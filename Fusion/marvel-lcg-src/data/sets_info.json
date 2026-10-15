@@ -1652,9 +1652,17 @@
    "sk_new_revengers",
    "sk_secret_invasion",
    "sk_skrull_pantheon",
-   "sk_dard_van_sect"
+   "sk_dard_van_sect",
+   "sk_shaper_of_worlds",
+   "sk_skrull_elite_crusader",
+   "sk_skrull_elite_jazinda",
+   "sk_skrull_elite_skymax",
+   "sk_skrull_elite_war_skrull",
+   "sk_skrull_elite_xavin",
+   "standard_skrull",
+   "expert_skrull"
   ],
-  "max_id": "sk227"
+  "max_id": "sk262"
  },
- "checksum": "028a1355df24a474cdaefabc031ad09baa83171ce0de0ce2603d36e344a42530"
+ "checksum": "8e2b4df22c5dc8e4552701a2ebf4221c5e804fe8afa11ba7b5feff1a7dbef176"
 }

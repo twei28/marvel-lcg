@@ -106862,7 +106862,583 @@
    "set_name": "Dard'van Sect",
    "text": "<b>When Revealed</b>: Choose a card in play with a \"<b>When Revealed</b>\" ability and resolve that ability. If you cannot, this card gains surge.\n<i>\"Trust. What do humans know of trust? You can't even agree on one god.\" —Nogor</i>",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk228",
+   "type": "Minion",
+   "name": "* Shaper of Worlds",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "SCH": "2",
+    "ATK": "2"
+   },
+   "traits": [
+    "COSMIC ENTITY",
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Shaper of Worlds",
+   "text": "<b>Forced Response</b>: After a player attacks Shaper of Worlds, shuffle this card into that player's deck.\n<b>Forced Interrupt</b>: When Shaper of Worlds enters your hand, discard the top 4 cards of the encounter deck. Put Shaper of Worlds into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk229",
+   "type": "SideScheme",
+   "name": "Cosmic Cube Creation",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Hinder": "4*",
+    "Victory": "2",
+    "Acceleration": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Shaper of Worlds",
+   "text": "Hinder 4[per_hero]. Victory 2.\n<b>When Revealed</b>: Put the set-aside Shaper of Worlds into play engaged with you.\n<b>When Defeated</b>: Each player chooses a copy of the set-aside Cosmic Cube Fragment resource and shuffles it into their deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk230a",
+   "type": "Resource",
+   "name": "Cosmic Cube Fragment",
+   "subtitle": "",
+   "desc": {
+    "RES": "YYY"
+   },
+   "traits": [],
+   "set_name": "Shaper of Worlds",
+   "text": "<i>An artifact to modify reality following the wishes of the user. The Skrulls were the first race to create a Cosmic Cube.</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk230b",
+   "type": "Resource",
+   "name": "Cosmic Cube Fragment",
+   "subtitle": "",
+   "desc": {
+    "RES": "BBB"
+   },
+   "traits": [],
+   "set_name": "Shaper of Worlds",
+   "text": "<i>An artifact to modify reality following the wishes of the user. The Skrulls were the first race to create a Cosmic Cube.</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk230c",
+   "type": "Resource",
+   "name": "Cosmic Cube Fragment",
+   "subtitle": "",
+   "desc": {
+    "RES": "RRR"
+   },
+   "traits": [],
+   "set_name": "Shaper of Worlds",
+   "text": "<i>An artifact to modify reality following the wishes of the user. The Skrulls were the first race to create a Cosmic Cube.</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk230d",
+   "type": "Resource",
+   "name": "Cosmic Cube Fragment",
+   "subtitle": "",
+   "desc": {
+    "RES": "RBY"
+   },
+   "traits": [],
+   "set_name": "Shaper of Worlds",
+   "text": "<i>An artifact to modify reality following the wishes of the user. The Skrulls were the first race to create a Cosmic Cube.</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk231",
+   "type": "Minion",
+   "name": "* Crusader",
+   "subtitle": "",
+   "desc": {
+    "HP": "4*",
+    "SCH": "2",
+    "ATK": "2",
+    "Victory": "1"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Elite - Crusader",
+   "text": "Victory 1.\n<b>When Revealed</b>: Deal 1 damage to each character you control. Give the villain 1 facedown boost card for each character defeated this way.\n[star] <b>Boost</b>: Put Crusader into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk232",
+   "type": "Attachment",
+   "name": "Enemy Adaptation",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1",
+    "ATK+": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Skrull Elite - Crusader",
+   "text": "Attach to a [[SKRULL]] minion. If you cannot, attach to the villain.\nYou cannot defend against attached enemy's attacks.\n<b>Hero Action</b>: Give the villain 1 facedown boost card → discard Enemy Adaptation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk233",
+   "type": "Attachment",
+   "name": "* Freedom Ring",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Skrull Elite - Crusader",
+   "text": "Attach to Crusader. If Crusader is not in play, discard cards from the top of the encounter deck until a minion is discarded. Put that minion into play engaged with you and attach this card to it. If you cannot, give the villain 1 facedown boost card.\nAttached minion gains villainous.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk234",
+   "type": "SideScheme",
+   "name": "Spy Training",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Hazard": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Crusader",
+   "text": "<i>Z'Reg, a Skrull operative who had been scarred by fellow trainee K'rtem, was sent to spy on the Avengers after his training was complete.</i>\n<b>When Revealed</b>: Defeat an ally you control and give the villain 1 facedown boost card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk235",
+   "type": "Treachery",
+   "name": "Rivals to the End",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Crusader",
+   "text": "<b>When Revealed</b>: Choose a minion. That minion attacks your hero twice in a row. If no attack was made this way, give the villain 1 facedown boost card for each character you control.\n<i>\"Your strategy is pathetic, human! You rush into battle and then you cradle your weak! Ha! Let me show you how Skrulls heed the call!\" —K'rtem</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk236",
+   "type": "Minion",
+   "name": "* Jazinda",
+   "subtitle": "",
+   "desc": {
+    "HP": "5*",
+    "SCH": "3",
+    "ATK": "1",
+    "Victory": "1"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Elite - Jazinda",
+   "text": "Victory 1.\nThe villain gets +1 SCH.\n[star] <b>Boost</b>: Put Jazinda into play engaged with you.\n<i>\"Pretending to be human is amusing. Especially when I do it so much better than you.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk237",
+   "type": "Attachment",
+   "name": "Skrull Energy Gun",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Skrull Elite - Jazinda",
+   "text": "Attach to a [[SKRULL]] minion. If you cannot, attach to the villain.\nWhile attached to a [[SKRULL]] enemy, attached enemy's attacks gain overkill, piercing, and ranged.\n<b>Hero Action</b>: Spend a [physical] resource → attach this card to another enemy.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk238",
+   "type": "Attachment",
+   "name": "* Sy-Torak Gem",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "ARTIFACT"
+   ],
+   "set_name": "Skrull Elite - Jazinda",
+   "text": "Attach to Jazinda. If you cannot, attach to the villain.\nAttached character gets +3 hit points.\n<b>Hero Action</b>: Give the villain 1 facedown boost card and spend a [energy] resource → discard Sy-Torak Gem.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk239",
+   "type": "SideScheme",
+   "name": "Stealing for the Empire",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Jazinda",
+   "text": "<i>A former agent of the Skrull Empire was sent to recover a sacred artifact of the Skrull stolen by the Kree.</i>\n<b>When Revealed</b>: Discard cards from the encounter deck until you discard an attachment. Reveal that attachment. Then, place threat on the main scheme equal to the number of boost icons ([boost]) on that attachment.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk240",
+   "type": "Treachery",
+   "name": "Skrull of Royal Blood",
+   "subtitle": "",
+   "desc": {
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Jazinda",
+   "text": "Surge.\n<b>When Revealed</b>: Shuffle all cards with the highest number of boost icons ([boost]) in the encounter discard pile into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk241",
+   "type": "Minion",
+   "name": "* Skymax",
+   "subtitle": "",
+   "desc": {
+    "HP": "5*",
+    "SCH": "2",
+    "ATK": "3",
+    "Victory": "1"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Elite - Skymax",
+   "text": "Victory 1.\n<b>When Revealed</b>: Shuffle all minions from the encounter discard pile into the encounter deck.\n[star] <b>Boost</b>: Put Skymax into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk242",
+   "type": "Attachment",
+   "name": "Changing Appearance",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Skrull Elite - Skymax",
+   "text": "Attach to a [[SKRULL]] minion. If you cannot, attach to the villain.\nAttached enemy cannot be attacked.\n<b>Forced Interrupt</b>: When attached enemy would attack, it schemes instead. Then, discard this card.\n<i>\"You're not bad, but my people invented shapeshifting!\" —Skymax</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk243",
+   "type": "SideScheme",
+   "name": "Surprising Alliance",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Skymax",
+   "text": "<i>\"I am my world's last survivor.\" —Skymax</i>\n<b>Forced Response</b>: When a player discards an ally from their hand, they put that ally into play engaged with them instead. Treat that ally as a minion with a blank text box. Its SCH is equal to its printed THW and it does not take consequential damage.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk244",
+   "type": "Treachery",
+   "name": "Shape Alteration",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Skymax",
+   "text": "<b>When Revealed</b>: Remove each stunned and confused status card from each [[SKRULL]] enemy and give each [[SKRULL]] enemy a tough status card. If there are no [[SKRULL]] enemies in play, this card gains surge.\n[star] <b>Boost</b>: Give 1 [[SKRULL]] enemy a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk245",
+   "type": "Minion",
+   "name": "* War Skrull",
+   "subtitle": "",
+   "desc": {
+    "HP": "5*",
+    "SCH": "2",
+    "ATK": "2*",
+    "Victory": "1"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Elite - War Skrull",
+   "text": "Victory 1.\n[star] <b>Forced Response</b>: After War Skrull attacks you, discard the top 2 cards of your deck.\n[star] <b>Boost</b>: Put War Skrull into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk246",
+   "type": "Attachment",
+   "name": "Impostor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Skrull Elite - War Skrull",
+   "text": "Treat attached ally as a [[SKRULL]] minion with a blank text box. Attached minion's SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: Attach to the non-[[SKRULL]] ally with the most remaining hit points without Impostor attached. Attached ally engages its controller. Otherwise, the villain schemes.",
+   "custom": "Kajislav",
+   "ability_link": "sk098"
+  },
+  {
+   "card_id": "sk247",
+   "type": "Minion",
+   "name": "Skrull Commander",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "SKRULL",
+    "SOLDIER"
+   ],
+   "set_name": "Skrull Elite - War Skrull",
+   "text": "Each other [[SKRULL]] minion gets +1 ATK.\n[star] <b>Boost</b>: If this activation is an attack, this card gets +2 boost icons ([boost][boost]) for this attack.\n<i>\"If he was a significant threat, we would know who he is\" —Commander Ak'strk</i>",
+   "custom": "Kajislav",
+   "ability_link": "sk113"
+  },
+  {
+   "card_id": "sk248",
+   "type": "Minion",
+   "name": "Skrull Geneticist",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "3",
+    "ATK": "0",
+    "Hazard": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "GENIUS",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Elite - War Skrull",
+   "text": "[star] <b>Boost</b>: Deal yourself a facedown encounter card.\n<i>\"These results are fascinating\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk249",
+   "type": "SideScheme",
+   "name": "Cloning Program",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - War Skrull",
+   "text": "<i>The Skrull scientists had cloned samples of Deadpool's blood and use it to upgrade a squadron of Super-Skrulls. They also place Deadpool in charge of training these new Super-Skrulls.</i>\nEach [[SKRULL]] minion activates 1 additional time during the step two of the villain phase.\nThreat cannot be removed from this scheme while there is no [[SKRULL]] minion in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk250",
+   "type": "Minion",
+   "name": "* Xavin",
+   "subtitle": "",
+   "desc": {
+    "HP": "5*",
+    "SCH": "2",
+    "ATK": "3",
+    "Victory": "1"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Elite - Xavin",
+   "text": "Victory 1.\n<b>When Revealed</b>: Discard cards from the encounter deck until a treachery is discarded. Reveal that treachery.\n[star] <b>Boost</b>: Put Xavin into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk251",
+   "type": "Attachment",
+   "name": "Invisible Forcefield",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Elite - Xavin",
+   "text": "Attach to the enemy with the highest printed hit points and without another Invisible Forcefield attached. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When any amount of damage would be dealt to attached character, place it here instead. Then, if there is at least 5 damage here, discard this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk252",
+   "type": "SideScheme",
+   "name": "Super-Skrull Training Program",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Amplify": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Xavin",
+   "text": "<i>\"Always remember, when you face a superior opponent, learn their weaknesses. Exploit them. That is the Skrull way.\" —Commander Chrell</i>\n<b>When Revealed</b>: Give each [[SKRULL]] enemy a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk253",
+   "type": "Treachery",
+   "name": "Going Nova",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Skrull Elite - Xavin",
+   "text": "<b>When Revealed</b>: Assign 2[per_hero] indirect damage among players.\n<i>\"Damnation. I keep forgetting how fragile you people are.\" —Xavin</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk254",
+   "type": "Attachment",
+   "name": "Impostor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Standard Skrull",
+   "text": "Treat attached ally as a [[SKRULL]] minion with a blank text box. Attached minion's SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: Attach to the non-[[SKRULL]] ally with the most remaining hit points without Impostor attached. Attached ally engages its controller. Otherwise, the villain schemes.",
+   "custom": "Kajislav",
+   "ability_link": "sk098"
+  },
+  {
+   "card_id": "sk255",
+   "type": "Treachery",
+   "name": "Cursed by the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Standard Skrull",
+   "text": "<b>When Revealed</b>: If your nemesis minion is in play, it activates against you. Otherwise, find your nemesis minion and reveal it. If your nemesis side scheme is in play, place threat on it equal to its starting threat value. Otherwise, find your nemesis side scheme and reveal it. Shuffle your remaining set-aside nemesis set into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk256",
+   "type": "Treachery",
+   "name": "Experiment Subject",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Standard Skrull",
+   "text": "<b>When Revealed</b>: Discard an upgrade you control. If no card was discarded this way, the villain schemes.\n<i>\"I am curious to see just what the upper limits of his extension are...\" —Skrull Scientist</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk257",
+   "type": "Treachery",
+   "name": "Forge Ahead",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Standard Skrull",
+   "text": "<b>When Revealed</b>: Each minion engaged with you schemes. If no scheme was made this way, the villain schemes.\n<i>\"We are not speaking of conquest. Think of it more as a... strategic protective occupation.\" —Nogor</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk258",
+   "type": "Treachery",
+   "name": "Mobilization",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Standard Skrull",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Engage each minion in play. The villain schemes.\n<b>When Revealed (Hero)</b>: The villain and each minion engaged with you attacks you.\n<i>\"We are by any and all definitions, the superior race!\" —Dorrek VII</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk259",
+   "type": "Treachery",
+   "name": "Stick to the Plan",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Standard Skrull",
+   "text": "<b>When Revealed</b>: The villain attacks the hero with the most remaining hit points. If no attack was made this way, the villain schemes.\n<i>\"Bow down and beg to the Skrulls!\" —Paibok</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk260",
+   "type": "Attachment",
+   "name": "Replaced Archenemy",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Expert Skrull",
+   "text": "Attached minion gains the [[SKRULL]] trait.\n<b>When Revealed</b>: If your nemesis minion is in play, attach this card to it. Then, it activates against you. Otherwise, find your nemesis minion, attach this card to it and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk261",
+   "type": "Treachery",
+   "name": "Focused Attention",
+   "subtitle": "",
+   "desc": {
+    "Surge": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Expert Skrull",
+   "text": "Surge.\n<b>When Revealed</b>: Give the villain 1 facedown boost card.\n<i>\"Earth shall pay for what it has done to my people!\" —Super-Skrull</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk262",
+   "type": "Treachery",
+   "name": "Tricky Assault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Expert Skrull",
+   "text": "<b>When Revealed</b>: Flip to hero form. The villain attacks you. If this attack is undefended, the villain schemes.\n<i>\"We are prepared to accept your surrender.\" —Unknown Skrull</i>",
+   "custom": "Kajislav"
   }
  ],
- "checksum": "f7fb8cdbcdd427043c1bc4aaf56dbbb122ba71a83b02f85f3b0206295f6e7abf"
+ "checksum": "b19720672a94f55f2cdb481f6837de0c02ffb6d7f492a231f79134733b77141e"
 }

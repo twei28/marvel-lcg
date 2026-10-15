@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Skrull Elite - War Skrull",
+  "encounters": [
+    "sk245",
+    "sk246",
+    "sk247",
+    "sk248",
+    "sk249",
+    "sk249"
+  ]
+}

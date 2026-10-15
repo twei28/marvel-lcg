@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Skrull Elite - Crusader",
+  "encounters": [
+    "sk231",
+    "sk232",
+    "sk233",
+    "sk234",
+    "sk235",
+    "sk235"
+  ]
+}

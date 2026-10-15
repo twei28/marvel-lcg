@@ -1,0 +1,13 @@
+{
+  "version": "0.5.8",
+  "name": "Standard Skrull",
+  "encounters": [
+    "sk254",
+    "sk255",
+    "sk256",
+    "sk257",
+    "sk258",
+    "sk259",
+    "sk259"
+  ]
+}

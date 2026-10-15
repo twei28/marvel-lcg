@@ -3839,4 +3839,80 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'sk187': "<b>Une fois révélée</b> : défaussez la carte du dessus du deck Rencontre pour chaque personnage en jeu. Révélez chaque carte défaussée de cette façon qui appartient au set de rencontre Dard'van Sect.\n<i>\"...le premier nous aime tous de la même façon.\" —Grrix</i>",
   // skrull_menace — Sectarian Practices (Treachery)
   'sk188': "<b>Une fois révélée</b> : choisissez une carte en jeu qui a une capacité \"<b>Une fois révélé</b>\" et résolvez cette capacité. Si vous ne pouvez pas, cette carte gagne Renfort.\n<i>\"La confiance. Que savent les humains de la confiance ? Vous n'arrivez même pas à vous accorder sur un seul dieu.\" —Nogor</i>",
+  // skrull_menace — Shaper of Worlds (Minion)
+  'sk228': "<b>Réponse forcée</b> : après qu'un joueur a attaqué Shaper of Worlds, mélangez cette carte dans le deck de ce joueur.\n<b>Interruption forcée</b> : quand Shaper of Worlds entre dans votre main, défaussez les 4 cartes du dessus du deck Rencontre. Mettez Shaper of Worlds en jeu engagé avec vous.",
+  // skrull_menace — Cosmic Cube Creation (SideScheme)
+  'sk229': "Entrave 4[per_hero]. Victoire 2.\n<b>Une fois révélée</b> : mettez en jeu Shaper of Worlds, mis de côté, engagé avec vous.\n<b>Une fois déjouée</b> : chaque joueur choisit un exemplaire de la ressource Cosmic Cube Fragment mise de côté et le mélange dans son deck.",
+  // skrull_menace — Cosmic Cube Fragment (Resource, A)
+  'sk230a': "<i>Un artefact capable de modifier la réalité selon les souhaits de son utilisateur. Les Skrulls furent la première race à créer un Cube Cosmique.</i>",
+  // skrull_menace — Cosmic Cube Fragment (Resource, B)
+  'sk230b': "<i>Un artefact capable de modifier la réalité selon les souhaits de son utilisateur. Les Skrulls furent la première race à créer un Cube Cosmique.</i>",
+  // skrull_menace — Cosmic Cube Fragment (Resource, C)
+  'sk230c': "<i>Un artefact capable de modifier la réalité selon les souhaits de son utilisateur. Les Skrulls furent la première race à créer un Cube Cosmique.</i>",
+  // skrull_menace — Cosmic Cube Fragment (Resource, D)
+  'sk230d': "<i>Un artefact capable de modifier la réalité selon les souhaits de son utilisateur. Les Skrulls furent la première race à créer un Cube Cosmique.</i>",
+  // skrull_menace — Crusader (Minion)
+  'sk231': "Victoire 1.\n<b>Une fois révélé</b> : infligez 1 dégât à chaque personnage que vous contrôlez. Donnez au méchant 1 carte de boost face cachée pour chaque personnage vaincu de cette façon.\n[star] <b>Boost</b> : mettez Crusader en jeu engagé avec vous.",
+  // skrull_menace — Enemy Adaptation (Attachment)
+  'sk232': "Attachez cette carte à un sbire [[SKRULL]]. Si vous ne le pouvez pas, attachez-la au méchant.\nVous ne pouvez pas défendre contre les attaques de l'ennemi attaché.\n<b>Action de héros</b> : donnez au méchant 1 carte de boost face cachée → défaussez Enemy Adaptation.",
+  // skrull_menace — Freedom Ring (Attachment)
+  'sk233': "Attachez cette carte à Crusader. Si Crusader n'est pas en jeu, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire soit défaussé. Mettez ce sbire en jeu engagé avec vous et attachez-lui cette carte. Si vous ne le pouvez pas, donnez au méchant 1 carte de boost face cachée.\nLe sbire attaché gagne Vilenie.",
+  // skrull_menace — Spy Training (SideScheme)
+  'sk234': "<i>Z'Reg, un agent skrull marqué par son camarade de formation K'rtem, fut envoyé espionner les Avengers une fois son entraînement terminé.</i>\n<b>Une fois révélée</b> : vainquez un allié que vous contrôlez et donnez au méchant 1 carte de boost face cachée.",
+  // skrull_menace — Rivals to the End (Treachery)
+  'sk235': "<b>Une fois révélée</b> : choisissez un sbire. Ce sbire attaque votre héros deux fois de suite. Si aucune attaque n'a été effectuée de cette façon, donnez au méchant 1 carte de boost face cachée pour chaque personnage que vous contrôlez.\n<i>« Ta stratégie est pitoyable, humain ! Tu te précipites au combat puis tu dorlotes tes faibles ! Ha ! Laisse-moi te montrer comment les Skrulls répondent à l'appel ! » —K'rtem</i>",
+  // skrull_menace — Jazinda (Minion)
+  'sk236': "Victoire 1.\nLe méchant gagne +1 MNG.\n[star] <b>Boost</b> : mettez Jazinda en jeu engagée avec vous.\n<i>« Se faire passer pour une humaine est amusant. Surtout quand je le fais tellement mieux que vous. »</i>",
+  // skrull_menace — Skrull Energy Gun (Attachment)
+  'sk237': "Attachez cette carte à un sbire [[SKRULL]]. Si vous ne le pouvez pas, attachez-la au méchant.\nTant qu'elle est attachée à un ennemi [[SKRULL]], les attaques de l'ennemi attaché gagnent Déferlement, Perçant et Distance.\n<b>Action de héros</b> : dépensez une ressource [physical] → attachez cette carte à un autre ennemi.",
+  // skrull_menace — Sy-Torak Gem (Attachment)
+  'sk238': "Attachez cette carte à Jazinda. Si vous ne le pouvez pas, attachez-la au méchant.\nLe personnage attaché gagne +3 points de vie.\n<b>Action de héros</b> : donnez au méchant 1 carte de boost face cachée et dépensez une ressource [energy] → défaussez Sy-Torak Gem.",
+  // skrull_menace — Stealing for the Empire (SideScheme)
+  'sk239': "<i>Un ancien agent de l'Empire Skrull fut envoyé récupérer un artefact sacré des Skrulls volé par les Krees.</i>\n<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à ce qu'un attachement soit défaussé. Révélez cet attachement. Ensuite, placez sur la manigance principale un nombre de menaces égal au nombre d'icônes de boost ([boost]) de cet attachement.",
+  // skrull_menace — Skrull of Royal Blood (Treachery)
+  'sk240': "Renfort.\n<b>Une fois révélée</b> : mélangez dans le deck Rencontre toutes les cartes de la pile de défausse rencontre qui ont le plus grand nombre d'icônes de boost ([boost]).",
+  // skrull_menace — Skymax (Minion)
+  'sk241': "Victoire 1.\n<b>Une fois révélé</b> : mélangez dans le deck Rencontre tous les sbires de la pile de défausse rencontre.\n[star] <b>Boost</b> : mettez Skymax en jeu engagé avec vous.",
+  // skrull_menace — Changing Appearance (Attachment)
+  'sk242': "Attachez cette carte à un sbire [[SKRULL]]. Si vous ne le pouvez pas, attachez-la au méchant.\nL'ennemi attaché ne peut pas être attaqué.\n<b>Interruption forcée</b> : quand l'ennemi attaché est censé attaquer, il manigance à la place. Ensuite, défaussez cette carte.\n<i>« Tu n'es pas mauvais, mais mon peuple a inventé le changement de forme ! » —Skymax</i>",
+  // skrull_menace — Surprising Alliance (SideScheme)
+  'sk243': "<i>« Je suis le dernier survivant de mon monde. » —Skymax</i>\n<b>Réponse forcée</b> : quand un joueur défausse un allié de sa main, il le met en jeu engagé avec lui à la place. Considérez cet allié comme un sbire dont la boîte de texte est vide. Sa MNG est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.",
+  // skrull_menace — Shape Alteration (Treachery)
+  'sk244': "<b>Une fois révélée</b> : retirez chaque carte d'état Sonné et Désorienté de chaque ennemi [[SKRULL]] et donnez à chaque ennemi [[SKRULL]] une carte d'état Tenace. S'il n'y a aucun ennemi [[SKRULL]] en jeu, cette carte gagne Renfort.\n[star] <b>Boost</b> : donnez une carte d'état Tenace à 1 ennemi [[SKRULL]].",
+  // skrull_menace — War Skrull (Minion)
+  'sk245': "Victoire 1.\n[star] <b>Réponse forcée</b> : après que War Skrull vous a attaqué, défaussez les 2 cartes du dessus de votre deck.\n[star] <b>Boost</b> : mettez War Skrull en jeu engagé avec vous.",
+  // skrull_menace — Impostor (Attachment, War Skrull)
+  'sk246': "Considérez l'allié attaché comme un sbire [[SKRULL]] dont la boîte de texte est vide. Sa MNG est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.\n<b>Une fois révélée</b> : attachez cette carte à l'allié non-[[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'exemplaire d'Impostor attaché. L'allié attaché s'engage avec son contrôleur. Sinon, le méchant manigance.",
+  // skrull_menace — Skrull Commander (Minion, War Skrull)
+  'sk247': "Chaque autre sbire [[SKRULL]] gagne +1 ATQ.\n[star] <b>Boost</b> : si cette activation est une attaque, cette carte gagne +2 icônes de boost ([boost][boost]) pour cette attaque.\n<i>« S'il était une menace sérieuse, nous saurions qui il est » —Commandant Ak'strk</i>",
+  // skrull_menace — Skrull Geneticist (Minion)
+  'sk248': "[star] <b>Boost</b> : distribuez-vous 1 carte Rencontre face cachée.\n<i>« Ces résultats sont fascinants »</i>",
+  // skrull_menace — Cloning Program (SideScheme)
+  'sk249': "<i>Les scientifiques skrulls avaient cloné des échantillons du sang de Deadpool et s'en servent pour améliorer un escadron de Super-Skrulls. Ils placent aussi Deadpool à la tête de l'entraînement de ces nouveaux Super-Skrulls.</i>\nChaque sbire [[SKRULL]] s'active 1 fois supplémentaire pendant l'étape deux de la phase du Méchant.\nLes menaces ne peuvent pas être retirées de cette manigance tant qu'il n'y a aucun sbire [[SKRULL]] en jeu.",
+  // skrull_menace — Xavin (Minion)
+  'sk250': "Victoire 1.\n<b>Une fois révélé</b> : défaussez des cartes du deck Rencontre jusqu'à ce qu'une traîtrise soit défaussée. Révélez cette traîtrise.\n[star] <b>Boost</b> : mettez Xavin en jeu engagé avec vous.",
+  // skrull_menace — Invisible Forcefield (Attachment)
+  'sk251': "Attachez cette carte à l'ennemi ayant le plus de points de vie imprimés et n'ayant pas d'autre Invisible Forcefield attaché. Si vous ne le pouvez pas, cette carte gagne Renfort.\n<b>Interruption forcée</b> : quand n'importe quelle quantité de dégâts est censée être infligée au personnage attaché, placez-la ici à la place. Ensuite, s'il y a au moins 5 dégâts ici, défaussez cette carte.",
+  // skrull_menace — Super-Skrull Training Program (SideScheme)
+  'sk252': "<i>« Souvenez-vous toujours : face à un adversaire supérieur, apprenez ses faiblesses. Exploitez-les. Telle est la voie des Skrulls. » —Commandant Chrell</i>\n<b>Une fois révélée</b> : donnez une carte d'état Tenace à chaque ennemi [[SKRULL]].",
+  // skrull_menace — Going Nova (Treachery)
+  'sk253': "<b>Une fois révélée</b> : répartissez 2[per_hero] dégâts indirects parmi les joueurs.\n<i>« Zut. J'oublie toujours à quel point vous êtes fragiles. » —Xavin</i>",
+  // skrull_menace — Impostor (Attachment, Standard Skrull)
+  'sk254': "Considérez l'allié attaché comme un sbire [[SKRULL]] dont la boîte de texte est vide. Sa MNG est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.\n<b>Une fois révélée</b> : attachez cette carte à l'allié non-[[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'exemplaire d'Impostor attaché. L'allié attaché s'engage avec son contrôleur. Sinon, le méchant manigance.",
+  // skrull_menace — Cursed by the Past (Treachery)
+  'sk255': "<b>Une fois révélée</b> : si votre sbire Némésis est en jeu, il s'active contre vous. Sinon, trouvez votre sbire Némésis et révélez-le. Si votre manigance annexe Némésis est en jeu, placez dessus un nombre de menaces égal à sa menace de départ. Sinon, trouvez votre manigance annexe Némésis et révélez-la. Mélangez dans le deck Rencontre les cartes restantes de votre set Némésis mis de côté.",
+  // skrull_menace — Experiment Subject (Treachery)
+  'sk256': "<b>Une fois révélée</b> : défaussez une amélioration que vous contrôlez. Si aucune carte n'a été défaussée de cette façon, le méchant manigance.\n<i>« Je suis curieux de voir jusqu'où vont les limites de son extension... » —Scientifique skrull</i>",
+  // skrull_menace — Forge Ahead (Treachery)
+  'sk257': "<b>Une fois révélée</b> : chaque sbire engagé avec vous manigance. Si aucune manigance n'a été effectuée de cette façon, le méchant manigance.\n<i>« Nous ne parlons pas de conquête. Voyez cela plutôt comme une... occupation protectrice stratégique. » —Nogor</i>",
+  // skrull_menace — Mobilization (Treachery)
+  'sk258': "<b>Une fois révélée (alter ego)</b> : engagez chaque sbire en jeu. Le méchant manigance.\n<b>Une fois révélée (héros)</b> : le méchant et chaque sbire engagé avec vous vous attaquent.\n<i>« Nous sommes, par toutes les définitions, la race supérieure ! » —Dorrek VII</i>",
+  // skrull_menace — Stick to the Plan (Treachery)
+  'sk259': "<b>Une fois révélée</b> : le méchant attaque le héros ayant le plus de points de vie restants. Si aucune attaque n'a été effectuée de cette façon, le méchant manigance.\n<i>« Prosternez-vous et suppliez devant les Skrulls ! » —Paibok</i>",
+  // skrull_menace — Replaced Archenemy (Attachment)
+  'sk260': "Le sbire attaché gagne le trait [[SKRULL]].\n<b>Une fois révélée</b> : si votre sbire Némésis est en jeu, attachez-lui cette carte. Ensuite, il s'active contre vous. Sinon, trouvez votre sbire Némésis, attachez-lui cette carte et révélez-le.",
+  // skrull_menace — Focused Attention (Treachery)
+  'sk261': "Renfort.\n<b>Une fois révélée</b> : donnez au méchant 1 carte de boost face cachée.\n<i>« La Terre paiera pour ce qu'elle a fait à mon peuple ! » —Super-Skrull</i>",
+  // skrull_menace — Tricky Assault (Treachery)
+  'sk262': "<b>Une fois révélée</b> : passez sous forme de héros. Le méchant vous attaque. Si cette attaque n'est pas défendue, le méchant manigance.\n<i>« Nous sommes prêts à accepter votre reddition. » —Skrull inconnu</i>",
 }
