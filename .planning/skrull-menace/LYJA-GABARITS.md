@@ -18,7 +18,8 @@ Rappels communs a toutes les cartes :
   ne joue pas Skrull Spy / Playing Along (aucune des 16 parties ne les a declenches) mais joue les evenements TREACHERY (melanges dans le
   deck rencontre puis revelés), Paibok, Untrustworthiness (en boost), Human Torch, Invisible Woman, Lazerfist... Ces deux actions sont
   couvertes par les cas.
-- **Etape 9 (deck)** : `DECK_NOM=lyja verifier_tous_les_decks.py` : « identite sk037b, main 6, deck 34 » (la partie monte).
+- **Etape 9 (deck)** : `DECK_NOM=lyja verifier_tous_les_decks.py` : « identite sk037b, main 6, deck 34 » (la partie monte) ; passe COMPLETE
+  apres le changement de l'enum COUNTER : 141/141 decks montent une partie.
 - **Outils statiques** : `verifier_appels_modules skrull_menace` OK (calibre : un appel `Faces.NexistePas` ajoute a la main est bien refuse) ;
   `verifier_api_cartes` : aucune faute dans skrull_menace ; `audit_cartes` : aucune discordance sur sk037-sk069.
 - **Moteur** : une entree ajoutee a l'enum COUNTER (`revelation`), voir `defs/lyja_moteur.md`. Rien d'autre.
