@@ -54,6 +54,11 @@ export type ChampVictoire = {
   libelle: string
   aide?: string
   options?: string[]
+  /**
+   * Un tableau de cases à cocher (« Cooperation Progress » de Skrull Menace) : une ligne par carte,
+   * une case par exigence. Le carnet garde « Titre: exigence » pour chaque case cochée.
+   */
+  cases?: Array<{ titre: string; exigences: string[] }>
 }
 
 const SEP = ';'

@@ -718,6 +718,46 @@ function Controle({
     )
   }
 
+  // Un tableau de cases (Cooperation Progress) : le jeu propose, le joueur corrige case par case.
+  if (champ.cases?.length) {
+    const cochees = new Set(deListe(valeur))
+    const toutes = champ.cases.flatMap((l) => l.exigences.map((e) => `${l.titre}: ${e}`))
+    return (
+      <table className="camp-cases" data-cle={cle}>
+        <tbody>
+          {champ.cases.map((ligne) => {
+            const faites = ligne.exigences.map((e) => cochees.has(`${ligne.titre}: ${e}`))
+            return (
+              <tr key={ligne.titre} className={faites.every(Boolean) ? 'complete' : ''}>
+                <th scope="row">{ligne.titre}</th>
+                {ligne.exigences.map((e, i) => (
+                  <td key={e}>
+                    <button
+                      type="button"
+                      className={'camp-case' + (faites[i] ? ' cochee' : '')}
+                      aria-pressed={faites[i]}
+                      disabled={inerte}
+                      onClick={() => {
+                        const suite = new Set(cochees)
+                        const k = `${ligne.titre}: ${e}`
+                        if (suite.has(k)) suite.delete(k)
+                        else suite.add(k)
+                        poser(cle, enListe(toutes.filter((x) => suite.has(x))))
+                      }}
+                    >
+                      {faites[i] ? '✔ ' : ''}
+                      {e}
+                    </button>
+                  </td>
+                ))}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    )
+  }
+
   if (champ.format === 'int') {
     return (
       <input

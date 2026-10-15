@@ -148,7 +148,108 @@
    "type": "auto",
    "format": "liste",
    "libelle": "Tableau de coopération",
-   "aide": "Une case par « Carte: exigence » cochée. Chaque sbire ou manigance annexe de la pile de victoire coche UNE seule exigence ; quand toutes celles d'une carte sont cochées, elle rejoint la zone de coopération."
+   "aide": "Une case par « Carte: exigence » cochée. Chaque sbire ou manigance annexe de la pile de victoire coche UNE seule exigence ; quand toutes celles d'une carte sont cochées, elle rejoint la zone de coopération.",
+   "cases": [
+    {
+     "titre": "Antalya",
+     "exigences": [
+      "Nemesis minion",
+      "Seeking a Suitable World"
+     ]
+    },
+    {
+     "titre": "Cadre K",
+     "exigences": [
+      "Non-ELITE minion",
+      "Hijacked",
+      "GENIUS minion"
+     ]
+    },
+    {
+     "titre": "Pool-o-Vision",
+     "exigences": [
+      "ELITE non-SKRULL minion",
+      "ELITE SKRULL minion",
+      "Non-ELITE SKRULL minion"
+     ]
+    },
+    {
+     "titre": "Princess Anelle",
+     "exigences": [
+      "Cloning Program",
+      "Emperor's Throne"
+     ]
+    },
+    {
+     "titre": "Skrull Battleship",
+     "exigences": [
+      "SOLDIER minion",
+      "Hijacked",
+      "Seeking a Suitable World"
+     ]
+    },
+    {
+     "titre": "Skrull Kill Crew",
+     "exigences": [
+      "Skrull Spy",
+      "Skrull Warrior",
+      "Skrull Soldier",
+      "Skrull Commander"
+     ]
+    },
+    {
+     "titre": "3-D Man's Goggles",
+     "exigences": [
+      "ELITE minion",
+      "Non-SKRULL minion",
+      "Player side scheme",
+      "Non-unique minion"
+     ]
+    },
+    {
+     "titre": "Inhibitor Mask",
+     "exigences": [
+      "Plotting Revenge",
+      "Non-ELITE non-SKRULL minion"
+     ]
+    },
+    {
+     "titre": "Nullifier",
+     "exigences": [
+      "Nemesis side scheme"
+     ]
+    },
+    {
+     "titre": "Reverting Device",
+     "exigences": [
+      "Skrull Spy",
+      "Skrull Scientist",
+      "Skrull Warrior",
+      "Skrull Telepath"
+     ]
+    },
+    {
+     "titre": "Skrull Shapeshifter",
+     "exigences": [
+      "Unique minion",
+      "Plotting Revenge",
+      "SKRULL minion"
+     ]
+    },
+    {
+     "titre": "Sy-Torak Gem",
+     "exigences": [
+      "Jazinda",
+      "Stealing for the Empire"
+     ]
+    },
+    {
+     "titre": "Cosmic Cube Fragment",
+     "exigences": [
+      "Cosmic Cube Creation"
+     ]
+    }
+   ]
   },
   {
    "cle": "Shaper of Worlds Game Area",

@@ -207,6 +207,11 @@ test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les
     await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
     await expect(page.locator('.camp-champ-libelle', { hasText: 'Zone de coopération' })).toBeVisible()
     await expect(page.locator('.camp-champ-libelle', { hasText: 'Tableau de coopération' })).toBeVisible()
+    // Le tableau de coopération est une grille de cases : le joueur corrige case par case.
+    const antalya = page.locator('.camp-cases button', { hasText: 'Nemesis minion' }).first()
+    await expect(page.locator('.camp-cases button'), 'Le tableau doit avoir ses 34 cases.').toHaveCount(34)
+    if ((await antalya.getAttribute('aria-pressed')) !== 'true') await antalya.click()
+    await expect(antalya).toHaveAttribute('aria-pressed', 'true')
     await page.locator('.camp-recomp-valider').click()
     await page.waitForURL('**/campagne.html', { timeout: 30000 })
 
@@ -216,6 +221,10 @@ test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les
       apres.historique?.sk_super_skrull?.['Cooperation Area'],
       'Le panneau n a pas garde la colonne du scenario 2 dans l historique.'
     ).toContain('sk267')
+    expect(
+      apres.carnet?.['Cooperation Progress'],
+      'La case cochee a la main dans le panneau doit etre au carnet.'
+    ).toContain('Antalya: Nemesis minion')
     const zone = String(apres.carnet?.['Cooperation Area'] ?? '').split(';').filter(Boolean)
     for (const id of ['sk267', 'sk274', 'sk230a', 'sk230b', 'sk230c', 'sk230d']) {
       expect(zone, `${id} devait etre dans la zone de cooperation : ${zone}`).toContain(id)
