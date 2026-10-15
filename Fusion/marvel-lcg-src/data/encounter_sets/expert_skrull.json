@@ -1,0 +1,9 @@
+{
+  "version": "0.5.8",
+  "name": "Expert Skrull",
+  "encounters": [
+    "sk260",
+    "sk261",
+    "sk262"
+  ]
+}

@@ -1647,9 +1647,17 @@
    "sk_skrull_society",
    "sk_kree_skrull_war",
    "sk_paibok",
-   "sk_new_revengers"
+   "sk_new_revengers",
+   "sk_shaper_of_worlds",
+   "sk_skrull_elite_crusader",
+   "sk_skrull_elite_jazinda",
+   "sk_skrull_elite_skymax",
+   "sk_skrull_elite_war_skrull",
+   "sk_skrull_elite_xavin",
+   "standard_skrull",
+   "expert_skrull"
   ],
-  "max_id": "sk169"
+  "max_id": "sk262"
  },
- "checksum": "1bc8106fb2ee0aa13b84a816ede6e28f39f893211e4a882103d062e6d1516473"
+ "checksum": "414d743228d37b24c045f8a9333db6427b00817c24ac3a6a1773caa3826cc18e"
 }

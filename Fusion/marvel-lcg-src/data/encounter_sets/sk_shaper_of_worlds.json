@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Shaper of Worlds",
+  "encounters": [
+    "sk228",
+    "sk229",
+    "sk230a",
+    "sk230b",
+    "sk230c",
+    "sk230d"
+  ]
+}

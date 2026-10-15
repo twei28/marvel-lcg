@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Skrull Elite - Skymax",
+  "encounters": [
+    "sk241",
+    "sk242",
+    "sk242",
+    "sk243",
+    "sk244",
+    "sk244"
+  ]
+}
