@@ -161,6 +161,36 @@ test.describe('Campagne Skrull Menace : l interface de choix de campagne', () =>
       await request.post('/delete_campagne', { data: { id } })
     }
   })
+
+  test('l Elite du scenario est tiree et montree avant le lancement, puis gardee au carnet', async ({ page, request }) => {
+    const nom = 'Essai automatique - skrull menace (elite)'
+    await nettoyer(request, nom)
+    const id = await poserCampagne(request, {
+      code: 'skrull_menace', nom, difficulte: 'standard',
+      equipe: [{ heros: 'lyja', nomHeros: 'Lyja' }],
+      termines: ['sk_skrull_empire'],
+      carnet: { 'Skrull Elite: Crusader': 'Removed from campaign', 'Skrull Elite: Jazinda': 'In another game area' },
+      tentatives: {}, partieEnCours: null,
+    })
+    try {
+      await page.goto('/campagne.html', { waitUntil: 'networkidle' })
+      await page.locator('.cmp-carte', { hasText: nom }).locator('.cmp-carte-ouvrir').click()
+      // Jazinda revient d'elle-meme ; UNE nouvelle Elite est tiree parmi Skymax, War Skrull, Xavin.
+      await expect(page.locator('.cmp-elite')).toHaveCount(2, { timeout: 10000 })
+      await expect(page.locator('.cmp-elite[data-elite="Jazinda"]')).toBeVisible()
+      const tiree = await page.locator('.cmp-elite').evaluateAll((l) => l.map((x) => x.getAttribute('data-elite')).filter((n) => n !== 'Jazinda'))
+      expect(['Skymax', 'War Skrull', 'Xavin']).toContain(tiree[0])
+      await page.screenshot({ path: '/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/aedcc77a-2512-4da8-82a4-14876d788fa2/scratchpad/elite.png' })
+      const apres = await relireCampagne(request, id)
+      expect(apres.carnet?.['Next Skrull Elite']).toBe('2:' + tiree[0])
+      // Rouvrir ne retire pas une autre Elite : le tirage est garde.
+      await page.reload({ waitUntil: 'networkidle' })
+      await page.locator('.cmp-carte', { hasText: nom }).locator('.cmp-carte-ouvrir').click()
+      await expect(page.locator('.cmp-elite[data-elite="' + tiree[0] + '"]')).toBeVisible({ timeout: 10000 })
+    } finally {
+      await request.post('/delete_campagne', { data: { id } })
+    }
+  })
 })
 
 test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les etats', () => {

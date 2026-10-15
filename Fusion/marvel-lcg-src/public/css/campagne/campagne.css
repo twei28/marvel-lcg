@@ -556,3 +556,9 @@ body:has(.cmp-page-campagne.avec-livre)>#app{flex:1 1 auto;min-height:0;height:a
 .cmp-zone-vignette.sel { border-color: #35a865; box-shadow: 0 0 0 2px rgba(53, 168, 101, 0.4); }
 .cmp-zone-vignette.prise { opacity: 0.35; cursor: not-allowed; }
 .cmp-zone-vignette:hover:not(:disabled) { border-color: #ffd45a; }
+
+/* L'Elite tiree pour le scenario, montree avant le lancement. */
+.cmp-elites { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.cmp-elites-t { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
+.cmp-elite { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+.cmp-elite img { width: 36px; border-radius: 4px; border: 1px solid #ffd45a; }

@@ -425,6 +425,18 @@ def _shaper_et_cube(effect: 'Effect', level: int) -> None:
             _mettre_de_cote(effect, card_id)
 
 
+CLE_ELITE_ANNONCEE = 'Next Skrull Elite'      # « <scenario>:<nom> » : le tirage deja fait et montre sur l'ecran de campagne
+
+
+def _elite_annoncee(effect: 'Effect', level: int, candidates: List[dict]) -> 'dict|None':
+    """L'Elite que l'ecran de campagne a TIREE (au hasard) et montree avant le lancement, si elle vaut pour
+    CE scenario et reste possible. Sinon None : le moteur tire lui-meme, comme avant."""
+    niveau, _, nom = _texte(effect, CLE_ELITE_ANNONCEE).partition(':')
+    if niveau != str(level):
+        return None
+    return next((e for e in candidates if e['nom'] == nom), None)
+
+
 def _elites(effect: 'Effect', level: int) -> None:
     """Les ensembles Skrull Elite (p.9 a p.17).
 
@@ -445,7 +457,8 @@ def _elites(effect: 'Effect', level: int) -> None:
     if level >= 5:
         pioche += candidates
     elif candidates:
-        pioche.append(candidates[Rand.RandomChoice(list(range(len(candidates))), effect)])
+        annoncee = _elite_annoncee(effect, level, candidates)
+        pioche.append(annoncee or candidates[Rand.RandomChoice(list(range(len(candidates))), effect)])
     for elite in pioche:
         faces = [_generer(effect, i) for i in CardFactory.LoadEncounterSet(elite['ensemble'])]
         Faces.ShuffleAllTo(faces, 'EncounterDeck', effect)

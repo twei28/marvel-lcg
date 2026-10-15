@@ -62,14 +62,15 @@ Fichiers : `src/cards/pack/skrull_menace/campaign.py` (moteur), `data/campagnes/
   `none` = rien). Rien de choisi : les questions de la mise en place comme avant. 4 chaines + mutation (3 rouges sur 4 sans la lecture).
 - **Tableau « Cooperation Progress » en cases dans le panneau de fin de partie** (champ `cases`) : le jeu propose l'assignation, le joueur
   corrige case par case (Q1).
+- **L'Elite du scenario, tiree et montree avant le lancement** (`elitesDuScenario`) : l'ecran fait le tirage du livret une fois, le garde
+  (`Next Skrull Elite` = « <scenario>:<nom> ») et le moteur le lit ; une annonce d'un autre scenario ou d'une Elite deja tiree est ignoree.
+  4 chaines + mutation (1 rouge sur 2 sans la lecture ; la 2e coincide avec le tirage a graine fixe).
 - **Questions du jeu en francais** : cooperation, zone, campagne experte (`vocabulaire-moteur.ts`).
 - **Partie reelle dans le navigateur** (`ui-check/tests/campagne-skrull-ecran-reel.spec.ts`) : cartes choisies a l'ecran dans le deck et
   en main, texte lisible (captures relues), question de cooperation affichee en francais, reponse qui defausse le dessus du deck.
 
 ## Ce qui n'est PAS fait (decisions, pas oublis)
 
-- **L'Elite du scenario a venir, affichee avant le lancement** : le livret la fait tirer AU HASARD a la mise en place (p.9) ; la montrer avant
-  reviendrait a deplacer le tirage. Le journal de l'ecran Cooperation montre ce qui a deja ete tire (case vide = jamais tiree).
 - **Un bouton a cote de la carte vaincue** pour la cooperation : la question standard (« Défausser le dessus de ton deck pour placer ... ») est
   deja posee a l'ecran, en francais, avec « Annuler ».
 - **La mise en pile de victoire par la console de debug** : un coup donne par la console n'enchaine pas la suite de la regle (artefact de

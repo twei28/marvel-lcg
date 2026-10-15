@@ -844,6 +844,49 @@ function blocChoixDeLaZone(campagne, definition) {
         sections);
 }
 
+/**
+ * L'Elite du scenario, TIREE ET MONTREE avant le lancement (Skrull Menace, livret p.9 a 17).
+ *
+ * Aux scenarios 1 a 4 le livret fait tirer UNE Elite au hasard parmi celles jamais tirees : l'ecran fait
+ * ce tirage, une fois, le garde au carnet (`Next Skrull Elite` = « <scenario>:<nom> ») et le moteur le lit.
+ * Au scenario 5 « the remaining » : toutes celles qui restent, rien a tirer. Une Elite deja tiree dont le
+ * sbire n'est pas en pile de victoire revient d'elle-meme (« In another game area »).
+ */
+function elitesDuScenario(campagne, definition, niveau) {
+    const coop = definition.cooperation;
+    if (!coop || !coop.elites || !coop.cle_elite_annoncee) return null;
+    const carnet = campagne.carnet || {};
+    const jamais = coop.elites.filter((e) => !carnet[e.cle]);
+    const reviennent = coop.elites.filter((e) => carnet[e.cle] === "In another game area");
+    if (niveau >= 5) return { elites: [...reviennent, ...jamais], tirage: false };
+    const [n, nom] = String(carnet[coop.cle_elite_annoncee] || "").split(":");
+    const annoncee = n === String(niveau) ? jamais.find((e) => e.nom === nom) : null;
+    if (annoncee) return { elites: [...reviennent, annoncee], tirage: true };
+    if (!jamais.length) return { elites: reviennent, tirage: false };
+    // Pas encore tiree : on tire, on garde, et l'ecran se redessine.
+    const cle = campagne.id + ":" + niveau;
+    if (etat.eliteTiree !== cle) {
+        etat.eliteTiree = cle;
+        const choix = jamais[Math.floor(Math.random() * jamais.length)];
+        setTimeout(() => proteger(async () => {
+            etat.campagne.carnet = { ...(etat.campagne.carnet || {}), [coop.cle_elite_annoncee]: niveau + ":" + choix.nom };
+            etat.campagne = await apiCampagne.enregistrer(etat.campagne);
+        }), 0);
+    }
+    return { elites: reviennent, tirage: false };
+}
+
+function blocEliteDuScenario(campagne, definition, niveau, enCours) {
+    if (enCours) return null;
+    const r = elitesDuScenario(campagne, definition, niveau);
+    if (!r || !r.elites.length) return null;
+    return el("div", { class: "cmp-elites" },
+        el("span", { class: "cmp-elites-t" }, niveau >= 5 ? t("Elites restantes") : r.elites.length > 1 ? t("Elites de ce scénario") : t("Elite de ce scénario")),
+        r.elites.map((e) => el("span", { class: "cmp-elite", "data-elite": e.nom, title: e.nom },
+            el("img", { src: cardImageUrl(e.sbire), alt: e.nom, loading: "lazy" }),
+            el("span", {}, e.nom))));
+}
+
 /** Le Marche se visite-t-il deja ? Hunting Season : « Between each scenario »,
  *  donc pas avant le premier (`ouvert_apres_premier`). */
 function marcheOuvert(campagne, definition) {
@@ -1085,6 +1128,7 @@ function vueCampagne() {
             el("h2", { class: "cmp-bloc-t" }, t("Mise en place")),
             el("p", { class: "cmp-bloc-aide" }, t("Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.")),
             sets.length ? el("ul", { class: "cmp-sets" }, sets.map(ligneSet)) : null,
+            blocEliteDuScenario(campagne, definition, scenario.numero, enCours),
         ),
         blocOptionsCampagne(campagne, definition, enCours),
         el("div", { class: "cmp-bloc cmp-bloc-lancer" },

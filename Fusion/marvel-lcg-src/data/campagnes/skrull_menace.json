@@ -595,6 +595,34 @@
     "libelle_en": "Elite Xavin"
    }
   ],
-  "cle_deck": "Cooperation Deck"
+  "cle_deck": "Cooperation Deck",
+  "cle_elite_annoncee": "Next Skrull Elite",
+  "elites": [
+   {
+    "nom": "Crusader",
+    "cle": "Skrull Elite: Crusader",
+    "sbire": "sk231"
+   },
+   {
+    "nom": "Jazinda",
+    "cle": "Skrull Elite: Jazinda",
+    "sbire": "sk236"
+   },
+   {
+    "nom": "Skymax",
+    "cle": "Skrull Elite: Skymax",
+    "sbire": "sk241"
+   },
+   {
+    "nom": "War Skrull",
+    "cle": "Skrull Elite: War Skrull",
+    "sbire": "sk245"
+   },
+   {
+    "nom": "Xavin",
+    "cle": "Skrull Elite: Xavin",
+    "sbire": "sk250"
+   }
+  ]
  }
 }

@@ -617,6 +617,40 @@ CHAINES += [
 ]
 
 
+# ---- l'Elite tiree et montree sur l'ecran avant le lancement (« Next Skrull Elite » = « <scenario>:<nom> »)
+CLE_ANNONCEE = "Next Skrull Elite"
+CHAINES += [
+    _chaine("Elites — l'Elite ANNONCEE par l'ecran (scenario 4 : Xavin) est celle qui entre en jeu",
+            {_cle_elite("Crusader"): RETIRE, _cle_elite("Jazinda"): RETIRE, CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE,
+             CLE_ANNONCEE: "4:Xavin"},
+            [{"scenario": "sk_skrull_pantheon",
+              "verifier": lambda monde: _verif((sorted(_elites_presentes(monde)) == ["Xavin"],
+                                                f"l'annoncee, et elle seule : {_elites_presentes(monde)}")),
+              "fin": "aucune"}]),
+    _chaine("Elites — l'Elite ANNONCEE par l'ecran (scenario 4 : Skymax) : le tirage du moteur ne peut pas coincider deux fois",
+            {_cle_elite("Crusader"): RETIRE, _cle_elite("Jazinda"): RETIRE, CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE,
+             CLE_ANNONCEE: "4:Skymax"},
+            [{"scenario": "sk_skrull_pantheon",
+              "verifier": lambda monde: _verif((sorted(_elites_presentes(monde)) == ["Skymax"],
+                                                f"l'annoncee, et elle seule : {_elites_presentes(monde)}")),
+              "fin": "aucune"}]),
+    _chaine("Elites — annonce d'un AUTRE scenario ou d'une Elite deja tiree : ignoree, tirage normal",
+            {_cle_elite("Crusader"): RETIRE, _cle_elite("Jazinda"): RETIRE, CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE,
+             CLE_ANNONCEE: "3:Xavin"},
+            [{"scenario": "sk_skrull_pantheon",
+              "verifier": lambda monde: _verif((len(_elites_presentes(monde)) == 1,
+                                                f"une seule Elite, tiree par le moteur : {_elites_presentes(monde)}")),
+              "fin": "aucune"}]),
+    _chaine("Elites — annonce d'une Elite DEJA TIREE (Crusader retiree) : ignoree",
+            {_cle_elite("Crusader"): RETIRE, _cle_elite("Jazinda"): RETIRE, CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE,
+             CLE_ANNONCEE: "4:Crusader"},
+            [{"scenario": "sk_skrull_pantheon",
+              "verifier": lambda monde: _verif((sorted(_elites_presentes(monde)) != ["Crusader"] and len(_elites_presentes(monde)) == 1,
+                                                f"jamais la retiree : {_elites_presentes(monde)}")),
+              "fin": "aucune"}]),
+]
+
+
 # ---- le choix fait SUR L'ECRAN de campagne (« Player N Cooperation Deck »), avant la partie
 CLE_DECK_1 = "Player 1 Cooperation Deck"
 CLE_DECK_2 = "Player 2 Cooperation Deck"

@@ -87,6 +87,9 @@ def cles_du_fichier(definition):
     cle_deck = (definition.get("cooperation") or {}).get("cle_deck")
     if cle_deck:
         yield cle_deck
+    cle_elite = (definition.get("cooperation") or {}).get("cle_elite_annoncee")
+    if cle_elite:
+        yield cle_elite
 
 
 # Valeurs acceptees pour l'attribut `deck` d'un champ de victoire.
