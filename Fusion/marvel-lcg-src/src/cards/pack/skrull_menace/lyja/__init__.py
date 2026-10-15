@@ -93,8 +93,11 @@ def MelangerDansLeDeckRencontre() -> 'Ability':
 
 
 def ADesUsagesOuUnTexteDeHeros(face: 'CardFace') -> bool:
-    """« an attachment with the uses keyword or the text "Hero Action" or "Hero Response" »."""
-    if not Attachment.IsType(face):
+    """« an attachment with the uses keyword or the text "Hero Action" or "Hero Response" ».
+
+    DECISION UTILISATEUR (15/10/2026) : « attachment » = TOUTE carte attachee, donc les
+    attachements de rencontre ET les ameliorations (Upgrade) du joueur."""
+    if not (Attachment.IsType(face) or Upgrade.IsType(face)):
         return False
     if getattr(face, "uses_counters", 0):
         return True

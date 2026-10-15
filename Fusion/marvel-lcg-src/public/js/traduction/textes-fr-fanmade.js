@@ -3529,4 +3529,118 @@ export const TEXTES_FR_FANMADE = {
     'sk068': "<b>Une fois révélée</b> : cherchez une carte [[TREACHERY]] dans le deck Rencontre et défaussez-la. <i>(Mélangez.)</i> Si aucune carte [[TREACHERY]] n'a été défaussée de cette façon, cette carte gagne Renfort.",
     // skrull_menace — Truth Revealed (Treachery)
     'sk069': "<b>Une fois révélée</b> : cherchez dans votre deck toutes les cartes spécifiques à une identité, mélangez votre deck et placez ces cartes sous votre deck dans l'ordre de votre choix.",
+    // skrull_menace — Super-Skrull I (Villain)
+    'sk117': "<b>Réponse forcée</b> : après avoir résolu l'étape 2 de la phase du Méchant, mélangez chaque attachement [[SUPERPOWER]] en jeu dans le deck [[SUPERPOWER]] et révélez la carte du dessus du deck [[SUPERPOWER]].",
+    // skrull_menace — Super-Skrull II (Villain)
+    'sk118': "<b>Réponse forcée</b> : après avoir résolu l'étape 2 de la phase du Méchant, mélangez chaque attachement [[SUPERPOWER]] en jeu dans le deck [[SUPERPOWER]] et révélez les 2 cartes du dessus du deck [[SUPERPOWER]].",
+    // skrull_menace — Super-Skrull III (Villain)
+    'sk119': "<b>Réponse forcée</b> : après avoir résolu l'étape 2 de la phase du Méchant, mélangez chaque attachement [[SUPERPOWER]] en jeu dans le deck [[SUPERPOWER]] et révélez les 2 cartes du dessus du deck [[SUPERPOWER]].",
+    // skrull_menace — Searching for the Heir 1A (MainScheme)
+    'sk120a': "<b>Contenu</b> : Super-Skrull (I) et Super-Skrull (II) <i>(Super-Skrull (III) en mode expert)</i>. Les sets de rencontre Super-Skrull et Standard. Deux sets de rencontre modulaires <i>(Army of Skrulls et Kree-Skrull War)</i>.\n<b>Mise en place</b> : mélangez chaque attachement [[SUPERPOWER]] pour former le deck [[SUPERPOWER]] et placez-le à côté du deck Rencontre.",
+    // skrull_menace — Searching for the Heir 1B (MainScheme)
+    'sk120b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[SUPERPOWER]].",
+    // skrull_menace — Heir to the Throne 2A (MainScheme)
+    'sk121a': "<b>Une fois révélée</b> : si Lord Kl'rt est en jeu, attribuez 1 carte Rencontre face cachée à chaque joueur. Sinon, cherchez Lord Kl'rt dans le deck Rencontre et la pile de défausse Rencontre et attachez-le à Super-Skrull. Mélangez le deck Rencontre.",
+    // skrull_menace — Heir to the Throne 2B (MainScheme)
+    'sk121b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[SUPERPOWER]].\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // skrull_menace — Flexibility (Attachment)
+    'sk122': "Attachez cette carte à Super-Skrull.\nSuper-Skrull gagne Robuste et ses attaques gagnent Distance.",
+    // skrull_menace — Invisibility (Attachment)
+    'sk123': "Attachez cette carte à Super-Skrull.\nEn tant que coût supplémentaire pour attaquer Super-Skrull, vous devez dépenser 1 ressource de n'importe quel type.",
+    // skrull_menace — Pyrokinesis (Attachment)
+    'sk124': "Attachez cette carte à Super-Skrull.\n<b>Réponse forcée</b> : après qu'un personnage ami a déjoué la manigance principale, infligez-lui 1 dégât.\n[star] Les attaques de Super-Skrull gagnent Perçant.",
+    // skrull_menace — Rock Mimicry (Attachment)
+    'sk125': "Attachez cette carte à Super-Skrull.\n[star] <b>Interruption forcée</b> : quand Super-Skrull attaque, donnez-lui 1 carte de boost supplémentaire pour cette activation.\n[star] Les attaques de Super-Skrull gagnent Déferlement.",
+    // skrull_menace — Invisible Forcefield (Attachment)
+    'sk126': "Attachez cette carte à l'ennemi avec le plus de points de vie imprimés et qui n'a pas déjà un Invisible Forcefield attaché. Si vous ne pouvez pas, cette carte gagne Renfort.\n<b>Interruption forcée</b> : quand le personnage attaché est censé subir n'importe quelle quantité de dégâts, placez-les sur cette carte à la place. Ensuite, s'il y a au moins 5 dégâts ici, défaussez cette carte.",
+    // skrull_menace — Lord Kl'rt (Attachment)
+    'sk127': "Attachez cette carte à Super-Skrull.\n<b>Action de héros</b> : révélez la carte du dessus du deck [[SUPERPOWER]] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // skrull_menace — Mt'nox (Minion)
+    'sk128': "[star] <b>Réponse forcée</b> : après que Mt'nox a effectué une attaque non défendue contre vous, défaussez la carte du dessus de votre deck. Si cette carte a comme ressource imprimée :\n[physical] - Donnez une carte d'état Tenace au méchant.\n[energy] - Vous êtes sonné.\n[mental] - Vous êtes désorienté.\n[wild] - Effectuez toutes les options ci-dessus.",
+    // skrull_menace — Praxagora (Minion)
+    'sk129': "[star] Les attaques de Praxagora gagnent Déferlement.",
+    // skrull_menace — R'kin (Minion)
+    'sk130': "<b>Une fois vaincu</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à défausser un attachement. Révélez cette carte.",
+    // skrull_menace — Galactic Council Membership (SideScheme)
+    'sk131': "<b>Réponse forcée</b> : après qu'un joueur a attaqué Super-Skrull, placez 1 menace sur la manigance principale.",
+    // skrull_menace — Skrull Warlords (SideScheme)
+    'sk132': "<b>Réponse forcée</b> : après qu'une carte est entrée en jeu sous le contrôle d'un joueur, donnez au méchant 1 carte de boost face cachée.",
+    // skrull_menace — Hypnotic Gaze (Treachery)
+    'sk133': "<b>Une fois révélée</b> : défaussez les 2 cartes du dessus de votre deck. Pour chaque ressource [physical] défaussée de cette façon, sonnez un personnage que vous contrôlez ; pour chaque ressource [mental] défaussée de cette façon, désorientez un personnage que vous contrôlez.",
+    // skrull_menace — Power Multiplying (Treachery)
+    'sk134': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[SUPERPOWER]]. Si vous ne pouvez pas, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) pour chaque attachement [[SUPERPOWER]] attaché à Super-Skrull.",
+    // skrull_menace — Villain's Versatility (Treachery)
+    'sk135': "<b>Une fois révélée</b> : si Super-Skrull a l'attachement [[SUPERPOWER]] suivant d'attaché :\n• Pyrokinesis - Subissez 3 dégâts indirects.\n• Rock Mimicry - Donnez une carte d'état Tenace à Super-Skrull.\n• Flexibility - Défaussez 1 carte de votre main.\n• Invisibility - Placez 2 menaces sur la manigance principale.",
+    // skrull_menace — Bel-Dann (Minion)
+    'sk136': "<b>Une fois révélé</b> : cherchez Raksor dans le deck Rencontre et la pile de défausse Rencontre et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Raksor (Minion)
+    'sk137': "<b>Une fois révélé</b> : cherchez Bel-Dann dans le deck Rencontre et la pile de défausse Rencontre et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Earth Involvement (SideScheme)
+    'sk138': "Permanent. Mise en place.\nTant qu'il y a au moins 1 menace ici, cette carte gagne une icône de crise ([crisis]).\n<b>Réponse forcée</b> : après qu'une carte appartenant au set de rencontre Kree-Skrull War est révélée, placez 2 menaces ici.",
+    // skrull_menace — Imperial Kree Army (Treachery)
+    'sk139': "<b>Une fois révélée</b> : défaussez la carte du dessus du deck Rencontre. Infligez 1 dégât à chaque personnage que vous contrôlez pour chaque icône de boost ([boost]) défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : placez 2 menaces sur Earth Involvement.",
+    // skrull_menace — Skrull Imperial Fleet (Treachery)
+    'sk140': "<b>Une fois révélée</b> : défaussez la carte du dessus du deck Rencontre. Placez 1 menace sur chaque manigance en jeu pour chaque icône de boost ([boost]) défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : placez 2 menaces sur Earth Involvement.",
+    // skrull_menace — Paibok (Villain, stade I)
+    'sk141': "Ténacité.\nTant que le nombre de cartes [[POWER SKRULL]] attachées à Paibok est égal ou inférieur au nombre de jetons de maîtrise sur lui, les cartes [[POWER SKRULL]] ne peuvent pas être défaussées.",
+    // skrull_menace — Paibok (Villain, stade II)
+    'sk142': "Ténacité.\nTant que le nombre de cartes [[POWER SKRULL]] attachées à Paibok est égal ou inférieur au nombre de jetons de maîtrise sur lui, les cartes [[POWER SKRULL]] ne peuvent pas être défaussées.\n<b>Une fois révélé</b> : cherchez une carte [[POWER SKRULL]] dans le deck Rencontre ou la pile de défausse rencontre et révélez-la.",
+    // skrull_menace — Paibok (Villain, stade III)
+    'sk143': "Ténacité.\nTant que le nombre de cartes [[POWER SKRULL]] attachées à Paibok est égal ou inférieur au nombre de jetons de maîtrise sur lui, les cartes [[POWER SKRULL]] ne peuvent pas être défaussées.\n<b>Une fois révélé</b> : cherchez une carte [[POWER SKRULL]] dans le deck Rencontre ou la pile de défausse rencontre et révélez-la.",
+    // skrull_menace — Power Skrull Engineering (MainScheme, 1A)
+    'sk144a': "<b>Contenu</b> : Paibok (I) et Paibok (II) <i>(Paibok (II) et Paibok (III) en mode expert)</i>. Les sets de rencontre Paibok et Standard. Un set de rencontre modulaire <i>(New Revengers)</i>.\n<b>Mise en place</b> : placez 1 jeton de maîtrise sur Paibok.",
+    // skrull_menace — Power Skrull Engineering (MainScheme, 1B)
+    'sk144b': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à ce qu'une carte [[POWER SKRULL]] soit défaussée. Révélez cette carte. Mélangez la pile de défausse rencontre dans le deck Rencontre.",
+    // skrull_menace — Mastering Superpowers (MainScheme, 2A)
+    'sk145a': "<b>Une fois révélée</b> : placez 1 jeton de maîtrise sur Paibok. Ensuite, si Captain Paibok est en jeu, résolvez sa capacité \"<b>Boost</b>\". Sinon, cherchez Captain Paibok dans le deck Rencontre ou la pile de défausse rencontre et attachez-le à Paibok. Mélangez le deck Rencontre.",
+    // skrull_menace — Mastering Superpowers (MainScheme, 2B)
+    'sk145b': "[star] <b>Interruption forcée</b> : quand ce stade est censé être achevé, placez 1 jeton de maîtrise sur Paibok et retirez-en toutes les menaces à la place. Ensuite, défaussez des cartes du deck Rencontre jusqu'à ce qu'une carte [[POWER SKRULL]] soit défaussée. Révélez cette carte.\n<b>Quand la phase des Joueurs se termine, si les 4 cartes [[POWER SKRULL]] sont attachées à Paibok, les joueurs perdent la partie.</b>",
+    // skrull_menace — Captain Paibok (Attachment)
+    'sk146': "Attachez cette carte à Paibok.\n<b>Action de héros</b> : résolvez la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : soignez 2 dégâts de Paibok.",
+    // skrull_menace — Distracted (Attachment)
+    'sk147': "Attachez cette carte à votre identité.\n<b>Interruption forcée</b> : quand vous contrez, diminuez de 1 la quantité de menaces que ce contre retire.\n<b>Action de héros</b> : dépensez les ressources suivantes : [mental][mental] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur la manigance principale.",
+    // skrull_menace — Electricity Projection (Attachment)
+    'sk148': "Attachez cette carte à Paibok.\nPaibok gagne Riposte 1.\n<b>Action de héros</b> : dépensez les ressources suivantes : [mental][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : sonnez un personnage que vous contrôlez.",
+    // skrull_menace — Hypnotized (Attachment)
+    'sk149': "Attachez cette carte à votre identité.\nEn tant que coût supplémentaire pour changer de forme, vous devez dépenser 1 ressource de n'importe quel type.\n<b>Action de héros</b> : dépensez les ressources suivantes : [energy][energy] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte de votre main.",
+    // skrull_menace — Ice Control (Attachment)
+    'sk150': "Attachez cette carte à Paibok.\n[star] <b>Réponse forcée</b> : après que Paibok vous a attaqué, inclinez un personnage que vous contrôlez.\n<b>Action de héros</b> : dépensez 3 ressources de n'importe quel type → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : inclinez un personnage que vous contrôlez.",
+    // skrull_menace — Metallic Skin (Attachment)
+    'sk151': "Attachez cette carte à Paibok.\n<b>Réponse forcée</b> : après que Paibok a subi des dégâts, donnez-lui une carte d'état Tenace.\n<b>Action de héros</b> : dépensez les ressources suivantes : [energy][mental] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à Paibok.",
+    // skrull_menace — Shapeshifting (Attachment)
+    'sk152': "Attachez cette carte à Paibok.\nPaibok gagne Robuste et le trait [[AERIAL]].\n<b>Action de héros</b> : dépensez les ressources suivantes : [energy][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : désorientez un personnage que vous contrôlez.",
+    // skrull_menace — Trapped in Ice (Attachment)
+    'sk153': "Attachez cette carte à votre identité.\n<b>Interruption forcée</b> : quand vous attaquez, diminuez de 1 la quantité de dégâts que cette attaque inflige.\n<b>Action de héros</b> : dépensez les ressources suivantes : [physical][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : subissez 1 dégât.",
+    // skrull_menace — Devos the Devastator (Minion)
+    'sk154': "<b>Réponse forcée</b> : après qu'une carte d'état est placée sur un personnage allié, Devos the Devastator s'active contre le joueur qui contrôle ce personnage.",
+    // skrull_menace — General Kalamari (Minion)
+    'sk155': "<b>Une fois vaincu</b> : le joueur qui a vaincu General Kalamari résout la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok.",
+    // skrull_menace — Galactic Ambassador (SideScheme)
+    'sk156': "<b>Une fois révélée</b> : placez 2 menaces supplémentaires ici pour chaque personnage allié qui a une carte d'état.",
+    // skrull_menace — Settling Scores (SideScheme)
+    'sk157': "Entrave 2[per_hero].\nRésolvez la capacité \"<b>Boost</b>\" de chaque carte de boost 1 fois supplémentaire.\n<b>Une fois révélée</b> : mélangez chaque carte [[POWER SKRULL]] de la pile de défausse rencontre dans le deck Rencontre.",
+    // skrull_menace — Council Manipulation (Treachery)
+    'sk158': "<b>Une fois révélée</b> : Paibok manigance. Si vous êtes sonné ou désorienté, cette carte gagne Renfort.",
+    // skrull_menace — Getting Ruthless (Treachery)
+    'sk159': "<b>Une fois révélée (alter ego)</b> : résolvez la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok.\n<b>Une fois révélée (héros)</b> : Paibok vous attaque. Donnez-lui 1 carte de boost supplémentaire si vous êtes sonné ou désorienté.",
+    // skrull_menace — Power Demonstration (Treachery)
+    'sk160': "<b>Une fois révélée</b> : résolvez la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok.",
+    // skrull_menace — O.M.N.I.T.R.O.N.I.C.U.S. (Environment)
+    'sk161': "Chaque sbire [[REVENGER]] gagne Vilenie.\n<b>Action de héros</b> : s'il n'y a aucun ennemi [[REVENGER]] en jeu, dépensez les ressources suivantes : [energy][energy] → défaussez cette carte.",
+    // skrull_menace — Angar the Screamer (Minion)
+    'sk162': "[star] Les attaques d'Angar the Screamer gagnent Distance.\n<b>Interruption forcée</b> : quand Angar the Screamer vous attaque, résolvez également son attaque contre chaque autre héros.",
+    // skrull_menace — Asti the All-Seeing (Minion)
+    'sk163': "<b>Interruption forcée</b> : quand Asti the All-Seeing subit n'importe quelle quantité de dégâts, placez 1 jeton d'absorption sur lui.\n<b>Une fois vaincu</b> : répartissez 2 dégâts indirects parmi les joueurs pour chaque jeton d'absorption sur Asti the All-Seeing.",
+    // skrull_menace — Skar (Minion)
+    'sk164': "[star] Les attaques de Skar gagnent Déferlement.\n<b>Une fois révélé</b> : inclinez un personnage que vous contrôlez.",
+    // skrull_menace — The Maker (Minion)
+    'sk165': "The Maker ne peut pas subir de dégâts tant qu'un autre ennemi [[REVENGER]] est en jeu.\n<b>Une fois révélé</b> : cherchez la manigance annexe The Revenge Time dans le deck Rencontre ou la pile de défausse rencontre et révélez-la.",
+    // skrull_menace — Vermin (Minion)
+    'sk166': "[star] Les attaques de Vermin infligent des dégâts indirects.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle inflige des dégâts indirects.",
+    // skrull_menace — White Tiger (Minion)
+    'sk167': "Coup Rapide. <i>(Après que ce sbire s'est engagé avec votre héros, il vous attaque.)</i>\n<b>Une fois vaincu</b> : donnez 1 carte de boost face cachée au méchant.",
+    // skrull_menace — The Revenge Time (SideScheme)
+    'sk168': "Le méchant gagne le trait [[REVENGER]].\n<b>Une fois révélée</b> : placez 1 menace supplémentaire ici pour chaque ennemi [[REVENGER]] en jeu.",
+    // skrull_menace — Forming the Revengers (Treachery)
+    'sk169': "<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'une carte avec le trait [[REVENGER]] soit défaussée. Révélez cette carte.",
 };

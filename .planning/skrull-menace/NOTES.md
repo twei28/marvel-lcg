@@ -78,3 +78,7 @@ Chaque carte : docs/reference/PROCESSUS-CARTE.md ; héros : PROCESSUS-HEROS.md.
 - Hors campagne IGNORE pour l'instant : heros Super-Skrull (Beta), heros Wiccan (1.1), cartes Veranke de Earth Under Siege.
 - Etoile rouge a droite du numero de set des cartes 02-09 de Lyja = icone de boost ★ (l'effet « ★ Boost » s'applique quand la carte est retournee comme carte de boost ; elle compte comme ★ pour Ministerial Tiara et Hit the Weak Spot).
 - Lectures faites par moi, non contestees : Galactic Ambassador = Acceleration ; Punish the Defector = Hazard ; Y rouge = icone de boost ordinaire ; Bel-Dann « alternative » = meme carte ; Pantheon = UNE carte double face a PV partages (la transcription disait deux mechants, c'est corrige).
+
+## Decisions utilisateur du 15/10/2026 (suite : questions de Lyja)
+- sk066 Paibok : « when a TREACHERY card would be discarded » = TOUTE defausse de traitrise, a la lettre (y compris un evenement TREACHERY de Lyja defausse de la main).
+- sk040 Feign Loyalty : « attachment » = TOUTE carte attachee (attachements de rencontre ET ameliorations du joueur) ; implemente (lyja/__init__.py, cas dedie).

@@ -67,7 +67,7 @@ const scan = (carte: WorldCard) => toScanCard(carte, contexte())
 describe('Paibok : ce que ses cartes dessinent', () => {
   // sk141 / sk144a / sk145 : les jetons de maîtrise sont publiés sous `c_mastery` et affichés.
   it('Paibok montre ses 2 jetons de maîtrise', () => {
-    const jetons = scan(paibok()).counters.find((c) => c.cle === 'mastery')
+    const jetons = scan(paibok()).counters?.find((c) => c.cle === 'mastery')
     expect(jetons?.value).toBe(2)
   })
 
@@ -89,7 +89,7 @@ describe('Paibok : ce que ses cartes dessinent', () => {
   it('Asti montre ses 2 jetons d’absorption', () => {
     const jetons = scan(
       carteSurTable(ASTI, 'sk163', 'Minion', 'Asti the All-Seeing', { info: { max_health: 4, health: 4, c_absorption: 2 } })
-    ).counters.find((c) => c.cle === 'absorption')
+    ).counters?.find((c) => c.cle === 'absorption')
     expect(jetons?.value).toBe(2)
   })
 
@@ -107,6 +107,6 @@ describe('Paibok : ce que ses cartes dessinent', () => {
   // Témoin : sans jeton, aucun compteur « mastery » n'est affiché.
   it('TEMOIN : sans jeton publié, aucun compteur maîtrise', () => {
     const sans = carteSurTable(PAIBOK, 'sk141', 'EncounterVillain', 'Paibok', { info: { max_health: 13, health: 13 } })
-    expect(scan(sans).counters.find((c) => c.cle === 'mastery')).toBeUndefined()
+    expect(scan(sans).counters?.find((c) => c.cle === 'mastery')).toBeUndefined()
   })
 })

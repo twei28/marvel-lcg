@@ -154,6 +154,16 @@ CAS = [
         "attendu": {"hors_jeu": ["01100"], "en_jeu": ["01098"], "defausse": ["sk040"], "aucune_en_resolution": True},
     },
     {
+        "nom": "[lyja] sk040 Feign Loyalty — DECISION UTILISATEUR : une amelioration du joueur a Hero Response est aussi visee",
+        "pourquoi": ("Decision du 15/10/2026 : « attachment » = toute carte attachee. Shapeshifter sk047 (amelioration, "
+                     "Hero Response) est la SEULE candidate : elle part ; le rhino 01098 (aucun texte) reste"),
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('sk047')", "Puzzle.PutIntoPlay('01098')"],
+        "declencher": ["Puzzle.Reveal('sk040')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sk047"], "en_jeu": ["01098"], "defausse": ["sk040", "sk047"], "aucune_en_resolution": True},
+    },
+    {
         "nom": "[lyja] sk040 Feign Loyalty — Boost : le joueur pioche 2 cartes",
         "pourquoi": "★ Boost « draw 2 cards » : main de depart 1 carte (01088), Rhino attaque, boost = sk040 -> main 3",
         **HEROS,
