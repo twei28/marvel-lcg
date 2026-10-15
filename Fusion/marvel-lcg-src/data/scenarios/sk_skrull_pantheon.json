@@ -1,0 +1,40 @@
+{
+  "version": "0.5.8",
+  "name": "Skrull Pantheon",
+  "villain": [
+    "sk170a,sk170b",
+    "sk171a,sk171b"
+  ],
+  "expert": false,
+  "schemes": [
+    "sk173a,sk173b",
+    "sk174a,sk174b"
+  ],
+  "set_aside": [
+    "sk175a,sk175b"
+  ],
+  "encounters": [
+    "sk176",
+    "sk176",
+    "sk177",
+    "sk177",
+    "sk178",
+    "sk179",
+    "sk180",
+    "sk180",
+    "sk181",
+    "sk181",
+    "sk181",
+    "sk182",
+    "sk182",
+    "sk182",
+    "sk183"
+  ],
+  "encounter_sets": [
+    "standard",
+    "sk_dard_van_sect"
+  ],
+  "modular_sets": [
+    "sk_skrull_society"
+  ]
+}

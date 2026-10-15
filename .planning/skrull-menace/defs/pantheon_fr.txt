@@ -1,0 +1,50 @@
+  // skrull_menace — Kly'bn (Villain, stade I)
+  'sk170a': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Kly'bn.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Kly'bn. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui n'est pas une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+  // skrull_menace — Sl'gur't (Villain, stade I)
+  'sk170b': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Sl'gur't.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Sl'gur't. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui est une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+  // skrull_menace — Kly'bn (Villain, stade II)
+  'sk171a': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Kly'bn.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Kly'bn. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui n'est pas une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+  // skrull_menace — Sl'gur't (Villain, stade II)
+  'sk171b': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Sl'gur't.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Sl'gur't. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui est une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+  // skrull_menace — Kly'bn (Villain, stade III)
+  'sk172a': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Kly'bn et donnez-lui une carte d'état Tenace.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Kly'bn. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui n'est pas une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+  // skrull_menace — Sl'gur't (Villain, stade III)
+  'sk172b': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Sl'gur't et donnez-lui une carte d'état Tenace.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Sl'gur't. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui est une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+  // skrull_menace — Protect the Pantheon (MainScheme, 1A)
+  'sk173a': "<b>Contenu</b> : Kly'bn (I) et Kly'bn (II) <i>(Kly'bn (II) et Kly'bn (III) en mode expert)</i>. Les sets de rencontre Skrull Pantheon, Dard'van Sect et Standard. Un set de rencontre modulaire <i>(Skrull Society)</i>.\n<b>Mise en place</b> : mettez l'environnement Skrull Pantheon de côté, hors du jeu.",
+  // skrull_menace — Protect the Pantheon (MainScheme, 1B)
+  'sk173b': "<b>Interruption forcée</b> : quand la dernière menace est retirée de cette manigance, mettez en jeu l'environnement Skrull Pantheon mis de côté, face <b><i>DESTROYED</i></b> visible. Avancez au stade 2B.\n<b>Une fois achevé</b> : mettez en jeu l'environnement Skrull Pantheon mis de côté, face <b><i>STRONGHOLD</i></b> visible. Avancez au stade 2A.",
+  // skrull_menace — Slaying the False Gods (MainScheme, 2A)
+  'sk174a': "<i>Kly'bn, l'Éternel Skrull, et Sl'gur't des Noms Infinis sont présentés comme l'empereur et l'impératrice du Panthéon skrull.</i>\n<b>Une fois révélée</b> : cherchez la manigance annexe Strengthen the Faith dans le deck Rencontre ou la pile de défausse rencontre, révélez-la et placez-y 2[per_hero] menaces supplémentaires.",
+  // skrull_menace — Slaying the False Gods (MainScheme, 2B)
+  'sk174b': "<i>Kly'bn et Sl'gur't ont indirectement soutenu la création et l'expansion de l'Empire skrull. Ils ont conquis et asservi les panthéons des races conquises, près de 1000 panthéons. Maintenant, le duo en veut aux dieux de la Terre.</i>\n<b>Une fois révélée</b> : retournez le méchant.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+  // skrull_menace — Skrull Pantheon (Environment, Stronghold)
+  'sk175a': "<b>Action de héros</b> : dépensez 2 ressources du même type → retirez 1 jeton de foi du méchant.\n<i>Kly'bn et Sl'gur't se sont unis et sont montés à la divinité, devenant les chefs du Panthéon skrull.</i>",
+  // skrull_menace — Skrull Pantheon (Environment, Destroyed)
+  'sk175b': "<b>Action de héros</b> : dépensez 2 ressources de n'importe quel type → retirez 1 jeton de foi du méchant.\n<i>Le Panthéon skrull a été détruit avec succès et la Divinité skrull est devenue vraiment furieuse.</i>",
+  // skrull_menace — Blessed by Kly'bn (Attachment)
+  'sk176': "Attachez cette carte au sbire ayant la MNG la plus faible. Sinon, cette carte gagne Renfort.\nX est égal au nombre de jetons de foi sur le méchant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une manigance, cette carte gagne +2 icônes de boost ([boost][boost]) pour cette activation.",
+  // skrull_menace — Blessed by Sl'gur't (Attachment)
+  'sk177': "Attachez cette carte au sbire ayant l'ATQ la plus faible. Sinon, cette carte gagne Renfort.\nX est égal au nombre de jetons de foi sur le méchant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, cette carte gagne +2 icônes de boost ([boost][boost]) pour cette activation.",
+  // skrull_menace — Nogor (Minion)
+  'sk178': "[star] Nogor gagne +1 MNG, +1 ATQ et +1 point de vie pour chaque jeton de foi sur le méchant.\n<b>Une fois révélé</b> : retournez le méchant.\n<hr />\n[star] <b>Boost</b> : retournez le méchant.\n<i>\"Je suis le harnais vivant du pouvoir des dieux.\"</i>",
+  // skrull_menace — Shapeless Wastes (SideScheme)
+  'sk179': "<i>L'équivalent skrull de l'Enfer est connu sous le nom de Shapeless Wastes.</i>\nEntrave 2[per_hero].\n<b>Réponse forcée</b> : après qu'un allié ou un sbire est vaincu, si ce personnage a le trait [[SKRULL]], retournez le méchant. Sinon, placez 1 jeton de foi sur le méchant.",
+  // skrull_menace — Strengthen the Faith (SideScheme)
+  'sk180': "<i>La plupart des Skrulls vénèrent Kly'bn, l'Éternel Skrull, et Sl'gur't des Noms Infinis. Ce sont les seuls vrais dieux de l'Empire skrull.</i>\n<b>Réponse forcée</b> : après qu'un sbire [[SKRULL]] entre en jeu, placez 1 jeton de foi sur le méchant.\n<hr />\n[star] <b>Boost</b> : placez 1 jeton de foi sur le méchant.",
+  // skrull_menace — Prayer to Kly'bn (Treachery)
+  'sk181': "<b>Une fois révélée</b> : si Kly'bn est en jeu, il s'active contre vous. Sinon, retournez le méchant.\n<hr />\n[star] <b>Boost</b> : si Kly'bn n'est pas en jeu, retournez le méchant.\n<i>\"Car je suis Kly'bn. Je suis l'Éternel Skrull. Et je vous aime.\" —Kly'bn</i>",
+  // skrull_menace — Prayer to Sl'gur't (Treachery)
+  'sk182': "<b>Une fois révélée</b> : si Sl'gur't est en jeu, elle s'active contre vous. Sinon, retournez le méchant.\n<hr />\n[star] <b>Boost</b> : si Sl'gur't n'est pas en jeu, retournez le méchant.\n<i>\"Comment vous appelle-t-on ? Je vous prie, dites-le-nous...\" —Sl'gur't</i>",
+  // skrull_menace — Talisman of the Skrulls (Treachery)
+  'sk183': "<b>Une fois révélée</b> : cherchez Nogor dans le deck Rencontre ou la pile de défausse rencontre et révélez-le. Si Nogor n'est pas entré en jeu de cette façon, cette carte gagne Renfort.\n<i>\"Le Talisman est la représentation des dieux, et sa présence est requise pour assurer la bénédiction des dieux sur nos entreprises\" —Jazinda</i>",
+  // skrull_menace — Dard'van Fanatic (Minion)
+  'sk184': "<b>Une fois révélé</b> : choisissez : soit vous infligez 1 dégât à chaque personnage que vous contrôlez, soit vous placez 1 menace sur chaque manigance en jeu.\n<i>\"J'appartiens à la secte Dard'van. Certains la considèrent comme extrême.\" —Grrix</i>",
+  // skrull_menace — Dard'van Priest (Minion)
+  'sk185': "<b>Une fois révélé</b> : Dard'van Priest manigance.\n[star] <b>Interruption forcée</b> : quand Dard'van Priest est censé attaquer, choisissez à la place une carte en jeu qui a une capacité \"<b>Une fois révélé</b>\" et résolvez cette capacité.\n<i>\"Il vous aime.\"</i>",
+  // skrull_menace — Dard'van Sect (SideScheme)
+  'sk186': "<i>Une secte zélée de l'Empire skrull qui suit des prophéties annonçant que la Terre deviendra la nouvelle patrie de la race skrull.</i>\n<b>Une fois révélée</b> : donnez 1 carte de boost face cachée au méchant.",
+  // skrull_menace — Collective Prayers (Treachery)
+  'sk187': "<b>Une fois révélée</b> : défaussez la carte du dessus du deck Rencontre pour chaque personnage en jeu. Révélez chaque carte défaussée de cette façon qui appartient au set de rencontre Dard'van Sect.\n<i>\"...le premier nous aime tous de la même façon.\" —Grrix</i>",
+  // skrull_menace — Sectarian Practices (Treachery)
+  'sk188': "<b>Une fois révélée</b> : choisissez une carte en jeu qui a une capacité \"<b>Une fois révélé</b>\" et résolvez cette capacité. Si vous ne pouvez pas, cette carte gagne Renfort.\n<i>\"La confiance. Que savent les humains de la confiance ? Vous n'arrivez même pas à vous accorder sur un seul dieu.\" —Nogor</i>",
