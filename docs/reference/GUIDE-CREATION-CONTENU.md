@@ -569,6 +569,21 @@ W="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 PY=$HOME/marvel-work/python/bin/python3.10
 ```
 
+**Sous Linux natif** (machine en service depuis le 14/10/2026, après le
+plantage du PC Windows) : mêmes commandes, seules ces deux variables changent.
+
+```bash
+W="/home/oem/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
+PY="/home/oem/Desktop/Marvel LCG/.venv-linux/bin/python"   # Python 3.10, créé par LANCEUR-LINUX.sh
+```
+
+⚠ **Avant toute validation sur une machine neuve ou après une copie** :
+`bash outils/reparer-game-src.sh`. Les liens de `.game-src` sont des chemins
+absolus propres à une machine ; recopiés de Windows vers Linux, ils étaient
+devenus des dossiers VIDES (constaté le 15/10/2026) et les outils auraient
+testé un moteur sans cartes. Le script ne touche qu'aux liens cassés et aux
+dossiers vides, il est sans danger à relancer (Linux comme WSL).
+
 **Espacer les ports d'au moins 400.** Les valeurs données plus bas se
 recouvraient : l'étape 4 ouvre un port par cas, donc 440 ports à partir de sa
 base, ce qui mordait sur la base de l'étape 5. Un recouvrement tue des cas
