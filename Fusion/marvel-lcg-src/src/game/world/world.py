@@ -103,6 +103,9 @@ class World(WorldAction, WorldFind):
 
         self.round_id = 0
         self.phase_id = 0
+        # AJOUT (15/10/2026, skrull_menace sk280 Princess Anelle) : nombre de phases du mechant a SAUTER
+        # (« skip the villain phase »). Lu par la boucle de round (`OnGameLoop`), qui le decremente.
+        self.skip_villain_phases = 0
         self.event_manager = EventManager(self)
         self.buff_manager = BuffManager(self)
         # self.on_event_manager = OnEventManager(self)
@@ -1166,6 +1169,12 @@ class World(WorldAction, WorldFind):
                     return
 
             for team in teams:
+                # AJOUT (15/10/2026, sk280 Princess Anelle) : « skip the villain phase » saute la phase ENTIERE
+                # (ni menace de complot, ni activations, ni cartes rencontre, ni debut/fin de phase).
+                if self.skip_villain_phases > 0:
+                    self.skip_villain_phases -= 1
+                    Message.TextRender("\n--- Phase : Villain (skipped) ---", self)
+                    continue
                 phase_begin("Villain")
                 if self.is_game_over:
                     return

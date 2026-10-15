@@ -1,0 +1,672 @@
+{
+ "reussis": 111,
+ "total": 111,
+ "cas": [
+  {
+   "index": 3244,
+   "nom": "[campagne_cartes] sk263 Crusader : 1 degat au mechant et au sbire engage ; un sbire acheve = 1 carte piochee",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3245,
+   "nom": "[campagne_cartes] sk263 Crusader : DEUX sbires achieves = 2 cartes piochees (un compte par ennemi vaincu)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3246,
+   "nom": "[campagne_cartes] sk263 Crusader, TEMOIN : aucun ennemi achieve = aucune carte piochee",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3247,
+   "nom": "[campagne_cartes] sk264 Jazinda : inclinee, le heros gagne +1 CTR (forme heros)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3248,
+   "nom": "[campagne_cartes] sk264 Jazinda, TEMOIN : redressee, aucun bonus de CTR",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3249,
+   "nom": "[campagne_cartes] sk264 Jazinda : elle ne compte PAS contre la limite d'allies (3 allies + Jazinda, tous restent en jeu)",
+   "ok": true,
+   "message": "3 allie(s) compte(s) contre la limite"
+  },
+  {
+   "index": 3250,
+   "nom": "[campagne_cartes] sk264 Jazinda, TEMOIN : 4 allies SANS Jazinda -> la limite de 3 s'applique (un seul est compte en trop)",
+   "ok": true,
+   "message": "3 allie(s) compte(s) contre la limite"
+  },
+  {
+   "index": 3251,
+   "nom": "[campagne_cartes] sk264 Jazinda : le bonus de CTR ne profite PAS au heros d'un AUTRE joueur",
+   "ok": true,
+   "message": "bonus de CTR chez le joueur 1 seulement"
+  },
+  {
+   "index": 3252,
+   "nom": "[campagne_cartes] sk265 Paibok : entre en jeu avec une carte Robuste (Toughness lu dans le desc)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3253,
+   "nom": "[campagne_cartes] sk265 Paibok : apres la defausse d'une traitrise, il prend 1 degat et l'attache face cachee ; +1 THW / +1 ATQ",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3254,
+   "nom": "[campagne_cartes] sk265 Paibok, TEMOIN : une carte qui n'est PAS une traitrise (sbire) defaussee : rien n'est attache",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3255,
+   "nom": "[campagne_cartes] sk265 Paibok : un evenement de Lyja portant le trait TREACHERY compte aussi (decision du 15/10/2026)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3256,
+   "nom": "[campagne_cartes] sk265 Paibok : « to a maximum of 2 » : la troisieme traitrise defaussee n'est PAS attachee",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3257,
+   "nom": "[campagne_cartes] sk265 Paibok : tant qu'il est Robuste, le cout « take 1 damage » ne peut pas etre paye (rien n'est attache)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3258,
+   "nom": "[campagne_cartes] sk266 Skymax : les allies de la defausse retournent dans le deck, pas les autres cartes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3259,
+   "nom": "[campagne_cartes] sk266 Skymax, TEMOIN : un allie EN JEU n'est pas touche",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3260,
+   "nom": "[campagne_cartes] sk267 Super-Skrull : un SUPERPOWER defausse est attache face cachee ; +1 THW / +1 ATQ",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3261,
+   "nom": "[campagne_cartes] sk267 Super-Skrull : DEUX pouvoirs DIFFERENTS = +2 / +2",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3262,
+   "nom": "[campagne_cartes] sk267 Super-Skrull : deux COPIES du meme pouvoir = +1 / +1 seulement (noms distincts)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3263,
+   "nom": "[campagne_cartes] sk267 Super-Skrull : « to a maximum of 4 » : le cinquieme SUPERPOWER n'est PAS attache",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3264,
+   "nom": "[campagne_cartes] sk267 Super-Skrull, TEMOIN : une carte sans le trait SUPERPOWER defaussee : rien n'est attache",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3265,
+   "nom": "[campagne_cartes] sk268 Chilly McHotpants : entre en jeu comme un SBIRE engage avec le joueur (MNG 2, ATQ 2, 5 PV)",
+   "ok": true,
+   "message": "Chilly McHotpants est un sbire SKRULL engage (MNG 2, ATQ 2, 5 PV)"
+  },
+  {
+   "index": 3266,
+   "nom": "[campagne_cartes] sk268 Chilly McHotpants : ne compte PAS contre la limite d'allies (3 allies en jeu, tous restent)",
+   "ok": true,
+   "message": "3 allie(s) compte(s) contre la limite"
+  },
+  {
+   "index": 3267,
+   "nom": "[campagne_cartes] sk268 Chilly McHotpants : apres avoir attaque, 1 carte piochee (degats subis, pas de 2e carte)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3268,
+   "nom": "[campagne_cartes] sk268 Chilly McHotpants : si le joueur ne subit AUCUN degat, 2 cartes piochees",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3269,
+   "nom": "[campagne_cartes] sk268 Chilly McHotpants vaincu : la carte revient dans la defausse du joueur, sous sa forme d'allie",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3270,
+   "nom": "[campagne_cartes] sk269 Xavin : defausse du deck jusqu'a un evenement a « Hero Action » et la resout (01022 : 1 degat a chaque ennemi)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3271,
+   "nom": "[campagne_cartes] sk269 Xavin, TEMOIN : un evenement SANS « Hero Action » (01086 First Aid, Action) est defausse mais pas pris pour cible",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3272,
+   "nom": "[campagne_cartes] sk269 Xavin : deck epuise sans evenement a « Hero Action » : rien n'est resolu, rien ne reste en resolution",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3273,
+   "nom": "[campagne_cartes] sk270 Buddy Training Program : cout X = stade du mechant : stade 1 = 1 ressource",
+   "ok": true,
+   "message": "cout calcule = 1"
+  },
+  {
+   "index": 3274,
+   "nom": "[campagne_cartes] sk270 Buddy Training Program : au stade 2 (Rhino II) le cout est 2",
+   "ok": true,
+   "message": "cout calcule = 2"
+  },
+  {
+   "index": 3275,
+   "nom": "[campagne_cartes] sk270 Buddy Training Program : au stade 2, une carte a 2 icones (01088 YY) paie et la carte se joue",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3276,
+   "nom": "[campagne_cartes] sk270 Buddy Training Program : vaincue, donne une carte Robuste au heros (jusqu'a X = 1 personnage amical)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3277,
+   "nom": "[campagne_cartes] sk270 Buddy Training Program : jusqu'a X = 2 personnages au stade 2 (heros ET allie recoivent chacun une carte Robuste)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3278,
+   "nom": "[campagne_cartes] sk271 Cloning Faux Pas : porte 1 icone ACCELERATION en jeu (desc, aucun script)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3279,
+   "nom": "[campagne_cartes] sk271 Cloning Faux Pas : vaincue, 3 degats a CHAQUE sbire SKRULL engage ; un sbire non Skrull est epargne",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3280,
+   "nom": "[campagne_cartes] sk271 Cloning Faux Pas, TEMOIN : montant 0 declare : aucun degat",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3281,
+   "nom": "[campagne_cartes] sk272 Fickle Alliance : vaincue, un sbire non Elite du deck rencontre devient un allie (MNG imprime -> CTR, traits gardes)",
+   "ok": true,
+   "message": "Shocker est un allie (CTR 1, ATQ 2, traits ['CRIMINAL'])"
+  },
+  {
+   "index": 3282,
+   "nom": "[campagne_cartes] sk272 Fickle Alliance : un sbire ELITE du deck rencontre n'est PAS cherchable (seul Sandman reste : rien n'est mis en jeu)",
+   "ok": true,
+   "message": "aucun allie cree (le deck ne contenait que l'Elite)"
+  },
+  {
+   "index": 3283,
+   "nom": "[campagne_cartes] sk272 Fickle Alliance : l'allie prend 1 degat consequent apres avoir attaque",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3284,
+   "nom": "[campagne_cartes] sk272 Fickle Alliance : l'allie issu du sbire, vaincu, retourne en DEFAUSSE DE RENCONTRE (sa carte est une carte rencontre)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3285,
+   "nom": "[campagne_cartes] sk273 Newbie Training : vaincue, defait un sbire SKRULL non Elite et pioche 1 carte ; l'Elite SKRULL est epargne",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3286,
+   "nom": "[campagne_cartes] sk273 Newbie Training, TEMOIN : aucun sbire SKRULL non Elite : rien n'est defait, aucune carte piochee",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3287,
+   "nom": "[campagne_cartes] sk274 Searching for Powers : vaincue, cherche un SUPERPOWER dans le deck et le JOUE sans payer (01022 Ground Stomp : 1 degat a chaque ennemi)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3288,
+   "nom": "[campagne_cartes] sk274 Searching for Powers : l'amelioration SUPERPOWER trouvee dans la DEFAUSSE (sk044 Lazerfist, cout 3) est jouee gratuitement",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3289,
+   "nom": "[campagne_cartes] sk275 Skrull Military Training : le CTR du heros ne retire AUCUNE menace (3 de depart)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3290,
+   "nom": "[campagne_cartes] sk275 Skrull Military Training : un allie NON Skrull (sk038 Human Torch) ne retire aucune menace",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3291,
+   "nom": "[campagne_cartes] sk275 Skrull Military Training : un SOUTIEN (sk278 Cadre K) ne peut pas retirer la menace non plus",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3292,
+   "nom": "[campagne_cartes] sk275 Skrull Military Training : un allie SKRULL (sk264 Jazinda, CTR 3) retire la menace, vainc le complot : pile de victoire",
+   "ok": true,
+   "message": "etat conforme ; pile de victoire = ['sk275']"
+  },
+  {
+   "index": 3293,
+   "nom": "[campagne_cartes] sk275 Skrull Military Training : en pile de victoire, le heros du proprietaire gagne +1 CTR, +1 ATQ, +1 DEF",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3294,
+   "nom": "[campagne_cartes] sk275 Skrull Military Training, TEMOIN : tant que la carte est EN JEU (pas en vitrine), aucun bonus",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3295,
+   "nom": "[campagne_cartes] sk275 Skrull Military Training : le bonus va au heros du PROPRIETAIRE seulement, pas a celui de l'autre joueur",
+   "ok": true,
+   "message": "bonus conformes pour les deux joueurs"
+  },
+  {
+   "index": 3296,
+   "nom": "[campagne_cartes] sk276 Stealing For Good : vaincue, ajoute une amelioration du deck a la main et retire sa valeur de menace (01065, cout 2)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3297,
+   "nom": "[campagne_cartes] sk276 Stealing For Good : une amelioration de cout 1 (01007 Spider-Tracer) retire 1 menace seulement",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3298,
+   "nom": "[campagne_cartes] sk289a / sk289b Cooperation Progress Reminder : les deux faces (type Insert) se creent sans erreur, rien n'est scripte",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3299,
+   "nom": "[campagne_cartes] sk277 Antalya : Action -> soigne 1 degat de l'identite et s'incline",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3300,
+   "nom": "[campagne_cartes] sk277 Antalya : peut soigner un ALLIE (personnage amical de n'importe quel type)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3301,
+   "nom": "[campagne_cartes] sk277 Antalya, TEMOIN : incline, elle n'offre plus son Action (les degats restent)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3302,
+   "nom": "[campagne_cartes] sk278 Cadre K : Action -> retire 1 menace d'une manigance (Bomb Scare 4 -> 3) et s'incline",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3303,
+   "nom": "[campagne_cartes] sk278 Cadre K, TEMOIN : incline, aucune menace retiree",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3304,
+   "nom": "[campagne_cartes] sk279 Pool-O-Vision : apres la defaite d'un sbire SKRULL, pioche 1 carte par icone en jeu (Acceleration + Crise = 2)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3305,
+   "nom": "[campagne_cartes] sk279 Pool-O-Vision : quatre icones differentes (Crise, Acceleration, Amplification, Alea) : plafond de 3 cartes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3306,
+   "nom": "[campagne_cartes] sk279 Pool-O-Vision, TEMOIN : sans aucune icone en jeu, aucune carte piochee (mais le soutien s'incline)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3307,
+   "nom": "[campagne_cartes] sk279 Pool-O-Vision, TEMOIN : la defaite d'un sbire NON Skrull (Hydra Mercenary) ne declenche rien",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3308,
+   "nom": "[campagne_cartes] sk279 Pool-O-Vision, TEMOIN : « Hero Response » : en alter ego (forme hors heros) rien n'est pioche",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3309,
+   "nom": "[campagne_cartes] sk280 Princess Anelle : cout X = joueurs + ennemis SKRULL en jeu : solo, aucun ennemi SKRULL = 1",
+   "ok": true,
+   "message": "cout calcule = 1"
+  },
+  {
+   "index": 3310,
+   "nom": "[campagne_cartes] sk280 Princess Anelle : deux ennemis SKRULL en jeu (sbire Dard'van et General Kalamari) = 1 + 2 = 3",
+   "ok": true,
+   "message": "cout calcule = 3"
+  },
+  {
+   "index": 3311,
+   "nom": "[campagne_cartes] sk280 Princess Anelle : le MECHANT SKRULL compte aussi (scenario Paibok) = 1 + 1 = 2",
+   "ok": true,
+   "message": "cout calcule = 2"
+  },
+  {
+   "index": 3312,
+   "nom": "[campagne_cartes] sk280 Princess Anelle : un sbire non Skrull (Hydra Mercenary) ne compte pas = 1",
+   "ok": true,
+   "message": "cout calcule = 1"
+  },
+  {
+   "index": 3313,
+   "nom": "[campagne_cartes] sk280 Princess Anelle : deux joueurs, aucun ennemi SKRULL = 2",
+   "ok": true,
+   "message": "cout calcule = 2"
+  },
+  {
+   "index": 3314,
+   "nom": "[campagne_cartes] sk280 Princess Anelle : ALLIANCE (2 joueurs) : un cout de 4 qu'un joueur seul ne peut pas payer l'est a deux",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3315,
+   "nom": "[campagne_cartes] sk280 Princess Anelle : apres la phase des joueurs, elle quitte la PARTIE (pas la defausse) et la phase du mechant est sautee",
+   "ok": true,
+   "message": "phases du mechant a sauter = 1 ; defausse = ['01092', '01065', '01009', '01005', '01061', '01060']"
+  },
+  {
+   "index": 3316,
+   "nom": "[campagne_cartes] sk280 Princess Anelle, TEMOIN : sans Anelle, la phase du mechant n'est pas sautee",
+   "ok": true,
+   "message": "phases du mechant a sauter = 0 ; defausse = ['01092', '01065', '01009', '01005', '01061', '01060']"
+  },
+  {
+   "index": 3317,
+   "nom": "[campagne_cartes] sk281 Skrull Battleship : jouable si on controle un allie SKRULL (Jazinda en jeu)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3318,
+   "nom": "[campagne_cartes] sk281 Skrull Battleship, TEMOIN : sans allie SKRULL (Human Torch, non Skrull), la carte reste en main",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3319,
+   "nom": "[campagne_cartes] sk281 Skrull Battleship : Ressource de heros -> une ressource [wild] qui paie le cout manquant d'une carte (Jazinda, cout 3)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3320,
+   "nom": "[campagne_cartes] sk281 Skrull Battleship, TEMOIN : sans le Battleship, 2 ressources ne paient pas Jazinda (cout 3) : elle reste en main",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3321,
+   "nom": "[campagne_cartes] sk282 Skrull Kill Krew : Action de heros -> 1 degat a un sbire SKRULL, s'incline (sbire non vaincu)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3322,
+   "nom": "[campagne_cartes] sk282 Skrull Kill Krew : si le sbire est VAINCU par ce coup, le soutien se redresse",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3323,
+   "nom": "[campagne_cartes] sk282 Skrull Kill Krew, TEMOIN : sans sbire SKRULL (Hydra Mercenary seul), aucune action offerte",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3324,
+   "nom": "[campagne_cartes] sk282 Skrull Kill Krew, TEMOIN : « Hero Action » : en alter ego, rien ne se passe",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3325,
+   "nom": "[campagne_cartes] sk283 3-D Man's Goggles : s'attache a un allie NON Skrull (Human Torch), jamais a un Skrull",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3326,
+   "nom": "[campagne_cartes] sk283 3-D Man's Goggles, TEMOIN : avec SEULEMENT un allie Skrull (Jazinda), la carte n'est pas jouable (reste en main)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3327,
+   "nom": "[campagne_cartes] sk283 3-D Man's Goggles : l'allie qui attaque un ennemi SKRULL ne prend AUCUN degat consequent (Human Torch ATQ 2*)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3328,
+   "nom": "[campagne_cartes] sk283 3-D Man's Goggles, TEMOIN : contre un ennemi NON Skrull (Hydra Mercenary), l'allie prend son degat consequent",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3329,
+   "nom": "[campagne_cartes] sk283 3-D Man's Goggles, TEMOIN : sans les lunettes, la meme attaque contre un Skrull coute 1 degat a l'allie",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3330,
+   "nom": "[campagne_cartes] sk284 Inhibitor Mask : s'attache a un ennemi SKRULL ; son texte imprime est ignore (Skrull Commander ne donne plus +1 ATQ)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3331,
+   "nom": "[campagne_cartes] sk284 Inhibitor Mask, TEMOIN : sans le masque, Skrull Commander donne bien +1 ATQ a sk184",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3332,
+   "nom": "[campagne_cartes] sk284 Inhibitor Mask, TEMOIN : avec SEULEMENT des ennemis non Skrull (Rhino), la carte n'est pas jouable",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3333,
+   "nom": "[campagne_cartes] sk284 Inhibitor Mask : TEMPORARY : defaussee a la fin du round, le texte redevient actif",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3334,
+   "nom": "[campagne_cartes] sk285 Ultimate Nullifier : l'ennemi porteur ne peut PAS s'activer (l'attaque de sk184 est annulee)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3335,
+   "nom": "[campagne_cartes] sk285 Ultimate Nullifier, TEMOIN : sans lui, l'attaque de sk184 inflige 2 degats a l'alter ego",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3336,
+   "nom": "[campagne_cartes] sk285 Ultimate Nullifier : sur le MECHANT (Paibok SKRULL), il porte 1 icone Hazard (solo = 1 par joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3337,
+   "nom": "[campagne_cartes] sk285 Ultimate Nullifier : a DEUX joueurs il porte 2 icones Hazard sur le mechant",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3338,
+   "nom": "[campagne_cartes] sk285 Ultimate Nullifier, TEMOIN : sur un SBIRE (sk184), aucune icone Hazard",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3339,
+   "nom": "[campagne_cartes] sk285 Ultimate Nullifier : TEMPORARY : defaussee a la fin du round",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3340,
+   "nom": "[campagne_cartes] sk286 Reverting Device : sous le controle du joueur, chaque sbire SKRULL engage avec lui perd 1 MNG (sk184 : 2 -> 1)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3341,
+   "nom": "[campagne_cartes] sk286 Reverting Device, TEMOIN : un sbire NON Skrull engage (Shocker, MNG 1) n'est pas touche",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3342,
+   "nom": "[campagne_cartes] sk286 Reverting Device, TEMOIN : sans la carte, sk184 garde son MNG imprime",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3343,
+   "nom": "[campagne_cartes] sk286 Reverting Device : un sbire SKRULL engage avec l'AUTRE joueur n'est pas touche",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3344,
+   "nom": "[campagne_cartes] sk286 Reverting Device : le bonus se recalcule quand un sbire SKRULL s'engage APRES la pose de la carte",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3345,
+   "nom": "[campagne_cartes] sk287 Skrull Shapeshifter : l'identite (alter ego) gagne le trait SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3346,
+   "nom": "[campagne_cartes] sk287 Skrull Shapeshifter : le trait vaut AUSSI en forme heros (contre-cas de l'autre forme)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3347,
+   "nom": "[campagne_cartes] sk287 Skrull Shapeshifter, TEMOIN : sans la carte, l'identite n'est pas SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3348,
+   "nom": "[campagne_cartes] sk287 Skrull Shapeshifter : quand le joueur serait vaincu, ses PV passent a 1 a la place, puis la carte est defaussee",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3349,
+   "nom": "[campagne_cartes] sk288 Sy-Torak Gem : +3 points de vie (alter ego : 13 PV max)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3350,
+   "nom": "[campagne_cartes] sk288 Sy-Torak Gem : le heros gagne +1 ATQ en forme heros",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3351,
+   "nom": "[campagne_cartes] sk288 Sy-Torak Gem, TEMOIN : sans la carte, aucun bonus",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3352,
+   "nom": "[campagne_cartes] sk288 Sy-Torak Gem : deck epuise, une ressource [energy] est depensee et la gemme reste en jeu",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3353,
+   "nom": "[campagne_cartes] sk288 Sy-Torak Gem : la gemme defaussee en pleine pioche fait perdre ses +3 PV : l'identite (11 degats sur 13) tombe, sans planter",
+   "ok": true,
+   "message": "joueur elimine, partie terminee"
+  },
+  {
+   "index": 3354,
+   "nom": "[campagne_cartes] sk288 Sy-Torak Gem : deck epuise SANS ressource [energy] payable : la gemme est defaussee",
+   "ok": true,
+   "message": "etat conforme"
+  }
+ ]
+}

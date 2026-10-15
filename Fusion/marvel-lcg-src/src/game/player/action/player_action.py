@@ -1237,7 +1237,11 @@ class PlayerAction:
                 by_effect,
                 continue_after_shuffle=True,
             )
-            if len(faces) < size:
+            # CORRECTIF (15/10/2026, skrull_menace sk288 Sy-Torak Gem) : le joueur peut etre elimine PENDANT la
+            # pioche (la Forced Interrupt « deck empties » defausse la gemme, qui donnait +3 PV : l'identite tombe).
+            # `PopPlayerDeckCards` s'arrete alors, `len(faces) < size`, et `Eliminate` levait l'assertion
+            # `is_eliminated == False` (plantage de partie constate a l'autoplay).
+            if len(faces) < size and not player.is_eliminated:
                 player.Eliminate(by_effect)
             message = Message.AfterPlayerDrewCards(player, {x: player.player_deck for x in faces}, by_effect)
             message.Send()

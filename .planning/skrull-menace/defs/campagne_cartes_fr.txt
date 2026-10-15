@@ -1,0 +1,58 @@
+  // skrull_menace — Crusader (Ally, campagne)
+  'sk263': "<b>Réponse</b> : après que Crusader est entré en jeu, choisissez un joueur → infligez 1 dégât au méchant et à chaque sbire engagé avec ce joueur. Piochez 1 carte pour chaque ennemi vaincu de cette façon.",
+  // skrull_menace — Jazinda (Ally, campagne)
+  'sk264': "Jazinda ne compte pas dans votre limite d'alliés.\nTant que Jazinda est inclinée, votre héros gagne +1 CTR.",
+  // skrull_menace — Paibok (Ally, campagne)
+  'sk265': "Ténacité.\n[star] Paibok gagne +1 CTR et +1 ATQ pour chaque carte traîtrise attachée à lui.\n<b>Réponse</b> : après qu'une carte traîtrise a été défaussée, Paibok subit 1 dégât → attachez cette carte face cachée ici (maximum 2).",
+  // skrull_menace — Skymax (Ally, campagne)
+  'sk266': "<b>Réponse</b> : quand Skymax entre en jeu, mélangez dans votre deck tous les alliés de votre pile de défausse.",
+  // skrull_menace — Super-Skrull (Ally, campagne)
+  'sk267': "[star] Super-Skrull gagne +1 CTR et +1 ATQ pour chaque carte [[SUPERPOWER]] différente attachée à lui.\n<b>Réponse</b> : après qu'une carte [[SUPERPOWER]] a été placée dans une pile de défausse, attachez-la face cachée ici (maximum 4).",
+  // skrull_menace — Chilly McHotpants (Ally, campagne)
+  'sk268': "<i>*Considérez cet allié comme un sbire engagé avec vous.</i>\n[star] <b>Réponse</b> : après que « Chilly McHotpants » vous a attaqué, piochez 1 carte. Si vous ne subissez aucun dégât de cette attaque, piochez 1 carte.",
+  // skrull_menace — Xavin (Ally, campagne)
+  'sk269': "<b>Interruption</b> : quand Xavin entre en jeu, défaussez des cartes de votre deck jusqu'à ce que vous défaussiez un événement doté d'une capacité \"<b>Action de héros</b>\". Vous pouvez résoudre la capacité \"<b>Action de héros</b>\" de cet événement.",
+  // skrull_menace — Buddy Training Program (PlayerSideScheme, campagne)
+  'sk270': "Victoire 0.\nX est égal au numéro de stade du méchant.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut donner une carte d'état Tenace à X personnages amis au maximum.",
+  // skrull_menace — Cloning Faux Pas (PlayerSideScheme, campagne)
+  'sk271': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut infliger jusqu'à 3 dégâts à chaque sbire [[SKRULL]] engagé avec lui.",
+  // skrull_menace — Fickle Alliance (PlayerSideScheme, campagne)
+  'sk272': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut chercher dans le deck Rencontre un sbire non-[[ÉLITE]] et le mettre en jeu sous son contrôle. <i>(Mélangez.)</i> Considérez ce sbire comme un allié avec une boîte de texte vierge <i>(sauf pour les</i> [[TRAITS]]<i>)</i>. Son CTR est égal à son MNG imprimé et il subit 1 dégât consécutif après avoir déjoué ou attaqué.",
+  // skrull_menace — Newbie Training (PlayerSideScheme, campagne)
+  'sk273': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut vaincre un sbire [[SKRULL]] non-[[ÉLITE]] et piocher 1 carte.",
+  // skrull_menace — Searching for Powers (PlayerSideScheme, campagne)
+  'sk274': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut chercher dans son deck et sa pile de défausse une carte portant le trait [[SUPERPOWER]] et la jouer, en ignorant son coût en ressources. <i>(Mélangez.)</i>",
+  // skrull_menace — Skrull Military Training (PlayerSideScheme, campagne)
+  'sk275': "Victoire 0.\nAucune menace ne peut être retirée de cette manigance, sauf si elle est déjouée par un allié [[SKRULL]].\nTant que cette carte est dans la pile de victoire, le héros de son propriétaire gagne +1 CTR, +1 ATQ et +1 DEF.",
+  // skrull_menace — Stealing For Good (PlayerSideScheme, campagne)
+  'sk276': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut chercher dans son deck et sa pile de défausse une amélioration et l'ajouter à sa main. <i>(Mélangez.)</i> Ensuite, il retire d'une manigance un nombre de menaces égal au coût imprimé de cette amélioration.",
+  // skrull_menace — Antalya (Support, campagne)
+  'sk277': "<b>Action</b> : inclinez Antalya → soignez 1 dégât d'un personnage ami.",
+  // skrull_menace — Cadre K (Support, campagne)
+  'sk278': "<b>Action</b> : inclinez Cadre K → retirez 1 menace d'une manigance.",
+  // skrull_menace — Pool-O-Vision (Support, campagne)
+  'sk279': "<b>Réponse de héros</b> : après qu'un sbire [[SKRULL]] a été vaincu, inclinez Pool-O-Vision → piochez 1 carte (maximum 3) pour chaque [crisis], [acceleration], [amplify] et [hazard] en jeu.",
+  // skrull_menace — Princess Anelle (Support, campagne)
+  'sk280': "Alliance.\nX est égal au nombre total de joueurs et d'ennemis [[SKRULL]] en jeu.\n<b>Réponse</b> : après la fin de la phase des joueurs, retirez Princess Anelle de la partie → sautez la phase du méchant.",
+  // skrull_menace — Skrull Battleship (Support, campagne)
+  'sk281': "Jouez cette carte uniquement si vous contrôlez un allié [[SKRULL]].\n<b>Ressource de héros</b> : inclinez Skrull Battleship → générez une ressource [wild] pour n'importe quel joueur.",
+  // skrull_menace — Skrull Kill Krew (Support, campagne)
+  'sk282': "<b>Action de héros</b> : inclinez Skrull Kill Krew → infligez 1 dégât à un sbire [[SKRULL]]. Si ce sbire est vaincu de cette façon, redressez Skrull Kill Krew.",
+  // skrull_menace — 3-D Man's Goggles (Upgrade, campagne)
+  'sk283': "Attachez cette carte à un allié non-[[SKRULL]].\n<b>Interruption</b> : quand l'allié attaché attaque un ennemi [[SKRULL]], cet allié ne subit pas de dégâts consécutifs.",
+  // skrull_menace — Inhibitor Mask (Upgrade, campagne)
+  'sk284': "Attachez cette carte à un ennemi [[SKRULL]].\nTemporaire.\nConsidérez la boîte de texte imprimée de l'ennemi attaché comme si elle était vierge.",
+  // skrull_menace — Ultimate Nullifier (Upgrade, campagne)
+  'sk285': "Attachez cette carte à un ennemi [[SKRULL]].\nTemporaire.\nL'ennemi attaché ne peut pas s'activer.\nTant que Nullifier est attaché au méchant, il gagne 1[per_hero] icône d'aléa ([hazard]).",
+  // skrull_menace — Reverting Device (Upgrade, campagne)
+  'sk286': "Jouez cette carte sous le contrôle de n'importe quel joueur.\nChaque sbire [[SKRULL]] engagé avec vous gagne -1 MNG.",
+  // skrull_menace — Skrull Shapeshifter (Upgrade, campagne)
+  'sk287': "Jouez cette carte sous le contrôle de n'importe quel joueur.\nVotre identité gagne le trait [[SKRULL]].\n<b>Interruption</b> : quand vous êtes censé être vaincu, fixez à la place votre compteur de points de vie à 1. Ensuite, défaussez cette carte.",
+  // skrull_menace — Sy-Torak Gem (Upgrade, campagne)
+  'sk288': "Jouez cette carte sous le contrôle de n'importe quel joueur.\nVous gagnez +3 points de vie.\nVotre héros gagne +1 ATQ.\n<b>Interruption forcée</b> : quand votre deck se vide, dépensez une ressource [energy]. Si vous ne pouvez pas, défaussez Sy-Torak Gem.",
+  // skrull_menace — gabarit technique : forme SBIRE de Chilly McHotpants (sk268), meme texte que la carte
+  'skrull_war_minion': "[star] <b>Réponse</b> : après que « Chilly McHotpants » vous a attaqué, piochez 1 carte. Si vous ne subissez aucun dégât de cette attaque, piochez 1 carte.",
+  // skrull_menace — Cooperation Progress Reminder (Insert, recto)
+  'sk289a': "<i>Mode campagne uniquement.</i>\n<b>Interruption</b> : quand un joueur vainc un sbire ou une manigance annexe, ce joueur peut défausser la carte du dessus de son deck pour placer ce sbire ou cette manigance annexe dans la pile de victoire au lieu de la pile de défausse rencontre.",
+  // skrull_menace — Cooperation Progress Reminder (Insert, verso)
+  'sk289b': "<b><i>Ne retournez pas cette carte à moins de vouloir bâtir la coopération.</i></b>",

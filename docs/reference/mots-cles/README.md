@@ -133,6 +133,11 @@ la plus fréquente sur un pack vilain.
       phase. ⚠ NON IMPLÉMENTÉ, malgré le commentaire du `.py` qui prétend
       le contraire ; crochet `WhenPhaseEnd` disponible)
 
+- [x] initiative.md (Skrull Menace, `sk263` Crusader : « INITIATIVE » est un
+      TRAIT imprimé, pas un mot-clé ; aucune règle n'est écrite sur la carte,
+      zéro ligne de code. ⚠ À ne pas confondre avec le set officiel « The
+      Initiative »)
+
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
 Vérification faite avec l'heuristique `<b>([A-Z][a-zA-Z ]{2,20})</b>` sur

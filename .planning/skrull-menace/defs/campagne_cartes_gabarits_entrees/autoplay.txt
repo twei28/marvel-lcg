@@ -1,0 +1,6 @@
+Autoplay du deck `campagne` (Spider-Man + les 26 cartes sk263-sk288), 8 parties par scenario sur rhino, sk_paibok, sk_super_skrull,
+sk_skrull_empire : 32 parties, 0 Traceback / NameError / AttributeError / TypeError / KeyError / AssertionError dans les journaux
+(le premier passage a trouve un plantage reel, `Player.Eliminate` pendant la pioche avec sk288 : corrige dans `DrawUp`, prouve par
+mutation rouge/vert). Le journal porte « --- Phase : Villain (skipped) --- » dans 6 parties : la boucle de saut de sk280 est prouvee.
+Temoin (deck Spider-Man de depart, sans carte de campagne) : 8 + 8 parties sur rhino et sk_paibok, 1 incident sur sk_paibok, anterieur
+et sans rapport avec le bloc. Victoires du robot : rhino 1/8, autres 0/8 (le robot ne joue pas pour gagner : pas un signal).
