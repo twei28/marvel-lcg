@@ -711,6 +711,17 @@ function vueMarche(campagne, definition) {
  */
 const enLangue = (fr, en) => (langueActuelle() === "en" ? (en || fr) : fr);
 
+function vueChoixDeLaZone(campagne, definition) {
+    return el("div", { class: "cmp-page-campagne" },
+        entete(t("Campagne")),
+        el("main", { class: "cmp-corps" },
+            bandeauErreur(),
+            el("div", { class: "cmp-titre-rangee" },
+                el("h1", { class: "cmp-titre mvl" }, t("Cartes de la zone de coopération")),
+                el("button", { class: "btn ghost", onclick: () => retourVers("campagne") }, t("Retour"))),
+            blocChoixDeLaZone(campagne, definition)));
+}
+
 function vueCooperation(campagne, definition) {
     const coop = definition.cooperation;
     const zone = new Set(listeCarnet(campagne, coop.cle_zone));
@@ -768,6 +779,69 @@ function vueCooperation(campagne, definition) {
             journal,
         ),
     );
+}
+
+/**
+ * Le choix des cartes de la zone de cooperation, AVANT la partie (scenarios 2 a 5).
+ *
+ * Livret p.10 : chaque joueur peut melanger UNE carte de chaque type de la zone a son
+ * deck. Le moteur savait le demander par des fenetres de question (le nom seul) ; ici on
+ * choisit sur les vignettes, et le carnet garde `Player N Cooperation Deck` (ids, « ; »,
+ * ou « none » si on a decide de ne rien prendre). Rien de choisi = le jeu pose ses
+ * questions a la mise en place, comme avant. Une carte unique prise par un joueur n'est
+ * plus offerte aux autres (le moteur ignore de toute facon un doublon).
+ */
+function zoneChoisissable(campagne, definition, enCours) {
+    const coop = definition.cooperation;
+    return Boolean(coop && coop.cle_deck && !enCours && indexCourant(campagne, definition) >= 1
+        && listeCarnet(campagne, coop.cle_zone).length);
+}
+
+function blocChoixDeLaZone(campagne, definition) {
+    const coop = definition.cooperation;
+    const zone = new Set(listeCarnet(campagne, coop.cle_zone));
+    const equipe = campagne.equipe || [];
+    const choixDe = (i) => listeCarnet(campagne, cleJoueur(coop.cle_deck, i)).filter((x) => x !== "none");
+    const decide = (i) => listeCarnet(campagne, cleJoueur(coop.cle_deck, i)).length > 0;
+    const ecrire = (i, ids) => proteger(async () => {
+        etat.campagne.carnet = { ...(etat.campagne.carnet || {}),
+            [cleJoueur(coop.cle_deck, i)]: ids.length ? ids.join(";") : "none" };
+        etat.campagne = await apiCampagne.enregistrer(etat.campagne);
+    });
+    const colonnes = coop.colonnes.map((col) => ({ col, dispo: col.ids.filter((id) => zone.has(id)) }))
+        .filter((x) => x.dispo.length);
+
+    const sections = equipe.map((membre, i) => {
+        const miens = choixDe(i);
+        const pris = new Set(equipe.flatMap((_, j) => (j === i ? [] : choixDe(j))));
+        const lignes = colonnes.map(({ col, dispo }) => {
+            const choisie = dispo.find((id) => miens.includes(id));
+            const reste = miens.filter((id) => !dispo.includes(id));
+            return el("div", { class: "cmp-zone-ligne", "data-type": col.titre },
+                el("span", { class: "cmp-zone-type" }, enLangue(col.titre, col.titre_en)),
+                el("div", { class: "cmp-zone-choix" },
+                    el("button", { class: "cmp-segment" + (!choisie ? " sel" : ""), "data-aucune": "1",
+                        onclick: () => ecrire(i, reste) }, t("Aucune")),
+                    dispo.map((id) => {
+                        const c = cards.get(id);
+                        const ailleurs = pris.has(id);
+                        return el("button", {
+                            class: "cmp-zone-vignette" + (choisie === id ? " sel" : "") + (ailleurs ? " prise" : ""),
+                            "data-carte": id, disabled: ailleurs || undefined,
+                            title: (c && c.name ? c.name : id) + (ailleurs ? " — " + t("prise par un autre joueur") : ""),
+                            onclick: () => ecrire(i, [...reste, id]),
+                        }, el("img", { src: cardImageUrl(id), alt: c && c.name ? c.name : id, loading: "lazy" }));
+                    })));
+        });
+        return el("section", { class: "cmp-zone-joueur", "data-joueur": String(i + 1) },
+            el("h3", { class: "cmp-zone-heros" }, membre.nomHeros || membre.heros || (t("Joueur") + " " + (i + 1)),
+                el("span", { class: "cmp-zone-etat" }, decide(i) ? "" : " · " + t("pas encore choisi : le jeu posera la question"))),
+            lignes);
+    });
+    return el("div", { class: "cmp-bloc cmp-bloc-zone" },
+        el("h2", { class: "cmp-bloc-t" }, t("Zone de coopération : cartes pour ce scénario")),
+        el("p", { class: "cmp-bloc-aide" }, t("Chaque joueur peut mélanger à son deck UNE carte de chaque type. Elles lui sont rendues à la fin de la partie.")),
+        sections);
 }
 
 /** Le Marche se visite-t-il deja ? Hunting Season : « Between each scenario »,
@@ -1034,6 +1108,10 @@ function vueCampagne() {
                 class: "btn ghost",
                 onclick: () => { etat.vue = "marche"; rendre(); },
             }, definition.marche.titre || t("Le Marché")) : null,
+            zoneChoisissable(campagne, definition, enCours) ? el("button", {
+                class: "btn ghost", "data-vue": "zone",
+                onclick: () => { etat.vue = "zone"; rendre(); },
+            }, t("Cartes de la zone")) : null,
             definition.cooperation ? el("button", {
                 class: "btn ghost",
                 onclick: () => { etat.vue = "cooperation"; rendre(); },
@@ -1622,7 +1700,7 @@ function corrigerTextesMarvel() {
    marche, enquete) est une entree d'historique au telephone. Les boutons
    « Retour » de l'interface reculent dans l'historique quand la vue visee est
    juste derriere : la pile reste propre (meme principe que l'assistant). */
-const VUES_DE_CAMPAGNE = ["campagne", "marche", "enquete", "cooperation"];
+const VUES_DE_CAMPAGNE = ["campagne", "marche", "enquete", "cooperation", "zone"];
 
 function retourVers(vue) {
     if (reculerVers(vue)) return;
@@ -1652,6 +1730,8 @@ suivreTel(() => rendre());
 function rendre() {
     if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
         root.replaceChildren(vueMarche(etat.campagne, etat.definition));
+    else if (etat.vue === "zone" && etat.campagne && etat.definition && zoneChoisissable(etat.campagne, etat.definition, false))
+        root.replaceChildren(vueChoixDeLaZone(etat.campagne, etat.definition));
     else if (etat.vue === "cooperation" && etat.campagne && etat.definition && etat.definition.cooperation)
         root.replaceChildren(vueCooperation(etat.campagne, etat.definition));
     else if (etat.vue === "enquete" && etat.campagne && etat.definition && etat.definition.enquete)

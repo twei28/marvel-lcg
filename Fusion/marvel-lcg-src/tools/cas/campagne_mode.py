@@ -617,6 +617,58 @@ CHAINES += [
 ]
 
 
+# ---- le choix fait SUR L'ECRAN de campagne (« Player N Cooperation Deck »), avant la partie
+CLE_DECK_1 = "Player 1 Cooperation Deck"
+CLE_DECK_2 = "Player 2 Cooperation Deck"
+
+
+def v_zone_ecran(monde):
+    p = _possede(monde)
+    return _verif(
+        ({"sk264", "sk271", "sk230b"} <= p, f"les trois cartes choisies a l'ecran sont dans le deck : {sorted(p & {'sk264', 'sk271', 'sk230b'})}"),
+        (not ({"sk263", "sk270", "sk230a", "sk277", "sk283"} & p), "et pas les premieres de chaque type (aucune question posee)"),
+    )
+
+
+def v_zone_ecran_invalide(monde):
+    p = _possede(monde)
+    return _verif(
+        ("sk263" in p, "la premiere carte valide de chaque type est prise"),
+        (not ({"sk264", "sk999"} & p), f"un deuxieme allie, ou une carte hors zone, est ignore : {sorted(p & {'sk264', 'sk999'})}"),
+    )
+
+
+def v_zone_ecran_deux_joueurs(monde):
+    a, b = _possede(monde, 0), _possede(monde, 1)
+    return _verif(
+        ("sk263" in a, "le premier joueur a la carte"),
+        ("sk263" not in b, "le second l'avait choisie aussi : une carte unique ne va que dans UN deck"),
+        ("sk277" in b, f"mais son autre choix est pris : {sorted(b & {'sk277'})}"),
+    )
+
+
+CHAINES += [
+    _chaine("zone de cooperation — choix fait a l'ECRAN : les cartes entrent au deck, aucune question",
+            {"Cooperation Area": ZONE_TEST, CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE,
+             CLE_DECK_1: "sk264;sk271;sk230b"},
+            [{"scenario": "sk_paibok", "verifier": v_zone_ecran,
+              "questions_absentes": ["Crusader", "Jazinda", "Cloning Faux Pas", "Cosmic Cube Fragment"], "fin": "aucune"}]),
+    _chaine("zone de cooperation — choix de l'ecran INVALIDE (hors zone, deux du meme type) : ignore",
+            {"Cooperation Area": ZONE_TEST, CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE,
+             CLE_DECK_1: "sk263;sk264;sk999"},
+            [{"scenario": "sk_super_skrull", "verifier": v_zone_ecran_invalide, "fin": "aucune"}]),
+    _chaine("zone de cooperation — choix de l'ecran « none » : rien n'entre dans le deck, aucune question",
+            {"Cooperation Area": ZONE_TEST, CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE, CLE_DECK_1: "none"},
+            [{"scenario": "sk_skrull_pantheon", "verifier": v_zone_refus,
+              "questions_absentes": ["Crusader", "Antalya"], "fin": "aucune"}]),
+    _chaine("zone de cooperation — choix de l'ecran a DEUX joueurs : une carte unique ne va que dans le deck du premier",
+            {"Cooperation Area": "sk263;sk277", CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE,
+             CLE_DECK_1: "sk263", CLE_DECK_2: "sk263;sk277"},
+            [{"scenario": "sk_super_skrull", "verifier": v_zone_ecran_deux_joueurs, "fin": "aucune"}],
+            heros=("lyja", "spider_man")),
+]
+
+
 # ===================================== la regle de cooperation : vaincre = pile de victoire (p.6) ==
 BASE = {}
 TUEUR = "Puzzle.FindFaceInPlay('sk037b')"     # l'identite de Lyja (alter ego) : un joueur qui vainc

@@ -537,3 +537,16 @@ button{cursor:pointer}
 .cmp-coop-ligne.complete th { background: rgba(53, 168, 101, 0.18); }
 .cmp-coop-gagnee { color: #5fd592; font-weight: 700; font-size: 12px; }
 .cmp-coop-now { color: #ffd45a; }
+
+/* Choix des cartes de la zone avant la partie : une rangée de vignettes par type. */
+.cmp-zone-joueur { margin: 10px 0 16px; }
+.cmp-zone-heros { margin: 0 0 6px; font-size: 15px; }
+.cmp-zone-etat { font-weight: 400; font-size: 12px; color: #ffd45a; }
+.cmp-zone-ligne { display: flex; align-items: center; gap: 10px; margin: 6px 0; flex-wrap: wrap; }
+.cmp-zone-type { width: 150px; font-size: 12px; color: rgba(255, 255, 255, 0.7); }
+.cmp-zone-choix { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.cmp-zone-vignette { width: 58px; padding: 0; border: 2px solid rgba(255, 255, 255, 0.18); border-radius: 6px; background: none; cursor: pointer; overflow: hidden; line-height: 0; }
+.cmp-zone-vignette img { width: 100%; display: block; }
+.cmp-zone-vignette.sel { border-color: #35a865; box-shadow: 0 0 0 2px rgba(53, 168, 101, 0.4); }
+.cmp-zone-vignette.prise { opacity: 0.35; cursor: not-allowed; }
+.cmp-zone-vignette:hover:not(:disabled) { border-color: #ffd45a; }

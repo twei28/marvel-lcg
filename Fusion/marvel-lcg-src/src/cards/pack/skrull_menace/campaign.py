@@ -451,16 +451,41 @@ def _elites(effect: 'Effect', level: int) -> None:
         Faces.ShuffleAllTo(faces, 'EncounterDeck', effect)
 
 
+CLE_DECK_DE_COOPERATION = 'Cooperation Deck'   # « Player N Cooperation Deck » : ce que l'ecran de campagne a deja choisi
+RIEN = 'none'                                   # « j'ai deja decide de ne rien prendre »
+
+
+def _choix_deja_faits(effect: 'Effect', player: 'Player') -> 'List[str]':
+    """Les cartes que le joueur a choisies SUR L'ECRAN de campagne, avant la partie (vide : il n'a rien
+    decide, on lui pose les questions de la mise en place comme avant)."""
+    return _liste(effect, f'Player {player.player_id + 1} {CLE_DECK_DE_COOPERATION}')
+
+
 def _cartes_de_la_zone(effect: 'Effect') -> None:
     """Scenarios 2 a 5 : chaque joueur peut melanger une carte de chaque type de la
     Cooperation Area a son deck (p.5, p.10). Ces cartes sont hors limite du deck (generees APRES
     la composition du deck) et rendues a la zone apres la partie (le carnet ne les en retire
-    jamais)."""
+    jamais). Le choix vient de l'ecran de campagne (vignettes) s'il y en a un ; sinon, une question
+    par type."""
     zone = list(_liste(effect, CLE_ZONE))
     for player in Worlds.GetPlayers(effect):
         if player.is_eliminated:
             continue
         ajoutees = False
+        d_avance = _choix_deja_faits(effect, player)
+        if d_avance:
+            vus = set()
+            for choisie in d_avance:
+                # une carte absente de la zone, prise par un autre joueur, ou un 2e du meme type : ignoree
+                if choisie == RIEN or choisie not in zone or TypeDeLaCarte(choisie) in vus:
+                    continue
+                vus.add(TypeDeLaCarte(choisie))
+                zone.remove(choisie)
+                CardFactory.GenerateCard(choisie, player.player_deck, effect.world)
+                ajoutees = True
+            if ajoutees:
+                player.player_deck.Shuffle(effect)
+            continue
         for type_ in TYPES_DE_LA_ZONE:
             candidates = [i for i in zone if TypeDeLaCarte(i) == type_]
             if not candidates:

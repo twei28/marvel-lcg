@@ -83,6 +83,10 @@ def cles_du_fichier(definition):
     for nom in ("victoire_commune", "victoire_commune_expert"):
         for champ in definition.get(nom) or []:
             yield champ["cle"]
+    # Une cle ecrite par l'ECRAN de campagne (choix de la zone de cooperation), un exemplaire par joueur.
+    cle_deck = (definition.get("cooperation") or {}).get("cle_deck")
+    if cle_deck:
+        yield cle_deck
 
 
 # Valeurs acceptees pour l'attribut `deck` d'un champ de victoire.

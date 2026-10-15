@@ -123,6 +123,44 @@ test.describe('Campagne Skrull Menace : l interface de choix de campagne', () =>
       await request.post('/delete_campagne', { data: { id } })
     }
   })
+
+  test('le choix des cartes de la zone se fait sur vignettes, avant la partie, et se garde au carnet', async ({ page, request }) => {
+    const nom = 'Essai automatique - skrull menace (choix zone)'
+    await nettoyer(request, nom)
+    const id = await poserCampagne(request, {
+      code: 'skrull_menace',
+      nom,
+      difficulte: 'standard',
+      equipe: [{ heros: 'lyja', nomHeros: 'Lyja' }, { heros: 'spider_man', nomHeros: 'Spider-Man' }],
+      termines: ['sk_skrull_empire'],
+      carnet: { 'Cooperation Area': 'sk263;sk264;sk270;sk277;sk230a' },
+      tentatives: {},
+      partieEnCours: null,
+    })
+    try {
+      await page.goto('/campagne.html', { waitUntil: 'networkidle' })
+      await page.locator('.cmp-carte', { hasText: nom }).locator('.cmp-carte-ouvrir').click()
+      await page.locator('button[data-vue="zone"]').click()
+      const j1 = page.locator('.cmp-zone-joueur[data-joueur="1"]')
+      const j2 = page.locator('.cmp-zone-joueur[data-joueur="2"]')
+      await expect(j1.locator('.cmp-zone-vignette')).toHaveCount(5)
+      await expect(j1).toContainText('pas encore choisi')
+      await j1.locator('[data-carte="sk263"]').click()
+      await expect(j1.locator('[data-carte="sk263"]')).toHaveClass(/sel/)
+      await expect(j2.locator('[data-carte="sk263"]'), 'Une carte unique prise par le joueur 1 n est plus offerte au joueur 2.').toBeDisabled()
+      await j1.locator('[data-carte="sk264"]').click()   // meme type : remplace
+      await j1.locator('[data-carte="sk270"]').click()
+      await j2.locator('.cmp-zone-ligne[data-type="Ressources"] [data-carte="sk230a"]').click()
+      await j2.locator('.cmp-zone-ligne[data-type="Alliés"] [data-aucune]').click()
+      const apres = await relireCampagne(request, id)
+      expect(apres.carnet?.['Player 1 Cooperation Deck']).toBe('sk264;sk270')
+      expect(apres.carnet?.['Player 2 Cooperation Deck']).toBe('sk230a')
+      await expect(j2).not.toContainText('pas encore choisi')
+      await page.screenshot({ path: '/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/aedcc77a-2512-4da8-82a4-14876d788fa2/scratchpad/choix-zone.png', fullPage: true })
+    } finally {
+      await request.post('/delete_campagne', { data: { id } })
+    }
+  })
 })
 
 test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les etats', () => {
