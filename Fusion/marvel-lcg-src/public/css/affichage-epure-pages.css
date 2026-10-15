@@ -311,3 +311,118 @@ html[data-epure] .pnum {
 html[data-epure] header.progress .pstep .pnum {
   color: #ffffff;
 }
+
+/* --- 10. Editeur de deck, campagnes, salon ----------------------------------- */
+html[data-epure] .db-rail,
+html[data-epure] .db-col,
+html[data-epure] .db-deck-col,
+html[data-epure] .db-filtres-col,
+html[data-epure] .db-modale,
+html[data-epure] .db-info,
+html[data-epure] .cmp-entete,
+html[data-epure] .cmp-carte,
+html[data-epure] .salon-b,
+html[data-epure] .est-erreur {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+  clip-path: none;
+  backdrop-filter: none;
+  font-family: var(--w98-police);
+}
+
+html[data-epure] .cmp-carte *,
+html[data-epure] .db-deck-col *,
+html[data-epure] .db-filtres-col *,
+html[data-epure] .db-modale *,
+html[data-epure] .db-info * {
+  color: #000000;
+  text-shadow: none;
+}
+
+html[data-epure] .db-retour-prep,
+html[data-epure] .db-tri,
+html[data-epure] .db-recherche-zone,
+html[data-epure] button.btn.primary,
+html[data-epure] .cmp-carte-suppr {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .db-recherche-zone {
+  background: #ffffff;
+  box-shadow: var(--w98-creux);
+}
+
+html[data-epure] .cmp-carte:hover {
+  transform: none;
+}
+
+/* Les panneaux qui portent une illustration en degrade (salon, etape vide). */
+html[data-epure] .tb-scene::before,
+html[data-epure] .tb-scene::after,
+html[data-epure] .salon-b::before,
+html[data-epure] .salon-b::after {
+  display: none;
+}
+
+html[data-epure] .tb-scene,
+html[data-epure] .tb-scene * {
+  background-image: none;
+}
+
+/* --- 11. Retouches apres capture (editeur, campagnes) ------------------------ */
+html[data-epure] .db-entete .mvl,
+html[data-epure] .db-ftitre,
+html[data-epure] .db-centre b,
+html[data-epure] .db-centre strong,
+html[data-epure] .db-barre,
+html[data-epure] .cmp-entete a,
+html[data-epure] .cmp-entete span,
+html[data-epure] header.progress .brand-back {
+  color: #000000;
+  text-shadow: none;
+  letter-spacing: 0;
+}
+
+html[data-epure] .db-ico {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] body .btn.primary,
+html[data-epure] body .btn.primary:hover {
+  background: var(--w98-face);
+  color: #000000;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .db-entete .db-titre,
+html[data-epure] .db-entete .db-heros,
+html[data-epure] .db-entete .db-heros-aspects {
+  color: #000000;
+  text-shadow: none;
+  letter-spacing: 0;
+}
+
+html[data-epure] .db-rail button,
+html[data-epure] .db-rail a {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .db-rail button *,
+html[data-epure] .db-rail a * {
+  color: #000000;
+}
