@@ -344,7 +344,12 @@ class Faces:
         return Faces.ReturnToHand(faces, player, by_effect)
 
     @staticmethod
-    def TreatAsAlly(minion: 'CardFace', as_card_name: str, player: 'Player', effect: 'Effect') -> bool:
+    def TreatAsAlly(minion: 'CardFace', as_card_name: str, player: 'Player', effect: 'Effect', *,
+                    process: 'Callable[[CardFace, CardFace], Any]|None'=None) -> bool:
+        # `process(allie, sbire)` (AJOUT du 15/10/2026, skrull_menace sk272 Fickle Alliance) : appele
+        # AVANT l'echange de face, pour ajuster la face allie (PV, traits...). Sans lui, l'allie portait les
+        # PV du gabarit (0) : un sbire cherche dans le deck rencontre, jamais entre en jeu, n'a aucun PV
+        # courant a reprendre et l'allie etait vaincu des son entree en jeu.
         # from game.operate.worlds import Worlds
         from game.ability.factory import AbilityFactory
         from game.card.factory import CardFactory
@@ -364,6 +369,9 @@ class Faces:
 
             face.printed_attack = minion.printed_attack
             face.printed_thwart = minion.printed_scheme
+
+            if process:
+                process(face, minion)
 
             minion.card.SwapCardFace(face, effect)
             CardFactory.FaceRegisterEffects(face)

@@ -196,6 +196,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # THIEF, KING et TITLE existaient deja. Lus par cn002 Belit, cn009 et la
         # remise « Discount 1 (KING) ».
         "ADVENTURER", "CIMMERIA", "PIRATE", "BARBARIAN",
+        # (15/10/2026) Cartes de campagne de Skrull Menace (Kajislav, sk263-sk288) : traits imprimes sur les allies
+        # et soutiens (Crusader « INITIATIVE », Paibok « S.W.O.R.D. », Skymax « SQUADRON SUPREME », Xavin
+        # « RUNAWAYS », Skrull Kill Krew « CREW »). Purement declaratif, comme les autres.
+        "INITIATIVE", "S.W.O.R.D.", "SQUADRON SUPREME", "RUNAWAYS", "CREW",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

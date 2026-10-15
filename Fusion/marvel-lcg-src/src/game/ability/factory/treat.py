@@ -20,13 +20,19 @@ def TreatAsMinion(face: 'CardFace', as_card_name: str, engage_player: 'Player', 
 
         minion.pic_id = face.paper.card_id
 
+        # minion = face.card.SetAsCard(minion)
+        minion = face.card.SwapCardFace(minion, effect)
+
         # Hack, for "50171"
-        minion.ability.Add(*CardsDB.FindAbilities(paper.card_id, paper.pack, paper.set_name))
+        # CORRECTIF (15/10/2026, skrull_menace sk268 Chilly McHotpants) : ce bloc etait AVANT l'echange de
+        # face et ajoutait une SECONDE fois les capacites du module (`CardFactory.CreateFace` les a deja
+        # ajoutees, ligne 84). Des qu'un gabarit porte une capacite, `FaceRegisterEffects` plantait :
+        # « 'Minion' object has no attribute 'card' » (la face n'est pas encore portee par une carte), et,
+        # l'echange fait, chaque capacite aurait ete enregistree DEUX fois (Reponse jouee en double).
+        # Meme ordre que `TreatAsAlly` : echange d'abord, enregistrement ensuite, sans doublon.
         minion.effect.face = minion
         CardFactory.FaceRegisterEffects(minion)
 
-        # minion = face.card.SetAsCard(minion)
-        minion = face.card.SwapCardFace(minion, effect)
         minion.printed_attack = face.printed_attack
         minion.printed_scheme = face.printed_thwart
 
