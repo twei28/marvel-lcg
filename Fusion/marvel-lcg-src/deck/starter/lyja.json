@@ -1,0 +1,67 @@
+{
+    "version": "0.5.8",
+    "name": "Lyja",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aspect AGGRESSION, donne par l'auteur : decklist « Starter Deck » imprimee dans le zip (Extra/49 starter deck lyja (expansion).png), recopiee telle quelle (PROCESSUS-HEROS etape 3). Numeros 48, 50, 51, 54, 55 de la liste = cartes OFFICIELLES non fournies par l'auteur : She-Hulk 10013, Chase Them Down 01052 x2, Clobber 18012 x3, Press the Advantage 04043 x2, Combat Training 01057 x2 ; Energy/Genius/Strength 01088-01090.",
+        "cartes_maison_note": "Cartes d'aspect MAISON dans ce deck : sk049 The Thing, sk052 Going Ballistic, sk053 Hit the Weak Spot (Aggression) ; sk056 Invisible Woman, sk057 Mister Fantastic, sk058 Laser Tag, sk062 Baxter Building, sk063 Fantasti-Car, sk064 Fantastic Four Member (Basic)."
+    },
+    "hero": [
+        "sk037a,sk037b"
+    ],
+    "hero_deck": [
+        "sk038",
+        "sk039",
+        "sk039",
+        "sk040",
+        "sk040",
+        "sk041",
+        "sk041",
+        "sk042",
+        "sk042",
+        "sk043",
+        "sk044",
+        "sk044",
+        "sk045",
+        "sk046",
+        "sk047"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "sk065"
+    ],
+    "nemesis_set": [
+        "sk066",
+        "sk067",
+        "sk068",
+        "sk068",
+        "sk069"
+    ],
+    "player_deck": [
+        "10013",
+        "sk049",
+        "01052",
+        "01052",
+        "18012",
+        "18012",
+        "18012",
+        "sk052",
+        "sk052",
+        "sk052",
+        "sk053",
+        "sk053",
+        "04043",
+        "04043",
+        "01057",
+        "01057",
+        "sk056",
+        "sk057",
+        "sk058",
+        "01088",
+        "01089",
+        "01090",
+        "sk062",
+        "sk063",
+        "sk064"
+    ]
+}

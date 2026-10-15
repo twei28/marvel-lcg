@@ -124,6 +124,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # Skrull Empire portent « LOCATION. PLANET. » ; cinq cartes du
         # scenario les comptent ou les visent par ce trait.
         "PLANET",
+        # (15/10/2026) Lyja (Kajislav) : huit evenements joueur portent « TREACHERY. »
+        # (Faking Death...) : ils se melangent dans le deck rencontre et se
+        # resolvent comme des traitrises. Purement declaratif cote enum ;
+        # les capacites de Lyja, Mole, Untrustworthiness et Paibok le lisent.
+        "TREACHERY",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",

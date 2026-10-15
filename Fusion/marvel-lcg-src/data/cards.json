@@ -104011,6 +104011,458 @@
     "SKRULL"
    ],
    "set_name": ""
+  },
+  {
+   "card_id": "sk037a",
+   "type": "Hero",
+   "name": "* Lyja",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "FANTASTIC FOUR",
+    "SKRULL"
+   ],
+   "set_name": "Lyja",
+   "text": "<i>Skrull Spy</i> — <b>Action</b>: Spend up to 1[per_hero] resources of any type → search the encounter deck for a [[TREACHERY]] card for each resource spent this way, shuffle the encounter deck, and place those cards on the top of the encounter deck in any order.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk037b",
+   "type": "AlterEgo",
+   "name": "* Laura Green",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "SKRULL",
+    "SPY"
+   ],
+   "set_name": "Lyja",
+   "text": "<i>Playing Along</i> — <b>Action</b>: Search your deck for a [[TREACHERY]] card, shuffle your deck and place that card on the top of your deck. <i>(Limit once per round.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk038",
+   "type": "Ally",
+   "name": "* Human Torch",
+   "subtitle": "Johnny Storm",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "THW": "1*",
+    "ATK": "2*",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "FANTASTIC FOUR"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Response</b>: After Human Torch leaves play, search the encounter deck for a [[TREACHERY]] card, shuffle the encounter deck, and place that card on the top of the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk039",
+   "type": "Event",
+   "name": "Faking Death",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TREACHERY"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Hero Action</b>: Shuffle this card into the encounter deck.\n<b>When Revealed</b>: Choose to either stun or confuse an enemy.\n<hr />\n[star] <b>Boost</b>: The activating enemy gets -2 SCH and -2 ATK for this activation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk040",
+   "type": "Event",
+   "name": "Feign Loyalty",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TREACHERY"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Hero Action</b>: Shuffle this card into the encounter deck.\n<b>When Revealed</b>: Discard an attachment with the uses keyword or the text \"<b>Hero Action</b>\" or \"<b>Hero Response</b>\" from play.\n<hr />\n[star] <b>Boost</b>: Draw 2 cards.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk041",
+   "type": "Event",
+   "name": "Hero Appearance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TREACHERY"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Hero Action</b>: Shuffle this card into the encounter deck.\n<b>When Revealed</b>: The Lyja player deals 4 damage among enemies in play.\n<hr />\n[star] <b>Boost</b>: The Lyja player deals 3 damage to an enemy.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk042",
+   "type": "Event",
+   "name": "Posing as a Civilian",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TREACHERY"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Hero Action</b>: Shuffle this card into the encounter deck.\n<b>When Revealed</b>: The Lyja player removes 3 threat from among schemes in play.\n<hr />\n[star] <b>Boost</b>: The Lyja player removes 2 threat from a scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk043",
+   "type": "Support",
+   "name": "New York Bookstore",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Lyja",
+   "text": "Laura Green gets +2 REC.\n<b>Alter-Ego Response</b>: After you make a basic recovery, draw 1 card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk044",
+   "type": "Upgrade",
+   "name": "Lazerfist",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Lyja",
+   "text": "Lyja gets +1 ATK.\n<b>Hero Resource</b>: Exhaust Lazerfist → generate a [energy] resource.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk045",
+   "type": "Upgrade",
+   "name": "Ministerial Tiara",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Interrupt</b>: When a boost card is turned faceup, if that card has a star icon ([star]) in the boost area, exhaust this card → draw 1 card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk046",
+   "type": "Upgrade",
+   "name": "Mole",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Hero Interrupt</b>: When a [[TREACHERY]] card is discarded from the top of the encounter deck, exhaust Mole → resolve that card's \"<b>When Revealed</b>\" ability.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk047",
+   "type": "Upgrade",
+   "name": "Shapeshifter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Lyja",
+   "text": "Lyja gets +1 THW.\n<b>Hero Response</b>: After you play a [[TREACHERY]] event, exhaust Shapeshifter → ready Lyja.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk049",
+   "type": "Ally",
+   "name": "* The Thing",
+   "subtitle": "Ben Grimm",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "THW": "0*",
+    "ATK": "2*",
+    "RES": "R",
+    "Toughness": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "FANTASTIC FOUR"
+   ],
+   "set_name": "Lyja",
+   "text": "Toughness.\n<b>Action</b>: Discard a tough status card from The Thing and choose up to 2 enemies → deal 2 damage to each of them.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk052",
+   "type": "Event",
+   "name": "Going Ballistic",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard your hand. Deal 2 damage to an enemy (to a maximum of 6) for each card discarded this way.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk053",
+   "type": "Event",
+   "name": "Hit the Weak Spot",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to a minion for each icon ([star] <i>and</i> [boost]) in that minion's boost area. This attack gains piercing.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk056",
+   "type": "Ally",
+   "name": "* Invisible Woman",
+   "subtitle": "Sue Storm",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "THW": "1",
+    "ATK": "1",
+    "RES": "Y",
+    "Class": "Basic"
+   },
+   "traits": [
+    "FANTASTIC FOUR"
+   ],
+   "set_name": "Lyja",
+   "text": "Invisible Woman takes +1 consequential damage for each revelation counter on the target of her basic power.\n<b>Forced Response</b>: After Invisible Woman uses a basic power, place 1 revelation counter on the target of that power.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk057",
+   "type": "Ally",
+   "name": "* Mister Fantastic",
+   "subtitle": "Reed Richards",
+   "desc": {
+    "Cost": "3",
+    "HP": "4",
+    "THW": "1*",
+    "ATK": "1*",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "FANTASTIC FOUR"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Resource</b>: Exhaust Mister Fantastic and deal 1 damage to him → generate a [mental] resource.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk058",
+   "type": "Event",
+   "name": "Laser Tag",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Basic",
+    "TeamUp": "Human Torch;Lyja",
+    "MaxPerDeck": "1"
+   },
+   "traits": [],
+   "set_name": "Lyja",
+   "text": "Team-Up (Human Torch and Lyja). Max 1 per deck.\n<b>Hero Action</b>: Ready Human Torch, Lyja, and each [[SUPERPOWER]] upgrade you control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk062",
+   "type": "Support",
+   "name": "* Baxter Building",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "FANTASTIC FOUR",
+    "LOCATION"
+   ],
+   "set_name": "Lyja",
+   "text": "Reduce the cost to play this card by 1 if you control a [[FANTASTIC FOUR]] character.\n<b>Resource</b>: Exhaust Baxter Building → generate a [wild] resource for any player.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk063",
+   "type": "Support",
+   "name": "* Fantasti-Car",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Basic"
+   },
+   "traits": [
+    "FANTASTIC FOUR",
+    "VEHICLE"
+   ],
+   "set_name": "Lyja",
+   "text": "<b>Response</b>: After Fantasti-Car enters play, ready a [[FANTASTIC FOUR]] card.\n<b>Alter-Ego Action</b>: Exhaust Fantasti-Car → choose a player. That player may shuffle 1 card from their discard pile into their deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk064",
+   "type": "Upgrade",
+   "name": "Fantastic Four Member",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Lyja",
+   "text": "Play only if your identity has the [[FANTASTIC FOUR]] trait.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[FANTASTIC FOUR]] trait.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk065",
+   "type": "Obligation",
+   "name": "Untrustworthiness",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Laura Green"
+   },
+   "traits": [],
+   "set_name": "Lyja",
+   "text": "<b><i>Give to the Laura Green player.</i></b>\n<b>Forced Interrupt</b>: When a \"<b>Boost</b>\" or \"<b>When Revealed</b>\" ability on a [[TREACHERY]] card would be resolved, cancel that ability. Then, deal yourself 1 facedown encounter card.\n<b>Alter-Ego Action</b>: Exhaust Laura Green → discard Untrustworthiness.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk066",
+   "type": "Minion",
+   "name": "* Paibok",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2*",
+    "Boost": "2",
+    "Toughness": "1",
+    "Nemesis": "Laura Green"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Lyja Nemesis",
+   "text": "Toughness.\n[star] Paibok gets +1 SCH and +1 ATK for each [[TREACHERY]] card attached to him.\n<b>Forced Interrupt</b>: When a [[TREACHERY]] card would be discarded, attach it facedown to Paibok instead.\n<i>(Lyja's nemesis minion.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk067",
+   "type": "SideScheme",
+   "name": "Punish the Defector",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Lyja Nemesis",
+   "text": "<i>In a battle between the Fantastic Four and her former lover Paibok, Lyja still bore feelings for the Torch and again betrayed Paibok to side with the Fantastic Four.</i>\n<b>When Revealed</b>: Search the encounter deck for a [[TREACHERY]] card and discard it. Shuffle the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk068",
+   "type": "Treachery",
+   "name": "\"It's a Stinkin' Skrull!\"",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Lyja Nemesis",
+   "text": "<b>When Revealed</b>: Search the encounter deck for a [[TREACHERY]] card and discard it. <i>(Shuffle.)</i> If no [[TREACHERY]] card was discarded this way, this card gains surge.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk069",
+   "type": "Treachery",
+   "name": "Truth Revealed",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Lyja Nemesis",
+   "text": "<b>When Revealed</b>: Search your deck for all identity-specific cards, shuffle your deck and place those cards on the bottom of your deck in any order.",
+   "custom": "Kajislav"
   }
  ],
  "checksum": "9b47b767d5b460d943e3deb4cffbe48a6a4cee57a808aeb16384f23d2e409c52"

@@ -32,6 +32,24 @@ class Event(HasTeamUp, HasAlliance, ClassCard, CanPlaceCounter, FinalType):
     def __init__(self, paper: 'Paper') -> None:
         super().__init__(paper)
 
+    # AJOUT (15/10/2026, pack custom skrull_menace, heros Lyja) : huit
+    # evenements joueur portent « TREACHERY. » et se MELANGENT dans le deck
+    # rencontre (« Hero Action: Shuffle this card into the encounter deck »).
+    # Reveles de la, ils se comportent comme une traitrise : leur « When
+    # Revealed » se resout puis la carte quitte la zone de revelation. Une
+    # traitrise se defausse elle-meme (treachery.py) ; un evenement n'avait
+    # aucune raison de le faire, et la carte serait restee coincee dans la
+    # zone de revelation. `Faces.DiscardAll` l'envoie dans la defausse de son
+    # PROPRIETAIRE (une carte joueur ne va jamais dans la defausse rencontre).
+    # Sans effet pour tout autre evenement : aucun n'est jamais revele.
+    @override
+    def OnWhenCardRevealed(self, revealed_message: 'Message.WhenCardRevealed') -> None:
+        from game.effect.rule import GameRule
+        from game.operate.faces import Faces
+        super().OnWhenCardRevealed(revealed_message)
+        if self.card.area.flags.is_revealing:
+            Faces.DiscardAll([self], GameRule(self))
+
     @override
     def OnAfterPlay(self, player: 'Player', by_effect: 'Effect', play_message: 'Message.WhenPlayerPlayCard', message: 'Message2', from_area: 'Deck'):
         from game.operate.faces import Faces

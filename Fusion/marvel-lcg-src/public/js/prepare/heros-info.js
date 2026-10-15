@@ -1435,6 +1435,19 @@ export const HEROS_INFO = {
         apparition: "Young Avengers #1 (2005)",
     },
 
+    "sk037a": {
+        bio: "Lyja est une espionne skrull envoyee sur Terre pour infiltrer les Quatre Fantastiques sous les traits d'Alicia Masters. Elle s'eprend de Johnny Storm, l'epouse, puis trahit son propre peuple et son ancien amant Paibok pour se ranger du cote des Quatre Fantastiques. Metamorphe, elle a retrouve son pouvoir de tirer des rayons d'energie : on l'appelle aussi la Lazerfist.",
+        bioEn: "Lyja is a Skrull spy sent to Earth to infiltrate the Fantastic Four in the guise of Alicia Masters. She falls in love with Johnny Storm and marries him, then betrays her own people and her former lover Paibok to side with the Fantastic Four. A shapeshifter, she has regained her power to fire energy blasts: she is also known as the Lazerfist.",
+        civil: "Laura Green",
+        civilEn: "Laura Green",
+        base: "New York",
+        equipes: "Quatre Fantastiques",
+        equipesEn: "Fantastic Four",
+        ennemis: "Paibok, l'Empire skrull",
+        ennemisEn: "Paibok, the Skrull Empire",
+        apparition: "Fantastic Four #357 (1991)",
+    },
+
     "im001a": {
         bio: "Tony Stark est un industriel milliardaire dont l'usine d'armement a fait la fortune, jusqu'a ce qu'un eclat d'obus se loge pres de son coeur et qu'un electro-aimant de fortune l'empeche de le tuer. De cette prison de metal il a fait une armure, puis un metier. La Model 42 est la plus intime de ses armures : une nuee de composants stockes sous sa peau, qu'il appelle a lui par la pensee. Genie, ingenieur, alcoolique en remission, il repare le monde avec la meme obstination qu'il met a se reparer lui-meme.",
         bioEn: "Tony Stark is a billionaire industrialist who made his fortune building weapons, until a shrapnel fragment lodged near his heart and a makeshift electromagnet was all that kept it from killing him. He turned that metal prison into a suit of armour, then into a calling. The Model 42 is the most intimate of his suits: a swarm of components stored beneath his skin, summoned by thought alone. Genius, engineer, recovering alcoholic, he repairs the world with the same stubbornness he brings to repairing himself.",

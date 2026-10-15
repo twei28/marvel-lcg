@@ -1,0 +1,52 @@
+  // skrull_menace — Lyja (Hero)
+  'sk037a': "<i>Espionne skrull</i> — <b>Action</b> : dépensez jusqu'à 1[per_hero] ressources de n'importe quel type → cherchez une carte [[TREACHERY]] dans le deck Rencontre pour chaque ressource dépensée de cette façon, mélangez le deck Rencontre et placez ces cartes sur le dessus du deck Rencontre dans l'ordre de votre choix.",
+  // skrull_menace — Laura Green (AlterEgo)
+  'sk037b': "<i>Jouer le jeu</i> — <b>Action</b> : cherchez une carte [[TREACHERY]] dans votre deck, mélangez votre deck et placez cette carte sur le dessus de votre deck. <i>(Limite d'une fois par round.)</i>",
+  // skrull_menace — Human Torch (Ally)
+  'sk038': "<b>Réponse</b> : après que Human Torch a quitté le jeu, cherchez une carte [[TREACHERY]] dans le deck Rencontre, mélangez le deck Rencontre et placez cette carte sur le dessus du deck Rencontre.",
+  // skrull_menace — Faking Death (Event)
+  'sk039': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : choisissez soit de sonner, soit de désorienter un ennemi.\n<hr />\n[star] <b>Boost</b> : l'ennemi qui s'active gagne -2 MNG et -2 ATQ pour cette activation.",
+  // skrull_menace — Feign Loyalty (Event)
+  'sk040': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : défaussez un attachement en jeu qui a le mot-clé Utilisations ou le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\".\n<hr />\n[star] <b>Boost</b> : piochez 2 cartes.",
+  // skrull_menace — Hero Appearance (Event)
+  'sk041': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : le joueur Lyja inflige 4 dégâts répartis entre les ennemis en jeu.\n<hr />\n[star] <b>Boost</b> : le joueur Lyja inflige 3 dégâts à un ennemi.",
+  // skrull_menace — Posing as a Civilian (Event)
+  'sk042': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : le joueur Lyja retire 3 menaces réparties entre les manigances en jeu.\n<hr />\n[star] <b>Boost</b> : le joueur Lyja retire 2 menaces d'une manigance.",
+  // skrull_menace — New York Bookstore (Support)
+  'sk043': "Laura Green gagne +2 REC.\n<b>Réponse d'alter ego</b> : après avoir effectué une récupération de base, piochez 1 carte.",
+  // skrull_menace — Lazerfist (Upgrade)
+  'sk044': "Lyja gagne +1 ATQ.\n<b>Ressource de héros</b> : inclinez Lazerfist → générez une ressource [energy].",
+  // skrull_menace — Ministerial Tiara (Upgrade)
+  'sk045': "<b>Interruption</b> : quand une carte de boost est retournée face visible, si cette carte a une icône étoile ([star]) dans la zone de boost, inclinez cette carte → piochez 1 carte.",
+  // skrull_menace — Mole (Upgrade)
+  'sk046': "<b>Interruption de héros</b> : quand une carte [[TREACHERY]] est défaussée du dessus du deck Rencontre, inclinez Mole → résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
+  // skrull_menace — Shapeshifter (Upgrade)
+  'sk047': "Lyja gagne +1 CTR.\n<b>Réponse de héros</b> : après avoir joué un événement [[TREACHERY]], inclinez Shapeshifter → redressez Lyja.",
+  // skrull_menace — The Thing (Ally)
+  'sk049': "Ténacité.\n<b>Action</b> : défaussez une carte d'état Tenace de The Thing et choisissez jusqu'à 2 ennemis → infligez 2 dégâts à chacun d'eux.",
+  // skrull_menace — Going Ballistic (Event)
+  'sk052': "<b>Action de héros</b> <i>(attaque)</i> : défaussez votre main. Infligez 2 dégâts à un ennemi (jusqu'à un maximum de 6) pour chaque carte défaussée de cette façon.",
+  // skrull_menace — Hit the Weak Spot (Event)
+  'sk053': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un sbire pour chaque icône ([star] <i>et</i> [boost]) dans la zone de boost de ce sbire. Cette attaque gagne Perçant.",
+  // skrull_menace — Invisible Woman (Ally)
+  'sk056': "Invisible Woman subit +1 dégât consécutif pour chaque compteur de révélation sur la cible de son pouvoir de base.\n<b>Réponse forcée</b> : après qu'Invisible Woman a utilisé un pouvoir de base, placez 1 compteur de révélation sur la cible de ce pouvoir.",
+  // skrull_menace — Mister Fantastic (Ally)
+  'sk057': "<b>Ressource</b> : inclinez Mister Fantastic et infligez-lui 1 dégât → générez une ressource [mental].",
+  // skrull_menace — Laser Tag (Event)
+  'sk058': "En Équipe (Human Torch et Lyja). 1 max par deck.\n<b>Action de héros</b> : redressez Human Torch, Lyja et chaque amélioration [[SUPERPOWER]] que vous contrôlez.",
+  // skrull_menace — Baxter Building (Support)
+  'sk062': "Réduisez de 1 le coût de cette carte si vous contrôlez un personnage [[FANTASTIC FOUR]].\n<b>Ressource</b> : inclinez Baxter Building → générez une ressource [wild] pour n'importe quel joueur.",
+  // skrull_menace — Fantasti-Car (Support)
+  'sk063': "<b>Réponse</b> : après que Fantasti-Car est entrée en jeu, redressez une carte [[FANTASTIC FOUR]].\n<b>Action d'alter ego</b> : inclinez Fantasti-Car → choisissez un joueur. Ce joueur peut mélanger 1 carte de sa défausse dans son deck.",
+  // skrull_menace — Fantastic Four Member (Upgrade)
+  'sk064': "Ne jouez cette carte que si votre identité a le trait [[FANTASTIC FOUR]].\nAttachez-la à un personnage allié. 1 max par personnage.\nLe personnage attaché gagne +1 point de vie et le trait [[FANTASTIC FOUR]].",
+  // skrull_menace — Untrustworthiness (Obligation)
+  'sk065': "<b><i>Donnez cette carte au joueur Laura Green.</i></b>\n<b>Interruption forcée</b> : quand une capacité \"<b>Boost</b>\" ou \"<b>Une fois révélée</b>\" d'une carte [[TREACHERY]] devrait être résolue, annulez cette capacité. Ensuite, attribuez-vous 1 carte Rencontre face cachée.\n<b>Action d'alter ego</b> : inclinez Laura Green → défaussez Untrustworthiness.",
+  // skrull_menace — Paibok (Minion)
+  'sk066': "Ténacité.\n[star] Paibok gagne +1 MNG et +1 ATQ pour chaque carte [[TREACHERY]] attachée à lui.\n<b>Interruption forcée</b> : quand une carte [[TREACHERY]] devrait être défaussée, attachez-la face cachée à Paibok à la place.\n<i>(Sbire némésis de Lyja.)</i>",
+  // skrull_menace — Punish the Defector (SideScheme)
+  'sk067': "<i>Lors d'un combat entre les Quatre Fantastiques et son ancien amant Paibok, Lyja, qui éprouvait encore des sentiments pour la Torche, a de nouveau trahi Paibok pour se ranger du côté des Quatre Fantastiques.</i>\n<b>Une fois révélée</b> : cherchez une carte [[TREACHERY]] dans le deck Rencontre et défaussez-la. Mélangez le deck Rencontre.",
+  // skrull_menace — "It's a Stinkin' Skrull!" (Treachery)
+  'sk068': "<b>Une fois révélée</b> : cherchez une carte [[TREACHERY]] dans le deck Rencontre et défaussez-la. <i>(Mélangez.)</i> Si aucune carte [[TREACHERY]] n'a été défaussée de cette façon, cette carte gagne Renfort.",
+  // skrull_menace — Truth Revealed (Treachery)
+  'sk069': "<b>Une fois révélée</b> : cherchez dans votre deck toutes les cartes propres à une identité, mélangez votre deck et placez ces cartes sous votre deck dans l'ordre de votre choix.",

@@ -54922,6 +54922,24 @@ CAS = [
         "attendu": {"menace": [["sk111", 4], ["sk082b", 0]]},
     },
 ]
+# ----------------------------------------------------- cas par bloc, hors fichier --
+# AJOUT (15/10/2026, coffret Skrull Menace) : plusieurs agents ecrivent leurs cas
+# EN PARALLELE, chacun dans sa copie du depot. Un seul gros fichier se
+# fusionnerait mal : chaque bloc depose donc ses cas dans `tools/cas/<bloc>.py`
+# (variable `CAS` = liste de dicts, comme ici ; variable facultative
+# `VERIFICATIONS` = texte de fonctions de verification, comme plus bas).
+import glob as _glob
+import importlib.util as _imp
+_CAS_EXTERNES_VERIFS = []
+for _f in sorted(_glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cas", "*.py"))):
+    if os.path.basename(_f).startswith("_"):
+        continue
+    _spec = _imp.spec_from_file_location("cas_" + os.path.basename(_f)[:-3], _f)
+    _mod = _imp.module_from_spec(_spec)
+    _spec.loader.exec_module(_mod)
+    CAS += getattr(_mod, "CAS", [])
+    if getattr(_mod, "VERIFICATIONS", ""):
+        _CAS_EXTERNES_VERIFS.append(_mod.VERIFICATIONS)
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
@@ -64614,6 +64632,7 @@ def mc4db_redwing_dessus_visible(monde, aides):
         return False, " ; ".join(soucis)
     return True, f"dessus {haut} : action refusee, Redwing pret et en jeu, Rhino intact"
 '''
+VERIFICATIONS += "\n".join(_CAS_EXTERNES_VERIFS)
 
 
 # ------------------------------------------------------- execution d'un cas --

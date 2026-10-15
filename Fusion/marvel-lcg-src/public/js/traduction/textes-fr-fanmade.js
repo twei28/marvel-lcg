@@ -2696,7 +2696,7 @@ export const TEXTES_FR_FANMADE = {
     // muse — Muse (Minion unique)
     'mu003': "Ténacité.\n<b>Interruption forcée</b> : quand un joueur joue une carte qui porte l'image de son identité <i>(une carte signature)</i>, Muse s'active contre ce joueur.",
     // muse — Graffitied Streets (Environment)
-    'mu004': "Réserve (3[per_hero] compteurs graffiti).\n<b>Interruption forcée</b> : quand vous jouez une carte qui porte l'image de votre identité <i>(une carte signature)</i>, placez 1 menace sur la manigance principale.\n<b>Action</b> : inclinez un personnage que vous contrôlez → retirez d'ici autant de compteurs graffiti que son CTR. <i>(Limite d'une fois par round et par joueur.)</i>",
+    'mu004': "Réserve (3[per_hero] compteurs graffiti).\n<b>Interruption forcée</b> : quand vous jouez une carte qui porte l'image de votre identité <i>(une carte signature)</i>, placez 1 menace sur la manigance principale.\n<b>Action</b> : inclinez un personnage que vous contrôlez → retirez d'ici autant de compteurs graffiti que son CTR. <i>(Limite d'une fois par round par joueur.)</i>",
     // muse — Grim Inspiration (Treachery)
     'mu005': "Déferlement.\n<b>Une fois révélée</b> : chaque joueur choisit une carte signature de sa pile de défausse et la place sur le dessus de son deck. Donnez à Muse et au vilain une carte de boost face cachée.",
     // muse — Obsession (Treachery, x2)
@@ -3064,9 +3064,9 @@ export const TEXTES_FR_FANMADE = {
     // hunting_season — Ravenous Onslaught (Treachery)
     'hs103': "<b>Une fois révélée (alter ego)</b> : Vulture manigance. S'il vous reste moins de la moitié de vos points de vie maximum, cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : Vulture vous attaque. S'il vous reste moins de la moitié de vos points de vie maximum, cette carte gagne renfort.",
     // hunting_season — Kraven The Hunter (Villain)
-    'hs104': "<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite d'une fois par round et par joueur.)",
+    'hs104': "<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite d'une fois par round par joueur.)",
     // hunting_season — Kraven The Hunter (Villain)
-    'hs105': "<b>Une fois révélé</b> : cherchez la pièce jointe Tooth Necklace dans le deck Rencontre et la pile de défausse, et révélez-la.\n<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite d'une fois par round et par joueur.)",
+    'hs105': "<b>Une fois révélé</b> : cherchez la pièce jointe Tooth Necklace dans le deck Rencontre et la pile de défausse, et révélez-la.\n<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite d'une fois par round par joueur.)",
     // hunting_season — Kraven The Hunter (Villain)
     'hs106': "<b>Une fois révélé</b> : chaque joueur s'attribue une carte [[TRAP]] du deck [[TRAP]].\n<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite de deux fois par round et par joueur.)",
     // hunting_season — Acquiring Targets (MainScheme)
@@ -3076,7 +3076,7 @@ export const TEXTES_FR_FANMADE = {
     // hunting_season — The Great Hunt (MainScheme)
     'hs108a': "<b>Une fois révélée</b> : cherchez la manigance annexe The Calypso Serum dans le deck Rencontre et la pile de défausse, et révélez-la. Mélangez le deck Rencontre. Passez à l'étape 2B.",
     // hunting_season — The Great Hunt (MainScheme)
-    'hs108b': "<b>Réponse forcée</b> : après qu'une carte [[TRAP]] a été révélée, placez 1 menace ici. (Limite d'une fois par round et par joueur.)\n<b>Si cette manigance est complétée, les joueurs perdent la partie.</b>",
+    'hs108b': "<b>Réponse forcée</b> : après qu'une carte [[TRAP]] a été révélée, placez 1 menace ici. (Limite d'une fois par round par joueur.)\n<b>Si cette manigance est complétée, les joueurs perdent la partie.</b>",
     // hunting_season — Last Son of Kraven (Minion)
     'hs109': "<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Last Son of Kraven, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. (Limite d'une fois par round.)\n<hr />\n[star] <b>Boost</b> : une fois cette activation terminée, mélangez cette carte dans le deck Rencontre.",
     // hunting_season — Chameleon (Minion)
@@ -3336,7 +3336,7 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Alliance (Support)
     'sk009': "<b>Réponse</b> : après avoir joué depuis votre main une carte avec le trait [[KREE]], infligez 1 dégât à un ennemi.\n<b>Réponse</b> : après avoir joué depuis votre main une carte avec le trait [[SKRULL]], retirez 1 menace de la manigance principale.",
     // skrull_menace — Ancestors (Support)
-    'sk010': "Utilisations (2 compteurs individual).\n<b>Action</b> : inclinez cette carte et retirez-en 1 compteur individual → choisissez 1 carte de votre main ou en jeu. Cette carte gagne le trait [[KREE]] ou [[SKRULL]] jusqu'à la fin du round.",
+    'sk010': "Utilisations (2 jetons individual).\n<b>Action</b> : inclinez cette carte et retirez-en 1 jeton individual → choisissez 1 carte de votre main ou en jeu. Cette carte gagne le trait [[KREE]] ou [[SKRULL]] jusqu'à la fin du round.",
     // skrull_menace — Changeling (Upgrade)
     'sk011': "Hulkling gagne le trait [[AERIAL]].\n<b>Interruption</b> : quand vous utilisez une capacité de base, inclinez Changeling → vous gagnez +1 à cette capacité pour cette utilisation.",
     // skrull_menace — Emperor Dorrek-Vell (Upgrade)
@@ -3346,17 +3346,17 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Nega Rings (Upgrade)
     'sk014': "<b>Action de héros</b> : inclinez Nega Rings et dépensez une ressource [energy] → choisissez une carte de votre main et échangez-la avec une carte de votre choix de votre défausse.",
     // skrull_menace — Lauri-Ell (Ally)
-    'sk015': "<b>Réponse</b> : après que Lauri-Ell a subi des dégâts, quels qu'ils soient, d'une attaque, donnez-lui une carte d'état Tenace.",
+    'sk015': "<b>Réponse</b> : après que Lauri-Ell a subi n'importe quelle quantité de dégâts d'une attaque, donnez-lui une carte d'état Tenace.",
     // skrull_menace — Mur-G'nn (Ally)
     'sk016': "<b>Action</b> : inclinez Mur-G'nn et infligez-lui 1 dégât → défaussez la carte du dessus de votre deck. Si la ressource imprimée de cette carte a :\n[physical] - redressez une carte que vous contrôlez.\n[energy] - donnez une carte d'état Tenace à une identité.\n[mental] - soignez 3 dégâts d'un personnage.",
     // skrull_menace — Provoked! (Event)
     'sk019': "<b>Réponse de héros</b> : après vous être défendu contre une attaque et avoir subi au moins 1 dégât, redressez votre héros.",
     // skrull_menace — Deflect the Blow (Upgrade)
-    'sk021': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quels qu'ils soient, d'une attaque, défaussez Deflect the Blow et inclinez votre héros, prévenez la totalité de ces dégâts.",
+    'sk021': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, défaussez Deflect the Blow et inclinez votre héros, prévenez la totalité de ces dégâts.",
     // skrull_menace — Talos (Ally)
-    'sk023': "<b>Interruption</b> : quand Talos devrait subir des dégâts consécutifs, quels qu'ils soient, infligez ces dégâts à un autre personnage que vous contrôlez.",
+    'sk023': "<b>Interruption</b> : quand Talos est censé subir n'importe quelle quantité de dégâts consécutifs, infligez ces dégâts à un autre personnage que vous contrôlez.",
     // skrull_menace — Drunk in Love (Event)
-    'sk024': "<b>Action</b> : désorientez votre identité → soignez-en 4 dégâts.",
+    'sk024': "<b>Action</b> : désorientez votre identité → soignez 4 dégâts de votre identité.",
     // skrull_menace — Strength in Otherness (Event)
     'sk025': "En Équipe (Hulkling et Wiccan). 1 max par deck.\n<b>Action de héros</b> <i>(attaque/contre)</i> : retirez 1 menace de la manigance principale et infligez 1 dégât au méchant pour chaque type de carte différent dans votre défausse.",
     // skrull_menace — Glorious Flight (Upgrade)
@@ -3376,11 +3376,11 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Swapping Roles (Treachery)
     'sk036': "<b>Une fois révélée</b> : inclinez chaque carte que vous contrôlez qui partage un [[TRAIT]] avec votre identité <i>(y compris votre identité)</i>.\n[star] <b>Boost</b> : inclinez chaque carte que vous contrôlez qui partage un [[TRAIT]] avec votre identité <i>(à l'exception de votre identité)</i>.",
     // skrull_menace — Emperor Dorrek I (Villain, stade I)
-    'sk070': "Riposte 1.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.\n<i>(Les méchants de ce scénario n'ont pas de cadran de PV : c'est l'environnement Skrull Empire qui le porte.)</i>",
+    'sk070': "Riposte 1.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.",
     // skrull_menace — Emperor Dorrek I (Villain, stade II)
-    'sk071': "Riposte 1.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.\n<i>(Les méchants de ce scénario n'ont pas de cadran de PV : c'est l'environnement Skrull Empire qui le porte.)</i>",
+    'sk071': "Riposte 1.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.",
     // skrull_menace — Emperor Dorrek I (Villain, stade III)
-    'sk072': "Riposte 2.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.\n<i>(Les méchants de ce scénario n'ont pas de cadran de PV : c'est l'environnement Skrull Empire qui le porte.)</i>",
+    'sk072': "Riposte 2.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.",
     // skrull_menace — Emperor Dorrek VII (Villain, stade I)
     'sk073': "Incitation 1[per_hero].\n[star] Les attaques d'Emperor Dorrek VII gagnent Déferlement.",
     // skrull_menace — Emperor Dorrek VII (Villain, stade II)
@@ -3414,13 +3414,13 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Entire Universe Domination 4A (MainScheme)
     'sk085a': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à défausser un sbire [[SKRULL]]. Mettez ce sbire en jeu, engagé avec le premier joueur.",
     // skrull_menace — Entire Universe Domination 4B (MainScheme)
-    'sk085b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[PLANET]].\n<b>Si cette étape est complétée, les joueurs perdent la partie.</b>",
+    'sk085b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[PLANET]].\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
     // skrull_menace — Skrull Empire (I) (Environment)
-    'sk086': "<i>Les méchants n'ont pas de cadran de PV : cet environnement le porte. Tout dégât infligé au méchant est placé ici. À 0 PV, l'environnement et les méchants du stade sont retirés de la partie, et le stade suivant commence.</i>\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez soit d'incliner votre héros, soit de dépenser 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Considérez sa boîte de texte imprimée comme vierge jusqu'à la fin du round. <i>(Limite d'une fois par round et par joueur.)</i>",
+    'sk086': "<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez : soit vous inclinez votre héros, soit vous dépensez 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Jusqu'à la fin du round, cet environnement perd le texte imprimé dans sa boîte de texte. <i>(Limite d'une fois par round par joueur.)</i>",
     // skrull_menace — Skrull Empire (II) (Environment)
-    'sk087': "<i>Les méchants n'ont pas de cadran de PV : cet environnement le porte. Tout dégât infligé au méchant est placé ici. À 0 PV, l'environnement et les méchants du stade sont retirés de la partie, et le stade suivant commence.</i>\n<b>Une fois révélée</b> : mélangez chaque carte Overthrow mise de côté dans le deck Rencontre.\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez soit d'incliner votre héros, soit de dépenser 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Considérez sa boîte de texte imprimée comme vierge jusqu'à la fin du round. <i>(Limite d'une fois par round et par joueur.)</i>",
+    'sk087': "<b>Une fois révélée</b> : mélangez chaque carte Overthrow mise de côté dans le deck Rencontre.\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez : soit vous inclinez votre héros, soit vous dépensez 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Jusqu'à la fin du round, cet environnement perd le texte imprimé dans sa boîte de texte. <i>(Limite d'une fois par round par joueur.)</i>",
     // skrull_menace — Skrull Empire (III) (Environment)
-    'sk088': "<i>Les méchants n'ont pas de cadran de PV : cet environnement le porte. Tout dégât infligé au méchant est placé ici. À 0 PV, l'environnement et les méchants du stade sont retirés de la partie : les joueurs gagnent.</i>\n<b>Une fois révélée</b> : mélangez chaque carte Overthrow mise de côté dans le deck Rencontre.\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez soit d'incliner votre héros, soit de dépenser 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Considérez sa boîte de texte imprimée comme vierge jusqu'à la fin du round. <i>(Limite d'une fois par round et par joueur.)</i>",
+    'sk088': "<b>Une fois révélée</b> : mélangez chaque carte Overthrow mise de côté dans le deck Rencontre.\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez : soit vous inclinez votre héros, soit vous dépensez 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Jusqu'à la fin du round, cet environnement perd le texte imprimé dans sa boîte de texte. <i>(Limite d'une fois par round par joueur.)</i>",
     // skrull_menace — Aks'Lo (Environment)
     'sk089': "Chaque sbire [[SKRULL]] gagne +2 PV.",
     // skrull_menace — Hy'lt Minor (Environment)
@@ -3442,9 +3442,9 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Impostor (Attachment)
     'sk098': "Considérez l'allié attaché comme un sbire [[SKRULL]] dont la boîte de texte est vide. Sa MNG est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.\n<b>Une fois révélée</b> : attachez cette carte à l'allié non-[[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'exemplaire d'Impostor attaché. L'allié attaché s'engage avec son contrôleur. Sinon, le méchant manigance.",
     // skrull_menace — Intelligentsia (Minion)
-    'sk099': "Chaque autre ennemi [[SKRULL]] gagne +1 MNG.\n[star] <b>Interruption forcée</b> : quand Intelligentsia devrait attaquer, elle manigance à la place.",
+    'sk099': "Chaque autre ennemi [[SKRULL]] gagne +1 MNG.\n[star] <b>Interruption forcée</b> : quand Intelligentsia est censée attaquer, elle manigance à la place.",
     // skrull_menace — Emperor's Throne (SideScheme)
-    'sk100': "<b>Une fois vaincue</b> : le méchant attaque le joueur qui a vaincu cette manigance <i>(même s'il est sous forme d'alter ego)</i>. Donnez au méchant 1 carte de boost supplémentaire pour cette activation.",
+    'sk100': "<b>Une fois déjouée</b> : le méchant attaque le joueur qui a déjoué cette manigance <i>(même s'il est sous forme d'alter ego)</i>. Donnez au méchant 1 carte de boost supplémentaire pour cette activation.",
     // skrull_menace — Seeking a Suitable World (SideScheme)
     'sk101': "Incitation 2.",
     // skrull_menace — A New Skrull Is Born (Treachery)
@@ -3452,17 +3452,17 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Giving Orders (Treachery)
     'sk103': "<b>Une fois révélée</b> : chaque sbire [[SKRULL]] s'active contre le joueur avec lequel il est engagé. Si aucun sbire ne s'est activé de cette façon, cette carte gagne Renfort.",
     // skrull_menace — Long Live the Empire (Treachery)
-    'sk104': "<b>Une fois révélée</b> : soignez 2 dégâts du méchant pour chaque ennemi [[SKRULL]] en jeu. Si aucun dégât n'a été soigné de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : soignez 1 dégât du méchant pour chaque ennemi [[SKRULL]] en jeu.\n<i>(Dans ce scénario, soigner le méchant retire des dégâts de l'environnement Skrull Empire.)</i>",
+    'sk104': "<b>Une fois révélée</b> : soignez 2 dégâts du méchant pour chaque ennemi [[SKRULL]] en jeu. Si aucun dégât n'a été soigné de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : soignez 1 dégât du méchant pour chaque ennemi [[SKRULL]] en jeu.",
     // skrull_menace — Overthrow (Treachery)
     'sk105': "<b>Une fois révélée</b> : retirez de la partie le méchant actuel et révélez la carte du dessus du deck Méchant. Ensuite, mettez Overthrow de côté, hors jeu.\n<hr />\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
     // skrull_menace — Wrath of the Empire (Treachery)
-    'sk106': "<b>Une fois révélée</b> : défaussez les 2 cartes du dessus du deck Rencontre pour chaque environnement [[PLANET]] en jeu. Placez 1 jeton d'accélération sur la manigance principale si une carte avec l'icône d'accélération a été défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost pour chaque environnement [[PLANET]] en jeu.",
+    'sk106': "<b>Une fois révélée</b> : défaussez les 2 cartes du dessus du deck Rencontre pour chaque environnement [[PLANET]] en jeu. Placez 1 pion Accélération sur la manigance principale si une carte avec l'icône d'accélération a été défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost pour chaque environnement [[PLANET]] en jeu.",
     // skrull_menace — Skrull Scientist (Minion)
     'sk107': "[star] <b>Boost</b> : soignez 2 dégâts du méchant, après la fin de cette activation.",
     // skrull_menace — Skrull Spy (Minion)
     'sk108': "<b>Une fois révélé</b> : défaussez 1 carte au hasard de votre main.\n[star] <b>Boost</b> : défaussez 1 carte au hasard de votre main.",
     // skrull_menace — Skrull Telepath (Minion)
-    'sk109': "[star] <b>Interruption forcée</b> : quand Skrull Telepath devrait attaquer, il manigance à la place.\n[star] <b>Boost</b> : si cette activation est une manigance, révélez cette carte.",
+    'sk109': "[star] <b>Interruption forcée</b> : quand Skrull Telepath est censé attaquer, il manigance à la place.\n[star] <b>Boost</b> : si cette activation est une manigance, révélez cette carte.",
     // skrull_menace — Skrull Warrior (Minion)
     'sk110': "Garde.\n[star] <b>Boost</b> : si cette attaque n'est pas défendue, vous êtes sonné.",
     // skrull_menace — Plotting Revenge (SideScheme)
@@ -3474,7 +3474,59 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Skrull Soldier (Minion)
     'sk114': "<b>Une fois révélé</b> : placez 2 menaces sur chaque manigance annexe en jeu.\n[star] <b>Boost</b> : défaussez les 2 cartes du dessus de votre deck.",
     // skrull_menace — Hijacked (SideScheme)
-    'sk115': "Entrave 1[per_hero].\n<b>Une fois révélée</b> : cherchez un allié dans votre deck, votre défausse et votre main, et placez-le sous cette manigance.\n<b>Une fois vaincue</b> : mettez en jeu l'allié placé sous cette manigance, sous le contrôle de son propriétaire.\n[star] <b>Boost</b> : révélez cette carte.",
+    'sk115': "Entrave 1[per_hero].\n<b>Une fois révélée</b> : cherchez un allié dans votre deck, votre défausse et votre main, et placez-le sous cette manigance.\n<b>Une fois déjouée</b> : mettez en jeu l'allié placé sous cette manigance, sous le contrôle de son propriétaire.\n[star] <b>Boost</b> : révélez cette carte.",
     // skrull_menace — Skrull Assault (Treachery)
     'sk116': "<b>Une fois révélée</b> : chaque sbire [[SKRULL]] attaque le héros avec lequel il est engagé. Si aucune attaque n'a été effectuée de cette façon, cette carte gagne Renfort.\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost pour chaque ennemi [[SKRULL]] en jeu <i>(jusqu'à +4)</i> pour cette activation.",
+    // skrull_menace — Lyja (Hero)
+    'sk037a': "<i>Espionne skrull</i> — <b>Action</b> : dépensez jusqu'à 1[per_hero] ressources de n'importe quel type → cherchez une carte [[TREACHERY]] dans le deck Rencontre pour chaque ressource dépensée de cette façon, mélangez le deck Rencontre et placez ces cartes sur le dessus du deck Rencontre dans l'ordre de votre choix.",
+    // skrull_menace — Laura Green (AlterEgo)
+    'sk037b': "<i>Jouer le jeu</i> — <b>Action</b> : cherchez une carte [[TREACHERY]] dans votre deck, mélangez votre deck et placez cette carte sur le dessus de votre deck. <i>(Limite d'une fois par round.)</i>",
+    // skrull_menace — Human Torch (Ally)
+    'sk038': "<b>Réponse</b> : après que Human Torch a quitté le jeu, cherchez une carte [[TREACHERY]] dans le deck Rencontre, mélangez le deck Rencontre et placez cette carte sur le dessus du deck Rencontre.",
+    // skrull_menace — Faking Death (Event)
+    'sk039': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : choisissez : soit vous sonnez un ennemi, soit vous le désorientez.\n<hr />\n[star] <b>Boost</b> : l'ennemi qui s'active gagne -2 MNG et -2 ATQ pour cette activation.",
+    // skrull_menace — Feign Loyalty (Event)
+    'sk040': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : défaussez un attachement en jeu qui a le mot-clé Utilisations ou le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\".\n<hr />\n[star] <b>Boost</b> : piochez 2 cartes.",
+    // skrull_menace — Hero Appearance (Event)
+    'sk041': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : le joueur Lyja inflige un total de 4 dégâts répartis parmi les ennemis en jeu.\n<hr />\n[star] <b>Boost</b> : le joueur Lyja inflige 3 dégâts à un ennemi.",
+    // skrull_menace — Posing as a Civilian (Event)
+    'sk042': "<b>Action de héros</b> : mélangez cette carte dans le deck Rencontre.\n<b>Une fois révélée</b> : le joueur Lyja retire un total de 3 menaces parmi les manigances en jeu.\n<hr />\n[star] <b>Boost</b> : le joueur Lyja retire 2 menaces d'une manigance.",
+    // skrull_menace — New York Bookstore (Support)
+    'sk043': "Laura Green gagne +2 REC.\n<b>Réponse d'alter ego</b> : après avoir effectué une récupération de base, piochez 1 carte.",
+    // skrull_menace — Lazerfist (Upgrade)
+    'sk044': "Lyja gagne +1 ATQ.\n<b>Ressource de héros</b> : inclinez Lazerfist → générez une ressource [energy].",
+    // skrull_menace — Ministerial Tiara (Upgrade)
+    'sk045': "<b>Interruption</b> : quand une carte de boost est retournée face visible, si cette carte a une icône étoile ([star]) dans le champ de boost, inclinez cette carte → piochez 1 carte.",
+    // skrull_menace — Mole (Upgrade)
+    'sk046': "<b>Interruption de héros</b> : quand une carte [[TREACHERY]] est défaussée du dessus du deck Rencontre, inclinez Mole → résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
+    // skrull_menace — Shapeshifter (Upgrade)
+    'sk047': "Lyja gagne +1 CTR.\n<b>Réponse de héros</b> : après avoir joué un événement [[TREACHERY]], inclinez Shapeshifter → redressez Lyja.",
+    // skrull_menace — The Thing (Ally)
+    'sk049': "Ténacité.\n<b>Action</b> : défaussez une carte d'état Tenace de The Thing et choisissez jusqu'à 2 ennemis → infligez 2 dégâts à chacun d'eux.",
+    // skrull_menace — Going Ballistic (Event)
+    'sk052': "<b>Action de héros</b> <i>(attaque)</i> : défaussez votre main. Infligez 2 dégâts à un ennemi (jusqu'à un maximum de 6) pour chaque carte défaussée de cette façon.",
+    // skrull_menace — Hit the Weak Spot (Event)
+    'sk053': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un sbire pour chaque icône ([star] <i>et</i> [boost]) dans le champ de boost de ce sbire. Cette attaque gagne Perçant.",
+    // skrull_menace — Invisible Woman (Ally)
+    'sk056': "Invisible Woman subit +1 dégât consécutif pour chaque jeton Révélation sur la cible de son pouvoir de base.\n<b>Réponse forcée</b> : après qu'Invisible Woman a utilisé un pouvoir de base, placez 1 jeton Révélation sur la cible de ce pouvoir.",
+    // skrull_menace — Mister Fantastic (Ally)
+    'sk057': "<b>Ressource</b> : inclinez Mister Fantastic et infligez-lui 1 dégât → générez une ressource [mental].",
+    // skrull_menace — Laser Tag (Event)
+    'sk058': "En Équipe (Human Torch et Lyja). 1 max par deck.\n<b>Action de héros</b> : redressez Human Torch, Lyja et chaque amélioration [[SUPERPOWER]] que vous contrôlez.",
+    // skrull_menace — Baxter Building (Support)
+    'sk062': "Réduisez de 1 le coût de cette carte si vous contrôlez un personnage [[FANTASTIC FOUR]].\n<b>Ressource</b> : inclinez Baxter Building → générez une ressource [wild] pour n'importe quel joueur.",
+    // skrull_menace — Fantasti-Car (Support)
+    'sk063': "<b>Réponse</b> : après que Fantasti-Car est entrée en jeu, redressez une carte [[FANTASTIC FOUR]].\n<b>Action d'alter ego</b> : inclinez Fantasti-Car → choisissez un joueur. Ce joueur peut mélanger 1 carte de sa défausse dans son deck.",
+    // skrull_menace — Fantastic Four Member (Upgrade)
+    'sk064': "Ne jouez cette carte que si votre identité a le trait [[FANTASTIC FOUR]].\nAttachez-la à un personnage allié. 1 max par personnage.\nLe personnage attaché gagne +1 point de vie et le trait [[FANTASTIC FOUR]].",
+    // skrull_menace — Untrustworthiness (Obligation)
+    'sk065': "<b><i>Donnez cette carte au joueur Laura Green.</i></b>\n<b>Interruption forcée</b> : quand une capacité \"<b>Boost</b>\" ou \"<b>Une fois révélée</b>\" d'une carte [[TREACHERY]] est censée être résolue, annulez cette capacité. Ensuite, attribuez-vous 1 carte Rencontre face cachée.\n<b>Action d'alter ego</b> : inclinez Laura Green → défaussez Untrustworthiness.",
+    // skrull_menace — Paibok (Minion)
+    'sk066': "Ténacité.\n[star] Paibok gagne +1 MNG et +1 ATQ pour chaque carte [[TREACHERY]] attachée à lui.\n<b>Interruption forcée</b> : quand une carte [[TREACHERY]] est censée être défaussée, attachez-la face cachée à Paibok à la place.\n<i>(Sbire némésis de Lyja.)</i>",
+    // skrull_menace — Punish the Defector (SideScheme)
+    'sk067': "<i>Lors d'un combat entre les Quatre Fantastiques et son ancien amant Paibok, Lyja, qui éprouvait encore des sentiments pour la Torche, a de nouveau trahi Paibok pour se ranger du côté des Quatre Fantastiques.</i>\n<b>Une fois révélée</b> : cherchez une carte [[TREACHERY]] dans le deck Rencontre et défaussez-la. Mélangez le deck Rencontre.",
+    // skrull_menace — "It's a Stinkin' Skrull!" (Treachery)
+    'sk068': "<b>Une fois révélée</b> : cherchez une carte [[TREACHERY]] dans le deck Rencontre et défaussez-la. <i>(Mélangez.)</i> Si aucune carte [[TREACHERY]] n'a été défaussée de cette façon, cette carte gagne Renfort.",
+    // skrull_menace — Truth Revealed (Treachery)
+    'sk069': "<b>Une fois révélée</b> : cherchez dans votre deck toutes les cartes spécifiques à une identité, mélangez votre deck et placez ces cartes sous votre deck dans l'ordre de votre choix.",
 };

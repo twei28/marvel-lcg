@@ -20,11 +20,40 @@ const INTERDITS: Array<[RegExp, string]> = [
   [/Max(imum)? \d par/, '1 max par deck / par joueur'],
 ]
 
+// Coffret Skrull Menace seulement (cartes `sk…`) : les autres packs fan-made ont
+// le même écart (« devrait » dans 112 textes au 15/10/2026), à reprendre à part.
+const INTERDITS_SKRULL_MENACE: Array<[RegExp, string]> = [
+  // Relevé le 15/10/2026 sur les 4 393 textes officiels (textes-fr-complets.ts) :
+  // « est censé » 209 fois contre « devrait » 3 ; « n'importe quelle quantité de
+  // dégâts » et jamais « quels qu'ils soient » ; « stade achevé », pas « étape
+  // complétée » ; « jeton » 804 fois contre « compteur » 8 (réservé au compteur
+  // de points de vie) ; une carte qui perd son texte « perd le texte imprimé
+  // dans sa boîte de texte », jamais « comme vierge ».
+  [/\bdevr(ait|aient|iez)\b/, 'est censé(e) / sont censés / êtes censé'],
+  [/quels qu'(ils|elles) soient/, "n'importe quelle quantité de"],
+  [/\bcomplétée?\b/, 'achevé(e)'],
+  [/comme vierge/, 'perd le texte imprimé dans sa boîte de texte'],
+  // Guide de référence FR (mc01_guide_de_reference_fr.pdf) : « pion Accélération »,
+  // « champ de boost » (zone imprimée de la carte), et « Une fois déjouée » pour
+  // une manigance (« Une fois vaincu » est réservé aux personnages).
+  [/jeton d'accélération/i, 'pion Accélération'],
+  [/zone de boost/, 'champ de boost'],
+]
+
 describe('vocabulaire officiel des textes FR fan-made', () => {
   for (const [motif, attendu] of INTERDITS) {
     it(`n'emploie jamais ${motif} (attendu : ${attendu})`, () => {
       const fautifs = Object.entries(TEXTES_FR_FANMADE)
         .filter(([, texte]) => texte !== undefined && motif.test(texte))
+        .map(([code]) => code)
+      expect(fautifs).toEqual([])
+    })
+  }
+
+  for (const [motif, attendu] of INTERDITS_SKRULL_MENACE) {
+    it(`Skrull Menace : n'emploie jamais ${motif} (attendu : ${attendu})`, () => {
+      const fautifs = Object.entries(TEXTES_FR_FANMADE)
+        .filter(([code, texte]) => /^sk\d{3}/.test(code) && texte !== undefined && motif.test(texte))
         .map(([code]) => code)
       expect(fautifs).toEqual([])
     })
