@@ -25,8 +25,8 @@ html[data-epure] {
 /* --- 1. Le fond de la page et la police -------------------------------------- */
 html[data-epure],
 html[data-epure] body {
-  background: #2a2a2a;
-  color: #e8e8e8;
+  background: var(--w98-face);
+  color: #000000;
   font-family: var(--w98-police);
 }
 
@@ -41,11 +41,11 @@ html[data-epure] .acc-aide {
    restent TOUJOURS visibles : credits et mention d'auteur, jamais decoratifs. */
 html[data-epure] .acc-merci,
 html[data-epure] footer.mention-legale {
-  color: #e8e8e8;
+  color: #000000;
 }
 html[data-epure] .acc-merci a,
 html[data-epure] footer.mention-legale a {
-  color: #8cb4ff;
+  color: #0000ee;
 }
 
 /* --- 3. Les titres : plus de lettres geantes inclinees ----------------------- */
@@ -66,13 +66,13 @@ html[data-epure] .mvl {
 html[data-epure] h1.affiche {
   font-size: 30px;
   line-height: 1.1;
-  color: #ffffff;
+  color: #000000;
 }
 
 html[data-epure] .tb-nomg {
   font-size: 24px;
   line-height: 1.2;
-  color: #ffffff;
+  color: #000000;
 }
 
 html[data-epure] .acc-titre .recitatif {
@@ -269,7 +269,7 @@ html[data-epure] .tb-port-nom {
 html[data-epure] .tb-equipe-k,
 html[data-epure] .tb-compte,
 html[data-epure] .tb-siege-nom {
-  color: #e8e8e8;
+  color: #000000;
   font-family: var(--w98-police);
   letter-spacing: 0;
 }
@@ -298,7 +298,7 @@ html[data-epure] .tb-entete .tb-mode {
 html[data-epure] .tb-equipe-k,
 html[data-epure] .tb-compte {
   opacity: 1;
-  color: #e8e8e8;
+  color: #000000;
 }
 
 html[data-epure] .pnum {
@@ -425,4 +425,99 @@ html[data-epure] .db-rail a {
 html[data-epure] .db-rail button *,
 html[data-epure] .db-rail a * {
   color: #000000;
+}
+
+/* --- 12. Un seul gris : le gris clair de Windows (15/10/2026) ----------------
+   Plus aucun fond sombre : page, panneaux, colonnes, barres, tout est #c0c0c0.
+   Seuls les champs de saisie restent blancs (creux), comme sous Windows 98. */
+html[data-epure] .layout,
+html[data-epure] .stage,
+html[data-epure] .step,
+html[data-epure] .tb-scene,
+html[data-epure] .tb-droite,
+html[data-epure] .db-page,
+html[data-epure] .db-body,
+html[data-epure] .db-col,
+html[data-epure] .db-centre,
+html[data-epure] .db-rail,
+html[data-epure] .db-barre,
+html[data-epure] .db-partir,
+html[data-epure] .db-nom,
+html[data-epure] .db-onglets,
+html[data-epure] .db-apercu-zone,
+html[data-epure] .cmp-entete,
+html[data-epure] .cmp-carte,
+html[data-epure] .salon-b,
+html[data-epure] .est-erreur,
+html[data-epure] footer.mention-legale {
+  background: var(--w98-face);
+  background-image: none;
+  color: #000000;
+}
+
+html[data-epure] .db-barre button,
+html[data-epure] .db-partir,
+html[data-epure] .db-nom + button,
+html[data-epure] .db-recherche button,
+html[data-epure] .db-recherche-zone ~ button,
+html[data-epure] .db-onglets button,
+html[data-epure] .db-info button {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .db-nom,
+html[data-epure] .db-partir {
+  background: #ffffff;
+  box-shadow: var(--w98-creux);
+}
+
+html[data-epure] .acc-merci a,
+html[data-epure] footer.mention-legale a {
+  color: #0000ee;
+}
+
+/* --- 13. Derniers fonds sombres (campagnes, salon, en-tetes) ------------------
+   Ces blocs portent des regles de page plus specifiques : `!important` ici, et
+   ici seulement, pour que le gris clair de Windows soit le meme partout. */
+html[data-epure],
+html[data-epure] body {
+  background: var(--w98-face) !important;
+  background-image: none !important;
+}
+
+html[data-epure] .brand-back,
+html[data-epure] p.est-erreur,
+html[data-epure] button.btn.primary,
+html[data-epure] button.btn.primary:hover {
+  background: var(--w98-face) !important;
+  color: #000000 !important;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .tb-entete .tb-compte,
+html[data-epure] .tb-entete b {
+  color: #ffffff !important;
+}
+
+html[data-epure] .tb-siege,
+html[data-epure] .tb-siege .tb-siege-nom {
+  background: var(--w98-face) !important;
+  color: #000000 !important;
+}
+
+html[data-epure] h1,
+html[data-epure] h2,
+html[data-epure] main > header,
+html[data-epure] main h1 {
+  color: #000000;
+  text-shadow: none;
+}
+
+html[data-epure] header.progress .pstep .pnum {
+  background: var(--w98-titre) !important;
+  color: #ffffff !important;
 }

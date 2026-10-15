@@ -46,8 +46,15 @@ html[data-epure] body,
 html[data-epure] .plateau-scene,
 html[data-epure] body.a-halo-heros .plateau-scene,
 html[data-epure] #scene {
-  background: #2a2a2a;
+  background: var(--w98-face);
   box-shadow: none;
+}
+
+/* Les etiquettes posees sur la table (piles, zones, compteurs) : texte noir. */
+html[data-epure] .plateau-scene,
+html[data-epure] .pile-vide,
+html[data-epure] .plateau-emplacement {
+  color: #000000;
 }
 
 /* Trois bandes en biais, aplaties (halo-heros.ts, `marqueDe`). Le pseudo-element
