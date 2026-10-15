@@ -107438,7 +107438,540 @@
    "set_name": "Expert Skrull",
    "text": "<b>When Revealed</b>: Flip to hero form. The villain attacks you. If this attack is undefended, the villain schemes.\n<i>\"We are prepared to accept your surrender.\" —Unknown Skrull</i>",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk263",
+   "type": "Ally",
+   "name": "* Crusader",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "4",
+    "THW": "2**",
+    "ATK": "2**",
+    "RES": "R",
+    "Class": "Campaign;Aggression"
+   },
+   "traits": [
+    "INITIATIVE",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b>Response</b>: After Crusader enters play, choose a player → deal 1 damage to the villain and each minion engaged with that player. Draw 1 card for each enemy defeated this way.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk264",
+   "type": "Ally",
+   "name": "* Jazinda",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "4",
+    "THW": "3**",
+    "ATK": "1*",
+    "RES": "B",
+    "Class": "Campaign;Justice"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Jazinda does not count against your ally limit.\nWhile Jazinda is exhausted, your hero gets +1 THW.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk265",
+   "type": "Ally",
+   "name": "* Paibok",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "4",
+    "THW": "2**",
+    "ATK": "2**",
+    "RES": "R",
+    "Toughness": "1",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "S.W.O.R.D.",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Toughness.\n[star] Paibok gets +1 THW and +1 ATK for each treachery card attached to him.\n<b>Response</b>: After a treachery card is discarded, take 1 damage → attach it facedown here (to a maximum of 2).",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk266",
+   "type": "Ally",
+   "name": "* Skymax",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "5",
+    "THW": "2**",
+    "ATK": "3**",
+    "RES": "R",
+    "Class": "Campaign;Leadership"
+   },
+   "traits": [
+    "SKRULL",
+    "SQUADRON SUPREME"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b>Response</b>: When Skymax enters play, shuffle all allies from your discard pile into your deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk267",
+   "type": "Ally",
+   "name": "* Super-Skrull",
+   "subtitle": "Kl'rt",
+   "desc": {
+    "Cost": "3",
+    "HP": "4",
+    "THW": "2**",
+    "ATK": "2**",
+    "RES": "Y",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "GUARDIAN",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "[star] Super-Skrull gets +1 THW and +1 ATK for each different [[SUPERPOWER]] card attached to him.\n<b>Response</b>: After a [[SUPERPOWER]] card is placed into a discard pile, attach it facedown here (to a maximum of 4).",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk268",
+   "type": "Ally",
+   "name": "* Chilly McHotpants",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "HP": "5",
+    "THW": "2",
+    "ATK": "2",
+    "RES": "R",
+    "Class": "Campaign;'Pool"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<i>*Treat this ally as a minion engaged with you.</i>\n[star] <b>Response</b>: After \"Chilly McHotpants\" attacks you, draw 1 cards. If you take no damage from that attack, draw 1 card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk269",
+   "type": "Ally",
+   "name": "* Xavin",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "5",
+    "THW": "2**",
+    "ATK": "3**",
+    "RES": "B",
+    "Class": "Campaign;Protection"
+   },
+   "traits": [
+    "RUNAWAYS",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b>Interrupt</b>: When Xavin enters play, discard cards from your deck until you discard an event with a \"<b>Hero Action</b>\" ability. You may resolve that event's \"<b>Hero Action</b>\" ability.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk270",
+   "type": "PlayerSideScheme",
+   "name": "* Buddy Training Program",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "StartingThreat": "2",
+    "Victory": "0",
+    "Class": "Campaign;Protection"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Victory 0.\nX is equal to the villain's stage number.\n<b>When Defeated</b>: The player who defeated this scheme may give up to X friendly characters a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk271",
+   "type": "PlayerSideScheme",
+   "name": "* Cloning Faux Pas",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "StartingThreat": "3",
+    "Acceleration": "1",
+    "Victory": "0",
+    "Class": "Campaign;'Pool"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Victory 0.\n<b>When Defeated</b>: The player who defeated this scheme may deal up to 3 damage to each [[SKRULL]] minion engaged with them.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk272",
+   "type": "PlayerSideScheme",
+   "name": "* Fickle Alliance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "StartingThreat": "3",
+    "Victory": "0",
+    "Class": "Campaign;Leadership"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Victory 0.\n<b>When Defeated</b>: The player who defeated this scheme may search the encounter deck for a non-[[ELITE]] minion and put it into play under their control. <i>(Shuffle.)</i> Treat that minion as an ally with a blank text box <i>(except for</i> [[TRAITS]]<i>)</i>. Its THW is equal to its printed SCH and it takes 1 consequential damage after it thwarts or attacks.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk273",
+   "type": "PlayerSideScheme",
+   "name": "* Newbie Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "StartingThreat": "3",
+    "Victory": "0",
+    "Class": "Campaign;Aggression"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Victory 0.\n<b>When Defeated</b>: The player who defeated this scheme may defeat a non-[[ELITE]] [[SKRULL]] minion and draw 1 card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk274",
+   "type": "PlayerSideScheme",
+   "name": "* Searching for Powers",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "StartingThreat": "3",
+    "Victory": "0",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Victory 0.\n<b>When Defeated</b>: The player who defeated this scheme may search their deck and discard pile for a card with the [[SUPERPOWER]] trait and play it, ignoring its resource cost. <i>(Shuffle.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk275",
+   "type": "PlayerSideScheme",
+   "name": "* Skrull Military Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "StartingThreat": "3",
+    "Victory": "0",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Victory 0.\nThreat cannot be removed from this scheme unless it is being thwarted by a [[SKRULL]] ally.\nWhile this card is in the victory display, its owner's hero gets +1 THW, +1 ATK, and +1 DEF.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk276",
+   "type": "PlayerSideScheme",
+   "name": "* Stealing For Good",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "StartingThreat": "2",
+    "Victory": "0",
+    "Class": "Campaign;Justice"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Victory 0.\n<b>When Defeated</b>: The player who defeated this scheme may search their deck and discard pile for an upgrade and add it to their hand. <i>(Shuffle.)</i> Then, they remove threat from a scheme equal to that upgrade's printed cost.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk277",
+   "type": "Support",
+   "name": "* Antalya",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Campaign;Protection"
+   },
+   "traits": [
+    "PERSONA",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b>Action</b>: Exhaust Antalya → heal 1 damage from a friendly character.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk278",
+   "type": "Support",
+   "name": "* Cadre K",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Campaign;Justice"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b>Action</b>: Exhaust Cadre K → remove 1 threat from a scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk279",
+   "type": "Support",
+   "name": "* Pool-O-Vision",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Campaign;'Pool"
+   },
+   "traits": [
+    "METAGAME"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b>Hero Response</b>: After a [[SKRULL]] minion is defeated, exhaust Pool-O-Vision → draw 1 card (to a maximum of 3) for each [crisis], [acceleration], [amplify], and [hazard] in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk280",
+   "type": "Support",
+   "name": "* Princess Anelle",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "PERSONA",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Alliance.\nX is equal to the total number of players and [[SKRULL]] enemies in play.\n<b>Response</b>: After the player phase ends, remove Princess Anelle from the game → skip the villain phase.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk281",
+   "type": "Support",
+   "name": "Skrull Battleship",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Campaign;Leadership"
+   },
+   "traits": [
+    "SKRULL",
+    "VEHICLE"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Play only if you control a [[SKRULL]] ally.\n<b>Hero Resource</b>: Exhaust Skrull Battleship → generate a [wild] resource for any player.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk282",
+   "type": "Support",
+   "name": "* Skrull Kill Krew",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Campaign;Aggression"
+   },
+   "traits": [
+    "CREW"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b>Hero Action</b>: Exhaust Skrull Kill Krew → deal 1 damage to a [[SKRULL]] minion. If that minion is defeated this way, ready Skrull Kill Krew.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk283",
+   "type": "Upgrade",
+   "name": "* 3-D Man's Goggles",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Campaign;Leadership"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Attach to a non-[[SKRULL]] ally.\n<b>Interrupt</b>: When attached ally attacks a [[SKRULL]] enemy, that ally does not take consequential damage.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk284",
+   "type": "Upgrade",
+   "name": "* Inhibitor Mask",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Temporary": "1",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Attach to a [[SKRULL]] enemy.\nTemporary.\nTreat attached enemy's printed text box as if it were blank.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk285",
+   "type": "Upgrade",
+   "name": "* Ultimate Nullifier",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Temporary": "1",
+    "Class": "Campaign;'Pool"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Attach to a [[SKRULL]] enemy.\nTemporary.\nAttached enemy cannot activate.\nWhile Nullifier is attached to the villain, it gains 1[per_hero] hazard icon ([hazard]).",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk286",
+   "type": "Upgrade",
+   "name": "Reverting Device",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Campaign;Justice"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Play under any player's control.\nEach [[SKRULL]] minion engaged with you gets -1 SCH.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk287",
+   "type": "Upgrade",
+   "name": "Skrull Shapeshifter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Campaign;Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Play under any player's control.\nYour identity gains the [[SKRULL]] trait.\n<b>Interrupt</b>: When you would be defeated, set your hit point dial to 1 instead. Then, discard this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk288",
+   "type": "Upgrade",
+   "name": "* Sy-Torak Gem",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Campaign;Aggression"
+   },
+   "traits": [
+    "ARTIFACT"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "Play under any player's control.\nYou get +3 hit points.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When your deck empties, spend [energy] resource. If you cannot, discard Sy-Torak Gem.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk289a",
+   "type": "Insert",
+   "name": "Cooperation Progress Reminder",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<i>Campaign Mode Only.</i>\n<b>Interrupt</b>: When a player defeats a minion or a side scheme, that player may discard the top card of their deck to place that minion or side scheme in the victory display instead of the encounter discard pile.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk289b",
+   "type": "Insert",
+   "name": "Cooperation Progress Reminder",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "<b><i>Do not flip this unless you intend to build cooperation.</i></b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "skrull_war_minion",
+   "pic_id": "player",
+   "type": "Minion",
+   "name": "Chilly McHotpants Minion",
+   "subtitle": "",
+   "desc": {
+    "HP": "5"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Menace Campaign",
+   "text": "[star] <b>Response</b>: After \"Chilly McHotpants\" attacks you, draw 1 cards. If you take no damage from that attack, draw 1 card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "skrull_fickle_ally",
+   "pic_id": "encounter",
+   "type": "Ally",
+   "name": "Fickle Ally",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0*",
+    "THW": "0*",
+    "Class": "Encounter"
+   },
+   "traits": [],
+   "set_name": "Skrull Menace Campaign",
+   "text": "",
+   "custom": "Kajislav"
   }
  ],
- "checksum": "b19720672a94f55f2cdb481f6837de0c02ffb6d7f492a231f79134733b77141e"
+ "checksum": "4ddf4334e8829a6fb349856915bc6a9db9a788cadb5dcb93714fd5427e55eb11"
 }
