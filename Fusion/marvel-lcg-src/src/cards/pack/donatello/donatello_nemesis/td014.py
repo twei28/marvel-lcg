@@ -1,6 +1,6 @@
 from . import *
 
-# Exterminate! — COMPLOT ANNEXE nemesis (1/5). Menace 2 par joueur,
+# Extermination! — COMPLOT ANNEXE nemesis (1/5). Menace 2 par joueur,
 #   icone d'ACCELERATION, boost 2.
 # When Defeated: Search the encounter deck and discard pile for a MOUSER or
 #   FLYBORG minion and put it into play engaged with the first player.

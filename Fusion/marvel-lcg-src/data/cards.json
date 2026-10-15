@@ -108539,7 +108539,7 @@
   {
    "card_id": "td014",
    "type": "SideScheme",
-   "name": "Exterminate!",
+   "name": "Extermination!",
    "subtitle": "",
    "desc": {
     "StartingThreat": "2*",
@@ -109223,5 +109223,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "5e5f8f259aec1c9078083d5310736fd4ff0a684138615a72d9925d6a81be2475"
+ "checksum": "86c190e6f1fb7e0824371a6374811ce36ca1d64e97ef5899cea68783a0f43b23"
 }

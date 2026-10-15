@@ -3976,7 +3976,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'td012': "Vous pouvez jouer, dépenser ou défausser les cartes glissées ici comme si elles étaient dans votre main. <i>(1 carte glissée maximum.)</i>\n<b>Action de héros</b> : inclinez Donatello's Shell → choisissez une carte dans votre main et glissez-la ici.",
   // donatello — Broken Shell (Obligation)
   'td013': "<b><i>Donnez-la au joueur de Donnie.</i></b>\nPassez sous forme d'alter ego et perdez 5 points de vie. Si cela devait vaincre votre identité, mettez plutôt votre cadran de points de vie à 1. Vous ne pouvez pas passer sous forme de héros.\n<b>Action d'alter ego</b> : dépensez des ressources [mental][mental] ou défaussez Donatello's Shell du jeu → retirez Broken Shell de la partie.",
-  // donatello — Exterminate! (SideScheme némésis)
+  // donatello — Extermination! (SideScheme némésis)
   'td014': "<i>Baxter Stockman a lancé ses machines à la recherche des tortues pour les exterminer.</i>\n<b>Une fois déjouée</b> : cherchez dans le deck rencontre et la défausse un sbire [[MOUSERS]] ou [[FLYBORGS]] et mettez-le en jeu, engagé avec le premier joueur.",
   // donatello — * Baxter Stockman (Minion némésis)
   'td015': "Coup Rapide.\nBaxter Stockman ne peut pas subir de dégâts tant qu'il y a des [[MOUSERS]] ou des [[FLYBORGS]] en jeu.\n<b>Interruption forcée</b> : quand Baxter Stockman va vous attaquer, il manigance plutôt.\n<i>(Sbire némésis de Donatello.)</i>",

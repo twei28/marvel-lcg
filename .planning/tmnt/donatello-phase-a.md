@@ -29,7 +29,7 @@ Set `164. Custom (Donatello)`, pack `donatello`.
 | td011 | * Donatello's Bō | Upgrade (Restricted) | x1 | oui |
 | td012 | * Donatello's Shell | Upgrade | x1 | oui |
 | td013 | Broken Shell | Obligation (GiveTo « Donnie ») | x1 | oui (set Donatello) |
-| td014 | Exterminate! | SideScheme némésis (1/5) | x1 | oui |
+| td014 | Extermination! | SideScheme némésis (1/5) | x1 | oui |
 | td015 | * Baxter Stockman | Minion némésis (2/5) | x1 | oui |
 | td016 | Plague of M.O.U.S.E.R.s | Minion némésis (3/5 et 4/5) | x2 | oui |
 | td017 | Flight of Flyborgs | Minion némésis (5/5) | x1 | oui |

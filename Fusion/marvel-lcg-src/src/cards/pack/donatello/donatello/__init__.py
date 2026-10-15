@@ -7,7 +7,7 @@ from cards.pack import *
 # cards_custom.json) : Donatello, Donnie, Metalhead, Bo Tobu, Chudan-Ura-Uke,
 # Improvised Tactics, Singularity, Inspired Brilliance, Donnie's Lab,
 # Anti-Gravity Gauntlet, Truevision Goggles, Donatello's Bo / Shell, Broken
-# Shell, Exterminate!, Baxter Stockman (« Baxter Building » mf004 n'est pas un
+# Shell, Extermination!, Baxter Stockman (« Baxter Building » mf004 n'est pas un
 # homonyme), Plague of M.O.U.S.E.R.s, Flight of Flyborgs.
 #
 # ⚠ LES NOMS UNIQUES S'ECRIVENT SANS L'ETOILE dans `CardFinder(name=...)`
