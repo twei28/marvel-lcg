@@ -64,6 +64,12 @@ est écrit seul, sans rappel, comme le note le commentaire en tête de
   existe : le script devra porter uniquement cette capacité annexe, jamais le
   mot-clé Alliance lui-même.
 
+**Variante `sk280` Princess Anelle (15/10/2026)** : « Alliance. » est imprimé sur un SOUTIEN de campagne (Skrull Menace),
+alors que `HasAlliance` est réservé aux événements. Aucun script de mot-clé : la capacité de JEU du soutien est marquée
+`ability.cout_en_groupe = True` (même marque que `sk189a` « You are a Skrull! »), que `CheckAnyPlayerMayHelpPay`
+(`resources.py`) lit pour ouvrir le paiement à tous les joueurs ; la carte `sk201` Mistrust and Paranoia le ferme
+(`PaiementEnGroupeInterdit`), comme pour le mot-clé natif. Cas `sk280 ... ALLIANCE (2 joueurs)`.
+
 **Variantes maison** : **Forces Combined** (`cd003`, pack `cloak_dagger`) est le
 second usager du crochet `CheckAnyPlayerMayHelpPay`, et pas du mot-clé Alliance
 (son `desc` ne contient que `Class` et `Permanent`). Son texte imprimé est

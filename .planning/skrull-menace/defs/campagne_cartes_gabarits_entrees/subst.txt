@@ -1,0 +1,27 @@
+SUBST sk263 : rouges 3/3
+SUBST sk264 : rouges 3/5 ; VERTS SANS MODULE : [campagne_cartes] sk264 Jazinda, TEMOIN : redressee, aucun bonus de CTR || [campagne_cartes] sk264 Jazinda, TEMOIN : 4 allies SANS Jazinda -> la limite de 3 s'applique (un seul est compte
+SUBST sk265 : rouges 3/6 ; VERTS SANS MODULE : [campagne_cartes] sk265 Paibok : entre en jeu avec une carte Robuste (Toughness lu dans le desc) || [campagne_cartes] sk265 Paibok, TEMOIN : une carte qui n'est PAS une traitrise (sbire) defaussee || [campagne_cartes] sk265 Paibok : tant qu'il est Robuste, le cout « take 1 damage » ne peut pas etre pay
+SUBST sk266 : rouges 1/2 ; VERTS SANS MODULE : [campagne_cartes] sk266 Skymax, TEMOIN : un allie EN JEU n'est pas touche
+SUBST sk267 : rouges 4/5 ; VERTS SANS MODULE : [campagne_cartes] sk267 Super-Skrull, TEMOIN : une carte sans le trait SUPERPOWER defaussee
+SUBST sk268 : rouges 5/5
+SUBST sk269 : rouges 2/3 ; VERTS SANS MODULE : [campagne_cartes] sk269 Xavin : deck epuise sans evenement a « Hero Action »
+SUBST sk270 : rouges 4/5 ; VERTS SANS MODULE : [campagne_cartes] sk270 Buddy Training Program : au stade 2, une carte a 2 icones (01088 YY) paie et la carte se joue
+SUBST sk271 : rouges 1/3 ; VERTS SANS MODULE : [campagne_cartes] sk271 Cloning Faux Pas : porte 1 icone ACCELERATION en jeu (desc, aucun script) || [campagne_cartes] sk271 Cloning Faux Pas, TEMOIN : montant 0 declare
+SUBST sk273 : rouges 1/2 ; VERTS SANS MODULE : [campagne_cartes] sk273 Newbie Training, TEMOIN : aucun sbire SKRULL non Elite
+SUBST sk274 : rouges 2/2
+SUBST sk275 : rouges 5/7 ; VERTS SANS MODULE : [campagne_cartes] sk275 Skrull Military Training : un allie SKRULL (sk264 Jazinda, CTR 3) retire la menace, vainc le comp || [campagne_cartes] sk275 Skrull Military Training, TEMOIN : tant que la carte est EN JEU (pas en vitrine), aucun bonus
+SUBST sk276 : rouges 2/2
+SUBST sk277 : rouges 2/3 ; VERTS SANS MODULE : [campagne_cartes] sk277 Antalya, TEMOIN : incline, elle n'offre plus son Action (les degats restent)
+SUBST sk278 : rouges 1/2 ; VERTS SANS MODULE : [campagne_cartes] sk278 Cadre K, TEMOIN : incline, aucune menace retiree
+SUBST sk279 : rouges 2/5 ; VERTS SANS MODULE : [campagne_cartes] sk279 Pool-O-Vision, TEMOIN : sans aucune icone en jeu, aucune carte piochee (mais le soutien s'incl || [campagne_cartes] sk279 Pool-O-Vision, TEMOIN : la defaite d'un sbire NON Skrull (Hydra Mercenary) ne declenche rien || [campagne_cartes] sk279 Pool-O-Vision, TEMOIN : « Hero Response »
+SUBST sk280 : rouges 6/8 ; VERTS SANS MODULE : [campagne_cartes] sk280 Princess Anelle : ALLIANCE (2 joueurs) || [campagne_cartes] sk280 Princess Anelle, TEMOIN : sans Anelle, la phase du mechant n'est pas sautee
+SUBST sk281 : rouges 2/4 ; VERTS SANS MODULE : [campagne_cartes] sk281 Skrull Battleship : jouable si on controle un allie SKRULL (Jazinda en jeu) || [campagne_cartes] sk281 Skrull Battleship, TEMOIN : sans le Battleship, 2 ressources ne paient pas Jazinda (cout 3)
+SUBST sk282 : rouges 2/4 ; VERTS SANS MODULE : [campagne_cartes] sk282 Skrull Kill Krew, TEMOIN : sans sbire SKRULL (Hydra Mercenary seul), aucune action offerte || [campagne_cartes] sk282 Skrull Kill Krew, TEMOIN : « Hero Action »
+SUBST sk283 : rouges 3/5 ; VERTS SANS MODULE : [campagne_cartes] sk283 3-D Man's Goggles, TEMOIN : contre un ennemi NON Skrull (Hydra Mercenary), l'allie prend son degat || [campagne_cartes] sk283 3-D Man's Goggles, TEMOIN : sans les lunettes, la meme attaque contre un Skrull coute 1 degat a l'
+SUBST sk284 : rouges 2/4 ; VERTS SANS MODULE : [campagne_cartes] sk284 Inhibitor Mask, TEMOIN : sans le masque, Skrull Commander donne bien +1 ATQ a sk184 || [campagne_cartes] sk284 Inhibitor Mask : TEMPORARY
+SUBST sk285 : rouges 4/6 ; VERTS SANS MODULE : [campagne_cartes] sk285 Ultimate Nullifier, TEMOIN : sans lui, l'attaque de sk184 inflige 2 degats a l'alter ego || [campagne_cartes] sk285 Ultimate Nullifier : TEMPORARY
+SUBST sk286 : rouges 2/5 ; VERTS SANS MODULE : [campagne_cartes] sk286 Reverting Device, TEMOIN : un sbire NON Skrull engage (Shocker, MNG 1) n'est pas touche || [campagne_cartes] sk286 Reverting Device, TEMOIN : sans la carte, sk184 garde son MNG imprime || [campagne_cartes] sk286 Reverting Device : un sbire SKRULL engage avec l'AUTRE joueur n'est pas touche
+SUBST sk287 : rouges 3/4 ; VERTS SANS MODULE : [campagne_cartes] sk287 Skrull Shapeshifter, TEMOIN : sans la carte, l'identite n'est pas SKRULL
+SUBST sk288 : rouges 4/6 ; VERTS SANS MODULE : [campagne_cartes] sk288 Sy-Torak Gem, TEMOIN : sans la carte, aucun bonus || [campagne_cartes] sk288 Sy-Torak Gem : la gemme defaussee en pleine pioche fait perdre ses +3 PV
+SUBST skrull_war_minion : rouges 2/5 ; VERTS SANS MODULE : [campagne_cartes] sk268 Chilly McHotpants : entre en jeu comme un SBIRE engage avec le joueur (MNG 2, ATQ 2, 5 PV) || [campagne_cartes] sk268 Chilly McHotpants : ne compte PAS contre la limite d'allies (3 allies en jeu, tous restent || [campagne_cartes] sk268 Chilly McHotpants vaincu : la carte revient dans la defausse du joueur, sous sa forme d'allie
+SUBST sk272 : rouges 3/4 ; VERTS SANS MODULE : [campagne_cartes] sk272 Fickle Alliance : un sbire ELITE du deck rencontre n'est PAS cherchable (seul Sandman re

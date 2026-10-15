@@ -1077,6 +1077,46 @@ servi, et elles resservent :
   dans `tools/autoplay.py` : devant un blocage de ce genre, lire les
   options avec une copie instrumentée du pilote avant d'accuser la carte.
 
+### 7octodecies. Pièges payés par les cartes de campagne de Skrull Menace (sk263-sk289b, 15/10/2026)
+
+- **`main_exclusive` défausse la main de départ APRÈS `mise_en_place`** : une carte posée par `mise_en_place` réagit à cette
+  défausse (Super-Skrull allié a attaché les cartes SUPERPOWER de Spider-Man, `thwart` +2 au lieu de +1). Poser la carte à
+  mesurer dans `declencher`.
+- **`Puzzle.CreatePlayerDeck` AJOUTE au vrai deck de 40 cartes** (il ne le remplace pas) : une recherche ou un « discard until »
+  voit tout le deck et le pilote prend la première carte légale (Enhanced Spider-Sense au lieu de Lazerfist). `Puzzle.EmptyPlayerDeck()`
+  d'abord, et `cibles: [card_id]` pour FORCER la carte cherchée. Un deck vidé par `DiscardDeckUntil` se remélange avec la défausse :
+  la défausse est alors vide, mesurer `dans_deck_joueur`.
+- **`Puzzle.SetThreat` vers le BAS est un retrait** (RECETTES §7sexies) : une manigance qui dit « threat cannot be removed » le
+  refuse (Skrull Military Training reste à 3). Partir de la menace imprimée.
+- **« take N damage → » en coût n'est payé que si TOUS les dégâts sont subis** (`TakeDamageOnCall`, cost_func.py) : un allié
+  Ténacité (Paibok sk265) ne peut pas payer sa Réponse tant qu'il a sa carte Robuste d'entrée (elle est consommée en vain).
+- **`TreatAsMinion` avec un gabarit qui porte une capacité** : `CreateFace` a DÉJÀ ajouté les capacités du module ; l'ancien bloc
+  « Hack for 50171 » les ajoutait une 2e fois AVANT l'échange (plantage `'Minion' object has no attribute 'card'`, puis pioche en
+  double). Corrigé dans `treat.py` (échange d'abord, enregistrement ensuite, sans doublon) : un gabarit sbire peut maintenant
+  porter son texte (`skrull_war_minion`).
+- **`Faces.TreatAsAlly(sbire, gabarit, joueur, effect)`** : (1) l'allié reprend le NOM, l'image, l'ATQ et SCH->CTR mais PAS les PV :
+  un sbire cherché dans le deck rencontre n'a jamais eu de PV courants et l'allié (PV 0 du gabarit) est vaincu en entrant en jeu
+  → paramètre `process(allie, sbire)` (ajouté) pour poser `printed_health` ; (2) `effect.this` est la carte dont la SORTIE du jeu
+  rend l'allié à sa forme de sbire : donner `GameRule(sbire)` pour une conversion permanente (le complot vaincu part en pile de
+  victoire juste après) ; (3) les traits du sbire se posent APRÈS l'échange (`allie.traits_internal[t] = [allie]`).
+- **Alliance sur un soutien** : pas de mot-clé natif hors événement ; marquer la capacité de JEU `ability.cout_en_groupe = True`
+  (sk280, modèle sk189a) ; la preuve est une MUTATION : sans la ligne, le cas « coût 4 payé à deux » tombe au rouge.
+- **« Skip the villain phase »** : `World.skip_villain_phases += 1` (lu par `OnGameLoop`, saute la phase ENTIÈRE, journal
+  « Phase : Villain (skipped) »). `Puzzle.EndPlayerPhase()` + lecture du drapeau prouve la Réponse ; la boucle se prouve à l'autoplay.
+- **Mesurer un COÛT dynamique** : `Message.WhenCalculateEffectCost(joueur, effet_de_jeu, [])` puis `.Send()` et `.cost.val`
+  (`cc_cout` dans `tools/cas/campagne_cartes.py`). Jouer la carte avec une main trop courte ne prouve rien : en alter ego,
+  la ressource de Peter Parker (« Scientist ») complète le paiement.
+- **`Worlds.GetIconsNum(effect, ["Crisis", "Acceleration", "Amplify", "Hazard"])`** compte les ICÔNES (une carte à deux icônes
+  compte deux fois) de toutes les cartes en jeu.
+- **« While X is exhausted »** : `OnEvent.TemplateTrigger(Message.AfterCardExhausted | Message.AfterCardReady, lambda e, m:
+  m.trigger == e.this)` en `change_on_event` de `GiveKeywordToInPlayWhenApplyThis(..., condition=lambda e: e.this.IsExhaust())` ;
+  « each minion engaged with you gets -1 SCH » : même fabrique avec `scheme=-1`, `get_new_value` (1 pour les sbires engagés avec
+  le propriétaire, 0 sinon) et `OnEvent.TemplateTrigger(Message.AfterMinionEngagePlayer, ...)`.
+- **Le message d'engagement s'appelle `Message.AfterMinionEngagePlayer`** (`AfterPlayerEngageMinion` n'existe que comme FABRIQUE) :
+  `verifier_api_cartes.py` l'a attrapé (« Message.AfterPlayerEngageMinion n'existe pas »), pas les cas.
+- **`DeclareNumber` répond la PREMIÈRE valeur (0)** : `choisir_option: ["3"]` force la valeur (cas sk271).
+- **Le filtre `[filtre]` du harnais est une sous-chaîne, pas une expression régulière** (`"sk2[78]"` retient 0 cas).
+
 ## 8. Données (`data/cards.json`) — conventions
 
 - Pack en QUEUE de fichier, `"custom": "Arnaud"`, `set_name` = nom du
