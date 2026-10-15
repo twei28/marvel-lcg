@@ -1,0 +1,24 @@
+SUBST sk170a : rouges 5/6 ⚠ un cas reste vert sans module
+SUBST sk170b : rouges 3/3
+SUBST sk171a : rouges 2/4 ⚠ un cas reste vert sans module
+SUBST sk171b : rouges 1/2 ⚠ un cas reste vert sans module
+SUBST sk172a : rouges 3/4 ⚠ un cas reste vert sans module
+SUBST sk172b : rouges 2/2
+SUBST sk173b : rouges 3/5 ⚠ un cas reste vert sans module
+SUBST sk174a : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk174b : rouges 6/11 ⚠ un cas reste vert sans module
+SUBST sk175a : rouges 3/5 ⚠ un cas reste vert sans module
+SUBST sk175b : rouges 1/2 ⚠ un cas reste vert sans module
+SUBST sk176 : rouges 4/5 ⚠ un cas reste vert sans module
+SUBST sk177 : rouges 4/5 ⚠ un cas reste vert sans module
+SUBST sk178 : rouges 4/4
+SUBST sk179 : rouges 3/6 ⚠ un cas reste vert sans module
+SUBST sk180 : rouges 2/5 ⚠ un cas reste vert sans module
+SUBST sk181 : rouges 3/4 ⚠ un cas reste vert sans module
+SUBST sk182 : rouges 4/4
+SUBST sk183 : rouges 4/4
+SUBST sk184 : rouges 3/3
+SUBST sk185 : rouges 3/4 ⚠ un cas reste vert sans module
+SUBST sk186 : rouges 1/1
+SUBST sk187 : rouges 2/2
+SUBST sk188 : rouges 3/3
