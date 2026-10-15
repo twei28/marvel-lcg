@@ -658,6 +658,7 @@ export type Campagne = {
   termines?: string[]
   perdue?: boolean
   scoreFinal?: number
+  historique?: Record<string, Record<string, string>>
 }
 
 export const listeCampagnes = async (request: APIRequestContext): Promise<Campagne[]> =>

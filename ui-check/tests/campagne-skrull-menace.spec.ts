@@ -81,6 +81,48 @@ test.describe('Campagne Skrull Menace : l interface de choix de campagne', () =>
       await request.post('/delete_campagne', { data: { id } })
     }
   })
+
+  test('l ecran Cooperation montre la zone, le tableau (ligne complete) et le journal par scenario', async ({ page, request }) => {
+    const nom = 'Essai automatique - skrull menace (cooperation)'
+    await nettoyer(request, nom)
+    const id = await poserCampagne(request, {
+      code: 'skrull_menace',
+      nom,
+      difficulte: 'standard',
+      equipe: [{ heros: 'lyja', nomHeros: 'Lyja' }],
+      termines: ['sk_skrull_empire', 'sk_super_skrull'],
+      carnet: {
+        'Cooperation Area': 'sk263;sk267;sk274;sk230a;sk230b;sk230c;sk230d',
+        'Cooperation Progress': 'Cadre K: Non-ELITE minion;Cadre K: Hijacked;Cadre K: GENIUS minion;Antalya: Nemesis minion',
+        'Shaper of Worlds Game Area': 'Set aside, out of play',
+        'Cosmic Cube Creation Game Area': 'Removed from campaign',
+        'Skrull Elite: Xavin': 'In another game area',
+      },
+      historique: {
+        sk_skrull_empire: { 'Shaper of Worlds Game Area': 'In another game area' },
+        sk_super_skrull: { 'Shaper of Worlds Game Area': 'Set aside, out of play', 'Cosmic Cube Creation Game Area': 'Removed from campaign' },
+      },
+      tentatives: {},
+      partieEnCours: null,
+    })
+    try {
+      await page.goto('/campagne.html', { waitUntil: 'networkidle' })
+      await page.locator('.cmp-carte', { hasText: nom }).locator('.cmp-carte-ouvrir').click()
+      await page.getByRole('button', { name: 'Coopération' }).click()
+      await expect(page.locator('.cmp-coop-carte')).toHaveCount(30)
+      await expect(page.locator('.cmp-coop-carte.presente'), 'Les 7 cartes du carnet doivent etre en couleur.').toHaveCount(7)
+      await expect(page.locator('.cmp-coop-ligne.complete'), 'Seule la ligne Cadre K est complete.').toHaveCount(1)
+      await expect(page.locator('.cmp-coop-ligne.complete')).toContainText('Cadre K')
+      await expect(page.locator('.cmp-coop-case.cochee')).toHaveCount(4)
+      const shaper = page.locator('.cmp-coop-journal tr[data-cle="Shaper of Worlds Game Area"] td')
+      await expect(shaper.nth(0)).toHaveText('In another game area')
+      await expect(shaper.nth(1)).toHaveText('Set aside, out of play')
+      await expect(page.locator('.cmp-coop-journal tr[data-cle="Skrull Elite: Xavin"] .cmp-coop-now')).toHaveText('In another game area')
+      await page.screenshot({ path: '/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/aedcc77a-2512-4da8-82a4-14876d788fa2/scratchpad/cooperation.png', fullPage: true })
+    } finally {
+      await request.post('/delete_campagne', { data: { id } })
+    }
+  })
 })
 
 test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les etats', () => {
@@ -132,6 +174,10 @@ test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les
 
     const apres = await relireCampagne(request, identifiant)
     expect(apres.termines, 'Le scenario gagne n est pas marque termine.').toContain('sk_super_skrull')
+    expect(
+      apres.historique?.sk_super_skrull?.['Cooperation Area'],
+      'Le panneau n a pas garde la colonne du scenario 2 dans l historique.'
+    ).toContain('sk267')
     const zone = String(apres.carnet?.['Cooperation Area'] ?? '').split(';').filter(Boolean)
     for (const id of ['sk267', 'sk274', 'sk230a', 'sk230b', 'sk230c', 'sk230d']) {
       expect(zone, `${id} devait etre dans la zone de cooperation : ${zone}`).toContain(id)

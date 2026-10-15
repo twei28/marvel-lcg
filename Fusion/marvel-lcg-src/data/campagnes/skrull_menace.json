@@ -232,5 +232,267 @@
    "libelle": "Expert Skrull à la place d'Expert",
    "aide": "Campagne experte uniquement : l'ensemble Expert Skrull remplace l'ensemble Expert."
   }
- ]
+ ],
+ "cooperation": {
+  "titre": "Coopération",
+  "titre_en": "Cooperation",
+  "aide": "La zone de coopération et le tableau « Cooperation Progress » de votre campagne, tels que le carnet les garde.",
+  "cle_zone": "Cooperation Area",
+  "cle_progres": "Cooperation Progress",
+  "colonnes": [
+   {
+    "titre": "Alliés",
+    "titre_en": "Allies",
+    "ids": [
+     "sk263",
+     "sk264",
+     "sk265",
+     "sk266",
+     "sk267",
+     "sk268",
+     "sk269"
+    ]
+   },
+   {
+    "titre": "Complots annexes de joueur",
+    "titre_en": "Player side schemes",
+    "ids": [
+     "sk270",
+     "sk271",
+     "sk272",
+     "sk273",
+     "sk274",
+     "sk275",
+     "sk276"
+    ]
+   },
+   {
+    "titre": "Ressources",
+    "titre_en": "Resources",
+    "ids": [
+     "sk230a",
+     "sk230b",
+     "sk230c",
+     "sk230d"
+    ]
+   },
+   {
+    "titre": "Soutiens",
+    "titre_en": "Supports",
+    "ids": [
+     "sk277",
+     "sk278",
+     "sk279",
+     "sk280",
+     "sk281",
+     "sk282"
+    ]
+   },
+   {
+    "titre": "Améliorations",
+    "titre_en": "Upgrades",
+    "ids": [
+     "sk283",
+     "sk284",
+     "sk285",
+     "sk286",
+     "sk287",
+     "sk288"
+    ]
+   }
+  ],
+  "tableau": [
+   {
+    "carte": "sk277",
+    "titre": "Antalya",
+    "exigences": [
+     "Nemesis minion",
+     "Seeking a Suitable World"
+    ],
+    "ajoutees": [
+     "sk277"
+    ]
+   },
+   {
+    "carte": "sk278",
+    "titre": "Cadre K",
+    "exigences": [
+     "Non-ELITE minion",
+     "Hijacked",
+     "GENIUS minion"
+    ],
+    "ajoutees": [
+     "sk278"
+    ]
+   },
+   {
+    "carte": "sk279",
+    "titre": "Pool-o-Vision",
+    "exigences": [
+     "ELITE non-SKRULL minion",
+     "ELITE SKRULL minion",
+     "Non-ELITE SKRULL minion"
+    ],
+    "ajoutees": [
+     "sk279"
+    ]
+   },
+   {
+    "carte": "sk280",
+    "titre": "Princess Anelle",
+    "exigences": [
+     "Cloning Program",
+     "Emperor's Throne"
+    ],
+    "ajoutees": [
+     "sk280"
+    ]
+   },
+   {
+    "carte": "sk281",
+    "titre": "Skrull Battleship",
+    "exigences": [
+     "SOLDIER minion",
+     "Hijacked",
+     "Seeking a Suitable World"
+    ],
+    "ajoutees": [
+     "sk281"
+    ]
+   },
+   {
+    "carte": "sk282",
+    "titre": "Skrull Kill Crew",
+    "exigences": [
+     "Skrull Spy",
+     "Skrull Warrior",
+     "Skrull Soldier",
+     "Skrull Commander"
+    ],
+    "ajoutees": [
+     "sk282"
+    ]
+   },
+   {
+    "carte": "sk283",
+    "titre": "3-D Man's Goggles",
+    "exigences": [
+     "ELITE minion",
+     "Non-SKRULL minion",
+     "Player side scheme",
+     "Non-unique minion"
+    ],
+    "ajoutees": [
+     "sk283"
+    ]
+   },
+   {
+    "carte": "sk284",
+    "titre": "Inhibitor Mask",
+    "exigences": [
+     "Plotting Revenge",
+     "Non-ELITE non-SKRULL minion"
+    ],
+    "ajoutees": [
+     "sk284"
+    ]
+   },
+   {
+    "carte": "sk285",
+    "titre": "Nullifier",
+    "exigences": [
+     "Nemesis side scheme"
+    ],
+    "ajoutees": [
+     "sk285"
+    ]
+   },
+   {
+    "carte": "sk286",
+    "titre": "Reverting Device",
+    "exigences": [
+     "Skrull Spy",
+     "Skrull Scientist",
+     "Skrull Warrior",
+     "Skrull Telepath"
+    ],
+    "ajoutees": [
+     "sk286"
+    ]
+   },
+   {
+    "carte": "sk287",
+    "titre": "Skrull Shapeshifter",
+    "exigences": [
+     "Unique minion",
+     "Plotting Revenge",
+     "SKRULL minion"
+    ],
+    "ajoutees": [
+     "sk287"
+    ]
+   },
+   {
+    "carte": "sk288",
+    "titre": "Sy-Torak Gem",
+    "exigences": [
+     "Jazinda",
+     "Stealing for the Empire"
+    ],
+    "ajoutees": [
+     "sk288"
+    ]
+   },
+   {
+    "carte": "sk230",
+    "titre": "Cosmic Cube Fragment",
+    "exigences": [
+     "Cosmic Cube Creation"
+    ],
+    "ajoutees": [
+     "sk230a",
+     "sk230b",
+     "sk230c",
+     "sk230d"
+    ]
+   }
+  ],
+  "journal": [
+   {
+    "cle": "Shaper of Worlds Game Area",
+    "libelle": "Shaper of Worlds",
+    "libelle_en": "Shaper of Worlds"
+   },
+   {
+    "cle": "Cosmic Cube Creation Game Area",
+    "libelle": "Cosmic Cube Creation",
+    "libelle_en": "Cosmic Cube Creation"
+   },
+   {
+    "cle": "Skrull Elite: Crusader",
+    "libelle": "Elite Crusader",
+    "libelle_en": "Elite Crusader"
+   },
+   {
+    "cle": "Skrull Elite: Jazinda",
+    "libelle": "Elite Jazinda",
+    "libelle_en": "Elite Jazinda"
+   },
+   {
+    "cle": "Skrull Elite: Skymax",
+    "libelle": "Elite Skymax",
+    "libelle_en": "Elite Skymax"
+   },
+   {
+    "cle": "Skrull Elite: War Skrull",
+    "libelle": "Elite War Skrull",
+    "libelle_en": "Elite War Skrull"
+   },
+   {
+    "cle": "Skrull Elite: Xavin",
+    "libelle": "Elite Xavin",
+    "libelle_en": "Elite Xavin"
+   }
+  ]
+ }
 }

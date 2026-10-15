@@ -66,6 +66,8 @@ export type Campagne = {
   termines?: string[]
   carnet?: Record<string, string>
   tentatives?: Record<string, number>
+  /** Le carnet écrit par chaque scénario gagné (une colonne du carnet imprimé), par id de scénario. */
+  historique?: Record<string, Record<string, string>>
   partieEnCours?: { scenario: string; depuis: string } | null
   /**
    * Campagne perdue au dernier scénario. Une campagne perdue ne se rejoue pas :

@@ -696,6 +696,80 @@ function vueMarche(campagne, definition) {
     );
 }
 
+/* ------------------------------------------- zone et tableau de cooperation -- */
+
+/**
+ * La zone de cooperation, le tableau « Cooperation Progress » et le journal des
+ * etats, tels que le carnet les garde (Skrull Menace, livret p.22-24).
+ *
+ * Tout vient de la boite (bloc `cooperation`) et du carnet : l'ecran ne calcule
+ * rien, il montre. Les cartes de la zone sont en couleur, les autres en gris ;
+ * une case du tableau est verte quand `Cooperation Progress` porte
+ * « Carte: exigence » ; une ligne complete a gagne sa carte. Le journal est la
+ * colonne par scenario du carnet imprime (p.22-23) : `campagne.historique`,
+ * ecrit par le panneau de recompenses a chaque scenario gagne.
+ */
+const enLangue = (fr, en) => (langueActuelle() === "en" ? (en || fr) : fr);
+
+function vueCooperation(campagne, definition) {
+    const coop = definition.cooperation;
+    const zone = new Set(listeCarnet(campagne, coop.cle_zone));
+    const cochees = new Set(listeCarnet(campagne, coop.cle_progres).map((x) => x.trim()));
+
+    const colonnes = coop.colonnes.map((col) => el("section", { class: "cmp-coop-col" },
+        el("h2", { class: "cmp-coop-col-t" }, enLangue(col.titre, col.titre_en),
+            el("span", { class: "cmp-coop-col-n" }, " " + col.ids.filter((id) => zone.has(id)).length + " / " + col.ids.length)),
+        el("div", { class: "cmp-coop-cartes" }, col.ids.map((id) => {
+            const presente = zone.has(id);
+            const c = cards.get(id);
+            return el("div", { class: "cmp-coop-carte" + (presente ? " presente" : " absente"), "data-carte": id,
+                title: (c && c.name ? c.name : id) + " — " + (presente ? t("dans la zone") : t("pas encore ralliée")) },
+                el("img", { src: cardImageUrl(id), alt: c && c.name ? c.name : id, loading: "lazy" }));
+        })),
+    ));
+
+    const lignes = coop.tableau.map((ligne) => {
+        const faites = ligne.exigences.map((e) => cochees.has(ligne.titre + ": " + e));
+        const complete = faites.every(Boolean);
+        return el("tr", { class: "cmp-coop-ligne" + (complete ? " complete" : ""), "data-ligne": ligne.carte },
+            el("th", { scope: "row" },
+                el("span", { class: "cmp-coop-ligne-nom" }, ligne.titre),
+                complete ? el("span", { class: "cmp-coop-gagnee" }, " ✔ " + t("gagnée")) : null),
+            ligne.exigences.map((e, i) => el("td", { class: "cmp-coop-case" + (faites[i] ? " cochee" : "") },
+                el("span", { class: "cmp-coop-coche" }, faites[i] ? "✔" : ""), " " + e)));
+    });
+
+    const scenarios = definition.scenarios;
+    const historique = campagne.historique || {};
+    const journal = el("table", { class: "cmp-coop-journal" },
+        el("thead", {}, el("tr", {},
+            el("th", {}, ""),
+            scenarios.map((s) => el("th", { title: enLangue(s.nom_fr || s.nom, s.nom) }, String(s.numero))),
+            el("th", {}, t("Maintenant")))),
+        el("tbody", {}, coop.journal.map((j) => el("tr", { "data-cle": j.cle },
+            el("th", { scope: "row" }, enLangue(j.libelle, j.libelle_en)),
+            scenarios.map((s) => el("td", {}, ((historique[s.id] || {})[j.cle]) || "")),
+            el("td", { class: "cmp-coop-now" }, (campagne.carnet || {})[j.cle] || "")))));
+
+    return el("div", { class: "cmp-page-campagne" },
+        entete(t("Campagne")),
+        el("main", { class: "cmp-corps" },
+            bandeauErreur(),
+            el("div", { class: "cmp-titre-rangee" },
+                el("h1", { class: "cmp-titre mvl" }, enLangue(coop.titre, coop.titre_en)),
+                el("button", { class: "btn ghost", onclick: () => retourVers("campagne") }, t("Retour"))),
+            el("p", { class: "cmp-champ-aide" }, coop.aide || ""),
+            el("h2", { class: "cmp-bloc-t" }, t("Zone de coopération")),
+            el("div", { class: "cmp-coop" }, colonnes),
+            el("h2", { class: "cmp-bloc-t" }, t("Tableau de coopération")),
+            el("table", { class: "cmp-coop-tableau" }, el("tbody", {}, lignes)),
+            el("h2", { class: "cmp-bloc-t" }, t("Journal par scénario")),
+            el("p", { class: "cmp-champ-aide" }, t("Ce que chaque scénario gagné a laissé au carnet (colonnes 1 à 5), puis l'état actuel.")),
+            journal,
+        ),
+    );
+}
+
 /** Le Marche se visite-t-il deja ? Hunting Season : « Between each scenario »,
  *  donc pas avant le premier (`ouvert_apres_premier`). */
 function marcheOuvert(campagne, definition) {
@@ -960,6 +1034,10 @@ function vueCampagne() {
                 class: "btn ghost",
                 onclick: () => { etat.vue = "marche"; rendre(); },
             }, definition.marche.titre || t("Le Marché")) : null,
+            definition.cooperation ? el("button", {
+                class: "btn ghost",
+                onclick: () => { etat.vue = "cooperation"; rendre(); },
+            }, enLangue(definition.cooperation.titre, definition.cooperation.titre_en)) : null,
             // L'enquete, elle, reste consultable meme partie en cours : on ne
             // touche a rien en la lisant, et c'est justement pendant qu'on
             // joue qu'on veut savoir quelles combinaisons tiennent encore.
@@ -1544,7 +1622,7 @@ function corrigerTextesMarvel() {
    marche, enquete) est une entree d'historique au telephone. Les boutons
    « Retour » de l'interface reculent dans l'historique quand la vue visee est
    juste derriere : la pile reste propre (meme principe que l'assistant). */
-const VUES_DE_CAMPAGNE = ["campagne", "marche", "enquete"];
+const VUES_DE_CAMPAGNE = ["campagne", "marche", "enquete", "cooperation"];
 
 function retourVers(vue) {
     if (reculerVers(vue)) return;
@@ -1574,6 +1652,8 @@ suivreTel(() => rendre());
 function rendre() {
     if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
         root.replaceChildren(vueMarche(etat.campagne, etat.definition));
+    else if (etat.vue === "cooperation" && etat.campagne && etat.definition && etat.definition.cooperation)
+        root.replaceChildren(vueCooperation(etat.campagne, etat.definition));
     else if (etat.vue === "enquete" && etat.campagne && etat.definition && etat.definition.enquete)
         root.replaceChildren(vueEnquete(etat.campagne, etat.definition));
     else if (etat.vue === "campagne" && etat.campagne && etat.definition) root.replaceChildren(vueCampagne());

@@ -391,6 +391,16 @@ export function PanneauRecompenses({
           ? [...new Set([...(campagne.termines ?? []), scenario.id])]
           : (campagne.termines ?? []),
         partieEnCours: null,
+        // La colonne de ce scénario dans le carnet imprimé : ce qu'il vient de
+        // noter. Rien ne la relit pour jouer ; l'écran de campagne la montre.
+        ...(gagne || continueSurDefaite
+          ? {
+              historique: {
+                ...(campagne.historique ?? {}),
+                [scenario.id]: assainirCarnet(champs, valeurs, total),
+              },
+            }
+          : {}),
         ...(verdict.perdue ? { perdue: true } : {}),
       }
       await enregistrerCampagne(suivante)

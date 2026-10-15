@@ -514,3 +514,26 @@ button{cursor:pointer}
 .cmp-vilains{border:1px solid var(--line);border-radius:8px;background:var(--ink2);padding:8px 10px}
 .cmp-vilains>summary{cursor:pointer;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--gold)}
 .cmp-vilains .cmp-page{margin-top:10px}
+
+
+/* ----------------------------------------- Coopération (Skrull Menace) ---
+   La zone en cinq colonnes comme la planche du carnet (p.22), le tableau de la
+   p.24, le journal par scénario (p.22-23). Présente = en couleur, absente = grise. */
+.cmp-coop-titre-bloc { margin-top: 22px; }
+.cmp-coop { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin: 10px 0 26px; }
+.cmp-coop-col-t { margin: 0 0 8px; font-size: 14px; }
+.cmp-coop-col-n { color: rgba(255, 255, 255, 0.5); font-weight: 400; }
+.cmp-coop-cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.cmp-coop-carte { border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 6px; overflow: hidden; line-height: 0; }
+.cmp-coop-carte img { width: 100%; display: block; }
+.cmp-coop-carte.presente { border-color: #35a865; }
+.cmp-coop-carte.absente img { filter: grayscale(1) brightness(0.55); }
+.cmp-coop-tableau, .cmp-coop-journal { border-collapse: collapse; width: 100%; font-size: 13px; margin: 8px 0 26px; }
+.cmp-coop-tableau th, .cmp-coop-tableau td, .cmp-coop-journal th, .cmp-coop-journal td {
+    border: 1px solid rgba(255, 255, 255, 0.14); padding: 5px 8px; text-align: left; vertical-align: top; }
+.cmp-coop-tableau th { width: 190px; }
+.cmp-coop-case { color: rgba(255, 255, 255, 0.62); }
+.cmp-coop-case.cochee { background: rgba(53, 168, 101, 0.28); color: #fff; }
+.cmp-coop-ligne.complete th { background: rgba(53, 168, 101, 0.18); }
+.cmp-coop-gagnee { color: #5fd592; font-weight: 700; font-size: 12px; }
+.cmp-coop-now { color: #ffd45a; }
