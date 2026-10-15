@@ -27,3 +27,10 @@ Une ligne par réponse. Source : conversation du 15/10/2026.
 - **Impulsive (tm004)** : **jouable sans WEAPON** (seul le coût doit être payable).
 - **Sewer Problems (tm014)** : icône centrale = **Crise 1** (même glyphe que 01108 Crowd Control, vérifié par découpe).
 - **Michelangelo « Hero Spin »** : une seule face héros, rien de plus (tm001a).
+- **Rage de Raphael (tr002, tr010, etc.)** : plafond de 3 **seulement où il est imprimé** (Yaban Hito, Sai) ; Casey Jones et Gekido sans plafond (`PLAFOND_PARTOUT = False`, état actuel du code).
+- **« Raphael » en forme civile (tr002, tr007, tr010)** : les effets visent **l'identité** (soin, dégâts, rage sur la carte d'identité même en alter-ego). Le code actuel fait l'inverse : À CORRIGER.
+- **Encart Sai (tr011, tr012)** : **l'encart fait loi** : chaque usage d'une Sai = action d'attaque + 1 rage (max 3).
+- **Out of Control (tr013)** : « vous » = **l'identité seulement** (alliés peuvent contrer/défendre).
+- **Mutagen Bomb (tr014)** : icône = **Amplify 1** (même glyphe que 16054 Vendetta, vérifié par découpe) ; `desc.Amplify = "1"` ajouté dans cards.json, checksum recalculé.
+- **Disarm (tr003)** : « attachment » = **attachements de rencontre seulement** (type Attachment), pas les améliorations posées sur un ennemi.
+- **Td002 Metalhead** : pas de question, fidélité 100 % : l'interruption doit être offerte depuis la main et la Carapace ; à prouver en phase C, sinon passer par `SetPlay` + coût 0.

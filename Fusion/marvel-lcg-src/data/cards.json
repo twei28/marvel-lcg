@@ -109167,7 +109167,8 @@
    "subtitle": "",
    "desc": {
     "Boost": "2",
-    "StartingThreat": "2*"
+    "StartingThreat": "2*",
+    "Amplify": "1"
    },
    "traits": [],
    "text": "<i>Old Hobb has weaponized mutagen into bombs.</i>\n<b>Forced Response</b>: After resolving step one of the villain phase, place 1 timer counter here. Then, if there are 2 or more timer counters here, discard this card and deal each player 1 facedown encounter card.",
@@ -109223,5 +109224,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "86c190e6f1fb7e0824371a6374811ce36ca1d64e97ef5899cea68783a0f43b23"
+ "checksum": "56b38b6f00271b52a0dff4fdd913549ff68a1e0d4ba4c9ed2fe2badc44bf36d6"
 }
