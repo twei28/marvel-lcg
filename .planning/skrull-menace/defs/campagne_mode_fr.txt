@@ -1,0 +1,14 @@
+  // skrull_menace — mode campagne : questions posees par le moteur (libelles anglais -> francais).
+  // Ces libelles sont ecrits dans `src/cards/pack/skrull_menace/campaign.py` (ForChoiceAbility / AskChooseOneText).
+  // Ce ne sont pas des textes de carte : ils vont au dictionnaire des questions du plateau, pas a textes-fr-fanmade.ts.
+  // Vocabulaire : « pile de victoire », « manigance annexe », « manigance principale », « pion Accélération » (guide de reference FR).
+  'Place 1 acceleration token on the main scheme to heal to full': "Placez 1 pion Accélération sur la manigance principale pour soigner votre identité au complet",
+  'Place 1 acceleration token on the main scheme to rejoin the team at full hit points': "Placez 1 pion Accélération sur la manigance principale pour rejoindre l'équipe avec tous vos points de vie",
+  // « {nom} » : nom de la carte vaincue, insere par le moteur.
+  'Discard the top card of your deck to place {nom} in the victory display': "Défaussez la carte du dessus de votre deck pour placer {nom} dans la pile de victoire",
+  // Titre de la question posee a chaque joueur, une fois par type de carte de la zone de coopération.
+  'Cooperation Area: add a card (Ally)': "Zone de coopération : ajoutez une carte (Allié)",
+  'Cooperation Area: add a card (PlayerSideScheme)': "Zone de coopération : ajoutez une carte (Manigance annexe de joueur)",
+  'Cooperation Area: add a card (Resource)': "Zone de coopération : ajoutez une carte (Ressource)",
+  'Cooperation Area: add a card (Support)': "Zone de coopération : ajoutez une carte (Soutien)",
+  'Cooperation Area: add a card (Upgrade)': "Zone de coopération : ajoutez une carte (Amélioration)",

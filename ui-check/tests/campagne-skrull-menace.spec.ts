@@ -9,6 +9,10 @@
 //
 //   UI_CHECK_BASE=http://127.0.0.1:31900 npx playwright test tests/campagne-skrull-menace.spec.ts --project=pc
 //
+// Prerequis (dans une copie du depot, pas dans le depot principal) : un serveur sur un port a soi
+// (copie de `.game-src` + `main.py`), `public/app` (plateau compile) et `public/stories/skrull_menace/`
+// (scans du livret) : ni l'un ni l'autre n'est versionne, les lier vers ceux du depot principal.
+//
 // ATTENTION : ce test lance de VRAIES parties. Toute partie en cours sur le serveur vise est perdue.
 import { test, expect } from '@playwright/test'
 import {
@@ -67,6 +71,10 @@ test.describe('Campagne Skrull Menace : l interface de choix de campagne', () =>
       await page.locator('.cmp-carte', { hasText: nom }).locator('.cmp-carte-ouvrir').click()
       await expect(page.getByRole('button', { name: /Lancer le scénario/ })).toBeVisible()
       await expect(page.locator('.cmp-sets'), 'Les sets du scenario 1 ne sont pas listes.').toContainText(/Army of Skrulls/i)
+      await expect(
+        page.locator('img[src*="/stories/skrull_menace/"]').first(),
+        'Le livret (pages de regles) n est pas branche a l ecran de la campagne.'
+      ).toBeAttached()
       await expect(page.getByText('Standard Skrull à la place de Standard')).toBeVisible()
       await expect(page.getByText('Expert Skrull à la place d\'Expert'), 'Reglage reserve a la campagne experte.').toBeVisible()
     } finally {

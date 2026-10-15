@@ -9,19 +9,26 @@
  "expert": {
   "pv_persistants": true
  },
- "pages_regles": [],
+ "pages_regles": [
+  "00-campagne-regles-1.jpg",
+  "00-campagne-regles-2.jpg",
+  "00-campagne-regles-3.jpg"
+ ],
  "scenarios": [
   {
    "id": "sk_skrull_empire",
    "numero": 1,
    "nom": "Skrull Empire",
    "nom_fr": "Empire Skrull",
-   "resume": "Dorrek, R'Klll et S'Byll se relaient à la tête d'un empire qui a colonisé la moitié de la galaxie d'Andromède. Les planètes qu'il conquiert le rendent plus fort à chaque complot mené à terme.",
+   "resume": "Dorrek, R'Klll et S'Byll se relaient à la tête d'un empire qui a colonisé la moitié de la galaxie d'Andromède. Les planètes qu'il conquiert le rendent plus fort à chaque manigance menée à terme.",
    "enjeu": "Le tirage d'un ensemble Skrull Elite, Shaper of Worlds et Cosmic Cube Creation entrent dans la campagne : ce que vous y vaincrez rejoindra la zone de coopération.",
    "victoire": [],
    "pages": {
     "intro": [],
-    "regles": [],
+    "regles": [
+     "01-sk_skrull_empire-regles-1.jpg",
+     "01-sk_skrull_empire-regles-2.jpg"
+    ],
     "epilogue": []
    }
   },
@@ -35,7 +42,11 @@
    "victoire": [],
    "pages": {
     "intro": [],
-    "regles": [],
+    "regles": [
+     "02-sk_super_skrull-regles-0.jpg",
+     "02-sk_super_skrull-regles-1.jpg",
+     "02-sk_super_skrull-regles-2.jpg"
+    ],
     "epilogue": []
    }
   },
@@ -49,7 +60,10 @@
    "victoire": [],
    "pages": {
     "intro": [],
-    "regles": [],
+    "regles": [
+     "03-sk_paibok-regles-1.jpg",
+     "03-sk_paibok-regles-2.jpg"
+    ],
     "epilogue": []
    }
   },
@@ -63,7 +77,10 @@
    "victoire": [],
    "pages": {
     "intro": [],
-    "regles": [],
+    "regles": [
+     "04-sk_skrull_pantheon-regles-1.jpg",
+     "04-sk_skrull_pantheon-regles-2.jpg"
+    ],
     "epilogue": []
    }
   },
@@ -78,7 +95,10 @@
    "victoire": [],
    "pages": {
     "intro": [],
-    "regles": [],
+    "regles": [
+     "05-sk_secret_invasion-regles-1.jpg",
+     "05-sk_secret_invasion-regles-2.jpg"
+    ],
     "epilogue": []
    }
   }
@@ -121,14 +141,14 @@
     "sk230d"
    ],
    "libelle": "Zone de coopération",
-   "aide": "Les cartes de campagne que les Skrulls ralliés mettent à votre disposition. Au début des scénarios 2 à 5, chaque joueur peut en mélanger une de chaque type (allié, complot annexe de joueur, ressource, soutien, amélioration) à son deck : elles ne comptent pas dans sa taille et sont rendues à la zone après la partie. Cochez ou décochez pour corriger."
+   "aide": "Les cartes de campagne que les Skrulls ralliés mettent à votre disposition. Au début des scénarios 2 à 5, chaque joueur peut en mélanger une de chaque type (allié, manigance annexe de joueur, ressource, soutien, amélioration) à son deck : elles ne comptent pas dans sa taille et sont rendues à la zone après la partie. Cochez ou décochez pour corriger."
   },
   {
    "cle": "Cooperation Progress",
    "type": "auto",
    "format": "liste",
    "libelle": "Tableau de coopération",
-   "aide": "Une case par « Carte: exigence » cochée. Chaque sbire ou complot annexe de la pile de victoire coche UNE seule exigence ; quand toutes celles d'une carte sont cochées, elle rejoint la zone de coopération."
+   "aide": "Une case par « Carte: exigence » cochée. Chaque sbire ou manigance annexe de la pile de victoire coche UNE seule exigence ; quand toutes celles d'une carte sont cochées, elle rejoint la zone de coopération."
   },
   {
    "cle": "Shaper of Worlds Game Area",
@@ -149,35 +169,35 @@
    "type": "auto",
    "format": "liste",
    "libelle": "Skrull Elite Crusader",
-   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et le complot annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
   },
   {
    "cle": "Skrull Elite: Jazinda",
    "type": "auto",
    "format": "liste",
    "libelle": "Skrull Elite Jazinda",
-   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et le complot annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
   },
   {
    "cle": "Skrull Elite: Skymax",
    "type": "auto",
    "format": "liste",
    "libelle": "Skrull Elite Skymax",
-   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et le complot annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
   },
   {
    "cle": "Skrull Elite: War Skrull",
    "type": "auto",
    "format": "liste",
    "libelle": "Skrull Elite War Skrull",
-   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et le complot annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
   },
   {
    "cle": "Skrull Elite: Xavin",
    "type": "auto",
    "format": "liste",
    "libelle": "Skrull Elite Xavin",
-   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et le complot annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
   }
  ],
  "victoire_commune_expert": [

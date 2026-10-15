@@ -986,3 +986,25 @@ CHAINES += [
              {"scenario": "sk_secret_invasion", "verifier": v_c5,
               "carnet_attendu": {"gagnee": True, "scenario": "sk_secret_invasion"}}]),
 ]
+
+
+def avant_pv_au_dessus_de_la_base(monde):
+    """Simule « +3 hit points » (Sy-Torak Gem) : PV max et PV courants a 13 pour une base de 10."""
+    ident = _identite(monde)
+    ident.components.health.SetMaxHealth(ident.printed_health + 3)
+    ident.components.health.SetHealth(ident.printed_health + 3)
+    BASE["pv_base"] = ident.printed_health
+    return []
+
+
+def vf_pv_depasses(monde):
+    ident = _identite(monde)
+    return _verif((ident.health == BASE["pv_base"] + 3, f"la partie finit bien AU-DESSUS de la base : {ident.health} (base {BASE['pv_base']})"))
+
+
+CHAINES += [
+    _chaine("expert — PV restants PLAFONNES aux PV de base (13 sur une base de 10 : on note 10)",
+            {},
+            [{"scenario": "sk_skrull_empire_expert", "avant": avant_pv_au_dessus_de_la_base, "verifier_fin": vf_pv_depasses,
+              "carnet_reporte_attendu": {CLE_PV: "10"}}]),
+]
