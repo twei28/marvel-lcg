@@ -55,8 +55,8 @@ Fichiers : `src/cards/pack/skrull_menace/campaign.py` (moteur), `data/campagnes/
 - **Une vraie UI pour la zone et le tableau** (onglets, vignettes, choix manuel des cases) : decrite dans `defs/campagne_mode_questions.md`
   (section Interface). Aujourd'hui : champs du panneau de fin de partie (zone = 30 vignettes cliquables, tableau = texte).
 - **Les cartes sk263-sk288** : portees (branche fusionnee le 15/10/2026, gabarits `CAMPAGNE-CARTES-GABARITS.md`, 111 cas `[campagne_cartes]`
-  verts). Les cas de `campagne_mode` utilisent les vraies cartes des qu'elles existent (32/32 apres la fusion). Reste Q10 : cacher
-  sk263-sk288 dans le constructeur de decks.
+  verts). Les cas de `campagne_mode` utilisent les vraies cartes des qu'elles existent (32/32 apres la fusion). Q10 faite : `SETS_RESERVES_A_LA_CAMPAGNE`
+  (`public/js/deckbuilder/regles.js`) retire les 26 cartes du constructeur et de l'import de decks.
 - **L'historique du journal par scenario** (p.22-23, une colonne par scenario) : seule la derniere valeur est gardee (Q13).
 
 ## Comment rejouer les preuves

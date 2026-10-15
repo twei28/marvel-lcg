@@ -95,8 +95,14 @@ export function estTypeJouable(c) {
         || TYPES_JOUEUR.includes(String(c.type));
 }
 
+/** Sets dont les cartes n'entrent dans un deck que par la mise en place de leur
+ *  campagne (« These cards cannot be included in any deck unless playing the
+ *  Skrull Menace campaign », livret p.5) : absentes du constructeur. */
+export const SETS_RESERVES_A_LA_CAMPAGNE = ["Skrull Menace Campaign"];
+
 export function estCarteJoueur(c) {
     if (!c || !c.class) return false;
+    if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return false;
     if (c.class === "Hero") return false;
     if (!ASPECTS.includes(c.class) && !CLASSES_NEUTRES.includes(c.class)) return false;
     return estTypeJouable(c);
