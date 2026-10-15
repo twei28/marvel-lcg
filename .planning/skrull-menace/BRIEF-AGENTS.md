@@ -55,8 +55,8 @@ l'utilisateur sont en FRANCAIS ; commentaires de code en francais, comme le rest
   `/home/oem/Desktop/Marvel LCG/Fusion/marvel-lcg-src/assets/pics/<card_id>.png` (petit cote ramene a 615 px,
   LANCZOS ; carte paysage : rotation 90 degres anti-horaire `im.rotate(90, expand=True)` avant) et l'original dans
   `/home/oem/Desktop/Marvel LCG/sauvegardes-serveur/scans-originaux/<card_id>.png`. Copies d'une carte : une seule image
-  par card_id. Recette : voir le bloc Lyja dans l'historique git (`git log -p` du commit d845b442 ne contient pas les
-  images ; la regle ci-dessus suffit).
+  par card_id. Recette : `.planning/skrull-menace/defs/copier_images_exemple.py`. (Ligne laissee pour memoire :
+  la regle ci-dessus suffit.)
 - Ne deploie JAMAIS (`deployer.sh` interdit : decision de l'utilisateur). Ne touche pas au jeu qui tourne sur le port 2345.
 
 ## Vocabulaire francais (textes de cartes) — a respecter, un test le verifiera
