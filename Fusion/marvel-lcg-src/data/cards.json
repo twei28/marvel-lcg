@@ -105356,7 +105356,1120 @@
    "set_name": "New Revengers",
    "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a card with the [[REVENGER]] trait is discarded. Reveal that card.",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk189a",
+   "type": "Villain",
+   "name": "* Spider-Woman (Veranke)",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "ATK": "2*",
+    "SCH": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Spider-Woman cannot take damage.\n[star] <b>Forced Response</b>: After Spider-Woman attacks you, place 1 suspicion counter on \"Who Do You Trust?\".\n<i>You are a Skrull!</i> — <b>Hero Action</b>: Exhaust a hero and spend 1[per_hero] resources of any type → flip Spider-Woman. <i>(The players can pay this ability's costs as a group.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk189b",
+   "type": "Villain",
+   "name": "* Queen Veranke",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Response</b>: After the villain phase ends, if any player is in alter-ego form, flip Queen Veranke.\n<b>When Defeated</b>: Remove all suspicion counters from \"Who Do You Trust?\".\n<i>\"I will be among those on Earth infiltration assignment. I will take a role in this strategy.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk190a",
+   "type": "Villain",
+   "name": "* Spider-Woman (Veranke)",
+   "subtitle": "",
+   "desc": {
+    "HP": "18*",
+    "ATK": "2*",
+    "SCH": "3",
+    "Stage": "2"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Spider-Woman cannot take damage.\n[star] <b>Forced Response</b>: After Spider-Woman attacks you, place 1 suspicion counter on \"Who Do You Trust?\".\n<i>You are a Skrull!</i> — <b>Hero Action</b>: Exhaust a hero and spend 1[per_hero] resources of any type → flip Spider-Woman. <i>(The players can pay this ability's costs as a group.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk190b",
+   "type": "Villain",
+   "name": "* Queen Veranke",
+   "subtitle": "",
+   "desc": {
+    "HP": "18*",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "2"
+   },
+   "traits": [
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Response</b>: After the villain phase ends, if any player is in alter-ego form, flip Queen Veranke.\n<b>When Defeated</b>: Remove all suspicion counters from \"Who Do You Trust?\".\n<i>\"I will be among those on Earth infiltration assignment. I will take a role in this strategy.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk191a",
+   "type": "Villain",
+   "name": "* Spider-Woman (Veranke)",
+   "subtitle": "",
+   "desc": {
+    "HP": "21*",
+    "ATK": "3*",
+    "SCH": "3",
+    "Stage": "3"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Spider-Woman cannot take damage.\n[star] <b>Forced Response</b>: After Spider-Woman attacks you, place 1 suspicion counter on \"Who Do You Trust?\".\n<i>You are a Skrull!</i> — <b>Hero Action</b>: Exhaust a hero and spend 1[per_hero] resources of any type → flip Spider-Woman. <i>(The players can pay this ability's costs as a group.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk191b",
+   "type": "Villain",
+   "name": "* Queen Veranke",
+   "subtitle": "",
+   "desc": {
+    "HP": "21*",
+    "ATK": "4",
+    "SCH": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Response</b>: After the villain phase ends, if any player is in alter-ego form, flip Queen Veranke. Otherwise, discard the top card of the encounter deck, if it is a treachery, flip Queen Veranke.\n<i>\"I will be among those on Earth infiltration assignment. I will take a role in this strategy.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk192a",
+   "type": "MainScheme",
+   "name": "The Infiltration Has Begun",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>Contents</b>: Spider-Woman I and Spider-Woman II <i>(Spider-Woman II and Spider-Woman III instead for expert mode)</i>. Secret Invasion and Standard encounter sets. One modular encounter set <i>(Army of Skrulls)</i>.\n<b>Setup</b>: Create the [[IMPOSTOR]] deck and set it next to the encounter deck <i>(see insert)</i>. Put the \"Who Do You Trust?\" environment into play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk192b",
+   "type": "MainScheme",
+   "name": "The Infiltration Has Begun",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1",
+    "TargetThreat": "8*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "[star] Place 1 additional threat here for each [[SKRULL]] enemy in play and each [[IMPOSTOR]] ally in play.\n<b>Forced Response</b>: After your turn ends, if there are less than 2[per_hero] suspicion counters on \"Who Do You Trust?\", put a [[CAMOUFLAGED]] ally at random from the [[IMPOSTOR]] deck into play under your control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk193a",
+   "type": "MainScheme",
+   "name": "The Skrull Invasion",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<i>The Skrulls, a ruthless group of alien shapeshifters, have secretly replaced many heroes on Earth with impostors and now they are about to strike.</i>\n<b>When Revealed</b>: If Mistrust and Paranoia is in play, remove 2[per_hero] suspicion counters from \"Who Do You Trust?\". Otherwise, find Mistrust and Paranoia and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk193b",
+   "type": "MainScheme",
+   "name": "The Skrull Invasion",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2",
+    "TargetThreat": "14*",
+    "EscalationThreat": "0",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "X is equal to twice the number of [[SKRULL]] enemies in play.\n<b>Forced Response</b>: After your turn ends, if there are less than 2[per_hero] suspicion counters on \"Who Do You Trust?\", put a [[REVEALED]] minion at random from the [[IMPOSTOR]] deck into play engaged with you.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk194",
+   "type": "Environment",
+   "name": "\"Who Do You Trust?\"",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When any amount of threat is placed on the main scheme, remove an equal amount of suspicion counters from here.\n<b>Forced Interrupt</b>: When any amount of threat is removed from the main scheme, place an equal amount of suspicion counters here.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk195",
+   "type": "Attachment",
+   "name": "Impostor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Treat attached ally as a [[SKRULL]] minion with a blank text box. Attached minion's SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: Attach to the non-[[SKRULL]] ally with the most remaining hit points without Impostor attached. Attached ally engages its controller. Otherwise, the villain schemes.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk196",
+   "type": "Attachment",
+   "name": "Super-Skrull Enhancement",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Attach to the [[SKRULL]] minion with the most remaining hit points without another Super-Skrull Enhancement attached. If you cannot, choose a [[CAMOUFLAGED]] ally, flip that ally and attach this card to it. Otherwise, this card gains surge.\nAttached minion gets +2 hit points.\n[star] <b>Boost</b>: Reveal this card, after this activation ends.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk197",
+   "type": "Attachment",
+   "name": "Super-Skrull Enhancement",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "3"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Attach to the [[SKRULL]] minion with the most remaining hit points without another Super-Skrull Enhancement attached. If you cannot, choose a [[CAMOUFLAGED]] ally, flip that ally and attach this card to it. Otherwise, this card gains surge.\n[star] <b>Boost</b>: Reveal this card, after this activation ends.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk198",
+   "type": "Attachment",
+   "name": "Super-Skrull Enhancement",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Attach to the [[SKRULL]] minion with the most remaining hit points without another Super-Skrull Enhancement attached. If you cannot, choose a [[CAMOUFLAGED]] ally, flip that ally and attach this card to it. Otherwise, this card gains surge.\nAttached minion gains retaliate 1.\n[star] <b>Boost</b>: Reveal this card, after this activation ends.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk199",
+   "type": "SideScheme",
+   "name": "Chaos on the Battlefield",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1",
+    "Acceleration": "1",
+    "Boost": "3",
+    "Incite": "2"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<i>\"All I know is, if there's only one way to figure out who's a Skrull... Then I'm more than happy to do it!\"</i> —Wolverine\nIncite 2.\n<b>When Revealed</b>: Place X additional threat here, where X is equal to the total SCH of all [[IMPOSTOR]] characters in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk200",
+   "type": "SideScheme",
+   "name": "Fulfill the Prophecy",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<i>The holy text of the Book of Worlds was the main reason the Skrulls turned the invasion of Earth into a holy war. They believed it rightfully theirs.</i>\nHinder 1[per_hero].\nEach [[SKRULL]] minion gains guard and patrol.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk201",
+   "type": "SideScheme",
+   "name": "Mistrust and Paranoia",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "Players cannot attack minions engaged with other players or defend against them. Players cannot pay any card's or ability's costs as a group.\n<b>When Revealed</b>: Place 1 additional threat here for each friendly character in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk202",
+   "type": "Treachery",
+   "name": "Arrival of Impostors",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Each player puts a [[CAMOUFLAGED]] ally at random from the [[IMPOSTOR]] deck into play under their control.\n[star] <b>Boost</b>: Put a [[CAMOUFLAGED]] ally at random from the [[IMPOSTOR]] deck into play under your control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk203",
+   "type": "Treachery",
+   "name": "Camouflage",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b> (Queen Veranke): Flip Queen Veranke. Remove 3 suspicion counter from \"Who Do You Trust?\".\n<b>When Revealed</b> (Spider-Woman): Spider-Woman schemes.\n[star] <b>Boost</b>: Flip Queen Veranke, after this activation ends.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk204",
+   "type": "Treachery",
+   "name": "Glory to the Skrull Empire",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Give the villain and each [[SKRULL]] minion engaged with you a tough status card. If the villain already has a tough status card, this card gains surge.\n[star] <b>Boost</b>: Give the villain a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk205",
+   "type": "Treachery",
+   "name": "Infiltration Ritual",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Put a [[CAMOUFLAGED]] ally at random from the [[IMPOSTOR]] deck into play under any player's control. If you cannot, this card gains surge.\n[star] <b>Boost</b>: Remove 3 suspicion counters from \"Who Do You Trust?\".",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk206",
+   "type": "Treachery",
+   "name": "Invasion Fleet",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Each player puts a [[REVEALED]] minion at random from the [[IMPOSTOR]] deck into play engaged with them.\n[star] <b>Boost</b>: Put a [[REVEALED]] minion at random from the [[IMPOSTOR]] deck into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk207",
+   "type": "Treachery",
+   "name": "Revelation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Flip the [[CAMOUFLAGED]] ally with the most remaining hit points. If you cannot, put a [[REVEALED]] minion at random from the [[IMPOSTOR]] deck into play engaged with you.\n[star] <b>Boost</b>: Flip 1 [[CAMOUFLAGED]] ally you control, after this activation ends.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk208a",
+   "type": "Ally",
+   "name": "* Captain America (Pitt'o Nili)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Captain America would leave play, flip him instead.\n<i>\"Your death will bring this world's heroes to their knees. Your death will bring the writings to life.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk208b",
+   "type": "Minion",
+   "name": "* Pitt'o Nili",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Guard": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Guard. <i>(While this minion is engaged with you, you cannot attack the villain.)</i>\n<b>When Revealed</b>: Heal all damage from Pitt'o Nili and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk209a",
+   "type": "Ally",
+   "name": "* Captain Marvel (Khn'nr)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Captain Marvel would leave play, flip him instead.\n<i>\"I Speak Skrull perfectly well.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk209b",
+   "type": "Minion",
+   "name": "* Khn'nr",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Heal all damage from Khn'nr and put him into play engaged with you.\n<b>When Defeated</b>: Remove all suspicion counters from \"Who Do You Trust?\".",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk210a",
+   "type": "Ally",
+   "name": "* Captain Marvel (M'lanz)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Captain Marvel would leave play, flip her instead.\n<i>\"It was written a world of blue would be the home for all that believed.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk210b",
+   "type": "Minion",
+   "name": "* M'lanz",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Heal all damage from M'lanz and put her into play engaged with you.\n[star] <b>Forced Interrupt</b>: When M'lanz attacks you, also resolve her attack against each other hero.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk211a",
+   "type": "Ally",
+   "name": "* Carnage (Zr'x)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Carnage would leave play, flip him instead.\n<i>\"It was written and it has come true.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk211b",
+   "type": "Minion",
+   "name": "* Zr'x",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Toughness. <i>(This character enters play with a tough status card.)</i>\n<b>When Revealed</b>: Heal all damage from Zr'x and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk212a",
+   "type": "Ally",
+   "name": "* Daredevil (Trl'k)",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "1*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Daredevil would leave play, flip him instead.\n<i>\"As the prophets wrote down to our ancestors.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk212b",
+   "type": "Minion",
+   "name": "* Trl'k",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "1",
+    "SCH": "2"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "While the engaged player is engaged with another [[SKRULL]] minion Trl'k cannot take damage.\n<b>When Revealed</b>: Heal all damage from Trl'k and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk213a",
+   "type": "Ally",
+   "name": "* Deathlok (Fry'lu)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Deathlok would leave play, flip her instead.\n<i>\"This will not be easy. Most of us will die before this is over.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk213b",
+   "type": "Minion",
+   "name": "* Fry'lu",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Heal all damage from Fry'lu and put her into play engaged with you.\n<b>When Defeated</b>: Deal the player who defeated Fry'lu a facedown encounter card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk214a",
+   "type": "Ally",
+   "name": "* Dum Dum Dugan (Sn'Tlo)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "1*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Dum Dum Dugan would leave play, flip him instead.\n<i>\"You don't reveal your true self in the open.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk214b",
+   "type": "Minion",
+   "name": "* Sn'Tlo",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "1",
+    "SCH": "2"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Reduce the amount of damage Sn'Tlo takes from each attack by 1.\n<b>When Revealed</b>: Heal all damage from Sn'Tlo and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk215a",
+   "type": "Ally",
+   "name": "* Elektra (Siri)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Elektra would leave play, flip her instead.\n<i>\"My identity was not detected.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk215b",
+   "type": "Minion",
+   "name": "* Siri",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Patrol. <i>(While this minion is engaged with you, you cannot thwart the main scheme.)</i>\n<b>When Revealed</b>: Heal all damage from Siri and put her into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk216a",
+   "type": "Ally",
+   "name": "* Giant-Man (D'lutz)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Giant-Man would leave play, flip him instead.\n<i>\"It was written in our Book of Worlds.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk216b",
+   "type": "Minion",
+   "name": "* D'lutz",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Retaliate 1.\n<b>When Revealed</b>: Heal all damage from D'lutz and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk217a",
+   "type": "Ally",
+   "name": "* Invisible Woman (De'Lila)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Invisible Woman would leave play, flip her instead.\n<i>\"It's true! I'm not Susan Richards; I am a Skrull!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk217b",
+   "type": "Minion",
+   "name": "* De'Lila",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "2"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "As an additional cost to attack De'Lila, you must spend 1 resource of any type.\n<b>When Revealed</b>: Heal all damage from De'Lila and put her into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk218a",
+   "type": "Ally",
+   "name": "* Iron Fist (Grrix)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Iron Fist would leave play, flip him instead.\n<i>\"He loves me... He loves me... He loves me...\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk218b",
+   "type": "Minion",
+   "name": "* Grrix",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "2"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Heal all damage from Grrix and put him into play engaged with you.\n<b>When Defeated</b>: The villain attacks the player who defeated Grrix <i>(even if that player is in alter-ego form)</i>.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk219a",
+   "type": "Ally",
+   "name": "* Iron Man (Ssrov)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Iron Man would leave play, flip him instead.\n<i>\"In spite of all that you've done to our empire, he loves you.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk219b",
+   "type": "Minion",
+   "name": "* Ssrov",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "1*"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "[star] While the villain has the [[REVEALED]] trait, Ssrov gets +1 SCH and +1 ATK.\n<b>When Revealed</b>: Heal all damage from Ssrov and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk220a",
+   "type": "Ally",
+   "name": "* Moon Knight (Hs'fld)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Moon Knight would leave play, flip him instead.\n<i>\"A billion Skrulls died to prove the words true.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk220b",
+   "type": "Minion",
+   "name": "* Hs'fld",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Heal all damage from Hs'fld and put him into play engaged with you.\n<b>When Defeated</b>: The player who defeated Hs'fld puts a [[CAMOUFLAGED]] ally at random from the [[IMPOSTOR]] deck into play under their control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk221a",
+   "type": "Ally",
+   "name": "* Nick Fury (H'kurrek)",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Nick Fury would leave play, flip him instead.\n<i>\"It was written a wave would come.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk221b",
+   "type": "Minion",
+   "name": "* H'kurrek",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2*",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "[star] H'kurrek's attacks gain overkill, piercing, and ranged.\n<b>When Revealed</b>: Heal all damage from H'kurrek and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk222a",
+   "type": "Ally",
+   "name": "* Phoenix (Korya)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Phoenix would leave play, flip her instead.\n<i>\"You will kill her. After we'll switch you out.\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk222b",
+   "type": "Minion",
+   "name": "* Korya",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2*",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Heal all damage from Korya and put her into play engaged with you.\n[star] <b>Forced Response</b>: After Korya attacks you, discard the top card of each player's deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk223a",
+   "type": "Ally",
+   "name": "* Spider-Man (Ch'Gra)",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Spider-Man would leave play, flip him instead.\n<i>\"Well, I do hate myself, but I don't know if I feel like smacking myself around.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk223b",
+   "type": "Minion",
+   "name": "* Ch'Gra",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>When Revealed</b>: Heal all damage from Hagar and put him into play engaged with you.\n<b>When Defeated</b>: Flip Queen Veranke.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk224a",
+   "type": "Ally",
+   "name": "* Thor (Hagar)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Thor would leave play, flip him instead.\n<i>\"He even loves you.\" —Criti Noll</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk224b",
+   "type": "Minion",
+   "name": "* Hagar",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "[star] Hagar's attacks deal indirect damage.\n<b>When Revealed</b>: Heal all damage from Hagar and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk225a",
+   "type": "Ally",
+   "name": "* Venom (Dharr)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Venom would leave play, flip him instead.\n<i>\"We now know the words as written are truth!\" —Queen Veranke</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk225b",
+   "type": "Minion",
+   "name": "* Dharr",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "2",
+    "Villainous": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Villainous. <i>(When this minion activates, give it a boost card.)</i>\n<b>When Revealed</b>: Heal all damage from Dharr and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk226a",
+   "type": "Ally",
+   "name": "* Wolverine (V'lrym)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Wolverine would leave play, flip him instead.\n<i>\"This is as it is written. And no Skrull or man can change that.\" —Commander Chrell</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk226b",
+   "type": "Minion",
+   "name": "* V'lrym",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Quickstrike.\n<b>When Revealed</b>: Heal all damage from V'lrym and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk227a",
+   "type": "Ally",
+   "name": "* Yellowjacket (Criti Noll)",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1*"
+   },
+   "traits": [
+    "CAMOUFLAGED",
+    "IMPOSTOR",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "<b>Forced Interrupt</b>: When Yellowjacket would leave play, flip him instead.\n<i>\"It won't be long until we have a Skrull in every state!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk227b",
+   "type": "Minion",
+   "name": "* Criti Noll",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "3",
+    "Incite": "3"
+   },
+   "traits": [
+    "IMPOSTOR",
+    "REVEALED",
+    "SKRULL"
+   ],
+   "set_name": "Secret Invasion",
+   "text": "Incite 3. <i>(When this card is revealed, place 3 threat on the main scheme.)</i>\n<b>When Revealed</b>: Heal all damage from Criti Noll and put him into play engaged with you.",
+   "custom": "Kajislav"
   }
  ],
- "checksum": "b4f1829dfd0fc8fa1df6231bb3edb113223265cc28e06065984e3c5779edcc52"
+ "checksum": "4eb4b81f9d4b408bb1aa4960ec802ff6997aa1c9e236f13e0ce9817e7273bfac"
 }

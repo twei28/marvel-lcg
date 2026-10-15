@@ -1636,7 +1636,8 @@
   "scenarios": [
    "sk_skrull_empire",
    "sk_super_skrull",
-   "sk_paibok"
+   "sk_paibok",
+   "sk_secret_invasion"
   ],
   "heroes": [
    "hulkling_kajislav",
@@ -1647,9 +1648,10 @@
    "sk_skrull_society",
    "sk_kree_skrull_war",
    "sk_paibok",
-   "sk_new_revengers"
+   "sk_new_revengers",
+   "sk_secret_invasion"
   ],
-  "max_id": "sk169"
+  "max_id": "sk227"
  },
- "checksum": "1bc8106fb2ee0aa13b84a816ede6e28f39f893211e4a882103d062e6d1516473"
+ "checksum": "79a37eaabfacab009e9c20fff965bf0cb0c93ae3a1646be994cb4e065b762beb"
 }
