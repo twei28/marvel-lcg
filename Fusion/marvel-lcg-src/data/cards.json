@@ -103205,7 +103205,813 @@
    "set_name": "Hulkling (Kajislav) Nemesis",
    "text": "<b>When Revealed</b>: Exhaust each card you control that shares a [[TRAIT]] with your identity <i>(including your identity)</i>.\n[star] <b>Boost</b>: Exhaust each card you control that shares a [[TRAIT]] with your identity <i>(except for your identity)</i>.",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk070",
+   "type": "Villain",
+   "name": "* Emperor Dorrek I",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "1*",
+    "SCH": "2",
+    "Stage": "1",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Retaliate 1.\n[star] Emperor Dorrek I's attacks gain ranged.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk071",
+   "type": "Villain",
+   "name": "* Emperor Dorrek I",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "2*",
+    "SCH": "2",
+    "Stage": "2",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Retaliate 1.\n[star] Emperor Dorrek I's attacks gain ranged.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk072",
+   "type": "Villain",
+   "name": "* Emperor Dorrek I",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "2*",
+    "SCH": "3",
+    "Stage": "3",
+    "Retaliate": "2"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Retaliate 2.\n[star] Emperor Dorrek I's attacks gain ranged.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk073",
+   "type": "Villain",
+   "name": "* Emperor Dorrek VII",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "2*",
+    "SCH": "1",
+    "Stage": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Incite 1[per_hero].\n[star] Emperor Dorrek VII's attacks gain overkill.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk074",
+   "type": "Villain",
+   "name": "* Emperor Dorrek VII",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "3*",
+    "SCH": "1",
+    "Stage": "2"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Incite 1[per_hero].\n[star] Emperor Dorrek VII's attacks gain overkill.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk075",
+   "type": "Villain",
+   "name": "* Emperor Dorrek VII",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "4*",
+    "SCH": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Incite 1[per_hero].\n[star] Emperor Dorrek VII's attacks gain overkill.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk076",
+   "type": "Villain",
+   "name": "* Empress R'Klll",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "1*",
+    "SCH": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Empress R'Klll attacks each player in hero form.\n[star] Empress R'Klll's attacks gain piercing.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk077",
+   "type": "Villain",
+   "name": "* Empress R'Klll",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "1*",
+    "SCH": "3",
+    "Stage": "2"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Empress R'Klll attacks each player in hero form.\n[star] Empress R'Klll's attacks gain piercing.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk078",
+   "type": "Villain",
+   "name": "* Empress R'Klll",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "2*",
+    "SCH": "4",
+    "Stage": "3"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Empress R'Klll attacks each player in hero form.\n[star] Empress R'Klll's attacks gain piercing.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk079",
+   "type": "Villain",
+   "name": "* Empress S'Byll",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "1",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Steady. Toughness.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk080",
+   "type": "Villain",
+   "name": "* Empress S'Byll",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "2",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Steady. Toughness.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk081",
+   "type": "Villain",
+   "name": "* Empress S'Byll",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "3",
+    "SCH": "3",
+    "Stage": "3",
+    "Stalwart": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Stalwart. Toughness.\n<i>(This villain has no hit point dial: see the Skrull Empire environment.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk082a",
+   "type": "MainScheme",
+   "name": "Rise of the Skrull Empire",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>Contents</b>: All villains (I) and (II) <i>(stages (II) and (III) instead for the expert mode)</i>. Skrull Empire, Skrull Society and Standard sets. One modular set <i>(Army of Skrulls)</i>.\n<b>Setup</b>: Create the [[PLANET]] and the Villain deck <i>(see insert)</i>. Reveal the top card of the Villain deck. Put the Skrull Empire environment (I) into play <i>(stage (II) instead for the expert mode)</i>.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk082b",
+   "type": "MainScheme",
+   "name": "Rise of the Skrull Empire",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1",
+    "TargetThreat": "6*",
+    "EscalationThreat": "2*",
+    "StartingThreat": "0"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Reveal the top card of the [[PLANET]] deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk083a",
+   "type": "MainScheme",
+   "name": "Andromeda Galaxy Colonization",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[SKRULL]] minion is discarded. Put that minion into play engaged with the first player.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk083b",
+   "type": "MainScheme",
+   "name": "Andromeda Galaxy Colonization",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2",
+    "TargetThreat": "7*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Reveal the top card of the [[PLANET]] deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk084a",
+   "type": "MainScheme",
+   "name": "Further Empire Expansion",
+   "subtitle": "",
+   "desc": {
+    "Stage": "3"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[SKRULL]] minion is discarded. Put that minion into play engaged with the first player.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk084b",
+   "type": "MainScheme",
+   "name": "Further Empire Expansion",
+   "subtitle": "",
+   "desc": {
+    "Stage": "3",
+    "TargetThreat": "5*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "0"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Reveal the top card of the [[PLANET]] deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk085a",
+   "type": "MainScheme",
+   "name": "Entire Universe Domination",
+   "subtitle": "",
+   "desc": {
+    "Stage": "4"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[SKRULL]] minion is discarded. Put that minion into play engaged with the first player.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk085b",
+   "type": "MainScheme",
+   "name": "Entire Universe Domination",
+   "subtitle": "",
+   "desc": {
+    "Stage": "4",
+    "TargetThreat": "9*",
+    "EscalationThreat": "2*",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Reveal the top card of the [[PLANET]] deck.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk086",
+   "type": "Environment",
+   "name": "Skrull Empire",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "Hit points 14[per_hero].\n<i>Incite Rebellion</i> — <b>Hero Action</b>: Choose to either exhaust your hero or spend 2 resources of any type → choose 1 [[PLANET]] environment in play. Treat its printed text box as if it were blank until the end of the round. <i>(Limit once per round per player.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk087",
+   "type": "Environment",
+   "name": "Skrull Empire",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "Hit points 18[per_hero].\n<b>When Revealed</b>: Shuffle each set-aside Overthrow card into the encounter deck.\n<i>Incite Rebellion</i> — <b>Hero Action</b>: Choose to either exhaust your hero or spend 2 resources of any type → choose 1 [[PLANET]] environment in play. Treat its printed text box as if it were blank until the end of the round. <i>(Limit once per round per player.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk088",
+   "type": "Environment",
+   "name": "Skrull Empire",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "Hit points 22[per_hero].\n<b>When Revealed</b>: Shuffle each set-aside Overthrow card into the encounter deck.\n<i>Incite Rebellion</i> — <b>Hero Action</b>: Choose to either exhaust your hero or spend 2 resources of any type → choose 1 [[PLANET]] environment in play. Treat its printed text box as if it were blank until the end of the round. <i>(Limit once per round per player.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk089",
+   "type": "Environment",
+   "name": "Aks'Lo",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each [[SKRULL]] minion gets +2 hit points.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk090",
+   "type": "Environment",
+   "name": "Hy'lt Minor",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each identity gets -1 REC.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk091",
+   "type": "Environment",
+   "name": "Satriani",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each [[SKRULL]] minion gains guard.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk092",
+   "type": "Environment",
+   "name": "Skrell",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each [[SKRULL]] minion gets +1 SCH.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk093",
+   "type": "Environment",
+   "name": "Skrullos",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each side scheme gains the crisis icon ([crisis]).",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk094",
+   "type": "Environment",
+   "name": "Tarnax II",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Decrease the target threat value of the main scheme by 1[per_hero].",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk095",
+   "type": "Environment",
+   "name": "Tarnax IV",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "While a side scheme is in play, this card gains the amplify icon ([amplify]).",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk096",
+   "type": "Environment",
+   "name": "Tarnax VII",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each [[SKRULL]] minion gets +1 ATK.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk097",
+   "type": "Environment",
+   "name": "Zaragz'na",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each ally and support enters play exhausted.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk098",
+   "type": "Attachment",
+   "name": "Impostor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Treat attached ally as a [[SKRULL]] minion with a blank text box. Attached minion's SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: Attach to the non-[[SKRULL]] ally with the most remaining hit points without Impostor attached. Attached ally engages its controller. Otherwise, the villain schemes.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk099",
+   "type": "Minion",
+   "name": "* Intelligentsia",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "0*",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Empire",
+   "text": "Each other [[SKRULL]] enemy gets +1 SCH.\n[star] <b>Forced Interrupt</b>: When Intelligentsia would attack, she schemes instead.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk100",
+   "type": "SideScheme",
+   "name": "Emperor's Throne",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Acceleration": "1",
+    "Hazard": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Defeated</b>: The villain attacks the player who defeated this scheme <i>(even if that player is in alter-ego form)</i>. Give the villain 1 additional boost card for this activation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk101",
+   "type": "SideScheme",
+   "name": "Seeking a Suitable World",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Incite": "2",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "Incite 2.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk102",
+   "type": "Treachery",
+   "name": "A New Skrull Is Born",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until you discard a [[SKRULL]] minion and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk103",
+   "type": "Treachery",
+   "name": "Giving Orders",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Each [[SKRULL]] minion activates against the player it is engaged with. If no minion activated this way, this card gains surge.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk104",
+   "type": "Treachery",
+   "name": "Long Live the Empire",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Heal 2 damage from the villain for each [[SKRULL]] enemy in play. If no damage was healed this way, this card gains surge.\n[star] <b>Boost</b>: Heal 1 damage from the villain for each [[SKRULL]] enemy in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk105",
+   "type": "Treachery",
+   "name": "Overthrow",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Remove the current villain from the game and reveal the top card of the villain deck. Then, set Overthrow aside, out of play.\n[star] <b>Boost</b>: Deal this card to yourself as a facedown encounter card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk106",
+   "type": "Treachery",
+   "name": "Wrath of the Empire",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Empire",
+   "text": "<b>When Revealed</b>: Discard the top 2 cards of the encounter deck for each [[PLANET]] environment in play. Place 1 acceleration token on the main scheme, if a card with the acceleration icon ([acceleration]) was discarded this way.\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[PLANET]] environment in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk107",
+   "type": "Minion",
+   "name": "Skrull Scientist",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "3",
+    "ATK": "0",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "GENIUS",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Society",
+   "text": "[star] <b>Boost</b>: Heal 2 damage from the villain, after this activation ends.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk108",
+   "type": "Minion",
+   "name": "Skrull Spy",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "1"
+   },
+   "traits": [
+    "SKRULL",
+    "SPY"
+   ],
+   "set_name": "Skrull Society",
+   "text": "<b>When Revealed</b>: Discard 1 random card from your hand.\n[star] <b>Boost</b>: Discard 1 random card from your hand.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk109",
+   "type": "Minion",
+   "name": "Skrull Telepath",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "2",
+    "ATK": "0*"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKRULL"
+   ],
+   "set_name": "Skrull Society",
+   "text": "[star] <b>Forced Interrupt</b>: When Skrull Telepath would attack, it schemes instead.\n[star] <b>Boost</b>: If this activation is a scheme, reveal this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk110",
+   "type": "Minion",
+   "name": "Skrull Warrior",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Guard": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Skrull Society",
+   "text": "Guard. <i>(While this minion is engaged with you, you cannot attack the villain.)</i>\n[star] <b>Boost</b>: If this attack is undefended, you are stunned.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk111",
+   "type": "SideScheme",
+   "name": "Plotting Revenge",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Hinder": "2*",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Skrull Society",
+   "text": "<i>The Skrulls thoroughly studied human behavior in order to achieve their goal of conquering Earth and completely dominating the universe.</i>\nHinder 2[per_hero].",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk112",
+   "type": "Treachery",
+   "name": "Outnumbered",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Skrull Society",
+   "text": "<b>When Revealed</b>: Engage each [[SKRULL]] minion in play. Then, search the encounter deck and discard pile for a [[SKRULL]] minion and reveal it.\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[SKRULL]] enemy in play <i>(to a maximum of +4)</i> for this activation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk113",
+   "type": "Minion",
+   "name": "Skrull Commander",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "SKRULL",
+    "SOLDIER"
+   ],
+   "set_name": "Army of Skrulls",
+   "text": "Each other [[SKRULL]] minion gets +1 ATK.\n[star] <b>Boost</b>: If this activation is an attack, this card gets +2 boost icons ([boost][boost]) for this activation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk114",
+   "type": "Minion",
+   "name": "Skrull Soldier",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "SKRULL",
+    "SOLDIER"
+   ],
+   "set_name": "Army of Skrulls",
+   "text": "<b>When Revealed</b>: Place 2 threat on each side scheme in play.\n[star] <b>Boost</b>: Discard the top 2 cards of your deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk115",
+   "type": "SideScheme",
+   "name": "Hijacked",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "1*",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "set_name": "Army of Skrulls",
+   "text": "Hinder 1[per_hero].\n<b>When Revealed</b>: Search your deck, discard pile and hand for an ally and place it beneath this scheme.\n<b>When Defeated</b>: Put the ally beneath this scheme into play under its owner's control.\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk116",
+   "type": "Treachery",
+   "name": "Skrull Assault",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Army of Skrulls",
+   "text": "<b>When Revealed</b>: Each [[SKRULL]] minion attacks the hero it is engaged with. If no attacks were made this way, this card gains surge.\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[SKRULL]] enemy in play <i>(to a maximum of +4)</i> for this activation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "skrull_minion",
+   "pic_id": "player",
+   "type": "Minion",
+   "name": "Skrull Minion",
+   "subtitle": "",
+   "desc": {
+    "HP": "0"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": ""
   }
  ],
- "checksum": "51d6ae02d94b85ddf744d7ee5b588eaa945917922382cbe66f40c2e599268600"
+ "checksum": "9b47b767d5b460d943e3deb4cffbe48a6a4cee57a808aeb16384f23d2e409c52"
 }

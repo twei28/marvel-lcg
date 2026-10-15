@@ -146,8 +146,25 @@ export function pvMaximum(card: WorldCard, catalogue: Catalogue): number | undef
  * Un plateau qui cache les PV du vilain est injouable, et c'est la meme
  * pastille, sans information supplementaire. A revalider avec l'utilisateur.
  */
+/**
+ * Une carte qui porte un cadran de PV sans etre un personnage : l'environnement
+ * Skrull Empire (pack custom skrull_menace) encaisse les degats a la place des
+ * mechants. Le moteur ne publie `cadran_pv` que sur une carte qui le declare
+ * (environment.py, 15/10/2026) : aucun autre environnement n'est concerne.
+ */
+function porteDesPv(card: WorldCard): boolean {
+  return isUnit(card) || (card.info.cadran_pv ?? 0) > 0
+}
+
 function pvAffiches(card: WorldCard, catalogue: Catalogue): string | undefined {
-  if (!isUnit(card)) return undefined
+  if (!porteDesPv(card)) return undefined
+
+  // Mechant du scenario Skrull Empire : il n'a PAS de cadran, ses degats vont
+  // sur l'environnement (pastille et jauge portees par celui-ci). Le moteur
+  // marque ces mechants (`pv_sur_environnement`, pack skrull_menace) ; sans
+  // cela le plateau affichait « INF », qui fait croire a un mechant
+  // invulnerable (Collector, Hela), ce qu'il n'est pas.
+  if ((card.info.pv_sur_environnement ?? 0) > 0) return undefined
 
   if (card.info.is_infinite_health) return 'INF'
 
@@ -201,7 +218,7 @@ function borne(part: number): number {
  * complot annexe A NOUS charge de menace n'en sont pas.
  */
 function jaugeAffichee(card: WorldCard, catalogue: Catalogue): CardGauge | undefined {
-  if (isUnit(card)) {
+  if (porteDesPv(card)) {
     // Des PV infinis ne se jaugent pas : la pastille dit deja « INF ».
     if (card.info.is_infinite_health) return undefined
     const courants = nombre(card.info.health)

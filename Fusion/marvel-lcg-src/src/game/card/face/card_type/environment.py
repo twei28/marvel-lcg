@@ -43,3 +43,25 @@ class Environment(CanCrisis, HasAccelerationIcon, HasAmplify, HasHazard, HasUses
             return player.GetIdentity()
         return None
 
+    # AJOUT (15/10/2026, pack custom skrull_menace, scenario Skrull Empire) :
+    # un environnement qui porte un CADRAN DE PV. « The villains in this
+    # scenario do not have a hit point dial. Instead, the Skrull Empire
+    # environment has a hit point dial » (livret p. 8). Un environnement n'a pas
+    # d'attribut HP dans le moteur (HasHealth exige des PV imprimes sur chaque
+    # carte : l'ajouter a la classe ferait tomber tous les environnements du
+    # jeu). Les degats vivent donc en compteurs 'damage' (precedent 21100a
+    # Avengers Tower), et la carte qui le veut DECLARE son cadran par script :
+    #     face.cadran_pv = lambda: (pv_restants, pv_max)
+    # Seule cette carte publie alors `health` / `max_health` / `cadran_pv`
+    # vers le plateau, qui dessine la pastille et la jauge de PV comme pour un
+    # personnage (card-model.ts). Aucun autre environnement n'est touche.
+    cadran_pv: 'Callable[[], Tuple[int, int]]|None' = None
+
+    @override
+    def GetInfoDict(self) -> Dict[str, int]:
+        info = super().GetInfoDict()
+        if self.cadran_pv is not None:
+            restants, maximum = self.cadran_pv()
+            info |= {'cadran_pv': 1, 'health': int(restants), 'max_health': int(maximum)}
+        return info
+

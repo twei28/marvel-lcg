@@ -746,6 +746,10 @@ class Worlds:
         "DealtTrap1",
         "DealtTrap2",
         "DealtTrap3",
+        # AJOUT (15/10/2026, pack custom skrull_menace) : le paquet PLANET du
+        # scenario Skrull Empire, 9 environnements faces cachees dont chaque
+        # complot principal face B revele la carte du dessus.
+        "PlanetDeck",
     ]
 
     SCENARIO_AREA_NAME: TypeAlias = Literal[

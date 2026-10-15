@@ -120,6 +120,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (Kajislav). sk001b * Teddy Altman, l'alter-ego de Hulkling, porte
         # « HYBRID. » (mi-Kree, mi-Skrull). Purement declaratif, comme LIZARD.
         "HYBRID",
+        # (15/10/2026) Les 9 environnements du paquet PLANET du scenario
+        # Skrull Empire portent « LOCATION. PLANET. » ; cinq cartes du
+        # scenario les comptent ou les visent par ce trait.
+        "PLANET",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",

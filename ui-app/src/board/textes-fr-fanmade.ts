@@ -3393,4 +3393,106 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'sk035': "<b>Une fois révélée (alter ego)</b> : inclinez votre identité.\n<b>Une fois révélée (héros)</b> : choisissez un personnage en jeu <i>(autre que votre identité)</i> qui partage un [[TRAIT]] avec votre héros. Subissez X dégâts, X étant égal à l'ATQ du personnage choisi. Sinon, inclinez votre identité.",
   // skrull_menace — Swapping Roles (Treachery)
   'sk036': "<b>Une fois révélée</b> : inclinez chaque carte que vous contrôlez qui partage un [[TRAIT]] avec votre identité <i>(y compris votre identité)</i>.\n[star] <b>Boost</b> : inclinez chaque carte que vous contrôlez qui partage un [[TRAIT]] avec votre identité <i>(à l'exception de votre identité)</i>.",
+  // skrull_menace — Emperor Dorrek I (Villain, stade I)
+  'sk070': "Riposte 1.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.\n<i>(Les méchants de ce scénario n'ont pas de cadran de PV : c'est l'environnement Skrull Empire qui le porte.)</i>",
+  // skrull_menace — Emperor Dorrek I (Villain, stade II)
+  'sk071': "Riposte 1.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.\n<i>(Les méchants de ce scénario n'ont pas de cadran de PV : c'est l'environnement Skrull Empire qui le porte.)</i>",
+  // skrull_menace — Emperor Dorrek I (Villain, stade III)
+  'sk072': "Riposte 2.\n[star] Les attaques d'Emperor Dorrek I gagnent Distance.\n<i>(Les méchants de ce scénario n'ont pas de cadran de PV : c'est l'environnement Skrull Empire qui le porte.)</i>",
+  // skrull_menace — Emperor Dorrek VII (Villain, stade I)
+  'sk073': "Incitation 1[per_hero].\n[star] Les attaques d'Emperor Dorrek VII gagnent Déferlement.",
+  // skrull_menace — Emperor Dorrek VII (Villain, stade II)
+  'sk074': "Incitation 1[per_hero].\n[star] Les attaques d'Emperor Dorrek VII gagnent Déferlement.",
+  // skrull_menace — Emperor Dorrek VII (Villain, stade III)
+  'sk075': "Incitation 1[per_hero].\n[star] Les attaques d'Emperor Dorrek VII gagnent Déferlement.",
+  // skrull_menace — Empress R'Klll (Villain, stade I)
+  'sk076': "<b>Une fois révélée</b> : Empress R'Klll attaque chaque joueur sous forme de héros.\n[star] Les attaques d'Empress R'Klll gagnent Perçant.",
+  // skrull_menace — Empress R'Klll (Villain, stade II)
+  'sk077': "<b>Une fois révélée</b> : Empress R'Klll attaque chaque joueur sous forme de héros.\n[star] Les attaques d'Empress R'Klll gagnent Perçant.",
+  // skrull_menace — Empress R'Klll (Villain, stade III)
+  'sk078': "<b>Une fois révélée</b> : Empress R'Klll attaque chaque joueur sous forme de héros.\n[star] Les attaques d'Empress R'Klll gagnent Perçant.",
+  // skrull_menace — Empress S'Byll (Villain, stade I)
+  'sk079': "Solide. Ténacité.",
+  // skrull_menace — Empress S'Byll (Villain, stade II)
+  'sk080': "Solide. Ténacité.",
+  // skrull_menace — Empress S'Byll (Villain, stade III)
+  'sk081': "Robuste. Ténacité.",
+  // skrull_menace — Rise of the Skrull Empire 1A (MainScheme)
+  'sk082a': "<b>Contenu</b> : tous les méchants (I) et (II) <i>(stades (II) et (III) en mode expert)</i>. Sets Skrull Empire, Skrull Society et Standard. Un set modulaire <i>(Army of Skrulls)</i>.\n<b>Mise en place</b> : créez le deck [[PLANET]] et le deck Méchant <i>(voir l'encart)</i>. Révélez la carte du dessus du deck Méchant. Mettez en jeu l'environnement Skrull Empire (I) <i>(stade (II) en mode expert)</i>.",
+  // skrull_menace — Rise of the Skrull Empire 1B (MainScheme)
+  'sk082b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[PLANET]].",
+  // skrull_menace — Andromeda Galaxy Colonization 2A (MainScheme)
+  'sk083a': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à défausser un sbire [[SKRULL]]. Mettez ce sbire en jeu, engagé avec le premier joueur.",
+  // skrull_menace — Andromeda Galaxy Colonization 2B (MainScheme)
+  'sk083b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[PLANET]].",
+  // skrull_menace — Further Empire Expansion 3A (MainScheme)
+  'sk084a': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à défausser un sbire [[SKRULL]]. Mettez ce sbire en jeu, engagé avec le premier joueur.",
+  // skrull_menace — Further Empire Expansion 3B (MainScheme)
+  'sk084b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[PLANET]].",
+  // skrull_menace — Entire Universe Domination 4A (MainScheme)
+  'sk085a': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à défausser un sbire [[SKRULL]]. Mettez ce sbire en jeu, engagé avec le premier joueur.",
+  // skrull_menace — Entire Universe Domination 4B (MainScheme)
+  'sk085b': "<b>Une fois révélée</b> : révélez la carte du dessus du deck [[PLANET]].\n<b>Si cette étape est complétée, les joueurs perdent la partie.</b>",
+  // skrull_menace — Skrull Empire (I) (Environment)
+  'sk086': "<i>Les méchants n'ont pas de cadran de PV : cet environnement le porte. Tout dégât infligé au méchant est placé ici. À 0 PV, l'environnement et les méchants du stade sont retirés de la partie, et le stade suivant commence.</i>\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez soit d'incliner votre héros, soit de dépenser 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Considérez sa boîte de texte imprimée comme vierge jusqu'à la fin du round. <i>(Limite d'une fois par round et par joueur.)</i>",
+  // skrull_menace — Skrull Empire (II) (Environment)
+  'sk087': "<i>Les méchants n'ont pas de cadran de PV : cet environnement le porte. Tout dégât infligé au méchant est placé ici. À 0 PV, l'environnement et les méchants du stade sont retirés de la partie, et le stade suivant commence.</i>\n<b>Une fois révélée</b> : mélangez chaque carte Overthrow mise de côté dans le deck Rencontre.\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez soit d'incliner votre héros, soit de dépenser 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Considérez sa boîte de texte imprimée comme vierge jusqu'à la fin du round. <i>(Limite d'une fois par round et par joueur.)</i>",
+  // skrull_menace — Skrull Empire (III) (Environment)
+  'sk088': "<i>Les méchants n'ont pas de cadran de PV : cet environnement le porte. Tout dégât infligé au méchant est placé ici. À 0 PV, l'environnement et les méchants du stade sont retirés de la partie : les joueurs gagnent.</i>\n<b>Une fois révélée</b> : mélangez chaque carte Overthrow mise de côté dans le deck Rencontre.\n<i>Inciter à la rébellion</i> — <b>Action de héros</b> : choisissez soit d'incliner votre héros, soit de dépenser 2 ressources de n'importe quel type → choisissez 1 environnement [[PLANET]] en jeu. Considérez sa boîte de texte imprimée comme vierge jusqu'à la fin du round. <i>(Limite d'une fois par round et par joueur.)</i>",
+  // skrull_menace — Aks'Lo (Environment)
+  'sk089': "Chaque sbire [[SKRULL]] gagne +2 PV.",
+  // skrull_menace — Hy'lt Minor (Environment)
+  'sk090': "Chaque identité gagne -1 REC.",
+  // skrull_menace — Satriani (Environment)
+  'sk091': "Chaque sbire [[SKRULL]] gagne Garde.",
+  // skrull_menace — Skrell (Environment)
+  'sk092': "Chaque sbire [[SKRULL]] gagne +1 MNG.",
+  // skrull_menace — Skrullos (Environment)
+  'sk093': "Chaque manigance annexe gagne l'icône de crise.",
+  // skrull_menace — Tarnax II (Environment)
+  'sk094': "La valeur de menace cible de la manigance principale est réduite de 1[per_hero].",
+  // skrull_menace — Tarnax IV (Environment)
+  'sk095': "Tant qu'une manigance annexe est en jeu, cette carte gagne l'icône d'amplification.",
+  // skrull_menace — Tarnax VII (Environment)
+  'sk096': "Chaque sbire [[SKRULL]] gagne +1 ATQ.",
+  // skrull_menace — Zaragz'na (Environment)
+  'sk097': "Chaque allié et chaque soutien entre en jeu incliné.",
+  // skrull_menace — Impostor (Attachment)
+  'sk098': "Considérez l'allié attaché comme un sbire [[SKRULL]] dont la boîte de texte est vide. Sa MNG est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.\n<b>Une fois révélée</b> : attachez cette carte à l'allié non-[[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'exemplaire d'Impostor attaché. L'allié attaché s'engage avec son contrôleur. Sinon, le méchant manigance.",
+  // skrull_menace — Intelligentsia (Minion)
+  'sk099': "Chaque autre ennemi [[SKRULL]] gagne +1 MNG.\n[star] <b>Interruption forcée</b> : quand Intelligentsia devrait attaquer, elle manigance à la place.",
+  // skrull_menace — Emperor's Throne (SideScheme)
+  'sk100': "<b>Une fois vaincue</b> : le méchant attaque le joueur qui a vaincu cette manigance <i>(même s'il est sous forme d'alter ego)</i>. Donnez au méchant 1 carte de boost supplémentaire pour cette activation.",
+  // skrull_menace — Seeking a Suitable World (SideScheme)
+  'sk101': "Incitation 2.",
+  // skrull_menace — A New Skrull Is Born (Treachery)
+  'sk102': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à défausser un sbire [[SKRULL]], et révélez-le.",
+  // skrull_menace — Giving Orders (Treachery)
+  'sk103': "<b>Une fois révélée</b> : chaque sbire [[SKRULL]] s'active contre le joueur avec lequel il est engagé. Si aucun sbire ne s'est activé de cette façon, cette carte gagne Renfort.",
+  // skrull_menace — Long Live the Empire (Treachery)
+  'sk104': "<b>Une fois révélée</b> : soignez 2 dégâts du méchant pour chaque ennemi [[SKRULL]] en jeu. Si aucun dégât n'a été soigné de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : soignez 1 dégât du méchant pour chaque ennemi [[SKRULL]] en jeu.\n<i>(Dans ce scénario, soigner le méchant retire des dégâts de l'environnement Skrull Empire.)</i>",
+  // skrull_menace — Overthrow (Treachery)
+  'sk105': "<b>Une fois révélée</b> : retirez de la partie le méchant actuel et révélez la carte du dessus du deck Méchant. Ensuite, mettez Overthrow de côté, hors jeu.\n<hr />\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
+  // skrull_menace — Wrath of the Empire (Treachery)
+  'sk106': "<b>Une fois révélée</b> : défaussez les 2 cartes du dessus du deck Rencontre pour chaque environnement [[PLANET]] en jeu. Placez 1 jeton d'accélération sur la manigance principale si une carte avec l'icône d'accélération a été défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost pour chaque environnement [[PLANET]] en jeu.",
+  // skrull_menace — Skrull Scientist (Minion)
+  'sk107': "[star] <b>Boost</b> : soignez 2 dégâts du méchant, après la fin de cette activation.",
+  // skrull_menace — Skrull Spy (Minion)
+  'sk108': "<b>Une fois révélé</b> : défaussez 1 carte au hasard de votre main.\n[star] <b>Boost</b> : défaussez 1 carte au hasard de votre main.",
+  // skrull_menace — Skrull Telepath (Minion)
+  'sk109': "[star] <b>Interruption forcée</b> : quand Skrull Telepath devrait attaquer, il manigance à la place.\n[star] <b>Boost</b> : si cette activation est une manigance, révélez cette carte.",
+  // skrull_menace — Skrull Warrior (Minion)
+  'sk110': "Garde.\n[star] <b>Boost</b> : si cette attaque n'est pas défendue, vous êtes sonné.",
+  // skrull_menace — Plotting Revenge (SideScheme)
+  'sk111': "Entrave 2[per_hero].",
+  // skrull_menace — Outnumbered (Treachery)
+  'sk112': "<b>Une fois révélée</b> : engagez chaque sbire [[SKRULL]] en jeu. Ensuite, cherchez un sbire [[SKRULL]] dans le deck Rencontre et sa défausse, et révélez-le.\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost pour chaque ennemi [[SKRULL]] en jeu <i>(jusqu'à +4)</i> pour cette activation.",
+  // skrull_menace — Skrull Commander (Minion)
+  'sk113': "Chaque autre sbire [[SKRULL]] gagne +1 ATQ.\n[star] <b>Boost</b> : si cette activation est une attaque, cette carte gagne +2 icônes de boost pour cette activation.",
+  // skrull_menace — Skrull Soldier (Minion)
+  'sk114': "<b>Une fois révélé</b> : placez 2 menaces sur chaque manigance annexe en jeu.\n[star] <b>Boost</b> : défaussez les 2 cartes du dessus de votre deck.",
+  // skrull_menace — Hijacked (SideScheme)
+  'sk115': "Entrave 1[per_hero].\n<b>Une fois révélée</b> : cherchez un allié dans votre deck, votre défausse et votre main, et placez-le sous cette manigance.\n<b>Une fois vaincue</b> : mettez en jeu l'allié placé sous cette manigance, sous le contrôle de son propriétaire.\n[star] <b>Boost</b> : révélez cette carte.",
+  // skrull_menace — Skrull Assault (Treachery)
+  'sk116': "<b>Une fois révélée</b> : chaque sbire [[SKRULL]] attaque le héros avec lequel il est engagé. Si aucune attaque n'a été effectuée de cette façon, cette carte gagne Renfort.\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost pour chaque ennemi [[SKRULL]] en jeu <i>(jusqu'à +4)</i> pour cette activation.",
 }

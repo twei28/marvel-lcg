@@ -1,0 +1,69 @@
+{
+  "version": "0.5.8",
+  "name": "Skrull Empire",
+  "villain": [],
+  "expert": true,
+  "schemes": [
+    "sk082a,sk082b",
+    "sk083a,sk083b",
+    "sk084a,sk084b",
+    "sk085a,sk085b"
+  ],
+  "set_aside": [
+    "sk071",
+    "sk074",
+    "sk077",
+    "sk080",
+    "sk072",
+    "sk075",
+    "sk078",
+    "sk081",
+    "sk087",
+    "sk088",
+    "sk089",
+    "sk090",
+    "sk091",
+    "sk092",
+    "sk093",
+    "sk094",
+    "sk095",
+    "sk096",
+    "sk097"
+  ],
+  "encounters": [
+    "sk098",
+    "sk099",
+    "sk100",
+    "sk101",
+    "sk101",
+    "sk101",
+    "sk102",
+    "sk102",
+    "sk103",
+    "sk103",
+    "sk104",
+    "sk104",
+    "sk105",
+    "sk105",
+    "sk105",
+    "sk106",
+    "sk106",
+    "sk106",
+    "sk107",
+    "sk108",
+    "sk108",
+    "sk109",
+    "sk110",
+    "sk110",
+    "sk111",
+    "sk112",
+    "sk112"
+  ],
+  "encounter_sets": [
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "sk_army_of_skrulls"
+  ]
+}

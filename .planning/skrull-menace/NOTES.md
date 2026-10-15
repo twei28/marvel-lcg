@@ -65,3 +65,16 @@ Chaque carte : docs/reference/PROCESSUS-CARTE.md ; héros : PROCESSUS-HEROS.md.
 - Badge orange des allies de campagne = points de vie.
 - Badge ATK/stat a etoile seule, ou etoile en exposant = renvoi aux effets etoile du texte, sans valeur chiffree.
 - Skrull Empire : les mechants n'ont pas de PV ; l'environnement Skrull Empire (14/18/22 par joueur) les porte.
+
+## Etat au 15/10/2026 (fin de journee)
+- Hulkling : FAIT et commite (0c0d05cf). Testable en local (LANCEUR-LINUX.sh).
+- Scenario 1 Skrull Empire (sk070-116) : scripts, donnees, textes FR, tests (72 cas [sk-e]), plateau, gabarits ecrits ; EN ATTENTE du commit (batterie complete relancee apres l'ajout de pv_sur_environnement dans villain.py).
+- Decisions utilisateur : PV de l'environnement = vrai cadran ; **PAS de deploiement avant la fin des 5 scenarios ET de la campagne** (deployer.sh interdit d'ici la).
+- Reste : Lyja, scenarios 2-5, campagne (data/campagnes/skrull_menace.json, Cooperation Area, etats entre scenarios, expert).
+- Piege decouvert : un meme nom unique d'un stade a l'autre (« * Emperor Dorrek I ») -> retirer l'ancien AVANT de reveler le nouveau (FinDeStade).
+- Dette hors perimetre : 4 cas Squirrel Girl rouges (sg006/007/009/013), anterieurs a Skrull Menace.
+
+## Decisions utilisateur du 15/10/2026 (audit de l'inventaire, voir INVENTAIRE.md)
+- Hors campagne IGNORE pour l'instant : heros Super-Skrull (Beta), heros Wiccan (1.1), cartes Veranke de Earth Under Siege.
+- Etoile rouge a droite du numero de set des cartes 02-09 de Lyja = icone de boost ★ (l'effet « ★ Boost » s'applique quand la carte est retournee comme carte de boost ; elle compte comme ★ pour Ministerial Tiara et Hit the Weak Spot).
+- Lectures faites par moi, non contestees : Galactic Ambassador = Acceleration ; Punish the Defector = Hazard ; Y rouge = icone de boost ordinaire ; Bel-Dann « alternative » = meme carte ; Pantheon = UNE carte double face a PV partages (la transcription disait deux mechants, c'est corrige).

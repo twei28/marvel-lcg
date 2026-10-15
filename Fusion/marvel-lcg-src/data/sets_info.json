@@ -1633,12 +1633,17 @@
  },
  "143. Custom (Skrull Menace)": {
   "name": "skrull_menace",
-  "scenarios": [],
+  "scenarios": [
+   "sk_skrull_empire"
+  ],
   "heroes": [
    "hulkling_kajislav"
   ],
-  "encounters": [],
-  "max_id": "sk036"
+  "encounters": [
+   "sk_army_of_skrulls",
+   "sk_skrull_society"
+  ],
+  "max_id": "sk116"
  },
- "checksum": "20fb0017753e9b359117ae116ebc1a190358e85d4147bc762d1def8ed0f11603"
+ "checksum": "575be711c37b04d684b58a4321260846dfc345e82a6af23f3743006ec2df2db8"
 }

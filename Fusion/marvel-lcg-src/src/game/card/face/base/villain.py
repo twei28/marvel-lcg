@@ -35,6 +35,24 @@ class Villain(Enemy, HasStage, HasAccelerationIcon, HasHazard, HasAmplify, HasVi
     #             break
     #     self.name = name
 
+    # AJOUT (15/10/2026, pack custom skrull_menace, scenario Skrull Empire) :
+    # « The villains in this scenario do not have a hit point dial. Instead, the
+    # Skrull Empire environment has a hit point dial » (livret p. 8). Les degats
+    # du mechant sont deja rediriges vers cet environnement ; le plateau doit en
+    # plus savoir que la pastille « INF » serait un mensonge ici (un mechant
+    # invulnerable comme Collector ou Hela, lui, la garde). On publie donc
+    # `pv_sur_environnement` quand un environnement du monde porte un cadran de PV
+    # (`Environment.cadran_pv`). Aucun autre scenario n'en declare.
+    @override
+    def GetInfoDict(self) -> Dict[str, int]:
+        info = super().GetInfoDict()
+        from game.card.face.card_type import Environment
+        for env in self.card.world.area_environment.GetAll():
+            if Environment.IsType(env) and env.cadran_pv is not None:
+                info |= {'pv_sur_environnement': 1}
+                break
+        return info
+
     @override
     def OnWhenCardRevealed(self, revealed_message: 'Message.WhenCardRevealed') -> None:
         if not self.IsInPlay():

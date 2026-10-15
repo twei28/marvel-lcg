@@ -221,7 +221,7 @@ Total cards: 27 files (13 distinct designs side-faces counted per file below).
 ---------------------------------------------------------------------
 ## Mechanics noticed
 ---------------------------------------------------------------------
-- Two co-villains in play simultaneously (Kly'bn and Sl'gur't, Villain stage I/II/III each, with different ATK/SCH). The "villain" referenced by cards (faith counters, "flip the villain", "remove 1 faith counter from the villain") seems to act as the shared pair; "flip the villain" is a recurring effect (Nogor reveal/boost, Prayer cards, Shapeless Wastes, 2A->2B When Revealed).
+- [CORRIGE 15/10/2026 d'apres l'insert p.14 : ce sont UNE carte double face (Kly'bn / Sl'gur't), PV partages, on retourne le mechant ; ne PAS jouer deux mechants a la fois] Two co-villains in play simultaneously (Kly'bn and Sl'gur't, Villain stage I/II/III each, with different ATK/SCH). The "villain" referenced by cards (faith counters, "flip the villain", "remove 1 faith counter from the villain") seems to act as the shared pair; "flip the villain" is a recurring effect (Nogor reveal/boost, Prayer cards, Shapeless Wastes, 2A->2B When Revealed).
 - New counter: **faith counter**, placed on the villains. Each villain, after step one of the villain phase, discards cards from the encounter deck equal to its faith counters and deals them out facedown to players (Kly'bn deals the non-treachery ones, Sl'gur't the treacheries). Facedown dealt cards are "facedown encounter card in player order".
 - Faith counters scale Blessed by... attachments (+X SCH / +X ATK where X = faith counters on the villain) and Nogor (+1 SCH/ATK/hit point per faith counter).
 - Stage III villains give themselves a tough status card on When Revealed.

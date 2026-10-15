@@ -1,0 +1,14 @@
+{
+  "version": "0.5.8",
+  "name": "Army of Skrulls",
+  "encounters": [
+    "sk113",
+    "sk113",
+    "sk114",
+    "sk114",
+    "sk114",
+    "sk115",
+    "sk115",
+    "sk116"
+  ]
+}
