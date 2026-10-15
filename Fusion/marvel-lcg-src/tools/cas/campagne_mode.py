@@ -615,3 +615,374 @@ CHAINES += [
             {"Cooperation Area": ZONE_TEST},
             [{"scenario": "sk_skrull_empire", "verifier": v_zone_refus, "questions_absentes": ["Crusader", "Antalya"], "fin": "aucune"}]),
 ]
+
+
+# ===================================== la regle de cooperation : vaincre = pile de victoire (p.6) ==
+BASE = {}
+TUEUR = "Puzzle.FindFaceInPlay('sk037b')"     # l'identite de Lyja (alter ego) : un joueur qui vainc
+
+
+def _avant(commandes, vider_deck=False):
+    """Releve la taille du deck et de la defausse AVANT le coup, puis rend les commandes."""
+    def f(monde):
+        BASE["deck"] = len(monde.players[0].player_deck.Get(True))
+        BASE["defausse"] = len(monde.players[0].discard_pile.Get(True))
+        return (["Puzzle.EmptyPlayerDeck()"] if vider_deck else []) + list(commandes)
+    return f
+
+
+def _defausse_rencontre(monde):
+    from game.operate.worlds import Worlds
+    return [_id(f) for f in Worlds.GetEncounterDiscardPileCards(monde)]
+
+
+def vf_cooperation_acceptee(monde):
+    taille = len(monde.players[0].player_deck.Get(True))
+    return _verif(
+        ("sk110" in _victoire(monde), f"le sbire vaincu est dans la pile de victoire : {_victoire(monde)}"),
+        ("sk110" not in _defausse_rencontre(monde), "et pas dans la defausse rencontre"),
+        (taille == BASE["deck"] - 1, f"le dessus du deck a ete defausse : {taille} carte(s) (avant : {BASE['deck']})"),
+        (len(monde.players[0].discard_pile.Get(True)) == BASE["defausse"] + 1, "la carte defaussee est dans la defausse du joueur"),
+    )
+
+
+def vf_cooperation_refusee(monde):
+    taille = len(monde.players[0].player_deck.Get(True))
+    return _verif(
+        ("sk110" not in _victoire(monde), "refus : pas dans la pile de victoire"),
+        ("sk110" in _defausse_rencontre(monde), f"refus : defausse rencontre habituelle : {_defausse_rencontre(monde)[:8]}"),
+        (taille == BASE["deck"], f"refus : le deck n'a pas bouge : {taille} (avant : {BASE['deck']})"),
+    )
+
+
+def vf_sans_joueur(monde):
+    taille = len(monde.players[0].player_deck.Get(True))
+    return _verif(
+        ("sk110" not in _victoire(monde), "vaincu par personne (degats sans source) : aucune cooperation proposee"),
+        (taille == BASE["deck"], f"et le deck n'a pas bouge : {taille} (avant : {BASE['deck']})"),
+    )
+
+
+def vf_victory_x(monde):
+    taille = len(monde.players[0].player_deck.Get(True))
+    return _verif(
+        ("sk231" in _victoire(monde), "Crusader (Victory 1) va dans la pile de victoire de toute facon"),
+        (taille == BASE["deck"], f"sans rien defausser : {taille} (avant : {BASE['deck']})"),
+    )
+
+
+def vf_complot(monde):
+    taille = len(monde.players[0].player_deck.Get(True))
+    return _verif(
+        ("sk101" in _victoire(monde), f"un complot annexe vaincu : lui aussi peut aller en pile de victoire : {_victoire(monde)}"),
+        (taille == BASE["deck"] - 1, f"pour le dessus du deck : {taille} (avant : {BASE['deck']})"),
+    )
+
+
+def vf_deck_vide(monde):
+    return _verif(
+        ("sk110" not in _victoire(monde), "deck VIDE : on ne peut rien defausser, rien n'est propose"),
+        ("sk110" in _defausse_rencontre(monde), "le sbire part a la defausse"),
+    )
+
+
+def vf_revealed(monde):
+    taille = len(monde.players[0].player_deck.Get(True))
+    return _verif(
+        ("sk208b" not in _victoire(monde), "FAQ p.21 : un sbire REVEALED ne va jamais en pile de victoire"),
+        (taille == BASE["deck"], f"et rien n'a ete propose ni defausse : {taille} (avant : {BASE['deck']})"),
+    )
+
+
+TUER_SBIRE = ["Puzzle.PutIntoPlay('sk110')", f"Puzzle.Damage(Puzzle.FindFaceInPlay('sk110'), 50, {TUEUR})"]
+
+CHAINES += [
+    _chaine("cooperation — un joueur vainc un sbire : il defausse le dessus de son deck, le sbire va en pile de victoire",
+            {}, [{"scenario": "sk_skrull_empire", "avant": _avant(TUER_SBIRE), "verifier_fin": vf_cooperation_acceptee}]),
+    _chaine("cooperation — le joueur REFUSE (Cancel) : defausse rencontre habituelle, deck intact",
+            {}, [{"scenario": "sk_skrull_empire", "avant": _avant(TUER_SBIRE), "preferer": ["Cancel"],
+                  "verifier_fin": vf_cooperation_refusee}]),
+    _chaine("cooperation — sbire vaincu par personne (degats sans source) : rien n'est propose",
+            {}, [{"scenario": "sk_skrull_empire",
+                  "avant": _avant(["Puzzle.PutIntoPlay('sk110')", "Puzzle.Damage(Puzzle.FindFaceInPlay('sk110'), 50)"]),
+                  "verifier_fin": vf_sans_joueur}]),
+    _chaine("cooperation — Victory X : le sbire y va de lui-meme, sans rien defausser",
+            {}, [{"scenario": "sk_skrull_empire",
+                  "avant": _avant(["Puzzle.PutIntoPlay('sk231')", f"Puzzle.Damage(Puzzle.FindFaceInPlay('sk231'), 50, {TUEUR})"]),
+                  "verifier_fin": vf_victory_x}]),
+    _chaine("cooperation — complot annexe contre par un joueur : pile de victoire pour le dessus du deck",
+            {}, [{"scenario": "sk_skrull_empire",
+                  "avant": _avant(["Puzzle.ChangeToFace('sk037b', 'sk037a')", "Puzzle.PutIntoPlay('sk101')",
+                                   "Puzzle.SetThreat(Puzzle.FindFaceInPlay('sk101'), 1)", "Puzzle.Thwart('sk037a')"]),
+                  "cibles": ["sk101"], "verifier_fin": vf_complot}]),
+    _chaine("cooperation — deck VIDE : rien a defausser, rien n'est propose",
+            {}, [{"scenario": "sk_skrull_empire", "avant": _avant(TUER_SBIRE, vider_deck=True),
+                  "verifier_fin": vf_deck_vide}]),
+    _chaine("cooperation — scenario 5 : un sbire REVEALED vaincu ne va PAS en pile de victoire (FAQ p.21)",
+            {}, [{"scenario": "sk_secret_invasion",
+                  "avant": _avant(["Puzzle.PutIntoPlay('sk208b')", f"Puzzle.Damage(Puzzle.FindFaceInPlay('sk208b'), 50, {TUEUR})"]),
+                  "verifier_fin": vf_revealed}]),
+]
+
+
+# ============================================================ la campagne EXPERTE (p.6) ==
+CLE_PV = "Player 1 Remaining hit points"
+
+
+def _identite(monde, i=0):
+    return monde.const_seat_order_players[i].GetIdentity()
+
+
+def _tokens_acceleration(monde):
+    from game.operate.worlds import Worlds
+    return sum(s.GetTokens("acceleration_token") for s in Worlds.GetAllMainSchemes(monde))
+
+
+def v_pv_gueris(monde):
+    ident = _identite(monde)
+    return _verif(
+        (ident.health == ident.max_health, f"soin accepte : PV au complet ({ident.health}/{ident.max_health})"),
+        (_tokens_acceleration(monde) == 1, f"un pion Acceleration sur la manigance principale : {_tokens_acceleration(monde)}"),
+    )
+
+
+def v_pv_restants(monde):
+    ident = _identite(monde)
+    return _verif(
+        (ident.health == ident.max_health - 4, f"PV de depart = PV restants (6) : {ident.health}/{ident.max_health}"),
+        (_tokens_acceleration(monde) == 0, f"soin refuse : aucun pion : {_tokens_acceleration(monde)}"),
+    )
+
+
+def v_pv_standard(monde):
+    ident = _identite(monde)
+    return _verif(
+        (ident.health == ident.max_health, f"campagne STANDARD : les PV restants ne comptent pas : {ident.health}/{ident.max_health}"),
+        (_tokens_acceleration(monde) == 0, "et aucun soin n'est propose"),
+    )
+
+
+def avant_degats_4(monde):
+    return ["Puzzle.Damage(Puzzle.FindFaceInPlay('sk037b'), 4)"]
+
+
+def v_pv_apres_degats(monde):
+    ident = _identite(monde)
+    return _verif((ident.health == ident.max_health - 4, f"fin du scenario 1 avec 4 degats : {ident.health}/{ident.max_health}"))
+
+
+CHAINES += [
+    _chaine("expert — 2 scenarios : PV restants reportes (10 - 4 = 6), le joueur les soigne d'un pion Acceleration",
+            {},
+            [{"scenario": "sk_skrull_empire_expert", "avant": avant_degats_4, "verifier_fin": v_pv_apres_degats,
+              "carnet_reporte_attendu": {CLE_PV: "6"}},
+             {"scenario": "sk_super_skrull_expert", "questions_attendues": ["Place 1 acceleration token"],
+              "verifier": v_pv_gueris, "fin": "aucune"}]),
+    _chaine("expert — le joueur REFUSE le soin : il commence le scenario avec ses PV restants",
+            {CLE_PV: "6", CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE},
+            [{"scenario": "sk_super_skrull_expert", "preferer": ["Cancel"], "verifier": v_pv_restants, "fin": "aucune"}]),
+    _chaine("expert — TEMOIN campagne standard : les PV restants du carnet ne s'appliquent pas",
+            {CLE_PV: "6", CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE},
+            [{"scenario": "sk_super_skrull", "verifier": v_pv_standard, "questions_absentes": ["Place 1 acceleration token"],
+              "fin": "aucune"}]),
+]
+
+
+def avant_elimine(monde):
+    """Le joueur 2 est vaincu pendant la partie, ses coequipiers gagnent."""
+    ident = _identite(monde, 1)
+    return [f"Puzzle.Damage(Puzzle.FindFaceInPlay('{ident.paper.card_id}'), 99)"]
+
+
+def v_elimine_revient(monde):
+    p2 = monde.const_seat_order_players[1]
+    return _verif(
+        (not p2.is_eliminated, "le joueur elimine REVIENT en payant un pion Acceleration"),
+        (p2.GetIdentity().health == p2.GetIdentity().max_health, f"a pleins PV : {p2.GetIdentity().health}/{p2.GetIdentity().max_health}"),
+        (_tokens_acceleration(monde) == 1, f"un pion sur la manigance principale : {_tokens_acceleration(monde)}"),
+    )
+
+
+def v_elimine_reste(monde):
+    return _verif((monde.const_seat_order_players[1].is_eliminated, "il refuse le pion : il ne joue pas ce scenario"),
+                  (not monde.const_seat_order_players[0].is_eliminated, "et son coequipier joue"))
+
+
+def vf_elimine_note(monde):
+    return _verif((monde.const_seat_order_players[1].is_eliminated, "le joueur 2 a bien ete elimine pendant la partie"))
+
+
+CHAINES += [
+    _chaine("expert — un joueur ELIMINE au scenario 1 revient au scenario 2 (pion Acceleration)",
+            {},
+            [{"scenario": "sk_skrull_empire_expert", "avant": avant_elimine, "verifier_fin": vf_elimine_note,
+              "carnet_reporte_attendu": {"Eliminated Players": "2"}},
+             {"scenario": "sk_super_skrull_expert", "questions_attendues": ["rejoin the team"],
+              "verifier": v_elimine_revient, "fin": "aucune"}],
+            heros=("lyja", "spider_man")),
+    _chaine("expert — un joueur elimine qui REFUSE le pion ne joue pas le scenario suivant",
+            {"Eliminated Players": "2", CLE_SHAPER: MIS_DE_COTE, CLE_CUBE: RETIRE},
+            [{"scenario": "sk_super_skrull_expert", "preferer": ["Cancel"], "verifier": v_elimine_reste, "fin": "aucune"}],
+            heros=("lyja", "spider_man")),
+]
+
+
+# ============================== LA CAMPAGNE ENTIERE : 5 scenarios a la suite, l'etat reporte ==
+def _zone_du_carnet(suggestions):
+    return set(_liste(suggestions.get("Cooperation Area")))
+
+
+def _progres_du_carnet(suggestions):
+    return set(_liste(suggestions.get("Cooperation Progress")))
+
+
+def _victoire_de(*ids):
+    return lambda monde: [f"Puzzle.MoveTo('{i}', 'VictoryDisplay')" for i in ids]
+
+
+# --- scenario 1 : Skrull Empire
+def v_c1(monde):
+    elites = _elites_presentes(monde)
+    MEMO["e1"] = elites[0] if elites else None
+    return _verif((len(elites) == 1, f"scenario 1 : UNE Elite tiree : {elites}"))
+
+
+def avant_c1(monde):
+    return [f"Puzzle.MoveTo('{i}', 'VictoryDisplay')" for i in ("sk107", "sk108", "sk109", "sk110", ELITES[MEMO["e1"]])]
+
+
+def cv_c1(s, carnet):
+    e1 = MEMO["e1"]
+    zone, progres = _zone_du_carnet(s), _progres_du_carnet(s)
+    reverting = {f"Reverting Device: {x}" for x in ("Skrull Spy", "Skrull Scientist", "Skrull Warrior", "Skrull Telepath")}
+    return _verif(
+        (reverting <= progres, f"Spy + Scientist + Warrior + Telepath en pile de victoire : Reverting Device complet : {sorted(progres)}"),
+        ({"sk286", ALLIES[e1], COMPLOTS[e1]} <= zone, f"zone : Reverting Device + allie et complot de {e1} : {sorted(zone)}"),
+        (s.get(_cle_elite(e1)) == PILE_VICTOIRE, f"{e1} en pile de victoire : {s.get(_cle_elite(e1))!r}"),
+        (s.get(CLE_SHAPER) == MIS_DE_COTE, f"Shaper mis de cote : {s.get(CLE_SHAPER)!r}"),
+        (s.get(CLE_CUBE) == AUTRE_ZONE, f"Cube ailleurs (deck rencontre) : {s.get(CLE_CUBE)!r}"),
+        (not (zone & {"sk267", "sk274", "sk265", "sk275"}), "le scenario 1 n'ajoute ni Super-Skrull ni Paibok"),
+    )
+
+
+# --- scenario 2 : Super-Skrull
+def v_c2(monde):
+    e1 = MEMO["e1"]
+    elites = _elites_presentes(monde)
+    nouvelle = [n for n in elites if n != e1]
+    MEMO["e2"] = nouvelle[0] if nouvelle else None
+    p = _possede(monde)
+    deck = _deck_rencontre(monde)
+    return _verif(
+        (e1 not in elites, f"{e1} (pile de victoire) a quitte la campagne : {elites}"),
+        (len(elites) == 1 and len(nouvelle) == 1, f"UNE nouvelle Elite : {elites}"),
+        ({"sk286", ALLIES[e1], COMPLOTS[e1]} <= p, f"les cartes de la zone sont au deck : manque {sorted({'sk286', ALLIES[e1], COMPLOTS[e1]} - p)}"),
+        ("sk229" in deck, "le Cube (« In another game area ») est remelange au deck rencontre"),
+        (len(_fragments_de_cote(monde)) == 1, "un fragment par joueur de cote"),
+    )
+
+
+def avant_c2(monde):
+    e2 = MEMO["e2"]
+    return [f"Puzzle.MoveTo('{i}', 'VictoryDisplay')"
+            for i in ("sk229", "sk108", "sk110", "sk114", "sk113", ELITES[e2])]
+
+
+def cv_c2(s, carnet):
+    e1, e2 = MEMO["e1"], MEMO["e2"]
+    zone, progres = _zone_du_carnet(s), _progres_du_carnet(s)
+    kill_crew = {f"Skrull Kill Crew: {x}" for x in ("Skrull Spy", "Skrull Warrior", "Skrull Soldier", "Skrull Commander")}
+    return _verif(
+        (kill_crew <= progres, f"Spy + Warrior + Soldier + Commander : Skrull Kill Crew complet : {sorted(progres)}"),
+        ("Cosmic Cube Fragment: Cosmic Cube Creation" in progres, "Cosmic Cube Creation en pile : case de la ligne des fragments cochee"),
+        (set(FRAGMENTS) <= zone, f"et les QUATRE fragments dans la zone (FAQ p.21) : {sorted(zone)}"),
+        ({"sk282", "sk267", "sk274", ALLIES[e2], COMPLOTS[e2], "sk286", ALLIES[e1], COMPLOTS[e1]} <= zone,
+         f"Skrull Kill Krew, Super-Skrull + Searching for Powers (scenario 2), allie et complot de {e2} : {sorted(zone)}"),
+        (s.get(CLE_CUBE) == PILE_VICTOIRE, f"Cube en pile de victoire : {s.get(CLE_CUBE)!r}"),
+        (s.get(_cle_elite(e2)) == PILE_VICTOIRE, f"{e2} en pile de victoire : {s.get(_cle_elite(e2))!r}"),
+    )
+
+
+# --- scenario 3 : Paibok
+def v_c3(monde):
+    e1, e2 = MEMO["e1"], MEMO["e2"]
+    elites = _elites_presentes(monde)
+    nouvelle = [n for n in elites if n not in (e1, e2)]
+    MEMO["e3"] = nouvelle[0] if nouvelle else None
+    p = _possede(monde)
+    return _verif(
+        (e1 not in elites and e2 not in elites, f"{e1} et {e2} ont quitte la campagne : {elites}"),
+        (len(elites) == 1 and len(nouvelle) == 1, f"UNE nouvelle Elite : {elites}"),
+        (not _existe(monde, "sk229"), "Cosmic Cube Creation (pile de victoire au scenario 2) a quitte la campagne"),
+        (not _fragments_de_cote(monde), "donc aucun fragment de cote"),
+        ({"sk230a", "sk282", "sk286"} <= p, f"ressource, soutien et amelioration de la zone au deck : manque {sorted({'sk230a','sk282','sk286'} - p)}"),
+        (len(p & {ALLIES[e1], ALLIES[e2], "sk267"}) == 1, f"UN allie de la zone : {sorted(p & {ALLIES[e1], ALLIES[e2], 'sk267'})}"),
+        (len(p & {COMPLOTS[e1], COMPLOTS[e2], "sk274"}) == 1, f"UN complot annexe de joueur de la zone : {sorted(p & {COMPLOTS[e1], COMPLOTS[e2], 'sk274'})}"),
+    )
+
+
+def cv_c3(s, carnet):
+    e3 = MEMO["e3"]
+    zone = _zone_du_carnet(s)
+    return _verif(
+        (s.get(_cle_elite(e3)) == AUTRE_ZONE, f"{e3} pas vaincue : {s.get(_cle_elite(e3))!r}"),
+        ({"sk265", "sk275"} <= zone, f"Paibok + Skrull Military Training (scenario 3) : {sorted(zone)}"),
+        (ALLIES[e3] not in zone, f"{e3} pas en pile de victoire : son allie n'est pas ajoute"),
+        (s.get(CLE_CUBE) == RETIRE, f"Cube retire de la campagne : {s.get(CLE_CUBE)!r}"),
+        (s.get(_cle_elite(MEMO['e1'])) == RETIRE and s.get(_cle_elite(MEMO['e2'])) == RETIRE, "les deux premieres Elites retirees"),
+    )
+
+
+# --- scenario 4 : Skrull Pantheon
+def v_c4(monde):
+    e1, e2, e3 = MEMO["e1"], MEMO["e2"], MEMO["e3"]
+    elites = _elites_presentes(monde)
+    nouvelle = [n for n in elites if n not in (e1, e2, e3)]
+    MEMO["e4"] = nouvelle[0] if nouvelle else None
+    return _verif(
+        (e3 in elites and _ensemble_complet(monde, e3), f"{e3} (laissee ailleurs au scenario 3) REVIENT avec son ensemble : {elites}"),
+        (len(elites) == 2 and len(nouvelle) == 1, f"plus UNE nouvelle : {elites}"),
+        (e1 not in elites and e2 not in elites, "les deux premieres restent retirees"),
+    )
+
+
+def avant_c4(monde):
+    return [f"Puzzle.MoveTo('{ELITES[MEMO['e4']]}', 'VictoryDisplay')"]
+
+
+def cv_c4(s, carnet):
+    e3, e4 = MEMO["e3"], MEMO["e4"]
+    zone = _zone_du_carnet(s)
+    return _verif(
+        (s.get(_cle_elite(e4)) == PILE_VICTOIRE and s.get(_cle_elite(e3)) == AUTRE_ZONE, f"{e4} vaincue, {e3} toujours debout"),
+        ({ALLIES[e4], COMPLOTS[e4]} <= zone and ALLIES[e3] not in zone, f"allie et complot de {e4} seulement : {sorted(zone)}"),
+        ("sk265" in zone and "sk275" in zone and "sk267" in zone, "la zone garde ce que les scenarios precedents y ont mis"),
+    )
+
+
+# --- scenario 5 : Secret Invasion
+def v_c5(monde):
+    e1, e2, e3, e4 = MEMO["e1"], MEMO["e2"], MEMO["e3"], MEMO["e4"]
+    elites = _elites_presentes(monde)
+    restante = [n for n in ELITES if n not in (e1, e2, e3, e4)]
+    return _verif(
+        (len(restante) == 1, f"quatre Elites distinctes tirees en quatre scenarios : {[e1, e2, e3, e4]}"),
+        (sorted(elites) == sorted([e3] + restante), f"{e3} (ailleurs) + « the remaining » {restante} : {elites}"),
+        (e4 not in elites, f"{e4} (pile de victoire au scenario 4) a quitte la campagne"),
+    )
+
+
+CHAINES += [
+    _chaine("CAMPAGNE ENTIERE (standard, solo) — 5 scenarios a la suite : zone, tableau, Elites, Cube, fragments",
+            {},
+            [{"scenario": "sk_skrull_empire", "verifier": v_c1, "avant": avant_c1, "carnet_verifier": cv_c1,
+              "carnet_attendu": {"gagnee": True, "scenario": "sk_skrull_empire"}},
+             {"scenario": "sk_super_skrull", "verifier": v_c2, "avant": avant_c2, "carnet_verifier": cv_c2,
+              "carnet_attendu": {"gagnee": True, "scenario": "sk_super_skrull"}},
+             {"scenario": "sk_paibok", "verifier": v_c3, "avant": _victoire_de("sk111", "sk115"), "carnet_verifier": cv_c3,
+              "carnet_attendu": {"gagnee": True, "scenario": "sk_paibok"}},
+             {"scenario": "sk_skrull_pantheon", "verifier": v_c4, "avant": avant_c4, "carnet_verifier": cv_c4,
+              "carnet_attendu": {"gagnee": True, "scenario": "sk_skrull_pantheon"}},
+             {"scenario": "sk_secret_invasion", "verifier": v_c5,
+              "carnet_attendu": {"gagnee": True, "scenario": "sk_secret_invasion"}}]),
+]

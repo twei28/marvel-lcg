@@ -589,7 +589,7 @@ def Releve(level: int, effect: 'Effect', message: 'Message.WhenGameOver') -> dic
 
     # --- Campagne experte : PV restants (plafonnes aux PV de base) et joueurs elimines
     elimines = []
-    for player in Worlds.GetPlayers(effect):
+    for player in world.const_seat_order_players:       # TOUS les sieges : un joueur elimine n'est plus dans `players`
         identity = player.GetIdentity()
         cle = f'Player {player.player_id + 1} Remaining hit points'
         if player.is_eliminated:

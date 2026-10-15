@@ -222,7 +222,7 @@ def executer_une_chaine(game_dir, port, index):
                 commandes = list(avant(monde) if callable(avant) else avant)
                 commandes.append("Puzzle.Lose()" if fin == "Lose" else "Puzzle.Win()")
                 PuzzleHelper.Exec(commandes, monde)
-                etat["elimines"] = [i for i, p in enumerate(monde.players) if p.is_eliminated]
+                etat["elimines"] = [p.player_id for p in monde.const_seat_order_players if p.is_eliminated]
                 return premiere_option(data)
             if etat["asks"] > 600:
                 rendre(False, f"{etape.get('nom')} : le tour du joueur n'a jamais ete atteint")
