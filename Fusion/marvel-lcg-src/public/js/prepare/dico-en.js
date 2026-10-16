@@ -296,6 +296,11 @@ export const DICO_EN_BASE = {
 
     /* ---- Import marvelcdb ---- */
     "URL/ID marvelcdb invalide.": "Invalid marvelcdb URL/ID.",
+    "Fichier OCTGN (.o8d)": "OCTGN file (.o8d)",
+    "Importer un deck OCTGN (fichier .o8d)": "Import an OCTGN deck (.o8d file)",
+    "Ce fichier n’est pas un deck OCTGN (.o8d) lisible.": "This file is not a readable OCTGN deck (.o8d).",
+    "Aucune carte de ce fichier n’existe dans le jeu.": "None of this file's cards exist in the game.",
+    "Cartes non reprises (inconnues du jeu, souvent les cartes propres à un autre héros) :": "Cards not taken (unknown to the game, often another hero's own cards):",
     "Deck introuvable sur marvelcdb ni mc4db": "Deck not found on marvelcdb or mc4db",
     "Vérifie que le deck est public.": "Check that the deck is public.",
     "Le héros de ce deck n’est pas disponible dans le jeu.": "This deck's hero is not available in the game.",
@@ -336,6 +341,7 @@ export const DICO_EN_BASE = {
     "Chargement des decks...": "Loading decks...",
     "Colle une URL ou un ID marvelcdb ou mc4db...": "Paste a marvelcdb or mc4db URL or ID...",
     "Éditeur de deck": "Deck builder",
+    "Construire un deck": "Build a deck",
     "Construire un deck personnalisé pour ce héros": "Build a custom deck for this hero",
     "Deck importé": "Imported deck",
     "Sauvegardé": "Saved",

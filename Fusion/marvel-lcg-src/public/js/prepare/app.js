@@ -57,6 +57,7 @@ import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 import { versDeckMoteur, ecartDeConversion } from "/public/js/marvelcdb/conversion.js";
 import { chargerHeros } from "/public/js/marvelcdb/index.js";
 import { chargerDeck, lireLien } from "/public/js/marvelcdb/sources.js";
+import { lireO8d, versSlots, indexParNom } from "/public/js/marvelcdb/octgn.js";
 import { demanderForcage } from "/public/js/prepare/deck-force.js";
 import { filtrer, aspectsPresents, tagsPresents, aDesRangs } from "/public/js/marvelcdb/filtres.js";
 import { lireFavoris, basculerFavori } from "/public/js/marvelcdb/favoris.js";
@@ -1016,8 +1017,16 @@ function ouvrirFeuilleImport(i) {
         el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
         el("div", { class: "vh-actions" },
             el("button", { class: "tampon", onclick: () => { fermerModale(overlay); ouvrirPanneauCdb(i); } }, t("Decks MarvelCDB")),
+            el("button", { class: "tampon", onclick: () => document.getElementById("o8d-" + i).click() }, t("Fichier OCTGN (.o8d)")),
             el("button", { class: "tampon jaune", onclick: async () => { if (await doImport(i)) fermerModale(overlay); } }, t("Import")),
         ),
+        el("input", {
+            type: "file", id: "o8d-" + i, accept: ".o8d,.xml,text/xml", hidden: true,
+            onchange: async (e) => {
+                const f = e.target.files && e.target.files[0]; e.target.value = "";
+                if (f && (await doImport(i, f))) fermerModale(overlay);
+            },
+        }),
     );
 }
 
@@ -2339,6 +2348,17 @@ function accueilView() {
                             tuile.aide) : null,
         ));
     }
+
+    // L'éditeur de deck, sur l'accueil (demande du 16/10/2026) : on ne le trouvait
+    // qu'en passant par un héros, puis un bouton de l'étape Decks.
+    grille.append(el("div", { class: "acc-tuile" },
+        el("button", { class: "acc-mode cut acc-editeur-tuile", onclick: () => { window.location.href = "/deck-builder.html"; } },
+            el("span", { class: "acc-copy" },
+                el("b", { class: "mvl" }, t("Éditeur de deck")),
+                el("small", {}, t("Construire un deck")),
+            ),
+        ),
+    ));
 
     // ⚠ LES NOUVEAUTES SONT UNE TUILE, PLUS UNE LISTE SOUS LA GRILLE
     // (17/09/2026). Le journal a grossi au point de pousser les modes hors de
@@ -4132,7 +4152,43 @@ async function importMarvelcdb(slotIndex, input) {
     if (!id) throw new Error(t("URL/ID marvelcdb invalide."));
     const trouve = await chargerDeck(input);
     if (!trouve) throw new Error(t("Deck introuvable sur marvelcdb ni mc4db") + " (ID " + id + "). " + t("Vérifie que le deck est public."));
-    const data = trouve.data;
+    return importerDonnees(slotIndex, trouve.data, id, `marvelcdb ${id}`);
+}
+
+/** Import d'un fichier OCTGN (.o8d) dans le slot courant : mêmes règles que pour un lien. */
+async function importO8d(slotIndex, texte, nomFichier) {
+    const deckO8d = lireO8d(texte);
+    if (!deckO8d) throw new Error(t("Ce fichier n’est pas un deck OCTGN (.o8d) lisible."));
+    await cards.load();
+    const parGuid = await tableGuid();
+    const { slots, inconnues, total } = versSlots(deckO8d, {
+        parGuid,
+        existe: (code) => !!cards.get(code),
+        parNom: indexParNom(cards.all()),
+    });
+    if (!Object.keys(slots).length) throw new Error(t("Aucune carte de ce fichier n’existe dans le jeu."));
+    // Le héros du fichier, s'il y figure (une carte Héros ou Alter-ego connue du jeu).
+    const codeHeros = Object.keys(slots).find((c) => { const k = cards.get(c); return k && /^(Hero|Alter-Ego)$/i.test(k.type || ""); }) || "";
+    const nom = String(nomFichier || "").replace(/\.o8d$/i, "").replace(/^[0-9a-f]{8}-/i, "").replace(/_/g, " ").trim();
+    const r = await importerDonnees(slotIndex, { name: nom || undefined, hero_code: codeHeros, slots }, "o8d", "octgn " + (nom || "o8d"));
+    r.inconnues = inconnues;
+    r.total = total;
+    return r;
+}
+
+/** La table GUID OCTGN -> code, lue une fois (data/octgn_guids.json, voir tools/octgn_guids.py). */
+let _tableGuid = null;
+async function tableGuid() {
+    if (_tableGuid) return _tableGuid;
+    try {
+        const r = await fetch("/read_file?data/octgn_guids.json");
+        _tableGuid = r.ok ? await r.json() : {};
+    } catch (e) { _tableGuid = {}; }
+    return _tableGuid;
+}
+
+/** Le cœur de l'import : un deck {name, hero_code, slots} devient le deck du slot. */
+async function importerDonnees(slotIndex, data, id, source) {
     await cards.load();
     // marvelcdb renvoie le heros sous "hero_code" (Marvel Champions), pas
     // "investigator_code" (qui est le champ d'Arkham Horror et reste null ici).
@@ -4162,7 +4218,7 @@ async function importMarvelcdb(slotIndex, input) {
         hero.deck,
         (cid) => { const c = cards.get(cid); return (c && c.class) || ""; },
     );
-    await verifierOuForcer(hero, deck, `marvelcdb ${id}`);
+    await verifierOuForcer(hero, deck, source);
     return { hero, deck };
 }
 
@@ -4495,6 +4551,18 @@ function rendreOutilsDeck() {
             el("button", { class: "tampon", onclick: () => doImport(i) }, "Import"),
             el("button", {
                 class: "tampon",
+                title: t("Importer un deck OCTGN (fichier .o8d)"),
+                onclick: () => document.getElementById("o8d-" + i).click(),
+            }, t("Fichier OCTGN (.o8d)")),
+            el("input", {
+                type: "file", id: "o8d-" + i, accept: ".o8d,.xml,text/xml", hidden: true,
+                onchange: async (e) => {
+                    const f = e.target.files && e.target.files[0]; e.target.value = "";
+                    if (f) await doImport(i, f);
+                },
+            }),
+            el("button", {
+                class: "tampon",
                 title: t("Parcourir les decks publiés sur MarvelCDB"),
                 onclick: () => ouvrirPanneauCdb(i),
             }, t("Decks MarvelCDB")),
@@ -4518,16 +4586,22 @@ function rendreOutilsDeck() {
     );
 }
 
-async function doImport(i) {
+async function doImport(i, fichier) {
     const input = document.getElementById("mcdb-" + i);
     const status = document.getElementById("mcdb-st-" + i);
-    if (!input || !input.value.trim()) return false;
+    if (!fichier && (!input || !input.value.trim())) return false;
     if (status) status.textContent = t("Import en cours...");
     try {
-        const { hero, deck } = await importMarvelcdb(i, input.value);
+        const { hero, deck, inconnues } = fichier
+            ? await importO8d(i, await fichier.text(), fichier.name)
+            : await importMarvelcdb(i, input.value);
         const p = state.players[i];
         p.hero = hero; p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
-        if (window.confirm(`Deck \u00ab ${deck.name} \u00bb ${t("importé")} (${deck.player_deck.length} ${t("cartes")}).\n\n${t("Le sauvegarder pour plus tard ?")}`)) {
+        // Les lignes d'un fichier OCTGN qu'aucun GUID ni aucun nom n'a retrouvees : dites, pas tues.
+        const manque = (inconnues || []).length
+            ? `\n\n${t("Cartes non reprises (inconnues du jeu, souvent les cartes propres à un autre héros) :")} ` + inconnues.map((c) => `${c.qte}× ${c.nom}`).join(", ")
+            : "";
+        if (window.confirm(`Deck \u00ab ${deck.name} \u00bb ${t("importé")} (${deck.player_deck.length} ${t("cartes")}).${manque}\n\n${t("Le sauvegarder pour plus tard ?")}`)) {
             // ⚠ SUR LE SERVEUR, pas dans le cache du navigateur : un deck range
             // dans le localStorage ne suit pas d'un appareil a l'autre et
             // disparait avec le cache. Voir decks-serveur.js.

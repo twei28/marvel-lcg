@@ -240,7 +240,7 @@ async function importerMarvelcdb(saisie) {
 function champImport() {
     const saisie = el("input", {
         class: "salon-mcdb-champ",
-        placeholder: t("Colle une URL ou un ID marvelcdb..."),
+        placeholder: t("Colle une URL ou un ID marvelcdb ou mc4db..."),
     });
     const bouton = el("button", { class: "salon-mcdb-bouton" }, t("Importer"));
     bouton.onclick = async () => {
