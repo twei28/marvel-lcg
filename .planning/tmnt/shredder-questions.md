@@ -61,3 +61,11 @@ consignee ici. Scans : `.planning/tmnt/pics-shredder/<card_id>.jpg` (copie versi
 - **Q7** : Kuro Kabuto s'attache APRES l'activation (confirmee).
 - **Q8** : tranchee par l'encart lui-meme (« Unless otherwise specified, a character can only have one Cloaked status card ») : plafond d'UN Cloaked pour tous les personnages, Shredder 2/3/4 selon son stade. Les trois regles chiffrees de l'encart (« Shredder Cloaked Rules ») sont desormais couvertes par des cas : +6 sur une activation avec 3 Cloaked (base mesuree 3 -> 9), une attaque de 3 retire 2 Cloaked et laisse le dernier, trois attaques de 1 les retirent tous.
 - **Q9** : « Hébété / hébétez » valide par l'utilisateur.
+
+### Q2 suite : lectures d'Intensified tranchees par l'utilisateur (16/10/2026)
+1. L'effet de la carte d'etat d'origine a lieu, seule sa defausse est remplacee : confirme.
+2. Defausse groupee : chaque Intensified remplace UNE carte : confirme.
+3. Perimetre : toute defausse d'un etat precis (consommation, carte de joueur, Percant) ; pas la sortie de jeu, « chaque carte d'etat », ni les plafonds de regle : confirme.
+4. te201 « 1 copy » = des la 1re copie, pour tout etat : confirme.
+5. Plafond : Intensified suit les regles des cartes d'etat, UNE par personnage, DEUX pour un Solide (Steady). CHANGE (l'agent avait code « aucun plafond »).
+6. te201 en jeu : case a cocher a la preparation, decochee par defaut, avec le jeu TMNT Standard / Expert.

@@ -23,6 +23,7 @@ RIEN_A_BOOSTER = "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"
 TE201 = "Puzzle.PutIntoPlay('te201')"
 R = "01094"
 H = "01001a"
+K = "27161"  # Kraven the Hunter, sbire Solide (Steady), sans Coriace native
 
 
 def _c(nom, pourquoi, mise, declencher, attendu, **cle):
@@ -42,9 +43,17 @@ CAS = [
        "Rhino Sonne : la pose reussit, la carte est reconnue (HasStatus Intensified)",
        [f"Puzzle.Stun('{R}')"], [f"Puzzle.Intensify('{R}')"],
        {"nb": [[R, "Intensified", 1], [R, "Stunned", 1]], "statuts": [[R, "Intensified"]]}),
-    _c("[intensified] aucun plafond : deux Intensified s'empilent",
-       "aucun plafond imprime (contrairement a Sonne / Hebete / Camoufle) : 2 poses = 2 cartes",
-       [f"Puzzle.Stun('{R}')"], [f"Puzzle.Intensify('{R}', 2)"], {"nb": [[R, "Intensified", 2]]}),
+    _c("[intensified] plafond : UNE Intensified par personnage, la seconde n'est pas posee",
+       "decision de l'utilisateur (16/10/2026) : Intensified suit les regles des cartes d'etat, une seule par personnage",
+       [f"Puzzle.Stun('{R}')"], [f"Puzzle.Intensify('{R}', 2)"], {"nb": [[R, "Intensified", 1]]}),
+    _c("[intensified] plafond : un personnage SOLIDE (Kraven 27161, Steady) en porte DEUX",
+       "decision de l'utilisateur (16/10/2026) : Solide autorise 2 Intensified, comme 2 Sonne / 2 Desoriente",
+       [f"Puzzle.PutIntoPlay('{K}')", f"Puzzle.Tough('{K}')"], [f"Puzzle.Intensify('{K}', 2)"],
+       {"nb": [[K, "Intensified", 2]]}),
+    _c("[intensified] plafond : meme SOLIDE, pas de troisieme Intensified",
+       "Solide plafonne a 2 : 3 poses = 2 cartes",
+       [f"Puzzle.PutIntoPlay('{K}')", f"Puzzle.Tough('{K}')"], [f"Puzzle.Intensify('{K}', 3)"],
+       {"nb": [[K, "Intensified", 2]]}),
 
     # ------------------------------------------------------------------ Sonne
     _c("[intensified] Sonne : l'attaque est QUAND MEME annulee, Sonne reste, Intensified part",
@@ -62,11 +71,11 @@ CAS = [
        [INCLINE, RIEN_A_BOOSTER, f"Puzzle.Stun('{R}')", f"Puzzle.Intensify('{R}')"],
        [f"Puzzle.Attack('{R}')", f"Puzzle.Attack('{R}')"],
        {"degats_identite": 0, "nb": [[R, "Stunned", 0], [R, "Intensified", 0]]}, main_exclusive=["01088"]),
-    _c("[intensified] deux Intensified + Sonne : une attaque n'en consomme qu'UNE",
-       "« the next time » : chaque Intensified remplace une defausse ; il en reste une, Sonne reste",
-       [INCLINE, RIEN_A_BOOSTER, f"Puzzle.Stun('{R}')", f"Puzzle.Intensify('{R}', 2)"],
-       [f"Puzzle.Attack('{R}')"],
-       {"degats_identite": 0, "nb": [[R, "Stunned", 1], [R, "Intensified", 1]]}, main_exclusive=["01088"]),
+    _c("[intensified] deux Intensified (Solide) + Coriace : une defausse n'en consomme qu'UNE",
+       "« the next time » : chaque Intensified remplace une defausse ; 3 degats prevenus, il en reste une, Coriace reste",
+       [f"Puzzle.PutIntoPlay('{K}')", f"Puzzle.Tough('{K}')", f"Puzzle.Intensify('{K}', 2)"],
+       [f"Puzzle.Damage('{K}', 3)"],
+       {"degats": [[K, 0]], "nb": [[K, "Tough", 1], [K, "Intensified", 1]]}),
 
     # ------------------------------------------------------------------ Desoriente
     _c("[intensified] Desoriente : la manigance est QUAND MEME annulee, Desoriente reste",
@@ -152,10 +161,14 @@ CAS = [
        "contre-cas du precedent",
        [f"Puzzle.AddStatus('{R}', 'Exposed')"], [f"Puzzle.AddStatus('{R}', 'Exposed')"],
        {"nb": [[R, "Exposed", 2], [R, "Intensified", 0]]}),
-    _c("[te201] une seconde Intensified n'est pas « intensifiee » (pas de boucle), elle s'empile",
-       "Intensified exclue de la fenetre de te201 : 2 poses d'Intensified = 2 cartes",
+    _c("[te201] une seconde Intensified n'est pas « intensifiee » (pas de boucle), le plafond la refuse",
+       "Intensified exclue de la fenetre de te201 ; plafond d'une carte : 2 poses = 1 carte, aucune boucle",
        [TE201, f"Puzzle.Stun('{R}')"], [f"Puzzle.Intensify('{R}', 2)"],
-       {"nb": [[R, "Stunned", 1], [R, "Intensified", 2]]}),
+       {"nb": [[R, "Stunned", 1], [R, "Intensified", 1]]}),
+    _c("[te201] SOLIDE : une seconde Intensified se pose (plafond 2), sans boucle",
+       "Kraven 27161 Steady : Intensified exclue de la fenetre de te201, 2 poses = 2 cartes",
+       [TE201, f"Puzzle.PutIntoPlay('{K}')", f"Puzzle.Tough('{K}')"], [f"Puzzle.Intensify('{K}', 2)"],
+       {"nb": [[K, "Tough", 1], [K, "Intensified", 2]]}),
     _c("[te201] vaut pour TOUT personnage : seconde Coriace sur le heros -> Intensified",
        "« a character » : ami comme ennemi",
        [TE201, f"Puzzle.Tough('{H}')"], [f"Puzzle.AddStatus('{H}', 'Tough')"],

@@ -118,7 +118,7 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
                 return False
 
         # AJOUT (16/10/2026) : « This card cannot be given to a character that has no
-        # status cards » (carte d'etat Intensified). Pas de plafond : elles s'empilent.
+        # status cards » (carte d'etat Intensified). Plafond 1, 2 si Steady (CanbeIntensified).
         if name == "Intensified" and not self.CanbeIntensified():
             return False
         if name == "Confused" and not self.CanbeConfused():
@@ -233,11 +233,16 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
 
     def CanbeIntensified(self) -> bool:
         """« This card cannot be given to a character that has no status cards. »
-        Aucun plafond imprime : plusieurs Intensified peuvent s'empiler (te201 en pose
-        une a chaque doublon refuse)."""
+        Plafond : decision de l'utilisateur (16/10/2026), Intensified suit les regles des
+        cartes d'etat : UNE par personnage, DEUX pour un personnage Solide (Steady),
+        comme Sonne / Desoriente."""
+        from game.card.face.base import Unit2
         if not self.IsInPlay():
             return False
-        return self.GetStatusSize() > 0
+        if self.GetStatusSize() == 0:
+            return False
+        plafond = 2 if self.card.CastTo(Unit2).IsSteady() else 1
+        return self.intensified < plafond
 
     def CanbeStunned(self) -> bool:
         if not self.IsInPlay():

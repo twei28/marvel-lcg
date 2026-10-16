@@ -33,7 +33,7 @@ défausse d'un état (`LoseState` de Sonné / Désorienté / Coriace / Exposé,
 `Faces.DiscardAll([carte])` de Camouflé / Hébété, perforant, cartes de joueur qui
 retirent un état) : modèle `skrull_menace/paibok/__init__.py`.
 
-**Lecture codée (À CONFIRMER, voir « Questions »)** :
+**Lectures tranchées par l'utilisateur (16/10/2026)** :
 
 - l'EFFET de la carte d'origine a lieu, seule sa DÉFAUSSE est remplacée : Sonné annule
   quand même l'attaque, Désorienté la manigance, Coriace prévient les dégâts, Exposé
@@ -42,12 +42,17 @@ retirent un état) : modèle `skrull_menace/paibok/__init__.py`.
 - une défausse de PLUSIEURS cartes d'un coup (« discard all Exposed », lot Hébété +
   Camouflé, Sonné ×2 d'un Steady) : chaque Intensified remplace UNE carte (« a status
   card »), les autres partent. Deux Exposé + une Intensified : +2 dégâts, un Exposé reste ;
-- **pas de plafond** : rien d'imprimé, plusieurs Intensified s'empilent (te201 en pose une
-  à chaque doublon) ; chacune remplace une défausse ;
+- **plafond des cartes d'état** : Intensified suit les règles générales des cartes d'état,
+  UNE par personnage, DEUX pour un personnage Solide (Steady), comme Sonné / Désorienté
+  (`CanbeIntensified`). Chaque carte remplace une défausse ;
 - « a character that has no status cards » : `GetStatusSize() == 0` ; une Intensified
-  posée compte elle-même comme carte d'état (une 2e Intensified est donc toujours légale).
+  posée compte elle-même comme carte d'état (la 2e Intensified d'un Solide est donc légale) ;
+- te201 « already has 1 copy » = AU MOINS une, pour TOUT état, quel que soit son plafond
+  (2e Exposé, 2e Cloaked de Shredder, 2e Sonné d'un Solide → Intensified) ;
+- te201 est un environnement OPTIONNEL : case à cocher à la préparation, décochée par
+  défaut, proposée seulement avec le jeu TMNT Standard / Expert.
 
-**Exclusions** (ne sont pas « ce personnage défausse une carte d'état ») :
+**Exclusions** (tranchées : ne sont pas « ce personnage défausse une carte d'état ») :
 
 - la défausse d'une autre Intensified (sinon deux Intensified se remplacent en boucle) ;
 - le VIDAGE de la zone d'état : le porteur quitte le jeu / se réinitialise
@@ -77,9 +82,10 @@ pour que 56175 / ah006 ne voient pas une pose que le plafond aurait refusée.
 
 **Variantes maison** : aucune.
 
-**Preuves** : `tools/cas/intensified.py` (16 cas `[intensified]`, 8 cas `[te201]`). Preuves
+**Preuves** : `tools/cas/intensified.py` (18 cas `[intensified]`, 9 cas `[te201]`). Preuves
 par substitution : `intensified.py` retiré → les 8 cas de remplacement + la chaîne te201
 ROUGES ; `CanbeIntensified` sans condition → « ne peut PAS être donnée » ROUGE ; garde
 `vidage` retirée → cas « défaussez chaque carte d'état » ROUGE ; `te201.py` retiré → 4 cas
 te201 ROUGES. Contre-cas d'absence assumés verts sous substitution (témoins, pose, « pas de
-boucle »).
+boucle »). Plafond (16/10/2026) : `CanbeIntensified` sans plafond → 3 cas ROUGES ; plafond
+fixé à 1 même pour un Solide → 4 cas ROUGES (Kraven 27161).
