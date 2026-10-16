@@ -396,6 +396,25 @@ class World(WorldAction, WorldFind):
 
         return deck
 
+    def CartesSetupOptionnelles(self, campaign: 'CampaignDescriptor', encounter_set_names: List[str]) -> List['CardFace']:
+        """Les cartes « Setup » qu'une OPTION de la preparation ajoute (etape 11).
+
+        te201 Intense Combatants : « TMNT Standard and Expert only. (This is an
+        optional environment...) Permanent. Setup. » Elle n'appartient a aucun
+        set : la case « Intense Combatants » de l'ecran de preparation pose la
+        regle `tmnt_intense_combatants`, et la carte ne nait que si la partie
+        joue AUSSI le set TMNT Standard ou TMNT Expert. Sinon la regle est
+        ignoree (decision de l'utilisateur du 16/10/2026).
+        """
+        from game.card.factory import CardFactory
+        if not self.rule.tmnt_intense_combatants:
+            return []
+        sets = list(campaign.encounter_sets) + list(encounter_set_names)
+        if not any(str(x).startswith(("tmnt_standard", "tmnt_expert")) for x in sets):
+            return []
+        cards = CardFactory.GenerateCards(["te201"], self.aside_deck, self)
+        return [card.face for card in cards]
+
     def SelectScenario(self, villains: Sequence[str], schemes: Sequence[str]) -> None:
         from game.card.factory import CardFactory
         from game.effect.rule import GameRule
@@ -565,6 +584,7 @@ class World(WorldAction, WorldFind):
                 ([second_encounter_deck] if second_encounter_deck else []) + \
                 self.additional_decks
         faces = [x for y in decks for x in y.GetAll() if HasSetup.IsType(x) and x.printed_setup > 0]
+        faces +=self.CartesSetupOptionnelles(campaign, message.encounter_set_names)
         for face in faces:
             face.ProcessSetup(game_start_effect)
 

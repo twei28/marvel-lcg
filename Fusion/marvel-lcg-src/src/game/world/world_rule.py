@@ -91,6 +91,12 @@ class WorldRule:
         # on saura toujours qu'une partie n'a pas ete jouee par les regles.
         self.mode_manuel                    = VariableBool(self, False, "mode_manuel")
         self.mode_heroic                    : int = 0
+        # te201 Intense Combatants (TMNT), environnement OPTIONNEL (decision de
+        # l'utilisateur du 16/10/2026) : une case de l'ecran de preparation,
+        # decochee par defaut. Pose par la liste `rules`, donc conserve dans la
+        # sauvegarde. Ignoree hors des sets TMNT Standard / Expert : voir
+        # `World.CartesSetupOptionnelles`.
+        self.tmnt_intense_combatants        = VariableBool(self, False, "tmnt_intense_combatants")
 
     def SetRule(self, rules: List[str], is_puzzle: bool, seed: int):
         for var in self.vars_bool:
