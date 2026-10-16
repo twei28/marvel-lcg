@@ -54,3 +54,10 @@ consignee ici. Scans : `.planning/tmnt/pics-shredder/<card_id>.jpg` (copie versi
 - **Q2** : l'utilisateur a fourni la carte d'etat **INTENSIFIED** (capture Discord du serveur Bebop & Rocksteady, `.planning/tmnt/intensified-capture.webp`) :
   « The next time this character would discard a status card, discard this status card instead. This card cannot be given to a character that has no status cards. »
   « Intensify X » = poser une carte d'etat Intensified sur X (7e carte d'etat). A IMPLEMENTER (moteur + te201), voir aussi le scenario Bebop & Rocksteady.
+- **Q3** : jeu standard/expert TMNT PROPRE par defaut (tmnt_standard / tmnt_expert) pour TOUS les scenarios TMNT ; Baxter bascule (8 parties d'essai sans erreur).
+- **Q4** : Foot Ninja est VAINCU (la defaite compte) puis melange (confirmee).
+- **Q5** : Kira no Ken defaussee si Karai est introuvable (confirmee).
+- **Q6** : « Karai » = ts101 OU tl015 (confirmee).
+- **Q7** : Kuro Kabuto s'attache APRES l'activation (confirmee).
+- **Q8** : tranchee par l'encart lui-meme (« Unless otherwise specified, a character can only have one Cloaked status card ») : plafond d'UN Cloaked pour tous les personnages, Shredder 2/3/4 selon son stade. Les trois regles chiffrees de l'encart (« Shredder Cloaked Rules ») sont desormais couvertes par des cas : +6 sur une activation avec 3 Cloaked (base mesuree 3 -> 9), une attaque de 3 retire 2 Cloaked et laisse le dernier, trois attaques de 1 les retirent tous.
+- **Q9** : « Hébété / hébétez » valide par l'utilisateur.

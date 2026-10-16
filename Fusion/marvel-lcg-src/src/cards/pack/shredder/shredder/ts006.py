@@ -19,7 +19,7 @@ from . import *
 # 1 resource » sont deux COUTS (avant le « -> ») ; « Shredder » retrouve par
 # card_id (`IDS_SHREDDER`).
 #
-# TODO-QUESTION (.planning/tmnt/shredder-questions.md, Q1) : « take 1 damage »
+# DECISION UTILISATEUR (16/10/2026, Q1) : « take 1 damage »
 # sans sujet. Lecture retenue : l'IDENTITE du joueur qui paie prend 1 degat.
 
 
