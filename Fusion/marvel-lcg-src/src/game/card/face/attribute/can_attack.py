@@ -380,6 +380,13 @@ class CanAttack(CardFace):
                 recalculate.Send()
                 calculated_damage = recalculate.will_take_damage
 
+            # AJOUT (16/10/2026, up039 Tonfa) : fenetre « When calculating damage during an attack », ouverte
+            # aux interruptions des joueurs ; un bonus de DEF pris ici s'ajoute a la DEF du defenseur.
+            calcul_message = Message.WhenCalculatingAttackDamage(this, atk_target, would_atk_message)
+            calcul_message.Send()
+            if calcul_message.defense_bonus and defense_messages and defender and not defender.IsDefeated():
+                defense += calcul_message.defense_bonus
+
             # LA VALEUR AVANT DEFENSE, retenue pour le journal du bilan.
             #
             # C'est la seule qui redonne le calcul que le joueur refait a la

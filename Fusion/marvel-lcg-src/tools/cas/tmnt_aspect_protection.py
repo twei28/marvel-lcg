@@ -368,7 +368,203 @@ CAS += [
 ]
 
 # ===================================================================== NOUVELLES
-# (cas ajoutes plus bas, carte par carte)
+CAS += [
+    # ------------------------------------------------------------------ up007 Cyber Ninja
+    _c("up007 Cyber Ninja : Reponse, une amelioration defaussee de la main -> pioche 1 et Camoufle",
+       "« After Cyber Ninja enters play, discard an upgrade from your hand -> draw 1 card and cloak Cyber Ninja »",
+       [HEROS, SANS_DECK, DECK6], [],
+       {"en_jeu": ["up007"], "statuts": [["up007", "Cloaked"]], "defausse": ["01081"], "taille_main": 1},
+       main_exclusive=["up007", "01089", "01081"], payer_avec=["01089"], jouer=["up007"], accepter_choix=True),
+    _c("up007 Cyber Ninja : sans amelioration en main, cout impayable -> ni pioche ni Camoufle",
+       "contre-cas du cout « discard an upgrade from your hand » (la main ne contient qu'un evenement)",
+       [HEROS, SANS_DECK, DECK6], [],
+       {"en_jeu": ["up007"], "statuts_absents": [["up007", "Cloaked"]], "en_main": ["01003"], "taille_main": 1},
+       main_exclusive=["up007", "01089", "01003"], payer_avec=["01089"], jouer=["up007"], accepter_choix=True),
+
+    # ------------------------------------------------------------------ up009 Demoralize
+    _c("up009 Demoralize : Rhino attaque le heros (incline : 2 degats) puis est Desoriente",
+       "« Choose an enemy. It attacks you. Confuse that enemy »",
+       [HEROS, "Puzzle.Exhaust('01001a')"], [],
+       {"degats_identite": 2, "statuts": [["01094", "Confused"]], "defausse": ["up009"]},
+       main_exclusive=["up009"], jouer=["up009"], cibles=["01094"]),
+    _c("up009 Demoralize : un SBIRE choisi (Hydra Mercenary) attaque puis est Desoriente ; Rhino intact",
+       "« an enemy » : un sbire aussi ; « that enemy » = le meme",
+       [HEROS, "Puzzle.Exhaust('01001a')", SBIRE], [],
+       {"statuts": [["01101", "Confused"]], "statuts_absents": [["01094", "Confused"]], "defausse": ["up009"]},
+       main_exclusive=["up009"], jouer=["up009"], cibles=["01101"]),
+
+    # ------------------------------------------------------------------ up015 Helpful Bystander
+    _c("up015 Helpful Bystander : Rhino attaque le joueur -> attaque le Bystander a la place, deferlement 1 sur l'identite",
+       "« it attacks Helpful Bystander instead. This attack gains overkill » : ATQ 2 sur 1 PV -> vaincu, 1 d'exces a "
+       "l'identite (overkill.md : allie vaincu -> identite du controleur)",
+       [HEROS, "Puzzle.PutIntoPlay('up015', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+       {"hors_jeu": ["up015"], "degats_identite": 1},
+       main_exclusive=["01090"]),
+    _c("up015 Helpful Bystander : votre heros gagne +1 taille de main",
+       "« Your hero gets +1 hand size »",
+       [HEROS, "Puzzle.PutIntoPlay('up015', under_control=True)"], [],
+       {"attributs": {"hand_size": 1}},
+       main_exclusive=["01090"]),
+
+    # ------------------------------------------------------------------ up016 Herman
+    _c("up016 Herman : surpaye de 2 (4 ressources pour un cout de 2) -> 3 cartes Tenace",
+       "Toughness (1) + « an additional tough status card on him (to a max of 2) for each resource you overpaid »",
+       [HEROS], [],
+       {"carte": "up016", "tenaces": 3}, verifier="up_tenaces",
+       main_exclusive=["up016", "01090", "01088"], jouer=["up016"], surpayer=True, payer_tout=True,
+       payer_avec=["01090", "01088"]),
+    _c("up016 Herman : paye juste (cout 2) -> 1 seule Tenace (Toughness)",
+       "contre-cas : aucun surpaiement",
+       [HEROS], [],
+       {"carte": "up016", "tenaces": 1}, verifier="up_tenaces",
+       main_exclusive=["up016", "01090"], jouer=["up016"]),
+    _c("up016 Herman : surpaye de 4 (6 ressources) -> plafond, 3 Tenace et pas 5",
+       "TEMOIN de la limite « to a max of 2 » et du « up to 3 tough status cards »",
+       [HEROS], [],
+       {"carte": "up016", "tenaces": 3}, verifier="up_tenaces",
+       main_exclusive=["up016", "01090", "01088", "01089"], jouer=["up016"], surpayer=True, payer_tout=True,
+       payer_avec=["01090", "01088", "01089"]),
+
+    # ------------------------------------------------------------------ up023 Lookout
+    _c("up023 Lookout : un sbire vous engage -> Lookout defausse, heros Camoufle, 1 carte piochee",
+       "« After a minion engages you, discard Lookout -> cloak your hero and draw 1 card »",
+       [HEROS, SANS_DECK, DECK6, "Puzzle.PutIntoPlay('up023', under_control=True)"], ["Puzzle.Reveal('01101')"],
+       {"defausse": ["up023"], "statuts": [["01001a", "Cloaked"]], "taille_main": 2},
+       main_exclusive=["01090"], accepter_choix=True),
+    _c("up023 Lookout : soutien NYC controle (Shell Cycle tr008) -> cout 1, jouable avec une seule ressource",
+       "« Reduce the cost to play this card by 1 if you control a NYC support » ; 01081 ne genere qu'1 ressource",
+       [HEROS, "Puzzle.PutIntoPlay('tr008', under_control=True)"], [],
+       {"en_jeu": ["up023"]},
+       main_exclusive=["up023", "01081"], jouer=["up023"]),
+    _c("up023 Lookout : SANS soutien NYC -> cout 2, injouable avec une seule ressource",
+       "contre-cas de la reduction",
+       [HEROS], [],
+       {"en_main": ["up023"]},
+       main_exclusive=["up023", "01081"], jouer=["up023"]),
+
+    # ------------------------------------------------------------------ up024 Nobody
+    _c("up024 Nobody : Reponse -> option Tenace",
+       "« place a tough or cloaked status card on them » : premiere option",
+       [HEROS], [],
+       {"statuts": [["up024", "Tough"]], "statuts_absents": [["up024", "Cloaked"]]},
+       main_exclusive=["up024", "01090", "01088"], jouer=["up024"], accepter_choix=True,
+       preferer_option="Place a tough"),
+    _c("up024 Nobody : Reponse -> option Camoufle",
+       "seconde option (une seule des deux)",
+       [HEROS], [],
+       {"statuts": [["up024", "Cloaked"]], "statuts_absents": [["up024", "Tough"]]},
+       main_exclusive=["up024", "01090", "01088"], jouer=["up024"], accepter_choix=True,
+       preferer_option="Place a cloaked"),
+
+    # ------------------------------------------------------------------ up026 Primal Provisions
+    _c("up026 Primal Provisions : Rampage 2 paye puis 2 cartes piochees",
+       "« [star] Rampage 2 » + « Hero Action: Draw 2 cards » : deck 6 - 2 - 2 = 2, main 2, 2 degats",
+       [HEROS, SANS_DECK, DECK6], [],
+       {"degats_identite": 2, "taille_deck_joueur": 2, "taille_main": 2, "defausse": ["up026"]},
+       main_exclusive=["up026"], jouer=["up026"]),
+    _c("up026 Primal Provisions : TEMOIN D'EPUISEMENT « Max 1 per phase » : la 2e copie reste en main",
+       "deux copies jouees dans la meme phase : un seul Rampage paye (2 degats), une copie en main",
+       [HEROS, SANS_DECK, DECK6], [],
+       {"degats_identite": 2, "en_main": ["up026"], "taille_deck_joueur": 2},
+       main_exclusive=["up026", "up026"], jouer=["up026", "up026"]),
+
+    # ------------------------------------------------------------------ up028 Rabid Infection
+    _c("up028 Rabid Infection : sbire attaque par le heros -> attachee, vulnerable : Sonne = defausse",
+       "« Attach to a minion that your hero attacked this turn. If attached to a non-ELITE minion, it gains "
+       "vulnerable » ; puis Puzzle.Stun : un sbire vulnerable etourdi est defausse",
+       [HEROS, SBIRE], ["Puzzle.Attack('01001a')"],
+       {"hors_jeu": ["01101"]},
+       main_exclusive=["up028"], jouer=["up028"], cibles=["01101"],
+       declencher_apres=["Puzzle.Stun(Puzzle.FindFaceInPlay('01101'))"]),
+    _c("up028 Rabid Infection : sbire NON attaque ce tour -> injouable",
+       "contre-cas « that your hero attacked this turn »",
+       [HEROS, SBIRE], [],
+       {"en_main": ["up028"], "en_jeu": ["01101"]},
+       main_exclusive=["up028"], jouer=["up028"]),
+    _c("up028 Rabid Infection : sbire ELITE (Killmonger 01157) -> pas vulnerable, survit au Sonne",
+       "« non-ELITE » : un sbire ELITE ne gagne rien",
+       [HEROS, "Puzzle.PutIntoPlay('01157')"], ["Puzzle.Attack('01001a')"],
+       {"en_jeu": ["01157"], "attaches": [["01157", "up028"]], "statuts": [["01157", "Stunned"]]},
+       main_exclusive=["up028"], jouer=["up028"], cibles=["01157"],
+       declencher_apres=["Puzzle.Stun('01157')"]),
+    _c("up028 Rabid Infection : le sbire s'active (attaque) -> 1 degat a un ennemi (Rhino)",
+       "« Interrupt: When attached minion activates, deal 1 damage to an enemy »",
+       [HEROS, SBIRE], ["Puzzle.Attack('01001a')"],
+       {"degats": [["01094", 1]]},
+       main_exclusive=["up028"], jouer=["up028"], cibles=["01094", "01101"], accepter_choix=True,
+       declencher_apres=["Puzzle.Attack('01101')"]),
+
+    # ------------------------------------------------------------------ up033 Senkon
+    _c("up033 Senkon : attache a Jessica Jones qui defend contre Rhino -> Rhino -1 ATQ (1 degat au lieu de 2)",
+       "« When attached character defends against an enemy attack, exhaust Senkon -> that enemy gets –1 ATK »",
+       [HEROS, "Puzzle.PutIntoPlay('01059', under_control=True)"], [],
+       {"degats": [["01059", 1]], "exhausted": ["up033"], "attaches": [["01059", "up033"]]},
+       main_exclusive=["up033", "01090"], jouer=["up033"], cibles=["01059"], accepter_choix=True,
+       declencher_apres=["Puzzle.Attack('01094', defender='01059')"]),
+    _c("up033 Senkon : attache a un ALLIE -> pas restricted",
+       "« While attached to an identity, this card gains restricted » : sur un allie, 0",
+       [HEROS, "Puzzle.PutIntoPlay('01059', under_control=True)"], [],
+       {"carte": "up033", "restricted": 0}, verifier="up_restricted",
+       main_exclusive=["up033", "01090"], jouer=["up033"], cibles=["01059"]),
+    _c("up033 Senkon : attache a l'IDENTITE -> restricted",
+       "branche « attached to an identity »",
+       [HEROS], [],
+       {"carte": "up033", "restricted": 1}, verifier="up_restricted",
+       main_exclusive=["up033", "01090"], jouer=["up033"], cibles=["01001a"]),
+
+    # ------------------------------------------------------------------ up039 Tonfa
+    _c("up039 Tonfa : attaque non defendue de Rhino -> option riposte 1 : Rhino subit 1",
+       "« give your hero either +1 DEF or retaliate 1 for this attack » : option riposte",
+       [HEROS, "Puzzle.PutIntoPlay('up039', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+       {"degats": [["01094", 1]], "degats_identite": 2, "exhausted": ["up039"]},
+       main_exclusive=["01090"], accepter_choix=True, preferer_option="retaliate"),
+    _c("up039 Tonfa : Titania (ATQ 6) attaque, le heros defend (DEF 3) -> option +1 DEF : 2 degats au lieu de 3",
+       "option +1 DEF ; ligne de base : cas suivant (3 degats sans Tonfa)",
+       [HEROS, "Puzzle.PutIntoPlay('up039', under_control=True)", "Puzzle.PutIntoPlay('01162')"],
+       ["Puzzle.Attack('01162', defender='01001a')"],
+       {"degats_identite": 2, "exhausted": ["up039"]},
+       main_exclusive=["01090"], accepter_choix=True, preferer_option="+1 DEF"),
+    _c("up039 Tonfa : ligne de base SANS Tonfa, Titania contre DEF 3 -> 3 degats",
+       "ligne de base du cas precedent",
+       [HEROS, "Puzzle.PutIntoPlay('01162')"], ["Puzzle.Attack('01162', defender='01001a')"],
+       {"degats_identite": 3},
+       main_exclusive=["01090"], accepter_choix=True),
+
+    # ------------------------------------------------------------------ up041 Usagi Yojimbo
+    _c("up041 Usagi Yojimbo : defend sans s'incliner (reste pret), Tenace consomme, Riposte 2 sur Rhino",
+       "« does not exhaust to defend » + Toughness + Retaliate 2 ; defense par la VRAIE question du moteur (le raccourci "
+       "`Puzzle.Attack(defender=...)` incline le defenseur lui-meme et court-circuite le cout)",
+       [HEROS, "Puzzle.PutIntoPlay('up041', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+       {"pret": ["up041"], "statuts_absents": [["up041", "Tough"]], "degats": [["01094", 2], ["up041", 0]],
+        "degats_identite": 0},
+       main_exclusive=["01090"]),
+    _c("up041 Usagi Yojimbo : INCLINE, il peut quand meme defendre (RR v1.8, « Defending »)",
+       "« A card ability that allows an ally to be declared as a defender without exhausting can be used on an "
+       "exhausted ally »",
+       [HEROS, "Puzzle.PutIntoPlay('up041', under_control=True)", "Puzzle.Exhaust('up041')", "Puzzle.Exhaust('01001a')"],
+       ["Puzzle.Attack('01094')"],
+       {"statuts_absents": [["up041", "Tough"]], "degats_identite": 0, "degats": [["01094", 2]]},
+       main_exclusive=["01090"]),
+    _c("up041 Usagi Yojimbo : la capacite ne deborde PAS sur un autre allie (Jessica Jones defend et s'incline)",
+       "« USAGI does not exhaust » : Jessica Jones, en jeu avec Usagi, s'incline toujours pour defendre (le cout "
+       "d'inclinaison est propre a chaque face) ; Usagi incline pour ne pas etre choisi",
+       [HEROS, "Puzzle.PutIntoPlay('up041', under_control=True)", "Puzzle.Exhaust('up041')",
+        "Puzzle.PutIntoPlay('01059', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+       {"exhausted": ["01059"], "degats": [["01059", 2]]},
+       main_exclusive=["01090"], preferer_option="Defense", cibles=["01059"]),
+    _c("up041 TEMOIN moteur 53011 Draw Their Fire : Falcon defend sans s'incliner (correctif cost_func.Exhaust)",
+       "carte officielle de la meme mecanique (`not_need_to_exhaust`) : apres le debut de la phase du vilain, "
+       "Falcon defend et reste pret",
+       ["Puzzle.ChangeForm('53001b')", "Puzzle.PutIntoPlay('53011', under_control=True)"],
+       ["Puzzle.BeginVillainPhase()", "Puzzle.Attack('01094')"],
+       {"pret": ["53001a"], "defausse": ["53011"]},
+       main_exclusive=["01090"], heros="falcon", accepter_choix=True),
+    _c("up041 TEMOIN : un allie ordinaire (Jessica Jones) s'incline pour defendre",
+       "temoin de la mesure « pret » : sans la capacite, le defenseur est incline",
+       [HEROS, "Puzzle.PutIntoPlay('01059', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+       {"exhausted": ["01059"]},
+       main_exclusive=["01090"]),
+]
 
 
 VERIFICATIONS = r'''
@@ -382,4 +578,28 @@ def up_rencontre_distribuee(monde, aides):
     if n != attendu["distribuees"]:
         return False, f"{n} carte(s) rencontre distribuee(s) (attendu {attendu['distribuees']})"
     return True, f"{n} carte(s) rencontre distribuee(s), face cachee"
+
+
+def up_tenaces(monde, aides):
+    """Nombre de cartes Tough sur `carte` (en jeu). `attendu` = {carte, tenaces}."""
+    attendu = aides["cas"]["attendu"]
+    face = aides["par_id"](monde, attendu["carte"])
+    if face is None:
+        return False, f"{attendu['carte']} n'est pas en jeu"
+    n = face.CastTo(aides["CanStatus"]).tough
+    if n != attendu["tenaces"]:
+        return False, f"{n} carte(s) Tenace (attendu {attendu['tenaces']})"
+    return True, f"{n} carte(s) Tenace"
+
+
+def up_restricted(monde, aides):
+    """Valeur courante du mot-cle restricted de `carte`. `attendu` = {carte, restricted}."""
+    attendu = aides["cas"]["attendu"]
+    face = aides["par_id"](monde, attendu["carte"])
+    if face is None:
+        return False, f"{attendu['carte']} n'est pas en jeu"
+    n = face.restricted
+    if n != attendu["restricted"]:
+        return False, f"restricted = {n} (attendu {attendu['restricted']})"
+    return True, f"restricted = {n}"
 '''

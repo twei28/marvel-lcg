@@ -310,7 +310,15 @@ class CostFunc:
                     range=range,
                     from_where=from_where
                 )
-            selector.selector_filter.AddParameter(canbe_exhaust=True)
+            # CORRECTIF (16/10/2026, aspect TMNT Protection, up041 Usagi Yojimbo) : un cout d'inclinaison
+            # rendu inutile (`not_need_to_exhaust`, « does not exhaust to defend » : 53011 Draw Their Fire,
+            # up041) doit rester payable par une carte DEJA inclinee. Rules Reference v1.8, « Defending » :
+            # « A card ability that allows an ally to be declared as a defender without exhausting can be
+            # used on an exhausted ally. » `on_check` le disait deja ; le filtre `canbe_exhaust=True` du
+            # selecteur, lui, retirait la carte inclinee des cibles et `PayCost` echouait. Liste vide (tous
+            # les autres couts) : filtre identique a l'ancien.
+            selector.selector_filter.AddParameter(
+                check_effect_fn=lambda effect, face: face.CanExhaust() or bool(self.not_need_to_exhaust))
             super().__init__(selector, on_call, on_check)
 
         def ResetCostSnapshot(self) -> None:
