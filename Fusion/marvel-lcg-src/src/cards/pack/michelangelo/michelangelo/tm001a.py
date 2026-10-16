@@ -28,9 +28,12 @@ from . import *
 #    minimum propose est 1 (0 serait « ne rien faire », la Response est deja
 #    declinable).
 #  - `MoveThreat` retire par `RemoveThreatInternal` : une annexe videe est
-#    VAINCUE par le moteur (comme un retrait normal), et Crise ne bloque pas
-#    ce chemin. # TODO-QUESTION (voir .planning/tmnt/michelangelo-phase-a.md,
-#    question 3).
+#    VAINCUE par le moteur (decision de l'utilisateur, 15/10/2026). Crise
+#    BLOQUE le deplacement depuis la manigance principale : c'est
+#    `MainScheme.RemoveThreatInternal` (scheme_main.py) qui refuse de retirer
+#    quoi que ce soit tant qu'une icone Crise est en jeu ; le script ne
+#    propose donc pas la principale comme source dans ce cas (sinon le
+#    joueur declarerait un nombre pour rien).
 #  - Le libelle n'est PAS `thwart` : deplacer n'est pas retirer.
 
 def GetAbilities() -> Sequence['Ability']:
@@ -61,11 +64,17 @@ def GetAbilities() -> Sequence['Ability']:
         nombre = initiator.DeclareNumber(1, min(3, source.threat))
         source.MoveThreat(nombre, effect, [destination])
 
+    def source_permise(effect: 'Effect', face: 'CardFace') -> bool:
+        # Crise : aucun retrait de menace sur la principale, deplacer inclus.
+        if MainScheme.IsType(face) and Worlds.GetCrisisFaces(effect):
+            return False
+        return True
+
     return [
         AbilityFactory.AfterUnitUseBasicPower(
             AbilityType.Response,
             "You",
             booyakasha,
         ).SetName("Booyakasha")
-        .SetTarget(Scheme2, has_threat=True),
+        .SetTarget(Scheme2, has_threat=True, check_fn=source_permise),
     ]

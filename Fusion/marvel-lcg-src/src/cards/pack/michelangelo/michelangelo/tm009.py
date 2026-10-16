@@ -27,14 +27,15 @@ from . import *
 #    manigance : l'Interruption se declenche alors (3 cartes) si le joueur
 #    est en forme de heros. C'est la lecture litterale.
 #  - « only the Michelangelo player can trigger » : on exige que l'initiateur
-#    soit le PROPRIETAIRE de la carte ; il pioche, pas le joueur qui a vaincu.
-#    # TODO-QUESTION (question 5 : multijoueur).
+#    soit le PROPRIETAIRE de la carte ; il pioche, pas le joueur qui a vaincu
+#    (decision de l'utilisateur, 15/10/2026 : l'insert tranche, forme heros
+#    obligatoire + « only the Michelangelo player » = proprietaire).
 #  - `CanPlayThisSchemeCard()` : la carte peut aussi etre jouee depuis la
 #    main (Call for Help l'y ajoute) ; cout imprime 0.
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def hors_limite(effect: 'Effect', message: 'Message.WhenCardSetup') -> None:
+    def hors_limite(effect: 'Effect', message: 'Message.WhenCardEnterPlay') -> None:
         effect.this.not_count_player_side_scheme_limit = True
 
     def retirer_une_menace(effect: 'Effect', message: 'Message.AfterPhaseEnd') -> None:
@@ -43,7 +44,11 @@ def GetAbilities() -> Sequence['Ability']:
         this.RemoveThreatFromSchemes([this], 1, effect)
 
     def le_proprietaire(effect: 'Effect', message: 'Message.WhenSchemeBeDefeated') -> bool:
-        return effect.GetInitiator() == effect.this.GetOwnerPlayer()
+        # `defeating_player` = le joueur qui vainc la manigance (le controleur de la carte qui la
+        # vainc, sinon l'initiateur de l'effet) ; `effect.GetInitiator()` serait toujours le
+        # proprietaire de tm009 (l'effet est le SIEN) et laisserait piocher quand un autre la vainc.
+        return message.defeating_player is not None and \
+            message.defeating_player == effect.this.GetOwnerPlayer()
 
     def piocher_trois(effect: 'Effect', message: 'Message.WhenSchemeBeDefeated') -> None:
         this = effect.this.CastTo(PlayerSideScheme)
@@ -55,7 +60,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.CanPlayThisSchemeCard(),
-        AbilityFactory.WhenCardSetup("This", hors_limite),
+        AbilityFactory.WhenCardEnterPlay(AbilityType.Temp0, "This", hors_limite),
         AbilityFactory.AfterPhaseEnd(
             AbilityType.ForcedResponse,
             "Player",

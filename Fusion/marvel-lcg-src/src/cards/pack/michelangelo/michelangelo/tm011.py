@@ -33,9 +33,10 @@ from . import *
 #  - « After you play an event » : tout evenement, `Event` seul, pas un
 #    evenement de Michelangelo.
 #  - Restricted : base automatique (desc), RIEN a coder.
-#  - ⚠ RISQUE A TESTER (phase C) : la MEME instance d'Ability est enregistree
-#    chez deux porteurs ; `Ability.Initialize` est gardee par
-#    `is_initialized`. # TODO-QUESTION (question 6).
+#  - Decision de l'utilisateur (15/10/2026) : vrai octroi a tous les NUNCHUCK
+#    (l'insert dit « either NUNCHUCK (or both) »). Risque verifie par les cas
+#    [michelangelo] tm011 : la MEME instance d'Ability est enregistree chez
+#    plusieurs porteurs (`Ability.Initialize` gardee par `is_initialized`).
 
 def GetAbilities() -> Sequence['Ability']:
 

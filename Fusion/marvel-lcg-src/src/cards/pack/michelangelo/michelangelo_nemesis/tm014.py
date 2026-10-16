@@ -13,9 +13,9 @@ from . import *
 #  - « EACH PLAYER » : tous les joueurs, pas seulement le premier.
 #  - « the top 3 cards of THEIR deck » : le deck de chaque joueur, pas le deck
 #    rencontre.
-#  - ⚠ L'icone CRISIS n'est pas ecrite dans le texte : elle est lue a la
-#    ressemblance avec 01108 Crowd Control (eclat avec « ! »). # TODO-QUESTION
-#    (question 7) : a confirmer par l'utilisateur.
+#  - L'icone CRISIS n'est pas ecrite dans le texte : c'est le glyphe central
+#    (eclat avec « ! »), identique a 01108 Crowd Control (Crise 1), verifie
+#    par decoupe (decision de l'utilisateur, 15/10/2026).
 
 def GetAbilities() -> Sequence['Ability']:
 
