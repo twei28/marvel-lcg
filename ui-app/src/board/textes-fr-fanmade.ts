@@ -4054,4 +4054,42 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'tr016': "<b>Une fois révélée</b> : défaussez 1 allié que vous contrôlez. Si vous ne pouvez pas, défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 allié redressé que vous contrôlez.",
   // raphael — Prepare to Rally (Treachery némésis)
   'tr017': "<b>Une fois révélée</b> : défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte de votre main.",
+  // venus — * Venus (Hero)
+  'tv001a': "<b>Action</b> : placez 1 compteur de dragage sur Venus pour chaque amélioration [[ELEMENT]] que vous contrôlez (maximum 6). <i>(Limite d'une fois par round.)</i>",
+  // venus — * Bonnie (AlterEgo)
+  'tv001b': "<b>Mise en place</b> : défaussez des cartes du dessus de votre deck jusqu'à défausser une amélioration [[ELEMENT]]. Mettez cette carte en jeu.\n<b>Action</b> : retirez 1 compteur de dragage de Bonnie → soignez 2 dégâts d'un personnage ami. <i>(Limite d'une fois par round.)</i>",
+  // venus — * Bludgeon (Ally)
+  'tv002': "<b>Réponse</b> : après que Bludgeon entre en jeu, placez 1 carte de votre défausse sur le dessus de votre deck.",
+  // venus — Arc Nova (Event)
+  'tv003': "<b>Action de héros</b> <i>(attaque)</i> : retirez X compteurs de dragage de Venus → infligez 4 dégâts à X ennemis.",
+  // venus — Brain Burn (Event)
+  'tv004': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Vous pouvez retirer 2 compteurs de dragage de Venus pour désorienter et sonner un ennemi.",
+  // venus — Eldritch Lance (Event)
+  'tv005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Cette attaque gagne Déferlement. Piochez 1 carte pour chaque ressource [wild] utilisée pour payer cette carte.",
+  // venus — Quantanucleic Acid (Event)
+  'tv006': "<b>Action de héros</b> : donnez à Venus une carte d'état Tenace. Vous pouvez retirer 2 compteurs de dragage de Venus pour piocher 2 cartes.",
+  // venus — Resistance (Event)
+  'tv007': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez tous les dégâts de cette attaque. Vous pouvez retirer 2 compteurs de dragage de Venus pour piocher 3 cartes.",
+  // venus — * Arcane Emitting Diode (Upgrade)
+  'tv009': "<b>Action de héros</b> <i>(attaque)</i> : inclinez cette carte et défaussez les 2 premières cartes de votre deck → infligez 2 dégâts à un ennemi.",
+  // venus — * Cosmic Requiem (Upgrade)
+  'tv010': "<b>Action de héros</b> : inclinez cette carte et retirez 2 compteurs de dragage de Venus → défaussez des cartes du dessus de votre deck jusqu'à défausser un événement. Ajoutez cette carte à votre main.",
+  // venus — * Dragon Scale (Upgrade)
+  'tv011': "<b>Ressource</b> : inclinez cette carte et retirez 1 compteur de dragage de Venus → générez une ressource [wild].",
+  // venus — * Dream Weaver (Upgrade)
+  'tv012': "<b>Action de héros</b> : inclinez cette carte et retirez 2 compteurs de dragage de Venus → défaussez des cartes du dessus de votre deck jusqu'à défausser un allié ou une amélioration. Ajoutez cette carte à votre main.",
+  // venus — * Reanimator Engine (Upgrade)
+  'tv013': "<b>Action de héros</b> : inclinez cette carte et retirez 2 compteurs de dragage de Venus → choisissez jusqu'à 2 cartes dans votre défausse et mélangez-les dans votre deck.",
+  // venus — * Turtle Shell (Upgrade)
+  'tv014': "<b>Action de héros</b> : inclinez cette carte et défaussez les 2 premières cartes de votre deck → redressez Venus.",
+  // venus — Faulty Creation (Obligation)
+  'tv015': "<b><i>Donnez-la au joueur Bonnie.</i></b>\nVous pouvez passer sous forme d'alter ego.\n<b>Action d'alter ego</b> : inclinez Bonnie → retirez Faulty Creation de la partie.",
+  // venus — Jasper Barlow's Lab (SideScheme némésis)
+  'tv016': "<i>Jasper Barlow a mené des expériences sur les habitants de Mutant Town.</i>\nEntrave 2[per_hero]. Incitation 2.",
+  // venus — * Jasper Barlow (Minion némésis)
+  'tv017': "<b>Une fois révélée</b> : placez une carte d'état Tenace sur chaque sbire engagé avec vous.\n<i>(Sbire némésis de Venus.)</i>\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
+  // venus — * Groundchuck-Dirtbag (Minion némésis)
+  'tv018': "Garde. Ténacité.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
+  // venus — Salvaged Scales (Treachery némésis)
+  'tv019': "<b>Une fois révélée</b> : placez 2 menaces sur la manigance principale. Si Jasper Barlow est en jeu, placez une carte d'état Tenace sur le méchant et sur chaque sbire engagé avec vous.",
 }

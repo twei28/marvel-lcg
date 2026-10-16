@@ -209,6 +209,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # MOUSERS / FLYBORGS ne sont pas decoratifs : td014 et td015 les lisent.
         "BO", "SEWERS",
         "MOUSERS", "FLYBORGS", "SWARM",
+        # CORRECTIF : traits du pack custom venus (Inkwire, TMNT Heroes). ELEMENT n'est PAS
+        # decoratif : tv001a/tv001b comptent et cherchent les ameliorations par ce trait.
+        "SHARK", "ELEMENT", "QUANTA", "SONG", "CONSTRUCT", "BULL", "MOLE",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -317,6 +320,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # td016 / td017 (SWARM) entrent en jeu avec 2 / 4 « swarm » ; leur
         # ATQ, MNG et PV valent ce nombre.
         'swarm',
+        # CORRECTIF : compteur du pack custom venus (Inkwire). Les compteurs de dragage vivent
+        # sur la carte d'IDENTITE (Venus / Bonnie, meme stock) ; tv001a les pose (max 6) et
+        # les ameliorations / evenements du pack les retirent en cout.
+        'dredge',
         # CORRECTIF : compteurs du pack custom dazzler (Lord Havok). Le « sound »
         # marque un SONG de la Setlist deja repete (« Rehearsal » n'accepte qu'un
         # SONG SANS compteur) ; le « knife » alimente les interruptions de

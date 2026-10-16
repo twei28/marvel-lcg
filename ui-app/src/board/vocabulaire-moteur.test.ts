@@ -49,6 +49,14 @@ describe('traduireMoteur', () => {
     )
   })
 
+  it('traduit les choix de Venus (compteurs de dragage)', () => {
+    enFrancais()
+    expect(traduireMoteur('Remove 2 dredge counters to draw 3 cards')).toBe('Retirer 2 compteurs de dragage pour piocher 3 cartes')
+    expect(traduireMoteur('Remove 2 dredge counters to confuse and stun an enemy')).toContain('désorienter et sonner')
+    enAnglais()
+    expect(traduireMoteur('Remove 2 dredge counters to draw 3 cards')).toBe('Remove 2 dredge counters to draw 3 cards')
+  })
+
   it('traduit les pouvoirs de base', () => {
     enFrancais()
     expect(traduireMoteur('Attack')).toBe('Attaquer')

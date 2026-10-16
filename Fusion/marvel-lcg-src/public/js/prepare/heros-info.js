@@ -1707,4 +1707,15 @@ export const HEROS_INFO = {
         apparition: "Teenage Mutant Ninja Turtles #1 (1984)",
     },
 
+    "tv001a": {
+        bio: "Venus de Milo est la fille des Tortues Ninja : une tortue mutante formée au ninjutsu, dont la maîtrise du chi lui donne des pouvoirs mystiques, de la foudre aux visions. Bonnie en civil, elle médite plus qu'elle ne se bat, jusqu'à ce que le danger la force à libérer la puissance qu'elle porte en elle et qu'elle puise dans les éléments. Son lien avec la famille Hamato est, dit-elle, « unique ».",
+        bioEn: "Venus de Milo is the Turtles' sister: a mutant turtle trained in ninjutsu whose mastery of chi gives her mystic powers, from lightning to visions. Known as Bonnie out of costume, she meditates more than she fights, until danger forces her to unleash the power she carries and draws from the elements. Her connection to the Hamato family is, she says, \"unique\".",
+        civil: "Bonnie",
+        base: "New York (Mutant Town)",
+        baseEn: "New York City (Mutant Town)",
+        equipes: "Tortues Ninja",
+        equipesEn: "Teenage Mutant Ninja Turtles",
+        ennemis: "Jasper Barlow, Groundchuck, Dirtbag",
+        ennemisEn: "Jasper Barlow, Groundchuck, Dirtbag",
+    },
 };

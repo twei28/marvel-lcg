@@ -1700,5 +1700,14 @@
   "encounters": [],
   "max_id": "tr017"
  },
- "checksum": "32680d599ccbb433ac71d590b1dd65102ee290709a6ae8cb9c2da40d7ae633b4"
+ "183. Custom (Venus)": {
+  "name": "venus",
+  "scenarios": [],
+  "heroes": [
+   "venus"
+  ],
+  "encounters": [],
+  "max_id": "tv019"
+ },
+ "checksum": "c9626b31a7ec7089d5dbe1e084ea6ba8e8fa6639bb58b7796b228187ea8d216f"
 }

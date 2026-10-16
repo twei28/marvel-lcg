@@ -550,6 +550,13 @@
    "cartes": 18,
    "depuis": "2026-10-15",
    "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
+  },
+  "tv": {
+   "pack": "venus",
+   "libelle": "183. Custom (Venus)",
+   "cartes": 20,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes, filigrane « TMNT Heroes By: Inkwire »), zip « TMNT Heroes / Venus v3 » (Kajislav). tv001a Venus (HEROS) / tv001b Bonnie (ALTER-EGO), tv002-tv014 signature (13 card_id pour 15 exemplaires), tv015 obligation Faulty Creation (GiveTo Bonnie, icone Hazard imprimee), tv016-tv019 set nemesis 'Venus Nemesis' (Jasper Barlow's Lab, Jasper Barlow, Groundchuck-Dirtbag, Salvaged Scales x2). Compteur MAISON `dredge` (compteurs de dragage poses sur l'IDENTITE, partages par les deux faces) ; traits SHARK, ELEMENT, QUANTA, SONG, CONSTRUCT, BULL, MOLE ajoutes a card_face.py. Prefixes freres TMNT : tl, td, tm, tr. Numero de set 183 PROVISOIRE : l'agent Venus travaillait en parallele des six autres heros, le coordinateur renumerote a la fusion."
   }
  }
 }

@@ -75,4 +75,10 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('swarm')).toBe('essaim')
     expect(nomDeCompteur('timer')).toBe('minuteur')
   })
+
+  it('traduit le compteur de dragage de Venus (dredge)', () => {
+    // tv001a/tv001b et les cartes du pack posent ou retirent des compteurs `dredge` sur l'identite.
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('dredge')).toBe('dragage')
+  })
 })

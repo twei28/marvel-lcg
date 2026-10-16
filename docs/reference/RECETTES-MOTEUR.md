@@ -1117,6 +1117,18 @@ servi, et elles resservent :
 - **`DeclareNumber` répond la PREMIÈRE valeur (0)** : `choisir_option: ["3"]` force la valeur (cas sk271).
 - **Le filtre `[filtre]` du harnais est une sous-chaîne, pas une expression régulière** (`"sk2[78]"` retient 0 cas).
 
+### 7novemdecies. Pièges payés par le pack `venus` (TMNT Heroes, 16/10/2026)
+
+| Mécanique / outil | Montage | Piège payé |
+|---|---|---|
+| « You MAY remove N <compteurs> to <effet> » (retrait = coût, facultatif) | `joueur.MayChooseOneAbility(effect, ForChoiceAbility(nom, op).SetCostFunc(CostFunc.Counter("YourIdentity", N, 'compteur')))` (modèle `01165` Eviction Notice ; helper `ProposerRetraitDragage`, `venus/__init__.py`) | Le refus est une option nommée **« Cancel »**, PAS un bouton Passer : dans un cas, `choisir_option: ["Cancel"]` ; `passer_sur_option` répond « la question n'a jamais été posée ». Branche non offerte quand le stock est insuffisant. |
+| « Remove X <compteurs> → ... », X choisi, zéro compris | `DeclareNumber(0, stock)` à la main, puis `Faces.RemoveCountersOn` (`tv003` Arc Nova) | `CostFunc.Counter` refuse un retrait de 0 et un minimum 1 interdit « jouer à X = 0 » ; `CostFunc.Counter(..., (1, N), ...)` + `effect.cost_func.Get(CostFunc.Counter).return_remove_counter` reste le bon modèle quand 0 n'a pas de sens (`16006`, `cn012b`). |
+| Ressource à coût de COMPTEUR (`CanGenerateResources(...).SetCostFunc(Counter)`) | `conditions=[stock >= n]` sur `CanGenerateResources` (`tv011` Dragon Scale) | Sans la condition, la ressource est offerte sans compteur et le moteur annule toute la carte en cours de paiement, sans motif. `CanPlayBy` (`venus_jouable`) NE VOIT PAS le paiement : pour prouver « impayable », jouer la carte (`jouer`) et mesurer qu'elle est restée en main. |
+| « discard cards from the top of your deck until you discard X » (`seek`) | `joueur.DiscardDeckUntil(effect, card_type=..., check_face_fn=...)` ; plusieurs types = `check_face_fn` (`tv012`) | Quand la carte trouvée est la dernière du deck, le moteur REMÉLANGE la défausse dans le deck vide (règle du deck épuisé) : défausse vide, trouvée rendue quand même. Prévoir une carte de fond dans le deck d'un cas, ou assumer le remélange. |
+| Harnais : `Puzzle.Gain('<card_id>')` (`main` / `main_exclusive`) | — | **PREND la carte dans le deck si elle y est** : un deck rempli de `01090` perdait ses cartes dès que la main en réclamait une (« deck 5 au lieu de 6 »). Remplir le deck avec un id absent de la main (`01073`). `main_exclusive` verse aussi la main de départ dans la défausse : ne pas mesurer la défausse « exacte » avec lui, utiliser `Puzzle.EmptyHand()`. |
+| Harnais : Setup de l'alter-ego qui fouille le deck | rejouer `Setup(False)` (`venus_resetup`) | Le Setup tourne à CHAQUE départ de cas : la carte qu'il met en jeu (ici `tv014`) est déjà là. Un cas qui compte ces cartes la retire (`Puzzle.Remove`) ou la compte. |
+| `substituer_pack.py` | base de ports ≤ 48000 pour ~20 cartes | 60 ports par carte, plafond 49146 (« PORT TROP HAUT ») : au-delà, tous les rapports sont « illisibles ». Le filtre est `<card_id> ` AVEC l'espace : le nom des cas doit commencer par `tvNNN `. |
+
 ## 8. Données (`data/cards.json`) — conventions
 
 - Pack en QUEUE de fichier, `"custom": "Arnaud"`, `set_name` = nom du
