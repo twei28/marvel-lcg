@@ -778,3 +778,83 @@ html[data-epure] .tb-scene::after {
   pointer-events: none;
   background: linear-gradient(0deg, var(--ep-surface) 0, var(--ep-surface) 26%, rgba(169, 171, 176, 0.85) 40%, transparent 62%);
 }
+
+/* --- 16. La barre du haut en sombre, comme sur le plateau (16/10/2026) ------
+   Anthracite, filet rouge Marvel dessous, icônes et étapes en clair ; l'étape
+   en cours soulignée de rouge. */
+html[data-epure] {
+  --ep-rouge: #e62429;
+}
+
+html[data-epure] header.progress {
+  background: #1f2228;
+  color: #eef0f3;
+  border-bottom: 3px solid var(--ep-rouge);
+  box-shadow: 0 2px 10px rgba(10, 14, 22, 0.35);
+}
+
+html[data-epure] header.progress .btn-icone,
+html[data-epure] header.progress .brand-back,
+html[data-epure] header.progress button:not(.pstep) {
+  background: transparent !important;
+  color: #e6e8ec !important;
+  box-shadow: none !important;
+}
+
+html[data-epure] header.progress .btn-icone:hover,
+html[data-epure] header.progress .brand-back:hover,
+html[data-epure] header.progress button:not(.pstep):hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-epure] header.progress .pstep {
+  background: transparent;
+  color: #e6e8ec;
+  box-shadow: none;
+  border-radius: 6px;
+}
+
+html[data-epure] header.progress .pstep .plabel {
+  color: #e6e8ec;
+}
+
+html[data-epure] header.progress .pstep:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] header.progress .pstep.active {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 -3px 0 var(--ep-rouge);
+}
+
+html[data-epure] header.progress .pstep.active .plabel {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* --- 17. L'accueil, un peu de Marvel (16/10/2026) ---------------------------
+   Le titre dans la typo du jeu, en rouge Marvel ; chaque tuile porte un trait
+   rouge à gauche, qui s'épaissit au survol. */
+html[data-epure] h1.affiche {
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 54px;
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  color: var(--ep-rouge);
+}
+
+html[data-epure] .acc-mode,
+html[data-epure] .acc-mode.cut {
+  box-shadow: inset 4px 0 0 var(--ep-rouge), var(--ep-relief) !important;
+  transition: box-shadow 0.12s ease-out;
+}
+
+html[data-epure] .acc-mode:hover,
+html[data-epure] .acc-mode.cut:hover {
+  box-shadow: inset 7px 0 0 var(--ep-rouge), var(--ep-relief-survol) !important;
+}
+
+html[data-epure] .acc-mode .mvl {
+  font-size: 16px;
+}
