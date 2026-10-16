@@ -82,7 +82,8 @@ export function CoucheTraitPhase({
   const contenu = contenuDuTrait(etape)
   // Rien à annoncer et aucune unité : le trait montre la direction, sans
   // étiquette. Un cartouche vide ferait un point noir posé sur la table.
-  const etiquette = sansEtiquette
+  // Une annonce à 0 (l'ATQ de Klaw avant ses boosts) ne dit pas « 0 dégâts » : ce serait faux.
+  const etiquette = sansEtiquette || (etape.etat === 'annonce' && contenu.montant === 0)
     ? ''
     : contenu.montant !== undefined
       ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`

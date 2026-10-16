@@ -2633,35 +2633,19 @@ export function DeroulePhase({
   // LA DEFAITE SUR LA TABLE (v3, Q44) : le coup fatal a ete joue sur la table,
   // une bulle en fait le constat avant l'ecran de fin de partie.
   if (surTable && defaiteLocale && !fatalAMontrerSurTable) {
+    // SANS MODALE : le coup fatal se dit dans la ligne du haut, en rouge.
     return enveloppe(
-      <div
-        ref={setElCartouche}
-        className={`deroule-rond-place deroule-bulle-table est-defaite${classeTelephone}`}
-        style={styleBulle}
-      >
-        <div
-          className="deroule-bulle-onglets poignee-glisser"
-          onPointerDown={poignee.onPointerDown}
-          onPointerMove={poignee.onPointerMove}
-          onPointerUp={poignee.onPointerUp}
-          onPointerCancel={poignee.onPointerCancel}
-        >
-          {chronologie}
-        </div>
-        <span className="deroule-recit">{phraseSurvolable(phraseEtape)}</span>
-        <span className="deroule-bulle-defaite">
-          <span aria-hidden="true">☠</span> {texteDefaite(etapeLue)}
-        </span>
-        <span className="deroule-bulle-compteur">{texteArretDefaite()}</span>
-        {estSpectateur() ? null : (
-          <span className="deroule-rond-rangee">
-            <button type="button" className="deroule-rond" onClick={avancer}>
-              {t('Continuer')}
-              <kbd className="deroule-rond-touche">{t('Espace')}</kbd>
-            </button>
-          </span>
-        )}
-      </div>
+      <BilanSurTable
+        titre={`☠ ${titreEtape(etapeLue)}`}
+        lignes={[
+          { cle: 'defaite', texte: texteDefaite(etapeLue) },
+          { cle: 'arret', texte: texteArretDefaite() },
+        ]}
+        peutAgir={!estSpectateur()}
+        avancer={avancer}
+        bouton={t('Continuer')}
+        defaite
+      />
     )
   }
 
@@ -2700,7 +2684,7 @@ export function DeroulePhase({
           cibleId={etape.carteId === undefined ? undefined : etape.cibleId}
           cle={etape.cle}
           phrase={phraseSurvolable(phraseEtape)}
-          nombre={recit.texte || undefined}
+          nombre={recit.texte && !(etapeLue.etat === 'annonce' && /^0(\s|$)/.test(recit.texte)) ? recit.texte : undefined}
           peutAgir={peutAgir}
           avancer={fatalAMontrerSurTable ? () => setCoupFatalVuSurTable(true) : avancerSurTable}
           reculer={index > 0 && peutAgir ? reculer : undefined}

@@ -307,6 +307,8 @@ export function BilanSurTable({
   avancer,
   reculer,
   mention,
+  bouton,
+  defaite,
 }: {
   titre: string
   lignes: Array<{ cle: string; texte: string; compteur?: string }>
@@ -315,9 +317,13 @@ export function BilanSurTable({
   avancer: () => void
   reculer?: () => void
   mention?: string
+  /** Le libellé du bouton (« Terminer la phase » par défaut). */
+  bouton?: string
+  /** Une ligne de défaite : le bandeau passe au rouge. */
+  defaite?: boolean
 }) {
   return (
-    <div className="tsm-bandeau est-bilan" role="status" aria-live="polite">
+    <div className={`tsm-bandeau est-bilan${defaite ? ' est-defaite' : ''}`} role="status" aria-live="polite">
       {reculer ? (
         <button type="button" className="tsm-retour" onClick={reculer} aria-label={t('Précédent')} title={t('Précédent')}>
           ‹
@@ -338,7 +344,7 @@ export function BilanSurTable({
       )}
       {peutAgir ? (
         <button type="button" className="tsm-bouton" onClick={avancer}>
-          {t('Terminer la phase')}
+          {bouton ?? t('Terminer la phase')}
         </button>
       ) : (
         <span className="tsm-consigne">{mention ?? t('La suite arrive…')}</span>

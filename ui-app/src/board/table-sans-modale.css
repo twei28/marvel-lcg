@@ -372,3 +372,39 @@ html:has(.tsm-bandeau) .plateau-cadre .scan-frame {
   border: 2px solid var(--rouge, #e62429);
   color: #ffb3b5;
 }
+
+.tsm-bandeau.est-defaite {
+  border-color: var(--rouge, #e62429);
+  border-left-width: 6px;
+  background: rgba(40, 10, 12, 0.94);
+}
+
+/* LES LIGNES ET LEUR TEXTE dans le style du jeu (16/10/2026 : « ne vont pas très bien avec le reste
+   du jeu ») : les couleurs de l'Épuré (rouge Marvel, jaune), un trait plein plus fin, et la pastille
+   en Bangers sur fond de panneau, carrée comme les autres pastilles de la ligne du haut. */
+html:has(.tsm-bandeau) .trait-phase-ombre {
+  stroke: rgba(0, 0, 0, 0.6);
+  stroke-width: 6;
+}
+
+html:has(.tsm-bandeau) .trait-phase-ligne {
+  stroke-width: 2.5;
+  stroke-dasharray: 14 7;
+}
+
+html:has(.tsm-bandeau) .trait-phase.est-degats .trait-phase-ligne { stroke: #e62429; }
+html:has(.tsm-bandeau) .trait-phase.est-menaces .trait-phase-ligne { stroke: #f3c623; }
+html:has(.tsm-bandeau) .trait-phase.est-degats .trait-phase-etiquette { color: #e62429; }
+html:has(.tsm-bandeau) .trait-phase.est-menaces .trait-phase-etiquette { color: #f3c623; }
+
+html:has(.tsm-bandeau) .trait-phase-etiquette rect {
+  fill: #1c2028;
+  rx: 3px;
+  ry: 3px;
+}
+
+html:has(.tsm-bandeau) .trait-phase-etiquette text {
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.05em;
+}
