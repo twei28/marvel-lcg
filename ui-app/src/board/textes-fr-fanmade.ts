@@ -20,7 +20,8 @@
 //  - NOMS PROPRES et traits [[...]] laisses en anglais : le joueur a la carte
 //    anglaise sous les yeux et doit s'y retrouver ;
 //  - jetons de jeu ([mental], [star], [per_hero]...) recopies tels quels ;
-//  - cartes d'etat maison : Camouflé (Cloaked), Hébété (Dazed, verbe « hébétez ») ;
+//  - cartes d'etat maison : Camouflé (Cloaked), Hébété (Dazed, verbe « hébétez »),
+//    Intensifié (Intensified, verbe « intensifiez ») ;
 //  - capacite nommee « Special » = « Spécial » ; « all-purpose counter » = « compteur polyvalent ».
 //
 // Ne sont PAS ici les cartes de defi (« challenges ») : leur identifiant n'a pas
@@ -4390,5 +4391,5 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_expert — Sinister Plan (Treachery)
   'te103': "<b>Une fois révélée</b> : cherchez votre manigance annexe némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-la. <i>(Mélangez.)</i> Hébétez votre identité. Si votre manigance annexe némésis n'est pas entrée en jeu ainsi, cette carte gagne Renfort.",
   // tmnt_intense — Intense Combatants (Environment)
-  'te201': "<i>Ensembles TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, « intensify » ce personnage à la place.",
+  'te201': "<i>Ensembles TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, intensifiez ce personnage à la place.",
 }

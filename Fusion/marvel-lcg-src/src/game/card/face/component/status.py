@@ -8,6 +8,8 @@ TOUGH_FINDER = CardFinder(name="Tough")
 EXPOSED_FINDER = CardFinder(name="Exposed")
 CLOAKED_FINDER = CardFinder(name="Cloaked")
 DAZED_FINDER = CardFinder(name="Dazed")
+# AJOUT (16/10/2026) : 7e carte d'etat, Intensified (fiche docs/reference/mots-cles/intensified.md).
+INTENSIFIED_FINDER = CardFinder(name="Intensified")
 
 class Status(Component):
     @override
@@ -15,6 +17,12 @@ class Status(Component):
         from game.deck import Deck2, DeckType
         super().__init__(card)
         self.deck = Deck2(self.parent, DeckType.StatusArea, StatusCard)
+        # AJOUT (16/10/2026, Intensified) : > 0 pendant un VIDAGE de la zone d'etat
+        # (le personnage quitte le jeu ou se reinitialise, « defaussez chaque carte
+        # d'etat »). Intensified ne remplace alors rien : toutes les cartes partent,
+        # elle comprise (sans quoi la carte d'origine resterait accrochee a un
+        # personnage qui n'est plus en jeu).
+        self.vidage = 0
 
     @property
     def confused(self):
@@ -40,15 +48,41 @@ class Status(Component):
     def dazed(self):
         return self.deck.FindCardSize(DAZED_FINDER)
 
+    @property
+    def intensified(self):
+        return self.deck.FindCardSize(INTENSIFIED_FINDER)
+
+    def SansRemplacement(self):
+        """Contexte : les defausses de cartes d'etat faites dedans ne sont PAS
+        remplacees par Intensified (vidage, regle de plafond, Stalwart)."""
+        from contextlib import contextmanager
+
+        @contextmanager
+        def ctx():
+            self.vidage += 1
+            try:
+                yield
+            finally:
+                self.vidage -= 1
+        return ctx()
+
     @override
     def OnParentReset(self):
         from game.effect.rule import GameRule
         from game.operate.faces import Faces
-        Faces.DiscardAll(self.deck.GetAll(True), GameRule(self.parent.face))
+        self.vidage += 1
+        try:
+            Faces.DiscardAll(self.deck.GetAll(True), GameRule(self.parent.face))
+        finally:
+            self.vidage -= 1
 
     @override
     def OnDiscard(self, by_effect: 'Effect') -> List['CardFace']:
-        self.deck.DiscardAll(by_effect)
+        self.vidage += 1
+        try:
+            self.deck.DiscardAll(by_effect)
+        finally:
+            self.vidage -= 1
         return super().OnDiscard(by_effect)
 
     def GiveStatusCard(self, name: "CardFace.STATUS", by_effect: 'Effect') -> 'StatusCard':

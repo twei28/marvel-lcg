@@ -31,6 +31,11 @@ describe('etatDe', () => {
     expect(etatDe(carte('Dazed'))).toEqual({ lettre: 'H', classe: 'est-hebete', nom: 'Hébété' })
   })
 
+  // Septieme carte d'etat (« Intensified », TMNT) : nom francais et classe propres, lettre I.
+  it('reconnait Intensifié, la septieme carte d etat', () => {
+    expect(etatDe(carte('Intensified'))).toEqual({ lettre: 'I', classe: 'est-intensifie', nom: 'Intensifié' })
+  })
+
   // Le moteur pose les statuts avec kind 'status' (Board.tsx:174). Un statut
   // dont le nom serait traduit ou inconnu reste un etat, avec son initiale.
   it('traite toute carte de kind status comme un etat, meme au nom inconnu', () => {

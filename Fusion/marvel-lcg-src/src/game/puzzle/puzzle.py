@@ -502,6 +502,23 @@ class RunPuzzle:
         for _ in range(n):
             Faces.GiveStatus([unit], "Cloaked", DebugRule(unit))
 
+    def AddStatus(self, card: CardName, name: str, n: int = 1):
+        """Pose n cartes d'etat `name` SANS bascule (les plafonds du moteur restent ;
+        ajoute pour Intensified : deux Exposed, un Sonne PUIS un second, etc.)."""
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        for _ in range(n):
+            Faces.GiveStatus([unit], name, DebugRule(unit))
+
+    def Intensify(self, card: CardName, n: int = 1):
+        """Pose n cartes Intensified (7e etat, TMNT). Pas de bascule : la regle de la
+        carte (« cannot be given to a character that has no status cards ») s'applique,
+        poser d'abord un autre etat."""
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        for _ in range(n):
+            Faces.GiveStatus([unit], "Intensified", DebugRule(unit))
+
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
 

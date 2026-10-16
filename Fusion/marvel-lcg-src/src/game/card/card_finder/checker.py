@@ -225,7 +225,7 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
         if self.has_status == "Any":
             # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed » est le
             # quatrieme etat. `has_status="Any"` l'ignorait.
-            check_status = ["Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed"]
+            check_status = ["Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed", "Intensified"]
         elif not isinstance(self.has_status, list):
             check_status = [self.has_status]
         else:
@@ -248,6 +248,10 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
                 is_has_status = True
                 break
             if staus == "Dazed" and face.IsDazed():
+                is_has_status = True
+                break
+            # AJOUT (16/10/2026) : 7e carte d'etat, Intensified (fiche intensified.md).
+            if staus == "Intensified" and face.IsIntensified():
                 is_has_status = True
                 break
         if not is_has_status:
@@ -279,6 +283,10 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
                 is_canbe_status = True
                 break
             if staus == "Dazed" and face.CanbeDazed():
+                is_canbe_status = True
+                break
+            # Intensified : seulement sur un personnage qui porte deja une carte d'etat.
+            if staus == "Intensified" and face.CanbeIntensified():
                 is_canbe_status = True
                 break
         if not is_canbe_status:

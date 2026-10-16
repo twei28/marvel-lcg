@@ -28,6 +28,9 @@ export const ETATS: Record<string, Etat> = {
   // pouvoir de base / a la prochaine activation, OU +2 aux prochains degats, puis la carte
   // part. « H » comme Hébété (D est libre mais le nom francais commence par H).
   dazed: { lettre: 'H', classe: 'est-hebete', nom: 'Hébété' },
+  // SEPTIEME carte d'etat (« Intensified », TMNT, Inkwire) : la prochaine defausse d'une
+  // carte d'etat de ce personnage defausse celle-ci a la place. « I » comme Intensifié.
+  intensified: { lettre: 'I', classe: 'est-intensifie', nom: 'Intensifié' },
 }
 
 export function etatDe(carte: ScanCardProps): Etat | undefined {

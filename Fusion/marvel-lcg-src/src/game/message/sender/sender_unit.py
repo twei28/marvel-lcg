@@ -316,6 +316,18 @@ class SenderUnit:
             unit = unit.CastTo(Unit2)
             super().__init__(trigger=unit, end_event=Message.AfterStatusCardPlaceOn)
 
+    class WhenStatusWouldCardPlaceOnAgain(TriggerUnitMessage, CanBeInstead):
+        # AJOUT (16/10/2026, te201 Intense Combatants, TMNT) : une carte d'etat va etre
+        # posee sur un personnage qui en porte DEJA au moins un exemplaire. Envoye par
+        # `CanStatus.GainStatus` AVANT les plafonds (un second Sonne serait sinon refuse
+        # en silence). `SetBeInstead` annule la pose.
+        def __init__(self, unit: 'CanStatus', name: "CardFace.STATUS", by_effect: 'Effect') -> None:
+            from game.card.face.base import Unit2
+            self.status_name: Final = name
+            self.by_effect: Final = by_effect
+            unit = unit.CastTo(Unit2)
+            super().__init__(trigger=unit)
+
     class AfterStatusCardPlaceOn(TriggerUnitMessage, HasPreEventMessage):
         def __init__(self, status: 'StatusCard', pre_message: 'Message.WhenStatusWouldCardPlaceOn') -> None:
             # from game.message import OnEvent

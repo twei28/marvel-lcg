@@ -25,6 +25,15 @@ def Daze(effect: 'Effect', face: 'CardFace|None') -> bool:
     return Faces.GiveStatus([face], "Dazed", effect) > 0
 
 
+def Intensify(effect: 'Effect', face: 'CardFace|None') -> bool:
+    """« Intensify X » = donner une carte d'etat Intensified a X (7e etat, fiche
+    intensified.md). Rend False si X n'a aucune carte d'etat (« This card cannot be
+    given to a character that has no status cards »)."""
+    if face is None:
+        return False
+    return Faces.GiveStatus([face], "Intensified", effect) > 0
+
+
 def FaceCacheeAuPremierJoueur(effect: 'Effect', this: 'CardFace') -> None:
     """« Deal this card to the first player as a facedown encounter card » (boost) :
     detourne le rangement de la carte de boost (modele tl015 / bw021)."""

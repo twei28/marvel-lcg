@@ -33,7 +33,11 @@ class HasStalwart(HasAttribute):
     def GainStalwart(self, diff: int, by_effect: 'Effect'):
         from game.card.face.base import Unit2
         if diff > 0:
-            self.CastTo(Unit2).DiscardStunned(by_effect, rule="All")
-            self.CastTo(Unit2).DiscardConfused(by_effect, rule="All")
+            # AJOUT (16/10/2026) : purge de REGLE (un personnage Stalwart ne peut etre ni
+            # Sonne ni Desoriente) : Intensified ne la remplace pas, sinon `stunned.py`
+            # trouverait un Sonne sur un Stalwart (assert).
+            with self.CastTo(Unit2).components.status.SansRemplacement():
+                self.CastTo(Unit2).DiscardStunned(by_effect, rule="All")
+                self.CastTo(Unit2).DiscardConfused(by_effect, rule="All")
         self.GainKeyword(diff, 'Stalwart', by_effect)
 

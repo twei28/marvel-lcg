@@ -44,6 +44,10 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     @property
     def dazed(self) -> int:
         return self.components.status.dazed
+    @property
+    def intensified(self) -> int:
+        # AJOUT (16/10/2026) : 7e carte d'etat, Intensified (TMNT, Inkwire).
+        return self.components.status.intensified
 
     @property
     def tough_max(self) -> int:
@@ -97,6 +101,26 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             #  or self.card.face.IsDefeated():
             return False
         # assert name in ['tough', 'stunned', 'confused'], f"{name=}"
+
+        # AJOUT (16/10/2026, te201 Intense Combatants) : « When a status card would be
+        # placed on a character, if that character ALREADY HAS 1 COPY of that status
+        # card on them, intensify them instead. » La fenetre s'ouvre AVANT les plafonds
+        # (Stunned/Confused/Dazed : un seul ; Tough : tough_max ; Cloaked : cloaked_max),
+        # sans quoi le second Sonne, refuse par `CanbeStunned`, n'atteindrait jamais
+        # te201. Message DISTINCT de `WhenStatusWouldCardPlaceOn` : les cartes qui
+        # repondent a une pose reelle (56175 Spider-Woman, ah006) ne doivent pas voir
+        # une pose que le plafond aurait de toute facon refusee. Intensified elle-meme
+        # n'est jamais « intensifiee » (sans quoi la seconde Intensified bouclerait).
+        if name != "Intensified" and self.HasStatus(name):
+            encore = Message.WhenStatusWouldCardPlaceOnAgain(self, name, by_effect)
+            encore.Send()
+            if encore.is_be_instead:
+                return False
+
+        # AJOUT (16/10/2026) : « This card cannot be given to a character that has no
+        # status cards » (carte d'etat Intensified). Pas de plafond : elles s'empilent.
+        if name == "Intensified" and not self.CanbeIntensified():
+            return False
         if name == "Confused" and not self.CanbeConfused():
             return False
         if name == "Stunned" and not self.CanbeStunned():
@@ -151,15 +175,27 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     def DiscardDazed(self, by_effect: 'Effect', *, rule: 'DISCARD_RULE') -> int:
         return self.LoseState("Dazed", by_effect, rule)
 
+    def DiscardIntensified(self, by_effect: 'Effect', *, rule: 'DISCARD_RULE') -> int:
+        return self.LoseState("Intensified", by_effect, rule)
+
     def DiscardAllTough(self, by_effect: 'Effect') -> int:
         return self.DiscardTough(by_effect, rule="All")
 
     def DiscardEachStatus(self, by_effect: 'Effect'):
-        self.DiscardConfused(by_effect, rule="All")
-        self.DiscardStunned(by_effect, rule="All")
-        self.DiscardAllTough(by_effect)
-        self.DiscardCloaked(by_effect, rule="All")
-        self.DiscardDazed(by_effect, rule="All")
+        # AJOUT (16/10/2026) : « defaussez CHAQUE carte d'etat » emporte aussi les
+        # Intensified, et elles ne remplacent rien pendant ce vidage (`vidage`), sans
+        # quoi le premier Desoriente defausse serait remplace et resterait en place.
+        status = self.components.status
+        status.vidage += 1
+        try:
+            self.DiscardConfused(by_effect, rule="All")
+            self.DiscardStunned(by_effect, rule="All")
+            self.DiscardAllTough(by_effect)
+            self.DiscardCloaked(by_effect, rule="All")
+            self.DiscardDazed(by_effect, rule="All")
+            self.DiscardIntensified(by_effect, rule="All")
+        finally:
+            status.vidage -= 1
 
     def IsConfused(self) -> bool:
         from game.card.face.base import Unit2
@@ -173,6 +209,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         return self.cloaked != 0
     def IsDazed(self) -> bool:
         return self.dazed != 0
+    def IsIntensified(self) -> bool:
+        return self.intensified != 0
     def IsStunned(self) -> bool:
         from game.card.face.base import Unit2
         if self.card.CastTo(Unit2).IsSteady():
@@ -192,6 +230,14 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         if self.IsDazed():
             return False
         return True
+
+    def CanbeIntensified(self) -> bool:
+        """« This card cannot be given to a character that has no status cards. »
+        Aucun plafond imprime : plusieurs Intensified peuvent s'empiler (te201 en pose
+        une a chaque doublon refuse)."""
+        if not self.IsInPlay():
+            return False
+        return self.GetStatusSize() > 0
 
     def CanbeStunned(self) -> bool:
         if not self.IsInPlay():
@@ -232,7 +278,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             # quatrieme carte d'etat, et l'assertion plus bas aurait fait
             # PLANTER toute carte qui demande `HasStatus("Exposed")`.
             return self.confused > 0 or self.stunned > 0 or self.tough > 0 \
-                or self.exposed > 0 or self.cloaked > 0 or self.dazed > 0
+                or self.exposed > 0 or self.cloaked > 0 or self.dazed > 0 \
+                or self.intensified > 0
         if name == "Confused":
             return self.confused > 0
         if name == "Stunned":
@@ -245,6 +292,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             return self.cloaked > 0
         if name == "Dazed":
             return self.dazed > 0
+        if name == "Intensified":
+            return self.intensified > 0
         assert False, f"{self=} {name=}"
 
     def GetStatusSize(self) -> int:
@@ -265,4 +314,8 @@ class CanNoStatus(CanStatus):
 
     @override
     def CanbeDazed(self) -> bool:
+        return False
+
+    @override
+    def CanbeIntensified(self) -> bool:
         return False
