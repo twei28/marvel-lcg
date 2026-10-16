@@ -246,6 +246,7 @@ import {
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaiPhaseMechant, essaisOuverts } from './board/essais'
+import { lirePhaseBis, suivrePhaseBis } from './board/phase-bis'
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
 import { JournalConsole } from './board/JournalConsole'
@@ -255,6 +256,7 @@ import {
   CLE_AFFICHAGE,
   ecrireAffichage,
   lireAffichage,
+  retenirEpurePermis,
   type Affichage,
 } from './board/affichage'
 import { fondDe, identiteAffichee, marqueDe, palettes, type Couleur } from './board/halo-heros'
@@ -2327,6 +2329,18 @@ export function PagePartie({
   useEffect(() => {
     appliquerAffichage(affichage)
   }, [affichage])
+  // L'épuré n'est permis qu'à l'administrateur (16/10/2026) : une fois le serveur
+  // entendu, la réponse est retenue et le choix rangé relu.
+  useEffect(() => {
+    let vivant = true
+    void essaisOuverts().then((ouverts) => {
+      retenirEpurePermis(ouverts)
+      if (vivant) setAffichage(lireAffichage())
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
   // Le compte fait foi quand il a deja un choix (meme contrat que la
   // preparation) : un plateau rejoint directement suit l'autre appareil.
   useEffect(() => {
@@ -2506,16 +2520,21 @@ export function PagePartie({
   // la table avant le « Suivant ». Une question au joueur rend le monde reel.
   // L'essai « Nouvelle phase du méchant » (10/10/2026), coché par compte dans
   // /admin : faux tant que le serveur n'a pas répondu, comme plus bas (essais ouverts).
-  const [phaseEssai, setPhaseEssai] = useState(false)
+  const [essaiPhaseCompte, setEssaiPhaseCompte] = useState(false)
   useEffect(() => {
     let vivant = true
     void essaiPhaseMechant().then((actif) => {
-      if (vivant) setPhaseEssai(actif)
+      if (vivant) setEssaiPhaseCompte(actif)
     })
     return () => {
       vivant = false
     }
   }, [])
+  // « Étape par étape bis » (16/10/2026) : le compte qui a l'essai choisit, dans les
+  // Réglages, entre l'ancienne présentation et la nouvelle (board/phase-bis.ts).
+  const [phaseBis, setPhaseBis] = useState(lirePhaseBis)
+  useEffect(() => suivrePhaseBis(setPhaseBis), [])
+  const phaseEssai = essaiPhaseCompte && phaseBis
   const instantanesRef = useRef<Instantanes>(new Map())
   const instantanes = useMemo(() => {
     const suivants = majInstantanes(

@@ -34,9 +34,60 @@ export function attributsDe(valeur) {
     return { affichage: v === NORMAL ? NORMAL : SOBRE, epure: v === EPURE };
 }
 
+/**
+ * L'ÉPURÉ EST RÉSERVÉ AU COMPTE DE L'ADMINISTRATEUR (16/10/2026, demande de
+ * l'utilisateur). Le serveur décide (`/get_site_admin`, comme lien-admin.js et
+ * board/essais.ts) ; sa réponse est retenue pour la session de l'onglet, pour
+ * que chaque page la connaisse dès son premier dessin. Un moteur lancé sur la
+ * machine (`localhost`) y a droit, la vue « compte classique » non.
+ * Un choix « épuré » rangé ailleurs se montre en SOBRE, sans être effacé.
+ */
+export const CLE_EPURE_PERMIS = "mc_epure_permis";
+
+function hoteLocal() {
+    const h = globalThis.location && globalThis.location.hostname;
+    return h === "localhost" || h === "127.0.0.1" || h === "[::1]";
+}
+
+export function epurePermis() {
+    try {
+        if (globalThis.localStorage && globalThis.localStorage.getItem("mc_vue_joueur") === "oui") return false;
+        if (hoteLocal()) return true;
+        return !!globalThis.sessionStorage && globalThis.sessionStorage.getItem(CLE_EPURE_PERMIS) === "oui";
+    } catch (e) { return false; }
+}
+
+/** La valeur montrée : l'épuré devient sobre pour qui n'y a pas droit. */
+export function valeurPermise(valeur) {
+    const v = normaliser(valeur);
+    return v === EPURE && !epurePermis() ? SOBRE : v;
+}
+
+let verification = null;
+/** Demande une fois au serveur si l'épuré est permis, et retient la réponse. */
+export function verifierEpurePermis() {
+    verification = verification || (async () => {
+        if (hoteLocal() || !epurePermisPossible()) return epurePermis();
+        let ok = false;
+        try {
+            const r = await fetch("/get_site_admin", { cache: "no-store" });
+            const d = r.ok ? await r.json() : null;
+            ok = !!(d && d.url);
+        } catch (e) { ok = false; }
+        try { globalThis.sessionStorage.setItem(CLE_EPURE_PERMIS, ok ? "oui" : "non"); } catch (e) { /* stockage indisponible */ }
+        return ok;
+    })();
+    return verification;
+}
+
+function epurePermisPossible() {
+    try { return !(globalThis.localStorage && globalThis.localStorage.getItem("mc_vue_joueur") === "oui"); }
+    catch (e) { return true; }
+}
+
 /** Pose ces attributs sur un élément (<html>). */
 export function poserAttributs(racine, valeur) {
-    const a = attributsDe(valeur);
+    const a = attributsDe(valeurPermise(valeur));
     racine.dataset.affichage = a.affichage;
     if (a.epure) racine.dataset.epure = "oui"; else delete racine.dataset.epure;
 }

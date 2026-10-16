@@ -973,6 +973,8 @@ export const DICO_EN_BASE = {
   // Réglage d'affichage (affichage.js, 03/10/2026).
   "Affichage normal": "Normal display",
   "Affichage sobre": "Muted display",
+  "Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour revenir à l’affichage normal":
+    "Muted display: grey background, no hero colours or animations. Click to go back to the normal display",
   "Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour passer en affichage épuré":
     "Muted display: grey background, no hero colours or animations. Click to switch to the minimal display",
   "Affichage épuré": "Minimal display",

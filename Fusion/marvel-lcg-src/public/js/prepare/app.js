@@ -37,7 +37,7 @@ import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
          brancherBandeau, ajouterPoignee } from "/public/js/prepare/tel.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
-import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
+import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
@@ -1776,7 +1776,9 @@ function demanderLaLangue() {
  *  ⚠ Même règle que la langue : on ne la ferme pas en cliquant à côté, un clic
  *  distrait vaudrait réponse et la question ne reviendrait jamais.
  */
-function demanderLAffichage({ rouvert = false } = {}) {
+async function demanderLAffichage({ rouvert = false } = {}) {
+    // L'épuré n'est proposé qu'à l'administrateur (16/10/2026) : on attend la réponse du serveur.
+    await verifierEpurePermis();
     return new Promise((resolve) => {
         // Les cartes SE CHOISISSENT, elles ne ferment plus : la roue de la
         // couleur du fond vit dans la meme fenetre (choix de l'utilisateur,
@@ -1820,7 +1822,7 @@ function demanderLAffichage({ rouvert = false } = {}) {
                 el("div", { class: "af-choix-grille" },
                     carte("normal", t("Normal"), t("Couleurs du héros, animations.")),
                     carte("sobre", t("Sobre"), t("Fond gris, sans couleurs ni animations, plus reposant.")),
-                    carte("epure", t("Épuré"), t("Gris clair, sans décor ni bandeaux, boutons plats et jaune du jeu.")),
+                    epurePermis() ? carte("epure", t("Épuré"), t("Gris clair, sans décor ni bandeaux, boutons plats et jaune du jeu.")) : null,
                 ),
                 el("div", { class: "af-teinte" },
                     el("b", {}, t("Couleur du fond")),

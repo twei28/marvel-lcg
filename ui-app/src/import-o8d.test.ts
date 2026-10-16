@@ -3,8 +3,11 @@
 import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
-// @ts-expect-error module JS servi tel quel, sans types
-import { lireO8d, versSlots, indexParNom } from '../../Fusion/marvel-lcg-src/public/js/marvelcdb/octgn.js'
+import * as module_ from '../../Fusion/marvel-lcg-src/public/js/marvelcdb/octgn.js'
+
+// Module JS servi tel quel : ses types inferes sont trop etroits pour les faux du test.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { lireO8d, versSlots, indexParNom } = module_ as any
 
 const RACINE = path.resolve(__dirname, '../..')
 const FICHIER = fs.readFileSync(path.join(RACINE, 'ui-check/tests/fixtures/Beast_Brain_over_Brawl.o8d'), 'utf8')

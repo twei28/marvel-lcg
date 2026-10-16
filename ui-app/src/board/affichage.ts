@@ -20,9 +20,38 @@ export function estSobreOuEpure(affichage: Affichage): boolean {
   return affichage !== 'normal'
 }
 
+/**
+ * L'ÉPURÉ EST RÉSERVÉ AU COMPTE DE L'ADMINISTRATEUR (16/10/2026). Même mémo de
+ * session que les pages (public/js/prepare/affichage-choix.js, `epurePermis`) :
+ * la réponse de `/get_site_admin`, retenue dans l'onglet. Le plateau la pose lui
+ * aussi, une fois `essaisOuverts` entendu (board.tsx). Un « épuré » rangé se
+ * montre en sobre pour qui n'y a pas droit, sans être effacé.
+ */
+export const CLE_EPURE_PERMIS = 'mc_epure_permis'
+
+export function epurePermis(): boolean {
+  try {
+    if (enVueJoueur()) return false
+    const hote = globalThis.location?.hostname ?? ''
+    if (hote === 'localhost' || hote === '127.0.0.1' || hote === '[::1]') return true
+    return globalThis.sessionStorage?.getItem(CLE_EPURE_PERMIS) === 'oui'
+  } catch {
+    return false
+  }
+}
+
+export function retenirEpurePermis(ok: boolean): void {
+  try {
+    globalThis.sessionStorage?.setItem(CLE_EPURE_PERMIS, ok ? 'oui' : 'non')
+  } catch {
+    /* stockage indisponible : la question sera reposee */
+  }
+}
+
 export function lireAffichage(): Affichage {
   try {
-    return normaliserAffichage(window.localStorage.getItem(CLE_AFFICHAGE))
+    const v = normaliserAffichage(window.localStorage.getItem(CLE_AFFICHAGE))
+    return v === 'epure' && !epurePermis() ? 'sobre' : v
   } catch {
     return 'normal'
   }
@@ -34,7 +63,8 @@ export function lireAffichage(): Affichage {
  * `=== 'sobre'` jouent aussi en epure ; `data-epure` ajoute le reste
  * (`styles/affichage-epure.css`).
  */
-export function appliquerAffichage(affichage: Affichage): void {
+export function appliquerAffichage(demande: Affichage): void {
+  const affichage = demande === 'epure' && !epurePermis() ? 'sobre' : demande
   const racine = document.documentElement
   racine.dataset.affichage = affichage === 'normal' ? 'normal' : 'sobre'
   if (affichage === 'epure') racine.dataset.epure = 'oui'

@@ -78,3 +78,12 @@ test("compte sans ce réglage (ancien joueur) : on propose, une fois", () => {
     assert.equal(doitProposerLeChoix(null, { compte: true, existe: true, preferences: { arts: {} } }), true);
     assert.equal(doitProposerLeChoix(null, { compte: true, existe: false, preferences: {} }), true);
 });
+
+test("l'épuré est réservé à l'administrateur : sans droit, il se montre en sobre (16/10/2026)", async () => {
+    const { valeurPermise, epurePermis } = await import("../../public/js/prepare/affichage-choix.js");
+    // Sous node : ni hôte local, ni réponse retenue du serveur.
+    assert.equal(epurePermis(), false);
+    assert.equal(valeurPermise("epure"), "sobre");
+    assert.equal(valeurPermise("sobre"), "sobre");
+    assert.equal(valeurPermise("normal"), "normal");
+});

@@ -72,9 +72,10 @@ async function choisirHeros(page: Page, nom: RegExp) {
 }
 
 /** Colle l'URL, clique Import, et rend le texte des boites de dialogue. */
-async function importer(page: Page): Promise<string[]> {
+async function importer(page: Page, refuser = false): Promise<string[]> {
   const dits: string[] = [];
-  page.on('dialog', async (d) => { dits.push(d.message()); await d.accept(); });
+  // `refuser` : « Annuler » au deck non légal (sinon on force, et forcer envoie un rapport).
+  page.on('dialog', async (d) => { dits.push(d.message()); if (refuser) await d.dismiss(); else await d.accept(); });
   await page.locator('#mcdb-0').fill(URL_FAUSSE);
   await page.getByRole('button', { name: /^Import$/ }).click();
   await expect.poll(() => dits.length, { timeout: 15000 }).toBeGreaterThan(0);
@@ -121,12 +122,18 @@ test("un deck que les regles du heros refusent est rejete, avec la raison",
     const warlock = await starter(request, 'adam_warlock');
     await fausseApi(page, 'Warlock Rainbow', warlock);
     await choisirHeros(page, /^She-Hulk/);
+    // Rien ne doit partir au serveur : ni deck, ni rapport de forcage.
+    const envois: string[] = [];
+    await page.route('**/save_deck', (r) => { envois.push('save_deck'); return r.fulfill({ status: 200, body: '{}' }); });
+    await page.route('**/post_rapport_bug', (r) => { envois.push('rapport'); return r.fulfill({ status: 200, body: 'ok' }); });
 
-    const dits = await importer(page);
+    const dits = await importer(page, true);
     expect(dits[0]).toMatch(/légal|legal/i);
     expect(dits[0]).toMatch(/She-Hulk/);
 
-    // Rien n'a ete range : l'import a ete refuse, pas a moitie applique.
+    // Rien n'a ete range ni envoye : l'import a ete refuse, pas a moitie applique.
+    await page.waitForTimeout(800);
+    expect(envois).toEqual([]);
     const range = await page.evaluate(() => {
       const o = JSON.parse(localStorage.getItem('mc_prepare_prefs_v1') || '{}');
       return (o.savedDecks || []).length;

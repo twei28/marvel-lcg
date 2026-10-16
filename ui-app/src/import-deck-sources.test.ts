@@ -1,8 +1,11 @@
 // @vitest-environment node
 // L'import d'un deck par lien : MarvelCDB et MC4DB (public/js/marvelcdb/sources.js, 16/10/2026).
 import { describe, it, expect } from 'vitest'
-// @ts-expect-error module JS servi tel quel, sans types
-import { lireLien, chargerDeck } from '../../Fusion/marvel-lcg-src/public/js/marvelcdb/sources.js'
+import * as module_ from '../../Fusion/marvel-lcg-src/public/js/marvelcdb/sources.js'
+
+// Module JS servi tel quel : ses types inferes sont trop etroits pour les faux du test.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { lireLien, chargerDeck } = module_ as any
 
 type Rep = { ok: boolean; status: number; json: () => Promise<unknown> }
 const rep = (status: number, corps: unknown = {}): Rep => ({ ok: status < 400, status, json: async () => corps })

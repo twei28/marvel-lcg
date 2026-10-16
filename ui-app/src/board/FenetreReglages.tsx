@@ -39,7 +39,9 @@ import {
 } from './moteur'
 import type { ReglageMode } from './mobile/useModeMobile'
 import { ecrireReglageTelephone, useReglagesTelephone, type TailleTexte } from './mobile/reglages-telephone'
-import type { Affichage } from './affichage'
+import { epurePermis, type Affichage } from './affichage'
+import { essaiPhaseMechant } from './essais'
+import { ecrirePhaseBis, lirePhaseBis, suivrePhaseBis } from './phase-bis'
 import { RoueTeinte } from './RoueTeinte'
 import type { Teinte } from './teinte'
 import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
@@ -243,6 +245,57 @@ function LigneVolumeSons({ disponible }: { disponible: boolean }) {
   )
 }
 
+/**
+ * La phase du méchant. Un compte qui a l'essai « nouvelle phase » (coché dans
+ * /admin, 16/10/2026 : l'administrateur et Yarro) voit en plus « Étape par étape
+ * bis », la nouvelle présentation ; « Étape par étape » reste celle de tout le
+ * monde. Les autres comptes ne voient aucun changement (board/phase-bis.ts).
+ */
+function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
+  const [essai, setEssai] = useState(false)
+  useEffect(() => {
+    let vivant = true
+    void essaiPhaseMechant().then((oui) => {
+      if (vivant) setEssai(oui)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
+  const [bis, setBis] = useState(lirePhaseBis)
+  useEffect(() => suivrePhaseBis(setBis), [])
+  const valeur: string = p.modePhase === 'detaille' && essai && bis ? 'detaille-bis' : p.modePhase
+  return (
+    <LigneChoix<string>
+      libelle={t('Phase du méchant')}
+      valeur={valeur}
+      choix={[
+        { valeur: 'detaille', libelle: t('Étape par étape') },
+        ...(essai ? [{ valeur: 'detaille-bis', libelle: t('Étape par étape bis') }] : []),
+        // « Sur la table » : OUVERT À TOUS depuis le 05/10/2026, quand la
+        // fenêtre de préparation « Choisis ta phase du méchant » l'a
+        // présenté à chaque joueur (décision de l'utilisateur). Un mode
+        // proposé là doit pouvoir se retrouver ici.
+        ...(MODE_SUR_TABLE_OUVERT ? [{ valeur: 'sur-table', libelle: t(p.libelleModePhase('sur-table')) }] : []),
+        { valeur: 'instantane', libelle: t('D’un coup') },
+      ]}
+      onChoisir={(v) => {
+        if (v === 'detaille-bis' || v === 'detaille') {
+          if (essai) ecrirePhaseBis(v === 'detaille-bis')
+          p.changerModePhase('detaille')
+          return
+        }
+        p.changerModePhase(v as ModePhaseMechant)
+      }}
+      detail={
+        essai
+          ? t('Étape par étape : un « Suivant » par étape de la phase. Bis : la nouvelle présentation, en essai')
+          : t('Étape par étape : un « Suivant » par étape de la phase')
+      }
+    />
+  )
+}
+
 function LigneFaconDeJouer() {
   const [facon, setFacon] = useState<FaconDeJouer>(lireFaconParDefaut)
   return (
@@ -427,7 +480,8 @@ export function ContenuOnglet({
           choix={[
             { valeur: 'normal' as Affichage, libelle: t('Normal') },
             { valeur: 'sobre' as Affichage, libelle: t('Sobre') },
-            { valeur: 'epure' as Affichage, libelle: t('Épuré') },
+            // Réservé à l'administrateur (16/10/2026), voir affichage.ts.
+            ...(epurePermis() ? [{ valeur: 'epure' as Affichage, libelle: t('Épuré') }] : []),
           ]}
           onChoisir={p.changerAffichage}
           detail={t('Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, boutons plats et jaune du jeu')}
@@ -549,23 +603,7 @@ export function ContenuOnglet({
       <>
         <LigneFaconDeJouer />
         <LigneCoteAmeliorations />
-        <LigneChoix
-          libelle={t('Phase du méchant')}
-          valeur={p.modePhase}
-          choix={[
-            { valeur: 'detaille' as ModePhaseMechant, libelle: t('Étape par étape') },
-            // « Sur la table » : OUVERT À TOUS depuis le 05/10/2026, quand la
-            // fenêtre de préparation « Choisis ta phase du méchant » l'a
-            // présenté à chaque joueur (décision de l'utilisateur). Un mode
-            // proposé là doit pouvoir se retrouver ici.
-            ...(MODE_SUR_TABLE_OUVERT
-              ? [{ valeur: 'sur-table' as ModePhaseMechant, libelle: t(p.libelleModePhase('sur-table')) }]
-              : []),
-            { valeur: 'instantane' as ModePhaseMechant, libelle: t('D’un coup') },
-          ]}
-          onChoisir={p.changerModePhase}
-          detail={t('Étape par étape : un « Suivant » par étape de la phase')}
-        />
+        <LignePhaseMechant p={p} />
         {p.avancePhaseHote ? <LigneAvancePhase /> : null}
         {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par
             decision » regle a la preparation fait expirer les attentes du

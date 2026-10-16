@@ -6,14 +6,21 @@
 // feuilles de style lisent : aucun rechargement n'est nécessaire.
 "use strict";
 
-import { CLE_AFFICHAGE, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
+import { CLE_AFFICHAGE, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, valeurPermise, epurePermis, verifierEpurePermis, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
 import { t } from "/public/js/prepare/langue.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
 
+/** Ce qui est montré : un « épuré » rangé reste « sobre » pour qui n'y a pas droit. */
 export function affichageActuel() {
-    try { return normaliser(localStorage.getItem(CLE_AFFICHAGE)); }
+    try { return valeurPermise(localStorage.getItem(CLE_AFFICHAGE)); }
     catch (e) { return normaliser(null); }
 }
+
+/** L'épuré se propose-t-il ici ? (réservé à l'administrateur, voir affichage-choix.js) */
+export { epurePermis, verifierEpurePermis };
+
+// Une fois le serveur entendu, les boutons de l'en-tête se redessinent.
+verifierEpurePermis().then(() => document.querySelectorAll(".btn-affichage").forEach(dessinerBouton));
 
 export function appliquerAffichage(valeur = affichageActuel()) {
     poserAttributs(document.documentElement, valeur);
@@ -79,7 +86,9 @@ function dessinerBouton(bouton) {
     bouton.dataset.description = mode === EPURE
         ? t("Affichage épuré : gris, sans décor, le strict nécessaire. Cliquer pour revenir à l’affichage normal")
         : mode === SOBRE
-            ? t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour passer en affichage épuré")
+            ? (epurePermis()
+                ? t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour passer en affichage épuré")
+                : t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour revenir à l’affichage normal"))
             : t("Affichage normal. Cliquer pour passer en affichage sobre : fond gris, sans couleurs du héros ni animations");
     poserIcone(bouton, mode === NORMAL ? "fa-eye" : "fa-eye-slash", mode === EPURE ? t("Affichage épuré") : mode === SOBRE ? t("Affichage sobre") : t("Affichage normal"));
 }
@@ -90,6 +99,9 @@ export function boutonAffichage(classe) {
     bouton.type = "button";
     bouton.className = (classe || "") + " btn-affichage";
     dessinerBouton(bouton);
-    bouton.addEventListener("click", () => { choisirAffichage(suivant(affichageActuel())); });
+    bouton.addEventListener("click", () => {
+        const prochain = suivant(affichageActuel());
+        choisirAffichage(prochain === EPURE && !epurePermis() ? NORMAL : prochain);
+    });
     return bouton;
 }

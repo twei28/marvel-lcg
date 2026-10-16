@@ -12,7 +12,7 @@
 "use strict";
 
 import { CLE_TEINTE, SEUIL_TABLE_CLAIRE, bornerTeinte, lireTeinte, variablesDeTeinte } from "/public/js/prepare/teinte-choix.js";
-import { CLE_AFFICHAGE, SOBRE, normaliser, poserAttributs } from "/public/js/prepare/affichage-choix.js";
+import { CLE_AFFICHAGE, SOBRE, normaliser, poserAttributs, verifierEpurePermis } from "/public/js/prepare/affichage-choix.js";
 
 const NOMS = Object.keys(variablesDeTeinte({ h: 0, s: 0, l: 20 }));
 
@@ -42,6 +42,8 @@ function lireAffichage() {
 }
 
 if (!document.documentElement.dataset.affichage) poserAttributs(document.documentElement, lireAffichage());
+// L'épuré n'est permis qu'à l'administrateur : une fois le serveur entendu, on repose.
+verifierEpurePermis().then(() => poserAttributs(document.documentElement, lireAffichage()));
 appliquerTeintePage(lireDuNavigateur());
 // La bascule de l'en-tete change `data-affichage` sans recharger : suivre.
 new MutationObserver(() => appliquerTeintePage(teinteDemandee)).observe(document.documentElement, { attributes: true, attributeFilter: ["data-affichage"] });
