@@ -55,9 +55,18 @@ async function fausseApi(page: Page, nom: string, deck: any) {
  *  L'accueil (tuiles de mode) precede l'assistant : sans le clic sur « Solo »,
  *  aucun heros n'est affiche. */
 async function choisirHeros(page: Page, nom: RegExp) {
+  // Premier lancement : sans choix range, les fenetres de la langue et de l'affichage
+  // couvriraient l'ecran.
+  await page.addInitScript(() => {
+    localStorage.setItem('marvel-langue-choisie', '1');
+    localStorage.setItem('mc_affichage_v1', 'normal');
+  });
   await page.goto('/prepare.html?ui=new', { waitUntil: 'load' });
   await page.getByRole('button', { name: /^Solo/ }).first().click();
   await page.getByRole('button', { name: nom }).first().click();
+  // « Options de ce heros » (art, faces) s'ouvre au choix d'un heros : on valide tel quel.
+  const options = page.locator('.deck-modal').getByRole('button', { name: 'Valider' });
+  if (await options.isVisible({ timeout: 3000 }).catch(() => false)) await options.click();
   await page.getByRole('button', { name: /continuer/i }).click();
   await expect(page.locator('#mcdb-0')).toBeVisible();
 }
@@ -79,19 +88,23 @@ test("un deck d'un autre heros garde le heros du siege et ne prend que ses carte
     await fausseApi(page, 'Web of Justice', spiderMan);
     await choisirHeros(page, /^She-Hulk/);
 
+    // Le deck se range SUR LE SERVEUR (/save_deck, decks-serveur.js), plus dans le
+    // navigateur : on capte l'envoi, sans rien ecrire sur le disque du jeu.
+    let envoye: any = null;
+    await page.route('**/save_deck', async (route) => {
+      envoye = route.request().postDataJSON().deck;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    });
     const dits = await importer(page);
     // Le nom porte le heros d'accueil : deux imports du meme deck sur deux
     // heros ne se confondent plus dans la liste des decks sauvegardes.
     expect(dits[0]).toMatch(/Web of Justice \(She-Hulk\)/);
     expect(dits[0]).toMatch(/25/);
 
-    // La preuve : le deck range en local porte le heros DE SHE-HULK, et les
+    // La preuve : le deck envoye au serveur porte le heros DE SHE-HULK, et les
     // cartes DE SPIDER-MAN.
-    const range = await page.evaluate(() => {
-      const o = JSON.parse(localStorage.getItem('mc_prepare_prefs_v1') || '{}');
-      return (o.savedDecks || []).slice(-1)[0];
-    });
-    expect(range, "aucun deck n'a ete range en local").toBeTruthy();
+    await expect.poll(() => envoye, { timeout: 10_000 }).toBeTruthy();
+    const range = envoye;
     expect(range.hero).toEqual(sheHulk.hero);
     expect(range.hero_deck).toEqual(sheHulk.hero_deck);
     expect(range.obligations).toEqual(sheHulk.obligations);
