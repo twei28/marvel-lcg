@@ -1302,6 +1302,15 @@ export function DeroulePhase({
       // journal, reglages, confirmation, menu d'une carte). Les deux gardes
       // ci-dessus passent AVANT : elles valent aussi pour ces touches.
       if (questionAuJoueur) {
+        // « Sur la table » : un SEUL choix possible se prend à Espace (ou Entrée).
+        if (surTable && (evenement.key === ' ' || evenement.key === 'Enter') && !clavierBloque(document)) {
+          const unique = document.querySelector<HTMLElement>('[data-choix-unique]')
+          if (unique) {
+            evenement.preventDefault()
+            unique.click()
+          }
+          return
+        }
         if (nouvelleScene && !clavierBloque(document)) {
           const vise = cibleDeLaTouche(evenement.key, document.querySelector('.deroule-phase.est-scene'))
           if (vise) {

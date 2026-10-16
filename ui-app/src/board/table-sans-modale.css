@@ -272,3 +272,32 @@
   white-space: nowrap;
   pointer-events: none;
 }
+
+/* La touche d'un choix unique, dans son bouton. */
+.tsm-touche {
+  margin-left: 8px;
+  padding: 0 6px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  vertical-align: middle;
+  opacity: 0.85;
+}
+
+/* Un seul halo par carte (16/10/2026). Le jeu dessine déjà un contour doré orangé autour de la
+   carte désignée (`.is-target-pulse`, 1 s) : calé sur le bloc entier de la carte, pastille de
+   type comprise, il faisait un second cadre décentré par-dessus le mien. Sur la table sans
+   fenêtre, mon halo le remplace. */
+html:has(.tsm-bandeau) .scan-card.is-target-pulse,
+html:has(.tsm-bandeau) .scan-card.is-target-pulse .scan-visuel,
+html:has(.tsm-bandeau) .scan-card.is-target-pulse .scan-frame,
+html:has(.tsm-bandeau) .scan-card.is-highlighted,
+html:has(.tsm-bandeau) .scan-card.is-highlighted .scan-visuel,
+html:has(.tsm-bandeau) .scan-card.is-highlighted .scan-frame {
+  outline: none !important;
+  animation: none !important;
+}

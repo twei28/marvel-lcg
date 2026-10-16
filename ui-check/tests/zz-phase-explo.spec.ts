@@ -59,6 +59,7 @@ async function partie(page: Page) {
     if (document.head) style(); else document.addEventListener('DOMContentLoaded', style);
   }, [MODE, THEME]);
   await page.goto('/app/board.html' + (MODE === 'table' ? '?phase=sur-table' : ''), { waitUntil: 'networkidle' });
+  if (process.env.ZZ_CSS) await page.addStyleTag({ content: process.env.ZZ_CSS });
   if (CMDS.length) await commandes(page, CMDS, 'CMDS');
 }
 
@@ -125,10 +126,21 @@ async function signature(page: Page) {
     })();
     const bulle = ((document.querySelector('.deroule-bulle-table') ?? document.querySelector('.deroule-phase')) as HTMLElement | null)?.outerHTML.slice(0, 2500);
     const jetons = Array.from(document.querySelectorAll('.jeton-coup')).map((e) => { const r = e.getBoundingClientRect(); return { t: e.textContent, vis: (e as HTMLElement).style.visibility, x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width) }; });
+    const cls = Array.from(document.querySelectorAll('.scan-card')).filter((e) => /active|actif|highlight|pulse|target|play/i.test(e.className)).map((e) => e.getAttribute('data-card-id') + ':' + e.className);
+    const cadresVus = Array.from(document.querySelectorAll('.scan-card.is-highlighted, .scan-card.is-target-pulse')).slice(0, 2).flatMap((c) => [c, ...Array.from(c.querySelectorAll('*'))].map((e) => { const cs = getComputedStyle(e); const r = e.getBoundingClientRect(); return { e: (e.className || e.tagName).toString().slice(0, 40), o: cs.outlineStyle !== 'none' ? cs.outlineColor + ' ' + cs.outlineWidth + ' off ' + cs.outlineOffset : '', b: cs.boxShadow !== 'none' ? cs.boxShadow.slice(0, 80) : '', bd: cs.borderTopStyle !== 'none' && cs.borderTopWidth !== '0px' ? cs.borderTopWidth + ' ' + cs.borderTopColor : '', r: [Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)] }; }).filter((x) => x.o || x.b || x.bd));
+    const rr = (e: Element | null) => { if (!e) return null; const r = e.getBoundingClientRect(); return [Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)]; };
+    const mesuresActeur = { nbActeurs: document.querySelectorAll('.tsm-acteur').length, tousActeurs: Array.from(document.querySelectorAll('.tsm-acteur')).map((e) => rr(e)), acteur: rr(document.querySelector('.tsm-acteur')), cible: rr(document.querySelector('.tsm-cible')), cadre: rr(document.querySelector('.plateau-cadre')), frames: Array.from(document.querySelectorAll('.scan-card.is-highlighted .scan-frame, .scan-card.is-target-pulse .scan-frame')).map((e) => rr(e)) };
+    const ptsHaut = document.elementsFromPoint(263, 150).concat(document.elementsFromPoint(321, 62)).map((e) => (e.tagName + '.' + (e.className || '')).toString().slice(0, 60));
+    const pseudos = Array.from(document.querySelectorAll('.scan-card[data-card-id="49"], .scan-card[data-card-id="49"] *')).flatMap((e) => ['::before', '::after'].map((p) => { const cs = getComputedStyle(e, p); return { e: (e.className || e.tagName).toString().slice(0, 30), p, c: cs.content, bd: cs.borderTopWidth + ' ' + cs.borderTopStyle + ' ' + cs.borderTopColor, bs: cs.boxShadow.slice(0, 60), ol: cs.outlineStyle, w: cs.width, h: cs.height }; })).filter((x) => x.c !== 'none' && x.c !== 'normal');
+    const candidats = Array.from(document.querySelectorAll('body *')).filter((e) => { const r = e.getBoundingClientRect(); return Math.abs(r.x - 263) < 14 && Math.abs(r.y - 62) < 14 && r.width > 80 && r.width < 160 && r.height > 150 && r.height < 260; }).map((e) => (e.tagName + '.' + (e.className || '')).toString().slice(0, 80) + ' ' + JSON.stringify([Math.round(e.getBoundingClientRect().x), Math.round(e.getBoundingClientRect().y), Math.round(e.getBoundingClientRect().width), Math.round(e.getBoundingClientRect().height)]));
+    const zones = Array.from(document.querySelectorAll('.plateau-emplacement')).map((e) => { const cs = getComputedStyle(e); return e.className + ' | bd ' + cs.borderTopWidth + ' ' + cs.borderTopColor + ' | ol ' + cs.outlineStyle + ' ' + cs.outlineColor + ' | bs ' + cs.boxShadow.slice(0, 70) + ' | bg ' + cs.backgroundColor; }).filter((x) => /rgb\(2[0-9][0-9]|rgba\(24|rgba\(2[0-9][0-9]/.test(x));
+    const tsmTous = Array.from(document.querySelectorAll('[class*="tsm-"]')).map((e) => (e.className || '').toString() + ' ' + JSON.stringify(rr(e)));
+    const ac = document.querySelector('.tsm-acteur');
+    const acStyle = ac ? (() => { const cs = getComputedStyle(ac); return { bs: cs.boxShadow, ol: cs.outlineStyle + ' ' + cs.outlineWidth + ' ' + cs.outlineColor + ' off ' + cs.outlineOffset, bd: cs.borderTopWidth + ' ' + cs.borderTopColor, w: cs.width, h: cs.height, minh: cs.minHeight, pad: cs.padding, bsz: cs.boxSizing, an: cs.animationName, foc: document.activeElement === ac, tf: cs.transform }; })() : null;
     const dep = document.querySelector('.tsm-depart')?.getBoundingClientRect();
     const dbg = [(window as unknown as { __dbg?: unknown }).__dbg, (window as unknown as { __j?: string[] }).__j];
     return {
-      dbg, jetons, dep: dep ? [Math.round(dep.x), Math.round(dep.y), Math.round(dep.width)] : null,
+      acStyle, tsmTous, zones, candidats, pseudos, ptsHaut, mesuresActeur, cadresVus, cls, dbg, jetons, dep: dep ? [Math.round(dep.x), Math.round(dep.y), Math.round(dep.width)] : null,
       bulle,
       diag,
       cartouche: t('.deroule-phase, .tsm-bandeau').slice(0, 400),
@@ -203,7 +215,7 @@ test('explo', async ({ page }) => {
         await page.screenshot({ path: path.join(SORTIE, `${String(rang).padStart(3, '0')}.png`) });
         const faits = (w.faits_mechant ?? []).map((f: Record<string, unknown>) => `${f.genre}:${f.etat ?? ''}:${f.carte ?? f.auteur ?? ''}`);
         const s2 = await signature(page);
-        journal.write(JSON.stringify({ rang, i, phase: w.phase, round: w.round_id, ...s, bulle: s2.bulle, jetons: s2.jetons, dbg: s2.dbg, dep: s2.dep, faits: faits.slice(-5) }) + '\n');
+        journal.write(JSON.stringify({ rang, i, phase: w.phase, round: w.round_id, ...s, bulle: s2.bulle, jetons: s2.jetons, acStyle: s2.acStyle, tsmTous: s2.tsmTous, zones: s2.zones, candidats: s2.candidats, pseudos: s2.pseudos, ptsHaut: s2.ptsHaut, mesuresActeur: s2.mesuresActeur, cadresVus: s2.cadresVus, cls: s2.cls, dbg: s2.dbg, dep: s2.dep, faits: faits.slice(-5) }) + '\n');
       }
     }
     await unPas(page, dansPhase);

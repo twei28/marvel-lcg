@@ -1616,6 +1616,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Tout voir': 'See all',
   'Réduire': 'Collapse',
   'Clique la carte dorée pour continuer': 'Click the golden card to continue',
+  'Clique la carte dorée, ou Espace': 'Click the golden card, or press Space',
   'Ta décision': 'Your decision',
   'Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai':
     'Step by step: one "Next" per step of the phase. Bis and Dynamic phase: the new presentations, on trial',

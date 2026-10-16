@@ -13,12 +13,29 @@ import { boiteDeCarte, cadreDuPlateau, type Boite } from './mesures-plateau'
 import { t } from './langue'
 
 /** Le rectangle de la carte, remesuré tant qu'elle bouge (vol, mise à l'échelle). */
+/**
+ * Le rectangle de l'IMAGE de la carte, pas de son bloc entier : le bloc compte aussi la pastille
+ * de type au-dessus et la barre de PV dessous, et les cadres lumineux débordaient (« pas du tout
+ * bien centrés », 16/10/2026).
+ */
+function boiteDeLImage(
+  id: number | undefined,
+  cadre: { element: HTMLElement; origine: DOMRect }
+): Boite | undefined {
+  if (id === undefined) return undefined
+  const el = cadre.element.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"] .scan-frame`)
+  if (!el) return boiteDeCarte(id, cadre)
+  const r = el.getBoundingClientRect()
+  if (r.width === 0 || r.height === 0) return boiteDeCarte(id, cadre)
+  return { x: r.left - cadre.origine.left, y: r.top - cadre.origine.top, w: r.width, h: r.height }
+}
+
 export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite | undefined {
   const [boite, setBoite] = useState<Boite | undefined>(undefined)
   useEffect(() => {
     const mesurer = () => {
       const cadre = cadreDuPlateau()
-      const b = cadre ? boiteDeCarte(carteId, cadre) : undefined
+      const b = cadre ? boiteDeLImage(carteId, cadre) : undefined
       setBoite((avant) =>
         avant && b && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h ? avant : b
       )
@@ -95,7 +112,7 @@ export function TableSansModale({
           </button>
         ) : (
           <span className="tsm-consigne">
-            {peutAgir ? t('Clique la carte dorée pour continuer') : (mention ?? t('La suite arrive…'))}
+            {peutAgir ? t('Clique la carte dorée, ou Espace') : (mention ?? t('La suite arrive…'))}
           </span>
         )}
       </div>
@@ -155,6 +172,10 @@ export function QuestionSurTable({
       else suivant.delete(id)
       return suivant
     })
+  // UN SEUL CHOIX POSSIBLE (16/10/2026) : on n'est pas obligé de cliquer, Espace le prend. S'il y
+  // en a plusieurs, rien ne se choisit au clavier : on clique la carte voulue.
+  const possibles = choix.filter((c) => !c.indisponible)
+  const uniqueId = possibles.length + (refus ? 1 : 0) === 1 ? (refus ? 'refus' : possibles[0]!.id) : undefined
   const surCarte = choix.filter((c) => c.carteId !== undefined && !absentes.has(c.id))
   const enLigne = choix.filter((c) => c.carteId === undefined || absentes.has(c.id))
   return (
@@ -169,8 +190,10 @@ export function QuestionSurTable({
             disabled={!!c.indisponible}
             title={c.indisponible}
             onClick={c.choisir}
+            data-choix-unique={uniqueId === c.id ? '' : undefined}
           >
             {c.nom}
+            {uniqueId === c.id ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
           </button>
         ))}
         {refus ? (
@@ -180,8 +203,10 @@ export function QuestionSurTable({
             onClick={refus.agir}
             onMouseEnter={() => refus.survoler?.(true)}
             onMouseLeave={() => refus.survoler?.(false)}
+            data-choix-unique={uniqueId === 'refus' ? '' : undefined}
           >
             {refus.libelle}
+            {uniqueId === 'refus' ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
           </button>
         ) : null}
       </div>
@@ -192,7 +217,7 @@ export function QuestionSurTable({
           <VeilleCarte key={`veille-${c.id}`} choix={c} signaler={signaler} />
         ))}
       {surCarte.map((c) => (
-        <PuceSurCarte key={c.id} choix={c} signaler={signaler} />
+        <PuceSurCarte key={c.id} choix={c} signaler={signaler} unique={uniqueId === c.id} />
       ))}
     </>
   )
@@ -210,9 +235,11 @@ function VeilleCarte({ choix, signaler }: { choix: ChoixSurTable; signaler: (id:
 function PuceSurCarte({
   choix,
   signaler,
+  unique,
 }: {
   choix: ChoixSurTable
   signaler: (id: number, absente: boolean) => void
+  unique: boolean
 }) {
   const boite = useBoiteDeCarte(choix.carteId, String(choix.id))
   // 600 ms de mesure avant de rabattre le choix en ligne : la carte peut encore voler.
@@ -249,8 +276,10 @@ function PuceSurCarte({
         }
         disabled={bloque}
         onClick={choix.choisir}
+        data-choix-unique={unique ? '' : undefined}
       >
         {choix.nom}
+        {unique ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
       </button>
     </>
   )
