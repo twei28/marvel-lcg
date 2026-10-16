@@ -612,42 +612,42 @@
    "libelle": "196. Custom (TMNT Aspects – Aggression)",
    "cartes": 41,
    "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation : ordre alphabetique des noms de FICHIER du dossier, 001 a N (meme ordre que le TSV d'analyse aspects-compare-*.tsv). Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Aggression »."
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Aggression »."
   },
   "ub": {
    "pack": "tmnt_aspect_basic",
    "libelle": "197. Custom (TMNT Aspects – Basic)",
    "cartes": 59,
    "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation : ordre alphabetique des noms de FICHIER du dossier, 001 a N (meme ordre que le TSV d'analyse aspects-compare-*.tsv). Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Basic » (dont 4 ressources)."
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Basic » (dont 4 ressources)."
   },
   "uj": {
    "pack": "tmnt_aspect_justice",
    "libelle": "198. Custom (TMNT Aspects – Justice)",
    "cartes": 40,
    "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation : ordre alphabetique des noms de FICHIER du dossier, 001 a N (meme ordre que le TSV d'analyse aspects-compare-*.tsv). Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Justice »."
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Justice »."
   },
   "ul": {
    "pack": "tmnt_aspect_leadership",
    "libelle": "199. Custom (TMNT Aspects – Leadership)",
    "cartes": 46,
    "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation : ordre alphabetique des noms de FICHIER du dossier, 001 a N (meme ordre que le TSV d'analyse aspects-compare-*.tsv). Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Leadership » : comprend la manigance joueur Weasel In et ses trois allies WEASEL Linked (dos de rencontre)."
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Leadership » : comprend la manigance joueur Weasel In et ses trois allies WEASEL Linked (dos de rencontre)."
   },
   "up": {
    "pack": "tmnt_aspect_protection",
    "libelle": "200. Custom (TMNT Aspects – Protection)",
    "cartes": 43,
    "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation : ordre alphabetique des noms de FICHIER du dossier, 001 a N (meme ordre que le TSV d'analyse aspects-compare-*.tsv). Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Protection »."
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Protection »."
   },
   "ud": {
    "pack": "tmnt_aspect_dual",
    "libelle": "201. Custom (TMNT Aspects – Dual-Aspect)",
    "cartes": 6,
    "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation : ordre alphabetique des noms de FICHIER du dossier, 001 a N (meme ordre que le TSV d'analyse aspects-compare-*.tsv). Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Dual-Aspect » : six allies a DEUX aspects (AJ, AL, AP, JL, JP, LP dans le nom de fichier)."
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Dual-Aspect » : six allies a DEUX aspects (AJ, AL, AP, JL, JP, LP dans le nom de fichier)."
   },
   "rs": {
    "pack": "red_sonja",

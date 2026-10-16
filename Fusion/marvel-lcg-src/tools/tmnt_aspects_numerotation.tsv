@@ -1,0 +1,236 @@
+card_id	pack	dossier	fichier_scan	nom_tsv	categorie	card_id_origine
+ua001	tmnt_aspect_aggression	Aggression	Aggressive Conditioning.png	Aggressive Conditioning	IDENTIQUE	56013
+ua002	tmnt_aspect_aggression	Aggression	Apex Predator.png	Apex Predator	NOUVELLE	
+ua003	tmnt_aspect_aggression	Aggression	Assassin Leo.png	Assassin (Leo)	NOUVELLE	
+ua004	tmnt_aspect_aggression	Aggression	Attack Training.png	Attack Training	MODIFIEE	32043
+ua005	tmnt_aspect_aggression	Aggression	Blood Rage.png	Blood Rage	IDENTIQUE	45043
+ua006	tmnt_aspect_aggression	Aggression	Bo-Wing.png	Bo-Wing (Donnie)	IDENTIQUE	53035
+ua007	tmnt_aspect_aggression	Aggression	Bring It.png	Bring It!	IDENTIQUE	19030
+ua008	tmnt_aspect_aggression	Aggression	Chain Reaction.png	Chain Reaction	NOUVELLE	
+ua009	tmnt_aspect_aggression	Aggression	Clobber.png	Clobber	IDENTIQUE	18012
+ua010	tmnt_aspect_aggression	Aggression	Combat Training.png	Combat Training	IDENTIQUE	01057
+ua011	tmnt_aspect_aggression	Aggression	Combo Move.png	Combo Move	NOUVELLE	
+ua012	tmnt_aspect_aggression	Aggression	Commando Raph.png	Commando (Raph)	NOUVELLE	
+ua013	tmnt_aspect_aggression	Aggression	Critical Wound.png	Critical Wound	NOUVELLE	
+ua014	tmnt_aspect_aggression	Aggression	Daito.png	Daitō	NOUVELLE	
+ua015	tmnt_aspect_aggression	Aggression	Demolish.png	Demolish	NOUVELLE	
+ua016	tmnt_aspect_aggression	Aggression	Drop Kick.png	Drop Kick	IDENTIQUE	10014
+ua017	tmnt_aspect_aggression	Aggression	Exeen.png	Exeen	IDENTIQUE	18011
+ua018	tmnt_aspect_aggression	Aggression	Firepower.png	Firepower	IDENTIQUE	54014
+ua019	tmnt_aspect_aggression	Aggression	Flow of Battle.png	Flow of Battle	NOUVELLE	
+ua020	tmnt_aspect_aggression	Aggression	Fusillade.png	Fusillade	IDENTIQUE	20026
+ua021	tmnt_aspect_aggression	Aggression	Guerilla Trap.png	Guerilla Trap	NOUVELLE	
+ua022	tmnt_aspect_aggression	Aggression	He-Dude.png	He-Dude (Mikey)	IDENTIQUE	56010
+ua023	tmnt_aspect_aggression	Aggression	Honed Technique.png	Honed Technique	IDENTIQUE	28017
+ua024	tmnt_aspect_aggression	Aggression	Innate Aggression.png	Innate Aggression	IDENTIQUE	61034
+ua025	tmnt_aspect_aggression	Aggression	Kitsune.png	Kitsune	NOUVELLE	
+ua026	tmnt_aspect_aggression	Aggression	Leatherhead.png	Leatherhead	NOUVELLE	
+ua027	tmnt_aspect_aggression	Aggression	Looking for Trouble.png	Looking for Trouble	IDENTIQUE	16043
+ua028	tmnt_aspect_aggression	Aggression	Magic Attack.png	Magic Attack	IDENTIQUE	21043
+ua029	tmnt_aspect_aggression	Aggression	Martial Prowess.png	Martial Prowess	IDENTIQUE	10018
+ua030	tmnt_aspect_aggression	Aggression	Nerve Strike.png	Nerve Strike	NOUVELLE	
+ua031	tmnt_aspect_aggression	Aggression	No Quarter.png	No Quarter	IDENTIQUE	28013
+ua032	tmnt_aspect_aggression	Aggression	Now I_m Mad.png	Now I'm Mad	IDENTIQUE	43019
+ua033	tmnt_aspect_aggression	Aggression	Pete.png	Pete	NOUVELLE	
+ua034	tmnt_aspect_aggression	Aggression	Precision Strike.png	Precision Strike	IDENTIQUE	35018
+ua035	tmnt_aspect_aggression	Aggression	Rave.png	Rave	IDENTIQUE	16040
+ua036	tmnt_aspect_aggression	Aggression	Ray Fillet.png	Ray Fillet	NOUVELLE	
+ua037	tmnt_aspect_aggression	Aggression	Slash.png	Slash	NOUVELLE	
+ua038	tmnt_aspect_aggression	Aggression	Spoiling for a Fight.png	Spoiling for a Fight	IDENTIQUE	54016
+ua039	tmnt_aspect_aggression	Aggression	Suppressing Fire.png	Suppressing Fire	IDENTIQUE	46014
+ua040	tmnt_aspect_aggression	Aggression	Ujigami.png	Ujigami (Splinter)	NOUVELLE	
+ua041	tmnt_aspect_aggression	Aggression	Yagi & Gorogoro.png	Yagi & Gorogoro	NOUVELLE	
+ub001	tmnt_aspect_basic	Basic	April O_Neil (Nick Fury).png	April O'Neil (Nick Fury)	IDENTIQUE	01084
+ub002	tmnt_aspect_basic	Basic	Assess the Situation.png	Assess the Situation	IDENTIQUE	12033
+ub003	tmnt_aspect_basic	Basic	Atilla (Spider Man).png	Atilla (Spider-Man)	MODIFIEE	13019
+ub004	tmnt_aspect_basic	Basic	Basic Spell.png	Basic Spell	IDENTIQUE	45051
+ub005	tmnt_aspect_basic	Basic	Casey Jones.png	Casey Jones (allié Basic)	NOUVELLE	
+ub006	tmnt_aspect_basic	Basic	Clyde (Ironheart).png	Clyde (Ironheart)	IDENTIQUE	13018
+ub007	tmnt_aspect_basic	Basic	Dig Deep.png	Digging Deep	IDENTIQUE	40060
+ub008	tmnt_aspect_basic	Basic	Donatello.png	Donatello (allié Basic)	NOUVELLE	
+ub009	tmnt_aspect_basic	Basic	Down Time.png	Down Time	IDENTIQUE	05033
+ub010	tmnt_aspect_basic	Basic	Endurance.png	Endurance	IDENTIQUE	05023
+ub011	tmnt_aspect_basic	Basic	Energy.png	Energy	IDENTIQUE	01088
+ub012	tmnt_aspect_basic	Basic	EPF RND.png	E.P.F. R.N.D. (Weapon X)	IDENTIQUE	35022
+ub013	tmnt_aspect_basic	Basic	Face the Past.png	Face the Past	IDENTIQUE	49022
+ub014	tmnt_aspect_basic	Basic	Fugitoid.png	Fugitoid (Professor Honeycutt)	NOUVELLE	
+ub015	tmnt_aspect_basic	Basic	Genghis (White Fox).png	Genghis (White Fox)	IDENTIQUE	40057
+ub016	tmnt_aspect_basic	Basic	Genius.png	Genius	IDENTIQUE	01089
+ub017	tmnt_aspect_basic	Basic	Gofu Talisman.png	Gofu Talisman (Bloodgem)	IDENTIQUE	45050
+ub018	tmnt_aspect_basic	Basic	Herold Lilja_s Lab.png	Herold Lilja's Lab (Cerebro)	MODIFIEE	34022
+ub019	tmnt_aspect_basic	Basic	Honorable Blades.png	Honorable Blades	NOUVELLE	
+ub020	tmnt_aspect_basic	Basic	Improvised Club.png	Improvised Club	NOUVELLE	
+ub021	tmnt_aspect_basic	Basic	Ingenuity.png	Ingenuity	IDENTIQUE	29027
+ub022	tmnt_aspect_basic	Basic	Jennika.png	Jennika (allié Basic)	NOUVELLE	
+ub023	tmnt_aspect_basic	Basic	Katsuichi.png	Katsuichi	NOUVELLE	
+ub024	tmnt_aspect_basic	Basic	Kennel Klub.png	The Kennel Klub (Utopia)	MODIFIEE	33020
+ub025	tmnt_aspect_basic	Basic	Leonardo.png	Leonardo (allié Basic)	NOUVELLE	
+ub026	tmnt_aspect_basic	Basic	Limitless Stamina.png	Limitless Stamina	IDENTIQUE	31023
+ub027	tmnt_aspect_basic	Basic	Martial Arts Training.png	Martial Arts Training	NOUVELLE	
+ub028	tmnt_aspect_basic	Basic	Mary (Mockingbird).png	Mary (Mockingbird)	IDENTIQUE	01083
+ub029	tmnt_aspect_basic	Basic	Michelangelo.png	Michelangelo (allié Basic)	NOUVELLE	
+ub030	tmnt_aspect_basic	Basic	Multitalented.png	Multitalented	IDENTIQUE	47021
+ub031	tmnt_aspect_basic	Basic	Mutagen.png	Mutagen (X-Gene)	IDENTIQUE	38019
+ub032	tmnt_aspect_basic	Basic	Mutanimal Van.png	Mutanimal Van (IPAC)	MODIFIEE	41022
+ub033	tmnt_aspect_basic	Basic	Ninja He-Man.png	Ninja He-Man (Prince Adam)	NOUVELLE	
+ub034	tmnt_aspect_basic	Basic	Onmyodo Saiko.png	Onmyōdō Saikō (The Sorcerer Supreme)	IDENTIQUE	09026
+ub035	tmnt_aspect_basic	Basic	Party Time.png	Party Time (Game Time)	IDENTIQUE	33022
+ub036	tmnt_aspect_basic	Basic	Party Wagon.png	Party Wagon (The X-Jet)	MODIFIEE	32020
+ub037	tmnt_aspect_basic	Basic	Pepperoni.png	Pepperoni	NOUVELLE	
+ub038	tmnt_aspect_basic	Basic	Pizza Time.png	Pizza Time (Mutant Education)	MODIFIEE	37021
+ub039	tmnt_aspect_basic	Basic	Practiced Plan.png	Practiced Plan	IDENTIQUE	50058
+ub040	tmnt_aspect_basic	Basic	Press and Protect.png	Press and Protect	NOUVELLE	
+ub041	tmnt_aspect_basic	Basic	Raphael.png	Raphael (allié Basic)	NOUVELLE	
+ub042	tmnt_aspect_basic	Basic	Ready to Rumble.png	Ready to Rumble	IDENTIQUE	21022
+ub043	tmnt_aspect_basic	Basic	Rupert_s Pizzeria.png	Rupert's Pizzeria (X-Mansion)	MODIFIEE	32049
+ub044	tmnt_aspect_basic	Basic	Shell Phone.png	Shell Phone (Cell Phone)	IDENTIQUE	47019
+ub045	tmnt_aspect_basic	Basic	Shinobi Batman.png	Shinobi Batman (Bruce Wayne)	NOUVELLE	
+ub046	tmnt_aspect_basic	Basic	Shuriken.png	Shuriken	NOUVELLE	
+ub047	tmnt_aspect_basic	Basic	Sky Wagon.png	Sky Wagon (Helicarrier)	IDENTIQUE	01092
+ub048	tmnt_aspect_basic	Basic	Slash (Hulk).png	Slash (Hulk)	IDENTIQUE	62020
+ub049	tmnt_aspect_basic	Basic	Snow and Shadow.png	Snow and Shadow	NOUVELLE	
+ub050	tmnt_aspect_basic	Basic	Special Delivery.png	"""Special Delivery!"" (X-Men Instruction)"	MODIFIEE	37031
+ub051	tmnt_aspect_basic	Basic	Spiritual Meditation.png	Spiritual Meditation	IDENTIQUE	15019
+ub052	tmnt_aspect_basic	Basic	Splinter Dojo.png	Splinter Dojo (Danger Room)	MODIFIEE	33021
+ub053	tmnt_aspect_basic	Basic	Splinter.png	Splinter (Stick)	IDENTIQUE	60029
+ub054	tmnt_aspect_basic	Basic	Strength.png	Strength	IDENTIQUE	01090
+ub055	tmnt_aspect_basic	Basic	Team-Building Exercise.png	Team-Building Exercise	IDENTIQUE	12024
+ub056	tmnt_aspect_basic	Basic	The Market.png	The Market (X-Bunker)	IDENTIQUE	41023
+ub057	tmnt_aspect_basic	Basic	Turtle Lair.png	Turtle Lair (Avengers Mansion)	IDENTIQUE	01091
+ub058	tmnt_aspect_basic	Basic	Upstate Farmhouse.png	Upstate Farmhouse (Crew Quarters)	IDENTIQUE	20029
+ub059	tmnt_aspect_basic	Basic	Weapon Harness.png	Weapon Harness (Side Holster)	MODIFIEE	20021
+uj001	tmnt_aspect_justice	Justice	Battlefield Benevolence.png	Battlefield Benevolence	IDENTIQUE	58016
+uj002	tmnt_aspect_justice	Justice	Chance Encounter.png	Chance Encounter	MODIFIEE	26034 (=60025)
+uj003	tmnt_aspect_justice	Justice	Clear the Area.png	Clear the Area	IDENTIQUE	04049
+uj004	tmnt_aspect_justice	Justice	Cowabunga Mikey.png	Cowabunga (Mikey)	NOUVELLE	
+uj005	tmnt_aspect_justice	Justice	Delirium.png	Delirium	NOUVELLE	
+uj006	tmnt_aspect_justice	Justice	Dire Straits.png	Dire Straits	NOUVELLE	
+uj007	tmnt_aspect_justice	Justice	Disguise.png	Disguise	IDENTIQUE	47013
+uj008	tmnt_aspect_justice	Justice	Dreadmon.png	Dreadmon	NOUVELLE	
+uj009	tmnt_aspect_justice	Justice	Feral Cunning.png	Feral Cunning	NOUVELLE	
+uj010	tmnt_aspect_justice	Justice	Float Like a Butterfly.png	Float Like a Butterfly	IDENTIQUE	41017
+uj011	tmnt_aspect_justice	Justice	For Justice.png	For Justice!	IDENTIQUE	01060
+uj012	tmnt_aspect_justice	Justice	Hatamoto Donnie.png	Hatamoto (Donnie)	NOUVELLE	
+uj013	tmnt_aspect_justice	Justice	Heroic Conditioning.png	Heroic Conditioning	IDENTIQUE	58021
+uj014	tmnt_aspect_justice	Justice	Heroic Intuition.png	Heroic Intuition	IDENTIQUE	01065
+uj015	tmnt_aspect_justice	Justice	innate perception.png	Innate Perception	IDENTIQUE	61036
+uj016	tmnt_aspect_justice	Justice	Inspector Ishida.png	Inspector Ishida	NOUVELLE	
+uj017	tmnt_aspect_justice	Justice	Know Your Enemy.png	Know Your Enemy	IDENTIQUE	60023
+uj018	tmnt_aspect_justice	Justice	Lita.png	Lita	NOUVELLE	
+uj019	tmnt_aspect_justice	Justice	Mission Training.png	Mission Training	MODIFIEE	34016
+uj020	tmnt_aspect_justice	Justice	Mona Lisa.png	Mona Lisa	NOUVELLE	
+uj021	tmnt_aspect_justice	Justice	Mondo Gecko.png	Mondo Gecko	NOUVELLE	
+uj022	tmnt_aspect_justice	Justice	Move in Shadows.png	Move in Shadow	IDENTIQUE	60027
+uj023	tmnt_aspect_justice	Justice	Night-Blade.png	Night-Blade (Leo)	MODIFIEE	08011
+uj024	tmnt_aspect_justice	Justice	One Way or Another.png	One Way or Another	IDENTIQUE	22015
+uj025	tmnt_aspect_justice	Justice	Overwatch.png	Overwatch	IDENTIQUE	30019
+uj026	tmnt_aspect_justice	Justice	Ram-Shell.png	Ram-Shell (Raph)	MODIFIEE	61016
+uj027	tmnt_aspect_justice	Justice	Sally Pride.png	Sally Pride	NOUVELLE	
+uj028	tmnt_aspect_justice	Justice	Screwloose.png	Screwloose	MODIFIEE	60021
+uj029	tmnt_aspect_justice	Justice	Skilled Investigator.png	Skilled Investigator	IDENTIQUE	04047
+uj030	tmnt_aspect_justice	Justice	Stealth Strike.png	Stealth Strike	IDENTIQUE	08013 (=37014)
+uj031	tmnt_aspect_justice	Justice	Stealth Training.png	Stealth Training	IDENTIQUE	60028
+uj032	tmnt_aspect_justice	Justice	Three Steps Ahead.png	Three Steps Ahead	IDENTIQUE	47015
+uj033	tmnt_aspect_justice	Justice	Tomoe Ame.png	Tomoe Ame	NOUVELLE	
+uj034	tmnt_aspect_justice	Justice	Turtle Line.png	Turtle Line	NOUVELLE	
+uj035	tmnt_aspect_justice	Justice	Under Surveillance.png	Under Surveillance	IDENTIQUE	06031
+uj036	tmnt_aspect_justice	Justice	Venus.png	Venus (Bonnie)	MODIFIEE	51014
+uj037	tmnt_aspect_justice	Justice	Watch the Exits.png	Watch the Exits	NOUVELLE	
+uj038	tmnt_aspect_justice	Justice	Wingnut.png	Wingnut	MODIFIEE	60020
+uj039	tmnt_aspect_justice	Justice	Zebulon.png	Zebulon	MODIFIEE	61017
+uj040	tmnt_aspect_justice	Justice	Zone of Silence.png	Zone of Silence	IDENTIQUE	21050
+ul001	tmnt_aspect_leadership	Leadership	Alopex.png	Alopex (Ally, coût 3, THW2* ATK2* PV3, CLAW CLAN. FOX. NINJA.)	NOUVELLE	
+ul002	tmnt_aspect_leadership	Leadership	Band Together.png	Band Together (Resource)	IDENTIQUE	21018
+ul003	tmnt_aspect_leadership	Leadership	Cameo.png	Cameo (Support, sans coût)	IDENTIQUE	58031
+ul004	tmnt_aspect_leadership	Leadership	Clarity of Purpose.png	Clarity of Purpose (Upgrade 1, CONDITION, ressource mentale)	IDENTIQUE	31029
+ul005	tmnt_aspect_leadership	Leadership	Dask.png	Dask (Ally, coût 3, THW2* ATK2* PV3, DIMENSION X. NEUTRINO. SOLDIER., ressource énergie)	MODIFIEE	03011
+ul006	tmnt_aspect_leadership	Leadership	Defensive Formation.png	Defensive Formation (Support 2, TACTIC)	MODIFIEE	62018
+ul007	tmnt_aspect_leadership	Leadership	Down the Drain.png	Down the Drain (Event 1*, FERAL. NYC., ressource mentale)	NOUVELLE	
+ul008	tmnt_aspect_leadership	Leadership	Gennosuke.png	Gennosuke (Ally, coût 2, THW2 ATK2 PV2 sans conséquent, RHINOCEROS. RONIN., physique)	MODIFIEE	21019
+ul009	tmnt_aspect_leadership	Leadership	Go All Out.png	Go All Out (Event 2, ATTACK, Requirement énergie)	IDENTIQUE	29017
+ul010	tmnt_aspect_leadership	Leadership	Heroes in a Half Shell.png	Heroes in a Half Shell (Support 3, TEAM)	MODIFIEE	36018
+ul011	tmnt_aspect_leadership	Leadership	Innate Inspiriation.png	Innate Inspiration (Upgrade 2, CONDITION, sans ressource)	IDENTIQUE	61037
+ul012	tmnt_aspect_leadership	Leadership	Inspired.png	Inspired (Upgrade 1, CONDITION, physique)	IDENTIQUE	01074
+ul013	tmnt_aspect_leadership	Leadership	Make the Call.png	Make the Call (Event 0)	IDENTIQUE	01071
+ul014	tmnt_aspect_leadership	Leadership	Midnight Veil.png	Midnight Veil (Event 3, NYC. SKILL., énergie)	NOUVELLE	
+ul015	tmnt_aspect_leadership	Leadership	Mission Leader.png	Mission Leader (Upgrade 2, TITLE, unique, physique)	IDENTIQUE	40023
+ul016	tmnt_aspect_leadership	Leadership	Naginata.png	Naginata (Upgrade 1, NINJA. WEAPON., mentale)	NOUVELLE	
+ul017	tmnt_aspect_leadership	Leadership	Napoleon (squirrel girl).png	Napoleon / Squirrel Girl (Ally 2, THW1* ATK1* PV2, FROG. PUNK.)	IDENTIQUE	03013
+ul018	tmnt_aspect_leadership	Leadership	Noble Sacrifice.png	Noble Sacrifice (Event 1, TACTIC)	IDENTIQUE	49018
+ul019	tmnt_aspect_leadership	Leadership	Old Hob.png	Old Hob / White Wolf (Ally 3, THW2** ATK2 PV3, CAT. MUTANIMALS.)	IDENTIQUE	51037
+ul020	tmnt_aspect_leadership	Leadership	Rasputin (Maria Hill).png	Rasputin / Maria Hill (Ally 2, THW2* ATK1* PV2, FROG. PUNK.)	IDENTIQUE	01067
+ul021	tmnt_aspect_leadership	Leadership	Red Shell.png	Red Shell « Raph » / Iron Fist (Ally 3, THW1* ATK2* PV3, NINJA. TURTLE. VIGILANTE.)	IDENTIQUE	62012
+ul022	tmnt_aspect_leadership	Leadership	Righteous Purpose.png	Righteous Purpose (Support 2, MAXIM)	IDENTIQUE	62019
+ul023	tmnt_aspect_leadership	Leadership	Rubble Rouser.png	Rubble Rouser (Event 1*, FERAL. NYC., physique)	NOUVELLE	
+ul024	tmnt_aspect_leadership	Leadership	Sense of Dread.png	Sense of Dread (Upgrade 1, CONDITION. FERAL., mentale)	NOUVELLE	
+ul025	tmnt_aspect_leadership	Leadership	Shogun Leo.png	Shōgun « Leo » (Ally 2, THW1* ATK1* PV2, NINJA. SAMURAI. TURTLE., physique)	NOUVELLE	
+ul026	tmnt_aspect_leadership	Leadership	Side-by-Side.png	Side-by-Side (Event 2)	IDENTIQUE	45016
+ul027	tmnt_aspect_leadership	Leadership	Sidekick.png	Sidekick (Upgrade 1, TITLE, wild)	IDENTIQUE	45015
+ul028	tmnt_aspect_leadership	Leadership	Splinter Dojo Training.png	Splinter Dojo Training / Danger Room Training (Upgrade 1, TRAINING)	MODIFIEE	33015
+ul029	tmnt_aspect_leadership	Leadership	Splinter.png	Splinter (Ally 2, THW1* ATK1* PV2, NINJA. RAT., mentale)	NOUVELLE	
+ul030	tmnt_aspect_leadership	Leadership	Street Vendor.png	Street Vendor (Upgrade 2, NYC, énergie)	NOUVELLE	
+ul031	tmnt_aspect_leadership	Leadership	Suit Up.png	Suit Up (Event 2, physique)	MODIFIEE	45017
+ul032	tmnt_aspect_leadership	Leadership	Summoning Spell.png	Summoning Spell (Event 2, SPELL)	IDENTIQUE	21055
+ul033	tmnt_aspect_leadership	Leadership	Take a Stand.png	Take a Stand (Event 1, énergie)	IDENTIQUE	62015
+ul034	tmnt_aspect_leadership	Leadership	Teamwork.png	Teamwork (Event 0, TACTIC, énergie)	IDENTIQUE	06032
+ul035	tmnt_aspect_leadership	Leadership	Turtle Power.png	Turtle Power! (Event 1, TACTIC, énergie)	MODIFIEE	36020
+ul036	tmnt_aspect_leadership	Leadership	Turtle Titan Mikey.png	Turtle Titan « Mikey » (Ally 4, THW1★ ATK2* PV3, HERO. NINJA. TURTLE., physique)	NOUVELLE	
+ul037	tmnt_aspect_leadership	Leadership	Turtle-At-Arms.png	Turtle-At-Arms « Donnie » / Misty Knight (Ally 3, THW1* ATK1* PV2, TURTLE. WARRIOR.)	IDENTIQUE	62013
+ul038	tmnt_aspect_leadership	Leadership	Unified Strike.png	Unified Stike [sic] (Event 0, TACTIC, énergie)	MODIFIEE	58020
+ul039	tmnt_aspect_leadership	Leadership	Venus.png	Venus « Bonnie » (Ally 3, THW2** ATK2** PV3, NINJA. TEMPORAL. TURTLE., mentale)	MODIFIEE	26013
+ul040	tmnt_aspect_leadership	Leadership	Weasel In Side Scheme.png	Weasel In (Player Side Scheme 0, 2 menace par joueur, wild, unique)	NOUVELLE	
+ul041	tmnt_aspect_leadership	Leadership	Weasels Mushroom (Encounter Back).png	Mushroom (Ally sans coût, THW1* ATK1* PV2, NINJA. WEASEL., dos de rencontre, physique)	NOUVELLE	
+ul042	tmnt_aspect_leadership	Leadership	Weasels Zanna (Encounter Back).png	Zanna (Ally sans coût, THW2* ATK0* PV1, NINJA. WEASEL., dos de rencontre, énergie)	NOUVELLE	
+ul043	tmnt_aspect_leadership	Leadership	Weasels Zink (Encounter Back).png	Zink (Ally sans coût, THW0* ATK2* PV1, NINJA. WEASEL., dos de rencontre, mentale)	NOUVELLE	
+ul044	tmnt_aspect_leadership	Leadership	You Got This.png	You Got This! (Event 1, TACTIC)	MODIFIEE	49019
+ul045	tmnt_aspect_leadership	Leadership	Zato-Ino.png	Zato-Ino (Ally 3, THW1* ATK1★* PV2, MASSEUSE. PIG. SWORDSMAN., énergie)	NOUVELLE	
+ul046	tmnt_aspect_leadership	Leadership	Zetian (White Tiger).png	Zetian / White Tiger (Ally 3, THW2* ATK2* PV2, FROG. PUNK.)	IDENTIQUE	21013
+up001	tmnt_aspect_protection	Protection	Ace Duck.png	Ace Duck (sous-titre Brother Voodoo)	IDENTIQUE	09012
+up002	tmnt_aspect_protection	Protection	Armored Vest.png	Armored Vest	IDENTIQUE	01081
+up003	tmnt_aspect_protection	Protection	Army of One.png	Army of One	IDENTIQUE	60048
+up004	tmnt_aspect_protection	Protection	Autodefenestration.png	Autodefenestration	MODIFIEE	01003
+up005	tmnt_aspect_protection	Protection	Change of Fortune.png	Change of Fortune	IDENTIQUE	48014
+up006	tmnt_aspect_protection	Protection	Come Get Me, Bub.png	Come Get Me, Bub!	IDENTIQUE	48016
+up007	tmnt_aspect_protection	Protection	Cyber Ninja Donnie.png	Cyber Ninja (sous-titre Donnie)	NOUVELLE	
+up008	tmnt_aspect_protection	Protection	Defensive Conditioning.png	Defensive Conditioning	IDENTIQUE	56046
+up009	tmnt_aspect_protection	Protection	Demoralize.png	Demoralize	NOUVELLE	
+up010	tmnt_aspect_protection	Protection	Electrostatic Armor.png	Electrostatic Armor	IDENTIQUE	10031
+up011	tmnt_aspect_protection	Protection	Energy Barrier.png	Energy Barrier	IDENTIQUE	05017
+up012	tmnt_aspect_protection	Protection	Get Their Attention.png	Get Their Attention	IDENTIQUE	60049
+up013	tmnt_aspect_protection	Protection	Groo the Wanderer.png	Groo the Wanderer	MODIFIEE	20016
+up014	tmnt_aspect_protection	Protection	Grotto.png	Grotto (sous-titre Iron Fist)	IDENTIQUE	09014
+up015	tmnt_aspect_protection	Protection	Helpful Bystander.png	Helpful Bystander	NOUVELLE	
+up016	tmnt_aspect_protection	Protection	Herman.png	Herman	NOUVELLE	
+up017	tmnt_aspect_protection	Protection	Honor Blade.png	Honor Blade (Leo, sous-titre Patriot)	IDENTIQUE	56041
+up018	tmnt_aspect_protection	Protection	I Can Do This All Day.png	I Can Do This All Day	IDENTIQUE	56047
+up019	tmnt_aspect_protection	Protection	In Harm_s Way.png	In Harm's Way	IDENTIQUE	60050
+up020	tmnt_aspect_protection	Protection	Innate Reflexes.png	Innate Reflexes	IDENTIQUE	60038
+up021	tmnt_aspect_protection	Protection	Jotaro.png	Jōtarō	MODIFIEE	26014
+up022	tmnt_aspect_protection	Protection	Lindsey Baker.png	Lindsey Baker (sous-titre The Night Nurse)	IDENTIQUE	09019
+up023	tmnt_aspect_protection	Protection	Lookout.png	Lookout	NOUVELLE	
+up024	tmnt_aspect_protection	Protection	Nobody.png	Nobody (Angel Bridge)	NOUVELLE	
+up025	tmnt_aspect_protection	Protection	Powerful Punch.png	Powerful Punch	IDENTIQUE	32014
+up026	tmnt_aspect_protection	Protection	Primal Provisions.png	Primal Provisions	NOUVELLE	
+up027	tmnt_aspect_protection	Protection	Protection Training.png	Protection Training	MODIFIEE	32013
+up028	tmnt_aspect_protection	Protection	Rabid Infection.png	Rabid Infection	NOUVELLE	
+up029	tmnt_aspect_protection	Protection	Ready for a Fight.png	Ready for a Fight	IDENTIQUE	52019
+up030	tmnt_aspect_protection	Protection	Redirection Mastery.png	Redirection Mastery	NOUVELLE	
+up031	tmnt_aspect_protection	Protection	Road Rage Raph.png	Road Rage (sous-titre Raph)	MODIFIEE	01066
+up032	tmnt_aspect_protection	Protection	Ronin.png	Ronin	IDENTIQUE	60053
+up033	tmnt_aspect_protection	Protection	Senkon.png	Senkon	NOUVELLE	
+up034	tmnt_aspect_protection	Protection	Seymour Gutz.png	Seymour Gutz (sous-titre Rogue)	IDENTIQUE	48012
+up035	tmnt_aspect_protection	Protection	Shield Spell.png	Shield Spell	IDENTIQUE	21061
+up036	tmnt_aspect_protection	Protection	Stand Alone.png	Stand Alone	IDENTIQUE	60054
+up037	tmnt_aspect_protection	Protection	Taunt.png	Taunt	IDENTIQUE	56048
+up038	tmnt_aspect_protection	Protection	The Best Offense.png	The Best Offense...	IDENTIQUE	60052
+up039	tmnt_aspect_protection	Protection	Tonfa.png	Tonfa	NOUVELLE	
+up040	tmnt_aspect_protection	Protection	Unflappable.png	Unflappable	IDENTIQUE	09020
+up041	tmnt_aspect_protection	Protection	Usagi Yojimbo.png	Usagi Yōjimbō	NOUVELLE	
+up042	tmnt_aspect_protection	Protection	What Doesn_t Kill Me.png	What Doesn't Kill Me	IDENTIQUE	27016
+up043	tmnt_aspect_protection	Protection	Wonder Turtle.png	Wonder Turtle (Mikey, sous-titre White Widow)	IDENTIQUE	54032
+ud001	tmnt_aspect_dual	Dual-Aspect	AJ Ronin Mikey.png	Ronin (Mikey)	NOUVELLE	
+ud002	tmnt_aspect_dual	Dual-Aspect	AL Doomsayer Donnie.png	Doomsayer (Donnie)	NOUVELLE	
+ud003	tmnt_aspect_dual	Dual-Aspect	AP Heavy Metal Jenny.png	Heavy Metal (Jenny)	NOUVELLE	
+ud004	tmnt_aspect_dual	Dual-Aspect	JL Stealth Fighter Raph.png	Stealth Fighter (Raph)	NOUVELLE	
+ud005	tmnt_aspect_dual	Dual-Aspect	JP Sohei Leo.png	Sōhei (Leo)	NOUVELLE	
+ud006	tmnt_aspect_dual	Dual-Aspect	LP Nightwatcher Jenny.png	Nightwatcher (Jenny)	NOUVELLE	
