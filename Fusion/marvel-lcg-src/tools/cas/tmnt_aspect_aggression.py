@@ -480,11 +480,18 @@ CAS += [
        ["Puzzle.Attack('01001a')", "Puzzle.Ready('01001a')", "Puzzle.Attack('01001a')"],
        {"degats": [["01094", 5]], "compteurs": [["ua033", "pistol", 2]]},
        main_exclusive=["01088"], cibles=["01094"], accepter_choix=True),
-    _c("ua033 Pete : evenement d'attaque (Precision Strike) -> PAS de declenchement (lecture codee Q-UA3)",
-       "lecture codee : « you » = votre identite (precedent 16032) ; un evenement ne declenche pas Pete",
+    _c("ua033 Pete : evenement d'attaque (Precision Strike) -> declenche AUSSI Pete (2+1) (lecture moteur, Q-UA3)",
+       "MESURE : la source des degats d'un evenement que vous jouez est votre identite pour `AfterYouDealDamage` "
+       "(precedent 16032) ; ce cas fige ce comportement en attendant Q-UA3",
        [HEROS, "Puzzle.PutIntoPlay('ua033', under_control=True)"], [],
-       {"degats": [["01094", 2]], "compteurs": [["ua033", "pistol", 3]]},
+       {"degats": [["01094", 3]], "compteurs": [["ua033", "pistol", 2]]},
        main_exclusive=["35018", "01089"], jouer=["35018"], cibles=["01094"], accepter_choix=True),
+    _c("ua033 Pete : un ALLIE (Leatherhead) blesse Rhino -> PAS de declenchement (lecture moteur, Q-UA3)",
+       "les degats d'un allie ne sont pas « vous » pour `AfterYouDealDamage`",
+       [HEROS, "Puzzle.PutIntoPlay('ua033', under_control=True)", "Puzzle.PutIntoPlay('ua026', under_control=True)"],
+       ["Puzzle.Attack('ua026')"],
+       {"degats": [["01094", 3]], "compteurs": [["ua033", "pistol", 3]]},
+       main_exclusive=["01088"], cibles=["01094"], accepter_choix=True),
 
     # ---------------------------------------------------------------- ua036 Ray Fillet
     _c("ua036 Ray Fillet : entre en jeu avec 2 munitions ; attaque -> 1 munition retiree, 2 degats en plus",

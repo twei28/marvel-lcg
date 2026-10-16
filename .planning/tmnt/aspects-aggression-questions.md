@@ -31,11 +31,11 @@ Scan : `Aggression/Slash.png` (Allié 2, PV 5, ATK 3, THW 0).
 
 Scan : `Aggression/Pete.png` (Soutien, Uses 3 pistol).
 
-1. **(recommandé, codé)** Les dégâts infligés par votre IDENTITÉ (attaque de base, capacités du héros) —
-   précédent moteur de l'officielle `16032` Schadenfreude (« each time you deal any amount of damage to an
-   enemy », fabrique `AfterYouDealDamage` = source « YourIdentity »). Un événement d'attaque joué (Clobber)
-   ou un allié ne déclenche PAS Pete.
-2. Identité ET cartes que vous jouez/contrôlez hors alliés (événements, améliorations, soutiens) : Clobber
-   déclenche Pete, un allié non.
+1. **(recommandé, codé — comportement MESURÉ du moteur)** Les dégâts infligés par vous : votre identité ET les
+   cartes que vous jouez (un événement d'attaque comme Precision Strike déclenche Pete : 2 + 1). Un ALLIÉ qui
+   attaque ne déclenche PAS Pete. C'est la lecture du moteur pour l'officielle `16032` Schadenfreude (« each time
+   you deal any amount of damage to an enemy », fabrique `AfterYouDealDamage`).
+2. Votre identité seulement (ses attaques et capacités) : un événement ne déclencherait pas Pete (il faudrait
+   filtrer la source).
 3. Tout ce que vous contrôlez, alliés compris.
 4. Autre (précise).

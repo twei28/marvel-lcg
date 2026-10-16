@@ -12,9 +12,9 @@ from . import *
 #    (damage.py : `AfterFaceDealDamage` dont la source est « YourIdentity »).
 #  - `62018` / `61033b` : deux couts « exhaust X and remove 1 counter » = deux `SetCostFunc` enchaines.
 # TEXTE CONTRE CODE
-#  ⚠ « After YOU deal damage » : lecture codee = degats infliges par votre IDENTITE (precedent 16032).
-#    ⚠ Question Q-UA3 (aspects-aggression-questions.md) : les degats d'un evenement que vous jouez, ou d'un
-#    allie, comptent-ils ? Carte NON terminee tant que la reponse n'est pas rendue.
+#  ⚠ « After YOU deal damage » : lecture du moteur pour 16032, MESUREE (cas `[ua] ua033`) : votre identite ET les
+#    evenements que vous jouez declenchent Pete ; un allie, non. ⚠ Question Q-UA3 (aspects-aggression-questions.md) :
+#    carte NON terminee tant que la reponse n'est pas rendue.
 #  ⚠ « that enemy » = l'ennemi qui vient de prendre les degats (`message.who_took_damage`).
 #  ⚠ « exhaust Pete AND remove 1 pistol counter » : deux couts, les deux payes ou aucun.
 
