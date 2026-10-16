@@ -20,8 +20,9 @@ from . import *
 # TEXTE CONTRE CODE
 #  ⚠ « Exhaust Gekido -> choose » : le choix est APRES la fleche, l'inclinaison
 #    est le seul cout. Un seul choix, pas les deux.
-#  ⚠ « Place 1 rage counter on Raphael » : PAS de « (to a maximum of 3) »
-#    imprime (decision du 15/10/2026) : `plafonne=False`.
+#  ⚠ « Place 1 rage counter on Raphael » : pas de « (to a maximum of 3) »
+#    imprime, mais Raphael est limite a 3 rage au maximum (DECISION DU
+#    16/10/2026, `PLAFOND_PARTOUT = True`) : `plafonne=True`.
 #  ⚠ « RAPHAEL » = l'identite (decision du 15/10/2026) ; une Hero Action
 #    impose de toute facon la forme heros.
 #  Pas de limite imprimee : seule l'inclinaison borne l'usage (une fois par
@@ -44,7 +45,7 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityFactory.ForChoiceAbility(
                 "Gekido: place 1 rage counter on Raphael",
                 lambda targets:
-                    PlacerRage(effect, joueur, plafonne=False),
+                    PlacerRage(effect, joueur, plafonne=True),
             ),
             AbilityFactory.ForChoiceAbility(
                 "Gekido: heal 1 damage from Raphael",

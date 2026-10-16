@@ -34,3 +34,4 @@ Une ligne par réponse. Source : conversation du 15/10/2026.
 - **Mutagen Bomb (tr014)** : icône = **Amplify 1** (même glyphe que 16054 Vendetta, vérifié par découpe) ; `desc.Amplify = "1"` ajouté dans cards.json, checksum recalculé.
 - **Disarm (tr003)** : « attachment » = **attachements de rencontre seulement** (type Attachment), pas les améliorations posées sur un ennemi.
 - **Td002 Metalhead** : pas de question, fidélité 100 % : l'interruption doit être offerte depuis la main et la Carapace ; à prouver en phase C, sinon passer par `SetPlay` + coût 0.
+- **Rage de Raphael, plafond de 3 PARTOUT (16/10/2026, remplace la decision du 15/10)** : Raphael est limite a 3 compteurs de rage maximum, quelle que soit la source (Casey Jones et Gekido compris). `PLAFOND_PARTOUT = True`.

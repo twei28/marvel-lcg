@@ -21,8 +21,9 @@ from . import *
 #  ⚠ « Raphael » = l'IDENTITE (decision du 15/10/2026) : en forme civile aussi,
 #    l'identite (Raph) subit le degat et recoit la rage (compteurs partages
 #    par les deux faces).
-#  ⚠ « Place 1 rage counter » : PAS de « (to a maximum of 3) » imprime ici
-#    (decision du 15/10/2026) : `plafonne=False`, la rage peut depasser 3.
+#  ⚠ « Place 1 rage counter » : pas de « (to a maximum of 3) » imprime ici,
+#    mais Raphael est limite a 3 rage au maximum (DECISION DU 16/10/2026,
+#    `PLAFOND_PARTOUT = True`) : `plafonne=True`.
 #  ⚠ ATQ « 2* » et CTR « 2* » : l'etoile creuse sous la valeur = 1 degat
 #    consequent (RECETTES §5), contrairement a l'etoile d'un HEROS.
 #  « Response » (pas « Hero Response ») : elle part aussi en forme civile.
@@ -48,7 +49,7 @@ def GetAbilities() -> Sequence['Ability']:
         if cibles:
             this.DealDamage(cibles, 1, effect)
 
-        PlacerRage(effect, joueur, plafonne=False)
+        PlacerRage(effect, joueur, plafonne=True)
 
     return [
         AbilityFactory.AfterCardEnterPlay(

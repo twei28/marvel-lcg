@@ -8,10 +8,11 @@ from cards.pack import *
 # deux faces, Raphael et Raph, partagent le meme stock de compteurs).
 #  - `tr001a` : chaque compteur se depense comme une ressource [physical]
 #    (modele `30001a` * Spider-Ham, compteur `toon` -> ressource wild).
-#  - PLAFOND DE 3 : SEULEMENT la ou il est imprime (Yaban Hito `tr001a`,
-#    Seething Rage `tr007`, usage d'une Sai `tr011`/`tr012`). Casey Jones
-#    `tr002` et Gekido `tr010` n'ont aucun plafond : `PLAFOND_PARTOUT = False`
-#    (decision du 15/10/2026).
+#  - PLAFOND DE 3 PARTOUT : Raphael est limite a 3 compteurs de rage au
+#    maximum, quelle que soit la source (Yaban Hito `tr001a`, Casey Jones
+#    `tr002`, Seething Rage `tr007`, Gekido `tr010`, Sai `tr011`/`tr012`) :
+#    `PLAFOND_PARTOUT = True`. DECISION DU 16/10/2026, qui REMPLACE celle du
+#    15/10 (plafond seulement ou imprime).
 #  - « Raphael » en forme CIVILE (`tr002`, `tr007`, `tr010`) : les effets visent
 #    l'IDENTITE (soin, degats, rage sur la carte d'identite meme en alter-ego),
 #    pas la seule face heros (decision du 15/10/2026) : voir
@@ -36,8 +37,9 @@ TRAIT_SAI = "SAI"
 ID_SAI = "tr011"        # Raphael's Sai : donne l'Action d'attaque
 ID_AUTRE_SAI = "tr012"  # Raphael's Other Sai : donne la Reponse qui fait piocher
 
-# False = plafond a 3 seulement ou il est imprime (decision du 15/10/2026).
-PLAFOND_PARTOUT = False
+# True = Raphael ne depasse jamais 3 rage (decision du 16/10/2026, remplace
+# celle du 15/10 : plafond seulement ou imprime).
+PLAFOND_PARTOUT = True
 
 
 def JoueurDeCetteCarte(effect: 'Effect') -> 'Player|None':

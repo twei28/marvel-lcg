@@ -33,7 +33,7 @@ et fin de round (ATQ retombe) ; tr012 une/deux Sai, ennemi vaincu par attaque, e
 ## Decisions du 15/10/2026 appliquees et prouvees
 
 - « Raphael » en civil = l'identite : tr002 (degat + rage sur Raph), tr007 (soin + rage), cas dans les deux formes.
-- Rage : plafond 3 seulement Yaban Hito / Seething Rage / Sai (4 attaques : 3) ; Casey 3 -> 4 et Gekido 3 -> 4 sans plafond.
+- Rage : plafond 3 PARTOUT (decision du 16/10/2026, remplace celle du 15/10) : Yaban Hito, Seething Rage, Sai (4 attaques : 3), Casey 3 -> reste 3, Gekido 3 -> reste 3.
 - Sai : 1 degat a l'identite, 1 a l'ennemi, +1 rage (plafond 3), action d'attaque (heros etourdi la consomme).
 - tr003 : attachement de rencontre seulement (Gekido pose sur Rhino reste, Armored Rhino Suit reste).
 - tr014 : Amplify 1 effectif.
