@@ -117,6 +117,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // Packs TMNT (16/10/2026) : essaims de Donatello (td016/td017, PV = compteurs) et
   // Mutagen Bomb de Raphael (tr014).
   swarm: 'essaim',
+  knucklehead: 'andouille',
   timer: 'minuteur',
 }
 

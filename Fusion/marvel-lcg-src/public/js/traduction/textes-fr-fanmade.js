@@ -3931,6 +3931,87 @@ export const TEXTES_FR_FANMADE = {
     'tl015': "<b>Une fois révélée</b> : camouflez Karai.\n<b>Une fois vaincu</b> : camouflez le méchant.\n<i>(Sbire némésis de Leonardo.)</i>\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
     // leonardo — Foot Soldiers (Minion némésis)
     'tl016': "<b>Une fois révélée</b> : camouflez Foot Soldiers.",
+    // ---- bebop_rocksteady (Inkwire, TMNT Villains, prefixe tk) : ecrit par l'agent Bebop & Rocksteady, 16/10/2026
+    // bebop_rocksteady — * Bebop (Villain)
+    'tk001a': "<b>Interruption forcée</b> : quand la phase du méchant commence, retirez 1 jeton Andouille de l'attachement [[HOG]] ou placez 1 menace sur la manigance principale.\n<b>Réponse forcée</b> : après que Bebop subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[HOG]].",
+    // bebop_rocksteady — * Bebop (Villain)
+    'tk001b': "[star] <b>Interruption forcée</b> : quand Bebop s'active, retirez plutôt 1 jeton Andouille de l'attachement [[HOG]]. S'il n'y a aucun jeton Andouille ici, retournez Bebop sur sa face [[ALERT]].\n<i>« J'ai mal à la tête ! »</i>",
+    // bebop_rocksteady — * Bebop (Villain)
+    'tk002a': "<b>Interruption forcée</b> : quand la phase du méchant commence, retirez 1 jeton Andouille de l'attachement [[HOG]] ou placez 2 menaces sur la manigance principale.\n<b>Réponse forcée</b> : après que Bebop subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[HOG]].",
+    // bebop_rocksteady — * Bebop (Villain)
+    'tk002b': "[star] <b>Interruption forcée</b> : quand Bebop s'active, retirez plutôt 2 jetons Andouille de l'attachement [[HOG]]. S'il n'y a aucun jeton Andouille ici, retournez Bebop sur sa face [[ALERT]].\n<i>« J'ai mal à la tête ! »</i>",
+    // bebop_rocksteady — * Rocksteady (Villain)
+    'tk003a': "<b>Interruption forcée</b> : quand la phase du méchant commence, donnez une carte d'état Tenace à Rocksteady. Retirez 1 jeton Andouille de l'attachement [[RHINO]], ou infligez 1 dégât au premier joueur.\n<b>Réponse forcée</b> : après que Rocksteady subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[RHINO]].",
+    // bebop_rocksteady — * Rocksteady (Villain)
+    'tk003b': "[star] <b>Interruption forcée</b> : quand Rocksteady s'active, retirez plutôt 1 jeton Andouille de l'attachement [[RHINO]]. S'il n'y a aucun jeton Andouille ici, retournez Rocksteady sur sa face [[ALERT]].\n<i>« Qu'est-ce qui m'a frappé ? »</i>",
+    // bebop_rocksteady — * Rocksteady (Villain)
+    'tk004a': "<b>Interruption forcée</b> : quand la phase du méchant commence, donnez une carte d'état Tenace à Rocksteady. Retirez 1 jeton Andouille de l'attachement [[RHINO]], ou infligez 2 dégâts au premier joueur.\n<b>Réponse forcée</b> : après que Rocksteady subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[RHINO]].",
+    // bebop_rocksteady — * Rocksteady (Villain)
+    'tk004b': "[star] <b>Interruption forcée</b> : quand Rocksteady s'active, retirez plutôt 2 jetons Andouille de l'attachement [[RHINO]]. S'il n'y a aucun jeton Andouille ici, retournez Rocksteady sur sa face [[ALERT]].\n<i>« Qu'est-ce qui m'a frappé ? »</i>",
+    // bebop_rocksteady — Demolition Crew (MainScheme)
+    'tk005a': "<i>Bebop et Rocksteady laissent un sillage de destruction dans tout Manhattan !</i>\n<b>Contenu</b> : Bebop (A1) et Rocksteady (A1), <i>(Bebop (B1) et Rocksteady (B1) en mode expert.)</i> Ensembles Bebop & Rocksteady, Concrete Jungle et Standard. Un ensemble Rencontre modulaire <i>(Rock the Block)</i>.\n<b>Mise en place</b> : mettez en jeu l'environnement Destructive Dunderheads, la manigance annexe Welcome to the Jungle, l'attachement Hog Wild et l'attachement Rhino Rage.",
+    // bebop_rocksteady — Demolition Crew (MainScheme)
+    'tk005b': "<i>Alors que vous sortez des égouts, Bebop et Rocksteady vous accueillent. On dirait qu'ils vous attendaient !</i>\n[star] <b>Interruption forcée</b> : quand cette manigance est censée être achevée, retirez plutôt toute la menace d'ici. Puis, dans l'ordre des joueurs, Bebop et Rocksteady attaquent chaque joueur <i>(même sous forme d'alter ego)</i>.",
+    // bebop_rocksteady — Destructive Dunderheads (Environment)
+    'tk006a': "<i>Double Peine</i> — Pendant l'étape 2 de la phase du méchant, les deux méchants s'activent contre chaque joueur. Choisissez Bebop ou Rocksteady comme cible de chaque carte qui mentionne « le méchant ».\n<b>Interruption forcée</b> : quand Bebop ou Rocksteady est vaincu, mettez de côté ce méchant et son attachement [[TEMPER]]. Retournez le méchant restant sur sa face [[ALERT]], et cette carte sur sa face [[FERAL]].",
+    // bebop_rocksteady — Gone Berserk! (Attachment)
+    'tk006b': "Permanent. Attachez-la au méchant.\nLe méchant attaché ne peut pas être désorienté.\nLe méchant attaché gagne +12[per_hero] points de vie.",
+    // bebop_rocksteady — Hog Wild (Attachment)
+    'tk007a': "Permanent. Mise en place.\nAttachez-la à Bebop.\n[star] Bebop gagne +1 ATQ pour chaque jeton Andouille ici.\n<b>Spécial</b> : placez 1 jeton Andouille ici. S'il y a au moins 3 jetons Andouille ici, retournez cette carte sur sa face [[ENRAGED]].\n<i>« Ça va devenir sauvage ! »</i> —Bebop",
+    // bebop_rocksteady — Headfirst (Attachment)
+    'tk007b': "Permanent. Attachez-la à Bebop.\nBebop gagne [[ENRAGED]].\n<b>Spécial</b> : infligez 1 dégât à votre identité.\n<b>Interruption forcée</b> : quand Bebop est censé s'activer, si Headstrong est en jeu, retournez Bebop et Rocksteady sur leurs faces [[K.O.]] et retournez les deux attachements [[TEMPER]] sur leurs faces [[ROWDY]].",
+    // bebop_rocksteady — Rhino Rage (Attachment)
+    'tk008a': "Permanent. Mise en place.\nAttachez-la à Rocksteady.\n[star] Rocksteady gagne +1 ATQ pour chaque jeton Andouille ici.\n<b>Spécial</b> : placez 1 jeton Andouille ici. S'il y a au moins 3 jetons Andouille ici, retournez cette carte sur sa face [[ENRAGED]].\n<i>« Dégage de mon chemin, minus. »</i> —Rocksteady",
+    // bebop_rocksteady — Headstrong (Attachment)
+    'tk008b': "Permanent. Attachez-la à Rocksteady.\nRocksteady gagne [[ENRAGED]].\n<b>Spécial</b> : placez 1 menace sur la manigance principale.\n<b>Interruption forcée</b> : quand Rocksteady est censé s'activer, si Headfirst est en jeu, retournez Bebop et Rocksteady sur leurs faces [[K.O.]] et retournez les deux attachements [[TEMPER]] sur leurs faces [[ROWDY]].",
+    // bebop_rocksteady — * Shutter Shades (Attachment)
+    'tk009': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nBebop gagne solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[HOG]].\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je porte mes lunettes de soleil la nuit. »</i> —Bebop",
+    // bebop_rocksteady — * Aviator Cap (Attachment)
+    'tk010': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nRocksteady gagne solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[RHINO]].\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.",
+    // bebop_rocksteady — * Roberta (Attachment)
+    'tk011': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\n[star] Les attaques de Bebop gagnent perçant.\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« C'est l'heure de la boucherie ! »</i> —Bebop",
+    // bebop_rocksteady — * Juniper (Attachment)
+    'tk012': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\n[star] Les attaques de Rocksteady gagnent déferlement.\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je parie que je peux vous convaincre de bouger. »</i> —Rocksteady",
+    // bebop_rocksteady — Bumbling Buffoons (SideScheme)
+    'tk013': "Esquive. <i>(Quand un personnage déjoue cette manigance annexe, il peut utiliser sa DEF au lieu de sa CTR.)</i>\n<b>Une fois déjouée</b> : choisissez un ennemi. Cet ennemi vous attaque. Vous pouvez infliger les dégâts de cette attaque à un autre ennemi de votre choix à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // bebop_rocksteady — Bumbling Buffoons (SideScheme)
+    'tk014': "Esquive. <i>(Quand un personnage déjoue cette manigance annexe, il peut utiliser sa DEF au lieu de sa CTR.)</i>\n<b>Une fois déjouée</b> : choisissez un ennemi. Cet ennemi vous attaque. Vous pouvez infliger les dégâts de cette attaque à un autre ennemi de votre choix à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // bebop_rocksteady — Bumbling Buffoons (SideScheme)
+    'tk015': "Esquive. <i>(Quand un personnage déjoue cette manigance annexe, il peut utiliser sa DEF au lieu de sa CTR.)</i>\n<b>Une fois déjouée</b> : choisissez un ennemi. Cet ennemi vous attaque. Vous pouvez infliger les dégâts de cette attaque à un autre ennemi de votre choix à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // bebop_rocksteady — Collision Course (SideScheme)
+    'tk016': "<b>Une fois révélée</b> : placez 1 jeton Andouille sur chaque attachement [[TEMPER]].\n<b>Une fois déjouée</b> : sonnez chaque méchant.\n<i>« À terre ! »</i>",
+    // bebop_rocksteady — Olé! (SideScheme)
+    'tk018': "Entrave 1[per_hero].\n<b>Une fois déjouée</b> : infligez 2[per_hero] dégâts à chaque méchant. Sonnez chaque méchant [[ENRAGED]] blessé de cette façon.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // bebop_rocksteady — Toro! Toro! (SideScheme)
+    'tk020': "Esquive. <i>(Quand un personnage déjoue cette manigance annexe, il peut utiliser sa DEF au lieu de sa CTR.)</i>\n<b>Une fois déjouée</b> : placez 2 jetons Andouille sur un attachement [[TEMPER]].",
+    // bebop_rocksteady — Lay the Beatdown (Treachery)
+    'tk022': "<b>Une fois révélée (alter ego)</b> : désorientez votre identité.\n<b>Une fois révélée (héros)</b> : choisissez :\n• Infligez 2 dégâts indirects à votre héros.\n• Sonnez votre héros.\n<i>« J'adore le son de ce rythme ! »</i> —Bebop",
+    // bebop_rocksteady — Pummel (Treachery)
+    'tk024': "<b>Une fois révélée</b> : choisissez :\n• Subissez des dégâts égaux à l'ATQ de Bebop ou de Rocksteady.\n• Défaussez l'amélioration ou le soutien de coût le plus élevé que vous contrôlez.\n<i>« Tu me sens ? »</i> —Bebop",
+    // bebop_rocksteady — Trample (Treachery)
+    'tk026': "<b>Une fois révélée (alter ego)</b> : défaussez 1 carte de votre main.\n<b>Une fois révélée (héros)</b> : choisissez un méchant. Ce méchant attaque le personnage ami ayant le moins de points de vie restants.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à un allié que vous contrôlez.",
+    // bebop_rocksteady — * Anchovy (Minion)
+    'tk028': "Ténacité.\n<b>Interruption forcée</b> : quand Anchovy est vaincu, mélangez-le dans le deck Rencontre.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
+    // bebop_rocksteady — Welcome to the Jungle (SideScheme)
+    'tk101': "<i>« On ne peut plus se battre dans l'ombre ! Il est temps de porter ce combat jusqu'à eux. »</i> —Raphael\nMise en place. Victoire 0.\n<b>Une fois déjouée</b> : chaque joueur peut choisir 1 carte [[NYC]] mise de côté et la mettre en jeu.",
+    // bebop_rocksteady — Road to Ruin (SideScheme)
+    'tk102': "<b>Une fois révélée</b> : choisissez :\n• Défaussez un [[LOCATION]] ami.\n• Sonnez votre héros.\n<b>Une fois déjouée</b> : sonnez un ennemi.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // bebop_rocksteady — Fallen Empires (Treachery)
+    'tk104': "<b>Une fois révélée</b> : choisissez :\n• Défaussez un [[LOCATION]] ami.\n• Défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte de votre main.\n<i>« Manhattan a vraiment mal tourné. »</i> —Bebop",
+    // bebop_rocksteady — * Channel 6 News (Support)
+    'tk106': "Lié (Welcome to the Jungle).\n<b>Réponse</b> : après qu'une manigance annexe [[NYC]] est révélée, inclinez Channel 6 News → retirez 2 menaces d'une manigance.\n<i>« Qui sont ces nouveaux justiciers ? Restez à l'écoute ! »</i> —April O'Neil",
+    // bebop_rocksteady — * Eastman Theater (Support)
+    'tk107': "Lié (Welcome to the Jungle).\n<b>Réponse de héros</b> : après qu'une manigance annexe [[NYC]] est déjouée, inclinez Eastman Theater → redressez un héros ami.\n<i>« Vu de bons films dernièrement ? »</i> —Donatello",
+    // bebop_rocksteady — * Powder Keg (PlayerSideScheme)
+    'tk108': "Lié (Welcome to the Jungle).\nCette carte ne compte pas dans la limite de manigances annexes de joueur.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance inflige 2 dégâts à chaque ennemi (4 dégâts à la place si l'ennemi est sonné ou désorienté).\n<i>« Snort ! Je suis sérieux, mec ! Tu ne sens pas le gaz, Bebop ? »</i> —Rocksteady",
+    // bebop_rocksteady — * Power Play (PlayerSideScheme)
+    'tk109': "Lié (Welcome to the Jungle).\nCette carte ne compte pas dans la limite de manigances annexes de joueur.\n<b>Réponse de héros</b> : après que vous retirez de la menace de cette manigance, défaussez 1 carte de votre main → retirez 2 menaces de cette manigance.\n<b>Une fois déjouée</b> : chaque joueur peut sonner et désorienter un ennemi.",
+    // bebop_rocksteady — Hittin' the Town (Treachery)
+    'tk201': "<b>Une fois révélée</b> : défaussez des cartes du dessus du deck du méchant jusqu'à ce qu'un attachement ou une manigance annexe soit défaussé, et révélez-le.\n<i>« Tu sais ce que c'est ? C'est ma nouvelle coupe de cheveux ! »</i> —Rocksteady",
+    // bebop_rocksteady — Jägerbombs (Treachery)
+    'tk203': "<b>Une fois révélée</b> : choisissez un :\n• Sonnez votre identité.\n• Désorientez votre identité.\n<i>« Jägerbombs ! Tu me sens, frérot ? »</i> —Bebop",
+    // bebop_rocksteady — Get Your Swell On (SideScheme)
+    'tk205': "<b>Une fois révélée</b> : soignez 1 dégât de chaque ennemi. Donnez une carte d'état Tenace à chaque ennemi.\n<i>« Tu as besoin de grogner comme ça ? »</i> —Rocksteady\n<i>« Pas maintenant, Chef, je suis dans la zone ! »</i> —Bebop",
     // donatello — * Donatello (Hero)
     'td001a': "<i>Kashikoi</i> — <b>Action</b> : dépensez des ressources [mental][mental] → piochez 2 cartes. <i>(Limite d'une fois par round.)</i>",
     // donatello — * Donnie (AlterEgo)

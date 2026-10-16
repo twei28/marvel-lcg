@@ -1315,7 +1315,16 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # aucune regle, aucun carnet, comportement inchange.
     regles = [r.strip() for r in (os.environ.get("AUTOPLAY_REGLES") or "").split(",") if r.strip()]
     carnet = {str(k): str(v) for k, v in json.loads(os.environ.get("AUTOPLAY_CARNET") or "{}").items()}
-    scene = SceneLoader.NewFromJson(json.dumps(campagne), None, [texte_deck],
+    # AJOUT 16/10/2026 (scenario Bebop & Rocksteady, solo ET 2 joueurs) : `AUTOPLAY_DECKS_SUP`
+    # (« black_panther » ou « black_panther,ant_man ») ajoute des joueurs. Sans la variable :
+    # une partie solo, comportement inchange. Le pilote repond pour chaque joueur qui interroge.
+    textes_decks = [texte_deck]
+    for nom_sup in [d.strip() for d in (os.environ.get("AUTOPLAY_DECKS_SUP") or "").split(",") if d.strip()]:
+        chemin_sup = FileManager.FindJsonPath("Hero", nom_sup)
+        assert chemin_sup, f"deck supplementaire introuvable : {nom_sup}"
+        with FileManager.OpenFile(chemin_sup, read=True) as fichier:
+            textes_decks.append(fichier.Read())
+    scene = SceneLoader.NewFromJson(json.dumps(campagne), None, textes_decks,
                                     graine, regles, carnet)
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
