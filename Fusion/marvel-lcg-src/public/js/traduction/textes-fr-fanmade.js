@@ -3928,9 +3928,9 @@ export const TEXTES_FR_FANMADE = {
     // leonardo — Foot Patrol (SideScheme némésis)
     'tl014': "<i>Karai est en patrouille avec le Foot Clan.</i>\n<b>Une fois déjouée</b> : cherchez dans le deck Rencontre et la défausse Rencontre un sbire [[FOOT CLAN]] et mettez-le en jeu, engagé avec le premier joueur.",
     // leonardo — * Karai (Minion némésis)
-    'tl015': "<b>Une fois révélée</b> : camouflez Karai.\n<b>Une fois vaincue</b> : camouflez le méchant.\n<i>(Sbire némésis de Leonardo.)</i>\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
+    'tl015': "<b>Une fois révélée</b> : camouflez Karai.\n<b>Une fois vaincu</b> : camouflez le méchant.\n<i>(Sbire némésis de Leonardo.)</i>\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
     // leonardo — Foot Soldiers (Minion némésis)
-    'tl016': "<b>Une fois révélé</b> : camouflez Foot Soldiers.",
+    'tl016': "<b>Une fois révélée</b> : camouflez Foot Soldiers.",
     // donatello — * Donatello (Hero)
     'td001a': "<i>Kashikoi</i> — <b>Action</b> : dépensez des ressources [mental][mental] → piochez 2 cartes. <i>(Limite d'une fois par round.)</i>",
     // donatello — * Donnie (AlterEgo)
