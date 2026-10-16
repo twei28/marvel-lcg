@@ -7,6 +7,7 @@ TOUGH_FINDER = CardFinder(name="Tough")
 # (fiche docs/reference/mots-cles/exposed.md).
 EXPOSED_FINDER = CardFinder(name="Exposed")
 CLOAKED_FINDER = CardFinder(name="Cloaked")
+DAZED_FINDER = CardFinder(name="Dazed")
 
 class Status(Component):
     @override
@@ -34,6 +35,10 @@ class Status(Component):
     @property
     def cloaked(self):
         return self.deck.FindCardSize(CLOAKED_FINDER)
+
+    @property
+    def dazed(self):
+        return self.deck.FindCardSize(DAZED_FINDER)
 
     @override
     def OnParentReset(self):

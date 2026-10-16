@@ -149,6 +149,11 @@ la plus fréquente sur un pack vilain.
       texte de `td016` / `td017`)
 - [x] tuck.md (terme officiel, `td012` Donatello's Shell ; jamais documenté
       avant ce pack)
+- [x] daze.md (pack `alopex`, TMNT Heroes : « Daze X » = poser la carte d'état
+      Dazed sur X ; défini par l'insert « Dazed Rules » de Baxter Stockman v3)
+- [x] dazed.md (carte d'état maison, 6e état du moteur : −2 au prochain pouvoir
+      de base / activation OU +2 aux prochains dégâts, un seul effet, une seule
+      carte par personnage ; Tough d'abord, Cloaked et Dazed en même temps)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

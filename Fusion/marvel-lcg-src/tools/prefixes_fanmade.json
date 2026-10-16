@@ -550,6 +550,13 @@
    "cartes": 18,
    "depuis": "2026-10-15",
    "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
+  },
+  "ta": {
+   "pack": "alopex",
+   "libelle": "183. Custom (Alopex)",
+   "cartes": 16,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Alopex v3 ». ta001a Alopex (HEROS) / ta001b Alopex (ALTER-EGO), ta002-ta010 signature (9 card_id pour 15 exemplaires), ta011 Prey (16e carte du deck, creee et mise de cote au Setup par ta001b), ta012 obligation Manipulated (GiveTo « Alopex », Acceleration 2), ta013-ta015 set nemesis « Alopex Nemesis » (You Belong To Me, Kitsune, Curse of Nine Tales x3). Mot-cle maison : Daze (carte d'etat Dazed, scan Baxter Stockman v3) ; Cloak deja defini. Compteur maison `hunter`."
   }
  }
 }

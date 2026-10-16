@@ -1700,5 +1700,14 @@
   "encounters": [],
   "max_id": "tr017"
  },
- "checksum": "32680d599ccbb433ac71d590b1dd65102ee290709a6ae8cb9c2da40d7ae633b4"
+ "183. Custom (Alopex)": {
+  "name": "alopex",
+  "scenarios": [],
+  "heroes": [
+   "alopex"
+  ],
+  "encounters": [],
+  "max_id": "ta015"
+ },
+ "checksum": "8f9f34f444426277569717024fde84b43936abed407644e8814e4ffd6b58e7dc"
 }

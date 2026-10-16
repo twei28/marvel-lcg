@@ -1706,5 +1706,13 @@ export const HEROS_INFO = {
         ennemisEn: "Shredder, Krang, the Foot Clan",
         apparition: "Teenage Mutant Ninja Turtles #1 (1984)",
     },
+    "ta001a": {
+        bio: "Alopex est une renarde arctique mutante, ninja et justicière des rues de New York, alliée des Tortues Ninja. Adolescente, elle a été traquée et manipulée avant d'apprendre à chasser à son tour : à la manière d'un matagi, elle désigne sa proie, la suit en silence et ne la lâche plus. Elle se camoufle dans l'ombre de la ville et frappe vite, ses deux kamas, de courtes faucilles de combat, à la main. Kitsune, sorcière du Clan du Pied, a planté ses griffes en elle et n'a aucune intention de la laisser partir.",
+        bioEn: "Alopex is a mutant arctic fox, a ninja and a vigilante of the streets of New York, and an ally of the Teenage Mutant Ninja Turtles. A teenager who was hunted and manipulated before learning to hunt in turn, she works like a matagi: she marks her prey, follows it in silence and never lets go. She cloaks herself in the city's shadows and strikes fast, a pair of kamas, short fighting sickles, in her hands. Kitsune, a witch of the Foot Clan, has dug her claws into her and has no intention of letting her go.",
+        base: "New York (rues)",
+        baseEn: "New York City (the streets)",
+        ennemis: "Kitsune, le Clan du Pied",
+        ennemisEn: "Kitsune, the Foot Clan",
+    },
 
 };

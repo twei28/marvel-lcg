@@ -286,6 +286,15 @@
    "desc": {},
    "traits": [],
    "set_name": ""
+  },
+  {
+   "card_id": "dazed",
+   "type": "Status",
+   "name": "Dazed",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": ""
   }
  ],
  "core": [
@@ -109233,5 +109242,292 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "247f50f15a49c74a15a7cb173b3bf844628201a1863e17d0a2dee7e3f4dadc54"
+ "alopex": [
+  {
+   "card_id": "ta001a",
+   "type": "Hero",
+   "name": "* Alopex",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "FOX",
+    "NINJA",
+    "VIGILANTE"
+   ],
+   "text": "<i>Matagi</i> — <b>Forced Response</b>: After you attack an enemy or thwart a scheme, find Prey and attach it to that enemy or scheme.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta001b",
+   "type": "AlterEgo",
+   "name": "* Alopex",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "FOX",
+    "MUTANT",
+    "TEENAGER"
+   ],
+   "text": "<b>Setup</b>: Set your Prey upgrade aside.\n<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for up to 2 [[KAMA]] upgrades and put them into play, exhausted. <i>(Shuffle.)</i>",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta002",
+   "type": "Ally",
+   "name": "* Nobody",
+   "subtitle": "Angel Bridges",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "VIGILANTE"
+   ],
+   "text": "[star] <b>Response</b>: After Nobody attacks an enemy with Prey attached, daze that enemy.\n[star] <b>Response</b>: After Nobody thwarts a scheme with Prey attached, cloak her.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta003",
+   "type": "Event",
+   "name": "Bold Strategy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b>: Cloak Alopex. You may spend up to 3 [mental] resources to daze an enemy for each [mental] resource spent this way.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta004",
+   "type": "Event",
+   "name": "Pounce",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to an enemy. You may spend up to 2 [mental] resources to deal 2 additional damage to that enemy for each [mental] resource spent this way.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta005",
+   "type": "Event",
+   "name": "Prowl",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Shuffle 1 card with a printed [mental] resource from your discard pile into your deck.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta006",
+   "type": "Event",
+   "name": "Sniff Out Trouble",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "<b>Hero Action</b>: Discard cards from the encounter deck until you discard a minion or side scheme. Reveal that card → draw 2 cards and ready each [[KAMA]] upgrade you control.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta007",
+   "type": "Support",
+   "name": "* Mutant Shelter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "STREETS"
+   ],
+   "text": "Your alter-ego gets +2 REC.\n<b>Alter-Ego Action</b>: Exhaust Mutant Shelter → shuffle the topmost ally in your discard pile into your deck.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta008",
+   "type": "Upgrade",
+   "name": "* Kitsune Kabuki",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "MYSTIC"
+   ],
+   "text": "Each hunter counter on this card can be spent as if it were a [mental] resource.\n<b>Hero Response</b>: After Prey leaves play, place 1 hunter counter here.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta009",
+   "type": "Upgrade",
+   "name": "* Alopex's Kama",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "KAMA",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\nEach [[KAMA]] upgrade you control gains: \"<b>Hero Response</b>: After Prey leaves play, exhaust this card and spend a [mental] resource → ready Alopex.\"",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta010",
+   "type": "Upgrade",
+   "name": "* Alopex's Other Kama",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "KAMA",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\nEach [[KAMA]] upgrade you control gains: \"<b>Hero Action</b> <i>(attack/thwart)</i>: Exhaust this card → deal 1 damage to an enemy or remove 1 threat from a scheme.\"",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta011",
+   "type": "Upgrade",
+   "name": "Prey",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "text": "Alopex' attacks deal 1 additional damage to attached enemy.\nAlopex' thwarts remove 1 additional threat from attached scheme.\n<b>Forced Interrupt</b>: When this card leaves play, set this card aside.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta012",
+   "type": "Obligation",
+   "name": "Manipulated",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Acceleration": "2",
+    "GiveTo": "Alopex"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Alopex player.</i></b>\n<b>Action</b>: Exhaust Alopex and deal 1 damage to each character you control → discard Manipulated.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta013",
+   "type": "SideScheme",
+   "name": "You Belong To Me",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "text": "<i>Kitsune has dug her claws into Alopex, and she has no intention of letting her go...</i>\n<b>When Revealed</b>: Each player discards 1 card from their hand.",
+   "set_name": "Alopex Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta014",
+   "type": "Minion",
+   "name": "* Kitsune",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "2",
+    "Nemesis": "Alopex"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "PANTHEON",
+    "WITCH"
+   ],
+   "text": "<b>When Revealed</b>: Cloak Kitsune and exhaust your identity.\n<i>(Alopex's nemesis minion.)</i>",
+   "set_name": "Alopex Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta015",
+   "type": "Treachery",
+   "name": "Curse of Nine Tales",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "text": "<b>When Revealed</b>: Choose one:\n• Discard the top 3 cards of your deck and place 1 threat on the main scheme for each different card type discarded this way.\n• Discard 2 allies you control.",
+   "set_name": "Alopex Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "cc67e64cea1d40e213e5c85101c236d63372a0f671ea806de1f38a81e51fcebc"
 }

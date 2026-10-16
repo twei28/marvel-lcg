@@ -24,6 +24,11 @@ export const ETATS: Record<string, Etat> = {
   // ligne, le repli generique afficherait un « C » (deja pris par Désorienté)
   // avec le nom anglais.
   cloaked: { lettre: 'K', classe: 'est-camoufle', nom: 'Camouflé' },
+  // SIXIEME carte d'etat (« Dazed », pack TMNT, Baxter Stockman v3, scan Inkwire) :
+  // -2 au prochain pouvoir de base / a la prochaine activation, OU +2 aux
+  // prochains degats, puis la carte part. Lettre Z (le D est ambigu) ; sans
+  // cette ligne le repli generique afficherait un « D » avec le nom anglais.
+  dazed: { lettre: 'Z', classe: 'est-etourdi', nom: 'Étourdi' },
 }
 
 export function etatDe(carte: ScanCardProps): Etat | undefined {

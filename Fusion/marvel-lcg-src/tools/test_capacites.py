@@ -65181,6 +65181,14 @@ def executer_un_cas(game_dir, port, index):
                 besoin = int(cout)
             else:
                 besoin = sum(int(c) if c.isdigit() else 1 for c in cout)
+            # AJOUT du 16/10/2026 (pack alopex, Bold Strategy / Pounce) : une depense
+            # « UP TO N » (`Cost(..., up_to=True)`, regle « UpTo » dans
+            # `target_payment`) exigeait jusque-la la couverture de TOUT le cout,
+            # donc ne pouvait pas etre testee a 0, 1 ou 2 ressources sur 3.
+            # `payer_jusqu_a: n` fixe combien d'unites le pilote depense (0 = rien).
+            # Additive : sans la cle, ou hors regle « UpTo », rien ne change.
+            if cas.get("payer_jusqu_a") is not None and "UpTo" in (infos.get("rule") or []):
+                besoin = min(besoin, int(cas["payer_jusqu_a"]))
             # ⚠ NE PAS interdire `bind_id` ici (retire le 11/09/2026). Les cles de
             # `payment` sont des identifiants d'EFFETS, dans un espace de numeros
             # distinct de celui des objets carte : sur le pack zeus, l'effet de

@@ -1,0 +1,43 @@
+{
+    "version": "0.5.8",
+    "name": "Alopex",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist fournie par l'auteur (Inkwire) : le zip contient les 2 faces heros, les 15 exemplaires signature, Prey (16e carte), l'obligation et les 5 cartes nemesis. player_deck VIDE (consigne du 06/09/2026, PROCESSUS-HEROS etape 3).",
+        "prey_note": "Prey (ta011) est la 16e carte du deck imprime (16/16) mais n'est PAS dans les 15 : le Setup de ta001b la cree et la met de cote (BeginGameWithSetAside). Elle figure dans set_aside pour les clients (images, catalogue) seulement."
+    },
+    "hero": [
+        "ta001a,ta001b"
+    ],
+    "hero_deck": [
+        "ta002",
+        "ta003",
+        "ta003",
+        "ta003",
+        "ta004",
+        "ta004",
+        "ta005",
+        "ta005",
+        "ta005",
+        "ta006",
+        "ta006",
+        "ta007",
+        "ta008",
+        "ta009",
+        "ta010"
+    ],
+    "set_aside": [
+        "ta011"
+    ],
+    "obligations": [
+        "ta012"
+    ],
+    "nemesis_set": [
+        "ta013",
+        "ta014",
+        "ta015",
+        "ta015",
+        "ta015"
+    ],
+    "player_deck": []
+}

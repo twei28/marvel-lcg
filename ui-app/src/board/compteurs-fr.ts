@@ -63,6 +63,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   sense: 'sens',
   article: 'article',
   wound: 'blessure',
+  hunter: 'chasseur',
   hate: 'haine',
   shell: 'carapace',
   unworthy: 'indigne',

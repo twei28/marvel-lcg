@@ -59,6 +59,16 @@ def GetAbilities() -> Sequence['Ability']:
             message.PreventDamage(a_retirer, effect)
             consommer(effect)
 
+    def pas_dazed(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> bool:
+        # « Cloaked and Dazed resolve simultaneously » (insert Dazed Rules) :
+        # sur des degats, c'est `dazed.py` qui resout les deux d'un bloc quand
+        # le personnage est Dazed ; Cloaked lui cede alors la place (sinon il
+        # retirerait 2 AVANT que Dazed n'ajoute 2, et le total serait faux).
+        # Si Dazed ne se declenche pas (Tough, degats nuls), il n'y a rien a
+        # retirer de toute facon.
+        unit = effect.this.CastTo(StatusCard).GetBindFace()
+        return not unit.IsDazed()
+
     return [
         AbilityFactory.WhenUnitUseBasicPower(
             AbilityType.Status,
@@ -76,5 +86,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.Status,
             "AttachedCharacter",
             degats,
+            conditions=[pas_dazed],
         ),
     ]
