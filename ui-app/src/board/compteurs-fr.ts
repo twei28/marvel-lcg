@@ -129,6 +129,11 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   cable: 'câble',
   shield: 'bouclier',
   ooze: 'mutagène',
+  // Aspect TMNT Justice (16/10/2026) : Ram-Shell uj026 (momentum, aussi Juggernaut), Zebulon uj039,
+  // Turtle Line uj034 (Uses 3 rope).
+  momentum: 'élan',
+  scorch: 'brûlure',
+  rope: 'corde',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »
