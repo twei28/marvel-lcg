@@ -35,6 +35,8 @@ Chaque lecture ci-dessous est IMPLEMENTEE PROVISOIREMENT (la recommandee, en pre
      (il n'a pas de cout imprime : il ne se joue pas, il ne sert que de ressource [mental]).
   2. fouiller aussi la MAIN (c'est ce que fait `tm001b` de Michelangelo pour tm009, par arbitrage de l'utilisateur).
   3. resoudre ce Setup AVANT la pioche de depart (ordre different de celui du moteur ; changerait tous les heros).
+- Rappel : le Sac n'imprime AUCUN cout (une barre « - » a la place du chiffre) : il est donc injouable depuis la main
+  et ne sert que de ressource [mental] (lecture retenue ; si c'etait un cout 0 il pourrait se jouer depuis la main).
 - Ce que ca change en jeu : avec 1, environ une partie sur trois commence SANS Sac (Casey n'a alors ni tuck,
   ni Anything Goes utile, ni retour d'arme par le Sac).
 - Cas qui la fige : `[casey] tc001b Setup : le Sac dans la MAIN de depart n'est PAS cherche`.
@@ -48,3 +50,15 @@ Chaque lecture ci-dessous est IMPLEMENTEE PROVISOIREMENT (la recommandee, en pre
      l'attaque) : on ne defausse pas le Willow (cout) pour un effet impossible.
   2. elle reste offerte, le Willow est defausse pour rien.
 - Cas qui la fige : `[casey] tc009 Cricket Willow : l'ennemi VAINCU par l'attaque ... n'est pas etourdi : le Willow reste en jeu`.
+
+## Q4 : Anything Goes, l'arme qui entre en jeu par l'echange (tc006)
+
+- card_id : `tc006` (scan `Casey Jones Deck/9 Anything Goes.png`).
+- Texte anglais exact : « **Hero Action**: Exhaust Anything Goes -> swap a Casey Jones **WEAPON** upgrade you control with a Casey Jones **WEAPON** upgrade tucked under Casey's Bag. »
+- Lectures possibles :
+  1. **(retenue)** echange de places : l'arme en jeu va SOUS le Sac (rangee, face cachee), l'arme rangee entre en jeu PRETE,
+     attachee a Casey ; on range d'abord, donc la limite Restricted n'est jamais depassee.
+  2. meme echange, mais l'arme entrante arrive INCLINEE (comme les armes mises en jeu par Mikey / Leo / Raph).
+  3. l'arme sortante est DEFAUSSEE et non rangee (contredit « swap » : elle ne serait plus echangeable).
+- Ce que ca change en jeu : avec 2, une arme a Hero Interrupt echangee ne servirait pas ce tour-ci.
+- Cas qui la fige : `[casey] tc006 Anything Goes : ECHANGE la Baseball Bat (en jeu) et le Cricket Willow (range sous le Sac)`.
