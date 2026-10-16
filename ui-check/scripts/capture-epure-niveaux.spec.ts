@@ -14,39 +14,41 @@ const NIVEAUX = [0, 1, 2, 3, 4, 5].map((i) => {
 const SORTIE = path.resolve('captures-epure', 'niveaux');
 fs.mkdirSync(SORTIE, { recursive: true });
 
-async function preparer(page: Page, n: (typeof NIVEAUX)[number]) {
+async function preparer(page: Page) {
   await page.setViewportSize({ width: 1600, height: 900 });
-  await page.addInitScript((n) => {
+  await page.addInitScript(() => {
     localStorage.setItem('marvel-langue-choisie', '1');
     localStorage.setItem('mc_affichage_v1', 'epure');
-    const poser = () => {
-      const r = document.documentElement;
-      const v: Record<string, string> = {
-        '--ep-fond': n.fond, '--ep-surface': n.surface, '--ep-champ': n.champ, '--ep-bord': n.bord, '--ep-bord-fort': n.fort,
-        '--ink': n.fond, '--ink2': n.surface, '--steel': n.surface, '--steel2': n.champ, '--steel3': n.soft, '--line': n.bord,
-        '--soft': n.soft, '--fond': n.fond, '--panneau': n.surface, '--carte': n.champ, '--hf-fond': n.fond, '--hf-panneau': n.surface,
-        '--w-bg-0': n.fond, '--w-bg-1': n.surface, '--w-panel': n.surface, '--w-panel-2': n.champ, '--w-line': n.bord, '--w-line-soft': n.soft,
-      };
-      for (const [k, x] of Object.entries(v)) r.style.setProperty(k, x);
-    };
-    poser();
-    new MutationObserver(poser).observe(document.documentElement, { attributes: true, attributeFilter: ['data-epure', 'data-affichage'] });
-  }, n);
+  });
   await page.route('**/get_preferences*', (r) => r.fulfill({ json: {} }));
+}
+/** Les jetons, poses par une feuille `!important` apres chaque navigation (une feuille en ligne
+    sur <html> etait effacee par la page). */
+async function teinter(page: Page, n: (typeof NIVEAUX)[number]) {
+  const v: Record<string, string> = {
+    '--ep-fond': n.fond, '--ep-surface': n.surface, '--ep-champ': n.champ, '--ep-bord': n.bord, '--ep-bord-fort': n.fort,
+    '--ink': n.fond, '--ink2': n.surface, '--steel': n.surface, '--steel2': n.champ, '--steel3': n.soft, '--line': n.bord,
+    '--soft': n.soft, '--fond': n.fond, '--panneau': n.surface, '--carte': n.champ, '--hf-fond': n.fond, '--hf-panneau': n.surface,
+    '--w-bg-0': n.fond, '--w-bg-1': n.surface, '--w-panel': n.surface, '--w-panel-2': n.champ, '--w-line': n.bord, '--w-line-soft': n.soft,
+  };
+  const css = 'html[data-epure]{' + Object.entries(v).map(([k, x]) => `${k}:${x} !important`).join(';') + '}';
+  await page.addStyleTag({ content: css });
 }
 const photo = (page: Page, i: number, nom: string) => page.screenshot({ path: path.join(SORTIE, `${nom}-${i}.png`) });
 test.setTimeout(300_000);
 
 for (const n of NIVEAUX) {
   test(`niveau ${n.i}`, async ({ page, request }) => {
-    await preparer(page, n);
+    await preparer(page);
     await page.goto('/prepare.html');
+    await teinter(page, n);
     await page.getByRole('button', { name: /^Solo/ }).first().click({ timeout: 30_000 });
     await expect(page.locator('#hero-grid .tb-port').first()).toBeVisible({ timeout: 30_000 });
     await page.locator('#hero-grid .tb-port').nth(2).hover();
     await page.waitForTimeout(700);
     await photo(page, n.i, 'selection');
     await page.goto('/deck-builder.html?hero=spider_man');
+    await teinter(page, n);
     await page.waitForSelector('.db-chip', { timeout: 30_000 });
     await page.waitForTimeout(1000);
     await photo(page, n.i, 'editeur');
@@ -60,6 +62,7 @@ for (const n of NIVEAUX) {
     };
     expect((await request.get('/new?data=' + encodeURIComponent(JSON.stringify(charge)))).status()).toBe(200);
     await page.goto('/app/board.html', { waitUntil: 'networkidle' });
+    await teinter(page, n);
     await page.waitForTimeout(2500);
     for (let k = 0; k < 40; k++) {
       await page.waitForTimeout(600);
