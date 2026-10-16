@@ -243,3 +243,14 @@
 .tsm-pastille small {
   color: #aab2c0;
 }
+
+/* Le point de départ des jetons et des traits : le milieu de la table, sans rien dessiner. */
+.tsm-depart {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  visibility: hidden;
+}

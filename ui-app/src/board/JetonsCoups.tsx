@@ -30,11 +30,24 @@ import './jetons-coups.css'
 function traceDu(c: Coup): TraceFleche | undefined {
   const rCible = rect(carteDeLaTable(c.cibleId))
   const rSource = rect(elementDuBout(c.depuis))
-  return rCible && rSource ? traceEntre(rSource, rCible) : undefined
+  if (!rCible || !rSource) return undefined
+  const trace = traceEntre(rSource, rCible)
+  if (c.genre !== 'menace') return trace
+  // 16/10/2026 : le jeton de menace se POSE sur le jeton de la manigance (le triangle), pas au
+  // bord de la carte. S'il n'existe pas encore (compteur à 0), on vise sa place habituelle.
+  const triangle = rect(carteDeLaTable(c.cibleId)?.querySelector('.jeton-menace'))
+  const arrivee = triangle
+    ? { x: triangle.x + triangle.w / 2, y: triangle.y + triangle.h / 2 }
+    : { x: rCible.x + rCible.w * 0.82, y: rCible.y + rCible.h * 0.24 }
+  return { ...trace, arrivee }
 }
 
+/** Au repos le jeton est GRAND (16/10/2026, « plus grand au milieu ») ; il rétrécit en volant. */
+const ECHELLE_REPOS = 3
+const ECHELLE_ARRIVEE = 0.45
+
 function placer(el: HTMLElement, x: number, y: number) {
-  el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`
+  el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${ECHELLE_REPOS})`
 }
 
 function creerJeton(c: Coup): HTMLElement {
@@ -43,7 +56,7 @@ function creerJeton(c: Coup): HTMLElement {
   const image = c.genre === 'menace' ? jetonMenaceImage : c.genre === 'acceleration' ? jetonAccelerationImage : jetonDegatsImage
   el.style.backgroundImage = `url(${image})`
   el.style.visibility = 'hidden'
-  el.textContent = c.genre === 'degats' ? `-${c.montant}` : c.genre === 'acceleration' ? '' : `+${c.montant}`
+  el.textContent = c.genre === 'degats' ? `-${c.montant}` : c.genre === 'acceleration' ? '' : `${c.montant}`
   el.setAttribute('aria-hidden', 'true')
   document.body.append(el)
   return el
@@ -107,9 +120,18 @@ export function useCoupsEnVol(
     }
     poser()
     const minuteurs = [260, 720].map((ms) => window.setTimeout(poser, ms))
+    // « Sur la table », l'intro de la phase peut retarder l'écran : son point de départ
+    // n'existe pas encore. On réessaie tant qu'un jeton n'est pas posé (5 s au plus).
+    const veille = window.setInterval(() => {
+      poser()
+      if (mes.every(({ el }) => el.style.visibility !== 'hidden')) window.clearInterval(veille)
+    }, 250)
+    const finVeille = window.setTimeout(() => window.clearInterval(veille), 5000)
     window.addEventListener('resize', poser)
     return () => {
       for (const m of minuteurs) window.clearTimeout(m)
+      window.clearInterval(veille)
+      window.clearTimeout(finVeille)
       window.removeEventListener('resize', poser)
       // Repris pour voler (clic sur Continuer) : ce n'est plus a nous de les enlever.
       for (const { el } of mes) {
@@ -144,7 +166,8 @@ export function useCoupsEnVol(
       }
       const cles = Array.from({ length: 13 }, (_, k) => {
         const p = pointDeLaCourbe(trace.depart, trace.controle, trace.arrivee, k / 12)
-        return { transform: `translate(${p.x}px, ${p.y}px) translate(-50%, -50%)`, offset: k / 12 }
+        const echelle = ECHELLE_REPOS + (ECHELLE_ARRIVEE - ECHELLE_REPOS) * (k / 12)
+        return { transform: `translate(${p.x}px, ${p.y}px) translate(-50%, -50%) scale(${echelle})`, offset: k / 12 }
       })
       const animation = v.el.animate(cles, { duration: DUREE_TRAJET_MS, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)', fill: 'forwards' })
       animation.onfinish = arrivee

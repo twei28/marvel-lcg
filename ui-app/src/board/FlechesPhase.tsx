@@ -37,12 +37,15 @@ export function carteDeLaTable(id: number): HTMLElement | undefined {
 
 export function elementDuBout(bout: BoutFleche): Element | undefined {
   if (bout.lieu === 'table') return carteDeLaTable(bout.id)
+  // « Sur la table », sans fenêtre : il n'y a plus de boîte d'où partir. Les jetons et les
+  // traits partent du MILIEU de la table (`TableSansModale`, `.tsm-depart`).
+  const milieu = () => document.querySelector('.tsm-depart') ?? undefined
   const boite = document.querySelector('.deroule-phase.est-essai')
-  if (!boite) return undefined
+  if (!boite) return milieu()
   if (bout.lieu === 'boite') {
-    return boite.querySelector(`.scan-card[data-card-id="${bout.id}"]`) ?? boite.querySelector('.deroule-corps') ?? undefined
+    return boite.querySelector(`.scan-card[data-card-id="${bout.id}"]`) ?? boite.querySelector('.deroule-corps') ?? milieu()
   }
-  return boite.querySelector('.deroule-corps') ?? undefined
+  return boite.querySelector('.deroule-corps') ?? milieu()
 }
 
 /** Hors de la fenêtre : il faut recadrer la table avant de tirer la flèche. */

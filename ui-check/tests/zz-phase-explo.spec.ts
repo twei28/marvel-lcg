@@ -45,7 +45,7 @@ async function partie(page: Page) {
   await page.addInitScript(([m, theme]) => {
     try {
       localStorage.setItem('mc_affichage_v1', theme);
-      localStorage.setItem('mc_phase_presentation', m === 'dynamique' ? 'dynamique' : m === 'bis' ? 'bis' : 'etape');
+      localStorage.setItem('mc_phase_presentation', m === 'dynamique' ? 'dynamique' : (m === 'bis' || m === 'table') ? 'bis' : 'etape');
       localStorage.setItem('marvel-langue-choisie', '1');
       localStorage.setItem('marvel-langue', 'fr');
       localStorage.setItem('marvel-board-mode-phase-mechant', m === 'table' ? 'sur-table' : 'detaille');
@@ -124,7 +124,11 @@ async function signature(page: Page) {
       };
     })();
     const bulle = ((document.querySelector('.deroule-bulle-table') ?? document.querySelector('.deroule-phase')) as HTMLElement | null)?.outerHTML.slice(0, 2500);
+    const jetons = Array.from(document.querySelectorAll('.jeton-coup')).map((e) => { const r = e.getBoundingClientRect(); return { t: e.textContent, vis: (e as HTMLElement).style.visibility, x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width) }; });
+    const dep = document.querySelector('.tsm-depart')?.getBoundingClientRect();
+    const dbg = [(window as unknown as { __dbg?: unknown }).__dbg, (window as unknown as { __j?: string[] }).__j];
     return {
+      dbg, jetons, dep: dep ? [Math.round(dep.x), Math.round(dep.y), Math.round(dep.width)] : null,
       bulle,
       diag,
       cartouche: t('.deroule-phase, .tsm-bandeau').slice(0, 400),
@@ -147,6 +151,8 @@ test('explo', async ({ page }) => {
   let phasesVues = 0;
   let dansPhase = false;
   let tours = 0;
+  let volProchain = false;
+  let volDejaVu = false;
   for (let i = 0; i < 2500 && rang < MAXPAS; i++) {
     await page.waitForTimeout(300);
     const w = await monde(page);
@@ -184,15 +190,20 @@ test('explo', async ({ page }) => {
       const cle = s.cartouche + '#' + s.demande + '#' + s.annonce + '#' + s.dialogues;
       if (cle !== vu) {
         vu = cle;
+        volProchain = /gagne \d+ menace/i.test(s.cartouche ?? '') && !volDejaVu;
         await page.waitForTimeout(800);
         rang++;
         await page.screenshot({ path: path.join(SORTIE, `${String(rang).padStart(3, '0')}.png`) });
         const faits = (w.faits_mechant ?? []).map((f: Record<string, unknown>) => `${f.genre}:${f.etat ?? ''}:${f.carte ?? f.auteur ?? ''}`);
         const s2 = await signature(page);
-        journal.write(JSON.stringify({ rang, i, phase: w.phase, round: w.round_id, ...s, bulle: s2.bulle, faits: faits.slice(-5) }) + '\n');
+        journal.write(JSON.stringify({ rang, i, phase: w.phase, round: w.round_id, ...s, bulle: s2.bulle, jetons: s2.jetons, dbg: s2.dbg, dep: s2.dep, faits: faits.slice(-5) }) + '\n');
       }
     }
     await unPas(page, dansPhase);
+    if (volProchain) {
+      volProchain = false; volDejaVu = true;
+      for (const k of [1, 2, 3]) { await page.waitForTimeout(220); await page.screenshot({ path: path.join(SORTIE, `vol-${k}.png`) }); }
+    }
   }
   journal.end();
 });

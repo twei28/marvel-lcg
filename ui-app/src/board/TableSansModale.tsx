@@ -80,6 +80,7 @@ export function TableSansModale({
   const sansCarte = !boiteActeur && (acteurId === undefined && cibleId === undefined ? true : !laisseMesurer)
   return (
     <>
+      <span className="tsm-depart" aria-hidden="true" />
       <div className="tsm-bandeau" role="status" aria-live="polite">
         {reculer ? (
           <button type="button" className="tsm-retour" onClick={reculer} aria-label={t('Précédent')} title={t('Précédent')}>

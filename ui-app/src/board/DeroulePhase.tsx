@@ -1830,7 +1830,8 @@ export function DeroulePhase({
           cibleId={volMenace?.cibleId}
           montant={volMenace?.montant}
           cle={volMenace?.cle}
-          actif={volMenace !== undefined}
+          // Avec l'essai, le grand jeton des coups (`JetonsCoups`) prend le relais : pas deux jetons.
+          actif={volMenace !== undefined && !essai}
         />
         <CoucheRencontreSurTable
           etape={etape}
