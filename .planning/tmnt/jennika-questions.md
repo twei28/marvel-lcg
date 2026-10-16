@@ -90,3 +90,12 @@ Scans : `.planning/tmnt/pics-jennika/<card_id>.jpg` (copie versionnée) ; origin
 - **`tj012` Personality Adjustment** : « You may flip... Choose: » : la bascule est facultative, puis le choix est
   obligatoire ; l'option « Exhaust Jenny » n'existe qu'en forme alter ego, Jenny redressée.
 - **Dos du Path** (`Sosaiken Cardback.png`) : insert de règles (construction de deck), aucune carte créée.
+
+## REPONSES DE L'UTILISATEUR (16/10/2026)
+
+- **Q1** : une fois par round pour chacune des 4 classes (lecture retenue, confirmee).
+- **Q2** : seules les cartes qui impriment une classe sont Shinobi (lecture retenue, confirmee).
+- **Q3** : creer un VRAI type de carte « Path » dans le moteur (PAS la lecture retenue : Support). A FAIRE : chantier moteur confie a un agent.
+- **Q4** : la Voie est mise de cote, hors du deck (lecture retenue, confirmee).
+- **Q5** : les deux moities d'Apparition sont independantes (lecture retenue, confirmee).
+- **Paire Tekko-Kagi (tj009/tj010)** : panorama declare.

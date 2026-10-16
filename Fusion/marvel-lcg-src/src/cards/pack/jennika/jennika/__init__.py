@@ -9,7 +9,7 @@ from cards.pack import *
 CLASSES_SHINOBI = ["Bushido", "Ninjutsu", "Kuji-Kiri", "Taijutsu"]
 
 
-# TODO-QUESTION Q2 (.planning/tmnt/jennika-questions.md) : seules les cartes portant une classe Shinobi
+# DECISION UTILISATEUR (16/10/2026, Q2) (.planning/tmnt/jennika-questions.md) : seules les cartes portant une classe Shinobi
 # imprimee comptent comme Shinobi (lecture retenue) ; ou toutes les cartes de Jennika ?
 def CarteShinobi() -> 'CardFinder':
     """Le filtre « un Shinobi card » : une carte portant l'une des quatre classes."""

@@ -22,7 +22,7 @@ from . import *
 #  - « Limit once per round FOR EACH SHINOBI » : lecture retenue = une fois par
 #    round POUR CHACUN des quatre Shinobi (Bushido, Ninjutsu, Kuji-Kiri,
 #    Taijutsu), d'ou QUATRE capacites identiques, une par classe, chacune avec
-#    sa propre limite (TODO-QUESTION Q1, .planning/tmnt/jennika-questions.md) ;
+#    sa propre limite (DECISION UTILISATEUR (16/10/2026, Q1), .planning/tmnt/jennika-questions.md) ;
 #  - « Interrupt » (sans « Hero ») : capacite de la face, optionnelle ;
 #  - le bonus part AVANT la resolution de la carte jouee (Interrupt) ;
 #  - « a Shinobi card » : une carte portant l'une des quatre classes ; les cartes
@@ -30,7 +30,7 @@ from . import *
 #    declenchent rien.
 
 
-# TODO-QUESTION Q1 (.planning/tmnt/jennika-questions.md) : « for each Shinobi » = par classe (lecture
+# DECISION UTILISATEUR (16/10/2026, Q1) (.planning/tmnt/jennika-questions.md) : « for each Shinobi » = par classe (lecture
 # retenue), par carte, ou une seule fois par round ?
 def GetAbilities() -> Sequence['Ability']:
 

@@ -28,7 +28,7 @@ from . import *
 #  - « TEKKO-KAGI upgrades » : trait ET type Upgrade (tj009, tj010).
 
 
-# TODO-QUESTION Q4 (la Voie mise de cote plutot que dans le deck) : .planning/tmnt/jennika-questions.md
+# DECISION UTILISATEUR (16/10/2026, Q4) (la Voie mise de cote plutot que dans le deck) : .planning/tmnt/jennika-questions.md
 def GetAbilities() -> Sequence['Ability']:
 
     def mettre_la_voie_en_jeu(effect: 'Effect', message: 'Message.WhenPlayerSelectHero') -> None:

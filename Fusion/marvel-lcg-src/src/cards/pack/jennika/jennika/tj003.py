@@ -25,7 +25,7 @@ from . import *
 #  - ordre imprime : menace d'abord, puis desorientation.
 
 
-# TODO-QUESTION Q5 (.planning/tmnt/jennika-questions.md) : les deux moities sont-elles independantes
+# DECISION UTILISATEUR (16/10/2026, Q5) (.planning/tmnt/jennika-questions.md) : les deux moities sont-elles independantes
 # (lecture retenue) ou les deux cibles obligatoires ?
 def GetAbilities() -> Sequence['Ability']:
 
