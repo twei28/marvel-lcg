@@ -53,5 +53,9 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroResponse,
             Ally,
             redresser_allie,
+            # « ready THAT ally » : l'allie vaincu par ces degats n'est plus une
+            # cible, la Reponse (cout compris) ne se propose pas (aucun etat ne change).
+            conditions=[lambda effect, message:
+                        message.trigger is not None and message.trigger.IsInPlay()],
         ).SetCostFunc(CostFunc.Exhaust("This")),
     ]

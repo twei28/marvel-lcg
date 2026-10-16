@@ -67,7 +67,13 @@ class FaceEffect:
 
     @final
     def RegisterGiven(self, ability: 'Ability') -> 'Effect':
-        effect = self.face.card.RegisterEffect(ability, self.face, world=self.face.card.world, is_temp=True)
+        # AJOUT 16/10/2026 (octroi Katana TMNT) : la depense de ressource
+        # (`DoGenerateResources`, locale) ne peut PAS s'enregistrer comme globale
+        # (assert event/manager.py « Paying »). On ne change que ce cas : tout
+        # autre aptitude donnee garde son enregistrement historique.
+        locale = bool(ability.is_local and ability.IsFunction("DoGenerateResources"))
+        effect = self.face.card.RegisterEffect(ability, self.face, world=self.face.card.world,
+                                               is_temp=True, is_local=locale)
         self.given_effects.append(effect)
         return effect
 

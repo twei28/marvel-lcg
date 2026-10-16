@@ -15,8 +15,10 @@ from . import *
 #    initiates an attack » ;
 #  - `27018` / `27043` : `CostFunc.Exhaust(trait=..., from_where=["YouControlCards"])`
 #    pour « exhaust a [[KATANA]] upgrade you control » ;
-#  - `angela` : `PlayerStat.kill_counter` (game/rule/gameplay.py:43) pour
-#    mesurer une defaite.
+#  - `game/card/face/card_face.py` DealDamage(if_this_attack_defeats=) : meme
+#    ecoute `AfterUnitDefeatedUnit` enregistree en temporaire, ici filtree sur
+#    `message.by_effect.this` (l'evenement joue) car le script de l'evenement
+#    n'est pas le notre.
 #
 # Insert du pack : « The Iaijutsu upgrade ability requires you to exhaust a
 # KATANA, it does NOT exhaust itself ». D'ou le cout sur un KATANA, et PAS
@@ -30,11 +32,10 @@ from . import *
 #  - « an [[ATTACK]] event WITH a "Hero Action" ability » : trait ATTACK ET
 #    une capacite HeroAction (comme `can_be_play` de 42013) ;
 #  - « (paying its cost) » : PAS `ignore_resources_cost` ;
-#  - TODO-QUESTION Q4 : « If this attack defeats an enemy, draw 1 card ».
-#    Rendu APPROXIMATIF : on compare `joueur.stat.kill_counter` avant/apres le
-#    jeu de l'evenement. Toute defaite causee par le joueur pendant la
-#    resolution compte. Pas de fabrique « cette attaque defait » disponible
-#    pour un evenement joue par cette voie.
+#  - « If THIS ATTACK defeats an enemy » : DECISION UTILISATEUR (15/10/2026) =
+#    crochet EXACT sur l'attaque. On ecoute `AfterUnitDefeatedUnit` pendant le jeu
+#    de l'evenement et on ne retient que les defaites dont `by_effect.this` est
+#    L'EVENEMENT JOUE (pas un autre effet, pas une defaite causee ailleurs).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -60,9 +61,29 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = effect.GetInitiator()
         if joueur is None:
             return
-        avant = len(joueur.stat.kill_counter)
+        jouee = effect.targets[0] if effect.targets else None
+        vaincu = [False]
+
+        def defaite(check_effect: 'Effect', check_message: 'Message.AfterUnitDefeatedUnit') -> None:
+            Unused(check_effect, check_message)
+            vaincu[0] = True
+
+        from game.operate.effects import Effects
+        temp = this.effect.RegisterTemp(
+            Ability(
+                AbilityType.Temp0,
+                Message.AfterUnitDefeatedUnit,
+                [lambda check_effect, check_message:
+                    jouee is not None and
+                    check_message.by_effect.this == jouee and
+                    Enemy.IsType(check_message.target)],
+                defaite,
+            ),
+            unregister_after_exec=False,
+        )
         joueur.PlayCardsLikeInTurn(effect.targets, effect)
-        if len(joueur.stat.kill_counter) > avant:
+        Effects.UnRegister(temp)
+        if vaincu[0]:
             joueur.DrawUp(1, effect)
 
     return [
