@@ -34,10 +34,10 @@ const rendre = (cle: string, pret = true) =>
 const jetons = () => [...document.querySelectorAll<HTMLElement>('.jeton-coup')]
 
 describe('les jetons des coups', () => {
-  it('ecran Menace : la manigance figee a son niveau d avant, un jeton « +2 » attend', () => {
+  it('ecran Menace : la manigance figee a son niveau d avant, un jeton « 2 » attend', () => {
     const { result } = rendre('menace:1')
     expect(result.current).toEqual([{ genre: 'menace', cibleId: 7, valeur: 1 }])
-    expect(jetons().map((j) => j.textContent)).toEqual(['+2'])
+    expect(jetons().map((j) => j.textContent)).toEqual(['2'])
     expect(animations).toHaveLength(0)
   })
 

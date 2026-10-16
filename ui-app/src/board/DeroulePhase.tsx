@@ -86,7 +86,9 @@ import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import { cadreDeLEtape, styleDuCadre, type CadreJoueur } from './couleur-joueur'
 import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
 import { FlechesPhase } from './FlechesPhase'
-import { TrajetsPhase } from './TrajetsPhase'
+import { TrajetsPhase, animationsCoupees } from './TrajetsPhase'
+import { coupsDeLEtape } from './coups-sur-table'
+import { DUREE_TRAJET_MS } from './trajets-phase'
 import { EtoilesEnAttente } from './EtoilesEnAttente'
 import { NumerosSbires } from './NumerosSbires'
 import { DepartsDeLaBoite } from './DepartsDeLaBoite'
@@ -978,6 +980,11 @@ export function DeroulePhase({
    * aussitôt passer à l'étape suivante : lire `etape` au moment du vol
    * donnerait la suivante, ou rien du tout.
    */
+  // 16/10/2026 : « pourquoi je vois déjà l'attaque du méchant pendant que la manigance se
+  // met ? ». Le temps du vol des jetons, l'écran suivant attend (ni ligne, ni halo, ni trait).
+  const [enVolDeJeton, setEnVolDeJeton] = useState(false)
+  const minuteurVol = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(minuteurVol.current), [])
   const [volMenace, setVolMenace] = useState<
     { cle: string; cibleId: number | undefined; montant: number | undefined } | undefined
   >(undefined)
@@ -994,9 +1001,16 @@ export function DeroulePhase({
     // Partie finie : le cartouche n'est plus a l'ecran, sa touche Entree ne
     // doit pas continuer a relacher le moteur derriere l'ecran de fin.
     if (partieFinie) return
+    // Un jeton est en vol : le clic suivant attend son atterrissage.
+    if (enVolDeJeton) return
     // Le joueur est vivant, et le filet anti-blocage doit le savoir meme quand
     // ce clic n'acquitte rien (voir `onActivite`).
     onActivite?.()
+    if (essai && surTable && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0)) {
+      setEnVolDeJeton(true)
+      window.clearTimeout(minuteurVol.current)
+      minuteurVol.current = window.setTimeout(() => setEnVolDeJeton(false), DUREE_TRAJET_MS + 250)
+    }
     // Un « Suivant » (clic, clavier, ou le minuteur de l'avance auto lui-meme)
     // leve la suspension posee par « Precedent ».
     setSuspendu(false)
@@ -1352,7 +1366,8 @@ export function DeroulePhase({
   const [cartesRetournees, setCartesRetournees] = useState<ReadonlySet<string>>(() => new Set())
   // 13/10/2026 (encadré ①) : les pastilles des joueurs dans le calcul de menace.
   const couleursDesJoueurs = useMemo(() => (essai && cadresJoueurs ? cadresJoueurs.map((c) => c.couleurs[0]) : undefined), [essai, cadresJoueurs])
-  const avantResultat = Boolean(essai && etape && etape.boosts.length > 0 && boostsMontres < etape.boosts.length)
+  const avantResultat =
+    Boolean(essai && etape && etape.boosts.length > 0 && boostsMontres < etape.boosts.length) || enVolDeJeton
   useEffect(() => {
     onAvantResultat?.(avantResultat)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- setter d'etat stable
@@ -1816,7 +1831,7 @@ export function DeroulePhase({
             comportement de `chronologie`, et c'est exactement sa decision
             « on la saute, mais on le dit ». Il ne coute aucun clic, puisque
             `etapesDeroule` ne fabrique pas d'etape pour lui. */}
-        <CoucheTraitPhase etape={etape} actif />
+        <CoucheTraitPhase etape={etape} actif={!enVolDeJeton} />
         <EffetsSurTable
           etape={etape}
           actif={!questionAuJoueur}
@@ -1840,7 +1855,7 @@ export function DeroulePhase({
           dosRencontre={dosRencontre}
           actif
         />
-        {contenu}
+        {enVolDeJeton ? null : contenu}
       </>,
       cadre
     )
