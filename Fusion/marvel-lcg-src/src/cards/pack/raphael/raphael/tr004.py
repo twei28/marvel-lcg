@@ -4,7 +4,7 @@ from . import *
 # Requirement ([physical][physical]).
 # Hero Action (attack): Deal 4 damage to an enemy. Stun or confuse that enemy.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # MOT-CLE : REQUIREMENT — fiche `docs/reference/mots-cles/requirement.md`.
 # `desc.Requirement = "RR"` : « 2 dont au moins 2 physiques » sur une carte a

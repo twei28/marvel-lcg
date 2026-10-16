@@ -5,7 +5,7 @@ from . import *
 #   your hero. If you paid for this ability using [physical][physical]
 #   resources, you get +1 THW until the end of the round.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `01093` Tenacity / `44030` Stick-To-Itiveness : « spend a resource -> ready

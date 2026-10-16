@@ -4,7 +4,7 @@ from . import *
 # Action: Discard 1 card from your hand -> search your deck and discard pile
 #   for up to 2 [[SAI]] upgrades and put them into play, exhausted. (Shuffle.)
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `54001b` Bucky Barnes : `Search.PlayerCard(include_player_deck=True,

@@ -4,7 +4,7 @@ from . import *
 # Response: After you spend this card, heal 2 damage from Raphael and place 1
 #   rage counter on him (to a maximum of 3).
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `29009` Stroke of Genius (ironheart) : « Response: After you spend this

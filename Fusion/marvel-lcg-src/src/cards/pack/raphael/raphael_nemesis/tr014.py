@@ -7,7 +7,7 @@ from . import *
 #   timer counter here. Then, if there are 2 or more timer counters here,
 #   discard this card and deal each player 1 facedown encounter card.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # ICONE : « croix + avion » sous le texte = AMPLIFY 1 (decision du 15/10/2026 :
 #   meme glyphe que 16054 Vendetta, verifie par decoupe). `desc.Amplify = "1"`

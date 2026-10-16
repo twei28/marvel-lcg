@@ -5,7 +5,7 @@ from . import *
 #   - Place 1 rage counter on Raphael.
 #   - Heal 1 damage from Raphael.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `ho010` / `sf007` : AMELIORATION sans « Attach to » = `CanPlayThisUpgradeCard()`

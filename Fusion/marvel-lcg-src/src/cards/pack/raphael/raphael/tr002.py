@@ -4,7 +4,7 @@ from . import *
 # Response: After Casey Jones enters play, deal 1 damage to Raphael and each
 #   minion engaged with you. Place 1 rage counter on Raphael.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `ho002` / `01083` Mockingbird : `AfterCardEnterPlay(Response, "This", op)`

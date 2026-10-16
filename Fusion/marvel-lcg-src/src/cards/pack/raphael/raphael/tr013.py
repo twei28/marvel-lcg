@@ -9,7 +9,7 @@ from . import *
 # Hero Action: Remove 2 rage counters from Raphael -> flip to alter-ego form
 #   and discard Out of Control.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `vv011` Grounded / `36030` Claustrophobia : obligation qui force une forme,

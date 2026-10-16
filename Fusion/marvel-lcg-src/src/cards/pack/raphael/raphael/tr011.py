@@ -5,7 +5,7 @@ from . import *
 # Each [[SAI]] upgrade you control gains: "Hero Action (attack): Exhaust this
 #   card and take 1 damage -> deal 1 damage to an enemy."
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # MOTS-CLES (fiches lues) : RESTRICTED — `docs/reference/mots-cles/restricted.md`
 # (`desc.Restricted = "1"`, limite de 2 cartes Restricted gerees par le moteur,

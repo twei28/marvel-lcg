@@ -4,7 +4,7 @@ from . import *
 # Requirement ([physical][physical][physical]).
 # Hero Action (attack): Deal 10 damage divided among enemies as you choose.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # MOT-CLE : REQUIREMENT — fiche `docs/reference/mots-cles/requirement.md`.
 # `desc.Requirement = "RRR"` sur une carte a cout 4 : 3 physiques au minimum

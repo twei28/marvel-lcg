@@ -5,7 +5,7 @@ from . import *
 # Each [[SAI]] upgrade you control gains: "Hero Response: After Raphael defeats
 #   an enemy, exhaust this card -> draw 1 card."
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # MOTS-CLES : RESTRICTED — `docs/reference/mots-cles/restricted.md` (base
 # automatique, `desc.Restricted = "1"`, aucun script).

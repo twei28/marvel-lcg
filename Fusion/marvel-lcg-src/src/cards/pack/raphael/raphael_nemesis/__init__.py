@@ -2,7 +2,7 @@ from cards.pack import *
 
 # ===========================================================================
 # Set nemesis « Raphael Nemesis » (Old Hob, Inkwire, prefixe `tr`).
-# PHASE A : jamais execute. `tr015` Old Hob n'a aucun script : Toughness,
+# `tr015` Old Hob n'a aucun script : Toughness,
 # Quickstrike et Nemesis sont des BASES AUTOMATIQUES lues dans `desc`.
 #
 # ⚠ L'obligation `tr013` Out of Control a le bandeau « RAPHAEL », pas

@@ -5,7 +5,7 @@ from . import *
 # Yaban Hito — Response: After Raphael takes any amount of damage from an
 #   attack, place 1 rage counter on him (to a maximum of 3).
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `30001a` * Spider-Ham : MEME montage mot pour mot. Compteur `toon` depense
