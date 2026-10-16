@@ -59,7 +59,6 @@ def GiveKeywordToInPlayWhenApplyThisInternal(
     buffs: List[Type['Buff']]|None=None,
     apply: Callable[['Effect','CardFace', int], None]|None=None,
     incite_only: bool=False,
-    abilities_everywhere: bool=False, # octroi d'aptitude a toute carte en jeu qui correspond (voir helper2)
     change_on_event: EventType,
     ) -> 'Ability':
     from game.operate.faces import Faces
@@ -206,6 +205,5 @@ def GiveKeywordToInPlayWhenApplyThisInternal(
         abilities=abilities,
         abilities_en_continu=abilities_en_continu,
         buffs=buffs,
-        abilities_everywhere=abilities_everywhere,
     )
 
