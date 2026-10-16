@@ -64,3 +64,9 @@ les deux cartes (la 15 est la 14 « retournée »). Rien n'est déclaré dans
 - « Daze » = carte d'état Dazed (insert « Dazed Rules », zip Baxter Stockman v3).
 - Pounce : « 1 damage » + « 2 additional damage for each » = UN seul coup de 1 + 2n
   (comme Repulsor Barrage `im002`).
+
+## REPONSES DE L'UTILISATEUR (16/10/2026)
+
+- **Q1** : regle officielle de « find » collee par l'utilisateur (« search each area where the card could be found (play area, set-aside area, player deck, discard pile, encounter deck, etc) ») : Prey DEJA en jeu est TROUVEE et DEPLACEE sur la nouvelle cible (PAS la lecture retenue). ta001a corrige, `PreyEnJeu` (qui passait une identite au lieu d'un effet) corrige, cas « Prey DEJA en jeu... deplacee » vu rouge puis vert.
+- **Q2** : Nobody camouflee, etat lu au moment du contre (confirmee).
+- **Q3** : deck Rencontre epuise sans sbire ni manigance annexe : rien (confirmee).

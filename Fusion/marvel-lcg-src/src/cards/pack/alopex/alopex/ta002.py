@@ -19,13 +19,13 @@ from . import *
 #    attaque l'a vaincu, il n'y a plus d'ennemi a etourdir (rien a faire) ;
 #  - « a scheme WITH PREY ATTACHED » : lu A L'INSTANT DU CONTRE : si ce contre
 #    vide la manigance, Prey part (de cote) mais la Reponse part quand meme
-#    (information connue au moment du contre) — TODO-QUESTION Q2 ;
+#    (information connue au moment du contre) — DECISION UTILISATEUR (16/10/2026, Q2) ;
 #  - « cloak HER » : Nobody elle-meme (pas l'identite) ;
 #  - « daze THAT enemy » : l'ennemi attaque (pas un autre) ;
 #  - ATQ 1* / THW 1* : les etoiles imprimees sont des degats consecutifs
 #    (desc `1*`), lus par le moteur.
 #
-# TODO-QUESTION (ta002, Q2) : « thwarts a scheme with Prey attached » quand le
+# DECISION UTILISATEUR (16/10/2026, Q2, ta002) : « thwarts a scheme with Prey attached » quand le
 # contre retire la derniere menace (Prey part de cote avec la manigance) ?
 # Lecture retenue : la Reponse part (etat de la manigance AU MOMENT du contre).
 

@@ -165,7 +165,7 @@ CAS = [
        [HEROS, "Puzzle.SetThreat('01097b', 5)", "Puzzle.PutIntoPlay('ta002', under_control=True)"], ["Puzzle.Thwart('ta002')"],
        {"degats": [["ta002", 1]], "statuts_absents": [["ta002", "Cloaked"]]}, main_exclusive=["01090"]),
     _c("ta002 Nobody : le contre qui VIDE la manigance portant Prey cloake quand meme Nobody (Q2)",
-       "TODO-QUESTION Q2 : la manigance etait portee par Prey AU MOMENT du contre ; Prey part de cote avec elle",
+       "DECISION UTILISATEUR (16/10/2026, Q2) : la manigance etait portee par Prey AU MOMENT du contre ; Prey part de cote avec elle",
        [HEROS, "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)", "Puzzle.AttachReel('ta011', '01107')",
         "Puzzle.PutIntoPlay('ta002', under_control=True)"],
        ["Puzzle.Thwart('ta002')"],
