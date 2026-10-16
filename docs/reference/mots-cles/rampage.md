@@ -49,7 +49,7 @@ garde « [star] Rampage 3. ».
 **Lectures arbitrées (questions ouvertes à l'utilisateur, la lecture codée est la
 plus fidèle trouvée)** :
 
-1. **Deck de moins de X cartes.** Lecture codée : la carte reste JOUABLE ; on
+1. **Deck de moins de X cartes.** CONFIRMÉ par l'utilisateur le 16/10/2026. Lecture codée : la carte reste JOUABLE ; on
    défausse ce qui reste, le deck s'épuise, on remélange la défausse, on prend
    1 carte rencontre et rien n'est défaussé du nouveau deck (Rules Reference,
    « Player Deck », p. 33 : « If the player's deck empties while the player was
