@@ -4,8 +4,10 @@ from . import *
 # Permanent.
 # Response: After you play a Shinobi card, exhaust this card -> draw 1 card.
 #
-# Type moteur : Support (le moteur n'a pas de type Path ; TODO-QUESTION Q3,
-# .planning/tmnt/jennika-questions.md). Mise de cote, jamais dans le deck : le Setup de
+# Type moteur : Path (type imprime PATH, DECISION UTILISATEUR 16/10/2026 : fidelite 100 %, pas de
+# Support deguise ; game/card/face/card_type/path.py), rangee dans l'aire de soutien, invisible aux
+# effets qui visent un Support (.planning/tmnt/jennika-questions.md Q3).
+# Mise de cote, jamais dans le deck :
 # tj001b la met en jeu (modele `wonder_man/58002` Ionic Physiology).
 #
 # Mot-cle : Permanent (mots-cles/permanent.md) : BASE AUTOMATIQUE (`desc.Permanent`),
@@ -25,11 +27,11 @@ from . import *
 #  - aucune limite « once per round » imprimee.
 
 
-# TODO-QUESTION Q3 (type Path rendu par un Support) : .planning/tmnt/jennika-questions.md
+# DECISION UTILISATEUR (16/10/2026, Q3) : vrai type Path : .planning/tmnt/jennika-questions.md
 def GetAbilities() -> Sequence['Ability']:
 
     def sosaiken(effect: 'Effect', message: 'Message.AfterPlayerPlayedCard') -> None:
-        this = effect.this.CastTo(Support)
+        this = effect.this.CastTo(Path)
         Unused(this, message)
 
         joueur = effect.GetInitiator()

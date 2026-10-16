@@ -95,6 +95,7 @@
 
   .scan-card.kind-ally,
   .scan-card.kind-support,
+  .scan-card.kind-path,
   .scan-card.kind-upgrade,
   .scan-card.kind-event,
   .scan-card.kind-resource {

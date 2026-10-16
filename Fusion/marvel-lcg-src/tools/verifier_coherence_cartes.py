@@ -220,7 +220,7 @@ rapport["mot_cle_imprime_sans_cle_desc"] = incoherences
 # carte est evaluee (`assert self.card_classes != []`). Six cartes etaient dans
 # ce cas le 4/8/2026, dont deux d'un pack officiel : la creation de partie de
 # Hercule et de Moon Knight etait impossible.
-TYPES_JOUEUR = {"Ally", "Event", "Support", "Upgrade", "Resource"}
+TYPES_JOUEUR = {"Ally", "Event", "Support", "Upgrade", "Resource", "Path"}
 sans_classe = []
 for pack, c in toutes:
     if c.get("type") in TYPES_JOUEUR and not (c.get("desc") or {}).get("Class"):

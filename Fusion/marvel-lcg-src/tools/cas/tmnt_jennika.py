@@ -430,7 +430,15 @@ CAS = [
        [HEROS, "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01074', '01073', '01075')"], [],
        {"exhausted": ["tj011"], "taille_deck_joueur": 2},
        main_exclusive=["tj005", "tj005"], jouer=["tj005", "tj005"], accepter_choix=True),
-    _c("tj011 Sosaiken : PERMANENT : le moteur la tient pour Permanent (desc), classe Hero, type Support, sans cout",
+    _c("tj011 Sosaiken : TYPE PATH (la Voie) : la face en jeu est un Path, PAS un Support, rangee dans l'aire de soutien",
+       "type imprime PATH (decision du 16/10/2026) : `Path.IsType` vrai, `Support.IsType` faux, un effet qui vise « Support » "
+       "(Worlds.GetOnFieldSupports, GetControlCardsByType(support=True)) ne la voit pas, mais elle reste une carte en jeu du joueur",
+       [], [], {}, verifier="jennika_voie_type"),
+    _c("tj011 Sosaiken : PERMANENT protege la Voie : un effet d'un AUTRE set (Rhino) ne peut pas la retirer du jeu",
+       "« Permanent » (permanent.md) : une GameRule portee par Rhino 01094 tente RemoveAllFromGame sur la Voie ; "
+       "elle reste en jeu, dans l'aire de soutien",
+       [], [], {}, verifier="jennika_voie_permanente"),
+    _c("tj011 Sosaiken : PERMANENT : le moteur la tient pour Permanent (desc), classe Hero, type Path, sans cout",
        "« Permanent » est une base automatique (permanent.md) : aucun script ; on lit l'indicateur du moteur sur la face en jeu",
        [], [], {"permanent": {"tj011": True}}, verifier="jennika_desc"),
 
@@ -618,6 +626,51 @@ def jennika_voie(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, f"Voie en jeu, controlee, 1 exemplaire ; {msg}"
+
+
+def jennika_voie_type(monde, aides):
+    """La Voie tj011 est un PATH, pas un Support ; aire de soutien ; invisible aux selecteurs « Support »."""
+    from game.card.face.card_type import Support
+    from game.operate.worlds import Worlds
+    soucis = []
+    voie = aides["par_id"](monde, "tj011")
+    if voie is None:
+        return False, "tj011 n'est pas en jeu"
+    joueur = monde.players[0]
+    if type(voie).__name__ != "Path" or voie.type_name != "Path":
+        soucis.append(f"type = {type(voie).__name__}/{voie.type_name} (attendu Path)")
+    if Support.IsType(voie):
+        soucis.append("Support.IsType(tj011) est vrai")
+    if voie.card.area is not joueur.supports:
+        soucis.append(f"zone = {voie.card.area} (attendu l'aire de soutien)")
+    if voie in Worlds.GetOnFieldSupports(voie.card.game_area):
+        soucis.append("Worlds.GetOnFieldSupports voit la Voie")
+    if voie in joueur.GetControlCardsByType(support=True):
+        soucis.append("GetControlCardsByType(support=True) voit la Voie")
+    if voie not in joueur.GetOnFieldCards():
+        soucis.append("GetOnFieldCards ne voit pas la Voie (elle doit rester une carte en jeu)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "Path en aire de soutien, ni Support ni vue des selecteurs Support"
+
+
+def jennika_voie_permanente(monde, aides):
+    """Permanent : une regle portee par une carte d'un AUTRE set ne retire pas la Voie du jeu (RemoveAllFromGame passe par
+    OnWhenCardLeavePlay de HasPermanent)."""
+    from game.effect.rule import GameRule
+    from game.operate.faces import Faces
+    voie = aides["par_id"](monde, "tj011")
+    rhino = aides["par_id"](monde, "01094")
+    if voie is None or rhino is None:
+        return False, f"voie={voie} rhino={rhino}"
+    if not voie.permanent:
+        return False, "la Voie n'est pas Permanent"
+    Faces.RemoveAllFromGame([voie], GameRule(rhino))
+    if not voie.IsInPlay():
+        return False, "la Voie a ete retiree du jeu par un effet d'un autre set (Permanent n'a pas protege)"
+    if voie.card.area is not monde.players[0].supports:
+        return False, f"la Voie a change de zone : {voie.card.area}"
+    return True, "la Voie reste en jeu, dans l'aire de soutien, malgre RemoveAllFromGame d'un autre set"
 
 
 def _jennika_nb_effets(face, nom_fonction):

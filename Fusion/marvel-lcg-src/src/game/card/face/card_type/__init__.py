@@ -44,4 +44,6 @@ Unused(Resource)
 
 from game.card.face.card_type.evidence import Evidence
 Unused(Evidence)
+from game.card.face.card_type.path import Path
+Unused(Path)
 

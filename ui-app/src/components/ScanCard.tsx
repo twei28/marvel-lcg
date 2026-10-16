@@ -98,6 +98,7 @@ export type CardKind =
   | 'alter-ego'
   | 'ally'
   | 'support'
+  | 'path'
   | 'upgrade'
   | 'event'
   | 'resource'
@@ -389,6 +390,7 @@ export const kindLabel: Record<CardKind, string> = {
   treachery: 'Traîtrise',
   'alter-ego': 'Alter ego',
   support: 'Soutien',
+  path: 'Voie',
   upgrade: 'Amélioration',
   event: 'Événement',
   resource: 'Ressource',

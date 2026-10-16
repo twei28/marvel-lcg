@@ -19,6 +19,7 @@ describe('poser une carte en jeu selon son type (table D.3)', () => {
   it.each([
     ['Ally', 'AlliesArea', 0],
     ['Support', 'SupportsArea', 0],
+    ['Path', 'SupportsArea', 0],
     ['Event', 'PlayerProcessingArea', 0],
     ['Minion', 'EngagedEnemiesArea', 0],
     ['PlayerMinion', 'EngagedEnemiesArea', 0],
@@ -104,7 +105,7 @@ describe('poser une carte en jeu selon son type (table D.3)', () => {
       [
         'Ally', 'AlterEgo', 'Attachment', 'Challenge', 'EncounterSideScheme', 'EncounterVillain', 'Environment',
         'Event', 'Evidence', 'Hero', 'Insert', 'Leader', 'MainScheme', 'Minion', 'Obligation', 'PlayerMinion',
-        'PlayerSideScheme', 'Resource', 'StatusCard', 'Support', 'Treachery', 'Upgrade',
+        'Path', 'PlayerSideScheme', 'Resource', 'StatusCard', 'Support', 'Treachery', 'Upgrade',
       ].sort()
     )
   })
