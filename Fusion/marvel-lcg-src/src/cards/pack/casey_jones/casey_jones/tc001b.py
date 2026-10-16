@@ -18,12 +18,10 @@ from . import *
 #    .SetTarget(liste, range=(1, 1), not_move=True)` (modele tr003).
 #
 # TEXTE CONTRE CODE
-#  ⚠ « SEARCH YOUR DECK AND DISCARD PILE » : les deux zones, PAS la main.
-#    TODO-QUESTION (Q2) : le Setup du moteur part APRES la pioche de depart et
-#    le mulligan (World.Setup, etape 16) : si le Sac est dans la main de depart
-#    il n'est trouve ni dans le deck ni dans la defausse, et reste en main (le
-#    Sac n'a pas de cout imprime : seule sa ressource [mental] sert). Lecture
-#    LITTERALE retenue (deck + defausse seulement).
+#  ⚠ « SEARCH YOUR DECK AND DISCARD PILE » + MAIN : DECISION UTILISATEUR (16/10/2026,
+#    Q2). Le Setup du moteur part APRES la pioche de depart et le mulligan : le Sac
+#    peut etre dans la main de depart (environ 1 partie sur 3). On le met en jeu
+#    quand meme : deck + defausse, puis la main (comme tm001b de Michelangelo).
 #  ⚠ « the Casey's BAG upgrade » : cherche par card_id `tc013`, jamais par nom.
 #  ⚠ « return A WEAPON upgrade » : n'importe quelle arme (pas seulement du set
 #    Casey Jones), au choix du joueur ; rien n'est offert si la defausse n'en a
@@ -48,6 +46,14 @@ def GetAbilities() -> Sequence['Ability']:
             include_discard_pile=True,
             finder=CardFinder(card_ids=[ID_SAC]),
         )
+        if not sac:
+            # DECISION UTILISATEUR (16/10/2026, Q2) : fouiller AUSSI la main. Le Setup part
+            # APRES la pioche de depart et le mulligan : le Sac peut etre dans la main de
+            # depart (environ 1 partie sur 3). Meme traitement que tm001b (Michelangelo).
+            en_main = [f for f in initiator.hand_cards.GetAll()
+                       if getattr(f.paper, "card_id", None) == ID_SAC]
+            if en_main:
+                sac = en_main[0]
         if sac:
             sac.PutIntoPlay(initiator, effect)
 
