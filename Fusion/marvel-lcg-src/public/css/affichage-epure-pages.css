@@ -1411,3 +1411,60 @@ html[data-epure] .team-b.eux .tb-art {
   background-position: 50% 3% !important;
   background-size: auto 165% !important;
 }
+
+/* Le cadrage des vignettes de méchants : leur taille a grandi, l'ancien cadrage (150 %,
+   22 %) coupait les visages. L'art en pleine largeur, calé sur le haut de la carte. */
+html[data-epure] .team-b.eux .tb-roster-scn .portrait {
+  background-size: 106% auto !important;
+  background-position: 50% 12% !important;
+}
+
+/* Le choix des sets modulaires : un panneau à la place de l'image du méchant. */
+html[data-epure] .team-b.eux .pm-droite {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-bord);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 0;
+}
+html[data-epure] .team-b.eux .pm-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ep-bord);
+  padding-bottom: 10px;
+}
+html[data-epure] .team-b.eux .pm-tete b { font: 700 20px var(--ep-police); color: var(--ep-texte); }
+html[data-epure] .team-b.eux .pm-fermer {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  font-size: 20px;
+  cursor: pointer;
+}
+html[data-epure] .team-b.eux .pm-liste {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+}
+html[data-epure] .team-b.eux .pm-pied { display: flex; justify-content: flex-end; }
+
+/* Le nom de l'extension, au-dessus du nom du méchant : lisible sur l'illustration. */
+html[data-epure] .team-b.eux .tb-nomg small {
+  color: var(--ep-jaune);
+  text-shadow: 0 1px 3px #000;
+}

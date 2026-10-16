@@ -5175,7 +5175,11 @@ function rendreMenace() {
         el("div", { class: "tb-menace-ligne" },
             el("span", { class: "tb-menace-k" }, t("Sets modulaires")),
             regle(t("Recommandés"), d.modularConfig === "recommended", () => { d.modularConfig = "recommended"; applyModularConfig(); }),
-            regle(t("Personnalisés"), d.modularConfig === "custom", () => { d.modularConfig = "custom"; }),
+            regle(t("Personnalisés"), d.modularConfig === "custom", () => {
+                d.modularConfig = "custom";
+                // Epure (16/10/2026) : le choix des sets s'ouvre a DROITE, a la place du mechant.
+                if (document.documentElement.dataset.epure) setTimeout(ouvrirPanneauModulaires, 0);
+            }),
             regle(t("Aléatoire"), d.modularConfig === "random", () => { d.modularConfig = "random"; applyModularConfig(); }),
         ),
         el("div", { class: "mod-chips", id: "modular-box" }),
@@ -5496,6 +5500,33 @@ function nomDuSetModulaire(nomFichier) {
     return nomAvecAuteur(titleize(nomFichier), auteur, true);
 }
 
+/** Epure : le choix des sets modulaires dans un panneau qui prend la place de l'image du mechant (colonne de droite). */
+async function ouvrirPanneauModulaires() {
+    const ecran = document.querySelector(".team-b.eux");
+    if (!ecran) return;
+    ecran.querySelectorAll(".pm-droite").forEach((x) => x.remove());
+    const d = state.difficulty;
+    const sel = new Set(d.selectedModularSets);
+    const liste = el("div", { class: "mod-chips pm-liste" }, el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
+    const fermer = () => { panneau.remove(); renderModular(); };
+    const panneau = el("aside", { class: "pm-droite", role: "dialog", "aria-label": t("Sets modulaires") },
+        el("div", { class: "pm-tete" },
+            el("b", { class: "mvl" }, t("Sets modulaires")),
+            el("button", { class: "pm-fermer", "aria-label": t("Fermer"), onclick: fermer }, "×")),
+        liste,
+        el("div", { class: "pm-pied" }, el("button", { class: "btn primary", onclick: fermer }, t("Valider"))));
+    ecran.append(panneau);
+    const tous = (await catalog.encounterSets()).filter((x) => x.kind === "modular");
+    liste.replaceChildren(...tous.map((x) => el("span", {
+        class: "mod-chip" + (sel.has(x.name) ? " on" : ""),
+        onclick: (e) => {
+            sel.has(x.name) ? sel.delete(x.name) : sel.add(x.name);
+            d.selectedModularSets = [...sel];
+            e.currentTarget.classList.toggle("on");
+        },
+    }, nomAvecAuteur(x.displayName, x.auteur, true))));
+}
+
 async function renderModular() {
     await Promise.resolve();
     const box = document.getElementById("modular-box");
@@ -5508,6 +5539,13 @@ async function renderModular() {
         ));
     } else if (d.modularConfig === "random") {
         box.replaceChildren(el("div", { class: "mod-chips" }, ...d.selectedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s)))));
+    } else if (document.documentElement.dataset.epure && document.querySelector(".team-b.eux")) {
+        // Epure : un resume des sets choisis et un bouton, pas la liste entiere (elle
+        // ne tient pas dans la colonne du milieu) ; la liste est dans le panneau de droite.
+        box.replaceChildren(el("div", { class: "mod-chips" },
+            ...d.selectedModularSets.map((n) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(n))),
+            el("button", { class: "tampon", onclick: () => ouvrirPanneauModulaires() },
+                d.selectedModularSets.length ? t("Modifier les sets") : t("Choisir les sets modulaires"))));
     } else {
         box.replaceChildren(el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
         const all = (await catalog.encounterSets()).filter((s) => s.kind === "modular");
