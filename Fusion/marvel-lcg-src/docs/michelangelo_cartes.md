@@ -32,9 +32,12 @@ tous verts après fusion avec `sauvegarde-cle-usb-2026-10-14`).
   « Fix for 50070 »), donc les Nunchuck ne recevaient jamais l'aptitude. Corrigé par l'agent Leonardo
   (`abilities_en_continu`) ; ma version identique (`abilities_everywhere`) a été écartée à la fusion.
   Cas Nunchuck verts avec ce correctif.
-- **Plateau (étape 8 bis)** : aucun cas plateau écrit ni rendu vérifié à l'écran. Sont concernées :
-  tm001b (Nunchuck mis en jeu inclinés par la recherche), tm010/011/012 (améliorations), tm002/tm015
-  (statut Tough, chemin standard), tm013 (retour en alter-ego). **Partie réelle non faite.**
+- **Plateau (étape 8 bis)** : `ui-app/src/board/tmnt-michelangelo-plateau.test.ts` (22 cas verts).
+  Sensibilité (16/10/2026) : `card-model.ts` `jetonMenace` renvoyant `undefined` + `zones.ts` sans
+  attachement => 12 cas ROUGES, lignes restaurées. Couvre tm001b (Nunchuck inclinés, tm009 posée),
+  tm001a/tm009 (jeton de menace), tm002/tm015 (carte Tough), tm005 (statut), tm013, tm011/tm012
+  (Réponse octroyée : chaque Nunchuck est un porteur cliquable, l'incliné `indisponible`).
+  **Rendu pixel et partie réelle : non faits** (les cas lisent le modèle de plateau, pas l'écran).
 - **Cloak** : aucune carte Michelangelo ne l'emploie.
 
 ---
@@ -50,8 +53,8 @@ tous verts après fusion avec `sauvegarde-cle-usb-2026-10-14`).
       2 joueurs ; Crise active ET sans ; `MoveThreat` moteur avec le vrai effet Booyakasha (une `DebugRule`
       ignore la Crise d'office : piège noté). Rouge 11/14 sans module.
 - [x] 7 bis : limite imprimée : NON.
-- [x] 8 : voir preuves communes. [ ] 8 bis : non vérifié à l'écran.
-Carte terminée : **NON** (partie réelle / plateau non faits). Capacité prouvée : OUI.
+- [x] 8 : voir preuves communes. [x] 8 bis : jeton de menace des deux manigances dessiné (`tmnt-michelangelo-plateau.test.ts`, rouge sans `jetonMenace`).
+Carte terminée : **NON** (partie réelle non faite). Capacité et plateau prouvés.
 
 ### tm001b : Mikey (Setup, Action Nunchuck)
 - [x] Étape 2 : `aa001b`, `jubilee/47001b` (Setup + fouille), `si001b`, `sf010` (coût), `40019`.
@@ -62,16 +65,16 @@ Carte terminée : **NON** (partie réelle / plateau non faits). Capacité prouv�
 - [x] Étape 7 : Setup en vraie partie, mulligan complet, tm009 en main, en défausse ; Action : 2 trouvés
       (deck + défausse, inclinés, coût payé), 1 trouvé, 0 trouvé, main vide refusée. Rouge 7/9.
       Mélange non mesuré (message du moteur par défaut de `Search`).
-- [x] 7 bis : NON. [ ] 8 bis : Nunchuck mis en jeu par recherche, non vérifié à l'écran.
-Carte terminée : **NON** (plateau / partie réelle).
+- [x] 7 bis : NON. [x] 8 bis : Nunchuck inclinés dessinés sur l'identité, tm009 posée au Setup avec 3 jetons (rouge sans attachement).
+Carte terminée : **NON** (partie réelle non faite). Plateau prouvé.
 
 ### tm002 : Slash
 - [x] Références : `50098` / `ho016` (Piercing), bases Toughness/Retaliate (fiches lues).
 - [x] Étape 5-6 : ATQ 3 conséq. 2, CTR 0 conséq. 1, coût 3, PV 2 : `desc` conforme au scan.
 - [x] Étape 7 : Toughness, Retaliate (Rhino subit 1), Piercing (Sandman Tough : Tough défaussé + 3 dégâts),
       conséquents (absorbés par Tough ; Slash vaincue sans Tough ; CTR 0 : 1 dégât). Rouge 1/6 (le reste = bases moteur).
-- [x] 7 bis NON. [ ] 8 bis : statut Tough standard, rien de vérifié à l'écran.
-Carte terminée : **NON** (partie réelle).
+- [x] 7 bis NON. [x] 8 bis : carte Tough dessinée sous Slash (rouge sans attachement).
+Carte terminée : **NON** (partie réelle non faite). Plateau prouvé.
 
 ### tm003 : Call for Help
 - [x] Réf. `ls005`, `20005`. Étape 5 : « ally OR the scheme » = UNE seule carte (cas deux disponibles).
@@ -120,6 +123,7 @@ Carte terminée : **OUI** (hors partie réelle, voir communs).
       forcée (-1), vaincue en forme héros (pioche 3), en alter-ego (rien), par un contre du héros (3), par un
       autre joueur (rien). Rouge 6/15 (témoins d'absence / vérifs de limite du moteur).
 - [x] 7 bis NON. Coût imprimé : cartouche sans chiffre, écrit 0.
+8 bis : jeton de menace et pioche de 3 cartes dessinés (`tmnt-michelangelo-plateau.test.ts`).
 Carte terminée : **NON** (cartouche de coût vide non tranchable ; partie réelle).
 
 ### tm010 : Mikey's Skateboard
@@ -135,7 +139,8 @@ Carte terminée : **OUI** (hors partie réelle).
       Response refusée) ; hors attaque (pas d'Interruption) ; Restricted (le plus ancien part au 3e).
       Risque de l'instance partagée (`is_initialized`) : **non observé**. Rouge tm011 4/10, tm012 2/9.
 - [x] Ligne de base mesurée : l'attaque de Rhino vaut 4 dans ce montage (cas témoin).
-Cartes terminées : **NON** (plateau : rattachement/rendu des Nunchuck ; partie réelle).
+8 bis : les deux Nunchuck dessinés et cliquables comme porteurs de la Réponse octroyée (`tmnt-michelangelo-plateau.test.ts`). Pas de ressource octroyée : l'octroi est une Réponse.
+Cartes terminées : **NON** (partie réelle non faite). Plateau prouvé.
 
 ### tm013 : All Alone
 - [x] Réf. `36030`, `sf010`. Étape 7 : révélation (alter-ego, allié et soutien inclinés), « cannot change
