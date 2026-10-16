@@ -112257,5 +112257,11 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "f2d0e2fa170d5648908785968c94731afb3e03617e412492caf4d0fb9b2c1e46"
+ "tmnt_aspect_aggression": [],
+ "tmnt_aspect_basic": [],
+ "tmnt_aspect_justice": [],
+ "tmnt_aspect_leadership": [],
+ "tmnt_aspect_protection": [],
+ "tmnt_aspect_dual": [],
+ "checksum": "987edec381c93f09aa7be3b83ba9fbe6f16e8cebfc91ea983acce40d081cd2d1"
 }
