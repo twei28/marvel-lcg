@@ -2722,7 +2722,15 @@ html[data-affichage="sobre"] *::after {
 html.tel .acc-merci{margin-top:20px;font-size:13px}
 /* Sur PC, les phrases prennent toute la largeur de la fenetre (demande de
    l'utilisateur, 12/10/2026) : moins de lignes, rien a faire defiler. */
-@media (min-width:821px){
+@media (min-width:821px) and (min-height:830px){
+  /* Les remerciements sont ANCRES AU BAS de la fenetre (demande du 16/10/2026) :
+     la derniere phrase juste au-dessus du bord, quelle que soit la hauteur. */
+  .acc-merci{width:min(calc(100vw - 60px),1760px);position:fixed;left:50%;bottom:10px;margin:0;transform:translateX(-50%);z-index:1}
+  /* La place du bloc, pour que la grille ne passe jamais dessous. */
+  .accueil-stage,html[data-ui-version="v2"] .accueil-stage{padding-bottom:120px!important}
+}
+/* Fenetre peu haute : pas la place d'ancrer, le bloc suit la grille comme avant. */
+@media (min-width:821px) and (max-height:829px){
   .acc-merci{width:min(calc(100vw - 60px),1760px);position:relative;left:50%;transform:translateX(-50%)}
 }
 /* PC peu haut : zones utiles reelles d'un navigateur (onglets et barre
