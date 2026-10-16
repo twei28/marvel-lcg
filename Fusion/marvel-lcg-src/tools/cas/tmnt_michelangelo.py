@@ -1218,17 +1218,6 @@ def michelangelo_movethreat(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, f"MoveThreat a deplace {deplace} ; menaces conformes"
-
-
-def michelangelo_debug(monde, aides):
-    out = []
-    for cid in ("tm011", "tm012", "tm001a"):
-        f = aides["par_id"](monde, cid)
-        if f is None:
-            out.append(cid + " absent")
-            continue
-        out.append(cid + " exhaust=" + str(f.IsExhaust()) + " given=" + str(len(f.effect.given_effects)))
-    return False, " | ".join(out)
 '''
 
 VERIFICATIONS = VERIFICATIONS + _SUITE
