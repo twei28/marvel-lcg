@@ -99,6 +99,8 @@ export type CarteDessinee = {
    * `facedown` : dans ce cas le plateau ne montre que le dos, pas la face.
    */
   codeCarte?: string
+  /** Carte d'une paire jumelle posée en panorama (`panorama-jumelles.ts`). */
+  panorama?: 'gauche' | 'droite'
   /** Inclinée (épuisée) : la carte est dessinée couchée. */
   exhausted: boolean
   /** Genre d'affichage (`status`, `upgrade`, `enemy`...), tel que `toScanCard` le publie. */
@@ -143,6 +145,7 @@ export function cartesDessinees(world: World, playerId = 0): CarteDessinee[] {
           peeking: !!unite.carte.peeking,
           facedown: !!unite.carte.facedown,
           crise: unite.carte.crise,
+          panorama: unite.panorama,
           codeCarte: unite.carte.codeCarte,
           ...detailsDessines(unite.carte),
         })
