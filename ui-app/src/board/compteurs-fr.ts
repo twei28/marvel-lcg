@@ -118,6 +118,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // Mutagen Bomb de Raphael (tr014).
   swarm: 'essaim',
   timer: 'minuteur',
+  // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
+  dredge: 'dragage',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

@@ -410,6 +410,11 @@ const TYPES_ZONE_FR: Record<string, string> = {
 }
 
 const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  // Pack TMNT Venus (`venus/__init__.py`, ProposerRetraitDragage) : retrait facultatif de compteurs de dragage.
+  [/^Remove (\d+) dredge counters to draw (\d+) cards$/,
+    (m) => `Retirer ${m[1]} compteurs de dragage pour piocher ${m[2]} cartes`],
+  [/^Remove (\d+) dredge counters to confuse and stun an enemy$/,
+    (m) => `Retirer ${m[1]} compteurs de dragage pour désorienter et sonner un ennemi`],
   // Campagne Skrull Menace (`skrull_menace/campaign.py`) : la règle de coopération, la zone, la campagne experte.
   [/^Discard the top card of your deck to place (.+) in the victory display$/,
     (m) => `Défausser le dessus de ton deck pour placer ${m[1]} dans la pile de victoire`],

@@ -149,6 +149,9 @@ la plus fréquente sur un pack vilain.
       texte de `td016` / `td017`)
 - [x] tuck.md (terme officiel, `td012` Donatello's Shell ; jamais documenté
       avant ce pack)
+- [x] dredge.md (pack `venus`, TMNT Heroes : compteur maison `dredge` posé sur
+      l'identité par `tv001a`, retiré en coût par dix autres cartes ; plafond 6 à
+      confirmer, Q1)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
