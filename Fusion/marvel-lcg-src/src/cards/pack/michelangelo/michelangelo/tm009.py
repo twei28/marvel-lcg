@@ -27,8 +27,9 @@ from . import *
 #    manigance : l'Interruption se declenche alors (3 cartes) si le joueur
 #    est en forme de heros. C'est la lecture litterale.
 #  - « only the Michelangelo player can trigger » : on exige que l'initiateur
-#    soit le PROPRIETAIRE de la carte ; il pioche, pas le joueur qui a vaincu.
-#    # TODO-QUESTION (question 5 : multijoueur).
+#    soit le PROPRIETAIRE de la carte ; il pioche, pas le joueur qui a vaincu
+#    (decision de l'utilisateur, 15/10/2026 : l'insert tranche, forme heros
+#    obligatoire + « only the Michelangelo player » = proprietaire).
 #  - `CanPlayThisSchemeCard()` : la carte peut aussi etre jouee depuis la
 #    main (Call for Help l'y ajoute) ; cout imprime 0.
 

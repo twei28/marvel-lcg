@@ -26,8 +26,8 @@ from . import *
 #  - « deck AND discard pile » : include_discard_pile=True.
 #  - « NUNCHUCK upgrades » : trait NUNCHUCK ET type Upgrade.
 #  - Setup : la manigance tm009 est dans le deck de depart (hero_deck, 15
-#    cartes dont elle). # TODO-QUESTION (question 1 : lecture « Put ... into
-#    play » = fouille du deck, tm009 etant l'une des 15 cartes du deck).
+#    cartes dont elle, 12/15). Decision de l'utilisateur (15/10/2026) : le
+#    Setup FOUILLE le deck (la carte y reste dans les 15) puis la met en jeu.
 #  - Le « → » est un COUT : defausser avant de chercher ; sans carte en main
 #    l'Action n'est pas jouable.
 
@@ -40,12 +40,21 @@ def GetAbilities() -> Sequence['Ability']:
         initiator = effect.GetInitiator()
         if initiator is None:
             return
+        # Le Setup part APRES la pioche de depart et le mulligan : tm009 (une des 15 cartes du
+        # deck) peut donc etre dans le deck, dans la MAIN de depart (6 cartes sur 15) ou dans la
+        # defausse (mulligan). « Put ... into play » est inconditionnel : on la trouve ou qu'elle soit.
         manigance = Search.PlayerCard(
             effect,
             initiator,
             include_player_deck=True,
+            include_discard_pile=True,
             finder=CardFinder(card_ids=["tm009"]),
         )
+        if not manigance:
+            en_main = [f for f in initiator.hand_cards.GetAll()
+                       if getattr(f.paper, "card_id", None) == "tm009"]
+            if en_main:
+                manigance = en_main[0]
         if manigance:
             manigance.PutIntoPlay(initiator, effect)
 

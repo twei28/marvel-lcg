@@ -15,7 +15,8 @@ from . import *
 #    menaces, puis le reste (ecrit en sequence, pas en `SetCostFunc`).
 #  - « ready Michelangelo AND a WEAPON you control » : le heros est TOUJOURS
 #    redresse ; l'arme est facultative en l'absence d'arme (pas de blocage).
-#    # TODO-QUESTION (question 4 : sans arme en jeu, la carte se joue-t-elle ?).
+#    Decision de l'utilisateur (15/10/2026) : jouable SANS WEAPON, seul le cout
+#    doit etre payable.
 #  - « WEAPON you control » : toute amelioration WEAPON que vous controlez
 #    (`GetControlUpgrade`), pas seulement celles du heros.
 #  - « Draw 1 card » : phrase separee, hors du « → ».

@@ -14,11 +14,11 @@ from . import *
 #  - degats : `this.DealDamage([ennemi], X, effect)`.
 #
 # ⚠ Mots-pieges :
-#  - X est le nombre DECLARE par le joueur (0 a 3), PAS les degats reellement
-#    encaisses : le texte dit « Take X damage », et un cout de degats est
-#    considere paye meme si les degats sont prevenus (commentaire de
-#    CostFunc.DealDamage). dt028, lui, mesure les PV perdus : c'est le point
-#    de divergence. # TODO-QUESTION (question 2).
+#  - X = les degats REELLEMENT subis par le heros (decision de l'utilisateur,
+#    15/10/2026, decisions-phase-b.md) : le joueur DECLARE 0 a 3, on inflige
+#    cette valeur au heros, puis X est relu sur les PV perdus (comme dt028).
+#    Un bouclier, Tough ou une reduction qui previent tout ou partie des degats
+#    reduit d'autant l'effet ; zero degat subi = aucun effet.
 #  - « remove X threat from A scheme » : UNE manigance au choix (principale ou
 #    annexe), pas de repartition. « deal X damage to AN enemy » : un seul
 #    ennemi.
@@ -37,8 +37,10 @@ def GetAbilities() -> Sequence['Ability']:
             return
         heros = initiator.GetHero()
 
-        x = initiator.DeclareNumber(0, 3)
-        heros.TakeDamage(this, x, effect)
+        declare = initiator.DeclareNumber(0, 3)
+        avant = heros.health
+        heros.TakeDamage(this, declare, effect)
+        x = avant - heros.health
         if x <= 0:
             return
 

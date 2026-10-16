@@ -93,6 +93,10 @@ def WhenFaceApplyThisInternal(card_finder: CardTypeMin,
                             incite_only: int|None=None,
                             abilities: List[Ability]|None=None,
                             buffs: List[Type['Buff']]|None=None,
+                            # TMNT (Nunchuck/Katana) : octroi d'aptitude a des cartes JOUEUR deja en jeu.
+                            # Sans ce drapeau, `abilities` n'est traite que sur un evenement Faceup
+                            # (cartes de rencontre, « Fix for 50070 »), donc jamais ici.
+                            abilities_everywhere: bool=False,
                             ) -> 'Ability':
     from game.ability.factory import AbilityFactory
     from game.operate.worlds import Worlds
@@ -208,7 +212,7 @@ def WhenFaceApplyThisInternal(card_finder: CardTypeMin,
                 pass
 
             # update = False
-            if abilities != None:
+            if abilities != None and not abilities_everywhere:
                 # Fix for "50070"
                 if OnEvent.Faceup in message.on_events:
                     assert isinstance(message, TriggerMessage)
