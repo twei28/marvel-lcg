@@ -47,6 +47,24 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-16",
+        genre: "heros",
+        fr: "La campagne fan-made Menace Skrull (de Kajislav) arrive en cinq scénarios : Skrull Empire, Super-Skrull, Paibok, Skrull Pantheon et Secret Invasion, avec sa zone de coopération et ses Élites. Hulkling et Lyja rejoignent le roster.",
+        en: "The fan-made Skrull Menace campaign (by Kajislav) arrives in five scenarios: Skrull Empire, Super-Skrull, Paibok, Skrull Pantheon and Secret Invasion, with its cooperation zone and Elites. Hulkling and Lyja join the roster.",
+    },
+    {
+        date: "2026-10-16",
+        genre: "jeu",
+        fr: "Importer un deck : en plus des liens MarvelCDB, les liens MC4DB et les fichiers OCTGN (.o8d). L'éditeur de deck a maintenant sa tuile sur l'accueil.",
+        en: "Importing a deck: besides MarvelCDB links, MC4DB links and OCTGN files (.o8d) now work. The deck builder now has its own tile on the home screen.",
+    },
+    {
+        date: "2026-10-16",
+        genre: "correction",
+        fr: "Plusieurs corrections d'affichage sur iPhone, et un joueur éliminé en pleine phase ne reçoit plus de carte rencontre.",
+        en: "Several display fixes on iPhone, and a player eliminated mid-phase no longer receives an encounter card.",
+    },
+    {
         date: "2026-10-12",
         genre: "correction",
         fr: "Les cartes Team-Up (par exemple Ne vois et n'entends aucun mal) se jouent sans devoir désigner les deux personnages. Déferlement : les dégâts en trop sur un sbire vont directement au méchant, sans question.",
