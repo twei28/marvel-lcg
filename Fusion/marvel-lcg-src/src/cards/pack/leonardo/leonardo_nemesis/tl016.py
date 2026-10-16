@@ -7,8 +7,8 @@ from . import *
 #
 # Cartes de reference :
 #  - `WhenThisRevealed(None, op)` : `an011` / `ho014` ;
-#  - le seul effet est `Cloak(...)` : STUB sans effet, voir tl015 et
-#    `leonardo_nemesis/__init__.py` (TODO-QUESTION Q1).
+#  - le seul effet est `Cloak(...)` : pose la carte d'etat Cloaked, voir tl015
+#    et `leonardo_nemesis/__init__.py` (fiche mots-cles/cloak.md).
 #
 # Mots-pieges :
 #  - « Cloak FOOT SOLDIERS » : la carte elle-meme (pas le vilain) ;

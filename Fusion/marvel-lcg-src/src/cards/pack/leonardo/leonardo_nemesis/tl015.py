@@ -15,11 +15,10 @@ from . import *
 #    (§3.1 du guide) ; `WhenThisRevealed(None, op)` pour le When Revealed ;
 #  - `Worlds.GetFirstPlayer(effect)` pour « the first player ».
 #
-# ⚠⚠ TODO-QUESTION Q1 — « CLOAK » est un mot-cle maison NON DEFINI (ni sur les
-# scans, ni dans l'insert). `Cloak(...)` est un STUB sans effet, dans
-# `leonardo_nemesis/__init__.py`. Les TROIS appels (tl015 x2, tl016) y passent :
-# une seule fonction a ecrire quand la regle sera donnee. Fiche :
-# docs/reference/mots-cles/cloak.md.
+# « CLOAK X » = poser la carte d'etat Cloaked sur X (fiches
+# docs/reference/mots-cles/cloak.md et cloaked.md). `Cloak(...)` vit dans
+# `leonardo_nemesis/__init__.py` ; les TROIS appels du pack (tl015 x2, tl016)
+# y passent et posent `Faces.GiveStatus([carte], "Cloaked", effect)`.
 #
 # ⚠ Pas de `desc.Boost` : seule l'ETOILE est imprimee (aucune icone chiffree).
 # `desc.Nemesis = "Leonardo"` (nom du heros, comme ls014/ls015).
