@@ -789,3 +789,109 @@ html[data-epure] .deck-modal-panel,
 html[data-epure] .demande-centrale .dc-texte {
   box-shadow: var(--ep-biseau), 0 18px 40px rgba(10, 14, 22, 0.22);
 }
+
+/* --- 16. La barre du haut, revue (16/10/2026) --------------------------------
+   « Épuré mais joli, avec des touches de rouge Marvel ». Barre claire un peu
+   plus haute, filet rouge Marvel dessous ; l'état de la partie à gauche, le
+   round en rouge dans la typo du jeu ; boutons fantômes (sans cadre, un fond
+   au survol) ; Auto / Manuel en commutateur, l'actif en rouge ; « Fin du
+   tour » reste le seul bouton plein (jaune). */
+html[data-epure] {
+  --ep-rouge: #e62429;
+  --ep-rouge-fonce: #b51c20;
+}
+
+html[data-epure] .plateau-barre {
+  height: 40px;
+  padding: 0 14px;
+  gap: 4px;
+  background: var(--ep-surface);
+  border-bottom: 3px solid var(--ep-rouge);
+  box-shadow: 0 2px 8px rgba(10, 14, 22, 0.12);
+}
+
+html[data-epure] .plateau-barre .bh-etat {
+  gap: 10px;
+  margin-right: auto;
+  font-size: 13px;
+}
+
+html[data-epure] .plateau-barre .bh-etat strong {
+  color: var(--ep-rouge);
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+html[data-epure] .plateau-barre .bh-etat span,
+html[data-epure] .plateau-barre .bh-etat em {
+  font-size: 13px;
+  font-style: normal;
+  color: var(--ep-texte);
+}
+
+html[data-epure] .plateau-barre .bh-etat em {
+  font-weight: 700;
+}
+
+/* Les boutons secondaires : fantômes. */
+html[data-epure] .plateau-barre button,
+html[data-epure] .plateau-barre .mode-actions {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 13px;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 6px;
+}
+
+html[data-epure] .plateau-barre button:hover:not(:disabled) {
+  background: rgba(20, 24, 32, 0.08);
+  box-shadow: none;
+}
+
+html[data-epure] .plateau-barre button:active,
+html[data-epure] .plateau-barre button[aria-pressed='true'] {
+  background: rgba(20, 24, 32, 0.12);
+  box-shadow: none;
+}
+
+html[data-epure] .plateau-barre button:disabled {
+  background: transparent;
+  box-shadow: none;
+  color: #6f7278;
+}
+
+/* Auto / Manuel : un commutateur, l'actif en rouge Marvel. */
+html[data-epure] .plateau-barre .bh-facon {
+  padding: 2px;
+  gap: 0;
+  border-radius: 8px;
+  background: rgba(20, 24, 32, 0.08);
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix {
+  height: 26px;
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
+  background: var(--ep-rouge);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+/* « Fin du tour » : le seul bouton plein de la barre. */
+html[data-epure][data-affichage] .plateau-barre .bh-fin-tour:not(:disabled) {
+  margin-left: 8px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 6px;
+}
+
+/* L'état de la partie tout à gauche : la rangée des actions prend toute la barre. */
+html[data-epure] .plateau-barre .board-actions {
+  flex: 1;
+  min-width: 0;
+}
