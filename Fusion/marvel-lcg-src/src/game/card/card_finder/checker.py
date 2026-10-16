@@ -225,7 +225,7 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
         if self.has_status == "Any":
             # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed » est le
             # quatrieme etat. `has_status="Any"` l'ignorait.
-            check_status = ["Confused", "Stunned", "Tough", "Exposed"]
+            check_status = ["Confused", "Stunned", "Tough", "Exposed", "Cloaked"]
         elif not isinstance(self.has_status, list):
             check_status = [self.has_status]
         else:
@@ -242,6 +242,9 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
                 is_has_status = True
                 break
             if staus == "Exposed" and face.exposed > 0:
+                is_has_status = True
+                break
+            if staus == "Cloaked" and face.IsCloaked():
                 is_has_status = True
                 break
         if not is_has_status:

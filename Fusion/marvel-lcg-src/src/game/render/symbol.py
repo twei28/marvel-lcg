@@ -41,6 +41,7 @@ class Symbol:
     confused    = f'{Fore.CYAN}Confused{Fore.RESET}'
     tough       = f'{Fore.LIGHTYELLOW_EX}Tough{Fore.RESET}'
     exposed     = f'{Fore.LIGHTRED_EX}Exposed{Fore.RESET}'  # CORRECTIF : pack sentinel
+    cloaked     = f'{Fore.LIGHTCYAN_EX}Cloaked{Fore.RESET}'
 
     # 🟂🟀🟂🟀✧✶☆
     boost = f'{Fore.RED}✶{Fore.RESET}'

@@ -38,6 +38,9 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     def exposed(self) -> int:
         # CORRECTIF (12/09/2026, pack `sentinel`) : quatrieme carte d'etat.
         return self.components.status.exposed
+    @property
+    def cloaked(self) -> int:
+        return self.components.status.cloaked
 
     @property
     def tough_max(self) -> int:
@@ -118,6 +121,9 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     def DiscardTough(self, by_effect: 'Effect', *, rule: 'DISCARD_RULE') -> int:
         return self.LoseState("Tough", by_effect, rule)
 
+    def DiscardCloaked(self, by_effect: 'Effect', *, rule: 'DISCARD_RULE') -> int:
+        return self.LoseState("Cloaked", by_effect, rule)
+
     def DiscardAllTough(self, by_effect: 'Effect') -> int:
         return self.DiscardTough(by_effect, rule="All")
 
@@ -125,6 +131,7 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         self.DiscardConfused(by_effect, rule="All")
         self.DiscardStunned(by_effect, rule="All")
         self.DiscardAllTough(by_effect)
+        self.DiscardCloaked(by_effect, rule="All")
 
     def IsConfused(self) -> bool:
         from game.card.face.base import Unit2
@@ -134,6 +141,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             return self.confused > 0
     def IsTough(self) -> bool:
         return self.tough != 0
+    def IsCloaked(self) -> bool:
+        return self.cloaked != 0
     def IsStunned(self) -> bool:
         from game.card.face.base import Unit2
         if self.card.CastTo(Unit2).IsSteady():
@@ -185,7 +194,7 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             # quatrieme carte d'etat, et l'assertion plus bas aurait fait
             # PLANTER toute carte qui demande `HasStatus("Exposed")`.
             return self.confused > 0 or self.stunned > 0 or self.tough > 0 \
-                or self.exposed > 0
+                or self.exposed > 0 or self.cloaked > 0
         if name == "Confused":
             return self.confused > 0
         if name == "Stunned":
@@ -194,6 +203,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             return self.tough > 0
         if name == "Exposed":
             return self.exposed > 0
+        if name == "Cloaked":
+            return self.cloaked > 0
         assert False, f"{self=} {name=}"
 
     def GetStatusSize(self) -> int:

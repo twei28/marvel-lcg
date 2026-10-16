@@ -16,12 +16,12 @@ import type { WorldCard } from './world'
  * Les statuts du jeu, par `card_id` de leur carte (cards.json, set `status`).
  *
  * `exposed` est le QUATRIEME, ajoute par le pack `sentinel` (T-Wrecks,
- * 12/09/2026). Sans lui ici, une carte Exposé posée ou retirée ne produirait
+ * 12/09/2026) ; `cloaked` le CINQUIEME (pack TMNT, Shredder v3). Sans lui ici, une carte Exposé posée ou retirée ne produirait
  * aucun badge : `estStatut` la rejetterait en silence.
  */
-export type Statut = 'stunned' | 'confused' | 'tough' | 'exposed'
+export type Statut = 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked'
 
-const STATUTS: readonly Statut[] = ['stunned', 'confused', 'tough', 'exposed']
+const STATUTS: readonly Statut[] = ['stunned', 'confused', 'tough', 'exposed', 'cloaked']
 
 function estStatut(valeur: string): valeur is Statut {
   return (STATUTS as readonly string[]).includes(valeur)
@@ -55,7 +55,7 @@ export type DeltaStatut = {
 }
 
 function compter(liste: Statut[] | undefined): Record<Statut, number> {
-  const compte: Record<Statut, number> = { stunned: 0, confused: 0, tough: 0, exposed: 0 }
+  const compte: Record<Statut, number> = { stunned: 0, confused: 0, tough: 0, exposed: 0, cloaked: 0 }
   for (const s of liste ?? []) compte[s] += 1
   return compte
 }
@@ -99,6 +99,7 @@ export function libelleStatut(statut: Statut, value: 1 | -1, langue: 'fr' | 'en'
     confused: { fr: 'Désorienté', en: 'Confused' },
     tough: { fr: 'Tenace', en: 'Tough' },
     exposed: { fr: 'Exposé', en: 'Exposed' },
+    cloaked: { fr: 'Camouflé', en: 'Cloaked' },
   }
   const nom = NOMS[statut][langue]
   if (value > 0) return nom

@@ -18,6 +18,7 @@ class StatusCard(FinalType):
             # CORRECTIF : « Exposed », quatrieme carte d'etat (pack sentinel,
             # 12/09/2026). Sa regle vit sur la carte, pas ici.
             "Exposed": Symbol.exposed,
+            "Cloaked": Symbol.cloaked,
         }[self.name]
 
     @override

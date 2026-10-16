@@ -19,6 +19,12 @@ describe('etatDe', () => {
     expect(etatDe(carte('Exposed'))).toEqual({ lettre: 'E', classe: 'est-expose', nom: 'Exposé' })
   })
 
+  // Cinquieme carte d'etat (« Cloaked », pack TMNT) : nom francais et classe
+  // propres, lettre K (le C est deja a Désorienté).
+  it('reconnait Camouflé, la cinquieme carte d etat', () => {
+    expect(etatDe(carte('Cloaked'))).toEqual({ lettre: 'K', classe: 'est-camoufle', nom: 'Camouflé' })
+  })
+
   // Le moteur pose les statuts avec kind 'status' (Board.tsx:174). Un statut
   // dont le nom serait traduit ou inconnu reste un etat, avec son initiale.
   it('traite toute carte de kind status comme un etat, meme au nom inconnu', () => {

@@ -416,6 +416,15 @@ class RunPuzzle:
         else:
             Faces.GiveStatus([unit], "Exposed", DebugRule(unit))
 
+    def Cloak(self, card: CardName):
+        """Pose (ou retire, bascule) une carte d'etat Cloaked, comme `Tough`."""
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        if unit.IsCloaked():
+            unit.DiscardCloaked(DebugRule(unit), rule=1)
+        else:
+            Faces.GiveStatus([unit], "Cloaked", DebugRule(unit))
+
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
 
