@@ -131,6 +131,44 @@ export function CoucheRencontreSurTable({
     return () => window.clearTimeout(minuteur)
   }, [cle])
 
+  // LES BOOSTS, COORDONNÉS (16/10/2026) : « la première sort du paquet et se met au milieu ; la
+  // deuxième sort du paquet et se met à côté de l'autre ; puis chacune va à côté du méchant ».
+  // Chaque boost passe par trois états : `sortie` (au paquet), `centre` (lu, au milieu, en
+  // grand), `range` (à sa place, à côté de l'attaquant). Tous rejoignent leur place ensemble,
+  // une fois le dernier retourné et lu.
+  const [etatsBoost, setEtatsBoost] = useState<Record<string, 'centre' | 'range'>>({})
+  const totalBoosts = etape?.boosts.length ?? 0
+  const boostsVus = etape ? Math.min(boostsMontres, totalBoosts) : 0
+  useEffect(() => {
+    setEtatsBoost({})
+  }, [cle])
+  // Un nouveau boost sorti : au rendu suivant, il part du paquet vers le milieu.
+  useEffect(() => {
+    if (!actif || boostsVus === 0) return
+    const image = window.requestAnimationFrame(() =>
+      setEtatsBoost((avant) => {
+        const suivant: Record<string, 'centre' | 'range'> = { ...avant }
+        for (let i = 0; i < boostsVus; i++) if (suivant[`b${i}`] === undefined) suivant[`b${i}`] = 'centre'
+        return suivant
+      })
+    )
+    return () => window.cancelAnimationFrame(image)
+  }, [actif, boostsVus, cle])
+  // Tous retournés : on laisse le temps de lire, puis ils rejoignent le méchant ensemble.
+  useEffect(() => {
+    if (!actif || totalBoosts === 0 || boostsVus < totalBoosts) return
+    const minuteur = window.setTimeout(
+      () =>
+        setEtatsBoost((avant) => {
+          const suivant: Record<string, 'centre' | 'range'> = {}
+          for (const k of Object.keys(avant)) suivant[k] = 'range'
+          return suivant
+        }),
+      1700
+    )
+    return () => window.clearTimeout(minuteur)
+  }, [actif, boostsVus, totalBoosts, cle])
+
   if (!actif || !etape || !ancre) return null
 
   const scene = sceneDe(etape)
@@ -174,32 +212,43 @@ export function CoucheRencontreSurTable({
         const props = carte.role === 'dos' ? dosRencontre : carteScene?.(carte.id, true)
         const place = places[i]
         if (!props || !place) return null
+        // La grande taille de lecture, et la place de CE boost parmi tous ceux de l'étape,
+        // alignés au milieu de la table (le total est connu d'avance : le premier ne bouge pas
+        // quand le deuxième arrive).
+        const echelle = Math.max(
+          1.4,
+          Math.min(
+            3.2,
+            (ancre.cadre.h * 0.42) / (place.h || 1),
+            ((ancre.cadre.w * 0.8 - 16 * (totalBoosts - 1)) / Math.max(1, totalBoosts)) / (place.w || 1)
+          )
+        )
+        const largeurLue = place.w * echelle
+        const groupe = totalBoosts * largeurLue + (totalBoosts - 1) * 16
+        const centreX = ancre.cadre.x + ancre.cadre.w / 2 - groupe / 2 + largeurLue / 2 + i * (largeurLue + 16)
+        const centreY = ancre.cadre.y + ancre.cadre.h / 2
+        const etat = etatsBoost[`b${i}`]
+        const transform =
+          etat === 'range'
+            ? 'none'
+            : etat === 'centre'
+              ? `translate(${centreX - (place.x + place.w / 2)}px, ${centreY - (place.y + place.h / 2)}px) scale(${echelle})`
+              : `translate(${ancre.deck.x - place.x}px, ${ancre.deck.y - place.y}px) scale(0.92)`
         return (
           <div
             key={`boost-${carte.role === 'dos' ? i : carte.id}`}
-            // v3 (Q12) : le dernier boost retourne s'agrandit et reste lisible
-            // jusqu'au clic suivant.
             className={`rencontre-sortie est-boost${i === boosts.length - 1 ? ' est-zoom' : ''}`}
             style={{
               left: `${place.x}px`,
               top: `${place.y}px`,
-              // ⚠ `--card-w`, PAS `width`. `ScanCard` se dimensionne sur cette
-              // variable (ScanCard.css) : lui imposer une largeur par-dessus
-              // laissait la carte a sa taille d'origine DANS un encadre plus
-              // grand. Defaut vu en partie : « il y a un grand encadre, mais il
-              // n'y a rien du tout dans la carte ».
+              // ⚠ `--card-w`, PAS `width` (voir `ScanCard.css`).
               '--card-w': `${place.w}px`,
-              // D'où elle vient : le décalage de départ de l'animation, en
-              // pixels, du paquet vers sa place. C'est CE décalage qui fait
-              // « sortir du paquet » plutôt qu'« apparaître à côté ».
-              '--depart-x': `${ancre.deck.x - place.x}px`,
-              '--depart-y': `${ancre.deck.y - place.y}px`,
-              // 16/10/2026 : « elles sortent du deck, elles vont au milieu, elles s'agrandissent
-              // au mieux, puis elles vont à côté du méchant ». Le milieu de la table, et la
-              // taille où la carte se lit (45 % de la hauteur de la table).
-              '--centre-x': `${ancre.cadre.x + ancre.cadre.w / 2 - (place.x + place.w / 2)}px`,
-              '--centre-y': `${ancre.cadre.y + ancre.cadre.h / 2 - (place.y + place.h / 2)}px`,
-              '--centre-echelle': `${Math.max(1.5, Math.min(4, (ancre.cadre.h * 0.45) / (place.h || 1)))}`,
+              transform,
+              opacity: etat === undefined ? 0 : 1,
+              // Au centre, les boosts passent devant les cartes de la table ; rangés, ils redescendent.
+              zIndex: etat === 'centre' ? 5 : 2,
+              animation: 'none',
+              transition: 'transform 900ms cubic-bezier(0.25, 0.7, 0.3, 1), opacity 240ms ease-out',
             } as React.CSSProperties}
           >
             {carteNue(props)}

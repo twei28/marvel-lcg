@@ -301,3 +301,16 @@ html:has(.tsm-bandeau) .scan-card.is-highlighted .scan-frame {
   outline: none !important;
   animation: none !important;
 }
+
+/* Aucun contour natif autour des cartes de la table dans ce mode : les halos sont les miens. */
+html:has(.tsm-bandeau) .plateau-cadre .scan-card,
+html:has(.tsm-bandeau) .plateau-cadre .scan-visuel,
+html:has(.tsm-bandeau) .plateau-cadre .scan-frame {
+  outline: none !important;
+}
+
+/* Les cartes montrées en grand n'ont plus de pastille de type : leur bande du haut, vide, ne
+   doit plus faire dépasser le cadre au-dessus de l'image. */
+.rencontre-sortie .top-strip {
+  display: none !important;
+}

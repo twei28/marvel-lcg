@@ -186,10 +186,13 @@ export function EffetsSurTable({
   const ids = [etape.carteId, etape.cibleId].filter((id): id is number => id !== undefined)
   if (ids.length === 0) return null
   const sauf = ids.map((id) => `:not([data-card-id="${id}"])`).join('')
-  const vises = ids.map((id) => `.plateau-cadre .scan-card[data-card-id="${id}"]`).join(',\n')
+  // 16/10/2026 : plus de contour orange épais ni de lueur sur les cartes qui agissent et qui
+  // subissent. Il se calait sur le BLOC entier de la carte (pastille de type et barre de PV
+  // comprises) et faisait un cadre décentré autour de Spider-Man ; ce sont les halos de
+  // `TableSansModale`, ajustés sur l'image, qui désignent ces cartes. Seul reste l'assombrissement
+  // des autres.
   const regles = [
     `.plateau-cadre .scan-card${sauf}:not(.rencontre-sur-table *) { filter: brightness(0.5) saturate(0.6); }`,
-    `${vises} { outline: 3px solid #f0b95f; outline-offset: 2px; filter: drop-shadow(0 0 10px rgba(240, 185, 95, 0.85)); }`,
   ]
   if (delta && cibleId !== undefined) {
     const jauge = `.plateau-cadre .scan-card[data-card-id="${cibleId}"] .jauge-carte`
