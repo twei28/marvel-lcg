@@ -68,4 +68,11 @@ describe('nomDeCompteur', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('shame')).toBe('honte')
   })
+
+  it('traduit les compteurs des tortues TMNT (swarm de Donatello, timer de tr014)', () => {
+    // td016/td017 (essaims) et tr014 Mutagen Bomb : sans entree, « 4 swarm » / « 2 timer ».
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('swarm')).toBe('essaim')
+    expect(nomDeCompteur('timer')).toBe('minuteur')
+  })
 })

@@ -114,6 +114,10 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   faith: 'foi',
   // Pack hunting_season (09/10/2026) : Reptilian Rage (hs060) pose de la « honte » sur Curtis.
   shame: 'honte',
+  // Packs TMNT (16/10/2026) : essaims de Donatello (td016/td017, PV = compteurs) et
+  // Mutagen Bomb de Raphael (tr014).
+  swarm: 'essaim',
+  timer: 'minuteur',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »
