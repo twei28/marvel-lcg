@@ -74,7 +74,8 @@ Carte terminée : OUI.
 - [x] Étape 6 : coût 2, RES Y. [x] Étape 7 : 4 cas, rouges sans module.
 - [ ] Option « Cloak two friendly characters » : travail de l'AUTRE agent (carte d'état Cloaked), ligne et branche non touchées ici, ses cas sont les siens (non relus ici) ; aucun de mes cas ne la choisit.
 Étape 8 bis : la carte Cloaked est dessinée sur l'identité et sur un allié (`tmnt-donatello-plateau.test.ts`), mais la branche moteur reste à l'autre agent.
-Carte terminée : NON pour le gabarit complet de cette carte : la branche Cloak n'est pas prouvée par ce fichier ; les deux autres options et la structure le sont.
+La branche Cloak est prouvee par `tools/cas/cloaked_cartes.py` (cas « td005 Improvised Tactics : deux amis Cloaked », 17/17 le 16/10/2026, rouge avec l'ancien td005).
+Carte terminée : OUI (hors partie réelle).
 
 ### td006 : Singularity
 - [x] Étape 2 : réf. `16036`, `04009`, `bw024`. [x] Étape 5 : « play only if you control » (injouable sans Gantelet), « 10 damage », overkill / piercing / ranged chacun MUTÉ séparément (flag à False -> cas rouge : overkill, piercing, ranged).

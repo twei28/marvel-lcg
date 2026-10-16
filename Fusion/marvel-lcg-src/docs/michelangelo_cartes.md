@@ -54,7 +54,7 @@ tous verts après fusion avec `sauvegarde-cle-usb-2026-10-14`).
       ignore la Crise d'office : piège noté). Rouge 11/14 sans module.
 - [x] 7 bis : limite imprimée : NON.
 - [x] 8 : voir preuves communes. [x] 8 bis : jeton de menace des deux manigances dessiné (`tmnt-michelangelo-plateau.test.ts`, rouge sans `jetonMenace`).
-Carte terminée : **NON** (partie réelle non faite). Capacité et plateau prouvés.
+Carte terminée : **OUI** (hors partie réelle, voir communs). Capacité et plateau prouvés.
 
 ### tm001b : Mikey (Setup, Action Nunchuck)
 - [x] Étape 2 : `aa001b`, `jubilee/47001b` (Setup + fouille), `si001b`, `sf010` (coût), `40019`.
@@ -66,7 +66,7 @@ Carte terminée : **NON** (partie réelle non faite). Capacité et plateau prouv
       (deck + défausse, inclinés, coût payé), 1 trouvé, 0 trouvé, main vide refusée. Rouge 7/9.
       Mélange non mesuré (message du moteur par défaut de `Search`).
 - [x] 7 bis : NON. [x] 8 bis : Nunchuck inclinés dessinés sur l'identité, tm009 posée au Setup avec 3 jetons (rouge sans attachement).
-Carte terminée : **NON** (partie réelle non faite). Plateau prouvé.
+Carte terminée : **OUI** (hors partie réelle, voir communs). Plateau prouvé.
 
 ### tm002 : Slash
 - [x] Références : `50098` / `ho016` (Piercing), bases Toughness/Retaliate (fiches lues).
@@ -74,7 +74,7 @@ Carte terminée : **NON** (partie réelle non faite). Plateau prouvé.
 - [x] Étape 7 : Toughness, Retaliate (Rhino subit 1), Piercing (Sandman Tough : Tough défaussé + 3 dégâts),
       conséquents (absorbés par Tough ; Slash vaincue sans Tough ; CTR 0 : 1 dégât). Rouge 1/6 (le reste = bases moteur).
 - [x] 7 bis NON. [x] 8 bis : carte Tough dessinée sous Slash (rouge sans attachement).
-Carte terminée : **NON** (partie réelle non faite). Plateau prouvé.
+Carte terminée : **OUI** (hors partie réelle, voir communs). Plateau prouvé.
 
 ### tm003 : Call for Help
 - [x] Réf. `ls005`, `20005`. Étape 5 : « ally OR the scheme » = UNE seule carte (cas deux disponibles).
@@ -124,7 +124,8 @@ Carte terminée : **OUI** (hors partie réelle, voir communs).
       autre joueur (rien). Rouge 6/15 (témoins d'absence / vérifs de limite du moteur).
 - [x] 7 bis NON. Coût imprimé : cartouche sans chiffre, écrit 0.
 8 bis : jeton de menace et pioche de 3 cartes dessinés (`tmnt-michelangelo-plateau.test.ts`).
-Carte terminée : **NON** (cartouche de coût vide non tranchable ; partie réelle).
+Cout : une manigance annexe joueur n'a PAS de cout imprime (scan verifie le 16/10/2026, le 3 du bas est la menace de depart) : `Cost 0` sans effet.
+Carte terminée : **OUI** (hors partie réelle, voir communs).
 
 ### tm010 : Mikey's Skateboard
 - [x] Réf. `01019a`, `bt001b`, `ls007`. Étape 7 : alter-ego -> héros, héros -> alter-ego, déjà incliné. Rouge 2/3.
@@ -140,7 +141,7 @@ Carte terminée : **OUI** (hors partie réelle).
       Risque de l'instance partagée (`is_initialized`) : **non observé**. Rouge tm011 4/10, tm012 2/9.
 - [x] Ligne de base mesurée : l'attaque de Rhino vaut 4 dans ce montage (cas témoin).
 8 bis : les deux Nunchuck dessinés et cliquables comme porteurs de la Réponse octroyée (`tmnt-michelangelo-plateau.test.ts`). Pas de ressource octroyée : l'octroi est une Réponse.
-Cartes terminées : **NON** (partie réelle non faite). Plateau prouvé.
+Cartes terminées : **OUI** (hors partie réelle, voir communs). Plateau prouvé.
 
 ### tm013 : All Alone
 - [x] Réf. `36030`, `sf010`. Étape 7 : révélation (alter-ego, allié et soutien inclinés), « cannot change
