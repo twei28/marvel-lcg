@@ -3491,7 +3491,7 @@ describe('la scène PC délègue au cartouche', () => {
     expect(document.querySelector('.deroule-temps-barre')).toBeNull()
   })
 
-  it('sur la table, Suivant retourne les boosts un par un avant de passer a l etape suivante (Q11)', () => {
+  it('sur la table, tous les boosts sortent ENSEMBLE : un seul geste les valide (16/10/2026)', () => {
     const avecBoosts: EtapeDeroule[] = [
       {
         cle: 'atk',
@@ -3521,9 +3521,7 @@ describe('la scène PC délègue au cartouche', () => {
       act(() => {
         document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
       })
-    // Un seul geste par boost : l'étape reste la même tant que tous ne sont pas retournés.
-    expect(phrase()).toContain('Ultron')
-    espace()
+    // Les deux boosts sont déjà sortis : un seul geste valide l'étape.
     expect(phrase()).toContain('Ultron')
     espace()
     expect(phrase()).not.toContain('Ultron')
