@@ -510,6 +510,13 @@ rouvrir un par un ; **le déclaratif l'emporte** quand il est présent.
 5. Référencer dans `sets_info.json` (`scenarios` et `encounters` du pack).
 6. Valider (§8) + partie test en solo ET à 2 joueurs (les valeurs `"N*"`,
    Hazard et la limite de side schemes ne se voient qu'en multi).
+7. **Scénario à PLUSIEURS vilains** (Sinister Six, Wrecking Crew, Bebop & Rocksteady) :
+   `"villain": []` et les vilains dans `"set_aside"` ; le Setup du complot principal (`27100a`,
+   `tk005a`) les met en jeu après `message.skip_put_villain_into_play = True`. Un vilain à DEUX faces
+   (ALERT / K.O.) est une carte `"idA,idB"` du `set_aside`. Si tous les vilains doivent s'activer
+   (Bebop & Rocksteady) : message `GettingVillainsToActivate` ; si « le vilain » doit être choisi :
+   `GettingVillain.by_effect`. Détail et pièges : `RECETTES-MOTEUR.md` §7septvicies ; exemple complet :
+   `.planning/tmnt/bebop-phase-a.md`.
 
 ## 7. Éditeur web (optionnel mais recommandé pour les cartes)
 
