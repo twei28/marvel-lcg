@@ -4128,4 +4128,36 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'tc016': "Ténacité.\n<b>Réponse forcée</b> : après que Hun attaque et blesse un personnage, sonnez ce personnage.\n<i>(Sbire némésis de Casey Jones.)</i>",
   // casey_jones_nemesis — Purple Dragon Goons (Minion némésis, x3)
   'tc017': "Garde. Patrouille.\n<b>Une fois révélée</b> : placez une carte d'état Tenace sur le méchant.",
+  // alopex — * Alopex (Hero)
+  'ta001a': "<i>Matagi</i> — <b>Réponse forcée</b> : après avoir attaqué un ennemi ou contré une manigance, trouvez Prey et attachez-la à cet ennemi ou à cette manigance.",
+  // alopex — * Alopex (AlterEgo)
+  'ta001b': "<b>Mise en place</b> : mettez votre amélioration Prey de côté.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[KAMA]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
+  // alopex — * Nobody (Ally)
+  'ta002': "[star] <b>Réponse</b> : après que Nobody a attaqué un ennemi portant Prey, hébétez cet ennemi.\n[star] <b>Réponse</b> : après que Nobody a contré une manigance portant Prey, camouflez-la.",
+  // alopex — Bold Strategy (Event)
+  'ta003': "<b>Action de héros</b> : camouflez Alopex. Vous pouvez dépenser jusqu'à 3 ressources [mental] pour hébéter un ennemi pour chaque ressource [mental] dépensée de cette façon.",
+  // alopex — Pounce (Event)
+  'ta004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi. Vous pouvez dépenser jusqu'à 2 ressources [mental] pour infliger 2 dégâts supplémentaires à cet ennemi pour chaque ressource [mental] dépensée de cette façon.",
+  // alopex — Prowl (Event)
+  'ta005': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Mélangez dans votre deck 1 carte portant une ressource [mental] imprimée de votre défausse.",
+  // alopex — Sniff Out Trouble (Event)
+  'ta006': "<b>Action de héros</b> : défaussez des cartes du deck Rencontre jusqu'à ce que vous défaussiez un sbire ou une manigance annexe. Révélez cette carte → piochez 2 cartes et redressez chaque amélioration [[KAMA]] que vous contrôlez.",
+  // alopex — * Mutant Shelter (Support)
+  'ta007': "Votre alter ego gagne +2 REC.\n<b>Action d'alter ego</b> : inclinez Mutant Shelter → mélangez dans votre deck l'allié le plus haut de votre pile de défausse.",
+  // alopex — * Kitsune Kabuki (Upgrade)
+  'ta008': "Chaque compteur de chasseur sur cette carte peut être dépensé comme s'il s'agissait d'une ressource [mental].\n<b>Réponse de héros</b> : après que Prey quitte le jeu, placez 1 compteur de chasseur ici.",
+  // alopex — * Alopex's Kama (Upgrade)
+  'ta009': "Restreint.\nChaque amélioration [[KAMA]] que vous contrôlez gagne : \"<b>Réponse de héros</b> : après que Prey quitte le jeu, inclinez cette carte et dépensez une ressource [mental] → redressez Alopex.\"",
+  // alopex — * Alopex's Other Kama (Upgrade)
+  'ta010': "Restreint.\nChaque amélioration [[KAMA]] que vous contrôlez gagne : \"<b>Action de héros</b> <i>(attaque/contre)</i> : inclinez cette carte → infligez 1 dégât à un ennemi ou retirez 1 menace d'une manigance.\"",
+  // alopex — Prey (Upgrade)
+  'ta011': "Les attaques d'Alopex infligent 1 dégât supplémentaire à l'ennemi attaché.\nLes contres d'Alopex retirent 1 menace supplémentaire de la manigance attachée.\n<b>Interruption forcée</b> : quand cette carte quitte le jeu, mettez-la de côté.",
+  // alopex — Manipulated (Obligation)
+  'ta012': "<b><i>Donnez-la au joueur Alopex.</i></b>\n<b>Action</b> : inclinez Alopex et infligez 1 dégât à chaque personnage que vous contrôlez → défaussez Manipulated.",
+  // alopex — You Belong To Me (SideScheme némésis)
+  'ta013': "<i>Kitsune a planté ses griffes dans Alopex, et elle n'a aucune intention de la lâcher...</i>\n<b>Une fois révélée</b> : chaque joueur défausse 1 carte de sa main.",
+  // alopex — * Kitsune (Minion némésis)
+  'ta014': "<b>Une fois révélée</b> : camouflez Kitsune et inclinez votre identité.\n<i>(Sbire némésis d'Alopex.)</i>",
+  // alopex — Curse of Nine Tales (Treachery némésis)
+  'ta015': "<b>Une fois révélée</b> : choisissez l'un ou l'autre :\n• Défaussez les 3 cartes du dessus de votre deck et placez 1 menace sur le complot principal pour chaque type de carte différent défaussé de cette façon.\n• Défaussez 2 alliés que vous contrôlez.",
 }

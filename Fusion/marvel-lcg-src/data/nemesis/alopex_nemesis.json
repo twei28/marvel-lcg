@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Alopex Nemesis",
+    "encounters": [
+        "ta013",
+        "ta014",
+        "ta015",
+        "ta015",
+        "ta015"
+    ]
+}

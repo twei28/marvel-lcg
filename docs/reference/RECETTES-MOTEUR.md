@@ -1130,6 +1130,36 @@ servi, et elles resservent :
 | Harnais : `Puzzle.Gain('<card_id>')` (`main` / `main_exclusive`) | — | **PREND la carte dans le deck si elle y est** : un deck rempli de `01090` perdait ses cartes dès que la main en réclamait une (« deck 5 au lieu de 6 »). Remplir le deck avec un id absent de la main (`01073`). `main_exclusive` verse aussi la main de départ dans la défausse : ne pas mesurer la défausse « exacte » avec lui, utiliser `Puzzle.EmptyHand()`. |
 | Harnais : Setup de l'alter-ego qui fouille le deck | rejouer `Setup(False)` (`venus_resetup`) | Le Setup tourne à CHAQUE départ de cas : la carte qu'il met en jeu (ici `tv014`) est déjà là. Un cas qui compte ces cartes la retire (`Puzzle.Remove`) ou la compte. |
 | `substituer_pack.py` | base de ports ≤ 48000 pour ~20 cartes | 60 ports par carte, plafond 49146 (« PORT TROP HAUT ») : au-delà, tous les rapports sont « illisibles ». Le filtre est `<card_id> ` AVEC l'espace : le nom des cas doit commencer par `tvNNN `. |
+### 7vicies. Pièges payés par le pack `alopex` (TMNT, 16/10/2026)
+
+- **Une Interruption forcée « when this card leaves play, set this card aside »
+  doit se garder contre sa propre sortie.** `Faces.SetAside` fait QUITTER LE JEU à la
+  carte et renvoie `WhenCardLeavePlay` : l'Interruption se relançait sans fin
+  (`RecursionError` AVALÉE par le moteur). La carte finissait de côté, les cas « elle
+  est de côté » étaient verts, mais `AfterCardLeavePlay` n'était jamais envoyé, donc
+  toute Réponse « after Prey leaves play » restait muette (Kabuki, Kama). Garde :
+  drapeau posé sur la carte autour de l'appel (`ta011.py`). **Symptôme au journal du
+  harnais : des centaines de lignes « [carte] s'active » suivies d'un `RecursionError`.**
+- « Spend up to N [mental] resources » **dans le corps** d'un effet (pas de flèche) :
+  `joueur.AskSpendResourcesInternal(Cost("BBB", up_to=True), effect)` rend les
+  `Resources` dépensées (`.val`) ; `Cost("B...")` accepte mental ET wild. Le pilote du
+  harnais refusait toute dépense partielle (« UpTo » exigeait la couverture totale) :
+  clé `payer_jusqu_a: n` ajoutée à `test_capacites.py` (additive). Il faut aussi des
+  cartes à UNE icône comme carburant (Genius 01089 = 2 icônes d'un coup).
+- Un **Réponse qui part AVANT les dégâts consécutifs** (ally `1*`) : une carte Cloaked
+  posée par cette Réponse absorbe aussitôt le dégât consécutif de l'allié (−2) et part.
+  Mesurer `degats` de l'allié (0 avec, 1 sans), pas la présence du statut.
+- La **défausse du joueur n'est jamais vide** : le harnais défausse la main de départ
+  (`main_exclusive`) AVANT `declencher`. Pour « aucune carte éligible » / « exactement
+  celle-ci », `Puzzle.EmptyPlayerDiscardPile()` (ajoutée) puis `CreatePlayerDiscardPile`
+  DANS `declencher`, pas dans `mise_en_place`.
+- `CreatePlayerDeck(a, b, c)` : la DERNIÈRE carte créée est au DESSUS du deck.
+- Un deck rencontre épuisé par « discard ... until » est **remélangé aussitôt** avec sa
+  défausse : ne pas asserter `defausse_rencontre` après une recherche infructueuse.
+- Un sbire à Garde (01101 Hydra Mercenary) rend le vilain non ciblable : choisir le
+  sbire comme cible d'un événement d'attaque.
+- Une attaque d'allié sur Rhino : les cartes `Puzzle.SetThreat('01097b', 8)` dépassent
+  le seuil du complot et mettent fin à la partie (l'attache échoue) : rester ≤ 6.
 
 ## 8. Données (`data/cards.json`) — conventions
 

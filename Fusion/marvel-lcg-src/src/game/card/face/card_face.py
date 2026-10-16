@@ -263,6 +263,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
+        'hunter',  # CORRECTIF (16/10/2026) : compteur du pack custom alopex (TMNT, Inkwire), ta008 Kitsune Kabuki
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
         'shell',  # CORRECTIF : compteur du pack custom texas_twister (Kajislav), 2 sur Armadillo
         'unworthy',  # CORRECTIF : compteur du pack custom beta_ray_bill (Rainy), 2 sur l'obligation
@@ -422,7 +423,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # sentinel (12/09/2026, fiche docs/reference/mots-cles/exposed.md).
         # Contrairement aux trois autres, sa regle n'est pas dans le moteur :
         # elle est scriptee sur la carte (cards/pack/status/exposed.py).
-        "Confused", "Stunned", "Tough", "Exposed", "Cloaked"
+        "Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed"
     ]
 
     ATTACK_KEYWORD = Literal[

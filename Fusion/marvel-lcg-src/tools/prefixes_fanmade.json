@@ -564,6 +564,13 @@
    "cartes": 18,
    "depuis": "2026-10-16",
    "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Casey Jones v3 ». tc001a Casey Jones (HEROS) / tc001b Casey Jones (ALTER-EGO), tc002-tc013 signature (12 card_id pour 16 exemplaires), tc014 obligation Daddy Issues (bandeau CASEY JONES, donc module dans casey_jones/casey_jones/), tc015-tc017 set nemesis Hun / The Purple Dragons (set Casey Jones Nemesis, 5 cartes : Purple Dragon Goons x3). HOMONYME : l'allie « Casey Jones » de Raphael (tr002) porte le meme nom que le heros : aucune carte du pack ne cherche par le nom, tout passe par card_id, type ou ensemble. Mot-cle maison : aucun (Overswing est un NOM de capacite, pas un mot-cle). Voir .planning/tmnt/casey-questions.md."
+  },
+  "ta": {
+   "pack": "alopex",
+   "libelle": "185. Custom (Alopex)",
+   "cartes": 16,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Alopex v3 ». ta001a Alopex (HEROS) / ta001b Alopex (ALTER-EGO), ta002-ta010 signature (9 card_id pour 15 exemplaires), ta011 Prey (16e carte du deck, creee et mise de cote au Setup par ta001b), ta012 obligation Manipulated (GiveTo « Alopex », Acceleration 2), ta013-ta015 set nemesis « Alopex Nemesis » (You Belong To Me, Kitsune, Curse of Nine Tales x3). Mot-cle maison : Daze (carte d'etat Dazed, scan Baxter Stockman v3) ; Cloak deja defini. Compteur maison `hunter`."
   }
  }
 }

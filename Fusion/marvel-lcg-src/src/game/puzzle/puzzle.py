@@ -209,6 +209,23 @@ class RunPuzzle:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
+    def EmptyPlayerDiscardPile(self):
+        """Vide la defausse du premier joueur (AJOUTEE le 16/10/2026, pack alopex,
+        Prowl : « 1 card with a printed [mental] resource from your discard pile »).
+
+        Le harnais defausse la main de depart AVANT `declencher` (`main_exclusive`) :
+        la defausse n'est donc jamais vide, et un cas qui veut « aucune carte
+        eligible » ou « exactement cette carte » doit la vider lui-meme. Les cartes
+        sont RETIREES DE LA PARTIE, comme `EmptyPlayerDeck`.
+        """
+        from game.operate.faces import Faces
+        joueur = self.world.GetFirstPlayer()
+        for _ in range(50):
+            faces = [f for f in joueur.discard_pile.GetAll() if f is not None]
+            if not faces:
+                return
+            Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
+
     def EmptyPlayerAdditionalDeck(self):
         """Vide le DECK ANNEXE du joueur (deck d'Invocation, deck REGISTERED...).
 
@@ -424,6 +441,15 @@ class RunPuzzle:
             unit.DiscardCloaked(DebugRule(unit), rule=1)
         else:
             Faces.GiveStatus([unit], "Cloaked", DebugRule(unit))
+
+    def Daze(self, card: CardName):
+        """Pose (ou retire, bascule) une carte d'etat Dazed, comme `Cloak`."""
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        if unit.IsDazed():
+            unit.DiscardDazed(DebugRule(unit), rule=1)
+        else:
+            Faces.GiveStatus([unit], "Dazed", DebugRule(unit))
 
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
