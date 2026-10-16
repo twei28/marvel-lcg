@@ -55,6 +55,20 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             value += additional
         return value
 
+    @property
+    def cloaked_max(self) -> int:
+        # CORRECTIF (pack shredder) : un personnage n'a qu'UNE carte Cloaked,
+        # sauf mention contraire (Shredder : 2, 3 ou 4 selon son stade).
+        from game.message import Message
+        from game.card.face.base import Unit2
+
+        value = 1
+        message = Message.GettingUnitAdditionalCloaked(self.card.CastTo(Unit2))
+        message.Send()
+        if message.return_value:
+            value += message.return_value
+        return value
+
     # @property
     # def stun_max(self) -> int:
     #     return 1
@@ -85,6 +99,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         if name == "Stunned" and not self.CanbeStunned():
             return False
         if name == "Tough" and self.IsTough() and self.tough >= self.tough_max:
+            return False
+        if name == "Cloaked" and self.cloaked >= self.cloaked_max:
             return False
 
         would_message = Message.WhenStatusWouldCardPlaceOn(self, name, by_effect)

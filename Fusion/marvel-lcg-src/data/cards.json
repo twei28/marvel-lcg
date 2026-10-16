@@ -109233,5 +109233,757 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "247f50f15a49c74a15a7cb173b3bf844628201a1863e17d0a2dee7e3f4dadc54"
+ "shredder": [
+  {
+   "card_id": "ts001",
+   "type": "Villain",
+   "name": "* Shredder",
+   "subtitle": "",
+   "desc": {
+    "HP": "12*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "I"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Shredder can have up to 2 cloaked status cards.\n<b>Forced Response</b>: After the villain phase ends, give Shredder a cloaked status card.\n<i>\"This city is mine!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts002",
+   "type": "Villain",
+   "name": "* Shredder",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "II"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Shredder can have up to 3 cloaked status cards.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Bladed Armor attachment and reveal it. <i>(Shuffle.)</i>\n<b>Forced Response</b>: After the villain phase ends, give Shredder a cloaked status card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts003",
+   "type": "Villain",
+   "name": "* Shredder",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "III"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Shredder can have up to 4 cloaked status cards.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Kuro Kabuto attachment and reveal it. <i>(Shuffle.)</i>\n<b>Forced Response</b>: After the villain phase ends, give Shredder 2 cloaked status cards.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts004a",
+   "type": "MainScheme",
+   "name": "Clan of Shadows",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>The Foot Clan controls the city streets.</i>\n<b>Content</b>: Shredder (I) and Shredder (II). <i>(Shredder (II) and Shredder (III) for expert mode.)</i> Shredder, Shadow of the Foot, and Standard sets. Two modular encounter sets <i>(Chunin and Foot Goon Squad)</i>.\n<b>Setup</b>: Each player searches the encounter deck for a [[FOOT CLAN]] minion and reveals it.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts004b",
+   "type": "MainScheme",
+   "name": "Clan of Shadows",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "6*",
+    "EscalationThreat": "1*",
+    "Stage": "1B"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>Shredder's chokehold on the city has gone on long enough. You must dismantle his criminal network.</i>\n<b>When Revealed</b>: Cloak Shredder.\n<b>Forced Response</b>: After a [[FOOT CLAN]] minion is defeated, place 1 threat on this scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts005a",
+   "type": "MainScheme",
+   "name": "Shredder's Wrath",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>Your meddling in the affairs of the Foot Clan has attracted the ire of Shredder.</i>\n<b>When Revealed</b>: In player order, each player discards 4 cards from the top of the encounter deck and reveals the topmost [[FOOT CLAN]] minion in the encounter discard pile.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts005b",
+   "type": "MainScheme",
+   "name": "Shredder's Wrath",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "TargetThreat": "10*",
+    "EscalationThreat": "1*",
+    "Stage": "2B"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>Shredder has now set his sights on you.</i>\n<b>When Revealed</b>: Give each enemy a tough status card.\n<b>Forced Response</b>: After Shredder schemes, give Shredder a cloaked status card.\n<b>If this scheme is completed, the players lose the game.</b>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts006",
+   "type": "Attachment",
+   "name": "Bladed Armor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "ATK+": "1"
+   },
+   "traits": [
+    "ARMOR",
+    "FOOT CLAN",
+    "RELIC"
+   ],
+   "set_name": "Shredder",
+   "text": "Attach to Shredder.\nShredder gains Retaliate 1.\n<b>Hero Action</b>: If there are no cloaked status cards on Shredder, take 1 damage and spend 1 resource of any type &#8594; discard this card.\n<i>\"Hey, check out the giant cheese grater.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts007",
+   "type": "Attachment",
+   "name": "* Kuro Kabuto",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1"
+   },
+   "traits": [
+    "ARMOR",
+    "FOOT CLAN",
+    "RELIC"
+   ],
+   "set_name": "Shredder",
+   "text": "Attach to Shredder.\nShredder gains steady.\n<b>Forced Response</b>: After the villain phase ends, cloak Shredder.\n<b>Hero Action</b>: Discard 2 cards from your hand &#8594; discard this card.\n<hr />\n[star] <b>Boost</b>: Attach Kuro Kabuto to Shredder.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts008",
+   "type": "Minion",
+   "name": "Elite Guard",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Guard. Patrol.\n<b>When Revealed</b>: Cloak Shredder.\n<hr />\n[star] <b>Boost</b>: Give Shredder a tough status card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts010",
+   "type": "Minion",
+   "name": "Foot Ninja",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed</b>: Cloak Foot Ninja.\n<b>Forced Interrupt</b>: When Foot Ninja is defeated, shuffle them into the encounter deck.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, cloak the villain.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts012",
+   "type": "Minion",
+   "name": "* Mongo",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "0",
+    "Boost": "1",
+    "Guard": "1",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Guard. Retaliate 1.\n<hr />\n[star] <b>Boost</b>: Stun your hero.\n<i>\"Who knew a sumo wrestler could pull off a kabuki mask?\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts013",
+   "type": "Treachery",
+   "name": "Cloak of Shadows",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed</b>: Cloak each enemy. If you are not engaged with a minion, reveal the topmost [[FOOT CLAN]] minion in the encounter discard pile.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, cloak Shredder.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts015",
+   "type": "Treachery",
+   "name": "Disarming Assault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed</b>: Shredder attacks you. Do not give Shredder any boost cards for this activation. If this attack deals damage to you, discard a [[WEAPON]] you control.\n<hr />\n[star] <b>Boost</b>: Discard a [[WEAPON]] you control.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts017",
+   "type": "Treachery",
+   "name": "Shred",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Place a cloaked status card on Shredder.\n<b>When Revealed (Hero)</b>: Shredder attacks you. Do not give Shredder any boost cards for this activation.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, cloak Shredder.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts020",
+   "type": "SideScheme",
+   "name": "Foot Rikugun",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Hazard": "1",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>The Foot Clan trains their ninja to be relentless assassins.</i>\n<b>Forced Response</b>: After a [[FOOT CLAN]] minion enters play, cloak it. If you cannot, give it a tough status card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts022",
+   "type": "SideScheme",
+   "name": "Throne of the Jōnin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Crisis": "1",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>\"Tonight I will dine on turtle soup.\"</i> —Shredder\n<b>When Revealed</b>: Search the encounter deck and discard pile for a [[FOOT CLAN]] attachment and reveal it. <i>(Shuffle.)</i> If you cannot, place 2[per_hero] threat on this scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts101",
+   "type": "Minion",
+   "name": "* Karai",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "1",
+    "SCH": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Chunin",
+   "text": "<b>When Revealed</b>: Cloak Karai.\n<b>When Defeated</b>: Cloak the villain.\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts102",
+   "type": "Minion",
+   "name": "* Ocho",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "2",
+    "Boost": "1",
+    "Guard": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "MOLE",
+    "YOUKAI"
+   ],
+   "set_name": "Chunin",
+   "text": "Guard.\n[star] Ocho's attacks gain piercing.\n<hr />\n[star] <b>Boost</b>: Search the encounter deck and discard pile for Karai and reveal her. <i>(Shuffle.)</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts103",
+   "type": "Attachment",
+   "name": "* Kira no Ken",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "ATK+": "1*"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "RELIC",
+    "WEAPON"
+   ],
+   "set_name": "Chunin",
+   "text": "Attach to Karai. If Karai is not in play, search the encounter deck and discard pile for Karai and reveal her. Then, attach this card to her.\n[star] Attached minion's attacks gain piercing.\n<i>\"My blade has no equal.\"</i> —Karai",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts104",
+   "type": "Treachery",
+   "name": "Doroppuin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Chunin",
+   "text": "<b>When Revealed</b>: Reveal the topmost minion in the encounter discard pile. Otherwise, this gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains piercing.\n<i>\"Please, try to keep up.\"</i> —Karai",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts201",
+   "type": "Minion",
+   "name": "* Bebop",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "0",
+    "Toughness": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "WARTHOG"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Toughness.\n[star] Bebop's attacks gain piercing.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains piercing. Otherwise, deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts202",
+   "type": "Minion",
+   "name": "* Bludgeon",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "SHARK"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Quickstrike.\n<b>Forced Response</b>: After Bludgeon attacks and damages a character, exhaust that character.\n<hr />\n[star] <b>Boost</b>: Exhaust your hero.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts203",
+   "type": "Minion",
+   "name": "* Hun",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Toughness.\n<b>Forced Response</b>: After Hun attacks and damages a character, stun that character.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to a character, stun that character.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts204",
+   "type": "Minion",
+   "name": "* Koya",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "1",
+    "SCH": "2",
+    "Incite": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "FALCON",
+    "FOOT CLAN"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Incite 1. Quickstrike.\n<b>When Revealed</b>: Heal 2 damage from the villain.\n<hr />\n[star] <b>Boost</b>: Place 1 threat on the main scheme and heal 2 damage from the villain.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts205",
+   "type": "Minion",
+   "name": "* Rocksteady",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "0",
+    "Boost": "1",
+    "Steady": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "RHINOCEROS"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Steady. Quickstrike.\n[star] Rocksteady's attacks gain overkill.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains overkill. Otherwise, deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts206",
+   "type": "SideScheme",
+   "name": "Send Out the Goons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Crisis": "1",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Foot Goon Squad",
+   "text": "<i>Shredder's goons are on the streets shaking down the locals.</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[BRUTE]] minion is discarded. Reveal that minion.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts301",
+   "type": "Minion",
+   "name": "Foot Assassin",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shadow of the Foot",
+   "text": "Quickstrike.\n<b>When Revealed</b>: Cloak Foot Assassin.\n<b>Forced Response</b>: After Foot Assassin attacks, cloak them.\n<i>\"Is your name Edward?\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts303",
+   "type": "Minion",
+   "name": "Foot Soldiers",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shadow of the Foot",
+   "text": "<b>When Revealed</b>: Cloak Foot Soldiers.\n<i>\"Beware the shadows of New York City, my sons. They have many blades.\"</i> —Splinter",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts305",
+   "type": "SideScheme",
+   "name": "Foothold",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Crisis": "1",
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Incite": "2"
+   },
+   "traits": [],
+   "set_name": "Shadow of the Foot",
+   "text": "<i>The Foot Clan has gained a firm foothold.</i>\nHinder 1[per_hero]. Incite 2.",
+   "custom": "Inkwire"
+  }
+ ],
+ "tmnt_standard_expert": [
+  {
+   "card_id": "te001",
+   "type": "Treachery",
+   "name": "No Quarter",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Discard an upgrade or support you control. If no cards were discarded this way, daze your identity.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, daze your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te002",
+   "type": "Treachery",
+   "name": "Outmatched",
+   "subtitle": "",
+   "desc": {
+    "Incite": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "Incite 2.\n<b>When Revealed</b>: Daze your identity.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, daze your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te004",
+   "type": "Treachery",
+   "name": "Pursued by Shadows",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for your nemesis minion and reveal it. <i>(Shuffle.)</i> Cloak your nemesis minion. If your nemesis minion did not enter play this way, this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te005",
+   "type": "Treachery",
+   "name": "Shadow of the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Reveal your set-aside nemesis minion and put it into play engaged with you. Reveal your set-aside nemesis side scheme and put it into play. Shuffle the rest of your set-aside nemesis encounter set into the encounter deck. If your nemesis minion does not enter the game this way, this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te006",
+   "type": "Treachery",
+   "name": "Skulk",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Take 2 indirect damage and cloak the villain.\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te021",
+   "type": "Treachery",
+   "name": "Advance",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed</b>: The villain schemes.\n<i>\"The world will be mine.\"</i> —Krang",
+   "custom": "Inkwire",
+   "ability_link": "01186"
+  },
+  {
+   "card_id": "te023",
+   "type": "Treachery",
+   "name": "Assault",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you.\n<i>\"I will have my revenge!\"</i> —Shredder",
+   "custom": "Inkwire",
+   "ability_link": "01187"
+  },
+  {
+   "card_id": "te025",
+   "type": "Treachery",
+   "name": "Caught Off Guard",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed</b>: Discard an upgrade or support you control. If no cards were discarded this way, this card gains surge.",
+   "custom": "Inkwire",
+   "ability_link": "01188"
+  },
+  {
+   "card_id": "te026",
+   "type": "Treachery",
+   "name": "Gang-Up",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain and each minion engaged with you attacks you.",
+   "custom": "Inkwire",
+   "ability_link": "01189"
+  },
+  {
+   "card_id": "te027",
+   "type": "Treachery",
+   "name": "Shadow of the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed</b>: Reveal your set-aside nemesis minion and put it into play engaged with you. Reveal your set-aside nemesis side scheme and put it into play. Shuffle the rest of your set-aside nemesis encounter set into the encounter deck. If your nemesis minion does not enter the game this way, this card gains surge.",
+   "custom": "Inkwire",
+   "ability_link": "01190"
+  },
+  {
+   "card_id": "te101",
+   "type": "Treachery",
+   "name": "Annihilation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert",
+   "text": "<b>When Revealed</b>: The villain attacks you. That attack gains overkill.\n<hr />\n[star] <b>Boost</b>: If the villain is attacking, this attack gains overkill.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te102",
+   "type": "Treachery",
+   "name": "Haunted by the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert",
+   "text": "<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for your nemesis minion and put it into play engaged with you. <i>(Shuffle.)</i> If your nemesis minion did not enter play this way, exhaust your identity and this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te103",
+   "type": "Treachery",
+   "name": "Sinister Plan",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert",
+   "text": "<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for your nemesis side scheme and reveal it. <i>(Shuffle.)</i> Daze your identity. If your nemesis side scheme did not enter play this way, this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te121",
+   "type": "Treachery",
+   "name": "Exhaustion",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert Reskin",
+   "text": "Surge.\n<b>When Revealed</b>: Exhaust your identity card.\n<i>\"Why so angry little turtle?\"</i> —Bebop",
+   "custom": "Inkwire",
+   "ability_link": "01191"
+  },
+  {
+   "card_id": "te122",
+   "type": "Treachery",
+   "name": "Masterplan",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert Reskin",
+   "text": "<b>When Revealed</b>: Place 4 threat on each side scheme. If there are no side schemes in play, discard cards from the top of the encounter deck until a side scheme is discarded. Reveal that side scheme.\n<i>\"We all must play our part.\"</i> —Rat King",
+   "custom": "Inkwire",
+   "ability_link": "01192"
+  },
+  {
+   "card_id": "te123",
+   "type": "Treachery",
+   "name": "Under Fire",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert Reskin",
+   "text": "Surge.\n<b>When Revealed</b>: Reveal the top card of the encounter deck.\n<i>\"We have them now! There's no escape!\"</i> —Granitor",
+   "custom": "Inkwire",
+   "ability_link": "01193"
+  },
+  {
+   "card_id": "te201",
+   "type": "Environment",
+   "name": "Intense Combatants",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Intense",
+   "text": "<i>TMNT Standard and Expert only.</i>\n<i>(This is an optional environment for those wanting additional hijinx.)</i>\nPermanent. Setup.\n<b>Forced Interrupt</b>: When a status card would be placed on a character, if that character already has 1 copy of that status card on them, intensify them instead.",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "205177fb6bbcbba0f0d7b5d72010c00a14e399d65035a7c7591bf53b1c75ac0e"
 }

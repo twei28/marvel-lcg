@@ -111,6 +111,23 @@ class AbilityFactoryStatus:
         )
 
     @staticmethod
+    def ThisCanHaveAdditionalCloaked(num: int) -> 'Ability':
+        """« This can have up to N+1 cloaked status cards » (pack shredder).
+
+        Capacite constante : repond a `GettingUnitAdditionalCloaked` pour la
+        carte elle-meme tant qu'elle est en jeu. `can_status.cloaked_max`
+        additionne 1 + les retours."""
+        return Ability(
+            AbilityType.NonKeyword,
+            Message.GettingUnitAdditionalCloaked,
+            [
+                Condition2.ThisIsTrigger
+            ],
+            lambda effect, message:
+                message.SetReturn(num)
+        ).SetName("ThisCanHaveAdditionalCloaked")
+
+    @staticmethod
     def UnitCannotBeConfused(which_unit: CardTypeMin) -> 'Ability':
         from game.ability.factory import AbilityFactory
         from game.buff.buff import BuffCannotBeConfused

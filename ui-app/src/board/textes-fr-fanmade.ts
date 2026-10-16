@@ -4054,4 +4054,82 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'tr016': "<b>Une fois révélée</b> : défaussez 1 allié que vous contrôlez. Si vous ne pouvez pas, défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 allié redressé que vous contrôlez.",
   // raphael — Prepare to Rally (Treachery némésis)
   'tr017': "<b>Une fois révélée</b> : défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte de votre main.",
+  // shredder — * Shredder I (Villain)
+  'ts001': "Shredder peut avoir jusqu'à 2 cartes d'état Camouflé.\n<b>Réponse forcée</b> : après la fin de la phase du Méchant, donnez une carte d'état Camouflé à Shredder.\n<i>« Cette ville est à moi ! »</i>",
+  // shredder — * Shredder II (Villain)
+  'ts002': "Shredder peut avoir jusqu'à 3 cartes d'état Camouflé.\n<b>Une fois révélé</b> : cherchez Bladed Armor (attachement) dans le deck Rencontre et la défausse Rencontre et révélez-la. <i>(Mélangez.)</i>\n<b>Réponse forcée</b> : après la fin de la phase du Méchant, donnez une carte d'état Camouflé à Shredder.",
+  // shredder — * Shredder III (Villain)
+  'ts003': "Shredder peut avoir jusqu'à 4 cartes d'état Camouflé.\n<b>Une fois révélé</b> : cherchez Kuro Kabuto (attachement) dans le deck Rencontre et la défausse Rencontre et révélez-le. <i>(Mélangez.)</i>\n<b>Réponse forcée</b> : après la fin de la phase du Méchant, donnez 2 cartes d'état Camouflé à Shredder.",
+  // shredder — Clan of Shadows (MainScheme 1A)
+  'ts004a': '<i>Le Foot Clan contrôle les rues de la ville.</i>\n<b>Contenu</b> : Shredder (I) et Shredder (II). <i>(Shredder (II) et Shredder (III) en mode expert.)</i> Ensembles Shredder, Shadow of the Foot et Standard. Deux ensembles de rencontre modulaires <i>(Chunin et Foot Goon Squad)</i>.\n<b>Mise en place</b> : chaque joueur cherche un sbire [[FOOT CLAN]] dans le deck Rencontre et le révèle.',
+  // shredder — Clan of Shadows (MainScheme 1B)
+  'ts004b': "<i>L'emprise de Shredder sur la ville dure depuis trop longtemps. Vous devez démanteler son réseau criminel.</i>\n<b>Une fois révélée</b> : camouflez Shredder.\n<b>Réponse forcée</b> : après qu'un sbire [[FOOT CLAN]] a été vaincu, placez 1 menace sur cette manigance.",
+  // shredder — Shredder's Wrath (MainScheme 2A)
+  'ts005a': "<i>Votre ingérence dans les affaires du Foot Clan a attiré la colère de Shredder.</i>\n<b>Une fois révélée</b> : dans l'ordre des joueurs, chaque joueur défausse 4 cartes du dessus du deck Rencontre et révèle le sbire [[FOOT CLAN]] le plus haut de la défausse Rencontre.",
+  // shredder — Shredder's Wrath (MainScheme 2B)
+  'ts005b': "<i>Shredder vous a maintenant dans sa ligne de mire.</i>\n<b>Une fois révélée</b> : donnez une carte d'état Tenace à chaque ennemi.\n<b>Réponse forcée</b> : après que Shredder manigance, donnez une carte d'état Camouflé à Shredder.\n<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
+  // shredder — Bladed Armor (Attachment)
+  'ts006': "Attachez-la à Shredder.\nShredder gagne Riposte 1.\n<b>Action de héros</b> : s'il n'y a aucune carte d'état Camouflé sur Shredder, subissez 1 dégât et dépensez 1 ressource de n'importe quel type → défaussez cette carte.\n<i>« Hé, regardez la râpe à fromage géante. »</i> —Raphael",
+  // shredder — * Kuro Kabuto (Attachment)
+  'ts007': 'Attachez-le à Shredder.\nShredder gagne Solide.\n<b>Réponse forcée</b> : après la fin de la phase du Méchant, camouflez Shredder.\n<b>Action de héros</b> : défaussez 2 cartes de votre main → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : attachez Kuro Kabuto à Shredder.',
+  // shredder — Elite Guard (Minion)
+  'ts008': "Garde. Patrouille.\n<b>Une fois révélé</b> : camouflez Shredder.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à Shredder.",
+  // shredder — Foot Ninja (Minion)
+  'ts010': '<b>Une fois révélé</b> : camouflez Foot Ninja.\n<b>Interruption forcée</b> : quand Foot Ninja est vaincu, mélangez-le dans le deck Rencontre.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez le Méchant.',
+  // shredder — * Mongo (Minion)
+  'ts012': "Garde. Riposte 1.\n<hr />\n[star] <b>Boost</b> : sonnez votre héros.\n<i>« Qui aurait cru qu'un lutteur de sumo pouvait porter un masque de kabuki ? »</i> —Michelangelo",
+  // shredder — Cloak of Shadows (Treachery)
+  'ts013': "<b>Une fois révélée</b> : camouflez chaque ennemi. Si vous n'êtes engagé avec aucun sbire, révélez le sbire [[FOOT CLAN]] le plus haut de la défausse Rencontre.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez Shredder.",
+  // shredder — Disarming Assault (Treachery)
+  'ts015': '<b>Une fois révélée</b> : Shredder vous attaque. Ne donnez aucune carte de boost à Shredder pour cette activation. Si cette attaque inflige des dégâts à votre identité, défaussez une [[WEAPON]] que vous contrôlez.\n<hr />\n[star] <b>Boost</b> : défaussez une [[WEAPON]] que vous contrôlez.',
+  // shredder — Shred (Treachery)
+  'ts017': "<b>Une fois révélée (Alter ego)</b> : placez une carte d'état Camouflé sur Shredder.\n<b>Une fois révélée (Héros)</b> : Shredder vous attaque. Ne donnez aucune carte de boost à Shredder pour cette activation.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez Shredder.",
+  // shredder — Foot Rikugun (SideScheme)
+  'ts020': "<i>Le Foot Clan entraîne ses ninjas pour en faire des assassins implacables.</i>\n<b>Réponse forcée</b> : après qu'un sbire [[FOOT CLAN]] entre en jeu, camouflez-le. Si vous ne pouvez pas, donnez-lui une carte d'état Tenace.",
+  // shredder — Throne of the Jōnin (SideScheme)
+  'ts022': '<i>« Ce soir, je dînerai de soupe de tortue. »</i> —Shredder\n<b>Une fois révélée</b> : cherchez un attachement [[FOOT CLAN]] dans le deck Rencontre et la défausse Rencontre et révélez-le. <i>(Mélangez.)</i> Si vous ne pouvez pas, placez 2[per_hero] menaces sur cette manigance.',
+  // chunin — * Karai (Minion)
+  'ts101': '<b>Une fois révélée</b> : camouflez Karai.\n<b>Une fois vaincu</b> : camouflez le Méchant.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
+  // chunin — * Ocho (Minion)
+  'ts102': "Garde.\n[star] Les attaques d'Ocho gagnent Perçant.\n<hr />\n[star] <b>Boost</b> : cherchez Karai dans le deck Rencontre et la défausse Rencontre et révélez-la. <i>(Mélangez.)</i>",
+  // chunin — * Kira no Ken (Attachment)
+  'ts103': "Attachez-le à Karai. Si Karai n'est pas en jeu, cherchez Karai dans le deck Rencontre et la défausse Rencontre et révélez-la. Ensuite, attachez cette carte à elle.\n[star] Les attaques du sbire attaché gagnent Perçant.\n<i>« Ma lame n'a pas d'égale. »</i> —Karai",
+  // chunin — Doroppuin (Treachery)
+  'ts104': "<b>Une fois révélée</b> : révélez le sbire le plus haut de la défausse Rencontre. Sinon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Perçant.\n<i>« Essayez de suivre, s'il vous plaît. »</i> —Karai",
+  // foot_goon_squad — * Bebop (Minion)
+  'ts201': 'Ténacité.\n[star] Les attaques de Bebop gagnent Perçant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Perçant. Sinon, attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
+  // foot_goon_squad — * Bludgeon (Minion)
+  'ts202': 'Coup Rapide.\n<b>Réponse forcée</b> : après que Bludgeon attaque et blesse un personnage, inclinez ce personnage.\n<hr />\n[star] <b>Boost</b> : inclinez votre héros.',
+  // foot_goon_squad — * Hun (Minion)
+  'ts203': 'Ténacité.\n<b>Réponse forcée</b> : après que Hun attaque et blesse un personnage, sonnez ce personnage.\n<hr />\n[star] <b>Boost</b> : si cette activation inflige des dégâts à un personnage, sonnez ce personnage.',
+  // foot_goon_squad — * Koya (Minion)
+  'ts204': 'Incitation 1. Coup Rapide.\n<b>Une fois révélée</b> : soignez 2 dégâts du Méchant.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur la manigance principale et soignez 2 dégâts du Méchant.',
+  // foot_goon_squad — * Rocksteady (Minion)
+  'ts205': 'Solide. Coup Rapide.\n[star] Les attaques de Rocksteady gagnent Déferlement.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Déferlement. Sinon, attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
+  // foot_goon_squad — Send Out the Goons (SideScheme)
+  'ts206': "<i>Les hommes de main de Shredder sont dans les rues et rackettent les habitants.</i>\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire [[BRUTE]] soit défaussé. Révélez ce sbire.",
+  // shadow_of_the_foot — Foot Assassin (Minion)
+  'ts301': "Coup Rapide.\n<b>Une fois révélé</b> : camouflez Foot Assassin.\n<b>Réponse forcée</b> : après que Foot Assassin attaque, camouflez-le.\n<i>« Tu t'appelles Edward ? »</i> —Michelangelo",
+  // shadow_of_the_foot — Foot Soldiers (Minion)
+  'ts303': '<b>Une fois révélé</b> : camouflez Foot Soldiers.\n<i>« Méfiez-vous des ombres de New York, mes fils. Elles ont de nombreuses lames. »</i> —Splinter',
+  // shadow_of_the_foot — Foothold (SideScheme)
+  'ts305': '<i>Le Foot Clan a pris solidement pied.</i>\nEntrave 1[per_hero]. Incitation 2.',
+  // tmnt_standard — No Quarter (Treachery)
+  'te001': "<b>Une fois révélée</b> : défaussez une amélioration ou un soutien que vous contrôlez. Si aucune carte n'a été défaussée ainsi, hébétez votre identité.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, hébétez votre identité.",
+  // tmnt_standard — Outmatched (Treachery)
+  'te002': 'Incitation 2.\n<b>Une fois révélée</b> : hébétez votre identité.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, hébétez votre identité.',
+  // tmnt_standard — Pursued by Shadows (Treachery)
+  'te004': "<b>Une fois révélée</b> : cherchez votre sbire némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-le. <i>(Mélangez.)</i> Camouflez votre sbire némésis. Si votre sbire némésis n'est pas entré en jeu ainsi, cette carte gagne Renfort.",
+  // tmnt_standard — Shadow of the Past (Treachery)
+  'te005': "<b>Une fois révélée</b> : révélez votre sbire némésis mis de côté et mettez-le en jeu engagé avec vous. Révélez votre manigance annexe némésis mise de côté et mettez-la en jeu. Mélangez le reste de votre ensemble de rencontre némésis mis de côté dans le deck Rencontre. Si votre sbire némésis n'entre pas en jeu ainsi, cette carte gagne Renfort.",
+  // tmnt_standard — Skulk (Treachery)
+  'te006': '<b>Une fois révélée</b> : subissez 2 dégâts indirects et camouflez le Méchant.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
+  // tmnt_expert — Annihilation (Treachery)
+  'te101': '<b>Une fois révélée</b> : le Méchant vous attaque. Cette attaque gagne Déferlement.\n<hr />\n[star] <b>Boost</b> : si le Méchant attaque, cette attaque gagne Déferlement.',
+  // tmnt_expert — Haunted by the Past (Treachery)
+  'te102': "<b>Une fois révélée</b> : cherchez votre sbire némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et mettez-le en jeu engagé avec vous. <i>(Mélangez.)</i> Si votre sbire némésis n'est pas entré en jeu ainsi, inclinez votre identité et cette carte gagne Renfort.",
+  // tmnt_expert — Sinister Plan (Treachery)
+  'te103': "<b>Une fois révélée</b> : cherchez votre manigance annexe némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-la. <i>(Mélangez.)</i> Hébétez votre identité. Si votre manigance annexe némésis n'est pas entrée en jeu ainsi, cette carte gagne Renfort.",
+  // tmnt_intense — Intense Combatants (Environment)
+  'te201': "<i>Ensembles TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, « intensify » ce personnage à la place.",
 }

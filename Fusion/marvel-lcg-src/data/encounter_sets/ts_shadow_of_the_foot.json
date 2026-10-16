@@ -1,0 +1,12 @@
+{
+    "version": "0.5.8",
+    "name": "ts_shadow_of_the_foot",
+    "encounters": [
+        "ts301",
+        "ts301",
+        "ts303",
+        "ts303",
+        "ts305",
+        "ts305"
+    ]
+}

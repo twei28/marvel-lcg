@@ -1315,7 +1315,15 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # aucune regle, aucun carnet, comportement inchange.
     regles = [r.strip() for r in (os.environ.get("AUTOPLAY_REGLES") or "").split(",") if r.strip()]
     carnet = {str(k): str(v) for k, v in json.loads(os.environ.get("AUTOPLAY_CARNET") or "{}").items()}
-    scene = SceneLoader.NewFromJson(json.dumps(campagne), None, [texte_deck],
+    # AJOUT 16/10/2026 (scenario Shredder) : `AUTOPLAY_DECK2` (nom d'un deck de depart)
+    # monte une partie a DEUX joueurs : le meme pilote joue les deux sieges.
+    textes_decks = [texte_deck]
+    if os.environ.get("AUTOPLAY_DECK2"):
+        chemin2 = FileManager.FindJsonPath("Hero", os.environ["AUTOPLAY_DECK2"])
+        assert chemin2, f"deck 2 introuvable : {os.environ['AUTOPLAY_DECK2']}"
+        with FileManager.OpenFile(chemin2, read=True) as fichier:
+            textes_decks.append(fichier.Read())
+    scene = SceneLoader.NewFromJson(json.dumps(campagne), None, textes_decks,
                                     graine, regles, carnet)
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
@@ -1350,6 +1358,8 @@ def main():
     ap.add_argument("--modulaires", default="",
                     help="sets modulaires a ajouter au scenario, separes par "
                          "des virgules (ex. : muse)")
+    ap.add_argument("--deck2", default="",
+                    help="second deck de depart : partie a DEUX joueurs (AUTOPLAY_DECK2)")
     ap.add_argument("--reglages", default="",
                     help="JSON de seuils qui surchargent le profil")
     args = ap.parse_args()
@@ -1408,6 +1418,8 @@ def main():
             env["AUTOPLAY_REGLAGES"] = args.reglages
         if args.modulaires:
             env["AUTOPLAY_MODULAIRES"] = args.modulaires
+        if args.deck2:
+            env["AUTOPLAY_DECK2"] = args.deck2
         proc = subprocess.Popen(
             [sys.executable, os.path.abspath(__file__), args.game_dir,
              "--trace", str(args.trace)],

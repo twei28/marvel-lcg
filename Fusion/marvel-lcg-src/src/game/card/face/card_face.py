@@ -209,6 +209,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # MOUSERS / FLYBORGS ne sont pas decoratifs : td014 et td015 les lisent.
         "BO", "SEWERS",
         "MOUSERS", "FLYBORGS", "SWARM",
+        # CORRECTIF : traits du pack custom shredder (Inkwire, TMNT Enemies / Shredder v3).
+        # Purement declaratifs, sauf RELIC / MOLE / YOUKAI lus par aucune carte.
+        "MOLE", "YOUKAI", "WARTHOG", "RHINOCEROS", "SHARK", "FALCON", "RELIC",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

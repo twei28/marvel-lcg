@@ -1510,3 +1510,22 @@
 - **Équipes** : Cercle Intérieur des Marauders
 - **Ennemis** : X-Men, Morlocks
 - **Première apparition** : Marvel Fanfare #1 (1982)
+
+
+## Shredder
+
+`ts001`
+
+
+**FR** — Oroku Saki, dit Shredder, est le chef impitoyable du Foot Clan, une organisation de ninjas criminels qui règne sur les bas-fonds de New York. Maître d'armes en armure à lames, il voue une haine tenace à Splinter et aux Tortues Ninja, qu'il traque sans relâche depuis des années. Protégé par ses lieutenants Karai, Ocho ou Bebop et Rocksteady, il avance masqué dans l'ombre de ses soldats.
+
+
+**EN** — Oroku Saki, known as the Shredder, is the ruthless leader of the Foot Clan, an organization of criminal ninja that rules New York's underworld. A master of arms in blade-covered armor, he nurses a deep hatred of Splinter and the Teenage Mutant Ninja Turtles, whom he has hunted relentlessly for years. Protected by lieutenants such as Karai, Ocho, or Bebop and Rocksteady, he moves unseen in the shadow of his soldiers.
+
+
+- **Identité civile** : Oroku Saki
+- **Équipes** : Foot Clan
+- **Base** : New York
+- **Ennemis** : Les Tortues Ninja, Splinter
+- **Première apparition** : Teenage Mutant Ninja Turtles #1 (1984)
+

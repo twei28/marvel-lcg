@@ -1,0 +1,13 @@
+{
+    "version": "0.5.8",
+    "name": "tmnt_standard",
+    "encounters": [
+        "te001",
+        "te002",
+        "te002",
+        "te004",
+        "te005",
+        "te006",
+        "te006"
+    ]
+}

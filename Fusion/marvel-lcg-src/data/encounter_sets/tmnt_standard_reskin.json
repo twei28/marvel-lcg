@@ -1,0 +1,13 @@
+{
+    "version": "0.5.8",
+    "name": "tmnt_standard_reskin",
+    "encounters": [
+        "te021",
+        "te021",
+        "te023",
+        "te023",
+        "te025",
+        "te026",
+        "te027"
+    ]
+}

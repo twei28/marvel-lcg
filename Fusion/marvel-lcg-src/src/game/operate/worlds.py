@@ -809,8 +809,7 @@ class Worlds:
         standard_encounter_sets: List[str] = []
         world = by_effect.world
         for encounter_set in world.scene.campaign.encounter_sets:
-            if encounter_set.startswith("standard") or \
-                encounter_set.startswith("expert"):
+            if encounter_set.startswith(("standard", "expert", "tmnt_standard", "tmnt_expert")):  # CORRECTIF : ensembles TMNT
                 standard_encounter_sets.append(encounter_set)
         return standard_encounter_sets
 
@@ -819,8 +818,7 @@ class Worlds:
         encounter_sets: List[str] = []
         world = by_effect.world
         for encounter_set in world.scene.campaign.encounter_sets:
-            if encounter_set.startswith("standard") or \
-                encounter_set.startswith("expert"):
+            if encounter_set.startswith(("standard", "expert", "tmnt_standard", "tmnt_expert")):  # CORRECTIF : ensembles TMNT
                 pass
             else:
                 encounter_sets.append(encounter_set)

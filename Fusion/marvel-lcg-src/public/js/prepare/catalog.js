@@ -265,8 +265,8 @@ export function aDeckDeBase(hero) {
 const SOCLE_BASIC = ["01088", "01089", "01090"]; // Energy, Genius, Strength
 
 function encounterKind(name) {
-    if (name.startsWith("standard")) return "standard";
-    if (name.startsWith("expert")) return "expert";
+    if (name.startsWith("standard") || name.startsWith("tmnt_standard")) return "standard";
+    if (name.startsWith("expert") || name.startsWith("tmnt_expert")) return "expert";
     if (name.endsWith("_nemesis")) return "nemesis";
     return "modular";
 }

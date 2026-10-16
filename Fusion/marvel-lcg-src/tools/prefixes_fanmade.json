@@ -550,6 +550,20 @@
    "cartes": 18,
    "depuis": "2026-10-15",
    "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
+  },
+  "ts": {
+   "pack": "shredder",
+   "libelle": "190. Custom (Shredder)",
+   "cartes": 30,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), zip « TMNT Enemies / Shredder v3 ». Scenario Shredder (3 stades ts001-ts003, complots ts004a/b et ts005a/b, set Shredder ts006-ts022 en 17 cartes distinctes), modulaires Chunin (ts101-ts104), Foot Goon Squad (ts201-ts206, dont Bebop ts201 et Rocksteady ts205 en SBIRES : homonymes des vilains du pack tk, jamais cherches par le nom seul) et Shadow of the Foot (ts301-ts305). L'encart Shredder n'est pas une carte : regles codees dans les scripts. Carte d'etat Cloaked et mot-cle Cloak : deja au moteur (fiches cloak.md, cloaked.md). Traits MOLE, YOUKAI, WARTHOG, RHINOCEROS, SHARK, FALCON, RELIC ajoutes a l'enum."
+  },
+  "te": {
+   "pack": "tmnt_standard_expert",
+   "libelle": "191. Custom (TMNT Standard-Expert)",
+   "cartes": 17,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), dossiers « TMNT Standard-Expert (Status Card Standard-Expert) » et « Normal Standard-Expert Reskins ». Partages par TOUS les vilains TMNT : ensembles tmnt_standard (te001-te006), tmnt_expert (te101-te103), tmnt_standard_reskin (te021-te027) et tmnt_expert_reskin (te121-te123, memes capacites que le core 01186-01193 par ability_link). te201 Intense Combatants : carte creee, NON scriptee (mot-cle « intensify » indefini : question)."
   }
  }
 }
