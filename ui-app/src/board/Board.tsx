@@ -353,14 +353,15 @@ export function Unite({
     heroActifId !== undefined && Number(unite.carte.id) === heroActifId
       ? { ...porteurBrut, estActif: true }
       : porteurBrut
+  const porteurPanorama = unite.panorama ? { ...porteur, panorama: unite.panorama } : porteur
   const cartePorteur =
-    !bloquerActionsPassives && !porteur.onSelect && unite.pileContenu
+    !bloquerActionsPassives && !porteurPanorama.onSelect && unite.pileContenu
       ? {
-          ...porteur,
+          ...porteurPanorama,
           onSelect: () =>
             ouvrirPile(unite.pileTitre ?? unite.carte.name, unite.pileContenu!, unite.pileGroupes, { u: unite.carte.id, s: 'pile' }),
         }
-      : porteur
+      : porteurPanorama
 
   return (
     // L'unite garde la largeur de son PORTEUR : les upgrades sont glissees
@@ -531,9 +532,14 @@ function Emplacement({
             // cible de depot de SON emplacement d'origine.
             data-zone={origines.length > 1 ? emplacement.groupesDOrigine?.[index] : undefined}
           >
-            {groupe.map((unite) => (
+            {groupe.map((unite, rang) => {
+              // 14|15 : la carte de DROITE est dessinee avec celle de GAUCHE, dans un
+              // meme bloc, pour qu'aucun espace ne s'intercale (panorama-jumelles.ts).
+              if (unite.panorama === 'droite' && groupe[rang - 1]?.panorama === 'gauche') return null
+              const jumelle = unite.panorama === 'gauche' && groupe[rang + 1]?.panorama === 'droite' ? groupe[rang + 1] : undefined
+              const dessin = (u: UniteAffichee) => (
               <Unite
-                unite={unite}
+                unite={u}
                 interactifs={interactifs}
                 effets={effets}
                 ouvrirPile={ouvrirPile}
@@ -541,11 +547,20 @@ function Emplacement({
                 heroActifId={heroActifId}
                 titreZone={emplacement.titre}
                 pilesAccueillantes={pilesAccueillantes}
-                ordreAmeliorations={ordres?.[cleDePile(Number(unite.carte.id))]}
+                ordreAmeliorations={ordres?.[cleDePile(Number(u.carte.id))]}
                 ordres={ordres}
-                key={unite.cle}
+                key={u.cle}
               />
-            ))}
+              )
+              return jumelle ? (
+                <div className="panorama-jumelles" key={unite.cle}>
+                  {dessin(unite)}
+                  {dessin(jumelle)}
+                </div>
+              ) : (
+                dessin(unite)
+              )
+            })}
           </div>
           )
         })}
