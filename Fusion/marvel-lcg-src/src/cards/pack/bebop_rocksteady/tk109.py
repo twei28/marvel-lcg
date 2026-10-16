@@ -12,6 +12,15 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this
         this.RemoveThreatFromSchemes([this], 2, effect)
 
+    def retire_par_vous(effect: 'Effect', message: 'Message.AfterSchemeRemoveThreat') -> bool:
+        controleur = effect.this.GetControlByPlayer()
+        par = message.would_remove_message.by_face
+        if controleur is None or par is None:
+            return False
+        if par == controleur.GetIdentity():
+            return True
+        return par == effect.this and message.would_remove_message.by_effect.initiator is controleur
+
     def vaincue(effect: 'Effect', message: 'Message.WhenSchemeBeDefeated') -> None:
         def action(joueur: 'Player') -> None:
             joueur.MayChooseOneAbility(
@@ -29,7 +38,11 @@ def GetAbilities() -> Sequence['Ability']:
         # « Hero Response: After you remove threat from this scheme, discard 1 card from
         # your hand -> remove 2 threat from this scheme. »
         AbilityFactory.AfterSchemeRemoveThreat(
-            AbilityType.HeroResponse, "This", apres_retrait, by_who="You",
+            AbilityType.HeroResponse, "This", apres_retrait,
+            # « After YOU remove threat » : l'identite du controleur (pas ses allies), ou la
+            # carte elle-meme quand c'est SA Reponse (resolue par son controleur) qui retire :
+            # la Reponse se redeclenche alors (TODO-QUESTION Q6, bebop-questions.md).
+            conditions=[lambda effect, message: retire_par_vous(effect, message)],
         ).SetCostFunc(CostFunc.Discard("YourHandCards", range=(1, 1))),
         AbilityFactory.WhenSchemeBeDefeated(AbilityType.WhenDefeated, "This", vaincue),
     ]
