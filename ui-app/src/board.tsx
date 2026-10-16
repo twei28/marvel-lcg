@@ -3680,7 +3680,7 @@ export function PagePartie({
       if (affichage === 'epure') {
         racine.style.setProperty('--marque-heros', marqueDe(couleurs) ?? 'none')
         // Les deux premieres couleurs du heros, en accent (16/10/2026, « epure mais pas mort ») :
-        // les boules du fond et le liseré sous les bandeaux (affichage-epure.css, §15).
+        // le liseré sous les bandeaux (affichage-epure.css, §15).
         const [c1, c2] = [couleurs[0], couleurs[1] ?? couleurs[0]]
         racine.style.setProperty('--ep-heros-1', `rgb(${c1[0]},${c1[1]},${c1[2]})`)
         racine.style.setProperty('--ep-heros-2', `rgb(${c2[0]},${c2[1]},${c2[2]})`)

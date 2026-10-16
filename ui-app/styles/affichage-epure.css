@@ -748,20 +748,9 @@ html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-
 }
 
 /* --- 15. « Épuré, mais pas mort » (16/10/2026) --------------------------------
-   Trois touches, rien de plus : des boules floues sur la table (aux couleurs du
-   heros quand on les connait), un liseré de la couleur du heros sous les
-   bandeaux, et un relief doux sous les cartes. */
-html[data-epure] .plateau-scene,
-html[data-epure] body.a-halo-heros .plateau-scene {
-  /* Des disques flous, bord doux : visibles, mais jamais un motif. */
-  background:
-    radial-gradient(circle 260px at 14% 32%, color-mix(in srgb, var(--ep-heros-1, #ffffff) 26%, transparent) 0, color-mix(in srgb, var(--ep-heros-1, #ffffff) 14%, transparent) 55%, transparent 100%),
-    radial-gradient(circle 320px at 80% 74%, color-mix(in srgb, var(--ep-heros-2, #ffffff) 22%, transparent) 0, color-mix(in srgb, var(--ep-heros-2, #ffffff) 10%, transparent) 55%, transparent 100%),
-    radial-gradient(circle 180px at 58% 18%, rgba(255, 255, 255, 0.28) 0, rgba(255, 255, 255, 0.12) 55%, transparent 100%),
-    radial-gradient(circle 140px at 36% 82%, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.08) 55%, transparent 100%),
-    radial-gradient(circle 120px at 90% 20%, color-mix(in srgb, var(--ep-heros-1, #ffffff) 18%, transparent) 0, transparent 100%),
-    var(--ep-fond);
-}
+   Deux touches : un liseré de la couleur du heros sous les bandeaux, et un
+   relief doux sous les cartes. */
+/* Les boules floues du fond, essayees puis retirees le meme jour : la table reste unie. */
 
 /* Le liseré du heros : sous la barre du haut et sous chaque bandeau jaune. */
 html[data-epure] .plateau-barre {
