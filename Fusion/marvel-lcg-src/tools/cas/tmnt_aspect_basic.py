@@ -89,7 +89,7 @@ CAS += _paire("ub006", "13018", "({X}) : joue de la main -> pioche 1 carte",
 # ub007 Digging Deep <- 40060, defaussee du dessus du deck par le Rampage 3 de ua015 Demolish
 CAS += _paire("ub007", "40060", "({X}) : defaussee du dessus du deck (Rampage de Demolish) -> revient en main",
               "« After this card is discarded from the top of your deck, add it to your hand »",
-              [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('{X}', '01089', '01089', '01089')"], [],
+              [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('01089', '01089', '{X}', '01089', '01089')"], [],
               {"en_main": ["{X}"], "degats": [["01094", 8]]},
               main_exclusive=["ua015", "01090", "01088"], jouer=["ua015"], cibles=["01094"], accepter_choix=True)
 # ub009 Down Time <- 05033
@@ -125,7 +125,7 @@ CAS += _paire("ub013", "49022", "({X}) : Hercules : revele Ares (sbire nemesis),
 # ub015 Genghis <- 40057 White Fox, defausse du dessus du deck par Demolish
 CAS += _paire("ub015", "40057", "({X}) : defausse du dessus du deck (Rampage de Demolish) -> mis en jeu",
               "« After Genghis is discarded from the top of your deck, put him into play under your control »",
-              [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('{X}', '01089', '01089', '01089')"], [],
+              [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('01089', '01089', '{X}', '01089', '01089')"], [],
               {"en_jeu": ["{X}"], "degats": [["01094", 8]]},
               main_exclusive=["ua015", "01090", "01088"], jouer=["ua015"], cibles=["01094"], accepter_choix=True)
 # ub017 Gofu Talisman <- 45050 Bloodgem
@@ -142,7 +142,7 @@ CAS += _paire("ub017", "45050", "({X}) : NON jouable par Spider-Man (sans MYSTIC
 # ub021 Ingenuity <- 29027
 CAS += _paire("ub021", "29027", "({X}) : Ressource : s'incliner -> paie seule Down Time (cout 1)",
               "« Exhaust Ingenuity -> generate a [mental] resource »",
-              [_jeu("{X}")], [], {"en_jeu": ["ub009"], "exhausted": ["{X}"]},
+              [HEROS, _jeu("{X}")], [], {"en_jeu": ["ub009"], "exhausted": ["{X}"]},
               main_exclusive=["ub009"], jouer=["ub009"])
 CAS += _paire("ub021", "29027", "({X}) : jouable par Peter Parker (GENIUS), pas par Spider-Man (heros, sans GENIUS)",
               "« Play only if your identity has the GENIUS trait » : la forme alter ego de Spider-Man a GENIUS",
@@ -167,14 +167,14 @@ CAS += _paire("ub028", "01083", "({X}) : entree en jeu -> sonne Rhino",
 # ub030 Multitalented <- 47021
 CAS += _paire("ub030", "47021", "({X}) : paye en [physical] seulement -> 2 degats, menace intacte",
               "« If you paid for this event using at least 1: [physical] - Deal 2 damage »",
-              [HEROS, "Puzzle.SetThreat('01097b', 5)"], [], {"degats": [["01094", 2]], "menace": [["01097b", 5]]},
+              [HEROS], ["Puzzle.SetThreat('01097b', 5)"], {"degats": [["01094", 2]], "menace": [["01097b", 5]]},
               main_exclusive=["{X}", "01090", "01090"], jouer=["{X}"], cibles=["01094"])
 # ub031 Mutagen <- 38019 X-Gene
 CAS += _paire("ub031", "38019", "({X}) : Ressource [wild] pour un evenement d'identite (Swinging Web Kick, cout 3)",
               "« generate a [wild] resource for an identity-specific event » : Strength (2) + Mutagen (1) = 3",
               [HEROS, _jeu("{X}")], [], {"degats": [["01094", 8]], "exhausted": ["{X}"]},
               main_exclusive=["01005", "01090"], jouer=["01005"], cibles=["01094"])
-CAS += _paire("ub031", "38019", "({X}) : la ressource ne paie PAS un evenement de base (Basic Spell via Strength seul ? non : Multitalented)",
+CAS += _paire("ub031", "38019", "({X}) : la ressource ne paie PAS un evenement de base (Multitalented reste en main)",
               "contre-cas « for an identity-specific event » : Multitalented (cout 3, basique) reste en main",
               [HEROS, _jeu("{X}")], [], {"en_main": ["ub030"], "degats": [["01094", 0]]},
               main_exclusive=["ub030", "01090"], jouer=["ub030"], cibles=["01094"])
@@ -225,9 +225,15 @@ CAS += _paire("ub051", "15019", "({X}) : pioche 2, defausse 1 (main : 0 -> 1)",
 # ub053 Splinter <- 60029 Stick
 CAS += _paire("ub053", "60029", "({X}) : Elektra (MARTIAL ARTIST) contre : option +1 en s'inclinant (menace 5 -> 3)",
               "« Exhaust Splinter -> that character gets +1 to that basic power for this use »",
-              [HEROS, _jeu("{X}"), _jeu("60007"), "Puzzle.SetThreat('01097b', 5)"], ["Puzzle.Thwart('60007')"],
+              [HEROS, _jeu("{X}"), _jeu("60007")], ["Puzzle.SetThreat('01097b', 5)", "Puzzle.Thwart('60007')"],
               {"menace": [["01097b", 3]], "exhausted": ["{X}"]},
-              main_exclusive=["01089"], cibles=["01097b"])
+              main_exclusive=["01089"], cibles=["01097b"], accepter_choix=True)
+CAS += _paire("ub053", "60029", "({X}) incline : option -1 et redresser (menace 5 -> 5, carte redressee)",
+              "« That character gets -1 to that basic power for this use. Ready Splinter » : Elektra THW 1 - 1 = 0",
+              [HEROS, _jeu("{X}"), _jeu("60007"), "Puzzle.Exhaust('{X}')"],
+              ["Puzzle.SetThreat('01097b', 5)", "Puzzle.Thwart('60007')"],
+              {"menace": [["01097b", 5]], "pret": ["{X}"]},
+              main_exclusive=["01089"], cibles=["01097b"], accepter_choix=True, preferer_option="-1")
 # ub055 Team-Building Exercise <- 12024
 CAS += _paire("ub055", "12024", "({X}) : Leonardo joue son Katana (NINJA, cout 1) pour 0",
               "« play a card from your hand that shares a trait with your hero, reducing its resource cost by 1 »",
