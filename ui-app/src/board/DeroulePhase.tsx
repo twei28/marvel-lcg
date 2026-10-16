@@ -1835,7 +1835,11 @@ export function DeroulePhase({
         {etape && ONGLETS.some((o) => o.cle === etape.temps) ? (
           <span className="tsm-temps">{t(ONGLETS.find((o) => o.cle === etape.temps)!.libelle)}</span>
         ) : null}
-        <CoucheTraitPhase etape={etape} actif={!enVolDeJeton} />
+        <CoucheTraitPhase
+          etape={etape}
+          actif={!enVolDeJeton}
+          sansEtiquette={Boolean(essai && etape && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0))}
+        />
         <EffetsSurTable
           etape={etape}
           actif={!questionAuJoueur}

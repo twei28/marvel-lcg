@@ -28,3 +28,24 @@
 .jeton-coup.est-menace {
   padding-top: 16px;
 }
+
+/* Les DÉGÂTS (16/10/2026) : un badge plat Épuré — disque sombre, anneau rouge Marvel, chiffre en
+   Bangers —, dans la famille de la pastille « N dégâts » de la ligne du haut. L'ancienne boule
+   rouge brillante ne ressemblait à rien d'autre à l'écran. */
+.jeton-coup.est-degats {
+  width: 76px;
+  height: 76px;
+  box-sizing: border-box;
+  background: #1c2028;
+  border: 5px solid #e62429;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.55),
+    0 8px 18px rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 34px;
+  letter-spacing: 0.03em;
+  -webkit-text-stroke: 0;
+  filter: none;
+}

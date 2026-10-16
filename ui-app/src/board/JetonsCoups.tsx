@@ -59,7 +59,8 @@ function creerJeton(c: Coup): HTMLElement {
   const el = document.createElement('div')
   el.className = `jeton-coup est-${c.genre}`
   const image = c.genre === 'menace' ? jetonMenaceImage : c.genre === 'acceleration' ? jetonAccelerationImage : jetonDegatsImage
-  el.style.backgroundImage = `url(${image})`
+  // Les dégâts : un badge plat, dessiné en CSS (`.jeton-coup.est-degats`), pas l'ancienne boule brillante.
+  if (c.genre !== 'degats') el.style.backgroundImage = `url(${image})`
   el.style.visibility = 'hidden'
   el.textContent = c.genre === 'degats' ? `-${c.montant}` : c.genre === 'acceleration' ? '' : `${c.montant}`
   el.setAttribute('aria-hidden', 'true')

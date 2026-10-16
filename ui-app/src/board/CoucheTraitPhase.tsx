@@ -25,9 +25,12 @@ import { alerteMenace, contenuDuTrait, deltaSurTable, traitEntre, type Trait } f
 export function CoucheTraitPhase({
   etape,
   actif,
+  sansEtiquette = false,
 }: {
   etape: EtapeDeroule | undefined
   actif: boolean
+  /** Le jeton porte déjà le nombre (16/10/2026) : pas de pastille « 4 dégâts » au milieu du trait. */
+  sansEtiquette?: boolean
 }) {
   const [trait, setTrait] = useState<Trait | undefined>(undefined)
   const [cadre, setCadre] = useState<{ w: number; h: number } | undefined>(undefined)
@@ -79,8 +82,9 @@ export function CoucheTraitPhase({
   const contenu = contenuDuTrait(etape)
   // Rien à annoncer et aucune unité : le trait montre la direction, sans
   // étiquette. Un cartouche vide ferait un point noir posé sur la table.
-  const etiquette =
-    contenu.montant !== undefined
+  const etiquette = sansEtiquette
+    ? ''
+    : contenu.montant !== undefined
       ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
       : contenu.unite
         ? t(contenu.unite)
