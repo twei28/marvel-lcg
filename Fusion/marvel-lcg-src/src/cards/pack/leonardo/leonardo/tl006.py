@@ -15,9 +15,9 @@ from . import *
 # Mots-pieges :
 #  - « This attack gains PIERCING » : inconditionnel (pas de choix) ;
 #  - « paid with [energy][mental][physical] resources » : LECTURE LITTERALE =
-#    au moins UNE de chaque couleur. TODO-QUESTION Q3 : une ressource [wild]
-#    compte-t-elle comme une couleur manquante ? Ici on teste HasColor sur
-#    chacune des trois, ce qui suit le comportement du moteur pour le wild ;
+#    au moins UNE de chaque couleur. DECISION UTILISATEUR (15/10/2026) : au moins
+#    UNE ressource de chaque couleur ; on teste HasColor sur chacune des trois
+#    (une ressource wild compte pour toute couleur, regle du jeu) ;
 #  - « you MAY return » : optionnel -> deux branches, dont « Decline » ;
 #  - libelle `(attack)`.
 
@@ -35,7 +35,7 @@ def GetAbilities() -> Sequence['Ability']:
         if joueur is None:
             return
         payees = effect.GetPaidResources()
-        # TODO-QUESTION Q3 : « [energy][mental][physical] » = une de chaque.
+        # « [energy][mental][physical] » = au moins une de chaque couleur.
         if payees.HasColor("Y") and payees.HasColor("B") and payees.HasColor("R"):
             joueur.ChooseAbilities(
                 effect,

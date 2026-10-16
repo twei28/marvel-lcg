@@ -366,7 +366,13 @@ class AbilityFactoryResources:
             for_card_from_hand=from_hand,
             is_play_card=is_play_card,
             who_trigger_this_effect=who_trigger_this_effect,
-            bind_ability=lambda face: face.effect.Find(func_name="DoGenerateResources")[0]
+            # AJOUT 16/10/2026 (octroi Katana TMNT) : la depense « DiscardPay »
+            # porte AUSSI le nom DoGenerateResources ; pour une aptitude OCTROYEE
+            # (enregistree apres les capacites statiques) `[0]` rendait elle. On
+            # prefere donc toute depense qui n'est pas DiscardPay ; repli [0].
+            bind_ability=lambda face: ([e for e in face.effect.Find(func_name="DoGenerateResources")
+                                        if not e.ability.IsFunction("DiscardPay")]
+                                       or face.effect.Find(func_name="DoGenerateResources"))[0]
         ).SetFuncName("CanGenerateResources") \
         .SetSecondType(ability_type) \
         .SetGenerateResourcesExOperation(ex_operation)
