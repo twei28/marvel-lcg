@@ -187,6 +187,7 @@ import { suivreDefilements, useDefilementsDuJoueur } from './board/defilement-pa
 import { phraseDuRefus } from './board/raisons-refus'
 import { CoucheRefusEffets } from './board/refus-effets'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
+import { CiblageSurTable } from './board/TableSansModale'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './board/marvelcdb'
@@ -4211,6 +4212,13 @@ export function PagePartie({
   // validation. Ceux de la table gardent leur halo et restent cliquables
   // derriere le voile : les deux chemins menent au meme `agir`.
   const ciblageEnScene = sceneCentrale && phaseMechantEnCours && interaction.option !== undefined
+  // « Sur la table », sans fenêtre (16/10/2026) : choisir des cibles, dans l'ordre s'il le faut, se fait
+  // sur les cartes elles-mêmes. Le paiement garde le panneau d'action.
+  const ciblageSurTable =
+    !sceneCentrale &&
+    phaseMechantEnCours &&
+    interaction.option !== undefined &&
+    (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'confirm')
   // Rapport n76 (Yarro, 10/10/2026) : quand TOUTES les cibles sont hors table,
   // le selecteur devient une fenetre avec Annuler / Valider, et le panneau
   // central (qui le recouvrait) se retire. Des cibles aussi sur la table : la
@@ -4444,7 +4452,7 @@ export function PagePartie({
           tailleMain={etat.monde?.players[etat.joueurDemande ?? playerId]?.hand_size}
           choixDansLaScene={ciblageEnScene}
           // Le sous-cadre du cartouche du bas porte tout, paiement compris (D6).
-          sousCadre={nouvelleScenePC && phaseMechantEnCours && interaction.option !== undefined}
+          sousCadre={(nouvelleScenePC && phaseMechantEnCours && interaction.option !== undefined) || ciblageSurTable}
         />
       )}
 
@@ -4674,6 +4682,19 @@ export function PagePartie({
                   choisies={interaction.cibles.length}
                   minimum={interaction.option.target_num_range[0]}
                   maximum={interaction.option.target_num_range[1]}
+                  prete={interaction.prete}
+                  raison={interaction.raison}
+                  valider={interaction.valider}
+                  annuler={interaction.annuler}
+                />
+              ) : ciblageSurTable ? (
+                <CiblageSurTable
+                  titre={nomLisible(interaction.option!)}
+                  choisies={interaction.cibles.length}
+                  maximum={interaction.option!.target_num_range[1]}
+                  cibles={[...interaction.cartes.entries()]
+                    .filter(([, e]) => e.role === 'cible' && e.agir !== undefined)
+                    .map(([id, e]) => ({ id, choisie: e.choisie, ordre: e.ordre, fois: e.fois, agir: e.agir! }))}
                   prete={interaction.prete}
                   raison={interaction.raison}
                   valider={interaction.valider}

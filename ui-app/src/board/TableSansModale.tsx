@@ -333,3 +333,92 @@ export function BilanSurTable({
     </div>
   )
 }
+
+export type CibleSurTable = {
+  id: number
+  choisie: boolean
+  /** Rang dans une sélection ordonnée (1, 2…) : le gros numéro posé sur la carte. */
+  ordre?: number
+  fois?: number
+  agir: () => void
+}
+
+/**
+ * Le CIBLAGE d'une action, sans fenêtre (16/10/2026) : les cartes qu'on peut viser brillent en vert,
+ * un clic les choisit, et quand la sélection est ordonnée un gros numéro (1, 2…) se pose sur chacune.
+ * La ligne du haut dit ce qu'on choisit, compte (n/max), et porte « Valider » et « Annuler ».
+ */
+export function CiblageSurTable({
+  titre,
+  choisies,
+  maximum,
+  cibles,
+  prete,
+  raison,
+  valider,
+  annuler,
+}: {
+  titre: string
+  choisies: number
+  maximum: number
+  cibles: CibleSurTable[]
+  prete: boolean
+  raison: string
+  valider: () => void
+  annuler?: () => void
+}) {
+  return (
+    <>
+      <div className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
+        <span className="tsm-phrase">
+          <b>{titre}</b>
+          {maximum > 0 ? <span className="tsm-compte"> {choisies}/{maximum}</span> : null}
+        </span>
+        <button
+          type="button"
+          className="tsm-bouton"
+          disabled={!prete}
+          title={prete ? undefined : raison}
+          onClick={valider}
+          data-choix-unique={prete ? '' : undefined}
+        >
+          {t('Valider')}
+          {prete ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
+        </button>
+        {annuler ? (
+          <button type="button" className="tsm-bouton est-refus" onClick={annuler}>
+            {t('Annuler')}
+          </button>
+        ) : null}
+      </div>
+      {cibles.map((c) => (
+        <CarteCiblable key={c.id} cible={c} />
+      ))}
+    </>
+  )
+}
+
+function CarteCiblable({ cible }: { cible: CibleSurTable }) {
+  const boite = useBoiteDeCarte(cible.id, 'cible')
+  if (!boite) return null
+  return (
+    <>
+      <button
+        type="button"
+        className={`tsm-utilisable${cible.choisie ? ' est-choisie' : ''}`}
+        style={boiteStyle(boite)}
+        onClick={cible.agir}
+        aria-pressed={cible.choisie}
+      />
+      {cible.ordre !== undefined || (cible.fois ?? 0) > 1 ? (
+        <span
+          className="tsm-numero"
+          style={{ left: `${boite.x + boite.w / 2}px`, top: `${boite.y + boite.h / 2}px` }}
+          aria-hidden="true"
+        >
+          {cible.ordre ?? `×${cible.fois}`}
+        </span>
+      ) : null}
+    </>
+  )
+}

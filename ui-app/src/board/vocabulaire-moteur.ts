@@ -285,6 +285,7 @@ const MOTEUR_FR: Record<string, string> = {
   'Main Scheme Stage Would Be Completed': 'Un stade de la manigance principale va être achevé',
   'Main Scheme Would Advance': 'La manigance principale va avancer',
   'Message Be Instead': 'Effet remplacé',
+  'Minion Activates Order': 'Ordre d’activation des sbires',
   'Minion Engage Player': 'Sbire engagé contre un joueur',
   'Minion Would Engage Player': 'Un sbire va s’engager contre un joueur',
   'Obligation Give To Player': 'Obligation remise au joueur',

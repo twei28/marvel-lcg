@@ -1132,6 +1132,13 @@ export function DeroulePhase({
       setEnAttente(false)
       return
     }
+    // L'étape qu'on attendait s'est COMPLÉTÉE SUR PLACE (l'intention est devenue sa résolution) et
+    // d'autres étapes sont arrivées avec elle (la riposte, l'effet ★ de Klaw) : on lit D'ABORD la
+    // résolution, avec ses boosts et son jeton de dégâts, au lieu de sauter à la suivante.
+    if (!etapeValidee && rangValidee === index) {
+      setEnAttente(false)
+      return
+    }
     if (index + 1 < etapesAffichees.length) {
       setEnAttente(false)
       setCleCourante(etapesAffichees[index + 1].cle)
@@ -1428,7 +1435,8 @@ export function DeroulePhase({
     // Essai (13/10/2026, demande de l'utilisateur) : les boosts arrivent TOUS face
     // cachee, et un seul clic les retourne ensemble (« comme pour Klaw, j'aimerais
     // que les deux s'affichent en même temps »).
-    setBoostsMontres(etape?.boosts.length ? (essai && nouvelleScene ? 0 : 1) : 0)
+    // « Sur la table » : tous les boosts sortent EN MÊME TEMPS (16/10/2026), un seul geste les valide.
+    setBoostsMontres(etape?.boosts.length ? (essai && nouvelleScene ? 0 : surTable ? etape.boosts.length : 1) : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
     // reconstruit a chaque trame du moteur (meme piege que dans
     // useDerouleScene.ts et TraitCible.tsx) : en dependre remettrait

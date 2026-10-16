@@ -137,10 +137,11 @@ async function signature(page: Page) {
     const tsmTous = Array.from(document.querySelectorAll('[class*="tsm-"]')).map((e) => (e.className || '').toString() + ' ' + JSON.stringify(rr(e)));
     const ac = document.querySelector('.tsm-acteur');
     const acStyle = ac ? (() => { const cs = getComputedStyle(ac); return { bs: cs.boxShadow, ol: cs.outlineStyle + ' ' + cs.outlineWidth + ' ' + cs.outlineColor + ' off ' + cs.outlineOffset, bd: cs.borderTopWidth + ' ' + cs.borderTopColor, w: cs.width, h: cs.height, minh: cs.minHeight, pad: cs.padding, bsz: cs.boxSizing, an: cs.animationName, foc: document.activeElement === ac, tf: cs.transform }; })() : null;
+    const et = (window as unknown as { __et?: unknown }).__et;
     const dep = document.querySelector('.tsm-depart')?.getBoundingClientRect();
     const dbg = [(window as unknown as { __dbg?: unknown }).__dbg, (window as unknown as { __j?: string[] }).__j];
     return {
-      acStyle, tsmTous, zones, candidats, pseudos, ptsHaut, mesuresActeur, cadresVus, cls, dbg, jetons, dep: dep ? [Math.round(dep.x), Math.round(dep.y), Math.round(dep.width)] : null,
+      et, acStyle, tsmTous, zones, candidats, pseudos, ptsHaut, mesuresActeur, cadresVus, cls, dbg, jetons, dep: dep ? [Math.round(dep.x), Math.round(dep.y), Math.round(dep.width)] : null,
       bulle,
       diag,
       cartouche: t('.deroule-phase, .tsm-bandeau').slice(0, 400),
@@ -170,7 +171,7 @@ test('explo', async ({ page }) => {
   let boostOcc = 0;
   let toutN = 0;
   for (let i = 0; i < 2500 && rang < MAXPAS; i++) {
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(Number(process.env.ZZ_PAUSE ?? 300));
     const w = await monde(page);
     if (i % 60 === 0) {
       const s = await signature(page);
@@ -216,16 +217,16 @@ test('explo', async ({ page }) => {
         await page.waitForTimeout(800);
         rang++;
         await page.screenshot({ path: path.join(SORTIE, `${String(rang).padStart(3, '0')}.png`) });
-        const faits = (w.faits_mechant ?? []).map((f: Record<string, unknown>) => `${f.genre}:${f.etat ?? ''}:${f.carte ?? f.auteur ?? ''}`);
+        const faits = (w.faits_mechant ?? []).map((f: Record<string, unknown>) => `${f.genre}:${f.etat ?? ''}:${f.carte ?? f.auteur ?? ''}:b${Array.isArray(f.boosts) ? f.boosts.length : '-'}:subi${f.subi ?? '-'}:base${f.base ?? '-'}:inf${f.inflige ?? '-'}`);
         const s2 = await signature(page);
         journal.write(JSON.stringify({ rang, i, phase: w.phase, round: w.round_id, ...s, bulle: s2.bulle, jetons: s2.jetons, acStyle: s2.acStyle, tsmTous: s2.tsmTous, zones: s2.zones, candidats: s2.candidats, pseudos: s2.pseudos, ptsHaut: s2.ptsHaut, mesuresActeur: s2.mesuresActeur, cadresVus: s2.cadresVus, cls: s2.cls, dbg: s2.dbg, dep: s2.dep, faits: faits.slice(-5) }) + '\n');
       }
     }
-    await unPas(page, dansPhase);
     if (process.env.ZZ_TOUT && dansPhase && toutN < 40) {
       const sg = await signature(page);
-      if (new RegExp(process.env.ZZ_TOUT, 'i').test(sg.cartouche ?? '')) { await page.screenshot({ path: path.join(SORTIE, `tout-${String(++toutN).padStart(2, '0')}.png`) }); journal.write(JSON.stringify({ tout: toutN, c: (sg.cartouche ?? '').slice(0, 90) }) + '\n'); }
+      if (new RegExp(process.env.ZZ_TOUT, 'i').test(sg.cartouche ?? '')) { await page.screenshot({ path: path.join(SORTIE, `tout-${String(++toutN).padStart(2, '0')}.png`) }); journal.write(JSON.stringify({ tout: toutN, c: (sg.cartouche ?? '').slice(0, 90), et: (sg as { et?: unknown }).et }) + '\n'); }
     }
+    await unPas(page, dansPhase);
     if (volProchain) {
       volProchain = false; volDejaVu = true;
       for (const k of [1, 2, 3]) { await page.waitForTimeout(220); await page.screenshot({ path: path.join(SORTIE, `vol-${k}.png`) }); }

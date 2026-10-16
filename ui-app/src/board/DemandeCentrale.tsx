@@ -543,6 +543,16 @@ export function DemandeCentrale({
     if (!option.failure_reason) survolerOption?.(undefined)
   }
 
+  // SANS MODALE : une question à UNE seule option qui demande des cibles (« ordre d'activation des
+  // sbires ») ne vaut pas un clic de plus : on entre directement dans le ciblage, sur la table.
+  const optionSeule = options.length === 1 && !demande.show_cancel ? options[0] : undefined
+  const entrerDansLeCiblage = surLaTable && optionSeule !== undefined && optionSeule.target_num_range[1] > 0 && !optionSeule.failure_reason
+  const idOptionSeule = optionSeule?.id
+  useEffect(() => {
+    if (entrerDansLeCiblage && optionSeule) choisirOuInformer(optionSeule)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- une seule fois par question
+  }, [entrerDansLeCiblage, idOptionSeule, demande.event_name])
+
   if (surLaTable) {
     const phrase = options.some((option) => option.name === 'Defense')
       ? t('Qui défend contre cette attaque ?')

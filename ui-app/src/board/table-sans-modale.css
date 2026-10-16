@@ -314,3 +314,38 @@ html:has(.tsm-bandeau) .plateau-cadre .scan-frame {
 .rencontre-sortie .top-strip {
   display: none !important;
 }
+
+/* Le ciblage : compte dans la ligne, carte choisie, gros numéro d'ordre. */
+.tsm-compte {
+  color: #f3c623;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.tsm-utilisable.est-choisie {
+  border-color: #ffffff;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.55),
+    0 0 22px 6px rgba(255, 255, 255, 0.55);
+}
+
+.tsm-numero {
+  position: absolute;
+  z-index: 142;
+  transform: translate(-50%, -50%);
+  min-width: 54px;
+  height: 54px;
+  padding: 0 10px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  background: #1c2028;
+  border: 4px solid #4fd17b;
+  border-radius: 50%;
+  color: #fff;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 32px;
+  line-height: 1;
+  pointer-events: none;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+}
