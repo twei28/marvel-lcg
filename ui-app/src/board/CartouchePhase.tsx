@@ -190,6 +190,8 @@ export type CartouchePhaseProps = {
    * phase precedente rouverte depuis le journal (D38, « Fermer »).
    */
   bandeau?: 'phase' | 'pendant-ton-tour' | 'relecture-journal'
+  /** Hors phase : le héros ou l'alter ego concerné, dit dans le bandeau (16/10/2026). */
+  nomConcerne?: string
   /** « Fermer » de la relecture depuis le journal. */
   onFermer?: () => void
   /**
@@ -1965,7 +1967,13 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     >
       <LigneDuHaut
         liste={horsPhase ? [] : liste}
-        bandeau={horsPhase ? t('Pendant ton tour') : relu || depuisLeJournal ? t('Relecture') : undefined}
+        bandeau={
+          horsPhase
+            ? `${t('Pendant ton tour')}${props.nomConcerne ? ` · ${props.nomConcerne}` : ''}`
+            : relu || depuisLeJournal
+              ? t('Relecture')
+              : undefined
+        }
         relire={relire ? (cle) => relire({ temps: cle }) : undefined}
         titre={titreAffiche}
         sousTitre={sousTitre}
@@ -2156,6 +2164,8 @@ export type CartoucheHorsPhaseProps = CartesDuCartouche & {
   /** La question de defense d'un coup annonce, quand c'est le cartouche qui la porte. */
   questionDuMoteur?: QuestionDuMoteur
   questionAuJoueur: boolean
+  /** Le héros ou l'alter ego dont c'est le tour, dit dans le bandeau. */
+  nomConcerne?: string
   /**
    * La relecture du journal occupe le bas de l'ecran : rien a dessiner, mais
    * les coups vus restent retenus (demonter les oublierait).
@@ -2237,6 +2247,7 @@ export function CartoucheHorsPhase(props: CartoucheHorsPhaseProps) {
       infoCarte={props.infoCarte}
       infoRevelee={props.infoRevelee}
       bandeau="pendant-ton-tour"
+      nomConcerne={props.nomConcerne}
     />
   )
 }

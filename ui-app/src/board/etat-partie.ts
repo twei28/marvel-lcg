@@ -25,6 +25,12 @@ function nomDuHeros(monde: World, numero: number): string | undefined {
   return joueur?.area_hero?.[0]?.name?.replace(/^\W*/, '').trim() || undefined
 }
 
+/** Le héros (ou l'alter ego, selon sa face) dont c'est le tour, s'il y en a un. */
+export function nomDuHerosDuTour(monde: World | undefined): string | undefined {
+  const tour = monde?.phase?.match(/^Player (\d+) Turn$/)
+  return monde && tour ? nomDuHeros(monde, Number(tour[1])) : undefined
+}
+
 /** La phase en cours, dite au joueur. */
 export function libellePhase(monde: World | undefined): string {
   if (!monde) return ''

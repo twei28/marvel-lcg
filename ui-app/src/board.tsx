@@ -191,7 +191,7 @@ import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJe
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './board/marvelcdb'
 import { nomAffiche } from './board/noms-cartes-fr'
-import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
+import { libellePhase, libelleQuiAgit, libelleRound, nomDuHerosDuTour } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
 import {
   NOM_OPTION_MANIGANCE,
@@ -4515,6 +4515,7 @@ export function PagePartie({
       {!manuel && nouvelleScenePC && !phaseMechantEnCours ? (
         <CartoucheHorsPhase
           coups={coupsPendantTonTour}
+          nomConcerne={nomDuHerosDuTour(etat.monde)}
           questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
           questionDuMoteur={questionDuMoteurPC}
           masque={relectureJournal}

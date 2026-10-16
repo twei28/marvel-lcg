@@ -131,8 +131,11 @@ export function marqueDe(couleurs: readonly Couleur[] | undefined, largeurBande 
   const rgb = (c: Couleur) => `rgb(${c[0]},${c[1]},${c[2]})`
   const derniere = couleurs[couleurs.length - 1]
   const bandes = [0, 2, 1].map((i) => couleurs[i] ?? derniere)
-  // ⚠ LA BANDE DU MILIEU FAIT UN TIERS DES AUTRES (demande du 15/10/2026).
-  const largeurs = [largeurBande, Math.round((largeurBande / 3) * 100) / 100, largeurBande]
+  // PROPORTIONS 25 / 5 / 70 du coin vers le bord (demande du 16/10/2026 ; avant :
+  // la bande du milieu faisait un tiers des deux autres). La longueur totale reste
+  // celle d'avant (7/3 de `largeurBande`, soit 224 px par defaut).
+  const total = (largeurBande * 7) / 3
+  const largeurs = [0.25, 0.05, 0.7].map((part) => Math.round(total * part * 100) / 100)
   let debut = 0
   const arrets = bandes.map((c, i) => {
     const fin = Math.round((debut + largeurs[i]) * 100) / 100

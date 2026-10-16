@@ -716,7 +716,10 @@ html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) 
 html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-revelee-texte,
 html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-revelee-texte,
 html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-revelee-texte,
-html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-revelee-texte {
+  visibility: hidden;
+}
+
 html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-boutons,
 html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-boutons,
 html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-boutons,
@@ -725,7 +728,7 @@ html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:n
 html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-mentions,
 html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-mentions,
 html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-mentions {
-  visibility: hidden;
+  display: none;
 }
 
 /* La question posee devant le cartouche y tient EN ENTIER (16/10/2026) : elle se
@@ -733,14 +736,16 @@ html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) 
    de la poignee fonctionner), et ses boutons passent a la ligne plutot que de
    deborder du cadre. */
 html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) {
-  translate: 105px 0;
-  max-width: 440px;
+  /* La fenêtre est centrée un peu sous le milieu de l'écran, la carte occupe
+     sa gauche : les boutons se posent dans sa moitié droite. */
+  translate: 105px calc(5vh + 24px);
+  max-width: 380px;
 }
 
 html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .dc-boutons {
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 440px;
+  max-width: 380px;
 }
 
 html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .af-action {
@@ -1078,4 +1083,62 @@ html[data-epure] .demande-centrale .af-action {
 html[data-epure] .demande-centrale .af-action:hover:not(:disabled) {
   background: #3a4150;
   box-shadow: 0 0 0 1px var(--ep-jaune);
+}
+
+/* --- 18. Le cartouche et sa question, retours du 16/10/2026 -----------------
+   La fenêtre s'ajuste à son contenu (plus de grand vide dessous), ressort
+   nettement de la table (voile sombre derrière, filet clair), les boutons de
+   choix ont la même taille, et « À toi de jouer » quitte la question : le
+   bandeau « Pendant ton tour » de la fenêtre le dit déjà. */
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) {
+  min-height: 0 !important;
+  box-shadow: 0 0 0 1px var(--ep-bord-fort), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+html[data-epure] body:has(.deroule-phase.est-scene)::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 539;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+html[data-epure] .demande-centrale .dc-texte .plateau-eyebrow {
+  display: none;
+}
+
+html[data-epure] .demande-centrale .dc-boutons {
+  align-items: stretch;
+}
+
+html[data-epure] .demande-centrale .dc-boutons .af-action-wrap {
+  flex: 1 1 0;
+  display: flex;
+}
+
+html[data-epure] .demande-centrale .dc-boutons .af-action {
+  width: 100%;
+  min-width: 170px;
+  max-width: none;
+  min-height: 64px;
+}
+
+/* Devant le cartouche, la question perd son bandeau (« Boom Sonique révélée ») :
+   le bandeau jaune de la fenêtre dit déjà de quoi il s'agit. Restent les boutons. */
+html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .dc-texte {
+  display: none;
+}
+
+/* Les boutons de choix : le seul choix, sans sous-ligne (nom de la carte, cible). */
+html[data-epure] .demande-centrale .af-action small,
+html[data-epure] .demande-centrale .af-action .af-cibles {
+  display: none;
+}
+
+html[data-epure] .demande-centrale .dc-boutons .af-action {
+  min-height: 56px;
 }
