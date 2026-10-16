@@ -1,0 +1,40 @@
+{
+    "version": "0.5.8",
+    "name": "Venus",
+    "metadata": {
+        "url": "",
+        "deck_note": "player_deck VOLONTAIREMENT VIDE (PROCESSUS-HEROS etape 3, consigne du 06/09/2026) : le zip TMNT Heroes/Venus v3 ne contient aucune decklist d'aspect. hero_deck = les 15 cartes signature (x/15 imprimes : Bludgeon 1, Arc Nova 1, Brain Burn 2, Eldritch Lance 1, Quantanucleic Acid 1, Resistance 2, Evanescence 1, six ameliorations ELEMENT), obligations = Faulty Creation, nemesis_set = les 5 cartes (x/5 imprimes). Auteur : Inkwire (TMNT Heroes)."
+    },
+    "hero": [
+        "tv001a,tv001b"
+    ],
+    "hero_deck": [
+        "tv002",
+        "tv003",
+        "tv004",
+        "tv004",
+        "tv005",
+        "tv006",
+        "tv007",
+        "tv007",
+        "tv008",
+        "tv009",
+        "tv010",
+        "tv011",
+        "tv012",
+        "tv013",
+        "tv014"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "tv015"
+    ],
+    "nemesis_set": [
+        "tv016",
+        "tv017",
+        "tv018",
+        "tv019",
+        "tv019"
+    ],
+    "player_deck": []
+}

@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Venus Nemesis",
+    "encounters": [
+        "tv016",
+        "tv017",
+        "tv018",
+        "tv019",
+        "tv019"
+    ]
+}

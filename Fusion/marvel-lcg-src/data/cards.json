@@ -109233,5 +109233,368 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "247f50f15a49c74a15a7cb173b3bf844628201a1863e17d0a2dee7e3f4dadc54"
+ "venus": [
+  {
+   "card_id": "tv001a",
+   "type": "Hero",
+   "name": "* Venus",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "NINJA",
+    "TEMPORAL",
+    "TURTLE"
+   ],
+   "text": "<b>Action</b>: Place 1 dredge counter on Venus for each [[ELEMENT]] upgrade you control (to a maximum of 6). <i>(Limit once per round.)</i>",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv001b",
+   "type": "AlterEgo",
+   "name": "* Bonnie",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "TEENAGER",
+    "MUTANT",
+    "TURTLE"
+   ],
+   "text": "<b>Setup</b>: Discard cards from the top of your deck until you discard an [[ELEMENT]] upgrade. Put that card into play.\n<b>Action</b>: Remove 1 dredge counter from Bonnie → heal 2 damage from a friendly character. <i>(Limit once per round.)</i>",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv002",
+   "type": "Ally",
+   "name": "* Bludgeon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "SHARK",
+    "TEMPORAL"
+   ],
+   "text": "<b>Response</b>: After Bludgeon enters play, put 1 card from your discard pile on top of your deck.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv003",
+   "type": "Event",
+   "name": "Arc Nova",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Remove X dredge counters from Venus → deal 4 damage to X enemies.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv004",
+   "type": "Event",
+   "name": "Brain Burn",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. You may remove 2 dredge counters from Venus to confuse and stun an enemy.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv005",
+   "type": "Event",
+   "name": "Eldritch Lance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. This attack gains overkill. Draw 1 card for each [wild] resource used to pay for this card.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv006",
+   "type": "Event",
+   "name": "Quantanucleic Acid",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "QUANTA"
+   ],
+   "text": "<b>Hero Action</b>: Give Venus a tough status card. You may remove 2 dredge counters from Venus to draw 2 cards.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv007",
+   "type": "Event",
+   "name": "Resistance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent all damage from that attack. You may remove 2 dredge counters from Venus to draw 3 cards.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv008",
+   "type": "Resource",
+   "name": "Evanescence",
+   "subtitle": "",
+   "desc": {
+    "RES": "GGG",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv009",
+   "type": "Upgrade",
+   "name": "* Arcane Emitting Diode",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust this card and discard the top 2 cards of your deck → deal 2 damage to an enemy.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv010",
+   "type": "Upgrade",
+   "name": "* Cosmic Requiem",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "SONG"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and remove 2 dredge counters from Venus → discard cards from the top of your deck until you discard an event. Add that card to your hand.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv011",
+   "type": "Upgrade",
+   "name": "* Dragon Scale",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARTIFACT",
+    "ELEMENT",
+    "MYSTIC"
+   ],
+   "text": "<b>Resource</b>: Exhaust this card and remove 1 dredge counter from Venus → generate a [wild] resource.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv012",
+   "type": "Upgrade",
+   "name": "* Dream Weaver",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "SONG"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and remove 2 dredge counters from Venus → discard cards from the top of your deck until you discard an ally or upgrade. Add that card to your hand.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv013",
+   "type": "Upgrade",
+   "name": "* Reanimator Engine",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONSTRUCT",
+    "ELEMENT"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and remove 2 dredge counters from Venus → choose up to 2 cards in your discard pile and shuffle them into your deck.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv014",
+   "type": "Upgrade",
+   "name": "* Turtle Shell",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "TURTLE"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and discard the top 2 cards of your deck → ready Venus.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv015",
+   "type": "Obligation",
+   "name": "Faulty Creation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Bonnie",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Bonnie player.</i></b>\nYou may flip to alter-ego form.\n<b>Alter-Ego Action</b>: Exhaust Bonnie → remove Faulty Creation from the game.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv016",
+   "type": "SideScheme",
+   "name": "Jasper Barlow's Lab",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "0",
+    "Boost": "2",
+    "Hazard": "1",
+    "Hinder": "2*",
+    "Incite": "2"
+   },
+   "traits": [],
+   "text": "<i>Jasper Barlow has been performing experiments on the inhabitants of Mutant Town.</i>\nHinder 2[per_hero]. Incite 2.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv017",
+   "type": "Minion",
+   "name": "* Jasper Barlow",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "2",
+    "ATK": "0",
+    "Boost": "0",
+    "Nemesis": "Venus"
+   },
+   "traits": [
+    "GENIUS",
+    "RAT"
+   ],
+   "text": "<b>When Revealed</b>: Place a tough status card on each minion engaged with you.\n<i>(Venus' nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv018",
+   "type": "Minion",
+   "name": "* Groundchuck-Dirtbag",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "0",
+    "Guard": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "BULL",
+    "MOLE"
+   ],
+   "text": "Guard. Toughness.\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv019",
+   "type": "Treachery",
+   "name": "Salvaged Scales",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Place 2 threat on the main scheme. If Jasper Barlow is in play, place a tough status card on the villain and each minion engaged with you.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "5f3e91f3bf76b1d71d20b9e5f1911d74af0cd7e483a8ca90ca6b1f39f71a2392"
 }
