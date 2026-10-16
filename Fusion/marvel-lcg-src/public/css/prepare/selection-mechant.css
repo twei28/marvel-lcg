@@ -1,0 +1,283 @@
+/* LA SÉLECTION DU MÉCHANT EN TROIS COLONNES (16/10/2026, maquette C validée),
+   POUR TOUS LES AFFICHAGES (Normal, Sobre, Épuré).
+   Gauche : les boîtes (pochettes). Milieu : les méchants de la boîte, la menace,
+   les sets modulaires et le face à face. Droite : la grande image du méchant, ou
+   le choix des sets modulaires (`.pm-droite`). Aucune modification du DOM de la
+   page : la grille CSS réordonne `.tb-scene` (image), `.ext-tabs` (boîtes),
+   `.tb-roster-scn` (méchants), `.tb-menace` et `.tb-equipe` (face à face).
+   Réservé au PC (>= 900 px) ; le téléphone garde sa mise en page.
+
+   Les couleurs viennent des jetons `--m-*`, qui reprennent ceux de l'Épuré
+   (`--ep-*`) quand il est actif et ceux du jeu sinon. */
+.team-b.eux {
+  --m-surface: var(--ep-surface, #1d1f23);
+  --m-champ: var(--ep-champ, #292d33);
+  --m-bord: var(--ep-bord, #3a3e44);
+  --m-texte: var(--ep-texte, #f2f3f5);
+  --m-doux: var(--ep-doux, #a9adb4);
+  --m-jaune: var(--ep-jaune, #f0b95f);
+  --m-rouge: var(--ep-rouge, var(--eux, #e62429));
+  --m-police: var(--ep-police, inherit);
+}
+
+/* Le filtre « Fan-made » n'existe que dans la mise en page à trois colonnes (PC). */
+.ext-fanmade { display: none; }
+
+@media (min-width: 900px) {
+  .team-b.eux {
+    display: grid;
+    grid-template-columns: clamp(360px, 31vw, 590px) minmax(0, 1fr) clamp(300px, 22vw, 420px);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 10px;
+    padding: 10px;
+    align-items: stretch;
+  }
+
+  /* Le fond du panneau du milieu. */
+  .team-b.eux::before {
+    content: "";
+    grid-column: 2;
+    grid-row: 1 / -1;
+    background: var(--m-surface);
+    border: 1px solid var(--m-bord);
+    border-radius: 12px;
+    z-index: 0;
+  }
+
+  .team-b.eux .tb-droite {
+    display: contents;
+  }
+
+  /* Droite : l'image du méchant, en pleine hauteur. */
+  .team-b.eux .tb-scene {
+    clip-path: none;
+    position: relative;
+    grid-column: 3;
+    grid-row: 1 / -1;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    width: auto;
+    height: auto;
+    min-height: 0;
+  }
+
+  /* Milieu : tout dans la colonne 2, au-dessus du fond. */
+  .team-b.eux .tb-entete,
+  .team-b.eux .tb-roster-scn,
+  .team-b.eux .tb-menace,
+  .team-b.eux .tb-equipe {
+    grid-column: 2;
+    position: relative;
+    z-index: 1;
+    margin: 0 18px;
+    min-width: 0;
+  }
+
+  .team-b.eux .tb-entete { grid-row: 1; margin-top: 16px; }
+  .team-b.eux .tb-roster-scn {
+    grid-row: 2;
+    /* !important : app.js (ajusterGrilleCibles) pose un grid-template-columns en ligne. */
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-auto-rows: auto;
+    align-content: start;
+    gap: 16px;
+    overflow-y: auto;
+  }
+  .team-b.eux .tb-roster-scn .tb-port {
+    aspect-ratio: 1.5;
+    height: auto;
+    width: auto;
+  }
+  .team-b.eux .tb-menace { grid-row: 3; }
+  .team-b.eux .tb-equipe { grid-row: 4; margin-bottom: 16px; }
+
+  /* Gauche : les boîtes, un panneau, 6 colonnes de pochettes. */
+  .team-b.eux .ext-tabs {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+    align-content: start;
+    gap: 6px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    margin: 0;
+    background: var(--m-surface);
+    border: 1px solid var(--m-bord);
+    border-radius: 12px;
+  }
+
+  .team-b.eux .ext-tab {
+    width: auto;
+    height: auto;
+    aspect-ratio: 0.58;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .team-b.eux .ext-tab.on {
+    border-color: var(--m-rouge);
+    background: var(--m-champ);
+    box-shadow: none;
+  }
+
+  .team-b.eux .ext-tab:hover {
+    border-color: var(--m-doux);
+    transform: none;
+    box-shadow: none;
+  }
+
+  .team-b.eux .ext-tab .box {
+    inset: 2px 2px 26px 2px;
+    background-size: contain;
+  }
+
+  .team-b.eux .ext-tab .exname {
+    background: none;
+    color: var(--m-doux);
+    font-size: 9.5px;
+    font-weight: 600;
+    padding: 0 2px 3px;
+  }
+
+  .team-b.eux .ext-tab.on .exname {
+    color: var(--m-texte);
+  }
+
+  /* Le bouton « Fan-made (7) », en tête du panneau des boîtes (filtre). */
+  .team-b.eux .ext-fanmade {
+    display: block;
+    margin: 0 0 0 auto;
+    padding: 6px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--m-champ);
+    color: var(--m-texte);
+    box-shadow: 0 0 0 1px var(--m-bord);
+    font: 600 13px var(--m-police);
+    cursor: pointer;
+  }
+  .team-b.eux .ext-fanmade:hover { box-shadow: 0 0 0 1px var(--m-doux); }
+  .team-b.eux .ext-fanmade.on {
+    background: var(--m-jaune);
+    color: #14161a;
+    box-shadow: 0 0 0 1px #b88f00;
+  }
+
+  /* Les pochettes : de la place pour un nom sur trois lignes. */
+  .team-b.eux .ext-tab { aspect-ratio: 0.62; min-height: 0; }
+  .team-b.eux .ext-tab .box { inset: 2px 2px 30px 2px; }
+  .team-b.eux .ext-tab .exname {
+    line-height: 1.1;
+    font-size: 9px;
+    max-height: 30px;
+    overflow: hidden;
+  }
+  .team-b.eux .ext-tabs { grid-auto-rows: min-content; gap: 4px 6px; padding-top: 12px; }
+  .team-b.eux .tb-entete .tb-mode { margin-left: 12px; }
+
+
+  /* L'image du méchant dans sa colonne étroite : le cadrage d'origine (zoom 165 %,
+     haut de la carte) rogne l'illustration ; on recentre sur l'art. */
+  .team-b.eux .tb-art {
+    background-position: 50% 3% !important;
+    background-size: auto 165% !important;
+  }
+
+  /* Le cadrage des vignettes de méchants : leur taille a grandi, l'ancien cadrage (150 %,
+     22 %) coupait les visages. L'art en pleine largeur, calé sur le haut de la carte. */
+  .team-b.eux .tb-roster-scn .portrait {
+    background-size: 106% auto !important;
+    background-position: 50% 12% !important;
+  }
+
+  /* Le choix des sets modulaires : un panneau à la place de l'image du méchant. */
+  .team-b.eux .pm-droite {
+    grid-column: 3;
+    grid-row: 1 / -1;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--m-surface);
+    border: 1px solid var(--m-bord);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .team-b.eux .pm-tete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--m-bord);
+    padding-bottom: 10px;
+  }
+  .team-b.eux .pm-tete b { font: 700 20px var(--m-police); color: var(--m-texte); }
+  .team-b.eux .pm-fermer {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--m-champ);
+    color: var(--m-texte);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .team-b.eux .pm-liste {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 8px;
+  }
+  .team-b.eux .pm-pied { display: flex; justify-content: flex-end; }
+
+  /* Le nom de l'extension, au-dessus du nom du méchant : lisible sur l'illustration. */
+  .team-b.eux .tb-nomg small {
+    color: var(--m-jaune);
+    text-shadow: 0 1px 3px #000;
+  }
+
+  /* Fenêtre peu haute (1366 x 657...) : les vignettes de méchants se partagent la hauteur
+     qui reste au lieu d'être écrasées, et la menace se resserre. */
+  @media (max-height: 800px) {
+    .team-b.eux .tb-roster-scn {
+      grid-auto-rows: clamp(70px, 14vh, 150px);
+      min-height: 0;
+      gap: 8px;
+    }
+    .team-b.eux .tb-roster-scn .tb-port {
+      aspect-ratio: auto;
+      height: 100%;
+    }
+    .team-b.eux .tb-menace {
+      max-height: none;
+      gap: 6px;
+      padding: 6px 0;
+    }
+    .team-b.eux .tb-menace .tampon,
+    .team-b.eux .tb-menace .mod-chip {
+      padding: 4px 9px;
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+    .team-b.eux .tb-menace-k {
+      font-size: 10px;
+    }
+    .team-b.eux .tb-equipe .tb-siege.petit {
+      width: 44px;
+    }
+    .team-b.eux .tb-entete b {
+      font-size: 26px;
+    }
+    .team-b.eux .tb-entete { margin-top: 10px; }
+    .team-b.eux .tb-equipe { margin-bottom: 8px; padding-top: 4px; }
+  }
+}

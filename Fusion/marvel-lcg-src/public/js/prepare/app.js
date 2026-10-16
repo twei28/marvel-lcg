@@ -5177,8 +5177,8 @@ function rendreMenace() {
             regle(t("Recommandés"), d.modularConfig === "recommended", () => { d.modularConfig = "recommended"; applyModularConfig(); }),
             regle(t("Personnalisés"), d.modularConfig === "custom", () => {
                 d.modularConfig = "custom";
-                // Epure (16/10/2026) : le choix des sets s'ouvre a DROITE, a la place du mechant.
-                if (document.documentElement.dataset.epure) setTimeout(ouvrirPanneauModulaires, 0);
+                // Le choix des sets s'ouvre a DROITE, a la place du mechant (16/10/2026), sur PC.
+                if (!estTel()) setTimeout(ouvrirPanneauModulaires, 0);
             }),
             regle(t("Aléatoire"), d.modularConfig === "random", () => { d.modularConfig = "random"; applyModularConfig(); }),
         ),
@@ -5500,7 +5500,7 @@ function nomDuSetModulaire(nomFichier) {
     return nomAvecAuteur(titleize(nomFichier), auteur, true);
 }
 
-/** Epure : le choix des sets modulaires dans un panneau qui prend la place de l'image du mechant (colonne de droite). */
+/** PC : le choix des sets modulaires dans un panneau qui prend la place de l'image du mechant (colonne de droite). */
 async function ouvrirPanneauModulaires() {
     const ecran = document.querySelector(".team-b.eux");
     if (!ecran) return;
@@ -5539,8 +5539,8 @@ async function renderModular() {
         ));
     } else if (d.modularConfig === "random") {
         box.replaceChildren(el("div", { class: "mod-chips" }, ...d.selectedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s)))));
-    } else if (document.documentElement.dataset.epure && document.querySelector(".team-b.eux")) {
-        // Epure : un resume des sets choisis et un bouton, pas la liste entiere (elle
+    } else if (!estTel() && document.querySelector(".team-b.eux")) {
+        // PC : un resume des sets choisis et un bouton, pas la liste entiere (elle
         // ne tient pas dans la colonne du milieu) ; la liste est dans le panneau de droite.
         box.replaceChildren(el("div", { class: "mod-chips" },
             ...d.selectedModularSets.map((n) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(n))),

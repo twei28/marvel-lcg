@@ -86,7 +86,9 @@ for (const ecran of ECRANS) {
         // Sous 1100 px la page passe en une colonne : la grille prend la hauteur
         // de son contenu, il n'y a pas de vide à remplir.
         if (ecran.width >= 1100) expect.soft(grille.largeur).toBeGreaterThan(148 * 1.2);
-        expect.soft(grille.largeur).toBeLessThanOrEqual(2 * 148 + 2);
+        // Mise en page à trois colonnes (16/10/2026) : les vignettes de méchants sont plus grandes que
+        // l'ancien plafond de 2 x 148 px ; elles ne défilent toujours pas pour 3 méchants.
+        expect.soft(grille.largeur).toBeLessThanOrEqual(400);
         expect.soft(grille.defile).toBe(false);
         expect.soft(grille.menaceVisible).toBe(true);
         // L'en-tête dit le méchant choisi, plus « Méchant inconnu ».

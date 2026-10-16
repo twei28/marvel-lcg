@@ -98,11 +98,13 @@ test.describe('Le filtre fan-made honore les createurs', () => {
 
     // VILAINS : chaque extension ouvre ses scenarios.
     const tuile = (id) => page.locator(`.tb-port[data-scn="${id}"] .tb-port-nom`);
-    await page.getByRole('button', { name: 'Custom (Gorr the God Butcher)' }).click();
+    await page.getByRole('button', { name: 'Gorr the God Butcher (BlueHG)' }).click();
     await expect(tuile('gorr')).toHaveText('Gorr the God Butcher (BlueHG)');
-    await page.getByRole('button', { name: 'Custom (The Spot)' }).click();
+    await page.mouse.move(900, 500); // l'aperçu au survol de la pochette précédente recouvre la suivante
+    await page.getByRole('button', { name: /^The Spot/ }).click();
     await expect(tuile('the_spot')).toHaveText('The Spot (DesignHacker)');
-    await page.getByRole('button', { name: 'Custom (Web of Deceit)' }).click();
+    await page.mouse.move(900, 500); // l'aperçu au survol de la pochette précédente recouvre la suivante
+    await page.getByRole('button', { name: 'Web of Deceit (Ripper3)' }).click();
     await expect(tuile('wd_shocker')).toHaveText('Shocker (Ripper3)');
     await page.screenshot({ path: 'fanmade-vilains-createurs.png' });
     // TEMOIN : un vilain officiel reste nu, sinon on attribuerait a tort.
@@ -112,7 +114,8 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     // SETS MODULAIRES : la liste « Personnalises » du bloc de difficulte.
     await page.locator('.tb-port[data-scn="rhino"]').click();
     await page.getByRole('button', { name: /^Personnalisés$/ }).click();
-    const chips = page.locator('.mod-chips .mod-chip');
+    // Le choix des sets s'ouvre dans le panneau de droite (.pm-droite) ; le resume du milieu les repete.
+    const chips = page.locator('.pm-droite .mod-chip');
     // Motifs ancres : « Muse » seul attraperait « Art Museum Heist ». Muse
     // n'est pas teste ici, il est mis de cote et ne parait dans aucune liste
     // joueur (_setsRencontreMasques).
