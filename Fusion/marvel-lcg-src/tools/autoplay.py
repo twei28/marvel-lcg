@@ -183,7 +183,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # le meme port, et la seconde mourait sur « port indisponible ».
     sys.argv = [sys.argv[0], "-config_files", "launch.json", "-device", "key"]
 
-    etiquette = f"{os.path.basename(deck)}_{vilain}_{difficulte}_{profil}_{graine}"
+    etiquette = f"{os.path.basename(deck)}{'+' + os.environ['AUTOPLAY_DECK2'] if os.environ.get('AUTOPLAY_DECK2') else ''}_{vilain}_{difficulte}_{profil}_{graine}"
     journal = open(f"/tmp/autoplay_{etiquette}.log", "w", buffering=1)
     sys.stdout = journal
     sys.stderr = journal
@@ -1343,6 +1343,14 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # aucune regle, aucun carnet, comportement inchange.
     regles = [r.strip() for r in (os.environ.get("AUTOPLAY_REGLES") or "").split(",") if r.strip()]
     carnet = {str(k): str(v) for k, v in json.loads(os.environ.get("AUTOPLAY_CARNET") or "{}").items()}
+    # AJOUT 16/10/2026 (scenario Shredder) : `AUTOPLAY_DECK2` (nom d'un deck de depart)
+    # monte une partie a DEUX joueurs : le meme pilote joue les deux sieges.
+    # (fusion 16/10/2026 : on AJOUTE au deck 2 eventuel de `--deck a+b`, sans remettre la liste a zero)
+    if os.environ.get("AUTOPLAY_DECK2"):
+        chemin2 = FileManager.FindJsonPath("Hero", os.environ["AUTOPLAY_DECK2"])
+        assert chemin2, f"deck 2 introuvable : {os.environ['AUTOPLAY_DECK2']}"
+        with FileManager.OpenFile(chemin2, read=True) as fichier:
+            textes_decks.append(fichier.Read())
     scene = SceneLoader.NewFromJson(json.dumps(campagne), None, textes_decks,
                                     graine, regles, carnet)
     jeu = Engine.game
@@ -1378,6 +1386,8 @@ def main():
     ap.add_argument("--modulaires", default="",
                     help="sets modulaires a ajouter au scenario, separes par "
                          "des virgules (ex. : muse)")
+    ap.add_argument("--deck2", default="",
+                    help="second deck de depart : partie a DEUX joueurs (AUTOPLAY_DECK2)")
     ap.add_argument("--reglages", default="",
                     help="JSON de seuils qui surchargent le profil")
     args = ap.parse_args()
@@ -1402,7 +1412,7 @@ def main():
             for profil in profils:
                 for i in range(args.parties):
                     graine = args.graine_depart + i
-                    etiquette = (f"{os.path.basename(args.deck)}_{vilain}_"
+                    etiquette = (f"{os.path.basename(args.deck)}{'+' + args.deck2 if args.deck2 else ''}_{vilain}_"
                                  f"{difficulte}_{profil}_{graine}")
                     travaux.append({
                         "deck": args.deck, "vilain": vilain,
@@ -1436,6 +1446,8 @@ def main():
             env["AUTOPLAY_REGLAGES"] = args.reglages
         if args.modulaires:
             env["AUTOPLAY_MODULAIRES"] = args.modulaires
+        if args.deck2:
+            env["AUTOPLAY_DECK2"] = args.deck2
         proc = subprocess.Popen(
             [sys.executable, os.path.abspath(__file__), args.game_dir,
              "--trace", str(args.trace)],

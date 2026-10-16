@@ -63,6 +63,16 @@ def GetAbilities() -> Sequence['Ability']:
         return would.IsBasicScheme()
 
     def degats(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> None:
+        # CORRECTIF (16/10/2026, encart Shredder) : « Tough status cards always
+        # resolve BEFORE cloaked status cards ». Une carte Tough absorbe tout et le
+        # Cloaked RESTE, quel que soit l'ordre de pose (sans cela, un Cloaked pose
+        # avant la Tough etait consomme a sa place). Avec une attaque PERCANTE
+        # (`ignore_tough`) la Tough ne repond pas : le Cloaked joue.
+        unite = effect.this.CastTo(StatusCard).GetBindFace()
+        if message.is_be_instead:
+            return
+        if unite.IsTough() and not message.property.ignore_tough:
+            return
         a_retirer = min(2, message.will_take_damage)
         if a_retirer > 0:
             message.PreventDamage(a_retirer, effect)

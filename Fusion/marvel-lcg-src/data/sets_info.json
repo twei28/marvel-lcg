@@ -1750,5 +1750,31 @@
   ],
   "max_id": "tx018"
  },
- "checksum": "65c2f6cb0a7e659d21b27809949f471807cc1b2abb73bbae3ebcb2483639e2db"
+ "190. Custom (Shredder)": {
+  "name": "shredder",
+  "scenarios": [
+   "shredder"
+  ],
+  "heroes": [],
+  "encounters": [
+   "ts_shredder",
+   "ts_shadow_of_the_foot",
+   "ts_chunin",
+   "ts_foot_goon_squad"
+  ],
+  "max_id": "ts305"
+ },
+ "191. Custom (TMNT Standard-Expert)": {
+  "name": "tmnt_standard_expert",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "tmnt_standard",
+   "tmnt_expert",
+   "tmnt_standard_reskin",
+   "tmnt_expert_reskin"
+  ],
+  "max_id": "te201"
+ },
+ "checksum": "4622b5824cccbdc3d1a9860cfc3931ce48f0fe9400fa415085400e77bdbf0784"
 }

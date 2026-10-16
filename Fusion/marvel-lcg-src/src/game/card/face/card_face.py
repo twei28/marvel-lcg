@@ -216,6 +216,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # au SINGULIER est imprime sur les scans tx012 / tx013 (td017 porte le pluriel FLYBORGS,
         # decision du 15/10) ; « FLY » est le trait du vilain tx001-tx003.
         "FLYBORG", "FLY",
+        # CORRECTIF : traits du pack custom shredder (Inkwire, TMNT Enemies / Shredder v3).
+        # Purement declaratifs, sauf RELIC / MOLE / YOUKAI lus par aucune carte.
+        "YOUKAI", "WARTHOG", "RHINOCEROS", "FALCON", "RELIC",  # MOLE et SHARK : deja declares (venus)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

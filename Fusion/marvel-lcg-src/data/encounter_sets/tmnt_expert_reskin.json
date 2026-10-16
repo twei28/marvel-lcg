@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "tmnt_expert_reskin",
+    "encounters": [
+        "te121",
+        "te122",
+        "te123"
+    ]
+}

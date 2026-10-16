@@ -169,6 +169,8 @@ la plus fréquente sur un pack vilain.
 - [x] shinobi.md (pack `jennika`, TMNT Heroes v3 : classes Bushido / Ninjutsu / Kuji-Kiri /
       Taijutsu portées par `desc.Class`, « Limit once per round for each Shinobi » = quatre capacités ;
       le Path `tj011` est un Support, question Q3)
+- [ ] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : mot-clé maison NON DEFINI par
+      les scans ; carte créée, non scriptée ; question Q2 de `.planning/tmnt/shredder-questions.md`)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "ts_chunin",
+    "encounters": [
+        "ts101",
+        "ts102",
+        "ts103",
+        "ts104",
+        "ts104"
+    ]
+}

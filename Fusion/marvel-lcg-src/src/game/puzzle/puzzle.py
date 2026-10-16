@@ -166,6 +166,28 @@ class RunPuzzle:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
+    def EmptyEncounterDiscardPile(self):
+        """Vide la DEFAUSSE Rencontre (cartes retirees de la partie). La mise en place
+        d'un scenario y defausse des cartes au hasard (recherches) : un cas qui parle
+        de « la carte la plus haute de la defausse » doit partir d'une defausse vide
+        (pack `shredder`)."""
+        from game.operate.faces import Faces
+        for _ in range(50):
+            faces = [f for f in Worlds.GetEncounterDiscardPileCards(self.world) if f is not None]
+            if not faces:
+                return
+            Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
+
+    def RemoveNemesisAside(self):
+        """Retire de la partie les cartes du set nemesis MISES DE COTE du joueur courant
+        (`Remove('<id>')` ne les trouve pas : elles ne sont pas en jeu et il en fabrique
+        un doublon). Pour mesurer « si votre sbire nemesis n'entre pas en jeu »."""
+        from game.operate.faces import Faces
+        joueur = self.world.GetCurrentPlayer()
+        faces = list(joueur.set_aside_nemesis_sets.GetAll())
+        if faces:
+            Faces.RemoveAllFromGame(faces, self.debug_rule)
+
     def CreateEncounterDeck(self, *cards: str):
         from game.card.factory import CardFactory
         villain = Worlds.GetAllVillains(self.world)[0]
@@ -450,6 +472,35 @@ class RunPuzzle:
             unit.DiscardDazed(DebugRule(unit), rule=1)
         else:
             Faces.GiveStatus([unit], "Dazed", DebugRule(unit))
+
+    def RevealDealtCards(self):
+        """Revele les cartes distribuees face cachee de CHAQUE joueur (etape 4 de la phase
+        du mechant). Pour mesurer ce qu'une carte « donnee au premier joueur » devient
+        une fois revelee (pack `shredder` : Skulk bouclait)."""
+        for joueur in list(self.world.const_players):
+            if joueur.dealt_encounter_cards.GetSize() > 0:
+                joueur.RevealEncounterCards()
+
+    def RemoveMinionsInPlay(self):
+        """Retire de la partie TOUS les sbires en jeu (engages ou non). Sert aux
+        cas de scenario : la mise en place en revele au hasard, et `Remove('<id>')`
+        vise l'exemplaire du DECK avant celui du jeu quand l'id existe en
+        plusieurs exemplaires (pack `shredder`)."""
+        from game.operate.faces import Faces
+        from game.card.face.card_type import Minion
+        faces = [o.face for o in self.world.object_manager.card_dict.values()
+                 if o.face is not None and o.face.IsInPlay() and Minion.IsType(o.face)]
+        Faces.RemoveAllFromGame(faces, self.debug_rule)
+
+    def AddCloak(self, card: CardName, n: int = 1):
+        """Pose n cartes Cloaked, sans la bascule de `Cloak` (qui en RETIRE une si
+        l'unite est deja Cloaked) : pour empiler sur Shredder, dont le maximum est
+        2, 3 ou 4 selon son stade (pack `shredder`). Le plafond reste celui du
+        moteur (`CanStatus.cloaked_max`)."""
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        for _ in range(n):
+            Faces.GiveStatus([unit], "Cloaked", DebugRule(unit))
 
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
