@@ -966,6 +966,17 @@ CAS += [
         "attendu": {"carte": "td017", "compteurs": 4, "engage_premier": True, "absents": ["td014", "01101"]},
     },
     {
+        "nom": "[donatello] td014 Extermination! — le FLYBORG au SINGULIER de Baxter (tx012) convient aussi (meme trait)",
+        "pourquoi": ("DECISION UTILISATEUR (16/10/2026) : FLYBORG et FLYBORGS (MOUSER / MOUSERS) sont le MEME trait pour les "
+                     "recherches ; deck rencontre = Mercenary + tx012 (Flight of Flyborgs du modulaire Cyber Swarm, trait imprime FLYBORG)"),
+        **HEROS, **DEUX,
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('tx012', '01101')",
+                          "Puzzle.PutIntoPlay('td014')"],
+        "declencher": ["Puzzle.PlaceThreat('td014', -4)"],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "tx012", "compteurs": 4, "engage_premier": True, "absents": ["td014", "01101"]},
+    },
+    {
         "nom": "[donatello] td014 Extermination! — cherche aussi dans la DEFAUSSE de rencontre",
         "pourquoi": "« the encounter deck AND discard pile » : td017 n'est que dans la defausse de rencontre, le deck n'a que Mercenary",
         **HEROS, **DEUX,

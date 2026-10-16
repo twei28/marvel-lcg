@@ -12,7 +12,7 @@ from . import *
 # pour « Exhaust your hero OR spend … » en DEUX actions (RECETTES §5/§3) ; `04132` Red Skull's Luger pour
 # « Boost: Attach … to X » = `WhenThisBoostAttachTo`.
 #
-# TODO-QUESTION (tx005-ATK) : le scan imprime une etoile dans la case ATQ de l'attachement (« ATK ★ »)
+# DECISION UTILISATEUR (16/10/2026, Q1) : le scan imprime une etoile dans la case ATQ de l'attachement (« ATK ★ »)
 # sans qu'AUCUN texte ne definisse sa valeur. Lecture provisoire : AUCUN bonus d'ATQ (l'etoile ne
 # signale que la capacite etoilee du texte). Voir .planning/tmnt/baxter-questions.md, Q1.
 #

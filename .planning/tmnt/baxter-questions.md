@@ -70,3 +70,11 @@ Scans : `.planning/tmnt/pics-baxter/` (copie versionnée, JPEG).
   porte le compteur en définit le type : swarm / ooze / cable / shield selon le sbire. Fiche `all-purpose-counter.md`.
 - Dazed : toutes les règles viennent de l'encart `Dazed Rules Insert.png` (un seul Dazed, Tough d'abord, Cloaked et Dazed
   simultanés, un seul effet puis la carte part). Fiche `dazed.md`.
+
+## REPONSES DE L'UTILISATEUR (16/10/2026)
+
+- **Q1** : aucun bonus d'ATQ pour l'etoile de la case ATK du Baxter Blaster (confirmee).
+- **Q2** : Wrapped Up, le joueur qui revele choisit parmi TOUS les personnages amis (confirmee).
+- **Q3** : Auto Defense Bots, sans compteur shield le sbire est vaincu normalement (confirmee).
+- **Q4** : FLYBORG (singulier, tx012/tx013) et FLYBORGS (pluriel, td017) = le MEME trait pour les recherches. `TRAITS_ESSAIM` de donatello_nemesis inclut FLYBORG : td014 Extermination! et td015 trouvent les Flyborgs de Baxter. Cas « le FLYBORG au SINGULIER de Baxter (tx012) convient aussi » vu rouge puis vert ; td014 7/7, td015 9/9.
+- **Q5** : sans question (stade III en expert).

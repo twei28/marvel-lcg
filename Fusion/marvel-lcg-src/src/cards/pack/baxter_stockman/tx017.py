@@ -12,7 +12,7 @@ from . import *
 #
 # Mots-pieges : « would be DEFEATED » (l'interruption part quand le sbire va tomber, quelle que soit la cause) ;
 # « heal ALL damage » ; « remove 1 shield counter » : UN seul compteur ; « INSTEAD » : le sbire n'est pas vaincu.
-# TODO-QUESTION (tx017-Q3) : texte muet quand il ne reste AUCUN compteur shield. Lecture provisoire : le
+# DECISION UTILISATEUR (16/10/2026, Q3) : texte muet quand il ne reste AUCUN compteur shield. Lecture provisoire : le
 # sbire n'a plus de bouclier, il est vaincu normalement (sans cela il serait immortel). Voir baxter-questions.md.
 
 
