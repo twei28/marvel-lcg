@@ -895,3 +895,55 @@ html[data-epure] .plateau-barre .board-actions {
   flex: 1;
   min-width: 0;
 }
+
+/* La barre du haut en sombre (16/10/2026, « rendre le header plus sombre ») :
+   anthracite, texte clair, le filet et le round en rouge Marvel. */
+html[data-epure] .plateau-barre {
+  background: #1f2228;
+  color: #eef0f3;
+  box-shadow: 0 2px 10px rgba(10, 14, 22, 0.35);
+}
+
+html[data-epure] .plateau-barre .bh-etat span,
+html[data-epure] .plateau-barre .bh-etat em {
+  color: #e6e8ec;
+}
+
+html[data-epure] .plateau-barre .bh-etat strong {
+  color: #ff3b3f;
+}
+
+html[data-epure] .plateau-barre button,
+html[data-epure] .plateau-barre .mode-actions {
+  color: #e6e8ec;
+}
+
+html[data-epure] .plateau-barre button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] .plateau-barre button:active,
+html[data-epure] .plateau-barre button[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+html[data-epure] .plateau-barre button:disabled {
+  color: #7d828b;
+}
+
+html[data-epure] .plateau-barre .bh-facon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix {
+  color: #e6e8ec;
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
+  background: var(--ep-rouge);
+  color: #ffffff;
+}
+
+html[data-epure][data-affichage] .plateau-barre .bh-fin-tour:not(:disabled) {
+  color: #14161a;
+}
