@@ -290,6 +290,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
         'hunter',  # CORRECTIF (16/10/2026) : compteur du pack custom alopex (TMNT, Inkwire), ta008 Kitsune Kabuki
+        'pep',  # CORRECTIF (16/10/2026) : compteur de ub037 Pepperoni, aspect TMNT Basic (Inkwire), Uses (3 pep)
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
         'shell',  # CORRECTIF : compteur du pack custom texas_twister (Kajislav), 2 sur Armadillo
         'unworthy',  # CORRECTIF : compteur du pack custom beta_ray_bill (Rainy), 2 sur l'obligation

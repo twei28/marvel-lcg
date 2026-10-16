@@ -64,6 +64,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   article: 'article',
   wound: 'blessure',
   hunter: 'chasseur',
+  pep: 'pep', // ub037 Pepperoni (aspect TMNT Basic, Inkwire) : « pep counters », mot laissé tel quel
   hate: 'haine',
   shell: 'carapace',
   unworthy: 'indigne',
