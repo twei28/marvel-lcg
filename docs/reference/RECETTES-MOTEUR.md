@@ -1246,6 +1246,46 @@ Le moteur expose desormais `/get_site_url` (lecture ouverte : c'est l'adresse
 d'accueil, pas l'administration), renseignee par l'orchestrateur pour TOUTES
 les tables. Tout lien du jeu vers une page du site doit passer par la.
 
+### 7septvicies. Pièges payés par le scénario Bebop & Rocksteady (`tk`, 16/10/2026)
+
+Scénario à DEUX vilains qui s'activent ensemble, chacun à deux faces ALERT / K.O.
+(modèle de montage : Sinister Six `27100a`, `villain: []` + `set_aside`).
+
+- **Deux vilains qui s'activent tous les deux** : le moteur n'activait que
+  `Worlds.FindVillainByGameArea`. Hook ajouté (additif) : `Message.GettingVillainsToActivate`
+  (`game/operate/enemies.py`, `DoActivateAgainstYouInternal`) ; une capacité
+  `Ability(AbilityType.NonKeyword, Message.GettingVillainsToActivate, [], fn)` y rend la liste
+  (`tk006a`). Sans capacité : comportement historique.
+- **« the villain » avec deux vilains en jeu** : `Worlds.FindVillain(effect)` passe désormais
+  `by_effect` à `Scenario.GetVillain` puis à `Message.GettingVillain.by_effect` ; la capacité
+  `AbilityFactory.GetVillain` de `tk006a` fait CHOISIR le joueur qui résout (mémorisé par effet :
+  une seule question par carte). `by_effect is None` = lecture interne du moteur : jamais de question.
+- **Un vilain mis de côté n'avance pas de stade** : `Villain.OnBeDefeated` n'appelle `Advance` que
+  si le vilain est encore en jeu. Les deux défaites doivent donc être CODÉES (`Worlds.SetGameOver(True)`) :
+  le premier vilain mis de côté reste dans la zone de côté, donc le test natif « plus de vilain de
+  côté » ne gagnera jamais la partie.
+- **Retourner une carte vilain** : `villain.card.Flip(effect)` ; la face déjà en jeu est l'objet
+  `message.trigger` d'AVANT le retournement, `card.face` est la courante. Après un retournement,
+  relire `villain.card.face` (le `HasTrait` de l'ancien objet répond encore ALERT).
+- **Retourner un attachement garde ses jetons** (`knucklehead`) et son hôte (`CanAttach.OnBeforeFlip` /
+  `OnAfterFlip` détache puis rattache). Les bonus `GiveKeywordToAttached` suivent la face.
+- **Carte d'état « Tenace/Étourdi » et Interruption forcée « à la place »** : l'Interruption forcée
+  passe AVANT la carte d'état (`SetBeInstead` déjà posé). « Status cards always take priority » doit
+  donc être CODÉ en condition de l'Interruption (`EtourdiPrioritaire`, même test que `status/stunned.py`).
+- **`AfterSchemeRemoveThreat(by_who="You")` plante** (`Condition.CheckWhichCard` refuse une chaîne,
+  `AssertionError` avalée, la Réponse ne part jamais) : écrire la condition à la main sur
+  `message.would_remove_message.by_face`.
+- **Harnais** : `spider_man` démarre en ALTER-EGO (`Puzzle.ChangeForm('01001a')` pour le héros) ;
+  `Puzzle.Thwart(<personnage>)` prend le CONTREUR, la manigance visée se désigne par `cibles` ;
+  `choisir_option="Cancel"` refuse un `MayChooseOneAbility` (le pilote prend sinon la première option) ;
+  une clé inconnue d'`etat_attendu` n'est lue que par `etat_attendu` : un vérificateur à soi renomme
+  ses clés (`menace_de`, `trait_de`) pour ne pas entrer en collision avec `menace`, `traits`.
+- **Autoplay à plusieurs joueurs** : `autoplay.py` ne savait jouer que le joueur 0 et la règle v1.6
+  « Ask » (demander à un autre joueur de déclencher une Action) lui faisait reposer la même question à
+  l'infini (4 parties sur 4 « bloquée » sur Rhino lui-même). Corrigé (`AUTOPLAY_DECKS_SUP`, état du
+  joueur qui interroge, mémoire de boucle par joueur, option « Ask » écartée) ; reste ~1 partie sur 4
+  « bloquée » à deux joueurs, sur Rhino comme sur Bebop & Rocksteady : limite du PILOTE, pas du scénario.
+
 ## 9. Le chemin outillé, de bout en bout
 
 | Étape | Commande | Durée vue |

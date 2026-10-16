@@ -1510,3 +1510,19 @@
 - **Équipes** : Cercle Intérieur des Marauders
 - **Ennemis** : X-Men, Morlocks
 - **Première apparition** : Marvel Fanfare #1 (1982)
+
+
+## Bebop & Rocksteady
+
+`tk001a`
+
+
+**FR** — Bebop, un phacochère mutant, et Rocksteady, un rhinocéros mutant, sont deux anciens voyous de rue transformés par la mutagène, et les hommes de main les plus bruyants du Clan Foot. Inséparables, bagarreurs et pas très futés, ils sèment la destruction dans Manhattan sans jamais penser aux conséquences. Plus on les frappe, plus ils s'énervent, jusqu'à ce qu'ils s'assomment tout seuls.
+
+
+**EN** — Bebop, a mutant warthog, and Rocksteady, a mutant rhinoceros, are two former street thugs transformed by mutagen and the loudest muscle of the Foot Clan. Inseparable, brawling and not very bright, they spread destruction through Manhattan without a thought for the consequences. The more you hit them, the angrier they get, until they knock themselves out.
+
+
+- **Équipes** : Clan Foot
+- **Ennemis** : Tortues Ninja
+- **Première apparition** : Teenage Mutant Ninja Turtles (série animée, 1987)

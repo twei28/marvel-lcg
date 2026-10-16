@@ -319,8 +319,18 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # la lecture d'etat. Les PV restaient a 100 %, le bot ne se repliait
         # jamais et se faisait tuer sans jamais changer de forme.
         try:
+            # AJOUT 16/10/2026 (parties a plusieurs joueurs) : on lit l'etat DU JOUEUR QUI
+            # INTERROGE (`etat["idx_joueur"]`, pose par `pilote`), pas toujours le premier.
+            # Solo : idx 0, comportement inchange.
             joueur = w.players[0]
+            for candidat in w.players:
+                if getattr(candidat, "player_id", 0) == etat.get("idx_joueur", 0):
+                    joueur = candidat
+                    break
             ctx["joueur"] = joueur
+            if len(w.players) > 1:
+                ctx["allies"] = [a for a in ctx["allies"]
+                                 if a.GetControlByPlayer() in (None, joueur)]
         except Exception:
             return ctx
         try:
@@ -367,7 +377,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # introuvable en forme heros. Les PV restaient alors bloques a
             # 100 %, le bot ne se repliait jamais et mourait sur place.
             identite = None
-            for face in ctx["faces"].values():
+            if len(w.players) > 1:
+                try:
+                    identite = joueur.GetIdentity()
+                except Exception:
+                    identite = None
+            for face in ([] if identite is not None else ctx["faces"].values()):
                 if not (hasattr(face, "IsInPlay") and face.IsInPlay()):
                     continue
                 if any(c.__name__ == "Identity" for c in type(face).__mro__):
@@ -928,6 +943,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     def pilote(self, data, player_id, check):
         self_pilote = lambda d, p, c: pilote(self, d, p, c)
         etat["asks"] += 1
+        etat["idx_joueur"] = player_id
         capturer_si_phase_mechant()
         if etat["asks"] > MAX_ASKS:
             rendre("bloquee", f"plafond de {MAX_ASKS} questions atteint")
@@ -937,10 +953,18 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             options = []
 
         brute = data.options_json or ""
+        if os.environ.get("AUTOPLAY_DEBUG_BRUTE") and etat["asks"] >= 10 and etat["asks"] <= 20:
+            print(f"DEBUGASK {etat['asks']} p{player_id} {brute[:900]}", flush=True)
 
         passer = json.dumps({"id": "0", "targets": [], "resources": []})
         libres = [o for o in options
                   if isinstance(o, dict) and not o.get("failure_reason")]
+        # AJOUT 16/10/2026 (parties a plusieurs joueurs) : « Ask » est la regle v1.6 « demander
+        # a un autre joueur de declencher une Action » (player_setup.py). Le pilote ne sait pas
+        # coordonner deux joueurs ; la choisir ne fait QUE se reposer la meme question, et la fin
+        # de tour (« End Phase ») n'etait jamais offerte tant qu'elle restait la seule option.
+        # Absente d'une partie solo : comportement inchange.
+        libres = [o for o in libres if o.get("name") != "Ask"]
         if not libres:
             etat["derniere_reponse_legale"] = False
             if trace and etat["asks"] <= trace:
@@ -1230,7 +1254,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                   f"{[(str(o.get('name')), str(o.get('failure_reason'))[:40]) for o in options if isinstance(o, dict) and o.get('failure_reason')]}",
                   flush=True)
         if trace and etat["asks"] <= trace:
-            print(f"ASK {etat['asks']} r{ctx['round']} pv={ctx['pv_ratio']:.2f} "
+            print(f"ASK {etat['asks']} p{player_id} r{ctx['round']} pv={ctx['pv_ratio']:.2f} "
                   f"menace={ctx['menace_ratio']:.2f} id={ctx.get('identite')} "
                   f"-> {meilleure.get('name')} "
                   f"{infos_carte(ctx, meilleure.get('bind_id')).get('nom', '')}",
@@ -1251,7 +1275,32 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                            "targets": cibles,
                            "resources": payer(meilleure, cibles, ctx)})
 
-    DeviceManager.DoGetInput = pilote
+    # AJOUT 16/10/2026 (parties a plusieurs joueurs) : la detection de boucle compare « la
+    # question precedente » a la courante. Avec deux joueurs qui interrogent tour a tour,
+    # la question du joueur 2 s'intercalait et la memoire du joueur 1 (derniere option,
+    # options desistees, plage de cibles) etait ecrasee : fausses « bloquee » sur Rhino lui-meme.
+    # Chaque joueur a donc SA copie de ces cles. Solo : un seul jeu de cles, rien ne change.
+    CLES_PAR_JOUEUR = ("derniere_reponse_legale", "derniere_question_brute", "dernier_progres",
+                       "desistees", "dernieres_options", "derniere_option", "cibles_bonus")
+    memoires = {}
+
+    def pilote_par_joueur(self, data, player_id, check):
+        memoire = memoires.setdefault(player_id, {})
+        for cle in CLES_PAR_JOUEUR:
+            if cle in memoire:
+                etat[cle] = memoire[cle]
+            else:
+                etat.pop(cle, None)
+        try:
+            return pilote(self, data, player_id, check)
+        finally:
+            for cle in CLES_PAR_JOUEUR:
+                if cle in etat:
+                    memoire[cle] = etat[cle]
+                else:
+                    memoire.pop(cle, None)
+
+    DeviceManager.DoGetInput = pilote_par_joueur
     DeviceManager.DoWaitConnect = lambda self, player_id, check: None
     DeviceManager.DoWaitSync = lambda self, player_id, check: None
 
@@ -1315,9 +1364,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # aucune regle, aucun carnet, comportement inchange.
     regles = [r.strip() for r in (os.environ.get("AUTOPLAY_REGLES") or "").split(",") if r.strip()]
     carnet = {str(k): str(v) for k, v in json.loads(os.environ.get("AUTOPLAY_CARNET") or "{}").items()}
-    # AJOUT 16/10/2026 (scenario Bebop & Rocksteady, solo ET 2 joueurs) : `AUTOPLAY_DECKS_SUP`
-    # (« black_panther » ou « black_panther,ant_man ») ajoute des joueurs. Sans la variable :
-    # une partie solo, comportement inchange. Le pilote repond pour chaque joueur qui interroge.
+    # AJOUT 16/10/2026 : `AUTOPLAY_DECKS_SUP` (« black_panther ») ajoute des joueurs.
     textes_decks = [texte_deck]
     for nom_sup in [d.strip() for d in (os.environ.get("AUTOPLAY_DECKS_SUP") or "").split(",") if d.strip()]:
         chemin_sup = FileManager.FindJsonPath("Hero", nom_sup)

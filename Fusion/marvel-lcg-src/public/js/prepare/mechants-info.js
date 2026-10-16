@@ -26,6 +26,27 @@ export const MECHANTS_INFO = {
         apparition: "The Amazing Spider-Man #113 (1972)",
     },
 
+    // TMNT Villains (Inkwire) : Bebop & Rocksteady (16/10/2026) ; la variante expert commence a tk002a
+    "tk001a": {
+        bio: "Bebop, un phacochère mutant, et Rocksteady, un rhinocéros mutant, sont deux anciens voyous de rue transformés par la mutagène, et les hommes de main les plus bruyants du Clan Foot. Inséparables, bagarreurs et pas très futés, ils sèment la destruction dans Manhattan sans jamais penser aux conséquences. Plus on les frappe, plus ils s'énervent, jusqu'à ce qu'ils s'assomment tout seuls.",
+        bioEn: "Bebop, a mutant warthog, and Rocksteady, a mutant rhinoceros, are two former street thugs transformed by mutagen and the loudest muscle of the Foot Clan. Inseparable, brawling and not very bright, they spread destruction through Manhattan without a thought for the consequences. The more you hit them, the angrier they get, until they knock themselves out.",
+        equipes: "Clan Foot",
+        equipesEn: "Foot Clan",
+        ennemis: "Tortues Ninja",
+        ennemisEn: "Teenage Mutant Ninja Turtles",
+        apparition: "Teenage Mutant Ninja Turtles (série animée, 1987)",
+    },
+
+    "tk002a": {
+        bio: "Bebop, un phacochère mutant, et Rocksteady, un rhinocéros mutant, sont deux anciens voyous de rue transformés par la mutagène, et les hommes de main les plus bruyants du Clan Foot. Inséparables, bagarreurs et pas très futés, ils sèment la destruction dans Manhattan sans jamais penser aux conséquences. Plus on les frappe, plus ils s'énervent, jusqu'à ce qu'ils s'assomment tout seuls.",
+        bioEn: "Bebop, a mutant warthog, and Rocksteady, a mutant rhinoceros, are two former street thugs transformed by mutagen and the loudest muscle of the Foot Clan. Inseparable, brawling and not very bright, they spread destruction through Manhattan without a thought for the consequences. The more you hit them, the angrier they get, until they knock themselves out.",
+        equipes: "Clan Foot",
+        equipesEn: "Foot Clan",
+        ennemis: "Tortues Ninja",
+        ennemisEn: "Teenage Mutant Ninja Turtles",
+        apparition: "Teenage Mutant Ninja Turtles (série animée, 1987)",
+    },
+
     "gb001": {
         bio: "Sur un monde aride où les prières restent sans réponse, Gorr perd sa famille et maudit des dieux qui n'ont jamais daigné écouter. Le jour où deux d'entre eux tombent du ciel, mourants, il s'empare de All-Black, la Nécro-épée, une lame vivante taillée dans l'ombre d'un dieu. Depuis, il traverse les âges pour tenir un seul serment : que plus aucun dieu ne survive. Il croise Thor à trois époques de sa vie, et c'est la première fois que le dieu du tonnerre se demande s'il mérite ses fidèles.",
         bioEn: "On a barren world where prayers go unanswered, Gorr loses his family and curses gods who never deigned to listen. The day two of them fall from the sky, dying, he seizes All-Black the Necrosword, a living blade cut from a god's shadow. Since then he has crossed the ages to keep a single vow: that no god shall survive. He crosses paths with Thor at three points in the thunder god's life, and for the first time Thor wonders whether he deserves his worshippers.",

@@ -548,6 +548,42 @@ CAS += [
        {"degats": [["tk001a", 1], ["tk003a", 0]], "statuts_sur": [["tk001a", "tough", 1], ["tk003a", "tough", 1]]}),
 ]
 
+CAS += [
+    _c("tk008a Rhino Rage : s'accroche a Rocksteady (et PAS a Bebop)",
+       "« Attach to Rocksteady » ; son jumeau tk007a vise Bebop",
+       [], [],
+       {"attache": [["tk008a", "tk003a"], ["tk007a", "tk001a"]]}),
+    _c("tk008a Rhino Rage : +1 ATQ a Rocksteady par jeton Andouille (2 jetons -> ATQ 1 + 2 = 3)",
+       "« Rocksteady gets +1 ATK for each knucklehead counter here »",
+       ["Puzzle.Counter('tk008a', 'knucklehead', 2)"], [],
+       {"attaque": [["tk003a", 3]]}),
+    _c("tk008a Rhino Rage : sans jeton, ATQ de base (1)",
+       "ligne de base",
+       [], [], {"attaque": [["tk003a", 1]]}),
+    _c("tk008a Rhino Rage : a 3 jetons, se retourne sur Headstrong (ENRAGED, +3 ATQ) : ATQ 1 + 3 = 4",
+       "« If there are at least 3 knucklehead counters here, flip this card to its ENRAGED side »",
+       ["Puzzle.Counter('tk008a', 'knucklehead', 2)"], ["Puzzle.Damage('tk003a', 1)"],
+       {"en_jeu": ["tk008b"], "absents": ["tk008a"], "attache": [["tk008b", "tk003a"]],
+        "compteurs_sur": [["tk008b", "knucklehead", 3]], "trait_de": [["tk003a", "ENRAGED", True]], "attaque": [["tk003a", 4]]}),
+    _c("tk006b Gone Berserk : Crise -> on ne peut plus retirer de menace du complot principal (3 -> 3)",
+       "icones imprimees : Crise 1, Amplification 1, Aleas 1 (desc) ; la Crise verrouille le complot",
+       [HEROS, "Puzzle.EmptyHand()", "Puzzle.Damage('tk001a', 15)", "Puzzle.SetThreat('tk005b', 3)"],
+       ["Puzzle.Thwart('01001a')"],
+       {"menace_de": [["tk005b", 3]]}, cibles=["tk005b"]),
+    _c("tk006b Gone Berserk : CONTRE-CAS sans Gone Berserk le complot peut etre contre (3 -> 2)",
+       "ligne de base de la Crise",
+       [HEROS, "Puzzle.EmptyHand()", "Puzzle.SetThreat('tk005b', 3)"],
+       ["Puzzle.Thwart('01001a')"],
+       {"menace_de": [["tk005b", 2]]}, cibles=["tk005b"]),
+]
+CAS += [
+    _c("tk018 Ole! : les degats aux deux vilains se resolvent UN PAR UN : Bebop (1 PV) meurt, Gone Berserk donne +12 PV a Rocksteady (1 PV) qui survit",
+       "cas limite de Destructive Dunderheads : « Deal 2 damage to each villain » est sequentiel dans le moteur (DealDamage boucle sur les unites) ; la 1re defaite retourne l'environnement AVANT les degats du 2e vilain",
+       [HEROS, "Puzzle.Damage('tk001a', 14)", "Puzzle.Damage('tk003a', 16)", "Puzzle.Reveal('tk018')", "Puzzle.SetThreat('tk018', 1)"],
+       ["Puzzle.Thwart('01001a')"],
+       {"gagnee": False, "absents": ["tk001a"], "en_jeu": ["tk003a", "tk006b"], "vie": [["tk003a", 29]]}),
+]
+
 
 # Verification outillee du pack : etat_attendu (cles de base) + extensions lues sur les faces EN JEU.
 VERIFICATIONS = r'''
