@@ -25,7 +25,7 @@ from . import *
 #    cibles de CETTE attaque ; un ennemi vaincu par l'attaque n'est plus en jeu,
 #    il n'y a rien a etourdir.
 #  ⚠ « discard Cricket Willow → » : la defausse est un COUT (fleche), payee avant
-#    d'etourdir. TODO-QUESTION (Q3, .planning/tmnt/casey-questions.md) : la
+#    d'etourdir. DECISION UTILISATEUR (16/10/2026, Q3) : la
 #    Reponse n'est offerte QUE si un ennemi attaque peut encore etre etourdi
 #    (condition `une_cible_a_etourdir`) ; sinon on defausserait le Willow pour un
 #    effet impossible.

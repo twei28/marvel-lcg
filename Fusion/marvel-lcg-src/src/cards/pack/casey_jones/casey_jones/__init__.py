@@ -13,7 +13,7 @@ from cards.pack import *
 #   - « a Casey Jones WEAPON upgrade » (tc002 Clap Back, tc006 Anything Goes) :
 #     une arme DU SET « Casey Jones » (cinq cartes : tc007, tc009-tc012).
 #
-#     TODO-QUESTION (.planning/tmnt/casey-questions.md, Q1) : « Casey Jones
+#     DECISION UTILISATEUR (16/10/2026, Q1) : « Casey Jones
 #     WEAPON » = arme du SET Casey Jones (lecture retenue, precedent `hd013`
 #     « a Howard the Duck card » = `set_name`), ou toute arme que Casey
 #     controle ? La premiere est la plus fidele : sinon le mot « Casey Jones »

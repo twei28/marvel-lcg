@@ -22,7 +22,7 @@ from . import *
 #    jeu (voir Q1) ; « tucked UNDER CASEY'S BAG » : sous le Sac tc013 seulement,
 #    pas sous une autre carte (Carapace de Donatello...).
 #  ⚠ « Exhaust Anything Goes » est devant la fleche : un COUT.
-#  TODO-QUESTION (Q4, .planning/tmnt/casey-questions.md) : l'arme qui ENTRE en jeu par
+#  DECISION UTILISATEUR (16/10/2026, Q4) : l'arme qui ENTRE en jeu par
 #    l'echange entre PRETE et attachee a l'identite (rien d'imprime ne dit « inclinee »),
 #    et l'arme sortante est RANGEE face cachee sous le Sac (c'est ce que « tucked » veut
 #    dire), jamais defaussee.

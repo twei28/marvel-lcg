@@ -62,3 +62,10 @@ Chaque lecture ci-dessous est IMPLEMENTEE PROVISOIREMENT (la recommandee, en pre
   3. l'arme sortante est DEFAUSSEE et non rangee (contredit « swap » : elle ne serait plus echangeable).
 - Ce que ca change en jeu : avec 2, une arme a Hero Interrupt echangee ne servirait pas ce tour-ci.
 - Cas qui la fige : `[casey] tc006 Anything Goes : ECHANGE la Baseball Bat (en jeu) et le Cricket Willow (range sous le Sac)`.
+
+## REPONSES DE L'UTILISATEUR (16/10/2026)
+
+- **Q1** : armes du SET « Casey Jones » (lecture retenue, confirmee).
+- **Q2** : fouiller AUSSI la main (PAS la lecture retenue) : tc001b met le Sac en jeu meme s'il est dans la main de depart. Corrige, cas « le Sac dans la MAIN de depart est AUSSI trouve » vu rouge puis vert.
+- **Q3** : Cricket Willow, Reponse NON offerte quand l'ennemi attaque est vaincu (confirmee).
+- **Q4** : Anything Goes, arme entrante PRETE, l'ancienne RANGEE sous le Sac (confirmee).
