@@ -8,7 +8,7 @@
 // ressource octroyée) n'ont pas de cas ici : leur effet est une inclinaison ou
 // un chiffre, déjà couverts par la jauge et `exhausted`.
 //
-// Pas de panorama des paires jumelles 14/15 (travail ultérieur).
+// Paire jumelle 14/15 (tl011 + tl012) : panorama, voir panorama-jumelles.test.tsx.
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { lireDemande, type Demande } from './ask'
@@ -35,11 +35,14 @@ describe('tl001b Leo : deux katanas mises en jeu inclinées', () => {
       })
     )
 
-  it('dessine les deux katanas sur l identité, couchées', () => {
-    for (const id of [11, 12]) {
+  it('dessine les deux katanas en panorama 14|15 A COTE de l identité, couchées', () => {
+    // Décision du 16/10/2026 (panorama-jumelles.ts) : la paire ne se glisse plus
+    // sous l'identité, elle se pose à côté, entièrement visible.
+    for (const [id, cote] of [[11, 'gauche'], [12, 'droite']] as const) {
       const vue = dessinee(monde(), id)
       expect(vue).toBeDefined()
-      expect(vue?.portePar).toBe(IDENTITE)
+      expect(vue?.portePar).toBe(0)
+      expect(vue?.panorama).toBe(cote)
       expect(vue?.kind).toBe('upgrade')
       expect(vue?.exhausted).toBe(true)
     }
