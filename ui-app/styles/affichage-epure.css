@@ -35,13 +35,13 @@
 
 /* --- 1. La palette ----------------------------------------------------------- */
 html[data-epure] {
-  --ep-fond: #c4c8cf;
-  --ep-surface: #d6d9de;
-  --ep-champ: #eceef1;
-  --ep-bord: #98a0ab;
-  --ep-bord-fort: #6c727d;
+  --ep-fond: #97999e;
+  --ep-surface: #a9abb0;
+  --ep-champ: #bfc1c6;
+  --ep-bord: #6b6d72;
+  --ep-bord-fort: #494b50;
   --ep-texte: #1b1e24;
-  --ep-doux: #5d636e;
+  --ep-doux: #3f444d;
   --ep-jaune: #f4c20d;
   --ep-jaune-vif: #ffd43b;
   --ep-police: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -52,7 +52,7 @@ html[data-epure] {
   --ep-creux: inset 0 0 0 1px var(--ep-bord), inset 0 1px 2px rgba(20, 24, 32, 0.08);
   /* Petite fenetre : le leger biseau (clair en haut a gauche, sombre en bas a droite). */
   --ep-biseau: inset 1px 1px 0 rgba(255, 255, 255, 0.95), inset -1px -1px 0 rgba(20, 24, 32, 0.16),
-    0 0 0 1px #98a0ab, 0 14px 34px rgba(10, 14, 22, 0.32);
+    0 0 0 1px #6b6d72, 0 14px 34px rgba(10, 14, 22, 0.32);
 }
 
 /* --- 2. La table : gris neutre, la marque du heros au coin ------------------- */
@@ -142,7 +142,7 @@ html[data-epure] .plateau-barre button:hover:not(:disabled) {
 
 html[data-epure] .plateau-barre button:active,
 html[data-epure] .plateau-barre button[aria-pressed='true'] {
-  background: #c9cdd3;
+  background: #b3b5ba;
   box-shadow: var(--ep-creux);
 }
 
@@ -276,7 +276,7 @@ html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:active,
 html[data-epure] .demande-centrale button:active,
 html[data-epure] .assistant-action button:active,
 html[data-epure] .deck-modal-panel button:active {
-  background: #c9cdd3;
+  background: #b3b5ba;
   box-shadow: var(--ep-creux);
 }
 
@@ -358,8 +358,8 @@ html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
 
 /* Un bouton inactif : texte gris, sans ombre. */
 html[data-epure] .plateau-barre button:disabled {
-  color: #9aa0aa;
-  box-shadow: 0 0 0 1px #b3b8c0;
+  color: #6f7278;
+  box-shadow: 0 0 0 1px #8a8c91;
   background: var(--ep-surface);
 }
 
@@ -430,7 +430,7 @@ html[data-epure] .scan-frame,
 html[data-epure] .state-playable .scan-frame,
 html[data-epure] .state-targetable .scan-frame,
 html[data-epure] .scan-card.state-source .scan-frame {
-  box-shadow: 0 0 0 1px #6c727d;
+  box-shadow: 0 0 0 1px #494b50;
 }
 
 /* --- 11. Les reglages : lignes claires, textes sombres (16/10/2026) ---------- */
@@ -481,7 +481,7 @@ html[data-epure] .reglages-fenetre .ligne-option.est-actif .ligne-option-etat {
 
 html[data-epure] .reglages-fenetre .ligne-option.est-desactive,
 html[data-epure] .reglages-fenetre .ligne-option.est-desactive * {
-  color: #9aa0aa;
+  color: #6f7278;
 }
 
 html[data-epure] .reglages-fenetre .reglages-groupe {
@@ -522,7 +522,7 @@ html[data-epure] .reglages-fenetre {
 
 /* --- 12. La mise en place carte par carte (CoucheMiseEnPlace.tsx) ------------ */
 html[data-epure][data-affichage] .mep-couche {
-  background: rgba(196, 200, 207, 0.86);
+  background: rgba(151, 153, 158, 0.86);
 }
 html[data-epure][data-affichage] .mep-titre {
   color: var(--ep-doux);
