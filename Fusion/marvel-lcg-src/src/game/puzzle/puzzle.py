@@ -425,6 +425,15 @@ class RunPuzzle:
         else:
             Faces.GiveStatus([unit], "Cloaked", DebugRule(unit))
 
+    def Daze(self, card: CardName):
+        """Pose (ou retire, bascule) une carte d'etat Dazed, comme `Cloak`."""
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        if unit.IsDazed():
+            unit.DiscardDazed(DebugRule(unit), rule=1)
+        else:
+            Faces.GiveStatus([unit], "Dazed", DebugRule(unit))
+
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
 

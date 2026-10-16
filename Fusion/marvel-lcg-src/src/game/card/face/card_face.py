@@ -209,6 +209,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # MOUSERS / FLYBORGS ne sont pas decoratifs : td014 et td015 les lisent.
         "BO", "SEWERS",
         "MOUSERS", "FLYBORGS", "SWARM",
+        # AJOUT (16/10/2026) : scenario Baxter Stockman v3 (Inkwire, prefixe `tx`). « FLYBORG »
+        # au SINGULIER est imprime sur les scans tx012 / tx013 (td017 porte le pluriel FLYBORGS,
+        # decision du 15/10) ; « FLY » est le trait du vilain tx001-tx003.
+        "FLYBORG", "FLY",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -402,6 +406,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # poses sur le mechant Kly'bn / Sl'gur't (insert p.14). Sans cette entree `IsCounter`
         # refuse le nom et la pose du jeton echoue.
         'faith',
+        # AJOUT (16/10/2026) : scenario Baxter Stockman v3 (Inkwire). Compteurs NOMMES des sbires
+        # SWARM : `cable` (tx015 Roadkill Rodneys), `shield` (tx017 Auto Defense Bots), `ooze`
+        # (tx013 Superfly). `swarm` existe deja (td016/td017). Sans ces entrees `IsCounter` refuse
+        # le nom et le sbire tombe a la mise en place.
+        'cable', 'shield', 'ooze',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
@@ -415,7 +424,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # sentinel (12/09/2026, fiche docs/reference/mots-cles/exposed.md).
         # Contrairement aux trois autres, sa regle n'est pas dans le moteur :
         # elle est scriptee sur la carte (cards/pack/status/exposed.py).
-        "Confused", "Stunned", "Tough", "Exposed", "Cloaked"
+        "Confused", "Stunned", "Tough", "Exposed", "Cloaked",
+        # AJOUT (16/10/2026) : 6e carte d'etat, « Dazed » (Hebete), scenario Baxter Stockman v3
+        # (Inkwire). Fiche docs/reference/mots-cles/dazed.md.
+        "Dazed"
     ]
 
     ATTACK_KEYWORD = Literal[

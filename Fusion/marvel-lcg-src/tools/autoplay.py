@@ -319,7 +319,10 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # la lecture d'etat. Les PV restaient a 100 %, le bot ne se repliait
         # jamais et se faisait tuer sans jamais changer de forme.
         try:
-            joueur = w.players[0]
+            # AJOUT 16/10/2026 (parties a deux joueurs, `--deck a+b`) : le joueur dont c'est la question,
+            # pas toujours le premier. `joueur_interroge` est pose par `pilote` (index dans `w.players`) ;
+            # sans « + » il vaut toujours 0 : comportement inchange.
+            joueur = w.players[etat.get("joueur_interroge", 0)]
             ctx["joueur"] = joueur
         except Exception:
             return ctx
@@ -928,6 +931,14 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     def pilote(self, data, player_id, check):
         self_pilote = lambda d, p, c: pilote(self, d, p, c)
         etat["asks"] += 1
+        # Index du joueur interroge (parties a deux joueurs) : `player_id` est l'identifiant de joueur du
+        # moteur ; on retombe sur 0 s'il ne designe aucun siege connu.
+        try:
+            etat["joueur_interroge"] = next(
+                (i for i, j in enumerate(monde().players) if getattr(j, "player_id", None) == player_id
+                 or getattr(j, "id", None) == player_id), 0)
+        except Exception:
+            etat["joueur_interroge"] = 0
         capturer_si_phase_mechant()
         if etat["asks"] > MAX_ASKS:
             rendre("bloquee", f"plafond de {MAX_ASKS} questions atteint")
@@ -941,6 +952,16 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         passer = json.dumps({"id": "0", "targets": [], "resources": []})
         libres = [o for o in options
                   if isinstance(o, dict) and not o.get("failure_reason")]
+        # AJOUT 16/10/2026 (parties a deux joueurs) : l'option « Ask » (demander a un autre joueur de
+        # declencher une Action qu'il pourrait jouer a son tour) ne fait RIEN quand ce joueur n'en a
+        # aucune, et le plateau ne bouge pas : le pilote la reprenait sans fin (« bloquee », 8 parties sur 8
+        # sur le temoin Rhino a deux joueurs). Il ne la propose a personne ; absente en solo.
+        try:
+            plusieurs = len(monde().players) > 1
+        except Exception:
+            plusieurs = False
+        if plusieurs:
+            libres = [o for o in libres if str(o.get("name")) != "Ask"]
         if not libres:
             etat["derniere_reponse_legale"] = False
             if trace and etat["asks"] <= trace:
@@ -1261,13 +1282,20 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     from engine.file.manager import FileManager
 
     # Le deck : un nom de deck de depart, ou un chemin vers un fichier exporte.
-    if os.path.isfile(deck):
-        texte_deck = open(deck).read()
-    else:
-        chemin = FileManager.FindJsonPath("Hero", deck)
-        assert chemin, f"deck introuvable : {deck}"
-        with FileManager.OpenFile(chemin, read=True) as fichier:
-            texte_deck = fichier.Read()
+    # AJOUT 16/10/2026 (scenario Baxter Stockman) : `--deck a+b` monte une partie A DEUX JOUEURS
+    # (un deck par joueur, separes par « + »). Le pilote lit l'etat du joueur 1 (`w.players[0]`) et
+    # repond aux questions des deux : ses reponses restent legales, mais il joue le second joueur
+    # avec les memes heuristiques. Sans « + », comportement strictement inchange.
+    textes_decks = []
+    for un_deck in deck.split("+"):
+        if os.path.isfile(un_deck):
+            textes_decks.append(open(un_deck).read())
+        else:
+            chemin = FileManager.FindJsonPath("Hero", un_deck)
+            assert chemin, f"deck introuvable : {un_deck}"
+            with FileManager.OpenFile(chemin, read=True) as fichier:
+                textes_decks.append(fichier.Read())
+    texte_deck = textes_decks[0]
 
     # La difficulte vit dans la campagne : on la force avant de monter la scene.
     chemin_vilain = FileManager.FindJsonPath("Campaign", vilain)
@@ -1315,7 +1343,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # aucune regle, aucun carnet, comportement inchange.
     regles = [r.strip() for r in (os.environ.get("AUTOPLAY_REGLES") or "").split(",") if r.strip()]
     carnet = {str(k): str(v) for k, v in json.loads(os.environ.get("AUTOPLAY_CARNET") or "{}").items()}
-    scene = SceneLoader.NewFromJson(json.dumps(campagne), None, [texte_deck],
+    scene = SceneLoader.NewFromJson(json.dumps(campagne), None, textes_decks,
                                     graine, regles, carnet)
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")

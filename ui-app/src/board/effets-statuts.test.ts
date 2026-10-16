@@ -54,6 +54,18 @@ describe('deltas de statuts', () => {
     expect(libelleStatut('cloaked', 1, 'en')).toBe('Cloaked')
   })
 
+  // Sixieme carte d'etat (« Dazed », scenario Baxter Stockman). Sans son entree dans
+  // STATUTS, `estStatut` la rejetterait et le badge ne partirait jamais.
+  it('signale Hébété, la sixieme carte d etat, posee puis retiree', () => {
+    const avant = monde(klaw)
+    const apres = monde(klaw, carte(204, 'StatusCard', 'dazed', 97))
+    expect(deltasStatuts(avant, apres)).toEqual([[97, { kind: 'status', statut: 'dazed', value: 1 }]])
+    expect(deltasStatuts(apres, avant)).toEqual([[97, { kind: 'status', statut: 'dazed', value: -1 }]])
+    expect(libelleStatut('dazed', 1, 'fr')).toBe('Hébété')
+    expect(libelleStatut('dazed', -1, 'fr')).toBe('Hébété retiré')
+    expect(libelleStatut('dazed', 1, 'en')).toBe('Dazed')
+  })
+
   it('ne dit rien quand rien ne change, meme avec un statut en place', () => {
     const m = monde(klaw, carte(200, 'StatusCard', 'tough', 97))
     expect(deltasStatuts(m, m)).toEqual([])
