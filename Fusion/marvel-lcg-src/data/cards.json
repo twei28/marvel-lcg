@@ -112279,7 +112279,10 @@
    "set_name": "TMNT Aggression",
    "text": "<b>Response</b>: After Bo-Wing attacks and defeats an enemy, remove 2 threat from a scheme.\n<i>\"As long as I'm alive, you'll have me to fight.\"</i>",
    "custom": "Inkwire",
-   "ability_link": "53035"
+   "ability_link": "53035",
+   "unique_also": [
+    "Winter Soldier"
+   ]
   },
   {
    "card_id": "ua009",
@@ -112339,7 +112342,10 @@
    "set_name": "TMNT Basic",
    "text": "<b>Forced Response</b>: After April O'Neil enters play, choose one: remove 2 threat from a scheme, draw 3 cards, or deal 4 damage to an enemy. At the end of the round, if April O'Neil is still in play, discard her.",
    "custom": "Inkwire",
-   "ability_link": "01084"
+   "ability_link": "01084",
+   "unique_also": [
+    "Nick Fury"
+   ]
   },
   {
    "card_id": "ub002",
@@ -112376,7 +112382,10 @@
    ],
    "set_name": "TMNT Basic",
    "text": "<b>Forced Response</b>: After you play Atilla from your hand, choose THW or ATK. Atilla gets +2 to the chosen power until the end of the phase.\n<i>\"This place belongs to us!\"</i>",
-   "custom": "Inkwire"
+   "custom": "Inkwire",
+   "unique_also": [
+    "Spider-Man"
+   ]
   },
   {
    "card_id": "ub004",
@@ -112436,7 +112445,10 @@
    "set_name": "TMNT Basic",
    "text": "<b>Response</b>: After you play Clyde from your hand, draw 1 card.\n<i>\"You mess with the swamp, you get the tongue.\"</i>",
    "custom": "Inkwire",
-   "ability_link": "13018"
+   "ability_link": "13018",
+   "unique_also": [
+    "Ironheart"
+   ]
   },
   {
    "card_id": "ub007",
@@ -112546,7 +112558,10 @@
    "set_name": "TMNT Basic",
    "text": "Play only if your identity has the [[MUTANT]] trait.\n<b>Alter-Ego Action</b>: Exhaust E.P.F. R.N.D. and take 1 damage → discard cards from your deck until you discard an identity-specific card, then add that card to your hand.",
    "custom": "Inkwire",
-   "ability_link": "35022"
+   "ability_link": "35022",
+   "unique_also": [
+    "Weapon X"
+   ]
   },
   {
    "card_id": "ub013",
@@ -112606,7 +112621,10 @@
    "set_name": "TMNT Basic",
    "text": "<b>Response</b>: After Genghis is discarded from the top of your deck, put him into play under your control.\n<i>\"When we leap, we conquer.\"</i>",
    "custom": "Inkwire",
-   "ability_link": "40057"
+   "ability_link": "40057",
+   "unique_also": [
+    "White Fox"
+   ]
   },
   {
    "card_id": "ub016",
@@ -112659,7 +112677,10 @@
    ],
    "set_name": "TMNT Basic",
    "text": "Play only if your identity has the [[MUTANT]] trait.\n<b>Alter-Ego Action</b>: Exhaust this card → search the top 5 cards of your deck for a [[DIMENSION X]], [[NINJA]], or [[MUTANIMAL]] ally (search the whole deck instead if you control a [[TEMPORAL]] character) and add that ally to your hand. <i>(Shuffle.)</i>",
-   "custom": "Inkwire"
+   "custom": "Inkwire",
+   "unique_also": [
+    "Cerebro"
+   ]
   },
   {
    "card_id": "ub020",
@@ -112834,7 +112855,10 @@
    "set_name": "TMNT Basic",
    "text": "<b>Response</b>: After Mary enters play, stun an enemy.\n<i>\"You dare doubt me? Allow me to Tudor you.\"</i>",
    "custom": "Inkwire",
-   "ability_link": "01083"
+   "ability_link": "01083",
+   "unique_also": [
+    "Mockingbird"
+   ]
   },
   {
    "card_id": "ub029",
@@ -112950,7 +112974,10 @@
    "set_name": "TMNT Basic",
    "text": "Play only if you have the [[MYSTIC]] trait.\nYou get +1 hand size while in hero form.\n<i>\"The balance of all things must be warded against the dark agents of chaos.\"</i> —Splinter",
    "custom": "Inkwire",
-   "ability_link": "09026"
+   "ability_link": "09026",
+   "unique_also": [
+    "The Sorcerer Supreme"
+   ]
   },
   {
    "card_id": "ub035",
@@ -113116,7 +113143,10 @@
    ],
    "set_name": "TMNT Basic",
    "text": "<b>Alter-Ego Action</b>: Exhaust Rupert's Pizzeria → heal 1 damage from a [[MUTANT]], [[MUTANIMAL]] or [[NINJA]] character. Any player whose alter-ego has the [[MUTANT]] trait may trigger this ability.\n<i>\"Best slice in the city!\"</i> —Mikey",
-   "custom": "Inkwire"
+   "custom": "Inkwire",
+   "unique_also": [
+    "X-Mansion"
+   ]
   },
   {
    "card_id": "ub044",
@@ -113217,7 +113247,10 @@
    "set_name": "TMNT Basic",
    "text": "Slash gets +1 ATK for each rage counter here.\n<b>Response</b>: After the villain attacks you, place 1 rage counter here.\n<i>\"Feel my rage!\"</i>",
    "custom": "Inkwire",
-   "ability_link": "62020"
+   "ability_link": "62020",
+   "unique_also": [
+    "Hulk"
+   ]
   },
   {
    "card_id": "ub049",
@@ -113305,7 +113338,10 @@
    "set_name": "TMNT Basic",
    "text": "<b>Interrupt</b>: When a friendly [[MARTIAL ARTIST]] character uses a basic power, choose:\n• Exhaust Splinter → that character gets +1 to that basic power for this use.\n• That character gets -1 to that basic power for this use. Ready Splinter.",
    "custom": "Inkwire",
-   "ability_link": "60029"
+   "ability_link": "60029",
+   "unique_also": [
+    "Stick"
+   ]
   },
   {
    "card_id": "ub054",
@@ -113356,7 +113392,10 @@
    "set_name": "TMNT Basic",
    "text": "<b>Action</b>: Exhaust The Market and choose a player whose identity has the [[MUTANT]] trait → that player searches the top X cards of their deck for any card, where X is the number of side schemes in the victory display, and adds that card to their hand. <i>(Shuffle.)</i>",
    "custom": "Inkwire",
-   "ability_link": "41023"
+   "ability_link": "41023",
+   "unique_also": [
+    "X-Bunker"
+   ]
   },
   {
    "card_id": "ub057",
@@ -113421,5 +113460,5 @@
  "tmnt_aspect_leadership": [],
  "tmnt_aspect_protection": [],
  "tmnt_aspect_dual": [],
- "checksum": "cdf76075787e6dc2c06347bcb750b66541d6c04ef7d8e3322d680ca5b660dab4"
+ "checksum": "f3b69999d9fd3fa4a000f26d6cb0017aec5a7ecd520184384d6d35511f48849c"
 }
