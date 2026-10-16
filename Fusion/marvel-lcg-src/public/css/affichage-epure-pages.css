@@ -858,3 +858,25 @@ html[data-epure] .acc-mode.cut:hover {
 html[data-epure] .acc-mode .mvl {
   font-size: 16px;
 }
+
+/* La grande image et la grille, chacune dans un cadre gris foncé (16/10/2026) :
+   les deux panneaux se détachent l'un de l'autre au lieu de se toucher. */
+html[data-epure] .tb-scene,
+html[data-epure] .tb-droite {
+  border: 6px solid #34373d !important;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* Le panneau de gauche perd sa pente (son bord droit coupé en biais mangeait
+   le cadre), et la grille respire à l'intérieur du sien. */
+html[data-epure] .tb-scene {
+  clip-path: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+html[data-epure] .tb-droite {
+  padding-left: 10px;
+  padding-right: 10px;
+}
