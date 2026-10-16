@@ -271,3 +271,11 @@ masque du deck-builder (à signaler, même nature que Q-R2).
 - [x] Étape 7 : Rhino blessé → Dazed (rouge sans module) ; Rhino Tenace → pas de Dazed (vert, assumé).
 - [x] 7 bis : NON. [x] 8 : présente en A. [x] 8 bis : statut Dazed, chemin existant.
 Carte terminée : OUI.
+
+## Autoplay final (après le correctif de 58031)
+
+8 parties contre Rhino, profil équilibré, même fournée : deck A 0 bloquée / 8, deck B 0 / 8, témoin
+`spider_man` 0 / 8. Grep `NameError|AttributeError|TypeError|KeyError|AssertionError|Traceback` : **0 sur les
+16 journaux A et B** (contre 3 parties touchées avant le correctif). Cameo s'active dans les 8 parties A sans
+plantage. Deck B : le pilote joue peu de cartes (Innate Inspiration en main de départ ×8, Take a Stand ×4,
+Old Hob ×4, Noble Sacrifice ×2) ; les autres servent de ressource : leur preuve reste `test_capacites`.
