@@ -85,9 +85,10 @@ CAS = [
     _c("tv001b Bonnie Setup : aucun ELEMENT dans le deck -> tout le deck est defausse, rien en jeu (Setup rejoue)",
        "« until you discard an ELEMENT upgrade » : sans ELEMENT on ne s'arrete qu'au deck vide ; ni un allie (tv002) ni "
        "une amelioration SANS le trait ELEMENT (Mark V Armor) ne l'arretent : seul le trait compte. Deck epuise : le moteur "
-       "remelange la defausse dans le deck (regle du deck epuise) : defausse vide, deck de 4",
-       ["Puzzle.Remove('tv014')", SANS_DECK, f"Puzzle.CreatePlayerDeck('01089', 'tv002', '01088', '{ARMURE}')"], [],
-       {"hors_jeu": ["tv002", "tv014"], "defausse_exacte": [], "taille_deck_joueur": 4},
+       "remelange la defausse dans le deck (regle du deck epuise) : defausse vide, deck de 4 + la carte-temoin 01075 deja en defausse = 5 (sans Setup : deck 4, 01075 en defausse)",
+       ["Puzzle.Remove('tv014')", SANS_DECK, f"Puzzle.CreatePlayerDeck('01089', 'tv002', '01088', '{ARMURE}')",
+        "Puzzle.CreatePlayerDiscardPile('01075')"], [],
+       {"hors_jeu": ["tv002", "tv014"], "defausse_exacte": [], "taille_deck_joueur": 5},
        verifier="venus_resetup"),
     _c("tv001b Bonnie Setup : l'ELEMENT est la TOUTE DERNIERE carte du deck -> trouve quand meme (piege DiscardUntil)",
        "01090, 01088 puis tv013 sont defaussees, le deck epuise remelange la defausse (3 cartes) : tv013 est RENDUE quand meme "
@@ -256,6 +257,10 @@ CAS = [
     _c("tv007 Resistance : « from an ATTACK » : des degats HORS attaque (Puzzle.Damage 2) ne sont PAS prevenus",
        "contre-cas : `is_from_attack=True`, la carte n'est pas jouee et les 2 degats passent",
        [HEROS], ["Puzzle.Damage('tv001a', 2)"],
+       {"degats_identite": 2, "en_main": ["tv007"]}, main_exclusive=["tv007", "01090"], accepter_choix=True),
+    _c("tv007 Resistance : « Hero Interrupt » : en alter-ego (Bonnie) elle n'est PAS jouable, Rhino frappe 2 degats, la carte reste en main",
+       "contre-cas dans l'AUTRE forme : Resistance exige la forme heros",
+       [], ["Puzzle.Attack('01094')"],
        {"degats_identite": 2, "en_main": ["tv007"]}, main_exclusive=["tv007", "01090"], accepter_choix=True),
     # ===================================================================== tv008 Evanescence
     _c("tv008 Evanescence : RESSOURCE GGG : trois jokers paient SEULS Bludgeon (cout 3)",
