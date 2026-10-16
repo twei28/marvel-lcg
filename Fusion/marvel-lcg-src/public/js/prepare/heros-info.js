@@ -1715,6 +1715,7 @@ export const HEROS_INFO = {
         equipesEn: "Allies of the Teenage Mutant Ninja Turtles",
         ennemis: "Hun, les Purple Dragons",
         ennemisEn: "Hun, the Purple Dragons",
+    },
     "ta001a": {
         bio: "Alopex est une renarde arctique mutante, ninja et justicière des rues de New York, alliée des Tortues Ninja. Adolescente, elle a été traquée et manipulée avant d'apprendre à chasser à son tour : à la manière d'un matagi, elle désigne sa proie, la suit en silence et ne la lâche plus. Elle se camoufle dans l'ombre de la ville et frappe vite, ses deux kamas, de courtes faucilles de combat, à la main. Kitsune, sorcière du Clan du Pied, a planté ses griffes en elle et n'a aucune intention de la laisser partir.",
         bioEn: "Alopex is a mutant arctic fox, a ninja and a vigilante of the streets of New York, and an ally of the Teenage Mutant Ninja Turtles. A teenager who was hunted and manipulated before learning to hunt in turn, she works like a matagi: she marks her prey, follows it in silence and never lets go. She cloaks herself in the city's shadows and strikes fast, a pair of kamas, short fighting sickles, in her hands. Kitsune, a witch of the Foot Clan, has dug her claws into her and has no intention of letting her go.",
@@ -1722,6 +1723,16 @@ export const HEROS_INFO = {
         baseEn: "New York City (the streets)",
         ennemis: "Kitsune, le Clan du Pied",
         ennemisEn: "Kitsune, the Foot Clan",
+    },
+    "tj001a": {
+        bio: "Jennika est la « cinquième tortue » de la famille Tortues Ninja : une adolescente passée par le Clan du Pied avant de devenir elle-même une tortue mutante. Bassiste dans l'âme, elle partage ses nuits entre les répétitions de son groupe et les toits de New York, où elle rôde sous une capuche sombre. Elle se bat avec des tekko-kagi, des griffes de combat fixées aux poings, et suit la voie du shinobi : discrétion, rituels et coups précis plutôt que force brute.",
+        bioEn: "Jennika is the \"fifth turtle\" of the Teenage Mutant Ninja Turtles family: a teenager who came up through the Foot Clan before becoming a mutant turtle herself. A bassist at heart, she splits her nights between her band's rehearsals and the rooftops of New York, where she prowls under a dark hood. She fights with tekko-kagi, hand claws strapped to her fists, and follows the way of the shinobi: stealth, ritual and precise strikes rather than brute strength.",
+        civil: "Jenny",
+        base: "New York",
+        equipes: "Tortues Ninja",
+        equipesEn: "Teenage Mutant Ninja Turtles",
+        ennemis: "Darius Dun, les Street Phantoms",
+        ennemisEn: "Darius Dun, the Street Phantoms",
     },
 
     "tv001a": {

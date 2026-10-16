@@ -48,6 +48,12 @@ class ClassCard(HasResourceIcon, HasCost, HasMaxPer, PlayerCard):
         "IdentitySpecific",
         "Encounter",    # e.g. "04097"
         "Campaign",
+        # CORRECTIF (16/10/2026) : les quatre classes SHINOBI du pack custom
+        # jennika (Inkwire, TMNT Heroes v3). Une carte « both a Jennika card
+        # and a Taijutsu card » porte `desc.Class = "Hero;Taijutsu"` (meme
+        # montage que « Campaign;Aggression »). Additif : aucune de ces
+        # classes n'est un ASPECT (voir ASPECT_CLASS_TYPE, inchange).
+        "Bushido", "Ninjutsu", "Kuji-Kiri", "Taijutsu",
         "Aspect",       # Non-Hero Non-basic card, non-basic
     ]
 

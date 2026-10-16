@@ -121,6 +121,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   timer: 'minuteur',
   // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
   dredge: 'dragage',
+  // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).
+  samurai: 'samouraï',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

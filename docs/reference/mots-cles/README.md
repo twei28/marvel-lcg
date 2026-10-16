@@ -158,6 +158,10 @@ la plus fréquente sur un pack vilain.
       de base / activation OU +2 aux prochains dégâts, un seul effet, une seule
       carte par personnage ; Tough d'abord, Cloaked et Dazed en même temps)
 
+- [x] shinobi.md (pack `jennika`, TMNT Heroes v3 : classes Bushido / Ninjutsu / Kuji-Kiri /
+      Taijutsu portées par `desc.Class`, « Limit once per round for each Shinobi » = quatre capacités ;
+      le Path `tj011` est un Support, question Q3)
+
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
 Vérification faite avec l'heuristique `<b>([A-Z][a-zA-Z ]{2,20})</b>` sur

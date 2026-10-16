@@ -4160,4 +4160,36 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ta014': "<b>Une fois révélée</b> : camouflez Kitsune et inclinez votre identité.\n<i>(Sbire némésis d'Alopex.)</i>",
   // alopex — Curse of Nine Tales (Treachery némésis)
   'ta015': "<b>Une fois révélée</b> : choisissez l'un ou l'autre :\n• Défaussez les 3 cartes du dessus de votre deck et placez 1 menace sur le complot principal pour chaque type de carte différent défaussé de cette façon.\n• Défaussez 2 alliés que vous contrôlez.",
+  // jennika — * Jennika (Hero)
+  'tj001a': "<i>Ninja Senpai</i> — <b>Interruption</b> : quand vous jouez une carte Shinobi, Jennika gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round. <i>(Limite d'une fois par round pour chaque Shinobi.)</i>",
+  // jennika — * Jenny (AlterEgo)
+  'tj001b': "<b>Mise en place</b> : mettez en jeu la Voie Sōsaiken sous votre contrôle.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[TEKKO-KAGI]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
+  // jennika — Composure (Event, x3)
+  'tj002': "<b>Action</b> : choisissez une carte dans votre défausse → ajoutez cette carte à votre main.",
+  // jennika — Apparition (Event, x2)
+  'tj003': "<b>Action</b> <i>(contre)</i> : retirez 2 menaces d'une manigance et désorientez un ennemi.\n<i>(Cette carte est à la fois une carte Jennika et une carte Kuji-Kiri.)</i>",
+  // jennika — Decisive Strike (Event, x2)
+  'tj004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si vous avez payé cette carte avec un événement [[ATTACK]], sonnez cet ennemi.\n<i>(Cette carte est à la fois une carte Jennika et une carte Taijutsu.)</i>",
+  // jennika — Moonlighting (Event, x2)
+  'tj005': "<b>Action de héros</b> : camouflez Jennika.\n<i>(Cette carte est à la fois une carte Jennika et une carte Ninjutsu.)</i>",
+  // jennika — Fearless Resolve (Upgrade, x2)
+  'tj006': "Utilisations (2 compteurs de samouraï).\n<b>Action de héros</b> : inclinez Fearless Resolve et retirez-en 2 compteurs de samouraï → redressez Jennika.\n<i>(Cette carte est à la fois une carte Jennika et une carte Bushido.)</i>",
+  // jennika — * Jenny's Crib (Support)
+  'tj007': "<b>Action d'alter ego</b> : inclinez Jenny's Crib et défaussez 1 carte de votre main → piochez 1 carte et redressez votre identité.",
+  // jennika — * Jennika's Bow (Upgrade)
+  'tj008': "Restreint.\n<b>Action de héros</b> : inclinez Jennika's Bow → infligez 1 dégât à un ennemi ou retirez 1 menace d'une manigance.\n<b>Réponse de héros</b> : après que vous avez joué un événement [[ATTACK]] ou [[THWART]], redressez Jennika's Bow.",
+  // jennika — * Jennika's Tekko-Kagi (Upgrade)
+  'tj009': "Chaque amélioration [[TEKKO-KAGI]] que vous contrôlez gagne : « <b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild] pour une carte Shinobi. »",
+  // jennika — * Jennika's Other Tekko-Kagi (Upgrade)
+  'tj010': "Chaque amélioration [[TEKKO-KAGI]] que vous contrôlez gagne : « <b>Interruption de héros</b> : quand vous faites une attaque de base, inclinez cette carte et défaussez 1 carte de votre main → Jennika gagne +2 ATQ pour cette attaque. Cette attaque gagne Perçant. »",
+  // jennika — Sōsaiken (Support, type imprimé PATH)
+  'tj011': "Permanent.\n<b>Réponse</b> : après que vous avez joué une carte Shinobi, inclinez cette carte → piochez 1 carte.",
+  // jennika — Personality Adjustment (Obligation)
+  'tj012': "<b><i>Donnez-la au joueur Jenny.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Jenny → retirez Personality Adjustment de la partie.\n• Placez 3 menaces sur la manigance principale. Défaussez cette obligation.",
+  // jennika_nemesis — Dun Import Exports (SideScheme némésis)
+  'tj013': "<i>Le dangereux mafieux Darius Dun ouvre boutique. Il a envoyé ses Street Phantoms prendre le contrôle des ports de la ville.</i>\nEntrave 1[per_hero]. Incitation 2.",
+  // jennika_nemesis — * Phantasm (Minion némésis)
+  'tj014': "Riposte 1. Ténacité.\n<b>Une fois vaincu</b> : camouflez chaque sbire [[PHANTOMS]] en jeu.\n<i>(Sbire némésis de Jennika.)</i>",
+  // jennika_nemesis — Street Phantoms (Minion némésis, x3)
+  'tj015': "Ténacité.\n<b>Une fois révélée</b> : camouflez Street Phantoms.",
 }
