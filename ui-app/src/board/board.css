@@ -814,6 +814,9 @@
 
   button.ma-cible {
     cursor: pointer;
+    min-height: 40px;
+    padding: 5px 10px;
+    text-align: left;
   }
 
   .ma-cible.est-hors-table {

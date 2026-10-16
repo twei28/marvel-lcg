@@ -21,7 +21,7 @@ type MenuActionsCarteProps = {
   toutesOptions?: Option[]
   cartesParId: Map<number, WorldCard>
   catalogue: Catalogue
-  choisirOption: (option: Option, ciblesInitiales?: number[]) => void
+  choisirOption: (option: Option, ciblesInitiales?: number[], parGeste?: boolean) => void
   annulerDemande?: () => void
   libelleAnnulation?: string
   fermer: () => void
@@ -766,11 +766,30 @@ export function MenuActionsCarte({
                       <span className="ma-cibles" aria-label={t('Cibles possibles')}>
                         {cibles
                           .filter((target) => !target.horsTable)
-                          .map((target) => (
-                            <span className="ma-cible" key={target.id}>
-                              <ContenuCible target={target} />
-                            </span>
-                          ))}
+                          .map((target) =>
+                            disabled ? (
+                              <span className="ma-cible" key={target.id}>
+                                <ContenuCible target={target} />
+                              </span>
+                            ) : (
+                              // Rapport n87/n88 (Yarro, tablette, 16/10/2026) : toucher la cible
+                              // NOMMEE dans l'action la choisit, comme un glisser-déposer
+                              // (`parGeste`) ; sinon la fenêtre « Choisir la cible » la
+                              // redemandait.
+                              <button
+                                type="button"
+                                className="ma-cible"
+                                key={target.id}
+                                onClick={(evenement) => {
+                                  evenement.stopPropagation()
+                                  choisirOption(option, [target.id], true)
+                                }}
+                                onKeyDown={(evenement) => evenement.stopPropagation()}
+                              >
+                                <ContenuCible target={target} />
+                              </button>
+                            )
+                          )}
                       </span>
                     ) : null}
                     {schemesNonLegaux.length > 0 ? (
