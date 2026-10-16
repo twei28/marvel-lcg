@@ -13,7 +13,7 @@ import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
-import { nomAvecAuteur, createursDe } from "/public/js/prepare/auteur.js";
+import { nomAvecAuteur, createursDe, auteurConnuDeLExtension } from "/public/js/prepare/auteur.js";
 // LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
 // ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
 import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
@@ -5324,8 +5324,9 @@ async function preselectionDernierScenario() {
 const _auteursExtensions = new Map();
 async function auteurDeExtension(e) {
     if (_auteursExtensions.has(e.key)) return _auteursExtensions.get(e.key);
-    let auteur = "";
-    for (const enc of e.encounters || []) { auteur = catalog.auteurSetRencontre(enc); if (auteur) break; }
+    const interne = e.key.match(/\((.*)\)\s*$/);
+    let auteur = interne ? auteurConnuDeLExtension(interne[1]) : "";
+    for (const enc of auteur ? [] : (e.encounters || [])) { auteur = catalog.auteurSetRencontre(enc); if (auteur) break; }
     if (!auteur) {
         const heros = await catalog.heroes();
         const h = heros.find((x) => x.extension === e.key && x.auteur);

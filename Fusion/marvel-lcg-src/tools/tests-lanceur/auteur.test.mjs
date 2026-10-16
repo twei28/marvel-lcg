@@ -71,3 +71,11 @@ test("un set officiel ou vide ne rend rien", () => {
     assert.equal(auteurUnique([undefined, undefined]), "");
     assert.equal(auteurUnique(null), "");
 });
+
+test("les créateurs d'extensions donnés à la main (16/10/2026)", async () => {
+    const { auteurConnuDeLExtension } = await import("../../public/js/prepare/auteur.js");
+    assert.equal(auteurConnuDeLExtension("Web of Deceit"), "Ripper3");
+    assert.equal(auteurConnuDeLExtension("  gorr the god butcher "), "BlueHG");
+    assert.equal(auteurConnuDeLExtension("Skrull Menace"), "");
+    assert.equal(auteurConnuDeLExtension(undefined), "");
+});

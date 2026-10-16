@@ -47,3 +47,17 @@ export function auteurUnique(customs) {
     }
     return trouve;
 }
+
+/** Les créateurs d'extensions que les cartes ne disent pas (champ `custom` vide,
+ *  ou set partagé avec des cartes officielles). Clé : le nom entre parenthèses de
+ *  l'extension (« Custom (Web of Deceit) » → « Web of Deceit »). Donnés par
+ *  l'administrateur le 16/10/2026. */
+export const AUTEURS_EXTENSIONS = {
+    "web of deceit": "Ripper3",
+    "gorr the god butcher": "BlueHG",
+};
+
+/** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas. */
+export function auteurConnuDeLExtension(nomInterne) {
+    return AUTEURS_EXTENSIONS[String(nomInterne || "").trim().toLowerCase()] || "";
+}
