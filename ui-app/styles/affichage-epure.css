@@ -735,10 +735,11 @@ html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) 
    range a droite de la carte (decalage par `translate`, qui laisse le glisser
    de la poignee fonctionner), et ses boutons passent a la ligne plutot que de
    deborder du cadre. */
-html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) {
-  /* La fenêtre est centrée un peu sous le milieu de l'écran, la carte occupe
-     sa gauche : les boutons se posent dans sa moitié droite. */
-  translate: 105px calc(5vh + 24px);
+html[data-epure] .demande-centrale[data-sur-cartouche] {
+  /* Les boutons suivent le cartouche : DemandeCentrale.tsx pose l'ancre à chaque image. */
+  inset: var(--ep-ancre-y) auto auto var(--ep-ancre-x) !important;
+  translate: none !important;
+  transform: none !important;
   max-width: 380px;
 }
 

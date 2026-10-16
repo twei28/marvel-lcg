@@ -461,6 +461,34 @@ export function DemandeCentrale({
   const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
   const styleDeplace: typeof style = enScene ? style : styleAvecDecalage(style, decalage)
 
+  // EPURE (16/10/2026) : devant le cartouche « Pendant ton tour » / de la phase du
+  // mechant, la question n'a plus de bandeau a elle ; ses boutons SUIVENT le
+  // cartouche (on deplace la fenetre par son bandeau jaune, les boutons partent
+  // avec elle). Les variables `--ep-ancre-*` sont lues par affichage-epure.css.
+  useEffect(() => {
+    if (enScene) return
+    const element = panneau.current
+    if (!element) return
+    let image = 0
+    const suivre = () => {
+      const racine = document.documentElement
+      const cartouche = document.querySelector('.deroule-phase.est-scene:not(.est-question)')
+      if (racine.dataset.epure && cartouche) {
+        const c = cartouche.getBoundingClientRect()
+        element.style.setProperty('--ep-ancre-x', `${Math.round(c.left + 232)}px`)
+        element.style.setProperty('--ep-ancre-y', `${Math.round(c.top + 118)}px`)
+        element.dataset.surCartouche = 'oui'
+      } else if (element.dataset.surCartouche) {
+        delete element.dataset.surCartouche
+        element.style.removeProperty('--ep-ancre-x')
+        element.style.removeProperty('--ep-ancre-y')
+      }
+      image = requestAnimationFrame(suivre)
+    }
+    image = requestAnimationFrame(suivre)
+    return () => cancelAnimationFrame(image)
+  }, [enScene, panneau])
+
   useEffect(() => {
     setRaisonVisible(undefined)
     setCarteRegardee(undefined)
