@@ -17,11 +17,11 @@
    derniere feuille gagne. Normal et Sobre ne voient rien de ceci. */
 
 html[data-epure] {
-  --ep-fond: #e8e9ec;
-  --ep-surface: #f8f8f9;
-  --ep-champ: #ffffff;
-  --ep-bord: #c6cad1;
-  --ep-bord-fort: #8f95a0;
+  --ep-fond: #c4c8cf;
+  --ep-surface: #d6d9de;
+  --ep-champ: #eceef1;
+  --ep-bord: #98a0ab;
+  --ep-bord-fort: #6c727d;
   --ep-texte: #1b1e24;
   --ep-doux: #5d636e;
   --ep-jaune: #f4c20d;
@@ -32,29 +32,29 @@ html[data-epure] {
   --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort), 0 2px 5px rgba(20, 24, 32, 0.16);
   --ep-creux: inset 0 0 0 1px var(--ep-bord), inset 0 1px 2px rgba(20, 24, 32, 0.08);
   --ep-biseau: inset 1px 1px 0 rgba(255, 255, 255, 0.95), inset -1px -1px 0 rgba(20, 24, 32, 0.16),
-    0 0 0 1px #aab0ba, 0 14px 34px rgba(10, 14, 22, 0.32);
+    0 0 0 1px #98a0ab, 0 14px 34px rgba(10, 14, 22, 0.32);
 
   /* Les variables des pages (fonds, textes, filets), redonnees en CLAIR : les
      feuilles des pages les lisent partout (editeur de deck, campagnes, salon,
      galerie...), le sobre les avait mises en gris sombre. */
-  --ink: #e8e9ec;
-  --ink2: #eceef1;
-  --steel: #f8f8f9;
-  --steel2: #ffffff;
-  --steel3: #e4e6ea;
-  --line: #c6cad1;
-  --soft: #e4e6ea;
-  --fond: #e8e9ec;
-  --panneau: #f8f8f9;
-  --carte: #ffffff;
-  --hf-fond: #e8e9ec;
-  --hf-panneau: #f8f8f9;
-  --w-bg-0: #e8e9ec;
-  --w-bg-1: #f8f8f9;
-  --w-panel: #f8f8f9;
-  --w-panel-2: #ffffff;
-  --w-line: #c6cad1;
-  --w-line-soft: #e4e6ea;
+  --ink: #c4c8cf;
+  --ink2: #c9cdd3;
+  --steel: #d6d9de;
+  --steel2: #eceef1;
+  --steel3: #bcc1c8;
+  --line: #98a0ab;
+  --soft: #bcc1c8;
+  --fond: #c4c8cf;
+  --panneau: #d6d9de;
+  --carte: #eceef1;
+  --hf-fond: #c4c8cf;
+  --hf-panneau: #d6d9de;
+  --w-bg-0: #c4c8cf;
+  --w-bg-1: #d6d9de;
+  --w-panel: #d6d9de;
+  --w-panel-2: #eceef1;
+  --w-line: #98a0ab;
+  --w-line-soft: #bcc1c8;
   --txt: #1b1e24;
   --dim: #5d636e;
   --mute: #7b818c;
@@ -183,7 +183,7 @@ html[data-epure] .acc-mode:active,
 html[data-epure] .acc-nombre:active,
 html[data-epure] .pstep.active,
 html[data-epure] .pb-bouton:active {
-  background: #eceef1;
+  background: #c9cdd3;
   box-shadow: var(--ep-creux);
 }
 
@@ -202,7 +202,7 @@ html[data-epure] .btn:disabled,
 html[data-epure] .btn.primary:disabled {
   background: var(--ep-surface);
   color: #9aa0aa;
-  box-shadow: 0 0 0 1px #dcdfe4;
+  box-shadow: 0 0 0 1px #b3b8c0;
 }
 
 html[data-epure] .acc-mode .mvl {
@@ -741,4 +741,10 @@ html[data-epure] .db-problemes {
   border: 0;
   border-radius: 6px;
   box-shadow: 0 0 0 1px #f0b8ae;
+}
+
+/* Le compte de cartes de la grille (« 917 cartes ») : le chiffre etait blanc. */
+html[data-epure] #db-grille-info,
+html[data-epure] #db-grille-info b {
+  color: var(--ep-texte);
 }

@@ -35,11 +35,11 @@
 
 /* --- 1. La palette ----------------------------------------------------------- */
 html[data-epure] {
-  --ep-fond: #e8e9ec;
-  --ep-surface: #f8f8f9;
-  --ep-champ: #ffffff;
-  --ep-bord: #c6cad1;
-  --ep-bord-fort: #8f95a0;
+  --ep-fond: #c4c8cf;
+  --ep-surface: #d6d9de;
+  --ep-champ: #eceef1;
+  --ep-bord: #98a0ab;
+  --ep-bord-fort: #6c727d;
   --ep-texte: #1b1e24;
   --ep-doux: #5d636e;
   --ep-jaune: #f4c20d;
@@ -52,7 +52,7 @@ html[data-epure] {
   --ep-creux: inset 0 0 0 1px var(--ep-bord), inset 0 1px 2px rgba(20, 24, 32, 0.08);
   /* Petite fenetre : le leger biseau (clair en haut a gauche, sombre en bas a droite). */
   --ep-biseau: inset 1px 1px 0 rgba(255, 255, 255, 0.95), inset -1px -1px 0 rgba(20, 24, 32, 0.16),
-    0 0 0 1px #aab0ba, 0 14px 34px rgba(10, 14, 22, 0.32);
+    0 0 0 1px #98a0ab, 0 14px 34px rgba(10, 14, 22, 0.32);
 }
 
 /* --- 2. La table : gris neutre, la marque du heros au coin ------------------- */
@@ -142,7 +142,7 @@ html[data-epure] .plateau-barre button:hover:not(:disabled) {
 
 html[data-epure] .plateau-barre button:active,
 html[data-epure] .plateau-barre button[aria-pressed='true'] {
-  background: #eceef1;
+  background: #c9cdd3;
   box-shadow: var(--ep-creux);
 }
 
@@ -276,7 +276,7 @@ html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:active,
 html[data-epure] .demande-centrale button:active,
 html[data-epure] .assistant-action button:active,
 html[data-epure] .deck-modal-panel button:active {
-  background: #eceef1;
+  background: #c9cdd3;
   box-shadow: var(--ep-creux);
 }
 
@@ -359,7 +359,7 @@ html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
 /* Un bouton inactif : texte gris, sans ombre. */
 html[data-epure] .plateau-barre button:disabled {
   color: #9aa0aa;
-  box-shadow: 0 0 0 1px #dcdfe4;
+  box-shadow: 0 0 0 1px #b3b8c0;
   background: var(--ep-surface);
 }
 
@@ -430,7 +430,7 @@ html[data-epure] .scan-frame,
 html[data-epure] .state-playable .scan-frame,
 html[data-epure] .state-targetable .scan-frame,
 html[data-epure] .scan-card.state-source .scan-frame {
-  box-shadow: 0 0 0 1px #8f95a0;
+  box-shadow: 0 0 0 1px #6c727d;
 }
 
 /* --- 11. Les reglages : lignes claires, textes sombres (16/10/2026) ---------- */
@@ -522,7 +522,7 @@ html[data-epure] .reglages-fenetre {
 
 /* --- 12. La mise en place carte par carte (CoucheMiseEnPlace.tsx) ------------ */
 html[data-epure][data-affichage] .mep-couche {
-  background: rgba(232, 233, 236, 0.86);
+  background: rgba(196, 200, 207, 0.86);
 }
 html[data-epure][data-affichage] .mep-titre {
   color: var(--ep-doux);
