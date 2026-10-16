@@ -12,6 +12,7 @@
 // demande la liste de ce qui est dessiné, et on affirme dessus. Voir
 // `docs/reference/PROCESSUS-CARTE.md` étape 8 bis.
 import { catalogueVide } from './catalogue'
+import type { ScanCardProps } from '../components/ScanCard'
 import { construirePlateau } from './zones'
 import type { World, WorldCard, WorldPlayer } from './world'
 
@@ -98,6 +99,25 @@ export type CarteDessinee = {
    * `facedown` : dans ce cas le plateau ne montre que le dos, pas la face.
    */
   codeCarte?: string
+  /** Inclinée (épuisée) : la carte est dessinée couchée. */
+  exhausted: boolean
+  /** Genre d'affichage (`status`, `upgrade`, `enemy`...), tel que `toScanCard` le publie. */
+  kind: string
+  /** Compteurs dessinés sur la carte : nom français -> valeur (rage, temps...). */
+  compteurs: Record<string, number>
+  /** Pour une pile (deck, défausse) : nombre de cartes qu'elle représente. */
+  pileCount?: number
+}
+
+function detailsDessines(carte: ScanCardProps) {
+  const compteurs: Record<string, number> = {}
+  for (const c of carte.counters ?? []) compteurs[c.cle ?? c.label] = c.value
+  return {
+    exhausted: !!carte.exhausted,
+    kind: carte.kind,
+    compteurs,
+    pileCount: carte.pileCount,
+  }
 }
 
 /**
@@ -121,6 +141,7 @@ export function cartesDessinees(world: World, playerId = 0): CarteDessinee[] {
           facedown: !!unite.carte.facedown,
           crise: unite.carte.crise,
           codeCarte: unite.carte.codeCarte,
+          ...detailsDessines(unite.carte),
         })
         for (const attachee of unite.attachees) {
           vues.push({
@@ -130,6 +151,7 @@ export function cartesDessinees(world: World, playerId = 0): CarteDessinee[] {
             peeking: !!attachee.peeking,
             facedown: !!attachee.facedown,
             codeCarte: attachee.codeCarte,
+            ...detailsDessines(attachee),
           })
         }
       }
