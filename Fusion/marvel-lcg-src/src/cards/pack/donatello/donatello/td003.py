@@ -19,7 +19,7 @@ from . import *
 #    tout. « and remove 3 threat from A scheme » -> UNE manigance au choix.
 #  Les deux copies du scan portent un titre different (« Bō Tobu » avec
 #  macron / « Bo Tobu ») pour un texte et des icones identiques : UN seul
-#  card_id, deux exemplaires. Voir la question Q-TD-03 du rapport.
+#  card_id, deux exemplaires. Decision du 15/10/2026 : nom « Bō Tobu » (macron), image du 2/15.
 
 
 def GetAbilities() -> Sequence['Ability']:

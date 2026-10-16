@@ -833,6 +833,13 @@ class CostFunc:
             self.return_original_area: Dict[CardFace, Deck] = {}
             self.return_discarded_cards: List['CardFace'] = []
 
+            # « discard N card(s) from your hand » : le cout accepte aussi une
+            # carte glissee que sa carte hote rend defaussable « comme en main »
+            # (td012 Donatello's Shell). Sans hote de ce genre en jeu, la liste
+            # des cibles est exactement `YourHandCards` d'avant.
+            if target == "YourHandCards":
+                target = "YourHandCardsDiscardable"
+
             def on_call(targets: Sequence['CardFace'], effect: 'Effect', player: 'Player|None') -> bool:
                 # We need to do this before discard them
                 self.return_original_area = {}

@@ -24,10 +24,9 @@ from . import *
 #  « Search » : melange du deck rencontre par defaut.
 #  Nombres : menace 2 « par joueur » (icone) -> `StartingThreat "2*"`.
 #
-# TODO-QUESTION Q-TD-14 : le texte dit « MOUSER or FLYBORG » (singulier) mais
-# les traits imprimes sont « MOUSERS » / « FLYBORGS ». Lecture litterale
-# retenue : le trait de la ligne de traits (pluriel), seul lisible par le
-# moteur.
+# Traits : le texte dit « MOUSER or FLYBORG » (singulier), les lignes de traits
+# « MOUSERS » / « FLYBORGS ». Decision du 15/10/2026 : traits PLURIELS conserves.
+# Aucun sbire trouve : rien ne se passe (meme decision).
 
 
 def GetAbilities() -> Sequence['Ability']:

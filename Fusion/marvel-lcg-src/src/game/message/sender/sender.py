@@ -223,8 +223,17 @@ class Message(SenderRound, SenderPlayer, SenderCard, SenderTokenCounter, SenderD
             self.apply_unique_rule = False
 
     class CheckIfFaceIsLikeInHand(CheckIfMessage):
-        def __init__(self, face: 'CardFace') -> None:
+        # `for_discard` (td012 Donatello's Shell, 16/10/2026) : la question posee n'est
+        # pas « jouable / depensable comme en main ? » mais « DEFAUSSABLE comme en
+        # main ? ». Une aptitude qui n'a pas declare `also_discard` n'y repond pas :
+        # les cartes glissees sous Echo (60037a), la Reserve de Brawn, etc. gardent
+        # exactement leur comportement d'avant (jouer / depenser seulement).
+        def __init__(self, face: 'CardFace', for_discard: bool=False, for_spend: bool=False) -> None:
             self.which_face: Final = face
+            self.for_discard: Final = for_discard
+            # `for_spend` : meme idee pour « DEPENSER comme en main » (la carte glissee fournit ses
+            # icones de ressource). Une aptitude sans `also_spend` n'y repond pas.
+            self.for_spend: Final = for_spend
             self.is_like_in_hand = False
             super().__init__(face)
             self.AddRelatedFace(face)

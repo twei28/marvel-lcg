@@ -30,10 +30,10 @@ from . import *
 #  « When DONATELLO defends » -> forme HEROS uniquement ("YourHero").
 #  « Toughness » est lu dans `desc` : aucun module.
 #
-# TODO-QUESTION : aucune, MAIS montage non prouve — une capacite hors `Play`
-# portee par une carte en MAIN n'est offerte que si le moteur enregistre ses
-# effets hors jeu (`NoOutOfPlayLimit`, idiome aa002/dz014/tt013). A TESTER en
-# phase C (cas : Metalhead en main, Donatello se defend, option proposee ?).
+# Montage PROUVE le 16/10/2026 (cas `td002 ... Interrupt depuis la MAIN` et `... depuis
+# la CARAPACE`, rouges sans module) : une capacite hors `Play` portee par une carte
+# en main (`NoOutOfPlayLimit`) est offerte, y compris depuis la Carapace ; pas besoin
+# de `SetPlay` + cout 0.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -41,7 +41,12 @@ def GetAbilities() -> Sequence['Ability']:
     def en_main_ou_sous_la_carapace(effect: 'Effect',
                                     message: 'Message.WhenUnitWouldDefend') -> bool:
         Unused(message)
-        return effect.this.IsLikeInHand()
+        # Unique (« * Metalhead ») : l'interruption ne doit pas etre offerte quand il est DEJA en
+        # jeu. Le `CanPlayThisAllyCard` du jeu normal porte cette garde ; ici la mise en jeu passe
+        # par `PlayCardsLikeInTurn(forced=True)`, qui ne la rejoue pas (mesure du 16/10/2026 : la
+        # 2e copie entrait, le B etait paye pour rien).
+        return effect.this.IsLikeInHand() and \
+            Condition.FieldHasNotThisUniqueType(effect.this, effect)
 
     def metalhead(effect: 'Effect', message: 'Message.WhenUnitWouldDefend') -> None:
         this = effect.this.CastTo(Ally)

@@ -10,24 +10,31 @@ instead. » Ce n'est donc PAS un mot-clé à effet propre : la mécanique vit da
 le texte de chaque carte, le trait ne sert qu'à les regrouper.
 
 **Mécanisme moteur** : compteur `swarm` ajouté à l'énum `COUNTER` de
-`src/game/card/face/card_face.py` ; entrée en jeu avec N compteurs par
-`AbilityFactory.ThisEnterPlayWithCounters(N, 'swarm')` ; ATQ/MNG égales au
-nombre de compteurs par `ThisGainKeyword(fn, attack=1, scheme=1,
-change_on_event=OnEvent.Counter("This", "swarm"))` (modèle `27067` Sand Clone) ;
+`src/game/card/face/card_face.py` ; tout est dans `CapacitesEssaim(n)`
+(`src/cards/pack/donatello/donatello_nemesis/__init__.py`), partagé par td016 et
+td017 : entrée en jeu avec N compteurs (`ThisEnterPlayWithCounters`) ; SCH, ATQ
+**et PV** égaux au nombre de compteurs par `ThisGainKeyword(fn, attack=1,
+scheme=1, health=1, change_on_event=OnEvent.Counter("This", "swarm"))` (modèles
+`27067` Sand Clone pour ATQ/SCH, `gorr/gb009` et `sk178` pour les PV) ;
 dégâts remplacés par un retrait de compteurs par `WhenUnitWouldTakeDamage(
-ForcedInterrupt, "This", op)` + `message.SetBeInstead(effect)` ; mort donnée à
-la main au dernier compteur (`Faces.DefeatUnits`).
+ForcedInterrupt, "This", op)` + `message.SetBeInstead(effect)`.
+
+**PV dynamiques, aucune mort à la main** (décision utilisateur du 15/10/2026,
+réalisée le 16/10/2026) : `desc.HP = "0"`, les PV viennent des compteurs. Quand le
+dernier compteur part, PV = compteurs = 0 et `CanHealth.LimitHealth` vainc le
+sbire comme pour une santé épuisée. Le module ne contient aucun appel de défaite.
 
 **Carte exemple** : `td016` Plague of M.O.U.S.E.R.s et `td017` Flight of
 Flyborgs (`src/cards/pack/donatello/donatello_nemesis/`).
 
 **Pièges connus** :
-- les PV ne sont PAS suivis dynamiquement (`desc.HP = "1"` fixe) : les dégâts ne
-  s'inscrivent jamais sur la carte, donc seul l'affichage diffère ;
+- les dégâts sont REMPLACÉS : un coup de 10 sur 2 compteurs ne reporte aucun
+  excédent (Overkill) sur le méchant ; mesuré, cas `td017 ... 10 degats d'un coup` ;
+- la mort passe par `LimitHealth` (tueur `None`) : pas de message
+  « AfterUnitDefeatedUnit », donc les réponses « after you defeat » d'un héros ne
+  partent pas sur un essaim (limite du moteur, non mesurée sur une carte réelle) ;
 - le disque orange du coin du scan est les PV, pas le boost (vérifié contre
-  `01167` Vulture) : PV « ★ » ici ; le boost est la marque rouge du coin
-  inférieur droit ;
-- à tester en phase C : surplus de dégâts, Déferlement/Perçant contre un
-  essaim, « after you defeat » après la mort donnée à la main.
+  `01167` Vulture) : PV « ★ » ici ; le boost est la marque rouge du coin inférieur
+  droit.
 
 **Variantes maison** : aucune autre que ces deux cartes.

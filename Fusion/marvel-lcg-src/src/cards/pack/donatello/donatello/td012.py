@@ -19,11 +19,12 @@ from . import *
 #    Upgrade).
 #  « (Max 1 tucked card.) » -> condition `GetSize() < 1` sur l'ACTION, sinon
 #    on inclinerait la Carapace pour rien.
-#  « play, spend, OR discard ... as if in hand » -> `YouMayPlayCardLikeInHand`
-#    rend la carte jouable ET depensable (zone `is_like_in_hand`). ⚠ LIMITE
-#    CONNUE : « DISCARD as if in hand » (defausse en cout, ex. td001b ou td009
-#    « discard 1 card from your hand ») n'est PAS couvert, ces couts ne
-#    regardent que `YourHandCards`. Voir Q-TD-12.
+#  « play, spend, OR discard ... as if in hand » -> les TROIS, en entier (decision
+#    du 15/10/2026, fidelite 100 %) : `AttachedCardCanPlayLikeInHand(also_discard=True,
+#    also_spend=True)`. Jouer : `IsLikeInHand` ; depenser : `IsLikeInHandForSpend`
+#    (cloisonnement des paiements, factory/resources.py) ; defausser :
+#    `IsLikeInHandForDiscard` (couts `CostFunc.Discard("YourHandCards")` de td001b et
+#    td009, et `Player.DiscardHandCards`). Voir mots-cles/tuck.md.
 #  « Hero Action » : jouable en forme heros seulement.
 #  L'insert fait de la Carapace le point d'ancrage de Metalhead (td002).
 
@@ -43,7 +44,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.CanPlayThisUpgradeCard(),
-        *AbilityFactory.AttachedCardCanPlayLikeInHand(),
+        *AbilityFactory.AttachedCardCanPlayLikeInHand(also_discard=True, also_spend=True),
         AbilityFactory.WhenInYourPlayTurn(
             AbilityType.HeroAction,
             ranger,

@@ -38,7 +38,7 @@ class SelectorTarget:
         "Upgrade", "Support", "Attachment", "Environment", "Obligation",
         "Identity", "Ally", "Hero", "AlterEgo", "StatusCard",
         "Friend", "Scheme2",
-        "YourSuitFormUpgrade", "YourHeroTough", "YourHandCards", "YourLikeHandCards", 
+        "YourSuitFormUpgrade", "YourHeroTough", "YourHandCards", "YourLikeHandCards", "YourHandCardsDiscardable",
         "TuckHereCard", "TuckUnderYourIdentityCard",
         "EnemyLeader", "YourLeader", 
     ]
