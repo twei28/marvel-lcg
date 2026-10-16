@@ -317,6 +317,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # td016 / td017 (SWARM) entrent en jeu avec 2 / 4 « swarm » ; leur
         # ATQ, MNG et PV valent ce nombre.
         'swarm',
+        # CORRECTIF (16/10/2026) : compteur du pack custom jennika (Inkwire).
+        # tj006 Fearless Resolve entre en jeu avec « Uses (2 samurai counters) ».
+        'samurai',
         # CORRECTIF : compteurs du pack custom dazzler (Lord Havok). Le « sound »
         # marque un SONG de la Setlist deja repete (« Rehearsal » n'accepte qu'un
         # SONG SANS compteur) ; le « knife » alimente les interruptions de

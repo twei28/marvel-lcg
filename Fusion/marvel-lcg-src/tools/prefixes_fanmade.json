@@ -550,6 +550,13 @@
    "cartes": 18,
    "depuis": "2026-10-15",
    "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
+  },
+  "tj": {
+   "pack": "jennika",
+   "libelle": "185. Custom (Jennika)",
+   "cartes": 16,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes v3), zip « TMNT Heroes / Jennika v3 ». tj001a Jennika (HEROS) / tj001b Jenny (ALTER-EGO), tj002-tj010 signature (9 card_id pour 15 exemplaires, + tj011 Sosaiken, la Voie, carte permanente MISE DE COTE comme Ionic Physiology de Wonder Man), tj012 obligation Personality Adjustment (GiveTo « Jenny »), tj013-tj015 set 'Jennika Nemesis' (Dun Import Exports, Phantasm, Street Phantoms x3). Mecanique Shinobi : classes Bushido / Ninjutsu / Kuji-Kiri / Taijutsu ajoutees a ClassCard.CARD_CLASS (desc.Class = 'Hero;Taijutsu'), compteur 'samurai' ajoute a CardFace.COUNTER. Voir .planning/tmnt/jennika-questions.md. Prefixes freres : tl, td, tm, tr."
   }
  }
 }

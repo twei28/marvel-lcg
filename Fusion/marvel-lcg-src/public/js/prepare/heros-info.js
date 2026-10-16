@@ -1706,5 +1706,15 @@ export const HEROS_INFO = {
         ennemisEn: "Shredder, Krang, the Foot Clan",
         apparition: "Teenage Mutant Ninja Turtles #1 (1984)",
     },
+    "tj001a": {
+        bio: "Jennika est la « cinquième tortue » de la famille Tortues Ninja : une adolescente passée par le Clan du Pied avant de devenir elle-même une tortue mutante. Bassiste dans l'âme, elle partage ses nuits entre les répétitions de son groupe et les toits de New York, où elle rôde sous une capuche sombre. Elle se bat avec des tekko-kagi, des griffes de combat fixées aux poings, et suit la voie du shinobi : discrétion, rituels et coups précis plutôt que force brute.",
+        bioEn: "Jennika is the \"fifth turtle\" of the Teenage Mutant Ninja Turtles family: a teenager who came up through the Foot Clan before becoming a mutant turtle herself. A bassist at heart, she splits her nights between her band's rehearsals and the rooftops of New York, where she prowls under a dark hood. She fights with tekko-kagi, hand claws strapped to her fists, and follows the way of the shinobi: stealth, ritual and precise strikes rather than brute strength.",
+        civil: "Jenny",
+        base: "New York",
+        equipes: "Tortues Ninja",
+        equipesEn: "Teenage Mutant Ninja Turtles",
+        ennemis: "Darius Dun, les Street Phantoms",
+        ennemisEn: "Darius Dun, the Street Phantoms",
+    },
 
 };

@@ -1700,5 +1700,14 @@
   "encounters": [],
   "max_id": "tr017"
  },
- "checksum": "32680d599ccbb433ac71d590b1dd65102ee290709a6ae8cb9c2da40d7ae633b4"
+ "185. Custom (Jennika)": {
+  "name": "jennika",
+  "scenarios": [],
+  "heroes": [
+   "jennika"
+  ],
+  "encounters": [],
+  "max_id": "tj015"
+ },
+ "checksum": "51bb6d7febbbef7c0a560b344b8fef622148f4c3ad23bb1caeb8ed81fd6457c8"
 }

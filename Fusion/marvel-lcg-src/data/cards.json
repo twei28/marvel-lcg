@@ -109233,5 +109233,297 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "247f50f15a49c74a15a7cb173b3bf844628201a1863e17d0a2dee7e3f4dadc54"
+ "jennika": [
+  {
+   "card_id": "tj001a",
+   "type": "Hero",
+   "name": "* Jennika",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "text": "<i>Ninja Senpai</i> — <b>Interrupt</b>: When you play a Shinobi card, Jennika gets +1 THW, +1 ATK, and +1 DEF until the end of the round. <i>(Limit once per round for each Shinobi.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj001b",
+   "type": "AlterEgo",
+   "name": "* Jenny",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "TEENAGER",
+    "MUTANT",
+    "TURTLE"
+   ],
+   "text": "<b>Setup</b>: Put the Sōsaiken Path into play under your control.\n<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for up to 2 [[TEKKO-KAGI]] upgrades and put them into play, exhausted. <i>(Shuffle.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj002",
+   "type": "Event",
+   "name": "Composure",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "text": "<b>Action</b>: Choose a card in your discard pile → add that card to your hand.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj003",
+   "type": "Event",
+   "name": "Apparition",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero;Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL",
+    "THWART"
+   ],
+   "text": "<b>Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme and confuse an enemy.\n<i>(This card is both a Jennika card and a Kuji-Kiri card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj004",
+   "type": "Event",
+   "name": "Decisive Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero;Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. If you paid for this card with an [[ATTACK]] event, stun that enemy.\n<i>(This card is both a Jennika card and a Taijutsu card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj005",
+   "type": "Event",
+   "name": "Moonlighting",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero;Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b>: Cloak Jennika.\n<i>(This card is both a Jennika card and a Ninjutsu card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj006",
+   "type": "Upgrade",
+   "name": "Fearless Resolve",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "2,samurai",
+    "Class": "Hero;Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "text": "Uses (2 samurai counters).\n<b>Hero Action</b>: Exhaust Fearless Resolve and remove 2 samurai counters from it → ready Jennika.\n<i>(This is both a Jennika card, and a Bushido card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj007",
+   "type": "Support",
+   "name": "* Jenny's Crib",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SKYLINE"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Exhaust Jenny's Crib and discard 1 card from your hand → draw 1 card and ready your identity.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj008",
+   "type": "Upgrade",
+   "name": "* Jennika's Bow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BOW",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust Jennika's Bow → deal 1 damage to an enemy or remove 1 threat from a scheme.\n<b>Hero Response</b>: After you play an [[ATTACK]] or [[THWART]] event, ready Jennika's Bow.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj009",
+   "type": "Upgrade",
+   "name": "* Jennika's Tekko-Kagi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "TEKKO-KAGI",
+    "WEAPON"
+   ],
+   "text": "Each [[TEKKO-KAGI]] upgrade you control gains: \"<b>Hero Resource</b>: Exhaust this card → generate a [wild] resource for a Shinobi card.\"",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj010",
+   "type": "Upgrade",
+   "name": "* Jennika's Other Tekko-Kagi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "TEKKO-KAGI",
+    "WEAPON"
+   ],
+   "text": "Each [[TEKKO-KAGI]] upgrade you control gains:\"<b>Hero Interrupt</b>: When you make a basic attack, exhaust this card and discard 1 card from your hand → Jennika gets +2 ATK for that attack. This attack gains piercing.\"",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj011",
+   "type": "Support",
+   "name": "Sōsaiken",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SENPAI"
+   ],
+   "text": "Permanent.\n<b>Response</b>: After you play a Shinobi card, exhaust this card → draw 1 card.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj012",
+   "type": "Obligation",
+   "name": "Personality Adjustment",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Jenny"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Jenny player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Jenny → remove Personality Adjustment from the game.\n• Place 3 threat on the main scheme. Discard this obligation.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj013",
+   "type": "SideScheme",
+   "name": "Dun Import Exports",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Boost": "2",
+    "Hazard": "1",
+    "Hinder": "1*",
+    "Incite": "2"
+   },
+   "traits": [],
+   "text": "<i>The dangerous mobster Darius Dun is setting up shop. He has sent out his Street Phantoms to secure control of the city ports.</i>\nHinder 1[per_hero]. Incite 2.",
+   "set_name": "Jennika Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj014",
+   "type": "Minion",
+   "name": "* Phantasm",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "3",
+    "Retaliate": "1",
+    "Toughness": "1",
+    "Nemesis": "Jennika"
+   },
+   "traits": [
+    "PHANTOMS"
+   ],
+   "text": "Retaliate 1. Toughness.\n<b>When Defeated</b>: Cloak each [[PHANTOMS]] minion in play.\n<i>(Jennika's nemesis minion.)</i>",
+   "set_name": "Jennika Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj015",
+   "type": "Minion",
+   "name": "Street Phantoms",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "2",
+    "Toughness": "1"
+   },
+   "traits": [
+    "PHANTOMS"
+   ],
+   "text": "Toughness.\n<b>When Revealed</b>: Cloak Street Phantoms.",
+   "set_name": "Jennika Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "b351c3bd6055a70eb1d14e4b9c4fa429fbb79b2d226ef7e13d4d66227d8e775f"
 }

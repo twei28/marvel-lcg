@@ -118,6 +118,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // Mutagen Bomb de Raphael (tr014).
   swarm: 'essaim',
   timer: 'minuteur',
+  // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).
+  samurai: 'samouraï',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »
