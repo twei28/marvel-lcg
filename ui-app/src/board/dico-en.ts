@@ -1738,7 +1738,6 @@ export const DICO_EN_BASE: Record<string, string> = {
   'sbire %1/%2': 'minion %1/%2',
   'Avant de défendre, tu peux jouer :': 'Before defending, you can play:',
   'K.O.': 'K.O.',
-  'Encore %1 avant la défaite': '%1 more until defeat',
   'Carte rencontre %1/%2': 'Encounter card %1/%2',
   'Demander à %1 de défendre': 'Ask %1 to defend',
   'Demander à un autre joueur de défendre': 'Ask another player to defend',
