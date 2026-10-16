@@ -880,3 +880,95 @@ html[data-epure] .tb-droite {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+/* --- 18. La sélection, finitions (16/10/2026) ------------------------------- */
+/* De l'air : les deux cadres se décollent des bords et l'un de l'autre. */
+html[data-epure] .team-b {
+  background: var(--ep-fond) !important;
+}
+
+html[data-epure] .tb-scene {
+  top: 10px;
+  bottom: 10px;
+  left: 10px;
+  width: calc(var(--affiche-scene-w, 58%) - var(--affiche-pente, 90px) * 0.6 - 18px);
+}
+
+html[data-epure] .tb-droite {
+  top: 10px;
+  bottom: 10px;
+  right: 10px;
+}
+
+/* Le haut de la grande image (le titre imprimé de la carte, coupé) se fond
+   dans le panneau. */
+html[data-epure] .tb-scene::before {
+  display: block;
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--ep-surface) 0, rgba(169, 171, 176, 0.75) 9%, transparent 24%);
+}
+
+/* Le héros choisi, et le siège qui l'attend : en rouge Marvel. */
+html[data-epure] .tb-port.choisi,
+html[data-epure] .tb-port.on,
+html[data-epure] .tb-siege.actif {
+  box-shadow: 0 0 0 3px var(--ep-rouge), 0 3px 10px rgba(10, 14, 22, 0.3) !important;
+}
+
+html[data-epure] .tb-port.choisi .tb-port-nom,
+html[data-epure] .tb-port.on .tb-port-nom {
+  font-weight: 700;
+}
+
+/* « Voir ses cartes » et « Biographie » : deux boutons du même style. */
+html[data-epure] .tb-bas .tb-voir,
+html[data-epure] .tb-bio,
+html[data-epure] .tb-bio[open] {
+  background: var(--ep-champ);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
+}
+
+html[data-epure] .tb-bio summary {
+  padding: 8px 14px;
+  font: 600 13px var(--ep-police);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-epure] .tb-bas {
+  align-items: center;
+}
+
+/* La barre du bas, sombre comme celle du haut : l'écran est encadré. */
+html[data-epure] footer.nav {
+  background: #1f2228;
+  color: #eef0f3;
+  border-top: 3px solid var(--ep-rouge);
+  box-shadow: 0 -2px 10px rgba(10, 14, 22, 0.3);
+}
+
+html[data-epure] footer.nav .nav-status {
+  color: #c9ccd2;
+}
+
+html[data-epure] footer.nav .btn:not(.primary):not(.launch) {
+  background: transparent;
+  color: #e6e8ec;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+html[data-epure] footer.nav .btn:not(.primary):not(.launch):hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] footer.nav .btn.primary:disabled {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #7d828b !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+}
