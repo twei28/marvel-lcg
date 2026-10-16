@@ -974,7 +974,7 @@ html[data-epure] footer.nav .btn.primary:disabled {
 }
 
 /* =============================================================================
-   19. ÉPURÉ SOMBRE — PILOTE SUR LA SÉLECTION (16/10/2026)
+   19. ÉPURÉ SOMBRE, SUR TOUTES LES PAGES (16/10/2026)
    Proposition validée par l'utilisateur : panneaux sombres pour mettre en
    valeur les illustrations, filets de 1 px, jaune comme accent principal
    (titre de section, héros choisi, bouton principal), un peu de rouge Marvel
@@ -982,7 +982,7 @@ html[data-epure] footer.nav .btn.primary:disabled {
    (étapes Équipe / Decks / Méchant / Final) le temps de valider ; les jetons
    `--ep-*` sont redéfinis, tout ce qui les lit suit.
    ============================================================================= */
-html[data-epure]:has(.team-b) {
+html[data-epure] {
   --ep-fond: #111318;
   --ep-surface: #1c2028;
   --ep-champ: #292e38;
@@ -1008,41 +1008,41 @@ html[data-epure]:has(.team-b) {
   background: #111318 !important;
 }
 
-html[data-epure]:has(.team-b) body,
-html[data-epure]:has(.team-b) .team-b {
+html[data-epure] body,
+html[data-epure] .team-b {
   background: #111318 !important;
   color: var(--ep-texte);
 }
 
 /* 1. Plus de gros cadres : un filet de 1 px, des coins arrondis. */
-html[data-epure]:has(.team-b) .tb-scene,
-html[data-epure]:has(.team-b) .tb-droite {
+html[data-epure] .tb-scene,
+html[data-epure] .tb-droite {
   border: 1px solid var(--ep-bord) !important;
   border-radius: 12px;
   background: var(--ep-surface);
   box-shadow: none;
 }
 
-html[data-epure]:has(.team-b) .tb-scene,
-html[data-epure]:has(.team-b) .tb-scene * {
+html[data-epure] .tb-scene,
+html[data-epure] .tb-scene * {
   color: var(--ep-texte);
 }
 
-html[data-epure]:has(.team-b) .tb-nomg small {
+html[data-epure] .tb-nomg small {
   color: var(--ep-jaune);
 }
 
 /* Les fondus de la grande image, en sombre. */
-html[data-epure]:has(.team-b) .tb-scene::after {
+html[data-epure] .tb-scene::after {
   background: linear-gradient(0deg, var(--ep-surface) 0, var(--ep-surface) 26%, rgba(28, 32, 40, 0.85) 40%, transparent 62%);
 }
 
-html[data-epure]:has(.team-b) .tb-scene::before {
+html[data-epure] .tb-scene::before {
   background: linear-gradient(180deg, var(--ep-surface) 0, rgba(28, 32, 40, 0.75) 9%, transparent 24%);
 }
 
 /* 2. Le titre de section : plus de bandeau jaune épais ni d'italique. */
-html[data-epure]:has(.team-b) .tb-entete {
+html[data-epure] .tb-entete {
   background: transparent;
   box-shadow: none;
   border-bottom: 1px solid var(--ep-bord);
@@ -1050,8 +1050,8 @@ html[data-epure]:has(.team-b) .tb-entete {
   align-items: center;
 }
 
-html[data-epure]:has(.team-b) .tb-entete b,
-html[data-epure]:has(.team-b) .tb-entete .mvl {
+html[data-epure] .tb-entete b,
+html[data-epure] .tb-entete .mvl {
   font-family: var(--ep-police) !important;
   font-size: 22px;
   font-weight: 700;
@@ -1061,14 +1061,14 @@ html[data-epure]:has(.team-b) .tb-entete .mvl {
   color: var(--ep-texte) !important;
 }
 
-html[data-epure]:has(.team-b) .tb-entete .tb-compte {
+html[data-epure] .tb-entete .tb-compte {
   font-family: var(--ep-police) !important;
   font-size: 12px;
   letter-spacing: 0.04em;
   color: var(--ep-doux) !important;
 }
 
-html[data-epure]:has(.team-b) .tb-entete .tb-mode {
+html[data-epure] .tb-entete .tb-mode {
   padding: 3px 10px;
   border-radius: 999px;
   background: var(--ep-champ);
@@ -1077,109 +1077,109 @@ html[data-epure]:has(.team-b) .tb-entete .tb-mode {
 }
 
 /* Les champs et filtres : sombres, filet fin. */
-html[data-epure]:has(.team-b) input,
-html[data-epure]:has(.team-b) select,
-html[data-epure]:has(.team-b) .search,
-html[data-epure]:has(.team-b) .sel {
+html[data-epure] input,
+html[data-epure] select,
+html[data-epure] .search,
+html[data-epure] .sel {
   background: var(--ep-fond);
   color: var(--ep-texte);
 }
 
-html[data-epure]:has(.team-b) .tb-droite .btn,
-html[data-epure]:has(.team-b) .tb-droite .tampon,
-html[data-epure]:has(.team-b) .tb-scene .tampon,
-html[data-epure]:has(.team-b) .tb-scene .btn,
-html[data-epure]:has(.team-b) .tb-bas .tb-voir,
-html[data-epure]:has(.team-b) .tb-bio {
+html[data-epure] .tb-droite .btn,
+html[data-epure] .tb-droite .tampon,
+html[data-epure] .tb-scene .tampon,
+html[data-epure] .tb-scene .btn,
+html[data-epure] .tb-bas .tb-voir,
+html[data-epure] .tb-bio {
   background: var(--ep-champ);
   color: var(--ep-texte);
   box-shadow: 0 0 0 1px var(--ep-bord);
 }
 
 /* Les portraits : cartes sombres, nom dessous ; le héros choisi en jaune. */
-html[data-epure]:has(.team-b) .tb-port {
+html[data-epure] .tb-port {
   background: var(--ep-champ);
   box-shadow: 0 0 0 1px var(--ep-bord);
   border-radius: 10px;
 }
 
-html[data-epure]:has(.team-b) .tb-port-nom {
+html[data-epure] .tb-port-nom {
   background: var(--ep-champ);
   color: var(--ep-texte);
 }
 
-html[data-epure]:has(.team-b) .tb-port:hover {
+html[data-epure] .tb-port:hover {
   box-shadow: 0 0 0 1px var(--ep-doux);
 }
 
-html[data-epure]:has(.team-b) .tb-port.choisi,
-html[data-epure]:has(.team-b) .tb-port.on {
+html[data-epure] .tb-port.choisi,
+html[data-epure] .tb-port.on {
   box-shadow: 0 0 0 2px var(--ep-jaune) !important;
 }
 
-html[data-epure]:has(.team-b) .tb-port.choisi .tb-port-nom,
-html[data-epure]:has(.team-b) .tb-port.on .tb-port-nom {
+html[data-epure] .tb-port.choisi .tb-port-nom,
+html[data-epure] .tb-port.on .tb-port-nom {
   color: var(--ep-jaune);
 }
 
 /* 4. « Mon équipe » : une petite barre, des emplacements discrets. */
-html[data-epure]:has(.team-b) .tb-equipe {
+html[data-epure] .tb-equipe {
   border-top: 1px solid var(--ep-bord);
   padding-top: 10px;
   align-items: center;
 }
 
-html[data-epure]:has(.team-b) .tb-equipe-k {
+html[data-epure] .tb-equipe-k {
   color: var(--ep-doux) !important;
   letter-spacing: 0.08em;
 }
 
-html[data-epure]:has(.team-b) .tb-siege,
-html[data-epure]:has(.team-b) .tb-siege .tb-siege-nom {
+html[data-epure] .tb-siege,
+html[data-epure] .tb-siege .tb-siege-nom {
   background: var(--ep-champ) !important;
   color: var(--ep-texte) !important;
 }
 
-html[data-epure]:has(.team-b) .tb-siege {
+html[data-epure] .tb-siege {
   width: 44px !important;
   height: 44px !important;
   border-radius: 10px;
   box-shadow: 0 0 0 1px var(--ep-jaune) !important;
 }
 
-html[data-epure]:has(.team-b) .tb-siege .tb-siege-nom {
+html[data-epure] .tb-siege .tb-siege-nom {
   display: none;
 }
 
-html[data-epure]:has(.team-b) .tb-siege .plus {
+html[data-epure] .tb-siege .plus {
   font-size: 22px;
   color: var(--ep-jaune);
 }
 
-html[data-epure]:has(.team-b) .tb-siege.actif {
+html[data-epure] .tb-siege.actif {
   box-shadow: 0 0 0 2px var(--ep-jaune) !important;
 }
 
 /* Barres du haut et du bas : panneau sombre, filets fins ; le rouge Marvel
    garde le filet sous la barre du haut. */
-html[data-epure]:has(.team-b) header.progress {
+html[data-epure] header.progress {
   background: var(--ep-surface);
   border-bottom: 2px solid var(--ep-rouge, #e62429);
 }
 
-html[data-epure]:has(.team-b) header.progress .pstep.active {
+html[data-epure] header.progress .pstep.active {
   background: var(--ep-champ);
   box-shadow: inset 0 -2px 0 var(--ep-jaune);
 }
 
-html[data-epure]:has(.team-b) footer.nav {
+html[data-epure] footer.nav {
   background: var(--ep-surface);
   border-top: 1px solid var(--ep-bord);
   box-shadow: none;
 }
 
 /* 5. « Continuer » : plus de présence ; désactivé, il le reste visiblement. */
-html[data-epure]:has(.team-b) footer.nav .btn.primary {
+html[data-epure] footer.nav .btn.primary {
   min-width: 170px;
   padding: 12px 26px;
   font-size: 16px;
@@ -1190,8 +1190,37 @@ html[data-epure]:has(.team-b) footer.nav .btn.primary {
   box-shadow: 0 4px 14px rgba(243, 198, 35, 0.25) !important;
 }
 
-html[data-epure]:has(.team-b) footer.nav .btn.primary:disabled {
+html[data-epure] footer.nav .btn.primary:disabled {
   background: var(--ep-champ) !important;
   color: #6b7280 !important;
   box-shadow: 0 0 0 1px var(--ep-bord) !important;
+}
+
+/* --- 20. Des cadres un peu biseautés (16/10/2026) -----------------------------
+   Deux coins coupés en biais (haut gauche, bas droit), façon case de BD, et un
+   reflet clair sur l'arête du haut. Sur les grands panneaux et les tuiles. */
+html[data-epure] {
+  --ep-biais: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --ep-biais-petit: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+}
+
+html[data-epure] .tb-scene,
+html[data-epure] .tb-droite,
+html[data-epure] .pb-panneau,
+html[data-epure] .pd-panneau,
+html[data-epure] .deck-modal-panel,
+html[data-epure] .db-col,
+html[data-epure] .db-deck-col,
+html[data-epure] .db-filtres-col {
+  clip-path: var(--ep-biais) !important;
+  border-radius: 0 !important;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 40%) !important;
+}
+
+html[data-epure] .acc-mode,
+html[data-epure] .acc-mode.cut,
+html[data-epure] .cmp-carte,
+html[data-epure] .tb-port {
+  clip-path: var(--ep-biais-petit) !important;
+  border-radius: 0 !important;
 }
