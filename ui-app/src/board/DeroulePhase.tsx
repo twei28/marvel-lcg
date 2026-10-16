@@ -99,6 +99,7 @@ import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
 import './table-sans-modale.css'
 import { BilanSurTable, TableSansModale } from './TableSansModale'
+import { phraseHistorique } from './PhaseDynamique'
 // ⚠ APRES boutons-bd.css : CartouchePhase importe sa feuille, qui doit passer
 // la DERNIERE (cartouche-phase.css, hors couche).
 import { CartouchePhase, PictoBoost, PictoStat, type CartouchePhaseProps, type PiedMulti } from './CartouchePhase'
@@ -2508,7 +2509,8 @@ export function DeroulePhase({
      faut voir les boutons. */
   // Le nombre de l'etape, dans son unite, EXACTEMENT comme le trait le dit.
   const contenu = contenuDuTrait(etapeLue)
-  const phraseEtape = titreEtape(etapeLue)
+  // `phraseHistorique` : « paquet-vide » et « etoile-differe » se disent en clair, jamais sous leur nom interne.
+  const phraseEtape = phraseHistorique(etapeLue)
   const nombreEnClair =
     contenu.montant !== undefined
       ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`

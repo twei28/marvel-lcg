@@ -167,6 +167,8 @@ test('explo', async ({ page }) => {
   let volDejaVu = false;
   let boostVu = false;
   let questionVue = false;
+  let boostOcc = 0;
+  let toutN = 0;
   for (let i = 0; i < 2500 && rang < MAXPAS; i++) {
     await page.waitForTimeout(300);
     const w = await monde(page);
@@ -204,8 +206,9 @@ test('explo', async ({ page }) => {
       const cle = s.cartouche + '#' + s.demande + '#' + s.annonce + '#' + s.dialogues;
       if (cle !== vu) {
         vu = cle;
+        if (process.env.ZZ_BOOSTRE && new RegExp(process.env.ZZ_BOOSTRE, 'i').test(s.cartouche ?? '')) boostOcc++;
         if (/Qui défend/.test(s.cartouche ?? '')) questionVue = true;
-        else if (questionVue && /attaque/i.test(s.cartouche ?? '') && !boostVu) {
+        else if (((process.env.ZZ_BOOSTRE && boostOcc >= Number(process.env.ZZ_BOOSTN ?? 2)) || (!process.env.ZZ_BOOSTRE && questionVue && /attaque/i.test(s.cartouche ?? ''))) && !boostVu) {
           boostVu = true;
           for (const k of [1, 2, 3, 4, 5]) { await page.waitForTimeout(380); await page.screenshot({ path: path.join(SORTIE, `boost-${k}.png`) }); }
         }
@@ -219,6 +222,10 @@ test('explo', async ({ page }) => {
       }
     }
     await unPas(page, dansPhase);
+    if (process.env.ZZ_TOUT && dansPhase && toutN < 40) {
+      const sg = await signature(page);
+      if (new RegExp(process.env.ZZ_TOUT, 'i').test(sg.cartouche ?? '')) { await page.screenshot({ path: path.join(SORTIE, `tout-${String(++toutN).padStart(2, '0')}.png`) }); journal.write(JSON.stringify({ tout: toutN, c: (sg.cartouche ?? '').slice(0, 90) }) + '\n'); }
+    }
     if (volProchain) {
       volProchain = false; volDejaVu = true;
       for (const k of [1, 2, 3]) { await page.waitForTimeout(220); await page.screenshot({ path: path.join(SORTIE, `vol-${k}.png`) }); }
