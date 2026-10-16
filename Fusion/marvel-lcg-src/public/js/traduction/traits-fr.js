@@ -89,6 +89,7 @@ export const TRAITS_FR = {
     "FAMILY": "FAMILLE",
     "FINISHED": "TERMINÉE",
     "FIRE": "FEU",
+    "FLY": "MOUCHE",
     "FOX": "RENARD",
     "GENIUS": "GÉNIE",
     "GENOSHA": "GÉNOSHA",

@@ -1,74 +1,66 @@
-# Dazed (carte d'état maison, pack TMNT, Baxter Stockman v3)
+# Dazed (Hébété) et « daze »
 
-**Texte imprimé** (scan Inkwire, `Dazed (1).png` du zip « TMNT Enemies / Baxter
-Stockman v3 », avec l'insert `Dazed Rules Insert.png`) : « The next time this
-character uses a basic power or activates, decrease that value by 2, then discard
-this status card. The next time this character would take any amount of damage,
-increase that value by 2, then discard this status card. »
+**Texte imprimé / définition** : carte d'état maison du scénario Baxter Stockman
+(scan Inkwire `Dazed (1).png`, encart `Dazed Rules Insert.png`, zip « TMNT
+Enemies / Baxter Stockman v3 ») : « The next time this character uses a basic
+power or activates, decrease that value by 2, then discard this status card.
+The next time this character would take any amount of damage, increase that
+value by 2, then discard this status card. » Verbe de carte : « daze X » = poser
+une carte Dazed sur X. Nom français : **Hébété** (verbe « hébétez »).
 
-Traduction retenue : « La prochaine fois que ce personnage utilise un pouvoir de
-base ou s'active, diminuez cette valeur de 2, puis défaussez cette carte d'état.
-La prochaine fois que ce personnage va subir des dégâts, quelle qu'en soit la
-quantité, augmentez cette valeur de 2, puis défaussez cette carte d'état. »
-Nom français de l'interface : **Hébété** (« Daze » = « hébétez » ; ⚠ « étourdi » est interdit par la gate `vocabulaire-statuts.test.ts`, qui le réserve à une mauvaise traduction de Stunned = Sonné).
+**Règles de l'encart** (font loi, codées) :
+- sauf mention contraire, **une seule carte Dazed par personnage** ; Steady et
+  Stalwart n'y changent rien (« Can I Daze a steady/stalwart character? Yes. ») ;
+- deux déclencheurs, **un seul consommateur** : le premier qui arrive (pouvoir de
+  base ou activation / dégâts à subir) applique son effet puis la carte part ;
+- **Tough résout avant Cloaked, et Cloaked et Dazed résolvent SIMULTANÉMENT** ;
+- Dazed -2 sur un pouvoir de base ou une activation d'ennemi (minimum 0) ;
+  +2 aux dégâts « quelle qu'en soit la quantité » (au moins 1) ;
+- défense : -2 DEF, puis la carte part AVANT les dégâts en excès (pas de +2) ;
+- allié à dégâts consécutifs : l'ATQ/CTR baisse, la carte part, les dégâts
+  consécutifs (qui résolvent en dernier) ne sont donc PAS augmentés ;
+- perforant : Tough part avant les dégâts, Dazed ajoute alors ses +2.
 
-**Ce que dit l'insert** (« Dazed Rules ») :
-- un personnage ne peut porter qu'**une** carte Dazed, sauf mention contraire ;
-- Steady et Stalwart n'y changent rien (on peut hébéter un personnage Steady
-  ou Stalwart ; Steady ne permet pas d'en porter deux) ;
-- **un seul effet, le premier qui arrive**, comme Cloaked : « If I defend with a
-  Dazed status card, do I get the −2 DEF, and also increase the damage by 2? No. »
-  Et « consequential damage resolves last : la carte réduit d'abord l'ATQ/CTR
-  de l'allié, puis part avant les dégâts consécutifs » ;
-- **Tough résout avant Cloaked, Cloaked et Dazed résolvent en même temps** ;
-- « Dazed + Stunned, attaque » : le personnage tente d'attaquer et retire la
-  carte Stunned à la place (Dazed reste).
-
-**Mécanisme moteur** : l'état est une vraie carte, recette identique à
-`cloaked.md` (la fiche de la carte jumelle, dont Dazed est l'envers).
+**Mécanisme moteur** : sixième carte d'état du moteur, recette identique à
+Cloaked (`cloaked.md`) :
 
 | Endroit | Ce qu'il a fallu |
 |---|---|
 | `data/cards.json`, pack `status` | `{"card_id": "dazed", "type": "Status", "name": "Dazed"}` + checksum |
-| `CardFace.STATUS` (`card_face.py`) | `"Dazed"` ajouté au `Literal` |
-| `StatusCard.symbol_name` (`card_type/card_status.py`), `Symbol` (`render/symbol.py`) | `dazed` |
-| `Status.dazed` (`component/status.py`) | `DAZED_FINDER` + la propriété de comptage |
-| `CanStatus` (`attribute/can_status.py`) | `dazed`, `IsDazed`, `DiscardDazed`, `HasStatus("Dazed")`, `has_status="Any"`, `DiscardEachStatus`, et la limite « UNE seule » dans `GainStatus` |
-| `checker.py`, `ability.py` | `has_status` reconnaît Dazed ; `SetTarget(name="Dazed")` vise une carte d'état |
-| `Puzzle.Daze` (`puzzle/puzzle.py`, `puzzle_.py`) | poser l'état dans un cas de test, comme `Puzzle.Cloak` |
-| `src/cards/pack/status/dazed.py` | la capacité (trois déclencheurs, un seul consommateur), modèle `cloaked.py` |
-| `cloaked.py` | cède la place à Dazed sur les dégâts (voir ci-dessous) |
-| UI | `etats.ts` (lettre H, « Hébété »), `effets-statuts.ts` (badge), type de `ScanCard.tsx`, scan `assets/textures/dazed.webp` |
+| `CardFace.STATUS` (`card_face.py`) | `"Dazed"` |
+| `StatusCard.symbol_name`, `Symbol` | `dazed` |
+| `Status.dazed` (`component/status.py`) | `DAZED_FINDER` + compteur |
+| `CanStatus` (`attribute/can_status.py`) | `dazed`, `IsDazed`, `CanbeDazed` (un seul), `DiscardDazed`, `HasStatus("Dazed")`, `GainStatus` refuse un second, `DiscardEachStatus` |
+| `checker.py`, `ability.py` | `has_status` / `canbe_status` reconnaissent Dazed |
+| `Puzzle.Daze` (`puzzle.py`, `puzzle_.py`) | poser l'état dans un cas de test |
+| `src/cards/pack/status/dazed.py` | la capacité (trois déclencheurs, un seul consommateur) ; MÊME hooks que `cloaked.py` |
+| UI | `effets-statuts.ts`, `mobile/etats.ts` (lettre H, « Hébété »), `ScanCard.tsx`, texture `assets/textures/dazed.webp` |
 
-**Lecture des mots du texte imprimé (tranchée dans `dazed.py`)** :
-- « uses a basic power » = `WhenUnitUseBasicPower` (ATQ, CTR, DEF, REC), −2 par
-  `message.GainValue(-2)` ; « activates » = ennemi qui s'active (attaque ou
-  manigance), exclu de la première branche pour ne pas compter deux fois.
-- « would take any amount of damage » = `WhenUnitWouldTakeDamage` avec au moins
-  1 dégât : `message.IncreaseDamage(2)` (y compris l'excès d'un overkill : le
-  personnage subit réellement ces dégâts).
-- **Tough d'abord** : la capacité de dégâts ne part pas si le personnage porte
-  Tough (sauf perçant : `ignore_tough`) ni si les dégâts sont déjà remplacés ; la
-  carte Dazed RESTE.
-- **Cloaked et Dazed en même temps** : sur des dégâts, `dazed.py` prend la main,
-  fait +2 puis −2 d'un bloc et défausse LES DEUX cartes ; `cloaked.py` lui cède
-  la place (condition `pas_dazed`), sinon Cloaked retirerait 2 avant que Dazed
-  n'ajoute 2 et le total serait faux (1 dégât → 1 subi, pas 2). Sur un pouvoir de
-  base les deux modifications s'additionnent d'elles-mêmes.
+**Simultanéité avec Cloaked** : un Cloaked puis un Dazed pris l'un après l'autre
+donneraient autre chose (1 dégât : Cloaked seul → 0, le Dazed ne se déclenche plus ;
+pris ensemble 1 - 2 + 2 = 1 et les deux cartes partent). `cloaked.py` s'efface donc
+(`pas_de_dazed`) devant un Dazed du même porteur et `dazed.py` résout le LOT : somme
+des effets de tous les Cloaked du porteur et du Dazed, puis toutes ces cartes
+défaussées. Tough d'abord : si le porteur a une carte Tough qui va absorber (pas de
+perforant), ni Dazed ni Cloaked ne sont consommés.
 
-**Carte exemple** : `ta002` Nobody et `ta003` Bold Strategy posent Dazed (fiche
-`daze.md`) ; le pack Baxter Stockman (autre agent) s'en sert aussi.
+**Carte exemple** : `tx016` Wrapped Up (« Daze a friendly character. If you cannot,
+this card gains surge »), `tx005` Baxter Blaster, `tx015` Roadkill Rodneys.
 
 **Pièges connus** :
-- Dazed ne s'empile pas (une par personnage) : contrairement à Cloaked.
-- `Puzzle.Daze` est une BASCULE (poser/retirer) : pour tenter une seconde pose, un
-  cas appelle `Faces.GiveStatus` lui-même (cas `dazed_unique`).
-- Ordre des états (Tough, puis Cloaked/Dazed ensemble) : couvert par les cas
-  `[dazed] Tough résout d'abord` et `[dazed] Cloaked + Dazed`.
-- « Dazed + Stunned » (attaque d'ennemi, la carte Stunned part seule) : suit le
-  comportement de Cloaked ; non couvert par un cas dédié.
+- `Faces.GiveStatus(..., "Dazed", effect)` rend le NOMBRE de personnages réellement
+  hébétés : c'est ce retour qui porte « If you cannot » (tx016) ; ne pas déclarer le repli
+  en cible légale ;
+- `Puzzle.Daze` BASCULE (pose, puis retire au second appel) comme `Puzzle.Tough` : pour
+  prouver « un seul Dazed », passer par `Faces.GiveStatus` (cas `bx_deux_dazed`) ;
+- la ligne `compter` de `effets-statuts.ts` liste chaque statut en dur : un statut absent
+  de `compter` donne `NaN` et le badge ne part jamais (trouvé par le cas
+  `effets-statuts.test.ts`, 16/10/2026) ;
+- non mesuré : l'ordre exact d'un Dazed et d'un Tough quand l'attaque est PERFORANTE (le
+  moteur défausse Tough avant les dégâts, `can_attack.py` ; le cas de l'encart « 1 dégât
+  perforant → 3 dégâts » n'a pas de cas).
 
 **Variantes maison** : aucune.
 
-**Preuves** : `tools/cas/dazed.py` (18 cas, dont 4 témoins et la preuve par
-substitution du module `dazed.py`).
+**Preuves** : `tools/cas/tmnt_baxter.py` (cas `[dazed]`, 21), preuve par substitution
+de `dazed.py` dans le rapport `.planning/tmnt/baxter-phase-a.md`.

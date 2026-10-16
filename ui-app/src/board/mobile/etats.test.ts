@@ -25,7 +25,8 @@ describe('etatDe', () => {
     expect(etatDe(carte('Cloaked'))).toEqual({ lettre: 'K', classe: 'est-camoufle', nom: 'Camouflé' })
   })
 
-  // Sixieme carte d'etat (« Dazed », pack TMNT) : nom francais « Hébété ».
+  // Sixieme carte d'etat (« Dazed », scenario Baxter Stockman) : nom francais et classe
+  // propres, lettre H (Hébété).
   it('reconnait Hébété, la sixieme carte d etat', () => {
     expect(etatDe(carte('Dazed'))).toEqual({ lettre: 'H', classe: 'est-hebete', nom: 'Hébété' })
   })

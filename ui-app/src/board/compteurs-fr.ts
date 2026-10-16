@@ -123,6 +123,11 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).
   samurai: 'samouraï',
+  // Scenario Baxter Stockman (16/10/2026) : sbires SWARM a compteur nomme (Roadkill Rodneys,
+  // Auto Defense Bots, Superfly).
+  cable: 'câble',
+  shield: 'bouclier',
+  ooze: 'mutagène',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

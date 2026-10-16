@@ -564,6 +564,19 @@ export const MECHANTS_INFO = {
         apparition: "The Amazing Spider-Man #98 (1971)",
     },
 
+    "tx001": {
+        bio: "Baxter Stockman est un roboticien de génie, longtemps employé par Stockgen, qui pousse ses expériences toujours plus loin. Il conçoit les Mousers, ces robots à mâchoires qui rôdent dans les égouts de New York, puis, transformé par le mutagène, devient un hybride d'homme et de mouche, entouré d'essaims de robots volants. Rongé par la rancune contre les Tortues Ninja, il revient sans cesse avec une armée d'automates plus nombreuse.",
+        bioEn: "Baxter Stockman is a brilliant roboticist, long employed by Stockgen, who keeps pushing his experiments further. He designs the Mousers, the jawed robots that prowl the sewers of New York, then, transformed by mutagen, becomes a human-fly hybrid surrounded by swarms of flying robots. Eaten up by resentment of the Teenage Mutant Ninja Turtles, he keeps coming back with an ever larger army of automatons.",
+        civil: "Baxter Stockman",
+        base: "Stockgen, New York",
+        baseEn: "Stockgen, New York",
+        equipes: "Allié occasionnel du Clan du Pied",
+        equipesEn: "Occasional ally of the Foot Clan",
+        ennemis: "Tortues Ninja",
+        ennemisEn: "Teenage Mutant Ninja Turtles",
+        apparition: "Teenage Mutant Ninja Turtles #19 (1989)",
+    },
+
     "wd035": {
         bio: "Ouvrier électricien frappé par la foudre alors qu'il répare une ligne à haute tension, Max Dillon acquiert la capacité de générer et de contrôler l'électricité, ainsi que d'absorber l'énergie ambiante pour démultiplier sa puissance. Rongé par un sentiment d'infériorité et une soif de reconnaissance, il devient l'un des criminels les plus redoutés de New York. Il affronte régulièrement Spider-Man, dont il jalouse la popularité.",
         bioEn: "A power lineman struck by lightning while repairing a high-voltage line, Max Dillon gains the ability to generate and control electricity, as well as absorb ambient energy to amplify his power. Driven by feelings of inferiority and a hunger for recognition, he becomes one of New York's most feared criminals. He regularly battles Spider-Man, whose popularity he resents.",

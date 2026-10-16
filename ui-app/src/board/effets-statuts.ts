@@ -21,6 +21,7 @@ import type { WorldCard } from './world'
  */
 export type Statut = 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed'
 
+// `dazed` est le SIXIEME (scenario Baxter Stockman, Inkwire, 16/10/2026).
 const STATUTS: readonly Statut[] = ['stunned', 'confused', 'tough', 'exposed', 'cloaked', 'dazed']
 
 function estStatut(valeur: string): valeur is Statut {

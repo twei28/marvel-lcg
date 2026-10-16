@@ -48,3 +48,8 @@ dépendent de la zone).
 donne des PV proportionnels au nombre d'attachements NECROVERSE en jeu, plafonné
 à 4 — la valeur bouge en cours de partie, l'étoile doit donc être recalculée et
 non figée à l'entrée en jeu.
+
+**Capacité Special NOMMÉE sur un complot principal** (scénario Baxter Stockman, 16/10/2026) : `tx004b` porte
+« *Replicate* — Special : ... », résolue par `tx001-tx003`, `tx008`, `tx009`, `tx011` (« each player resolves the Special
+on the Baxter's Laboratory scheme »). `WhenResolveSpecialAbility("This", op)` sur la face 1B, appelants via
+`ResoudreLeSpecial(effect, joueur)` : fiche `replicate.md`.

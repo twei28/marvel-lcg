@@ -212,6 +212,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # CORRECTIF : traits du pack custom venus (Inkwire, TMNT Heroes). ELEMENT n'est PAS
         # decoratif : tv001a/tv001b comptent et cherchent les ameliorations par ce trait.
         "SHARK", "ELEMENT", "QUANTA", "SONG", "CONSTRUCT", "BULL", "MOLE",
+        # AJOUT (16/10/2026) : scenario Baxter Stockman v3 (Inkwire, prefixe `tx`). « FLYBORG »
+        # au SINGULIER est imprime sur les scans tx012 / tx013 (td017 porte le pluriel FLYBORGS,
+        # decision du 15/10) ; « FLY » est le trait du vilain tx001-tx003.
+        "FLYBORG", "FLY",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -413,6 +417,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # poses sur le mechant Kly'bn / Sl'gur't (insert p.14). Sans cette entree `IsCounter`
         # refuse le nom et la pose du jeton echoue.
         'faith',
+        # AJOUT (16/10/2026) : scenario Baxter Stockman v3 (Inkwire). Compteurs NOMMES des sbires
+        # SWARM : `cable` (tx015 Roadkill Rodneys), `shield` (tx017 Auto Defense Bots), `ooze`
+        # (tx013 Superfly). `swarm` existe deja (td016/td017). Sans ces entrees `IsCounter` refuse
+        # le nom et le sbire tombe a la mise en place.
+        'cable', 'shield', 'ooze',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

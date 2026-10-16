@@ -838,6 +838,24 @@
 - **Première apparition** : The Amazing Spider-Man #98 (1971)
 
 
+## Baxter Stockman (TMNT)
+
+`tx001`
+
+
+**FR** — Baxter Stockman est un roboticien de génie, longtemps employé par Stockgen, qui pousse ses expériences toujours plus loin. Il conçoit les Mousers, ces robots à mâchoires qui rôdent dans les égouts de New York, puis, transformé par le mutagène, devient un hybride d'homme et de mouche, entouré d'essaims de robots volants. Rongé par la rancune contre les Tortues Ninja, il revient sans cesse avec une armée d'automates plus nombreuse.
+
+
+**EN** — Baxter Stockman is a brilliant roboticist, long employed by Stockgen, who keeps pushing his experiments further. He designs the Mousers, the jawed robots that prowl the sewers of New York, then, transformed by mutagen, becomes a human-fly hybrid surrounded by swarms of flying robots. Eaten up by resentment of the Teenage Mutant Ninja Turtles, he keeps coming back with an ever larger army of automatons.
+
+
+- **Identité civile** : Baxter Stockman
+- **Base** : Stockgen, New York
+- **Équipes** : Allié occasionnel du Clan du Pied
+- **Ennemis** : Tortues Ninja
+- **Première apparition** : Teenage Mutant Ninja Turtles #19 (1989)
+
+
 ## Electro (Web of Deceit)
 
 `wd035`

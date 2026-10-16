@@ -257,7 +257,7 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
             return False
         if self.canbe_status == "Any":
             # CORRECTIF (13/09/2026) : idem pour « peut recevoir un etat ».
-            check_status = ["Confused", "Stunned", "Tough", "Exposed"]
+            check_status = ["Confused", "Stunned", "Tough", "Exposed", "Dazed"]
         elif not isinstance(self.canbe_status, list):
             check_status = [self.canbe_status]
         else:
@@ -276,6 +276,9 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
             # ⚠ Exposé N'A AUCUN PLAFOND : il s'empile, contrairement a
             # Coriace (`tough_max`). Tout personnage en jeu peut en recevoir.
             if staus == "Exposed":
+                is_canbe_status = True
+                break
+            if staus == "Dazed" and face.CanbeDazed():
                 is_canbe_status = True
                 break
         if not is_canbe_status:

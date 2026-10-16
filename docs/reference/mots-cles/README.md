@@ -138,6 +138,14 @@ la plus fréquente sur un pack vilain.
       zéro ligne de code. ⚠ À ne pas confondre avec le set officiel « The
       Initiative »)
 
+- [x] dazed.md (scenario `baxter_stockman` : SIXIEME carte d'etat, -2 aux pouvoirs de
+      base / +2 aux degats, un seul effet puis defaussee, un seul Dazed par personnage ;
+      Tough d'abord, Cloaked et Dazed SIMULTANES. Verbe « daze » = poser la carte)
+- [x] replicate.md (scenario `baxter_stockman` : la capacite nommee « Replicate », de type
+      SPECIAL, portee par `tx004b` et resolue par le joueur)
+- [x] all-purpose-counter.md (terme officiel : le type du compteur est celui de la carte qui
+      le porte ; FAQ MC4DB du 29/09/2026)
+
 - [ ] cloak.md (pack `leonardo`, TMNT : mot-clé imprimé en verbe sur tl015 et
       tl016 et JAMAIS défini — fiche créée le 15/10/2026 SANS définition ni
       mécanisme, stub `Cloak()` en attente de la réponse de l'utilisateur,

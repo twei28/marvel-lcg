@@ -89,11 +89,10 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             return False
         if name == "Tough" and self.IsTough() and self.tough >= self.tough_max:
             return False
-        # Dazed (pack TMNT, Baxter Stockman v3, insert « Dazed Rules ») : « un
-        # personnage ne peut avoir qu'UNE carte d'etat Dazed, sauf mention
-        # contraire ». Steady/Stalwart n'y changent rien (« Can I Daze a
-        # steady/stalwart character ? Yes »).
-        if name == "Dazed" and self.IsDazed():
+        # AJOUT (16/10/2026, Baxter Stockman v3) : « a character can only have one Dazed
+        # status card on them » (insert Dazed). Ni Stalwart ni Steady n'y changent rien
+        # (insert : « Can I Daze a steady/stalwart character? Yes »).
+        if name == "Dazed" and not self.CanbeDazed():
             return False
 
         would_message = Message.WhenStatusWouldCardPlaceOn(self, name, by_effect)
@@ -170,6 +169,14 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             return False
         return self.tough < self.tough_max
 
+    def CanbeDazed(self) -> bool:
+        """Un seul Dazed par personnage (insert Dazed) ; ni Stalwart ni Steady n'interviennent."""
+        if not self.IsInPlay():
+            return False
+        if self.IsDazed():
+            return False
+        return True
+
     def CanbeStunned(self) -> bool:
         if not self.IsInPlay():
             return False
@@ -238,4 +245,8 @@ class CanNoStatus(CanStatus):
 
     @override
     def CanbeConfused(self) -> bool:
+        return False
+
+    @override
+    def CanbeDazed(self) -> bool:
         return False

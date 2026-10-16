@@ -24,10 +24,9 @@ export const ETATS: Record<string, Etat> = {
   // ligne, le repli generique afficherait un « C » (deja pris par Désorienté)
   // avec le nom anglais.
   cloaked: { lettre: 'K', classe: 'est-camoufle', nom: 'Camouflé' },
-  // SIXIEME carte d'etat (« Dazed », pack TMNT, Baxter Stockman v3, scan Inkwire) :
-  // -2 au prochain pouvoir de base / a la prochaine activation, OU +2 aux
-  // prochains degats, puis la carte part. Lettre H (le D est ambigu) ; sans
-  // cette ligne le repli generique afficherait un « D » avec le nom anglais.
+  // SIXIEME carte d'etat (« Dazed », scenario Baxter Stockman, Inkwire) : -2 au prochain
+  // pouvoir de base / a la prochaine activation, OU +2 aux prochains degats, puis la carte
+  // part. « H » comme Hébété (D est libre mais le nom francais commence par H).
   dazed: { lettre: 'H', classe: 'est-hebete', nom: 'Hébété' },
 }
 

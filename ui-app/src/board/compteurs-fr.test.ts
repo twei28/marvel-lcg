@@ -19,6 +19,14 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('psionic web')).toBe('toile psionique')
   })
 
+  it('traduit les compteurs nommes du scenario Baxter Stockman', () => {
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('cable')).toBe('câble')
+    expect(nomDeCompteur('shield')).toBe('bouclier')
+    expect(nomDeCompteur('ooze')).toBe('mutagène')
+    expect(nomDeCompteur('swarm')).toBe('essaim')
+  })
+
   it('laisse un compteur inconnu en anglais, mots séparés', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('tic_tac_toe_1_1')).toBe('tic tac toe 1 1')

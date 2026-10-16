@@ -1,53 +1,68 @@
 from . import *
 
-# Dazed (carte d'etat maison, pack TMNT, Baxter Stockman v3, scan Inkwire)
+# Dazed (Hebete), carte d'etat maison, scenario Baxter Stockman v3 (Inkwire).
 #
-# Texte imprime : « The next time this character uses a basic power or
-# activates, decrease that value by 2, then discard this status card. The next
-# time this character would take any amount of damage, increase that value by
-# 2, then discard this status card. »
+# Texte imprime (scan « Dazed (1).png ») : « The next time this character uses a
+# basic power or activates, decrease that value by 2, then discard this status
+# card. The next time this character would take any amount of damage, increase
+# that value by 2, then discard this status card. »
 #
-# Insert « Dazed Rules » (meme zip) : « Daze X » = poser une carte d'etat Dazed
-# sur X ; UNE seule Dazed par personnage sauf mention contraire (Steady et
-# Stalwart n'y changent rien) ; les deux declencheurs sont EXCLUSIFS (« Can I
-# defend with a Dazed card, -2 DEF and also +2 damage ? No ») : le premier qui
-# arrive defausse la carte. Meme lecture que Cloaked (decision de l'utilisateur
-# du 16/10/2026), a l'envers. Fiche : docs/reference/mots-cles/dazed.md.
+# Encart « Dazed Rules Insert » (regle) : « Unlike other status cards, this status
+# card has TWO ways in which it will trigger: when the character uses a basic power
+# (or activates), when the character would receive damage. » Un personnage ne peut
+# porter qu'UNE carte Dazed (sauf mention contraire), Steady / Stalwart ne changent
+# rien. « Tough status cards always resolve before Cloaked status cards, and Cloaked
+# and Dazed status cards always resolve SIMULTANEOUSLY. » Fiche :
+# docs/reference/mots-cles/dazed.md. Modele : `cloaked.py` (meme trois declencheurs,
+# meme consommateur unique : le premier qui arrive, puis la carte part).
 #
-# « Tough resolves before Cloaked, and Cloaked and Dazed resolve
-# simultaneously » (insert) :
-#  - Tough d'abord : un personnage Tough qui va subir des degats les voit
-#    PREVENUS par Tough ; Dazed ne se declenche pas (la carte reste). Garde
-#    `IsTough()` + `is_be_instead`, qui ne dependent pas de l'ordre des cartes.
-#  - Cloaked et Dazed « en meme temps » : sur des degats, Dazed prend la
-#    main : +2 puis -2 (Cloaked) d'un seul bloc, les DEUX cartes partent
-#    (`cloaked.py` lui cede la place quand le personnage est Dazed). Sur un
-#    pouvoir de base (+2 / -2) les deux modifications s'additionnent d'elles
-#    memes.
+# SIMULTANEITE AVEC CLOAKED : le resultat d'un Cloaked (+2 puissance / -2 degats) et
+# d'un Dazed (-2 puissance / +2 degats) pris ENSEMBLE n'est pas celui de deux
+# resolutions successives : 1 degat avec Cloaked seul d'abord donne 0 (le Dazed ne
+# se declenche alors plus) ; pris ensemble, 1 - 2 + 2 = 1 et les deux cartes partent.
+# `cloaked.py` s'efface donc devant un Dazed du meme porteur, et c'est CE module qui
+# resout le lot : somme des effets, puis toutes les cartes concernees defaussees.
 #
-# Modele : `cloaked.py` (meme dossier), forme identique.
+# TOUGH D'ABORD : si le porteur a une carte Tough qui va absorber les degats (pas de
+# perforant), ni Dazed ni Cloaked ne sont consommes : Tough resout avant eux.
+
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def consommer(effect: 'Effect') -> None:
+    def porteur(effect: 'Effect') -> 'Unit2':
+        return effect.this.CastTo(StatusCard).GetBindFace()
+
+    def consommer_le_lot(effect: 'Effect') -> None:
+        """Defausse CETTE carte Dazed et, si le porteur en a, ses Cloaked (simultanes)."""
         from game.operate.faces import Faces
         this = effect.this.CastTo(StatusCard)
+        unit = porteur(effect)
         Faces.DiscardAll([this], effect)
+        if unit.cloaked > 0:
+            unit.DiscardCloaked(effect, rule="All")
+
+    def delta_de_puissance(effect: 'Effect') -> int:
+        """-2 pour Dazed, +2 par Cloaked simultane."""
+        return -2 + 2 * porteur(effect).cloaked
 
     def pas_ennemi(effect: 'Effect', message: 'Message.WhenUnitUseBasicPower') -> bool:
         return not Enemy.IsType(message.trigger)
 
     def pouvoir_de_base(effect: 'Effect', message: 'Message.WhenUnitUseBasicPower') -> None:
-        message.GainValue(-2, effect)
-        consommer(effect)
+        delta = delta_de_puissance(effect)
+        if delta != 0:
+            message.GainValue(delta, effect)
+        consommer_le_lot(effect)
 
     def activation(effect: 'Effect', message: 'Message.WhenEnemyActivateAgainstYou') -> None:
+        delta = delta_de_puissance(effect)
         would = message.would_message
-        if isinstance(would, Message.WhenUnitWouldAttack):
-            would.GainATKForThisAttack(-2, effect)
-        else:
-            would.GainSCHForThisScheme(-2, effect)
-        consommer(effect)
+        if delta != 0:
+            if isinstance(would, Message.WhenUnitWouldAttack):
+                would.GainATKForThisAttack(delta, effect)
+            else:
+                would.GainSCHForThisScheme(delta, effect)
+        consommer_le_lot(effect)
 
     def vraie_activation_de_base(effect: 'Effect', message: 'Message.WhenEnemyActivateAgainstYou') -> bool:
         if message.would_act_message is None:
@@ -57,25 +72,24 @@ def GetAbilities() -> Sequence['Ability']:
             return would.IsBasicAttack()
         return would.IsBasicScheme()
 
-    def peut_se_declencher_sur_degats(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> bool:
-        unit = effect.this.CastTo(StatusCard).GetBindFace()
-        if message.is_be_instead or message.IsBePrevent():
-            return False
-        # Tough d'abord : il va tout prevenir, Dazed attend le prochain coup.
-        if not message.property.ignore_tough and unit.IsTough():
-            return False
-        return message.will_take_damage > 0
+    def tough_absorbe(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> bool:
+        unit = porteur(effect)
+        return unit.IsTough() and not message.property.ignore_tough
+
+    def avant_degats(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> bool:
+        """« would take ANY AMOUNT of damage » : au moins 1, et Tough n'a pas la priorite."""
+        return message.will_take_damage > 0 and not tough_absorbe(effect, message)
 
     def degats(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> None:
-        this = effect.this.CastTo(StatusCard)
-        unit = this.GetBindFace()
-        # `inclure_overkill` : le personnage subit REELLEMENT ces degats.
-        message.IncreaseDamage(2, effect, inclure_overkill=True)
-        # Cloaked « en meme temps » : -2 dans le meme bloc, et la carte part.
-        if unit.IsCloaked():
-            message.ReduceDamage(min(2, message.will_take_damage), effect)
-            unit.DiscardCloaked(effect, rule=1)
-        consommer(effect)
+        unit = porteur(effect)
+        subis = message.will_take_damage
+        # +2 (Dazed), -2 par Cloaked simultane ; le total ne descend pas sous 0.
+        total = max(0, subis + 2 - 2 * unit.cloaked)
+        if total > subis:
+            message.IncreaseDamage(total - subis, effect)
+        elif total < subis:
+            message.PreventDamage(subis - total, effect)
+        consommer_le_lot(effect)
 
     return [
         AbilityFactory.WhenUnitUseBasicPower(
@@ -94,6 +108,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.Status,
             "AttachedCharacter",
             degats,
-            conditions=[peut_se_declencher_sur_degats],
+            conditions=[avant_degats],
         ),
     ]

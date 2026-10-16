@@ -86,3 +86,10 @@ identique à `exposed.md` :
 substitution : le module retiré, les 8 cas de comportement échouent et les 5
 témoins/poses passent) ; les cas des cartes qui posent Cloaked :
 `tools/cas/cloaked_cartes.py` (tl015 ×2, tl016, td005).
+
+## Cloaked et Dazed : résolution SIMULTANÉE (16/10/2026, scénario Baxter Stockman)
+
+L'encart de la carte d'état Dazed dit : « Tough status cards always resolve before Cloaked status cards, and Cloaked and
+Dazed status cards always resolve simultaneously. » `cloaked.py` s'efface donc devant un Dazed du même porteur
+(`pas_de_dazed`) et `dazed.py` résout le lot : voir `dazed.md`. Cloaked seul est inchangé (cas `[dazed] Cloaked seul reste
+inchangé` et `[cloaked]` verts).

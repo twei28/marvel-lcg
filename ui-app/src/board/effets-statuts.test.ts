@@ -54,7 +54,8 @@ describe('deltas de statuts', () => {
     expect(libelleStatut('cloaked', 1, 'en')).toBe('Cloaked')
   })
 
-  // Sixieme carte d'etat, pack TMNT (« Dazed », Baxter Stockman v3).
+  // Sixieme carte d'etat (« Dazed », scenario Baxter Stockman). Sans son entree dans
+  // STATUTS, `estStatut` la rejetterait et le badge ne partirait jamais.
   it('signale Hébété, la sixieme carte d etat, posee puis retiree', () => {
     const avant = monde(klaw)
     const apres = monde(klaw, carte(204, 'StatusCard', 'dazed', 97))
