@@ -1224,3 +1224,19 @@ html[data-epure] .tb-port {
   clip-path: var(--ep-biais-petit) !important;
   border-radius: 0 !important;
 }
+
+/* --- 21. La trame BD, très discrète, sur le fond (16/10/2026) ----------------
+   Des points clairs à 3,5 % d'opacité, tous les 6 px : on la devine plus
+   qu'on ne la voit. Seulement sur le fond, jamais sur les panneaux. */
+html[data-epure] body,
+html[data-epure] .team-b,
+html[data-epure] .layout,
+html[data-epure] .stage,
+html[data-epure] .step,
+html[data-epure] .db-page,
+html[data-epure] .db-body,
+html[data-epure] .db-centre {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.4px) 0 0 / 6px 6px,
+    var(--ep-fond) !important;
+}
