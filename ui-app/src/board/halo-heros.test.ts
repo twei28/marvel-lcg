@@ -165,15 +165,14 @@ describe('la marque aplatie de l affichage epure', () => {
     expect(marqueDe([])).toBeUndefined()
   })
 
-  it('trois bandes nettes : primaire au coin, tertiaire fine au milieu, secondaire au bord', () => {
-    const marque = marqueDe([ROUGE, BLEU, BLANC], 40)!
+  it('trois bandes nettes, 70 / 5 / 25 : primaire au coin, tertiaire fine au milieu, secondaire au bord', () => {
+    const marque = marqueDe([ROUGE, BLEU, BLANC], 60)!
     expect(marque).toContain('315deg')
-    // Deux positions par couleur : un arret net, jamais un degrade.
-    // Celle du milieu (40 / 3 = 13,33 px) fait un tiers des deux autres (40 px).
-    expect(marque).toContain('rgb(140,41,31) 0px 40px')
-    expect(marque).toContain('rgb(219,220,222) 40px 53.33px')
-    expect(marque).toContain('rgb(32,43,114) 53.33px 93.33px')
-    expect(marque).toContain('transparent 93.33px')
+    // Deux positions par couleur : un arret net, jamais un degrade. Total 140 px.
+    expect(marque).toContain('rgb(140,41,31) 0px 98px')
+    expect(marque).toContain('rgb(219,220,222) 98px 105px')
+    expect(marque).toContain('rgb(32,43,114) 105px 140px')
+    expect(marque).toContain('transparent 140px')
     expect(marque).not.toContain('rgba')
   })
 

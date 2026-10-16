@@ -69,13 +69,17 @@ identique à `exposed.md` :
 
 - **Un seul effet** : le premier déclencheur qui arrive défausse la carte, les
   autres ne la trouvent plus. Cas de test dans les deux sens.
-- **Cloaked s'empile** (aucun plafond, comme Exposé, contrairement à Coriace) :
-  deux cartes sur le même personnage agissent chacune une fois. Le texte imprimé
-  ne donne aucun plafond ; le moteur n'en invente pas.
-- **Coriace d'abord ?** Une cible qui porte Coriace ET Cloaked : les deux se
-  branchent sur `WhenUnitWouldTakeDamage`. Coriace prévient tout via
-  `SetBeInstead` ; l'ordre entre les deux cartes d'état n'est pas défini par le
-  texte. Non testé : à vérifier en partie réelle si le cas se présente.
+- **UNE seule carte Cloaked par personnage, sauf mention contraire** (encart du scénario Shredder, 16/10/2026 :
+  « Normally characters can only have one Cloaked status card on them at a time, but the Shredder can have more
+  than one, depending on his villain stage »). `CanStatus.cloaked_max` = 1 + le retour de
+  `Message.GettingUnitAdditionalCloaked` ; `AbilityFactory.ThisCanHaveAdditionalCloaked(N)` (Shredder I/II/III :
+  N = 1/2/3, donc 2/3/4 cartes). « Cloak X » sur un X déjà au maximum ne pose rien (`GainStatus` rend False) : c'est
+  le « If you cannot » de `ts020` Foot Rikugun. REMPLACE l'ancienne note « Cloaked s'empile (aucun plafond) ».
+  Plusieurs cartes sur Shredder : chacune agit UNE fois (insert : 3 Cloaked + une activation = +6 ; 3 dégâts d'une
+  attaque retirent 2 cartes ; 3 attaques de 1 dégât en retirent 3). Cas : `tools/cas/tmnt_shredder.py` (« encart Q&R »).
+- **Coriace d'abord** (encart : « Tough status cards always resolve before cloaked status cards »). Une cible qui porte
+  Coriace ET Cloaked : Coriace absorbe tout, le Cloaked RESTE ; avec une attaque PERÇANTE la Coriace part d'abord,
+  puis le Cloaked prévient 2 (cas « encart Q&R » : les deux ordres de pose).
 - **Le +2 d'activation se joue sur la valeur utilisée** : il est ajouté AVANT les
   cartes de boost, comme tout `GainATKForThisAttack` (même mécanisme que Retaliate
   ou une amélioration d'ennemi).
@@ -86,3 +90,10 @@ identique à `exposed.md` :
 substitution : le module retiré, les 8 cas de comportement échouent et les 5
 témoins/poses passent) ; les cas des cartes qui posent Cloaked :
 `tools/cas/cloaked_cartes.py` (tl015 ×2, tl016, td005).
+
+## Cloaked et Dazed : résolution SIMULTANÉE (16/10/2026, scénario Baxter Stockman)
+
+L'encart de la carte d'état Dazed dit : « Tough status cards always resolve before Cloaked status cards, and Cloaked and
+Dazed status cards always resolve simultaneously. » `cloaked.py` s'efface donc devant un Dazed du même porteur
+(`pas_de_dazed`) et `dazed.py` résout le lot : voir `dazed.md`. Cloaked seul est inchangé (cas `[dazed] Cloaked seul reste
+inchangé` et `[cloaked]` verts).

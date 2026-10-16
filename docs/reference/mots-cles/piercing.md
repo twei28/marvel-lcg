@@ -30,6 +30,13 @@ Les conditions « if this attack has piercing » se testent via
   listé dans PROCESSUS-CARTE.md comme non rendable fidèlement sur certains
   événements).
 
+**Cas `tc012` Persuader (pack `casey_jones`)** : « When you make a basic attack, exhaust Persuader
+→ you get +1 ATK for that attack. This attack gains piercing » = `WhenUnitWouldAttack(HeroInterrupt,
+"You", op, is_basic_attack=True)` + `message.GainATKForThisAttack(1)` + `message.GainPiercing(effect)` sur
+le message d'ATTAQUE (pas `WhenUnitUseBasicPower`, qui couvre aussi la défense et le contre). Cas
+`[casey] tc012` : Rhino Tough, 4 dégâts passent et le Tough est défaussé, contre 0 dégât (Tough absorbe)
+sans la carte.
+
 **Variantes maison** : `ho016` (* Bullseye, pack `harry_osborn`) : « [star]
 Bullseye's attack gains piercing and overkill » — capacité étoile (Expert)
 posée par `GainPiercing`/`GainOverKill` sur l'attaque en cours.

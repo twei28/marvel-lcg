@@ -98,6 +98,7 @@ export type CardKind =
   | 'alter-ego'
   | 'ally'
   | 'support'
+  | 'path'
   | 'upgrade'
   | 'event'
   | 'resource'
@@ -149,7 +150,7 @@ export type CardEffectDelta =
        * `sentinel` (voir board/effets-statuts.ts).
        */
       kind: 'status'
-      statut: 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked'
+      statut: 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed'
       value: 1 | -1
     }
 
@@ -389,6 +390,7 @@ export const kindLabel: Record<CardKind, string> = {
   treachery: 'Traîtrise',
   'alter-ego': 'Alter ego',
   support: 'Soutien',
+  path: 'Voie',
   upgrade: 'Amélioration',
   event: 'Événement',
   resource: 'Ressource',

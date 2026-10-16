@@ -190,6 +190,8 @@ export type CartouchePhaseProps = {
    * phase precedente rouverte depuis le journal (D38, « Fermer »).
    */
   bandeau?: 'phase' | 'pendant-ton-tour' | 'relecture-journal'
+  /** Hors phase : le héros ou l'alter ego concerné, dit dans le bandeau (16/10/2026). */
+  nomConcerne?: string
   /** « Fermer » de la relecture depuis le journal. */
   onFermer?: () => void
   /**
@@ -426,7 +428,6 @@ function ResultatEssai({ rangee }: { rangee: VueRangee }) {
         {rangee.resultat.raison ? <small className="essai-raison">{rangee.resultat.raison}</small> : null}
         {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
         {rangee.resultat.note ? <small className="deroule-resultat-note"><Texte>{rangee.resultat.note}</Texte></small> : null}
-        {pose?.jauge === 'menace' ? <AlerteSeuil jauge={rangee.resultat.jauge} /> : null}
       </span>
     )
   }
@@ -574,22 +575,8 @@ function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; g
  * LA MENACE DE L'ETAPE 1 (lot 5, decision 7) : le calcul pose, une ligne par
  * source, le total, la jauge avant → apres sur le seuil, « COMPLÉTÉE ».
  */
-/**
- * 13/10/2026 (decision ① seuil proche) : « Encore N avant la défaite » en rouge,
- * des qu'il reste 2 menaces ou moins avant le seuil. Seule une manigance a seuil
- * (la principale) en a un : une annexe n'en a pas.
- */
-export function texteAlerteSeuil(jauge: { apres?: number; plafond?: number } | undefined): string | undefined {
-  if (!jauge || jauge.apres === undefined || !jauge.plafond) return undefined
-  const reste = jauge.plafond - jauge.apres
-  if (reste <= 0 || reste > 2) return undefined
-  return t('Encore %1 avant la défaite').replace('%1', String(reste))
-}
-
-function AlerteSeuil({ jauge }: { jauge: { apres?: number; plafond?: number } | undefined }) {
-  const texte = texteAlerteSeuil(jauge)
-  return texte ? <p className="essai-alerte-seuil">{texte}</p> : null
-}
+// 16/10/2026 : l'alerte « Encore N avant la défaite » (décision ① du 13/10) est
+// retirée à la demande de l'utilisateur : la jauge avant → après suffit.
 
 /** Les couleurs des joueurs à la table (essai, 13/10/2026), pour les pastilles du calcul de menace. */
 const AUCUNE_COULEUR: readonly string[] = []
@@ -652,7 +639,6 @@ function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
             </span>
           </div>
         ) : null}
-        <AlerteSeuil jauge={menace.complete ? undefined : jauge} />
         {menace.complete ? (
           <span className="essai-tampon essai-tampon-complete" aria-hidden="true">
             {t('COMPLÉTÉE')}
@@ -1981,7 +1967,13 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     >
       <LigneDuHaut
         liste={horsPhase ? [] : liste}
-        bandeau={horsPhase ? t('Pendant ton tour') : relu || depuisLeJournal ? t('Relecture') : undefined}
+        bandeau={
+          horsPhase
+            ? `${t('Pendant ton tour')}${props.nomConcerne ? ` · ${props.nomConcerne}` : ''}`
+            : relu || depuisLeJournal
+              ? t('Relecture')
+              : undefined
+        }
         relire={relire ? (cle) => relire({ temps: cle }) : undefined}
         titre={titreAffiche}
         sousTitre={sousTitre}
@@ -2172,6 +2164,8 @@ export type CartoucheHorsPhaseProps = CartesDuCartouche & {
   /** La question de defense d'un coup annonce, quand c'est le cartouche qui la porte. */
   questionDuMoteur?: QuestionDuMoteur
   questionAuJoueur: boolean
+  /** Le héros ou l'alter ego dont c'est le tour, dit dans le bandeau. */
+  nomConcerne?: string
   /**
    * La relecture du journal occupe le bas de l'ecran : rien a dessiner, mais
    * les coups vus restent retenus (demonter les oublierait).
@@ -2253,6 +2247,7 @@ export function CartoucheHorsPhase(props: CartoucheHorsPhaseProps) {
       infoCarte={props.infoCarte}
       infoRevelee={props.infoRevelee}
       bandeau="pendant-ton-tour"
+      nomConcerne={props.nomConcerne}
     />
   )
 }

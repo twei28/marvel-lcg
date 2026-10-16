@@ -41,6 +41,9 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     @property
     def cloaked(self) -> int:
         return self.components.status.cloaked
+    @property
+    def dazed(self) -> int:
+        return self.components.status.dazed
 
     @property
     def tough_max(self) -> int:
@@ -53,6 +56,20 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         additional = message.return_value
         if additional:
             value += additional
+        return value
+
+    @property
+    def cloaked_max(self) -> int:
+        # CORRECTIF (pack shredder) : un personnage n'a qu'UNE carte Cloaked,
+        # sauf mention contraire (Shredder : 2, 3 ou 4 selon son stade).
+        from game.message import Message
+        from game.card.face.base import Unit2
+
+        value = 1
+        message = Message.GettingUnitAdditionalCloaked(self.card.CastTo(Unit2))
+        message.Send()
+        if message.return_value:
+            value += message.return_value
         return value
 
     # @property
@@ -85,6 +102,13 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         if name == "Stunned" and not self.CanbeStunned():
             return False
         if name == "Tough" and self.IsTough() and self.tough >= self.tough_max:
+            return False
+        # AJOUT (16/10/2026, Baxter Stockman v3) : « a character can only have one Dazed
+        # status card on them » (insert Dazed). Ni Stalwart ni Steady n'y changent rien
+        # (insert : « Can I Daze a steady/stalwart character? Yes »).
+        if name == "Dazed" and not self.CanbeDazed():
+            return False
+        if name == "Cloaked" and self.cloaked >= self.cloaked_max:
             return False
 
         would_message = Message.WhenStatusWouldCardPlaceOn(self, name, by_effect)
@@ -124,6 +148,9 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     def DiscardCloaked(self, by_effect: 'Effect', *, rule: 'DISCARD_RULE') -> int:
         return self.LoseState("Cloaked", by_effect, rule)
 
+    def DiscardDazed(self, by_effect: 'Effect', *, rule: 'DISCARD_RULE') -> int:
+        return self.LoseState("Dazed", by_effect, rule)
+
     def DiscardAllTough(self, by_effect: 'Effect') -> int:
         return self.DiscardTough(by_effect, rule="All")
 
@@ -132,6 +159,7 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         self.DiscardStunned(by_effect, rule="All")
         self.DiscardAllTough(by_effect)
         self.DiscardCloaked(by_effect, rule="All")
+        self.DiscardDazed(by_effect, rule="All")
 
     def IsConfused(self) -> bool:
         from game.card.face.base import Unit2
@@ -143,6 +171,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         return self.tough != 0
     def IsCloaked(self) -> bool:
         return self.cloaked != 0
+    def IsDazed(self) -> bool:
+        return self.dazed != 0
     def IsStunned(self) -> bool:
         from game.card.face.base import Unit2
         if self.card.CastTo(Unit2).IsSteady():
@@ -154,6 +184,14 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         if not self.IsInPlay():
             return False
         return self.tough < self.tough_max
+
+    def CanbeDazed(self) -> bool:
+        """Un seul Dazed par personnage (insert Dazed) ; ni Stalwart ni Steady n'interviennent."""
+        if not self.IsInPlay():
+            return False
+        if self.IsDazed():
+            return False
+        return True
 
     def CanbeStunned(self) -> bool:
         if not self.IsInPlay():
@@ -194,7 +232,7 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             # quatrieme carte d'etat, et l'assertion plus bas aurait fait
             # PLANTER toute carte qui demande `HasStatus("Exposed")`.
             return self.confused > 0 or self.stunned > 0 or self.tough > 0 \
-                or self.exposed > 0 or self.cloaked > 0
+                or self.exposed > 0 or self.cloaked > 0 or self.dazed > 0
         if name == "Confused":
             return self.confused > 0
         if name == "Stunned":
@@ -205,6 +243,8 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
             return self.exposed > 0
         if name == "Cloaked":
             return self.cloaked > 0
+        if name == "Dazed":
+            return self.dazed > 0
         assert False, f"{self=} {name=}"
 
     def GetStatusSize(self) -> int:
@@ -221,4 +261,8 @@ class CanNoStatus(CanStatus):
 
     @override
     def CanbeConfused(self) -> bool:
+        return False
+
+    @override
+    def CanbeDazed(self) -> bool:
         return False

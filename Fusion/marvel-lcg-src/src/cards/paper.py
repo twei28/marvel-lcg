@@ -91,6 +91,7 @@ class Paper:
         from game.card.face.card_type import Resource
         from game.card.face.card_type import StatusCard
         from game.card.face.card_type import Evidence
+        from game.card.face.card_type import Path
 
         return {
             'Insert': Insert,
@@ -118,5 +119,7 @@ class Paper:
             'Resource': Resource,
             'Status': StatusCard,
             'Evidence': Evidence,
+            # AJOUT (16/10/2026, pack jennika) : la Voie. Voir card_type/path.py.
+            'Path': Path,
         }[self.type]
 

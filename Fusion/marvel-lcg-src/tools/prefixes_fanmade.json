@@ -395,7 +395,7 @@
   },
   "tk": {
    "pack": "bebop_rocksteady",
-   "libelle": "190. Custom (Bebop & Rocksteady)",
+   "libelle": "192. Custom (Bebop & Rocksteady)",
    "cartes": 0,
    "depuis": "2026-10-16",
    "note": "Cree le 16/10/2026 (phase A en cours). Auteur Inkwire / Kajislav (TMNT Villains, zip « TMNT Enemies / Bebop & Rocksteady v3 »). SCENARIO A DEUX VILAINS (Bebop et Rocksteady, chacun a deux faces ALERT / K.O.). card_id = `tk` + (100 x module + numero imprime) : tk001-tk028 le set « Bebop & Rocksteady » (villains tk001-tk004 a/b, complot tk005a/b, tk006a/b Destructive Dunderheads / Gone Berserk, tk007a/b Hog Wild / Headfirst, tk008a/b Rhino Rage / Headstrong, tk009-tk028 deck de rencontre), tk101-tk109 Concrete Jungle, tk201-tk205 Rock the Block. Les copies identiques (meme scan) partagent un card_id ; Bumbling Buffoons (3 illustrations) a 3 card_id."
@@ -453,6 +453,13 @@
    "cartes": 25,
    "depuis": "2026-09-04",
    "note": "Cree le 04/09/2026. Auteur Kajislav. Texas Twister, heros Meneur qui rejoue ses pouvoirs de base : chaque usage de CTR/ATQ/DEF le renforce, le redresse ou fait piocher. ⚠ Ne pas confondre avec le DOSSIER `src/cards/pack/tt/`, qui est le pack officiel Thor et n'a aucun card_id en lettres : le prefixe `tt` etait libre."
+  },
+  "tx": {
+   "pack": "baxter_stockman",
+   "libelle": "195. Custom (Baxter Stockman)",
+   "cartes": 19,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Villains / TMNT Modulars), zip « TMNT Enemies / Baxter Stockman v3 ». SCENARIO COMPLET : tx001-tx003 Baxter Stockman I a III (vilain, 3 stades), tx004a/b manigance principale Baxter's Laboratory (la 1B porte la capacite SPECIAL « Replicate »), tx005-tx011 set de rencontre Baxter's Lab (22 exemplaires), tx012-tx014 set modulaire Cyber Swarm, tx015-tx016 High Speed, tx017-tx018 Security Protocol. Sixieme carte d'etat du moteur : Dazed (card_id `dazed`, pack status, fiche mots-cles/dazed.md). Compteurs maison cable, shield, ooze ; traits FLYBORG (singulier, imprime) et FLY. HOMONYMES : td015 « * Baxter Stockman » est le SBIRE nemesis de Donatello, et « * Baxter Stockman » (tx001-tx003) est le VILAIN : toujours chercher par card_id ou par type. Numero de set 195 provisoire (a renumeroter a la fusion si collision)."
   },
   "vp": {
    "pack": "venompool",
@@ -557,6 +564,48 @@
    "cartes": 18,
    "depuis": "2026-10-15",
    "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
+  },
+  "tv": {
+   "pack": "venus",
+   "libelle": "183. Custom (Venus)",
+   "cartes": 20,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes, filigrane « TMNT Heroes By: Inkwire »), zip « TMNT Heroes / Venus v3 » (Kajislav). tv001a Venus (HEROS) / tv001b Bonnie (ALTER-EGO), tv002-tv014 signature (13 card_id pour 15 exemplaires), tv015 obligation Faulty Creation (GiveTo Bonnie, icone Hazard imprimee), tv016-tv019 set nemesis 'Venus Nemesis' (Jasper Barlow's Lab, Jasper Barlow, Groundchuck-Dirtbag, Salvaged Scales x2). Compteur MAISON `dredge` (compteurs de dragage poses sur l'IDENTITE, partages par les deux faces) ; traits SHARK, ELEMENT, QUANTA, SONG, CONSTRUCT, BULL, MOLE ajoutes a card_face.py. Prefixes freres TMNT : tl, td, tm, tr. Numero de set 183 PROVISOIRE : l'agent Venus travaillait en parallele des six autres heros, le coordinateur renumerote a la fusion."
+  },
+  "tc": {
+   "pack": "casey_jones",
+   "libelle": "184. Custom (Casey Jones)",
+   "cartes": 18,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Casey Jones v3 ». tc001a Casey Jones (HEROS) / tc001b Casey Jones (ALTER-EGO), tc002-tc013 signature (12 card_id pour 16 exemplaires), tc014 obligation Daddy Issues (bandeau CASEY JONES, donc module dans casey_jones/casey_jones/), tc015-tc017 set nemesis Hun / The Purple Dragons (set Casey Jones Nemesis, 5 cartes : Purple Dragon Goons x3). HOMONYME : l'allie « Casey Jones » de Raphael (tr002) porte le meme nom que le heros : aucune carte du pack ne cherche par le nom, tout passe par card_id, type ou ensemble. Mot-cle maison : aucun (Overswing est un NOM de capacite, pas un mot-cle). Voir .planning/tmnt/casey-questions.md."
+  },
+  "ta": {
+   "pack": "alopex",
+   "libelle": "185. Custom (Alopex)",
+   "cartes": 16,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Alopex v3 ». ta001a Alopex (HEROS) / ta001b Alopex (ALTER-EGO), ta002-ta010 signature (9 card_id pour 15 exemplaires), ta011 Prey (16e carte du deck, creee et mise de cote au Setup par ta001b), ta012 obligation Manipulated (GiveTo « Alopex », Acceleration 2), ta013-ta015 set nemesis « Alopex Nemesis » (You Belong To Me, Kitsune, Curse of Nine Tales x3). Mot-cle maison : Daze (carte d'etat Dazed, scan Baxter Stockman v3) ; Cloak deja defini. Compteur maison `hunter`."
+  },
+  "tj": {
+   "pack": "jennika",
+   "libelle": "186. Custom (Jennika)",
+   "cartes": 16,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes v3), zip « TMNT Heroes / Jennika v3 ». tj001a Jennika (HEROS) / tj001b Jenny (ALTER-EGO), tj002-tj010 signature (9 card_id pour 15 exemplaires, + tj011 Sosaiken, la Voie, carte permanente MISE DE COTE comme Ionic Physiology de Wonder Man), tj012 obligation Personality Adjustment (GiveTo « Jenny »), tj013-tj015 set 'Jennika Nemesis' (Dun Import Exports, Phantasm, Street Phantoms x3). Mecanique Shinobi : classes Bushido / Ninjutsu / Kuji-Kiri / Taijutsu ajoutees a ClassCard.CARD_CLASS (desc.Class = 'Hero;Taijutsu'), compteur 'samurai' ajoute a CardFace.COUNTER. Voir .planning/tmnt/jennika-questions.md. Prefixes freres : tl, td, tm, tr."
+  },
+  "ts": {
+   "pack": "shredder",
+   "libelle": "190. Custom (Shredder)",
+   "cartes": 30,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), zip « TMNT Enemies / Shredder v3 ». Scenario Shredder (3 stades ts001-ts003, complots ts004a/b et ts005a/b, set Shredder ts006-ts022 en 17 cartes distinctes), modulaires Chunin (ts101-ts104), Foot Goon Squad (ts201-ts206, dont Bebop ts201 et Rocksteady ts205 en SBIRES : homonymes des vilains du pack tk, jamais cherches par le nom seul) et Shadow of the Foot (ts301-ts305). L'encart Shredder n'est pas une carte : regles codees dans les scripts. Carte d'etat Cloaked et mot-cle Cloak : deja au moteur (fiches cloak.md, cloaked.md). Traits MOLE, YOUKAI, WARTHOG, RHINOCEROS, SHARK, FALCON, RELIC ajoutes a l'enum."
+  },
+  "te": {
+   "pack": "tmnt_standard_expert",
+   "libelle": "191. Custom (TMNT Standard-Expert)",
+   "cartes": 17,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), dossiers « TMNT Standard-Expert (Status Card Standard-Expert) » et « Normal Standard-Expert Reskins ». Partages par TOUS les vilains TMNT : ensembles tmnt_standard (te001-te006), tmnt_expert (te101-te103), tmnt_standard_reskin (te021-te027) et tmnt_expert_reskin (te121-te123, memes capacites que le core 01186-01193 par ability_link). te201 Intense Combatants : carte creee, NON scriptee (mot-cle « intensify » indefini : question)."
   }
  }
 }

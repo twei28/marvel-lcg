@@ -40,3 +40,7 @@ similaire nécessiterait une modification du moteur, pas un script de
 carte isolé.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+**Cas `tc013` Casey's Bag (pack `casey_jones`)** : amélioration Permanente SANS coût imprimé, mise en jeu par
+le Setup de `tc001b`. Un `Puzzle.Discard('tc013')` (règle de débogage d'un autre set) la laisse en jeu ;
+un effet du MÊME set « Casey Jones » peut la déplacer (le test du moteur compare les `set_name`).

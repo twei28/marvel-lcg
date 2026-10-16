@@ -1700,7 +1700,83 @@
   "encounters": [],
   "max_id": "tr017"
  },
- "190. Custom (Bebop & Rocksteady)": {
+ "183. Custom (Venus)": {
+  "name": "venus",
+  "scenarios": [],
+  "heroes": [
+   "venus"
+  ],
+  "encounters": [],
+  "max_id": "tv019"
+ },
+ "184. Custom (Casey Jones)": {
+  "name": "casey_jones",
+  "scenarios": [],
+  "heroes": [
+   "casey_jones"
+  ],
+  "encounters": [],
+  "max_id": "tc017"
+ },
+ "185. Custom (Alopex)": {
+  "name": "alopex",
+  "scenarios": [],
+  "heroes": [
+   "alopex"
+  ],
+  "encounters": [],
+  "max_id": "ta015"
+ },
+ "186. Custom (Jennika)": {
+  "name": "jennika",
+  "scenarios": [],
+  "heroes": [
+   "jennika"
+  ],
+  "encounters": [],
+  "max_id": "tj015"
+ },
+ "195. Custom (Baxter Stockman)": {
+  "name": "baxter_stockman",
+  "scenarios": [
+   "baxter_stockman"
+  ],
+  "heroes": [],
+  "encounters": [
+   "baxters_lab",
+   "cyber_swarm",
+   "high_speed",
+   "security_protocol"
+  ],
+  "max_id": "tx018"
+ },
+ "190. Custom (Shredder)": {
+  "name": "shredder",
+  "scenarios": [
+   "shredder"
+  ],
+  "heroes": [],
+  "encounters": [
+   "ts_shredder",
+   "ts_shadow_of_the_foot",
+   "ts_chunin",
+   "ts_foot_goon_squad"
+  ],
+  "max_id": "ts305"
+ },
+ "191. Custom (TMNT Standard-Expert)": {
+  "name": "tmnt_standard_expert",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "tmnt_standard",
+   "tmnt_expert",
+   "tmnt_standard_reskin",
+   "tmnt_expert_reskin"
+  ],
+  "max_id": "te201"
+ },
+ "192. Custom (Bebop & Rocksteady)": {
   "name": "bebop_rocksteady",
   "scenarios": [
    "bebop_rocksteady"
@@ -1713,5 +1789,5 @@
   ],
   "max_id": "tk205"
  },
- "checksum": "c7744f815f12886403e4a614407107d5c1a68cfc4c2ed08d8efd47985af57fd9"
+ "checksum": "c25b7e0d35793ed3f4d6888e92cd3d8abae2c8c5d8dd00b1df91c94c3b4b0f3b"
 }

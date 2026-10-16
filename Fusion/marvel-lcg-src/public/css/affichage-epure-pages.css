@@ -77,8 +77,8 @@ html[data-epure] body {
 }
 
 /* --- 2. Ce qu'on retire ------------------------------------------------------ */
+/* La carte du héros survolé, à gauche (.tb-art), reste visible (16/10/2026). */
 html[data-epure] .tb-trame,
-html[data-epure] .tb-art,
 html[data-epure] .acc-aide {
   display: none;
 }
@@ -464,7 +464,7 @@ html[data-epure] .salon-b::after {
 }
 
 html[data-epure] .tb-scene,
-html[data-epure] .tb-scene * {
+html[data-epure] .tb-scene *:not(.tb-art):not(.tb-art *) {
   background-image: none;
 }
 
@@ -747,4 +747,724 @@ html[data-epure] .db-problemes {
 html[data-epure] #db-grille-info,
 html[data-epure] #db-grille-info b {
   color: var(--ep-texte);
+}
+
+/* --- 15. Retours du 16/10/2026 ----------------------------------------------- */
+/* « Lancer la partie » : en orange, pour qu'on le trouve tout de suite. */
+html[data-epure] .btn.launch,
+html[data-epure] body .btn.launch,
+html[data-epure] button.btn.launch {
+  background: #f28c1b !important;
+  color: #14161a !important;
+  box-shadow: 0 0 0 1px #b8620a, 0 1px 2px rgba(20, 24, 32, 0.25) !important;
+  font-weight: 700;
+}
+html[data-epure] .btn.launch:hover:not(:disabled) {
+  background: #ff9d33 !important;
+}
+html[data-epure] .btn.launch:disabled {
+  background: var(--ep-surface) !important;
+  color: #6f7278 !important;
+  box-shadow: 0 0 0 1px #b3b5ba !important;
+}
+
+/* La carte survolée, à gauche : un voile clair sous le nom et les pastilles,
+   pour que le texte sombre de l'épuré reste lisible sur l'illustration. */
+html[data-epure] .tb-scene::after {
+  display: block;
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, var(--ep-surface) 0, var(--ep-surface) 26%, rgba(169, 171, 176, 0.85) 40%, transparent 62%);
+}
+
+/* --- 16. La barre du haut en sombre, comme sur le plateau (16/10/2026) ------
+   Anthracite, filet rouge Marvel dessous, icônes et étapes en clair ; l'étape
+   en cours soulignée de rouge. */
+html[data-epure] {
+  --ep-rouge: #e62429;
+}
+
+html[data-epure] header.progress {
+  background: #1f2228;
+  color: #eef0f3;
+  border-bottom: 3px solid var(--ep-rouge);
+  box-shadow: 0 2px 10px rgba(10, 14, 22, 0.35);
+}
+
+html[data-epure] header.progress .btn-icone,
+html[data-epure] header.progress .brand-back,
+html[data-epure] header.progress button:not(.pstep) {
+  background: transparent !important;
+  color: #e6e8ec !important;
+  box-shadow: none !important;
+}
+
+html[data-epure] header.progress .btn-icone:hover,
+html[data-epure] header.progress .brand-back:hover,
+html[data-epure] header.progress button:not(.pstep):hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-epure] header.progress .pstep {
+  background: transparent;
+  color: #e6e8ec;
+  box-shadow: none;
+  border-radius: 6px;
+}
+
+html[data-epure] header.progress .pstep .plabel {
+  color: #e6e8ec;
+}
+
+html[data-epure] header.progress .pstep:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] header.progress .pstep.active {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 -3px 0 var(--ep-rouge);
+}
+
+html[data-epure] header.progress .pstep.active .plabel {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* --- 17. L'accueil, un peu de Marvel (16/10/2026) ---------------------------
+   Le titre dans la typo du jeu, en rouge Marvel ; chaque tuile porte un trait
+   rouge à gauche, qui s'épaissit au survol. */
+html[data-epure] h1.affiche {
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 54px;
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  color: var(--ep-rouge);
+}
+
+html[data-epure] .acc-mode,
+html[data-epure] .acc-mode.cut {
+  box-shadow: inset 4px 0 0 var(--ep-rouge), var(--ep-relief) !important;
+  transition: box-shadow 0.12s ease-out;
+}
+
+html[data-epure] .acc-mode:hover,
+html[data-epure] .acc-mode.cut:hover {
+  box-shadow: inset 7px 0 0 var(--ep-rouge), var(--ep-relief-survol) !important;
+}
+
+html[data-epure] .acc-mode .mvl {
+  font-size: 16px;
+}
+
+/* La grande image et la grille, chacune dans un cadre gris foncé (16/10/2026) :
+   les deux panneaux se détachent l'un de l'autre au lieu de se toucher. */
+html[data-epure] .tb-scene,
+html[data-epure] .tb-droite {
+  border: 6px solid #34373d !important;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* Le panneau de gauche perd sa pente (son bord droit coupé en biais mangeait
+   le cadre), et la grille respire à l'intérieur du sien. */
+html[data-epure] .tb-scene {
+  clip-path: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+html[data-epure] .tb-droite {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* --- 18. La sélection, finitions (16/10/2026) ------------------------------- */
+/* De l'air : les deux cadres se décollent des bords et l'un de l'autre. */
+html[data-epure] .team-b {
+  background: var(--ep-fond) !important;
+}
+
+html[data-epure] .tb-scene {
+  top: 10px;
+  bottom: 10px;
+  left: 10px;
+  width: calc(var(--affiche-scene-w, 58%) - var(--affiche-pente, 90px) * 0.6 - 18px);
+}
+
+html[data-epure] .tb-droite {
+  top: 10px;
+  bottom: 10px;
+  right: 10px;
+}
+
+/* Le haut de la grande image (le titre imprimé de la carte, coupé) se fond
+   dans le panneau. */
+html[data-epure] .tb-scene::before {
+  display: block;
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--ep-surface) 0, rgba(169, 171, 176, 0.75) 9%, transparent 24%);
+}
+
+/* Le héros choisi, et le siège qui l'attend : en rouge Marvel. */
+html[data-epure] .tb-port.choisi,
+html[data-epure] .tb-port.on,
+html[data-epure] .tb-siege.actif {
+  box-shadow: 0 0 0 3px var(--ep-rouge), 0 3px 10px rgba(10, 14, 22, 0.3) !important;
+}
+
+html[data-epure] .tb-port.choisi .tb-port-nom,
+html[data-epure] .tb-port.on .tb-port-nom {
+  font-weight: 700;
+}
+
+/* « Voir ses cartes » et « Biographie » : deux boutons du même style. */
+html[data-epure] .tb-bas .tb-voir,
+html[data-epure] .tb-bio,
+html[data-epure] .tb-bio[open] {
+  background: var(--ep-champ);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
+}
+
+html[data-epure] .tb-bio summary {
+  padding: 8px 14px;
+  font: 600 13px var(--ep-police);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-epure] .tb-bas {
+  align-items: center;
+}
+
+/* La barre du bas, sombre comme celle du haut : l'écran est encadré. */
+html[data-epure] footer.nav {
+  background: #1f2228;
+  color: #eef0f3;
+  border-top: 3px solid var(--ep-rouge);
+  box-shadow: 0 -2px 10px rgba(10, 14, 22, 0.3);
+}
+
+html[data-epure] footer.nav .nav-status {
+  color: #c9ccd2;
+}
+
+html[data-epure] footer.nav .btn:not(.primary):not(.launch) {
+  background: transparent;
+  color: #e6e8ec;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+html[data-epure] footer.nav .btn:not(.primary):not(.launch):hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] footer.nav .btn.primary:disabled {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #7d828b !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+}
+
+/* =============================================================================
+   19. ÉPURÉ SOMBRE, SUR TOUTES LES PAGES (16/10/2026)
+   Proposition validée par l'utilisateur : panneaux sombres pour mettre en
+   valeur les illustrations, filets de 1 px, jaune comme accent principal
+   (titre de section, héros choisi, bouton principal), un peu de rouge Marvel
+   gardé (filet sous la barre du haut). Limité aux écrans qui portent `.team-b`
+   (étapes Équipe / Decks / Méchant / Final) le temps de valider ; les jetons
+   `--ep-*` sont redéfinis, tout ce qui les lit suit.
+   ============================================================================= */
+html[data-epure] {
+  --ep-fond: #111318;
+  --ep-surface: #1c2028;
+  --ep-champ: #292e38;
+  --ep-bord: #383e49;
+  --ep-bord-fort: #4b5361;
+  --ep-texte: #f2f3f5;
+  --ep-doux: #9da5b3;
+  --ep-jaune: #f3c623;
+  --ep-jaune-vif: #ffd84a;
+  --ep-relief: 0 0 0 1px var(--ep-bord);
+  --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort);
+  --ep-creux: inset 0 0 0 1px var(--ep-bord);
+  --ink: #111318;
+  --ink2: #1c2028;
+  --steel: #1c2028;
+  --steel2: #292e38;
+  --steel3: #383e49;
+  --line: #383e49;
+  --soft: #292e38;
+  --txt: #f2f3f5;
+  --dim: #9da5b3;
+  --mute: #7c8494;
+  background: #111318 !important;
+}
+
+html[data-epure] body,
+html[data-epure] .team-b {
+  background: #111318 !important;
+  color: var(--ep-texte);
+}
+
+/* 1. Plus de gros cadres : un filet de 1 px, des coins arrondis. */
+html[data-epure] .tb-scene,
+html[data-epure] .tb-droite {
+  border: 1px solid var(--ep-bord) !important;
+  border-radius: 12px;
+  background: var(--ep-surface);
+  box-shadow: none;
+}
+
+html[data-epure] .tb-scene,
+html[data-epure] .tb-scene * {
+  color: var(--ep-texte);
+}
+
+html[data-epure] .tb-nomg small {
+  color: var(--ep-jaune);
+}
+
+/* Les fondus de la grande image, en sombre. */
+html[data-epure] .tb-scene::after {
+  background: linear-gradient(0deg, var(--ep-surface) 0, var(--ep-surface) 26%, rgba(28, 32, 40, 0.85) 40%, transparent 62%);
+}
+
+html[data-epure] .tb-scene::before {
+  background: linear-gradient(180deg, var(--ep-surface) 0, rgba(28, 32, 40, 0.75) 9%, transparent 24%);
+}
+
+/* 2. Le titre de section : plus de bandeau jaune épais ni d'italique. */
+html[data-epure] .tb-entete {
+  background: transparent;
+  box-shadow: none;
+  border-bottom: 1px solid var(--ep-bord);
+  padding: 4px 2px 10px;
+  align-items: center;
+}
+
+html[data-epure] .tb-entete b,
+html[data-epure] .tb-entete .mvl {
+  font-family: var(--ep-police) !important;
+  font-size: 22px;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ep-texte) !important;
+}
+
+html[data-epure] .tb-entete .tb-compte {
+  font-family: var(--ep-police) !important;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ep-doux) !important;
+}
+
+html[data-epure] .tb-entete .tb-mode {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--ep-champ);
+  color: var(--ep-texte) !important;
+  font-size: 12px;
+}
+
+/* Les champs et filtres : sombres, filet fin. */
+html[data-epure] input,
+html[data-epure] select,
+html[data-epure] .search,
+html[data-epure] .sel {
+  background: var(--ep-fond);
+  color: var(--ep-texte);
+}
+
+html[data-epure] .tb-droite .btn,
+html[data-epure] .tb-droite .tampon,
+html[data-epure] .tb-scene .tampon,
+html[data-epure] .tb-scene .btn,
+html[data-epure] .tb-bas .tb-voir,
+html[data-epure] .tb-bio {
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  box-shadow: 0 0 0 1px var(--ep-bord);
+}
+
+/* Les portraits : cartes sombres, nom dessous ; le héros choisi en jaune. */
+html[data-epure] .tb-port {
+  background: var(--ep-champ);
+  box-shadow: 0 0 0 1px var(--ep-bord);
+  border-radius: 10px;
+}
+
+html[data-epure] .tb-port-nom {
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+}
+
+html[data-epure] .tb-port:hover {
+  box-shadow: 0 0 0 1px var(--ep-doux);
+}
+
+html[data-epure] .tb-port.choisi,
+html[data-epure] .tb-port.on {
+  box-shadow: 0 0 0 2px var(--ep-jaune) !important;
+}
+
+html[data-epure] .tb-port.choisi .tb-port-nom,
+html[data-epure] .tb-port.on .tb-port-nom {
+  color: var(--ep-jaune);
+}
+
+/* 4. « Mon équipe » : une petite barre, des emplacements discrets. */
+html[data-epure] .tb-equipe {
+  border-top: 1px solid var(--ep-bord);
+  padding-top: 10px;
+  align-items: center;
+}
+
+html[data-epure] .tb-equipe-k {
+  color: var(--ep-doux) !important;
+  letter-spacing: 0.08em;
+}
+
+html[data-epure] .tb-siege,
+html[data-epure] .tb-siege .tb-siege-nom {
+  background: var(--ep-champ) !important;
+  color: var(--ep-texte) !important;
+}
+
+html[data-epure] .tb-siege {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--ep-jaune) !important;
+}
+
+html[data-epure] .tb-siege .tb-siege-nom {
+  display: none;
+}
+
+html[data-epure] .tb-siege .plus {
+  font-size: 22px;
+  color: var(--ep-jaune);
+}
+
+html[data-epure] .tb-siege.actif {
+  box-shadow: 0 0 0 2px var(--ep-jaune) !important;
+}
+
+/* Barres du haut et du bas : panneau sombre, filets fins ; le rouge Marvel
+   garde le filet sous la barre du haut. */
+html[data-epure] header.progress {
+  background: var(--ep-surface);
+  border-bottom: 2px solid var(--ep-rouge, #e62429);
+}
+
+html[data-epure] header.progress .pstep.active {
+  background: var(--ep-champ);
+  box-shadow: inset 0 -2px 0 var(--ep-jaune);
+}
+
+html[data-epure] footer.nav {
+  background: var(--ep-surface);
+  border-top: 1px solid var(--ep-bord);
+  box-shadow: none;
+}
+
+/* 5. « Continuer » : plus de présence ; désactivé, il le reste visiblement. */
+html[data-epure] footer.nav .btn.primary {
+  min-width: 170px;
+  padding: 12px 26px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px;
+  background: var(--ep-jaune) !important;
+  color: #14161a !important;
+  box-shadow: 0 4px 14px rgba(243, 198, 35, 0.25) !important;
+}
+
+html[data-epure] footer.nav .btn.primary:disabled {
+  background: var(--ep-champ) !important;
+  color: #6b7280 !important;
+  box-shadow: 0 0 0 1px var(--ep-bord) !important;
+}
+
+/* --- 20. Des cadres un peu biseautés (16/10/2026) -----------------------------
+   Deux coins coupés en biais (haut gauche, bas droit), façon case de BD, et un
+   reflet clair sur l'arête du haut. Sur les grands panneaux et les tuiles. */
+html[data-epure] {
+  --ep-biais: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --ep-biais-petit: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+}
+
+html[data-epure] .tb-scene,
+html[data-epure] .tb-droite,
+html[data-epure] .pb-panneau,
+html[data-epure] .pd-panneau,
+html[data-epure] .deck-modal-panel,
+html[data-epure] .db-col,
+html[data-epure] .db-deck-col,
+html[data-epure] .db-filtres-col {
+  clip-path: var(--ep-biais) !important;
+  border-radius: 0 !important;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 40%) !important;
+}
+
+html[data-epure] .acc-mode,
+html[data-epure] .acc-mode.cut,
+html[data-epure] .cmp-carte,
+html[data-epure] .tb-port {
+  clip-path: var(--ep-biais-petit) !important;
+  border-radius: 0 !important;
+}
+
+/* --- 21. La trame BD, très discrète, sur le fond (16/10/2026) ----------------
+   Des points clairs à 3,5 % d'opacité, tous les 6 px : on la devine plus
+   qu'on ne la voit. Seulement sur le fond, jamais sur les panneaux. */
+html[data-epure] body,
+html[data-epure] .team-b,
+html[data-epure] .layout,
+html[data-epure] .stage,
+html[data-epure] .step,
+html[data-epure] .db-page,
+html[data-epure] .db-body,
+html[data-epure] .db-centre {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.4px) 0 0 / 6px 6px,
+    var(--ep-fond) !important;
+}
+
+/* =============================================================================
+   22. LA SÉLECTION DU MÉCHANT EN TROIS COLONNES (16/10/2026, maquette C validée)
+   Gauche : les boîtes (pochettes, sur 6 colonnes, sans défilement). Milieu : les
+   méchants de la boîte (vignettes plus grandes) puis le menace et le face à
+   face. Droite : la grande image du méchant. Aucune modification du DOM : la
+   grille CSS réordonne `.tb-scene` (image), `.ext-tabs` (boîtes), `.tb-roster-scn`
+   (méchants), `.tb-menace` et `.tb-equipe` (face à face). Épuré seulement.
+   ============================================================================= */
+html[data-epure] .team-b.eux {
+  display: grid;
+  grid-template-columns: 590px minmax(0, 1fr) 420px;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: 10px;
+  padding: 10px;
+  align-items: stretch;
+}
+
+/* Le fond du panneau du milieu. */
+html[data-epure] .team-b.eux::before {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / -1;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-bord);
+  border-radius: 12px;
+  z-index: 0;
+}
+
+html[data-epure] .team-b.eux .tb-droite {
+  display: contents;
+}
+
+/* Droite : l'image du méchant, en pleine hauteur. */
+html[data-epure] .team-b.eux .tb-scene {
+  position: relative;
+  grid-column: 3;
+  grid-row: 1 / -1;
+  left: auto;
+  top: auto;
+  bottom: auto;
+  width: auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* Milieu : tout dans la colonne 2, au-dessus du fond. */
+html[data-epure] .team-b.eux .tb-entete,
+html[data-epure] .team-b.eux .tb-roster-scn,
+html[data-epure] .team-b.eux .tb-menace,
+html[data-epure] .team-b.eux .tb-equipe {
+  grid-column: 2;
+  position: relative;
+  z-index: 1;
+  margin: 0 18px;
+  min-width: 0;
+}
+
+html[data-epure] .team-b.eux .tb-entete { grid-row: 1; margin-top: 16px; }
+html[data-epure] .team-b.eux .tb-roster-scn {
+  grid-row: 2;
+  /* !important : app.js (ajusterGrilleCibles) pose un grid-template-columns en ligne. */
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-auto-rows: auto;
+  align-content: start;
+  gap: 16px;
+  overflow-y: auto;
+}
+html[data-epure] .team-b.eux .tb-roster-scn .tb-port {
+  aspect-ratio: 1.5;
+  height: auto;
+  width: auto;
+}
+html[data-epure] .team-b.eux .tb-menace { grid-row: 3; }
+html[data-epure] .team-b.eux .tb-equipe { grid-row: 4; margin-bottom: 16px; }
+
+/* Gauche : les boîtes, un panneau, 6 colonnes de pochettes. */
+html[data-epure] .team-b.eux .ext-tabs {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-content: start;
+  gap: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  margin: 0;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-bord);
+  border-radius: 12px;
+}
+
+html[data-epure] .team-b.eux .ext-tab {
+  width: auto;
+  height: auto;
+  aspect-ratio: 0.58;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  background: transparent;
+}
+
+html[data-epure] .team-b.eux .ext-tab.on {
+  border-color: var(--ep-rouge);
+  background: var(--ep-champ);
+  box-shadow: none;
+}
+
+html[data-epure] .team-b.eux .ext-tab:hover {
+  border-color: var(--ep-doux);
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-epure] .team-b.eux .ext-tab .box {
+  inset: 2px 2px 26px 2px;
+  background-size: contain;
+}
+
+html[data-epure] .team-b.eux .ext-tab .exname {
+  background: none;
+  color: var(--ep-doux);
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 0 2px 3px;
+}
+
+html[data-epure] .team-b.eux .ext-tab.on .exname {
+  color: var(--ep-texte);
+}
+
+/* Le bouton « Fan-made (7) », en tête du panneau des boîtes (filtre). */
+html[data-epure] .team-b.eux .ext-fanmade {
+  display: block;
+  margin: 0 0 0 auto;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  box-shadow: 0 0 0 1px var(--ep-bord);
+  font: 600 13px var(--ep-police);
+  cursor: pointer;
+}
+html[data-epure] .team-b.eux .ext-fanmade:hover { box-shadow: 0 0 0 1px var(--ep-doux); }
+html[data-epure] .team-b.eux .ext-fanmade.on {
+  background: var(--ep-jaune);
+  color: #14161a;
+  box-shadow: 0 0 0 1px #b88f00;
+}
+
+/* Les pochettes : de la place pour un nom sur trois lignes. */
+html[data-epure] .team-b.eux .ext-tab { aspect-ratio: 0.62; min-height: 0; }
+html[data-epure] .team-b.eux .ext-tab .box { inset: 2px 2px 30px 2px; }
+html[data-epure] .team-b.eux .ext-tab .exname {
+  line-height: 1.1;
+  font-size: 9px;
+  max-height: 30px;
+  overflow: hidden;
+}
+html[data-epure] .team-b.eux .ext-tabs { grid-auto-rows: min-content; gap: 4px 6px; padding-top: 12px; }
+html[data-epure] .team-b.eux .tb-entete .tb-mode { margin-left: 12px; }
+
+
+/* L'image du méchant dans sa colonne étroite : le cadrage d'origine (zoom 165 %,
+   haut de la carte) rogne l'illustration ; on recentre sur l'art. */
+html[data-epure] .team-b.eux .tb-art {
+  background-position: 50% 3% !important;
+  background-size: auto 165% !important;
+}
+
+/* Le cadrage des vignettes de méchants : leur taille a grandi, l'ancien cadrage (150 %,
+   22 %) coupait les visages. L'art en pleine largeur, calé sur le haut de la carte. */
+html[data-epure] .team-b.eux .tb-roster-scn .portrait {
+  background-size: 106% auto !important;
+  background-position: 50% 12% !important;
+}
+
+/* Le choix des sets modulaires : un panneau à la place de l'image du méchant. */
+html[data-epure] .team-b.eux .pm-droite {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-bord);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 0;
+}
+html[data-epure] .team-b.eux .pm-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ep-bord);
+  padding-bottom: 10px;
+}
+html[data-epure] .team-b.eux .pm-tete b { font: 700 20px var(--ep-police); color: var(--ep-texte); }
+html[data-epure] .team-b.eux .pm-fermer {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  font-size: 20px;
+  cursor: pointer;
+}
+html[data-epure] .team-b.eux .pm-liste {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+}
+html[data-epure] .team-b.eux .pm-pied { display: flex; justify-content: flex-end; }
+
+/* Le nom de l'extension, au-dessus du nom du méchant : lisible sur l'illustration. */
+html[data-epure] .team-b.eux .tb-nomg small {
+  color: var(--ep-jaune);
+  text-shadow: 0 1px 3px #000;
 }

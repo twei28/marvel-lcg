@@ -19,6 +19,14 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('psionic web')).toBe('toile psionique')
   })
 
+  it('traduit les compteurs nommes du scenario Baxter Stockman', () => {
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('cable')).toBe('câble')
+    expect(nomDeCompteur('shield')).toBe('bouclier')
+    expect(nomDeCompteur('ooze')).toBe('mutagène')
+    expect(nomDeCompteur('swarm')).toBe('essaim')
+  })
+
   it('laisse un compteur inconnu en anglais, mots séparés', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('tic_tac_toe_1_1')).toBe('tic tac toe 1 1')
@@ -74,5 +82,11 @@ describe('nomDeCompteur', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('swarm')).toBe('essaim')
     expect(nomDeCompteur('timer')).toBe('minuteur')
+  })
+
+  it('traduit le compteur de dragage de Venus (dredge)', () => {
+    // tv001a/tv001b et les cartes du pack posent ou retirent des compteurs `dredge` sur l'identite.
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('dredge')).toBe('dragage')
   })
 })

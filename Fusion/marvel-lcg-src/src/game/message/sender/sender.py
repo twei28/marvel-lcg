@@ -316,6 +316,17 @@ class Message(SenderRound, SenderPlayer, SenderCard, SenderTokenCounter, SenderD
         def SetReturn(self, val: int):
             self.return_value = val
 
+    class GettingUnitAdditionalCloaked(TriggerUnitMessage, GettingMessage):
+        # CORRECTIF (pack shredder) : « Shredder can have up to N cloaked status
+        # cards » : le maximum de cartes Cloaked d'un personnage est 1 + ce
+        # retour (encart du scenario : « Normally characters can only have one
+        # Cloaked status card on them at a time »).
+        def __init__(self, unit: 'Unit2') -> None:
+            super().__init__(trigger=unit)
+
+        def SetReturn(self, val: int):
+            self.return_value = (self.return_value or 0) + val
+
     # class CheckIfUnitCannotBeStunned(CheckIfMessage):
     #     def __init__(self, unit: 'Unit2') -> None:
     #         self.canbe_stunned = True

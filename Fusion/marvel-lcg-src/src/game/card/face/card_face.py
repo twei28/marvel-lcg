@@ -215,6 +215,16 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # MOUSERS / FLYBORGS ne sont pas decoratifs : td014 et td015 les lisent.
         "BO", "SEWERS",
         "MOUSERS", "FLYBORGS", "SWARM",
+        # CORRECTIF : traits du pack custom venus (Inkwire, TMNT Heroes). ELEMENT n'est PAS
+        # decoratif : tv001a/tv001b comptent et cherchent les ameliorations par ce trait.
+        "SHARK", "ELEMENT", "QUANTA", "SONG", "CONSTRUCT", "BULL", "MOLE",
+        # AJOUT (16/10/2026) : scenario Baxter Stockman v3 (Inkwire, prefixe `tx`). « FLYBORG »
+        # au SINGULIER est imprime sur les scans tx012 / tx013 (td017 porte le pluriel FLYBORGS,
+        # decision du 15/10) ; « FLY » est le trait du vilain tx001-tx003.
+        "FLYBORG", "FLY",
+        # CORRECTIF : traits du pack custom shredder (Inkwire, TMNT Enemies / Shredder v3).
+        # Purement declaratifs, sauf RELIC / MOLE / YOUKAI lus par aucune carte.
+        "YOUKAI", "WARTHOG", "RHINOCEROS", "FALCON", "RELIC",  # MOLE et SHARK : deja declares (venus)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -269,6 +279,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
+        'hunter',  # CORRECTIF (16/10/2026) : compteur du pack custom alopex (TMNT, Inkwire), ta008 Kitsune Kabuki
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
         'shell',  # CORRECTIF : compteur du pack custom texas_twister (Kajislav), 2 sur Armadillo
         'unworthy',  # CORRECTIF : compteur du pack custom beta_ray_bill (Rainy), 2 sur l'obligation
@@ -326,6 +337,13 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # td016 / td017 (SWARM) entrent en jeu avec 2 / 4 « swarm » ; leur
         # ATQ, MNG et PV valent ce nombre.
         'swarm',
+        # CORRECTIF : compteur du pack custom venus (Inkwire). Les compteurs de dragage vivent
+        # sur la carte d'IDENTITE (Venus / Bonnie, meme stock) ; tv001a les pose (max 6) et
+        # les ameliorations / evenements du pack les retirent en cout.
+        'dredge',
+        # CORRECTIF (16/10/2026) : compteur du pack custom jennika (Inkwire).
+        # tj006 Fearless Resolve entre en jeu avec « Uses (2 samurai counters) ».
+        'samurai',
         # CORRECTIF : compteurs du pack custom dazzler (Lord Havok). Le « sound »
         # marque un SONG de la Setlist deja repete (« Rehearsal » n'accepte qu'un
         # SONG SANS compteur) ; le « knife » alimente les interruptions de
@@ -411,6 +429,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # poses sur le mechant Kly'bn / Sl'gur't (insert p.14). Sans cette entree `IsCounter`
         # refuse le nom et la pose du jeton echoue.
         'faith',
+        # AJOUT (16/10/2026) : scenario Baxter Stockman v3 (Inkwire). Compteurs NOMMES des sbires
+        # SWARM : `cable` (tx015 Roadkill Rodneys), `shield` (tx017 Auto Defense Bots), `ooze`
+        # (tx013 Superfly). `swarm` existe deja (td016/td017). Sans ces entrees `IsCounter` refuse
+        # le nom et le sbire tombe a la mise en place.
+        'cable', 'shield', 'ooze',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
@@ -424,7 +447,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # sentinel (12/09/2026, fiche docs/reference/mots-cles/exposed.md).
         # Contrairement aux trois autres, sa regle n'est pas dans le moteur :
         # elle est scriptee sur la carte (cards/pack/status/exposed.py).
-        "Confused", "Stunned", "Tough", "Exposed", "Cloaked"
+        "Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed"
     ]
 
     ATTACK_KEYWORD = Literal[

@@ -38,3 +38,12 @@ Flyborgs (`src/cards/pack/donatello/donatello_nemesis/`).
   droit.
 
 **Variantes maison** : aucune autre que ces deux cartes.
+
+## Scénario Baxter Stockman (16/10/2026) : le même mécanisme, trois variantes de compteur
+
+`tx007` Plague of M.O.U.S.E.R.S. (2 swarm) et `tx012` Flight of Flyborgs (4 swarm) reprennent mot pour mot td016 / td017 :
+elles appellent `CapacitesEssaim(n)` (importé du pack donatello). Trois sbires du même trait SWARM ont leur compteur NOMMÉ :
+`tx013` Superfly (ooze : SCH et ATQ égales aux compteurs, PV imprimés 5, pas de « retirez plutôt »), `tx015` Roadkill
+Rodneys (cable : +1 ATQ par compteur, Réponse forcée qui les retire tous), `tx017` Auto Defense Bots (shield : défaite
+évitée tant qu'il en reste). La manigance `tx004b` leur pose un « all-purpose counter » du bon type : fiches
+`replicate.md` et `all-purpose-counter.md`. Compteurs `cable`, `shield`, `ooze` ajoutés à l'énum `COUNTER`.

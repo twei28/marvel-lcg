@@ -138,6 +138,14 @@ la plus fréquente sur un pack vilain.
       zéro ligne de code. ⚠ À ne pas confondre avec le set officiel « The
       Initiative »)
 
+- [x] dazed.md (scenario `baxter_stockman` : SIXIEME carte d'etat, -2 aux pouvoirs de
+      base / +2 aux degats, un seul effet puis defaussee, un seul Dazed par personnage ;
+      Tough d'abord, Cloaked et Dazed SIMULTANES. Verbe « daze » = poser la carte)
+- [x] replicate.md (scenario `baxter_stockman` : la capacite nommee « Replicate », de type
+      SPECIAL, portee par `tx004b` et resolue par le joueur)
+- [x] all-purpose-counter.md (terme officiel : le type du compteur est celui de la carte qui
+      le porte ; FAQ MC4DB du 29/09/2026)
+
 - [ ] cloak.md (pack `leonardo`, TMNT : mot-clé imprimé en verbe sur tl015 et
       tl016 et JAMAIS défini — fiche créée le 15/10/2026 SANS définition ni
       mécanisme, stub `Cloak()` en attente de la réponse de l'utilisateur,
@@ -149,6 +157,20 @@ la plus fréquente sur un pack vilain.
       texte de `td016` / `td017`)
 - [x] tuck.md (terme officiel, `td012` Donatello's Shell ; jamais documenté
       avant ce pack)
+- [x] dredge.md (pack `venus`, TMNT Heroes : compteur maison `dredge` posé sur
+      l'identité par `tv001a`, retiré en coût par dix autres cartes ; plafond 6 à
+      confirmer, Q1)
+- [x] daze.md (pack `alopex`, TMNT Heroes : « Daze X » = poser la carte d'état
+      Dazed sur X ; défini par l'insert « Dazed Rules » de Baxter Stockman v3)
+- [x] dazed.md (carte d'état maison, 6e état du moteur : −2 au prochain pouvoir
+      de base / activation OU +2 aux prochains dégâts, un seul effet, une seule
+      carte par personnage ; Tough d'abord, Cloaked et Dazed en même temps)
+
+- [x] shinobi.md (pack `jennika`, TMNT Heroes v3 : classes Bushido / Ninjutsu / Kuji-Kiri /
+      Taijutsu portées par `desc.Class`, « Limit once per round for each Shinobi » = quatre capacités ;
+      le Path `tj011` est un Support, question Q3)
+- [ ] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : mot-clé maison NON DEFINI par
+      les scans ; carte créée, non scriptée ; question Q2 de `.planning/tmnt/shredder-questions.md`)
 
 - [x] dodgy.md (scénario `bebop_rocksteady`, TMNT : mot-clé maison défini par
       l'encart de l'auteur, cousin facultatif d'Assault ; AUCUNE clé `desc`,

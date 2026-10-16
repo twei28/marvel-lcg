@@ -23,7 +23,16 @@ from . import *
 # `WhenEnemyActivateAgainstYou` : le premier branchement l'exclut (condition
 # `pas_ennemi`), sans quoi le +2 serait compte deux fois.
 
+# CORRECTIF (16/10/2026, scenario Baxter Stockman v3) : « Cloaked and Dazed status cards
+# always resolve SIMULTANEOUSLY » (insert Dazed). Un porteur qui a AUSSI une carte Dazed
+# laisse `dazed.py` resoudre le lot (somme des effets, puis les deux cartes defaussees) :
+# `pas_de_dazed` ecarte donc les trois declencheurs ci-dessous dans ce cas.
+
+
 def GetAbilities() -> Sequence['Ability']:
+
+    def pas_de_dazed(effect: 'Effect') -> bool:
+        return not effect.this.CastTo(StatusCard).GetBindFace().IsDazed()
 
     def consommer(effect: 'Effect') -> None:
         from game.operate.faces import Faces
@@ -31,7 +40,7 @@ def GetAbilities() -> Sequence['Ability']:
         Faces.DiscardAll([this], effect)
 
     def pas_ennemi(effect: 'Effect', message: 'Message.WhenUnitUseBasicPower') -> bool:
-        return not Enemy.IsType(message.trigger)
+        return not Enemy.IsType(message.trigger) and pas_de_dazed(effect)
 
     def pouvoir_de_base(effect: 'Effect', message: 'Message.WhenUnitUseBasicPower') -> None:
         message.GainValue(2, effect)
@@ -46,7 +55,7 @@ def GetAbilities() -> Sequence['Ability']:
         consommer(effect)
 
     def vraie_activation_de_base(effect: 'Effect', message: 'Message.WhenEnemyActivateAgainstYou') -> bool:
-        if message.would_act_message is None:
+        if message.would_act_message is None or not pas_de_dazed(effect):
             return False
         would = message.would_message
         if isinstance(would, Message.WhenUnitWouldAttack):
@@ -54,6 +63,16 @@ def GetAbilities() -> Sequence['Ability']:
         return would.IsBasicScheme()
 
     def degats(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> None:
+        # CORRECTIF (16/10/2026, encart Shredder) : « Tough status cards always
+        # resolve BEFORE cloaked status cards ». Une carte Tough absorbe tout et le
+        # Cloaked RESTE, quel que soit l'ordre de pose (sans cela, un Cloaked pose
+        # avant la Tough etait consomme a sa place). Avec une attaque PERCANTE
+        # (`ignore_tough`) la Tough ne repond pas : le Cloaked joue.
+        unite = effect.this.CastTo(StatusCard).GetBindFace()
+        if message.is_be_instead:
+            return
+        if unite.IsTough() and not message.property.ignore_tough:
+            return
         a_retirer = min(2, message.will_take_damage)
         if a_retirer > 0:
             message.PreventDamage(a_retirer, effect)
@@ -76,5 +95,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.Status,
             "AttachedCharacter",
             degats,
+            conditions=[lambda effect, message: pas_de_dazed(effect)],
         ),
     ]

@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "tmnt_expert",
+    "encounters": [
+        "te101",
+        "te102",
+        "te103"
+    ]
+}

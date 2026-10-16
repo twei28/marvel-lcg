@@ -1,0 +1,12 @@
+{
+    "version": "0.5.8",
+    "name": "ts_foot_goon_squad",
+    "encounters": [
+        "ts201",
+        "ts202",
+        "ts203",
+        "ts204",
+        "ts205",
+        "ts206"
+    ]
+}

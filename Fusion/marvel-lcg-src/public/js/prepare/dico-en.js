@@ -296,6 +296,8 @@ export const DICO_EN_BASE = {
 
     /* ---- Import marvelcdb ---- */
     "URL/ID marvelcdb invalide.": "Invalid marvelcdb URL/ID.",
+    "Modifier les sets": "Edit sets",
+    "Choisir les sets modulaires": "Choose modular sets",
     "Fichier OCTGN (.o8d)": "OCTGN file (.o8d)",
     "Importer un deck OCTGN (fichier .o8d)": "Import an OCTGN deck (.o8d file)",
     "Ce fichier n’est pas un deck OCTGN (.o8d) lisible.": "This file is not a readable OCTGN deck (.o8d).",

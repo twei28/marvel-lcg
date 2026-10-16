@@ -1,0 +1,43 @@
+{
+    "version": "0.5.8",
+    "name": "Jennika",
+    "metadata": {
+        "url": "",
+        "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE (consigne utilisateur du 06/09/2026, PROCESSUS-HEROS etape 3) : le zip « TMNT Heroes / Jennika v3 » (Inkwire) ne contient AUCUNE decklist d'aspect (la carte « Path of the Sosaiken » ne donne que des regles de construction : cartes Shinobi de n'importe quelle combinaison, aucun aspect, cartes basiques). Ce fichier ne contient que de l'IMPRIME : l'identite, les 15 cartes signature, l'obligation et le set nemesis.",
+        "set_aside_note": "tj011 Sosaiken (la Voie, Permanent) est MISE DE COTE : le Setup de tj001b la met en jeu (meme montage que Ionic Physiology de Wonder Man, 58001b). Elle n'est PAS dans les 15 du deck."
+    },
+    "hero": [
+        "tj001a,tj001b"
+    ],
+    "hero_deck": [
+        "tj002",
+        "tj002",
+        "tj002",
+        "tj003",
+        "tj003",
+        "tj004",
+        "tj004",
+        "tj005",
+        "tj005",
+        "tj006",
+        "tj006",
+        "tj007",
+        "tj008",
+        "tj009",
+        "tj010"
+    ],
+    "set_aside": [
+        "tj011"
+    ],
+    "obligations": [
+        "tj012"
+    ],
+    "nemesis_set": [
+        "tj013",
+        "tj014",
+        "tj015",
+        "tj015",
+        "tj015"
+    ],
+    "player_deck": []
+}

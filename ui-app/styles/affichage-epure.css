@@ -186,7 +186,6 @@ html[data-epure] .plateau-barre button .ico-reglages {
 /* --- 5. Les petites fenetres : jaune du jeu, typo des titres, leger biseau ---- */
 html[data-epure] .reglages-fenetre,
 html[data-epure] .deroule-phase,
-html[data-epure] .demande-centrale,
 html[data-epure] .fin-partie-carte,
 html[data-epure] .assistant-action,
 html[data-epure] .deck-modal-panel {
@@ -552,4 +551,595 @@ html[data-epure][data-affichage] .mep-continuer:focus-visible {
   background: var(--ep-jaune-vif);
   outline: 2px solid var(--ep-texte);
   outline-offset: 2px;
+}
+
+/* --- 13. Retours du 16/10/2026 ----------------------------------------------- */
+/* La question centrale (DemandeCentrale) : pas de fenetre grise autour (elle
+   coupait les boutons). Le bandeau du texte devient une carte claire, les
+   boutons des boutons plats ; « Continuer » reste jaune. */
+html[data-epure] .demande-centrale {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  overflow: visible;
+}
+
+html[data-epure] .demande-centrale .dc-texte {
+  background: var(--ep-surface);
+  color: var(--ep-texte);
+  border: 0;
+  border-top: 4px solid var(--ep-jaune);
+  border-radius: 6px;
+  box-shadow: var(--ep-biseau);
+  backdrop-filter: none;
+}
+
+html[data-epure] .demande-centrale .dc-texte .plateau-eyebrow {
+  color: #6b5200;
+  font-weight: 700;
+}
+
+html[data-epure] .demande-centrale .af-action,
+html[data-epure] .demande-centrale .dc-continue {
+  clip-path: none;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  box-shadow: var(--ep-relief);
+  font-family: var(--ep-police);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 8px 16px;
+}
+
+html[data-epure] .demande-centrale .af-action small,
+html[data-epure] .demande-centrale .af-action .af-cibles {
+  color: var(--ep-doux);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+html[data-epure] .demande-centrale .af-action:hover:not(:disabled) {
+  box-shadow: var(--ep-relief-survol);
+}
+
+html[data-epure] .demande-centrale .dc-continue,
+html[data-epure] .demande-centrale .af-action.est-au-maximum {
+  background: var(--ep-jaune);
+  color: #14161a;
+  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
+}
+
+html[data-epure] .demande-centrale .af-action-wrap:has(> .af-action.est-au-maximum) {
+  filter: none;
+}
+
+html[data-epure] .demande-centrale .dc-pass {
+  background: var(--ep-surface);
+  color: var(--ep-doux);
+}
+
+/* Les pictogrammes de ressources gardent la police du jeu (ChampionsIcons) :
+   la police systeme posee sur les fenetres les changeait en lettres. */
+html[data-epure] .demande-centrale .icone-res,
+html[data-epure] .deroule-phase .icone-res,
+html[data-epure] .assistant-action .icone-res,
+html[data-epure] .reglages-fenetre .icone-res,
+html[data-epure] .deck-modal-panel .icone-res,
+html[data-epure] .plateau-barre .icone-res {
+  font-family: 'ChampionsIcons';
+}
+
+html[data-epure] .deroule-phase .tp-icone,
+html[data-epure] .demande-centrale .tp-icone,
+html[data-epure] .assistant-action .tp-icone,
+html[data-epure] .deroule-phase .essai-boost-icones {
+  font-family: 'ChampionsIcons';
+}
+
+/* « Fin du tour » : un jaune vif, bien visible. */
+html[data-epure][data-affichage] .bouton-fin-tour,
+html[data-epure][data-affichage] .plateau-barre .bh-fin-tour:not(:disabled) {
+  background: #ffcc00;
+  color: #14161a;
+  border: 1px solid #b88f00;
+  box-shadow: 0 1px 2px rgba(20, 24, 32, 0.25);
+  font-weight: 800;
+  filter: none;
+}
+
+html[data-epure][data-affichage] .bouton-fin-tour:hover {
+  background: #ffd84d;
+}
+
+html[data-epure] .demande-centrale .dc-texte strong,
+html[data-epure] .demande-centrale .dc-texte .dc-reagit {
+  color: var(--ep-texte);
+  font-size: 15px;
+}
+
+html[data-epure] .demande-centrale .af-action > span {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+/* Les boutons BD grossissent de 20 % sur grand ecran (boutons-bd.css) : pas en epure. */
+html[data-epure] .demande-centrale .af-action,
+html[data-epure] .demande-centrale .dc-continue {
+  zoom: 1;
+}
+
+/* --- 14. Le cartouche de la phase (« Pendant ton tour », carte révélée) ------
+   Bandeau du titre en jaune, titre sombre ; cadre gris clair, sans liseré
+   rouge. Quand une question s'ouvre devant lui (16/10/2026, « la fenêtre là ça
+   ne va pas ») : au lieu de l'estomper à 45 % (gris délavé, texte anglais et
+   « Continuer » qui transparaissent sous les boutons), il reste net mais ne
+   garde que son titre et la carte ; la question porte le reste. */
+html[data-epure] .deroule-phase.est-scene.est-bis {
+  border: 0;
+  border-radius: 6px;
+  box-shadow: var(--ep-biseau);
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis::before {
+  display: none;
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis .deroule-ligne-haut,
+html[data-epure] .deroule-phase.est-scene .deroule-ligne-haut {
+  background: var(--ep-jaune);
+  border-bottom: 1px solid rgba(20, 24, 32, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+html[data-epure] .deroule-phase.est-scene .deroule-titre-court {
+  color: #14161a;
+  font-family: var(--ep-titres);
+}
+
+html[data-epure] .deroule-phase.est-scene .deroule-bandeau,
+html[data-epure] .deroule-phase.est-scene.est-hors-phase .deroule-bandeau {
+  background: #14161a;
+  color: #ffffff;
+}
+
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) {
+  opacity: 1;
+}
+
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-revelee-texte {
+  visibility: hidden;
+}
+
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-mentions,
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-mentions,
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-mentions,
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-mentions {
+  display: none;
+}
+
+/* La question posee devant le cartouche y tient EN ENTIER (16/10/2026) : elle se
+   range a droite de la carte (decalage par `translate`, qui laisse le glisser
+   de la poignee fonctionner), et ses boutons passent a la ligne plutot que de
+   deborder du cadre. */
+html[data-epure] .demande-centrale[data-sur-cartouche] {
+  /* Les boutons suivent le cartouche : DemandeCentrale.tsx pose l'ancre à chaque image. */
+  inset: var(--ep-ancre-y) auto auto var(--ep-ancre-x) !important;
+  translate: none !important;
+  transform: none !important;
+  max-width: 380px;
+}
+
+html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .dc-boutons {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 380px;
+}
+
+html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .af-action {
+  max-width: 210px;
+}
+
+/* --- 15. « Épuré, mais pas mort » (16/10/2026) --------------------------------
+   Deux touches : un liseré de la couleur du heros sous les bandeaux, et un
+   relief doux sous les cartes. */
+/* Les boules floues du fond, essayees puis retirees le meme jour : la table reste unie. */
+
+/* Le liseré du heros : sous la barre du haut et sous chaque bandeau jaune. */
+html[data-epure] .plateau-barre {
+  border-bottom: 3px solid var(--ep-heros-1, var(--ep-bord));
+}
+
+html[data-epure] .reglages-tete,
+html[data-epure] .deroule-phase.est-scene .deroule-ligne-haut,
+html[data-epure] .deck-modal-panel .dm-head,
+html[data-epure] .assistant-action .assistant-simple-action {
+  border-bottom: 3px solid var(--ep-heros-1, rgba(20, 24, 32, 0.28));
+}
+
+html[data-epure] .demande-centrale .dc-texte {
+  border-top-color: var(--ep-heros-1, var(--ep-jaune));
+}
+
+/* Le relief doux : une ombre sous chaque carte, qui se soulève un peu au survol. */
+html[data-epure] .scan-frame,
+html[data-epure] .state-playable .scan-frame,
+html[data-epure] .state-targetable .scan-frame,
+html[data-epure] .scan-card.state-source .scan-frame {
+  box-shadow: 0 0 0 1px #6c727d, 0 3px 8px rgba(10, 14, 22, 0.28);
+  transition: translate 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+html[data-epure] .scan-card:hover .scan-frame {
+  translate: 0 -3px;
+  box-shadow: 0 0 0 1px #494b50, 0 8px 18px rgba(10, 14, 22, 0.32);
+}
+
+html[data-epure] .reglages-fenetre,
+html[data-epure] .deroule-phase,
+html[data-epure] .assistant-action,
+html[data-epure] .deck-modal-panel,
+html[data-epure] .demande-centrale .dc-texte {
+  box-shadow: var(--ep-biseau), 0 18px 40px rgba(10, 14, 22, 0.22);
+}
+
+/* --- 16. La barre du haut, revue (16/10/2026) --------------------------------
+   « Épuré mais joli, avec des touches de rouge Marvel ». Barre claire un peu
+   plus haute, filet rouge Marvel dessous ; l'état de la partie à gauche, le
+   round en rouge dans la typo du jeu ; boutons fantômes (sans cadre, un fond
+   au survol) ; Auto / Manuel en commutateur, l'actif en rouge ; « Fin du
+   tour » reste le seul bouton plein (jaune). */
+html[data-epure] {
+  --ep-rouge: #e62429;
+  --ep-rouge-fonce: #b51c20;
+}
+
+html[data-epure] .plateau-barre {
+  height: 40px;
+  padding: 0 14px;
+  gap: 4px;
+  background: var(--ep-surface);
+  border-bottom: 3px solid var(--ep-rouge);
+  box-shadow: 0 2px 8px rgba(10, 14, 22, 0.12);
+}
+
+html[data-epure] .plateau-barre .bh-etat {
+  gap: 10px;
+  margin-right: auto;
+  font-size: 13px;
+}
+
+html[data-epure] .plateau-barre .bh-etat strong {
+  color: var(--ep-rouge);
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+html[data-epure] .plateau-barre .bh-etat span,
+html[data-epure] .plateau-barre .bh-etat em {
+  font-size: 13px;
+  font-style: normal;
+  color: var(--ep-texte);
+}
+
+html[data-epure] .plateau-barre .bh-etat em {
+  font-weight: 700;
+}
+
+/* Les boutons secondaires : fantômes. */
+html[data-epure] .plateau-barre button,
+html[data-epure] .plateau-barre .mode-actions {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 13px;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 6px;
+}
+
+html[data-epure] .plateau-barre button:hover:not(:disabled) {
+  background: rgba(20, 24, 32, 0.08);
+  box-shadow: none;
+}
+
+html[data-epure] .plateau-barre button:active,
+html[data-epure] .plateau-barre button[aria-pressed='true'] {
+  background: rgba(20, 24, 32, 0.12);
+  box-shadow: none;
+}
+
+html[data-epure] .plateau-barre button:disabled {
+  background: transparent;
+  box-shadow: none;
+  color: #6f7278;
+}
+
+/* Auto / Manuel : un commutateur, l'actif en rouge Marvel. */
+html[data-epure] .plateau-barre .bh-facon {
+  padding: 2px;
+  gap: 0;
+  border-radius: 8px;
+  background: rgba(20, 24, 32, 0.08);
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix {
+  height: 26px;
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
+  background: var(--ep-rouge);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+/* « Fin du tour » : le seul bouton plein de la barre. */
+html[data-epure][data-affichage] .plateau-barre .bh-fin-tour:not(:disabled) {
+  margin-left: 8px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 6px;
+}
+
+/* L'état de la partie tout à gauche : la rangée des actions prend toute la barre. */
+html[data-epure] .plateau-barre .board-actions {
+  flex: 1;
+  min-width: 0;
+}
+
+/* La barre du haut en sombre (16/10/2026, « rendre le header plus sombre ») :
+   anthracite, texte clair, le filet et le round en rouge Marvel. */
+html[data-epure] .plateau-barre {
+  background: #1f2228;
+  color: #eef0f3;
+  box-shadow: 0 2px 10px rgba(10, 14, 22, 0.35);
+}
+
+html[data-epure] .plateau-barre .bh-etat span,
+html[data-epure] .plateau-barre .bh-etat em {
+  color: #e6e8ec;
+}
+
+html[data-epure] .plateau-barre .bh-etat strong {
+  color: #ff3b3f;
+}
+
+html[data-epure] .plateau-barre button,
+html[data-epure] .plateau-barre .mode-actions {
+  color: #e6e8ec;
+}
+
+html[data-epure] .plateau-barre button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] .plateau-barre button:active,
+html[data-epure] .plateau-barre button[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+html[data-epure] .plateau-barre button:disabled {
+  color: #7d828b;
+}
+
+html[data-epure] .plateau-barre .bh-facon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix {
+  color: #e6e8ec;
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
+  background: var(--ep-rouge);
+  color: #ffffff;
+}
+
+html[data-epure][data-affichage] .plateau-barre .bh-fin-tour:not(:disabled) {
+  color: #14161a;
+}
+
+/* =============================================================================
+   17. LE PLATEAU EN SOMBRE (16/10/2026), même palette que les pages
+   (public/css/affichage-epure-pages.css, §19) : fond #111318, panneaux
+   #1C2028, cartes et boutons #292E38, filets #383E49, texte #F2F3F5 /
+   #9DA5B3, accent jaune #F3C623 ; la barre du haut garde son filet rouge.
+   Trame BD très discrète sur la table, fenêtres biseautées.
+   ============================================================================= */
+html[data-epure] {
+  --ep-fond: #111318;
+  --ep-surface: #1c2028;
+  --ep-champ: #292e38;
+  --ep-bord: #383e49;
+  --ep-bord-fort: #4b5361;
+  --ep-texte: #f2f3f5;
+  --ep-doux: #9da5b3;
+  --ep-jaune: #f3c623;
+  --ep-jaune-vif: #ffd84a;
+  --ep-relief: 0 0 0 1px var(--ep-bord);
+  --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort);
+  --ep-creux: inset 0 0 0 1px var(--ep-bord);
+  --ep-biseau: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px var(--ep-bord), 0 18px 40px rgba(0, 0, 0, 0.45);
+  --ep-biais: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+
+/* La table : sombre, avec la trame. */
+html[data-epure] .plateau-scene,
+html[data-epure] body.a-halo-heros .plateau-scene,
+html[data-epure],
+html[data-epure] body,
+html[data-epure] #scene {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.4px) 0 0 / 6px 6px,
+    var(--ep-fond);
+}
+
+html[data-epure] .plateau-scene,
+html[data-epure] .pile-vide,
+html[data-epure] .plateau-emplacement {
+  color: var(--ep-doux);
+}
+
+/* La barre du haut : le panneau sombre de la palette, filet rouge gardé. */
+html[data-epure] .plateau-barre {
+  background: var(--ep-surface);
+}
+
+/* Les états « appuyé » et « désactivé » faits pour le clair. */
+html[data-epure] .reglages-fenetre button:active,
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:active,
+html[data-epure] .demande-centrale button:active,
+html[data-epure] .assistant-action button:active,
+html[data-epure] .deck-modal-panel button:active {
+  background: #333946;
+}
+
+html[data-epure] .plateau-barre button:disabled {
+  color: #6b7280;
+}
+
+/* Les fenêtres : panneau sombre, biseautées. */
+html[data-epure] .reglages-fenetre,
+html[data-epure] .deroule-phase,
+html[data-epure] .assistant-action,
+html[data-epure] .deck-modal-panel,
+html[data-epure] .fin-partie-carte {
+  background: var(--ep-surface);
+  border-radius: 0;
+  clip-path: var(--ep-biais);
+}
+
+html[data-epure] .demande-centrale .dc-texte {
+  background: var(--ep-surface);
+  clip-path: var(--ep-biais);
+  border-radius: 0;
+}
+
+html[data-epure] .reglages-fenetre .ligne-option.est-actif .ligne-option-etat {
+  color: var(--ep-jaune);
+}
+
+html[data-epure] .demande-centrale .dc-texte .plateau-eyebrow {
+  color: var(--ep-jaune);
+}
+
+/* La mise en place : voile sombre. */
+html[data-epure][data-affichage] .mep-couche {
+  background: rgba(17, 19, 24, 0.88);
+}
+
+html[data-epure][data-affichage] .mep-detail {
+  color: var(--ep-jaune);
+}
+
+/* Les cartes : un filet sombre, l'ombre plus profonde sur fond sombre. */
+html[data-epure] .scan-frame,
+html[data-epure] .state-playable .scan-frame,
+html[data-epure] .state-targetable .scan-frame,
+html[data-epure] .scan-card.state-source .scan-frame {
+  box-shadow: 0 0 0 1px #000000, 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+html[data-epure] .scan-card:hover .scan-frame {
+  box-shadow: 0 0 0 1px var(--ep-jaune), 0 10px 22px rgba(0, 0, 0, 0.6);
+}
+
+/* Les languettes Aide / Journal. */
+html[data-epure] .volet-aide-languette,
+html[data-epure] .volet-journal-languette {
+  background: var(--ep-surface);
+  color: var(--ep-texte);
+}
+
+/* La carte du texte de la question, devant le cartouche sombre : un cran plus
+   clair que lui, un filet, et le jaune en haut (pas la couleur du héros, qui
+   s'y perdait). */
+html[data-epure] .demande-centrale .dc-texte {
+  background: var(--ep-champ);
+  box-shadow: 0 0 0 1px var(--ep-bord-fort), 0 10px 24px rgba(0, 0, 0, 0.45);
+  border-top: 3px solid var(--ep-jaune);
+  border-top-color: var(--ep-jaune);
+}
+
+html[data-epure] .demande-centrale .af-action {
+  background: #323844;
+  box-shadow: 0 0 0 1px var(--ep-bord-fort);
+}
+
+html[data-epure] .demande-centrale .af-action:hover:not(:disabled) {
+  background: #3a4150;
+  box-shadow: 0 0 0 1px var(--ep-jaune);
+}
+
+/* --- 18. Le cartouche et sa question, retours du 16/10/2026 -----------------
+   La fenêtre s'ajuste à son contenu (plus de grand vide dessous), ressort
+   nettement de la table (voile sombre derrière, filet clair), les boutons de
+   choix ont la même taille, et « À toi de jouer » quitte la question : le
+   bandeau « Pendant ton tour » de la fenêtre le dit déjà. */
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) {
+  min-height: 0 !important;
+  box-shadow: 0 0 0 1px var(--ep-bord-fort), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+html[data-epure] body:has(.deroule-phase.est-scene)::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 539;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+html[data-epure] .demande-centrale .dc-texte .plateau-eyebrow {
+  display: none;
+}
+
+html[data-epure] .demande-centrale .dc-boutons {
+  align-items: stretch;
+}
+
+html[data-epure] .demande-centrale .dc-boutons .af-action-wrap {
+  flex: 1 1 0;
+  display: flex;
+}
+
+html[data-epure] .demande-centrale .dc-boutons .af-action {
+  width: 100%;
+  min-width: 170px;
+  max-width: none;
+  min-height: 64px;
+}
+
+/* Devant le cartouche, la question perd son bandeau (« Boom Sonique révélée ») :
+   le bandeau jaune de la fenêtre dit déjà de quoi il s'agit. Restent les boutons. */
+html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .dc-texte {
+  display: none;
+}
+
+/* Les boutons de choix : le seul choix, sans sous-ligne (nom de la carte, cible). */
+html[data-epure] .demande-centrale .af-action small,
+html[data-epure] .demande-centrale .af-action .af-cibles {
+  display: none;
+}
+
+html[data-epure] .demande-centrale .dc-boutons .af-action {
+  min-height: 56px;
 }

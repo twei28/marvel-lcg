@@ -1471,13 +1471,6 @@ html.essai-peril-autre .main-feuille {
   opacity: 0.6;
 }
 
-/* « Encore N avant la défaite » (13/10/2026) : sous la jauge, en rouge. */
-.deroule-phase.est-essai .essai-alerte-seuil {
-  margin: 4px 0 0;
-  font-weight: 800;
-  color: #ff5a4f;
-}
-
 /* « K.O. » et « VAINCU » sous la carte qui tombe (13/10/2026). */
 .deroule-phase.est-essai .essai-tampon-ko,
 .deroule-phase.est-essai .essai-tampon-vaincu {

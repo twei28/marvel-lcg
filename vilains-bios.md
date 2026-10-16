@@ -838,6 +838,24 @@
 - **Première apparition** : The Amazing Spider-Man #98 (1971)
 
 
+## Baxter Stockman (TMNT)
+
+`tx001`
+
+
+**FR** — Baxter Stockman est un roboticien de génie, longtemps employé par Stockgen, qui pousse ses expériences toujours plus loin. Il conçoit les Mousers, ces robots à mâchoires qui rôdent dans les égouts de New York, puis, transformé par le mutagène, devient un hybride d'homme et de mouche, entouré d'essaims de robots volants. Rongé par la rancune contre les Tortues Ninja, il revient sans cesse avec une armée d'automates plus nombreuse.
+
+
+**EN** — Baxter Stockman is a brilliant roboticist, long employed by Stockgen, who keeps pushing his experiments further. He designs the Mousers, the jawed robots that prowl the sewers of New York, then, transformed by mutagen, becomes a human-fly hybrid surrounded by swarms of flying robots. Eaten up by resentment of the Teenage Mutant Ninja Turtles, he keeps coming back with an ever larger army of automatons.
+
+
+- **Identité civile** : Baxter Stockman
+- **Base** : Stockgen, New York
+- **Équipes** : Allié occasionnel du Clan du Pied
+- **Ennemis** : Tortues Ninja
+- **Première apparition** : Teenage Mutant Ninja Turtles #2 (1984)
+
+
 ## Electro (Web of Deceit)
 
 `wd035`
@@ -1526,3 +1544,21 @@
 - **Équipes** : Clan Foot
 - **Ennemis** : Tortues Ninja
 - **Première apparition** : Teenage Mutant Ninja Turtles (série animée, 1987)
+
+## Shredder
+
+`ts001`
+
+
+**FR** — Oroku Saki, dit Shredder, est le chef impitoyable du Foot Clan, une organisation de ninjas criminels qui règne sur les bas-fonds de New York. Maître d'armes en armure à lames, il voue une haine tenace à Splinter et aux Tortues Ninja, qu'il traque sans relâche depuis des années. Protégé par ses lieutenants Karai, Ocho ou Bebop et Rocksteady, il avance masqué dans l'ombre de ses soldats.
+
+
+**EN** — Oroku Saki, known as the Shredder, is the ruthless leader of the Foot Clan, an organization of criminal ninja that rules New York's underworld. A master of arms in blade-covered armor, he nurses a deep hatred of Splinter and the Teenage Mutant Ninja Turtles, whom he has hunted relentlessly for years. Protected by lieutenants such as Karai, Ocho, or Bebop and Rocksteady, he moves unseen in the shadow of his soldiers.
+
+
+- **Identité civile** : Oroku Saki
+- **Équipes** : Foot Clan
+- **Base** : New York
+- **Ennemis** : Les Tortues Ninja, Splinter
+- **Première apparition** : Teenage Mutant Ninja Turtles #1 (1984)
+

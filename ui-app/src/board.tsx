@@ -191,7 +191,7 @@ import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJe
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './board/marvelcdb'
 import { nomAffiche } from './board/noms-cartes-fr'
-import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
+import { libellePhase, libelleQuiAgit, libelleRound, nomDuHerosDuTour } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
 import {
   NOM_OPTION_MANIGANCE,
@@ -2325,7 +2325,8 @@ export function PagePartie({
   // L'affichage sobre coupe les animations sans toucher au reglage du joueur :
   // revenir en normal lui rend ce qu'il avait choisi.
   const [affichage, setAffichage] = useState<Affichage>(lireAffichage)
-  const animationsActives = animations && affichage === 'normal'
+  // L'épuré garde les animations (16/10/2026) : seul le sobre les coupe.
+  const animationsActives = animations && affichage !== 'sobre'
   useEffect(() => {
     appliquerAffichage(affichage)
   }, [affichage])
@@ -3678,6 +3679,11 @@ export function PagePartie({
       // EPURE : trois bandes plates au coin, jamais le halo (affichage-epure.css).
       if (affichage === 'epure') {
         racine.style.setProperty('--marque-heros', marqueDe(couleurs) ?? 'none')
+        // Les deux premieres couleurs du heros, en accent (16/10/2026, « epure mais pas mort ») :
+        // le liseré sous les bandeaux (affichage-epure.css, §15).
+        const [c1, c2] = [couleurs[0], couleurs[1] ?? couleurs[0]]
+        racine.style.setProperty('--ep-heros-1', `rgb(${c1[0]},${c1[1]},${c1[2]})`)
+        racine.style.setProperty('--ep-heros-2', `rgb(${c2[0]},${c2[1]},${c2[2]})`)
         corps.classList.remove('a-halo-heros')
         corps.classList.add('a-marque-heros')
         return
@@ -4509,6 +4515,7 @@ export function PagePartie({
       {!manuel && nouvelleScenePC && !phaseMechantEnCours ? (
         <CartoucheHorsPhase
           coups={coupsPendantTonTour}
+          nomConcerne={nomDuHerosDuTour(etat.monde)}
           questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
           questionDuMoteur={questionDuMoteurPC}
           masque={relectureJournal}

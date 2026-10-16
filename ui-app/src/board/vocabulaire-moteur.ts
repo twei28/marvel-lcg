@@ -406,10 +406,16 @@ const TYPES_ZONE_FR: Record<string, string> = {
   PlayerSideScheme: 'manigance annexe de joueur',
   Resource: 'ressource',
   Support: 'soutien',
+  Path: 'voie',
   Upgrade: 'amélioration',
 }
 
 const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  // Pack TMNT Venus (`venus/__init__.py`, ProposerRetraitDragage) : retrait facultatif de compteurs de dragage.
+  [/^Remove (\d+) dredge counters to draw (\d+) cards$/,
+    (m) => `Retirer ${m[1]} compteurs de dragage pour piocher ${m[2]} cartes`],
+  [/^Remove (\d+) dredge counters to confuse and stun an enemy$/,
+    (m) => `Retirer ${m[1]} compteurs de dragage pour désorienter et sonner un ennemi`],
   // Campagne Skrull Menace (`skrull_menace/campaign.py`) : la règle de coopération, la zone, la campagne experte.
   [/^Discard the top card of your deck to place (.+) in the victory display$/,
     (m) => `Défausser le dessus de ton deck pour placer ${m[1]} dans la pile de victoire`],
@@ -418,6 +424,10 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
     () => 'Placer 1 jeton Accélération sur la manigance principale pour rejoindre l’équipe avec tous tes points de vie'],
   [/^Place 1 acceleration token on the main scheme to heal to full$/,
     () => 'Placer 1 jeton Accélération sur la manigance principale pour te soigner complètement'],
+  // Obligations a deux branches (Need for Speed 14024, Personality Adjustment tj012 de Jennika).
+  [/^Place (\d+) threat on the main scheme\. Discard this obligation$/,
+    (m) => `Placer ${menaces(m[1]!)} sur la manigance principale. Défausser cette obligation`],
+  [/^Exhaust (.+) → remove (.+) from the game$/, (m) => `Incliner ${m[1]} → retirer ${m[2]} de la partie`],
   [/^Take (\d+) indirect damage$/, (m) => `Subir ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'}`],
   [/^Take (\d+) damage$/, (m) => `Subir ${degats(m[1]!)}`],
   [/^Place (\d+) threat on the main scheme$/, (m) => `Placer ${menaces(m[1]!)} sur la manigance principale`],

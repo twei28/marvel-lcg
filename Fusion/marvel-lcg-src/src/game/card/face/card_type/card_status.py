@@ -19,6 +19,7 @@ class StatusCard(FinalType):
             # 12/09/2026). Sa regle vit sur la carte, pas ici.
             "Exposed": Symbol.exposed,
             "Cloaked": Symbol.cloaked,
+            "Dazed": Symbol.dazed,
         }[self.name]
 
     @override

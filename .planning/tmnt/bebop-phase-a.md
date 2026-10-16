@@ -3,7 +3,7 @@
 Source : zip `TMNT Enemies -20261014T200338Z-1-001.zip`, dossier « Bebop & Rocksteady v3/ » (53 PNG dont
 l'encart de règles). Scans réduits en JPEG 615 px (`tools/importer_images_bebop_rocksteady.py`) dans
 `Fusion/marvel-lcg-src/assets/pics/` (gitignoré) ET `.planning/tmnt/pics-bebop/` (40 fichiers versionnés).
-Pack `bebop_rocksteady`, set 190, auteur `Inkwire` (champ `custom`). Questions ouvertes :
+Pack `bebop_rocksteady`, set 192, auteur `Inkwire` (champ `custom`). Questions ouvertes :
 `.planning/tmnt/bebop-questions.md`.
 
 ## Structure du scénario
@@ -25,8 +25,7 @@ Pack `bebop_rocksteady`, set 190, auteur `Inkwire` (champ `custom`). Questions o
 - **Ensembles** : « Bebop & Rocksteady » (20 cartes de rencontre, `data/encounter_sets/bebop_rocksteady.json`),
   « Concrete Jungle » (module FIXE : `tk101` de côté, 4 cartes Linked, `concrete_jungle.json` = 2 Road to
   Ruin + 2 Fallen Empires), « Rock the Block » (module recommandé, `rock_the_block.json`).
-  ⚠ **À la fusion : basculer `encounter_sets: ["standard"]` / `["standard","expert"]` sur `tmnt_standard` /
-  `tmnt_expert`** (ensembles `te`, autre agent) dans `data/scenarios/bebop_rocksteady.json` et `_expert.json`.
+  Les scénarios utilisent `tmnt_standard` / `tmnt_expert` (ensembles `te`), basculés à la fusion du 16/10/2026.
 
 ## card_id (`tk` + 100 x module + numéro imprimé)
 
@@ -59,8 +58,7 @@ porte le chiffre seul.)
   `ui-app/src/board/compteurs-fr.ts` (`knucklehead` = « andouille »), `ui-app/src/board/textes-fr-fanmade.ts`
   (40 entrées) + copie `public/js/traduction/*` régénérée, `public/js/prepare/mechants-info.js` (bios),
   `vilains-bios.md`, `data/cards.json` (pack `bebop_rocksteady`), `data/sets_info.json` (set 190).
-- Outillage : `tools/autoplay.py` (plusieurs joueurs : `AUTOPLAY_DECKS_SUP`, état du joueur qui interroge,
-  mémoire de boucle par joueur, option « Ask » écartée) ; `tools/cas/tmnt_bebop.py` (cas).
+- Outillage : `tools/cas/tmnt_bebop.py` (cas). `tools/autoplay.py` : version de la branche de sauvegarde conservée à la fusion (`--deck a+b`).
 
 ## Preuves
 

@@ -49,6 +49,28 @@ describe('traduireMoteur', () => {
     )
   })
 
+  it('traduit les choix de Venus (compteurs de dragage)', () => {
+    enFrancais()
+    expect(traduireMoteur('Remove 2 dredge counters to draw 3 cards')).toBe('Retirer 2 compteurs de dragage pour piocher 3 cartes')
+    expect(traduireMoteur('Remove 2 dredge counters to confuse and stun an enemy')).toContain('désorienter et sonner')
+    enAnglais()
+    expect(traduireMoteur('Remove 2 dredge counters to draw 3 cards')).toBe('Remove 2 dredge counters to draw 3 cards')
+  })
+
+  it('traduit les deux branches de l obligation de Jennika (tj012)', () => {
+    enFrancais()
+    expect(traduireMoteur('Place 3 threat on the main scheme. Discard this obligation')).toBe(
+      'Placer 3 menaces sur la manigance principale. Défausser cette obligation'
+    )
+    expect(traduireMoteur('Exhaust Jenny → remove Personality Adjustment from the game')).toBe(
+      'Incliner Jenny → retirer Personality Adjustment de la partie'
+    )
+    enAnglais()
+    expect(traduireMoteur('Place 3 threat on the main scheme. Discard this obligation')).toBe(
+      'Place 3 threat on the main scheme. Discard this obligation'
+    )
+  })
+
   it('traduit les pouvoirs de base', () => {
     enFrancais()
     expect(traduireMoteur('Attack')).toBe('Attaquer')

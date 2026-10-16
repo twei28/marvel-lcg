@@ -13,7 +13,7 @@ import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
-import { nomAvecAuteur, createursDe } from "/public/js/prepare/auteur.js";
+import { nomAvecAuteur, createursDe, auteurConnuDeLExtension } from "/public/js/prepare/auteur.js";
 // LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
 // ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
 import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
@@ -5021,7 +5021,7 @@ function rendreSceneMechant(sc) {
         el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(sc.tileImage)}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
-            el("small", {}, nomExtension(sc.extension, langueActuelle())),
+            el("small", {}, libelleExtension({ key: sc.extension }, _auteursExtensions.get(sc.extension))),
             sc.name),
         el("div", { class: "tb-tampons" },
             pv ? el("span", { class: "tampon rouge" }, t("PV") + " " + pv + (parJoueur ? " / " + t("joueur") : "")) : null,
@@ -5175,7 +5175,11 @@ function rendreMenace() {
         el("div", { class: "tb-menace-ligne" },
             el("span", { class: "tb-menace-k" }, t("Sets modulaires")),
             regle(t("Recommandés"), d.modularConfig === "recommended", () => { d.modularConfig = "recommended"; applyModularConfig(); }),
-            regle(t("Personnalisés"), d.modularConfig === "custom", () => { d.modularConfig = "custom"; }),
+            regle(t("Personnalisés"), d.modularConfig === "custom", () => {
+                d.modularConfig = "custom";
+                // Epure (16/10/2026) : le choix des sets s'ouvre a DROITE, a la place du mechant.
+                if (document.documentElement.dataset.epure) setTimeout(ouvrirPanneauModulaires, 0);
+            }),
             regle(t("Aléatoire"), d.modularConfig === "random", () => { d.modularConfig = "random"; applyModularConfig(); }),
         ),
         el("div", { class: "mod-chips", id: "modular-box" }),
@@ -5317,9 +5321,37 @@ async function preselectionDernierScenario() {
     return true;
 }
 
+/** Le libelle d'une extension FAN-MADE : « Nom (Createur) », comme pour les heros
+ *  (demande du 16/10/2026 : « Custom (Web of Deceit) » devient « Web of Deceit (Gwenpool) »).
+ *  Le createur se retrouve par les sets de rencontre de l'extension, a defaut par
+ *  l'un de ses heros. Sans createur sur : « Nom » seul. Un officiel ne change pas. */
+const _auteursExtensions = new Map();
+async function auteurDeExtension(e) {
+    if (_auteursExtensions.has(e.key)) return _auteursExtensions.get(e.key);
+    const interne = e.key.match(/\((.*)\)\s*$/);
+    let auteur = interne ? auteurConnuDeLExtension(interne[1]) : "";
+    for (const enc of auteur ? [] : (e.encounters || [])) { auteur = catalog.auteurSetRencontre(enc); if (auteur) break; }
+    if (!auteur) {
+        const heros = await catalog.heroes();
+        const h = heros.find((x) => x.extension === e.key && x.auteur);
+        auteur = h ? h.auteur : "";
+    }
+    _auteursExtensions.set(e.key, auteur);
+    return auteur;
+}
+function libelleExtension(e, auteur) {
+    const nom = nomExtension(e.key, langueActuelle());
+    const interne = nom.match(/^Custom \((.*)\)$/i);
+    return interne ? nomAvecAuteur(interne[1], auteur, true) : nom;
+}
+
 async function loadExtTabs() {
     await preselectionDernierScenario();
-    const exts = (await catalog.extensions()).filter((e) => e.scenarios.length);
+    const toutes = (await catalog.extensions()).filter((e) => e.scenarios.length);
+    const nbFanmade = toutes.filter((e) => /custom/i.test(e.key)).length;
+    // Le filtre « Fan-made » (16/10/2026, selection du mechant en trois colonnes) :
+    // seules les boites fan-made, comme sur l'ecran des heros.
+    const exts = state.extFanmade ? toutes.filter((e) => /custom/i.test(e.key)) : toutes;
     // Si l'onglet courant n'existe plus dans la liste, on le recale.
     const validKeys = new Set(exts.map((e) => e.key));
     if (!state.extensionTab || !validKeys.has(state.extensionTab)) {
@@ -5327,6 +5359,20 @@ async function loadExtTabs() {
     }
     const tabs = document.getElementById("ext-tabs");
     if (!tabs) return;
+    const auteurs = new Map();
+    for (const e of exts) if (/custom/i.test(e.key)) auteurs.set(e.key, await auteurDeExtension(e));
+    const filtre = el("button", {
+        class: "ext-fanmade" + (state.extFanmade ? " on" : ""),
+        "aria-pressed": state.extFanmade ? "true" : "false",
+        onclick: () => { state.extFanmade = !state.extFanmade; loadExtTabs(); },
+    }, `${t("Fan-made")} (${nbFanmade})`);
+    // Le bouton vit dans l'en-tete du panneau (pas dans la grille des boites : il lui
+    // volerait une rangee), a cote du compte de scenarios.
+    const entete = tabs.parentElement && tabs.parentElement.querySelector(".tb-entete");
+    if (entete) {
+        entete.querySelectorAll(".ext-fanmade").forEach((x) => x.remove());
+        entete.insertBefore(filtre, entete.querySelector(".tb-mode"));
+    }
     tabs.replaceChildren(...exts.map((e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
         title: e.key,
@@ -5337,7 +5383,7 @@ async function loadExtTabs() {
         e.key === "defis"
             ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${extensionImageUrl(e.key)}")` } }),
-        el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : nomExtension(e.key, langueActuelle())),
+        el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
     )));
     loadScnGrid();
 }
@@ -5454,6 +5500,33 @@ function nomDuSetModulaire(nomFichier) {
     return nomAvecAuteur(titleize(nomFichier), auteur, true);
 }
 
+/** Epure : le choix des sets modulaires dans un panneau qui prend la place de l'image du mechant (colonne de droite). */
+async function ouvrirPanneauModulaires() {
+    const ecran = document.querySelector(".team-b.eux");
+    if (!ecran) return;
+    ecran.querySelectorAll(".pm-droite").forEach((x) => x.remove());
+    const d = state.difficulty;
+    const sel = new Set(d.selectedModularSets);
+    const liste = el("div", { class: "mod-chips pm-liste" }, el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
+    const fermer = () => { panneau.remove(); renderModular(); };
+    const panneau = el("aside", { class: "pm-droite", role: "dialog", "aria-label": t("Sets modulaires") },
+        el("div", { class: "pm-tete" },
+            el("b", { class: "mvl" }, t("Sets modulaires")),
+            el("button", { class: "pm-fermer", "aria-label": t("Fermer"), onclick: fermer }, "×")),
+        liste,
+        el("div", { class: "pm-pied" }, el("button", { class: "btn primary", onclick: fermer }, t("Valider"))));
+    ecran.append(panneau);
+    const tous = (await catalog.encounterSets()).filter((x) => x.kind === "modular");
+    liste.replaceChildren(...tous.map((x) => el("span", {
+        class: "mod-chip" + (sel.has(x.name) ? " on" : ""),
+        onclick: (e) => {
+            sel.has(x.name) ? sel.delete(x.name) : sel.add(x.name);
+            d.selectedModularSets = [...sel];
+            e.currentTarget.classList.toggle("on");
+        },
+    }, nomAvecAuteur(x.displayName, x.auteur, true))));
+}
+
 async function renderModular() {
     await Promise.resolve();
     const box = document.getElementById("modular-box");
@@ -5466,6 +5539,13 @@ async function renderModular() {
         ));
     } else if (d.modularConfig === "random") {
         box.replaceChildren(el("div", { class: "mod-chips" }, ...d.selectedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s)))));
+    } else if (document.documentElement.dataset.epure && document.querySelector(".team-b.eux")) {
+        // Epure : un resume des sets choisis et un bouton, pas la liste entiere (elle
+        // ne tient pas dans la colonne du milieu) ; la liste est dans le panneau de droite.
+        box.replaceChildren(el("div", { class: "mod-chips" },
+            ...d.selectedModularSets.map((n) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(n))),
+            el("button", { class: "tampon", onclick: () => ouvrirPanneauModulaires() },
+                d.selectedModularSets.length ? t("Modifier les sets") : t("Choisir les sets modulaires"))));
     } else {
         box.replaceChildren(el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
         const all = (await catalog.encounterSets()).filter((s) => s.kind === "modular");

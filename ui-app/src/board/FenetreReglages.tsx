@@ -471,7 +471,7 @@ export function ContenuOnglet({
   p: ProprietesReglages
 }) {
   if (onglet === 'apparence') {
-    const sobre = p.affichage !== 'normal'
+    const sobre = p.affichage === 'sobre'
     return (
       <>
         <LigneChoix

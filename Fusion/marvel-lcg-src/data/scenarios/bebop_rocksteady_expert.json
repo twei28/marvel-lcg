@@ -18,8 +18,8 @@
     "encounter_sets": [
         "bebop_rocksteady",
         "concrete_jungle",
-        "standard",
-        "expert"
+        "tmnt_standard",
+        "tmnt_expert"
     ],
     "modular_sets": [
         "rock_the_block"

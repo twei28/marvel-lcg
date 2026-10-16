@@ -183,7 +183,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # le meme port, et la seconde mourait sur « port indisponible ».
     sys.argv = [sys.argv[0], "-config_files", "launch.json", "-device", "key"]
 
-    etiquette = f"{os.path.basename(deck)}_{vilain}_{difficulte}_{profil}_{graine}"
+    etiquette = f"{os.path.basename(deck)}{'+' + os.environ['AUTOPLAY_DECK2'] if os.environ.get('AUTOPLAY_DECK2') else ''}_{vilain}_{difficulte}_{profil}_{graine}"
     journal = open(f"/tmp/autoplay_{etiquette}.log", "w", buffering=1)
     sys.stdout = journal
     sys.stderr = journal
@@ -319,18 +319,11 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # la lecture d'etat. Les PV restaient a 100 %, le bot ne se repliait
         # jamais et se faisait tuer sans jamais changer de forme.
         try:
-            # AJOUT 16/10/2026 (parties a plusieurs joueurs) : on lit l'etat DU JOUEUR QUI
-            # INTERROGE (`etat["idx_joueur"]`, pose par `pilote`), pas toujours le premier.
-            # Solo : idx 0, comportement inchange.
-            joueur = w.players[0]
-            for candidat in w.players:
-                if getattr(candidat, "player_id", 0) == etat.get("idx_joueur", 0):
-                    joueur = candidat
-                    break
+            # AJOUT 16/10/2026 (parties a deux joueurs, `--deck a+b`) : le joueur dont c'est la question,
+            # pas toujours le premier. `joueur_interroge` est pose par `pilote` (index dans `w.players`) ;
+            # sans « + » il vaut toujours 0 : comportement inchange.
+            joueur = w.players[etat.get("joueur_interroge", 0)]
             ctx["joueur"] = joueur
-            if len(w.players) > 1:
-                ctx["allies"] = [a for a in ctx["allies"]
-                                 if a.GetControlByPlayer() in (None, joueur)]
         except Exception:
             return ctx
         try:
@@ -377,12 +370,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # introuvable en forme heros. Les PV restaient alors bloques a
             # 100 %, le bot ne se repliait jamais et mourait sur place.
             identite = None
-            if len(w.players) > 1:
-                try:
-                    identite = joueur.GetIdentity()
-                except Exception:
-                    identite = None
-            for face in ([] if identite is not None else ctx["faces"].values()):
+            for face in ctx["faces"].values():
                 if not (hasattr(face, "IsInPlay") and face.IsInPlay()):
                     continue
                 if any(c.__name__ == "Identity" for c in type(face).__mro__):
@@ -943,7 +931,14 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     def pilote(self, data, player_id, check):
         self_pilote = lambda d, p, c: pilote(self, d, p, c)
         etat["asks"] += 1
-        etat["idx_joueur"] = player_id
+        # Index du joueur interroge (parties a deux joueurs) : `player_id` est l'identifiant de joueur du
+        # moteur ; on retombe sur 0 s'il ne designe aucun siege connu.
+        try:
+            etat["joueur_interroge"] = next(
+                (i for i, j in enumerate(monde().players) if getattr(j, "player_id", None) == player_id
+                 or getattr(j, "id", None) == player_id), 0)
+        except Exception:
+            etat["joueur_interroge"] = 0
         capturer_si_phase_mechant()
         if etat["asks"] > MAX_ASKS:
             rendre("bloquee", f"plafond de {MAX_ASKS} questions atteint")
@@ -953,18 +948,20 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             options = []
 
         brute = data.options_json or ""
-        if os.environ.get("AUTOPLAY_DEBUG_BRUTE") and etat["asks"] >= 10 and etat["asks"] <= 20:
-            print(f"DEBUGASK {etat['asks']} p{player_id} {brute[:900]}", flush=True)
 
         passer = json.dumps({"id": "0", "targets": [], "resources": []})
         libres = [o for o in options
                   if isinstance(o, dict) and not o.get("failure_reason")]
-        # AJOUT 16/10/2026 (parties a plusieurs joueurs) : « Ask » est la regle v1.6 « demander
-        # a un autre joueur de declencher une Action » (player_setup.py). Le pilote ne sait pas
-        # coordonner deux joueurs ; la choisir ne fait QUE se reposer la meme question, et la fin
-        # de tour (« End Phase ») n'etait jamais offerte tant qu'elle restait la seule option.
-        # Absente d'une partie solo : comportement inchange.
-        libres = [o for o in libres if o.get("name") != "Ask"]
+        # AJOUT 16/10/2026 (parties a deux joueurs) : l'option « Ask » (demander a un autre joueur de
+        # declencher une Action qu'il pourrait jouer a son tour) ne fait RIEN quand ce joueur n'en a
+        # aucune, et le plateau ne bouge pas : le pilote la reprenait sans fin (« bloquee », 8 parties sur 8
+        # sur le temoin Rhino a deux joueurs). Il ne la propose a personne ; absente en solo.
+        try:
+            plusieurs = len(monde().players) > 1
+        except Exception:
+            plusieurs = False
+        if plusieurs:
+            libres = [o for o in libres if str(o.get("name")) != "Ask"]
         if not libres:
             etat["derniere_reponse_legale"] = False
             if trace and etat["asks"] <= trace:
@@ -1254,7 +1251,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                   f"{[(str(o.get('name')), str(o.get('failure_reason'))[:40]) for o in options if isinstance(o, dict) and o.get('failure_reason')]}",
                   flush=True)
         if trace and etat["asks"] <= trace:
-            print(f"ASK {etat['asks']} p{player_id} r{ctx['round']} pv={ctx['pv_ratio']:.2f} "
+            print(f"ASK {etat['asks']} r{ctx['round']} pv={ctx['pv_ratio']:.2f} "
                   f"menace={ctx['menace_ratio']:.2f} id={ctx.get('identite')} "
                   f"-> {meilleure.get('name')} "
                   f"{infos_carte(ctx, meilleure.get('bind_id')).get('nom', '')}",
@@ -1275,32 +1272,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                            "targets": cibles,
                            "resources": payer(meilleure, cibles, ctx)})
 
-    # AJOUT 16/10/2026 (parties a plusieurs joueurs) : la detection de boucle compare « la
-    # question precedente » a la courante. Avec deux joueurs qui interrogent tour a tour,
-    # la question du joueur 2 s'intercalait et la memoire du joueur 1 (derniere option,
-    # options desistees, plage de cibles) etait ecrasee : fausses « bloquee » sur Rhino lui-meme.
-    # Chaque joueur a donc SA copie de ces cles. Solo : un seul jeu de cles, rien ne change.
-    CLES_PAR_JOUEUR = ("derniere_reponse_legale", "derniere_question_brute", "dernier_progres",
-                       "desistees", "dernieres_options", "derniere_option", "cibles_bonus")
-    memoires = {}
-
-    def pilote_par_joueur(self, data, player_id, check):
-        memoire = memoires.setdefault(player_id, {})
-        for cle in CLES_PAR_JOUEUR:
-            if cle in memoire:
-                etat[cle] = memoire[cle]
-            else:
-                etat.pop(cle, None)
-        try:
-            return pilote(self, data, player_id, check)
-        finally:
-            for cle in CLES_PAR_JOUEUR:
-                if cle in etat:
-                    memoire[cle] = etat[cle]
-                else:
-                    memoire.pop(cle, None)
-
-    DeviceManager.DoGetInput = pilote_par_joueur
+    DeviceManager.DoGetInput = pilote
     DeviceManager.DoWaitConnect = lambda self, player_id, check: None
     DeviceManager.DoWaitSync = lambda self, player_id, check: None
 
@@ -1310,13 +1282,20 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     from engine.file.manager import FileManager
 
     # Le deck : un nom de deck de depart, ou un chemin vers un fichier exporte.
-    if os.path.isfile(deck):
-        texte_deck = open(deck).read()
-    else:
-        chemin = FileManager.FindJsonPath("Hero", deck)
-        assert chemin, f"deck introuvable : {deck}"
-        with FileManager.OpenFile(chemin, read=True) as fichier:
-            texte_deck = fichier.Read()
+    # AJOUT 16/10/2026 (scenario Baxter Stockman) : `--deck a+b` monte une partie A DEUX JOUEURS
+    # (un deck par joueur, separes par « + »). Le pilote lit l'etat du joueur 1 (`w.players[0]`) et
+    # repond aux questions des deux : ses reponses restent legales, mais il joue le second joueur
+    # avec les memes heuristiques. Sans « + », comportement strictement inchange.
+    textes_decks = []
+    for un_deck in deck.split("+"):
+        if os.path.isfile(un_deck):
+            textes_decks.append(open(un_deck).read())
+        else:
+            chemin = FileManager.FindJsonPath("Hero", un_deck)
+            assert chemin, f"deck introuvable : {un_deck}"
+            with FileManager.OpenFile(chemin, read=True) as fichier:
+                textes_decks.append(fichier.Read())
+    texte_deck = textes_decks[0]
 
     # La difficulte vit dans la campagne : on la force avant de monter la scene.
     chemin_vilain = FileManager.FindJsonPath("Campaign", vilain)
@@ -1364,12 +1343,13 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # aucune regle, aucun carnet, comportement inchange.
     regles = [r.strip() for r in (os.environ.get("AUTOPLAY_REGLES") or "").split(",") if r.strip()]
     carnet = {str(k): str(v) for k, v in json.loads(os.environ.get("AUTOPLAY_CARNET") or "{}").items()}
-    # AJOUT 16/10/2026 : `AUTOPLAY_DECKS_SUP` (« black_panther ») ajoute des joueurs.
-    textes_decks = [texte_deck]
-    for nom_sup in [d.strip() for d in (os.environ.get("AUTOPLAY_DECKS_SUP") or "").split(",") if d.strip()]:
-        chemin_sup = FileManager.FindJsonPath("Hero", nom_sup)
-        assert chemin_sup, f"deck supplementaire introuvable : {nom_sup}"
-        with FileManager.OpenFile(chemin_sup, read=True) as fichier:
+    # AJOUT 16/10/2026 (scenario Shredder) : `AUTOPLAY_DECK2` (nom d'un deck de depart)
+    # monte une partie a DEUX joueurs : le meme pilote joue les deux sieges.
+    # (fusion 16/10/2026 : on AJOUTE au deck 2 eventuel de `--deck a+b`, sans remettre la liste a zero)
+    if os.environ.get("AUTOPLAY_DECK2"):
+        chemin2 = FileManager.FindJsonPath("Hero", os.environ["AUTOPLAY_DECK2"])
+        assert chemin2, f"deck 2 introuvable : {os.environ['AUTOPLAY_DECK2']}"
+        with FileManager.OpenFile(chemin2, read=True) as fichier:
             textes_decks.append(fichier.Read())
     scene = SceneLoader.NewFromJson(json.dumps(campagne), None, textes_decks,
                                     graine, regles, carnet)
@@ -1406,6 +1386,8 @@ def main():
     ap.add_argument("--modulaires", default="",
                     help="sets modulaires a ajouter au scenario, separes par "
                          "des virgules (ex. : muse)")
+    ap.add_argument("--deck2", default="",
+                    help="second deck de depart : partie a DEUX joueurs (AUTOPLAY_DECK2)")
     ap.add_argument("--reglages", default="",
                     help="JSON de seuils qui surchargent le profil")
     args = ap.parse_args()
@@ -1430,7 +1412,7 @@ def main():
             for profil in profils:
                 for i in range(args.parties):
                     graine = args.graine_depart + i
-                    etiquette = (f"{os.path.basename(args.deck)}_{vilain}_"
+                    etiquette = (f"{os.path.basename(args.deck)}{'+' + args.deck2 if args.deck2 else ''}_{vilain}_"
                                  f"{difficulte}_{profil}_{graine}")
                     travaux.append({
                         "deck": args.deck, "vilain": vilain,
@@ -1464,6 +1446,8 @@ def main():
             env["AUTOPLAY_REGLAGES"] = args.reglages
         if args.modulaires:
             env["AUTOPLAY_MODULAIRES"] = args.modulaires
+        if args.deck2:
+            env["AUTOPLAY_DECK2"] = args.deck2
         proc = subprocess.Popen(
             [sys.executable, os.path.abspath(__file__), args.game_dir,
              "--trace", str(args.trace)],

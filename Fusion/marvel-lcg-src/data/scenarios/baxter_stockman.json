@@ -1,0 +1,23 @@
+{
+    "version": "0.5.8",
+    "name": "Baxter Stockman",
+    "villain": [
+        "tx001",
+        "tx002"
+    ],
+    "expert": false,
+    "schemes": [
+        "tx004a,tx004b"
+    ],
+    "set_aside": [],
+    "encounters": [],
+    "encounter_sets": [
+        "baxters_lab",
+        "cyber_swarm",
+        "tmnt_standard"
+    ],
+    "modular_sets": [
+        "high_speed",
+        "security_protocol"
+    ]
+}

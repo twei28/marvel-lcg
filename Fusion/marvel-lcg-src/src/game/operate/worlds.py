@@ -247,9 +247,12 @@ class Worlds:
             return units
     @staticmethod
     def GetOnFieldSupports(game_area_effect: 'GameArea|Effect') -> List['Support']:
+        from game.card.face.card_type import Support
         supports: List['Support'] = []
         for player in Worlds.GetPlayers(game_area_effect):
-            supports += player.supports.Get()
+            # AJOUT (16/10/2026, pack jennika) : l'aire de soutien abrite aussi la
+            # Voie (type Path), qui n'est pas un Support : on filtre sur le type.
+            supports += [x for x in player.supports.Get() if Support.IsType(x)]
         return supports
     @staticmethod
     def GetOnFieldEnemies(game_area_effect: 'GameArea|Effect', finder: 'CardFinder|None'=None) -> List['Minion|Villain']:
@@ -809,8 +812,7 @@ class Worlds:
         standard_encounter_sets: List[str] = []
         world = by_effect.world
         for encounter_set in world.scene.campaign.encounter_sets:
-            if encounter_set.startswith("standard") or \
-                encounter_set.startswith("expert"):
+            if encounter_set.startswith(("standard", "expert", "tmnt_standard", "tmnt_expert")):  # CORRECTIF : ensembles TMNT
                 standard_encounter_sets.append(encounter_set)
         return standard_encounter_sets
 
@@ -819,8 +821,7 @@ class Worlds:
         encounter_sets: List[str] = []
         world = by_effect.world
         for encounter_set in world.scene.campaign.encounter_sets:
-            if encounter_set.startswith("standard") or \
-                encounter_set.startswith("expert"):
+            if encounter_set.startswith(("standard", "expert", "tmnt_standard", "tmnt_expert")):  # CORRECTIF : ensembles TMNT
                 pass
             else:
                 encounter_sets.append(encounter_set)

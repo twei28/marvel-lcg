@@ -227,6 +227,8 @@ identique avec et sans la carte en vitrine. Déplacée sur l'identité
 
 | Ressource à coût **Custom** (défausser une carte accrochée, retirer un pion…) | `CanGenerateResources(type, Resources("B"), conditions=[dispo]).SetCostFunc(CostFunc.Custom(None, fn))` | hc001a Empowered, ze011 Mount Olympus | ⚠ **`conditions` OBLIGATOIRE** : sans elle la ressource est OFFERTE au paiement même quand son coût est impayable ; `fn` rend alors False et le moteur lève `GameSignal_UndoRequest` (resources.py:409), qui **annule toute la carte en train d'être payée**, sans motif (« Green Hell failed »). Dix cas rouges d'un coup le 11/09/2026 |
 
+| Ressource à coût « **défausser une carte EN JEU** » + « *if X was discarded to pay for this card* » (marquer la carte PAYÉE) | `CanGenerateResources(Resource, Resources("GGG"), for_card=CardFinder(traits=["ATTACK", "THWART", "DEFENSE"], card_type=Event), ex_operation=fn).SetName(...).SetCostFunc(CostFunc.Discard("YouControlCards", card_type=Upgrade, trait="WEAPON", check_effect=lambda effect, face: face.restricted > 0)).LimitOncePerPhase()`. `fn(effect, message)` lit `message.cost_check_effect.cost_func.GetAll()` -> `return_discarded_cards` (rempli par le coût, juste avant `ex_operation`) et pose une marque sur `message.for_effect` : c'est l'effet de la carte PAYÉE, que le script de cette carte relit (`getattr(effect, ...)`) | `tc001a` Overswing, `tc002` Clap Back (pack `casey_jones`) ; modèles `34001a` Phoenix (limite par phase), `32031a` (`for_card` à traits) | `traits=[...]` est un OU. Aucune gate n'attrape une marque posée sur le mauvais objet : le cas « payée par Overswing avec une arme de Casey / d'un AUTRE héros / défaussée AVANT » (`tmnt_casey.py`) la prouve. `Resources("GGG")` = 3 wild (glyphe étoile, vérifié par découpe contre `04010`). Le Sac de Casey est PERMANENT : un `DebugRule` d'un autre set ne peut pas le déplacer (voir `mots-cles/tuck.md`). |
+
 ## 4ter. Réduire un coût « quand CETTE carte est la cible »
 
 > ⚠ **Le moteur ne calcule un coût PAR CIBLE que si on le lui demande.**
@@ -1117,6 +1119,68 @@ servi, et elles resservent :
 - **`DeclareNumber` répond la PREMIÈRE valeur (0)** : `choisir_option: ["3"]` force la valeur (cas sk271).
 - **Le filtre `[filtre]` du harnais est une sous-chaîne, pas une expression régulière** (`"sk2[78]"` retient 0 cas).
 
+### 7novemdecies. Pièges payés par le pack `venus` (TMNT Heroes, 16/10/2026)
+
+| Mécanique / outil | Montage | Piège payé |
+|---|---|---|
+| « You MAY remove N <compteurs> to <effet> » (retrait = coût, facultatif) | `joueur.MayChooseOneAbility(effect, ForChoiceAbility(nom, op).SetCostFunc(CostFunc.Counter("YourIdentity", N, 'compteur')))` (modèle `01165` Eviction Notice ; helper `ProposerRetraitDragage`, `venus/__init__.py`) | Le refus est une option nommée **« Cancel »**, PAS un bouton Passer : dans un cas, `choisir_option: ["Cancel"]` ; `passer_sur_option` répond « la question n'a jamais été posée ». Branche non offerte quand le stock est insuffisant. |
+| « Remove X <compteurs> → ... », X choisi, zéro compris | `DeclareNumber(0, stock)` à la main, puis `Faces.RemoveCountersOn` (`tv003` Arc Nova) | `CostFunc.Counter` refuse un retrait de 0 et un minimum 1 interdit « jouer à X = 0 » ; `CostFunc.Counter(..., (1, N), ...)` + `effect.cost_func.Get(CostFunc.Counter).return_remove_counter` reste le bon modèle quand 0 n'a pas de sens (`16006`, `cn012b`). |
+| Ressource à coût de COMPTEUR (`CanGenerateResources(...).SetCostFunc(Counter)`) | `conditions=[stock >= n]` sur `CanGenerateResources` (`tv011` Dragon Scale) | Sans la condition, la ressource est offerte sans compteur et le moteur annule toute la carte en cours de paiement, sans motif. `CanPlayBy` (`venus_jouable`) NE VOIT PAS le paiement : pour prouver « impayable », jouer la carte (`jouer`) et mesurer qu'elle est restée en main. |
+| « discard cards from the top of your deck until you discard X » (`seek`) | `joueur.DiscardDeckUntil(effect, card_type=..., check_face_fn=...)` ; plusieurs types = `check_face_fn` (`tv012`) | Quand la carte trouvée est la dernière du deck, le moteur REMÉLANGE la défausse dans le deck vide (règle du deck épuisé) : défausse vide, trouvée rendue quand même. Prévoir une carte de fond dans le deck d'un cas, ou assumer le remélange. |
+| Harnais : `Puzzle.Gain('<card_id>')` (`main` / `main_exclusive`) | — | **PREND la carte dans le deck si elle y est** : un deck rempli de `01090` perdait ses cartes dès que la main en réclamait une (« deck 5 au lieu de 6 »). Remplir le deck avec un id absent de la main (`01073`). `main_exclusive` verse aussi la main de départ dans la défausse : ne pas mesurer la défausse « exacte » avec lui, utiliser `Puzzle.EmptyHand()`. |
+| Harnais : Setup de l'alter-ego qui fouille le deck | rejouer `Setup(False)` (`venus_resetup`) | Le Setup tourne à CHAQUE départ de cas : la carte qu'il met en jeu (ici `tv014`) est déjà là. Un cas qui compte ces cartes la retire (`Puzzle.Remove`) ou la compte. |
+| `substituer_pack.py` | base de ports ≤ 48000 pour ~20 cartes | 60 ports par carte, plafond 49146 (« PORT TROP HAUT ») : au-delà, tous les rapports sont « illisibles ». Le filtre est `<card_id> ` AVEC l'espace : le nom des cas doit commencer par `tvNNN `. |
+### 7vicies. Pièges payés par le pack `alopex` (TMNT, 16/10/2026)
+
+- **Une Interruption forcée « when this card leaves play, set this card aside »
+  doit se garder contre sa propre sortie.** `Faces.SetAside` fait QUITTER LE JEU à la
+  carte et renvoie `WhenCardLeavePlay` : l'Interruption se relançait sans fin
+  (`RecursionError` AVALÉE par le moteur). La carte finissait de côté, les cas « elle
+  est de côté » étaient verts, mais `AfterCardLeavePlay` n'était jamais envoyé, donc
+  toute Réponse « after Prey leaves play » restait muette (Kabuki, Kama). Garde :
+  drapeau posé sur la carte autour de l'appel (`ta011.py`). **Symptôme au journal du
+  harnais : des centaines de lignes « [carte] s'active » suivies d'un `RecursionError`.**
+- « Spend up to N [mental] resources » **dans le corps** d'un effet (pas de flèche) :
+  `joueur.AskSpendResourcesInternal(Cost("BBB", up_to=True), effect)` rend les
+  `Resources` dépensées (`.val`) ; `Cost("B...")` accepte mental ET wild. Le pilote du
+  harnais refusait toute dépense partielle (« UpTo » exigeait la couverture totale) :
+  clé `payer_jusqu_a: n` ajoutée à `test_capacites.py` (additive). Il faut aussi des
+  cartes à UNE icône comme carburant (Genius 01089 = 2 icônes d'un coup).
+- Un **Réponse qui part AVANT les dégâts consécutifs** (ally `1*`) : une carte Cloaked
+  posée par cette Réponse absorbe aussitôt le dégât consécutif de l'allié (−2) et part.
+  Mesurer `degats` de l'allié (0 avec, 1 sans), pas la présence du statut.
+- La **défausse du joueur n'est jamais vide** : le harnais défausse la main de départ
+  (`main_exclusive`) AVANT `declencher`. Pour « aucune carte éligible » / « exactement
+  celle-ci », `Puzzle.EmptyPlayerDiscardPile()` (ajoutée) puis `CreatePlayerDiscardPile`
+  DANS `declencher`, pas dans `mise_en_place`.
+- `CreatePlayerDeck(a, b, c)` : la DERNIÈRE carte créée est au DESSUS du deck.
+- Un deck rencontre épuisé par « discard ... until » est **remélangé aussitôt** avec sa
+  défausse : ne pas asserter `defausse_rencontre` après une recherche infructueuse.
+- Un sbire à Garde (01101 Hydra Mercenary) rend le vilain non ciblable : choisir le
+  sbire comme cible d'un événement d'attaque.
+- Une attaque d'allié sur Rhino : les cartes `Puzzle.SetThreat('01097b', 8)` dépassent
+  le seuil du complot et mettent fin à la partie (l'attache échoue) : rester ≤ 6.
+### 7unvicies. Pièges payés par le scénario Baxter Stockman (tx001-tx018, 16/10/2026)
+
+- **`FindOrCreateFace` (donc `Puzzle.Damage / Remove / Discard / Counter / PutIntoPlay` sur un card_id) cherche le DECK
+  RENCONTRE avant les cartes en jeu.** Dans un scénario réel (4 Plague, 3 Flyborgs... dans le deck), la commande visait la copie
+  du DECK : 20 cas rouges sur 93, tous « la Plague n'a pas bougé ». `Puzzle.EmptyEncounterDeck()` au début de CHAQUE cas
+  (`FOND` de `tools/cas/tmnt_baxter.py`), puis trois cartes inoffensives (`01105`) si la carte doit pouvoir distribuer.
+- **Une carte « Special » nommée SUR UN COMPLOT PRINCIPAL** : `WhenResolveSpecialAbility("This", op)` sur la face 1B ; les appelants
+  font `complot.ResolveSpecialAbility(joueur, effect)`, le joueur est `message.GetToPlayer()` (fiche `replicate.md`).
+- **« all-purpose counter »** : `Faces.PlaceCountersOn(cibles, n, 'all-purpose', effect)` (le moteur convertit : le type est celui de
+  la carte porteuse, FAQ officielle). Une carte dont la statistique suit un compteur doit nommer le sien (`COMPTEUR_DU_SBIRE`), sinon
+  un sbire sans compteur reçoit un `counter` générique sans effet.
+- **`Deck.DiscardUntil` rend None quand il vide le deck, même si la dernière carte défaussée est la cherchée** (`deck.py`) :
+  `DefausserJusquAuSbire` relit le dessus de la défausse si une carte y est arrivée pendant l'appel. Cas « le sbire est la dernière
+  carte du deck » obligatoire.
+- **Une 6e carte d'état se câble en 11 endroits** (fiche `dazed.md`) ; un oubli ne casse rien AU CHARGEMENT : le piège de `compter()`
+  de `effets-statuts.ts` (`Record<Statut, number>` écrit en dur) donne `NaN` en silence, seul un cas vitest le voit.
+- **Deux statuts « simultanés » (Cloaked et Dazed) ne se résolvent pas par deux consommateurs indépendants** : l'un des deux doit
+  s'effacer et l'autre résoudre le lot (sinon 1 - 2 puis 0 + 2 donne 2 au lieu de 1).
+- **`autoplay.py --deck a+b`** monte une partie à deux joueurs (AJOUT 16/10/2026) ; l'expert se joue par
+  `--vilains <scenario>_expert --difficultes normal` (le mode `--difficultes expert` retire seulement le premier stade).
+
 ## 8. Données (`data/cards.json`) — conventions
 
 - Pack en QUEUE de fichier, `"custom": "Arnaud"`, `set_name` = nom du
@@ -1280,11 +1344,9 @@ Scénario à DEUX vilains qui s'activent ensemble, chacun à deux faces ALERT / 
   `choisir_option="Cancel"` refuse un `MayChooseOneAbility` (le pilote prend sinon la première option) ;
   une clé inconnue d'`etat_attendu` n'est lue que par `etat_attendu` : un vérificateur à soi renomme
   ses clés (`menace_de`, `trait_de`) pour ne pas entrer en collision avec `menace`, `traits`.
-- **Autoplay à plusieurs joueurs** : `autoplay.py` ne savait jouer que le joueur 0 et la règle v1.6
-  « Ask » (demander à un autre joueur de déclencher une Action) lui faisait reposer la même question à
-  l'infini (4 parties sur 4 « bloquée » sur Rhino lui-même). Corrigé (`AUTOPLAY_DECKS_SUP`, état du
-  joueur qui interroge, mémoire de boucle par joueur, option « Ask » écartée) ; reste ~1 partie sur 4
-  « bloquée » à deux joueurs, sur Rhino comme sur Bebop & Rocksteady : limite du PILOTE, pas du scénario.
+- **Autoplay à plusieurs joueurs** : `--deck a+b` (deux joueurs ; corrigé en parallèle sur la branche de sauvegarde : l'option « Ask »
+  est écartée, l'état lu est celui du joueur qui interroge). Reste quelques parties « bloquée » à deux joueurs, sur Rhino comme sur
+  Bebop & Rocksteady : limite du PILOTE, pas du scénario.
 
 ## 9. Le chemin outillé, de bout en bout
 
@@ -1299,3 +1361,48 @@ Scénario à DEUX vilains qui s'activent ensemble, chacun à deux faces ALERT / 
 | Autoplay ciblé | `autoplay.py --deck <pack> --parties 8` + témoin | ~3 min |
 | Batterie complète (fichier partagé touché) | `test_capacites.py` sans filtre | ~2 h, en fond |
 | Boucle des campagnes (carnet ou mise en place touchés) | `test_campagnes.py` | ~5 min |
+
+### 7duovicies. Pièges payés par le pack `jennika` (16/10/2026)
+
+- **« If you paid for this card with an [[ATTACK]] event »** (une CARTE qui paie, pas une couleur) : `GetPaidResources()` ne
+  dit que les couleurs. Les cartes qui ont payé sont `effect.context.paid_this_res_effects` (liste d'effets de ressource,
+  `e.this` = la carte payeuse, défaussée de la main ou en jeu). Modèle : `jennika/tj004`. Un témoin « payée par une
+  carte ressource » et un « payée par un événement d'un autre trait » sont obligatoires.
+- **Une classe de carte propre à un héros** (« this card is both a Jennika card and a Taijutsu card ») : `desc.Class =
+  "Hero;Taijutsu"` + le nom ajouté à `ClassCard.CARD_CLASS` ; le filtre est `CardFinder(card_classes=[...])`. Sans la
+  déclaration dans le `Literal`, la carte ne se construit pas (`assert IsCardClass`). Fiche `mots-cles/shinobi.md`.
+- **« Limit once per round FOR EACH <classe> »** : une capacité par classe, chacune `.LimitOncePerRound()` (une limite posée
+  sur UNE capacité commune serait partagée). Témoin d'épuisement : mesurer avec `world.stat.IsOncePerRound(ability)` ; la
+  fin de round de la vérification doit appeler `monde.stat.OnRoundEnd()` EN PLUS de `WhenRoundEnd` et
+  `buff_manager.OnRoundEnd()` (sinon la limite reste verrouillée, faux rouge).
+- **Une carte permanente mise de côté** (Path, Ionic Physiology) : `BeginGameWithSetAside([id], op)` + `set_aside` dans le deck de
+  départ ; la mise en jeu cherche dans `set_aside_deck` ET `additional_discard_pile`. Le deck reste à 15, la main de départ
+  n'est pas amputée.
+- **Obligation « Choose » à deux branches avec « You may flip »** : sous le harnais le pilote ACCEPTE la bascule (première
+  option) ; pour la refuser, `choisir_option: ["Cancel"]`. Une branche impayable ou sans condition remplie n'est pas
+  offerte : s'il ne reste qu'une branche, le moteur la prend sans poser de question.
+- **Mesurer la menace d'un complot principal : ne pas la monter jusqu'au seuil** (`SetThreat(principal, 4)` puis +3 :
+  « s'apprête à être accomplie », le complot avance et la résolution s'arrête avant la défausse de l'obligation). Partir de 1.
+- **Un vérificateur dédié qui ne lit pas toutes les clés de `attendu` les IGNORE** : le cas passe au vert sans rien mesurer
+  (Tenace de `tj015`, vu en mutant le `desc`). Faire déléguer le reste à `etat_attendu`.
+- **Les effets d'un héros se retrouvent par `e.ability.when.__name__`** (`func_names` ne contient que le nom de fabrique,
+  vide pour `WhenPlayerPlayCard`) ; `when` peut être un `UnionType` : `getattr(when, "__name__", "")`.
+## 10. Pièges payés par le scénario Shredder (`ts`) et TMNT Standard-Expert (`te`), 16/10/2026
+
+| Mécanique imprimée | Montage | Modèle | Piège |
+|---|---|---|---|
+| « X can have up to N cloaked status cards » (plafond de cartes d'état propre à une carte) | `AbilityFactory.ThisCanHaveAdditionalCloaked(N)` : capacité constante qui répond à `Message.GettingUnitAdditionalCloaked` ; `CanStatus.cloaked_max` = 1 + retours ; le plafond est testé dans `GainStatus` | ts001-ts003 (Shredder I/II/III : N = 1/2/3) | **Le plafond par défaut est 1** (encart du scénario) : « Cloak X » sur un X déjà cloaké rend `GainStatus == False`, ce que `Faces.GiveStatus` compte (« If you cannot ») |
+| Deux cartes d'état qui se résolvent sur le même événement (Tough avant Cloaked) | la carte la moins prioritaire se retire elle-même : `if unite.IsTough() and not message.property.ignore_tough: return` + `if message.is_be_instead: return` | `status/cloaked.py` | Sans cela, l'ORDRE DE POSE décidait : un Cloaked posé avant une Tough était consommé à sa place (cas « encart Q&R ») |
+| « If this activation deals damage to a character, <effet> » (boost) | `message.would_atk_message.IfUnitTakeDamageFromThisAttack(op, effect)` (dégâts RÉELLEMENT subis) | ts203 Hun | ⚠ `IfThisAttackDealDamage` (modèle thor 06029) lit les dégâts CALCULÉS : une carte Tough qui absorbe tout laissait quand même l'effet partir |
+| « Deal this card to the first player as a facedown encounter card » (boost) | détourner le rangement de la carte (`WhenCardWouldDiscard` → `SetToArea(joueur.dealt_encounter_cards)`) | tl015, ts101, ts201, ts205, te006 | ⚠ **à USAGE UNIQUE** (`unregister_after_exec=True`). Resté actif jusqu'à la fin du round, il renvoyait une TRAITRISE donnée puis révélée (Skulk te006) dans les cartes distribuées après sa défausse : `RevealEncounterCards` bouclait (`AssertionError face != last_face`). Constaté en autoplay |
+| « If there are no cloaked status cards on X » (condition d'une Action de héros d'attachement) | `PlayerActionToDiscardThis(HeroAction, conditions=[fn])` + `.SetCost(Cost("1"))` + `.SetCostFunc(CostFunc.TakeDamage(1, "YourIdentity"))` | ts006 | « spend 1 resource of any type » = `Cost("1")` |
+| Un nouveau jeu de rencontre « standard » / « expert » propre à une licence | le moteur reconnaît un ensemble standard/expert par son PRÉFIXE (`setup.py`, `worlds.py`, `catalog.js` : `standard*`, `expert*`, depuis le 16/10/2026 aussi `tmnt_standard*`, `tmnt_expert*`) | `data/encounter_sets/tmnt_standard.json` | Un nom sans ce préfixe est traité comme MODULAIRE : mis de côté au lieu d'être mélangé, et compté dans les « N ensembles modulaires » |
+| Carte « habillée » (même texte qu'une carte du core, autre illustration) | entrée complète dans `cards.json` + `"ability_link": "<card_id du core>"`, AUCUN script | te021-te027, te121-te123 → 01186-01193 | Preuve par substitution : stubber le module du CORE ; le module d'une carte habillée n'existe pas |
+| Boost d'attachement « Attach X to Shredder » | `message.AfterThisActivation(effect, lambda: this.AttachTo2(villain, effect))` | ts007 | une carte de boost est rangée APRÈS sa résolution : attacher tout de suite serait écrasé |
+
+Pièges du HARNAIS (`tools/test_capacites.py`) constatés sur ce scénario :
+- **`Puzzle.Reveal` sur un deck rencontre VIDE** : la carte est piochée, le deck est vide, le moteur **remélange la défausse dans le deck AVANT** le When Revealed. Un cas qui parle de « la défausse » doit garnir le deck (`CreateEncounterDeck('01105')`). Même cause pour le surge : garnir le deck de 3 cartes et mesurer `taille_deck_rencontre`.
+- **`Puzzle.Remove('<id>')` retire l'exemplaire du DECK avant celui du jeu** quand l'id existe en plusieurs exemplaires (Foot Soldiers x2) : `Puzzle.RemoveMinionsInPlay()` retire les sbires en jeu (mise en place au hasard) ; `Puzzle.EmptyEncounterDiscardPile()`, `Puzzle.RemoveNemesisAside()`, `Puzzle.AddCloak(card, n)` (le `Cloak` bascule), `Puzzle.RevealDealtCards()` ont été ajoutés.
+- **Un sbire à Coup Rapide posé en forme HÉROS attaque tout de suite** : le mettre en jeu en ALTER EGO, puis `ChangeForm`.
+- Deux exemplaires de la même carte en jeu : `Puzzle.PutIntoPlay(Puzzle.CreateCard('<id>'))` (les appels imbriqués de `Puzzle` sont permis).
+- Autoplay à deux joueurs : `--deck2 <deck>` (`AUTOPLAY_DECK2`). Le pilote **bloque** souvent à deux joueurs, même contre Rhino (8 parties bloquées sur 8, témoin du 16/10/2026) : ce taux n'est pas imputable au scénario.

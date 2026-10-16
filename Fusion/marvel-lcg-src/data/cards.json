@@ -286,6 +286,15 @@
    "desc": {},
    "traits": [],
    "set_name": ""
+  },
+  {
+   "card_id": "dazed",
+   "type": "Status",
+   "name": "Dazed",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": ""
   }
  ],
  "core": [
@@ -109904,5 +109913,2340 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "7974a66ba123896ff87ba9ce6751baa792a4ed471e8fe6423960b34f501b887e"
+ "venus": [
+  {
+   "card_id": "tv001a",
+   "type": "Hero",
+   "name": "* Venus",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "NINJA",
+    "TEMPORAL",
+    "TURTLE"
+   ],
+   "text": "<b>Action</b>: Place 1 dredge counter on Venus for each [[ELEMENT]] upgrade you control (to a maximum of 6). <i>(Limit once per round.)</i>",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv001b",
+   "type": "AlterEgo",
+   "name": "* Bonnie",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "TEENAGER",
+    "MUTANT",
+    "TURTLE"
+   ],
+   "text": "<b>Setup</b>: Discard cards from the top of your deck until you discard an [[ELEMENT]] upgrade. Put that card into play.\n<b>Action</b>: Remove 1 dredge counter from Bonnie → heal 2 damage from a friendly character. <i>(Limit once per round.)</i>",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv002",
+   "type": "Ally",
+   "name": "* Bludgeon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "SHARK",
+    "TEMPORAL"
+   ],
+   "text": "<b>Response</b>: After Bludgeon enters play, put 1 card from your discard pile on top of your deck.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv003",
+   "type": "Event",
+   "name": "Arc Nova",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Remove X dredge counters from Venus → deal 4 damage to X enemies.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv004",
+   "type": "Event",
+   "name": "Brain Burn",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. You may remove 2 dredge counters from Venus to confuse and stun an enemy.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv005",
+   "type": "Event",
+   "name": "Eldritch Lance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. This attack gains overkill. Draw 1 card for each [wild] resource used to pay for this card.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv006",
+   "type": "Event",
+   "name": "Quantanucleic Acid",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "QUANTA"
+   ],
+   "text": "<b>Hero Action</b>: Give Venus a tough status card. You may remove 2 dredge counters from Venus to draw 2 cards.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv007",
+   "type": "Event",
+   "name": "Resistance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent all damage from that attack. You may remove 2 dredge counters from Venus to draw 3 cards.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv008",
+   "type": "Resource",
+   "name": "Evanescence",
+   "subtitle": "",
+   "desc": {
+    "RES": "GGG",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv009",
+   "type": "Upgrade",
+   "name": "* Arcane Emitting Diode",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust this card and discard the top 2 cards of your deck → deal 2 damage to an enemy.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv010",
+   "type": "Upgrade",
+   "name": "* Cosmic Requiem",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "SONG"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and remove 2 dredge counters from Venus → discard cards from the top of your deck until you discard an event. Add that card to your hand.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv011",
+   "type": "Upgrade",
+   "name": "* Dragon Scale",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARTIFACT",
+    "ELEMENT",
+    "MYSTIC"
+   ],
+   "text": "<b>Resource</b>: Exhaust this card and remove 1 dredge counter from Venus → generate a [wild] resource.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv012",
+   "type": "Upgrade",
+   "name": "* Dream Weaver",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "SONG"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and remove 2 dredge counters from Venus → discard cards from the top of your deck until you discard an ally or upgrade. Add that card to your hand.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv013",
+   "type": "Upgrade",
+   "name": "* Reanimator Engine",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONSTRUCT",
+    "ELEMENT"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and remove 2 dredge counters from Venus → choose up to 2 cards in your discard pile and shuffle them into your deck.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv014",
+   "type": "Upgrade",
+   "name": "* Turtle Shell",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ELEMENT",
+    "TURTLE"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust this card and discard the top 2 cards of your deck → ready Venus.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv015",
+   "type": "Obligation",
+   "name": "Faulty Creation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Bonnie",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Bonnie player.</i></b>\nYou may flip to alter-ego form.\n<b>Alter-Ego Action</b>: Exhaust Bonnie → remove Faulty Creation from the game.",
+   "set_name": "Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv016",
+   "type": "SideScheme",
+   "name": "Jasper Barlow's Lab",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "0",
+    "Boost": "2",
+    "Hazard": "1",
+    "Hinder": "2*",
+    "Incite": "2"
+   },
+   "traits": [],
+   "text": "<i>Jasper Barlow has been performing experiments on the inhabitants of Mutant Town.</i>\nHinder 2[per_hero]. Incite 2.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv017",
+   "type": "Minion",
+   "name": "* Jasper Barlow",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "2",
+    "ATK": "0",
+    "Boost": "0",
+    "Nemesis": "Venus"
+   },
+   "traits": [
+    "GENIUS",
+    "RAT"
+   ],
+   "text": "<b>When Revealed</b>: Place a tough status card on each minion engaged with you.\n<i>(Venus' nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv018",
+   "type": "Minion",
+   "name": "* Groundchuck-Dirtbag",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "0",
+    "Guard": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "BULL",
+    "MOLE"
+   ],
+   "text": "Guard. Toughness.\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tv019",
+   "type": "Treachery",
+   "name": "Salvaged Scales",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Place 2 threat on the main scheme. If Jasper Barlow is in play, place a tough status card on the villain and each minion engaged with you.",
+   "set_name": "Venus Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "casey_jones": [
+  {
+   "card_id": "tc001a",
+   "type": "Hero",
+   "name": "* Casey Jones",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "VIGILANTE"
+   ],
+   "text": "<i>Overswing</i> — <b>Resource</b>: Discard a [[WEAPON]] upgrade you control with the restricted keyword → generate [wild][wild][wild] resources for an [[ATTACK]], [[THWART]], or [[DEFENSE]] event. (Limit once per phase.)",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc001b",
+   "type": "AlterEgo",
+   "name": "* Casey Jones",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "text": "<b>Setup</b>: Search your deck and discard pile for the Casey's Bag upgrade and put it into play. <i>(Shuffle.)</i>\n<b>Response</b>: After you change to this form, return a [[WEAPON]] upgrade from your discard pile to your hand.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc002",
+   "type": "Event",
+   "name": "Clap Back",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. If a Casey Jones [[WEAPON]] upgrade was discarded to pay for this card, confuse an enemy.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc003",
+   "type": "Event",
+   "name": "Cross Block",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you defend against an attack, you get +3 DEF for that attack. Then, ready Casey Jones and give him a tough status card.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc004",
+   "type": "Event",
+   "name": "Face-Off",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Ready your hero and deal 3 damage to an enemy. That enemy attacks you.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc005",
+   "type": "Event",
+   "name": "Grand Slam",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Requirement": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "Requirement ([wild]). <i>(While paying for this card, spend the listed resources.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc006",
+   "type": "Upgrade",
+   "name": "Anything Goes",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust Anything Goes → swap a Casey Jones [[WEAPON]] upgrade you control with a Casey Jones [[WEAPON]] upgrade tucked under Casey's Bag.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc007",
+   "type": "Upgrade",
+   "name": "Baseball Bat",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When you use a basic power, exhaust Baseball Bat → you get +1 to that power for this use.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc008",
+   "type": "Upgrade",
+   "name": "* Casey's Mask",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust Casey's Mask → ready Casey Jones.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc009",
+   "type": "Upgrade",
+   "name": "Cricket Willow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\nYour hero gets +1 ATK.\n<b>Hero Response</b>: After you attack an enemy, discard Cricket Willow → stun that enemy.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc010",
+   "type": "Upgrade",
+   "name": "Driving Iron",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust Driving Iron → deal 1 damage to an enemy, or remove 1 threat from a scheme.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc011",
+   "type": "Upgrade",
+   "name": "Hockey Stick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When you make a basic attack or defense, exhaust Hockey Stick → you get +2 to that power for this use.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc012",
+   "type": "Upgrade",
+   "name": "Persuader",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\nYour hero gets +1 ATK.\n<b>Hero Interrupt</b>: When you make a basic attack, exhaust Persuader → you get +1 ATK for that attack. This attack gains piercing.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc013",
+   "type": "Upgrade",
+   "name": "* Casey's Bag",
+   "subtitle": "",
+   "desc": {
+    "RES": "B",
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "text": "Permanent.\nYou may play cards tucked here as if they were in your hand.\n<b>Hero Action</b>: Exhaust this card → tuck the bottommost [[WEAPON]] upgrade in your discard pile under this card.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc014",
+   "type": "Obligation",
+   "name": "Daddy Issues",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Casey Jones"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Casey Jones player.</i></b>\nFlip to alter-ego form. You cannot change forms.\n<b>Action</b>: Exhaust Casey Jones → remove Daddy Issues from the game.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc015",
+   "type": "SideScheme",
+   "name": "The Purple Dragons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "3",
+    "Crisis": "1",
+    "Incite": "1*"
+   },
+   "traits": [],
+   "text": "<i>Hun and his Purple Dragons run this part of town.</i>\nIncite 1[per_hero].",
+   "set_name": "Casey Jones Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc016",
+   "type": "Minion",
+   "name": "* Hun",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "3",
+    "Toughness": "1",
+    "Nemesis": "Casey Jones"
+   },
+   "traits": [
+    "BRUTE",
+    "PURPLE DRAGONS"
+   ],
+   "text": "Toughness.\n<b>Forced Response</b>: After Hun attacks and damages a character, stun that character.\n<i>(Casey Jones' nemesis minion.)</i>",
+   "set_name": "Casey Jones Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc017",
+   "type": "Minion",
+   "name": "Purple Dragon Goons",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Guard": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "PURPLE DRAGONS"
+   ],
+   "text": "Guard. Patrol.\n<b>When Revealed</b>: Place a tough status card on the villain.",
+   "set_name": "Casey Jones Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "alopex": [
+  {
+   "card_id": "ta001a",
+   "type": "Hero",
+   "name": "* Alopex",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "FOX",
+    "NINJA",
+    "VIGILANTE"
+   ],
+   "text": "<i>Matagi</i> — <b>Forced Response</b>: After you attack an enemy or thwart a scheme, find Prey and attach it to that enemy or scheme.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta001b",
+   "type": "AlterEgo",
+   "name": "* Alopex",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "FOX",
+    "MUTANT",
+    "TEENAGER"
+   ],
+   "text": "<b>Setup</b>: Set your Prey upgrade aside.\n<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for up to 2 [[KAMA]] upgrades and put them into play, exhausted. <i>(Shuffle.)</i>",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta002",
+   "type": "Ally",
+   "name": "* Nobody",
+   "subtitle": "Angel Bridges",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "VIGILANTE"
+   ],
+   "text": "[star] <b>Response</b>: After Nobody attacks an enemy with Prey attached, daze that enemy.\n[star] <b>Response</b>: After Nobody thwarts a scheme with Prey attached, cloak her.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta003",
+   "type": "Event",
+   "name": "Bold Strategy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b>: Cloak Alopex. You may spend up to 3 [mental] resources to daze an enemy for each [mental] resource spent this way.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta004",
+   "type": "Event",
+   "name": "Pounce",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to an enemy. You may spend up to 2 [mental] resources to deal 2 additional damage to that enemy for each [mental] resource spent this way.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta005",
+   "type": "Event",
+   "name": "Prowl",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Shuffle 1 card with a printed [mental] resource from your discard pile into your deck.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta006",
+   "type": "Event",
+   "name": "Sniff Out Trouble",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "<b>Hero Action</b>: Discard cards from the encounter deck until you discard a minion or side scheme. Reveal that card → draw 2 cards and ready each [[KAMA]] upgrade you control.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta007",
+   "type": "Support",
+   "name": "* Mutant Shelter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "STREETS"
+   ],
+   "text": "Your alter-ego gets +2 REC.\n<b>Alter-Ego Action</b>: Exhaust Mutant Shelter → shuffle the topmost ally in your discard pile into your deck.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta008",
+   "type": "Upgrade",
+   "name": "* Kitsune Kabuki",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "MYSTIC"
+   ],
+   "text": "Each hunter counter on this card can be spent as if it were a [mental] resource.\n<b>Hero Response</b>: After Prey leaves play, place 1 hunter counter here.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta009",
+   "type": "Upgrade",
+   "name": "* Alopex's Kama",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "KAMA",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\nEach [[KAMA]] upgrade you control gains: \"<b>Hero Response</b>: After Prey leaves play, exhaust this card and spend a [mental] resource → ready Alopex.\"",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta010",
+   "type": "Upgrade",
+   "name": "* Alopex's Other Kama",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "KAMA",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\nEach [[KAMA]] upgrade you control gains: \"<b>Hero Action</b> <i>(attack/thwart)</i>: Exhaust this card → deal 1 damage to an enemy or remove 1 threat from a scheme.\"",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta011",
+   "type": "Upgrade",
+   "name": "Prey",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "text": "Alopex' attacks deal 1 additional damage to attached enemy.\nAlopex' thwarts remove 1 additional threat from attached scheme.\n<b>Forced Interrupt</b>: When this card leaves play, set this card aside.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta012",
+   "type": "Obligation",
+   "name": "Manipulated",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Acceleration": "2",
+    "GiveTo": "Alopex"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Alopex player.</i></b>\n<b>Action</b>: Exhaust Alopex and deal 1 damage to each character you control → discard Manipulated.",
+   "set_name": "Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta013",
+   "type": "SideScheme",
+   "name": "You Belong To Me",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "text": "<i>Kitsune has dug her claws into Alopex, and she has no intention of letting her go...</i>\n<b>When Revealed</b>: Each player discards 1 card from their hand.",
+   "set_name": "Alopex Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta014",
+   "type": "Minion",
+   "name": "* Kitsune",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "2",
+    "Nemesis": "Alopex"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "PANTHEON",
+    "WITCH"
+   ],
+   "text": "<b>When Revealed</b>: Cloak Kitsune and exhaust your identity.\n<i>(Alopex's nemesis minion.)</i>",
+   "set_name": "Alopex Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ta015",
+   "type": "Treachery",
+   "name": "Curse of Nine Tales",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "text": "<b>When Revealed</b>: Choose one:\n• Discard the top 3 cards of your deck and place 1 threat on the main scheme for each different card type discarded this way.\n• Discard 2 allies you control.",
+   "set_name": "Alopex Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "jennika": [
+  {
+   "card_id": "tj001a",
+   "type": "Hero",
+   "name": "* Jennika",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "text": "<i>Ninja Senpai</i> — <b>Interrupt</b>: When you play a Shinobi card, Jennika gets +1 THW, +1 ATK, and +1 DEF until the end of the round. <i>(Limit once per round for each Shinobi.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj001b",
+   "type": "AlterEgo",
+   "name": "* Jenny",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "TEENAGER",
+    "MUTANT",
+    "TURTLE"
+   ],
+   "text": "<b>Setup</b>: Put the Sōsaiken Path into play under your control.\n<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for up to 2 [[TEKKO-KAGI]] upgrades and put them into play, exhausted. <i>(Shuffle.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj002",
+   "type": "Event",
+   "name": "Composure",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "text": "<b>Action</b>: Choose a card in your discard pile → add that card to your hand.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj003",
+   "type": "Event",
+   "name": "Apparition",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero;Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL",
+    "THWART"
+   ],
+   "text": "<b>Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme and confuse an enemy.\n<i>(This card is both a Jennika card and a Kuji-Kiri card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj004",
+   "type": "Event",
+   "name": "Decisive Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero;Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. If you paid for this card with an [[ATTACK]] event, stun that enemy.\n<i>(This card is both a Jennika card and a Taijutsu card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj005",
+   "type": "Event",
+   "name": "Moonlighting",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero;Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b>: Cloak Jennika.\n<i>(This card is both a Jennika card and a Ninjutsu card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj006",
+   "type": "Upgrade",
+   "name": "Fearless Resolve",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "2,samurai",
+    "Class": "Hero;Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "text": "Uses (2 samurai counters).\n<b>Hero Action</b>: Exhaust Fearless Resolve and remove 2 samurai counters from it → ready Jennika.\n<i>(This is both a Jennika card, and a Bushido card.)</i>",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj007",
+   "type": "Support",
+   "name": "* Jenny's Crib",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SKYLINE"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Exhaust Jenny's Crib and discard 1 card from your hand → draw 1 card and ready your identity.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj008",
+   "type": "Upgrade",
+   "name": "* Jennika's Bow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BOW",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust Jennika's Bow → deal 1 damage to an enemy or remove 1 threat from a scheme.\n<b>Hero Response</b>: After you play an [[ATTACK]] or [[THWART]] event, ready Jennika's Bow.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj009",
+   "type": "Upgrade",
+   "name": "* Jennika's Tekko-Kagi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "TEKKO-KAGI",
+    "WEAPON"
+   ],
+   "text": "Each [[TEKKO-KAGI]] upgrade you control gains: \"<b>Hero Resource</b>: Exhaust this card → generate a [wild] resource for a Shinobi card.\"",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj010",
+   "type": "Upgrade",
+   "name": "* Jennika's Other Tekko-Kagi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "TEKKO-KAGI",
+    "WEAPON"
+   ],
+   "text": "Each [[TEKKO-KAGI]] upgrade you control gains:\"<b>Hero Interrupt</b>: When you make a basic attack, exhaust this card and discard 1 card from your hand → Jennika gets +2 ATK for that attack. This attack gains piercing.\"",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj011",
+   "type": "Path",
+   "name": "Sōsaiken",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SENPAI"
+   ],
+   "text": "Permanent.\n<b>Response</b>: After you play a Shinobi card, exhaust this card → draw 1 card.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj012",
+   "type": "Obligation",
+   "name": "Personality Adjustment",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Jenny"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Jenny player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Jenny → remove Personality Adjustment from the game.\n• Place 3 threat on the main scheme. Discard this obligation.",
+   "set_name": "Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj013",
+   "type": "SideScheme",
+   "name": "Dun Import Exports",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Boost": "2",
+    "Hazard": "1",
+    "Hinder": "1*",
+    "Incite": "2"
+   },
+   "traits": [],
+   "text": "<i>The dangerous mobster Darius Dun is setting up shop. He has sent out his Street Phantoms to secure control of the city ports.</i>\nHinder 1[per_hero]. Incite 2.",
+   "set_name": "Jennika Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj014",
+   "type": "Minion",
+   "name": "* Phantasm",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "3",
+    "Retaliate": "1",
+    "Toughness": "1",
+    "Nemesis": "Jennika"
+   },
+   "traits": [
+    "PHANTOMS"
+   ],
+   "text": "Retaliate 1. Toughness.\n<b>When Defeated</b>: Cloak each [[PHANTOMS]] minion in play.\n<i>(Jennika's nemesis minion.)</i>",
+   "set_name": "Jennika Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tj015",
+   "type": "Minion",
+   "name": "Street Phantoms",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "2",
+    "Toughness": "1"
+   },
+   "traits": [
+    "PHANTOMS"
+   ],
+   "text": "Toughness.\n<b>When Revealed</b>: Cloak Street Phantoms.",
+   "set_name": "Jennika Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "baxter_stockman": [
+  {
+   "card_id": "tx001",
+   "type": "Villain",
+   "name": "* Baxter Stockman",
+   "subtitle": "",
+   "desc": {
+    "HP": "13*",
+    "ATK": "0",
+    "SCH": "1",
+    "Stage": "I",
+    "Toughness": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "FLY",
+    "GENIUS"
+   ],
+   "text": "Toughness.\n<b>Forced Interrupt</b>: When the villain phase begins, each player resolves the \"<b>Special</b>\" on the Baxter's Laboratory scheme.\n<i>\"I will show them all...\"</i>",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx002",
+   "type": "Villain",
+   "name": "* Baxter Stockman",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "ATK": "1",
+    "SCH": "2",
+    "Stage": "II",
+    "Toughness": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "FLY",
+    "GENIUS"
+   ],
+   "text": "Toughness.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Baxter Blaster attachment and reveal it. <i>(Shuffle.)</i>\n<b>Forced Interrupt</b>: When the villain phase begins, each player resolves the \"<b>Special</b>\" on the Baxter's Laboratory scheme.",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx003",
+   "type": "Villain",
+   "name": "* Baxter Stockman",
+   "subtitle": "",
+   "desc": {
+    "HP": "19*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "III",
+    "Toughness": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "FLY",
+    "GENIUS"
+   ],
+   "text": "Toughness.\nEach [[SWARM]] minion gains guard.\n<b>When Revealed</b>: Deal each player 1 facedown encounter card.\n<b>Forced Interrupt</b>: When the villain phase begins, each player resolves the \"<b>Special</b>\" on the Baxter's Laboratory scheme.",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx004a",
+   "type": "MainScheme",
+   "name": "Baxter's Laboratory",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "text": "<i>Baxter Stockman has been busy at Stockgen working on his many automatons and mutagen experiments. The recent disappearance of the scientist has sparked wild speculation. What has he been up to?</i>\n<b>Content:</b> Baxter Stockman (I) and Baxter Stockman (II). <i>(Baxter Stockman (II) and Baxter (III) for expert mode.)</i> Baxter's Lab, Cyber Swarm, and Standard sets. Two modular encounter sets <i>(High Speed and Security Protocol)</i>.\n<b>Setup</b>: Put a Plague of M.O.U.S.E.R.S. minion into play engaged with each player.",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx004b",
+   "type": "MainScheme",
+   "name": "Baxter's Laboratory",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "11*",
+    "EscalationThreat": "1*",
+    "Stage": "1B"
+   },
+   "traits": [],
+   "text": "<i>Replicate</i> — <b>Special</b>: Place 1 all-purpose counter on each [[SWARM]] minion engaged with you. If there are no [[SWARM]] minions engaged with you, deal yourself a facedown encounter card.\n<b>If this scheme is completed, the players lose the game.</b>",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx005",
+   "type": "Attachment",
+   "name": "* Baxter Blaster",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "text": "Attach to Baxter Stockman.\n[star] <b>Forced Response</b>: After Baxter Stockman attacks and damages a friendly character, daze them.\n<b>Hero Action</b>: Exhaust your hero or spend 2 resources of any type → discard this card.\n<hr />\n[star] <b>Boost</b>: Attach Baxter Blaster to Baxter Stockman.",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx006",
+   "type": "Attachment",
+   "name": "Swarm Superiority",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "text": "Attach to a [[SWARM]] minion. If you cannot, this card gains surge.\nAttached minion gains [[AERIAL]] and guard.\n<b>When Revealed</b>: Place 2 all-purpose counters on attached minion.\n<i>\"It's hard to compete with our numbers.\"</i> —Baxter Stockman",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx007",
+   "type": "Minion",
+   "name": "Plague of M.O.U.S.E.R.S.",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0",
+    "SCH": "0",
+    "Boost": "1"
+   },
+   "traits": [
+    "MOUSERS",
+    "SWARM"
+   ],
+   "text": "Enters play with 2 swarm counters on them.\n[star] This minion's SCH, ATK, and hit points are equal to the number of swarm counters here.\n<b>Forced Interrupt</b>: When this minion takes any amount of damage, remove that many swarm counters from here instead.",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx008",
+   "type": "Treachery",
+   "name": "Radical Ingenuity",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Choose:\n• Resolve the \"<b>Special</b>\" ability on Baxter's Laboratory.\n• Place 2 threat on the main scheme.\n<i>\"Jussst try and stop meeeeee.\"</i> —Baxter Stockman",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx009",
+   "type": "Treachery",
+   "name": "Rapid Replication",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a minion is discarded. Reveal that minion. Then, resolve the \"<b>Special</b>\" ability on Baxter's Laboratory.\n<i>\"Go forth my minions!\"</i> —Baxter Stockman",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx010",
+   "type": "SideScheme",
+   "name": "Robotics Facility",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "1*",
+    "Boost": "1",
+    "Acceleration": "1",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "text": "<i>The automated factory hums with precision without human oversight. Unaffected by the conflict surrounding the facility.</i>\nHinder 1[per_hero].",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx011",
+   "type": "SideScheme",
+   "name": "Mad Lab",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "1"
+   },
+   "traits": [],
+   "text": "<i>\"They said I was crazy. Soon they will learn.\"</i> —Baxter Stockman\n<b>Forced Interrupt</b>: When the villain phase begins, the first player must resolve the \"<b>Special</b>\" ability on Baxter's Laboratory.",
+   "set_name": "Baxter's Lab",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx012",
+   "type": "Minion",
+   "name": "Flight of Flyborgs",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0",
+    "SCH": "0",
+    "Boost": "2"
+   },
+   "traits": [
+    "AERIAL",
+    "FLYBORG",
+    "SWARM"
+   ],
+   "text": "Enters play with 4 swarm counters here.\n[star] This minion's SCH, ATK, and hit points are equal to the number of swarm counters here.\n<b>Forced Interrupt</b>: When this minion takes any amount of damage, remove that many swarm counters from here instead.",
+   "set_name": "Cyber Swarm",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx013",
+   "type": "Minion",
+   "name": "* Superfly",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "0",
+    "SCH": "0",
+    "Boost": "3"
+   },
+   "traits": [
+    "AERIAL",
+    "FLYBORG",
+    "SWARM"
+   ],
+   "text": "Enters play with 2 Ooze counters on him.\n[star] This minion's SCH and ATK are equal to the number of Ooze counters here.\n<i>\"Buzz Buzz.\"</i>",
+   "set_name": "Cyber Swarm",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx014",
+   "type": "Treachery",
+   "name": "Buzz Off",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Choose:\n• Place 3 threat on the main scheme.\n• Take 2 damage.\n<i>\"Bzzzzzzzzzzzzzzzzzz.\"</i>",
+   "set_name": "Cyber Swarm",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx015",
+   "type": "Minion",
+   "name": "Roadkill Rodneys",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "ROBOT",
+    "SWARM"
+   ],
+   "text": "Enters play with 1 cable counter on them.\nQuickstrike.\n[star] This minion gets +1 ATK for each cable counter here.\n[star] <b>Forced Response</b>: After this minion attacks and damages a character, daze that character and remove each cable counter from here.",
+   "set_name": "High Speed",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx016",
+   "type": "Treachery",
+   "name": "Wrapped Up",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Daze a friendly character. If you cannot, this card gains surge.\n<i>\"Apprehend! Apprehend!\"</i> —Roadkill Rodney",
+   "set_name": "High Speed",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx017",
+   "type": "Minion",
+   "name": "Auto Defense Bots",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "0",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "ROBOT",
+    "SWARM"
+   ],
+   "text": "Guard. Patrol.\nEnters play with 1 shield counter on them.\n<b>Forced Interrupt</b>: When this minion would be defeated, heal all damage from this minion, and remove 1 shield counter from here instead.",
+   "set_name": "Security Protocol",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tx018",
+   "type": "Attachment",
+   "name": "Intruder Alert!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "text": "Attach to your identity.\n[[crisis]]\n<b>Action</b>: Take 2 damage or exhaust your identity → discard this card.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "set_name": "Security Protocol",
+   "custom": "Inkwire"
+  }
+ ],
+ "shredder": [
+  {
+   "card_id": "ts001",
+   "type": "Villain",
+   "name": "* Shredder",
+   "subtitle": "",
+   "desc": {
+    "HP": "12*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "I"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Shredder can have up to 2 cloaked status cards.\n<b>Forced Response</b>: After the villain phase ends, give Shredder a cloaked status card.\n<i>\"This city is mine!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts002",
+   "type": "Villain",
+   "name": "* Shredder",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "II"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Shredder can have up to 3 cloaked status cards.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Bladed Armor attachment and reveal it. <i>(Shuffle.)</i>\n<b>Forced Response</b>: After the villain phase ends, give Shredder a cloaked status card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts003",
+   "type": "Villain",
+   "name": "* Shredder",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "III"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Shredder can have up to 4 cloaked status cards.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Kuro Kabuto attachment and reveal it. <i>(Shuffle.)</i>\n<b>Forced Response</b>: After the villain phase ends, give Shredder 2 cloaked status cards.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts004a",
+   "type": "MainScheme",
+   "name": "Clan of Shadows",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>The Foot Clan controls the city streets.</i>\n<b>Content</b>: Shredder (I) and Shredder (II). <i>(Shredder (II) and Shredder (III) for expert mode.)</i> Shredder, Shadow of the Foot, and Standard sets. Two modular encounter sets <i>(Chunin and Foot Goon Squad)</i>.\n<b>Setup</b>: Each player searches the encounter deck for a [[FOOT CLAN]] minion and reveals it.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts004b",
+   "type": "MainScheme",
+   "name": "Clan of Shadows",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "6*",
+    "EscalationThreat": "1*",
+    "Stage": "1B"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>Shredder's chokehold on the city has gone on long enough. You must dismantle his criminal network.</i>\n<b>When Revealed</b>: Cloak Shredder.\n<b>Forced Response</b>: After a [[FOOT CLAN]] minion is defeated, place 1 threat on this scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts005a",
+   "type": "MainScheme",
+   "name": "Shredder's Wrath",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>Your meddling in the affairs of the Foot Clan has attracted the ire of Shredder.</i>\n<b>When Revealed</b>: In player order, each player discards 4 cards from the top of the encounter deck and reveals the topmost [[FOOT CLAN]] minion in the encounter discard pile.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts005b",
+   "type": "MainScheme",
+   "name": "Shredder's Wrath",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "TargetThreat": "10*",
+    "EscalationThreat": "1*",
+    "Stage": "2B"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>Shredder has now set his sights on you.</i>\n<b>When Revealed</b>: Give each enemy a tough status card.\n<b>Forced Response</b>: After Shredder schemes, give Shredder a cloaked status card.\n<b>If this scheme is completed, the players lose the game.</b>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts006",
+   "type": "Attachment",
+   "name": "Bladed Armor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "ATK+": "1"
+   },
+   "traits": [
+    "ARMOR",
+    "FOOT CLAN",
+    "RELIC"
+   ],
+   "set_name": "Shredder",
+   "text": "Attach to Shredder.\nShredder gains Retaliate 1.\n<b>Hero Action</b>: If there are no cloaked status cards on Shredder, take 1 damage and spend 1 resource of any type &#8594; discard this card.\n<i>\"Hey, check out the giant cheese grater.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts007",
+   "type": "Attachment",
+   "name": "* Kuro Kabuto",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1"
+   },
+   "traits": [
+    "ARMOR",
+    "FOOT CLAN",
+    "RELIC"
+   ],
+   "set_name": "Shredder",
+   "text": "Attach to Shredder.\nShredder gains steady.\n<b>Forced Response</b>: After the villain phase ends, cloak Shredder.\n<b>Hero Action</b>: Discard 2 cards from your hand &#8594; discard this card.\n<hr />\n[star] <b>Boost</b>: Attach Kuro Kabuto to Shredder.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts008",
+   "type": "Minion",
+   "name": "Elite Guard",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Guard. Patrol.\n<b>When Revealed</b>: Cloak Shredder.\n<hr />\n[star] <b>Boost</b>: Give Shredder a tough status card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts010",
+   "type": "Minion",
+   "name": "Foot Ninja",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed</b>: Cloak Foot Ninja.\n<b>Forced Interrupt</b>: When Foot Ninja is defeated, shuffle them into the encounter deck.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, cloak the villain.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts012",
+   "type": "Minion",
+   "name": "* Mongo",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "0",
+    "Boost": "1",
+    "Guard": "1",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shredder",
+   "text": "Guard. Retaliate 1.\n<hr />\n[star] <b>Boost</b>: Stun your hero.\n<i>\"Who knew a sumo wrestler could pull off a kabuki mask?\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts013",
+   "type": "Treachery",
+   "name": "Cloak of Shadows",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed</b>: Cloak each enemy. If you are not engaged with a minion, reveal the topmost [[FOOT CLAN]] minion in the encounter discard pile.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, cloak Shredder.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts015",
+   "type": "Treachery",
+   "name": "Disarming Assault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed</b>: Shredder attacks you. Do not give Shredder any boost cards for this activation. If this attack deals damage to you, discard a [[WEAPON]] you control.\n<hr />\n[star] <b>Boost</b>: Discard a [[WEAPON]] you control.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts017",
+   "type": "Treachery",
+   "name": "Shred",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Place a cloaked status card on Shredder.\n<b>When Revealed (Hero)</b>: Shredder attacks you. Do not give Shredder any boost cards for this activation.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, cloak Shredder.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts020",
+   "type": "SideScheme",
+   "name": "Foot Rikugun",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Hazard": "1",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>The Foot Clan trains their ninja to be relentless assassins.</i>\n<b>Forced Response</b>: After a [[FOOT CLAN]] minion enters play, cloak it. If you cannot, give it a tough status card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts022",
+   "type": "SideScheme",
+   "name": "Throne of the Jōnin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Crisis": "1",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Shredder",
+   "text": "<i>\"Tonight I will dine on turtle soup.\"</i> —Shredder\n<b>When Revealed</b>: Search the encounter deck and discard pile for a [[FOOT CLAN]] attachment and reveal it. <i>(Shuffle.)</i> If you cannot, place 2[per_hero] threat on this scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts101",
+   "type": "Minion",
+   "name": "* Karai",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "1",
+    "SCH": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Chunin",
+   "text": "<b>When Revealed</b>: Cloak Karai.\n<b>When Defeated</b>: Cloak the villain.\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts102",
+   "type": "Minion",
+   "name": "* Ocho",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "2",
+    "Boost": "1",
+    "Guard": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "MOLE",
+    "YOUKAI"
+   ],
+   "set_name": "Chunin",
+   "text": "Guard.\n[star] Ocho's attacks gain piercing.\n<hr />\n[star] <b>Boost</b>: Search the encounter deck and discard pile for Karai and reveal her. <i>(Shuffle.)</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts103",
+   "type": "Attachment",
+   "name": "* Kira no Ken",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "ATK+": "1*"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "RELIC",
+    "WEAPON"
+   ],
+   "set_name": "Chunin",
+   "text": "Attach to Karai. If Karai is not in play, search the encounter deck and discard pile for Karai and reveal her. Then, attach this card to her.\n[star] Attached minion's attacks gain piercing.\n<i>\"My blade has no equal.\"</i> —Karai",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts104",
+   "type": "Treachery",
+   "name": "Doroppuin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Chunin",
+   "text": "<b>When Revealed</b>: Reveal the topmost minion in the encounter discard pile. Otherwise, this gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains piercing.\n<i>\"Please, try to keep up.\"</i> —Karai",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts201",
+   "type": "Minion",
+   "name": "* Bebop",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "0",
+    "Toughness": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "WARTHOG"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Toughness.\n[star] Bebop's attacks gain piercing.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains piercing. Otherwise, deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts202",
+   "type": "Minion",
+   "name": "* Bludgeon",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "SHARK"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Quickstrike.\n<b>Forced Response</b>: After Bludgeon attacks and damages a character, exhaust that character.\n<hr />\n[star] <b>Boost</b>: Exhaust your hero.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts203",
+   "type": "Minion",
+   "name": "* Hun",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Toughness.\n<b>Forced Response</b>: After Hun attacks and damages a character, stun that character.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to a character, stun that character.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts204",
+   "type": "Minion",
+   "name": "* Koya",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "1",
+    "SCH": "2",
+    "Incite": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "FALCON",
+    "FOOT CLAN"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Incite 1. Quickstrike.\n<b>When Revealed</b>: Heal 2 damage from the villain.\n<hr />\n[star] <b>Boost</b>: Place 1 threat on the main scheme and heal 2 damage from the villain.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts205",
+   "type": "Minion",
+   "name": "* Rocksteady",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "0",
+    "Boost": "1",
+    "Steady": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "FOOT CLAN",
+    "RHINOCEROS"
+   ],
+   "set_name": "Foot Goon Squad",
+   "text": "Steady. Quickstrike.\n[star] Rocksteady's attacks gain overkill.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains overkill. Otherwise, deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts206",
+   "type": "SideScheme",
+   "name": "Send Out the Goons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Crisis": "1",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Foot Goon Squad",
+   "text": "<i>Shredder's goons are on the streets shaking down the locals.</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[BRUTE]] minion is discarded. Reveal that minion.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts301",
+   "type": "Minion",
+   "name": "Foot Assassin",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shadow of the Foot",
+   "text": "Quickstrike.\n<b>When Revealed</b>: Cloak Foot Assassin.\n<b>Forced Response</b>: After Foot Assassin attacks, cloak them.\n<i>\"Is your name Edward?\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts303",
+   "type": "Minion",
+   "name": "Foot Soldiers",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "set_name": "Shadow of the Foot",
+   "text": "<b>When Revealed</b>: Cloak Foot Soldiers.\n<i>\"Beware the shadows of New York City, my sons. They have many blades.\"</i> —Splinter",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ts305",
+   "type": "SideScheme",
+   "name": "Foothold",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Crisis": "1",
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Incite": "2"
+   },
+   "traits": [],
+   "set_name": "Shadow of the Foot",
+   "text": "<i>The Foot Clan has gained a firm foothold.</i>\nHinder 1[per_hero]. Incite 2.",
+   "custom": "Inkwire"
+  }
+ ],
+ "tmnt_standard_expert": [
+  {
+   "card_id": "te001",
+   "type": "Treachery",
+   "name": "No Quarter",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Discard an upgrade or support you control. If no cards were discarded this way, daze your identity.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, daze your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te002",
+   "type": "Treachery",
+   "name": "Outmatched",
+   "subtitle": "",
+   "desc": {
+    "Incite": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "Incite 2.\n<b>When Revealed</b>: Daze your identity.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, daze your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te004",
+   "type": "Treachery",
+   "name": "Pursued by Shadows",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for your nemesis minion and reveal it. <i>(Shuffle.)</i> Cloak your nemesis minion. If your nemesis minion did not enter play this way, this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te005",
+   "type": "Treachery",
+   "name": "Shadow of the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Reveal your set-aside nemesis minion and put it into play engaged with you. Reveal your set-aside nemesis side scheme and put it into play. Shuffle the rest of your set-aside nemesis encounter set into the encounter deck. If your nemesis minion does not enter the game this way, this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te006",
+   "type": "Treachery",
+   "name": "Skulk",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard",
+   "text": "<b>When Revealed</b>: Take 2 indirect damage and cloak the villain.\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te021",
+   "type": "Treachery",
+   "name": "Advance",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed</b>: The villain schemes.\n<i>\"The world will be mine.\"</i> —Krang",
+   "custom": "Inkwire",
+   "ability_link": "01186"
+  },
+  {
+   "card_id": "te023",
+   "type": "Treachery",
+   "name": "Assault",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you.\n<i>\"I will have my revenge!\"</i> —Shredder",
+   "custom": "Inkwire",
+   "ability_link": "01187"
+  },
+  {
+   "card_id": "te025",
+   "type": "Treachery",
+   "name": "Caught Off Guard",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed</b>: Discard an upgrade or support you control. If no cards were discarded this way, this card gains surge.",
+   "custom": "Inkwire",
+   "ability_link": "01188"
+  },
+  {
+   "card_id": "te026",
+   "type": "Treachery",
+   "name": "Gang-Up",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain and each minion engaged with you attacks you.",
+   "custom": "Inkwire",
+   "ability_link": "01189"
+  },
+  {
+   "card_id": "te027",
+   "type": "Treachery",
+   "name": "Shadow of the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Standard Reskin",
+   "text": "<b>When Revealed</b>: Reveal your set-aside nemesis minion and put it into play engaged with you. Reveal your set-aside nemesis side scheme and put it into play. Shuffle the rest of your set-aside nemesis encounter set into the encounter deck. If your nemesis minion does not enter the game this way, this card gains surge.",
+   "custom": "Inkwire",
+   "ability_link": "01190"
+  },
+  {
+   "card_id": "te101",
+   "type": "Treachery",
+   "name": "Annihilation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert",
+   "text": "<b>When Revealed</b>: The villain attacks you. That attack gains overkill.\n<hr />\n[star] <b>Boost</b>: If the villain is attacking, this attack gains overkill.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te102",
+   "type": "Treachery",
+   "name": "Haunted by the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert",
+   "text": "<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for your nemesis minion and put it into play engaged with you. <i>(Shuffle.)</i> If your nemesis minion did not enter play this way, exhaust your identity and this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te103",
+   "type": "Treachery",
+   "name": "Sinister Plan",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert",
+   "text": "<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for your nemesis side scheme and reveal it. <i>(Shuffle.)</i> Daze your identity. If your nemesis side scheme did not enter play this way, this card gains surge.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "te121",
+   "type": "Treachery",
+   "name": "Exhaustion",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert Reskin",
+   "text": "Surge.\n<b>When Revealed</b>: Exhaust your identity card.\n<i>\"Why so angry little turtle?\"</i> —Bebop",
+   "custom": "Inkwire",
+   "ability_link": "01191"
+  },
+  {
+   "card_id": "te122",
+   "type": "Treachery",
+   "name": "Masterplan",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert Reskin",
+   "text": "<b>When Revealed</b>: Place 4 threat on each side scheme. If there are no side schemes in play, discard cards from the top of the encounter deck until a side scheme is discarded. Reveal that side scheme.\n<i>\"We all must play our part.\"</i> —Rat King",
+   "custom": "Inkwire",
+   "ability_link": "01192"
+  },
+  {
+   "card_id": "te123",
+   "type": "Treachery",
+   "name": "Under Fire",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Expert Reskin",
+   "text": "Surge.\n<b>When Revealed</b>: Reveal the top card of the encounter deck.\n<i>\"We have them now! There's no escape!\"</i> —Granitor",
+   "custom": "Inkwire",
+   "ability_link": "01193"
+  },
+  {
+   "card_id": "te201",
+   "type": "Environment",
+   "name": "Intense Combatants",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1"
+   },
+   "traits": [],
+   "set_name": "TMNT Intense",
+   "text": "<i>TMNT Standard and Expert only.</i>\n<i>(This is an optional environment for those wanting additional hijinx.)</i>\nPermanent. Setup.\n<b>Forced Interrupt</b>: When a status card would be placed on a character, if that character already has 1 copy of that status card on them, intensify them instead.",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "9213de399cb58f5792eb352348837f0974246bf6e4836067f9c04282d699e547"
 }

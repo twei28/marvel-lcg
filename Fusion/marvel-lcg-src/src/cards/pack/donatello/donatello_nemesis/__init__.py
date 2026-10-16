@@ -11,9 +11,12 @@ from cards.pack import *
 # traits imprimees (« MOUSERS. SWARM. », « AERIAL. FLYBORGS. SWARM. ») et sur
 # Baxter Stockman (« any MOUSERS or FLYBORGS »). Le texte de td014 dit « a
 # MOUSER or FLYBORG minion » au singulier : decision du 15/10/2026, traits pluriels conserves.
+# DECISION UTILISATEUR (16/10/2026) : singulier et pluriel sont le MEME trait pour les
+# recherches. Le scenario Baxter Stockman (`tx`) imprime FLYBORG au singulier (tx012,
+# tx013) : td014 et td015 les trouvent aussi. (Aucune carte n'imprime MOUSER seul.)
 # ===========================================================================
 
-TRAITS_ESSAIM = ["MOUSERS", "FLYBORGS"]
+TRAITS_ESSAIM = ["MOUSERS", "FLYBORGS", "FLYBORG"]
 COMPTEUR_ESSAIM: 'CardFace.COUNTER' = "swarm"
 
 

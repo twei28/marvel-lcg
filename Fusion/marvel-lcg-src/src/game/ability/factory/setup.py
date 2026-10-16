@@ -117,8 +117,7 @@ class AbilityFactorySetup:
             encounter_sets: List[str] = []
             standard_encounter_sets: List[str] = []
             for encounter_set in message.encounter_set_names:
-                if encounter_set.startswith("standard") or \
-                    encounter_set.startswith("expert"):
+                if encounter_set.startswith(("standard", "expert", "tmnt_standard", "tmnt_expert")):  # CORRECTIF : ensembles TMNT
                     standard_encounter_sets.append(encounter_set)
                 else:
                     encounter_sets.append(encounter_set)

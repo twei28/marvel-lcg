@@ -43,6 +43,8 @@ const REFUS_TABLE = 'Cette carte ne se pose pas sur la table : glisse-la sur une
 const TABLE: Record<string, Destination> = {
   Ally: { zone: 'AlliesArea', duJoueur: true },
   Support: { zone: 'SupportsArea', duJoueur: true },
+  // La Voie (type imprime PATH, tj011) vit dans l'aire de soutien du joueur.
+  Path: { zone: 'SupportsArea', duJoueur: true },
   Upgrade: 'amelioration',
   // Question 4 : à côté de son héros, en cours de résolution, puis Suppr.
   Event: { zone: 'PlayerProcessingArea', duJoueur: true },
