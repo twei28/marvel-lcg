@@ -178,6 +178,32 @@ CAS = [
        [TE201, INCLINE, RIEN_A_BOOSTER, f"Puzzle.Stun('{R}')", f"Puzzle.AddStatus('{R}', 'Stunned')"],
        [f"Puzzle.Attack('{R}')", f"Puzzle.Attack('{R}')"],
        {"degats_identite": 0, "nb": [[R, "Stunned", 0], [R, "Intensified", 0]]}, main_exclusive=["01088"]),
+
+    # ------------------------------------------------- te201 : l'OPTION de la preparation
+    # Decision de l'utilisateur (16/10/2026) : une case de l'ecran de preparation, decochee par
+    # defaut, proposee seulement si le scenario joue TMNT Standard ou TMNT Expert. Cochee, le
+    # lanceur pose la regle `tmnt_intense_combatants` et te201 entre en jeu a l'etape 11 (Setup).
+    # Aucune mise en place Puzzle : la carte doit venir de la SEULE regle.
+    *[{"nom": f"[te201] option de preparation : {nom}", "pourquoi": pourquoi, "scenario": scenario,
+       "heros": "spider_man", "regles": regles, "mise_en_place": [], "declencher": [],
+       "verifier": "etat_attendu", "attendu": attendu}
+      for nom, pourquoi, scenario, regles, attendu in [
+        ("case cochee + Shredder (TMNT Standard) -> te201 en jeu des la mise en place",
+         "« Permanent. Setup. » : la regle `tmnt_intense_combatants` fait naitre te201, que l'etape 11 met en jeu",
+         "shredder", ["tmnt_intense_combatants"], {"en_jeu": ["te201"]}),
+        ("case cochee + Baxter Stockman (TMNT Standard) -> te201 en jeu",
+         "second scenario TMNT Standard",
+         "baxter_stockman", ["tmnt_intense_combatants"], {"en_jeu": ["te201"]}),
+        ("case cochee + Shredder EXPERT (TMNT Standard + Expert) -> te201 en jeu",
+         "« TMNT Standard and Expert only » : les deux sets presents",
+         "shredder_expert", ["tmnt_intense_combatants"], {"en_jeu": ["te201"]}),
+        ("case DECOCHEE + Shredder -> te201 absente (defaut)",
+         "environnement optionnel : sans la case, la partie se joue sans lui",
+         "shredder", [], {"hors_jeu": ["te201"]}),
+        ("case cochee + Rhino (aucun set TMNT) -> option ignoree, te201 absente",
+         "« TMNT Standard and Expert only » : hors TMNT, la regle est ignoree par le moteur",
+         "rhino", ["tmnt_intense_combatants"], {"hors_jeu": ["te201"]}),
+      ]],
 ]
 
 VERIFICATIONS = r'''

@@ -1,0 +1,121 @@
+// te201 Intense Combatants : l'environnement OPTIONNEL des scénarios TMNT (16/10/2026).
+//
+// Décision de l'utilisateur : une case à la préparation, DÉCOCHÉE par défaut,
+// proposée seulement quand le scénario joue TMNT Standard ou TMNT Expert.
+// Cochée, le lanceur ajoute `tmnt_intense_combatants` à `rules` (le canal de
+// Skirmish et d'Héroïque) ; le moteur met te201 en jeu au Setup.
+//
+//   npx playwright test tests/intense-combatants.spec.ts --project=pc
+//
+// Laisse une capture dans ui-check/intense-combatants.png pour l'œil humain.
+import { test, expect, type Page } from '@playwright/test';
+
+async function etapeMechant(page: Page) {
+  await page.addInitScript(() => {
+    localStorage.setItem('marvel-langue', 'fr');
+    localStorage.setItem('marvel-langue-choisie', '1');
+  });
+  await page.goto('/prepare.html');
+  await page.getByRole('button', { name: /^Solo/ }).first().click({ timeout: 30_000 });
+  await expect(page.locator('#hero-grid .tb-port').first()).toBeVisible({ timeout: 30_000 });
+  await page.locator('#hero-grid .tb-port[data-hero="spider_man"]').first().click();
+  const valider = page.getByRole('button', { name: /^(Valider|Confirm)$/ });
+  if (await valider.isVisible({ timeout: 2_000 }).catch(() => false)) await valider.click();
+  await page.getByRole('button', { name: /^(Continuer|Continue)$/ }).click();
+  await page.waitForTimeout(800);
+  await page.getByRole('button', { name: /^(Continuer|Continue)$/ }).click();
+  await expect(page.locator('#scn-grid .tb-port').first()).toBeVisible({ timeout: 30_000 });
+}
+
+async function choisirMechant(page: Page, boite: string, scn: string) {
+  await page.locator(`#ext-tabs .ext-tab[title="${boite}"]`).click();
+  await page.locator(`#scn-grid .tb-port[data-scn="${scn}"]`).click();
+  await page.mouse.move(5, 5);
+  await page.waitForTimeout(3_000); // la carte qui surgit au choix dure 2,8 s
+}
+
+const CASE = '#tb-menace .intense-combatants input[type="checkbox"]';
+
+test('la case apparait pour Shredder (TMNT Standard), decochee, avec le texte FR de te201', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await etapeMechant(page);
+  await choisirMechant(page, '190. Custom (Shredder)', 'shredder');
+
+  const ligne = page.locator('#tb-menace .intense-combatants');
+  await expect(ligne).toBeVisible();
+  await expect(ligne).toContainText('Intense Combatants (environnement optionnel)');
+  await expect(ligne).toContainText('Interruption forcée');
+  await expect(ligne).toHaveAttribute('title', /Ensembles TMNT Standard et Expert uniquement/);
+  await expect(page.locator(CASE)).not.toBeChecked();
+  await ligne.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: 'intense-combatants.png' });
+  await expect(page.locator(CASE)).toHaveCount(1);
+});
+
+test('la case n apparait pas pour Rhino', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await etapeMechant(page);
+  await choisirMechant(page, '1. Core Set', 'rhino');
+  await expect(page.locator('#tb-menace .tb-menace-ligne').first()).toBeVisible();
+  await expect(page.locator('#tb-menace .intense-combatants')).toHaveCount(0);
+});
+
+test('le descripteur porte la regle seulement case cochee ET scenario TMNT', async ({ page }) => {
+  await page.goto('/prepare.html');
+  const r = await page.evaluate(async () => {
+    const { catalog } = await import('/public/js/prepare/catalog.js');
+    const { buildDescriptor } = await import('/public/js/prepare/launcher.js');
+    const deck = { name: 'Test', hero: ['01001a'], hero_deck: [], obligations: [], nemesis_set: [], player_deck: [] };
+    const trouver = async (id: string) => {
+      for (const ext of await catalog.extensions()) {
+        let liste: any[] = [];
+        try { liste = await catalog.scenariosForExtension(ext.key); } catch (e) { continue; }
+        const sc = liste.find((s) => s.id === id);
+        if (sc) return sc;
+      }
+      return null;
+    };
+    const etat = (scenario: any, coche: boolean) => ({
+      mode: { id: 'hotseat' }, scenario, playerCount: 1, premierJoueur: 0, players: [{ deck }],
+      difficulty: { base: 'standard', standard: 'standard', skirmish: false, heroic: 0,
+                    selectedModularSets: [], intenseCombatants: coche },
+      seed: 1, timeoutSecondes: 0, reglesV16: true, campaignLog: {},
+    });
+    const shredder = await trouver('shredder');
+    const rhino = await trouver('rhino');
+    const R = 'tmnt_intense_combatants';
+    return {
+      shredderCoche: (await buildDescriptor(etat(shredder, true))).rules.includes(R),
+      shredderDecoche: (await buildDescriptor(etat(shredder, false))).rules.includes(R),
+      rhinoCoche: (await buildDescriptor(etat(rhino, true))).rules.includes(R),
+    };
+  });
+  expect(r).toEqual({ shredderCoche: true, shredderDecoche: false, rhinoCoche: false });
+});
+
+test('cocher la case envoie la regle au serveur (/new)', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  let envoye: any = null;
+  await page.route(/\/new\?data=/, async (route) => {
+    envoye = JSON.parse(decodeURIComponent(route.request().url().split('data=')[1]));
+    await route.fulfill({ status: 200, body: '{}' });
+  });
+  await page.route(/\/app\/board\.html/, (route) => route.fulfill({ status: 200, body: 'plateau' }));
+  await etapeMechant(page);
+  await choisirMechant(page, '190. Custom (Shredder)', 'shredder');
+  await page.locator(CASE).check();
+  // Jusqu'au lancement : les « Continuer » puis le bouton de lancement.
+  for (let i = 0; i < 6 && envoye === null; i++) {
+    const lancer = page.getByRole('button', { name: /^(Lancer|Launch|Jouer|Play)/ }).first();
+    if (await lancer.isVisible().catch(() => false)) { await lancer.click(); await page.waitForTimeout(1_500); continue; }
+    const suite = page.getByRole('button', { name: /^(Continuer|Continue)$/ });
+    if (await suite.isVisible().catch(() => false)) { await suite.click(); await page.waitForTimeout(1_000); continue; }
+    await page.waitForTimeout(1_000);
+  }
+  expect(envoye, 'aucun appel /new intercepte').not.toBeNull();
+  expect(envoye.rules).toContain('tmnt_intense_combatants');
+  expect(envoye.encounter_set_names).toContain('tmnt_standard');
+});

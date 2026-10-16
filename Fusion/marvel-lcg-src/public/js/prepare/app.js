@@ -6,7 +6,7 @@ import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=0bd7678d";
+import { launch } from "/public/js/prepare/launcher.js?v=7e201c0b";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
@@ -47,6 +47,7 @@ import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/
 import { appliquerTeintePage } from "/public/js/teinte-page.js?v=1";
 import { sauverDeck, supprimerDeck, decksSauvegardesPourHeros } from "/public/js/prepare/decks-serveur.js";
 import { NIVEAUX_STANDARD, libelleNiveau, niveauDuScenario } from "/public/js/prepare/niveau-standard.js";
+import { proposerIntense, chargerTexteFr as texteIntenseFr, texteSansBalises, CARTE_INTENSE } from "/public/js/prepare/intense-combatants.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
@@ -303,6 +304,9 @@ const state = {
         modularConfig: "recommended",
         selectedModularSets: [],
         scenarioOptions: {},
+        // te201 Intense Combatants, environnement OPTIONNEL des scenarios TMNT :
+        // decoche par defaut (decision du 16/10/2026). Voir intense-combatants.js.
+        intenseCombatants: false,
     },
     seed: null,
     // Bloc « Avancé » de l'étape finale.
@@ -5183,9 +5187,44 @@ function rendreMenace() {
             regle(t("Aléatoire"), d.modularConfig === "random", () => { d.modularConfig = "random"; applyModularConfig(); }),
         ),
         el("div", { class: "mod-chips", id: "modular-box" }),
+        caseIntenseCombatants(sc),
         estBataille() ? blocSecondeTable() : null,
     );
     renderModular();
+}
+
+/**
+ * te201 Intense Combatants : la case n'existe que pour un scenario qui joue
+ * TMNT Standard ou TMNT Expert (« TMNT Standard and Expert only »). Decochee
+ * par defaut ; le lanceur en tire la regle `tmnt_intense_combatants`.
+ * L'aide reprend le texte FR de la carte (textes-fr-fanmade).
+ */
+let texteIntense = null;
+function caseIntenseCombatants(sc) {
+    if (!sc || !proposerIntense(sc.mandatoryEncounterSets)) return null;
+    if (texteIntense === null) {
+        texteIntense = "";
+        texteIntenseFr().then((txt) => { texteIntense = txt; if (txt) rendreMenace(); });
+    }
+    const d = state.difficulty;
+    // En anglais, le texte imprime de la carte ; en francais, sa traduction.
+    const carte = langueActuelle() === "en" ? cards.get(CARTE_INTENSE) : null;
+    const texte = carte ? texteSansBalises(carte.text) : texteIntense;
+    const regle = texte.search(/Interruption forcée|Forced Interrupt/);
+    return el("div", { class: "tb-menace-ligne intense-combatants", title: texte || undefined },
+        el("span", { class: "tb-menace-k" }, t("Environnement")),
+        el("label", { class: "cj-chk" },
+            el("input", {
+                type: "checkbox",
+                name: "intense-combatants",
+                checked: d.intenseCombatants === true || undefined,
+                onchange: (e) => { d.intenseCombatants = e.target.checked; },
+            }),
+            el("span", {}, t("Intense Combatants (environnement optionnel)"))),
+        texte
+            ? el("span", { class: "tb-menace-vide" }, regle >= 0 ? texte.slice(regle) : texte)
+            : null,
+    );
 }
 
 /** La table qui se compose : l'équipe, puis la cible verrouillée. */
@@ -5613,6 +5652,7 @@ function stepSummary() {
         reglages.push(d.base === "expert" ? "Expert" : libelleNiveau(d.standard));
         if (d.skirmish) reglages.push("Skirmish");
         if (d.heroic > 0) reglages.push(t("Héroïque") + " " + d.heroic);
+        if (d.intenseCombatants === true && proposerIntense(sc.mandatoryEncounterSets)) reglages.push("Intense Combatants");
         const sets = [...sc.mandatoryEncounterSets, ...d.selectedModularSets].map(titleize);
         if (sets.length) reglages.push(sets.join(" · "));
     }

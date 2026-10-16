@@ -551,6 +551,8 @@ export const DICO_EN_BASE = {
     "En ligne, l'ordre des sièges suit ce choix": "Online, seat order follows this choice",
     "Règles v16": "v16 rules",
     "Activées (recommandé)": "Enabled (recommended)",
+    "Environnement": "Environment",
+    "Intense Combatants (environnement optionnel)": "Intense Combatants (optional environment)",
     "Le moteur pose la table, puis ne joue plus": "The engine sets up the table, then stops playing",
     "Automatique : le moteur applique les règles": "Automatic: the engine applies the rules",
     "Manuel façon OCTGN : le moteur pose la table, puis ne joue plus": "Manual, OCTGN style: the engine sets up the table, then stops playing",

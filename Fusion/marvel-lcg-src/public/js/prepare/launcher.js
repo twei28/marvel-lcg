@@ -4,6 +4,7 @@
 import { catalog } from "/public/js/prepare/catalog.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 import { appliquerNiveau } from "/public/js/prepare/niveau-standard.js";
+import { reglesIntense } from "/public/js/prepare/intense-combatants.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { t } from "/public/js/prepare/langue.js";
 import { echangesTeamUp, appliquerEchange } from "/public/js/prepare/team-up.js";
@@ -108,7 +109,9 @@ export async function buildDescriptor(state) {
         seed: state.seed == null ? -1 : state.seed,
         timeout: state.timeoutSecondes > 0 ? state.timeoutSecondes : 0,
         challenges: raw.challenges || [],
-        rules: buildRules(state),
+        // te201 Intense Combatants : la case de la préparation, prise en compte
+        // seulement si la partie joue TMNT Standard ou Expert (intense-combatants.js).
+        rules: [...buildRules(state), ...reglesIntense(state.difficulty.intenseCombatants, encounter_set_names)],
         campaign_log: (state.mode && state.mode.id === "campaign" && state.campaignLog) ? state.campaignLog : {},
     };
 
