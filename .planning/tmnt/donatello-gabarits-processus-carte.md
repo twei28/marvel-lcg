@@ -23,10 +23,12 @@ Preuves communes à toutes les cartes :
   VÉRIFIÉES PAR DÉCOUPE contre des cartes officielles (coin inférieur gauche de 01004 mental, 01006
   énergie, 01003 physique, 01011 wild) : td002/td005/td009/td011 énergie (Y), td003/td004/td006
   mental (B), td008/td010/td012 physique (R), td007 mental + wild (BG) : tout conforme à `desc.RES`.
-- Étape 8 bis (plateau, ce que la carte DESSINE) : AUCUN cas `ui-app` écrit ni lancé. Les cartes
-  concernées (td001b attache, td012 glisse, td013 forme, td016/td017 compteurs) restent donc
-  « NON » ci-dessous sur ce seul point.
-
+- Étape 8 bis (plateau, ce que la carte DESSINE) : `ui-app/src/board/tmnt-donatello-plateau.test.ts`
+  (28 cas verts). Preuve de sensibilité (16/10/2026) : `zones.ts` `sousArbre` ramené à un seul étage
+  (`...[]`) et `card-model.ts` `compteursAffiches` sans `push` => 11 cas ROUGES (carte glissée sous la
+  Carapace absente/non cliquable, compteurs swarm absents), lignes restaurées (`git checkout`), cas
+  reverts verts. Le cliquable (jouer/dépenser/défausser la carte glissée) est vérifié par
+  `useInteraction`. Ce que le test NE prouve PAS : un rendu pixel à l'écran (jamais regardé en vrai).
 Questions « une icône / un mot » : aucune ouverte (décisions de `decisions-phase-b.md` appliquées).
 
 ### td001a : * Donatello (face héros)
@@ -45,8 +47,8 @@ Carte terminée : OUI.
 - [x] Étape 7 : 5 cas (td011, td012, défausse, aucune cible, témoin main vide), rouge sans module sur les 4 positifs.
 - [x] Étape 7 bis : limite NON.
 - [x] Étape 8 : voir communs.
-- [ ] Étape 8 bis : OUI (l'amélioration arrive attachée et inclinée) ; cas plateau non écrit.
-Carte terminée : NON : seul l'étape 8 bis (plateau) manque ; moteur et script prouvés.
+- [x] Étape 8 bis : OUI (l'amélioration arrive attachée et inclinée) ; `tmnt-donatello-plateau.test.ts` « td001b Donnie », rouge sans correctif (mutation `sousArbre`).
+Carte terminée : OUI.
 
 ### td002 : * Metalhead
 - [x] Étape 2 : réf. `dd003` Doombot (Interrupt + `PlayCardsLikeInTurn`), `td012`.
@@ -71,6 +73,7 @@ Carte terminée : OUI.
 - [x] Étape 2 : réf. `55023` (choose two), coût `Exhaust` TECH. [x] Étape 5 : « choose two, jamais la même » (témoin Piocher x1), « Stun OR confuse » (2 branches), coût devant la flèche (sans TECH : injouable).
 - [x] Étape 6 : coût 2, RES Y. [x] Étape 7 : 4 cas, rouges sans module.
 - [ ] Option « Cloak two friendly characters » : travail de l'AUTRE agent (carte d'état Cloaked), ligne et branche non touchées ici, ses cas sont les siens (non relus ici) ; aucun de mes cas ne la choisit.
+Étape 8 bis : la carte Cloaked est dessinée sur l'identité et sur un allié (`tmnt-donatello-plateau.test.ts`), mais la branche moteur reste à l'autre agent.
 Carte terminée : NON pour le gabarit complet de cette carte : la branche Cloak n'est pas prouvée par ce fichier ; les deux autres options et la structure le sont.
 
 ### td006 : Singularity
@@ -107,14 +110,14 @@ Carte terminée : OUI.
 - [x] Étape 2 : réf. `60030`, `dd008`, Echo `60037a`. [x] Étape 5 : « play, spend, OR discard » EN ENTIER (décision 15/10, fidélité 100 %) : jouer, dépenser, défausser chacun prouvé ; « Max 1 » (témoin d'épuisement : Carapace redressée entre deux actions) ; Hero Action (témoin alter ego).
 - [x] Étape 6 : coût 2, RES R. [x] Étape 7 : 12 cas (tuck, plafond, alter ego, dépenser + témoin, jouer, défausser td001b + témoin, défausser td009 +3 + témoin), 6 rouges sans module.
 - [x] Étape 7 bis : plafond « Max 1 » : cas `TEMOIN « Max 1 tucked card »`, 2e carte non glissée, Carapace prête, 1 carte dessous.
-- [x] Étape 8 : voir communs. [ ] Étape 8 bis : OUI (carte glissée) ; cas plateau non écrit.
+- [x] Étape 8 : voir communs. [x] Étape 8 bis : OUI (carte glissée) ; 13 cas `td012` (dessinée, rang juste derrière la Carapace, `peeking`, dos pour un autre siège, jouer/dépenser/défausser cliquables), 8 rouges sous mutation `sousArbre`.
 MOTEUR PARTAGÉ MODIFIÉ (voir rapport) ; regressions relancées : Echo, Brawn, ho009, sf010, wd0, sf0.
-Carte terminée : NON : seul l'étape 8 bis manque.
+Carte terminée : OUI.
 
 ### td013 : Broken Shell (obligation)
 - [x] Étape 2 : réf. `ho013`, `sf010`, `sf015`. [x] Étape 5 : bascule ET -5 PV (11 -> 6), plancher 1 (4 PV -> 1), déjà alter ego, « cannot change to hero form » (témoin), deux Actions (BB / défausser la Carapace EN JEU), « remove from the game » (zone retirée, ni défaussée), repassage en héros après retrait.
-- [x] Étape 6 : Boost 2. [x] Étape 7 : 9 cas, 7 rouges sans module. [x] 7 bis NON. [x] Étape 8 : deck de départ monté (`verifier_tous_les_decks`). [ ] 8 bis : OUI (changement de forme) ; non fait.
-Carte terminée : NON : seul l'étape 8 bis manque.
+- [x] Étape 6 : Boost 2. [x] Étape 7 : 9 cas, 7 rouges sans module. [x] 7 bis NON. [x] Étape 8 : deck de départ monté (`verifier_tous_les_decks`). [x] 8 bis : OUI (changement de forme) ; `tmnt-donatello-plateau.test.ts` « td013 » : forme d'identité, obligation dessinée, Carapace défaussée, retrait du jeu en zone `annexes` (témoins d'état, pas de rouge dédié : le changement de face n'a pas de code de rendu propre).
+Carte terminée : OUI.
 
 ### td014 : Extermination!
 - [x] Étape 2 : réf. `27068`, `01128`, `01109`. [x] Étape 5 : « deck AND discard pile » (3 cas : deck, FLYBORGS, défausse), UN seul sbire, « engaged with the FIRST player » (vérifié sur le premier joueur ; le cas « vaincue par le 2e joueur » n'est pas montable avec le harnais), traits pluriels (décision), rien si aucun sbire.
@@ -129,10 +132,11 @@ Carte terminée : OUI.
 ### td016 : Plague of M.O.U.S.E.R.s
 - [x] Étape 2 : réf. `16036`, `27067`, `gorr/gb009`, `sk178`. [x] Étape 5 : SCH, ATQ ET PV = compteurs, DYNAMIQUES (`desc.HP = 0`, `ThisGainKeyword(health=1)`), aucune défaite écrite dans le module, « that many instead » (3 dégâts sur 2 compteurs, 1 puis 1), vaincu par `LimitHealth`, défausse de rencontre.
 - [x] Étape 6 : boost 1, 2 compteurs. [x] Étape 7 : 10 cas, 7 rouges sans module (les 3 verts : mort identique avec PV 0 sans module).
-- [x] Étape 8 : voir communs. [ ] 8 bis : OUI (compteurs) ; non fait.
+- [x] Étape 8 : voir communs. [x] 8 bis : OUI (compteurs) ; `tmnt-donatello-plateau.test.ts` « td016 / td017 essaims » : `compteurs.swarm` dessiné (2, 4, 1), rouge sans `push` de `compteursAffiches`.
 Limites mesurées : dégâts remplacés -> aucun excédent Overkill ; mort sans tueur (pas de « after you defeat »).
-Carte terminée : NON : étape 8 bis (compteurs au plateau) manque.
+Limite 8 bis : la valeur ATQ/PV/SCH dynamique affichée sur la carte n'est pas affirmée (seul le compteur l'est).
+Carte terminée : OUI.
 
 ### td017 : Flight of Flyborgs
-- Jumeau de td016 (4 compteurs, boost 3) : 4 cas, 3 rouges sans module. Mêmes limites, même 8 bis.
-Carte terminée : NON : étape 8 bis manque.
+- Jumeau de td016 (4 compteurs, boost 3) : 4 cas, 3 rouges sans module. Mêmes limites, même 8 bis (compteur à 4 dessiné).
+Carte terminée : OUI.
