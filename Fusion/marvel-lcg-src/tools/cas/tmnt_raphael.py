@@ -48,11 +48,11 @@ CAS = [
        main_exclusive=["tr004"], jouer=["tr004"], cibles=["01094"]),
     _c("tr001a Yaban Hito : une attaque qui blesse Raphael pose 1 rage (Rhino ATK 2 -> 2 degats, 1 rage)",
        "« After Raphael takes any amount of damage from an attack, place 1 rage counter on him (max 3) » ; `is_from_attack=True`",
-       [HEROS], ["Puzzle.Attack('01094')"],
+       [HEROS, "Puzzle.Exhaust('tr001a')"], ["Puzzle.Attack('01094')"],
        {"degats_identite": 2, "compteurs_identite": [["rage", 1]]}, main_exclusive=["01090"]),
     _c("tr001a Yaban Hito : plafond de 3 (4 attaques de Rhino : 8 degats, rage 3 et non 4)",
        "TEMOIN D'EPUISEMENT du plafond imprime « to a maximum of 3 » : on mesure un CHIFFRE au 4e declenchement",
-       [HEROS], ["Puzzle.Attack('01094')", "Puzzle.Attack('01094')", "Puzzle.Attack('01094')", "Puzzle.Attack('01094')"],
+       [HEROS, "Puzzle.Exhaust('tr001a')"], ["Puzzle.Attack('01094')", "Puzzle.Attack('01094')", "Puzzle.Attack('01094')", "Puzzle.Attack('01094')"],
        {"degats_identite": 8, "compteurs_identite": [["rage", 3]]}, main_exclusive=["01090"]),
     _c("tr001a Yaban Hito : des degats qui ne viennent PAS d'une attaque ne posent rien (Puzzle.Damage 2)",
        "contre-cas « from an attack » : les degats de Casey, des Sai, du poison... ne declenchent pas Yaban Hito",
@@ -187,9 +187,9 @@ CAS = [
        main_exclusive=["tr005", "01090", "tr007", "tr007"], jouer=["tr005"], cibles=["01094"] * 10),
     _c("tr005 Savage Assault : 10 degats REPARTIS (7 sur Rhino + 3 sur le sbire, qui meurt) : total mesure a 10, pas 10 chacun",
        "piege `each` : le total est 10, pas 10 par ennemi",
-       [HEROS, "Puzzle.PutIntoPlay('01101')"], [],
-       {"degats": [["01094", 7]], "hors_jeu": ["01101"], "defausse": ["tr005"]},
-       main_exclusive=["tr005", "01090", "tr007", "tr007"], jouer=["tr005"], cibles=["01094"] * 7 + ["01101"] * 3),
+       [HEROS, "Puzzle.PutIntoPlay('01103')"], [],
+       {"degats": [["01094", 7]], "hors_jeu": ["01103"], "defausse": ["tr005"]},
+       main_exclusive=["tr005", "01090", "tr007", "tr007"], jouer=["tr005"], cibles=["01103"] * 3 + ["01094"] * 7),
     # ===================================================================== tr006 Unbridled Fury
     _c("tr006 Unbridled Fury : +2 ATQ a Raphael ET pioche 1 si payee avec une ressource [physical] (Strength)",
        "« +2 ATK until the end of the round. If you paid using a [physical] resource, draw 1 card » : ATQ 3 -> 5, main : 0 + 1 pioche",
@@ -210,7 +210,8 @@ CAS = [
        "limite imprimee « Max 1 per phase » : apres une 1re Fury, la 2nde (autre exemplaire) est refusee ; ATQ +2 (et non +4)",
        [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090')"], [],
        {"attributs": {"attack": 2}, "jouable": [["tr006", False]]},
-       main_exclusive=["tr006", "tr006", "01090", "01090"], jouer=["tr006"], verifier="raphael_etat"),
+       main_exclusive=["tr006", "tr006", "01090", "01090"], jouer=["tr006"], verifier="raphael_etat",
+       payer_avec=["01090"], ne_pas_depenser=["tr006"]),
     _c("tr006 Unbridled Fury : a la FIN DU ROUND l'ATQ redevient 3 (dure jusqu'a la fin du round, pas plus)",
        "« until the end of the round » : `GainUntilRoundEnd`, mesure avant et apres la fin de round",
        [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090')"], [],
@@ -428,17 +429,17 @@ CAS = [
        "« You cannot defend » : sans l'interdit Raphael (DEF 2) encaisserait 0",
        [], ["Puzzle.Reveal('tr013')", "Puzzle.Ready('tr001a')"],
        {"degats_identite": 2}, main_exclusive=["01090"],
-       declencher_apres=["Puzzle.Defend('tr001a', '01094')"]),
+       declencher_apres=["Puzzle.Attack('01094')"]),
     _c("tr013 Out of Control : temoin SANS l'obligation, Raphael DEFEND (DEF 2 contre ATQ 2 : 0 degat)",
        "le contre-cas qui rend le cas precedent significatif",
        [HEROS], [],
        {"degats_identite": 0}, main_exclusive=["01090"],
-       declencher_apres=["Puzzle.Defend('tr001a', '01094')"]),
+       declencher_apres=["Puzzle.Attack('01094')"]),
     _c("tr013 Out of Control : un ALLIE peut DEFENDRE (Jessica Jones prend le coup, l'identite 0 degat)",
        "decision du 15/10/2026 : les allies defendent",
        ["Puzzle.PutIntoPlay('01059', under_control=True)"], ["Puzzle.Reveal('tr013')", "Puzzle.Ready('tr001a')"],
        {"degats_identite": 0, "degats": [["01059", 2]]}, main_exclusive=["01090"],
-       declencher_apres=["Puzzle.Defend('01059', '01094')"]),
+       declencher_apres=["Puzzle.Attack('01094')"]),
     _c("tr013 Out of Control : Hero Action = retire 2 rage, retourne en civil ET defausse l'obligation",
        "« Remove 2 rage counters from Raphael -> flip to alter-ego form and discard Out of Control » : la carte elle-meme peut retourner l'identite",
        [], ["Puzzle.Reveal('tr013')", "Puzzle.Counter('tr001a', 'rage', 2)", "Puzzle.Action('tr013', 'HeroAction')"],
@@ -448,10 +449,98 @@ CAS = [
        [], ["Puzzle.Reveal('tr013')", "Puzzle.Counter('tr001a', 'rage', 1)"],
        {"forme": "Hero", "en_jeu": ["tr013"], "compteurs_identite": [["rage", 1]]}, main_exclusive=["01090"],
        declencher_apres=[], declencher_tolerant=["Puzzle.Action('tr013', 'HeroAction')"]),
+    # ===================================================================== tr014 Mutagen Bomb
+    _c("tr014 Mutagen Bomb : menace de depart 2 par joueur (1 joueur : 2)",
+       "`StartingThreat 2*` : « 2 » + silhouette",
+       [HEROS], ["Puzzle.Reveal('tr014')"],
+       {"menace": [["tr014", 2]], "en_jeu": ["tr014"]}, main_exclusive=["01090"], verifier="raphael_etat"),
+    _c("tr014 Mutagen Bomb : AMPLIFY 1 appliquee par le moteur (icone comptee en jeu)",
+       "decision du 15/10/2026 : l'icone est Amplify 1 (`desc.Amplify = 1`) ; base automatique, aucun script",
+       [HEROS], ["Puzzle.Reveal('tr014')"],
+       {"icones": [["Amplify", 1]]}, main_exclusive=["01090"]),
+    _c("tr014 Mutagen Bomb : Amplify EFFECTIF : une carte boost de 2 icones (01107) revelee pendant l'attaque de Rhino vaut 3 (2 + 1) : 5 degats",
+       "ATQ 2 + 2 icones de boost + 1 Amplify = 5 ; temoin sans tr014 dans le cas suivant (4)",
+       [HEROS, "Puzzle.Exhaust('tr001a')", "Puzzle.Reveal('tr014')", "Puzzle.EmptyEncounterDeck()",
+        "Puzzle.CreateEncounterDeck('01107', '01107', '01107')"],
+       ["Puzzle.Attack('01094')"],
+       {"degats_identite": 5}, main_exclusive=["01090"]),
+    _c("tr014 Mutagen Bomb : TEMOIN sans Amplify : la meme attaque fait 4 degats",
+       "ligne de base du cas precedent",
+       [HEROS, "Puzzle.Exhaust('tr001a')", "Puzzle.EmptyEncounterDeck()",
+        "Puzzle.CreateEncounterDeck('01107', '01107', '01107')"],
+       ["Puzzle.Attack('01094')"],
+       {"degats_identite": 4}, main_exclusive=["01090"]),
+    _c("tr014 Mutagen Bomb : 1er passage de l'etape 1 de la phase du vilain = 1 compteur timer, la carte reste",
+       "« After resolving step one of the villain phase, place 1 timer counter here. Then, if 2 or more... »",
+       [HEROS, "Puzzle.Reveal('tr014')"], [],
+       {"timer": [["tr014", 1]], "en_jeu": ["tr014"], "cartes_distribuees": 0, "etape1_vilain": 1},
+       main_exclusive=["01090"], verifier="raphael_etat"),
+    _c("tr014 Mutagen Bomb : 2e passage = la carte est DEFAUSSEE ET chaque joueur recoit 1 carte rencontre face cachee",
+       "seuil « 2 or more » atteint au 2e passage de l'etape 1 : defausse puis `DealEncounterCards(1)` a chaque joueur",
+       [HEROS, "Puzzle.Reveal('tr014')"], [],
+       {"hors_jeu": ["tr014"], "cartes_distribuees": 1, "etape1_vilain": 2},
+       main_exclusive=["01090"], verifier="raphael_etat"),
+    _c("tr014 Mutagen Bomb : 2 JOUEURS : chaque joueur recoit 1 carte face cachee (2 distribuees)",
+       "piege `each player` : un seul joueur servi ne suffit pas",
+       [HEROS, "Puzzle.Reveal('tr014')"], [],
+       {"hors_jeu": ["tr014"], "cartes_distribuees": 2, "etape1_vilain": 2},
+       heros2="spider_man", main_exclusive=["01090"], verifier="raphael_etat"),
+    _c("tr014 Mutagen Bomb : au 1er passage RIEN n'est distribue (temoin du seuil)",
+       "avec 1 seul compteur, ni defausse ni distribution",
+       [HEROS, "Puzzle.Reveal('tr014')"], [],
+       {"en_jeu": ["tr014"], "cartes_distribuees": 0, "timer": [["tr014", 1]], "etape1_vilain": 1},
+       main_exclusive=["01090"], verifier="raphael_etat"),
+    # ===================================================================== tr015 Old Hob
+    _c("tr015 Old Hob (forme HEROS) : entre en jeu avec un statut Tough ET attaque a l'engagement (Quickstrike : 2 degats)",
+       "bases automatiques `Toughness 1` + `Quickstrike 1` (fiches toughness.md / quickstrike.md) ; ATQ 2",
+       [HEROS, "Puzzle.Exhaust('tr001a')"], ["Puzzle.Reveal('tr015')"],
+       {"statuts": [["tr015", "Tough"]], "degats_identite": 2, "icones_boost": [["tr015", 2]]}, main_exclusive=["01090"]),
+    _c("tr015 Old Hob (forme CIVILE) : Tough oui, mais PAS de Quickstrike (il ne s'engage pas avec un HEROS)",
+       "contre-cas dans l'autre forme : « after this minion engages your HERO »",
+       [], ["Puzzle.Reveal('tr015')"],
+       {"statuts": [["tr015", "Tough"]], "degats_identite": 0}, main_exclusive=["01090"]),
+    _c("tr015 Old Hob : SONDE du set nemesis a la mise en place (ou sont tr014..tr017 ?)",
+       "mesure de la regle Nemesis : set mis de cote, deck rencontre",
+       [], [], {"nemesis_de_cote": ["tr014", "tr015", "tr016", "tr016", "tr017"], "dans_deck_rencontre": ["tr013"]},
+       main_exclusive=["01090"], verifier="raphael_etat", avec_boost=True),
+    # ===================================================================== tr016 Insurrection
+    _c("tr016 Insurrection (revelee) : defausse 1 allie que l'on controle, la main est INTACTE",
+       "« Discard 1 ally you control. If you cannot, discard 1 card from your hand » : la 2e phrase ne part QUE sans allie",
+       ["Puzzle.PutIntoPlay('01059', under_control=True)"], ["Puzzle.Reveal('tr016')"],
+       {"hors_jeu": ["01059"], "taille_main": 2}, main_exclusive=["01090", "01089"]),
+    _c("tr016 Insurrection (revelee) : sans allie, defausse 1 carte de la main (le joueur choisit)",
+       "« If you cannot » : repli sur la main",
+       [], ["Puzzle.Reveal('tr016')"],
+       {"taille_main": 1}, main_exclusive=["01090", "01089"]),
+    _c("tr016 Insurrection (revelee) : sans allie ni main, rien ne se passe (aucun plantage)",
+       "aucun surge imprime : rien a defausser",
+       [], ["Puzzle.EmptyHand()", "Puzzle.Reveal('tr016')"],
+       {"taille_main": 0}, main_exclusive=["01090"]),
+    _c("tr016 Insurrection (Boost) : defausse un allie REDRESSE",
+       "« [star] Boost: Discard 1 ready ally you control » ; Puzzle.Boost active Rhino (forme civile : il manigance, aucun defenseur n'incline l'allie)",
+       ["Puzzle.PutIntoPlay('01059', under_control=True)"], ["Puzzle.Boost('tr016')"],
+       {"hors_jeu": ["01059"]}, main_exclusive=["01090"]),
+    _c("tr016 Insurrection (Boost) : un allie INCLINE ne compte pas (reste en jeu)",
+       "« ready ally » : seuls les allies redresses sont eligibles ; aucun repli imprime",
+       ["Puzzle.PutIntoPlay('01059', under_control=True, exhaust=True)"], ["Puzzle.Boost('tr016')"],
+       {"en_jeu": ["01059"]}, main_exclusive=["01090"]),
+    # ===================================================================== tr017 Prepare to Rally
+    _c("tr017 Prepare to Rally (revelee) : defausse 1 carte de la main (choisie)",
+       "« When Revealed: Discard 1 card from your hand »",
+       [], ["Puzzle.Reveal('tr017')"],
+       {"taille_main": 1}, main_exclusive=["01090", "01089"]),
+    _c("tr017 Prepare to Rally (revelee) : main vide = rien (aucun plantage)",
+       "aucun repli imprime",
+       [], ["Puzzle.EmptyHand()", "Puzzle.Reveal('tr017')"],
+       {"taille_main": 0}, main_exclusive=["01090"]),
+    _c("tr017 Prepare to Rally (Boost) : defausse 1 carte de la main",
+       "« [star] Boost: Discard 1 card from your hand »",
+       [HEROS, "Puzzle.Exhaust('tr001a')"], ["Puzzle.Boost('tr017')"],
+       {"taille_main": 1}, main_exclusive=["01090", "01089"]),
 ]
 VERIFICATIONS = r'''
 CLES_RAPHAEL = {"jouable", "restreintes", "fin_de_round", "forme_joueur", "identite_inclinee_joueur",
-                "timer", "taille_deck_rencontre", "cartes_distribuees", "sonde", "pas_de_rec"}
+                "timer", "taille_deck_rencontre", "cartes_distribuees", "sonde", "pas_de_rec", "nemesis_de_cote", "etape1_vilain"}
 
 def _raphael_fin_de_round(monde):
     from game.message import Message
@@ -475,6 +564,13 @@ def raphael_etat(monde, aides):
     joueur = monde.players[0]
     if attendu.get("fin_de_round"):
         _raphael_fin_de_round(monde)
+    # `etape1_vilain: n` : n fois l'etape 1 de la phase du vilain (messages du moteur, world.py:732), SANS le reste
+    # de la phase (activation, distribution et revelation fausseraient le compte de cartes distribuees).
+    for _ in range(int(attendu.get("etape1_vilain") or 0)):
+        from game.message import Message
+        etape = Message.WhenVillainPhaseStepStart(1, monde)
+        etape.Send()
+        Message.AfterResolveVillainPhaseStep(1, etape).Send()
     for card_id, voulu in attendu.get("jouable") or []:
         face = None
         for f in joueur.hand_cards.GetAll():
@@ -517,6 +613,10 @@ def raphael_etat(monde, aides):
         n = sum(len(list(j.dealt_encounter_cards.GetAll())) for j in monde.players)
         if n != attendu["cartes_distribuees"]:
             soucis.append(f"cartes rencontre distribuees face cachee = {n} (attendu {attendu['cartes_distribuees']})")
+    if "nemesis_de_cote" in attendu:
+        reel = sorted(getattr(f.paper, "card_id", None) for f in joueur.set_aside_nemesis_sets.Get(True))
+        if reel != sorted(attendu["nemesis_de_cote"]):
+            soucis.append(f"set nemesis mis de cote = {reel} (attendu {sorted(attendu['nemesis_de_cote'])})")
     if attendu.get("pas_de_rec"):
         # La face HEROS n'imprime aucune REC : le bonus du Sac (alter-ego) ne doit lui en donner aucune.
         rec = getattr(monde.players[0].GetIdentity(), "recover", None)
@@ -537,5 +637,8 @@ def sonde_raphael(monde):
     j = monde.players[0]
     return {"deck_rencontre": [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)],
             "aside_nemesis": [getattr(f.paper, "card_id", None) for f in j.set_aside_nemesis_sets.Get(True)],
+            "defausse_rencontre": [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDiscardPileCards(monde)],
+            "distribuees": [getattr(f.paper, "card_id", None) for f in j.dealt_encounter_cards.GetAll()],
+            "tr014_en_jeu": aides_par_id_global(monde, "tr014") is not None,
             "main": [getattr(f.paper, "card_id", None) for f in j.hand_cards.GetAll()]}
 '''
