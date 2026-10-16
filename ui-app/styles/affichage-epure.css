@@ -671,3 +671,59 @@ html[data-epure] .demande-centrale .af-action,
 html[data-epure] .demande-centrale .dc-continue {
   zoom: 1;
 }
+
+/* --- 14. Le cartouche de la phase (« Pendant ton tour », carte révélée) ------
+   Bandeau du titre en jaune, titre sombre ; cadre gris clair, sans liseré
+   rouge. Quand une question s'ouvre devant lui (16/10/2026, « la fenêtre là ça
+   ne va pas ») : au lieu de l'estomper à 45 % (gris délavé, texte anglais et
+   « Continuer » qui transparaissent sous les boutons), il reste net mais ne
+   garde que son titre et la carte ; la question porte le reste. */
+html[data-epure] .deroule-phase.est-scene.est-bis {
+  border: 0;
+  border-radius: 6px;
+  box-shadow: var(--ep-biseau);
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis::before {
+  display: none;
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis .deroule-ligne-haut,
+html[data-epure] .deroule-phase.est-scene .deroule-ligne-haut {
+  background: var(--ep-jaune);
+  border-bottom: 1px solid rgba(20, 24, 32, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+html[data-epure] .deroule-phase.est-scene .deroule-titre-court {
+  color: #14161a;
+  font-family: var(--ep-titres);
+}
+
+html[data-epure] .deroule-phase.est-scene .deroule-bandeau,
+html[data-epure] .deroule-phase.est-scene.est-hors-phase .deroule-bandeau {
+  background: #14161a;
+  color: #ffffff;
+}
+
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question),
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) {
+  opacity: 1;
+}
+
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-revelee-texte,
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-boutons,
+html[data-epure] body:has(.demande-centrale:not(.est-en-scene)) .deroule-phase:not(.est-question) .deroule-mentions,
+html[data-epure] body:has(.evenement-centrale) .deroule-phase:not(.est-question) .deroule-mentions,
+html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .deroule-mentions,
+html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-mentions {
+  visibility: hidden;
+}
