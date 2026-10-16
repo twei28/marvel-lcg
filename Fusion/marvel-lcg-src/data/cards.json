@@ -112320,9 +112320,793 @@
   }
  ],
  "tmnt_aspect_basic": [],
- "tmnt_aspect_justice": [],
+ "tmnt_aspect_justice": [
+  {
+   "card_id": "uj001",
+   "type": "Event",
+   "name": "Battlefield Benevolence",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Justice"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Hero Action</b>: Heal 2 damage from an enemy → confuse that enemy.\n<i>\"I don't know where it all went wrong. This is not the future that I wanted to create...\"</i> —Old Hob",
+   "custom": "Inkwire",
+   "ability_link": "58016"
+  },
+  {
+   "card_id": "uj002",
+   "type": "Upgrade",
+   "name": "Chance Encounter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Attach to a scheme. Max 1 per scheme.\n<b>Interrupt</b>: When attached side scheme is defeated, search your deck and discard pile for an ally and add it to your hand. Shuffle your deck.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj003",
+   "type": "Event",
+   "name": "Clear the Area",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. If this removes the last threat on that scheme, draw 1 card.\n<i>\"Let's clear the air!\"</i> —Donatello",
+   "custom": "Inkwire",
+   "ability_link": "04049"
+  },
+  {
+   "card_id": "uj004",
+   "type": "Ally",
+   "name": "* Cowabunga",
+   "subtitle": "Mikey",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "NINJA",
+    "PARTY",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After Cowabunga enters play, discard a resource card from your hand → draw 2 cards and heal 2 damage from a friendly character.\n<i>\"Surf's up, dudes!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj005",
+   "type": "Upgrade",
+   "name": "Delirium",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CONDITION",
+    "FERAL",
+    "WOUND"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Attach to a minion that your hero attacked this turn. If attached to a non-[[ELITE]] minion, it gains vulnerable.\n<b>Interrupt</b>: When attached minion leaves play, remove 2 threat from a scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj006",
+   "type": "Event",
+   "name": "Dire Straits",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "FERAL",
+    "NYC",
+    "THWART"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "[star] Rampage 3. <i>(As an additional cost for this card, take 3 damage and discard 3 cards from the top of your deck.)</i>\n<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you control a [[NYC]] support, ready your hero.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj007",
+   "type": "Upgrade",
+   "name": "Disguise",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Play under any player's control.\nMax 1 per player.\n<b>Action</b> <i>(thwart)</i>: Exhaust Disguise and your identity → remove 2 threat from a scheme.\n<i>\"Who you lookin' at?!\"</i> —Thing",
+   "custom": "Inkwire",
+   "ability_link": "47013"
+  },
+  {
+   "card_id": "uj008",
+   "type": "Ally",
+   "name": "* Dreadmon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2**",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "JACKAL",
+    "MUTANIMAL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "[star] <b>Response</b>: After Dreadmon takes consequential damage ([consequential]), ready him.\n<b>Forced Interrupt</b>: When the round ends, discard Dreadmon.\n<i>\"You owe me, mon.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj009",
+   "type": "Event",
+   "name": "Feral Cunning",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2*",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "ATTACK",
+    "FERAL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "[star] Rampage 2. <i>(As an additional cost for this card, take 2 damage and discard 2 cards from the top of your deck.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to an enemy and confuse it.\n<i>\"Humans are very easily confused.\"</i> —Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj010",
+   "type": "Upgrade",
+   "name": "Float Like a Butterfly",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Play under any player's control.\nMax 1 per player.\n<b>Interrupt</b>: When a character you control attacks a confused enemy, increase the amount of damage that attack deals to that enemy by 1.",
+   "custom": "Inkwire",
+   "ability_link": "41017"
+  },
+  {
+   "card_id": "uj011",
+   "type": "Event",
+   "name": "For Justice!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme (4 threat instead if you paid for this card using a [mental] resource).\n<i>\"Hiroto Oroku will answer for his crimes.\"</i> —Ronin",
+   "custom": "Inkwire",
+   "ability_link": "01060"
+  },
+  {
+   "card_id": "uj012",
+   "type": "Ally",
+   "name": "* Hatamoto",
+   "subtitle": "Donnie",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "R",
+    "Toughness": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "NINJA",
+    "SAMURAI",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Toughness.\n<b>Interrupt</b>: When Hatamoto defends against an attack, remove 1 threat from a scheme.\n<i>\"I will defend the Emperor with my life.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj013",
+   "type": "Upgrade",
+   "name": "Heroic Conditioning",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points and your hero gets +1 THW.\n<i>\"Hero turtles to the rescue!\"</i> —Donatello",
+   "custom": "Inkwire",
+   "ability_link": "58021"
+  },
+  {
+   "card_id": "uj014",
+   "type": "Upgrade",
+   "name": "Heroic Intuition",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Play under any player's control. Max 1 per player.\nYour hero gets +1 THW.\n<i>\"We know what needs to be done.\"</i> —Leonardo",
+   "custom": "Inkwire",
+   "ability_link": "01065"
+  },
+  {
+   "card_id": "uj015",
+   "type": "Upgrade",
+   "name": "Innate Perception",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "MaxPerDeck": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Starting. <i>(You may add this card to your hand before drawing your starting hand.)</i>\nYour hero gets +1 THW.\n<i>\"I will find you...\"</i> —Nightwatcher",
+   "custom": "Inkwire",
+   "ability_link": "61036"
+  },
+  {
+   "card_id": "uj016",
+   "type": "Ally",
+   "name": "* Inspector Ishida",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CAT",
+    "DETECTIVE"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After you play Inspector Ishida from your hand, choose:\n• Remove 2 threat from a scheme.\n• Look at the top 3 cards of the encounter deck and put them back in any order.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj017",
+   "type": "Event",
+   "name": "Know Your Enemy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "[star] Discount 1 ([[Martial Artist]]).\n<b>Hero Action</b> <i>(thwart)</i>: Remove 1 threat from a scheme. Remove 1 threat from a scheme.\n<i>\"What are they gonna do next? I got a hunch.\"</i> —Raphael",
+   "custom": "Inkwire",
+   "ability_link": "60023"
+  },
+  {
+   "card_id": "uj018",
+   "type": "Ally",
+   "name": "* Lita",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "NINJA",
+    "TEMPORAL",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "[star] <b>Response</b>: After Lita thwarts, look at the top card of your deck. You may discard 1 card from your hand to add that card to your hand.\n<i>\"Your time has run out.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj019",
+   "type": "Upgrade",
+   "name": "Mission Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "TRAINING"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Attach to a [[NINJA]] or [[MUTANIMAL]] ally. Max 1 [[TRAINING]] upgrade per ally.\nAttached ally gets +1 THW and +2 hit points.\n<i>\"Remember your training.\"</i> —Casey Marie Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj020",
+   "type": "Support",
+   "name": "* Mona Lisa",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "PERSONA",
+    "NYC"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After Mona Lisa enters play, choose a [[THWART]] event in your discard pile and tuck it here.\n<b>Action</b>: Play the card tucked here <i>(paying its cost)</i>. Then, discard Mona Lisa.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj021",
+   "type": "Ally",
+   "name": "* Mondo Gecko",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "GECKO",
+    "MUTANIMAL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After Mondo Gecko enters play, cloak him.\n<i>\"Hey hey my friends, let me check things out first.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj022",
+   "type": "Upgrade",
+   "name": "Move in Shadow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2*",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Temporary": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "[star] Discount 1 ([[Martial Artist]] or [[Spy]]).\nTemporary. Max 1 per player.\n<b>Response</b> <i>(thwart)</i>: After you play a card <i>(including this one)</i>, remove 1 threat from a scheme.",
+   "custom": "Inkwire",
+   "ability_link": "60027"
+  },
+  {
+   "card_id": "uj023",
+   "type": "Ally",
+   "name": "* Night-Blade",
+   "subtitle": "Leo",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE",
+    "VIGILANTE"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After Night-Blade enters play, search your deck and discard pile for a [[Preparation]] card and add it to your hand. Shuffle your deck.\n<i>\"I'm the turtle with a plan.\"</i>",
+   "custom": "Inkwire",
+   "ability_link": "08011"
+  },
+  {
+   "card_id": "uj024",
+   "type": "Event",
+   "name": "One Way or Another",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [],
+   "set_name": "TMNT Justice",
+   "text": "Max 1 per round.\n<b>Hero Action</b>: Search the encounter deck for a side scheme. Reveal that side scheme → draw 3 cards. <i>(Shuffle the encounter deck.)</i>",
+   "custom": "Inkwire",
+   "ability_link": "22015"
+  },
+  {
+   "card_id": "uj025",
+   "type": "Upgrade",
+   "name": "Overwatch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [],
+   "set_name": "TMNT Justice",
+   "text": "Attach to a scheme. Max 1 per scheme.\n<b>Hero Interrupt</b>: When any amount of threat is removed from attached scheme by a thwart, discard this card → remove an equal amount of threat from a different scheme.",
+   "custom": "Inkwire",
+   "ability_link": "30019"
+  },
+  {
+   "card_id": "uj026",
+   "type": "Ally",
+   "name": "* Ram-Shell",
+   "subtitle": "Raph",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2**",
+    "RES": "R",
+    "Class": "Justice"
+   },
+   "traits": [
+    "TURTLE",
+    "WARRIOR"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After a character you control thwarts, place 1 momentum counter here (to a maximum of 8). You may discard Ram-Shell to deal 1 damage to an enemy for each momentum counter here.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj027",
+   "type": "Ally",
+   "name": "* Sally Pride",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Justice"
+   },
+   "traits": [
+    "LION",
+    "MUTANIMAL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "[star] <b>Response</b>: After Sally Pride attacks or thwarts, remove 2 threat from a scheme.\n<i>\"I can definitely accomplish more with my fists than my words.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj028",
+   "type": "Ally",
+   "name": "* Screwloose",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "1**",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "AERIAL",
+    "DIMENSION X",
+    "MOSQUITO"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Wingnut loses each [acceleration] icon.\n[star] If Wingnut is in play, Screwloose takes -1 consequential damage after he uses a basic power.\n<i>\"Check out this payload!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj029",
+   "type": "Upgrade",
+   "name": "Skilled Investigator",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Hero Response</b>: After a side scheme is defeated, exhaust Skilled Investigator → draw 1 card.",
+   "custom": "Inkwire",
+   "ability_link": "04047"
+  },
+  {
+   "card_id": "uj030",
+   "type": "Event",
+   "name": "Stealth Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If that enemy is defeated by this attack, remove 2 threat from a scheme.\n<i>\"You can't stop what you can't see.\"</i> —Ronin",
+   "custom": "Inkwire",
+   "ability_link": "08013"
+  },
+  {
+   "card_id": "uj031",
+   "type": "Upgrade",
+   "name": "Stealth Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Response</b>: After you thwart and exactly defeat a side scheme, exhaust Stealth Training → stun an enemy.",
+   "custom": "Inkwire",
+   "ability_link": "60028"
+  },
+  {
+   "card_id": "uj032",
+   "type": "Event",
+   "name": "Three Steps Ahead",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: For each different resource type <i>([energy], [mental], [physical], and [wild])</i> you used to pay for this card, choose a scheme and remove 2 threat from it.\n<i>\"Just try to keep up...\"</i> —Leonardo",
+   "custom": "Inkwire",
+   "ability_link": "47015"
+  },
+  {
+   "card_id": "uj033",
+   "type": "Ally",
+   "name": "* Tomoe Ame",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "3**",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CAT",
+    "ONNA-MUSHA"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After Tomoe Ame defeats a side scheme or minion, draw 1 card.\n<i>\"My duty is my life. Without it, I am nothing but a shadow.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj034",
+   "type": "Upgrade",
+   "name": "Turtle Line",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Uses": "3,rope",
+    "Class": "Justice"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Attach to a friendly character. While attached to an identity, this card gains restricted. Uses (3 rope counters).\n<b>Response</b>: After attached character uses a basic power, exhaust this card and remove 1 rope counter from here → remove 2 threat from a scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj035",
+   "type": "Upgrade",
+   "name": "Under Surveillance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Attach to the main scheme. Max 1 per scheme.\nIncrease the target threat value of attached scheme by 4.",
+   "custom": "Inkwire",
+   "ability_link": "06031"
+  },
+  {
+   "card_id": "uj036",
+   "type": "Ally",
+   "name": "* Venus",
+   "subtitle": "Bonnie",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "NINJA",
+    "TEMPORAL",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After Venus enters play, choose a player. That player searches their deck and a discard pile for a player side scheme and adds it to their hand.\n<i>\"I manifest my own destiny.\"</i>",
+   "custom": "Inkwire",
+   "ability_link": "51014"
+  },
+  {
+   "card_id": "uj037",
+   "type": "Upgrade",
+   "name": "Watch the Exits",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Justice"
+   },
+   "traits": [
+    "NYC",
+    "PREPARATION"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Reduce the cost to play this card by 1 if you control a [[NYC]] support.\n<b>Hero Response</b>: After a minion engages you, discard Watch the Exits → remove 2 threat from a scheme and ready your hero.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj038",
+   "type": "Ally",
+   "name": "* Wingnut",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "ATK": "1",
+    "THW": "2",
+    "RES": "B",
+    "Acceleration": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "AERIAL",
+    "BAT",
+    "DIMENSION X"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Action</b>: Exhaust Wingnut and spend [energy][energy] resources → find Screwloose and put him into play.\n[acceleration]",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj039",
+   "type": "Ally",
+   "name": "* Zebulon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "DIMENSION X",
+    "NOVA POSSE"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "<b>Response</b>: After you play Zebulon from your hand, place 1 scorch counter here for each card in your hand (to a maximum of 4).\n<b>Action</b>: Remove 1 scorch counter from here → remove 1 threat from a scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "uj040",
+   "type": "Event",
+   "name": "Zone of Silence",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerDeck": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SPELL",
+    "THWART"
+   ],
+   "set_name": "TMNT Justice",
+   "text": "Play only if your identity has the [[Mystic]] trait. Max 1 per deck.\n<b>Hero Action</b> <i>(thwart)</i>: Choose a scheme and discard up to 4 cards from the top of your deck → remove 1 threat from that scheme for each card discarded this way.",
+   "custom": "Inkwire",
+   "ability_link": "21050"
+  }
+ ],
  "tmnt_aspect_leadership": [],
  "tmnt_aspect_protection": [],
  "tmnt_aspect_dual": [],
- "checksum": "42551438d507d20144097c23cad83a068b7b38d73564a96ab49b6d960ad7112e"
+ "checksum": "a6cd06c6bb4cf43c8a7295cac80ffa7c3a346ef90c467ce2ada27ee79e872d22"
 }
