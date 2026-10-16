@@ -319,6 +319,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'invocation', 'teleport', 'sword', 'mangetic',
         'power', 'backup', 'soul', 'fatigue', 'research', 'psi', 'leadership', 'boom',
         'freeze', 'operative', 'judo', 'magnet', 'knock', 'momentum',
+        # AJOUT (16/10/2026, aspect TMNT Justice) : « scorch counter » de uj039 Zebulon, « rope counters »
+        # de uj034 Turtle Line (Uses 3).
+        'scorch', 'rope',
 
         'progress', 'sym', 'luck', 'deploy', 'supply', 'missile', 'operation', 'speed', 
         'staff', 'mission', 'leap', 'lock', 'parley', 'bystander', 'doubt', 'target', 
