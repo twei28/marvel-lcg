@@ -114,6 +114,7 @@ class AbilityFactoryEnvironment:
         base_atk: int|None=None,
         base_health: int|None=None,
         change_on_event: EventType=OnEvent.NONE,
+        given_abilities: List['Ability']|None=None, # aptitudes OCTROYEES aux cartes visees (Katana/Nunchuck TMNT)
         # apply: Callable[['Effect','CardFace', int], None]|None=None,
         ) -> List['Ability']:
         from game.ability.factory.environment_helper import GiveKeywordToInPlayWhenApplyThisInternal
@@ -178,6 +179,7 @@ class AbilityFactoryEnvironment:
             base_sch != None or \
             base_atk != None or \
             base_health != None or \
+            given_abilities != None or \
             apply != None:
 
             abilities.append(GiveKeywordToInPlayWhenApplyThisInternal(
@@ -226,6 +228,7 @@ class AbilityFactoryEnvironment:
                 base_sch=base_sch,
                 base_atk=base_atk,
                 base_health=base_health,
+                abilities=given_abilities,
                 apply=apply,
                 change_on_event=change_on_event
             ))

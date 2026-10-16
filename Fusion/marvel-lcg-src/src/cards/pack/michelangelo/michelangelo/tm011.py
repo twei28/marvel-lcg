@@ -11,8 +11,8 @@ from . import *
 #
 # Cartes de reference :
 #  - « each X upgrade you control GAINS an ability » :
-#    `AbilityFactory.GiveAbilityToInPlayWhenApplyThis(finder, control_by="You",
-#    abilities=[...])` (environment.py:27, modele `aos/black_widow/50070`) ;
+#    `*AbilityFactory.GiveKeywordToInPlayWhenApplyThis(finder, control_by="You",
+#    given_abilities=[...])` (environment.py, parametre ajoute pour ce pack) ;
 #    l'abilite donnee est enregistree PAR PORTEUR (`RegisterGiven`,
 #    face_effect.py:69) ;
 #  - declencheur : `jubilee/47004` —
@@ -72,9 +72,9 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.CanPlayThisUpgradeCard(),
-        AbilityFactory.GiveAbilityToInPlayWhenApplyThis(
+        *AbilityFactory.GiveKeywordToInPlayWhenApplyThis(
             CardFinder(trait="NUNCHUCK", card_type=Upgrade),
             control_by="You",
-            abilities=[reponse_donnee],
+            given_abilities=[reponse_donnee],
         ),
     ]

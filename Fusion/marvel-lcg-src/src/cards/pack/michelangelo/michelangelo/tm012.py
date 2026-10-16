@@ -45,9 +45,9 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.CanPlayThisUpgradeCard(),
-        AbilityFactory.GiveAbilityToInPlayWhenApplyThis(
+        *AbilityFactory.GiveKeywordToInPlayWhenApplyThis(
             CardFinder(trait="NUNCHUCK", card_type=Upgrade),
             control_by="You",
-            abilities=[interruption_donnee],
+            given_abilities=[interruption_donnee],
         ),
     ]
