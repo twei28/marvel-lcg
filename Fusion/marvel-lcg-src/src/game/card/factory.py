@@ -77,6 +77,7 @@ class CardFactory:
         from game.card.face.card_type import AlterEgo
         from game.card.face.card_type import Event
         from game.card.face.card_type import Resource
+        from game.card.face.card_type import Path
 
         face = paper.GetType()(paper)
         player_num = world.GetPlayerNumIcon()
@@ -88,7 +89,9 @@ class CardFactory:
         from build import Build
         if not Build.release:
             if ClassCard.IsType(face):
-                if type(face) != Resource:
+                # AJOUT (16/10/2026, pack jennika) : une Voie (Path) ne se joue jamais depuis la
+                # main (Setup d'une identite) : pas de capacite `Play`, comme une Resource.
+                if type(face) != Resource and type(face) != Path:
                     if type(face) == Ally:
                         # CORRECTIF (02/09/2026) : `dd003` Doombot, pack custom
                         # doctor_doom. Meme motif que les evenements ci-dessous,

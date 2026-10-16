@@ -406,6 +406,7 @@ const TYPES_ZONE_FR: Record<string, string> = {
   PlayerSideScheme: 'manigance annexe de joueur',
   Resource: 'ressource',
   Support: 'soutien',
+  Path: 'voie',
   Upgrade: 'amélioration',
 }
 

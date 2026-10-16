@@ -393,6 +393,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Traîtrise': 'Treachery',
   'Alter ego': 'Alter-Ego',
   'Soutien': 'Support',
+  'Voie': 'Path',
   'Amélioration': 'Upgrade',
   'Événement': 'Event',
   'Ressource': 'Resource',

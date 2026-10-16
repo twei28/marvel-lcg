@@ -247,9 +247,12 @@ class Worlds:
             return units
     @staticmethod
     def GetOnFieldSupports(game_area_effect: 'GameArea|Effect') -> List['Support']:
+        from game.card.face.card_type import Support
         supports: List['Support'] = []
         for player in Worlds.GetPlayers(game_area_effect):
-            supports += player.supports.Get()
+            # AJOUT (16/10/2026, pack jennika) : l'aire de soutien abrite aussi la
+            # Voie (type Path), qui n'est pas un Support : on filtre sur le type.
+            supports += [x for x in player.supports.Get() if Support.IsType(x)]
         return supports
     @staticmethod
     def GetOnFieldEnemies(game_area_effect: 'GameArea|Effect', finder: 'CardFinder|None'=None) -> List['Minion|Villain']:

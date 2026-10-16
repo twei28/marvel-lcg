@@ -13,6 +13,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { lireDemande, type Demande } from './ask'
+import { kindLabel } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { useInteraction } from './interaction'
 import { carteSurTable as carte, cartesDessinees, dessinee, siege, tableAvec } from './plateau-de-test'
@@ -29,7 +30,7 @@ const MANIGANCE = 20
 
 const alterEgo = () => carte(IDENTITE, 'tj001b', 'AlterEgo', 'Jenny')
 const heros = () => carte(IDENTITE, 'tj001a', 'Hero', 'Jennika')
-const voie = (extra: Partial<WorldCard> = {}) => carte(VOIE, 'tj011', 'Support', 'Sōsaiken', extra)
+const voie = (extra: Partial<WorldCard> = {}) => carte(VOIE, 'tj011', 'Path', 'Sōsaiken', extra)
 const tekko1 = (extra: Partial<WorldCard> = {}) =>
   carte(TEKKO_1, 'tj009', 'Upgrade', "Jennika's Tekko-Kagi", { bind_object_id: IDENTITE, ...extra })
 const tekko2 = (extra: Partial<WorldCard> = {}) =>
@@ -45,11 +46,18 @@ describe('tj001b Jenny Setup : la Voie tj011 est posée sur la table', () => {
       })
     )
 
-  it('la Voie est dessinée, en genre soutien, dans la zone des soutiens', () => {
+  it('la Voie est dessinée, en genre voie (Path, pas soutien), dans la zone des soutiens', () => {
     const v = dessinee(monde(), VOIE)
     expect(v).toBeDefined()
-    expect(v?.kind).toBe('support')
+    expect(v?.kind).toBe('path')
     expect(v?.zone).toBe('terrain-soutien')
+  })
+
+  it('la Voie porte l étiquette « Voie »', () => {
+    const v = dessinee(monde(), VOIE)
+    expect(kindLabel.path).toBe('Voie')
+    expect(v?.kind).toBe('path')
+    expect(v?.kind).not.toBe('support')
   })
 
   it('prête à l entrée, elle n est pas couchée', () => {

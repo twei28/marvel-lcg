@@ -39,7 +39,7 @@ def GetAbilities() -> Sequence['Ability']:
         for zone in (joueur.set_aside_deck, joueur.additional_discard_pile):
             for face in list(zone.Get()):
                 if face.paper.card_id == 'tj011':
-                    face.CastTo(Support).PutIntoPlay(joueur, effect, under_control=True)
+                    face.CastTo(Path).PutIntoPlay(joueur, effect, under_control=True)
                     return
 
     def chercher_les_tekko_kagi(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:

@@ -218,6 +218,7 @@ from game.card.face.card_type.obligation import Obligation
 from game.card.face.card_type.treachery import Treachery
 from game.card.face.card_type.resource import Resource
 from game.card.face.card_type.evidence import Evidence
+from game.card.face.card_type.path import Path
 Unused(StatusCard)
 Unused(Insert)
 Unused(Challenge)
@@ -238,4 +239,5 @@ Unused(Obligation)
 Unused(Treachery)
 Unused(Resource)
 Unused(Evidence)
+Unused(Path)
 

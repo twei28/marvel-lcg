@@ -47,14 +47,14 @@ Scans : `.planning/tmnt/pics-jennika/<card_id>.jpg` (copie versionnée) ; origin
   Type imprimé : PATH ; trait : SENPAI ; « JENNIKA (16/16) ». Jenny : « **Setup**: Put the Sōsaiken Path into play
   under your control. »
 - Lectures :
-  1. **(recommandée, implémentée)** le moteur n'a pas de type « Path » : la carte est un **Support** (Permanent, sans
+  1. (écartée par l'utilisateur) le moteur n'a pas de type « Path » : la carte est un **Support** (Permanent, sans
      coût, mise de côté et mise en jeu par le Setup de Jenny, modèle `58002` Ionic Physiology de Wonder Man). Rien
      dans le pack ne distingue un Path d'un Support ;
-  2. créer un vrai type de carte « Path » dans le moteur (fichier partagé `card_type/`, plusieurs enregistrements) ;
+  2. **(DÉCISION UTILISATEUR du 16/10/2026, implémentée)** créer un vrai type de carte « Path » dans le moteur (fichier partagé `card_type/`, plusieurs enregistrements) ;
      un effet qui parle de « soutien » ne toucherait plus la Voie.
 - Ce que ça change en jeu : avec la lecture 1, un effet « défaussez / inclinez / redressez un soutien » pourrait
   viser la Voie (Permanent la protège de la défausse par un autre set, mais pas de l'inclinaison).
-- Code : `data/cards.json` (`tj011`, type `Support`).
+- Code : `data/cards.json` (`tj011`, type `Path`) ; moteur `game/card/face/card_type/path.py` (voir `GUIDE-CREATION-CONTENU.md`, tableau des fichiers moteur touchés).
 
 ## Q4 : `tj011` : mise de côté ou dans le deck ?
 
@@ -95,7 +95,7 @@ Scans : `.planning/tmnt/pics-jennika/<card_id>.jpg` (copie versionnée) ; origin
 
 - **Q1** : une fois par round pour chacune des 4 classes (lecture retenue, confirmee).
 - **Q2** : seules les cartes qui impriment une classe sont Shinobi (lecture retenue, confirmee).
-- **Q3** : creer un VRAI type de carte « Path » dans le moteur (PAS la lecture retenue : Support). A FAIRE : chantier moteur confie a un agent.
+- **Q3** : VRAI type de carte « Path » dans le moteur (decision du 16/10/2026), implemente : `card_type/path.py`, rangee dans l'aire de soutien, invisible aux effets « Support ».
 - **Q4** : la Voie est mise de cote, hors du deck (lecture retenue, confirmee).
 - **Q5** : les deux moities d'Apparition sont independantes (lecture retenue, confirmee).
 - **Paire Tekko-Kagi (tj009/tj010)** : panorama declare.

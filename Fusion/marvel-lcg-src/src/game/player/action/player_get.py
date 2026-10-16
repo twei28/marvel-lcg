@@ -129,7 +129,10 @@ class PlayerGet:
         if upgrade:
             faces += self.GetControlUpgrade()
         if support:
-            faces += player.supports.Get()
+            # AJOUT (16/10/2026, pack jennika) : la Voie (Path) partage l'aire de
+            # soutien mais n'est pas un Support.
+            from game.card.face.card_type import Support
+            faces += [x for x in player.supports.Get() if Support.IsType(x)]
         if identity:
             faces.append(player.GetIdentity())
         if attachment:

@@ -52,7 +52,7 @@ tj006 R, tj007 Y, tj008 R, tj009 Y, tj010 Y : TOUTES conformes a `cards.json`. L
 tj012, tj013, tj015 = Boost 2 ; trois fleches sur tj014 = Boost 3. Le rond orange de tj014 / tj015 = PV 1.
 
 **Questions en attente (lectures provisoires, `TODO-QUESTION` dans les scripts)** : `.planning/tmnt/jennika-questions.md`
-(Q1 limite « for each Shinobi », Q2 quelles cartes sont Shinobi, Q3 type Path rendu par un Support, Q4 Voie mise de
+(Q1 limite « for each Shinobi », Q2 quelles cartes sont Shinobi, Q3 type Path : RESOLUE le 16/10/2026, vrai type Path dans le moteur, Q4 Voie mise de
 cote ou dans le deck, Q5 Apparition : deux moities independantes). Une carte dont la lecture est provisoire porte
 « OUI (lecture provisoire Qn) » : elle est prouvee POUR CETTE LECTURE ; si l'utilisateur en choisit une autre, la preuve
 est a refaire.
@@ -189,9 +189,14 @@ Carte terminée : OUI
       (`permanent.md`). Étape 6 : aucun cout, aucun nombre. OK.
 - [x] Étape 7 : pioche apres Ninjutsu, apres Bushido (amelioration), en alter ego ; temoin Composure ; temoin d'epuisement (deux
       Moonlighting : une seule pioche) ; indicateur Permanent. Rouge 4/7 (verts : mise en place, temoin, `desc`).
+- [x] TYPE PATH (16/10/2026, decision utilisateur Q3) : type `Path` (`card_type/path.py`), rangee dans l'aire de soutien. Cas
+      `jennika_voie_type` (Path et pas Support ; `GetOnFieldSupports` et `GetControlCardsByType(support=True)` ne la voient
+      pas ; reste une carte en jeu) : ROUGE avant le type (Support/Support), vert apres ; cas `jennika_voie_permanente` (un
+      `RemoveAllFromGame` d'un autre set, Rhino, ne la retire pas) : rouge quand la garde de `HasPermanent` est neutralisee,
+      vert sinon. Plateau : genre `path`, etiquette « Voie », zone des soutiens (vitest).
 - [x] 7 bis : NON (aucune limite imprimee). 8 OK.
-- [x] Étape 8 bis : OUI (Voie dessinee en soutien, couchee apres sa Reponse).
-Carte terminée : OUI (lecture provisoire Q3, Q4)
+- [x] Étape 8 bis : OUI (Voie dessinee en genre `path`, etiquette « Voie », zone des soutiens, couchee apres sa Reponse).
+Carte terminée : OUI (lecture provisoire Q4)
 
 ### tj012 : Personality Adjustment (obligation)
 - [x] Étape 2 : `qsv/14024` Need for Speed (MEME squelette).
