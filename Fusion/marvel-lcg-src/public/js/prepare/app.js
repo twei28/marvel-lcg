@@ -5317,6 +5317,29 @@ async function preselectionDernierScenario() {
     return true;
 }
 
+/** Le libelle d'une extension FAN-MADE : « Nom (Createur) », comme pour les heros
+ *  (demande du 16/10/2026 : « Custom (Web of Deceit) » devient « Web of Deceit (Gwenpool) »).
+ *  Le createur se retrouve par les sets de rencontre de l'extension, a defaut par
+ *  l'un de ses heros. Sans createur sur : « Nom » seul. Un officiel ne change pas. */
+const _auteursExtensions = new Map();
+async function auteurDeExtension(e) {
+    if (_auteursExtensions.has(e.key)) return _auteursExtensions.get(e.key);
+    let auteur = "";
+    for (const enc of e.encounters || []) { auteur = catalog.auteurSetRencontre(enc); if (auteur) break; }
+    if (!auteur) {
+        const heros = await catalog.heroes();
+        const h = heros.find((x) => x.extension === e.key && x.auteur);
+        auteur = h ? h.auteur : "";
+    }
+    _auteursExtensions.set(e.key, auteur);
+    return auteur;
+}
+function libelleExtension(e, auteur) {
+    const nom = nomExtension(e.key, langueActuelle());
+    const interne = nom.match(/^Custom \((.*)\)$/i);
+    return interne ? nomAvecAuteur(interne[1], auteur, true) : nom;
+}
+
 async function loadExtTabs() {
     await preselectionDernierScenario();
     const exts = (await catalog.extensions()).filter((e) => e.scenarios.length);
@@ -5327,6 +5350,8 @@ async function loadExtTabs() {
     }
     const tabs = document.getElementById("ext-tabs");
     if (!tabs) return;
+    const auteurs = new Map();
+    for (const e of exts) if (/custom/i.test(e.key)) auteurs.set(e.key, await auteurDeExtension(e));
     tabs.replaceChildren(...exts.map((e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
         title: e.key,
@@ -5337,7 +5362,7 @@ async function loadExtTabs() {
         e.key === "defis"
             ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${extensionImageUrl(e.key)}")` } }),
-        el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : nomExtension(e.key, langueActuelle())),
+        el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
     )));
     loadScnGrid();
 }
