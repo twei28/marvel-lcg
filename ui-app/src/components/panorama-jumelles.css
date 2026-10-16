@@ -1,0 +1,80 @@
+/* Panorama des cartes jumelles (board/panorama-jumelles.ts, decision du
+   16/10/2026). Deux scans a illustration continue, collés bord à bord, taille
+   normale, sans espace ; l'épuisement ne penche pas la carte (le raccord serait
+   cassé) : elle se grise et porte une pastille d'inclinaison + « Épuisée ». */
+
+.panorama-jumelles {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  position: relative;
+}
+
+/* Bord à bord : plus de liseré, de coins arrondis ni d'ombre côté raccord. */
+.scan-card.est-panorama.panorama-gauche .scan-frame {
+  border-right-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  clip-path: inset(-24px 0 -24px -24px);
+}
+
+.scan-card.est-panorama.panorama-droite .scan-frame {
+  border-left-width: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  clip-path: inset(-24px -24px -24px 0);
+}
+
+/* Épuisée : JAMAIS de rotation (ni `state-exhausted` ni `est-epuise`). */
+.scan-card.est-panorama.est-epuise .scan-frame,
+.scan-card.est-panorama.state-exhausted .scan-frame {
+  transform: none;
+}
+
+/* Désaturée (~15 % de couleur) et assombrie (~55 %) : le scan seul, la
+   pastille reste nette. */
+.scan-card.est-panorama-epuise .scan-frame > img {
+  filter: saturate(0.15) brightness(0.55);
+}
+
+.panorama-epuise {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6%;
+  pointer-events: none;
+}
+
+.panorama-pastille {
+  display: grid;
+  place-items: center;
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(18, 20, 26, 0.88);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.panorama-pastille svg {
+  width: 66%;
+  height: 66%;
+  fill: #fff;
+}
+
+.panorama-etiquette {
+  padding: 0.12em 0.7em;
+  border-radius: 999px;
+  background: rgba(18, 20, 26, 0.9);
+  border: 2px solid #fff;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
