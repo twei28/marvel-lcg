@@ -125,6 +125,15 @@ class ModelName(ModelBase):
             get_subtitle(this) == get_subtitle(that):
             return False
 
+        # AJOUT (16/10/2026, aspects TMNT) : titre unique secondaire du bandeau (`unique_also`,
+        # Bo-Wing « ✦ Winter Soldier »). Decision de l'utilisateur : l'unicite se juge sur les
+        # deux titres. Le bandeau n'a pas de sous-titre : il suffit que le TITRE corresponde.
+        def get_aliases(face: 'CardFace') -> Set[str]:
+            return set(face.paper.unique_also)
+        if get_aliases(this) & (get_titles(that) | get_aliases(that)) or \
+            get_aliases(that) & get_titles(this):
+            return False
+
         return True
 
     ################################################################################
