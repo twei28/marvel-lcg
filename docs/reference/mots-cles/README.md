@@ -149,6 +149,8 @@ la plus fréquente sur un pack vilain.
       texte de `td016` / `td017`)
 - [x] tuck.md (terme officiel, `td012` Donatello's Shell ; jamais documenté
       avant ce pack)
+- [ ] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : mot-clé maison NON DEFINI par
+      les scans ; carte créée, non scriptée ; question Q2 de `.planning/tmnt/shredder-questions.md`)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
