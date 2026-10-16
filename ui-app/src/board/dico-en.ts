@@ -1615,6 +1615,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Qui défend contre cette attaque ?': 'Who defends against this attack?',
   'Tout voir': 'See all',
   'Réduire': 'Collapse',
+  'Clique la carte dorée pour continuer': 'Click the golden card to continue',
+  'Ta décision': 'Your decision',
   'Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai':
     'Step by step: one "Next" per step of the phase. Bis and Dynamic phase: the new presentations, on trial',
   'D’un coup': 'All at once',

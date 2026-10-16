@@ -3472,12 +3472,14 @@ describe('la scène PC délègue au cartouche', () => {
     expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(6)
   })
 
-  it('la table garde son bouton rond', () => {
+  it('la table n a plus de fenêtre : une ligne fine, et la carte qui agit se clique (16/10/2026)', () => {
     const { container } = render(
       <DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />
     )
     expect(container.querySelector('.est-scene')).toBeNull()
-    expect(container.querySelector('.deroule-rond')).not.toBeNull()
+    expect(container.querySelector('.deroule-bulle-table')).toBeNull()
+    expect(container.querySelector('.deroule-rond')).toBeNull()
+    expect(container.querySelector('.tsm-bandeau')).not.toBeNull()
   })
 
   it('la bulle de la table porte la frise en onglets, plus la barre du haut (v3)', () => {
@@ -3514,14 +3516,17 @@ describe('la scène PC délègue au cartouche', () => {
     const { container } = render(
       <DeroulePhase etapes={avecBoosts} presentation="table" onTerminer={() => {}} />
     )
-    const boostsVus = () => container.querySelectorAll('.deroule-bulle-calcul .essai-stat.est-boost').length
-    const suivant = () => container.querySelector<HTMLButtonElement>('.deroule-bulle-table .deroule-rond')!
-    // Le premier se retourne a l'arrivee sur l'etape, les suivants un par clic.
-    expect(boostsVus()).toBe(1)
-    act(() => suivant().click())
-    expect(boostsVus()).toBe(2)
-    act(() => suivant().click())
-    expect(container.querySelector('.deroule-bulle-calcul')).toBeNull()
+    const phrase = () => container.querySelector('.tsm-phrase')?.textContent ?? ''
+    const espace = () =>
+      act(() => {
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      })
+    // Un seul geste par boost : l'étape reste la même tant que tous ne sont pas retournés.
+    expect(phrase()).toContain('Ultron')
+    espace()
+    expect(phrase()).toContain('Ultron')
+    espace()
+    expect(phrase()).not.toContain('Ultron')
   })
 
   it('sur la table, Echap demande confirmation avant de tout passer (Q32)', () => {
@@ -3531,30 +3536,11 @@ describe('la scène PC délègue au cartouche', () => {
     act(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
     })
-    expect(container.querySelector('.deroule-bulle-confirmer')).not.toBeNull()
+    expect(container.querySelector('.tsm-confirmer')).not.toBeNull()
     act(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
     })
-    expect(container.querySelector('.deroule-bulle-confirmer')).toBeNull()
-  })
-
-  it('la bulle de la table devient fantome au survol d une carte, et revient hors des cartes', () => {
-    const { container } = render(
-      <>
-        <div className="scan-card" data-testid="carte-table" />
-        <div data-testid="vide" />
-        <DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />
-      </>
-    )
-    const bulle = () => container.querySelector('.deroule-bulle-table')
-    act(() => {
-      screen.getByTestId('carte-table').dispatchEvent(new MouseEvent('pointerover', { bubbles: true }))
-    })
-    expect(bulle()?.classList.contains('est-fantome')).toBe(true)
-    act(() => {
-      screen.getByTestId('vide').dispatchEvent(new MouseEvent('pointerover', { bubbles: true }))
-    })
-    expect(bulle()?.classList.contains('est-fantome')).toBe(false)
+    expect(container.querySelector('.tsm-confirmer')).toBeNull()
   })
 
   it('« Suivant (espace) » valide l etape, comme l ancien « Suivant »', () => {

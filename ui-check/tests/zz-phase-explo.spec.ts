@@ -123,9 +123,11 @@ async function signature(page: Page) {
         defilementInterne: corps ? corps.scrollHeight > corps.clientHeight + 1 : false,
       };
     })();
+    const bulle = ((document.querySelector('.deroule-bulle-table') ?? document.querySelector('.deroule-phase')) as HTMLElement | null)?.outerHTML.slice(0, 2500);
     return {
+      bulle,
       diag,
-      cartouche: t('.deroule-phase').slice(0, 400),
+      cartouche: t('.deroule-phase, .tsm-bandeau').slice(0, 400),
       demande: t('.demande-centrale').slice(0, 200),
       annonce: t('.bandeau-annonce').slice(0, 160),
       dialogues: Array.from(document.querySelectorAll('[role="dialog"]')).filter(vis).map((d) => d.getAttribute('aria-label') || '').filter(Boolean).join(','),
@@ -152,7 +154,7 @@ test('explo', async ({ page }) => {
       const s = await signature(page);
       console.log(`PAS ${i} phase=${w.phase} round=${w.round_id} boutons=${JSON.stringify(s.boutons)}`);
     }
-    const enPhase = PHASES_MECHANT.includes(w.phase ?? '') || (await page.locator('.deroule-phase').filter({ visible: true }).count()) > 0;
+    const enPhase = PHASES_MECHANT.includes(w.phase ?? '') || (await page.locator('.deroule-phase, .tsm-bandeau').filter({ visible: true }).count()) > 0;
     if (enPhase && !dansPhase) dansPhase = true;
     if (!enPhase && dansPhase) {
       dansPhase = false; phasesVues++;
@@ -186,7 +188,8 @@ test('explo', async ({ page }) => {
         rang++;
         await page.screenshot({ path: path.join(SORTIE, `${String(rang).padStart(3, '0')}.png`) });
         const faits = (w.faits_mechant ?? []).map((f: Record<string, unknown>) => `${f.genre}:${f.etat ?? ''}:${f.carte ?? f.auteur ?? ''}`);
-        journal.write(JSON.stringify({ rang, i, phase: w.phase, round: w.round_id, ...s, faits: faits.slice(-5) }) + '\n');
+        const s2 = await signature(page);
+        journal.write(JSON.stringify({ rang, i, phase: w.phase, round: w.round_id, ...s, bulle: s2.bulle, faits: faits.slice(-5) }) + '\n');
       }
     }
     await unPas(page, dansPhase);

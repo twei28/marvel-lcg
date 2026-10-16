@@ -1,3 +1,4 @@
+import { QuestionSurTable, type ChoixSurTable } from './TableSansModale'
 import { ligneDefense } from './ligne-attaque'
 import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
@@ -64,6 +65,8 @@ type DemandeCentraleProps = {
    * position fixe, le panneau coule dans la scene a la place de ses boutons.
    */
   enScene?: boolean
+  /** « Sur la table » sans modale : pas de fenêtre, les cartes qui répondent portent leur étiquette. */
+  surLaTable?: boolean
   /**
    * Remet la partie avant le choix de la carte (`/undo action`). La croix du
    * coin ne s'affiche que si la question en fait partie (`annuler_action`).
@@ -413,6 +416,7 @@ export function DemandeCentrale({
   ligneSansDefense,
   survolSansDefense,
   enScene = false,
+  surLaTable = false,
   annulerAction,
 }: DemandeCentraleProps) {
   const reaction = estFenetreDeReaction(demande)
@@ -537,6 +541,45 @@ export function DemandeCentrale({
   const desactiverOption = (option: Option) => {
     setCarteRegardee(undefined)
     if (!option.failure_reason) survolerOption?.(undefined)
+  }
+
+  if (surLaTable) {
+    const phrase = options.some((option) => option.name === 'Defense')
+      ? t('Qui défend contre cette attaque ?')
+      : titreDepuisSource(demande, options, cartesParId)
+    const posees = new Set<number>()
+    const choix: ChoixSurTable[] = options.map((option) => {
+      const nomBrut = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+      const source = nomSource(option, cartesParId, nomPorteur)
+      const defense = option.name === 'Defense' && source !== undefined
+      const nom = defense ? `${t('Défendre avec')} ${source}` : nomBrut
+      const carte = carteDeLOption?.(option) ?? (reaction ? carteAuSurvol?.(option) : undefined)
+      const carteId = carte && !posees.has(Number(carte.id)) ? Number(carte.id) : undefined
+      if (carteId !== undefined) posees.add(carteId)
+      return {
+        id: option.id,
+        nom: String(nom),
+        carteId,
+        indisponible: option.failure_reason || undefined,
+        choisir: () => choisirOuInformer(option),
+        survoler: (actif: boolean) => (actif ? activerOption(option, carteAuSurvol?.(option) ?? carte) : desactiverOption(option)),
+      }
+    })
+    const attaque = ligneSansDefense && options.some((option) => option.name === 'Defense')
+    return (
+      <QuestionSurTable
+        phrase={phrase}
+        choix={choix}
+        refus={
+          demande.show_cancel
+            ? {
+                libelle: `${libelleRefus(options, reaction, cartesParId, nomPorteur, texteCapacite, estEnMain)}${attaque ? ` (${ligneSansDefense})` : ''}`,
+                agir: annuler,
+              }
+            : undefined
+        }
+      />
+    )
   }
 
   return (

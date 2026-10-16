@@ -4262,7 +4262,10 @@ export function PagePartie({
     // narration du tour suivant se posait au centre pendant que le cartouche
     // du bas montrait encore son bilan (planche du lot 3). Tant qu'il montre
     // une etape, il est le seul panneau.
-    !(nouvelleScenePC && cleEtapeAffichee !== undefined)
+    !(nouvelleScenePC && cleEtapeAffichee !== undefined) &&
+    // SANS MODALE (16/10/2026) : « Sur la table », la flèche, la pastille et la ligne du
+    // haut racontent déjà l'événement. Ce panneau le redisait dans une fenêtre.
+    !(modePhase === 'sur-table' && (phaseMechantEnCours || cleEtapeAffichee !== undefined))
 
   // Mode simple : la barre du bas disparait. Il reste juste un bouton flottant
   // « End Turn » quand on est en phase libre (sinon plus aucun moyen visible de
@@ -4692,6 +4695,7 @@ export function PagePartie({
                   ligneSansDefense={ligneSansDefense}
                   survolSansDefense={survolSansDefense}
                   enScene
+                  surLaTable={!sceneCentrale}
                   annulerAction={manuel ? undefined : annulerAction}
                 />
               ) : undefined

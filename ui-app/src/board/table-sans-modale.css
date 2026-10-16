@@ -1,0 +1,245 @@
+/* « Sur la table », sans modale : la carte qui agit, et une ligne fine. */
+.tsm-bandeau {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(760px, 92%);
+  padding: 6px 14px;
+  background: rgba(17, 19, 24, 0.92);
+  border: 1px solid rgba(243, 198, 35, 0.55);
+  border-left: 4px solid var(--rouge, #e62429);
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  color: #f4f6fa;
+  font-size: 15px;
+  line-height: 1.25;
+  pointer-events: auto;
+}
+
+.tsm-phrase b {
+  color: #fff;
+  font-weight: 800;
+}
+
+.tsm-nombre {
+  flex: none;
+  padding: 1px 9px;
+  background: var(--rouge, #e62429);
+  color: #fff;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  border-radius: 3px;
+}
+
+.tsm-consigne {
+  flex: none;
+  padding-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  color: #f3c623;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tsm-retour {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* La carte qui agit : un halo doré calme, qui respire doucement. Elle se clique. */
+.tsm-acteur {
+  position: absolute;
+  z-index: 140;
+  padding: 0;
+  background: transparent;
+  border: 3px solid #f3c623;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.55),
+    0 0 18px 4px rgba(243, 198, 35, 0.55);
+  cursor: pointer;
+  animation: tsm-respire 1.8s ease-in-out infinite;
+}
+
+.tsm-acteur.est-inactif {
+  cursor: default;
+  animation: none;
+  border-color: rgba(243, 198, 35, 0.4);
+  box-shadow: none;
+}
+
+.tsm-acteur:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+/* La carte qui subit : un anneau rouge fin, sans mouvement. */
+.tsm-cible {
+  position: absolute;
+  z-index: 139;
+  border: 2px solid rgba(230, 36, 41, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 0 12px 2px rgba(230, 36, 41, 0.45);
+  pointer-events: none;
+}
+
+@keyframes tsm-respire {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 0 10px 2px rgba(243, 198, 35, 0.4); }
+  50% { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 0 22px 6px rgba(243, 198, 35, 0.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tsm-acteur { animation: none; }
+}
+
+.tsm-confirmer {
+  position: absolute;
+  left: 50%;
+  top: 52px;
+  transform: translateX(-50%);
+  z-index: 151;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: rgba(17, 19, 24, 0.95);
+  border: 1px solid rgba(243, 198, 35, 0.55);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* La question : la ligne du haut porte la phrase et les choix sans carte. */
+.tsm-bandeau.est-question {
+  border-left-color: #f3c623;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tsm-bouton {
+  flex: none;
+  min-height: 32px;
+  padding: 4px 14px;
+  background: #f3c623;
+  color: #111318;
+  border: 2px solid #ffe27a;
+  border-radius: 4px;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.tsm-bouton.est-refus {
+  background: #292e38;
+  color: #f4f6fa;
+  border-color: #4a5160;
+}
+
+.tsm-bouton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Les cartes qui peuvent répondre : un halo vert, plus doux que le doré de l'action. */
+.tsm-utilisable {
+  position: absolute;
+  z-index: 140;
+  padding: 0;
+  background: transparent;
+  border: 3px solid #4fd17b;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.5),
+    0 0 14px 3px rgba(79, 209, 123, 0.5);
+  cursor: pointer;
+}
+
+.tsm-utilisable:hover {
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.5),
+    0 0 22px 6px rgba(79, 209, 123, 0.8);
+}
+
+.tsm-utilisable.est-inactif {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.tsm-etiquette {
+  position: absolute;
+  z-index: 141;
+  transform: translateX(-50%);
+  max-width: 220px;
+  padding: 3px 12px;
+  background: #4fd17b;
+  color: #0b1a10;
+  border: 2px solid #b5f0c8;
+  border-radius: 4px;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-align: center;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.tsm-etiquette.est-inactif {
+  background: #3a404c;
+  color: #aab2c0;
+  border-color: #4a5160;
+  cursor: not-allowed;
+}
+
+/* Le bilan : titre, pastilles, bouton, sur une ligne qui peut passer à la ligne. */
+.tsm-bandeau.est-bilan {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: min(980px, 94%);
+}
+
+.tsm-titre {
+  flex: none;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #f3c623;
+}
+
+.tsm-pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tsm-pastille {
+  padding: 2px 10px;
+  background: #292e38;
+  border: 1px solid #383e49;
+  border-radius: 3px;
+  font-size: 14px;
+  color: #f4f6fa;
+}
+
+.tsm-pastille small {
+  color: #aab2c0;
+}
