@@ -66,7 +66,7 @@ describe('ta011 Prey : attachée à l ennemi attaqué ou à la manigance contré
 })
 
 describe('ta002 / ta003 / ta014 : états Cloaked et Dazed dessinés', () => {
-  it('Dazed est dessinée sur l ennemi étourdi (ta002 Nobody, ta003 Bold Strategy)', () => {
+  it('Dazed est dessinée sur l ennemi hébété (ta002 Nobody, ta003 Bold Strategy)', () => {
     const monde = tableAvec(siege({ area_hero: [heros()] }), {
       area_villain: [
         carte(ENNEMI, '01094', 'EncounterVillain', 'Rhino'),

@@ -25,9 +25,9 @@ describe('etatDe', () => {
     expect(etatDe(carte('Cloaked'))).toEqual({ lettre: 'K', classe: 'est-camoufle', nom: 'Camouflé' })
   })
 
-  // Sixieme carte d'etat (« Dazed », pack TMNT) : nom francais « Étourdi ».
-  it('reconnait Étourdi, la sixieme carte d etat', () => {
-    expect(etatDe(carte('Dazed'))).toEqual({ lettre: 'Z', classe: 'est-etourdi', nom: 'Étourdi' })
+  // Sixieme carte d'etat (« Dazed », pack TMNT) : nom francais « Hébété ».
+  it('reconnait Hébété, la sixieme carte d etat', () => {
+    expect(etatDe(carte('Dazed'))).toEqual({ lettre: 'H', classe: 'est-hebete', nom: 'Hébété' })
   })
 
   // Le moteur pose les statuts avec kind 'status' (Board.tsx:174). Un statut

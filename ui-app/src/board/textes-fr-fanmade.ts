@@ -4059,9 +4059,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // alopex — * Alopex (AlterEgo)
   'ta001b': "<b>Mise en place</b> : mettez votre amélioration Prey de côté.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[KAMA]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // alopex — * Nobody (Ally)
-  'ta002': "[star] <b>Réponse</b> : après que Nobody a attaqué un ennemi portant Prey, étourdissez cet ennemi.\n[star] <b>Réponse</b> : après que Nobody a contré une manigance portant Prey, camouflez-la.",
+  'ta002': "[star] <b>Réponse</b> : après que Nobody a attaqué un ennemi portant Prey, hébétez cet ennemi.\n[star] <b>Réponse</b> : après que Nobody a contré une manigance portant Prey, camouflez-la.",
   // alopex — Bold Strategy (Event)
-  'ta003': "<b>Action de héros</b> : camouflez Alopex. Vous pouvez dépenser jusqu'à 3 ressources [mental] pour étourdir un ennemi pour chaque ressource [mental] dépensée de cette façon.",
+  'ta003': "<b>Action de héros</b> : camouflez Alopex. Vous pouvez dépenser jusqu'à 3 ressources [mental] pour hébéter un ennemi pour chaque ressource [mental] dépensée de cette façon.",
   // alopex — Pounce (Event)
   'ta004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi. Vous pouvez dépenser jusqu'à 2 ressources [mental] pour infliger 2 dégâts supplémentaires à cet ennemi pour chaque ressource [mental] dépensée de cette façon.",
   // alopex — Prowl (Event)

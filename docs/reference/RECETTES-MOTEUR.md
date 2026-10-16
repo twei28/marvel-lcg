@@ -1117,6 +1117,37 @@ servi, et elles resservent :
 - **`DeclareNumber` répond la PREMIÈRE valeur (0)** : `choisir_option: ["3"]` force la valeur (cas sk271).
 - **Le filtre `[filtre]` du harnais est une sous-chaîne, pas une expression régulière** (`"sk2[78]"` retient 0 cas).
 
+### 7novemdecies. Pièges payés par le pack `alopex` (TMNT, 16/10/2026)
+
+- **Une Interruption forcée « when this card leaves play, set this card aside »
+  doit se garder contre sa propre sortie.** `Faces.SetAside` fait QUITTER LE JEU à la
+  carte et renvoie `WhenCardLeavePlay` : l'Interruption se relançait sans fin
+  (`RecursionError` AVALÉE par le moteur). La carte finissait de côté, les cas « elle
+  est de côté » étaient verts, mais `AfterCardLeavePlay` n'était jamais envoyé, donc
+  toute Réponse « after Prey leaves play » restait muette (Kabuki, Kama). Garde :
+  drapeau posé sur la carte autour de l'appel (`ta011.py`). **Symptôme au journal du
+  harnais : des centaines de lignes « [carte] s'active » suivies d'un `RecursionError`.**
+- « Spend up to N [mental] resources » **dans le corps** d'un effet (pas de flèche) :
+  `joueur.AskSpendResourcesInternal(Cost("BBB", up_to=True), effect)` rend les
+  `Resources` dépensées (`.val`) ; `Cost("B...")` accepte mental ET wild. Le pilote du
+  harnais refusait toute dépense partielle (« UpTo » exigeait la couverture totale) :
+  clé `payer_jusqu_a: n` ajoutée à `test_capacites.py` (additive). Il faut aussi des
+  cartes à UNE icône comme carburant (Genius 01089 = 2 icônes d'un coup).
+- Un **Réponse qui part AVANT les dégâts consécutifs** (ally `1*`) : une carte Cloaked
+  posée par cette Réponse absorbe aussitôt le dégât consécutif de l'allié (−2) et part.
+  Mesurer `degats` de l'allié (0 avec, 1 sans), pas la présence du statut.
+- La **défausse du joueur n'est jamais vide** : le harnais défausse la main de départ
+  (`main_exclusive`) AVANT `declencher`. Pour « aucune carte éligible » / « exactement
+  celle-ci », `Puzzle.EmptyPlayerDiscardPile()` (ajoutée) puis `CreatePlayerDiscardPile`
+  DANS `declencher`, pas dans `mise_en_place`.
+- `CreatePlayerDeck(a, b, c)` : la DERNIÈRE carte créée est au DESSUS du deck.
+- Un deck rencontre épuisé par « discard ... until » est **remélangé aussitôt** avec sa
+  défausse : ne pas asserter `defausse_rencontre` après une recherche infructueuse.
+- Un sbire à Garde (01101 Hydra Mercenary) rend le vilain non ciblable : choisir le
+  sbire comme cible d'un événement d'attaque.
+- Une attaque d'allié sur Rhino : les cartes `Puzzle.SetThreat('01097b', 8)` dépassent
+  le seuil du complot et mettent fin à la partie (l'attache échoue) : rester ≤ 6.
+
 ## 8. Données (`data/cards.json`) — conventions
 
 - Pack en QUEUE de fichier, `"custom": "Arnaud"`, `set_name` = nom du

@@ -31,7 +31,7 @@ déjà Dazed), `ta002` Nobody (« daze that enemy »).
   même ennemi n'y posent qu'une carte (le moteur ne propose donc que les ennemis
   non Dazed).
 - `ta002` : si l'attaque de Nobody vainc l'ennemi (donc sa Prey part), il n'y a
-  plus d'ennemi à étourdir : rien ne se passe.
+  plus d'ennemi à hébéter : rien ne se passe.
 
 **Variantes maison** : aucune.
 

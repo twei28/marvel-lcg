@@ -55,13 +55,13 @@ describe('deltas de statuts', () => {
   })
 
   // Sixieme carte d'etat, pack TMNT (« Dazed », Baxter Stockman v3).
-  it('signale Étourdi, la sixieme carte d etat, posee puis retiree', () => {
+  it('signale Hébété, la sixieme carte d etat, posee puis retiree', () => {
     const avant = monde(klaw)
     const apres = monde(klaw, carte(204, 'StatusCard', 'dazed', 97))
     expect(deltasStatuts(avant, apres)).toEqual([[97, { kind: 'status', statut: 'dazed', value: 1 }]])
     expect(deltasStatuts(apres, avant)).toEqual([[97, { kind: 'status', statut: 'dazed', value: -1 }]])
-    expect(libelleStatut('dazed', 1, 'fr')).toBe('Étourdi')
-    expect(libelleStatut('dazed', -1, 'fr')).toBe('Étourdi retiré')
+    expect(libelleStatut('dazed', 1, 'fr')).toBe('Hébété')
+    expect(libelleStatut('dazed', -1, 'fr')).toBe('Hébété retiré')
     expect(libelleStatut('dazed', 1, 'en')).toBe('Dazed')
   })
 

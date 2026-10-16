@@ -10,11 +10,11 @@ Traduction retenue : « La prochaine fois que ce personnage utilise un pouvoir d
 base ou s'active, diminuez cette valeur de 2, puis défaussez cette carte d'état.
 La prochaine fois que ce personnage va subir des dégâts, quelle qu'en soit la
 quantité, augmentez cette valeur de 2, puis défaussez cette carte d'état. »
-Nom français de l'interface : **Étourdi** (« Daze » = « étourdissez »).
+Nom français de l'interface : **Hébété** (« Daze » = « hébétez » ; ⚠ « étourdi » est interdit par la gate `vocabulaire-statuts.test.ts`, qui le réserve à une mauvaise traduction de Stunned = Sonné).
 
 **Ce que dit l'insert** (« Dazed Rules ») :
 - un personnage ne peut porter qu'**une** carte Dazed, sauf mention contraire ;
-- Steady et Stalwart n'y changent rien (on peut étourdir un personnage Steady
+- Steady et Stalwart n'y changent rien (on peut hébéter un personnage Steady
   ou Stalwart ; Steady ne permet pas d'en porter deux) ;
 - **un seul effet, le premier qui arrive**, comme Cloaked : « If I defend with a
   Dazed status card, do I get the −2 DEF, and also increase the damage by 2? No. »
@@ -38,7 +38,7 @@ Nom français de l'interface : **Étourdi** (« Daze » = « étourdissez »).
 | `Puzzle.Daze` (`puzzle/puzzle.py`, `puzzle_.py`) | poser l'état dans un cas de test, comme `Puzzle.Cloak` |
 | `src/cards/pack/status/dazed.py` | la capacité (trois déclencheurs, un seul consommateur), modèle `cloaked.py` |
 | `cloaked.py` | cède la place à Dazed sur les dégâts (voir ci-dessous) |
-| UI | `etats.ts` (lettre Z, « Étourdi »), `effets-statuts.ts` (badge), type de `ScanCard.tsx`, scan `assets/textures/dazed.webp` |
+| UI | `etats.ts` (lettre H, « Hébété »), `effets-statuts.ts` (badge), type de `ScanCard.tsx`, scan `assets/textures/dazed.webp` |
 
 **Lecture des mots du texte imprimé (tranchée dans `dazed.py`)** :
 - « uses a basic power » = `WhenUnitUseBasicPower` (ATQ, CTR, DEF, REC), −2 par
@@ -70,5 +70,5 @@ Nom français de l'interface : **Étourdi** (« Daze » = « étourdissez »).
 
 **Variantes maison** : aucune.
 
-**Preuves** : `tools/cas/dazed.py` (17 cas, dont 4 témoins et la preuve par
+**Preuves** : `tools/cas/dazed.py` (18 cas, dont 4 témoins et la preuve par
 substitution du module `dazed.py`).

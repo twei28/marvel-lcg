@@ -160,6 +160,15 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 0, "statuts": [["01001a", "Dazed"]], "statuts_absents": [["01001a", "Tough"]]},
     },
+    {
+        "nom": "[dazed] Tough d'abord, PUIS Dazed : 3 degats (prevenus par Tough) puis 3 degats (+2 = 5 subis), Dazed consommee",
+        "pourquoi": "preuve positive de l'ordre : le premier coup est absorbe par Tough (Dazed intacte), le second declenche Dazed ; rouge sans module",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.Tough('01001a')", "Puzzle.Daze('01001a')"],
+        "declencher": ["Puzzle.Damage('01001a', 3)", "Puzzle.Damage('01001a', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 5, "statuts_absents": [["01001a", "Dazed"], ["01001a", "Tough"]]},
+    },
     # ------------------------------------------------------------ Cloaked et Dazed en meme temps
     {
         "nom": "[dazed] Cloaked + Dazed, pouvoir de base : +2 -2 = ATQ imprimee (2 degats), les DEUX cartes partent",

@@ -100,7 +100,7 @@ export function libelleStatut(statut: Statut, value: 1 | -1, langue: 'fr' | 'en'
     tough: { fr: 'Tenace', en: 'Tough' },
     exposed: { fr: 'Exposé', en: 'Exposed' },
     cloaked: { fr: 'Camouflé', en: 'Cloaked' },
-    dazed: { fr: 'Étourdi', en: 'Dazed' },
+    dazed: { fr: 'Hébété', en: 'Dazed' },
   }
   const nom = NOMS[statut][langue]
   if (value > 0) return nom
