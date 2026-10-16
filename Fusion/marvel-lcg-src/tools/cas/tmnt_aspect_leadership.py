@@ -194,10 +194,10 @@ CAS += [
     _c("ul007 Down the Drain : Rampage 2 + allie defausse -> 2 degats, 2 menaces retirees, 2 cartes piochees",
        "« take 2 damage and discard 2 cards » (cout) ; « Discard an ally you control -> deal 2 damage to an enemy, "
        "remove 2 threat from a scheme, and draw 2 cards » : deck 6 -> 2 defaussees -> 2 piochees -> 2",
-       [HEROS, SANS_DECK, DECK6, M("01067"), "Puzzle.EmptyHand()", "Puzzle.SetThreat('01097b', 5)"], [],
-       {"degats_identite": 2, "degats": [["01094", 2]], "menace": [["01097b", 3]], "defausse": ["01067", "ul007"],
+       [HEROS, SANS_DECK, DECK6, M("01041"), "Puzzle.EmptyHand()", "Puzzle.SetThreat('01097b', 5)"], [],
+       {"degats_identite": 2, "degats": [["01094", 2]], "menace": [["01097b", 3]], "defausse": ["01041", "ul007"],
         "taille_main": 2, "taille_deck_joueur": 2},
-       main_exclusive=["ul007", "01002"], jouer=["ul007"], cibles=["01094", "01097b", "01067"]),
+       main_exclusive=["ul007", "01002"], jouer=["ul007"], cibles=["01094", "01097b", "01041"]),
     _c("ul007 Down the Drain : sans allie a defausser, la carte n'est pas jouable (aucun degat de Rampage)",
        "« Discard an ally you control » est un COUT : impayable -> rien n'est paye", [HEROS, SANS_DECK, DECK6], [],
        {"degats_identite": 0, "en_main": ["ul007"], "taille_deck_joueur": 6},
@@ -274,6 +274,12 @@ CAS += [
        [HEROS, "Puzzle.PutIntoPlay('01101')", M("ul024"), "Puzzle.AttachReel('ul024', '01101')",
         "Puzzle.EmptyHand()"],
        ["Puzzle.Discard(Puzzle.FindFaceInPlay('01101'))"], {"taille_main": 1, "hors_jeu": ["01101"]}, accepter_choix=True),
+    _c("ul024 Sense of Dread : le sbire attache est VAINCU (attaque du heros) -> pioche 1",
+       "« leaves play » couvre aussi la defaite : 2 degats sur 1 PV restant",
+       [HEROS, "Puzzle.PutIntoPlay('01101')", "Puzzle.Damage(Puzzle.FindFaceInPlay('01101'), 2)", M("ul024"),
+        "Puzzle.AttachReel('ul024', '01101')", "Puzzle.EmptyHand()"],
+       ["Puzzle.Attack('01001a')"], {"taille_main": 1, "hors_jeu": ["01101"]}, cibles=["01101"],
+       accepter_choix=True),
     # ---- ul025 Shogun
     _c("ul025 Shogun : defausse un allie de la main -> Tenace sur un allie (lui-meme)",
        "« discard an ally from your hand -> give an ally a tough status card »", [HEROS], [],
@@ -389,7 +395,12 @@ CAS += [
 
 VERIFICATIONS = r'''
 def ul_jouable_hors_main(monde, aides):
-    """La carte `attendu.carte` (posee hors de la main) est-elle offerte au jeu ? `CanPlayBy` du moteur."""
+    """La carte `attendu.carte` (posee hors de la main) est-elle OFFERTE au jeu par le moteur ? Meme filtre que
+    `jouer_carte_glissee` du harnais (WhenPlayerLikeInTurn + FilterAvailableEffects), sans exiger l'identite
+    comme hote."""
+    from game.message import Message
+    from game.effect.rule import GameRule
+    from game.event.manager import EventManager
     attendu = aides["cas"]["attendu"]
     joueur = monde.players[0]
     face = None
@@ -399,7 +410,10 @@ def ul_jouable_hors_main(monde, aides):
             face = f
     if face is None:
         return False, f"{attendu['carte']} introuvable"
-    jouable = bool(face.CanPlayBy(joueur))
+    effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+    message.Send()
+    jouable = bool(EventManager.FilterAvailableEffects(message, effets, joueur, monde, None))
     if jouable != attendu["jouable"]:
         return False, f"jouable={jouable} (attendu {attendu['jouable']}), zone {face.card.area}"
     return True, f"jouable={jouable}"

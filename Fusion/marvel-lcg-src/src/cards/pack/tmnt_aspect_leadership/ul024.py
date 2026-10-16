@@ -16,7 +16,9 @@ from . import *
 #  - `sk093` / `st016` : un mot-cle sans parametre dedie dans la fabrique d'attachement =
 #    `GiveKeywordToAttached(finder, apply=...)` ; le filtre rend 0 pour un porteur qui ne remplit pas
 #    la condition (ici : ELITE).
-#  - `27048` / `60206b` : « When X leaves play » = `WhenCardLeavePlay(<type>, ..., op)`.
+#  - `sk213a` : « When X leaves play » (Interruption) = `WhenCardWouldLeavePlay(<type>, ..., op)` : AVANT
+#    la sortie, quand l'amelioration est encore attachee (`WhenCardLeavePlay` arrive apres son detachement :
+#    mesure en jeu, l'Interruption ne partait pas).
 #
 # TEXTE CONTRE CODE
 #  ⚠ « a MINION » : pas le vilain.
@@ -42,11 +44,11 @@ def GetAbilities() -> Sequence['Ability']:
     def gagner_vulnerable(effect: 'Effect', face: 'CardFace', diff: int) -> None:
         face.GainVulnerable(diff, effect)
 
-    def le_porteur(effect: 'Effect', message: 'Message.WhenCardLeavePlay') -> bool:
+    def le_porteur(effect: 'Effect', message: 'Message.WhenCardWouldLeavePlay') -> bool:
         this = effect.this.CastTo(Upgrade)
         return this.bind_face is not None and message.trigger is this.bind_face
 
-    def piocher(effect: 'Effect', message: 'Message.WhenCardLeavePlay') -> None:
+    def piocher(effect: 'Effect', message: 'Message.WhenCardWouldLeavePlay') -> None:
         this = effect.this.CastTo(Upgrade)
         Unused(message)
         joueur = this.GetControlByOrOwner()
@@ -64,7 +66,7 @@ def GetAbilities() -> Sequence['Ability']:
             CardFinder(card_type=Minion, non_trait="ELITE"),
             apply=gagner_vulnerable,
         ),
-        AbilityFactory.WhenCardLeavePlay(
+        AbilityFactory.WhenCardWouldLeavePlay(
             AbilityType.Interrupt,
             Minion,
             piocher,

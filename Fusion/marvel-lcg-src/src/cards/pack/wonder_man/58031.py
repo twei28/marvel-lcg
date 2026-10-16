@@ -27,7 +27,14 @@ def GetAbilities() -> Sequence['Ability']:
             return
         chosen = player.AskChooseFace(faces, effect)
         if chosen:
-            Faces.ShuffleAllTo([chosen], player.player_deck, effect)
+            # CORRECTIF (16/10/2026, autoplay du pack tmnt_aspect_leadership, reskin ul003) : les candidats sont
+            # fabriques dans `world.area_removed`, dont le PROPRIETAIRE est le scenario (et la defausse liee celle
+            # de rencontre). Melange tel quel dans le deck du joueur, l'allie choisi restait au scenario :
+            # depense comme ressource, `GetControlByPlayer` levait AssertionError (3 parties sur 8). On fabrique
+            # donc une copie NEUVE dans le deck du joueur (proprietaire = le joueur), puis on melange : modele
+            # `skrull_menace/campaign.py` (GenerateCard(..., player.player_deck) + Shuffle).
+            CardFactory.GenerateCard(chosen.paper.card_id, player.player_deck, world)
+            player.player_deck.Shuffle(effect)
         hand = list(player.hand_cards.Get())
         if hand:
             num = min(2, len(hand))
