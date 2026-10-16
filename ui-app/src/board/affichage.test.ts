@@ -49,7 +49,8 @@ describe('affichage', () => {
     expect(window.localStorage.getItem(CLE_AFFICHAGE)).toBe('epure')
     expect(document.documentElement.dataset.affichage).toBe('sobre')
     expect(document.documentElement.dataset.epure).toBe('oui')
-    expect(mouvementReduit()).toBe(true)
+    // L'épuré garde ses animations (16/10/2026) : seul le sobre les coupe.
+    expect(mouvementReduit()).toBe(false)
     ecrireAffichage('sobre')
     expect(document.documentElement.dataset.epure).toBeUndefined()
   })
@@ -64,6 +65,7 @@ describe('affichage', () => {
 
   it('le mode sobre vaut mouvement reduit, le mode normal suit le systeme', () => {
     // test-setup.ts : matchMedia repond toujours « non ».
+    delete document.documentElement.dataset.epure
     document.documentElement.dataset.affichage = 'normal'
     expect(mouvementReduit()).toBe(false)
     document.documentElement.dataset.affichage = 'sobre'

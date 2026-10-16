@@ -25,7 +25,7 @@ const VRAIE_PILE = /(deck|defausse|discard|victoire|retirees|mise-de-cote|nemesi
 export function animationsCoupees(): boolean {
   if (typeof window === 'undefined') return true
   if (document.body.classList.contains('plateau-sans-animations')) return true
-  if (document.documentElement.getAttribute('data-affichage') === 'sobre') return true
+  if (document.documentElement.getAttribute('data-affichage') === 'sobre' && !document.documentElement.dataset.epure) return true
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 }
 

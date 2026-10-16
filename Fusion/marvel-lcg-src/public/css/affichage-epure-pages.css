@@ -77,8 +77,8 @@ html[data-epure] body {
 }
 
 /* --- 2. Ce qu'on retire ------------------------------------------------------ */
+/* La carte du héros survolé, à gauche (.tb-art), reste visible (16/10/2026). */
 html[data-epure] .tb-trame,
-html[data-epure] .tb-art,
 html[data-epure] .acc-aide {
   display: none;
 }
@@ -464,7 +464,7 @@ html[data-epure] .salon-b::after {
 }
 
 html[data-epure] .tb-scene,
-html[data-epure] .tb-scene * {
+html[data-epure] .tb-scene *:not(.tb-art):not(.tb-art *) {
   background-image: none;
 }
 
@@ -747,4 +747,34 @@ html[data-epure] .db-problemes {
 html[data-epure] #db-grille-info,
 html[data-epure] #db-grille-info b {
   color: var(--ep-texte);
+}
+
+/* --- 15. Retours du 16/10/2026 ----------------------------------------------- */
+/* « Lancer la partie » : en orange, pour qu'on le trouve tout de suite. */
+html[data-epure] .btn.launch,
+html[data-epure] body .btn.launch,
+html[data-epure] button.btn.launch {
+  background: #f28c1b !important;
+  color: #14161a !important;
+  box-shadow: 0 0 0 1px #b8620a, 0 1px 2px rgba(20, 24, 32, 0.25) !important;
+  font-weight: 700;
+}
+html[data-epure] .btn.launch:hover:not(:disabled) {
+  background: #ff9d33 !important;
+}
+html[data-epure] .btn.launch:disabled {
+  background: var(--ep-surface) !important;
+  color: #6f7278 !important;
+  box-shadow: 0 0 0 1px #b3b5ba !important;
+}
+
+/* La carte survolée, à gauche : un voile clair sous le nom et les pastilles,
+   pour que le texte sombre de l'épuré reste lisible sur l'illustration. */
+html[data-epure] .tb-scene::after {
+  display: block;
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, var(--ep-surface) 0, var(--ep-surface) 26%, rgba(169, 171, 176, 0.85) 40%, transparent 62%);
 }

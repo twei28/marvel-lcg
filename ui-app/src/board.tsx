@@ -2325,7 +2325,8 @@ export function PagePartie({
   // L'affichage sobre coupe les animations sans toucher au reglage du joueur :
   // revenir en normal lui rend ce qu'il avait choisi.
   const [affichage, setAffichage] = useState<Affichage>(lireAffichage)
-  const animationsActives = animations && affichage === 'normal'
+  // L'épuré garde les animations (16/10/2026) : seul le sobre les coupe.
+  const animationsActives = animations && affichage !== 'sobre'
   useEffect(() => {
     appliquerAffichage(affichage)
   }, [affichage])

@@ -132,6 +132,7 @@ export async function chercherAffichageDuCompte(): Promise<Affichage | undefined
  * feuille sobre ne doit pas laisser une attente derriere elle.
  */
 export function mouvementReduit(): boolean {
-  if (document.documentElement.dataset.affichage === 'sobre') return true
+  // L'épuré garde ses animations (16/10/2026) : seul le sobre les coupe.
+  if (document.documentElement.dataset.affichage === 'sobre' && !document.documentElement.dataset.epure) return true
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }

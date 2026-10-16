@@ -186,7 +186,6 @@ html[data-epure] .plateau-barre button .ico-reglages {
 /* --- 5. Les petites fenetres : jaune du jeu, typo des titres, leger biseau ---- */
 html[data-epure] .reglages-fenetre,
 html[data-epure] .deroule-phase,
-html[data-epure] .demande-centrale,
 html[data-epure] .fin-partie-carte,
 html[data-epure] .assistant-action,
 html[data-epure] .deck-modal-panel {
@@ -552,4 +551,123 @@ html[data-epure][data-affichage] .mep-continuer:focus-visible {
   background: var(--ep-jaune-vif);
   outline: 2px solid var(--ep-texte);
   outline-offset: 2px;
+}
+
+/* --- 13. Retours du 16/10/2026 ----------------------------------------------- */
+/* La question centrale (DemandeCentrale) : pas de fenetre grise autour (elle
+   coupait les boutons). Le bandeau du texte devient une carte claire, les
+   boutons des boutons plats ; « Continuer » reste jaune. */
+html[data-epure] .demande-centrale {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  overflow: visible;
+}
+
+html[data-epure] .demande-centrale .dc-texte {
+  background: var(--ep-surface);
+  color: var(--ep-texte);
+  border: 0;
+  border-top: 4px solid var(--ep-jaune);
+  border-radius: 6px;
+  box-shadow: var(--ep-biseau);
+  backdrop-filter: none;
+}
+
+html[data-epure] .demande-centrale .dc-texte .plateau-eyebrow {
+  color: #6b5200;
+  font-weight: 700;
+}
+
+html[data-epure] .demande-centrale .af-action,
+html[data-epure] .demande-centrale .dc-continue {
+  clip-path: none;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  box-shadow: var(--ep-relief);
+  font-family: var(--ep-police);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 8px 16px;
+}
+
+html[data-epure] .demande-centrale .af-action small,
+html[data-epure] .demande-centrale .af-action .af-cibles {
+  color: var(--ep-doux);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+html[data-epure] .demande-centrale .af-action:hover:not(:disabled) {
+  box-shadow: var(--ep-relief-survol);
+}
+
+html[data-epure] .demande-centrale .dc-continue,
+html[data-epure] .demande-centrale .af-action.est-au-maximum {
+  background: var(--ep-jaune);
+  color: #14161a;
+  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
+}
+
+html[data-epure] .demande-centrale .af-action-wrap:has(> .af-action.est-au-maximum) {
+  filter: none;
+}
+
+html[data-epure] .demande-centrale .dc-pass {
+  background: var(--ep-surface);
+  color: var(--ep-doux);
+}
+
+/* Les pictogrammes de ressources gardent la police du jeu (ChampionsIcons) :
+   la police systeme posee sur les fenetres les changeait en lettres. */
+html[data-epure] .demande-centrale .icone-res,
+html[data-epure] .deroule-phase .icone-res,
+html[data-epure] .assistant-action .icone-res,
+html[data-epure] .reglages-fenetre .icone-res,
+html[data-epure] .deck-modal-panel .icone-res,
+html[data-epure] .plateau-barre .icone-res {
+  font-family: 'ChampionsIcons';
+}
+
+html[data-epure] .deroule-phase .tp-icone,
+html[data-epure] .demande-centrale .tp-icone,
+html[data-epure] .assistant-action .tp-icone,
+html[data-epure] .deroule-phase .essai-boost-icones {
+  font-family: 'ChampionsIcons';
+}
+
+/* « Fin du tour » : un jaune vif, bien visible. */
+html[data-epure][data-affichage] .bouton-fin-tour,
+html[data-epure][data-affichage] .plateau-barre .bh-fin-tour:not(:disabled) {
+  background: #ffcc00;
+  color: #14161a;
+  border: 1px solid #b88f00;
+  box-shadow: 0 1px 2px rgba(20, 24, 32, 0.25);
+  font-weight: 800;
+  filter: none;
+}
+
+html[data-epure][data-affichage] .bouton-fin-tour:hover {
+  background: #ffd84d;
+}
+
+html[data-epure] .demande-centrale .dc-texte strong,
+html[data-epure] .demande-centrale .dc-texte .dc-reagit {
+  color: var(--ep-texte);
+  font-size: 15px;
+}
+
+html[data-epure] .demande-centrale .af-action > span {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+/* Les boutons BD grossissent de 20 % sur grand ecran (boutons-bd.css) : pas en epure. */
+html[data-epure] .demande-centrale .af-action,
+html[data-epure] .demande-centrale .dc-continue {
+  zoom: 1;
 }

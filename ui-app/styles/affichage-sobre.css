@@ -151,41 +151,44 @@ html[data-affichage='sobre'] .deroule-phase .deroule-boutons .deroule-suivant:ho
    fenetres et les trajets. Chaque element ci-dessous a une forme de base
    lisible : couper son animation le laisse a sa place finale.
 
+   ⚠ L'ÉPURÉ GARDE SES ANIMATIONS (16/10/2026, demande de l'utilisateur) : d'où
+   le `:not([data-epure])` de chaque règle de cette section.
+
    ⚠ Les messages qui s'effacent d'eux-memes (`.bulle-refus-effet`,
    `.pas-a-pas-chiffre`) ne sont PAS dans la liste : leur base est visible, et
    sans animation ils ne disparaitraient plus. */
-html[data-affichage='sobre'] .ligne-cible,
-html[data-affichage='sobre'] .trait-phase-ligne,
-html[data-affichage='sobre'] .bouton-fin-tour.est-suggere,
-html[data-affichage='sobre'] .bh-fin-tour.est-suggere,
-html[data-affichage='sobre'] .bh-voir-table.est-actif,
-html[data-affichage='sobre'] .pas-a-pas-halo,
-html[data-affichage='sobre'] .scan-card.is-target-pulse .scan-frame,
-html[data-affichage='sobre'] .scan-frame.retourne-dos,
-html[data-affichage='sobre'] .scan-frame.retourne-face,
-html[data-affichage='sobre'] .evenement-centrale,
-html[data-affichage='sobre'] .menu-actions-carte,
-html[data-affichage='sobre'] .carte-apercu,
-html[data-affichage='sobre'] .bandeau-annonce,
-html[data-affichage='sobre'] .confirm-voile,
-html[data-affichage='sobre'] .confirm-modale,
-html[data-affichage='sobre'] .ambiance-voile,
-html[data-affichage='sobre'] .ambiance-modale,
-html[data-affichage='sobre'] .fin-partie,
-html[data-affichage='sobre'] .fin-partie-carte,
-html[data-affichage='sobre'] .banniere-succes,
-html[data-affichage='sobre'] .rencontre-sortie,
-html[data-affichage='sobre'] .glisser-refus,
-html[data-affichage='sobre'] .volet-journal {
+html[data-affichage='sobre']:not([data-epure]) .ligne-cible,
+html[data-affichage='sobre']:not([data-epure]) .trait-phase-ligne,
+html[data-affichage='sobre']:not([data-epure]) .bouton-fin-tour.est-suggere,
+html[data-affichage='sobre']:not([data-epure]) .bh-fin-tour.est-suggere,
+html[data-affichage='sobre']:not([data-epure]) .bh-voir-table.est-actif,
+html[data-affichage='sobre']:not([data-epure]) .pas-a-pas-halo,
+html[data-affichage='sobre']:not([data-epure]) .scan-card.is-target-pulse .scan-frame,
+html[data-affichage='sobre']:not([data-epure]) .scan-frame.retourne-dos,
+html[data-affichage='sobre']:not([data-epure]) .scan-frame.retourne-face,
+html[data-affichage='sobre']:not([data-epure]) .evenement-centrale,
+html[data-affichage='sobre']:not([data-epure]) .menu-actions-carte,
+html[data-affichage='sobre']:not([data-epure]) .carte-apercu,
+html[data-affichage='sobre']:not([data-epure]) .bandeau-annonce,
+html[data-affichage='sobre']:not([data-epure]) .confirm-voile,
+html[data-affichage='sobre']:not([data-epure]) .confirm-modale,
+html[data-affichage='sobre']:not([data-epure]) .ambiance-voile,
+html[data-affichage='sobre']:not([data-epure]) .ambiance-modale,
+html[data-affichage='sobre']:not([data-epure]) .fin-partie,
+html[data-affichage='sobre']:not([data-epure]) .fin-partie-carte,
+html[data-affichage='sobre']:not([data-epure]) .banniere-succes,
+html[data-affichage='sobre']:not([data-epure]) .rencontre-sortie,
+html[data-affichage='sobre']:not([data-epure]) .glisser-refus,
+html[data-affichage='sobre']:not([data-epure]) .volet-journal {
   animation: none;
 }
 
 /* Les glissements (zoom au survol, panneaux qui coulissent) deviennent
    instantanes. Aucun code n'attend `transitionend` : PanneauManigance et ses
    semblables passent par `mouvementReduit()`, vrai en sobre. */
-html[data-affichage='sobre'] *,
-html[data-affichage='sobre'] *::before,
-html[data-affichage='sobre'] *::after {
+html[data-affichage='sobre']:not([data-epure]) *,
+html[data-affichage='sobre']:not([data-epure]) *::before,
+html[data-affichage='sobre']:not([data-epure]) *::after {
   transition: none !important;
 }
 

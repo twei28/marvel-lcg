@@ -144,8 +144,9 @@ html[data-affichage="sobre"] .aspect-basic { --c-aspect: var(--asp-basic); }
 html[data-affichage="sobre"] .aspect-campaign { --c-aspect: var(--asp-campaign); }
 
 /* La scène : image fixe, voile du plateau, diagonale gardée. */
-html[data-affichage="sobre"] .tb-art,
-html[data-affichage="sobre"] .tb-eclair {
+/* L'épuré garde ses animations (16/10/2026) : seul le sobre les coupe. */
+html[data-affichage="sobre"]:not([data-epure]) .tb-art,
+html[data-affichage="sobre"]:not([data-epure]) .tb-eclair {
   animation: none !important;
 }
 html[data-affichage="sobre"] .tb-art.vide,
@@ -158,23 +159,23 @@ html[data-affichage="sobre"] .team-b.eux .tb-scene::after {
 }
 
 /* Survol : pas de soulèvement, juste un contour. */
-html[data-affichage="sobre"] .hero-card:hover,
-html[data-affichage="sobre"] .scn-tile:hover,
-html[data-affichage="sobre"] .deck-opt:hover,
-html[data-affichage="sobre"] .ext-tab:hover,
-html[data-affichage="sobre"] .preset:hover,
-html[data-affichage="sobre"] .slot:hover,
-html[data-affichage="sobre"] .acc-mode:hover,
-html[data-affichage="sobre"] .camp-node:not(.locked):hover,
-html[data-affichage="sobre"] .tb-siege:hover,
-html[data-affichage="sobre"] .tb-deck:hover,
-html[data-affichage="sobre"] .recap-slot:hover,
-html[data-affichage="sobre"] .pstep:hover,
-html[data-affichage="sobre"] .btn:hover,
-html[data-affichage="sobre"] .cmp-carte:hover,
-html[data-affichage="sobre"] .g-carte:hover,
-html[data-affichage="sobre"] .tb-carte img:hover,
-html[data-affichage="sobre"] .dm-card:hover img {
+html[data-affichage="sobre"]:not([data-epure]) .hero-card:hover,
+html[data-affichage="sobre"]:not([data-epure]) .scn-tile:hover,
+html[data-affichage="sobre"]:not([data-epure]) .deck-opt:hover,
+html[data-affichage="sobre"]:not([data-epure]) .ext-tab:hover,
+html[data-affichage="sobre"]:not([data-epure]) .preset:hover,
+html[data-affichage="sobre"]:not([data-epure]) .slot:hover,
+html[data-affichage="sobre"]:not([data-epure]) .acc-mode:hover,
+html[data-affichage="sobre"]:not([data-epure]) .camp-node:not(.locked):hover,
+html[data-affichage="sobre"]:not([data-epure]) .tb-siege:hover,
+html[data-affichage="sobre"]:not([data-epure]) .tb-deck:hover,
+html[data-affichage="sobre"]:not([data-epure]) .recap-slot:hover,
+html[data-affichage="sobre"]:not([data-epure]) .pstep:hover,
+html[data-affichage="sobre"]:not([data-epure]) .btn:hover,
+html[data-affichage="sobre"]:not([data-epure]) .cmp-carte:hover,
+html[data-affichage="sobre"]:not([data-epure]) .g-carte:hover,
+html[data-affichage="sobre"]:not([data-epure]) .tb-carte img:hover,
+html[data-affichage="sobre"]:not([data-epure]) .dm-card:hover img {
   transform: none !important;
   box-shadow: none !important;
   outline: 2px solid #b3a588;
