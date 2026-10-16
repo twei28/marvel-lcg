@@ -4402,6 +4402,42 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // --- TMNT Aggression (ua) : ajouter les cartes uaNNN ci-dessous, dans ce bloc seulement ---
   // tmnt_aspect_aggression — Aggressive Conditioning (Upgrade), reskin de 56013
   'ua001': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVous gagnez +3 points de vie et votre héros gagne +1 ATQ.\n<i>« J'ai attendu ça toute la journée. »</i> —Casey Jones",
+  // tmnt_aspect_aggression — Apex Predator (Event) ; « Rampage » : mot-clé maison laissé en anglais
+  'ua002': "[star] Rampage 2. <i>(Coût additionnel pour jouer cette carte : subissez 2 dégâts et défaussez les 2 cartes du dessus de votre deck.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : choisissez :\n• infligez 4 dégâts à un ennemi ;\n• sonnez un ennemi.",
+  // tmnt_aspect_aggression — Assassin (Ally)
+  'ua003': "[star] Assassin subit 1 dégât consécutif ([consequential]) de moins après avoir attaqué le Méchant ou un sbire [[ÉLITE]].\n<i>« Je fais ce qui doit être fait. »</i>",
+  // tmnt_aspect_aggression — Attack Training (Upgrade), MODIFIÉE de 32043
+  'ua004': "Attachez cette carte à un allié [[NINJA]] ou [[MUTANIMAL]]. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\nL'allié attaché gagne +1 ATQ et +2 points de vie.\n<i>« Suivez le rythme, les gars ! »</i> —Uno",
+  // tmnt_aspect_aggression — Chain Reaction (Event)
+  'ua008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi est vaincu, infligez 2 dégâts à un deuxième ennemi. Si cet ennemi est vaincu, infligez 3 dégâts à un troisième ennemi.\n<i>« Encore un qui mord la poussière. »</i> —Michelangelo",
+  // tmnt_aspect_aggression — Combo Move (Event)
+  'ua011': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts répartis entre les ennemis en jeu (3 dégâts à la place si votre identité a le trait [[ARTISTE MARTIAL]]).\n<i>« Qu'est-ce que tu dis de ça ? »</i> —Donatello",
+  // tmnt_aspect_aggression — Commando (Ally)
+  'ua012': "<b>Réponse</b> : après que Commando est entré en jeu, défaussez un événement de votre main → sonnez un ennemi.\n<i>« Chargez les armes, les gars. »</i>",
+  // tmnt_aspect_aggression — Critical Wound (Upgrade)
+  'ua013': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\nAugmentez de 1 la quantité de dégâts que le sbire attaché subit de chaque attaque.",
+  // tmnt_aspect_aggression — Daitō (Upgrade)
+  'ua014': "Attachez cette carte à un personnage allié. Tant qu'elle est attachée à une identité, cette carte gagne Restreint.\n<b>Interruption</b> : quand le personnage attaché attaque un ennemi, inclinez Daitō → cette attaque inflige 1 dégât supplémentaire et gagne Perçant.",
+  // tmnt_aspect_aggression — Flow of Battle (Upgrade) ; « Prerequisite » : question Q-UA1
+  'ua019': "Prérequis ([[ARTISTE MARTIAL]]).\n1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez attaqué et vaincu exactement un ennemi, défaussez cette carte → piochez 3 cartes.\n<i>« Trouve la paix dans le chaos. »</i> —Leonardo",
+  // tmnt_aspect_aggression — Guerilla Trap (Upgrade)
+  'ua021': "Réduisez de 1 le coût pour jouer cette carte si vous contrôlez un soutien [[NYC]].\n<b>Réponse de héros</b> : après qu'un sbire vous a engagé, défaussez Guerilla Trap → hébétez ce sbire et camouflez votre héros.",
+  // tmnt_aspect_aggression — Kitsune (Ally)
+  'ua025': "<b>Réponse</b> : après que vous avez joué Kitsune depuis votre main, choisissez :\n• camouflez Kitsune ;\n• hébétez un ennemi.\n<i>« Non. C'est une autre Kitsune... »</i>",
+  // tmnt_aspect_aggression — Leatherhead (Ally)
+  'ua026': "<b>Réponse</b> : après que Leatherhead a attaqué et vaincu un sbire, soignez-lui 2 dégâts.\n<i>« Nous ne sommes pas amis. Tu n'es qu'un moyen d'arriver à mes fins. »</i>",
+  // tmnt_aspect_aggression — Nerve Strike (Event)
+  'ua030': "[star] Remise 1 ([[ARTISTE MARTIAL]]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Sonnez ou désorientez cet ennemi.\n<i>« On dirait que j'ai touché un nerf. »</i> —Nobody",
+  // tmnt_aspect_aggression — Pete (Support) ; question Q-UA3
+  'ua033': "Utilisations (3 compteurs pistolet).\n<b>Réponse</b> : après que vous avez infligé des dégâts à un ennemi, inclinez Pete et retirez-lui 1 compteur pistolet → infligez 1 dégât à cet ennemi.\n<i>« Salut, moi c'est Pete ! »</i>",
+  // tmnt_aspect_aggression — Ray Fillet (Ally)
+  'ua036': "Ray Fillet entre en jeu avec 2 compteurs munitions.\n[star] <b>Interruption</b> : quand Ray Fillet utilise un pouvoir de base, retirez-lui 1 compteur munitions → infligez 2 dégâts à un ennemi.",
+  // tmnt_aspect_aggression — Slash (Ally) ; question Q-UA2
+  'ua037': "<b>Réponse forcée</b> : après que Slash est entré en jeu, subissez 3 dégâts.\n<i>« Raaaarrrrr ! »</i>",
+  // tmnt_aspect_aggression — Ujigami (Ally), bandeau ✦ Shang-Chi
+  'ua040': "Ujigami entre en jeu avec 10 compteurs dague.\n<b>Action</b> : retirez 1 compteur dague d'ici → infligez 1 dégât à un ennemi. (Limite deux fois par round.)\n<i>« Je suis ta mort ! »</i>",
+  // tmnt_aspect_aggression — Yagi & Gorogoro (Ally)
+  'ua041': "[star] Les attaques de Yagi & Gorogoro gagnent Perçant.\n[star] <b>Réponse forcée</b> : après que Yagi & Gorogoro ont effectué une attaque de base, choisissez soit de défausser 2 cartes de votre main, soit de retirer Yagi & Gorogoro de la partie.",
   // tmnt_aspect_aggression — Blood Rage (Upgrade), reskin de 45043
   'ua005': "1 max par joueur.\n<b>Réponse</b> : après que vous avez vaincu un ennemi avec une attaque de base, inclinez Blood Rage et subissez 1 dégât → piochez 1 carte.",
   // tmnt_aspect_aggression — "Bring It!" (Event), reskin de 19030
