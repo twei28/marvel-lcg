@@ -287,3 +287,14 @@ html[data-affichage='sobre'] .deroule-phase.est-scene.est-bis.est-dynamique {
   overflow: visible;
   padding-block: 0;
 }
+
+/* « La phase en bref » : une colonne, les lignes passent à la ligne au lieu d'être coupées. */
+.deroule-phase.est-dynamique .essai-bilan-liste ol {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.deroule-phase.est-dynamique .essai-bilan-ligne {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}

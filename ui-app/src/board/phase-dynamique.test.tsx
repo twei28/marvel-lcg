@@ -93,6 +93,14 @@ describe('l’historique des événements confirmés', () => {
     expect(container.textContent).not.toContain('paquet-vide')
   })
 
+  it('un effet ★ différé se lit « Effet ★ de … », jamais « etoile-differe »', () => {
+    const { container } = render(
+      <HistoriqueDynamique etapes={[etape('x', 'etoile-differe', { auteurNom: 'Rhino' }), etape('z', 'bilan')]} index={1} />
+    )
+    expect(container.textContent).toContain('Effet ★ de Rhino')
+    expect(container.textContent).not.toContain('etoile-differe')
+  })
+
   it('rien du tout au premier événement', () => {
     const { container } = render(<HistoriqueDynamique etapes={etapes} index={0} />)
     expect(container.textContent).toBe('')

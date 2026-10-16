@@ -41,6 +41,22 @@ export function evenementsConfirmes(etapes: readonly EtapeDeroule[], index: numb
     .reverse()
 }
 
+/** Une ligne d'historique en clair : les étapes sans rédaction propre ne montrent jamais leur nom interne. */
+export function phraseHistorique(e: EtapeDeroule): string {
+  switch (e.titre) {
+    case 'paquet-vide':
+      return t('Paquet rencontre vide')
+    case 'etoile-differe':
+      return e.auteurNom ? t('Effet ★ de %1').replace('%1', e.auteurNom) : t('Effet ★')
+    case 'riposte':
+      return e.auteurNom ? t('Riposte de %1').replace('%1', e.auteurNom) : t('Riposte')
+    case 'elimination':
+      return e.cibleNom ? t('%1 est éliminé').replace('%1', e.cibleNom) : t('Un héros est éliminé')
+    default:
+      return titreEtape(e)
+  }
+}
+
 export function HistoriqueDynamique({
   etapes,
   index,
@@ -67,7 +83,7 @@ export function HistoriqueDynamique({
       </div>
       <ol className={ouvert ? 'dyn-historique-liste est-ouverte' : 'dyn-historique-liste'}>
         {montres.map((e) => (
-          <li key={e.cle}>{e.titre === 'paquet-vide' ? t('Paquet rencontre vide') : titreEtape(etapeEnLangue(e, nomFr))}</li>
+          <li key={e.cle}>{phraseHistorique(etapeEnLangue(e, nomFr))}</li>
         ))}
       </ol>
     </div>
