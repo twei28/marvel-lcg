@@ -113,7 +113,8 @@ Carte terminée : OUI
 - [x] Étape 2 : `ls004`, `32045`. Étape 5 : « each of their basic powers » (ATQ/CTR/DEF ; REC n'existe pas en forme heros, non mesurable), « exhaust 2 KATANA » (2 pretes), « until the end of the round ».
 - [x] Étape 7 : +1 sur Leonardo ; +1 ATQ/CTR sur Splinter ; disparait a la fin du round ; temoins une katana prete / tl012 seule. Ressource : voir tl011.
 - [x] Étape 8 bis : OUI, memes cas que tl011 (la katana tl012 est l'une des deux sources cliquables).
-Carte terminée : NON : l'UI est prouvee, il ne reste que « each of their basic powers » : +1 REC non mesure (aucune face heros n'a de REC), decision d'interpretation a trancher.
+- [x] +1 REC (DECISION UTILISATEUR du 16/10/2026 : donner aussi le +1 REC) : le bonus est porte par l'identite et se lit sur la face alter-ego dans le meme round (REC 3 -> 4). Cas `tmnt_leonardo.py` « +1 REC (decision utilisateur) », vu ROUGE sans `recover=1` (« recover=3 (imprime 3, attendu 4) »).
+Carte terminée : OUI
 
 ### tl013 : Brainwashed Betrayal
 - [x] Étape 2 : `ls005`, `ls012`, `11049`, `45080`. Étape 5 : lecture litterale (decisions) : flip obligatoire, un allie defausse au choix, « cannot attack the villain » (sbires attaquables), 3 degats a n'importe quel allie.

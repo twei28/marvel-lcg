@@ -625,6 +625,18 @@ CAS = [
                     "attributs": {"attack": 1, "thwart": 1, "defense": 1}},
     },
     {
+        "nom": "[leonardo] tl012 Other Katana — +1 REC (decision utilisateur) : le bonus est porte par l'identite et se lit en alter-ego, meme round",
+        "pourquoi": ("« each of their basic powers » : la REC n'existe que sur la face alter-ego ; la forme heros n'en a pas. "
+                     "Decision de l'utilisateur : donner AUSSI le +1 REC. Preuve : action en forme heros, retour en alter-ego "
+                     "dans le meme round, REC lue = imprimee + 1"),
+        **HEROS,
+        "mise_en_place": [FORME_HEROS, *KATANAS],
+        "declencher": ["Puzzle.Action('tl012', 'HeroAction', 0)", "Puzzle.ChangeForm('tl001a')"],
+        "cibles": ["tl001a"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 1}},
+    },
+    {
         "nom": "[leonardo] tl012 Other Katana — « a friendly character » : un ALLIE (Splinter) gagne +1 ATQ et +1 CTR",
         "pourquoi": "toute identite ou tout allie ami : on vise Splinter, le heros reste a l'imprime",
         **HEROS,
