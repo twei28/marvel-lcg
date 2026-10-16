@@ -226,9 +226,10 @@ CAS = [
        [HEROS], [],
        {"degats": [["01094", 4]], "statuts_absents": [["tj001a", "Cloaked"]]},
        main_exclusive=["tj005"], jouer=["tj005"], declencher_apres=["Puzzle.Attack('tj001a')"]),
-    _c("tj005 Moonlighting : deux Moonlighting = DEUX cartes Cloaked qui s'empilent, chacune agit une fois (aucun plafond, cloaked.md)",
-       "deux exemplaires jouees : les deux Cloaked s'appliquent a la meme attaque (ATQ 1 + 1 Senpai + 2 + 2 = 6) puis les deux partent",
-       [HEROS], [], {"degats": [["01094", 6]], "statuts_absents": [["tj001a", "Cloaked"]]},
+    _c("tj005 Moonlighting : deux Moonlighting = UN seul Cloaked (plafond d'une carte par personnage, encart Shredder, cloaked.md)",
+       "deux exemplaires joues : le second ne pose rien (Jennika porte deja son Cloaked), l'attaque vaut ATQ 1 + 1 Senpai + 2 = 4 "
+       "et le Cloaked part",
+       [HEROS], [], {"degats": [["01094", 4]], "statuts_absents": [["tj001a", "Cloaked"]]},
        main_exclusive=["tj005", "tj005"], jouer=["tj005", "tj005"], declencher_apres=["Puzzle.Attack('tj001a')"]),
 
     # ===================================================================== tj006 Fearless Resolve
