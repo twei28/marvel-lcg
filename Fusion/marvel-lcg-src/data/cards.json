@@ -108577,7 +108577,7 @@
    "name": "Plague of M.O.U.S.E.R.s",
    "subtitle": "",
    "desc": {
-    "HP": "1",
+    "HP": "0",
     "SCH": "0",
     "ATK": "0",
     "Boost": "1"
@@ -108596,7 +108596,7 @@
    "name": "Flight of Flyborgs",
    "subtitle": "",
    "desc": {
-    "HP": "1",
+    "HP": "0",
     "SCH": "0",
     "ATK": "0",
     "Boost": "3"
@@ -109224,5 +109224,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "56b38b6f00271b52a0dff4fdd913549ff68a1e0d4ba4c9ed2fe2badc44bf36d6"
+ "checksum": "e9339459133b8aadaea45536420a959a2088b7182fa3a3274a6e6cb17874cd3f"
 }

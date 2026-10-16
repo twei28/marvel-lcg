@@ -257,6 +257,18 @@ class Card(Object):
             message.Send()
             self.can_state.is_like_in_hand = message.is_like_in_hand
         return self.can_state.is_like_in_hand
+    def IsLikeInHandForDiscard(self) -> bool:
+        """DEFAUSSABLE comme si elle etait en main (td012 Donatello's Shell).
+
+        Jamais de cache : la reponse depend d'une aptitude de la carte hote
+        (`also_discard`), et ne sert qu'a l'instant ou un cout de defausse
+        cherche ses cartes. Une carte reellement en main n'est pas concernee
+        (elle est deja dans `hand_cards`).
+        """
+        from game.message import Message
+        message = Message.CheckIfFaceIsLikeInHand(self.face, for_discard=True)
+        message.Send()
+        return message.is_like_in_hand
     def IsCanReadyBy(self, by_effect: 'Effect') -> bool:
         return not self.IsReady()
         # TODO: Use the follow

@@ -41,7 +41,12 @@ def GetAbilities() -> Sequence['Ability']:
     def en_main_ou_sous_la_carapace(effect: 'Effect',
                                     message: 'Message.WhenUnitWouldDefend') -> bool:
         Unused(message)
-        return effect.this.IsLikeInHand()
+        # Unique (« * Metalhead ») : l'interruption ne doit pas etre offerte quand il est DEJA en
+        # jeu. Le `CanPlayThisAllyCard` du jeu normal porte cette garde ; ici la mise en jeu passe
+        # par `PlayCardsLikeInTurn(forced=True)`, qui ne la rejoue pas (mesure du 16/10/2026 : la
+        # 2e copie entrait, le B etait paye pour rien).
+        return effect.this.IsLikeInHand() and \
+            Condition.FieldHasNotThisUniqueType(effect.this, effect)
 
     def metalhead(effect: 'Effect', message: 'Message.WhenUnitWouldDefend') -> None:
         this = effect.this.CastTo(Ally)

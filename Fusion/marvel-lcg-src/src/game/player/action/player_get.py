@@ -141,6 +141,23 @@ class PlayerGet:
             faces = finder.Checks(faces)
         return faces
 
+    def GetHandCardsAndTuckedDiscardable(self) -> List['CardFace']:
+        """La main, PLUS les cartes glissees sous une carte que le joueur controle
+        ET que cette carte rend defaussables « comme si elles etaient en main »
+        (td012 Donatello's Shell, `also_discard`). Sert aux couts et aux effets
+        « discard N card(s) from your hand » ou le joueur CHOISIT (jamais au
+        hasard : « you MAY discard ... »)."""
+        player = self.GetPlayer()
+        faces: List['CardFace'] = list(player.hand_cards.Get())
+        hotes = self.GetControlCardsByType(ally=True, upgrade=True, support=True, identity=True)
+        for hote in hotes:
+            if hote is None:
+                continue
+            for carte in hote.GetPlacedCardArea().Get():
+                if carte is not None and carte not in faces and carte.card.IsLikeInHandForDiscard():
+                    faces.append(carte)
+        return faces
+
     TCA = TypeVar("TCA", bound='CardFace')
     def GetControlCards2(self, finder: 'CardFinder2[TCA]') -> List['TCA']:
         faces = self.GetControlCardsByType(finder, ally=True, upgrade=True, support=True, identity=True, attachment=False)

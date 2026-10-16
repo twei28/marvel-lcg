@@ -368,7 +368,10 @@ class PlayerAsk:
         from game.operate.filter import Filter
         player = self.GetPlayer()
 
-        faces = player.hand_cards.Get()
+        # La main + les cartes glissees defaussables « comme en main » (td012
+        # Donatello's Shell) : le joueur CHOISIT ce qu'il defausse. Sans hote de ce
+        # genre en jeu, c'est exactement `hand_cards.Get()` d'avant.
+        faces = player.GetHandCardsAndTuckedDiscardable()
         if card_type:
             faces = Filter.ByType(faces, card_type)
         if finder:

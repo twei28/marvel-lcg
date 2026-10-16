@@ -418,12 +418,16 @@ class AbilityFactoryPlay:
     # Like in hand
     # Will also make the card can be visit
     @staticmethod
-    def AttachedCardCanPlayLikeInHand(card_finder: 'CardFinder|None'=None,) -> List['Ability']:
+    def AttachedCardCanPlayLikeInHand(card_finder: 'CardFinder|None'=None,
+                                      *,
+                                      also_discard: bool=False,
+                                      ) -> List['Ability']:
         return AbilityFactoryPlay.YouMayPlayCardLikeInHand(
             AbilityType.NonKeyword,
             card_finder,
             from_where="ThisPlacedCard",
             during=None,
+            also_discard=also_discard,
         )
 
     @staticmethod
@@ -433,8 +437,16 @@ class AbilityFactoryPlay:
                                 from_where: Literal["YourDiscardPile", "ThisPlacedCard", "YourDeckTop"]|None=None,
                                 during: Literal["YourTurn"]|None=None,
                                 conditions: ConditionsType[Message.CheckIfFaceIsLikeInHand]=[],
+                                also_discard: bool=False,
                                 ) -> List['Ability']:
         from game.ability.factory import AbilityFactory
+
+        # `also_discard` (td012 Donatello's Shell : « play, spend, or DISCARD cards
+        # tucked here as if they were in your hand ») : la carte est aussi
+        # defaussable comme en main (couts « discard 1 card from your hand »). Sans
+        # lui, cette aptitude ne repond qu'a la question « jouable / depensable ? ».
+        def check_discard_scope(effect: 'Effect', message: 'Message.CheckIfFaceIsLikeInHand') -> bool:
+            return also_discard or not message.for_discard
 
         def check_which_card(effect: 'Effect', message: 'Message.CheckIfFaceIsLikeInHand') -> bool:
             return Condition.CheckWhichCard(which_card, message.which_face, effect)
@@ -469,6 +481,7 @@ class AbilityFactoryPlay:
                 check_which_card,
                 check_from_where,
                 check_during,
+                check_discard_scope,
                 *conditions
             ],
             set_like_in_hand,

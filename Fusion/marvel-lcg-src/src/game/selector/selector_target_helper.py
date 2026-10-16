@@ -282,6 +282,12 @@ def get_YourHandCards(effect: 'Effect') -> Sequence['CardFace']:
     you = Select.GetYou(effect)
     return you.hand_cards.Get()
 
+def get_YourHandCardsDiscardable(effect: 'Effect') -> Sequence['CardFace']:
+    # La main + les cartes glissees defaussables comme en main (td012). Reserve
+    # aux COUTS de defausse (CostFunc.Discard) : voir `Player.GetHandCardsAndTuckedDiscardable`.
+    you = Select.GetYou(effect)
+    return you.GetHandCardsAndTuckedDiscardable()
+
 def get_YourLikeHandCards(effect: 'Effect') -> Sequence['CardFace']:
     you = Select.GetYou(effect)
     faces = you.hand_cards.Get()
@@ -335,6 +341,7 @@ TARGET_MAP_FUNC: Dict['SELECT.TARGET_TYPE|CardFinderHelper.FINDER_TARGET|SELECT.
     "YourHeroTough"                     : get_YourHeroTough,
     "YourHandCards"                     : get_YourHandCards,
     "YourLikeHandCards"                 : get_YourLikeHandCards,
+    "YourHandCardsDiscardable"          : get_YourHandCardsDiscardable,
     "Minion"                            : get_Minion,
     "Villain"                           : get_Villain,
     "EncounterSideScheme"               : get_SideScheme,
