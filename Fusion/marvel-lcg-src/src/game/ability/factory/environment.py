@@ -229,7 +229,7 @@ class AbilityFactoryEnvironment:
                 base_atk=base_atk,
                 base_health=base_health,
                 abilities=given_abilities,
-                abilities_everywhere=given_abilities != None,
+                abilities_en_continu=given_abilities is not None,
                 apply=apply,
                 change_on_event=change_on_event
             ))

@@ -16,13 +16,16 @@ from . import *
 # ⚠ `Restricted` est une BASE AUTOMATIQUE (`desc.Restricted`) : aucun module.
 # ⚠ UNE SEULE `CanGenerateResources` PAR CARTE (assert card_player.py:82-84).
 #
-# TODO-QUESTION Q2 — « Each KATANA upgrade you control GAINS ... » est un
-# OCTROI d'aptitude. Aucune carte joueur du depot n'octroie une aptitude de
-# ce genre (`GiveAbilityToInPlayWhenApplyThis` n'est utilise que pour des
-# cartes Rencontre). Rendu retenu : CHAQUE katana porte sa propre
-# CanGenerateResources — tl011 ici, tl012 sous la condition « un exemplaire de
-# tl011 est en jeu sous votre controle » (voir tl012). Equivalent en jeu pour
-# les deux katanas du pack ; ne couvre PAS un futur KATANA d'un autre pack.
+# DECISION UTILISATEUR (15/10/2026, decisions-phase-b.md) : VRAI OCTROI
+# d'aptitude. « Each KATANA upgrade you control GAINS ... » :
+# `*AbilityFactory.GiveKeywordToInPlayWhenApplyThis(CardFinder(trait="KATANA",
+# card_type=Upgrade), control_by="You", given_abilities=[...])` (modele :
+# michelangelo/tm011, Nunchuck). L'aptitude donnee est enregistree PAR
+# PORTEUR (`RegisterGiven`, face_effect.py:69) et retiree quand tl011 quitte
+# le jeu : tl012 n'a donc AUCUNE ressource propre (son script n'en porte plus).
+# La ressource est le couple « Can/DoGenerateResources » : la premiere
+# annonce la ressource au paiement, la seconde la depense ; hors `GetAbilities`
+# statique le moteur ne fabrique pas la seconde tout seul, on la donne aussi.
 #
 # Mots-pieges :
 #  - « Hero RESOURCE » : forme de heros uniquement (type HeroResource) ;
@@ -34,11 +37,21 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
+    ressource_donnee = AbilityFactory.CanGenerateResources(
+        AbilityType.HeroResource,
+        Resources("G"),
+        CardFinder(card_class="IdentitySpecific"),
+    ).SetCostFunc(CostFunc.Exhaust("This"))
+    depense_donnee = AbilityFactory.DoGenerateResources(
+        AbilityType.HeroResource,
+        "This",
+    )
+
     return [
         AbilityFactory.CanPlayThisUpgradeCard(),
-        AbilityFactory.CanGenerateResources(
-            AbilityType.HeroResource,
-            Resources("G"),
-            CardFinder(card_class="IdentitySpecific"),
-        ).SetCostFunc(CostFunc.Exhaust("This")),
+        *AbilityFactory.GiveKeywordToInPlayWhenApplyThis(
+            CardFinder(trait="KATANA", card_type=Upgrade),
+            control_by="You",
+            given_abilities=[ressource_donnee, depense_donnee],
+        ),
     ]

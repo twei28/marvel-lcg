@@ -92,11 +92,8 @@ def WhenFaceApplyThisInternal(card_finder: CardTypeMin,
                             works_in_the_victory_display: bool=False, # 40006
                             incite_only: int|None=None,
                             abilities: List[Ability]|None=None,
+                            abilities_en_continu: bool=False,
                             buffs: List[Type['Buff']]|None=None,
-                            # TMNT (Nunchuck/Katana) : octroi d'aptitude a des cartes JOUEUR deja en jeu.
-                            # Sans ce drapeau, `abilities` n'est traite que sur un evenement Faceup
-                            # (cartes de rencontre, « Fix for 50070 »), donc jamais ici.
-                            abilities_everywhere: bool=False,
                             ) -> 'Ability':
     from game.ability.factory import AbilityFactory
     from game.operate.worlds import Worlds
@@ -212,7 +209,10 @@ def WhenFaceApplyThisInternal(card_finder: CardTypeMin,
                 pass
 
             # update = False
-            if abilities != None and not abilities_everywhere:
+            # `abilities_en_continu` (AJOUT 16/10/2026, TMNT Katana/Nunchuck) : octroi
+            # d'aptitude a toute carte visee EN JEU (cartes joueur : aucun
+            # retournement face visible ne part) -> branche generique « All ».
+            if abilities != None and not abilities_en_continu:
                 # Fix for "50070"
                 if OnEvent.Faceup in message.on_events:
                     assert isinstance(message, TriggerMessage)

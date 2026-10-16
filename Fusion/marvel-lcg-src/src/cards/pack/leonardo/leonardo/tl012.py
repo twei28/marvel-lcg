@@ -5,7 +5,7 @@ from . import *
 # Hero Action: Choose a friendly character and exhaust 2 [[KATANA]] upgrades
 #   you control -> that character gets +1 to each of their basic powers until
 #   the end of the round.
-# (+ l'aptitude Hero Resource octroyee par tl011, voir ci-dessous.)
+# (+ l'aptitude Hero Resource OCTROYEE par tl011 : aucun code ici, voir tl011.)
 #
 # Cartes de reference :
 #  - `ls004` Lead The Charge : `face.GainUntilRoundEnd(effect, attack=1)` ;
@@ -23,21 +23,11 @@ from . import *
 #  - « exhaust 2 [[KATANA]] » : `range=(2, 2)` ; Other Katana EST un KATANA, elle
 #    peut donc compter parmi les deux (lecture litterale) ;
 #  - « until the END OF THE ROUND » : `GainUntilRoundEnd`, pas fin de phase ;
-#  - TODO-QUESTION Q2 : l'aptitude « Hero Resource » vient de tl011. On la
-#    porte ici SOUS CONDITION « tl011 en jeu sous votre controle ». Ecart
-#    assume (voir tl011).
+#  - la ressource wild de tl012 vient de l'octroi de tl011 (decision utilisateur
+#    du 15/10/2026) : sans tl011 en jeu, tl012 n'a pas de ressource.
 
 
 def GetAbilities() -> Sequence['Ability']:
-
-    def katana_en_jeu(effect: 'Effect', message: 'Message.CheckPlayerCanPayCost') -> bool:
-        Unused(message)
-        joueur = effect.this.GetControlBy()
-        if joueur is None:
-            return False
-        # ⚠ Un nom unique s'ecrit SANS l'etoile (paper.py:45-46).
-        return len(joueur.GetControlUpgrade(
-            CardFinder(name="Leonardo's Katana"))) > 0
 
     def other_katana(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Upgrade)
@@ -62,10 +52,4 @@ def GetAbilities() -> Sequence['Ability']:
         ).SetCostFunc(CostFunc.Exhaust(card_type=Upgrade, trait="KATANA",
                                        from_where=["YouControlCards"],
                                        range=(2, 2))),
-        AbilityFactory.CanGenerateResources(
-            AbilityType.HeroResource,
-            Resources("G"),
-            CardFinder(card_class="IdentitySpecific"),
-            conditions=[katana_en_jeu],
-        ).SetCostFunc(CostFunc.Exhaust("This")),
     ]

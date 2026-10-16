@@ -55,6 +55,7 @@ def GiveKeywordToInPlayWhenApplyThisInternal(
     base_atk: int|None=None,
     base_health: int|None=None,
     abilities: List[Ability]|None=None,
+    abilities_en_continu: bool=False, # AJOUT 16/10/2026 (TMNT Katana/Nunchuck) : octroi a TOUTE carte visee en jeu, pas seulement au retournement face visible (50070)
     buffs: List[Type['Buff']]|None=None,
     apply: Callable[['Effect','CardFace', int], None]|None=None,
     incite_only: bool=False,
@@ -203,6 +204,7 @@ def GiveKeywordToInPlayWhenApplyThisInternal(
         works_in_the_victory_display=works_in_the_victory_display,
         incite_only=incite_only,
         abilities=abilities,
+        abilities_en_continu=abilities_en_continu,
         buffs=buffs,
         abilities_everywhere=abilities_everywhere,
     )
