@@ -5021,7 +5021,7 @@ function rendreSceneMechant(sc) {
         el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(sc.tileImage)}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
-            el("small", {}, nomExtension(sc.extension, langueActuelle())),
+            el("small", {}, libelleExtension({ key: sc.extension }, _auteursExtensions.get(sc.extension))),
             sc.name),
         el("div", { class: "tb-tampons" },
             pv ? el("span", { class: "tampon rouge" }, t("PV") + " " + pv + (parJoueur ? " / " + t("joueur") : "")) : null,
@@ -5343,7 +5343,11 @@ function libelleExtension(e, auteur) {
 
 async function loadExtTabs() {
     await preselectionDernierScenario();
-    const exts = (await catalog.extensions()).filter((e) => e.scenarios.length);
+    const toutes = (await catalog.extensions()).filter((e) => e.scenarios.length);
+    const nbFanmade = toutes.filter((e) => /custom/i.test(e.key)).length;
+    // Le filtre « Fan-made » (16/10/2026, selection du mechant en trois colonnes) :
+    // seules les boites fan-made, comme sur l'ecran des heros.
+    const exts = state.extFanmade ? toutes.filter((e) => /custom/i.test(e.key)) : toutes;
     // Si l'onglet courant n'existe plus dans la liste, on le recale.
     const validKeys = new Set(exts.map((e) => e.key));
     if (!state.extensionTab || !validKeys.has(state.extensionTab)) {
@@ -5353,6 +5357,18 @@ async function loadExtTabs() {
     if (!tabs) return;
     const auteurs = new Map();
     for (const e of exts) if (/custom/i.test(e.key)) auteurs.set(e.key, await auteurDeExtension(e));
+    const filtre = el("button", {
+        class: "ext-fanmade" + (state.extFanmade ? " on" : ""),
+        "aria-pressed": state.extFanmade ? "true" : "false",
+        onclick: () => { state.extFanmade = !state.extFanmade; loadExtTabs(); },
+    }, `${t("Fan-made")} (${nbFanmade})`);
+    // Le bouton vit dans l'en-tete du panneau (pas dans la grille des boites : il lui
+    // volerait une rangee), a cote du compte de scenarios.
+    const entete = tabs.parentElement && tabs.parentElement.querySelector(".tb-entete");
+    if (entete) {
+        entete.querySelectorAll(".ext-fanmade").forEach((x) => x.remove());
+        entete.insertBefore(filtre, entete.querySelector(".tb-mode"));
+    }
     tabs.replaceChildren(...exts.map((e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
         title: e.key,

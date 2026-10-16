@@ -2752,3 +2752,6 @@ html.tel .acc-merci{margin-top:20px;font-size:13px}
   .accueil-stage,html[data-ui-version="v2"] .accueil-stage{padding-top:8px;padding-bottom:6px}
   .acc-merci{font-size:12px}
 }
+
+/* Le filtre « Fan-made » des boites : seulement dans l'affichage Epure (affichage-epure-pages.css). */
+.ext-fanmade{display:none}
