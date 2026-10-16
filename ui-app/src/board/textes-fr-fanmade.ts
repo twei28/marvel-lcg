@@ -3940,15 +3940,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // leonardo — * Leonardo's Katana (Upgrade)
   'tl011': "Restreint.\nChaque amélioration [[KATANA]] que vous contrôlez gagne : « <b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild] pour une carte spécifique à l'identité. »",
   // leonardo — * Leonardo's Other Katana (Upgrade)
-  'tl012': "Restreint.\n<b>Action de héros</b> : choisissez un personnage amical et inclinez 2 améliorations [[KATANA]] que vous contrôlez → ce personnage gagne +1 à chacun de ses pouvoirs de base jusqu'à la fin du round.",
+  'tl012': "Restreint.\n<b>Action de héros</b> : choisissez un personnage ami et inclinez 2 améliorations [[KATANA]] que vous contrôlez → ce personnage gagne +1 à chacun de ses pouvoirs de base jusqu'à la fin du round.",
   // leonardo — Brainwashed Betrayal (Obligation)
   'tl013': "<b><i>Donnez-la au joueur Leo.</i></b>\nPassez sous forme de héros et défaussez un allié que vous contrôlez. Vous ne pouvez pas attaquer le méchant.\n<b>Réponse forcée</b> : après que votre tour commence, infligez 3 dégâts à un allié.\n<b>Action d'alter ego</b> : inclinez Leo et subissez 2 dégâts → retirez Brainwashed Betrayal de la partie.",
   // leonardo — Foot Patrol (SideScheme némésis)
   'tl014': "<i>Karai est en patrouille avec le Foot Clan.</i>\n<b>Une fois déjouée</b> : cherchez dans le deck Rencontre et la défausse Rencontre un sbire [[FOOT CLAN]] et mettez-le en jeu, engagé avec le premier joueur.",
   // leonardo — * Karai (Minion némésis)
-  'tl015': "<b>Une fois révélée</b> : Cloak Karai.\n<b>Une fois vaincue</b> : Cloak le méchant.\n<i>(Sbire némésis de Leonardo.)</i>\n<hr />[star] <b>Boost</b> : donnez cette carte au premier joueur comme carte Rencontre face cachée.",
+  'tl015': "<b>Une fois révélée</b> : camouflez Karai.\n<b>Une fois vaincue</b> : camouflez le méchant.\n<i>(Sbire némésis de Leonardo.)</i>\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
   // leonardo — Foot Soldiers (Minion némésis)
-  'tl016': "<b>Une fois révélé</b> : Cloak Foot Soldiers.",
+  'tl016': "<b>Une fois révélé</b> : camouflez Foot Soldiers.",
   // donatello — * Donatello (Hero)
   'td001a': "<i>Kashikoi</i> — <b>Action</b> : dépensez des ressources [mental][mental] → piochez 2 cartes. <i>(Limite d'une fois par round.)</i>",
   // donatello — * Donnie (AlterEgo)
@@ -3956,11 +3956,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // donatello — * Metalhead (Ally)
   'td002': "Ténacité.\n<b>Interruption</b> : quand Donatello se défend contre une attaque, dépensez une ressource [mental] → jouez Metalhead depuis votre main ou depuis Donatello's Shell sans payer son coût en ressources.",
   // donatello — Bō Tobu (Event, x2)
-  'td003': "<b>Interruption de héros</b> <i>(défense/contre)</i> : quand vous allez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et retirez 3 menaces d'une manigance.",
+  'td003': "<b>Interruption de héros</b> <i>(défense/contre)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et retirez 3 menaces d'une manigance.",
   // donatello — Chūdan-Ura-Uke (Event, x2)
-  'td004': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand vous allez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et infligez 3 dégâts à l'ennemi qui attaque.",
-  // donatello — Improvised Tactics (Event, x2) — ⚠ « Cloak » : mot-clé maison non défini (Q-TD-05)
-  'td005': "<b>Action de héros</b> : inclinez une amélioration [[TECH]] que vous contrôlez → choisissez deux options différentes :\n• <i>Cloak</i> deux personnages alliés.\n• Sonnez ou désorientez un ennemi.\n• Piochez 2 cartes.",
+  'td004': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et infligez 3 dégâts à l'ennemi attaquant.",
+  // donatello — Improvised Tactics (Event, x2) — « Cloak » = camouflez (statut Camouflé, décision phase B)
+  'td005': "<b>Action de héros</b> : inclinez une amélioration [[TECH]] que vous contrôlez → choisissez deux options <i>(vous ne pouvez pas choisir deux fois la même option)</i> :\n• Camouflez deux personnages amis.\n• Sonnez ou désorientez un ennemi.\n• Piochez 2 cartes.",
   // donatello — Singularity (Event)
   'td006': "Jouable uniquement si vous contrôlez l'amélioration Anti-Gravity Gauntlet.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 10 dégâts à un ennemi. Cette attaque gagne Déferlement, Perçant et À Distance.",
   // donatello — Inspired Brilliance (Resource, x2) : aucun texte imprimé, donc aucune entrée
@@ -3969,21 +3969,21 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // donatello — * Anti-Gravity Gauntlet (Upgrade)
   'td009': "Donatello gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous jouez un événement [[ATTACK]], inclinez Anti-Gravity Gauntlet et défaussez 1 carte de votre main → augmentez de 3 les dégâts infligés par cet événement.",
   // donatello — * Truevision Goggles (Upgrade)
-  'td010': "<b>Interruption de héros</b> : quand vous faites un contre de base, inclinez Truevision Goggles → vous gagnez +1 CTR pour ce contre. Vous pouvez défausser une carte d'état d'un ennemi.",
+  'td010': "<b>Interruption de héros</b> : quand vous effectuez un contre de base, inclinez Truevision Goggles → vous gagnez +1 CTR pour ce contre. Vous pouvez défausser une carte d'état d'un ennemi.",
   // donatello — * Donatello's Bō (Upgrade)
   'td011': "Restreint.\n<b>Action de héros</b> : inclinez cette carte → redressez Donatello.",
   // donatello — * Donatello's Shell (Upgrade)
   'td012': "Vous pouvez jouer, dépenser ou défausser les cartes glissées ici comme si elles étaient dans votre main. <i>(1 carte glissée maximum.)</i>\n<b>Action de héros</b> : inclinez Donatello's Shell → choisissez une carte dans votre main et glissez-la ici.",
   // donatello — Broken Shell (Obligation)
-  'td013': "<b><i>Donnez-la au joueur de Donnie.</i></b>\nPassez sous forme d'alter ego et perdez 5 points de vie. Si cela devait vaincre votre identité, mettez plutôt votre cadran de points de vie à 1. Vous ne pouvez pas passer sous forme de héros.\n<b>Action d'alter ego</b> : dépensez des ressources [mental][mental] ou défaussez Donatello's Shell du jeu → retirez Broken Shell de la partie.",
+  'td013': "<b><i>Donnez-la au joueur Donnie.</i></b>\nPassez sous forme d'alter ego et perdez 5 points de vie. Si cela devait vaincre votre identité, mettez plutôt votre cadran de points de vie à 1. Vous ne pouvez pas passer sous forme de héros.\n<b>Action d'alter ego</b> : dépensez des ressources [mental][mental] ou défaussez Donatello's Shell du jeu → retirez Broken Shell de la partie.",
   // donatello — Extermination! (SideScheme némésis)
-  'td014': "<i>Baxter Stockman a lancé ses machines à la recherche des tortues pour les exterminer.</i>\n<b>Une fois déjouée</b> : cherchez dans le deck rencontre et la défausse un sbire [[MOUSERS]] ou [[FLYBORGS]] et mettez-le en jeu, engagé avec le premier joueur.",
+  'td014': "<i>Baxter Stockman a lancé ses machines à la recherche des tortues pour les exterminer.</i>\n<b>Une fois déjouée</b> : cherchez dans le deck Rencontre et la défausse Rencontre un sbire [[MOUSERS]] ou [[FLYBORGS]] et mettez-le en jeu, engagé avec le premier joueur.",
   // donatello — * Baxter Stockman (Minion némésis)
-  'td015': "Coup Rapide.\nBaxter Stockman ne peut pas subir de dégâts tant qu'il y a des [[MOUSERS]] ou des [[FLYBORGS]] en jeu.\n<b>Interruption forcée</b> : quand Baxter Stockman va vous attaquer, il manigance plutôt.\n<i>(Sbire némésis de Donatello.)</i>",
+  'td015': "Coup Rapide.\nBaxter Stockman ne peut pas subir de dégâts tant qu'il y a des [[MOUSERS]] ou des [[FLYBORGS]] en jeu.\n<b>Interruption forcée</b> : quand Baxter Stockman devrait vous attaquer, il manigance plutôt.\n<i>(Sbire némésis de Donatello.)</i>",
   // donatello — Plague of M.O.U.S.E.R.s (Minion némésis, x2)
   'td016': "Entre en jeu avec 2 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit des dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
   // donatello — Flight of Flyborgs (Minion némésis)
-  'td017': "Entre en jeu avec 4 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit des dégâts, retirez plutôt ce nombre de compteurs d'essaim de cette carte.",
+  'td017': "Entre en jeu avec 4 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit des dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
   // michelangelo — Michelangelo (Hero) [set 164, Inkwire]
   'tm001a': "<i>Booyakasha</i> — <b>Réponse</b> : après que vous avez utilisé un pouvoir de base <i>(CTR, ATQ ou DEF)</i>, déplacez jusqu'à 3 menaces d'une manigance vers une autre manigance. Vous ne pouvez pas déplacer de menace vers une manigance annexe portant 5[per_hero] menaces ou plus.",
   // michelangelo — Mikey (AlterEgo)
@@ -3991,9 +3991,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // michelangelo — Slash (Ally)
   'tm002': "Riposte 1. Ténacité.\n[star] Les attaques de Slash gagnent Perçant.",
   // michelangelo — Call for Help (Event)
-  'tm003': "<b>Action de héros</b> : cherchez dans votre deck et votre défausse un allié ou la manigance annexe de joueur I'm Here to Help et ajoutez-le à votre main. <i>(Mélangez.)</i>",
+  'tm003': "<b>Action de héros</b> : cherchez dans votre deck et votre défausse un allié ou la manigance annexe de joueur I'm Here to Help et ajoutez cette carte à votre main. <i>(Mélangez.)</i>",
   // michelangelo — Impulsive (Event, x2)
-  'tm004': "<b>Action de héros</b> : placez 2 menaces sur la manigance principale → redressez Michelangelo et une amélioration [[WEAPON]] que vous contrôlez. Piochez 1 carte.",
+  'tm004': "<b>Action de héros</b> : placez 2 menaces sur la manigance principale → redressez Michelangelo et une carte [[WEAPON]] que vous contrôlez. Piochez 1 carte.",
   // michelangelo — Kaiten (Event, x2)
   'tm005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Vous pouvez incliner une amélioration [[NUNCHUCK]] que vous contrôlez pour désorienter ou sonner cet ennemi.",
   // michelangelo — Majime (Event, x2)
@@ -4007,15 +4007,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // michelangelo — Mikey's Skateboard (Upgrade)
   'tm010': "<b>Réponse</b> : après que vous avez changé de forme, inclinez Mikey's Skateboard → redressez votre identité.",
   // michelangelo — Michelangelo's Nunchuck (Upgrade)
-  'tm011': "<b><i>Restreinte.</i></b>\nChaque amélioration [[NUNCHUCK]] que vous contrôlez gagne : \"<b>Réponse de héros</b> : après que vous avez joué un événement, inclinez cette carte → votre héros gagne +1 à un pouvoir de base jusqu'à la fin du round.\"",
+  'tm011': "Restreint.\nChaque amélioration [[NUNCHUCK]] que vous contrôlez gagne : \"<b>Réponse de héros</b> : après que vous avez joué un événement, inclinez cette carte → votre héros gagne +1 à un pouvoir de base jusqu'à la fin du round.\"",
   // michelangelo — Michelangelo's Other Nunchuck (Upgrade)
-  'tm012': "<b><i>Restreinte.</i></b>\nChaque amélioration [[NUNCHUCK]] que vous contrôlez gagne : \"<b>Interruption de héros</b> : quand vous devriez subir des dégâts d'une attaque, inclinez cette carte → réduisez ces dégâts de 1 et infligez 1 dégât à l'ennemi attaquant.\"",
+  'tm012': "Restreint.\nChaque amélioration [[NUNCHUCK]] que vous contrôlez gagne : \"<b>Interruption de héros</b> : quand vous devriez subir des dégâts d'une attaque, inclinez cette carte → réduisez ces dégâts de 1 et infligez 1 dégât à l'ennemi attaquant.\"",
   // michelangelo — All Alone (Obligation)
   'tm013': "<b><i>Donnez-la au joueur Mikey.</i></b>\nPassez sous forme d'alter ego. Inclinez chaque allié et chaque soutien que vous contrôlez. Vous ne pouvez pas changer de forme.\n<b>Action d'alter ego</b> : inclinez votre identité et défaussez 1 carte de votre main → retirez All Alone de la partie.",
   // michelangelo_nemesis — Sewer Problems (SideScheme)
   'tm014': "<i>Quelque chose de terrible grandit dans les égouts.</i>\n<b>Une fois révélée</b> : chaque joueur défausse les 3 premières cartes de son deck.",
   // michelangelo_nemesis — Wyrm (Minion)
-  'tm015': "Ténacité.\n<b>Une fois vaincu</b> : mélangez Wyrm dans le deck rencontre.\n<i>(Sbire némésis de Michelangelo.)</i>",
+  'tm015': "Ténacité.\n<b>Une fois vaincu</b> : mélangez Wyrm dans le deck Rencontre.\n<i>(Sbire némésis de Michelangelo.)</i>",
   // michelangelo_nemesis — Smash! (Treachery, x3)
   'tm016': "<b>Une fois révélée</b> : vous subissez 2 dégâts indirects.",
   // raphael — * Raphael (Hero)
@@ -4027,13 +4027,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // raphael — Disarm (Event)
   'tr003': "<b><i>Exigence</i></b> ([physical]).\n<b>Action de héros</b> <i>(contre)</i> : retirez 4 menaces d'une manigance. Vous pouvez défausser une amélioration [[SAI]] que vous contrôlez pour défausser d'un ennemi un attachement portant le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\".",
   // raphael — Headbutt (Event)
-  'tr004': "<b><i>Exigence</i></b> ([physical][physical]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Rendez cet ennemi sonné ou désorienté.",
+  'tr004': "<b><i>Exigence</i></b> ([physical][physical]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Sonnez ou désorientez cet ennemi.",
   // raphael — Savage Assault (Event)
   'tr005': "<b><i>Exigence</i></b> ([physical][physical][physical]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 10 dégâts répartis comme vous le souhaitez entre des ennemis.",
   // raphael — Unbridled Fury (Event)
   'tr006': "1 max par phase.\n<b>Action de héros</b> : Raphael gagne +2 ATQ jusqu'à la fin du round. Si vous avez payé cette carte avec une ressource [physical], piochez 1 carte.",
   // raphael — Seething Rage (Resource)
-  'tr007': "<b>Réponse</b> : après que vous dépensez cette carte, soignez 2 dégâts de Raphael et placez 1 compteur de rage sur lui (maximum 3).",
+  'tr007': "<b>Réponse</b> : après que vous avez dépensé cette carte, soignez 2 dégâts de Raphael et placez 1 compteur de rage sur lui (maximum 3).",
   // raphael — * Shell Cycle (Support)
   'tr008': "<b>Action de héros</b> : inclinez Shell Cycle et dépensez 2 ressources de n'importe quel type → redressez votre héros. Si vous avez payé cette capacité avec des ressources [physical][physical], vous gagnez +1 CTR jusqu'à la fin du round.",
   // raphael — * Raph's Punching Bag (Support)
@@ -4045,9 +4045,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // raphael — * Raphael's Other Sai (Upgrade)
   'tr012': "Restreint.\nChaque amélioration [[SAI]] que vous contrôlez gagne : \"<b>Réponse de héros</b> : après que Raphael met K.O. un ennemi, inclinez cette carte → piochez 1 carte.\"",
   // raphael — Out of Control (Obligation)
-  'tr013': "<b><i>Donnez-la au joueur de Raph.</i></b>\nPassez sous forme de héros et inclinez votre identité. Vous ne pouvez pas changer de forme, contrer ni vous défendre.\n<b>Action de héros</b> : retirez 2 compteurs de rage de Raphael → passez sous forme d'alter ego et défaussez Out of Control.",
+  'tr013': "<b><i>Donnez-la au joueur Raph.</i></b>\nPassez sous forme de héros et inclinez votre identité. Vous ne pouvez pas changer de forme, contrer ni vous défendre.\n<b>Action de héros</b> : retirez 2 compteurs de rage de Raphael → passez sous forme d'alter ego et défaussez Out of Control.",
   // raphael — Mutagen Bomb (SideScheme némésis)
-  'tr014': "<i>Old Hobb a transformé le mutagène en bombes.</i>\n<b>Réponse forcée</b> : après la résolution de l'étape un de la phase du vilain, placez 1 compteur de minuteur ici. Ensuite, s'il y a 2 compteurs de minuteur ou plus ici, défaussez cette carte et distribuez à chaque joueur 1 carte rencontre face cachée.",
+  'tr014': "<i>Old Hobb a transformé le mutagène en bombes.</i>\n<b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, placez 1 compteur de minuteur ici. Ensuite, s'il y a 2 compteurs de minuteur ou plus ici, défaussez cette carte et attribuez à chaque joueur 1 carte Rencontre face cachée.",
   // raphael — * Old Hob (Minion némésis)
   'tr015': "Ténacité. Coup Rapide.\n<i>(Sbire némésis de Raphael.)</i>",
   // raphael — Insurrection (Treachery némésis)
