@@ -105,6 +105,8 @@ export type CarteDessinee = {
   kind: string
   /** Compteurs dessinés sur la carte : nom français -> valeur (rage, temps...). */
   compteurs: Record<string, number>
+  /** Jeton de menace posé sur la carte (manigance), absent si 0. */
+  menace?: number
   /** Pour une pile (deck, défausse) : nombre de cartes qu'elle représente. */
   pileCount?: number
 }
@@ -117,6 +119,7 @@ function detailsDessines(carte: ScanCardProps) {
     kind: carte.kind,
     compteurs,
     pileCount: carte.pileCount,
+    menace: carte.jetonMenace,
   }
 }
 
