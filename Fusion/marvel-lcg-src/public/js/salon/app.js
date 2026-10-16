@@ -17,6 +17,7 @@ import { boutonAffichage } from "/public/js/prepare/affichage.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
 import { versDeckMoteur } from "/public/js/marvelcdb/conversion.js";
+import { chargerDeck, lireLien } from "/public/js/marvelcdb/sources.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 import { demanderForcage } from "/public/js/prepare/deck-force.js";
 import {
@@ -168,32 +169,13 @@ async function envoyerChoix(deck) {
 // converti puis ENREGISTRE sur le serveur, parce que le salon ne transmet a
 // l'hote qu'un identifiant (`set_choix_siege`), jamais les quarante cartes.
 
-function mcdbId(saisie) {
-    const texte = String(saisie || "").trim();
-    const avecChemin = texte.match(/(?:decklist|deck)\/(?:view\/)?(\d+)/);
-    if (avecChemin) return avecChemin[1];
-    const nu = texte.match(/(\d{3,})/);
-    return nu ? nu[1] : "";
-}
-
-async function mcdbCharger(id) {
-    // Les deux formes d'adresse de MarvelCDB : une liste publiee, ou un deck
-    // personnel rendu public. On essaie l'une puis l'autre.
-    for (const url of [`https://marvelcdb.com/api/public/decklist/${id}.json`,
-                       `https://marvelcdb.com/api/public/deck/${id}.json`]) {
-        try {
-            const r = await fetch(url);
-            if (r.ok) return await r.json();
-        } catch (e) { /* adresse suivante */ }
-    }
-    throw new Error(t("Deck introuvable sur marvelcdb") + " (ID " + id + "). "
-        + t("Vérifie que le deck est public."));
-}
-
 async function importerMarvelcdb(saisie) {
-    const id = mcdbId(saisie);
+    const { id } = lireLien(saisie);
     if (!id) throw new Error(t("URL/ID marvelcdb invalide."));
-    const data = await mcdbCharger(id);
+    const trouve = await chargerDeck(saisie);
+    if (!trouve) throw new Error(t("Deck introuvable sur marvelcdb ni mc4db") + " (ID " + id + "). "
+        + t("Vérifie que le deck est public."));
+    const data = trouve.data;
     await cards.load();
 
     // MarvelCDB nomme le heros `hero_code` pour Marvel Champions
@@ -278,7 +260,7 @@ function champImport() {
     return el("div", { class: "salon-mcdb" },
         el("b", {}, t("Ton propre deck")),
         el("div", { class: "salon-mcdb-ligne" }, saisie, bouton),
-        el("small", {}, t("Le deck doit être public sur marvelcdb. Celui d’un autre héros marche : seules ses cartes d’aspect sont reprises.")),
+        el("small", {}, t("Le deck doit être public sur marvelcdb ou mc4db. Celui d’un autre héros marche : seules ses cartes d’aspect sont reprises.")),
     );
 }
 

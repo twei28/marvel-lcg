@@ -296,7 +296,7 @@ export const DICO_EN_BASE = {
 
     /* ---- Import marvelcdb ---- */
     "URL/ID marvelcdb invalide.": "Invalid marvelcdb URL/ID.",
-    "Deck introuvable sur marvelcdb": "Deck not found on marvelcdb",
+    "Deck introuvable sur marvelcdb ni mc4db": "Deck not found on marvelcdb or mc4db",
     "Vérifie que le deck est public.": "Check that the deck is public.",
     "Le héros de ce deck n’est pas disponible dans le jeu.": "This deck's hero is not available in the game.",
     "importé": "imported",
@@ -334,7 +334,7 @@ export const DICO_EN_BASE = {
     "Decks assignés": "Decks assigned",
     "Deck prêt": "Deck ready",
     "Chargement des decks...": "Loading decks...",
-    "Colle une URL ou un ID marvelcdb...": "Paste a marvelcdb URL or ID...",
+    "Colle une URL ou un ID marvelcdb ou mc4db...": "Paste a marvelcdb or mc4db URL or ID...",
     "Éditeur de deck": "Deck builder",
     "Construire un deck personnalisé pour ce héros": "Build a custom deck for this hero",
     "Deck importé": "Imported deck",
@@ -620,8 +620,8 @@ export const DICO_EN_BASE = {
     "Générer les liens à envoyer": "Generate the links to send",
     "Ton propre deck": "Your own deck",
     "Importer": "Import",
-    "Le deck doit être public sur marvelcdb. Celui d’un autre héros marche : seules ses cartes d’aspect sont reprises.":
-        "The deck must be public on marvelcdb. Another hero's deck works too: only its aspect cards are taken.",
+    "Le deck doit être public sur marvelcdb ou mc4db. Celui d’un autre héros marche : seules ses cartes d’aspect sont reprises.":
+        "The deck must be public on marvelcdb or mc4db. Another hero's deck works too: only its aspect cards are taken.",
     "Import en cours…": "Importing…",
     "Import impossible.": "Import failed.",
     "Le serveur a refusé le deck.": "The server rejected the deck.",

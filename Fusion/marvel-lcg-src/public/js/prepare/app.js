@@ -56,6 +56,7 @@ import { etatSalon } from "/public/js/prepare/salon-etat.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 import { versDeckMoteur, ecartDeConversion } from "/public/js/marvelcdb/conversion.js";
 import { chargerHeros } from "/public/js/marvelcdb/index.js";
+import { chargerDeck, lireLien } from "/public/js/marvelcdb/sources.js";
 import { demanderForcage } from "/public/js/prepare/deck-force.js";
 import { filtrer, aspectsPresents, tagsPresents, aDesRangs } from "/public/js/marvelcdb/filtres.js";
 import { lireFavoris, basculerFavori } from "/public/js/marvelcdb/favoris.js";
@@ -1011,7 +1012,7 @@ function ouvrirFicheMechant(sc) {
 function ouvrirFeuilleImport(i) {
     const overlay = feuilleTel("feuille-import",
         el("div", { class: "dm-head" }, el("b", { class: "mvl" }, t("Importer un deck"))),
-        el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb...") }),
+        el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb ou mc4db...") }),
         el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
         el("div", { class: "vh-actions" },
             el("button", { class: "tampon", onclick: () => { fermerModale(overlay); ouvrirPanneauCdb(i); } }, t("Decks MarvelCDB")),
@@ -4114,26 +4115,6 @@ function rappelVariantes(p, i) {
 }
 
 /* ---- Import marvelcdb ---- */
-function mcdbExtractId(input) {
-    const s = String(input || "").trim();
-    const um = s.match(/(?:decklist|deck)\/(?:view\/)?(\d+)/);
-    if (um) return um[1];
-    const m = s.match(/(\d{3,})/);
-    return m ? m[1] : "";
-}
-async function mcdbFetch(id, lien) {
-    // Deux numérotations distinctes : l'ordre suit le type de lien collé, pour
-    // qu'un lien /deck/ ne tombe pas sur une decklist sans rapport du même numéro.
-    const urls = [
-        `https://marvelcdb.com/api/public/decklist/${id}.json`,
-        `https://marvelcdb.com/api/public/deck/${id}.json`,
-    ];
-    if (!/decklist/.test(String(lien || ""))) urls.reverse();
-    for (const u of urls) {
-        try { const r = await fetch(u); if (r.ok) return await r.json(); } catch (e) {}
-    }
-    throw new Error(t("Deck introuvable sur marvelcdb") + " (ID " + id + "). " + t("Vérifie que le deck est public."));
-}
 /** Import d'un deck marvelcdb DANS LE SLOT COURANT.
  *
  * Le héros du slot l'emporte sur celui du deck (09/09/2026). Un deck marvelcdb
@@ -4147,9 +4128,11 @@ async function mcdbFetch(id, lien) {
  * de héros de repli si le slot n'en a pas encore.
  */
 async function importMarvelcdb(slotIndex, input) {
-    const id = mcdbExtractId(input);
+    const { id } = lireLien(input);
     if (!id) throw new Error(t("URL/ID marvelcdb invalide."));
-    const data = await mcdbFetch(id, input);
+    const trouve = await chargerDeck(input);
+    if (!trouve) throw new Error(t("Deck introuvable sur marvelcdb ni mc4db") + " (ID " + id + "). " + t("Vérifie que le deck est public."));
+    const data = trouve.data;
     await cards.load();
     // marvelcdb renvoie le heros sous "hero_code" (Marvel Champions), pas
     // "investigator_code" (qui est le champ d'Arkham Horror et reste null ici).
@@ -4508,7 +4491,7 @@ function rendreOutilsDeck() {
     }
     poser(zone,
         el("div", { class: "tb-menace-ligne" },
-            el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb...") }),
+            el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb ou mc4db...") }),
             el("button", { class: "tampon", onclick: () => doImport(i) }, "Import"),
             el("button", {
                 class: "tampon",
