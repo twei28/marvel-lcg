@@ -573,3 +573,47 @@ Carte terminée : OUI.
 - [x] 7 bis : la limite mord (cas « 5e arme ») ; 8 fournée Leonardo-ub ; 8 bis NON.
 
 Carte terminée : OUI.
+
+---
+
+## Bilan des preuves (16/10/2026)
+
+- `[ub]` : **158/158 verts** (PARALLELES=6, ports 31000+).
+- **Substitution des scripts** (`tools/substituer_pack.py .game-src 31300 ub`, 26 modules) : chaque module a au
+  moins un cas qui rougit ; les cas restés verts sont TOUS des contre-cas d'absence d'effet ou de donnée
+  (non jouable sans trait, allié sans trait, main vide, vilain au lieu d'un sbire...). Détail :
+  ub003 2/4, ub005 2/3, ub008 1/1, ub014 4/5, ub018 5/6, ub020 1/2, ub022 1/2, ub023 1/2, ub024 2/4, ub025 1/2,
+  ub027 4/5, ub029 2/2, ub032 2/2, ub033 2/3, ub036 1/2, ub037 3/4, ub038 2/3, ub040 1/2, ub041 3/4, ub043 2/2,
+  ub045 2/2, ub046 1/2, ub049 1/2, ub050 2/2, ub052 2/4, ub059 3/4.
+- **Substitution des reskins** (`SANS_LIEN=1` : tous les `ability_link` retirés) : 124/158 ; les 34 rouges
+  sont exactement les cas de capacité des reskins (TÉMOINS officiels tous verts). Restés verts : les cas de
+  données (non jouable sans trait : ub004/ub017/ub021/ub026/ub031 contre-cas ; ressources ub011/ub016/ub054,
+  sans module par nature ; « jouable par » ub017/ub021).
+- Non-régression : `[r` (rampage, reskin, raphael... 120/120), `62020` 2/2, `Luke Cage` 8/8 ;
+  `verifier_appels_modules.py` (tmnt_aspect_basic, fne, luke_cage) OK ; `test_cards.py` 6607 ok, 0 erreur ;
+  vitest `textes-fr-fanmade.test.ts` + `compteurs-fr.test.ts` 28/28.
+
+## Étape 8 : fournée d'autoplay (commune)
+
+8 parties par deck contre Rhino, normal, profil équilibré, ports 31500+ :
+- deck Leonardo + aspect ub (`scratchpad/ub/deck-leo-ub.json` : 29 cartes ub) : 0 V / 8 D, 6,4 rounds, 0 blocage ;
+  témoin Leonardo de départ : 0 blocage, mêmes causes de fin (4 éliminés / 4 manigance) ;
+- deck Spider-Man + aspect ub (`deck-sm-ub.json` : 27 cartes ub) : 0 blocage ; témoin Spider-Man : 0 blocage.
+- Grep NameError/AttributeError/TypeError/KeyError/AssertionError/Traceback sur les 32 journaux : **0**.
+- Lecture : 47 cartes ub différentes mises en jeu ou activées (Martial Arts Training 16 entrées en jeu,
+  Fugitoid 12 + 10 activations, Atilla 12 + 6, Shuriken 4 activations, Shinobi Batman 3 Réponses après sortie,
+  Ninja He-Man 2 camouflages, Pizza Time, Rupert's Pizzeria...). Fugitoid : la Réponse défausse bien une
+  carte de la main (Vigilant tl004, [physical]) ; sans personnage blessé le soin n'a pas de cible.
+- Non jouées en autoplay (hors des deux decks ou condition jamais remplie) : ub004, ub010, ub012, ub017, ub026,
+  ub031, ub032 (aucune identité MUTANIMAL n'existe), ub034, ub049 (deck Alopex requis), ub051, ub056. Leur
+  capacité est prouvée par les cas (et, pour les reskins, par l'officielle).
+
+## Ce qui n'est pas prouvé
+
+- Aucune partie humaine dans le navigateur.
+- Le deck-builder masque les reskins homonymes d'une officielle (Q-R2, déjà ouverte) : Assess the Situation,
+  Basic Spell, Digging Deep, Down Time, Endurance, Energy, Genius, Strength, Face the Past, Ingenuity, Limitless
+  Stamina, Multitalented, Practiced Plan, Ready to Rumble, Spiritual Meditation, Team-Building Exercise,
+  Martial Arts Training (homonyme de 41009 Psylocke) n'y ont probablement pas de tuile.
+- Traits sans traduction FR dans `traits-fr.ts` : PUNK, LION, RONIN, DIMENSION X, NYC, MUTANIMAL (fichier hors
+  bloc d'aspect, non modifié).
