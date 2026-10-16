@@ -1240,6 +1240,63 @@ class CostFunc:
 
             super().__init__(Select.From("This"), on_call)
 
+    class Rampage(Base):
+        """AJOUT (16/10/2026) : mot-cle MAISON « Rampage X » des aspects TMNT (Inkwire).
+
+        Texte de rappel imprime : « As an additional cost for this card, take X
+        damage and discard X cards from the top of your deck. » Fiche :
+        docs/reference/mots-cles/rampage.md (huit evenements FERAL, dont ua015).
+
+        UN seul cout qui COMPOSE les deux couts existants, dans l'ordre imprime,
+        pour heriter de leurs regles deja arbitrees au lieu de les recopier :
+          1. `TakeDamage(X, "YourIdentity")` : l'identite (heros OU alter-ego)
+             subit X degats ; des degats EMPECHES (Tough...) = cout impaye
+             (Rules Reference, « Cost »), un payeur qui en meurt a PAYE.
+          2. `DiscardDeckTopCards("YourDeck", X)` : un deck plus court que X
+             s'epuise, se remelange, rien de plus n'est defausse, et le cout est
+             PAYE (arbitrage utilisateur du 25/09/2026, Rules Reference
+             « Player Deck »). Seuls un deck ET une defausse vides le rendent
+             impayable.
+        Les cartes defaussees : `effect.cost_func.Get(CostFunc.Rampage)
+        .return_discarded_cards`.
+
+        ⚠ « Cannot pay all of the costs → pay none » (Rules Reference, « Cost ») :
+        la partie DEFAUSSE se verifie AVANT de prendre les degats, et des la
+        question « jouable ? » (selecteur), sinon un deck vide ferait perdre X PV
+        pour rien. « Deck vide » = `DiscardDeckTopCards` refuse (`attendu > 0`) ;
+        en partie, un deck ne reste vide que si la defausse l'est aussi (il se
+        remelange aussitot, Rules Reference « Player Deck »).
+        """
+        def __init__(self, x: int) -> None:
+            from game.card.card_finder import CardFinder
+            assert isinstance(x, int) and x > 0, f"Rampage {x!r}"
+            self.x = x
+            self.return_discarded_cards: List[CardFace] = []
+            degats = CostFunc.TakeDamage(x, "YourIdentity")
+            defausse = CostFunc.DiscardDeckTopCards("YourDeck", x)
+
+            def peut_defausser(effect: 'Effect', face: 'CardFace') -> bool:
+                joueur = effect.GetInitiator()
+                if joueur is None:
+                    return False
+                return joueur.player_deck.GetSize() > 0
+
+            def on_call(targets: Sequence['CardFace'], effect: 'Effect', player: 'Player|None') -> bool:
+                self.return_discarded_cards = []
+                if not player or degats.call_fn == None or defausse.call_fn == None:
+                    return False
+                if player.player_deck.GetSize() == 0:
+                    return False
+                if not degats.call_fn(targets, effect, player):
+                    return False
+                paye = defausse.call_fn([], effect, player)
+                self.return_discarded_cards = list(defausse.return_discarded_cards)
+                return paye
+
+            selector = Select.From("YourIdentity", finder=CardFinder(check_effect_fn=peut_defausser))
+            selector.selector_filter.AddParameter(has_non_health=False)
+            super().__init__(selector, on_call)
+
     # Will ignore "Requirement"
     class PayPrintCost(Base):
         def __init__(self, res: Literal["Target"]):
