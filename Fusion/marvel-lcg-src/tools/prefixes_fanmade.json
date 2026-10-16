@@ -606,6 +606,55 @@
    "cartes": 17,
    "depuis": "2026-10-16",
    "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), dossiers « TMNT Standard-Expert (Status Card Standard-Expert) » et « Normal Standard-Expert Reskins ». Partages par TOUS les vilains TMNT : ensembles tmnt_standard (te001-te006), tmnt_expert (te101-te103), tmnt_standard_reskin (te021-te027) et tmnt_expert_reskin (te121-te123, memes capacites que le core 01186-01193 par ability_link). te201 Intense Combatants (ensemble optionnel tmnt_intense) : scriptee le 16/10/2026, « intensify » = carte d'etat Intensified (fiche intensified.md)."
+  },
+  "ua": {
+   "pack": "tmnt_aspect_aggression",
+   "libelle": "196. Custom (TMNT Aspects – Aggression)",
+   "cartes": 41,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Aggression »."
+  },
+  "ub": {
+   "pack": "tmnt_aspect_basic",
+   "libelle": "197. Custom (TMNT Aspects – Basic)",
+   "cartes": 59,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Basic » (dont 4 ressources)."
+  },
+  "uj": {
+   "pack": "tmnt_aspect_justice",
+   "libelle": "198. Custom (TMNT Aspects – Justice)",
+   "cartes": 40,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Justice »."
+  },
+  "ul": {
+   "pack": "tmnt_aspect_leadership",
+   "libelle": "199. Custom (TMNT Aspects – Leadership)",
+   "cartes": 46,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Leadership » : comprend la manigance joueur Weasel In et ses trois allies WEASEL Linked (dos de rencontre)."
+  },
+  "up": {
+   "pack": "tmnt_aspect_protection",
+   "libelle": "200. Custom (TMNT Aspects – Protection)",
+   "cartes": 43,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Protection »."
+  },
+  "ud": {
+   "pack": "tmnt_aspect_dual",
+   "libelle": "201. Custom (TMNT Aspects – Dual-Aspect)",
+   "cartes": 6,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Dual-Aspect » : six allies a DEUX aspects (AJ, AL, AP, JL, JP, LP dans le nom de fichier)."
+  },
+  "rs": {
+   "pack": "red_sonja",
+   "libelle": "176. Custom (Red Sonja)",
+   "cartes": 19,
+   "depuis": "2026-09-25",
+   "note": "Declare a posteriori le 16/10/2026 : le pack (auteur RyCoRan, meme gabarit que Conan) etait livre sans entree ici, et tools/verifier_prefixes.py refusait ses 19 cartes."
   }
  }
 }

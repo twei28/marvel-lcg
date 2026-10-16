@@ -1408,3 +1408,61 @@ Pièges du HARNAIS (`tools/test_capacites.py`) constatés sur ce scénario :
 - **Un sbire à Coup Rapide posé en forme HÉROS attaque tout de suite** : le mettre en jeu en ALTER EGO, puis `ChangeForm`.
 - Deux exemplaires de la même carte en jeu : `Puzzle.PutIntoPlay(Puzzle.CreateCard('<id>'))` (les appels imbriqués de `Puzzle` sont permis).
 - Autoplay à deux joueurs : `--deck2 <deck>` (`AUTOPLAY_DECK2`). Le pilote **bloque** souvent à deux joueurs, même contre Rhino (8 parties bloquées sur 8, témoin du 16/10/2026) : ce taux n'est pas imputable au scénario.
+
+## 11. Aspects TMNT (Inkwire, packs `tmnt_aspect_*`) : reskin d'une carte JOUEUR, Rampage X (16/10/2026)
+
+Socle commun aux six packs (`ua` Aggression, `ub` Basic, `uj` Justice, `ul` Leadership, `up` Protection,
+`ud` Dual-Aspect). Numéros FIGÉS par `Fusion/marvel-lcg-src/tools/tmnt_aspects_numerotation.tsv` (scan →
+card_id), images par `tools/importer_images_tmnt_aspects.py <dossier extrait> [sortie] [ua015|ua ...]`.
+Cas de preuve : `tools/cas/rampage.py` (filtres `[rampage]`, `[reskin]`).
+
+### Reskin d'une carte joueur (scan IDENTIQUE à une officielle) — recette exacte
+
+1. **Entrée complète** dans le pack `tmnt_aspect_<aspect>` de `data/cards.json`, rangée par card_id :
+   `card_id` (table de numérotation), `type`, `name` **imprimé sur le scan** (`"* "` devant si l'étoile ✦
+   d'unicité est imprimée), `subtitle` imprimé (« Donnie »), `desc` **recopié de l'original** puis CORRIGÉ
+   d'après le scan (`Cost`, `RES` vérifiée contre une carte du même pack, `HP/ATK/THW` avec leurs `*` de
+   dégâts consécutifs, ET les clés-mots-clés lues par le moteur : `Uses`, `MaxPerUnit`, `MaxPerDeck`,
+   `Restricted`, `Toughness`, `Retaliate`, `Setup`… ; elles ne viennent PAS par `ability_link`),
+   `traits` **imprimés sur le scan** (jamais ceux de l'original), `set_name` `"TMNT <Aspect>"`, `text`
+   (texte du scan + citation en `<i>`), `"custom": "Inkwire"`, et **`"ability_link": "<card_id officiel>"`**.
+2. **Aucun script.** `CardsDB.FindAbilities` charge le module de l'original et appelle SON
+   `GetAbilities()` pour le card_id du reskin (cache par card_id : objets distincts). Le pack de
+   l'original n'est pas touché.
+3. **Avant de valider**, lire le module de l'original : un script qui compare un NOM ou un card_id en dur
+   (`CardFinder(name="Winter Soldier")`, `this.name == ...`, `"53035"` dans le moteur :
+   `grep -rn '"<id>"' src/game src/engine`) ne verra pas le reskin. Si c'est le cas : script propre, copie
+   adaptée, et le dire dans le gabarit.
+4. **Pas de `full_link`** : il clonerait aussi le nom, les traits et l'image de l'original.
+5. **Texte français** : `ui-app/src/board/textes-fr-fanmade.ts`, clé = card_id du reskin, texte repris de
+   `textes-fr-complets.ts["<original>"]` en remplaçant le NOM (Le Soldat de l'Hiver → Bo-Wing) + citation.
+6. **Preuve** : un cas sur le reskin ET un cas TÉMOIN identique sur l'original, même chiffre attendu ;
+   substitution = retirer `ability_link` de l'entrée → les cas de capacité rougissent (mesuré : 3/3 sur
+   ua006/ua009 ; les cas de données — traits, unicité — restent verts, c'est attendu).
+7. **MODIFIÉE** (le texte diffère, même d'un trait : « NINJA or MUTANIMAL ally » au lieu de « X-MEN
+   ally ») : PAS d'`ability_link`, un script propre copié de l'original et adapté.
+
+Ce que la recette garantit (cas verts du 16/10/2026) : la capacité part sur le reskin et rend le même
+chiffre que l'original (ua009 ↔ 18012, ua006 ↔ 53035) ; le reskin porte SES traits (Bo-Wing : NINJA
+TURTLE VIGILANTE, sans SOLDIER) ; l'unicité se juge sur SON titre (`CanCoexistWith` compare les noms :
+Bo-Wing et Winter Soldier coexistent ; deux Bo-Wing, non).
+
+⚠ **Deck-builder : un reskin HOMONYME d'une officielle est INVISIBLE.** Le pool
+(`public/js/deckbuilder/app.js`, `poolJoueur`, clé `cleImpression = nom|classe|type`) ne garde que la
+PREMIÈRE carte de chaque clé, donc l'officielle : « Clobber » TMNT (ua009) n'a pas de tuile. 106 des 235
+scans portent le nom d'une carte existante. Précédent : `ma026` déclaré art alternatif de Moment of
+Triumph dans `public/js/deckbuilder/arts-reeditions.js` (`REEDITIONS_ILLUSTREES`) — mais ce sélecteur
+est COUPÉ en français (`versionMontree`). Décision utilisateur attendue avant de toucher au deck-builder.
+
+⚠ **Bandeau du titre d'ORIGINE.** Certains scans impriment le nom de l'officielle sous le titre TMNT
+(Bo-Wing : « ✦ WINTER SOLDIER » ; Mutagen : sous-titre vertical « X-Gene »). La recette actuelle juge
+l'unicité sur le titre TMNT ; si l'auteur entend « c'est Winter Soldier pour les règles », il faudra une
+clé de titre de règles. Question ouverte : relever ces bandeaux dans chaque gabarit.
+
+### Rampage X (mot-clé maison, fiche `mots-cles/rampage.md`)
+
+| Texte imprimé | API | Modèle | Piège |
+|---|---|---|---|
+| « ★ Rampage X. (As an additional cost for this card, take X damage and discard X cards from the top of your deck.) » | `.SetCostFunc(CostFunc.Rampage(X))` sur la capacité de JEU (`WhenInYourPlayTurn(...).SetPlay()`, ou la Réponse/Interruption de héros de l'événement) ; `desc.Cost` avec l'étoile (`"3*"`) | ua015 Demolish | Un seul coût qui compose `TakeDamage(X, "YourIdentity")` puis `DiscardDeckTopCards("YourDeck", X)` : Tenace = coût impayé, effet annulé ; deck < X = payé (arbitrage du 25/09) ; deck vide = injouable, AUCUN dégât pris. Cartes défaussées : `effect.cost_func.Get(CostFunc.Rampage).return_discarded_cards` |
+| « If you control a [[NYC]] support » | `effect.GetInitiator().IsControl(CardFinder2("NYC", Support))` | ua015 | lu au moment de la résolution ; soutien NYC de test : `tr008` Shell Cycle |
+| Harnais : sbire Tenace | `Puzzle.Tough(Puzzle.PutIntoPlay('01101'))` | `tools/cas/rampage.py` | `Puzzle.Tough('01101')` vise une copie du DECK RENCONTRE de Rhino (FindOrCreateFace y cherche avant la table) : le Tenace n'est jamais posé sur le sbire en jeu |

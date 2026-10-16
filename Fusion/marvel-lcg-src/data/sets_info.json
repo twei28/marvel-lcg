@@ -1789,5 +1789,47 @@
   ],
   "max_id": "tk205"
  },
- "checksum": "c25b7e0d35793ed3f4d6888e92cd3d8abae2c8c5d8dd00b1df91c94c3b4b0f3b"
+ "196. Custom (TMNT Aspects – Aggression)": {
+  "name": "tmnt_aspect_aggression",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "ua041"
+ },
+ "197. Custom (TMNT Aspects – Basic)": {
+  "name": "tmnt_aspect_basic",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "ub059"
+ },
+ "198. Custom (TMNT Aspects – Justice)": {
+  "name": "tmnt_aspect_justice",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "uj040"
+ },
+ "199. Custom (TMNT Aspects – Leadership)": {
+  "name": "tmnt_aspect_leadership",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "ul046"
+ },
+ "200. Custom (TMNT Aspects – Protection)": {
+  "name": "tmnt_aspect_protection",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "up043"
+ },
+ "201. Custom (TMNT Aspects – Dual-Aspect)": {
+  "name": "tmnt_aspect_dual",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "ud006"
+ },
+ "checksum": "bd2599be203650a17a2fab90072cd8c0e317d3f75641e7d65d73a8c9caa547bd"
 }

@@ -181,6 +181,11 @@ la plus fréquente sur un pack vilain.
 - [x] linked.md (mot-clé officiel, `desc.Linked` : cartes mises de côté avec la
       carte nommée ; scénario `bebop_rocksteady`, Concrete Jungle)
 
+- [x] rampage.md (aspects TMNT `tmnt_aspect_*`, Inkwire : « Rampage X » = coût
+      additionnel, subir X dégâts ET défausser X cartes du dessus de son deck ;
+      HUIT événements FERAL, pas sept. `CostFunc.Rampage(X)`, une ligne par carte.
+      Le ★ devant et sur le coût n'est qu'un rappel)
+
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
 Vérification faite avec l'heuristique `<b>([A-Z][a-zA-Z ]{2,20})</b>` sur

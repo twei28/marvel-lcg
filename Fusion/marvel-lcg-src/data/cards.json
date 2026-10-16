@@ -112257,5 +112257,72 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "f2d0e2fa170d5648908785968c94731afb3e03617e412492caf4d0fb9b2c1e46"
+ "tmnt_aspect_aggression": [
+  {
+   "card_id": "ua006",
+   "type": "Ally",
+   "name": "* Bo-Wing",
+   "subtitle": "Donnie",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE",
+    "VIGILANTE"
+   ],
+   "set_name": "TMNT Aggression",
+   "text": "<b>Response</b>: After Bo-Wing attacks and defeats an enemy, remove 2 threat from a scheme.\n<i>\"As long as I'm alive, you'll have me to fight.\"</i>",
+   "custom": "Inkwire",
+   "ability_link": "53035"
+  },
+  {
+   "card_id": "ua009",
+   "type": "Event",
+   "name": "Clobber",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Aggression",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. If this is the first card you have played this round, return this card to your hand.\n<i>\"Nice guys finish last? That's not what I've heard!\"</i> —Michelangelo",
+   "custom": "Inkwire",
+   "ability_link": "18012"
+  },
+  {
+   "card_id": "ua015",
+   "type": "Event",
+   "name": "Demolish",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3*",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK",
+    "FERAL",
+    "NYC"
+   ],
+   "set_name": "TMNT Aggression",
+   "text": "[star] Rampage 3. <i>(As an additional cost for this card, take 3 damage and discard 3 cards from the top of your deck.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy. If you control a [[NYC]] support, this attack gains overkill and piercing.",
+   "custom": "Inkwire"
+  }
+ ],
+ "tmnt_aspect_basic": [],
+ "tmnt_aspect_justice": [],
+ "tmnt_aspect_leadership": [],
+ "tmnt_aspect_protection": [],
+ "tmnt_aspect_dual": [],
+ "checksum": "42551438d507d20144097c23cad83a068b7b38d73564a96ab49b6d960ad7112e"
 }

@@ -4390,6 +4390,12 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'te102': "<b>Une fois révélée</b> : cherchez votre sbire némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et mettez-le en jeu engagé avec vous. <i>(Mélangez.)</i> Si votre sbire némésis n'est pas entré en jeu ainsi, inclinez votre identité et cette carte gagne Renfort.",
   // tmnt_expert — Sinister Plan (Treachery)
   'te103': "<b>Une fois révélée</b> : cherchez votre manigance annexe némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-la. <i>(Mélangez.)</i> Hébétez votre identité. Si votre manigance annexe némésis n'est pas entrée en jeu ainsi, cette carte gagne Renfort.",
+  // tmnt_aspect_aggression — Bo-Wing (Ally), reskin de 53035 Winter Soldier
+  'ua006': "<b>Réponse</b> : après que Bo-Wing a attaqué et vaincu un ennemi, retirez 2 menaces d'une manigance.\n<i>« Tant que je serai en vie, tu m'auras sur le dos. »</i>",
+  // tmnt_aspect_aggression — Clobber (Event), reskin de 18012
+  'ua009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si cette carte est la première que vous jouez lors de ce round, renvoyez-la dans votre main.\n<i>« Les gentils finissent derniers ? C'est pas ce qu'on m'a dit ! »</i> —Michelangelo",
+  // tmnt_aspect_aggression — Demolish (Event) ; « Rampage » : mot-clé maison laissé en anglais, comme Cloak
+  'ua015': "[star] Rampage 3. <i>(Coût additionnel pour jouer cette carte : subissez 3 dégâts et défaussez les 3 cartes du dessus de votre deck.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si vous contrôlez un soutien [[NYC]], cette attaque gagne Déferlement et Perçant.",
   // tmnt_intense — Intense Combatants (Environment)
   'te201': "<i>Ensembles TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, intensifiez ce personnage à la place.",
 }

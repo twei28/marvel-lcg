@@ -181,6 +181,8 @@ Structure : `{ "<pack>": [cartes...], "checksum": "..." }`. Une carte :
 - `set_name` : détermine le chemin du script Python (voir §3).
 - `full_link` : la carte clone intégralement une autre (`{"card_id": X,
   "full_link": Y}` et rien d'autre). `ability_link` : mêmes capacités seulement.
+  Reskin d'une carte JOUEUR (nom, traits, image propres, capacités de l'officielle) :
+  recette exacte au §11 de `RECETTES-MOTEUR.md` (aspects TMNT, 16/10/2026).
 
 Clés `desc` principales (toutes les valeurs sont des **strings**) :
 
