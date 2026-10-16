@@ -1700,5 +1700,18 @@
   "encounters": [],
   "max_id": "tr017"
  },
- "checksum": "32680d599ccbb433ac71d590b1dd65102ee290709a6ae8cb9c2da40d7ae633b4"
+ "190. Custom (Bebop & Rocksteady)": {
+  "name": "bebop_rocksteady",
+  "scenarios": [
+   "bebop_rocksteady"
+  ],
+  "heroes": [],
+  "encounters": [
+   "bebop_rocksteady",
+   "concrete_jungle",
+   "rock_the_block"
+  ],
+  "max_id": "tk205"
+ },
+ "checksum": "c7744f815f12886403e4a614407107d5c1a68cfc4c2ed08d8efd47985af57fd9"
 }

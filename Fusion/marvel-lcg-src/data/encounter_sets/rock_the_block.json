@@ -1,0 +1,10 @@
+{
+    "version": "0.5.8",
+    "name": "rock_the_block",
+    "encounters": [
+        "tk201",
+        "tk201",
+        "tk203",
+        "tk205"
+    ]
+}
