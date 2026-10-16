@@ -683,6 +683,12 @@ def jennika_desc(monde, aides):
             reel = getattr(face, nom, None)
             if reel != voulu:
                 soucis.append(f"{cid}.{nom} = {reel} (attendu {voulu})")
+    # Les autres cles (statuts, ...) restent celles d'etat_attendu : une cle ignoree en silence ne prouverait rien.
+    reste = {k: v for k, v in attendu.items() if k not in ("restricted", "permanent", "valeurs")}
+    if reste:
+        ok, msg = etat_attendu(monde, {**aides, "cas": {**aides["cas"], "attendu": reste}})
+        if not ok:
+            soucis.append(msg)
     if soucis:
         return False, " ; ".join(soucis)
     return True, "desc conforme"

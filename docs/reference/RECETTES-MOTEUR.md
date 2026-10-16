@@ -1259,3 +1259,29 @@ les tables. Tout lien du jeu vers une page du site doit passer par la.
 | Autoplay ciblé | `autoplay.py --deck <pack> --parties 8` + témoin | ~3 min |
 | Batterie complète (fichier partagé touché) | `test_capacites.py` sans filtre | ~2 h, en fond |
 | Boucle des campagnes (carnet ou mise en place touchés) | `test_campagnes.py` | ~5 min |
+
+### 7novodecies. Pièges payés par le pack `jennika` (16/10/2026)
+
+- **« If you paid for this card with an [[ATTACK]] event »** (une CARTE qui paie, pas une couleur) : `GetPaidResources()` ne
+  dit que les couleurs. Les cartes qui ont payé sont `effect.context.paid_this_res_effects` (liste d'effets de ressource,
+  `e.this` = la carte payeuse, défaussée de la main ou en jeu). Modèle : `jennika/tj004`. Un témoin « payée par une
+  carte ressource » et un « payée par un événement d'un autre trait » sont obligatoires.
+- **Une classe de carte propre à un héros** (« this card is both a Jennika card and a Taijutsu card ») : `desc.Class =
+  "Hero;Taijutsu"` + le nom ajouté à `ClassCard.CARD_CLASS` ; le filtre est `CardFinder(card_classes=[...])`. Sans la
+  déclaration dans le `Literal`, la carte ne se construit pas (`assert IsCardClass`). Fiche `mots-cles/shinobi.md`.
+- **« Limit once per round FOR EACH <classe> »** : une capacité par classe, chacune `.LimitOncePerRound()` (une limite posée
+  sur UNE capacité commune serait partagée). Témoin d'épuisement : mesurer avec `world.stat.IsOncePerRound(ability)` ; la
+  fin de round de la vérification doit appeler `monde.stat.OnRoundEnd()` EN PLUS de `WhenRoundEnd` et
+  `buff_manager.OnRoundEnd()` (sinon la limite reste verrouillée, faux rouge).
+- **Une carte permanente mise de côté** (Path, Ionic Physiology) : `BeginGameWithSetAside([id], op)` + `set_aside` dans le deck de
+  départ ; la mise en jeu cherche dans `set_aside_deck` ET `additional_discard_pile`. Le deck reste à 15, la main de départ
+  n'est pas amputée.
+- **Obligation « Choose » à deux branches avec « You may flip »** : sous le harnais le pilote ACCEPTE la bascule (première
+  option) ; pour la refuser, `choisir_option: ["Cancel"]`. Une branche impayable ou sans condition remplie n'est pas
+  offerte : s'il ne reste qu'une branche, le moteur la prend sans poser de question.
+- **Mesurer la menace d'un complot principal : ne pas la monter jusqu'au seuil** (`SetThreat(principal, 4)` puis +3 :
+  « s'apprête à être accomplie », le complot avance et la résolution s'arrête avant la défausse de l'obligation). Partir de 1.
+- **Un vérificateur dédié qui ne lit pas toutes les clés de `attendu` les IGNORE** : le cas passe au vert sans rien mesurer
+  (Tenace de `tj015`, vu en mutant le `desc`). Faire déléguer le reste à `etat_attendu`.
+- **Les effets d'un héros se retrouvent par `e.ability.when.__name__`** (`func_names` ne contient que le nom de fabrique,
+  vide pour `WhenPlayerPlayCard`) ; `when` peut être un `UnionType` : `getattr(when, "__name__", "")`.
