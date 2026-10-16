@@ -269,6 +269,13 @@ class Card(Object):
         message = Message.CheckIfFaceIsLikeInHand(self.face, for_discard=True)
         message.Send()
         return message.is_like_in_hand
+    def IsLikeInHandForSpend(self) -> bool:
+        """DEPENSABLE comme si elle etait en main (td012 : ses icones de ressource paient).
+        Jamais de cache, meme raison que `IsLikeInHandForDiscard`."""
+        from game.message import Message
+        message = Message.CheckIfFaceIsLikeInHand(self.face, for_spend=True)
+        message.Send()
+        return message.is_like_in_hand
     def IsCanReadyBy(self, by_effect: 'Effect') -> bool:
         return not self.IsReady()
         # TODO: Use the follow

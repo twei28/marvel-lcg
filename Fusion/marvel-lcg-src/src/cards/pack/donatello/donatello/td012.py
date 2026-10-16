@@ -43,7 +43,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.CanPlayThisUpgradeCard(),
-        *AbilityFactory.AttachedCardCanPlayLikeInHand(also_discard=True),
+        *AbilityFactory.AttachedCardCanPlayLikeInHand(also_discard=True, also_spend=True),
         AbilityFactory.WhenInYourPlayTurn(
             AbilityType.HeroAction,
             ranger,

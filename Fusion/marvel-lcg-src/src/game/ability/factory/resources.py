@@ -124,6 +124,13 @@ class AbilityFactoryResources:
             # sont ouvertes.
             to_player = message.GetToPlayer()
             payer_area = this.card.area
+            # Carte GLISSEE sous une carte que le joueur controle et qui la rend depensable « comme
+            # en main » (td012 Donatello's Shell, `also_spend`) : pour le cloisonnement ci-dessous
+            # elle compte comme une carte de la MAIN.
+            if payer_area.flags.is_place_card_area and payer_area.bind_card is not None \
+                    and payer_area.bind_card.face.GetControlByOrOwner() == to_player \
+                    and this.card.IsLikeInHandForSpend():
+                payer_area = to_player.hand_cards
             if payer_area != to_player.hand_cards and payer_area != to_player.reserve:
                 return False
 

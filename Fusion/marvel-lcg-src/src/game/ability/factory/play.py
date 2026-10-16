@@ -421,6 +421,7 @@ class AbilityFactoryPlay:
     def AttachedCardCanPlayLikeInHand(card_finder: 'CardFinder|None'=None,
                                       *,
                                       also_discard: bool=False,
+                                      also_spend: bool=False,
                                       ) -> List['Ability']:
         return AbilityFactoryPlay.YouMayPlayCardLikeInHand(
             AbilityType.NonKeyword,
@@ -428,6 +429,7 @@ class AbilityFactoryPlay:
             from_where="ThisPlacedCard",
             during=None,
             also_discard=also_discard,
+            also_spend=also_spend,
         )
 
     @staticmethod
@@ -438,6 +440,7 @@ class AbilityFactoryPlay:
                                 during: Literal["YourTurn"]|None=None,
                                 conditions: ConditionsType[Message.CheckIfFaceIsLikeInHand]=[],
                                 also_discard: bool=False,
+                                also_spend: bool=False,
                                 ) -> List['Ability']:
         from game.ability.factory import AbilityFactory
 
@@ -446,7 +449,11 @@ class AbilityFactoryPlay:
         # defaussable comme en main (couts « discard 1 card from your hand »). Sans
         # lui, cette aptitude ne repond qu'a la question « jouable / depensable ? ».
         def check_discard_scope(effect: 'Effect', message: 'Message.CheckIfFaceIsLikeInHand') -> bool:
-            return also_discard or not message.for_discard
+            if message.for_discard and not also_discard:
+                return False
+            if message.for_spend and not also_spend:
+                return False
+            return True
 
         def check_which_card(effect: 'Effect', message: 'Message.CheckIfFaceIsLikeInHand') -> bool:
             return Condition.CheckWhichCard(which_card, message.which_face, effect)
