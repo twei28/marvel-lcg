@@ -7,7 +7,8 @@ from . import *
 #
 # NOUVELLE. Cartes de reference :
 #  - « Play only if you control a <trait> card » : 27048 Ghost-Spider, `CanPlayThisAllyCard().SetPlay(...)`.
-#    Deux traits (OU) : `only_if_you_control_face=CardFinder(traits=[...])` (KWArgs « traits » = OU).
+#    Deux traits (OU) : helper `JouableSiVousControlez` (__init__.py du pack) ; ⚠ PAS
+#    `only_if_you_control_face`, qui lit l'inventaire (attachements) de l'identite et refusait la carte.
 #  - Toughness : `desc.Toughness`, lu par le moteur (fiche toughness.md) : zero code.
 #  - « cloak him » : fiche mots-cles/cloak.md, `Faces.GiveStatus([lui], "Cloaked")` ; declencheur
 #    `AfterCardEnterPlay(Response, "This")` (45048).
