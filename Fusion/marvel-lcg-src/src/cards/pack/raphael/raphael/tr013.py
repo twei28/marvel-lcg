@@ -38,10 +38,10 @@ from . import *
 #  ⚠ « REMOVE 2 rage counters FROM RAPHAEL -> » : COUT (fleche), pris sur la
 #    carte d'identite ; sans 2 compteurs l'Action n'est pas offerte. Rien ne
 #    plafonne ni ne donne de rage ici : le joueur doit en avoir gagne.
-#    TODO-QUESTION Q4 : le texte n'a PAS de sortie sans rage ; une carte
-#    d'identite exhaustee, sans rage, sans pouvoir ni changer de forme, est
-#    bloquee. Est-ce voulu (seul moyen : prendre des coups pour gagner de la
-#    rage) ? Code = lecture litterale.
+#    Decision du 15/10/2026 : « vous » = l'IDENTITE seulement (les allies
+#    peuvent contrer et defendre). Le texte n'a PAS de sortie sans rage : lecture
+#    litterale conservee (seul moyen : gagner de la rage par les allies, Gekido,
+#    Seething Rage...).
 #  ⚠ « flip to alter-ego form AND discard Out of Control » : l'ordre imprime,
 #    `ex_operation` s'execute AVANT la defausse. « discard » : l'obligation
 #    retourne au deck rencontre du joueur (pas `RemoveFromGame`).

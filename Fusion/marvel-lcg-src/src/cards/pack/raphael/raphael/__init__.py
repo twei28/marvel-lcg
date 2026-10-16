@@ -2,23 +2,20 @@ from cards.pack import *
 
 # ===========================================================================
 # Helpers partages du set « Raphael » (Inkwire, TMNT Heroes, prefixe `tr`).
-# PHASE A (construction) : rien de ce pack n'a ete execute ni valide. Les
-# marqueurs `TODO-QUESTION` renvoient a .planning/tmnt/raphael-phase-a.md.
+# Decisions de l'utilisateur : .planning/tmnt/decisions-phase-b.md (fait loi).
 #
-# MECANIQUE CENTRALE : le compteur `rage`, pose sur la face HEROS.
+# MECANIQUE CENTRALE : le compteur `rage`, pose sur la CARTE d'identite (les
+# deux faces, Raphael et Raph, partagent le meme stock de compteurs).
 #  - `tr001a` : chaque compteur se depense comme une ressource [physical]
 #    (modele `30001a` * Spider-Ham, compteur `toon` -> ressource wild).
-#  - « to a maximum of 3 » : imprime sur `tr001a`, `tr007` et, par l'encart de
-#    regles, sur l'usage des Sai. PAS imprime sur `tr002` Casey Jones ni
-#    `tr010` Gekido.
-#    TODO-QUESTION Q1 : le plafond de 3 vaut-il pour TOUTE pose de rage ?
-#    Lecture la plus litterale retenue : plafond la ou il est imprime
-#    seulement. Pour plafonner partout, passer PLAFOND_PARTOUT a True.
-#  - « Raphael » nomme la face HEROS : hors forme heros (Raph en civil), les
-#    effets qui visent « Raphael » (soin, degats, pose de rage) ne font rien.
-#    TODO-QUESTION Q2 : en forme civile, `tr002` / `tr007` doivent-ils poser
-#    la rage sur l'identite (les compteurs vivent sur la CARTE, partages par
-#    les deux faces) ?
+#  - PLAFOND DE 3 : SEULEMENT la ou il est imprime (Yaban Hito `tr001a`,
+#    Seething Rage `tr007`, usage d'une Sai `tr011`/`tr012`). Casey Jones
+#    `tr002` et Gekido `tr010` n'ont aucun plafond : `PLAFOND_PARTOUT = False`
+#    (decision du 15/10/2026).
+#  - « Raphael » en forme CIVILE (`tr002`, `tr007`, `tr010`) : les effets visent
+#    l'IDENTITE (soin, degats, rage sur la carte d'identite meme en alter-ego),
+#    pas la seule face heros (decision du 15/10/2026) : voir
+#    `IdentiteDuJoueur`.
 #
 # LES DEUX SAI (`tr011`, `tr012`) : chacune « fait gagner » une capacite a
 # TOUTE amelioration [[SAI]] que le joueur controle, elle-meme comprise. Il
@@ -27,6 +24,8 @@ from cards.pack import *
 # CHAQUE Sai porte les DEUX capacites, chacune conditionnee a la presence de
 # la carte qui la donne (`SaiEnJeu`). Resultat observable identique : deux Sai
 # en jeu = deux Actions d'attaque et deux Reponses de pioche, une par carte.
+# L'encart « Sai Weapon Rules » fait loi : chaque usage d'une Sai = action
+# d'attaque + 1 rage (max 3).
 # ===========================================================================
 
 NOM_HEROS = "Raphael"
@@ -37,7 +36,7 @@ TRAIT_SAI = "SAI"
 ID_SAI = "tr011"        # Raphael's Sai : donne l'Action d'attaque
 ID_AUTRE_SAI = "tr012"  # Raphael's Other Sai : donne la Reponse qui fait piocher
 
-# TODO-QUESTION Q1 : False = plafond a 3 seulement ou il est imprime.
+# False = plafond a 3 seulement ou il est imprime (decision du 15/10/2026).
 PLAFOND_PARTOUT = False
 
 
@@ -60,6 +59,20 @@ def JoueurDeCetteCarte(effect: 'Effect') -> 'Player|None':
     return None
 
 
+def IdentiteDuJoueur(effect: 'Effect', joueur: 'Player|None' = None) -> 'CardFace|None':
+    """L'IDENTITE du joueur (Raphael OU Raph) : la cible de « Raphael ».
+
+    Decision du 15/10/2026 : les effets qui nomment « Raphael » (soin, degats,
+    rage) visent l'identite, meme quand le joueur est en forme civile. Les
+    compteurs de rage vivent sur la carte d'identite, partagee par les deux faces.
+    """
+    if joueur is None:
+        joueur = JoueurDeCetteCarte(effect)
+    if joueur is None:
+        return None
+    return joueur.GetIdentity()
+
+
 def HerosDuJoueur(effect: 'Effect', joueur: 'Player|None' = None) -> 'CardFace|None':
     """La face HEROS (« Raphael »), ou None si le joueur est en civil.
 
@@ -80,13 +93,14 @@ def PlacerRage(effect: 'Effect', joueur: 'Player|None' = None, *,
     """« Place 1 rage counter on Raphael [(to a maximum of 3)]. »
 
     `plafonne=True` seulement la ou le texte imprime « to a maximum of 3 ».
-    Rend le nombre de compteurs effectivement poses (0 en forme civile).
+    La rage se pose sur l'IDENTITE, quelle que soit sa forme. Rend le nombre
+    de compteurs effectivement poses.
     """
-    heros = HerosDuJoueur(effect, joueur)
-    if heros is None:
+    identite = IdentiteDuJoueur(effect, joueur)
+    if identite is None:
         return 0
     maximum = PLAFOND_RAGE if (plafonne or PLAFOND_PARTOUT) else None
-    place = Faces.PlaceCountersOn([heros], 1, RAGE, effect, maximum=maximum)
+    place = Faces.PlaceCountersOn([identite], 1, RAGE, effect, maximum=maximum)
     return int(place or 0)
 
 
@@ -136,7 +150,7 @@ def CapaciteAttaqueSai() -> 'Ability':
     ⚠ L'ENCART DE REGLES du zip ajoute : c'est une action d'ATTAQUE, et il faut
     poser 1 rage sur Raphael (max 3) a chaque usage. Les degats pris en COUT ne
     sont pas « from an attack », Yaban Hito ne part donc pas : la rage est
-    posee ICI, a la main. TODO-QUESTION Q3 : confirmer que l'encart fait loi.
+    posee ICI, a la main (decision du 15/10/2026 : l'encart fait loi).
     ⚠ Les degats sont infliges par le HEROS (`hero.DealDamage`) : c'est ce qui
     fait de Raphael l'auteur pour « After Raphael defeats an enemy » (`tr012`).
     """
@@ -145,7 +159,7 @@ def CapaciteAttaqueSai() -> 'Ability':
         Unused(this, message)
 
         joueur = JoueurDeCetteCarte(effect)
-        heros = HerosDuJoueur(effect, joueur)
+        heros = IdentiteDuJoueur(effect, joueur)
         cibles = [t for t in effect.targets if t is not None]
         if heros is not None and cibles:
             heros.DealDamage(cibles, 1, effect)

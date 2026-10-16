@@ -18,11 +18,11 @@ from . import *
 #    JOUEUR (pas tous les sbires du terrain, piege `each` de PROCESSUS-CARTE).
 #    Les degats viennent de Casey, pas d'une attaque : Yaban Hito (`tr001a`,
 #    « from an attack ») ne se declenche donc PAS.
-#  ⚠ « Raphael » nomme la face HEROS : en forme civile le heros n'est pas en jeu
-#    et seuls les sbires sont touches. TODO-QUESTION Q2 (voir __init__).
-#  ⚠ « Place 1 rage counter » : PAS de « (to a maximum of 3) » imprime ici.
-#    TODO-QUESTION Q1 : `plafonne=False` = lecture litterale ; un joueur peut
-#    donc depasser 3.
+#  ⚠ « Raphael » = l'IDENTITE (decision du 15/10/2026) : en forme civile aussi,
+#    l'identite (Raph) subit le degat et recoit la rage (compteurs partages
+#    par les deux faces).
+#  ⚠ « Place 1 rage counter » : PAS de « (to a maximum of 3) » imprime ici
+#    (decision du 15/10/2026) : `plafonne=False`, la rage peut depasser 3.
 #  ⚠ ATQ « 2* » et CTR « 2* » : l'etoile creuse sous la valeur = 1 degat
 #    consequent (RECETTES §5), contrairement a l'etoile d'un HEROS.
 #  « Response » (pas « Hero Response ») : elle part aussi en forme civile.
@@ -39,9 +39,9 @@ def GetAbilities() -> Sequence['Ability']:
             return
 
         cibles: List['CardFace'] = []
-        heros = HerosDuJoueur(effect, joueur)
-        if heros is not None:
-            cibles.append(heros)
+        identite = IdentiteDuJoueur(effect, joueur)
+        if identite is not None:
+            cibles.append(identite)
         for sbire in Worlds.GetOnFieldMinions(effect):
             if sbire.GetEngagedPlayer() == joueur:
                 cibles.append(sbire)

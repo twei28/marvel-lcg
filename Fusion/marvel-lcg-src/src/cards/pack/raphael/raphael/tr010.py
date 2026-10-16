@@ -21,9 +21,9 @@ from . import *
 #  ⚠ « Exhaust Gekido -> choose » : le choix est APRES la fleche, l'inclinaison
 #    est le seul cout. Un seul choix, pas les deux.
 #  ⚠ « Place 1 rage counter on Raphael » : PAS de « (to a maximum of 3) »
-#    imprime. TODO-QUESTION Q1 : `plafonne=False` = lecture litterale.
-#  ⚠ « RAPHAEL » : la face heros ; une Hero Action impose de toute facon la
-#    forme heros.
+#    imprime (decision du 15/10/2026) : `plafonne=False`.
+#  ⚠ « RAPHAEL » = l'identite (decision du 15/10/2026) ; une Hero Action
+#    impose de toute facon la forme heros.
 #  Pas de limite imprimee : seule l'inclinaison borne l'usage (une fois par
 #  redressement).
 
@@ -37,7 +37,7 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = JoueurDeCetteCarte(effect)
         if joueur is None:
             return
-        heros = HerosDuJoueur(effect, joueur)
+        heros = IdentiteDuJoueur(effect, joueur)
 
         joueur.ChooseAbilities(
             effect,

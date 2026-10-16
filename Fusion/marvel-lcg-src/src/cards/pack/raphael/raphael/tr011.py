@@ -30,7 +30,8 @@ from . import *
 #  ⚠ « Exhaust this card AND take 1 damage -> » : deux COUTS ; les degats sont
 #    infliges a l'IDENTITE du joueur (la Sai est attachee au heros).
 #  ⚠ « deal 1 damage to AN enemy » : vilain ou sbire, au choix.
-#  ⚠ Encart de regles : action d'ATTAQUE + pose de 1 rage (max 3). TODO-QUESTION Q3.
+#  ⚠ Encart de regles : action d'ATTAQUE + pose de 1 rage (max 3) :
+#    l'encart fait loi (decision du 15/10/2026).
 #  Aucune limite imprimee.
 
 

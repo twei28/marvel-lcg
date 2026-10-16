@@ -9,12 +9,10 @@ from . import *
 #
 # PHASE A : construit, jamais execute.
 #
-# ⚠ ICONE NON TRANCHEE : le scan porte, sous le texte, une icone « croix +
-#   forme d'avion/fleche » qui n'est NI le Hazard ( carte penchee + croix, rien
-#   dessous ; `hd022`) NI l'Acceleration (croix + pointe + BARRE epaisse dessous ;
-#   `hd026`, `ag011`) : comparaison faite en decoupant les trois bandes basses.
-#   AUCUNE cle `Hazard` / `Acceleration` n'est posee dans `desc` (rien n'est
-#   invente). TODO-QUESTION Q5 (voir .planning/tmnt/raphael-phase-a.md).
+# ICONE : « croix + avion » sous le texte = AMPLIFY 1 (decision du 15/10/2026 :
+#   meme glyphe que 16054 Vendetta, verifie par decoupe). `desc.Amplify = "1"`
+#   dans cards.json : le moteur l'applique seul, aucun script (fiche
+#   docs/reference/mots-cles/amplify.md).
 #
 # CARTES DE REFERENCE
 #  - `04112b` The Island of Dr. Zola / `04113b` (zola/__init__.py) :

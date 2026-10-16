@@ -15,8 +15,8 @@ from . import *
 #
 # TEXTE CONTRE CODE
 #  ⚠ « Response » et NON « Hero Response » : la carte se depense (et repond)
-#    aussi quand le joueur est en civil. Mais « Raphael » est la face HEROS :
-#    en civil il n'y a ni soin ni rage. TODO-QUESTION Q2 (voir __init__).
+#    aussi quand le joueur est en civil, et « Raphael » = l'IDENTITE (decision
+#    du 15/10/2026) : en civil aussi, l'identite est soignee et recoit la rage.
 #  ⚠ « heal 2 damage FROM RAPHAEL » : le heros, pas un autre personnage.
 #  ⚠ « (to a maximum of 3) » : imprime ICI, donc `plafonne=True`.
 #  ⚠ « After you SPEND this card » : declenche a la depense comme ressource,
@@ -32,10 +32,10 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(message)
 
         joueur = JoueurDeCetteCarte(effect)
-        heros = HerosDuJoueur(effect, joueur)
-        if heros is None:
+        identite = IdentiteDuJoueur(effect, joueur)
+        if identite is None:
             return
-        this.HealthUnits([heros], 2, effect)
+        this.HealthUnits([identite], 2, effect)
         PlacerRage(effect, joueur, plafonne=True)
 
     return [
