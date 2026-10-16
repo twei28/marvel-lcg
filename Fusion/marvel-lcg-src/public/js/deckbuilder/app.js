@@ -109,8 +109,11 @@ function motsClesDe(carte) {
     return MOTS_CLES.filter(([, re]) => re.test(texte)).map(([nom]) => nom);
 }
 function libelleType(type) { return TYPE_PAR_CLE[type] ? t(TYPE_PAR_CLE[type].libelle) : type; }
-function classeCss(aspect) { return String(aspect).replace(/[^a-z]/gi, "").toLowerCase(); }
+// Double aspect (« Aggression;Justice », pack tmnt_aspect_dual) : la ligne prend la
+// couleur du PREMIER aspect imprime, le libelle nomme les deux (« Agressivité / Justice »).
+function classeCss(aspect) { return String(aspect).split(";")[0].replace(/[^a-z]/gi, "").toLowerCase(); }
 function labelAspect(aspect) {
+    if (String(aspect).includes(";")) return String(aspect).split(";").map((a) => labelAspect(a.trim())).join(" / ");
     const brut = String(aspect).replace(/^'/, "");
     return NOMS_ASPECTS_FR[aspect] ? t(NOMS_ASPECTS_FR[aspect]) : brut;
 }

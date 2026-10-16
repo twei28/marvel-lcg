@@ -17,6 +17,15 @@ export const STATS = [
 export const ORDRE_TYPES = ["Ally", "Event", "Upgrade", "Support", "Resource", "PlayerSideScheme", "Player_Side_Scheme"];
 const ORDRE_CLASSES = ["Hero", "Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized", "Basic", "Campaign"];
 
+const ASPECTS_FILTRE = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized"];
+/** Carte DOUBLE ASPECT (« Aggression;Justice », pack tmnt_aspect_dual) : ses deux
+ *  aspects, pour qu'elle apparaisse sous l'un ET sous l'autre filtre. Vide pour
+ *  toute autre classe (« Hero;Aggression » reste une signature). */
+function classesDoubles(carte) {
+    const parts = String((carte && carte.class) || "").split(";").map((x) => x.trim()).filter(Boolean);
+    return parts.length >= 2 && parts.every((x) => ASPECTS_FILTRE.includes(x)) ? parts : [];
+}
+
 export function filtresVides() {
     return {
         texte: "",
@@ -61,7 +70,7 @@ export function aspectsParDefaut(aspectsDuDeck, stanLee = false) {
  */
 export function passeFiltres(carte, f, ctx) {
     if (!f.fanMade && carte.custom) return false;
-    if (f.aspects.size && !f.aspects.has(carte.class)) return false;
+    if (f.aspects.size && !f.aspects.has(carte.class) && !classesDoubles(carte).some((a) => f.aspects.has(a))) return false;
     if (f.types.size && !f.types.has(carte.type)) return false;
     if (f.couts.size && !f.couts.has(cleCout(carte))) return false;
     if (f.ressources.size && !ctx.ressourcesDe(carte).some((l) => f.ressources.has(l))) return false;

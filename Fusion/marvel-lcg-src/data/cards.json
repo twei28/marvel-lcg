@@ -112323,6 +112323,140 @@
  "tmnt_aspect_justice": [],
  "tmnt_aspect_leadership": [],
  "tmnt_aspect_protection": [],
- "tmnt_aspect_dual": [],
- "checksum": "42551438d507d20144097c23cad83a068b7b38d73564a96ab49b6d960ad7112e"
+ "tmnt_aspect_dual": [
+  {
+   "card_id": "ud001",
+   "type": "Ally",
+   "name": "* Rōnin",
+   "subtitle": "Mikey",
+   "desc": {
+    "Cost": "4",
+    "HP": "2",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Aggression;Justice"
+   },
+   "traits": [
+    "NINJA",
+    "RONIN",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Dual-Aspect",
+   "text": "<b>Response</b>: After Rōnin enters play, cloak him.\n<b>Interrupt</b>: When Rōnin is defeated by consequential damage ([consequential]), spend a [wild] resource → draw 3 cards.\n<i>\"I must avenge the fallen.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ud002",
+   "type": "Ally",
+   "name": "* Doomsayer",
+   "subtitle": "Donnie",
+   "desc": {
+    "Cost": "4",
+    "HP": "2",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Aggression;Leadership"
+   },
+   "traits": [
+    "MYSTIC",
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Dual-Aspect",
+   "text": "<b>Response</b>: After Doomsayer enters play, draw X cards (to a maximum of 3), where X is equal to the villain's stage number.\n<b>Interrupt</b>: When Doomsayer is defeated by consequential damage ([consequential]), draw 1 card for each minion engaged with you.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ud003",
+   "type": "Ally",
+   "name": "* Heavy Metal",
+   "subtitle": "Jenny",
+   "desc": {
+    "Cost": "4",
+    "HP": "2",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Aggression;Protection"
+   },
+   "traits": [
+    "NINJA",
+    "PARTY",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Dual-Aspect",
+   "text": "Heavy Metal enters play with 2 amp counters on her.\n<b>Response</b>: After Heavy Metal takes consequential damage ([consequential]), remove 1 amp counter from her → place a status card on a character.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ud004",
+   "type": "Ally",
+   "name": "* Stealth Fighter",
+   "subtitle": "Raph",
+   "desc": {
+    "Cost": "4",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Justice;Leadership"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Dual-Aspect",
+   "text": "<b>Response</b>: After Stealth Fighter enters play or takes consequential damage ([consequential]), cloak him.\n<b>Interrupt</b>: After Stealth Fighter is defeated by consequential damage ([consequential]), cloak a friendly character.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ud005",
+   "type": "Ally",
+   "name": "* Sōhei",
+   "subtitle": "Leo",
+   "desc": {
+    "Cost": "4",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Justice;Protection",
+    "Toughness": "1"
+   },
+   "traits": [
+    "MONK",
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Dual-Aspect",
+   "text": "Toughness.\n<b>Interrupt</b>: When Sōhei is defeated by consequential damage ([consequential]), your hero gets +2 hand size until the end of the round.\n<i>\"I will be watching you from the other side.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "ud006",
+   "type": "Ally",
+   "name": "* Nightwatcher",
+   "subtitle": "Jenny",
+   "desc": {
+    "Cost": "4",
+    "HP": "2",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Leadership;Protection",
+    "Toughness": "1"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE",
+    "VIGILANTE"
+   ],
+   "set_name": "TMNT Dual-Aspect",
+   "text": "Toughness.\n<b>Response</b>: After Nightwatcher takes consequential damage ([consequential]), give her a tough status card.\n<i>\"I am the hero we ALL need!\"</i>",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "1f4547cf948b02217b4e6e38953540e721d61e65700d9f31f9d74a9277a40c8e"
 }

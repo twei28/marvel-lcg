@@ -251,6 +251,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : compteur imprime
         # « knucklehead counter » des attachements Temper.
         'knucklehead',
+        # AJOUT (16/10/2026, aspects TMNT Dual-Aspect, Inkwire) : « amp counter »
+        # de ud003 Heavy Metal (« enters play with 2 amp counters on her »).
+        'amp',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',
