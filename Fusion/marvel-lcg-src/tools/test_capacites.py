@@ -3671,6 +3671,43 @@ CAS = [
         "attendu": {"pret": ["av001a"], "exhausted": ["av010"]},
     },
     {
+        "nom": "52020 Stun Gun — Hero Action en forme heros : 2 jetons, le vilain est etourdi",
+        "pourquoi": "rapport n86 (Yarro, 16/10/2026) : le texte imprime est une HERO Action, pas une Action",
+        "scenario": "rhino",
+        "heros": "silk",
+        "mise_en_place": ["Puzzle.ChangeForm('52001a')", "Puzzle.PutIntoPlay('52020')"],
+        "main_exclusive": [],
+        "declencher": ["Puzzle.Action('52020', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "52020 Stun Gun — refusee en alter ego (c'est une Hero Action)",
+        "pourquoi": "rapport n86 : « j'ai pu activer le Stun Gun sous forme alter ego » ; temoin de refus",
+        "scenario": "rhino",
+        "heros": "silk",
+        "mise_en_place": ["Puzzle.PutIntoPlay('52020')"],
+        "main_exclusive": [],
+        "declencher": [],
+        "tenter": "Puzzle.Action('52020', 'Action')",
+        "verifier": "hs_action_bloquee",
+        "attendu": {},
+    },
+    {
+        "nom": "16033 Salvage — depensee pour payer : l'amelioration TECH choisie remonte sur le deck",
+        "pourquoi": "rapport n85 (Yarro, 15/10/2026) : « ca spam la fenetre suivante » ; le journal montrait Salvage depensee deux fois dans le meme paiement",
+        "scenario": "rhino",
+        "heros": "rocket_raccoon",
+        "mise_en_place": ["Puzzle.ChangeForm('16029a')", "Puzzle.CreatePlayerDiscardPile('16038')"],
+        "main_exclusive": ["16035", "16033"],
+        "declencher": [],
+        "jouer": ["16035"],
+        "payer_avec": ["16033"],
+        "cibles": ["16038"],
+        "verifier": "salvage_dessus_du_deck",
+        "attendu": {},
+    },
+    {
         "nom": "01094 Rhino — Puzzle.Attack : le vilain frappe et le heros encaisse",
         "pourquoi": "premier cas passant par Puzzle.Attack ; sans lui aucune capacite « apres avoir attaque » n'est atteignable",
         "scenario": "rhino",
@@ -61387,6 +61424,20 @@ def hs_au_fond(monde, aides):
     if not cartes or cartes[-1] != voulu:
         return False, f"{voulu} n'est pas au fond de la defausse de rencontre (de dessus a dessous : {cartes})"
     return True, msg
+
+def salvage_dessus_du_deck(monde, aides):
+    """16033 Salvage : la carte TECH choisie (la copie posee dans la defausse) doit etre le DESSUS du deck
+    (dernier element de `GetAll()`), et la defausse ne doit plus la contenir."""
+    joueur = monde.players[0]
+    deck = [getattr(f.paper, "card_id", None) for f in joueur.player_deck.GetAll()]
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()]
+    if not deck or deck[-1] != "16038":
+        return False, f"le dessus du deck n'est pas 16038 (deck[-3:]={deck[-3:]}, defausse={defausse})"
+    if "16038" in defausse:
+        return False, f"16038 est encore dans la defausse ({defausse})"
+    if "16033" not in defausse:
+        return False, f"Salvage n'a pas ete depensee ({defausse})"
+    return True, "16038 au dessus du deck, absent de la defausse, Salvage depensee"
 
 def hs_action_bloquee(monde, aides):
     """Hunting Season : `tenter` (commande Puzzle) doit etre REFUSEE par le moteur (aucune action disponible)."""
