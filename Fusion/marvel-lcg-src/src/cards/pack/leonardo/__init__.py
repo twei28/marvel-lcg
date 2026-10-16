@@ -22,6 +22,7 @@ from cards.pack import *
 #
 # ⚠ BASES AUTOMATIQUES (aucun script) : `Restricted` (tl011, tl012) via
 #   `desc.Restricted`.
-# ⚠ MOT-CLE MAISON NON DEFINI : « Cloak » (tl015, tl016) — voir
-#   docs/reference/mots-cles/cloak.md et `leonardo_nemesis/__init__.py`.
+# ⚠ MOT-CLE MAISON : « Cloak » (tl015, tl016) = poser la carte d'etat Cloaked —
+#   voir docs/reference/mots-cles/cloak.md, cloaked.md et
+#   `leonardo_nemesis/__init__.py`.
 # ===========================================================================

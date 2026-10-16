@@ -25,11 +25,12 @@ from . import *
 #    elle-meme un choix etourdir/desorienter.
 #  « Draw 2 cards » -> le joueur qui joue la carte.
 #
-# TODO-QUESTION (Q-TD-05) : « CLOAK » est un mot-cle MAISON jamais defini sur
-# les cartes fournies (ni insert, ni officiel : introuvable dans le moteur et
-# dans docs/reference/mots-cles/). L'option 1 est donc un STUB INERTE : elle
-# est offerte (pour que « choose two » reste fidele) mais ne fait rien.
-# Fiche : docs/reference/mots-cles/cloak.md.
+# « CLOAK two friendly characters » : pose une carte d'etat Cloaked sur DEUX
+# personnages amis (identites et allies de tous les joueurs,
+# `Worlds.GetOnFieldFriendlyCharacters`), choisis par le joueur : exactement
+# deux quand il y en a au moins deux, sinon tous ceux qui existent. Aucune
+# restriction de statut : Cloaked n'a pas de plafond. Fiches :
+# docs/reference/mots-cles/cloak.md et cloaked.md.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -42,8 +43,20 @@ def GetAbilities() -> Sequence['Ability']:
             return
 
         def cloak(cibles: Sequence['CardFace']) -> None:
-            # TODO-QUESTION Q-TD-05 : mot-cle « Cloak » non defini. Inerte.
             Unused(cibles)
+            amis = Worlds.GetOnFieldFriendlyCharacters(effect)
+            if not amis:
+                return
+            nombre = min(2, len(amis))
+            choisis = joueur.AskChooseFaces(
+                amis,
+                (nombre, nombre),
+                effect,
+                prompt="Cloak two friendly characters",
+                not_move=True,
+            )
+            if choisis:
+                Faces.GiveStatus(choisis, "Cloaked", effect)
 
         def etourdir_ou_desorienter(cibles: Sequence['CardFace']) -> None:
             Unused(cibles)

@@ -174,7 +174,10 @@ test.describe.serial('Campagne : les trois boîtes jamais jouées par un test', 
     await ouvrirEtMettreEnPlace(page, request)
 
     // La manigance de campagne vaincue : sa face B suffit au relevé (FaceExists).
-    await console_(page, request, `PutIntoPlay("${METRO_PD}")`)
+    // La mise en place la pose déjà en jeu sur sa face A ; « PutIntoPlay » de la
+    // face B ne fabrique plus de doublon (la recherche rend la face visible), il
+    // faut donc la RETOURNER, comme le fait la partie quand la manigance est vaincue.
+    await console_(page, request, `Flip("${METRO_PD.replace('b', 'a')}")`)
 
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait être gagnée.').toBe(true)

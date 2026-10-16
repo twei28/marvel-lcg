@@ -845,7 +845,7 @@ class Ability:
             # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed » ajoute aux
             # trois etats connus, sans quoi `SetTarget(name="Exposed")` ne
             # viserait pas une carte d'etat.
-            ETATS = ["Confused", "Stunned", "Tough", "Exposed"]
+            ETATS = ["Confused", "Stunned", "Tough", "Exposed", "Cloaked"]
             if names:
                 if any(n in names for n in ETATS):
                     target = "StatusCard"

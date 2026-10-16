@@ -6,6 +6,7 @@ TOUGH_FINDER = CardFinder(name="Tough")
 # CORRECTIF : quatrieme carte d'etat, ajoutee pour le pack `sentinel`
 # (fiche docs/reference/mots-cles/exposed.md).
 EXPOSED_FINDER = CardFinder(name="Exposed")
+CLOAKED_FINDER = CardFinder(name="Cloaked")
 
 class Status(Component):
     @override
@@ -29,6 +30,10 @@ class Status(Component):
     @property
     def exposed(self):
         return self.deck.FindCardSize(EXPOSED_FINDER)
+
+    @property
+    def cloaked(self):
+        return self.deck.FindCardSize(CLOAKED_FINDER)
 
     @override
     def OnParentReset(self):
