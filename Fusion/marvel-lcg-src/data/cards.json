@@ -277,6 +277,15 @@
    "desc": {},
    "traits": [],
    "set_name": ""
+  },
+  {
+   "card_id": "cloaked",
+   "type": "Status",
+   "name": "Cloaked",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": ""
   }
  ],
  "core": [
@@ -109224,5 +109233,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "e9339459133b8aadaea45536420a959a2088b7182fa3a3274a6e6cb17874cd3f"
+ "checksum": "247f50f15a49c74a15a7cb173b3bf844628201a1863e17d0a2dee7e3f4dadc54"
 }

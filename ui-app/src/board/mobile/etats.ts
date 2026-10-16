@@ -1,4 +1,4 @@
-// Les etats poses sur un personnage : coriace, sonne, desoriente, expose.
+// Les etats poses sur un personnage : coriace, sonne, desoriente, expose, camoufle.
 //
 // Le moteur les attache comme des CARTES (kind 'status'). Sur une carte de
 // 100 px, une carte glissee derriere ne se lit pas : ces etats deviennent des
@@ -18,6 +18,12 @@ export const ETATS: Record<string, Etat> = {
   // cette ligne le repli generique plus bas afficherait deja un « E », mais
   // avec le nom ANGLAIS et la classe fourre-tout.
   exposed: { lettre: 'E', classe: 'est-expose', nom: 'Exposé' },
+  // CINQUIEME carte d'etat (« Cloaked », pack TMNT, Shredder v3, scan Inkwire) :
+  // +2 au prochain pouvoir de base / a la prochaine activation, OU -2 aux
+  // prochains degats, puis la carte part. Meme raison que `exposed` : sans cette
+  // ligne, le repli generique afficherait un « C » (deja pris par Désorienté)
+  // avec le nom anglais.
+  cloaked: { lettre: 'K', classe: 'est-camoufle', nom: 'Camouflé' },
 }
 
 export function etatDe(carte: ScanCardProps): Etat | undefined {

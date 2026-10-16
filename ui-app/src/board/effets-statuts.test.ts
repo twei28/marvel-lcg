@@ -42,6 +42,18 @@ describe('deltas de statuts', () => {
     expect(libelleStatut('exposed', 1, 'fr')).toBe('Exposé')
   })
 
+  // Cinquieme carte d'etat, pack TMNT (« Cloaked »). Sans son entree dans
+  // STATUTS, `estStatut` la rejetterait et le badge ne partirait jamais.
+  it('signale Camouflé, la cinquieme carte d etat, posee puis retiree', () => {
+    const avant = monde(klaw)
+    const apres = monde(klaw, carte(203, 'StatusCard', 'cloaked', 97))
+    expect(deltasStatuts(avant, apres)).toEqual([[97, { kind: 'status', statut: 'cloaked', value: 1 }]])
+    expect(deltasStatuts(apres, avant)).toEqual([[97, { kind: 'status', statut: 'cloaked', value: -1 }]])
+    expect(libelleStatut('cloaked', 1, 'fr')).toBe('Camouflé')
+    expect(libelleStatut('cloaked', -1, 'fr')).toBe('Camouflé retiré')
+    expect(libelleStatut('cloaked', 1, 'en')).toBe('Cloaked')
+  })
+
   it('ne dit rien quand rien ne change, meme avec un statut en place', () => {
     const m = monde(klaw, carte(200, 'StatusCard', 'tough', 97))
     expect(deltasStatuts(m, m)).toEqual([])

@@ -2,12 +2,15 @@ from cards.pack import *
 
 
 def Cloak(effect: 'Effect', face: 'CardFace|None') -> None:
-    """« Cloak <carte> » — TODO-QUESTION (cloak) : mot-cle maison NON DEFINI.
+    """« Cloak <carte> » : pose une carte d'etat Cloaked sur la carte visee.
 
-    Ni la carte, ni l'insert du zip ne definissent « Cloak ». Aucune lecture
-    n'est arbitree ici : ce stub ne fait RIEN et ne leve rien. Quand
-    l'utilisateur aura tranche (voir .planning/tmnt/leonardo-phase-a.md,
-    question Q1), c'est ICI, en un seul endroit, que s'ecrit l'effet : les
-    trois cartes qui l'emploient (tl015 x2, tl016) l'appellent toutes.
+    Mot-cle maison du pack TMNT : « Cloak X » = X recoit une carte d'etat
+    Cloaked (+2 au prochain pouvoir de base / a la prochaine activation, OU -2
+    aux prochains degats, un seul effet, puis la carte part). Fiches :
+    docs/reference/mots-cles/cloak.md et cloaked.md. Les trois appels du pack
+    (tl015 x2, tl016) passent par ici ; `face` vaut None quand la cible n'existe
+    plus (vilain absent) : rien a poser.
     """
-    Unused(effect, face)
+    if face is None:
+        return
+    Faces.GiveStatus([face], "Cloaked", effect)
