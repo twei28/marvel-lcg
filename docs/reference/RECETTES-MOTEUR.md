@@ -1117,6 +1117,27 @@ servi, et elles resservent :
 - **`DeclareNumber` répond la PREMIÈRE valeur (0)** : `choisir_option: ["3"]` force la valeur (cas sk271).
 - **Le filtre `[filtre]` du harnais est une sous-chaîne, pas une expression régulière** (`"sk2[78]"` retient 0 cas).
 
+### 7novodecies. Pièges payés par le scénario Baxter Stockman (tx001-tx018, 16/10/2026)
+
+- **`FindOrCreateFace` (donc `Puzzle.Damage / Remove / Discard / Counter / PutIntoPlay` sur un card_id) cherche le DECK
+  RENCONTRE avant les cartes en jeu.** Dans un scénario réel (4 Plague, 3 Flyborgs... dans le deck), la commande visait la copie
+  du DECK : 20 cas rouges sur 93, tous « la Plague n'a pas bougé ». `Puzzle.EmptyEncounterDeck()` au début de CHAQUE cas
+  (`FOND` de `tools/cas/tmnt_baxter.py`), puis trois cartes inoffensives (`01105`) si la carte doit pouvoir distribuer.
+- **Une carte « Special » nommée SUR UN COMPLOT PRINCIPAL** : `WhenResolveSpecialAbility("This", op)` sur la face 1B ; les appelants
+  font `complot.ResolveSpecialAbility(joueur, effect)`, le joueur est `message.GetToPlayer()` (fiche `replicate.md`).
+- **« all-purpose counter »** : `Faces.PlaceCountersOn(cibles, n, 'all-purpose', effect)` (le moteur convertit : le type est celui de
+  la carte porteuse, FAQ officielle). Une carte dont la statistique suit un compteur doit nommer le sien (`COMPTEUR_DU_SBIRE`), sinon
+  un sbire sans compteur reçoit un `counter` générique sans effet.
+- **`Deck.DiscardUntil` rend None quand il vide le deck, même si la dernière carte défaussée est la cherchée** (`deck.py`) :
+  `DefausserJusquAuSbire` relit le dessus de la défausse si une carte y est arrivée pendant l'appel. Cas « le sbire est la dernière
+  carte du deck » obligatoire.
+- **Une 6e carte d'état se câble en 11 endroits** (fiche `dazed.md`) ; un oubli ne casse rien AU CHARGEMENT : le piège de `compter()`
+  de `effets-statuts.ts` (`Record<Statut, number>` écrit en dur) donne `NaN` en silence, seul un cas vitest le voit.
+- **Deux statuts « simultanés » (Cloaked et Dazed) ne se résolvent pas par deux consommateurs indépendants** : l'un des deux doit
+  s'effacer et l'autre résoudre le lot (sinon 1 - 2 puis 0 + 2 donne 2 au lieu de 1).
+- **`autoplay.py --deck a+b`** monte une partie à deux joueurs (AJOUT 16/10/2026) ; l'expert se joue par
+  `--vilains <scenario>_expert --difficultes normal` (le mode `--difficultes expert` retire seulement le premier stade).
+
 ## 8. Données (`data/cards.json`) — conventions
 
 - Pack en QUEUE de fichier, `"custom": "Arnaud"`, `set_name` = nom du

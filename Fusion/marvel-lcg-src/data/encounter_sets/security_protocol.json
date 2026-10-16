@@ -1,0 +1,13 @@
+{
+    "version": "0.5.8",
+    "name": "security_protocol",
+    "encounters": [
+        "tx017",
+        "tx017",
+        "tx017",
+        "tx017",
+        "tx018",
+        "tx018",
+        "tx018"
+    ]
+}

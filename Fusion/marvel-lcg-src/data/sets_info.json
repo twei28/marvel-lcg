@@ -1700,5 +1700,19 @@
   "encounters": [],
   "max_id": "tr017"
  },
- "checksum": "32680d599ccbb433ac71d590b1dd65102ee290709a6ae8cb9c2da40d7ae633b4"
+ "195. Custom (Baxter Stockman)": {
+  "name": "baxter_stockman",
+  "scenarios": [
+   "baxter_stockman"
+  ],
+  "heroes": [],
+  "encounters": [
+   "baxters_lab",
+   "cyber_swarm",
+   "high_speed",
+   "security_protocol"
+  ],
+  "max_id": "tx018"
+ },
+ "checksum": "188eb75d57692d571049baaf8fa12c13b7048773a31b6a548495cb92a0ea723d"
 }

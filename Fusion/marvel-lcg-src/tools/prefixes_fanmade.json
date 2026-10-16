@@ -447,6 +447,13 @@
    "depuis": "2026-09-04",
    "note": "Cree le 04/09/2026. Auteur Kajislav. Texas Twister, heros Meneur qui rejoue ses pouvoirs de base : chaque usage de CTR/ATQ/DEF le renforce, le redresse ou fait piocher. ⚠ Ne pas confondre avec le DOSSIER `src/cards/pack/tt/`, qui est le pack officiel Thor et n'a aucun card_id en lettres : le prefixe `tt` etait libre."
   },
+  "tx": {
+   "pack": "baxter_stockman",
+   "libelle": "195. Custom (Baxter Stockman)",
+   "cartes": 19,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Villains / TMNT Modulars), zip « TMNT Enemies / Baxter Stockman v3 ». SCENARIO COMPLET : tx001-tx003 Baxter Stockman I a III (vilain, 3 stades), tx004a/b manigance principale Baxter's Laboratory (la 1B porte la capacite SPECIAL « Replicate »), tx005-tx011 set de rencontre Baxter's Lab (22 exemplaires), tx012-tx014 set modulaire Cyber Swarm, tx015-tx016 High Speed, tx017-tx018 Security Protocol. Sixieme carte d'etat du moteur : Dazed (card_id `dazed`, pack status, fiche mots-cles/dazed.md). Compteurs maison cable, shield, ooze ; traits FLYBORG (singulier, imprime) et FLY. HOMONYMES : td015 « * Baxter Stockman » est le SBIRE nemesis de Donatello, et « * Baxter Stockman » (tx001-tx003) est le VILAIN : toujours chercher par card_id ou par type. Numero de set 195 provisoire (a renumeroter a la fusion si collision)."
+  },
   "vp": {
    "pack": "venompool",
    "libelle": "129. Custom (Venompool)",

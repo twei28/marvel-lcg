@@ -20,7 +20,9 @@
 //  - aspects Agressivite, Justice, Leadership, Protection ;
 //  - NOMS PROPRES et traits [[...]] laisses en anglais : le joueur a la carte
 //    anglaise sous les yeux et doit s'y retrouver ;
-//  - jetons de jeu ([mental], [star], [per_hero]...) recopies tels quels.
+//  - jetons de jeu ([mental], [star], [per_hero]...) recopies tels quels ;
+//  - cartes d'etat maison : Camouflé (Cloaked), Hébété (Dazed, verbe « hébétez ») ;
+//  - capacite nommee « Special » = « Spécial » ; « all-purpose counter » = « compteur polyvalent ».
 //
 // Ne sont PAS ici les cartes de defi (« challenges ») : leur identifiant n'a pas
 // le format d'un code de carte, le plateau ne les affiche donc jamais.
@@ -4036,4 +4038,42 @@ export const TEXTES_FR_FANMADE = {
     'tr016': "<b>Une fois révélée</b> : défaussez 1 allié que vous contrôlez. Si vous ne pouvez pas, défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 allié redressé que vous contrôlez.",
     // raphael — Prepare to Rally (Treachery némésis)
     'tr017': "<b>Une fois révélée</b> : défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte de votre main.",
+    // baxter_stockman — * Baxter Stockman I (Villain)
+    'tx001': "Ténacité.\n<b>Interruption forcée</b> : quand la phase du Méchant commence, chaque joueur résout la capacité « <b>Spécial</b> » de la manigance Baxter's Laboratory.\n<i>« Je vais tous leur montrer... »</i>",
+    // baxter_stockman — * Baxter Stockman II (Villain)
+    'tx002': "Ténacité.\n<b>Une fois révélée</b> : cherchez dans le deck Rencontre et la défausse Rencontre l'attachement Baxter Blaster et révélez-le. <i>(Mélangez.)</i>\n<b>Interruption forcée</b> : quand la phase du Méchant commence, chaque joueur résout la capacité « <b>Spécial</b> » de la manigance Baxter's Laboratory.",
+    // baxter_stockman — * Baxter Stockman III (Villain)
+    'tx003': "Ténacité.\nChaque sbire [[SWARM]] gagne garde.\n<b>Une fois révélée</b> : distribuez 1 carte Rencontre face cachée à chaque joueur.\n<b>Interruption forcée</b> : quand la phase du Méchant commence, chaque joueur résout la capacité « <b>Spécial</b> » de la manigance Baxter's Laboratory.",
+    // baxter_stockman — Baxter's Laboratory 1A (MainScheme)
+    'tx004a': "<i>Baxter Stockman s'est affairé chez Stockgen sur ses nombreux automates et ses expériences de mutagène. La récente disparition du scientifique a déclenché de folles rumeurs. Que manigançait-il ?</i>\n<b>Contenu :</b> Baxter Stockman (I) et Baxter Stockman (II). <i>(Baxter Stockman (II) et Baxter (III) en mode expert.)</i> Sets Baxter's Lab, Cyber Swarm et Standard. Deux sets de rencontre modulaires <i>(High Speed et Security Protocol)</i>.\n<b>Mise en place</b> : mettez en jeu un sbire Plague of M.O.U.S.E.R.S. engagé avec chaque joueur.",
+    // baxter_stockman — Baxter's Laboratory 1B (MainScheme)
+    'tx004b': "<i>Réplication</i> — <b>Spécial</b> : placez 1 compteur polyvalent sur chaque sbire [[SWARM]] engagé avec vous. S'il n'y a aucun sbire [[SWARM]] engagé avec vous, distribuez-vous 1 carte Rencontre face cachée.\n<b>Si cette manigance est achevée, les joueurs perdent la partie.</b>",
+    // baxter_stockman — * Baxter Blaster (Attachment)
+    'tx005': "Attachez-le à Baxter Stockman.\n[star] <b>Réponse forcée</b> : après que Baxter Stockman attaque et blesse un personnage allié, hébétez-le.\n<b>Action de héros</b> : inclinez votre héros ou dépensez 2 ressources de n'importe quel type → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : attachez Baxter Blaster à Baxter Stockman.",
+    // baxter_stockman — Swarm Superiority (Attachment, x2)
+    'tx006': "Attachez-la à un sbire [[SWARM]]. Si vous ne pouvez pas, cette carte gagne Renfort.\nLe sbire attaché gagne [[AERIAL]] et garde.\n<b>Une fois révélée</b> : placez 2 compteurs polyvalents sur le sbire attaché.\n<i>« Il est difficile de rivaliser avec notre nombre. »</i> —Baxter Stockman",
+    // baxter_stockman — Plague of M.O.U.S.E.R.S. (Minion, x4)
+    'tx007': "Entre en jeu avec 2 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit des dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
+    // baxter_stockman — Radical Ingenuity (Treachery, x3)
+    'tx008': "<b>Une fois révélée</b> : choisissez :\n• Résolvez la capacité « <b>Spécial</b> » de Baxter's Laboratory.\n• Placez 2 menaces sur la manigance principale.\n<i>« Essssayez donc de m'arrêteeeer. »</i> —Baxter Stockman",
+    // baxter_stockman — Rapid Replication (Treachery, x3)
+    'tx009': "<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire soit défaussé. Révélez ce sbire. Ensuite, résolvez la capacité « <b>Spécial</b> » de Baxter's Laboratory.\n<i>« Allez, mes sbires ! »</i> —Baxter Stockman",
+    // baxter_stockman — Robotics Facility (SideScheme, x3)
+    'tx010': "<i>L'usine automatisée tourne avec précision, sans supervision humaine. Insensible au conflit qui fait rage autour de l'installation.</i>\nEntrave 1[per_hero].",
+    // baxter_stockman — Mad Lab (SideScheme, x2)
+    'tx011': "<i>« Ils disaient que j'étais fou. Bientôt, ils comprendront. »</i> —Baxter Stockman\n<b>Interruption forcée</b> : quand la phase du Méchant commence, le premier joueur doit résoudre la capacité « <b>Spécial</b> » de Baxter's Laboratory.",
+    // baxter_stockman (Cyber Swarm) — Flight of Flyborgs (Minion, x3)
+    'tx012': "Entre en jeu avec 4 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit des dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
+    // baxter_stockman (Cyber Swarm) — * Superfly (Minion)
+    'tx013': "Entre en jeu avec 2 compteurs de mutagène dessus.\n[star] La MNG et l'ATQ de ce sbire sont égales au nombre de compteurs de mutagène qu'il porte.\n<i>« Bzz bzz. »</i>",
+    // baxter_stockman (Cyber Swarm) — Buzz Off (Treachery, x2)
+    'tx014': "<b>Une fois révélée</b> : choisissez :\n• Placez 3 menaces sur la manigance principale.\n• Subissez 2 dégâts.\n<i>« Bzzzzzzzzzzzzzzzzzz. »</i>",
+    // baxter_stockman (High Speed) — Roadkill Rodneys (Minion, x3)
+    'tx015': "Entre en jeu avec 1 compteur de câble dessus.\nCoup Rapide.\n[star] Ce sbire gagne +1 ATQ par compteur de câble qu'il porte.\n[star] <b>Réponse forcée</b> : après que ce sbire attaque et blesse un personnage, hébétez ce personnage et retirez de cette carte chaque compteur de câble.",
+    // baxter_stockman (High Speed) — Wrapped Up (Treachery, x2)
+    'tx016': "<b>Une fois révélée</b> : hébétez un personnage allié. Si vous ne pouvez pas, cette carte gagne Renfort.\n<i>« Appréhendez ! Appréhendez ! »</i> —Roadkill Rodney",
+    // baxter_stockman (Security Protocol) — Auto Defense Bots (Minion, x4)
+    'tx017': "Garde. Patrouille.\nEntre en jeu avec 1 compteur de bouclier dessus.\n<b>Interruption forcée</b> : quand ce sbire va être vaincu, soignez tous les dégâts de ce sbire et retirez plutôt 1 compteur de bouclier de cette carte.",
+    // baxter_stockman (Security Protocol) — Intruder Alert! (Attachment, x3)
+    'tx018': "Attachez-la à votre identité.\n[[crisis]]\n<b>Action</b> : subissez 2 dégâts ou inclinez votre identité → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
 };

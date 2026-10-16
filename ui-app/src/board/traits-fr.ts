@@ -84,6 +84,7 @@ export const TRAITS_FR: Readonly<Record<string, string | undefined>> = {
   "FAMILY": "FAMILLE",
   "FINISHED": "TERMINÉE",
   "FIRE": "FEU",
+  "FLY": "MOUCHE",
   "GENIUS": "GÉNIE",
   "GENOSHA": "GÉNOSHA",
   "GHOST": "FANTÔME",
