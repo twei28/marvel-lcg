@@ -14,6 +14,10 @@ class Paper:
     pack: str = field(default='')
     set_name: "CardFace.SETNAMES" = field(default="")
     text: str = field(default='')
+    # AJOUT (16/10/2026, aspects TMNT) : titre(s) unique(s) SECONDAIRE(S) imprime(s) dans un
+    # bandeau sous le titre (Bo-Wing « ✦ Winter Soldier »). Decision de l'utilisateur :
+    # l'unicite se juge sur les DEUX titres. Cle `unique_also` de cards.json.
+    unique_also: List[str] = field(default_factory=lambda: [])
 
     @staticmethod
     def GetCardId(card_paper: Dict[str, Any]) -> str:
@@ -62,8 +66,11 @@ class Paper:
             else:
                 text = ""
 
+        unique_also = list(card_paper.get("unique_also", []))
+
         return Paper(
-            card_id, pic_id, type_name, unique, name, subtitle, desc, traits, pack, set_name, text
+            card_id, pic_id, type_name, unique, name, subtitle, desc, traits, pack, set_name, text,
+            unique_also
         )
 
     def IsFromSet(self, set_name: "CardFace.SETNAMES") -> bool:

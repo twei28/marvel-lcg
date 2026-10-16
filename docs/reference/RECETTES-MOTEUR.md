@@ -1444,8 +1444,14 @@ Cas de preuve : `tools/cas/rampage.py` (filtres `[rampage]`, `[reskin]`).
 
 Ce que la recette garantit (cas verts du 16/10/2026) : la capacité part sur le reskin et rend le même
 chiffre que l'original (ua009 ↔ 18012, ua006 ↔ 53035) ; le reskin porte SES traits (Bo-Wing : NINJA
-TURTLE VIGILANTE, sans SOLDIER) ; l'unicité se juge sur SON titre (`CanCoexistWith` compare les noms :
-Bo-Wing et Winter Soldier coexistent ; deux Bo-Wing, non).
+TURTLE VIGILANTE, sans SOLDIER) ; l'unicité se juge sur SON titre ET sur le titre secondaire du bandeau.
+
+8. **Bandeau « ✦ <titre d'origine> » imprimé sous le titre** (Bo-Wing : « ✦ Winter Soldier ») :
+   décision de l'utilisateur (Q-R1, 16/10/2026), l'unicité se juge sur LES DEUX titres. Ajouter
+   `"unique_also": ["<titre du bandeau>"]` à l'entrée (`Paper.unique_also`, lu par `CanCoexistWith`,
+   comparé au TITRE seul : le bandeau n'a pas de sous-titre). Bo-Wing et Winter Soldier 53035 ne
+   coexistent donc PAS (cas `[reskin]`, substitution mesurée : 2 cas rougissent). Un sous-titre ordinaire
+   qui reprend le nom d'origine (Mutagen « X-Gene ») n'est PAS un bandeau ✦ : pas d'`unique_also`.
 
 ⚠ **Deck-builder : un reskin HOMONYME d'une officielle est INVISIBLE.** Le pool
 (`public/js/deckbuilder/app.js`, `poolJoueur`, clé `cleImpression = nom|classe|type`) ne garde que la
