@@ -11,8 +11,8 @@
 // (Kama inclinées). Sans cas : ta004-ta007, ta012, ta013, ta015 (ne font que
 // chiffrer, défausser ou piocher).
 //
-// Pas de panorama des paires jumelles 14/15 (ta009/ta010) : à trancher par
-// l'utilisateur (voir .planning/tmnt/alopex-questions.md).
+// Paire jumelle 14/15 (ta009 + ta010) : panorama confirmé le 16/10/2026
+// (panorama-jumelles.ts), posée à côté de l'identité.
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { lireDemande, type Demande } from './ask'
@@ -101,7 +101,7 @@ describe('ta002 / ta003 / ta014 : états Cloaked et Dazed dessinés', () => {
 })
 
 describe('ta001b / ta009 / ta010 : Kama mises en jeu inclinées', () => {
-  it('les deux Kama sont dessinées attachées à l identité, couchées', () => {
+  it('les deux Kama sont dessinées en panorama 14|15 A COTE de l identité, couchées', () => {
     const monde = tableAvec(
       siege({
         area_hero: [
@@ -111,9 +111,10 @@ describe('ta001b / ta009 / ta010 : Kama mises en jeu inclinées', () => {
         ],
       })
     )
-    for (const id of [11, 12]) {
+    for (const [id, cote] of [[11, 'gauche'], [12, 'droite']] as const) {
       expect(dessinee(monde, id)).toBeDefined()
       expect(dessinee(monde, id)?.exhausted).toBe(true)
+      expect(dessinee(monde, id)?.panorama).toBe(cote)
     }
   })
 })

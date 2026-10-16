@@ -23,6 +23,7 @@ export const PAIRES_JUMELLES: readonly PaireJumelle[] = [
   { gauche: 'tm011', droite: 'tm012' }, // Nunchuck de Michelangelo (14/15 + 15/15), confirmee le 16/10/2026
   { gauche: 'tr011', droite: 'tr012' }, // Sai de Raphael (14/15 + 15/15), confirmee le 16/10/2026
   { gauche: 'td011', droite: 'td012' }, // Bo et Shell de Donatello (14/15 + 15/15), confirmee le 16/10/2026
+  { gauche: 'ta009', droite: 'ta010' }, // Kama d'Alopex (14/16 + 15/16), confirmee le 16/10/2026
 ]
 
 /** Cote ou se dessine cette carte dans son panneau, ou `undefined` si elle n'est dans aucune paire. */
