@@ -1831,6 +1831,10 @@ export function DeroulePhase({
             comportement de `chronologie`, et c'est exactement sa decision
             « on la saute, mais on le dit ». Il ne coute aucun clic, puisque
             `etapesDeroule` ne fabrique pas d'etape pour lui. */}
+        {/* Où l'on en est dans la phase (« 2A. Le méchant s'active »), centré au-dessus de la ligne. */}
+        {etape && ONGLETS.some((o) => o.cle === etape.temps) ? (
+          <span className="tsm-temps">{t(ONGLETS.find((o) => o.cle === etape.temps)!.libelle)}</span>
+        ) : null}
         <CoucheTraitPhase etape={etape} actif={!enVolDeJeton} />
         <EffetsSurTable
           etape={etape}

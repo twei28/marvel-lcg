@@ -2,7 +2,7 @@
 .tsm-bandeau {
   position: absolute;
   left: 50%;
-  top: 6px;
+  top: 30px;
   transform: translateX(-50%);
   z-index: 150;
   display: flex;
@@ -253,4 +253,22 @@
   height: 8px;
   pointer-events: none;
   visibility: hidden;
+}
+
+/* Où l'on en est : une petite étiquette rouge, centrée au-dessus de la ligne. */
+.tsm-temps {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  transform: translateX(-50%);
+  z-index: 151;
+  padding: 1px 12px;
+  background: var(--rouge, #e62429);
+  color: #fff;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
 }

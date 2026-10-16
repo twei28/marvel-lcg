@@ -144,8 +144,19 @@ export function QuestionSurTable({
   choix: ChoixSurTable[]
   refus?: { libelle: string; agir: () => void; survoler?: (actif: boolean) => void }
 }) {
-  const surCarte = choix.filter((c) => c.carteId !== undefined)
-  const enLigne = choix.filter((c) => c.carteId === undefined)
+  // Une carte qu'on ne trouve pas sur la table (hors du cadre, disparue) ne doit JAMAIS rendre son
+  // choix injouable : il passe alors dans la ligne du haut, comme un choix sans carte.
+  const [absentes, setAbsentes] = useState<ReadonlySet<number>>(new Set())
+  const signaler = (id: number, absente: boolean) =>
+    setAbsentes((avant) => {
+      if (avant.has(id) === absente) return avant
+      const suivant = new Set(avant)
+      if (absente) suivant.add(id)
+      else suivant.delete(id)
+      return suivant
+    })
+  const surCarte = choix.filter((c) => c.carteId !== undefined && !absentes.has(c.id))
+  const enLigne = choix.filter((c) => c.carteId === undefined || absentes.has(c.id))
   return (
     <>
       <div className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
@@ -174,16 +185,45 @@ export function QuestionSurTable({
           </button>
         ) : null}
       </div>
+      {/* Les cartes pas encore mesurées : on les surveille pour pouvoir les rabattre en ligne. */}
+      {choix
+        .filter((c) => c.carteId !== undefined && absentes.has(c.id))
+        .map((c) => (
+          <VeilleCarte key={`veille-${c.id}`} choix={c} signaler={signaler} />
+        ))}
       {surCarte.map((c) => (
-        <PuceSurCarte key={c.id} choix={c} />
+        <PuceSurCarte key={c.id} choix={c} signaler={signaler} />
       ))}
     </>
   )
 }
 
-function PuceSurCarte({ choix }: { choix: ChoixSurTable }) {
+/** Surveille une carte rabattue en ligne : si elle reparaît sur la table, elle reprend sa place. */
+function VeilleCarte({ choix, signaler }: { choix: ChoixSurTable; signaler: (id: number, absente: boolean) => void }) {
   const boite = useBoiteDeCarte(choix.carteId, String(choix.id))
+  useEffect(() => {
+    if (boite) signaler(choix.id, false)
+  }, [boite, choix.id, signaler])
+  return null
+}
+
+function PuceSurCarte({
+  choix,
+  signaler,
+}: {
+  choix: ChoixSurTable
+  signaler: (id: number, absente: boolean) => void
+}) {
+  const boite = useBoiteDeCarte(choix.carteId, String(choix.id))
+  // 600 ms de mesure avant de rabattre le choix en ligne : la carte peut encore voler.
+  useEffect(() => {
+    if (boite) return
+    const minuteur = window.setTimeout(() => signaler(choix.id, true), 600)
+    return () => window.clearTimeout(minuteur)
+  }, [boite, choix.id, signaler])
   if (!boite) return null
+  const hauteurTable = cadreDuPlateau()?.boite.h ?? Number.POSITIVE_INFINITY
+  const enBas = boite.y + boite.h + 44 > hauteurTable
   const bloque = !!choix.indisponible
   return (
     <>
@@ -201,7 +241,12 @@ function PuceSurCarte({ choix }: { choix: ChoixSurTable }) {
       <button
         type="button"
         className={`tsm-etiquette${bloque ? ' est-inactif' : ''}`}
-        style={{ left: `${boite.x + boite.w / 2}px`, top: `${boite.y + boite.h + 6}px` }}
+        style={
+          // Une carte de la MAIN touche le bas de la table : l'étiquette passe au-dessus.
+          enBas
+            ? { left: `${boite.x + boite.w / 2}px`, top: `${boite.y - 6}px`, transform: 'translate(-50%, -100%)' }
+            : { left: `${boite.x + boite.w / 2}px`, top: `${boite.y + boite.h + 6}px` }
+        }
         disabled={bloque}
         onClick={choix.choisir}
       >

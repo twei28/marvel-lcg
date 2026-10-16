@@ -546,7 +546,7 @@ export function DemandeCentrale({
   if (surLaTable) {
     const phrase = options.some((option) => option.name === 'Defense')
       ? t('Qui défend contre cette attaque ?')
-      : titreDepuisSource(demande, options, cartesParId)
+      : titreDepuisSource(demande, options, cartesParId).replace(/\s*\(\+0\)\s*$/, '')
     const posees = new Set<number>()
     const choix: ChoixSurTable[] = options.map((option) => {
       const nomBrut = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
