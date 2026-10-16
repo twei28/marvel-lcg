@@ -1709,5 +1709,14 @@
   "encounters": [],
   "max_id": "tv019"
  },
- "checksum": "c9626b31a7ec7089d5dbe1e084ea6ba8e8fa6639bb58b7796b228187ea8d216f"
+ "184. Custom (Casey Jones)": {
+  "name": "casey_jones",
+  "scenarios": [],
+  "heroes": [
+   "casey_jones"
+  ],
+  "encounters": [],
+  "max_id": "tc017"
+ },
+ "checksum": "cc6b6ca83fb5fb496134deebc0c23c5860982466303a95dbb3e5b4feec64e8b7"
 }

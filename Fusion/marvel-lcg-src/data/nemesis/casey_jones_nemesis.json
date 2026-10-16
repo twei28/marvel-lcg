@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Casey Jones Nemesis",
+    "encounters": [
+        "tc015",
+        "tc016",
+        "tc017",
+        "tc017",
+        "tc017"
+    ]
+}

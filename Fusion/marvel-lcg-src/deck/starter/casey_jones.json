@@ -1,0 +1,43 @@
+{
+    "version": "0.5.8",
+    "name": "Casey Jones",
+    "metadata": {
+        "url": "",
+        "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE (consigne utilisateur du 06/09/2026, PROCESSUS-HEROS étape 3) : le zip de Casey Jones v3 ne livre aucune decklist d'aspect. Le fichier ne contient que de l'IMPRIME : identité, 16 cartes signature (12 card_id, dont 4 en deux exemplaires), obligation, set némésis. Il reste indispensable : `catalog.heroes()` construit la liste des héros à partir de deck/starter/*.json.",
+        "collision_note": "⚠ HOMONYME : « Casey Jones » est aussi l'ALLIE de Raphael (tr002, pack raphael, trait VIGILANTE, classe Hero) : meme nom, meme unicite. Le heros tc001a/tc001b et l'allie tr002 ne peuvent donc pas etre en jeu ensemble (regle d'unicite du moteur) ; l'allie de Raphael n'est PAS dans ce deck. Aucun module du pack ne cherche par le NOM : tout passe par card_id, par le TYPE (Hero/AlterEgo) ou par l'ensemble (set « Casey Jones »). Autres noms deja au depot : aucun (Clap Back, Cross Block, Face-Off, Grand Slam, Anything Goes, Baseball Bat, Casey's Mask, Cricket Willow, Driving Iron, Hockey Stick, Persuader, Casey's Bag, Daddy Issues, The Purple Dragons, Hun, Purple Dragon Goons verifies dans data/cards.json et cards_custom.json le 16/10/2026).",
+        "numerotation_note": "Le scan « Casey's Mask » porte « 10/16 » comme « Baseball Bat » et aucune carte ne porte « 11/16 » : coquille evidente de l'auteur, la Mask est la carte 11. Les deux copies de Clap Back, Cross Block, Face-Off et Grand Slam partagent un seul card_id (tc002 a tc005) : le deck les liste deux fois."
+    },
+    "hero": [
+        "tc001a,tc001b"
+    ],
+    "hero_deck": [
+        "tc002",
+        "tc002",
+        "tc003",
+        "tc003",
+        "tc004",
+        "tc004",
+        "tc005",
+        "tc005",
+        "tc006",
+        "tc007",
+        "tc008",
+        "tc009",
+        "tc010",
+        "tc011",
+        "tc012",
+        "tc013"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "tc014"
+    ],
+    "nemesis_set": [
+        "tc015",
+        "tc016",
+        "tc017",
+        "tc017",
+        "tc017"
+    ],
+    "player_deck": []
+}

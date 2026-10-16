@@ -4074,4 +4074,40 @@ export const TEXTES_FR_FANMADE = {
     'tv018': "Garde. Ténacité.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.",
     // venus — Salvaged Scales (Treachery némésis)
     'tv019': "<b>Une fois révélée</b> : placez 2 menaces sur la manigance principale. Si Jasper Barlow est en jeu, placez une carte d'état Tenace sur le méchant et sur chaque sbire engagé avec vous.",
+    // casey_jones — * Casey Jones (Hero)
+    'tc001a': "<i>Overswing</i> — <b>Ressource</b> : défaussez une amélioration [[WEAPON]] que vous contrôlez ayant le mot-clé restreint → générez [wild][wild][wild] ressources pour un événement [[ATTACK]], [[THWART]] ou [[DEFENSE]]. <i>(Limite d'une fois par phase.)</i>",
+    // casey_jones — * Casey Jones (AlterEgo)
+    'tc001b': "<b>Mise en place</b> : cherchez l'amélioration Casey's Bag dans votre deck et votre défausse et mettez-la en jeu. <i>(Mélangez.)</i>\n<b>Réponse</b> : après que vous avez changé pour cette forme, remettez dans votre main une amélioration [[WEAPON]] de votre pile de défausse.",
+    // casey_jones — Clap Back (Event, x2)
+    'tc002': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Si une amélioration [[WEAPON]] de Casey Jones a été défaussée pour payer cette carte, désorientez un ennemi.",
+    // casey_jones — Cross Block (Event, x2)
+    'tc003': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous vous défendez contre une attaque, vous gagnez +3 DEF pour cette attaque. Ensuite, redressez Casey Jones et donnez-lui une carte d'état Tenace.",
+    // casey_jones — Face-Off (Event, x2)
+    'tc004': "<b>Action de héros</b> <i>(attaque)</i> : redressez votre héros et infligez 3 dégâts à un ennemi. Cet ennemi vous attaque.",
+    // casey_jones — Grand Slam (Event, x2)
+    'tc005': "<b><i>Exigence</i></b> ([wild]). <i>(En payant cette carte, dépensez les ressources indiquées.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi.",
+    // casey_jones — Anything Goes (Upgrade)
+    'tc006': "<b>Action de héros</b> : inclinez Anything Goes → échangez une amélioration [[WEAPON]] de Casey Jones que vous contrôlez avec une amélioration [[WEAPON]] de Casey Jones glissée sous Casey's Bag.",
+    // casey_jones — Baseball Bat (Upgrade)
+    'tc007': "Restreint.\n<b>Interruption de héros</b> : quand vous utilisez un pouvoir de base, inclinez Baseball Bat → vous gagnez +1 à ce pouvoir pour cette utilisation.",
+    // casey_jones — * Casey's Mask (Upgrade)
+    'tc008': "<b>Action de héros</b> : inclinez Casey's Mask → redressez Casey Jones.",
+    // casey_jones — Cricket Willow (Upgrade)
+    'tc009': "Restreint.\nVotre héros gagne +1 ATQ.\n<b>Réponse de héros</b> : après que vous avez attaqué un ennemi, défaussez Cricket Willow → sonnez cet ennemi.",
+    // casey_jones — Driving Iron (Upgrade)
+    'tc010': "Restreint.\n<b>Action de héros</b> : inclinez Driving Iron → infligez 1 dégât à un ennemi ou retirez 1 menace d'une manigance.",
+    // casey_jones — Hockey Stick (Upgrade)
+    'tc011': "Restreint.\n<b>Interruption de héros</b> : quand vous effectuez une attaque ou une défense de base, inclinez Hockey Stick → vous gagnez +2 à ce pouvoir pour cette utilisation.",
+    // casey_jones — Persuader (Upgrade)
+    'tc012': "Restreint.\nVotre héros gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous effectuez une attaque de base, inclinez Persuader → vous gagnez +1 ATQ pour cette attaque. Cette attaque gagne perçant.",
+    // casey_jones — * Casey's Bag (Upgrade)
+    'tc013': "Permanent.\nVous pouvez jouer les cartes glissées ici comme si elles étaient dans votre main.\n<b>Action de héros</b> : inclinez cette carte → glissez sous cette carte l'amélioration [[WEAPON]] la plus basse de votre pile de défausse.",
+    // casey_jones — Daddy Issues (Obligation)
+    'tc014': "<b><i>Donnez-la au joueur Casey Jones.</i></b>\nPassez sous forme d'alter ego. Vous ne pouvez pas changer de forme.\n<b>Action</b> : inclinez Casey Jones → retirez Daddy Issues de la partie.",
+    // casey_jones_nemesis — The Purple Dragons (SideScheme némésis)
+    'tc015': "<i>Hun et ses Purple Dragons font la loi dans ce quartier.</i>\nIncitation 1[per_hero].",
+    // casey_jones_nemesis — * Hun (Minion némésis)
+    'tc016': "Ténacité.\n<b>Réponse forcée</b> : après que Hun attaque et blesse un personnage, sonnez ce personnage.\n<i>(Sbire némésis de Casey Jones.)</i>",
+    // casey_jones_nemesis — Purple Dragon Goons (Minion némésis, x3)
+    'tc017': "Garde. Patrouille.\n<b>Une fois révélée</b> : placez une carte d'état Tenace sur le méchant.",
 };
