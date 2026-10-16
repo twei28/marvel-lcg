@@ -153,12 +153,12 @@ CAS = [
        {"en_jeu": ["ud004"], "statuts": [["ud004", "Cloaked"]]},
        main_exclusive=["ud004"] + PAIE4, jouer=["ud004"], accepter_choix=True),
     _c("ud004 Stealth Fighter : Response, apres un degat consecutif subi (il survit) il est cloake",
-       "« ... or takes consequential damage, cloak him » : Cloaked d'entree retire, il contre, subit 1 degat "
-       "consecutif et porte de nouveau Cloaked",
-       [HEROS, *_en_jeu("ud004"), "Puzzle.SetThreat('01097b', 5)"],
-       ["Puzzle.Thwart('ud004')"],
+       "« ... or takes consequential damage, cloak him » : Cloaked d'entree retire, il attaque Rhino, subit 1 "
+       "degat consecutif (PV 2, il survit) et porte de nouveau Cloaked",
+       [HEROS, *_en_jeu("ud004")],
+       ["Puzzle.Attack('ud004')"],
        {"statuts": [["ud004", "Cloaked"]], "degats": [["ud004", 1]]},
-       cibles=["01097b"], accepter_choix=True),
+       cibles=["01094"], accepter_choix=True),
     _c("ud004 Stealth Fighter : Interrupt (lecture provisoire Q-UD3), vaincu par degat consecutif -> un ami cloake",
        "« cloak a friendly character » : le seul autre ami est Spider-Man, qui porte Cloaked",
        [HEROS, *_en_jeu("ud004", 1)],
