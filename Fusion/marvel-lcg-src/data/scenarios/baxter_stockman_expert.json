@@ -14,8 +14,8 @@
     "encounter_sets": [
         "baxters_lab",
         "cyber_swarm",
-        "standard",
-        "expert"
+        "tmnt_standard",
+        "tmnt_expert"
     ],
     "modular_sets": [
         "high_speed",
