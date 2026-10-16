@@ -562,6 +562,28 @@ CAS += [
        {"menace": [["01097b", 3]], "pret": ["01001a"], "hors_jeu": ["uj037"]}, cibles=["01097b"],
        accepter_choix=True),
 ]
+CAS += [
+    # ---------------------------------------------------------------- uj039 Zebulon
+    _c("uj039 Zebulon : joue de la main avec 2 cartes restantes -> 2 compteurs scorch",
+       "« place 1 scorch counter here for each card in your hand » : paye avec 01088 (2 icones), restent 60039 x2",
+       [HEROS], [], {"compteurs": [["uj039", "scorch", 2]]},
+       main_exclusive=["uj039", "01088", "60039", "60039"], jouer=["uj039"], payer_avec=["01088"],
+       accepter_choix=True),
+    _c("uj039 Zebulon : plafond de 4 (5 cartes restantes en main)",
+       "« (to a maximum of 4) »",
+       [HEROS], [], {"compteurs": [["uj039", "scorch", 4]]},
+       main_exclusive=["uj039", "01088", "60039", "60039", "60039", "60039", "60039"], jouer=["uj039"],
+       payer_avec=["01088"], accepter_choix=True),
+    _c("uj039 Zebulon : Action, retirer 1 scorch -> 1 menace retiree",
+       "« Remove 1 scorch counter from here → remove 1 threat from a scheme » : 2 compteurs -> 1, 5 -> 4",
+       [HEROS, PRINC5, "Puzzle.PutIntoPlay('uj039', under_control=True)", "Puzzle.PlaceCounters('uj039', 'scorch', 2)"],
+       ["Puzzle.Action('uj039')"], {"compteurs": [["uj039", "scorch", 1]], "menace": [["01097b", 4]]},
+       cibles=["01097b"]),
+    _c("uj039 Zebulon : contre-cas, mis en jeu par un effet -> aucun compteur",
+       "« After you PLAY Zebulon FROM YOUR HAND »",
+       [HEROS, "Puzzle.CreateHandCards('01089', '01089')", "Puzzle.PutIntoPlay('uj039', under_control=True)"], [],
+       {"compteurs": [["uj039", "scorch", 0]]}, accepter_choix=True),
+]
 # Turtle Line : dernier pion. Le montage pose les 3 pions de Uses a l'entree en jeu ; on en retire 2 avant.
 for _cas in CAS:
     if _cas.pop("declencher_avant_rope", None):
