@@ -89,11 +89,12 @@ describe('tr001b Raph : deux Sai mises en jeu inclinées', () => {
       })
     )
 
-  it('les deux Sai sont dessinées sur l identité, couchées', () => {
-    for (const id of [11, 12]) {
+  it('les deux Sai sont dessinées en panorama 14|15 A COTE de l identité, couchées', () => {
+    // Décision du 16/10/2026 (panorama-jumelles.ts) : paire confirmée, posée à côté, pas dessous.
+    for (const [id, cote] of [[11, 'gauche'], [12, 'droite']] as const) {
       const vue = dessinee(monde(), id)
       expect(vue).toBeDefined()
-      expect(vue?.portePar).toBe(IDENTITE)
+      expect(vue?.panorama).toBe(cote)
       expect(vue?.kind).toBe('upgrade')
       expect(vue?.exhausted).toBe(true)
     }
