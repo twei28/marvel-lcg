@@ -118,7 +118,7 @@ def JoueurResponsable(by_effect: 'Effect') -> 'Player':
     """« your » / « you » sur un effet de rencontre sans joueur designe (Special de
     Headfirst, resolu par la Reponse Forcee du vilain) : le joueur qui a inflige
     les degats si c'est un joueur, sinon le premier joueur.
-    TODO-QUESTION (.planning/tmnt/bebop-questions.md, Q1) : lecture non tranchee."""
+    Tranche par l'utilisateur le 16/10/2026 (bebop-questions.md Q1) : cette lecture."""
     ini = by_effect.initiator
     if isinstance(ini, Player):
         return ini
@@ -238,8 +238,8 @@ def TempersEnrages(nom_cible: str) -> List['Ability']:
         for t in TousLesTempers(effect):
             TemperSurSaFaceRowdy(t, effect)
         # L'activation qui a declenche le retournement est celle d'un vilain
-        # desormais K.O. : lecture retenue, voir bebop-questions.md Q2.
-        # TODO-QUESTION Q2
+        # desormais K.O. : tranche par l'utilisateur le 16/10/2026 (bebop-questions.md
+        # Q2) : elle retire 1 jeton (2 en expert) au lieu d'attaquer.
         vilain = message.trigger.card.face.CastTo(Villain)   # la face COURANTE (K.O.)
         n = 2 if vilain.paper.card_id[:5] in ("tk002", "tk004") else 1
         ActivationKO(vilain, n, effect, message)

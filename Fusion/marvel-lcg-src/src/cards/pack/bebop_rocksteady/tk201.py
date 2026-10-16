@@ -2,8 +2,8 @@ from . import *
 
 # Hittin' the Town : « Discard cards from the top of the villain deck until an
 # attachment or side scheme is discarded and reveal it. »
-# TODO-QUESTION Q5 : « villain deck » lu comme le DECK RENCONTRE (le scenario n'a pas
-# de deck de vilain a defausser, et Anchovy dit « encounter deck »).
+# Tranche par l'utilisateur le 16/10/2026 (Q5) : « villain deck » = le DECK RENCONTRE
+# (le scenario n'a pas de deck de vilain a defausser, et Anchovy dit « encounter deck »).
 
 def GetAbilities() -> Sequence['Ability']:
 

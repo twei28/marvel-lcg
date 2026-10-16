@@ -7,6 +7,9 @@ def GetAbilities() -> Sequence['Ability']:
     # « Double Trouble -- During step two of the villain phase, both villains
     # activate against each player. »  Hook moteur `GettingVillainsToActivate`
     # (enemies.py) : tant que cette face est en jeu, les deux vilains s'activent.
+    # L'ORDRE : le premier joueur choisit, pour chaque joueur, lequel s'active
+    # d'abord (`Enemies.OrdreDesVilainsActives` ; tranche par l'utilisateur le
+    # 16/10/2026, bebop-questions.md Q8, regle des effets simultanes).
     def les_deux_activent(effect: 'Effect', message: 'Message.GettingVillainsToActivate') -> None:
         vilains = VilainsEnJeu(effect)
         if len(vilains) >= 2:

@@ -15,7 +15,8 @@ def GetAbilities() -> Sequence['Ability']:
 
         def indirects(targets):
             # « Deal 2 indirect damage to your hero » : au HEROS seulement, en degats
-            # indirects (TODO-QUESTION Q3, bebop-questions.md).
+            # indirects (tranche par l'utilisateur le 16/10/2026, Q3 : pas de repartition sur
+            # les allies).
             identite.TakeDamage(this, DamageProperty(damage=2, is_indirect_damage=True), effect)
 
         def etourdir(targets):

@@ -411,6 +411,11 @@ const TYPES_ZONE_FR: Record<string, string> = {
 }
 
 const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  // Bebop & Rocksteady (`tk006a`, enemies.py OrdreDesVilainsActives) : le premier
+  // joueur choisit, pour chaque joueur, le vilain qui s'active d'abord (Q8, 16/10/2026).
+  [/^Choose which villain activates first against (.+)$/,
+    (m) => `Choisis le méchant qui s’active d’abord contre ${m[1]}`],
+  [/^Choose Bebop or Rocksteady$/, () => 'Choisis Bebop ou Rocksteady'],
   // Pack TMNT Venus (`venus/__init__.py`, ProposerRetraitDragage) : retrait facultatif de compteurs de dragage.
   [/^Remove (\d+) dredge counters to draw (\d+) cards$/,
     (m) => `Retirer ${m[1]} compteurs de dragage pour piocher ${m[2]} cartes`],

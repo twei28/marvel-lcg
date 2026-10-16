@@ -20,7 +20,8 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityFactory.ForChoiceAbility("Discard a friendly LOCATION", defausser,
                                             condition=bool(lieux)
                                             ).SetTarget(Support, trait="LOCATION"),
-            # « Stun your hero » : la forme HEROS seulement (TODO-QUESTION Q4).
+            # « Stun your hero » : la forme HEROS seulement (tranche par l'utilisateur le
+            # 16/10/2026, Q4).
             AbilityFactory.ForChoiceAbility("Stun your hero", etourdir,
                                             condition=joueur.IsHero()),
         )

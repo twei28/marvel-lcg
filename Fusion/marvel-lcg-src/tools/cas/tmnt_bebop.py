@@ -253,6 +253,39 @@ CAS += [
        {"degats_identite": 5}, heros2="black_panther"),
 ]
 
+Q8 = "Choose which villain activates first against"
+CAS += [
+    # ===================================================================== Q8 : ordre des deux activations (16/10/2026)
+    _c("tk006a Dunderheads (Q8) : le premier joueur choisit ROCKSTEADY d'abord -> Rocksteady s'active avant Bebop",
+       "Q8 tranchee le 16/10/2026 : « both villains activate against each player », le premier joueur choisit l'ordre (effets simultanes)",
+       [HEROS, "Puzzle.Counter('tk007a', 'knucklehead', 2)", "Puzzle.Counter('tk008a', 'knucklehead', 1)", "Puzzle.Exhaust('01001a')"],
+       ["Puzzle.RunVillainPhase()"],
+       {"ordre_activations": [["Rocksteady", "Spider-Man"], ["Bebop", "Spider-Man"]], "degats_identite": 6},
+       cibles=["tk003a"], questions_presentes=[Q8 + " Spider-Man"]),
+    _c("tk006a Dunderheads (Q8) : le premier joueur choisit BEBOP d'abord -> Bebop s'active avant Rocksteady",
+       "Q8 : meme position, l'autre reponse",
+       [HEROS, "Puzzle.Counter('tk007a', 'knucklehead', 2)", "Puzzle.Counter('tk008a', 'knucklehead', 1)", "Puzzle.Exhaust('01001a')"],
+       ["Puzzle.RunVillainPhase()"],
+       {"ordre_activations": [["Bebop", "Spider-Man"], ["Rocksteady", "Spider-Man"]], "degats_identite": 6},
+       cibles=["tk001a"], questions_presentes=[Q8 + " Spider-Man"]),
+    _c("tk006a Dunderheads (Q8) : a DEUX joueurs, le choix est pose pour CHAQUE joueur (Rocksteady d'abord a chaque fois)",
+       "Q8 : « against each player » -> une question par joueur, posee au premier joueur",
+       [HEROS, "Puzzle.Counter('tk007a', 'knucklehead', 2)", "Puzzle.Counter('tk008a', 'knucklehead', 1)", "Puzzle.Exhaust('01001a')"],
+       ["Puzzle.RunVillainPhase()"],
+       {"ordre_activations": [["Rocksteady", "Spider-Man"], ["Bebop", "Spider-Man"],
+                              # Black Panther demarre en alter ego : les vilains manigancent contre lui.
+                              ["Rocksteady", "Demolition Crew"], ["Bebop", "Demolition Crew"]]},
+       cibles=["tk003a"], heros2="black_panther",
+       # Black Panther est en alter ego : son identite s'appelle T'Challa.
+       questions_presentes=[Q8 + " Spider-Man", Q8 + " T'Challa"]),
+    _c("tk006a Dunderheads (Q8) : un SEUL vilain restant (Feral) -> aucune question d'ordre, Rocksteady s'active seul",
+       "Q8 : apres le retournement Feral il ne reste qu'un vilain, rien a ordonner",
+       [HEROS, "Puzzle.Damage('tk001a', 15)", "Puzzle.Counter('tk008a', 'knucklehead', 1)", "Puzzle.Exhaust('01001a')"],
+       ["Puzzle.RunVillainPhase()"],
+       {"ordre_activations": [["Rocksteady", "Spider-Man"]], "absents": ["tk001a"]},
+       questions_absentes=[Q8]),
+]
+
 CAS += [
     # ===================================================================== accessoires attaches (Shutter Shades, Aviator Cap, Roberta, Juniper)
     _c("tk009 Shutter Shades : revelee, Bebop ALERT -> s'attache a Bebop, Bebop STEADY, 1 compteur sur Hog Wild",
@@ -670,6 +703,22 @@ def bb_etat(monde, aides):
             soucis.append(f"{cid} n'est pas en jeu"); continue
         if not f.IsSteady():
             soucis.append(f"{cid} n'est pas Steady")
+    if "ordre_activations" in attendu:
+        # [[auteur, cible], ...] : les activations RESOLUES de Bebop / Rocksteady, dans
+        # l'ordre du journal de la phase du mechant (sous-chaines des noms).
+        vus = []
+        for fait in monde.stat.faits_mechant:
+            auteur = str(fait.get("auteur", ""))
+            if fait.get("etat") not in (None, "resolu"):
+                continue
+            if "Bebop" not in auteur and "Rocksteady" not in auteur:
+                continue
+            vus.append([auteur, str(fait.get("genre", "")), str(fait.get("cible", ""))])
+        voulu = attendu["ordre_activations"]
+        conforme = len(vus) == len(voulu) and all(
+            a in v[0] and c in v[2] for (a, c), v in zip(voulu, vus))
+        if not conforme:
+            soucis.append(f"ordre des activations = {vus} (attendu {voulu})")
     if "gagnee" in attendu:
         fini = bool(getattr(monde, "is_game_over", False))
         gagne = fini and bool(monde.game_over.players_won)

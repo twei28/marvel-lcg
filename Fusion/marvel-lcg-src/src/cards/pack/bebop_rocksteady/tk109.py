@@ -41,7 +41,7 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroResponse, "This", apres_retrait,
             # « After YOU remove threat » : l'identite du controleur (pas ses allies), ou la
             # carte elle-meme quand c'est SA Reponse (resolue par son controleur) qui retire :
-            # la Reponse se redeclenche alors (TODO-QUESTION Q6, bebop-questions.md).
+            # la Reponse se redeclenche alors (tranche par l'utilisateur le 16/10/2026, Q6).
             conditions=[lambda effect, message: retire_par_vous(effect, message)],
         ).SetCostFunc(CostFunc.Discard("YourHandCards", range=(1, 1))),
         AbilityFactory.WhenSchemeBeDefeated(AbilityType.WhenDefeated, "This", vaincue),
