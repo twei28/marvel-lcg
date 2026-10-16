@@ -35,7 +35,7 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def hors_limite(effect: 'Effect', message: 'Message.WhenCardSetup') -> None:
+    def hors_limite(effect: 'Effect', message: 'Message.WhenCardEnterPlay') -> None:
         effect.this.not_count_player_side_scheme_limit = True
 
     def retirer_une_menace(effect: 'Effect', message: 'Message.AfterPhaseEnd') -> None:
@@ -44,7 +44,11 @@ def GetAbilities() -> Sequence['Ability']:
         this.RemoveThreatFromSchemes([this], 1, effect)
 
     def le_proprietaire(effect: 'Effect', message: 'Message.WhenSchemeBeDefeated') -> bool:
-        return effect.GetInitiator() == effect.this.GetOwnerPlayer()
+        # `defeating_player` = le joueur qui vainc la manigance (le controleur de la carte qui la
+        # vainc, sinon l'initiateur de l'effet) ; `effect.GetInitiator()` serait toujours le
+        # proprietaire de tm009 (l'effet est le SIEN) et laisserait piocher quand un autre la vainc.
+        return message.defeating_player is not None and \
+            message.defeating_player == effect.this.GetOwnerPlayer()
 
     def piocher_trois(effect: 'Effect', message: 'Message.WhenSchemeBeDefeated') -> None:
         this = effect.this.CastTo(PlayerSideScheme)
@@ -56,7 +60,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.CanPlayThisSchemeCard(),
-        AbilityFactory.WhenCardSetup("This", hors_limite),
+        AbilityFactory.WhenCardEnterPlay(AbilityType.Temp0, "This", hors_limite),
         AbilityFactory.AfterPhaseEnd(
             AbilityType.ForcedResponse,
             "Player",
