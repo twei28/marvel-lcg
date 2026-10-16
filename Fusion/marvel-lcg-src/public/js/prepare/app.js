@@ -1810,7 +1810,7 @@ function demanderLAffichage({ rouvert = false } = {}) {
                 el("div", { class: "af-choix-grille" },
                     carte("normal", t("Normal"), t("Couleurs du héros, animations.")),
                     carte("sobre", t("Sobre"), t("Fond gris, sans couleurs ni animations, plus reposant.")),
-                    carte("epure", t("Épuré"), t("Gris, sans décor ni bandeaux, style Windows 98.")),
+                    carte("epure", t("Épuré"), t("Gris clair, sans décor ni bandeaux, boutons plats et jaune du jeu.")),
                 ),
                 el("div", { class: "af-teinte" },
                     el("b", {}, t("Couleur du fond")),

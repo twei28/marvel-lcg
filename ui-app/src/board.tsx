@@ -1257,7 +1257,7 @@ function PopoverSauvegardes() {
         aria-expanded={ouvert}
         title={t('Emplacements de sauvegarde, chargement, export')}
       >
-        <span aria-hidden="true">💾</span> {t('Sauver')}
+        <span className="ico ico-sauver" aria-hidden="true">💾</span> {t('Sauver')}
       </button>
       {ouvert ? (
         <div className="popover-sauvegardes" role="menu" style={transformDecalage(decalage)}>
@@ -4887,7 +4887,7 @@ export function PagePartie({
               onClick={() => setMenuOuvert(true)}
               title={t('Revenir au menu principal')}
             >
-              <span aria-hidden="true">⌂</span> {t('Menu')}
+              <span className="ico ico-menu" aria-hidden="true">⌂</span> {t('Menu')}
             </button>
             <BoutonVoirLaTable />
             <button
@@ -4898,7 +4898,7 @@ export function PagePartie({
             >
               {/* « Annuler » se traduit ici « Undo » (le dictionnaire réserve
                   « Annuler » -> « Cancel » pour l'assistant d'action). */}
-              <span aria-hidden="true">↶</span> {langueActuelle() === 'fr' ? 'Annuler' : 'Undo'}
+              <span className="ico ico-annuler" aria-hidden="true">↶</span> {langueActuelle() === 'fr' ? 'Annuler' : 'Undo'}
             </button>
             <PopoverSauvegardes />
             {/* Signaler un bug : le journal de toute la partie part avec la
@@ -5014,7 +5014,7 @@ export function PagePartie({
               aria-label={t('Réglages')}
               title={t('Réglages')}
             >
-              <span aria-hidden="true">{'\u2699\ufe0f'}</span>
+              <span className="ico ico-reglages" aria-hidden="true">{'\u2699\ufe0f'}</span>
             </button>
 
             {/* Fin du tour : le seul bouton colore, toujours a droite.
@@ -5036,7 +5036,7 @@ export function PagePartie({
                       : t('Fin du tour possible quand le moteur te rend la main')
                 }
               >
-                <span aria-hidden="true">▷</span> {t('Fin du tour')}
+                <span className="ico ico-fin-du-tour" aria-hidden="true">▷</span> {t('Fin du tour')}
                 {finDeTourSuggeree ? ' ✓' : ''}
             </button>
             )}

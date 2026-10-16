@@ -1,9 +1,14 @@
-/* L'AFFICHAGE EPURE SUR LES PAGES HORS PLATEAU (15/10/2026).
+/* L'AFFICHAGE EPURE SUR LES PAGES HORS PLATEAU (15/10/2026, refonte 16/10/2026).
 
-   Jumeau de ui-app/styles/affichage-epure.css (le plateau). Demande de
-   l'utilisateur : un style Windows 98 « pour tout ce qui est selection des
-   persos et tout » : cadres gris en relief, barre de titre bleu marine uni,
-   boutons biseautes, aucun decor.
+   Jumeau de ui-app/styles/affichage-epure.css (le plateau) : memes jetons
+   `--ep-*`, a garder identiques. Le style Windows 98 du premier jet n'etait
+   qu'une etape ; le mode garde sa sobriete (aucun decor, gris neutre, theme
+   clair) et change d'habillage, pour « tout ce qui est selection des persos,
+   options, editeur, campagnes, salon » :
+     - fond gris clair, panneaux presque blancs, filets fins, coins arrondis ;
+     - boutons plats, le principal en JAUNE du jeu ;
+     - les fenetres et les barres de titre en jaune, typo des titres du jeu
+       (Bangers), leger biseau ; le reste du texte en police systeme.
 
    ⚠ L'EPURE EST UN SOBRE EN PLUS DEPOUILLE : `data-affichage` vaut `sobre` pour
    les deux, `data-epure` ajoute ce qui suit. affichage-sobre-pages.css joue
@@ -12,22 +17,63 @@
    derniere feuille gagne. Normal et Sobre ne voient rien de ceci. */
 
 html[data-epure] {
-  --w98-face: #c0c0c0;
-  --w98-clair: #ffffff;
-  --w98-ombre: #808080;
-  --w98-noir: #000000;
-  --w98-titre: #000080;
-  --w98-police: Tahoma, 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
-  --w98-relief: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
-  --w98-creux: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #000;
+  --ep-fond: #e8e9ec;
+  --ep-surface: #f8f8f9;
+  --ep-champ: #ffffff;
+  --ep-bord: #c6cad1;
+  --ep-bord-fort: #8f95a0;
+  --ep-texte: #1b1e24;
+  --ep-doux: #5d636e;
+  --ep-jaune: #f4c20d;
+  --ep-jaune-vif: #ffd43b;
+  --ep-police: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ep-titres: 'Bangers', Impact, 'Arial Black', sans-serif;
+  --ep-relief: 0 0 0 1px var(--ep-bord), 0 1px 2px rgba(20, 24, 32, 0.1);
+  --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort), 0 2px 5px rgba(20, 24, 32, 0.16);
+  --ep-creux: inset 0 0 0 1px var(--ep-bord), inset 0 1px 2px rgba(20, 24, 32, 0.08);
+  --ep-biseau: inset 1px 1px 0 rgba(255, 255, 255, 0.95), inset -1px -1px 0 rgba(20, 24, 32, 0.16),
+    0 0 0 1px #aab0ba, 0 14px 34px rgba(10, 14, 22, 0.32);
+
+  /* Les variables des pages (fonds, textes, filets), redonnees en CLAIR : les
+     feuilles des pages les lisent partout (editeur de deck, campagnes, salon,
+     galerie...), le sobre les avait mises en gris sombre. */
+  --ink: #e8e9ec;
+  --ink2: #eceef1;
+  --steel: #f8f8f9;
+  --steel2: #ffffff;
+  --steel3: #e4e6ea;
+  --line: #c6cad1;
+  --soft: #e4e6ea;
+  --fond: #e8e9ec;
+  --panneau: #f8f8f9;
+  --carte: #ffffff;
+  --hf-fond: #e8e9ec;
+  --hf-panneau: #f8f8f9;
+  --w-bg-0: #e8e9ec;
+  --w-bg-1: #f8f8f9;
+  --w-panel: #f8f8f9;
+  --w-panel-2: #ffffff;
+  --w-line: #c6cad1;
+  --w-line-soft: #e4e6ea;
+  --txt: #1b1e24;
+  --dim: #5d636e;
+  --mute: #7b818c;
+  --lien: #1a56c4;
+  --agir: #a67c00;
+  --agir-halo: rgba(166, 124, 0, 0.25);
+  --affiche-jaune: #a67c00;
+  --gold: #a67c00;
+  --or: #a67c00;
+  --hf-or: #a67c00;
+  --nous-halo: rgba(20, 24, 32, 0.12);
 }
 
 /* --- 1. Le fond de la page et la police -------------------------------------- */
 html[data-epure],
 html[data-epure] body {
-  background: var(--w98-face);
-  color: #000000;
-  font-family: var(--w98-police);
+  background: var(--ep-fond);
+  color: var(--ep-texte);
+  font-family: var(--ep-police);
 }
 
 /* --- 2. Ce qu'on retire ------------------------------------------------------ */
@@ -41,11 +87,11 @@ html[data-epure] .acc-aide {
    restent TOUJOURS visibles : credits et mention d'auteur, jamais decoratifs. */
 html[data-epure] .acc-merci,
 html[data-epure] footer.mention-legale {
-  color: #000000;
+  color: var(--ep-doux);
 }
 html[data-epure] .acc-merci a,
 html[data-epure] footer.mention-legale a {
-  color: #0000ee;
+  color: #1a56c4;
 }
 
 /* --- 3. Les titres : plus de lettres geantes inclinees ----------------------- */
@@ -53,7 +99,7 @@ html[data-epure] h1.affiche,
 html[data-epure] .recitatif,
 html[data-epure] .tb-nomg,
 html[data-epure] .mvl {
-  font-family: var(--w98-police);
+  font-family: var(--ep-police);
   font-style: normal;
   font-weight: 700;
   letter-spacing: 0;
@@ -64,27 +110,31 @@ html[data-epure] .mvl {
 }
 
 html[data-epure] h1.affiche {
-  font-size: 30px;
+  font-size: 32px;
   line-height: 1.1;
-  color: #000000;
+  color: var(--ep-texte);
 }
 
 html[data-epure] .tb-nomg {
   font-size: 24px;
   line-height: 1.2;
-  color: #000000;
+  color: var(--ep-texte);
 }
 
+/* Le bandeau « recitatif » de l'accueil : une pastille jaune, typo du jeu. */
 html[data-epure] .acc-titre .recitatif {
-  background: var(--w98-titre);
-  color: #ffffff;
+  background: var(--ep-jaune);
+  color: #14161a;
   box-shadow: none;
-  border-radius: 0;
-  font-size: 12px;
-  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  font-size: 16px;
+  padding: 3px 10px;
 }
 
-/* --- 4. Les boutons : gris en relief, texte noir ----------------------------- */
+/* --- 4. Les boutons : plats, arrondis ---------------------------------------- */
 html[data-epure] .btn,
 html[data-epure] .btn.ghost,
 html[data-epure] .btn.primary,
@@ -98,15 +148,15 @@ html[data-epure] .tb-mode,
 html[data-epure] .pb-bouton,
 html[data-epure] .pb-fermer,
 html[data-epure] .pd-fermer {
-  background: var(--w98-face);
-  color: #000000;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
   clip-path: none;
-  font-family: var(--w98-police);
+  font-family: var(--ep-police);
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
   text-shadow: none;
@@ -122,86 +172,108 @@ html[data-epure] .tampon * {
   text-shadow: none;
 }
 
+html[data-epure] .btn:hover:not(:disabled),
+html[data-epure] .acc-mode:hover,
+html[data-epure] .pb-bouton:hover {
+  box-shadow: var(--ep-relief-survol);
+}
+
 html[data-epure] .btn:active,
 html[data-epure] .acc-mode:active,
 html[data-epure] .acc-nombre:active,
 html[data-epure] .pstep.active,
 html[data-epure] .pb-bouton:active {
-  box-shadow: var(--w98-creux);
+  background: #eceef1;
+  box-shadow: var(--ep-creux);
 }
 
-/* Le bouton par defaut (« Continuer ») : cadre noir autour. */
+/* Le bouton principal (« Continuer ») : le jaune du jeu. */
 html[data-epure] .btn.primary {
-  outline: 1px solid #000000;
+  background: var(--ep-jaune);
+  color: #14161a;
+  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
   font-weight: 700;
+}
+html[data-epure] .btn.primary:hover:not(:disabled) {
+  background: var(--ep-jaune-vif);
 }
 
 html[data-epure] .btn:disabled,
 html[data-epure] .btn.primary:disabled {
-  color: var(--w98-ombre);
-  text-shadow: 1px 1px #ffffff;
-  outline: 0;
+  background: var(--ep-surface);
+  color: #9aa0aa;
+  box-shadow: 0 0 0 1px #dcdfe4;
 }
 
 html[data-epure] .acc-mode .mvl {
-  color: #000000;
-  font-size: 14px;
+  color: var(--ep-texte);
+  font-size: 15px;
 }
 
 html[data-epure] .acc-copy {
-  color: #000000;
+  color: var(--ep-doux);
 }
 
-/* --- 5. Les barres du haut et du bas : barre d'outils Win 98 ----------------- */
+/* --- 5. Les barres du haut et du bas ----------------------------------------- */
 html[data-epure] header.progress,
 html[data-epure] footer.nav {
-  background: var(--w98-face);
-  color: #000000;
+  background: var(--ep-surface);
+  color: var(--ep-texte);
   border: 0;
-  box-shadow: var(--w98-relief);
+  box-shadow: 0 0 0 1px var(--ep-bord);
   backdrop-filter: none;
-  font-family: var(--w98-police);
+  font-family: var(--ep-police);
 }
 
 html[data-epure] footer.nav .nav-status,
 html[data-epure] header.progress .plabel,
 html[data-epure] header.progress .pnum {
-  color: #000000;
-  font-family: var(--w98-police);
+  color: var(--ep-texte);
+  font-family: var(--ep-police);
   letter-spacing: 0;
   text-transform: none;
 }
 
-/* --- 6. Les fenetres : cadre en relief, barre de titre bleu marine ----------- */
+/* --- 6. Les fenetres : filet, leger biseau, barre de titre jaune ------------- */
 html[data-epure] .pb-panneau,
 html[data-epure] .pd-panneau,
-html[data-epure] .deck-modal-panel,
-html[data-epure] .tb-droite {
-  background: var(--w98-face);
-  color: #000000;
+html[data-epure] .deck-modal-panel {
+  background: var(--ep-surface);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief), 4px 4px 0 rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  box-shadow: var(--ep-biseau);
   backdrop-filter: none;
-  font-family: var(--w98-police);
+  font-family: var(--ep-police);
+  overflow: hidden;
 }
 
+/* La grande fenetre de selection (heros, decks...) : un panneau a plat. */
 html[data-epure] .tb-droite {
-  box-shadow: var(--w98-relief);
+  background: var(--ep-surface);
+  color: var(--ep-texte);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
+  backdrop-filter: none;
+  font-family: var(--ep-police);
+  overflow: hidden;
 }
 
 html[data-epure] .pb-titre,
 html[data-epure] .pd-titre,
 html[data-epure] .deck-modal-panel .dm-head,
 html[data-epure] .tb-entete {
-  background: var(--w98-titre);
-  color: #ffffff;
-  font-family: var(--w98-police);
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0;
+  background: var(--ep-jaune);
+  color: #14161a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(20, 24, 32, 0.28);
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 0.05em;
   text-transform: none;
-  padding: 3px 8px;
+  padding: 4px 14px;
   border-radius: 0;
 }
 
@@ -209,16 +281,17 @@ html[data-epure] .pb-titre *,
 html[data-epure] .pd-titre *,
 html[data-epure] .deck-modal-panel .dm-head *,
 html[data-epure] .tb-entete * {
-  color: #ffffff;
-  font-family: var(--w98-police);
-  letter-spacing: 0;
+  color: #14161a;
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.05em;
 }
 
 html[data-epure] .pb-corps,
 html[data-epure] .pd-corps,
 html[data-epure] .pb-corps *,
 html[data-epure] .pd-corps *:not(a) {
-  color: #000000;
+  color: var(--ep-texte);
 }
 
 /* --- 7. Les champs : creux blanc --------------------------------------------- */
@@ -227,40 +300,49 @@ html[data-epure] select,
 html[data-epure] textarea,
 html[data-epure] .search,
 html[data-epure] .sel {
-  background: #ffffff;
-  color: #000000;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-creux);
-  font-family: var(--w98-police);
+  border-radius: 8px;
+  box-shadow: var(--ep-creux);
+  font-family: var(--ep-police);
+}
+html[data-epure] input:focus,
+html[data-epure] select:focus,
+html[data-epure] textarea:focus {
+  outline: 2px solid var(--ep-jaune);
+  outline-offset: 0;
 }
 
 /* --- 8. Les portraits de heros : cadre plat, aucune lueur -------------------- */
 html[data-epure] .tb-port,
 html[data-epure] .tb-port .portrait,
 html[data-epure] .tb-siege {
-  border-radius: 0;
+  border-radius: 8px;
   clip-path: none;
   box-shadow: none;
   filter: none;
 }
 
 html[data-epure] .tb-port {
-  background: var(--w98-face);
-  box-shadow: var(--w98-relief);
+  background: var(--ep-champ);
+  box-shadow: var(--ep-relief);
+}
+html[data-epure] .tb-port:hover {
+  box-shadow: var(--ep-relief-survol);
 }
 
 html[data-epure] .tb-port.choisi,
 html[data-epure] .tb-port.on,
 html[data-epure] .tb-siege.actif {
-  box-shadow: var(--w98-creux);
-  outline: 2px solid var(--w98-titre);
+  box-shadow: 0 0 0 3px var(--ep-jaune), 0 2px 6px rgba(20, 24, 32, 0.2);
+  outline: 0;
 }
 
 html[data-epure] .tb-port-nom {
-  background: var(--w98-face);
-  color: #000000;
-  font-family: var(--w98-police);
+  background: var(--ep-surface);
+  color: var(--ep-texte);
+  font-family: var(--ep-police);
   font-style: normal;
   letter-spacing: 0;
   text-transform: none;
@@ -269,47 +351,56 @@ html[data-epure] .tb-port-nom {
 html[data-epure] .tb-equipe-k,
 html[data-epure] .tb-compte,
 html[data-epure] .tb-siege-nom {
-  color: #000000;
-  font-family: var(--w98-police);
+  color: var(--ep-texte);
+  font-family: var(--ep-police);
   letter-spacing: 0;
 }
 
 /* --- 9. Retouches apres capture ---------------------------------------------- */
-/* Le panneau de gauche (« Siege 1 / Choisis un heros ») : un panneau gris. */
+/* Le panneau de gauche (« Siege 1 / Choisis un heros ») : un panneau a plat. */
 html[data-epure] .tb-scene {
-  background: var(--w98-face);
-  color: #000000;
-  box-shadow: var(--w98-relief);
+  background: var(--ep-surface);
+  color: var(--ep-texte);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
 }
 
 html[data-epure] .tb-scene .tb-nomg,
 html[data-epure] .tb-scene * {
-  color: #000000;
+  color: var(--ep-texte);
   text-shadow: none;
 }
 
-/* Le mode dans la barre de titre (« Solo · 1 heros ») : du texte blanc, sans bouton. */
+/* Le mode dans la barre de titre (« Solo · 1 heros ») : du texte sombre, sans bouton. */
 html[data-epure] .tb-entete .tb-mode {
   background: transparent;
   box-shadow: none;
-  color: #ffffff;
+  color: #14161a;
+  font-family: var(--ep-police);
+  font-weight: 600;
+  font-size: 13px;
 }
 
 html[data-epure] .tb-equipe-k,
 html[data-epure] .tb-compte {
   opacity: 1;
-  color: #000000;
+  color: var(--ep-doux);
 }
 
+/* Le numero d'etape : une pastille jaune. */
 html[data-epure] .pnum {
-  background: var(--w98-titre);
-  color: #ffffff;
-  border-radius: 0;
+  background: var(--ep-jaune);
+  color: #14161a;
+  border-radius: 50%;
   box-shadow: none;
 }
 
 html[data-epure] header.progress .pstep .pnum {
-  color: #ffffff;
+  color: #14161a;
+}
+
+html[data-epure] header.progress .pstep.active {
+  box-shadow: 0 0 0 2px var(--ep-jaune);
 }
 
 /* --- 10. Editeur de deck, campagnes, salon ----------------------------------- */
@@ -323,14 +414,14 @@ html[data-epure] .cmp-entete,
 html[data-epure] .cmp-carte,
 html[data-epure] .salon-b,
 html[data-epure] .est-erreur {
-  background: var(--w98-face);
-  color: #000000;
+  background: var(--ep-surface);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
   clip-path: none;
   backdrop-filter: none;
-  font-family: var(--w98-police);
+  font-family: var(--ep-police);
 }
 
 html[data-epure] .cmp-carte *,
@@ -338,7 +429,7 @@ html[data-epure] .db-deck-col *,
 html[data-epure] .db-filtres-col *,
 html[data-epure] .db-modale *,
 html[data-epure] .db-info * {
-  color: #000000;
+  color: var(--ep-texte);
   text-shadow: none;
 }
 
@@ -347,20 +438,21 @@ html[data-epure] .db-tri,
 html[data-epure] .db-recherche-zone,
 html[data-epure] button.btn.primary,
 html[data-epure] .cmp-carte-suppr {
-  background: var(--w98-face);
-  color: #000000;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
 }
 
 html[data-epure] .db-recherche-zone {
-  background: #ffffff;
-  box-shadow: var(--w98-creux);
+  background: var(--ep-champ);
+  box-shadow: var(--ep-creux);
 }
 
 html[data-epure] .cmp-carte:hover {
   transform: none;
+  box-shadow: var(--ep-relief-survol);
 }
 
 /* Les panneaux qui portent une illustration en degrade (salon, etape vide). */
@@ -385,171 +477,268 @@ html[data-epure] .db-barre,
 html[data-epure] .cmp-entete a,
 html[data-epure] .cmp-entete span,
 html[data-epure] header.progress .brand-back {
-  color: #000000;
+  color: var(--ep-texte);
   text-shadow: none;
   letter-spacing: 0;
 }
 
 html[data-epure] .db-ico {
-  background: var(--w98-face);
-  color: #000000;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
 }
 
 html[data-epure] body .btn.primary,
 html[data-epure] body .btn.primary:hover {
-  background: var(--w98-face);
-  color: #000000;
-  box-shadow: var(--w98-relief);
+  background: var(--ep-jaune);
+  color: #14161a;
+  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
 }
 
 html[data-epure] .db-entete .db-titre,
 html[data-epure] .db-entete .db-heros,
 html[data-epure] .db-entete .db-heros-aspects {
-  color: #000000;
+  color: var(--ep-texte);
   text-shadow: none;
   letter-spacing: 0;
 }
 
 html[data-epure] .db-rail button,
 html[data-epure] .db-rail a {
-  background: var(--w98-face);
-  color: #000000;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
 }
 
 html[data-epure] .db-rail button *,
 html[data-epure] .db-rail a * {
-  color: #000000;
+  color: var(--ep-texte);
 }
 
-/* --- 12. Un seul gris : le gris clair de Windows (15/10/2026) ----------------
-   Plus aucun fond sombre : page, panneaux, colonnes, barres, tout est #c0c0c0.
-   Seuls les champs de saisie restent blancs (creux), comme sous Windows 98. */
+/* --- 12. Un seul fond : le gris clair, partout ------------------------------- */
 html[data-epure] .layout,
 html[data-epure] .stage,
 html[data-epure] .step,
-html[data-epure] .tb-scene,
-html[data-epure] .tb-droite,
 html[data-epure] .db-page,
 html[data-epure] .db-body,
-html[data-epure] .db-col,
 html[data-epure] .db-centre,
-html[data-epure] .db-rail,
 html[data-epure] .db-barre,
-html[data-epure] .db-partir,
-html[data-epure] .db-nom,
 html[data-epure] .db-onglets,
 html[data-epure] .db-apercu-zone,
+html[data-epure] footer.mention-legale {
+  background: var(--ep-fond);
+  background-image: none;
+  color: var(--ep-texte);
+}
+
+html[data-epure] .db-col,
 html[data-epure] .cmp-entete,
 html[data-epure] .cmp-carte,
 html[data-epure] .salon-b,
-html[data-epure] .est-erreur,
-html[data-epure] footer.mention-legale {
-  background: var(--w98-face);
+html[data-epure] .est-erreur {
+  background: var(--ep-surface);
   background-image: none;
-  color: #000000;
+  color: var(--ep-texte);
 }
 
 html[data-epure] .db-barre button,
-html[data-epure] .db-partir,
 html[data-epure] .db-nom + button,
 html[data-epure] .db-recherche button,
 html[data-epure] .db-recherche-zone ~ button,
 html[data-epure] .db-onglets button,
 html[data-epure] .db-info button {
-  background: var(--w98-face);
-  color: #000000;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
 }
 
 html[data-epure] .db-nom,
 html[data-epure] .db-partir {
-  background: #ffffff;
-  box-shadow: var(--w98-creux);
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--ep-creux);
 }
 
 html[data-epure] .acc-merci a,
 html[data-epure] footer.mention-legale a {
-  color: #0000ee;
+  color: #1a56c4;
 }
 
 /* --- 13. Derniers fonds sombres (campagnes, salon, en-tetes) ------------------
    Ces blocs portent des regles de page plus specifiques : `!important` ici, et
-   ici seulement, pour que le gris clair de Windows soit le meme partout. */
+   ici seulement, pour que le fond soit le meme partout. */
 html[data-epure],
 html[data-epure] body {
-  background: var(--w98-face) !important;
+  background: var(--ep-fond) !important;
   background-image: none !important;
 }
 
 html[data-epure] .brand-back,
-html[data-epure] p.est-erreur,
+html[data-epure] p.est-erreur {
+  background: var(--ep-champ) !important;
+  color: var(--ep-texte) !important;
+  box-shadow: var(--ep-relief);
+  border-radius: 8px;
+}
+
 html[data-epure] button.btn.primary,
 html[data-epure] button.btn.primary:hover {
-  background: var(--w98-face) !important;
-  color: #000000 !important;
-  box-shadow: var(--w98-relief);
+  background: var(--ep-jaune) !important;
+  color: #14161a !important;
+  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
 }
 
 html[data-epure] .tb-entete .tb-compte,
 html[data-epure] .tb-entete b {
-  color: #ffffff !important;
+  color: #14161a !important;
 }
 
 html[data-epure] .tb-siege,
 html[data-epure] .tb-siege .tb-siege-nom {
-  background: var(--w98-face) !important;
-  color: #000000 !important;
+  background: var(--ep-champ) !important;
+  color: var(--ep-texte) !important;
 }
 
 html[data-epure] h1,
 html[data-epure] h2,
 html[data-epure] main > header,
 html[data-epure] main h1 {
-  color: #000000;
+  color: var(--ep-texte);
   text-shadow: none;
 }
 
 html[data-epure] header.progress .pstep .pnum {
-  background: var(--w98-titre) !important;
-  color: #ffffff !important;
+  background: var(--ep-jaune) !important;
+  color: #14161a !important;
 }
 
-/* Fenêtre « Choisis ton affichage » / Options : cartes en gris Windows,
-   aperçu de la teinte masqué (la teinte ne joue pas en épuré). */
+/* Fenetre « Choisis ton affichage » / Options : cartes claires, le choix actif
+   cerne de jaune, apercu de la teinte masque (la teinte ne joue pas en epure). */
 html[data-epure] .affichage-modal .af-choix {
-  background: var(--w98-face) !important;
-  color: #000000 !important;
+  background: var(--ep-champ) !important;
+  color: var(--ep-texte) !important;
   border: 0 !important;
-  box-shadow: var(--w98-relief) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--ep-relief) !important;
 }
 html[data-epure] .affichage-modal .af-choix.on {
-  box-shadow: inset 0 0 0 2px var(--w98-titre), var(--w98-relief) !important;
+  box-shadow: 0 0 0 3px var(--ep-jaune), 0 2px 6px rgba(20, 24, 32, 0.2) !important;
 }
 html[data-epure] .affichage-modal .af-choix b,
 html[data-epure] .affichage-modal .af-choix small,
 html[data-epure] .affichage-modal .af-teinte > b,
 html[data-epure] .affichage-modal .af-teinte > small,
 html[data-epure] .affichage-modal .rt-clarte {
-  color: #000000 !important;
+  color: var(--ep-texte) !important;
 }
 html[data-epure] .affichage-modal .rt-origine {
-  background: var(--w98-face) !important;
-  color: #000000 !important;
+  background: var(--ep-champ) !important;
+  color: var(--ep-texte) !important;
   border: 0 !important;
-  box-shadow: var(--w98-relief);
+  border-radius: 8px !important;
+  box-shadow: var(--ep-relief);
 }
 html[data-epure] .affichage-modal .rt-apercu {
   display: none;
 }
 
 html[data-epure] .acc-entete p {
-  color: #000000 !important;
+  color: var(--ep-doux) !important;
+}
+
+/* --- 14. Retouches apres la refonte (16/10/2026) ----------------------------- */
+/* Les pastilles d'information (PV, Vague, Variantes) : la jaune porte un fond doux. */
+html[data-epure] .tampon.jaune {
+  background: #fdf1c0;
+  box-shadow: 0 0 0 1px #e3c44a;
+}
+html[data-epure] .tampon {
+  font-size: 13px;
+}
+
+/* La biographie repliable (« Biographie ») : une carte claire, plus un bloc noir. */
+html[data-epure] .tb-bio,
+html[data-epure] .tb-bio[open] {
+  background: var(--ep-champ);
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
+}
+html[data-epure] .tb-bio summary,
+html[data-epure] .tb-bio[open] summary,
+html[data-epure] .tb-bio summary:hover {
+  color: var(--ep-texte);
+  font-family: var(--ep-police);
+  letter-spacing: 0.06em;
+}
+html[data-epure] .tb-bio[open] summary {
+  border-bottom: 1px solid var(--ep-bord);
+}
+html[data-epure] .tb-bio *:not(summary) {
+  color: var(--ep-texte);
+}
+
+/* Les pastilles de filtre de l'editeur (aspects, types, couts) : plates, l'active
+   teintee de sa couleur. */
+html[data-epure] .db-chip {
+  clip-path: none;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  box-shadow: var(--ep-relief);
+}
+html[data-epure] .db-chip[class*='aspect-'] {
+  border-left: 4px solid var(--c);
+  border-radius: 4px 6px 6px 4px;
+}
+html[data-epure] .db-chip:hover {
+  box-shadow: var(--ep-relief-survol);
+}
+html[data-epure] .db-chip.est-actif {
+  background: color-mix(in srgb, var(--c) 30%, #ffffff);
+  color: var(--ep-texte);
+  box-shadow: 0 0 0 2px var(--c);
+}
+html[data-epure] .db-replier,
+html[data-epure] .db-kit {
+  background: var(--ep-champ);
+  color: var(--ep-texte);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: var(--ep-relief);
+}
+html[data-epure] .db-kit-liste {
+  background: var(--ep-surface);
+  color: var(--ep-doux);
+}
+html[data-epure] .db-kit-liste b {
+  color: var(--ep-texte);
+}
+html[data-epure] .db-onglets {
+  border-bottom: 1px solid var(--ep-bord);
+}
+html[data-epure] .db-onglets button {
+  background: transparent;
+  box-shadow: none;
+  color: var(--ep-doux);
+  border-radius: 0;
+}
+html[data-epure] .db-onglets button[aria-selected='true'] {
+  color: var(--ep-texte);
+  box-shadow: inset 0 -3px 0 var(--ep-jaune);
+}
+html[data-epure] .db-problemes {
+  background: #fdeceb;
+  color: #8c2f18;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #f0b8ae;
 }

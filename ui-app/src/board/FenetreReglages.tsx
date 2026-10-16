@@ -430,7 +430,7 @@ export function ContenuOnglet({
             { valeur: 'epure' as Affichage, libelle: t('Épuré') },
           ]}
           onChoisir={p.changerAffichage}
-          detail={t('Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, style Windows 98')}
+          detail={t('Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, boutons plats et jaune du jeu')}
         />
         {/* La couleur du fond (04/10/2026) : la table change en direct. */}
         {p.changerTeinte && p.reinitialiserTeinte ? (

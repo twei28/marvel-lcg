@@ -6,10 +6,17 @@
        de phase, stats) ET on aplatit ce qui reste ;
      - les trois couleurs du heros restent, en trois BANDES EN BIAIS aplaties dans
        le coin bas droit (pas de halo) ;
-     - style Windows 98 (cadres en relief gris, barre de titre bleu marine uni),
-       sur la selection ET sur les fenetres du plateau ;
-     - barre du haut tres fine ; languettes Aide / Journal gardees, en Win 98 ;
+     - barre du haut tres fine ; languettes Aide / Journal gardees ;
      - cartes nues (plus d'etiquette de type), barres de PV gardees.
+
+   REFONTE DU 16/10/2026 : le style Windows 98 n'etait qu'une etape (un essai
+   « ultra basique »). Le mode garde sa sobriete et change d'habillage :
+     - theme CLAIR, gris neutre, boutons plats, coins legerement arrondis ;
+     - barre du haut : pictogrammes au trait fin (masques CSS, voir §4) ;
+     - petites fenetres (questions, reglages) : le JAUNE du jeu en barre de
+       titre, la typo des titres du jeu (Bangers), un leger biseau ;
+     - le reste du texte en police systeme (lisible, neutre).
+   Le nom du mode reste « Epure ».
 
    ⚠ L'EPURE EST UN SOBRE EN PLUS DEPOUILLE. `appliquerAffichage` pose
    `data-affichage='sobre'` ET `data-epure='oui'` : toute la feuille sobre (gris,
@@ -21,23 +28,31 @@
 
    ⚠ LE CARTOUCHE DE PHASE N'EST PAS CACHE EN ENTIER : il porte les boutons
    « Suivant » / « Continuer » qui font avancer la partie. On retire ses
-   decorations (fleches, trajets, bandeau en biais) et on le passe en fenetre
-   Win 98. */
+   decorations (fleches, trajets, bandeau en biais) et on le passe en fenetre.
 
-/* --- 1. La palette Windows 98 ------------------------------------------------ */
+   ⚠ Les memes jetons (`--ep-*`) vivent dans public/css/affichage-epure-pages.css
+   (les pages hors plateau) : a garder identiques. */
+
+/* --- 1. La palette ----------------------------------------------------------- */
 html[data-epure] {
-  --w98-face: #c0c0c0;
-  --w98-clair: #ffffff;
-  --w98-ombre: #808080;
-  --w98-noir: #000000;
-  --w98-titre: #000080;
-  --w98-texte: #000000;
-  --w98-police: Tahoma, 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
-  /* Le relief : clair en haut a gauche, sombre en bas a droite. */
-  --w98-relief: inset -1px -1px var(--w98-noir), inset 1px 1px var(--w98-clair),
-    inset -2px -2px var(--w98-ombre), inset 2px 2px #dfdfdf;
-  --w98-creux: inset -1px -1px var(--w98-clair), inset 1px 1px var(--w98-ombre),
-    inset -2px -2px #dfdfdf, inset 2px 2px var(--w98-noir);
+  --ep-fond: #e8e9ec;
+  --ep-surface: #f8f8f9;
+  --ep-champ: #ffffff;
+  --ep-bord: #c6cad1;
+  --ep-bord-fort: #8f95a0;
+  --ep-texte: #1b1e24;
+  --ep-doux: #5d636e;
+  --ep-jaune: #f4c20d;
+  --ep-jaune-vif: #ffd43b;
+  --ep-police: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ep-titres: 'Bangers', Impact, 'Arial Black', sans-serif;
+  /* Bouton / carte : un filet et une ombre tres douce, rien d'epais. */
+  --ep-relief: 0 0 0 1px var(--ep-bord), 0 1px 2px rgba(20, 24, 32, 0.1);
+  --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort), 0 2px 5px rgba(20, 24, 32, 0.16);
+  --ep-creux: inset 0 0 0 1px var(--ep-bord), inset 0 1px 2px rgba(20, 24, 32, 0.08);
+  /* Petite fenetre : le leger biseau (clair en haut a gauche, sombre en bas a droite). */
+  --ep-biseau: inset 1px 1px 0 rgba(255, 255, 255, 0.95), inset -1px -1px 0 rgba(20, 24, 32, 0.16),
+    0 0 0 1px #aab0ba, 0 14px 34px rgba(10, 14, 22, 0.32);
 }
 
 /* --- 2. La table : gris neutre, la marque du heros au coin ------------------- */
@@ -46,7 +61,7 @@ html[data-epure] body,
 html[data-epure] .plateau-scene,
 html[data-epure] body.a-halo-heros .plateau-scene,
 html[data-epure] #scene {
-  background: var(--w98-face);
+  background: var(--ep-fond);
   box-shadow: none;
 }
 
@@ -88,57 +103,102 @@ html[data-epure] .scan-card {
   box-shadow: none;
 }
 
-/* --- 4. La barre du haut : tres fine ----------------------------------------- */
+/* --- 4. La barre du haut : tres fine, pictogrammes au trait ------------------ */
 html[data-epure] .plateau-barre {
   min-height: 0;
-  height: 26px;
-  padding: 1px 4px;
-  gap: 2px;
-  background: var(--w98-face);
-  border-bottom: 1px solid var(--w98-noir);
-  box-shadow: inset 0 1px var(--w98-clair);
-  font: 11px/1 var(--w98-police);
-  color: var(--w98-texte);
+  height: 32px;
+  padding: 2px 8px;
+  gap: 6px;
+  background: var(--ep-surface);
+  border-bottom: 1px solid var(--ep-bord);
+  box-shadow: 0 1px 3px rgba(20, 24, 32, 0.06);
+  font: 12px/1 var(--ep-police);
+  color: var(--ep-texte);
 }
 
 html[data-epure] .plateau-barre * {
-  font-family: var(--w98-police);
+  font-family: var(--ep-police);
   text-shadow: none;
 }
 
 html[data-epure] .plateau-barre button,
 html[data-epure] .plateau-barre .mode-actions {
   min-height: 0;
-  height: 22px;
-  padding: 0 8px;
-  font-size: 11px;
-  background: var(--w98-face);
-  color: var(--w98-texte);
+  height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
+  border-radius: 6px;
+  box-shadow: var(--ep-relief);
+  transition: none;
+}
+
+html[data-epure] .plateau-barre button:hover:not(:disabled) {
+  box-shadow: var(--ep-relief-survol);
 }
 
 html[data-epure] .plateau-barre button:active,
 html[data-epure] .plateau-barre button[aria-pressed='true'] {
-  box-shadow: var(--w98-creux);
+  background: #eceef1;
+  box-shadow: var(--ep-creux);
 }
 
-/* --- 5. Les fenetres : cadre en relief, barre de titre bleu marine ----------- */
+/* Les pictogrammes : le glyphe d'origine (⌂ ↶ 💾 ⚙ ▷) est masque, un trait fin
+   le remplace (masque CSS, couleur du texte). Un `ico-*` par bouton. */
+html[data-epure] .ico {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  font-size: 0;
+  line-height: 0;
+  vertical-align: -3px;
+  margin-right: 5px;
+  background: currentColor;
+  -webkit-mask: var(--ico) center / contain no-repeat;
+  mask: var(--ico) center / contain no-repeat;
+}
+html[data-epure] .ico:last-child {
+  margin-right: 0;
+}
+html[data-epure] .ico-menu {
+  --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8'/%3E%3Cpath d='M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3C/svg%3E");
+}
+html[data-epure] .ico-annuler {
+  --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 14 4 9l5-5'/%3E%3Cpath d='M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11'/%3E%3C/svg%3E");
+}
+html[data-epure] .ico-sauver {
+  --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z'/%3E%3Cpath d='M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7'/%3E%3Cpath d='M7 3v4a1 1 0 0 0 1 1h7'/%3E%3C/svg%3E");
+}
+html[data-epure] .ico-reglages {
+  --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4'/%3E%3C/svg%3E");
+}
+html[data-epure] .ico-fin-du-tour {
+  --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='5 4 15 12 5 20 5 4'/%3E%3Cline x1='19' x2='19' y1='5' y2='19'/%3E%3C/svg%3E");
+}
+/* Le reglage n'a plus besoin de l'emoji de roue dentee : le pictogramme seul. */
+html[data-epure] .plateau-barre button .ico-reglages {
+  margin: 0;
+}
+
+/* --- 5. Les petites fenetres : jaune du jeu, typo des titres, leger biseau ---- */
 html[data-epure] .reglages-fenetre,
 html[data-epure] .deroule-phase,
 html[data-epure] .demande-centrale,
 html[data-epure] .fin-partie-carte,
 html[data-epure] .assistant-action,
 html[data-epure] .deck-modal-panel {
-  background: var(--w98-face);
-  color: var(--w98-texte);
+  background: var(--ep-surface);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief), 4px 4px 0 rgba(0, 0, 0, 0.45);
-  font-family: var(--w98-police);
+  border-radius: 6px;
+  box-shadow: var(--ep-biseau);
+  font-family: var(--ep-police);
   text-shadow: none;
   backdrop-filter: none;
+  overflow: hidden;
 }
 
 html[data-epure] .reglages-fenetre *,
@@ -146,28 +206,43 @@ html[data-epure] .deroule-phase *,
 html[data-epure] .demande-centrale *,
 html[data-epure] .assistant-action *,
 html[data-epure] .deck-modal-panel * {
-  font-family: var(--w98-police);
+  font-family: var(--ep-police);
   text-shadow: none;
 }
 
+/* La barre de titre : le jaune, la typo des titres du jeu. */
 html[data-epure] .reglages-tete,
 html[data-epure] .deroule-phase .deroule-titre,
 html[data-epure] .deck-modal-panel .dm-head {
-  background: var(--w98-titre);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 12px;
-  padding: 3px 6px;
+  background: var(--ep-jaune);
+  color: #14161a;
+  border-bottom: 1px solid rgba(20, 24, 32, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  padding: 4px 12px;
   border-radius: 0;
 }
 
 html[data-epure] .reglages-tete *,
 html[data-epure] .deroule-phase .deroule-titre *,
 html[data-epure] .deck-modal-panel .dm-head * {
-  color: #ffffff;
+  color: #14161a;
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.05em;
 }
 
-/* --- 6. Les boutons : biseautes, gris ---------------------------------------- */
+/* La croix de fermeture, dans la barre de titre : plate, lisible sur le jaune. */
+html[data-epure] .reglages-tete button {
+  background: rgba(255, 255, 255, 0.55);
+  color: #14161a;
+  box-shadow: none;
+  font-family: var(--ep-police);
+}
+
+/* --- 6. Les boutons : plats, arrondis ; le principal en jaune ---------------- */
 html[data-epure] .reglages-fenetre button,
 html[data-epure] .deroule-phase .deroule-boutons .bh-bouton,
 html[data-epure] .deroule-phase .deroule-boutons .deroule-suivant,
@@ -176,16 +251,24 @@ html[data-epure] .assistant-action button,
 html[data-epure] .deck-modal-panel button,
 html[data-epure] .deck-modal-panel .btn,
 html[data-epure] .fin-partie-carte button {
-  background: var(--w98-face);
-  color: var(--w98-texte);
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
-  font-weight: 400;
+  border-radius: 6px;
+  box-shadow: var(--ep-relief);
+  font-weight: 500;
   text-transform: none;
   letter-spacing: 0;
   clip-path: none;
   animation: none;
+}
+
+html[data-epure] .reglages-fenetre button:hover:not(:disabled),
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:hover:not(:disabled),
+html[data-epure] .demande-centrale button:hover:not(:disabled),
+html[data-epure] .assistant-action button:hover:not(:disabled),
+html[data-epure] .deck-modal-panel button:hover:not(:disabled) {
+  box-shadow: var(--ep-relief-survol);
 }
 
 html[data-epure] .reglages-fenetre button:active,
@@ -193,28 +276,37 @@ html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:active,
 html[data-epure] .demande-centrale button:active,
 html[data-epure] .assistant-action button:active,
 html[data-epure] .deck-modal-panel button:active {
-  box-shadow: var(--w98-creux);
+  background: #eceef1;
+  box-shadow: var(--ep-creux);
 }
 
-/* Le bouton par defaut d'une fenetre Win 98 : cadre noir autour. */
+/* Le bouton principal d'une fenetre : jaune, texte sombre, plus gras. */
 html[data-epure] .deroule-phase .deroule-boutons .deroule-suivant,
 html[data-epure] .assistant-action .assistant-confirmer,
 html[data-epure] .deck-modal-panel .btn.primary {
-  outline: 1px solid var(--w98-noir);
+  background: var(--ep-jaune);
+  color: #14161a;
   font-weight: 700;
+  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
+}
+html[data-epure] .deroule-phase .deroule-boutons .deroule-suivant:hover:not(:disabled),
+html[data-epure] .assistant-action .assistant-confirmer:hover:not(:disabled),
+html[data-epure] .deck-modal-panel .btn.primary:hover:not(:disabled) {
+  background: var(--ep-jaune-vif);
 }
 
-/* --- 7. Les languettes Aide et Journal : gardees, en Win 98 ------------------ */
+/* --- 7. Les languettes Aide et Journal : gardees, a plat --------------------- */
 html[data-epure] .volet-aide-languette,
 html[data-epure] .volet-journal-languette {
-  background: var(--w98-face);
-  color: var(--w98-texte);
+  background: var(--ep-surface);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-relief);
-  font-family: var(--w98-police);
+  border-radius: 6px 0 0 6px;
+  box-shadow: var(--ep-relief);
+  font-family: var(--ep-police);
   font-size: 11px;
-  letter-spacing: 0;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-shadow: none;
 }
 
@@ -223,20 +315,20 @@ html[data-epure] .reglages-fenetre input[type='text'],
 html[data-epure] .reglages-fenetre select,
 html[data-epure] .deck-modal-panel input,
 html[data-epure] .deck-modal-panel select {
-  background: #ffffff;
-  color: var(--w98-texte);
+  background: var(--ep-champ);
+  color: var(--ep-texte);
   border: 0;
-  border-radius: 0;
-  box-shadow: var(--w98-creux);
+  border-radius: 6px;
+  box-shadow: var(--ep-creux);
 }
 
-/* --- 9. Les textes poses SUR le gris de la barre et des fenetres ------------- */
+/* --- 9. Les textes poses SUR la barre et les fenetres ------------------------ */
 html[data-epure] .plateau-barre .bh-etat,
 html[data-epure] .plateau-barre .bh-etat strong,
 html[data-epure] .plateau-barre .bh-etat span,
 html[data-epure] .plateau-barre .bh-etat em {
-  color: var(--w98-texte);
-  font-size: 11px;
+  color: var(--ep-texte);
+  font-size: 12px;
   letter-spacing: 0;
   text-transform: none;
 }
@@ -245,35 +337,38 @@ html[data-epure] .plateau-barre .bh-etat strong {
   font-weight: 700;
 }
 
-/* La bascule Auto / Manuel : deux cases, l'active en creux. */
+/* La bascule Auto / Manuel : deux segments, l'actif plein. */
 html[data-epure] .plateau-barre .bh-facon {
   background: transparent;
   border: 0;
   box-shadow: none;
-  gap: 1px;
+  gap: 2px;
 }
 
 html[data-epure] .plateau-barre .bh-facon-choix {
-  padding: 0 6px;
+  padding: 0 8px;
 }
 
 html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
-  box-shadow: var(--w98-creux);
+  background: var(--ep-jaune);
+  color: #14161a;
+  box-shadow: 0 0 0 1px #b88f00;
   font-weight: 700;
 }
 
-/* Le bouton « Fin du tour » inactif : texte gris, comme un bouton Win 98 grise. */
+/* Un bouton inactif : texte gris, sans ombre. */
 html[data-epure] .plateau-barre button:disabled {
-  color: var(--w98-ombre);
-  text-shadow: 1px 1px var(--w98-clair);
+  color: #9aa0aa;
+  box-shadow: 0 0 0 1px #dcdfe4;
+  background: var(--ep-surface);
 }
 
-/* La fenetre de question du bas (mulligan, choix...) : un panneau gris, le texte
-   en noir, aucune pastille doree ni cadre a coins coupes. */
+/* La fenetre de question du bas (mulligan, choix...) : une fenetre comme les
+   autres, avec son bandeau jaune. */
 html[data-epure] .assistant-action .assistant-simple-action,
 html[data-epure] .assistant-action .assistant-simple-indication {
-  background: var(--w98-face);
-  color: var(--w98-texte);
+  background: transparent;
+  color: var(--ep-texte);
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -288,24 +383,26 @@ html[data-epure] .assistant-action .assistant-simple-action {
   box-sizing: border-box;
   height: auto;
   min-height: 0;
-  padding: 3px 6px;
+  padding: 4px 12px;
   margin: 0;
   text-align: left;
-  background: var(--w98-titre);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 12px;
+  background: var(--ep-jaune);
+  color: #14161a;
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  font-size: 18px;
 }
 
 html[data-epure] .assistant-action .assistant-simple-indication {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
 }
 
 html[data-epure] .assistant-action .assistant-confirmer {
-  font-size: 13px;
+  font-size: 14px;
   font-style: normal;
-  padding: 4px 16px;
+  padding: 6px 18px;
 }
 
 /* --- 10. Aucun contour de couleur autour des cartes (demande du 15/10/2026) ---
@@ -333,5 +430,126 @@ html[data-epure] .scan-frame,
 html[data-epure] .state-playable .scan-frame,
 html[data-epure] .state-targetable .scan-frame,
 html[data-epure] .scan-card.state-source .scan-frame {
-  box-shadow: 0 0 0 1px #6e6e6e;
+  box-shadow: 0 0 0 1px #8f95a0;
+}
+
+/* --- 11. Les reglages : lignes claires, textes sombres (16/10/2026) ---------- */
+/* Les lignes d'option, l'onglet actif, les pastilles d'ambiance et les curseurs
+   portaient des textes clairs faits pour le fond sombre. */
+html[data-epure] .reglages-fenetre div,
+html[data-epure] .reglages-fenetre span,
+html[data-epure] .reglages-fenetre label,
+html[data-epure] .reglages-fenetre p,
+html[data-epure] .reglages-fenetre small,
+html[data-epure] .reglages-fenetre h3,
+html[data-epure] .reglages-fenetre h4,
+html[data-epure] .reglages-fenetre b,
+html[data-epure] .reglages-fenetre strong,
+html[data-epure] .reglages-fenetre em,
+html[data-epure] .reglages-fenetre .ligne-option {
+  color: var(--ep-texte);
+}
+
+html[data-epure] .reglages-fenetre .ligne-option {
+  background: var(--ep-champ);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--ep-relief);
+  font-weight: 600;
+}
+
+html[data-epure] .reglages-fenetre .ligne-option:hover:not(.est-etabli) {
+  background: var(--ep-champ);
+  box-shadow: var(--ep-relief-survol);
+}
+
+html[data-epure] .reglages-fenetre .ligne-option.est-etabli {
+  background: transparent;
+  box-shadow: none;
+}
+
+html[data-epure] .reglages-fenetre .ligne-option-aide,
+html[data-epure] .reglages-fenetre .ligne-option-etat {
+  color: var(--ep-doux);
+  font-weight: 400;
+}
+
+html[data-epure] .reglages-fenetre .ligne-option.est-actif .ligne-option-etat {
+  color: #8a6a00;
+  font-weight: 700;
+}
+
+html[data-epure] .reglages-fenetre .ligne-option.est-desactive,
+html[data-epure] .reglages-fenetre .ligne-option.est-desactive * {
+  color: #9aa0aa;
+}
+
+html[data-epure] .reglages-fenetre .reglages-groupe {
+  color: var(--ep-doux);
+  border-top: 1px solid var(--ep-bord);
+}
+
+/* Les onglets de gauche : plats, l'actif en jaune. */
+html[data-epure] .reglages-fenetre .reglages-onglet {
+  border-radius: 8px;
+}
+html[data-epure] .reglages-fenetre .reglages-onglet.est-actif,
+html[data-epure] .reglages-fenetre .reglages-onglet[aria-selected='true'],
+html[data-epure] .reglages-fenetre .reglages-onglet[aria-pressed='true'] {
+  background: var(--ep-jaune);
+  color: #14161a;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px #b88f00;
+}
+
+/* Les pastilles (Normal / Sobre / Epure, ambiances) : l'active en jaune. */
+html[data-epure] .reglages-fenetre .pastille,
+html[data-epure] .reglages-fenetre .pastille.est-actif {
+  border-radius: 6px;
+}
+html[data-epure] .reglages-fenetre .pastille.est-actif,
+html[data-epure] .reglages-fenetre .pastille[aria-pressed='true'],
+html[data-epure] .reglages-fenetre .pastille.est-choisi {
+  background: var(--ep-jaune);
+  color: #14161a;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px #b88f00;
+}
+
+html[data-epure] .reglages-fenetre {
+  background: var(--ep-surface);
+}
+
+/* --- 12. La mise en place carte par carte (CoucheMiseEnPlace.tsx) ------------ */
+html[data-epure][data-affichage] .mep-couche {
+  background: rgba(232, 233, 236, 0.86);
+}
+html[data-epure][data-affichage] .mep-titre {
+  color: var(--ep-doux);
+  font-family: var(--ep-police);
+}
+html[data-epure][data-affichage] .mep-cadre {
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--ep-bord-fort), 0 12px 30px rgba(10, 14, 22, 0.3);
+}
+html[data-epure][data-affichage] .mep-legende {
+  color: var(--ep-texte);
+  font-family: var(--ep-titres);
+}
+html[data-epure][data-affichage] .mep-detail {
+  color: #8a6a00;
+  font-family: var(--ep-police);
+}
+html[data-epure][data-affichage] .mep-continuer {
+  background: var(--ep-jaune);
+  color: #14161a;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
+  font-family: var(--ep-titres);
+}
+html[data-epure][data-affichage] .mep-continuer:hover,
+html[data-epure][data-affichage] .mep-continuer:focus-visible {
+  background: var(--ep-jaune-vif);
+  outline: 2px solid var(--ep-texte);
+  outline-offset: 2px;
 }
