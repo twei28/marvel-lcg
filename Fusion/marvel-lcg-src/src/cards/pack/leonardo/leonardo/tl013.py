@@ -23,11 +23,11 @@ from . import *
 #  - « discard AN ALLY YOU CONTROL » : un seul, au choix du joueur, uniquement
 #    parmi les siens ; sans allie, rien ;
 #  - « You cannot attack THE VILLAIN » : le vilain seulement (les sbires restent
-#    attaquables). TODO-QUESTION Q5 : duree et portee — ici tant que
-#    l'obligation est en jeu, et pour le(s) joueur(s) vises par « You » ;
+#    attaquables). DECISION UTILISATEUR (15/10/2026) : lecture litterale, tant que
+#    l'obligation est en jeu, pour le(s) joueur(s) vises par « You » ;
 #  - « Forced Response: AFTER your turn begins » : AfterPlayerTurnBegin, pas
 #    When ;
-#  - « deal 3 damage to AN ALLY » : TODO-QUESTION Q5 — n'importe quel allie en
+#  - « deal 3 damage to AN ALLY » : DECISION UTILISATEUR — n'importe quel allie en
 #    jeu (lecture litterale), choisi par le joueur ; ici pas de filtre de
 #    controle ;
 #  - « Exhaust Leo AND take 2 damage -> » : DEUX parties de cout ; l'alter-ego

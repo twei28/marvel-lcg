@@ -837,6 +837,53 @@ CAS = [
         "verifier": "sbire_engage",
         "attendu": {"carte": "tl016", "joueur": "premier", "pas_vainqueur": True, "hors_jeu": ["tl014"]},
     },
+    # ===================================================================== tl015 Karai / tl016 Foot Soldiers
+    {
+        "nom": "[leonardo] tl015 Karai — When Revealed : Karai devient Cloaked (le vilain non)",
+        "pourquoi": "« Cloak Karai » : carte d'etat Cloaked posee sur la carte (carte d'etat : cas detailles dans cloaked.py)",
+        **HEROS,
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('tl015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["tl015", "Cloaked"]], "statuts_absents": [["01094", "Cloaked"]]},
+    },
+    {
+        "nom": "[leonardo] tl015 Karai — When Defeated : le VILAIN devient Cloaked",
+        "pourquoi": "« Cloak the villain »",
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('tl015')"],
+        "declencher": ["Puzzle.Damage('tl015', 9)"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Cloaked"]], "hors_jeu": ["tl015"]},
+    },
+    {
+        "nom": "[leonardo] tl015 Karai — ★ Boost : la carte part chez le PREMIER joueur comme carte rencontre face cachee (pas a la defausse)",
+        "pourquoi": ("Rhino attaque, la carte de boost est Karai : « Deal this card to the first player as a facedown "
+                     "encounter card » -> dans les cartes rencontre distribuees du joueur, pas dans la defausse rencontre"),
+        **HEROS,
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('tl015')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "boost_distribue",
+        "attendu": {"carte": "tl015"},
+    },
+    {
+        "nom": "[leonardo] tl016 Foot Soldiers — When Revealed : le sbire devient Cloaked",
+        "pourquoi": "« Cloak Foot Soldiers » : la carte elle-meme",
+        **HEROS,
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('tl016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["tl016", "Cloaked"]], "statuts_absents": [["01094", "Cloaked"]]},
+    },
+    {
+        "nom": "[leonardo] tl016 Foot Soldiers — Boost 1 : Rhino (ATQ 2) + 1 icone = 3 degats a Leo (alter ego)",
+        "pourquoi": "desc.Boost = 1 : la carte de boost ajoute 1 ; ligne de base ATQ 2 de Rhino",
+        **HEROS,
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('tl016')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
 ]
 
 VERIFICATIONS = r'''
@@ -1009,4 +1056,19 @@ def sbire_engage(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, f"{cid} engage avec le joueur {attendu['joueur']} ; {msg}"
+
+
+def boost_distribue(monde, aides):
+    """`attendu.carte` doit etre parmi les cartes rencontre distribuees (face cachee) du premier joueur,
+    et PAS dans la defausse de rencontre."""
+    from game.operate.worlds import Worlds
+    cid = aides["cas"]["attendu"]["carte"]
+    premier = monde.GetFirstPlayer()
+    distribuees = [getattr(f.paper, "card_id", None) for f in premier.dealt_encounter_cards.GetAll()]
+    defausse = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDiscardPileCards(monde)]
+    if cid not in distribuees:
+        return False, f"{cid} n'est pas distribuee au premier joueur (distribuees = {distribuees}, defausse = {defausse})"
+    if cid in defausse:
+        return False, f"{cid} est aussi dans la defausse rencontre"
+    return True, f"{cid} distribuee au premier joueur, absente de la defausse"
 '''

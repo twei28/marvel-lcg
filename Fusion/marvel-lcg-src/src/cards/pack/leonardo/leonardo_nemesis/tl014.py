@@ -26,7 +26,7 @@ from . import *
 #  - « engaged with the FIRST player » : pas le joueur qui a vaincu le complot ;
 #  - « (Shuffle) » non imprime, mais la fouille du deck rencontre melange par
 #    defaut ;
-#  - TODO-QUESTION Q6 : si aucun sbire FOOT CLAN n'est trouve, rien ne se
+#  - DECISION UTILISATEUR (15/10/2026) : si aucun sbire FOOT CLAN n'est trouve, rien ne se
 #    passe (lecture litterale, pas de repli).
 
 
