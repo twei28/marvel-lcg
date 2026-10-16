@@ -3965,9 +3965,9 @@ export const TEXTES_FR_FANMADE = {
     // bebop_rocksteady — Headstrong (Attachment)
     'tk008b': "Permanent. Attachez-la à Rocksteady.\nRocksteady gagne [[ENRAGED]].\n<b>Spécial</b> : placez 1 menace sur la manigance principale.\n<b>Interruption forcée</b> : quand Rocksteady est censé s'activer, si Headfirst est en jeu, retournez Bebop et Rocksteady sur leurs faces [[K.O.]] et retournez les deux attachements [[TEMPER]] sur leurs faces [[ROWDY]].",
     // bebop_rocksteady — * Shutter Shades (Attachment)
-    'tk009': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nBebop gagne solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[HOG]].\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je porte mes lunettes de soleil la nuit. »</i> —Bebop",
+    'tk009': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nBebop gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[HOG]].\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je porte mes lunettes de soleil la nuit. »</i> —Bebop",
     // bebop_rocksteady — * Aviator Cap (Attachment)
-    'tk010': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nRocksteady gagne solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[RHINO]].\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.",
+    'tk010': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nRocksteady gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[RHINO]].\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.",
     // bebop_rocksteady — * Roberta (Attachment)
     'tk011': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\n[star] Les attaques de Bebop gagnent perçant.\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« C'est l'heure de la boucherie ! »</i> —Bebop",
     // bebop_rocksteady — * Juniper (Attachment)
