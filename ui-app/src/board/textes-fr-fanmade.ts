@@ -4400,6 +4400,46 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'te201': "<i>Ensembles TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, intensifiez ce personnage à la place.",
 
   // --- TMNT Aggression (ua) : ajouter les cartes uaNNN ci-dessous, dans ce bloc seulement ---
+  // tmnt_aspect_aggression — Aggressive Conditioning (Upgrade), reskin de 56013
+  'ua001': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVous gagnez +3 points de vie et votre héros gagne +1 ATQ.\n<i>« J'ai attendu ça toute la journée. »</i> —Casey Jones",
+  // tmnt_aspect_aggression — Blood Rage (Upgrade), reskin de 45043
+  'ua005': "1 max par joueur.\n<b>Réponse</b> : après que vous avez vaincu un ennemi avec une attaque de base, inclinez Blood Rage et subissez 1 dégât → piochez 1 carte.",
+  // tmnt_aspect_aggression — "Bring It!" (Event), reskin de 19030
+  'ua007': "1 max par phase.\n<b>Action de héros</b> : piochez 1 carte par sbire engagé avec vous.\n<i>« C'est l'heure de s'amuser ! »</i> —Raphael",
+  // tmnt_aspect_aggression — Combat Training (Upgrade), reskin de 01057
+  'ua010': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVotre héros gagne +1 ATQ.\n<i>« Tu dois apprendre à maîtriser ta rage, mon ami. »</i> —Usagi",
+  // tmnt_aspect_aggression — Drop Kick (Event), reskin de 10014
+  'ua016': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si vous n'avez utilisé que des ressources [physical] pour payer cette carte, sonnez cet ennemi et piochez 1 carte.\n<i>« C'est l'heure de faire du BRUIT ! »</i> —Raphael",
+  // tmnt_aspect_aggression — Exeen (Ally), reskin de 18011 Angela (bandeau ✦ Angela)
+  'ua017': "<b>Réponse forcée</b> : après qu'Exeen est entrée en jeu sous votre contrôle, cherchez un sbire parmi les 10 cartes du dessus du deck Rencontre et mettez-le en jeu engagé avec vous. Mélangez le deck Rencontre. Si aucun sbire n'a été mis en jeu par cet effet, défaussez Exeen.",
+  // tmnt_aspect_aggression — Firepower (Event), reskin de 54014
+  'ua018': "<b>Action de héros</b> <i>(attaque)</i> : inclinez jusqu'à 3 améliorations [[ARME]] que vous contrôlez → pour chaque amélioration ainsi inclinée, choisissez un ennemi et infligez-lui 3 dégâts. Cette attaque gagne À Distance.",
+  // tmnt_aspect_aggression — Fusillade (Event), reskin de 20026
+  'ua020': "<b>Action de héros</b> <i>(attaque)</i> : inclinez une amélioration [[ARME]] que vous contrôlez → infligez 5 dégâts à un ennemi.\n<i>« Tu débarques dans ma ville, tu gâches la soirée pizza, tu t'en prends à Splinter, et tu crois que tu vas t'en tirer ? Rêve pas, espèce de mangeur de vase sans carapace ! »</i> —Michelangelo",
+  // tmnt_aspect_aggression — He-Dude (Ally), reskin de 56010 Two-Gun Kid (bandeau ✦ Two-Gun Kid)
+  'ua022': "[star] <b>Interruption</b> : quand He-Dude effectue une attaque de base, choisissez 2 ennemis à la place de 1 et résolvez cette attaque contre chacun d'eux.\n<i>« Allez muchachos, dites-moi quand. »</i>",
+  // tmnt_aspect_aggression — Honed Technique (Upgrade), reskin de 28017
+  'ua023': "Exigence ([mental][mental]). 1 max par joueur.\n<b>Interruption</b> : quand vous jouez un événement Agressivité [[ATTAQUE]], si vous avez utilisé une ressource [mental] pour payer cet événement, augmentez la quantité de dégâts infligée par cet événement de la valeur de son coût imprimé.",
+  // tmnt_aspect_aggression — Innate Aggression (Upgrade), reskin de 61034
+  'ua024': "Départ. <i>(Vous pouvez ajouter cette carte à votre main avant de piocher votre main de départ.)</i>\nVotre héros gagne +1 ATQ.\n<i>« C'est ici que ça se termine ! »</i> —Raphael",
+  // tmnt_aspect_aggression — Looking for Trouble (Event), reskin de 16043
+  'ua027': "<b>Action de héros</b> <i>(contre)</i> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce que vous défaussiez un sbire. Mettez ce sbire en jeu, engagé avec vous → retirez 3 menaces de la manigance principale.",
+  // tmnt_aspect_aggression — Magic Attack (Event), reskin de 21043
+  'ua028': "Jouez cette carte uniquement si votre identité a le trait [[MYSTIQUE]]. 1 max par deck.\n<b>Action de héros</b> <i>(attaque)</i> : choisissez un ennemi et défaussez jusqu'à 5 cartes du dessus de votre deck → infligez 1 dégât à cet ennemi pour chaque carte ainsi défaussée.",
+  // tmnt_aspect_aggression — Martial Prowess (Upgrade), reskin de 10018
+  'ua029': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\n<b>Ressource</b> : inclinez Martial Prowess → générez une ressource [physical] pour un événement [[ATTAQUE]].",
+  // tmnt_aspect_aggression — No Quarter (Event), reskin de 28013
+  'ua031': "Exigence ([physical]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Pour chaque point de dégât en excès infligé à cet ennemi par cette attaque, défaussez la carte du dessus de votre deck et ajoutez à votre main chaque carte Agressivité (rouge) ainsi défaussée.",
+  // tmnt_aspect_aggression — "Now I'm Mad" (Upgrade), reskin de 43019
+  'ua032': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nTant que les points de vie restants de votre héros sont inférieurs à la moitié de ses points de vie de départ, il a +1 ATQ et -1 CTR.",
+  // tmnt_aspect_aggression — Precision Strike (Event), reskin de 35018
+  'ua034': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi est vaincu par cette attaque, soignez 2 dégâts de votre héros.\n<i>« Je ne cesserai jamais de me battre pour ce qui est juste. »</i> —Leonardo",
+  // tmnt_aspect_aggression — Rave (Ally), reskin de 16040 Bug (bandeau ✦ Bug)
+  'ua035': "<b>Réponse de héros</b> : après que votre héros a effectué une attaque de base, soignez 1 dégât de Rave.\n<i>« La Nova Posse ne bat pas en retraite. On change juste de voie. »</i>",
+  // tmnt_aspect_aggression — Spoiling for a Fight (Event), reskin de 54016
+  'ua038': "<b>Action de héros</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce que vous défaussiez un sbire. Mettez en jeu ce sbire engagé avec vous → redressez votre héros.\n<i>« L'heure de régler nos comptes. »</i> —Ronin",
+  // tmnt_aspect_aggression — Suppressing Fire (Upgrade), reskin de 46014
+  'ua039': "Attachez cette carte à un sbire. 1 max par sbire.\n<b>Interruption de héros</b> : quand vous attaquez et vainquez le sbire attaché, soignez 2 dégâts de votre héros.",
 
 
   // --- TMNT Basic (ub) : ajouter les cartes ubNNN ci-dessous, dans ce bloc seulement ---

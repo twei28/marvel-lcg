@@ -112317,7 +112317,10 @@
    "set_name": "TMNT Aggression",
    "text": "<b>Response</b>: After Bo-Wing attacks and defeats an enemy, remove 2 threat from a scheme.\n<i>\"As long as I'm alive, you'll have me to fight.\"</i>",
    "custom": "Inkwire",
-   "ability_link": "53035"
+   "ability_link": "53035",
+   "unique_also": [
+    "Winter Soldier"
+   ]
   },
   {
    "card_id": "ua007",
@@ -112429,7 +112432,10 @@
    "set_name": "TMNT Aggression",
    "text": "<b>Forced Response</b>: After Exeen enters play under your control, search the top 10 cards of the encounter deck for a minion and put it into play engaged with you. Shuffle the encounter deck. If a minion was not put into play this way, discard Exeen.",
    "custom": "Inkwire",
-   "ability_link": "18011"
+   "ability_link": "18011",
+   "unique_also": [
+    "Angela"
+   ]
   },
   {
    "card_id": "ua018",
@@ -112487,7 +112493,10 @@
    "set_name": "TMNT Aggression",
    "text": "[star] <b>Interrupt</b>: When He-Dude makes a basic attack, choose 2 enemies instead of 1 and resolve this attack against each of them.\n<i>\"Alright muchachos, say when.\"</i>",
    "custom": "Inkwire",
-   "ability_link": "56010"
+   "ability_link": "56010",
+   "unique_also": [
+    "Two-Gun Kid"
+   ]
   },
   {
    "card_id": "ua023",
@@ -112660,7 +112669,10 @@
    "set_name": "TMNT Aggression",
    "text": "<b>Hero Response</b>: After your hero makes a basic attack, heal 1 damage from Rave.\n<i>\"Nova Posse doesn't retreat. We just change the track.\"</i>",
    "custom": "Inkwire",
-   "ability_link": "16040"
+   "ability_link": "16040",
+   "unique_also": [
+    "Bug"
+   ]
   },
   {
    "card_id": "ua038",
@@ -112703,5 +112715,5 @@
  "tmnt_aspect_leadership": [],
  "tmnt_aspect_protection": [],
  "tmnt_aspect_dual": [],
- "checksum": "54edd8d6ea5ab0c2de0f39c59cc003431bc7b78479cb322c05c96da1c6c304cc"
+ "checksum": "222760d58740a984849f6b19baeaf6bc18a236d8936420087137bfffc0f616d7"
 }

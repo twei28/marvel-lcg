@@ -239,6 +239,30 @@ CAS += _paire("ua039", "46014", "Suppressing Fire : attachee a Shocker, le heros
               declencher_apres=["Puzzle.Damage('01103', 1)", "Puzzle.Attack('01001a')"])
 
 
+# ============================================================ bandeaux « ✦ <titre d'origine> » (Q-R1, unique_also)
+# Decision de l'utilisateur (16/10/2026) : l'unicite se juge sur les DEUX titres. Exeen ✦ Angela, He-Dude ✦ Two-Gun
+# Kid, Rave ✦ Bug. Cout de l'allie paye par la main 01088/01089/01088 (6 ressources).
+for _r, _o, _nom in (("ua017", "18011", "Exeen / Angela"), ("ua022", "56010", "He-Dude / Two-Gun Kid"),
+                     ("ua035", "16040", "Rave / Bug")):
+    CAS += [
+        _c(f"{_r} {_nom} : bandeau ✦ : l'officielle {_o} en jeu -> {_r} PAS jouable",
+           "Q-R1 : `unique_also` du reskin = titre du bandeau, compare au titre de l'officielle",
+           [HEROS, f"Puzzle.Gain('{_r}')", f"Puzzle.PutIntoPlay('{_o}', under_control=True)"], [],
+           {"carte": _r, "jouable": False, "en_jeu": 0},
+           main=["01088", "01089", "01088"], verifier="max_par_joueur_jouable"),
+        _c(f"{_r} {_nom} : bandeau ✦ : sens inverse, {_r} en jeu -> l'officielle {_o} PAS jouable",
+           "le titre secondaire bloque dans les deux sens",
+           [HEROS, f"Puzzle.Gain('{_o}')", f"Puzzle.PutIntoPlay('{_r}', under_control=True)"], [],
+           {"carte": _o, "jouable": False, "en_jeu": 0},
+           main=["01088", "01089", "01088"], verifier="max_par_joueur_jouable"),
+        _c(f"{_r} {_nom} : TEMOIN, rien en jeu -> {_r} en main est jouable",
+           "contre-cas : c'est bien l'officielle en jeu qui bloque",
+           [HEROS, f"Puzzle.Gain('{_r}')"], [],
+           {"carte": _r, "jouable": True, "en_jeu": 0},
+           main=["01088", "01089", "01088"], verifier="max_par_joueur_jouable"),
+    ]
+
+
 VERIFICATIONS = r'''
 def ua_porte_fabrique(monde, aides):
     """La carte (en main ou en jeu) porte une capacite construite par la fabrique nommee."""
