@@ -191,7 +191,7 @@ class Worlds:
                 this.refers_to_the_villain_refers_to_attached:
                 return this.GetBindFace() # type: ignore
             world = by_effect.world
-            return world.GetScenario().GetVillain(by_effect.this.card.game_area)
+            return world.GetScenario().GetVillain(by_effect.this.card.game_area, by_effect)
         else:
             return Worlds.FindCardOnField(
                 by_effect,

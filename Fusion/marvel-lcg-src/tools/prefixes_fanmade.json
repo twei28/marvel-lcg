@@ -393,6 +393,13 @@
    "depuis": "2026-08-13",
    "note": "Le scenario fan-made The Spot (DesignHacker), 25 cartes physiques et 19 distinctes ; il apporte le mot-cle ThreatLevel."
   },
+  "tk": {
+   "pack": "bebop_rocksteady",
+   "libelle": "192. Custom (Bebop & Rocksteady)",
+   "cartes": 0,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026 (phase A en cours). Auteur Inkwire / Kajislav (TMNT Villains, zip « TMNT Enemies / Bebop & Rocksteady v3 »). SCENARIO A DEUX VILAINS (Bebop et Rocksteady, chacun a deux faces ALERT / K.O.). card_id = `tk` + (100 x module + numero imprime) : tk001-tk028 le set « Bebop & Rocksteady » (villains tk001-tk004 a/b, complot tk005a/b, tk006a/b Destructive Dunderheads / Gone Berserk, tk007a/b Hog Wild / Headfirst, tk008a/b Rhino Rage / Headstrong, tk009-tk028 deck de rencontre), tk101-tk109 Concrete Jungle, tk201-tk205 Rock the Block. Les copies identiques (meme scan) partagent un card_id ; Bumbling Buffoons (3 illustrations) a 3 card_id."
+  },
   "sr": {
    "pack": "spider_man_rainy",
    "libelle": "115. Custom (Spider-Man Rainy)",

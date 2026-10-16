@@ -172,6 +172,12 @@ la plus fréquente sur un pack vilain.
 - [ ] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : mot-clé maison NON DEFINI par
       les scans ; carte créée, non scriptée ; question Q2 de `.planning/tmnt/shredder-questions.md`)
 
+- [x] dodgy.md (scénario `bebop_rocksteady`, TMNT : mot-clé maison défini par
+      l'encart de l'auteur, cousin facultatif d'Assault ; AUCUNE clé `desc`,
+      fabrique `Dodgy()` du pack)
+- [x] linked.md (mot-clé officiel, `desc.Linked` : cartes mises de côté avec la
+      carte nommée ; scénario `bebop_rocksteady`, Concrete Jungle)
+
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
 Vérification faite avec l'heuristique `<b>([A-Z][a-zA-Z ]{2,20})</b>` sur

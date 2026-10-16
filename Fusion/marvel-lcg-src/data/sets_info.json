@@ -1776,5 +1776,18 @@
   ],
   "max_id": "te201"
  },
- "checksum": "4622b5824cccbdc3d1a9860cfc3931ce48f0fe9400fa415085400e77bdbf0784"
+ "192. Custom (Bebop & Rocksteady)": {
+  "name": "bebop_rocksteady",
+  "scenarios": [
+   "bebop_rocksteady"
+  ],
+  "heroes": [],
+  "encounters": [
+   "bebop_rocksteady",
+   "concrete_jungle",
+   "rock_the_block"
+  ],
+  "max_id": "tk205"
+ },
+ "checksum": "c25b7e0d35793ed3f4d6888e92cd3d8abae2c8c5d8dd00b1df91c94c3b4b0f3b"
 }

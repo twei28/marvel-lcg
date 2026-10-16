@@ -71,6 +71,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
     ABILITY_IGNORE_KEY = Literal["Guard", "Patrol", "Crisis"]
 
     TRAITS = Literal[
+        # AJOUT (16/10/2026, scenario TMNT Bebop & Rocksteady, prefixe `tk`).
+        # ALERT / K.O. / ENRAGED / ROWDY / TEMPER / HOG / RHINO sont LUS par les
+        # scripts du pack (etat des vilains, attachements Temper).
+        "WARTHOG", "RHINOCEROS", "ALERT", "K.O.", "HOG", "RHINO", "ROWDY",
+        "TEMPER", "ENRAGED", "BESTIES", "BERSERK", "FERAL", "SUNGLASSES",
+        "HELMET", "STREETS", "VELOCIRAPTOR",
         "AVENGER", "MUTANT", "X-MEN", "GENIUS", "HERO FOR HIRE", "DEFENSE",
         "SKILL", "SUPERPOWER", "AERIAL", "ATTACK", "SUPERPOWER", "PERSONA",
         "ITEM", "TECH", "CONDITION", "CRIMINAL", "SOLDIER", "S.H.I.E.L.D",
@@ -232,6 +238,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
 
     COUNTER = Literal[
         'counter',
+        # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : compteur imprime
+        # « knucklehead counter » des attachements Temper.
+        'knucklehead',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',

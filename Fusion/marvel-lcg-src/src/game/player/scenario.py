@@ -65,13 +65,13 @@ class Scenario(User):
         deck.BindDiscardPile(discard_pile, process_after_shuffle)
         return deck, discard_pile
 
-    def GetVillain(self, game_area: 'GameArea|None') -> 'Villain|None':
+    def GetVillain(self, game_area: 'GameArea|None', by_effect: 'Effect|None'=None) -> 'Villain|None':
         if self.area_villain.GetSize() == 0:
             return None
         game_area = self.world.CastGameArea(game_area)
 
         from game.message import Message
-        message = Message.GettingVillain(game_area, self.world)
+        message = Message.GettingVillain(game_area, self.world, by_effect)
         message.Send()
         villain = message.return_value
         if villain:

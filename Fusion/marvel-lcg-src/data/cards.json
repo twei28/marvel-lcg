@@ -76542,6 +76542,677 @@
    "custom": "DesignHacker"
   }
  ],
+ "bebop_rocksteady": [
+  {
+   "card_id": "tk001a",
+   "type": "Villain",
+   "name": "* Bebop",
+   "subtitle": "",
+   "desc": {
+    "HP": "15*",
+    "ATK": "0",
+    "SCH": "1",
+    "Stage": "A1"
+   },
+   "traits": [
+    "ALERT",
+    "WARTHOG"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>Forced Interrupt</b>: When the villain phase begins, remove 1 knucklehead counter from the [[HOG]] attachment or place 1 threat on the main scheme.\n<b>Forced Response</b>: After Bebop takes damage, resolve the \"<b>Special</b>\" ability on the [[HOG]] attachment.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk001b",
+   "type": "Villain",
+   "name": "* Bebop",
+   "subtitle": "",
+   "desc": {
+    "HP": "15*",
+    "ATK": "0",
+    "SCH": "0",
+    "Stage": "A2"
+   },
+   "traits": [
+    "K.O.",
+    "WARTHOG"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "[star] <b>Forced Interrupt</b>: When Bebop activates, remove 1 knucklehead counter from the [[HOG]] attachment instead. If there are no knucklehead counters there, flip Bebop to his [[ALERT]] side.\n<i>\"My head hurts!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk002a",
+   "type": "Villain",
+   "name": "* Bebop",
+   "subtitle": "",
+   "desc": {
+    "HP": "19*",
+    "ATK": "1",
+    "SCH": "2",
+    "Stage": "B1"
+   },
+   "traits": [
+    "ALERT",
+    "WARTHOG"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>Forced Interrupt</b>: When the villain phase begins, remove 1 knucklehead counter from the [[HOG]] attachment or place 2 threat on the main scheme.\n<b>Forced Response</b>: After Bebop takes damage, resolve the \"<b>Special</b>\" ability on the [[HOG]] attachment.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk002b",
+   "type": "Villain",
+   "name": "* Bebop",
+   "subtitle": "",
+   "desc": {
+    "HP": "19*",
+    "ATK": "0",
+    "SCH": "0",
+    "Stage": "B2"
+   },
+   "traits": [
+    "K.O.",
+    "WARTHOG"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "[star] <b>Forced Interrupt</b>: When Bebop activates, remove 2 knucklehead counters from the [[HOG]] attachment instead. If there are no knucklehead counters there, flip Bebop to his [[ALERT]] side.\n<i>\"My head hurts!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk003a",
+   "type": "Villain",
+   "name": "* Rocksteady",
+   "subtitle": "",
+   "desc": {
+    "HP": "17*",
+    "ATK": "1",
+    "SCH": "0",
+    "Stage": "A1"
+   },
+   "traits": [
+    "ALERT",
+    "RHINOCEROS"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>Forced Interrupt</b>: When the villain phase begins, give Rocksteady a tough status card. Remove 1 knucklehead counter from the [[RHINO]] attachment, or deal 1 damage to the first player.\n<b>Forced Response</b>: After Rocksteady takes damage, resolve the \"<b>Special</b>\" ability on the [[RHINO]] attachment.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk003b",
+   "type": "Villain",
+   "name": "* Rocksteady",
+   "subtitle": "",
+   "desc": {
+    "HP": "17*",
+    "ATK": "0",
+    "SCH": "0",
+    "Stage": "A2"
+   },
+   "traits": [
+    "K.O.",
+    "RHINOCEROS"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "[star] <b>Forced Interrupt</b>: When Rocksteady activates, remove 1 knucklehead counter from the [[RHINO]] attachment instead. If there are no knucklehead counters there, flip Rocksteady to his [[ALERT]] side.\n<i>\"What just hit me?\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk004a",
+   "type": "Villain",
+   "name": "* Rocksteady",
+   "subtitle": "",
+   "desc": {
+    "HP": "21*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "B1"
+   },
+   "traits": [
+    "ALERT",
+    "RHINOCEROS"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>Forced Interrupt</b>: When the villain phase begins, give Rocksteady a tough status card. Remove 1 knucklehead counter from the [[RHINO]] attachment, or deal 2 damage to the first player.\n<b>Forced Response</b>: After Rocksteady takes damage, resolve the \"<b>Special</b>\" ability on the [[RHINO]] attachment.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk004b",
+   "type": "Villain",
+   "name": "* Rocksteady",
+   "subtitle": "",
+   "desc": {
+    "HP": "21*",
+    "ATK": "0",
+    "SCH": "0",
+    "Stage": "B2"
+   },
+   "traits": [
+    "K.O.",
+    "RHINOCEROS"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "[star] <b>Forced Interrupt</b>: When Rocksteady activates, remove 2 knucklehead counters from the [[RHINO]] attachment instead. If there are no knucklehead counters there, flip Rocksteady to his [[ALERT]] side.\n<i>\"What just hit me?\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk005a",
+   "type": "MainScheme",
+   "name": "Demolition Crew",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<i>Bebop and Rocksteady are leaving a wake of destruction throughout Manhattan!</i>\n<b>Content</b>: Bebop (A1) and Rocksteady (A1), <i>(Bebop (B1) and Rocksteady (B1) for expert mode.)</i> Bebop & Rocksteady, Concrete Jungle, and Standard sets. One modular encounter set <i>(Rock the Block)</i>.\n<b>Setup</b>: Put the Destructive Dunderheads environment, Welcome to the Jungle side scheme, Hog Wild attachment, and Rhino Rage attachment into play.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk005b",
+   "type": "MainScheme",
+   "name": "Demolition Crew",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "0",
+    "TargetThreat": "7*",
+    "EscalationThreat": "1*",
+    "Stage": "1B"
+   },
+   "traits": [],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<i>As you emerge from the sewers—Bebop and Rocksteady greet you. It seems they were expecting you!</i>\n[star] <b>Forced Interrupt</b>: When this scheme would be completed, remove all threat from here instead. Then, in player order, Bebop and Rocksteady attack each player <i>(even if they are in alter-ego form)</i>.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk006a",
+   "type": "Environment",
+   "name": "Destructive Dunderheads",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "BESTIES"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<i>Double Trouble</i> — During step two of the villain phase, both villains activate against each player. Choose either Bebop or Rocksteady as the target for each card that references \"the villain\".\n<b>Forced Interrupt</b>: When Bebop or Rocksteady is defeated, set that villain and their [[TEMPER]] attachment aside. Flip the remaining villain to their [[ALERT]] side, and this card to its [[FERAL]] side.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk006b",
+   "type": "Attachment",
+   "name": "Gone Berserk!",
+   "subtitle": "",
+   "desc": {
+    "Crisis": "1",
+    "Amplify": "1",
+    "Hazard": "1",
+    "Permanent": "1"
+   },
+   "traits": [
+    "BERSERK",
+    "FERAL"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Permanent. Attach to the villain.\nAttached villain cannot be confused.\nAttached villain gets +12[per_hero] hit points.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk007a",
+   "type": "Attachment",
+   "name": "Hog Wild",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [
+    "HOG",
+    "ROWDY",
+    "TEMPER"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Permanent. Setup.\nAttach to Bebop.\n[star] Bebop gets +1 ATK for each knucklehead counter here.\n<b>Special</b>: Place 1 knucklehead counter here. If there are at least 3 knucklehead counters here, flip this card to its [[ENRAGED]] side.\n<i>\"Things are about to get wild!\"</i> —Bebop",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk007b",
+   "type": "Attachment",
+   "name": "Headfirst",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "ATK+": "3"
+   },
+   "traits": [
+    "ENRAGED",
+    "HOG",
+    "TEMPER"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Permanent. Attach to Bebop.\nBebop gains [[ENRAGED]].\n<b>Special</b>: Deal 1 damage to your identity.\n<b>Forced Interrupt</b>: When Bebop would activate, if Headstrong is in play, flip Bebop and Rocksteady to their [[K.O.]] sides and flip both [[TEMPER]] attachments to their [[ROWDY]] sides.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk008a",
+   "type": "Attachment",
+   "name": "Rhino Rage",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [
+    "RHINO",
+    "ROWDY",
+    "TEMPER"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Permanent. Setup.\nAttach to Rocksteady.\n[star] Rocksteady gets +1 ATK for each knucklehead counter here.\n<b>Special</b>: Place 1 knucklehead counter here. If there are at least 3 knucklehead counters here, flip this card to its [[ENRAGED]] side.\n<i>\"Outta my way pipsqueak.\"</i> —Rocksteady",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk008b",
+   "type": "Attachment",
+   "name": "Headstrong",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "ATK+": "3"
+   },
+   "traits": [
+    "ENRAGED",
+    "RHINO",
+    "TEMPER"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Permanent. Attach to Rocksteady.\nRocksteady gains [[ENRAGED]].\n<b>Special</b>: Place 1 threat on the main scheme.\n<b>Forced Interrupt</b>: When Rocksteady would activate, if Headfirst is in play, flip Bebop and Rocksteady to their [[K.O.]] sides and flip both [[TEMPER]] attachments to their [[ROWDY]] sides.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk009",
+   "type": "Attachment",
+   "name": "* Shutter Shades",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SUNGLASSES"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Attach to Bebop if he is [[ALERT]]. Otherwise, this card gains surge.\nBebop gains steady.\n<b>When Revealed</b>: Place 1 knucklehead counter on the [[HOG]] attachment.\n<b>Forced Response</b>: After Bebop flips to his [[K.O.]] side, discard this card.\n<i>\"I wear my sunglasses at night.\"</i> —Bebop",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk010",
+   "type": "Attachment",
+   "name": "* Aviator Cap",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "HELMET"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Attach to Rocksteady if he is [[ALERT]]. Otherwise, this card gains surge.\nRocksteady gains steady.\n<b>When Revealed</b>: Place 1 knucklehead counter on the [[RHINO]] attachment.\n<b>Forced Response</b>: After Rocksteady flips to his [[K.O.]] side, discard this card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk011",
+   "type": "Attachment",
+   "name": "* Roberta",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Attach to Bebop if he is [[ALERT]]. Otherwise, this card gains surge.\n[star] Bebop's attacks gain piercing.\n<b>Forced Response</b>: After Bebop flips to his [[K.O.]] side, discard this card.\n<i>\"Time for some gore!\"</i> —Bebop",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk012",
+   "type": "Attachment",
+   "name": "* Juniper",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Attach to Rocksteady if he is [[ALERT]]. Otherwise, this card gains surge.\n[star] Rocksteady's attacks gain overkill.\n<b>Forced Response</b>: After Rocksteady flips to his [[K.O.]] side, discard this card.\n<i>\"I bet I can persuade you to move.\"</i> —Rocksteady",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk013",
+   "type": "SideScheme",
+   "name": "Bumbling Buffoons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Acceleration": "1",
+    "StartingThreat": "4"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Dodgy. <i>(When a character thwarts this side scheme, they may use their DEF instead of their THW.)</i>\n<b>When Defeated</b>: Choose an enemy. That enemy attacks you. You may deal damage from this attack to another enemy of your choice instead.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk014",
+   "type": "SideScheme",
+   "name": "Bumbling Buffoons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Acceleration": "1",
+    "StartingThreat": "4"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Dodgy. <i>(When a character thwarts this side scheme, they may use their DEF instead of their THW.)</i>\n<b>When Defeated</b>: Choose an enemy. That enemy attacks you. You may deal damage from this attack to another enemy of your choice instead.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk015",
+   "type": "SideScheme",
+   "name": "Bumbling Buffoons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Acceleration": "1",
+    "StartingThreat": "4"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Dodgy. <i>(When a character thwarts this side scheme, they may use their DEF instead of their THW.)</i>\n<b>When Defeated</b>: Choose an enemy. That enemy attacks you. You may deal damage from this attack to another enemy of your choice instead.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk016",
+   "type": "SideScheme",
+   "name": "Collision Course",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Acceleration": "1",
+    "StartingThreat": "2*"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>When Revealed</b>: Place 1 knucklehead counter on each [[TEMPER]] attachment.\n<b>When Defeated</b>: Stun each villain.\n<i>\"Hit the deck!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk018",
+   "type": "SideScheme",
+   "name": "Olé!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Acceleration": "1",
+    "StartingThreat": "2",
+    "Hinder": "1*"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Hinder 1[per_hero].\n<b>When Defeated</b>: Deal 2[per_hero] damage to each villain. Stun each [[ENRAGED]] villain damaged this way.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk020",
+   "type": "SideScheme",
+   "name": "Toro! Toro!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Hazard": "1",
+    "StartingThreat": "4"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Dodgy. <i>(When a character thwarts this side scheme, they may use their DEF instead of their THW.)</i>\n<b>When Defeated</b>: Place 2 knucklehead counters on a [[TEMPER]] attachment.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk022",
+   "type": "Treachery",
+   "name": "Lay the Beatdown",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Confuse your identity.\n<b>When Revealed (Hero)</b>: Choose:\n• Deal 2 indirect damage to your hero.\n• Stun your hero.\n<i>\"I love the sound of this beat!\"</i> —Bebop",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk024",
+   "type": "Treachery",
+   "name": "Pummel",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>When Revealed</b>: Choose:\n• Take damage equal to either Bebop or Rocksteady's ATK.\n• Discard the highest-cost upgrade or support you control.\n<i>\"You feelin' me?\"</i> —Bebop",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk026",
+   "type": "Treachery",
+   "name": "Trample",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Bebop & Rocksteady",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Discard 1 card from your hand.\n<b>When Revealed (Hero)</b>: Choose a villain. That villain attacks the friendly character with the fewest remaining hit points.\n<hr />\n[star] <b>Boost</b>: Deal 1 damage to an ally you control.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk028",
+   "type": "Minion",
+   "name": "* Anchovy",
+   "subtitle": "",
+   "desc": {
+    "HP": "1*",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "ELITE",
+    "VELOCIRAPTOR"
+   ],
+   "set_name": "Bebop & Rocksteady",
+   "text": "Toughness.\n<b>Forced Interrupt</b>: When Anchovy is defeated, shuffle him into the encounter deck.\n<hr />\n[star] <b>Boost</b>: After this activation resolves, deal this card to the first player as a facedown encounter card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk101",
+   "type": "SideScheme",
+   "name": "Welcome to the Jungle",
+   "subtitle": "",
+   "desc": {
+    "Acceleration": "1",
+    "StartingThreat": "2*",
+    "Victory": "0"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Concrete Jungle",
+   "text": "<i>\"We can't fight in the shadows anymore! It's time to take this fight to the them.\"</i> —Raphael\nSetup. Victory 0.\n<b>When Defeated</b>: Each player may choose 1 set-aside [[NYC]] card and put it into play.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk102",
+   "type": "SideScheme",
+   "name": "Road to Ruin",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Concrete Jungle",
+   "text": "<b>When Revealed</b>: Choose:\n• Discard a friendly [[LOCATION]].\n• Stun your hero.\n<b>When Defeated</b>: Stun an enemy.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk104",
+   "type": "Treachery",
+   "name": "Fallen Empires",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Concrete Jungle",
+   "text": "<b>When Revealed</b>: Choose:\n• Discard a friendly [[LOCATION]].\n• Discard 1 card from your hand.\n<hr />\n[star] <b>Boost</b>: Discard 1 card from your hand.\n<i>\"Manhattan has really fallen on hard times.\"</i> —Bebop",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk106",
+   "type": "Support",
+   "name": "* Channel 6 News",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Basic",
+    "Linked": "Welcome to the Jungle"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SKYLINE"
+   ],
+   "set_name": "",
+   "text": "Linked (Welcome to the Jungle).\n<b>Response</b>: After a [[NYC]] side scheme is revealed, exhaust Channel 6 News → remove 2 threat from a scheme.\n<i>\"Who are these new vigilantes? Stay tuned to find out!\"</i> —April O'Neil",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk107",
+   "type": "Support",
+   "name": "* Eastman Theater",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Basic",
+    "Linked": "Welcome to the Jungle"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "STREETS"
+   ],
+   "set_name": "",
+   "text": "Linked (Welcome to the Jungle).\n<b>Hero Response</b>: After a [[NYC]] side scheme is defeated, exhaust Eastman Theater → ready a friendly hero.\n<i>\"Seen any good movies lately?\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk108",
+   "type": "PlayerSideScheme",
+   "name": "* Powder Keg",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "Class": "Basic",
+    "StartingThreat": "2*",
+    "Linked": "Welcome to the Jungle"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "",
+   "text": "Linked (Welcome to the Jungle).\nThis card does not count against the player side scheme limit.\n<b>When Defeated</b>: The player who defeated this scheme deals 2 damage to each enemy (4 damage instead if the enemy is stunned or confused).\n<i>\"Snort! I'm serious man! Don't you smell gas Bebop?\"</i> —Rocksteady",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk109",
+   "type": "PlayerSideScheme",
+   "name": "* Power Play",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "Class": "Basic",
+    "StartingThreat": "2*",
+    "Linked": "Welcome to the Jungle"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "",
+   "text": "Linked (Welcome to the Jungle).\nThis card does not count against the player side scheme limit.\n<b>Hero Response</b>: After you remove threat from this scheme, discard 1 card from your hand → remove 2 threat from this scheme.\n<b>When Defeated</b>: Each player may stun and confuse an enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk201",
+   "type": "Treachery",
+   "name": "Hittin' the Town",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Rock the Block",
+   "text": "<b>When Revealed</b>: Discard cards from the top of the villain deck until an attachment or side scheme is discarded and reveal it.\n<i>\"You know what this is? This is my new haircut!\"</i> —Rocksteady",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk203",
+   "type": "Treachery",
+   "name": "Jägerbombs",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Rock the Block",
+   "text": "<b>When Revealed</b>: Choose one:\n• Stun your identity.\n• Confuse your identity.\n<i>\"Jägerbombs! You feel me broski?\"</i> —Bebop",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tk205",
+   "type": "SideScheme",
+   "name": "Get Your Swell On",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Amplify": "1",
+    "StartingThreat": "4*"
+   },
+   "traits": [
+    "NYC"
+   ],
+   "set_name": "Rock the Block",
+   "text": "<b>When Revealed</b>: Heal 1 damage from each enemy. Give each enemy a tough status card.\n<i>\"Do you need to grunt like that?\"</i> —Rocksteady\n<i>\"Not now Chief, I'm in the zone!\"</i> —Bebop",
+   "custom": "Inkwire"
+  }
+ ],
  "web_of_deceit": [
   {
    "card_id": "wd001a",
@@ -111577,5 +112248,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "1b1b045be8fa680eaeaaddc4daf8098d71d2b374e77bee983ceb48339b962ebe"
+ "checksum": "9213de399cb58f5792eb352348837f0974246bf6e4836067f9c04282d699e547"
 }

@@ -1,0 +1,26 @@
+{
+    "version": "0.5.8",
+    "name": "Bebop & Rocksteady",
+    "villain": [],
+    "expert": false,
+    "schemes": [
+        "tk005a,tk005b"
+    ],
+    "set_aside": [
+        "tk001a,tk001b",
+        "tk003a,tk003b",
+        "tk006a,tk006b",
+        "tk007a,tk007b",
+        "tk008a,tk008b",
+        "tk101"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "bebop_rocksteady",
+        "concrete_jungle",
+        "tmnt_standard"
+    ],
+    "modular_sets": [
+        "rock_the_block"
+    ]
+}
