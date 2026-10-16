@@ -17,6 +17,7 @@ import { langueActuelle, t } from '../board/langue'
 import { libelleStatut } from '../board/effets-statuts'
 import { IMAGE_MORSURE } from './morsure'
 import './ScanCard.css'
+import './panorama-jumelles.css'
 
 // Vraies icones de stats (bursts comic) fournies par l'utilisateur. Vite les
 // inline en data-URI au build : pas de requete reseau, compatible avec la CSP.
@@ -231,6 +232,12 @@ export type ScanCardProps = {
    * apres avoir attaque), et doit alors garder son inclinaison d'epuisement.
    */
   exhausted?: boolean
+  /**
+   * Moitie d'une paire jumelle a illustration continue (`board/panorama-jumelles.ts`) :
+   * posee bord a bord avec sa soeur. Epuisee, elle ne penche PAS (cela casserait
+   * le raccord) : elle se grise et porte une pastille d'inclinaison.
+   */
+  panorama?: 'gauche' | 'droite'
   imageUrl: string
   /**
    * `table` (defaut) : la carte se dessine petite, on demande au serveur sa
@@ -536,6 +543,7 @@ export function ScanCard({
   labelType,
   state = 'ready',
   exhausted = false,
+  panorama,
   imageUrl,
   taille = 'table',
   surcouche,
@@ -654,6 +662,8 @@ export function ScanCard({
     `kind-${facedown ? 'unknown' : kind}`,
     `state-${state}`,
     exhausted ? 'est-epuise' : '',
+    panorama ? `est-panorama panorama-${panorama}` : '',
+    panorama && exhausted ? 'est-panorama-epuise' : '',
     isLandscape ? 'is-landscape' : 'is-portrait',
     isLandscape && scanIsPortrait ? 'scan-a-tourner' : '',
     facedown ? 'is-facedown' : '',
@@ -745,6 +755,18 @@ export function ScanCard({
             <span>{facedown ? '?' : name}</span>
           </div>
           {surcouche}
+
+          {panorama && exhausted ? (
+            <span className="panorama-epuise">
+              <span className="panorama-pastille" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M12 4a8 8 0 0 1 6.9 4H16a1 1 0 0 0 0 2h5V5a1 1 0 0 0-2 0v1.4A10 10 0 0 0 2.1 11a1 1 0 0 0 2 .2A8 8 0 0 1 12 4z" />
+                  <path d="M12 20a8 8 0 0 1-6.9-4H8a1 1 0 0 0 0-2H3v5a1 1 0 0 0 2 0v-1.4A10 10 0 0 0 21.9 13a1 1 0 0 0-2-.2A8 8 0 0 1 12 20z" />
+                </svg>
+              </span>
+              <span className="panorama-etiquette">{langueActuelle() === 'en' ? 'Exhausted' : 'Épuisée'}</span>
+            </span>
+          ) : null}
 
           {pileCount !== undefined ? (
             <span className="pile-count-badge" aria-label={`${pileCount} ${t('cartes dans la pile')}`}>
