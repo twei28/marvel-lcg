@@ -746,3 +746,57 @@ html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-
 html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .af-action {
   max-width: 210px;
 }
+
+/* --- 15. « Épuré, mais pas mort » (16/10/2026) --------------------------------
+   Trois touches, rien de plus : des boules floues sur la table (aux couleurs du
+   heros quand on les connait), un liseré de la couleur du heros sous les
+   bandeaux, et un relief doux sous les cartes. */
+html[data-epure] .plateau-scene,
+html[data-epure] body.a-halo-heros .plateau-scene {
+  /* Des disques flous, bord doux : visibles, mais jamais un motif. */
+  background:
+    radial-gradient(circle 260px at 14% 32%, color-mix(in srgb, var(--ep-heros-1, #ffffff) 26%, transparent) 0, color-mix(in srgb, var(--ep-heros-1, #ffffff) 14%, transparent) 55%, transparent 100%),
+    radial-gradient(circle 320px at 80% 74%, color-mix(in srgb, var(--ep-heros-2, #ffffff) 22%, transparent) 0, color-mix(in srgb, var(--ep-heros-2, #ffffff) 10%, transparent) 55%, transparent 100%),
+    radial-gradient(circle 180px at 58% 18%, rgba(255, 255, 255, 0.28) 0, rgba(255, 255, 255, 0.12) 55%, transparent 100%),
+    radial-gradient(circle 140px at 36% 82%, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.08) 55%, transparent 100%),
+    radial-gradient(circle 120px at 90% 20%, color-mix(in srgb, var(--ep-heros-1, #ffffff) 18%, transparent) 0, transparent 100%),
+    var(--ep-fond);
+}
+
+/* Le liseré du heros : sous la barre du haut et sous chaque bandeau jaune. */
+html[data-epure] .plateau-barre {
+  border-bottom: 3px solid var(--ep-heros-1, var(--ep-bord));
+}
+
+html[data-epure] .reglages-tete,
+html[data-epure] .deroule-phase.est-scene .deroule-ligne-haut,
+html[data-epure] .deck-modal-panel .dm-head,
+html[data-epure] .assistant-action .assistant-simple-action {
+  border-bottom: 3px solid var(--ep-heros-1, rgba(20, 24, 32, 0.28));
+}
+
+html[data-epure] .demande-centrale .dc-texte {
+  border-top-color: var(--ep-heros-1, var(--ep-jaune));
+}
+
+/* Le relief doux : une ombre sous chaque carte, qui se soulève un peu au survol. */
+html[data-epure] .scan-frame,
+html[data-epure] .state-playable .scan-frame,
+html[data-epure] .state-targetable .scan-frame,
+html[data-epure] .scan-card.state-source .scan-frame {
+  box-shadow: 0 0 0 1px #6c727d, 0 3px 8px rgba(10, 14, 22, 0.28);
+  transition: translate 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+html[data-epure] .scan-card:hover .scan-frame {
+  translate: 0 -3px;
+  box-shadow: 0 0 0 1px #494b50, 0 8px 18px rgba(10, 14, 22, 0.32);
+}
+
+html[data-epure] .reglages-fenetre,
+html[data-epure] .deroule-phase,
+html[data-epure] .assistant-action,
+html[data-epure] .deck-modal-panel,
+html[data-epure] .demande-centrale .dc-texte {
+  box-shadow: var(--ep-biseau), 0 18px 40px rgba(10, 14, 22, 0.22);
+}
