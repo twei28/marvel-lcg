@@ -72,3 +72,4 @@ Source des scans : `TMNT Heroes-20261014T200300Z-1-001.zip` / `TMNT Heroes/Venus
 - **Q1** : plafond du STOCK de Venus (lecture retenue, confirmee). Rien a changer.
 - **Q2** : l'icone est un vrai Hazard 1 (lecture retenue, confirmee). Rien a changer.
 - **Q3** : seulement les ressources wild NECESSAIRES au cout (PAS la lecture retenue) : `min(wild payees, cout paye)`, jamais le surplus. tv005 corrige, cas « deux Evanescence : 4 cartes et non 6 » vu rouge puis vert.
+- **Paire Dragon Scale (tv011) + Turtle Shell (tv014)** : l'utilisateur a refusé le panorama (cartes séparées, illustration non vraiment continue). Rien n'est déclaré dans `panorama-jumelles.ts`.
