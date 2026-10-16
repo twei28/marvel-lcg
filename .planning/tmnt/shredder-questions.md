@@ -47,3 +47,10 @@ consignee ici. Scans : `.planning/tmnt/pics-shredder/<card_id>.jpg` (copie versi
 
 ## Q9. « daze » : traduction francaise et carte d'etat
 - te001, te002, te103 posent la carte d'etat **Dazed** (encart « Dazed Rules Insert » du vilain Baxter Stockman, autre agent). Traduction FR provisoire : « hebetez ». A harmoniser avec le pack Baxter lors de la fusion.
+
+## REPONSES DE L'UTILISATEUR (16/10/2026)
+
+- **Q1** : Bladed Armor, l'IDENTITE du joueur qui paie prend le degat (confirmee).
+- **Q2** : l'utilisateur a fourni la carte d'etat **INTENSIFIED** (capture Discord du serveur Bebop & Rocksteady, `.planning/tmnt/intensified-capture.webp`) :
+  « The next time this character would discard a status card, discard this status card instead. This card cannot be given to a character that has no status cards. »
+  « Intensify X » = poser une carte d'etat Intensified sur X (7e carte d'etat). A IMPLEMENTER (moteur + te201), voir aussi le scenario Bebop & Rocksteady.
