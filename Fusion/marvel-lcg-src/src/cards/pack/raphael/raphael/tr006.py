@@ -5,7 +5,7 @@ from . import *
 # Hero Action: Raphael gets +2 ATK until the end of the round. If you paid for
 #   this card using a [physical] resource, draw 1 card.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `bk014` (pack blink) / `14005` : « Max 1 per phase » -> `.MaxOnePerPhase()`

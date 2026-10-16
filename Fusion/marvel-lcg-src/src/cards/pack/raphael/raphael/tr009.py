@@ -6,7 +6,7 @@ from . import *
 # Alter-Ego Action: Exhaust Raph's Punching Bag and remove all rage counters
 #   from your identity -> draw 1 card for each rage counter removed this way.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # CARTES DE REFERENCE
 #  - `ho005` (harry_osborn) : SOUTIEN qui donne un bonus continu d'identite =

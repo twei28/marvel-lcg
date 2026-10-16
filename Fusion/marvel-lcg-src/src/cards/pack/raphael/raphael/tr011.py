@@ -5,7 +5,7 @@ from . import *
 # Each [[SAI]] upgrade you control gains: "Hero Action (attack): Exhaust this
 #   card and take 1 damage -> deal 1 damage to an enemy."
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # MOTS-CLES (fiches lues) : RESTRICTED — `docs/reference/mots-cles/restricted.md`
 # (`desc.Restricted = "1"`, limite de 2 cartes Restricted gerees par le moteur,
@@ -30,7 +30,8 @@ from . import *
 #  ⚠ « Exhaust this card AND take 1 damage -> » : deux COUTS ; les degats sont
 #    infliges a l'IDENTITE du joueur (la Sai est attachee au heros).
 #  ⚠ « deal 1 damage to AN enemy » : vilain ou sbire, au choix.
-#  ⚠ Encart de regles : action d'ATTAQUE + pose de 1 rage (max 3). TODO-QUESTION Q3.
+#  ⚠ Encart de regles : action d'ATTAQUE + pose de 1 rage (max 3) :
+#    l'encart fait loi (decision du 15/10/2026).
 #  Aucune limite imprimee.
 
 

@@ -5,7 +5,7 @@ from . import *
 #   your hand.
 # [star] Boost: Discard 1 ready ally you control.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # MOT-CLE : BOOST — fiche `docs/reference/mots-cles/boost.md`. `desc.Boost = "0"`
 # (aucune icone chiffree, une etoile) + `WhenCardBecomeBoost("This", op)`.

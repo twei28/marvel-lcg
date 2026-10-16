@@ -6,7 +6,7 @@ from . import *
 #   upgrade you control to discard an attachment with the text "Hero Action" or
 #   "Hero Response" from an enemy.
 #
-# PHASE A : construit, jamais execute.
+# Valide en jeu : cas `tools/cas/tmnt_raphael.py` (voir .planning/todos/2026-10-16-raphael-gabarits-processus-carte.md).
 #
 # MOT-CLE : REQUIREMENT — fiche `docs/reference/mots-cles/requirement.md`.
 # BASE AUTOMATIQUE : `desc.Requirement = "R"`. AUCUN SCRIPT. « 2 dont au moins
