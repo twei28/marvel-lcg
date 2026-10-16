@@ -49,6 +49,18 @@ describe('traduireMoteur', () => {
     )
   })
 
+  it('traduit les choix de Bebop & Rocksteady (ordre des deux activations, vilain visé)', () => {
+    enFrancais()
+    expect(traduireMoteur('Choose which villain activates first against Spider-Man')).toBe(
+      'Choisis le méchant qui s’active d’abord contre Spider-Man'
+    )
+    expect(traduireMoteur('Choose Bebop or Rocksteady')).toBe('Choisis Bebop ou Rocksteady')
+    enAnglais()
+    expect(traduireMoteur('Choose which villain activates first against Spider-Man')).toBe(
+      'Choose which villain activates first against Spider-Man'
+    )
+  })
+
   it('traduit les choix de Venus (compteurs de dragage)', () => {
     enFrancais()
     expect(traduireMoteur('Remove 2 dredge counters to draw 3 cards')).toBe('Retirer 2 compteurs de dragage pour piocher 3 cartes')

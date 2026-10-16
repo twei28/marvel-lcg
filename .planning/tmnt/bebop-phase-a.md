@@ -88,8 +88,8 @@ porte le chiffre seul.)
 - **Plateau** : `ui-app/src/board/tmnt-bebop-plateau.test.ts` (14 cas verts ; gate vue rouge par mutation du
   `bind_object_id` de Gone Berserk) ; `vitest` complet 3594/3597 (les 3 échecs : arts alternatifs de héros,
   images absentes de la copie de travail, étrangers au pack) ; `tsc --noEmit` vert.
-- **Non prouvé** : une partie jouée par un humain dans le navigateur ; l'ordre des deux activations (Q8) ;
-  les lectures Q1-Q7 ; le rendu des scans (icônes) autrement que par découpe ; l'exposition des quatre
+- **Non prouvé** : une partie jouée par un humain dans le navigateur (dont l'affichage réel de la question
+  d'ordre Q8 dans la scène de la phase du méchant) ; les lectures Q1-Q8 sont TRANCHÉES (16/10/2026) ; le rendu des scans (icônes) autrement que par découpe ; l'exposition des quatre
   cartes `Linked` (Basic) dans le deck-builder, comme les cartes Linked officielles.
 
 ## Gabarits par carte (PROCESSUS-CARTE.md)
@@ -226,14 +226,16 @@ Carte terminée : OUI
 
 ### tk006a : Destructive Dunderheads (Environment)
 
-- [x] Étape 2 : carte(s) de référence : Plusieurs vilains : `27100a` (`AbilityFactory.GetVillain`) ; mise de côté d'un vilain vaincu : `SinisterSixWhenDefeated` (`27100`). Hooks moteur ajoutés : `GettingVillainsToActivate`, `GettingVillain.by_effect`.
-- [x] Étape 5 : texte-contre-code : mots-pièges vérifiés : each / either / instead / unless / if (alert/K.O.) / « the villain » / « you » / « your identity » / « may » / « first player » / before-after (Interruption vs Réponse). Résultat : voir `.planning/tmnt/bebop-questions.md` pour les lectures non tranchées (Q1-Q8) ; le reste est littéral.
+- [x] Étape 2 : carte(s) de référence : Plusieurs vilains : `27100a` (`AbilityFactory.GetVillain`) ; mise de côté d'un vilain vaincu : `SinisterSixWhenDefeated` (`27100`). Hooks moteur ajoutés : `GettingVillainsToActivate`, `GettingVillain.by_effect`. Ordre des deux activations (Q8) : `Enemies.OrdreDesJoueursActives` (« Players Activation Order », le premier joueur choisit, RR p.6) et `faces.py` (« Simultaneous Discard », `GetFirstPlayer().ChooseOrder`) ; ajouté `Enemies.OrdreDesVilainsActives` (`AskChooseFace` du premier joueur, une question par joueur activé).
+- [x] Étape 5 : texte-contre-code : mots-pièges vérifiés : each / either / instead / unless / if (alert/K.O.) / « the villain » / « you » / « your identity » / « may » / « first player » / before-after (Interruption vs Réponse). Résultat : « both villains activate against each player » : l'ordre n'est pas imprimé → Q8 tranchée le 16/10/2026 (le premier joueur choisit, pour chaque joueur, lequel s'active d'abord ; question seulement si les deux vilains sont en jeu). Le reste est littéral.
 - [x] Étape 6 : nombres texte ↔ code : valeurs `desc` relevées sur le scan (PV, ATQ, SCH, coût, menace, icônes de boost) ; contrôlées par les cas. Résultat : conforme.
 - [x] Étape 7 : cas `test_capacites` sujets (10) : tk006a Dunderheads (Double Trouble) : les DEUX vilains s'activent contre le joueur (phase du mechant); tk006a Dunderheads : a DEUX joueurs, chaque vilain s'active contre CHAQUE joueur (+2 sur le premier joueur par rapport au BASELINE); tk006a Dunderheads : « the villain » -> le joueur choisit UN vilain (overkill sur un sbire : 4 degats a celui choisi); tk006a Dunderheads : Bebop vaincu -> lui et son Temper sont MIS DE COTE, Rocksteady reste ALERT et Gone Berserk l'equipe; tk006a Dunderheads : Bebop vaincu alors que Rocksteady est K.O. -> Rocksteady repasse ALERT; tk006a Dunderheads : Rocksteady vaincu -> Bebop (ALERT, +12 PV) et son Temper restent ...
       Substitution (`tools/substituer_pack.py`) : rouges 6/10 ⚠ un cas reste vert sans module
+      Q8 (16/10/2026) : 4 cas `(Q8)` dans `tools/cas/tmnt_bebop.py` : premier joueur choisit Rocksteady → [Rocksteady, Bebop] ; choisit Bebop → [Bebop, Rocksteady] ; 2 joueurs → question posée pour Spider-Man ET T'Challa, ordre [R, B, R, B] ; un seul vilain (Feral) → aucune question. 4/4 verts. MUTATION (ordre fixe Bebop puis Rocksteady, sans question) : 1/4 vert, les 3 cas d'ordre ROUGES (le 4e est le contre-cas d'absence, vert par construction). Pack complet (filtre « tk ») : 123/123 (122 au premier passage + le cas 2 joueurs corrigé : T'Challa, identité en alter ego, et non « Black Panther »).
 - [x] Étape 7 bis : limite imprimée ? NON (aucun « Limit » imprimé)
 - [x] Étape 8 : autoplay ciblé : solo et 2 joueurs, normal et expert : voir bilan ci-dessous ; témoin Rhino, grep tracebacks : 0.
-- [x] Étape 8 bis : la carte change-t-elle ce qu'on VOIT ? OUI. cas plateau : `ui-app/src/board/tmnt-bebop-plateau.test.ts` (14 cas verts, gate vue rouge par mutation)
+      Q8 (16/10/2026) : solo spider_man normal 4 parties 0 V / 4 D, 0 traceback ; 2 joueurs spider_man + black_panther 4 parties : 3 D + 1 « bloquée » (round 1, boucle Tenacity 01093 du pilote, avant toute phase du méchant), 0 traceback ; le pilote répond à la question (trace : « Choose_which_villain_activates_first_against_Spider-Man », et contre Black Panther à 2 joueurs, 1 à 3 fois par partie).
+- [x] Étape 8 bis : la carte change-t-elle ce qu'on VOIT ? OUI. cas plateau : `ui-app/src/board/tmnt-bebop-plateau.test.ts` (14 cas verts, gate vue rouge par mutation) ; libellé de la question Q8 traduit (`vocabulaire-moteur.ts`, « Choisis le méchant qui s’active d’abord contre … », test `vocabulaire-moteur.test.ts`)
 
 Carte terminée : OUI
 

@@ -48,6 +48,8 @@ class Enemies:
                 multi_message.Send()
                 if multi_message.return_value:
                     villains_to_activate = list(multi_message.return_value)
+                    villains_to_activate = Enemies.OrdreDesVilainsActives(
+                        effect, activate_against_player, villains_to_activate)
                 for active_villain in villains_to_activate:
                     if not active_villain.IsInPlay():
                         continue
@@ -149,6 +151,33 @@ class Enemies:
             include_villain=False,
             if_no_activate=if_no_activate,
         )
+
+    @staticmethod
+    def OrdreDesVilainsActives(effect: 'Effect', joueur: 'Player',
+                               vilains: List['Villain']) -> List['Villain']:
+        """L'ordre de PLUSIEURS vilains qui s'activent contre le meme joueur.
+
+        Bebop & Rocksteady, `tk006a` Destructive Dunderheads : « both villains
+        activate against each player ». Aucun texte ne fixe l'ordre : regle des
+        effets simultanes (RR p.6), le PREMIER JOUEUR choisit, pour chaque joueur,
+        quel vilain s'active d'abord (tranche par l'utilisateur le 16/10/2026,
+        bebop-questions.md Q8). Un seul vilain en jeu : aucune question.
+        """
+        restants = [v for v in vilains if v.IsInPlay()]
+        if len(restants) < 2:
+            return restants
+        premier = effect.world.GetFirstPlayer()
+        nom = joueur.GetIdentity().name
+        ordre: List['Villain'] = []
+        while len(restants) > 1:
+            choisi = premier.AskChooseFace(
+                restants, effect,
+                prompt=f"Choose which villain activates first against {nom}")
+            if choisi is None or choisi not in restants:
+                choisi = restants[0]
+            ordre.append(choisi)
+            restants.remove(choisi)
+        return ordre + restants
 
     @staticmethod
     def OrdreDesJoueursActives(effect: 'Effect', finder: 'CardFinder|None',
