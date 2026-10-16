@@ -1064,8 +1064,83 @@ CAS += [
     },
 ]
 
-# ========================================================================= td016 / td017 : jeu reel des essaims
+# ========================================================================= td016 / td017 : essaims, PV dynamiques
 CAS += [
+    {
+        "nom": "[donatello] td016 Plague of M.O.U.S.E.R.s — entre avec 2 compteurs swarm : ATQ, MNG et PV valent 2",
+        "pourquoi": ("« Enters play with 2 swarm counters. [star] SCH, ATK and hit points are equal to the number of "
+                     "swarm counters » : PV dynamiques (desc.HP = 0), le sbire ne meurt PAS a l'entree en jeu"),
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('td016')"],
+        "declencher": [],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td016", "compteurs": 2, "pv": 2, "pv_max": 2, "atq": 2, "mng": 2},
+    },
+    {
+        "nom": "[donatello] td016 Plague of M.O.U.S.E.R.s — revele depuis le deck rencontre : meme etat (2 compteurs, PV 2)",
+        "pourquoi": "chemin reel de mise en jeu d'un sbire de rencontre (Reveal) : aucune mort a l'entree, 2 compteurs",
+        **HEROS,
+        "mise_en_place": ["Puzzle.Reveal('td016')"],
+        "declencher": [],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td016", "compteurs": 2, "pv": 2, "pv_max": 2, "atq": 2, "mng": 2},
+    },
+    {
+        "nom": "[donatello] td016 Plague of M.O.U.S.E.R.s — 1 degat : retire 1 compteur INSTEAD, PV et ATQ suivent, aucun degat inscrit",
+        "pourquoi": ("Forced Interrupt « remove that many swarm counters instead » : 1 degat -> 1 compteur, PV 1/1 "
+                     "(jamais 1 degat sur une carte a 2 PV), ATQ/MNG 1, toujours en jeu"),
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('td016')"],
+        "declencher": ["Puzzle.Damage('td016', 1)"],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td016", "compteurs": 1, "pv": 1, "pv_max": 1, "atq": 1, "mng": 1},
+    },
+    {
+        "nom": "[donatello] td016 Plague of M.O.U.S.E.R.s — 3 degats sur 2 compteurs : vaincu PAR LE MOTEUR (PV = 0), pas a la main",
+        "pourquoi": ("surplus de degats : 3 degats > 2 compteurs. Le module ne contient AUCUN appel de defaite : les "
+                     "compteurs partent, les PV (= compteurs) tombent a 0, `LimitHealth` vainc le sbire"),
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('td016')"],
+        "declencher": ["Puzzle.Damage('td016', 3)"],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td016", "en_jeu": False, "defausse_rencontre": True},
+    },
+    {
+        "nom": "[donatello] td016 Plague of M.O.U.S.E.R.s — 2 degats en deux fois (1 puis 1) : vaincu au dernier compteur",
+        "pourquoi": "la mort au dernier compteur ne depend pas d'un coup unique : 1 degat (1 compteur reste, en jeu) puis 1 degat (vaincu)",
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('td016')"],
+        "declencher": ["Puzzle.Damage('td016', 1)", "Puzzle.Damage('td016', 1)"],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td016", "en_jeu": False, "defausse_rencontre": True},
+    },
+    {
+        "nom": "[donatello] td017 Flight of Flyborgs — entre avec 4 compteurs swarm : ATQ, MNG et PV valent 4",
+        "pourquoi": "meme montage que td016 avec 4 compteurs de depart",
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('td017')"],
+        "declencher": [],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td017", "compteurs": 4, "pv": 4, "pv_max": 4, "atq": 4, "mng": 4},
+    },
+    {
+        "nom": "[donatello] td017 Flight of Flyborgs — 3 degats : 1 compteur reste, PV 1, ATQ 1, toujours en jeu",
+        "pourquoi": "« remove that number of swarm counters instead » : 3 degats retirent 3 compteurs (4 -> 1), la jauge de PV suit",
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('td017')"],
+        "declencher": ["Puzzle.Damage('td017', 3)"],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td017", "compteurs": 1, "pv": 1, "pv_max": 1, "atq": 1, "mng": 1},
+    },
+    {
+        "nom": "[donatello] td017 Flight of Flyborgs — 9 degats sur 4 compteurs : vaincu par le moteur",
+        "pourquoi": "gros surplus (9 > 4) : les compteurs sont plafonnes, le sbire est vaincu quand les PV tombent a 0",
+        **HEROS,
+        "mise_en_place": ["Puzzle.PutIntoPlay('td017')"],
+        "declencher": ["Puzzle.Damage('td017', 9)"],
+        "verifier": "td_etat_carte",
+        "attendu": {"carte": "td017", "en_jeu": False, "defausse_rencontre": True},
+    },
     {
         "nom": "[donatello] td016 Plague of M.O.U.S.E.R.s — attaque avec ATQ = compteurs : 2 degats a Donatello epuise",
         "pourquoi": "ATQ 2 (2 compteurs), Donatello epuise ne se defend pas : 2 degats",

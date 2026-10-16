@@ -8,23 +8,35 @@ Hero Action: Exhaust Donatello's Shell → choose a card in your hand and tuck
 it here. »
 
 **Mécanisme moteur** : `CardFace.TuckCardUnderHere(faces, effect)`
-(`card_face.py:1022`, enveloppe de `PlaceCardHere`) range la carte dans la zone
+(`card_face.py`, enveloppe de `PlaceCardHere`) range la carte dans la zone
 `PlaceCardArea` de la carte porteuse (`is_place_card_area`, hors jeu) ;
-`GetPlacedCardArea().GetSize()` compte les cartes rangées ;
-`AbilityFactory.AttachedCardCanPlayLikeInHand(finder)` /
-`YouMayPlayCardLikeInHand(..., from_where="ThisPlacedCard")` rend les cartes
-rangées jouables comme en main (`Card.IsLikeInHand`).
+`GetPlacedCardArea().GetSize()` compte les cartes rangées.
+`AbilityFactory.AttachedCardCanPlayLikeInHand(also_discard=, also_spend=)` rend
+les cartes rangées utilisables « comme en main ». Trois permissions DISTINCTES,
+chacune répondue à sa propre question (`Message.CheckIfFaceIsLikeInHand`, champs
+`for_discard` / `for_spend`) :
+- **jouer** : `Card.IsLikeInHand` (défaut, toute aptitude déclarée) ;
+- **dépenser** (`also_spend=True`) : `Card.IsLikeInHandForSpend`, lue par
+  `CheckThisCanDropPay` (`factory/resources.py`) : la carte glissée compte comme une
+  carte de la main pour le cloisonnement des paiements ;
+- **défausser** (`also_discard=True`) : `Card.IsLikeInHandForDiscard`, lue par
+  `Player.GetHandCardsAndTuckedDiscardable`, qui sert aux coûts
+  `CostFunc.Discard("YourHandCards")` (cible `YourHandCardsDiscardable`) et à
+  `Player.DiscardHandCards` (effets où le joueur choisit).
+Sans `also_*`, les cartes glissées sous Echo (`60037a`) gardent leur comportement
+d'avant (jouer seulement). Une défausse AU HASARD (`DiscardRandomHandCards`) ne
+voit pas la carte glissée : « you MAY discard » est une permission du joueur.
 
-**Carte exemple** : `60030` Contingency Planning (une amélioration, une seule
-carte rangée, jouable comme en main) ; `dd008` Doomstadt (plafond à 3).
+**Carte exemple** : `td012` Donatello's Shell (les trois permissions) ; `60030`
+Contingency Planning (jouer seulement) ; `dd008` Doomstadt (plafond à 3).
 
 **Pièges connus** :
-- « play, spend, OR DISCARD as if in your hand » : seul « play » (et, par la
-  zone, « spend ») est rendu par le moteur. Les coûts « discard 1 card from
-  your hand » ne regardent que `YourHandCards` et ne voient pas la carte
-  rangée (question Q-TD-12) ;
+- jusqu'au 16/10/2026 « spend » et « discard » n'étaient PAS rendus (seul « play »
+  l'était) : le cloisonnement des paiements refusait toute carte hors main/réserve ;
 - le plafond « Max N » se met en CONDITION de l'action qui range, pas dans le
   corps ;
-- `PlaceCardHere` refuse si la carte porteuse n'est pas sur le terrain.
+- `PlaceCardHere` refuse si la carte porteuse n'est pas sur le terrain ;
+- `Puzzle.Gain('<id>')` d'une carte déjà en jeu la RAMÈNE en main (même objet) :
+  pour une 2e copie, `Puzzle.CreateHandCards`.
 
 **Variantes maison** : aucune.

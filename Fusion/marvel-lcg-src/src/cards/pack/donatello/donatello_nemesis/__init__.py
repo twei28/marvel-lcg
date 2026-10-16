@@ -10,7 +10,7 @@ from cards.pack import *
 # ⚠ TRAITS MOUSERS / FLYBORGS : ecrits au PLURIEL, comme sur les lignes de
 # traits imprimees (« MOUSERS. SWARM. », « AERIAL. FLYBORGS. SWARM. ») et sur
 # Baxter Stockman (« any MOUSERS or FLYBORGS »). Le texte de td014 dit « a
-# MOUSER or FLYBORG minion » au singulier : voir TODO-QUESTION dans td014.
+# MOUSER or FLYBORG minion » au singulier : decision du 15/10/2026, traits pluriels conserves.
 # ===========================================================================
 
 TRAITS_ESSAIM = ["MOUSERS", "FLYBORGS"]

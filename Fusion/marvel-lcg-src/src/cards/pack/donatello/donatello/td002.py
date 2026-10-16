@@ -30,10 +30,10 @@ from . import *
 #  « When DONATELLO defends » -> forme HEROS uniquement ("YourHero").
 #  « Toughness » est lu dans `desc` : aucun module.
 #
-# TODO-QUESTION : aucune, MAIS montage non prouve — une capacite hors `Play`
-# portee par une carte en MAIN n'est offerte que si le moteur enregistre ses
-# effets hors jeu (`NoOutOfPlayLimit`, idiome aa002/dz014/tt013). A TESTER en
-# phase C (cas : Metalhead en main, Donatello se defend, option proposee ?).
+# Montage PROUVE le 16/10/2026 (cas `td002 ... Interrupt depuis la MAIN` et `... depuis
+# la CARAPACE`, rouges sans module) : une capacite hors `Play` portee par une carte
+# en main (`NoOutOfPlayLimit`) est offerte, y compris depuis la Carapace ; pas besoin
+# de `SetPlay` + cout 0.
 
 
 def GetAbilities() -> Sequence['Ability']:
