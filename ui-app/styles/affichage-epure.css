@@ -727,3 +727,22 @@ html[data-epure] body:has(.assistant-action) .deroule-phase:not(.est-question) .
 html[data-epure] body:has(.plateau-selecteur) .deroule-phase:not(.est-question) .deroule-mentions {
   visibility: hidden;
 }
+
+/* La question posee devant le cartouche y tient EN ENTIER (16/10/2026) : elle se
+   range a droite de la carte (decalage par `translate`, qui laisse le glisser
+   de la poignee fonctionner), et ses boutons passent a la ligne plutot que de
+   deborder du cadre. */
+html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) {
+  translate: 105px 0;
+  max-width: 440px;
+}
+
+html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .dc-boutons {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 440px;
+}
+
+html[data-epure] body:has(.deroule-phase.est-scene:not(.est-question)) .demande-centrale:not(.est-en-scene) .af-action {
+  max-width: 210px;
+}
