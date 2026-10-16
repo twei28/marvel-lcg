@@ -160,6 +160,8 @@ export function CoucheRencontreSurTable({
       allyHp={undefined}
       stats={undefined}
       labelType={garderType ? props.labelType : undefined}
+      // 16/10/2026 : pas de petite pastille de type au-dessus des cartes montrées en grand.
+      masquerType
       camp={undefined}
     />
   )
