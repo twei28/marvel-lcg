@@ -76,6 +76,14 @@ def construire_moteur(zip_path):
     for d in ("data", "deck", "puzzle"):
         shutil.copytree(os.path.join(MOTEUR, d), os.path.join(stage, d), ignore=ignore)
     os.makedirs(os.path.join(stage, "deck", "custom"), exist_ok=True)
+    # Heros pas encore valides, a garder hors ligne (16/10/2026, TMNT) : leurs decks
+    # de depart ne partent pas, donc ils ne se proposent pas. Meme liste que
+    # l'archive du site normal. Ex. : NARWHAL_HEROS_CACHES=leonardo,donatello
+    for nom in filter(None, os.environ.get("NARWHAL_HEROS_CACHES", "").split(",")):
+        chemin = os.path.join(stage, "deck", "starter", nom.strip() + ".json")
+        if os.path.isfile(chemin):
+            os.remove(chemin)
+            print(f"  heros cache : {nom.strip()}")
     json.dump(config_navigateur(), open(os.path.join(stage, "launch.json"), "w", encoding="utf-8"), indent=1)
     # L'EMPREINTE DU MOTEUR, prise avant compilation : ce que le controle
     # d'equivalence a valide. Meme empreinte, meme moteur, controle inutile.

@@ -11,7 +11,12 @@ import json, os, random, shutil, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor
 ICI = os.path.dirname(os.path.abspath(__file__)); NAV = os.path.dirname(ICI); RACINE = os.path.dirname(NAV)
 MOTEUR = os.path.join(RACINE, "Fusion", "marvel-lcg-src"); NATIF = os.path.join(NAV, ".cache", "natif")
-PY310 = os.path.expanduser("~/marvel-work/python/bin/python3.10")
+# Le Python 3.10 du moteur natif : variable NARWHAL_PY310, sinon l'environnement du
+# lanceur Linux (.venv-linux), sinon l'ancien chemin WSL.
+PY310 = os.environ.get("NARWHAL_PY310") or next(
+    (p for p in (os.path.join(RACINE, ".venv-linux", "bin", "python"),
+                 os.path.expanduser("~/marvel-work/python/bin/python3.10")) if os.path.exists(p)),
+    os.path.expanduser("~/marvel-work/python/bin/python3.10"))
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 24
 GRAINE = int(sys.argv[2]) if len(sys.argv) > 2 else 2026
 
