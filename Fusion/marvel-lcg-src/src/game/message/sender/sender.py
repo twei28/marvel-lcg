@@ -283,11 +283,30 @@ class Message(SenderRound, SenderPlayer, SenderCard, SenderTokenCounter, SenderD
             self.return_value = val
 
     class GettingVillain(GettingMessage):
+        # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : `by_effect` est
+        # l'effet d'une CARTE qui lit « le vilain » (`Worlds.FindVillain`).
+        # None pour toute lecture interne du moteur. Seul un scenario a deux
+        # vilains qui s'activent ensemble s'en sert : « le joueur qui resout la
+        # carte choisit UN vilain » (encart Bebop & Rocksteady).
+        def __init__(self, game_area: 'GameArea|None', world: 'World', by_effect: 'Effect|None'=None) -> None:
+            self.game_area: Final = game_area
+            self.by_effect: Final = by_effect
+            super().__init__(world=world)
+
+        def SetReturn(self, val: 'Villain'):
+            self.return_value = val
+
+    # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : les vilains qui
+    # s'activent contre un joueur pendant l'etape 2 de la phase du mechant.
+    # Un scenario a plusieurs vilains qui s'activent TOUS (Destructive
+    # Dunderheads : « both villains activate against each player ») rend la
+    # liste, dans l'ordre d'activation ; sinon le moteur garde le vilain unique.
+    class GettingVillainsToActivate(GettingMessage):
         def __init__(self, game_area: 'GameArea|None', world: 'World') -> None:
             self.game_area: Final = game_area
             super().__init__(world=world)
 
-        def SetReturn(self, val: 'Villain'):
+        def SetReturn(self, val: 'List[Villain]'):
             self.return_value = val
 
     class GettingUnitAdditionalTough(TriggerUnitMessage, GettingMessage):

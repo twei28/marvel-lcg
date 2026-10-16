@@ -40,7 +40,17 @@ class Enemies:
             game_area = activate_against_player.GetIdentity().card.GetGameArea()
             if Worlds.GetScenario(effect).IsVillainReady():
                 active_villain = Worlds.FindVillainByGameArea(game_area)
-                if active_villain:
+                villains_to_activate = [active_villain] if active_villain else []
+                # AJOUT (16/10/2026, Bebop & Rocksteady) : un scenario peut faire
+                # s'activer PLUSIEURS vilains contre le meme joueur.
+                from game.message import Message
+                multi_message = Message.GettingVillainsToActivate(game_area, effect.world)
+                multi_message.Send()
+                if multi_message.return_value:
+                    villains_to_activate = list(multi_message.return_value)
+                for active_villain in villains_to_activate:
+                    if not active_villain.IsInPlay():
+                        continue
                     has_enemy = True
                     if not finder or finder.Check(active_villain):
                         if activate == "Attack":
@@ -51,6 +61,8 @@ class Enemies:
                             do_active = active_villain.DoActivate(activate_against_player, effect)
                         if do_active:
                             active_cnt += 1
+                    if Worlds.IsGameOver(effect):
+                        break
                 if Worlds.IsGameOver(effect):
                     return Enemies.ActivatedResult(has_enemy, active_cnt)
 
