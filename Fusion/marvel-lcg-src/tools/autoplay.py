@@ -183,7 +183,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     # le meme port, et la seconde mourait sur « port indisponible ».
     sys.argv = [sys.argv[0], "-config_files", "launch.json", "-device", "key"]
 
-    etiquette = f"{os.path.basename(deck)}_{vilain}_{difficulte}_{profil}_{graine}"
+    etiquette = f"{os.path.basename(deck)}{'+' + os.environ['AUTOPLAY_DECK2'] if os.environ.get('AUTOPLAY_DECK2') else ''}_{vilain}_{difficulte}_{profil}_{graine}"
     journal = open(f"/tmp/autoplay_{etiquette}.log", "w", buffering=1)
     sys.stdout = journal
     sys.stderr = journal
@@ -1384,7 +1384,7 @@ def main():
             for profil in profils:
                 for i in range(args.parties):
                     graine = args.graine_depart + i
-                    etiquette = (f"{os.path.basename(args.deck)}_{vilain}_"
+                    etiquette = (f"{os.path.basename(args.deck)}{'+' + args.deck2 if args.deck2 else ''}_{vilain}_"
                                  f"{difficulte}_{profil}_{graine}")
                     travaux.append({
                         "deck": args.deck, "vilain": vilain,

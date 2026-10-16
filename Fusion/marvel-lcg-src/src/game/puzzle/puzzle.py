@@ -447,6 +447,14 @@ class RunPuzzle:
         else:
             Faces.GiveStatus([unit], "Cloaked", DebugRule(unit))
 
+    def RevealDealtCards(self):
+        """Revele les cartes distribuees face cachee de CHAQUE joueur (etape 4 de la phase
+        du mechant). Pour mesurer ce qu'une carte « donnee au premier joueur » devient
+        une fois revelee (pack `shredder` : Skulk bouclait)."""
+        for joueur in list(self.world.const_players):
+            if joueur.dealt_encounter_cards.GetSize() > 0:
+                joueur.RevealEncounterCards()
+
     def RemoveMinionsInPlay(self):
         """Retire de la partie TOUS les sbires en jeu (engages ou non). Sert aux
         cas de scenario : la mise en place en revele au hasard, et `Remove('<id>')`

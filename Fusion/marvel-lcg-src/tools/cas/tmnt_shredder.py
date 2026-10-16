@@ -308,6 +308,11 @@ CAS = [
     _c("ts101 Boost : Karai est donnee face cachee au PREMIER joueur",
        "« Deal this card to the first player as a facedown encounter card »",
        BASE + [SANS_CLOAK], ["Puzzle.Boost('ts101')"], {"distribuees": [[0, ["ts101"]]]}, main_exclusive=["01088"]),
+    _c("ts101 Boost puis revelation : Karai donnee, revelee dans le meme round, entre en jeu cloakee (pas de boucle)",
+       "le detournement du boost est a usage UNIQUE (defaut Skulk te006 trouve en autoplay)",
+       BASE + [SANS_CLOAK, "Puzzle.CreateEncounterDeck('01105')"],
+       ["Puzzle.Boost('ts101')", "Puzzle.RevealDealtCards()"],
+       {"en_jeu": ["ts101"], "cloaked": [["ts101", 1]], "distribuees": [[0, []]]}, main_exclusive=["01088"]),
     # ===================================================================== ts102 Ocho
     _c("ts102 Guard (desc) + attaques PERCANTES : Ocho blesse un heros Coriace et lui retire sa carte Coriace",
        "« [star] Ocho's attacks gain piercing » : ATQ 2, Coriace defaussee ET 2 degats",

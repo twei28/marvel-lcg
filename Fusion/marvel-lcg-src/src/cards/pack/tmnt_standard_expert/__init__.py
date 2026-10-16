@@ -32,11 +32,23 @@ def FaceCacheeAuPremierJoueur(effect: 'Effect', this: 'CardFace') -> None:
     if premier is None:
         return
 
+    fait = False
+
     def rediriger(effet_temp: 'Effect', message2: 'Message.WhenCardWouldDiscard') -> None:
+        # ⚠ UNE SEULE FOIS. Le detournement restait actif jusqu'a la fin du round
+        # (`unregister_after_exec=False`, comme tl015) : une traitrise donnee puis
+        # REVELEE dans le meme round (Skulk te006, Cloak of Shadows...) est defaussee
+        # apres sa revelation, le detournement la renvoyait dans les cartes
+        # distribuees, et `RevealEncounterCards` bouclait (AssertionError
+        # `face != last_face`, constate en autoplay le 16/10/2026).
+        nonlocal fait
+        if fait:
+            return
+        fait = True
         message2.SetToArea(premier.dealt_encounter_cards)
 
     this.effect.RegisterTemp(
         AbilityFactory.WhenCardWouldDiscard(AbilityType.Temp0, "This", rediriger),
-        unregister_after_exec=False,
+        unregister_after_exec=True,
         until_round_end=True,
     )

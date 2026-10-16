@@ -46,6 +46,11 @@ CAS = [
     _c("te006 Skulk Boost : la carte est donnee face cachee au premier joueur",
        "« Deal this card to the first player as a facedown encounter card »",
        BASE + [SANS_CLOAK], ["Puzzle.Boost('te006')"], {"distribuees": [[0, ["te006"]]]}, main_exclusive=["01088"]),
+    _c("te006 Skulk Boost : donnee puis REVELEE dans le meme round -> elle est defaussee UNE fois (plus de boucle)",
+       "defaut trouve en autoplay : le detournement du boost bouclait sur `RevealEncounterCards` (face != last_face)",
+       BASE + [SANS_CLOAK, "Puzzle.CreateEncounterDeck('01105')"],
+       ["Puzzle.Boost('te006')", "Puzzle.RevealDealtCards()"],
+       {"defausse_ids": ["te006"], "distribuees": [[0, []]], "cloaked": [["ts001", 1]]}, main_exclusive=["01088"]),
     # ---------------------------------------------------------------- TMNT Expert
     _c("te101 Annihilation : le vilain attaque et l'attaque gagne OVERKILL (Maria Hill HP 2, 1 degat : excedent sur le heros)",
        "« The villain attacks you. That attack gains overkill »",
