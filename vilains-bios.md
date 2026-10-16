@@ -853,7 +853,7 @@
 - **Base** : Stockgen, New York
 - **Équipes** : Allié occasionnel du Clan du Pied
 - **Ennemis** : Tortues Ninja
-- **Première apparition** : Teenage Mutant Ninja Turtles #19 (1989)
+- **Première apparition** : Teenage Mutant Ninja Turtles #2 (1984)
 
 
 ## Electro (Web of Deceit)

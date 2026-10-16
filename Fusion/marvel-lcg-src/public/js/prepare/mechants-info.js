@@ -574,7 +574,7 @@ export const MECHANTS_INFO = {
         equipesEn: "Occasional ally of the Foot Clan",
         ennemis: "Tortues Ninja",
         ennemisEn: "Teenage Mutant Ninja Turtles",
-        apparition: "Teenage Mutant Ninja Turtles #19 (1989)",
+        apparition: "Teenage Mutant Ninja Turtles #2 (1984)",
     },
 
     "wd035": {
