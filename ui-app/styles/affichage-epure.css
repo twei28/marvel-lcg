@@ -1059,3 +1059,23 @@ html[data-epure] .volet-journal-languette {
   background: var(--ep-surface);
   color: var(--ep-texte);
 }
+
+/* La carte du texte de la question, devant le cartouche sombre : un cran plus
+   clair que lui, un filet, et le jaune en haut (pas la couleur du héros, qui
+   s'y perdait). */
+html[data-epure] .demande-centrale .dc-texte {
+  background: var(--ep-champ);
+  box-shadow: 0 0 0 1px var(--ep-bord-fort), 0 10px 24px rgba(0, 0, 0, 0.45);
+  border-top: 3px solid var(--ep-jaune);
+  border-top-color: var(--ep-jaune);
+}
+
+html[data-epure] .demande-centrale .af-action {
+  background: #323844;
+  box-shadow: 0 0 0 1px var(--ep-bord-fort);
+}
+
+html[data-epure] .demande-centrale .af-action:hover:not(:disabled) {
+  background: #3a4150;
+  box-shadow: 0 0 0 1px var(--ep-jaune);
+}
