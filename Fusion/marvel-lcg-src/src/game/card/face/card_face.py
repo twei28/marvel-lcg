@@ -225,6 +225,16 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # CORRECTIF : traits du pack custom shredder (Inkwire, TMNT Enemies / Shredder v3).
         # Purement declaratifs, sauf RELIC / MOLE / YOUKAI lus par aucune carte.
         "YOUKAI", "WARTHOG", "RHINOCEROS", "FALCON", "RELIC",  # MOLE et SHARK : deja declares (venus)
+        # AJOUT (16/10/2026) : traits imprimes sur les 235 cartes d'aspect TMNT (Inkwire, packs
+        # tmnt_aspect_*, prefixes ua/ub/uj/ul/up/ud), releves scan par scan. MUTANIMAL n'est PAS
+        # decoratif : les trois TRAINING (« Attach to a NINJA or MUTANIMAL ally »), The Kennel Klub
+        # et le Mutanimal Van le lisent. ⚠ « MUTANIMALS » (pluriel) n'est imprime que sur Old Hob
+        # (Leadership) : coquille probable, question posee a l'utilisateur ; declare pour l'instant.
+        "VIGILANTE", "WOUND", "DIMENSION X", "NOVA POSSE", "WARRIOR", "FOX", "ALLIGATOR",
+        "MUTANIMAL", "MUTANIMALS", "PIGEON", "MANTA RAY", "GOAT", "FROG", "PUNK", "LION", "RONIN",
+        "DINOSAUR", "PARTY", "MONK", "SAMURAI", "JACKAL", "CAT", "DETECTIVE", "GECKO", "MOSQUITO",
+        "ONNA-MUSHA", "BAT", "CLAW CLAN", "NEUTRINO", "MAXIM", "HERO", "WEASEL", "MASSEUSE", "PIG",
+        "SWORDSMAN", "CRAB", "RABBIT",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
