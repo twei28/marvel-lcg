@@ -41,7 +41,7 @@ import type { ReglageMode } from './mobile/useModeMobile'
 import { ecrireReglageTelephone, useReglagesTelephone, type TailleTexte } from './mobile/reglages-telephone'
 import { epurePermis, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
-import { ecrirePhaseBis, lirePhaseBis, suivrePhaseBis } from './phase-bis'
+import { ecrirePresentationPhase, lirePresentationPhase, suivrePresentationPhase, type PresentationPhase } from './phase-presentation'
 import { RoueTeinte } from './RoueTeinte'
 import type { Teinte } from './teinte'
 import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
@@ -249,7 +249,7 @@ function LigneVolumeSons({ disponible }: { disponible: boolean }) {
  * La phase du méchant. Un compte qui a l'essai « nouvelle phase » (coché dans
  * /admin, 16/10/2026 : l'administrateur et Yarro) voit en plus « Étape par étape
  * bis », la nouvelle présentation ; « Étape par étape » reste celle de tout le
- * monde. Les autres comptes ne voient aucun changement (board/phase-bis.ts).
+ * monde. Les autres comptes ne voient aucun changement (board/phase-presentation.ts).
  */
 function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   const [essai, setEssai] = useState(false)
@@ -262,16 +262,21 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
       vivant = false
     }
   }, [])
-  const [bis, setBis] = useState(lirePhaseBis)
-  useEffect(() => suivrePhaseBis(setBis), [])
-  const valeur: string = p.modePhase === 'detaille' && essai && bis ? 'detaille-bis' : p.modePhase
+  const [presentation, setPresentation] = useState(lirePresentationPhase)
+  useEffect(() => suivrePresentationPhase(setPresentation), [])
+  const valeur: string = p.modePhase === 'detaille' && essai && presentation !== 'etape' ? presentation : p.modePhase
   return (
     <LigneChoix<string>
       libelle={t('Phase du méchant')}
       valeur={valeur}
       choix={[
         { valeur: 'detaille', libelle: t('Étape par étape') },
-        ...(essai ? [{ valeur: 'detaille-bis', libelle: t('Étape par étape bis') }] : []),
+        ...(essai
+          ? [
+              { valeur: 'bis', libelle: t('Étape par étape bis') },
+              { valeur: 'dynamique', libelle: t('Phase dynamique') },
+            ]
+          : []),
         // « Sur la table » : OUVERT À TOUS depuis le 05/10/2026, quand la
         // fenêtre de préparation « Choisis ta phase du méchant » l'a
         // présenté à chaque joueur (décision de l'utilisateur). Un mode
@@ -280,8 +285,8 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
         { valeur: 'instantane', libelle: t('D’un coup') },
       ]}
       onChoisir={(v) => {
-        if (v === 'detaille-bis' || v === 'detaille') {
-          if (essai) ecrirePhaseBis(v === 'detaille-bis')
+        if (v === 'bis' || v === 'dynamique' || v === 'detaille') {
+          if (essai) ecrirePresentationPhase(v === 'detaille' ? 'etape' : (v as PresentationPhase))
           p.changerModePhase('detaille')
           return
         }
@@ -289,7 +294,7 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
       }}
       detail={
         essai
-          ? t('Étape par étape : un « Suivant » par étape de la phase. Bis : la nouvelle présentation, en essai')
+          ? t('Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai')
           : t('Étape par étape : un « Suivant » par étape de la phase')
       }
     />

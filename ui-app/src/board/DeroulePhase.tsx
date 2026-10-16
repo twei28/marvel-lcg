@@ -166,6 +166,7 @@ export function DeroulePhase({
   etapes: etapesRecues,
   presentation = 'scene',
   essai = false,
+  dynamique = false,
   attendreBandeau = false,
   identitePhase,
   identitePartie,
@@ -212,6 +213,8 @@ export function DeroulePhase({
    * change.
    */
   essai?: boolean
+  /** « Phase dynamique » (16/10/2026) : le cartouche posé en panneau à droite de la table. Suppose `essai`. */
+  dynamique?: boolean
   /**
    * OU l'etape est racontee. Deux presentations, UNE SEULE mecanique.
    *
@@ -1915,6 +1918,7 @@ export function DeroulePhase({
         defaiteLocale={defaiteLocale}
         boostsMontres={boostsMontres}
         essai={essai}
+        dynamique={dynamique && presentation === 'scene'}
         // L'ancien « Bis » est LA presentation du cartouche central depuis le
         // 10/10/2026 ; le cartouche pose sur la table garde la sienne.
         bis={presentation === 'scene'}

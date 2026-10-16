@@ -1,0 +1,289 @@
+/* « PHASE DYNAMIQUE » (16/10/2026) : la quatrième présentation de la phase du méchant.
+
+   Le même cartouche détaillé que le bis (mêmes étapes, même question du moteur), posé
+   en PANNEAU À DROITE de la table au lieu d'une fenêtre au centre : le plateau reste le
+   contexte principal et jouable derrière lui. Tout est sous `.est-dynamique`, qui
+   n'est posé que si le compte a l'essai ET a choisi cette présentation
+   (phase-presentation.ts) : les autres présentations n'héritent de rien d'ici.
+
+   ⚠ Hors couche, importée en DERNIER par CartouchePhase.tsx : ces règles passent
+   devant celles du bis (cartouche-phase-bis.css) à spécificité égale.
+
+   ⚠ La section ne déclare jamais `transform` : le déplacement à la main pose un
+   `translate` inline (useGlisserPanneau). Elle ne déclare jamais son fond : la teinte
+   et les affichages (sobre, épuré) le posent.
+
+   Anatomie, de haut en bas : en-tête fixe (progression + titre), corps qui défile EN
+   INTERNE, pied fixe (les boutons). Jamais de bouton hors écran, jamais de texte coupé. */
+.deroule-phase.est-scene.est-bis.est-dynamique {
+  --dyn-l: clamp(360px, 26vw, 430px);
+  --grande-h: clamp(170px, calc(210px * var(--echelle, 1)), 260px);
+  --vignette-h: clamp(110px, calc(140px * var(--echelle, 1)), 170px);
+  position: fixed;
+  /* À droite, sous la barre du haut, au-dessus du bas de l'écran : les languettes
+     Aide / Journal (bord droit) restent libres. */
+  inset: 52px 46px 20px auto;
+  margin: 0;
+  width: var(--dyn-l);
+  height: auto;
+  min-height: 0;
+  max-height: calc(100dvh - 72px);
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: default;
+  animation: dynamique-entree 200ms ease-out;
+}
+
+@keyframes dynamique-entree {
+  from {
+    opacity: 0;
+    translate: 24px 0;
+  }
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique::before {
+  display: none;
+}
+
+/* L'en-tête : la progression compacte, puis le titre de l'action. Il se prend pour
+   déplacer le panneau (poignée), comme le bandeau des autres fenêtres. */
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-ligne-haut {
+  margin: 0;
+  padding: 10px 14px 10px;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: grab;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastilles {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  gap: 3px;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille {
+  min-height: 26px;
+  padding: 3px 4px;
+  border-right: 0;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  justify-content: center;
+}
+
+/* Une seule étape principale : l'active porte son nom, les autres sont discrètes. */
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille:not(.est-courant) .deroule-pastille-nom {
+  display: none;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille.est-courant {
+  flex: 3 1 0;
+  background: #f0131e;
+  box-shadow: none;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille.est-passe {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-bandeau {
+  margin: 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-titre-court {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+/* Le corps : la zone qui défile. */
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-corps {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 12px 14px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-corps::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-rangee,
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-revelee,
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-stade,
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-bilan {
+  width: 100%;
+  min-width: 0;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-rangee-cartes,
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-revelee {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-sous-cadre {
+  width: 100%;
+}
+
+/* Le pied : les actions, toujours visibles. */
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-boutons {
+  flex: none;
+  padding: 10px 14px 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: stretch;
+  background: rgba(0, 0, 0, 0.22);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-boutons .bh-bouton {
+  flex: 1 1 auto;
+  min-height: 40px;
+  white-space: normal;
+}
+
+/* La carte révélée (ou la carte en grand d'une étape) : plus grande que dans la
+   vignette, texte lisible. Le texte vient dessous quand la place manque. */
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-carte-grande .scan-card {
+  --card-w: calc(var(--grande-h) * 127 / 176);
+}
+
+/* Le bilan : UNE colonne (trois colonnes serrées coupaient les noms). */
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-bilan {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-bilan .deroule-lignes li {
+  flex-wrap: wrap;
+}
+
+/* La ligne de question : une phrase, juste au-dessus des choix, jamais coupée. */
+.dyn-question {
+  flex: none;
+  margin: 0;
+  padding: 10px 14px 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+/* L'historique : quelques lignes discrètes, repliables. */
+.dyn-historique {
+  flex: none;
+  padding: 6px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.78rem;
+  color: rgba(248, 250, 252, 0.62);
+}
+
+.dyn-historique-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.dyn-historique-bascule {
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  font: inherit;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.dyn-historique-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1px;
+}
+
+.dyn-historique-liste li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dyn-historique-liste.est-ouverte {
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.dyn-historique-liste.est-ouverte li {
+  white-space: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deroule-phase.est-scene.est-bis.est-dynamique {
+    animation: none;
+  }
+}
+
+body.plateau-sans-animations .deroule-phase.est-scene.est-bis.est-dynamique,
+html[data-affichage='sobre'] .deroule-phase.est-scene.est-bis.est-dynamique {
+  animation: none;
+}
+
+/* La progression : la ligne « Phase du méchant » au-dessus, les jalons dessous sur
+   toute la largeur ; l'étape active porte son nom en entier. */
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-frise {
+  flex-direction: column;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-frise .deroule-bandeau {
+  order: -1;
+  align-self: flex-start;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille.est-courant {
+  flex: 4 1 0;
+  overflow: visible;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille {
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille.est-courant .deroule-pastille-nom {
+  overflow: visible;
+  white-space: nowrap;
+}
+
+.deroule-phase.est-scene.est-bis.est-dynamique .deroule-frise .deroule-bandeau {
+  flex: none;
+  height: auto;
+  line-height: 1.4;
+  overflow: visible;
+  padding-block: 0;
+}

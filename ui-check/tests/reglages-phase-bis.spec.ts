@@ -38,9 +38,13 @@ test('les Réglages proposent « Étape par étape » et « Étape par étape bi
   await expect(fenetre.getByRole('button', { name: /^Étape par étape bis$/ })).toBeVisible();
   await expect(fenetre.getByRole('button', { name: /^Étape par étape$/ })).toBeVisible();
   await fenetre.getByRole('button', { name: /^Étape par étape$/ }).click();
-  expect(await page.evaluate(() => localStorage.getItem('mc_phase_bis'))).toBe('non');
+  const choix = () => page.evaluate(() => localStorage.getItem('mc_phase_presentation'));
+  expect(await choix()).toBe('etape');
   await fenetre.getByRole('button', { name: /^Étape par étape bis$/ }).click();
-  expect(await page.evaluate(() => localStorage.getItem('mc_phase_bis'))).toBe('oui');
+  expect(await choix()).toBe('bis');
+  await expect(fenetre.getByRole('button', { name: /^Phase dynamique/ })).toBeVisible();
+  await fenetre.getByRole('button', { name: /^Phase dynamique/ }).click();
+  expect(await choix()).toBe('dynamique');
   // L'apparence : en local, l'Épuré reste proposé (moteur de la machine).
   await page.getByRole('tab', { name: /^Apparence$/ }).or(page.getByRole('button', { name: /^Apparence$/ })).first().click();
   await expect(fenetre.getByRole('button', { name: /^Épuré$/ })).toBeVisible();

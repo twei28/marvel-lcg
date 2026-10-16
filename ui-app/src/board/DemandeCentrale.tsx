@@ -142,7 +142,7 @@ function resumeCibles(option: Option, cartesParId: Map<number, WorldCard>): stri
  * (le type d'ability, illisible), on nomme la carte qui agit si toutes les
  * options viennent de la meme (« The Pericles — choose an option »).
  */
-function titreDepuisSource(
+export function titreDepuisSource(
   demande: Demande,
   options: Option[],
   cartesParId: Map<number, WorldCard>

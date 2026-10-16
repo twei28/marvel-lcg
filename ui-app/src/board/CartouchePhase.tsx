@@ -92,6 +92,8 @@ import {
 import './cartouche-phase.css'
 import './cartouche-essai.css'
 import './cartouche-phase-bis.css'
+import './cartouche-dynamique.css'
+import { HistoriqueDynamique, QuestionDynamique, useCommandeUneFois } from './PhaseDynamique'
 
 /** Les gestionnaires de `useGlisserPanneau`, poses sur la ligne du haut. */
 export type GestesDeplacer = {
@@ -200,6 +202,8 @@ export type CartouchePhaseProps = {
    * et « Continuer ». Faux : le rendu d'avant, a l'octet pres.
    */
   essai?: boolean
+  /** « Phase dynamique » (16/10/2026) : panneau à droite de la table (cartouche-dynamique.css). */
+  dynamique?: boolean
   /** Presentation « Étape par étape » (l'ancien Bis, seule depuis le
    *  10/10/2026). Vraie par defaut ; faux pour le cartouche pose sur la table. */
   bis?: boolean
@@ -1350,7 +1354,8 @@ export function CartouchePhase(props: CartouchePhaseProps) {
 
   // LA QUESTION DU MOTEUR, EN DONNEES (lot 4). Elle ne vaut que pour le
   // joueur local : celle d'un autre siege se lit, ne se joue pas (D28).
-  const q = questionAuJoueur ? props.questionDuMoteur : undefined
+  // Phase dynamique : chaque commande terminale ne part qu'une fois par decision (PhaseDynamique.tsx).
+  const q = useCommandeUneFois(questionAuJoueur ? props.questionDuMoteur : undefined, Boolean(essai && props.dynamique))
   const vueQ = q ? vueSousCadre(q, { etape, tempsQuestion }) : undefined
   const corpsRangee = vuePage?.corps.genre === 'rangee' ? vuePage.corps : undefined
   const corpsRevele = vuePage?.corps.genre === 'revelee' ? vuePage.corps : undefined
@@ -1772,7 +1777,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     (essai && !relu && etape && props.montrerBoostSuivant ? Math.max(0, etape.boosts.length - props.boostsMontres) : 0) +
     (carteCacheeIci ? 1 : 0)
   const compteur =
-    essai && etape && !relu && !horsPhase ? compteurDesRevelations(etapes, etape.cle, props.cartesDistribuees) : undefined
+    essai && etape && !relu && !horsPhase ? compteurDesRevelations(etapes.map((e) => etapeEnLangue(e, props.nomFr)), etape.cle, props.cartesDistribuees) : undefined
   // Essai (13/10/2026) : « Carte rencontre 2/2 · Captain America » en titre, la
   // carte revelee dessous. Le compteur de droite ne garde que les Renforts.
   const rencontre = essai && etapeLue && !relu && !horsPhase ? rencontreDuJoueur(etapes, etapeLue.cle) : undefined
@@ -1902,6 +1907,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (horsPhase) classes.push('est-hors-phase')
   if (essai) classes.push('est-essai')
   if (props.bis ?? true) classes.push('est-bis')
+  if (essai && props.dynamique) classes.push('est-dynamique')
   if (essai && reduit) classes.push('est-reduit')
   // 13/10/2026 (encadré ②) : un changement de stade secoue la boîte (rien en sobre ni en mouvement réduit).
   if (essai && etapeLue?.titre === 'stade') classes.push('est-secousse')
@@ -1972,7 +1978,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             ? `${t('Pendant ton tour')}${props.nomConcerne ? ` · ${props.nomConcerne}` : ''}`
             : relu || depuisLeJournal
               ? t('Relecture')
-              : undefined
+              : essai && props.dynamique
+                ? t('Phase du méchant')
+                : undefined
         }
         relire={relire ? (cle) => relire({ temps: cle }) : undefined}
         titre={titreAffiche}
@@ -2005,6 +2013,12 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         ) : null}
         {essai ? mentions : null}
       </div>
+      {essai && props.dynamique && !relu ? (
+        <>
+          <HistoriqueDynamique etapes={etapes} index={index} nomFr={props.nomFr} />
+          <QuestionDynamique q={questionAuJoueur ? q : undefined} defense={vueQ?.genre === 'defense'} />
+        </>
+      ) : null}
       {choixDefense}
       {props.multi?.genre === 'choix-hote' ? (
         <div className="essai-choix-avance" role="group" aria-label={t('Qui fait avancer la phase du méchant ?')}>
@@ -2166,6 +2180,8 @@ export type CartoucheHorsPhaseProps = CartesDuCartouche & {
   questionAuJoueur: boolean
   /** Le héros ou l'alter ego dont c'est le tour, dit dans le bandeau. */
   nomConcerne?: string
+  /** « Phase dynamique » : le coup du méchant pendant le tour se pose lui aussi en panneau à droite. */
+  dynamique?: boolean
   /**
    * La relecture du journal occupe le bas de l'ecran : rien a dessiner, mais
    * les coups vus restent retenus (demonter les oublierait).
@@ -2248,6 +2264,8 @@ export function CartoucheHorsPhase(props: CartoucheHorsPhaseProps) {
       infoRevelee={props.infoRevelee}
       bandeau="pendant-ton-tour"
       nomConcerne={props.nomConcerne}
+      dynamique={props.dynamique}
+      essai={props.dynamique ? true : undefined}
     />
   )
 }

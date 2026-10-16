@@ -1,7 +1,7 @@
 // L'Épuré réservé au compte de l'administrateur, et « Étape par étape bis » (16/10/2026).
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { appliquerAffichage, CLE_AFFICHAGE, CLE_EPURE_PERMIS, epurePermis, lireAffichage, retenirEpurePermis } from './affichage'
-import { ecrirePhaseBis, lirePhaseBis, suivrePhaseBis } from './phase-bis'
+import { ecrirePresentationPhase, lirePresentationPhase, suivrePresentationPhase } from './phase-presentation'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -46,16 +46,28 @@ describe("l'épuré, réservé à l'administrateur", () => {
   })
 })
 
-describe('« Étape par étape bis »', () => {
-  it('bis par défaut, et le choix se suit', () => {
-    expect(lirePhaseBis()).toBe(true)
-    const vus: boolean[] = []
-    const fin = suivrePhaseBis((oui) => vus.push(oui))
-    ecrirePhaseBis(false)
-    expect(lirePhaseBis()).toBe(false)
-    ecrirePhaseBis(true)
+describe('les présentations de la phase du méchant', () => {
+  it('bis par défaut, le choix se suit et se relit', () => {
+    expect(lirePresentationPhase()).toBe('bis')
+    const vus: string[] = []
+    const fin = suivrePresentationPhase((p) => vus.push(p))
+    ecrirePresentationPhase('dynamique')
+    expect(lirePresentationPhase()).toBe('dynamique')
+    ecrirePresentationPhase('etape')
     fin()
-    ecrirePhaseBis(false)
-    expect(vus).toEqual([false, true])
+    ecrirePresentationPhase('bis')
+    expect(vus).toEqual(['dynamique', 'etape'])
+  })
+
+  it("l'ancien réglage « mc_phase_bis » est repris tant qu'aucun choix n'est fait", () => {
+    localStorage.setItem('mc_phase_bis', 'non')
+    expect(lirePresentationPhase()).toBe('etape')
+    localStorage.setItem('mc_phase_bis', 'oui')
+    expect(lirePresentationPhase()).toBe('bis')
+    // Un choix explicite prime, une valeur inconnue est ignorée.
+    localStorage.setItem('mc_phase_presentation', 'dynamique')
+    expect(lirePresentationPhase()).toBe('dynamique')
+    localStorage.setItem('mc_phase_presentation', 'n-importe-quoi')
+    expect(lirePresentationPhase()).toBe('bis')
   })
 })

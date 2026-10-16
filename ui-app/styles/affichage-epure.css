@@ -1143,3 +1143,40 @@ html[data-epure] .demande-centrale .af-action .af-cibles {
 html[data-epure] .demande-centrale .dc-boutons .af-action {
   min-height: 56px;
 }
+
+/* --- 19. La « Phase dynamique » en Épuré (16/10/2026) ------------------------
+   Le panneau à droite (cartouche-dynamique.css) prend la palette sombre : en-tête
+   gris soutenu, filet jaune dessous, titre blanc ; le reste suit les jetons. */
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique {
+  background: var(--ep-surface);
+  border-radius: 6px;
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique .deroule-ligne-haut {
+  background: var(--ep-champ);
+  border-bottom: 3px solid var(--ep-jaune);
+  box-shadow: none;
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique .deroule-titre-court,
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique .deroule-titre-court * {
+  color: var(--ep-texte);
+  font-family: var(--ep-titres);
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique .deroule-bandeau {
+  background: transparent;
+  color: var(--ep-doux);
+  padding: 0;
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique .deroule-pastille.est-courant {
+  background: var(--ep-rouge);
+  color: #ffffff;
+}
+
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique .deroule-boutons,
+html[data-epure] .deroule-phase.est-scene.est-bis.est-dynamique .dyn-historique {
+  background: var(--ep-champ);
+  border-top: 1px solid var(--ep-bord);
+}

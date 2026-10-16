@@ -1652,3 +1652,40 @@ describe('LOT 5 de la refonte (12/10/2026) : les écrans particuliers, derrière
     expect(document.querySelector('.deroule-phase')?.textContent).toContain('VAINCU')
   })
 })
+
+// « PHASE DYNAMIQUE » (16/10/2026) : le même cartouche, posé en panneau à droite.
+describe('la Phase dynamique', () => {
+  it('le panneau porte sa classe, sa ligne « Phase du méchant » et l’historique des étapes déjà passées', () => {
+    monter({ essai: true, dynamique: true, index: 1 })
+    expect(section()?.className).toContain('est-dynamique')
+    expect(section()?.className).toContain('est-bis')
+    expect(document.querySelector('.deroule-bandeau')?.textContent).toBe('Phase du méchant')
+    const lignes = [...document.querySelectorAll('.dyn-historique li')].map((li) => li.textContent)
+    expect(lignes).toHaveLength(1)
+    expect(lignes[0]).toContain('menace')
+  })
+
+  it('premier événement : pas d’historique ; rien non plus sans l’essai ni hors Phase dynamique', () => {
+    monter({ essai: true, dynamique: true, index: 0 })
+    expect(document.querySelector('.dyn-historique')).toBeNull()
+    cleanup()
+    monter({ essai: true, index: 1 })
+    expect(section()?.className).not.toContain('est-dynamique')
+    expect(document.querySelector('.dyn-historique')).toBeNull()
+    cleanup()
+    // Sans l'essai, le drapeau seul ne change rien : le rendu d'avant.
+    monter({ dynamique: true, index: 1 })
+    expect(section()?.className).not.toContain('est-dynamique')
+    expect(document.querySelector('.dyn-historique')).toBeNull()
+  })
+
+  it('un coup du méchant pendant le tour se pose lui aussi en panneau', () => {
+    // Les coups déjà là au montage sont « vus » : on le fait ARRIVER après.
+    const rendu = (coups: EtapeDeroule[]) => (
+      <CartoucheHorsPhase coups={coups} questionAuJoueur={false} nomFr={() => undefined} dynamique />
+    )
+    const { container, rerender } = render(rendu([]))
+    rerender(rendu([attaqueResolue]))
+    expect(container.querySelector('section.est-dynamique')).not.toBeNull()
+  })
+})

@@ -246,7 +246,7 @@ import {
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaiPhaseMechant, essaisOuverts } from './board/essais'
-import { lirePhaseBis, suivrePhaseBis } from './board/phase-bis'
+import { lirePresentationPhase, suivrePresentationPhase } from './board/phase-presentation'
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
 import { JournalConsole } from './board/JournalConsole'
@@ -2532,10 +2532,12 @@ export function PagePartie({
     }
   }, [])
   // « Étape par étape bis » (16/10/2026) : le compte qui a l'essai choisit, dans les
-  // Réglages, entre l'ancienne présentation et la nouvelle (board/phase-bis.ts).
-  const [phaseBis, setPhaseBis] = useState(lirePhaseBis)
-  useEffect(() => suivrePhaseBis(setPhaseBis), [])
-  const phaseEssai = essaiPhaseCompte && phaseBis
+  // Réglages, entre trois présentations (board/phase-presentation.ts).
+  const [presentationPhase, setPresentationPhase] = useState(lirePresentationPhase)
+  useEffect(() => suivrePresentationPhase(setPresentationPhase), [])
+  const phaseEssai = essaiPhaseCompte && presentationPhase !== 'etape'
+  // « Phase dynamique » (16/10/2026) : le cartouche détaillé, posé en panneau à droite.
+  const phaseDynamique = phaseEssai && presentationPhase === 'dynamique'
   const instantanesRef = useRef<Instantanes>(new Map())
   const instantanes = useMemo(() => {
     const suivants = majInstantanes(
@@ -3630,8 +3632,9 @@ export function PagePartie({
   // boucle (cartouche-essai.css).
   useEffect(() => {
     document.documentElement.classList.toggle('essai-phase-mechant', phaseEssai)
-    return () => document.documentElement.classList.remove('essai-phase-mechant')
-  }, [phaseEssai])
+    document.documentElement.classList.toggle('phase-dynamique', phaseDynamique)
+    return () => document.documentElement.classList.remove('essai-phase-mechant', 'phase-dynamique')
+  }, [phaseEssai, phaseDynamique])
   // Refonte du 12/10/2026 (essai) : la couleur de chaque joueur, tiree de
   // l'aspect de son deck, et le joueur a qui appartient une carte de la table.
   const cadresJoueurs = useMemo(() => cadresDesJoueurs(etat.monde, catalogue), [etat.monde, catalogue])
@@ -4516,6 +4519,7 @@ export function PagePartie({
         <CartoucheHorsPhase
           coups={coupsPendantTonTour}
           nomConcerne={nomDuHerosDuTour(etat.monde)}
+          dynamique={phaseDynamique}
           questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
           questionDuMoteur={questionDuMoteurPC}
           masque={relectureJournal}
@@ -4553,6 +4557,7 @@ export function PagePartie({
             // « Sur la table ».
             presentation={sceneCentrale ? 'scene' : 'table'}
             essai={phaseEssai}
+            dynamique={phaseDynamique}
             cadresJoueurs={cadresJoueurs}
             joueurDeCarte={joueurDeCarteMonde}
             siegeLocal={playerId}
