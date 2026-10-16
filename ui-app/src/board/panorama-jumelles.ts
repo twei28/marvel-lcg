@@ -20,6 +20,7 @@ export type PaireJumelle = {
 
 export const PAIRES_JUMELLES: readonly PaireJumelle[] = [
   { gauche: 'tl011', droite: 'tl012' }, // Katana de Leonardo (14/15 + 15/15)
+  { gauche: 'tm011', droite: 'tm012' }, // Nunchuck de Michelangelo (14/15 + 15/15), confirmee le 16/10/2026
 ]
 
 /** Cote ou se dessine cette carte dans son panneau, ou `undefined` si elle n'est dans aucune paire. */

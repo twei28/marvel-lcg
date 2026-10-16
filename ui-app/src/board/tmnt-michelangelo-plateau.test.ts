@@ -72,11 +72,12 @@ describe('tm001b Mikey : deux Nunchuck mis en jeu inclinés par la recherche', (
       })
     )
 
-  it('les deux Nunchuck sont dessinés sur l identité, couchés', () => {
-    for (const id of [NUNCHUCK_1, NUNCHUCK_2]) {
+  it('les deux Nunchuck sont dessinés en panorama 14|15 A COTE de l identité, couchés', () => {
+    // Décision du 16/10/2026 (panorama-jumelles.ts) : paire confirmée, posée à côté, pas dessous.
+    for (const [id, cote] of [[NUNCHUCK_1, 'gauche'], [NUNCHUCK_2, 'droite']] as const) {
       const vue = dessinee(monde(), id)
       expect(vue).toBeDefined()
-      expect(vue?.portePar).toBe(IDENTITE)
+      expect(vue?.panorama).toBe(cote)
       expect(vue?.kind).toBe('upgrade')
       expect(vue?.exhausted).toBe(true)
     }

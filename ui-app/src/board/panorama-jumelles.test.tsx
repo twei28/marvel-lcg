@@ -31,8 +31,11 @@ function rendre(cartes: WorldCard[], interactifs?: Map<number, EtatInteractif>) 
 }
 
 describe('registre des paires', () => {
-  it('ne declare que Katana de Leonardo pour l instant', () => {
-    expect(PAIRES_JUMELLES).toEqual([{ gauche: 'tl011', droite: 'tl012' }])
+  it('declare les paires confirmees une a une : Katana de Leonardo, Nunchuck de Michelangelo', () => {
+    expect(PAIRES_JUMELLES).toEqual([
+      { gauche: 'tl011', droite: 'tl012' },
+      { gauche: 'tm011', droite: 'tm012' },
+    ])
   })
 })
 
