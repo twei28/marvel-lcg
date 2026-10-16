@@ -169,8 +169,11 @@ la plus fréquente sur un pack vilain.
 - [x] shinobi.md (pack `jennika`, TMNT Heroes v3 : classes Bushido / Ninjutsu / Kuji-Kiri /
       Taijutsu portées par `desc.Class`, « Limit once per round for each Shinobi » = quatre capacités ;
       le Path `tj011` est un Support, question Q3)
-- [ ] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : mot-clé maison NON DEFINI par
-      les scans ; carte créée, non scriptée ; question Q2 de `.planning/tmnt/shredder-questions.md`)
+- [x] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : « intensify X » = donner une
+      carte d'état Intensified à X ; définition fournie par l'utilisateur le 16/10/2026, réponse Q2)
+- [x] intensified.md (carte d'état maison, 7e état du moteur : la prochaine DÉFAUSSE d'une carte d'état du
+      porteur est remplacée par la sienne, l'effet de l'autre carte a lieu ; jamais sur un personnage sans
+      carte d'état ; aucun plafond ; posée par te201 au second exemplaire d'un état)
 
 - [x] dodgy.md (scénario `bebop_rocksteady`, TMNT : mot-clé maison défini par
       l'encart de l'auteur, cousin facultatif d'Assault ; AUCUNE clé `desc`,

@@ -20,6 +20,7 @@ class StatusCard(FinalType):
             "Exposed": Symbol.exposed,
             "Cloaked": Symbol.cloaked,
             "Dazed": Symbol.dazed,
+            "Intensified": Symbol.intensified,
         }[self.name]
 
     @override

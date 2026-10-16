@@ -605,7 +605,7 @@
    "libelle": "191. Custom (TMNT Standard-Expert)",
    "cartes": 17,
    "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), dossiers « TMNT Standard-Expert (Status Card Standard-Expert) » et « Normal Standard-Expert Reskins ». Partages par TOUS les vilains TMNT : ensembles tmnt_standard (te001-te006), tmnt_expert (te101-te103), tmnt_standard_reskin (te021-te027) et tmnt_expert_reskin (te121-te123, memes capacites que le core 01186-01193 par ability_link). te201 Intense Combatants : carte creee, NON scriptee (mot-cle « intensify » indefini : question)."
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), dossiers « TMNT Standard-Expert (Status Card Standard-Expert) » et « Normal Standard-Expert Reskins ». Partages par TOUS les vilains TMNT : ensembles tmnt_standard (te001-te006), tmnt_expert (te101-te103), tmnt_standard_reskin (te021-te027) et tmnt_expert_reskin (te121-te123, memes capacites que le core 01186-01193 par ability_link). te201 Intense Combatants (ensemble optionnel tmnt_intense) : scriptee le 16/10/2026, « intensify » = carte d'etat Intensified (fiche intensified.md)."
   }
  }
 }

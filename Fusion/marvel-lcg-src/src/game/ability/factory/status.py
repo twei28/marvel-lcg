@@ -100,7 +100,9 @@ class AbilityFactoryStatus:
                     return
                 exceed = this.tough - this.tough_max
                 if exceed > 0:
-                    this.DiscardTough(effect, rule=exceed)
+                    # Plafond de REGLE : Intensified ne remplace pas cette defausse.
+                    with this.components.status.SansRemplacement():
+                        this.DiscardTough(effect, rule=exceed)
 
         return AbilityFactory.WhileValid(
             OnEvent.CardInPlay(StatusCard),
@@ -126,6 +128,29 @@ class AbilityFactoryStatus:
             lambda effect, message:
                 message.SetReturn(num)
         ).SetName("ThisCanHaveAdditionalCloaked")
+
+    @staticmethod
+    def WhenUnitWouldBeStatusAgain(ability_type: 'AbilityType',
+                                   which_unit: CardType,
+                                   operation: OperationType[Message.WhenStatusWouldCardPlaceOnAgain],
+                                   *,
+                                   conditions: ConditionsType[Message.WhenStatusWouldCardPlaceOnAgain]=[],
+                                   ) -> 'Ability':
+        """AJOUT (16/10/2026, te201 Intense Combatants) : une carte d'etat va etre posee
+        sur un personnage qui en porte DEJA un exemplaire (fenetre ouverte avant les
+        plafonds, `CanStatus.GainStatus`)."""
+        def check_which_unit(effect: 'Effect', message: Message.WhenStatusWouldCardPlaceOnAgain) -> bool:
+            return Condition.CheckWhichCard(which_unit, message.trigger, effect)
+
+        return Ability(
+            ability_type,
+            Message.WhenStatusWouldCardPlaceOnAgain,
+            [
+                check_which_unit,
+                *conditions,
+            ],
+            operation
+        )
 
     @staticmethod
     def UnitCannotBeConfused(which_unit: CardTypeMin) -> 'Ability':

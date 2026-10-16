@@ -19,10 +19,11 @@ import type { WorldCard } from './world'
  * 12/09/2026) ; `cloaked` le CINQUIEME (pack TMNT, Shredder v3). Sans lui ici, une carte Exposé posée ou retirée ne produirait
  * aucun badge : `estStatut` la rejetterait en silence.
  */
-export type Statut = 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed'
+export type Statut = 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed' | 'intensified'
 
-// `dazed` est le SIXIEME (scenario Baxter Stockman, Inkwire, 16/10/2026).
-const STATUTS: readonly Statut[] = ['stunned', 'confused', 'tough', 'exposed', 'cloaked', 'dazed']
+// `dazed` est le SIXIEME (scenario Baxter Stockman, Inkwire, 16/10/2026) ; `intensified` le SEPTIEME
+// (TMNT, Inkwire, posee par te201 Intense Combatants).
+const STATUTS: readonly Statut[] = ['stunned', 'confused', 'tough', 'exposed', 'cloaked', 'dazed', 'intensified']
 
 function estStatut(valeur: string): valeur is Statut {
   return (STATUTS as readonly string[]).includes(valeur)
@@ -56,7 +57,7 @@ export type DeltaStatut = {
 }
 
 function compter(liste: Statut[] | undefined): Record<Statut, number> {
-  const compte: Record<Statut, number> = { stunned: 0, confused: 0, tough: 0, exposed: 0, cloaked: 0, dazed: 0 }
+  const compte: Record<Statut, number> = { stunned: 0, confused: 0, tough: 0, exposed: 0, cloaked: 0, dazed: 0, intensified: 0 }
   for (const s of liste ?? []) compte[s] += 1
   return compte
 }
@@ -102,6 +103,7 @@ export function libelleStatut(statut: Statut, value: 1 | -1, langue: 'fr' | 'en'
     exposed: { fr: 'Exposé', en: 'Exposed' },
     cloaked: { fr: 'Camouflé', en: 'Cloaked' },
     dazed: { fr: 'Hébété', en: 'Dazed' },
+    intensified: { fr: 'Intensifié', en: 'Intensified' },
   }
   const nom = NOMS[statut][langue]
   if (value > 0) return nom

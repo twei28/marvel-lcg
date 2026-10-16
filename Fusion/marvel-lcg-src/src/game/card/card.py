@@ -851,7 +851,9 @@ class Card(Object):
         unite = self.face.CastTo(Unit2)
         exceed = unite.tough - unite.tough_max
         if exceed > 0:
-            unite.DiscardTough(by_effect, rule=exceed)
+            # Plafond de REGLE : Intensified ne remplace pas cette defausse.
+            with unite.components.status.SansRemplacement():
+                unite.DiscardTough(by_effect, rule=exceed)
 
     def Render(self) -> 'CardDescriptor':
         from game.card.face.base import Villain

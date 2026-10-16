@@ -53,7 +53,7 @@ consignee ici. Scans : `.planning/tmnt/pics-shredder/<card_id>.jpg` (copie versi
 - **Q1** : Bladed Armor, l'IDENTITE du joueur qui paie prend le degat (confirmee).
 - **Q2** : l'utilisateur a fourni la carte d'etat **INTENSIFIED** (capture Discord du serveur Bebop & Rocksteady, `.planning/tmnt/intensified-capture.webp`) :
   « The next time this character would discard a status card, discard this status card instead. This card cannot be given to a character that has no status cards. »
-  « Intensify X » = poser une carte d'etat Intensified sur X (7e carte d'etat). A IMPLEMENTER (moteur + te201), voir aussi le scenario Bebop & Rocksteady.
+  « Intensify X » = poser une carte d'etat Intensified sur X (7e carte d'etat). IMPLEMENTE le 16/10/2026 (moteur + te201, fiche `docs/reference/mots-cles/intensified.md`, cas `tools/cas/intensified.py`).
 - **Q3** : jeu standard/expert TMNT PROPRE par defaut (tmnt_standard / tmnt_expert) pour TOUS les scenarios TMNT ; Baxter bascule (8 parties d'essai sans erreur).
 - **Q4** : Foot Ninja est VAINCU (la defaite compte) puis melange (confirmee).
 - **Q5** : Kira no Ken defaussee si Karai est introuvable (confirmee).

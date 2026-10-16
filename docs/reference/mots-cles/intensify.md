@@ -1,21 +1,22 @@
-# Intensify (mot-cle maison NON DEFINI, ensemble TMNT Intense)
+# Intensify (mot-clé maison, ensemble TMNT Intense)
 
-**Texte imprime** : te201 « Intense Combatants » (zip `TMNT Standard-Expert (Status Card Standard-Expert) /
+**Texte imprimé** : te201 « Intense Combatants » (zip `TMNT Standard-Expert (Status Card Standard-Expert) /
 Optional Intense Version / X1 Intense Combatants.png`) : « **Forced Interrupt**: When a status card would be
 placed on a character, if that character already has 1 copy of that status card on them, intensify them
 instead. »
 
-**Definition** : AUCUNE. Ni la carte, ni les encarts des vilains Shredder, Baxter Stockman, Bebop & Rocksteady ne
-definissent « intensify ». La carte est creee dans `cards.json` (pack `tmnt_standard_expert`) sans script.
+**Définition** (fournie par l'utilisateur le 16/10/2026, réponse Q2 de `.planning/tmnt/shredder-questions.md`) :
+« intensify X » = donner une carte d'état **Intensified** à X (7e carte d'état, fiche `intensified.md`).
 
-**Mecanisme moteur** : aucun. Piste a trancher avec l'utilisateur (question Q2 de
-`.planning/tmnt/shredder-questions.md`) : « intensifier » une carte d'etat pourrait vouloir dire en poser un
-doublon au-dela du plafond, ou doubler son effet.
+**Mécanisme moteur** : helper `Intensify(effect, face)` du pack `tmnt_standard_expert`
+(`Faces.GiveStatus([face], "Intensified", effect)`, rend False si X n'a aucune carte d'état). te201 écoute la
+fenêtre `Message.WhenStatusWouldCardPlaceOnAgain` (fabrique `AbilityFactory.WhenUnitWouldBeStatusAgain`),
+envoyée par `CanStatus.GainStatus` AVANT les plafonds.
 
-**Carte exemple** : `te201` Intense Combatants (non scriptee).
+**Carte exemple** : `te201` Intense Combatants, `src/cards/pack/tmnt_standard_expert/tmnt_intense/te201.py`.
 
-**Pieges connus** : le plafond « une carte Cloaked par personnage » (`CanStatus.cloaked_max`) interagit avec
-cette regle : le plafond est teste dans `CanStatus.GainStatus` AVANT l'envoi de `WhenStatusWouldCardPlaceOn`
-(meme ordre que le plafond de Tough) ; si l'utilisateur definit « intensify », l'ordre est a revoir.
+**Pièges connus** : le plafond « un seul Sonné / Désorienté / Hébété / Cloaked » et `tough_max` sont testés
+APRÈS la fenêtre te201 : sans cet ordre, le doublon serait refusé en silence et te201 ne verrait jamais rien.
+Une Intensified n'ouvre pas la fenêtre (sinon boucle).
 
 **Variantes maison** : aucune.

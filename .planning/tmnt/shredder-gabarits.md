@@ -58,8 +58,8 @@ Preuves communes à toutes les cartes (16/10/2026, copie `tmnt-shredder`, scans 
   chaque carte d'état doit être dessinée. Pas de correctif d'affichage nécessaire (l'UI dessinait déjà tout). Ce que le
   test NE prouve PAS : un rendu pixel à l'écran (jamais regardé).
 - Moteur partagé touché (additif, documenté) : voir le rapport final et `docs/reference/RECETTES-MOTEUR.md` §10.
-- Questions ouvertes : `.planning/tmnt/shredder-questions.md` (Q1-Q9) ; **`te201` Intense Combatants : carte créée, NON
-  scriptée (« intensify » indéfini), donc « Carte terminée : NON »**.
+- Questions ouvertes : `.planning/tmnt/shredder-questions.md` (Q1-Q9) ; `te201` Intense Combatants : scriptée le 16/10/2026
+  (carte d'état Intensified), « Carte terminée : OUI ».
 
 ### te001 : No Quarter (Treachery, set TMNT Standard)
 
@@ -239,14 +239,35 @@ Carte terminée : OUI
 
 ### te201 : Intense Combatants (Environment, set TMNT Intense)
 
-- [x] Étape 2 : référence(s) : `ability_link` vers le core : AUCUN module propre (voir ci-dessous)
-- [x] Étape 5 : mots-pièges : memes mots que le core (texte verifie sur le scan)
-- [x] Étape 6 : nombres lus sur le scan = `cards.json` : Permanent 1, Setup 1.
-- [ ] Étape 7 : 0 cas sujet(s) : . Substitution : voir la section communs (habillage par ability_link).
-- [x] Étape 7 bis : limite imprimée NON (aucune carte du pack ne porte « Limit »).
-- [x] Étape 8 : autoplay, voir communs (grep tracebacks = 0).
-- [x] Étape 8 bis : NON (ne change que des chiffres ou révèle une carte déjà gérée).
-Carte terminée : NON : carte créée (`cards.json`, image) mais NON scriptée, aucun ensemble ni scénario ne la contient : « intensify » n'est défini nulle part (question Q2).
+Scriptée le 16/10/2026 (`src/cards/pack/tmnt_standard_expert/tmnt_intense/te201.py`), après réception de la carte
+d'état INTENSIFIED (réponse Q2). Moteur : 7e carte d'état, fiche `docs/reference/mots-cles/intensified.md`.
+
+- [x] Étape 2 : référence(s) : 56175 Contaminant Immunity / ah006 Gamma Barrier (Interrupt « would be stunned » →
+      `SetBeInstead` sur la pose, puis autre effet) ; fenêtre DÉDIÉE `WhenStatusWouldCardPlaceOnAgain` ouverte avant
+      les plafonds (un second Sonné est refusé par `CanbeStunned` avant `WhenStatusWouldCardPlaceOn`). Permanent / Setup :
+      `desc`, aucun code. Intensified : `tough.py` (gabarit d'état) + paibok `__init__.py` (`WhenCardWouldDiscard` +
+      `SetBeInstead`).
+- [x] Étape 5 : mots-pièges : « a character » (tout personnage, ami ou ennemi : `CardFinder()`) ; « already has 1 copy
+      of THAT status card » (même nom, ≥ 1, testé avant les plafonds) ; « instead » (la pose N'A PAS lieu, une
+      Intensified la remplace) ; **Forced** Interrupt (`AbilityType.ForcedInterrupt`, avant la pose). Intensified : « would
+      discard » (remplacement), « instead » (la carte d'origine RESTE), « cannot be given ... no status cards ».
+      Résultat : conforme ; la seconde Intensified n'ouvre pas la fenêtre (sinon boucle).
+- [x] Étape 6 : nombres : Permanent 1, Setup 1 (`desc`) ; « 1 copy » = `HasStatus` (≥ 1). Résultat : conforme.
+- [x] Étape 7 : `tools/cas/intensified.py` : 8 cas `[te201]` (second Sonné → Intensified ; témoin sans te201 ; premier
+      Sonné normal ; second Exposé → Intensified ; témoin Exposé ×2 ; seconde Intensified s'empile sans boucle ; seconde
+      Coriace du héros → Intensified ; chaîne complète Sonné ×2 → deux attaques annulées) + 16 cas `[intensified]`.
+      Substitution : `te201.py` retiré → 4 cas te201 ROUGES (les 4 autres sont des témoins / absences, assumés) ;
+      `intensified.py` retiré → 8 cas de remplacement + chaîne te201 ROUGES ; `CanbeIntensified` neutralisé → « ne
+      peut PAS être donnée » ROUGE ; garde `vidage` retirée → « défaussez chaque carte d'état » ROUGE. Remis : 24/24 VERTS.
+- [x] Étape 7 bis : limite imprimée NON.
+- [x] Étape 8 : autoplay Shredder spider_man, 4 parties (voir rapport) : 0 traceback. ⚠ te201 n'est dans AUCUN ensemble
+      ni scénario (environnement optionnel) : l'autoplay ne l'exerce pas, il ne prouve que la non-régression du moteur
+      des états. Batterie complète : 5233/5243, les 10 échecs sont antérieurs (9 connus + `[jennika] tj005` deux
+      Moonlighting, rouge aussi avec le `can_status.py` d'origine : plafond Cloaked = 1 du pack shredder).
+- [x] Étape 8 bis : OUI (pose une carte d'état). Cas plateau `ui-app/src/board/tmnt-intensified-plateau.test.ts`
+      (3 cas) ; sensibilité : `zones.ts` `attacheesPar.get(id)` rendu `.slice(0, 1)` → 2 cas ROUGES, restauré → 3/3.
+Carte terminée : OUI (reste non prouvé : une partie réelle avec te201 en jeu, faute d'ensemble qui la contienne ;
+lectures à confirmer listées dans intensified.md).
 
 ### ts001 : * Shredder (Villain, set Shredder)
 

@@ -295,6 +295,15 @@
    "desc": {},
    "traits": [],
    "set_name": ""
+  },
+  {
+   "card_id": "intensified",
+   "type": "Status",
+   "name": "Intensified",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": ""
   }
  ],
  "core": [
@@ -112248,5 +112257,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "9213de399cb58f5792eb352348837f0974246bf6e4836067f9c04282d699e547"
+ "checksum": "f2d0e2fa170d5648908785968c94731afb3e03617e412492caf4d0fb9b2c1e46"
 }

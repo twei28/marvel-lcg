@@ -66,6 +66,18 @@ describe('deltas de statuts', () => {
     expect(libelleStatut('dazed', 1, 'en')).toBe('Dazed')
   })
 
+  // Septieme carte d'etat (« Intensified », TMNT, posee par te201). Sans son entree dans
+  // STATUTS et dans compter(), le badge ne partirait jamais (NaN).
+  it('signale Intensifié, la septieme carte d etat, posee puis retiree', () => {
+    const avant = monde(klaw)
+    const apres = monde(klaw, carte(205, 'StatusCard', 'intensified', 97))
+    expect(deltasStatuts(avant, apres)).toEqual([[97, { kind: 'status', statut: 'intensified', value: 1 }]])
+    expect(deltasStatuts(apres, avant)).toEqual([[97, { kind: 'status', statut: 'intensified', value: -1 }]])
+    expect(libelleStatut('intensified', 1, 'fr')).toBe('Intensifié')
+    expect(libelleStatut('intensified', -1, 'fr')).toBe('Intensifié retiré')
+    expect(libelleStatut('intensified', 1, 'en')).toBe('Intensified')
+  })
+
   it('ne dit rien quand rien ne change, meme avec un statut en place', () => {
     const m = monde(klaw, carte(200, 'StatusCard', 'tough', 97))
     expect(deltasStatuts(m, m)).toEqual([])

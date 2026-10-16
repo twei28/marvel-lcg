@@ -150,7 +150,7 @@ export type CardEffectDelta =
        * `sentinel` (voir board/effets-statuts.ts).
        */
       kind: 'status'
-      statut: 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed'
+      statut: 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed' | 'intensified'
       value: 1 | -1
     }
 

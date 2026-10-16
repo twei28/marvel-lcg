@@ -43,6 +43,7 @@ class Symbol:
     exposed     = f'{Fore.LIGHTRED_EX}Exposed{Fore.RESET}'  # CORRECTIF : pack sentinel
     cloaked     = f'{Fore.LIGHTCYAN_EX}Cloaked{Fore.RESET}'
     dazed       = f'{Fore.LIGHTMAGENTA_EX}Dazed{Fore.RESET}'
+    intensified = f'{Fore.MAGENTA}Intensified{Fore.RESET}'
 
     # 🟂🟀🟂🟀✧✶☆
     boost = f'{Fore.RED}✶{Fore.RESET}'

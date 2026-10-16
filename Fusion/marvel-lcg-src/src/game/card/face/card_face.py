@@ -447,7 +447,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # sentinel (12/09/2026, fiche docs/reference/mots-cles/exposed.md).
         # Contrairement aux trois autres, sa regle n'est pas dans le moteur :
         # elle est scriptee sur la carte (cards/pack/status/exposed.py).
-        "Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed"
+        "Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed",
+        # AJOUT (16/10/2026) : 7e carte d'etat, « Intensified » (Intensifie), TMNT
+        # (Inkwire). Fiche docs/reference/mots-cles/intensified.md.
+        "Intensified"
     ]
 
     ATTACK_KEYWORD = Literal[
