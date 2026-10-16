@@ -8,9 +8,8 @@
 // de nouveau : tj001a (bonus +1/+1/+1 : la jauge le montre déjà), tj002 (une carte revient en main),
 // tj010 (+2 ATQ le temps d'une attaque : aucune trace sur la table), tj013 hors jeton de menace.
 //
-// Paire jumelle 14/15 (tj009 + tj010, illustration continue) : NON déclarée au registre des
-// panoramas (consigne : la signaler seulement). Les deux Tekko-Kagi sont donc dessinées comme des
-// améliorations ordinaires, sans `panorama` : aucune assertion ici n'en dépend.
+// Paire jumelle 14/15 (tj009 + tj010, illustration continue) : panorama CONFIRMÉ le 16/10/2026
+// (panorama-jumelles.ts) ; le test ci-dessous vérifie leur placement 14|15 à côté de l'identité.
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { lireDemande, type Demande } from './ask'
@@ -397,5 +396,21 @@ describe('tj009 / tj010 : la ressource octroyée aux Tekko-Kagi dans le paiement
     act(() => result.current.choisirOption(d.options[0]!))
     expect(result.current.cartes.get(TEKKO_1)?.agir).toBeUndefined()
     expect(result.current.cartes.get(TEKKO_2)?.agir).toBeTypeOf('function')
+  })
+})
+
+describe('tj009 / tj010 : panorama des Tekko-Kagi', () => {
+  it('les deux Tekko-Kagi sont en panorama 14|15 à côté de l identité', () => {
+    const monde = tableAvec(
+      siege({
+        area_hero: [
+          carte(IDENTITE, 'tj001b', 'AlterEgo', 'Jenny'),
+          carte(TEKKO_1, 'tj009', 'Upgrade', "Jennika's Tekko-Kagi", { bind_object_id: IDENTITE }),
+          carte(TEKKO_2, 'tj010', 'Upgrade', "Jennika's Other Tekko-Kagi", { bind_object_id: IDENTITE }),
+        ],
+      })
+    )
+    expect(dessinee(monde, TEKKO_1)?.panorama).toBe('gauche')
+    expect(dessinee(monde, TEKKO_2)?.panorama).toBe('droite')
   })
 })
