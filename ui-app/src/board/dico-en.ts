@@ -1615,6 +1615,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Qui défend contre cette attaque ?': 'Who defends against this attack?',
   'Tout voir': 'See all',
   'Réduire': 'Collapse',
+  'Renfort : une autre carte va être révélée': 'Surge: another card will be revealed',
   'Ordre d’activation des sbires': 'Minion activation order',
   'Clique la carte dorée pour continuer': 'Click the golden card to continue',
   'Clique la carte dorée, ou Espace': 'Click the golden card, or press Space',

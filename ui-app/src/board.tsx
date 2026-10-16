@@ -2565,7 +2565,15 @@ export function PagePartie({
     () => (phaseEssai ? avecEcranStadeRevele(avecEtapesRiposte(etapesPhaseMechant)) : etapesPhaseMechant),
     [phaseEssai, etapesPhaseMechant]
   )
-  const compteursFiges = useCoupsEnVol(etapesDesCoups, cleEtapeAffichee, phaseEssai, !avantResultat)
+  // La dernière étape connue vient d'être validée sans qu'une suivante n'arrive (la riposte avant la
+  // question d'ordre des sbires) : ses jetons volent quand même, la clé « validée » les libère.
+  const [validationEtape, setValidationEtape] = useState<string | undefined>(undefined)
+  const etatEtapeAffichee = etapesDesCoups.find((e) => e.cle === cleEtapeAffichee)?.etat
+  const cleDesCoups =
+    cleEtapeAffichee !== undefined && validationEtape === `${cleEtapeAffichee}|${etatEtapeAffichee}`
+      ? `${cleEtapeAffichee}#valide`
+      : cleEtapeAffichee
+  const compteursFiges = useCoupsEnVol(etapesDesCoups, cleDesCoups, phaseEssai, !avantResultat)
   const mondeTable = useMemo(() => {
     if (!phaseEssai || !mondeCale) return mondeCale
     const base = (avantResultat ? mondeAvantEtape(instantanes, etapesPhaseMechant, cleEtapeAffichee) : undefined) ?? mondeCale
@@ -4622,6 +4630,9 @@ export function PagePartie({
             tempsQuestion={tempsDeLaQuestion(
               etat.monde?.phase,
               (() => {
+                // L'ordre d'activation des sbires se demande en 2B (16/10/2026).
+                if ((etat.demande?.options ?? []).some((o) => /minion.*order/i.test(o.name))) return false
+                if (interaction.option && /minion.*order/i.test(interaction.option.name)) return false
                 const defense = etat.demande?.options?.find((o) => o.name === 'Defense')
                 const attaquant = defense?.all_legal_targets?.[0]
                 if (attaquant === undefined) return undefined
@@ -4767,6 +4778,7 @@ export function PagePartie({
             onActivite={signalerActivite}
             onTerminer={avancerPasAPas}
             onEtapeAffichee={setCleEtapeAffichee}
+            onEtapeValidee={(cle, etatValide) => setValidationEtape(`${cle}|${etatValide}`)}
             onAvantResultat={setAvantResultat}
             // Le coup fatal est vu : l'ecran de fin de partie peut paraitre.
             onDefaiteVue={() => setCoupFatalVu(true)}

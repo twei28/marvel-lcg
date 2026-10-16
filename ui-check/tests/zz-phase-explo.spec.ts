@@ -76,6 +76,13 @@ async function unPas(page: Page, enPhase: boolean) {
       .first().click({ timeout: 1000 }).catch(() => {});
     return;
   }
+  // « Sur la table » : un ciblage en cours (ordre des sbires) se fait en cliquant les cartes vertes.
+  const aCibler = page.locator('.tsm-utilisable:not(.est-choisie):not([disabled])');
+  if ((await page.locator('.tsm-bandeau.est-question .tsm-compte').count()) > 0 && (await aCibler.count()) > 0) {
+    if (await cliquer(aCibler.first())) return;
+  }
+  const validerTable = page.locator('.tsm-bandeau .tsm-bouton:not([disabled])', { hasText: /^Valider/ });
+  if ((await validerTable.count()) > 0 && (await cliquer(validerTable.first()))) return;
   const confirmer = await visible(page, /^Confirmer$/);
   if (confirmer && !(await confirmer.isDisabled().catch(() => true)) && (await cliquer(confirmer))) return;
   if (enPhase && CHOIX) {

@@ -23,7 +23,12 @@ function boiteDeLImage(
   cadre: { element: HTMLElement; origine: DOMRect }
 ): Boite | undefined {
   if (id === undefined) return undefined
-  const el = cadre.element.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"] .scan-frame`)
+  // Une carte rencontre RÉVÉLÉE est montrée en grand à côté du paquet, et sa copie face cachée reste
+  // sur la table : le halo va sur celle qu'on lit (« qu'on comprenne bien quelle est la carte de
+  // rencontre », 16/10/2026).
+  const el =
+    cadre.element.querySelector<HTMLElement>(`.rencontre-sortie.est-revelee .scan-card[data-card-id="${id}"] .scan-frame`) ??
+    cadre.element.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"] .scan-frame`)
   if (!el) return boiteDeCarte(id, cadre)
   const r = el.getBoundingClientRect()
   if (r.width === 0 || r.height === 0) return boiteDeCarte(id, cadre)
@@ -70,6 +75,10 @@ export type TableSansModaleProps = {
   mention?: string
   /** Texte accessible du clic sur la carte. */
   libelleAction: string
+  /** Avant la phrase, en rouge : d'où vient cette carte (« Renfort de Pris par Surprise »). */
+  surtitre?: string
+  /** Après la phrase : ce qui va suivre (« Renfort : une autre carte va être révélée »). */
+  suite?: string
 }
 
 export function TableSansModale({
@@ -83,6 +92,8 @@ export function TableSansModale({
   reculer,
   mention,
   libelleAction,
+  surtitre,
+  suite,
 }: TableSansModaleProps) {
   const boiteActeur = useBoiteDeCarte(acteurId ?? cibleId, cle)
   const boiteCible = useBoiteDeCarte(acteurId !== undefined ? cibleId : undefined, cle)
@@ -104,8 +115,10 @@ export function TableSansModale({
             ‹
           </button>
         ) : null}
+        {surtitre ? <span className="tsm-surtitre">{surtitre}</span> : null}
         <span className="tsm-phrase">{phrase}</span>
         {nombre ? <b className="tsm-nombre">{nombre}</b> : null}
+        {suite ? <span className="tsm-suite">{suite}</span> : null}
         {peutAgir && sansCarte ? (
           <button type="button" className="tsm-bouton" onClick={avancer} aria-label={libelleAction}>
             {t('Continuer')}

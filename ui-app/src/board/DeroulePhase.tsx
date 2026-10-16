@@ -208,6 +208,7 @@ export function DeroulePhase({
   onTerminer,
   onDefaiteVue,
   onEtapeAffichee,
+  onEtapeValidee,
   onAvantResultat,
 }: {
   etapes: EtapeDeroule[]
@@ -517,6 +518,8 @@ export function DeroulePhase({
    * aucune.
    */
   onEtapeAffichee?: (cle: string | undefined) => void
+  /** L'étape affichée vient d'être validée (clé et état) : ses jetons peuvent voler même sans étape suivante. */
+  onEtapeValidee?: (cle: string, etat: string | undefined) => void
   /**
    * REFONTE, LOT 4 (essai, decision 51) : vrai tant que l'etape affichee
    * retourne encore ses boosts, avant l'ecran du resultat. La table garde
@@ -1019,6 +1022,7 @@ export function DeroulePhase({
     // Une intention validee ici ne vaudra pas validation de la resolution qui
     // prendra sa place (voir `validee` et `cartoucheAJour`).
     setValidee({ cle: etape.cle, etat: etape.etat, temps: etape.temps, titre: etape.titre, cibleId: etape.cibleId })
+    onEtapeValidee?.(etape.cle, etape.etat)
     // Le jeton de menace s'envole MAINTENANT, sur l'étape que le joueur vient
     // de valider (voir `volMenace`). Les autres étapes n'en posent pas.
     if (etape.titre === 'menace' || etape.titre === 'manigance') {
@@ -1850,12 +1854,22 @@ export function DeroulePhase({
             « on la saute, mais on le dit ». Il ne coute aucun clic, puisque
             `etapesDeroule` ne fabrique pas d'etape pour lui. */}
         {/* Où l'on en est dans la phase (« 2A. Le méchant s'active »), centré au-dessus de la ligne. */}
-        {etape && ONGLETS.some((o) => o.cle === etape.temps) ? (
-          <span className="tsm-temps">{t(ONGLETS.find((o) => o.cle === etape.temps)!.libelle)}</span>
-        ) : null}
+        {(() => {
+          // Pendant une question, le temps est celui de la QUESTION quand elle est plus loin dans la
+          // phase (l'ordre des sbires est en 2B, même si la dernière étape lue était l'attaque du méchant).
+          const temps =
+            questionAuJoueur &&
+            tempsQuestion !== undefined &&
+            (!etape || ONGLETS.findIndex((o) => o.cle === tempsQuestion) > ONGLETS.findIndex((o) => o.cle === etape.temps))
+              ? tempsQuestion
+              : etape?.temps
+          const onglet = ONGLETS.find((o) => o.cle === temps)
+          return onglet ? <span className="tsm-temps">{t(onglet.libelle)}</span> : null
+        })()}
         <CoucheTraitPhase
           etape={etape}
-          actif={!enVolDeJeton}
+          // Pendant une question, le trait d'une étape déjà RÉSOLUE (la riposte) n'a plus rien à montrer.
+          actif={!enVolDeJeton && !(questionAuJoueur && etape?.etat === 'resolu')}
           sansEtiquette={Boolean(essai && etape && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0))}
         />
         <EffetsSurTable
@@ -2692,6 +2706,14 @@ export function DeroulePhase({
           reculer={index > 0 && peutAgir ? reculer : undefined}
           mention={enAttente ? texteAttente({ autreJoueur: attendUnAutreJoueur, nom: nomJoueurAttendu }) : undefined}
           libelleAction={`${titreEtape(etapeLue)} — ${t('Suivant')}`}
+          // LE RENFORT, en clair (16/10/2026, « que le surge soit clair ») : d'où vient la carte, et
+          // qu'une autre va suivre.
+          surtitre={surtitreEtape(etapeLue) || undefined}
+          suite={
+            etapeLue.suivieDUnRenfort || (etapeLue.titre === 'revelation' && aRenfort(carteScene?.(etapeLue.carteId ?? -1, true)))
+              ? t('Renfort : une autre carte va être révélée')
+              : undefined
+          }
         />
         {confirmerPasser && !passerTout ? (
           <span className="tsm-confirmer" role="alertdialog" aria-label={t('Passer toute la phase ?')}>
@@ -2885,4 +2907,12 @@ export function DeroulePhase({
       </section>
     </>
   )
+}
+
+/** La carte porte le mot-clé Renfort (Surge) : imprimé dans ses mots-clés ou dans son texte. */
+function aRenfort(carte: { keywords?: Array<{ nom: string }>; texte?: string } | undefined): boolean {
+  if (!carte) return false
+  if (carte.keywords?.some((k) => /^(renfort|surge)$/i.test(k.nom.trim()))) return true
+  // Imprimé en tête du texte (« Renfort. »), pas « cette carte gagne Renfort », qui est conditionnel.
+  return /^\s*(renfort|surge)\s*[.\n]/i.test(carte.texte ?? '')
 }

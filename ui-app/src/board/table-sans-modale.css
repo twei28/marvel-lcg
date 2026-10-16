@@ -349,3 +349,26 @@ html:has(.tsm-bandeau) .plateau-cadre .scan-frame {
   pointer-events: none;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
 }
+
+/* Le Renfort : d'où vient la carte (avant la phrase), et ce qui suit (après). */
+.tsm-surtitre,
+.tsm-suite {
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 3px;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.tsm-surtitre {
+  background: var(--rouge, #e62429);
+  color: #fff;
+}
+
+.tsm-suite {
+  background: transparent;
+  border: 2px solid var(--rouge, #e62429);
+  color: #ffb3b5;
+}
