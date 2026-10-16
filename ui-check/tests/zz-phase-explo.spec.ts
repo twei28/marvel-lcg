@@ -153,6 +153,8 @@ test('explo', async ({ page }) => {
   let tours = 0;
   let volProchain = false;
   let volDejaVu = false;
+  let boostVu = false;
+  let questionVue = false;
   for (let i = 0; i < 2500 && rang < MAXPAS; i++) {
     await page.waitForTimeout(300);
     const w = await monde(page);
@@ -190,6 +192,11 @@ test('explo', async ({ page }) => {
       const cle = s.cartouche + '#' + s.demande + '#' + s.annonce + '#' + s.dialogues;
       if (cle !== vu) {
         vu = cle;
+        if (/Qui défend/.test(s.cartouche ?? '')) questionVue = true;
+        else if (questionVue && /attaque/i.test(s.cartouche ?? '') && !boostVu) {
+          boostVu = true;
+          for (const k of [1, 2, 3, 4, 5]) { await page.waitForTimeout(380); await page.screenshot({ path: path.join(SORTIE, `boost-${k}.png`) }); }
+        }
         volProchain = /gagne \d+ menace/i.test(s.cartouche ?? '') && !volDejaVu;
         await page.waitForTimeout(800);
         rang++;

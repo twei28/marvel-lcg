@@ -192,6 +192,12 @@ export function CoucheRencontreSurTable({
               // « sortir du paquet » plutôt qu'« apparaître à côté ».
               '--depart-x': `${ancre.deck.x - place.x}px`,
               '--depart-y': `${ancre.deck.y - place.y}px`,
+              // 16/10/2026 : « elles sortent du deck, elles vont au milieu, elles s'agrandissent
+              // au mieux, puis elles vont à côté du méchant ». Le milieu de la table, et la
+              // taille où la carte se lit (45 % de la hauteur de la table).
+              '--centre-x': `${ancre.cadre.x + ancre.cadre.w / 2 - (place.x + place.w / 2)}px`,
+              '--centre-y': `${ancre.cadre.y + ancre.cadre.h / 2 - (place.y + place.h / 2)}px`,
+              '--centre-echelle': `${Math.max(1.5, Math.min(4, (ancre.cadre.h * 0.45) / (place.h || 1)))}`,
             } as React.CSSProperties}
           >
             {carteNue(props)}

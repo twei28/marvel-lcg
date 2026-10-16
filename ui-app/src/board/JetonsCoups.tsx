@@ -17,7 +17,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import jetonAccelerationImage from '../components/jetons/acceleration.png'
 import jetonDegatsImage from '../components/jetons/degats.png'
 import jetonMenaceImage from '../components/jetons/menace.png'
-import { coupsDeLEtape, pointDeLaCourbe, type Coup, type Fige } from './coups-sur-table'
+import { coupsDeLEtape, pointDeLaCourbe, type Coup, type Fige, type GenreCoup } from './coups-sur-table'
 import type { EtapeDeroule } from './deroule-phase'
 import { carteDeLaTable, elementDuBout, rect } from './FlechesPhase'
 import { traceEntre, type TraceFleche } from './fleches-phase'
@@ -42,12 +42,17 @@ function traceDu(c: Coup): TraceFleche | undefined {
   return { ...trace, arrivee }
 }
 
-/** Au repos le jeton est GRAND (16/10/2026, « plus grand au milieu ») ; il rétrécit en volant. */
-const ECHELLE_REPOS = 3
-const ECHELLE_ARRIVEE = 0.45
+/**
+ * Le jeton de MENACE est grand au repos (16/10/2026, « trois fois plus grand ») et rétrécit en
+ * volant. Les dégâts et l'accélération gardent leur taille normale : « tu peux le laisser aux
+ * dégâts normaux ».
+ */
+function echelles(genre: GenreCoup): { repos: number; arrivee: number } {
+  return genre === 'menace' ? { repos: 3, arrivee: 0.45 } : { repos: 1, arrivee: 1 }
+}
 
-function placer(el: HTMLElement, x: number, y: number) {
-  el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${ECHELLE_REPOS})`
+function placer(el: HTMLElement, x: number, y: number, genre: GenreCoup) {
+  el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${echelles(genre).repos})`
 }
 
 function creerJeton(c: Coup): HTMLElement {
@@ -114,7 +119,7 @@ export function useCoupsEnVol(
         if (!enAttente.current.some((a) => a.el === el)) continue
         const trace = traceDu(coup)
         if (!trace) continue
-        placer(el, trace.depart.x, trace.depart.y)
+        placer(el, trace.depart.x, trace.depart.y, coup.genre)
         el.style.visibility = ''
       }
     }
@@ -166,7 +171,8 @@ export function useCoupsEnVol(
       }
       const cles = Array.from({ length: 13 }, (_, k) => {
         const p = pointDeLaCourbe(trace.depart, trace.controle, trace.arrivee, k / 12)
-        const echelle = ECHELLE_REPOS + (ECHELLE_ARRIVEE - ECHELLE_REPOS) * (k / 12)
+        const { repos, arrivee: fin } = echelles(v.coup.genre)
+        const echelle = repos + (fin - repos) * (k / 12)
         return { transform: `translate(${p.x}px, ${p.y}px) translate(-50%, -50%) scale(${echelle})`, offset: k / 12 }
       })
       const animation = v.el.animate(cles, { duration: DUREE_TRAJET_MS, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)', fill: 'forwards' })

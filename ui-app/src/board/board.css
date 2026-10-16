@@ -8963,9 +8963,38 @@
   /* Chaque boost part un peu après le précédent : ils sortent l'un APRÈS
      l'autre, comme on retourne des cartes à la main. Quatre suffisent : au-delà
      le moteur n'en révèle pratiquement jamais, et le dernier délai reste. */
-  .rencontre-sortie.est-boost:nth-child(2) { animation-delay: 60ms; }
-  .rencontre-sortie.est-boost:nth-child(3) { animation-delay: 120ms; }
-  .rencontre-sortie.est-boost:nth-child(4) { animation-delay: 180ms; }
+
+  /* Les cartes BOOST : elles sortent du deck, vont au MILIEU de la table en grand pour qu'on les
+     lise, puis rejoignent leur place à côté de l'attaquant (16/10/2026). */
+  .rencontre-sortie.est-boost {
+    animation: rencontre-boost 2200ms cubic-bezier(0.25, 0.7, 0.3, 1) both;
+    z-index: 2;
+  }
+
+  .rencontre-sortie.est-boost:nth-child(2),
+  .rencontre-sortie.est-boost:nth-child(3),
+  .rencontre-sortie.est-boost:nth-child(4) {
+    animation-delay: 0ms;
+  }
+
+  @keyframes rencontre-boost {
+    0% {
+      transform: translate(var(--depart-x, 0), var(--depart-y, 0)) scale(0.92);
+      opacity: 0;
+    }
+    24% {
+      transform: translate(var(--centre-x, 0), var(--centre-y, 0)) scale(var(--centre-echelle, 2.4));
+      opacity: 1;
+    }
+    68% {
+      transform: translate(var(--centre-x, 0), var(--centre-y, 0)) scale(var(--centre-echelle, 2.4));
+      opacity: 1;
+    }
+    100% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+  }
 
   /* La carte rencontre sort ET grandit : son cadre doré la détache du reste. */
   .rencontre-sortie.est-revelee {
