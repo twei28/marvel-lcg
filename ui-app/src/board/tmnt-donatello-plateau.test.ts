@@ -48,11 +48,12 @@ describe('td001b Donnie : Bō et Carapace mis en jeu inclinés par la recherche'
       })
     )
 
-  it('les deux améliorations sont dessinées sur l identité, couchées', () => {
-    for (const id of [BO, CARAPACE]) {
+  it('les deux améliorations sont dessinées en panorama 14|15 A COTE de l identité, couchées', () => {
+    // Décision du 16/10/2026 (panorama-jumelles.ts) : Bō (14/15) + Carapace (15/15), paire confirmée.
+    for (const [id, cote] of [[BO, 'gauche'], [CARAPACE, 'droite']] as const) {
       const vue = dessinee(monde(), id)
       expect(vue).toBeDefined()
-      expect(vue?.portePar).toBe(IDENTITE)
+      expect(vue?.panorama).toBe(cote)
       expect(vue?.kind).toBe('upgrade')
       expect(vue?.exhausted).toBe(true)
     }
