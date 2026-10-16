@@ -66,3 +66,9 @@ Source des scans : `TMNT Heroes-20261014T200300Z-1-001.zip` / `TMNT Heroes/Venus
 - `Arc Nova` imprime « VENUS (2/16) » : coquille de l'auteur (les 15 scans sont numerotes 1 a 15).
 - Paires de cartes a illustration continue : voir le rapport final (candidates `tv011` Dragon Scale /
   `tv014` Turtle Shell, scans 12 et 15) : RIEN n'est declare, a confirmer par l'utilisateur.
+
+## REPONSES DE L'UTILISATEUR (16/10/2026)
+
+- **Q1** : plafond du STOCK de Venus (lecture retenue, confirmee). Rien a changer.
+- **Q2** : l'icone est un vrai Hazard 1 (lecture retenue, confirmee). Rien a changer.
+- **Q3** : seulement les ressources wild NECESSAIRES au cout (PAS la lecture retenue) : `min(wild payees, cout paye)`, jamais le surplus. tv005 corrige, cas « deux Evanescence : 4 cartes et non 6 » vu rouge puis vert.

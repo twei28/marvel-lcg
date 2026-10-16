@@ -12,8 +12,8 @@ from . import *
 # TEXTE CONTRE CODE
 #  ⚠ « for EACH [[ELEMENT]] upgrade YOU CONTROL » -> `ElementsControles(joueur)` : les
 #    ameliorations ELEMENT du joueur seulement (trait, pas nom), zero = zero compteur.
-#  ⚠ « (to a MAXIMUM of 6) » -> TODO-QUESTION (.planning/tmnt/venus-questions.md, Q1) :
-#    lecture retenue provisoirement = PLAFOND DU STOCK (Venus ne porte jamais plus de
+#  ⚠ « (to a MAXIMUM of 6) » -> DECISION UTILISATEUR (16/10/2026, Q1) :
+#    lecture CONFIRMEE = PLAFOND DU STOCK (Venus ne porte jamais plus de
 #    6 compteurs de dragage, comme le plafond « to a maximum of 3 » de la rage de
 #    Raphael, `maximum=6`). Autre lecture : plafonner seulement le nombre pose par
 #    activation (aucun effet pratique : il n'existe que 6 ameliorations ELEMENT).
@@ -28,7 +28,7 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(this, message)
         joueur = JoueurDeCetteCarte(effect)
         n = len(ElementsControles(joueur))
-        # TODO-QUESTION Q1 : plafond du stock (6) retenu, voir l'en-tete.
+        # DECISION UTILISATEUR Q1 : plafond du stock (6), voir l'en-tete.
         PlacerDragage(effect, n, joueur, maximum=PLAFOND_DREDGE)
 
     return [

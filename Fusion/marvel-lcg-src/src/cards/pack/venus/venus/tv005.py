@@ -13,6 +13,8 @@ from . import *
 #  ⚠ « for each [WILD] resource used to PAY for this card » -> `GetPaidResources().g` : les
 #    ressources JOKER depensees (une ressource physique/mentale/energie d'une carte
 #    imprimee [wild] compte ; une carte [physical] non). Compte, pas simple presence.
+#    DECISION UTILISATEUR (16/10/2026) : seulement les wild NECESSAIRES au cout :
+#    min(wild payees, cout paye `context.paid_this_cost.true_val`), jamais le surplus.
 #  ⚠ « This attack gains OVERKILL » -> `AttackProperty(overkill=True)` : l'excedent passe au
 #    vilain, jamais d'un ennemi au sien.
 #  Icone [wild] du texte verifiee par decoupe (docs/packs/venus_cartes.md).
@@ -29,7 +31,11 @@ def GetAbilities() -> Sequence['Ability']:
         if heros is not None and cibles:
             heros.DealDamage(cibles, 5, effect, property=AttackProperty(overkill=True))
         if joueur is not None:
-            jokers = int(effect.GetPaidResources().g)
+            # DECISION UTILISATEUR (16/10/2026, Q3) : seulement les ressources [wild]
+            # NECESSAIRES au cout ; le surplus (ressources payees au-dela du cout)
+            # ne compte pas, la pioche ne depasse donc jamais le cout de la carte.
+            jokers = min(int(effect.GetPaidResources().g),
+                         int(effect.context.paid_this_cost.true_val))
             if jokers > 0:
                 joueur.DrawUp(jokers, effect)
 
