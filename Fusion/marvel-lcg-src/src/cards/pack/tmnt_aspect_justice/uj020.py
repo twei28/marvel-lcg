@@ -25,8 +25,10 @@ from . import *
 #  ⚠ « Action » (pas Hero Action) : jouable dans les deux formes ; c'est la carte glissee qui impose ses
 #    propres conditions de jeu (un evenement « Hero Action » n'est jouable qu'en forme heros).
 #  ⚠ « (paying its cost) » : cout normal de la carte glissee.
-#  ⚠ « Then, discard Mona Lisa » : apres la tentative de jeu, Mona Lisa est defaussee (la carte glissee
-#    qui n'a pas ete jouee part avec elle, en defausse : `PlaceCardArea` suit sa porteuse).
+#  ⚠ « THEN, discard Mona Lisa » : Rules Reference v1.8, entree « THEN » : la partie apres « then » ne se
+#    resout QUE si celle d'avant a reussi. Carte glissee NON jouee (refus, cout impayable, evenement
+#    « Hero Action » en alter-ego) : Mona Lisa RESTE en jeu, la carte reste glissee. (Premiere version :
+#    defausse inconditionnelle, vue en autoplay, Peter Parker perdait Mona Lisa ET Dire Straits.)
 #  ⚠ L'Action n'est offerte que s'il y a une carte glissee (« the card tucked here »).
 #  Aucune limite imprimee.
 
@@ -49,9 +51,10 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(message)
         joueur = effect.GetInitiator()
         face = CarteGlissee(this)
-        if joueur is not None and face is not None:
-            joueur.PlayCardsLikeInTurn([face], effect)
-        if this.IsInPlay():
+        if joueur is None or face is None:
+            return
+        jouees = joueur.PlayCardsLikeInTurn([face], effect)
+        if jouees and this.IsInPlay():
             Faces.DiscardAll([this], effect)
 
     return [

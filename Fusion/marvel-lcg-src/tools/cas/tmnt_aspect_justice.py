@@ -429,6 +429,13 @@ CAS += [
        {"menace": [["01097b", 3]], "hors_jeu": ["uj020"], "defausse": ["uj020", "04049", "01089"]},
        main_exclusive=["uj020", "01089"], jouer=["uj020"], declencher_apres=["Puzzle.Action('uj020')"],
        cibles=["01097b"], accepter_choix=True),
+    _c("uj020 Mona Lisa : « THEN » : carte glissee IMPAYABLE (main vide) -> pas jouee, Mona Lisa RESTE en jeu",
+       "Rules Reference v1.8 « THEN » : la partie apres « then » ne se resout que si la premiere a reussi ; 04049 "
+       "reste glissee, menace intacte",
+       [HEROS, "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('04049')", PRINC5], [],
+       {"menace": [["01097b", 5]], "en_jeu": ["uj020"], "pose_sous": [["uj020", "04049"]]},
+       main_exclusive=["uj020"], jouer=["uj020"], declencher_tolerant=["Puzzle.Action('uj020')"],
+       cibles=["01097b"], accepter_choix=True),
     _c("uj020 Mona Lisa : contre-cas, aucun evenement THWART en defausse -> rien de glisse, Action indisponible",
        "« the card tucked here » : sans carte glissee, pas d'Action (la tentative est refusee, Mona Lisa reste)",
        [HEROS, "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01090')"], [],
