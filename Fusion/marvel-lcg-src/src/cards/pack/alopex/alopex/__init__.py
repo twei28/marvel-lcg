@@ -47,12 +47,13 @@ def PreyMiseDeCote(joueur: 'Player|None') -> 'CardFace|None':
     return None
 
 
-def PreyEnJeu(joueur: 'Player|None') -> 'CardFace|None':
-    """La carte Prey en jeu (attachee quelque part) qui appartient au joueur."""
+def PreyEnJeu(effect: 'Effect', joueur: 'Player|None') -> 'CardFace|None':
+    """La carte Prey en jeu (attachee a un ennemi ou une manigance) qui appartient au joueur."""
     if joueur is None:
         return None
-    for face in Worlds.FindCardsOnField(joueur.GetIdentity(), name=NOM_PREY):
-        return face
+    for face in Worlds.FindCardsOnField(effect, card_type=Upgrade, name=NOM_PREY):
+        if face.GetControlBy() == joueur:
+            return face
     return None
 
 

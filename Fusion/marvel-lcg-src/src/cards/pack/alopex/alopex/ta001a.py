@@ -17,17 +17,13 @@ from . import *
 #  - « Forced RESPONSE » : AbilityType.ForcedResponse, obligatoire ;
 #  - « attack AN ENEMY » : la (ou les) cible(s) de l'attaque ; « thwart A
 #    SCHEME » : la manigance contree. « THAT enemy or scheme » = la meme cible ;
-#  - « FIND Prey » : Prey est introuvable quand elle est DEJA en jeu (attachee
-#    ailleurs) — lecture litterale « find = chercher hors du jeu », PROVISOIRE,
-#    voir TODO-QUESTION ci-dessous ;
+#  - « FIND Prey » : DECISION UTILISATEUR (16/10/2026, Q1) : regle officielle « find »
+#    = chercher dans chaque zone ou la carte peut se trouver (cartes de cote, zone
+#    de jeu...). Prey deja attachee ailleurs est trouvee et DEPLACEE ;
 #  - si la cible a quitte le jeu (ennemi vaincu, manigance videe), rien a
 #    attacher : Prey reste de cote ;
 #  - le nom « Matagi » est celui de la capacite (italique imprime).
 #
-# TODO-QUESTION (ta001a, .planning/tmnt/alopex-questions.md, Q1) : Prey deja
-# attachee a UNE AUTRE cible — « find » la deplace-t-elle ? Lecture retenue :
-# NON (« find » = chercher parmi les cartes de cote ; Prey en jeu n'est pas
-# « trouvable »).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -49,7 +45,10 @@ def GetAbilities() -> Sequence['Ability']:
         if not cibles:
             return
 
-        prey = PreyMiseDeCote(joueur)
+        # DECISION UTILISATEUR (16/10/2026, Q1) : regle officielle « find » = chercher dans
+        # CHAQUE zone ou la carte peut se trouver (cartes de cote, zone de jeu...). Prey deja
+        # attachee a une autre cible est donc TROUVEE et deplacee sur la nouvelle cible.
+        prey = PreyMiseDeCote(joueur) or PreyEnJeu(effect, joueur)
         if prey is None:
             return
         prey.CastTo(Upgrade).AttachTo2(cibles[0], effect)
