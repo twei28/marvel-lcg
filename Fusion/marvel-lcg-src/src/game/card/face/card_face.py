@@ -251,6 +251,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : compteur imprime
         # « knucklehead counter » des attachements Temper.
         'knucklehead',
+        # AJOUT (16/10/2026, aspect TMNT Protection) : compteurs imprimes « healing » (up022 Lindsey
+        # Baker, Uses), « brute » (up014 Grotto), « fuel » (up031 Road Rage). `desc.Uses` les refuse
+        # (assert IsCounter) tant qu'ils ne sont pas dans cette liste.
+        'healing', 'brute', 'fuel',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',

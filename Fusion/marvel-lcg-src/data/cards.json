@@ -112325,7 +112325,860 @@
  "tmnt_aspect_basic": [],
  "tmnt_aspect_justice": [],
  "tmnt_aspect_leadership": [],
- "tmnt_aspect_protection": [],
+ "tmnt_aspect_protection": [
+  {
+   "card_id": "up001",
+   "type": "Ally",
+   "name": "* Ace Duck",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2**",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "AERIAL",
+    "DUCK",
+    "DIMENSION X"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Response</b>: After Ace Duck enters play, search the top 5 cards of your deck for an event card and add it to your hand. Shuffle your deck.\n<i>\"Quack under pressure? Never.\"</i>",
+   "custom": "Inkwire",
+   "ability_link": "09012",
+   "unique_also": [
+    "Brother Voodoo"
+   ]
+  },
+  {
+   "card_id": "up002",
+   "type": "Upgrade",
+   "name": "Armored Vest",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Play under any player's control. Max 1 per player.\nYour hero gets +1 DEF.\n<i>Standard issue body armor. No turtle should go without.</i>",
+   "custom": "Inkwire",
+   "ability_link": "01081"
+  },
+  {
+   "card_id": "up003",
+   "type": "Event",
+   "name": "Army of One",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "Y",
+    "Class": "Protection"
+   },
+   "traits": [],
+   "set_name": "TMNT Protection",
+   "text": "[star] Increase the cost to play this card by 1 for each ally you control.\n<b>Hero Action</b>: Ready your hero.\n<i>\"Ten versus one is not a fair fight... for you.\"</i> —Raphael",
+   "custom": "Inkwire",
+   "ability_link": "60048"
+  },
+  {
+   "card_id": "up004",
+   "type": "Event",
+   "name": "Autodefenestration",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0*",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENSE",
+    "FERAL",
+    "NYC"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "[star] Rampage 2. <i>(As an additional cost for this card, take 2 damage and discard 2 cards from the top of your deck.)</i>\n<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent all of that damage.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up005",
+   "type": "Upgrade",
+   "name": "Change of Fortune",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [],
+   "set_name": "TMNT Protection",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Response</b>: After you defeat an enemy during the villain phase, exhaust this card → draw 2 cards.",
+   "custom": "Inkwire",
+   "ability_link": "48014"
+  },
+  {
+   "card_id": "up006",
+   "type": "Event",
+   "name": "\"Come Get Me, Bub!\"",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Hero Action</b>: Discard cards from the encounter deck until you discard a minion. Put that minion into play engaged with you → heal 3 damage from your identity and give your identity a tough status card.",
+   "custom": "Inkwire",
+   "ability_link": "48016"
+  },
+  {
+   "card_id": "up007",
+   "type": "Ally",
+   "name": "* Cyber Ninja",
+   "subtitle": "Donnie",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "GENIUS",
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Response</b>: After Cyber Ninja enters play, discard an upgrade from your hand → draw 1 card and cloak Cyber Ninja.\n<i>\"There was a time where such sentiments clouded my judgement. I fixed that...\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up008",
+   "type": "Upgrade",
+   "name": "Defensive Conditioning",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points and your hero gets +1 DEF.\n<i>\"Brace yourselves, brothers!\"</i> —Leonardo",
+   "custom": "Inkwire",
+   "ability_link": "56046"
+  },
+  {
+   "card_id": "up009",
+   "type": "Event",
+   "name": "Demoralize",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Hero Action</b>: Choose an enemy. It attacks you. Confuse that enemy.\n<i>\"Time to crack some heads!\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up010",
+   "type": "Upgrade",
+   "name": "Electrostatic Armor",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Response</b>: After you defend against an attack, deal 1 damage to the attacking character.",
+   "custom": "Inkwire",
+   "ability_link": "10031"
+  },
+  {
+   "card_id": "up011",
+   "type": "Upgrade",
+   "name": "Energy Barrier",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Uses": "3,reflection",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Uses (3 reflection counters).\n<b>Interrupt</b>: When you would take any amount of damage, remove 1 reflection counter from here → prevent 1 of that damage and deal 1 damage to an enemy.",
+   "custom": "Inkwire",
+   "ability_link": "05017"
+  },
+  {
+   "card_id": "up012",
+   "type": "Event",
+   "name": "Get Their Attention",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENSE",
+    "THWART"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Hero Interrupt</b> <i>(defense/thwart)</i>: When an enemy initiates an attack, remove 3 threat from a scheme.\n<i>\"Now that I have your attention, let's get started, shall we?\"</i> —Ronin",
+   "custom": "Inkwire",
+   "ability_link": "60049"
+  },
+  {
+   "card_id": "up013",
+   "type": "Ally",
+   "name": "* Groo the Wanderer",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "4",
+    "ATK": "3*",
+    "THW": "2**",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "BARBARIAN"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Forced Response</b>: After Groo the Wanderer enters play under your control, deal yourself 1 facedown encounter card.\n<i>\"I would have words with you!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up014",
+   "type": "Ally",
+   "name": "* Grotto",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DIMENSION X",
+    "NOVA POSSE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Grotto enters play with 2 brute counters on him.\n<b>Interrupt</b>: When Grotto attacks an enemy, remove 1 brute counter from him → stun that enemy and deal 1 damage to it.",
+   "custom": "Inkwire",
+   "unique_also": [
+    "Iron Fist"
+   ]
+  },
+  {
+   "card_id": "up015",
+   "type": "Ally",
+   "name": "Helpful Bystander",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "HP": "1",
+    "RES": "R",
+    "Vulnerable": "1",
+    "MaxPerDeck": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Vulnerable. Max 1 per deck.\nYour hero gets +1 hand size.\n<b>Forced Interrupt</b>: When an enemy attacks you, it attacks Helpful Bystander instead. This attack gains overkill.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up016",
+   "type": "Ally",
+   "name": "* Herman",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "1",
+    "ATK": "2**",
+    "THW": "1**",
+    "RES": "R",
+    "Toughness": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CRAB",
+    "MUTANIMAL",
+    "SOLDIER"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Toughness. Herman can have up to 3 tough status cards.\n<b>Interrupt</b>: When Herman enters play, place an additional tough status card on him (to a max of 2) for each resource you overpaid for Herman's cost.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up017",
+   "type": "Ally",
+   "name": "* Honor Blade",
+   "subtitle": "Leo",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TURTLE",
+    "WARRIOR"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Response</b>: After you engage a minion, give Honor Blade a tough status card.\n<i>\"I'm ready for anything.\"</i>",
+   "custom": "Inkwire",
+   "ability_link": "56041",
+   "unique_also": [
+    "Patriot"
+   ]
+  },
+  {
+   "card_id": "up018",
+   "type": "Event",
+   "name": "\"I Can Do This All Day\"",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Hero Action</b> <i>(defense)</i>: When an enemy attacks, declare your hero as the defender without exhausting them.\n<i>\"I'm not going anywhere.\"</i> —Leonardo",
+   "custom": "Inkwire",
+   "ability_link": "56047"
+  },
+  {
+   "card_id": "up019",
+   "type": "Event",
+   "name": "In Harm's Way",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3*",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "[star] Increase the cost to play this card by 1 for each ally you control.\n<b>Hero Action</b> <i>(attack/thwart)</i>: Deal X damage to an enemy and remove X threat from a scheme, where X is your DEF.",
+   "custom": "Inkwire",
+   "ability_link": "60050"
+  },
+  {
+   "card_id": "up020",
+   "type": "Upgrade",
+   "name": "Innate Reflexes",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Starting. <i>(You may add this card to your hand before drawing your starting hand.)</i>\nYour hero gets +1 DEF.\n<i>\"Missed me.\"</i> —Jennika",
+   "custom": "Inkwire",
+   "ability_link": "60038"
+  },
+  {
+   "card_id": "up021",
+   "type": "Ally",
+   "name": "* Jōtarō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "R",
+    "Toughness": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "RABBIT",
+    "RONIN"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Toughness.\n<b>Interrupt</b>: When an enemy would deal any amount of damage, spend a [physical] resource → reduce that amount of damage by 1. (Limit once per round.)\n<i>\"I will protect this village with my life.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up022",
+   "type": "Support",
+   "name": "* Lindsey Baker",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Uses": "3,healing",
+    "Class": "Protection"
+   },
+   "traits": [
+    "PERSONA"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Uses (3 healing counters).\n<b>Action</b>: Exhaust Lindsey Baker and remove 1 healing counter from her → heal 1 damage from a hero and discard 1 status card from it.",
+   "custom": "Inkwire",
+   "unique_also": [
+    "The Night Nurse"
+   ]
+  },
+  {
+   "card_id": "up023",
+   "type": "Upgrade",
+   "name": "Lookout",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "NYC",
+    "PREPARATION"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Reduce the cost to play this card by 1 if you control a [[NYC]] support.\n<b>Hero Response</b>: After a minion engages you, discard Lookout → cloak your hero and draw 1 card.\n<i>\"We can't afford to let our guard down.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up024",
+   "type": "Ally",
+   "name": "* Nobody",
+   "subtitle": "Angel Bridge",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2**",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "NINJA",
+    "VIGILANTE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Response</b>: After Nobody enters play, place a tough or cloaked status card on them.\n<i>\"Can they swing from a thread? Take a look overhead. Hey there, there goes Nobody.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up025",
+   "type": "Event",
+   "name": "Powerful Punch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When an enemy initiates an attack, deal 4 damage to that enemy.\n<i>\"What's the matter? Did your gang forget to teach you how to take a punch?\"</i> —Raphael",
+   "custom": "Inkwire",
+   "ability_link": "32014"
+  },
+  {
+   "card_id": "up026",
+   "type": "Event",
+   "name": "Primal Provisions",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0*",
+    "RES": "Y",
+    "Class": "Protection"
+   },
+   "traits": [
+    "FERAL"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Max 1 per phase.\n[star] Rampage 2. <i>(As an additional cost for this card, take 2 damage and discard 2 cards from the top of your deck.)</i>\n<b>Hero Action</b>: Draw 2 cards.\n<i>\"We cannot rest. We must push on.\"</i> —Alopex",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up027",
+   "type": "Upgrade",
+   "name": "Protection Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TRAINING"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Attach to a [[NINJA]] or [[MUTANIMAL]] ally. Max 1 [[Training]] upgrade per ally.\nAttached ally gets a +3 hit points.\n<i>\"Hold the line my brothers!\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up028",
+   "type": "Upgrade",
+   "name": "Rabid Infection",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION",
+    "FERAL",
+    "WOUND"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Attach to a minion that your hero attacked this turn. If attached to a non-[[ELITE]] minion, it gains vulnerable.\n<b>Interrupt</b>: When attached minion activates, deal 1 damage to an enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up029",
+   "type": "Upgrade",
+   "name": "Ready for a Fight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Requirement": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Requirement ([physical]). Max 1 per player.\n<b>Interrupt</b>: When an enemy would scheme, discard Ready for a Fight → change to hero form. That enemy attacks you instead.",
+   "custom": "Inkwire",
+   "ability_link": "52019"
+  },
+  {
+   "card_id": "up030",
+   "type": "Upgrade",
+   "name": "Redirection Mastery",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Hero Response</b>: After you exactly defend an attack, deal damage to the attacker equal to your DEF for that attack.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up031",
+   "type": "Ally",
+   "name": "* Road Rage",
+   "subtitle": "Raph",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE",
+    "VIGILANTE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Road Rage enters play with 3 fuel counters on him.\n<b>Response</b>: After a minion enters play, remove 1 fuel counter from Road Rage → deal 2 damage to that minion.\n<i>\"I've been meaning to catch up with you.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up032",
+   "type": "Upgrade",
+   "name": "* Ronin",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "While you do not control any allies, your hero gets +1 DEF and gains retaliate 1.\n<i>\"I am Ronin, the turtle with no master.\"</i> —Ronin",
+   "custom": "Inkwire",
+   "ability_link": "60053"
+  },
+  {
+   "card_id": "up033",
+   "type": "Upgrade",
+   "name": "Senkon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Attach to a friendly character. While attached to an identity, this card gains restricted.\n<b>Interrupt</b>: When attached character defends against an enemy attack, exhaust Senkon → that enemy gets –1 ATK for that attack.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up034",
+   "type": "Ally",
+   "name": "* Seymour Gutz",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "MUTANIMAL"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Action</b>: Deal 1 damage to another friendly character → until the end of the round, Seymor Gutz gains each of that character's [[Traits]] and adds that character's printed THW and ATK to his matching powers. (Limit once per round.)",
+   "custom": "Inkwire",
+   "ability_link": "48012",
+   "unique_also": [
+    "Rogue"
+   ]
+  },
+  {
+   "card_id": "up035",
+   "type": "Event",
+   "name": "Shield Spell",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENSE",
+    "SPELL"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Play only if your identity has the [[MYSTIC]] trait. Max 1 per deck.\n<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, discard that many cards from the top of your deck → prevent all damage from this attack.",
+   "custom": "Inkwire",
+   "ability_link": "21061"
+  },
+  {
+   "card_id": "up036",
+   "type": "Upgrade",
+   "name": "Stand Alone",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Max 1 per player.\n<b>Hero Interrupt</b>: When an enemy attacks you <i>(before any defender is declared)</i>, if you do not control any allies, exhaust Stand Alone → ready your hero.",
+   "custom": "Inkwire",
+   "ability_link": "60054"
+  },
+  {
+   "card_id": "up037",
+   "type": "Event",
+   "name": "Taunt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Hero Action</b>: The villain attacks you. Other characters cannot defend against this attack. Draw 3 cards.\n<i>\"Jackie!\"</i> —Slash",
+   "custom": "Inkwire",
+   "ability_link": "56048"
+  },
+  {
+   "card_id": "up038",
+   "type": "Upgrade",
+   "name": "The Best Offense...",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Temporary": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Temporary.\nYour hero gets +1 DEF.\nUse your DEF in place of your THW and ATK. <i>(Ignore any modifiers to your THW and ATK.)</i>",
+   "custom": "Inkwire",
+   "ability_link": "60052"
+  },
+  {
+   "card_id": "up039",
+   "type": "Upgrade",
+   "name": "Tonfa",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ITEM",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When calculating damage during an attack against you, exhaust this card → give your hero either +1 DEF or retaliate 1 for this attack.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up040",
+   "type": "Upgrade",
+   "name": "Unflappable",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Response</b>: After you defend against an attack and take no damage, exhaust Unflappable → draw 1 card.",
+   "custom": "Inkwire",
+   "ability_link": "09020"
+  },
+  {
+   "card_id": "up041",
+   "type": "Ally",
+   "name": "* Usagi Yōjimbō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "Y",
+    "Retaliate": "2",
+    "Toughness": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "RABBIT",
+    "RONIN"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "Retaliate 2. Toughness.\nUsagi Yōjimbō does not exhaust to defend.\n<i>\"I will guard you with my life.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "up042",
+   "type": "Event",
+   "name": "What Doesn't Kill Me",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Requirement": "R",
+    "Class": "Protection"
+   },
+   "traits": [],
+   "set_name": "TMNT Protection",
+   "text": "Requirement ([physical]) <i>(While paying for this card, spend the listed resources.)</i>\n<b>Hero Action</b>: Heal 2 damage from your hero → ready your hero.\n<i>\"When I get outta here, you're gonna get it!\"</i>",
+   "custom": "Inkwire",
+   "ability_link": "27016"
+  },
+  {
+   "card_id": "up043",
+   "type": "Ally",
+   "name": "* Wonder Turtle",
+   "subtitle": "Mikey",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE",
+    "VIGILANTE"
+   ],
+   "set_name": "TMNT Protection",
+   "text": "<b>Response</b>: After you resolve the ability of a [[Preparation]] card you control, heal damage from Wonder Turtle equal to that card's printed resource cost.\n<i>\"Suprise.\"</i>",
+   "custom": "Inkwire",
+   "ability_link": "54032",
+   "unique_also": [
+    "White Widow"
+   ]
+  }
+ ],
  "tmnt_aspect_dual": [],
- "checksum": "d4f86c1ce42f0516e991214ef82468f4e826721b9e8af5a72a5da718af911fb3"
+ "checksum": "2149ed8ffee7aaadeb6a8b683129447a04f4f98ddab4c689c00077b8fccb2eb7"
 }

@@ -120,6 +120,10 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   swarm: 'essaim',
   knucklehead: 'andouille',
   timer: 'minuteur',
+  // Aspect TMNT Protection (16/10/2026) : Lindsey Baker (up022), Grotto (up014), Road Rage (up031).
+  healing: 'guérison',
+  brute: 'brute',
+  fuel: 'carburant',
   // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).
