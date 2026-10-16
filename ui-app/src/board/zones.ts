@@ -16,6 +16,7 @@ import { kindLabel, type ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { representantNemesis, scanUrl, toPileCard, toScanCard, type ContexteCarte } from './card-model'
 import { t } from './langue'
+import { trouverPaire, type CotePanorama } from './panorama-jumelles'
 import type { CleBrique } from './table-briques'
 import { collectionPourJoueur, lireArtsRessources } from './variantes'
 import { estUneCarte, isVisibleFor, type World, type WorldCard, type WorldPlayer } from './world'
@@ -75,6 +76,12 @@ export type UniteAffichee = {
   cle: string
   carte: ScanCardProps
   attachees: ScanCardProps[]
+  /**
+   * Carte d'une paire jumelle a illustration continue (`panorama-jumelles.ts`) :
+   * posee A COTE de son porteur, pas dessous. Le rendu colle la `gauche` (14) et
+   * la `droite` (15) bord a bord.
+   */
+  panorama?: CotePanorama
   /**
    * Contenu complet d'une pile PUBLIQUE (defausse, victoire, retirees...) : on
    * peut cliquer la pile pour l'etaler et la regarder. Absent = pile non
@@ -318,13 +325,51 @@ function enUnites(
     ])
   }
 
-  return liste
-    .filter((carte) => carte.bind_object_id === 0 || !ids.has(carte.bind_object_id))
-    .map((carte) => ({
-      cle: `carte-${carte.id}`,
-      carte: toScanCard(carte, ctxCarte),
-      attachees: sousArbre(carte.id).map((attachee) => toScanCard(attachee, ctxCarte)),
-    }))
+  const descendants = (id: number, vu = new Set<number>()): WorldCard[] => {
+    if (vu.has(id)) return []
+    vu.add(id)
+    return (attacheesPar.get(id) ?? []).flatMap((fille) => [fille, ...descendants(fille.id, vu)])
+  }
+
+  const racines = liste.filter((carte) => carte.bind_object_id === 0 || !ids.has(carte.bind_object_id))
+  return racines.flatMap((carte): UniteAffichee[] => {
+    const pendantes = sousArbre(carte.id)
+    const paire = options.dansLaMain ? undefined : trouverPaire(pendantes)
+    if (!paire) {
+      return [
+        {
+          cle: `carte-${carte.id}`,
+          carte: toScanCard(carte, ctxCarte),
+          attachees: pendantes.map((attachee) => toScanCard(attachee, ctxCarte)),
+        },
+      ]
+    }
+    // Paire jumelle : les deux cartes sortent de la cascade et se posent A COTE
+    // du porteur (14 puis 15, quel que soit l'ordre d'arrivee). Ce qui pendait
+    // sous elles les suit.
+    const sortantes = new Set<number>()
+    const retient = (racine: WorldCard) => {
+      sortantes.add(racine.id)
+      for (const fille of descendants(racine.id)) sortantes.add(fille.id)
+    }
+    retient(paire.gauche)
+    retient(paire.droite)
+    const unite = (jumelle: WorldCard, panorama: CotePanorama): UniteAffichee => ({
+      cle: `carte-${jumelle.id}`,
+      carte: toScanCard(jumelle, ctxCarte),
+      attachees: descendants(jumelle.id).map((fille) => toScanCard(fille, ctxCarte)),
+      panorama,
+    })
+    return [
+      {
+        cle: `carte-${carte.id}`,
+        carte: toScanCard(carte, ctxCarte),
+        attachees: pendantes.filter((a) => !sortantes.has(a.id)).map((a) => toScanCard(a, ctxCarte)),
+      },
+      unite(paire.gauche, 'gauche'),
+      unite(paire.droite, 'droite'),
+    ]
+  })
 }
 
 /** Un groupe de cartes posees. Vide = pas de groupe. */
