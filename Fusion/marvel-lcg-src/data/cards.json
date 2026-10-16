@@ -109233,5 +109233,324 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "247f50f15a49c74a15a7cb173b3bf844628201a1863e17d0a2dee7e3f4dadc54"
+ "casey_jones": [
+  {
+   "card_id": "tc001a",
+   "type": "Hero",
+   "name": "* Casey Jones",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "VIGILANTE"
+   ],
+   "text": "<i>Overswing</i> — <b>Resource</b>: Discard a [[WEAPON]] upgrade you control with the restricted keyword → generate [wild][wild][wild] resources for an [[ATTACK]], [[THWART]], or [[DEFENSE]] event. (Limit once per phase.)",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc001b",
+   "type": "AlterEgo",
+   "name": "* Casey Jones",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "text": "<b>Setup</b>: Search your deck and discard pile for the Casey's Bag upgrade and put it into play. <i>(Shuffle.)</i>\n<b>Response</b>: After you change to this form, return a [[WEAPON]] upgrade from your discard pile to your hand.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc002",
+   "type": "Event",
+   "name": "Clap Back",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. If a Casey Jones [[WEAPON]] upgrade was discarded to pay for this card, confuse an enemy.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc003",
+   "type": "Event",
+   "name": "Cross Block",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you defend against an attack, you get +3 DEF for that attack. Then, ready Casey Jones and give him a tough status card.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc004",
+   "type": "Event",
+   "name": "Face-Off",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Ready your hero and deal 3 damage to an enemy. That enemy attacks you.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc005",
+   "type": "Event",
+   "name": "Grand Slam",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Requirement": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "Requirement ([wild]). <i>(While paying for this card, spend the listed resources.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc006",
+   "type": "Upgrade",
+   "name": "Anything Goes",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust Anything Goes → swap a Casey Jones [[WEAPON]] upgrade you control with a Casey Jones [[WEAPON]] upgrade tucked under Casey's Bag.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc007",
+   "type": "Upgrade",
+   "name": "Baseball Bat",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When you use a basic power, exhaust Baseball Bat → you get +1 to that power for this use.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc008",
+   "type": "Upgrade",
+   "name": "* Casey's Mask",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust Casey's Mask → ready Casey Jones.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc009",
+   "type": "Upgrade",
+   "name": "Cricket Willow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\nYour hero gets +1 ATK.\n<b>Hero Response</b>: After you attack an enemy, discard Cricket Willow → stun that enemy.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc010",
+   "type": "Upgrade",
+   "name": "Driving Iron",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust Driving Iron → deal 1 damage to an enemy, or remove 1 threat from a scheme.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc011",
+   "type": "Upgrade",
+   "name": "Hockey Stick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When you make a basic attack or defense, exhaust Hockey Stick → you get +2 to that power for this use.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc012",
+   "type": "Upgrade",
+   "name": "Persuader",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\nYour hero gets +1 ATK.\n<b>Hero Interrupt</b>: When you make a basic attack, exhaust Persuader → you get +1 ATK for that attack. This attack gains piercing.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc013",
+   "type": "Upgrade",
+   "name": "* Casey's Bag",
+   "subtitle": "",
+   "desc": {
+    "RES": "B",
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "text": "Permanent.\nYou may play cards tucked here as if they were in your hand.\n<b>Hero Action</b>: Exhaust this card → tuck the bottommost [[WEAPON]] upgrade in your discard pile under this card.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc014",
+   "type": "Obligation",
+   "name": "Daddy Issues",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Casey Jones"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Casey Jones player.</i></b>\nFlip to alter-ego form. You cannot change forms.\n<b>Action</b>: Exhaust Casey Jones → remove Daddy Issues from the game.",
+   "set_name": "Casey Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc015",
+   "type": "SideScheme",
+   "name": "The Purple Dragons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "3",
+    "Crisis": "1",
+    "Incite": "1*"
+   },
+   "traits": [],
+   "text": "<i>Hun and his Purple Dragons run this part of town.</i>\nIncite 1[per_hero].",
+   "set_name": "Casey Jones Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc016",
+   "type": "Minion",
+   "name": "* Hun",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "3",
+    "Toughness": "1",
+    "Nemesis": "Casey Jones"
+   },
+   "traits": [
+    "BRUTE",
+    "PURPLE DRAGONS"
+   ],
+   "text": "Toughness.\n<b>Forced Response</b>: After Hun attacks and damages a character, stun that character.\n<i>(Casey Jones' nemesis minion.)</i>",
+   "set_name": "Casey Jones Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tc017",
+   "type": "Minion",
+   "name": "Purple Dragon Goons",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Guard": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "PURPLE DRAGONS"
+   ],
+   "text": "Guard. Patrol.\n<b>When Revealed</b>: Place a tough status card on the villain.",
+   "set_name": "Casey Jones Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "30494353285f3fd858f4ceb2ebac3ea40d28b21e47ce48c325de89b1ac927585"
 }

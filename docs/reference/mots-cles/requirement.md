@@ -44,3 +44,10 @@ Le script d'une carte à Requirement ne le mentionne donc jamais. Vérifié sur
 
 **Variantes maison** : aucune. Le pack fan-made `doctor_doom` (`dd003`
 Doombot, `Requirement ([mental])`) l'emploie tel quel.
+
+**Requirement ([wild])** : `"Requirement": "G"`. Le paiement doit COMPORTER au moins une icône
+wild (une carte dont `desc.RES = "G"`, ou une ressource générée wild : Overswing de `tc001a`
+génère `GGG`). Quatre icônes colorées sans wild (RR + YY) ne suffisent PAS. Précédent :
+`dt084` Off the Cuff. Pack `casey_jones` : `tc005` Grand Slam (glyphe étoile du scan identique
+à `04010` / `04033`, vérifié par découpe : `.planning/tmnt/pics-casey-icones/wild.png`). Cas :
+`[casey] tc005` (wild + physique accepté, physique + énergie refusé).

@@ -1706,5 +1706,15 @@ export const HEROS_INFO = {
         ennemisEn: "Shredder, Krang, the Foot Clan",
         apparition: "Teenage Mutant Ninja Turtles #1 (1984)",
     },
+    "tc001a": {
+        bio: "Casey Jones est un justicier new-yorkais qui cache son visage derrière un masque de hockey et rend la justice à coups de batte de baseball, de crosse de hockey ou de club de golf, le tout rangé dans un grand sac de sport qu'il porte en bandoulière. Tête brûlée au grand cœur, il croise la route des Tortues Ninja dans une ruelle et devient leur allié le plus fidèle, toujours prêt à foncer dans la bagarre en criant « Goongala ! ». Hors du masque, c'est un jeune homme comme les autres, avec ses problèmes de famille et une colère qui ne demande qu'à sortir.",
+        bioEn: "Casey Jones is a New York vigilante who hides his face behind a hockey mask and dishes out justice with baseball bats, hockey sticks and golf clubs, all carried in a big sports bag slung over his shoulder. A hothead with a big heart, he crosses paths with the Teenage Mutant Ninja Turtles in an alley and becomes their most loyal ally, always ready to charge into a brawl shouting \"Goongala!\". Behind the mask he is a young man like any other, with family troubles and a temper that is always looking for a way out.",
+        civil: "Casey Jones",
+        base: "New York",
+        equipes: "Alliés des Tortues Ninja",
+        equipesEn: "Allies of the Teenage Mutant Ninja Turtles",
+        ennemis: "Hun, les Purple Dragons",
+        ennemisEn: "Hun, the Purple Dragons",
+    },
 
 };

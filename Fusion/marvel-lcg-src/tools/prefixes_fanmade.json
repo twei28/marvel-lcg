@@ -550,6 +550,13 @@
    "cartes": 18,
    "depuis": "2026-10-15",
    "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
+  },
+  "tc": {
+   "pack": "casey_jones",
+   "libelle": "184. Custom (Casey Jones)",
+   "cartes": 18,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Casey Jones v3 ». tc001a Casey Jones (HEROS) / tc001b Casey Jones (ALTER-EGO), tc002-tc013 signature (12 card_id pour 16 exemplaires), tc014 obligation Daddy Issues (bandeau CASEY JONES, donc module dans casey_jones/casey_jones/), tc015-tc017 set nemesis Hun / The Purple Dragons (set Casey Jones Nemesis, 5 cartes : Purple Dragon Goons x3). HOMONYME : l'allie « Casey Jones » de Raphael (tr002) porte le meme nom que le heros : aucune carte du pack ne cherche par le nom, tout passe par card_id, type ou ensemble. Mot-cle maison : aucun (Overswing est un NOM de capacite, pas un mot-cle). Voir .planning/tmnt/casey-questions.md."
   }
  }
 }

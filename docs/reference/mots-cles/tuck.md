@@ -39,4 +39,14 @@ Contingency Planning (jouer seulement) ; `dd008` Doomstadt (plafond à 3).
 - `Puzzle.Gain('<id>')` d'une carte déjà en jeu la RAMÈNE en main (même objet) :
   pour une 2e copie, `Puzzle.CreateHandCards`.
 
+**Casey's Bag (`tc013`, pack `casey_jones`)** : « You may play cards tucked here as if they were
+in your hand » = `*AbilityFactory.AttachedCardCanPlayLikeInHand()` SANS `also_spend` ni
+`also_discard` (le texte ne dit que « play ») et SANS plafond de cartes rangées (contrairement à
+la Carapace). Le Sac range lui-même la plus basse arme de la défausse (`discard_pile.Get()` rend la
+défausse du FOND vers le dessus : le premier élément filtré est le bon, modèle `hd013`) et
+`tc006` Anything Goes ÉCHANGE une arme en jeu avec une arme rangée : on RANGE d'abord (libère la
+place Restricted) puis on met en jeu (`PutIntoPlay`). ⚠ Le Sac est PERMANENT : seul un effet du même
+set (`paper.set_name`) peut le faire quitter le jeu (`has_permanent.py`) ; pour le déplacer dans un
+cas de test, emprunter l'identité de Casey comme `DebugRule` (`casey_resetup`).
+
 **Variantes maison** : aucune.
