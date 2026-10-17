@@ -1381,6 +1381,33 @@ moteur, seule l'image change.
   (test : `tools/test_arts_heros_serveur.py`). Limite : le plateau ne lit que
   le localStorage, la synchro compte vers navigateur est faite par le wizard.
 
+- **Cartes de deck : art alternatif ou exclusive (17/10/2026)**. Règle de
+  l'utilisateur : si SEULE l'image change par rapport à l'officielle, c'est un
+  **art alternatif** proposé à tous (même `card_id` pour le moteur) ; si le
+  nom, les traits, le texte, le coût, la ressource, l'unicité ou le bandeau
+  changent, c'est une **carte exclusive** (héros TMNT seulement). Source
+  unique : `data/arts_alternatifs.json` (`cartes` : officielle -> codes ;
+  `series.tmnt` : héros, sets exclusifs), d'où `tools/generer_arts_cartes.py`
+  tire `public/js/prepare/arts-cartes-table.js` et
+  `ui-app/src/board/arts-cartes-table.ts` (`--verifier` contrôle
+  l'alignement). Choix du joueur : clé `mc_card_art_v1` `{officielle: code}`
+  (`standard` force l'officielle ; absent = art TMNT pour un héros TMNT,
+  officielle sinon), lue par le plateau (`arts-cartes.ts`, via
+  `picIdAffiche`), la préparation et l'éditeur de deck
+  (`prepare/arts-cartes-choix.js`, module pur testé par
+  `tools/tests-lanceur/arts-cartes-choix.test.mjs`). Une réimpression
+  identique (`full_link`) partage l'image et le choix de l'officielle. À la
+  sélection d'un deck, la fenêtre « arts alternatifs ? » (Oui/Non, « Ne plus
+  proposer ») est dans `prepare/arts-cartes-fenetre.js`. Les cartes exclusives
+  sont masquées de l'éditeur et refusées par `validerDeck` hors deck de héros
+  TMNT. `tools/classer_reskins_tmnt.py` calcule le classement (art seul /
+  exclusive) ; `tools/convertir_reskins_art_seul.py` retire les reskins « art
+  seul » de `cards.json` et les déclare (essai à blanc par défaut ; copie les
+  images `<officielle>_tmnt.jpg` sans toucher aux originales ; test :
+  `tools/test_convertir_reskins.py`). Les trois ressources doubles TMNT
+  restent des cartes et forment la collection `tmnt` de `COLLECTIONS`, par
+  défaut pour un héros TMNT.
+
 **Les deux tables doivent rester alignées** entre le plateau et le wizard,
 sinon le sélecteur propose un art que le plateau n'affichera pas.
 
