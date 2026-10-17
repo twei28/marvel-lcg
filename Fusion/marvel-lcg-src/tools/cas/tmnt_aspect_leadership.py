@@ -152,11 +152,31 @@ for _r, _o, _t in [("ul017", "03013", "Squirrel Girl"), ("ul019", "51037", "Whit
                   [HEROS, "Puzzle.Gain('%s')" % _r, M(_o)], [],
                   {"carte": _r, "jouable": False, "en_jeu": 0},
                   main=["01088", "01089", "01090"], verifier="max_par_joueur_jouable"))
-CAS.append(_c("ul019 Old Hob : porte SES traits (CAT, MUTANIMALS), pas WAKANDA",
+CAS.append(_c("ul019 Old Hob : porte SES traits (CAT, MUTANIMAL : coquille « MUTANIMALS » corrigee), pas WAKANDA",
               "Paper.Load lit `traits` sur l'entree du reskin ; `ability_link` ne copie que les capacites",
               [HEROS, M("ul019")], [],
-              {"carte": "ul019", "presents": ["CAT", "MUTANIMALS"], "absents": ["WAKANDA"], "nom": "Old Hob",
+              {"carte": "ul019", "presents": ["CAT", "MUTANIMAL"], "absents": ["WAKANDA", "MUTANIMALS"], "nom": "Old Hob",
                "unique": True}, verifier="reskin_identite"))
+
+# ----- ul019 Old Hob est MUTANIMAL (coquille « MUTANIMALS » CONFIRMEE le 17/10/2026) : les Training s'y attachent
+CAS += [
+    _c("ul019 Old Hob MUTANIMAL : Splinter Dojo Training (ul028) s'y attache -> +1 CTR +1 ATQ +1 PV",
+       "« Attach to a NINJA or MUTANIMAL ally » : Old Hob (CAT, MUTANIMAL) est le seul allie en jeu",
+       [HEROS, M("ul019")], [],
+       {"attributs_carte": [["ul019", "thwart", 1], ["ul019", "attack", 1], ["ul019", "health", 1]]},
+       main_exclusive=["ul028", "01090"], jouer=["ul028"], cibles=["ul019"]),
+    _c("ul019 Old Hob MUTANIMAL : Attack Training (ua004) s'y attache -> +1 ATQ +2 PV",
+       "« Attach to a NINJA or MUTANIMAL ally » (ua004) : meme trait",
+       [HEROS, M("ul019")], [],
+       {"attributs_carte": [["ul019", "attack", 1], ["ul019", "health", 2]]},
+       main_exclusive=["ua004", "01090"], jouer=["ua004"], cibles=["ul019"]),
+]
+
+# ----- ul033 Take a Stand : trait TACTIC remis (oubli de l'auteur, confirme le 17/10/2026)
+CAS.append(_c("ul033 Take a Stand : porte le trait TACTIC (comme 62015)",
+              "Paper.Load lit `traits` sur l'entree du reskin ; oubli de l'auteur confirme le 17/10/2026",
+              [HEROS, "Puzzle.Gain('ul033')"], [],
+              {"carte": "ul033", "presents": ["TACTIC"], "nom": "Take a Stand"}, verifier="tmnt_donnees_carte"))
 
 # ===================================================================== cartes MODIFIEES / NOUVELLES
 CAS += [
@@ -313,11 +333,24 @@ CAS += [
        {"en_jeu": ["ul030"]}, main_exclusive=["ul030", "01002"], jouer=["ul030"]),
     _c("ul030 Street Vendor : sans soutien NYC, Black Cat ne suffit pas (contre-cas)",
        "cout 2 plein", [HEROS], [], {"en_main": ["ul030"]}, main_exclusive=["ul030", "01002"], jouer=["ul030"]),
-    # ---- ul031 Suit Up (lecture A, en attente de Q-UL-6)
+    # ---- ul031 Suit Up : LECTURE LITTERALE (17/10/2026) « an upgrade that can be attached to AN ally »
     _c("ul031 Suit Up : Black Cat et Sidekick (attachable a CET allie) ajoutes a la main",
-       "lecture A (officielle) en attendant Q-UL-6 ; montage du cas 45017", [], ["Puzzle.CreatePlayerDeck('01002', "
-                                                                                 "'01067', '45015')"],
+       "montage du cas 45017 : l'upgrade est attachable a l'allie trouve, donc aussi (a fortiori) a UN allie",
+       [], ["Puzzle.CreatePlayerDeck('01002', '45015', '01089')"],
        {"en_main": ["01002", "45015"], "taille_main": 2},
+       main_exclusive=["ul031", "01088"], jouer=["ul031"], accepter_choix=True),
+    _c("ul031 Suit Up : amelioration attachable a UN AUTRE allie que celui trouve (Sidekick -> Black Cat en jeu) -> ajoutee",
+       "lecture litterale : deck = Maria Hill (allie trouve) + Sidekick (« identity-specific ally you control », "
+       "attachable a Black Cat EN JEU mais pas a Maria Hill). Sous la lecture de l'officielle (« THAT ally ») "
+       "Sidekick serait ecarte",
+       [M("01002"), SANS_DECK, "Puzzle.CreatePlayerDeck('01067', '45015', '01089')"], [],
+       {"en_main": ["01067", "45015"], "taille_main": 2},
+       main_exclusive=["ul031", "01088"], jouer=["ul031"], accepter_choix=True),
+    _c("ul031 Suit Up : aucune amelioration attachable a un allie (Armored Vest, « players ») -> l'allie seul est ajoute",
+       "lecture litterale : Armored Vest 01081 ne se pose pas sur un allie ; la recherche d'amelioration ne propose "
+       "rien et l'allie trouve vient quand meme",
+       [SANS_DECK, "Puzzle.CreatePlayerDeck('01067', '01081', '01089')"], [],
+       {"en_main": ["01067"], "absent_main": ["01081"], "taille_main": 1},
        main_exclusive=["ul031", "01088"], jouer=["ul031"], accepter_choix=True),
     # ---- ul035 Turtle Power
     _c("ul035 Turtle Power : identite TURTLE, un allie TURTLE du dessus mis en jeu, puis en main a la fin de la phase",
@@ -334,12 +367,16 @@ CAS += [
        [HEROS, M("ul036"), "Puzzle.Damage('ul036', 2)", "Puzzle.EmptyHand()", "Puzzle.SetThreat('01097b', 5)"], ["Puzzle.Thwart('ul036')"],
        {"degats": [["ul036", 1]], "menace": [["01097b", 4]]}, main_exclusive=["01090"], cibles=["01097b"],
        accepter_choix=True),
-    # ---- ul038 Unified Strike (lecture A, en attente de Q-UL-7)
-    _c("ul038 Unified Stike : Maria Hill attaque + ATQ du heros (1 + 2 = 3), sans degat consecutif",
-       "lecture A (Interruption de heros, comme 58020) en attendant Q-UL-7",
+    # ---- ul038 Unified Strike (Hero Interrupt, titre corrige : coquilles confirmees le 17/10/2026)
+    _c("ul038 Unified Strike : Maria Hill attaque + ATQ du heros (1 + 2 = 3), sans degat consecutif",
+       "Interruption de heros, comme 58020 (la coquille « Hero Response: When » est corrigee)",
        [HEROS, M("01067")], ["Puzzle.Attack('01067')"],
        {"degats": [["01094", 3], ["01067", 0]], "exhausted": ["01001a"]},
        main_exclusive=["ul038"], cibles=["01094"], accepter_choix=True),
+    _c("ul038 Unified Strike : le titre est « Unified Strike » (et non « Stike »), trait TACTIC",
+       "coquille de titre confirmee le 17/10/2026 ; donnee de la carte (reste vert sans le script)",
+       [HEROS, "Puzzle.Gain('ul038')"], [],
+       {"carte": "ul038", "presents": ["TACTIC"], "nom": "Unified Strike"}, verifier="tmnt_donnees_carte"),
     # ---- ul039 Venus
     _c("ul039 Venus : a l'entree en jeu, attache face cachee une carte de la defausse qui partage un trait",
        "« choose a card in your discard pile that shares a TRAIT with Venus » : Red Shell (NINJA TURTLE) oui",

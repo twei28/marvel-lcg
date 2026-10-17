@@ -1511,3 +1511,13 @@ compte un double pour DEUX aspects (Adam Warlock 21038/21039/21066). Aucune cart
 Harnais : `Puzzle.PutIntoPlay` déclenche AUSSI les capacités d'entrée en jeu (Cloaked de Rōnin, Tough
 de Toughness, compteurs « enters play with ») : un Cloaked absorbe ensuite 2 dégâts de `Puzzle.Damage`.
 Retirer l'état par la bascule `Puzzle.Cloak` / `Puzzle.Tough` avant de poser des dégâts (`tools/cas/tmnt_aspect_dual.py`, `_en_jeu`).
+
+### Retouches du 17/10/2026 (réponses de l'utilisateur, branche `retouches-cartes`)
+
+| Texte imprimé | API | Modèle | Piège |
+|---|---|---|---|
+| « After you EXACTLY defend an attack » (valeur de l'attaque == DEF) | `AfterUnitDefendEnd(HeroResponse, "YourHero", ..., conditions=[message.damage_before_defense == message.defense_value])` | `up030` Redirection Mastery | **AJOUT moteur** : `AfterUnitDefendEnd.damage_before_defense` (attaque, boosts compris, avant la DEF) et `.defense_value` (DEF retenue). `dealt_damage` est plafonné à 0 : il ne distingue pas parade pile / attaque < DEF. Harnais : boost 1 = `Puzzle.CreateEncounterDeck('01101', ...)` en tête |
+| « an upgrade that can be attached to AN ally » (recherche large) | `CardFinder(card_type=Upgrade, check_effect_fn=lambda: any(u.CanAttachTo(a) for a in alliés possibles))` | `ul031` Suit Up | les alliés « possibles » = deck + défausse + alliés que l'on contrôle ; `45017` liait la 2e recherche à l'allié trouvé (`canbe_attach_to=allie`) |
+| « your hero gets +N hand size » valable en alter ego | `joueur.GetIdentity().GainUntilRoundEnd(effect, hand_size=N)` sans test de forme | `ud005` Sōhei | un `Hero.IsType(identite)` excluait l'alter ego |
+| Team-Up avec un allié au nom accentué | `desc.TeamUp = "Leonardo;Usagi Yōjimbō"` | `ub019` (fiche `mots-cles/teamup.md`) | `effect.targets` n'est pas ordonné : distinguer par `IsName` |
+| Reskin dont seul le trait/titre était faux | corriger l'entrée de `cards.json` (traits, titre) | `ul019` MUTANIMAL, `ul033` / `ub002` TACTIC, `ul038` « Unified Strike » | le vérificateur `tmnt_donnees_carte` (`tools/cas/tmnt_aspect_basic.py`) lit nom et traits d'une carte en main / deck (un événement n'est jamais « en jeu » : `reskin_identite` ne le trouve pas) |

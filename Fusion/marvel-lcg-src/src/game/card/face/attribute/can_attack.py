@@ -508,7 +508,7 @@ class CanAttack(CardFace):
                     attacker_is_defeated += retaliate_message != None and isinstance(retaliate_message, Message.AfterUnitDefeatedUnit)
 
                 if being_atk_message.defense_messages:
-                    defend_against_message = Message.AfterUnitDefendEnd(being_atk_message.defense_messages, would_atk_message, calculated_damage, took_damage)
+                    defend_against_message = Message.AfterUnitDefendEnd(being_atk_message.defense_messages, would_atk_message, calculated_damage, took_damage, total_avant_defense, defense)
                     defend_against_message.Send()
             else:
                 assert being_atk_message.defense_messages == []

@@ -15,10 +15,8 @@ from . import *
 #    (`GetIdentity().GainUntilPhaseEnd(effect, hand_size=N)`) ; ici « until the end of the ROUND » :
 #    `GainUntilRoundEnd(effect, hand_size=2)` (meme parametre, `face_action.py`).
 #
-# ⚠ QUESTION OUVERTE Q-UD4 (.planning/tmnt/aspects-dual-aspect-questions.md) : « YOUR HERO » quand
-#   le joueur est en ALTER EGO au moment ou Sōhei tombe. Lecture provisoire = l'option
-#   recommandee : le bonus ne vaut que si l'identite est en forme HEROS a ce moment-la.
-#   Carte NON terminee tant que la question n'est pas tranchee.
+# Q-UD4 TRANCHEE (17/10/2026) : « your hero gets +2 hand size » vaut AUSSI quand le joueur est en
+#   ALTER EGO : l'identite du joueur, quelle que soit sa forme, gagne +2 de taille de main.
 #
 # Mots-pieges : « defeated » (pas « damaged ») ; « by consequential damage » ; « YOUR hero » (le
 # joueur qui controle Sōhei) ; « until the end of the ROUND » (pas de la phase : le bonus vaut
@@ -32,9 +30,7 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = effect.GetInitiator()
         if joueur is None:
             return
-        identite = joueur.GetIdentity()
-        if Hero.IsType(identite):
-            identite.GainUntilRoundEnd(effect, hand_size=2)
+        joueur.GetIdentity().GainUntilRoundEnd(effect, hand_size=2)
 
     return [
         AbilityFactory.WhenUnitBeDefeated(

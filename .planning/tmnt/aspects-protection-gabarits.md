@@ -311,7 +311,9 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 - [x] Etape 8 : autoplay : 16 parties (decks A/B) + 8 temoin Black Panther, 0 traceback ; carte jouee 6 fois (section Autoplay).
 - [x] Etape 8 bis : change ce qu'on VOIT ? NON (chiffres, jauges deja dessinees).
 
-Carte terminee : NON : en attente de Q-UP2 (codee comme l'officielle, cas verts).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : **Hero Interrupt confirmé** (coquille « Hero Action » du scan) ; texte affiché corrigé
+en « Hero Interrupt » (cards.json) / « Interruption de héros » (FR) ; code inchangé (lien 56047).
+Carte terminee : OUI.
 
 ### up019 : In Harm's Way (IDENTIQUE 60050)
 
@@ -498,7 +500,7 @@ Carte terminee : OUI.
 
 Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et la substitution ; Q-R2 deck-builder en attente).
 
-### up030 : Redirection Mastery (NOUVELLE)
+### up030 : Redirection Mastery (NOUVELLE, défense exacte)
 
 - [x] Etape 2 : carte(s) de reference : (a remplir apres Q-UP1) : `38014` Judoka Skill / `10031` (Reponse apres defense)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « exactly defend » : lecture incertaine -> Q-UP1
@@ -510,7 +512,29 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 - [x] Etape 8 : autoplay : 16 parties, 0 traceback ; carte JAMAIS jouee par le pilote (couverte par ses cas seulement) (section Autoplay).
 - [x] Etape 8 bis : change ce qu'on VOIT ? NON (chiffres, jauges deja dessinees).
 
-Carte terminee : NON : aucun script tant que Q-UP1 n'est pas tranchee (la carte existe mais ne fait rien).
+**Réponse du 17/10/2026, lecture choisie « DÉFENSE EXACTE »** : après que votre héros défend contre une attaque, la Réponse ne part que si la
+valeur de l'attaque (boosts compris) est EXACTEMENT égale à votre DEF pour cette attaque (coup paré pile, 0 dégât) ; l'attaquant
+subit alors des dégâts égaux à votre DEF.
+
+- [x] Étape 2 : `09020` Unflappable (« Play under any player's control » = `CanPlayThisUpgradeCard("Players")`, Response après
+      défense) ; `62015` Take a Stand (`AfterUnitDefendEnd(HeroResponse, "YourHero", ...)`) ; `40165` Stryfe
+      (`attacker.TakeDamage(this, value, effect)`). Mot-clé : aucun (SKILL = trait).
+- [x] Étape 5 : « exactly defend » (égalité stricte attaque == DEF, sans plafond), « YOUR DEF FOR THAT ATTACK » (DEF retenue pour
+      ce coup), « the attacker » (de CETTE attaque, encore en jeu), « Hero Response » (défenseur = votre HÉROS), Max 1 per player.
+      Résultat : conforme.
+- [x] Étape 6 : coût 2, RES R, MaxPerUnit 1, dégâts = DEF. Résultat : conforme.
+- [x] **EXTENSION MOTEUR** : `Message.AfterUnitDefendEnd` porte `damage_before_defense` (valeur de l'attaque avant le retrait
+      de la DEF) et `defense_value` (DEF retenue), renseignés par `can_attack.py` ; `dealt_damage` est plafonné à 0 et ne distingue
+      pas parade pile / attaque inférieure à la DEF. Paramètres facultatifs : les autres lecteurs du message ne changent pas.
+- [x] Étape 7 : 5 cas `[up] up030 ...` (Spider-Man DEF 3) : attaque = DEF (Melter ATQ 3) -> Melter subit 3, héros 0 ; attaque >
+      DEF (Titania) -> rien, héros 3 ; attaque < DEF (Rhino ATQ 2) -> rien ; BOOSTS comptent (Rhino 2 + boost 1 = 3) -> Rhino
+      subit 3 ; TÉMOIN sans la carte -> rien. 5/5 verts. **Substitution** (module retiré) : les 2 cas « part » ROUGES, les 3 cas
+      d'absence verts (assumé).
+- [x] Étape 7 bis : « Max 1 per player » = donnée (`MaxPerUnit`) : NON.
+- [x] Étape 8 : autoplay du 17/10 (section en fin de fichier de Basic).
+- [x] Étape 8 bis : NON (dégâts : jauge déjà dessinée).
+
+Carte terminée : OUI.
 
 ### up031 : Road Rage (Raph) (MODIFIEE de 01066 Hawkeye)
 

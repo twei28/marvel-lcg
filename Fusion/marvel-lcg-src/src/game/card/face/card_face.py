@@ -228,10 +228,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026) : traits imprimes sur les 235 cartes d'aspect TMNT (Inkwire, packs
         # tmnt_aspect_*, prefixes ua/ub/uj/ul/up/ud), releves scan par scan. MUTANIMAL n'est PAS
         # decoratif : les trois TRAINING (« Attach to a NINJA or MUTANIMAL ally »), The Kennel Klub
-        # et le Mutanimal Van le lisent. ⚠ « MUTANIMALS » (pluriel) n'est imprime que sur Old Hob
-        # (Leadership) : coquille probable, question posee a l'utilisateur ; declare pour l'instant.
+        # et le Mutanimal Van le lisent. ⚠ Old Hob (ul019) imprime « MUTANIMALS » (pluriel) :
+        # coquille CONFIRMEE par l'utilisateur (17/10/2026), trait retenu = MUTANIMAL.
         "VIGILANTE", "WOUND", "DIMENSION X", "NOVA POSSE", "WARRIOR", "FOX", "ALLIGATOR",
-        "MUTANIMAL", "MUTANIMALS", "PIGEON", "MANTA RAY", "GOAT", "FROG", "PUNK", "LION", "RONIN",
+        "MUTANIMAL", "PIGEON", "MANTA RAY", "GOAT", "FROG", "PUNK", "LION", "RONIN",
         "DINOSAUR", "PARTY", "MONK", "SAMURAI", "JACKAL", "CAT", "DETECTIVE", "GECKO", "MOSQUITO",
         "ONNA-MUSHA", "BAT", "CLAW CLAN", "NEUTRINO", "MAXIM", "HERO", "WEASEL", "MASSEUSE", "PIG",
         "SWORDSMAN", "CRAB", "RABBIT",

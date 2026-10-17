@@ -81,15 +81,24 @@ en place). Comportement observé correct en autoplay après correctif.
 
 ### ul019 : Old Hob (IDENTIQUE, reskin de 51037)
 Gabarit commun ci-dessus (cas + témoin, rouge sans lien ; trait « MUTANIMALS » vérifié par cas).
-Carte terminée : NON — Q-UL-4 (MUTANIMALS / MUTANIMAL).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : coquille confirmée, **le trait est MUTANIMAL** (pas MUTANIMALS ; le trait
+« MUTANIMALS » est retiré de `CardFace.TRAITS`). Cas : `ul019 Old Hob : porte SES traits (CAT, MUTANIMAL), pas WAKANDA ni
+MUTANIMALS` ; **Splinter Dojo Training (ul028) et Attack Training (ua004) s'y attachent** (Old Hob seul allié : +1 CTR +1 ATQ
++1 PV, puis +1 ATQ +2 PV). Substitution (ancienne entrée « MUTANIMALS ») : 3 cas ROUGES (trait + 2 Training), les cas de
+capacité (témoin 51037) restent verts.
+Carte terminée : OUI.
 
 ### ul033 : Take a Stand (IDENTIQUE, reskin de 62015)
 Gabarit commun (cas + témoin, rouge sans lien). Traits : aucun (scan).
-Carte terminée : NON — Q-UL-5 (trait TACTIC absent du scan).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : trait **TACTIC remis** (oubli de l'auteur). Cas de donnée `ul033 Take a Stand :
+porte le trait TACTIC` (vérificateur `tmnt_donnees_carte`), ROUGE avec l'ancienne entrée, vert après.
+Carte terminée : OUI.
 
 ### ul044 : "You Got This!" (texte IDENTIQUE à 49019, ressource différente)
 Gabarit commun (cas + témoin, rouge sans lien). `RES R` (poing du scan) : seule différence, donnée.
-Carte terminée : NON — Q-UL-8 ([physical] du scan contre [energy] de l'officielle).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : la ressource PHYSIQUE ([physical], poing rouge du scan) est voulue, comme le scan
+(contre [energy] pour l'officielle 49019). Rien à changer.
+Carte terminée : OUI.
 
 ### ul005 : Dask (MODIFIÉE, de 03011 Falcon)
 - [x] Étape 2 : 03011 (regard + compte des traîtrises), 06020 Heimdall (« put back in any order »).
@@ -205,7 +214,17 @@ Carte terminée : OUI.
 - [x] Étapes 2/5/6 : copie de 45017 ; lecture A (attachable à CET allié) en attendant Q-UL-6. Coût 2, R.
 - [x] Étape 7 : Black Cat + Sidekick en main : rouge sans module.
 - [x] 7 bis : NON. [x] 8 : présente en B. [x] 8 bis : NON.
-Carte terminée : NON — Q-UL-6.
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026) : LECTURE LITTÉRALE choisie** (contre la recommandation) : « an upgrade that can be
+attached to AN ally », recherche LARGE (toute amélioration attachable à un allié, pas forcément à celui trouvé). Script
+propre réécrit : l'allié n'a plus de contrainte ; l'amélioration doit être attachable à UN allié quelconque (alliés du deck, de
+la défausse, ou en jeu sous votre contrôle, `Upgrade.CanAttachTo`) ; les deux recherches sont indépendantes (l'une sans
+l'autre possible) ; le deck est mélangé dans tous les cas.
+- Étape 5 : « AN ally » (pas « THAT ally ») ; « an ally AND an upgrade » ; « Shuffle ». Étape 6 : coût 2, RES R.
+- Étape 7 : `Black Cat + Sidekick` (deck à un seul allié) ; **`amélioration attachable à UN AUTRE allié que celui trouvé`**
+  (Maria Hill trouvée, Sidekick attachable à Black Cat EN JEU seulement : les deux en main) ; `aucune amélioration
+  attachable à un allié` (Armored Vest, « players ») : l'allié seul est ajouté. 3/3 verts ; avec l'ancien script (« that
+  ally ») 2/3 ROUGES (main vide).
+Carte terminée : OUI (le texte FR affiché garde « à un allié »).
 
 ### ul035 : "Turtle Power!" (MODIFIÉE, de 36020)
 - [x] Étapes 2/5/6 : copie de 36020, X-MEN → TURTLE ×2 ; coût 1, Y, 5 cartes.
@@ -221,11 +240,15 @@ Carte terminée : OUI.
 - [x] 7 bis : NON. [x] 8 : 2 activations (A). [x] 8 bis : NON.
 Carte terminée : OUI.
 
-### ul038 : Unified Stike (MODIFIÉE, de 58020)
+### ul038 : Unified Strike (MODIFIÉE, de 58020)
 - [x] Étapes 2/5/6 : copie de 58020 (Interruption de héros, lecture A de Q-UL-7) ; coût 0, Y.
 - [x] Étape 7 : Maria Hill 1 + 2 = 3, aucun dégât consécutif : rouge sans module.
 - [x] 7 bis : NON. [x] 8 : présente en B. [x] 8 bis : NON.
-Carte terminée : NON — Q-UL-7 (« Hero Response: When », titre « Stike »).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : **titre corrigé « Unified Strike »** (cards.json, textes, commentaires, cas ; le TSV
+de numérotation, figé, garde « Stike [sic] ») ; **Hero Interrupt comme codé** (texte affiché « Hero Interrupt », FR
+« Interruption de héros »). Cas de donnée `ul038 Unified Strike : le titre est « Unified Strike »` : ROUGE avec l'ancienne
+entrée (« Unified Stike »), vert après ; cas de capacité (Maria Hill 1 + 2 = 3) inchangé, rouge sans module.
+Carte terminée : OUI.
 
 ### ul039 : Venus « Bonnie » (MODIFIÉE, de 26013 Jocasta)
 - [x] Étape 2 : 26013 ; vz001 (`ShareTrait(this)`).
