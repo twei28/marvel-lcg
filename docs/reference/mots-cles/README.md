@@ -168,7 +168,12 @@ la plus fréquente sur un pack vilain.
 
 - [x] shinobi.md (pack `jennika`, TMNT Heroes v3 : classes Bushido / Ninjutsu / Kuji-Kiri /
       Taijutsu portées par `desc.Class`, « Limit once per round for each Shinobi » = quatre capacités ;
-      le Path `tj011` est un Support, question Q3)
+      le Path `tj011` est un Support, question Q3 ; TMNT Shinobi 17/10/2026 : système des Paths, Dual Shinobi,
+      helpers `CarteShinobi` / `EstShinobi`, règles de construction)
+- [x] samurai-counter.md (compteur `samurai` et trait OATH : Jennika `tj006`, Path Samurai `se003` ; coût réparti
+      entre plusieurs améliorations)
+- [x] path.md (type PATH : mis de côté puis en jeu au Setup pour n'importe quel héros, « -1 hand size », classe =
+      types Shinobi, Voie propre d'un héros (Sosaiken) ou Path choisi au deck-building)
 - [x] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : « intensify X » = donner une
       carte d'état Intensified à X ; définition fournie par l'utilisateur le 16/10/2026, réponse Q2)
 - [x] intensified.md (carte d'état maison, 7e état du moteur : la prochaine DÉFAUSSE d'une carte d'état du

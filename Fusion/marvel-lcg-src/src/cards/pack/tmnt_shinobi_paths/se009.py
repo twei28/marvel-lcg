@@ -15,8 +15,9 @@ from . import *
 #    generation, avec `message.paying_card` (la carte payee) ; `Message.WhenPlayerPayingResources`.
 #
 # TEXTE CONTRE CODE
-#  ⚠ « generate a [wild] resource » : UNE ressource wild (icone imprimee « etoile » : a verifier au scan contre
-#    une carte du pack, voir .planning/tmnt/shinobi-socle-questions.md Q-S4) ; « Hero Resource » : forme heros.
+#  ⚠ « generate a [wild] resource » : UNE ressource wild. L'icone imprimee (etoile a six branches irregulieres) est
+#    LE MEME glyphe que « generate a [star] resource for a Shinobi card » de `jennika/tj009` Tekko-Kagi (decoupe des deux scans
+#    comparee le 17/10/2026), code [wild] et deja valide ; « Hero Resource » : forme heros.
 #  ⚠ « If you paid for a SHINOBI card WITH THIS RESOURCE » : seulement quand la ressource de CETTE Voie sert
 #    a payer l'entree en jeu d'une carte Shinobi (Dual comprise) ; payer une carte non Shinobi avec elle ne pioche
 #    rien ; une Shinobi payee par d'autres ressources non plus.
