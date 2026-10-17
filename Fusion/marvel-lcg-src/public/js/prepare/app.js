@@ -2348,7 +2348,11 @@ function accueilView() {
                 ...(tuile.aide ? { "aria-describedby": idAide } : {}),
             },
                 el("span", { class: "acc-copy" },
-                    el("b", { class: "mvl" }, tuile.libelle),
+                    // « Partie au hasard » sur deux lignes (17/10/2026) : sur une seule, le titre
+                    // touchait les boutons de nombre.
+                    tuile.cle === "hasard" && tuile.libelle.includes(" ")
+                        ? el("b", { class: "mvl" }, tuile.libelle.slice(0, tuile.libelle.indexOf(" ")), el("br"), tuile.libelle.slice(tuile.libelle.indexOf(" ") + 1))
+                        : el("b", { class: "mvl" }, tuile.libelle),
                     el("small", {}, tuile.detail),
                 ),
                 nombres.length ? el("span", { class: "acc-nombres" },
