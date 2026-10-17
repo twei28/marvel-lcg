@@ -5,9 +5,9 @@
   "cote navigateur est public/js/deckbuilder/paths-shinobi.js (un test node, tools/tests-lanceur/regles-shinobi.test.mjs, verifie",
   "que les deux disent la meme chose). Les dos sont des INSERTS : aucune carte jouable, aucun card_id (images : assets/pics/seNNN_dos.jpg).",
   "",
-  "Lecture LITTERALE du livret : il ne limite PAS les Paths aux heros TMNT. Par defaut tout heros peut prendre un Path (question",
-  "ouverte a l'utilisateur : .planning/tmnt/shinobi-socle-questions.md, Q-S3). Pour reserver les cartes Shinobi aux heros TMNT, ajouter les sets",
-  "« TMNT Shinobi * » a `sets_exclusifs` de data/arts_alternatifs.json (mecanisme des aspects TMNT).",
+  "Q-S3 (reponse de l'utilisateur, 17/10/2026) : les Paths et les cartes Shinobi sont reserves aux HEROS TMNT. Les six sets",
+  "« TMNT Shinobi Bushido / Kuji-Kiri / Ninjutsu / Taijutsu / Dual / Paths » figurent dans `sets_exclusifs` de la serie `tmnt` de",
+  "data/arts_alternatifs.json (mecanisme des aspects TMNT : le deck-builder les masque et les refuse hors d'un heros TMNT).",
   "",
   "Cles : `types` = types Shinobi autorises (une carte Dual est admise des qu'UN de ses types l'est) ; `aspects` = nombre d'aspects",
   "(Aggression, Justice, Leadership, Protection) autorises : {max: 1} un seul au choix ; `basic` = les cartes Basic sont admises ;",
@@ -29,7 +29,7 @@
   "dual_admise_si_un_type_est_autorise": true,
   "aspects_possibles": ["Aggression", "Justice", "Leadership", "Protection"],
   "regles_standard_en_plus": true,
-  "limite_aux_heros_tmnt": false
+  "limite_aux_heros_tmnt": true
  },
  "paths": {
   "se001": {"nom": "Kagemusha", "avance": false, "types": ["Ninjutsu"], "aspects": {"max": 1}, "basic": true, "complexite": 2,

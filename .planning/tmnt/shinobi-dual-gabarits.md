@@ -91,7 +91,7 @@ Carte terminée : **OUI** (autoplay sans partie jouant la carte, dit clairement)
 - [x] Étape 2 : `tj006` (coûts, `Faces.ReadyAll`), `tj005` (cloak). [x] Étape 5 : « 3 counters from it » (une seule utilisation, puis la carte part), cloak ET ready, « Action » + « your hero » : **Q-D1**.
 - [x] Étape 6 : Uses 3, retrait 3. [x] Étape 7 : 9 cas : Uses, Action (cloak + ready + la carte part), témoins (sans Action, 2 compteurs = 0 action, 3 = 1 action), déjà camouflé, alter-ego provisoire, Jennika.
 - [x] 7 bis : NON (Uses : témoins). [x] Étape 8 : 2 parties jouées, 0 erreur. [x] 8 bis : compteurs (couvert).
-Carte terminée : **NON** : attend Q-D1 (Action vs Hero Action, « your hero » en alter-ego). Comportement provisoire prouvé.
+Carte terminée : **OUI**. Q-D1 (réponse du 17/10/2026, `shinobi-reponses.md`) : « Action » des deux formes ; en alter-ego « your hero » = l'identité camouflée et redressée (lecture littérale confirmée). 9 cas verts.
 
 ### sc005 : Yoi-Dachi (Amélioration Bushido/Taijutsu, OATH STANCE, 2, Y)
 
@@ -150,4 +150,4 @@ Carte terminée : **OUI** (autoplay sans partie jouant la carte).
 
 - [x] Étape 2 : `tj004` + `PayeAvecUnEvenement(effect, "THWART")`, `beast/bt005` (Hero Response sans déclencheur lue Hero Action). [x] Étape 5 : « paid with A THWART event », cloak LE HÉROS, **Hero Response sans « After » : Q-D2**.
 - [x] Étape 6 : 3 dégâts. [x] Étape 7 : 6 cas (THWART : camouflé, ATTACK / ressources : pas camouflé, alter-ego, Jennika) : 4 rouges. [x] 7 bis : NON. [x] Étape 8 : 13 jouées, 0 erreur. [x] 8 bis : statut (couvert).
-Carte terminée : **NON** : attend Q-D2 (Hero Response sans déclencheur). Comportement provisoire prouvé.
+Carte terminée : **OUI**. Q-D2 (réponse du 17/10/2026, `shinobi-reponses.md`) : Hero Action (attack) confirmée (précédent `bt005`) ; le texte affiché de cards.json garde le « Hero Response » imprimé (comme sj020). 6 cas verts.

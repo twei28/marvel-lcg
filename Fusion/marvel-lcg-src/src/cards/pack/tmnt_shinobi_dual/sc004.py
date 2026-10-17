@@ -20,8 +20,8 @@ from . import *
 #  ⚠ « cloak AND ready your hero » : les deux effets sur LE HEROS, sans condition (le heros peut deja etre pret ou deja
 #    camoufle : pas de seconde carte Cloaked).
 #  ⚠ « Action » (et non « Hero Action ») avec « your hero » : QUESTION OUVERTE (.planning/tmnt/shinobi-dual-questions.md,
-#    Q-D1). LECTURE PROVISOIRE : Action utilisable dans les deux formes ; en forme alter-ego « your hero » designe l'identite
-#    du joueur (la carte d'identite, face alter-ego). NON TERMINEE tant que la reponse n'est pas donnee.
+#    Q-D1). REPONSE de l'utilisateur 17/10/2026 (lecture confirmee) : Action utilisable dans les deux formes ; en forme alter-ego « your hero » designe l'identite
+#    du joueur (la carte d'identite, face alter-ego). Carte terminee.
 
 
 def GetAbilities() -> Sequence['Ability']:

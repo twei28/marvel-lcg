@@ -38,8 +38,7 @@ d'attachement à plusieurs étages de `zones.ts` couvre déjà une carte glissé
 - [ ] Étape 8 : non faite (voir plus haut).
 - [x] Étape 8 bis : NON (statut, pas de glissement).
 
-Carte terminée : **NON** : le scan imprime « Shadow Stride », le livret (p.1-2) « Walk in Shadows » (Q-S1). Comportement entièrement prouvé ;
-seul le libellé de la capacité attend la réponse (provisoire : le scan).
+Carte terminée : **OUI**. Q-S1 résolue (réponse du 17/10/2026, `shinobi-reponses.md`) : le nom retenu est « Shadow Stride » (le scan). Comportement entièrement prouvé (14 cas).
 
 ### se002 : Onmyōdō (Path, Kuji-Kiri)
 
@@ -89,8 +88,11 @@ Carte terminée : **OUI**. Non prouvé : « you control » face à l'OATH d'un A
 - [x] Étape 7 bis : limite imprimée ? NON ; une fois par fin de phase (message unique), pas de témoin d'épuisement possible hors du message.
 - [ ] Étape 8 : non faite. [x] Étape 8 bis : NON.
 
-Carte terminée : **NON** : la FAQ du livret (p.8) répond « Yes » pour une carte « Kuji-Kiri/Ninjutsu » alors que le texte et le dos disent « 1 Taijutsu card » (Q-S2).
-Implémenté : le texte imprimé.
+- [x] Réponse Q-S2 (17/10/2026) : « Taijutsu + Dual Kuji-Kiri/Ninjutsu » : Recenter rend une carte de classe Taijutsu (Dual Taijutsu comprises) OU une Dual
+      Kuji-Kiri/Ninjutsu (sc007, sc008) ; le texte affiché reste « 1 Taijutsu card ». Script modifié ; +2 cas (Dual KN sc007, Dual Taijutsu sc011) : 9 cas au total ;
+      substitution : ancien script -> le cas sc007 rouge (1/2 passes), nouveau script -> 9/9.
+
+Carte terminée : **OUI**.
 
 ### se005 : ✦ The Last Rōnin (Path hybride, unique, Bushido + Ninjutsu + Kuji-Kiri + Taijutsu)
 

@@ -4,9 +4,9 @@ from . import *
 # Hero Action (defense/thwart): When your hero would take any amount of damage from an attack, prevent all of
 # that damage. Remove threat from a scheme equal to the amount of damage prevented this way.
 #
-# ⚠ QUESTION OUVERTE Q-K1 (`.planning/tmnt/shinobi-kuji-kiri-questions.md`) : le scan imprime « Hero ACTION » devant
-# un declencheur « When your hero WOULD take damage » (formulation d'une INTERRUPTION). Lecture PROVISOIRE : Hero
-# INTERRUPT (coquille de type probable). Carte NON TERMINEE tant que l'utilisateur n'a pas tranche.
+# ⚠ QUESTION Q-K1 RESOLUE le 17/10/2026 (`.planning/tmnt/shinobi-reponses.md`) : Hero INTERRUPT confirme ; le texte affiche garde le « Hero Action » imprime. Rappel : le scan imprime « Hero ACTION » devant
+# un declencheur « When your hero WOULD take damage » (formulation d'une INTERRUPTION). Lecture retenue : Hero
+# INTERRUPT (coquille de type confirmee par l'utilisateur).
 #
 # Cartes de reference : `tmnt_aspect_protection/up004` Autodefenestration (« Hero Interrupt (defense): When you
 # would take any amount of damage from an attack, prevent all of that damage » : `WhenUnitWouldTakeDamage(...,

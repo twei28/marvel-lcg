@@ -24,13 +24,15 @@ from ... » = `CoutDefausserCloaked` (`CostFunc.Custom(CardFinder(has_status="Cl
 Règles Cloaked du livret p.8 prouvées en jeu : un seul Cloaked par personnage, Solide/Steady n'y change rien (« Can I put 2 Cloaked on a steady character ? No » : une seule carte
 posée même déjà présente), Coriace avant Cloaked, +2 DEF de la défense puis la carte part avant l'excédent (`sa002`), les dégâts consécutifs résolvent après le +2 ATQ (`sa017`).
 
-### sa001 : Assassinate (Événement 2, Ninjutsu, ATTACK) : NON terminée (Q-N1)
-- [x] Étape 2 : `04044` Piercing Strike (`hero.DealDamage(..., AttackProperty(piercing=True))`, `.SetPlay().SetLabel('attack')`) ; `JouableSiVousControlez` (condition de jeu en tête) ; `08003` (Action nue).
-- [x] Étape 5 : « YOUR HERO is cloaked » (forme héros) ; « Action » (pas Hero Action) ; « 7 damage to a MINION » ; « gains piercing ». Résultat : texte = code, sauf le doute Q-N1.
+### sa001 : Assassinate (Événement 2, Ninjutsu, ATTACK) : Hero Action (Q-N1)
+- [x] Étape 2 : `04044` Piercing Strike (`hero.DealDamage(..., AttackProperty(piercing=True))`, `.SetPlay().SetLabel('attack')`) ; `JouableSiVousControlez` (condition de jeu en tête) ; `08003` (Action nue, plus utilisée : Q-N1 → Hero Action).
+- [x] Étape 5 : « YOUR HERO is cloaked » (forme héros) ; « Hero Action » (le scan imprime « Action » : coquille, l'utilisateur a répondu Hero Action, Q-N1) ; « 7 damage to a MINION » ; « gains piercing ». Résultat : texte = code.
 - [x] Étape 6 : 7 dégâts, coût 2 (desc et script). Conforme.
 - [x] Étape 7 : 6 cas (sbire vaincu ; sbire Coriace vaincu grâce au piercing ; héros non camouflé / alter-ego camouflé / sans sbire : injouable ; témoin jouable). Rouges sans module 3/6 ; verts = 3 injouables.
 - [x] Étape 7 bis : limite imprimée ? NON. [ ] Étape 8 : non faite. [x] Étape 8 bis : NON (dégâts).
-Carte terminée : **NON** : « Action » ou « Hero Action » et « your hero is cloaked » en alter-ego (Q-N1). Lecture provisoire (a) prouvée.
+- [x] Réponse Q-N1 (réponse du 17/10/2026, `shinobi-reponses.md`) : script en `AbilityType.HeroAction`, `cards.json` et FR « Hero Action » / « Action de héros » ; +1 cas (type de capacité = HeroAction, vérificateur `sn_type_capacite_main`) : 7 cas, substitution (ancien script) : 6/7 donc le nouveau cas rougit.
+
+Carte terminée : **OUI**.
 
 ### sa002 : Shroud and Protect (Événement 1, DEFENSE) : terminée
 - [x] Étape 2 : `14014` Never Back Down (même déclencheur, `IfYouTakeNoDamage`), `09015` (redresser le héros), `up023` (Cloak).
@@ -93,14 +95,14 @@ Carte terminée : **OUI**.
 - [ ] Étape 8 : non faite. [x] Étape 8 bis : OUI (compteur `smoke`, statut) : cas plateau.
 Carte terminée : **OUI**.
 
-### sa009 : ✦ Twilight Sentry (Amélioration unique 1, TITLE TRAINING) : NON terminée (Q-N3)
+### sa009 : ✦ Twilight Sentry (Amélioration unique 1, TITLE TRAINING) : ordre du moteur conservé (Q-N3)
 - [x] Étape 2 : `ua004` (attache + « Max 1 TRAINING per ally » natif) ; `dt088` (Forced Response à la pose pour poser un statut) ; `19032`/`27087b` (« instead » = `SetBeInstead`).
-- [x] Étape 5 : « an ally YOU CONTROL » ; « and cloak THEM » (à la pose) ; « Max 1 TRAINING upgrade per ally » ; « Interrupt » (pas Hero) ; « WOULD take ANY amount » ; « discard a cloaked status card INSTEAD ». Résultat : conforme, sauf Q-N3.
+- [x] Étape 5 : « an ally YOU CONTROL » ; « and cloak THEM » (à la pose) ; « Max 1 TRAINING upgrade per ally » ; « Interrupt » (pas Hero) ; « WOULD take ANY amount » ; « discard a cloaked status card INSTEAD ». Résultat : conforme ; Q-N3 résolue (ordre du moteur conservé).
 - [x] Étape 6 : coût 1. Conforme.
-- [x] Étape 7 : 9 cas (pose : allié camouflé et amélioration attachée ; aucun allié / allié d'un autre joueur : injouable ; allié contrôlé : jouable ; allié déjà entraîné : injouable ; lecture provisoire : le statut résout avant l'Interruption ; témoins). Rouges sans module 7/9.
-  ⚠ Le point central (l'Interruption elle-même) n'est PAS prouvé : un allié camouflé voit sa carte résoudre d'abord (`TimingPriority`), Sentry n'est jamais proposée : Q-N3.
+- [x] Étape 7 : 9 cas (pose : allié camouflé et amélioration attachée ; aucun allié / allié d'un autre joueur : injouable ; allié contrôlé : jouable ; allié déjà entraîné : injouable ; comportement retenu Q-N3 : le statut résout avant l'Interruption ; témoins). Rouges sans module 7/9.
+  Q-N3 (réponse du 17/10/2026, `shinobi-reponses.md`) : ordre du moteur conservé, aucune extension : la carte ne sert qu'à camoufler l'allié à la pose ; l'Interruption n'est en pratique jamais proposée (statut Cloaked avant Interruption). Le cas « comportement retenu » le prouve.
 - [x] Étape 7 bis : NON. [ ] Étape 8 : non faite. [x] Étape 8 bis : OUI (amélioration sur un allié, statut) : cas plateau.
-Carte terminée : **NON** : Q-N3.
+Carte terminée : **OUI**. Non prouvé : l'Interruption elle-même (jamais proposée, par choix de l'utilisateur).
 
 ### sa010 : Opportunist (Amélioration 2, SKILL) : terminée
 - [x] Étape 2 : `sk049` (coût sur un personnage + `DiscardTough`), `tj006` (Exhaust), `10019` (retrait de menace).
@@ -119,13 +121,13 @@ Carte terminée : **OUI**.
 - [x] Étape 7 bis : NON. [ ] Étape 8 : non faite. [x] Étape 8 bis : statut (badge couvert).
 Carte terminée : **OUI**. Non prouvé : la Réponse en alter-ego (aucun pouvoir de base d'alter-ego atteignable par l'API).
 
-### sa012 : Black Ops (Amélioration 1) : NON terminée (Q-N2)
+### sa012 : Black Ops (Amélioration 1) : Hero Response (Q-N2)
 - [x] Étape 2 : `se008` Onigari (« After you defeat a minion OR side scheme », deux capacités), `13017`/`up023` (coût `Discard("This")`), `09015`.
-- [x] Étape 5 : « Hero Action: After ... » est contradictoire (Q-N2) ; « After YOUR HERO defeats » ; « minion or side scheme ». Résultat : lecture provisoire Hero Response.
+- [x] Étape 5 : « Hero Action: After ... » est contradictoire (Q-N2) ; « After YOUR HERO defeats » ; « minion or side scheme ». Résultat : Hero Response, confirmée par l'utilisateur (Q-N2, 17/10/2026).
 - [x] Étape 6 : coût 1. Conforme.
 - [x] Étape 7 : 4 cas (sbire vaincu : redressé, carte défaussée ; complot annexe vaincu ; sbire non vaincu ; allié qui vainc). Rouges sans module 2/4.
 - [x] Étape 7 bis : NON. [ ] Étape 8 : non faite. [x] Étape 8 bis : NON.
-Carte terminée : **NON** : Q-N2.
+Carte terminée : **OUI**. Q-N2 (réponse du 17/10/2026, `shinobi-reponses.md`) : Hero Response confirmée.
 
 ### sa013 : Up in Smoke (Événement 0, TACTIC) : terminée
 - [x] Étape 2 : `vz015` (redresser, `canbe_ready`), `19032` Regroup (`Faces.ReturnToHand(.., "Owner")`), `27087b` (`WhenCardWouldDiscard` + `SetBeInstead`).

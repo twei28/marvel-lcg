@@ -5,7 +5,7 @@ from . import *
 # Response: After this card enters play, search your deck and discard pile for a WEAPON upgrade. (Shuffle.) Put that upgrade into
 #   play (paying its resource cost) with this card attached.
 #
-# ⚠⚠ CARTE NON TERMINEE : LECTURE PROVISOIRE, voir `.planning/tmnt/shinobi-bushido-questions.md` (Q-B2). Le texte imprime ne dit pas
+# Q-B2 RESOLUE le 17/10/2026 (`.planning/tmnt/shinobi-reponses.md`, option (a) identite puis arme) : lecture confirmee, carte terminee. Le texte imprime ne dit pas
 # OU cette carte s'attache quand on la joue (aucun « Attach to »), ni ce qu'elle devient si la recherche ne ramene rien ; « attached
 # upgrade » et « with this card attached » designent l'amelioration ARME qui la porte. LECTURE CODEE :
 #  - jouee comme toute amelioration sans « Attach to » : elle entre en jeu attachee a l'IDENTITE du joueur ;

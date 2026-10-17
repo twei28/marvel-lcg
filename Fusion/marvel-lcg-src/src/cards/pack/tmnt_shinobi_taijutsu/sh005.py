@@ -17,7 +17,7 @@ from . import *
 # TEXTE CONTRE CODE
 #  ⚠ Deux PUCES INDEPENDANTES : une carte payee par un evenement DEFENSE pioche 1 ; payee par un evenement THWART
 #    pioche 1 de plus ; une carte (Toss, Countercross) qui porte LES DEUX traits satisfait les DEUX puces
-#    (lecture litterale, question Q-T3, carte NON terminee). Plusieurs evenements du MEME trait ne repiochent pas :
+#    (lecture litterale, Q-T3 resolue le 17/10/2026, lecture confirmee). Plusieurs evenements du MEME trait ne repiochent pas :
 #    la puce dit « A DEFENSE event », pas « each ».
 #  ⚠ « 2 damage » et « 2 threat » : deux effets sans fleche, les deux se resolvent toujours.
 #  ⚠ « Hero Action » : forme heros seulement.

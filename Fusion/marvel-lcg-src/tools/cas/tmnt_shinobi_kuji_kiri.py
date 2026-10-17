@@ -713,7 +713,7 @@ CAS += [
        main_exclusive=["sj019", "01088"]),
 ]
 
-# ========================================================================= sj020 Aethreal Shift (lecture PROVISOIRE : Hero INTERRUPT, question Q-K1)
+# ========================================================================= sj020 Aethreal Shift (Hero INTERRUPT confirme, Q-K1)
 # Rhino attaque le heros (ATQ 2, pas de defenseur : le heros prend 2, `Puzzle.Attack('01094')`).
 def _shift(nom, pourquoi, mise, declencher, attendu, **cle):
     cle.setdefault("passer_sur_option", "Defense")   # le heros ne defend pas : sinon sa DEF 3 absorbe l'ATQ 2 de Rhino

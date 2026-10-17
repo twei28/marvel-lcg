@@ -1,5 +1,7 @@
 # TMNT Shinobi, socle et Paths : questions ouvertes pour l'utilisateur (17/10/2026)
 
+> Réponses rendues le 17/10/2026, voir shinobi-reponses.md (les mentions « NON terminée » / « provisoire » ci-dessous sont historiques : cartes levées).
+
 Sources : zip « TMNT Shinobi » (livret `Shinobi Book PNGs` pages 1-12 + `Shinobi Path Rulebook.pdf`, 11 dos de Path « Cardback »,
 11 fronts de Path). Scans : `/tmp/.../zip-shinobi/TMNT Shinobi/` (dossiers `Shinobi Paths`, `Shinobi Paths/ Hybrid Shinobi Paths
 (Advanced)`, `Shinobi Book PNGs`). Une question à la fois, scan à l'appui (consigne : montrer l'image avant chaque question).

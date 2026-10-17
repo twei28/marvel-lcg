@@ -39,7 +39,7 @@ Carte terminee : OUI
 - [x] Etape 8 : autoplay 8 parties (deck Taijutsu + temoin spider_man), tracebacks : 0, la carte est jouee dans les journaux.
 - [x] Etape 8 bis : la carte change-t-elle ce qu'on VOIT ? OUI (carte Dazed sur Rhino : plateau, dazed).
 
-Carte terminee : NON : attend la reponse de l'utilisateur (Q-T1 (credit « MC Custom Content By: Inkwire »)), voir `.planning/tmnt/shinobi-taijutsu-questions.md`.
+Carte terminee : OUI. Q-T1 (réponse du 17/10/2026, `shinobi-reponses.md`) : credit « MC Custom Content By: Inkwire » laisse tel quel.
 
 ### sh004 : Straight Cross
 
@@ -65,7 +65,7 @@ Carte terminee : OUI
 - [x] Etape 8 : autoplay 8 parties (deck Taijutsu + temoin spider_man), tracebacks : 0, la carte est jouee dans les journaux.
 - [x] Etape 8 bis : la carte change-t-elle ce qu'on VOIT ? NON (pioche).
 
-Carte terminee : NON : attend la reponse de l'utilisateur (Q-T3 (evenement DEFENSE+THWART : deux puces ou une ?)), voir `.planning/tmnt/shinobi-taijutsu-questions.md`.
+Carte terminee : OUI. Q-T3 (réponse du 17/10/2026, `shinobi-reponses.md`) : evenement DEFENSE+THWART : les deux puces, pioche 2 (lecture confirmee).
 
 ### sh006 : Flying Kick
 
@@ -208,7 +208,7 @@ Carte terminee : OUI
 - [x] Etape 8 : autoplay 8 parties (deck Taijutsu + temoin spider_man), tracebacks : 0, la carte est jouee dans les journaux.
 - [x] Etape 8 bis : la carte change-t-elle ce qu'on VOIT ? OUI (compteurs cudgel, 'bâton' en FR).
 
-Carte terminee : NON : attend la reponse de l'utilisateur (Q-T4 (portee de « After you damage an enemy »)), voir `.planning/tmnt/shinobi-taijutsu-questions.md`.
+Carte terminee : OUI. Q-T4 (réponse du 17/10/2026, `shinobi-reponses.md`) : identite + cartes jouees (lecture confirmee).
 
 ### sh017 : * Odyn
 
@@ -221,7 +221,9 @@ Carte terminee : NON : attend la reponse de l'utilisateur (Q-T4 (portee de « Af
 - [x] Etape 8 : autoplay 8 parties (deck Taijutsu + temoin spider_man), tracebacks : 0, la carte est jouee dans les journaux.
 - [x] Etape 8 bis : la carte change-t-elle ce qu'on VOIT ? OUI (carte Tough sur un allie).
 
-Carte terminee : NON : attend la reponse de l'utilisateur (Q-T2 (citation « behnd »)), voir `.planning/tmnt/shinobi-taijutsu-questions.md`.
+- [x] Reponse Q-T2 (réponse du 17/10/2026, `shinobi-reponses.md`) : citation corrigee en « behind » dans `data/cards.json` (checksum recalcule) ; le FR l'etait deja.
+
+Carte terminee : OUI.
 
 ### sh018 : Countercross
 

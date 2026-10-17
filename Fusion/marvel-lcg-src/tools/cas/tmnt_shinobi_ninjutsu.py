@@ -56,6 +56,10 @@ CAS = [
        [HEROS, CLOAK, SBIRE, "Puzzle.Tough('01101')"], [],
        {"hors_jeu": ["01101"], "defausse": ["sa001"]},
        main_exclusive=["sa001", "01088"], jouer=["sa001"], cibles=["01101"], accepter_choix=True),
+    _c("sa001 Assassinate : Q-N1 (reponse 17/10/2026), la capacite est une HERO ACTION (coquille « Action » du scan corrigee)",
+       "la carte imprimee « Action (attack) » est lue « Hero Action (attack) » : type HeroAction (forme heros seulement)",
+       [HEROS, CLOAK, SBIRE], [], {"carte": "sa001", "type": "HeroAction"}, verifier="sn_type_capacite_main",
+       main_exclusive=["sa001", "01088"]),
     _jouable("sa001 Assassinate : TEMOIN, heros NON camoufle -> injouable",
              "« Play only if your hero is cloaked » : sans Cloaked sur le heros, la carte en main n'est pas jouable",
              [HEROS, SBIRE], "sa001", False),
@@ -330,10 +334,10 @@ CAS += [
     _jouable("sa009 Twilight Sentry : « Max 1 TRAINING upgrade per ally » : l'allie porte deja une TRAINING -> injouable",
              "Attack Training (ua004, trait TRAINING) deja attachee a Splinter, seul allie",
              [HEROS, ALLIE, "Puzzle.AttachReel('ua004', 'tl002')"], "sa009", False, main_exclusive=["sa009", "01089"]),
-    _c("sa009 Twilight Sentry Interrupt [LECTURE PROVISOIRE Q-N3, ordre du moteur] : l'allie camoufle va subir 3 degats -> le STATUT Cloaked resout "
+    _c("sa009 Twilight Sentry Interrupt [comportement retenu Q-N3, ordre du moteur] : l'allie camoufle va subir 3 degats -> le STATUT Cloaked resout "
        "d'abord (-2, defausse), l'allie en subit 1, l'Interruption n'a plus de carte Cloaked a defausser",
        "RR : les cartes d'etat resolvent AVANT les Interruptions (`TimingPriority.Status` < `Interrupt`) : Sentry n'est jamais proposee a un allie "
-       "porteur d'UNE carte Cloaked ; question Q-N3 posee a l'utilisateur (resolution recommandee : Sentry AVANT le statut, 0 degat)",
+       "porteur d'UNE carte Cloaked ; reponse Q-N3 du 17/10/2026 : ordre du moteur conserve, aucune extension (la carte ne sert qu'a camoufler l'allie a la pose)",
        [HEROS, ALLIE, "Puzzle.AttachReel('sa009', 'tl002')"], ["Puzzle.Damage('tl002', 3)"],
        {"degats": [["tl002", 1]], "statuts_absents": [["tl002", "Cloaked"]], "accroche_a": [["sa009", "tl002"]]}, accepter_choix=True),
     _c("sa009 Twilight Sentry : TEMOIN sans Sentry : un allie camoufle qui subit 3 degats n'en evite que 2 (1 subi, Cloaked consomme)",
@@ -422,7 +426,7 @@ CAS += [
        {"statuts": [["01001a", "Cloaked"]], "defausse": ["sa011"], "degats": [["01094", 4]]},
        main_exclusive=["sa011"], accepter_choix=True, verifier="sn_un_seul_cloaked"),
 
-    # ===================================================================== sa012 Black Ops (QUESTION OUVERTE Q-N2 : lecture provisoire = Hero Response)
+    # ===================================================================== sa012 Black Ops (Q-N2 : Hero Response confirmee)
     _c("sa012 Black Ops : le heros VAINC un sbire -> Black Ops est defaussee et le heros incline est redresse",
        "(lecture provisoire Hero Response) « After your hero defeats a minion, discard Black Ops -> ready your hero » : l'attaque de base "
        "incline le heros, la carte le redresse",
@@ -685,6 +689,24 @@ def sn_jouable(monde, aides):
         ok, msg = etat_attendu(monde, aides2)
         return ok, f"{code} jouable={jouable} ; {msg}"
     return True, f"{code} jouable={jouable}, comme attendu"
+
+
+def sn_type_capacite_main(monde, aides):
+    """`attendu` : carte (en main), type (nom d'AbilityType) : la capacite de jeu de la carte est de CE type, et d'aucun autre."""
+    from game.ability.ability import AbilityType
+    from game.message import Message
+    attendu = aides["cas"]["attendu"]
+    joueur = monde.players[0]
+    code = attendu["carte"]
+    main = [f for f in joueur.hand_cards.GetAll() if getattr(f.paper, "card_id", None) == code]
+    if not main:
+        return False, f"{code} absente de la main"
+    face = main[0]
+    types = sorted({str(x.ability.type).split('.')[-1] for x in face.effect.Find(when=Message.WhenPlayerInTurn)})
+    voulu = attendu["type"]
+    if types != [voulu]:
+        return False, f"{code} : types de capacite {types} (attendu {[voulu]})"
+    return True, f"{code} : capacite de type {voulu}, comme attendu"
 
 
 def sn_a_regarde(monde, aides):

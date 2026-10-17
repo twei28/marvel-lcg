@@ -1,5 +1,7 @@
 # TMNT Shinobi, cartes DUAL (`sc001`-`sc012`) : questions ouvertes pour l'utilisateur (17/10/2026)
 
+> Réponses rendues le 17/10/2026, voir shinobi-reponses.md (les mentions « NON terminée » / « provisoire » ci-dessous sont historiques : cartes levées).
+
 Sources : zip « TMNT Shinobi », dossier `Dual Shinobi Cards/` (12 scans, 1500x2150). Scans : `/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/2ed3e66d-9fcf-45e1-aa7f-2debf9a42af0/scratchpad/zip-shinobi/TMNT Shinobi/Dual Shinobi Cards/`.
 Une question à la fois, scan à l'appui (consigne : montrer l'image avant chaque question). Lecture PROVISOIRE retenue entre parenthèses ;
 chaque question dit ce qu'elle change EN JEU. Deux cartes sur douze sont concernées : elles sont scriptées dans la lecture provisoire

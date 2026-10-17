@@ -1,5 +1,7 @@
 # TMNT Shinobi Taijutsu (sh001-sh020) : questions ouvertes pour l'utilisateur (17/10/2026)
 
+> Réponses rendues le 17/10/2026, voir shinobi-reponses.md (les mentions « NON terminée » / « provisoire » ci-dessous sont historiques : cartes levées).
+
 Source : zip « TMNT Shinobi », dossier `Taijutsu` (T1-T20). Scans : `/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/2ed3e66d-9fcf-45e1-aa7f-2debf9a42af0/scratchpad/zip-shinobi/TMNT Shinobi/Taijutsu/`
 (images importées dans `assets/pics/sh001.jpg`..`sh020.jpg` par `tools/importer_images_tmnt_shinobi.py`). Une question à la fois, scan à l'appui
 (consigne : montrer l'image avant chaque question). Lecture PROVISOIRE retenue entre parenthèses ; chaque question dit ce qu'elle change EN JEU.

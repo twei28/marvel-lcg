@@ -20,7 +20,7 @@ from . import *
 #    proposee.
 #  ⚠ « give Odyn a tough status card » : un seul Tough par personnage ; Odyn peut etre Hebete ou Camoufle en meme temps.
 #  ⚠ « Response » nu (le [star] est la marque d'allie unique imprimee), pas « Hero Response ».
-#  ⚠ Coquille du scan : citation « behnd » (question Q-T2, carte NON terminee).
+#  ⚠ Coquille du scan : citation « behnd » (Q-T2, reponse du 17/10/2026 : corrigee en « behind » dans cards.json).
 
 
 def GetAbilities() -> Sequence['Ability']:

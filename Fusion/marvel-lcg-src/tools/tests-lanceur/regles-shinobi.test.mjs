@@ -18,6 +18,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { estCarteJoueur, validerDeck, classeDeConstruction } from "../../public/js/deckbuilder/regles.js";
 import { PATHS_SHINOBI, CLASSES_SHINOBI, typesShinobi, estShinobi, estPath, reglesDuPath, admiseParLePath } from "../../public/js/deckbuilder/paths-shinobi.js";
+import { serieExclusive, exclusiveRefusee } from "../../public/js/prepare/arts-cartes-choix.js";
 import { filtresVides, passeFiltres } from "../../public/js/deckbuilder/filtres.js";
 
 const RACINE = new URL("../../", import.meta.url);
@@ -94,7 +95,7 @@ test("data/shinobi_paths.json : regles communes du livret (taille de main -1, 3 
     assert.equal(c.path_obligatoire_pour_les_shinobi, true);
     assert.equal(c.dual_admise_si_un_type_est_autorise, true);
     assert.equal(c.shinobi_ni_aspect_ni_basic, true);
-    assert.equal(c.limite_aux_heros_tmnt, false);
+    assert.equal(c.limite_aux_heros_tmnt, true);
 });
 
 test("data/cards.json : les 11 Paths existent, type Path, Permanent, classe = types du Path, un seul Path unique", () => {
@@ -260,4 +261,45 @@ test("regles du Path : un Path futur sans entree dans la table suit sa classe im
     assert.equal(r.aspects.max, 1);
     assert.equal(admiseParLePath({ class: "Taijutsu" }, r), true);
     assert.equal(admiseParLePath({ class: "Ninjutsu" }, r), false);
+});
+
+/* ----------------------------------------------------------------- Q-S3 : reserves aux heros TMNT ---- */
+const SETS_SHINOBI = ["TMNT Shinobi Bushido", "TMNT Shinobi Kuji-Kiri", "TMNT Shinobi Ninjutsu", "TMNT Shinobi Taijutsu", "TMNT Shinobi Dual", "TMNT Shinobi Paths"];
+const ARTS = lire("data/arts_alternatifs.json");
+
+test("Q-S3 : les six sets « TMNT Shinobi * » sont des sets exclusifs de la serie tmnt, et chacun existe dans cards.json", () => {
+    const exclusifs = ARTS.series.tmnt.sets_exclusifs;
+    const cartes = lire("data/cards.json");
+    const presents = new Set(Object.values(cartes).flat().filter((c) => c && typeof c === "object").map((c) => c.set_name));
+    for (const s of SETS_SHINOBI) {
+        assert.ok(exclusifs.includes(s), `${s} dans sets_exclusifs`);
+        assert.ok(presents.has(s), `${s} existe dans cards.json`);
+    }
+});
+
+test("Q-S3 : la table generee (arts-cartes-table.js) reserve les six sets : refus hors heros TMNT, accepte pour un heros TMNT", () => {
+    for (const s of SETS_SHINOBI) {
+        assert.equal(serieExclusive(s), "tmnt", s);
+        assert.equal(exclusiveRefusee(s, "spider_man"), true, `${s} refuse pour Spider-Man`);
+        assert.equal(exclusiveRefusee(s, "iron_man"), true, `${s} refuse pour Iron Man`);
+        for (const h of ["jennika", "tj001", "leonardo", "tl001"]) assert.equal(exclusiveRefusee(s, h), false, `${s} accepte pour ${h}`);
+    }
+});
+
+test("Q-S3 : validerDeck refuse le Path et les cartes Shinobi d'un heros non TMNT, et accepte Jennika et Leonardo", () => {
+    const cat = (id) => {
+        const c = CATALOGUE[id];
+        if (!c) return c;
+        const set = c.type === "Path" ? "TMNT Shinobi Paths" : (typesShinobi(c.class).length > 1 ? "TMNT Shinobi Dual" : `TMNT Shinobi ${c.class}`);
+        return typesShinobi(c.class).length || c.type === "Path" ? { ...c, set_name: set } : c;
+    };
+    const verdictSet = (hero, extra) => validerDeck({ hero, choisies: choisies(extra, "basic"), carte: cat });
+    const extra = { se001: 1, Ninjutsu1: 3, dualBN: 2 };
+    const refus = verdictSet(heros("spider_man"), extra);
+    dit(refus, /réservées aux héros TMNT|reserv/i);
+    assert.match(refus.problemes.join(" | "), /Kagemusha/);
+    assert.match(refus.problemes.join(" | "), /Omawari/);
+    assert.deepEqual(verdictSet(heros("leonardo"), extra).problemes, []);
+    assert.deepEqual(verdictSet({ ...heros("jennika"), heroCardId: "tj001" }, { Ninjutsu1: 3 }).problemes.filter((p) => /TMNT/.test(p)), []);
+    assert.deepEqual(verdictSet(JENNIKA, {}).problemes.filter((p) => /TMNT/.test(p)), []);
 });

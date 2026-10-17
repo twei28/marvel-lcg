@@ -4,7 +4,7 @@
 // 17/10/2026) : `tools/tests-lanceur/regles-shinobi.test.mjs` verifie que les deux disent la meme chose.
 // Un Path (type imprime PATH) est choisi au deck-building ; il est MIS DE COTE (hors des 40-50), mis en jeu au
 // Setup, et lui seul autorise les cartes Shinobi du deck : types Shinobi, UN aspect au choix, cartes Basic.
-// Lecture litterale du livret : aucun Path n'est reserve aux heros TMNT (question Q-S3).
+// Q-S3 (reponse du 17/10/2026) : Paths et cartes Shinobi reserves aux heros TMNT (sets_exclusifs de arts_alternatifs.json).
 "use strict";
 
 export const CLASSES_SHINOBI = ["Bushido", "Ninjutsu", "Kuji-Kiri", "Taijutsu"];

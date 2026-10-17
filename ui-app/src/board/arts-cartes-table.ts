@@ -275,7 +275,13 @@ export const SERIES_ARTS: Record<string, SerieArt> = {
       "TMNT Justice",
       "TMNT Leadership",
       "TMNT Protection",
-      "TMNT Dual-Aspect"
+      "TMNT Dual-Aspect",
+      "TMNT Shinobi Bushido",
+      "TMNT Shinobi Kuji-Kiri",
+      "TMNT Shinobi Ninjutsu",
+      "TMNT Shinobi Taijutsu",
+      "TMNT Shinobi Dual",
+      "TMNT Shinobi Paths"
     ]
   }
 }
