@@ -1849,3 +1849,9 @@ html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-texte:n
   letter-spacing: 0.04em;
   color: #ffffff;
 }
+
+/* Pas d'étiquette « Allié » / « Événement » au-dessus de la carte de la fenêtre de réaction (demande du 17/10/2026). */
+html[data-epure] .demande-centrale:not(.est-en-scene) .dc-vignette .kind-pill,
+html[data-epure] .demande-centrale:not(.est-en-scene) .dc-vignette .top-strip {
+  display: none;
+}
