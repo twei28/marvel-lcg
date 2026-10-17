@@ -3224,8 +3224,9 @@ function recruterVraiment(h, portraitEl) {
     if (tel) { herosApercuTel = h; rendreSceneTel(h); }
     else rendreScene(herosDuSiegeActif());
     rendreEquipe();
-    const scene = document.getElementById("tb-scene");
-    if (scene && !tel) {
+    const jouerEclair = () => {
+        const scene = document.getElementById("tb-scene");
+        if (!scene || tel) return;
         const cri = replique(h);
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrlEn(picIdHeros(h.heroCardId)), alt: "" }),
@@ -3235,7 +3236,11 @@ function recruterVraiment(h, portraitEl) {
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
         setTimeout(() => eclair.remove(), 2800);   // filet, un peu apres la fin de l'animation
-    }
+    };
+    // La fenêtre « Options du héros » s'ouvre aussitôt et cacherait la carte et sa phrase
+    // (17/10/2026) : elles jouent alors à la fermeture de la fenêtre (Valider ou Annuler).
+    if (avecVariantes) apresModaleVariantes = jouerEclair;
+    else jouerEclair();
     document.querySelectorAll(".tb-port").forEach((b) => {
         b.classList.toggle("chosen", activePlayers().some((p) => p.hero && p.hero.id === b.dataset.hero));
     });
@@ -4367,13 +4372,22 @@ function ouvrirModale(overlay) {
     if (panneau) ajouterPoignee(panneau, () => fermerModale(overlay));
 }
 
+/** Ce qui joue quand la fenêtre des options du héros se ferme : la carte qui surgit. */
+let apresModaleVariantes = null;
+
 function fermerModale(overlay) {
     // `isConnected` : sans lui, deux fermetures de suite (le clic dehors qui
     // suit le bouton) decompteraient deux fois et libereraient la page trop
     // tot, ou jamais.
     if (!overlay || !overlay.isConnected) return;
+    const etaitVariantes = apresModaleVariantes && overlay.querySelector(".vh-panel");
     overlay.remove();
     _modalesOuvertes = Math.max(0, _modalesOuvertes - 1);
+    if (etaitVariantes) {
+        const suite = apresModaleVariantes;
+        apresModaleVariantes = null;
+        setTimeout(suite, 120);
+    }
     if (_modalesOuvertes === 0) {
         document.documentElement.style.overflow = "";
         document.documentElement.style.removeProperty("--barre-defilement");

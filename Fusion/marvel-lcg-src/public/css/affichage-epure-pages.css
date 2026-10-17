@@ -1958,3 +1958,21 @@ html[data-epure] .tb-scene .tb-nomg *:not(small) {
 }
 html[data-epure] .tb-scene .tb-nomg { font-size: 46px !important; line-height: 1 !important; }
 html[data-epure] .tb-scene .tb-nomg small { font-size: 13px !important; line-height: 1.3 !important; }
+
+/* La carte qui surgit au choix d'un héros, avec sa phrase (17/10/2026) : le réglage « sobre »
+   mettait TOUTES les durées d'animation à 1 ms, et l'Épuré en hérite (il est un sobre
+   particulier). La carte et l'onomatopée ne se voyaient donc plus du tout. L'Épuré les garde. */
+html[data-epure] .tb-eclair {
+  animation-duration: var(--affiche-eclair, 2.4s) !important;
+}
+html[data-epure] .tb-eclair .ono {
+  animation-duration: 0.5s !important;
+}
+html[data-epure] .tb-eclair .ono {
+  font-family: "Bangers", Impact, sans-serif !important;
+  color: #f3c623 !important;
+  -webkit-text-stroke: 3px #1e1e1e !important;
+  text-shadow: 6px 6px 0 #1e1e1e !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
