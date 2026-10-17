@@ -31,6 +31,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 
 ### up002 : Armored Vest (IDENTIQUE 01081)
 
+> **Converti en art alternatif de 01081 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up002` n'existe plus dans `cards.json` (image `01081_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `01081` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"01081"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « any player's control », « Max 1 per player » (`MaxPerUnit` recopie dans desc), « your HERO »
       Resultat : conforme.
@@ -46,6 +48,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et la substitution ; Q-R2 deck-builder en attente).
 
 ### up003 : Army of One (IDENTIQUE 60048)
+
+> **Converti en art alternatif de 60048 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up003` n'existe plus dans `cards.json` (image `60048_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `60048` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"60048"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « for EACH ally you control » (cout +1 par allie), « Ready your HERO »
@@ -83,6 +87,8 @@ Carte terminee : OUI.
 
 ### up005 : Change of Fortune (IDENTIQUE 48014)
 
+> **Converti en art alternatif de 48014 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up005` n'existe plus dans `cards.json` (image `48014_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `48014` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"48014"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « during the VILLAIN phase » (contre-cas phase joueur), « exhaust this card -> draw 2 »
       Resultat : conforme.
@@ -100,6 +106,8 @@ Carte terminee : OUI.
 Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et la substitution ; Q-R2 deck-builder en attente).
 
 ### up006 : "Come Get Me, Bub!" (IDENTIQUE 48016)
+
+> **Converti en art alternatif de 48016 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up006` n'existe plus dans `cards.json` (image `48016_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `48016` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"48016"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « until you discard a MINION », « engaged with YOU », « heal 3 AND tough »
@@ -132,6 +140,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 Carte terminee : OUI.
 
 ### up008 : Defensive Conditioning (IDENTIQUE 56046)
+
+> **Converti en art alternatif de 56046 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up008` n'existe plus dans `cards.json` (image `56046_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `56046` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"56046"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « YOU get +3 hit points AND your HERO gets +1 DEF »
@@ -196,6 +206,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et la substitution ; Q-R2 deck-builder en attente).
 
 ### up012 : Get Their Attention (IDENTIQUE 60049)
+
+> **Converti en art alternatif de 60049 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up012` n'existe plus dans `cards.json` (image `60049_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `60049` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"60049"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « When an enemy INITIATES an attack », « remove 3 threat from A scheme »
@@ -299,6 +311,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 
 ### up018 : "I Can Do This All Day" (IDENTIQUE 56047 (coquille « Hero Action »))
 
+> **Converti en art alternatif de 56047 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up018` n'existe plus dans `cards.json` (image `56047_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `56047` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"56047"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « Hero ACTION (defense): When... » imprime : coquille probable (Q-UP2) ; « declare your HERO », « WITHOUT exhausting »
       Resultat : conforme a 56047 ; Q-UP2 ouverte.
@@ -317,6 +331,8 @@ Carte terminee : OUI.
 
 ### up019 : In Harm's Way (IDENTIQUE 60050)
 
+> **Converti en art alternatif de 60050 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up019` n'existe plus dans `cards.json` (image `60050_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `60050` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"60050"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « X = your DEF » (DEF du heros), « an enemy AND a scheme », cout +1 par allie
       Resultat : conforme.
@@ -332,6 +348,8 @@ Carte terminee : OUI.
 Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et la substitution ; Q-R2 deck-builder en attente).
 
 ### up020 : Innate Reflexes (IDENTIQUE 60038)
+
+> **Converti en art alternatif de 60038 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up020` n'existe plus dans `cards.json` (image `60038_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `60038` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"60038"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « Starting » (capacite du module 60038, `WhenGameBeginSetup`), « your HERO gets +1 DEF » ; pas d'icone de ressource (desc sans RES, comme 60038)
@@ -419,6 +437,8 @@ Carte terminee : NON : en attente de Q-UP3 (unicite partagee avec ta002 ; codee 
 
 ### up025 : Powerful Punch (IDENTIQUE 32014)
 
+> **Converti en art alternatif de 32014 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up025` n'existe plus dans `cards.json` (image `32014_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `32014` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"32014"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « When an enemy INITIATES an attack », « 4 damage to THAT enemy »
       Resultat : conforme.
@@ -485,6 +505,8 @@ Carte terminee : OUI.
 Carte terminee : OUI.
 
 ### up029 : Ready for a Fight (IDENTIQUE 52019)
+
+> **Converti en art alternatif de 52019 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up029` n'existe plus dans `cards.json` (image `52019_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `52019` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"52019"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : coquille « Intterupt » sur le scan (lecture sans ambiguite : Interrupt, comme 52019), Requirement recopie dans desc, « change to hero form », « attacks you INSTEAD »
@@ -554,6 +576,8 @@ Carte terminee : OUI (compteur `fuel` ajoute).
 
 ### up032 : Ronin (IDENTIQUE 60053)
 
+> **Converti en art alternatif de 60053 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up032` n'existe plus dans `cards.json` (image `60053_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `60053` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"60053"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « While you do NOT control any allies », « +1 DEF AND retaliate 1 » ; unique ✦
       Resultat : conforme.
@@ -605,6 +629,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 
 ### up035 : Shield Spell (IDENTIQUE 21061)
 
+> **Converti en art alternatif de 21061 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up035` n'existe plus dans `cards.json` (image `21061_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `21061` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"21061"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « Play only if your identity has the MYSTIC trait » (cas sur Doctor Strange), « discard THAT MANY cards », « Max 1 per deck » (desc)
       Resultat : conforme.
@@ -620,6 +646,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et la substitution ; Q-R2 deck-builder en attente).
 
 ### up036 : Stand Alone (IDENTIQUE 60054)
+
+> **Converti en art alternatif de 60054 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up036` n'existe plus dans `cards.json` (image `60054_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `60054` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"60054"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « if you do NOT control any allies », « exhaust Stand Alone -> ready your hero »
@@ -637,6 +665,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 
 ### up037 : Taunt (IDENTIQUE 56048)
 
+> **Converti en art alternatif de 56048 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up037` n'existe plus dans `cards.json` (image `56048_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `56048` est conservé. Ce qui suit est l'historique.
+
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"56048"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « The VILLAIN attacks you », « Other characters cannot defend », « Draw 3 »
       Resultat : conforme.
@@ -652,6 +682,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et la substitution ; Q-R2 deck-builder en attente).
 
 ### up038 : The Best Offense... (IDENTIQUE 60052)
+
+> **Converti en art alternatif de 60052 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up038` n'existe plus dans `cards.json` (image `60052_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `60052` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"60052"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « Temporary » (desc), « +1 DEF », « DEF in place of THW AND ATK »
@@ -685,6 +717,8 @@ Carte terminee : OUI (reskin : capacite de l'officielle prouvee par le temoin et
 Carte terminee : OUI (extension moteur).
 
 ### up040 : Unflappable (IDENTIQUE 09020)
+
+> **Converti en art alternatif de 09020 le 17/10/2026** : seule l'image différait de l'officielle, la carte `up040` n'existe plus dans `cards.json` (image `09020_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `09020` est conservé. Ce qui suit est l'historique.
 
 - [x] Etape 2 : carte(s) de reference : reskin IDENTIQUE par `ability_link` (RECETTES §11) ; module de l'officielle relu : aucun nom ni card_id en dur ; `grep -rn '"09020"' src/game src/engine` : rien (ou commentaire seul)
 - [x] Etape 5 : texte-contre-code : mots-pieges verifies : « After you defend AND take no damage », « exhaust -> draw 1 »

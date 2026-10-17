@@ -148,3 +148,31 @@ test('un autre heros : l officielle par defaut', async ({ page }) => {
   await expect(page.locator('.ac-carte').first().locator('.ac-vignette.on')).toHaveAttribute('data-code', 'standard')
   await capture(page, '4-autre-heros-officielle')
 })
+
+// CONVERSION DU 17/10/2026 : « Clobber » TMNT (ex-ua009, image seule) n'est plus une carte mais l'art
+// alternatif `18012_tmnt` de l'officielle 18012. Leonardo l'a par defaut, Spider-Man garde l'officielle.
+test('Clobber (ex-ua009) : art TMNT par defaut pour Leonardo, officielle pour Spider-Man', async ({ page }) => {
+  const erreurs: string[] = []
+  page.on('pageerror', (e) => erreurs.push(String(e)))
+  for (const [hero, attendu] of [
+    ['leonardo', /18012_tmnt/],
+    ['spider_man', /18012(?!_tmnt)/],
+  ] as const) {
+    await page.goto(`/deck-builder.html?hero=${hero}`)
+    await page.evaluate(() => {
+      localStorage.removeItem('mc_card_art_v1')
+      localStorage.setItem('marvel-langue', 'en')
+    })
+    await page.reload()
+    await page.waitForSelector('#db-grille .db-carte', { state: 'attached', timeout: 30000 })
+    await page.locator('.db-recherche').fill('Clobber')
+    await page.waitForTimeout(600)
+    const tuiles = page.locator('#db-grille .db-carte[title="Clobber"]')
+    await expect(tuiles).toHaveCount(1)
+    await expect(page.locator('#db-grille .db-carte[data-carte="ua009"]')).toHaveCount(0) // la carte n'existe plus
+    await expect(tuiles.locator('img')).toHaveAttribute('src', attendu)
+    await tuiles.hover()
+    await capture(page, `9-clobber-${hero}`)
+  }
+  expect(erreurs.join(' | '), 'erreur JS dans l editeur').toBe('')
+})

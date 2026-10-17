@@ -40,13 +40,35 @@ def _sub(x, cid):
     return x
 
 
-def _paire(reskin, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
+def _paire_brute(reskin, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
     """Le cas sur le reskin, puis le TEMOIN identique sur l'officielle."""
     a = _c(f"{reskin} {nom}", pourquoi, _sub(mise, reskin), _sub(declencher, reskin), _sub(attendu, reskin),
            **_sub(cle, reskin))
     b = _c(f"{reskin} TEMOIN {officielle} : {nom}", "meme montage sur l'officielle, meme chiffre attendu",
            _sub(mise, officielle), _sub(declencher, officielle), _sub(attendu, officielle), **_sub(cle, officielle))
     return [a, b]
+
+
+# ----- Conversion en arts alternatifs (17/10/2026) : les reskins « image seule » ne sont plus des cartes.
+# `_paire` ne rend plus que le TEMOIN sur l'officielle (il prouve la carte) pour une carte convertie ; la
+# preuve de la conversion elle-meme est un cas de donnees (tools/test_convertir_reskins.py).
+import importlib.util as _iu
+import os as _os
+import re as _re
+_sp = _iu.spec_from_file_location("_converties", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "_converties.py"))
+_cv = _iu.module_from_spec(_sp)
+_sp.loader.exec_module(_cv)
+CONVERTIES = _cv.CONVERTIES
+
+
+def _paire(reskin, officielle, *args, **cle):
+    cas = _paire_brute(reskin, officielle, *args, **cle)
+    if reskin not in CONVERTIES:
+        return cas
+    temoin = cas[1]
+    temoin["nom"] = _re.sub(r"%s TEMOIN %s( \(officielle\))?" % (reskin, officielle),
+                            "%s (officielle, ex-%s)" % (officielle, reskin), temoin["nom"], count=1)
+    return [temoin]
 
 
 CAS = []
@@ -171,12 +193,6 @@ CAS += [
        {"attributs_carte": [["ul019", "attack", 1], ["ul019", "health", 2]]},
        main_exclusive=["ua004", "01090"], jouer=["ua004"], cibles=["ul019"]),
 ]
-
-# ----- ul033 Take a Stand : trait TACTIC remis (oubli de l'auteur, confirme le 17/10/2026)
-CAS.append(_c("ul033 Take a Stand : porte le trait TACTIC (comme 62015)",
-              "Paper.Load lit `traits` sur l'entree du reskin ; oubli de l'auteur confirme le 17/10/2026",
-              [HEROS, "Puzzle.Gain('ul033')"], [],
-              {"carte": "ul033", "presents": ["TACTIC"], "nom": "Take a Stand"}, verifier="tmnt_donnees_carte"))
 
 # ===================================================================== cartes MODIFIEES / NOUVELLES
 CAS += [
@@ -368,15 +384,11 @@ CAS += [
        {"degats": [["ul036", 1]], "menace": [["01097b", 4]]}, main_exclusive=["01090"], cibles=["01097b"],
        accepter_choix=True),
     # ---- ul038 Unified Strike (Hero Interrupt, titre corrige : coquilles confirmees le 17/10/2026)
-    _c("ul038 Unified Strike : Maria Hill attaque + ATQ du heros (1 + 2 = 3), sans degat consecutif",
-       "Interruption de heros, comme 58020 (la coquille « Hero Response: When » est corrigee)",
+    _c("58020 (officielle, ex-ul038) Unified Strike : Maria Hill attaque + ATQ du heros (1 + 2 = 3), sans degat consecutif",
+       "Interruption de heros ; ul038 est desormais un art alternatif de 58020 : le cas porte sur l'officielle",
        [HEROS, M("01067")], ["Puzzle.Attack('01067')"],
        {"degats": [["01094", 3], ["01067", 0]], "exhausted": ["01001a"]},
-       main_exclusive=["ul038"], cibles=["01094"], accepter_choix=True),
-    _c("ul038 Unified Strike : le titre est « Unified Strike » (et non « Stike »), trait TACTIC",
-       "coquille de titre confirmee le 17/10/2026 ; donnee de la carte (reste vert sans le script)",
-       [HEROS, "Puzzle.Gain('ul038')"], [],
-       {"carte": "ul038", "presents": ["TACTIC"], "nom": "Unified Strike"}, verifier="tmnt_donnees_carte"),
+       main_exclusive=["58020"], cibles=["01094"], accepter_choix=True),
     # ---- ul039 Venus
     _c("ul039 Venus : a l'entree en jeu, attache face cachee une carte de la defausse qui partage un trait",
        "« choose a card in your discard pile that shares a TRAIT with Venus » : Red Shell (NINJA TURTLE) oui",

@@ -38,13 +38,35 @@ def _remplacer(valeur, a, b):
     return valeur
 
 
-def _paire(reskin, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
+def _paire_brute(reskin, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
     """Le cas sur le reskin + le TEMOIN identique sur l'officielle (tout `reskin` remplace par `officielle`)."""
     a = _c(f"{reskin} {nom}", pourquoi, mise, declencher, attendu, **cle)
     b = _remplacer(dict(a), reskin, officielle)
     b["nom"] = f"[ua] {reskin} TEMOIN {officielle} (officielle) : {nom}"
     b["pourquoi"] = "le reskin doit rendre EXACTEMENT le chiffre de l'original ; " + pourquoi
     return [a, b]
+
+
+# ----- Conversion en arts alternatifs (17/10/2026) : les reskins « image seule » ne sont plus des cartes.
+# `_paire` ne rend plus que le TEMOIN sur l'officielle (il prouve la carte) pour une carte convertie ; la
+# preuve de la conversion elle-meme est un cas de donnees (tools/test_convertir_reskins.py).
+import importlib.util as _iu
+import os as _os
+import re as _re
+_sp = _iu.spec_from_file_location("_converties", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "_converties.py"))
+_cv = _iu.module_from_spec(_sp)
+_sp.loader.exec_module(_cv)
+CONVERTIES = _cv.CONVERTIES
+
+
+def _paire(reskin, officielle, *args, **cle):
+    cas = _paire_brute(reskin, officielle, *args, **cle)
+    if reskin not in CONVERTIES:
+        return cas
+    temoin = cas[1]
+    temoin["nom"] = _re.sub(r"%s TEMOIN %s( \(officielle\))?" % (reskin, officielle),
+                            "%s (officielle, ex-%s)" % (officielle, reskin), temoin["nom"], count=1)
+    return [temoin]
 
 
 CAS = []
@@ -86,15 +108,15 @@ CAS += _paire("ua010", "01057", "Combat Training : +1 ATK au heros",
 # ============================================================ ua016 Drop Kick (10014)
 CAS += _paire("ua016", "10014", "Drop Kick : paye uniquement en [physical] -> 4 degats, Rhino sonne, 1 carte piochee",
               "« If you paid for this card using only [physical] resources, stun that enemy and draw 1 card » : "
-              "main = la carte + 01090 (RR) + ua009 (R) ; tout est depense, la main finit a 1 (la pioche)",
+              "main = la carte + 01090 (RR) + 18012 (R) ; tout est depense, la main finit a 1 (la pioche)",
               [HEROS], [],
               {"degats": [["01094", 4]], "statuts": [["01094", "Stunned"]], "taille_main": 1},
-              main_exclusive=["ua016", "01090", "ua009"], jouer=["ua016"], cibles=["01094"])
+              main_exclusive=["ua016", "01090", "18012"], jouer=["ua016"], cibles=["01094"])
 CAS += _paire("ua016", "10014", "Drop Kick : paye avec de l'energie -> 4 degats, ni sonne ni pioche (contre-cas)",
-              "branche « only [physical] » FAUSSE : 01088 (YY) + ua009 (R)",
+              "branche « only [physical] » FAUSSE : 01088 (YY) + 18012 (R)",
               [HEROS], [],
               {"degats": [["01094", 4]], "statuts_absents": [["01094", "Stunned"]], "taille_main": 0},
-              main_exclusive=["ua016", "01088", "ua009"], jouer=["ua016"], cibles=["01094"])
+              main_exclusive=["ua016", "01088", "18012"], jouer=["ua016"], cibles=["01094"])
 
 # ============================================================ ua017 Exeen (18011, reskin d'Angela)
 CAS += _paire("ua017", "18011", "Exeen : en jeu, cherche un sbire dans le deck Rencontre et le met en jeu engage",
@@ -404,12 +426,12 @@ CAS += [
        "« Reduce the cost to play this card by 1 if you control a NYC support » : tr008 Shell Cycle",
        [HEROS, "Puzzle.PutIntoPlay('tr008', under_control=True)"], [],
        {"en_jeu": ["ua021"]},
-       main_exclusive=["ua021", "ua009"], jouer=["ua021"]),
+       main_exclusive=["ua021", "18012"], jouer=["ua021"]),
     _c("ua021 Guerilla Trap : CONTRE-CAS sans soutien NYC -> cout 2, une ressource ne suffit pas",
        "la reduction n'existe qu'avec un soutien NYC",
        [HEROS], [],
        {"en_main": ["ua021"]},
-       main_exclusive=["ua021", "ua009"], jouer=["ua021"]),
+       main_exclusive=["ua021", "18012"], jouer=["ua021"]),
 
     # ---------------------------------------------------------------- ua025 Kitsune
     _c("ua025 Kitsune : jouee depuis la main, branche « Cloak Kitsune »",

@@ -1,6 +1,6 @@
 # Cas test_capacites du mot-cle MAISON « Rampage X » (aspects TMNT, Inkwire) et de la recette
 # « reskin d'une carte joueur par ability_link » (socle des packs tmnt_aspect_*, 16/10/2026).
-# Filtre : `[rampage]` (mot-cle + ua015 Demolish) et `[reskin]` (ua006 Bo-Wing, ua009 Clobber).
+# Filtre : `[rampage]` (mot-cle + ua015 Demolish) et `[reskin]` (ua006 Bo-Wing ; ua009 Clobber converti en art alternatif de 18012 le 17/10/2026, temoin 18012 conserve).
 # Fiche : docs/reference/mots-cles/rampage.md ; recette : docs/reference/RECETTES-MOTEUR.md.
 #
 # Conventions :
@@ -67,21 +67,16 @@ CAS = [
        main_exclusive=PAIE3, jouer=["ua015"], cibles=["01101"]),
 
     # ============================================================ reskin par ability_link
-    _c("reskin", "ua009 Clobber (reskin de 18012) : 3 degats et retour en main (premiere carte du round)",
-       "IDENTIQUE a 18012 : `ability_link` branche le script de l'officielle sur la carte TMNT ; la capacite vit sur ua009",
-       [HEROS], [],
-       {"degats": [["01094", 3]], "en_main": ["ua009"]},
-       main_exclusive=["ua009", "01090"], jouer=["ua009"], cibles=["01094"]),
-    _c("reskin", "ua009 Clobber : TEMOIN 18012 (officielle), meme montage, meme resultat",
-       "le reskin doit se comporter EXACTEMENT comme l'original : meme chiffre, meme zone d'arrivee",
+    _c("reskin", "18012 Clobber (officielle, ex-ua009) : 3 degats et retour en main (premiere carte du round)",
+       "ua009 est desormais un art alternatif de 18012 (conversion du 17/10/2026) : la carte est prouvee sur l'officielle",
        [HEROS], [],
        {"degats": [["01094", 3]], "en_main": ["18012"]},
        main_exclusive=["18012", "01090"], jouer=["18012"], cibles=["01094"]),
-    _c("reskin", "ua009 Clobber : rejouee dans le meme round, ce n'est plus la premiere carte -> defausse (6 degats)",
+    _c("reskin", "18012 Clobber (officielle, ex-ua009) : rejouee dans le meme round, ce n'est plus la premiere carte -> defausse (6 degats)",
        "deuxieme branche du texte : « If this is the first card you have played this round » est FAUX au second jeu",
        [HEROS], [],
-       {"degats": [["01094", 6]], "defausse": ["ua009"], "absent_main": ["ua009"]},
-       main_exclusive=["ua009", "01090", "01090"], jouer=["ua009", "ua009"], cibles=["01094"]),
+       {"degats": [["01094", 6]], "defausse": ["18012"], "absent_main": ["18012"]},
+       main_exclusive=["18012", "01090", "01090"], jouer=["18012", "18012"], cibles=["01094"]),
     _c("reskin", "ua006 Bo-Wing (reskin de 53035) : porte SES traits (NINJA TURTLE VIGILANTE), pas ceux de Winter Soldier",
        "Paper.Load lit `traits` sur l'entree du reskin ; `ability_link` ne copie QUE les capacites",
        [HEROS, "Puzzle.PutIntoPlay('ua006', under_control=True)"], [],

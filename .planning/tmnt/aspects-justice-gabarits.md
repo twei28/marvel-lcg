@@ -52,17 +52,23 @@ scan. Étape 7 bis : limite imprimée NON, sauf uj024. Étape 8 bis : NON sauf u
 manigance : rendu générique, déjà couvert par le test plateau de Chance Encounter).
 
 ### uj001 : Battlefield Benevolence (↔ 58016)
+
+> **Converti en art alternatif de 58016 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj001` n'existe plus dans `cards.json` (image `58016_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `58016` est conservé. Ce qui suit est l'historique.
 - [x] 2 : 58016 par lien. [x] 5 : texte du scan = 58016 mot à mot (« Heal 2 damage from an enemy →
   confuse that enemy »). [x] 6 : coût 1, R. [x] 7 : cas + témoin (Rhino 3 → 1 dégât, Confused), rouge sans
   lien. [x] 7 bis : NON. [x] 8 : jouée (journaux B). [x] 8 bis : NON (statut d'ennemi, rendu existant).
 Carte terminée : OUI.
 
 ### uj003 : Clear the Area (↔ 04049)
+
+> **Converti en art alternatif de 04049 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj003` n'existe plus dans `cards.json` (image `04049_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `04049` est conservé. Ce qui suit est l'historique.
 - [x] 2/5/6 : identique, coût 1, B. [x] 7 : cas + témoin (2 → 0, pioche 1), rouge sans lien. [x] 7 bis :
   NON. [x] 8 : jouée. [x] 8 bis : NON.
 Carte terminée : OUI.
 
 ### uj007 : Disguise (↔ 47013)
+
+> **Converti en art alternatif de 47013 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj007` n'existe plus dans `cards.json` (image `47013_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `47013` est conservé. Ce qui suit est l'historique.
 - [x] 2/5/6 : identique (« Exhaust Disguise and your identity »), coût 1, B, MaxPerUnit 1. [x] 7 : cas +
   témoin (5 → 3, les deux inclinés), rouge sans lien ; cas de donnée Max 1 per player (vert, donnée).
   [x] 7 bis : NON (« Max 1 per player » n'est pas une limite d'usage). [x] 8 : jouée. [x] 8 bis : NON.
@@ -70,26 +76,36 @@ Carte terminée : OUI.
 Carte terminée : OUI.
 
 ### uj010 : Float Like a Butterfly (↔ 41017)
+
+> **Converti en art alternatif de 41017 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj010` n'existe plus dans `cards.json` (image `41017_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `41017` est conservé. Ce qui suit est l'historique.
 - [x] 2/5/6 : identique, coût 2, Y, MaxPerUnit 1. [x] 7 : cas + témoin (ATK 2 + 1 = 3 sur Rhino
   désorienté), rouge sans lien. [x] 7 bis : NON. [ ] 8 : jamais activée en autoplay (le pilote n'attaque
   pas d'ennemi désorienté) ; 0 traceback. [x] 8 bis : NON.
 Carte terminée : OUI (activation en partie non observée, voir rapport).
 
 ### uj011 : For Justice! (↔ 01060)
+
+> **Converti en art alternatif de 01060 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj011` n'existe plus dans `cards.json` (image `01060_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `01060` est conservé. Ce qui suit est l'historique.
 - [x] 2/5/6 : identique, coût 2, Y ; icône [mental] du texte = nœuds bleus. [x] 7 : 2 cas + 2 témoins
   (payé B : 6 → 2 ; payé R : 6 → 3), rouges sans lien. [x] 7 bis : NON. [x] 8 : jouée. [x] 8 bis : NON.
 Carte terminée : OUI.
 
 ### uj013 : Heroic Conditioning (↔ 58021)
+
+> **Converti en art alternatif de 58021 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj013` n'existe plus dans `cards.json` (image `58021_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `58021` est conservé. Ce qui suit est l'historique.
 - [x] 2/5/6 : identique, coût 3, R, MaxPerUnit 1. [x] 7 : cas + témoin (+3 PV, +1 THW), rouge sans lien.
   [x] 7 bis : NON. [x] 8 : jouée. [x] 8 bis : NON.
 Carte terminée : OUI.
 
 ### uj014 : Heroic Intuition (↔ 01065)
+
+> **Converti en art alternatif de 01065 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj014` n'existe plus dans `cards.json` (image `01065_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `01065` est conservé. Ce qui suit est l'historique.
 - [x] idem : coût 2, Y. Cas + témoin (+1 THW), rouge sans lien. Jouée en autoplay.
 Carte terminée : OUI.
 
 ### uj015 : Innate Perception (↔ 61036)
+
+> **Converti en art alternatif de 61036 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj015` n'existe plus dans `cards.json` (image `61036_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `61036` est conservé. Ce qui suit est l'historique.
 - [x] 2/5/6 : identique, coût 2, aucune ressource, MaxPerDeck 1. [x] 7 : cas + témoin « +1 THW », rouge
   sans lien. ⚠ Le mot-clé Starting (même module 61036, `WhenGameBeginSetup`) n'a PAS de cas sur uj015 : le
   harnais ne sait monter une mise en place qu'avec un deck de départ existant qui contient la carte ; les
@@ -118,18 +134,26 @@ Carte terminée : OUI.
 Carte terminée : OUI (non observée en autoplay).
 
 ### uj025 : Overwatch (↔ 30019)
+
+> **Converti en art alternatif de 30019 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj025` n'existe plus dans `cards.json` (image `30019_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `30019` est conservé. Ce qui suit est l'historique.
 - [x] identique, coût 0, R, MaxPerUnit 1. Cas + témoin (1 menace contrée sur la principale → 1 retirée de
   01107, Overwatch défaussée), rouge sans lien. Jouée et activée en autoplay (14 lignes). 8 bis : attache à
   une manigance, rendu générique.
 Carte terminée : OUI.
 
 ### uj029 : Skilled Investigator (↔ 04047), uj030 : Stealth Strike (↔ 08013 = 37014), uj031 : Stealth Training (↔ 60028), uj032 : Three Steps Ahead (↔ 47015), uj035 : Under Surveillance (↔ 06031)
+
+> **Converti en art alternatif de 04047 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj029` n'existe plus dans `cards.json` (image `04047_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `04047` est conservé. Ce qui suit est l'historique.
+
+> **Converties aussi en arts alternatifs le 17/10/2026** : `uj031` (→ 60028), `uj032` (→ 47015), `uj035` (→ 06031) : même note (cartes retirées de `cards.json`, cas de reskin supprimés, témoins sur les officielles conservés). `uj030` reste une carte.
 - [x] chacune : texte identique, coût / ressource identiques (0 R, 3 B, 2 R, 3 B, 2 Y), MaxPerUnit recopié
   pour les améliorations. Cas + témoin chacune (pioche 1 ; sbire tué → 2 menaces ; Rhino sonné ; 2 types
   → 2 × 2 ; seuil +4), rouges sans lien. Toutes jouées en autoplay.
 Cartes terminées : OUI (les cinq).
 
 ### uj040 : Zone of Silence (↔ 21050)
+
+> **Converti en art alternatif de 21050 le 17/10/2026** : seule l'image différait de l'officielle, la carte `uj040` n'existe plus dans `cards.json` (image `21050_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `21050` est conservé. Ce qui suit est l'historique.
 - [x] identique sauf la coquille « 4 card cards » (affichage corrigé, question Q-uj040). Coût 1, B,
   MaxPerDeck 1. Cas + témoin avec Doctor Strange (MYSTIC) : 4 défaussées → 4 menaces (ligne de base du deck
   écrite dans le cas) ; Spider-Man : injouable (donnée). Rouges sans lien (la capacité). [ ] 8 : injouable

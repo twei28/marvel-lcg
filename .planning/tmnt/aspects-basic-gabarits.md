@@ -89,6 +89,8 @@ Carte terminée : OUI. (Remarque : la lecture « Forced » suit le scan ; si c'�
 
 ### ub004 : Basic Spell (reskin IDENTIQUE de 45051)
 
+> **Converti en art alternatif de 45051 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub004` n'existe plus dans `cards.json` (image `45051_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `45051` est conservé. Ce qui suit est l'historique.
+
 - [x] 2 : 45051. 5 : texte identique (MYSTIC, trois options). 6 : coût 2, RES Y, 3/3/3.
 - [x] 7 : `ub004 ... Doctor Strange ... 3 degats` + témoin ; contre-cas Spider-Man injouable + témoin.
 - [x] 7 bis NON ; 8 : non jouée en autoplay (aucun héros MYSTIC dans la fournée) ; 8 bis NON.
@@ -117,6 +119,8 @@ Carte terminée : OUI.
 
 ### ub007 : Digging Deep (reskin IDENTIQUE de 40060)
 
+> **Converti en art alternatif de 40060 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub007` n'existe plus dans `cards.json` (image `40060_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `40060` est conservé. Ce qui suit est l'historique.
+
 - [x] 2 : 40060. 5 : texte identique. 6 : RES G (étoile verte).
 - [x] 7 : défaussée du dessus du deck par le Rampage de ua015 Demolish → revient en main + témoin.
 - [x] 7 bis NON ; 8 : dans les deux decks de la fournée ; 8 bis NON.
@@ -135,6 +139,8 @@ Carte terminée : NON — en attente de Q-ub05 (unicité avec le héros Donatell
 
 ### ub009 : Down Time (reskin IDENTIQUE de 05033)
 
+> **Converti en art alternatif de 05033 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub009` n'existe plus dans `cards.json` (image `05033_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `05033` est conservé. Ce qui suit est l'historique.
+
 - [x] 2 : 05033. 5 : identique (Play under any player's control, Max 1 per player → `MaxPerUnit`). 6 : coût 1,
       RES R, +2 REC.
 - [x] 7 : `ub009 ... +2 REC` + témoin. 7 bis NON. 8 : fournée Spider-Man-ub. 8 bis NON.
@@ -142,6 +148,8 @@ Carte terminée : NON — en attente de Q-ub05 (unicité avec le héros Donatell
 Carte terminée : OUI.
 
 ### ub010 : Endurance (reskin IDENTIQUE de 05023)
+
+> **Converti en art alternatif de 05023 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub010` n'existe plus dans `cards.json` (image `05023_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `05023` est conservé. Ce qui suit est l'historique.
 
 - [x] 2 : 05023. 5 : identique. 6 : coût 1, RES Y, +3 PV.
 - [x] 7 : `ub010 ... +3 points de vie` + témoin. 7 bis NON. 8 : non incluse dans la fournée. 8 bis NON.
@@ -168,6 +176,8 @@ Cartes terminées : OUI.
 Carte terminée : OUI.
 
 ### ub013 : Face the Past (reskin IDENTIQUE de 49022)
+
+> **Converti en art alternatif de 49022 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub013` n'existe plus dans `cards.json` (image `49022_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `49022` est conservé. Ce qui suit est l'historique.
 
 - [x] 2 : 49022. 5 : identique. 6 : coût 0, RES R, Max 1 per deck, 3 cartes.
 - [x] 7 : montage du cas Hercules existant (Ares révélé, pas la Lernean Hydra) + témoin. 7 bis NON.
@@ -313,6 +323,8 @@ Carte terminée : NON — en attente de Q-ub04 (unicité avec le héros Leonardo
 
 ### ub026 : Limitless Stamina (reskin IDENTIQUE de 31023)
 
+> **Converti en art alternatif de 31023 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub026` n'existe plus dans `cards.json` (image `31023_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `31023` est conservé. Ce qui suit est l'historique.
+
 - [x] 2 : 31023. 5/6 : identique, coût 1, RES R, 14 PV. 7 : Hulk redressé + témoin ; Spider-Man injouable +
       témoin. 7 bis NON. 8 : hors fournée. 8 bis NON.
 
@@ -433,6 +445,8 @@ Carte terminée : OUI.
 
 ### ub039 : Practiced Plan (reskin IDENTIQUE de 50058)
 
+> **Converti en art alternatif de 50058 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub039` n'existe plus dans `cards.json` (image `50058_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `50058` est conservé. Ce qui suit est l'historique.
+
 - [x] 2 : 50058. 5/6 : identique, coût 0, RES Y. 7 : Widow's Bite défaussée revient en main + témoin.
 - [x] 7 bis NON ; 8 fournée Spider-Man-ub ; 8 bis NON.
 
@@ -540,6 +554,8 @@ Carte terminée : OUI (autoplay non fait pour elle : il faudrait une fournée Al
 Carte terminée : OUI.
 
 ### ub051 : Spiritual Meditation (reskin IDENTIQUE de 15019)
+
+> **Converti en art alternatif de 15019 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ub051` n'existe plus dans `cards.json` (image `15019_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `15019` est conservé. Ce qui suit est l'historique.
 
 - [x] 2 : 15019. 5/6 : identique, coût 0, RES B. 7 : pioche 2 défausse 1 + témoin. 7 bis NON. 8 hors fournée.
       8 bis NON.

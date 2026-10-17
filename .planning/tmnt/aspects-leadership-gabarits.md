@@ -51,6 +51,8 @@ Lecture « Interrupt / Response » du pilote : les cas facultatifs passent `acce
 Carte terminée : NON — Q-UL-1 (unicité avec l'identité Alopex `ta001`).
 
 ### ul002 Band Together, ul004 Clarity of Purpose, ul009 Go All Out, ul011 Innate Inspiration, ul012 Inspired, ul013 Make the Call, ul015 Mission Leader, ul017 Napoleon, ul018 Noble Sacrifice, ul020 Rasputin, ul021 Red Shell, ul022 Righteous Purpose, ul026 Side-by-Side, ul027 Sidekick, ul032 Summoning Spell, ul034 Teamwork, ul037 Turtle-At-Arms, ul046 Zetian (IDENTIQUES, reskins par `ability_link`)
+
+> **Converties en arts alternatifs le 17/10/2026** : `ul004` (→ 31029), `ul011` (→ 61037), `ul012` (→ 01074), `ul013` (→ 01071), `ul018` (→ 49018), `ul022` (→ 62019), `ul026` (→ 45016), `ul032` (→ 21055). Seule l'image différait de l'officielle : ces cartes n'existent plus dans `cards.json` (image `<officielle>_tmnt.jpg`, `data/arts_alternatifs.json`), leurs cas de reskin sont supprimés, les TÉMOINS sur les officielles sont conservés. Ce qui suit est l'historique.
 Un gabarit commun, les différences sont listées.
 - [x] Étape 2 : l'officielle par `ability_link` (21018, 31029, 29017, 61037, 01074, 01071, 40023, 03013, 49018,
       01067, 62012, 62019, 45016, 45015, 21055, 06032, 62013, 21013). Modules relus : aucun nom ni card_id en dur ;
@@ -71,6 +73,8 @@ Un gabarit commun, les différences sont listées.
 Carte terminée : OUI pour chacune (Q-R2 deck-builder en attente chez l'utilisateur, non bloquante).
 
 ### ul003 : Cameo (IDENTIQUE, reskin de 58031)
+
+> **Converti en art alternatif de 58031 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ul003` n'existe plus dans `cards.json` (image `58031_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `58031` est conservé. Ce qui suit est l'historique.
 - [x] Étapes 2/5/6 : comme ci-dessus (Setup, Max 1 per deck, aucun coût).
 - [ ] Étape 7 : AUCUN cas : la capacité est une Mise en place (`AfterGameSetup`), hors de portée du harnais
       (le deck de départ du cas n'est pas modifiable avant la mise en place). Substitution impossible.
@@ -89,6 +93,8 @@ capacité (témoin 51037) restent verts.
 Carte terminée : OUI.
 
 ### ul033 : Take a Stand (IDENTIQUE, reskin de 62015)
+
+> **Converti en art alternatif de 62015 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ul033` n'existe plus dans `cards.json` (image `62015_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `62015` est conservé. Ce qui suit est l'historique.
 Gabarit commun (cas + témoin, rouge sans lien). Traits : aucun (scan).
 **Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : trait **TACTIC remis** (oubli de l'auteur). Cas de donnée `ul033 Take a Stand :
 porte le trait TACTIC` (vérificateur `tmnt_donnees_carte`), ROUGE avec l'ancienne entrée, vert après.
@@ -241,6 +247,8 @@ Carte terminée : OUI.
 Carte terminée : OUI.
 
 ### ul038 : Unified Strike (MODIFIÉE, de 58020)
+
+> **Converti en art alternatif de 58020 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ul038` n'existe plus dans `cards.json` (image `58020_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `58020` est conservé. Ce qui suit est l'historique.
 - [x] Étapes 2/5/6 : copie de 58020 (Interruption de héros, lecture A de Q-UL-7) ; coût 0, Y.
 - [x] Étape 7 : Maria Hill 1 + 2 = 3, aucun dégât consécutif : rouge sans module.
 - [x] 7 bis : NON. [x] 8 : présente en B. [x] 8 bis : NON.
