@@ -1855,3 +1855,24 @@ html[data-epure] .demande-centrale:not(.est-en-scene) .dc-vignette .kind-pill,
 html[data-epure] .demande-centrale:not(.est-en-scene) .dc-vignette .top-strip {
   display: none;
 }
+
+/* Les deux boutons de la fenêtre de réaction : MÊME taille de typo (le texte de « Réponse » était dans un
+   <span> resté à 15 px alors que le refus était à 19 px), même hauteur, même largeur minimale. */
+html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .af-action,
+html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .af-action > span {
+  font-size: 19px;
+  line-height: 1.1;
+}
+html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-boutons {
+  align-items: stretch;
+}
+html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .af-action-wrap {
+  display: flex;
+}
+html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .af-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 190px;
+  text-align: center;
+}
