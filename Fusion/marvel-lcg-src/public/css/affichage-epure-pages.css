@@ -1932,3 +1932,29 @@ html[data-epure] .face-a-face .fo-side.heroes-side {
 /* Le fond marron est celui du cadre entier : la frontière en éclair laisse voir le marron
    à gauche de la colonne du méchant. */
 html[data-epure] .face-a-face .faceoff { background: #3a2b2d !important; }
+
+/* La fiche du héros, à gauche (17/10/2026) : d'abord le NOM, en typo Marvel, puis les
+   affiliations (traits) dessous. Le DOM les pose dans l'autre ordre : on les inverse. */
+html[data-epure] .tb-scene .tb-nomg {
+  display: flex !important;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 6px;
+}
+html[data-epure] .tb-scene .tb-nomg small {
+  font-family: var(--ep-police) !important;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8fbcf5 !important;
+}
+html[data-epure] .tb-scene .tb-nomg,
+html[data-epure] .tb-scene .tb-nomg *:not(small) {
+  font-family: "MarvelFan", "Arial Narrow", sans-serif !important;
+  font-weight: 400 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+html[data-epure] .tb-scene .tb-nomg { font-size: 46px !important; line-height: 1 !important; }
+html[data-epure] .tb-scene .tb-nomg small { font-size: 13px !important; line-height: 1.3 !important; }
