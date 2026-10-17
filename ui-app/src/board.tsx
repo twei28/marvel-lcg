@@ -272,7 +272,7 @@ import type { Demande, Option, Reponse } from './board/ask'
 import {
   chargerEtat,
 } from './board/sources'
-import { isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
+import { estRegardeePar, isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
 
 /** Ce qui, ouvert par-dessus le plateau, garde Echap pour se fermer. */
 const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond`
@@ -646,8 +646,9 @@ function cartesRegardeesDansPile(
 ): GroupeCartesRegardees | undefined {
   if (!Array.isArray(pile)) return undefined
 
+  // REGARDEES, pas seulement connues (rapport Yarro n85) : voir `estRegardeePar`.
   const visibles = pile.filter(
-    (carte) => isVisibleFor(carte, contexte.playerId) && !carte.is_face_up
+    (carte) => estRegardeePar(carte, contexte.playerId) && !carte.is_face_up
   )
   if (visibles.length <= 1) return undefined
 

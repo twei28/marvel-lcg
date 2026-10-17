@@ -92,6 +92,7 @@ function indicationSimple(interaction: Interaction): string {
     }
     return t('Choisis la cible')
   }
+  if (etape === 'payment' && assistant.coutFacultatif) return assistant.titre
   if (etape === 'payment') return interaction.coutAffiche ? `${t('Paie')} ${interaction.coutAffiche}` : t('Paie le coût')
   // Etape de confirmation. Elle ne disait rien, ce qui convient a la plupart
   // des cartes mais pas a celles dont le coût est X : elles n'exigent RIEN, on

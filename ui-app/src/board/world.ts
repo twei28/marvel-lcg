@@ -15,6 +15,13 @@ export type WorldCard = {
   is_face_up: boolean
   /** Numeros de joueurs autorises a voir la face. Vide = personne. */
   visible_for_players: number[]
+  /**
+   * Numeros des joueurs qui ont REGARDE la carte par un effet (« look at »),
+   * moteur du 17/10/2026. Plus etroit que `visible_for_players` : une carte
+   * remise de la defausse sur le deck (Salvage) est connue de tous, sans avoir
+   * ete regardee. Absent d'un moteur plus ancien.
+   */
+  looked_at_by?: number[]
   /** != 0 : cette carte est attachee a la carte portant cet id. */
   bind_object_id: number
   name: string
@@ -847,4 +854,15 @@ export function isScheme(card: WorldCard): boolean {
  */
 export function isVisibleFor(card: WorldCard, playerId: number): boolean {
   return card.visible_for_players.includes(playerId)
+}
+
+/**
+ * Ce joueur a-t-il REGARDE cette carte par un effet (« look at ») ? Plus etroit
+ * que `isVisibleFor` : une carte remise de la defausse sur le deck (Salvage de
+ * Rocket Raccoon) est connue de tous sans avoir ete regardee, et la fenetre
+ * « Cartes regardees » se rouvrait a chaque Salvage (rapport Yarro n85,
+ * 15/10/2026). Sans `looked_at_by` (moteur plus ancien), l'ancienne regle.
+ */
+export function estRegardeePar(card: WorldCard, playerId: number): boolean {
+  return card.looked_at_by ? card.looked_at_by.includes(playerId) : isVisibleFor(card, playerId)
 }

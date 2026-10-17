@@ -66,12 +66,22 @@ function traductionsDuType(type: string): string[] {
   return [...new Set([normaliser(traduits.join(' ')), normaliser([...traduits].reverse().join(' '))])]
 }
 
+/**
+ * La repartition de degats INDIRECTS (`PlayerAction.AssignDamage`, moteur :
+ * « Assign 3 damage ») : une question de REGLE, que le moteur rattache a
+ * l'identite. Rapport Yarro n92 (16/10/2026) : sous Starshark, le titre
+ * affichait le seul paragraphe de Rocket Raccoon, « "Murdered You!" —
+ * Response », sans rapport avec la question.
+ */
+export const REPARTITION_INDIRECTE = /^Assign[ _](\d+)[ _]damage$/
+
 export function extraireCapacite(
   texte: string | undefined,
   nomOption: string,
   typeDemande?: string
 ): string | undefined {
   if (!texte) return undefined
+  if (REPARTITION_INDIRECTE.test(nomOption)) return undefined
   const paras = paragraphes(texte).map(nettoyerTexteCarte).filter(Boolean)
   if (paras.length === 0) return undefined
   if (paras.length === 1) return paras[0]

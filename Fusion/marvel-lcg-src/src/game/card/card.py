@@ -29,10 +29,17 @@ class Card(Object):
     class Visible:
         def __init__(self, card: 'Card') -> None:
             self.visible_players: Set['Player'] = set()
+            # CEUX QUI ONT REGARDE la carte par un effet (« look at », `Set`), distincts de ceux qui la
+            # CONNAISSENT pour l'avoir vue face visible (`Update`). Rapport Yarro n85 (15/10/2026) :
+            # Salvage remet sur le deck une carte de la defausse, donc connue de tous ; le plateau,
+            # qui ne lisait que `visible_players`, annoncait « Cartes regardees » a chaque Salvage.
+            # Effacee quand la carte change de zone (`MoveToAreaInternal`) et au melange (`Clean`).
+            self.regardee_par: Set['Player'] = set()
             self.card: Final = card
             pass
         def Clean(self):
             self.visible_players.clear()
+            self.regardee_par.clear()
         def Update(self) -> None: # Only add
             for player in self.card.world.const_players:
                 if self.card.IsVisible(player):
@@ -43,8 +50,10 @@ class Card(Object):
             elif visible == True: # "All"
                 for player in self.card.world.const_players:
                     self.visible_players.add(player)
+                    self.regardee_par.add(player)
             else:
                 self.visible_players.add(visible)
+                self.regardee_par.add(visible)
         def IsVisible(self, player: 'User|Literal["Any"]') -> bool:
             if player == "Any":
                 return len(self.visible_players) > 0
@@ -526,6 +535,8 @@ class Card(Object):
         self.area.Remove(self)
         into_area.Insert(index, self, target_game_area)
 
+        # Un regard ne survit pas a un changement de zone (voir `Card.Visible.regardee_par`).
+        self.visible.regardee_par.clear()
         self.visible.Update()
 
         if callback:
@@ -577,7 +588,9 @@ class Card(Object):
                 area.Append(self)
             else:
                 self.MoveToArea(deck, by_effect, ui_group=ui_group)
-            Message.AfterCardMovedToDeck_Text(area, [self.face], "top", by_effect)
+            # `deck`, pas `area` (la zone de DEPART) : le journal ecrivait « moved to DiscardPile top »
+            # pour une carte remise de la defausse sur le deck (rapport Yarro n85, 15/10/2026).
+            Message.AfterCardMovedToDeck_Text(deck, [self.face], "top", by_effect)
             return True
         # self.area.cards.remove(self)
         # self.area.cards.insert(index, self)
@@ -911,6 +924,7 @@ class Card(Object):
             for player in self.world.players:
                 if self.IsVisible(player):
                     visible_player.append(player.player_id)
+        regardee_par = [player.player_id for player in self.world.players if player in self.visible.regardee_par]
 
         def get_non_forced() -> Sequence['Effect']:
             effects: List['Effect'] = []
@@ -955,5 +969,6 @@ class Card(Object):
             is_new              = Engine.statistics.IsNew(self.face.paper.card_id),
             is_action           = any(x for x in self.face.effects if x.ability.flags.is_action), #  or x.ability.type.is_resource
             bonus               = self.face.BonusParSource(),
+            looked_at_by        = regardee_par,
         )
 

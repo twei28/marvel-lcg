@@ -233,6 +233,14 @@ describe('D31 : titreReponse, le nom de la carte d abord', () => {
     )
   })
 
+  it('repartition de degats indirects : la consigne, pas le texte de la carte qui porte l option (Yarro n92)', () => {
+    const repartir = option(8, 'Assign 3 damage', 40, { target_num_range: [3, 3], all_legal_targets: [40, 41] })
+    const q = question(demande([repartir], { ability_type: 'Normal', show_cancel: false }), undefined, {
+      texteCapacite: () => '« Murdered You! » — Réponse : après que vous avez infligé des dégâts en excès, piochez 1 carte.',
+    })
+    expect(titreReponse(repartir, q)).toBe('Répartis 3 dégâts indirects entre tes personnages')
+  })
+
   it('sans texte du tout : le nom seul', () => {
     const muet = option(6, 'Response', 50)
     const q = question(demande([muet], { ability_type: 'Response' }), undefined, { texteCapacite: () => undefined })

@@ -941,3 +941,91 @@ describe('useInteraction chez celui qui regarde (relecture fidele, 08/10/2026)',
     expect(rien.result.current.option).toBeUndefined()
   })
 })
+
+// Rapport Yarro n93 (17/10/2026) : Nebula's Ship (16093), « Exhaust the Milano
+// and spend UP TO 2 resources → remove 1 evasion counter for each resource
+// spent ». Le cout « jusqu'a N » n'exigeant rien, le plateau sautait droit a
+// « Prêt à valider » : aucune carte ne clignotait, Yarro a valide sans rien
+// depenser et le Milano s'est incline pour rien.
+describe('useInteraction, cout « jusqu a N » (UpTo)', () => {
+  const UN = 300
+  const DEUX = 301
+  const mondeUpTo = {
+    render_id: 1,
+    players: [
+      {
+        area_hero: [carte(HEROS, { card_type: 'hero' })],
+        hand: [
+          carte(UN, { card_type: 'event', resources: [7] }),
+          carte(DEUX, { card_type: 'event', resources: [8] }),
+        ],
+      },
+    ],
+  } as unknown as World
+  const vaisseau: Option = {
+    id: 70,
+    name: 'Shoot_the_Thrusters!',
+    bind_id: HEROS,
+    bind_player_id: 0,
+    all_legal_targets: [],
+    target_num_range: [0, 0],
+    target_payment: {
+      0: {
+        cost: '2',
+        payment: [
+          { effect_id: 7, res_text: 'Y' },
+          { effect_id: 8, res_text: 'BB' },
+        ],
+        rule: ['UpTo'],
+      },
+    },
+    select_rule: '',
+    target_must_include_traits: [],
+    failure_reason: '',
+    is_search: false,
+  }
+  const monterUpTo = () => {
+    const demande: Demande = {
+      options: [vaisseau],
+      refus: [],
+      prompt_text: '',
+      event_name: 'WhenPlayerInTurn',
+      show_cancel: true,
+      ability_type: 'FirstPlayerAction',
+    }
+    return renderHook(() =>
+      useInteraction(mondeUpTo, demande, vi.fn(), new Set([HEROS, UN, DEUX]), 0, CATALOGUE, 'simple')
+    )
+  }
+
+  it('reste a l etape du paiement, cartes surlignees, tant qu il reste de quoi depenser ; valider reste permis', () => {
+    const { result } = monterUpTo()
+    act(() => result.current.choisirOption(vaisseau))
+    expect(result.current.assistant.etape).toBe('payment')
+    expect(result.current.cartes.get(UN)?.pulse).toBe(true)
+    expect(result.current.prete).toBe(true)
+
+    act(() => result.current.cartes.get(UN)?.agir?.())
+    expect(result.current.assistant.etape).toBe('payment')
+    expect(result.current.assistant.coutPaye).toBe(1)
+    expect(result.current.prete).toBe(true)
+  })
+
+  it('refuse de depasser N : le moteur abandonnerait le paiement et la capacite partirait pour rien', () => {
+    const { result } = monterUpTo()
+    act(() => result.current.choisirOption(vaisseau))
+    act(() => result.current.cartes.get(UN)?.agir?.())
+    act(() => result.current.cartes.get(DEUX)?.agir?.())
+    expect(result.current.assistant.coutPaye).toBe(3)
+    expect(result.current.prete).toBe(false)
+    expect(result.current.raison).toBe('Remove 1 resource(s)')
+  })
+
+  it('a N tout juste, passe a la confirmation', () => {
+    const { result } = monterUpTo()
+    act(() => result.current.choisirOption(vaisseau))
+    act(() => result.current.cartes.get(DEUX)?.agir?.())
+    expect(result.current.assistant.etape).toBe('confirm')
+    expect(result.current.prete).toBe(true)
+  })
+})

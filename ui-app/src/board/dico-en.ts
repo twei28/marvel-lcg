@@ -100,6 +100,10 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // ---- board.tsx : barre du haut, sauvegardes, relecture, connexion, fin ----
   'Cartes regardées': 'Cards being looked at',
+  'Dépense jusqu’à %1 ressource(s), puis valide': 'Spend up to %1 resource(s), then confirm',
+  '%1 dépensée(s) sur %2 au plus': '%1 spent, %2 at most',
+  'Répartis %1 dégâts indirects entre tes personnages': 'Assign %1 indirect damage among your characters',
+  'Répartis %1 dégât indirect entre tes personnages': 'Assign %1 indirect damage among your characters',
   'Cibles possibles': 'Possible targets',
   'Cibles possibles :': 'Possible targets:',
   'Mode d’affichage des actions': 'Action display mode',

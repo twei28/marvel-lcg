@@ -31,6 +31,7 @@ import type { CoutSlot, Interaction } from './interaction'
 import { t } from './langue'
 import { ligneDefense } from './ligne-attaque'
 import { nomAffiche } from './noms-cartes-fr'
+import { REPARTITION_INDIRECTE } from './texte-capacite'
 import type { WorldCard } from './world'
 
 /** Ce que board.tsx sait de la question ; les closures restent ICI, jamais dans la vue. */
@@ -148,6 +149,16 @@ function nomOption(option: Option, q: QuestionDuMoteur): string {
  * pour une capacite qui n'a qu'un type.
  */
 export function titreReponse(option: Option, q: QuestionDuMoteur): string {
+  // Degats indirects : la consigne de la REGLE, jamais le nom ni le texte de la
+  // carte qui porte l'option (rapport Yarro n92, 16/10/2026).
+  const repartition = REPARTITION_INDIRECTE.exec(option.name)
+  if (repartition) {
+    const n = Number(repartition[1])
+    return (n > 1
+      ? t('Répartis %1 dégâts indirects entre tes personnages')
+      : t('Répartis %1 dégât indirect entre tes personnages')
+    ).replace('%1', String(n))
+  }
   const texte = q.texteCapacite(option)
   const corps = texte ? texteSansEntete(texte) : ''
   let tete: string

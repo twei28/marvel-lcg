@@ -169,6 +169,8 @@ export type AssistantInteraction = {
   coutRegles: string[]
   /** Ce qui manque type par type quand le coût est par types (design essai). */
   typesManquants?: Record<string, number>
+  /** Coût « jusqu'à N » (UpTo) : rien n'est exigé, `coutRequis` est un plafond. */
+  coutFacultatif?: boolean
 }
 
 /** Une cible que la table ne montre pas : elle passe par le selecteur. */
@@ -637,6 +639,18 @@ export function useInteraction(
     coutParType(paiement.cost) === undefined &&
     paiement.payment.length > 0 &&
     ressources.length === 0
+  // « Jusqu'a N » (UpTo) : rien n'est EXIGE, mais la capacite ne vaut que ce
+  // qu'on depense. Rapport Yarro n93 (17/10/2026, Nebula's Ship) : l'etape
+  // sautait droit a « Prêt à valider », aucune carte ne clignotait, et le
+  // Milano s'inclinait pour rien. On reste donc au paiement tant qu'il reste de
+  // quoi depenser ; valider y reste permis (`reponsePrete`).
+  const coutFacultatifOuvert =
+    option !== undefined &&
+    paiement !== undefined &&
+    paiementFacultatif(paiement) &&
+    requis !== undefined &&
+    paye < requis &&
+    paiement.payment.length > 0
   // Combien de designations la table peut encore offrir : une carte repetable
   // en vaut plusieurs. Sans ce plafond reel, une action « jusqu'a 3 cibles » ne
   // disposant que d'UNE carte legale resterait indefiniment a l'etape des
@@ -666,7 +680,7 @@ export function useInteraction(
       ? 'target'
       : cibleSupplementairePossible
         ? 'target'
-        : coutRequis || coutInconnuRequis || typesRequis
+        : coutRequis || coutInconnuRequis || typesRequis || coutFacultatifOuvert
           ? 'payment'
           : 'confirm'
 
@@ -1172,7 +1186,9 @@ export function useInteraction(
       : etape === 'target'
         ? libelles.titre
         : etape === 'payment'
-          ? t('Payer le coût')
+          ? paiementFacultatif(paiement) && requis !== undefined
+            ? t('Dépense jusqu’à %1 ressource(s), puis valide').replace('%1', String(requis))
+            : t('Payer le coût')
           : t('Prêt à valider'),
     detail: !option
       ? undefined
@@ -1196,6 +1212,7 @@ export function useInteraction(
     coutSlots: slotsCout(paiement, ressources, requis),
     coutRegles: reglesCout(paiement),
     typesManquants: typesManquants(paiement, ressources),
+    coutFacultatif: paiementFacultatif(paiement),
   }
 
   // La confirmation « ce coup ne fera rien » (11/09/2026). Le moteur accepte

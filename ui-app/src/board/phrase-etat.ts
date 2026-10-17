@@ -35,6 +35,11 @@ export function phraseEtat(assistant: AssistantInteraction, prete: boolean): str
         .join(` ${t('et')} `)
       return `${t('Il manque')} ${liste}`
     }
+    if (assistant.coutFacultatif && assistant.coutRequis !== undefined) {
+      return t('%1 dépensée(s) sur %2 au plus')
+        .replace('%1', String(assistant.coutPaye))
+        .replace('%2', String(assistant.coutRequis))
+    }
     if (assistant.coutRequis !== undefined) {
       const manque = Math.max(0, assistant.coutRequis - assistant.coutPaye)
       if (manque === 0) return t('Coût couvert')
@@ -54,5 +59,10 @@ export function raisonDite(raison: string): string {
   if (encore) return `Choisis encore ${cibles(Number(encore[1]))}`
   const enTrop = /^Remove (\d+) target\(s\)$/.exec(raison)
   if (enTrop) return `Retire ${cibles(Number(enTrop[1]))}`
+  const ressourcesEnTrop = /^Remove (\d+) resource\(s\)$/.exec(raison)
+  if (ressourcesEnTrop) {
+    const n = Number(ressourcesEnTrop[1])
+    return `Retire ${n} ${n > 1 ? 'ressources' : 'ressource'} (plafond dépassé)`
+  }
   return raison
 }

@@ -7399,7 +7399,7 @@
     "INHUMAN"
    ],
    "set_name": "Ms. Marvel",
-   "text": "\"Morphogenetics\" � <b>Response</b>: After you play an [[Attack]], [[Thwart]], or [[Defense]] event, exhaust Ms. Marvel &#8594; return that event to your hand."
+   "text": "\"Morphogenetics\" — <b>Response</b>: After you play an [[Attack]], [[Thwart]], or [[Defense]] event, exhaust Ms. Marvel &#8594; return that event to your hand."
   },
   {
    "card_id": "05001b",
@@ -7415,7 +7415,7 @@
     "INHUMAN"
    ],
    "set_name": "Ms. Marvel",
-   "text": "Teen Spirit � <b>Action</b>: Discard cards from the top of your deck until you discard a Ms. Marvel card, then add that card to your hand. (Limit once per round.)"
+   "text": "Teen Spirit — <b>Action</b>: Discard cards from the top of your deck until you discard a Ms. Marvel card, then add that card to your hand. (Limit once per round.)"
   },
   {
    "card_id": "05002",
@@ -13031,7 +13031,7 @@
     "MYSTIC"
    ],
    "set_name": "Scarlet Witch",
-   "text": "<i>Chaos Control</i> � <b>Interrupt:</b> When boost icons on an encounter card would be counted, discard the top card of the encounter deck and count the number of boost icons on that card instead. (Limit once per phase.)"
+   "text": "<i>Chaos Control</i> — <b>Interrupt:</b> When boost icons on an encounter card would be counted, discard the top card of the encounter deck and count the number of boost icons on that card instead. (Limit once per phase.)"
   },
   {
    "card_id": "15001b",
@@ -13047,7 +13047,7 @@
     "MYSTIC"
    ],
    "set_name": "Scarlet Witch",
-   "text": "<i>Superpowered Siblings</i> � <b>Action:</b> Discard 2 cards from your hand &#8594; draw 2 cards (draw 3 cards instead if Pietro Maximoff is in play). (Limit once per round.)"
+   "text": "<i>Superpowered Siblings</i> — <b>Action:</b> Discard 2 cards from your hand &#8594; draw 2 cards (draw 3 cards instead if Pietro Maximoff is in play). (Limit once per round.)"
   },
   {
    "card_id": "15002",
@@ -13337,7 +13337,7 @@
    },
    "traits": [],
    "set_name": "Scarlet Witch",
-   "text": "<b><i>Give to the Wanda Maximoff player.</i></b>\r\nYou may flip to alter-ego form. Choose:\r\n� Exhaust Wanda Maximoff &#8594; remove Slipping Sanity from the game.\r\n� Discard the top 5 cards of the encounter deck. For each star icon([star]) in the boost area discarded this way, place 1 threat on the main scheme. Discard this obligation."
+   "text": "<b><i>Give to the Wanda Maximoff player.</i></b>\r\nYou may flip to alter-ego form. Choose:\r\n• Exhaust Wanda Maximoff &#8594; remove Slipping Sanity from the game.\r\n• Discard the top 5 cards of the encounter deck. For each star icon([star]) in the boost area discarded this way, place 1 threat on the main scheme. Discard this obligation."
   },
   {
    "card_id": "15024",
@@ -13874,7 +13874,7 @@
     "GUARDIAN"
    ],
    "set_name": "Rocket Raccoon",
-   "text": "<i>\"Murdered You!\"</i> � <b>Response</b>: After you deal excess damage to an enemy, draw 1 card."
+   "text": "<i>\"Murdered You!\"</i> — <b>Response</b>: After you deal excess damage to an enemy, draw 1 card."
   },
   {
    "card_id": "16029b",
@@ -13891,7 +13891,7 @@
     "OUTLAW"
    ],
    "set_name": "Rocket Raccoon",
-   "text": "<i>Tinkering</i> � <b>Action</b>: Choose and discard a [[tech]] upgrade you control &#8594; draw 2 cards. (Limit once per round.)"
+   "text": "<i>Tinkering</i> — <b>Action</b>: Choose and discard a [[tech]] upgrade you control &#8594; draw 2 cards. (Limit once per round.)"
   },
   {
    "card_id": "16030",
@@ -14202,7 +14202,7 @@
    },
    "traits": [],
    "set_name": "Rocket Raccoon",
-   "text": "<b><i>Give to the Rocket Raccoon player.</i></b>\r\nYou may flip to alter-ego form. Choose:\r\n� Exhaust your alter-ego &#8594; remove Crisis on Halfworld from the game.\r\n� Discard the highest cost upgrade you control. If no upgrade was discarded this way, this card gains surge. Discard this obligation"
+   "text": "<b><i>Give to the Rocket Raccoon player.</i></b>\r\nYou may flip to alter-ego form. Choose:\r\n• Exhaust your alter-ego &#8594; remove Crisis on Halfworld from the game.\r\n• Discard the highest cost upgrade you control. If no upgrade was discarded this way, this card gains surge. Discard this obligation"
   },
   {
    "card_id": "16054",
@@ -14382,7 +14382,7 @@
     "VEHICLE"
    ],
    "set_name": "Brotherhood Of Badoon",
-   "text": "<i>Charge Up</i> � <b>Special:</b> Place 1 barrage counter here. Then, if there are 4 or more barrage counters here, deal 2 indirect damage to each player and remove all barrage counters from here."
+   "text": "<i>Charge Up</i> — <b>Special:</b> Place 1 barrage counter here. Then, if there are 4 or more barrage counters here, deal 2 indirect damage to each player and remove all barrage counters from here."
   },
   {
    "card_id": "16064",
@@ -14787,7 +14787,7 @@
     "LOCATION"
    ],
    "set_name": "Collector 2",
-   "text": "\"<i>This way?</i>\" � <b>Hero Action:</b> Deal yourself 1 facedown encounter card &#8594; remove 5 threat from the main scheme. (Limit once per round per player.)"
+   "text": "\"<i>This way?</i>\" — <b>Hero Action:</b> Deal yourself 1 facedown encounter card &#8594; remove 5 threat from the main scheme. (Limit once per round per player.)"
   },
   {
    "card_id": "16085b",
@@ -14800,7 +14800,7 @@
     "VEHICLE"
    ],
    "set_name": "Collector 2",
-   "text": "\"<i>Hold on to your butts!</i>\" � <b>Forced Interrupt:</b> Chen the villain phase begins, choose one:\r\n- Exhaust the Milano &#8594; assign 2[per_hero] indirect damage among players.\r\n- Assign 3[per_hero] indirect damage among players."
+   "text": "\"<i>Hold on to your butts!</i>\" — <b>Forced Interrupt:</b> Chen the villain phase begins, choose one:\r\n- Exhaust the Milano &#8594; assign 2[per_hero] indirect damage among players.\r\n- Assign 3[per_hero] indirect damage among players."
   },
   {
    "card_id": "16086",
@@ -25530,7 +25530,7 @@
     "CRIMINAL"
    ],
    "set_name": "Sandman",
-   "text": "<i>Sand Blast</i> � [star] <b>Forced Interrupt</b>: When Sandman attacks you, that attack deals indirect damage. If your identity takes any amount of damage from that attack, resolve the \"<i>Surging Sands</i>\" ability on City Streets."
+   "text": "<i>Sand Blast</i> — [star] <b>Forced Interrupt</b>: When Sandman attacks you, that attack deals indirect damage. If your identity takes any amount of damage from that attack, resolve the \"<i>Surging Sands</i>\" ability on City Streets."
   },
   {
    "card_id": "27062",
@@ -25547,7 +25547,7 @@
     "CRIMINAL"
    ],
    "set_name": "Sandman",
-   "text": "<b>When Revealed</b>: Resolve the \"<i>Surging Sands</i>\" ability on City Streets.\r\n<i>Sand Blast</i> � [star] <b>Forced Interrupt</b>: When Sandman attacks you, that attack deals indirect damage. If your identity takes any amount of damage from that attack, resolve the \"<i>Surging Sands</i>\" ability on City Streets."
+   "text": "<b>When Revealed</b>: Resolve the \"<i>Surging Sands</i>\" ability on City Streets.\r\n<i>Sand Blast</i> — [star] <b>Forced Interrupt</b>: When Sandman attacks you, that attack deals indirect damage. If your identity takes any amount of damage from that attack, resolve the \"<i>Surging Sands</i>\" ability on City Streets."
   },
   {
    "card_id": "27063",
@@ -25564,7 +25564,7 @@
     "CRIMINAL"
    ],
    "set_name": "Sandman",
-   "text": "<b>When Revealed</b>: Place 1 sand counter on City Streets. Resolve its \"<i>Surging Sands</i>\" ability.\r\n<i>Sand Wave</i> � [star] <b>Forced Interrupt</b>: When Sandman attacks you, that attack gains overkill. If your identity takes any amount of damage from that attack, resolve the \"<i>Surging Sands</i>\" ability on City Streets."
+   "text": "<b>When Revealed</b>: Place 1 sand counter on City Streets. Resolve its \"<i>Surging Sands</i>\" ability.\r\n<i>Sand Wave</i> — [star] <b>Forced Interrupt</b>: When Sandman attacks you, that attack gains overkill. If your identity takes any amount of damage from that attack, resolve the \"<i>Surging Sands</i>\" ability on City Streets."
   },
   {
    "card_id": "27064a",
@@ -25603,7 +25603,7 @@
     "LOCATION"
    ],
    "set_name": "Sandman",
-   "text": "<i>Surging Sands</i> � <b>Special</b>: Place 1 sand counter here. Discard cards from the top of the encounter deck equal to the number of sand counters here.\r\n<b>Hero Action</b>: Exhaust a character you control &#8594; remove sand counters from here equal to that character's ATK. (Limit once per round per player.)"
+   "text": "<i>Surging Sands</i> — <b>Special</b>: Place 1 sand counter here. Discard cards from the top of the encounter deck equal to the number of sand counters here.\r\n<b>Hero Action</b>: Exhaust a character you control &#8594; remove sand counters from here equal to that character's ATK. (Limit once per round per player.)"
   },
   {
    "card_id": "27066",
@@ -25896,7 +25896,7 @@
     "CRIMINAL"
    ],
    "set_name": "Mysterio",
-   "text": "<i>Seeds of Fear</i> � [star] <b>Forced Response</b>: After you resolve a boost card during Mysterio's activation, place that card in your discard pile if it has the [[illusion]] trait."
+   "text": "<i>Seeds of Fear</i> — [star] <b>Forced Response</b>: After you resolve a boost card during Mysterio's activation, place that card in your discard pile if it has the [[illusion]] trait."
   },
   {
    "card_id": "27085",
@@ -25913,7 +25913,7 @@
     "CRIMINAL"
    ],
    "set_name": "Mysterio",
-   "text": "<b>When Revealed</b>: In player order, shuffle the top card of the encounter deck into each player's deck.\r\n<i>Creeping Fear</i> � [star] <b>Forced Response</b>: After you resolve a boost card during Mysterio's activation, place that card on the bottom of your deck if it has the [[illusion]] trait."
+   "text": "<b>When Revealed</b>: In player order, shuffle the top card of the encounter deck into each player's deck.\r\n<i>Creeping Fear</i> — [star] <b>Forced Response</b>: After you resolve a boost card during Mysterio's activation, place that card on the bottom of your deck if it has the [[illusion]] trait."
   },
   {
    "card_id": "27086",
@@ -25930,7 +25930,7 @@
     "CRIMINAL"
    ],
    "set_name": "Mysterio",
-   "text": "<b>When Revealed</b>: Discard the top 5 cards of each player's deck.\r\n<i>Bound by Fear</i> � [star] <b>Forced Response</b>: After you resolve a boost card during Mysterio's activation, place that card on the top of your deck if it has the [[illusion]] trait."
+   "text": "<b>When Revealed</b>: Discard the top 5 cards of each player's deck.\r\n<i>Bound by Fear</i> — [star] <b>Forced Response</b>: After you resolve a boost card during Mysterio's activation, place that card on the top of your deck if it has the [[illusion]] trait."
   },
   {
    "card_id": "27087a",
@@ -26045,7 +26045,7 @@
    },
    "traits": [],
    "set_name": "Mysterio",
-   "text": "Peril. <i>(While you are resolving this card, other players cannot help you.)</i>\r\n<b>When Revealed</b>: Choose to either take 1 damage or place 1 threat on the main scheme. Shuffle D�j� Vu into any player's deck.\r\n<hr />\r\n[star] <b>Boost</b>: Reveal this card."
+   "text": "Peril. <i>(While you are resolving this card, other players cannot help you.)</i>\r\n<b>When Revealed</b>: Choose to either take 1 damage or place 1 threat on the main scheme. Shuffle Déjà Vu into any player's deck.\r\n<hr />\r\n[star] <b>Boost</b>: Reveal this card."
   },
   {
    "card_id": "27093",
@@ -26186,7 +26186,7 @@
    },
    "traits": [],
    "set_name": "Sinister Six",
-   "text": "Ambush! � <b>Special</b>: Choose a set-aside villain at random, put that villain into play, and place the active counter on it. (In expert mode, place 2 threat on Light at the End).\r\n<b>Forced Interrupt</b>: When a villain would activate, if no villain is in play, resolve this card's \"<i>Ambush!</i>\" ability. Continue that activation."
+   "text": "Ambush! — <b>Special</b>: Choose a set-aside villain at random, put that villain into play, and place the active counter on it. (In expert mode, place 2 threat on Light at the End).\r\n<b>Forced Interrupt</b>: When a villain would activate, if no villain is in play, resolve this card's \"<i>Ambush!</i>\" ability. Continue that activation."
   },
   {
    "card_id": "27101a",
@@ -26213,7 +26213,7 @@
    },
    "traits": [],
    "set_name": "Sinister Six",
-   "text": "<i>Ambush!</i> � <b>Special</b>: Choose a set-aside villain at random, put that villain into play, and place the active counter on it. (In expert mode, place 2 threat on Light at the End).\r\n<b>Forced Interrupt</b> When a villain would activate, if no villain is in play, resolve this card's \"<i>Ambush!</i>\" ability. Continue that activation.\r\n<b>If this stage is completed, the players lose the game.</b>",
+   "text": "<i>Ambush!</i> — <b>Special</b>: Choose a set-aside villain at random, put that villain into play, and place the active counter on it. (In expert mode, place 2 threat on Light at the End).\r\n<b>Forced Interrupt</b> When a villain would activate, if no villain is in play, resolve this card's \"<i>Ambush!</i>\" ability. Continue that activation.\r\n<b>If this stage is completed, the players lose the game.</b>",
    "ability_link": "27100b"
   },
   {
@@ -30551,7 +30551,7 @@
    },
    "traits": [],
    "set_name": "Colossus",
-   "text": "<b><i>Give to the Piotr Rasputin player.</i></b>\r\nYou may flip to alter-ego form. Choose:\r\n� Exhaust Piotr Rasputin &#8594; remove Homesick from the game.\r\n� Discard this card and each tough status card from your identity. If you discarded no tough status cards this way, this card gains surge."
+   "text": "<b><i>Give to the Piotr Rasputin player.</i></b>\r\nYou may flip to alter-ego form. Choose:\r\n• Exhaust Piotr Rasputin &#8594; remove Homesick from the game.\r\n• Discard this card and each tough status card from your identity. If you discarded no tough status cards this way, this card gains surge."
   },
   {
    "card_id": "32026",
@@ -35234,7 +35234,7 @@
     "X-MEN"
    ],
    "set_name": "Storm",
-   "text": "<i>Weather Control</i> � <b>Action</b>: Swap your [[WEATHER]] support in play with a support of your choice from the [[WEATHER]] deck. Resolve the \"<b>Special</b>\" ability on your [[WEATHER]] support in play. (Limit once per round)."
+   "text": "<i>Weather Control</i> — <b>Action</b>: Swap your [[WEATHER]] support in play with a support of your choice from the [[WEATHER]] deck. Resolve the \"<b>Special</b>\" ability on your [[WEATHER]] support in play. (Limit once per round)."
   },
   {
    "card_id": "36001b",
@@ -35250,7 +35250,7 @@
     "MUTANT"
    ],
    "set_name": "Storm",
-   "text": "Ororo Munroe begins the game with a [[WEATHER]] deck. (See insert.)\r\n<i>\"I feel a storm coming...\"</i> � <b>Setup</b>: Choose a support from the [[WEATHER]] deck and put it into play."
+   "text": "Ororo Munroe begins the game with a [[WEATHER]] deck. (See insert.)\r\n<i>\"I feel a storm coming...\"</i> — <b>Setup</b>: Choose a support from the [[WEATHER]] deck and put it into play."
   },
   {
    "card_id": "36002",
@@ -36972,7 +36972,7 @@
     "CHEERING CROWD"
    ],
    "set_name": "Magog",
-   "text": "Underdogs � <b>Forced Response</b>: After The Champion flips to this side, each player draws 1 card.\r\n<b>If there are at least 10[per_hero] ratings counters here, MaGog wins again and the players lose the game.</b>"
+   "text": "Underdogs — <b>Forced Response</b>: After The Champion flips to this side, each player draws 1 card.\r\n<b>If there are at least 10[per_hero] ratings counters here, MaGog wins again and the players lose the game.</b>"
   },
   {
    "card_id": "39004a",
@@ -36996,7 +36996,7 @@
     "CHEERING CROWD"
    ],
    "set_name": "Magog",
-   "text": "Tag Team � <b>Forced Response</b>: After The Challengers flips to this side, search the encounter deck and discard pile for Surprise Contender and put it into play engaged with the first player. If it is already in play, give it a tough status card.\r\n<b>If there are at least 10[per_hero] ratings counters here, you wow the crowd and the players win the game.</b>"
+   "text": "Tag Team — <b>Forced Response</b>: After The Challengers flips to this side, search the encounter deck and discard pile for Surprise Contender and put it into play engaged with the first player. If it is already in play, give it a tough status card.\r\n<b>If there are at least 10[per_hero] ratings counters here, you wow the crowd and the players win the game.</b>"
   },
   {
    "card_id": "39005",
@@ -43397,7 +43397,7 @@
     "X-FORCE"
    ],
    "set_name": "Deadpool",
-   "text": "<i>The Regeneratin' Degenerate</i> � <b>Forced Interrupt</b>: When you would be defeated, instead set your hit point dial to 1, change to alter-ego form, and add 1 acceleration token to the main scheme."
+   "text": "<i>The Regeneratin' Degenerate</i> — <b>Forced Interrupt</b>: When you would be defeated, instead set your hit point dial to 1, change to alter-ego form, and add 1 acceleration token to the main scheme."
   },
   {
    "card_id": "44001b",
@@ -43414,7 +43414,7 @@
     "MUTANT"
    ],
    "set_name": "Deadpool",
-   "text": "<i>Break the Fourth Wall</i> � <b>Action</b>: Discard a card from your hand &#8594; search your deck for a Deadpool event and add it to your hand. (Limit once per round.)"
+   "text": "<i>Break the Fourth Wall</i> — <b>Action</b>: Discard a card from your hand &#8594; search your deck for a Deadpool event and add it to your hand. (Limit once per round.)"
   },
   {
    "card_id": "44002",
@@ -43448,7 +43448,7 @@
    },
    "traits": [],
    "set_name": "Deadpool",
-   "text": "<b>Hero Action</b>: Choose:\r\n� Place 1 acceleration token on the main scheme &#8594; stun and confuse the villain.\r\n� Exhaust a player's identity &#8594; that player draws 1 card for each acceleration token on the main scheme."
+   "text": "<b>Hero Action</b>: Choose:\r\n• Place 1 acceleration token on the main scheme &#8594; stun and confuse the villain.\r\n• Exhaust a player's identity &#8594; that player draws 1 card for each acceleration token on the main scheme."
   },
   {
    "card_id": "44004",
@@ -43745,7 +43745,7 @@
    },
    "traits": [],
    "set_name": "",
-   "text": "<b>Hero Action</b>: If the following icons are on 1 or more cards in play:\r\n[crisis] � Deal 3 damage to an enemy.\r\n[acceleration] � Remove 2 threat from a scheme.\r\n[amplify] � Ready an ally you control.\r\n[hazard] � Draw 1 card."
+   "text": "<b>Hero Action</b>: If the following icons are on 1 or more cards in play:\r\n[crisis] — Deal 3 damage to an enemy.\r\n[acceleration] — Remove 2 threat from a scheme.\r\n[amplify] — Ready an ally you control.\r\n[hazard] — Draw 1 card."
   },
   {
    "card_id": "44022",
@@ -44186,7 +44186,7 @@
    },
    "traits": [],
    "set_name": "",
-   "text": "<b>Action</b>: Exhaust Plot Convenience &#8594; choose:\r\n� Attach 1 aspect card from your hand facedown here (to a maximum of 3).\r\n� Add 1 card attached facedown here to your hand.\r\nAny player may trigger this ability."
+   "text": "<b>Action</b>: Exhaust Plot Convenience &#8594; choose:\r\n• Attach 1 aspect card from your hand facedown here (to a maximum of 3).\r\n• Add 1 card attached facedown here to your hand.\r\nAny player may trigger this ability."
   },
   {
    "card_id": "44051",
@@ -45281,7 +45281,7 @@
     "PRELATE"
    ],
    "set_name": "Unus",
-   "text": "Toughness.\r\nIf the amount of threat on Gene Pool is at least:\r\n� 3 � Unus gains retaliate 1.\r\n� 6 � Unus also gains stalwart.\r\n� 9 � Unus also gains a [amplify] icon."
+   "text": "Toughness.\r\nIf the amount of threat on Gene Pool is at least:\r\n• 3 — Unus gains retaliate 1.\r\n• 6 — Unus also gains stalwart.\r\n• 9 — Unus also gains a [amplify] icon."
   },
   {
    "card_id": "45060",
@@ -45299,7 +45299,7 @@
     "PRELATE"
    ],
    "set_name": "Unus",
-   "text": "Toughness.\r\nIf the amount of threat on Gene Pool is at least:\r\n� 3 � Unus gains retaliate 1.\r\n� 6 � Unus also gains stalwart.\r\n� 9 � Unus also gains a [amplify] icon.",
+   "text": "Toughness.\r\nIf the amount of threat on Gene Pool is at least:\r\n• 3 — Unus gains retaliate 1.\r\n• 6 — Unus also gains stalwart.\r\n• 9 — Unus also gains a [amplify] icon.",
    "ability_link": "45059"
   },
   {
@@ -45318,7 +45318,7 @@
     "PRELATE"
    ],
    "set_name": "Unus",
-   "text": "Toughness.\r\nIf the amount of threat on Gene Pool is at least:\r\n� 3 � Unus gains retaliate 1.\r\n� 6 � Unus also gains stalwart.\r\n� 9 � Unus also gains a [amplify] icon.",
+   "text": "Toughness.\r\nIf the amount of threat on Gene Pool is at least:\r\n• 3 — Unus gains retaliate 1.\r\n• 6 — Unus also gains stalwart.\r\n• 9 — Unus also gains a [amplify] icon.",
    "ability_link": "45059"
   },
   {
@@ -45419,7 +45419,7 @@
    },
    "traits": [],
    "set_name": "Unus",
-   "text": "<b>When Revealed</b>: Unus activates against you. If the amount of threat on Gene Pool is at least:\r\n� 3 � Give Unus a tough status card.\r\n� 6 � Heal 3 damage from Unus as well.\r\n� 9 � Give Unus an additional boost card for this activation as well."
+   "text": "<b>When Revealed</b>: Unus activates against you. If the amount of threat on Gene Pool is at least:\r\n• 3 — Give Unus a tough status card.\r\n• 6 — Heal 3 damage from Unus as well.\r\n• 9 — Give Unus an additional boost card for this activation as well."
   },
   {
    "card_id": "45068",
@@ -45451,7 +45451,7 @@
     "INFINITE"
    ],
    "set_name": "Infinites",
-   "text": "Guard.\r\nIf the amount of threat on Gene Pool is at least:\r\n� 3 � This minion gains quickstrike.\r\n� 6 � This minion also gains surge.\r\n� 9 � This minion also gets +3 hit points."
+   "text": "Guard.\r\nIf the amount of threat on Gene Pool is at least:\r\n• 3 — This minion gains quickstrike.\r\n• 6 — This minion also gains surge.\r\n• 9 — This minion also gets +3 hit points."
   },
   {
    "card_id": "45070",

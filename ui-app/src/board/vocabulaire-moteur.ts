@@ -437,6 +437,8 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
     (m) => `Placer ${menaces(m[1]!)} sur la manigance principale. Défausser cette obligation`],
   [/^Exhaust (.+) → remove (.+) from the game$/, (m) => `Incliner ${m[1]} → retirer ${m[2]} de la partie`],
   [/^Take (\d+) indirect damage$/, (m) => `Subir ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'}`],
+  // La repartition des degats indirects (`PlayerAction.AssignDamage`, rapport Yarro n92).
+  [/^Assign (\d+) damage$/, (m) => `Répartir ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'}`],
   [/^Take (\d+) damage$/, (m) => `Subir ${degats(m[1]!)}`],
   [/^Place (\d+) threat on the main scheme$/, (m) => `Placer ${menaces(m[1]!)} sur la manigance principale`],
   [/^Place (\d+) threat here$/, (m) => `Placer ${menaces(m[1]!)} ici`],

@@ -238,6 +238,30 @@ class AbilityFactoryResources:
                 return True
             return effect.this != message.paying_for_effect.this
 
+        def check_not_exhausted_by_paid_cost(effect: 'Effect', message: 'Message.CheckPlayerCanPayCost'):
+            # CORRECTIF (17/10/2026, rapport Yarro n93) : « Exhaust the Milano and spend up to 2
+            # resources » (16093 Nebula's Ship) offrait la ressource du Milano (« Exhaust the Milano
+            # -> generate a [wild] ») pour payer ce meme cout. Une carte ne s'incline pas deux fois :
+            # choisie, la ressource inclinait le Milano, le cout ne pouvait plus l'incliner, le
+            # paiement etait abandonne et la capacite partait sans rien retirer. Une ressource qui
+            # s'incline elle-meme est donc retiree quand le cout paye exige d'incliner CETTE carte
+            # et elle seule (une seule cible legale : aucun autre choix possible).
+            from game.ability.cost_func import CostFunc
+            propres = getattr(effect.ability, 'cost_funcs', None) or []
+            if not any(isinstance(c, CostFunc.Exhaust) for c in propres):
+                return True
+            paying = message.paying_for_effect
+            for cout in getattr(paying.ability, 'cost_funcs', None) or []:
+                if not isinstance(cout, CostFunc.Exhaust) or cout.not_need_to_exhaust or not cout.selector:
+                    continue
+                try:
+                    cibles = cout.selector.GetAllLegalTargets(paying, just_check=True)
+                except Exception:
+                    continue
+                if len(cibles) == 1 and cibles[0] == effect.this:
+                    return False
+            return True
+
         # def check_can_pay(effect: 'Effect', message: 'Send.CheckPlayerCanPayingResources') -> None:
         #     res = resources_fn(effect, message)
         #     if res != 0 and effect.HasCostTargets():
@@ -296,6 +320,7 @@ class AbilityFactoryResources:
             Message.CheckPlayerCanPayCost,
             [
                 check_cannot_generate_self,
+                check_not_exhausted_by_paid_cost,
                 check_generate_resources_type,
                 check_is_not_the_target,
                 check_spend_this_only_in_hero_form,

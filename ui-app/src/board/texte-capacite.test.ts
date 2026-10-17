@@ -31,6 +31,15 @@ describe('nettoyerTexteCarte, jetons de ressource', () => {
 })
 
 describe('extraireCapacite', () => {
+  it('rien pour une question de REGLE portee par l’identite (rapport Yarro n92, 16/10/2026)', () => {
+    // Les degats indirects de Starshark se repartissent par une option
+    // « Assign 3 damage » rattachee a Rocket Raccoon : le titre affichait le
+    // seul paragraphe de sa carte, « "Murdered You!" — Response ».
+    const ROCKET = '<i>"Murdered You!"</i> — <b>Response</b>: After you deal excess damage to an enemy, draw 1 card.'
+    expect(extraireCapacite(ROCKET, 'Assign 3 damage', 'Normal')).toBeUndefined()
+    expect(extraireCapacite(ROCKET, 'Assign_1_damage', 'Normal')).toBeUndefined()
+  })
+
   it('rend tout le texte quand la carte n’a qu’une capacite', () => {
     expect(extraireCapacite(JENNIFER, '"I_Object!"', 'Interrupt')).toBe(
       '"I Object!" — Interrupt: When threat would be placed on a scheme, prevent 1 of that threat. (Limit once per round.)'

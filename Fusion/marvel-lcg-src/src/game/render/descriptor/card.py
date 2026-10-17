@@ -30,3 +30,7 @@ class CardDescriptor:
     # defense « Ne pas défendre (ATQ 2 + 1 Charge + 1 carte boost) »). La valeur
     # imprimee de la carte elle-meme n'y figure pas.
     bonus               : Dict[str, List[List[Any]]] = field(default_factory=dict)
+    # Les joueurs qui ont REGARDE cette carte par un effet (« look at »), pas ceux qui la
+    # connaissent seulement pour l'avoir vue face visible (17/10/2026, rapport Yarro n85) :
+    # c'est ce champ, et non `visible_for_players`, qui ouvre la fenetre « Cartes regardees ».
+    looked_at_by        : List[int] = field(default_factory=list)

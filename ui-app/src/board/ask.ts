@@ -496,6 +496,12 @@ export function reponsePrete(
       raison: `Pay ${requis - paye} more resource(s)`,
     }
   }
+  // « Jusqu'a N » DEPASSE : le moteur refuse le paiement (`IsMatchCost`, UpTo :
+  // `val <= cost`), l'abandonne, et la capacite part quand meme sans rien
+  // depenser (rapport Yarro n93, 17/10/2026).
+  if (requis !== undefined && paiementFacultatif(paiement) && paye > requis) {
+    return { prete: false, raison: `Remove ${paye - requis} resource(s)` }
+  }
 
   return { prete: true, raison: '' }
 }
