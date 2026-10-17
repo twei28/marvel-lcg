@@ -1836,60 +1836,42 @@
   "scenarios": [],
   "heroes": [],
   "encounters": [],
-  "max_id": "sb020",
-  "indisponible": true,
-  "set_names": ["TMNT Shinobi Bushido"],
-  "indisponible_note": "Pack TMNT Shinobi cache le 17/10/2026, a la demande de l'utilisateur, tant que tout le pack n'est pas fini. Les cartes et les cas de test restent ; seules les interfaces (gallerie, deck-builder) cessent de les proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "sb020"
  },
  "203. Custom (TMNT Shinobi – Kuji-Kiri)": {
   "name": "tmnt_shinobi_kuji_kiri",
   "scenarios": [],
   "heroes": [],
   "encounters": [],
-  "max_id": "sj020",
-  "indisponible": true,
-  "set_names": ["TMNT Shinobi Kuji-Kiri"],
-  "indisponible_note": "Pack TMNT Shinobi cache le 17/10/2026, a la demande de l'utilisateur, tant que tout le pack n'est pas fini. Les cartes et les cas de test restent ; seules les interfaces (gallerie, deck-builder) cessent de les proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "sj020"
  },
  "204. Custom (TMNT Shinobi – Ninjutsu)": {
   "name": "tmnt_shinobi_ninjutsu",
   "scenarios": [],
   "heroes": [],
   "encounters": [],
-  "max_id": "sa020",
-  "indisponible": true,
-  "set_names": ["TMNT Shinobi Ninjutsu"],
-  "indisponible_note": "Pack TMNT Shinobi cache le 17/10/2026, a la demande de l'utilisateur, tant que tout le pack n'est pas fini. Les cartes et les cas de test restent ; seules les interfaces (gallerie, deck-builder) cessent de les proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "sa020"
  },
  "205. Custom (TMNT Shinobi – Taijutsu)": {
   "name": "tmnt_shinobi_taijutsu",
   "scenarios": [],
   "heroes": [],
   "encounters": [],
-  "max_id": "sh020",
-  "indisponible": true,
-  "set_names": ["TMNT Shinobi Taijutsu"],
-  "indisponible_note": "Pack TMNT Shinobi cache le 17/10/2026, a la demande de l'utilisateur, tant que tout le pack n'est pas fini. Les cartes et les cas de test restent ; seules les interfaces (gallerie, deck-builder) cessent de les proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "sh020"
  },
  "206. Custom (TMNT Shinobi – Dual Shinobi)": {
   "name": "tmnt_shinobi_dual",
   "scenarios": [],
   "heroes": [],
   "encounters": [],
-  "max_id": "sc012",
-  "indisponible": true,
-  "set_names": ["TMNT Shinobi Dual"],
-  "indisponible_note": "Pack TMNT Shinobi cache le 17/10/2026, a la demande de l'utilisateur, tant que tout le pack n'est pas fini. Les cartes et les cas de test restent ; seules les interfaces (gallerie, deck-builder) cessent de les proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "sc012"
  },
  "207. Custom (TMNT Shinobi – Paths)": {
   "name": "tmnt_shinobi_paths",
   "scenarios": [],
   "heroes": [],
   "encounters": [],
-  "max_id": "se011",
-  "indisponible": true,
-  "set_names": ["TMNT Shinobi Paths"],
-  "indisponible_note": "Pack TMNT Shinobi cache le 17/10/2026, a la demande de l'utilisateur, tant que tout le pack n'est pas fini. Les cartes et les cas de test restent ; seules les interfaces (gallerie, deck-builder) cessent de les proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "se011"
  },
  "checksum": "3be616ffc00565664543aaac385546d370588e923e68f96272457d3215b86e21"
 }

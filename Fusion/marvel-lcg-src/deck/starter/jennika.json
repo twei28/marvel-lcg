@@ -13,9 +13,7 @@
         },
         "deckbuilding_note": "Voie PROPRE de Jennika (dos « Sosaiken Cardback ») : « You may add any combination of Shinobi cards (Bushido, Ninjutsu, Kuji-Kiri, or Taijutsu) to your deck. You cannot add aspect cards. You may add Basic cards. » (17/10/2026, socle TMNT Shinobi : `metadata.deckbuilding.path`, lu par regles.js). Elle n'a donc pas besoin d'un Path choisi, et n'en prend pas un second (question Q-S5, .planning/tmnt/shinobi-socle-questions.md).",
         "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE (consigne utilisateur du 06/09/2026, PROCESSUS-HEROS etape 3) : le zip « TMNT Heroes / Jennika v3 » (Inkwire) ne contient AUCUNE decklist d'aspect (la carte « Path of the Sosaiken » ne donne que des regles de construction : cartes Shinobi de n'importe quelle combinaison, aucun aspect, cartes basiques). Ce fichier ne contient que de l'IMPRIME : l'identite, les 15 cartes signature, l'obligation et le set nemesis.",
-        "set_aside_note": "tj011 Sosaiken (la Voie, Permanent) est MISE DE COTE : le Setup de tj001b la met en jeu (meme montage que Ionic Physiology de Wonder Man, 58001b). Elle n'est PAS dans les 15 du deck.",
-        "indisponible": true,
-        "indisponible_note": "Retiree des heros jouables le 17/10/2026, a la demande de l'utilisateur : Jennika repose sur les cartes Shinobi, dont les 80 cartes standard et les 12 Dual ne sont pas encore faites (pack TMNT Shinobi en cours). Le deck reste ICI, et non deplace, pour que les cas de test du harnais continuent de tourner. Pour la remettre : supprimer la cle `indisponible`."
+        "set_aside_note": "tj011 Sosaiken (la Voie, Permanent) est MISE DE COTE : le Setup de tj001b la met en jeu (meme montage que Ionic Physiology de Wonder Man, 58001b). Elle n'est PAS dans les 15 du deck."
     },
     "hero": [
         "tj001a,tj001b"
