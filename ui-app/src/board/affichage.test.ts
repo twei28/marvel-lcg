@@ -109,7 +109,8 @@ describe.each([
       .map((s) => s.trim())
       .filter(Boolean)
     expect(selecteurs.length).toBeGreaterThan(20)
-    for (const s of selecteurs) expect(s.startsWith('html[data-epure]'), s).toBe(true)
+    // Une `@font-face` ne change rien a l'affichage tant qu'aucune regle ne s'en sert : elle est permise.
+    for (const s of selecteurs) expect(s.startsWith('html[data-epure]') || s === '@font-face', s).toBe(true)
   })
 
   it('ne declare aucune couche (elle doit passer devant toutes)', () => {
