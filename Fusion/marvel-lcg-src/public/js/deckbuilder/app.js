@@ -373,7 +373,55 @@ function rendreEnTete() {
         await chargerSources();
         reglerFiltresParDefaut();
         rendreToutEtFiltres();
+        majBlocHero();
     };
+
+    /* LE HÉROS DANS LA PAGE (17/10/2026) : le choisir dans l'en-tête n'était pas
+       pratique. Sur PC, un bloc en haut de la colonne du deck montre le héros
+       courant et ouvre une fenêtre de portraits avec recherche. Le <select> de
+       l'en-tête reste dans le DOM (il porte la logique de changement, et le
+       téléphone s'en sert) mais il est masqué sur PC. */
+    const choisirHero = (id) => { selHero.value = id; selHero.onchange(); };
+    const ouvrirChoixHero = () => {
+        const modale = $("#db-modale");
+        const fermer = () => { modale.hidden = true; remplacer(modale); };
+        const grille = el("div", { class: "db-hero-grille" });
+        const recherche = el("input", { type: "search", class: "db-hero-recherche", placeholder: t("Chercher un héros…"), autocomplete: "off" });
+        const remplir = () => {
+            const q = recherche.value.trim().toLowerCase();
+            remplacer(grille, ...etat.heroes
+                .filter((h) => !q || h.name.toLowerCase().includes(q))
+                .map((h) => el("button", { type: "button", class: "db-hero-puce" + (etat.hero && etat.hero.id === h.id ? " est-actif" : ""),
+                    onclick: () => { fermer(); choisirHero(h.id); } },
+                    el("span", { class: "db-hero-img" }, el("img", { src: cardImageUrl(h.heroCardId || h.id), alt: "", loading: "lazy" })),
+                    el("span", { class: "db-hero-nom" }, h.name))));
+        };
+        recherche.oninput = remplir;
+        remplir();
+        remplacer(modale, el("div", { class: "db-modale-boite db-hero-boite", role: "dialog", "aria-modal": "true" },
+            el("div", { class: "db-hero-tete" }, el("b", { class: "mvl" }, t("Choisir un héros")),
+                el("button", { type: "button", class: "db-hero-fermer", onclick: fermer, "aria-label": t("Annuler") }, "✕")),
+            recherche, grille));
+        modale.onclick = (e) => { if (e.target === modale) fermer(); };
+        modale.hidden = false;
+        recherche.focus();
+    };
+    function majBlocHero() {
+        let bloc = document.getElementById("db-hero-bloc");
+        if (!bloc) {
+            bloc = el("button", { type: "button", id: "db-hero-bloc", class: "db-hero-bloc", onclick: ouvrirChoixHero });
+            const cible = document.querySelector(".db-partir");
+            if (!cible) return;
+            cible.before(bloc);
+        }
+        const h = etat.hero;
+        remplacer(bloc,
+            el("span", { class: "db-hero-img" }, h ? el("img", { src: cardImageUrl(h.heroCardId || h.id), alt: "" }) : el("span", { class: "db-hero-vide" }, "?")),
+            el("span", { class: "db-hero-textes" },
+                el("small", {}, t("Héros")),
+                el("b", {}, h ? h.name : t("Choisir un héros"))),
+            el("span", { class: "db-hero-changer" }, (h ? t("Changer") : t("Choisir")) + " ›"));
+    }
     const retour = el("a", { class: "brand", href: "/prepare.html", title: t("Préparation"), "aria-label": t("Préparation") },
         el("span", { class: "brand-back" }, "<"),
         el("span", { class: "brand-lockup logo" }, el("img", { class: "brand-narwhal", src: urlNarval(), alt: "" })));
@@ -398,6 +446,7 @@ function rendreEnTete() {
         el("span", { class: "db-heros-aspects", id: "db-heros-aspects" }),
         el("span", { class: "db-esp" }),
         el("a", { class: "db-retour-prep", href: "/prepare.html" }, t("← Préparation")));
+    majBlocHero();
 }
 
 /* ---------------- Filtres ---------------- */

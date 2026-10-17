@@ -913,6 +913,9 @@ export const DICO_EN_BASE = {
   // prepare : la tuile « Mises a jour » de l'accueil et sa modale
   'Mises à jour': 'Updates',
   'Puzzle': 'Puzzle',
+  'Changer': 'Change',
+  'Chercher un héros…': 'Search a hero…',
+  'Choisir un héros': 'Choose a hero',
   'Préparation': 'Setup',
   'Tout voir': 'See all',
   'mises à jour': 'updates',
