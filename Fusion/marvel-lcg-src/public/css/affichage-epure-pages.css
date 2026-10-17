@@ -1407,3 +1407,20 @@ html[data-epure] header.progress .pstep.active .pnum {
   color: #2c63b0 !important;
   border-color: #fff !important;
 }
+
+/* Un petit cadre biseauté autour de chaque héros de la grille. */
+html[data-epure] .hero-grid.tb-roster .tb-port {
+  padding: 3px !important;
+  background: linear-gradient(160deg, #34415c, #1b2436) !important;
+  border: 2px solid #3d5a8c !important;
+  border-top-color: #7fa9e6 !important;
+  border-left-color: #6a95d6 !important;
+  border-bottom-color: #0f1522 !important;
+  border-right-color: #131a29 !important;
+  border-radius: 3px !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45) !important;
+}
+html[data-epure] .hero-grid.tb-roster .tb-port:hover {
+  border-top-color: #b5d2fa !important;
+  border-left-color: #a0c2f5 !important;
+}
