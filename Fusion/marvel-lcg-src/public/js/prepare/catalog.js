@@ -16,10 +16,20 @@ function teamFromTraits(card) {
     for (const t of TEAMS) if (card.traits.some((x) => String(x).toLowerCase().includes(t.toLowerCase().replace(/\W/g, "")))) return t;
     return card.traits[0] || "";
 }
+const ASPECTS_DOUBLES = ["aggression", "justice", "leadership", "protection", "'pool", "determination", "venomized"];
 function aspectsOfDeck(deck) {
     if (!deck || !deck.player_deck) return [];
     const s = new Set();
-    for (const id of deck.player_deck) { const a = cards.aspectOf(id); if (a && a !== "basic") s.add(a); }
+    // Double aspect (« aggression;justice », pack tmnt_aspect_dual) : il rejoint un
+    // aspect deja present ; seul, il apporte son premier aspect imprime.
+    const doubles = [];
+    for (const id of deck.player_deck) {
+        const a = cards.aspectOf(id);
+        const parts = (a || "").split(";").map((p) => p.trim());
+        if (parts.length >= 2 && parts.every((p) => ASPECTS_DOUBLES.includes(p))) doubles.push(parts);
+        else if (a && a !== "basic") s.add(a);
+    }
+    for (const parts of doubles) if (!parts.some((p) => s.has(p))) s.add(parts[0]);
     return [...s];
 }
 

@@ -38,5 +38,9 @@ elle-même.
 
 **Variantes maison** : aucune.
 
+**Cartes joueur de l'aspect Protection (16/10/2026)** : `up007` Cyber Ninja (« cloak Cyber Ninja », sur
+lui-même), `up023` Lookout (« cloak your hero »), `up024` Nobody (« place a tough or cloaked status card »).
+Toutes par `Faces.GiveStatus([...], "Cloaked", effect)`. Cas : `tools/cas/tmnt_aspect_protection.py`.
+
 **Preuves** : `tools/cas/cloaked_cartes.py` (tl015 Karai révélée / vaincue, tl016,
 td005), avec preuve par substitution (le stub rétabli, les 4 cas échouent).

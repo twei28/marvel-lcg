@@ -64,6 +64,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   article: 'article',
   wound: 'blessure',
   hunter: 'chasseur',
+  pep: 'pep', // ub037 Pepperoni (aspect TMNT Basic, Inkwire) : « pep counters », mot laissé tel quel
   hate: 'haine',
   shell: 'carapace',
   unworthy: 'indigne',
@@ -119,7 +120,13 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // Mutagen Bomb de Raphael (tr014).
   swarm: 'essaim',
   knucklehead: 'andouille',
+  // Aspects TMNT Dual-Aspect (16/10/2026) : ud003 Heavy Metal entre en jeu avec 2 « amp counters ».
+  amp: 'ampli',
   timer: 'minuteur',
+  // Aspect TMNT Protection (16/10/2026) : Lindsey Baker (up022), Grotto (up014), Road Rage (up031).
+  healing: 'guérison',
+  brute: 'brute',
+  fuel: 'carburant',
   // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).
@@ -129,6 +136,11 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   cable: 'câble',
   shield: 'bouclier',
   ooze: 'mutagène',
+  // Aspect TMNT Justice (16/10/2026) : Ram-Shell uj026 (momentum, aussi Juggernaut), Zebulon uj039,
+  // Turtle Line uj034 (Uses 3 rope).
+  momentum: 'élan',
+  scorch: 'brûlure',
+  rope: 'corde',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

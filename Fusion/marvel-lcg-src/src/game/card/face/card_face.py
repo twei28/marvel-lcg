@@ -251,6 +251,13 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : compteur imprime
         # « knucklehead counter » des attachements Temper.
         'knucklehead',
+        # AJOUT (16/10/2026, aspect TMNT Protection) : compteurs imprimes « healing » (up022 Lindsey
+        # Baker, Uses), « brute » (up014 Grotto), « fuel » (up031 Road Rage). `desc.Uses` les refuse
+        # (assert IsCounter) tant qu'ils ne sont pas dans cette liste.
+        'healing', 'brute', 'fuel',
+        # AJOUT (16/10/2026, aspects TMNT Dual-Aspect, Inkwire) : « amp counter »
+        # de ud003 Heavy Metal (« enters play with 2 amp counters on her »).
+        'amp',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',
@@ -290,6 +297,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
         'hunter',  # CORRECTIF (16/10/2026) : compteur du pack custom alopex (TMNT, Inkwire), ta008 Kitsune Kabuki
+        'dagger', 'pistol',  # AJOUT (16/10/2026) : aspect TMNT Aggression (Inkwire), ua040 Ujigami (10 dagger), ua033 Pete (Uses 3 pistol)
+        'pep',  # CORRECTIF (16/10/2026) : compteur de ub037 Pepperoni, aspect TMNT Basic (Inkwire), Uses (3 pep)
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
         'shell',  # CORRECTIF : compteur du pack custom texas_twister (Kajislav), 2 sur Armadillo
         'unworthy',  # CORRECTIF : compteur du pack custom beta_ray_bill (Rainy), 2 sur l'obligation
@@ -319,6 +328,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'invocation', 'teleport', 'sword', 'mangetic',
         'power', 'backup', 'soul', 'fatigue', 'research', 'psi', 'leadership', 'boom',
         'freeze', 'operative', 'judo', 'magnet', 'knock', 'momentum',
+        # AJOUT (16/10/2026, aspect TMNT Justice) : « scorch counter » de uj039 Zebulon, « rope counters »
+        # de uj034 Turtle Line (Uses 3).
+        'scorch', 'rope',
 
         'progress', 'sym', 'luck', 'deploy', 'supply', 'missile', 'operation', 'speed', 
         'staff', 'mission', 'leap', 'lock', 'parley', 'bystander', 'doubt', 'target', 

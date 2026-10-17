@@ -1472,3 +1472,42 @@ clé de titre de règles. Question ouverte : relever ces bandeaux dans chaque ga
 | « ★ Rampage X. (As an additional cost for this card, take X damage and discard X cards from the top of your deck.) » | `.SetCostFunc(CostFunc.Rampage(X))` sur la capacité de JEU (`WhenInYourPlayTurn(...).SetPlay()`, ou la Réponse/Interruption de héros de l'événement) ; `desc.Cost` avec l'étoile (`"3*"`) | ua015 Demolish | Un seul coût qui compose `TakeDamage(X, "YourIdentity")` puis `DiscardDeckTopCards("YourDeck", X)` : Tenace = coût impayé, effet annulé ; deck < X = payé (arbitrage du 25/09) ; deck vide = injouable, AUCUN dégât pris. Cartes défaussées : `effect.cost_func.Get(CostFunc.Rampage).return_discarded_cards` |
 | « If you control a [[NYC]] support » | `effect.GetInitiator().IsControl(CardFinder2("NYC", Support))` | ua015 | lu au moment de la résolution ; soutien NYC de test : `tr008` Shell Cycle |
 | Harnais : sbire Tenace | `Puzzle.Tough(Puzzle.PutIntoPlay('01101'))` | `tools/cas/rampage.py` | `Puzzle.Tough('01101')` vise une copie du DECK RENCONTRE de Rhino (FindOrCreateFace y cherche avant la table) : le Tenace n'est jamais posé sur le sbire en jeu |
+
+### Aspect Protection (`up`, 16/10/2026) : ce que le portage a payé
+
+| Texte imprimé | API | Modèle | Piège |
+|---|---|---|---|
+| « Rampage X » sur une **Hero Interrupt** (événement de défense) | `WhenUnitWouldTakeDamage(HeroInterrupt, "You", ..., is_from_attack=True).SetPlay().SetCostFunc(CostFunc.Rampage(X))` | `up004` Autodefenestration | identité Tenace : le coût n'est pas payé, la carte reste en main ET le Tenace absorbe l'attaque (cas `[up] up004 ... Tenace`) |
+| « Max 1 per phase » + Rampage | `.MaxOnePerPhase().SetCostFunc(CostFunc.Rampage(X))` | `up026` Primal Provisions | témoin : la 2e copie reste en main, un seul Rampage payé |
+| « When calculating damage during an attack against you » | **AJOUT moteur** `Message.WhenCalculatingAttackDamage` (sender_damage.py), envoyé par `can_attack.py` après `WhenRecalculateAttackDamage` ; `GainDefenseForThisAttack(n)` s'ajoute à la DEF du défenseur | `up039` Tonfa | `WhenRecalculateAttackDamage` n'ouvre AUCUNE fenêtre de joueur (`event/manager.py` : constantes + interruptions forcées seulement) : une Hero Interrupt posée dessus ne part jamais. La DEF du défenseur est lue à la DÉCLARATION : un `TemporaryGain(defense=)` à ce moment-là ne change pas les dégâts |
+| « X does not exhaust to defend » (permanent) | `AfterCardEnterPlay(NonKeyword, "This", ...)` qui ajoute la face à `CostFunc.Exhaust.not_need_to_exhaust` du coût de son effet `DEF` | `up041` Usagi (`53011` Draw Their Fire en version de phase) | **CORRECTIF moteur** (`cost_func.py`) : le filtre `canbe_exhaust=True` du sélecteur retirait la carte inclinée des cibles du coût, donc un allié incliné ne pouvait pas défendre, contrairement à RR v1.8 « Defending » (« can be used on an exhausted ally »). Harnais : `Puzzle.Attack(defender=...)` incline le défenseur LUI-MÊME et court-circuite le coût : passer par la vraie question du moteur |
+| « Attach to a minion that your hero attacked this turn » | `CanPlayThisUpgradeCard(CardFinder(card_type=Minion, check_effect_fn=...))` + `effect.world.stat.this_turn_made_attack` | `up028` (modèle `43012`) | — |
+| « it gains vulnerable » (amélioration) | `GiveKeywordToAttached(Minion, get_new_value=..., apply=lambda e, f, d: f.GainVulnerable(d, e))` | `up028` | le moteur ne défausse un Vulnérable qu'à la POSE d'un Sonné/Désorienté : « is or becomes » demande de vérifier à la main un sbire déjà Sonné |
+| Harnais : statut sur un sbire non unique | `Puzzle.Stun(Puzzle.FindFaceInPlay('01101'))` | `[up] up028` | `Puzzle.Stun('01101')` vise la copie du DECK RENCONTRE (même piège que `Puzzle.Tough`) |
+| Compteurs nommés `brute`, `fuel`, `healing` | ajoutés à `CardFace.COUNTER` (card_face.py) + `compteurs-fr.ts` | `up014`, `up031`, `up022` | `desc.Uses` refuse (assert `IsCounter`) un nom absent de la liste ; `ThisEnterPlayWithCounters`, lui, ne vérifie rien |
+| Spider-Man dans les cas | Spider-Sense pioche 1 carte quand le VILAIN attaque : la compter dans `taille_main` / `taille_deck_joueur` | `[up]` up004, up037, up040 | avec un deck VIDE, Spider-Sense bloque l'attaque (le cas ne va pas au bout) |
+| Reskin dont le module écrit un NOM DE COMPTEUR en dur | script propre, copie du module (pas d'`ability_link`) | `up014` Grotto (09014 'mystic'), `up022` Lindsey Baker (09019 'medical') | l'`ability_link` poserait le compteur de l'officielle |
+### Carte DOUBLE ASPECT (pack `tmnt_aspect_dual`, `ud`, 16/10/2026)
+
+Première carte du jeu à porter deux aspects (bandeau « AGGRESSION/JUSTICE », cadre bicolore). Le scan
+n'imprime AUCUNE règle de construction propre : lecture retenue = la carte entre dans un deck de l'un
+OU de l'autre aspect, sans y ajouter d'aspect.
+
+| Où | Montage | Preuve |
+|---|---|---|
+| Données | `desc.Class = "Aggression;Justice"` (l'ordre du bandeau) | — |
+| Moteur | RIEN à changer : `ClassCard` découpe sur « ; » → `card_classes = [Aggression, Justice, Aspect]` ; `IsClass` / `CardFinder(card_class=...)` répondent VRAI pour chacun | cas `[ud] ud001 ... The Power of Justice ET The Power of Aggression` (2+2 = 4) et témoin The Power of Leadership (2+1, injouable) |
+| Deck-builder, pool | `estCarteJoueur` : `estDoubleAspect(c)` (toutes les parties sont des aspects, ≥ 2) → carte d'aspect ; avant : classe inconnue, AUCUNE tuile | `tools/tests-lanceur/regles-double-aspect.test.mjs` (vu rouge) |
+| Deck-builder, légalité | `validerDeck` : les doubles sont mis de côté puis rangés dans un aspect DÉJÀ présent (le moins fourni, pour l'égalité de Spider-Woman), sinon on ouvre l'aspect qui couvre le plus de doubles restants | même fichier : deck Justice + Rōnin légal, deck Leadership + Rōnin refusé, deux doubles sans aspect commun = 2 aspects |
+| Deck-builder, filtres | `passeFiltres` : la carte passe sous le filtre de CHACUN de ses aspects | même fichier |
+| Deck-builder, affichage | `labelAspect` « Agressivité / Justice », ligne colorée du PREMIER aspect (`classeCss`) | non testé (DOM) |
+| Préparation | `catalog.js` `aspectsOfDeck` : un double rejoint un aspect présent, seul il apporte son premier | non testé (module lié au DOM) |
+| Plateau (ui-app) | `aspectDeClasse` rend le PREMIER aspect (liseré monocolore sous un effet délavant) | `tmnt-aspect-dual-plateau.test.ts` |
+
+⚠ Points NON tranchés, faute de règle : `ClassCard.GetAspect()` rend le PREMIER aspect seulement (lu par
+04031a Spider-Woman « once per round for each aspect » et par la page de suivi) ; `FacesCounter.GetAspectCount`
+compte un double pour DEUX aspects (Adam Warlock 21038/21039/21066). Aucune carte du pack ne le lit.
+
+Harnais : `Puzzle.PutIntoPlay` déclenche AUSSI les capacités d'entrée en jeu (Cloaked de Rōnin, Tough
+de Toughness, compteurs « enters play with ») : un Cloaked absorbe ensuite 2 dégâts de `Puzzle.Damage`.
+Retirer l'état par la bascule `Puzzle.Cloak` / `Puzzle.Tough` avant de poser des dégâts (`tools/cas/tmnt_aspect_dual.py`, `_en_jeu`).

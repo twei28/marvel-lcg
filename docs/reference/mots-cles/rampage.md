@@ -17,8 +17,8 @@ Huit cartes le portent, toutes des ÉVÉNEMENTS au trait FERAL, tous à coût é
 | Justice | Feral Cunning | 2 |
 | Leadership | Down the Drain | 2 |
 | Leadership | Rubble Rouser | 3 |
-| Protection | Primal Provisions | 2 |
-| Protection | Autodefenestration | 2 |
+| Protection | Primal Provisions (`up026`, Hero Action + Max 1 per phase) | 2 |
+| Protection | Autodefenestration (`up004`, sur une **Hero Interrupt**) | 2 |
 
 ⚠ La consigne de départ en listait SEPT : **Autodefenestration** (Protection, coût
 0★, « DEFENSE. FERAL. NYC. ») porte aussi « ★ Rampage 2 ». Relevé sur le scan le
