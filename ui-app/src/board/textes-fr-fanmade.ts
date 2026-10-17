@@ -4690,7 +4690,47 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
   // --- TMNT Shinobi Kuji-Kiri (sj) : ajouter les cartes sjNNN ci-dessous, dans ce bloc seulement ---
 
-  // --- TMNT Shinobi Ninjutsu (sa) : ajouter les cartes saNNN ci-dessous, dans ce bloc seulement ---
+  // --- TMNT Shinobi Ninjutsu (sa) : les vingt cartes Ninjutsu (17/10/2026) ---
+  // sa001 Assassinate
+  'sa001': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action</b> <i>(attaque)</i> : infligez 7 dégâts à un sbire. Cette attaque gagne perçant.\n<i>« Le silence et la vitesse sont les armes que nous manions. »</i> —Splinter",
+  // sa002 Shroud and Protect
+  'sa002': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous défendez contre une attaque, vous gagnez +1 DEF pour cette attaque. Si vous ne subissez aucun dégât de cette attaque, camouflez et redressez votre héros.\n<i>« Il faut partir avant que quelqu'un nous voie. »</i> —Donatello",
+  // sa003 Reconnaissance
+  'sa003': "<b>Action</b> : camouflez un personnage que vous contrôlez → regardez les 3 cartes du dessus du deck d'un joueur ou du deck rencontre. Remettez ces cartes sur le dessus et/ou le dessous de ce deck, dans l'ordre de votre choix.\n<i>« Ça sent les ennuis... »</i> —Donatello",
+  // sa004 Scale the Wall
+  'sa004': "Jouez cette carte uniquement si votre héros est camouflé. 1 max par round.\n<b>Action de héros</b> : piochez 2 cartes.\n<i>« Il faut savoir surmonter n'importe quel obstacle. »</i> —Splinter",
+  // sa005 Run the Rooftops
+  'sa005': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance.\n<i>« Nous sommes les gardiens invisibles de la ville. »</i> —Donatello",
+  // sa006 Cut-and-Run
+  'sa006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si cette attaque vainc un ennemi, camouflez votre héros.\n<i>« Ça dégénère. Comptez-moi dehors. »</i> —Ronin",
+  // sa007 Hamato Clan
+  'sa007': "<b>Réponse</b> : après qu'un allié que vous contrôlez a quitté le jeu, placez 1 compteur d'ombre ici.\n<b>Action</b> : inclinez cette carte et retirez-en 1 compteur d'ombre → camouflez un allié que vous contrôlez.",
+  // sa008 Smoke Bombs
+  'sa008': "Utilisations (2 compteurs de fumée). 1 max par joueur.\n<b>Action de héros</b> : inclinez cette carte et retirez-en 1 compteur de fumée → camouflez un personnage ami.\n<i>« Maintenant tu me vois... »</i> —Ronin",
+  // sa009 Twilight Sentry
+  'sa009': "Attachez cette carte à un allié que vous contrôlez et camouflez-le.\n1 amélioration [[ENTRAÎNEMENT]] max par allié.\n<b>Interruption</b> : quand l'allié attaché est censé subir n'importe quelle quantité de dégâts, défaussez à la place une carte d'état Camouflé de lui.",
+  // sa010 Opportunist
+  'sa010': "1 max par joueur.\n<b>Action de héros</b> <i>(contre)</i> : défaussez une carte d'état Camouflé d'un personnage que vous contrôlez et inclinez Opportunist → retirez 3 menaces d'une manigance.",
+  // sa011 Stealth Proficiency
+  'sa011': "<b>Action de héros</b> : défaussez une carte d'état Camouflé de votre héros → redressez votre héros.\n<b>Réponse de héros</b> : après que vous avez utilisé un de vos pouvoirs de base, camouflez votre héros.\n<i>« Il y a bien plus de potentiel dans le chaos... »</i> —Ronin",
+  // sa012 Black Ops (Q-N2 : « Action de héros : après que... » imprimé tel quel)
+  'sa012': "<b>Action de héros</b> : après que votre héros a vaincu un sbire ou une manigance annexe, défaussez Black Ops → redressez votre héros.\n<i>« Un obstacle de moins... »</i> —Raphael",
+  // sa013 Up in Smoke
+  'sa013': "<b>Action de héros</b> : redressez un allié [[NINJA]].\n<b>Interruption de héros</b> : quand un allié est censé être défaussé du jeu, remettez-le plutôt dans la main de son propriétaire.\n<i>« Il est temps de bousculer l'échiquier. »</i> —Ronin",
+  // sa014 Hidden Passage
+  'sa014': "<b>Action d'alter-ego</b> : inclinez Hidden Passage et défaussez une carte d'état Camouflé de votre identité → piochez 1 carte.\n<b>Réponse de héros</b> : après que vous avez changé de forme, inclinez Hidden Passage → camouflez votre identité.",
+  // sa015 Kusari-Kagi
+  'sa015': "Restreint.\n<b>Action de héros</b> : inclinez cette carte et défaussez une carte d'état Camouflé de votre héros → infligez 1 dégât à un ennemi et piochez 1 carte.\n<i>« Viens ici ! »</i> —Ronin",
+  // sa016 Shadow Summon
+  'sa016': "<b>Action</b> : défaussez des cartes du dessus de votre deck jusqu'à défausser un allié [[NINJA]] et mettez-le en jeu. Si cet allié est toujours en jeu à la fin de la phase, ajoutez-le à votre main.\n<i>« Nous devrons cacher notre nombre. »</i> —Leonardo",
+  // sa017 Moja
+  'sa017': "<b>Réponse</b> : après que Moja est entrée en jeu, camouflez-la.\n<b>Réponse</b> : après que Moja a subi des dégâts consécutifs ([consequential]), défaussez une carte Ninjutsu de votre main → camouflez Moja.",
+  // sa018 Smokescreen
+  'sa018': "Réduisez de 1 le coût pour jouer cette carte si votre identité est camouflée.\n<b>Interruption de héros</b> <i>(défense)</i> : quand une attaque ennemie est censée infliger des dégâts à un personnage ami, défaussez cette carte → prévenez 2 de ces dégâts.",
+  // sa019 Gaslight
+  'sa019': "<b>Action de héros</b> <i>(contre)</i> : défaussez une carte d'état Camouflé de votre héros → choisissez :\n• Retirez 3 menaces d'une manigance.\n• Désorientez un ennemi.\n<i>« Vous avez dû rêver... »</i> —Donatello",
+  // sa020 From the Shadows
+  'sa020': "1 max par deck.\n<b>Réponse de héros</b> : après que vous avez dépensé cette carte pour jouer une carte Ninjutsu, camouflez votre héros.",
 
   // --- TMNT Shinobi Taijutsu (sh) : ajouter les cartes shNNN ci-dessous, dans ce bloc seulement ---
 

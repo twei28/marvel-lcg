@@ -115688,7 +115688,354 @@
  ],
  "tmnt_shinobi_bushido": [],
  "tmnt_shinobi_kuji_kiri": [],
- "tmnt_shinobi_ninjutsu": [],
+ "tmnt_shinobi_ninjutsu": [
+  {
+   "card_id": "sa001",
+   "type": "Event",
+   "name": "Assassinate",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Play only if your hero is cloaked.\n<b>Action</b> <i>(attack)</i>: Deal 7 damage to a minion. This attack gains piercing.\n<i>\"Silence and speed are weapons we wield.\"</i> —Splinter",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa002",
+   "type": "Event",
+   "name": "Shroud and Protect",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you defend against an attack you get +1 DEF for that attack. If you take no damage from that attack, cloak and ready your hero.\n<i>\"We need to go before someone sees us.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa003",
+   "type": "Event",
+   "name": "Reconnaissance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Action</b>: Cloak a character you control → look at the top 3 cards of a player deck or encounter deck. Put those cards on the top and/or bottom of that deck in any order.\n<i>\"Looks like trouble...\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa004",
+   "type": "Event",
+   "name": "Scale the Wall",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Play only if your hero is cloaked. Max 1 per round.\n<b>Hero Action</b>: Draw 2 cards.\n<i>\"You must be able to overcome any obstacle.\"</i> —Splinter",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa005",
+   "type": "Event",
+   "name": "Run the Rooftops",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "NYC",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Play only if your hero is cloaked.\n<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme.\n<i>\"We are the unseen guardians of the city.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa006",
+   "type": "Event",
+   "name": "Cut-and-Run",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If this attack defeats an enemy, cloak your hero.\n<i>\"This is getting out of control. You can count me out.\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa007",
+   "type": "Support",
+   "name": "* Hamato Clan",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TEAM"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Response</b>: After an ally you control leaves play, place 1 shadow counter here.\n<b>Action</b>: Exhaust this card and remove 1 shadow counter from here → cloak an ally you control.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa008",
+   "type": "Upgrade",
+   "name": "Smoke Bombs",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "2,smoke",
+    "MaxPerUnit": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Uses (2 smoke counters). Max 1 per player.\n<b>Hero Action</b>: Exhaust this card and remove 1 smoke counter from it → cloak a friendly character.\n<i>\"Now you see me...\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa009",
+   "type": "Upgrade",
+   "name": "* Twilight Sentry",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TITLE",
+    "TRAINING"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Attach to an ally you control and cloak them.\nMax 1 [[TRAINING]] upgrade per ally.\n<b>Interrupt</b>: When attached ally would take any amount of damage, discard a cloaked status card from them instead.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa010",
+   "type": "Upgrade",
+   "name": "Opportunist",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Max 1 per player.\n<b>Hero Action</b> <i>(thwart)</i>: Discard a cloaked status card from a character you control and exhaust Opportunist → remove 3 threat from a scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa011",
+   "type": "Event",
+   "name": "Stealth Proficiency",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b>: Discard a cloaked status card from your hero → ready your hero.\n<b>Hero Response</b>: After you use one of your basic powers, cloak your hero.\n<i>\"There is far more potential in chaos...\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa012",
+   "type": "Upgrade",
+   "name": "Black Ops",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b>: After your hero defeats a minion or side scheme, discard Black Ops → ready your hero.\n<i>\"That's one less obstacle...\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa013",
+   "type": "Event",
+   "name": "Up in Smoke",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b>: Ready a [[NINJA]] ally.\n<b>Hero Interrupt</b>: When an ally would be discarded from play, return it to its owner's hand instead.\n<i>\"Time to shake up the board.\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa014",
+   "type": "Support",
+   "name": "* Hidden Passage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SEWERS"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Hidden Passage and discard a cloaked status card from your identity → draw 1 card.\n<b>Hero Response</b>: After you change form, exhaust Hidden Passage → cloak your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa015",
+   "type": "Upgrade",
+   "name": "* Kusari-Kagi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust this card and discard a cloaked status card from your hero → deal 1 damage to an enemy and draw 1 card.\n<i>\"Get over here!\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa016",
+   "type": "Event",
+   "name": "Shadow Summon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Action</b>: Discard cards from the top of your deck until you discard a [[NINJA]] ally and put it into play. If that ally is still in play at the end of the phase, add it to your hand.\n<i>\"We will need to hide our numbers.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa017",
+   "type": "Ally",
+   "name": "* Moja",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Response</b>: After Moja enters play, cloak her.\n<b>Response</b>: After Moja takes consequential damage ([consequential]), discard a Ninjutsu card from your hand → cloak Moja.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa018",
+   "type": "Upgrade",
+   "name": "Smokescreen",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Reduce the cost to play this card by 1 if your identity is cloaked.\n<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attack would deal damage to a friendly character, discard this card → prevent 2 of that damage.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa019",
+   "type": "Event",
+   "name": "Gaslight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Discard a cloaked status card from your hero → choose:\n• Remove 3 threat from a scheme.\n• Confuse an enemy.\n<i>\"You must have imagined that...\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa020",
+   "type": "Resource",
+   "name": "From the Shadows",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Max 1 per deck.\n<b>Hero Response</b>: After you spend this card to play a Ninjutsu card, cloak your hero.",
+   "custom": "Inkwire"
+  }
+ ],
  "tmnt_shinobi_taijutsu": [],
  "tmnt_shinobi_dual": [],
  "tmnt_shinobi_paths": [
@@ -115875,5 +116222,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "8042a42a91ca89e674b0aed182218375e8924de7c0cae17c4a4952f51d2350a4"
+ "checksum": "b25445a8da1ba11b78f107c39bb3fc7e09f2020a31e42581a3ff9af156a8407b"
 }
