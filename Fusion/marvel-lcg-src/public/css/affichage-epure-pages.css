@@ -760,7 +760,7 @@ html[data-epure] #db-grille-info b {
 }
 
 /* --- 15. Retours du 16/10/2026 ----------------------------------------------- */
-/* « Lancer la partie » : en orange, pour qu'on le trouve tout de suite. */
+/* « Lancer la partie » : orange le 16/10, bleu depuis le 17/10 (voir la fin du fichier). */
 html[data-epure] .btn.launch,
 html[data-epure] body .btn.launch,
 html[data-epure] button.btn.launch {
@@ -1537,4 +1537,14 @@ html[data-epure] .ext-fanmade {
 html[data-epure] .acc-nombre:hover {
   background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%) !important;
   color: #fff;
+}
+
+/* « Lancer la partie » en bleu relief (17/10/2026, remplace l'orange du 16/10). */
+html[data-epure] body button.btn.launch:not(:disabled),
+html[data-epure] body button.btn.launch:not(:disabled):hover {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%) !important;
+  color: #fff !important;
+  border: 1px solid #1d4a8a !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3) !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
