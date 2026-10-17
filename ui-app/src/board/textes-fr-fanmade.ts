@@ -4610,7 +4610,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'uj009': "[star] Rampage 2. <i>(Coût additionnel pour jouer cette carte : subissez 2 dégâts et défaussez les 2 cartes du dessus de votre deck.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi et désorientez-le.\n<i>« Les humains sont très faciles à embrouiller. »</i> —Alopex",
   'uj010': "Jouez cette carte sous le contrôle de n'importe quel joueur.\n1 max par joueur.\n<b>Interruption</b> : quand un personnage que vous contrôlez attaque un ennemi désorienté, augmentez de 1 la quantité de dégâts que cette attaque inflige à cet ennemi.",
   'uj011': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance (4 menaces à la place si vous avez utilisé une ressource [mental] pour payer cette carte).\n<i>« Hiroto Oroku répondra de ses crimes. »</i> —Ronin",
-  'uj012': "Robustesse.\n<b>Interruption</b> : quand Hatamoto défend contre une attaque, retirez 1 menace d'une manigance.\n<i>« Je défendrai l'Empereur au prix de ma vie. »</i>",
+  'uj012': "Ténacité.\n<b>Interruption</b> : quand Hatamoto défend contre une attaque, retirez 1 menace d'une manigance.\n<i>« Je défendrai l'Empereur au prix de ma vie. »</i>",
   'uj013': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVous gagnez +3 points de vie et votre héros gagne +1 CTR.\n<i>« Les tortues héroïques à la rescousse ! »</i> —Donatello",
   'uj014': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVotre héros gagne +1 CTR.\n<i>« Nous savons ce qu'il faut faire. »</i> —Leonardo",
   'uj015': "Départ. (<i>Vous pouvez ajouter cette carte à votre main avant de piocher votre main de départ.</i>)\nVotre héros gagne +1 CTR.\n<i>« Je te trouverai... »</i> —Nightwatcher",
@@ -4789,8 +4789,8 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_dual — Stealth Fighter (Ally), Justice/Commandement
   'ud004': "<b>Réponse</b> : après que Stealth Fighter est entré en jeu ou a subi des dégâts consécutifs ([consequential]), camouflez-le.\n<b>Interruption</b> : après que Stealth Fighter a été vaincu par des dégâts consécutifs ([consequential]), camouflez un personnage ami.",
   // tmnt_aspect_dual — Sōhei (Ally), Justice/Protection
-  'ud005': "Tenace.\n<b>Interruption</b> : quand Sōhei est vaincu par des dégâts consécutifs ([consequential]), votre héros gagne +2 en taille de main jusqu'à la fin du round.\n<i>« Je veillerai sur toi depuis l'autre côté. »</i>",
+  'ud005': "Ténacité.\n<b>Interruption</b> : quand Sōhei est vaincu par des dégâts consécutifs ([consequential]), votre héros gagne +2 en taille de main jusqu'à la fin du round.\n<i>« Je veillerai sur toi depuis l'autre côté. »</i>",
   // tmnt_aspect_dual — Nightwatcher (Ally), Commandement/Protection
-  'ud006': "Tenace.\n<b>Réponse</b> : après que Nightwatcher a subi des dégâts consécutifs ([consequential]), donnez-lui une carte d'état Tenace.\n<i>« Je suis le héros dont nous avons TOUS besoin ! »</i>",
+  'ud006': "Ténacité.\n<b>Réponse</b> : après que Nightwatcher a subi des dégâts consécutifs ([consequential]), donnez-lui une carte d'état Tenace.\n<i>« Je suis le héros dont nous avons TOUS besoin ! »</i>",
 
 }
