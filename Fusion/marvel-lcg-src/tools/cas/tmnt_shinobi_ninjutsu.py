@@ -601,8 +601,10 @@ CAS += [
        "pas de reduction", [HEROS], [], {"en_main": ["sa018"], "hors_jeu": ["sa018"]},
        main_exclusive=["sa018"], jouer=["sa018"], accepter_choix=True),
     _c("sa018 Smokescreen : « your IDENTITY » : une identite ALTER-EGO camouflee suffit (cout 0)",
-       "pas « your hero »", ["Puzzle.Cloak('01001b')"], [], {"en_jeu": ["sa018"]},
-       main_exclusive=["sa018"], jouer=["sa018"], accepter_choix=True),
+       "pas « your hero » ; ⚠ Peter Parker genere lui-meme une ressource [mental] (Scientist) : on lui INTERDIT de payer (`ne_pas_depenser`), "
+       "sinon le cas resterait vert sans la reduction de cout",
+       ["Puzzle.Cloak('01001b')"], [], {"en_jeu": ["sa018"]},
+       main_exclusive=["sa018"], ne_pas_depenser=["01001b"], jouer=["sa018"], accepter_choix=True),
     _c("sa018 Smokescreen (Hero Interrupt) : attaque de Rhino (ATQ 4) sur le heros incline : 2 degats evites, la carte est defaussee",
        "« When an enemy attack would deal damage to a friendly character, discard this card -> prevent 2 of that damage » : 4 - 2 = 2",
        [HEROS, HERO_FATIGUE, _en_jeu("sa018")] + DEUX_ICONES, ["Puzzle.Attack('01094')"],
