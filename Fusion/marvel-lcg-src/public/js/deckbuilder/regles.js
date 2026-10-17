@@ -11,6 +11,8 @@
 "use strict";
 
 import { exclusiveRefusee } from "../prepare/arts-cartes-choix.js";
+import { CLASSES_SHINOBI, typesShinobi, estShinobi, estPath, reglesDuPath, reglesDuPathPropre, admiseParLePath } from "./paths-shinobi.js";
+export { CLASSES_SHINOBI, typesShinobi, estShinobi, estPath };
 
 // « 'Pool » : l'apostrophe fait partie du nom d'aspect dans les donnees (Deadpool).
 export const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized"];
@@ -81,6 +83,9 @@ export function classeDeConstruction(classe) {
     const liste = String(classe || "").split(";").map((x) => x.trim()).filter(Boolean);
     if (liste.length < 2) return classe;
     if (liste.includes("Hero")) return "Hero";
+    // Carte DUAL SHINOBI (« Bushido;Kuji-Kiri », pack tmnt_shinobi_dual) : ses DEUX types restent lisibles
+    // (livret p.7 : elle compte comme les deux), ils ne sont ni des aspects ni « Basic ».
+    if (typesShinobi(classe).length) return classe;
     return liste.find((x) => ASPECTS.includes(x)) || liste.find((x) => CLASSES_NEUTRES.includes(x)) || liste[0];
 }
 
@@ -122,6 +127,10 @@ export function estCarteJoueur(c) {
     if (!c || !c.class) return false;
     if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return false;
     if (c.class === "Hero") return false;
+    // TMNT Shinobi (17/10/2026) : une carte Shinobi (classe Bushido / Ninjutsu / Kuji-Kiri / Taijutsu, Dual
+    // comprise) ou un PATH est une carte de joueur ; `validerDeck` exige alors un Path et applique ses regles.
+    if (estPath(c)) return true;
+    if (estShinobi(c)) return estTypeJouable(c);
     // Double aspect (« Aggression;Justice ») : une carte d'aspect comme une autre.
     if (estDoubleAspect(c)) return estTypeJouable(c);
     if (!ASPECTS.includes(c.class) && !CLASSES_NEUTRES.includes(c.class)) return false;
@@ -461,10 +470,15 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     // Cartes DOUBLE ASPECT : leur aspect se decide APRES le decompte des autres
     // (elles rejoignent un aspect deja present, sinon le moins couteux).
     const doubles = [];          // { aspects, n, c }
+    // TMNT Shinobi (17/10/2026) : les cartes Shinobi (ni aspect ni Basic) et le Path choisi.
+    const shinobis = [];         // { brute, c }
+    const chemins = [];          // { brute, c, id, regles }
     for (const [id, n] of choisies) {
         const c = carte(id);
         if (!c) continue;
         const brute = carteBrute(id);
+        if (estPath(brute)) chemins.push({ brute, c, id, n, regles: reglesDuPath(brute, id) });
+        else if (estShinobi(brute)) shinobis.push({ brute, c });
         // Carte EXCLUSIVE à une série (TMNT) : seulement dans le deck d'un de ses héros.
         if (exclusiveRefusee(brute.set_name, hero.heroCardId || hero.id)) exclusivesRefusees.push(c.name);
         if (estDoubleAspect(brute)) {
@@ -494,6 +508,9 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
         else if (interdits.includes(String(c.type))) typesRefuses.push(c.name);
         else if (interditsAspect.includes(String(c.type)) && ASPECTS.includes(c.class)) typesRefuses.push(c.name);
         if (estSignature(c)) empruntees += n;
+        else if (estShinobi(brute) || estPath(brute)) {
+            // Ni aspect ni Basic (livret p.8) : rien a compter ici, les regles du Path sont jugees plus bas.
+        }
         else if (c.class && !CLASSES_NEUTRES.includes(c.class)
                  && !exemptDeLaLimiteAspect(hero, c)) {
             parAspect.set(c.class, (parAspect.get(c.class) || 0) + n);
@@ -580,9 +597,39 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     if (total < 40) problemes.push(`${t("Deck trop petit :")} ${total}/40 ${t("minimum (cartes signature incluses)")}`);
     if (total > 50) problemes.push(`${t("Deck trop grand :")} ${total}/50 maximum`);
     const regle = reglesAspect(hero, t);
+    // ---- TMNT SHINOBI (17/10/2026) : le Path, ses types Shinobi, ses aspects, ses plafonds ----
+    // « Follow your Path deck-building rules in conjunction with the standard deck-building rules » (livret p.5) :
+    // les regles du Path S'AJOUTENT a celles du heros. Un Path ne remplace une regle du heros que quand il le dit
+    // (The Last Ronin : « any combination of aspect cards »).
+    const propre = reglesDuPathPropre(hero);
+    const nbPaths = chemins.reduce((s, x) => s + x.n, 0);
+    const regles = chemins.length ? chemins[0].regles : propre;
+    if (nbPaths > 1 || (propre && nbPaths >= 1)) {
+        problemes.push(`${t("Un seul Path par deck :")} ${[...new Set(chemins.map((x) => titreDe(x.c)))].join(", ")}`
+            + (propre ? ` (${t("ce héros a déjà sa Voie")})` : ""));
+    }
+    if (shinobis.length && !regles) {
+        problemes.push(`${t("Cartes Shinobi sans Path :")} ${[...new Set(shinobis.map((x) => x.c.name))].join(", ")}`);
+    }
+    if (regles) {
+        const refusees = shinobis.filter((x) => !admiseParLePath(x.brute, regles)).map((x) => x.c.name);
+        if (refusees.length) {
+            problemes.push(`${t("Types Shinobi non autorisés par le Path")} ${regles.nom} (${regles.types.join(", ")}) : ${[...new Set(refusees)].join(", ")}`);
+        }
+    }
+    let aspectsMax = regle.max;
+    let aspectsLabel = regle.label;
+    if (regles) {
+        const pm = regles.aspects.max;
+        if (regles.aspects.libre) { aspectsMax = Math.max(aspectsMax, pm); aspectsLabel = t("une combinaison libre d’aspects (Path)"); }
+        else if (Math.min(aspectsMax, pm) >= regle.min) {
+            aspectsMax = Math.min(aspectsMax, pm);
+            aspectsLabel = pm === 0 ? t("aucun aspect (Path)") : (pm === 1 ? t("un seul aspect (Path)") : aspectsLabel);
+        }
+    }
     if (aspects.size < regle.min) problemes.push(`${t("Ce héros requiert")} ${regle.label} — ${t("actuellement")} ${aspects.size}`);
-    if (aspects.size > regle.max) {
-        problemes.push(`${t("Trop d’aspects")} (${[...aspects].join(", ")}) — ${t("autorisé :")} ${regle.label}`
+    if (aspects.size > aspectsMax) {
+        problemes.push(`${t("Trop d’aspects")} (${[...aspects].join(", ")}) — ${t("autorisé :")} ${aspectsLabel}`
             + (quota ? ` ${t("+ au plus")} ${quota.label}` : ""));
     }
     if (quota && horsAspect > quota.max) {
@@ -590,7 +637,9 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     }
     // Adam Warlock (21031b) : « You cannot include more than 1 copy of any
     // non-Adam Warlock card » (ses signatures ne sont pas dans `choisies`).
-    const maxCopies = idHeros === "adam_warlock" ? 1 : Infinity;
+    // The Last Ronin (« You may add only one copy of any card to your deck ») : 1 exemplaire de TOUTE carte.
+    const maxPath = regles && regles.maxExemplaires ? regles.maxExemplaires : Infinity;
+    const maxCopies = Math.min(idHeros === "adam_warlock" ? 1 : Infinity, maxPath);
     for (const x of parTitre.values()) {
         const max = Math.min(x.max, maxCopies);
         if (x.n > max) problemes.push(`${t("Trop d’exemplaires de")} « ${x.nom} » : ${x.n}/${max}`);

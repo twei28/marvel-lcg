@@ -46,7 +46,7 @@ import { DICO_EN_DECKBUILDER } from "/public/js/deckbuilder/dico-en.js";
 // Les règles de construction vivent dans regles.js : l'écran de préparation les
 // applique AUSSI, quand on colle un lien MarvelCDB sur un autre héros.
 import {
-    ASPECTS, CLASSES_NEUTRES, estStanLee, estSignature,
+    ASPECTS, CLASSES_NEUTRES, CLASSES_SHINOBI, estStanLee, estSignature,
     estCarteJoueur, estCarteSignature, maxParDeck, validerDeck, choisiesDuDeck, reglesAspect,
 } from "/public/js/deckbuilder/regles.js";
 
@@ -85,6 +85,7 @@ const MOTS_CLES = [
 ];
 
 const TYPES = [
+    { cle: "Path", libelle: "Voie", groupe: "Voie", icone: "fa-torii-gate" },
     { cle: "Ally", libelle: "Allié", groupe: "Alliés", icone: "fa-user" },
     { cle: "Event", libelle: "Événement", groupe: "Événements", icone: "fa-bolt" },
     { cle: "Upgrade", libelle: "Amélioration", groupe: "Améliorations", icone: "fa-arrow-up" },
@@ -500,7 +501,9 @@ function aspectsProposes() {
     const f = etat.filtres;
     return [...(estStanLee(etat.hero) ? ["Hero"] : []),
         ...ASPECTS.filter((a) => f.fanMade || !auteurDeLAspect(a)),
-        ...CLASSES_NEUTRES];
+        ...CLASSES_NEUTRES,
+        // TMNT Shinobi : les quatre types Shinobi (ni aspect ni Basic), proposes en tant que filtres de classe.
+        ...(f.fanMade ? CLASSES_SHINOBI : [])];
 }
 
 function traitsDuPool() {

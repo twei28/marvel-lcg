@@ -252,15 +252,15 @@ CAS += [
     _dispo("se005 The Last Ronin : Kanpeki est une ACTION, proposee aussi en forme alter-ego",
            "« Action » (sans Hero) : les deux formes", [_voie("se005")], "se005", "Action", 1,
            main_exclusive=["tj004"]),
-    _c("se005 The Last Ronin : une carte glissee sous la Voie se JOUE comme si elle etait en main",
-       "« You may play cards tucked here as if they were in your hand » : tj005 Moonlighting (cout 0) glissee sous la Voie, main VIDE, "
-       "elle est jouee depuis le dessous de la Voie et finit dans la defausse",
-       [HEROS, _voie("se005"), "Puzzle.PlaceUnder('tj005', 'se005')", "Puzzle.EmptyHand()"], [],
-       {"defausse": ["tj005"]}, jouer=["tj005"], accepter_choix=True),
-    _c("se005 The Last Ronin : TEMOIN, sans la Voie une carte glissee ailleurs ne se joue pas (reste hors de la main)",
-       "tj005 glissee sous un autre hote (Spider-Man) : non jouable, elle ne passe pas en defausse",
-       [HEROS, "Puzzle.PlaceUnder('tj005', '01001a')", "Puzzle.EmptyHand()"], [],
-       {"hors_jeu": ["tj005"]}, jouer=["tj005"], accepter_choix=True),
+    _c("se005 The Last Ronin : une carte glissee sous la Voie est jouable COMME SI elle etait en main (et pas une carte de la defausse)",
+       "« You may play cards tucked here as if they were in your hand » : tj005 glissee sous la Voie ; `IsLikeInHand()` vrai, la defausse non "
+       "(la cle `jouer` du harnais amene une carte absente en main : elle ne prouverait rien ici)",
+       [HEROS, _voie("se005"), "Puzzle.PlaceUnder('tj005', 'se005')", "Puzzle.CreatePlayerDiscardPile('01090')"], [],
+       {"hote": "se005", "carte": "tj005", "comme_en_main": True}, verifier="se_comme_en_main"),
+    _c("se005 The Last Ronin : TEMOIN, une carte glissee sous un AUTRE hote (le heros) n'est PAS jouable comme en main",
+       "meme carte, meme position, mais rangee sous Spider-Man et non sous la Voie : `IsLikeInHand()` faux",
+       [HEROS, _voie("se005"), "Puzzle.PlaceUnder('tj005', '01001a')", "Puzzle.CreatePlayerDiscardPile('01090')"], [],
+       {"hote": "01001a", "carte": "tj005", "comme_en_main": False}, verifier="se_comme_en_main"),
 
     # ===================================================================== se006 Yoshimitsu
     _c("se006 Yoshimitsu : « You get +2 hit points » (forme heros, 10 -> 12)",
@@ -392,6 +392,26 @@ CAS += [
 ]
 
 VERIFICATIONS = r'''
+def se_comme_en_main(monde, aides):
+    """`attendu` : hote (en jeu), carte (rangee sous l'hote), comme_en_main (bool attendu de `IsLikeInHand()`).
+    Contre-bout : une carte de la DEFAUSSE n'est jamais « comme en main » (sans lui la mesure ne discrimine rien)."""
+    attendu = aides["cas"]["attendu"]
+    hote = aides["par_id"](monde, attendu["hote"])
+    if hote is None:
+        return False, f"{attendu['hote']} n'est pas en jeu"
+    rangees = [c for c in hote.GetPlacedCardArea().Get(True) if c is not None
+               and getattr(c.paper, "card_id", None) == attendu["carte"]]
+    if len(rangees) != 1:
+        return False, f"{len(rangees)} exemplaire(s) de {attendu['carte']} sous {attendu['hote']} (attendu 1)"
+    obtenu = bool(rangees[0].IsLikeInHand())
+    if obtenu != attendu["comme_en_main"]:
+        return False, f"{attendu['carte']} sous {attendu['hote']} : IsLikeInHand() = {obtenu} (attendu {attendu['comme_en_main']})"
+    for f in monde.players[0].discard_pile.Get():
+        if f is not None and f.IsLikeInHand():
+            return False, f"{getattr(f.paper, 'card_id', '?')}, dans la DEFAUSSE, se dit aussi comme en main : la mesure ne discrimine rien"
+    return True, f"{attendu['carte']} sous {attendu['hote']} : IsLikeInHand() = {obtenu}, la defausse non"
+
+
 def se_classes(monde, aides):
     """`attendu` : carte (en jeu), `oui` (classes que `IsClass` ET `CardFinder(card_class=...)` doivent reconnaitre),
     `non` (classes refusees). Verifie aussi que `CarteShinobi()`-equivalent (4 classes, OU) la retient."""
