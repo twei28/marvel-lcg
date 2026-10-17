@@ -18,7 +18,7 @@
 // Test : `node --test tools/tests-lanceur/arts-cartes-choix.test.mjs`.
 "use strict";
 
-import { ARTS_CARTES, SERIES_ARTS } from "./arts-cartes-table.js";
+import { ARTS_CARTES, SERIES_ARTS, ORIGINES_CARTES } from "./arts-cartes-table.js";
 
 export const STANDARD = "standard";
 export const CLE_STOCKAGE = "mc_card_art_v1";
@@ -29,6 +29,13 @@ export function cleCarte(id) {
     return String(id || "").split(",")[0];
 }
 
+/** L'officielle d'une carte : pour une réimpression identique (`full_link`),
+ *  l'impression d'origine, dont l'image et le choix valent pour toutes. */
+export function origine(id, origines = ORIGINES_CARTES) {
+    const cle = cleCarte(id);
+    return origines[cle] || cle;
+}
+
 /** Clé de héros : numéro de carte sans suffixe de face (« tl001a » -> « tl001 »). */
 export function cleHeros(heroCardId) {
     return cleCarte(heroCardId).replace(/[a-z]$/, "");
@@ -36,7 +43,7 @@ export function cleHeros(heroCardId) {
 
 /** Les arts alternatifs d'une carte officielle ([] si elle n'en a pas). */
 export function artsDe(id, arts = ARTS_CARTES) {
-    return arts[cleCarte(id)] || [];
+    return arts[origine(id)] || [];
 }
 
 /** La série d'art d'un héros (« tmnt »), ou null. `heros` : card_id de sa
@@ -59,7 +66,7 @@ export function codeParDefaut(id, heros, arts = ARTS_CARTES, series = SERIES_ART
 
 /** Le code que la carte AFFICHE : le choix enregistré s'il est valable, sinon le défaut. */
 export function codeAffiche(id, choix, heros, arts = ARTS_CARTES, series = SERIES_ARTS) {
-    const voulu = choix && choix[cleCarte(id)];
+    const voulu = choix && choix[origine(id)];
     if (voulu === STANDARD) return STANDARD;
     if (voulu && artsDe(id, arts).includes(voulu)) return voulu;
     return codeParDefaut(id, heros, arts, series);
@@ -67,14 +74,14 @@ export function codeAffiche(id, choix, heros, arts = ARTS_CARTES, series = SERIE
 
 /** Identifiant d'image à demander (« 56013_tmnt ») : l'officielle si « standard ». */
 export function picIdAvecArt(id, code) {
-    const base = cleCarte(id);
+    const base = origine(id);
     return code && code !== STANDARD ? `${base}_${code}` : base;
 }
 
 /** Les changements à écrire pour ce choix, au format des hérauts :
  *  `null` efface la clé (retour au défaut). */
 export function changementsPourCarte(id, code) {
-    const cle = cleCarte(id);
+    const cle = origine(id);
     if (!cle) return {};
     return { [cle]: code ? code : null };
 }
@@ -94,7 +101,7 @@ export function cartesAvecArt(ids, arts = ARTS_CARTES) {
     const vus = new Set();
     const out = [];
     for (const brut of ids || []) {
-        const id = cleCarte(brut);
+        const id = origine(brut);
         if (!id || vus.has(id) || artsDe(id, arts).length === 0) continue;
         vus.add(id);
         out.push(id);
@@ -106,7 +113,7 @@ export function cartesAvecArt(ids, arts = ARTS_CARTES) {
  *  proposés (officielle d'abord), le code affiché et le nombre d'exemplaires. */
 export function lignesDeChoix(ids, choix, heros, arts = ARTS_CARTES, series = SERIES_ARTS) {
     const nombre = new Map();
-    for (const brut of ids || []) nombre.set(cleCarte(brut), (nombre.get(cleCarte(brut)) || 0) + 1);
+    for (const brut of ids || []) nombre.set(origine(brut), (nombre.get(origine(brut)) || 0) + 1);
     return cartesAvecArt(ids, arts).map((id) => ({
         id,
         exemplaires: nombre.get(id),

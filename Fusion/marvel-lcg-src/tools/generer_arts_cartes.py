@@ -23,9 +23,25 @@ ENTETE = ("GENERE par tools/generer_arts_cartes.py depuis data/arts_alternatifs.
           "ne pas modifier a la main.")
 
 
+def reimpressions(cartes):
+    """Reimpression identique (`full_link`) -> officielle, pour les cartes a art alternatif.
+
+    Le moteur sert l'image de l'officielle pour ses reimpressions : l'art alternatif
+    et le choix du joueur valent donc pour toutes les impressions."""
+    donnees = json.load(open(RACINE / "data" / "cards.json", encoding="utf-8"))
+    out = {}
+    for v in donnees.values():
+        if isinstance(v, list):
+            for c in v:
+                if isinstance(c, dict) and c.get("full_link") in cartes and c.get("card_id"):
+                    out[c["card_id"]] = c["full_link"]
+    return dict(sorted(out.items()))
+
+
 def lire():
     d = json.load(open(SOURCE, encoding="utf-8"))
-    return {"series": d["series"], "cartes": dict(sorted(d["cartes"].items()))}
+    cartes = dict(sorted(d["cartes"].items()))
+    return {"series": d["series"], "cartes": cartes, "origines": reimpressions(cartes)}
 
 
 def _js(d):
@@ -37,6 +53,8 @@ def contenu_js(d):
             "\"use strict\";\n\n"
             "/** Officielle -> codes d'art alternatif (image `assets/pics/<id>_<code>.jpg`). */\n"
             f"export const ARTS_CARTES = {_js(d['cartes'])};\n\n"
+            "/** Reimpression identique -> officielle (meme image, meme choix). */\n"
+            f"export const ORIGINES_CARTES = {_js(d['origines'])};\n\n"
             "/** Series d'art : heros qui l'ont par defaut, sets exclusifs. */\n"
             f"export const SERIES_ARTS = {_js(d['series'])};\n")
 
@@ -45,6 +63,8 @@ def contenu_ts(d):
     return (f"// {ENTETE}\n\n"
             "/** Officielle -> codes d'art alternatif (image `<id>_<code>`). */\n"
             f"export const ARTS_CARTES: Record<string, string[]> = {_js(d['cartes'])}\n\n"
+            "/** Reimpression identique -> officielle (meme image, meme choix). */\n"
+            f"export const ORIGINES_CARTES: Record<string, string> = {_js(d['origines'])}\n\n"
             "export type SerieArt = {\n"
             "  nom: string\n  nom_en: string\n  heros_cartes: string[]\n  heros_ids: string[]\n  sets_exclusifs: string[]\n}\n\n"
             "/** Series d'art : heros qui l'ont par defaut, sets exclusifs. */\n"

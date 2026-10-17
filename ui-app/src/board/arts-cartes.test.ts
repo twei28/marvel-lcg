@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('./arts-cartes-table', () => ({
   ARTS_CARTES: { '56013': ['tmnt'], '01057': ['tmnt'] },
+  ORIGINES_CARTES: { '04041': '01057' },
   SERIES_ARTS: {
     tmnt: {
       nom: 'TMNT',
@@ -17,7 +18,7 @@ vi.mock('./arts-cartes-table', () => ({
 }))
 
 import { picIdCarte, serieDuHeros, lireArtsCartes, oublierArtsCartes, CLE_ARTS_CARTES } from './arts-cartes'
-import { picIdAffiche } from './variantes'
+import { picIdAffiche, collectionPourJoueur } from './variantes'
 
 const ARTS = { '56013': ['tmnt'], '01057': ['tmnt'] }
 
@@ -39,6 +40,20 @@ describe('arts alternatifs des cartes de deck', () => {
     expect(picIdCarte('56013', 'tl001a', { '56013': 'standard' })).toBe('56013')
     expect(picIdCarte('56013', '38001a', { '56013': 'tmnt' })).toBe('56013_tmnt')
     expect(picIdCarte('56013', '38001a', { '56013': 'zzz' })).toBe('56013')
+  })
+
+  it('une reimpression identique prend l\'art et le choix de l\'officielle', () => {
+    expect(picIdCarte('04041', 'tl001a', {})).toBe('01057_tmnt')
+    expect(picIdCarte('04041', '38001a', {})).toBe('04041')
+    expect(picIdCarte('04041', '38001a', { '01057': 'tmnt' })).toBe('01057_tmnt')
+    expect(picIdCarte('04041', 'tl001a', { '01057': 'standard' })).toBe('04041')
+  })
+
+  it('les ressources doubles : collection TMNT par defaut pour un heros TMNT, choix libre ensuite', () => {
+    expect(collectionPourJoueur('tl001a', 1, {})).toBe('tmnt')
+    expect(collectionPourJoueur('38001a', 1, {})).toBe('')
+    expect(collectionPourJoueur('tl001a', 1, { tl001: 'standard' })).toBe('')
+    expect(collectionPourJoueur('38001a', 1, { '38001': 'tmnt' })).toBe('tmnt')
   })
 
   it('une carte sans art alternatif ne change jamais', () => {

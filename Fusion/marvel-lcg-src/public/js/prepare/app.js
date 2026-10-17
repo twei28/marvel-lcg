@@ -9,6 +9,10 @@ import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=7e201c0b";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
+// Arts alternatifs des cartes de deck (TMNT) : la fenêtre « arts alternatifs ? » à la sélection d'un deck.
+import { proposerArtsCartes } from "/public/js/prepare/arts-cartes-fenetre.js";
+import { picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
+import { serieDuHeros } from "/public/js/prepare/arts-cartes-choix.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
@@ -3530,6 +3534,7 @@ const COLLECTIONS_RESSOURCES = [
     { code: "sw", nom: "Spider-Woman", apercu: "01089_sw" },
     { code: "dh_starlord", nom: "Star-Lord", apercu: "01089_dh_starlord" },
     { code: "th", nom: "Thor", apercu: "01089_th" },
+    { code: "tmnt", nom: "TMNT", apercu: "ub016" },
     { code: "dh_valkyrie", nom: "Valkyrie", apercu: "01089_dh_valkyrie" },
     { code: "dh_venom", nom: "Venom", apercu: "01089_dh_venom" },
     { code: "dh_vision", nom: "Vision", apercu: "01089_dh_vision" },
@@ -3751,7 +3756,9 @@ function _cleRessource(nom) {
 }
 
 /** La collection de ressources qui porte le nom de ce héros, s'il en existe une. */
-function collectionDuHeros(nomHeros) {
+function collectionDuHeros(nomHeros, heroCardId) {
+    // Un héros TMNT a par défaut les ressources TMNT (règle du 17/10/2026).
+    if (serieDuHeros(heroCardId) === "tmnt") return "tmnt";
     const cle = _cleRessource(nomHeros);
     if (!cle) return null;
     const trouvee = COLLECTIONS_RESSOURCES.find((c) => _cleRessource(c.nom) === cle);
@@ -3770,7 +3777,7 @@ function collectionDuHeros(nomHeros) {
 function contexteVariantes(h) {
     return {
         arts: ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || [],
-        collection: collectionDuHeros(h.name),
+        collection: collectionDuHeros(h.name, h.heroCardId),
     };
 }
 
@@ -4088,7 +4095,7 @@ function ouvrirModaleVariantes(i, h) {
 function ouvrirModaleRessources(i, h) {
     const p = state.players[i];
     if (!p) return;
-    let choix = prefs.resourceArt(h.heroCardId, collectionDuHeros(h.name));
+    let choix = prefs.resourceArt(h.heroCardId, collectionDuHeros(h.name, h.heroCardId));
     const section = sectionVariantes(t("Cartes ressources doubles"), t("Energy · Genius · Strength — même collection"),
         COLLECTIONS_RESSOURCES.map((c) => ({ code: c.code, nom: t(c.nom), trio: c.apercu || "" })),
         choix, (code) => { choix = code; });
@@ -4308,6 +4315,16 @@ function fermerModale(overlay) {
     }
 }
 
+/** Propose les arts alternatifs des cartes du deck de ce siège (ne fait rien sans carte concernée). */
+function proposerArts(p) {
+    if (!p || !p.deck || !p.hero) return;
+    proposerArtsCartes({
+        deck: p.deck, heros: p.hero.heroCardId, el, t, ouvrirModale, fermerModale,
+        imageUrl: (pic) => cardImageUrl(pic),
+        nomCarte: (cid) => { const c = cards.get(cid); return c ? c.name : cid; },
+    });
+}
+
 function showDeckCards(deck, hero, deckId) {
     const ids = [...(deck.hero || []).flatMap((x) => String(x).split(",")), ...(deck.hero_deck || []), ...(deck.player_deck || [])];
     const counts = {};
@@ -4332,7 +4349,7 @@ function showDeckCards(deck, hero, deckId) {
             ),
             el("div", { class: "dm-grid" }, ...Object.keys(counts).map((id) =>
                 el("div", { class: "dm-card" },
-                    el("img", { src: cardImageUrl(id), loading: "lazy", onmouseenter: auSurvol((e) => showCardHover(id, e.currentTarget)), onmouseleave: auSurvol(scheduleHide),
+                    el("img", { src: cardImageUrl(picIdDeCarte(id, hero ? hero.heroCardId : "")), loading: "lazy", onmouseenter: auSurvol((e) => showCardHover(id, e.currentTarget)), onmouseleave: auSurvol(scheduleHide),
                         onclick: estTel() ? () => ouvrirCarteGrande(id) : undefined }),
                     counts[id] > 1 ? el("span", { class: "dm-count" }, "x" + counts[id]) : null,
                 ))),
@@ -4377,6 +4394,7 @@ async function ouvrirPanneauCdb(i) {
             p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
             fermerModale(overlay);
             render();
+            proposerArts(p);
         };
 
         return el("div", { class: "cdb-ligne" + (d.jouable ? "" : " incomplet"), onclick: choisir },
@@ -4617,6 +4635,7 @@ async function doImport(i, fichier) {
             }
         }
         render();
+        proposerArts(p);
         return true;
     } catch (e) {
         if (status) status.textContent = "";
@@ -4722,6 +4741,7 @@ async function loadDecks(i) {
             rendreSceneDeck();
             rendreEquipe();
             majNav();
+            proposerArts(p);
         };
         const supprimable = dk.source === "saved" && !String(dk.id).startsWith("saved-");
         const supprimer = async () => {

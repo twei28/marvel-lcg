@@ -4,6 +4,9 @@
 /** Officielle -> codes d'art alternatif (image `assets/pics/<id>_<code>.jpg`). */
 export const ARTS_CARTES = {};
 
+/** Reimpression identique -> officielle (meme image, meme choix). */
+export const ORIGINES_CARTES = {};
+
 /** Series d'art : heros qui l'ont par defaut, sets exclusifs. */
 export const SERIES_ARTS = {
   "tmnt": {

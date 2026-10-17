@@ -3,6 +3,9 @@
 /** Officielle -> codes d'art alternatif (image `<id>_<code>`). */
 export const ARTS_CARTES: Record<string, string[]> = {}
 
+/** Reimpression identique -> officielle (meme image, meme choix). */
+export const ORIGINES_CARTES: Record<string, string> = {}
+
 export type SerieArt = {
   nom: string
   nom_en: string

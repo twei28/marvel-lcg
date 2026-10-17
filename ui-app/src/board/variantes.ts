@@ -7,7 +7,7 @@
 // vaut pour les TROIS ressources a la fois : une collection est coherente. On
 // relit ici la meme cle localStorage, ecrite par le wizard.
 
-import { picIdCarte } from './arts-cartes'
+import { picIdCarte, serieDuHeros } from './arts-cartes'
 
 /**
  * Une collection donne l'image des TROIS ressources doubles. Deux origines :
@@ -63,6 +63,9 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   gwenpool: ['gp015', 'gp016', 'gp017'],
   howard: ['hd018', 'hd019', 'hd020'],
   ms_america: ['ma027', 'ma028', 'ma029'],
+  // Ressources TMNT (pack Basic, Inkwire) : art seul, meme regles. Par defaut
+  // pour un heros TMNT (voir collectionPourJoueur).
+  tmnt: ['ub011', 'ub016', 'ub054'],
   // Idem, ajoutes le 22/09/2026 : Angel, Beast, Gambit, Human Torch, Jubilee,
   // Magneto, The Thing, Wave. Chaque pack a ses PROPRES card_id (pas de
   // full_link vers 01088/89/90) ; sans objet ici, purement cosmetique.
@@ -341,7 +344,9 @@ export function collectionPourJoueur(
   heroObjectId: number | undefined,
   arts: ArtsRessources
 ): string {
-  const choix = arts[cleHeros(heroCardId)] ?? 'standard'
+  // Sans choix enregistre : la collection TMNT pour un heros TMNT, sinon l'art standard.
+  const parDefaut = serieDuHeros(heroCardId) === 'tmnt' ? 'tmnt' : 'standard'
+  const choix = arts[cleHeros(heroCardId)] ?? parDefaut
   if (choix === 'standard') return ''
   if (choix === 'random') {
     const codes = Object.keys(COLLECTIONS)

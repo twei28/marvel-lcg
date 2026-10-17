@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import {
-    cleCarte, artsDe, serieDuHeros, codeParDefaut, codeAffiche, picIdAvecArt, changementsPourCarte,
+    cleCarte, origine, artsDe, serieDuHeros, codeParDefaut, codeAffiche, picIdAvecArt, changementsPourCarte,
     appliquer, cartesAvecArt, lignesDeChoix, doitProposer, serieExclusive, exclusiveRefusee, STANDARD,
 } from "../../public/js/prepare/arts-cartes-choix.js";
 import { ARTS_CARTES, SERIES_ARTS } from "../../public/js/prepare/arts-cartes-table.js";
@@ -92,6 +92,14 @@ test("exclusives : refusées hors héros de la série, admises pour ses héros",
     assert.equal(exclusiveRefusee("TMNT Aggression", "leonardo", SERIES), false);
     assert.equal(exclusiveRefusee("Core Set", "38001a", SERIES), false);
     assert.equal(exclusiveRefusee("", "38001a", SERIES), false);
+});
+
+test("une réimpression identique se ramène à l'officielle (image et choix partagés)", () => {
+    const origines = { "04041": "01057" };
+    assert.equal(origine("04041", origines), "01057");
+    assert.equal(origine("01057", origines), "01057");
+    assert.equal(origine("04041,04041", origines), "01057");
+    assert.equal(origine("99999", origines), "99999");
 });
 
 test("cleCarte ignore la liste de faces", () => {

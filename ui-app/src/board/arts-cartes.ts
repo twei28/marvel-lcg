@@ -8,7 +8,7 @@
 // Miroir de `public/js/prepare/arts-cartes-choix.js` (module pur de la
 // preparation) : arts-cartes.test.ts compare les deux. Les tables viennent de
 // data/arts_alternatifs.json via tools/generer_arts_cartes.py.
-import { ARTS_CARTES, SERIES_ARTS } from './arts-cartes-table'
+import { ARTS_CARTES, ORIGINES_CARTES, SERIES_ARTS } from './arts-cartes-table'
 
 /** Cle partagee avec la preparation et le deck-builder. */
 export const CLE_ARTS_CARTES = 'mc_card_art_v1'
@@ -60,11 +60,13 @@ export function picIdCarte(
   herosCardId: string | undefined,
   choix: ChoixArtsCartes = lireArtsCartes()
 ): string {
-  const codes = ARTS_CARTES[picId]
+  // Une reimpression identique (`full_link`) prend l'image et le choix de l'officielle.
+  const id = ORIGINES_CARTES[picId] ?? picId
+  const codes = ARTS_CARTES[id]
   if (!codes || codes.length === 0) return picId
-  const voulu = choix[picId]
+  const voulu = choix[id]
   if (voulu === STANDARD) return picId
-  if (voulu && codes.includes(voulu)) return `${picId}_${voulu}`
+  if (voulu && codes.includes(voulu)) return `${id}_${voulu}`
   const serie = serieDuHeros(herosCardId)
-  return serie && codes.includes(serie) ? `${picId}_${serie}` : picId
+  return serie && codes.includes(serie) ? `${id}_${serie}` : picId
 }
