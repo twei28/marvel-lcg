@@ -680,7 +680,64 @@ CAS += [
 ]
 
 
+# ========================================================================= sb013 Santoryu Ogi (LECTURE PROVISOIRE, Q-B2)
+# Armes de matiere (toutes Restricted) : tc007 Baseball Bat (cout 1, l'arme ramenee), tr011 Raphael's Sai et tl011 Leonardo's Katana (cout 1, deja en jeu).
+_OGI = dict(main_exclusive=["sb013", "01090"], jouer=["sb013"], payer_avec=["01090"])
+_DECK_ARME = ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', 'tc007', '01074')"]
+CAS += [
+    _c("sb013 Ogi (provisoire Q-B2) : Ogi jouee, recherche Baseball Bat dans le deck, la met en jeu en PAYANT son cout, et s'attache a elle ; l'arme perd Restricted",
+       "Strength (RR) paie la batte (cout 1) ; Ogi attachee a tc007 ; `restricted` de tc007 = 0 ; la batte n'est plus dans le deck",
+       [HEROS] + _DECK_ARME, [],
+       {"arme": "tc007", "ogi": "sb013", "restricted": 0, "en_jeu": ["sb013", "tc007"], "taille_deck_joueur": 2, "defausse": ["01090"]},
+       verifier="sb_ogi_etat", **_OGI),
+    _c("sb013 Ogi : TEMOIN, la meme arme posee SANS Ogi garde son mot-cle Restricted (1)",
+       "contre-cas : `restricted` = 1 sans Ogi", [HEROS, _poser("tc007")], [],
+       {"carte": "tc007", "attributs": {"restricted": 1}}, verifier="sb_attributs_carte"),
+    _c("sb013 Ogi : quand elle se DETACHE (defaussee), l'arme retrouve Restricted (1)",
+       "Ogi defaussee apres s'etre attachee a la batte : `restricted` revient a 1",
+       [HEROS] + _DECK_ARME, [],
+       {"carte": "tc007", "attributs": {"restricted": 1}}, verifier="sb_attributs_carte", declencher_apres=["Puzzle.Discard('sb013')"],
+       **_OGI),
+    _c("sb013 Ogi : la recherche couvre la DEFAUSSE (la batte y est, rien dans le deck)",
+       "« search your deck AND discard pile » : tc007 de la defausse entre en jeu",
+       [HEROS, "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', '01074')", "Puzzle.CreatePlayerDiscardPile('tc007')"], [],
+       {"arme": "tc007", "ogi": "sb013", "restricted": 0, "en_jeu": ["tc007"]}, verifier="sb_ogi_etat", **_OGI),
+    _c("sb013 Ogi : TEMOIN de la limite, sans Ogi une TROISIEME arme Restricted jouee force la defausse de l'une des deux (limite de 2)",
+       "Katana et Nunchuck en jeu, Baseball Bat jouee : la batte entre, le plus ancien Restricted (le Katana, choix du pilote) est defausse. "
+       "NON PROUVE avec Ogi : le moteur controle la limite a l'ENTREE en jeu de l'arme, avant que Ogi s'y attache (ecart signale au rapport).",
+       [HEROS, _poser("tl011"), _poser("tm011")], [],
+       {"en_jeu": ["tc007", "tm011"], "hors_jeu": ["tl011"]}, main_exclusive=["tc007", "01090"], jouer=["tc007"], payer_avec=["01090"]),
+    _c("sb013 Ogi : sans arme dans le deck ni la defausse, Ogi reste attachee a l'IDENTITE (aucune erreur)",
+       "aucune WEAPON : rien ne vient, Ogi reste sur le heros",
+       [HEROS, "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', '01074')"], [],
+       {"hotes": [["sb013", "01001a"]], "en_jeu": ["sb013"]}, **_OGI),
+    _c("sb013 Ogi : arme impayable (aucune ressource en main) : elle n'entre pas en jeu, Ogi reste sur l'identite, la batte retourne dans le deck",
+       "main vide sauf Ogi : le cout 1 de la batte n'est pas paye",
+       [HEROS] + _DECK_ARME, [],
+       {"hotes": [["sb013", "01001a"]], "hors_jeu": ["tc007"], "dans_deck_joueur": ["tc007"]},
+       main_exclusive=["sb013"], jouer=["sb013"]),
+]
+
 VERIFICATIONS = r'''
+def sb_ogi_etat(monde, aides):
+    """`attendu` : arme (card_id en jeu), ogi (card_id), restricted (valeur attendue sur l'arme), puis le reste va a etat_attendu.
+    Verifie que Ogi est ATTACHEE a l'arme (bind_face) et que `arme.restricted` vaut la valeur attendue."""
+    attendu = aides["cas"]["attendu"]
+    arme = aides["par_id"](monde, attendu["arme"])
+    ogi = aides["par_id"](monde, attendu["ogi"])
+    if arme is None or ogi is None:
+        return False, f"arme={arme} ogi={ogi} : l'une n'est pas en jeu"
+    hote = getattr(getattr(ogi, "bind_face", None), "paper", None)
+    if getattr(hote, "card_id", None) != attendu["arme"]:
+        return False, f"{attendu['ogi']} est attachee a {getattr(hote, 'card_id', None)}, attendu {attendu['arme']}"
+    if arme.restricted != attendu["restricted"]:
+        return False, f"{attendu['arme']}.restricted = {arme.restricted} (attendu {attendu['restricted']})"
+    reste = {k: v for k, v in attendu.items() if k in ("en_jeu", "taille_deck_joueur", "defausse", "hors_jeu", "dans_deck_joueur")}
+    aides["cas"]["attendu"] = reste
+    ok, msg = etat_attendu(monde, aides)
+    return ok, f"{attendu['ogi']} attachee a {attendu['arme']}, restricted = {arme.restricted} ; {msg}"
+
+
 def sb_carte_en_zone(monde, aides):
     """`attendu` : carte, zone (victoire | defausse). La carte (par card_id) doit se trouver dans cette zone."""
     attendu = aides["cas"]["attendu"]
