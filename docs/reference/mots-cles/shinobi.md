@@ -96,3 +96,32 @@ Le zip « TMNT Shinobi » (103 cartes joueur : 4 Paths standard + 7 Paths hybrid
   `jennika/tj009` (découpe des deux scans comparée le 17/10/2026), donc [wild] ;
 - les cartes `sb`/`sj`/`sa`/`sh`/`sc` portent `desc.Class` = leur(s) type(s) Shinobi SEUL(S) (jamais « Hero ») : cartes de
   joueur choisies au deck-building, contrairement aux Shinobi de Jennika (« Hero;Taijutsu », signatures).
+
+---
+
+## Taijutsu (pack `tmnt_shinobi_taijutsu`, `sh001`-`sh020`, 17/10/2026)
+
+Vingt cartes orange : 14 événements, 3 améliorations (`sh010` Martial Skill, `sh014` * Minarai, `sh016` * Jō), 1 soutien (`sh012` * Mutant Fight
+Club), 1 allié (`sh017` * Odyn), 1 ressource (`sh015` Keep the Momentum). `desc.Class = "Taijutsu"`, jamais « Hero ». Gabarits :
+`.planning/tmnt/shinobi-taijutsu-gabarits.md` ; questions : `.planning/tmnt/shinobi-taijutsu-questions.md` ; cas : `tools/cas/tmnt_shinobi_taijutsu.py`.
+
+**Bonus « si vous l'avez payée avec un événement ATTACK / THWART / DEFENSE »** : `PayeAvecUnEvenement(effect, "ATTACK", ...)` lit
+`effect.context.paid_this_res_effects` (`.this` = la carte dépensée). Nuances mesurées : un événement à plusieurs traits (Toss DEFENSE/THWART,
+Countercross) satisfait chaque condition (`sh005`, question Q-T3) ; « for each THWART event used to pay » (`sh006`) COMPTE les événements
+distincts ; « each ATTACK event ... you used to pay » (`sh002`) les REND (ils sont dans `discard_pile.Get()`).
+
+**Pièges connus (Taijutsu)** :
+- Un événement DEFENSE servant de paiement dans un cas d'ATTAQUE (Backflip, Wiggle Room) serait joué par le pilote à la place de la carte testée :
+  prendre `09015` Desperate Defense (« When your hero defends... », non offerte quand le héros est incliné).
+- `main_exclusive` verse la main de départ de Spider-Man dans la DÉFAUSSE (Swinging Web Kick ATTACK, For Justice! THWART...) : un cas qui lit la
+  défausse la remet à plat (`DISC(...)` dans `declencher`) ; `main_exclusive: []` ne vide rien : `Puzzle.EmptyHand()`.
+- `Puzzle.SetThreat` dans `mise_en_place` déclenche « Great Responsibility » de la main de départ : le poser dans `declencher`.
+- Une capacité d'ÉVÉNEMENT qui ne le joue pas (`sh001` : « Hero Response: After you spend this card to pay for a DEFENSE event, draw 1 card »)
+  était reproposée SANS FIN par `EventManager.ProcessOptionalEffect` (40 pioches). Corrigé dans `game/event/manager.py` : seul l'effet qui JOUE
+  l'événement (`ability.is_play`) reste offert.
+- « (attack/defense) » sur une RÉPONSE d'après-dégâts (`sh007`, `AfterUnitTookDamage`) faisait `assert False` dans `CanDefense.SpecialDefense` :
+  branche ajoutée, sans effet.
+- La cible « a scheme » exige de la menace (`has_threat=True` automatique, `ability.py`) : sans menace sur aucune manigance, Toss / Countercross /
+  Double Kick ne sont pas proposés (comme l'officielle `18004`).
+- Les dégâts consécutifs d'un allié sont infligés APRÈS les Réponses « After X uses a basic power » : la carte Tough d'Odyn (`sh017`) les absorbe.
+- Compteurs : `chi` existait ; `cudgel` ajouté à `CardFace.COUNTER` (« bâton » dans `compteurs-fr.ts`).
