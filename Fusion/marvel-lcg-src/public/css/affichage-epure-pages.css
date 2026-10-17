@@ -1994,3 +1994,18 @@ html[data-epure] .team-b.arsenal .tb-scene .tb-nomg { flex-direction: column; }
   html[data-epure] .team-b.eux .ext-tabs { grid-auto-rows: 1fr !important; align-content: stretch !important; }
   html[data-epure] .team-b.eux .ext-tab { aspect-ratio: auto; }
 }
+
+/* Les noms des héros, méchants et scénarios sur les tuiles (17/10/2026) : Bangers, petit,
+   majuscules, blanc. */
+html[data-epure] .tb-port .tb-port-nom,
+html[data-epure] .tb-port.chosen .tb-port-nom,
+html[data-epure] .tb-port.choisi .tb-port-nom,
+html[data-epure] .tb-port.on .tb-port-nom {
+  font-family: var(--ep-titres) !important;
+  font-weight: 400 !important;
+  font-size: 13px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: #fff !important;
+}
+html[data-epure] .team-b.eux .tb-port .tb-port-nom { font-size: 15px !important; }
