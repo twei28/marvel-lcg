@@ -30,34 +30,30 @@ test('l\'accueil porte une tuile « Mises à jour », et plus de liste', async (
   await expect(page.locator('.acc-modes .acc-nouv-tuile')).toHaveCount(1);
 });
 
-test('la tuile ouvre le journal, classé par famille', async ({ page }) => {
+test('la tuile ouvre la page des mises à jour : une rangée par famille, trois dernières à droite', async ({ page }) => {
   await page.goto('/prepare.html');
   await page.waitForSelector('.acc-nouv-tuile', { timeout: 20000 });
   await page.locator('.acc-nouv-tuile').click();
+  await page.waitForURL('**/nouveautes.html');
 
-  const modale = page.locator('.nouveautes-modal');
-  await expect(modale).toBeVisible();
-
-  // Autant de familles que de genres réellement utilisés, ni plus ni moins.
-  const attendues = await page.evaluate(async () => {
+  // Autant de rangées que de genres réellement utilisés, ni plus ni moins.
+  const attendu = await page.evaluate(async () => {
     const m: any = await import('/public/js/prepare/nouveautes.js');
-    const genres = Object.keys(m.GENRES);
-    return genres.filter((g) => m.nouveautesTriees().some((n: any) => n.genre === g)).length;
+    const genres = Object.keys(m.GENRES).filter((g) => m.nouveautesTriees().some((n: any) => n.genre === g));
+    return { rangees: genres.length, premier: genres[0], total: m.nouveautesTriees().filter((n: any) => n.genre === genres[0]).length };
   });
-  await expect(modale.locator('.nouv-famille')).toHaveCount(attendues);
+  await expect(page.locator('.nv-rangee')).toHaveCount(attendu.rangees);
+  // Chaque rangée montre au plus les trois dernières mises à jour de sa famille.
+  for (const rangee of await page.locator('.nv-rangee').all()) {
+    expect(await rangee.locator('.nv-derniers > li').count()).toBeLessThanOrEqual(3);
+  }
 
-  // ⚠ TOUT LE JOURNAL, PAS UN EXTRAIT : c'est la raison d'être de cet écran.
-  const total = await page.evaluate(async () => {
-    const m: any = await import('/public/js/prepare/nouveautes.js');
-    return m.nouveautesTriees().length;
-  });
-  await expect(modale.locator('.acc-nouv-liste > li')).toHaveCount(total);
-
-  // Dans une section déjà titrée par sa famille, l'étiquette de genre ferait
-  // doublon sur chaque ligne.
-  await expect(modale.locator('.acc-nouv-genre')).toHaveCount(0);
-  await expect(modale.locator('.acc-nouv-liste > li').first().locator('.acc-nouv-date'))
-    .not.toBeEmpty();
+  // Un clic sur une famille ouvre TOUTES ses mises à jour.
+  await page.locator('.nv-rangee').first().click();
+  await expect(page.locator('.nv-toutes > li')).toHaveCount(attendu.total);
+  // « Précédent » ramène à la vue d'ensemble.
+  await page.goBack();
+  await expect(page.locator('.nv-rangee')).toHaveCount(attendu.rangees);
 });
 
 test('dans chaque famille, le plus récent est en tête', async ({ page }) => {
@@ -97,24 +93,25 @@ test('chaque nouveauté est écrite dans les deux langues et porte un genre conn
   expect(affichables).toBe(ecrites);
 });
 
-test('en anglais, la tuile et le journal parlent anglais', async ({ page }) => {
+test('en anglais, la tuile et la page parlent anglais', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('marvel-langue', 'en'));
   await page.goto('/prepare.html');
   await page.waitForSelector('.acc-nouv-tuile', { timeout: 20000 });
 
   await expect(page.locator('.acc-nouv-tuile b')).toHaveText('Updates');
   await page.locator('.acc-nouv-tuile').click();
+  await page.waitForURL('**/nouveautes.html');
 
-  // Le texte de la première ligne est bien la version anglaise du fichier, et
-  // pas la française : c'est la seule façon de prouver que la traduction est
-  // lue, un titre traduit ne dirait rien du contenu.
+  // Le texte de la première ligne de la première rangée est la version anglaise du
+  // fichier, pas la française : c'est la seule façon de prouver que la traduction est lue.
   const attendu = await page.evaluate(async () => {
     const m: any = await import('/public/js/prepare/nouveautes.js');
-    const premiere = m.nouveautesTriees()[0];
-    return { en: premiere.en, fr: premiere.fr, genre: premiere.genre };
+    const genres = Object.keys(m.GENRES).filter((g) => m.nouveautesTriees().some((n: any) => n.genre === g));
+    const premiere = m.nouveautesTriees().find((n: any) => n.genre === genres[0]);
+    return { en: premiere.en, fr: premiere.fr };
   });
-  const lignes = page.locator(`.nouv-famille-titre.${attendu.genre} + .acc-nouv-liste .acc-nouv-texte`);
-  const affiche = await lignes.first().innerText();
-  expect(affiche.trim()).toBe(attendu.en.trim());
-  if (attendu.en !== attendu.fr) expect(affiche.trim()).not.toBe(attendu.fr.trim());
+  const affiche = await page.locator('.nv-rangee').first().locator('.nv-texte').first().innerText();
+  // La rangée coupe sur deux lignes : on compare le début.
+  expect(affiche.trim().slice(0, 40)).toBe(attendu.en.trim().slice(0, 40));
+  if (attendu.en !== attendu.fr) expect(affiche.trim().slice(0, 40)).not.toBe(attendu.fr.trim().slice(0, 40));
 });

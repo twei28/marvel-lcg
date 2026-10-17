@@ -1600,3 +1600,133 @@ html[data-epure] .acc-titre h1.affiche {
   text-shadow: 5px 5px 0 #3f86e0, 10px 10px 0 #05070b !important;
   -webkit-text-stroke: 3px #05070b !important;
 }
+
+/* --- 25. UN SEUL EN-TÊTE POUR TOUTES LES PAGES (17/10/2026) ---------------------
+   À gauche, toujours : retour « < », narval, titre de la page. Au milieu : ce qui
+   est propre à la page (étapes, choix du héros…). À droite, toujours dans le même
+   ordre : FR, affichage, puis les autres outils. Même hauteur, même fond. */
+html[data-epure] header.progress,
+html[data-epure] header.cmp-entete,
+html[data-epure] header.g-entete {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  height: 52px;
+  padding: 6px 18px !important;
+  margin: 0 !important;
+  background: linear-gradient(180deg, #2a3a5a 0%, #1b2436 100%) !important;
+  border: 0 !important;
+  border-bottom: 2px solid #3f86e0 !important;
+  box-shadow: inset 0 1px 0 rgba(140, 180, 240, 0.35) !important;
+  backdrop-filter: none !important;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+/* Gauche : retour + narval + titre. */
+html[data-epure] header.progress .brand { order: 0; }
+html[data-epure] header.cmp-entete .cmp-marque { order: 0; }
+html[data-epure] header.g-entete .g-retour { order: 0; }
+html[data-epure] .db-entete .db-titre,
+html[data-epure] .cmp-marque-sous,
+html[data-epure] header.g-entete h1 {
+  font-family: var(--ep-titres) !important;
+  font-size: 22px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff !important;
+  margin: 0;
+  flex: none !important;
+}
+html[data-epure] .db-entete .db-titre { order: 1; }
+html[data-epure] .db-entete .db-heros { order: 2; }
+html[data-epure] .db-entete .db-heros-aspects { order: 3; }
+html[data-epure] .db-entete .db-esp { order: 4; flex: 1; }
+html[data-epure] header.g-entete h1 { order: 1; margin-right: auto; }
+/* Le « < » : même taille, même couleur partout. */
+html[data-epure] .brand-back,
+html[data-epure] .cmp-marque-retour,
+html[data-epure] .g-retour {
+  font-size: 22px;
+  line-height: 1;
+  color: #8fbcf5 !important;
+}
+/* Milieu : les étapes, poussées à droite, avant les outils. */
+html[data-epure] header.progress .steps { order: 5; margin-left: auto; }
+html[data-epure] .db-entete .db-retour-prep { order: 5; }
+/* Droite : FR, affichage, puis le reste, dans cet ordre. */
+html[data-epure] header .btn-langue,
+html[data-epure] header .cmp-langue,
+html[data-epure] header #zone-langue { order: 10; }
+html[data-epure] header .btn-affichage { order: 11; }
+html[data-epure] header .reprise-boutons { order: 12; }
+html[data-epure] header.cmp-entete .cmp-langue,
+html[data-epure] header.g-entete #zone-langue { margin-left: auto; }
+html[data-epure] header.progress:has(.steps) .btn-langue { margin-left: 14px; }
+html[data-epure] header.progress:not(:has(.steps)) .btn-langue { margin-left: 0; }
+html[data-epure] .brand-titre {
+  display: inline-block;
+  margin-left: 12px;
+  font-family: var(--ep-titres);
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+html:not([data-epure]) .brand-titre { display: none; }
+html[data-epure] header.progress .brand,
+html[data-epure] header.cmp-entete .cmp-marque,
+html[data-epure] header.g-entete .g-retour {
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 12px;
+}
+html[data-epure] header.g-entete {
+  margin: 0 calc(-1 * clamp(12px, 3vw, 36px)) 14px !important;
+}
+html[data-epure] header.progress .brand .brand-lockup { margin: 0 !important; padding: 0 !important; }
+html[data-epure] header .brand-back {
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  clip-path: none !important;
+}
+html[data-epure] header .btn-langue,
+html[data-epure] header .cmp-langue,
+html[data-epure] header #zone-langue button,
+html[data-epure] header .btn-affichage {
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center;
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%) !important;
+  border: 1px solid #4a5a7c !important;
+  border-radius: 0 !important;
+  color: #dbe3f3 !important;
+  font-family: var(--ep-titres) !important;
+  font-size: 14px !important;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+  box-shadow: inset 1px 1px 0 rgba(140, 180, 240, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.45) !important;
+}
+html[data-epure] header .brand .brand-lockup,
+html[data-epure] header .brand .brand-lockup.logo {
+  display: block !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 0 !important;
+  flex: none;
+}
+html[data-epure] header .brand .brand-narwhal {
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  display: block;
+}
+html[data-epure] .brand-titre { margin-left: 0; }
