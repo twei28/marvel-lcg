@@ -23,8 +23,9 @@ from . import *
 #  ⚠ « discard the top 2 cards of YOUR deck -> return ... » : le « -> » est un COUT, paye d'abord ; les deux
 #    cartes defaussees peuvent etre la carte Taijutsu rendue : le choix se fait donc APRES le cout (dans
 #    l'operation, pas par un `SetTarget` pose avant le cout).
-#  ⚠ « 1 TAIJUTSU card » : une carte portant la classe Taijutsu ; une Dual Shinobi Taijutsu (Bushido/Taijutsu...)
-#    en est une aussi. « from your discard pile » : sa propre defausse. « return ... to your HAND ».
+#  ⚠ « 1 TAIJUTSU card » (Q-S2, REPONSE de l'utilisateur 17/10/2026 : « Taijutsu + Dual Kuji-Kiri/Ninjutsu ») :
+#    une carte portant la classe Taijutsu (les Dual Taijutsu en sont) OU la Dual Kuji-Kiri/Ninjutsu (sc007, sc008) ;
+#    le texte imprime reste « 1 Taijutsu card ». « from your discard pile » : sa propre defausse. « return ... to your HAND ».
 #  ⚠ « Hero Interrupt » : forme heros seulement.
 
 
@@ -36,7 +37,10 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = effect.GetInitiator()
         if joueur is None:
             return
-        candidats = [f for f in joueur.discard_pile.Get() if EstShinobi(f, "Taijutsu")]
+        # Q-S2 (reponse du 17/10/2026) : « Taijutsu + Dual Kuji-Kiri/Ninjutsu » : toute carte de classe Taijutsu
+        # (Dual Taijutsu comprises) OU la Dual Kuji-Kiri/Ninjutsu (sc007 / sc008), qui n'est pas Taijutsu.
+        candidats = [f for f in joueur.discard_pile.Get()
+                     if EstShinobi(f, "Taijutsu") or (EstShinobi(f, "Kuji-Kiri") and EstShinobi(f, "Ninjutsu"))]
         if not candidats:
             return
         if len(candidats) == 1:
