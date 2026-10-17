@@ -4479,6 +4479,122 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
 
   // --- TMNT Basic (ub) : ajouter les cartes ubNNN ci-dessous, dans ce bloc seulement ---
+  // tmnt_aspect_basic — April O'Neil (Ally), reskin de 01084 Nick Fury
+  'ub001': "<b>Réponse forcée</b> : après qu'April O'Neil est entrée en jeu, choisissez une option : retirez 2 menaces d'une manigance, piochez 3 cartes ou infligez 4 dégâts à un ennemi. À la fin du round, si April O'Neil est toujours en jeu, défaussez-la.",
+  // tmnt_aspect_basic — Assess the Situation (Event), reskin de 12033
+  'ub002': "<b>Action</b> : votre taille de main augmente de +1 jusqu'à la fin de la phase.\n<i>« Vous en pensez quoi, les gars ? C'est le moment d'entrer dans la bagarre ? »</i> —Raphael",
+  // tmnt_aspect_basic — Atilla (Ally), 13019 modifiée (Réponse FORCÉE)
+  'ub003': "<b>Réponse forcée</b> : après avoir joué Atilla de votre main, choisissez CTR ou ATQ. Atilla gagne +2 au pouvoir choisi jusqu'à la fin de la phase.\n<i>« Cet endroit nous appartient ! »</i>",
+  // tmnt_aspect_basic — Basic Spell (Event), reskin de 45051
+  'ub004': "Jouez cette carte uniquement si votre identité a le trait [[MYSTIQUE]].\n<b>Action de héros</b> : choisissez une option :\n• Soignez 3 dégâts d'une identité.\n• Retirez 3 menaces d'une manigance.\n• Infligez 3 dégâts à un ennemi.",
+  // tmnt_aspect_basic — Casey Jones (Ally)
+  'ub005': "<b>Réponse</b> : après que Casey Jones est entré en jeu, cherchez une amélioration [[ARME]] dans votre deck et votre pile de défausse et ajoutez-la à votre main. <i>(Mélangez.)</i>\n<i>« C'est l'heure de dégager, les gros bras. »</i>",
+  // tmnt_aspect_basic — Clyde (Ally), reskin de 13018 Ironheart
+  'ub006': "<b>Réponse</b> : après avoir joué Clyde de votre main, piochez 1 carte.\n<i>« On touche au marais, on goûte à la langue. »</i>",
+  // tmnt_aspect_basic — Digging Deep (Resource), reskin de 40060
+  'ub007': "<b>Réponse</b> : après que cette carte a été défaussée du dessus de votre deck, ajoutez-la à votre main.",
+  // tmnt_aspect_basic — Donatello (Ally)
+  'ub008': "<b>Réponse</b> : après que Donatello est entré en jeu, piochez 2 cartes.\n<i>« Avant de foncer, on élabore une stratégie. »</i>",
+  // tmnt_aspect_basic — Down Time (Upgrade), reskin de 05033
+  'ub009': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVotre alter ego gagne +2 REC.\n<i>« Pause de cinq minutes, les gars. »</i> —Raph",
+  // tmnt_aspect_basic — Endurance (Upgrade), reskin de 05023
+  'ub010': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVous gagnez +3 points de vie.\n<i>« Il en faudra plus que ça pour m'user. »</i>",
+  // tmnt_aspect_basic — Energy (Resource), reskin de 01088
+  'ub011': "1 max par deck.",
+  // tmnt_aspect_basic — E.P.F. R.N.D. (Support), reskin de 35022 Weapon X
+  'ub012': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]].\n<b>Action d'alter ego</b> : inclinez E.P.F. R.N.D. et subissez 1 dégât → défaussez des cartes de votre deck jusqu'à ce que vous défaussiez une carte spécifique à l'identité, puis ajoutez cette carte à votre main.",
+  // tmnt_aspect_basic — Face the Past (Event), reskin de 49022
+  'ub013': "1 max par deck.\n<b>Action de héros</b> : cherchez votre sbire Némésis dans le deck Rencontre, la pile de défausse Rencontre et la zone « mis de côté », et révélez-le → redressez votre héros et piochez 3 cartes. Vous ne pouvez pas attaquer le méchant à cette phase. Retirez cette carte de la partie.",
+  // tmnt_aspect_basic — Fugitoid (Ally)
+  'ub014': "[star] <b>Réponse</b> : après que Fugitoid a utilisé un pouvoir de base, défaussez 1 carte de votre main. Si la ressource imprimée de cette carte comporte :\n[physical] - Soignez 2 dégâts d'un personnage ami.\n[mental] - Retirez 2 menaces d'une manigance.\n[energy] - Infligez 2 dégâts à un ennemi.\n[wild] - Piochez 1 carte.",
+  // tmnt_aspect_basic — Genghis (Ally), reskin de 40057 White Fox
+  'ub015': "<b>Réponse</b> : après que Genghis a été défaussé du dessus de votre deck, mettez-le en jeu sous votre contrôle.\n<i>« Quand on bondit, on conquiert. »</i>",
+  // tmnt_aspect_basic — Genius (Resource), reskin de 01089
+  'ub016': "1 max par deck.",
+  // tmnt_aspect_basic — Gofu Talisman (Upgrade), reskin de 45050 Bloodgem
+  'ub017': "Jouez cette carte uniquement si vous avez le trait [[MYSTIQUE]]. 1 max par deck.\n<b>Ressource</b> : inclinez le Talisman Gofu et subissez 2 dégâts → générez une ressource [wild].",
+  // tmnt_aspect_basic — Herold Lilja's Lab (Support), 34022 Cerebro modifiée
+  'ub018': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]].\n<b>Action d'alter ego</b> : inclinez cette carte → cherchez un allié [[DIMENSION X]], [[NINJA]] ou [[MUTANIMAL]] dans les 5 cartes du dessus de votre deck (cherchez dans l'intégralité de votre deck si vous contrôlez un personnage [[TEMPOREL]]) et ajoutez cet allié à votre main. <i>(Mélangez.)</i>",
+  // tmnt_aspect_basic — Improvised Club (Upgrade)
+  'ub020': "Attachez cette carte à un allié. 1 max par allié.\n<b>Réponse</b> : après que l'allié attaché a attaqué et blessé un sbire, défaussez Improvised Club → sonnez ce sbire.\n<i>« Tu veux entrer dans mon club ? »</i> —Casey Jones",
+  // tmnt_aspect_basic — Ingenuity (Upgrade), reskin de 29027
+  'ub021': "Jouez cette carte uniquement si votre identité a le trait [[GÉNIE]]. 1 max par joueur.\n<b>Ressource</b> : inclinez Inventivité → générez une ressource [mental].",
+  // tmnt_aspect_basic — Jennika (Ally)
+  'ub022': "<b>Réponse</b> : après que Jennika est entrée en jeu, placez une carte Shinobi <i>(noire)</i> de votre pile de défausse sur le dessus de votre deck.\n<i>« Je sais me débrouiller. »</i>",
+  // tmnt_aspect_basic — Katsuichi (Ally)
+  'ub023': "<b>Réponse</b> : après que Katsuichi est entré en jeu, cherchez une carte spécifique à l'identité dans votre deck et ajoutez-la à votre main. <i>(Mélangez.)</i>\n<i>« Vide ton esprit, mais jamais ton cœur. »</i>",
+  // tmnt_aspect_basic — The Kennel Klub (Support), 33020 Utopia modifiée
+  'ub024': "Si chacun de vos alliés a le trait [[MUTANIMAL]] ou [[NINJA]], augmentez de 1 votre limite d'alliés.\n<b>Réponse</b> : après qu'un allié [[MUTANIMAL]] ou [[NINJA]] est entré en jeu, inclinez The Kennel Klub → redressez un personnage [[MUTANIMAL]] ou [[NINJA]].",
+  // tmnt_aspect_basic — Leonardo (Ally)
+  'ub025': "[star] <b>Réponse</b> : après que Leonardo a utilisé un pouvoir de base, redressez un autre allié [[NINJA]] que vous contrôlez.\n<i>« Suivez-moi. »</i>",
+  // tmnt_aspect_basic — Limitless Stamina (Event), reskin de 31023
+  'ub026': "Jouez cette carte uniquement si votre identité a au moins 14 points de vie imprimés.\n<b>Action de héros</b> : redressez votre héros.\n<i>« Viens m'affronter ! »</i> —Raphael",
+  // tmnt_aspect_basic — Martial Arts Training (Upgrade) ; « Starting » : mot-clé laissé tel quel
+  'ub027': "Starting. <i>(Vous pouvez ajouter cette carte à votre main avant de piocher votre main de départ.)</i>\nVotre héros gagne le trait [[ARTISTE MARTIAL]].",
+  // tmnt_aspect_basic — Mary (Ally), reskin de 01083 Mockingbird
+  'ub028': "<b>Réponse</b> : après que Mary est entrée en jeu, sonnez un ennemi.\n<i>« Tu oses douter de moi ? Laisse-moi te faire la leçon à la Tudor. »</i>",
+  // tmnt_aspect_basic — Michelangelo (Ally)
+  'ub029': "<b>Réponse</b> : après que Michelangelo est entré en jeu, soignez 2 dégâts d'un personnage ami.\n<i>« Je couvre tes arrières. »</i>",
+  // tmnt_aspect_basic — Multitalented (Event), reskin de 47021
+  'ub030': "<b>Action de héros</b> <i>(attaque/contre)</i> : si vous avez payé cet événement en utilisant au moins 1 :\n[physical] - Infligez 2 dégâts à un ennemi.\n[mental] - Retirez 2 menaces d'une manigance.\n[energy] - Soignez 2 dégâts de votre identité.",
+  // tmnt_aspect_basic — Mutagen (Upgrade), reskin de 38019 X-Gene
+  'ub031': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]]. 1 max par joueur.\n<b>Ressource</b> : inclinez Mutagen → générez une ressource [wild] pour un événement spécifique à votre identité.",
+  // tmnt_aspect_basic — Mutanimal Van (Support), 41022 IPAC modifiée
+  'ub032': "Jouez cette carte uniquement si votre identité a le trait [[MUTANIMAL]].\n<b>Action de héros</b> : inclinez Mutanimal Van et attribuez 1 carte Rencontre face cachée à un joueur → ce joueur pioche 2 cartes.",
+  // tmnt_aspect_basic — Ninja He-Man (Ally)
+  'ub033': "Jouez cette carte uniquement si vous contrôlez une carte [[NINJA]] ou [[GUERRIER]].\nTénacité.\n<b>Réponse</b> : après que Ninja He-Man est entré en jeu, camouflez-le.",
+  // tmnt_aspect_basic — Onmyōdō Saikō (Upgrade), reskin de 09026 The Sorcerer Supreme
+  'ub034': "Jouez cette carte uniquement si vous avez le trait [[MYSTIQUE]].\nVotre taille de main augmente de +1 tant que vous êtes sous forme de héros.\n<i>« L'équilibre de toute chose doit être protégé des sombres agents du chaos. »</i> —Splinter",
+  // tmnt_aspect_basic — Party Time (Event), reskin de 33022 Game Time
+  'ub035': "<b>Action de héros</b> : choisissez un allié auquel est attachée une amélioration [[ENTRAÎNEMENT]] → redressez cet allié et soignez-le de 1 dégât.\n<i>« Bon, les gars, vous savez quelle heure il est ! »</i> —Michelangelo",
+  // tmnt_aspect_basic — Party Wagon (Support), 32020 The X-Jet modifiée
+  'ub036': "<b>Ressource</b> : inclinez Party Wagon → générez une ressource [wild] pour un joueur dont l'identité a le trait [[NINJA]] ou [[TORTUE]].\n<i>« Il est où, le lance-pizzas ? »</i> —Michelangelo",
+  // tmnt_aspect_basic — Pepperoni (Support) ; jetons « pep » laissés tels quels
+  'ub037': "Utilisations (3 jetons pep).\n<b>Réponse</b> : après que vous avez vaincu un ennemi ou retiré la dernière menace d'une manigance, inclinez Pepperoni et retirez-lui 1 jeton pep → votre taille de main augmente de +1 jusqu'à la fin de la phase.",
+  // tmnt_aspect_basic — Pizza Time (Event), 37021 Mutant Education modifiée
+  'ub038': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]].\n<b>Action d'alter ego</b> : choisissez dans votre pile de défausse jusqu'à 2 cartes spécifiques à l'identité et mélangez-les dans votre deck. Si Rupert's Pizzeria est en jeu, piochez 1 carte.",
+  // tmnt_aspect_basic — Practiced Plan (Upgrade), reskin de 50058
+  'ub039': "1 max par joueur.\n<b>Réponse</b> : après que vous avez défaussé une carte [[PRÉPARATION]] que vous contrôlez, défaussez Practiced Plan → renvoyez cette carte de votre pile de défausse dans votre main.",
+  // tmnt_aspect_basic — Press and Protect (Event)
+  'ub040': "En Équipe (April O'Neil et Casey Jones). 1 max par deck.\n<b>Action</b> : retirez 3 menaces d'une manigance et donnez une carte d'état Tenace à un personnage ami.",
+  // tmnt_aspect_basic — Raphael (Ally)
+  'ub041': "[star] Raphael gagne +1 ATQ pour chaque jeton de dégât sur lui (+2 ATQ au maximum).\n<i>« Lâche-moi un peu. »</i>",
+  // tmnt_aspect_basic — Ready to Rumble (Upgrade), reskin de 21022
+  'ub042': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez changé de forme, défaussez cette carte → redressez votre héros.\n<i>« Bon, c'est quoi la suite ? »</i> —Mondo Gecko",
+  // tmnt_aspect_basic — Rupert's Pizzeria (Support), 32049 X-Mansion modifiée
+  'ub043': "<b>Action d'alter ego</b> : inclinez Rupert's Pizzeria → soignez 1 dégât d'un personnage [[MUTANT]], [[MUTANIMAL]] ou [[NINJA]]. N'importe quel joueur dont l'alter ego a le trait [[MUTANT]] peut déclencher cette capacité.\n<i>« La meilleure part de la ville ! »</i> —Mikey",
+  // tmnt_aspect_basic — Shell Phone (Upgrade), reskin de 47019 Cell Phone
+  'ub044': "Utilisations (3 jetons Charge).\n<b>Action</b> : inclinez le Shell Phone, retirez-lui 1 jeton Charge et choisissez un joueur → ce joueur effectue une attaque ou un contre de base avec un personnage qu'il contrôle. Ce personnage gagne +1 CTR et +1 ATQ pour cette utilisation.",
+  // tmnt_aspect_basic — Shinobi Batman (Ally)
+  'ub045': "Jouez cette carte uniquement si vous contrôlez une carte [[NINJA]] ou [[JUSTICIER]].\n<b>Réponse</b> : après que Shinobi Batman a quitté le jeu, cherchez une carte [[NINJA]] ou [[JUSTICIER]] dans votre deck et ajoutez-la à votre main. <i>(Mélangez.)</i>",
+  // tmnt_aspect_basic — Shuriken (Upgrade)
+  'ub046': "Attachez cette carte à un personnage ami. 1 max par personnage.\n<b>Action de héros</b> : inclinez cette carte et défaussez 1 carte de votre main → infligez 1 dégât à jusqu'à 3 ennemis.",
+  // tmnt_aspect_basic — Sky Wagon (Support), reskin de 01092 Helicarrier
+  'ub047': "1 max par joueur.\n<b>Action</b> : inclinez le Sky Wagon → choisissez un joueur. Réduisez de 1 le coût en ressources de la prochaine carte jouée par ce joueur à cette phase.\n<i>« Un van volant ? Un dirigeable serait plus discret... »</i> —Raphael",
+  // tmnt_aspect_basic — Slash (Ally), reskin de 62020 Hulk
+  'ub048': "Slash gagne +1 ATQ pour chaque jeton Rage sur lui.\n<b>Réponse</b> : après que le méchant vous a attaqué, placez 1 jeton Rage sur cet allié.\n<i>« Sentez ma rage ! »</i>",
+  // tmnt_aspect_basic — Snow and Shadow (Event)
+  'ub049': "En Équipe (Alopex et Nobody). 1 max par deck.\n<b>Action de héros</b> : redressez Alopex et Nobody. Camouflez un personnage ami. Hébétez un ennemi.",
+  // tmnt_aspect_basic — "Special Delivery!" (Event), 37031 X-Men Instruction modifiée
+  'ub050': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]].\n<b>Action d'alter ego</b> : choisissez dans votre pile de défausse jusqu'à 2 alliés ayant le trait [[DIMENSION X]], [[MUTANIMAL]] ou [[NINJA]] et mélangez-les dans votre deck. Si Rupert's Pizzeria est en jeu, piochez 1 carte.",
+  // tmnt_aspect_basic — Spiritual Meditation (Event), reskin de 15019
+  'ub051': "Jouez cette carte uniquement si votre identité a le trait [[MYSTIQUE]].\n<b>Action</b> : piochez 2 cartes. Choisissez et défaussez 1 carte de votre main.\n<i>« Tu dois apprendre à regarder en toi pour savoir où regarder au-dehors. »</i> —Splinter",
+  // tmnt_aspect_basic — Splinter Dojo (Support), 33021 Danger Room modifiée
+  'ub052': "<b>Réponse d'alter ego</b> : après qu'un allié [[MUTANIMAL]] ou [[NINJA]] est entré en jeu, inclinez Splinter Dojo → cherchez une amélioration [[ENTRAÎNEMENT]] dans votre deck et votre pile de défausse et attachez-la à cet allié. N'importe quel joueur dont l'alter ego a le trait [[MUTANT]] peut déclencher cette capacité.",
+  // tmnt_aspect_basic — Splinter (Support), reskin de 60029 Stick
+  'ub053': "<b>Interruption</b> : quand un personnage [[ARTISTE MARTIAL]] ami utilise un pouvoir de base, choisissez :\n• Inclinez Splinter → ce personnage a +1 à ce pouvoir de base pour cette utilisation.\n• Ce personnage a -1 à ce pouvoir de base pour cette utilisation. Redressez Splinter.",
+  // tmnt_aspect_basic — Strength (Resource), reskin de 01090
+  'ub054': "1 max par deck.",
+  // tmnt_aspect_basic — Team-Building Exercise (Support), reskin de 12024
+  'ub055': "<b>Action de héros</b> : inclinez Team-Building Exercise → jouez une carte de votre main qui partage un trait avec votre héros, en réduisant de 1 son coût en ressources.\n<i>« C'est l'équipe de combat la plus redoutable du monde. »</i>",
+  // tmnt_aspect_basic — The Market (Support), reskin de 41023 X-Bunker
+  'ub056': "<b>Action</b> : inclinez The Market et choisissez un joueur dont l'identité a le trait [[MUTANT]] → ce joueur cherche une carte parmi les X cartes du dessus de son deck et l'ajoute à sa main, X étant le nombre de manigances annexes dans la pile de victoire. <i>(Mélangez.)</i>",
+  // tmnt_aspect_basic — Turtle Lair (Support), reskin de 01091 Avengers Mansion
+  'ub057': "1 max par joueur.\n<b>Action</b> : inclinez le Turtle Lair → choisissez un joueur. Ce joueur pioche 1 carte.\n<i>« Ça fait du bien d'être à la maison. »</i> —Mikey",
+  // tmnt_aspect_basic — Upstate Farmhouse (Support), reskin de 20029 Crew Quarters
+  'ub058': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\n<b>Action d'alter ego</b> : inclinez Upstate Farmhouse → soignez 1 dégât d'un alter ego.",
+  // tmnt_aspect_basic — Weapon Harness (Upgrade), 20021 Side Holster modifiée
+  'ub059': "1 max par joueur. Jouez cette carte uniquement si votre identité a le trait [[NINJA]].\nVous pouvez contrôler 2 améliorations [[ARME]] supplémentaires dotées du mot-clé Restreint.",
 
 
   // --- TMNT Justice (uj) : ajouter les cartes ujNNN ci-dessous, dans ce bloc seulement ---
