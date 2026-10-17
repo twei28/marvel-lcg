@@ -4656,4 +4656,32 @@ export const TEXTES_FR_FANMADE = {
     'ud005': "Ténacité.\n<b>Interruption</b> : quand Sōhei est vaincu par des dégâts consécutifs ([consequential]), votre héros gagne +2 en taille de main jusqu'à la fin du round.\n<i>« Je veillerai sur toi depuis l'autre côté. »</i>",
     // tmnt_aspect_dual — Nightwatcher (Ally), Commandement/Protection
     'ud006': "Ténacité.\n<b>Réponse</b> : après que Nightwatcher a subi des dégâts consécutifs ([consequential]), donnez-lui une carte d'état Tenace.\n<i>« Je suis le héros dont nous avons TOUS besoin ! »</i>",
+    // --- TMNT Shinobi Bushido (sb) : ajouter les cartes sbNNN ci-dessous, dans ce bloc seulement ---
+    // --- TMNT Shinobi Kuji-Kiri (sj) : ajouter les cartes sjNNN ci-dessous, dans ce bloc seulement ---
+    // --- TMNT Shinobi Ninjutsu (sa) : ajouter les cartes saNNN ci-dessous, dans ce bloc seulement ---
+    // --- TMNT Shinobi Taijutsu (sh) : ajouter les cartes shNNN ci-dessous, dans ce bloc seulement ---
+    // --- TMNT Shinobi Dual (sc) : ajouter les cartes scNNN ci-dessous, dans ce bloc seulement ---
+    // --- TMNT Shinobi Paths (se) : les onze Voies (socle Shinobi, 17/10/2026) ---
+    // se001 Kagemusha (Path, Ninjutsu)
+    'se001': "Permanent.\nVous avez -1 à votre taille de main.\nVotre héros gagne le trait [[NINJA]].\n<i>Shadow Stride</i> — <b>Action de héros</b> : inclinez cette carte → camouflez votre héros.\n<i>« Je suis les ombres. »</i>",
+    // se002 Onmyōdō (Path, Kuji-Kiri)
+    'se002': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[MYSTIC]].\n<i>Insight</i> — <b>Action de héros</b> : inclinez cette carte → regardez les 2 cartes du dessus de n'importe quel deck et remettez-les dans le même ordre.",
+    // se003 Samurai (Path, Bushido)
+    'se003': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Way of the Warrior</i> — <b>Action de héros</b> : inclinez cette carte et retirez en tout 2 compteurs de samouraï parmi les améliorations [[OATH]] que vous contrôlez → redressez votre héros et piochez 1 carte.",
+    // se004 Shihan (Path, Taijutsu)
+    'se004': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Recenter</i> — <b>Interruption de héros</b> : quand la phase des joueurs se termine, défaussez les 2 cartes du dessus de votre deck → remettez dans votre main 1 carte Taijutsu de votre pile de défausse.",
+    // se005 The Last Rōnin (Path hybride, unique, 4 types)
+    'se005': "Permanent.\nVous avez -1 à votre taille de main.\nVous pouvez jouer les cartes glissées ici comme si elles étaient dans votre main. <i>(2 cartes glissées maximum.)</i>\n<i>Kanpeki</i> — <b>Action</b> : inclinez cette carte et glissez ici 1 carte Shinobi de votre main → piochez 1 carte.",
+    // se006 Yoshimitsu (Path hybride, Bushido + Kuji-Kiri)
+    'se006': "Permanent.\nVous avez -1 à votre taille de main.\nVous avez +2 points de vie.\n<i>Magnificence</i> — <b>Action de héros</b> : subissez 1 dégât et inclinez cette carte → vous gagnez +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round.",
+    // se007 Yamabushi (Path hybride, Kuji-Kiri + Taijutsu)
+    'se007': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[TEMPORAL]].\n<i>Meditate</i> — <b>Action de héros</b> : inclinez cette carte et votre héros → piochez 3 cartes. Choisissez et défaussez 1 carte de votre main.",
+    // se008 Onigari (Path hybride, Kuji-Kiri + Ninjutsu)
+    'se008': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[PSIONIC]].\n<i>Dark Visions</i> — <b>Réponse de héros</b> : après que vous avez vaincu un sbire ou une manigance annexe, inclinez cette carte → camouflez votre héros et piochez 1 carte.",
+    // se009 Ashigaru (Path hybride, Bushido + Taijutsu)
+    'se009': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[SOLDIER]].\n<i>Light of Foot</i> — <b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild]. Si vous avez payé une carte Shinobi avec cette ressource, piochez 1 carte.",
+    // se010 Onmitsu (Path hybride, Ninjutsu + Taijutsu)
+    'se010': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Gardener</i> — <b>Réponse de héros</b> : après que vous avez joué un événement [[ATTACK]] ou [[DEFENSE]], subissez 1 dégât → hébétez un ennemi.",
+    // se011 Yōjimbō (Path hybride, Bushido + Ninjutsu)
+    'se011': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Bodyguard</i> — <b>Interruption de héros</b> : quand un ennemi attaque, inclinez cette carte → déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je suis à tes côtés. »</i>",
 };
