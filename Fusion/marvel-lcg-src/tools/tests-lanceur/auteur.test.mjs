@@ -32,7 +32,7 @@ test("la casse du créateur ne compte pas pour la répétition", () => {
     assert.equal(nomAvecAuteur("Hulk (RAINY)", "Rainy", true), "Hulk (RAINY)");
 });
 
-import { createursDe } from "../../public/js/prepare/auteur.js";
+import { createursDe, createursDeTout } from "../../public/js/prepare/auteur.js";
 
 test("les créateurs sont listés une fois, séparés sur le « + », triés", () => {
     const heroes = [
@@ -78,4 +78,18 @@ test("les créateurs d'extensions donnés à la main (16/10/2026)", async () => 
     assert.equal(auteurConnuDeLExtension("  gorr the god butcher "), "BlueHG");
     assert.equal(auteurConnuDeLExtension("Skrull Menace"), "");
     assert.equal(auteurConnuDeLExtension(undefined), "");
+});
+
+test("createursDeTout : héros et extensions fan-made réunis, chacun une fois, officiels exclus", () => {
+    const heroes = [
+        { homebrew: true, auteur: "Inkwire" },
+        { homebrew: true, auteur: "BlueHG + DesignHacker" },
+        { homebrew: false, auteur: "Marvel" },
+    ];
+    assert.deepEqual(
+        createursDeTout(heroes, ["Inkwire", "Ripper3", "", undefined]),
+        ["BlueHG", "DesignHacker", "Inkwire", "Ripper3"],
+    );
+    assert.deepEqual(createursDeTout([], []), []);
+    assert.deepEqual(createursDeTout(null, null), []);
 });

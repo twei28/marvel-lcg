@@ -31,6 +31,7 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await expect(merci).toBeVisible();
     await expect(merci).toContainText('Un grand merci à');
     await expect(merci).toContainText('Nugget');
+    await expect(merci).toContainText('Inkwire');
     await expect(merci).toContainText('pour leur travail');
 
     const nom = page.locator('.tb-port[data-hero="agent_anti_venom"] .tb-port-nom');
@@ -72,16 +73,18 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await champ.fill('good boy');
     await expect(page.locator('#hero-grid .tb-port[data-hero="lockjaw"]')).toBeVisible();
 
-    // La phrase suit ce qui reste affiche, et se met au SINGULIER pour un seul
-    // createur : « pour leur travail » a une personne seule sonnerait faux.
+    // La phrase est COMMUNE (17/10/2026) : tous les createurs de heros ET de vilains
+    // fan-made, quelle que soit la recherche. Elle ne se reduit plus.
+    const toute = (await page.locator('#tb-merci').innerText());
     await champ.fill('nugget');
-    await expect(page.locator('#tb-merci')).toHaveText('Un grand merci à Nugget pour son travail : ces héros sont les siens.');
+    await expect(page.locator('#tb-merci')).toHaveText(toute);
+    await expect(page.locator('#tb-merci')).toContainText('Inkwire');
     await champ.fill('');
     await expect(page.locator('#tb-merci')).toContainText('pour leur travail');
 
-    // Capture pour l'oeil humain : tout ce qu'un createur a dessine, d'un mot.
+    // Capture pour l'oeil humain.
     await champ.fill('rainy');
-    await expect(page.locator('#tb-merci')).toContainText('Rainy pour son travail');
+    await expect(page.locator('#tb-merci')).toContainText('Rainy');
     await page.screenshot({ path: 'fanmade-recherche-createur.png' });
   });
 
@@ -89,12 +92,27 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await page.goto('/prepare.html');
     await page.getByRole('button', { name: /^Solo/ }).first().click();
     await expect(page.locator('.tb-port').first()).toBeVisible();
+    // La phrase de remerciement des heros, lue ici pour la comparer a celle des vilains.
+    await page.getByRole('button', { name: /^fan-made$/i }).click();
+    const merciHeros = await page.locator('#tb-merci').innerText();
+    await page.getByRole('button', { name: /^fan-made$/i }).click();
     // Storm a un art alternatif depuis l'automne : sa tuile ouvre la modale du
     // heros, qu'on valide telle quelle (le sujet ici, ce sont les vilains).
     await page.locator('.tb-port[data-hero="storm"]').click();
     await page.locator('.vh-panel').getByRole('button', { name: /valider/i }).click();
     await page.getByRole('button', { name: /continuer/i }).click();
     await page.getByRole('button', { name: /continuer/i }).click();
+
+    // La MEME ligne de remerciement sur l'ecran des vilains (17/10/2026), seulement
+    // avec le filtre fan-made ; sinon rien.
+    await expect(page.locator('#tb-merci-vilains')).toBeHidden();
+    await page.locator('.ext-fanmade').click();
+    await expect(page.locator('#tb-merci-vilains')).toBeVisible();
+    await expect(page.locator('#tb-merci-vilains')).toHaveText(merciHeros);
+    await expect(page.locator('#tb-merci-vilains')).toContainText('Inkwire');
+    await page.screenshot({ path: 'fanmade-merci-vilains.png' });
+    await page.locator('.ext-fanmade').click();
+    await expect(page.locator('#tb-merci-vilains')).toBeHidden();
 
     // VILAINS : chaque extension ouvre ses scenarios.
     const tuile = (id) => page.locator(`.tb-port[data-scn="${id}"] .tb-port-nom`);

@@ -17,7 +17,7 @@ import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
-import { nomAvecAuteur, createursDe, auteurConnuDeLExtension } from "/public/js/prepare/auteur.js";
+import { nomAvecAuteur, createursDeTout, auteurConnuDeLExtension } from "/public/js/prepare/auteur.js";
 // LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
 // ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
 import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
@@ -1146,6 +1146,9 @@ function progressBar() {
                 // exactement comme « /01001a » trouve un scan de carte.
                 el("img", { class: "brand-narwhal", src: urlNarval(), alt: "NarwhalChampions" }),
             ),
+            // Le titre de la page, comme sur les autres pages (17/10/2026) : visible seulement
+            // dans l'Épuré, où l'en-tête est le même partout.
+            el("span", { class: "brand-titre" }, t("Préparation")),
         ),
         boutonLangue("btn ghost btn-langue"),
         boutonAffichage("btn ghost"),
@@ -2397,7 +2400,8 @@ function accueilView() {
     grille.append(el("div", { class: "acc-tuile", "data-cle": "nouveautes" },
         el("button", {
             class: "acc-mode cut acc-nouv-tuile",
-            onclick: () => ouvrirNouveautes(),
+            // PC : une page à part (nouveautes.html). Le téléphone garde la modale.
+            onclick: () => { if (estTel()) ouvrirNouveautes(); else window.location.href = "/nouveautes.html"; },
             "aria-describedby": "acc-aide-nouveautes",
         },
             el("span", { class: "acc-copy" },
@@ -3304,23 +3308,52 @@ function majPlaceholderRecherche(homebrew) {
         : t("Rechercher un héros ou un trait");
 }
 
-/** Sur le filtre fan-made, une ligne remercie les créateurs des héros
- *  affichés (demande du 18/09/2026). Ailleurs la ligne disparaît. */
-function majMerciCreateurs(list, homebrew) {
-    const merci = document.getElementById("tb-merci");
-    if (!merci) return;
-    const noms = homebrew ? createursDe(list) : [];
+/** La liste COMMUNE des remerciements (demande du 17/10/2026) : tous les créateurs de
+ *  héros ET d'extensions fan-made (vilains, sets), la même sur l'écran des héros et sur
+ *  celui des méchants. Elle ne dépend ni de la recherche ni de l'onglet : un nouveau
+ *  contenu se déclare une fois (champ `custom` des cartes) et paraît partout. */
+let _creditsFanmade = null;
+function createursFanmadeTous() {
+    if (!_creditsFanmade) {
+        _creditsFanmade = (async () => {
+            const heros = await catalog.heroes();
+            const auteurs = [];
+            for (const e of await catalog.extensions()) {
+                if (/custom/i.test(e.key)) auteurs.push(await auteurDeExtension(e));
+            }
+            return createursDeTout(heros, auteurs);
+        })().catch((err) => { _creditsFanmade = null; throw err; });
+    }
+    return _creditsFanmade;
+}
+
+/** Remplit une ligne de remerciement. Un seul créateur : la phrase passe au singulier,
+ *  sinon elle parle de « leur travail » à une personne seule. */
+function remplirMerci(merci, noms) {
     merci.hidden = noms.length === 0;
     if (!noms.length) { merci.replaceChildren(); return; }
-    // Un seul créateur : la phrase passe au singulier, sinon elle parle de
-    // « leur travail » à une personne seule (visible des qu'on cherche « rainy »).
     merci.replaceChildren(
         t("Un grand merci à") + " ",
         el("b", {}, noms.join(", ")),
         " " + (noms.length === 1
-            ? t("pour son travail : ces héros sont les siens.")
-            : t("pour leur travail : ces héros sont les leurs.")),
+            ? t("pour son travail : ces héros et ces méchants sont les siens.")
+            : t("pour leur travail : ces héros et ces méchants sont les leurs.")),
     );
+}
+
+/** Sur le filtre fan-made, une ligne remercie tous les créateurs (liste commune, voir
+ *  `createursFanmadeTous`). Ailleurs la ligne disparaît. */
+async function majMerciCreateurs(homebrew) {
+    const merci = document.getElementById("tb-merci");
+    if (!merci) return;
+    remplirMerci(merci, homebrew ? await createursFanmadeTous() : []);
+}
+
+/** La même ligne sur l'écran des méchants, quand son filtre fan-made est coché. */
+async function majMerciVilains() {
+    const merci = document.getElementById("tb-merci-vilains");
+    if (!merci) return;
+    remplirMerci(merci, state.extFanmade ? await createursFanmadeTous() : []);
 }
 
 async function refreshHeroGrid(pre) {
@@ -3342,7 +3375,7 @@ async function refreshHeroGrid(pre) {
         (!!h.homebrew === f.homebrew));
     const compte = document.getElementById("tb-compte");
     if (compte) compte.textContent = list.length + " " + t("héros");
-    majMerciCreateurs(list, f.homebrew);
+    majMerciCreateurs(f.homebrew);
     majPlaceholderRecherche(f.homebrew);
     if (!list.length) {
         grid.replaceChildren(el("div", { class: "empty-state" }, t("Aucun héros trouvé")));
@@ -5036,6 +5069,7 @@ function stepScenario() {
             el("span", { class: "tb-mode" }, navStatus()),
         ),
         el("div", { class: "ext-tabs", id: "ext-tabs" }, el("div", { class: "loading" }, "...")),
+        el("div", { class: "tb-merci", id: "tb-merci-vilains", hidden: true }),
         el("div", { class: "hero-grid tb-roster tb-roster-scn", id: "scn-grid" }),
         // Le niveau de menace, ici même : c'est en voyant le méchant qu'on
         // décide de la difficulté, pas un écran plus loin.
@@ -5464,6 +5498,7 @@ async function loadExtTabs() {
         entete.querySelectorAll(".ext-fanmade").forEach((x) => x.remove());
         entete.insertBefore(filtre, entete.querySelector(".tb-mode"));
     }
+    majMerciVilains();
     tabs.replaceChildren(...exts.map((e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
         title: e.key,

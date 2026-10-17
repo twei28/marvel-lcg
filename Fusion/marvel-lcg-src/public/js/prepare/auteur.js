@@ -32,6 +32,16 @@ export function createursDe(heroes) {
     return [...vus.values()].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 }
 
+/** La liste COMMUNE des remerciements (demande du 17/10/2026) : les créateurs de tous
+ *  les héros fan-made ET de toutes les extensions fan-made (vilains, sets), chacun une
+ *  fois. La même phrase s'affiche sur l'écran des héros et sur celui des méchants : un
+ *  nouveau contenu s'ajoute aux deux d'un coup, jamais à un seul. `auteursExtensions` :
+ *  les créateurs des extensions fan-made, une chaîne chacun (« A + B » accepté). */
+export function createursDeTout(heroes, auteursExtensions) {
+    const dEntrees = (auteursExtensions || []).filter(Boolean).map((a) => ({ homebrew: true, auteur: a }));
+    return createursDe([...(heroes || []), ...dEntrees]);
+}
+
 /** Le créateur d'un ensemble de cartes, quand il n'y a pas de doute : la seule
  *  valeur `custom` non vide qu'elles portent toutes. Deux auteurs, ou une
  *  carte officielle mêlée à des cartes maison, et on rend "" — mieux vaut ne
