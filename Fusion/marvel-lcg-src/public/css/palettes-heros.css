@@ -210,3 +210,5 @@ body{
 .p-actions .p-traite.p-deja { border-color: var(--line); color: var(--dim); font-weight: 400; }
 .p-ligne:not(.p-corrigee) .p-etat { color: #e6be3c; }
 .p-ligne[hidden]{display:none !important}
+/* Un méchant : deux couleurs, le troisième champ n'existe pas. */
+.p-deux-couleurs .p-champ:nth-child(3) { display: none; }

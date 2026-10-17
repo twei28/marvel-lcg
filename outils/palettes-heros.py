@@ -202,8 +202,9 @@ def main():
         if not couleurs:
             sans_mechant.append((set_name, lues))
             continue
+        # DEUX COULEURS pour un mechant (precision de l'utilisateur, 17/10/2026).
         for phase in phases:
-            palettes.setdefault(phase, couleurs)
+            palettes.setdefault(phase, couleurs[:2])
     print(f"{len(mechants)} mechants, {len(mechants) - len(sans_mechant)} avec une palette")
     for nom, lues in sans_mechant[:12]:
         print(f"    mechant sans palette : {nom} ({lues} carte(s) lue(s))")

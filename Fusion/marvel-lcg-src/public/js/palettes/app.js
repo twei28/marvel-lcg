@@ -114,7 +114,8 @@ function nomsDesCartes(cartesParGroupe) {
 
 /** Ce que la ligne enverrait au serveur, ou l'erreur qui l'en empêche. */
 function lectureDe(ligne) {
-    const champs = ligne.champs.map((champ) => champ.value);
+    // Un méchant n'a que DEUX couleurs : le troisième champ est caché et ignoré.
+    const champs = ligne.champs.slice(0, ligne.type === "mechants" ? 2 : 3).map((champ) => champ.value);
     return couleursDepuisChamps(champs);
 }
 
@@ -149,7 +150,7 @@ function dire(ligne, texte, classe) {
 function poserCouleurs(ligne, couleurs) {
     ligne.couleurs = couleurs.map((c) => [c[0], c[1], c[2]]);
     ligne.champs.forEach((champ, rang) => {
-        const couleur = couleurs[rang];
+        const couleur = ligne.type === "mechants" && rang > 1 ? null : couleurs[rang];
         champ.value = couleur ? rgbVersHex(couleur) : "";
     });
     ligne.pastilles.forEach((pastille, rang) => {
@@ -431,6 +432,7 @@ function construireLigne(groupe, nom, type) {
         annuler: noeud.querySelector(".p-annuler"),
     };
     noeud.querySelector(".p-nom").textContent = nom;
+    if (type === "mechants") noeud.classList.add("p-deux-couleurs");
     noeud.querySelector(".p-cartes").textContent = groupe.cartes.join(" · ");
     const scan = noeud.querySelector(".p-scan");
     scan.src = "/" + groupe.cartes[0];
