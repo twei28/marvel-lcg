@@ -168,15 +168,15 @@ export function marqueDe(couleurs: readonly Couleur[] | undefined, largeurBande 
 
 /**
  * La marque du MÉCHANT en affichage ÉPURÉ : DEUX bandes en biais, aplaties, au coin HAUT GAUCHE
- * (17/10/2026), le pendant de `marqueDe`. La principale tient le coin (70 %), la secondaire le
- * bord (30 %). Arrêts nets, aucun dégradé.
+ * (17/10/2026), le pendant de `marqueDe`. PROPORTIONS 40 / 60 (demande du 17/10/2026) : la
+ * principale tient le coin (40 %), la secondaire le bord (60 %). Arrêts nets, aucun dégradé.
  */
 export function marqueMechantDe(couleurs: readonly Couleur[] | undefined, largeurBande = 96): string | undefined {
   if (!couleurs || couleurs.length === 0) return undefined
   const rgb = (c: Couleur) => `rgb(${c[0]},${c[1]},${c[2]})`
   const [principale, secondaire] = [couleurs[0], couleurs[1] ?? couleurs[0]]
   const total = (largeurBande * 7) / 3
-  const premiere = Math.round(total * 0.7 * 100) / 100
+  const premiere = Math.round(total * 0.4 * 100) / 100
   const seconde = Math.round(total * 100) / 100
   return `linear-gradient(135deg, ${rgb(principale)} 0px ${premiere}px, ${rgb(secondaire)} ${premiere}px ${seconde}px, transparent ${seconde}px)`
 }

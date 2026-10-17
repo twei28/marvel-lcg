@@ -210,11 +210,11 @@ describe('le méchant au coin haut gauche (17/10/2026)', () => {
     expect(fondDe([rouge], 'SOMBRE').startsWith('linear-gradient(315deg')).toBe(true)
   })
 
-  it('marqueMechantDe : deux bandes nettes, 70 puis 30 %, sans dégradé', () => {
+  it('marqueMechantDe : deux bandes nettes, 40 puis 60 %, sans dégradé', () => {
     const m = marqueMechantDe([noir, rouge], 96) ?? ''
     expect(m).toContain('135deg')
-    expect(m).toContain('rgb(10,10,10) 0px 156.8px')
-    expect(m).toContain('rgb(200,30,30) 156.8px 224px')
+    expect(m).toContain('rgb(10,10,10) 0px 89.6px')
+    expect(m).toContain('rgb(200,30,30) 89.6px 224px')
     expect(marqueMechantDe(undefined)).toBeUndefined()
   })
 
