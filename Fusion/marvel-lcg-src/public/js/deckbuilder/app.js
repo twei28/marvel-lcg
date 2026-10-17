@@ -32,8 +32,8 @@ import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
 import { correspondRecherche } from "/public/js/deckbuilder/recherche.js";
 import { versionsDe, versionDansLeDeck, changerVersion } from "/public/js/deckbuilder/arts-reeditions.js";
 // Arts alternatifs (TMNT) : même carte, seule l'image change. Choix dans mc_card_art_v1.
-import { artsDe, STANDARD, exclusiveRefusee } from "/public/js/prepare/arts-cartes-choix.js";
-import { ecrireChoixCartes, picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
+import { artsDe, origine, codeAffiche, STANDARD, exclusiveRefusee } from "/public/js/prepare/arts-cartes-choix.js";
+import { ecrireChoixCartes, lireChoixCartes, picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
 import {
@@ -803,15 +803,17 @@ function rendreArts(id) {
     // Art alternatif d'une carte (TMNT) : le choix ne touche pas au deck, seulement à l'image.
     const codes = artsDe(id);
     if (codes.length) {
-        const actif = picIdDeCarte(id, refHeros());
+        // Une réimpression identique partage l'image et le choix de l'officielle.
+        const base = origine(id);
+        const actif = codeAffiche(id, lireChoixCartes(), refHeros());
         remplacer($("#db-arts"), el("span", {}, t("ARTS")),
             [STANDARD, ...codes].map((code) => {
-                const pic = code === STANDARD ? id : `${id}_${code}`;
+                const pic = code === STANDARD ? id : `${base}_${code}`;
                 return el("img", {
                     src: cardImageUrl(pic), alt: pic, "data-art": code,
-                    class: pic === actif ? "est-active" : "",
+                    class: code === actif ? "est-active" : "",
                     title: code === STANDARD ? t("Illustration officielle") : `${t("Illustration")} ${code.toUpperCase()}`,
-                    onclick: () => { ecrireChoixCartes({ [id]: code }); rendreApercu(); rendreGrille(); rendreDeck(); },
+                    onclick: () => { ecrireChoixCartes({ [base]: code }); rendreApercu(); rendreGrille(); rendreDeck(); },
                 });
             }));
         return;
