@@ -293,6 +293,9 @@ let _setsRencontreMasques = new Set();
 // départ. Rempli par heroes(), lu par setsMasques() : le deckbuilder s'en sert
 // pour ne pas proposer les cartes signature d'un héros retiré du jeu.
 let _setsMasques = new Set();
+// `set_name` des cartes d'une extension marquee `indisponible` dans sets_info.json
+// (cle `set_names`). Rempli par extensions(), fusionne dans _setsMasques par heroes().
+let _setsMasquesExt = new Set();
 const _scenariosByExt = new Map();
 
 export const catalog = {
@@ -306,8 +309,10 @@ export const catalog = {
         // pas partir en production. Pour remettre une extension : supprimer la
         // cle `indisponible`.
         _setsRencontreMasques = new Set();
+        _setsMasquesExt = new Set();
         Object.entries(raw).forEach(([, v]) => {
             if (!v || !v.indisponible) return;
+            (v.set_names || []).forEach((n) => _setsMasquesExt.add(n));
             (v.encounters || []).forEach((n) => _setsRencontreMasques.add(n));
         });
         _extensions = Object.entries(raw).filter(([, v]) => !(v && v.indisponible))
@@ -350,7 +355,7 @@ export const catalog = {
         // Squirrel Girl en a trois (« Squirrel Girl », « Squirrel Deck » pour
         // les six écureuils mis de côté, « Squirrel Girl Nemesis »), et ses six
         // cartes empruntables sont justement dans « Squirrel Deck ».
-        _setsMasques = new Set();
+        _setsMasques = new Set(_setsMasquesExt);
         loaded.forEach((x) => {
             if (!x || !x.d || !x.d.metadata || !x.d.metadata.indisponible) return;
             const d = x.d;
