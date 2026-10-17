@@ -21,7 +21,7 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
     return cas
 
 
-def _paire(up, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
+def _paire_brute(up, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
     """Un cas sur le reskin `up` et son TEMOIN identique sur l'officielle (card_id remplace partout)."""
     def sub(x):
         if isinstance(x, str):
@@ -52,6 +52,28 @@ def _unique(up, bandeau_id, bandeau):
            {"carte": up, "jouable": True, "en_jeu": 0},
            main=["01088", "01089", "01090", "01088"], verifier="max_par_joueur_jouable"),
     ]
+
+
+# ----- Conversion en arts alternatifs (17/10/2026) : les reskins « image seule » ne sont plus des cartes.
+# `_paire` ne rend plus que le TEMOIN sur l'officielle (il prouve la carte) pour une carte convertie ; la
+# preuve de la conversion elle-meme est un cas de donnees (tools/test_convertir_reskins.py).
+import importlib.util as _iu
+import os as _os
+import re as _re
+_sp = _iu.spec_from_file_location("_converties", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "_converties.py"))
+_cv = _iu.module_from_spec(_sp)
+_sp.loader.exec_module(_cv)
+CONVERTIES = _cv.CONVERTIES
+
+
+def _paire(reskin, officielle, *args, **cle):
+    cas = _paire_brute(reskin, officielle, *args, **cle)
+    if reskin not in CONVERTIES:
+        return cas
+    temoin = cas[1]
+    temoin["nom"] = _re.sub(r"%s TEMOIN %s( \(officielle\))?" % (reskin, officielle),
+                            "%s (officielle, ex-%s)" % (officielle, reskin), temoin["nom"], count=1)
+    return [temoin]
 
 
 CAS = []

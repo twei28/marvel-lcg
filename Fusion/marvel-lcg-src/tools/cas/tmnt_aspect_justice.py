@@ -33,7 +33,7 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
     return cas
 
 
-def _paire(tmnt, officielle, libelle, pourquoi, mise, declencher, attendu, **cle):
+def _paire_brute(tmnt, officielle, libelle, pourquoi, mise, declencher, attendu, **cle):
     """Un cas sur le reskin TMNT + le TEMOIN identique sur l'officielle (chaque card_id est remplace
     partout : mise en place, declencheurs, attendu, main, jouer, cibles)."""
     import json
@@ -47,6 +47,28 @@ def _paire(tmnt, officielle, libelle, pourquoi, mise, declencher, attendu, **cle
                 sub(mise, tmnt, officielle), sub(declencher, tmnt, officielle), sub(attendu, tmnt, officielle),
                 **sub(dict(cle), tmnt, officielle))
     return [cas_tmnt, temoin]
+
+
+# ----- Conversion en arts alternatifs (17/10/2026) : les reskins « image seule » ne sont plus des cartes.
+# `_paire` ne rend plus que le TEMOIN sur l'officielle (il prouve la carte) pour une carte convertie ; la
+# preuve de la conversion elle-meme est un cas de donnees (tools/test_convertir_reskins.py).
+import importlib.util as _iu
+import os as _os
+import re as _re
+_sp = _iu.spec_from_file_location("_converties", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "_converties.py"))
+_cv = _iu.module_from_spec(_sp)
+_sp.loader.exec_module(_cv)
+CONVERTIES = _cv.CONVERTIES
+
+
+def _paire(reskin, officielle, *args, **cle):
+    cas = _paire_brute(reskin, officielle, *args, **cle)
+    if reskin not in CONVERTIES:
+        return cas
+    temoin = cas[1]
+    temoin["nom"] = _re.sub(r"%s TEMOIN %s( \(officielle\))?" % (reskin, officielle),
+                            "%s (officielle, ex-%s)" % (officielle, reskin), temoin["nom"], count=1)
+    return [temoin]
 
 
 CAS = []
@@ -213,10 +235,10 @@ CAS += [
        "c'est bien la copie deja jouee qui bloque la seconde",
        [HEROS, "Puzzle.CreateEncounterDeck('01107', '01108', '01104')", "Puzzle.CreateHandCards('uj024', 'uj024')"],
        [], {"carte": "uj024", "jouable": True, "en_jeu": 0}, verifier="max_par_joueur_jouable"),
-    _c("uj007 Disguise : Max 1 per player, une copie en jeu -> la 2e n'est PAS jouable",
-       "« Max 1 per player » (MaxPerUnit 1 recopie de 47013 : donnee, ne vient pas par ability_link)",
-       [HEROS, "Puzzle.Gain('uj007')", "Puzzle.PutIntoPlay('uj007', under_control=True)"], [],
-       {"carte": "uj007", "jouable": False, "en_jeu": 1},
+    _c("47013 (officielle, ex-uj007) Disguise : Max 1 per player, une copie en jeu -> la 2e n'est PAS jouable",
+       "« Max 1 per player » ; uj007 est desormais un art alternatif de 47013 : le cas porte sur l'officielle",
+       [HEROS, "Puzzle.Gain('47013')", "Puzzle.PutIntoPlay('47013', under_control=True)"], [],
+       {"carte": "47013", "jouable": False, "en_jeu": 1},
        main=["01088", "01089"], verifier="max_par_joueur_jouable"),
 ]
 

@@ -7,7 +7,13 @@ Verifie : l'essai a blanc n'ecrit rien ; la conversion retire les cartes « art
 seul » (et elles seules) de cards.json avec un checksum valide, les declare dans
 arts_alternatifs.json, copie leur image sans toucher a l'originale ; les
 exclusives et les trois ressources doubles restent ; relancer ne change rien.
+
+Depuis la conversion du 17/10/2026, le depot n'a plus de reskin « art seul » :
+le test les RECREE dans la copie (un clone de chaque officielle convertie, lue
+dans la colonne `converti_art_alternatif_de` du TSV), puis, en premiere partie,
+verifie l'ETAT REEL du depot (`verifier_depot`).
 """
+import csv
 import hashlib
 import json
 import shutil
@@ -35,7 +41,51 @@ def checksum_ok(chemin):
     return hashlib.sha256(json.dumps(sans, sort_keys=True).encode()).hexdigest() == d["checksum"], d
 
 
+def verifier_depot():
+    """Etat reel : chaque carte convertie a disparu de cards.json, son officielle declare un art `tmnt`
+    et possede l'image `<officielle>_tmnt.jpg` ; les exclusives et les ressources doubles restent."""
+    converties = {}
+    with open(RACINE / "tools" / "tmnt_aspects_numerotation.tsv", encoding="utf-8", newline="") as h:
+        for r in csv.DictReader(h, delimiter="\t"):
+            if (r.get("converti_art_alternatif_de") or "").strip():
+                converties[r["card_id"]] = r["converti_art_alternatif_de"].strip()
+    assert len(converties) >= 60, f"colonne converti_art_alternatif_de vide ({len(converties)})"
+    ok, d = checksum_ok(RACINE / "data" / "cards.json")
+    assert ok, "checksum de cards.json invalide"
+    cartes = classeur.charger_cartes()
+    arts = json.loads((RACINE / "data" / "arts_alternatifs.json").read_text(encoding="utf-8"))["cartes"]
+    pics = RACINE / "assets" / "pics"
+    for cid, off in converties.items():
+        assert cid not in cartes, f"{cid} devrait avoir ete retiree de cards.json"
+        assert off in cartes, f"l'officielle {off} de {cid} manque"
+        assert "tmnt" in arts.get(off, []), f"{off} ne declare pas d'art alternatif tmnt (ex-{cid})"
+        assert (pics / f"{off}_tmnt.jpg").is_file(), f"image {off}_tmnt.jpg absente (ex-{cid})"
+    reste = [c for c, _, o, e in classeur.classer() if not e and o not in {"01088", "01089", "01090"}]
+    assert not reste, f"reskins « art seul » encore presents : {reste}"
+    print(f"OK depot : {len(converties)} cartes converties, art alternatif tmnt + image presents")
+    return converties
+
+
+def injecter_clones(copie, converties):
+    """Recree dans la copie un reskin « art seul » (clone de l'officielle) par carte convertie."""
+    chemin = copie / "data" / "cards.json"
+    brut = json.loads(chemin.read_text(encoding="utf-8"))
+    for cid, off in converties.items():
+        for cle, v in brut.items():
+            if isinstance(v, list):
+                src = next((c for c in v if isinstance(c, dict) and c.get("card_id") == off), None)
+                if src:
+                    clone = dict(src)
+                    clone.update(card_id=cid, ability_link=off, custom="Inkwire", set_name="TMNT test")
+                    v.append(clone)
+                    break
+    brut["checksum"] = hashlib.sha256(json.dumps({k: v for k, v in brut.items() if k != "checksum"},
+                                                 sort_keys=True).encode()).hexdigest()
+    chemin.write_text(json.dumps(brut, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def main():
+    converties = verifier_depot()
     with tempfile.TemporaryDirectory() as tmp:
         copie = Path(tmp)
         (copie / "data").mkdir()
@@ -45,6 +95,7 @@ def main():
             shutil.copy(RACINE / "data" / f, copie / "data" / f)
         shutil.copy(RACINE / "tools" / "tmnt_aspects_numerotation.tsv", copie / "tools")
 
+        injecter_clones(copie, converties)
         classement = classeur.classer(classeur.charger_cartes(copie / "data" / "cards.json"),
                                       classeur.lire_origines(copie / "tools" / "tmnt_aspects_numerotation.tsv"))
         ressources = {"01088", "01089", "01090"}

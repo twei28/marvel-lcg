@@ -39,7 +39,7 @@ def _sub(valeur, x):
     return valeur
 
 
-def _paire(reskin, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
+def _paire_brute(reskin, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
     """Le cas sur le reskin TMNT, puis le TEMOIN identique sur l'officielle."""
     return [
         _c(_sub(f"{reskin} {nom}", reskin), pourquoi, _sub(mise, reskin), _sub(declencher, reskin),
@@ -52,6 +52,28 @@ def _paire(reskin, officielle, nom, pourquoi, mise, declencher, attendu, **cle):
 
 def _jeu(card_id):
     return "Puzzle.PutIntoPlay('%s', under_control=True)" % card_id
+
+
+# ----- Conversion en arts alternatifs (17/10/2026) : les reskins « image seule » ne sont plus des cartes.
+# `_paire` ne rend plus que le TEMOIN sur l'officielle (il prouve la carte) pour une carte convertie ; la
+# preuve de la conversion elle-meme est un cas de donnees (tools/test_convertir_reskins.py).
+import importlib.util as _iu
+import os as _os
+import re as _re
+_sp = _iu.spec_from_file_location("_converties", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "_converties.py"))
+_cv = _iu.module_from_spec(_sp)
+_sp.loader.exec_module(_cv)
+CONVERTIES = _cv.CONVERTIES
+
+
+def _paire(reskin, officielle, *args, **cle):
+    cas = _paire_brute(reskin, officielle, *args, **cle)
+    if reskin not in CONVERTIES:
+        return cas
+    temoin = cas[1]
+    temoin["nom"] = _re.sub(r"%s TEMOIN %s( \(officielle\))?" % (reskin, officielle),
+                            "%s (officielle, ex-%s)" % (officielle, reskin), temoin["nom"], count=1)
+    return [temoin]
 
 
 CAS = []
@@ -131,8 +153,8 @@ CAS += _paire("ub015", "40057", "({X}) : defausse du dessus du deck (Rampage de 
 # ub017 Gofu Talisman <- 45050 Bloodgem
 CAS += _paire("ub017", "45050", "({X}) : Ressource : s'incliner et subir 2 degats -> paie seule Down Time (cout 1)",
               "« Exhaust and take 2 damage -> generate a [wild] resource »",
-              [_jeu("{X}")], [], {"en_jeu": ["ub009"], "degats_identite": 2, "exhausted": ["{X}"]},
-              heros="doctor_strange", main_exclusive=["ub009"], jouer=["ub009"])
+              [_jeu("{X}")], [], {"en_jeu": ["05033"], "degats_identite": 2, "exhausted": ["{X}"]},
+              heros="doctor_strange", main_exclusive=["05033"], jouer=["05033"])
 CAS += _paire("ub017", "45050", "({X}) : jouable par Doctor Strange (MYSTIC)",
               "« Play only if you have the MYSTIC trait » (cout 0)",
               [], [], {"en_jeu": ["{X}"]}, heros="doctor_strange", main_exclusive=["{X}"], jouer=["{X}"])
@@ -142,8 +164,8 @@ CAS += _paire("ub017", "45050", "({X}) : NON jouable par Spider-Man (sans MYSTIC
 # ub021 Ingenuity <- 29027
 CAS += _paire("ub021", "29027", "({X}) : Ressource : s'incliner -> paie seule Down Time (cout 1)",
               "« Exhaust Ingenuity -> generate a [mental] resource »",
-              [HEROS, _jeu("{X}")], [], {"en_jeu": ["ub009"], "exhausted": ["{X}"]},
-              main_exclusive=["ub009"], jouer=["ub009"])
+              [HEROS, _jeu("{X}")], [], {"en_jeu": ["05033"], "exhausted": ["{X}"]},
+              main_exclusive=["05033"], jouer=["05033"])
 CAS += _paire("ub021", "29027", "({X}) : jouable par Peter Parker (GENIUS), pas par Spider-Man (heros, sans GENIUS)",
               "« Play only if your identity has the GENIUS trait » : la forme alter ego de Spider-Man a GENIUS",
               [], [], {"en_jeu": ["{X}"]}, main_exclusive=["{X}", "01089"], jouer=["{X}"])
@@ -343,8 +365,8 @@ CAS += [
        [LEO_HEROS, _jeu("ub036")], [], {"en_jeu": ["tl011"], "exhausted": ["ub036"]},
        heros="leonardo", main_exclusive=["tl011"], jouer=["tl011"]),
     _c("ub036 Party Wagon : Spider-Man heros (ni NINJA ni TURTLE) ne peut pas s'en servir",
-       "contre-cas du trait du joueur", [HEROS, _jeu("ub036")], [], {"en_main": ["ub009"], "pret": ["ub036"]},
-       main_exclusive=["ub009"], jouer=["ub009"]),
+       "contre-cas du trait du joueur", [HEROS, _jeu("ub036")], [], {"en_main": ["05033"], "pret": ["ub036"]},
+       main_exclusive=["05033"], jouer=["05033"]),
     # ub038 Pizza Time (37021 modifie)
     _c("ub038 Pizza Time : Leo (MUTANT) remelange 2 cartes d'identite de la defausse ; sans Pizzeria, pas de pioche",
        "« Choose up to 2 identity-specific cards in your discard pile and shuffle them into your deck »",
@@ -463,8 +485,8 @@ CAS += [
        {"degats_identite": 1}, main_exclusive=["01090"], cibles=["01097b", "01001a"], accepter_choix=True),
     _c("ub014 Fugitoid : defausse Digging Deep ([wild]) -> pioche 1",
        "« [wild] - Draw 1 card »",
-       [HEROS, _jeu("ub014")], ["Puzzle.SetThreat('01097b', 5)", "Puzzle.Thwart('ub014')"], {"taille_main": 1, "defausse": ["ub007"]},
-       main_exclusive=["ub007"], cibles=["01097b"], accepter_choix=True),
+       [HEROS, _jeu("ub014")], ["Puzzle.SetThreat('01097b', 5)", "Puzzle.Thwart('ub014')"], {"taille_main": 1, "defausse": ["40060"]},
+       main_exclusive=["40060"], cibles=["01097b"], accepter_choix=True),
     _c("ub014 Fugitoid : main vide -> rien a defausser, aucun effet (Rhino 1 degat de l'attaque seulement)",
        "« discard 1 card from your hand » : sans carte, aucune icone",
        [HEROS, _jeu("ub014"), "Puzzle.EmptyHand()"], ["Puzzle.Attack('ub014')"], {"degats": [["01094", 1]]},
