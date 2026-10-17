@@ -1521,3 +1521,37 @@ Retirer l'état par la bascule `Puzzle.Cloak` / `Puzzle.Tough` avant de poser de
 | « your hero gets +N hand size » valable en alter ego | `joueur.GetIdentity().GainUntilRoundEnd(effect, hand_size=N)` sans test de forme | `ud005` Sōhei | un `Hero.IsType(identite)` excluait l'alter ego |
 | Team-Up avec un allié au nom accentué | `desc.TeamUp = "Leonardo;Usagi Yōjimbō"` | `ub019` (fiche `mots-cles/teamup.md`) | `effect.targets` n'est pas ordonné : distinguer par `IsName` |
 | Reskin dont seul le trait/titre était faux | corriger l'entrée de `cards.json` (traits, titre) | `ul019` MUTANIMAL, `ul033` / `ub002` TACTIC, `ul038` « Unified Strike » | le vérificateur `tmnt_donnees_carte` (`tools/cas/tmnt_aspect_basic.py`) lit nom et traits d'une carte en main / deck (un événement n'est jamais « en jeu » : `reskin_identite` ne le trouve pas) |
+
+## 12. Unicité par sous-titre : `CanCoexistWith` aligné sur le deck-builder (17/10/2026)
+
+Décision de l'utilisateur : le sous-titre d'un allié est le PERSONNAGE. Rōnin (sous-titre Mikey) ne se joue pas
+avec Michelangelo (alter ego Mikey) ; Heavy Metal (Jenny) et Nightwatcher (Jenny) ne coexistent pas, ni avec
+Jennika ; l'allié Basic Leonardo (Leo) ne coexiste pas avec le héros Leonardo (déjà vrai).
+
+**Avant** : `CanCoexistWith` (`src/game/card/face/model/face_name.py`) refusait seulement « titre commun ET même
+sous-titre » (le sous-titre d'une identité = son titre d'alter ego, correctif `50034b`). **Le deck-builder**
+(`public/js/deckbuilder/regles.js`, `correspondent`, Rules Reference v1.8) refusait en plus : le sous-titre (ou titre
+d'alter ego) de l'une égale le titre, le sous-titre ou le titre d'alter ego de l'autre, même sous des titres différents.
+
+**Maintenant** : le moteur applique la même règle `correspondent` en plus de l'ancien jugement (qu'il ne remplace pas :
+`unique_also` des bandeaux et titres de héros multiples sont intacts). Deux limites, pour ne rien casser d'officiel :
+1. Côté JOUEUR seulement (identité, allié, soutien, amélioration, ressource). Les cartes de la rencontre (vilain,
+   sbire, attachement...) gardent l'ancien jugement : le vilain Lizard « Curtis Connors » reste compatible avec un
+   héros dont l'alter ego est Curtis Connors.
+2. Pas d'identité contre identité (le deck-builder ne les compare pas non plus) : deux joueurs peuvent jouer deux
+   Spider-Man de même alter ego Peter Parker.
+
+**Portée (décision du 17/10/2026) : la règle `correspondent` ne s'applique QUE si au moins une des deux cartes est une
+carte TMNT.** Les paires officielles ou d'autres packs gardent EXACTEMENT le comportement d'avant (92 paires, ex.
+Spider-Man / Spider-Man Noir `wd118`, Thor / `ra002` Odinson, Black Panther / T'Challa, Deadpool / Venompool : le
+moteur les laisse coexister, le deck-builder les refuse toujours dans un deck, écart voulu). « Carte TMNT » =
+`ModelName.IsTmntPaper(pack, set_name)` : pack de héros listé dans `data/arts_alternatifs.json`
+(`series.tmnt.heros_ids`), ensemble dans `series.tmnt.sets_exclusifs`, ou ensemble commençant par « TMNT » (repli si
+le fichier manque). Source unique partagée avec les arts alternatifs. Écart restant : 88 paires, toutes TMNT
+(`python3 tools/diff_unicite_sous_titre.py`, depuis `Fusion/marvel-lcg-src`).
+
+Preuve : table partagée `tools/tests-lanceur/unicite-sous-titre-cas.json`, lue par le moteur
+(`tools/cas/unicite_sous_titre.py`, filtre `[unique-st]`) ET par le deck-builder
+(`node --test tools/tests-lanceur/unicite-sous-titre.test.mjs`) : les deux répondent pareil. Écarts voulus
+(`parite: false`) : les paires hors TMNT (wd118, ra002) et deux cartes de même titre ET même sous-titre (Miles Morales 13019 / 27011) : copies pour le
+deck-builder (limite par deck), uniques pour le moteur (refus en jeu).
