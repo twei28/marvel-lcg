@@ -31,6 +31,9 @@ import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
 import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
 import { correspondRecherche } from "/public/js/deckbuilder/recherche.js";
 import { versionsDe, versionDansLeDeck, changerVersion } from "/public/js/deckbuilder/arts-reeditions.js";
+// Arts alternatifs (TMNT) : même carte, seule l'image change. Choix dans mc_card_art_v1.
+import { artsDe, origine, codeAffiche, STANDARD, exclusiveRefusee } from "/public/js/prepare/arts-cartes-choix.js";
+import { ecrireChoixCartes, lireChoixCartes, picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
 import {
@@ -642,11 +645,18 @@ function versionMontree(idPool, cartePool) {
     return { id, versions };
 }
 
+/** Le héros du deck, pour l'art par défaut et les cartes exclusives : card_id de sa face. */
+function refHeros() { return etat.hero ? (etat.hero.heroCardId || etat.hero.id) : ""; }
+
+/** L'image d'une carte du deck, avec son art alternatif (choix, sinon défaut du héros). */
+function urlCarte(id) { return cardImageUrl(picIdDeCarte(id, refHeros())); }
+
 /** Même carte, quelle que soit l'impression : la clé de dédoublonnage du pool. */
 const cleImpression = (c) => `${c.name}|${c.class}|${c.type}`;
 
 async function rendreGrille() {
-    const pool = await poolJoueur(estStanLee(etat.hero));
+    // Cartes EXCLUSIVES à une série (TMNT) : absentes de la grille hors de ses héros.
+    const pool = (await poolJoueur(estStanLee(etat.hero))).filter((x) => !exclusiveRefusee(x.carte.set_name, refHeros()));
     if (!document.querySelector("#db-filtres .db-chip")) rendreFiltres();
     const tri = comparateur(etat.triGrille, nomCarte);
     const passent = pool.filter((x) => passeFiltres(x.carte, etat.filtres, ctxFiltres))
@@ -678,7 +688,7 @@ async function rendreGrille() {
                 "data-carte": id, tabindex: "0",
                 title: dispo.ouvert ? nomCarte(carte) : `${t("Pas encore débloquée")} : ${dispo.etiquette}`,
             },
-                el("img", { src: cardImageUrl(id), loading: "lazy", alt: nomCarte(carte) }),
+                el("img", { src: urlCarte(id), loading: "lazy", alt: nomCarte(carte) }),
                 n ? el("span", { class: "db-badge" }, `${n}/${max}`) : null,
                 stan && estSignature(carte) ? el("span", { class: "db-stan" }, `${t("Signature")} · Stan Lee`) : null,
                 carte.custom ? el("span", { class: "db-badge-custom", title: `${t("Carte fan-made")} : ${carte.custom}` }, t("CUSTOM")) : null,
@@ -777,7 +787,7 @@ function rendreApercu() {
         return;
     }
     const carte = cards.get(id);
-    const url = cardImageUrl(id);
+    const url = urlCarte(id);
     const cadre = el("div", { class: "db-apercu-cadre" }, el("img", { src: url, alt: carte ? nomCarte(carte) : id }));
     remplacer(zone, cadre,
         etat.epingle ? el("button", { type: "button", class: "db-epingle", title: t("Libérer l’aperçu"),
@@ -790,6 +800,24 @@ function rendreApercu() {
  *  l'aperçu. En choisir une y passe aussi les copies du deck : même carte pour
  *  le moteur (`full_link`), seule l'image change. */
 function rendreArts(id) {
+    // Art alternatif d'une carte (TMNT) : le choix ne touche pas au deck, seulement à l'image.
+    const codes = artsDe(id);
+    if (codes.length) {
+        // Une réimpression identique partage l'image et le choix de l'officielle.
+        const base = origine(id);
+        const actif = codeAffiche(id, lireChoixCartes(), refHeros());
+        remplacer($("#db-arts"), el("span", {}, t("ARTS")),
+            [STANDARD, ...codes].map((code) => {
+                const pic = code === STANDARD ? id : `${base}_${code}`;
+                return el("img", {
+                    src: cardImageUrl(pic), alt: pic, "data-art": code,
+                    class: code === actif ? "est-active" : "",
+                    title: code === STANDARD ? t("Illustration officielle") : `${t("Illustration")} ${code.toUpperCase()}`,
+                    onclick: () => { ecrireChoixCartes({ [base]: code }); rendreApercu(); rendreGrille(); rendreDeck(); },
+                });
+            }));
+        return;
+    }
     const versions = langueActuelle() === "fr" ? [] : versionsDe(id);
     if (versions.length < 2) { remplacer($("#db-arts")); return; }
     remplacer($("#db-arts"), el("span", {}, t("ARTS")),
@@ -962,7 +990,7 @@ function rendrePioche() {
         el("div", { class: "db-pboutons" },
             el("button", { type: "button", class: etat.pioche.mode === "alter" ? "est-actif" : "", onclick: () => mode("alter") }, `${t("Alter ego")} (${tailleAlter})`),
             el("button", { type: "button", class: etat.pioche.mode === "heros" ? "est-actif" : "", onclick: () => mode("heros") }, `${t("Héros")} (${tailleHeros})`)),
-        el("div", { class: "db-main" }, etat.pioche.main.map((x) => el("img", { src: cardImageUrl(x), alt: nomCarte(cards.get(x) || { name: x }), "data-carte": x, loading: "lazy" }))),
+        el("div", { class: "db-main" }, etat.pioche.main.map((x) => el("img", { src: urlCarte(x), alt: nomCarte(cards.get(x) || { name: x }), "data-carte": x, loading: "lazy" }))),
         el("div", { class: "db-pboutons" },
             el("button", { type: "button", disabled: !etat.pioche.reste.length, onclick: () => {
                 etat.pioche.main.push(etat.pioche.reste.shift()); rendreDeck();

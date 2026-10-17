@@ -7,6 +7,8 @@
 // vaut pour les TROIS ressources a la fois : une collection est coherente. On
 // relit ici la meme cle localStorage, ecrite par le wizard.
 
+import { picIdCarte, serieDuHeros } from './arts-cartes'
+
 /**
  * Une collection donne l'image des TROIS ressources doubles. Deux origines :
  *  - les promos « Play-and-Share » de FFG, decoupees des PDF -> « 01088_th » ;
@@ -61,6 +63,9 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   gwenpool: ['gp015', 'gp016', 'gp017'],
   howard: ['hd018', 'hd019', 'hd020'],
   ms_america: ['ma027', 'ma028', 'ma029'],
+  // Ressources TMNT (pack Basic, Inkwire) : art seul, meme regles. Par defaut
+  // pour un heros TMNT (voir collectionPourJoueur).
+  tmnt: ['ub011', 'ub016', 'ub054'],
   // Idem, ajoutes le 22/09/2026 : Angel, Beast, Gambit, Human Torch, Jubilee,
   // Magneto, The Thing, Wave. Chaque pack a ses PROPRES card_id (pas de
   // full_link vers 01088/89/90) ; sans objet ici, purement cosmetique.
@@ -339,7 +344,9 @@ export function collectionPourJoueur(
   heroObjectId: number | undefined,
   arts: ArtsRessources
 ): string {
-  const choix = arts[cleHeros(heroCardId)] ?? 'standard'
+  // Sans choix enregistre : la collection TMNT pour un heros TMNT, sinon l'art standard.
+  const parDefaut = serieDuHeros(heroCardId) === 'tmnt' ? 'tmnt' : 'standard'
+  const choix = arts[cleHeros(heroCardId)] ?? parDefaut
   if (choix === 'standard') return ''
   if (choix === 'random') {
     const codes = Object.keys(COLLECTIONS)
@@ -352,11 +359,18 @@ export function collectionPourJoueur(
  * Identifiant d'image a afficher. Ne change QUE pour les trois ressources
  * doubles, et seulement si une collection est choisie.
  */
-export function picIdAffiche(picId: string, collection: string | undefined): string {
-  // Les deux mecanismes ne se croisent jamais : une carte est soit une des
-  // trois ressources doubles, soit une carte de heros.
+export function picIdAffiche(
+  picId: string,
+  collection: string | undefined,
+  herosCardId?: string
+): string {
+  // Les mecanismes ne se croisent jamais : une carte est soit une des trois
+  // ressources doubles, soit une carte de heros, soit une carte de deck a art
+  // alternatif (arts-cartes.ts, table mc_card_art_v1).
   const avecArtHeros = picIdHeros(picId)
   if (avecArtHeros !== picId) return avecArtHeros
+  const avecArtCarte = picIdCarte(picId, herosCardId)
+  if (avecArtCarte !== picId) return avecArtCarte
   if (!collection) return picId
   const index = INDEX_RESSOURCE[picId]
   if (index === undefined) return picId

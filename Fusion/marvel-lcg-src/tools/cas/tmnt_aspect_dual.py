@@ -197,11 +197,12 @@ CAS = [
        ["Puzzle.Attack('ud005')", "Puzzle.EndPlayerPhase()"],
        {"hors_jeu": ["ud005"], "attributs": {"hand_size": 2}},
        cibles=["01094"], accepter_choix=True),
-    _c("ud005 Sōhei : Interrupt (lecture provisoire Q-UD4), joueur en ALTER EGO : pas de bonus",
-       "« YOUR HERO » : l'identite est en forme alter ego au moment ou Sōhei tombe -> rien (lecture recommandee)",
+    _c("ud005 Sōhei : Interrupt, joueur en ALTER EGO -> le bonus +2 vaut AUSSI (Q-UD4 tranchee le 17/10/2026)",
+       "« YOUR HERO » = l'identite du joueur, quelle que soit sa forme : en alter ego au moment ou Sōhei tombe, "
+       "+2 taille de main quand meme (lecture provisoire precedente : 0, rougit sans le correctif)",
        [*_en_jeu("ud005", 1)],
        ["Puzzle.Attack('ud005')"],
-       {"hors_jeu": ["ud005"], "attributs": {"hand_size": 0}},
+       {"hors_jeu": ["ud005"], "attributs": {"hand_size": 2}, "forme": "AlterEgo"},
        cibles=["01094"], accepter_choix=True),
 
     # ================================================================ ud006 Nightwatcher

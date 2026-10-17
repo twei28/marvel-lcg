@@ -18,6 +18,9 @@
 
 /* TYPO DE L'EPURE (17/10/2026) : titres en Bangers (le comics du jeu), texte en Avenir Next, la police
    des cartes, a la place de la police du systeme (Inter n'etait pas chargee : le texte etait terne). */
+@font-face { font-family: 'Inter'; font-weight: 400; src: url('/public/fonts/Inter-400.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Inter'; font-weight: 600; src: url('/public/fonts/Inter-600.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Inter'; font-weight: 700; src: url('/public/fonts/Inter-700.woff2') format('woff2'); font-display: swap; }
 @font-face { font-family: 'Anton'; src: url('/public/fonts/Anton-Regular.ttf') format('truetype'); font-display: swap; }
 @font-face { font-family: 'Bangers'; src: url('/public/fonts/Bangers-Regular.ttf') format('truetype'); font-display: swap; }
 @font-face { font-family: 'Avenir Next Carte'; font-weight: 400; src: url('/public/fonts/AvenirNextLTPro-Regular.ttf') format('truetype'); font-display: swap; }
@@ -31,10 +34,10 @@ html[data-epure] {
   --ep-bord-fort: #494b50;
   --ep-texte: #1b1e24;
   --ep-doux: #3f444d;
-  --ep-jaune: #e62429;
-  --ep-jaune-vif: #ff3b40;
-  --ep-police: 'Avenir Next Carte', Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --ep-titres: 'Anton', 'Bangers', Impact, 'Arial Black', sans-serif;
+  --ep-jaune: #3f86e0;
+  --ep-jaune-vif: #5a9bf0;
+  --ep-police: Inter, 'Avenir Next Carte', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ep-titres: 'Bangers', 'Anton', Impact, 'Arial Black', sans-serif;
   --ep-relief: 0 0 0 1px var(--ep-bord), 0 1px 2px rgba(20, 24, 32, 0.1);
   --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort), 0 2px 5px rgba(20, 24, 32, 0.16);
   --ep-creux: inset 0 0 0 1px var(--ep-bord), inset 0 1px 2px rgba(20, 24, 32, 0.08);
@@ -997,8 +1000,8 @@ html[data-epure] {
   --ep-bord-fort: #4b5361;
   --ep-texte: #f2f3f5;
   --ep-doux: #9da5b3;
-  --ep-jaune: #e62429; /* ROUGE Marvel seul (17/10/2026) : le nom du jeton est reste, la teinte est rouge */
-  --ep-jaune-vif: #ff3b40;
+  --ep-jaune: #3f86e0; /* ACCENT bleu Captain (17/10/2026) : le nom du jeton est reste, la teinte est bleue ; le rouge Marvel #e62429 sert de secondaire */
+  --ep-jaune-vif: #5a9bf0;
   --ep-relief: 0 0 0 1px var(--ep-bord);
   --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort);
   --ep-creux: inset 0 0 0 1px var(--ep-bord);
@@ -1036,7 +1039,7 @@ html[data-epure] .tb-scene * {
 }
 
 html[data-epure] .tb-nomg small {
-  color: #ff5a5f;
+  color: #6aa5ee;
 }
 
 /* Les fondus de la grande image, en sombre. */
@@ -1126,7 +1129,7 @@ html[data-epure] .tb-port.on {
 
 html[data-epure] .tb-port.choisi .tb-port-nom,
 html[data-epure] .tb-port.on .tb-port-nom {
-  color: #ff5a5f;
+  color: #6aa5ee;
 }
 
 /* 4. « Mon équipe » : une petite barre, des emplacements discrets. */
@@ -1160,7 +1163,7 @@ html[data-epure] .tb-siege .tb-siege-nom {
 
 html[data-epure] .tb-siege .plus {
   font-size: 22px;
-  color: #ff5a5f;
+  color: #6aa5ee;
 }
 
 html[data-epure] .tb-siege.actif {
@@ -1171,7 +1174,7 @@ html[data-epure] .tb-siege.actif {
    garde le filet sous la barre du haut. */
 html[data-epure] header.progress {
   background: var(--ep-surface);
-  border-bottom: 2px solid var(--ep-rouge, #e62429);
+  border-bottom: 2px solid var(--ep-jaune);
 }
 
 html[data-epure] header.progress .pstep.active {
@@ -1275,7 +1278,7 @@ html[data-epure] .acc-copy small {
 html[data-epure] .acc-nombres small {
   font-size: 12px;
   letter-spacing: 0.1em;
-  color: #ff5a5f;
+  color: #6aa5ee;
 }
 
 /* La MARQUE garde son comics (Bangers) et son badge jaune : seuls les titres de contenu passent au condensé. */
@@ -1290,6 +1293,6 @@ html[data-epure] .brand-sub {
   letter-spacing: 0.03em;
 }
 html[data-epure] .brand-sub {
-  background: #f3c623;
-  color: #14161a;
+  background: #e62429;
+  color: #fff;
 }

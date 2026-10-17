@@ -66,7 +66,10 @@ Carte terminée : OUI.
 - [x] Étape 7 : `ub002 ... +1 taille de main` + témoin 12033.
 - [x] 7 bis : NON. 8 : fournée Spider-Man-ub. 8 bis : NON.
 
-Carte terminée : NON — en attente de Q-ub01 (trait TACTIC).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : le trait TACTIC absent du scan est un oubli de l'auteur ; **TACTIC remis**
+(`traits` de l'entrée = `["TACTIC"]`, comme 12033). Cas de donnée `ub002 ... porte le trait TACTIC` (vérificateur
+`tmnt_donnees_carte`) : ROUGE avec l'ancienne entrée (« trait TACTIC absent »), vert après.
+Carte terminée : OUI (trait TACTIC remis).
 
 ### ub003 : Atilla (MODIFIÉE de 13019 Spider-Man Miles Morales)
 
@@ -216,9 +219,33 @@ Carte terminée : OUI.
 
 Carte terminée : OUI.
 
-### ub019 : Honorable Blades (NOUVELLE) — NON INTÉGRÉE
+### ub019 : Honorable Blades (NOUVELLE, Team-Up Leonardo + Usagi Yōjimbō)
 
-Carte terminée : NON — Q-ub03 (Usagi Yōjimbō n'existe pas ; coquille « Yōjimō »). Ni entrée, ni script.
+**INTÉGRÉE le 17/10/2026.** Rectification : l'agent précédent croyait Usagi Yōjimbō absent de la base, c'est faux :
+c'est l'allié `up041` (Protection, unique, RABBIT RONIN). Scan : « Team-Up (Leonardo and Usagi Yōjimbō). Max 1 per
+deck. Hero Action: Ready Leonardo and Usagi Yōjimbō. Cloak Leonardo. Place a tough status card on Usagi Yōjimō. » : la
+coquille « Yōjimō » (dernière ligne) est corrigée, le nom exact est celui de `up041` (texte affiché avec la bonne
+orthographe). Coût 2, RES éclair = Y (énergie), aucun trait imprimé, Max 1 per deck.
+
+- [x] Étape 2 : mot-clé **Team-Up** : fiche `mots-cles/teamup.md` lue (les ALLIÉS comptent, `.SetTarget("TeamUp")`
+      obligatoire, `desc.TeamUp = "Leonardo;Usagi Yōjimbō"`) ; `34035` Soul Sisters (Phoenix) : « Ready A and B »
+      (`Faces.ReadyAll(effect.targets)`), même déclencheur Hero Action + TeamUp ; `uj021` : « Cloak X » =
+      `Faces.GiveStatus([x], "Cloaked")` ; `up016` : « place a tough status card » = `GiveStatus(..., "Tough")`.
+- [x] Étape 5 : « Team-Up » (les DEUX en jeu, identité OU allié), « Ready Leonardo AND Usagi » (les deux), « Cloak
+      LEONARDO » seulement, « tough on USAGI » seulement ; les personnages sont distingués par le nom
+      (`effect.targets` n'est pas ordonné) ; « Max 1 per deck » (`MaxPerDeck`). Résultat : conforme.
+- [x] Étape 6 : coût 2, RES Y, MaxPerDeck 1. Résultat : conforme.
+- [x] Étape 7 : `[ub] ub019 ...` : Leonardo ET Usagi en jeu -> les deux redressés (inclinés au départ), Leonardo camouflé,
+      Usagi Tenace (Tenace retiré avant) ; jouable avec les deux (contre-cas) ; PAS jouable avec Leonardo seul ; PAS
+      jouable avec Usagi sans Leonardo (Spider-Man). 4/4 verts. **Substitution** : sans le script ni l'entrée, 4/4 ROUGES
+      (`AssertionError: name_or_id='ub019'`) ; remis, 4/4 verts.
+- [x] Étape 7 bis : limite imprimée « Max 1 per deck » : donnée de deck-building, pas une limite de jeu : NON.
+- [x] Étape 8 : autoplay du 17/10 (section en fin de ce fichier).
+- [x] Étape 8 bis : NON (statuts Cloaked / Tough déjà dessinés, cf. ud001 / ud006).
+
+Carte terminée : OUI (image `ub019` déjà importée ; deck-builder / arts alternatifs hors périmètre).
+Non prouvé : l'icône du coin (éclair) lue comme énergie à la vue, comparée à `ub011` dont la fiche porte `RES Y` ;
+aucune partie jouée par un humain.
 
 ### ub020 : Improvised Club (NOUVELLE)
 
@@ -480,7 +507,10 @@ Carte terminée : OUI.
 - [x] 2 : 01092. 5/6 : identique, coût 3, RES R, Max 1 per player. Traits NYC VEHICLE → Q-ub02.
 - [x] 7 : Clyde payé avec une seule ressource + témoin. 7 bis NON. 8 fournée Spider-Man-ub. 8 bis NON.
 
-Carte terminée : NON — en attente de Q-ub02 (trait LOCATION).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : l'utilisateur confirme les traits du scan (NYC, VEHICLE), **PAS LOCATION**.
+Rien à changer (Helicarrier 01092 reste LOCATION / S.H.I.E.L.D, Sky Wagon non). Cas de donnée ajouté `ub047 Sky Wagon :
+traits NYC et VEHICLE, PAS LOCATION` (vert ; donnée, ne rougit pas sous substitution du lien).
+Carte terminée : OUI (traits du scan confirmés).
 
 ### ub048 : Slash (reskin IDENTIQUE de 62020 Hulk)
 
@@ -617,3 +647,13 @@ Carte terminée : OUI.
   Martial Arts Training (homonyme de 41009 Psylocke) n'y ont probablement pas de tuile.
 - Traits sans traduction FR dans `traits-fr.ts` : PUNK, LION, RONIN, DIMENSION X, NYC, MUTANIMAL (fichier hors
   bloc d'aspect, non modifié).
+
+## Autoplay des retouches du 17/10/2026 (ub019, up030, ul031, ud005, uj002, ul019, ul033, ub002, ul038, ub047, up018)
+
+`tools/autoplay.py`, Rhino normal, profil équilibré, 8 parties, port 30010, deck `deck-ret-A` (héros Leonardo ; cartes
+retouchées : ub019 ×2, up041 ×2, up030 ×2, ul031, ud005, ul019, ul033, ub002, ul038, ul028, uj002, ub047, up018, + ub025 et
+cartes Protection) : 4 schéma complété, 4 joueur éliminé, 0/8 bloquée ; **0 NameError / AttributeError / TypeError /
+KeyError / AssertionError / Traceback sur 8 journaux**. Lecture : ub019 jouée (Usagi et Leonardo redressés, Tenace d'Usagi
+retiré avant son jeu), up030 portée par Leonardo, ul031 / uj002 / ul038 / ul019 vus en partie. Pas de héros témoin (le deck de
+départ Leonardo a un `player_deck` vide) : le taux de défaite n'est pas comparé. Rien de ce relevé ne remplace une partie
+jouée par un humain (non faite).

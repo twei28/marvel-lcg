@@ -10,6 +10,8 @@
 // l'execute donc tel quel — voir tools/tests-lanceur/regles-aspect.test.mjs.
 "use strict";
 
+import { exclusiveRefusee } from "../prepare/arts-cartes-choix.js";
+
 // « 'Pool » : l'apostrophe fait partie du nom d'aspect dans les donnees (Deadpool).
 export const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized"];
 // Classes non-aspect jouables : Basic, et les cartes de recompense de Campagne.
@@ -455,6 +457,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     const idHeros = hero.id || "";
     const horsDeckJoueur = [];   // cartes de rencontre, ou signatures d'un autre heros
     const typesRefuses = [];     // « no additional allies » et consorts
+    const exclusivesRefusees = [];  // cartes réservées à une série (TMNT) hors de ses héros
     // Cartes DOUBLE ASPECT : leur aspect se decide APRES le decompte des autres
     // (elles rejoignent un aspect deja present, sinon le moins couteux).
     const doubles = [];          // { aspects, n, c }
@@ -462,6 +465,8 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
         const c = carte(id);
         if (!c) continue;
         const brute = carteBrute(id);
+        // Carte EXCLUSIVE à une série (TMNT) : seulement dans le deck d'un de ses héros.
+        if (exclusiveRefusee(brute.set_name, hero.heroCardId || hero.id)) exclusivesRefusees.push(c.name);
         if (estDoubleAspect(brute)) {
             if (!estPermanente(c)) total += n;
             const copie = cleCopie(c);
@@ -562,6 +567,9 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     }
     if (horsDeckJoueur.length) {
         problemes.push(`${t("Cartes qui n’appartiennent pas à un deck de joueur :")} ${[...new Set(horsDeckJoueur)].join(", ")}`);
+    }
+    if (exclusivesRefusees.length) {
+        problemes.push(`${t("Cartes réservées aux héros TMNT :")} ${[...new Set(exclusivesRefusees)].join(", ")}`);
     }
     if (typesRefuses.length) {
         problemes.push(`${t("Ce héros refuse ce type de carte :")} ${[...new Set(typesRefuses)].join(", ")}`);

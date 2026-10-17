@@ -4,6 +4,9 @@
 
 export const DICO_EN_DECKBUILDER = {
     "ARTS": "ARTS",
+    "Cartes réservées aux héros TMNT :": "Cards reserved to TMNT heroes:",
+    "Illustration officielle": "Official artwork",
+    "Illustration": "Artwork",
     "ATK · THW · DEF · PV": "ATK · THW · DEF · HP",
     "PV": "HP",
     "Afficher le fan-made": "Show fan-made",

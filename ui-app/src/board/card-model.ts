@@ -324,6 +324,12 @@ export type ContexteCarte = {
    * ('' = art standard). Choisie a la preparation, deja resolue.
    */
   collectionRessources?: string
+  /**
+   * card_id du heros PROPRIETAIRE de la zone : sert a l'art par defaut des
+   * cartes de deck a art alternatif (TMNT pour un heros TMNT), voir
+   * arts-cartes.ts.
+   */
+  herosArt?: string
   /** Force la pastille de hauteur de pile (voir toPileCard). */
   pileCount?: number
 }
@@ -507,7 +513,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     }
   }
 
-  const picAffiche = picIdAffiche(card.pic_id, contexte.collectionRessources)
+  const picAffiche = picIdAffiche(card.pic_id, contexte.collectionRessources, contexte.herosArt)
   return {
     id: String(card.id),
     // Le nom FRANCAIS quand les scans le sont : sans cela la carte montrait

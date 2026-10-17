@@ -218,7 +218,7 @@ class SenderUnit:
 
     # AfterUnitDefendAgainstAttack
     class AfterUnitDefendEnd(TriggerUnitMessage, AttackerMessage, DefenderMessage):
-        def __init__(self, def_messages: List['Message.AfterUnitDefenseInternal'], would_atk_message: 'Message.WhenUnitWouldAttack', deal_damage: int, took_damage: int) -> None:
+        def __init__(self, def_messages: List['Message.AfterUnitDefenseInternal'], would_atk_message: 'Message.WhenUnitWouldAttack', deal_damage: int, took_damage: int, damage_before_defense: int|None=None, defense_value: int|None=None) -> None:
             attacker = would_atk_message.attacker
             defender = would_atk_message.defender
             self.would_atk_message: Final = would_atk_message
@@ -226,6 +226,11 @@ class SenderUnit:
             self.would_def_messages: Final = [x.would_def_message for x in def_messages]
             self.dealt_damage: Final = deal_damage
             self.taken_damage: Final = took_damage
+            # AJOUT (17/10/2026, up030 Redirection Mastery « exactly defend ») : la valeur de l'attaque
+            # (boosts compris) AVANT le retrait de la DEF, et la DEF retenue pour ce coup. `dealt_damage`
+            # est plafonne a 0 et ne distingue pas « parade pile » de « attaque inferieure a la DEF ».
+            self.damage_before_defense: Final = damage_before_defense
+            self.defense_value: Final = defense_value
             assert defender != None
             super().__init__(trigger=defender, attacker=attacker, attacked=[defender], defender=defender, would_atk_message=would_atk_message)
 

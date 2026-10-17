@@ -58,3 +58,27 @@ l'effet en jeu. « Réponse du 17/10/2026 » = tranché par l'utilisateur.
 - Coquilles de chiffres à confirmer : Jōtarō coût 3 (le tableau disait 2), « Hero Response » de Atilla (« Forced Response » codé tel quel), Fugitoid, Gofu Talisman (lectures prises par l'agent Basic, non posées).
 - Cartes Chain Reaction et Combo Move : créées comme nouvelles, car introuvables dans la base.
 - Deck-builder : voir G1/G2 (fenêtre « arts alternatifs ? Oui / Non / Ne plus proposer »), à coder.
+
+## F. Réponses du 17/10/2026 APPLIQUÉES au code (branche `retouches-cartes`)
+
+Mise à jour des sections B et E ci-dessus : tout ce qui y est marqué « à reprendre dans le code » ou « à trancher » pour les
+cartes suivantes est fait (ul044 et ub019 de la section E aussi ; Q-UD2, Q-UD3, Q-UD4 de la section E aussi). Chaque carte : cas,
+substitution rougie, gabarit PROCESSUS-CARTE mis à jour (`aspects-<aspect>-gabarits.md`), « Carte terminée : OUI ».
+
+| Carte | Décision | Ce qui a changé |
+|---|---|---|
+| uj002 Chance Encounter | « Attach to a SIDE scheme » (coquille) | `ability_link 26034`, script propre supprimé, texte « side scheme » / FR « manigance annexe » |
+| ul019 Old Hob | trait MUTANIMAL (pas MUTANIMALS) | trait corrigé, « MUTANIMALS » retiré de `CardFace.TRAITS` ; Splinter Dojo Training et Attack Training s'y attachent (cas) |
+| ul033 Take a Stand, ub002 Assess the Situation | trait TACTIC remis | `traits: ["TACTIC"]` |
+| ub047 Sky Wagon | traits du scan NYC, VEHICLE confirmés (PAS LOCATION) | rien (cas de donnée ajouté) |
+| ul031 Suit Up | lecture littérale « attached to AN ally », recherche large | script réécrit (voir gabarit) |
+| ul038 | titre « Unified Strike », Hero Interrupt | titre corrigé (cards.json), texte affiché « Hero Interrupt » / FR « Interruption de héros » |
+| ub019 Honorable Blades | INTÉGRÉE : Team-Up Leonardo + Usagi Yōjimbō (= allié `up041`) | entrée + script `ub019.py` (`desc.TeamUp`, `.SetTarget("TeamUp")`), texte FR |
+| ud005 Sōhei | « your hero +2 hand size » vaut aussi en alter ego | script corrigé (plus de test `Hero.IsType`) |
+| up030 Redirection Mastery | « défense exacte » (attaque, boosts compris, == DEF) | script écrit + **extension moteur** : `Message.AfterUnitDefendEnd.damage_before_defense / defense_value` |
+| up018 | Hero Interrupt | texte affiché corrigé |
+| ua019, ua037, ua033, uj036, uj040, ul044, ud003, ud004 | réponses rendues (voir gabarits) | aucun changement de code |
+
+Toutes les unicités homonymes (même titre = même personnage : Alopex, Nobody, Venus, Splinter, Slash, Old Hob / White Wolf...)
+restent « ne coexistent pas » (décision G5, code déjà ainsi). L'unicité par sous-titre (Q-UD1) et le deck-builder / arts
+alternatifs sont traités par d'autres agents.

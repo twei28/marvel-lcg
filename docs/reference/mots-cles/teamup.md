@@ -56,3 +56,12 @@
   personnage) restent demandes. Cas : 60055 (aucune cible, meme option deux fois,
   injouable sans Daredevil), temoin 62023.
 
+
+## Team-Up avec un ALLIE au nom accentue (17/10/2026, ub019 Honorable Blades)
+
+- `desc.TeamUp = "Leonardo;Usagi Yōjimbō"` : le nom de l'allie (`* Usagi Yōjimbō`, up041) se compare par
+  `IsName` (etoile d'unicite et macron compris), il suffit d'ecrire le NOM EXACT de la carte alliee.
+- `effect.targets` = les deux personnages, SANS ordre garanti : quand l'effet differe selon le personnage
+  (« Cloak Leonardo, tough sur Usagi »), les distinguer par `perso.IsName(...)`.
+- Cas : `[ub] ub019` (jouable avec les deux, injouable avec un seul, des deux cotes), `tools/cas/tmnt_aspect_basic.py`.
+

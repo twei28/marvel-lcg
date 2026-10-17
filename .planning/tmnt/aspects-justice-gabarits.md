@@ -134,7 +134,8 @@ Cartes terminées : OUI (les cinq).
   MaxPerDeck 1. Cas + témoin avec Doctor Strange (MYSTIC) : 4 défaussées → 4 menaces (ligne de base du deck
   écrite dans le cas) ; Spider-Man : injouable (donnée). Rouges sans lien (la capacité). [ ] 8 : injouable
   pour Spider-Man (attendu), non observée.
-Carte terminée : OUI sous réserve de Q-uj040 (affichage seulement).
+Réponse du 17/10/2026 : « 4 cards » (texte affiché corrigé) confirmé ; (« 4 card cards » du scan = coquille).
+Carte terminée : OUI.
 
 ### uj023 : Night-Blade (Leo) (↔ 08011 Agent Coulson) — reclassée IDENTIQUE
 - Le TSV la classe MODIFIEE ; relu : seul le NOM change (et les traits, qui sont des données), exactement le
@@ -146,17 +147,27 @@ Carte terminée : OUI.
 ### uj036 : Venus (Bonnie) (↔ 51014 Manifold)
 - Lien posé selon l'option recommandée de **Q-uj036** (« a discard pile »). Cas + témoin (40018 en main),
   rouge sans lien ; bandeau « ✦ Manifold » (3 cas). Jouée en autoplay.
-Carte terminée : NON — en attente de Q-uj036.
+Réponse du 17/10/2026 : « a discard pile » est une coquille, **comme Manifold : SA défausse** (code déjà ainsi, lien 51014).
+Carte terminée : OUI.
 
 ## Cartes MODIFIÉES (script propre, copie adaptée)
 
-### uj002 : Chance Encounter
+### uj002 : Chance Encounter (RESKIN de 26034 par `ability_link`)
 - [x] 2 : 26034 (déclencheur, recherche) ; 30019 (« Attach to a scheme » = `CanPlayThisUpgradeCard(Scheme2)`).
 - [x] 5 : « a scheme » (principale ou annexe) ; « attached SIDE scheme » ; « your deck and discard pile ».
 - [x] 6 : coût 0, Y, MaxPerUnit 1.
 - [x] 7 : jouable sur la principale (rouge sans module) ; annexe vaincue → 60039 en main (rouge sans module).
 - [x] 7 bis : NON. [x] 8 : jouée (journaux A). [x] 8 bis : OUI (attache à manigance) : test plateau vert.
-Carte terminée : NON — en attente de **Q-uj002** (coquille « scheme » / « side scheme »).
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026)** : coquille confirmée, « Attach to a SIDE scheme » comme l'officielle 26034.
+Retour à l'officielle : entrée avec `"ability_link": "26034"` (RECETTES §11), script propre `uj002.py` SUPPRIMÉ, texte affiché
+corrigé en « side scheme » (FR « manigance annexe »). Module 26034 relu : aucun nom ni card_id en dur ; `MaxPerUnit 1` reste dans
+le `desc` (non transmis par le lien).
+- Étape 7 : 3 cas + 3 TÉMOINS 26034 (même chiffre) : seule la principale en jeu -> PAS jouable ; une annexe (01107) en jeu ->
+  jouable ; annexe attachée vaincue -> 60039 en main. **Substitution (retrait de `ability_link`)** : 2 cas ROUGES (« PAS jouable
+  sur la principale », « annexe vaincue -> allié »), témoins verts ; le cas « jouable avec annexe » reste vert sans lien (le
+  vérificateur `max_par_joueur_jouable` ne mesure pas la cible : assumé). 6/6 verts avec le lien.
+- Étape 8 bis : test plateau `tmnt-justice-plateau.test.ts` inchangé (attache à une manigance quelle qu'elle soit).
+Carte terminée : OUI.
 
 ### uj019 : Mission Training
 - [x] 2 : 34016 (`CanPlayThisUpgradeCard` + `GiveKeywordToAttached(Ally, thwart=1, health=2)`), wx012 pour

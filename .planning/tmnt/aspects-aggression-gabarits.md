@@ -553,7 +553,9 @@ Carte terminée : OUI. Non mesuré : le « restricted » sur identité n'a pas d
 - [x] Étape 8 : mise en jeu 2 fois (lot C) ; 0 traceback.
 - [x] Étape 8 bis : NON.
 
-Carte terminée : NON — attend la réponse à Q-UA1 (sens de « Prerequisite »).
+**Réponse du 17/10/2026** : « Prerequisite (MARTIAL ARTIST) » = jouable seulement si l'identité a le trait MARTIAL ARTIST (Spider-Man ne peut
+pas la poser, Daredevil oui) : lecture codée confirmée, rien à changer.
+Carte terminée : OUI.
 
 ### ua021 : Guerilla Trap (NOUVELLE)
 
@@ -627,7 +629,9 @@ Carte terminée : OUI.
 - [x] Étape 8 : mis en jeu 2 fois, Réponse partie 2 fois (lot B) ; 0 traceback.
 - [x] Étape 8 bis : compteur pistol : compteurs nommés déjà dessinés (Uses).
 
-Carte terminée : NON — attend Q-UA3 (sources de « you deal damage »).
+**Réponse du 17/10/2026** : « After you deal damage » = l'identité + les cartes que vous jouez (un allié qui attaque ne compte pas ; Precision
+Strike déclenche Pete) : lecture codée confirmée, rien à changer.
+Carte terminée : OUI.
 
 ### ua036 : Ray Fillet (NOUVELLE)
 
@@ -653,7 +657,9 @@ Carte terminée : OUI.
 - [x] Étape 8 : mis en jeu 3 fois (lot B) : « Slash s'apprête à infliger 3 dégâts à Matt Murdock » ; 0 traceback.
 - [x] Étape 8 bis : NON.
 
-Carte terminée : NON — attend Q-UA2.
+**Réponse du 17/10/2026** : « take 3 damage » = l'identité subit les 3 dégâts (Slash reste à 5 PV) : lecture codée confirmée. Homonyme de `tm002` :
+même titre = même personnage, ils ne coexistent pas (décision G5).
+Carte terminée : OUI.
 
 ### ua040 : Ujigami (Splinter) (NOUVELLE, bandeau ✦ Shang-Chi)
 

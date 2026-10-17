@@ -11,8 +11,8 @@ from . import *
 #
 # TEXTE CONTRE CODE
 #  ⚠ « NINJA OR MUTANIMAL » : l'un des deux traits suffit.
-#  ⚠ « MUTANIMAL » (singulier) : Old Hob (`ul019`) imprime « MUTANIMALS » (pluriel) et n'est donc PAS
-#    accepte tant que la question Q-UL-4 n'est pas tranchee (fichier des questions ul).
+#  ⚠ « MUTANIMAL » (singulier) : Old Hob (`ul019`) imprimait « MUTANIMALS » (coquille CONFIRMEE le
+#    17/10/2026) : son trait est MUTANIMAL, Splinter Dojo Training s'y attache (cas ul019 + ul028).
 #  ⚠ « an ally » : n'importe quel allie en jeu (le texte ne dit pas « you control »).
 
 

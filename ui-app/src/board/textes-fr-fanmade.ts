@@ -4515,6 +4515,8 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ub017': "Jouez cette carte uniquement si vous avez le trait [[MYSTIQUE]]. 1 max par deck.\n<b>Ressource</b> : inclinez le Talisman Gofu et subissez 2 dégâts → générez une ressource [wild].",
   // tmnt_aspect_basic — Herold Lilja's Lab (Support), 34022 Cerebro modifiée
   'ub018': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]].\n<b>Action d'alter ego</b> : inclinez cette carte → cherchez un allié [[DIMENSION X]], [[NINJA]] ou [[MUTANIMAL]] dans les 5 cartes du dessus de votre deck (cherchez dans l'intégralité de votre deck si vous contrôlez un personnage [[TEMPOREL]]) et ajoutez cet allié à votre main. <i>(Mélangez.)</i>",
+  // tmnt_aspect_basic — Honorable Blades (Event)
+  'ub019': "En Équipe (Leonardo et Usagi Yōjimbō). 1 max par deck.\n<b>Action de héros</b> : redressez Leonardo et Usagi Yōjimbō. Camouflez Leonardo. Donnez une carte d'état Tenace à Usagi Yōjimbō.",
   // tmnt_aspect_basic — Improvised Club (Upgrade)
   'ub020': "Attachez cette carte à un allié. 1 max par allié.\n<b>Réponse</b> : après que l'allié attaché a attaqué et blessé un sbire, défaussez Improvised Club → sonnez ce sbire.\n<i>« Tu veux entrer dans mon club ? »</i> —Casey Jones",
   // tmnt_aspect_basic — Ingenuity (Upgrade), reskin de 29027
@@ -4600,7 +4602,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // --- TMNT Justice (uj) : ajouter les cartes ujNNN ci-dessous, dans ce bloc seulement ---
   // Reskins : texte de textes-fr-complets[<officielle>], nom remplace, citation ajoutee. Nouvelles : traduction.
   'uj001': "<b>Action de héros</b> : soignez 2 dégâts d'un ennemi → désorientez cet ennemi.\n<i>« Je ne sais pas où tout a dérapé. Ce n'est pas l'avenir que je voulais créer... »</i> —Old Hob",
-  'uj002': "Attachez cette carte à une manigance. 1 max par manigance.\n<b>Interruption</b> : quand la manigance annexe attachée est déjouée, cherchez un allié dans votre deck ou votre pile de défausse et ajoutez-le à votre main. Mélangez votre deck.",
+  'uj002': "Attachez cette carte à une manigance annexe. 1 max par manigance.\n<b>Interruption</b> : quand la manigance annexe attachée est déjouée, cherchez un allié dans votre deck ou votre pile de défausse et ajoutez-le à votre main. Mélangez votre deck.",
   'uj003': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, piochez 1 carte.\n<i>« Faisons un peu de ménage ! »</i> —Donatello",
   'uj004': "<b>Réponse</b> : après que Cowabunga est entré en jeu, défaussez une carte ressource de votre main → piochez 2 cartes et soignez 2 dégâts d'un personnage allié.\n<i>« Ça surfe, les gars ! »</i>",
   'uj005': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\n<b>Interruption</b> : quand le sbire attaché quitte le jeu, retirez 2 menaces d'une manigance.",
@@ -4679,7 +4681,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ul035': "Jouez cette carte uniquement si votre identité a le trait [[TURTLE]].\n<b>Action de héros</b> : cherchez un allié [[TURTLE]] parmi les 5 cartes du dessus de votre deck et mettez-le en jeu. Si cet allié est toujours en jeu à la fin de la phase, ajoutez-le à votre main.",
   'ul036': "[star] <b>Réponse</b> : après que Turtle Titan a contré une manigance, soignez-lui 2 dégâts.\n<i>« Tremblez, criminels ! Turtle Titan est là ! »</i>",
   'ul037': "Ténacité.\n[star] Turtle-At-Arms gagne +2 ATQ et +2 CTR tant qu'il a une carte d'état Tenace.\n<i>« Allez, guerriers. Nous devons aider à sauver ce pays. »</i>",
-  'ul038': "<b>Réponse de héros</b> : quand un allié utilise un pouvoir de base, inclinez votre héros → ajoutez le pouvoir correspondant de votre héros au pouvoir de cet allié pour cette utilisation. Cet allié ne subit pas de dégâts consécutifs pour cette utilisation.\n<i>« Allons chercher les ennuis. »</i> —Casey Jones",
+  'ul038': "<b>Interruption de héros</b> : quand un allié utilise un pouvoir de base, inclinez votre héros → ajoutez le pouvoir correspondant de votre héros au pouvoir de cet allié pour cette utilisation. Cet allié ne subit pas de dégâts consécutifs pour cette utilisation.\n<i>« Allons chercher les ennuis. »</i> —Casey Jones",
   'ul039': "Vous pouvez jouer la carte attachée à Venus comme si elle était dans votre main.\n<b>Réponse</b> : après que Venus est entrée en jeu, choisissez dans votre pile de défausse une carte qui partage un [[TRAIT]] avec Venus et attachez-la-lui, face cachée.",
   'ul040': "Victoire 0.\n<b>Une fois déjouée</b> : mélangez les alliés [[WEASEL]] mis de côté dans le deck Rencontre.\n<i>« Cette caisse est apparue devant notre porte. Qu'est-ce que vous voulez qu'on en fasse ? »</i> —Rocksteady",
   'ul041': "Liée (Weasel In).\nMusroom ne compte pas dans votre limite d'alliés.\n<b>Une fois révélée</b> : soignez 2 dégâts d'un personnage ami et mettez Mushroom en jeu sous votre contrôle. Cette carte gagne Renfort. Cet effet ne peut pas être annulé.",
@@ -4726,7 +4728,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_protection — Honor Blade (Ally), reskin de 56041 Patriot
   'up017': "<b>Réponse</b> : après que vous avez engagé un sbire, donnez une carte d'état Tenace à Honor Blade.\n<i>« Je suis prêt à tout. »</i>",
   // tmnt_aspect_protection — "I Can Do This All Day" (Event), reskin de 56047 ; le scan imprime « Hero Action » (question Q-UP2)
-  'up018': "<b>Action de héros</b> (<i>défense</i>) : quand un ennemi attaque, déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je ne bougerai pas d'ici. »</i> —Leonardo",
+  'up018': "<b>Interruption de héros</b> (<i>défense</i>) : quand un ennemi attaque, déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je ne bougerai pas d'ici. »</i> —Leonardo",
   // tmnt_aspect_protection — In Harm's Way (Event), reskin de 60050
   'up019': "[star] Augmentez de 1 le coût pour jouer cette carte pour chaque allié que vous contrôlez.\n<b>Action de héros</b> (<i>attaque/contre</i>) : infligez X dégâts à un ennemi et retirez X menaces d'une manigance, X étant votre DEF.",
   // tmnt_aspect_protection — Innate Reflexes (Upgrade), reskin de 60038
