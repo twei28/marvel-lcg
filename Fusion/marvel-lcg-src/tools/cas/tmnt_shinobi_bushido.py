@@ -316,6 +316,122 @@ CAS += [
        main_exclusive=["sb010", "01090"], jouer=["sb010"], cibles=["01101"], **_PAYE_2R),
 ]
 
+# ========================================================================= sb011 Vow
+# Spider-Man a 1 de CTR ; Energy 01088 (YY) paie Vow (cout 2). Le DESSUS du deck est la DERNIERE carte de `CreatePlayerDeck`.
+_PAYE_2Y = dict(payer_avec=["01088"])
+_DECK_OATH = ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', 'sb001', '01074')"]
+CAS += [
+    _c("sb011 Vow : retire la DERNIERE menace d'un complot annexe : recherche une OATH dans le deck, l'ajoute a la main (deck 3 -> 2)",
+       "complot annexe a 1 menace, CTR 1 : menace retiree jusqu'a 0 (complot vaincu), Loyalty (sb001) du deck passe en main",
+       [HEROS, "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)"] + _DECK_OATH, [],
+       {"hors_jeu": ["01107"], "en_main": ["sb001"], "taille_deck_joueur": 2, "defausse": ["sb011"]},
+       main_exclusive=["sb011", "01088"], jouer=["sb011"], cibles=["01107"], accepter_choix=True, **_PAYE_2Y),
+    _c("sb011 Vow : TEMOIN, un retrait PARTIEL (complot principal a 6) ne declenche pas la recherche",
+       "menace 6 -> 5 : Loyalty reste dans le deck, rien en main",
+       [MENACE, HEROS] + _DECK_OATH, [],
+       {"menace": [["01097b", 5]], "dans_deck_joueur": ["sb001"], "absent_main": ["sb001"], "taille_deck_joueur": 3},
+       main_exclusive=["sb011", "01088"], jouer=["sb011"], cibles=["01097b"], accepter_choix=True, **_PAYE_2Y),
+    _c("sb011 Vow : « equal to your hero's THW » : CTR 1, complot annexe a 2 menaces -> il en reste 1, pas de recherche",
+       "sans bonus de CTR le retrait n'est que de 1 : le complot survit, Loyalty reste dans le deck",
+       [HEROS, "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 2)"] + _DECK_OATH, [],
+       {"menace": [["01107", 1]], "dans_deck_joueur": ["sb001"], "absent_main": ["sb001"]},
+       main_exclusive=["sb011", "01088"], jouer=["sb011"], cibles=["01107"], accepter_choix=True, **_PAYE_2Y),
+    _c("sb011 Vow : « equal to your hero's THW » : avec Rectitude (+1 CTR = 2), les 2 menaces partent : recherche et OATH en main",
+       "meme position avec Rectitude en jeu : CTR 2, complot annexe vaincu, Loyalty en main",
+       [HEROS, _poser("sb002"), "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 2)"] + _DECK_OATH, [],
+       {"hors_jeu": ["01107"], "en_main": ["sb001"]},
+       main_exclusive=["sb011", "01088"], jouer=["sb011"], cibles=["01107"], accepter_choix=True, **_PAYE_2Y),
+    _c("sb011 Vow : « search your DECK » : une OATH dans la DEFAUSSE n'est pas trouvee",
+       "Loyalty en defausse, aucune OATH dans le deck : la recherche ne ramene rien",
+       [HEROS, "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)", "Puzzle.EmptyPlayerDeck()",
+        "Puzzle.CreatePlayerDeck('01073', '01074')", "Puzzle.CreatePlayerDiscardPile('sb001')"], [],
+       {"hors_jeu": ["01107"], "absent_main": ["sb001"], "taille_deck_joueur": 2},
+       main_exclusive=["sb011", "01088"], jouer=["sb011"], cibles=["01107"], accepter_choix=True, **_PAYE_2Y),
+    _c("sb011 Vow : « an OATH upgrade » : une amelioration NON OATH du deck (Armored Vest) n'est pas ramenee",
+       "deck sans OATH : Armored Vest 01081 reste dans le deck, rien n'entre en main",
+       [HEROS, "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)", "Puzzle.EmptyPlayerDeck()",
+        "Puzzle.CreatePlayerDeck('01073', '01081', '01074')"], [],
+       {"hors_jeu": ["01107"], "absent_main": ["01081"], "dans_deck_joueur": ["01081"]},
+       main_exclusive=["sb011", "01088"], jouer=["sb011"], cibles=["01107"], accepter_choix=True, **_PAYE_2Y),
+]
+
+# ========================================================================= sb012 Kensei
+# Genius 01089 (BB) paie Kensei (cout 1). Le heros est incline d'abord (sinon « ready your hero » n'a pas de cible).
+_PAYE_B = dict(payer_avec=["01089"])
+CAS += [
+    _c("sb012 Kensei Hero Action : incline une arme (01046) en cout et REDRESSE le heros incline",
+       "heros incline, arme prete : apres Kensei le heros est pret, l'arme est inclinee, Kensei defaussee",
+       [HEROS, _poser("01046"), "Puzzle.Exhaust('01001a')"], [],
+       {"pret": ["01001a"], "exhausted": ["01046"], "defausse": ["sb012"]},
+       main_exclusive=["sb012", "01089"], jouer=["sb012"], accepter_choix=True, **_PAYE_B),
+    _c("sb012 Kensei : « a WEAPON upgrade YOU control » comprend l'arme attachee a un ALLIE (Mockingbird)",
+       "01046 attachee a Mockingbird (allie sous mon controle) : elle paie le cout, le heros est redresse",
+       [HEROS, "Puzzle.PutIntoPlay('01083', under_control=True)", "Puzzle.AttachReel('01046', '01083')",
+        "Puzzle.Exhaust('01001a')"], [],
+       {"pret": ["01001a"], "exhausted": ["01046"], "defausse": ["sb012"]},
+       main_exclusive=["sb012", "01089"], jouer=["sb012"], accepter_choix=True, **_PAYE_B),
+    _c("sb012 Kensei : TEMOIN, heros DEJA PRET : « ready your hero » sans cible, la carte n'est pas jouable (reste en main, arme intacte)",
+       "precedent 27016 : un heros pret n'est pas une cible de `ready`",
+       [HEROS, _poser("01046")], [],
+       {"en_main": ["sb012"], "pret": ["01046", "01001a"]},
+       main_exclusive=["sb012", "01089"], jouer=["sb012"], accepter_choix=True, **_PAYE_B),
+    _c("sb012 Kensei : TEMOIN, sans arme sous controle le cout est impayable : carte en main, heros toujours incline",
+       "aucune amelioration WEAPON : Kensei reste en main, le heros reste incline",
+       [HEROS, "Puzzle.Exhaust('01001a')"], [],
+       {"en_main": ["sb012"], "exhausted": ["01001a"]},
+       main_exclusive=["sb012", "01089"], jouer=["sb012"], accepter_choix=True, **_PAYE_B),
+    _c("sb012 Kensei : TEMOIN, une arme DEJA inclinee ne peut pas etre inclinee de nouveau : carte en main",
+       "la seule arme est inclinee : cout impayable",
+       [HEROS, _poser("01046"), "Puzzle.Exhaust('01046')", "Puzzle.Exhaust('01001a')"], [],
+       {"en_main": ["sb012"], "exhausted": ["01001a", "01046"]},
+       main_exclusive=["sb012", "01089"], jouer=["sb012"], accepter_choix=True, **_PAYE_B),
+    _c("sb012 Kensei : TEMOIN, une amelioration prete qui n'est PAS une arme (Loyalty) ne paie pas le cout",
+       "seule Loyalty (OATH) est en jeu : carte en main, heros incline, Loyalty prete",
+       [HEROS, _poser("sb001"), "Puzzle.Exhaust('01001a')"], [],
+       {"en_main": ["sb012"], "exhausted": ["01001a"], "pret": ["sb001"]},
+       main_exclusive=["sb012", "01089"], jouer=["sb012"], accepter_choix=True, **_PAYE_B),
+]
+
+# ========================================================================= sb014 Kosho
+# Mockingbird 01083 (allie, 3 PV) ; Alopex ul001 (allie NINJA) ; Strength 01090 (RR) paie Kosho (cout 1).
+_ALLIE = "Puzzle.PutIntoPlay('01083', under_control=True)"
+_PAYE_R = dict(payer_avec=["01090"])
+CAS += [
+    _c("sb014 Kosho : jouee depuis la main, elle s'attache a l'ALLIE sous controle (Mockingbird), Uses pose 2 compteurs samurai",
+       "« Attach to an ally you control » : Kosho attachee a Mockingbird, 2 compteurs, en jeu",
+       [HEROS, _ALLIE], [],
+       {"hotes": [["sb014", "01083"]], "compteurs": [["sb014", "samurai", 2]], "en_jeu": ["sb014"]},
+       main_exclusive=["sb014", "01090"], jouer=["sb014"], cibles=["01083"], **_PAYE_R),
+    _c("sb014 Kosho Hero Action : incline la carte, retire ses 2 compteurs (Uses la defausse), SOIGNE 2 degats de l'allie porteur ET le REDRESSE",
+       "Mockingbird (3 PV) a 2 degats et inclinee : apres l'action, 0 degat, prete ; Kosho defaussee (ses 2 compteurs partis)",
+       [HEROS, _ALLIE, "Puzzle.Damage('01083', 2)", "Puzzle.Exhaust('01083')"], [],
+       {"degats": [["01083", 0]], "pret": ["01083"], "hors_jeu": ["sb014"], "defausse": ["sb014"]},
+       main_exclusive=["sb014", "01090"], jouer=["sb014"], cibles=["01083"], declencher_apres=["Puzzle.Action('sb014', 'HeroAction', 0)"],
+       **_PAYE_R),
+    _c("sb014 Kosho : « heal 2 damage » : 1 seul degat a soigner -> 0 (le soin ne depasse pas les degats), l'allie est redresse",
+       "Mockingbird a 1 degat, prete : l'action soigne 1 et ne bloque pas ; la carte est defaussee",
+       [HEROS, _ALLIE, "Puzzle.Damage('01083', 1)"], [],
+       {"degats": [["01083", 0]], "hors_jeu": ["sb014"], "defausse": ["sb014"]},
+       main_exclusive=["sb014", "01090"], jouer=["sb014"], cibles=["01083"], declencher_apres=["Puzzle.Action('sb014', 'HeroAction', 0)"],
+       **_PAYE_R),
+    _c("sb014 Kosho : « Max 1 TRAINING upgrade per ally » : une seconde amelioration TRAINING (Attack Training ua004) ne s'attache pas a Alopex deja equipee",
+       "Kosho (TRAINING) sur Alopex (NINJA) ; Attack Training reste en main (plafond du moteur, trait TRAINING), Kosho reste attachee",
+       [HEROS, "Puzzle.PutIntoPlay('ul001', under_control=True)"], [],
+       {"hotes": [["sb014", "ul001"]], "en_main": ["ua004"]},
+       main_exclusive=["sb014", "ua004", "01090", "01090"], jouer=["sb014", "ua004"], cibles=["ul001"], **_PAYE_R),
+    _c("sb014 Kosho : « an ally YOU control » : sans allie sous mon controle (celui du 2e joueur seul) elle n'est pas jouable",
+       "partie a deux : Mockingbird est a l'AUTRE joueur ; Kosho reste en main",
+       [HEROS, "Puzzle.PutIntoPlay('01083', under_control=True, player=1)"], [],
+       {"en_main": ["sb014"], "hors_jeu": ["sb014"]},
+       main_exclusive=["sb014", "01090"], jouer=["sb014"], heros2="iron_man", **_PAYE_R),
+    _dispo("sb014 Kosho : l'action est proposee en forme heros (temoin positif)",
+           "Kosho attachee, 2 compteurs : 1 Hero Action disponible", [HEROS, _ALLIE], "sb014", "HeroAction", 1,
+           main_exclusive=["sb014", "01090"], jouer=["sb014"], cibles=["01083"], **_PAYE_R),
+    _dispo("sb014 Kosho : Hero Action NON proposee en forme alter-ego",
+           "forme heros uniquement", [_ALLIE], "sb014", "HeroAction", 0,
+           main_exclusive=["sb014", "01090"], jouer=["sb014"], cibles=["01083"], **_PAYE_R),
+]
+
 VERIFICATIONS = r'''
 
 def sb_debug(monde, aides):
