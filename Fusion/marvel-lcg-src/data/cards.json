@@ -116047,7 +116047,381 @@
    "custom": "Inkwire"
   }
  ],
- "tmnt_shinobi_kuji_kiri": [],
+ "tmnt_shinobi_kuji_kiri": [
+  {
+   "card_id": "sj001",
+   "type": "Event",
+   "name": "Foresight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Look at the top card of the encounter deck. You may reveal that card to draw 3 cards.\n<i>\"I have seen the events yet to come.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj002",
+   "type": "Upgrade",
+   "name": "Imbued Weapons",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Attach to an ally. Max 1 per ally.\nAttached ally gets +1 THW and +1 ATK.\n<i>\"These glowy weapons look so cool!\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj003",
+   "type": "Event",
+   "name": "Yang",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Choose:\n• Stun an enemy.\n• Give a friendly character a tough status card.\n<i>\"My future defines my past.\"</i> —Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj004",
+   "type": "Event",
+   "name": "Yin",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Heal 2 damage from a friendly character. Choose:\n• Cloak a friendly character.\n• Confuse an enemy.\n<i>\"My past defines my future.\"</i> —Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj005",
+   "type": "Resource",
+   "name": "Tai Chi",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Max 2 per deck.\n<b>Response</b>: After you spend this card on a [[SPELL]] card, draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj006",
+   "type": "Upgrade",
+   "name": "Enthrall",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "CONDITION",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Attach to a non-[[ELITE]] minion.\nTake control of attached minion and treat it as a [[CONTROLLED]] ally with a blank textbox. Its THW is equal to its printed SCH and it takes 3 consequential damage ([consequential]) after it thwarts or attacks.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj007",
+   "type": "Upgrade",
+   "name": "* Ring of Protection",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Interrupt</b>: When a treachery is revealed, discard this card → cancel all of the effects of that treachery and discard it. Discard cards from the top of your deck for each icon ([star] and [boost]) in the discarded card's boost area.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj008",
+   "type": "Support",
+   "name": "* Toshokan Arcana",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Action</b>: Exhaust Toshokan Arcana → discard cards from the top of your deck until you discard a [[SPELL]] card. Add that card to your hand.\n<i>\"Was that spell in the 'Scripts of Shinigami'? Or 'Ho Chan's Haikus'?\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj009",
+   "type": "PlayerSideScheme",
+   "name": "* Armageddon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "StartingThreat": "5*",
+    "Victory": "0",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Victory 0.\n<b>Forced Response</b>: After Armageddon enters play, deal each player 1 facedown encounter card.\nWhile Armageddon is in the victory display, each identity gets +1 hand size in hero form.\n<i>\"I saw what lurks at the end of time, and it's terrifying.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj010",
+   "type": "Event",
+   "name": "Flash Ward",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "DEFENSE",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a friendly character would take damage, discard the top 2 cards of the encounter deck → prevent 1 damage for each icon ([star] and [boost]) in each of the discarded card's boost areas.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj011",
+   "type": "Event",
+   "name": "Unravel",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "SPELL",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Discard 3 cards from the top of your deck and discard 3 cards from the top of the encounter deck → deal 3 damage to an enemy and remove 3 threat from a scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj012",
+   "type": "Support",
+   "name": "* A Thin Place",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "LOCATION",
+    "MYSTIC"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Alter-Ego Action</b>: Exhaust A Thin Place and remove 3 mystic counters from it → draw 2 cards and heal 2 damage from your identity.\n<b>Response</b>: After you play a Kuji-Kiri card from your hand, exhaust A Thin Place → place 1 mystic counter here.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj013",
+   "type": "Upgrade",
+   "name": "* Kirby's Pencil",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ARTIFACT"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Play a card from your hand, ignoring its resource cost. Discard cards from the top of the encounter deck equal to that card's printed resource cost. Then, remove this card from the game.\n<i>\"The most meta object in our universe.\"</i> —Donnie",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj014",
+   "type": "Upgrade",
+   "name": "* Kuji-Kaijū",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL",
+    "TITLE"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Attach to an ally you control. That ally gains the [[FERAL]] and [[GIANT]] traits.\nAttached ally gets +2 hit points and +2 ATK.\nAttached ally takes +1 consequential damage ([consequential]) after it attacks.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj015",
+   "type": "Event",
+   "name": "Morphic Charm",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Choose a minion or ally with a status card. Replace that status card with a different status card → draw 1 card.\n<i>\"Definitely in the top three wierdest sensations I've ever felt...\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj016",
+   "type": "Event",
+   "name": "QNA Restoration",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Choose a player. Heal 2 damage from that player's identity. That player may choose 1 card in their discard pile and shuffle it into their deck.\n<i>\"This hand thing... is getting out of hand...\"</i> —Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj017",
+   "type": "Ally",
+   "name": "* Yi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "MYSTIC",
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "[star] <b>Response</b>: After Yi uses a basic power, choose a [[SPELL]] or [[TECH]] card in your discard pile and put it on the top of your deck.\n<i>\"Shocking!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj018",
+   "type": "Upgrade",
+   "name": "* Wu Jen Tessen",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "MYSTIC",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Restricted.\n<b>Hero Response</b>: After you play a Kuji-Kiri card from your hand, exhaust this card → ready your hero.\n<i>\"I'm totally your biggest fan!\"</i> —Lita",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj019",
+   "type": "Event",
+   "name": "Static Shock",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "[star] Rampage 1. <i>(As an additional cost for this card, take 1 damage and discard 1 card from the top of your deck.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Deal 1 damage to each enemy engaged with you.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj020",
+   "type": "Event",
+   "name": "Æthreal Shift",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "DEFENSE",
+    "SPELL",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b> <i>(defense/thwart)</i>: When your hero would take any amount of damage from an attack, prevent all of that damage. Remove threat from a scheme equal to the amount of damage prevented this way.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "enthrall_controlled_ally",
+   "pic_id": "encounter",
+   "type": "Ally",
+   "name": "Controlled Ally",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0***",
+    "THW": "0***",
+    "Class": "Encounter"
+   },
+   "traits": [
+    "CONTROLLED"
+   ],
+   "set_name": ""
+  }
+ ],
  "tmnt_shinobi_ninjutsu": [
   {
    "card_id": "sa001",
@@ -117159,5 +117533,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "74e7c378e0b01d450f77fe664dda6c3433d45b85842ad02925570aafe0a89009"
+ "checksum": "31d0f9c365cd62094c47d378a8cd5b03af4bbca3eb0b47314c5b7beb10b76734"
 }

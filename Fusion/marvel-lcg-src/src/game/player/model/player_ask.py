@@ -138,7 +138,12 @@ class PlayerAsk:
             text.append("G")
         return self.AskChooseOneText(text)
 
-    def DeclareStatusCard(self, *, confused: bool=True, stunned: bool=True, tough: bool=True) -> 'CardFace.STATUS|None':
+    def DeclareStatusCard(self, *, confused: bool=True, stunned: bool=True, tough: bool=True,
+                          exposed: bool=False, cloaked: bool=False, dazed: bool=False,
+                          intensified: bool=False) -> 'CardFace.STATUS|None':
+        # AJOUT (17/10/2026, TMNT Shinobi sj015 Morphic Charm) : les cartes d'etat posterieures a Coriace /
+        # Sonne / Desoriente (Exposed, Cloaked, Dazed, Intensified) sont proposables a leur tour, mais
+        # SEULEMENT a la demande de l'appelant (defaut False : 09035, 15004 et 50020 gardent leur choix a trois).
         from game.card.face.card_face import CardFace
         status_text: List[str] = []
         if confused:
@@ -147,6 +152,14 @@ class PlayerAsk:
             status_text.append("stunned")
         if tough:
             status_text.append("tough")
+        if exposed:
+            status_text.append("exposed")
+        if cloaked:
+            status_text.append("cloaked")
+        if dazed:
+            status_text.append("dazed")
+        if intensified:
+            status_text.append("intensified")
         if status_text == []:
             return None
         status = self.AskChoosePaper(status_text)

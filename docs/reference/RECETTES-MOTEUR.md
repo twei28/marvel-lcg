@@ -1614,3 +1614,14 @@ la DERNIÈRE carte listée est le DESSUS du deck. ⚠ `Puzzle.Attack('01094')` s
 
 Harnais : `Puzzle.Counter(carte, nom, n)` AJOUTE n compteurs (n négatif en retire). `Puzzle.EmptyHand()` avant tout `SetThreat` (Emergency ramène la menace à 0). Un sbire Guard engagé interdit de viser le vilain
 avec un événement `attack` à plusieurs cibles. ⚠ « Exhaust a WEAPON you control » + une arme qui produit aussi une ressource (Tekko-Kagi) : le pilote paie avec l'arme puis le coût échoue, paiement perdu (défaut moteur non corrigé).
+### 13 bis. Kuji-Kiri (`sj`, 17/10/2026) : ce que ce pack a payé
+
+| Mécanique imprimée | Fabrique / chemin | Carte modèle | Piège |
+|---|---|---|---|
+| « discard the top N cards of the encounter deck → prevent 1 damage per icon ([star] and [boost]) » | `WhenUnitWouldTakeDamage(HeroInterrupt, Friend, op).SetPlay().SetLabel("defense").SetCostFunc(CostFunc.DiscardDeckTopCards("EncounterDeck", N))` ; `FacesCounter.CountTotalBoostStarAndBoost(effect.cost_func.Get(CostFunc.DiscardDeckTopCards).return_discarded_cards)` | `sj010`, `falcon/53010` | l icône « Y » du scan est l icône de BOOST ; deck de rencontre de moins de N cartes : coût impayé, cartes non restituées (moteur préexistant) |
+| « take control of attached minion ... N consequential damage » | `TakeControlOfAttachedMinion("<gabarit>")` ; N = nombre d étoiles du gabarit d allié dans `cards.json` | `sj006`, `phoenix/34009` | fiche `controlled.md` |
+| « Replace that status card with a different status card » | `Player.DeclareStatusCard(...)` (7 genres, paramètres `exposed`, `cloaked`, `dazed`, `intensified`) + `GiveStatus` puis défausse de l ancienne | `sj015`, `drs/09035` | options nommées `p_<genre>` (`choisir_option="p_dazed"`) ; `questions_presentes` / `questions_absentes` lisent les noms AVEC espaces |
+| « After you play a <classe> card from your hand » sur la carte elle-même | `AfterPlayerPlayedCard(..., CarteShinobi("Kuji-Kiri"), from_hand=True)` | `sj012`, `sj018` | la carte répond à SA PROPRE mise en jeu : poser par `AttachReel` / `PutIntoPlay` pour mesurer la carte suivante |
+| Option facultative « You may ... » (`MayChooseOneAbility`) | refuser avec `choisir_option="Cancel"` (la liste contient une option « Cancel », pas de bouton Passer) | `sj001`, `sj016` | `passer_sur_option` ne marche PAS ici |
+| Une carte ✦ unique | `desc` : nom `* Nom` | `sj014` | une seconde copie est injouable : ce n est PAS un « Max 1 » |
+| « each enemy engaged with you » | `Worlds.FindCardsOnField(card_type=Enemy, engaged_with=joueur)` | `sj019`, `ra005` | ne retient QUE les sbires (le vilain n est pas engagé) ; un sbire à Guard interdit de viser le vilain avec une carte `attack` |
