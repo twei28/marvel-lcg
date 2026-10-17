@@ -27,55 +27,54 @@
 @font-face { font-family: 'Avenir Next Carte'; font-weight: 700; src: url('/public/fonts/AvenirNextLTPro-Demi.ttf') format('truetype'); font-display: swap; }
 
 html[data-epure] {
-  --ep-fond: #97999e;
-  --ep-surface: #a9abb0;
-  --ep-champ: #bfc1c6;
-  --ep-bord: #6b6d72;
-  --ep-bord-fort: #494b50;
-  --ep-texte: #1b1e24;
-  --ep-doux: #3f444d;
+  /* Les jetons de l'Épuré, thème SOMBRE (nettoyé le 17/10/2026 : les gris de l'ancien thème clair
+     ne servaient plus, le §19 les redéfinissait tous). L'accent est le bleu Captain ; le nom des
+     jetons « jaune » est resté. */
+  --ep-fond: #111318;
+  --ep-surface: #1c2028;
+  --ep-champ: #292e38;
+  --ep-bord: #383e49;
+  --ep-bord-fort: #4b5361;
+  --ep-texte: #f2f3f5;
+  --ep-doux: #9da5b3;
   --ep-jaune: #3f86e0;
   --ep-jaune-vif: #5a9bf0;
   --ep-police: Inter, 'Avenir Next Carte', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
   --ep-titres: 'Bangers', 'Anton', Impact, 'Arial Black', sans-serif;
-  --ep-relief: 0 0 0 1px var(--ep-bord), 0 1px 2px rgba(20, 24, 32, 0.1);
-  --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort), 0 2px 5px rgba(20, 24, 32, 0.16);
-  --ep-creux: inset 0 0 0 1px var(--ep-bord), inset 0 1px 2px rgba(20, 24, 32, 0.08);
-  --ep-biseau: inset 1px 1px 0 rgba(255, 255, 255, 0.95), inset -1px -1px 0 rgba(20, 24, 32, 0.16),
-    0 0 0 1px #6b6d72, 0 14px 34px rgba(10, 14, 22, 0.32);
+  --ep-relief: 0 0 0 1px var(--ep-bord);
+  --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort);
+  --ep-creux: inset 0 0 0 1px var(--ep-bord);
+  --ep-biseau: inset 1px 1px 0 rgba(140, 180, 240, 0.25), inset -1px -1px 0 rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--ep-bord), 0 14px 34px rgba(0, 0, 0, 0.5);
 
-  /* Les variables des pages (fonds, textes, filets), redonnees en CLAIR : les
-     feuilles des pages les lisent partout (editeur de deck, campagnes, salon,
-     galerie...), le sobre les avait mises en gris sombre. */
-  --ink: #97999e;
-  --ink2: #b3b5ba;
-  --steel: #a9abb0;
-  --steel2: #bfc1c6;
-  --steel3: #8f9196;
-  --line: #6b6d72;
-  --soft: #8f9196;
-  --fond: #97999e;
-  --panneau: #a9abb0;
-  --carte: #bfc1c6;
-  --hf-fond: #97999e;
-  --hf-panneau: #a9abb0;
-  --w-bg-0: #97999e;
-  --w-bg-1: #a9abb0;
-  --w-panel: #a9abb0;
-  --w-panel-2: #bfc1c6;
-  --w-line: #6b6d72;
-  --w-line-soft: #8f9196;
-  --txt: #1b1e24;
-  --dim: #3f444d;
-  --mute: #7b818c;
+  /* Les variables des autres feuilles des pages (préparation, éditeur de deck, campagnes,
+     salon, galerie), alignées sur l'Épuré. L'ancien OR (#a67c00) devient le bleu de l'accent. */
+  --ink: #111318;
+  --ink2: #1c2028;
+  --steel: #1c2028;
+  --steel2: #292e38;
+  --steel3: #383e49;
+  --line: #383e49;
+  --soft: #292e38;
+  --hf-fond: #111318;
+  --hf-panneau: #1c2028;
+  --w-bg-0: #111318;
+  --w-bg-1: #1c2028;
+  --w-panel: #1c2028;
+  --w-panel-2: #292e38;
+  --w-line: #383e49;
+  --w-line-soft: #292e38;
+  --txt: #f2f3f5;
+  --dim: #9da5b3;
+  --mute: #7c8494;
   --lien: #8fbcf5;
-  --agir: #a67c00;
-  --agir-halo: rgba(166, 124, 0, 0.25);
-  --affiche-jaune: #a67c00;
-  --gold: #a67c00;
-  --or: #a67c00;
-  --hf-or: #a67c00;
-  --nous-halo: rgba(20, 24, 32, 0.12);
+  --agir: #3f86e0;
+  --agir-halo: rgba(63, 134, 224, 0.25);
+  --affiche-jaune: #8fbcf5;
+  --gold: #8fbcf5;
+  --or: #8fbcf5;
+  --hf-or: #8fbcf5;
+  --nous-halo: rgba(0, 0, 0, 0.25);
 }
 
 /* --- 1. Le fond de la page et la police -------------------------------------- */
@@ -192,7 +191,7 @@ html[data-epure] .acc-mode:active,
 html[data-epure] .acc-nombre:active,
 html[data-epure] .pstep.active,
 html[data-epure] .pb-bouton:active {
-  background: #b3b5ba;
+  background: #1b2436;
   box-shadow: var(--ep-creux);
 }
 
@@ -200,7 +199,7 @@ html[data-epure] .pb-bouton:active {
 html[data-epure] .btn.primary {
   background: var(--ep-jaune);
   color: #fff;
-  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
+  box-shadow: 0 0 0 1px #1d4a8a, 0 1px 2px rgba(0, 0, 0, 0.3);
   font-weight: 700;
 }
 html[data-epure] .btn.primary:hover:not(:disabled) {
@@ -210,8 +209,8 @@ html[data-epure] .btn.primary:hover:not(:disabled) {
 html[data-epure] .btn:disabled,
 html[data-epure] .btn.primary:disabled {
   background: var(--ep-surface);
-  color: #6f7278;
-  box-shadow: 0 0 0 1px #8a8c91;
+  color: #7c8494;
+  box-shadow: 0 0 0 1px var(--ep-bord);
 }
 
 html[data-epure] .acc-mode .mvl {
@@ -503,7 +502,7 @@ html[data-epure] body .btn.primary,
 html[data-epure] body .btn.primary:hover {
   background: var(--ep-jaune);
   color: #fff;
-  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
+  box-shadow: 0 0 0 1px #1d4a8a, 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 html[data-epure] .db-entete .db-titre,
@@ -602,7 +601,7 @@ html[data-epure] button.btn.primary,
 html[data-epure] button.btn.primary:hover {
   background: var(--ep-jaune) !important;
   color: #fff !important;
-  box-shadow: 0 0 0 1px #b88f00, 0 1px 2px rgba(20, 24, 32, 0.18);
+  box-shadow: 0 0 0 1px #1d4a8a, 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 html[data-epure] .tb-entete .tb-compte,
@@ -773,8 +772,8 @@ html[data-epure] .btn.launch:hover:not(:disabled) {
 }
 html[data-epure] .btn.launch:disabled {
   background: var(--ep-surface) !important;
-  color: #6f7278 !important;
-  box-shadow: 0 0 0 1px #b3b5ba !important;
+  color: #7c8494 !important;
+  box-shadow: 0 0 0 1px var(--ep-bord) !important;
 }
 
 /* La carte survolée, à gauche : un voile clair sous le nom et les pastilles,
@@ -2013,4 +2012,111 @@ html[data-epure] .team-b.eux .tb-port .tb-port-nom { font-size: 15px !important;
    lisible ; sans palette, le marron d'avant. */
 html[data-epure] .face-a-face .faceoff {
   background: linear-gradient(160deg, color-mix(in srgb, var(--fo-mechant, #4a3538) 70%, #000), color-mix(in srgb, var(--fo-mechant, #2a1f21) 35%, #000) 85%) !important;
+}
+
+/* --- 26. Revue complète des écrans (17/10/2026) ------------------------------------------ */
+/* Les titres restés en Inter (le §3 avait mis tous les .mvl en police de texte). */
+html[data-epure] .cmp-titre,
+html[data-epure] .cmp-carte-nom,
+html[data-epure] .roue-nom,
+html[data-epure] .deck-modal .dm-head b.mvl {
+  font-family: var(--ep-titres) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* Campagnes : le choix actif (difficulté, nombre de héros) en bleu, plus en rouge brun. */
+html[data-epure] .cmp-segment.sel {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%) !important;
+  border-color: #1d4a8a !important;
+  color: #fff !important;
+}
+html[data-epure] .cmp-segment {
+  border-radius: 0 !important;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+}
+/* Éditeur de palettes : même en-tête que les autres pages. */
+html[data-epure] .p-entete {
+  background: linear-gradient(180deg, #2a3a5a 0%, #1b2436 100%) !important;
+  border-bottom: 2px solid #3f86e0 !important;
+  box-shadow: inset 0 1px 0 rgba(140, 180, 240, 0.35);
+}
+html[data-epure] .p-entete h1 {
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+html[data-epure] .p-retour {
+  color: #8fbcf5 !important;
+  font-size: 22px;
+  background: none !important;
+  border: 0 !important;
+}
+/* « Rejoindre la partie » : panneau biseauté, sièges en boutons bleus. */
+html[data-epure] body:has(> .boite #sieges) {
+  background-color: #111318;
+}
+html[data-epure] .boite:has(#sieges) {
+  background: linear-gradient(160deg, #2b3a58 0%, #1f2a40 55%, #171e2e 100%);
+  border: 2px solid #3d5a8c;
+  border-top-color: #7fa9e6;
+  border-left-color: #6a95d6;
+  border-bottom-color: #0f1522;
+  border-right-color: #131a29;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+}
+html[data-epure] .boite:has(#sieges) h1 {
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 30px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+html[data-epure] .boite:has(#sieges) p,
+html[data-epure] .boite:has(#sieges) a.spectateur {
+  color: #9da5b3;
+}
+html[data-epure] .boite:has(#sieges) button {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
+  color: #fff;
+  border: 1px solid #1d4a8a;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+html[data-epure] .boite:has(#sieges) input {
+  background: #12161e;
+  border: 1px solid #2c3445;
+  border-radius: 0;
+}
+/* Le nom d'une campagne en Bangers tient sur deux lignes, sans être coupé. */
+html[data-epure] .cmp-carte-nom {
+  font-size: 22px !important;
+  line-height: 1 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere;
+  padding-right: 28px;
+}
+/* Les boîtes de « Nouvelle campagne » : nom en Bangers (comme les scénarios), boîte choisie en bleu. */
+html[data-epure] .cmp-boite-nom {
+  font-family: var(--ep-titres) !important;
+  font-weight: 400 !important;
+  font-size: 19px !important;
+  letter-spacing: 0.03em;
+  line-height: 1.05 !important;
+}
+html[data-epure] .cmp-boite.sel {
+  border-color: #3f86e0 !important;
+  box-shadow: 0 0 0 2px rgba(63, 134, 224, 0.55) !important;
 }

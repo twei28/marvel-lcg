@@ -65,10 +65,14 @@ test.describe('éditeur de palettes', () => {
   })
 
   test('sans compte auteur, la page le dit et n’enregistre rien', async ({ page }) => {
-    // Le moteur de test n'a pas de site devant lui : `/get_site_admin` rend une
-    // adresse vide, donc la page doit s'annoncer en lecture seule et garder son
-    // bouton Enregistrer éteint. C'est la garde vue du joueur ; celle qui
-    // compte vraiment est le 403 du moteur.
+    // Sans compte auteur, `/get_site_admin` rend une adresse vide : la page doit
+    // s'annoncer en lecture seule et garder son bouton Enregistrer éteint. C'est
+    // la garde vue du joueur ; celle qui compte vraiment est le 403 du moteur.
+    // ⚠ Le moteur LOCAL est lancé en administrateur (launch.json, 17/10/2026) :
+    // on simule donc ici la réponse d'un compte ordinaire.
+    await page.route('**/get_site_admin*', (r) => r.fulfill({ contentType: 'application/json', body: '{"url":""}' }))
+    await page.reload()
+    await expect(page.locator('#liste')).toBeVisible({ timeout: 20000 })
     await expect(page.locator('#message')).toContainText('Lecture seule')
     await expect(page.locator('.p-ligne').first().locator('.p-enregistrer')).toBeDisabled()
   })
