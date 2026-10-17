@@ -22,6 +22,10 @@ SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
 
 
 def _c(nom, pourquoi, mise, declencher, attendu, **cle):
+    # ⚠ `main_exclusive: []` NE VIDE RIEN (liste vide = faux dans le harnais) : une main vide se demande par `EmptyHand`.
+    if cle.get("main_exclusive") == []:
+        cle.pop("main_exclusive")
+        mise = list(mise) + ["Puzzle.EmptyHand()"]
     if not cle.pop("avec_boost", False):
         mise = SANS_BOOST + list(mise)
     cas = {"nom": "[sh] " + nom, "pourquoi": pourquoi, "scenario": cle.pop("scenario", SC),
@@ -32,6 +36,13 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
 
 
 CAS = []
+
+
+def DISC(*ids):
+    """Defausse du joueur EXACTEMENT egale a `ids` (a mettre dans `declencher`, APRES le vidage de la main par
+    `main_exclusive` qui verse la main de depart de Spider-Man dans la defausse : Swinging Web Kick (ATTACK), For Justice!
+    (THWART)... fausseraient tout cas qui lit la defausse)."""
+    return ["Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile(" + ", ".join(repr(i) for i in ids) + ")"]
 
 # ========================================================================= sh001 Raising Block
 FFF = "ah016"   # Fin Fang Foom : ATQ 4, 4 PV (attaquant des cas de defense)
@@ -52,6 +63,25 @@ CAS += [
        "Hero Interrupt : forme heros seulement ; Fin Fang Foom attaque Peter Parker (alter-ego, pret)",
        [f"Puzzle.PutIntoPlay('{FFF}')"], [f"Puzzle.Attack('{FFF}')"],
        {"degats_identite": 4, "en_main": ["sh001"]}, main_exclusive=["sh001"]),
+]
+
+CAS += [
+    _c("sh001 Raising Block : depensee pour payer un evenement DEFENSE (Desperate Defense 09015) : pioche 1 carte (Reponse)",
+       "« After you spend this card to pay for a DEFENSE event, draw 1 card » : le heros pret defend (DEF 3 + 2 de Desperate Defense = 5 > ATQ 4 : "
+       "aucun degat) ; Raising Block (cout 0, ressource [physical]) paie les 1 ressource ; main vide + 1 pioche",
+       [HEROS, f"Puzzle.PutIntoPlay('{FFF}')"], [f"Puzzle.Attack('{FFF}', defender='01001a')"],
+       {"degats_identite": 0, "defausse": ["09015", "sh001"], "taille_main": 1},
+       main_exclusive=["09015", "sh001"], payer_avec=["sh001"]),
+    _c("sh001 Raising Block : TEMOIN, Desperate Defense payee par Strength : Raising Block reste en main, aucune pioche",
+       "la Reponse est portee par la carte DEPENSEE : sans elle dans le paiement, rien",
+       [HEROS, f"Puzzle.PutIntoPlay('{FFF}')"], [f"Puzzle.Attack('{FFF}', defender='01001a')"],
+       {"degats_identite": 0, "defausse": ["09015", "01090"], "en_main": ["sh001"], "taille_main": 1},
+       main_exclusive=["09015", "sh001", "01090"], payer_avec=["01090"]),
+    _c("sh001 Raising Block : TEMOIN, depensee pour payer un evenement ATTACK (Stiff Jab) : aucune pioche",
+       "« a DEFENSE event » : un evenement ATTACK ne convient pas ; Stiff Jab (cout 1) payee par Raising Block",
+       [HEROS], [],
+       {"degats": [["01094", 2]], "defausse": ["sh003", "sh001"], "taille_main": 0},
+       main_exclusive=["sh003", "sh001"], payer_avec=["sh001"], jouer=["sh003"], cibles=["01094"]),
 ]
 
 # ========================================================================= sh002 Foot Sweep
@@ -215,27 +245,27 @@ CAS += [
        main_exclusive=["sh008", "01090"], payer_avec=["01090"], jouer=["sh008"]),
     _c("sh008 Drop In : payee avec un evenement DEFENSE (Backflip) : peut rendre un evenement ATTACK de la defausse (Haymaker)",
        "« you MAY return an ATTACK or THWART event from your discard pile » : Haymaker revient en main (premier choix accepte)",
-       ["Puzzle.Exhaust('01001b')", "Puzzle.CreatePlayerDiscardPile('01087')"], [],
+       ["Puzzle.Exhaust('01001b')"], DISC('01087'),
        {"pret": ["01001b"], "en_main": ["01087"], "defausse": ["sh008", "01003"]},
        main_exclusive=["sh008", "01003"], payer_avec=["01003"], jouer=["sh008"]),
     _c("sh008 Drop In : meme chose avec un evenement THWART de la defausse (Sideswipe)",
        "« ATTACK OR THWART » : le trait THWART convient aussi",
-       ["Puzzle.CreatePlayerDiscardPile('sh019')"], [],
+       [], DISC('sh019'),
        {"en_main": ["sh019"], "defausse": ["sh008", "01003"]},
        main_exclusive=["sh008", "01003"], payer_avec=["01003"], jouer=["sh008"]),
     _c("sh008 Drop In : « you MAY » : le retour se refuse (Cancel), Haymaker reste en defausse",
        "la carte est offerte mais refusable (`MayChooseFace`)",
-       ["Puzzle.CreatePlayerDiscardPile('01087')"], [],
+       [], DISC('01087'),
        {"absent_main": ["01087"], "defausse": ["sh008", "01003", "01087"]},
        main_exclusive=["sh008", "01003"], payer_avec=["01003"], jouer=["sh008"], preferer_option="Cancel"),
     _c("sh008 Drop In : un evenement DEFENSE de la defausse n'est PAS rendu (ni ATTACK ni THWART)",
        "seuls les evenements ATTACK ou THWART conviennent : la defausse ne contient qu'un DEFENSE (Wiggle Room)",
-       ["Puzzle.CreatePlayerDiscardPile('05005')"], [],
+       [], DISC('05005'),
        {"absent_main": ["05005"], "defausse": ["sh008", "01003", "05005"]},
        main_exclusive=["sh008", "01003"], payer_avec=["01003"], jouer=["sh008"]),
     _c("sh008 Drop In : payee SANS evenement DEFENSE (Strength) : Haymaker reste en defausse",
        "le retour est conditionne au paiement par un evenement DEFENSE",
-       ["Puzzle.CreatePlayerDiscardPile('01087')"], [],
+       [], DISC('01087'),
        {"absent_main": ["01087"], "defausse": ["sh008", "01090", "01087"]},
        main_exclusive=["sh008", "01090"], payer_avec=["01090"], jouer=["sh008"]),
 ]
@@ -308,6 +338,348 @@ CAS += [
        main_exclusive=["sh008", "01090"], payer_avec=["01090"], jouer=["sh008"]),
 ]
 
+# ========================================================================= sh011 Elbow Strike
+CAS += [
+    _c("sh011 Elbow Strike : apres une attaque de base du HEROS qui blesse Rhino : Rhino est HEBETE",
+       "« After your hero makes a basic attack and damages an enemy, daze that enemy » : Spider-Man (ATQ 2) attaque Rhino ; cout 0",
+       [HEROS], ["Puzzle.Attack('01001a')"],
+       {"degats": [["01094", 2]], "statuts": [["01094", "Dazed"]], "defausse": ["sh011"]},
+       main_exclusive=["sh011"], cibles=["01094"]),
+    _c("sh011 Elbow Strike : TEMOIN, l'attaque d'un ALLIE (Hellcat) n'ouvre pas la Reponse : « your HERO »",
+       "Hellcat attaque Rhino (1 degat) : Elbow Strike reste en main, pas d'hebetude",
+       [HEROS, "Puzzle.PutIntoPlay('01020', under_control=True)"], ["Puzzle.Attack('01020')"],
+       {"degats": [["01094", 1]], "statuts_absents": [["01094", "Dazed"]], "en_main": ["sh011"]},
+       main_exclusive=["sh011"], cibles=["01094"]),
+    _c("sh011 Elbow Strike : TEMOIN, une attaque qui ne blesse pas (Rhino TENACE : la carte Tough part) : pas de Reponse",
+       "« and DAMAGES an enemy » : Tough absorbe l'attaque, aucun degat : la carte reste en main",
+       [HEROS, "Puzzle.Tough('01094')"], ["Puzzle.Attack('01001a')"],
+       {"degats": [["01094", 0]], "statuts_absents": [["01094", "Dazed"], ["01094", "Tough"]], "en_main": ["sh011"]},
+       main_exclusive=["sh011"], cibles=["01094"]),
+    _c("sh011 Elbow Strike : TEMOIN, une attaque qui n'est pas de BASE (evenement Haymaker) ne l'ouvre pas",
+       "« a BASIC attack » : Haymaker (Hero Action) inflige 3 degats mais n'est pas l'attaque de base : Elbow Strike reste en main",
+       [HEROS], [],
+       {"degats": [["01094", 3]], "statuts_absents": [["01094", "Dazed"]], "en_main": ["sh011"], "defausse": ["01087"]},
+       main_exclusive=["sh011", "01087", "01090"], payer_avec=["01090"], ne_pas_depenser=["sh011"], jouer=["01087"], cibles=["01094"]),
+]
+
+# ========================================================================= sh012 Mutant Fight Club
+CLUB = ["Puzzle.PutIntoPlay('sh012', under_control=True)"]
+CAS += [
+    _c("sh012 Mutant Fight Club : Action d'alter-ego : s'incline, Peter prend 1 degat, Haymaker (ATTACK) de la defausse est attache FACE CACHEE",
+       "« Exhaust this card and take 1 damage -> attach an ATTACK or DEFENSE event in your discard pile to this card facedown »",
+       CLUB, DISC('01087') + ["Puzzle.Action('sh012', 'AlterEgoAction', 0)"],
+       {"exhausted": ["sh012"], "degats_identite": 1, "pose_sous": [["sh012", "01087"]]},
+       main_exclusive=[], cibles=["01087"]),
+    _c("sh012 Mutant Fight Club : un evenement DEFENSE (Backflip) convient aussi",
+       "« an ATTACK OR DEFENSE event »",
+       CLUB, DISC('01003') + ["Puzzle.Action('sh012', 'AlterEgoAction', 0)"],
+       {"exhausted": ["sh012"], "degats_identite": 1, "pose_sous": [["sh012", "01003"]]},
+       main_exclusive=[], cibles=["01003"]),
+    _c("sh012 Mutant Fight Club : un evenement THWART seul (Sideswipe) ne convient PAS : l'Action n'est pas offerte, aucun cout paye",
+       "la defausse ne contient qu'un THWART : ni incline ni degat",
+       CLUB, DISC('sh019'),
+       {"pret": ["sh012"], "degats_identite": 0}, main_exclusive=[],
+       declencher_tolerant=["Puzzle.Action('sh012', 'AlterEgoAction', 0)"]),
+    _c("sh012 Mutant Fight Club : TEMOIN, forme HEROS : « Alter-Ego Action » n'est pas offerte",
+       "en forme heros le soutien ne se remplit pas : ni incline ni degat",
+       [HEROS] + CLUB, DISC('01087'),
+       {"pret": ["sh012"], "degats_identite": 0}, main_exclusive=[],
+       declencher_tolerant=["Puzzle.Action('sh012', 'AlterEgoAction', 0)"]),
+    _c("sh012 Mutant Fight Club : AUCUN plafond imprime : deux evenements attaches en deux Actions",
+       "contrairement a Santana Family (max 2) : Haymaker puis Backflip, apres redressement ; Peter prend 2 degats",
+       CLUB,
+       DISC('01087', '01003') + ["Puzzle.Action('sh012', 'AlterEgoAction', 0)", "Puzzle.Ready('sh012')",
+                                 "Puzzle.Action('sh012', 'AlterEgoAction', 0)"],
+       {"degats_identite": 2, "pose_sous": [["sh012", "01087"], ["sh012", "01003"]]},
+       main_exclusive=[], cibles=["01087", "01003"]),
+    _c("sh012 Mutant Fight Club : un evenement attache est JOUABLE comme en main (et pas celui de la defausse)",
+       "« You may play events attached to this card as if they were in your hand » : `IsLikeInHand()` vrai pour la carte glissee",
+       CLUB + ["Puzzle.PlaceUnder('01087', 'sh012')"], [],
+       {"hote": "sh012", "carte": "01087", "comme_en_main": True}, verifier="sh_comme_en_main", main_exclusive=[]),
+    _c("sh012 Mutant Fight Club : TEMOIN, la meme carte sous un AUTRE hote (l'identite) n'est pas jouable comme en main",
+       "contre-bout : sans le Club, rien ne rend la carte glissee jouable",
+       ["Puzzle.PlaceUnder('01087', '01001b')"], [],
+       {"hote": "01001b", "carte": "01087", "comme_en_main": False}, verifier="sh_comme_en_main", main_exclusive=[]),
+]
+
+# ========================================================================= sh013 Roll With It
+CAS += [
+    _c("sh013 Roll With It : apres une defense du heros, le HEROS est REDRESSE (Reponse)",
+       "« After your hero defends, ready your hero » : Fin Fang Foom (ATQ 4) attaque, Spider-Man defend (DEF 3) et s'incline ; "
+       "la Reponse (cout 0) le redresse ; 1 degat subi",
+       [HEROS, f"Puzzle.PutIntoPlay('{FFF}')"], [f"Puzzle.Attack('{FFF}', defender='01001a')"],
+       {"pret": ["01001a"], "degats_identite": 1, "defausse": ["sh013"]}, main_exclusive=["sh013"]),
+    _c("sh013 Roll With It : TEMOIN, le heros NE defend PAS (incline d'avance) : pas de Reponse, la carte reste en main",
+       "« After your hero DEFENDS » : sans defense, rien",
+       [HEROS, "Puzzle.Exhaust('01001a')", f"Puzzle.PutIntoPlay('{FFF}')"], [f"Puzzle.Attack('{FFF}')"],
+       {"exhausted": ["01001a"], "degats_identite": 4, "en_main": ["sh013"]}, main_exclusive=["sh013"]),
+    _c("sh013 Roll With It : depensee pour un evenement ATTACK (Haymaker), elle remet un evenement DEFENSE de la defausse SUR le deck",
+       "« When you spend this card to pay for an ATTACK event, put a DEFENSE event from your discard pile on top of your deck » : "
+       "Backflip passe de la defausse au DESSUS du deck (on le pioche ensuite)",
+       [HEROS], DISC('01003'),
+       {"en_main": ["01003"], "degats": [["01094", 3]], "defausse": ["01087", "sh013", "01090"]},
+       main_exclusive=["01087", "sh013", "01090"], payer_avec=["sh013", "01090"], jouer=["01087"], cibles=["01094"],
+       declencher_apres=["Puzzle.Draw(1)"]),
+    _c("sh013 Roll With It : TEMOIN, depensee pour un evenement NON-ATTACK (Drop In sh008) : Backflip reste en defausse",
+       "seul un evenement ATTACK declenche l'Interruption",
+       [HEROS], DISC('01003'),
+       {"defausse": ["01003", "sh013", "sh008"], "absent_main": ["01003"]},
+       main_exclusive=["sh008", "sh013"], payer_avec=["sh013"], jouer=["sh008"]),
+    _c("sh013 Roll With It : aucun evenement DEFENSE en defausse : l'Interruption ne fait rien et rien ne plante",
+       "la defausse ne contient que Haymaker (ATTACK) : pas de cible, l'evenement ATTACK se joue normalement",
+       [HEROS], [],
+       {"degats": [["01094", 3]], "defausse": ["01087", "sh013", "01090"], "taille_main": 0},
+       main_exclusive=["01087", "sh013", "01090"], payer_avec=["sh013", "01090"], jouer=["01087"], cibles=["01094"]),
+]
+
+# ========================================================================= sh014 Minarai
+HC = "01020"  # Hellcat : allie 3 PV, ATQ 1*, CTR 2*, aucun texte d'entree en jeu
+CAS += [
+    _c("sh014 Minarai : « Attach to an ally you control » : joue sur Hellcat (cout 1, Strength), elle est ATTACHEE a l'allie",
+       "le seul allie en jeu est la cible ; l'amelioration est rattachee (`accroche_a`)",
+       [HEROS, f"Puzzle.PutIntoPlay('{HC}', under_control=True)"], [],
+       {"accroche_a": [["sh014", HC]], "en_jeu": ["sh014"]},
+       main_exclusive=["sh014", "01090"], payer_avec=["01090"], jouer=["sh014"], cibles=[HC]),
+    _c("sh014 Minarai : l'allie attache subit des degats CONSECUTIFS apres avoir attaque : pioche 1 carte",
+       "« After attached ally takes consequential damage, draw 1 card » : Hellcat (ATQ 1*) attaque Rhino, prend 1 degat consecutif ; "
+       "main vide + 1 pioche",
+       [HEROS, f"Puzzle.PutIntoPlay('{HC}', under_control=True)", "Puzzle.PutIntoPlay('sh014', under_control=True)",
+        f"Puzzle.AttachReel('sh014', '{HC}')"], [f"Puzzle.Attack('{HC}')"],
+       {"degats": [[HC, 1], ["01094", 1]], "taille_main": 1}, main_exclusive=[], cibles=["01094"]),
+    _c("sh014 Minarai : TEMOIN, un AUTRE allie (Jessica Jones) qui subit des degats consecutifs ne declenche pas la Reponse",
+       "« ATTACHED ally » : Minarai est sur Hellcat, c'est Jessica qui attaque ; pas de pioche",
+       [HEROS, f"Puzzle.PutIntoPlay('{HC}', under_control=True)", "Puzzle.PutIntoPlay('01059', under_control=True)",
+        "Puzzle.PutIntoPlay('sh014', under_control=True)", f"Puzzle.AttachReel('sh014', '{HC}')"], ["Puzzle.Attack('01059')"],
+       {"degats": [["01059", 1]], "taille_main": 0}, main_exclusive=[], cibles=["01094"]),
+    _c("sh014 Minarai : TEMOIN, Hellcat TENACE ne subit aucun degat consecutif (la carte Tough part) : pas de pioche",
+       "« takes consequential damage » : seulement si les degats sont reellement subis",
+       [HEROS, f"Puzzle.PutIntoPlay('{HC}', under_control=True)", f"Puzzle.Tough('{HC}')", "Puzzle.PutIntoPlay('sh014', under_control=True)",
+        f"Puzzle.AttachReel('sh014', '{HC}')"], [f"Puzzle.Attack('{HC}')"],
+       {"degats": [[HC, 0]], "taille_main": 0, "statuts_absents": [[HC, "Tough"]]}, main_exclusive=[], cibles=["01094"]),
+    _c("sh014 Minarai : l'allie est VAINCU par ces degats consecutifs : l'amelioration part avec lui, aucune pioche",
+       "Hellcat (3 PV, 2 degats deja) attaque, le degat consecutif la vainc",
+       [HEROS, f"Puzzle.PutIntoPlay('{HC}', under_control=True)", f"Puzzle.Damage('{HC}', 2)", "Puzzle.PutIntoPlay('sh014', under_control=True)",
+        f"Puzzle.AttachReel('sh014', '{HC}')"], [f"Puzzle.Attack('{HC}')"],
+       {"hors_jeu": [HC, "sh014"], "taille_main": 0}, main_exclusive=[], cibles=["01094"]),
+]
+
+# ========================================================================= sh015 Keep the Momentum
+CAS += [
+    _c("sh015 Keep the Momentum : depensee pour un evenement TAIJUTSU (Stiff Jab) : un evenement Taijutsu de la defausse REVIENT en main",
+       "« After you spend this card on an event, return 1 Taijutsu event from your discard pile to your hand » : Raising Block (Taijutsu) "
+       "est dans la defausse ; Stiff Jab (cout 1) est payee par la ressource",
+       [HEROS], DISC("sh001"),
+       {"en_main": ["sh001"], "degats": [["01094", 2]], "defausse": ["sh003", "sh015"], "taille_main": 1},
+       main_exclusive=["sh003", "sh015"], payer_avec=["sh015"], jouer=["sh003"], cibles=["01094"]),
+    _c("sh015 Keep the Momentum : « on AN event » : depensee pour un evenement NON Taijutsu (Haymaker) elle declenche aussi",
+       "Haymaker (cout 2) payee par la ressource + Strength ; Raising Block revient",
+       [HEROS], DISC("sh001"),
+       {"en_main": ["sh001"], "degats": [["01094", 3]], "defausse": ["01087", "sh015", "01090"], "taille_main": 1},
+       main_exclusive=["01087", "sh015", "01090"], payer_avec=["sh015", "01090"], jouer=["01087"], cibles=["01094"]),
+    _c("sh015 Keep the Momentum : TEMOIN, depensee pour un SOUTIEN (Aunt May) : pas un evenement, rien ne revient",
+       "Aunt May (cout 1, Soutien) payee par la ressource : Raising Block reste en defausse",
+       [HEROS], DISC("sh001"),
+       {"absent_main": ["sh001"], "defausse": ["sh001", "sh015"], "en_jeu": ["01006"], "taille_main": 0},
+       main_exclusive=["01006", "sh015"], payer_avec=["sh015"], jouer=["01006"]),
+    _c("sh015 Keep the Momentum : TEMOIN, la defausse ne contient qu'un evenement NON Taijutsu (Haymaker) : rien ne revient",
+       "« 1 TAIJUTSU event » : Haymaker (classe Basic) ne convient pas",
+       [HEROS], DISC("01087"),
+       {"absent_main": ["01087"], "defausse": ["01087", "sh003", "sh015"], "taille_main": 0},
+       main_exclusive=["sh003", "sh015"], payer_avec=["sh015"], jouer=["sh003"], cibles=["01094"]),
+    _c("sh015 Keep the Momentum : TEMOIN, une amelioration Taijutsu (Martial Skill) en defausse n'est pas un EVENEMENT : rien ne revient",
+       "« Taijutsu EVENT » : le type compte",
+       [HEROS], DISC("sh010"),
+       {"absent_main": ["sh010"], "defausse": ["sh010", "sh003", "sh015"], "taille_main": 0},
+       main_exclusive=["sh003", "sh015"], payer_avec=["sh015"], jouer=["sh003"], cibles=["01094"]),
+    _c("sh015 Keep the Momentum : DEUX evenements Taijutsu en defausse : UN seul revient, au choix du joueur (Foot Sweep designe)",
+       "« return 1 Taijutsu event » : un seul ; Raising Block reste en defausse",
+       [HEROS], DISC("sh001", "sh002"),
+       {"en_main": ["sh002"], "absent_main": ["sh001"], "defausse": ["sh001", "sh003", "sh015"], "taille_main": 1},
+       main_exclusive=["sh003", "sh015"], payer_avec=["sh015"], jouer=["sh003"], cibles=["01094", "sh002"]),
+    _c("sh015 Keep the Momentum : defausse VIDE de Taijutsu : rien ne revient et rien ne plante",
+       "pas de candidat : la carte payee se joue normalement",
+       [HEROS], DISC(),
+       {"degats": [["01094", 2]], "defausse": ["sh003", "sh015"], "taille_main": 0},
+       main_exclusive=["sh003", "sh015"], payer_avec=["sh015"], jouer=["sh003"], cibles=["01094"]),
+]
+
+# ========================================================================= sh016 Jo
+JO = ["Puzzle.PutIntoPlay('sh016', under_control=True)", "Puzzle.Attach('sh016', '01001a')"]
+CAS += [
+    _c("sh016 Jo : entre en jeu avec 3 compteurs cudgel (Uses)",
+       "« Uses (3 cudgel counters) » : natif (`desc.Uses = \"3,cudgel\"`, compteur ajoute a CardFace.COUNTER)",
+       [HEROS] + JO, [], {"compteurs": [["sh016", "cudgel", 3]], "en_jeu": ["sh016"]}, main_exclusive=[]),
+    _c("sh016 Jo : apres un evenement TAIJUTSU (Sideswipe) : +1 compteur cudgel (4 : AUCUN plafond)",
+       "« After you play a Taijutsu event, place 1 cudgel counter here » : Uses ne fixe que le nombre d'entree",
+       [HEROS] + JO, [f"Puzzle.SetThreat('{COMPLOT}', 3)"], {"compteurs": [["sh016", "cudgel", 4]], "defausse": ["sh019"]},
+       main_exclusive=["sh019"], jouer=["sh019"], cibles=[COMPLOT]),
+    _c("sh016 Jo : TEMOIN, un evenement NON Taijutsu (For Justice!, sans degats) ne pose aucun compteur",
+       "« a TAIJUTSU event » : For Justice! (Justice) retire de la menace sans blesser : Jo reste a 3",
+       [HEROS] + JO, [f"Puzzle.SetThreat('{COMPLOT}', 5)"], {"compteurs": [["sh016", "cudgel", 3]], "defausse": ["01060"]},
+       main_exclusive=["01060", "01090"], payer_avec=["01090"], jouer=["01060"], cibles=[COMPLOT]),
+    _c("sh016 Jo : TEMOIN, une carte Taijutsu qui n'est PAS un evenement (Mutant Fight Club, Soutien) ne pose aucun compteur",
+       "« Taijutsu EVENT » : le type compte ; cout 1 paye par Strength",
+       [HEROS] + JO, [], {"compteurs": [["sh016", "cudgel", 3]], "en_jeu": ["sh012"]},
+       main_exclusive=["sh012", "01090"], payer_avec=["01090"], jouer=["sh012"]),
+    _c("sh016 Jo : Hero Response apres l'attaque de base du heros : retire 2 compteurs, Rhino est HEBETE",
+       "« After you damage an enemy, remove 2 cudgel counters from this card -> daze that enemy » : 3 -> 1 ; Spider-Man (ATQ 2) blesse Rhino",
+       [HEROS] + JO, ["Puzzle.Attack('01001a')"],
+       {"compteurs": [["sh016", "cudgel", 1]], "degats": [["01094", 2]], "statuts": [["01094", "Dazed"]]},
+       main_exclusive=[], cibles=["01094"]),
+    _c("sh016 Jo : TEMOIN, avec UN seul compteur le cout de 2 est impayable : pas de Reponse, pas d'hebetude",
+       "1 compteur restant (3 - 2) : la Reponse n'est pas proposee",
+       [HEROS] + JO + ["Puzzle.Counter('sh016', 'cudgel', -2)"], ["Puzzle.Attack('01001a')"],
+       {"compteurs": [["sh016", "cudgel", 1]], "degats": [["01094", 2]], "statuts_absents": [["01094", "Dazed"]]},
+       main_exclusive=[], cibles=["01094"]),
+    _c("sh016 Jo : avec exactement 2 compteurs, le cout vide la carte (Uses) : elle part, Rhino est quand meme HEBETE",
+       "le cout est paye avant l'effet : les 2 derniers compteurs retires, Jo defaussee, le sort se resout",
+       [HEROS] + JO + ["Puzzle.Counter('sh016', 'cudgel', -1)"], ["Puzzle.Attack('01001a')"],
+       {"hors_jeu": ["sh016"], "degats": [["01094", 2]], "statuts": [["01094", "Dazed"]]},
+       main_exclusive=[], cibles=["01094"]),
+    _c("sh016 Jo : lecture codee (Q-T4) : les degats d'un EVENEMENT que vous jouez (Haymaker) ouvrent aussi la Reponse",
+       "« After YOU damage an enemy » : comme l'officielle 16032 / ua033 Pete, votre identite ET les cartes que vous jouez ; Haymaker : 3 degats",
+       [HEROS] + JO, [], {"compteurs": [["sh016", "cudgel", 1]], "degats": [["01094", 3]], "statuts": [["01094", "Dazed"]]},
+       main_exclusive=["01087", "01090"], payer_avec=["01090"], jouer=["01087"], cibles=["01094"]),
+    _c("sh016 Jo : lecture codee (Q-T4) : un ALLIE (Hellcat) qui attaque n'ouvre PAS la Reponse",
+       "« After YOU damage » : l'identite et ses cartes, pas les allies ; Jo reste a 3, Rhino sain",
+       [HEROS, "Puzzle.PutIntoPlay('01020', under_control=True)"] + JO, ["Puzzle.Attack('01020')"],
+       {"compteurs": [["sh016", "cudgel", 3]], "degats": [["01094", 1]], "statuts_absents": [["01094", "Dazed"]]},
+       main_exclusive=[], cibles=["01094"]),
+]
+
+# ========================================================================= sh017 Odyn
+ODYN = ["Puzzle.PutIntoPlay('sh017', under_control=True)"]
+CAS += [
+    _c("sh017 Odyn : attaque de base (ATQ 3**) : 3 degats a Rhino ; la Reponse (defausse Backflip, DEFENSE) donne Tough AVANT les 2 degats consecutifs, qui l'epuisent",
+       "« After Odyn uses a basic power, discard a DEFENSE card from your hand -> give Odyn a tough status card » : le moteur resout la Reponse "
+       "AVANT les degats consecutifs (journal : « gagne Tough » puis « Tough remplace les degats ») : Odyn n'a AUCUN degat et la carte Tough est "
+       "consommee ; le temoin sans carte DEFENSE (cas suivant) subit les 2 degats",
+       [HEROS] + ODYN, ["Puzzle.Attack('sh017')"],
+       {"degats": [["01094", 3], ["sh017", 0]], "statuts_absents": [["sh017", "Tough"]], "defausse": ["01003"], "taille_main": 0},
+       main_exclusive=["01003"], cibles=["01094"]),
+    _c("sh017 Odyn : contre de base (CTR 1*) : 1 menace retiree, Reponse identique (Tough avant le degat consecutif, qui l'epuise)",
+       "« a basic power » : l'attaque OU le contre ; menace 5 -> 4 ; Odyn n'a aucun degat (sans la Reponse : 1)",
+       [HEROS] + ODYN, [f"Puzzle.SetThreat('{COMPLOT}', 5)", "Puzzle.Thwart('sh017')"],
+       {"menace": [[COMPLOT, 4]], "degats": [["sh017", 0]], "statuts_absents": [["sh017", "Tough"]], "defausse": ["01003"]},
+       main_exclusive=["01003"], cibles=[COMPLOT]),
+    _c("sh017 Odyn : TEMOIN, sans carte DEFENSE en main (Haymaker seulement) le cout est impayable : pas de Tough",
+       "« discard a DEFENSE card from your hand » est un COUT : la Reponse n'est pas proposee, Haymaker reste en main",
+       [HEROS] + ODYN, ["Puzzle.Attack('sh017')"],
+       {"degats": [["01094", 3], ["sh017", 2]], "statuts_absents": [["sh017", "Tough"]], "en_main": ["01087"]},
+       main_exclusive=["01087"], cibles=["01094"]),
+    _c("sh017 Odyn : TEMOIN, c'est le HEROS qui attaque (pas Odyn) : aucune Reponse, Backflip reste en main",
+       "« After ODYN uses a basic power » : lui seul",
+       [HEROS] + ODYN, ["Puzzle.Attack('01001a')"],
+       {"degats": [["01094", 2], ["sh017", 0]], "statuts_absents": [["sh017", "Tough"]], "en_main": ["01003"]},
+       main_exclusive=["01003"], cibles=["01094"]),
+    _c("sh017 Odyn : TEMOIN, un AUTRE allie (Hellcat) qui attaque ne declenche pas Odyn",
+       "idem avec un allie",
+       [HEROS, "Puzzle.PutIntoPlay('01020', under_control=True)"] + ODYN, ["Puzzle.Attack('01020')"],
+       {"degats": [["sh017", 0]], "statuts_absents": [["sh017", "Tough"]], "en_main": ["01003"]},
+       main_exclusive=["01003"], cibles=["01094"]),
+]
+
+# ========================================================================= sh018 Countercross
+CAS += [
+    _c("sh018 Countercross : attaque de 4 : previent 1, inflige 1 a Rhino, retire 1 menace, pioche 1 (le heros prend 3)",
+       "« prevent 1 of that damage. Deal 1 damage to an enemy. Remove 1 threat from a scheme. Draw 1 card » : Fin Fang Foom (ATQ 4) "
+       "frappe le heros incline ; cout 1 paye par Strength ; menace 5 -> 4 ; main : 1 carte piochee",
+       [HEROS, "Puzzle.Exhaust('01001a')", f"Puzzle.PutIntoPlay('{FFF}')"],
+       [f"Puzzle.SetThreat('{COMPLOT}', 5)", f"Puzzle.Attack('{FFF}')"],
+       {"degats_identite": 3, "degats": [["01094", 1]], "menace": [[COMPLOT, 4]], "taille_main": 1,
+        "defausse": ["sh018", "01090"]},
+       main_exclusive=["sh018", "01090"], payer_avec=["01090"], cibles=["01094", COMPLOT]),
+    _c("sh018 Countercross : attaque de 1 (Hydra Mercenary) : la prevention de 1 vaut tout, les trois autres effets partent quand meme",
+       "« prevent 1 OF THAT damage » : 1 - 1 = 0 degat ; riposte 1 (sur le sbire : Guard interdit de viser le vilain), menace -1, pioche 1",
+       [HEROS, "Puzzle.Exhaust('01001a')", "Puzzle.PutIntoPlay('01101')"],
+       [f"Puzzle.SetThreat('{COMPLOT}', 5)", "Puzzle.Attack('01101')"],
+       {"degats_identite": 0, "degats": [["01101", 1], ["01094", 0]], "menace": [[COMPLOT, 4]], "taille_main": 1,
+        "defausse": ["sh018", "01090"]},
+       main_exclusive=["sh018", "01090"], payer_avec=["01090"], cibles=["01101", COMPLOT]),
+    _c("sh018 Countercross : TEMOIN, des degats hors attaque ne sont pas prevenus (carte non offerte)",
+       "« from an attack » : 3 degats directs, la carte reste en main",
+       [HEROS], ["Puzzle.Damage('01001a', 3)"], {"degats_identite": 3, "en_main": ["sh018"]},
+       main_exclusive=["sh018", "01090"]),
+    _c("sh018 Countercross : TEMOIN, forme ALTER-EGO : Hero Interrupt non offerte",
+       "Peter Parker prend les 4 degats",
+       [f"Puzzle.PutIntoPlay('{FFF}')"], [f"Puzzle.Attack('{FFF}')"], {"degats_identite": 4, "en_main": ["sh018"]},
+       main_exclusive=["sh018", "01090"]),
+]
+
+# ========================================================================= sh019 Sideswipe
+CAS += [
+    _c("sh019 Sideswipe : retire 1 menace et VIDE la manigance (1 -> 0) : un evenement ATTACK de la defausse revient",
+       "« If this removes the last threat on that scheme, return an ATTACK card from your discard pile to your hand » : Haymaker revient",
+       [HEROS], DISC("01087") + [f"Puzzle.SetThreat('{COMPLOT}', 1)"],
+       {"menace": [[COMPLOT, 0]], "en_main": ["01087"], "defausse": ["sh019"], "taille_main": 1},
+       main_exclusive=["sh019"], jouer=["sh019"], cibles=[COMPLOT]),
+    _c("sh019 Sideswipe : la manigance garde de la menace (3 -> 2) : RIEN ne revient",
+       "« the LAST threat » : pas le dernier",
+       [HEROS], DISC("01087") + [f"Puzzle.SetThreat('{COMPLOT}', 3)"],
+       {"menace": [[COMPLOT, 2]], "absent_main": ["01087"], "defausse": ["sh019", "01087"], "taille_main": 0},
+       main_exclusive=["sh019"], jouer=["sh019"], cibles=[COMPLOT]),
+    _c("sh019 Sideswipe : « THAT scheme » : la manigance annexe (Bomb Scare, 1 menace) est videe alors que la principale en garde : retour",
+       "la derniere menace de LA manigance choisie, pas de la principale ; Bomb Scare 01109 mise a 1, videe elle quitte le jeu",
+       [HEROS, "Puzzle.PutIntoPlay('01109')"], DISC("01087") + [f"Puzzle.SetThreat('{COMPLOT}', 4)", "Puzzle.SetThreat('01109', 1)"],
+       {"hors_jeu": ["01109"], "menace": [[COMPLOT, 4]], "en_main": ["01087"], "defausse": ["sh019"], "taille_main": 1},
+       main_exclusive=["sh019"], jouer=["sh019"], cibles=["01109"]),
+    _c("sh019 Sideswipe : « an ATTACK CARD » : un seul candidat parmi DEUX cartes (Haymaker ATTACK, Wiggle Room DEFENSE) : l'ATTACK revient",
+       "seule la carte au trait ATTACK convient ; le DEFENSE reste",
+       [HEROS], DISC("05005", "01087") + [f"Puzzle.SetThreat('{COMPLOT}', 1)"],
+       {"menace": [[COMPLOT, 0]], "en_main": ["01087"], "absent_main": ["05005"], "defausse": ["sh019", "05005"], "taille_main": 1},
+       main_exclusive=["sh019"], jouer=["sh019"], cibles=[COMPLOT]),
+    _c("sh019 Sideswipe : DEUX cartes ATTACK en defausse : UNE seule revient, au choix (Swinging Web Kick designe)",
+       "« return AN ATTACK card » : une seule",
+       [HEROS], DISC("01087", "01005") + [f"Puzzle.SetThreat('{COMPLOT}', 1)"],
+       {"menace": [[COMPLOT, 0]], "en_main": ["01005"], "absent_main": ["01087"], "defausse": ["sh019", "01087"], "taille_main": 1},
+       main_exclusive=["sh019"], jouer=["sh019"], cibles=[COMPLOT, "01005"]),
+    _c("sh019 Sideswipe : manigance videe mais AUCUNE carte ATTACK en defausse : rien ne revient, rien ne plante",
+       "defausse vide de traits ATTACK",
+       [HEROS], DISC("05005") + [f"Puzzle.SetThreat('{COMPLOT}', 1)"],
+       {"menace": [[COMPLOT, 0]], "absent_main": ["05005"], "defausse": ["sh019", "05005"], "taille_main": 0},
+       main_exclusive=["sh019"], jouer=["sh019"], cibles=[COMPLOT]),
+]
+
+# ========================================================================= sh020 Tough Nut
+CAS += [
+    _c("sh020 Tough Nut : apres l'attaque de base du heros : carte Tough sur le HEROS, payee par Strength : PAS de soin",
+       "« give it a tough status card. If you paid ... with a DEFENSE or THWART event, heal 2 » : Strength n'est pas un evenement ; "
+       "Spider-Man (3 degats) reste a 3",
+       [HEROS], ["Puzzle.Damage('01001a', 3)", "Puzzle.Attack('01001a')"],
+       {"statuts": [["01001a", "Tough"]], "degats_identite": 3, "defausse": ["sh020", "01090"]},
+       main_exclusive=["sh020", "01090"], payer_avec=["01090"], cibles=["01094"]),
+    _c("sh020 Tough Nut : payee avec un evenement DEFENSE (Backflip) : carte Tough ET soin de 2 (3 -> 1)",
+       "« DEFENSE or THWART » : Backflip (DEFENSE) paie le cout 1",
+       [HEROS], ["Puzzle.Damage('01001a', 3)", "Puzzle.Attack('01001a')"],
+       {"statuts": [["01001a", "Tough"]], "degats_identite": 1, "defausse": ["sh020", "01003"]},
+       main_exclusive=["sh020", "01003"], payer_avec=["01003"], cibles=["01094"]),
+    _c("sh020 Tough Nut : payee avec un evenement THWART (Sideswipe) : soin de 2",
+       "l'autre moitie du « or »",
+       [HEROS], ["Puzzle.Damage('01001a', 3)", "Puzzle.Attack('01001a')"],
+       {"statuts": [["01001a", "Tough"]], "degats_identite": 1, "defausse": ["sh020", "sh019"]},
+       main_exclusive=["sh020", "sh019"], payer_avec=["sh019"], cibles=["01094"]),
+    _c("sh020 Tough Nut : payee avec un evenement ATTACK (Haymaker) : PAS de soin (seulement la carte Tough)",
+       "ni DEFENSE ni THWART ; cout 1 : Haymaker (1 ressource) suffit",
+       [HEROS], ["Puzzle.Damage('01001a', 3)", "Puzzle.Attack('01001a')"],
+       {"statuts": [["01001a", "Tough"]], "degats_identite": 3, "defausse": ["sh020", "01087"]},
+       main_exclusive=["sh020", "01087"], payer_avec=["01087"], cibles=["01094"]),
+    _c("sh020 Tough Nut : le heros est DEJA tenace : pas de seconde carte, mais le soin a lieu (phrase separee)",
+       "« give it a tough » ne peut rien donner ; « If you paid ... heal 2 » reste vrai (Backflip) : 3 -> 1",
+       [HEROS], ["Puzzle.Damage('01001a', 3)", "Puzzle.Tough('01001a')", "Puzzle.Attack('01001a')"],
+       {"statuts": [["01001a", "Tough"]], "degats_identite": 1, "defausse": ["sh020", "01003"]},
+       main_exclusive=["sh020", "01003"], payer_avec=["01003"], cibles=["01094"]),
+    _c("sh020 Tough Nut : apres un CONTRE de base du heros (THW) : la Reponse part aussi",
+       "« uses a basic power » : ATQ, CTR ou DEF ; menace 3 -> 2",
+       [HEROS], [f"Puzzle.SetThreat('{COMPLOT}', 3)", "Puzzle.Thwart('01001a')"],
+       {"statuts": [["01001a", "Tough"]], "menace": [[COMPLOT, 2]], "defausse": ["sh020", "01090"]},
+       main_exclusive=["sh020", "01090"], payer_avec=["01090"], cibles=[COMPLOT]),
+    _c("sh020 Tough Nut : TEMOIN, un ALLIE (Hellcat) qui attaque n'ouvre pas la Reponse : « your HERO »",
+       "Tough Nut reste en main, le heros n'est pas tenace",
+       [HEROS, "Puzzle.PutIntoPlay('01020', under_control=True)"], ["Puzzle.Attack('01020')"],
+       {"statuts_absents": [["01001a", "Tough"]], "en_main": ["sh020"]},
+       main_exclusive=["sh020", "01090"], cibles=["01094"]),
+]
+
 # ========================================================================= sh004 Straight Cross
 CAS += [
     _c("sh004 Straight Cross : 5 degats a Rhino, payee SANS evenement ATTACK (Strength RR + Energy YY) : pas d'etourdissement",
@@ -319,3 +691,27 @@ CAS += [
        [HEROS], [], {"degats": [["01094", 5]], "statuts": [["01094", "Stunned"]], "defausse": ["sh004", "01087"]},
        main_exclusive=["sh004", "01087", "01090"], payer_avec=["01087", "01090"], jouer=["sh004"], cibles=["01094"]),
 ]
+
+# @@FIN-CAS@@
+
+
+VERIFICATIONS = r'''
+def sh_comme_en_main(monde, aides):
+    """`attendu` : hote (en jeu), carte (rangee sous l'hote), comme_en_main (bool attendu de `IsLikeInHand()`).
+    Contre-bout : une carte de la DEFAUSSE n'est jamais « comme en main » (sans lui la mesure ne discrimine rien)."""
+    attendu = aides["cas"]["attendu"]
+    hote = aides["par_id"](monde, attendu["hote"])
+    if hote is None:
+        return False, f"{attendu['hote']} n'est pas en jeu"
+    rangees = [c for c in hote.GetPlacedCardArea().Get(True) if c is not None
+               and getattr(c.paper, "card_id", None) == attendu["carte"]]
+    if len(rangees) != 1:
+        return False, f"{len(rangees)} exemplaire(s) de {attendu['carte']} sous {attendu['hote']} (attendu 1)"
+    obtenu = bool(rangees[0].IsLikeInHand())
+    if obtenu != attendu["comme_en_main"]:
+        return False, f"{attendu['carte']} sous {attendu['hote']} : IsLikeInHand() = {obtenu} (attendu {attendu['comme_en_main']})"
+    for f in monde.players[0].discard_pile.Get():
+        if f is not None and f.IsLikeInHand():
+            return False, f"{getattr(f.paper, 'card_id', '?')}, dans la DEFAUSSE, se dit aussi comme en main : la mesure ne discrimine rien"
+    return True, f"{attendu['carte']} sous {attendu['hote']} : IsLikeInHand() = {obtenu}, la defausse non"
+'''
