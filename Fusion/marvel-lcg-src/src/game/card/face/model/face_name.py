@@ -80,6 +80,30 @@ class ModelName(ModelBase):
     # If two identities share the same title, but each has a different alter-ego, they may coexist in play
     # If two unique allies share the same title, but each has a different subtitle, they may coexist in a player’s deck and in play.
     # If a hero and a unique ally share the same title, but the alter-ego and the subtitle are different, they may coexist in deckbuilding and in play.
+    # Carte TMNT = pack de heros TMNT ou ensemble « TMNT ... » : liste lue dans `data/arts_alternatifs.json`
+    # (`series.tmnt.heros_ids`, `sets_exclusifs`), source unique partagee avec les arts alternatifs.
+    # Repli (fichier absent) : ensemble commencant par « TMNT ».
+    _tmnt_packs: 'Optional[Set[str]]' = None
+    _tmnt_sets: 'Optional[Set[str]]' = None
+
+    @staticmethod
+    def IsTmntPaper(pack: str, set_name: str) -> bool:
+        if ModelName._tmnt_packs is None:
+            packs: Set[str] = set()
+            sets: Set[str] = set()
+            try:
+                from engine.lib.json import Json
+                data, _ = Json.LoadInternal("./data/arts_alternatifs.json")
+                serie = data["series"]["tmnt"]
+                packs = set(serie.get("heros_ids", []))
+                sets = set(serie.get("sets_exclusifs", []))
+            except Exception:
+                pass
+            ModelName._tmnt_packs = packs
+            ModelName._tmnt_sets = sets
+        return pack in (ModelName._tmnt_packs or set()) or set_name in (ModelName._tmnt_sets or set()) \
+            or set_name.startswith("TMNT")
+
     @final
     def CanCoexistWith(self, that: 'CardFace') -> bool:
         from game.card.face.card_type import Identity
@@ -131,11 +155,14 @@ class ModelName(ModelBase):
         # carte unique egale le titre, le sous-titre ou le titre d'alter ego de l'autre. Un sous-titre
         # d'allie est le PERSONNAGE : Ronin (Mikey) ne coexiste pas avec Michelangelo (alter ego Mikey),
         # Heavy Metal (Jenny) ne coexiste pas avec Nightwatcher (Jenny).
-        # Limites : (1) cartes cote JOUEUR seulement (identite, allie, soutien, amelioration, ressource) ;
+        # Limites : (0) au moins une carte TMNT, voir (3) ; (1) cartes cote JOUEUR seulement (identite, allie, soutien, amelioration, ressource) ;
         # les cartes de la rencontre gardent l'ancien jugement (le vilain Lizard « Curtis Connors »
         # reste compatible avec un heros dont l'alter ego est Curtis Connors) ; (2) pas d'identite contre
         # identite (le deck-builder ne les compare pas non plus : deux joueurs peuvent jouer deux
         # Spider-Man de meme alter ego).
+        def est_tmnt(face: 'CardFace') -> bool:
+            return ModelName.IsTmntPaper(face.paper.pack, face.paper.set_name)
+
         def cote_joueur(face: 'CardFace') -> bool:
             from game.card.face.card_type import Ally, Support, Upgrade, Resource
             return Identity.IsType(face) or Ally.IsType(face) or Support.IsType(face) or \
@@ -159,7 +186,9 @@ class ModelName(ModelBase):
             return any(v in autres(b) for v in (a[1], a[2]) if v) or \
                 any(v in autres(a) for v in (b[1], b[2]) if v)
 
-        if cote_joueur(this) and cote_joueur(that) and \
+        # (3) Decision du 17/10/2026 : seulement quand l'une des deux cartes est une carte TMNT (Inkwire).
+        # Les paires officielles ou d'autres packs gardent EXACTEMENT l'ancien comportement.
+        if (est_tmnt(this) or est_tmnt(that)) and cote_joueur(this) and cote_joueur(that) and \
             not (Identity.IsType(this) and Identity.IsType(that)):
             for desc_this in descripteurs(this):
                 for desc_that in descripteurs(that):

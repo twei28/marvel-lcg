@@ -1541,15 +1541,17 @@ d'alter ego) de l'une égale le titre, le sous-titre ou le titre d'alter ego de 
 2. Pas d'identité contre identité (le deck-builder ne les compare pas non plus) : deux joueurs peuvent jouer deux
    Spider-Man de même alter ego Peter Parker.
 
-Écart de comportement sur des cartes OFFICIELLES (calculé sur `data/cards.json`, 180 paires dont 92 sans TMNT) : des
-cartes de titres différents au même sous-titre/alter ego, ex. Spider-Man (héros, Peter Parker) et Spider-Man Noir
-(allié Peter Parker `wd118`), Deadpool (Wade Wilson) et Venompool/Zenpool, Hawkeye (Kate Bishop) et Hawkingbird,
-Thor (Odinson) et l'allié Odinson. Le deck-builder les refusait déjà dans un même deck ; le moteur les laissait
-coexister en jeu (cartes mises en jeu par un effet, deck hors règles). Désormais la seconde est défaussée à son
-arrivée (`IsThisUniqueInPlay`) ou injouable. Liste complète : `python3 tools/diff_unicite_sous_titre.py` (depuis `Fusion/marvel-lcg-src`).
+**Portée (décision du 17/10/2026) : la règle `correspondent` ne s'applique QUE si au moins une des deux cartes est une
+carte TMNT.** Les paires officielles ou d'autres packs gardent EXACTEMENT le comportement d'avant (92 paires, ex.
+Spider-Man / Spider-Man Noir `wd118`, Thor / `ra002` Odinson, Black Panther / T'Challa, Deadpool / Venompool : le
+moteur les laisse coexister, le deck-builder les refuse toujours dans un deck, écart voulu). « Carte TMNT » =
+`ModelName.IsTmntPaper(pack, set_name)` : pack de héros listé dans `data/arts_alternatifs.json`
+(`series.tmnt.heros_ids`), ensemble dans `series.tmnt.sets_exclusifs`, ou ensemble commençant par « TMNT » (repli si
+le fichier manque). Source unique partagée avec les arts alternatifs. Écart restant : 88 paires, toutes TMNT
+(`python3 tools/diff_unicite_sous_titre.py`, depuis `Fusion/marvel-lcg-src`).
 
 Preuve : table partagée `tools/tests-lanceur/unicite-sous-titre-cas.json`, lue par le moteur
 (`tools/cas/unicite_sous_titre.py`, filtre `[unique-st]`) ET par le deck-builder
-(`node --test tools/tests-lanceur/unicite-sous-titre.test.mjs`) : les deux répondent pareil. Seul écart voulu
-(`parite: false`) : deux cartes de même titre ET même sous-titre (Miles Morales 13019 / 27011) : copies pour le
+(`node --test tools/tests-lanceur/unicite-sous-titre.test.mjs`) : les deux répondent pareil. Écarts voulus
+(`parite: false`) : les paires hors TMNT (wd118, ra002) et deux cartes de même titre ET même sous-titre (Miles Morales 13019 / 27011) : copies pour le
 deck-builder (limite par deck), uniques pour le moteur (refus en jeu).
