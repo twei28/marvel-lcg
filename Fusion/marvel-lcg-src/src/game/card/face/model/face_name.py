@@ -125,6 +125,47 @@ class ModelName(ModelBase):
             get_subtitle(this) == get_subtitle(that):
             return False
 
+        # AJOUT (17/10/2026, decision de l'utilisateur, unicite par sous-titre). Le moteur ne jugeait que
+        # « meme titre ET meme sous-titre » ; le deck-builder (`public/js/deckbuilder/regles.js`,
+        # `correspondent`, Rules Reference v1.8) juge aussi : le sous-titre (ou le titre d'alter ego) d'une
+        # carte unique egale le titre, le sous-titre ou le titre d'alter ego de l'autre. Un sous-titre
+        # d'allie est le PERSONNAGE : Ronin (Mikey) ne coexiste pas avec Michelangelo (alter ego Mikey),
+        # Heavy Metal (Jenny) ne coexiste pas avec Nightwatcher (Jenny).
+        # Limites : (1) cartes cote JOUEUR seulement (identite, allie, soutien, amelioration, ressource) ;
+        # les cartes de la rencontre gardent l'ancien jugement (le vilain Lizard « Curtis Connors »
+        # reste compatible avec un heros dont l'alter ego est Curtis Connors) ; (2) pas d'identite contre
+        # identite (le deck-builder ne les compare pas non plus : deux joueurs peuvent jouer deux
+        # Spider-Man de meme alter ego).
+        def cote_joueur(face: 'CardFace') -> bool:
+            from game.card.face.card_type import Ally, Support, Upgrade, Resource
+            return Identity.IsType(face) or Ally.IsType(face) or Support.IsType(face) or \
+                Upgrade.IsType(face) or Resource.IsType(face)
+
+        def descripteurs(face: 'CardFace') -> List[Tuple[str, str, str]]:
+            # (titre, sous-titre, titre d'alter ego), comme `correspondent` cote deck-builder
+            if not Identity.IsType(face):
+                return [(face.name, face.printed_subtitle, "")]
+            alter = ""
+            for check_face in [face] + face.card.back_faces:
+                if AlterEgo.IsType(check_face):
+                    alter = check_face.name
+            return [(title, "", alter) for title in get_titles(face)]
+
+        def correspondent(a: Tuple[str, str, str], b: Tuple[str, str, str]) -> bool:
+            if a[0] == b[0] and not a[1] and not b[1] and not a[2] and not b[2]:
+                return True
+            def autres(x: Tuple[str, str, str]) -> List[str]:
+                return [v for v in x if v]
+            return any(v in autres(b) for v in (a[1], a[2]) if v) or \
+                any(v in autres(a) for v in (b[1], b[2]) if v)
+
+        if cote_joueur(this) and cote_joueur(that) and \
+            not (Identity.IsType(this) and Identity.IsType(that)):
+            for desc_this in descripteurs(this):
+                for desc_that in descripteurs(that):
+                    if correspondent(desc_this, desc_that):
+                        return False
+
         # AJOUT (16/10/2026, aspects TMNT) : titre unique secondaire du bandeau (`unique_also`,
         # Bo-Wing « ✦ Winter Soldier »). Decision de l'utilisateur : l'unicite se juge sur les
         # deux titres. Le bandeau n'a pas de sous-titre : il suffit que le TITRE corresponde.

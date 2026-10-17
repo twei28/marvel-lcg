@@ -1511,3 +1511,35 @@ compte un double pour DEUX aspects (Adam Warlock 21038/21039/21066). Aucune cart
 Harnais : `Puzzle.PutIntoPlay` déclenche AUSSI les capacités d'entrée en jeu (Cloaked de Rōnin, Tough
 de Toughness, compteurs « enters play with ») : un Cloaked absorbe ensuite 2 dégâts de `Puzzle.Damage`.
 Retirer l'état par la bascule `Puzzle.Cloak` / `Puzzle.Tough` avant de poser des dégâts (`tools/cas/tmnt_aspect_dual.py`, `_en_jeu`).
+
+## 12. Unicité par sous-titre : `CanCoexistWith` aligné sur le deck-builder (17/10/2026)
+
+Décision de l'utilisateur : le sous-titre d'un allié est le PERSONNAGE. Rōnin (sous-titre Mikey) ne se joue pas
+avec Michelangelo (alter ego Mikey) ; Heavy Metal (Jenny) et Nightwatcher (Jenny) ne coexistent pas, ni avec
+Jennika ; l'allié Basic Leonardo (Leo) ne coexiste pas avec le héros Leonardo (déjà vrai).
+
+**Avant** : `CanCoexistWith` (`src/game/card/face/model/face_name.py`) refusait seulement « titre commun ET même
+sous-titre » (le sous-titre d'une identité = son titre d'alter ego, correctif `50034b`). **Le deck-builder**
+(`public/js/deckbuilder/regles.js`, `correspondent`, Rules Reference v1.8) refusait en plus : le sous-titre (ou titre
+d'alter ego) de l'une égale le titre, le sous-titre ou le titre d'alter ego de l'autre, même sous des titres différents.
+
+**Maintenant** : le moteur applique la même règle `correspondent` en plus de l'ancien jugement (qu'il ne remplace pas :
+`unique_also` des bandeaux et titres de héros multiples sont intacts). Deux limites, pour ne rien casser d'officiel :
+1. Côté JOUEUR seulement (identité, allié, soutien, amélioration, ressource). Les cartes de la rencontre (vilain,
+   sbire, attachement...) gardent l'ancien jugement : le vilain Lizard « Curtis Connors » reste compatible avec un
+   héros dont l'alter ego est Curtis Connors.
+2. Pas d'identité contre identité (le deck-builder ne les compare pas non plus) : deux joueurs peuvent jouer deux
+   Spider-Man de même alter ego Peter Parker.
+
+Écart de comportement sur des cartes OFFICIELLES (calculé sur `data/cards.json`, 180 paires dont 92 sans TMNT) : des
+cartes de titres différents au même sous-titre/alter ego, ex. Spider-Man (héros, Peter Parker) et Spider-Man Noir
+(allié Peter Parker `wd118`), Deadpool (Wade Wilson) et Venompool/Zenpool, Hawkeye (Kate Bishop) et Hawkingbird,
+Thor (Odinson) et l'allié Odinson. Le deck-builder les refusait déjà dans un même deck ; le moteur les laissait
+coexister en jeu (cartes mises en jeu par un effet, deck hors règles). Désormais la seconde est défaussée à son
+arrivée (`IsThisUniqueInPlay`) ou injouable. Liste complète : `python3 tools/diff_unicite_sous_titre.py` (depuis `Fusion/marvel-lcg-src`).
+
+Preuve : table partagée `tools/tests-lanceur/unicite-sous-titre-cas.json`, lue par le moteur
+(`tools/cas/unicite_sous_titre.py`, filtre `[unique-st]`) ET par le deck-builder
+(`node --test tools/tests-lanceur/unicite-sous-titre.test.mjs`) : les deux répondent pareil. Seul écart voulu
+(`parite: false`) : deux cartes de même titre ET même sous-titre (Miles Morales 13019 / 27011) : copies pour le
+deck-builder (limite par deck), uniques pour le moteur (refus en jeu).

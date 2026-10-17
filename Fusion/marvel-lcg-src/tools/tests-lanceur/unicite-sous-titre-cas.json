@@ -1,0 +1,38 @@
+{
+ "_lisez_moi": "Table des cas d'unicite par sous-titre, lue par tools/cas/unicite_sous_titre.py (moteur, test_capacites) ET par tools/tests-lanceur/unicite-sous-titre.test.mjs (deck-builder). heros = cle du heros du harnais ; faces = faces de l'identite cote deck-builder ; en_jeu = cartes deja posees ; a_jouer = carte de la main ; conflit = true si les deux ne coexistent pas. parite=false : ecart VOULU entre moteur et deck-builder, explique dans `pourquoi`. etat = voulu (rougit avant le correctif) | inchange (deja vrai avant, temoin de non-regression).",
+ "heros_faces": {
+  "spider_man": "01001a,01001b",
+  "michelangelo": "tm001a,tm001b",
+  "leonardo": "tl001a,tl001b",
+  "raphael": "tr001a,tr001b",
+  "donatello": "td001a,td001b",
+  "jennika": "tj001a,tj001b",
+  "nick_fury": "50034a,50034b"
+ },
+ "cas": [
+  {"nom": "ud001 Ronin (Mikey) : Michelangelo (alter ego Mikey) en jeu, Ronin n'est PAS jouable", "pourquoi": "decision 17/10/2026 : le sous-titre d'un allie est le personnage ; Mikey est l'alter ego de Michelangelo", "heros": "michelangelo", "en_jeu": [], "a_jouer": "ud001", "conflit": true, "etat": "voulu"},
+  {"nom": "ud001 Ronin TEMOIN : Spider-Man (alter ego Peter Parker) en jeu, Ronin est jouable", "pourquoi": "contre-cas : c'est bien l'alter ego Mikey qui bloque", "heros": "spider_man", "en_jeu": [], "a_jouer": "ud001", "conflit": false, "etat": "inchange"},
+  {"nom": "ud002 Doomsayer (Donnie) : Donatello en jeu, pas jouable", "pourquoi": "meme regle, Donnie = alter ego de Donatello", "heros": "donatello", "en_jeu": [], "a_jouer": "ud002", "conflit": true, "etat": "voulu"},
+  {"nom": "ud004 Stealth Fighter (Raph) : Raphael en jeu, pas jouable", "pourquoi": "meme regle, Raph = alter ego de Raphael", "heros": "raphael", "en_jeu": [], "a_jouer": "ud004", "conflit": true, "etat": "voulu"},
+  {"nom": "ud005 Sohei (Leo) : Leonardo en jeu, pas jouable", "pourquoi": "meme regle, Leo = alter ego de Leonardo", "heros": "leonardo", "en_jeu": [], "a_jouer": "ud005", "conflit": true, "etat": "voulu"},
+  {"nom": "ud003 Heavy Metal (Jenny) : Jennika en jeu, pas jouable", "pourquoi": "meme regle, Jenny = alter ego de Jennika", "heros": "jennika", "en_jeu": [], "a_jouer": "ud003", "conflit": true, "etat": "voulu"},
+  {"nom": "ud006 Nightwatcher (Jenny) : Heavy Metal (Jenny) en jeu, Nightwatcher n'est PAS jouable", "pourquoi": "deux allies de TITRES differents au meme sous-titre sont le meme personnage", "heros": "spider_man", "en_jeu": ["ud003"], "a_jouer": "ud006", "conflit": true, "etat": "voulu"},
+  {"nom": "ud006 Nightwatcher TEMOIN : Doomsayer (Donnie) en jeu, Nightwatcher est jouable", "pourquoi": "contre-cas : un autre sous-titre ne bloque pas", "heros": "spider_man", "en_jeu": ["ud002"], "a_jouer": "ud006", "conflit": false, "etat": "inchange"},
+  {"nom": "ud003 Heavy Metal : l'allie Basic Jennika (ub022, Jenny) en jeu, pas jouable", "pourquoi": "l'allie Basic Jennika porte le sous-titre Jenny", "heros": "spider_man", "en_jeu": ["ub022"], "a_jouer": "ud003", "conflit": true, "etat": "voulu"},
+  {"nom": "ud005 Sohei (Leo) : l'allie Basic Leonardo (ub025, Leo) en jeu, pas jouable", "pourquoi": "meme personnage sous deux titres", "heros": "spider_man", "en_jeu": ["ub025"], "a_jouer": "ud005", "conflit": true, "etat": "voulu"},
+
+  {"nom": "ub025 Leonardo (allie Basic, Leo) : le HEROS Leonardo en jeu, pas jouable", "pourquoi": "meme titre, sous-titre Leo = alter ego : deja refuse avant le correctif", "heros": "leonardo", "en_jeu": [], "a_jouer": "ub025", "conflit": true, "etat": "inchange"},
+  {"nom": "ub025 Leonardo TEMOIN : Spider-Man en jeu, l'allie Leonardo est jouable", "pourquoi": "contre-cas", "heros": "spider_man", "en_jeu": [], "a_jouer": "ub025", "conflit": false, "etat": "inchange"},
+  {"nom": "ub041 Raphael (allie Basic) : le heros Leonardo en jeu, jouable", "pourquoi": "un autre personnage TMNT ne bloque pas", "heros": "leonardo", "en_jeu": [], "a_jouer": "ub041", "conflit": false, "etat": "inchange"},
+  {"nom": "ub029 Michelangelo (allie Basic, Mikey) : le HEROS Michelangelo en jeu, pas jouable", "pourquoi": "meme titre, sous-titre = alter ego", "heros": "michelangelo", "en_jeu": [], "a_jouer": "ub029", "conflit": true, "etat": "inchange"},
+
+  {"nom": "27011 Spider-Man (Miles Morales) : Spider-Man (Peter Parker) en jeu, jouable", "pourquoi": "meme titre, alter ego different : coexistent (Rules Reference)", "heros": "spider_man", "en_jeu": [], "a_jouer": "27011", "conflit": false, "etat": "inchange"},
+  {"nom": "04045 Spider-Man (Peter Parker) : Spider-Man (Peter Parker) en jeu, PAS jouable", "pourquoi": "sous-titre = alter ego : refuse avant et apres", "heros": "spider_man", "en_jeu": [], "a_jouer": "04045", "conflit": true, "etat": "inchange"},
+  {"nom": "27017 Spider-Man (Hobie) : Spider-Man (Miles) en jeu, jouable", "pourquoi": "deux allies de meme titre, sous-titres differents : coexistent", "heros": "spider_man", "en_jeu": ["27011"], "a_jouer": "27017", "conflit": false, "etat": "inchange"},
+  {"nom": "13019 Spider-Man (Miles) : l'autre Miles 27011 en jeu, PAS jouable", "pourquoi": "meme titre, meme sous-titre : deux cartes uniques identiques, refuse en jeu. Le deck-builder les traite en COPIES (limite par deck, pas par correspondance) : ecart voulu, hors parite", "heros": "spider_man", "en_jeu": ["27011"], "a_jouer": "13019", "conflit": true, "etat": "inchange", "parite": false},
+  {"nom": "mw023 Spider-Woman (Ashley) : mw002 (Julia) en jeu, jouable", "pourquoi": "les cinq Spider-Woman de Madame Web coexistent", "heros": "spider_man", "en_jeu": ["mw002"], "a_jouer": "mw023", "conflit": false, "etat": "inchange"},
+  {"nom": "04011 Hawkeye (Kate) : 01066 Hawkeye (Clint) en jeu, jouable", "pourquoi": "meme titre, sous-titres differents", "heros": "spider_man", "en_jeu": ["01066"], "a_jouer": "04011", "conflit": false, "etat": "inchange"},
+  {"nom": "01084 Nick Fury (allie) : l'identite 50034 « Fix » (alter ego du meme nom) en jeu, PAS jouable", "pourquoi": "50034b : le titre d'alter ego egal au titre du heros ne cree pas de sous-titre fantome", "heros": "nick_fury", "en_jeu": [], "a_jouer": "01084", "conflit": true, "etat": "inchange"},
+  {"nom": "01084 Nick Fury TEMOIN : Spider-Man en jeu, jouable", "pourquoi": "contre-cas", "heros": "spider_man", "en_jeu": [], "a_jouer": "01084", "conflit": false, "etat": "inchange"}
+ ]
+}
