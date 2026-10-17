@@ -1011,7 +1011,7 @@ export const DICO_EN_BASE = {
   "Affichage épuré : gris, sans décor, le strict nécessaire. Cliquer pour revenir à l’affichage normal":
     "Minimal display: grey, no decoration, only the essentials. Click to go back to the normal display",
   "Épuré": "Minimal",
-  "Gris clair, sans décor ni bandeaux, boutons plats et jaune du jeu.": "Light grey, no decoration or banners, flat buttons and the game's yellow.",
+  "Fond sombre, panneaux bleus biseautés, titres en Bangers et rouge Marvel en touche.": "Dark background, bevelled blue panels, Bangers titles and Marvel red as an accent.",
   "Affichage normal. Cliquer pour passer en affichage sobre : fond gris, sans couleurs du héros ni animations":
     "Normal display. Click to switch to the muted display: grey background, no hero colours or animations",
 

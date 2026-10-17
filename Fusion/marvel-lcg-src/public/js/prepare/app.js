@@ -1833,7 +1833,7 @@ async function demanderLAffichage({ rouvert = false } = {}) {
                 el("div", { class: "af-choix-grille" },
                     carte("normal", t("Normal"), t("Couleurs du héros, animations.")),
                     carte("sobre", t("Sobre"), t("Fond gris, sans couleurs ni animations, plus reposant.")),
-                    epurePermis() ? carte("epure", t("Épuré"), t("Gris clair, sans décor ni bandeaux, boutons plats et jaune du jeu.")) : null,
+                    epurePermis() ? carte("epure", t("Épuré"), t("Fond sombre, panneaux bleus biseautés, titres en Bangers et rouge Marvel en touche.")) : null,
                 ),
                 el("div", { class: "af-teinte" },
                     el("b", {}, t("Couleur du fond")),
