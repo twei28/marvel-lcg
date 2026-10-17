@@ -4773,6 +4773,46 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'sa020': "1 max par deck.\n<b>Réponse de héros</b> : après que vous avez dépensé cette carte pour jouer une carte Ninjutsu, camouflez votre héros.",
 
   // --- TMNT Shinobi Taijutsu (sh) : ajouter les cartes shNNN ci-dessous, dans ce bloc seulement ---
+  // sh001 Raising Block (Evenement, Taijutsu)
+  'sh001': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts.\n<b>Réponse de héros</b> : après que vous avez dépensé cette carte pour payer un événement [[DEFENSE]], piochez 1 carte.",
+  // sh002 Foot Sweep
+  'sh002': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Remettez dans votre main chaque événement [[ATTACK]] que vous avez utilisé pour payer cette carte.\n<i>« Balayons ces ordures. »</i> —Jennika",
+  // sh003 Stiff Jab
+  'sh003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si vous avez payé cette carte avec un événement [[ATTACK]], vous pouvez hébéter cet ennemi.\n<i>« Je t'avais prévenu. »</i> —Leonardo",
+  // sh004 Straight Cross
+  'sh004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Si vous avez payé cette carte avec un événement [[ATTACK]], sonnez cet ennemi.\n<i>« Tu ferais mieux de rester à terre. »</i> —Raphael",
+  // sh005 Double Kick
+  'sh005': "<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 2 dégâts à un ennemi et retirez 2 menaces d'une manigance. Si vous avez payé cette carte avec :\n• Un événement [[DEFENSE]], piochez 1 carte.\n• Un événement [[THWART]], piochez 1 carte.",
+  // sh006 Flying Kick
+  'sh006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Piochez 1 carte pour chaque événement [[THWART]] utilisé pour payer cet événement.\n<i>« Un coup de botte dans la tête ! »</i> —Casey Marie Jones",
+  // sh007 Trading Blows
+  'sh007': "<b>Réponse de héros</b> <i>(attaque/défense)</i> : après que vous avez subi des dégâts d'une attaque d'ennemi, infligez 2 dégâts à cet ennemi. Si vous avez payé cette carte avec un événement [[DEFENSE]], sonnez ou désorientez cet ennemi.\n<i>« Aïe. »</i> —Raphael",
+  // sh008 Drop In (homonyme de nt004, autre carte)
+  'sh008': "<b>Action</b> : redressez votre identité. Si vous avez payé cette carte avec un événement [[DEFENSE]], vous pouvez remettre dans votre main un événement [[ATTACK]] ou [[THWART]] de votre pile de défausse.\n<i>« On a décidé de s'inviter. »</i> —Michelangelo",
+  // sh009 Toss
+  'sh009': "<b>Interruption de héros</b> <i>(défense/contre)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et retirez 1 menace d'une manigance. Si vous avez payé cette carte avec un événement [[ATTACK]], hébétez cet ennemi.",
+  // sh010 Martial Skill
+  'sh010': "1 max par joueur. Utilisations (2 compteurs chi).\n<b>Réponse</b> : après que vous avez joué un événement, inclinez Martial Skill et retirez-lui 1 compteur chi → piochez 1 carte.\n<i>« C'est en forgeant qu'on devient forgeron. »</i> —Leonardo",
+  // sh011 Elbow Strike
+  'sh011': "<b>Réponse de héros</b> : après que votre héros a fait une attaque de base et blessé un ennemi, hébétez cet ennemi.\n<i>« Tu ne t'y attendais pas, hein ? »</i> —Donatello",
+  // sh012 * Mutant Fight Club
+  'sh012': "Vous pouvez jouer les événements attachés à cette carte comme s'ils étaient dans votre main.\n<b>Action d'alter ego</b> : inclinez cette carte et subissez 1 dégât → attachez face cachée à cette carte un événement [[ATTACK]] ou [[DEFENSE]] de votre pile de défausse.\n<i>La première règle du Mutant Fight Club : parlez-en à vos amis !</i>",
+  // sh013 Roll With It
+  'sh013': "<b>Réponse de héros</b> : après que votre héros a défendu, redressez votre héros.\n<b>Interruption de héros</b> : quand vous dépensez cette carte pour payer un événement [[ATTACK]], placez un événement [[DEFENSE]] de votre pile de défausse sur le dessus de votre deck.",
+  // sh014 * Minarai
+  'sh014': "Attachez cette carte à un allié que vous contrôlez. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\n<b>Réponse</b> : après que l'allié attaché a subi des dégâts consécutifs ([consequential]), piochez 1 carte.\n<i>« Fais comme moi, Casey. »</i> —Leonardo",
+  // sh015 Keep the Momentum
+  'sh015': "2 max par deck.\n<b>Réponse</b> : après que vous avez dépensé cette carte pour un événement, remettez dans votre main 1 événement Taijutsu de votre pile de défausse.",
+  // sh016 * Jō
+  'sh016': "Restreint. Utilisations (3 compteurs bâton).\n<b>Réponse</b> : après que vous avez joué un événement Taijutsu, placez 1 compteur bâton ici.\n<b>Réponse de héros</b> : après que vous avez blessé un ennemi, retirez 2 compteurs bâton de cette carte → hébétez cet ennemi.",
+  // sh017 * Odyn
+  'sh017': "[star] <b>Réponse</b> : après qu'Odyn a utilisé un pouvoir de base, défaussez une carte [[DEFENSE]] de votre main → donnez à Odyn une carte d'état Tenace.\n<i>« Je vous conseille de rester derrière moi cette fois. »</i>",
+  // sh018 Countercross
+  'sh018': "<b>Interruption de héros</b> <i>(attaque/défense/contre)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 1 de ces dégâts. Infligez 1 dégât à un ennemi. Retirez 1 menace d'une manigance. Piochez 1 carte.",
+  // sh019 Sideswipe
+  'sh019': "<b>Action de héros</b> <i>(contre)</i> : retirez 1 menace d'une manigance. Si cela retire la dernière menace de cette manigance, remettez dans votre main une carte [[ATTACK]] de votre pile de défausse.\n<i>« Pardon, je ne fais que passer ! »</i> —Raphael",
+  // sh020 Tough Nut
+  'sh020': "<b>Réponse de héros</b> : après que votre héros a utilisé un pouvoir de base, donnez-lui une carte d'état Tenace. Si vous avez payé cette carte avec un événement [[DEFENSE]] ou [[THWART]], soignez 2 dégâts de votre héros.\n<i>« Vas-y, amène-toi. »</i> —Uno",
 
   // --- TMNT Shinobi Dual (sc) : les douze cartes Dual Shinobi (17/10/2026) ---
   // sc001 Nendō (Événement, Bushido/Kuji-Kiri)

@@ -116396,7 +116396,366 @@
    "custom": "Inkwire"
   }
  ],
- "tmnt_shinobi_taijutsu": [],
+ "tmnt_shinobi_taijutsu": [
+  {
+   "card_id": "sh001",
+   "type": "Event",
+   "name": "Raising Block",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent 3 of that damage.\n<b>Hero Response</b>: After you spend this card to pay for a [[DEFENSE]] event, draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh002",
+   "type": "Event",
+   "name": "Foot Sweep",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Return each [[ATTACK]] event to your hand that you used to pay for this card.\n<i>\"Let's sweep up the trash.\"</i> —Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh003",
+   "type": "Event",
+   "name": "Stiff Jab",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If you paid for this card with an [[ATTACK]] event, you may daze that enemy.\n<i>\"I warned you.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh004",
+   "type": "Event",
+   "name": "Straight Cross",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. If you paid for this card with an [[ATTACK]] event, stun that enemy.\n<i>\"You best stay down.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh005",
+   "type": "Event",
+   "name": "Double Kick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 2 damage to an enemy and remove 2 threat from a scheme. If you paid for this card with:\n• A [[DEFENSE]] event, draw 1 card.\n• A [[THWART]] event, draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh006",
+   "type": "Event",
+   "name": "Flying Kick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Draw 1 card for each [[THWART]] event used to pay for this event.\n<i>\"Boot to the head!\"</i> —Casey Marie Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh007",
+   "type": "Event",
+   "name": "Trading Blows",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b> <i>(attack/defense)</i>: After you take damage from an enemy attack, deal 2 damage to that enemy. If you paid for this card with a [[DEFENSE]] event, stun or confuse that enemy.\n<i>\"Ouch.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh008",
+   "type": "Event",
+   "name": "Drop In",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "NYC",
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Action</b>: Ready your identity. If you paid for this card with a [[DEFENSE]] event, you may return an [[ATTACK]] or [[THWART]] event from your discard pile to your hand.\n<i>\"We've decided to invite ourselves.\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh009",
+   "type": "Event",
+   "name": "Toss",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "DEFENSE",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Interrupt</b> <i>(defense/thwart)</i>: When you would take any amount of damage from an attack, prevent 3 of that damage and remove 1 threat from a scheme. If you paid for this card with an [[ATTACK]] event, daze that enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh010",
+   "type": "Upgrade",
+   "name": "Martial Skill",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Uses": "2,chi",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Max 1 per player. Uses (2 chi counters).\n<b>Response</b>: After you play an event, exhaust Martial Skill and remove 1 chi counter from it → draw 1 card.\n<i>\"Practice makes perfect.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh011",
+   "type": "Event",
+   "name": "Elbow Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b>: After your hero makes a basic attack and damages an enemy, daze that enemy.\n<i>\"You weren't expecting that, were you?\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh012",
+   "type": "Support",
+   "name": "* Mutant Fight Club",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "STREETS"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "You may play events attached to this card as if they were in your hand.\n<b>Alter-Ego Action</b>: Exhaust this card and take 1 damage → attach an [[ATTACK]] or [[DEFENSE]] event in your discard pile to this card facedown.\n<i>First rule of Mutant Fight Club is: Tell your friends!</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh013",
+   "type": "Event",
+   "name": "Roll With It",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "NYC",
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b>: After your hero defends, ready your hero.\n<b>Hero Interrupt</b>: When you spend this card to pay for an [[ATTACK]] event, put a [[DEFENSE]] event from your discard pile on top of your deck.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh014",
+   "type": "Upgrade",
+   "name": "* Minarai",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "TITLE",
+    "TRAINING"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Attach to an ally you control. Max 1 [[TRAINING]] upgrade per ally.\n<b>Response</b>: After attached ally takes consequential damage ([consequential]), draw 1 card.\n<i>\"Just do what I do Casey.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh015",
+   "type": "Resource",
+   "name": "Keep the Momentum",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Taijutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Max 2 per deck.\n<b>Response</b>: After you spend this card on an event, return 1 Taijutsu event from your discard pile to your hand.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh016",
+   "type": "Upgrade",
+   "name": "* Jō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Uses": "3,cudgel",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Restricted. Uses (3 cudgel counters).\n<b>Response</b>: After you play a Taijutsu event, place 1 cudgel counter here.\n<b>Hero Response</b>: After you damage an enemy, remove 2 cudgel counters from this card → daze that enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh017",
+   "type": "Ally",
+   "name": "* Odyn",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "3**",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "MONK",
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "[star] <b>Response</b>: After Odyn uses a basic power, discard a [[DEFENSE]] card from your hand → give Odyn a tough status card.\n<i>\"I suggest you stand behnd me this time.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh018",
+   "type": "Event",
+   "name": "Countercross",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Interrupt</b> <i>(attack/defense/thwart)</i>: When you would take any amount of damage from an attack, prevent 1 of that damage. Deal 1 damage to an enemy. Remove 1 threat from a scheme. Draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh019",
+   "type": "Event",
+   "name": "Sideswipe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 1 threat from a scheme. If this removes the last threat on that scheme, return an [[ATTACK]] card from your discard pile to your hand.\n<i>\"Sorry, just passing through!\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh020",
+   "type": "Event",
+   "name": "Tough Nut",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b>: After your hero uses a basic power, give it a tough status card. If you paid for this card with a [[DEFENSE]] or [[THWART]] event, heal 2 damage from your hero.\n<i>\"Bring it.\"</i> —Uno",
+   "custom": "Inkwire"
+  }
+ ],
  "tmnt_shinobi_dual": [
   {
    "card_id": "sc001",
@@ -116800,5 +117159,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "35e00fabd300996f0ad5b34eb920a21a2e3e63d23f00ec0821c779717f9c75ac"
+ "checksum": "74e7c378e0b01d450f77fe664dda6c3433d45b85842ad02925570aafe0a89009"
 }

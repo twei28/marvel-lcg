@@ -335,7 +335,12 @@ class EventManager:
 
                     if not is_play_turn and effect:
                         # Fix for "05005" and "05001a"
-                        if not Event.IsType(effect.this):
+                        # AJOUT (17/10/2026, TMNT Shinobi Taijutsu, sh001 Raising Block) : seule la capacite qui JOUE
+                        # l'evenement (`SetPlay`) doit rester offerte (plusieurs exemplaires, 05005 / 05001a). Une
+                        # capacite d'evenement qui ne le joue PAS (« Hero Response: After you spend this card to pay for
+                        # a DEFENSE event, draw 1 card ») est jouee UNE fois par message : sans cela la carte depensee,
+                        # restee en defausse, etait reproposee sans fin (40 pioches constatees).
+                        if not Event.IsType(effect.this) or not effect.ability.is_play:
                             processed_effects.append(effect)
                         pass
 

@@ -135,6 +135,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // (sa008) entre en jeu avec 2 « smoke counters ».
   shadow: 'ombre',
   smoke: 'fumée',
+  // Pack TMNT Shinobi Taijutsu (17/10/2026) : « Uses (3 cudgel counters) » de sh016 Jō.
+  cudgel: 'bâton',
   // Scenario Baxter Stockman (16/10/2026) : sbires SWARM a compteur nomme (Roadkill Rodneys,
   // Auto Defense Bots, Superfly).
   cable: 'câble',
