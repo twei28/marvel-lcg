@@ -152,7 +152,7 @@ CAS += [
            "1 action disponible avant usage", [HEROS, _poser("sb005")], "sb005", "Action", 1),
 ]
 
-# ========================================================================= sb006 Mercy (LECTURE PROVISOIRE, Q-B1)
+# ========================================================================= sb006 Mercy (lecture retenue, Q-B1)
 _DECK5 = ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', '01074', '01075', '01076', '01077')"]
 CAS += [
     _c("sb006 Mercy (provisoire Q-B1) : le heros allait VAINCRE Hydra Mercenary : la carte est defaussee, le sbire survit a 1 PV, 3 cartes piochees",
@@ -680,7 +680,7 @@ CAS += [
 ]
 
 
-# ========================================================================= sb013 Santoryu Ogi (LECTURE PROVISOIRE, Q-B2)
+# ========================================================================= sb013 Santoryu Ogi (lecture retenue, Q-B2)
 # Armes de matiere (toutes Restricted) : tc007 Baseball Bat (cout 1, l'arme ramenee), tr011 Raphael's Sai et tl011 Leonardo's Katana (cout 1, deja en jeu).
 _OGI = dict(main_exclusive=["sb013", "01090"], jouer=["sb013"], payer_avec=["01090"])
 _DECK_ARME = ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', 'tc007', '01074')"]

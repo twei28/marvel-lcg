@@ -4,10 +4,10 @@ from . import *
 # Classe : « Ninjutsu;Taijutsu ».
 # Hero Response (attack): Deal 3 damage to an enemy. If you paid for this card with a THWART event, cloak your hero.
 #
-# ⚠ QUESTION OUVERTE (.planning/tmnt/shinobi-dual-questions.md, Q-D2) : une « Hero Response » SANS declencheur (« After... »)
+# ⚠ QUESTION Q-D2 RESOLUE le 17/10/2026 (.planning/tmnt/shinobi-reponses.md) : Hero Action (attack) confirmee. Rappel : : une « Hero Response » SANS declencheur (« After... »)
 # n'a aucune fenetre ou partir. Meme situation que `beast/bt005` Fighting With Friends (« Hero Response: Ready your hero »),
-# tranchee par l'utilisateur en Hero Action. LECTURE PROVISOIRE : comme une Hero Action (attack). NON TERMINEE tant que la
-# reponse n'est pas donnee.
+# tranchee par l'utilisateur en Hero Action. LECTURE RETENUE (reponse de l'utilisateur) : comme une Hero Action (attack). Le texte affiche garde le « Hero Response »
+# imprime (comme sj020).
 #
 # Mots-cles (fiches lues AVANT le code) : Cloak (cloak.md, cloaked.md) ; Shinobi (shinobi.md).
 #

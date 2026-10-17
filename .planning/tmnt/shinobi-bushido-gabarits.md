@@ -42,10 +42,10 @@ Carte terminée : **OUI**.
 - [x] Étape 7 : 9 cas, rouges 9/9 ; témoin d'épuisement (0 action après usage, il reste 1 compteur).   - [x] Limite imprimée : NON (l'inclinaison).
 Carte terminée : **OUI**.
 
-### sb006 Mercy (Upgrade OATH, Max 1 par joueur) : LECTURE PROVISOIRE
+### sb006 Mercy (Upgrade OATH, Max 1 par joueur) : lecture confirmée (Q-B1)
 - [x] Réf. `drax/19011` (`WhenUnitWouldBeDefeated` + `SetBeInstead` + `SetHealth`), `nebu/22014`.
 - [x] Pièges : « BY YOUR HERO » (pas un allié), « hit points to 1 » (PV restants), « Then, draw 3 ».   - [x] 4 cas, rouges 1/4 (3 témoins / base automatique).
-Carte terminée : **NON** : Q-B1 (place de « instead », sens de « hit points »).
+Carte terminée : **OUI**. Q-B1 (réponse du 17/10/2026, `shinobi-reponses.md`) : option (a) confirmée (PV restants à 1, la défaite n'a pas lieu, on pioche 3).
 
 ### sb007 Integrity (Upgrade OATH)
 - [x] Réf. `tj008`/`tm011` (`AfterPlayerPlayedCard`), helper. Pièges : « YOU play an OATH UPGRADE » (une amélioration OATH, pas autre chose) ; exhaust ; elle répond à sa propre pose.
@@ -71,10 +71,10 @@ Carte terminée : **NON** : Q-B1 (place de « instead », sens de « hit points 
 - [x] Réf. `sm/27016` (`SetTarget("YourHero", canbe_ready=True)`), `sentinel/st011` (coût d'inclinaison à sélecteur maison). Pièges : arme prête sous son contrôle (allié compris) ; héros incliné.
 - [x] 6 cas, rouges 2/6 (4 témoins d'impossibilité de jouer).  Carte terminée : **OUI**.
 
-### sb013 Santōryū Ōgi (Upgrade SKILL, Max 1 par deck) : LECTURE PROVISOIRE
+### sb013 Santōryū Ōgi (Upgrade SKILL, Max 1 par deck) : lecture confirmée (Q-B2)
 - [x] Réf. `superior_iron_man/si008` (`Search` + `PlayACard(face, True)`), `CanAttach.AttachTo2`, `GiveKeywordToAttached(apply=...)` + `GainKeyword`.
 - [x] 7 cas (arme ramenée payée et rattachée, Restricted perdu puis rendu au détachement, défausse, aucun / impayable, témoins), rouges 3/7.
-Carte terminée : **NON** : Q-B2 (où s'attache Ōgi). Écart moteur : la limite « 2 Restricted » est contrôlée à l'entrée en jeu de l'arme, avant le rattachement ; contournement NON prouvé.
+Carte terminée : **OUI**. Q-B2 (réponse du 17/10/2026, `shinobi-reponses.md`) : option (a) confirmée (identité puis arme). Écart moteur : la limite « 2 Restricted » est contrôlée à l'entrée en jeu de l'arme, avant le rattachement ; contournement NON prouvé.
 
 ### sb014 ✦ Kōshō (Upgrade OATH. TITLE. TRAINING., Uses 2)
 - [x] Réf. `mut_gen/32013` + `up027` (« Max 1 TRAINING per ally » = moteur), `patriot/pt016`. `SetTarget("Attached")` (porteur lu AVANT que Uses ne défausse la carte).
@@ -91,7 +91,7 @@ Carte terminée : **NON** : Q-B2 (où s'attache Ōgi). Écart moteur : la limite
 
 ### sb018 ✦ Musha Shugyō (Manigance annexe de joueur, menace 5, coût 1)
 - [x] Réf. `next_evol/cable/40006` (menace non retirable), `next_evol/40019`. Pièges : « other than THE OWNER » (identité du propriétaire et ce qu'elle joue seulement) ; « up to 2 » ; deck ET défausse.
-- [x] 8 cas, rouges 4/8. Leçon : `Puzzle.SetThreat` négatif retire la menace PAR la manigance elle-même et est bloqué par la carte. **OUI** (lecture littérale à confirmer, voir notes).
+- [x] 8 cas, rouges 4/8. Leçon : `Puzzle.SetThreat` négatif retire la menace PAR la manigance elle-même et est bloqué par la carte. **OUI** (lecture littérale confirmée par l'utilisateur le 17/10/2026 : seule l'identité du propriétaire, et ce qu'elle joue, retire de la menace).
 
 ### sb019 ✦ Gusoku (Upgrade ARMOR)  - [x] Réf. `04032`, `27016`, `CostFunc.Counter(Select.From(fn))`. 9 cas, rouges 6/9. **OUI**.
 

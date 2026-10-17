@@ -4,10 +4,10 @@ from . import *
 # Hero Action: After your hero defeats a minion or side scheme, discard Black Ops -> ready your hero.
 # « That's one less obstacle... » —Raphael
 #
-# ⚠ QUESTION OUVERTE Q-N2 (.planning/tmnt/shinobi-ninjutsu-questions.md) : « Hero ACTION: AFTER ... » est
+# ⚠ QUESTION Q-N2 RESOLUE le 17/10/2026 (reponse : Hero RESPONSE) (.planning/tmnt/shinobi-ninjutsu-questions.md) : « Hero ACTION: AFTER ... » est
 # contradictoire (une Action se joue a volonte, « After » est le declencheur d'une REPONSE ; meme coquille que The Made
-# Men, ud004). Lecture PROVISOIRE = l'option recommandee : Hero RESPONSE, comme `se008` Onigari (« After you defeat a
-# minion or side scheme »). Carte NON terminee tant que la question n'est pas tranchee.
+# Men, ud004). Lecture retenue : Hero RESPONSE, comme `se008` Onigari (« After you defeat a
+# minion or side scheme »). Carte terminee.
 #
 # NOUVELLE. Mots-cles (fiches lues AVANT le code) : aucun (pas de Cloak sur le texte imprime).
 #

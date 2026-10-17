@@ -1,5 +1,7 @@
 # TMNT Shinobi Kuji-Kiri (`sj001`-`sj020`) : questions ouvertes pour l'utilisateur (17/10/2026)
 
+> Réponses rendues le 17/10/2026, voir shinobi-reponses.md (les mentions « NON terminée » / « provisoire » ci-dessous sont historiques : cartes levées).
+
 Scans : `/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/2ed3e66d-9fcf-45e1-aa7f-2debf9a42af0/scratchpad/zip-shinobi/TMNT Shinobi/Kuji-Kiri/`.
 Une question à la fois, scan à l'appui (montrer l'image avant de poser la question).
 

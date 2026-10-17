@@ -5,9 +5,9 @@ from . import *
 # Hero Interrupt: When an enemy would be defeated by your hero, discard this card instead -> set that enemy's hit points to 1.
 #   Then, draw 3 cards.
 #
-# ⚠⚠ CARTE NON TERMINEE : LECTURE PROVISOIRE, voir `.planning/tmnt/shinobi-bushido-questions.md` (Q-B1). Le texte imprime place
+# Q-B1 RESOLUE le 17/10/2026 (`.planning/tmnt/shinobi-reponses.md`, option (a)) : lecture confirmee, carte terminee. Le texte imprime place
 # « instead » apres « discard this card » et avant la fleche : deux lectures (le « instead » remplace la DEFAITE de l'ennemi, ou il
-# qualifie la defausse), et « set that enemy's hit points to 1 » (PV restants a 1) n'est pas tranche non plus. LECTURE CODEE :
+# qualifie la defausse), et « set that enemy's hit points to 1 » (PV restants a 1) n'est pas tranche non plus. LECTURE RETENUE :
 #  - cout = defausser cette carte (devant la fleche) ;
 #  - effet = la defaite n'a PAS lieu (« instead » : `message.SetBeInstead`), les PV RESTANTS de l'ennemi passent a 1
 #    (`SetHealth(1)`), PUIS le joueur pioche 3 cartes.

@@ -211,7 +211,7 @@ CAS += [
        [HEROS, "Puzzle.Exhaust('01001a')", "Puzzle.Cloak('01001a')", "Puzzle.PutIntoPlay('sc004', under_control=True)"],
        ["Puzzle.Action('sc004', 'Action', 0)"],
        {"statuts": [["01001a", "Cloaked"]], "pret": ["01001a"], "hors_jeu": ["sc004"]}, verifier="sc_un_seul_cloaked"),
-    _c("sc004 Kuragari (PROVISOIRE Q-D1) : « Action » en forme ALTER-EGO : l'identite est camouflee et redressee",
+    _c("sc004 Kuragari (Q-D1 confirmee) : « Action » en forme ALTER-EGO : l'identite est camouflee et redressee",
        "lecture provisoire : « your hero » = l'identite du joueur quand elle est en forme alter-ego ; a confirmer (Q-D1)",
        ["Puzzle.Exhaust('01001b')", "Puzzle.PutIntoPlay('sc004', under_control=True)"],
        ["Puzzle.Action('sc004', 'Action', 0)"],
@@ -575,24 +575,24 @@ CAS += [
        heros="jennika", main_exclusive=["sc011", "01089"], payer_avec=["01089"], jouer=["sc011"], cibles=["01094"]),
 ]
 
-# ========================================================================= sc012 Hitodama (PROVISOIRE : Q-D2, Hero Response sans declencheur lue comme Hero Action)
+# ========================================================================= sc012 Hitodama (Q-D2 confirmee : Hero Response sans declencheur lue comme Hero Action)
 CAS += [
-    _c("sc012 Hitodama (PROVISOIRE Q-D2) : payee avec un evenement THWART (Crisis Interdiction 01012) : 3 degats a Rhino ET le heros est camoufle",
+    _c("sc012 Hitodama (Q-D2 confirmee) : payee avec un evenement THWART (Crisis Interdiction 01012) : 3 degats a Rhino ET le heros est camoufle",
        "« Deal 3 damage to an enemy. If you paid for this card with a THWART event, cloak your hero » : lecture provisoire en Hero Action",
        [HEROS], [],
        {"degats": [["01094", 3]], "statuts": [["01001a", "Cloaked"]], "defausse": ["sc012", "01012"]},
        main_exclusive=["sc012", "01012", "01089"], payer_avec=["01012", "01089"], jouer=["sc012"], cibles=["01094"]),
-    _c("sc012 Hitodama (PROVISOIRE Q-D2) : payee avec un evenement ATTACK (Haymaker 01087) : 3 degats mais PAS de Cloaked",
+    _c("sc012 Hitodama (Q-D2 confirmee) : payee avec un evenement ATTACK (Haymaker 01087) : 3 degats mais PAS de Cloaked",
        "seul un evenement THWART compte",
        [HEROS], [],
        {"degats": [["01094", 3]], "statuts_absents": [["01001a", "Cloaked"]], "defausse": ["sc012", "01087"]},
        main_exclusive=["sc012", "01087", "01089"], payer_avec=["01087", "01089"], jouer=["sc012"], cibles=["01094"]),
-    _c("sc012 Hitodama (PROVISOIRE Q-D2) : payee par de simples ressources (Genius BB) : 3 degats, pas de Cloaked",
+    _c("sc012 Hitodama (Q-D2 confirmee) : payee par de simples ressources (Genius BB) : 3 degats, pas de Cloaked",
        "aucune carte THWART dans le paiement",
        [HEROS], [],
        {"degats": [["01094", 3]], "statuts_absents": [["01001a", "Cloaked"]], "defausse": ["sc012", "01089"]},
        main_exclusive=["sc012", "01089"], payer_avec=["01089"], jouer=["sc012"], cibles=["01094"]),
-    _c("sc012 Hitodama (PROVISOIRE Q-D2) : forme ALTER-EGO : la carte n'est pas jouable (reste en main)",
+    _c("sc012 Hitodama (Q-D2 confirmee) : forme ALTER-EGO : la carte n'est pas jouable (reste en main)",
        "lecture provisoire en Hero Action : Peter Parker ne la joue pas",
        [], [],
        {"degats": [["01094", 0]], "en_main": ["sc012"]},

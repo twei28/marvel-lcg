@@ -149,13 +149,13 @@ Carte terminée : **OUI**.
 - [x] 7 bis : NON.  - [x] 8 bis : NON.
 Carte terminée : **OUI**.
 
-### sj020 : Æthreal Shift (Événement DEFENSE SPELL THWART, 3, R) : LECTURE PROVISOIRE
+### sj020 : Æthreal Shift (Événement DEFENSE SPELL THWART, 3, R) : Hero Interrupt confirmé (Q-K1)
 - [x] Étape 2 : `tmnt_aspect_protection/up004` Autodefenestration (`WhenUnitWouldTakeDamage(..., is_from_attack=True)` + `PreventDamage("All")`), `determination/dt046` (menace retirée par choix de manigance).
-- [ ] Étape 5 : scan « Hero ACTION » devant « When your hero would take damage » : coquille probable (Q-K1). Implémenté : Hero INTERRUPT. Le reste (« from an attack », « all of that damage », « threat equal to the damage prevented this way ») est conforme.
+- [x] Étape 5 : scan « Hero ACTION » devant « When your hero would take damage » : coquille, Hero INTERRUPT confirmé par l'utilisateur (Q-K1, 17/10/2026) ; le texte affiché garde le « Hero Action » imprimé. Le reste (« from an attack », « all of that damage », « threat equal to the damage prevented this way ») est conforme.
 - [x] Étape 6 : 3 (coût) conforme.
 - [x] Étape 7 : 5 cas (2 dégâts empêchés + 2 menaces ; témoin sans carte ; menace plafonnée ; dégâts directs ne déclenchent pas ; manigance annexe choisie). Rouges sans module : 3/5 ; verts : témoin et dégâts directs.
 - [x] 7 bis : NON.  - [x] 8 bis : NON.
-Carte terminée : **NON** : attend Q-K1 (Hero Action ou Hero Interrupt). Comportement prouvé pour la lecture Interruption.
+Carte terminée : **OUI**. Q-K1 (réponse du 17/10/2026, `shinobi-reponses.md`) : Hero Interrupt ; comportement prouvé (5 cas).
 
 ## Étape 8 commune (autoplay ciblé)
 Deck de test `/tmp/.../scratchpad/w/deck_kuji.json` : Spider-Man + Voie Onmyōdō (`se002`) + les 20 cartes Kuji-Kiri (sauf Tai Chi en excès), 8 parties contre Rhino

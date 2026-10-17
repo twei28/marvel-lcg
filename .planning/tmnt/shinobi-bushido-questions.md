@@ -1,5 +1,7 @@
 # TMNT Shinobi Bushido (`sb001`-`sb020`) : questions ouvertes pour l'utilisateur (17/10/2026)
 
+> Réponses rendues le 17/10/2026, voir shinobi-reponses.md (les mentions « NON terminée » / « provisoire » ci-dessous sont historiques : cartes levées).
+
 Scans : `/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/2ed3e66d-9fcf-45e1-aa7f-2debf9a42af0/scratchpad/zip-shinobi/TMNT Shinobi/Bushido/`.
 Une question à la fois, scan à l'appui. Les deux cartes ci-dessous sont codées sur une lecture PROVISOIRE (marquée en tête de leur script) et
 restent **NON terminées**.
