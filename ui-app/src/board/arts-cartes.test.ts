@@ -91,7 +91,7 @@ describe('arts alternatifs des cartes de deck', () => {
       for (const heros of ['tl001a', 'tj001b', '38001a', undefined]) {
         for (const c of [undefined, 'standard', 'tmnt', 'zzz']) {
           const table = c ? { [id]: c } : {}
-          const pur = choix.picIdAvecArt(id, choix.codeAffiche(id, table, heros, ARTS, series))
+          const pur = choix.picIdAvecArt(id, choix.codeAffiche(id, table, heros, ARTS as never, series))
           expect(picIdCarte(id, heros, table), `${id} ${heros} ${c}`).toBe(pur)
         }
       }
