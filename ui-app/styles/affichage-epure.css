@@ -1606,3 +1606,9 @@ html[data-epure] .actions-flottantes .af-fermer {
   clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   font-family: var(--ep-titres);
 }
+
+/* Le menu d'une carte passe DEVANT la grande image d'aperçu (z-index 545) : elle en cachait la moitié
+   (« Fin du tour » coupé). Il reste centré sur l'écran (17/10/2026). */
+html[data-epure] .actions-flottantes {
+  z-index: 560;
+}
