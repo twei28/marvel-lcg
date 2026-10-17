@@ -7,6 +7,18 @@
 "use strict";
 
 export const DICO_EN_BASE = {
+    /* ---- Arts alternatifs de cartes de deck (17/10/2026) ---- */
+    "Arts alternatifs": "Alternate arts",
+    "Cartes de ce deck": "Cards in this deck",
+    "Cartes réservées aux héros TMNT :": "Cards reserved to TMNT heroes:",
+    "Choisir des arts alternatifs pour les cartes de ce deck ?": "Choose alternate arts for the cards in this deck?",
+    "Illustration officielle": "Official illustration",
+    "Illustration": "Illustration",
+    "Mémorisé sur cet appareil. Même carte pour le jeu, seule l'image change.": "Saved on this device. Same card for the game, only the picture changes.",
+    "Ne plus proposer": "Don't ask again",
+    "Officielle": "Official",
+    "Terminer": "Done",
+    "Touche l'illustration voulue pour chaque carte.": "Tap the illustration you want for each card.",
     /* ---- Inviter un connecté (13/10/2026) ---- */
     "Ton deck": "Your deck",
     "Envoi de ton deck…": "Sending your deck…",
