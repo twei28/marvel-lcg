@@ -152,6 +152,170 @@ CAS += [
            "1 action disponible avant usage", [HEROS, _poser("sb005")], "sb005", "Action", 1),
 ]
 
+# ========================================================================= sb006 Mercy (LECTURE PROVISOIRE, Q-B1)
+_DECK5 = ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', '01074', '01075', '01076', '01077')"]
+CAS += [
+    _c("sb006 Mercy (provisoire Q-B1) : le heros allait VAINCRE Hydra Mercenary : la carte est defaussee, le sbire survit a 1 PV, 3 cartes piochees",
+       "Hydra Mercenary (3 PV, 2 degats deja) : l'attaque de base du heros (1 degat) le vaincrait ; Hero Interrupt : Mercy defaussee "
+       "(cout), PV restants = 1 (degats 2), main 1 + 3 = 4",
+       [HEROS, _poser("sb006"), "Puzzle.PutIntoPlay('01101')", "Puzzle.Damage('01101', 2)"] + _DECK5,
+       ["Puzzle.Attack('01001a')"],
+       {"en_jeu": ["01101"], "degats": [["01101", 2]], "defausse": ["sb006"], "hors_jeu": ["sb006"], "taille_main": 4},
+       main_exclusive=["01090"], cibles=["01101"]),
+    _c("sb006 Mercy : TEMOIN, sans Mercy le meme coup VAINC Hydra Mercenary",
+       "contre-cas du precedent : aucune amelioration, le sbire est vaincu (hors jeu)",
+       [HEROS, "Puzzle.PutIntoPlay('01101')", "Puzzle.Damage('01101', 2)"] + _DECK5, ["Puzzle.Attack('01001a')"],
+       {"hors_jeu": ["01101"], "taille_main": 1}, main_exclusive=["01090"], cibles=["01101"]),
+    _c("sb006 Mercy : « defeated by YOUR HERO » : un ALLIE (Mockingbird) qui allait vaincre le sbire ne declenche pas Mercy",
+       "temoin d'absence : le sbire est vaincu par l'allie, Mercy reste en jeu, aucune carte piochee",
+       [HEROS, _poser("sb006"), "Puzzle.PutIntoPlay('01083', under_control=True)", "Puzzle.PutIntoPlay('01101')",
+        "Puzzle.Damage('01101', 2)"] + _DECK5, ["Puzzle.Attack('01083')"],
+       {"hors_jeu": ["01101"], "en_jeu": ["sb006"], "taille_main": 1}, main_exclusive=["01090"], cibles=["01101"]),
+    _c("sb006 Mercy : « Max 1 per player » : une seconde copie en main n'est pas jouable",
+       "`desc.MaxPerUnit = 1`", [HEROS, "Puzzle.Gain('sb006')", _poser("sb006")], [],
+       {"carte": "sb006", "jouable": False, "en_jeu": 1}, main=["01088", "01089"], verifier="max_par_joueur_jouable"),
+]
+
+# ========================================================================= sb007 Integrity
+CAS += [
+    _c("sb007 Integrity Response : apres avoir JOUE une amelioration OATH (Loyalty), Integrity s'incline et 1 compteur samurai est place sur l'OATH choisie",
+       "Loyalty (cout 0) jouee depuis la main : Integrity s'incline, le compteur va sur Loyalty (3 -> 4) ; la pose elle-meme ne compte pas deux fois",
+       [HEROS, _poser("sb007")], [],
+       {"exhausted": ["sb007"], "compteurs": [["sb001", "samurai", 4]], "en_jeu": ["sb001"]},
+       main_exclusive=["sb001"], jouer=["sb001"], cibles=["sb001"]),
+    _c("sb007 Integrity : « an OATH upgrade YOU control » : le joueur CHOISIT, ici une AUTRE amelioration OATH (Courage en jeu) que celle jouee",
+       "Loyalty jouee, Courage deja en jeu : le compteur va sur Courage (3 -> 4), Loyalty garde ses 3",
+       [HEROS, _poser("sb007"), _poser("sb003")], [],
+       {"exhausted": ["sb007"], "compteurs": [["sb003", "samurai", 4], ["sb001", "samurai", 3]]},
+       main_exclusive=["sb001"], jouer=["sb001"], cibles=["sb003"]),
+    _c("sb007 Integrity : TEMOIN D'EPUISEMENT, une SECONDE OATH jouee dans le meme round ne declenche plus rien (Integrity inclinee)",
+       "Loyalty puis Courage (cout 1, payee Strength RR) : un seul compteur ajoute en tout (Loyalty 4, Courage 3)",
+       [HEROS, _poser("sb007")], [],
+       {"exhausted": ["sb007"], "compteurs": [["sb001", "samurai", 4], ["sb003", "samurai", 3]]},
+       main_exclusive=["sb001", "sb003", "01090"], payer_avec=["01090"], jouer=["sb001", "sb003"], cibles=["sb001"]),
+    _c("sb007 Integrity : TEMOIN, une amelioration NON OATH jouee (Armored Vest 01081) ne declenche rien",
+       "Armored Vest (cout 1, payee Strength) : Integrity reste prete, Loyalty garde ses 3 compteurs",
+       [HEROS, _poser("sb007"), _poser("sb001")], [],
+       {"pret": ["sb007"], "compteurs": [["sb001", "samurai", 3]], "en_jeu": ["01081"]},
+       main_exclusive=["01081", "01090"], payer_avec=["01090"], jouer=["01081"], cibles=["sb001"]),
+    _c("sb007 Integrity : TEMOIN, un evenement joue (pas une amelioration) ne declenche rien",
+       "Haymaker 01087 (cout 2, evenement) joue : Integrity reste prete",
+       [HEROS, _poser("sb007"), _poser("sb001")], [],
+       {"pret": ["sb007"], "compteurs": [["sb001", "samurai", 3]]},
+       main_exclusive=["01087", "01090"], payer_avec=["01090"], jouer=["01087"], cibles=["01094"]),
+    _c("sb007 Integrity : Integrity JOUEE elle-meme est une amelioration OATH jouee : elle repond a sa propre pose",
+       "Integrity (cout 2) jouee avec Loyalty en jeu : le message de jeu est envoye apres sa mise en jeu, elle s'incline et place 1 compteur "
+       "sur Loyalty (3 -> 4)",
+       [HEROS, _poser("sb001")], [],
+       {"exhausted": ["sb007"], "compteurs": [["sb001", "samurai", 4]]},
+       main_exclusive=["sb007", "01090"], payer_avec=["01090"], jouer=["sb007"], cibles=["sb001"]),
+]
+
+# ========================================================================= sb008 Self-Control
+CAS += [
+    _c("sb008 Self-Control Resource : SEULE source de paiement, elle paie Armored Vest (cout 1) : Self-Control s'incline, 3 -> 2 compteurs",
+       "main vide sauf Armored Vest 01081 : la ressource wild generee par Self-Control paie la carte, qui entre en jeu",
+       [HEROS, _poser("sb008")], [],
+       {"en_jeu": ["01081"], "exhausted": ["sb008"], "compteurs": [["sb008", "samurai", 2]]},
+       main_exclusive=["01081"], jouer=["01081"]),
+    _c("sb008 Self-Control : « Resource » (et non Hero Resource) : fonctionne aussi en forme ALTER-EGO",
+       "Peter Parker (alter-ego, qui genere lui-meme 1 ressource) joue Combat Training 01057 (amelioration non OATH, cout 2) : les deux sources paient, dont Self-Control "
+       "(inclinee, 3 -> 2 compteurs)",
+       [_poser("sb008")], [],
+       {"en_jeu": ["01057"], "exhausted": ["sb008"], "compteurs": [["sb008", "samurai", 2]]},
+       main_exclusive=["01057"], jouer=["01057"]),
+    _c("sb008 Self-Control : « generate A resource » : UNE seule ressource, elle ne paie pas une carte de cout 2 (Haymaker reste en main)",
+       "Haymaker 01087 (cout 2) avec Self-Control pour seule source : une ressource ne suffit pas, rien n'est paye (carte en main, "
+       "Self-Control prete, 3 compteurs)",
+       [HEROS, _poser("sb008")], [],
+       {"en_main": ["01087"], "pret": ["sb008"], "compteurs": [["sb008", "samurai", 3]]},
+       main_exclusive=["01087"], jouer=["01087"], cibles=["01094"]),
+    _c("sb008 Self-Control : le DERNIER compteur retire PENDANT le paiement : la carte payee entre en jeu, Self-Control est defaussee (Uses)",
+       "1 compteur restant : le cout le retire, Uses defausse Self-Control, Armored Vest entre quand meme en jeu",
+       [HEROS, _poser("sb008"), "Puzzle.Counter('sb008', 'samurai', -2)"], [],
+       {"en_jeu": ["01081"], "hors_jeu": ["sb008"], "defausse": ["sb008"]},
+       main_exclusive=["01081"], jouer=["01081"]),
+    _c("sb008 Self-Control : TEMOIN D'EPUISEMENT, Self-Control deja inclinee ne genere plus de ressource (Armored Vest reste en main)",
+       "cout « Exhaust this card » : inclinee, la ressource n'est pas offerte ; les 3 compteurs restent",
+       [HEROS, _poser("sb008"), "Puzzle.Exhaust('sb008')"], [],
+       {"en_main": ["01081"], "compteurs": [["sb008", "samurai", 3]]},
+       main_exclusive=["01081"], jouer=["01081"]),
+]
+
+# ========================================================================= sb009 Devotion
+# armes de matiere : 01046 (WEAPON, non Restricted) et jennika/tj008 Jennika's Bow (WEAPON, Restricted).
+CAS += [
+    _c("sb009 Devotion Hero Action : incline la carte, retire 1 compteur samurai, REDRESSE l'arme inclinee (01046)",
+       "« ready a WEAPON upgrade you control » : 01046 inclinee -> prete ; Devotion inclinee, 3 -> 2 compteurs",
+       [HEROS, _poser("sb009"), _poser("01046"), "Puzzle.Exhaust('01046')"], ["Puzzle.Action('sb009', 'HeroAction', 0)"],
+       {"pret": ["01046"], "exhausted": ["sb009"], "compteurs": [["sb009", "samurai", 2]]}, accepter_choix=True),
+    _c("sb009 Devotion : « A weapon » : UNE seule arme redressee, au choix (tj008 designee) : l'autre arme inclinee le reste",
+       "deux armes inclinees (01046 et tj008) : seule tj008 est redressee",
+       [HEROS, _poser("sb009"), _poser("01046"), _poser("tj008"), "Puzzle.Exhaust('01046')", "Puzzle.Exhaust('tj008')"],
+       ["Puzzle.Action('sb009', 'HeroAction', 0)"],
+       {"pret": ["tj008"], "exhausted": ["sb009", "01046"]}, cibles=["tj008"], accepter_choix=True),
+    _c("sb009 Devotion : « you control » comprend l'arme attachee a un ALLIE (Mockingbird)",
+       "01046 attachee a Mockingbird (allie sous mon controle) et inclinee : Devotion la redresse",
+       [HEROS, _poser("sb009"), "Puzzle.PutIntoPlay('01083', under_control=True)", "Puzzle.AttachReel('01046', '01083')",
+        "Puzzle.Exhaust('01046')"], ["Puzzle.Action('sb009', 'HeroAction', 0)"],
+       {"pret": ["01046"], "exhausted": ["sb009"]}, accepter_choix=True),
+    _c("sb009 Devotion : le DERNIER compteur retire (1 restant) : l'arme est redressee, Devotion est defaussee (Uses)",
+       "1 compteur : le cout le retire, Uses defausse Devotion, l'effet a lieu quand meme",
+       [HEROS, _poser("sb009"), "Puzzle.Counter('sb009', 'samurai', -2)", _poser("01046"), "Puzzle.Exhaust('01046')"],
+       ["Puzzle.Action('sb009', 'HeroAction', 0)"],
+       {"pret": ["01046"], "hors_jeu": ["sb009"], "defausse": ["sb009"]}, accepter_choix=True),
+    _dispo("sb009 Devotion : TEMOIN D'EPUISEMENT, inclinee elle ne propose plus l'action dans le meme round (2 compteurs restants, 2 armes inclinees)",
+           "apres un usage la carte est inclinee : 0 action disponible malgre les compteurs et une arme inclinee",
+           [HEROS, _poser("sb009"), _poser("01046"), _poser("tj008"), "Puzzle.Exhaust('01046')", "Puzzle.Exhaust('tj008')"],
+           "sb009", "HeroAction", 0, declencher=["Puzzle.Action('sb009', 'HeroAction', 0)"], accepter_choix=True),
+    _dispo("sb009 Devotion : l'action est proposee avec une arme inclinee (temoin positif)",
+           "1 action disponible", [HEROS, _poser("sb009"), _poser("01046"), "Puzzle.Exhaust('01046')"], "sb009", "HeroAction", 1),
+    _dispo("sb009 Devotion : une arme DEJA PRETE n'est pas une cible : l'action n'est pas proposee",
+           "ready sur une carte deja prete : aucune cible legale (`canbe_ready`)",
+           [HEROS, _poser("sb009"), _poser("01046")], "sb009", "HeroAction", 0),
+    _dispo("sb009 Devotion : une amelioration inclinee qui n'est PAS une arme (Loyalty) n'est pas une cible",
+           "seule Loyalty (OATH, pas WEAPON) est inclinee : aucune cible, action non proposee",
+           [HEROS, _poser("sb009"), _poser("sb001"), "Puzzle.Exhaust('sb001')"], "sb009", "HeroAction", 0),
+    _dispo("sb009 Devotion : Hero Action NON proposee en forme alter-ego",
+           "forme heros uniquement", [_poser("sb009"), _poser("01046"), "Puzzle.Exhaust('01046')"], "sb009", "HeroAction", 0),
+]
+
+# ========================================================================= sb010 Tsujigiri
+# Spider-Man a 2 d'ATQ ; Hydra Mercenary 01101 a 3 PV ; Strength 01090 (RR) paie Tsujigiri (cout 2).
+_PAYE_2R = dict(payer_avec=["01090"])
+CAS += [
+    _c("sb010 Tsujigiri : « damage equal to your ATK » : ATQ 2 -> 2 degats a Rhino",
+       "Hero Action (attack) : 2 degats (l'ATQ courant de Spider-Man) ; Rhino survit, pas de compteur",
+       [HEROS, _poser("sb001")], [],
+       {"degats": [["01094", 2]], "defausse": ["sb010"], "compteurs": [["sb001", "samurai", 3]]},
+       main_exclusive=["sb010", "01090"], jouer=["sb010"], cibles=["01094"], **_PAYE_2R),
+    _c("sb010 Tsujigiri : l'ATQ COURANT compte (Courage +1 ATQ : 3 degats a Rhino)",
+       "Courage en jeu : ATQ 2 + 1 = 3 degats, lus a la resolution",
+       [HEROS, _poser("sb003")], [],
+       {"degats": [["01094", 3]], "defausse": ["sb010"]},
+       main_exclusive=["sb010", "01090"], jouer=["sb010"], cibles=["01094"], **_PAYE_2R),
+    _c("sb010 Tsujigiri : « If this attack defeats that enemy, you MAY place 1 samurai counter » : sbire vaincu, compteur place sur l'OATH (3 -> 4)",
+       "Hydra Mercenary (3 PV, 2 degats deja) vaincu par les 2 degats de la carte : le joueur place 1 compteur sur Loyalty",
+       [HEROS, _poser("sb001"), "Puzzle.PutIntoPlay('01101')", "Puzzle.Damage('01101', 2)"], [],
+       {"hors_jeu": ["01101"], "compteurs": [["sb001", "samurai", 4]]},
+       main_exclusive=["sb010", "01090"], jouer=["sb010"], cibles=["01101", "sb001"], **_PAYE_2R),
+    _c("sb010 Tsujigiri : TEMOIN, l'attaque ne VAINC pas la cible (Hydra Mercenary a 3 PV) : aucun compteur",
+       "2 degats sur un sbire a 3 PV : il survit, Loyalty garde ses 3 compteurs",
+       [HEROS, _poser("sb001"), "Puzzle.PutIntoPlay('01101')"], [],
+       {"en_jeu": ["01101"], "degats": [["01101", 2]], "compteurs": [["sb001", "samurai", 3]]},
+       main_exclusive=["sb010", "01090"], jouer=["sb010"], cibles=["01101", "sb001"], **_PAYE_2R),
+    _c("sb010 Tsujigiri : TEMOIN, le « may » se REFUSE (Cancel) : le sbire est vaincu, aucun compteur place",
+       "choix refuse : Loyalty garde 3 compteurs, le sbire est quand meme vaincu",
+       [HEROS, _poser("sb001"), "Puzzle.PutIntoPlay('01101')", "Puzzle.Damage('01101', 2)"], [],
+       {"hors_jeu": ["01101"], "compteurs": [["sb001", "samurai", 3]]},
+       main_exclusive=["sb010", "01090"], jouer=["sb010"], cibles=["01101"], choisir_option="Cancel", **_PAYE_2R),
+    _c("sb010 Tsujigiri : sans amelioration OATH sous controle, vaincre la cible ne pose rien et ne bloque rien",
+       "aucune OATH en jeu : le sbire est vaincu, aucune question de compteur, la carte est defaussee",
+       [HEROS, "Puzzle.PutIntoPlay('01101')", "Puzzle.Damage('01101', 2)"], [],
+       {"hors_jeu": ["01101"], "defausse": ["sb010"]},
+       main_exclusive=["sb010", "01090"], jouer=["sb010"], cibles=["01101"], **_PAYE_2R),
+]
+
 VERIFICATIONS = r'''
 
 def sb_debug(monde, aides):
