@@ -1522,6 +1522,23 @@ Retirer l'état par la bascule `Puzzle.Cloak` / `Puzzle.Tough` avant de poser de
 | Team-Up avec un allié au nom accentué | `desc.TeamUp = "Leonardo;Usagi Yōjimbō"` | `ub019` (fiche `mots-cles/teamup.md`) | `effect.targets` n'est pas ordonné : distinguer par `IsName` |
 | Reskin dont seul le trait/titre était faux | corriger l'entrée de `cards.json` (traits, titre) | `ul019` MUTANIMAL, `ul033` / `ub002` TACTIC, `ul038` « Unified Strike » | le vérificateur `tmnt_donnees_carte` (`tools/cas/tmnt_aspect_basic.py`) lit nom et traits d'une carte en main / deck (un événement n'est jamais « en jeu » : `reskin_identite` ne le trouve pas) |
 
+### Conversion des reskins « image seule » en arts alternatifs (17/10/2026, branche `conversion-art-seul`)
+
+Décision de l'utilisateur : si SEULE l'image change, ce n'est plus une carte mais un art alternatif de l'officielle
+(§12 bis du guide). `tools/convertir_reskins_art_seul.py --ecrire` a retiré 67 reskins de `cards.json` (ua/ub/uj/ul/up),
+les a déclarés dans `data/arts_alternatifs.json` et copié `<id TMNT>.jpg` en `<officielle>_tmnt.jpg`. Ce que la recette
+du §11 devient pour ces cartes :
+- **Plus de carte, plus de cas de reskin.** Seul le TÉMOIN sur l'officielle reste (il prouve la carte), nommé
+  `[ua] 56013 (officielle, ex-ua001) : ...`. Dans les modules `tools/cas/tmnt_aspect_*.py`, `_paire(reskin, officielle, ...)`
+  ne rend que le témoin quand `reskin` figure dans `tools/cas/_converties.py` (lu dans la colonne
+  `converti_art_alternatif_de` de `tools/tmnt_aspects_numerotation.tsv`, numérotation figée, aucun id réattribué).
+- **Un id retiré ne sert plus de décor** (ua009 en main, ub009 Down Time, ub007...) : on met l'officielle (18012, 05033...).
+- **Preuve de la conversion** : `tools/test_convertir_reskins.py` (`verifier_depot`) vérifie, pour chaque carte de la colonne,
+  qu'elle a quitté `cards.json`, que l'officielle déclare l'art `tmnt` et que `<officielle>_tmnt.jpg` existe ; puis il recrée
+  des reskins « art seul » dans une copie pour rejouer la conversion.
+- Restent des cartes : les 81 reskins exclusifs (quelque chose d'autre change) et les 3 ressources doubles (collection `tmnt`).
+- Les textes FR des cartes retirées ont quitté `textes-fr-fanmade.ts` : l'officielle a déjà le sien.
+
 ## 12. Unicité par sous-titre : `CanCoexistWith` aligné sur le deck-builder (17/10/2026)
 
 Décision de l'utilisateur : le sous-titre d'un allié est le PERSONNAGE. Rōnin (sous-titre Mikey) ne se joue pas

@@ -7,7 +7,7 @@ l'effet en jeu. « Réponse du 17/10/2026 » = tranché par l'utilisateur.
 
 | # | Sujet | Décision | Effet |
 |---|---|---|---|
-| G1 | Reskin dont seule l'IMAGE change | Art alternatif de l'officielle, proposé à tous les héros ; version TMNT d'office pour un héros TMNT | Pas de carte en double. 62 cartes concernées (mesure du 17/10/2026) |
+| G1 | Reskin dont seule l'IMAGE change | Art alternatif de l'officielle, proposé à tous les héros ; version TMNT d'office pour un héros TMNT | Pas de carte en double. **APPLIQUÉ le 17/10/2026, branche `conversion-art-seul`** : 67 cartes converties (`tools/convertir_reskins_art_seul.py` ; colonne `converti_art_alternatif_de` de `tools/tmnt_aspects_numerotation.tsv`, numérotation figée, aucun id réattribué). Les 3 ressources doubles ub011, ub016, ub054 restent des cartes (collection `tmnt`) |
 | G2 | Reskin où la MOINDRE autre chose change (nom, traits, texte, coût, ressource, unicité, bandeau) | Carte exclusive TMNT | 89 cartes concernées |
 | G3 | Bandeau « ✦ titre d'origine » imprimé sous le titre (ex. Bo-Wing « ✦ Winter Soldier ») | L'unicité se juge sur LES DEUX titres (`unique_also`) | Bo-Wing et Winter Soldier ne coexistent pas |
 | G4 | Rampage X avec moins de X cartes dans le deck | Jouable, on défausse ce qui reste | Déjà codé |

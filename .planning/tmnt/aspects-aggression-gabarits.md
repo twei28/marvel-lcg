@@ -16,6 +16,8 @@ des WEAPON peuvent être inclinées par le coût) — gardé IDENTIQUE.
 
 ### ua001 : Aggressive Conditioning (reskin IDENTIQUE de 56013)
 
+> **Converti en art alternatif de 56013 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua001` n'existe plus dans `cards.json` (image `56013_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `56013` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `56013` par `ability_link` (recette RECETTES §11). Module de `56013` relu : aucun
       nom ni card_id en dur ; `grep -rn '"56013"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `56013` : identique (nom de carte remplacé, citation ajoutée).
@@ -35,6 +37,8 @@ des WEAPON peuvent être inclinées par le coût) — gardé IDENTIQUE.
 Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua005 : Blood Rage (reskin IDENTIQUE de 45043)
+
+> **Converti en art alternatif de 45043 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua005` n'existe plus dans `cards.json` (image `45043_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `45043` est conservé. Ce qui suit est l'historique.
 
 - [x] Étape 2 : carte de référence : `45043` par `ability_link` (recette RECETTES §11). Module de `45043` relu : aucun
       nom ni card_id en dur ; `grep -rn '"45043"' src/game src/engine` : rien.
@@ -56,6 +60,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua007 : "Bring It!" (reskin IDENTIQUE de 19030)
 
+> **Converti en art alternatif de 19030 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua007` n'existe plus dans `cards.json` (image `19030_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `19030` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `19030` par `ability_link` (recette RECETTES §11). Module de `19030` relu : aucun
       nom ni card_id en dur ; `grep -rn '"19030"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `19030` : identique (nom de carte remplacé, citation ajoutée).
@@ -76,6 +82,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua010 : Combat Training (reskin IDENTIQUE de 01057)
 
+> **Converti en art alternatif de 01057 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua010` n'existe plus dans `cards.json` (image `01057_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `01057` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `01057` par `ability_link` (recette RECETTES §11). Module de `01057` relu : aucun
       nom ni card_id en dur ; `grep -rn '"01057"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `01057` : identique (nom de carte remplacé, citation ajoutée).
@@ -95,6 +103,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua016 : Drop Kick (reskin IDENTIQUE de 10014)
+
+> **Converti en art alternatif de 10014 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua016` n'existe plus dans `cards.json` (image `10014_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `10014` est conservé. Ce qui suit est l'historique.
 
 - [x] Étape 2 : carte de référence : `10014` par `ability_link` (recette RECETTES §11). Module de `10014` relu : aucun
       nom ni card_id en dur ; `grep -rn '"10014"' src/game src/engine` : rien.
@@ -156,6 +166,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua020 : Fusillade (reskin IDENTIQUE de 20026)
 
+> **Converti en art alternatif de 20026 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua020` n'existe plus dans `cards.json` (image `20026_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `20026` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `20026` par `ability_link` (recette RECETTES §11). Module de `20026` relu : aucun
       nom ni card_id en dur ; `grep -rn '"20026"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `20026` : identique (nom de carte remplacé, citation ajoutée).
@@ -196,6 +208,8 @@ Carte terminée : OUI — bandeau Q-R1 appliqué (unique_also).
 
 ### ua023 : Honed Technique (reskin IDENTIQUE de 28017)
 
+> **Converti en art alternatif de 28017 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua023` n'existe plus dans `cards.json` (image `28017_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `28017` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `28017` par `ability_link` (recette RECETTES §11). Module de `28017` relu : aucun
       nom ni card_id en dur ; `grep -rn '"28017"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `28017` : identique (nom de carte remplacé, citation ajoutée).
@@ -215,6 +229,8 @@ Carte terminée : OUI — bandeau Q-R1 appliqué (unique_also).
 Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua024 : Innate Aggression (reskin IDENTIQUE de 61034)
+
+> **Converti en art alternatif de 61034 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua024` n'existe plus dans `cards.json` (image `61034_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `61034` est conservé. Ce qui suit est l'historique.
 
 - [x] Étape 2 : carte de référence : `61034` par `ability_link` (recette RECETTES §11). Module de `61034` relu : aucun
       nom ni card_id en dur ; `grep -rn '"61034"' src/game src/engine` : rien.
@@ -236,6 +252,8 @@ Carte terminée : OUI (Starting en mise en place réelle : vu en autoplay, 8 par
 
 ### ua027 : Looking for Trouble (reskin IDENTIQUE de 16043)
 
+> **Converti en art alternatif de 16043 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua027` n'existe plus dans `cards.json` (image `16043_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `16043` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `16043` par `ability_link` (recette RECETTES §11). Module de `16043` relu : aucun
       nom ni card_id en dur ; `grep -rn '"16043"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `16043` : identique (nom de carte remplacé, citation ajoutée).
@@ -255,6 +273,8 @@ Carte terminée : OUI (Starting en mise en place réelle : vu en autoplay, 8 par
 Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua028 : Magic Attack (reskin IDENTIQUE de 21043)
+
+> **Converti en art alternatif de 21043 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua028` n'existe plus dans `cards.json` (image `21043_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `21043` est conservé. Ce qui suit est l'historique.
 
 - [x] Étape 2 : carte de référence : `21043` par `ability_link` (recette RECETTES §11). Module de `21043` relu : aucun
       nom ni card_id en dur ; `grep -rn '"21043"' src/game src/engine` : rien.
@@ -276,6 +296,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua029 : Martial Prowess (reskin IDENTIQUE de 10018)
 
+> **Converti en art alternatif de 10018 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua029` n'existe plus dans `cards.json` (image `10018_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `10018` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `10018` par `ability_link` (recette RECETTES §11). Module de `10018` relu : aucun
       nom ni card_id en dur ; `grep -rn '"10018"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `10018` : identique (nom de carte remplacé, citation ajoutée).
@@ -295,6 +317,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua031 : No Quarter (reskin IDENTIQUE de 28013)
+
+> **Converti en art alternatif de 28013 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua031` n'existe plus dans `cards.json` (image `28013_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `28013` est conservé. Ce qui suit est l'historique.
 
 - [x] Étape 2 : carte de référence : `28013` par `ability_link` (recette RECETTES §11). Module de `28013` relu : aucun
       nom ni card_id en dur ; `grep -rn '"28013"' src/game src/engine` : rien.
@@ -316,6 +340,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua032 : "Now I'm Mad" (reskin IDENTIQUE de 43019)
 
+> **Converti en art alternatif de 43019 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua032` n'existe plus dans `cards.json` (image `43019_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `43019` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `43019` par `ability_link` (recette RECETTES §11). Module de `43019` relu : aucun
       nom ni card_id en dur ; `grep -rn '"43019"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `43019` : identique (nom de carte remplacé, citation ajoutée).
@@ -335,6 +361,8 @@ Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua034 : Precision Strike (reskin IDENTIQUE de 35018)
+
+> **Converti en art alternatif de 35018 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua034` n'existe plus dans `cards.json` (image `35018_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `35018` est conservé. Ce qui suit est l'historique.
 
 - [x] Étape 2 : carte de référence : `35018` par `ability_link` (recette RECETTES §11). Module de `35018` relu : aucun
       nom ni card_id en dur ; `grep -rn '"35018"' src/game src/engine` : rien.
@@ -376,6 +404,8 @@ Carte terminée : OUI — bandeau Q-R1 appliqué (unique_also).
 
 ### ua038 : Spoiling for a Fight (reskin IDENTIQUE de 54016)
 
+> **Converti en art alternatif de 54016 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua038` n'existe plus dans `cards.json` (image `54016_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `54016` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `54016` par `ability_link` (recette RECETTES §11). Module de `54016` relu : aucun
       nom ni card_id en dur ; `grep -rn '"54016"' src/game src/engine` : rien.
 - [x] Étape 5 : texte du scan relu mot à mot contre `54016` : identique (nom de carte remplacé, citation ajoutée).
@@ -395,6 +425,8 @@ Carte terminée : OUI — bandeau Q-R1 appliqué (unique_also).
 Carte terminée : OUI — Q-R2 (deck-builder, homonyme) en attente.
 
 ### ua039 : Suppressing Fire (reskin IDENTIQUE de 46014)
+
+> **Converti en art alternatif de 46014 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua039` n'existe plus dans `cards.json` (image `46014_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `46014` est conservé. Ce qui suit est l'historique.
 
 - [x] Étape 2 : carte de référence : `46014` par `ability_link` (recette RECETTES §11). Module de `46014` relu : aucun
       nom ni card_id en dur ; `grep -rn '"46014"' src/game src/engine` : rien (sauf le commentaire « Fix 46014 » de defeated.py, sans effet de nom).

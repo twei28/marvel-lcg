@@ -53,6 +53,8 @@ paiement (rien dans le cartouche ne dit « vous allez subir 3 dégâts ») ; non
 
 ### ua009 : Clobber (reskin IDENTIQUE de 18012)
 
+> **Converti en art alternatif de 18012 le 17/10/2026** : seule l'image différait de l'officielle, la carte `ua009` n'existe plus dans `cards.json` (image `18012_tmnt.jpg`, `data/arts_alternatifs.json`). Les cas du reskin sont supprimés, le TÉMOIN sur `18012` est conservé. Ce qui suit est l'historique.
+
 - [x] Étape 2 : carte de référence : `18012` Clobber, branchée par `ability_link` (recette RECETTES §11) ;
       précédent joueur `45018` → `01070`.
 - [x] Étape 5 : texte du scan relu mot à mot contre 18012 : identique (« first card you have played this
