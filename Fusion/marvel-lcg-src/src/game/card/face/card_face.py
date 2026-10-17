@@ -372,6 +372,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # CORRECTIF (16/10/2026) : compteur du pack custom jennika (Inkwire).
         # tj006 Fearless Resolve entre en jeu avec « Uses (2 samurai counters) ».
         'samurai',
+        # AJOUT (17/10/2026, pack TMNT Shinobi Taijutsu, Inkwire) : « Uses (3 cudgel counters) » de sh016 Jo.
+        'cudgel',
         # CORRECTIF : compteurs du pack custom dazzler (Lord Havok). Le « sound »
         # marque un SONG de la Setlist deja repete (« Rehearsal » n'accepte qu'un
         # SONG SANS compteur) ; le « knife » alimente les interruptions de

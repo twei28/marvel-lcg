@@ -134,6 +134,11 @@ class CanDefense(CardFace):
                 defense(pre_message.would_atk_message)
         elif isinstance(pre_message, Message.AfterUnitBecomeDefender):
             pass
+        elif isinstance(pre_message, Message.AfterUnitTookDamage):
+            # AJOUT (17/10/2026, TMNT Shinobi Taijutsu, sh007 Trading Blows) : « Hero Response (attack/defense): After
+            # you take damage from an enemy attack... ». Les degats sont deja subis : l'attaque est resolue, personne ne
+            # peut plus devenir defenseur ; le libelle (defense) n'a plus d'effet a ce stade (comme AfterUnitBecomeDefender).
+            pass
         else:
             assert False
 
