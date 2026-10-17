@@ -1976,3 +1976,7 @@ html[data-epure] .tb-eclair .ono {
   text-transform: none !important;
   letter-spacing: 0 !important;
 }
+
+/* Écran des decks : « Arsenal de » reste AU-DESSUS du nom (« Arsenal de / Daredevil »), l'inversion
+   ne vaut que pour la fiche du héros (nom puis affiliations). */
+html[data-epure] .team-b.arsenal .tb-scene .tb-nomg { flex-direction: column; }
