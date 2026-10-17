@@ -1594,6 +1594,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Style d’affichage': 'Display style',
   'Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, panneaux bleus biseautés et titres en Bangers':
     'Muted: grey background, no colours or animations. Minimal: also no decoration, bevelled blue panels and Bangers titles',
+  'la Réponse': 'the Response',
+  'la Réponse forcée': 'the Forced Response',
+  "l'Interruption": 'the Interrupt',
+  "l'Interruption forcée": 'the Forced Interrupt',
   'Épuré': 'Minimal',
   'Couleur de la table': 'Table colour',
   'Placement des zones': 'Zone layout',

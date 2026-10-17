@@ -338,8 +338,18 @@ describe('DemandeCentrale — le bouton de refus dit ce qu il fait', () => {
     )
   })
 
-  it('capacite sans nom : le nom de la carte, jamais « Ne pas utiliser Interruption »', () => {
+  it('capacite sans nom : le TYPE avec son article, comme le bouton d\u2019a cote (17/10/2026)', () => {
+    // Avant : « Ne pas utiliser Backflip » (le nom de la carte) — on croyait annuler la mise en jeu de la carte.
     expect(libelleRefus([avec({ name: 'Interrupt' })], true, cartes, undefined, undefined, () => false)).toBe(
+      'Ne pas utiliser l\u2019Interruption'.replace('\u2019', "'")
+    )
+    expect(libelleRefus([avec({ name: 'Response' })], true, cartes, undefined, undefined, () => false)).toBe(
+      'Ne pas utiliser la Réponse'
+    )
+  })
+
+  it('capacite sans nom ET sans type connu : on garde le nom de la carte', () => {
+    expect(libelleRefus([avec({ name: 'Special' })], true, cartes, undefined, undefined, () => false)).toBe(
       'Ne pas utiliser Backflip'
     )
   })

@@ -271,8 +271,28 @@ export function libelleRefus(
   // capture le 04/10/2026 : la premiere version ne reconnaissait que les noms
   // entre guillemets, et ecrivait « Ne pas utiliser Spider-Man ».
   const nommee = /^["«]/.test(option.name) || /—/.test(option.name) || estNomDeCapacite(option.name)
+  // Une capacité qui n'a que son TYPE pour nom (« Réponse », « Interruption ») : le refus reprend ce type,
+  // comme le bouton d'à côté (« Réponse » / « Ne pas utiliser la Réponse »). Avec le nom de la carte
+  // (« Ne pas utiliser Squirrel Girl »), on croyait annuler la mise en jeu de la carte (17/10/2026).
+  if (!nommee) {
+    const type = typeDeCapaciteAvecArticle(nomLisible(option))
+    if (type) return `${t('Ne pas utiliser')} ${type}`
+  }
   const nom = nommee ? nomDeCapacite(option, texteCapacite?.(option)) : carte
   return nom ? `${t('Ne pas utiliser')} ${nom}` : t('Passer')
+}
+
+/** « Réponse » -> « la Réponse », « Interruption » -> « l'Interruption » ; rien si ce n'est pas un type connu. */
+function typeDeCapaciteAvecArticle(nom: string | undefined): string | undefined {
+  const cle = (nom ?? '').trim().toLowerCase()
+  const types: Record<string, string> = {
+    'réponse': 'la Réponse', response: 'la Réponse',
+    'réponse forcée': 'la Réponse forcée', 'forced response': 'la Réponse forcée',
+    'interruption': "l'Interruption", interrupt: "l'Interruption",
+    'interruption forcée': "l'Interruption forcée", 'forced interrupt': "l'Interruption forcée",
+  }
+  const phrase = types[cle]
+  return phrase ? t(phrase) : undefined
 }
 
 export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boolean {
