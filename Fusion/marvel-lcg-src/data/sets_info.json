@@ -1831,5 +1831,47 @@
   "encounters": [],
   "max_id": "ud006"
  },
- "checksum": "bd2599be203650a17a2fab90072cd8c0e317d3f75641e7d65d73a8c9caa547bd"
+ "202. Custom (TMNT Shinobi – Bushido)": {
+  "name": "tmnt_shinobi_bushido",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "sb020"
+ },
+ "203. Custom (TMNT Shinobi – Kuji-Kiri)": {
+  "name": "tmnt_shinobi_kuji_kiri",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "sj020"
+ },
+ "204. Custom (TMNT Shinobi – Ninjutsu)": {
+  "name": "tmnt_shinobi_ninjutsu",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "sa020"
+ },
+ "205. Custom (TMNT Shinobi – Taijutsu)": {
+  "name": "tmnt_shinobi_taijutsu",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "sh020"
+ },
+ "206. Custom (TMNT Shinobi – Dual Shinobi)": {
+  "name": "tmnt_shinobi_dual",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "sc012"
+ },
+ "207. Custom (TMNT Shinobi – Paths)": {
+  "name": "tmnt_shinobi_paths",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "se011"
+ },
+ "checksum": "3be616ffc00565664543aaac385546d370588e923e68f96272457d3215b86e21"
 }
