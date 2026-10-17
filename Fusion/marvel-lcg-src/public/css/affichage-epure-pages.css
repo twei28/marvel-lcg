@@ -68,7 +68,7 @@ html[data-epure] {
   --txt: #1b1e24;
   --dim: #3f444d;
   --mute: #7b818c;
-  --lien: #1a56c4;
+  --lien: #8fbcf5;
   --agir: #a67c00;
   --agir-halo: rgba(166, 124, 0, 0.25);
   --affiche-jaune: #a67c00;
@@ -100,7 +100,7 @@ html[data-epure] footer.mention-legale {
 }
 html[data-epure] .acc-merci a,
 html[data-epure] footer.mention-legale a {
-  color: #1a56c4;
+  color: #8fbcf5;
 }
 
 /* --- 3. Les titres : plus de lettres geantes inclinees ----------------------- */
@@ -578,7 +578,7 @@ html[data-epure] .db-partir {
 
 html[data-epure] .acc-merci a,
 html[data-epure] footer.mention-legale a {
-  color: #1a56c4;
+  color: #8fbcf5;
 }
 
 /* --- 13. Derniers fonds sombres (campagnes, salon, en-tetes) ------------------
