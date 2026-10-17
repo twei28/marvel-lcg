@@ -432,7 +432,286 @@ CAS += [
            main_exclusive=["sb014", "01090"], jouer=["sb014"], cibles=["01083"], **_PAYE_R),
 ]
 
+# ========================================================================= sb015 Oathbreaker
+# False Alarm 01112 : « You are confused » (effet VISIBLE : Confused sur l'identite). Revelee par `Puzzle.Reveal` depuis le deck rencontre.
+CAS += [
+    _c("sb015 Oathbreaker Hero Interrupt : annule False Alarm (revelee du deck rencontre) : le heros n'est PAS desoriente, la carte est defaussee",
+       "cout : Loyalty (OATH) defaussee ; « cancel all of that card's effects and discard it » : pas de Desoriente, False Alarm dans la defausse rencontre",
+       [HEROS, _poser("sb001")], ["Puzzle.Reveal('01112')"],
+       {"statuts_absents": [["01001a", "Confused"]], "defausse_rencontre": ["01112"], "defausse": ["sb015", "sb001"], "hors_jeu": ["sb001"]},
+       main_exclusive=["sb015"], accepter_choix=True),
+    _c("sb015 Oathbreaker : TEMOIN, sans amelioration OATH le cout est impayable : False Alarm se resout (heros desoriente), Oathbreaker reste en main",
+       "aucune OATH sous controle : l'interruption n'est pas offerte",
+       [HEROS], ["Puzzle.Reveal('01112')"],
+       {"statuts": [["01001a", "Confused"]], "en_main": ["sb015"]},
+       main_exclusive=["sb015"], accepter_choix=True),
+    _c("sb015 Oathbreaker : « an OATH upgrade you control » : le joueur CHOISIT laquelle defausser (Courage designee) : Loyalty reste",
+       "Loyalty et Courage en jeu : Courage est defaussee en cout, Loyalty garde ses 3 compteurs",
+       [HEROS, _poser("sb001"), _poser("sb003")], ["Puzzle.Reveal('01112')"],
+       {"hors_jeu": ["sb003"], "en_jeu": ["sb001"], "compteurs": [["sb001", "samurai", 3]], "statuts_absents": [["01001a", "Confused"]]},
+       main_exclusive=["sb015"], cibles=["sb003"], accepter_choix=True),
+    _c("sb015 Oathbreaker : TEMOIN, « Hero Interrupt » : en forme alter-ego l'interruption n'est pas offerte, l'alter-ego est desoriente",
+       "Peter Parker (alter-ego) : False Alarm se resout, Loyalty reste en jeu, Oathbreaker en main",
+       [_poser("sb001")], ["Puzzle.Reveal('01112')"],
+       {"statuts": [["01001b", "Confused"]], "en_jeu": ["sb001"], "en_main": ["sb015"]},
+       main_exclusive=["sb015"], accepter_choix=True),
+]
+
+# ========================================================================= sb016 Wakizashi
+CAS += [
+    _c("sb016 Wakizashi Hero Response : une OATH (Loyalty) DEFAUSSEE DU JEU : Wakizashi s'incline, 1 carte piochee (main 1 -> 2)",
+       "`Puzzle.Discard` d'une amelioration OATH en jeu : Hero Response, cout Exhaust, pioche 1",
+       [HEROS, _poser("sb016"), _poser("sb001")] + _DECK5, ["Puzzle.Discard('sb001')"],
+       {"exhausted": ["sb016"], "taille_main": 2, "defausse": ["sb001"]}, main_exclusive=["01090"], accepter_choix=True),
+    _c("sb016 Wakizashi : la defausse par USES (dernier compteur retire par Loyalty apres une defense) en est une aussi : 1 carte piochee",
+       "Loyalty a 1 compteur, defense de base : Forced Response retire le dernier, Uses la defausse, Wakizashi pioche",
+       [HEROS, _poser("sb016"), _poser("sb001"), "Puzzle.Counter('sb001', 'samurai', -2)"] + _DECK5,
+       ["Puzzle.Defend('01001a', '01094')"],
+       {"exhausted": ["sb016"], "taille_main": 2, "hors_jeu": ["sb001"]}, main_exclusive=["01090"], accepter_choix=True),
+    _c("sb016 Wakizashi : « an OATH upgrade » de N'IMPORTE QUEL joueur : l'OATH du 2e joueur (partie a deux) defaussee fait piocher",
+       "Loyalty du second joueur en jeu, defaussee : Wakizashi du premier joueur pioche",
+       [HEROS, _poser("sb016"), "Puzzle.PutIntoPlay('sb001', under_control=True, player=1)"] + _DECK5, ["Puzzle.Discard('sb001')"],
+       {"exhausted": ["sb016"], "taille_main": 2}, main_exclusive=["01090"], heros2="iron_man", accepter_choix=True),
+    _c("sb016 Wakizashi : TEMOIN, une amelioration NON OATH defaussee du jeu (Armored Vest) ne fait rien piocher",
+       "Armored Vest defaussee : Wakizashi reste prete, main inchangee",
+       [HEROS, _poser("sb016"), _poser("01081")] + _DECK5, ["Puzzle.Discard('01081')"],
+       {"pret": ["sb016"], "taille_main": 1}, main_exclusive=["01090"], accepter_choix=True),
+    _c("sb016 Wakizashi : TEMOIN, « discarded FROM PLAY » : une OATH defaussee du DECK (et non du jeu) ne fait rien piocher",
+       "Loyalty au milieu du deck puis defaussee : Wakizashi reste prete, main = 1 (Strength). (`Puzzle.Discard` cherche dans le deck, la "
+       "defausse puis le jeu, jamais dans la main ; une carte introuvable serait FABRIQUEE : d'ou le deck.)",
+       [HEROS, _poser("sb016"), "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', 'sb001', '01074')"], ["Puzzle.Discard('sb001')"],
+       {"pret": ["sb016"], "taille_main": 1, "defausse": ["sb001"]}, main_exclusive=["01090"], accepter_choix=True),
+    _c("sb016 Wakizashi : TEMOIN D'EPUISEMENT, deux OATH defaussees dans le meme round : UNE seule carte piochee (main 1 -> 2, pas 3)",
+       "Wakizashi inclinee apres la 1re : la 2e defausse ne declenche plus rien",
+       [HEROS, _poser("sb016"), _poser("sb001"), _poser("sb003")] + _DECK5, ["Puzzle.Discard('sb001')", "Puzzle.Discard('sb003')"],
+       {"exhausted": ["sb016"], "taille_main": 2, "defausse": ["sb001", "sb003"]}, main_exclusive=["01090"], accepter_choix=True),
+    _c("sb016 Wakizashi : TEMOIN, Hero Response : en forme alter-ego rien n'est pioche",
+       "Peter Parker : l'OATH defaussee ne declenche pas Wakizashi (Hero Response), main inchangee",
+       [_poser("sb016"), _poser("sb001")] + _DECK5, ["Puzzle.Discard('sb001')"],
+       {"pret": ["sb016"], "taille_main": 1}, main_exclusive=["01090"], accepter_choix=True),
+    _c("sb016 Wakizashi : base automatique « Restricted » (1) lue dans `desc`, traits NINJA et WEAPON, carte unique",
+       "`face.restricted == 1` en jeu ; traits NINJA + WEAPON ; la carte est unique",
+       [HEROS, _poser("sb016")], [],
+       {"carte": "sb016", "attributs": {"restricted": 1}, "traits": ["NINJA", "WEAPON"], "unique": True},
+       verifier="sb_attributs_carte"),
+]
+
+# ========================================================================= sb017 Uno
+_UNO = "Puzzle.PutIntoPlay('sb017', under_control=True)"
+CAS += [
+    _c("sb017 Uno Response : apres SON attaque de base, 1 compteur samurai est place sur l'OATH choisie (Loyalty 3 -> 4)",
+       "« After Uno uses a basic power » : attaque de base d'Uno (ATQ 1) sur Rhino, puis le compteur va sur Loyalty",
+       [HEROS, _UNO, _poser("sb001")], ["Puzzle.Attack('sb017')"],
+       {"compteurs": [["sb001", "samurai", 4]], "degats": [["01094", 1]]}, main_exclusive=["01090"], cibles=["01094", "sb001"]),
+    _c("sb017 Uno : « uses A basic power » : son CONTRE de base compte aussi (Loyalty 3 -> 4, menace 6 -> 5)",
+       "contre de base d'Uno (CTR 1) sur le complot principal, puis le compteur va sur Loyalty",
+       [MENACE, HEROS, _UNO, _poser("sb001")], ["Puzzle.Thwart('sb017')"],
+       {"compteurs": [["sb001", "samurai", 4]], "menace": [["01097b", 5]]}, main_exclusive=["01090"], cibles=["01097b", "sb001"]),
+    _c("sb017 Uno : « the OATH upgrade YOU choose » : le compteur va sur une AUTRE OATH (Courage designee), Loyalty garde ses 3",
+       "deux OATH en jeu : le joueur designe Courage", [HEROS, _UNO, _poser("sb001"), _poser("sb003")], ["Puzzle.Attack('sb017')"],
+       {"compteurs": [["sb003", "samurai", 4], ["sb001", "samurai", 3]]}, main_exclusive=["01090"], cibles=["01094", "sb003"]),
+    _c("sb017 Uno : TEMOIN, « After UNO » : l'attaque de base du HEROS ne declenche pas la Response (Loyalty garde 3 compteurs)",
+       "Spider-Man attaque : aucun compteur place par Uno",
+       [HEROS, _UNO, _poser("sb001")], ["Puzzle.Attack('01001a')"],
+       {"compteurs": [["sb001", "samurai", 3]]}, main_exclusive=["01090"], cibles=["01094", "sb001"]),
+    _c("sb017 Uno : sans amelioration OATH sous controle la Response ne pose rien et ne bloque pas l'attaque",
+       "aucune OATH : l'attaque a lieu (1 degat), aucune erreur", [HEROS, _UNO], ["Puzzle.Attack('sb017')"],
+       {"degats": [["01094", 1]], "en_jeu": ["sb017"]}, main_exclusive=["01090"], cibles=["01094"]),
+    _c("sb017 Uno : ATQ 1, CTR 1, 3 PV, unique, traits NINJA SAMURAI TURTLE",
+       "valeurs imprimees (etape 6) : ATQ 1*, CTR 1*, PV 3 (la sonde lit `attack`, `thwart`, `max_health`)",
+       [HEROS, _UNO], [],
+       {"carte": "sb017", "attributs": {"attack": 1, "thwart": 1, "max_health": 3}, "traits": ["NINJA", "SAMURAI", "TURTLE"],
+        "unique": True},
+       verifier="sb_attributs_carte"),
+]
+
+# ========================================================================= sb018 Musha Shugyo
+# jouee depuis la main (cout 1 [energy], payee par Energy 01088) puis ramenee a 1 menace : `declencher_apres` s'execute APRES `jouer`.
+_MUSHA = dict(main_exclusive=["sb018", "01088"], jouer=["sb018"], payer_avec=["01088"])
+# ⚠ `Puzzle.SetThreat` / `PlaceThreat` negatif font retirer la menace PAR LA MANIGANCE ELLE-MEME (`face.RemoveThreatFromSchemes([face], ...)`) :
+# la regle « characters other than the owner cannot remove threat » de Musha Shugyo la BLOQUE (lecon payee le 17/10/2026). On la vainc donc
+# pour de vrai : 5 contres de base du heros (CTR 1) separes par un redressement, les 5 menaces.
+_VAINCRE = ["Puzzle.Thwart('01001a')", "Puzzle.Ready('01001a')"] * 4 + ["Puzzle.Thwart('01001a')"]
+_DECK_3_OATH = ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', 'sb003', 'sb001')"]
+CAS += [
+    _c("sb018 Musha Shugyo : jouee depuis la main, elle entre en jeu avec 5 menaces (fixe, sans etoile)",
+       "StartingThreat 5 : menace 5 sur la carte, en jeu", [HEROS], [],
+       {"menace": [["sb018", 5]], "en_jeu": ["sb018"]}, **_MUSHA),
+    _c("sb018 Musha Shugyo : le PROPRIETAIRE (Spider-Man) retire la derniere menace : elle est vaincue, deck et defausse sont fouilles : DEUX OATH en jeu",
+       "deck [Loyalty, Courage] : « up to 2 » : les deux entrent en jeu (le joueur accepte les deux recherches)",
+       [HEROS] + _DECK_3_OATH, [],
+       {"hors_jeu": ["sb018"], "en_jeu": ["sb001", "sb003"]},
+       declencher_apres=_VAINCRE, cibles=["sb018"], accepter_choix=True, **_MUSHA),
+    _c("sb018 Musha Shugyo : la recherche couvre aussi la DEFAUSSE (Rectitude y est, rien dans le deck)",
+       "« search their deck AND discard pile » : Rectitude de la defausse entre en jeu",
+       [HEROS, "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', '01074')", "Puzzle.CreatePlayerDiscardPile('sb002')"], [],
+       {"hors_jeu": ["sb018"], "en_jeu": ["sb002"]},
+       declencher_apres=_VAINCRE, cibles=["sb018"], accepter_choix=True, **_MUSHA),
+    _c("sb018 Musha Shugyo : « UP TO 2 » : trois OATH disponibles (deck + defausse) : DEUX seulement entrent en jeu, la troisieme reste dans le deck",
+       "deck [Loyalty, Courage], defausse [Rectitude] : choix Loyalty puis Rectitude : Courage reste dans le deck",
+       [HEROS] + _DECK_3_OATH + ["Puzzle.CreatePlayerDiscardPile('sb002')"], [],
+       {"en_jeu": ["sb001", "sb002"], "hors_jeu": ["sb018", "sb003"], "dans_deck_joueur": ["sb003"]},
+       declencher_apres=_VAINCRE, cibles=["sb018", "sb001", "sb002"], accepter_choix=True, **_MUSHA),
+    _c("sb018 Musha Shugyo : « Characters other than the owner » : un ALLIE du proprietaire (Mockingbird) ne retire PAS de menace",
+       "Mockingbird (CTR 1) contre la carte (5 menaces) : la menace reste a 5, la carte reste en jeu",
+       [HEROS, "Puzzle.PutIntoPlay('01083', under_control=True)"], [],
+       {"menace": [["sb018", 5]], "en_jeu": ["sb018"]},
+       declencher_apres=["Puzzle.Thwart('01083')"], cibles=["sb018"], **_MUSHA),
+    _c("sb018 Musha Shugyo : TEMOIN positif, un evenement du proprietaire (Vow, CTR 1) retire de la menace (5 -> 4)",
+       "la source d'un evenement est l'IDENTITE de celui qui le joue (`event.py` OnRemoveSchemeThreat) : retrait autorise",
+       [HEROS], [],
+       {"menace": [["sb018", 4]]},
+       jouer_apres=["sb011"], cibles=["sb018"],
+       main_exclusive=["sb018", "sb011", "01088", "01088"], jouer=["sb018"], payer_avec=["01088"]),
+    _c("sb018 Musha Shugyo : TEMOIN positif, le contre de base du heros proprietaire retire de la menace (5 -> 4)",
+       "Spider-Man (CTR 1) : un contre de base, la menace passe a 4",
+       [HEROS], [],
+       {"menace": [["sb018", 4]]},
+       declencher_apres=["Puzzle.Thwart('01001a')"], cibles=["sb018"], **_MUSHA),
+    _c("sb018 Musha Shugyo : vaincue elle va a l'AFFICHAGE DES VICTOIRES (Victory 0)",
+       "« Victory 0 » : base automatique ; la carte vaincue est dans l'affichage des victoires, pas en defausse",
+       [HEROS, "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', '01074')"], [],
+       {"carte": "sb018", "zone": "victoire"},
+       declencher_apres=_VAINCRE, cibles=["sb018"], accepter_choix=True,
+       verifier="sb_carte_en_zone", **_MUSHA),
+]
+
+# ========================================================================= sb019 Gusoku
+_GUSOKU = "Puzzle.PutIntoPlay('sb019', under_control=True)"
+CAS += [
+    _c("sb019 Gusoku Hero Response : apres l'ATTAQUE de base du heros, Gusoku s'incline, retire 1 compteur a Loyalty (3 -> 2) et REDRESSE le heros",
+       "le heros est incline par son attaque, puis redresse par la Response",
+       [HEROS, _GUSOKU, _poser("sb001")], ["Puzzle.Attack('01001a')"],
+       {"pret": ["01001a"], "exhausted": ["sb019"], "compteurs": [["sb001", "samurai", 2]]},
+       main_exclusive=["01090"], cibles=["01094", "sb001"], accepter_choix=True),
+    _c("sb019 Gusoku : apres le CONTRE de base du heros (complot principal a 6) : meme effet",
+       "contre de base : heros redresse, Gusoku inclinee, Loyalty 3 -> 2",
+       [MENACE, HEROS, _GUSOKU, _poser("sb001")], ["Puzzle.Thwart('01001a')"],
+       {"pret": ["01001a"], "exhausted": ["sb019"], "compteurs": [["sb001", "samurai", 2]]},
+       main_exclusive=["01090"], cibles=["01097b", "sb001"], accepter_choix=True),
+    _c("sb019 Gusoku : apres la DEFENSE de base du heros (Rhino attaque) : meme effet",
+       "defense de base : le heros defenseur s'incline puis est redresse ; l'OATH est Courage (Loyalty, elle, perdrait AUSSI un compteur "
+       "apres une defense : sa propre Forced Response)",
+       [HEROS, _GUSOKU, _poser("sb003")], ["Puzzle.Defend('01001a', '01094')"],
+       {"pret": ["01001a"], "exhausted": ["sb019"], "compteurs": [["sb003", "samurai", 2]]},
+       main_exclusive=["01090"], cibles=["sb003"], accepter_choix=True),
+    _c("sb019 Gusoku : « FROM AN OATH upgrade » : le joueur CHOISIT laquelle perd un compteur (Rectitude designee), Loyalty garde 3",
+       "deux OATH (Loyalty, Rectitude) apres un contre de base (Rectitude perd AUSSI 1 compteur par sa Forced Response : 3 -> 2, puis "
+       "Gusoku en retire 1 : 1) ; Loyalty garde ses 3",
+       [MENACE, HEROS, _GUSOKU, _poser("sb001"), _poser("sb002")], ["Puzzle.Thwart('01001a')"],
+       {"pret": ["01001a"], "compteurs": [["sb002", "samurai", 1], ["sb001", "samurai", 3]]},
+       main_exclusive=["01090"], cibles=["01097b", "sb002"], accepter_choix=True),
+    _c("sb019 Gusoku : TEMOIN, sans compteur samurai a retirer le cout est impayable : le heros reste incline apres son attaque",
+       "Loyalty n'a plus qu'un compteur... retire ? non : aucune OATH en jeu : pas de Response, heros incline, Gusoku prete",
+       [HEROS, _GUSOKU], ["Puzzle.Attack('01001a')"],
+       {"exhausted": ["01001a"], "pret": ["sb019"]}, main_exclusive=["01090"], cibles=["01094"], accepter_choix=True),
+    _c("sb019 Gusoku : TEMOIN, « YOUR basic powers » : l'attaque d'un ALLIE (Mockingbird) ne declenche pas Gusoku (heros incline d'avance)",
+       "le heros reste incline, Loyalty garde ses 3 compteurs",
+       [HEROS, _GUSOKU, _poser("sb001"), "Puzzle.PutIntoPlay('01083', under_control=True)", "Puzzle.Exhaust('01001a')"],
+       ["Puzzle.Attack('01083')"],
+       {"exhausted": ["01001a"], "pret": ["sb019"], "compteurs": [["sb001", "samurai", 3]]},
+       main_exclusive=["01090"], cibles=["01094", "sb001"], accepter_choix=True),
+    _c("sb019 Gusoku : TEMOIN D'EPUISEMENT, deux attaques de base dans le meme round : la 2e ne declenche plus rien (heros incline, 1 seul compteur retire)",
+       "Gusoku inclinee apres la 1re Response : apres la 2e attaque le heros reste incline, Loyalty 2 (et non 1)",
+       [HEROS, _GUSOKU, _poser("sb001")], ["Puzzle.Attack('01001a')", "Puzzle.Attack('01001a')"],
+       {"exhausted": ["01001a", "sb019"], "compteurs": [["sb001", "samurai", 2]]},
+       main_exclusive=["01090"], cibles=["01094", "sb001"], accepter_choix=True),
+    _c("sb019 Gusoku : le DERNIER compteur d'une OATH retire en cout : l'OATH est defaussee (Uses), le heros est redresse",
+       "Loyalty a 1 compteur : retire par le cout, Loyalty defaussee, heros pret",
+       [HEROS, _GUSOKU, _poser("sb001"), "Puzzle.Counter('sb001', 'samurai', -2)"], ["Puzzle.Attack('01001a')"],
+       {"pret": ["01001a"], "hors_jeu": ["sb001"], "defausse": ["sb001"]},
+       main_exclusive=["01090"], cibles=["01094", "sb001"], accepter_choix=True),
+    _c("sb019 Gusoku : unique, ARMOR, Hero Response seulement : valeurs imprimees (traits, unicite)",
+       "traits ARMOR, unique ✦", [HEROS, _GUSOKU], [],
+       {"carte": "sb019", "attributs": {}, "traits": ["ARMOR"], "unique": True}, verifier="sb_attributs_carte"),
+]
+
+# ========================================================================= sb020 Iaido
+# Genius 01089 (BB) paie Iaido (cout 1) ; l'evenement est joue PAR LE PILOTE pendant le pouvoir de base (interruption), sans `jouer`.
+# Spider-Man : ATQ 2, CTR 1, DEF 1 ; Rhino 01094.
+_DEUX_ICONES = ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01111')"]   # Explosion : 2 icones de boost
+
+
+def _i(nom, pourquoi, mise, declencher, attendu, **cle):
+    return _c(nom, pourquoi, mise, declencher, attendu, main_exclusive=["sb020", "01089"], payer_avec=["01089"], **cle)
+
+
+CAS += [
+    _i("sb020 Iaido Hero Interrupt : l'ATTAQUE de base du heros gagne +2 (ATQ 2 + 2 = 4 degats a Rhino) ET 1 compteur samurai est place (Loyalty 3 -> 4)",
+       "evenement joue pendant l'attaque (interruption), le bonus compte dans le pouvoir",
+       [HEROS, _poser("sb001")], ["Puzzle.Attack('01001a')"],
+       {"degats": [["01094", 4]], "compteurs": [["sb001", "samurai", 4]], "defausse": ["sb020"]},
+       cibles=["01094", "sb001"], accepter_choix=True),
+    _c("sb020 Iaido : TEMOIN, sans Iaido la meme attaque ne fait que 2 degats",
+       "contre-cas : ATQ 2 seul", [HEROS], ["Puzzle.Attack('01001a')"], {"degats": [["01094", 2]]},
+       main_exclusive=["01090"], cibles=["01094"]),
+    _i("sb020 Iaido : le CONTRE de base gagne +2 aussi (CTR 1 + 2 = 3 : menace 6 -> 3)",
+       "« +2 to THAT power » : le contre de base",
+       [MENACE, HEROS, _poser("sb001")], ["Puzzle.Thwart('01001a')"],
+       {"menace": [["01097b", 3]], "compteurs": [["sb001", "samurai", 4]]},
+       cibles=["01097b", "sb001"], accepter_choix=True),
+    _i("sb020 Iaido : la DEFENSE de base gagne +2 (DEF 3 + 2 = 5 contre Rhino ATQ 2 + 2 icones de boost = 4 : aucun degat pour l'identite)",
+       "« When you use a basic power » : la defense aussi ; le compteur est place sur Courage (Loyalty, elle, perdrait AUSSI 1 compteur apres la defense)",
+       [HEROS, _poser("sb003")] + _DEUX_ICONES, ["Puzzle.Defend('01001a', '01094')"],
+       {"degats_identite": 0, "compteurs": [["sb003", "samurai", 4]]},
+       cibles=["sb003"], accepter_choix=True, avec_boost=True),
+    _c("sb020 Iaido : TEMOIN de la defense, sans Iaido le meme coup (ATQ 4 contre DEF 3) inflige 1 degat a l'identite",
+       "contre-cas : DEF 3 seule contre Rhino ATQ 2 + 2 icones de boost", [HEROS] + _DEUX_ICONES,
+       ["Puzzle.Defend('01001a', '01094')"], {"degats_identite": 1},
+       main_exclusive=["01090"], avec_boost=True),
+    _i("sb020 Iaido : « FOR THIS USE » : apres l'attaque l'ATQ courant du heros est revenu a sa valeur imprimee (le +2 n'est pas durable)",
+       "ATQ courant = imprime apres l'attaque amelioree (ecart 0), 4 degats infliges",
+       [HEROS], ["Puzzle.Attack('01001a')"],
+       {"attributs": {"attack": 0}, "degats": [["01094", 4]]},
+       cibles=["01094"], accepter_choix=True),
+    _i("sb020 Iaido : « You MAY place » : refus (Cancel) : le +2 compte quand meme (4 degats) mais Loyalty garde 3 compteurs",
+       "le « may » porte sur le compteur seulement",
+       [HEROS, _poser("sb001")], ["Puzzle.Attack('01001a')"],
+       {"degats": [["01094", 4]], "compteurs": [["sb001", "samurai", 3]]},
+       cibles=["01094"], choisir_option="Cancel"),
+    _i("sb020 Iaido : sans amelioration OATH le +2 s'applique sans question de compteur (4 degats)",
+       "aucune OATH sous controle", [HEROS], ["Puzzle.Attack('01001a')"], {"degats": [["01094", 4]], "defausse": ["sb020"]},
+       cibles=["01094"], accepter_choix=True),
+    _i("sb020 Iaido : TEMOIN, « When YOU use » : l'attaque d'un ALLIE (Mockingbird, ATQ 1) n'ouvre pas Iaido : 1 degat, carte en main",
+       "le pouvoir de base d'un allie n'est pas le votre",
+       [HEROS, "Puzzle.PutIntoPlay('01083', under_control=True)"], ["Puzzle.Attack('01083')"],
+       {"degats": [["01094", 1]], "en_main": ["sb020"]},
+       cibles=["01094"], accepter_choix=True),
+]
+
+
 VERIFICATIONS = r'''
+def sb_carte_en_zone(monde, aides):
+    """`attendu` : carte, zone (victoire | defausse). La carte (par card_id) doit se trouver dans cette zone."""
+    attendu = aides["cas"]["attendu"]
+    zones = {"victoire": [f for f in monde.victory_display.GetAll()],
+             "defausse": [f for j in monde.players for f in j.discard_pile.GetAll()]}
+    ids = [getattr(f.paper, "card_id", None) for f in zones[attendu["zone"]]]
+    if attendu["carte"] not in ids:
+        return False, f"{attendu['carte']} n'est pas dans {attendu['zone']} ({ids})"
+    return True, f"{attendu['carte']} est dans {attendu['zone']}"
+
+
+def sb_attributs_carte(monde, aides):
+    """`attendu` : carte (en jeu), attributs {nom: valeur} lus par getattr, traits [..], unique (bool)."""
+    attendu = aides["cas"]["attendu"]
+    face = aides["par_id"](monde, attendu["carte"])
+    if face is None:
+        return False, f"{attendu['carte']} introuvable en jeu"
+    soucis = []
+    for nom, valeur in (attendu.get("attributs") or {}).items():
+        courant = getattr(face, nom, None)
+        if courant != valeur:
+            soucis.append(f"{nom}={courant!r} (attendu {valeur!r})")
+    for trait in attendu.get("traits") or []:
+        if not face.HasTrait(trait):
+            soucis.append(f"trait {trait} absent")
+    if "unique" in attendu and bool(face.IsUnique()) != attendu["unique"]:
+        soucis.append(f"unique={face.IsUnique()} (attendu {attendu['unique']})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"{attendu['carte']} : attributs {attendu.get('attributs')} traits {attendu.get('traits')} conformes"
+
 
 def sb_debug(monde, aides):
     rep = []
