@@ -5486,7 +5486,9 @@ function libelleExtension(e, auteur) {
 
 async function loadExtTabs() {
     await preselectionDernierScenario();
-    const toutes = (await catalog.extensions()).filter((e) => e.scenarios.length);
+    // « Weekly Challenges » et « Défis » ne se choisissent plus ici (17/10/2026, demande de l'utilisateur).
+    const toutes = (await catalog.extensions()).filter((e) => e.scenarios.length
+        && e.key !== "defis" && !/weekly/i.test(e.key));
     const nbFanmade = toutes.filter((e) => /custom/i.test(e.key)).length;
     // Le filtre « Fan-made » (16/10/2026, selection du mechant en trois colonnes) :
     // seules les boites fan-made, comme sur l'ecran des heros.
@@ -5525,7 +5527,37 @@ async function loadExtTabs() {
             : el("div", { class: "box", style: { backgroundImage: `url("${extensionImageUrl(e.key)}")` } }),
         el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
     )));
+    ajusterPochettes();
     loadScnGrid();
+}
+
+/** Les pochettes remplissent le panneau des boîtes (17/10/2026) : on prend le plus grand nombre
+ *  de colonnes qui fait TENIR toutes les boîtes sans défiler, et chaque pochette grandit
+ *  d'autant. Refait quand le panneau change de taille. */
+let _observePochettes = null;
+function ajusterPochettes() {
+    const tabs = document.getElementById("ext-tabs");
+    if (!tabs) return;
+    const n = tabs.querySelectorAll(".ext-tab").length;
+    if (!n || window.innerWidth < 900) { tabs.style.removeProperty("grid-template-columns"); return; }
+    const cs = getComputedStyle(tabs);
+    const L = tabs.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const H = tabs.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    if (L <= 0 || H <= 0) return;
+    const ECART_X = 6, ECART_Y = 4, RATIO = 0.62;
+    let meilleur = 3;
+    for (let c = 3; c <= 10; c++) {
+        const w = (L - ECART_X * (c - 1)) / c;
+        const lignes = Math.ceil(n / c);
+        const h = w / RATIO;
+        if (lignes * h + ECART_Y * (lignes - 1) <= H) { meilleur = c; break; }
+        meilleur = c;
+    }
+    tabs.style.setProperty("grid-template-columns", `repeat(${meilleur}, minmax(0, 1fr))`, "important");
+    if (!_observePochettes && "ResizeObserver" in window) {
+        _observePochettes = new ResizeObserver(() => ajusterPochettes());
+        _observePochettes.observe(tabs);
+    }
 }
 
 async function loadScnGrid() {
@@ -5600,6 +5632,31 @@ function ajusterTuilesMechants() {
     };
     if (!n) return vider();
     const cs = getComputedStyle(grille);
+    // Écran du méchant en trois colonnes (PC, 17/10/2026) : les cartes de scénario gardent leur
+    // rapport 3:2 et prennent la plus grande taille qui fait tenir TOUS les scénarios dans la
+    // zone, sans plafond de 2x ; le nombre de colonnes s'adapte au nombre de scénarios.
+    if (window.innerWidth >= 900 && grille.closest(".team-b.eux")) {
+        const L = grille.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        const H = grille.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+        const gC = parseFloat(cs.columnGap) || 16, gR = parseFloat(cs.rowGap) || 16;
+        if (L > 0 && H > 0) {
+            let meilleurC = 1, meilleurW = 0;
+            for (let c = 1; c <= Math.min(n, 6); c++) {
+                const r = Math.ceil(n / c);
+                const w = Math.min((L - (c - 1) * gC) / c, ((H - (r - 1) * gR) / r) * 1.5, 640);
+                if (w > meilleurW) { meilleurW = w; meilleurC = c; }
+            }
+            const h = Math.floor(meilleurW / 1.5);
+            const cle = meilleurC + "x" + h;
+            if (grille.dataset.ajuste !== cle) {
+                grille.dataset.ajuste = cle;
+                grille.style.setProperty("grid-template-columns", `repeat(${meilleurC}, ${Math.floor(meilleurW)}px)`, "important");
+                grille.style.setProperty("grid-auto-rows", h + "px", "important");
+                grille.style.setProperty("justify-content", "start");
+            }
+            return;
+        }
+    }
     const racine = getComputedStyle(document.documentElement);
     const base = parseFloat(racine.getPropertyValue("--affiche-cible")) || 148;
     const baseH = parseFloat(racine.getPropertyValue("--affiche-cible-h")) || 124;

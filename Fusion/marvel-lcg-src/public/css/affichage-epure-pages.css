@@ -1980,3 +1980,17 @@ html[data-epure] .tb-eclair .ono {
 /* Écran des decks : « Arsenal de » reste AU-DESSUS du nom (« Arsenal de / Daredevil »), l'inversion
    ne vaut que pour la fiche du héros (nom puis affiliations). */
 html[data-epure] .team-b.arsenal .tb-scene .tb-nomg { flex-direction: column; }
+
+/* Choix du méchant : les images remplissent la zone (17/10/2026). Les scénarios s'adaptent à la
+   place : deux, trois ou quatre colonnes selon la largeur, chaque carte aussi grande que possible. */
+@media (min-width: 900px) {
+  html[data-epure] .team-b.eux .tb-roster-scn { gap: 16px; align-content: start; }
+  html[data-epure] .team-b.eux .tb-roster-scn .tb-port { aspect-ratio: auto; width: 100%; height: 100%; }
+  html[data-epure] .team-b.eux .ext-tab { aspect-ratio: 0.62; }
+  html[data-epure] .team-b.eux .ext-tab .exname { font-size: 11px; max-height: 36px; line-height: 1.12; }
+  html[data-epure] .team-b.eux .ext-tab .box { inset: 3px 3px 36px 3px; }
+}
+@media (min-width: 900px) {
+  html[data-epure] .team-b.eux .ext-tabs { grid-auto-rows: 1fr !important; align-content: stretch !important; }
+  html[data-epure] .team-b.eux .ext-tab { aspect-ratio: auto; }
+}
