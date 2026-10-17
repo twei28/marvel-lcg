@@ -79,6 +79,7 @@ Le zip « TMNT Shinobi » (103 cartes joueur : 4 Paths standard + 7 Paths hybrid
 - **Helpers partagés** (`src/cards/pack/__init__.py`, visibles de tout module de carte) : `CLASSES_SHINOBI`,
   `CarteShinobi(*classes)`, `EstShinobi(face, *classes)`, `PayeAvecUnEvenement(effect, *traits)`, `ShinobiCloak(effect,
   faces)`, `ShinobiDaze(effect, faces)`.
+- `CarteShinobi()` / `EstShinobi()` EXCLUENT les Paths (qui portent pourtant les classes de leurs types) : un Path n'est pas une « carte Shinobi » du deck.
 - **Path** : fiche `path.md` (type, mise en jeu au Setup pour n'importe quel héros, -1 taille de main, classe = types).
 - **Compteur samurai / trait OATH** : fiche `samurai-counter.md`.
 - **Tuck** (The Last Ronin, Kanpeki) : fiche `tuck.md`.

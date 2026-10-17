@@ -160,11 +160,12 @@ CLASSES_SHINOBI: List[str] = ["Bushido", "Ninjutsu", "Kuji-Kiri", "Taijutsu"]
 
 def CarteShinobi(*classes: str) -> 'CardFinder':
     """Filtre « une carte Shinobi » ; avec des classes, « une carte <classe> » (OU entre elles)."""
-    return CardFinder(card_classes=list(classes) if classes else list(CLASSES_SHINOBI))  # type: ignore
+    # Un PATH porte les classes de ses types (desc.Class) mais n'est pas une « carte Shinobi » du deck : exclu.
+    return CardFinder(card_classes=list(classes) if classes else list(CLASSES_SHINOBI), non_card_type=Path)  # type: ignore
 
 def EstShinobi(face: 'CardFace|None', *classes: str) -> bool:
-    """Vrai si `face` est une carte Shinobi (de l'une des `classes` si precisees ; Dual : l'une ou l'autre)."""
-    if face is None or not ClassCard.IsType(face):
+    """Vrai si `face` est une carte Shinobi (de l'une des `classes` si precisees ; Dual : l'une ou l'autre). Un Path : faux."""
+    if face is None or not ClassCard.IsType(face) or Path.IsType(face):
         return False
     return face.IsClass(*(classes or CLASSES_SHINOBI))  # type: ignore
 
