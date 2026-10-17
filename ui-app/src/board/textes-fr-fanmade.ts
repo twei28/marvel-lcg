@@ -4687,6 +4687,46 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ud006': "Ténacité.\n<b>Réponse</b> : après que Nightwatcher a subi des dégâts consécutifs ([consequential]), donnez-lui une carte d'état Tenace.\n<i>« Je suis le héros dont nous avons TOUS besoin ! »</i>",
 
   // --- TMNT Shinobi Bushido (sb) : ajouter les cartes sbNNN ci-dessous, dans ce bloc seulement ---
+  // sb001 Loyalty (Upgrade, OATH)
+  'sb001': "Utilisations (3 compteurs de samouraï).\nVotre héros gagne +1 DEF.\n<b>Réponse forcée</b> : après que votre héros a fait une défense de base, retirez 1 compteur de samouraï de cette carte.\n<i>« Il faudra me passer sur le corps ! »</i> —Michelangelo",
+  // sb002 Rectitude (Upgrade, OATH)
+  'sb002': "Utilisations (3 compteurs de samouraï).\nVotre héros gagne +1 CTR.\n<b>Réponse forcée</b> : après que votre héros a fait un contre de base, retirez 1 compteur de samouraï de cette carte.\n<i>« Nous manquons de temps ! »</i> —Donatello",
+  // sb003 Courage (Upgrade, OATH)
+  'sb003': "Utilisations (3 compteurs de samouraï).\nVotre héros gagne +1 ATQ.\n<b>Réponse forcée</b> : après que votre héros a fait une attaque de base, retirez 1 compteur de samouraï de cette carte.\n<i>« Je ne te crains pas. »</i> —Leonardo",
+  // sb004 Glory (Upgrade, OATH)
+  'sb004': "1 max par joueur.\n<b>Réponse de héros</b> : après que votre héros a déjoué une manigance annexe, défaussez cette carte → placez en tout 4 compteurs de samouraï parmi un nombre quelconque d'améliorations [[OATH]] que vous contrôlez.",
+  // sb005 Gratitude (Upgrade, OATH)
+  'sb005': "Utilisations (2 compteurs de samouraï).\n<b>Action</b> : inclinez cette carte et retirez-lui 1 compteur de samouraï → soignez 1 dégât de votre identité. Vous pouvez défausser 1 carte d'état de votre identité.",
+  // sb006 Mercy (Upgrade, OATH), lecture provisoire (Q-B1)
+  'sb006': "1 max par joueur.\n<b>Interruption de héros</b> : quand un ennemi devrait être mis K.O. par votre héros, défaussez cette carte à la place → fixez les points de vie de cet ennemi à 1. Ensuite, piochez 3 cartes.",
+  // sb007 Integrity (Upgrade, OATH)
+  'sb007': "<b>Réponse</b> : après que vous avez joué une amélioration [[OATH]], inclinez cette carte → placez 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Les actes parlent plus fort que les mots. »</i> —Odyn",
+  // sb008 Self-Control (Upgrade, OATH)
+  'sb008': "Utilisations (3 compteurs de samouraï).\n<b>Ressource</b> : inclinez cette carte et retirez-lui 1 compteur de samouraï → générez une ressource [wild].\n<i>« La voie de la maîtrise de soi est longue. »</i> —Michelangelo",
+  // sb009 Devotion (Upgrade, OATH)
+  'sb009': "Utilisations (3 compteurs de samouraï).\n<b>Action de héros</b> : inclinez cette carte et retirez-lui 1 compteur de samouraï → redressez une amélioration [[WEAPON]] que vous contrôlez.\n<i>« La maîtrise ne vient pas vite. »</i> —Ronin",
+  // sb010 Tsujigiri (Event, ATTACK)
+  'sb010': "<b>Action de héros</b> <i>(attaque)</i> : infligez à un ennemi un nombre de dégâts égal à votre ATQ. Si cette attaque met cet ennemi K.O., vous pouvez placer 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Il est temps d'essayer mes nouvelles lames. »</i> —Leonardo",
+  // sb011 Vow (Event, THWART)
+  'sb011': "<b>Action de héros</b> <i>(contre)</i> : retirez d'une manigance un nombre de menaces égal à la CTR de votre héros. Si cela retire la dernière menace de cette manigance, cherchez dans votre deck une amélioration [[OATH]] et ajoutez-la à votre main. <i>(Mélangez.)</i>",
+  // sb012 Kensei (Event, SKILL)
+  'sb012': "<b>Action de héros</b> : inclinez une amélioration [[WEAPON]] que vous contrôlez → redressez votre héros.\n<i>« Un guerrier est toujours prêt. »</i> —Raphael",
+  // sb013 Santōryū Ōgi (Upgrade, SKILL), lecture provisoire (Q-B2)
+  'sb013': "1 max par deck. L'amélioration attachée perd le mot-clé Restreint.\n<b>Réponse</b> : après que cette carte est entrée en jeu, cherchez dans votre deck et votre pile de défausse une amélioration [[WEAPON]]. <i>(Mélangez.)</i> Mettez cette amélioration en jeu (en payant son coût en ressources) avec cette carte attachée.",
+  // sb014 Kōshō (Upgrade unique, OATH. TITLE. TRAINING.)
+  'sb014': "Utilisations (2 compteurs de samouraï). Attachez-la à un allié que vous contrôlez.\n1 amélioration [[TRAINING]] max par allié.\n<b>Action de héros</b> : inclinez cette carte et retirez-lui 2 compteurs de samouraï → soignez 2 dégâts de l'allié attaché et redressez-le.",
+  // sb015 Oathbreaker (Event, TACTIC)
+  'sb015': "<b>Interruption de héros</b> : quand une carte rencontre est révélée depuis le deck rencontre, défaussez une amélioration [[OATH]] que vous contrôlez → annulez tous les effets de cette carte rencontre et défaussez-la.\n<i>« Je ferai ce que je dois pour les sauver tous... »</i> —Leonardo",
+  // sb016 Wakizashi (Upgrade unique, NINJA. WEAPON.)
+  'sb016': "Restreint.\n<b>Réponse de héros</b> : après qu'une amélioration [[OATH]] est défaussée du jeu, inclinez cette carte → piochez 1 carte.\n<i>« Je préfère le dashido traditionnel. »</i> —Moja",
+  // sb017 Uno (Ally unique, NINJA. SAMURAI. TURTLE.)
+  'sb017': "[star] <b>Réponse</b> : après qu'Uno a utilisé un pouvoir de base, placez 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Tu manques de discipline. »</i>",
+  // sb018 Musha Shugyō (Manigance annexe de joueur, unique)
+  'sb018': "Victoire 0.\nLes personnages autres que le propriétaire de cette carte ne peuvent pas en retirer de menace.\n<b>Une fois déjouée</b> : le propriétaire de cette carte peut chercher dans son deck et sa pile de défausse jusqu'à 2 améliorations [[OATH]] et les mettre en jeu. <i>(Mélangez.)</i>\n<i>« J'endurerai l'hiver de cette âme. »</i> —Leonardo",
+  // sb019 Gusoku (Upgrade unique, ARMOR)
+  'sb019': "<b>Réponse de héros</b> : après que vous avez utilisé un de vos pouvoirs de base, inclinez cette carte et retirez 1 compteur de samouraï d'une amélioration [[OATH]] que vous contrôlez → redressez votre héros.\n<i>Cette armure a vu bien des batailles.</i>",
+  // sb020 Iaidō (Event, SKILL)
+  'sb020': "<b>Interruption de héros</b> : quand vous utilisez un pouvoir de base, vous gagnez +2 à ce pouvoir pour cette utilisation. Vous pouvez placer 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Fais bien attention, je ne te le montrerai pas deux fois... »</i> —Ronin",
 
   // --- TMNT Shinobi Kuji-Kiri (sj) : ajouter les cartes sjNNN ci-dessous, dans ce bloc seulement ---
 
