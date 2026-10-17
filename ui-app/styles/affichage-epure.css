@@ -1841,3 +1841,11 @@ html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-croix {
   top: 12px;
   right: 26px;
 }
+
+/* Une fenêtre SANS ligne « peut réagir » (choix d'option, « Réflexes Innés ») : son titre est le grand titre. */
+html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-texte:not(:has(.dc-reagit)) strong {
+  font-family: var(--ep-titres);
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+}
