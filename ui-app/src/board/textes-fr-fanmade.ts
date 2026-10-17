@@ -4691,6 +4691,92 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
 
   // --- TMNT Protection (up) : ajouter les cartes upNNN ci-dessous, dans ce bloc seulement ---
+  // tmnt_aspect_protection — Ace Duck (Ally), reskin de 09012 Brother Voodoo
+  'up001': "<b>Réponse</b> : après qu'Ace Duck est entré en jeu, cherchez une carte Événement parmi les 5 cartes du dessus de votre deck et ajoutez-la à votre main. Mélangez votre deck.\n<i>« Paniquer ? Jamais, coin-coin. »</i>",
+  // tmnt_aspect_protection — Armored Vest (Upgrade), reskin de 01081
+  'up002': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVotre héros gagne +1 DEF.\n<i>Gilet pare-balles réglementaire. Aucune tortue ne devrait sortir sans.</i>",
+  // tmnt_aspect_protection — Army of One (Event), reskin de 60048
+  'up003': "[star] Augmentez de 1 le coût pour jouer cette carte par allié que vous contrôlez.\n<b>Action de héros</b> : redressez votre héros.\n<i>« Dix contre un, ce n'est pas un combat équitable... pour vous. »</i> —Raphael",
+  // tmnt_aspect_protection — Autodefenestration (Event), modifiée de 01003 Backflip ; « Rampage » laissé en anglais
+  'up004': "[star] Rampage 2. <i>(Coût additionnel pour jouer cette carte : subissez 2 dégâts et défaussez les 2 cartes du dessus de votre deck.)</i>\n<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez tous ces dégâts.",
+  // tmnt_aspect_protection — Change of Fortune (Upgrade), reskin de 48014
+  'up005': "Jouez cette carte sous le contrôle de n'importe quel joueur.\n1 max par joueur.\n<b>Réponse</b> : après que vous avez vaincu un ennemi lors de la phase du Méchant, inclinez cette carte → piochez 2 cartes.",
+  // tmnt_aspect_protection — "Come Get Me, Bub!" (Event), reskin de 48016
+  'up006': "<b>Action de héros</b> : défaussez des cartes du deck Rencontre jusqu'à ce que vous défaussiez un sbire. Mettez en jeu ce sbire engagé avec vous → soignez 3 dégâts de votre identité et donnez-lui une carte d'état Tenace.",
+  // tmnt_aspect_protection — Cyber Ninja (Ally) ; « cloak » = poser une carte d'état Camouflé
+  'up007': "<b>Réponse</b> : après que Cyber Ninja est entré en jeu, défaussez une amélioration de votre main → piochez 1 carte et camouflez Cyber Ninja.\n<i>« Il fut un temps où de tels sentiments troublaient mon jugement. J'ai corrigé ça... »</i>",
+  // tmnt_aspect_protection — Defensive Conditioning (Upgrade), reskin de 56046
+  'up008': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVous gagnez +3 points de vie et votre héros gagne +1 DEF.\n<i>« Préparez-vous, mes frères ! »</i> —Leonardo",
+  // tmnt_aspect_protection — Demoralize (Event)
+  'up009': "<b>Action de héros</b> : choisissez un ennemi. Il vous attaque. Désorientez cet ennemi.\n<i>« C'est l'heure de faire tomber des têtes ! »</i> —Raphael",
+  // tmnt_aspect_protection — Electrostatic Armor (Upgrade), reskin de 10031
+  'up010': "Jouez cette carte sous le contrôle de n'importe quel joueur.\n1 max par joueur.\n<b>Réponse</b> : après que vous avez défendu contre une attaque, infligez 1 dégât au personnage attaquant.",
+  // tmnt_aspect_protection — Energy Barrier (Upgrade), reskin de 05017
+  'up011': "Utilisation (3 jetons Réverbération).\n<b>Interruption</b> : quand vous êtes censé subir n'importe quelle quantité de dégâts, retirez 1 jeton Réverbération de cette carte → prévenez 1 de ces dégâts et infligez 1 dégât à un ennemi.",
+  // tmnt_aspect_protection — Get Their Attention (Event), reskin de 60049
+  'up012': "<b>Interruption de héros</b> (<i>défense/contre</i>) : quand un ennemi initie une attaque, retirez 3 menaces d'une manigance.\n<i>« Maintenant que j'ai votre attention, on commence ? »</i> —Ronin",
+  // tmnt_aspect_protection — Groo the Wanderer (Ally), modifiée de 20016 Star-Lord (sans À Distance)
+  'up013': "<b>Réponse forcée</b> : après que Groo the Wanderer est entré en jeu sous votre contrôle, attribuez-vous 1 carte Rencontre face cachée.\n<i>« J'aurais deux mots à vous dire ! »</i>",
+  // tmnt_aspect_protection — Grotto (Ally), texte de 09014 Iron Fist, jetons « brute »
+  'up014': "Grotto entre en jeu avec 2 jetons Brute sur lui.\n<b>Interruption</b> : quand Grotto attaque un ennemi, retirez-lui 1 jeton Brute → sonnez cet ennemi et infligez-lui 1 dégât.",
+  // tmnt_aspect_protection — Helpful Bystander (Ally)
+  'up015': "Vulnérable. 1 max par deck.\nVotre héros gagne +1 en taille de main.\n<b>Interruption forcée</b> : quand un ennemi vous attaque, il attaque Helpful Bystander à la place. Cette attaque gagne Déferlement.",
+  // tmnt_aspect_protection — Herman (Ally)
+  'up016': "Ténacité. Herman peut avoir jusqu'à 3 cartes d'état Tenace.\n<b>Interruption</b> : quand Herman entre en jeu, placez sur lui une carte d'état Tenace supplémentaire (2 max) pour chaque ressource payée en trop pour son coût.",
+  // tmnt_aspect_protection — Honor Blade (Ally), reskin de 56041 Patriot
+  'up017': "<b>Réponse</b> : après que vous avez engagé un sbire, donnez une carte d'état Tenace à Honor Blade.\n<i>« Je suis prêt à tout. »</i>",
+  // tmnt_aspect_protection — "I Can Do This All Day" (Event), reskin de 56047 ; le scan imprime « Hero Action » (question Q-UP2)
+  'up018': "<b>Action de héros</b> (<i>défense</i>) : quand un ennemi attaque, déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je ne bougerai pas d'ici. »</i> —Leonardo",
+  // tmnt_aspect_protection — In Harm's Way (Event), reskin de 60050
+  'up019': "[star] Augmentez de 1 le coût pour jouer cette carte pour chaque allié que vous contrôlez.\n<b>Action de héros</b> (<i>attaque/contre</i>) : infligez X dégâts à un ennemi et retirez X menaces d'une manigance, X étant votre DEF.",
+  // tmnt_aspect_protection — Innate Reflexes (Upgrade), reskin de 60038
+  'up020': "Départ. (<i>Vous pouvez ajouter cette carte à votre main avant de piocher votre main de départ.</i>)\nVotre héros gagne +1 DEF.\n<i>« Raté. »</i> —Jennika",
+  // tmnt_aspect_protection — Jōtarō (Ally), modifiée de 26014 Protector
+  'up021': "Ténacité.\n<b>Interruption</b> : quand un ennemi est censé infliger n'importe quelle quantité de dégâts, dépensez une ressource [physical] → diminuez de 1 cette quantité. (Limite d'une fois par round.)\n<i>« Je protégerai ce village au péril de ma vie. »</i>",
+  // tmnt_aspect_protection — Lindsey Baker (Support), texte de 09019 The Night Nurse, jetons « healing »
+  'up022': "Utilisations (3 jetons Guérison).\n<b>Action</b> : inclinez Lindsey Baker et retirez-lui 1 jeton Guérison → soignez 1 dégât d'un héros et défaussez 1 de ses cartes d'état.",
+  // tmnt_aspect_protection — Lookout (Upgrade)
+  'up023': "Réduisez de 1 le coût pour jouer cette carte si vous contrôlez un soutien [[NYC]].\n<b>Réponse de héros</b> : après qu'un sbire vous a engagé, défaussez Lookout → camouflez votre héros et piochez 1 carte.\n<i>« On ne peut pas se permettre de baisser la garde. »</i> —Raphael",
+  // tmnt_aspect_protection — Nobody (Ally)
+  'up024': "<b>Réponse</b> : après que Nobody est entré en jeu, placez sur lui une carte d'état Tenace ou Camouflé.\n<i>« Can they swing from a thread? Take a look overhead. Hey there, there goes Nobody. »</i>",
+  // tmnt_aspect_protection — Powerful Punch (Event), reskin de 32014
+  'up025': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand un ennemi initie une attaque, infligez 4 dégâts à cet ennemi.\n<i>« Qu'est-ce qui se passe ? Ta bande a oublié de t'apprendre à encaisser ? »</i> —Raphael",
+  // tmnt_aspect_protection — Primal Provisions (Event) ; « Rampage » laissé en anglais
+  'up026': "1 max par phase.\n[star] Rampage 2. <i>(Coût additionnel pour jouer cette carte : subissez 2 dégâts et défaussez les 2 cartes du dessus de votre deck.)</i>\n<b>Action de héros</b> : piochez 2 cartes.\n<i>« On ne peut pas se reposer. Il faut continuer. »</i> —Alopex",
+  // tmnt_aspect_protection — Protection Training (Upgrade), modifiée de 32013
+  'up027': "Attachez cette carte à un allié [[NINJA]] ou [[MUTANIMAL]]. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\nL'allié attaché gagne +3 points de vie.\n<i>« Tenez la ligne, mes frères ! »</i> —Leonardo",
+  // tmnt_aspect_protection — Rabid Infection (Upgrade)
+  'up028': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\n<b>Interruption</b> : quand le sbire attaché s'active, infligez 1 dégât à un ennemi.",
+  // tmnt_aspect_protection — Ready for a Fight (Upgrade), reskin de 52019
+  'up029': "Exigence ([physical]). 1 max par joueur.\n<b>Interruption</b> : quand un ennemi est censé manigancer, défaussez Ready for a Fight → passez sous forme de héros. Cet ennemi vous attaque à la place.",
+  // tmnt_aspect_protection — Redirection Mastery (Upgrade) ; « exactly defend » : question Q-UP1
+  'up030': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez « exactement » défendu une attaque, infligez à l'attaquant des dégâts égaux à votre DEF pour cette attaque.",
+  // tmnt_aspect_protection — Road Rage (Ally), modifiée de 01066 Hawkeye
+  'up031': "Road Rage entre en jeu avec 3 jetons Carburant sur lui.\n<b>Réponse</b> : après qu'un sbire est entré en jeu, retirez 1 jeton Carburant de Road Rage → infligez 2 dégâts à ce sbire.\n<i>« Ça faisait longtemps que je voulais te rattraper. »</i>",
+  // tmnt_aspect_protection — Ronin (Upgrade), reskin de 60053
+  'up032': "Tant que vous ne contrôlez pas d'allié, votre héros gagne +1 DEF et Riposte 1.\n<i>« Je suis Ronin, la tortue sans maître. »</i> —Ronin",
+  // tmnt_aspect_protection — Senkon (Upgrade)
+  'up033': "Attachez cette carte à un personnage ami. Tant qu'elle est attachée à une identité, cette carte gagne Restreint.\n<b>Interruption</b> : quand le personnage attaché défend contre une attaque ennemie, inclinez Senkon → cet ennemi a –1 ATQ pour cette attaque.",
+  // tmnt_aspect_protection — Seymour Gutz (Ally), reskin de 48012 Rogue
+  'up034': "<b>Action</b> : infligez 1 dégât à un autre personnage ami → jusqu'à la fin du round, Seymour Gutz gagne tous les [[TRAITS]] de ce personnage et ajoute la CTR et l'ATQ imprimées de ce personnage à ses pouvoirs correspondants. (Limite d'une fois par round.)",
+  // tmnt_aspect_protection — Shield Spell (Event), reskin de 21061
+  'up035': "Jouez cette carte uniquement si votre identité a le trait [[MYSTIQUE]]. 1 max par deck.\n<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, défaussez autant de cartes du dessus de votre deck → prévenez tous les dégâts de cette attaque.",
+  // tmnt_aspect_protection — Stand Alone (Upgrade), reskin de 60054
+  'up036': "1 max par joueur.\n<b>Interruption de héros</b> : quand un ennemi vous attaque (<i>avant qu'un défenseur ne soit déclaré</i>), si vous ne contrôlez pas d'allié, inclinez Stand Alone → redressez votre héros.",
+  // tmnt_aspect_protection — Taunt (Event), reskin de 56048
+  'up037': "<b>Action de héros</b> : le méchant vous attaque. Les autres personnages ne peuvent pas défendre contre cette attaque. Piochez 3 cartes.\n<i>« Jackie ! »</i> —Slash",
+  // tmnt_aspect_protection — The Best Offense... (Upgrade), reskin de 60052
+  'up038': "Temporaire.\nVotre héros gagne +1 DEF.\nUtilisez votre DEF à la place de votre CTR et ATQ. <i>(Ignorez tous les modificateurs à vos CTR et ATQ.)</i>",
+  // tmnt_aspect_protection — Tonfa (Upgrade)
+  'up039': "Restreint.\n<b>Interruption de héros</b> : pendant le calcul des dégâts d'une attaque contre vous, inclinez cette carte → donnez à votre héros soit +1 DEF, soit Riposte 1 pour cette attaque.",
+  // tmnt_aspect_protection — Unflappable (Upgrade), reskin de 09020
+  'up040': "Jouez cette carte sous le contrôle de n'importe quel joueur.\n1 max par joueur.\n<b>Réponse</b> : après que vous avez défendu contre une attaque sans subir de dégâts, inclinez Unflappable → piochez 1 carte.",
+  // tmnt_aspect_protection — Usagi Yōjimbō (Ally)
+  'up041': "Riposte 2. Ténacité.\nUsagi Yōjimbō ne s'incline pas pour défendre.\n<i>« Je te protégerai au péril de ma vie. »</i>",
+  // tmnt_aspect_protection — What Doesn't Kill Me (Event), reskin de 27016
+  'up042': "Exigence ([physical]). <i>(Lorsque vous payez pour cette carte, dépensez les ressources indiquées.)</i>\n<b>Action de héros</b> : soignez 2 dégâts de votre héros → redressez votre héros.\n<i>« Quand je sortirai d'ici, tu vas le regretter ! »</i>",
+  // tmnt_aspect_protection — Wonder Turtle (Ally), reskin de 54032 White Widow
+  'up043': "<b>Réponse</b> : après avoir résolu la capacité d'une carte [[Préparation]] que vous contrôlez, soignez Wonder Turtle d'un nombre de dégâts égal au coût en ressources imprimé de cette carte.\n<i>« Surprise. »</i>",
 
 
   // --- TMNT Dual-Aspect (ud) : ajouter les cartes udNNN ci-dessous, dans ce bloc seulement ---

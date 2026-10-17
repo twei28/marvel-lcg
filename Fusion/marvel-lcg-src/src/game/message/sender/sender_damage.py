@@ -500,6 +500,26 @@ class SenderDamage:
             # This update just for UI
             this.CastTo(Unit2).GainForThisActive(by_effect, self.would_atk_message, attack=damage)
 
+    class WhenCalculatingAttackDamage(TriggerUnitMessage, AttackerMessage, DefenderNoneMessage):
+        """AJOUT (16/10/2026, aspect TMNT Protection, up039 Tonfa) : la FENETRE D'INTERRUPTION « When
+        calculating damage during an attack », que `WhenRecalculateAttackDamage` n'ouvre pas (message de
+        calcul : regles, constantes et interruptions forcees seulement, `event/manager.py`).
+
+        Envoyee par `can_attack.py` juste apres le calcul de la valeur d'attaque (boosts compris) et AVANT
+        que la DEF du defenseur soit retranchee. `GainDefenseForThisAttack` ajoute a cette DEF (« +1 DEF for
+        this attack ») : la DEF etant lue a la declaration du defenseur, c'est le seul moyen qu'un bonus de
+        DEF pris a ce moment compte. Aucun ecouteur (cas general) : `BroadcastMessage` sort aussitot."""
+        def __init__(self, attacker: 'Unit2', target: 'Unit2', would_atk_message: 'Message.WhenUnitWouldAttack') -> None:
+            self.target: Final = target # qui recoit les degats (defenseur, ou cible non defendue)
+            self.would_atk_message: Final = would_atk_message
+            self.defense_bonus = 0
+            super().__init__(trigger=attacker, attacker=attacker, attacked=[target], defender=would_atk_message.defender, would_atk_message=would_atk_message)
+            self.AddRelatedFace(attacker, target)
+
+        def GainDefenseForThisAttack(self, value: int, by_effect: 'Effect') -> None:
+            Unused(by_effect)
+            self.defense_bonus += value
+
     class AfterUnitAttackUnit(TriggerUnitMessage, AttackerMessage, DefenderNoneMessage, TriggerNonePlayerMessage, HasPreEventMessage):
         def __init__(self, attacker: 'Unit2', target: 'Unit2', attacked_you: 'Player|None', overkill_target: 'Unit2|None', took_damage_targets: List['Unit2'], calculated_damage: int, taken_damage: int, excess_damage: int, boost_faces: Sequence['CardFace'], would_atk_unit_message: 'Message.WhenUnitWouldAttackUnit', defense_messages: List['Message.AfterUnitDefenseInternal']) -> None:
             self.dealt_damage: Final = calculated_damage
