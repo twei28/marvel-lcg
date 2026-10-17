@@ -2341,7 +2341,7 @@ function accueilView() {
         // bien la, visible pour le navigateur comme pour les tests, et
         // n'apparaissait a l'ecran nulle part. D'ou l'enveloppe.
         const idAide = "acc-aide-" + tuile.cle;
-        grille.append(el("div", { class: "acc-tuile" },
+        grille.append(el("div", { class: "acc-tuile", "data-cle": tuile.cle },
             el("button", {
                 class: "acc-mode cut" + (nombres.length ? " avec-nombres" : ""),
                 onclick: () => partir(tuile, null),
@@ -2361,7 +2361,7 @@ function accueilView() {
 
     // L'éditeur de deck, sur l'accueil (demande du 16/10/2026) : on ne le trouvait
     // qu'en passant par un héros, puis un bouton de l'étape Decks.
-    grille.append(el("div", { class: "acc-tuile" },
+    grille.append(el("div", { class: "acc-tuile", "data-cle": "editeur" },
         el("button", { class: "acc-mode cut acc-editeur-tuile", onclick: () => { window.location.href = "/deck-builder.html"; }, "aria-describedby": "acc-aide-editeur" },
             el("span", { class: "acc-copy" },
                 el("b", { class: "mvl" }, t("Éditeur de deck")),
@@ -2374,7 +2374,7 @@ function accueilView() {
 
     // PUZZLE (17/10/2026) : la tuile est posée, le mode viendra plus tard. Grisée,
     // elle ne mène nulle part pour l'instant.
-    grille.append(el("div", { class: "acc-tuile" },
+    grille.append(el("div", { class: "acc-tuile", "data-cle": "puzzle" },
         el("button", { class: "acc-mode cut acc-puzzle-tuile", disabled: true, "aria-disabled": "true", "aria-describedby": "acc-aide-puzzle" },
             el("span", { class: "acc-copy" },
                 el("b", { class: "mvl" }, t("Puzzle")),
@@ -2390,7 +2390,7 @@ function accueilView() {
     // l'ecran : « tout ne rentre pas sur une page a cause des mises a jour ».
     // Une tuile de plus, au meme format que les modes, et tout le journal
     // derriere, classe par famille.
-    grille.append(el("div", { class: "acc-tuile" },
+    grille.append(el("div", { class: "acc-tuile", "data-cle": "nouveautes" },
         el("button", {
             class: "acc-mode cut acc-nouv-tuile",
             onclick: () => ouvrirNouveautes(),
@@ -2407,7 +2407,7 @@ function accueilView() {
 
     // Les options, comme en partie (demande du 15/10/2026) : la fenêtre
     // d'affichage (Normal / Sobre / Épuré, couleur du fond), rouverte à volonté.
-    grille.append(el("div", { class: "acc-tuile" },
+    grille.append(el("div", { class: "acc-tuile", "data-cle": "options" },
         el("button", {
             class: "acc-mode cut acc-options-tuile",
             onclick: () => demanderLAffichage({ rouvert: true }),
@@ -2421,6 +2421,16 @@ function accueilView() {
         el("span", { class: "acc-aide", id: "acc-aide-options", role: "tooltip" },
            t("Changer l'affichage du site et ses couleurs.")),
     ));
+
+    // L'ORDRE DES TUILES (17/10/2026), trois par rangée : jouer seul ou à plusieurs, puis
+    // la progression, puis les modes à part, puis le reste. Une tuile absente
+    // (ex. Coop en ligne hors serveur en ligne) laisse simplement la suite remonter.
+    const ORDRE = ["solo", "hotseat", "hotseat-en-ligne", "campaign", "legacy", "hasard",
+                   "bataille", "sandbox", "editeur", "puzzle", "options", "nouveautes"];
+    const rang = (c) => { const i = ORDRE.indexOf(c); return i < 0 ? ORDRE.length : i; };
+    [...grille.children]
+        .sort((a, b) => rang(a.dataset.cle) - rang(b.dataset.cle))
+        .forEach((n) => grille.append(n));
 
     if (estTel()) return accueilTel(tuiles, partir);
 
