@@ -115686,7 +115686,367 @@
    "custom": "Inkwire"
   }
  ],
- "tmnt_shinobi_bushido": [],
+ "tmnt_shinobi_bushido": [
+  {
+   "card_id": "sb001",
+   "type": "Upgrade",
+   "name": "Loyalty",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\nYour hero gets +1 DEF.\n<b>Forced Response</b>: After your hero makes a basic defense, remove 1 samurai counter from this card.\n<i>\"You gotta go through me first.\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb002",
+   "type": "Upgrade",
+   "name": "Rectitude",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\nYour hero gets +1 THW.\n<b>Forced Response</b>: After your hero makes a basic thwart, remove 1 samurai counter from this card.\n<i>\"We are running out of time!\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb003",
+   "type": "Upgrade",
+   "name": "Courage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\nYour hero gets +1 ATK.\n<b>Forced Response</b>: After your hero makes a basic attack, remove 1 samurai counter from this card.\n<i>\"I do not fear you.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb004",
+   "type": "Upgrade",
+   "name": "Glory",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Max 1 per player.\n<b>Hero Response</b>: After your hero defeats a side scheme, discard this card → place a total of 4 samurai counters among any number of [[OATH]] upgrades you control.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb005",
+   "type": "Upgrade",
+   "name": "Gratitude",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Uses": "2,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (2 samurai counters).\n<b>Action</b>: Exhaust this card and remove 1 samurai counter from it → heal 1 damage from your identity. You may discard 1 status card from your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb006",
+   "type": "Upgrade",
+   "name": "Mercy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Max 1 per player.\n<b>Hero Interrupt</b>: When an enemy would be defeated by your hero, discard this card instead → set that enemy's hit points to 1. Then, draw 3 cards.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb007",
+   "type": "Upgrade",
+   "name": "Integrity",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Response</b>: After you play an [[OATH]] upgrade, exhaust this card → place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"Actions speak louder than words.\"</i> —Odyn",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb008",
+   "type": "Upgrade",
+   "name": "Self-Control",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\n<b>Resource</b>: Exhaust this card and remove 1 samurai counter from it → generate a [wild] resource.\n<i>\"The path to self-control is long.\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb009",
+   "type": "Upgrade",
+   "name": "Devotion",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\n<b>Hero Action</b>: Exhaust this card and remove 1 samurai counter from it → ready a [[WEAPON]] upgrade you control.\n<i>\"Mastery does not come quickly.\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb010",
+   "type": "Event",
+   "name": "Tsujigiri",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal damage to an enemy equal to your ATK. If this attack defeats that enemy, you may place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"Time to test out my new blades.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb011",
+   "type": "Event",
+   "name": "Vow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove threat from a scheme equal to your hero's THW. If this removes the last threat on that scheme, search your deck for an [[OATH]] upgrade, and add it to your hand. <i>(Shuffle.)</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb012",
+   "type": "Event",
+   "name": "Kensei",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Action</b>: Exhaust a [[WEAPON]] upgrade you control → ready your hero.\n<i>\"A warrior is always ready.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb013",
+   "type": "Upgrade",
+   "name": "Santōryū Ōgi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Max 1 per deck. Attached upgrade loses the restricted keyword.\n<b>Response</b>: After this card enters play, search your deck and discard pile for a [[WEAPON]] upgrade. <i>(Shuffle.)</i> Put that upgrade into play (paying its resource cost) with this card attached.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb014",
+   "type": "Upgrade",
+   "name": "* Kōshō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "2,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH",
+    "TITLE",
+    "TRAINING"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (2 samurai counters). Attach to an ally you control.\nMax 1 [[TRAINING]] upgrade per ally.\n<b>Hero Action</b>: Exhaust this card and remove 2 samurai counters from it → heal 2 damage from attached ally and ready it.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb015",
+   "type": "Event",
+   "name": "Oathbreaker",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Interrupt</b>: When an encounter card is revealed from the encounter deck, discard an [[OATH]] upgrade you control → cancel all of that encounter card's effects and discard it.\n<i>\"I will do what I must to save them all...\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb016",
+   "type": "Upgrade",
+   "name": "* Wakizashi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Restricted.\n<b>Hero Response</b>: After an [[OATH]] upgrade is discarded from play, exhaust this card → draw 1 card.\n<i>\"I prefer the traditional dashido.\"</i> —Moja",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb017",
+   "type": "Ally",
+   "name": "* Uno",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "NINJA",
+    "SAMURAI",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "[star] <b>Response</b>: After Uno uses a basic power, place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"You lack discipline.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb018",
+   "type": "PlayerSideScheme",
+   "name": "* Musha Shugyō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "StartingThreat": "5",
+    "Class": "Bushido",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Victory 0.\nCharacters other than the owner of this card cannot remove threat from it.\n<b>When Defeated</b>: The owner of this card may search their deck and discard pile for up to 2 [[OATH]] upgrades and put them into play. <i>(Shuffle.)</i>\n<i>\"I will endure this soul's winter.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb019",
+   "type": "Upgrade",
+   "name": "* Gusoku",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Response</b>: After you use one of your basic powers, exhaust this card and remove 1 samurai counter from an [[OATH]] upgrade you control → ready your hero.\n<i>This armor has seen many battles.</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb020",
+   "type": "Event",
+   "name": "Iaidō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Interrupt</b>: When you use a basic power, you get +2 to that power for this use. You may place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"Pay close attention, I won't show you twice...\"</i> —Ronin",
+   "custom": "Inkwire"
+  }
+ ],
  "tmnt_shinobi_kuji_kiri": [],
  "tmnt_shinobi_ninjutsu": [],
  "tmnt_shinobi_taijutsu": [],
@@ -116093,5 +116453,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "43bfa84e5ec31623397142a0646870d129c2877e3645020be24717e1a20b1c23"
+ "checksum": "2b2b9bffe6c49bc798dee9bd1026bfc8558e4f6cf342b1774e69639229c52739"
 }
