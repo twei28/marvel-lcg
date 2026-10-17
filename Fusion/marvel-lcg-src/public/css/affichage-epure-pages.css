@@ -1293,6 +1293,6 @@ html[data-epure] .brand-sub {
   letter-spacing: 0.03em;
 }
 html[data-epure] .brand-sub {
-  background: #e62429;
+  background: #e62429 !important;
   color: #fff;
 }
