@@ -1,0 +1,13 @@
+{
+ "_doc": "Arts alternatifs de cartes de deck et cartes exclusives (regle de l'utilisateur, 17/10/2026). Source UNIQUE : tools/generer_arts_cartes.py en tire public/js/prepare/arts-cartes-table.js (preparation et deck-builder) et ui-app/src/board/arts-cartes-table.ts (plateau). Ne modifier que ce fichier, puis relancer le generateur (python3 tools/generer_arts_cartes.py ; --verifier pour controler l'alignement).",
+ "series": {
+  "tmnt": {
+   "nom": "TMNT",
+   "nom_en": "TMNT",
+   "heros_cartes": ["tl001", "td001", "tm001", "tr001", "tv001", "tc001", "ta001", "tj001"],
+   "heros_ids": ["leonardo", "donatello", "michelangelo", "raphael", "venus", "casey_jones", "alopex", "jennika"],
+   "sets_exclusifs": ["TMNT Aggression", "TMNT Basic", "TMNT Justice", "TMNT Leadership", "TMNT Protection", "TMNT Dual-Aspect"]
+  }
+ },
+ "cartes": {}
+}
