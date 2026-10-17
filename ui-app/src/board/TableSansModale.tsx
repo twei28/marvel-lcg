@@ -359,6 +359,8 @@ export type CibleSurTable = {
   /** Rang dans une sélection ordonnée (1, 2…) : le gros numéro posé sur la carte. */
   ordre?: number
   fois?: number
+  /** Ce que fait le clic, écrit sous la carte : une PILE à ouvrir (« Chercher dans le deck »). */
+  etiquette?: string
   agir: () => void
 }
 
@@ -428,7 +430,22 @@ function CarteCiblable({ cible }: { cible: CibleSurTable }) {
         style={boiteStyle(boite)}
         onClick={cible.agir}
         aria-pressed={cible.choisie}
+        aria-label={cible.etiquette}
       />
+      {cible.etiquette ? (
+        <button
+          type="button"
+          className="tsm-etiquette"
+          style={
+            boite.y + boite.h + 44 > (cadreDuPlateau()?.boite.h ?? Number.POSITIVE_INFINITY)
+              ? { left: `${boite.x + boite.w / 2}px`, top: `${boite.y - 6}px`, transform: 'translate(-50%, -100%)' }
+              : { left: `${boite.x + boite.w / 2}px`, top: `${boite.y + boite.h + 6}px` }
+          }
+          onClick={cible.agir}
+        >
+          {cible.etiquette}
+        </button>
+      ) : null}
       {cible.ordre !== undefined || (cible.fois ?? 0) > 1 ? (
         <span
           className="tsm-numero"

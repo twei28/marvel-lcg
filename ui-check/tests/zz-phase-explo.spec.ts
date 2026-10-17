@@ -81,6 +81,11 @@ async function unPas(page: Page, enPhase: boolean) {
   if ((await page.locator('.tsm-bandeau.est-question .tsm-compte').count()) > 0 && (await aCibler.count()) > 0) {
     if (await cliquer(aCibler.first())) return;
   }
+  // La fenetre de recherche (ouverte par la pile) : la premiere carte, puis son Valider.
+  const carteSel = page.locator('.plateau-selecteur.est-fenetre .plateau-selecteur-carte:not(.est-choisie)');
+  const validerSel = page.locator('.plateau-selecteur-valider:not([disabled])');
+  if ((await validerSel.count()) > 0 && (await cliquer(validerSel.first()))) return;
+  if ((await carteSel.count()) > 0 && (await cliquer(carteSel.first()))) return;
   const validerTable = page.locator('.tsm-bandeau .tsm-bouton:not([disabled])', { hasText: /^Valider/ });
   if ((await validerTable.count()) > 0 && (await cliquer(validerTable.first()))) return;
   const confirmer = await visible(page, /^Confirmer$/);

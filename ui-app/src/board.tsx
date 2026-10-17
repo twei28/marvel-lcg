@@ -562,6 +562,18 @@ function idsPulsePourDemandeEnnemie(
   return ids
 }
 
+/** Ce qu'on fait dans la pile qui tient cette carte, dit sur la pile elle-même. */
+function libelleDeLaPile(id: number, monde: World | undefined): string {
+  const dans = (cartes: readonly WorldCard[] | undefined) => cartes?.some((c) => c.id === id) ?? false
+  if (dans(monde?.encounter_discard_pile)) return t('Chercher dans la défausse rencontre')
+  if (dans(monde?.encounter_deck)) return t('Chercher dans le paquet rencontre')
+  for (const joueur of monde?.players ?? []) {
+    if (dans(joueur.player_discard_pile) || dans(joueur.additional_discard_pile)) return t('Prendre dans la défausse')
+    if (dans(joueur.player_deck) || dans(joueur.additional_deck)) return t('Chercher dans le deck')
+  }
+  return t('Ouvrir la pile')
+}
+
 function ciblesHorsTablePourOption(
   option: Option,
   cartesParId: Map<number, WorldCard>,
@@ -4134,6 +4146,36 @@ export function PagePartie({
       : `${nom} ${t('perd')} ${valeur} ${t('menace')}`
   }, [effets, cartesMondeParId])
 
+  const ciblageSurTable =
+    !sceneCentrale &&
+    phaseMechantEnCours &&
+    interaction.option !== undefined &&
+    (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'confirm')
+
+  // UNE RECHERCHE S'OUVRE PAR SA PILE (17/10/2026) : sur la table, pendant la phase, la fenêtre de
+  // choix ne surgit plus seule. Le deck ou la défausse où sont les cartes cherchées brille, avec ce
+  // qu'on y fait (« Chercher dans le deck »), et c'est le clic sur la pile qui ouvre la fenêtre, avec
+  // les seules cartes de cette pile. Changer d'action referme la pile.
+  const [pileFouillee, setPileFouillee] = useState<number | undefined>()
+  useEffect(() => setPileFouillee(undefined), [interaction.option])
+  const pilesARechercher = useMemo(() => {
+    const piles = new Map<number, string>()
+    if (!ciblageSurTable || !plateau) return piles
+    for (const cible of interaction.ciblesHorsTable) {
+      const id = Number(cible.props.id)
+      const representant = plateau.representantsDePile.get(id)
+      if (representant === undefined || piles.has(representant)) continue
+      piles.set(representant, libelleDeLaPile(id, etat.monde))
+    }
+    return piles
+  }, [ciblageSurTable, plateau, interaction.ciblesHorsTable, etat.monde])
+  const porteDePileFermee = pilesARechercher.size > 0 && (pileFouillee === undefined || !pilesARechercher.has(pileFouillee))
+  const ciblesHorsTableVisibles = porteDePileFermee
+    ? []
+    : pilesARechercher.size > 1
+      ? interaction.ciblesHorsTable.filter((c) => plateau?.representantsDePile.get(Number(c.props.id)) === pileFouillee)
+      : interaction.ciblesHorsTable
+
   if (!etat.monde || !plateau || voile) {
     return (
       <p className="plateau-message" role={etat.erreur ? 'alert' : undefined}>
@@ -4222,17 +4264,12 @@ export function PagePartie({
   const ciblageEnScene = sceneCentrale && phaseMechantEnCours && interaction.option !== undefined
   // « Sur la table », sans fenêtre (16/10/2026) : choisir des cibles, dans l'ordre s'il le faut, se fait
   // sur les cartes elles-mêmes. Le paiement garde le panneau d'action.
-  const ciblageSurTable =
-    !sceneCentrale &&
-    phaseMechantEnCours &&
-    interaction.option !== undefined &&
-    (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'confirm')
   // Rapport n76 (Yarro, 10/10/2026) : quand TOUTES les cibles sont hors table,
   // le selecteur devient une fenetre avec Annuler / Valider, et le panneau
   // central (qui le recouvrait) se retire. Des cibles aussi sur la table : la
   // table doit rester cliquable, on garde l'ancien couple.
   const fenetreChoix =
-    selecteurOuvert &&
+    ciblesHorsTableVisibles.length > 0 &&
     !(ciblageEnScene && nouvelleScenePC) &&
     interaction.ciblesHorsTable.length >= interaction.assistant.ciblePossibles
   // LA QUESTION STRUCTUREE du cartouche du bas (scene PC, lots 4 et 5) : la
@@ -4355,7 +4392,7 @@ export function PagePartie({
           hors du cartouche (piege 29). */}
       {ciblageEnScene && nouvelleScenePC ? null : (
         <SelecteurCibles
-          cibles={interaction.ciblesHorsTable}
+          cibles={ciblesHorsTableVisibles}
           titre={interaction.option ? nomLisible(interaction.option) : ''}
           survoler={setApercuSelecteur}
           fenetre={
@@ -4703,9 +4740,19 @@ export function PagePartie({
                   titre={nomLisible(interaction.option!)}
                   choisies={interaction.cibles.length}
                   maximum={interaction.option!.target_num_range[1]}
-                  cibles={[...interaction.cartes.entries()]
-                    .filter(([, e]) => e.role === 'cible' && e.agir !== undefined)
-                    .map(([id, e]) => ({ id, choisie: e.choisie, ordre: e.ordre, fois: e.fois, agir: e.agir! }))}
+                  cibles={[
+                    ...[...interaction.cartes.entries()]
+                      .filter(([id, e]) => e.role === 'cible' && e.agir !== undefined && !pilesARechercher.has(id))
+                      .map(([id, e]) => ({ id, choisie: e.choisie, ordre: e.ordre, fois: e.fois, agir: e.agir! })),
+                    ...(porteDePileFermee
+                      ? [...pilesARechercher].map(([id, libelle]) => ({
+                          id,
+                          choisie: false,
+                          etiquette: libelle,
+                          agir: () => setPileFouillee(id),
+                        }))
+                      : []),
+                  ]}
                   prete={interaction.prete}
                   raison={interaction.raison}
                   valider={interaction.valider}
