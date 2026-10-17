@@ -293,7 +293,12 @@ function cartes(liste: readonly unknown[] | undefined, rendu: Rendu): WorldCard[
 function enUnites(
   liste: WorldCard[],
   rendu: Rendu,
-  options: { dansLaMain?: boolean; proprietaire?: string; collectionRessources?: string } = {}
+  options: {
+    dansLaMain?: boolean
+    proprietaire?: string
+    collectionRessources?: string
+    herosArt?: string
+  } = {}
 ): UniteAffichee[] {
   const ids = new Set(liste.map((carte) => carte.id))
   const attacheesPar = new Map<number, WorldCard[]>()
@@ -310,6 +315,7 @@ function enUnites(
     dansLaMain: options.dansLaMain,
     proprietaire: options.proprietaire,
     collectionRessources: options.collectionRessources,
+    herosArt: options.herosArt,
   }
 
   // `vus` n'est pas de la prudence gratuite : un etat corrompu ou deux cartes
@@ -376,7 +382,12 @@ function enUnites(
 function posees(
   liste: readonly unknown[] | undefined,
   rendu: Rendu,
-  options: { dansLaMain?: boolean; proprietaire?: string; collectionRessources?: string } = {}
+  options: {
+    dansLaMain?: boolean
+    proprietaire?: string
+    collectionRessources?: string
+    herosArt?: string
+  } = {}
 ): UniteAffichee[] {
   const valides = cartes(liste, rendu)
   return valides.length === 0 ? [] : enUnites(valides, rendu, options)
@@ -785,6 +796,11 @@ export function construirePlateau(world: World, options: Options): Plateau {
     return collectionPourJoueur(heros?.card_id, heros?.id, arts)
   }
   const notreCollection = collectionDe(notre)
+  // Heros proprietaire d'une zone : art par defaut des cartes de deck (TMNT).
+  const herosDe = (joueur: WorldPlayer | undefined): string | undefined =>
+    joueur?.area_hero?.[0]?.card_id
+  const notreHeros = herosDe(notre)
+  const renduNotre: Rendu = { ...rendu, ctx: { ...rendu.ctx, herosArt: notreHeros } }
 
   /**
    * Ce que le SCENARIO resout, c'est-a-dire la liste du monde moins ce qui
@@ -896,11 +912,11 @@ export function construirePlateau(world: World, options: Options): Plateau {
       'terrain-combat',
       t('Alliés, sbires et environnement'),
       [
-        posees(notre?.allies, rendu, { proprietaire: nomHero(notre) }),
+        posees(notre?.allies, rendu, { proprietaire: nomHero(notre), herosArt: notreHeros }),
         posees(notre?.engaged_enemies, rendu, { proprietaire: nomHero(notre) }),
         // En multijoueur, les autres joueurs partagent l'aire : leur ligne de combat.
         ...autres.flatMap((joueur) => [
-          posees(joueur.allies, rendu, { proprietaire: nomHero(joueur) }),
+          posees(joueur.allies, rendu, { proprietaire: nomHero(joueur), herosArt: herosDe(joueur) }),
           posees(joueur.engaged_enemies, rendu, { proprietaire: nomHero(joueur) }),
         ]),
         // ⚠ TOUJOURS EN DERNIER (25/09/2026, demande de l'utilisateur :
@@ -991,6 +1007,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
       posees(notre?.reserve, rendu, {
         dansLaMain: true,
         collectionRessources: notreCollection,
+        herosArt: notreHeros,
       }),
     ]),
 
@@ -1009,6 +1026,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
     emplacement('rising-tide', t('Ta marée montante'), [
       posees(notre?.rising_tide, rendu, {
         collectionRessources: notreCollection,
+        herosArt: notreHeros,
       }),
     ]),
 
@@ -1018,13 +1036,13 @@ export function construirePlateau(world: World, options: Options): Plateau {
     // ait besoin de resynchroniser deux listes.
     ((): EmplacementAffiche | undefined => {
       const groupesEtProprietaires: Array<[UniteAffichee[], number, CleBrique]> = [
-        [posees(notre?.area_hero, rendu), options.playerId, 'heros'],
-        [posees(soutiensHorsMeteo, rendu), options.playerId, 'soutiens'],
+        [posees(notre?.area_hero, rendu, { herosArt: notreHeros }), options.playerId, 'heros'],
+        [posees(soutiensHorsMeteo, rendu, { herosArt: notreHeros }), options.playerId, 'soutiens'],
         [posees(notre?.obligations_area, rendu), options.playerId, 'soutiens'],
         // La carte en cours de resolution se pose aupres de SON heros, le
         // temps que son texte s'applique : c'est ce qu'on fait sur une vraie
         // table, et non chez le mechant.
-        [posees(notre?.area_processing, rendu), options.playerId, 'soutiens'],
+        [posees(notre?.area_processing, rendu, { herosArt: notreHeros }), options.playerId, 'soutiens'],
         ...autres.flatMap((joueur, index): Array<[UniteAffichee[], number, CleBrique]> => {
           const idJoueur = joueurs.indexOf(joueur)
           return [
@@ -1035,9 +1053,9 @@ export function construirePlateau(world: World, options: Options): Plateau {
               idJoueur,
               'heros',
             ],
-            [posees(joueur.area_hero, rendu), idJoueur, 'heros'],
-            [posees(joueur.supports, rendu), idJoueur, 'soutiens'],
-            [posees(joueur.area_processing, rendu), idJoueur, 'soutiens'],
+            [posees(joueur.area_hero, rendu, { herosArt: herosDe(joueur) }), idJoueur, 'heros'],
+            [posees(joueur.supports, rendu, { herosArt: herosDe(joueur) }), idJoueur, 'soutiens'],
+            [posees(joueur.area_processing, rendu, { herosArt: herosDe(joueur) }), idJoueur, 'soutiens'],
           ]
         }),
       ]
@@ -1075,7 +1093,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
             videAffichable: true,
           },
         ],
-        rendu
+        renduNotre
       ),
     ]),
 
@@ -1151,6 +1169,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
       posees(notre?.hand_cards, rendu, {
         dansLaMain: true,
         collectionRessources: notreCollection,
+        herosArt: notreHeros,
       }),
     ]),
   ].filter((e): e is EmplacementAffiche => e !== undefined)

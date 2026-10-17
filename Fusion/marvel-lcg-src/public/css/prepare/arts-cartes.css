@@ -1,0 +1,25 @@
+/* Fenetre « arts alternatifs » des cartes d'un deck (arts-cartes-fenetre.js).
+   Epuree : texte, vignettes, un contour rouge Marvel sur le choix actif. */
+.ac-panneau { width: min(760px, 94vw); }
+.ac-question { margin: 6px 0 14px; font-size: 16px; line-height: 1.4; }
+.ac-ne-plus { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; opacity: .8; cursor: pointer; }
+.ac-ne-plus input { accent-color: #ec1d24; width: 16px; height: 16px; }
+.ac-grille {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 14px; max-height: 56vh; overflow-y: auto; padding: 4px 6px 4px 2px;
+}
+.ac-carte { display: flex; flex-direction: column; gap: 6px; }
+.ac-nom { font-size: 13px; font-weight: 700; line-height: 1.2; }
+.ac-nom small { font-weight: 400; opacity: .7; }
+.ac-vignettes { display: flex; gap: 8px; }
+.ac-vignette {
+  flex: 1 1 0; min-width: 0; padding: 0; background: none; color: inherit; cursor: pointer;
+  border: 2px solid transparent; border-radius: 7px; display: flex; flex-direction: column;
+  align-items: center; gap: 3px; opacity: .72; transition: opacity .12s, border-color .12s, transform .12s;
+}
+.ac-vignette img { width: 100%; border-radius: 5px; display: block; }
+.ac-vignette span { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding-bottom: 2px; }
+.ac-vignette:hover { opacity: 1; transform: translateY(-2px); }
+.ac-vignette.on { opacity: 1; border-color: #ec1d24; }
+.ac-vignette:focus-visible { outline: 2px solid #ec1d24; outline-offset: 2px; }
+html.tel .ac-grille { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); max-height: 50vh; }
