@@ -1596,4 +1596,7 @@ html[data-epure] .acc-titre h1.affiche {
   font-size: 150px !important;
   line-height: 0.92 !important;
   margin: 0 !important;
+  /* Double ombre bleu Captain puis noire, contour noir fin (choix du 17/10/2026). */
+  text-shadow: 5px 5px 0 #3f86e0, 10px 10px 0 #05070b !important;
+  -webkit-text-stroke: 3px #05070b !important;
 }
