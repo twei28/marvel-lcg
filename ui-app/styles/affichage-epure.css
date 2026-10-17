@@ -1749,7 +1749,7 @@ html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-texte {
   cursor: grab;
   text-align: center;
 }
-html[data-epure] .demande-centrale .dc-texte:active {
+html[data-epure] .demande-centrale:not(.est-en-scene) .dc-texte:active {
   cursor: grabbing;
 }
 html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-texte strong {
@@ -1761,7 +1761,7 @@ html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-texte s
   text-transform: uppercase;
   color: #8fbcf5;
 }
-html[data-epure] .demande-centrale .dc-texte .dc-reagit {
+html[data-epure] .demande-centrale:not(.est-en-scene) .dc-texte .dc-reagit {
   display: block;
   margin-top: 2px;
   font-family: var(--ep-titres);
@@ -1775,7 +1775,7 @@ html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .dc-texte .
   display: none;
 }
 /* Le texte de l'effet, dans un encadré. */
-html[data-epure] .demande-centrale .dc-effet {
+html[data-epure] .demande-centrale:not(.est-en-scene) .dc-effet {
   display: block;
   margin: 10px 0 0;
   padding: 8px 12px;
@@ -1787,7 +1787,7 @@ html[data-epure] .demande-centrale .dc-effet {
   background: rgba(17, 19, 24, 0.7);
   border: 1px solid #2c3445;
 }
-html[data-epure] .demande-centrale .dc-effet b {
+html[data-epure] .demande-centrale:not(.est-en-scene) .dc-effet b {
   color: #ffffff;
   font-weight: 700;
 }
