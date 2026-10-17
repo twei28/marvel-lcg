@@ -1225,9 +1225,21 @@ html[data-epure] .plateau-barre {
 }
 
 /* « ROUND » en lettrage Marvel, accent bleu clair lisible sur la barre. */
+/* ⚠ Cette police ne contient QUE les lettres A à Z et le point : pas un chiffre. « ROUND 1 » dessinait
+   donc le « 1 » avec la police de secours (Arial Narrow, fine et claire), qui jurait avec le lettrage
+   (17/10/2026, « Round 1, c'est pas la bonne typo »). Les chiffres viennent d'Anton, droit et
+   condensé comme le lettrage Marvel ; `size-adjust` leur donne la même hauteur que les lettres. */
 @font-face {
   font-family: 'MarvelFan';
   src: url('/public/fonts/MarvelRegular-Dj83.ttf') format('truetype');
+  unicode-range: U+0041-005A, U+002E;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MarvelFan';
+  src: url('/public/fonts/Anton-Regular.ttf') format('truetype');
+  unicode-range: U+0030-0039;
+  size-adjust: 82%;
   font-display: swap;
 }
 html[data-epure] .plateau-barre .bh-etat strong {
