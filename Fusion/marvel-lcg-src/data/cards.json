@@ -115691,6 +115691,189 @@
  "tmnt_shinobi_ninjutsu": [],
  "tmnt_shinobi_taijutsu": [],
  "tmnt_shinobi_dual": [],
- "tmnt_shinobi_paths": [],
- "checksum": "9f7a2a50b4e04a789a63b83e71808d6e9e198c0260980066977310135acf88de"
+ "tmnt_shinobi_paths": [
+  {
+   "card_id": "se001",
+   "type": "Path",
+   "name": "Kagemusha",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "NINJUTSU"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\nYour hero gains the [[NINJA]] trait.\n<i>Shadow Stride</i> — <b>Hero Action</b>: Exhaust this card → cloak your hero.\n<i>\"I am the shadows.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se002",
+   "type": "Path",
+   "name": "Onmyōdō",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "KUJI-KIRI"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\nYou gain the [[MYSTIC]] trait.\n<i>Insight</i> — <b>Hero Action</b>: Exhaust this card → look at the top 2 cards of any deck and put them back in the same order.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se003",
+   "type": "Path",
+   "name": "Samurai",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "BUSHIDO"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\n<i>Way of the Warrior</i> — <b>Hero Action</b>: Exhaust this card and remove a total of 2 samurai counters from among [[OATH]] upgrades you control → ready your hero and draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se004",
+   "type": "Path",
+   "name": "Shihan",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "TAIJUTSU"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\n<i>Recenter</i> — <b>Hero Interrupt</b>: When the player phase ends, discard the top 2 cards of your deck → return 1 Taijutsu card from your discard pile to your hand.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se005",
+   "type": "Path",
+   "name": "* The Last Rōnin",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Bushido;Kuji-Kiri;Ninjutsu;Taijutsu"
+   },
+   "traits": [
+    "SENPAI"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\nYou may play cards tucked here as if they were in your hand. (Max 2 tucked cards.)\n<i>Kanpeki</i> — <b>Action</b>: Exhaust this card and tuck 1 Shinobi card from your hand under here → draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se006",
+   "type": "Path",
+   "name": "Yoshimitsu",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Bushido;Kuji-Kiri"
+   },
+   "traits": [
+    "BUSHIDO",
+    "KUJI-KIRI"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\nYou get +2 hit points.\n<i>Magnificence</i> — <b>Hero Action</b>: Take 1 damage and exhaust this card → you get +1 THW, +1 ATK, and +1 DEF until the end of the round.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se007",
+   "type": "Path",
+   "name": "Yamabushi",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Kuji-Kiri;Taijutsu"
+   },
+   "traits": [
+    "KUJI-KIRI",
+    "TAIJUTSU"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\nYou gain the [[TEMPORAL]] trait.\n<i>Meditate</i> — <b>Hero Action</b>: Exhaust this card and your hero → draw 3 cards. Choose and discard 1 card from your hand.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se008",
+   "type": "Path",
+   "name": "Onigari",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Kuji-Kiri;Ninjutsu"
+   },
+   "traits": [
+    "KUJI-KIRI",
+    "NINJUTSU"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\nYou gain the [[PSIONIC]] trait.\n<i>Dark Visions</i> — <b>Hero Response</b>: After you defeat a minion or side scheme, exhaust this card → cloak your hero and draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se009",
+   "type": "Path",
+   "name": "Ashigaru",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Bushido;Taijutsu"
+   },
+   "traits": [
+    "BUSHIDO",
+    "TAIJUTSU"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\nYou gain the [[SOLDIER]] trait.\n<i>Light of Foot</i> — <b>Hero Resource</b>: Exhaust this card → generate a [wild] resource. If you paid for a Shinobi card with this resource, draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se010",
+   "type": "Path",
+   "name": "Onmitsu",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Ninjutsu;Taijutsu"
+   },
+   "traits": [
+    "NINJUTSU",
+    "TAIJUTSU"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\n<i>Gardener</i> — <b>Hero Response</b>: After you play an [[ATTACK]] or [[DEFENSE]] event, take 1 damage → daze an enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "se011",
+   "type": "Path",
+   "name": "Yōjimbō",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Bushido;Ninjutsu"
+   },
+   "traits": [
+    "BUSHIDO",
+    "NINJUTSU"
+   ],
+   "set_name": "TMNT Shinobi Paths",
+   "text": "Permanent.\nYou get -1 hand size.\n<i>Bodyguard</i> — <b>Hero Interrupt</b>: When an enemy attacks, exhaust this card → declare your hero as the defender without exhausting them.\n<i>\"I stand with you.\"</i>",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "8042a42a91ca89e674b0aed182218375e8924de7c0cae17c4a4952f51d2350a4"
 }

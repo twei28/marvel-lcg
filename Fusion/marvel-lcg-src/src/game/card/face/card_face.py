@@ -235,6 +235,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "DINOSAUR", "PARTY", "MONK", "SAMURAI", "JACKAL", "CAT", "DETECTIVE", "GECKO", "MOSQUITO",
         "ONNA-MUSHA", "BAT", "CLAW CLAN", "NEUTRINO", "MAXIM", "HERO", "WEASEL", "MASSEUSE", "PIG",
         "SWORDSMAN", "CRAB", "RABBIT",
+        # AJOUT (17/10/2026, pack TMNT Shinobi, Inkwire) : OATH (ameliorations Bushido a jetons samurai,
+        # deja sur tj006) et SENPAI (Sosaiken tj011, The Last Ronin se005), lus par « OATH upgrades you
+        # control » (Samurai, Way of the Warrior). Declaratifs a l'execution.
+        "OATH", "SENPAI",
+        # Les Paths Shinobi (se001-se011) impriment leur(s) type(s) Shinobi en ligne de traits.
+        "BUSHIDO", "KUJI-KIRI", "NINJUTSU", "TAIJUTSU",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

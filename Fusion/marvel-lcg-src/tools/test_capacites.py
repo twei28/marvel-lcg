@@ -65668,6 +65668,11 @@ def executer_un_cas(game_dir, port, index):
         if "mode_campaign" not in scene.rules:
             scene.rules.append("mode_campaign")
     remplir_les_decks_vides(scene)
+    # `deck_ajoute` (17/10/2026, pack TMNT Shinobi) : card_id ajoutes au `player_deck` du joueur 1 AVANT la mise
+    # en place, comme le ferait le constructeur de deck. Sert a prouver qu'un PATH choisi au deck-building
+    # (`PlayerSetup.MettreLesPathsDeCoteEtEnJeuAuSetup`) est mis de cote puis en jeu au Setup, pour n'importe quel heros.
+    if cas.get("deck_ajoute"):
+        scene.players[0].player_deck = list(scene.players[0].player_deck or []) + list(cas["deck_ajoute"])
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
     try:

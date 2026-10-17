@@ -289,6 +289,32 @@ class PlayerSetup:
                 imposees.append(str(Random.RandomChoice(pioche)))
         return imposees
 
+    @staticmethod
+    def EstUnPath(card_id: str) -> bool:
+        """Le card_id designe-t-il une carte de type PATH (catalogue, `paper.type`) ?"""
+        from cards.database import CardsDB
+        paper = CardsDB.papers.get(str(card_id).split(',')[0])
+        return paper is not None and paper.type == "Path"
+
+    @staticmethod
+    def MettreLesPathsDeCoteEtEnJeuAuSetup(player: 'Player', hero_card: 'CardFace', chemins: Sequence[str]) -> None:
+        """Fabrique chaque Path dans la reserve du joueur (`additional_discard_pile`, comme les cartes
+        mises de cote) et le met en jeu SOUS SON CONTROLE quand le Setup de la partie commence."""
+        if not chemins:
+            return
+        from game.card.factory import CardFactory
+        from game.effect.rule import GameRule
+        from game.operate.run_at import RunAt
+        from game.card.face.card_type import Path
+
+        cartes = CardFactory.GenerateCards(chemins, player.additional_discard_pile, player.world)
+        for carte in cartes:
+            def mettre_en_jeu(carte=carte):
+                for face in carte.printed_faces:
+                    if Path.IsType(face):
+                        face.PutIntoPlay(player, GameRule(hero_card), under_control=True)
+            RunAt.WhenGameBeginSetup(hero_card, mettre_en_jeu)
+
     def SelectIdentity(self, name: str, hero_names: Sequence[str], hero_deck: Sequence[str], obligations: Sequence[str], nemesis_set: Sequence[str], player_deck: Sequence[str]) -> None:
         from game.effect.rule import GameRule
         from game.message import Message
@@ -383,7 +409,20 @@ class PlayerSetup:
         # deck comme n'importe quelle autre. Liste vide pour tout deck qui ne
         # contient aucun aspect concerne.
         player_hero_deck += PlayerSetup.CartesImposeesParLesAspects(player_hero_deck, player.world)
+
+        # AJOUT (17/10/2026, pack TMNT Shinobi, Inkwire) : LE PATH CHOISI AU DECK-BUILDING.
+        # « During deck-building, select a Shinobi Path card [...] Make sure to put your Path card
+        # into play during setup. » Un Path (type imprime PATH, card_type/path.py) n'est JAMAIS
+        # melange au deck : il est MIS DE COTE puis mis en jeu au Setup (etape « Set Up », avant la
+        # pioche de depart, donc le « -1 hand size » vaut deja pour la main de depart), pour N'IMPORTE
+        # QUEL heros. Le Path propre a un heros (Sosaiken de Jennika, `tj011`) n'est pas concerne : il
+        # ne figure pas dans ces listes, `BeginGameWithSetAside` de tj001b le gere. Voir
+        # docs/reference/mots-cles/shinobi.md, §Path.
+        chemins = [c for c in player_hero_deck if PlayerSetup.EstUnPath(c)]
+        if chemins:
+            player_hero_deck = [c for c in player_hero_deck if not PlayerSetup.EstUnPath(c)]
         CardFactory.GenerateCards(player_hero_deck, player.player_deck, player.world)
+        PlayerSetup.MettreLesPathsDeCoteEtEnJeuAuSetup(player, hero_card, chemins)
 
         player.stat.ResetPlayedRevealedCards()
         player.flag.Reset()
