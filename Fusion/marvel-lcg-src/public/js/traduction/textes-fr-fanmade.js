@@ -4458,7 +4458,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_aggression — Suppressing Fire (Upgrade), reskin de 46014
     'ua039': "Attachez cette carte à un sbire. 1 max par sbire.\n<b>Interruption de héros</b> : quand vous attaquez et vainquez le sbire attaché, soignez 2 dégâts de votre héros.",
     // --- TMNT Basic (ub) : ajouter les cartes ubNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Basic (ub) : ajouter les cartes ubNNN ci-dessous, dans ce bloc seulement ---
     // tmnt_aspect_basic — April O'Neil (Ally), reskin de 01084 Nick Fury
     'ub001': "<b>Réponse forcée</b> : après qu'April O'Neil est entrée en jeu, choisissez une option : retirez 2 menaces d'une manigance, piochez 3 cartes ou infligez 4 dégâts à un ennemi. À la fin du round, si April O'Neil est toujours en jeu, défaussez-la.",
     // tmnt_aspect_basic — Assess the Situation (Event), reskin de 12033
@@ -4576,8 +4575,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_basic — Weapon Harness (Upgrade), 20021 Side Holster modifiée
     'ub059': "1 max par joueur. Jouez cette carte uniquement si votre identité a le trait [[NINJA]].\nVous pouvez contrôler 2 améliorations [[ARME]] supplémentaires dotées du mot-clé Restreint.",
     // --- TMNT Justice (uj) : ajouter les cartes ujNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Basic (ub) : ajouter les cartes ubNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Justice (uj) : ajouter les cartes ujNNN ci-dessous, dans ce bloc seulement ---
     // Reskins : texte de textes-fr-complets[<officielle>], nom remplace, citation ajoutee. Nouvelles : traduction.
     'uj001': "<b>Action de héros</b> : soignez 2 dégâts d'un ennemi → désorientez cet ennemi.\n<i>« Je ne sais pas où tout a dérapé. Ce n'est pas l'avenir que je voulais créer... »</i> —Old Hob",
     'uj002': "Attachez cette carte à une manigance. 1 max par manigance.\n<b>Interruption</b> : quand la manigance annexe attachée est déjouée, cherchez un allié dans votre deck ou votre pile de défausse et ajoutez-le à votre main. Mélangez votre deck.",
@@ -4619,9 +4616,6 @@ export const TEXTES_FR_FANMADE = {
     'uj038': "<b>Action</b> : inclinez Wingnut et dépensez les ressources suivantes [energy][energy] → trouvez Screwloose et mettez-le en jeu.\n[acceleration]",
     'uj039': "<b>Réponse</b> : après avoir joué Zebulon de votre main, placez 1 jeton Brûlure sur lui pour chaque carte dans votre main (jusqu'à un maximum de 4).\n<b>Action</b> : retirez 1 jeton Brûlure de Zebulon → retirez 1 menace d'une manigance.",
     'uj040': "Jouez cette carte uniquement si votre identité a le trait [[MYSTIQUE]]. 1 max par deck.\n<b>Action de héros</b> <i>(contre)</i> : choisissez une manigance et défaussez jusqu'à 4 cartes du dessus de votre deck → retirez 1 menace de cette manigance pour chaque carte ainsi défaussée.",
-    // --- TMNT Leadership (ul) : ajouter les cartes ulNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Basic (ub) : ajouter les cartes ubNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Justice (uj) : ajouter les cartes ujNNN ci-dessous, dans ce bloc seulement ---
     // --- TMNT Leadership (ul) : ajouter les cartes ulNNN ci-dessous, dans ce bloc seulement ---
     'ul001': "Riposte 1.\n<b>Réponse</b> : après qu'Alopex est entrée en jeu, camouflez-la.\n<i>« Maintenant, place à la partie amusante. »</i>",
     'ul002': "Cette carte génère une ressource [wild] pour chaque allié que vous contrôlez (jusqu'à un maximum de 3).",
@@ -4669,10 +4663,6 @@ export const TEXTES_FR_FANMADE = {
     'ul044': "<b>Réponse de héros</b> : après avoir incliné votre héros pour effectuer un contre ou une attaque de base, défaussez un allié que vous contrôlez → ajoutez le pouvoir correspondant de cet allié à celui de votre héros pour cette utilisation. Redressez votre héros.",
     'ul045': "[star] <b>Réponse</b> : après que Zato-Ino a attaqué et blessé un ennemi, hébétez cet ennemi.\n<i>« Tu ferais bien de ne pas me sous-estimer. »</i>",
     'ul046': "<b>Réponse</b> : après avoir joué Zetian de votre main, piochez X cartes (jusqu'à un maximum de 3), X étant égal au numéro du stade du méchant. Si le méchant n'a pas de numéro de stade, piochez 1 carte.\n<i>« L'ordre et le chaos sont les deux faces d'une même pièce. »</i>",
-    // --- TMNT Protection (up) : ajouter les cartes upNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Basic (ub) : ajouter les cartes ubNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Justice (uj) : ajouter les cartes ujNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Leadership (ul) : ajouter les cartes ulNNN ci-dessous, dans ce bloc seulement ---
     // --- TMNT Protection (up) : ajouter les cartes upNNN ci-dessous, dans ce bloc seulement ---
     // tmnt_aspect_protection — Ace Duck (Ally), reskin de 09012 Brother Voodoo
     'up001': "<b>Réponse</b> : après qu'Ace Duck est entré en jeu, cherchez une carte Événement parmi les 5 cartes du dessus de votre deck et ajoutez-la à votre main. Mélangez votre deck.\n<i>« Paniquer ? Jamais, coin-coin. »</i>",
@@ -4760,7 +4750,6 @@ export const TEXTES_FR_FANMADE = {
     'up042': "Exigence ([physical]). <i>(Lorsque vous payez pour cette carte, dépensez les ressources indiquées.)</i>\n<b>Action de héros</b> : soignez 2 dégâts de votre héros → redressez votre héros.\n<i>« Quand je sortirai d'ici, tu vas le regretter ! »</i>",
     // tmnt_aspect_protection — Wonder Turtle (Ally), reskin de 54032 White Widow
     'up043': "<b>Réponse</b> : après avoir résolu la capacité d'une carte [[Préparation]] que vous contrôlez, soignez Wonder Turtle d'un nombre de dégâts égal au coût en ressources imprimé de cette carte.\n<i>« Surprise. »</i>",
-    // --- TMNT Dual-Aspect (ud) : ajouter les cartes udNNN ci-dessous, dans ce bloc seulement ---
     // --- TMNT Dual-Aspect (ud) : ajouter les cartes udNNN ci-dessous, dans ce bloc seulement ---
     // tmnt_aspect_dual — Rōnin (Ally), Agressivité/Justice
     'ud001': "<b>Réponse</b> : après que Rōnin est entré en jeu, camouflez-le.\n<b>Interruption</b> : quand Rōnin est vaincu par des dégâts consécutifs ([consequential]), dépensez une ressource [wild] → piochez 3 cartes.\n<i>« Je dois venger ceux qui sont tombés. »</i>",
