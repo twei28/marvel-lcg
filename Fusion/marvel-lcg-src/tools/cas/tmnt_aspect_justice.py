@@ -294,20 +294,28 @@ CAS = [c for c in CAS if not c["nom"].startswith("[uj] uj026 bandeau : sens inve
 # ================================================================== CARTES SCRIPTEES (MODIFIEES / NOUVELLES)
 TROIS = ["01088", "01089"]          # [energy][energy] + [mental][mental] : 4 ressources
 PRINC5 = "Puzzle.SetThreat('01097b', 5)"
+# uj002 Chance Encounter : RESKIN de 26034 (coquille « a scheme » CONFIRMEE le 17/10/2026 : « a SIDE scheme »,
+# `ability_link`, plus de script). Un cas sur le reskin + un TEMOIN sur l'officielle, meme chiffre attendu.
+CAS += _paire(
+    "uj002", "26034", "Chance Encounter : seule la manigance PRINCIPALE en jeu -> PAS jouable",
+    "« Attach to a SIDE scheme » : la principale n'est pas une cible legale",
+    [HEROS, "Puzzle.Gain('uj002')"], [], {"carte": "uj002", "jouable": False, "en_jeu": 0},
+    main=["01088"], verifier="max_par_joueur_jouable")
+CAS += _paire(
+    "uj002", "26034", "Chance Encounter : une manigance ANNEXE (01107) en jeu -> jouable",
+    "contre-cas du precedent : la meme carte devient jouable des qu'une manigance annexe est en jeu",
+    [HEROS, "Puzzle.Reveal('01107')", "Puzzle.Gain('uj002')"], [], {"carte": "uj002", "jouable": True, "en_jeu": 0},
+    main=["01088"], verifier="max_par_joueur_jouable")
+CAS += _paire(
+    "uj002", "26034", "Chance Encounter : manigance ANNEXE attachee vaincue -> un allie du deck va en main",
+    "« When attached side scheme is defeated, search your deck and discard pile for an ally and add it to your "
+    "hand » : 01107 a 1 menace, Spider-Man contre ; 60039 Daredevil (allie) dans un deck de Genius",
+    [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('01089', '60039', '01089')", "Puzzle.Reveal('01107')",
+     "Puzzle.SetThreat('01107', 1)", "Puzzle.PutIntoPlay('uj002', under_control=True)",
+     "Puzzle.Attach('uj002', '01107')"],
+    ["Puzzle.Thwart('01001a')"],
+    {"hors_jeu": ["01107"], "en_main": ["60039"]}, cibles=["01107"], accepter_choix=True)
 CAS += [
-    # ---------------------------------------------------------------- uj002 Chance Encounter
-    _c("uj002 Chance Encounter : « Attach to a scheme » -> jouable sur la manigance PRINCIPALE (lecture du scan)",
-       "MODIFIEE : la cible de jeu est « a scheme » (26034 : « a side scheme ») ; question Q-uj002 ouverte",
-       [HEROS], [], {"accroche_a": [["uj002", "01097b"]]},
-       main_exclusive=["uj002"], jouer=["uj002"], cibles=["01097b"]),
-    _c("uj002 Chance Encounter : manigance ANNEXE attachee vaincue -> un allie du deck va en main",
-       "« When attached side scheme is defeated, search your deck and discard pile for an ally and add it to your "
-       "hand » : 01107 a 1 menace, Spider-Man contre ; 60039 Daredevil (allie) dans un deck de Genius",
-       [HEROS, SANS_DECK, "Puzzle.CreatePlayerDeck('01089', '60039', '01089')", "Puzzle.Reveal('01107')",
-        "Puzzle.SetThreat('01107', 1)", "Puzzle.PutIntoPlay('uj002', under_control=True)",
-        "Puzzle.Attach('uj002', '01107')"],
-       ["Puzzle.Thwart('01001a')"],
-       {"hors_jeu": ["01107"], "en_main": ["60039"]}, cibles=["01107"], accepter_choix=True),
     # ---------------------------------------------------------------- uj004 Cowabunga
     _c("uj004 Cowabunga : entre en jeu, defausse une carte RESSOURCE -> pioche 2 et soigne 2 a Spider-Man",
        "« discard a resource card from your hand → draw 2 cards and heal 2 damage from a friendly character » : "

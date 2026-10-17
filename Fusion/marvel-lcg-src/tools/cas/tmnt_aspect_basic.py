@@ -638,6 +638,43 @@ CAS += [
 ]
 
 
+# ===================================================================== retouches du 17/10/2026
+# ub002 / ub047 : traits confirmes par l'utilisateur ; ub019 Honorable Blades (Team-Up, NOUVELLE)
+CAS.append(_c("ub002 Assess the Situation : porte le trait TACTIC (oubli de l'auteur confirme le 17/10/2026)",
+              "Paper.Load lit `traits` sur l'entree du reskin ; comme 12033",
+              [HEROS, "Puzzle.Gain('ub002')"], [],
+              {"carte": "ub002", "presents": ["TACTIC"], "nom": "Assess the Situation"},
+              verifier="tmnt_donnees_carte"))
+CAS.append(_c("ub047 Sky Wagon : traits du scan NYC et VEHICLE, PAS LOCATION (confirme le 17/10/2026)",
+              "Paper.Load lit `traits` sur l'entree du reskin ; Helicarrier (01092) est LOCATION, Sky Wagon non",
+              [HEROS, _jeu("ub047")], [],
+              {"carte": "ub047", "presents": ["NYC", "VEHICLE"], "absents": ["LOCATION", "S.H.I.E.L.D"],
+               "nom": "Sky Wagon"}, verifier="reskin_identite"))
+
+USAGI = [_jeu("up041"), "Puzzle.Tough('up041')"]      # Usagi entre en jeu Tenace (Toughness) : on retire l'etat
+CAS += [
+    _c("ub019 Honorable Blades : Leonardo ET Usagi en jeu -> les deux redresses, Leonardo camoufle, Usagi Tenace",
+       "Team-Up (Leonardo and Usagi Yojimbo) ; « Ready Leonardo and Usagi. Cloak Leonardo. Place a tough status "
+       "card on Usagi » : les deux inclines au depart, Usagi sans Tenace",
+       [LEO_HEROS, *USAGI, "Puzzle.Exhaust('tl001a')", "Puzzle.Exhaust('up041')"], [],
+       {"pret": ["tl001a", "up041"], "statuts": [["tl001a", "Cloaked"], ["up041", "Tough"]],
+        "statuts_absents": [["up041", "Cloaked"], ["tl001a", "Tough"]], "defausse": ["ub019"]},
+       heros="leonardo", main_exclusive=["ub019", "01088"], jouer=["ub019"]),
+    _c("ub019 Honorable Blades : Leonardo ET Usagi en jeu -> jouable (contre-cas des deux suivants)",
+       "les deux personnages nommes sont en jeu : la condition Team-Up est remplie",
+       [LEO_HEROS, *USAGI, "Puzzle.Gain('ub019')"], [], {"carte": "ub019", "jouable": True, "en_jeu": 0},
+       heros="leonardo", main=["01088"], verifier="max_par_joueur_jouable"),
+    _c("ub019 Honorable Blades : Leonardo SANS Usagi -> PAS jouable",
+       "Team-Up : « les DEUX personnages (identite ou allie) en jeu »",
+       [LEO_HEROS, "Puzzle.Gain('ub019')"], [], {"carte": "ub019", "jouable": False, "en_jeu": 0},
+       heros="leonardo", main=["01088"], verifier="max_par_joueur_jouable"),
+    _c("ub019 Honorable Blades : Usagi SANS Leonardo (Spider-Man) -> PAS jouable",
+       "Team-Up : l'identite n'est pas Leonardo",
+       [HEROS, *USAGI, "Puzzle.Gain('ub019')"], [], {"carte": "ub019", "jouable": False, "en_jeu": 0},
+       main=["01088"], verifier="max_par_joueur_jouable"),
+]
+
+
 VERIFICATIONS = r'''
 def ub_allies(monde, aides):
     """`allies` : nombre d'allies en jeu controles par le joueur 1 (limite d'allies : le surplus est defausse)."""
@@ -674,4 +711,29 @@ def ub_apres_fin_de_round(monde, aides):
     monde.ProcessTemporary(GameRule(monde.const_players[0].GetIdentity()))
     Message.AfterRoundEnd(m).Send()
     return etat_attendu(monde, aides)
+
+def tmnt_donnees_carte(monde, aides):
+    """Traits et nom d'une carte QUELLE QUE SOIT SA ZONE (main, deck, jeu) : un evenement n'est jamais « en jeu ».
+    `attendu` = {carte, presents, absents, nom}."""
+    attendu = aides["cas"]["attendu"]
+    face = None
+    for objet in monde.object_manager.card_dict.values():
+        f = objet.face
+        if f is not None and getattr(f.paper, "card_id", None) == attendu["carte"]:
+            face = f
+            break
+    if face is None:
+        return False, f"{attendu['carte']} introuvable"
+    soucis = []
+    for t in attendu.get("presents", []):
+        if not face.HasTrait(t):
+            soucis.append(f"trait {t} absent")
+    for t in attendu.get("absents", []):
+        if face.HasTrait(t):
+            soucis.append(f"trait {t} PRESENT")
+    if "nom" in attendu and face.name != attendu["nom"]:
+        soucis.append(f"nom {face.name!r} (attendu {attendu['nom']!r})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"{attendu['carte']} : {face.name}, traits conformes"
 '''

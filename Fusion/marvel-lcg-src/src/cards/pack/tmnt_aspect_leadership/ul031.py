@@ -5,13 +5,15 @@ from . import *
 #   ally. Add them to your hand. (Shuffle.)
 #
 # MODIFIEE (reskin de `45017` Suit Up) : l'officielle dit « an upgrade that can be attached to THAT ally »,
-# le scan « ... to AN ally ». QUESTION OUVERTE Q-UL-6 (fichier des questions ul) : coquille probable.
-# LECTURE CODEE EN ATTENDANT (option recommandee A) : celle de l'officielle (amelioration attachable A
-# L'ALLIE TROUVE). Si l'utilisateur retient la lecture litterale (B), seule la seconde recherche change :
-# `CardFinder(card_type=Upgrade, check_effect_fn=<attachable a un allie quelconque>)`.
+# le scan « ... to AN ally ». LECTURE LITTERALE CHOISIE PAR L'UTILISATEUR (17/10/2026), contre la
+# recommandation : recherche LARGE. L'allie n'a plus de contrainte ; l'amelioration doit pouvoir s'attacher
+# a UN allie quelconque (pas forcement celui trouve) : allies de son deck, de sa defausse ou en jeu
+# sous son controle. Les deux recherches sont independantes : s'il n'y a rien d'un cote, l'autre est
+# quand meme ajoute (le deck est melange dans tous les cas).
 #
-# Script propre copie de 45017 (voir ses commentaires : deux recherches de suite, allies sans amelioration
-# attachable ecartes, remelange par la seconde recherche seulement).
+# Script propre (45017 liait la 2e recherche a l'allie trouve : `canbe_attach_to=allie`).
+# `Upgrade.CanAttachTo(face)` relit le selecteur de la capacite de jeu de l'amelioration (Sidekick,
+# « attach to an identity-specific ally you control », n'est attachable qu'a un allie d'identite EN JEU).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -23,10 +25,12 @@ def GetAbilities() -> Sequence['Ability']:
         initiator = effect.GetInitiator()
 
         zones = list(initiator.player_deck.Get()) + list(initiator.discard_pile.Get())
-        ameliorations = Filter.ByType(zones, Upgrade)
+        allies_possibles = Filter.ByType(zones, Ally) + list(initiator.allies.Get())
 
-        def allie_equipable(eff: 'Effect', face: 'CardFace') -> bool:
-            return any(u.CanAttachTo(face) for u in ameliorations)
+        def attachable_a_un_allie(eff: 'Effect', face: 'CardFace') -> bool:
+            Unused(eff)
+            upgrade = face.CastTo(Upgrade)
+            return any(upgrade.CanAttachTo(ally) for ally in allies_possibles)
 
         allie = Search.PlayerCard(
             effect,
@@ -34,22 +38,23 @@ def GetAbilities() -> Sequence['Ability']:
             include_player_deck=True,
             include_discard_pile=True,
             not_move=True,
-            finder=CardFinder(card_type=Ally, check_effect_fn=allie_equipable),
+            card_type=Ally,
         )
-        if not allie:
-            return
 
         amelioration = Search.PlayerCard(
             effect,
             initiator,
             include_player_deck=True,
             include_discard_pile=True,
-            finder=CardFinder(card_type=Upgrade, canbe_attach_to=allie),
+            finder=CardFinder(card_type=Upgrade, check_effect_fn=attachable_a_un_allie),
         )
         if not amelioration:
-            return
+            # la recherche des ameliorations melange le deck ; sans elle, on melange ici
+            initiator.player_deck.Shuffle(effect)
 
-        initiator.GainCard([allie, amelioration], effect)
+        trouvees = [c for c in (allie, amelioration) if c]
+        if trouvees:
+            initiator.GainCard(trouvees, effect)
 
     return [
         AbilityFactory.WhenInYourPlayTurn(

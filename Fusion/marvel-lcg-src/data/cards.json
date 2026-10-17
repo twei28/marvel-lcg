@@ -113097,7 +113097,9 @@
     "RES": "B",
     "Class": "Basic"
    },
-   "traits": [],
+   "traits": [
+    "TACTIC"
+   ],
    "set_name": "TMNT Basic",
    "text": "<b>Action</b>: You get +1 hand size until the end of the phase.\n<i>\"What do you guys think? Is it time to join the fight?\"</i> —Raphael",
    "custom": "Inkwire",
@@ -113421,6 +113423,23 @@
    "unique_also": [
     "Cerebro"
    ]
+  },
+  {
+   "card_id": "ub019",
+   "type": "Event",
+   "name": "Honorable Blades",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "TeamUp": "Leonardo;Usagi Yōjimbō",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "TMNT Basic",
+   "text": "Team-Up (Leonardo and Usagi Yōjimbō). Max 1 per deck.\n<b>Hero Action</b>: Ready Leonardo and Usagi Yōjimbō. Cloak Leonardo. Place a tough status card on Usagi Yōjimbō.",
+   "custom": "Inkwire"
   },
   {
    "card_id": "ub020",
@@ -114230,8 +114249,9 @@
     "CONDITION"
    ],
    "set_name": "TMNT Justice",
-   "text": "Attach to a scheme. Max 1 per scheme.\n<b>Interrupt</b>: When attached side scheme is defeated, search your deck and discard pile for an ally and add it to your hand. Shuffle your deck.",
-   "custom": "Inkwire"
+   "text": "Attach to a side scheme. Max 1 per scheme.\n<b>Interrupt</b>: When attached side scheme is defeated, search your deck and discard pile for an ally and add it to your hand. Shuffle your deck.",
+   "custom": "Inkwire",
+   "ability_link": "26034"
   },
   {
    "card_id": "uj003",
@@ -115354,7 +115374,7 @@
    },
    "traits": [
     "CAT",
-    "MUTANIMALS"
+    "MUTANIMAL"
    ],
    "set_name": "TMNT Leadership",
    "text": "[star] <b>Forced Response</b>: After Old Hob attacks, place 1 threat on the main scheme.\n<i>\"This city respects teeth, claws, and firepower.\"</i>",
@@ -115628,7 +115648,9 @@
     "MaxPerDeck": "3",
     "Class": "Leadership"
    },
-   "traits": [],
+   "traits": [
+    "TACTIC"
+   ],
    "set_name": "TMNT Leadership",
    "text": "<b>Hero Response</b>: After your hero defends, each ally you control gets +1 THW and +1 ATK until the end of the player phase.\n<i>\"I do not fear you any longer.\"</i> —Leonardo",
    "custom": "Inkwire",
@@ -115720,7 +115742,7 @@
   {
    "card_id": "ul038",
    "type": "Event",
-   "name": "Unified Stike",
+   "name": "Unified Strike",
    "subtitle": "",
    "desc": {
     "Cost": "0",
@@ -115731,7 +115753,7 @@
     "TACTIC"
    ],
    "set_name": "TMNT Leadership",
-   "text": "<b>Hero Response</b>: When an ally uses a basic power, exhaust your hero → add your hero's matching power to that ally's power for this use. That ally does not take consequential damage for this use.\n<i>\"Let's find some trouble.\"</i> —Casey Jones",
+   "text": "<b>Hero Interrupt</b>: When an ally uses a basic power, exhaust your hero → add your hero's matching power to that ally's power for this use. That ally does not take consequential damage for this use.\n<i>\"Let's find some trouble.\"</i> —Casey Jones",
    "custom": "Inkwire"
   },
   {
@@ -116261,7 +116283,7 @@
     "DEFENSE"
    ],
    "set_name": "TMNT Protection",
-   "text": "<b>Hero Action</b> <i>(defense)</i>: When an enemy attacks, declare your hero as the defender without exhausting them.\n<i>\"I'm not going anywhere.\"</i> —Leonardo",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attacks, declare your hero as the defender without exhausting them.\n<i>\"I'm not going anywhere.\"</i> —Leonardo",
    "custom": "Inkwire",
    "ability_link": "56047"
   },
@@ -116891,5 +116913,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "50a12608ae9bc01a880dc22641baa6322fcb2517df49bed2447d49d92ff4462e"
+ "checksum": "fcac6744afbef527f69c31811df3794a28d7897ed06e1d7789fd767d2c1b98a2"
 }

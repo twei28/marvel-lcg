@@ -567,6 +567,43 @@ CAS += [
 ]
 
 
+# ===================================================================== up030 Redirection Mastery (17/10/2026)
+# Lecture choisie : DEFENSE EXACTE (attaque, boosts compris, == DEF du heros pour cette attaque).
+SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
+              "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105')"]
+RM = [HEROS, "Puzzle.PutIntoPlay('up030', under_control=True)", "Puzzle.Attach('up030', '01001a')"]
+CAS += [
+    _c("up030 Redirection Mastery : attaque = DEF (Melter ATQ 3 contre DEF 3, coup pare pile) -> Melter subit 3 degats",
+       "« After you exactly defend an attack, deal damage to the attacker equal to your DEF for that attack » : "
+       "0 degat au heros, 3 au Melter (5 PV)",
+       [*RM, "Puzzle.PutIntoPlay('01132')", *SANS_BOOST], ["Puzzle.Attack('01132', defender='01001a')"],
+       {"degats": [["01132", 3]], "degats_identite": 0},
+       main_exclusive=["01090"], accepter_choix=True),
+    _c("up030 Redirection Mastery : attaque > DEF (Titania, 3 degats passent) -> pas de Reponse, Titania intacte",
+       "defense non exacte : l'attaque depasse la DEF ; ligne de base 3 degats comme le cas Tonfa",
+       [*RM, "Puzzle.PutIntoPlay('01162')", *SANS_BOOST], ["Puzzle.Attack('01162', defender='01001a')"],
+       {"degats": [["01162", 0]], "degats_identite": 3},
+       main_exclusive=["01090"], accepter_choix=True),
+    _c("up030 Redirection Mastery : attaque < DEF (Rhino ATQ 2 contre DEF 3) -> pas de Reponse, Rhino intact",
+       "defense non exacte : la DEF excede l'attaque (0 degat aussi, mais PAS une parade pile)",
+       [*RM, *SANS_BOOST], ["Puzzle.Attack('01094', defender='01001a')"],
+       {"degats": [["01094", 0]], "degats_identite": 0},
+       main_exclusive=["01090"], accepter_choix=True),
+    _c("up030 Redirection Mastery : les BOOSTS comptent (Rhino ATQ 2 + boost 1 = 3 = DEF) -> Rhino subit 3",
+       "« exactly defend an attack » : valeur de l'attaque boosts compris ; 01101 (Boost 1) en tete du deck rencontre",
+       [*RM, "Puzzle.EmptyEncounterDeck()",
+        "Puzzle.CreateEncounterDeck('01101', '01101', '01101', '01101', '01101', '01101')"],
+       ["Puzzle.Attack('01094', defender='01001a')"],
+       {"degats": [["01094", 3]], "degats_identite": 0},
+       main_exclusive=["01090"], accepter_choix=True),
+    _c("up030 Redirection Mastery : TEMOIN sans la carte, parade pile de Melter -> Melter ne subit rien",
+       "ligne de base du premier cas : sans Redirection Mastery, aucun degat ne repart",
+       [HEROS, "Puzzle.PutIntoPlay('01132')", *SANS_BOOST], ["Puzzle.Attack('01132', defender='01001a')"],
+       {"degats": [["01132", 0]], "degats_identite": 0},
+       main_exclusive=["01090"], accepter_choix=True),
+]
+
+
 VERIFICATIONS = r'''
 def up_rencontre_distribuee(monde, aides):
     """Nombre de cartes rencontre distribuees face cachee au joueur 1 (en attente de revelation)

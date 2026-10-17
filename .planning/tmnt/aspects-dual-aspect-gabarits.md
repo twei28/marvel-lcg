@@ -104,7 +104,8 @@ vilain à stade 4 dans le harnais).
       `amp: 'ampli'` de `compteurs-fr.ts`.
       Résultat : 4/4 verts.
 
-Carte terminée : NON : Q-UD2 en attente (et Q-UD1).
+**Réponse du 17/10/2026 : Heavy Metal, « a status card » = les 7 états** (lecture codée confirmée, rien à changer).
+Carte terminée : OUI pour Q-UD2 ; reste Q-UD1 (sous-titres / unicité : autre agent).
 
 ### ud004 : Stealth Fighter (Raph), Justice/Leadership, NOUVELLE
 
@@ -124,7 +125,8 @@ Carte terminée : NON : Q-UD2 en attente (et Q-UD1).
 - [x] Étape 8 : voir « Autoplay » (0 traceback).
 - [x] Étape 8 bis : OUI (Cloaked), carte d'état déjà dessinée : sans nouveau cas.
 
-Carte terminée : NON : Q-UD3 en attente (et Q-UD1).
+**Réponse du 17/10/2026 : Stealth Fighter = Interruption « When »** (lecture codée confirmée, rien à changer).
+Carte terminée : OUI pour Q-UD3 ; reste Q-UD1 (sous-titres / unicité : autre agent).
 
 ### ud005 : Sōhei (Leo), Justice/Protection, NOUVELLE
 
@@ -143,7 +145,12 @@ Carte terminée : NON : Q-UD3 en attente (et Q-UD1).
 - [x] Étape 8 : voir « Autoplay » (0 traceback).
 - [x] Étape 8 bis : NON (Tough déjà dessinée ; taille de main = chiffre).
 
-Carte terminée : NON : Q-UD4 en attente (et Q-UD1). Non mesuré : la fin du bonus au round suivant.
+**Mise à jour du 17/10/2026 (Réponse du 17/10/2026) : Q-UD4 tranchée** : « your hero gets +2 hand size » vaut AUSSI quand le joueur est en
+alter ego (identité quelle que soit sa forme). Script corrigé : `joueur.GetIdentity().GainUntilRoundEnd(effect, hand_size=2)`
+(plus de test `Hero.IsType`). Cas dans les deux formes : forme héros (+2, taille 6 -> 8, cas existant) et **forme alter ego (+2,
+`forme: AlterEgo` vérifiée, cas réécrit : l'ancienne lecture attendait +0)**. Substitution (ancien script) : le cas alter ego
+ROUGE (`hand_size=6, attendu 8`), les 4 autres verts. 5/5 verts après correction.
+Carte terminée : OUI pour Q-UD4 ; reste Q-UD1 (sous-titres / unicité : autre agent). Non mesuré : la fin du bonus au round suivant.
 
 ### ud006 : Nightwatcher (Jenny), Leadership/Protection, NOUVELLE
 
