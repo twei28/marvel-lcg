@@ -1416,3 +1416,181 @@ html[data-epure][data-affichage] .plateau-barre .bh-fin-tour:not(:disabled) {
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
+
+/* =============================================================================
+   LES FENÊTRES DE CHOIX (« Réflexes Innés — choisis une option », qui défend, effets) au style
+   des pages (17/10/2026) : titre en panneau bleu biseauté à coins coupés, choix en boutons
+   bleu relief, « Annuler / Ne pas… » en bouton neutre biseauté. Texte blanc, Bangers.
+   ============================================================================= */
+html[data-epure] .demande-centrale .dc-texte {
+  background: linear-gradient(160deg, #2b3a58 0%, #1f2a40 55%, #171e2e 100%);
+  border: 2px solid #3d5a8c;
+  border-top: 2px solid #7fa9e6;
+  border-left-color: #6a95d6;
+  border-bottom-color: #0f1522;
+  border-right-color: #131a29;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  box-shadow: inset 0 0 0 1px rgba(63, 134, 224, 0.25);
+  color: #ffffff;
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 19px;
+}
+html[data-epure] .demande-centrale .dc-texte *:not(.plateau-eyebrow) {
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+html[data-epure] .demande-centrale .dc-texte .plateau-eyebrow {
+  color: #8fbcf5;
+  font-weight: 400;
+}
+html[data-epure] .demande-centrale .af-action,
+html[data-epure] .demande-centrale .dc-continue {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
+  color: #ffffff;
+  border: 1px solid #1d4a8a;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+html[data-epure] .demande-centrale .af-action:hover:not(:disabled),
+html[data-epure] .demande-centrale .dc-continue:hover:not(:disabled) {
+  filter: brightness(1.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+}
+html[data-epure] .demande-centrale .af-action.dc-pass,
+html[data-epure] .demande-centrale .dc-pass {
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%);
+  color: #dbe3f3;
+  border: 1px solid #4a5a7c;
+  box-shadow: inset 1px 1px 0 rgba(140, 180, 240, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.45);
+  text-shadow: none;
+}
+html[data-epure] .demande-centrale .af-action:disabled {
+  opacity: 0.5;
+}
+html[data-epure] .demande-centrale .af-action small,
+html[data-epure] .demande-centrale .af-action .af-cibles {
+  font-family: var(--ep-police);
+  text-transform: none;
+  letter-spacing: 0;
+  color: #dbe3f3;
+}
+
+/* ⚠ La règle générique `.demande-centrale *` (police de texte) passait sur les <span> DES BOUTONS et
+   annulait le Bangers : les libellés restaient en Inter. On l'impose aussi aux enfants. */
+html[data-epure] .demande-centrale .af-action,
+html[data-epure] .demande-centrale .af-action *:not(small):not(.af-cibles),
+html[data-epure] .demande-centrale .dc-continue,
+html[data-epure] .demande-centrale .dc-continue *,
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton,
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton * {
+  font-family: var(--ep-titres) !important;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+/* La croix et l'étiquette de la carte en scène : même habillage. */
+html[data-epure] .demande-centrale .dc-croix {
+  border-radius: 0;
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%);
+  color: #ffffff;
+  border: 1px solid #4a5a7c;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+/* « Fin de phase » / « Suivant » du cartouche : le bouton beige devient bleu relief. */
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:not(:disabled) {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
+  color: #ffffff;
+  border: 1px solid #1d4a8a;
+  border-radius: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  font-size: 19px;
+}
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:disabled {
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%);
+  color: #7c8494;
+  border: 1px solid #4a5a7c;
+  border-radius: 0;
+}
+
+/* Les boutons posés sur la table (menu d'une carte : Attaquer, Contrer, Changer de forme, Fin du tour)
+   (17/10/2026) : bleu relief à coins coupés en Bangers ; « Annuler / Fin du tour » en neutre biseauté. */
+html[data-epure] .actions-flottantes .af-action,
+html[data-epure] .actions-flottantes .af-action * {
+  font-family: var(--ep-titres) !important;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+html[data-epure] .actions-flottantes .af-action {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
+  color: #ffffff;
+  border: 1px solid #1d4a8a;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  font-size: 18px;
+}
+html[data-epure] .actions-flottantes .af-action.af-annulation,
+html[data-epure] .actions-flottantes .af-action.tonalite-general {
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%);
+  color: #dbe3f3;
+  border: 1px solid #4a5a7c;
+  box-shadow: inset 1px 1px 0 rgba(140, 180, 240, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.45);
+  text-shadow: none;
+}
+html[data-epure] .actions-flottantes .af-action:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+html[data-epure] .actions-flottantes .af-action:disabled,
+html[data-epure] .actions-flottantes .af-action.est-indisponible {
+  opacity: 0.5;
+}
+
+/* Le CENTRE (17/10/2026) : la rangée des boutons d'une fenêtre de choix faisait 960 px dans un conteneur
+   centré de 660 px, donc elle débordait de 150 px vers la droite. Le conteneur prend la largeur de ses
+   boutons (dans la limite de l'écran) et les boutons se centrent. */
+html[data-epure] .demande-centrale:not(.est-en-scene) {
+  width: max-content;
+  max-width: 94vw;
+}
+html[data-epure] .demande-centrale:not(.est-en-scene) .dc-boutons,
+html[data-epure] .demande-centrale:not(.est-en-scene) .af-boutons {
+  justify-content: center;
+}
+
+/* La poignée (nom de la carte) et la croix du menu d'une carte : biseau bleu, coins coupés, Bangers. */
+html[data-epure] .actions-flottantes .af-poignee {
+  background: linear-gradient(160deg, #2b3a58, #171e2e);
+  color: #ffffff;
+  border: 1px solid #3d5a8c;
+  border-top-color: #7fa9e6;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+html[data-epure] .actions-flottantes .af-fermer {
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%);
+  color: #ffffff;
+  border: 1px solid #4a5a7c;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  font-family: var(--ep-titres);
+}
