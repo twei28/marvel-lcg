@@ -591,8 +591,8 @@ for _cas in CAS:
 
 
 # Sonde sur l'OFFICIELLE 61016 (citee dans uj026.py) : sa Reponse « You » part-elle apres un contre du heros ?
-CAS += [_c("SONDE 61016 Spider-Woman (officielle) : compteur limb apres un contre du heros",
-           "mesure du declencheur `AfterUnitThwartScheme(..., You, ...)` de l'officielle (rapport, pas une preuve uj)",
+CAS += [_c("61016 Spider-Woman (officielle) : un personnage que vous controlez contre -> 1 compteur limb",
+           "« After a character you control thwarts » ; correctif 17/10/2026 du declencheur (`YouControlCharacter` au lieu de `You`, qui ne partait jamais)",
            [HEROS, PRINC5, "Puzzle.PutIntoPlay('61016', under_control=True)"], ["Puzzle.Thwart('01001a')"],
            {"compteurs": [["61016", "limb", 1]]}, accepter_choix=True)]
 
