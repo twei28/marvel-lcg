@@ -32,7 +32,8 @@ const MESSAGE = document.getElementById("message");
 const LISTE = document.getElementById("liste");
 const AVANCEMENT = document.getElementById("avancement");
 const RECHERCHE = document.getElementById("recherche");
-const SEULEMENT_CORRIGES = document.getElementById("seulement-corriges");
+const ONGLETS = document.getElementById("onglets");
+const ETATS = document.getElementById("etats");
 const MODELE = document.getElementById("modele-ligne");
 const LOUPE = document.getElementById("loupe");
 const LOUPE_FOND = document.getElementById("loupe-fond");
@@ -58,7 +59,17 @@ const etat = {
     generees: new Map(),     // identité -> couleurs mesurées
     corrections: new Set(),  // identités corrigées à la main
     lignes: [],              // { identite, cartes, nom, noeud, champs, ... }
+    type: "heros",           // l'onglet : « heros » ou « mechants »
+    montre: "traiter",       // « traiter », « traites » ou « tous »
 };
+
+/** Une ligne est TRAITÉE quand l'une de ses cartes a une correction enregistrée : soit
+ *  retouchée à la main, soit validée telle quelle avec le bouton « Traité ». C'est le même
+ *  fichier de corrections, donc rien de plus à stocker côté serveur. */
+const sansLettre = (carte) => String(carte).replace(/[a-z]$/, "");
+const estTraitee = (ligne) => ligne.cartes.some((carte) => etat.corrections.has(sansLettre(carte)));
+const marquerTraitee = (ligne) => { for (const carte of ligne.cartes) etat.corrections.add(sansLettre(carte)); };
+const oublierTraitee = (ligne) => { for (const carte of ligne.cartes) etat.corrections.delete(sansLettre(carte)); };
 
 async function json(url) {
     const reponse = await fetch(url, { cache: "no-store" });
@@ -72,6 +83,20 @@ async function json(url) {
             "Il tourne sans doute sur une version d'avant cet éditeur.");
     }
     return reponse.json();
+}
+
+/** Pour chaque carte : son nom, son type et son set. Sert à distinguer les méchants des héros
+ *  et à regrouper les phases d'un même méchant. */
+function infosDesCartes(cartesParGroupe) {
+    const infos = new Map();
+    for (const cartes of Object.values(cartesParGroupe || {})) {
+        if (!Array.isArray(cartes)) continue;
+        for (const carte of cartes) {
+            if (!carte || !carte.card_id) continue;
+            infos.set(String(carte.card_id), { type: carte.type || "", set: carte.set_name || "" });
+        }
+    }
+    return infos;
 }
 
 /** Le nom lisible de chaque identité, tiré du catalogue des cartes. */
@@ -105,8 +130,10 @@ function rafraichirApercu(ligne) {
     const modifiee = !lu.erreur && !memePalette(lu.couleurs, ligne.couleurs);
     ligne.noeud.classList.toggle("p-modifiee", modifiee);
     ligne.enregistrer.disabled = !etat.administrateur || Boolean(lu.erreur) || !modifiee;
-    ligne.annuler.hidden = !etat.corrections.has(ligne.identite) || genere.length === 0;
+    ligne.annuler.hidden = !estTraitee(ligne) || genere.length === 0;
     ligne.annuler.disabled = !etat.administrateur;
+    ligne.traite.disabled = !etat.administrateur || Boolean(lu.erreur);
+    ligne.traite.classList.toggle("p-deja", estTraitee(ligne) && !modifiee);
     if (lu.erreur === "hex") dire(ligne, "hex incomplet", "p-echec");
     else if (lu.erreur === "trou") dire(ligne, "un trou au milieu", "p-echec");
     else if (lu.erreur === "vide") dire(ligne, "au moins une couleur", "p-echec");
@@ -129,9 +156,9 @@ function poserCouleurs(ligne, couleurs) {
         const couleur = couleurs[rang];
         pastille.value = couleur ? rgbVersHex(couleur) : "#000000";
     });
-    ligne.noeud.classList.toggle("p-corrigee", etat.corrections.has(ligne.identite));
-    ligne.etat.textContent = etat.corrections.has(ligne.identite)
-        ? "corrigée à la main" : "mesurée sur le contour des cartes";
+    ligne.noeud.classList.toggle("p-corrigee", estTraitee(ligne));
+    ligne.etat.textContent = estTraitee(ligne)
+        ? "traitée" : "à traiter · mesurée sur le contour des cartes";
     rafraichirApercu(ligne);
 }
 
@@ -139,9 +166,21 @@ async function enregistrer(ligne) {
     const lu = lectureDe(ligne);
     if (lu.erreur) return;
     await envoyer(ligne, { cartes: ligne.cartes, couleurs: lu.couleurs }, () => {
-        etat.corrections.add(ligne.identite);
+        marquerTraitee(ligne);
         poserCouleurs(ligne, lu.couleurs);
         dire(ligne, "enregistrée", "p-ok");
+    });
+}
+
+/** « Traité » : enregistre les couleurs affichées, même inchangées, et range la ligne. */
+async function traiter(ligne) {
+    const lu = lectureDe(ligne);
+    if (lu.erreur) return;
+    await envoyer(ligne, { cartes: ligne.cartes, couleurs: lu.couleurs }, () => {
+        marquerTraitee(ligne);
+        poserCouleurs(ligne, lu.couleurs);
+        dire(ligne, "traitée", "p-ok");
+        filtrer();
     });
 }
 
@@ -149,7 +188,7 @@ async function revenirAuMesure(ligne) {
     const genere = etat.generees.get(ligne.identite);
     if (!genere || genere.length === 0) return;
     await envoyer(ligne, { cartes: ligne.cartes, oublier: true }, () => {
-        etat.corrections.delete(ligne.identite);
+        oublierTraitee(ligne);
         poserCouleurs(ligne, genere);
         dire(ligne, "revenue à la couleur mesurée", "p-ok");
     });
@@ -158,6 +197,7 @@ async function revenirAuMesure(ligne) {
 async function envoyer(ligne, corps, apres) {
     ligne.enregistrer.disabled = true;
     ligne.annuler.disabled = true;
+    ligne.traite.disabled = true;
     dire(ligne, "envoi…", "");
     try {
         const reponse = await fetch("/save_palette_heros", {
@@ -183,27 +223,52 @@ async function envoyer(ligne, corps, apres) {
     } finally {
         ligne.enregistrer.disabled = !etat.administrateur;
         ligne.annuler.disabled = !etat.administrateur;
+        ligne.traite.disabled = !etat.administrateur;
         rafraichirApercu(ligne);
     }
 }
 
-function compter(corrigees) {
-    const total = etat.lignes.length;
-    const nb = typeof corrigees === "number" ? corrigees : etat.corrections.size;
-    AVANCEMENT.textContent = total
-        ? `${total} identités · ${etat.corrections.size} corrigée(s)` + (nb ? "" : "")
+function compter() {
+    const deLOnglet = etat.lignes.filter((l) => l.type === etat.type);
+    const traitees = deLOnglet.filter(estTraitee).length;
+    AVANCEMENT.textContent = deLOnglet.length
+        ? `${traitees} / ${deLOnglet.length} traités · ${deLOnglet.length - traitees} à traiter`
         : "";
+    for (const bouton of ONGLETS.querySelectorAll("button")) {
+        const lot = etat.lignes.filter((l) => l.type === bouton.dataset.type);
+        const reste = lot.filter((l) => !estTraitee(l)).length;
+        bouton.textContent = (bouton.dataset.type === "heros" ? "Héros" : "Méchants")
+            + (reste ? ` (${reste})` : " ✓");
+    }
+    const traites = deLOnglet.filter(estTraitee).length;
+    ETATS.querySelector('[data-etat="traiter"]').textContent = `À traiter (${deLOnglet.length - traites})`;
+    ETATS.querySelector('[data-etat="traites"]').textContent = `Traités (${traites})`;
+    ETATS.querySelector('[data-etat="tous"]').textContent = `Tous (${deLOnglet.length})`;
 }
 
 function filtrer() {
     const cherche = (RECHERCHE.value || "").trim().toLowerCase();
-    const seulement = SEULEMENT_CORRIGES.checked;
+    let visibles = 0;
     for (const ligne of etat.lignes) {
+        const parType = ligne.type === etat.type;
         const parNom = !cherche
             || ligne.nom.toLowerCase().includes(cherche)
             || ligne.identite.toLowerCase().includes(cherche);
-        const parEtat = !seulement || etat.corrections.has(ligne.identite);
-        ligne.noeud.hidden = !(parNom && parEtat);
+        const traitee = estTraitee(ligne);
+        const parEtat = etat.montre === "tous" || (etat.montre === "traiter" ? !traitee : traitee);
+        const voir = parType && parNom && parEtat;
+        ligne.noeud.hidden = !voir;
+        if (voir) visibles += 1;
+    }
+    compter();
+    if (!MESSAGE.classList.contains("p-alerte") && !MESSAGE.classList.contains("p-echec")) {
+        MESSAGE.hidden = visibles > 0;
+        if (!visibles) {
+            MESSAGE.textContent = etat.montre === "traiter"
+                ? "Rien à traiter ici : tout est fait. « Traités » les ramène pour les changer."
+                : "Rien à montrer.";
+            MESSAGE.className = "p-message";
+        }
     }
 }
 
@@ -347,9 +412,10 @@ document.addEventListener("keydown", (evenement) => {
     if (rang >= 0) { etat.loupe.rang = rang; dessinerCibles(); }
 });
 
-function construireLigne(groupe, nom) {
+function construireLigne(groupe, nom, type) {
     const noeud = MODELE.content.firstElementChild.cloneNode(true);
     const ligne = {
+        type,
         identite: groupe.identite,
         cartes: groupe.cartes,
         nom,
@@ -361,6 +427,7 @@ function construireLigne(groupe, nom) {
         etat: noeud.querySelector(".p-etat"),
         retour: noeud.querySelector(".p-retour-serveur"),
         enregistrer: noeud.querySelector(".p-enregistrer"),
+        traite: noeud.querySelector(".p-traite"),
         annuler: noeud.querySelector(".p-annuler"),
     };
     noeud.querySelector(".p-nom").textContent = nom;
@@ -401,6 +468,7 @@ function construireLigne(groupe, nom) {
         });
     });
     ligne.enregistrer.addEventListener("click", () => { void enregistrer(ligne); });
+    ligne.traite.addEventListener("click", () => { void traiter(ligne); });
     ligne.annuler.addEventListener("click", () => { void revenirAuMesure(ligne); });
     return ligne;
 }
@@ -419,6 +487,7 @@ async function charger() {
     const palettes = (releve && releve.palettes) || {};
     const corrections = (releve && releve.corrections) || {};
     const noms = nomsDesCartes(cartesParGroupe);
+    const infos = infosDesCartes(cartesParGroupe);
 
     // Le relevé GÉNÉRÉ seul : palettes corrigées retirées de la vue, pour que
     // « Couleur mesurée » sache à quoi revenir.
@@ -431,13 +500,44 @@ async function charger() {
         etat.corrections.add(carte.replace(/[a-z]$/, ""));
     }
 
-    const groupes = Array.from(grouperParIdentite(palettes).values());
-    groupes.sort((a, b) => a.identite.localeCompare(b.identite, "fr", { numeric: true }));
+    // Les héros : une ligne par identité (les deux faces ensemble). Les méchants : une ligne
+    // par MÉCHANT, toutes ses phases ensemble (regroupées par set), pour que la couleur ne saute
+    // pas quand il passe à la phase suivante.
+    const estMechant = (carte) => (infos.get(carte) || {}).type === "Villain";
+    const heros = {};
+    const mechants = new Map();
+    for (const [carte, couleurs] of Object.entries(palettes)) {
+        if (estMechant(carte)) {
+            const set = (infos.get(carte) || {}).set || carte;
+            const groupe = mechants.get(set) || { identite: sansLettre(carte), cartes: [], couleurs: [], set };
+            groupe.cartes.push(carte);
+            if (!groupe.couleurs.length) groupe.couleurs = couleurs.map((c) => [c[0], c[1], c[2]]);
+            mechants.set(set, groupe);
+        } else {
+            heros[carte] = couleurs;
+        }
+    }
+    const groupesHeros = Array.from(grouperParIdentite(heros).values());
+    groupesHeros.sort((a, b) => a.identite.localeCompare(b.identite, "fr", { numeric: true }));
+    const groupesMechants = Array.from(mechants.values());
+    for (const groupe of groupesMechants) groupe.cartes.sort();
+    groupesMechants.sort((a, b) => a.cartes[0].localeCompare(b.cartes[0], "fr", { numeric: true }));
+    for (const groupe of groupesMechants) {
+        // Le relevé « mesuré » d'un méchant, pour « Couleur mesurée ».
+        if (!etat.generees.has(groupe.identite) && groupe.cartes.some((c) => genereesParCarte[c])) {
+            etat.generees.set(groupe.identite, groupe.couleurs);
+        }
+    }
 
     const fragment = document.createDocumentFragment();
-    for (const groupe of groupes) {
+    for (const groupe of groupesHeros) {
         const nom = noms.get(groupe.cartes[0]) || groupe.identite;
-        const ligne = construireLigne(groupe, nom);
+        const ligne = construireLigne(groupe, nom, "heros");
+        etat.lignes.push(ligne);
+        fragment.append(ligne.noeud);
+    }
+    for (const groupe of groupesMechants) {
+        const ligne = construireLigne(groupe, groupe.set, "mechants");
         etat.lignes.push(ligne);
         fragment.append(ligne.noeud);
     }
@@ -445,7 +545,7 @@ async function charger() {
     for (const ligne of etat.lignes) poserCouleurs(ligne, ligne.couleurs);
 
     LISTE.hidden = false;
-    compter();
+    filtrer();
     if (!etat.administrateur) {
         MESSAGE.textContent =
             "Lecture seule : cette page ne sert qu'au compte auteur, connecté depuis le "
@@ -457,7 +557,24 @@ async function charger() {
 }
 
 RECHERCHE.addEventListener("input", filtrer);
-SEULEMENT_CORRIGES.addEventListener("change", filtrer);
+function choisir(zone, cle, valeur) {
+    for (const bouton of zone.querySelectorAll("button")) bouton.classList.toggle("on", bouton.dataset[cle] === valeur);
+}
+ONGLETS.addEventListener("click", (evenement) => {
+    const bouton = evenement.target.closest("button");
+    if (!bouton) return;
+    etat.type = bouton.dataset.type;
+    choisir(ONGLETS, "type", etat.type);
+    RECHERCHE.placeholder = etat.type === "heros" ? "Chercher un héros…" : "Chercher un méchant…";
+    filtrer();
+});
+ETATS.addEventListener("click", (evenement) => {
+    const bouton = evenement.target.closest("button");
+    if (!bouton) return;
+    etat.montre = bouton.dataset.etat;
+    choisir(ETATS, "etat", etat.montre);
+    filtrer();
+});
 
 charger().catch((erreur) => {
     MESSAGE.textContent = String((erreur && erreur.message) || erreur);

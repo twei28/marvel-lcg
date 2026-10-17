@@ -186,6 +186,28 @@ def main():
         for face in faces:
             palettes[face] = couleurs
 
+    # LES MECHANTS (17/10/2026) : demande de l'utilisateur, « en haut a gauche les couleurs
+    # du mechant », comme le coin bas droit porte celles du heros. UN MECHANT = UNE PALETTE :
+    # toutes ses phases (1A, 2A, 3A, leurs deux faces) partagent les memes couleurs, pour que le
+    # fond ne saute pas quand le mechant passe a la phase suivante. Le groupe est le set du
+    # mechant (`set_name`) ; la palette est tiree du contour de TOUTES ses cartes mechant.
+    mechants = {}    # set_name -> [card_id des phases]
+    for _, carte in cartes_du_catalogue():
+        set_name = carte.get('set_name') or ''
+        if set_name and carte.get('type') == 'Villain':
+            mechants.setdefault(set_name, []).append(str(carte['card_id']))
+    sans_mechant = []
+    for set_name, phases in sorted(mechants.items()):
+        couleurs, lues = palette_du_set(phases)
+        if not couleurs:
+            sans_mechant.append((set_name, lues))
+            continue
+        for phase in phases:
+            palettes.setdefault(phase, couleurs)
+    print(f"{len(mechants)} mechants, {len(mechants) - len(sans_mechant)} avec une palette")
+    for nom, lues in sans_mechant[:12]:
+        print(f"    mechant sans palette : {nom} ({lues} carte(s) lue(s))")
+
     print(f"{len(identites)} identites, {len(palettes)} faces avec une palette")
     if sans:
         print(f"⚠ {len(sans)} set(s) sans palette (scans absents ou trop peu nombreux) :")

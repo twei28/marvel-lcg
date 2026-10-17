@@ -197,3 +197,16 @@ body{
   position:relative; height:66px; border-radius:8px; border:1px solid var(--line);
   background:var(--plateau);
 }
+
+/* Onglets Héros / Méchants, et ce qu'on montre : à traiter, traités, tous (17/10/2026). */
+.p-onglets, .p-etats { display: flex; gap: 6px; }
+.p-onglets button, .p-etats button {
+  padding: 7px 14px; cursor: pointer; font: 700 13px "Segoe UI", system-ui, sans-serif;
+  color: var(--dim); background: var(--steel); border: 1px solid var(--line); border-radius: 0;
+}
+.p-onglets button.on { color: #fff; background: var(--blue); border-color: var(--blue); }
+.p-etats button.on { color: #fff; background: var(--steel3); border-color: #8fbcf5; }
+.p-actions .p-traite { border-color: #34ae61; color: #bff0d0; font-weight: 700; }
+.p-actions .p-traite.p-deja { border-color: var(--line); color: var(--dim); font-weight: 400; }
+.p-ligne:not(.p-corrigee) .p-etat { color: #e6be3c; }
+.p-ligne[hidden]{display:none !important}

@@ -13,13 +13,18 @@
 <body>
     <header class="p-entete">
         <a class="p-retour" href="/prepare.html">←</a>
-        <h1>Palettes des héros</h1>
+        <h1>Palettes</h1>
+        <nav class="p-onglets" id="onglets" aria-label="Quoi colorier">
+            <button type="button" data-type="heros" class="on">Héros</button>
+            <button type="button" data-type="mechants">Méchants</button>
+        </nav>
+        <nav class="p-etats" id="etats" aria-label="Quoi montrer">
+            <button type="button" data-etat="traiter" class="on">À traiter</button>
+            <button type="button" data-etat="traites">Traités</button>
+            <button type="button" data-etat="tous">Tous</button>
+        </nav>
         <span class="p-avancement" id="avancement"></span>
-        <label class="p-filtre">
-            <input type="checkbox" id="seulement-corriges">
-            <span>Seulement les corrigés</span>
-        </label>
-        <input type="search" id="recherche" placeholder="Chercher un héros…"
+        <input type="search" id="recherche" placeholder="Chercher…"
                autocomplete="off" spellcheck="false">
     </header>
 
@@ -68,6 +73,7 @@
                 <span class="p-apercu-legende">fond du plateau</span>
             </div>
             <div class="p-actions">
+                <button type="button" class="p-traite" title="Enregistre ces couleurs et range la ligne : elle ne reste dans « À traiter » que tant qu'on n'y a pas touché">Traité ✓</button>
                 <button type="button" class="p-enregistrer">Enregistrer</button>
                 <button type="button" class="p-annuler" hidden>Couleur mesurée</button>
                 <span class="p-retour-serveur" role="status"></span>

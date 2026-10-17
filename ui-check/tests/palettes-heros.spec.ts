@@ -32,7 +32,8 @@ test.describe('éditeur de palettes', () => {
   })
 
   test('la vignette agrandit la carte, et la pipette remplit le champ visé', async ({ page }) => {
-    const ligne = page.locator('.p-ligne').first()
+    // La vue par défaut ne montre que les lignes « à traiter » (les traitées sont rangées).
+    const ligne = page.locator('.p-ligne:not([hidden])').first()
     const avant = await ligne.locator('.p-hex').first().inputValue()
 
     await ligne.locator('.p-scan-bouton').click()
