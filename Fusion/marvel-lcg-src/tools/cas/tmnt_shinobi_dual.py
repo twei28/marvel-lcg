@@ -92,6 +92,11 @@ CAS += [
        [HEROS, ARME, "Puzzle.Reveal('01101')"], [],
        {"hors_jeu": ["01101"], "exhausted": ["01046"], "defausse": ["sc001"]},
        main_exclusive=["sc001", "01090"], payer_avec=["01090"], jouer=["sc001"], cibles=["01101"]),
+    _c("sc001 Nendo : le WEAPON est Jennika's Tekko-Kagi (qui a AUSSI un pouvoir de ressource) : payee par la main, c'est le cout qui l'incline",
+       "Tekko-Kagi (WEAPON) sert de cout d'inclinaison ; le cout en ressources est paye par Strength : 4 degats, Dazed, Tekko-Kagi inclinee",
+       [JHEROS, "Puzzle.PutIntoPlay('tj009', under_control=True)"], [],
+       {"degats": [["01094", 4]], "statuts": [["01094", "Dazed"]], "exhausted": ["tj009"], "defausse": ["sc001"]},
+       heros="jennika", main_exclusive=["sc001", "01090"], payer_avec=["01090"], jouer=["sc001"], cibles=["01094"]),
     _c("sc001 Nendo avec JENNIKA : jouer une Dual Bushido/Kuji-Kiri declenche Ninja Senpai pour LES DEUX classes (+2/+2/+2)",
        "tj001a : une Interruption par classe Shinobi, une fois par round chacune ; Bushido ET Kuji-Kiri = deux declenchements",
        [JHEROS, ARME], [],
@@ -610,15 +615,6 @@ def sc_un_seul_cloaked(monde, aides):
     return etat_attendu(monde, aides)
 
 
-def sc_un_seul_dazed(monde, aides):
-    """Rhino porte EXACTEMENT une carte Dazed (jamais deux) ; le reste est delegue a etat_attendu."""
-    rhino = aides["par_id"](monde, "01094")
-    n = rhino.dazed
-    if n != 1:
-        return False, f"Rhino porte {n} carte(s) Dazed (attendu exactement 1)"
-    return etat_attendu(monde, aides)
-
-
 def sc_statuts_parmi(monde, aides):
     """`attendu.parmi_cloaked` / `parmi_dazed` : [[card_id...], n] = EXACTEMENT n de ces cartes portent le statut ;
     le reste (`defausse`...) est delegue a etat_attendu."""
@@ -652,6 +648,12 @@ def sc_dessus_rencontre(monde, aides):
     deck = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde) if f is not None]
     defausse = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDiscardPileCards(monde) if f is not None]
     soucis = []
+    # Deux lectures independantes du « dessus » : l'ordre de `Get(True)` ET `Deck.GetTop()` du deck du vilain (celui
+    # que `Puzzle.CreateEncounterDeck` remplit et que la phase de rencontre pioche).
+    haut = Worlds.GetAllVillains(monde)[0].encounter_deck.GetTop()
+    haut_id = getattr(getattr(haut, "paper", None), "card_id", None)
+    if haut_id != attendu["dessus"]:
+        soucis.append(f"Deck.GetTop() du deck de rencontre du vilain = {haut_id} (attendu {attendu['dessus']})")
     if deck[:1] != [attendu["dessus"]]:
         soucis.append(f"dessus du deck de rencontre = {deck[:1]} (attendu {attendu['dessus']}) ; deck = {deck[:4]}...")
     if "taille_deck" in attendu and len(deck) != attendu["taille_deck"]:

@@ -4694,7 +4694,31 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
   // --- TMNT Shinobi Taijutsu (sh) : ajouter les cartes shNNN ci-dessous, dans ce bloc seulement ---
 
-  // --- TMNT Shinobi Dual (sc) : ajouter les cartes scNNN ci-dessous, dans ce bloc seulement ---
+  // --- TMNT Shinobi Dual (sc) : les douze cartes Dual Shinobi (17/10/2026) ---
+  // sc001 Nendō (Événement, Bushido/Kuji-Kiri)
+  'sc001': "<b>Action de héros</b> <i>(attaque)</i> : inclinez une amélioration [[WEAPON]] que vous contrôlez → infligez 4 dégâts à un ennemi. Hébétez cet ennemi.\n<i>« Réfléchis vite ! » —Casey Jones</i>",
+  // sc002 Shugorei (Amélioration, Bushido/Kuji-Kiri)
+  'sc002': "1 max par joueur.\nUtilisations (4 compteurs de samouraï).\n<b>Action</b> : inclinez cette carte et retirez-en 2 compteurs de samouraï → piochez 1 carte.\n<i>« Ce dont nous nous souvenons, nous le devenons. » —Leonardo</i>",
+  // sc003 Omawari (Événement, Bushido/Ninjutsu)
+  'sc003': "<b>Action de héros</b> : inclinez une amélioration [[WEAPON]] que vous contrôlez → camouflez votre héros et donnez-lui une carte d'état Tenace.\n<i>« Rien ne nous passera devant. » —Raphael</i>",
+  // sc004 Kuragari (Amélioration, Bushido/Ninjutsu)
+  'sc004': "Utilisations (3 compteurs de samouraï).\n<b>Action</b> : inclinez cette carte et retirez-en 3 compteurs de samouraï → camouflez et redressez votre héros.\n<i>« Chhhut... » —Casey Jones</i>",
+  // sc005 Yoi-Dachi (Amélioration, Bushido/Taijutsu)
+  'sc005': "1 max par joueur. Utilisations (3 compteurs de samouraï).\n<b>Réponse</b> : après que vous avez subi des dégâts d'une attaque d'ennemi, retirez 1 compteur de samouraï d'ici → hébétez cet ennemi.",
+  // sc006 Migatte (Événement, Bushido/Taijutsu)
+  'sc006': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, il gagne +2 DEF pour cette attaque. Si vous avez payé cette carte avec une carte Shinobi, redressez votre héros.\n<i>« Il est temps de s'écarter de la tradition. » —Nightwatcher</i>",
+  // sc007 Mizuki (Événement, Kuji-Kiri/Ninjutsu)
+  'sc007': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, choisissez :\n• camouflez un personnage ami ;\n• remettez dans votre main un événement de votre pile de défausse.",
+  // sc008 Naito Dansā (Événement, Kuji-Kiri/Ninjutsu)
+  'sc008': "<b>Action de héros</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce que vous défaussiez un attachement ou une manigance annexe. Révélez cette carte → camouflez jusqu'à 2 personnages amis. Hébétez jusqu'à 2 ennemis.\n<i>« Regardez mes mouvements. » —Michelangelo</i>",
+  // sc009 Yomi (Événement, Kuji-Kiri/Taijutsu)
+  'sc009': "<b>Action de héros</b> <i>(contre)</i> : choisissez 1 carte dans la pile de défausse Rencontre et placez-la sur le dessus du deck Rencontre → retirez 2 menaces d'une manigance.\n<i>« C'est comme entendre la chasse avant qu'elle ne commence. » —Donatello</i>",
+  // sc010 Kusuri (Amélioration, Kuji-Kiri/Taijutsu)
+  'sc010': "1 max par joueur.\n<b>Action</b> : inclinez cette carte et défaussez un événement [[ATTACK]] de votre main → soignez 2 dégâts d'un personnage ami.\n<i>« Double, double, peine et trouble... » —Donatello</i>",
+  // sc011 Kenbu (Événement, Ninjutsu/Taijutsu)
+  'sc011': "<b>Action de héros</b> <i>(attaque)</i> : défaussez une carte d'état Camouflé de votre héros → infligez 1 dégât à jusqu'à 3 ennemis. Hébétez chaque ennemi ayant subi des dégâts de cette façon.\n<i>« Suivant. » —Alopex</i>",
+  // sc012 Hitodama (Événement, Ninjutsu/Taijutsu)
+  'sc012': "<b>Réponse de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si vous avez payé cette carte avec un événement [[THWART]], camouflez votre héros.\n<i>« On danse ! » —Raphael</i>",
 
   // --- TMNT Shinobi Paths (se) : les onze Voies (socle Shinobi, 17/10/2026) ---
   // se001 Kagemusha (Path, Ninjutsu)

@@ -1596,3 +1596,15 @@ Harnais : la clé de cas `deck_ajoute: [card_id, ...]` ajoute des cartes au `pla
 glissée est jouable « comme en main » (mesurer `IsLikeInHand()`, cas `se_comme_en_main`). ⚠ `Puzzle.CreatePlayerDeck(a, b, c)` :
 la DERNIÈRE carte listée est le DESSUS du deck. ⚠ `Puzzle.Attack('01094')` sans défenseur : le pilote fait défendre le héros
 (il s'incline) ; pour un dégât subi, incliner le héros d'abord.
+
+### 13bis. Cartes Dual Shinobi (`sc`, 17/10/2026) : recettes ajoutées
+
+| Texte imprimé | Fabrique / modèle | Piège |
+|---|---|---|
+| « If you paid for this card with a Shinobi card » | boucle locale sur `effect.context.paid_this_res_effects` avec `EstShinobi(e.this)` et `e.this != effect.this` (`sc006`) | `PayeAvecUnEvenement` ne couvre que les événements ; une Dual est Shinobi pour ses deux classes |
+| « Discard ... until you discard X or Y. Reveal that card → » (type UNION) | `CostFunc.Custom(Select.From("This"), fn)` bouclant `Worlds.DiscardEncounterTopCard` puis `face.Reveal(joueur, effect)` (`sc008`, modèles `sm/27015`, `alopex/ta006`) | la révélation est le COÛT ; deck épuisé sans cible = coût impayé |
+| « Choose 1 card from the encounter discard pile and put it on top of the encounter deck → » | `CostFunc.Custom(Select.From(CardFinder(), from_where=["EncounterDiscardPile"]), fn)` + `Faces.MoveAllToDeck(..., "Top", ...)` (`sc009`) | le journal affiche « EncounterDiscardPile<0> » : se fier à `Deck.GetTop()` |
+| « Discard a cloaked status card from your hero → » | `CostFunc.Custom(Select.From("YourHero", finder=CardFinder(has_status="Cloaked")), ...)` + `DiscardCloaked(effect, rule=1)` (`sc011`) | `canbe_status="Cloaked"` n'est PAS géré par `checker.py` |
+
+Harnais : `Puzzle.Counter(carte, nom, n)` AJOUTE n compteurs (n négatif en retire). `Puzzle.EmptyHand()` avant tout `SetThreat` (Emergency ramène la menace à 0). Un sbire Guard engagé interdit de viser le vilain
+avec un événement `attack` à plusieurs cibles. ⚠ « Exhaust a WEAPON you control » + une arme qui produit aussi une ressource (Tekko-Kagi) : le pilote paie avec l'arme puis le coût échoue, paiement perdu (défaut moteur non corrigé).

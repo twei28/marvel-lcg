@@ -96,3 +96,9 @@ Le zip « TMNT Shinobi » (103 cartes joueur : 4 Paths standard + 7 Paths hybrid
   `jennika/tj009` (découpe des deux scans comparée le 17/10/2026), donc [wild] ;
 - les cartes `sb`/`sj`/`sa`/`sh`/`sc` portent `desc.Class` = leur(s) type(s) Shinobi SEUL(S) (jamais « Hero ») : cartes de
   joueur choisies au deck-building, contrairement aux Shinobi de Jennika (« Hero;Taijutsu », signatures).
+
+### Cartes Dual (`tmnt_shinobi_dual`, `sc001`-`sc012`, 17/10/2026)
+
+Douze cartes à DEUX classes (`desc.Class = "Bushido;Kuji-Kiri"`...) : Shinobi pour chacune de leurs classes en jeu (Ninja Senpai de Jennika : +2/+2/+2 pour une Dual, +1 pour une carte à une
+classe) et au deck-building (un Path d'un seul des deux types suffit). Preuves : `tools/cas/tmnt_shinobi_dual.py` et `tools/tests-lanceur/regles-shinobi-dual.test.mjs`. Gabarits :
+`.planning/tmnt/shinobi-dual-gabarits.md` ; questions ouvertes (sc004, sc012) : `.planning/tmnt/shinobi-dual-questions.md`.
