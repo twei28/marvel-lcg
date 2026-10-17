@@ -5815,7 +5815,18 @@ function stepSummary() {
         if (sets.length) reglages.push(sets.join(" · "));
     }
 
-    return el("section", { class: "step face-a-face" },
+    // La couleur PRINCIPALE du méchant teinte son côté (17/10/2026). Palettes déjà servies par
+    // /get_palettes_heros ; sans palette, le fond reste celui d'avant.
+    const ecranVS = el("section", { class: "step face-a-face" });
+    const idVilain = cartesVilain[0];
+    if (idVilain) {
+        fetch("/get_palettes_heros", { cache: "no-store" }).then((r) => r.json()).then((d) => {
+            const pal = (d && d.palettes) || {};
+            const c = pal[idVilain] || pal[idVilain + "a"] || pal[String(idVilain).replace(/[a-z]$/, "")];
+            if (c && c[0]) ecranVS.style.setProperty("--fo-mechant", "rgb(" + c[0].join(",") + ")");
+        }).catch(() => { /* pas de palette : fond habituel */ });
+    }
+    ecranVS.append(...[
         el("div", { class: "faceoff" + (state.playerCount > 2 ? " large" : "") },
             el("div", { class: "fo-side heroes-side" },
                 heros,
@@ -5835,7 +5846,8 @@ function stepSummary() {
                 ...v.errors.map((e) => el("div", { class: "err", onclick: () => goto(e.step) }, e.message + " >")))
             : null,
         blocAvance(),
-    );
+    ].filter(Boolean));
+    return ecranVS;
 }
 
 /* ---- Bloc « Avancé » : seed, temps par décision, premier joueur, règles ----

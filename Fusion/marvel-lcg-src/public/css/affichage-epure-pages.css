@@ -2009,3 +2009,9 @@ html[data-epure] .tb-port.on .tb-port-nom {
   color: #fff !important;
 }
 html[data-epure] .team-b.eux .tb-port .tb-port-nom { font-size: 15px !important; }
+
+/* Le côté du méchant prend sa couleur PRINCIPALE (17/10/2026), assombrie pour garder le texte
+   lisible ; sans palette, le marron d'avant. */
+html[data-epure] .face-a-face .faceoff {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--fo-mechant, #4a3538) 70%, #000), color-mix(in srgb, var(--fo-mechant, #2a1f21) 35%, #000) 85%) !important;
+}
