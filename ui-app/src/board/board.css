@@ -1222,6 +1222,11 @@
   }
 
   /* « Jennifer Walters peut réagir » : sous la phrase du moteur, en clair. */
+  /* Le texte de l'effet (DemandeCentrale) : seulement en Épuré (affichage-epure.css). */
+  .dc-effet {
+    display: none;
+  }
+
   .dc-reagit {
     font-size: 13px;
     font-weight: 600;

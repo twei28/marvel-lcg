@@ -87,7 +87,7 @@ describe('DemandeCentrale — une fenetre de reaction se comprend sans survoler'
     expect(screen.queryByText('Jennifer Walters peut réagir')).toBeNull()
   })
 
-  it('dit qui peut reagir et montre la carte porteuse, sans le texte de la capacite', () => {
+  it('dit qui peut reagir et montre la carte porteuse ; le texte de la capacite est dans .dc-effet, masque hors Epure', () => {
     rendre({
       demande: fenetre(),
       options: [objection()],
@@ -102,8 +102,12 @@ describe('DemandeCentrale — une fenetre de reaction se comprend sans survoler'
     expect(screen.queryByText(/Main Scheme Phase/)).toBeNull()
     expect(screen.queryByText(/The Break-In!/)).toBeNull()
     expect(screen.getByText(/Effraction/)).toBeInTheDocument()
-    // Plus de texte de capacite sous les boutons (retire le 03/10/2026).
-    expect(screen.queryByText(/prevent 1 of that threat/)).toBeNull()
+    // Le texte de la capacite n'est plus sous les boutons (retire le 03/10/2026) : il est dans son
+    // propre bloc `.dc-effet`, que seul l'Epure affiche (17/10/2026, board.css le masque sinon).
+    const effet = document.querySelector('.dc-effet')
+    expect(effet).not.toBeNull()
+    expect(effet?.textContent).toMatch(/prevent 1 of that threat/)
+    expect(document.querySelector('.dc-boutons')?.textContent ?? '').not.toMatch(/prevent 1 of that threat/)
     // La vignette de la carte porteuse, sans survol.
     expect(document.querySelector('.dc-vignette')).not.toBeNull()
     // « Passer » est devenu « Ne pas utiliser … » (04/10/2026) : Objection est

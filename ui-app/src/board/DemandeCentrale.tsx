@@ -644,6 +644,19 @@ export function DemandeCentrale({
         ) : null}
       </div>
 
+      {/* Le TEXTE de l'effet, sous le titre (Épuré, 17/10/2026 : « Réponse : après que Squirrel Girl entre
+          en jeu… »). Masqué hors Épuré (board.css) : les autres affichages gardent leur fenêtre. */}
+      {reaction && !enScene
+        ? (() => {
+            const textes = [...new Set(options.map((option) => texteCapacite?.(option)).filter((x): x is string => Boolean(x)))]
+            if (textes.length === 0) return null
+            // « Réponse : après que… » : le nom de la capacité en gras, le reste en clair.
+            const brut = textes.join(' ')
+            const m = brut.match(/^([^:]{2,30}?) : ([\s\S]*)$/)
+            return <span className="dc-effet">{m ? <><b>{m[1]}</b> : {m[2]}</> : brut}</span>
+          })()
+        : null}
+
       <div className={`af-boutons dc-boutons${choixUnique ? ' est-choix-unique' : ''}`} onMouseOver={survolerZone} onMouseLeave={quitterZone}>
         {/*
           ⚠ UNE SEULE VIGNETTE PAR IMAGE, ET PAS UNE PAR BOUTON.
