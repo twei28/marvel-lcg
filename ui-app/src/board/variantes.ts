@@ -7,6 +7,8 @@
 // vaut pour les TROIS ressources a la fois : une collection est coherente. On
 // relit ici la meme cle localStorage, ecrite par le wizard.
 
+import { picIdCarte } from './arts-cartes'
+
 /**
  * Une collection donne l'image des TROIS ressources doubles. Deux origines :
  *  - les promos « Play-and-Share » de FFG, decoupees des PDF -> « 01088_th » ;
@@ -352,11 +354,18 @@ export function collectionPourJoueur(
  * Identifiant d'image a afficher. Ne change QUE pour les trois ressources
  * doubles, et seulement si une collection est choisie.
  */
-export function picIdAffiche(picId: string, collection: string | undefined): string {
-  // Les deux mecanismes ne se croisent jamais : une carte est soit une des
-  // trois ressources doubles, soit une carte de heros.
+export function picIdAffiche(
+  picId: string,
+  collection: string | undefined,
+  herosCardId?: string
+): string {
+  // Les mecanismes ne se croisent jamais : une carte est soit une des trois
+  // ressources doubles, soit une carte de heros, soit une carte de deck a art
+  // alternatif (arts-cartes.ts, table mc_card_art_v1).
   const avecArtHeros = picIdHeros(picId)
   if (avecArtHeros !== picId) return avecArtHeros
+  const avecArtCarte = picIdCarte(picId, herosCardId)
+  if (avecArtCarte !== picId) return avecArtCarte
   if (!collection) return picId
   const index = INDEX_RESSOURCE[picId]
   if (index === undefined) return picId
