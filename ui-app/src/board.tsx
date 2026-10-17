@@ -260,7 +260,7 @@ import {
   retenirEpurePermis,
   type Affichage,
 } from './board/affichage'
-import { fondDe, identiteAffichee, marqueDe, palettes, type Couleur } from './board/halo-heros'
+import { fondDe, identiteAffichee, identitesMechants, marqueDe, marqueMechantDe, palettes, type Couleur } from './board/halo-heros'
 // CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
@@ -3685,24 +3685,32 @@ export function PagePartie({
    * sans le drapeau, la classe n'est pas posee et la CSS garde le fond uni.
    */
   const identite = identiteAffichee(etat.monde, joueurActif)
+  // Le méchant en jeu : ses cartes (toutes les phases partagent la même palette), jointes en une
+  // clé simple pour ne repartir que quand le méchant change.
+  const clesMechant = identitesMechants(etat.monde).join(',')
   useEffect(() => {
     const racine = document.documentElement
     const corps = document.body
     let vivant = true
     if (!essais || !identite || affichage === 'sobre') {
-      corps.classList.remove('a-halo-heros', 'a-marque-heros')
+      corps.classList.remove('a-halo-heros', 'a-marque-heros', 'a-marque-mechant')
       return
     }
     void palettes().then((catalogue) => {
       if (!vivant) return
       const couleurs: Couleur[] | undefined = catalogue[identite]
+      // Le méchant : la première de ses cartes en jeu qui porte une palette (deux couleurs).
+      const cleMechant = clesMechant.split(',').find((id) => id && (catalogue[id]?.length ?? 0) > 0)
+      const couleursMechant: Couleur[] | undefined = cleMechant ? catalogue[cleMechant] : undefined
       if (!couleurs || couleurs.length === 0) {
-        corps.classList.remove('a-halo-heros', 'a-marque-heros')
+        corps.classList.remove('a-halo-heros', 'a-marque-heros', 'a-marque-mechant')
         return
       }
       // EPURE : trois bandes plates au coin, jamais le halo (affichage-epure.css).
       if (affichage === 'epure') {
         racine.style.setProperty('--marque-heros', marqueDe(couleurs) ?? 'none')
+        racine.style.setProperty('--marque-mechant', marqueMechantDe(couleursMechant) ?? 'none')
+        corps.classList.toggle('a-marque-mechant', Boolean(couleursMechant))
         // Les deux premieres couleurs du heros, en accent (16/10/2026, « epure mais pas mort ») :
         // le liseré sous les bandeaux (affichage-epure.css, §15).
         const [c1, c2] = [couleurs[0], couleurs[1] ?? couleurs[0]]
@@ -3712,17 +3720,21 @@ export function PagePartie({
         corps.classList.add('a-marque-heros')
         return
       }
-      corps.classList.remove('a-marque-heros')
+      corps.classList.remove('a-marque-heros', 'a-marque-mechant')
       racine.style.setProperty(
         '--fond-plateau',
-        fondDe(couleurs, 'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))')
+        fondDe(
+          couleurs,
+          'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))',
+          couleursMechant
+        )
       )
       corps.classList.add('a-halo-heros')
     })
     return () => {
       vivant = false
     }
-  }, [essais, identite, affichage])
+  }, [essais, identite, clesMechant, affichage])
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'

@@ -86,6 +86,19 @@ html[data-epure] body.a-marque-heros .plateau-scene::after {
   z-index: 0;
 }
 
+/* Le méchant : deux bandes en biais au coin HAUT GAUCHE (halo-heros.ts, `marqueMechantDe`). */
+html[data-epure] body.a-marque-mechant .plateau-scene::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 320px;
+  height: 320px;
+  background: var(--marque-mechant, none);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* --- 3. Ce qu'on retire ------------------------------------------------------ */
 html[data-epure] .plateau-emplacement-titre,
 html[data-epure] .fleches-phase,

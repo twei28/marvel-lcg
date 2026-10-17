@@ -6,7 +6,7 @@
 // serveur sans le fichier, une reponse abimee, tout cela doit rendre un plateau
 // NORMAL. Un fond casse serait pire que pas de couleur du tout.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { fondDe, identiteAffichee, marqueDe, oublierPalettes, palettes, type Couleur } from './halo-heros'
+import { bandeMechant, fondDe, identiteAffichee, identitesMechants, marqueDe, marqueMechantDe, oublierPalettes, palettes, type Couleur } from './halo-heros'
 
 const ROUGE: Couleur = [140, 41, 31]
 const BLEU: Couleur = [32, 43, 114]
@@ -179,5 +179,47 @@ describe('la marque aplatie de l affichage epure', () => {
   it('un heros a deux couleurs repete la derniere', () => {
     const marque = marqueDe([ROUGE, BLEU], 40)!
     expect(marque.match(/rgb\(32,43,114\)/g)).toHaveLength(2)
+  })
+})
+
+describe('le méchant au coin haut gauche (17/10/2026)', () => {
+  const noir: Couleur = [10, 10, 10]
+  const rouge: Couleur = [200, 30, 30]
+
+  it('bandeMechant : principale au coin, secondaire ensuite, éteinte avant le centre', () => {
+    const b = bandeMechant([noir, rouge])
+    expect(b).toContain('135deg')
+    expect(b.indexOf('rgba(10,10,10,1) 0%')).toBeGreaterThan(-1)
+    expect(b).toContain('rgba(200,30,30,0.9) 26%')
+    expect(b).toContain('rgba(200,30,30,0) 50%')
+  })
+
+  it('un méchant à une seule couleur répète cette couleur', () => {
+    expect(bandeMechant([noir])).toContain('rgba(10,10,10,0.9) 26%')
+  })
+
+  it('fondDe pose la bande du méchant AVANT celle du héros, sur le fond sombre', () => {
+    const fond = fondDe([rouge], 'SOMBRE', [noir, rouge])
+    expect(fond.startsWith('linear-gradient(135deg')).toBe(true)
+    expect(fond.indexOf('315deg')).toBeGreaterThan(fond.indexOf('135deg'))
+    expect(fond.endsWith('SOMBRE')).toBe(true)
+  })
+
+  it('fondDe sans méchant reste identique à avant', () => {
+    expect(fondDe([rouge], 'SOMBRE')).toBe(fondDe([rouge], 'SOMBRE', undefined))
+    expect(fondDe([rouge], 'SOMBRE').startsWith('linear-gradient(315deg')).toBe(true)
+  })
+
+  it('marqueMechantDe : deux bandes nettes, 70 puis 30 %, sans dégradé', () => {
+    const m = marqueMechantDe([noir, rouge], 96) ?? ''
+    expect(m).toContain('135deg')
+    expect(m).toContain('rgb(10,10,10) 0px 156.8px')
+    expect(m).toContain('rgb(200,30,30) 156.8px 224px')
+    expect(marqueMechantDe(undefined)).toBeUndefined()
+  })
+
+  it('identitesMechants : les cartes de la zone du méchant', () => {
+    expect(identitesMechants({ area_villain: [{ card_id: '01094' }, { card_id: '' }, {}] })).toEqual(['01094'])
+    expect(identitesMechants(null)).toEqual([])
   })
 })

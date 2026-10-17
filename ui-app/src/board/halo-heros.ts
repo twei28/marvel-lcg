@@ -85,8 +85,15 @@ export function oublierPalettes(): void {
  * « la primaire je la veux a droite, la secondaire a gauche et le tertiaire
  * au milieu »). Voir `ORDRE` ci-dessous.
  */
-export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string): string {
-  if (!couleurs || couleurs.length === 0) return sombre
+export function fondDe(
+  couleurs: readonly Couleur[] | undefined,
+  sombre: string,
+  mechant?: readonly Couleur[] | undefined
+): string {
+  // Le coin HAUT GAUCHE porte les couleurs du méchant (17/10/2026) : même bande diagonale que
+  // celle du héros, en sens inverse. Elle s'éteint, elle aussi, avant le centre.
+  const coinMechant = mechant && mechant.length > 0 ? `${bandeMechant(mechant)}, ` : ''
+  if (!couleurs || couleurs.length === 0) return coinMechant ? `${coinMechant}${sombre}` : sombre
   const rgba = (c: Couleur, a: number) => `rgba(${c[0]},${c[1]},${c[2]},${a})`
   // Position et force de chaque couleur le long de la bande, de la plus dense
   // (au coin) a la plus diffuse. Trois arrets : au-dela les teintes se
@@ -111,7 +118,19 @@ export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string)
     return `${rgba(couleur, arret.force)} ${arret.a}%`
   })
   const fin = couleurs[ORDRE[ARRETS.length - 1]] ?? derniere
-  return `linear-gradient(315deg, ${etapes.join(', ')}, ${rgba(fin, 0)} 50%), ${sombre}`
+  return `${coinMechant}linear-gradient(315deg, ${etapes.join(', ')}, ${rgba(fin, 0)} 50%), ${sombre}`
+}
+
+/**
+ * La bande du MÉCHANT, au coin haut gauche : DEUX couleurs (précision de l'utilisateur,
+ * 17/10/2026 : « les méchants, c'est deux couleurs »), la principale au coin, la secondaire
+ * ensuite, puis le fondu. `135deg` progresse vers le BAS DROIT : la position 0 % est le coin
+ * haut gauche. Mêmes forces que la bande du héros (pleine, puis 0,9), éteinte avant le centre.
+ */
+export function bandeMechant(couleurs: readonly Couleur[]): string {
+  const rgba = (c: Couleur, a: number) => `rgba(${c[0]},${c[1]},${c[2]},${a})`
+  const [principale, secondaire] = [couleurs[0], couleurs[1] ?? couleurs[0]]
+  return `linear-gradient(135deg, ${rgba(principale, 1)} 0%, ${rgba(secondaire, 0.9)} 26%, ${rgba(secondaire, 0)} 50%)`
 }
 
 /**
@@ -147,10 +166,34 @@ export function marqueDe(couleurs: readonly Couleur[] | undefined, largeurBande 
   return `linear-gradient(315deg, ${arrets.join(', ')}, transparent ${debut}px)`
 }
 
+/**
+ * La marque du MÉCHANT en affichage ÉPURÉ : DEUX bandes en biais, aplaties, au coin HAUT GAUCHE
+ * (17/10/2026), le pendant de `marqueDe`. La principale tient le coin (70 %), la secondaire le
+ * bord (30 %). Arrêts nets, aucun dégradé.
+ */
+export function marqueMechantDe(couleurs: readonly Couleur[] | undefined, largeurBande = 96): string | undefined {
+  if (!couleurs || couleurs.length === 0) return undefined
+  const rgb = (c: Couleur) => `rgb(${c[0]},${c[1]},${c[2]})`
+  const [principale, secondaire] = [couleurs[0], couleurs[1] ?? couleurs[0]]
+  const total = (largeurBande * 7) / 3
+  const premiere = Math.round(total * 0.7 * 100) / 100
+  const seconde = Math.round(total * 100) / 100
+  return `linear-gradient(135deg, ${rgb(principale)} 0px ${premiere}px, ${rgb(secondaire)} ${premiere}px ${seconde}px, transparent ${seconde}px)`
+}
+
 /** La forme minimale dont le halo a besoin : qui est assis, et sa carte d'identité. */
 export type MondeVuDuHalo = {
   players?: Array<{ area_hero?: Array<{ card_id?: string }> }>
+  area_villain?: Array<{ card_id?: string }>
 } | null | undefined
+
+/**
+ * La carte du MÉCHANT en jeu, celle qui donne la couleur du coin haut gauche. La première carte
+ * de la zone du méchant qui a une palette ; `a-t-elle-une-palette` est décidé par l'appelant.
+ */
+export function identitesMechants(monde: MondeVuDuHalo): string[] {
+  return (monde?.area_villain ?? []).map((carte) => carte?.card_id ?? '').filter(Boolean)
+}
 
 /**
  * La carte d'identité du héros AFFICHÉ, celle qui donne la couleur du fond.
