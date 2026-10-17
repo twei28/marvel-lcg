@@ -1548,3 +1548,8 @@ html[data-epure] body button.btn.launch:not(:disabled):hover {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3) !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
+
+/* L'étiquette « Héros » à côté des chiffres de l'accueil est retirée (17/10/2026). */
+html[data-epure] .acc-nombres small {
+  display: none !important;
+}
