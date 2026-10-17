@@ -147,3 +147,49 @@ def YouMayChangeForm(player: 'Player', effect: 'Effect'):
     if face:
         player.GetIdentity().ChangeToFace(face, effect)
 
+################################################################################
+# TMNT SHINOBI (Inkwire, 17/10/2026) : helpers PARTAGES par tous les packs `tmnt_shinobi_*` (et par
+# jennika, qui a les siens, equivalents). Voir docs/reference/mots-cles/shinobi.md.
+#
+# Une carte SHINOBI = une carte portant l'une des quatre classes Bushido / Ninjutsu / Kuji-Kiri /
+# Taijutsu dans `desc.Class` (separees par « ; »). Une carte DUAL en porte DEUX (« Bushido;Kuji-Kiri ») et
+# compte donc pour LES DEUX en jeu comme a la construction (livret p.7). Les classes Shinobi ne sont ni
+# des ASPECTS ni « Basic » : `IsClass("Aspect")` et `IsClass("Basic")` restent faux (livret p.8 :
+# « Shinobi cards do not count as aspect or basic cards when triggering abilities »).
+CLASSES_SHINOBI: List[str] = ["Bushido", "Ninjutsu", "Kuji-Kiri", "Taijutsu"]
+
+def CarteShinobi(*classes: str) -> 'CardFinder':
+    """Filtre « une carte Shinobi » ; avec des classes, « une carte <classe> » (OU entre elles)."""
+    # Un PATH porte les classes de ses types (desc.Class) mais n'est pas une « carte Shinobi » du deck : exclu.
+    return CardFinder(card_classes=list(classes) if classes else list(CLASSES_SHINOBI), non_card_type=Path)  # type: ignore
+
+def EstShinobi(face: 'CardFace|None', *classes: str) -> bool:
+    """Vrai si `face` est une carte Shinobi (de l'une des `classes` si precisees ; Dual : l'une ou l'autre). Un Path : faux."""
+    if face is None or not ClassCard.IsType(face) or Path.IsType(face):
+        return False
+    return face.IsClass(*(classes or CLASSES_SHINOBI))  # type: ignore
+
+def PayeAvecUnEvenement(effect: 'Effect', *traits: str) -> bool:
+    """« If you paid for this card with an ATTACK / THWART / DEFENSE event » : un AUTRE evenement
+    portant l'un des traits, defausse pour sa ressource, figure dans le paiement de `effect.this`."""
+    this = effect.this
+    return any(
+        Event.IsType(e.this) and e.this != this and any(e.this.HasTrait(t) for t in traits)  # type: ignore
+        for e in effect.context.paid_this_res_effects
+    )
+
+def ShinobiCloak(effect: 'Effect', faces: 'CardFace|Sequence[CardFace|None]|None') -> int:
+    """« Cloak X » : pose la carte d'etat Cloaked (une seule par personnage). Rend le nombre de
+    personnages reellement camoufles (porte le « if you cannot »)."""
+    if faces is None:
+        return 0
+    cibles = [faces] if isinstance(faces, CardFace) else [f for f in faces if f is not None]
+    return Faces.GiveStatus(cibles, "Cloaked", effect) if cibles else 0
+
+def ShinobiDaze(effect: 'Effect', faces: 'CardFace|Sequence[CardFace|None]|None') -> int:
+    """« Daze X » : pose la carte d'etat Dazed (une seule par personnage). Rend le nombre de personnages hebetes."""
+    if faces is None:
+        return 0
+    cibles = [faces] if isinstance(faces, CardFace) else [f for f in faces if f is not None]
+    return Faces.GiveStatus(cibles, "Dazed", effect) if cibles else 0
+

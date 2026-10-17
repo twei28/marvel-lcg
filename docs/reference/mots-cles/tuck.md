@@ -49,4 +49,12 @@ place Restricted) puis on met en jeu (`PutIntoPlay`). ⚠ Le Sac est PERMANENT :
 set (`paper.set_name`) peut le faire quitter le jeu (`has_permanent.py`) ; pour le déplacer dans un
 cas de test, emprunter l'identité de Casey comme `DebugRule` (`casey_resetup`).
 
+**The Last Rōnin (`se005`, pack `tmnt_shinobi_paths`, 17/10/2026)** : « You may play cards tucked here as if they were in your
+hand. (Max 2 tucked cards.) *Kanpeki* — Action: Exhaust this card and tuck 1 Shinobi card from your hand under here → draw 1
+card. » Même lecture que Casey's Bag pour « play » seulement (`AttachedCardCanPlayLikeInHand()` SANS `also_spend` ni
+`also_discard`). Le tuck est un COÛT (avant la flèche) : `CostFunc.TuckCardHere(Select.From("YourHandCards",
+finder=CarteShinobi(), range=(1, 1)))`, et le plafond « Max 2 » est une CONDITION de l'action (`GetPlacedCardArea().GetSize() <
+2`). Preuves : `[se] se005` (Kanpeki, plafond 2 et 1, forme alter-ego, jouable comme en main par `IsLikeInHand()`, témoin sous un
+autre hôte). ⚠ La clé de cas `jouer` AMÈNE en main une carte absente : elle ne prouve pas la permission.
+
 **Variantes maison** : aucune.

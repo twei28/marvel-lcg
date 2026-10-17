@@ -655,6 +655,48 @@
    "cartes": 19,
    "depuis": "2026-09-25",
    "note": "Declare a posteriori le 16/10/2026 : le pack (auteur RyCoRan, meme gabarit que Conan) etait livre sans entree ici, et tools/verifier_prefixes.py refusait ses 19 cartes."
+  },
+  "sb": {
+   "pack": "tmnt_shinobi_bushido",
+   "libelle": "202. Custom (TMNT Shinobi – Bushido)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier B1 a B20 (Bushido, liseré turquoise ; ameliorations OATH, jeton samurai)."
+  },
+  "sj": {
+   "pack": "tmnt_shinobi_kuji_kiri",
+   "libelle": "203. Custom (TMNT Shinobi – Kuji-Kiri)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier K1 a K20 (Kuji-Kiri, rose ; sorts)."
+  },
+  "sa": {
+   "pack": "tmnt_shinobi_ninjutsu",
+   "libelle": "204. Custom (TMNT Shinobi – Ninjutsu)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier N1 a N20 (Ninjutsu, violet ; Cloaked)."
+  },
+  "sh": {
+   "pack": "tmnt_shinobi_taijutsu",
+   "libelle": "205. Custom (TMNT Shinobi – Taijutsu)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier T1 a T20 (Taijutsu, orange ; Dazed)."
+  },
+  "sc": {
+   "pack": "tmnt_shinobi_dual",
+   "libelle": "206. Custom (TMNT Shinobi – Dual Shinobi)",
+   "cartes": 12,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier 12 cartes Dual Shinobi BK1 BK2 BN1 BN2 BT1 BT2 KN KN2 KT1 KT2 NT1 NT2 (comptent comme LES DEUX types)."
+  },
+  "se": {
+   "pack": "tmnt_shinobi_paths",
+   "libelle": "207. Custom (TMNT Shinobi – Paths)",
+   "cartes": 11,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier 4 Paths standard (se001-se004 : Kagemusha, Onmyodo, Samurai, Shihan) + 7 Paths hybrides (se005-se011 : The Last Ronin, Yoshimitsu, Yamabushi, Onigari, Ashigaru, Onmitsu, Yojimbo) ; les 11 DOS (regles de construction) sont des inserts hors cards.json, data/shinobi_paths.json."
   }
  }
 }

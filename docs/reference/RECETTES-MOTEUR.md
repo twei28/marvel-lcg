@@ -1572,3 +1572,27 @@ Preuve : table partagée `tools/tests-lanceur/unicite-sous-titre-cas.json`, lue 
 (`node --test tools/tests-lanceur/unicite-sous-titre.test.mjs`) : les deux répondent pareil. Écarts voulus
 (`parite: false`) : les paires hors TMNT (wd118, ra002) et deux cartes de même titre ET même sous-titre (Miles Morales 13019 / 27011) : copies pour le
 deck-builder (limite par deck), uniques pour le moteur (refus en jeu).
+
+## 13. TMNT Shinobi (Inkwire, packs `tmnt_shinobi_*`, préfixes sb sj sa sh sc se) : socle, 17/10/2026
+
+Fiche : `mots-cles/shinobi.md` (classes, Dual, Path, helpers), `samurai-counter.md`, `path.md`. Numérotation figée :
+`tools/tmnt_shinobi_numerotation.tsv` ; images : `tools/importer_images_tmnt_shinobi.py` ; règles de construction :
+`data/shinobi_paths.json`.
+
+| Texte imprimé | Fabrique / helper | Modèle | Piège |
+|---|---|---|---|
+| carte Shinobi (« a Shinobi card », « 1 Taijutsu card ») | `CarteShinobi()` / `CarteShinobi("Taijutsu")`, `EstShinobi(face, *classes)` (`cards/pack/__init__.py`) | `jennika/tj011`, `se004` | une Dual (`"Bushido;Kuji-Kiri"`) est Shinobi pour LES DEUX classes ; ni aspect ni Basic ; une signature « Hero;Taijutsu » est Taijutsu aussi |
+| « If you paid for this card with an ATTACK / THWART / DEFENSE event » | `PayeAvecUnEvenement(effect, "ATTACK", ...)` | `jennika/tj004` | lit `paid_this_res_effects` ; un AUTRE événement que la carte elle-même |
+| « cloak / daze X » | `ShinobiCloak(effect, face(s))`, `ShinobiDaze(...)` | `se001`, `se010` | une seule Cloaked / Dazed par personnage ; renvoie le nombre de personnages touchés (« if you cannot ») |
+| « You get -1 hand size » (Path) | `*GiveKeywordToInPlayWhenApplyThis("You", hand_size=-1[, trait=..., health=...])` | `se001`-`se011` | `"You"` = deux formes ; « Your hero gains » = `"YourHero"` (forme héros seulement) |
+| « remove a total of N <compteur> counters from among <cartes> you control » (coût réparti) | `CostFunc.Custom(Select.From("This", finder=CardFinder(check_effect_fn=assez)), retirer)` | `se003` | la condition globale (« au moins N en tout ») va dans `check_effect_fn`, sinon l'action est proposée sans pouvoir payer ; retirer UN compteur à la fois, choix du joueur |
+| « tuck 1 <filtre> card from your hand under here » (coût) | `CostFunc.TuckCardHere(Select.From("YourHandCards", finder=CarteShinobi(), range=(1, 1)))` | `se005` | « (Max 2 tucked cards) » = CONDITION de l'action, pas du coût ; « play ... as if in hand » = `AttachedCardCanPlayLikeInHand()` seul (pas `also_spend`) |
+| « When the player phase ends » | `WhenPlayerPhaseEnd(HeroInterrupt, op)` | `se004` | `WhenPhaseEnd("Player")` part APRÈS la pioche de fin de phase (`PlayersEndPhase`) : c'est « after you draw your new hand » ; un cout `DiscardDeckTopCards` DÉFAUSSE avant le choix, qui doit donc se faire dans l'opération |
+| « generate a [wild] resource. If you paid for X with this resource, ... » | `CanGenerateResources(HeroResource, Resources("G"), ex_operation=op)` | `se009` | `ex_operation(effect, message)` reçoit `message.paying_card` (la carte payée) |
+| Path du deck | `PlayerSetup.MettreLesPathsDeCoteEtEnJeuAuSetup` (`player_setup.py`) | `se001` choisi (`deck_ajoute`) | tout card_id de type Path dans `player_deck` est retiré du deck, fabriqué de côté, mis en jeu à `WhenGameBeginSetup` (avant la pioche de départ) ; le Path propre à un héros (Sosaiken) passe, lui, par `BeginGameWithSetAside` |
+
+Harnais : la clé de cas `deck_ajoute: [card_id, ...]` ajoute des cartes au `player_deck` du joueur 1 AVANT la mise en place
+(chemin réel du deck-builder). ⚠ La clé `jouer` AMÈNE EN MAIN une carte absente de la main : elle ne prouve pas qu'une carte
+glissée est jouable « comme en main » (mesurer `IsLikeInHand()`, cas `se_comme_en_main`). ⚠ `Puzzle.CreatePlayerDeck(a, b, c)` :
+la DERNIÈRE carte listée est le DESSUS du deck. ⚠ `Puzzle.Attack('01094')` sans défenseur : le pilote fait défendre le héros
+(il s'incline) ; pour un dégât subi, incliner le héros d'abord.

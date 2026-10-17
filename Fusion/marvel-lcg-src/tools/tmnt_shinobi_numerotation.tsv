@@ -1,0 +1,115 @@
+card_id	pack	dossier	fichier_scan	nom_tsv	classe_shinobi	categorie	card_id_origine	converti_art_alternatif_de	note
+sb001	tmnt_shinobi_bushido	Bushido	B1 Loyalty.png	Loyalty	Bushido	NOUVELLE			
+sb002	tmnt_shinobi_bushido	Bushido	B2 Rectitude.png	Rectitude	Bushido	NOUVELLE			
+sb003	tmnt_shinobi_bushido	Bushido	B3 Courage.png	Courage	Bushido	NOUVELLE			
+sb004	tmnt_shinobi_bushido	Bushido	B4 Glory.png	Glory	Bushido	NOUVELLE			
+sb005	tmnt_shinobi_bushido	Bushido	B5 Gratitude.png	Gratitude	Bushido	NOUVELLE			
+sb006	tmnt_shinobi_bushido	Bushido	B6 Mercy.png	Mercy	Bushido	NOUVELLE			
+sb007	tmnt_shinobi_bushido	Bushido	B7 Integrity.png	Integrity	Bushido	NOUVELLE			
+sb008	tmnt_shinobi_bushido	Bushido	B8 Self-Control.png	Self-Control	Bushido	NOUVELLE			
+sb009	tmnt_shinobi_bushido	Bushido	B9 Devotion.png	Devotion	Bushido	NOUVELLE			
+sb010	tmnt_shinobi_bushido	Bushido	B10 Tsujigiri.png	Tsujigiri	Bushido	NOUVELLE			
+sb011	tmnt_shinobi_bushido	Bushido	B11 Vow.png	Vow	Bushido	NOUVELLE			
+sb012	tmnt_shinobi_bushido	Bushido	B12 Kensei.png	Kensei	Bushido	NOUVELLE			
+sb013	tmnt_shinobi_bushido	Bushido	B13 Santoryu Ogi.png	Santoryu Ogi	Bushido	NOUVELLE			
+sb014	tmnt_shinobi_bushido	Bushido	B14 Kosho.png	Kosho	Bushido	NOUVELLE			
+sb015	tmnt_shinobi_bushido	Bushido	B15 Oathbreaker.png	Oathbreaker	Bushido	NOUVELLE			
+sb016	tmnt_shinobi_bushido	Bushido	B16 Wakizashi.png	Wakizashi	Bushido	NOUVELLE			
+sb017	tmnt_shinobi_bushido	Bushido	B17 Uno.png	Uno	Bushido	NOUVELLE			
+sb018	tmnt_shinobi_bushido	Bushido	B18 Musha Shugyo.png	Musha Shugyo	Bushido	NOUVELLE			
+sb019	tmnt_shinobi_bushido	Bushido	B19 Gusoku.png	Gusoku	Bushido	NOUVELLE			
+sb020	tmnt_shinobi_bushido	Bushido	B20 Iaido.png	Iaido	Bushido	NOUVELLE			
+sj001	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K1 Foresight.png	Foresight	Kuji-Kiri	NOUVELLE			homonyme de mw009,vp008 (autre carte, a verifier sur le scan)
+sj002	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K2 Imbued Weapons.png	Imbued Weapons	Kuji-Kiri	NOUVELLE			
+sj003	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K3 Yang.png	Yang	Kuji-Kiri	NOUVELLE			
+sj004	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K4 Yin.png	Yin	Kuji-Kiri	NOUVELLE			
+sj005	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K5 Tai Chi.png	Tai Chi	Kuji-Kiri	NOUVELLE			
+sj006	tmnt_shinobi_kuji_kiri	Kuji-Kiri	k6 Enthrall.png	Enthrall	Kuji-Kiri	NOUVELLE			
+sj007	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K7 Ring of Protection.png	Ring of Protection	Kuji-Kiri	NOUVELLE			
+sj008	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K8 Toshokan Arcana.png	Toshokan Arcana	Kuji-Kiri	NOUVELLE			
+sj009	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K9 Armageddon.png	Armageddon	Kuji-Kiri	NOUVELLE			
+sj010	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K10 Flash Ward.png	Flash Ward	Kuji-Kiri	NOUVELLE			
+sj011	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K11 Unravel.png	Unravel	Kuji-Kiri	NOUVELLE			
+sj012	tmnt_shinobi_kuji_kiri	Kuji-Kiri	k12 A Thin Place.png	A Thin Place	Kuji-Kiri	NOUVELLE			
+sj013	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K13 Kirbys Pencil.png	Kirbys Pencil	Kuji-Kiri	NOUVELLE			
+sj014	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K14 Kuji-Kaiju.png	Kuji-Kaiju	Kuji-Kiri	NOUVELLE			
+sj015	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K15 Morphic Charm.png	Morphic Charm	Kuji-Kiri	NOUVELLE			
+sj016	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K16 QNA Restoration.png	QNA Restoration	Kuji-Kiri	NOUVELLE			
+sj017	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K17 Yi.png	Yi	Kuji-Kiri	NOUVELLE			
+sj018	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K18 Wu Jen Tessen.png	Wu Jen Tessen	Kuji-Kiri	NOUVELLE			
+sj019	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K19 Static Shock.png	Static Shock	Kuji-Kiri	NOUVELLE			
+sj020	tmnt_shinobi_kuji_kiri	Kuji-Kiri	K20 Aethreal Shift.png	Aethreal Shift	Kuji-Kiri	NOUVELLE			
+sa001	tmnt_shinobi_ninjutsu	Ninjutsu	N1 Assassinate.png	Assassinate	Ninjutsu	NOUVELLE			
+sa002	tmnt_shinobi_ninjutsu	Ninjutsu	N2 Shroud and Protect.png	Shroud and Protect	Ninjutsu	NOUVELLE			
+sa003	tmnt_shinobi_ninjutsu	Ninjutsu	N3 Reconnaissance.png	Reconnaissance	Ninjutsu	NOUVELLE			
+sa004	tmnt_shinobi_ninjutsu	Ninjutsu	N4 Scale The Wall.png	Scale The Wall	Ninjutsu	NOUVELLE			
+sa005	tmnt_shinobi_ninjutsu	Ninjutsu	N5 Run the Rooftops.png	Run the Rooftops	Ninjutsu	NOUVELLE			
+sa006	tmnt_shinobi_ninjutsu	Ninjutsu	N6 Cut-and-Run.png	Cut-and-Run	Ninjutsu	NOUVELLE			
+sa007	tmnt_shinobi_ninjutsu	Ninjutsu	N7 Hamato Clan.png	Hamato Clan	Ninjutsu	NOUVELLE			
+sa008	tmnt_shinobi_ninjutsu	Ninjutsu	N8 Smoke Bombs.png	Smoke Bombs	Ninjutsu	NOUVELLE			homonyme de 27139 (autre carte, a verifier sur le scan)
+sa009	tmnt_shinobi_ninjutsu	Ninjutsu	N9 Twilight Sentry.png	Twilight Sentry	Ninjutsu	NOUVELLE			
+sa010	tmnt_shinobi_ninjutsu	Ninjutsu	N10 Opportunist.png	Opportunist	Ninjutsu	NOUVELLE			
+sa011	tmnt_shinobi_ninjutsu	Ninjutsu	N11 Stealth Proficiency.png	Stealth Proficiency	Ninjutsu	NOUVELLE			
+sa012	tmnt_shinobi_ninjutsu	Ninjutsu	N12 Black Ops.png	Black Ops	Ninjutsu	NOUVELLE			
+sa013	tmnt_shinobi_ninjutsu	Ninjutsu	N13 Up In Smoke.png	Up In Smoke	Ninjutsu	NOUVELLE			
+sa014	tmnt_shinobi_ninjutsu	Ninjutsu	N14 Hidden Passage.png	Hidden Passage	Ninjutsu	NOUVELLE			
+sa015	tmnt_shinobi_ninjutsu	Ninjutsu	N15 Kusari-Kagi.png	Kusari-Kagi	Ninjutsu	NOUVELLE			
+sa016	tmnt_shinobi_ninjutsu	Ninjutsu	N16 Shadow Summon.png	Shadow Summon	Ninjutsu	NOUVELLE			
+sa017	tmnt_shinobi_ninjutsu	Ninjutsu	N17 Moja.png	Moja	Ninjutsu	NOUVELLE			
+sa018	tmnt_shinobi_ninjutsu	Ninjutsu	N18 Smokescreen.png	Smokescreen	Ninjutsu	NOUVELLE			
+sa019	tmnt_shinobi_ninjutsu	Ninjutsu	N19 Gaslight.png	Gaslight	Ninjutsu	NOUVELLE			
+sa020	tmnt_shinobi_ninjutsu	Ninjutsu	N20 From the Shadows.png	From the Shadows	Ninjutsu	NOUVELLE			
+sh001	tmnt_shinobi_taijutsu	Taijutsu	T1 Raising Block.png	Raising Block	Taijutsu	NOUVELLE			
+sh002	tmnt_shinobi_taijutsu	Taijutsu	T2 Foot Sweep.png	Foot Sweep	Taijutsu	NOUVELLE			
+sh003	tmnt_shinobi_taijutsu	Taijutsu	T3 Stiff Jab.png	Stiff Jab	Taijutsu	NOUVELLE			
+sh004	tmnt_shinobi_taijutsu	Taijutsu	T4 Straight Cross.png	Straight Cross	Taijutsu	NOUVELLE			
+sh005	tmnt_shinobi_taijutsu	Taijutsu	T5 Double Kick.png	Double Kick	Taijutsu	NOUVELLE			
+sh006	tmnt_shinobi_taijutsu	Taijutsu	T6 Flying Kick.png	Flying Kick	Taijutsu	NOUVELLE			
+sh007	tmnt_shinobi_taijutsu	Taijutsu	T7 Trading Blows.png	Trading Blows	Taijutsu	NOUVELLE			
+sh008	tmnt_shinobi_taijutsu	Taijutsu	T8 Drop In.png	Drop In	Taijutsu	NOUVELLE			homonyme de nt004 (autre carte, a verifier sur le scan)
+sh009	tmnt_shinobi_taijutsu	Taijutsu	T9 Toss.png	Toss	Taijutsu	NOUVELLE			
+sh010	tmnt_shinobi_taijutsu	Taijutsu	T10 Martial Skill.png	Martial Skill	Taijutsu	NOUVELLE			
+sh011	tmnt_shinobi_taijutsu	Taijutsu	T11 Elbow Strike.png	Elbow Strike	Taijutsu	NOUVELLE			
+sh012	tmnt_shinobi_taijutsu	Taijutsu	T12 Mutant Fight Club.png	Mutant Fight Club	Taijutsu	NOUVELLE			
+sh013	tmnt_shinobi_taijutsu	Taijutsu	T13 Roll With It.png	Roll With It	Taijutsu	NOUVELLE			
+sh014	tmnt_shinobi_taijutsu	Taijutsu	T14 Minarai.png	Minarai	Taijutsu	NOUVELLE			
+sh015	tmnt_shinobi_taijutsu	Taijutsu	T15 Keep the Momentum.png	Keep the Momentum	Taijutsu	NOUVELLE			
+sh016	tmnt_shinobi_taijutsu	Taijutsu	T16 Jo.png	Jo	Taijutsu	NOUVELLE			
+sh017	tmnt_shinobi_taijutsu	Taijutsu	T17 Odyn.png	Odyn	Taijutsu	NOUVELLE			
+sh018	tmnt_shinobi_taijutsu	Taijutsu	T18 Countercross.png	Countercross	Taijutsu	NOUVELLE			
+sh019	tmnt_shinobi_taijutsu	Taijutsu	T19 Sideswipe.png	Sideswipe	Taijutsu	NOUVELLE			
+sh020	tmnt_shinobi_taijutsu	Taijutsu	T20 Tough Nut.png	Tough Nut	Taijutsu	NOUVELLE			
+sc001	tmnt_shinobi_dual	Dual Shinobi Cards	BK1 Nendō.png	Nendō	Bushido;Kuji-Kiri	NOUVELLE			
+sc002	tmnt_shinobi_dual	Dual Shinobi Cards	BK2 Shugorei.png	Shugorei	Bushido;Kuji-Kiri	NOUVELLE			
+sc003	tmnt_shinobi_dual	Dual Shinobi Cards	BN1 Omawari.png	Omawari	Bushido;Ninjutsu	NOUVELLE			
+sc004	tmnt_shinobi_dual	Dual Shinobi Cards	BN2 Kuragari.png	Kuragari	Bushido;Ninjutsu	NOUVELLE			
+sc005	tmnt_shinobi_dual	Dual Shinobi Cards	BT1 Yoi-Dachi.png	Yoi-Dachi	Bushido;Taijutsu	NOUVELLE			
+sc006	tmnt_shinobi_dual	Dual Shinobi Cards	BT2 Migatte.png	Migatte	Bushido;Taijutsu	NOUVELLE			
+sc007	tmnt_shinobi_dual	Dual Shinobi Cards	KN Mizuki.png	Mizuki	Kuji-Kiri;Ninjutsu	NOUVELLE			
+sc008	tmnt_shinobi_dual	Dual Shinobi Cards	KN2 Naito Dansā.png	Naito Dansā	Kuji-Kiri;Ninjutsu	NOUVELLE			
+sc009	tmnt_shinobi_dual	Dual Shinobi Cards	KT1 Yomi.png	Yomi	Kuji-Kiri;Taijutsu	NOUVELLE			
+sc010	tmnt_shinobi_dual	Dual Shinobi Cards	KT2 Kusuri.png	Kusuri	Kuji-Kiri;Taijutsu	NOUVELLE			
+sc011	tmnt_shinobi_dual	Dual Shinobi Cards	NT1 Kenbu.png	Kenbu	Ninjutsu;Taijutsu	NOUVELLE			
+sc012	tmnt_shinobi_dual	Dual Shinobi Cards	NT2 Hitodama.png	Hitodama	Ninjutsu;Taijutsu	NOUVELLE			
+se001	tmnt_shinobi_paths	Shinobi Paths	Kagemusha.png	Kagemusha	Ninjutsu	NOUVELLE			
+se002	tmnt_shinobi_paths	Shinobi Paths	Onmyodo.png	Onmyodo	Kuji-Kiri	NOUVELLE			
+se003	tmnt_shinobi_paths	Shinobi Paths	Samurai.png	Samurai	Bushido	NOUVELLE			
+se004	tmnt_shinobi_paths	Shinobi Paths	Shihan.png	Shihan	Taijutsu	NOUVELLE			
+se005	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	The Last Ronin.png	The Last Ronin	Bushido;Kuji-Kiri;Ninjutsu;Taijutsu	NOUVELLE			
+se006	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Yoshimitsu.png	Yoshimitsu	Bushido;Kuji-Kiri	NOUVELLE			
+se007	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Yamabushi.png	Yamabushi	Kuji-Kiri;Taijutsu	NOUVELLE			
+se008	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Onigari.png	Onigari	Kuji-Kiri;Ninjutsu	NOUVELLE			
+se009	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Ashigaru.png	Ashigaru	Bushido;Taijutsu	NOUVELLE			
+se010	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Onmitsu.png	Onmitsu	Ninjutsu;Taijutsu	NOUVELLE			
+se011	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Yojimbo.png	Yojimbo	Bushido;Ninjutsu	NOUVELLE			
+se001_dos	tmnt_shinobi_paths	Shinobi Paths	Kagemusha Cardback.png	Kagemusha (dos)		DOS			
+se002_dos	tmnt_shinobi_paths	Shinobi Paths	Onmyodo Cardback.png	Onmyodo (dos)		DOS			
+se003_dos	tmnt_shinobi_paths	Shinobi Paths	Samurai Cardback.png	Samurai (dos)		DOS			
+se004_dos	tmnt_shinobi_paths	Shinobi Paths	Shihan Cardback.png	Shihan (dos)		DOS			
+se005_dos	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	The Last Ronin Cardback.png	The Last Ronin (dos)		DOS			
+se006_dos	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Yoshimitsu Cardback.png	Yoshimitsu (dos)		DOS			
+se007_dos	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Yamabushi Cardback.png	Yamabushi (dos)		DOS			
+se008_dos	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Onigari Cardback.png	Onigari (dos)		DOS			
+se009_dos	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Ashigaru Cardback.png	Ashigaru (dos)		DOS			
+se010_dos	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Onmitsu Cardback.png	Onmitsu (dos)		DOS			
+se011_dos	tmnt_shinobi_paths	Shinobi Paths/ Hybrid Shinobi Paths (Advanced)	Yojimbo Cardback.png	Yojimbo (dos)		DOS			

@@ -14,10 +14,14 @@ export const STATS = [
     { cle: "def", desc: "DEF", libelle: "DEF" },
     { cle: "hp", desc: "HP", libelle: "PV" },
 ];
-export const ORDRE_TYPES = ["Ally", "Event", "Upgrade", "Support", "Resource", "PlayerSideScheme", "Player_Side_Scheme"];
-const ORDRE_CLASSES = ["Hero", "Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized", "Basic", "Campaign"];
+export const ORDRE_TYPES = ["Path", "Ally", "Event", "Upgrade", "Support", "Resource", "PlayerSideScheme", "Player_Side_Scheme"];
+const ORDRE_CLASSES = ["Hero", "Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized", "Basic", "Campaign",
+    "Bushido", "Kuji-Kiri", "Ninjutsu", "Taijutsu"];
 
-const ASPECTS_FILTRE = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized"];
+// Les quatre types SHINOBI (TMNT Shinobi, 17/10/2026) filtrent comme des aspects : une carte DUAL
+// (« Bushido;Kuji-Kiri ») apparait sous l'un ET sous l'autre.
+const ASPECTS_FILTRE = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized",
+    "Bushido", "Ninjutsu", "Kuji-Kiri", "Taijutsu"];
 /** Carte DOUBLE ASPECT (« Aggression;Justice », pack tmnt_aspect_dual) : ses deux
  *  aspects, pour qu'elle apparaisse sous l'un ET sous l'autre filtre. Vide pour
  *  toute autre classe (« Hero;Aggression » reste une signature). */
