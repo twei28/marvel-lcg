@@ -1426,7 +1426,7 @@ html[data-epure] .hero-grid.tb-roster .tb-port:hover {
 }
 
 /* Fenêtre « options de ce héros » : bouton Valider en bleu relief, titres lisibles. */
-html[data-epure] .tampon.jaune {
+html[data-epure] .vh-actions .tampon.jaune {
   background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%) !important;
   color: #fff !important;
   border: 1px solid #1d4a8a !important;
@@ -1475,11 +1475,66 @@ html[data-epure] .do-view {
 
 /* Choix actifs (menace, sets modulaires) et bouton « Lancer la partie » en bleu relief. */
 html[data-epure] .tampon.on,
-html[data-epure] .mod-chip.on,
-html[data-epure] .btn.launch {
+html[data-epure] .mod-chip.on {
   background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%) !important;
   color: #fff !important;
   border: 1px solid #1d4a8a !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.4) !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* --- 24. Boutons : coins coupés petits, Bangers majuscules (choix du 17/10/2026) -- */
+html[data-epure] .btn,
+html[data-epure] .tampon,
+html[data-epure] .tb-mode,
+html[data-epure] .mod-chip,
+html[data-epure] .ext-fanmade,
+html[data-epure] .btn-icone,
+html[data-epure] header.progress button:not(.pstep),
+html[data-epure] .deck-modal .tampon {
+  border-radius: 0 !important;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+}
+html[data-epure] .btn,
+html[data-epure] .tampon,
+html[data-epure] .mod-chip,
+html[data-epure] .ext-fanmade,
+html[data-epure] .tb-mode {
+  font-family: var(--ep-titres) !important;
+  font-weight: 400 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+html[data-epure] .btn { font-size: 16px; padding: 9px 20px; }
+html[data-epure] .tampon, html[data-epure] .mod-chip, html[data-epure] .ext-fanmade { font-size: 14px; }
+html[data-epure] input.search,
+html[data-epure] .tb-search {
+  border-radius: 0 !important;
+}
+html[data-epure] .acc-nombre,
+html[data-epure] .tb-siege,
+html[data-epure] .ca-fleche,
+html[data-epure] .pb-bouton,
+html[data-epure] .pb-fermer,
+html[data-epure] .pd-fermer {
+  border-radius: 0 !important;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+}
+html[data-epure] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+  border-radius: 0 !important;
+}
+/* Le clip-path coupe les anneaux dessinés en dehors (box-shadow externe) : on les redessine en dedans. */
+html[data-epure] .acc-nombre,
+html[data-epure] header.progress .btn-icone,
+html[data-epure] header.progress button:not(.pstep),
+html[data-epure] .tb-siege,
+html[data-epure] .ca-fleche,
+html[data-epure] .ext-fanmade {
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%) !important;
+  border: 1px solid #4a5a7c !important;
+  box-shadow: inset 1px 1px 0 rgba(140, 180, 240, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.45) !important;
+}
+html[data-epure] .acc-nombre:hover {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%) !important;
+  color: #fff;
 }
