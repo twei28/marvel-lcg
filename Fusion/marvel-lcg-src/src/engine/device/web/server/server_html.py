@@ -12,13 +12,12 @@ class GameServerHTML(GameServerBase):
         # CORRECTIF : /main servait l'ancien menu ; il ouvre désormais le wizard,
         # pour que les anciens favoris et raccourcis continuent de fonctionner.
         self.AddHtmlSecurity('/main', './public/prepare.html')
-        self.AddHtmlSecurity('/deck', './public/deck.html')
-        self.AddHtmlSecurity('/cards', './public/cards.html')
+        # /deck, /cards, /credits, /puzzle_editor : pages de l'ancien site, retirees (redirigent vers l'accueil)
+        for _p in ('/deck', '/cards', '/credits', '/puzzle_editor'):
+            self.AddHtmlSecurity(_p, './public/prepare.html')
         self.AddHtmlSecurity('/scene', './public/scene.html')
         self.AddHtmlSecurity('/replay', './public/replay.html')
         self.AddHtmlSecurity('/puzzle', './public/replay.html')
-        self.AddHtmlSecurity('/credits', './public/credits.html')
-        self.AddHtmlSecurity('/puzzle_editor', './public/puzzle_editor.html')
         self.AddHtmlSecurity('/puzzle_test', './public/replay.html')
         self.AddHtmlSecurity('/report', './public/report.html')
         # Ajouts locaux (multijoueur / pages hébergées)

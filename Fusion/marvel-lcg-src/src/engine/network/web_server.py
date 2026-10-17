@@ -429,7 +429,15 @@ class WebServer:
                 )
             return response
 
+        # PAGES DE L'ANCIEN SITE (Irefrixs), RETIREES (17/10/2026) : « tout ce qui est de l'ancien
+        # site ne doit plus du tout etre visible, meme pas accessible avec une extension ». Elles
+        # renvoient a notre accueil, avec ou sans `.html`. Les fichiers restent dans le depot.
+        PAGES_RETIREES = {'/credits.html', '/deck.html', '/cards.html', '/main.html',
+                          '/puzzle_editor.html', '/credits', '/deck', '/cards', '/puzzle_editor'}
+
         async def handle_html(request: web.Request):
+            if request.path in PAGES_RETIREES:
+                raise web.HTTPFound('/')
             return self.ReadFile(request.path, ['./public/', './public/blueprints'])
 
         async def handle_css(request: web.Request):
