@@ -457,6 +457,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # poses sur le mechant Kly'bn / Sl'gur't (insert p.14). Sans cette entree `IsCounter`
         # refuse le nom et la pose du jeton echoue.
         'faith',
+        # AJOUT (17/10/2026, pack TMNT Shinobi Ninjutsu, Inkwire) : 'shadow' (sa007 Hamato Clan :
+        # « place 1 shadow counter here », puis « remove 1 shadow counter from here ») et 'smoke'
+        # (sa008 Smoke Bombs : « Uses (2 smoke counters) »). Sans ces entrees `IsCounter` refuse le nom.
+        'shadow', 'smoke',
         # AJOUT (16/10/2026) : scenario Baxter Stockman v3 (Inkwire). Compteurs NOMMES des sbires
         # SWARM : `cable` (tx015 Roadkill Rodneys), `shield` (tx017 Auto Defense Bots), `ooze`
         # (tx013 Superfly). `swarm` existe deja (td016/td017). Sans ces entrees `IsCounter` refuse

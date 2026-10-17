@@ -131,6 +131,10 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).
   samurai: 'samouraï',
+  // TMNT Shinobi Ninjutsu (17/10/2026) : Hamato Clan (sa007) pose des « shadow counters », Smoke Bombs
+  // (sa008) entre en jeu avec 2 « smoke counters ».
+  shadow: 'ombre',
+  smoke: 'fumée',
   // Scenario Baxter Stockman (16/10/2026) : sbires SWARM a compteur nomme (Roadkill Rodneys,
   // Auto Defense Bots, Superfly).
   cable: 'câble',
