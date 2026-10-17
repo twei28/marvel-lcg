@@ -44,7 +44,7 @@ html[data-epure] {
   --ep-doux: #3f444d;
   --ep-jaune: #f4c20d;
   --ep-jaune-vif: #ffd43b;
-  --ep-police: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ep-police: 'Avenir Next Carte', Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
   --ep-titres: 'Bangers', Impact, 'Arial Black', sans-serif;
   /* Bouton / carte : un filet et une ombre tres douce, rien d'epais. */
   --ep-relief: 0 0 0 1px var(--ep-bord), 0 1px 2px rgba(20, 24, 32, 0.1);

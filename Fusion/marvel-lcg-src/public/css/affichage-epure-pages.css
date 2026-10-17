@@ -16,6 +16,12 @@
    ⚠ A CHARGER APRES affichage-sobre-pages.css : a specificite egale, la
    derniere feuille gagne. Normal et Sobre ne voient rien de ceci. */
 
+/* TYPO DE L'EPURE (17/10/2026) : titres en Bangers (le comics du jeu), texte en Avenir Next, la police
+   des cartes, a la place de la police du systeme (Inter n'etait pas chargee : le texte etait terne). */
+@font-face { font-family: 'Bangers'; src: url('/public/fonts/Bangers-Regular.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Avenir Next Carte'; font-weight: 400; src: url('/public/fonts/AvenirNextLTPro-Regular.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Avenir Next Carte'; font-weight: 700; src: url('/public/fonts/AvenirNextLTPro-Demi.ttf') format('truetype'); font-display: swap; }
+
 html[data-epure] {
   --ep-fond: #97999e;
   --ep-surface: #a9abb0;
@@ -26,7 +32,7 @@ html[data-epure] {
   --ep-doux: #3f444d;
   --ep-jaune: #f4c20d;
   --ep-jaune-vif: #ffd43b;
-  --ep-police: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ep-police: 'Avenir Next Carte', Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
   --ep-titres: 'Bangers', Impact, 'Arial Black', sans-serif;
   --ep-relief: 0 0 0 1px var(--ep-bord), 0 1px 2px rgba(20, 24, 32, 0.1);
   --ep-relief-survol: 0 0 0 1px var(--ep-bord-fort), 0 2px 5px rgba(20, 24, 32, 0.16);
@@ -1239,4 +1245,33 @@ html[data-epure] .db-centre {
   background:
     radial-gradient(circle, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.4px) 0 0 / 6px 6px,
     var(--ep-fond) !important;
+}
+
+/* --- 22. La typo (17/10/2026) : « un peu tristounet » -------------------------
+   Les titres de tuiles, de colonnes et de pages prennent le comics du jeu
+   (Bangers, un peu espacé) ; le texte secondaire grossit d'un cran et gagne en
+   contraste. Le texte courant reste en Avenir Next (--ep-police). */
+html[data-epure] .acc-mode .mvl,
+html[data-epure] .acc-copy b,
+html[data-epure] .db-filtres-col h2,
+html[data-epure] .db-filtres-col h3,
+html[data-epure] h1,
+html[data-epure] h2 {
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+html[data-epure] .acc-mode .acc-copy b.mvl {
+  font-size: 27px !important;
+  line-height: 1.05;
+}
+html[data-epure] .acc-copy small {
+  font-size: 14px;
+  line-height: 1.3;
+  color: #b7bdc8;
+}
+html[data-epure] .acc-nombres small {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #f3c623;
 }
