@@ -2753,3 +2753,6 @@ html.tel .acc-merci{margin-top:20px;font-size:13px}
   .acc-merci{font-size:12px}
 }
 
+
+/* Le titre de page de l'en-tête n'existe que dans l'Épuré (affichage-epure-pages.css). */
+.brand-titre{display:none}

@@ -1675,7 +1675,6 @@ html[data-epure] .brand-titre {
   text-transform: uppercase;
   color: #fff;
 }
-html:not([data-epure]) .brand-titre { display: none; }
 html[data-epure] header.progress .brand,
 html[data-epure] header.cmp-entete .cmp-marque,
 html[data-epure] header.g-entete .g-retour {
