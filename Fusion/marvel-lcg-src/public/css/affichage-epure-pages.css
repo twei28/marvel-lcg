@@ -1553,3 +1553,13 @@ html[data-epure] body button.btn.launch:not(:disabled):hover {
 html[data-epure] .acc-nombres small {
   display: none !important;
 }
+
+/* La tuile Puzzle, posée pour plus tard : grisée, sans survol. */
+html[data-epure] .acc-puzzle-tuile:disabled {
+  opacity: 0.5;
+  cursor: default;
+  filter: saturate(0.4);
+}
+html[data-epure] .acc-puzzle-tuile:disabled:hover {
+  transform: none;
+}

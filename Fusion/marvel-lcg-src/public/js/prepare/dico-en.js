@@ -912,6 +912,11 @@ export const DICO_EN_BASE = {
   "Revenir à l'accueil": 'Back to the home page',
   // prepare : la tuile « Mises a jour » de l'accueil et sa modale
   'Mises à jour': 'Updates',
+  'Puzzle': 'Puzzle',
+  'Bientôt': 'Coming soon',
+  "Changer l'affichage du site et ses couleurs.": 'Change how the site looks and its colours.',
+  "Construire ou modifier un deck, puis l'utiliser en partie.": 'Build or edit a deck, then use it in a game.',
+  'Pas encore disponible : des situations de jeu à résoudre en quelques tours.': 'Not available yet: game situations to solve in a few turns.',
   'Ce qui a changé': "What's changed",
   'Options': "Options",
   'Affichage, couleurs': "Display, colours",

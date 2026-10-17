@@ -2362,12 +2362,27 @@ function accueilView() {
     // L'éditeur de deck, sur l'accueil (demande du 16/10/2026) : on ne le trouvait
     // qu'en passant par un héros, puis un bouton de l'étape Decks.
     grille.append(el("div", { class: "acc-tuile" },
-        el("button", { class: "acc-mode cut acc-editeur-tuile", onclick: () => { window.location.href = "/deck-builder.html"; } },
+        el("button", { class: "acc-mode cut acc-editeur-tuile", onclick: () => { window.location.href = "/deck-builder.html"; }, "aria-describedby": "acc-aide-editeur" },
             el("span", { class: "acc-copy" },
                 el("b", { class: "mvl" }, t("Éditeur de deck")),
                 el("small", {}, t("Construire un deck")),
             ),
         ),
+        el("span", { class: "acc-aide", id: "acc-aide-editeur", role: "tooltip" },
+           t("Construire ou modifier un deck, puis l'utiliser en partie.")),
+    ));
+
+    // PUZZLE (17/10/2026) : la tuile est posée, le mode viendra plus tard. Grisée,
+    // elle ne mène nulle part pour l'instant.
+    grille.append(el("div", { class: "acc-tuile" },
+        el("button", { class: "acc-mode cut acc-puzzle-tuile", disabled: true, "aria-disabled": "true", "aria-describedby": "acc-aide-puzzle" },
+            el("span", { class: "acc-copy" },
+                el("b", { class: "mvl" }, t("Puzzle")),
+                el("small", {}, t("Bientôt")),
+            ),
+        ),
+        el("span", { class: "acc-aide", id: "acc-aide-puzzle", role: "tooltip" },
+           t("Pas encore disponible : des situations de jeu à résoudre en quelques tours.")),
     ));
 
     // ⚠ LES NOUVEAUTES SONT UNE TUILE, PLUS UNE LISTE SOUS LA GRILLE
@@ -2396,12 +2411,15 @@ function accueilView() {
         el("button", {
             class: "acc-mode cut acc-options-tuile",
             onclick: () => demanderLAffichage({ rouvert: true }),
+            "aria-describedby": "acc-aide-options",
         },
             el("span", { class: "acc-copy" },
                 el("b", { class: "mvl" }, t("Options")),
                 el("small", {}, t("Affichage, couleurs")),
             ),
         ),
+        el("span", { class: "acc-aide", id: "acc-aide-options", role: "tooltip" },
+           t("Changer l'affichage du site et ses couleurs.")),
     ));
 
     if (estTel()) return accueilTel(tuiles, partir);
