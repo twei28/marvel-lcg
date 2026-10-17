@@ -489,7 +489,7 @@ export function ContenuOnglet({
             ...(epurePermis() ? [{ valeur: 'epure' as Affichage, libelle: t('Épuré') }] : []),
           ]}
           onChoisir={p.changerAffichage}
-          detail={t('Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, boutons plats et jaune du jeu')}
+          detail={t('Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, panneaux bleus biseautés et titres en Bangers')}
         />
         {/* La couleur du fond (04/10/2026) : la table change en direct. */}
         {p.changerTeinte && p.reinitialiserTeinte ? (

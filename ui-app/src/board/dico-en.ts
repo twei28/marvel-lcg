@@ -1588,8 +1588,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Son': 'Sound',
   'Jeu': 'Game',
   'Style d’affichage': 'Display style',
-  'Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, boutons plats et jaune du jeu':
-    'Muted: grey background, no colours or animations. Minimal: also no decoration, flat buttons and the game\'s yellow',
+  'Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, panneaux bleus biseautés et titres en Bangers':
+    'Muted: grey background, no colours or animations. Minimal: also no decoration, bevelled blue panels and Bangers titles',
   'Épuré': 'Minimal',
   'Couleur de la table': 'Table colour',
   'Placement des zones': 'Zone layout',

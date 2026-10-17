@@ -1273,3 +1273,46 @@ html[data-epure][data-affichage] .mep-continuer {
   text-transform: uppercase;
   background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
 }
+
+/* La fenêtre du mulligan et ses boutons (17/10/2026) : bleu relief, texte blanc, coins coupés,
+   plus de liseré doré. */
+html[data-epure] .assistant-action .assistant-confirmer,
+html[data-epure] .assistant-action .assistant-boutons button {
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
+  color: #ffffff;
+  border: 1px solid #1d4a8a;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Suite du §20 : tout ce qui portait du texte sombre sur l'ancien jaune passe en blanc, et le
+   liseré doré des éléments actifs devient bleu foncé. */
+html[data-epure] .reglages-tete,
+html[data-epure] .reglages-tete *,
+html[data-epure] .deroule-phase .deroule-titre,
+html[data-epure] .deroule-phase .deroule-titre *,
+html[data-epure] .deck-modal-panel .dm-head *,
+html[data-epure] .reglages-fenetre .reglages-onglet.est-actif,
+html[data-epure] .reglages-fenetre .reglages-onglet[aria-selected='true'],
+html[data-epure] .reglages-fenetre .pastille.est-actif,
+html[data-epure] .reglages-fenetre .pastille[aria-pressed='true'] {
+  color: #ffffff;
+}
+html[data-epure] .reglages-fenetre .reglages-onglet.est-actif,
+html[data-epure] .reglages-fenetre .reglages-onglet[aria-selected='true'],
+html[data-epure] .reglages-fenetre .reglages-onglet[aria-pressed='true'],
+html[data-epure] .reglages-fenetre .pastille.est-actif,
+html[data-epure] .reglages-fenetre .pastille[aria-pressed='true'],
+html[data-epure] .reglages-fenetre .pastille.est-choisi {
+  box-shadow: 0 0 0 1px #1d4a8a;
+}
+html[data-epure] .reglages-fenetre .reglages-onglet,
+html[data-epure] .reglages-fenetre .pastille {
+  border-radius: 0;
+}
