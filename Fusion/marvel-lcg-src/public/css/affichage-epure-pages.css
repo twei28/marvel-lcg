@@ -88,8 +88,7 @@ html[data-epure] body {
 
 /* --- 2. Ce qu'on retire ------------------------------------------------------ */
 /* La carte du héros survolé, à gauche (.tb-art), reste visible (16/10/2026). */
-html[data-epure] .tb-trame,
-html[data-epure] .acc-aide {
+html[data-epure] .tb-trame {
   display: none;
 }
 
@@ -1562,4 +1561,39 @@ html[data-epure] .acc-puzzle-tuile:disabled {
 }
 html[data-epure] .acc-puzzle-tuile:disabled:hover {
   transform: none;
+}
+
+/* Plus de sous-titre sur les tuiles de l'accueil (17/10/2026) : la phrase d'aide
+   (.acc-aide) sort au survol. Seulement là où le survol existe ; sur écran
+   tactile, le sous-titre reste. */
+@media (hover: hover) {
+  html[data-epure] .acc-mode .acc-copy small {
+    display: none !important;
+  }
+}
+
+/* La bulle d'aide des tuiles, au survol (17/10/2026) : même biseau bleu que les panneaux. */
+html[data-epure] .acc-aide {
+  background: linear-gradient(160deg, #2b3a58, #171e2e) !important;
+  border: 2px solid #3d5a8c !important;
+  border-top-color: #7fa9e6 !important;
+  border-left-color: #6a95d6 !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+  color: #f2f3f5;
+  font-size: 14px;
+}
+
+/* L'en-tête de l'accueil (17/10/2026) : ni « Préparation de mission » ni « Comment veux-tu
+   jouer ? », et Narwhal Champions, en grand, à la hauteur du logo. */
+html[data-epure] .acc-titre .recitatif,
+html[data-epure] .acc-titre p {
+  display: none !important;
+}
+html[data-epure] .acc-entete {
+  align-items: center;
+}
+html[data-epure] .acc-titre h1.affiche {
+  font-size: 150px !important;
+  line-height: 0.92 !important;
+  margin: 0 !important;
 }
