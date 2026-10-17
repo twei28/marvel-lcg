@@ -4657,10 +4657,174 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_dual — Nightwatcher (Ally), Commandement/Protection
     'ud006': "Ténacité.\n<b>Réponse</b> : après que Nightwatcher a subi des dégâts consécutifs ([consequential]), donnez-lui une carte d'état Tenace.\n<i>« Je suis le héros dont nous avons TOUS besoin ! »</i>",
     // --- TMNT Shinobi Bushido (sb) : ajouter les cartes sbNNN ci-dessous, dans ce bloc seulement ---
+    // sb001 Loyalty (Upgrade, OATH)
+    'sb001': "Utilisations (3 compteurs de samouraï).\nVotre héros gagne +1 DEF.\n<b>Réponse forcée</b> : après que votre héros a fait une défense de base, retirez 1 compteur de samouraï de cette carte.\n<i>« Il faudra me passer sur le corps ! »</i> —Michelangelo",
+    // sb002 Rectitude (Upgrade, OATH)
+    'sb002': "Utilisations (3 compteurs de samouraï).\nVotre héros gagne +1 CTR.\n<b>Réponse forcée</b> : après que votre héros a fait un contre de base, retirez 1 compteur de samouraï de cette carte.\n<i>« Nous manquons de temps ! »</i> —Donatello",
+    // sb003 Courage (Upgrade, OATH)
+    'sb003': "Utilisations (3 compteurs de samouraï).\nVotre héros gagne +1 ATQ.\n<b>Réponse forcée</b> : après que votre héros a fait une attaque de base, retirez 1 compteur de samouraï de cette carte.\n<i>« Je ne te crains pas. »</i> —Leonardo",
+    // sb004 Glory (Upgrade, OATH)
+    'sb004': "1 max par joueur.\n<b>Réponse de héros</b> : après que votre héros a déjoué une manigance annexe, défaussez cette carte → placez en tout 4 compteurs de samouraï parmi un nombre quelconque d'améliorations [[OATH]] que vous contrôlez.",
+    // sb005 Gratitude (Upgrade, OATH)
+    'sb005': "Utilisations (2 compteurs de samouraï).\n<b>Action</b> : inclinez cette carte et retirez-lui 1 compteur de samouraï → soignez 1 dégât de votre identité. Vous pouvez défausser 1 carte d'état de votre identité.",
+    // sb006 Mercy (Upgrade, OATH), lecture provisoire (Q-B1)
+    'sb006': "1 max par joueur.\n<b>Interruption de héros</b> : quand un ennemi devrait être mis K.O. par votre héros, défaussez cette carte à la place → fixez les points de vie de cet ennemi à 1. Ensuite, piochez 3 cartes.",
+    // sb007 Integrity (Upgrade, OATH)
+    'sb007': "<b>Réponse</b> : après que vous avez joué une amélioration [[OATH]], inclinez cette carte → placez 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Les actes parlent plus fort que les mots. »</i> —Odyn",
+    // sb008 Self-Control (Upgrade, OATH)
+    'sb008': "Utilisations (3 compteurs de samouraï).\n<b>Ressource</b> : inclinez cette carte et retirez-lui 1 compteur de samouraï → générez une ressource [wild].\n<i>« La voie de la maîtrise de soi est longue. »</i> —Michelangelo",
+    // sb009 Devotion (Upgrade, OATH)
+    'sb009': "Utilisations (3 compteurs de samouraï).\n<b>Action de héros</b> : inclinez cette carte et retirez-lui 1 compteur de samouraï → redressez une amélioration [[WEAPON]] que vous contrôlez.\n<i>« La maîtrise ne vient pas vite. »</i> —Ronin",
+    // sb010 Tsujigiri (Event, ATTACK)
+    'sb010': "<b>Action de héros</b> <i>(attaque)</i> : infligez à un ennemi un nombre de dégâts égal à votre ATQ. Si cette attaque met cet ennemi K.O., vous pouvez placer 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Il est temps d'essayer mes nouvelles lames. »</i> —Leonardo",
+    // sb011 Vow (Event, THWART)
+    'sb011': "<b>Action de héros</b> <i>(contre)</i> : retirez d'une manigance un nombre de menaces égal à la CTR de votre héros. Si cela retire la dernière menace de cette manigance, cherchez dans votre deck une amélioration [[OATH]] et ajoutez-la à votre main. <i>(Mélangez.)</i>",
+    // sb012 Kensei (Event, SKILL)
+    'sb012': "<b>Action de héros</b> : inclinez une amélioration [[WEAPON]] que vous contrôlez → redressez votre héros.\n<i>« Un guerrier est toujours prêt. »</i> —Raphael",
+    // sb013 Santōryū Ōgi (Upgrade, SKILL), lecture provisoire (Q-B2)
+    'sb013': "1 max par deck. L'amélioration attachée perd le mot-clé Restreint.\n<b>Réponse</b> : après que cette carte est entrée en jeu, cherchez dans votre deck et votre pile de défausse une amélioration [[WEAPON]]. <i>(Mélangez.)</i> Mettez cette amélioration en jeu (en payant son coût en ressources) avec cette carte attachée.",
+    // sb014 Kōshō (Upgrade unique, OATH. TITLE. TRAINING.)
+    'sb014': "Utilisations (2 compteurs de samouraï). Attachez-la à un allié que vous contrôlez.\n1 amélioration [[TRAINING]] max par allié.\n<b>Action de héros</b> : inclinez cette carte et retirez-lui 2 compteurs de samouraï → soignez 2 dégâts de l'allié attaché et redressez-le.",
+    // sb015 Oathbreaker (Event, TACTIC)
+    'sb015': "<b>Interruption de héros</b> : quand une carte rencontre est révélée depuis le deck rencontre, défaussez une amélioration [[OATH]] que vous contrôlez → annulez tous les effets de cette carte rencontre et défaussez-la.\n<i>« Je ferai ce que je dois pour les sauver tous... »</i> —Leonardo",
+    // sb016 Wakizashi (Upgrade unique, NINJA. WEAPON.)
+    'sb016': "Restreint.\n<b>Réponse de héros</b> : après qu'une amélioration [[OATH]] est défaussée du jeu, inclinez cette carte → piochez 1 carte.\n<i>« Je préfère le dashido traditionnel. »</i> —Moja",
+    // sb017 Uno (Ally unique, NINJA. SAMURAI. TURTLE.)
+    'sb017': "[star] <b>Réponse</b> : après qu'Uno a utilisé un pouvoir de base, placez 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Tu manques de discipline. »</i>",
+    // sb018 Musha Shugyō (Manigance annexe de joueur, unique)
+    'sb018': "Victoire 0.\nLes personnages autres que le propriétaire de cette carte ne peuvent pas en retirer de menace.\n<b>Une fois déjouée</b> : le propriétaire de cette carte peut chercher dans son deck et sa pile de défausse jusqu'à 2 améliorations [[OATH]] et les mettre en jeu. <i>(Mélangez.)</i>\n<i>« J'endurerai l'hiver de cette âme. »</i> —Leonardo",
+    // sb019 Gusoku (Upgrade unique, ARMOR)
+    'sb019': "<b>Réponse de héros</b> : après que vous avez utilisé un de vos pouvoirs de base, inclinez cette carte et retirez 1 compteur de samouraï d'une amélioration [[OATH]] que vous contrôlez → redressez votre héros.\n<i>Cette armure a vu bien des batailles.</i>",
+    // sb020 Iaidō (Event, SKILL)
+    'sb020': "<b>Interruption de héros</b> : quand vous utilisez un pouvoir de base, vous gagnez +2 à ce pouvoir pour cette utilisation. Vous pouvez placer 1 compteur de samouraï sur une amélioration [[OATH]] que vous contrôlez.\n<i>« Fais bien attention, je ne te le montrerai pas deux fois... »</i> —Ronin",
     // --- TMNT Shinobi Kuji-Kiri (sj) : ajouter les cartes sjNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Shinobi Ninjutsu (sa) : ajouter les cartes saNNN ci-dessous, dans ce bloc seulement ---
+    'sj001': "<b>Action de héros</b> : regardez la carte du dessus du deck de rencontre. Vous pouvez révéler cette carte pour piocher 3 cartes.\n<i>« J'ai vu les événements à venir. »</i> —Donatello",
+    'sj002': "Attachez à un allié. Maximum 1 par allié.\nL'allié attaché gagne +1 CTR et +1 ATQ.\n<i>« Ces armes luisantes ont trop la classe ! »</i> —Michelangelo",
+    'sj003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Choisissez :\n• Étourdissez un ennemi.\n• Donnez une carte d'état Tenace à un personnage allié.\n<i>« Mon futur définit mon passé. »</i> —Venus",
+    'sj004': "<b>Action de héros</b> : soignez 2 dégâts d'un personnage allié. Choisissez :\n• Camouflez un personnage allié.\n• Désorientez un ennemi.\n<i>« Mon passé définit mon futur. »</i> —Venus",
+    'sj005': "Maximum 2 par deck.\n<b>Réponse</b> : après que vous avez dépensé cette carte pour une carte [[SPELL]], piochez 1 carte.",
+    'sj006': "Attachez à un sbire non-[[ELITE]].\nPrenez le contrôle du sbire attaché et traitez-le comme un allié [[CONTROLLED]] au texte vierge. Son CTR est égal à sa MNG imprimée et il subit 3 dégâts consécutifs ([consequential]) après avoir contré ou attaqué.",
+    'sj007': "<b>Interruption de héros</b> : quand une traîtrise est révélée, défaussez cette carte → annulez tous les effets de cette traîtrise et défaussez-la. Défaussez des cartes du dessus de votre deck pour chaque icône ([star] et [boost]) dans la zone de boost de la carte défaussée.",
+    'sj008': "<b>Action</b> : inclinez Toshokan Arcana → défaussez des cartes du dessus de votre deck jusqu'à ce que vous défaussiez une carte [[SPELL]]. Ajoutez cette carte à votre main.\n<i>« Ce sort était dans les “Écrits de Shinigami” ? Ou dans les “Haïkus de Ho Chan” ? »</i> —Donatello",
+    'sj009': "Victoire 0.\n<b>Réponse obligatoire</b> : après qu'Armageddon entre en jeu, distribuez à chaque joueur 1 carte de rencontre face cachée.\nTant qu'Armageddon est dans la pile de victoire, chaque identité a +1 taille de main sous forme de héros.\n<i>« J'ai vu ce qui rôde à la fin des temps, et c'est terrifiant. »</i> —Donatello",
+    'sj010': "<b>Interruption de héros</b> <i>(défense)</i> : quand un personnage allié est censé subir des dégâts, défaussez les 2 cartes du dessus du deck de rencontre → prévenez 1 dégât pour chaque icône ([star] et [boost]) dans la zone de boost de chacune des cartes défaussées.",
+    'sj011': "<b>Action de héros</b> <i>(attaque/contre)</i> : défaussez 3 cartes du dessus de votre deck et défaussez 3 cartes du dessus du deck de rencontre → infligez 3 dégâts à un ennemi et retirez 3 menaces d'une manigance.",
+    'sj012': "<b>Action d'alter ego</b> : inclinez A Thin Place et retirez-en 3 compteurs mystiques → piochez 2 cartes et soignez 2 dégâts de votre identité.\n<b>Réponse</b> : après que vous avez joué une carte Kuji-Kiri depuis votre main, inclinez A Thin Place → placez 1 compteur mystique ici.",
+    'sj013': "<b>Action de héros</b> : jouez une carte de votre main sans payer son coût en ressources. Défaussez du dessus du deck de rencontre autant de cartes que le coût en ressources imprimé de cette carte. Ensuite, retirez cette carte de la partie.\n<i>« L'objet le plus méta de notre univers. »</i> —Donnie",
+    'sj014': "Attachez à un allié que vous contrôlez. Cet allié gagne les traits [[FERAL]] et [[GIANT]].\nL'allié attaché a +2 points de vie et +2 ATQ.\nL'allié attaché subit +1 dégât consécutif ([consequential]) après avoir attaqué.",
+    'sj015': "<b>Action de héros</b> : choisissez un sbire ou un allié portant une carte d'état. Remplacez cette carte d'état par une carte d'état différente → piochez 1 carte.\n<i>« Franchement dans le top trois des sensations les plus bizarres que j'aie jamais ressenties… »</i> —Donatello",
+    'sj016': "<b>Action de héros</b> : choisissez un joueur. Soignez 2 dégâts de l'identité de ce joueur. Ce joueur peut choisir 1 carte de sa pile de défausse et la mélanger dans son deck.\n<i>« Cette histoire de main… nous échappe des mains… »</i> —Venus",
+    'sj017': "[star] <b>Réponse</b> : après que Yi utilise un pouvoir de base, choisissez une carte [[SPELL]] ou [[TECH]] dans votre pile de défausse et mettez-la sur le dessus de votre deck.\n<i>« Choquant ! »</i>",
+    'sj018': "Restreint.\n<b>Réponse de héros</b> : après que vous avez joué une carte Kuji-Kiri depuis votre main, inclinez cette carte → redressez votre héros.\n<i>« Je suis totalement votre plus grande fan ! »</i> —Lita",
+    'sj019': "[star] Rampage 1. <i>(Coût additionnel pour jouer cette carte : subissez 1 dégât et défaussez la carte du dessus de votre deck.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Infligez 1 dégât à chaque ennemi engagé avec vous.",
+    'sj020': "<b>Action de héros</b> <i>(défense/contre)</i> : quand votre héros est censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez tous ces dégâts. Retirez d'une manigance autant de menaces que de dégâts prévenus ainsi.",
+    // --- TMNT Shinobi Ninjutsu (sa) : les vingt cartes Ninjutsu (17/10/2026) ---
+    // sa001 Assassinate
+    'sa001': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action</b> <i>(attaque)</i> : infligez 7 dégâts à un sbire. Cette attaque gagne perçant.\n<i>« Le silence et la vitesse sont les armes que nous manions. »</i> —Splinter",
+    // sa002 Shroud and Protect
+    'sa002': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous défendez contre une attaque, vous gagnez +1 DEF pour cette attaque. Si vous ne subissez aucun dégât de cette attaque, camouflez et redressez votre héros.\n<i>« Il faut partir avant que quelqu'un nous voie. »</i> —Donatello",
+    // sa003 Reconnaissance
+    'sa003': "<b>Action</b> : camouflez un personnage que vous contrôlez → regardez les 3 cartes du dessus du deck d'un joueur ou du deck rencontre. Remettez ces cartes sur le dessus et/ou le dessous de ce deck, dans l'ordre de votre choix.\n<i>« Ça sent les ennuis... »</i> —Donatello",
+    // sa004 Scale the Wall
+    'sa004': "Jouez cette carte uniquement si votre héros est camouflé. 1 max par round.\n<b>Action de héros</b> : piochez 2 cartes.\n<i>« Il faut savoir surmonter n'importe quel obstacle. »</i> —Splinter",
+    // sa005 Run the Rooftops
+    'sa005': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance.\n<i>« Nous sommes les gardiens invisibles de la ville. »</i> —Donatello",
+    // sa006 Cut-and-Run
+    'sa006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si cette attaque vainc un ennemi, camouflez votre héros.\n<i>« Ça dégénère. Comptez-moi dehors. »</i> —Ronin",
+    // sa007 Hamato Clan
+    'sa007': "<b>Réponse</b> : après qu'un allié que vous contrôlez a quitté le jeu, placez 1 compteur d'ombre ici.\n<b>Action</b> : inclinez cette carte et retirez-en 1 compteur d'ombre → camouflez un allié que vous contrôlez.",
+    // sa008 Smoke Bombs
+    'sa008': "Utilisations (2 compteurs de fumée). 1 max par joueur.\n<b>Action de héros</b> : inclinez cette carte et retirez-en 1 compteur de fumée → camouflez un personnage ami.\n<i>« Maintenant tu me vois... »</i> —Ronin",
+    // sa009 Twilight Sentry
+    'sa009': "Attachez cette carte à un allié que vous contrôlez et camouflez-le.\n1 amélioration [[ENTRAÎNEMENT]] max par allié.\n<b>Interruption</b> : quand l'allié attaché est censé subir n'importe quelle quantité de dégâts, défaussez à la place une carte d'état Camouflé de lui.",
+    // sa010 Opportunist
+    'sa010': "1 max par joueur.\n<b>Action de héros</b> <i>(contre)</i> : défaussez une carte d'état Camouflé d'un personnage que vous contrôlez et inclinez Opportunist → retirez 3 menaces d'une manigance.",
+    // sa011 Stealth Proficiency
+    'sa011': "<b>Action de héros</b> : défaussez une carte d'état Camouflé de votre héros → redressez votre héros.\n<b>Réponse de héros</b> : après que vous avez utilisé un de vos pouvoirs de base, camouflez votre héros.\n<i>« Il y a bien plus de potentiel dans le chaos... »</i> —Ronin",
+    // sa012 Black Ops (Q-N2 : « Action de héros : après que... » imprimé tel quel)
+    'sa012': "<b>Action de héros</b> : après que votre héros a vaincu un sbire ou une manigance annexe, défaussez Black Ops → redressez votre héros.\n<i>« Un obstacle de moins... »</i> —Raphael",
+    // sa013 Up in Smoke
+    'sa013': "<b>Action de héros</b> : redressez un allié [[NINJA]].\n<b>Interruption de héros</b> : quand un allié est censé être défaussé du jeu, remettez-le plutôt dans la main de son propriétaire.\n<i>« Il est temps de bousculer l'échiquier. »</i> —Ronin",
+    // sa014 Hidden Passage
+    'sa014': "<b>Action d'alter-ego</b> : inclinez Hidden Passage et défaussez une carte d'état Camouflé de votre identité → piochez 1 carte.\n<b>Réponse de héros</b> : après que vous avez changé de forme, inclinez Hidden Passage → camouflez votre identité.",
+    // sa015 Kusari-Kagi
+    'sa015': "Restreint.\n<b>Action de héros</b> : inclinez cette carte et défaussez une carte d'état Camouflé de votre héros → infligez 1 dégât à un ennemi et piochez 1 carte.\n<i>« Viens ici ! »</i> —Ronin",
+    // sa016 Shadow Summon
+    'sa016': "<b>Action</b> : défaussez des cartes du dessus de votre deck jusqu'à défausser un allié [[NINJA]] et mettez-le en jeu. Si cet allié est toujours en jeu à la fin de la phase, ajoutez-le à votre main.\n<i>« Nous devrons cacher notre nombre. »</i> —Leonardo",
+    // sa017 Moja
+    'sa017': "<b>Réponse</b> : après que Moja est entrée en jeu, camouflez-la.\n<b>Réponse</b> : après que Moja a subi des dégâts consécutifs ([consequential]), défaussez une carte Ninjutsu de votre main → camouflez Moja.",
+    // sa018 Smokescreen
+    'sa018': "Réduisez de 1 le coût pour jouer cette carte si votre identité est camouflée.\n<b>Interruption de héros</b> <i>(défense)</i> : quand une attaque ennemie est censée infliger des dégâts à un personnage ami, défaussez cette carte → prévenez 2 de ces dégâts.",
+    // sa019 Gaslight
+    'sa019': "<b>Action de héros</b> <i>(contre)</i> : défaussez une carte d'état Camouflé de votre héros → choisissez :\n• Retirez 3 menaces d'une manigance.\n• Désorientez un ennemi.\n<i>« Vous avez dû rêver... »</i> —Donatello",
+    // sa020 From the Shadows
+    'sa020': "1 max par deck.\n<b>Réponse de héros</b> : après que vous avez dépensé cette carte pour jouer une carte Ninjutsu, camouflez votre héros.",
     // --- TMNT Shinobi Taijutsu (sh) : ajouter les cartes shNNN ci-dessous, dans ce bloc seulement ---
-    // --- TMNT Shinobi Dual (sc) : ajouter les cartes scNNN ci-dessous, dans ce bloc seulement ---
+    // sh001 Raising Block (Evenement, Taijutsu)
+    'sh001': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts.\n<b>Réponse de héros</b> : après que vous avez dépensé cette carte pour payer un événement [[DEFENSE]], piochez 1 carte.",
+    // sh002 Foot Sweep
+    'sh002': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Remettez dans votre main chaque événement [[ATTACK]] que vous avez utilisé pour payer cette carte.\n<i>« Balayons ces ordures. »</i> —Jennika",
+    // sh003 Stiff Jab
+    'sh003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si vous avez payé cette carte avec un événement [[ATTACK]], vous pouvez hébéter cet ennemi.\n<i>« Je t'avais prévenu. »</i> —Leonardo",
+    // sh004 Straight Cross
+    'sh004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Si vous avez payé cette carte avec un événement [[ATTACK]], sonnez cet ennemi.\n<i>« Tu ferais mieux de rester à terre. »</i> —Raphael",
+    // sh005 Double Kick
+    'sh005': "<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 2 dégâts à un ennemi et retirez 2 menaces d'une manigance. Si vous avez payé cette carte avec :\n• Un événement [[DEFENSE]], piochez 1 carte.\n• Un événement [[THWART]], piochez 1 carte.",
+    // sh006 Flying Kick
+    'sh006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Piochez 1 carte pour chaque événement [[THWART]] utilisé pour payer cet événement.\n<i>« Un coup de botte dans la tête ! »</i> —Casey Marie Jones",
+    // sh007 Trading Blows
+    'sh007': "<b>Réponse de héros</b> <i>(attaque/défense)</i> : après que vous avez subi des dégâts d'une attaque d'ennemi, infligez 2 dégâts à cet ennemi. Si vous avez payé cette carte avec un événement [[DEFENSE]], sonnez ou désorientez cet ennemi.\n<i>« Aïe. »</i> —Raphael",
+    // sh008 Drop In (homonyme de nt004, autre carte)
+    'sh008': "<b>Action</b> : redressez votre identité. Si vous avez payé cette carte avec un événement [[DEFENSE]], vous pouvez remettre dans votre main un événement [[ATTACK]] ou [[THWART]] de votre pile de défausse.\n<i>« On a décidé de s'inviter. »</i> —Michelangelo",
+    // sh009 Toss
+    'sh009': "<b>Interruption de héros</b> <i>(défense/contre)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et retirez 1 menace d'une manigance. Si vous avez payé cette carte avec un événement [[ATTACK]], hébétez cet ennemi.",
+    // sh010 Martial Skill
+    'sh010': "1 max par joueur. Utilisations (2 compteurs chi).\n<b>Réponse</b> : après que vous avez joué un événement, inclinez Martial Skill et retirez-lui 1 compteur chi → piochez 1 carte.\n<i>« C'est en forgeant qu'on devient forgeron. »</i> —Leonardo",
+    // sh011 Elbow Strike
+    'sh011': "<b>Réponse de héros</b> : après que votre héros a fait une attaque de base et blessé un ennemi, hébétez cet ennemi.\n<i>« Tu ne t'y attendais pas, hein ? »</i> —Donatello",
+    // sh012 * Mutant Fight Club
+    'sh012': "Vous pouvez jouer les événements attachés à cette carte comme s'ils étaient dans votre main.\n<b>Action d'alter ego</b> : inclinez cette carte et subissez 1 dégât → attachez face cachée à cette carte un événement [[ATTACK]] ou [[DEFENSE]] de votre pile de défausse.\n<i>La première règle du Mutant Fight Club : parlez-en à vos amis !</i>",
+    // sh013 Roll With It
+    'sh013': "<b>Réponse de héros</b> : après que votre héros a défendu, redressez votre héros.\n<b>Interruption de héros</b> : quand vous dépensez cette carte pour payer un événement [[ATTACK]], placez un événement [[DEFENSE]] de votre pile de défausse sur le dessus de votre deck.",
+    // sh014 * Minarai
+    'sh014': "Attachez cette carte à un allié que vous contrôlez. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\n<b>Réponse</b> : après que l'allié attaché a subi des dégâts consécutifs ([consequential]), piochez 1 carte.\n<i>« Fais comme moi, Casey. »</i> —Leonardo",
+    // sh015 Keep the Momentum
+    'sh015': "2 max par deck.\n<b>Réponse</b> : après que vous avez dépensé cette carte pour un événement, remettez dans votre main 1 événement Taijutsu de votre pile de défausse.",
+    // sh016 * Jō
+    'sh016': "Restreint. Utilisations (3 compteurs bâton).\n<b>Réponse</b> : après que vous avez joué un événement Taijutsu, placez 1 compteur bâton ici.\n<b>Réponse de héros</b> : après que vous avez blessé un ennemi, retirez 2 compteurs bâton de cette carte → hébétez cet ennemi.",
+    // sh017 * Odyn
+    'sh017': "[star] <b>Réponse</b> : après qu'Odyn a utilisé un pouvoir de base, défaussez une carte [[DEFENSE]] de votre main → donnez à Odyn une carte d'état Tenace.\n<i>« Je vous conseille de rester derrière moi cette fois. »</i>",
+    // sh018 Countercross
+    'sh018': "<b>Interruption de héros</b> <i>(attaque/défense/contre)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 1 de ces dégâts. Infligez 1 dégât à un ennemi. Retirez 1 menace d'une manigance. Piochez 1 carte.",
+    // sh019 Sideswipe
+    'sh019': "<b>Action de héros</b> <i>(contre)</i> : retirez 1 menace d'une manigance. Si cela retire la dernière menace de cette manigance, remettez dans votre main une carte [[ATTACK]] de votre pile de défausse.\n<i>« Pardon, je ne fais que passer ! »</i> —Raphael",
+    // sh020 Tough Nut
+    'sh020': "<b>Réponse de héros</b> : après que votre héros a utilisé un pouvoir de base, donnez-lui une carte d'état Tenace. Si vous avez payé cette carte avec un événement [[DEFENSE]] ou [[THWART]], soignez 2 dégâts de votre héros.\n<i>« Vas-y, amène-toi. »</i> —Uno",
+    // --- TMNT Shinobi Dual (sc) : les douze cartes Dual Shinobi (17/10/2026) ---
+    // sc001 Nendō (Événement, Bushido/Kuji-Kiri)
+    'sc001': "<b>Action de héros</b> <i>(attaque)</i> : inclinez une amélioration [[WEAPON]] que vous contrôlez → infligez 4 dégâts à un ennemi. Hébétez cet ennemi.\n<i>« Réfléchis vite ! » —Casey Jones</i>",
+    // sc002 Shugorei (Amélioration, Bushido/Kuji-Kiri)
+    'sc002': "1 max par joueur.\nUtilisations (4 compteurs de samouraï).\n<b>Action</b> : inclinez cette carte et retirez-en 2 compteurs de samouraï → piochez 1 carte.\n<i>« Ce dont nous nous souvenons, nous le devenons. » —Leonardo</i>",
+    // sc003 Omawari (Événement, Bushido/Ninjutsu)
+    'sc003': "<b>Action de héros</b> : inclinez une amélioration [[WEAPON]] que vous contrôlez → camouflez votre héros et donnez-lui une carte d'état Tenace.\n<i>« Rien ne nous passera devant. » —Raphael</i>",
+    // sc004 Kuragari (Amélioration, Bushido/Ninjutsu)
+    'sc004': "Utilisations (3 compteurs de samouraï).\n<b>Action</b> : inclinez cette carte et retirez-en 3 compteurs de samouraï → camouflez et redressez votre héros.\n<i>« Chhhut... » —Casey Jones</i>",
+    // sc005 Yoi-Dachi (Amélioration, Bushido/Taijutsu)
+    'sc005': "1 max par joueur. Utilisations (3 compteurs de samouraï).\n<b>Réponse</b> : après que vous avez subi des dégâts d'une attaque d'ennemi, retirez 1 compteur de samouraï d'ici → hébétez cet ennemi.",
+    // sc006 Migatte (Événement, Bushido/Taijutsu)
+    'sc006': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, il gagne +2 DEF pour cette attaque. Si vous avez payé cette carte avec une carte Shinobi, redressez votre héros.\n<i>« Il est temps de s'écarter de la tradition. » —Nightwatcher</i>",
+    // sc007 Mizuki (Événement, Kuji-Kiri/Ninjutsu)
+    'sc007': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, choisissez :\n• camouflez un personnage ami ;\n• remettez dans votre main un événement de votre pile de défausse.",
+    // sc008 Naito Dansā (Événement, Kuji-Kiri/Ninjutsu)
+    'sc008': "<b>Action de héros</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce que vous défaussiez un attachement ou une manigance annexe. Révélez cette carte → camouflez jusqu'à 2 personnages amis. Hébétez jusqu'à 2 ennemis.\n<i>« Regardez mes mouvements. » —Michelangelo</i>",
+    // sc009 Yomi (Événement, Kuji-Kiri/Taijutsu)
+    'sc009': "<b>Action de héros</b> <i>(contre)</i> : choisissez 1 carte dans la pile de défausse Rencontre et placez-la sur le dessus du deck Rencontre → retirez 2 menaces d'une manigance.\n<i>« C'est comme entendre la chasse avant qu'elle ne commence. » —Donatello</i>",
+    // sc010 Kusuri (Amélioration, Kuji-Kiri/Taijutsu)
+    'sc010': "1 max par joueur.\n<b>Action</b> : inclinez cette carte et défaussez un événement [[ATTACK]] de votre main → soignez 2 dégâts d'un personnage ami.\n<i>« Double, double, peine et trouble... » —Donatello</i>",
+    // sc011 Kenbu (Événement, Ninjutsu/Taijutsu)
+    'sc011': "<b>Action de héros</b> <i>(attaque)</i> : défaussez une carte d'état Camouflé de votre héros → infligez 1 dégât à jusqu'à 3 ennemis. Hébétez chaque ennemi ayant subi des dégâts de cette façon.\n<i>« Suivant. » —Alopex</i>",
+    // sc012 Hitodama (Événement, Ninjutsu/Taijutsu)
+    'sc012': "<b>Réponse de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si vous avez payé cette carte avec un événement [[THWART]], camouflez votre héros.\n<i>« On danse ! » —Raphael</i>",
     // --- TMNT Shinobi Paths (se) : les onze Voies (socle Shinobi, 17/10/2026) ---
     // se001 Kagemusha (Path, Ninjutsu)
     'se001': "Permanent.\nVous avez -1 à votre taille de main.\nVotre héros gagne le trait [[NINJA]].\n<i>Shadow Stride</i> — <b>Action de héros</b> : inclinez cette carte → camouflez votre héros.\n<i>« Je suis les ombres. »</i>",

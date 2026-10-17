@@ -115686,11 +115686,1669 @@
    "custom": "Inkwire"
   }
  ],
- "tmnt_shinobi_bushido": [],
- "tmnt_shinobi_kuji_kiri": [],
- "tmnt_shinobi_ninjutsu": [],
- "tmnt_shinobi_taijutsu": [],
- "tmnt_shinobi_dual": [],
+ "tmnt_shinobi_bushido": [
+  {
+   "card_id": "sb001",
+   "type": "Upgrade",
+   "name": "Loyalty",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\nYour hero gets +1 DEF.\n<b>Forced Response</b>: After your hero makes a basic defense, remove 1 samurai counter from this card.\n<i>\"You gotta go through me first.\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb002",
+   "type": "Upgrade",
+   "name": "Rectitude",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\nYour hero gets +1 THW.\n<b>Forced Response</b>: After your hero makes a basic thwart, remove 1 samurai counter from this card.\n<i>\"We are running out of time!\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb003",
+   "type": "Upgrade",
+   "name": "Courage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\nYour hero gets +1 ATK.\n<b>Forced Response</b>: After your hero makes a basic attack, remove 1 samurai counter from this card.\n<i>\"I do not fear you.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb004",
+   "type": "Upgrade",
+   "name": "Glory",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Max 1 per player.\n<b>Hero Response</b>: After your hero defeats a side scheme, discard this card → place a total of 4 samurai counters among any number of [[OATH]] upgrades you control.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb005",
+   "type": "Upgrade",
+   "name": "Gratitude",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Uses": "2,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (2 samurai counters).\n<b>Action</b>: Exhaust this card and remove 1 samurai counter from it → heal 1 damage from your identity. You may discard 1 status card from your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb006",
+   "type": "Upgrade",
+   "name": "Mercy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Max 1 per player.\n<b>Hero Interrupt</b>: When an enemy would be defeated by your hero, discard this card instead → set that enemy's hit points to 1. Then, draw 3 cards.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb007",
+   "type": "Upgrade",
+   "name": "Integrity",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Response</b>: After you play an [[OATH]] upgrade, exhaust this card → place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"Actions speak louder than words.\"</i> —Odyn",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb008",
+   "type": "Upgrade",
+   "name": "Self-Control",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\n<b>Resource</b>: Exhaust this card and remove 1 samurai counter from it → generate a [wild] resource.\n<i>\"The path to self-control is long.\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb009",
+   "type": "Upgrade",
+   "name": "Devotion",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (3 samurai counters).\n<b>Hero Action</b>: Exhaust this card and remove 1 samurai counter from it → ready a [[WEAPON]] upgrade you control.\n<i>\"Mastery does not come quickly.\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb010",
+   "type": "Event",
+   "name": "Tsujigiri",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal damage to an enemy equal to your ATK. If this attack defeats that enemy, you may place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"Time to test out my new blades.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb011",
+   "type": "Event",
+   "name": "Vow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove threat from a scheme equal to your hero's THW. If this removes the last threat on that scheme, search your deck for an [[OATH]] upgrade, and add it to your hand. <i>(Shuffle.)</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb012",
+   "type": "Event",
+   "name": "Kensei",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Action</b>: Exhaust a [[WEAPON]] upgrade you control → ready your hero.\n<i>\"A warrior is always ready.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb013",
+   "type": "Upgrade",
+   "name": "Santōryū Ōgi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Max 1 per deck. Attached upgrade loses the restricted keyword.\n<b>Response</b>: After this card enters play, search your deck and discard pile for a [[WEAPON]] upgrade. <i>(Shuffle.)</i> Put that upgrade into play (paying its resource cost) with this card attached.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb014",
+   "type": "Upgrade",
+   "name": "* Kōshō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "2,samurai",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "OATH",
+    "TITLE",
+    "TRAINING"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Uses (2 samurai counters). Attach to an ally you control.\nMax 1 [[TRAINING]] upgrade per ally.\n<b>Hero Action</b>: Exhaust this card and remove 2 samurai counters from it → heal 2 damage from attached ally and ready it.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb015",
+   "type": "Event",
+   "name": "Oathbreaker",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Interrupt</b>: When an encounter card is revealed from the encounter deck, discard an [[OATH]] upgrade you control → cancel all of that encounter card's effects and discard it.\n<i>\"I will do what I must to save them all...\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb016",
+   "type": "Upgrade",
+   "name": "* Wakizashi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Restricted.\n<b>Hero Response</b>: After an [[OATH]] upgrade is discarded from play, exhaust this card → draw 1 card.\n<i>\"I prefer the traditional dashido.\"</i> —Moja",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb017",
+   "type": "Ally",
+   "name": "* Uno",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "NINJA",
+    "SAMURAI",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "[star] <b>Response</b>: After Uno uses a basic power, place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"You lack discipline.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb018",
+   "type": "PlayerSideScheme",
+   "name": "* Musha Shugyō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "StartingThreat": "5",
+    "Class": "Bushido",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "Victory 0.\nCharacters other than the owner of this card cannot remove threat from it.\n<b>When Defeated</b>: The owner of this card may search their deck and discard pile for up to 2 [[OATH]] upgrades and put them into play. <i>(Shuffle.)</i>\n<i>\"I will endure this soul's winter.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb019",
+   "type": "Upgrade",
+   "name": "* Gusoku",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Response</b>: After you use one of your basic powers, exhaust this card and remove 1 samurai counter from an [[OATH]] upgrade you control → ready your hero.\n<i>This armor has seen many battles.</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sb020",
+   "type": "Event",
+   "name": "Iaidō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Bushido"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Bushido",
+   "text": "<b>Hero Interrupt</b>: When you use a basic power, you get +2 to that power for this use. You may place 1 samurai counter on an [[OATH]] upgrade you control.\n<i>\"Pay close attention, I won't show you twice...\"</i> —Ronin",
+   "custom": "Inkwire"
+  }
+ ],
+ "tmnt_shinobi_kuji_kiri": [
+  {
+   "card_id": "sj001",
+   "type": "Event",
+   "name": "Foresight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Look at the top card of the encounter deck. You may reveal that card to draw 3 cards.\n<i>\"I have seen the events yet to come.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj002",
+   "type": "Upgrade",
+   "name": "Imbued Weapons",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Attach to an ally. Max 1 per ally.\nAttached ally gets +1 THW and +1 ATK.\n<i>\"These glowy weapons look so cool!\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj003",
+   "type": "Event",
+   "name": "Yang",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Choose:\n• Stun an enemy.\n• Give a friendly character a tough status card.\n<i>\"My future defines my past.\"</i> —Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj004",
+   "type": "Event",
+   "name": "Yin",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Heal 2 damage from a friendly character. Choose:\n• Cloak a friendly character.\n• Confuse an enemy.\n<i>\"My past defines my future.\"</i> —Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj005",
+   "type": "Resource",
+   "name": "Tai Chi",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Max 2 per deck.\n<b>Response</b>: After you spend this card on a [[SPELL]] card, draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj006",
+   "type": "Upgrade",
+   "name": "Enthrall",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "CONDITION",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Attach to a non-[[ELITE]] minion.\nTake control of attached minion and treat it as a [[CONTROLLED]] ally with a blank textbox. Its THW is equal to its printed SCH and it takes 3 consequential damage ([consequential]) after it thwarts or attacks.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj007",
+   "type": "Upgrade",
+   "name": "* Ring of Protection",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Interrupt</b>: When a treachery is revealed, discard this card → cancel all of the effects of that treachery and discard it. Discard cards from the top of your deck for each icon ([star] and [boost]) in the discarded card's boost area.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj008",
+   "type": "Support",
+   "name": "* Toshokan Arcana",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Action</b>: Exhaust Toshokan Arcana → discard cards from the top of your deck until you discard a [[SPELL]] card. Add that card to your hand.\n<i>\"Was that spell in the 'Scripts of Shinigami'? Or 'Ho Chan's Haikus'?\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj009",
+   "type": "PlayerSideScheme",
+   "name": "* Armageddon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "StartingThreat": "5*",
+    "Victory": "0",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Victory 0.\n<b>Forced Response</b>: After Armageddon enters play, deal each player 1 facedown encounter card.\nWhile Armageddon is in the victory display, each identity gets +1 hand size in hero form.\n<i>\"I saw what lurks at the end of time, and it's terrifying.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj010",
+   "type": "Event",
+   "name": "Flash Ward",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "DEFENSE",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a friendly character would take damage, discard the top 2 cards of the encounter deck → prevent 1 damage for each icon ([star] and [boost]) in each of the discarded card's boost areas.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj011",
+   "type": "Event",
+   "name": "Unravel",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "SPELL",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Discard 3 cards from the top of your deck and discard 3 cards from the top of the encounter deck → deal 3 damage to an enemy and remove 3 threat from a scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj012",
+   "type": "Support",
+   "name": "* A Thin Place",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "LOCATION",
+    "MYSTIC"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Alter-Ego Action</b>: Exhaust A Thin Place and remove 3 mystic counters from it → draw 2 cards and heal 2 damage from your identity.\n<b>Response</b>: After you play a Kuji-Kiri card from your hand, exhaust A Thin Place → place 1 mystic counter here.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj013",
+   "type": "Upgrade",
+   "name": "* Kirby's Pencil",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ARTIFACT"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Play a card from your hand, ignoring its resource cost. Discard cards from the top of the encounter deck equal to that card's printed resource cost. Then, remove this card from the game.\n<i>\"The most meta object in our universe.\"</i> —Donnie",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj014",
+   "type": "Upgrade",
+   "name": "* Kuji-Kaijū",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL",
+    "TITLE"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Attach to an ally you control. That ally gains the [[FERAL]] and [[GIANT]] traits.\nAttached ally gets +2 hit points and +2 ATK.\nAttached ally takes +1 consequential damage ([consequential]) after it attacks.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj015",
+   "type": "Event",
+   "name": "Morphic Charm",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Choose a minion or ally with a status card. Replace that status card with a different status card → draw 1 card.\n<i>\"Definitely in the top three wierdest sensations I've ever felt...\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj016",
+   "type": "Event",
+   "name": "QNA Restoration",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b>: Choose a player. Heal 2 damage from that player's identity. That player may choose 1 card in their discard pile and shuffle it into their deck.\n<i>\"This hand thing... is getting out of hand...\"</i> —Venus",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj017",
+   "type": "Ally",
+   "name": "* Yi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "MYSTIC",
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "[star] <b>Response</b>: After Yi uses a basic power, choose a [[SPELL]] or [[TECH]] card in your discard pile and put it on the top of your deck.\n<i>\"Shocking!\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj018",
+   "type": "Upgrade",
+   "name": "* Wu Jen Tessen",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "MYSTIC",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "Restricted.\n<b>Hero Response</b>: After you play a Kuji-Kiri card from your hand, exhaust this card → ready your hero.\n<i>\"I'm totally your biggest fan!\"</i> —Lita",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj019",
+   "type": "Event",
+   "name": "Static Shock",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "Y",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "SPELL"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "[star] Rampage 1. <i>(As an additional cost for this card, take 1 damage and discard 1 card from the top of your deck.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Deal 1 damage to each enemy engaged with you.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sj020",
+   "type": "Event",
+   "name": "Æthreal Shift",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Kuji-Kiri"
+   },
+   "traits": [
+    "DEFENSE",
+    "SPELL",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Kuji-Kiri",
+   "text": "<b>Hero Action</b> <i>(defense/thwart)</i>: When your hero would take any amount of damage from an attack, prevent all of that damage. Remove threat from a scheme equal to the amount of damage prevented this way.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "enthrall_controlled_ally",
+   "pic_id": "encounter",
+   "type": "Ally",
+   "name": "Controlled Ally",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0***",
+    "THW": "0***",
+    "Class": "Encounter"
+   },
+   "traits": [
+    "CONTROLLED"
+   ],
+   "set_name": ""
+  }
+ ],
+ "tmnt_shinobi_ninjutsu": [
+  {
+   "card_id": "sa001",
+   "type": "Event",
+   "name": "Assassinate",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Play only if your hero is cloaked.\n<b>Action</b> <i>(attack)</i>: Deal 7 damage to a minion. This attack gains piercing.\n<i>\"Silence and speed are weapons we wield.\"</i> —Splinter",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa002",
+   "type": "Event",
+   "name": "Shroud and Protect",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you defend against an attack you get +1 DEF for that attack. If you take no damage from that attack, cloak and ready your hero.\n<i>\"We need to go before someone sees us.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa003",
+   "type": "Event",
+   "name": "Reconnaissance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Action</b>: Cloak a character you control → look at the top 3 cards of a player deck or encounter deck. Put those cards on the top and/or bottom of that deck in any order.\n<i>\"Looks like trouble...\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa004",
+   "type": "Event",
+   "name": "Scale the Wall",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Play only if your hero is cloaked. Max 1 per round.\n<b>Hero Action</b>: Draw 2 cards.\n<i>\"You must be able to overcome any obstacle.\"</i> —Splinter",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa005",
+   "type": "Event",
+   "name": "Run the Rooftops",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "NYC",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Play only if your hero is cloaked.\n<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme.\n<i>\"We are the unseen guardians of the city.\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa006",
+   "type": "Event",
+   "name": "Cut-and-Run",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If this attack defeats an enemy, cloak your hero.\n<i>\"This is getting out of control. You can count me out.\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa007",
+   "type": "Support",
+   "name": "* Hamato Clan",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TEAM"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Response</b>: After an ally you control leaves play, place 1 shadow counter here.\n<b>Action</b>: Exhaust this card and remove 1 shadow counter from here → cloak an ally you control.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa008",
+   "type": "Upgrade",
+   "name": "Smoke Bombs",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "2,smoke",
+    "MaxPerUnit": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Uses (2 smoke counters). Max 1 per player.\n<b>Hero Action</b>: Exhaust this card and remove 1 smoke counter from it → cloak a friendly character.\n<i>\"Now you see me...\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa009",
+   "type": "Upgrade",
+   "name": "* Twilight Sentry",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TITLE",
+    "TRAINING"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Attach to an ally you control and cloak them.\nMax 1 [[TRAINING]] upgrade per ally.\n<b>Interrupt</b>: When attached ally would take any amount of damage, discard a cloaked status card from them instead.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa010",
+   "type": "Upgrade",
+   "name": "Opportunist",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Max 1 per player.\n<b>Hero Action</b> <i>(thwart)</i>: Discard a cloaked status card from a character you control and exhaust Opportunist → remove 3 threat from a scheme.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa011",
+   "type": "Event",
+   "name": "Stealth Proficiency",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b>: Discard a cloaked status card from your hero → ready your hero.\n<b>Hero Response</b>: After you use one of your basic powers, cloak your hero.\n<i>\"There is far more potential in chaos...\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa012",
+   "type": "Upgrade",
+   "name": "Black Ops",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b>: After your hero defeats a minion or side scheme, discard Black Ops → ready your hero.\n<i>\"That's one less obstacle...\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa013",
+   "type": "Event",
+   "name": "Up in Smoke",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b>: Ready a [[NINJA]] ally.\n<b>Hero Interrupt</b>: When an ally would be discarded from play, return it to its owner's hand instead.\n<i>\"Time to shake up the board.\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa014",
+   "type": "Support",
+   "name": "* Hidden Passage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SEWERS"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Hidden Passage and discard a cloaked status card from your identity → draw 1 card.\n<b>Hero Response</b>: After you change form, exhaust Hidden Passage → cloak your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa015",
+   "type": "Upgrade",
+   "name": "* Kusari-Kagi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust this card and discard a cloaked status card from your hero → deal 1 damage to an enemy and draw 1 card.\n<i>\"Get over here!\"</i> —Ronin",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa016",
+   "type": "Event",
+   "name": "Shadow Summon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Action</b>: Discard cards from the top of your deck until you discard a [[NINJA]] ally and put it into play. If that ally is still in play at the end of the phase, add it to your hand.\n<i>\"We will need to hide our numbers.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa017",
+   "type": "Ally",
+   "name": "* Moja",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Response</b>: After Moja enters play, cloak her.\n<b>Response</b>: After Moja takes consequential damage ([consequential]), discard a Ninjutsu card from your hand → cloak Moja.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa018",
+   "type": "Upgrade",
+   "name": "Smokescreen",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Reduce the cost to play this card by 1 if your identity is cloaked.\n<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attack would deal damage to a friendly character, discard this card → prevent 2 of that damage.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa019",
+   "type": "Event",
+   "name": "Gaslight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Ninjutsu"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Discard a cloaked status card from your hero → choose:\n• Remove 3 threat from a scheme.\n• Confuse an enemy.\n<i>\"You must have imagined that...\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sa020",
+   "type": "Resource",
+   "name": "From the Shadows",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Ninjutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Ninjutsu",
+   "text": "Max 1 per deck.\n<b>Hero Response</b>: After you spend this card to play a Ninjutsu card, cloak your hero.",
+   "custom": "Inkwire"
+  }
+ ],
+ "tmnt_shinobi_taijutsu": [
+  {
+   "card_id": "sh001",
+   "type": "Event",
+   "name": "Raising Block",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent 3 of that damage.\n<b>Hero Response</b>: After you spend this card to pay for a [[DEFENSE]] event, draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh002",
+   "type": "Event",
+   "name": "Foot Sweep",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Return each [[ATTACK]] event to your hand that you used to pay for this card.\n<i>\"Let's sweep up the trash.\"</i> —Jennika",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh003",
+   "type": "Event",
+   "name": "Stiff Jab",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If you paid for this card with an [[ATTACK]] event, you may daze that enemy.\n<i>\"I warned you.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh004",
+   "type": "Event",
+   "name": "Straight Cross",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. If you paid for this card with an [[ATTACK]] event, stun that enemy.\n<i>\"You best stay down.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh005",
+   "type": "Event",
+   "name": "Double Kick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 2 damage to an enemy and remove 2 threat from a scheme. If you paid for this card with:\n• A [[DEFENSE]] event, draw 1 card.\n• A [[THWART]] event, draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh006",
+   "type": "Event",
+   "name": "Flying Kick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Draw 1 card for each [[THWART]] event used to pay for this event.\n<i>\"Boot to the head!\"</i> —Casey Marie Jones",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh007",
+   "type": "Event",
+   "name": "Trading Blows",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b> <i>(attack/defense)</i>: After you take damage from an enemy attack, deal 2 damage to that enemy. If you paid for this card with a [[DEFENSE]] event, stun or confuse that enemy.\n<i>\"Ouch.\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh008",
+   "type": "Event",
+   "name": "Drop In",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "NYC",
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Action</b>: Ready your identity. If you paid for this card with a [[DEFENSE]] event, you may return an [[ATTACK]] or [[THWART]] event from your discard pile to your hand.\n<i>\"We've decided to invite ourselves.\"</i> —Michelangelo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh009",
+   "type": "Event",
+   "name": "Toss",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "DEFENSE",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Interrupt</b> <i>(defense/thwart)</i>: When you would take any amount of damage from an attack, prevent 3 of that damage and remove 1 threat from a scheme. If you paid for this card with an [[ATTACK]] event, daze that enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh010",
+   "type": "Upgrade",
+   "name": "Martial Skill",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Uses": "2,chi",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Max 1 per player. Uses (2 chi counters).\n<b>Response</b>: After you play an event, exhaust Martial Skill and remove 1 chi counter from it → draw 1 card.\n<i>\"Practice makes perfect.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh011",
+   "type": "Event",
+   "name": "Elbow Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b>: After your hero makes a basic attack and damages an enemy, daze that enemy.\n<i>\"You weren't expecting that, were you?\"</i> —Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh012",
+   "type": "Support",
+   "name": "* Mutant Fight Club",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "STREETS"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "You may play events attached to this card as if they were in your hand.\n<b>Alter-Ego Action</b>: Exhaust this card and take 1 damage → attach an [[ATTACK]] or [[DEFENSE]] event in your discard pile to this card facedown.\n<i>First rule of Mutant Fight Club is: Tell your friends!</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh013",
+   "type": "Event",
+   "name": "Roll With It",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "NYC",
+    "TACTIC"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b>: After your hero defends, ready your hero.\n<b>Hero Interrupt</b>: When you spend this card to pay for an [[ATTACK]] event, put a [[DEFENSE]] event from your discard pile on top of your deck.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh014",
+   "type": "Upgrade",
+   "name": "* Minarai",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "TITLE",
+    "TRAINING"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Attach to an ally you control. Max 1 [[TRAINING]] upgrade per ally.\n<b>Response</b>: After attached ally takes consequential damage ([consequential]), draw 1 card.\n<i>\"Just do what I do Casey.\"</i> —Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh015",
+   "type": "Resource",
+   "name": "Keep the Momentum",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Taijutsu"
+   },
+   "traits": [],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Max 2 per deck.\n<b>Response</b>: After you spend this card on an event, return 1 Taijutsu event from your discard pile to your hand.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh016",
+   "type": "Upgrade",
+   "name": "* Jō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Uses": "3,cudgel",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "NINJA",
+    "WEAPON"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "Restricted. Uses (3 cudgel counters).\n<b>Response</b>: After you play a Taijutsu event, place 1 cudgel counter here.\n<b>Hero Response</b>: After you damage an enemy, remove 2 cudgel counters from this card → daze that enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh017",
+   "type": "Ally",
+   "name": "* Odyn",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "3**",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "MONK",
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "[star] <b>Response</b>: After Odyn uses a basic power, discard a [[DEFENSE]] card from your hand → give Odyn a tough status card.\n<i>\"I suggest you stand behnd me this time.\"</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh018",
+   "type": "Event",
+   "name": "Countercross",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE",
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Interrupt</b> <i>(attack/defense/thwart)</i>: When you would take any amount of damage from an attack, prevent 1 of that damage. Deal 1 damage to an enemy. Remove 1 threat from a scheme. Draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh019",
+   "type": "Event",
+   "name": "Sideswipe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 1 threat from a scheme. If this removes the last threat on that scheme, return an [[ATTACK]] card from your discard pile to your hand.\n<i>\"Sorry, just passing through!\"</i> —Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sh020",
+   "type": "Event",
+   "name": "Tough Nut",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Taijutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "TMNT Shinobi Taijutsu",
+   "text": "<b>Hero Response</b>: After your hero uses a basic power, give it a tough status card. If you paid for this card with a [[DEFENSE]] or [[THWART]] event, heal 2 damage from your hero.\n<i>\"Bring it.\"</i> —Uno",
+   "custom": "Inkwire"
+  }
+ ],
+ "tmnt_shinobi_dual": [
+  {
+   "card_id": "sc001",
+   "type": "Event",
+   "name": "Nendō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido;Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "PSIONIC"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust a [[WEAPON]] upgrade you control → deal 4 damage to an enemy. Daze that enemy.\n<i>\"Think fast!\" —Casey Jones</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc002",
+   "type": "Upgrade",
+   "name": "Shugorei",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Uses": "4,samurai",
+    "MaxPerUnit": "1",
+    "Class": "Bushido;Kuji-Kiri"
+   },
+   "traits": [
+    "OATH",
+    "SPELL"
+   ],
+   "text": "Max 1 per player.\nUses (4 samurai counters).\n<b>Action</b>: Exhaust this card and remove 2 samurai counters from it → draw 1 card.\n<i>\"What we remember, we become.\" —Leonardo</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc003",
+   "type": "Event",
+   "name": "Omawari",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Bushido;Ninjutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust a [[WEAPON]] upgrade you control → cloak your hero and give them a tough status card.\n<i>\"Nothin' is gonna get past us.\" —Raphael</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc004",
+   "type": "Upgrade",
+   "name": "Kuragari",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "Class": "Bushido;Ninjutsu"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "text": "Uses (3 samurai counters).\n<b>Action</b>: Exhaust this card and remove 3 samurai counters from it → cloak and ready your hero.\n<i>\"Shhhh...\" —Casey Jones</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc005",
+   "type": "Upgrade",
+   "name": "Yoi-Dachi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "MaxPerUnit": "1",
+    "Class": "Bushido;Taijutsu"
+   },
+   "traits": [
+    "OATH",
+    "STANCE"
+   ],
+   "text": "Max 1 per player. Uses (3 samurai counters).\n<b>Response</b>: After you take damage from an enemy attack, remove 1 samurai counter from here → daze that enemy.",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc006",
+   "type": "Event",
+   "name": "Migatte",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Bushido;Taijutsu"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, it gets +2 DEF for that attack. If you paid for this card with a Shinobi card, ready your hero.\n<i>\"Time to stray from tradition.\" —Nightwatcher</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc007",
+   "type": "Event",
+   "name": "Mizuki",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Kuji-Kiri;Ninjutsu"
+   },
+   "traits": [
+    "PSIONIC",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. If this removes the last threat on that scheme, choose:\n• Cloak a friendly character.\n• Return an event from your discard pile to your hand.",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc008",
+   "type": "Event",
+   "name": "Naito Dansā",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Kuji-Kiri;Ninjutsu"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "text": "<b>Hero Action</b>: Discard cards from the top of the encounter deck until you discard an attachment or side scheme. Reveal that card → cloak up to 2 friendly characters. Daze up to 2 enemies.\n<i>\"Watch my moves.\" —Michelangelo</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc009",
+   "type": "Event",
+   "name": "Yomi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Kuji-Kiri;Taijutsu"
+   },
+   "traits": [
+    "PSIONIC",
+    "SPELL",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Choose 1 card from the encounter discard pile and put it on top of the encounter deck → remove 2 threat from a scheme.\n<i>\"It's like hearing the hunt before it begins.\" —Donatello</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc010",
+   "type": "Upgrade",
+   "name": "Kusuri",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Kuji-Kiri;Taijutsu"
+   },
+   "traits": [
+    "ITEM",
+    "MYSTIC"
+   ],
+   "text": "Max 1 per player.\n<b>Action</b>: Exhaust this card and discard an [[ATTACK]] event from your hand → heal 2 damage from a friendly character.\n<i>\"Double, double toil and trouble...\" —Donatello</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc011",
+   "type": "Event",
+   "name": "Kenbu",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Ninjutsu;Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard a cloaked status card from your hero → deal 1 damage to up to 3 enemies. Daze each enemy damaged this way.\n<i>\"Next.\" —Alopex</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc012",
+   "type": "Event",
+   "name": "Hitodama",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Ninjutsu;Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Response</b> <i>(attack)</i>: Deal 3 damage to an enemy. If you paid for this card with a [[THWART]] event, cloak your hero.\n<i>\"Let's dance!\" —Raphael</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  }
+ ],
  "tmnt_shinobi_paths": [
   {
    "card_id": "se001",
@@ -115875,5 +117533,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "8042a42a91ca89e674b0aed182218375e8924de7c0cae17c4a4952f51d2350a4"
+ "checksum": "31d0f9c365cd62094c47d378a8cd5b03af4bbca3eb0b47314c5b7beb10b76734"
 }

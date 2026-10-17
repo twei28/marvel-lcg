@@ -1590,9 +1590,38 @@ Fiche : `mots-cles/shinobi.md` (classes, Dual, Path, helpers), `samurai-counter.
 | « When the player phase ends » | `WhenPlayerPhaseEnd(HeroInterrupt, op)` | `se004` | `WhenPhaseEnd("Player")` part APRÈS la pioche de fin de phase (`PlayersEndPhase`) : c'est « after you draw your new hand » ; un cout `DiscardDeckTopCards` DÉFAUSSE avant le choix, qui doit donc se faire dans l'opération |
 | « generate a [wild] resource. If you paid for X with this resource, ... » | `CanGenerateResources(HeroResource, Resources("G"), ex_operation=op)` | `se009` | `ex_operation(effect, message)` reçoit `message.paying_card` (la carte payée) |
 | Path du deck | `PlayerSetup.MettreLesPathsDeCoteEtEnJeuAuSetup` (`player_setup.py`) | `se001` choisi (`deck_ajoute`) | tout card_id de type Path dans `player_deck` est retiré du deck, fabriqué de côté, mis en jeu à `WhenGameBeginSetup` (avant la pioche de départ) ; le Path propre à un héros (Sosaiken) passe, lui, par `BeginGameWithSetAside` |
+| « Hero Response: After you spend this card to pay for a <trait> event, ... » sur un ÉVÉNEMENT | `AfterYouSpendThisCard(HeroResponse, op, to_pay_card=CardFinder2("DEFENSE", Event))` (SANS `SetPlay`) | `sh001` | avant le 17/10/2026 reproposée sans fin : `ProcessOptionalEffect` ne marquait jamais « traité » un effet d'événement ; corrigé (`manager.py`, `ability.is_play`) |
+| « for each THWART event used to pay » / « return each ATTACK event you used to pay » | boucle sur `effect.context.paid_this_res_effects` (`.this`, `Event.IsType`, `HasTrait`, sans doublon) puis `DrawUp(n)` / `Faces.ReturnToHand` | `sh006`, `sh002` | `PayeAvecUnEvenement` ne rend qu'un booléen ; les événements rendus sont dans `discard_pile.Get()` |
+| « Hero Response (attack/defense): After you take damage from an enemy attack, ... that enemy » | `AfterUnitTookDamage(HeroResponse, "You", op, is_from_attack=True, who_dealt_damage=Enemy).SetPlay().SetLabel('attack', 'defense').SetTarget("Attacker")` | `sh007`, `08030` | le libellé `defense` d'une Réponse faisait `assert False` dans `SpecialDefense` : branche ajoutée |
+| « attach an ATTACK or DEFENSE event in your discard pile to this card facedown » (soutien) | `SetTarget(CardFinder(card_type=Event, traits=[...]), from_where=["YourDiscardPile"])` + `PlaceCardHere(targets, False, effect)` + `*AttachedCardCanPlayLikeInHand(CardFinder(card_type=Event))` | `sh012`, `ma004` | `traits=[...]` est un OU ; aucun plafond imprimé = aucune condition de taille ; cas `sh_comme_en_main` |
+| « After attached ally takes consequential damage » | `AfterAllyTakeConsequentialDamage(Response, "AttachedAlly", op, conditions=[allié en jeu])` | `sh014`, `tl009` | « ally you control » : `CardFinder(card_type=Ally, check_effect_fn=...GetControlByPlayer())` ; `Puzzle.AttachReel` (pas `Attach`) pour qu'il soit « attaché » |
+| « If this removes the last threat on that scheme, ... » | `RemoveThreatFromSchemes(..., if_this_remove_last_threat=fn)` | `sh019`, `ma015` | une manigance annexe vidée QUITTE le jeu ; ne PAS copier `04049` (teste `threat == 0` après coup) |
 
 Harnais : la clé de cas `deck_ajoute: [card_id, ...]` ajoute des cartes au `player_deck` du joueur 1 AVANT la mise en place
 (chemin réel du deck-builder). ⚠ La clé `jouer` AMÈNE EN MAIN une carte absente de la main : elle ne prouve pas qu'une carte
 glissée est jouable « comme en main » (mesurer `IsLikeInHand()`, cas `se_comme_en_main`). ⚠ `Puzzle.CreatePlayerDeck(a, b, c)` :
 la DERNIÈRE carte listée est le DESSUS du deck. ⚠ `Puzzle.Attack('01094')` sans défenseur : le pilote fait défendre le héros
 (il s'incline) ; pour un dégât subi, incliner le héros d'abord.
+
+### 13bis. Cartes Dual Shinobi (`sc`, 17/10/2026) : recettes ajoutées
+
+| Texte imprimé | Fabrique / modèle | Piège |
+|---|---|---|
+| « If you paid for this card with a Shinobi card » | boucle locale sur `effect.context.paid_this_res_effects` avec `EstShinobi(e.this)` et `e.this != effect.this` (`sc006`) | `PayeAvecUnEvenement` ne couvre que les événements ; une Dual est Shinobi pour ses deux classes |
+| « Discard ... until you discard X or Y. Reveal that card → » (type UNION) | `CostFunc.Custom(Select.From("This"), fn)` bouclant `Worlds.DiscardEncounterTopCard` puis `face.Reveal(joueur, effect)` (`sc008`, modèles `sm/27015`, `alopex/ta006`) | la révélation est le COÛT ; deck épuisé sans cible = coût impayé |
+| « Choose 1 card from the encounter discard pile and put it on top of the encounter deck → » | `CostFunc.Custom(Select.From(CardFinder(), from_where=["EncounterDiscardPile"]), fn)` + `Faces.MoveAllToDeck(..., "Top", ...)` (`sc009`) | le journal affiche « EncounterDiscardPile<0> » : se fier à `Deck.GetTop()` |
+| « Discard a cloaked status card from your hero → » | `CostFunc.Custom(Select.From("YourHero", finder=CardFinder(has_status="Cloaked")), ...)` + `DiscardCloaked(effect, rule=1)` (`sc011`) | `canbe_status="Cloaked"` n'est PAS géré par `checker.py` |
+
+Harnais : `Puzzle.Counter(carte, nom, n)` AJOUTE n compteurs (n négatif en retire). `Puzzle.EmptyHand()` avant tout `SetThreat` (Emergency ramène la menace à 0). Un sbire Guard engagé interdit de viser le vilain
+avec un événement `attack` à plusieurs cibles. ⚠ « Exhaust a WEAPON you control » + une arme qui produit aussi une ressource (Tekko-Kagi) : le pilote paie avec l'arme puis le coût échoue, paiement perdu (défaut moteur non corrigé).
+### 13 bis. Kuji-Kiri (`sj`, 17/10/2026) : ce que ce pack a payé
+
+| Mécanique imprimée | Fabrique / chemin | Carte modèle | Piège |
+|---|---|---|---|
+| « discard the top N cards of the encounter deck → prevent 1 damage per icon ([star] and [boost]) » | `WhenUnitWouldTakeDamage(HeroInterrupt, Friend, op).SetPlay().SetLabel("defense").SetCostFunc(CostFunc.DiscardDeckTopCards("EncounterDeck", N))` ; `FacesCounter.CountTotalBoostStarAndBoost(effect.cost_func.Get(CostFunc.DiscardDeckTopCards).return_discarded_cards)` | `sj010`, `falcon/53010` | l icône « Y » du scan est l icône de BOOST ; deck de rencontre de moins de N cartes : coût impayé, cartes non restituées (moteur préexistant) |
+| « take control of attached minion ... N consequential damage » | `TakeControlOfAttachedMinion("<gabarit>")` ; N = nombre d étoiles du gabarit d allié dans `cards.json` | `sj006`, `phoenix/34009` | fiche `controlled.md` |
+| « Replace that status card with a different status card » | `Player.DeclareStatusCard(...)` (7 genres, paramètres `exposed`, `cloaked`, `dazed`, `intensified`) + `GiveStatus` puis défausse de l ancienne | `sj015`, `drs/09035` | options nommées `p_<genre>` (`choisir_option="p_dazed"`) ; `questions_presentes` / `questions_absentes` lisent les noms AVEC espaces |
+| « After you play a <classe> card from your hand » sur la carte elle-même | `AfterPlayerPlayedCard(..., CarteShinobi("Kuji-Kiri"), from_hand=True)` | `sj012`, `sj018` | la carte répond à SA PROPRE mise en jeu : poser par `AttachReel` / `PutIntoPlay` pour mesurer la carte suivante |
+| Option facultative « You may ... » (`MayChooseOneAbility`) | refuser avec `choisir_option="Cancel"` (la liste contient une option « Cancel », pas de bouton Passer) | `sj001`, `sj016` | `passer_sur_option` ne marche PAS ici |
+| Une carte ✦ unique | `desc` : nom `* Nom` | `sj014` | une seconde copie est injouable : ce n est PAS un « Max 1 » |
+| « each enemy engaged with you » | `Worlds.FindCardsOnField(card_type=Enemy, engaged_with=joueur)` | `sj019`, `ra005` | ne retient QUE les sbires (le vilain n est pas engagé) ; un sbire à Guard interdit de viser le vilain avec une carte `attack` |

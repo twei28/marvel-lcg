@@ -172,6 +172,9 @@ la plus fréquente sur un pack vilain.
       helpers `CarteShinobi` / `EstShinobi`, règles de construction)
 - [x] samurai-counter.md (compteur `samurai` et trait OATH : Jennika `tj006`, Path Samurai `se003` ; coût réparti
       entre plusieurs améliorations)
+- [x] shadow-counter.md (compteur `shadow` de Hamato Clan `sa007`, TMNT Shinobi Ninjutsu : posé quand un allié
+      sous son contrôle part, retiré en coût pour camoufler un allié)
+- [x] smoke-counter.md (compteur `smoke` de Smoke Bombs `sa008`, `Uses (2 smoke counters)` ; homonyme de `27139`)
 - [x] path.md (type PATH : mis de côté puis en jeu au Setup pour n'importe quel héros, « -1 hand size », classe =
       types Shinobi, Voie propre d'un héros (Sosaiken) ou Path choisi au deck-building)
 - [x] intensify.md (pack `tmnt_standard_expert`, `te201` Intense Combatants : « intensify X » = donner une
@@ -292,3 +295,4 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
   maison d'aucune sorte.
 - **`luke_cage`** : `__init__.py` du pack entièrement vide, aucun
   mécanisme maison d'aucune sorte.
+- [x] controlled.md (take control / allié CONTROLLED, gabarit d allié à N dégâts consécutifs)
