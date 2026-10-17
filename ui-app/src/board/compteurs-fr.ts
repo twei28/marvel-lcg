@@ -120,6 +120,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // Mutagen Bomb de Raphael (tr014).
   swarm: 'essaim',
   knucklehead: 'andouille',
+  // Aspects TMNT Dual-Aspect (16/10/2026) : ud003 Heavy Metal entre en jeu avec 2 « amp counters ».
+  amp: 'ampli',
   timer: 'minuteur',
   // Aspect TMNT Protection (16/10/2026) : Lindsey Baker (up022), Grotto (up014), Road Rage (up031).
   healing: 'guérison',

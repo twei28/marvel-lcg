@@ -1487,3 +1487,27 @@ clé de titre de règles. Question ouverte : relever ces bandeaux dans chaque ga
 | Compteurs nommés `brute`, `fuel`, `healing` | ajoutés à `CardFace.COUNTER` (card_face.py) + `compteurs-fr.ts` | `up014`, `up031`, `up022` | `desc.Uses` refuse (assert `IsCounter`) un nom absent de la liste ; `ThisEnterPlayWithCounters`, lui, ne vérifie rien |
 | Spider-Man dans les cas | Spider-Sense pioche 1 carte quand le VILAIN attaque : la compter dans `taille_main` / `taille_deck_joueur` | `[up]` up004, up037, up040 | avec un deck VIDE, Spider-Sense bloque l'attaque (le cas ne va pas au bout) |
 | Reskin dont le module écrit un NOM DE COMPTEUR en dur | script propre, copie du module (pas d'`ability_link`) | `up014` Grotto (09014 'mystic'), `up022` Lindsey Baker (09019 'medical') | l'`ability_link` poserait le compteur de l'officielle |
+### Carte DOUBLE ASPECT (pack `tmnt_aspect_dual`, `ud`, 16/10/2026)
+
+Première carte du jeu à porter deux aspects (bandeau « AGGRESSION/JUSTICE », cadre bicolore). Le scan
+n'imprime AUCUNE règle de construction propre : lecture retenue = la carte entre dans un deck de l'un
+OU de l'autre aspect, sans y ajouter d'aspect.
+
+| Où | Montage | Preuve |
+|---|---|---|
+| Données | `desc.Class = "Aggression;Justice"` (l'ordre du bandeau) | — |
+| Moteur | RIEN à changer : `ClassCard` découpe sur « ; » → `card_classes = [Aggression, Justice, Aspect]` ; `IsClass` / `CardFinder(card_class=...)` répondent VRAI pour chacun | cas `[ud] ud001 ... The Power of Justice ET The Power of Aggression` (2+2 = 4) et témoin The Power of Leadership (2+1, injouable) |
+| Deck-builder, pool | `estCarteJoueur` : `estDoubleAspect(c)` (toutes les parties sont des aspects, ≥ 2) → carte d'aspect ; avant : classe inconnue, AUCUNE tuile | `tools/tests-lanceur/regles-double-aspect.test.mjs` (vu rouge) |
+| Deck-builder, légalité | `validerDeck` : les doubles sont mis de côté puis rangés dans un aspect DÉJÀ présent (le moins fourni, pour l'égalité de Spider-Woman), sinon on ouvre l'aspect qui couvre le plus de doubles restants | même fichier : deck Justice + Rōnin légal, deck Leadership + Rōnin refusé, deux doubles sans aspect commun = 2 aspects |
+| Deck-builder, filtres | `passeFiltres` : la carte passe sous le filtre de CHACUN de ses aspects | même fichier |
+| Deck-builder, affichage | `labelAspect` « Agressivité / Justice », ligne colorée du PREMIER aspect (`classeCss`) | non testé (DOM) |
+| Préparation | `catalog.js` `aspectsOfDeck` : un double rejoint un aspect présent, seul il apporte son premier | non testé (module lié au DOM) |
+| Plateau (ui-app) | `aspectDeClasse` rend le PREMIER aspect (liseré monocolore sous un effet délavant) | `tmnt-aspect-dual-plateau.test.ts` |
+
+⚠ Points NON tranchés, faute de règle : `ClassCard.GetAspect()` rend le PREMIER aspect seulement (lu par
+04031a Spider-Woman « once per round for each aspect » et par la page de suivi) ; `FacesCounter.GetAspectCount`
+compte un double pour DEUX aspects (Adam Warlock 21038/21039/21066). Aucune carte du pack ne le lit.
+
+Harnais : `Puzzle.PutIntoPlay` déclenche AUSSI les capacités d'entrée en jeu (Cloaked de Rōnin, Tough
+de Toughness, compteurs « enters play with ») : un Cloaked absorbe ensuite 2 dégâts de `Puzzle.Damage`.
+Retirer l'état par la bascule `Puzzle.Cloak` / `Puzzle.Tough` avant de poser des dégâts (`tools/cas/tmnt_aspect_dual.py`, `_en_jeu`).

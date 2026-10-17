@@ -4761,4 +4761,17 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_protection — Wonder Turtle (Ally), reskin de 54032 White Widow
     'up043': "<b>Réponse</b> : après avoir résolu la capacité d'une carte [[Préparation]] que vous contrôlez, soignez Wonder Turtle d'un nombre de dégâts égal au coût en ressources imprimé de cette carte.\n<i>« Surprise. »</i>",
     // --- TMNT Dual-Aspect (ud) : ajouter les cartes udNNN ci-dessous, dans ce bloc seulement ---
+    // --- TMNT Dual-Aspect (ud) : ajouter les cartes udNNN ci-dessous, dans ce bloc seulement ---
+    // tmnt_aspect_dual — Rōnin (Ally), Agressivité/Justice
+    'ud001': "<b>Réponse</b> : après que Rōnin est entré en jeu, camouflez-le.\n<b>Interruption</b> : quand Rōnin est vaincu par des dégâts consécutifs ([consequential]), dépensez une ressource [wild] → piochez 3 cartes.\n<i>« Je dois venger ceux qui sont tombés. »</i>",
+    // tmnt_aspect_dual — Doomsayer (Ally), Agressivité/Commandement
+    'ud002': "<b>Réponse</b> : après que Doomsayer est entré en jeu, piochez X cartes (3 au maximum), où X est égal au numéro d'étape du méchant.\n<b>Interruption</b> : quand Doomsayer est vaincu par des dégâts consécutifs ([consequential]), piochez 1 carte pour chaque sbire engagé avec vous.",
+    // tmnt_aspect_dual — Heavy Metal (Ally), Agressivité/Protection
+    'ud003': "Heavy Metal entre en jeu avec 2 compteurs ampli sur elle.\n<b>Réponse</b> : après que Heavy Metal a subi des dégâts consécutifs ([consequential]), retirez-lui 1 compteur ampli → placez une carte d'état sur un personnage.",
+    // tmnt_aspect_dual — Stealth Fighter (Ally), Justice/Commandement
+    'ud004': "<b>Réponse</b> : après que Stealth Fighter est entré en jeu ou a subi des dégâts consécutifs ([consequential]), camouflez-le.\n<b>Interruption</b> : après que Stealth Fighter a été vaincu par des dégâts consécutifs ([consequential]), camouflez un personnage ami.",
+    // tmnt_aspect_dual — Sōhei (Ally), Justice/Protection
+    'ud005': "Tenace.\n<b>Interruption</b> : quand Sōhei est vaincu par des dégâts consécutifs ([consequential]), votre héros gagne +2 en taille de main jusqu'à la fin du round.\n<i>« Je veillerai sur toi depuis l'autre côté. »</i>",
+    // tmnt_aspect_dual — Nightwatcher (Ally), Commandement/Protection
+    'ud006': "Tenace.\n<b>Réponse</b> : après que Nightwatcher a subi des dégâts consécutifs ([consequential]), donnez-lui une carte d'état Tenace.\n<i>« Je suis le héros dont nous avons TOUS besoin ! »</i>",
 };

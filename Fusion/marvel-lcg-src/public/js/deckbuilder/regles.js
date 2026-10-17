@@ -82,6 +82,22 @@ export function classeDeConstruction(classe) {
     return liste.find((x) => ASPECTS.includes(x)) || liste.find((x) => CLASSES_NEUTRES.includes(x)) || liste[0];
 }
 
+/** Les ASPECTS d'une classe (« Aggression;Justice » -> les deux ; « Hero;Aggression »
+ *  -> [« Aggression »] ; « Basic » -> []). */
+export function aspectsDeClasse(classe) {
+    return String(classe || "").split(";").map((x) => x.trim()).filter((x) => ASPECTS.includes(x));
+}
+
+/** Carte DOUBLE ASPECT (pack tmnt_aspect_dual, Inkwire, 16/10/2026) : sa classe ne
+ *  porte QUE des aspects, au moins deux (bandeau « AGGRESSION/JUSTICE »). Elle entre
+ *  dans un deck de l'un OU de l'autre, sans y ajouter d'aspect. « Hero;Aggression »
+ *  (signatures de Spider-Woman) n'en est pas une. */
+export function estDoubleAspect(c) {
+    if (!c || !c.class) return false;
+    const parts = String(c.class).split(";").map((x) => x.trim()).filter(Boolean);
+    return parts.length >= 2 && parts.every((x) => ASPECTS.includes(x));
+}
+
 const avecClasseDeConstruction = (c) => {
     if (!c) return c;
     const classe = classeDeConstruction(c.class);
@@ -104,6 +120,8 @@ export function estCarteJoueur(c) {
     if (!c || !c.class) return false;
     if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return false;
     if (c.class === "Hero") return false;
+    // Double aspect (« Aggression;Justice ») : une carte d'aspect comme une autre.
+    if (estDoubleAspect(c)) return estTypeJouable(c);
     if (!ASPECTS.includes(c.class) && !CLASSES_NEUTRES.includes(c.class)) return false;
     return estTypeJouable(c);
 }
@@ -437,9 +455,26 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     const idHeros = hero.id || "";
     const horsDeckJoueur = [];   // cartes de rencontre, ou signatures d'un autre heros
     const typesRefuses = [];     // « no additional allies » et consorts
+    // Cartes DOUBLE ASPECT : leur aspect se decide APRES le decompte des autres
+    // (elles rejoignent un aspect deja present, sinon le moins couteux).
+    const doubles = [];          // { aspects, n, c }
     for (const [id, n] of choisies) {
         const c = carte(id);
         if (!c) continue;
+        const brute = carteBrute(id);
+        if (estDoubleAspect(brute)) {
+            if (!estPermanente(c)) total += n;
+            const copie = cleCopie(c);
+            parTitre.set(copie, {
+                n: (parTitre.get(copie)?.n || 0) + n,
+                max: estUnique(c) ? 1 : maxParDeck(c),
+                nom: titreDe(c) + (c.subtitle ? ` (${c.subtitle})` : ""),
+            });
+            if (!estTypeJouable(c)) horsDeckJoueur.push(c.name);
+            else if (interdits.includes(String(c.type)) || interditsAspect.includes(String(c.type))) typesRefuses.push(c.name);
+            if (!exemptDeLaLimiteAspect(hero, c)) doubles.push({ aspects: aspectsDeClasse(brute.class), n, c });
+            continue;
+        }
         if (!estPermanente(c)) total += n;
         const copie = cleCopie(c);
         parTitre.set(copie, {
@@ -462,6 +497,28 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
                 titresAdmissibles.set(c.class, (titresAdmissibles.get(c.class) || new Set()).add(c.name));
             }
         }
+    }
+
+    // Doubles aspects : une carte « Aggression;Justice » compte pour un aspect DEJA
+    // present dans le deck (le moins fourni des deux s'ils le sont tous les deux,
+    // pour l'egalite exigee par Spider-Woman) ; sinon, on ouvre l'aspect qui couvre
+    // le plus de doubles restants (le premier imprime a egalite). Un deck n'en
+    // compte ainsi jamais plus que necessaire.
+    let restants = doubles;
+    while (restants.length) {
+        const pendants = [];
+        for (const d of restants) {
+            const presents = d.aspects.filter((a) => parAspect.has(a));
+            if (!presents.length) { pendants.push(d); continue; }
+            presents.sort((a, b) => parAspect.get(a) - parAspect.get(b));
+            parAspect.set(presents[0], parAspect.get(presents[0]) + d.n);
+        }
+        if (!pendants.length) break;
+        const couverture = new Map();
+        for (const d of pendants) for (const a of d.aspects) couverture.set(a, (couverture.get(a) || 0) + 1);
+        const ouvert = [...couverture.entries()].sort((a, b) => b[1] - a[1])[0][0];
+        parAspect.set(ouvert, 0);
+        restants = pendants;
     }
 
     // Quota hors aspect : l'aspect choisi est le plus fourni ; un autre aspect
