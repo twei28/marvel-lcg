@@ -116437,7 +116437,7 @@
     "ATTACK"
    ],
    "set_name": "TMNT Shinobi Ninjutsu",
-   "text": "Play only if your hero is cloaked.\n<b>Action</b> <i>(attack)</i>: Deal 7 damage to a minion. This attack gains piercing.\n<i>\"Silence and speed are weapons we wield.\"</i> —Splinter",
+   "text": "Play only if your hero is cloaked.\n<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to a minion. This attack gains piercing.\n<i>\"Silence and speed are weapons we wield.\"</i> —Splinter",
    "custom": "Inkwire"
   },
   {
@@ -117073,7 +117073,7 @@
     "TURTLE"
    ],
    "set_name": "TMNT Shinobi Taijutsu",
-   "text": "[star] <b>Response</b>: After Odyn uses a basic power, discard a [[DEFENSE]] card from your hand → give Odyn a tough status card.\n<i>\"I suggest you stand behnd me this time.\"</i>",
+   "text": "[star] <b>Response</b>: After Odyn uses a basic power, discard a [[DEFENSE]] card from your hand → give Odyn a tough status card.\n<i>\"I suggest you stand behind me this time.\"</i>",
    "custom": "Inkwire"
   },
   {
@@ -117533,5 +117533,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "31d0f9c365cd62094c47d378a8cd5b03af4bbca3eb0b47314c5b7beb10b76734"
+ "checksum": "aab3ed15c1bf657f0fc5a0a44c24685229453fdf4f72b0ae1fe56d3af279a098"
 }

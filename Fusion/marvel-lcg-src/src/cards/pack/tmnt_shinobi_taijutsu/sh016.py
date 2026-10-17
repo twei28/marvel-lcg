@@ -14,7 +14,7 @@ from . import *
 #    Sword (`AfterPlayerPlayedCard(Response, "You", finder, op)`) ;
 #  - « After you deal damage to an enemy ... remove N counters → ... that enemy » : `tmnt_aspect_aggression/ua033`
 #    Pete (`AfterYouDealDamage(Response, Enemy, op)` + `CostFunc.Counter("This", n, '<compteur>')`, cible
-#    `message.who_took_damage`) ; question de portee Q-T4 (carte NON terminee).
+#    `message.who_took_damage`) ; portee Q-T4 resolue le 17/10/2026 (identite + cartes jouees, lecture confirmee).
 #
 # TEXTE CONTRE CODE
 #  ⚠ « a TAIJUTSU event » : un EVENEMENT de classe Taijutsu (CardFinder card_classes=["Taijutsu"]) ; « place 1 counter

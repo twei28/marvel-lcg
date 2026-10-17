@@ -4752,7 +4752,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
   // --- TMNT Shinobi Ninjutsu (sa) : les vingt cartes Ninjutsu (17/10/2026) ---
   // sa001 Assassinate
-  'sa001': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action</b> <i>(attaque)</i> : infligez 7 dégâts à un sbire. Cette attaque gagne perçant.\n<i>« Le silence et la vitesse sont les armes que nous manions. »</i> —Splinter",
+  'sa001': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un sbire. Cette attaque gagne perçant.\n<i>« Le silence et la vitesse sont les armes que nous manions. »</i> —Splinter",
   // sa002 Shroud and Protect
   'sa002': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous défendez contre une attaque, vous gagnez +1 DEF pour cette attaque. Si vous ne subissez aucun dégât de cette attaque, camouflez et redressez votre héros.\n<i>« Il faut partir avant que quelqu'un nous voie. »</i> —Donatello",
   // sa003 Reconnaissance
