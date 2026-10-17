@@ -115690,7 +115690,225 @@
  "tmnt_shinobi_kuji_kiri": [],
  "tmnt_shinobi_ninjutsu": [],
  "tmnt_shinobi_taijutsu": [],
- "tmnt_shinobi_dual": [],
+ "tmnt_shinobi_dual": [
+  {
+   "card_id": "sc001",
+   "type": "Event",
+   "name": "Nendō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Bushido;Kuji-Kiri"
+   },
+   "traits": [
+    "ATTACK",
+    "PSIONIC"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust a [[WEAPON]] upgrade you control → deal 4 damage to an enemy. Daze that enemy.\n<i>\"Think fast!\" —Casey Jones</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc002",
+   "type": "Upgrade",
+   "name": "Shugorei",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Uses": "4,samurai",
+    "MaxPerUnit": "1",
+    "Class": "Bushido;Kuji-Kiri"
+   },
+   "traits": [
+    "OATH",
+    "SPELL"
+   ],
+   "text": "Max 1 per player.\nUses (4 samurai counters).\n<b>Action</b>: Exhaust this card and remove 2 samurai counters from it → draw 1 card.\n<i>\"What we remember, we become.\" —Leonardo</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc003",
+   "type": "Event",
+   "name": "Omawari",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Bushido;Ninjutsu"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust a [[WEAPON]] upgrade you control → cloak your hero and give them a tough status card.\n<i>\"Nothin' is gonna get past us.\" —Raphael</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc004",
+   "type": "Upgrade",
+   "name": "Kuragari",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "Class": "Bushido;Ninjutsu"
+   },
+   "traits": [
+    "OATH"
+   ],
+   "text": "Uses (3 samurai counters).\n<b>Action</b>: Exhaust this card and remove 3 samurai counters from it → cloak and ready your hero.\n<i>\"Shhhh...\" —Casey Jones</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc005",
+   "type": "Upgrade",
+   "name": "Yoi-Dachi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Uses": "3,samurai",
+    "MaxPerUnit": "1",
+    "Class": "Bushido;Taijutsu"
+   },
+   "traits": [
+    "OATH",
+    "STANCE"
+   ],
+   "text": "Max 1 per player. Uses (3 samurai counters).\n<b>Response</b>: After you take damage from an enemy attack, remove 1 samurai counter from here → daze that enemy.",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc006",
+   "type": "Event",
+   "name": "Migatte",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Bushido;Taijutsu"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, it gets +2 DEF for that attack. If you paid for this card with a Shinobi card, ready your hero.\n<i>\"Time to stray from tradition.\" —Nightwatcher</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc007",
+   "type": "Event",
+   "name": "Mizuki",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Kuji-Kiri;Ninjutsu"
+   },
+   "traits": [
+    "PSIONIC",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. If this removes the last threat on that scheme, choose:\n• Cloak a friendly character.\n• Return an event from your discard pile to your hand.",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc008",
+   "type": "Event",
+   "name": "Naito Dansā",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Kuji-Kiri;Ninjutsu"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "text": "<b>Hero Action</b>: Discard cards from the top of the encounter deck until you discard an attachment or side scheme. Reveal that card → cloak up to 2 friendly characters. Daze up to 2 enemies.\n<i>\"Watch my moves.\" —Michelangelo</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc009",
+   "type": "Event",
+   "name": "Yomi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Kuji-Kiri;Taijutsu"
+   },
+   "traits": [
+    "PSIONIC",
+    "SPELL",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Choose 1 card from the encounter discard pile and put it on top of the encounter deck → remove 2 threat from a scheme.\n<i>\"It's like hearing the hunt before it begins.\" —Donatello</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc010",
+   "type": "Upgrade",
+   "name": "Kusuri",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Kuji-Kiri;Taijutsu"
+   },
+   "traits": [
+    "ITEM",
+    "MYSTIC"
+   ],
+   "text": "Max 1 per player.\n<b>Action</b>: Exhaust this card and discard an [[ATTACK]] event from your hand → heal 2 damage from a friendly character.\n<i>\"Double, double toil and trouble...\" —Donatello</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc011",
+   "type": "Event",
+   "name": "Kenbu",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Ninjutsu;Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard a cloaked status card from your hero → deal 1 damage to up to 3 enemies. Daze each enemy damaged this way.\n<i>\"Next.\" —Alopex</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "sc012",
+   "type": "Event",
+   "name": "Hitodama",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Ninjutsu;Taijutsu"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Response</b> <i>(attack)</i>: Deal 3 damage to an enemy. If you paid for this card with a [[THWART]] event, cloak your hero.\n<i>\"Let's dance!\" —Raphael</i>",
+   "set_name": "TMNT Shinobi Dual",
+   "custom": "Inkwire"
+  }
+ ],
  "tmnt_shinobi_paths": [
   {
    "card_id": "se001",
@@ -115875,5 +116093,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "8042a42a91ca89e674b0aed182218375e8924de7c0cae17c4a4952f51d2350a4"
+ "checksum": "43bfa84e5ec31623397142a0646870d129c2877e3645020be24717e1a20b1c23"
 }
