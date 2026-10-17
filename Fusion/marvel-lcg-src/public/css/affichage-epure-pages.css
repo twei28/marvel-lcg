@@ -2120,3 +2120,8 @@ html[data-epure] .cmp-boite.sel {
   border-color: #3f86e0 !important;
   box-shadow: 0 0 0 2px rgba(63, 134, 224, 0.55) !important;
 }
+/* Partie au hasard : le repère de la carte tirée en bleu (était doré). */
+html[data-epure] .roue-repere {
+  border-color: #3f86e0;
+  border-radius: 0;
+}
