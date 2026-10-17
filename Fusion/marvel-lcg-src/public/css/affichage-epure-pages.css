@@ -1770,3 +1770,41 @@ html[data-epure] .face-a-face .fo-vs {
   transform: translateX(-50%) !important;
   filter: drop-shadow(6px 8px 0 rgba(0, 0, 0, 0.35));
 }
+
+/* La frontière bleu / marron suit l'éclair (17/10/2026) : le panneau des héros est découpé
+   le long de la ligne centrale de l'éclair, mesurée sur le PNG (u = position dans l'image,
+   y = hauteur). L'éclair mesure 52,26 % de la hauteur du cadre en largeur. */
+html[data-epure] .face-a-face .faceoff { container-type: size; }
+html[data-epure] .face-a-face .fo-side.heroes-side {
+  width: calc(50cqw + 30cqh) !important;
+  padding-right: calc(22px + 30cqh) !important;
+  clip-path: polygon(
+    0 0,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0100 * 52.26cqh) 0.0%,
+    calc(50cqw + var(--fo-pente) / 2 + 0.0070 * 52.26cqh) 3.3%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0130 * 52.26cqh) 8.3%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0770 * 52.26cqh) 20.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0470 * 52.26cqh) 21.7%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0240 * 52.26cqh) 23.3%,
+    calc(50cqw + var(--fo-pente) / 2 + 0.0250 * 52.26cqh) 25.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0030 * 52.26cqh) 28.3%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0930 * 52.26cqh) 40.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0480 * 52.26cqh) 41.7%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0390 * 52.26cqh) 43.3%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0450 * 52.26cqh) 50.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0450 * 52.26cqh) 60.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0520 * 52.26cqh) 63.3%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.1080 * 52.26cqh) 70.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0310 * 52.26cqh) 71.7%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0800 * 52.26cqh) 75.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.1000 * 52.26cqh) 76.7%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.0610 * 52.26cqh) 80.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.1700 * 52.26cqh) 90.0%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.2060 * 52.26cqh) 93.3%,
+    calc(50cqw + var(--fo-pente) / 2 + -0.2500 * 52.26cqh) 100.0%,
+    0 100%
+  ) !important;
+}
+/* Le fond marron est celui du cadre entier : la frontière en éclair laisse voir le marron
+   à gauche de la colonne du méchant. */
+html[data-epure] .face-a-face .faceoff { background: #3a2b2d !important; }
