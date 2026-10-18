@@ -137,7 +137,7 @@
   .team-b.eux .ext-tab .box {
     inset: 2px 2px 26px 2px;
     background-size: cover;
-    background-position: center top;
+    background-position: center;
     background-repeat: no-repeat;
     background-color: var(--m-champ);
     border-radius: 4px;
@@ -176,7 +176,7 @@
   }
 
   /* Les pochettes : de la place pour un nom sur trois lignes. */
-  .team-b.eux .ext-tab { aspect-ratio: 0.62; min-height: 0; }
+  .team-b.eux .ext-tab { aspect-ratio: 0.58; min-height: 0; }
   .team-b.eux .ext-tab .box { inset: 2px 2px 30px 2px; }
   .team-b.eux .ext-tab .exname {
     line-height: 1.1;

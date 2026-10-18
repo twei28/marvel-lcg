@@ -5524,11 +5524,21 @@ async function loadExtTabs() {
     },
         e.key === "defis"
             ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
-            : el("div", { class: "box", style: { backgroundImage: `url("${extensionImageUrl(e.key)}")` } }),
+            : el("div", { class: "box", style: { backgroundImage: `url("${pochetteBoite(e.key)}")` } }),
         el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
     )));
     ajusterPochettes();
     loadScnGrid();
+}
+
+/** Les boîtes dont on a une pochette recadrée au format commun (outils/pochettes-boites.py, 18/10/2026) :
+ *  l'illustration de face, sans liseré de pack ni perspective. Les autres gardent leur image d'origine. */
+const POCHETTES_RECADREES = new Set([1, 2, 4, 7, 11, 16, 21, 24, 27, 32, 39, 40, 45, 50, 55, 56, 57, 60, 119, 120, 136, 143, 178]);
+function pochetteBoite(cle) {
+    const numero = parseInt(String(cle).split(".")[0], 10);
+    return POCHETTES_RECADREES.has(numero) && /^\d+\. /.test(cle)
+        ? `/public/img/prepare/boites/${numero}.webp`
+        : extensionImageUrl(cle);
 }
 
 /** Les pochettes remplissent le panneau des boîtes (17/10/2026) : on prend le plus grand nombre
@@ -5544,7 +5554,7 @@ function ajusterPochettes() {
     const L = tabs.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const H = tabs.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     if (L <= 0 || H <= 0) return;
-    const ECART_X = 6, ECART_Y = 4, RATIO = 0.62;
+    const ECART_X = 6, ECART_Y = 4, RATIO = 0.56;
     let meilleur = 3;
     for (let c = 3; c <= 10; c++) {
         const w = (L - ECART_X * (c - 1)) / c;
