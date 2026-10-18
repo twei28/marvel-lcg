@@ -4413,7 +4413,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_aggression — Critical Wound (Upgrade)
   'ua013': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\nAugmentez de 1 la quantité de dégâts que le sbire attaché subit de chaque attaque.",
   // tmnt_aspect_aggression — Daitō (Upgrade)
-  'ua014': "Attachez cette carte à un personnage allié. Tant qu'elle est attachée à une identité, cette carte gagne Restreint.\n<b>Interruption</b> : quand le personnage attaché attaque un ennemi, inclinez Daitō → cette attaque inflige 1 dégât supplémentaire et gagne Perçant.",
+  'ua014': "Attachez cette carte à un personnage ami. Tant qu'elle est attachée à une identité, cette carte gagne Restreint.\n<b>Interruption</b> : quand le personnage attaché attaque un ennemi, inclinez Daitō → cette attaque inflige 1 dégât supplémentaire et gagne Perçant.",
   // tmnt_aspect_aggression — Flow of Battle (Upgrade) ; « Prerequisite » : question Q-UA1
   'ua019': "Prérequis ([[ARTISTE MARTIAL]]).\n1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez attaqué et vaincu exactement un ennemi, défaussez cette carte → piochez 3 cartes.\n<i>« Trouve la paix dans le chaos. »</i> —Leonardo",
   // tmnt_aspect_aggression — Guerilla Trap (Upgrade)
@@ -4421,9 +4421,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_aggression — Kitsune (Ally)
   'ua025': "<b>Réponse</b> : après que vous avez joué Kitsune depuis votre main, choisissez :\n• camouflez Kitsune ;\n• hébétez un ennemi.\n<i>« Non. C'est une autre Kitsune... »</i>",
   // tmnt_aspect_aggression — Leatherhead (Ally)
-  'ua026': "<b>Réponse</b> : après que Leatherhead a attaqué et vaincu un sbire, soignez-lui 2 dégâts.\n<i>« Nous ne sommes pas amis. Tu n'es qu'un moyen d'arriver à mes fins. »</i>",
+  'ua026': "<b>Réponse</b> : après que Leatherhead a attaqué et vaincu un sbire, soignez-le de 2 dégâts.\n<i>« Nous ne sommes pas amis. Tu n'es qu'un moyen d'arriver à mes fins. »</i>",
   // tmnt_aspect_aggression — Nerve Strike (Event)
-  'ua030': "[star] Remise 1 ([[ARTISTE MARTIAL]]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Sonnez ou désorientez cet ennemi.\n<i>« On dirait que j'ai touché un nerf. »</i> —Nobody",
+  'ua030': "[star] Réduction 1 ([[ARTISTE MARTIAL]]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Sonnez ou désorientez cet ennemi.\n<i>« On dirait que j'ai touché un nerf. »</i> —Nobody",
   // tmnt_aspect_aggression — Pete (Support) ; question Q-UA3
   'ua033': "Utilisations (3 compteurs pistolet).\n<b>Réponse</b> : après que vous avez infligé des dégâts à un ennemi, inclinez Pete et retirez-lui 1 compteur pistolet → infligez 1 dégât à cet ennemi.\n<i>« Salut, moi c'est Pete ! »</i>",
   // tmnt_aspect_aggression — Ray Fillet (Ally)
@@ -4431,7 +4431,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_aggression — Slash (Ally) ; question Q-UA2
   'ua037': "<b>Réponse forcée</b> : après que Slash est entré en jeu, subissez 3 dégâts.\n<i>« Raaaarrrrr ! »</i>",
   // tmnt_aspect_aggression — Ujigami (Ally), bandeau ✦ Shang-Chi
-  'ua040': "Ujigami entre en jeu avec 10 compteurs dague.\n<b>Action</b> : retirez 1 compteur dague d'ici → infligez 1 dégât à un ennemi. (Limite deux fois par round.)\n<i>« Je suis ta mort ! »</i>",
+  'ua040': "Ujigami entre en jeu avec 10 compteurs dague.\n<b>Action</b> : retirez 1 compteur dague d'ici → infligez 1 dégât à un ennemi. (Limite de deux fois par round.)\n<i>« Je suis ta mort ! »</i>",
   // tmnt_aspect_aggression — Yagi & Gorogoro (Ally)
   'ua041': "[star] Les attaques de Yagi & Gorogoro gagnent Perçant.\n[star] <b>Réponse forcée</b> : après que Yagi & Gorogoro ont effectué une attaque de base, choisissez soit de défausser 2 cartes de votre main, soit de retirer Yagi & Gorogoro de la partie.",
   // tmnt_aspect_aggression — Exeen (Ally), reskin de 18011 Angela (bandeau ✦ Angela)
@@ -4468,7 +4468,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_basic — Genius (Resource), reskin de 01089
   'ub016': "1 max par deck.",
   // tmnt_aspect_basic — Gofu Talisman (Upgrade), reskin de 45050 Bloodgem
-  'ub017': "Jouez cette carte uniquement si vous avez le trait [[MYSTIQUE]]. 1 max par deck.\n<b>Ressource</b> : inclinez le Talisman Gofu et subissez 2 dégâts → générez une ressource [wild].",
+  'ub017': "Jouez cette carte uniquement si vous avez le trait [[MYSTIQUE]]. 1 max par deck.\n<b>Ressource</b> : inclinez Gofu Talisman et subissez 2 dégâts → générez une ressource [wild].",
   // tmnt_aspect_basic — Herold Lilja's Lab (Support), 34022 Cerebro modifiée
   'ub018': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]].\n<b>Action d'alter ego</b> : inclinez cette carte → cherchez un allié [[DIMENSION X]], [[NINJA]] ou [[MUTANIMAL]] dans les 5 cartes du dessus de votre deck (cherchez dans l'intégralité de votre deck si vous contrôlez un personnage [[TEMPOREL]]) et ajoutez cet allié à votre main. <i>(Mélangez.)</i>",
   // tmnt_aspect_basic — Honorable Blades (Event)
@@ -4476,7 +4476,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_basic — Improvised Club (Upgrade)
   'ub020': "Attachez cette carte à un allié. 1 max par allié.\n<b>Réponse</b> : après que l'allié attaché a attaqué et blessé un sbire, défaussez Improvised Club → sonnez ce sbire.\n<i>« Tu veux entrer dans mon club ? »</i> —Casey Jones",
   // tmnt_aspect_basic — Ingenuity (Upgrade), reskin de 29027
-  'ub021': "Jouez cette carte uniquement si votre identité a le trait [[GÉNIE]]. 1 max par joueur.\n<b>Ressource</b> : inclinez Inventivité → générez une ressource [mental].",
+  'ub021': "Jouez cette carte uniquement si votre identité a le trait [[GÉNIE]]. 1 max par joueur.\n<b>Ressource</b> : inclinez Ingenuity → générez une ressource [mental].",
   // tmnt_aspect_basic — Jennika (Ally)
   'ub022': "<b>Réponse</b> : après que Jennika est entrée en jeu, placez une carte Shinobi <i>(noire)</i> de votre pile de défausse sur le dessus de votre deck.\n<i>« Je sais me débrouiller. »</i>",
   // tmnt_aspect_basic — Katsuichi (Ally)
@@ -4486,7 +4486,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_basic — Leonardo (Ally)
   'ub025': "[star] <b>Réponse</b> : après que Leonardo a utilisé un pouvoir de base, redressez un autre allié [[NINJA]] que vous contrôlez.\n<i>« Suivez-moi. »</i>",
   // tmnt_aspect_basic — Martial Arts Training (Upgrade) ; « Starting » : mot-clé laissé tel quel
-  'ub027': "Starting. <i>(Vous pouvez ajouter cette carte à votre main avant de piocher votre main de départ.)</i>\nVotre héros gagne le trait [[ARTISTE MARTIAL]].",
+  'ub027': "Départ. <i>(Vous pouvez ajouter cette carte à votre main avant de piocher votre main de départ.)</i>\nVotre héros gagne le trait [[ARTISTE MARTIAL]].",
   // tmnt_aspect_basic — Mary (Ally), reskin de 01083 Mockingbird
   'ub028': "<b>Réponse</b> : après que Mary est entrée en jeu, sonnez un ennemi.\n<i>« Tu oses douter de moi ? Laisse-moi te faire la leçon à la Tudor. »</i>",
   // tmnt_aspect_basic — Michelangelo (Ally)
@@ -4506,7 +4506,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_basic — Party Wagon (Support), 32020 The X-Jet modifiée
   'ub036': "<b>Ressource</b> : inclinez Party Wagon → générez une ressource [wild] pour un joueur dont l'identité a le trait [[NINJA]] ou [[TORTUE]].\n<i>« Il est où, le lance-pizzas ? »</i> —Michelangelo",
   // tmnt_aspect_basic — Pepperoni (Support) ; jetons « pep » laissés tels quels
-  'ub037': "Utilisations (3 jetons pep).\n<b>Réponse</b> : après que vous avez vaincu un ennemi ou retiré la dernière menace d'une manigance, inclinez Pepperoni et retirez-lui 1 jeton pep → votre taille de main augmente de +1 jusqu'à la fin de la phase.",
+  'ub037': "Utilisations (3 jetons Pep).\n<b>Réponse</b> : après que vous avez vaincu un ennemi ou retiré la dernière menace d'une manigance, inclinez Pepperoni et retirez-lui 1 jeton Pep → votre taille de main augmente de +1 jusqu'à la fin de la phase.",
   // tmnt_aspect_basic — Pizza Time (Event), 37021 Mutant Education modifiée
   'ub038': "Jouez cette carte uniquement si votre identité a le trait [[MUTANT]].\n<b>Action d'alter ego</b> : choisissez dans votre pile de défausse jusqu'à 2 cartes spécifiques à l'identité et mélangez-les dans votre deck. Si Rupert's Pizzeria est en jeu, piochez 1 carte.",
   // tmnt_aspect_basic — Press and Protect (Event)
@@ -4552,7 +4552,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // --- TMNT Justice (uj) : ajouter les cartes ujNNN ci-dessous, dans ce bloc seulement ---
   // Reskins : texte de textes-fr-complets[<officielle>], nom remplace, citation ajoutee. Nouvelles : traduction.
   'uj002': "Attachez cette carte à une manigance annexe. 1 max par manigance.\n<b>Interruption</b> : quand la manigance annexe attachée est déjouée, cherchez un allié dans votre deck ou votre pile de défausse et ajoutez-le à votre main. Mélangez votre deck.",
-  'uj004': "<b>Réponse</b> : après que Cowabunga est entré en jeu, défaussez une carte ressource de votre main → piochez 2 cartes et soignez 2 dégâts d'un personnage allié.\n<i>« Ça surfe, les gars ! »</i>",
+  'uj004': "<b>Réponse</b> : après que Cowabunga est entré en jeu, défaussez une carte ressource de votre main → piochez 2 cartes et soignez 2 dégâts d'un personnage ami.\n<i>« Ça surfe, les gars ! »</i>",
   'uj005': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\n<b>Interruption</b> : quand le sbire attaché quitte le jeu, retirez 2 menaces d'une manigance.",
   'uj006': "[star] Rampage 3. <i>(Coût additionnel pour jouer cette carte : subissez 3 dégâts et défaussez les 3 cartes du dessus de votre deck.)</i>\n<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous contrôlez un soutien [[NYC]], redressez votre héros.",
   'uj008': "[star] <b>Réponse</b> : après que Dreadmon a subi des dégâts consécutifs ([consequential]), redressez-le.\n<b>Interruption forcée</b> : quand le round se termine, défaussez Dreadmon.\n<i>« Tu me dois une fière chandelle, mon. »</i>",
@@ -4564,17 +4564,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'uj019': "Attachez cette carte à un allié [[NINJA]] ou [[MUTANIMAL]]. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\nL'allié attaché gagne +1 CTR et +2 points de vie.\n<i>« Souviens-toi de ton entraînement. »</i> —Casey Marie Jones",
   'uj020': "<b>Réponse</b> : après que Mona Lisa est entrée en jeu, choisissez un événement [[CONTRE]] dans votre pile de défausse et glissez-le ici.\n<b>Action</b> : jouez la carte glissée ici <i>(en payant son coût)</i>. Puis, défaussez Mona Lisa.",
   'uj021': "<b>Réponse</b> : après que Mondo Gecko est entré en jeu, camouflez-le.\n<i>« Salut salut les amis, laissez-moi d'abord jeter un œil. »</i>",
-  'uj022': "[star] Réduction 1 ([[Artiste martial]] ou [[espion]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> (<i>contre</i>) : après avoir joué une carte <i>(y compris celle-ci</i>), retirez 1 menace d'une manigance.",
+  'uj022': "[star] Réduction 1 ([[Artiste martial]] ou [[espion]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> <i>(contre)</i> : après avoir joué une carte <i>(y compris celle-ci)</i>, retirez 1 menace d'une manigance.",
   'uj023': "<b>Réponse</b> : après que Night-Blade est entré en jeu, cherchez une carte [[Préparation]] dans votre deck ou votre pile de défausse et ajoutez-la à votre main. Mélangez votre deck.\n<i>« Je suis la tortue qui a un plan. »</i>",
-  'uj024': "1 max par round.\n<b>Action de héros</b> : cherchez une manigance annexe dans le deck Rencontre. Révélez cette manigance annexe → piochez 3 cartes <i>(Mélangez le deck Rencontre)</i>.",
+  'uj024': "1 max par round.\n<b>Action de héros</b> : cherchez une manigance annexe dans le deck Rencontre. Révélez cette manigance annexe → piochez 3 cartes. <i>(Mélangez le deck Rencontre.)</i>",
   'uj026': "<b>Réponse</b> : après qu'un personnage que vous contrôlez a contré, placez 1 jeton Élan ici (jusqu'à un maximum de 8). Vous pouvez défausser Ram-Shell pour infliger 1 dégât à un ennemi pour chaque jeton Élan ici.",
   'uj027': "[star] <b>Réponse</b> : après que Sally Pride a attaqué ou contré, retirez 2 menaces d'une manigance.\n<i>« Je suis bien plus efficace avec mes poings qu'avec mes mots. »</i>",
-  'uj028': "Wingnut perd chaque icône [acceleration].\n[star] Si Wingnut est en jeu, Screwloose subit -1 dégât consécutif après avoir utilisé un pouvoir de base.\n<i>« Admirez-moi cette charge utile ! »</i>",
+  'uj028': "Wingnut perd chaque icône [acceleration].\n[star] Si Wingnut est en jeu, Screwloose subit 1 dégât consécutif de moins après avoir utilisé un pouvoir de base.\n<i>« Admirez-moi cette charge utile ! »</i>",
   'uj030': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si cet ennemi est vaincu par cette attaque, retirez 2 menaces d'une manigance.\n<i>« On ne peut pas arrêter ce qu'on ne voit pas. »</i> —Ronin",
   'uj033': "<b>Réponse</b> : après que Tomoe Ame a déjoué une manigance annexe ou vaincu un sbire, piochez 1 carte.\n<i>« Mon devoir est ma vie. Sans lui, je ne suis qu'une ombre. »</i>",
-  'uj034': "Attachez cette carte à un personnage allié. Tant qu'elle est attachée à une identité, cette carte gagne Restreint. Usages (3 jetons Corde).\n<b>Réponse</b> : après que le personnage attaché a utilisé un pouvoir de base, inclinez cette carte et retirez 1 jeton Corde d'ici → retirez 2 menaces d'une manigance.",
+  'uj034': "Attachez cette carte à un personnage ami. Tant qu'elle est attachée à une identité, cette carte gagne Restreint. Utilisations (3 jetons Corde).\n<b>Réponse</b> : après que le personnage attaché a utilisé un pouvoir de base, inclinez cette carte et retirez 1 jeton Corde d'ici → retirez 2 menaces d'une manigance.",
   'uj036': "<b>Réponse</b> : après que Venus est entrée en jeu, choisissez un joueur. Ce joueur cherche une manigance annexe Joueur dans son deck et une pile de défausse et l'ajoute à sa main.\n<i>« Je façonne mon propre destin. »</i>",
-  'uj037': "Réduisez de 1 le coût pour jouer cette carte si vous contrôlez un soutien [[NYC]].\n<b>Réponse de héros</b> : après qu'un sbire s'est engagé avec vous, défaussez Watch the Exits → retirez 2 menaces d'une manigance et redressez votre héros.",
+  'uj037': "Réduisez de 1 le coût pour jouer cette carte si vous contrôlez un soutien [[NYC]].\n<b>Réponse de héros</b> : après qu'un sbire vous a engagé, défaussez Watch the Exits → retirez 2 menaces d'une manigance et redressez votre héros.",
   'uj038': "<b>Action</b> : inclinez Wingnut et dépensez les ressources suivantes [energy][energy] → trouvez Screwloose et mettez-le en jeu.\n[acceleration]",
   'uj039': "<b>Réponse</b> : après avoir joué Zebulon de votre main, placez 1 jeton Brûlure sur lui pour chaque carte dans votre main (jusqu'à un maximum de 4).\n<b>Action</b> : retirez 1 jeton Brûlure de Zebulon → retirez 1 menace d'une manigance.",
 
@@ -4598,14 +4598,14 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ul023': "[star] Rampage 3. <i>(Coût additionnel pour jouer cette carte : subissez 3 dégâts et défaussez les 3 cartes du dessus de votre deck.)</i>\n<b>Réponse de héros</b> : après qu'un allié a été vaincu, cherchez un allié dans votre deck et mettez-le en jeu, incliné. <i>(Mélangez.)</i>",
   'ul024': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\n<b>Interruption</b> : quand le sbire attaché quitte le jeu, piochez 1 carte.\n<i>« De nouveaux jouets à mâcher ?!? »</i> —Tokka",
   'ul025': "<b>Réponse</b> : après que Shugun est entré en jeu, défaussez un allié de votre main → donnez une carte d'état Tenace à un allié.\n<i>« Suivez-moi, si vous voulez vivre. »</i>",
-  'ul027': "Attachez cette carte à un allié spécifique à l'identité que vous contrôlez. 1 max par deck.\nL'allié attaché gagne +2 points de vie et devient votre \"acolyte\".\n<b>Réponse</b> : après que vous avez effectué une récupération de base, soignez 2 dégâts de l'allié attaché.",
+  'ul027': "Attachez cette carte à un allié spécifique à l'identité que vous contrôlez. 1 max par deck.\nL'allié attaché gagne +2 points de vie et est votre « acolyte ».\n<b>Réponse</b> : après que vous avez effectué une récupération de base, soignez 2 dégâts de l'allié attaché.",
   'ul028': "Attachez cette carte à un allié [[NINJA]] ou [[MUTANIMAL]]. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\nL'allié attaché gagne +1 CTR, +1 ATQ et +1 point de vie.\n<i>« Qui a dit que tout cet entraînement ne servirait à rien ? »</i> —Michelangelo",
   'ul029': "<b>Réponse</b> : après que Splinter est entré en jeu, regardez les 5 cartes du dessus de votre deck. Ajoutez-en 1 à votre main et placez les autres sous votre deck dans l'ordre de votre choix.\n<i>« Tu dois choisir ton propre chemin, mon fils. »</i>",
   'ul030': "Réduisez de 1 le coût pour jouer cette carte si vous contrôlez un soutien [[NYC]].\n<b>Action de héros</b> : défaussez Street Vendor → soignez un total de 3 dégâts répartis parmi les personnages que vous contrôlez.\n<i>« Les meilleurs chili cheese dogs de la ville ! »</i> —Alopex",
   'ul031': "<b>Action d'alter ego</b> : cherchez dans votre deck et votre pile de défausse un allié et une amélioration pouvant être attachée à un allié. Ajoutez-les à votre main. <i>(Mélangez.)</i>\n<i>« Il est temps de s'y remettre. »</i> —Odin",
   'ul034': "<b>Interruption de héros</b> : quand vous utilisez votre pouvoir de contre de base <i>(CTR)</i> ou votre pouvoir d'attaque de base <i>(ATQ)</i>, inclinez un allié que vous contrôlez → ajoutez le pouvoir correspondant de cet allié à celui de votre héros pour cette utilisation.\n<i>« Relais des Tortues ! »</i> —Michelangelo",
   'ul035': "Jouez cette carte uniquement si votre identité a le trait [[TURTLE]].\n<b>Action de héros</b> : cherchez un allié [[TURTLE]] parmi les 5 cartes du dessus de votre deck et mettez-le en jeu. Si cet allié est toujours en jeu à la fin de la phase, ajoutez-le à votre main.",
-  'ul036': "[star] <b>Réponse</b> : après que Turtle Titan a contré une manigance, soignez-lui 2 dégâts.\n<i>« Tremblez, criminels ! Turtle Titan est là ! »</i>",
+  'ul036': "[star] <b>Réponse</b> : après que Turtle Titan a contré une manigance, soignez-le de 2 dégâts.\n<i>« Tremblez, criminels ! Turtle Titan est là ! »</i>",
   'ul037': "Ténacité.\n[star] Turtle-At-Arms gagne +2 ATQ et +2 CTR tant qu'il a une carte d'état Tenace.\n<i>« Allez, guerriers. Nous devons aider à sauver ce pays. »</i>",
   'ul039': "Vous pouvez jouer la carte attachée à Venus comme si elle était dans votre main.\n<b>Réponse</b> : après que Venus est entrée en jeu, choisissez dans votre pile de défausse une carte qui partage un [[TRAIT]] avec Venus et attachez-la-lui, face cachée.",
   'ul040': "Victoire 0.\n<b>Une fois déjouée</b> : mélangez les alliés [[WEASEL]] mis de côté dans le deck Rencontre.\n<i>« Cette caisse est apparue devant notre porte. Qu'est-ce que vous voulez qu'on en fasse ? »</i> —Rocksteady",
