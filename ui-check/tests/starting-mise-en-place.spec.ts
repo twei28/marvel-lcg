@@ -29,6 +29,15 @@ async function lancerStormAvecReflexes(request: APIRequestContext, seed: number)
   })))
 }
 
+/** Les cartes de la mise en place (manigance principale…) passent devant la table : on les fait défiler. */
+async function passerLaMiseEnPlace(page: Page) {
+  const continuer = page.locator('.mep-couche .mep-continuer').first()
+  for (let i = 0; i < 30 && (await page.locator('.mep-couche').count()) > 0; i++) {
+    if (await continuer.isVisible().catch(() => false)) await continuer.click({ timeout: 1500, force: true }).catch(() => {})
+    await page.waitForTimeout(400)
+  }
+}
+
 const ask = async (request: APIRequestContext) => (await (await request.get('/get_ask?p=0')).text()).trim()
 // Le moteur nomme l'option avec des soulignés : « Add_this_card_to_your_starting_hand ».
 const estLaQuestion = (brut: string) => /starting[_ ]hand/.test(brut)
@@ -66,6 +75,7 @@ for (const langue of ['fr', 'en'] as const) {
         // Les questions de mise en place d'avant (météo de Storm...) sont servies par le pilote.
         let trouve = false
         for (let i = 0; i < 60 && !trouve; i++) {
+          await passerLaMiseEnPlace(page)
           const brut = await ask(request)
           if (estLaQuestion(brut)) { trouve = true; break }
           if (brut) await repondre(request, 0)
@@ -73,6 +83,7 @@ for (const langue of ['fr', 'en'] as const) {
         }
         expect(trouve, 'le moteur pose la question Starting').toBe(true)
 
+        await passerLaMiseEnPlace(page)
         const bouton = page.getByRole('button', { name: LIBELLE[langue] })
         await expect(bouton).toBeVisible({ timeout: 20_000 })
         await capture(page, `${langue}-${ecran}-1-question`)

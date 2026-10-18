@@ -30,6 +30,8 @@ async function etapeMechant(page: Page, langue: 'fr' | 'en', affichage: 'normal'
 
 async function choisirBoite(page: Page, cle: string) {
   await page.locator(`#ext-tabs .ext-tab[title="${cle}"]`).click();
+  // La souris reste sur la pochette : son agrandissement au survol couvrirait la grille des scénarios (1030 px).
+  await page.mouse.move(1, 1);
   await expect(page.locator('#scn-grid .tb-port').first()).toBeVisible({ timeout: 30_000 });
   await page.waitForTimeout(600);
 }
@@ -87,8 +89,8 @@ for (const ecran of ECRANS) {
         // de son contenu, il n'y a pas de vide à remplir.
         if (ecran.width >= 1100) expect.soft(grille.largeur).toBeGreaterThan(148 * 1.2);
         // Mise en page à trois colonnes (16/10/2026) : les vignettes de méchants sont plus grandes que
-        // l'ancien plafond de 2 x 148 px ; elles ne défilent toujours pas pour 3 méchants.
-        expect.soft(grille.largeur).toBeLessThanOrEqual(400);
+        // l'ancien plafond de 2 x 148 px (406 px à 1920, 18/10/2026) ; elles ne défilent toujours pas pour 3 méchants.
+        expect.soft(grille.largeur).toBeLessThanOrEqual(440);
         expect.soft(grille.defile).toBe(false);
         expect.soft(grille.menaceVisible).toBe(true);
         // L'en-tête dit le méchant choisi, plus « Méchant inconnu ».

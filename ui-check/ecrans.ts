@@ -31,84 +31,14 @@ export type Ecran = {
   preuves?: string[];
 };
 
+// Les pages de l'ancien client (/main, /scene, /cards, /deck) sont retirees (18/10/2026, elles renvoient a l'accueil) :
+// leurs captures ne sont plus faites.
 export const ECRANS: Ecran[] = [
-  {
-    cle: 'menu',
-    titre: 'Menu principal',
-    url: '/main.html',
-    marqueur: '.menu',
-  },
-  {
-    cle: 'preparation',
-    titre: 'Preparation (ancienne)',
-    url: '/scene.html',
-    // La barre d'etapes du wizard : c'est le seul repere visible au chargement.
-    // Les panneaux d'etapes (#mode, #rules...) sont masques tant qu'on n'y est pas.
-    marqueur: '#w-stepper',
-    // Le numero de "seed" est tire au hasard a chaque ouverture de la page.
-    // Il est aujourd'hui dans une etape masquee, mais on garde le masque en
-    // filet : il redeviendra utile si l'etape s'ouvre par defaut un jour.
-    masques: ['#seed_div'],
-  },
-  // Les 3 entrees suivantes existent parce que scene.html n'affiche QU'UN SEUL
-  // de ses 4 panneaux au chargement (l'entree 'preparation' ci-dessus couvre le
-  // panneau 0, Scenario). Or la majorite des declarations !important de
-  // css/menu/wizard.css agit sur les panneaux 1, 2 et 3 : environ 45 sur 105.
-  // Sans ces photos, la purge de ces !important se ferait a l'aveugle et un
-  // "npm run captures" vert apres la purge ne prouverait rien.
-  {
-    cle: 'preparation-rencontre',
-    titre: 'Preparation ancienne - etape 2 Rencontre',
-    url: '/scene.html',
-    marqueur: '#w-stepper',
-    masques: ['#seed_div'],
-    etape: 1,
-    // Les sets modulaires sont replies au chargement : le conteneur porte la
-    // classe 'hide-not-click', qui masque tout set non selectionne. Sans ce
-    // clic, la photo ne montrerait AUCUN set modulaire, alors que la moitie des
-    // !important de ce panneau visent "#modular-sets button" et
-    // "#modular-sets img". On vise le bouton par son comportement (son onclick)
-    // et non par son libelle, qui pourrait etre traduit.
-    depliages: ['button[onclick*="hide-not-click"]'],
-    preuves: ['#encounter-sets button', '#modular-sets button'],
-  },
-  {
-    cle: 'preparation-heros',
-    titre: 'Preparation ancienne - etape 3 Heros',
-    url: '/scene.html',
-    marqueur: '#w-stepper',
-    masques: ['#seed_div'],
-    etape: 2,
-    preuves: ['.w-step-panel[data-panel="2"] legend'],
-  },
-  {
-    cle: 'preparation-lancement',
-    titre: 'Preparation ancienne - etape 4 Lancement',
-    url: '/scene.html',
-    marqueur: '#w-stepper',
-    // Le champ "seed" est DANS ce panneau : sans le masque, chaque photo
-    // differerait de la precedente.
-    masques: ['#seed_div'],
-    etape: 3,
-    preuves: ['#play-buttons', '#game-start'],
-  },
   {
     cle: 'preparation-nouvelle',
     titre: 'Preparation (nouvelle)',
     url: '/prepare.html',
     marqueur: '#app',
-  },
-  {
-    cle: 'cartes',
-    titre: 'Galerie de cartes',
-    url: '/cards.html',
-    marqueur: '#found_cards',
-  },
-  {
-    cle: 'decks',
-    titre: 'Gestion de decks',
-    url: '/deck.html',
-    marqueur: '#deck_editor',
   },
   {
     cle: 'replay',
