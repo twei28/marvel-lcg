@@ -182,6 +182,8 @@ export type ChoixSurTable = {
   nom: string
   /** La carte qui porte ce choix : elle s'allume et se clique. Sans carte, le choix va dans la ligne du haut. */
   carteId?: number
+  /** Une amélioration dans une pile se choisit aussi par son nom, sans viser une tranche. */
+  enLigne?: boolean
   indisponible?: string
   choisir: () => void
   survoler?: (actif: boolean) => void
@@ -216,8 +218,8 @@ export function QuestionSurTable({
   // en a plusieurs, rien ne se choisit au clavier : on clique la carte voulue.
   const possibles = choix.filter((c) => !c.indisponible)
   const uniqueId = possibles.length + (refus ? 1 : 0) === 1 ? (refus ? 'refus' : possibles[0]!.id) : undefined
-  const surCarte = choix.filter((c) => c.carteId !== undefined && !absentes.has(c.id))
-  const enLigne = choix.filter((c) => c.carteId === undefined || absentes.has(c.id))
+  const surCarte = choix.filter((c) => !c.enLigne && c.carteId !== undefined && !absentes.has(c.id))
+  const enLigne = choix.filter((c) => c.enLigne || c.carteId === undefined || absentes.has(c.id))
   return (
     <>
       <div className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
@@ -230,6 +232,10 @@ export function QuestionSurTable({
             disabled={!!c.indisponible}
             title={c.indisponible}
             onClick={c.choisir}
+            onMouseEnter={() => c.survoler?.(true)}
+            onMouseLeave={() => c.survoler?.(false)}
+            onFocus={() => c.survoler?.(true)}
+            onBlur={() => c.survoler?.(false)}
             data-choix-unique={uniqueId === c.id ? '' : undefined}
           >
             {c.nom}
@@ -252,7 +258,7 @@ export function QuestionSurTable({
       </div>
       {/* Les cartes pas encore mesurées : on les surveille pour pouvoir les rabattre en ligne. */}
       {choix
-        .filter((c) => c.carteId !== undefined && absentes.has(c.id))
+        .filter((c) => !c.enLigne && c.carteId !== undefined && absentes.has(c.id))
         .map((c) => (
           <VeilleCarte key={`veille-${c.id}`} choix={c} signaler={signaler} />
         ))}

@@ -37,7 +37,7 @@ type Props = {
 export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, actif, controle, surPhase }: Props) {
   const cartes: CarteLue[] = []
   if (actif && etape) {
-    for (const c of sceneDe(etape).cartes) {
+    for (const c of sceneDe(etape, true).cartes) {
       if (c.role !== 'boost' && c.role !== 'revelee') continue
       if (c.role === 'boost' && cartes.filter((p) => p.boost).length >= boostsMontres) continue
       const props = carteScene?.(c.id, true)
@@ -48,10 +48,12 @@ export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, acti
   const identite = cartes.map((c) => `${c.boost ? 'boost' : 'carte'}:${c.id}`).join(',')
   const apport = etape?.boosts.slice(0, boostsMontres).reduce((s, b) => s + (b.apport ?? 0), 0) ?? 0
   const rienALire = cartes.length === 0
+  const boostsEnAttente = Boolean(etape && boostsMontres < etape.boosts.length &&
+    etape.boosts.some((b) => carteScene?.(b.cibleId, true)))
   useEffect(() => {
-    if (actif && rienALire) surPhase?.('aucune')
+    if (actif && rienALire && !boostsEnAttente) surPhase?.('aucune')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actif, rienALire, etape?.cle])
+  }, [actif, rienALire, boostsEnAttente, etape?.cle])
   return <LectureRencontre key={identite} cartes={cartes} apport={apport} auteurId={etape?.carteId} controle={controle} surPhase={surPhase} />
 }
 
@@ -90,8 +92,7 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
   const changer = (p: typeof phase) => { etat.current = p; setPhase(p) }
   useEffect(() => {
     if (cartes.length > 0) surPhase?.(phase)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, cartes.length])
+  }, [phase, cartes.length, surPhase])
   const elements = () => Array.from(couche.current?.querySelectorAll<HTMLElement>('.rencontre-sortie') ?? [])
 
   // Les transformations portent sur une boîte aux dimensions de LECTURE,
@@ -147,9 +148,6 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
       for (const a of vols.current) a.cancel()
       vols.current = []
       changer('lecture')
-      const suite = suiteEnAttente.current
-      suiteEnAttente.current = undefined
-      if (suite) commande.current?.valider(suite)
     }).catch(() => { /* Annulation : une autre phase ou une autre partie a pris la main. */ })
     // Seule l'arrivée des ancres déclenche l'entrée, jamais un enrichissement de l'étape.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -159,7 +157,7 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
     valider: (suite) => {
       if (!ancres || !cartes.length || etat.current === 'termine') return false
       if (etat.current === 'entree') {
-        suiteEnAttente.current ??= suite
+        // Un clic trop tôt ne doit jamais supprimer la lecture au centre.
         return true
       }
       if (etat.current !== 'lecture') return true

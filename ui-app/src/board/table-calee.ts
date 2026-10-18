@@ -19,7 +19,40 @@
 //  - hors phase du mechant, ou sans instantane pour l'etape (le bilan) : le
 //    monde reel, comme avant.
 import type { EtapeDeroule } from './deroule-phase'
-import type { World } from './world'
+import type { World, WorldCard } from './world'
+
+/** Une question future attend la lecture et la validation du résultat courant. */
+export function questionDuRecit(demandee: boolean, etape: EtapeDeroule | undefined, validee: boolean, surTable: boolean, lectureBoosts = false): boolean {
+  return demandee && !(surTable && (lectureBoosts || (etape?.etat === 'resolu' && !validee)))
+}
+
+/** Les mains restent à jour pendant les décisions, les rencontres gardent la face du récit. */
+export function avecFacesRencontreDuRecit(monde: World, recit: World, cacherBoosts = false): World {
+  const faces = new Map<number, Pick<WorldCard, 'is_face_up' | 'visible_for_players'>>()
+  for (const carte of [...(recit.encounter_deck ?? []), ...(recit.encounter_discard_pile ?? []),
+    ...(recit.area_boost ?? []), ...(recit.players ?? []).flatMap((p) => p.dealt_encounter_cards ?? [])]) {
+    faces.set(carte.id, { is_face_up: carte.is_face_up, visible_for_players: carte.visible_for_players })
+  }
+  if (cacherBoosts) for (const carte of recit.area_boost ?? []) faces.set(carte.id, { is_face_up: false, visible_for_players: [] })
+  const parcourir = (valeur: unknown): unknown => {
+    if (Array.isArray(valeur)) {
+      const suite = valeur.map(parcourir)
+      return suite.some((e, i) => e !== valeur[i]) ? suite : valeur
+    }
+    if (!valeur || typeof valeur !== 'object') return valeur
+    const objet = valeur as Record<string, unknown>
+    const face = typeof objet.id === 'number' && 'is_face_up' in objet ? faces.get(objet.id) : undefined
+    let copie: Record<string, unknown> | undefined
+    if (face && (objet.is_face_up !== face.is_face_up || JSON.stringify(objet.visible_for_players) !== JSON.stringify(face.visible_for_players))) copie = { ...objet, ...face }
+    for (const [cle, contenu] of Object.entries(objet)) {
+      if (cle === 'visible_for_players' || cle === 'is_face_up') continue
+      const suite = parcourir(contenu)
+      if (suite !== contenu) { copie ??= { ...objet }; copie[cle] = suite }
+    }
+    return copie ?? valeur
+  }
+  return parcourir(monde) as World
+}
 
 /** Temps des etapes qui font ENTRER une carte en jeu, et de rien d'autre. */
 const TITRES_QUI_FONT_ENTRER = new Set(['entree', 'revelation'])

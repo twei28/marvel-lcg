@@ -16,7 +16,7 @@ async function questionOuPreparation(page: Page, finTour = false) {
     const main = page.getByRole('button', { name: /, (Ressource|Événement|Amélioration|Soutien|Allié)$/, pressed: false }).first()
     if (await main.count()) { await main.click(); return }
   }
-  const valider = page.locator('.plateau-selecteur-valider:not([disabled])').first()
+  const valider = page.locator('.plateau-selecteur-valider:not([disabled]), .tsm-bandeau .tsm-bouton:not([disabled])').filter({ hasText: /^Valider/ }).first()
   if (await valider.isVisible().catch(() => false)) { await valider.click(); return }
   const carte = page.locator('.plateau-selecteur.est-fenetre .plateau-selecteur-carte:not(.est-choisie)').first()
   if (await carte.isVisible().catch(() => false)) { await carte.click(); return }
@@ -32,10 +32,10 @@ async function questionOuPreparation(page: Page, finTour = false) {
   if (await premier.count()) await premier.click()
 }
 
-for (const scenario of ['rhino', 'klaw']) test(`lecture, arrivée et explication coordonnées — ${scenario}`, async ({ page }, info) => {
+for (const scenario of ['rhino', 'klaw', 'klaw-ameliorations']) test(`lecture, arrivée et explication coordonnées — ${scenario}`, async ({ page }, info) => {
   test.setTimeout(240_000)
   const req = page.request
-  const s = await (await req.get(`/get_scenario_json?${scenario}`)).json()
+  const s = await (await req.get(`/get_scenario_json?${scenario.replace('-ameliorations', '')}`)).json()
   const charge = {
     campaign_json: JSON.stringify(s), campaign_log: {}, challenges: s.challenges ?? [],
     encounter_set_names: [...new Set([...(s.encounter_sets ?? []), ...(s.modular_sets ?? [])])],
@@ -52,6 +52,22 @@ for (const scenario of ['rhino', 'klaw']) test(`lecture, arrivée et explication
     localStorage.setItem('marvel-board-mode-phase-mechant', 'sur-table')
     localStorage.setItem('mc_aide_bulle_table', 'vue')
   })
+  await page.addInitScript(() => {
+    const changements: Array<{ id: string; dos: boolean; phrase: string }> = []
+    ;(window as unknown as { facesAudit: typeof changements }).facesAudit = changements
+    const precedents = new Map<string, boolean>()
+    setInterval(() => {
+      for (const el of document.querySelectorAll<HTMLElement>('.plateau-cadre .scan-card[data-card-id]')) {
+        if (el.closest('.rencontre-sur-table, .carte-apercu, .deroule-phase') || getComputedStyle(el).visibility === 'hidden') continue
+        const id = el.dataset.cardId!
+        const dos = el.classList.contains('is-facedown')
+        if (precedents.get(id) !== dos) {
+          changements.push({ id, dos, phrase: document.querySelector('.tsm-phrase')?.textContent ?? '' })
+          precedents.set(id, dos)
+        }
+      }
+    }, 40)
+  })
   await page.goto('/app/board.html?phase=sur-table')
   const monde = async () => (await (await req.get('/get_world?hot_seat&p=0')).json())
   // Fin du tour est présent dès l'initialisation : attendre la vraie phase joueur.
@@ -64,16 +80,28 @@ for (const scenario of ['rhino', 'klaw']) test(`lecture, arrivée et explication
     await questionOuPreparation(page)
     await page.waitForTimeout(150)
   }
-  if (scenario === 'klaw') {
+  if (scenario.startsWith('klaw')) {
     const r = await req.post('/sandbox_command?p=0', { data: { commands: ["Puzzle.ChangeForm('01001b')"] } })
     expect(r.ok()).toBe(true)
     await expect.poll(async () => (await monde()).players[0].area_hero[0].name).toBe('Spider-Man')
     await expect(page.locator('.zone-terrain-soutien .scan-card.kind-hero, .scan-card.kind-hero').first()).toBeVisible()
   }
+  if (scenario === 'klaw-ameliorations') {
+    const r = await req.post('/sandbox_command?p=0', { data: { commands: [
+      "Puzzle.PutIntoPlay('01008', under_control=True)",
+      "Puzzle.PutIntoPlay('05017', under_control=True)",
+      "Puzzle.PutIntoPlay('01079', under_control=True)",
+    ] } })
+    expect(r.ok()).toBe(true)
+    await expect(page.locator('.scan-card.kind-upgrade')).toHaveCount(3)
+  }
   const fin = page.getByRole('button', { name: /Fin du tour/ }).first()
   await expect(fin).toBeEnabled()
   await fin.click()
   console.log(`Phase du méchant : ${scenario}`)
+  const boostsLus = new Set<string>()
+  let barriereJouee = false
+  let entreeTestee = false
   let lectures = 0
   let deuxBoosts = false
   let termine = false
@@ -82,6 +110,20 @@ for (const scenario of ['rhino', 'klaw']) test(`lecture, arrivée et explication
     const etat = await monde()
     phaseCommencee ||= ['Main Scheme Place Threat', 'Enemy Activation', 'Deal Encounter Cards', 'Reveal Encounter Cards'].includes(etat.phase)
     if (i % 30 === 0) console.log(`Étape ${scenario} : ${(await monde()).phase} — ${(await page.locator('.tsm-bandeau').allTextContents()).join(' ')}`)
+    if (scenario === 'klaw-ameliorations' && !barriereJouee) {
+      const barriere = page.locator('.tsm-bandeau.est-question .tsm-bouton').filter({ hasText: /Barrière énergétique/i }).first()
+      if (await barriere.count()) {
+        expect(boostsLus.size, 'les boosts ont été lus avant de choisir la prévention de dégâts').toBeGreaterThan(0)
+        await expect(barriere).toBeEnabled()
+        await expect(page.locator('.tsm-utilisable[aria-label*="Barrière énergétique"]')).toHaveCount(0)
+        await barriere.hover()
+        await expect(page.locator('.carte-apercu')).toBeVisible()
+        await page.screenshot({ path: info.outputPath('amelioration-selection.png') })
+        await barriere.click()
+        barriereJouee = true
+        continue
+      }
+    }
     const couche = page.locator('.rencontre-sur-table[data-lecture="lecture"]')
     if (await couche.count()) {
       lectures++
@@ -90,6 +132,15 @@ for (const scenario of ['rhino', 'klaw']) test(`lecture, arrivée et explication
       await expect(bandeau).toBeVisible()
       for (const jeton of await page.locator('.jeton-coup').all()) await expect(jeton).toBeHidden()
       const phrase = (await bandeau.textContent()) ?? ''
+      const boosts = couche.locator('.est-boost')
+      const avecBoosts = await boosts.count() > 0
+      const pv = page.locator('.scan-card.kind-hero .jauge-texte, .scan-card.kind-alter-ego .jauge-texte').first()
+      const pvAvant = await pv.count() ? await pv.textContent() : null
+      await expect(page.locator('.delta-sur-table')).toHaveCount(0)
+      if (avecBoosts) {
+        await expect(page.locator('.tsm-nombre')).toHaveCount(0)
+        for (const id of await boosts.locator('[data-card-id]').evaluateAll((els) => els.map((e) => e.getAttribute('data-card-id')!))) boostsLus.add(id)
+      }
       const cartes = couche.locator('.rencontre-sortie')
       const n = await cartes.count()
       deuxBoosts ||= n === 2 && await couche.locator('.est-boost').count() === 2
@@ -117,23 +168,48 @@ for (const scenario of ['rhino', 'klaw']) test(`lecture, arrivée et explication
       await page.keyboard.press('Space')
       await expect(bandeau).toHaveText(phrase)
       await page.waitForTimeout(1900)
+      if (avecBoosts) {
+        await expect(page.locator('.rencontre-sur-table')).toHaveCount(0)
+        if (pvAvant !== null) await expect(pv).toHaveText(pvAvant)
+        await page.screenshot({ path: info.outputPath(`resultat-${lectures}.png`) })
+      }
       continue
     }
     const bilan = page.locator('.tsm-bandeau.est-bilan .tsm-bouton')
     if (await bilan.count()) { await bilan.click(); termine = true; break }
+    if (!entreeTestee && await page.locator('.rencontre-sur-table[data-lecture="entree"]').count()) {
+      entreeTestee = true
+      await page.keyboard.press('Space')
+      await expect(page.locator('.rencontre-sur-table')).toHaveAttribute('data-lecture', 'lecture', { timeout: 4000 })
+      await page.waitForTimeout(300)
+      await expect(page.locator('.rencontre-sur-table')).toHaveAttribute('data-lecture', 'lecture')
+      continue
+    }
     if (await page.locator('.rencontre-sur-table[data-lecture="entree"], .rencontre-sur-table[data-lecture="depart"]').count()) {
       await page.waitForTimeout(150)
       continue
     }
     const action = page.locator('.tsm-acteur:not([disabled]), .tsm-bandeau:not(.est-bilan):not(.est-question) .tsm-bouton').first()
     if (await action.count() && !await page.locator('.tsm-bandeau.est-question').count()) {
-      // Le halo suit une carte encore en mouvement ; le clavier ne dépend
-      // pas de sa stabilité géométrique. Une question peut remplacer l'étape.
-      await action.press('Space', { timeout: 1500 }).catch((e) => { if (page.isClosed()) throw e })
+      // La trame peut changer entre deux requêtes Playwright. Vérifier et
+      // cliquer dans le même passage évite qu'une touche préparée pour
+      // l'étape précédente ne ferme le bilan qui vient d'apparaître.
+      await page.evaluate(() => {
+        if (document.querySelector('.tsm-bandeau.est-question, .tsm-bandeau.est-bilan, .rencontre-sur-table')) return
+        document.querySelector<HTMLButtonElement>('.tsm-acteur:not([disabled]), .tsm-bandeau:not(.est-bilan):not(.est-question) .tsm-bouton')?.click()
+      })
     } else await questionOuPreparation(page, !phaseCommencee)
     await page.waitForTimeout(150)
   }
+  const faces = await page.evaluate(() => (window as unknown as { facesAudit: Array<{ id: string; dos: boolean; phrase: string }> }).facesAudit)
+  await info.attach('faces-rencontres', { body: JSON.stringify(faces, null, 2), contentType: 'application/json' })
+  for (const id of boostsLus) {
+    const etats = faces.filter((e) => e.id === id)
+    const visible = etats.findIndex((e) => !e.dos)
+    if (visible >= 0) expect(etats.slice(visible).every((e) => !e.dos), `le boost ${id} ne se recache pas après avoir été montré`).toBe(true)
+  }
   expect(termine, 'la phase entière doit arriver au bilan').toBe(true)
   expect(lectures).toBeGreaterThan(0)
-  if (scenario === 'klaw') expect(deuxBoosts, 'attaque de Klaw avec deux boosts effectivement observée').toBe(true)
+  if (scenario === 'klaw-ameliorations') expect(barriereJouee, 'amélioration choisie par son bouton nommé').toBe(true)
+  if (scenario.startsWith('klaw')) expect(deuxBoosts, 'attaque de Klaw avec deux boosts effectivement observée').toBe(true)
 })

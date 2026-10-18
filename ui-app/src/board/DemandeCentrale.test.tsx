@@ -460,3 +460,31 @@ describe('DemandeCentrale — la croix annule l’action en cours', () => {
     expect(screen.queryByRole('button', { name: 'Annuler l’action' })).toBeNull()
   })
 })
+
+
+describe('améliorations superposées pendant une décision sur table', () => {
+  it('propose chaque amélioration par son nom, avec aperçu, sans bouton superposé sur la pile', () => {
+    const choisir = vi.fn()
+    const survoler = vi.fn()
+    const options = [option(), { ...option(), id: 8, bind_id: 13 }]
+    const sources = new Map<number, WorldCard>([
+      [12, { id: 12, name: 'Energy Barrier', card_type: 'Upgrade' } as WorldCard],
+      [13, { id: 13, name: 'Forcefield Generator', card_type: 'Upgrade' } as WorldCard],
+    ])
+    rendre({ demande: { ...demande(), options }, options, cartesParId: sources,
+      surLaTable: true, choisirOption: choisir, survolerOption: survoler,
+      carteDeLOption: (o) => ({ ...scan, id: String(o.bind_id), kind: 'upgrade', name: sources.get(o.bind_id)!.name }),
+      nomPorteur: (id) => id === 12 ? 'Barrière d’Énergie' : 'Générateur de Champ de Force',
+    })
+    const barriere = screen.getByRole('button', { name: /Barrière d’Énergie/ })
+    const generateur = screen.getByRole('button', { name: /Générateur de Champ de Force/ })
+    expect(document.querySelector('.tsm-utilisable')).toBeNull()
+    fireEvent.mouseEnter(barriere)
+    expect(survoler).toHaveBeenLastCalledWith(options[0])
+    expect(document.querySelector('.carte-apercu')).not.toBeNull()
+    fireEvent.mouseLeave(barriere)
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+    fireEvent.click(generateur)
+    expect(choisir).toHaveBeenCalledWith(options[1])
+  })
+})

@@ -17,7 +17,9 @@
 // attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
 import {
+  useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -25,6 +27,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react'
+import { questionDuRecit } from './table-calee'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
 import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
@@ -604,6 +607,7 @@ export function DeroulePhase({
     temps?: EtapeDeroule['temps']
     titre?: EtapeDeroule['titre']
     cibleId?: number
+    boosts?: string
   }>()
   // LA RELECTURE d'un onglet passe (decision du 03/10/2026) : lecture seule,
   // « Revenir à l'étape en cours ». `cle` designe le coup dont on lit le
@@ -970,11 +974,22 @@ export function DeroulePhase({
     etape !== undefined &&
     validee !== undefined &&
     (validee.cle === etape.cle || memeEtapeRecle) &&
-    validee.etat === etape.etat
+    validee.etat === etape.etat &&
+    (!surTable || validee.boosts === etape.boosts.map((b) => b.cibleId).join(','))
   // Le moteur peut déjà demander la défense du sbire suivant alors que le
   // résultat de l'attaque précédente vient seulement d'arriver. On finit
   // d'abord sa lecture : une question future ne doit pas effacer ses boosts.
-  const questionAuJoueur = questionDemandee && !(surTable && etape?.etat === 'resolu' && !etapeValidee)
+  const [lectureCartes, setLectureCartes] = useState<{ cle: string; phase: PhaseLecture } | undefined>()
+  const cleLecture = etape ? `${identitePartie}|${cleDeLaPhase}|${etape.cle}|${sceneDe(etape, true).cartes.flatMap((c) => c.role === 'boost' || c.role === 'revelee' ? [c.id] : []).join(',')}` : undefined
+  const signalerPhaseLecture = useCallback((phase: PhaseLecture) => {
+    if (cleLecture !== undefined) setLectureCartes((avant) => avant?.cle === cleLecture && avant.phase === phase ? avant : { cle: cleLecture, phase })
+  }, [cleLecture])
+  const phaseDesCartes = lectureCartes && lectureCartes.cle === cleLecture ? lectureCartes.phase : undefined
+  const activationAvecBoosts = Boolean(etape && (etape.titre === 'attaque' || etape.titre === 'manigance') && etape.boosts.length)
+  const cartesALire = Boolean(surTable && etape && document.querySelector('.plateau-cadre') &&
+    sceneDe(etape, true).cartes.some((c) => (c.role === 'boost' || c.role === 'revelee') && carteScene?.(c.id, true)))
+  const lectureEnCours = cartesALire && !etapeValidee && !termine && !relecture && phaseDesCartes !== 'termine' && phaseDesCartes !== 'aucune'
+  const questionAuJoueur = questionDuRecit(questionDemandee, etape, etapeValidee, surTable, lectureEnCours && activationAvecBoosts)
 
   /**
    * LE JETON DE MENACE PART AU CLIC, PAS A L'AFFICHAGE DE L'ETAPE.
@@ -1017,6 +1032,9 @@ export function DeroulePhase({
     // déclenche leur départ ; il ne valide ni ne relâche encore le moteur.
     const suivaitUnAutre = avanceSuivieRef.current
     if (surTable && !apresTrajetRencontre.current && rencontreSurTable.current?.valider(() => {
+      // Les boosts ont été lus et rangés. Le résultat a maintenant son
+      // propre temps de lecture ; un nouveau clic appliquera les dégâts.
+      if (activationAvecBoosts && !passerTout) return
       apresTrajetRencontre.current = true
       const suiviAvant = avanceSuivieRef.current
       avanceSuivieRef.current = suivaitUnAutre
@@ -1042,7 +1060,7 @@ export function DeroulePhase({
     // L'etape courante est validee, DANS L'ETAT OU ELLE EST AU MOMENT DU CLIC.
     // Une intention validee ici ne vaudra pas validation de la resolution qui
     // prendra sa place (voir `validee` et `cartoucheAJour`).
-    setValidee({ cle: etape.cle, etat: etape.etat, temps: etape.temps, titre: etape.titre, cibleId: etape.cibleId })
+    setValidee({ cle: etape.cle, etat: etape.etat, temps: etape.temps, titre: etape.titre, cibleId: etape.cibleId, boosts: etape.boosts.map((b) => b.cibleId).join(',') })
     onEtapeValidee?.(etape.cle, etape.etat)
     // Le jeton de menace s'envole MAINTENANT, sur l'étape que le joueur vient
     // de valider (voir `volMenace`). Les autres étapes n'en posent pas.
@@ -1399,7 +1417,7 @@ export function DeroulePhase({
     }, 0)
     return () => window.clearTimeout(minuteur)
     // `avancer` change a chaque rendu : la cle de l'etape pilote le defilement.
-  }, [passerTout, surTable, etape?.cle, questionAuJoueur, enAttente, termine])
+  }, [passerTout, surTable, etape?.cle, questionAuJoueur, enAttente, termine, phaseDesCartes])
 
   // Combien de boosts sont deja retournes sur l'etape courante. Ils
   // s'enchainent SEULS : c'est l'etape qui attend la validation, pas chaque
@@ -1408,14 +1426,13 @@ export function DeroulePhase({
   // OU EN EST LA LECTURE DES CARTES SUR LA TABLE (18/10/2026, « il fait les degats avant qu'il y ait les
   // cartes boost ») : le bandeau n'annonce les degats d'une attaque qu'une fois ses boosts arrives et
   // lisibles. Par etape : la phase d'une etape passee ne compte pas pour la suivante.
-  const [lectureCartes, setLectureCartes] = useState<{ cle: string; phase: PhaseLecture } | undefined>()
   // 13/10/2026 (encadré ⑫) : les cartes révélées déjà retournées, par clé d'étape.
   const [cartesRetournees, setCartesRetournees] = useState<ReadonlySet<string>>(() => new Set())
   // 13/10/2026 (encadré ①) : les pastilles des joueurs dans le calcul de menace.
   const couleursDesJoueurs = useMemo(() => (essai && cadresJoueurs ? cadresJoueurs.map((c) => c.couleurs[0]) : undefined), [essai, cadresJoueurs])
   const avantResultat =
-    Boolean(essai && etape && etape.boosts.length > 0 && boostsMontres < etape.boosts.length) || enVolDeJeton
-  useEffect(() => {
+    lectureEnCours || Boolean(essai && etape && etape.boosts.length > 0 && boostsMontres < etape.boosts.length) || enVolDeJeton
+  useLayoutEffect(() => {
     onAvantResultat?.(avantResultat)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- setter d'etat stable
   }, [avantResultat])
@@ -1545,7 +1562,7 @@ export function DeroulePhase({
     }
     if (lectureSuivie.cle === '' && etape.temps === 'bilan') suivreLeMeneur()
     // eslint-disable-next-line react-hooks/exhaustive-deps -- la lecture suivie (cle, boosts, heure) pilote
-  }, [multi, lectureSuivie?.cle, lectureSuivie?.boosts, lectureSuivie?.valide, lectureSuivie?.t, rangSuivi, index, boostsMontres, questionAuJoueur, termine, etape?.cle, validee?.cle])
+  }, [multi, lectureSuivie?.cle, lectureSuivie?.boosts, lectureSuivie?.valide, lectureSuivie?.t, rangSuivi, index, boostsMontres, questionAuJoueur, termine, etape?.cle, validee?.cle, phaseDesCartes])
   // « Tout le monde valide » : on avance ensemble quand chaque siege est pret.
   const prets = multi && politique === 'tous' ? siegesPrets(avanceMulti.etapes, etape?.cle, siegesTable) : []
   const tousSontPrets = multi && politique === 'tous' && tousPrets(avanceMulti.etapes, etape?.cle, siegesTable)
@@ -1903,7 +1920,7 @@ export function DeroulePhase({
         />
         <EffetsSurTable
           etape={etape}
-          actif={!questionAuJoueur && !enVolDeJeton}
+          actif={!questionAuJoueur && !enVolDeJeton && !lectureEnCours}
           pvMax={etape?.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined}
         />
         {/* Les cartes qui sortent du paquet rencontre : les boosts a cote du
@@ -1922,9 +1939,9 @@ export function DeroulePhase({
           boostsMontres={boostsMontres}
           carteScene={carteScene}
           dosRencontre={dosRencontre}
-          actif={!attendreBandeau && !enVolDeJeton && !questionAuJoueur && !etapeValidee && !termine && !relecture}
+          actif={!attendreBandeau && !enVolDeJeton && !questionAuJoueur && !etapeValidee && !termine && !relecture && phaseDesCartes !== 'termine'}
           controle={rencontreSurTable}
-          surPhase={(phase) => etape && setLectureCartes((avant) => (avant?.cle === etape.cle && avant.phase === phase ? avant : { cle: etape.cle, phase }))}
+          surPhase={signalerPhaseLecture}
         />
         {enVolDeJeton ? null : contenu}
       </>,
@@ -2563,29 +2580,14 @@ export function DeroulePhase({
   // Le nombre de l'etape, dans son unite, EXACTEMENT comme le trait le dit.
   const contenu = contenuDuTrait(etapeLue)
   // `phraseHistorique` : « paquet-vide » et « etoile-differe » se disent en clair, jamais sous leur nom interne.
-  const phraseEtape = phraseHistorique(etapeLue)
+  const phraseEtape = phraseHistorique(lectureEnCours && activationAvecBoosts ? { ...etapeLue, etat: 'annonce' } : etapeLue)
   const nombreEnClair =
     contenu.montant !== undefined
       ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
       : contenu.unite
         ? t(contenu.unite)
         : ''
-  // Une attaque ou une manigance AVEC boosts : tant que ses cartes arrivent (ou n'ont pas encore dit
-  // ou elles en sont), le nombre reste cache. Ni la couche des cartes (animations coupees, pas
-  // d'etape active) ni l'absence de carte a lire ne le retiennent : `couchePeutLire` suit le meme
-  // critere que la couche, `aucune` libere.
-  const couchePeutLire = !attendreBandeau && !enVolDeJeton && !questionAuJoueur && !etapeValidee && !termine && !relecture
-  const boostsAttendus =
-    surTable &&
-    couchePeutLire &&
-    // La couche des cartes ne se monte que dans le cadre du plateau (voir `enveloppe`) : sans lui, rien
-    // ne dira jamais « lisibles », il ne faut donc rien retenir.
-    document.querySelector('.plateau-cadre') !== null &&
-    (etape.titre === 'attaque' || etape.titre === 'manigance') &&
-    etapeLue.etat !== 'annonce' &&
-    etape.boosts.length > 0
-  const phaseDesCartes = lectureCartes?.cle === etape.cle ? lectureCartes.phase : undefined
-  const nombreRetenu = boostsAttendus && (phaseDesCartes === undefined || phaseDesCartes === 'entree')
+  const nombreRetenu = lectureEnCours
   const recit = {
     ton: contenu.ton,
     // ⚠ PAS DEUX FOIS LE MEME NOMBRE. Certaines phrases le portent deja :

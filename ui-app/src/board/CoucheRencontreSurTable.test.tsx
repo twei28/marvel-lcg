@@ -115,7 +115,7 @@ describe('lecture et trajet des cartes rencontre', () => {
     expect(vols[1].cancel).toHaveBeenCalled()
   })
 
-  it('un clic pendant l’entrée est retenu sans couper le trajet ni doubler la validation', async () => {
+  it('ignore les clics pendant l’entrée et exige un nouveau clic après la lecture', async () => {
     const controle = createRef<ControleRencontre>()
     const suite = vi.fn()
     render(<CoucheRencontreSurTable etape={revelation} boostsMontres={0} carteScene={scans} actif controle={controle} />)
@@ -123,6 +123,10 @@ describe('lecture et trajet des cartes rencontre', () => {
     expect(vols).toHaveLength(1)
     expect(suite).not.toHaveBeenCalled()
     await finir(0)
+    expect(vols).toHaveLength(1)
+    expect(document.querySelector('[data-lecture="lecture"]')).not.toBeNull()
+    expect(suite).not.toHaveBeenCalled()
+    act(() => { controle.current?.valider(suite) })
     expect(vols).toHaveLength(2)
     expect(suite).not.toHaveBeenCalled()
     await finir(1)

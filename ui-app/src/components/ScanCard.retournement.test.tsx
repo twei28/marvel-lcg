@@ -36,4 +36,12 @@ describe('ScanCard : le retournement', () => {
     const { container } = render(<ScanCard {...props} imageUrl="/face.jpg" />)
     expect(container.querySelector('.scan-frame')?.className).toBe('scan-frame')
   })
+
+  it('termine le geste si le scan change pendant le retournement', async () => {
+    const { container, rerender } = render(<ScanCard {...props} imageUrl="/dos.jpg" facedown />)
+    rerender(<ScanCard {...props} imageUrl="/face-en.jpg" facedown={false} />)
+    rerender(<ScanCard {...props} imageUrl="/face-fr.jpg" facedown={false} />)
+    await waitFor(() => expect(container.querySelector('.scan-frame')?.className).toBe('scan-frame'), { timeout: 1500 })
+    expect(container.querySelector('img')?.getAttribute('src')).toBe('/face-fr.jpg')
+  })
 })

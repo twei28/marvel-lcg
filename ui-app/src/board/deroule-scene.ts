@@ -30,7 +30,7 @@ export type SceneEtape = {
 
 const RIEN: SceneEtape = { cartes: [], fleche: false, voile: false }
 
-export function sceneDe(etape: EtapeDeroule): SceneEtape {
+export function sceneDe(etape: EtapeDeroule, lireBoostsAnnonce = false): SceneEtape {
   if (etape.temps === 'distribution') {
     const dos = Math.max(1, etape.montant ?? 1)
     return { cartes: Array.from({ length: dos }, () => ({ role: 'dos' })), fleche: false, voile: true }
@@ -60,7 +60,7 @@ export function sceneDe(etape: EtapeDeroule): SceneEtape {
   // de la refonte du cartouche) : la table et le telephone ne les sortent du
   // paquet qu'une fois l'attaque resolue, comme avant. Un fait sans etat est
   // un fait resolu.
-  if (etape.etat !== 'annonce') {
+  if (etape.etat !== 'annonce' || lireBoostsAnnonce) {
     for (const boost of etape.boosts) cartes.push({ role: 'boost', id: boost.cibleId })
   }
   // Un auteur qui est sa propre cible : une seule carte, la fleche n'aurait

@@ -1,7 +1,7 @@
 // La table calee sur le recit : ce qui n'est pas raconte n'apparait pas.
 import { describe, expect, it } from 'vitest'
 import type { EtapeDeroule } from './deroule-phase'
-import { cartesAVenir, estEnJeu, majInstantanes, mondeAvantEtape, mondeDeLaTable, sansCartesAVenir, type Instantanes } from './table-calee'
+import { avecFacesRencontreDuRecit, questionDuRecit, cartesAVenir, estEnJeu, majInstantanes, mondeAvantEtape, mondeDeLaTable, sansCartesAVenir, type Instantanes } from './table-calee'
 import type { World } from './world'
 
 const monde = (nom: string) => ({ phase: 'Villain Activation', nom }) as unknown as World
@@ -101,5 +101,36 @@ describe('lot 4 : la carte revelee arrive sur la table a SON ecran', () => {
     let inst = majInstantanes(vide, [revelation], mondeAvec('revelee', false), true)
     inst = majInstantanes(inst, [revelation], mondeAvec('engagee', true), true)
     expect((mondeDeLaTable(inst, 'r57', false) as unknown as { nom: string }).nom).toBe('revelee')
+  })
+})
+
+
+describe('décisions et faces des rencontres suivent le récit', () => {
+  it('retient une question future tant que le résultat sur table n’est pas validé', () => {
+    const resolue = etape('a', 'resolu')
+    expect(questionDuRecit(true, resolue, false, true)).toBe(false)
+    expect(questionDuRecit(true, resolue, true, true)).toBe(true)
+    expect(questionDuRecit(true, etape('a', 'annonce'), false, true)).toBe(true)
+    expect(questionDuRecit(true, etape('a', 'annonce'), false, true, true)).toBe(false)
+    expect(questionDuRecit(true, resolue, false, false)).toBe(true)
+  })
+
+  it('une question actualise la main sans révéler puis recacher un boost', () => {
+    const boost = { id: 72, is_face_up: false, visible_for_players: [] }
+    const recit = { area_boost: [boost], encounter_deck: [], players: [] } as unknown as World
+    const actuel = { area_boost: [{ ...boost, is_face_up: true, visible_for_players: [0] }], players: [{ hand_cards: [{ id: 99, is_face_up: true }] }] } as unknown as World
+    const stable = avecFacesRencontreDuRecit(actuel, recit)
+    expect(stable.area_boost[0].is_face_up).toBe(false)
+    expect(stable.area_boost[0].visible_for_players).toEqual([])
+    expect(stable.players).toBe(actuel.players)
+    expect(actuel.area_boost[0].is_face_up).toBe(true)
+  })
+
+  it('figer les compteurs sur un monde précédent ne recache pas un boost déjà lu', () => {
+    const boost = { id: 72, is_face_up: false, visible_for_players: [] }
+    const avant = { area_boost: [boost], players: [] } as unknown as World
+    const lu = { area_boost: [{ ...boost, is_face_up: true, visible_for_players: [0] }], players: [] } as unknown as World
+    expect(avecFacesRencontreDuRecit(avant, lu).area_boost[0].is_face_up).toBe(true)
+    expect(avecFacesRencontreDuRecit(lu, lu, true).area_boost[0].is_face_up).toBe(false)
   })
 })

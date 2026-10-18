@@ -22,7 +22,7 @@ export const ECART = 8
  * ⚠ CONTRE LA CARTE QUI FRAPPE, PAS CONTRE LE PAQUET. Elles se posaient à côté
  * du deck rencontre, en haut à gauche, loin du méchant : « à côté du méchant
  * qui frappe » (choix de l'utilisateur parmi trois, 14/09/2026). On voit à qui
- * appartient cet élan, et ça vaut aussi pour un sbire. Le trajet depuis le
+ * appartient ce boost, et ça vaut aussi pour un sbire. Le trajet depuis le
  * paquet reste visible, puisque c'est de là qu'elles partent.
  *
  * ⚠ ET À GAUCHE SI ELLES N'Y TIENNENT PAS. Mieux vaut les poser du mauvais

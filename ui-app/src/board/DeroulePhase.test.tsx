@@ -3574,6 +3574,46 @@ describe('la scène PC délègue au cartouche', () => {
       expect(nombre()).toBeNull()
     })
 
+    it('lecture puis résultat : les dégâts exigent un nouveau clic après le départ des boosts', async () => {
+      const cadre = document.querySelector('.plateau-cadre')!
+      cadre.innerHTML = '<div class="zone-piles-rencontre"><div class="scan-card"><div class="scan-frame"></div></div></div>'
+      const mesure = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ x: 0, y: 0, left: 0, top: 0, width: 500, height: 400, right: 500, bottom: 400, toJSON: () => ({}) })
+      const valider = vi.fn()
+      render(<DeroulePhase etapes={[attaque]} presentation="table" carteScene={scan} onEtapeValidee={valider} onTerminer={() => {}} />)
+      await act(async () => { await Promise.resolve() })
+      expect(document.querySelector('[data-lecture="lecture"]')).not.toBeNull()
+      expect(nombre()).toBeNull()
+      expect(document.querySelector('.delta-sur-table')).toBeNull()
+      await act(async () => { fireEvent.keyDown(document, { key: ' ' }); await Promise.resolve() })
+      expect(document.querySelector('.rencontre-sur-table')).toBeNull()
+      expect(nombre()?.textContent).toMatch(/^1/)
+      expect(valider).not.toHaveBeenCalled()
+      fireEvent.keyDown(document, { key: ' ' })
+      expect(valider).toHaveBeenCalledWith('klaw-resultat', 'resolu')
+      mesure.mockRestore()
+    })
+
+    it('lit les boosts avant une interruption de dégâts et ne les rejoue pas à la résolution', async () => {
+      document.querySelector('.plateau-cadre')!.innerHTML = '<div class="zone-piles-rencontre"><div class="scan-card"></div></div>'
+      const mesure = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ x: 0, y: 0, left: 0, top: 0, width: 500, height: 400, right: 500, bottom: 400, toJSON: () => ({}) })
+      const valider = vi.fn()
+      const vue = (e: EtapeDeroule, question = false) => <DeroulePhase etapes={[e]} phaseMechantEnCours presentation="table" carteScene={scan} questionAuJoueur={question} question={<button>Utiliser Barrière énergétique</button>} onEtapeValidee={valider} onTerminer={() => {}} />
+      const { rerender } = render(vue({ ...attaque, etat: 'annonce', boosts: [] }))
+      fireEvent.keyDown(document, { key: ' ' })
+      expect(valider).toHaveBeenCalledTimes(1)
+      rerender(vue({ ...attaque, etat: 'annonce' }, true))
+      await act(async () => { await Promise.resolve() })
+      expect(document.querySelector('[data-lecture="lecture"]')).not.toBeNull()
+      expect(screen.queryByRole('button', { name: 'Utiliser Barrière énergétique' })).toBeNull()
+      await act(async () => { fireEvent.keyDown(document, { key: ' ' }); await Promise.resolve() })
+      expect(screen.getByRole('button', { name: 'Utiliser Barrière énergétique' })).toBeInTheDocument()
+      rerender(vue(attaque))
+      await act(async () => { await Promise.resolve() })
+      expect(document.querySelector('.rencontre-sur-table')).toBeNull()
+      expect(nombre()?.textContent).toMatch(/^1/)
+      mesure.mockRestore()
+    })
+
     it('sans carte de boost a lire (scan introuvable) : le nombre se montre, rien n’attend une lecture qui n’aura pas lieu', () => {
       render(
         <DeroulePhase etapes={[attaque]} presentation="table" carteScene={() => undefined} onTerminer={() => {}} />

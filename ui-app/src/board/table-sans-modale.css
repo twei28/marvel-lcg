@@ -128,6 +128,7 @@
 /* La question : la ligne du haut porte la phrase et les choix sans carte. */
 .tsm-bandeau.est-question {
   border-left-color: #f3c623;
+  max-width: min(980px, 94%);
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -407,4 +408,10 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
   font-family: Bangers, Anton, Impact, system-ui, sans-serif;
   font-size: 17px;
   letter-spacing: 0.05em;
+}
+
+.tsm-bandeau.est-question .tsm-bouton {
+  flex-shrink: 1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }

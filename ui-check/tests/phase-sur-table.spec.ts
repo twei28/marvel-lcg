@@ -197,3 +197,31 @@ test('⚠ le jeton de menace part AU CLIC, pas avant', async ({ page }) => {
     `le jeton ne porte pas l'image menace.png du jeu (fond reçu : ${fond.slice(0, 80)}…)`
   ).toBe(true)
 })
+
+// Le rectangle englobant d'une carte tournée ne suffit pas : le cadre doit
+// avoir le même angle et la même silhouette que son image.
+test('le cadre suit une carte inclinée sur le vrai plateau', async ({ page }) => {
+  await ouvrirLaPhase(page)
+  const acteur = page.locator('.tsm-acteur').first()
+  await expect(acteur).toBeVisible()
+  await page.evaluate(() => {
+    const halo = document.querySelector('.tsm-acteur')!.getBoundingClientRect()
+    const frames = [...document.querySelectorAll<HTMLElement>('.plateau-cadre .scan-frame')]
+    const distance = (e: HTMLElement) => {
+      const r = e.getBoundingClientRect()
+      return Math.abs(r.x + r.width / 2 - halo.x - halo.width / 2) + Math.abs(r.y + r.height / 2 - halo.y - halo.height / 2)
+    }
+    const frame = frames.sort((a, b) => distance(a) - distance(b))[0]
+    frame.dataset.verificationInclinaison = 'oui'
+    frame.closest('.scan-card')!.classList.add('est-epuise')
+  })
+  const angle = () => acteur.evaluate((e) => {
+    const m = new DOMMatrixReadOnly(getComputedStyle(e).transform)
+    return Math.atan2(m.b, m.a) * 180 / Math.PI
+  })
+  await expect.poll(angle).toBeCloseTo(8, 1)
+  const image = await page.locator('[data-verification-inclinaison]').boundingBox()
+  const cadre = await acteur.boundingBox()
+  expect(Math.abs(image!.width - cadre!.width)).toBeLessThan(3)
+  expect(Math.abs(image!.height - cadre!.height)).toBeLessThan(3)
+})

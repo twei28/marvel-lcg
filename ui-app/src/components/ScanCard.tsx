@@ -600,9 +600,13 @@ export function ScanCard({
   // de la tranche (280 ms). Le dos est retenu tant que la carte est cachée.
   const dosRetenu = useRef<string | undefined>(undefined)
   const [retournement, setRetournement] = useState<{ phase: 'dos' | 'face'; dos: string } | null>(null)
+  // Un scan traduit peut remplacer l'image pendant le geste. Ce remplacement
+  // ne doit ni relancer le retournement ni annuler ses minuteries.
+  useEffect(() => {
+    if (facedown) dosRetenu.current = imageUrl
+  }, [facedown, imageUrl])
   useEffect(() => {
     if (facedown) {
-      dosRetenu.current = imageUrl
       // ⚠ La carte se recache EN PLEIN retournement (une recherche de deck montre
       // un instant le dessus au joueur) : le nettoyage ci-dessous a déjà coupé les
       // minuteries, donc plus rien ne ramènerait l'état à zéro et le cadre
@@ -621,7 +625,7 @@ export function ScanCard({
       window.clearTimeout(versLaFace)
       window.clearTimeout(fin)
     }
-  }, [facedown, imageUrl])
+  }, [facedown])
   const imageBrute = retournement?.phase === 'dos' ? retournement.dos : imageUrl
   const imageAffichee = taille === 'grande' ? imageBrute : versVignette(imageBrute)
   const paresseuses = useContext(ImagesParesseuses)

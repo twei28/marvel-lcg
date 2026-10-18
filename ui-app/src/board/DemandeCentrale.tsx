@@ -588,8 +588,9 @@ export function DemandeCentrale({
       if (carteId !== undefined) posees.add(carteId)
       return {
         id: option.id,
-        nom: String(nom),
+        nom: carte?.kind === 'upgrade' && source && !String(nom).includes(source) ? `${source} — ${nom}` : String(nom),
         carteId,
+        enLigne: carte?.kind === 'upgrade',
         indisponible: option.failure_reason || undefined,
         choisir: () => choisirOuInformer(option),
         survoler: (actif: boolean) => (actif ? activerOption(option, carteAuSurvol?.(option) ?? carte) : desactiverOption(option)),
@@ -597,6 +598,7 @@ export function DemandeCentrale({
     })
     const attaque = ligneSansDefense && options.some((option) => option.name === 'Defense')
     return (
+      <>
       <QuestionSurTable
         phrase={phrase}
         choix={choix}
@@ -609,6 +611,8 @@ export function DemandeCentrale({
             : undefined
         }
       />
+      {carteRegardee ? <CarteApercu carte={carteRegardee} /> : null}
+      </>
     )
   }
 

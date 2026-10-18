@@ -160,7 +160,7 @@ import { detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
 import { useCoupsEnVol } from './board/JetonsCoups'
 import { avecCompteursFiges } from './board/coups-sur-table'
 import { avecEcranStadeRevele, avecEtapesRiposte } from './board/etapes-essai'
-import { cartesAVenir, majInstantanes, mondeAvantEtape, mondeDeLaTable, sansCartesAVenir, type Instantanes } from './board/table-calee'
+import { avecFacesRencontreDuRecit, questionDuRecit, cartesAVenir, majInstantanes, mondeAvantEtape, mondeDeLaTable, sansCartesAVenir, type Instantanes } from './board/table-calee'
 import {
   appliquerTeinte,
   chercherTeinteDuCompte,
@@ -2433,6 +2433,12 @@ export function PagePartie({
   // souvent.
   // L'etape que montre le cartouche : la table se cale dessus (table-calee.ts).
   const [cleEtapeAffichee, setCleEtapeAffichee] = useState<string>()
+  const [modePhaseChoisi, setModePhase] = useState<ModePhaseMechant>(lireModePhaseMechant)
+  // LE SPECTATEUR VOIT LA PHASE DANS LE MODE DU JOUEUR REGARDE (08/10/2026),
+  // publie avec son etape (etape-partagee.ts) ; son propre reglage ne change pas.
+  const modeDuJoueurSuivi = useSuiviDuJoueur(spectateur).mode
+  const modePhase = spectateur && modeDuJoueurSuivi ? modeDuJoueurSuivi : modePhaseChoisi
+
   const etapesPhaseMechant = useMemo(() => {
     const mechantIds = new Set<number>()
     for (const carte of cartesMondeParId.values()) {
@@ -2564,11 +2570,6 @@ export function PagePartie({
     instantanesRef.current = suivants
     return suivants
   }, [etapesPhaseMechant, etat.monde, phaseEssai])
-  const mondeCale = mondeDeLaTable(
-    instantanes,
-    cleEtapeAffichee,
-    Boolean(etat.aNous && etat.demande)
-  )
   // REFONTE, LOT 4 (essai, decisions 49 et 51) : tant que l'attaque retourne
   // ses boosts, la table garde le monde d'AVANT l'etape (PV, menace) ; et une
   // carte qu'une etape suivante fera entrer en jeu n'y est pas encore.
@@ -2582,6 +2583,15 @@ export function PagePartie({
   // question d'ordre des sbires) : ses jetons volent quand même, la clé « validée » les libère.
   const [validationEtape, setValidationEtape] = useState<string | undefined>(undefined)
   const etatEtapeAffichee = etapesDesCoups.find((e) => e.cle === cleEtapeAffichee)?.etat
+  const etapeSurTable = etapesDesCoups.find((e) => e.cle === cleEtapeAffichee)
+  const questionVisible = questionDuRecit(Boolean(etat.aNous && etat.demande), etapeSurTable,
+    validationEtape === `${cleEtapeAffichee}|${etatEtapeAffichee}`, modePhase === 'sur-table', avantResultat && Boolean(etapeSurTable?.boosts.length))
+  const instantaneRecit = mondeDeLaTable(instantanes, cleEtapeAffichee, false)
+  const mondeCale = useMemo(() => {
+    const base = questionVisible ? etat.monde : instantaneRecit
+    if (!base || modePhase !== 'sur-table' || !instantaneRecit) return base
+    return avecFacesRencontreDuRecit(base, instantaneRecit, etapeSurTable?.etat === 'annonce')
+  }, [questionVisible, etat.monde, instantaneRecit, modePhase, etapeSurTable?.etat])
   const cleDesCoups =
     cleEtapeAffichee !== undefined && validationEtape === `${cleEtapeAffichee}|${etatEtapeAffichee}`
       ? `${cleEtapeAffichee}#valide`
@@ -2590,11 +2600,13 @@ export function PagePartie({
   const mondeTable = useMemo(() => {
     if (!phaseEssai || !mondeCale) return mondeCale
     const base = (avantResultat ? mondeAvantEtape(instantanes, etapesPhaseMechant, cleEtapeAffichee) : undefined) ?? mondeCale
-    const monde = sansCartesAVenir(base, cartesAVenir(etapesPhaseMechant, cleEtapeAffichee))
+    // Les compteurs peuvent garder leur valeur précédente sans recacher une carte déjà lue.
+    const facesStables = modePhase === 'sur-table' ? avecFacesRencontreDuRecit(base, mondeCale, etapeSurTable?.etat === 'annonce') : base
+    const monde = sansCartesAVenir(facesStables, cartesAVenir(etapesPhaseMechant, cleEtapeAffichee))
     // Essai, 13/10/2026 : les cartes que l'ecran touche (menace, PV) gardent
     // leur valeur d'AVANT ; le jeton qui vole au clic les met a jour en arrivant.
     return avecCompteursFiges(monde, compteursFiges)
-  }, [phaseEssai, mondeCale, avantResultat, instantanes, etapesPhaseMechant, cleEtapeAffichee, compteursFiges])
+  }, [phaseEssai, mondeCale, avantResultat, instantanes, etapesPhaseMechant, cleEtapeAffichee, compteursFiges, modePhase, etapeSurTable?.etat])
   const plateauTable = useMemo(
     () =>
       mondeTable
@@ -3241,11 +3253,6 @@ export function PagePartie({
     })
   }, [])
 
-  const [modePhaseChoisi, setModePhase] = useState<ModePhaseMechant>(lireModePhaseMechant)
-  // LE SPECTATEUR VOIT LA PHASE DANS LE MODE DU JOUEUR REGARDE (08/10/2026),
-  // publie avec son etape (etape-partagee.ts) ; son propre reglage ne change pas.
-  const modeDuJoueurSuivi = useSuiviDuJoueur(spectateur).mode
-  const modePhase = spectateur && modeDuJoueurSuivi ? modeDuJoueurSuivi : modePhaseChoisi
   // Le spectateur affiche la meme etape que le joueur, dans son mode (etape-partagee.ts).
   useEffect(() => {
     if (spectateur) return
