@@ -41,7 +41,7 @@ import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
          brancherBandeau, ajouterPoignee } from "/public/js/prepare/tel.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
-import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
+import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
@@ -1775,17 +1775,13 @@ function demanderLaLangue() {
     });
 }
 
-/** « Choisis ton affichage », posée une seule fois (04/10/2026).
+/** « Choisis ton affichage » : la fenêtre d'Options (Normal, Coloré, Sobre, et la couleur du fond).
  *
- *  Demandée par l'utilisateur : « qu'il y ait un exemple, comme ça ils peuvent
- *  voir et choisir en connaissance de cause, et indiquer que ça peut encore être
- *  changé ». Deux aperçus réels de la table, pris sur une question de la phase
- *  du méchant, seul le mode change. Pour les refaire : `ui-check/scripts/capture-affichage.spec.ts`,
- *  hors du dossier des tests parce qu'il CRÉE une partie (à lancer contre un
- *  moteur d'essai, jamais contre une partie en cours).
+ *  ⚠ ELLE NE S'IMPOSE PLUS À LA PREMIÈRE VISITE (18/10/2026, demande de l'utilisateur : « vire le choix au
+ *  début, les gens sont en Normal et peuvent à la limite changer dans les options ») et SANS IMAGES d'aperçu
+ *  (retirées le même jour). Elle ne s'ouvre que par la tuile « Options ».
  *
- *  ⚠ Même règle que la langue : on ne la ferme pas en cliquant à côté, un clic
- *  distrait vaudrait réponse et la question ne reviendrait jamais.
+ *  ⚠ On ne la ferme pas en cliquant à côté : un clic distrait vaudrait réponse.
  */
 async function demanderLAffichage({ rouvert = false } = {}) {
     // L'épuré n'est proposé qu'à l'administrateur (16/10/2026) : on attend la réponse du serveur.
@@ -1810,7 +1806,6 @@ async function demanderLAffichage({ rouvert = false } = {}) {
                     }
                 },
             },
-                el("img", { src: `/public/img/affichage/apercu-${valeur}.jpg`, alt: titre, loading: "eager" }),
                 el("b", {}, titre),
                 el("small", {}, sous));
             bouton.dataset.valeur = valeur;
@@ -6027,9 +6022,8 @@ installerHistorique(appliquerCleTel);
     // La teinte suit le compte comme l'affichage, sur la MEME reponse.
     synchroniserTeinte(reponsePreferences);
     appliquerTeintePage(teinteActuelle());
-    if (!creationCampagne() && affichageJamaisChoisi(reponsePreferences)) {
-        await demanderLAffichage();
-    }
+    // Plus de fenetre « Choisis ton affichage » a la premiere visite (18/10/2026) : tout le monde commence en
+    // Normal et peut en changer dans Options (`demanderLAffichage({ rouvert: true })`) ou par le bouton de l'en-tete.
     // Apres l'affichage : une seule fenetre a la fois, et la langue est deja
     // choisie. Chaque joueur la voit une fois, nouveau comme ancien.
     let phaseVue = null;
