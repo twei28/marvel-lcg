@@ -3,7 +3,7 @@
 import { cardImageUrl, cardImageUrlEn, cardImageUrlHd, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=564d4a13";
 import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
-import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
+import { catalog, titleize, nomSetRencontre, titreDeVague } from "/public/js/prepare/catalog.js";
 import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=2f32932e";
@@ -5179,8 +5179,8 @@ function bioDuMechant(sc) {
     return pliBio(t("Biographie"), [
         info ? el("p", { class: "hh-bio" }, (en && info.bioEn) || info.bio) : null,
         detailRow(t("Méchant(s)"), sc.villainNames.length ? sc.villainNames.join(", ") : t("Pas de méchant fixe")),
-        detailRow(t("Sets requis"), sc.mandatoryEncounterSets.map(titleize).join(", ") || "-"),
-        detailRow(t("Sets recommandés"), sc.recommendedModularSets.map(titleize).join(", ") || "-"),
+        detailRow(t("Sets requis"), sc.mandatoryEncounterSets.map(nomSetRencontre).join(", ") || "-"),
+        detailRow(t("Sets recommandés"), sc.recommendedModularSets.map(nomSetRencontre).join(", ") || "-"),
     ]);
 }
 
@@ -5700,7 +5700,7 @@ function detailRow(k, v) {
  *  le createur se retrouve par l'index du catalogue. */
 function nomDuSetModulaire(nomFichier) {
     const auteur = catalog.auteurSetRencontre(nomFichier);
-    return nomAvecAuteur(titleize(nomFichier), auteur, true);
+    return nomAvecAuteur(nomSetRencontre(nomFichier), auteur, true);
 }
 
 /** PC : le choix des sets modulaires dans un panneau qui prend la place de l'image du mechant (colonne de droite). */
@@ -5817,7 +5817,7 @@ function stepSummary() {
         if (d.skirmish) reglages.push("Skirmish");
         if (d.heroic > 0) reglages.push(t("Héroïque") + " " + d.heroic);
         if (d.intenseCombatants === true && proposerIntense(sc.mandatoryEncounterSets)) reglages.push("Intense Combatants");
-        const sets = [...sc.mandatoryEncounterSets, ...d.selectedModularSets].map(titleize);
+        const sets = [...sc.mandatoryEncounterSets, ...d.selectedModularSets].map(nomSetRencontre);
         if (sets.length) reglages.push(sets.join(" · "));
     }
 

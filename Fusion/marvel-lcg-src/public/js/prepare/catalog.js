@@ -9,6 +9,18 @@ import { auteurUnique } from "/public/js/prepare/auteur.js";
 const TEAMS = ["Avenger", "X-Men", "Guardian", "Champion", "Defender", "X-Force", "Inhuman", "S.H.I.E.L.D.", "Web-Warrior"];
 const num = (s) => { const m = String(s).match(/^\s*(\d+)/); return m ? +m[1] : 9999; };
 const titleize = (s) => String(s).replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+// Nom affiché d'un set de rencontre (18/10/2026). Le fichier du set de Shredder porte un préfixe de
+// pack (`ts_chunin`) que titleize rendait « Ts Chunin » ; les cartes, elles, disent « Chunin » : le nom
+// sert aussi à retrouver le créateur dans `set_name` (voir `_auteurParSet`). Même règle pour tout
+// futur set dont le fichier garde un préfixe : l'ajouter ici.
+const NOMS_SETS_RENCONTRE = {
+    ts_shredder: "Shredder",
+    ts_chunin: "Chunin",
+    ts_foot_goon_squad: "Foot Goon Squad",
+    ts_shadow_of_the_foot: "Shadow of the Foot",
+};
+const nomSetRencontre = (n) => NOMS_SETS_RENCONTRE[String(n)] || titleize(n);
 const cleanName = (s) => String(s || "").replace(/^\*\s*/, "").trim();
 
 function teamFromTraits(card) {
@@ -667,7 +679,7 @@ export const catalog = {
         const auteurs = this._auteurParSet();
         _encounterSets = names.filter((n) => !_setsRencontreMasques.has(n))
             .map((n) => {
-                const displayName = titleize(n);
+                const displayName = nomSetRencontre(n);
                 return {
                     name: n, displayName, kind: encounterKind(n),
                     auteur: auteurs.get(displayName) || "",
@@ -680,7 +692,7 @@ export const catalog = {
      *  Vide pour un set officiel, ou quand deux auteurs portent le meme nom
      *  de set. Appeler encounterSets() ou extensions() d'abord. */
     auteurSetRencontre(name) {
-        return this._auteurParSet().get(titleize(name)) || "";
+        return this._auteurParSet().get(nomSetRencontre(name)) || "";
     },
 
     /** Image d'un set de rencontre (1re carte) — chargée à la demande. */
@@ -695,4 +707,4 @@ export const catalog = {
 // qui dise a quelle vague appartient une boite : la recopier ailleurs aurait
 // cree une seconde verite, et la boite du Bouffon Vert (n°2, vague 1) est
 // justement le contre-exemple qu'aucune approximation ne retrouve.
-export { titleize, titreDeVague, vagueDeLExtension };
+export { titleize, nomSetRencontre, titreDeVague, vagueDeLExtension };

@@ -65,6 +65,8 @@ export function auteurUnique(customs) {
 export const AUTEURS_EXTENSIONS = {
     "web of deceit": "Ripper3",
     "gorr the god butcher": "BlueHG",
+    // Le set « Custom (Shredder) » contient les cartes du scénario ET celles du set TMNT : le nom ne retrouve pas le créateur seul (18/10/2026).
+    "shredder": "Inkwire",
 };
 
 /** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas. */
