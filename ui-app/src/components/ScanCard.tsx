@@ -369,6 +369,11 @@ export type ScanCardProps = {
    * remplace. Voir `.est-delave` dans board.css.
    */
   aspect?: string
+  /**
+   * Le dégradé des trois couleurs du héros, pour le liseré de son IDENTITÉ en Épuré (`.est-identite`, voir
+   * `affichage-epure.css`). Jamais sur une carte face cachée.
+   */
+  lisereHeros?: string
   /** Variation temporaire d'un compteur, affichee directement sur la carte. */
   effectDelta?: CardEffectDelta
   /**
@@ -539,6 +544,7 @@ export function ScanCard({
   crise,
   deckSpecial = false,
   aspect,
+  lisereHeros,
   discard = false,
   mordu = false,
   accroche = false,
@@ -690,6 +696,7 @@ export function ScanCard({
     !facedown && deckSpecial ? 'est-deck-special' : '',
     // Jamais sur une carte face cachee : son aspect n'est pas connu du joueur.
     !facedown && aspect ? `aspect-${aspect}` : '',
+    !facedown && lisereHeros ? 'est-identite' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -697,6 +704,7 @@ export function ScanCard({
   return (
     <article
       className={classes}
+      style={!facedown && lisereHeros ? ({ '--lisere-heros': lisereHeros } as CSSProperties) : undefined}
       data-card-id={id}
       aria-label={`${name}, ${label}`}
       tabIndex={0}

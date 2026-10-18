@@ -2001,6 +2001,18 @@ export function PagePartie({
   } = useModeMobile()
   // Remonte ici (et non plus 200 lignes plus bas) parce que la construction du
   // plateau en a besoin : voir `seulCeJoueur` juste en dessous.
+  // LE LISERÉ DE L'IDENTITÉ (18/10/2026) : le dégradé des trois couleurs du héros vient des palettes, chargées une
+  // seule fois ; les cartes se redessinent dès qu'elles sont là (`couleursDeHeros`, lu par `toScanCard`).
+  const [palettesPretes, setPalettesPretes] = useState(false)
+  useEffect(() => {
+    let vivant = true
+    void palettes().then(() => {
+      if (vivant) setPalettesPretes(true)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
   const plateau = useMemo(
     () =>
       etat.monde
@@ -2026,7 +2038,7 @@ export function PagePartie({
             seulCeJoueur: vueForcee !== null || modePlateau === 'mobile',
           })
         : undefined,
-    [etat.monde, joueurActif, catalogue, scansFr, dosCartes, vueForcee]
+    [etat.monde, joueurActif, catalogue, scansFr, dosCartes, vueForcee, palettesPretes]
   )
   // ⚠ LA TABLE NE VOIT PAS LA QUESTION DE LA MANIGANCE. Son panneau la tient
   // (voir `demandeHorsPanneauManigance`) : le halo, le menu d'une carte et le

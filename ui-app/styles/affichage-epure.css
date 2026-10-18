@@ -2090,3 +2090,13 @@ html[data-epure] .scan-card.aspect-shinobi .scan-frame {
   background-origin: border-box;
   background-clip: border-box;
 }
+
+/* Le liseré de l'IDENTITÉ du héros (18/10/2026) : un dégradé de ses trois couleurs de palette, comme une carte Dual
+   (`--lisere-heros`, posée par ScanCard une fois les palettes chargées). Les couleurs sont reprises telles quelles,
+   même presque noires. Même mécanique que les Dual : bordure transparente, fond étalé dessous. */
+html[data-epure] .scan-card.est-identite .scan-frame {
+  border: 1.5px solid transparent;
+  background-image: var(--lisere-heros);
+  background-origin: border-box;
+  background-clip: border-box;
+}

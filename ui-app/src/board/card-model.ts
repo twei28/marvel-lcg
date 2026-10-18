@@ -4,6 +4,7 @@
 // connait aucun card_type, aucun champ info, aucune route serveur.
 
 import type { CardGauge, CardKind, CardState, ScanCardProps } from '../components/ScanCard'
+import { couleursDeHeros, degradeDeHeros } from './halo-heros'
 import type { Catalogue } from './catalogue'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 import { nomDeCompteur } from './compteurs-fr'
@@ -560,6 +561,9 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     traits: contexte.catalogue.traits?.(card.card_id),
     codeCarte: card.card_id,
     aspect: contexte.catalogue.aspect(card.card_id),
+    // Le liseré de l'identité (Hero ou AlterEgo) : le dégradé des trois couleurs de son héros, une fois les
+    // palettes chargées. Seulement l'identité : ses cartes de signature gardent leur aspect « héros ».
+    lisereHeros: card.card_type === 'Hero' || card.card_type === 'AlterEgo' ? degradeDeHeros(couleursDeHeros(card.card_id)) : undefined,
     pileCount: contexte.pileCount,
     highlight: contexte.actives.has(card.id),
   }

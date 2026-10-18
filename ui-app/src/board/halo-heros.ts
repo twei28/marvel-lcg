@@ -19,6 +19,8 @@
 export type Couleur = readonly [number, number, number]
 
 let promesse: Promise<Record<string, Couleur[]>> | undefined
+// Les palettes une fois chargées, pour qui ne peut pas attendre une promesse (le dessin d'une carte).
+let chargees: Record<string, Couleur[]> | undefined
 
 async function charger(): Promise<Record<string, Couleur[]>> {
   try {
@@ -28,7 +30,8 @@ async function charger(): Promise<Record<string, Couleur[]>> {
     // pas que la route existe. Sur un serveur d'avant elle, `json()` échoue et
     // le `catch` rend un catalogue vide, donc aucun halo. C'est le bon repli.
     const donnees = (await reponse.json()) as { palettes?: Record<string, Couleur[]> }
-    return donnees?.palettes ?? {}
+    chargees = donnees?.palettes ?? {}
+    return chargees
   } catch {
     return {}
   }
@@ -43,6 +46,23 @@ export function palettes(): Promise<Record<string, Couleur[]>> {
 /** Pour les tests seulement : oublie le catalogue retenu. */
 export function oublierPalettes(): void {
   promesse = undefined
+  chargees = undefined
+}
+
+/** Les couleurs d'un héros, SI les palettes sont déjà chargées (rien sinon : jamais d'attente). */
+export function couleursDeHeros(cardId: string): Couleur[] | undefined {
+  return chargees?.[cardId]
+}
+
+/**
+ * Le LISERÉ DE L'IDENTITÉ en Épuré (18/10/2026, « les trois couleurs qu'on a choisies pour chaque héros ») : un
+ * dégradé de gauche à droite, comme une carte Dual. Les couleurs sont reprises TELLES QUELLES, même presque noires
+ * (décision de l'utilisateur pour Black Widow). Une seule couleur est doublée pour que le dégradé reste valide.
+ */
+export function degradeDeHeros(couleurs: readonly Couleur[] | undefined): string | undefined {
+  if (!couleurs || couleurs.length === 0) return undefined
+  const liste = couleurs.length === 1 ? [couleurs[0], couleurs[0]] : couleurs
+  return `linear-gradient(90deg, ${liste.map((c) => `rgb(${c[0]},${c[1]},${c[2]})`).join(', ')})`
 }
 
 /**
