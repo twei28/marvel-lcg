@@ -3954,27 +3954,27 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'tl016': "<b>Une fois révélée</b> : camouflez Foot Soldiers.",
   // ---- bebop_rocksteady (Inkwire, TMNT Villains, prefixe tk) : ecrit par l'agent Bebop & Rocksteady, 16/10/2026
   // bebop_rocksteady — * Bebop (Villain)
-  'tk001a': "<b>Interruption forcée</b> : quand la phase du méchant commence, retirez 1 jeton Andouille de l'attachement [[HOG]] ou placez 1 menace sur la manigance principale.\n<b>Réponse forcée</b> : après que Bebop subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[HOG]].",
+  'tk001a': "<b>Interruption forcée</b> : quand la phase du Méchant commence, retirez 1 jeton Andouille de l'attachement [[HOG]] ou placez 1 menace sur la manigance principale.\n<b>Réponse forcée</b> : après que Bebop subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[HOG]].",
   // bebop_rocksteady — * Bebop (Villain)
   'tk001b': "[star] <b>Interruption forcée</b> : quand Bebop s'active, retirez plutôt 1 jeton Andouille de l'attachement [[HOG]]. S'il n'y a aucun jeton Andouille ici, retournez Bebop sur sa face [[ALERT]].\n<i>« J'ai mal à la tête ! »</i>",
   // bebop_rocksteady — * Bebop (Villain)
-  'tk002a': "<b>Interruption forcée</b> : quand la phase du méchant commence, retirez 1 jeton Andouille de l'attachement [[HOG]] ou placez 2 menaces sur la manigance principale.\n<b>Réponse forcée</b> : après que Bebop subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[HOG]].",
+  'tk002a': "<b>Interruption forcée</b> : quand la phase du Méchant commence, retirez 1 jeton Andouille de l'attachement [[HOG]] ou placez 2 menaces sur la manigance principale.\n<b>Réponse forcée</b> : après que Bebop subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[HOG]].",
   // bebop_rocksteady — * Bebop (Villain)
   'tk002b': "[star] <b>Interruption forcée</b> : quand Bebop s'active, retirez plutôt 2 jetons Andouille de l'attachement [[HOG]]. S'il n'y a aucun jeton Andouille ici, retournez Bebop sur sa face [[ALERT]].\n<i>« J'ai mal à la tête ! »</i>",
   // bebop_rocksteady — * Rocksteady (Villain)
-  'tk003a': "<b>Interruption forcée</b> : quand la phase du méchant commence, donnez une carte d'état Tenace à Rocksteady. Retirez 1 jeton Andouille de l'attachement [[RHINO]], ou infligez 1 dégât au premier joueur.\n<b>Réponse forcée</b> : après que Rocksteady subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[RHINO]].",
+  'tk003a': "<b>Interruption forcée</b> : quand la phase du Méchant commence, donnez une carte d'état Tenace à Rocksteady. Retirez 1 jeton Andouille de l'attachement [[RHINO]], ou infligez 1 dégât au premier joueur.\n<b>Réponse forcée</b> : après que Rocksteady subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[RHINO]].",
   // bebop_rocksteady — * Rocksteady (Villain)
   'tk003b': "[star] <b>Interruption forcée</b> : quand Rocksteady s'active, retirez plutôt 1 jeton Andouille de l'attachement [[RHINO]]. S'il n'y a aucun jeton Andouille ici, retournez Rocksteady sur sa face [[ALERT]].\n<i>« Qu'est-ce qui m'a frappé ? »</i>",
   // bebop_rocksteady — * Rocksteady (Villain)
-  'tk004a': "<b>Interruption forcée</b> : quand la phase du méchant commence, donnez une carte d'état Tenace à Rocksteady. Retirez 1 jeton Andouille de l'attachement [[RHINO]], ou infligez 2 dégâts au premier joueur.\n<b>Réponse forcée</b> : après que Rocksteady subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[RHINO]].",
+  'tk004a': "<b>Interruption forcée</b> : quand la phase du Méchant commence, donnez une carte d'état Tenace à Rocksteady. Retirez 1 jeton Andouille de l'attachement [[RHINO]], ou infligez 2 dégâts au premier joueur.\n<b>Réponse forcée</b> : après que Rocksteady subit des dégâts, résolvez la capacité « <b>Spécial</b> » de l'attachement [[RHINO]].",
   // bebop_rocksteady — * Rocksteady (Villain)
   'tk004b': "[star] <b>Interruption forcée</b> : quand Rocksteady s'active, retirez plutôt 2 jetons Andouille de l'attachement [[RHINO]]. S'il n'y a aucun jeton Andouille ici, retournez Rocksteady sur sa face [[ALERT]].\n<i>« Qu'est-ce qui m'a frappé ? »</i>",
   // bebop_rocksteady — Demolition Crew (MainScheme)
-  'tk005a': "<i>Bebop et Rocksteady laissent un sillage de destruction dans tout Manhattan !</i>\n<b>Contenu</b> : Bebop (A1) et Rocksteady (A1), <i>(Bebop (B1) et Rocksteady (B1) en mode expert.)</i> Ensembles Bebop & Rocksteady, Concrete Jungle et Standard. Un ensemble Rencontre modulaire <i>(Rock the Block)</i>.\n<b>Mise en place</b> : mettez en jeu l'environnement Destructive Dunderheads, la manigance annexe Welcome to the Jungle, l'attachement Hog Wild et l'attachement Rhino Rage.",
+  'tk005a': "<i>Bebop et Rocksteady laissent un sillage de destruction dans tout Manhattan !</i>\n<b>Contenu</b> : Bebop (A1) et Rocksteady (A1), <i>(Bebop (B1) et Rocksteady (B1) à la place en mode expert.)</i> Les sets de rencontre Bebop & Rocksteady, Concrete Jungle et Standard. Un set de rencontre modulaire <i>(Rock the Block)</i>.\n<b>Mise en place</b> : mettez en jeu l'environnement Destructive Dunderheads, la manigance annexe Welcome to the Jungle, l'attachement Hog Wild et l'attachement Rhino Rage.",
   // bebop_rocksteady — Demolition Crew (MainScheme)
   'tk005b': "<i>Alors que vous sortez des égouts, Bebop et Rocksteady vous accueillent. On dirait qu'ils vous attendaient !</i>\n[star] <b>Interruption forcée</b> : quand cette manigance est censée être achevée, retirez plutôt toute la menace d'ici. Puis, dans l'ordre des joueurs, Bebop et Rocksteady attaquent chaque joueur <i>(même sous forme d'alter ego)</i>.",
   // bebop_rocksteady — Destructive Dunderheads (Environment)
-  'tk006a': "<i>Double Peine</i> — Pendant l'étape 2 de la phase du méchant, les deux méchants s'activent contre chaque joueur. Choisissez Bebop ou Rocksteady comme cible de chaque carte qui mentionne « le méchant ».\n<b>Interruption forcée</b> : quand Bebop ou Rocksteady est vaincu, mettez de côté ce méchant et son attachement [[TEMPER]]. Retournez le méchant restant sur sa face [[ALERT]], et cette carte sur sa face [[FERAL]].",
+  'tk006a': "<i>Double Peine</i> — Pendant l'étape 2 de la phase du Méchant, les deux méchants s'activent contre chaque joueur. Choisissez Bebop ou Rocksteady comme cible de chaque carte qui mentionne « le méchant ».\n<b>Interruption forcée</b> : quand Bebop ou Rocksteady est vaincu, mettez de côté ce méchant et son attachement [[TEMPER]]. Retournez le méchant restant sur sa face [[ALERT]], et cette carte sur sa face [[FERAL]].",
   // bebop_rocksteady — Gone Berserk! (Attachment)
   'tk006b': "Permanent. Attachez-la au méchant.\nLe méchant attaché ne peut pas être désorienté.\nLe méchant attaché gagne +12[per_hero] points de vie.",
   // bebop_rocksteady — Hog Wild (Attachment)
@@ -3986,13 +3986,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // bebop_rocksteady — Headstrong (Attachment)
   'tk008b': "Permanent. Attachez-la à Rocksteady.\nRocksteady gagne [[ENRAGED]].\n<b>Spécial</b> : placez 1 menace sur la manigance principale.\n<b>Interruption forcée</b> : quand Rocksteady est censé s'activer, si Headfirst est en jeu, retournez Bebop et Rocksteady sur leurs faces [[K.O.]] et retournez les deux attachements [[TEMPER]] sur leurs faces [[ROWDY]].",
   // bebop_rocksteady — * Shutter Shades (Attachment)
-  'tk009': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nBebop gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[HOG]].\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je porte mes lunettes de soleil la nuit. »</i> —Bebop",
+  'tk009': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\nBebop gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[HOG]].\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je porte mes lunettes de soleil la nuit. »</i> —Bebop",
   // bebop_rocksteady — * Aviator Cap (Attachment)
-  'tk010': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\nRocksteady gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[RHINO]].\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.",
+  'tk010': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\nRocksteady gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[RHINO]].\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.",
   // bebop_rocksteady — * Roberta (Attachment)
-  'tk011': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\n[star] Les attaques de Bebop gagnent perçant.\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« C'est l'heure de la boucherie ! »</i> —Bebop",
+  'tk011': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\n[star] Les attaques de Bebop gagnent Perçant.\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« C'est l'heure de la boucherie ! »</i> —Bebop",
   // bebop_rocksteady — * Juniper (Attachment)
-  'tk012': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne renfort.\n[star] Les attaques de Rocksteady gagnent déferlement.\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je parie que je peux vous convaincre de bouger. »</i> —Rocksteady",
+  'tk012': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\n[star] Les attaques de Rocksteady gagnent Déferlement.\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je parie que je peux vous convaincre de bouger. »</i> —Rocksteady",
   // bebop_rocksteady — Bumbling Buffoons (SideScheme)
   'tk013': "Esquive. <i>(Quand un personnage déjoue cette manigance annexe, il peut utiliser sa DEF au lieu de sa CTR.)</i>\n<b>Une fois déjouée</b> : choisissez un ennemi. Cet ennemi vous attaque. Vous pouvez infliger les dégâts de cette attaque à un autre ennemi de votre choix à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // bebop_rocksteady — Bumbling Buffoons (SideScheme)
@@ -4030,7 +4030,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // bebop_rocksteady — Hittin' the Town (Treachery)
   'tk201': "<b>Une fois révélée</b> : défaussez des cartes du dessus du deck du méchant jusqu'à ce qu'un attachement ou une manigance annexe soit défaussé, et révélez-le.\n<i>« Tu sais ce que c'est ? C'est ma nouvelle coupe de cheveux ! »</i> —Rocksteady",
   // bebop_rocksteady — Jägerbombs (Treachery)
-  'tk203': "<b>Une fois révélée</b> : choisissez un :\n• Sonnez votre identité.\n• Désorientez votre identité.\n<i>« Jägerbombs ! Tu me sens, frérot ? »</i> —Bebop",
+  'tk203': "<b>Une fois révélée</b> : choisissez une option :\n• Sonnez votre identité.\n• Désorientez votre identité.\n<i>« Jägerbombs ! Tu me sens, frérot ? »</i> —Bebop",
   // bebop_rocksteady — Get Your Swell On (SideScheme)
   'tk205': "<b>Une fois révélée</b> : soignez 1 dégât de chaque ennemi. Donnez une carte d'état Tenace à chaque ennemi.\n<i>« Tu as besoin de grogner comme ça ? »</i> —Rocksteady\n<i>« Pas maintenant, Chef, je suis dans la zone ! »</i> —Bebop",
   // donatello — * Donatello (Hero)
@@ -4281,17 +4281,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // baxter_stockman — * Baxter Stockman II (Villain)
   'tx002': "Ténacité.\n<b>Une fois révélée</b> : cherchez dans le deck Rencontre et la défausse Rencontre l'attachement Baxter Blaster et révélez-le. <i>(Mélangez.)</i>\n<b>Interruption forcée</b> : quand la phase du Méchant commence, chaque joueur résout la capacité « <b>Spécial</b> » de la manigance Baxter's Laboratory.",
   // baxter_stockman — * Baxter Stockman III (Villain)
-  'tx003': "Ténacité.\nChaque sbire [[SWARM]] gagne garde.\n<b>Une fois révélée</b> : distribuez 1 carte Rencontre face cachée à chaque joueur.\n<b>Interruption forcée</b> : quand la phase du Méchant commence, chaque joueur résout la capacité « <b>Spécial</b> » de la manigance Baxter's Laboratory.",
+  'tx003': "Ténacité.\nChaque sbire [[SWARM]] gagne Garde.\n<b>Une fois révélée</b> : attribuez 1 carte Rencontre face cachée à chaque joueur.\n<b>Interruption forcée</b> : quand la phase du Méchant commence, chaque joueur résout la capacité « <b>Spécial</b> » de la manigance Baxter's Laboratory.",
   // baxter_stockman — Baxter's Laboratory 1A (MainScheme)
-  'tx004a': "<i>Baxter Stockman s'est affairé chez Stockgen sur ses nombreux automates et ses expériences de mutagène. La récente disparition du scientifique a déclenché de folles rumeurs. Que manigançait-il ?</i>\n<b>Contenu :</b> Baxter Stockman (I) et Baxter Stockman (II). <i>(Baxter Stockman (II) et Baxter (III) en mode expert.)</i> Sets Baxter's Lab, Cyber Swarm et Standard. Deux sets de rencontre modulaires <i>(High Speed et Security Protocol)</i>.\n<b>Mise en place</b> : mettez en jeu un sbire Plague of M.O.U.S.E.R.S. engagé avec chaque joueur.",
+  'tx004a': "<i>Baxter Stockman s'est affairé chez Stockgen sur ses nombreux automates et ses expériences de mutagène. La récente disparition du scientifique a déclenché de folles rumeurs. Que manigançait-il ?</i>\n<b>Contenu</b> : Baxter Stockman (I) et Baxter Stockman (II). <i>(Baxter Stockman (II) et Baxter (III) à la place en mode expert.)</i> Les sets de rencontre Baxter's Lab, Cyber Swarm et Standard. Deux sets de rencontre modulaires <i>(High Speed et Security Protocol)</i>.\n<b>Mise en place</b> : mettez en jeu un sbire Plague of M.O.U.S.E.R.S. engagé avec chaque joueur.",
   // baxter_stockman — Baxter's Laboratory 1B (MainScheme)
-  'tx004b': "<i>Réplication</i> — <b>Spécial</b> : placez 1 compteur polyvalent sur chaque sbire [[SWARM]] engagé avec vous. S'il n'y a aucun sbire [[SWARM]] engagé avec vous, distribuez-vous 1 carte Rencontre face cachée.\n<b>Si cette manigance est achevée, les joueurs perdent la partie.</b>",
+  'tx004b': "<i>Réplication</i> — <b>Spécial</b> : placez 1 compteur polyvalent sur chaque sbire [[SWARM]] engagé avec vous. S'il n'y a aucun sbire [[SWARM]] engagé avec vous, attribuez-vous 1 carte Rencontre face cachée.\n<b>Si cette manigance est achevée, les joueurs perdent la partie.</b>",
   // baxter_stockman — * Baxter Blaster (Attachment)
-  'tx005': "Attachez-le à Baxter Stockman.\n[star] <b>Réponse forcée</b> : après que Baxter Stockman attaque et blesse un personnage allié, hébétez-le.\n<b>Action de héros</b> : inclinez votre héros ou dépensez 2 ressources de n'importe quel type → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : attachez Baxter Blaster à Baxter Stockman.",
+  'tx005': "Attachez-le à Baxter Stockman.\n[star] <b>Réponse forcée</b> : après que Baxter Stockman attaque et blesse un personnage ami, hébétez-le.\n<b>Action de héros</b> : inclinez votre héros ou dépensez 2 ressources de n'importe quel type → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : attachez Baxter Blaster à Baxter Stockman.",
   // baxter_stockman — Swarm Superiority (Attachment, x2)
-  'tx006': "Attachez-la à un sbire [[SWARM]]. Si vous ne pouvez pas, cette carte gagne Renfort.\nLe sbire attaché gagne [[AERIAL]] et garde.\n<b>Une fois révélée</b> : placez 2 compteurs polyvalents sur le sbire attaché.\n<i>« Il est difficile de rivaliser avec notre nombre. »</i> —Baxter Stockman",
+  'tx006': "Attachez-la à un sbire [[SWARM]]. Si vous ne pouvez pas, cette carte gagne Renfort.\nLe sbire attaché gagne [[AERIAL]] et Garde.\n<b>Une fois révélée</b> : placez 2 compteurs polyvalents sur le sbire attaché.\n<i>« Il est difficile de rivaliser avec notre nombre. »</i> —Baxter Stockman",
   // baxter_stockman — Plague of M.O.U.S.E.R.S. (Minion, x4)
-  'tx007': "Entre en jeu avec 2 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit des dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
+  'tx007': "Entre en jeu avec 2 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit n'importe quelle quantité de dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
   // baxter_stockman — Radical Ingenuity (Treachery, x3)
   'tx008': "<b>Une fois révélée</b> : choisissez :\n• Résolvez la capacité « <b>Spécial</b> » de Baxter's Laboratory.\n• Placez 2 menaces sur la manigance principale.\n<i>« Essssayez donc de m'arrêteeeer. »</i> —Baxter Stockman",
   // baxter_stockman — Rapid Replication (Treachery, x3)
@@ -4301,17 +4301,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // baxter_stockman — Mad Lab (SideScheme, x2)
   'tx011': "<i>« Ils disaient que j'étais fou. Bientôt, ils comprendront. »</i> —Baxter Stockman\n<b>Interruption forcée</b> : quand la phase du Méchant commence, le premier joueur doit résoudre la capacité « <b>Spécial</b> » de Baxter's Laboratory.",
   // baxter_stockman (Cyber Swarm) — Flight of Flyborgs (Minion, x3)
-  'tx012': "Entre en jeu avec 4 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit des dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
+  'tx012': "Entre en jeu avec 4 compteurs d'essaim dessus.\n[star] La MNG, l'ATQ et les points de vie de ce sbire sont égaux au nombre de compteurs d'essaim qu'il porte.\n<b>Interruption forcée</b> : quand ce sbire subit n'importe quelle quantité de dégâts, retirez plutôt autant de compteurs d'essaim de cette carte.",
   // baxter_stockman (Cyber Swarm) — * Superfly (Minion)
-  'tx013': "Entre en jeu avec 2 compteurs de mutagène dessus.\n[star] La MNG et l'ATQ de ce sbire sont égales au nombre de compteurs de mutagène qu'il porte.\n<i>« Bzz bzz. »</i>",
+  'tx013': "Entre en jeu avec 2 compteurs de mutagène dessus.\n[star] La MNG et l'ATQ de ce sbire sont égaux au nombre de compteurs de mutagène qu'il porte.\n<i>« Bzz bzz. »</i>",
   // baxter_stockman (Cyber Swarm) — Buzz Off (Treachery, x2)
   'tx014': "<b>Une fois révélée</b> : choisissez :\n• Placez 3 menaces sur la manigance principale.\n• Subissez 2 dégâts.\n<i>« Bzzzzzzzzzzzzzzzzzz. »</i>",
   // baxter_stockman (High Speed) — Roadkill Rodneys (Minion, x3)
   'tx015': "Entre en jeu avec 1 compteur de câble dessus.\nCoup Rapide.\n[star] Ce sbire gagne +1 ATQ par compteur de câble qu'il porte.\n[star] <b>Réponse forcée</b> : après que ce sbire attaque et blesse un personnage, hébétez ce personnage et retirez de cette carte chaque compteur de câble.",
   // baxter_stockman (High Speed) — Wrapped Up (Treachery, x2)
-  'tx016': "<b>Une fois révélée</b> : hébétez un personnage allié. Si vous ne pouvez pas, cette carte gagne Renfort.\n<i>« Appréhendez ! Appréhendez ! »</i> —Roadkill Rodney",
+  'tx016': "<b>Une fois révélée</b> : hébétez un personnage ami. Si vous ne pouvez pas, cette carte gagne Renfort.\n<i>« Appréhendez ! Appréhendez ! »</i> —Roadkill Rodney",
   // baxter_stockman (Security Protocol) — Auto Defense Bots (Minion, x4)
-  'tx017': "Garde. Patrouille.\nEntre en jeu avec 1 compteur de bouclier dessus.\n<b>Interruption forcée</b> : quand ce sbire va être vaincu, soignez tous les dégâts de ce sbire et retirez plutôt 1 compteur de bouclier de cette carte.",
+  'tx017': "Garde. Patrouille.\nEntre en jeu avec 1 compteur de bouclier dessus.\n<b>Interruption forcée</b> : quand ce sbire est censé être vaincu, soignez tous les dégâts de ce sbire et retirez plutôt 1 compteur de bouclier de cette carte.",
   // baxter_stockman (Security Protocol) — Intruder Alert! (Attachment, x3)
   'tx018': "Attachez-la à votre identité.\n[[crisis]]\n<b>Action</b> : subissez 2 dégâts ou inclinez votre identité → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // shredder — * Shredder I (Villain)
@@ -4321,13 +4321,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // shredder — * Shredder III (Villain)
   'ts003': "Shredder peut avoir jusqu'à 4 cartes d'état Camouflé.\n<b>Une fois révélé</b> : cherchez Kuro Kabuto (attachement) dans le deck Rencontre et la défausse Rencontre et révélez-le. <i>(Mélangez.)</i>\n<b>Réponse forcée</b> : après la fin de la phase du Méchant, donnez 2 cartes d'état Camouflé à Shredder.",
   // shredder — Clan of Shadows (MainScheme 1A)
-  'ts004a': '<i>Le Foot Clan contrôle les rues de la ville.</i>\n<b>Contenu</b> : Shredder (I) et Shredder (II). <i>(Shredder (II) et Shredder (III) en mode expert.)</i> Ensembles Shredder, Shadow of the Foot et Standard. Deux ensembles de rencontre modulaires <i>(Chunin et Foot Goon Squad)</i>.\n<b>Mise en place</b> : chaque joueur cherche un sbire [[FOOT CLAN]] dans le deck Rencontre et le révèle.',
+  'ts004a': '<i>Le Foot Clan contrôle les rues de la ville.</i>\n<b>Contenu</b> : Shredder (I) et Shredder (II). <i>(Shredder (II) et Shredder (III) à la place en mode expert.)</i> Les sets de rencontre Shredder, Shadow of the Foot et Standard. Deux sets de rencontre modulaires <i>(Chunin et Foot Goon Squad)</i>.\n<b>Mise en place</b> : chaque joueur cherche un sbire [[FOOT CLAN]] dans le deck Rencontre et le révèle.',
   // shredder — Clan of Shadows (MainScheme 1B)
-  'ts004b': "<i>L'emprise de Shredder sur la ville dure depuis trop longtemps. Vous devez démanteler son réseau criminel.</i>\n<b>Une fois révélée</b> : camouflez Shredder.\n<b>Réponse forcée</b> : après qu'un sbire [[FOOT CLAN]] a été vaincu, placez 1 menace sur cette manigance.",
+  'ts004b': "<i>L'emprise de Shredder sur la ville dure depuis trop longtemps. Vous devez démanteler son réseau criminel.</i>\n<b>Une fois révélée</b> : camouflez Shredder.\n<b>Réponse forcée</b> : après qu'un sbire [[FOOT CLAN]] est vaincu, placez 1 menace sur cette manigance.",
   // shredder — Shredder's Wrath (MainScheme 2A)
   'ts005a': "<i>Votre ingérence dans les affaires du Foot Clan a attiré la colère de Shredder.</i>\n<b>Une fois révélée</b> : dans l'ordre des joueurs, chaque joueur défausse 4 cartes du dessus du deck Rencontre et révèle le sbire [[FOOT CLAN]] le plus haut de la défausse Rencontre.",
   // shredder — Shredder's Wrath (MainScheme 2B)
-  'ts005b': "<i>Shredder vous a maintenant dans sa ligne de mire.</i>\n<b>Une fois révélée</b> : donnez une carte d'état Tenace à chaque ennemi.\n<b>Réponse forcée</b> : après que Shredder manigance, donnez une carte d'état Camouflé à Shredder.\n<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
+  'ts005b': "<i>Shredder vous a maintenant dans sa ligne de mire.</i>\n<b>Une fois révélée</b> : donnez une carte d'état Tenace à chaque ennemi.\n<b>Réponse forcée</b> : après que Shredder manigance, donnez une carte d'état Camouflé à Shredder.\n<b>Si cette manigance est achevée, les joueurs perdent la partie.</b>",
   // shredder — Bladed Armor (Attachment)
   'ts006': "Attachez-la à Shredder.\nShredder gagne Riposte 1.\n<b>Action de héros</b> : s'il n'y a aucune carte d'état Camouflé sur Shredder, subissez 1 dégât et dépensez 1 ressource de n'importe quel type → défaussez cette carte.\n<i>« Hé, regardez la râpe à fromage géante. »</i> —Raphael",
   // shredder — * Kuro Kabuto (Attachment)
@@ -4335,21 +4335,21 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // shredder — Elite Guard (Minion)
   'ts008': "Garde. Patrouille.\n<b>Une fois révélé</b> : camouflez Shredder.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à Shredder.",
   // shredder — Foot Ninja (Minion)
-  'ts010': '<b>Une fois révélé</b> : camouflez Foot Ninja.\n<b>Interruption forcée</b> : quand Foot Ninja est vaincu, mélangez-le dans le deck Rencontre.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez le Méchant.',
+  'ts010': '<b>Une fois révélé</b> : camouflez Foot Ninja.\n<b>Interruption forcée</b> : quand Foot Ninja est vaincu, mélangez-le dans le deck Rencontre.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez le méchant.',
   // shredder — * Mongo (Minion)
   'ts012': "Garde. Riposte 1.\n<hr />\n[star] <b>Boost</b> : sonnez votre héros.\n<i>« Qui aurait cru qu'un lutteur de sumo pouvait porter un masque de kabuki ? »</i> —Michelangelo",
   // shredder — Cloak of Shadows (Treachery)
   'ts013': "<b>Une fois révélée</b> : camouflez chaque ennemi. Si vous n'êtes engagé avec aucun sbire, révélez le sbire [[FOOT CLAN]] le plus haut de la défausse Rencontre.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez Shredder.",
   // shredder — Disarming Assault (Treachery)
-  'ts015': '<b>Une fois révélée</b> : Shredder vous attaque. Ne donnez aucune carte de boost à Shredder pour cette activation. Si cette attaque inflige des dégâts à votre identité, défaussez une [[WEAPON]] que vous contrôlez.\n<hr />\n[star] <b>Boost</b> : défaussez une [[WEAPON]] que vous contrôlez.',
+  'ts015': '<b>Une fois révélée</b> : Shredder vous attaque. Ne donnez aucune carte de boost à Shredder pour cette activation. Si cette attaque vous inflige des dégâts, défaussez une [[WEAPON]] que vous contrôlez.\n<hr />\n[star] <b>Boost</b> : défaussez une [[WEAPON]] que vous contrôlez.',
   // shredder — Shred (Treachery)
-  'ts017': "<b>Une fois révélée (Alter ego)</b> : placez une carte d'état Camouflé sur Shredder.\n<b>Une fois révélée (Héros)</b> : Shredder vous attaque. Ne donnez aucune carte de boost à Shredder pour cette activation.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez Shredder.",
+  'ts017': "<b>Une fois révélée (alter ego)</b> : placez une carte d'état Camouflé sur Shredder.\n<b>Une fois révélée (héros)</b> : Shredder vous attaque. Ne donnez aucune carte de boost à Shredder pour cette activation.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, camouflez Shredder.",
   // shredder — Foot Rikugun (SideScheme)
   'ts020': "<i>Le Foot Clan entraîne ses ninjas pour en faire des assassins implacables.</i>\n<b>Réponse forcée</b> : après qu'un sbire [[FOOT CLAN]] entre en jeu, camouflez-le. Si vous ne pouvez pas, donnez-lui une carte d'état Tenace.",
   // shredder — Throne of the Jōnin (SideScheme)
   'ts022': '<i>« Ce soir, je dînerai de soupe de tortue. »</i> —Shredder\n<b>Une fois révélée</b> : cherchez un attachement [[FOOT CLAN]] dans le deck Rencontre et la défausse Rencontre et révélez-le. <i>(Mélangez.)</i> Si vous ne pouvez pas, placez 2[per_hero] menaces sur cette manigance.',
   // chunin — * Karai (Minion)
-  'ts101': '<b>Une fois révélée</b> : camouflez Karai.\n<b>Une fois vaincu</b> : camouflez le Méchant.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
+  'ts101': '<b>Une fois révélée</b> : camouflez Karai.\n<b>Une fois vaincu</b> : camouflez le méchant.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
   // chunin — * Ocho (Minion)
   'ts102': "Garde.\n[star] Les attaques d'Ocho gagnent Perçant.\n<hr />\n[star] <b>Boost</b> : cherchez Karai dans le deck Rencontre et la défausse Rencontre et révélez-la. <i>(Mélangez.)</i>",
   // chunin — * Kira no Ken (Attachment)
@@ -4363,7 +4363,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // foot_goon_squad — * Hun (Minion)
   'ts203': 'Ténacité.\n<b>Réponse forcée</b> : après que Hun attaque et blesse un personnage, sonnez ce personnage.\n<hr />\n[star] <b>Boost</b> : si cette activation inflige des dégâts à un personnage, sonnez ce personnage.',
   // foot_goon_squad — * Koya (Minion)
-  'ts204': 'Incitation 1. Coup Rapide.\n<b>Une fois révélée</b> : soignez 2 dégâts du Méchant.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur la manigance principale et soignez 2 dégâts du Méchant.',
+  'ts204': 'Incitation 1. Coup Rapide.\n<b>Une fois révélée</b> : soignez 2 dégâts du méchant.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur la manigance principale et soignez 2 dégâts du méchant.',
   // foot_goon_squad — * Rocksteady (Minion)
   'ts205': 'Solide. Coup Rapide.\n[star] Les attaques de Rocksteady gagnent Déferlement.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Déferlement. Sinon, attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
   // foot_goon_squad — Send Out the Goons (SideScheme)
@@ -4379,23 +4379,23 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_standard — Outmatched (Treachery)
   'te002': 'Incitation 2.\n<b>Une fois révélée</b> : hébétez votre identité.\n<hr />\n[star] <b>Boost</b> : après la résolution de cette activation, hébétez votre identité.',
   // tmnt_standard — Pursued by Shadows (Treachery)
-  'te004': "<b>Une fois révélée</b> : cherchez votre sbire némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-le. <i>(Mélangez.)</i> Camouflez votre sbire némésis. Si votre sbire némésis n'est pas entré en jeu ainsi, cette carte gagne Renfort.",
+  'te004': "<b>Une fois révélée</b> : cherchez votre sbire Némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-le. <i>(Mélangez.)</i> Camouflez votre sbire Némésis. Si votre sbire Némésis n'est pas entré en jeu ainsi, cette carte gagne Renfort.",
   // tmnt_standard — Shadow of the Past (Treachery)
-  'te005': "<b>Une fois révélée</b> : révélez votre sbire némésis mis de côté et mettez-le en jeu engagé avec vous. Révélez votre manigance annexe némésis mise de côté et mettez-la en jeu. Mélangez le reste de votre ensemble de rencontre némésis mis de côté dans le deck Rencontre. Si votre sbire némésis n'entre pas en jeu ainsi, cette carte gagne Renfort.",
+  'te005': "<b>Une fois révélée</b> : révélez votre sbire Némésis mis de côté et mettez-le en jeu engagé avec vous. Révélez votre manigance annexe Némésis mise de côté et mettez-la en jeu. Mélangez le reste de votre set de rencontre Némésis mis de côté dans le deck Rencontre. Si votre sbire Némésis n'entre pas en jeu à cause de cet effet, cette carte gagne Renfort.",
   // tmnt_standard — Skulk (Treachery)
-  'te006': '<b>Une fois révélée</b> : subissez 2 dégâts indirects et camouflez le Méchant.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
+  'te006': '<b>Une fois révélée</b> : subissez 2 dégâts indirects et camouflez le méchant.\n<hr />\n[star] <b>Boost</b> : attribuez cette carte au premier joueur comme carte Rencontre face cachée.',
   // tmnt_expert — Annihilation (Treachery)
-  'te101': '<b>Une fois révélée</b> : le Méchant vous attaque. Cette attaque gagne Déferlement.\n<hr />\n[star] <b>Boost</b> : si le Méchant attaque, cette attaque gagne Déferlement.',
+  'te101': '<b>Une fois révélée</b> : le méchant vous attaque. Cette attaque gagne Déferlement.\n<hr />\n[star] <b>Boost</b> : si le méchant attaque, cette attaque gagne Déferlement.',
   // tmnt_expert — Haunted by the Past (Treachery)
-  'te102': "<b>Une fois révélée</b> : cherchez votre sbire némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et mettez-le en jeu engagé avec vous. <i>(Mélangez.)</i> Si votre sbire némésis n'est pas entré en jeu ainsi, inclinez votre identité et cette carte gagne Renfort.",
+  'te102': "<b>Une fois révélée</b> : cherchez votre sbire Némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et mettez-le en jeu engagé avec vous. <i>(Mélangez.)</i> Si votre sbire Némésis n'est pas entré en jeu ainsi, inclinez votre identité et cette carte gagne Renfort.",
   // tmnt_expert — Sinister Plan (Treachery)
-  'te103': "<b>Une fois révélée</b> : cherchez votre manigance annexe némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-la. <i>(Mélangez.)</i> Hébétez votre identité. Si votre manigance annexe némésis n'est pas entrée en jeu ainsi, cette carte gagne Renfort.",
+  'te103': "<b>Une fois révélée</b> : cherchez votre manigance annexe Némésis dans le deck Rencontre, la défausse Rencontre et la zone mise de côté et révélez-la. <i>(Mélangez.)</i> Hébétez votre identité. Si votre manigance annexe Némésis n'est pas entrée en jeu ainsi, cette carte gagne Renfort.",
   // tmnt_aspect_aggression — Bo-Wing (Ally), reskin de 53035 Winter Soldier
   'ua006': "<b>Réponse</b> : après que Bo-Wing a attaqué et vaincu un ennemi, retirez 2 menaces d'une manigance.\n<i>« Tant que je serai en vie, tu m'auras sur le dos. »</i>",
   // tmnt_aspect_aggression — Demolish (Event) ; « Rampage » : mot-clé maison laissé en anglais, comme Cloak
   'ua015': "[star] Rampage 3. <i>(Coût additionnel pour jouer cette carte : subissez 3 dégâts et défaussez les 3 cartes du dessus de votre deck.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si vous contrôlez un soutien [[NYC]], cette attaque gagne Déferlement et Perçant.",
   // tmnt_intense — Intense Combatants (Environment)
-  'te201': "<i>Ensembles TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, intensifiez ce personnage à la place.",
+  'te201': "<i>Sets TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, intensifiez ce personnage à la place.",
 
   // --- TMNT Aggression (ua) : ajouter les cartes uaNNN ci-dessous, dans ce bloc seulement ---
   // tmnt_aspect_aggression — Apex Predator (Event) ; « Rampage » : mot-clé maison laissé en anglais
