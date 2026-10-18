@@ -21,6 +21,11 @@
 - Le cadre de décision tour par tour (aussi la spec du bot autoplay) :
   `reference/GUIDE-STRATEGIE-JEU.md`
 
+## Je veux voir ce qui reste à faire
+
+- `BACKLOG.md` : les chantiers décidés ou envisagés, pas encore faits (par exemple le jeu installable sans
+  télécharger toutes les cartes)
+
 ## Je veux comprendre l'historique du projet
 
 - `rapports/RANGEMENT.md` : pourquoi le dossier est organisé ainsi
