@@ -75,7 +75,7 @@ describe('lecture et trajet des cartes rencontre', () => {
     await finir(0)
     expect(r.container.querySelector('[data-lecture="entree"]')).not.toBeNull()
     await finir(1)
-    expect(r.container.querySelector('.rencontre-total')?.textContent).toBe('Élan +3')
+    expect(r.container.querySelector('.rencontre-total')?.textContent).toBe('Boost +3')
     expect(suite).not.toHaveBeenCalled()
     act(() => { controle.current?.valider(suite) })
     await finir(2)

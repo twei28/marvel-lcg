@@ -200,7 +200,7 @@ function LectureRencontre({ cartes, apport, auteurId, controle }: { cartes: Cart
             labelType={undefined} masquerType camp={undefined} />
         </div>
       ))}
-      {cartes.length > 1 && phase === 'lecture' ? <div className="rencontre-total" style={{ left: places[0].x, top: Math.max(...places.map((p) => p.y + p.h)) + 12, width: places.at(-1)!.x + places.at(-1)!.w - places[0].x }}>{t('Élan')} +{apport}</div> : null}
+      {cartes.length > 1 && phase === 'lecture' ? <div className="rencontre-total" style={{ left: places[0].x, top: Math.max(...places.map((p) => p.y + p.h)) + 12, width: places.at(-1)!.x + places.at(-1)!.w - places[0].x }}>{t('Boost')} +{apport}</div> : null}
     </div>
   )
 }
