@@ -5533,7 +5533,7 @@ async function loadExtTabs() {
 
 /** Les boîtes dont on a une pochette recadrée au format commun (outils/pochettes-boites.py, 18/10/2026) :
  *  l'illustration de face, sans liseré de pack ni perspective. Les autres gardent leur image d'origine. */
-const POCHETTES_RECADREES = new Set([1, 2, 4, 7, 11, 16, 21, 24, 27, 32, 39, 40, 45, 50, 55, 56, 57, 60, 119, 120, 136, 143, 178]);
+const POCHETTES_RECADREES = new Set([1, 2, 4, 7, 11, 16, 21, 24, 27, 32, 39, 40, 45, 50, 55, 56, 57, 60, 119, 120, 136, 143, 178, 190, 192, 195]);
 function pochetteBoite(cle) {
     const numero = parseInt(String(cle).split(".")[0], 10);
     return POCHETTES_RECADREES.has(numero) && /^\d+\. /.test(cle)

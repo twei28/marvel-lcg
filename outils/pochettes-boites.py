@@ -12,7 +12,7 @@ Les rectangles sont (x, y, largeur) dans l'image d'origine ; la hauteur se dedui
 sans entree ici garde son image d'origine (voir `pochetteBoite` dans public/js/prepare/app.js).
 """
 import os
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE = os.path.join(RACINE, "Fusion", "marvel-lcg-src", "assets", "textures", "sets")
@@ -55,3 +55,33 @@ for nom, (x, y, w) in RECTS.items():
     boite = im.crop((x, y, x + w, y + h)).resize((LARGEUR, HAUTEUR), Image.LANCZOS)
     boite.save(os.path.join(SORTIE, nom.split(".")[0] + ".webp"), quality=90, method=6)
     print(nom, (x, y, w, h))
+
+
+# Les trois boites fan-made TMNT n'ont pas de pochette : on en tire une de l'illustration de leur méchant
+# (assets/pics), recadrée sur le personnage, avec le titre en Bangers comme sur les autres couvertures.
+PICS = os.path.join(RACINE, "Fusion", "marvel-lcg-src", "assets", "pics")
+POLICE = os.path.join(RACINE, "Fusion", "marvel-lcg-src", "public", "fonts", "Bangers-Regular.ttf")
+Y0, Y1 = 98, 488   # la fenêtre de l'illustration sur une carte de méchant (615 x 882)
+LARGE = round((Y1 - Y0) * RATIO)
+DE_CARTES = {
+    "190": ("SHREDDER", [("ts001.jpg", 215)]),
+    "192": ("BEBOP & ROCKSTEADY", [("tk001a.jpg", 190), ("tk003a.jpg", 230)]),
+    "195": ("BAXTER STOCKMAN", [("tx001.jpg", 130)]),
+}
+for numero, (titre, morceaux) in DE_CARTES.items():
+    toile = Image.new("RGB", (LARGE, Y1 - Y0))
+    part = LARGE // len(morceaux)
+    for i, (fichier, x) in enumerate(morceaux):
+        carte = Image.open(os.path.join(PICS, fichier)).convert("RGB")
+        toile.paste(carte.crop((x, Y0, x + part, Y1)), (i * part, 0))
+    toile = toile.resize((LARGEUR, HAUTEUR), Image.LANCZOS)
+    d = ImageDraw.Draw(toile)
+    taille = 46
+    while True:
+        police = ImageFont.truetype(POLICE, taille)
+        if d.textlength(titre, font=police) <= LARGEUR - 24 or taille <= 20:
+            break
+        taille -= 2
+    d.text((LARGEUR / 2, HAUTEUR - 34), titre, font=police, fill="white", anchor="mm", stroke_width=4, stroke_fill="black")
+    toile.save(os.path.join(SORTIE, numero + ".webp"), quality=90, method=6)
+    print(numero, titre)
