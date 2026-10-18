@@ -78,3 +78,56 @@ y restent utiles, comme briques :
 
 **Pistes de départ.** Mesurer le gain d'un passage en WebP sur 100 cartes ; prototyper le téléchargement à la demande
 des cartes d'une partie ; étendre `sw-plateau.js` pour la version en ligne ; évaluer l'emballage du moteur.
+
+---
+
+## 2. Ajouter des langues au jeu (ajouté le 18/10/2026)
+
+**Le besoin.** Le jeu est en français et en anglais. Savoir quelles langues ajouter ensuite, et où trouver leurs
+cartes (textes et images).
+
+**Quelles langues.** Les ventes par langue **ne sont pas publiques** (ni Fantasy Flight Games ni Asmodee ne les
+publient). Éditions officielles confirmées : anglais, français, allemand, italien, coréen ; espagnol, chinois et
+tchèque cités par un site de fans non officiel. Estimation, **non sourcée**, des cinq langues les plus
+vendues : anglais, puis français, allemand, espagnol, italien (ordre incertain après le français). L'allemand et
+l'espagnol seraient les suivantes à ajouter.
+
+**Où trouver les cartes (mesuré le 18/10/2026).**
+
+*Textes et noms : MarvelCDB* (`<langue>.marvelcdb.com`, même interface publique que pour `fr.`, déjà utilisée par le
+projet). Sur ses 2 155 cartes officielles, part dont le nom ou le texte est traduit :
+
+| Langue | Adresse | Couverture |
+|---|---|---|
+| Espagnol | `es.marvelcdb.com` | 99 % |
+| Allemand | `de.marvelcdb.com` | 86 % |
+| Français | `fr.marvelcdb.com` | 82 % (déjà utilisé) |
+| Italien | `it.marvelcdb.com` | 82 % |
+| Coréen | `ko.marvelcdb.com` | 35 % |
+| Polonais, russe | `pl.`, `ru.marvelcdb.com` | 0 % (le site existe, tout est en anglais) |
+| Chinois, japonais, portugais, tchèque | | aucun site de langue |
+
+*Images :*
+- Un **pack d'images chinoises** (54 Mo, 24/05/2024) pour le moteur d'`irefrixs`, annoncé dans son
+  [journal de développement](https://irefrixs.itch.io/marvel-lcg/devlog/737085/post) ; même mécanisme que les scans
+  français (dossier d'images ajouté à `image_folders`).
+- **Coréen** : communauté [Boardlife](https://boardlife.co.kr/game/14799/board/talk), traductions de fans incomplètes.
+- **OCTGN** et **DragnCards** : à ma connaissance ils ont des cartes et images en plusieurs langues, mais **non vérifié**,
+  les recherches n'ont rien donné ; à aller voir directement dans leurs dépôts.
+
+**Ce que ça ne couvre pas.** Les extensions fan-made et TMNT/Shinobi n'existent pas sur MarvelCDB : leurs traductions
+resteraient à faire à la main. Les conditions d'usage de MarvelCDB pour une réutilisation à grande échelle n'ont pas
+été vérifiées.
+
+**Ce qui existe déjà dans le projet.** L'import français (`fr.marvelcdb.com`, textes FR du plateau, scans dans
+`assets/pics-fr`, 915 Mo ; rapport `docs/rapports/RAPPORT-SCANS-FR.md`). Le travail pour une nouvelle langue suit
+le même chemin : textes de cartes, textes de l'interface (`dico-en`-like), scans, noms de cartes.
+
+**À trancher.**
+- Quelle langue en premier (l'espagnol a le meilleur rapport couverture/effort pour le texte) ?
+- Les scans : où les trouver pour cette langue (pack OCTGN ? DragnCards ?) et leur poids (voir le chantier 1 : ~1 Go
+  par langue de scans, à alléger avant d'en multiplier).
+- Faut-il demander l'accord de MarvelCDB ?
+
+**Pistes de départ.** Chiffrer le travail pour l'espagnol (textes MarvelCDB + interface) ; regarder les modules
+OCTGN et DragnCards pour les scans ; mesurer le poids d'une langue en WebP.
