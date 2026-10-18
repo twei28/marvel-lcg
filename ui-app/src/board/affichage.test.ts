@@ -10,6 +10,7 @@ import {
   lireAffichage,
   mouvementReduit,
   normaliserAffichage,
+  reglerEpurePourTous,
 } from './affichage'
 
 beforeEach(() => {
@@ -19,10 +20,12 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  reglerEpurePourTous(true)
 })
 
 describe('affichage', () => {
   it('lit la meme cle que la preparation, normal par defaut (pour qui n a pas droit a l epure)', () => {
+    reglerEpurePourTous(false) // l'ancienne reserve a l'administrateur (modes Normal et Sobre desactives, pas supprimes)
     window.localStorage.setItem('mc_vue_joueur', 'oui')
     expect(CLE_AFFICHAGE).toBe('mc_affichage_v1')
     expect(lireAffichage()).toBe('normal')
@@ -54,6 +57,7 @@ describe('affichage', () => {
   })
 
   it('l epure est un sobre de plus : data-affichage vaut sobre, data-epure s ajoute', () => {
+    reglerEpurePourTous(false) // ancienne regle : les modes Normal et Sobre sont desactives, pas supprimes
     expect(normaliserAffichage('epure')).toBe('epure')
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('{}'))))
     ecrireAffichage('epure')

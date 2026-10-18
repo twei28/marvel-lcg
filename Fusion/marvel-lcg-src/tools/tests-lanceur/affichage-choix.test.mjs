@@ -3,7 +3,11 @@
 //     node --test tools/tests-lanceur/affichage-choix.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { normaliser, suivant, attributsDe, reconcilier, CLE_AFFICHAGE } from "../../public/js/prepare/affichage-choix.js";
+import { normaliser, suivant, attributsDe, reconcilier, CLE_AFFICHAGE, reglerEpurePourTous } from "../../public/js/prepare/affichage-choix.js";
+
+// Depuis le 18/10/2026 l'épuré est l'affichage de TOUS (modes Normal et Sobre désactivés, pas supprimés). Ces tests vérifient
+// l'ancienne règle (réserve à l'administrateur) : on la remet ici ; le test « pour tout le monde » en bas la coupe à nouveau.
+reglerEpurePourTous(false);
 
 test("la clé est celle que lit le plateau", () => {
     assert.equal(CLE_AFFICHAGE, "mc_affichage_v1");
@@ -96,5 +100,18 @@ test("qui a droit à l'épuré n'a plus que lui : normal et sobre rangés ne se 
         assert.equal(doitProposerLeChoix(null, null), false);
     } finally {
         delete globalThis.location;
+    }
+});
+
+test("l'épuré pour tout le monde, seul affichage : défaut du site depuis le 18/10/2026", async () => {
+    const { valeurPermise, epurePermis, doitProposerLeChoix } = await import("../../public/js/prepare/affichage-choix.js");
+    reglerEpurePourTous(true);
+    try {
+        // Sous node : ni hôte local, ni réponse du serveur, et pourtant :
+        assert.equal(epurePermis(), true);
+        for (const v of ["normal", "sobre", "epure", null, "fluo"]) assert.equal(valeurPermise(v), "epure");
+        assert.equal(doitProposerLeChoix(null, null), false);
+    } finally {
+        reglerEpurePourTous(false);
     }
 });

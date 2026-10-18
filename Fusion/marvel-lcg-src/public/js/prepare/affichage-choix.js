@@ -49,7 +49,26 @@ function hoteLocal() {
     return h === "localhost" || h === "127.0.0.1" || h === "[::1]";
 }
 
+/**
+ * L'ÉPURÉ POUR TOUT LE MONDE, SEUL AFFICHAGE (18/10/2026, demande de l'utilisateur :
+ * « les modes autres, je veux pas que tu les supprimes, je veux juste que tu les
+ * désactives »). Tant que ce réglage est vrai, `epurePermis()` répond oui à tous
+ * (aussi dans la vue « compte classique » de l'administrateur) : le bouton qui
+ * fait tourner les modes, la fenêtre « Choisis ton affichage » et la ligne de choix
+ * disparaissent, et un Normal ou un Sobre rangé dans le navigateur ou sur le compte
+ * ne se montre plus (sans être effacé). Le code des modes Normal et Sobre, et la
+ * réserve à l'administrateur (`epurePermisReserve`), restent là, intacts.
+ * POUR TOUT REMETTRE : `reglerEpurePourTous(false)` ou la constante ci-dessous à `false`.
+ */
+let epurePourTous = true;
+export function reglerEpurePourTous(valeur) { epurePourTous = !!valeur; }
+
 export function epurePermis() {
+    return epurePourTous || epurePermisReserve();
+}
+
+/** L'ancienne règle : réservé à l'administrateur (conservée, voir `epurePourTous`). */
+export function epurePermisReserve() {
     try {
         if (globalThis.localStorage && globalThis.localStorage.getItem("mc_vue_joueur") === "oui") return false;
         if (hoteLocal()) return true;

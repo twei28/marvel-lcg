@@ -8,6 +8,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ContenuOnglet, FenetreReglages, ONGLETS, type ProprietesReglages } from './FenetreReglages'
+import { reglerEpurePourTous } from './affichage'
 
 function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
   return {
@@ -96,8 +97,16 @@ describe('un sous-reglage inutilisable reste VISIBLE', () => {
 
 // Qui a droit a l'epure (l'hote local, l'administrateur) n'a plus de ligne « Style d'affichage »
 // (18/10/2026) ; qui n'y a pas droit la garde. La vue joueur de l'administrateur compte comme sans droit.
-const sansDroitAEpure = () => window.localStorage.setItem('mc_vue_joueur', 'oui')
-afterEach(() => window.localStorage.removeItem('mc_vue_joueur'))
+// Depuis le 18/10/2026 l'Epure est l'affichage de TOUS (reglerEpurePourTous) : « sans droit » veut dire ici
+// qu'on remet l'ancienne reserve a l'administrateur, pour garder ces tests des modes Normal et Sobre (desactives, pas supprimes).
+const sansDroitAEpure = () => {
+  reglerEpurePourTous(false)
+  window.localStorage.setItem('mc_vue_joueur', 'oui')
+}
+afterEach(() => {
+  window.localStorage.removeItem('mc_vue_joueur')
+  reglerEpurePourTous(true)
+})
 
 describe('aucun reglage n’a ete perdu au rangement', () => {
   beforeEach(sansDroitAEpure)

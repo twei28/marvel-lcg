@@ -1,6 +1,6 @@
 // L'Épuré réservé au compte de l'administrateur, et « Étape par étape bis » (16/10/2026).
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { appliquerAffichage, CLE_AFFICHAGE, CLE_EPURE_PERMIS, epurePermis, lireAffichage, retenirEpurePermis } from './affichage'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { appliquerAffichage, CLE_AFFICHAGE, CLE_EPURE_PERMIS, epurePermis, lireAffichage, reglerEpurePourTous, retenirEpurePermis } from './affichage'
 import { ecrirePresentationPhase, lirePresentationPhase, suivrePresentationPhase } from './phase-presentation'
 
 afterEach(() => {
@@ -8,9 +8,25 @@ afterEach(() => {
   localStorage.clear()
   sessionStorage.clear()
   delete document.documentElement.dataset.epure
+  reglerEpurePourTous(true)
 })
 
-describe("l'épuré, réservé à l'administrateur", () => {
+describe("l'épuré pour tout le monde, seul affichage (18/10/2026)", () => {
+  it("tout le monde y a droit, même en ligne, sans réponse du serveur, même en vue « compte classique »", () => {
+    vi.stubGlobal('location', { hostname: 'narwhalchampions.com' })
+    localStorage.setItem('mc_vue_joueur', 'oui')
+    localStorage.setItem(CLE_AFFICHAGE, 'sobre')
+    expect(epurePermis()).toBe(true)
+    expect(lireAffichage()).toBe('epure')
+    appliquerAffichage('normal')
+    expect(document.documentElement.dataset.epure).toBe('oui')
+    // Le choix rangé n'est pas effacé : les anciens modes sont désactivés, pas supprimés.
+    expect(localStorage.getItem(CLE_AFFICHAGE)).toBe('sobre')
+  })
+})
+
+describe("l'épuré, réservé à l'administrateur (ancienne règle, conservée)", () => {
+  beforeEach(() => reglerEpurePourTous(false))
   it('en ligne, sans réponse du serveur : un épuré rangé se montre en sobre', () => {
     vi.stubGlobal('location', { hostname: 'narwhalchampions.com' })
     localStorage.setItem(CLE_AFFICHAGE, 'epure')

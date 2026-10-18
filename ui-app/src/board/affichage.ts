@@ -29,7 +29,27 @@ export function estSobreOuEpure(affichage: Affichage): boolean {
  */
 export const CLE_EPURE_PERMIS = 'mc_epure_permis'
 
+/**
+ * L'ÉPURÉ POUR TOUT LE MONDE, SEUL AFFICHAGE (18/10/2026, demande de l'utilisateur :
+ * « je veux juste que tu les désactives »). Même réglage que la préparation
+ * (public/js/prepare/affichage-choix.js) : tant qu'il est vrai, `epurePermis()` répond
+ * oui à tous, la ligne de choix « Style d'affichage » disparaît et un Normal ou un
+ * Sobre rangé ne se montre plus (sans être effacé). Le code des modes Normal et Sobre
+ * et la réserve à l'administrateur (`epurePermisReserve`) restent intacts.
+ * POUR TOUT REMETTRE : `reglerEpurePourTous(false)` ou la variable ci-dessous à `false`.
+ */
+let epurePourTous = true
+
+export function reglerEpurePourTous(valeur: boolean): void {
+  epurePourTous = valeur
+}
+
 export function epurePermis(): boolean {
+  return epurePourTous || epurePermisReserve()
+}
+
+/** L'ancienne règle : réservé à l'administrateur (conservée, voir `epurePourTous`). */
+export function epurePermisReserve(): boolean {
   try {
     if (enVueJoueur()) return false
     const hote = globalThis.location?.hostname ?? ''
@@ -68,7 +88,8 @@ export function lireAffichage(): Affichage {
  * (`styles/affichage-epure.css`).
  */
 export function appliquerAffichage(demande: Affichage): void {
-  const affichage = demande === 'epure' && !epurePermis() ? 'sobre' : demande
+  // Qui a droit a l'epure n'a plus que lui (18/10/2026) : un Normal ou un Sobre demande se montre en epure (seulement sous `epurePourTous` ; l'ancienne regle est inchangee).
+  const affichage = epurePourTous ? 'epure' : demande === 'epure' && !epurePermis() ? 'sobre' : demande
   const racine = document.documentElement
   racine.dataset.affichage = affichage === 'normal' ? 'normal' : 'sobre'
   if (affichage === 'epure') racine.dataset.epure = 'oui'
