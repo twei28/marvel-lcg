@@ -17,7 +17,7 @@ const NOM = process.env.ZZ_NOM ?? 'explo';
 const PHASES = Number(process.env.ZZ_PHASES ?? 1);
 const SORTIE = path.join(process.env.ZZ_SORTIE ?? '/tmp', MODE, NOM);
 const MAXPAS = Number(process.env.ZZ_MAXPAS ?? 200);
-const THEME = process.env.ZZ_THEME ?? 'normal';
+const THEME = process.env.ZZ_THEME ?? 'epure';
 const LARG = Number(process.env.ZZ_L ?? 1280);
 const HAUT = Number(process.env.ZZ_H ?? 720);
 

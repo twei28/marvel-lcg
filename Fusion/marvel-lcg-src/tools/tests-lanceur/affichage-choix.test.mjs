@@ -87,3 +87,14 @@ test("l'épuré est réservé à l'administrateur : sans droit, il se montre en 
     assert.equal(valeurPermise("sobre"), "sobre");
     assert.equal(valeurPermise("normal"), "normal");
 });
+
+test("qui a droit à l'épuré n'a plus que lui : normal et sobre rangés ne se montrent plus, plus de fenêtre de choix (18/10/2026)", async () => {
+    const { valeurPermise, doitProposerLeChoix } = await import("../../public/js/prepare/affichage-choix.js");
+    globalThis.location = { hostname: "localhost" };
+    try {
+        for (const v of ["normal", "sobre", "epure", null, "fluo"]) assert.equal(valeurPermise(v), "epure");
+        assert.equal(doitProposerLeChoix(null, null), false);
+    } finally {
+        delete globalThis.location;
+    }
+});

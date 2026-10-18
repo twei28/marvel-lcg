@@ -22,11 +22,22 @@ afterEach(() => {
 })
 
 describe('affichage', () => {
-  it('lit la meme cle que la preparation, normal par defaut', () => {
+  it('lit la meme cle que la preparation, normal par defaut (pour qui n a pas droit a l epure)', () => {
+    window.localStorage.setItem('mc_vue_joueur', 'oui')
     expect(CLE_AFFICHAGE).toBe('mc_affichage_v1')
     expect(lireAffichage()).toBe('normal')
     window.localStorage.setItem(CLE_AFFICHAGE, 'sobre')
     expect(lireAffichage()).toBe('sobre')
+    window.localStorage.setItem(CLE_AFFICHAGE, 'epure')
+    expect(lireAffichage()).toBe('sobre')
+  })
+
+  it('qui a droit a l epure n a plus que lui, quoi que le navigateur ait range (18/10/2026)', () => {
+    expect(lireAffichage()).toBe('epure')
+    for (const v of ['normal', 'sobre', 'epure']) {
+      window.localStorage.setItem(CLE_AFFICHAGE, v)
+      expect(lireAffichage()).toBe('epure')
+    }
   })
 
   it('une valeur inconnue vaut normal', () => {

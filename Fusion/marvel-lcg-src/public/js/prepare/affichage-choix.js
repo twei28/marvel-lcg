@@ -59,8 +59,10 @@ export function epurePermis() {
 
 /** La valeur montrée : l'épuré devient sobre pour qui n'y a pas droit. */
 export function valeurPermise(valeur) {
+    // Qui a droit à l'épuré n'a plus que lui (18/10/2026) : un normal ou un sobre rangé ne se montre plus.
+    if (epurePermis()) return EPURE;
     const v = normaliser(valeur);
-    return v === EPURE && !epurePermis() ? SOBRE : v;
+    return v === EPURE ? SOBRE : v;
 }
 
 let verification = null;
@@ -122,6 +124,7 @@ export function reconcilier(local, reponse) {
  *  - le compte dont le fichier de préférences porte déjà `affichage`.
  */
 export function doitProposerLeChoix(local, reponse) {
+    if (epurePermis()) return false; // un seul affichage : rien à choisir
     if (local === NORMAL || local === SOBRE || local === EPURE) return false;
     const prefs = reponse && reponse.compte && reponse.existe ? (reponse.preferences || {}) : {};
     return !Object.prototype.hasOwnProperty.call(prefs, "affichage");

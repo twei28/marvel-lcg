@@ -479,18 +479,19 @@ export function ContenuOnglet({
     const sobre = p.affichage === 'sobre'
     return (
       <>
-        <LigneChoix
-          libelle={t('Style d’affichage')}
-          valeur={p.affichage}
-          choix={[
-            { valeur: 'normal' as Affichage, libelle: t('Normal') },
-            { valeur: 'sobre' as Affichage, libelle: t('Sobre') },
-            // Réservé à l'administrateur (16/10/2026), voir affichage.ts.
-            ...(epurePermis() ? [{ valeur: 'epure' as Affichage, libelle: t('Épuré') }] : []),
-          ]}
-          onChoisir={p.changerAffichage}
-          detail={t('Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, panneaux bleus biseautés et titres en Bangers')}
-        />
+        {/* Qui a droit a l'epure (16/10/2026) n'a plus qu'elle : la ligne de choix disparait (18/10/2026). */}
+        {epurePermis() ? null : (
+          <LigneChoix
+            libelle={t('Style d’affichage')}
+            valeur={p.affichage}
+            choix={[
+              { valeur: 'normal' as Affichage, libelle: t('Normal') },
+              { valeur: 'sobre' as Affichage, libelle: t('Sobre') },
+            ]}
+            onChoisir={p.changerAffichage}
+            detail={t('Sobre : fond gris, sans couleurs ni animations')}
+          />
+        )}
         {/* La couleur du fond (04/10/2026) : la table change en direct. */}
         {p.changerTeinte && p.reinitialiserTeinte ? (
           <div className="reglage-teinte">

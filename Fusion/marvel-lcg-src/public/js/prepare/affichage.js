@@ -80,6 +80,8 @@ export function affichageJamaisChoisi(reponse) {
 }
 
 function dessinerBouton(bouton) {
+    // Un seul affichage pour qui a droit à l'épuré (18/10/2026) : le bouton qui fait tourner les modes se cache.
+    bouton.hidden = epurePermis();
     const mode = affichageActuel();
     bouton.setAttribute("aria-pressed", mode === NORMAL ? "false" : "true");
     bouton.title = "";

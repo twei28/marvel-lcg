@@ -6,7 +6,7 @@
 // Les autres cas verifient surtout qu'aucun reglage n'a ete perdu en chemin :
 // c'est un rangement, pas une refonte.
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ContenuOnglet, FenetreReglages, ONGLETS, type ProprietesReglages } from './FenetreReglages'
 
 function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
@@ -94,7 +94,13 @@ describe('un sous-reglage inutilisable reste VISIBLE', () => {
   })
 })
 
+// Qui a droit a l'epure (l'hote local, l'administrateur) n'a plus de ligne « Style d'affichage »
+// (18/10/2026) ; qui n'y a pas droit la garde. La vue joueur de l'administrateur compte comme sans droit.
+const sansDroitAEpure = () => window.localStorage.setItem('mc_vue_joueur', 'oui')
+afterEach(() => window.localStorage.removeItem('mc_vue_joueur'))
+
 describe('aucun reglage n’a ete perdu au rangement', () => {
+  beforeEach(sansDroitAEpure)
   // Les 18 reglages de l'ancien panneau, avec l'onglet ou chacun doit se
   // trouver. Un reglage qui disparaitrait d'un onglet sans reapparaitre
   // ailleurs ferait rougir ce test.
@@ -158,6 +164,7 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
 })
 
 describe('chaque interrupteur appelle bien sa fonction', () => {
+  beforeEach(sansDroitAEpure)
   it('choisir l affichage sobre', () => {
     const changerAffichage = vi.fn()
     render(<ContenuOnglet onglet="apparence" p={proprietes({ changerAffichage })} />)
@@ -165,11 +172,20 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     expect(changerAffichage).toHaveBeenCalledWith('sobre')
   })
 
-  it('choisir l affichage epure', () => {
-    const changerAffichage = vi.fn()
-    render(<ContenuOnglet onglet="apparence" p={proprietes({ changerAffichage })} />)
-    fireEvent.click(screen.getByText('Épuré'))
-    expect(changerAffichage).toHaveBeenCalledWith('epure')
+  it('qui a droit a l epure : plus de ligne de choix, ni Normal, ni Sobre, ni Epure (18/10/2026)', () => {
+    window.localStorage.removeItem('mc_vue_joueur')
+    render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
+    expect(screen.queryByText('Style d’affichage')).toBeNull()
+    expect(screen.queryByText('Normal')).toBeNull()
+    expect(screen.queryByText('Sobre')).toBeNull()
+    expect(screen.queryByText('Épuré')).toBeNull()
+  })
+
+  it('qui n a pas droit a l epure : Normal et Sobre, sans Epure', () => {
+    render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
+    expect(screen.getByText('Normal')).toBeTruthy()
+    expect(screen.getByText('Sobre')).toBeTruthy()
+    expect(screen.queryByText('Épuré')).toBeNull()
   })
 
   it('en affichage sobre, « Animations » reste visible mais inerte et sur « Non »', () => {

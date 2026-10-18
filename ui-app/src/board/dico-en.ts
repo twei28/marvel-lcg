@@ -1592,6 +1592,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Son': 'Sound',
   'Jeu': 'Game',
   'Style d’affichage': 'Display style',
+  'Sobre : fond gris, sans couleurs ni animations': 'Sober: grey background, no colours or animations',
   'Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, panneaux bleus biseautés et titres en Bangers':
     'Muted: grey background, no colours or animations. Minimal: also no decoration, bevelled blue panels and Bangers titles',
   'la Réponse': 'the Response',

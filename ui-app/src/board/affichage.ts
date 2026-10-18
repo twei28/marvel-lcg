@@ -50,8 +50,12 @@ export function retenirEpurePermis(ok: boolean): void {
 
 export function lireAffichage(): Affichage {
   try {
+    // L'EPURE EST LE SEUL AFFICHAGE DE QUI Y A DROIT (18/10/2026, « on ne regarde plus que le mode
+    // epure, tu peux meme cacher les autres modes ») : un Normal ou un Sobre range dans le
+    // navigateur ne s'affiche plus, sans etre efface. Qui n'a pas droit a l'epure garde son choix.
+    if (epurePermis()) return 'epure'
     const v = normaliserAffichage(window.localStorage.getItem(CLE_AFFICHAGE))
-    return v === 'epure' && !epurePermis() ? 'sobre' : v
+    return v === 'epure' ? 'sobre' : v
   } catch {
     return 'normal'
   }
