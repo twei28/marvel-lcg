@@ -47,6 +47,19 @@ export type Aspect =
   | 'pool'
   | 'determination'
   | 'venomized'
+  // Les quatre classes SHINOBI du pack TMNT (18/10/2026), et leurs Dual : un liseré par classe, un dégradé
+  // pour une carte à deux classes (`board.css`). `shinobi` : la carte qui porte les quatre.
+  | 'bushido'
+  | 'kuji-kiri'
+  | 'ninjutsu'
+  | 'taijutsu'
+  | 'bushido-kuji-kiri'
+  | 'bushido-ninjutsu'
+  | 'bushido-taijutsu'
+  | 'kuji-kiri-ninjutsu'
+  | 'kuji-kiri-taijutsu'
+  | 'ninjutsu-taijutsu'
+  | 'shinobi'
   | 'hero'
   | 'basic'
 
@@ -57,6 +70,13 @@ export type Aspect =
  * c'est l'information la plus discriminante qui doit gagner. Campaign et
  * Encounter ne disent rien de la couleur du cadre et sont ignores.
  */
+const CLASSES_SHINOBI: Record<string, string> = {
+  Bushido: 'bushido',
+  'Kuji-Kiri': 'kuji-kiri',
+  Ninjutsu: 'ninjutsu',
+  Taijutsu: 'taijutsu',
+}
+
 export function aspectDeClasse(brut: string | undefined): Aspect | undefined {
   if (!brut) return undefined
   const parts = brut.split(';').map((p) => p.trim())
@@ -77,6 +97,12 @@ export function aspectDeClasse(brut: string | undefined): Aspect | undefined {
     Venomized: 'venomized',
   }
   for (const p of parts) if (table[p]) return table[p]
+  // Les classes Shinobi, dans l'ordre imprime : une Dual en a deux (« Bushido;Ninjutsu »), la carte des quatre
+  // est `shinobi`. Un aspect l'emporte sur Hero : une signature « Hero;Taijutsu » est Taijutsu.
+  const shinobi = parts.map((p) => CLASSES_SHINOBI[p]).filter((c): c is string => c !== undefined)
+  if (shinobi.length === 1) return shinobi[0] as Aspect
+  if (shinobi.length === 4) return 'shinobi'
+  if (shinobi.length > 1) return shinobi.join('-') as Aspect
   if (parts.includes('Hero')) return 'hero'
   if (parts.includes('Basic')) return 'basic'
   return undefined

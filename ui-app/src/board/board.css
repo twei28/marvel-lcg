@@ -5945,6 +5945,39 @@
      sombre. On garde la teinte (le meme bleu-noir) en montant la luminosite,
      seul moyen que le lisere reste VISIBLE tout en disant la bonne couleur. */
   .plateau.est-delave .scan-card.aspect-venomized { --lisere-aspect: #6b6b7a; }
+  /* Les quatre classes SHINOBI du pack TMNT (18/10/2026, reponses de l'utilisateur) : la couleur de la barre du
+     bas de leurs cartes, prelevee sur les scans (sb001, sj001, sa001, sh001), reprise telle quelle. */
+  .plateau.est-delave .scan-card.aspect-bushido { --lisere-aspect: #20f8d0; }
+  .plateau.est-delave .scan-card.aspect-kuji-kiri { --lisere-aspect: #f800a8; }
+  .plateau.est-delave .scan-card.aspect-ninjutsu { --lisere-aspect: #9870e0; }
+  .plateau.est-delave .scan-card.aspect-taijutsu { --lisere-aspect: #f87800; }
+  /* Une carte DUAL (deux classes) : un DEGRADE des deux couleurs, comme sa barre du bas. Le trait de la bordure
+     ne peut pas etre un degrade : la bordure devient transparente et le fond du cadre, etale sous elle
+     (`background-clip: border-box`), passe au travers ; l'image de la carte couvre l'interieur. */
+  .plateau.est-delave .scan-card.aspect-bushido-kuji-kiri { --lisere-a: #20f8d0; --lisere-b: #f800a8; }
+  .plateau.est-delave .scan-card.aspect-bushido-ninjutsu { --lisere-a: #20f8d0; --lisere-b: #9870e0; }
+  .plateau.est-delave .scan-card.aspect-bushido-taijutsu { --lisere-a: #20f8d0; --lisere-b: #f87800; }
+  .plateau.est-delave .scan-card.aspect-kuji-kiri-ninjutsu { --lisere-a: #f800a8; --lisere-b: #9870e0; }
+  .plateau.est-delave .scan-card.aspect-kuji-kiri-taijutsu { --lisere-a: #f800a8; --lisere-b: #f87800; }
+  .plateau.est-delave .scan-card.aspect-ninjutsu-taijutsu { --lisere-a: #9870e0; --lisere-b: #f87800; }
+  .plateau.est-delave .scan-card.aspect-bushido-kuji-kiri .scan-frame,
+  .plateau.est-delave .scan-card.aspect-bushido-ninjutsu .scan-frame,
+  .plateau.est-delave .scan-card.aspect-bushido-taijutsu .scan-frame,
+  .plateau.est-delave .scan-card.aspect-kuji-kiri-ninjutsu .scan-frame,
+  .plateau.est-delave .scan-card.aspect-kuji-kiri-taijutsu .scan-frame,
+  .plateau.est-delave .scan-card.aspect-ninjutsu-taijutsu .scan-frame {
+    border-color: transparent;
+    background-image: linear-gradient(90deg, var(--lisere-a), var(--lisere-b));
+    background-origin: border-box;
+    background-clip: border-box;
+  }
+  /* La carte des quatre classes : les quatre couleurs. */
+  .plateau.est-delave .scan-card.aspect-shinobi .scan-frame {
+    border-color: transparent;
+    background-image: linear-gradient(90deg, #20f8d0, #f800a8, #9870e0, #f87800);
+    background-origin: border-box;
+    background-clip: border-box;
+  }
   /* Les quatre aspects et 'Pool ont leurs couleurs officielles. Celles du
      heros et du basique sont un CHOIX : le jeu ne leur en donne pas, il faut
      juste qu'elles ne se confondent avec aucune des cinq autres. */
