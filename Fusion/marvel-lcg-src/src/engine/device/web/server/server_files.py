@@ -19,7 +19,10 @@ class GameServerFiles(GameServerBase):
             # /scene /replay /deck /cards /puzzle /credits.
             return self.ReadFile('./public/prepare.html')
         else:
-            return self.ReadFile('./public/marvel.html')
+            # L'ancien plateau (marvel.html) est retire (18/10/2026) : la racine avec une requete
+            # (`/?p=1`, `/?hot_seat`) renvoie vers le plateau actuel, requete conservee, pour qu'un vieux
+            # lien continue de marcher.
+            raise web.HTTPFound('/app/board.html?' + request.query_string)
 
     async def handle_players_404(self, request: web.Request) -> web.StreamResponse:
         player = request.match_info.get('player')

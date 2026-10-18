@@ -433,7 +433,9 @@ class WebServer:
         # site ne doit plus du tout etre visible, meme pas accessible avec une extension ». Elles
         # renvoient a notre accueil, avec ou sans `.html`. Les fichiers restent dans le depot.
         PAGES_RETIREES = {'/credits.html', '/deck.html', '/cards.html', '/main.html',
-                          '/puzzle_editor.html', '/credits', '/deck', '/cards', '/puzzle_editor'}
+                          '/puzzle_editor.html', '/credits', '/deck', '/cards', '/puzzle_editor',
+                          # Ancien client (18/10/2026) : le plateau est /app/board.html, l'assistant est prepare.html.
+                          '/marvel.html', '/scene.html', '/scene', '/report.html', '/report'}
 
         async def handle_html(request: web.Request):
             if request.path in PAGES_RETIREES:
