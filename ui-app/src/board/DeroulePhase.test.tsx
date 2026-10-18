@@ -3527,6 +3527,31 @@ describe('la scène PC délègue au cartouche', () => {
     expect(phrase()).not.toContain('Ultron')
   })
 
+  it('sur la table, Espace avance aussi quand le bouton de la carte a gardé le focus', () => {
+    const { container } = render(<DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />)
+    const avant = container.querySelector('.tsm-phrase')?.textContent
+    const bouton = document.createElement('button')
+    bouton.className = 'tsm-acteur'
+    container.append(bouton)
+    bouton.focus()
+    fireEvent.keyDown(bouton, { key: ' ' })
+    expect(container.querySelector('.tsm-phrase')?.textContent).not.toBe(avant)
+  })
+
+  it('la défense suivante attend la lecture du résultat et des boosts de l’attaque précédente', () => {
+    const attaque: EtapeDeroule = {
+      cle: 'klaw-resolu', temps: 'mechant', titre: 'attaque', regle: '', etat: 'resolu',
+      carteId: 50, cibleId: 1, auteurNom: 'Klaw', cibleNom: 'Spider-Man', montant: 1,
+      boosts: [{ cle: 'b1', cibleId: 66, nom: 'A', apport: 0 }, { cle: 'b2', cibleId: 72, nom: 'B', apport: 1 }],
+    }
+    render(<DeroulePhase etapes={[attaque]} presentation="table" questionAuJoueur phaseMechantEnCours
+      question={<button>Défense du sbire suivant</button>} onTerminer={() => {}} />)
+    expect(screen.queryByRole('button', { name: 'Défense du sbire suivant' })).toBeNull()
+    expect(document.querySelector('.tsm-phrase')?.textContent).toContain('Klaw')
+    fireEvent.keyDown(document, { key: ' ' })
+    expect(screen.getByRole('button', { name: 'Défense du sbire suivant' })).toBeInTheDocument()
+  })
+
   it('sur la table, Echap demande confirmation avant de tout passer (Q32)', () => {
     const { container } = render(
       <DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />

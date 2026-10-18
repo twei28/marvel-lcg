@@ -23,7 +23,7 @@ function boiteDeLImage(
   cadre: { element: HTMLElement; origine: DOMRect }
 ): Boite | undefined {
   if (id === undefined) return undefined
-  // Une carte rencontre RÉVÉLÉE est montrée en grand à côté du paquet, et sa copie face cachée reste
+  // Une carte rencontre RÉVÉLÉE est montrée en grand au centre, et sa copie face cachée reste
   // sur la table : le halo va sur celle qu'on lit (« qu'on comprenne bien quelle est la carte de
   // rencontre », 16/10/2026).
   const el =

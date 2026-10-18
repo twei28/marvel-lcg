@@ -33,7 +33,7 @@ function cartesDeLaTable(): Map<number, { el: HTMLElement; mesure: Mesure }> {
   const resultat = new Map<number, { el: HTMLElement; mesure: Mesure }>()
   const cartes = document.querySelectorAll<HTMLElement>('.plateau-cadre .scan-card[data-card-id]')
   for (const el of cartes) {
-    if (el.closest('.deroule-phase, .zone-main, [data-zone="main"], .carte-apercu')) continue
+    if (el.closest('.deroule-phase, .rencontre-sur-table, .zone-main, [data-zone="main"], .carte-apercu')) continue
     // Les vraies piles (decks, defausses...) ne comptent pas : une rangee FONDUE
     // (les sbires engages, « terrain-combat-engages ») porte aussi `data-pile`.
     if (VRAIE_PILE.test(el.closest('[data-pile]')?.getAttribute('data-pile') ?? '')) continue

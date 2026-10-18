@@ -17,15 +17,6 @@ export type Boite = { x: number; y: number; w: number; h: number }
 export const ECART = 8
 
 /**
- * De combien la carte rencontre grandit quand elle sort du paquet.
- *
- * ⚠ ELLE DOIT ÊTRE LUE, pas devinée : c'est tout l'intérêt du geste. À la
- * taille de la table (127 px) son texte est illisible ; à 1,7 fois elle
- * dépasse les 200 px, le seuil où le corps de texte redevient déchiffrable.
- */
-export const AGRANDISSEMENT = 1.7
-
-/**
  * Les places des cartes boost, à la suite de l'ATTAQUANT.
  *
  * ⚠ CONTRE LA CARTE QUI FRAPPE, PAS CONTRE LE PAQUET. Elles se posaient à côté
@@ -42,34 +33,39 @@ export const AGRANDISSEMENT = 1.7
  */
 export function placesDesBoosts(ancre: Boite, cadre: Boite, nombre: number): Boite[] {
   if (nombre <= 0) return []
-  const largeurTotale = nombre * ancre.w + (nombre - 1) * ECART
+  const w = Math.min(ancre.w, Math.max(1, (cadre.w - (nombre - 1) * ECART) / nombre))
+  const h = ancre.h * w / Math.max(1, ancre.w)
+  const largeurTotale = nombre * w + (nombre - 1) * ECART
   const aDroite = ancre.x + ancre.w + ECART
   const tientADroite = aDroite + largeurTotale <= cadre.x + cadre.w
   const depart = tientADroite ? aDroite : Math.max(cadre.x, ancre.x - ECART - largeurTotale)
   return Array.from({ length: nombre }, (_, i) => ({
-    x: depart + i * (ancre.w + ECART),
-    y: ancre.y,
-    w: ancre.w,
-    h: ancre.h,
+    x: depart + i * (w + ECART),
+    y: Math.max(cadre.y, Math.min(ancre.y, cadre.y + cadre.h - h)),
+    w,
+    h,
   }))
 }
 
-/**
- * La place de la carte rencontre agrandie, à côté du paquet.
- *
- * ⚠ ELLE GRANDIT VERS LE BAS ET VERS LA DROITE, jamais vers le haut : le deck
- * rencontre touche le bord supérieur de la table, et une carte centrée sur lui
- * en sortirait. Elle reste bornée au cadre dans les deux sens.
- */
+/** Les cartes lisibles au centre, avec leur orientation et sans déborder. */
+export function placesDeLecture(cadre: Boite, ratios: number[]): Boite[] {
+  if (!ratios.length) return []
+  const marge = 24
+  const ecart = 20
+  const largeur = Math.max(1, cadre.w - marge * 2 - ecart * (ratios.length - 1))
+  const hauteur = Math.max(1, Math.min(560, cadre.h * 0.68, cadre.h - 140))
+  const h = Math.min(hauteur, largeur / ratios.reduce((s, r) => s + r, 0))
+  const total = ratios.reduce((s, r) => s + r * h, 0) + ecart * (ratios.length - 1)
+  let x = cadre.x + (cadre.w - total) / 2
+  return ratios.map((ratio) => {
+    const w = h * ratio
+    const place = { x, y: cadre.y + (cadre.h - h) / 2, w, h }
+    x += w + ecart
+    return place
+  })
+}
+
+/** Compatibilité des appelants : une carte rencontre se lit désormais au centre. */
 export function placeDeLaRevelee(deck: Boite, cadre: Boite): Boite {
-  const w = deck.w * AGRANDISSEMENT
-  const h = deck.h * AGRANDISSEMENT
-  const aDroite = deck.x + deck.w + ECART
-  const x = aDroite + w + ECART <= cadre.x + cadre.w ? aDroite : Math.max(cadre.x + ECART, deck.x - ECART - w)
-  // ⚠ LA BORNE HAUTE EN DERNIER, ET C'EST UN TEST QUI L'A DIT. Écrit dans
-  // l'autre ordre, un cadre plus bas que la carte agrandie donnait un `y`
-  // NÉGATIF : la carte sortait par le haut au lieu d'être simplement collée en
-  // haut. Même piège que le bornage de `phase-sur-table.ts`.
-  const y = Math.max(cadre.y + ECART, Math.min(deck.y, cadre.y + cadre.h - h - ECART))
-  return { x, y, w, h }
+  return placesDeLecture(cadre, [deck.w / deck.h])[0]
 }

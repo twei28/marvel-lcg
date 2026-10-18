@@ -21,6 +21,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// Ces scénarios vérifient aussi le départ des jetons : conserver les animations.
+test.use({ reducedMotion: 'no-preference' })
+
 const ETAT = 'rhino__spider_man__phase-mechant-complet.js'
 /**
  * ⚠ CE FILET NE GARDE PAS LE RYTHME DU MOTEUR, ET IL FAUT LE SAVOIR.
@@ -44,6 +47,7 @@ async function ouvrirLaPhase(page: Page, avanceAuto = false) {
   await page.goto('/main.html')
   await page.evaluate((auto) => {
     localStorage.setItem('marvel-langue-choisie', '1')
+    localStorage.setItem('mc_aide_bulle_table', 'vue')
     // ⚠ LE RÉGLAGE QUI A CAUSÉ LE DÉFAUT UNE PREMIÈRE FOIS. « Avance toute
     // seule » était grisé hors du mode Détaillé, mais sa VALEUR s'appliquait
     // quand même : griser ne désactive pas. Le mettre sur « on » ici est donc
@@ -58,12 +62,12 @@ async function ouvrirLaPhase(page: Page, avanceAuto = false) {
   await page.goto(`/app/board.html?phase=sur-table&etat=${ETAT}`)
   await page.waitForSelector('.plateau-scene', { timeout: 30000 })
   // Le bandeau d'ouverture joue SEUL : la première étape ne paraît qu'après.
-  await page.waitForSelector('.deroule-rond', { timeout: 15000 })
+  await page.waitForSelector('.tsm-acteur:not([disabled]), .tsm-bandeau .tsm-bouton', { timeout: 15000 })
 }
 
 /** Ce que le joueur lit en ce moment. */
 const phraseCourante = (page: Page) =>
-  page.locator('.deroule-recit').first().innerText().catch(() => '')
+  page.locator('.tsm-phrase').first().innerText().catch(() => '')
 
 test('⚠ RIEN n’avance sans un clic, du premier temps au dernier', async ({ page }) => {
   // Huit étapes × cinq secondes d'observation : ce test est lent PAR NATURE.
@@ -86,10 +90,10 @@ test('⚠ RIEN n’avance sans un clic, du premier temps au dernier', async ({ p
     ).toBe(avant)
 
     // 2. UN CLIC, UNE ÉTAPE.
-    const bouton = page.locator('.deroule-rond')
+    const bouton = page.locator('.tsm-acteur:not([disabled]), .tsm-bandeau .tsm-bouton')
     if ((await bouton.count()) === 0) break
     await bouton.first().click()
-    await page.waitForTimeout(1500)
+    await page.waitForTimeout(2300)
     const apresClic = await phraseCourante(page)
     if (apresClic === avant) break // dernière étape connue de la fixture
   }
@@ -115,10 +119,10 @@ test('⚠ jamais deux panneaux au centre en même temps', async ({ page }) => {
     const phrase = await phraseCourante(page)
     expect(panneaux, `${panneaux} panneaux empilés sur « ${phrase} »`).toBeLessThanOrEqual(1)
 
-    const bouton = page.locator('.deroule-rond')
+    const bouton = page.locator('.tsm-acteur:not([disabled]), .tsm-bandeau .tsm-bouton')
     if ((await bouton.count()) === 0) break
     await bouton.first().click()
-    await page.waitForTimeout(1200)
+    await page.waitForTimeout(2300)
   }
 })
 
@@ -141,7 +145,7 @@ test('⚠ même avec « Avance toute seule » ALLUMÉE, rien ne bouge sur la tab
   ).toBe(avant)
 
   // Et le bouton est toujours là pour avancer à la main.
-  await expect(page.locator('.deroule-rond').first()).toBeVisible()
+  await expect(page.locator('.tsm-acteur:not([disabled]), .tsm-bandeau .tsm-bouton').first()).toBeVisible()
 })
 
 
@@ -157,7 +161,7 @@ test('⚠ le jeton de menace part AU CLIC, pas avant', async ({ page }) => {
   test.setTimeout(90000)
   await ouvrirLaPhase(page)
 
-  const jeton = page.locator('.jeton-menace-volant')
+  const jeton = page.locator('.jeton-menace-volant, .jeton-coup.est-menace')
   const premiere = await phraseCourante(page)
   expect(premiere, 'la première étape devrait être la menace').toMatch(/menace/i)
 
@@ -165,12 +169,12 @@ test('⚠ le jeton de menace part AU CLIC, pas avant', async ({ page }) => {
   // vol différé se voie.
   await page.waitForTimeout(2000)
   expect(
-    await jeton.count(),
+    await jeton.evaluateAll((els) => els.flatMap((el) => el.getAnimations()).filter((a) => a.playState === 'running').length),
     `le jeton de menace a volé AVANT le clic, sur « ${premiere} »`
   ).toBe(0)
 
   // APRÈS le clic : il part.
-  await page.locator('.deroule-rond').first().click()
+  await page.locator('.tsm-acteur:not([disabled]), .tsm-bandeau .tsm-bouton').first().click()
   await expect(jeton.first(), 'le jeton de menace n’est pas parti au clic').toBeVisible({
     timeout: 5000,
   })

@@ -6,9 +6,9 @@
 // paquet pour se mettre à côté, pour ensuite voir à combien ».
 import { describe, expect, it } from 'vitest'
 import {
-  AGRANDISSEMENT,
   ECART,
   placeDeLaRevelee,
+  placesDeLecture,
   placesDesBoosts,
   type Boite,
 } from './places-rencontre'
@@ -66,38 +66,40 @@ describe('les cartes boost se posent contre l’ATTAQUANT', () => {
   })
 })
 
-describe('la carte rencontre s’agrandit à côté du paquet', () => {
-  it('elle est nettement plus grande que sur la table', () => {
-    // À 127 px son texte est illisible, et c'est tout l'objet du geste.
+describe('la lecture centrale des rencontres et des boosts', () => {
+  it('centre une carte nettement agrandie', () => {
     const p = placeDeLaRevelee(DECK, CADRE)
-    expect(p.w).toBeCloseTo(DECK.w * AGRANDISSEMENT)
-    expect(p.w).toBeGreaterThan(200)
+    expect(p.x + p.w / 2).toBeCloseTo(CADRE.w / 2)
+    expect(p.y + p.h / 2).toBeCloseTo(CADRE.h / 2)
+    expect(p.w).toBeGreaterThan(300)
   })
 
-  it('elle se pose à droite du paquet, pas dessus', () => {
-    const p = placeDeLaRevelee(DECK, CADRE)
-    expect(p.x).toBeGreaterThanOrEqual(DECK.x + DECK.w)
+  it('conserve une carte horizontale lisible et son ratio', () => {
+    const [p] = placesDeLecture(CADRE, [176 / 127])
+    expect(p.w / p.h).toBeCloseTo(176 / 127)
+    expect(p.w).toBeGreaterThan(500)
   })
 
-  it('⚠ elle ne dépasse JAMAIS par le haut', () => {
-    // Le deck rencontre touche le bord supérieur : une carte agrandie centrée
-    // sur lui sortirait de la table par le haut.
-    const p = placeDeLaRevelee(DECK, CADRE)
-    expect(p.y).toBeGreaterThanOrEqual(CADRE.y)
-    expect(p.y + p.h).toBeLessThanOrEqual(CADRE.y + CADRE.h)
+  it('garde les boosts côte à côte dans le cadre sur un petit écran', () => {
+    const cadre = { x: 20, y: 15, w: 600, h: 400 }
+    const places = placesDeLecture(cadre, Array(4).fill(127 / 176))
+    for (const p of places) {
+      expect(p.x).toBeGreaterThanOrEqual(cadre.x)
+      expect(p.x + p.w).toBeLessThanOrEqual(cadre.x + cadre.w)
+      expect(p.y).toBeGreaterThanOrEqual(cadre.y)
+      expect(p.y + p.h).toBeLessThanOrEqual(cadre.y + cadre.h)
+    }
+    expect(places[1].x).toBeGreaterThan(places[0].x + places[0].w)
   })
 
-  it('sur un cadre bas, elle reste dedans', () => {
-    const bas: Boite = { x: 0, y: 0, w: 1900, h: 300 }
-    const p = placeDeLaRevelee(DECK, bas)
-    expect(p.y).toBeGreaterThanOrEqual(bas.y)
+  it('réserve la barre du haut et garde la carte dans un cadre bas', () => {
+    const cadre = { x: 0, y: 0, w: 1000, h: 300 }
+    const [p] = placesDeLecture(cadre, [127 / 176])
+    expect(p.y).toBeGreaterThanOrEqual(70)
+    expect(p.y + p.h).toBeLessThanOrEqual(cadre.h)
   })
 
-  it('sans place à droite, elle passe à gauche plutôt que de sortir', () => {
-    const etroit: Boite = { x: 0, y: 0, w: 400, h: 940 }
-    const deckADroite: Boite = { x: 250, y: 12, w: 127, h: 200 }
-    const p = placeDeLaRevelee(deckADroite, etroit)
-    expect(p.x).toBeGreaterThanOrEqual(etroit.x)
-    expect(p.x).toBeLessThan(deckADroite.x)
+  it('ne crée aucune place sans carte', () => {
+    expect(placesDeLecture(CADRE, [])).toEqual([])
   })
 })

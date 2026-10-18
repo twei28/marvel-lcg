@@ -228,6 +228,7 @@ export function CoucheAnimations({
 
     const courant = new Map<string, Mesure>()
     for (const el of scene.querySelectorAll<HTMLElement>('.scan-card[data-card-id]')) {
+      if (el.closest('.rencontre-sur-table')) continue
       const id = el.dataset.cardId
       if (!id) continue
       courant.set(id, { rect: boiteDe(el), zone: zoneDe(el), src: imageDe(el), el })

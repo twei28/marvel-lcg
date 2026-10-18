@@ -31,7 +31,7 @@ export function rect(el: Element | null | undefined): Rect | undefined {
  */
 export function carteDeLaTable(id: number): HTMLElement | undefined {
   const candidates = document.querySelectorAll<HTMLElement>(`.plateau-cadre .scan-card[data-card-id="${id}"]`)
-  for (const el of candidates) if (!el.closest('.deroule-phase') && !el.classList.contains('is-facedown')) return el
+  for (const el of candidates) if (!el.closest('.deroule-phase, .rencontre-sur-table') && !el.classList.contains('is-facedown')) return el
   return undefined
 }
 

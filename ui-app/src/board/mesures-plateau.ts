@@ -40,9 +40,12 @@ export function boiteDeCarte(
   cadre: { element: HTMLElement; origine: DOMRect }
 ): Boite | undefined {
   if (id === undefined) return undefined
-  const el = cadre.element.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"]`)
+  // Les cartes de lecture portent le même id que l'original : elles ne sont
+  // jamais une destination, même si l'original est absent ou masqué.
+  const el = Array.from(cadre.element.querySelectorAll<HTMLElement>(`.scan-card[data-card-id="${id}"]`))
+    .find((e) => !e.closest('.rencontre-sur-table, .carte-apercu, .deroule-phase'))
   if (!el) return undefined
-  const r = el.getBoundingClientRect()
+  const r = (el.querySelector('.scan-frame') ?? el).getBoundingClientRect()
   if (r.width === 0 || r.height === 0) return undefined
   return {
     x: r.left - cadre.origine.left,
@@ -70,7 +73,7 @@ export function boiteDuDeckRencontre(cadre: {
 }): Boite | undefined {
   const el = cadre.element.querySelector<HTMLElement>('.zone-piles-rencontre .scan-card')
   if (!el) return undefined
-  const r = el.getBoundingClientRect()
+  const r = (el.querySelector('.scan-frame') ?? el).getBoundingClientRect()
   if (r.width === 0) return undefined
   return {
     x: r.left - cadre.origine.left,
@@ -108,7 +111,7 @@ export function destinationDeLaCarte(
     '.zone-piles-rencontre .plateau-unite:last-child .scan-card'
   )
   if (!defausse) return undefined
-  const r = defausse.getBoundingClientRect()
+  const r = (defausse.querySelector('.scan-frame') ?? defausse).getBoundingClientRect()
   if (r.width === 0) return undefined
   return {
     x: r.left - cadre.origine.left,

@@ -93,7 +93,7 @@ import { EtoilesEnAttente } from './EtoilesEnAttente'
 import { NumerosSbires } from './NumerosSbires'
 import { DepartsDeLaBoite } from './DepartsDeLaBoite'
 import { cartoucheEstAJour } from './cartouche-a-jour'
-import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
+import { CoucheRencontreSurTable, type ControleRencontre } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
@@ -177,7 +177,7 @@ export function DeroulePhase({
   identitePartie,
   phaseMechantEnCours = false,
   partieFinie = false,
-  questionAuJoueur = false,
+  questionAuJoueur: questionDemandee = false,
   tempsQuestion,
   carteScene,
   dosRencontre,
@@ -971,6 +971,10 @@ export function DeroulePhase({
     validee !== undefined &&
     (validee.cle === etape.cle || memeEtapeRecle) &&
     validee.etat === etape.etat
+  // Le moteur peut déjà demander la défense du sbire suivant alors que le
+  // résultat de l'attaque précédente vient seulement d'arriver. On finit
+  // d'abord sa lecture : une question future ne doit pas effacer ses boosts.
+  const questionAuJoueur = questionDemandee && !(surTable && etape?.etat === 'resolu' && !etapeValidee)
 
   /**
    * LE JETON DE MENACE PART AU CLIC, PAS A L'AFFICHAGE DE L'ETAPE.
@@ -997,6 +1001,8 @@ export function DeroulePhase({
   // lui-meme ; son cartouche suit celui qui le donne (`suivreLeMeneur`, plus bas).
   const avanceBloqueeRef = useRef(false)
   const avanceSuivieRef = useRef(false)
+  const rencontreSurTable = useRef<ControleRencontre>(null)
+  const apresTrajetRencontre = useRef(false)
   const avancer = () => {
     if (avanceBloqueeRef.current && !avanceSuivieRef.current) return
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
@@ -1007,6 +1013,21 @@ export function DeroulePhase({
     if (partieFinie) return
     // Un jeton est en vol : le clic suivant attend son atterrissage.
     if (enVolDeJeton) return
+    // La même étape reste affichée jusqu'à l'arrivée des cartes. Le clic
+    // déclenche leur départ ; il ne valide ni ne relâche encore le moteur.
+    const suivaitUnAutre = avanceSuivieRef.current
+    if (surTable && !apresTrajetRencontre.current && rencontreSurTable.current?.valider(() => {
+      apresTrajetRencontre.current = true
+      const suiviAvant = avanceSuivieRef.current
+      avanceSuivieRef.current = suivaitUnAutre
+      try { avancerRef.current() } finally {
+        apresTrajetRencontre.current = false
+        avanceSuivieRef.current = suiviAvant
+      }
+    })) {
+      onActivite?.()
+      return
+    }
     // Le joueur est vivant, et le filet anti-blocage doit le savoir meme quand
     // ce clic n'acquitte rien (voir `onActivite`).
     onActivite?.()
@@ -1303,7 +1324,8 @@ export function DeroulePhase({
       if (
         cible instanceof HTMLElement &&
         cible.closest('button, a, select, [role="button"]') &&
-        !cible.closest('.deroule-phase')
+        !cible.closest('.deroule-phase') &&
+        !(surTable && cible.closest('.tsm-acteur, .tsm-bandeau:not(.est-question) .tsm-bouton'))
       ) {
         return
       }
@@ -1439,7 +1461,8 @@ export function DeroulePhase({
     // Essai (13/10/2026, demande de l'utilisateur) : les boosts arrivent TOUS face
     // cachee, et un seul clic les retourne ensemble (« comme pour Klaw, j'aimerais
     // que les deux s'affichent en même temps »).
-    // « Sur la table » : tous les boosts sortent EN MÊME TEMPS (16/10/2026), un seul geste les valide.
+    // Sur la table, le groupe est disponible d’un coup ; la couche de lecture
+    // fait entrer ses cartes successivement et attend la validation pour les ranger.
     setBoostsMontres(etape?.boosts.length ? (essai && nouvelleScene ? 0 : surTable ? etape.boosts.length : 1) : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
     // reconstruit a chaque trame du moteur (meme piege que dans
@@ -1451,8 +1474,8 @@ export function DeroulePhase({
   useEffect(() => {
     const total = etape?.boosts.length ?? 0
     if (boostsMontres === 0 || boostsMontres >= total) return
-    // L'essai les retourne au clic (« Continuer »), un par un ; la table aussi
-    // (v3, Q11 : « retourner un boost par clic »).
+    // Le mode scène gère son retournement au clic. Sur la table, la couche
+    // de lecture pilote l’entrée et le départ des cartes.
     if ((essai && nouvelleScene) || surTable) return
     const minuteur = window.setTimeout(
       () => setBoostsMontres((n) => n + 1),
@@ -1844,6 +1867,8 @@ export function DeroulePhase({
     if (!cadre) return contenu
     return createPortal(
       <>
+        {/* La source des jetons reste mesurable lorsque le texte suivant attend leur arrivée. */}
+        {enVolDeJeton ? <span className="tsm-depart" aria-hidden="true" /> : null}
         {/* ⚠ LA LIGNE DES TEMPS MONTE DANS LA BARRE DU HAUT. Choix de
             l'utilisateur parmi trois (14/09/2026) : « oui, dans la barre du
             haut ». Elle vivait dans le panneau, qui a disparu ; la laisser au
@@ -1874,7 +1899,7 @@ export function DeroulePhase({
         />
         <EffetsSurTable
           etape={etape}
-          actif={!questionAuJoueur}
+          actif={!questionAuJoueur && !enVolDeJeton}
           pvMax={etape?.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined}
         />
         {/* Les cartes qui sortent du paquet rencontre : les boosts a cote du
@@ -1893,7 +1918,8 @@ export function DeroulePhase({
           boostsMontres={boostsMontres}
           carteScene={carteScene}
           dosRencontre={dosRencontre}
-          actif
+          actif={!attendreBandeau && !enVolDeJeton && !questionAuJoueur && !etapeValidee && !termine && !relecture}
+          controle={rencontreSurTable}
         />
         {enVolDeJeton ? null : contenu}
       </>,

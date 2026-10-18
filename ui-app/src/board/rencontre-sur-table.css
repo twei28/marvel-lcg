@@ -1,0 +1,33 @@
+/* Les dimensions de lecture sont explicites, y compris en paysage. Les
+   animations pilotées par le composant attendent leur fin avant la suite. */
+.rencontre-sur-table {
+  /* La lecture couvre les halos de la table, mais laisse la barre du haut libre. */
+  z-index: 145;
+}
+
+.rencontre-sur-table .rencontre-sortie {
+  animation: none !important;
+  transition: none !important;
+  transform-origin: top left;
+}
+
+.rencontre-sur-table .rencontre-sortie .scan-card,
+.rencontre-sur-table .rencontre-sortie .scan-visuel {
+  --card-w: var(--lecture-w) !important;
+  width: var(--lecture-w) !important;
+}
+
+.rencontre-sur-table .rencontre-sortie .scan-visuel {
+  gap: 0;
+  transform: none !important;
+}
+
+.rencontre-sur-table .rencontre-sortie .top-strip {
+  display: none;
+}
+
+/* Le total est déjà annoncé dans la barre. Le grand jeton du résultat
+   attend le départ des cartes, puis vole vers sa cible au clic validé. */
+body:has(.rencontre-sur-table[data-lecture="entree"], .rencontre-sur-table[data-lecture="lecture"], .rencontre-sur-table[data-lecture="depart"]) .jeton-coup {
+  visibility: hidden !important;
+}
