@@ -1962,3 +1962,78 @@ html[data-epure] .plateau-selecteur-valider:disabled {
 html[data-epure] .plateau-selecteur.est-fenetre .kind-pill {
   border-radius: 0;
 }
+
+/* =============================================================================
+   21. COULEURS DE LA PHASE DU MÉCHANT QUI N'ÉTAIENT PAS À L'ÉPURÉ (18/10/2026)
+   Relevé des couleurs réellement affichées, puis cinq choix : le beige et le brun-rouge
+   venaient du thème Sobre (qui reste posé en même temps que l'Épuré), les jaunes étaient
+   six versions différentes, les gris et les rouges pâles étaient restés tels quels.
+   Le FIN DU TOUR garde son jaune. */
+html[data-epure][data-affichage] {
+  --rouge: #b51c20;
+  --rouge-vif: #e62429;
+  --camp-eux: #b51c20;
+  --camp-eux-vif: #e62429;
+  --menace: #f3c623;
+  --menace-clair: #f3c623;
+  --affiche-jaune: #f3c623;
+}
+
+/* Beige délavé → bleu clair. */
+html[data-epure][data-affichage] .deroule-phase.est-scene .deroule-type,
+html[data-epure][data-affichage] .deroule-phase.est-scene .deroule-chaine-lien {
+  color: #7fa9e6;
+}
+
+/* Un seul jaune. */
+html[data-epure][data-affichage] .delta-sur-table.est-menace {
+  color: #f3c623;
+}
+html[data-epure][data-affichage] .rencontre-sortie.est-revelee {
+  box-shadow: 0 0 0 2px rgba(243, 198, 35, 0.85), 0 18px 44px rgba(0, 0, 0, 0.8);
+}
+html[data-epure][data-affichage] .deroule-phase.est-scene.est-bis .deroule-pastille.est-courant {
+  box-shadow: inset 0 -4px 0 #f3c623, inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+html[data-epure][data-affichage] .deroule-phase.est-scene.est-bis .deroule-resultat-gros,
+html[data-epure][data-affichage] .deroule-phase.est-scene.est-bis .deroule-total.est-gros {
+  color: #f3c623;
+}
+
+/* Gris ternes → gris-bleu. */
+html[data-epure][data-affichage] .plateau-barre button:disabled {
+  color: #7c8494;
+}
+html[data-epure][data-affichage] .deroule-phase.est-scene .deroule-pastille.est-passe,
+html[data-epure][data-affichage] .deroule-phase.est-scene .deroule-pastille.est-courant,
+html[data-epure][data-affichage] .deroule-phase.est-scene.est-hors-phase .deroule-bandeau {
+  background: #2b3a58;
+}
+html[data-epure][data-affichage] .stages-bouton {
+  background: rgba(23, 30, 46, 0.92);
+}
+
+/* Rouges pâles → blanc, rouge Marvel, panneau bleu. */
+html[data-epure][data-affichage] .deroule-phase.est-scene .deroule-resultat-texte {
+  color: #ffffff;
+}
+html[data-epure][data-affichage] .fin-partie-eyebrow {
+  color: #e62429;
+}
+html[data-epure][data-affichage] .plateau-message {
+  background: rgba(23, 30, 46, 0.96);
+  border-color: #3d5a8c;
+  color: #ffffff;
+}
+html[data-epure][data-affichage] .ordre-repere {
+  box-shadow: 0 0 0 2px rgba(7, 8, 12, 0.85), 0 0 14px 3px rgba(243, 198, 35, 0.75);
+}
+html[data-epure][data-affichage] .scan-card.state-targetable {
+  --lisere: rgba(243, 198, 35, 0.95);
+}
+html[data-epure][data-affichage] .evenement-centrale {
+  border-color: rgba(243, 198, 35, 0.58);
+}
+html[data-epure][data-affichage] .tsm-attente {
+  color: #7fa9e6;
+}
