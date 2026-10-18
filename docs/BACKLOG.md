@@ -46,16 +46,35 @@ s'active que sur téléphone.
 **Limite à connaître.** Le moteur de règles est en Python, côté serveur : une application installable depuis le
 navigateur ne peut pas jouer hors ligne. Le lancement local (`JOUER-SOLO`) a, lui, toutes les images sur le disque.
 
-**Recommandation provisoire, au regard du critère.** Les options 1 puis 2 : rien à installer pour le joueur,
-et toute mise à jour (cartes, règles, interface) se fait côté serveur, sans que personne n'ait rien à retélécharger
-hors les cartes nouvelles. L'option 4 est la plus lourde à tenir à jour ; elle n'a de sens que si le hors-ligne
-devient un vrai besoin.
+**Réponses de l'utilisateur (18/10/2026).**
+- Jouer **sans connexion** : oui, c'est un besoin.
+- Le cache doit servir **aussi sur PC**, pas seulement sur téléphone : oui.
+- Règle de nettoyage du cache : **pas décidée** (« je ne sais pas »). Proposition par défaut, à confirmer plus tard :
+  garder les cartes des decks et scénarios déjà joués, effacer d'abord les moins récemment vues au-delà d'une taille
+  maximale réglable (par exemple 1 Go).
 
-**À trancher avant de commencer.**
-- Les joueurs ont-ils besoin de jouer **sans connexion**, ou seulement de lancer vite le jeu et de ne pas retélécharger
-  les cartes ? (Décide entre l'option 1 et l'option 4.)
-- Le cache doit-il aussi servir sur PC, ou seulement sur téléphone comme aujourd'hui ?
-- Une règle de nettoyage du cache (taille maximale, cartes les moins vues d'abord) ?
+**Conséquence : la recommandation change.** Le hors-ligne est un besoin, or le moteur de règles est en Python côté
+serveur : les options 1 et 2 seules (navigateur + cache) ne suffisent plus. Il faut une **application de bureau**
+(option 4) qui embarque le moteur et l'interface, avec les images en téléchargement à la demande. Les options 1 et 2
+y restent utiles, comme briques :
+- **Allègement des images (option 2)** : à faire quoi qu'il arrive, il réduit le téléchargement de chaque joueur.
+- **Cache et préchargement à la demande (option 1)** : la même logique, dans l'application de bureau, avec un dossier de
+  cartes sur le disque du joueur à la place du cache du navigateur.
+- **Paquets (option 3)** : « télécharger ce héros et ce scénario pour jouer hors ligne », en plus du téléchargement
+  automatique des cartes de la partie.
 
-**Pistes de départ.** Étendre `sw-plateau.js` (cache d'images par version, ETag), précharger la liste de cartes de la
-partie au lancement, mesurer le gain d'un passage en WebP sur 100 cartes avant de convertir le tout.
+**Pour tenir ton critère (facile pour les joueurs, facile à mettre à jour).**
+- Joueur : un seul installateur léger (le moteur et l'interface, sans les cartes), puis les cartes arrivent au fil des
+  parties ; un bouton « tout télécharger » est facultatif.
+- Mises à jour : une mise à jour automatique de l'application au lancement, et des images adressées par leur
+  **empreinte** (nom de fichier = hash), de sorte que seules les cartes nouvelles ou modifiées se retéléchargent.
+
+**À trancher ensuite.**
+- La technique d'emballage du moteur Python avec une interface web (par exemple une fenêtre qui embarque le navigateur)
+  et le programme de mise à jour : à comparer sur la taille de l'installateur, la signature et les antivirus sous
+  Windows, et la facilité des mises à jour.
+- Garder aussi l'accès par navigateur pour ceux qui ne veulent rien installer (le jeu en ligne actuel).
+- Les systèmes visés : Windows seulement, ou aussi Mac et Linux (les lanceurs `.command` et `.sh` existent déjà).
+
+**Pistes de départ.** Mesurer le gain d'un passage en WebP sur 100 cartes ; prototyper le téléchargement à la demande
+des cartes d'une partie ; étendre `sw-plateau.js` pour la version en ligne ; évaluer l'emballage du moteur.
