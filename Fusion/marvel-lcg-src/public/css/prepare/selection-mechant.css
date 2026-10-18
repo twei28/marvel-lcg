@@ -131,9 +131,16 @@
     box-shadow: none;
   }
 
+  /* Toutes les pochettes remplissent le même cadre (18/10/2026) : avec « contain », une boîte large
+     ou un visuel carré se retrouvait plus petit que les pochettes hautes. « cover » les met à la
+     même taille, quitte à rogner un peu les bords. */
   .team-b.eux .ext-tab .box {
     inset: 2px 2px 26px 2px;
-    background-size: contain;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-color: var(--m-champ);
+    border-radius: 4px;
   }
 
   .team-b.eux .ext-tab .exname {
