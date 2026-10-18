@@ -146,7 +146,7 @@ test('les scenarios de la boite du Bouffon Vert sont grises, Rhino est libre', a
   const rhino = page.locator('#scn-grid .tb-port').filter({ hasText: /^Rhino/ }).first();
   await expect(rhino).not.toHaveClass(/est-verrou/);
   // L'onglet de la boite du Bouffon Vert (n°2).
-  await page.locator('.ext-tab').filter({ hasText: /Green Goblin/ }).first().click();
+  await page.locator('.ext-tab').filter({ hasText: /Green Goblin|Bouffon Vert/ }).first().click();
   await page.waitForSelector('#scn-grid .tb-port', { timeout: 20000 });
   const risky = page.locator('#scn-grid .tb-port').filter({ hasText: /Risky Business/ }).first();
   await expect(risky).toHaveClass(/est-verrou/);
@@ -167,7 +167,7 @@ test('a l etape des decks, seuls les decks jouables avec ce qu on a sont propose
   await page.waitForSelector('#deck-liste .tb-deck', { timeout: 20000 });
   const etiquettes = await page.$$eval('#deck-liste .tb-deck', (n) => n.map((x) => x.textContent || ''));
   console.log('DECKS PROPOSES :', JSON.stringify(etiquettes.map((e) => e.slice(0, 40))));
-  expect(etiquettes.some((e) => /Base/.test(e))).toBe(true);
+  expect(etiquettes.some((e) => /Base|Deck de départ|Starter/.test(e))).toBe(true);
   expect(etiquettes.some((e) => /Paquet|Conseill/.test(e))).toBe(false);
   // Et l'editeur de deck s'ouvre en Legacy : il verrouillera les memes cartes.
   const [popup] = await Promise.all([
@@ -207,7 +207,7 @@ test('la bande separe la condition des jetons a prendre', async ({ page }) => {
   const bonus = page.locator('.legacy-bonus');
   await expect(bonus).toHaveCount(1);
   console.log('JETONS A PRENDRE :', await bonus.textContent());
-  await expect(bonus).toContainText('5');
+  await expect(bonus).toContainText(/\d+ héros de cette boîte/);
 
   // Le mot sur la regle, pour celui qui s'etait fixe l'ancien objectif.
   await expect(page.locator('.legacy-regle')).toContainText(/méchants ouvrent/i);

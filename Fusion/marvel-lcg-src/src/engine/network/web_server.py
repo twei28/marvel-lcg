@@ -520,6 +520,9 @@ class WebServer:
 
         self.AddAwaitGetSecurity(r'/{path:.+\.eot}', handle_font)
         self.AddAwaitGetSecurity(r'/{path:.+\.woff}', handle_font)
+        # .woff2 : sans cette ligne, l'Inter des pages Epure (public/fonts/Inter-*.woff2) tombait dans la route des
+        # images et le navigateur recevait un JPEG a la place de la police (18/10/2026).
+        self.AddAwaitGetSecurity(r'/{path:.+\.woff2}', handle_font)
         self.AddAwaitGetSecurity(r'/{path:.+\.ttf}', handle_font)
 
         self.AddAwaitGetSecurity(r'/{path:.+\.svg}', handle_svg)

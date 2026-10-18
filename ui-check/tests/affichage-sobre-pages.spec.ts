@@ -26,6 +26,7 @@ async function etatSobre(page: Page) {
     const art = document.querySelector<HTMLElement>('.tb-art');
     return {
       affichage: html.dataset.affichage,
+      epure: html.dataset.epure !== undefined,
       teinte: html.dataset.teinte ?? null,
       trame: avant.display === 'none' || avant.content === 'none' || avant.content === '',
       ombreTitre: titre ? getComputedStyle(titre).textShadow : 'none',
@@ -59,8 +60,11 @@ const PAGES: Array<{ nom: string; aller: (page: Page) => Promise<void> }> = [
 ];
 
 for (const p of PAGES) {
-  test(`${p.nom} : normal puis sobre`, async ({ browser }) => {
-    for (const affichage of ['normal', 'sobre'] as const) {
+  // Depuis le 18/10/2026, qui a droit à l'Épuré (hôte local, administrateur) n'a plus que lui : le « normal »
+  // n'existe plus sur ce moteur de test, et l'Épuré pose `data-affichage="sobre"` en plus de son propre
+  // attribut. On ne mesure donc que le sobre, que les visiteurs sans droit à l'Épuré voient encore.
+  test(`${p.nom} : sobre`, async ({ browser }) => {
+    for (const affichage of ['sobre'] as const) {
       const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
       const page = await ctx.newPage();
       await preparer(page, affichage);
@@ -78,7 +82,8 @@ for (const p of PAGES) {
         for (const hex of e.accents) {
           const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
           expect(Math.max(r, g, b) - Math.min(r, g, b), `accent ${hex} ne doit pas etre gris`).toBeGreaterThan(12);
-          expect(Math.max(r, g, b) - Math.min(r, g, b), `accent ${hex} doit etre terni`).toBeLessThan(90);
+          // L'Épuré a ses propres accents bleus vifs : « terni » ne se mesure que sur le vrai sobre.
+          if (!e.epure) expect(Math.max(r, g, b) - Math.min(r, g, b), `accent ${hex} doit etre terni`).toBeLessThan(90);
         }
       }
       await ctx.close();

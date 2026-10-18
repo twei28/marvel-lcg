@@ -9,10 +9,17 @@
 //   UI_CHECK_BASE=http://127.0.0.1:40000 WSLENV=UI_CHECK_BASE npx playwright test tests/palettes-heros.spec.ts --project=pc
 import { test, expect } from '@playwright/test'
 
+// La vue par défaut ne montre que les lignes « à traiter » : une fois tous les méchants et héros traités
+// (18/10/2026), elle est vide et `#liste` n'a plus de hauteur. On ouvre donc « Tous » avant de mesurer.
+async function voirTous(page: import('@playwright/test').Page) {
+  await page.locator('button[data-etat="tous"]').click({ timeout: 20000 })
+  await expect(page.locator('#liste')).toBeVisible({ timeout: 20000 })
+}
+
 test.describe('éditeur de palettes', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/palettes-heros.html')
-    await expect(page.locator('#liste')).toBeVisible({ timeout: 20000 })
+    await voirTous(page)
   })
 
   test('la liste montre les identités, avec leurs trois champs et un aperçu', async ({ page }) => {
@@ -32,7 +39,6 @@ test.describe('éditeur de palettes', () => {
   })
 
   test('la vignette agrandit la carte, et la pipette remplit le champ visé', async ({ page }) => {
-    // La vue par défaut ne montre que les lignes « à traiter » (les traitées sont rangées).
     const ligne = page.locator('.p-ligne:not([hidden])').first()
     const avant = await ligne.locator('.p-hex').first().inputValue()
 
@@ -72,7 +78,7 @@ test.describe('éditeur de palettes', () => {
     // on simule donc ici la réponse d'un compte ordinaire.
     await page.route('**/get_site_admin*', (r) => r.fulfill({ contentType: 'application/json', body: '{"url":""}' }))
     await page.reload()
-    await expect(page.locator('#liste')).toBeVisible({ timeout: 20000 })
+    await voirTous(page)
     await expect(page.locator('#message')).toContainText('Lecture seule')
     await expect(page.locator('.p-ligne').first().locator('.p-enregistrer')).toBeDisabled()
   })
