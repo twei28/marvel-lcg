@@ -22,6 +22,9 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 
 const SEUIL_GLISSER = 6
 
+/** Propriete posee sur `onPointerDown` : voir `glisserPartout.ts`. */
+export const MARQUE_GESTE = '__glisserPanneau'
+
 export type Decalage = { dx: number; dy: number }
 
 const REPOS: Decalage = { dx: 0, dy: 0 }
@@ -187,6 +190,10 @@ export function useGlisserPanneau(signature: string, memoire?: string) {
     },
     [oublier]
   )
+
+  // Marque les gestionnaires de ce hook : `glisserPartout` s'en sert pour retrouver, dans une fenetre, l'element
+  // qui porte son geste, sans que chaque fenetre ait a le declarer.
+  ;(onPointerDown as unknown as Record<string, boolean>)[MARQUE_GESTE] = true
 
   return {
     decalage,

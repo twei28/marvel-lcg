@@ -265,6 +265,7 @@ import { fondDe, identiteAffichee, identitesMechants, marqueDe, marqueMechantDe,
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
 import { transformDecalage, useGlisserPanneau } from './board/placement/useGlisserPanneau'
+import { installerGlisserPartout } from './board/placement/glisserPartout'
 import { cibleDeLaTouche, SELECTEURS_BLOQUANTS } from './board/clavier-cartouche'
 import { nomLisible } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
@@ -1190,6 +1191,8 @@ function ModaleMenu({
 
 function PopoverSauvegardes() {
   const confirmer = useConfirmation()
+  // Les fenetres se glissent de partout, hors boutons, cartes et champs (voir placement/glisserPartout.ts).
+  useEffect(() => installerGlisserPartout(), [])
   const [ouvert, setOuvert] = useState(false)
   const [metas, setMetas] = useState<Record<number, MetaSauvegarde | undefined>>({})
   const [occupe, setOccupe] = useState<string | undefined>(undefined)
