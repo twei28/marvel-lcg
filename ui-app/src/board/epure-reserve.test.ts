@@ -11,17 +11,26 @@ afterEach(() => {
   reglerEpurePourTous(true)
 })
 
-describe("l'épuré pour tout le monde, seul affichage (18/10/2026)", () => {
+describe("l'épuré, affichage « Normal » de tout le monde (18/10/2026)", () => {
   it("tout le monde y a droit, même en ligne, sans réponse du serveur, même en vue « compte classique »", () => {
     vi.stubGlobal('location', { hostname: 'narwhalchampions.com' })
     localStorage.setItem('mc_vue_joueur', 'oui')
-    localStorage.setItem(CLE_AFFICHAGE, 'sobre')
     expect(epurePermis()).toBe(true)
     expect(lireAffichage()).toBe('epure')
-    appliquerAffichage('normal')
+    appliquerAffichage('epure')
     expect(document.documentElement.dataset.epure).toBe('oui')
-    // Le choix rangé n'est pas effacé : les anciens modes sont désactivés, pas supprimés.
-    expect(localStorage.getItem(CLE_AFFICHAGE)).toBe('sobre')
+  })
+
+  it('les trois affichages se choisissent : un Coloré ou un Sobre rangé est respecté', () => {
+    localStorage.setItem(CLE_AFFICHAGE, 'sobre')
+    expect(lireAffichage()).toBe('sobre')
+    appliquerAffichage('sobre')
+    expect(document.documentElement.dataset.epure).toBeUndefined()
+    localStorage.setItem(CLE_AFFICHAGE, 'normal')
+    expect(lireAffichage()).toBe('normal')
+    appliquerAffichage('normal')
+    expect(document.documentElement.dataset.affichage).toBe('normal')
+    expect(document.documentElement.dataset.epure).toBeUndefined()
   })
 })
 

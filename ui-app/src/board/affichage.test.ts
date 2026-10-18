@@ -24,27 +24,29 @@ afterEach(() => {
 })
 
 describe('affichage', () => {
-  it('lit la meme cle que la preparation, normal par defaut (pour qui n a pas droit a l epure)', () => {
-    reglerEpurePourTous(false) // l'ancienne reserve a l'administrateur (modes Normal et Sobre desactives, pas supprimes)
-    window.localStorage.setItem('mc_vue_joueur', 'oui')
+  it('lit la meme cle que la preparation ; l affichage de depart est epure, qui se lit « Normal » (18/10/2026)', () => {
     expect(CLE_AFFICHAGE).toBe('mc_affichage_v1')
-    expect(lireAffichage()).toBe('normal')
-    window.localStorage.setItem(CLE_AFFICHAGE, 'sobre')
-    expect(lireAffichage()).toBe('sobre')
-    window.localStorage.setItem(CLE_AFFICHAGE, 'epure')
-    expect(lireAffichage()).toBe('sobre')
-  })
-
-  it('qui a droit a l epure n a plus que lui, quoi que le navigateur ait range (18/10/2026)', () => {
     expect(lireAffichage()).toBe('epure')
-    for (const v of ['normal', 'sobre', 'epure']) {
+    // Les trois affichages se CHOISISSENT : ce que le navigateur a range est respecte.
+    for (const v of ['normal', 'sobre', 'epure'] as const) {
       window.localStorage.setItem(CLE_AFFICHAGE, v)
-      expect(lireAffichage()).toBe('epure')
+      expect(lireAffichage()).toBe(v)
     }
   })
 
-  it('une valeur inconnue vaut normal', () => {
-    for (const v of [undefined, null, '', 'fluo', 'SOBRE']) expect(normaliserAffichage(v)).toBe('normal')
+  it('sans droit a l epure (ancienne reserve a l administrateur) : un epure range, ou le depart, se montre en sobre', () => {
+    reglerEpurePourTous(false)
+    window.localStorage.setItem('mc_vue_joueur', 'oui')
+    expect(lireAffichage()).toBe('sobre')
+    window.localStorage.setItem(CLE_AFFICHAGE, 'epure')
+    expect(lireAffichage()).toBe('sobre')
+    window.localStorage.setItem(CLE_AFFICHAGE, 'normal')
+    expect(lireAffichage()).toBe('normal')
+  })
+
+  it('une valeur inconnue vaut l affichage de depart (epure, « Normal »)', () => {
+    for (const v of [undefined, null, '', 'fluo', 'SOBRE']) expect(normaliserAffichage(v)).toBe('epure')
+    expect(normaliserAffichage('normal')).toBe('normal')
   })
 
   it('ecrire range le choix, pose l attribut et previent le compte', () => {
@@ -57,7 +59,6 @@ describe('affichage', () => {
   })
 
   it('l epure est un sobre de plus : data-affichage vaut sobre, data-epure s ajoute', () => {
-    reglerEpurePourTous(false) // ancienne regle : les modes Normal et Sobre sont desactives, pas supprimes
     expect(normaliserAffichage('epure')).toBe('epure')
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('{}'))))
     ecrireAffichage('epure')
@@ -75,7 +76,7 @@ describe('affichage', () => {
     expect(affichageDuCompte({ compte: true, existe: false, preferences: {} })).toBeUndefined()
     expect(affichageDuCompte(null)).toBeUndefined()
     expect(affichageDuCompte({ compte: true, existe: true, preferences: { affichage: 'sobre' } })).toBe('sobre')
-    expect(affichageDuCompte({ compte: true, existe: true, preferences: {} })).toBe('normal')
+    expect(affichageDuCompte({ compte: true, existe: true, preferences: {} })).toBe('epure')
   })
 
   it('le mode sobre vaut mouvement reduit, le mode normal suit le systeme', () => {

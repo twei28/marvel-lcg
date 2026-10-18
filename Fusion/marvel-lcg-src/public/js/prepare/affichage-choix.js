@@ -1,7 +1,12 @@
-// affichage-choix.js : le réglage « Affichage : Normal / Sobre / Épuré ».
+// affichage-choix.js : le réglage « Affichage : Normal / Coloré / Sobre ».
 //
 // Une seule clé de stockage, `mc_affichage_v1`, lue AUSSI par le plateau
-// (ui-app/src/board/affichage.ts). Valeurs : "normal" (défaut), "sobre" ou "epure".
+// (ui-app/src/board/affichage.ts). Valeurs : "epure" (défaut), "normal" ou "sobre".
+//
+// ⚠ LES NOMS ONT CHANGÉ (18/10/2026, demande de l'utilisateur) SANS CHANGER LES VALEURS RANGÉES :
+//   valeur "epure"  -> se lit « Normal » (l'affichage de départ de tout le monde, ex-« Épuré »)
+//   valeur "normal" -> se lit « Coloré » (couleurs du héros, halo vif, ex-« Normal »)
+//   valeur "sobre"  -> se lit « Sobre » (inchangé)
 //
 // Module PUR (ni DOM ni stockage) : testé par
 // `node --test tools/tests-lanceur/affichage-choix.test.mjs`.
@@ -12,15 +17,18 @@ export const NORMAL = "normal";
 export const SOBRE = "sobre";
 export const EPURE = "epure";
 
-/** Toute valeur inconnue (absente, abîmée, ancienne) vaut « normal ». */
+/** L'affichage de départ : "epure", qui se lit « Normal » (18/10/2026). */
+export const PAR_DEFAUT = EPURE;
+
+/** Toute valeur inconnue (absente, abîmée, ancienne) vaut l'affichage de départ. */
 export function normaliser(valeur) {
-    return valeur === SOBRE || valeur === EPURE ? valeur : NORMAL;
+    return valeur === NORMAL || valeur === SOBRE || valeur === EPURE ? valeur : PAR_DEFAUT;
 }
 
-/** Le bouton de l'en-tête fait tourner : normal, sobre, épuré, normal... */
+/** Le bouton de l'en-tête fait tourner : Normal (epure), Coloré (normal), Sobre, Normal... */
 export function suivant(valeur) {
     const v = normaliser(valeur);
-    return v === NORMAL ? SOBRE : v === SOBRE ? EPURE : NORMAL;
+    return v === EPURE ? NORMAL : v === NORMAL ? SOBRE : EPURE;
 }
 
 /**
@@ -50,15 +58,10 @@ function hoteLocal() {
 }
 
 /**
- * L'ÉPURÉ POUR TOUT LE MONDE, SEUL AFFICHAGE (18/10/2026, demande de l'utilisateur :
- * « les modes autres, je veux pas que tu les supprimes, je veux juste que tu les
- * désactives »). Tant que ce réglage est vrai, `epurePermis()` répond oui à tous
- * (aussi dans la vue « compte classique » de l'administrateur) : le bouton qui
- * fait tourner les modes, la fenêtre « Choisis ton affichage » et la ligne de choix
- * disparaissent, et un Normal ou un Sobre rangé dans le navigateur ou sur le compte
- * ne se montre plus (sans être effacé). Le code des modes Normal et Sobre, et la
- * réserve à l'administrateur (`epurePermisReserve`), restent là, intacts.
- * POUR TOUT REMETTRE : `reglerEpurePourTous(false)` ou la constante ci-dessous à `false`.
+ * L'ÉPURÉ POUR TOUT LE MONDE (18/10/2026) : c'est l'affichage « Normal », celui de départ. Tant que ce réglage
+ * est vrai, `epurePermis()` répond oui à tous (aussi dans la vue « compte classique » de l'administrateur) ;
+ * faux, l'ancienne réserve à l'administrateur (`epurePermisReserve`) reprend. Les trois affichages (Normal,
+ * Coloré, Sobre) se CHOISISSENT : plus rien n'est forcé ni caché (« ils choisissent entre les trois »).
  */
 let epurePourTous = true;
 export function reglerEpurePourTous(valeur) { epurePourTous = !!valeur; }
@@ -78,10 +81,8 @@ export function epurePermisReserve() {
 
 /** La valeur montrée : l'épuré devient sobre pour qui n'y a pas droit. */
 export function valeurPermise(valeur) {
-    // Qui a droit à l'épuré n'a plus que lui (18/10/2026) : un normal ou un sobre rangé ne se montre plus.
-    if (epurePermis()) return EPURE;
     const v = normaliser(valeur);
-    return v === EPURE ? SOBRE : v;
+    return v === EPURE && !epurePermis() ? SOBRE : v;
 }
 
 let verification = null;
@@ -127,7 +128,7 @@ export function reconcilier(local, reponse) {
     if (!reponse || !reponse.compte) return null;
     const ici = normaliser(local);
     if (!reponse.existe) {
-        return { affichage: ici, pousser: ici !== NORMAL ? { affichage: ici } : {} };
+        return { affichage: ici, pousser: ici !== PAR_DEFAUT ? { affichage: ici } : {} };
     }
     const prefs = reponse.preferences || {};
     return { affichage: normaliser(prefs.affichage), pousser: {} };
@@ -143,7 +144,9 @@ export function reconcilier(local, reponse) {
  *  - le compte dont le fichier de préférences porte déjà `affichage`.
  */
 export function doitProposerLeChoix(local, reponse) {
-    if (epurePermis()) return false; // un seul affichage : rien à choisir
+    // Tout le monde commence en Normal (18/10/2026) : rien à proposer d'office. Le choix reste dans « Options »
+    // et le bouton de l'en-tête.
+    if (epurePermis()) return false;
     if (local === NORMAL || local === SOBRE || local === EPURE) return false;
     const prefs = reponse && reponse.compte && reponse.existe ? (reponse.preferences || {}) : {};
     return !Object.prototype.hasOwnProperty.call(prefs, "affichage");

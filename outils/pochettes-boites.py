@@ -39,7 +39,6 @@ RECTS = {
     "56. Civil War": (20, 0, 216),
     "57. Synthezoid Smackdown": (22, 36, 166),
     "60. Fear No Evil": (42, 0, 216),
-    "119. Custom (The Spot)": (0, 5, 209),
     "120. Custom (Web of Deceit)": (0, 5, 209),
     "136. Custom (Gorr the God Butcher)": (0, 10, 183),
     "143. Custom (Skrull Menace)": (28, 0, 216),
@@ -67,13 +66,17 @@ DE_CARTES = {
     "190": ("SHREDDER", [("ts001.jpg", 215)]),
     "192": ("BEBOP & ROCKSTEADY", [("tk001a.jpg", 190), ("tk003a.jpg", 230)]),
     "195": ("BAXTER STOCKMAN", [("tx001.jpg", 130)]),
+    # Les cartes de The Spot font 600 x 840 : la fenêtre de l'illustration est un peu plus haute.
+    "119": ("THE SPOT", [("sp002.jpg", 177)], 92, 458),
 }
-for numero, (titre, morceaux) in DE_CARTES.items():
-    toile = Image.new("RGB", (LARGE, Y1 - Y0))
-    part = LARGE // len(morceaux)
+for numero, (titre, morceaux, *fenetre) in DE_CARTES.items():
+    y0, y1 = fenetre if fenetre else (Y0, Y1)
+    large = round((y1 - y0) * RATIO)
+    toile = Image.new("RGB", (large, y1 - y0))
+    part = large // len(morceaux)
     for i, (fichier, x) in enumerate(morceaux):
         carte = Image.open(os.path.join(PICS, fichier)).convert("RGB")
-        toile.paste(carte.crop((x, Y0, x + part, Y1)), (i * part, 0))
+        toile.paste(carte.crop((x, y0, x + part, y1)), (i * part, 0))
     toile = toile.resize((LARGEUR, HAUTEUR), Image.LANCZOS)
     d = ImageDraw.Draw(toile)
     taille = 46

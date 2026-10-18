@@ -181,19 +181,26 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     expect(changerAffichage).toHaveBeenCalledWith('sobre')
   })
 
-  it('qui a droit a l epure : plus de ligne de choix, ni Normal, ni Sobre, ni Epure (18/10/2026)', () => {
+  it('les trois affichages se choisissent : Normal (valeur epure), Colore (valeur normal), Sobre (18/10/2026)', () => {
     window.localStorage.removeItem('mc_vue_joueur')
-    render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
-    expect(screen.queryByText('Style d’affichage')).toBeNull()
-    expect(screen.queryByText('Normal')).toBeNull()
-    expect(screen.queryByText('Sobre')).toBeNull()
+    reglerEpurePourTous(true)
+    const changerAffichage = vi.fn()
+    render(<ContenuOnglet onglet="apparence" p={proprietes({ changerAffichage })} />)
+    expect(screen.getByText('Style d’affichage')).toBeTruthy()
+    fireEvent.click(screen.getByText('Coloré'))
+    expect(changerAffichage).toHaveBeenLastCalledWith('normal')
+    fireEvent.click(screen.getByText('Normal'))
+    expect(changerAffichage).toHaveBeenLastCalledWith('epure')
+    fireEvent.click(screen.getByText('Sobre'))
+    expect(changerAffichage).toHaveBeenLastCalledWith('sobre')
     expect(screen.queryByText('Épuré')).toBeNull()
   })
 
-  it('qui n a pas droit a l epure : Normal et Sobre, sans Epure', () => {
+  it('sans droit a l epure (ancienne reserve) : Colore et Sobre, pas de Normal', () => {
     render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
-    expect(screen.getByText('Normal')).toBeTruthy()
+    expect(screen.getByText('Coloré')).toBeTruthy()
     expect(screen.getByText('Sobre')).toBeTruthy()
+    expect(screen.queryByText('Normal')).toBeNull()
     expect(screen.queryByText('Épuré')).toBeNull()
   })
 

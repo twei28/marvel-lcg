@@ -1,45 +1,52 @@
 // Tests du module pur `public/js/prepare/affichage-choix.js`.
 //
 //     node --test tools/tests-lanceur/affichage-choix.test.mjs
+//
+// LES NOMS (18/10/2026) : valeur "epure" = « Normal » (affichage de départ de tout le monde), valeur "normal" =
+// « Coloré », valeur "sobre" = « Sobre ». Les valeurs rangées n'ont pas changé.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { normaliser, suivant, attributsDe, reconcilier, CLE_AFFICHAGE, reglerEpurePourTous } from "../../public/js/prepare/affichage-choix.js";
-
-// Depuis le 18/10/2026 l'épuré est l'affichage de TOUS (modes Normal et Sobre désactivés, pas supprimés). Ces tests vérifient
-// l'ancienne règle (réserve à l'administrateur) : on la remet ici ; le test « pour tout le monde » en bas la coupe à nouveau.
-reglerEpurePourTous(false);
+import { normaliser, suivant, attributsDe, reconcilier, CLE_AFFICHAGE, PAR_DEFAUT, doitProposerLeChoix, valeurPermise, epurePermis, reglerEpurePourTous } from "../../public/js/prepare/affichage-choix.js";
 
 test("la clé est celle que lit le plateau", () => {
     assert.equal(CLE_AFFICHAGE, "mc_affichage_v1");
 });
 
-test("toute valeur inconnue vaut normal", () => {
-    for (const v of [undefined, null, "", "fluo", "SOBRE", 1]) assert.equal(normaliser(v), "normal");
+test("l'affichage de départ est epure, qui se lit « Normal »", () => {
+    assert.equal(PAR_DEFAUT, "epure");
+});
+
+test("toute valeur inconnue vaut l'affichage de départ", () => {
+    for (const v of [undefined, null, "", "fluo", "SOBRE", 1]) assert.equal(normaliser(v), "epure");
+    assert.equal(normaliser("normal"), "normal");
     assert.equal(normaliser("sobre"), "sobre");
     assert.equal(normaliser("epure"), "epure");
 });
 
-test("suivant fait tourner : normal, sobre, épuré, normal", () => {
+test("suivant fait tourner : Normal (epure), Coloré (normal), Sobre, Normal", () => {
+    assert.equal(suivant("epure"), "normal");
     assert.equal(suivant("normal"), "sobre");
     assert.equal(suivant("sobre"), "epure");
-    assert.equal(suivant("epure"), "normal");
-    assert.equal(suivant(undefined), "sobre");
+    assert.equal(suivant(undefined), "normal");
 });
 
 test("l'épuré est un sobre de plus : data-affichage vaut sobre, data-epure s'ajoute", () => {
     assert.deepEqual(attributsDe("normal"), { affichage: "normal", epure: false });
     assert.deepEqual(attributsDe("sobre"), { affichage: "sobre", epure: false });
     assert.deepEqual(attributsDe("epure"), { affichage: "sobre", epure: true });
+    assert.deepEqual(attributsDe(undefined), { affichage: "sobre", epure: true });
 });
 
-test("un navigateur qui a rangé « epure » a déjà choisi", () => {
-    assert.equal(doitProposerLeChoix("epure", null), false);
-    assert.equal(doitProposerLeChoix(null, null), true);
-});
-
-test("compte sans fichier : l'épuré du navigateur y est versé", () => {
+test("compte sans fichier : le choix du navigateur y est versé, sauf le départ", () => {
+    assert.deepEqual(reconcilier("normal", { compte: true, existe: false, preferences: {} }),
+        { affichage: "normal", pousser: { affichage: "normal" } });
+    assert.deepEqual(reconcilier("sobre", { compte: true, existe: false, preferences: {} }),
+        { affichage: "sobre", pousser: { affichage: "sobre" } });
+    // Le départ (Normal, valeur epure) n'a rien à verser.
     assert.deepEqual(reconcilier("epure", { compte: true, existe: false, preferences: {} }),
-        { affichage: "epure", pousser: { affichage: "epure" } });
+        { affichage: "epure", pousser: {} });
+    assert.deepEqual(reconcilier(null, { compte: true, existe: false, preferences: {} }),
+        { affichage: "epure", pousser: {} });
 });
 
 test("invité ou moteur local : le navigateur reste maître", () => {
@@ -47,71 +54,43 @@ test("invité ou moteur local : le navigateur reste maître", () => {
     assert.equal(reconcilier("sobre", null), null);
 });
 
-test("compte sans fichier : le choix du navigateur y est versé", () => {
-    assert.deepEqual(reconcilier("sobre", { compte: true, existe: false, preferences: {} }),
-        { affichage: "sobre", pousser: { affichage: "sobre" } });
-    // Le défaut n'a rien à verser.
-    assert.deepEqual(reconcilier(null, { compte: true, existe: false, preferences: {} }),
-        { affichage: "normal", pousser: {} });
-});
-
 test("compte avec fichier : il fait foi, même sans clé d'affichage", () => {
     assert.deepEqual(reconcilier("normal", { compte: true, existe: true, preferences: { affichage: "sobre" } }),
         { affichage: "sobre", pousser: {} });
     assert.deepEqual(reconcilier("sobre", { compte: true, existe: true, preferences: {} }),
-        { affichage: "normal", pousser: {} });
+        { affichage: "epure", pousser: {} });
 });
 
-import { doitProposerLeChoix } from "../../public/js/prepare/affichage-choix.js";
-
-test("jamais choisi (rien dans le navigateur, pas de compte) : on propose la fenêtre", () => {
-    assert.equal(doitProposerLeChoix(null, null), true);
-    assert.equal(doitProposerLeChoix(null, { compte: false, existe: false, preferences: {} }), true);
-});
-
-test("déjà choisi dans ce navigateur, même « normal » : on ne propose plus", () => {
-    assert.equal(doitProposerLeChoix("normal", null), false);
-    assert.equal(doitProposerLeChoix("sobre", null), false);
-});
-
-test("déjà choisi sur le compte, depuis un autre appareil : on ne propose plus", () => {
-    assert.equal(doitProposerLeChoix(null, { compte: true, existe: true, preferences: { affichage: "normal" } }), false);
-});
-
-test("compte sans ce réglage (ancien joueur) : on propose, une fois", () => {
-    assert.equal(doitProposerLeChoix(null, { compte: true, existe: true, preferences: { arts: {} } }), true);
-    assert.equal(doitProposerLeChoix(null, { compte: true, existe: false, preferences: {} }), true);
-});
-
-test("l'épuré est réservé à l'administrateur : sans droit, il se montre en sobre (16/10/2026)", async () => {
-    const { valeurPermise, epurePermis } = await import("../../public/js/prepare/affichage-choix.js");
-    // Sous node : ni hôte local, ni réponse retenue du serveur.
-    assert.equal(epurePermis(), false);
-    assert.equal(valeurPermise("epure"), "sobre");
-    assert.equal(valeurPermise("sobre"), "sobre");
-    assert.equal(valeurPermise("normal"), "normal");
-});
-
-test("qui a droit à l'épuré n'a plus que lui : normal et sobre rangés ne se montrent plus, plus de fenêtre de choix (18/10/2026)", async () => {
-    const { valeurPermise, doitProposerLeChoix } = await import("../../public/js/prepare/affichage-choix.js");
-    globalThis.location = { hostname: "localhost" };
-    try {
-        for (const v of ["normal", "sobre", "epure", null, "fluo"]) assert.equal(valeurPermise(v), "epure");
-        assert.equal(doitProposerLeChoix(null, null), false);
-    } finally {
-        delete globalThis.location;
-    }
-});
-
-test("l'épuré pour tout le monde, seul affichage : défaut du site depuis le 18/10/2026", async () => {
-    const { valeurPermise, epurePermis, doitProposerLeChoix } = await import("../../public/js/prepare/affichage-choix.js");
+test("tout le monde a droit à l'épuré (Normal) : les trois affichages rangés sont respectés, rien n'est forcé", () => {
     reglerEpurePourTous(true);
+    assert.equal(epurePermis(), true);
+    assert.equal(valeurPermise("epure"), "epure");
+    assert.equal(valeurPermise("normal"), "normal");
+    assert.equal(valeurPermise("sobre"), "sobre");
+    assert.equal(valeurPermise(null), "epure");
+    assert.equal(valeurPermise("fluo"), "epure");
+});
+
+test("tout le monde commence en Normal : aucune fenêtre « Choisis ton affichage » proposée d'office", () => {
+    reglerEpurePourTous(true);
+    assert.equal(doitProposerLeChoix(null, null), false);
+    assert.equal(doitProposerLeChoix(null, { compte: true, existe: true, preferences: { arts: {} } }), false);
+});
+
+test("ancienne règle conservée (réserve à l'administrateur) : sans droit, l'épuré et le départ se montrent en sobre", () => {
+    reglerEpurePourTous(false);
     try {
-        // Sous node : ni hôte local, ni réponse du serveur, et pourtant :
-        assert.equal(epurePermis(), true);
-        for (const v of ["normal", "sobre", "epure", null, "fluo"]) assert.equal(valeurPermise(v), "epure");
-        assert.equal(doitProposerLeChoix(null, null), false);
+        // Sous node : ni hôte local, ni réponse retenue du serveur.
+        assert.equal(epurePermis(), false);
+        assert.equal(valeurPermise("epure"), "sobre");
+        assert.equal(valeurPermise(null), "sobre");
+        assert.equal(valeurPermise("sobre"), "sobre");
+        assert.equal(valeurPermise("normal"), "normal");
+        // La fenêtre de choix, elle, se propose de nouveau à qui n'a jamais choisi.
+        assert.equal(doitProposerLeChoix(null, null), true);
+        assert.equal(doitProposerLeChoix("normal", null), false);
+        assert.equal(doitProposerLeChoix(null, { compte: true, existe: true, preferences: { affichage: "normal" } }), false);
     } finally {
-        reglerEpurePourTous(false);
+        reglerEpurePourTous(true);
     }
 });

@@ -1794,7 +1794,7 @@ async function demanderLAffichage({ rouvert = false } = {}) {
         // Les cartes SE CHOISISSENT, elles ne ferment plus : la roue de la
         // couleur du fond vit dans la meme fenetre (choix de l'utilisateur,
         // 04/10/2026), et c'est « Valider » qui ferme le tout.
-        let choixAffichage = rouvert ? affichageActuel() : "normal";
+        let choixAffichage = rouvert ? affichageActuel() : "epure";
         let choixTeinte = teinteActuelle();
         const cartes = [];
         const carte = (valeur, titre, sous) => {
@@ -1831,9 +1831,10 @@ async function demanderLAffichage({ rouvert = false } = {}) {
                     el("b", { class: "mvl" }, t("Choisis ton affichage")),
                 ),
                 el("div", { class: "af-choix-grille" },
-                    carte("normal", t("Normal"), t("Couleurs du héros, animations.")),
+                    // Normal (valeur epure, celui de départ), Coloré (valeur normal), Sobre (18/10/2026).
+                    epurePermis() ? carte("epure", t("Normal"), t("Fond sombre, panneaux bleus biseautés, titres en Bangers et rouge Marvel en touche.")) : null,
+                    carte("normal", t("Coloré"), t("Couleurs du héros, animations.")),
                     carte("sobre", t("Sobre"), t("Fond gris, sans couleurs ni animations, plus reposant.")),
-                    epurePermis() ? carte("epure", t("Épuré"), t("Fond sombre, panneaux bleus biseautés, titres en Bangers et rouge Marvel en touche.")) : null,
                 ),
                 el("div", { class: "af-teinte" },
                     el("b", {}, t("Couleur du fond")),

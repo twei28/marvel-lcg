@@ -80,22 +80,20 @@ export function affichageJamaisChoisi(reponse) {
 }
 
 function dessinerBouton(bouton) {
-    // Un seul affichage pour qui a droit à l'épuré (18/10/2026) : le bouton qui fait tourner les modes se cache.
-    bouton.hidden = epurePermis();
     const mode = affichageActuel();
-    bouton.setAttribute("aria-pressed", mode === NORMAL ? "false" : "true");
+    // « Appuyé » = pas l'affichage de départ (Normal, valeur epure).
+    bouton.setAttribute("aria-pressed", mode === EPURE ? "false" : "true");
     bouton.title = "";
     bouton.dataset.description = mode === EPURE
-        ? t("Affichage épuré : gris, sans décor, le strict nécessaire. Cliquer pour revenir à l’affichage normal")
-        : mode === SOBRE
-            ? (epurePermis()
-                ? t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour passer en affichage épuré")
-                : t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour revenir à l’affichage normal"))
-            : t("Affichage normal. Cliquer pour passer en affichage sobre : fond gris, sans couleurs du héros ni animations");
-    poserIcone(bouton, mode === NORMAL ? "fa-eye" : "fa-eye-slash", mode === EPURE ? t("Affichage épuré") : mode === SOBRE ? t("Affichage sobre") : t("Affichage normal"));
+        ? t("Affichage normal. Cliquer pour passer en affichage coloré : couleurs du héros, halo vif")
+        : mode === NORMAL
+            ? t("Affichage coloré : couleurs du héros, halo vif. Cliquer pour passer en affichage sobre")
+            : t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour revenir à l’affichage normal");
+    poserIcone(bouton, mode === NORMAL ? "fa-eye" : "fa-eye-slash",
+        mode === EPURE ? t("Affichage normal") : mode === NORMAL ? t("Affichage coloré") : t("Affichage sobre"));
 }
 
-/** Bouton Normal / Sobre / Épuré, à poser à côté du bouton FR / EN. */
+/** Bouton Normal / Coloré / Sobre, à poser à côté du bouton FR / EN. */
 export function boutonAffichage(classe) {
     const bouton = document.createElement("button");
     bouton.type = "button";

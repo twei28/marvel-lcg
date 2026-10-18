@@ -1596,6 +1596,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, panneaux bleus biseautés et titres en Bangers':
     'Muted: grey background, no colours or animations. Minimal: also no decoration, bevelled blue panels and Bangers titles',
   'la Réponse': 'the Response',
+  'Coloré': 'Colourful',
+  'Coloré : couleurs du héros et halo vif. Sobre : fond gris, sans couleurs ni animations':
+    'Colourful: hero colours and a vivid glow. Muted: grey background, no colours or animations',
   'la Réponse forcée': 'the Forced Response',
   "l'Interruption": 'the Interrupt',
   "l'Interruption forcée": 'the Forced Interrupt',

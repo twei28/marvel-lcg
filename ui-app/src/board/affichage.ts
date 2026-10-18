@@ -1,4 +1,10 @@
-// affichage.ts — le reglage « Affichage : Normal / Sobre » du plateau.
+// affichage.ts — le reglage « Affichage » du plateau : Normal, Colore, Sobre.
+//
+// ⚠ LES NOMS ONT CHANGE (18/10/2026, demande de l'utilisateur) SANS CHANGER LES VALEURS RANGEES :
+//   valeur `epure`  -> se lit « Normal » (l'affichage de depart de tout le monde, ex-« Epure »)
+//   valeur `normal` -> se lit « Colore » (couleurs du heros, halo vif, ex-« Normal »)
+//   valeur `sobre`  -> se lit « Sobre » (inchange)
+// Les navigateurs et les comptes qui avaient range `normal` ou `sobre` gardent donc leur choix.
 //
 // Meme cle que la preparation (Fusion/marvel-lcg-src/public/js/prepare/
 // affichage-choix.js) : un choix fait avant la partie suit sur le plateau, et
@@ -11,8 +17,12 @@ export const CLE_AFFICHAGE = 'mc_affichage_v1'
 
 export type Affichage = 'normal' | 'sobre' | 'epure'
 
+/** L'affichage de depart : `epure`, qui se lit « Normal » (18/10/2026). */
+export const AFFICHAGE_PAR_DEFAUT: Affichage = 'epure'
+
+/** Toute valeur inconnue (absente, abimee, ancienne) vaut l'affichage de depart. */
 export function normaliserAffichage(valeur: unknown): Affichage {
-  return valeur === 'sobre' || valeur === 'epure' ? valeur : 'normal'
+  return valeur === 'normal' || valeur === 'sobre' || valeur === 'epure' ? valeur : AFFICHAGE_PAR_DEFAUT
 }
 
 /** Sobre ou epure : les deux coupent couleurs vives et mouvement. */
@@ -30,13 +40,10 @@ export function estSobreOuEpure(affichage: Affichage): boolean {
 export const CLE_EPURE_PERMIS = 'mc_epure_permis'
 
 /**
- * L'ÉPURÉ POUR TOUT LE MONDE, SEUL AFFICHAGE (18/10/2026, demande de l'utilisateur :
- * « je veux juste que tu les désactives »). Même réglage que la préparation
- * (public/js/prepare/affichage-choix.js) : tant qu'il est vrai, `epurePermis()` répond
- * oui à tous, la ligne de choix « Style d'affichage » disparaît et un Normal ou un
- * Sobre rangé ne se montre plus (sans être effacé). Le code des modes Normal et Sobre
- * et la réserve à l'administrateur (`epurePermisReserve`) restent intacts.
- * POUR TOUT REMETTRE : `reglerEpurePourTous(false)` ou la variable ci-dessous à `false`.
+ * L'ÉPURÉ POUR TOUT LE MONDE (18/10/2026) : c'est l'affichage « Normal », celui de depart. Tant que ce reglage
+ * est vrai, `epurePermis()` repond oui a tous ; faux, l'ancienne reserve a l'administrateur
+ * (`epurePermisReserve`) reprend. Les trois affichages (Normal, Colore, Sobre) se CHOISISSENT : plus rien n'est
+ * force ni cache (demande de l'utilisateur : « ils choisissent entre les trois »).
  */
 let epurePourTous = true
 
@@ -70,14 +77,10 @@ export function retenirEpurePermis(ok: boolean): void {
 
 export function lireAffichage(): Affichage {
   try {
-    // L'EPURE EST LE SEUL AFFICHAGE DE QUI Y A DROIT (18/10/2026, « on ne regarde plus que le mode
-    // epure, tu peux meme cacher les autres modes ») : un Normal ou un Sobre range dans le
-    // navigateur ne s'affiche plus, sans etre efface. Qui n'a pas droit a l'epure garde son choix.
-    if (epurePermis()) return 'epure'
     const v = normaliserAffichage(window.localStorage.getItem(CLE_AFFICHAGE))
-    return v === 'epure' ? 'sobre' : v
+    return v === 'epure' && !epurePermis() ? 'sobre' : v
   } catch {
-    return 'normal'
+    return AFFICHAGE_PAR_DEFAUT
   }
 }
 
@@ -88,8 +91,7 @@ export function lireAffichage(): Affichage {
  * (`styles/affichage-epure.css`).
  */
 export function appliquerAffichage(demande: Affichage): void {
-  // Qui a droit a l'epure n'a plus que lui (18/10/2026) : un Normal ou un Sobre demande se montre en epure (seulement sous `epurePourTous` ; l'ancienne regle est inchangee).
-  const affichage = epurePourTous ? 'epure' : demande === 'epure' && !epurePermis() ? 'sobre' : demande
+  const affichage = demande === 'epure' && !epurePermis() ? 'sobre' : demande
   const racine = document.documentElement
   racine.dataset.affichage = affichage === 'normal' ? 'normal' : 'sobre'
   if (affichage === 'epure') racine.dataset.epure = 'oui'
