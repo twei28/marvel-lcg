@@ -3919,7 +3919,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // skrull_menace — Tricky Assault (Treachery)
   'sk262': "<b>Une fois révélée</b> : passez sous forme de héros. Le méchant vous attaque. Si cette attaque n'est pas défendue, le méchant manigance.\n<i>« Nous sommes prêts à accepter votre reddition. » —Skrull inconnu</i>",
   // leonardo — * Leonardo (Hero)
-  'tl001a': "<i>Kenjutsu</i> — <b>Action</b> : redressez une amélioration [[WEAPON]] que vous contrôlez. <i>(Limite d'une fois par round.)</i>",
+  'tl001a': "<i>Art du Sabre</i> — <b>Action</b> : redressez une amélioration [[WEAPON]] que vous contrôlez. (Limite d'une fois par round.)",
   // leonardo — * Leo (AlterEgo)
   'tl001b': "<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre pile de défausse jusqu'à 2 améliorations [[KATANA]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // leonardo — * Splinter (Ally)
@@ -3974,7 +3974,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // bebop_rocksteady — Demolition Crew (MainScheme)
   'tk005b': "<i>Alors que vous sortez des égouts, Bebop et Rocksteady vous accueillent. On dirait qu'ils vous attendaient !</i>\n[star] <b>Interruption forcée</b> : quand cette manigance est censée être achevée, retirez plutôt toute la menace d'ici. Puis, dans l'ordre des joueurs, Bebop et Rocksteady attaquent chaque joueur <i>(même sous forme d'alter ego)</i>.",
   // bebop_rocksteady — Destructive Dunderheads (Environment)
-  'tk006a': "<i>Double Peine</i> — Pendant l'étape 2 de la phase du Méchant, les deux méchants s'activent contre chaque joueur. Choisissez Bebop ou Rocksteady comme cible de chaque carte qui mentionne « le méchant ».\n<b>Interruption forcée</b> : quand Bebop ou Rocksteady est vaincu, mettez de côté ce méchant et son attachement [[TEMPER]]. Retournez le méchant restant sur sa face [[ALERT]], et cette carte sur sa face [[FERAL]].",
+  'tk006a': "<i>Double Galère</i> — Pendant l'étape 2 de la phase du Méchant, les deux méchants s'activent contre chaque joueur. Choisissez Bebop ou Rocksteady comme cible de chaque carte qui mentionne « le méchant ».\n<b>Interruption forcée</b> : quand Bebop ou Rocksteady est vaincu, mettez de côté ce méchant et son attachement [[TEMPER]]. Retournez le méchant restant sur sa face [[ALERT]], et cette carte sur sa face [[FERAL]].",
   // bebop_rocksteady — Gone Berserk! (Attachment)
   'tk006b': "Permanent. Attachez-la au méchant.\nLe méchant attaché ne peut pas être désorienté.\nLe méchant attaché gagne +12[per_hero] points de vie.",
   // bebop_rocksteady — Hog Wild (Attachment)
@@ -3986,13 +3986,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // bebop_rocksteady — Headstrong (Attachment)
   'tk008b': "Permanent. Attachez-la à Rocksteady.\nRocksteady gagne [[ENRAGED]].\n<b>Spécial</b> : placez 1 menace sur la manigance principale.\n<b>Interruption forcée</b> : quand Rocksteady est censé s'activer, si Headfirst est en jeu, retournez Bebop et Rocksteady sur leurs faces [[K.O.]] et retournez les deux attachements [[TEMPER]] sur leurs faces [[ROWDY]].",
   // bebop_rocksteady — * Shutter Shades (Attachment)
-  'tk009': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\nBebop gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[HOG]].\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je porte mes lunettes de soleil la nuit. »</i> —Bebop",
+  'tk009': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\nBebop gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[HOG]].\n<b>Réponse forcée</b> : après que Bebop est retourné sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je porte mes lunettes de soleil la nuit. »</i> —Bebop",
   // bebop_rocksteady — * Aviator Cap (Attachment)
-  'tk010': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\nRocksteady gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[RHINO]].\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.",
+  'tk010': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\nRocksteady gagne Solide.\n<b>Une fois révélée</b> : placez 1 jeton Andouille sur l'attachement [[RHINO]].\n<b>Réponse forcée</b> : après que Rocksteady est retourné sur sa face [[K.O.]], défaussez cette carte.",
   // bebop_rocksteady — * Roberta (Attachment)
-  'tk011': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\n[star] Les attaques de Bebop gagnent Perçant.\n<b>Réponse forcée</b> : après que Bebop passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« C'est l'heure de la boucherie ! »</i> —Bebop",
+  'tk011': "Attachez-la à Bebop s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\n[star] Les attaques de Bebop gagnent Perçant.\n<b>Réponse forcée</b> : après que Bebop est retourné sur sa face [[K.O.]], défaussez cette carte.\n<i>« C'est l'heure de la boucherie ! »</i> —Bebop",
   // bebop_rocksteady — * Juniper (Attachment)
-  'tk012': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\n[star] Les attaques de Rocksteady gagnent Déferlement.\n<b>Réponse forcée</b> : après que Rocksteady passe sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je parie que je peux vous convaincre de bouger. »</i> —Rocksteady",
+  'tk012': "Attachez-la à Rocksteady s'il est [[ALERT]]. Sinon, cette carte gagne Renfort.\n[star] Les attaques de Rocksteady gagnent Déferlement.\n<b>Réponse forcée</b> : après que Rocksteady est retourné sur sa face [[K.O.]], défaussez cette carte.\n<i>« Je parie que je peux vous convaincre de bouger. »</i> —Rocksteady",
   // bebop_rocksteady — Bumbling Buffoons (SideScheme)
   'tk013': "Esquive. <i>(Quand un personnage déjoue cette manigance annexe, il peut utiliser sa DEF au lieu de sa CTR.)</i>\n<b>Une fois déjouée</b> : choisissez un ennemi. Cet ennemi vous attaque. Vous pouvez infliger les dégâts de cette attaque à un autre ennemi de votre choix à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // bebop_rocksteady — Bumbling Buffoons (SideScheme)
@@ -4034,7 +4034,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // bebop_rocksteady — Get Your Swell On (SideScheme)
   'tk205': "<b>Une fois révélée</b> : soignez 1 dégât de chaque ennemi. Donnez une carte d'état Tenace à chaque ennemi.\n<i>« Tu as besoin de grogner comme ça ? »</i> —Rocksteady\n<i>« Pas maintenant, Chef, je suis dans la zone ! »</i> —Bebop",
   // donatello — * Donatello (Hero)
-  'td001a': "<i>Kashikoi</i> — <b>Action</b> : dépensez des ressources [mental][mental] → piochez 2 cartes. <i>(Limite d'une fois par round.)</i>",
+  'td001a': "<i>Futé</i> — <b>Action</b> : dépensez des ressources [mental][mental] → piochez 2 cartes. (Limite d'une fois par round.)",
   // donatello — * Donnie (AlterEgo)
   'td001b': "<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre pile de défausse Donatello's Bo ou Donatello's Shell et mettez-la en jeu, inclinée. <i>(Mélangez.)</i>",
   // donatello — * Metalhead (Ally)
@@ -4044,7 +4044,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // donatello — Chūdan-Ura-Uke (Event, x2)
   'td004': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et infligez 3 dégâts à l'ennemi attaquant.",
   // donatello — Improvised Tactics (Event, x2) — « Cloak » = camouflez (statut Camouflé, décision phase B)
-  'td005': "<b>Action de héros</b> : inclinez une amélioration [[TECH]] que vous contrôlez → choisissez deux options <i>(vous ne pouvez pas choisir deux fois la même option)</i> :\n• Camouflez deux personnages amis.\n• Sonnez ou désorientez un ennemi.\n• Piochez 2 cartes.",
+  'td005': "<b>Action de héros</b> : inclinez une amélioration [[TECH]] que vous contrôlez → choisissez deux options (vous ne pouvez pas choisir deux fois la même option) :\n• Camouflez deux personnages amis.\n• Sonnez ou désorientez un ennemi.\n• Piochez 2 cartes.",
   // donatello — Singularity (Event)
   'td006': "Jouable uniquement si vous contrôlez l'amélioration Anti-Gravity Gauntlet.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 10 dégâts à un ennemi. Cette attaque gagne Déferlement, Perçant et À Distance.",
   // donatello — Inspired Brilliance (Resource, x2) : aucun texte imprimé, donc aucune entrée
@@ -4057,7 +4057,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // donatello — * Donatello's Bō (Upgrade)
   'td011': "Restreint.\n<b>Action de héros</b> : inclinez cette carte → redressez Donatello.",
   // donatello — * Donatello's Shell (Upgrade)
-  'td012': "Vous pouvez jouer, dépenser ou défausser les cartes glissées ici comme si elles étaient dans votre main. <i>(1 carte glissée maximum.)</i>\n<b>Action de héros</b> : inclinez Donatello's Shell → choisissez une carte dans votre main et glissez-la ici.",
+  'td012': "Vous pouvez jouer, dépenser ou défausser les cartes glissées ici comme si elles étaient dans votre main. (1 carte glissée maximum.)\n<b>Action de héros</b> : inclinez Donatello's Shell → choisissez une carte dans votre main et glissez-la ici.",
   // donatello — Broken Shell (Obligation)
   'td013': "<b><i>Donnez-la au joueur Donnie.</i></b>\nPassez sous forme d'alter ego et perdez 5 points de vie. Si cela devait vaincre votre identité, mettez plutôt votre cadran de points de vie à 1. Vous ne pouvez pas passer sous forme de héros.\n<b>Action d'alter ego</b> : dépensez des ressources [mental][mental] ou défaussez Donatello's Shell du jeu → retirez Broken Shell de la partie.",
   // donatello — Extermination! (SideScheme némésis)
@@ -4081,13 +4081,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // michelangelo — Kaiten (Event, x2)
   'tm005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Vous pouvez incliner une amélioration [[NUNCHUCK]] que vous contrôlez pour désorienter ou sonner cet ennemi.",
   // michelangelo — Majime (Event, x2)
-  'tm006': "<b>Action de héros</b> <i>(attaque/contre)</i> : subissez X dégâts <i>(jusqu'à un maximum de 3)</i> → retirez X menaces d'une manigance et infligez X dégâts à un ennemi.",
+  'tm006': "<b>Action de héros</b> <i>(attaque/contre)</i> : subissez X dégâts (jusqu'à un maximum de 3) → retirez X menaces d'une manigance et infligez X dégâts à un ennemi.",
   // michelangelo — Optimism (Resource, x2)
   'tm007': "<b>Réponse</b> : après que vous avez dépensé cette carte, soignez 1 dégât de votre identité et piochez 1 carte.",
   // michelangelo — Mikey's Couch (Support)
   'tm008': "Mikey gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Mikey's Couch → choisissez jusqu'à 2 cartes dans votre pile de défausse et mélangez-les dans votre deck.",
   // michelangelo — I'm Here to Help (PlayerSideScheme)
-  'tm009': "Cette carte ne compte pas dans la limite de manigances annexes de joueur.\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, retirez 1 menace de cette carte.\n<b>Interruption de héros</b> : quand cette manigance est déjouée, piochez 3 cartes <i>(seul le joueur Michelangelo peut déclencher cette capacité)</i>.",
+  'tm009': "Cette carte ne compte pas dans la limite de manigances annexes de joueur.\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, retirez 1 menace de cette carte.\n<b>Interruption de héros</b> : quand cette manigance est déjouée, piochez 3 cartes (seul le joueur Michelangelo peut déclencher cette capacité).",
   // michelangelo — Mikey's Skateboard (Upgrade)
   'tm010': "<b>Réponse</b> : après que vous avez changé de forme, inclinez Mikey's Skateboard → redressez votre identité.",
   // michelangelo — Michelangelo's Nunchuck (Upgrade)
@@ -4103,7 +4103,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // michelangelo_nemesis — Smash! (Treachery, x3)
   'tm016': "<b>Une fois révélée</b> : vous subissez 2 dégâts indirects.",
   // raphael — * Raphael (Hero)
-  'tr001a': "Chaque jeton Rage sur Raphael peut être dépensé comme s'il s'agissait d'une ressource [physical].\n<i>Yaban Hito</i> — <b>Réponse</b> : après que Raphael subit des dégâts d'une attaque, placez 1 jeton Rage sur lui (maximum 3).",
+  'tr001a': "Chaque jeton Rage sur Raphael peut être dépensé comme s'il s'agissait d'une ressource [physical].\n<i>Homme Sauvage</i> — <b>Réponse</b> : après que Raphael subit des dégâts d'une attaque, placez 1 jeton Rage sur lui (maximum 3).",
   // raphael — * Raph (AlterEgo)
   'tr001b': "<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre pile de défausse jusqu'à 2 améliorations [[SAI]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // raphael — * Casey Jones (Ally)
@@ -4139,9 +4139,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // raphael — Prepare to Rally (Treachery némésis)
   'tr017': "<b>Une fois révélée</b> : défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte de votre main.",
   // venus — * Venus (Hero)
-  'tv001a': "<b>Action</b> : placez 1 jeton Dragage sur Venus pour chaque amélioration [[ELEMENT]] que vous contrôlez (maximum 6). <i>(Limite d'une fois par round.)</i>",
+  'tv001a': "<b>Action</b> : placez 1 jeton Dragage sur Venus pour chaque amélioration [[ELEMENT]] que vous contrôlez (maximum 6). (Limite d'une fois par round.)",
   // venus — * Bonnie (AlterEgo)
-  'tv001b': "<b>Mise en place</b> : défaussez des cartes du dessus de votre deck jusqu'à défausser une amélioration [[ELEMENT]]. Mettez cette carte en jeu.\n<b>Action</b> : retirez 1 jeton Dragage de Bonnie → soignez 2 dégâts d'un personnage ami. <i>(Limite d'une fois par round.)</i>",
+  'tv001b': "<b>Mise en place</b> : défaussez des cartes du dessus de votre deck jusqu'à défausser une amélioration [[ELEMENT]]. Mettez cette carte en jeu.\n<b>Action</b> : retirez 1 jeton Dragage de Bonnie → soignez 2 dégâts d'un personnage ami. (Limite d'une fois par round.)",
   // venus — * Bludgeon (Ally)
   'tv002': "<b>Réponse</b> : après que Bludgeon entre en jeu, placez 1 carte de votre défausse sur le dessus de votre deck.",
   // venus — Arc Nova (Event)
@@ -4177,9 +4177,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // venus — Salvaged Scales (Treachery némésis)
   'tv019': "<b>Une fois révélée</b> : placez 2 menaces sur la manigance principale. Si Jasper Barlow est en jeu, placez une carte d'état Tenace sur le méchant et sur chaque sbire engagé avec vous.",
   // casey_jones — * Casey Jones (Hero)
-  'tc001a': "<i>Overswing</i> — <b>Ressource</b> : défaussez une amélioration [[WEAPON]] que vous contrôlez ayant le mot-clé Restreint → générez [wild][wild][wild] ressources pour un événement [[ATTACK]], [[THWART]] ou [[DEFENSE]]. <i>(Limite d'une fois par phase.)</i>",
+  'tc001a': "<i>Frappe Excessive</i> — <b>Ressource</b> : défaussez une amélioration [[WEAPON]] que vous contrôlez ayant le mot-clé Restreint → générez [wild][wild][wild] ressources pour un événement [[ATTACK]], [[THWART]] ou [[DEFENSE]]. (Limite d'une fois par phase.)",
   // casey_jones — * Casey Jones (AlterEgo)
-  'tc001b': "<b>Mise en place</b> : cherchez l'amélioration Casey's Bag dans votre deck et votre défausse et mettez-la en jeu. <i>(Mélangez.)</i>\n<b>Réponse</b> : après que vous avez changé pour cette forme, remettez dans votre main une amélioration [[WEAPON]] de votre pile de défausse.",
+  'tc001b': "<b>Mise en place</b> : cherchez l'amélioration Casey's Bag dans votre deck et votre défausse et mettez-la en jeu. <i>(Mélangez.)</i>\n<b>Réponse</b> : après avoir changé de forme, remettez dans votre main une amélioration [[WEAPON]] de votre pile de défausse.",
   // casey_jones — Clap Back (Event, x2)
   'tc002': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Si une amélioration [[WEAPON]] de Casey Jones a été défaussée pour payer cette carte, désorientez un ennemi.",
   // casey_jones — Cross Block (Event, x2)
@@ -4213,7 +4213,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // casey_jones_nemesis — Purple Dragon Goons (Minion némésis, x3)
   'tc017': "Garde. Patrouille.\n<b>Une fois révélée</b> : placez une carte d'état Tenace sur le méchant.",
   // alopex — * Alopex (Hero)
-  'ta001a': "<i>Matagi</i> — <b>Réponse forcée</b> : après avoir attaqué un ennemi ou contré une manigance, trouvez Prey et attachez-la à cet ennemi ou à cette manigance.",
+  'ta001a': "<i>Chasseur Traditionnel</i> — <b>Réponse forcée</b> : après avoir attaqué un ennemi ou contré une manigance, trouvez Prey et attachez-la à cet ennemi ou à cette manigance.",
   // alopex — * Alopex (AlterEgo)
   'ta001b': "<b>Mise en place</b> : mettez votre amélioration Prey de côté.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[KAMA]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // alopex — * Nobody (Ally)
@@ -4245,7 +4245,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // alopex — Curse of Nine Tales (Treachery némésis)
   'ta015': "<b>Une fois révélée</b> : choisissez une option :\n• Défaussez les 3 cartes du dessus de votre deck et placez 1 menace sur la manigance principale pour chaque type de carte différent défaussé de cette façon.\n• Défaussez 2 alliés que vous contrôlez.",
   // jennika — * Jennika (Hero)
-  'tj001a': "<i>Ninja Senpai</i> — <b>Interruption</b> : quand vous jouez une carte Shinobi, Jennika gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round. <i>(Limite d'une fois par round pour chaque Shinobi.)</i>",
+  'tj001a': "<i>Ninja Aîné</i> — <b>Interruption</b> : quand vous jouez une carte Shinobi, Jennika gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round. (Limite d'une fois par round pour chaque Shinobi.)",
   // jennika — * Jenny (AlterEgo)
   'tj001b': "<b>Mise en place</b> : mettez en jeu la Voie Sōsaiken sous votre contrôle.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[TEKKO-KAGI]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // jennika — Composure (Event, x3)
@@ -4411,7 +4411,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // tmnt_aspect_aggression — Demolish (Event) ; « Rampage » : mot-clé maison laissé en anglais, comme Cloak
   'ua015': "[star] Rampage 3. <i>(Coût additionnel pour jouer cette carte : subissez 3 dégâts et défaussez les 3 cartes du dessus de votre deck.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si vous contrôlez un soutien [[NYC]], cette attaque gagne Déferlement et Perçant.",
   // tmnt_intense — Intense Combatants (Environment)
-  'te201': "<i>Sets TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent plus de rebondissements.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, intensifiez ce personnage à la place.",
+  'te201': "<i>Sets TMNT Standard et Expert uniquement. (Environnement optionnel pour ceux qui veulent encore plus de grabuge.)</i>\nPermanent. Mise en place.\n<b>Interruption forcée</b> : quand une carte d'état devrait être placée sur un personnage, si ce personnage a déjà 1 exemplaire de cette carte d'état, intensifiez ce personnage à la place.",
 
   // --- TMNT Aggression (ua) : ajouter les cartes uaNNN ci-dessous, dans ce bloc seulement ---
   // tmnt_aspect_aggression — Apex Predator (Event) ; « Rampage » : mot-clé maison laissé en anglais
@@ -4580,7 +4580,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'uj019': "Attachez cette carte à un allié [[NINJA]] ou [[MUTANIMAL]]. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\nL'allié attaché gagne +1 CTR et +2 points de vie.\n<i>« Souviens-toi de ton entraînement. »</i> —Casey Marie Jones",
   'uj020': "<b>Réponse</b> : après que Mona Lisa est entrée en jeu, choisissez un événement [[CONTRE]] dans votre pile de défausse et glissez-le ici.\n<b>Action</b> : jouez la carte glissée ici <i>(en payant son coût)</i>. Puis, défaussez Mona Lisa.",
   'uj021': "<b>Réponse</b> : après que Mondo Gecko est entré en jeu, camouflez-le.\n<i>« Salut salut les amis, laissez-moi d'abord jeter un œil. »</i>",
-  'uj022': "[star] Réduction 1 ([[Artiste martial]] ou [[espion]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> <i>(contre)</i> : après avoir joué une carte <i>(y compris celle-ci)</i>, retirez 1 menace d'une manigance.",
+  'uj022': "[star] Réduction 1 ([[Artiste martial]] ou [[espion]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> <i>(contre)</i> : après avoir joué une carte (y compris celle-ci), retirez 1 menace d'une manigance.",
   'uj023': "<b>Réponse</b> : après que Night-Blade est entré en jeu, cherchez une carte [[Préparation]] dans votre deck ou votre pile de défausse et ajoutez-la à votre main. Mélangez votre deck.\n<i>« Je suis la tortue qui a un plan. »</i>",
   'uj024': "1 max par round.\n<b>Action de héros</b> : cherchez une manigance annexe dans le deck Rencontre. Révélez cette manigance annexe → piochez 3 cartes. <i>(Mélangez le deck Rencontre.)</i>",
   'uj026': "<b>Réponse</b> : après qu'un personnage que vous contrôlez a contré, placez 1 jeton Élan ici (jusqu'à un maximum de 8). Vous pouvez défausser Ram-Shell pour infliger 1 dégât à un ennemi pour chaque jeton Élan ici.",
@@ -4591,7 +4591,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'uj034': "Attachez cette carte à un personnage ami. Tant qu'elle est attachée à une identité, cette carte gagne Restreint. Utilisations (3 jetons Corde).\n<b>Réponse</b> : après que le personnage attaché a utilisé un pouvoir de base, inclinez cette carte et retirez 1 jeton Corde d'ici → retirez 2 menaces d'une manigance.",
   'uj036': "<b>Réponse</b> : après que Venus est entrée en jeu, choisissez un joueur. Ce joueur cherche une manigance annexe Joueur dans son deck et une pile de défausse et l'ajoute à sa main.\n<i>« Je façonne mon propre destin. »</i>",
   'uj037': "Réduisez de 1 le coût pour jouer cette carte si vous contrôlez un soutien [[NYC]].\n<b>Réponse de héros</b> : après qu'un sbire vous a engagé, défaussez Watch the Exits → retirez 2 menaces d'une manigance et redressez votre héros.",
-  'uj038': "<b>Action</b> : inclinez Wingnut et dépensez les ressources suivantes [energy][energy] → trouvez Screwloose et mettez-le en jeu.\n[acceleration]",
+  'uj038': "<b>Action</b> : inclinez Wingnut et dépensez [energy][energy] → trouvez Screwloose et mettez-le en jeu.\n[acceleration]",
   'uj039': "<b>Réponse</b> : après avoir joué Zebulon de votre main, placez 1 jeton Brûlure sur lui pour chaque carte dans votre main (jusqu'à un maximum de 4).\n<b>Action</b> : retirez 1 jeton Brûlure de Zebulon → retirez 1 menace d'une manigance.",
 
 
@@ -4613,7 +4613,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ul021': "<b>Interruption</b> : quand Red Shell défend contre une attaque, prévenez un nombre de dégâts de cette attaque égal à l'ATQ de Red Shell.\n<i>« J'en sais plus sur le combat que tu n'en oublieras jamais. »</i>",
   'ul023': "[star] Rampage 3. <i>(Coût additionnel pour jouer cette carte : subissez 3 dégâts et défaussez les 3 cartes du dessus de votre deck.)</i>\n<b>Réponse de héros</b> : après qu'un allié a été vaincu, cherchez un allié dans votre deck et mettez-le en jeu, incliné. <i>(Mélangez.)</i>",
   'ul024': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\n<b>Interruption</b> : quand le sbire attaché quitte le jeu, piochez 1 carte.\n<i>« De nouveaux jouets à mâcher ?!? »</i> —Tokka",
-  'ul025': "<b>Réponse</b> : après que Shugun est entré en jeu, défaussez un allié de votre main → donnez une carte d'état Tenace à un allié.\n<i>« Suivez-moi, si vous voulez vivre. »</i>",
+  'ul025': "<b>Réponse</b> : après que Shōgun est entré en jeu, défaussez un allié de votre main → donnez une carte d'état Tenace à un allié.\n<i>« Suivez-moi, si vous voulez vivre. »</i>",
   'ul027': "Attachez cette carte à un allié spécifique à l'identité que vous contrôlez. 1 max par deck.\nL'allié attaché gagne +2 points de vie et est votre « acolyte ».\n<b>Réponse</b> : après que vous avez effectué une récupération de base, soignez 2 dégâts de l'allié attaché.",
   'ul028': "Attachez cette carte à un allié [[NINJA]] ou [[MUTANIMAL]]. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\nL'allié attaché gagne +1 CTR, +1 ATQ et +1 point de vie.\n<i>« Qui a dit que tout cet entraînement ne servirait à rien ? »</i> —Michelangelo",
   'ul029': "<b>Réponse</b> : après que Splinter est entré en jeu, regardez les 5 cartes du dessus de votre deck. Ajoutez-en 1 à votre main et placez les autres sous votre deck dans l'ordre de votre choix.\n<i>« Tu dois choisir ton propre chemin, mon fils. »</i>",
@@ -4625,7 +4625,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ul037': "Ténacité.\n[star] Turtle-At-Arms gagne +2 ATQ et +2 CTR tant qu'il a une carte d'état Tenace.\n<i>« Allez, guerriers. Nous devons aider à sauver ce pays. »</i>",
   'ul039': "Vous pouvez jouer la carte attachée à Venus comme si elle était dans votre main.\n<b>Réponse</b> : après que Venus est entrée en jeu, choisissez dans votre pile de défausse une carte qui partage un [[TRAIT]] avec Venus et attachez-la-lui, face cachée.",
   'ul040': "Victoire 0.\n<b>Une fois déjouée</b> : mélangez les alliés [[WEASEL]] mis de côté dans le deck Rencontre.\n<i>« Cette caisse est apparue devant notre porte. Qu'est-ce que vous voulez qu'on en fasse ? »</i> —Rocksteady",
-  'ul041': "Liée (Weasel In).\nMusroom ne compte pas dans votre limite d'alliés.\n<b>Une fois révélée</b> : soignez 2 dégâts d'un personnage ami et mettez Mushroom en jeu sous votre contrôle. Cette carte gagne Renfort. Cet effet ne peut pas être annulé.",
+  'ul041': "Liée (Weasel In).\nMushroom ne compte pas dans votre limite d'alliés.\n<b>Une fois révélée</b> : soignez 2 dégâts d'un personnage ami et mettez Mushroom en jeu sous votre contrôle. Cette carte gagne Renfort. Cet effet ne peut pas être annulé.",
   'ul042': "Liée (Weasel In).\nZanna ne compte pas dans votre limite d'alliés.\n<b>Une fois révélée</b> : retirez 2 menaces d'une manigance et mettez Zanna en jeu sous votre contrôle. Cette carte gagne Renfort. Cet effet ne peut pas être annulé.",
   'ul043': "Liée (Weasel In).\nZink ne compte pas dans votre limite d'alliés.\n<b>Une fois révélée</b> : infligez 2 dégâts à un ennemi et mettez Zink en jeu sous votre contrôle. Cette carte gagne Renfort. Cet effet ne peut pas être annulé.",
   'ul044': "<b>Réponse de héros</b> : après avoir incliné votre héros pour effectuer un contre ou une attaque de base, défaussez un allié que vous contrôlez → ajoutez le pouvoir correspondant de cet allié à celui de votre héros pour cette utilisation. Redressez votre héros.",
@@ -4878,26 +4878,26 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
   // --- TMNT Shinobi Paths (se) : les onze Voies (socle Shinobi, 17/10/2026) ---
   // se001 Kagemusha (Path, Ninjutsu)
-  'se001': "Permanent.\nVous avez -1 à votre taille de main.\nVotre héros gagne le trait [[NINJA]].\n<i>Shadow Stride</i> — <b>Action de héros</b> : inclinez cette carte → camouflez votre héros.\n<i>« Je suis les ombres. »</i>",
+  'se001': "Permanent.\nVous avez -1 à votre taille de main.\nVotre héros gagne le trait [[NINJA]].\n<i>Pas de l'Ombre</i> — <b>Action de héros</b> : inclinez cette carte → camouflez votre héros.\n<i>« Je suis les ombres. »</i>",
   // se002 Onmyōdō (Path, Kuji-Kiri)
-  'se002': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[MYSTIC]].\n<i>Insight</i> — <b>Action de héros</b> : inclinez cette carte → regardez les 2 cartes du dessus de n'importe quel deck et remettez-les dans le même ordre.",
+  'se002': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[MYSTIC]].\n<i>Intuition</i> — <b>Action de héros</b> : inclinez cette carte → regardez les 2 cartes du dessus de n'importe quel deck et remettez-les dans le même ordre.",
   // se003 Samurai (Path, Bushido)
-  'se003': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Way of the Warrior</i> — <b>Action de héros</b> : inclinez cette carte et retirez en tout 2 jetons Samouraï parmi les améliorations [[OATH]] que vous contrôlez → redressez votre héros et piochez 1 carte.",
+  'se003': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Voie du Guerrier</i> — <b>Action de héros</b> : inclinez cette carte et retirez en tout 2 jetons Samouraï parmi les améliorations [[OATH]] que vous contrôlez → redressez votre héros et piochez 1 carte.",
   // se004 Shihan (Path, Taijutsu)
-  'se004': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Recenter</i> — <b>Interruption de héros</b> : quand la phase des joueurs se termine, défaussez les 2 cartes du dessus de votre deck → remettez dans votre main 1 carte Taijutsu de votre pile de défausse.",
+  'se004': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Recentrage</i> — <b>Interruption de héros</b> : quand la phase des joueurs se termine, défaussez les 2 cartes du dessus de votre deck → remettez dans votre main 1 carte Taijutsu de votre pile de défausse.",
   // se005 The Last Rōnin (Path hybride, unique, 4 types)
-  'se005': "Permanent.\nVous avez -1 à votre taille de main.\nVous pouvez jouer les cartes glissées ici comme si elles étaient dans votre main. <i>(2 cartes glissées maximum.)</i>\n<i>Kanpeki</i> — <b>Action</b> : inclinez cette carte et glissez ici 1 carte Shinobi de votre main → piochez 1 carte.",
+  'se005': "Permanent.\nVous avez -1 à votre taille de main.\nVous pouvez jouer les cartes glissées ici comme si elles étaient dans votre main. (2 cartes glissées maximum.)\n<i>Perfection</i> — <b>Action</b> : inclinez cette carte et glissez ici 1 carte Shinobi de votre main → piochez 1 carte.",
   // se006 Yoshimitsu (Path hybride, Bushido + Kuji-Kiri)
   'se006': "Permanent.\nVous avez -1 à votre taille de main.\nVous avez +2 points de vie.\n<i>Magnificence</i> — <b>Action de héros</b> : subissez 1 dégât et inclinez cette carte → vous gagnez +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round.",
   // se007 Yamabushi (Path hybride, Kuji-Kiri + Taijutsu)
-  'se007': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[TEMPORAL]].\n<i>Meditate</i> — <b>Action de héros</b> : inclinez cette carte et votre héros → piochez 3 cartes. Choisissez et défaussez 1 carte de votre main.",
+  'se007': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[TEMPORAL]].\n<i>Méditation</i> — <b>Action de héros</b> : inclinez cette carte et votre héros → piochez 3 cartes. Choisissez et défaussez 1 carte de votre main.",
   // se008 Onigari (Path hybride, Kuji-Kiri + Ninjutsu)
-  'se008': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[PSIONIC]].\n<i>Dark Visions</i> — <b>Réponse de héros</b> : après que vous avez vaincu un sbire ou une manigance annexe, inclinez cette carte → camouflez votre héros et piochez 1 carte.",
+  'se008': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[PSIONIC]].\n<i>Visions Sombres</i> — <b>Réponse de héros</b> : après que vous avez vaincu un sbire ou une manigance annexe, inclinez cette carte → camouflez votre héros et piochez 1 carte.",
   // se009 Ashigaru (Path hybride, Bushido + Taijutsu)
-  'se009': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[SOLDIER]].\n<i>Light of Foot</i> — <b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild]. Si vous avez payé une carte Shinobi avec cette ressource, piochez 1 carte.",
+  'se009': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[SOLDIER]].\n<i>Pied Léger</i> — <b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild]. Si vous avez payé une carte Shinobi avec cette ressource, piochez 1 carte.",
   // se010 Onmitsu (Path hybride, Ninjutsu + Taijutsu)
-  'se010': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Gardener</i> — <b>Réponse de héros</b> : après que vous avez joué un événement [[ATTACK]] ou [[DEFENSE]], subissez 1 dégât → hébétez un ennemi.",
+  'se010': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Jardinier</i> — <b>Réponse de héros</b> : après que vous avez joué un événement [[ATTACK]] ou [[DEFENSE]], subissez 1 dégât → hébétez un ennemi.",
   // se011 Yōjimbō (Path hybride, Bushido + Ninjutsu)
-  'se011': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Bodyguard</i> — <b>Interruption de héros</b> : quand un ennemi attaque, inclinez cette carte → déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je suis à tes côtés. »</i>",
+  'se011': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Garde du Corps</i> — <b>Interruption de héros</b> : quand un ennemi attaque, inclinez cette carte → déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je suis à tes côtés. »</i>",
 
 }
