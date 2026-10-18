@@ -114668,7 +114668,7 @@
     "TURTLE"
    ],
    "set_name": "TMNT Leadership",
-   "text": "<b>Response</b>: After Shugun enters play, discard an ally from your hand → give an ally a tough status card.\n<i>\"Follow me, if you want to live.\"</i>",
+   "text": "<b>Response</b>: After Shōgun enters play, discard an ally from your hand → give an ally a tough status card.\n<i>\"Follow me, if you want to live.\"</i>",
    "custom": "Inkwire"
   },
   {
@@ -114757,7 +114757,7 @@
    },
    "traits": [],
    "set_name": "TMNT Leadership",
-   "text": "<b>Alter-Ego Action</b>: Search your deck and discard pile for an ally and an upgrade that can be attached to an ally. Add them to your hand. <i>(Shuffle.)</i>\n<i>\"TIme to get back at it.\"</i> —Odin",
+   "text": "<b>Alter-Ego Action</b>: Search your deck and discard pile for an ally and an upgrade that can be attached to an ally. Add them to your hand. <i>(Shuffle.)</i>\n<i>\"Time to get back at it.\"</i> —Odin",
    "custom": "Inkwire"
   },
   {
@@ -114900,7 +114900,7 @@
     "WEASEL"
    ],
    "set_name": "TMNT Leadership",
-   "text": "Linked (Weasel In).\nMusroom does not count against your ally limit.\n<b>When Revealed</b>: Heal 2 damage from a friendly character and put Mushroom into play under your control. This card gains surge. This effect cannot be canceled.",
+   "text": "Linked (Weasel In).\nMushroom does not count against your ally limit.\n<b>When Revealed</b>: Heal 2 damage from a friendly character and put Mushroom into play under your control. This card gains surge. This effect cannot be canceled.",
    "custom": "Inkwire"
   },
   {
@@ -117533,5 +117533,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "aab3ed15c1bf657f0fc5a0a44c24685229453fdf4f72b0ae1fe56d3af279a098"
+ "checksum": "6e0cce2909eed4dc14b65ff58e620f25d5d4fc9defd76472bc9eaa2cbb554d2d"
 }
