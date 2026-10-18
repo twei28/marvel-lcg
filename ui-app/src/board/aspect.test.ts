@@ -72,11 +72,15 @@ describe('le catalogue reel', () => {
     // Toute valeur qui n'est ni un aspect, ni Hero, ni Basic doit etre une
     // combinaison de Campaign et Encounter : si une nouvelle valeur apparait
     // un jour dans les donnees, ce cas la signale au lieu de la perdre.
+    // Les quatre classes SHINOBI du pack TMNT (Bushido, Kuji-Kiri, Ninjutsu, Taijutsu ; une Dual en porte
+    // deux, « Bushido;Kuji-Kiri ») ne sont ni un aspect ni Basic : le moteur ne leur peint aucune couleur de
+    // cadre (`image_creator.py`), il n'y a donc aucun liseré à leur donner (RECETTES-MOTEUR, « carte Shinobi »).
+    const CLASSES_SHINOBI = ['Bushido', 'Kuji-Kiri', 'Ninjutsu', 'Taijutsu']
     const inconnues = new Set<string>()
     for (const c of cartes) {
       const brut = c.desc?.Class
       if (!brut || aspectDeClasse(brut)) continue
-      for (const p of brut.split(';')) if (!['Campaign', 'Encounter'].includes(p.trim())) inconnues.add(p)
+      for (const p of brut.split(';')) if (!['Campaign', 'Encounter', ...CLASSES_SHINOBI].includes(p.trim())) inconnues.add(p)
     }
     expect([...inconnues]).toEqual([])
   })

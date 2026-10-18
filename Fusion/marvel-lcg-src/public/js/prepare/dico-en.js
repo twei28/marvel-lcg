@@ -7,6 +7,14 @@
 "use strict";
 
 export const DICO_EN_BASE = {
+    /* ---- Regles de construction des Paths Shinobi (18/10/2026, deckbuilder/regles.js) ---- */
+    "Un seul Path par deck :": "Only one Path per deck:",
+    "ce héros a déjà sa Voie": "this hero already has its own Path",
+    "Cartes Shinobi sans Path :": "Shinobi cards without a Path:",
+    "Types Shinobi non autorisés par le Path": "Shinobi types not allowed by the Path",
+    "une combinaison libre d’aspects (Path)": "any combination of aspects (Path)",
+    "aucun aspect (Path)": "no aspect (Path)",
+    "un seul aspect (Path)": "a single aspect (Path)",
     /* ---- Arts alternatifs de cartes de deck (17/10/2026) ---- */
     "Arts alternatifs": "Alternate arts",
     "Cartes de ce deck": "Cards in this deck",

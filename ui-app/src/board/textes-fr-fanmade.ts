@@ -4730,14 +4730,14 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
   // --- TMNT Shinobi Kuji-Kiri (sj) : ajouter les cartes sjNNN ci-dessous, dans ce bloc seulement ---
   'sj001': "<b>Action de héros</b> : regardez la carte du dessus du deck de rencontre. Vous pouvez révéler cette carte pour piocher 3 cartes.\n<i>« J'ai vu les événements à venir. »</i> —Donatello",
-  'sj002': "Attachez à un allié. Maximum 1 par allié.\nL'allié attaché gagne +1 CTR et +1 ATQ.\n<i>« Ces armes luisantes ont trop la classe ! »</i> —Michelangelo",
-  'sj003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Choisissez :\n• Étourdissez un ennemi.\n• Donnez une carte d'état Tenace à un personnage allié.\n<i>« Mon futur définit mon passé. »</i> —Venus",
+  'sj002': "Attachez à un allié. 1 max par allié.\nL'allié attaché gagne +1 CTR et +1 ATQ.\n<i>« Ces armes luisantes ont trop la classe ! »</i> —Michelangelo",
+  'sj003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Choisissez :\n• Sonnez un ennemi.\n• Donnez une carte d'état Tenace à un personnage allié.\n<i>« Mon futur définit mon passé. »</i> —Venus",
   'sj004': "<b>Action de héros</b> : soignez 2 dégâts d'un personnage allié. Choisissez :\n• Camouflez un personnage allié.\n• Désorientez un ennemi.\n<i>« Mon passé définit mon futur. »</i> —Venus",
-  'sj005': "Maximum 2 par deck.\n<b>Réponse</b> : après que vous avez dépensé cette carte pour une carte [[SPELL]], piochez 1 carte.",
+  'sj005': "2 max par deck.\n<b>Réponse</b> : après que vous avez dépensé cette carte pour une carte [[SPELL]], piochez 1 carte.",
   'sj006': "Attachez à un sbire non-[[ELITE]].\nPrenez le contrôle du sbire attaché et traitez-le comme un allié [[CONTROLLED]] au texte vierge. Son CTR est égal à sa MNG imprimée et il subit 3 dégâts consécutifs ([consequential]) après avoir contré ou attaqué.",
   'sj007': "<b>Interruption de héros</b> : quand une traîtrise est révélée, défaussez cette carte → annulez tous les effets de cette traîtrise et défaussez-la. Défaussez des cartes du dessus de votre deck pour chaque icône ([star] et [boost]) dans la zone de boost de la carte défaussée.",
   'sj008': "<b>Action</b> : inclinez Toshokan Arcana → défaussez des cartes du dessus de votre deck jusqu'à ce que vous défaussiez une carte [[SPELL]]. Ajoutez cette carte à votre main.\n<i>« Ce sort était dans les “Écrits de Shinigami” ? Ou dans les “Haïkus de Ho Chan” ? »</i> —Donatello",
-  'sj009': "Victoire 0.\n<b>Réponse obligatoire</b> : après qu'Armageddon entre en jeu, distribuez à chaque joueur 1 carte de rencontre face cachée.\nTant qu'Armageddon est dans la pile de victoire, chaque identité a +1 taille de main sous forme de héros.\n<i>« J'ai vu ce qui rôde à la fin des temps, et c'est terrifiant. »</i> —Donatello",
+  'sj009': "Victoire 0.\n<b>Réponse forcée</b> : après qu'Armageddon entre en jeu, distribuez à chaque joueur 1 carte de rencontre face cachée.\nTant qu'Armageddon est dans la pile de victoire, chaque identité a +1 taille de main sous forme de héros.\n<i>« J'ai vu ce qui rôde à la fin des temps, et c'est terrifiant. »</i> —Donatello",
   'sj010': "<b>Interruption de héros</b> <i>(défense)</i> : quand un personnage allié est censé subir des dégâts, défaussez les 2 cartes du dessus du deck de rencontre → prévenez 1 dégât pour chaque icône ([star] et [boost]) dans la zone de boost de chacune des cartes défaussées.",
   'sj011': "<b>Action de héros</b> <i>(attaque/contre)</i> : défaussez 3 cartes du dessus de votre deck et défaussez 3 cartes du dessus du deck de rencontre → infligez 3 dégâts à un ennemi et retirez 3 menaces d'une manigance.",
   'sj012': "<b>Action d'alter ego</b> : inclinez A Thin Place et retirez-en 3 compteurs mystiques → piochez 2 cartes et soignez 2 dégâts de votre identité.\n<b>Réponse</b> : après que vous avez joué une carte Kuji-Kiri depuis votre main, inclinez A Thin Place → placez 1 compteur mystique ici.",
@@ -4778,7 +4778,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // sa013 Up in Smoke
   'sa013': "<b>Action de héros</b> : redressez un allié [[NINJA]].\n<b>Interruption de héros</b> : quand un allié est censé être défaussé du jeu, remettez-le plutôt dans la main de son propriétaire.\n<i>« Il est temps de bousculer l'échiquier. »</i> —Ronin",
   // sa014 Hidden Passage
-  'sa014': "<b>Action d'alter-ego</b> : inclinez Hidden Passage et défaussez une carte d'état Camouflé de votre identité → piochez 1 carte.\n<b>Réponse de héros</b> : après que vous avez changé de forme, inclinez Hidden Passage → camouflez votre identité.",
+  'sa014': "<b>Action d'alter ego</b> : inclinez Hidden Passage et défaussez une carte d'état Camouflé de votre identité → piochez 1 carte.\n<b>Réponse de héros</b> : après que vous avez changé de forme, inclinez Hidden Passage → camouflez votre identité.",
   // sa015 Kusari-Kagi
   'sa015': "Restreint.\n<b>Action de héros</b> : inclinez cette carte et défaussez une carte d'état Camouflé de votre héros → infligez 1 dégât à un ennemi et piochez 1 carte.\n<i>« Viens ici ! »</i> —Ronin",
   // sa016 Shadow Summon
