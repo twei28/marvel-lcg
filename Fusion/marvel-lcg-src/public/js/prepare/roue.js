@@ -92,7 +92,9 @@ export function sansMouvement() {
     try {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
     } catch (e) { /* navigateur ancien : on anime */ }
-    return document.documentElement.dataset.affichage === "sobre";
+    // L'Épuré pose aussi `data-affichage="sobre"` : il garde la roue (18/10/2026, « on ne voit plus la roue tourner »).
+    const racine = document.documentElement;
+    return racine.dataset.affichage === "sobre" && racine.dataset.epure === undefined;
 }
 
 function caseDom(item) {

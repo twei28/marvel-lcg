@@ -4468,7 +4468,9 @@ export function PagePartie({
           annuler={interaction.annuler}
         />
       ) : null}
-      {apercuSelecteur && !fenetreChoix ? <CarteApercu carte={apercuSelecteur} /> : null}
+      {apercuSelecteur ? (
+        <CarteApercu carte={apercuSelecteur} classe={fenetreChoix ? 'au-dessus-de-la-fenetre' : undefined} />
+      ) : null}
       {interaction.ciblesHorsTable.length === 0 && !interaction.option ? (
         <ModaleCartesRegardees groupes={groupesRegardes} />
       ) : null}

@@ -68,3 +68,9 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
+/* L'agrandissement au survol d'une carte de la fenêtre de choix passe devant le voile (700) : sans cela
+   il restait derrière, assombri (18/10/2026, « il ne me montre pas la grande version sur la droite »). */
+.carte-apercu.au-dessus-de-la-fenetre {
+  z-index: 710;
+}

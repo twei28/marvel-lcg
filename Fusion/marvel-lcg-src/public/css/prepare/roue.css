@@ -142,7 +142,7 @@
     .roue-fenetre .roue-repere { animation: none !important; }
 }
 
-html[data-affichage="sobre"] .roue-fenetre .roue-repere { animation: none; }
+html[data-affichage="sobre"]:not([data-epure]) .roue-fenetre .roue-repere { animation: none; }
 
 /* Téléphone : le titre au-dessus, le bouton dessous, des cases plus petites. */
 @media (max-width: 640px) {
