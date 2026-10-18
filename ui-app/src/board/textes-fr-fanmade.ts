@@ -4153,9 +4153,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // venus — Quantanucleic Acid (Event)
   'tv006': "<b>Action de héros</b> : donnez à Venus une carte d'état Tenace. Vous pouvez retirer 2 compteurs de dragage de Venus pour piocher 2 cartes.",
   // venus — Resistance (Event)
-  'tv007': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez tous les dégâts de cette attaque. Vous pouvez retirer 2 compteurs de dragage de Venus pour piocher 3 cartes.",
+  'tv007': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez tous les dégâts de cette attaque. Vous pouvez retirer 2 compteurs de dragage de Venus pour piocher 3 cartes.",
   // venus — * Arcane Emitting Diode (Upgrade)
-  'tv009': "<b>Action de héros</b> <i>(attaque)</i> : inclinez cette carte et défaussez les 2 premières cartes de votre deck → infligez 2 dégâts à un ennemi.",
+  'tv009': "<b>Action de héros</b> <i>(attaque)</i> : inclinez cette carte et défaussez les 2 cartes du dessus de votre deck → infligez 2 dégâts à un ennemi.",
   // venus — * Cosmic Requiem (Upgrade)
   'tv010': "<b>Action de héros</b> : inclinez cette carte et retirez 2 compteurs de dragage de Venus → défaussez des cartes du dessus de votre deck jusqu'à défausser un événement. Ajoutez cette carte à votre main.",
   // venus — * Dragon Scale (Upgrade)
@@ -4165,7 +4165,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // venus — * Reanimator Engine (Upgrade)
   'tv013': "<b>Action de héros</b> : inclinez cette carte et retirez 2 compteurs de dragage de Venus → choisissez jusqu'à 2 cartes dans votre défausse et mélangez-les dans votre deck.",
   // venus — * Turtle Shell (Upgrade)
-  'tv014': "<b>Action de héros</b> : inclinez cette carte et défaussez les 2 premières cartes de votre deck → redressez Venus.",
+  'tv014': "<b>Action de héros</b> : inclinez cette carte et défaussez les 2 cartes du dessus de votre deck → redressez Venus.",
   // venus — Faulty Creation (Obligation)
   'tv015': "<b><i>Donnez-la au joueur Bonnie.</i></b>\nVous pouvez passer sous forme d'alter ego.\n<b>Action d'alter ego</b> : inclinez Bonnie → retirez Faulty Creation de la partie.",
   // venus — Jasper Barlow's Lab (SideScheme némésis)
@@ -4177,7 +4177,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // venus — Salvaged Scales (Treachery némésis)
   'tv019': "<b>Une fois révélée</b> : placez 2 menaces sur la manigance principale. Si Jasper Barlow est en jeu, placez une carte d'état Tenace sur le méchant et sur chaque sbire engagé avec vous.",
   // casey_jones — * Casey Jones (Hero)
-  'tc001a': "<i>Overswing</i> — <b>Ressource</b> : défaussez une amélioration [[WEAPON]] que vous contrôlez ayant le mot-clé restreint → générez [wild][wild][wild] ressources pour un événement [[ATTACK]], [[THWART]] ou [[DEFENSE]]. <i>(Limite d'une fois par phase.)</i>",
+  'tc001a': "<i>Overswing</i> — <b>Ressource</b> : défaussez une amélioration [[WEAPON]] que vous contrôlez ayant le mot-clé Restreint → générez [wild][wild][wild] ressources pour un événement [[ATTACK]], [[THWART]] ou [[DEFENSE]]. <i>(Limite d'une fois par phase.)</i>",
   // casey_jones — * Casey Jones (AlterEgo)
   'tc001b': "<b>Mise en place</b> : cherchez l'amélioration Casey's Bag dans votre deck et votre défausse et mettez-la en jeu. <i>(Mélangez.)</i>\n<b>Réponse</b> : après que vous avez changé pour cette forme, remettez dans votre main une amélioration [[WEAPON]] de votre pile de défausse.",
   // casey_jones — Clap Back (Event, x2)
@@ -4201,7 +4201,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // casey_jones — Hockey Stick (Upgrade)
   'tc011': "Restreint.\n<b>Interruption de héros</b> : quand vous effectuez une attaque ou une défense de base, inclinez Hockey Stick → vous gagnez +2 à ce pouvoir pour cette utilisation.",
   // casey_jones — Persuader (Upgrade)
-  'tc012': "Restreint.\nVotre héros gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous effectuez une attaque de base, inclinez Persuader → vous gagnez +1 ATQ pour cette attaque. Cette attaque gagne perçant.",
+  'tc012': "Restreint.\nVotre héros gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous effectuez une attaque de base, inclinez Persuader → vous gagnez +1 ATQ pour cette attaque. Cette attaque gagne Perçant.",
   // casey_jones — * Casey's Bag (Upgrade)
   'tc013': "Permanent.\nVous pouvez jouer les cartes glissées ici comme si elles étaient dans votre main.\n<b>Action de héros</b> : inclinez cette carte → glissez sous cette carte l'amélioration [[WEAPON]] la plus basse de votre pile de défausse.",
   // casey_jones — Daddy Issues (Obligation)
@@ -4243,7 +4243,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // alopex — * Kitsune (Minion némésis)
   'ta014': "<b>Une fois révélée</b> : camouflez Kitsune et inclinez votre identité.\n<i>(Sbire némésis d'Alopex.)</i>",
   // alopex — Curse of Nine Tales (Treachery némésis)
-  'ta015': "<b>Une fois révélée</b> : choisissez l'un ou l'autre :\n• Défaussez les 3 cartes du dessus de votre deck et placez 1 menace sur le complot principal pour chaque type de carte différent défaussé de cette façon.\n• Défaussez 2 alliés que vous contrôlez.",
+  'ta015': "<b>Une fois révélée</b> : choisissez une option :\n• Défaussez les 3 cartes du dessus de votre deck et placez 1 menace sur le manigance principale pour chaque type de carte différent défaussé de cette façon.\n• Défaussez 2 alliés que vous contrôlez.",
   // jennika — * Jennika (Hero)
   'tj001a': "<i>Ninja Senpai</i> — <b>Interruption</b> : quand vous jouez une carte Shinobi, Jennika gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round. <i>(Limite d'une fois par round pour chaque Shinobi.)</i>",
   // jennika — * Jenny (AlterEgo)
@@ -4265,7 +4265,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // jennika — * Jennika's Tekko-Kagi (Upgrade)
   'tj009': "Chaque amélioration [[TEKKO-KAGI]] que vous contrôlez gagne : « <b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild] pour une carte Shinobi. »",
   // jennika — * Jennika's Other Tekko-Kagi (Upgrade)
-  'tj010': "Chaque amélioration [[TEKKO-KAGI]] que vous contrôlez gagne : « <b>Interruption de héros</b> : quand vous faites une attaque de base, inclinez cette carte et défaussez 1 carte de votre main → Jennika gagne +2 ATQ pour cette attaque. Cette attaque gagne Perçant. »",
+  'tj010': "Chaque amélioration [[TEKKO-KAGI]] que vous contrôlez gagne : « <b>Interruption de héros</b> : quand vous effectuez une attaque de base, inclinez cette carte et défaussez 1 carte de votre main → Jennika gagne +2 ATQ pour cette attaque. Cette attaque gagne Perçant. »",
   // jennika — Sōsaiken (Support, type imprimé PATH)
   'tj011': "Permanent.\n<b>Réponse</b> : après que vous avez joué une carte Shinobi, inclinez cette carte → piochez 1 carte.",
   // jennika — Personality Adjustment (Obligation)
