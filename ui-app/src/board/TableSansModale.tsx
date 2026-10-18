@@ -9,7 +9,7 @@
 // Tout est dans le repère du cadre du plateau (voir `mesures-plateau.ts`), comme le trait
 // et les cartes sorties du paquet : ce composant se rend par le même portail.
 import { useEffect, useState, type ReactNode } from 'react'
-import { boiteDeCarte, cadreDuPlateau, type Boite } from './mesures-plateau'
+import { boiteDeCarte, cadreDuPlateau, redresserBoite, type Boite } from './mesures-plateau'
 import { t } from './langue'
 
 /** Le rectangle de la carte, remesuré tant qu'elle bouge (vol, mise à l'échelle). */
@@ -32,7 +32,28 @@ function boiteDeLImage(
   if (!el) return boiteDeCarte(id, cadre)
   const r = el.getBoundingClientRect()
   if (r.width === 0 || r.height === 0) return boiteDeCarte(id, cadre)
-  return { x: r.left - cadre.origine.left, y: r.top - cadre.origine.top, w: r.width, h: r.height }
+  const englobante = { x: r.left - cadre.origine.left, y: r.top - cadre.origine.top, w: r.width, h: r.height }
+  // UNE CARTE INCLINEE (epuisee : 8 degres) : le cadre doré s'incline avec elle au lieu de rester droit autour
+  // de sa boite englobante (18/10/2026). L'angle se lit sur la carte et ses parents, sa taille de mise en page
+  // (offsetWidth/Height) ne change pas avec la rotation.
+  const angle = angleDeLElement(el, cadre.element)
+  return angle ? redresserBoite(englobante, el.offsetWidth, el.offsetHeight, angle) : englobante
+}
+
+/** L'angle total (degres) de l'element et de ses parents jusqu'au cadre, lu sur leurs transformations. */
+function angleDeLElement(el: HTMLElement, racine: HTMLElement): number {
+  let total = 0
+  for (let e: HTMLElement | null = el; e && e !== racine; e = e.parentElement) {
+    const transform = getComputedStyle(e).transform
+    if (!transform || transform === 'none') continue
+    try {
+      const m = new DOMMatrixReadOnly(transform)
+      total += (Math.atan2(m.b, m.a) * 180) / Math.PI
+    } catch {
+      /* transformation illisible : on la laisse droite */
+    }
+  }
+  return Math.abs(total) < 0.05 ? 0 : total
 }
 
 export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite | undefined {
@@ -42,7 +63,7 @@ export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite
       const cadre = cadreDuPlateau()
       const b = cadre ? boiteDeLImage(carteId, cadre) : undefined
       setBoite((avant) =>
-        avant && b && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h ? avant : b
+        avant && b && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h && avant.angle === b.angle ? avant : b
       )
     }
     mesurer()
@@ -146,7 +167,13 @@ export function TableSansModale({
 }
 
 function boiteStyle(b: Boite) {
-  return { left: `${b.x}px`, top: `${b.y}px`, width: `${b.w}px`, height: `${b.h}px` }
+  return {
+    left: `${b.x}px`,
+    top: `${b.y}px`,
+    width: `${b.w}px`,
+    height: `${b.h}px`,
+    ...(b.angle ? { transform: `rotate(${b.angle}deg)` } : {}),
+  }
 }
 
 export type ChoixSurTable = {

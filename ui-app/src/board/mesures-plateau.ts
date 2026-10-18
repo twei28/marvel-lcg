@@ -10,7 +10,34 @@
 // coordonnées de fenêtre poseraient le cartouche et le trait décalés de toute
 // cette hauteur.
 
-export type Boite = { x: number; y: number; w: number; h: number }
+/** `angle` (degres) : la boite est tournee autour de son centre, comme la carte qu'elle entoure. */
+export type Boite = { x: number; y: number; w: number; h: number; angle?: number }
+
+/**
+ * La boite d'une carte INCLINEE, redressee : sa taille et son centre, plus son angle.
+ *
+ * `getBoundingClientRect` d'une carte tournee rend la boite qui l'ENGLOBE : droite et plus grande
+ * qu'elle. Un cadre pose dessus (le carre dore de la carte qui agit) restait droit, de travers par
+ * rapport a la carte (18/10/2026). On rend donc le rectangle de la carte elle-meme : sa taille de mise
+ * en page (`largeur`, `hauteur`, que la rotation ne change pas) mise a l'echelle du plateau, centree
+ * comme la boite englobante, avec l'angle a appliquer au cadre.
+ */
+export function redresserBoite(englobante: Boite, largeur: number, hauteur: number, angle: number): Boite {
+  if (!angle || largeur <= 0 || hauteur <= 0) return { x: englobante.x, y: englobante.y, w: englobante.w, h: englobante.h }
+  const a = (angle * Math.PI) / 180
+  const c = Math.abs(Math.cos(a))
+  const s = Math.abs(Math.sin(a))
+  const echelle = englobante.w / (largeur * c + hauteur * s)
+  const w = largeur * echelle
+  const h = hauteur * echelle
+  return {
+    x: englobante.x + englobante.w / 2 - w / 2,
+    y: englobante.y + englobante.h / 2 - h / 2,
+    w,
+    h,
+    angle,
+  }
+}
 
 /** Le cadre du plateau, ou `undefined` s'il n'est pas mesurable. */
 export function cadreDuPlateau(): { element: HTMLElement; origine: DOMRect; boite: Boite } | undefined {

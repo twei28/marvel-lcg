@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import contrat from '../contrat-nouvelle-partie.json' with { type: 'json' };
 
-test.use({ reducedMotion: 'no-preference', video: { mode: 'on', size: { width: 1280, height: 720 } }, viewport: { width: 1280, height: 720 } });
+test.use({ launchOptions: { args: ['--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessChecks'] }, reducedMotion: 'no-preference', video: { mode: 'on', size: { width: 1280, height: 720 } }, viewport: { width: 1280, height: 720 } });
 const MODE = process.env.ZZ_MODE ?? 'bis';
 const SCEN = process.env.ZZ_SCEN ?? 'rhino';
 const HEROS = (process.env.ZZ_HEROS ?? 'spider_man').split(',');
@@ -58,6 +58,18 @@ async function partie(page: Page) {
     };
     if (document.head) style(); else document.addEventListener('DOMContentLoaded', style);
   }, [MODE, THEME]);
+  // ZZ_DIST : un plateau compile a part (vite build --outDir), servi a la place de /app/ pour voir le code
+  // courant sans toucher a public/app, que sert peut-etre une partie en cours.
+  if (process.env.ZZ_DIST) {
+    const dist = process.env.ZZ_DIST;
+    const types: Record<string, string> = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.ttf': 'font/ttf' };
+    await page.route('**/app/**', (route) => {
+      const u = new URL(route.request().url());
+      const f = path.join(dist, u.pathname.replace(/^\/app\//, ''));
+      if (!fs.existsSync(f) || fs.statSync(f).isDirectory()) return route.continue();
+      return route.fulfill({ status: 200, contentType: types[path.extname(f)] ?? 'application/octet-stream', body: fs.readFileSync(f) });
+    });
+  }
   await page.goto('/app/board.html' + (MODE === 'table' ? '?phase=sur-table' : ''), { waitUntil: 'networkidle' });
   if (process.env.ZZ_CSS) await page.addStyleTag({ content: process.env.ZZ_CSS });
   if (CMDS.length) await commandes(page, CMDS, 'CMDS');
@@ -215,7 +227,7 @@ test('explo', async ({ page }) => {
     if (!dansPhase) {
       // Phase du joueur : poser les commandes du tour avant « Fin du tour ».
       const fin = await visible(page, /Fin du tour/);
-      if (fin && !(await fin.isDisabled().catch(() => true)) && !/Mulligan|Setup|^$/i.test(w.phase ?? '')) {
+      if ((/^Player(?: \d+)? Turn$/.test(w.phase ?? '') && tours === 0) || (fin && !(await fin.isDisabled().catch(() => true)) && !/Mulligan|Setup|^$/i.test(w.phase ?? ''))) {
         const liste = tours === 0 ? CMDS_TOUR : tours === 1 ? CMDS_TOUR2 : [];
         if (liste.length) { await commandes(page, liste, `TOUR${tours} (${w.phase})`); await page.waitForTimeout(1500); }
         tours++;
@@ -233,7 +245,7 @@ test('explo', async ({ page }) => {
           for (const k of [1, 2, 3, 4, 5]) { await page.waitForTimeout(380); await page.screenshot({ path: path.join(SORTIE, `boost-${k}.png`) }); }
         }
         volProchain = /gagne \d+ menace/i.test(s.cartouche ?? '') && !volDejaVu;
-        await page.waitForTimeout(800);
+        await page.waitForTimeout(Number(process.env.ZZ_ATTENTE ?? 800));
         rang++;
         await page.screenshot({ path: path.join(SORTIE, `${String(rang).padStart(3, '0')}.png`) });
         const faits = (w.faits_mechant ?? []).map((f: Record<string, unknown>) => `${f.genre}:${f.etat ?? ''}:${f.carte ?? f.auteur ?? ''}:b${Array.isArray(f.boosts) ? f.boosts.length : '-'}:subi${f.subi ?? '-'}:base${f.base ?? '-'}:inf${f.inflige ?? '-'}`);

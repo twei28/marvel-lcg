@@ -93,7 +93,7 @@ import { EtoilesEnAttente } from './EtoilesEnAttente'
 import { NumerosSbires } from './NumerosSbires'
 import { DepartsDeLaBoite } from './DepartsDeLaBoite'
 import { cartoucheEstAJour } from './cartouche-a-jour'
-import { CoucheRencontreSurTable, type ControleRencontre } from './CoucheRencontreSurTable'
+import { CoucheRencontreSurTable, type ControleRencontre, type PhaseLecture } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
@@ -1405,6 +1405,10 @@ export function DeroulePhase({
   // s'enchainent SEULS : c'est l'etape qui attend la validation, pas chaque
   // carte. Une attaque a trois boosts couterait sinon quatre clics.
   const [boostsMontres, setBoostsMontres] = useState(0)
+  // OU EN EST LA LECTURE DES CARTES SUR LA TABLE (18/10/2026, « il fait les degats avant qu'il y ait les
+  // cartes boost ») : le bandeau n'annonce les degats d'une attaque qu'une fois ses boosts arrives et
+  // lisibles. Par etape : la phase d'une etape passee ne compte pas pour la suivante.
+  const [lectureCartes, setLectureCartes] = useState<{ cle: string; phase: PhaseLecture } | undefined>()
   // 13/10/2026 (encadré ⑫) : les cartes révélées déjà retournées, par clé d'étape.
   const [cartesRetournees, setCartesRetournees] = useState<ReadonlySet<string>>(() => new Set())
   // 13/10/2026 (encadré ①) : les pastilles des joueurs dans le calcul de menace.
@@ -1920,6 +1924,7 @@ export function DeroulePhase({
           dosRencontre={dosRencontre}
           actif={!attendreBandeau && !enVolDeJeton && !questionAuJoueur && !etapeValidee && !termine && !relecture}
           controle={rencontreSurTable}
+          surPhase={(phase) => etape && setLectureCartes((avant) => (avant?.cle === etape.cle && avant.phase === phase ? avant : { cle: etape.cle, phase }))}
         />
         {enVolDeJeton ? null : contenu}
       </>,
@@ -2565,13 +2570,29 @@ export function DeroulePhase({
       : contenu.unite
         ? t(contenu.unite)
         : ''
+  // Une attaque ou une manigance AVEC boosts : tant que ses cartes arrivent (ou n'ont pas encore dit
+  // ou elles en sont), le nombre reste cache. Ni la couche des cartes (animations coupees, pas
+  // d'etape active) ni l'absence de carte a lire ne le retiennent : `couchePeutLire` suit le meme
+  // critere que la couche, `aucune` libere.
+  const couchePeutLire = !attendreBandeau && !enVolDeJeton && !questionAuJoueur && !etapeValidee && !termine && !relecture
+  const boostsAttendus =
+    surTable &&
+    couchePeutLire &&
+    // La couche des cartes ne se monte que dans le cadre du plateau (voir `enveloppe`) : sans lui, rien
+    // ne dira jamais « lisibles », il ne faut donc rien retenir.
+    document.querySelector('.plateau-cadre') !== null &&
+    (etape.titre === 'attaque' || etape.titre === 'manigance') &&
+    etapeLue.etat !== 'annonce' &&
+    etape.boosts.length > 0
+  const phaseDesCartes = lectureCartes?.cle === etape.cle ? lectureCartes.phase : undefined
+  const nombreRetenu = boostsAttendus && (phaseDesCartes === undefined || phaseDesCartes === 'entree')
   const recit = {
     ton: contenu.ton,
     // ⚠ PAS DEUX FOIS LE MEME NOMBRE. Certaines phrases le portent deja :
     // « The Break-In! gagne 1 menace » suivi d'un « 1 menace » en jaune disait
     // la meme chose a dix pixels d'ecart. Constate a l'ecran. On ne rajoute le
     // nombre que quand la phrase ne le dit pas.
-    texte: nombreEnClair && phraseEtape.includes(nombreEnClair) ? '' : nombreEnClair,
+    texte: nombreRetenu ? '' : nombreEnClair && phraseEtape.includes(nombreEnClair) ? '' : nombreEnClair,
   }
 
   // LE CALCUL EN PASTILLES de la bulle (v3, Q10 et Q15) : [ATQ 2] + [+1 BOOST]

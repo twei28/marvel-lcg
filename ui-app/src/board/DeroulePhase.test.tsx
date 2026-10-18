@@ -3552,6 +3552,43 @@ describe('la scène PC délègue au cartouche', () => {
     expect(screen.getByRole('button', { name: 'Défense du sbire suivant' })).toBeInTheDocument()
   })
 
+  // Rapport de l'utilisateur, 18/10/2026 : « il fait les degats avant qu'il y ait les cartes boost ». Le
+  // bandeau disait « 1 degat » des l'entree des boosts. Les degats se calculent boosts a l'ecran, puis partent.
+  describe('les degats ne s’annoncent qu’une fois les boosts lisibles', () => {
+    const attaque: EtapeDeroule = {
+      cle: 'klaw-resultat', temps: 'mechant', titre: 'attaque', regle: '', etat: 'resolu',
+      carteId: 50, cibleId: 1, auteurNom: 'Klaw', cibleNom: 'Spider-Man', montant: 1,
+      boosts: [{ cle: 'b1', cibleId: 66, nom: 'A', apport: 0 }, { cle: 'b2', cibleId: 72, nom: 'B', apport: 1 }],
+    }
+    const scan = (id: number) => ({ id: String(id), name: `Carte ${id}`, kind: 'treachery' as const, imageUrl: '/scan.png' })
+    // La couche des cartes (et donc la lecture des boosts) ne vit que dans le cadre du plateau.
+    beforeEach(() => { document.body.insertAdjacentHTML('beforeend', '<div class="plateau-cadre"></div>') })
+    afterEach(() => { document.querySelector('.plateau-cadre')?.remove() })
+    const nombre = () => document.querySelector('.tsm-nombre')
+
+    it('pendant l’entree des boosts : pas de « 1 degat » dans le bandeau', () => {
+      render(
+        <DeroulePhase etapes={[attaque]} presentation="table" carteScene={scan} onTerminer={() => {}} />
+      )
+      expect(document.querySelector('.tsm-phrase')?.textContent).toContain('Klaw')
+      expect(nombre()).toBeNull()
+    })
+
+    it('sans carte de boost a lire (scan introuvable) : le nombre se montre, rien n’attend une lecture qui n’aura pas lieu', () => {
+      render(
+        <DeroulePhase etapes={[attaque]} presentation="table" carteScene={() => undefined} onTerminer={() => {}} />
+      )
+      expect(nombre()?.textContent).toMatch(/^1/)
+    })
+
+    it('une attaque sans boost montre son nombre tout de suite', () => {
+      render(
+        <DeroulePhase etapes={[{ ...attaque, boosts: [] }]} presentation="table" carteScene={scan} onTerminer={() => {}} />
+      )
+      expect(nombre()?.textContent).toMatch(/^1/)
+    })
+  })
+
   it('sur la table, Echap demande confirmation avant de tout passer (Q32)', () => {
     const { container } = render(
       <DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />

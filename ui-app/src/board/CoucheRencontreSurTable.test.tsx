@@ -37,6 +37,25 @@ afterEach(() => { cleanup(); Reflect.deleteProperty(HTMLElement.prototype, 'anim
 const finir = async (...indices: number[]) => act(async () => { for (const i of indices) vols[i].finir(); await Promise.resolve() })
 
 describe('lecture et trajet des cartes rencontre', () => {
+  it('annonce sa phase : entree, lecture, depart, termine (le bandeau n’annonce les degats qu’a la lecture)', async () => {
+    const controle = createRef<ControleRencontre>()
+    const phases: string[] = []
+    render(<CoucheRencontreSurTable etape={revelation} boostsMontres={0} carteScene={scans} actif controle={controle} surPhase={(p) => phases.push(p)} />)
+    expect(phases.at(-1)).toBe('entree')
+    await finir(0)
+    expect(phases.at(-1)).toBe('lecture')
+    act(() => { controle.current?.valider(() => {}) })
+    expect(phases.at(-1)).toBe('depart')
+    await finir(1)
+    expect(phases.at(-1)).toBe('termine')
+  })
+
+  it('sans carte a lire, elle le dit : rien n’attend une lecture qui n’aura pas lieu', () => {
+    const phases: string[] = []
+    render(<CoucheRencontreSurTable etape={{ ...revelation, carteId: undefined }} boostsMontres={0} carteScene={() => undefined} actif surPhase={(p) => phases.push(p)} />)
+    expect(phases.at(-1)).toBe('aucune')
+  })
+
   it('attend le clic après l’entrée, puis la fin du départ avant de continuer', async () => {
     const controle = createRef<ControleRencontre>()
     const suite = vi.fn()

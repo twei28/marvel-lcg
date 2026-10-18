@@ -19,6 +19,9 @@ export type ControleRencontre = {
   valider: (suite: () => void) => boolean
 }
 
+/** Ou en est la lecture : les cartes arrivent, se lisent, partent. `aucune` : rien a lire. */
+export type PhaseLecture = 'entree' | 'lecture' | 'depart' | 'termine' | 'aucune'
+
 type CarteLue = { id: number; props: ScanCardProps; boost: boolean }
 type Props = {
   etape: EtapeDeroule | undefined
@@ -27,9 +30,11 @@ type Props = {
   dosRencontre?: ScanCardProps
   actif: boolean
   controle?: Ref<ControleRencontre>
+  /** Annonce chaque changement de phase : le bandeau n'annonce les degats qu'une fois les boosts lisibles. */
+  surPhase?: (phase: PhaseLecture) => void
 }
 
-export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, actif, controle }: Props) {
+export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, actif, controle, surPhase }: Props) {
   const cartes: CarteLue[] = []
   if (actif && etape) {
     for (const c of sceneDe(etape).cartes) {
@@ -42,10 +47,15 @@ export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, acti
   // Une entrée enrichie en révélation conserve exactement la même lecture.
   const identite = cartes.map((c) => `${c.boost ? 'boost' : 'carte'}:${c.id}`).join(',')
   const apport = etape?.boosts.slice(0, boostsMontres).reduce((s, b) => s + (b.apport ?? 0), 0) ?? 0
-  return <LectureRencontre key={identite} cartes={cartes} apport={apport} auteurId={etape?.carteId} controle={controle} />
+  const rienALire = cartes.length === 0
+  useEffect(() => {
+    if (actif && rienALire) surPhase?.('aucune')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actif, rienALire, etape?.cle])
+  return <LectureRencontre key={identite} cartes={cartes} apport={apport} auteurId={etape?.carteId} controle={controle} surPhase={surPhase} />
 }
 
-function LectureRencontre({ cartes, apport, auteurId, controle }: { cartes: CarteLue[]; apport: number; auteurId?: number; controle?: Ref<ControleRencontre> }) {
+function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { cartes: CarteLue[]; apport: number; auteurId?: number; controle?: Ref<ControleRencontre>; surPhase?: (phase: PhaseLecture) => void }) {
   const couche = useRef<HTMLDivElement>(null)
   const [ancres, setAncres] = useState<{ deck: Boite; cadre: Boite; auteur?: Boite }>()
   const etat = useRef<'entree' | 'lecture' | 'depart' | 'termine'>('entree')
@@ -78,6 +88,10 @@ function LectureRencontre({ cartes, apport, auteurId, controle }: { cartes: Cart
   }, [])
 
   const changer = (p: typeof phase) => { etat.current = p; setPhase(p) }
+  useEffect(() => {
+    if (cartes.length > 0) surPhase?.(phase)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, cartes.length])
   const elements = () => Array.from(couche.current?.querySelectorAll<HTMLElement>('.rencontre-sortie') ?? [])
 
   // Les transformations portent sur une boîte aux dimensions de LECTURE,
