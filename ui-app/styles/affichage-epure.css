@@ -2037,3 +2037,56 @@ html[data-epure][data-affichage] .evenement-centrale {
 html[data-epure][data-affichage] .tsm-attente {
   color: #7fa9e6;
 }
+
+/* --- Le liseré de couleur des cartes (18/10/2026) -------------------------------------------------------- */
+/* Un trait fin (1,5 px) autour de chaque carte, de la couleur de son aspect ; les quatre classes Shinobi du pack
+   TMNT ont la couleur de la barre du bas de leurs cartes (prélevée sur les scans), une carte à deux classes un
+   dégradé des deux. Validé sur planche (« c'est parfait pour l'épuré »). Mêmes couleurs que le plateau délavé
+   (board.css) ; l'épuré ne passe pas par l'effet délavé, il les porte donc ici. Une carte face cachée n'a pas
+   de classe d'aspect : elle garde son trait neutre. */
+html[data-epure] .scan-card.aspect-aggression { --lisere-aspect: #d1382c; }
+html[data-epure] .scan-card.aspect-justice { --lisere-aspect: #e6be3c; }
+html[data-epure] .scan-card.aspect-leadership { --lisere-aspect: #3f86e0; }
+html[data-epure] .scan-card.aspect-protection { --lisere-aspect: #34ae61; }
+html[data-epure] .scan-card.aspect-pool { --lisere-aspect: #ef67b0; }
+html[data-epure] .scan-card.aspect-determination { --lisere-aspect: #965cc4; }
+html[data-epure] .scan-card.aspect-venomized { --lisere-aspect: #6b6b7a; }
+html[data-epure] .scan-card.aspect-hero { --lisere-aspect: #a878e8; }
+html[data-epure] .scan-card.aspect-basic { --lisere-aspect: #aab3bd; }
+html[data-epure] .scan-card.aspect-bushido { --lisere-aspect: #20f8d0; }
+html[data-epure] .scan-card.aspect-kuji-kiri { --lisere-aspect: #f800a8; }
+html[data-epure] .scan-card.aspect-ninjutsu { --lisere-aspect: #9870e0; }
+html[data-epure] .scan-card.aspect-taijutsu { --lisere-aspect: #f87800; }
+html[data-epure] .scan-card.aspect-bushido-kuji-kiri { --lisere-a: #20f8d0; --lisere-b: #f800a8; }
+html[data-epure] .scan-card.aspect-bushido-ninjutsu { --lisere-a: #20f8d0; --lisere-b: #9870e0; }
+html[data-epure] .scan-card.aspect-bushido-taijutsu { --lisere-a: #20f8d0; --lisere-b: #f87800; }
+html[data-epure] .scan-card.aspect-kuji-kiri-ninjutsu { --lisere-a: #f800a8; --lisere-b: #9870e0; }
+html[data-epure] .scan-card.aspect-kuji-kiri-taijutsu { --lisere-a: #f800a8; --lisere-b: #f87800; }
+html[data-epure] .scan-card.aspect-ninjutsu-taijutsu { --lisere-a: #9870e0; --lisere-b: #f87800; }
+
+/* ⚠ `transparent` en repli : une Dual n'a pas de `--lisere-aspect` (elle a `--lisere-a` et `--lisere-b`). Sans repli,
+   la déclaration entière devient invalide et la bordure disparaît (0 px), donc le dégradé aussi. */
+html[data-epure] .scan-card[class*='aspect-'] .scan-frame {
+  border: 1.5px solid var(--lisere-aspect, transparent);
+}
+
+/* Une carte à deux classes : la bordure devient transparente et le fond du cadre, étalé dessous, passe au travers. */
+html[data-epure] .scan-card.aspect-bushido-kuji-kiri .scan-frame,
+html[data-epure] .scan-card.aspect-bushido-ninjutsu .scan-frame,
+html[data-epure] .scan-card.aspect-bushido-taijutsu .scan-frame,
+html[data-epure] .scan-card.aspect-kuji-kiri-ninjutsu .scan-frame,
+html[data-epure] .scan-card.aspect-kuji-kiri-taijutsu .scan-frame,
+html[data-epure] .scan-card.aspect-ninjutsu-taijutsu .scan-frame {
+  border-color: transparent;
+  background-image: linear-gradient(90deg, var(--lisere-a), var(--lisere-b));
+  background-origin: border-box;
+  background-clip: border-box;
+}
+
+/* La carte des quatre classes : les quatre couleurs. */
+html[data-epure] .scan-card.aspect-shinobi .scan-frame {
+  border-color: transparent;
+  background-image: linear-gradient(90deg, #20f8d0, #f800a8, #9870e0, #f87800);
+  background-origin: border-box;
+  background-clip: border-box;
+}
