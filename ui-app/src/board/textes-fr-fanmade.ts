@@ -4752,11 +4752,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
   // --- TMNT Shinobi Ninjutsu (sa) : les vingt cartes Ninjutsu (17/10/2026) ---
   // sa001 Assassinate
-  'sa001': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un sbire. Cette attaque gagne perçant.\n<i>« Le silence et la vitesse sont les armes que nous manions. »</i> —Splinter",
+  'sa001': "Jouez cette carte uniquement si votre héros est camouflé.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un sbire. Cette attaque gagne Perçant.\n<i>« Le silence et la vitesse sont les armes que nous manions. »</i> —Splinter",
   // sa002 Shroud and Protect
   'sa002': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous défendez contre une attaque, vous gagnez +1 DEF pour cette attaque. Si vous ne subissez aucun dégât de cette attaque, camouflez et redressez votre héros.\n<i>« Il faut partir avant que quelqu'un nous voie. »</i> —Donatello",
   // sa003 Reconnaissance
-  'sa003': "<b>Action</b> : camouflez un personnage que vous contrôlez → regardez les 3 cartes du dessus du deck d'un joueur ou du deck rencontre. Remettez ces cartes sur le dessus et/ou le dessous de ce deck, dans l'ordre de votre choix.\n<i>« Ça sent les ennuis... »</i> —Donatello",
+  'sa003': "<b>Action</b> : camouflez un personnage que vous contrôlez → regardez les 3 cartes du dessus du deck d'un joueur ou du deck Rencontre. Remettez ces cartes sur le dessus et/ou le dessous de ce deck, dans l'ordre de votre choix.\n<i>« Ça sent les ennuis... »</i> —Donatello",
   // sa004 Scale the Wall
   'sa004': "Jouez cette carte uniquement si votre héros est camouflé. 1 max par round.\n<b>Action de héros</b> : piochez 2 cartes.\n<i>« Il faut savoir surmonter n'importe quel obstacle. »</i> —Splinter",
   // sa005 Run the Rooftops
@@ -4794,7 +4794,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
 
   // --- TMNT Shinobi Taijutsu (sh) : ajouter les cartes shNNN ci-dessous, dans ce bloc seulement ---
   // sh001 Raising Block (Evenement, Taijutsu)
-  'sh001': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts.\n<b>Réponse de héros</b> : après que vous avez dépensé cette carte pour payer un événement [[DEFENSE]], piochez 1 carte.",
+  'sh001': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez 3 de ces dégâts.\n<b>Réponse de héros</b> : après que vous avez dépensé cette carte pour payer un événement [[DEFENSE]], piochez 1 carte.",
   // sh002 Foot Sweep
   'sh002': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Remettez dans votre main chaque événement [[ATTACK]] que vous avez utilisé pour payer cette carte.\n<i>« Balayons ces ordures. »</i> —Jennika",
   // sh003 Stiff Jab
@@ -4810,9 +4810,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // sh008 Drop In (homonyme de nt004, autre carte)
   'sh008': "<b>Action</b> : redressez votre identité. Si vous avez payé cette carte avec un événement [[DEFENSE]], vous pouvez remettre dans votre main un événement [[ATTACK]] ou [[THWART]] de votre pile de défausse.\n<i>« On a décidé de s'inviter. »</i> —Michelangelo",
   // sh009 Toss
-  'sh009': "<b>Interruption de héros</b> <i>(défense/contre)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 3 de ces dégâts et retirez 1 menace d'une manigance. Si vous avez payé cette carte avec un événement [[ATTACK]], hébétez cet ennemi.",
+  'sh009': "<b>Interruption de héros</b> <i>(défense/contre)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez 3 de ces dégâts et retirez 1 menace d'une manigance. Si vous avez payé cette carte avec un événement [[ATTACK]], hébétez cet ennemi.",
   // sh010 Martial Skill
-  'sh010': "1 max par joueur. Utilisations (2 compteurs chi).\n<b>Réponse</b> : après que vous avez joué un événement, inclinez Martial Skill et retirez-lui 1 compteur chi → piochez 1 carte.\n<i>« C'est en forgeant qu'on devient forgeron. »</i> —Leonardo",
+  'sh010': "1 max par joueur. Utilisations (2 compteurs chi).\n<b>Réponse</b> : après que vous avez joué un événement, inclinez Martial Skill et retirez-en 1 compteur chi → piochez 1 carte.\n<i>« C'est en forgeant qu'on devient forgeron. »</i> —Leonardo",
   // sh011 Elbow Strike
   'sh011': "<b>Réponse de héros</b> : après que votre héros a fait une attaque de base et blessé un ennemi, hébétez cet ennemi.\n<i>« Tu ne t'y attendais pas, hein ? »</i> —Donatello",
   // sh012 * Mutant Fight Club
@@ -4828,7 +4828,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // sh017 * Odyn
   'sh017': "[star] <b>Réponse</b> : après qu'Odyn a utilisé un pouvoir de base, défaussez une carte [[DEFENSE]] de votre main → donnez à Odyn une carte d'état Tenace.\n<i>« Je vous conseille de rester derrière moi cette fois. »</i>",
   // sh018 Countercross
-  'sh018': "<b>Interruption de héros</b> <i>(attaque/défense/contre)</i> : quand vous devriez subir des dégâts d'une attaque, prévenez 1 de ces dégâts. Infligez 1 dégât à un ennemi. Retirez 1 menace d'une manigance. Piochez 1 carte.",
+  'sh018': "<b>Interruption de héros</b> <i>(attaque/défense/contre)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez 1 de ces dégâts. Infligez 1 dégât à un ennemi. Retirez 1 menace d'une manigance. Piochez 1 carte.",
   // sh019 Sideswipe
   'sh019': "<b>Action de héros</b> <i>(contre)</i> : retirez 1 menace d'une manigance. Si cela retire la dernière menace de cette manigance, remettez dans votre main une carte [[ATTACK]] de votre pile de défausse.\n<i>« Pardon, je ne fais que passer ! »</i> —Raphael",
   // sh020 Tough Nut
@@ -4848,7 +4848,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // sc006 Migatte (Événement, Bushido/Taijutsu)
   'sc006': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, il gagne +2 DEF pour cette attaque. Si vous avez payé cette carte avec une carte Shinobi, redressez votre héros.\n<i>« Il est temps de s'écarter de la tradition. » —Nightwatcher</i>",
   // sc007 Mizuki (Événement, Kuji-Kiri/Ninjutsu)
-  'sc007': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, choisissez :\n• camouflez un personnage ami ;\n• remettez dans votre main un événement de votre pile de défausse.",
+  'sc007': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, choisissez :\n• Camouflez un personnage ami.\n• Remettez dans votre main un événement de votre pile de défausse.",
   // sc008 Naito Dansā (Événement, Kuji-Kiri/Ninjutsu)
   'sc008': "<b>Action de héros</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce que vous défaussiez un attachement ou une manigance annexe. Révélez cette carte → camouflez jusqu'à 2 personnages amis. Hébétez jusqu'à 2 ennemis.\n<i>« Regardez mes mouvements. » —Michelangelo</i>",
   // sc009 Yomi (Événement, Kuji-Kiri/Taijutsu)
