@@ -1876,3 +1876,89 @@ html[data-epure] .demande-centrale:not(.est-en-scene):not(.dc-liste) .af-action 
   min-width: 190px;
   text-align: center;
 }
+
+/* Le libellé d'une pile (« Chercher dans le deck ») est centré sur la pile ; les piles sont au bord gauche
+   de l'écran, donc un libellé de 190 px sortait de l'écran. Il se replie sur 2-3 lignes dans la largeur de la
+   pile (18/10/2026). */
+html[data-epure] .tsm-etiquette {
+  max-width: 112px;
+  padding: 3px 8px;
+  font-size: 15px;
+}
+
+/* =============================================================================
+   LA FENÊTRE DE RECHERCHE (« Foresight — Choisis une carte »), au style des autres fenêtres (18/10/2026) :
+   panneau biseauté à coins coupés, titre en Bangers au centre (c'est la poignée de déplacement), boutons
+   Annuler neutre et Valider bleu relief.
+   ============================================================================= */
+html[data-epure] .plateau-selecteur.est-fenetre {
+  background: linear-gradient(160deg, #2b3a58 0%, #1f2a40 55%, #171e2e 100%);
+  border: 2px solid #3d5a8c;
+  border-top-color: #7fa9e6;
+  border-left-color: #6a95d6;
+  border-bottom-color: #0f1522;
+  border-right-color: #131a29;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  box-shadow: inset 0 0 0 1px rgba(63, 134, 224, 0.25);
+  color: #ffffff;
+}
+html[data-epure] .plateau-selecteur.est-fenetre .plateau-selecteur-entete {
+  align-items: center;
+  text-align: center;
+  cursor: grab;
+}
+html[data-epure] .plateau-selecteur.est-fenetre .plateau-selecteur-entete strong {
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+html[data-epure] .plateau-selecteur.est-fenetre .plateau-selecteur-compte {
+  font-family: var(--ep-police);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8fbcf5;
+  opacity: 1;
+  order: -1;
+}
+html[data-epure] .plateau-selecteur-boutons {
+  justify-content: center;
+}
+html[data-epure] .plateau-selecteur-boutons button {
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  font-family: var(--ep-titres);
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 9px 22px;
+}
+html[data-epure] .plateau-selecteur-annuler {
+  color: #dbe3f3;
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%);
+  border: 1px solid #4a5a7c;
+  box-shadow: inset 1px 1px 0 rgba(140, 180, 240, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.45);
+}
+html[data-epure] .plateau-selecteur-valider {
+  color: #ffffff;
+  background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
+  border: 1px solid #1d4a8a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+html[data-epure] .plateau-selecteur-valider:disabled {
+  color: #7c8494;
+  background: linear-gradient(180deg, #2b3a58 0%, #1f2a40 100%);
+  border-color: #3d5a8c;
+  box-shadow: none;
+  text-shadow: none;
+}
+/* La pastille de type au-dessus de chaque carte de la fenêtre (« Amélioration ») : biseau bleu. */
+html[data-epure] .plateau-selecteur.est-fenetre .kind-pill {
+  border-radius: 0;
+}

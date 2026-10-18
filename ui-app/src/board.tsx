@@ -4165,6 +4165,12 @@ export function PagePartie({
     interaction.option !== undefined &&
     (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'confirm')
 
+  // La règle de la pile vaut PARTOUT (18/10/2026, « ta règle partout ») : mise en place, tour du joueur,
+  // phase du méchant. `rechercheEnCours` : une action attend ses cibles ou sa confirmation.
+  const rechercheEnCours =
+    interaction.option !== undefined &&
+    (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'confirm')
+
   // UNE RECHERCHE S'OUVRE PAR SA PILE (17/10/2026) : sur la table, pendant la phase, la fenêtre de
   // choix ne surgit plus seule. Le deck ou la défausse où sont les cartes cherchées brille, avec ce
   // qu'on y fait (« Chercher dans le deck »), et c'est le clic sur la pile qui ouvre la fenêtre, avec
@@ -4173,7 +4179,7 @@ export function PagePartie({
   useEffect(() => setPileFouillee(undefined), [interaction.option])
   const pilesARechercher = useMemo(() => {
     const piles = new Map<number, string>()
-    if (!ciblageSurTable || !plateau) return piles
+    if (!(ciblageSurTable || rechercheEnCours) || !plateau) return piles
     for (const cible of interaction.ciblesHorsTable) {
       const id = Number(cible.props.id)
       const representant = plateau.representantsDePile.get(id)
@@ -4181,7 +4187,7 @@ export function PagePartie({
       piles.set(representant, libelleDeLaPile(id, etat.monde))
     }
     return piles
-  }, [ciblageSurTable, plateau, interaction.ciblesHorsTable, etat.monde])
+  }, [ciblageSurTable, rechercheEnCours, plateau, interaction.ciblesHorsTable, etat.monde])
   const porteDePileFermee = pilesARechercher.size > 0 && (pileFouillee === undefined || !pilesARechercher.has(pileFouillee))
   const ciblesHorsTableVisibles = porteDePileFermee
     ? []
@@ -4275,6 +4281,11 @@ export function PagePartie({
   // validation. Ceux de la table gardent leur halo et restent cliquables
   // derriere le voile : les deux chemins menent au meme `agir`.
   const ciblageEnScene = sceneCentrale && phaseMechantEnCours && interaction.option !== undefined
+
+  // Hors phase du méchant (mise en place, tour du joueur), la porte de la pile est le bandeau des piles :
+  // le deck ou la défausse brille avec son libellé, la fenêtre de choix et l'assistant attendent le clic.
+  const porteHorsPhase =
+    rechercheEnCours && !ciblageSurTable && !(ciblageEnScene && nouvelleScenePC) && porteDePileFermee
   // « Sur la table », sans fenêtre (16/10/2026) : choisir des cibles, dans l'ordre s'il le faut, se fait
   // sur les cartes elles-mêmes. Le paiement garde le panneau d'action.
   // Rapport n76 (Yarro, 10/10/2026) : quand TOUTES les cibles sont hors table,
@@ -4421,6 +4432,23 @@ export function PagePartie({
           }
         />
       )}
+      {porteHorsPhase && interaction.option ? (
+        <CiblageSurTable
+          titre={nomLisible(interaction.option)}
+          choisies={interaction.cibles.length}
+          maximum={interaction.option.target_num_range[1]}
+          cibles={[...pilesARechercher].map(([id, libelle]) => ({
+            id,
+            choisie: false,
+            etiquette: libelle,
+            agir: () => setPileFouillee(id),
+          }))}
+          prete={interaction.prete}
+          raison={interaction.raison}
+          valider={interaction.valider}
+          annuler={interaction.annuler}
+        />
+      ) : null}
       {apercuSelecteur && !fenetreChoix ? <CarteApercu carte={apercuSelecteur} /> : null}
       {interaction.ciblesHorsTable.length === 0 && !interaction.option ? (
         <ModaleCartesRegardees groupes={groupesRegardes} />
@@ -4497,7 +4525,7 @@ export function PagePartie({
         />
       ) : null}
 
-      {manuel || fenetreChoix ? null : (
+      {manuel || fenetreChoix || porteHorsPhase ? null : (
         <AssistantAction
           demande={etat.demande}
           interaction={interaction}
