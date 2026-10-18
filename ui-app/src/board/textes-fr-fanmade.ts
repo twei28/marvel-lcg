@@ -3919,7 +3919,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // skrull_menace — Tricky Assault (Treachery)
   'sk262': "<b>Une fois révélée</b> : passez sous forme de héros. Le méchant vous attaque. Si cette attaque n'est pas défendue, le méchant manigance.\n<i>« Nous sommes prêts à accepter votre reddition. » —Skrull inconnu</i>",
   // leonardo — * Leonardo (Hero)
-  'tl001a': "<i>Art du Sabre</i> — <b>Action</b> : redressez une amélioration [[WEAPON]] que vous contrôlez. (Limite d'une fois par round.)",
+  'tl001a': "<i>Kenjutsu</i> — <b>Action</b> : redressez une amélioration [[WEAPON]] que vous contrôlez. (Limite d'une fois par round.)",
   // leonardo — * Leo (AlterEgo)
   'tl001b': "<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre pile de défausse jusqu'à 2 améliorations [[KATANA]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // leonardo — * Splinter (Ally)
@@ -4034,7 +4034,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // bebop_rocksteady — Get Your Swell On (SideScheme)
   'tk205': "<b>Une fois révélée</b> : soignez 1 dégât de chaque ennemi. Donnez une carte d'état Tenace à chaque ennemi.\n<i>« Tu as besoin de grogner comme ça ? »</i> —Rocksteady\n<i>« Pas maintenant, Chef, je suis dans la zone ! »</i> —Bebop",
   // donatello — * Donatello (Hero)
-  'td001a': "<i>Futé</i> — <b>Action</b> : dépensez des ressources [mental][mental] → piochez 2 cartes. (Limite d'une fois par round.)",
+  'td001a': "<i>Kashikoi</i> — <b>Action</b> : dépensez des ressources [mental][mental] → piochez 2 cartes. (Limite d'une fois par round.)",
   // donatello — * Donnie (AlterEgo)
   'td001b': "<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre pile de défausse Donatello's Bo ou Donatello's Shell et mettez-la en jeu, inclinée. <i>(Mélangez.)</i>",
   // donatello — * Metalhead (Ally)
@@ -4103,7 +4103,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // michelangelo_nemesis — Smash! (Treachery, x3)
   'tm016': "<b>Une fois révélée</b> : vous subissez 2 dégâts indirects.",
   // raphael — * Raphael (Hero)
-  'tr001a': "Chaque jeton Rage sur Raphael peut être dépensé comme s'il s'agissait d'une ressource [physical].\n<i>Homme Sauvage</i> — <b>Réponse</b> : après que Raphael subit des dégâts d'une attaque, placez 1 jeton Rage sur lui (maximum 3).",
+  'tr001a': "Chaque jeton Rage sur Raphael peut être dépensé comme s'il s'agissait d'une ressource [physical].\n<i>Yaban Hito</i> — <b>Réponse</b> : après que Raphael subit des dégâts d'une attaque, placez 1 jeton Rage sur lui (maximum 3).",
   // raphael — * Raph (AlterEgo)
   'tr001b': "<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre pile de défausse jusqu'à 2 améliorations [[SAI]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // raphael — * Casey Jones (Ally)
@@ -4213,7 +4213,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // casey_jones_nemesis — Purple Dragon Goons (Minion némésis, x3)
   'tc017': "Garde. Patrouille.\n<b>Une fois révélée</b> : placez une carte d'état Tenace sur le méchant.",
   // alopex — * Alopex (Hero)
-  'ta001a': "<i>Chasseur Traditionnel</i> — <b>Réponse forcée</b> : après avoir attaqué un ennemi ou contré une manigance, trouvez Prey et attachez-la à cet ennemi ou à cette manigance.",
+  'ta001a': "<i>Matagi</i> — <b>Réponse forcée</b> : après avoir attaqué un ennemi ou contré une manigance, trouvez Prey et attachez-la à cet ennemi ou à cette manigance.",
   // alopex — * Alopex (AlterEgo)
   'ta001b': "<b>Mise en place</b> : mettez votre amélioration Prey de côté.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[KAMA]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // alopex — * Nobody (Ally)
@@ -4245,7 +4245,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // alopex — Curse of Nine Tales (Treachery némésis)
   'ta015': "<b>Une fois révélée</b> : choisissez une option :\n• Défaussez les 3 cartes du dessus de votre deck et placez 1 menace sur la manigance principale pour chaque type de carte différent défaussé de cette façon.\n• Défaussez 2 alliés que vous contrôlez.",
   // jennika — * Jennika (Hero)
-  'tj001a': "<i>Ninja Aîné</i> — <b>Interruption</b> : quand vous jouez une carte Shinobi, Jennika gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round. (Limite d'une fois par round pour chaque Shinobi.)",
+  'tj001a': "<i>Ninja Senpai</i> — <b>Interruption</b> : quand vous jouez une carte Shinobi, Jennika gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round. (Limite d'une fois par round pour chaque Shinobi.)",
   // jennika — * Jenny (AlterEgo)
   'tj001b': "<b>Mise en place</b> : mettez en jeu la Voie Sōsaiken sous votre contrôle.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[TEKKO-KAGI]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
   // jennika — Composure (Event, x3)
@@ -4886,7 +4886,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // se004 Shihan (Path, Taijutsu)
   'se004': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Recentrage</i> — <b>Interruption de héros</b> : quand la phase des joueurs se termine, défaussez les 2 cartes du dessus de votre deck → remettez dans votre main 1 carte Taijutsu de votre pile de défausse.",
   // se005 The Last Rōnin (Path hybride, unique, 4 types)
-  'se005': "Permanent.\nVous avez -1 à votre taille de main.\nVous pouvez jouer les cartes glissées ici comme si elles étaient dans votre main. (2 cartes glissées maximum.)\n<i>Perfection</i> — <b>Action</b> : inclinez cette carte et glissez ici 1 carte Shinobi de votre main → piochez 1 carte.",
+  'se005': "Permanent.\nVous avez -1 à votre taille de main.\nVous pouvez jouer les cartes glissées ici comme si elles étaient dans votre main. (2 cartes glissées maximum.)\n<i>Kanpeki</i> — <b>Action</b> : inclinez cette carte et glissez ici 1 carte Shinobi de votre main → piochez 1 carte.",
   // se006 Yoshimitsu (Path hybride, Bushido + Kuji-Kiri)
   'se006': "Permanent.\nVous avez -1 à votre taille de main.\nVous avez +2 points de vie.\n<i>Magnificence</i> — <b>Action de héros</b> : subissez 1 dégât et inclinez cette carte → vous gagnez +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round.",
   // se007 Yamabushi (Path hybride, Kuji-Kiri + Taijutsu)

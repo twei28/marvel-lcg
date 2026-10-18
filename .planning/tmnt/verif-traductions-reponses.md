@@ -70,3 +70,6 @@ Citation de Nobody (up024), Redirection Mastery (up030), « attribuez » sur Mut
 
 ## Preuves
 `node outils/generer-traduction-public.mjs` ; vitest (traduction, textes-fr-fanmade, noms-cartes-fr, vocabulaire, compteurs, tmnt) : 28 fichiers, 365 tests OK ; `verifier_traductions_fr.py` OK ; `verifier_prefixes.py` OK ; cas de test moteur : voir résumé de la réponse.
+
+## Décision finale de l'utilisateur sur la table (18/10/2026)
+« Fusionner, mais garder les mots japonais » : Kanpeki (se005), Kenjutsu (tl001a), Kashikoi (td001a), Yaban Hito (tr001a), Matagi (ta001a) et Ninja Senpai (tj001a) sont REVENUS à leur nom d'origine. Les autres noms (Pas de l'Ombre, Intuition, Voie du Guerrier, Recentrage, Magnificence, Méditation, Visions Sombres, Pied Léger, Jardinier, Garde du Corps, Frappe Excessive) restent traduits. « Booyakasha » (tm001a) reste en anglais.
