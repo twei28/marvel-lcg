@@ -29,6 +29,5 @@
   "cards_json_custom_file": "./data/cards_custom.json",
   "deck_folders": [
     "./deck/custom/"
-  ],
-  "site_admin_url": "http://127.0.0.1:2345/"
+  ]
 }

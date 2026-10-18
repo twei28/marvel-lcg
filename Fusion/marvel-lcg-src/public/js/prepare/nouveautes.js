@@ -47,6 +47,36 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-18",
+        genre: "jeu",
+        fr: "Sur ordinateur, les mises à jour ont leur propre page, classée par famille : les trois dernières de chacune, et un clic pour tout voir. L'accueil range ses tuiles en quatre rangées, avec une tuile Puzzle qui arrive bientôt.",
+        en: "On computer, updates now have their own page, sorted by family: the three latest of each, and one click to see everything. The home screen lays its tiles out in four rows, with a Puzzle tile coming soon.",
+    },
+    {
+        date: "2026-10-18",
+        genre: "jeu",
+        fr: "L'éditeur de deck se choisit son héros dans la page, avec une fenêtre de portraits et une recherche. Au choix du méchant, les boîtes et les cartes de scénario remplissent la place disponible, et les Défis et Weekly Challenges n'y sont plus proposés.",
+        en: "The deck builder now picks its hero in the page, with a portrait window and a search. When choosing the villain, the boxes and scenario cards fill the space available, and Challenges and Weekly Challenges are no longer offered there.",
+    },
+    {
+        date: "2026-10-18",
+        genre: "jeu",
+        fr: "À la mise en place et pendant ton tour, une recherche dans le deck ou la défausse s'ouvre en cliquant la pile concernée, qui s'allume avec ce qu'on y fait, au lieu d'une fenêtre qui surgit toute seule.",
+        en: "During setup and your turn, a search in your deck or discard pile now opens by clicking the pile, which lights up with what you do there, instead of a window that pops up by itself.",
+    },
+    {
+        date: "2026-10-18",
+        genre: "correction",
+        fr: "Sur une réaction, le bouton de refus nomme la capacité (« Ne pas utiliser la Réponse ») et non la carte, pour qu'on ne croie plus annuler sa mise en jeu. La fenêtre Cartes regardées ne s'ouvre plus pour une carte seulement connue (Récup'), la répartition des dégâts indirects n'affiche plus le texte de la carte qui la porte, et une ressource qui s'incline elle-même n'est plus proposée pour payer un coût qui exige de l'incliner (Nebula's Ship).",
+        en: "On a reaction, the refuse button now names the ability (\"Do not use the Response\") rather than the card, so it no longer looks like cancelling the card being played. The Looked-at cards window no longer opens for a card that is merely known (Salvage), indirect damage assignment no longer shows the text of the card carrying it, and a resource that exhausts itself is no longer offered to pay a cost that requires exhausting it (Nebula's Ship).",
+    },
+    {
+        date: "2026-10-18",
+        genre: "coulisses",
+        fr: "Les anciennes pages du moteur d'origine (crédits, éditeur de decks, liste des cartes, ancien plateau, rapport de bug) ne sont plus accessibles : elles renvoient à l'accueil.",
+        en: "The old pages of the original engine (credits, deck editor, card list, old board, bug report) are no longer reachable: they send you back to the home page.",
+    },
+    {
         date: "2026-10-16",
         genre: "heros",
         fr: "La campagne fan-made Menace Skrull (de Kajislav) arrive en cinq scénarios : Skrull Empire, Super-Skrull, Paibok, Skrull Pantheon et Secret Invasion, avec sa zone de coopération et ses Élites. Hulkling et Lyja rejoignent le roster.",

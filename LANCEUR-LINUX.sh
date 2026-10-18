@@ -141,6 +141,12 @@ fi
 echo "Demarrage du moteur... le navigateur s'ouvrira tout seul."
 echo
 cd "$MOTEUR" || exit 1
+# Droits d'administrateur EN LOCAL (palettes, boutons d'admin) : le reglage vit dans launch.admin-local.json,
+# a la racine du depot, HORS de Fusion/marvel-lcg-src (le dossier envoye au serveur par le deploiement).
+# Sans lui, ou ailleurs que sur ce poste, le moteur ne te reconnait pas comme administrateur.
+if [ -f ../../launch.admin-local.json ]; then
+    OPTIONS+=(--config ../../launch.admin-local.json)
+fi
 "$PYTHON_JEU" launcher_fast.py "${OPTIONS[@]}"
 
 echo
