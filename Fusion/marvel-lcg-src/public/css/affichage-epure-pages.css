@@ -849,18 +849,18 @@ html[data-epure] h1.affiche {
   font-size: 54px;
   line-height: 0.95;
   letter-spacing: 0.03em;
-  color: var(--ep-rouge);
+  color: var(--ep-jaune);
 }
 
 html[data-epure] .acc-mode,
 html[data-epure] .acc-mode.cut {
-  box-shadow: inset 4px 0 0 var(--ep-rouge), var(--ep-relief) !important;
+  box-shadow: inset 4px 0 0 var(--ep-jaune), var(--ep-relief) !important;
   transition: box-shadow 0.12s ease-out;
 }
 
 html[data-epure] .acc-mode:hover,
 html[data-epure] .acc-mode.cut:hover {
-  box-shadow: inset 7px 0 0 var(--ep-rouge), var(--ep-relief-survol) !important;
+  box-shadow: inset 7px 0 0 var(--ep-jaune), var(--ep-relief-survol) !important;
 }
 
 html[data-epure] .acc-mode .mvl {
@@ -1595,8 +1595,9 @@ html[data-epure] .acc-titre h1.affiche {
   font-size: 150px !important;
   line-height: 0.92 !important;
   margin: 0 !important;
-  /* Double ombre bleu Captain puis noire, contour noir fin (choix du 17/10/2026). */
-  text-shadow: 5px 5px 0 #3f86e0, 10px 10px 0 #05070b !important;
+  /* Titre bleu Captain, double ombre BLANCHE puis noire, contour noir fin (18/10/2026 : le bleu devient la couleur principale de l'accueil, plus de rouge). */
+  color: #3f86e0 !important;
+  text-shadow: 5px 5px 0 #ffffff, 10px 10px 0 #05070b !important;
   -webkit-text-stroke: 3px #05070b !important;
 }
 
