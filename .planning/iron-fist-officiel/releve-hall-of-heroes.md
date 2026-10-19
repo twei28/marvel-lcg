@@ -84,3 +84,29 @@ manquantes (l'article dit cinq améliorations Technique, trois sont vues). Les s
 Reste ouvert : les n° 14, 15, 17, 21, 23 (deck Protection et Basic) et les n° au-delà de 24 (Basic de ressources, cartes de rencontre, extras d'autres aspects). Par analogie avec Luke Cage,
 on peut s'attendre à 15 exemplaires Protection, 10 Basic (dont Luke Cage et Power Man and Iron Fist), mais le nombre d'exemplaires de chaque carte du deck n'est pas imprimé :
 il faudra la liste officielle ou le pack.
+
+## MISE À JOUR (19/10/2026, 2e lot d'images de la même page : 12 cartes en haute définition, ~1440 × 2000 px)
+La page publie aussi 12 images « Shadowland gameplay » qui sont en réalité de grandes images de cartes. Elles **confirment la déduction** (n° 9 = 12/15, n° 11 = 14/15)
+et comblent les 7 numéros manquants jusqu'à 24, plus 5 cartes au-delà. Toutes les cartes numérotées de 1A à 24 sont donc relevées.
+
+| N° | Carte | Coût | Type | Aspect | Traits | Texte |
+|---|---|---|---|---|---|---|
+| 9 (12/15) | **Embody the Dragon** | 0 | Upgrade | Iron Fist | Technique | Temporary. Iron Fist gains retaliate X, where X is equal to the number of chi counters on this card. Hero Action: Move 1 chi counter from Iron Fist to this card. |
+| 11 (14/15) | **Keep 'Em Coming** | 0 | Upgrade | Iron Fist | Technique | Temporary. Hero Action: Remove 2 chi counters from Iron Fist → ready him. « I'm not trying to get out of this fight. I'm just giving you a chance to flee. » —Iron Fist |
+| 14 | **Iron Fist** (Lin Lie), ally, THW 1, ATK 2★, PV 3 | 4 | Ally | Protection | Agent of Atlas. Martial Artist | ★ Response: After Iron Fist (this ally) attacks an enemy who has been attacked by a hero this phase, stun that enemy. If Iron Fist defeated that enemy, he takes −2 consequential damage from this attack. |
+| 15 | **Defiance** | 0 | Event | Protection | Defense | Hero Interrupt (defense): When a boost card on an enemy attacking you would be turned faceup, discard it instead. « No. » —Shang-Chi |
+| 17 | **The Night Nurse** | 1 | Support | Protection | Persona | Uses (3 medical counters). Action: Exhaust The Night Nurse and remove 1 medical counter from her → heal 1 damage from a hero and discard 1 status card from it. |
+| 21 | **Colleen Wing**, ally, THW 1, ATK 2★, PV 3 | 3 | Ally | Basic | Hero for Hire. Martial Artist | ★ Colleen Wing takes −1 consequential damage after she attacks an enemy who has been attacked by another Martial Artist character this phase. « Even I'd admit, she is probably the best samurai sword fighter outside of Japan. » —Razor Fist |
+| 23 | **Punch, Reverse Punch** | 1★ | Event | Basic | Attack | ★ Discount 1 (Martial Artist). Hero Action (attack): Deal 1 damage to an enemy. Deal 1 damage to an enemy. « It never hurts to practice even the basic forms. » —Shang-Chi |
+| 25 | **Thunder Dojo** | 1 | Support | Basic | Location | Prerequisite (Defender or Martial Artist). Alter-Ego Action: Exhaust this card → shuffle up to 2 Attack events from your discard pile into your deck. Any player may trigger this ability. « I love giving back to the community. » —Danny Rand |
+| 30 | **Death by a Thousand Cuts** | 2★ | Upgrade | Aggression | Skill | ★ Discount 1 (Martial Artist or Soldier). Temporary. Max 1 per player. Response (attack): After you play a card (including this one), deal 1 damage to an enemy. |
+| 31 | **Zen-Like Calm** | 0 | Event | Leadership | Tactic | Action: Heal 1 damage from a Martial Artist character. Then, if that character has no sustained damage, heal 1 damage from another character. « Matt, adjust your posture. Let your body relax. Bring your attention to your breath. » —Iron Fist |
+| 32 | **Sensei** | 2★ | Upgrade | Leadership | Title | ★ Discount 2 (Martial Artist). Max 1 per player. Each Martial Artist ally you control takes −2 consequential damage after they exactly defeat an enemy or side scheme. |
+| 33 | **The Defenders** | – | Resource | Basic | – | This card generates a resource (icône) for each Defender character you control (to a maximum of 4) and can be spent for another player whose identity has the Defender trait. |
+
+**Cartes signature complètes (11 cartes, 15 exemplaires)** : n° 2 Deep Breathing ×3, 3 Dragon Punch ×1, 4 Fists of Fury ×2, 5 The Way of Things ×2, 6 Lei Kung ×1, 7 Book of the Iron Fist ×1,
+8 Channel the Iron Fist ×1, 9 Embody the Dragon ×1, 10 Feel the Flow ×1, 11 Keep 'Em Coming ×1, 12 Redirect Chi ×1. Cinq Techniques : Channel the Iron Fist, Embody the Dragon, Feel the Flow, Keep 'Em Coming, Redirect Chi.
+
+**Restent non vus** : les n° 26 à 29 (probablement des Basic : ressources et autres), le n° 34 et suivants (cartes de rencontre éventuelles, extras des autres aspects), et le nombre d'exemplaires des cartes
+Protection, Basic et autres aspects (non imprimé). Le deck préconstruit de 40 cartes se reconstitue donc en partie seulement. Les images en haute définition de cette page (carte 1, 9, 11, 14, 15, 17, 21, 23, 25, 30 à 33) sont une base utilisable
+pour `PROCESSUS-CARTE.md`, à compléter pour les 17 cartes lues en 300 px.
