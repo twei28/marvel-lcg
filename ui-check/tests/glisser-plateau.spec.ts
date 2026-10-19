@@ -95,15 +95,10 @@ test('glisser le heros sur le mechant l attaque', async ({ page, request }) => {
   await confirmer.waitFor({ state: 'visible', timeout: 40000 });
   await confirmer.click();
 
-  // ⚠ LE MODE « DETAILLE », SANS QUOI LA BARRE D'ACTIONS N'EXISTE PAS. Un
-  // navigateur neuf demarre en « Simple », ou le bas de l'ecran ne porte que
-  // « Fin du tour » : le bouton de changement de forme n'y est pas, et le cas
-  // attendait un element qui ne viendrait jamais. Le GLISSER, lui, marche dans
-  // les deux modes ; seule la mise en place a besoin de ce bouton.
-  await page.getByRole('button', { name: /^Détaillé$/ }).first().click();
-  const changerDeForme = page.getByRole('button', { name: /Changer de forme/ }).first();
-  await changerDeForme.waitFor({ state: 'visible', timeout: 40000 });
-  await changerDeForme.click();
+  // Le changement de forme se fait par la commande du bac à sable : depuis le 18/10/2026 le bouton de la barre du bas
+  // n'existe plus (le menu de la carte propose « Changer de forme », mais ce cas teste le GLISSER, pas ce menu).
+  const rep = await page.request.post('/sandbox_command?p=0', { data: { commands: ["Puzzle.ChangeForm('01001a')"] } });
+  expect(rep.status()).toBe(200);
   await page.waitForSelector('.scan-card.kind-hero[data-card-id]', { timeout: 30000 });
 
   // ⚠ ON ATTEND QUE LE PLATEAU OFFRE LE GESTE. Juste apres un changement de
