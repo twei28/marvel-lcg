@@ -48,6 +48,18 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-19",
+        genre: "jeu",
+        fr: "Tout le monde repart sur le nouvel affichage Normal à sa prochaine connexion. L'ancien se retrouve dans les options sous le nom Coloré, et ton choix ensuite est respecté.",
+        en: "Everyone starts again on the new Normal display at their next login. The old one is still in the options under the name Colourful, and your choice after that is respected.",
+    },
+    {
+        date: "2026-10-19",
+        genre: "jeu",
+        fr: "Au choix du méchant, on ne voit d'abord que les boîtes officielles. Le bouton Fan-made montre à lui seul les boîtes fan-made, comme pour les héros.",
+        en: "When choosing the villain, you first see only the official boxes. The Fan-made button shows the fan-made boxes alone, as it does for heroes.",
+    },
+    {
+        date: "2026-10-19",
         genre: "heros",
         fr: "Les Tortues Ninja arrivent : Leonardo, Michelangelo, Raphael, Donatello, Casey Jones, Jennika, Alopex et Venus, avec les méchants Shredder, Bebop et Rocksteady et Baxter Stockman.",
         en: "The Teenage Mutant Ninja Turtles arrive: Leonardo, Michelangelo, Raphael, Donatello, Casey Jones, Jennika, Alopex and Venus, with the villains Shredder, Bebop and Rocksteady and Baxter Stockman.",
