@@ -4,7 +4,7 @@
 import { test, expect } from '@playwright/test';
 import contrat from '../contrat-nouvelle-partie.json' with { type: 'json' };
 
-test('les Réglages ne proposent que trois choix : bis, Sur la table, D’un coup', async ({ page, request }) => {
+test('les Réglages ne proposent que trois choix : Guidée, Plateau animé, Accéléré', async ({ page, request }) => {
   test.setTimeout(120_000);
   const scenario = await (await request.get('/get_scenario_json?rhino')).json();
   const deck = await (await request.get('/get_hero_json?spider_man')).json();
@@ -37,11 +37,11 @@ test('les Réglages ne proposent que trois choix : bis, Sur la table, D’un cou
   const fenetre = page.locator('.reglages-fenetre');
   // 19/10/2026 : trois choix seulement, « Étape par étape » et « Phase dynamique » sont caches.
   const ligne = fenetre.locator('.ligne-option').filter({ hasText: 'Phase du méchant' }).first();
-  await expect(ligne.getByRole('button')).toHaveText(['Étape par étape bis', 'Sur la table', 'D’un coup']);
+  await expect(ligne.getByRole('button')).toHaveText(['Guidée', 'Plateau animé', 'Accéléré']);
   const choix = () => page.evaluate(() => localStorage.getItem('mc_phase_presentation'));
-  await ligne.getByRole('button', { name: /^Sur la table$/ }).click();
-  await ligne.getByRole('button', { name: /^Étape par étape bis$/ }).click();
-  expect(await choix()).toBe('bis');
+  await ligne.getByRole('button', { name: /^Plateau animé$/ }).click();
+  await ligne.getByRole('button', { name: /^Guidée$/ }).click();
+  expect(await choix()).toBe('tris');
   // L'apparence : depuis le 18/10/2026 l'Épuré s'appelle « Normal » et se propose à tout le monde.
   await page.getByRole('tab', { name: /^Apparence$/ }).or(page.getByRole('button', { name: /^Apparence$/ })).first().click();
   await expect(fenetre.getByRole('button', { name: /^Normal$/ })).toBeVisible();

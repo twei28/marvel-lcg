@@ -325,11 +325,11 @@ export function ecrireReponseAmbiance(valeur: ReponseAmbiance): void {
 export function libelleModePhase(mode: ModePhaseMechant): string {
   switch (mode) {
     case 'detaille':
-      return 'Détaillé'
+      return 'Guidée'
     case 'sur-table':
-      return 'Sur la table'
+      return 'Plateau animé'
     case 'instantane':
-      return 'Instantané'
+      return 'Accéléré'
   }
 }
 

@@ -211,8 +211,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-19",
         genre: "jeu",
-        fr: "La phase du méchant se choisit entre trois façons : « Étape par étape bis », « Sur la table » et « D'un coup ». Ceux qui étaient sur l'ancien « Étape par étape » passent sur « Étape par étape bis ».",
-        en: "The villain phase now comes in three ways: “Step by step bis”, “On the table” and “All at once”. Anyone who was on the old “Step by step” moves to “Step by step bis”.",
+        fr: "La phase du méchant se choisit entre trois façons : « Guidée », « Plateau animé » et « Accéléré ». Les anciennes présentations « Étape par étape » passent sur « Guidée ».",
+        en: "The villain phase now comes in three ways: “Guided”, “Animated Board” and “Fast Forward”. The former “Step by step” presentations move to “Guided”.",
     },
     {
         date: "2026-10-10",

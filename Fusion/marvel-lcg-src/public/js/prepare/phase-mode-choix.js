@@ -19,29 +19,36 @@ export const DETAILLE = "detaille";
 export const SUR_TABLE = "sur-table";
 export const INSTANTANE = "instantane";
 
-// TROIS CHOIX (19/10/2026) : « Étape par étape bis » (valeur `detaille`, présentation `bis`), « Sur la table »,
-// « D'un coup ». L'ancien « Étape par étape » (présentation `etape`) et « Phase dynamique » sont cachés, pas
+// TROIS CHOIX (19/10/2026) : « Guidée » (valeur `detaille`, présentation `tris`), « Plateau animé » (`sur-table`),
+// « Accéléré » (`instantane`). « Étape par étape » (`etape`), « Étape par étape bis » (`bis`) et « Phase dynamique » sont cachés, pas
 // supprimés (drapeaux `PHASE_ETAPE_VISIBLE` / `PHASE_DYNAMIQUE_VISIBLE` de ui-app/src/board/phase-presentation.ts).
-// La valeur `detaille` reste celle du mode : elle se lit « bis », sa présentation par défaut.
+// La valeur `detaille` reste celle du mode : elle se lit « tris », sa présentation par défaut.
 export const CLE_PRESENTATION_PHASE = "mc_phase_presentation";
 const CLE_ANCIENNE_PHASE_BIS = "mc_phase_bis";
-export const PRESENTATION_PAR_DEFAUT = "bis";
+export const PRESENTATION_PAR_DEFAUT = "tris";
+
+/**
+ * Les captures de la fenêtre « Choisis ta phase du méchant » (img/phase-modes/*.jpg) sont CACHÉES depuis
+ * le 19/10/2026 (trop anciennes) : seulement le nom et une courte description de chaque mode. Les fichiers
+ * et le code du carrousel restent : remettre `true` les montre de nouveau.
+ */
+export const PHASE_IMAGES_VISIBLES = false;
 
 /**
  * PASSAGE UNIQUE AUX TROIS CHOIX (19/10/2026), jumeau de `migrerPhaseTroisChoix` de
  * ui-app/src/board/phase-presentation.ts (même clé de passage, même version : le premier des deux qui passe
- * fait le travail). Qui était sur l'ancien « Étape par étape » (présentation `etape`, ou l'ancien `mc_phase_bis`
- * à « non ») ou sur « Phase dynamique » passe sur « bis ». Le mode (`detaille`, `sur-table`, `instantane`) n'est
+ * fait le travail). Qui était sur « Étape par étape » (`etape`, ou l'ancien `mc_phase_bis` à « non »), « Étape par étape bis »
+ * (`bis`) ou « Phase dynamique » passe sur « tris » (« Guidée »). Version `2026-10-19b` : ceux déjà passés sur « bis » le sont une seconde fois. Le mode (`detaille`, `sur-table`, `instantane`) n'est
  * jamais touché. Rend vrai si le passage vient d'avoir lieu. Le choix vit dans le navigateur seulement.
  */
 export const CLE_MIGRATION_PHASE = "mc_phase_trois_choix_migre";
-export const VERSION_MIGRATION_PHASE = "2026-10-19";
+export const VERSION_MIGRATION_PHASE = "2026-10-19b";
 export function migrerPhaseTroisChoix(stockage) {
     try {
         if (!stockage || stockage.getItem(CLE_MIGRATION_PHASE) === VERSION_MIGRATION_PHASE) return false;
         const stocke = stockage.getItem(CLE_PRESENTATION_PHASE);
         const ancienNon = stocke === null && stockage.getItem(CLE_ANCIENNE_PHASE_BIS) === "non";
-        if (ancienNon || (stocke !== null && stocke !== PRESENTATION_PAR_DEFAUT && stocke !== "tris")) stockage.setItem(CLE_PRESENTATION_PHASE, PRESENTATION_PAR_DEFAUT);
+        if (ancienNon || (stocke !== null && stocke !== PRESENTATION_PAR_DEFAUT)) stockage.setItem(CLE_PRESENTATION_PHASE, PRESENTATION_PAR_DEFAUT);
         stockage.setItem(CLE_MIGRATION_PHASE, VERSION_MIGRATION_PHASE);
         return true;
     } catch (e) { return false; }

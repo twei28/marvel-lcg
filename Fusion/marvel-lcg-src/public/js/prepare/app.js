@@ -44,7 +44,7 @@ import { ouvrirFeuille } from "/public/js/tel-pages.js";
 import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire,
-         migrerPhaseTroisChoix } from "/public/js/prepare/phase-mode-choix.js";
+         migrerPhaseTroisChoix, PHASE_IMAGES_VISIBLES } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
 import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
 // ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
@@ -1855,8 +1855,9 @@ async function demanderLAffichage({ rouvert = false } = {}) {
  *  méchant, « un petit peu comme pour le mode sobre et le mode normal », avec
  *  une image chacune. Les images sont de vraies captures du plateau.
  *
- *  ⚠ Depuis le 19/10/2026 la première carte s'appelle « Étape par étape bis » (valeur
- *  rangée `detaille`, inchangée) : l'ancien « Étape par étape » est caché.
+ *  ⚠ Depuis le 19/10/2026 les trois cartes s'appellent « Guidée » (valeur
+ *  rangée `detaille`, inchangée), « Plateau animé » et « Accéléré », sans images (drapeau
+ *  `PHASE_IMAGES_VISIBLES`, phase-mode-choix.js) : une courte description à la place.
  *
  *  ⚠ « D'un coup » dit son prix : on voit beaucoup moins, donc beaucoup moins
  *  de chances de repérer un défaut. Le choix se fait en connaissance de cause.
@@ -1880,7 +1881,7 @@ function demanderLaPhaseDuMechant() {
         let i = 0;
         let minuteur = null;
         const src = (k) => `/public/img/phase-modes/${dossier}-${k + 1}.jpg`;
-        const img = el("img", { src: src(0), alt: "", loading: "eager" });
+        const img = el("img", { src: PHASE_IMAGES_VISIBLES ? src(0) : "", alt: "", loading: "eager" });
         const points = Array.from({ length: NOMBRE }, () => el("span", { class: "pm-point" }));
         const dessiner = () => {
             img.src = src(i);
@@ -1890,7 +1891,7 @@ function demanderLaPhaseDuMechant() {
         const arreter = () => { if (minuteur !== null) { clearInterval(minuteur); minuteur = null; } };
         const reduit = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
         const demarrer = () => { arreter(); if (!reduit) minuteur = setInterval(() => aller(i + 1), 3200); };
-        for (const d of Object.values(dossiers)) for (let k = 0; k < NOMBRE; k++) { const pre = new Image(); pre.src = `/public/img/phase-modes/${d}-${k + 1}.jpg`; }
+        if (PHASE_IMAGES_VISIBLES) for (const d of Object.values(dossiers)) for (let k = 0; k < NOMBRE; k++) { const pre = new Image(); pre.src = `/public/img/phase-modes/${d}-${k + 1}.jpg`; }
         const choisir = (valeur) => {
             choix = valeur;
             for (const c of cartes) {
@@ -1900,8 +1901,7 @@ function demanderLaPhaseDuMechant() {
             }
             dossier = dossiers[valeur];
             i = 0;
-            dessiner();
-            demarrer();
+            if (PHASE_IMAGES_VISIBLES) { dessiner(); demarrer(); }
         };
         const fleche = (sens, texte, nom) => el("button", {
             class: "pm-fleche pm-fleche-" + (sens < 0 ? "g" : "d"),
@@ -1950,23 +1950,21 @@ function demanderLaPhaseDuMechant() {
                     el("span", { class: "dm-sub" }, t("Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.")),
                 ),
                 el("div", { class: "af-choix-grille" },
-                    carte("detaille", t("Étape par étape bis"),
-                        t("Chaque étape de la phase est détaillée, avec un « Suivant » à chaque fois. C'est le plus long, parce que tout est expliqué.")),
-                    carte("sur-table", t("Sur la table"),
-                        t("Tu vois les cartes bouger directement sur la table. Un peu moins de détails, mais plus vivant.")),
-                    carte("instantane", t("D’un coup"),
-                        t("Tout se fait d'un coup. Seule une interruption te laisse jouer une carte quand c'est possible."),
-                        t("On voit beaucoup moins ce qui se passe : un défaut éventuel est bien plus difficile à repérer.")),
+                    carte("detaille", t("Guidée"),
+                        t("Un guide compact accompagne chaque étape de la phase du méchant, une étape à la fois.")),
+                    carte("sur-table", t("Plateau animé"),
+                        t("La phase du méchant se joue sur le plateau : les cartes bougent, un trait relie l'attaquant à sa cible et la validation se fait à côté de l'action.")),
+                    carte("instantane", t("Accéléré"),
+                        t("La phase du méchant se résout d'un seul coup, sans s'arrêter. Un bilan de fin de phase raconte ce qui s'est passé.")),
                 ),
-                visionneuse,
+                PHASE_IMAGES_VISIBLES ? visionneuse : null,
                 el("div", { class: "vh-note" },
                     t("Tu pourras changer à tout moment : Réglages en partie, onglet Jeu.")),
                 el("div", { class: "af-valider" },
                     el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
             ),
         );
-        dessiner();
-        demarrer();
+        if (PHASE_IMAGES_VISIBLES) { dessiner(); demarrer(); }
         ouvrirModale(overlay);
     });
 }

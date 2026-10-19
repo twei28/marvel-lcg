@@ -72,28 +72,28 @@ describe("l'épuré, réservé à l'administrateur (ancienne règle, conservée)
 })
 
 describe('les présentations de la phase du méchant', () => {
-  it('bis par défaut, le choix se suit et se relit', () => {
-    expect(lirePresentationPhase()).toBe('bis')
+  it('tris par défaut, le choix se suit et se relit', () => {
+    expect(lirePresentationPhase()).toBe('tris')
     const vus: string[] = []
     const fin = suivrePresentationPhase((p) => vus.push(p))
     ecrirePresentationPhase('dynamique')
-    // 19/10/2026 : « Phase dynamique » et « Étape par étape » sont cachés, ils se lisent bis (phase-trois-choix.test.tsx).
-    expect(lirePresentationPhase()).toBe('bis')
+    // 19/10/2026 : « Phase dynamique » et « Étape par étape » sont cachés, ils se lisent tris (phase-trois-choix.test.tsx).
+    expect(lirePresentationPhase()).toBe('tris')
     ecrirePresentationPhase('etape')
     fin()
-    ecrirePresentationPhase('bis')
+    ecrirePresentationPhase('tris')
     expect(vus).toEqual(['dynamique', 'etape'])
   })
 
   it("l'ancien réglage « mc_phase_bis » est repris tant qu'aucun choix n'est fait", () => {
     localStorage.setItem('mc_phase_bis', 'non')
-    expect(lirePresentationPhase()).toBe('bis')
+    expect(lirePresentationPhase()).toBe('tris')
     localStorage.setItem('mc_phase_bis', 'oui')
-    expect(lirePresentationPhase()).toBe('bis')
+    expect(lirePresentationPhase()).toBe('tris')
     // Un choix explicite prime, une valeur inconnue est ignorée.
     localStorage.setItem('mc_phase_presentation', 'dynamique')
-    expect(lirePresentationPhase()).toBe('bis')
+    expect(lirePresentationPhase()).toBe('tris')
     localStorage.setItem('mc_phase_presentation', 'n-importe-quoi')
-    expect(lirePresentationPhase()).toBe('bis')
+    expect(lirePresentationPhase()).toBe('tris')
   })
 })

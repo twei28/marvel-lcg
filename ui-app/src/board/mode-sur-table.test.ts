@@ -61,12 +61,12 @@ describe('le rythme du mode « Sur la table »', () => {
 })
 
 describe('sa place parmi les modes', () => {
-  it('figure dans la liste, entre « Détaillé » et « Instantané »', () => {
+  it('figure dans la liste, entre « Guidée » et « Accéléré »', () => {
     expect(MODES).toEqual(['detaille', 'sur-table', 'instantane'])
   })
 
   it('porte son propre libellé', () => {
-    expect(libelleModePhase('sur-table')).toBe('Sur la table')
+    expect(libelleModePhase('sur-table')).toBe('Plateau animé')
   })
 
   it('les trois modes ont chacun un libellé distinct', () => {

@@ -43,6 +43,8 @@ import { epurePermis, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
 import {
   PHASE_BIS_POUR_TOUS,
+  PHASE_BIS_VISIBLE,
+  phaseTrisUtilisable,
   PHASE_DYNAMIQUE_VISIBLE,
   PHASE_ETAPE_VISIBLE,
   ecrirePresentationPhase,
@@ -254,8 +256,8 @@ function LigneVolumeSons({ disponible }: { disponible: boolean }) {
 }
 
 /**
- * La phase du méchant : TROIS choix pour tout le monde (19/10/2026), dans l'ordre « Étape par étape bis »,
- * « Sur la table », « D'un coup ». « Étape par étape » (l'ancien cartouche) et « Phase dynamique » sont cachés
+ * La phase du méchant : TROIS choix pour tout le monde (19/10/2026), dans l'ordre « Guidée »,
+ * « Plateau animé », « Accéléré ». « Étape par étape » (l'ancien cartouche) et « Phase dynamique » sont cachés
  * derrière `PHASE_ETAPE_VISIBLE` et `PHASE_DYNAMIQUE_VISIBLE` (board/phase-presentation.ts) : le code reste,
  * remettre un drapeau à `true` les montre de nouveau. « bis » ne dépend plus de l'essai « nouvelle phase »
  * de /admin (`PHASE_BIS_POUR_TOUS`).
@@ -282,18 +284,16 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
       valeur={valeur}
       choix={[
         ...(PHASE_ETAPE_VISIBLE || !bisOuvert ? [{ valeur: 'detaille', libelle: t('Étape par étape') }] : []),
-        ...(bisOuvert ? [{ valeur: 'bis', libelle: t('Étape par étape bis') }] : []),
-        // « tris » : variante de l'autre session, seulement en local (jamais sur le site en ligne).
-        ...(bisOuvert && ['localhost', '127.0.0.1', '[::1]'].includes(globalThis.location?.hostname ?? '')
-          ? [{ valeur: 'tris', libelle: t('Étape par étape tris') }]
-          : []),
+        ...(bisOuvert && PHASE_BIS_VISIBLE ? [{ valeur: 'bis', libelle: t('Étape par étape bis') }] : []),
+        // « Guidée » (`tris`) : pour tout le monde depuis le 19/10/2026 (drapeau PHASE_TRIS_POUR_TOUS).
+        ...(bisOuvert && phaseTrisUtilisable() ? [{ valeur: 'tris', libelle: t('Guidée') }] : []),
         ...(bisOuvert && PHASE_DYNAMIQUE_VISIBLE ? [{ valeur: 'dynamique', libelle: t('Phase dynamique') }] : []),
-        // « Sur la table » : OUVERT À TOUS depuis le 05/10/2026, quand la
+        // « Plateau animé » : OUVERT À TOUS depuis le 05/10/2026, quand la
         // fenêtre de préparation « Choisis ta phase du méchant » l'a
         // présenté à chaque joueur (décision de l'utilisateur). Un mode
         // proposé là doit pouvoir se retrouver ici.
         ...(MODE_SUR_TABLE_OUVERT ? [{ valeur: 'sur-table', libelle: t(p.libelleModePhase('sur-table')) }] : []),
-        { valeur: 'instantane', libelle: t('D’un coup') },
+        { valeur: 'instantane', libelle: t('Accéléré') },
       ]}
       onChoisir={(v) => {
         if (v === 'bis' || v === 'tris' || v === 'dynamique' || v === 'detaille') {
@@ -305,7 +305,7 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
       }}
       detail={
         bisOuvert && !PHASE_ETAPE_VISIBLE
-          ? t('Étape par étape bis : un « Suivant » par étape de la phase. Sur la table : les cartes bougent sur la table. D’un coup : tout se joue d’un coup')
+          ? t('Guidée : un « Suivant » par étape de la phase. Plateau animé : les cartes bougent sur la table. Accéléré : tout se joue d’un coup')
           : t('Étape par étape : un « Suivant » par étape de la phase')
       }
     />

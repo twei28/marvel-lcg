@@ -1003,6 +1003,15 @@ export const DICO_EN_BASE = {
   "Tu vois les cartes bouger directement sur la table. Un peu moins de détails, mais plus vivant.":
     "You see the cards move straight on the table. Slightly less detail, but livelier.",
   "D’un coup": "All at once",
+  "Guidée": "Guided",
+  "Plateau animé": "Animated Board",
+  "Accéléré": "Fast Forward",
+  "Un guide compact accompagne chaque étape de la phase du méchant, une étape à la fois.":
+    "A compact guide accompanies each step of the villain phase, one step at a time.",
+  "La phase du méchant se joue sur le plateau : les cartes bougent, un trait relie l'attaquant à sa cible et la validation se fait à côté de l'action.":
+    "The villain phase plays out on the board: cards move, a line links the attacker to its target, and confirmation happens next to the action.",
+  "La phase du méchant se résout d'un seul coup, sans s'arrêter. Un bilan de fin de phase raconte ce qui s'est passé.":
+    "The villain phase resolves all at once, without stopping. An end-of-phase summary tells what happened.",
   "Tout se fait d'un coup. Seule une interruption te laisse jouer une carte quand c'est possible.":
     "Everything happens at once. Only an interruption lets you play a card when you can.",
   "On voit beaucoup moins ce qui se passe : un défaut éventuel est bien plus difficile à repérer.":

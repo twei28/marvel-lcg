@@ -47,9 +47,9 @@ describe('mode detaille', () => {
   it('affiche son propre libelle, pas celui d un autre mode', () => {
     // Le panneau Options affichait « Instantane » pour le mode detaille,
     // pourtant le defaut : un ternaire a trois branches sans branche pour lui.
-    expect(libelleModePhase('detaille')).toBe('Détaillé')
-    expect(libelleModePhase('sur-table')).toBe('Sur la table')
-    expect(libelleModePhase('instantane')).toBe('Instantané')
+    expect(libelleModePhase('detaille')).toBe('Guidée')
+    expect(libelleModePhase('sur-table')).toBe('Plateau animé')
+    expect(libelleModePhase('instantane')).toBe('Accéléré')
   })
 
   // 10/10/2026 : le Bis EST devenu « Etape par etape ». Un joueur qui l'avait

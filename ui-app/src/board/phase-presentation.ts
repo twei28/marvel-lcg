@@ -12,7 +12,7 @@
 // moteur retient et relâche ses trames exactement de la même façon. Les comptes
 // qui n'ont pas l'essai (`essais.ts`) ne voient jamais que `etape`.
 //
-// Depuis le 19/10/2026 seuls « bis », « Sur la table » et « D'un coup » sont proposés à tous (voir plus bas).
+// Depuis le 19/10/2026 (soir) seuls « Guidée » (`tris`), « Plateau animé » (`sur-table`) et « Accéléré » (`instantane`) sont proposés à tous (voir plus bas).
 //
 // Le choix vit dans le navigateur. Il remplace `mc_phase_bis` (oui/non, du matin du
 // 16/10/2026), toujours lu s'il n'y a pas encore de choix : `non` donne `etape`,
@@ -38,32 +38,44 @@ export const PHASE_DYNAMIQUE_VISIBLE = false
  * (`essaiPhaseMechant`, qui reste en place). Remettre `false` pour la réserver de nouveau aux comptes d'essai.
  */
 export const PHASE_BIS_POUR_TOUS = true
+/** « Étape par étape bis » (présentation `bis`) : cachée depuis le 19/10/2026 (soir), remplacée par « Guidée » (`tris`). */
+export const PHASE_BIS_VISIBLE = false
+/**
+ * « Guidée » (présentation `tris`) pour TOUT LE MONDE, y compris en ligne. Avant, elle n'existait que sur
+ * localhost (test d'hôte retiré). Remettre `false` la rend de nouveau invisible hors de la machine locale.
+ */
+export const PHASE_TRIS_POUR_TOUS = true
+/** Cette variante `tris` est-elle utilisable ici ? (drapeau, sinon hôte local seulement.) */
+export function phaseTrisUtilisable(hote: string = globalThis.location?.hostname ?? ''): boolean {
+  return PHASE_TRIS_POUR_TOUS || ['localhost', '127.0.0.1', '[::1]'].includes(hote)
+}
 
 /** Cette présentation est-elle proposée au joueur ? */
 export function presentationProposee(presentation: PresentationPhase): boolean {
   if (presentation === 'etape') return PHASE_ETAPE_VISIBLE
   if (presentation === 'dynamique') return PHASE_DYNAMIQUE_VISIBLE
-  return true
+  if (presentation === 'bis') return PHASE_BIS_VISIBLE
+  return phaseTrisUtilisable()
 }
 
 /** Le choix de départ, et le repli de tout choix qui n'est plus proposé. */
-export const PRESENTATION_PAR_DEFAUT: PresentationPhase = 'bis'
+export const PRESENTATION_PAR_DEFAUT: PresentationPhase = 'tris'
 
 /**
  * PASSAGE UNIQUE AUX TROIS CHOIX (19/10/2026) : jumeau de `migrerPhaseTroisChoix` de la préparation
  * (public/js/prepare/phase-mode-choix.js), même clé de passage, même version. Qui était sur l'ancien
  * « Étape par étape » (présentation `etape`, ou l'ancien `mc_phase_bis` à « non ») ou sur « Phase dynamique »
- * passe sur « bis » (« tris », la variante locale, est conservée). Le mode (`detaille`, `sur-table`, `instantane`) n'est jamais touché : « Sur la table » et
+ * passe sur « tris » (« Guidée »). Version `2026-10-19b` : ceux déjà passés sur « bis » le sont une seconde fois. Le mode (`detaille`, `sur-table`, `instantane`) n'est jamais touché : « Sur la table » et
  * « D'un coup » sont conservés. Le choix vit dans le navigateur seulement (rien n'est rangé sur le compte).
  */
 export const CLE_MIGRATION_PHASE = 'mc_phase_trois_choix_migre'
-export const VERSION_MIGRATION_PHASE = '2026-10-19'
+export const VERSION_MIGRATION_PHASE = '2026-10-19b'
 export function migrerPhaseTroisChoix(stockage: Pick<Storage, 'getItem' | 'setItem'> | null | undefined): boolean {
   try {
     if (!stockage || stockage.getItem(CLE_MIGRATION_PHASE) === VERSION_MIGRATION_PHASE) return false
     const stocke = stockage.getItem(CLE_PRESENTATION_PHASE)
     const ancienNon = stocke === null && stockage.getItem(CLE_ANCIENNE_PHASE_BIS) === 'non'
-    if (ancienNon || (stocke !== null && stocke !== 'bis' && stocke !== 'tris')) stockage.setItem(CLE_PRESENTATION_PHASE, PRESENTATION_PAR_DEFAUT)
+    if (ancienNon || (stocke !== null && stocke !== 'tris')) stockage.setItem(CLE_PRESENTATION_PHASE, PRESENTATION_PAR_DEFAUT)
     stockage.setItem(CLE_MIGRATION_PHASE, VERSION_MIGRATION_PHASE)
     return true
   } catch {
@@ -82,7 +94,7 @@ export function lirePresentationPhase(): PresentationPhase {
   try {
     const stocke = globalThis.localStorage?.getItem(CLE_PRESENTATION_PHASE)
     if (stocke && (PRESENTATIONS as readonly string[]).includes(stocke)) {
-      // Un choix qui n'est plus proposé (caché derrière un drapeau) retombe sur « bis », sans être effacé.
+      // Un choix qui n'est plus proposé (caché derrière un drapeau) retombe sur « tris », sans être effacé.
       return presentationProposee(stocke as PresentationPhase) ? (stocke as PresentationPhase) : PRESENTATION_PAR_DEFAUT
     }
     const ancien = globalThis.localStorage?.getItem(CLE_ANCIENNE_PHASE_BIS) === 'non' ? 'etape' : PRESENTATION_PAR_DEFAUT

@@ -34,7 +34,7 @@ function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
       m === 'detaille'
         ? 'Détaillé'
         : m === 'sur-table'
-          ? 'Sur la table'
+          ? 'Plateau animé'
           : 'Instantané',
     tempsParDecision: 0,
     texteTempsParDecision: () => 'le moteur n’attend pas',
@@ -224,7 +224,7 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
   it('choisir la phase instantanee', () => {
     const changerModePhase = vi.fn()
     render(<ContenuOnglet onglet="jeu" p={proprietes({ changerModePhase })} />)
-    fireEvent.click(screen.getByText('D’un coup'))
+    fireEvent.click(screen.getByText('Accéléré'))
     expect(changerModePhase).toHaveBeenCalledWith('instantane')
   })
 
@@ -387,12 +387,12 @@ describe('le mode « Sur la table » est proposé à tous', () => {
     // chacun, il doit donc se retrouver ici sans condition. Il raconte la même
     // chose que « Détaillé », au même rythme : sa place est à côté de lui.
     render(<ContenuOnglet onglet="jeu" p={proprietes()} />)
-    expect(modes()).toEqual(['Étape par étape bis', 'Sur la table', 'D’un coup'])
+    expect(modes()).toEqual(['Guidée', 'Plateau animé', 'Accéléré'])
   })
 
   it('un mode déjà choisi reste dans la liste', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'sur-table' })} />)
-    expect(modes()).toEqual(['Étape par étape bis', 'Sur la table', 'D’un coup'])
+    expect(modes()).toEqual(['Guidée', 'Plateau animé', 'Accéléré'])
   })
 })
 
