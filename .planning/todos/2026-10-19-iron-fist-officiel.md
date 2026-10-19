@@ -19,3 +19,13 @@
 ## Pièges notés
 - MC4DB (https://mc4db.merlindumesnil.net) n'a pas encore le pack officiel au 19/10/2026 ; son pack « iron_fist_by_merlin » est un travail fan-made distinct (ne pas confondre).
 - Une icône de ressource ne se nomme jamais à vue (Redirect Chi : étoile = wild, à confirmer contre une carte du même pack).
+
+## Cartes d'aspect du pack (HORS PÉRIMÈTRE pour l'instant : 17 cartes relevées, aucune créée)
+Source : mêmes images de Hall of Heroes ; textes complets dans `releve-hall-of-heroes.md`. Noms anglais, pas de version française connue.
+- **Protection (8)** : Helpful Bystander (n° 13, allié 1, passant fragile, +1 main, attire l'attaque), Iron Fist / Lin Lie (n° 14, allié 4, étourdit après une attaque, −2 de contrecoup s'il achève),
+  Defiance (n° 15, événement de défense, défausse un boost), Demoralize (n° 16, force un ennemi à attaquer puis le désoriente), The Night Nurse (n° 17, support, 3 soins),
+  Redirection Mastery (n° 18, renvoie des dégâts égaux à la DÉF après une défense exacte), No Time to Bleed (n° 19, soigne 1 à chaque carte jouée, temporaire), Tonfa (n° 20, +1 DÉF ou riposte 1).
+- **Basic (6)** : Luke Cage (n° 22), Colleen Wing (n° 21), Punch Reverse Punch (n° 23), Power Man and Iron Fist (n° 24), Thunder Dojo (n° 25), The Defenders (n° 33).
+- **Aggression (1)** : Death by a Thousand Cuts (n° 30). **Leadership (2)** : Zen-Like Calm (n° 31), Sensei (n° 32).
+- Manque : numéros 26 à 29 et 34+ ; nombre d'exemplaires non imprimé ; composition du deck préconstruit de 40 cartes (attendu : 15 Protection + 10 Basic en plus des 15 signature).
+- Piège de vocabulaire : « consequential damage » (dégâts de contrecoup) est une notion des règles 1.8, à vérifier côté moteur (présente dans `face_action.py`, `can_attack.py`).
