@@ -299,15 +299,6 @@ export function TableSansModale({
   const boiteActeur = useBoiteDeCarte(lecture ? undefined : acteurId ?? cibleId, cle)
   const boiteCible = useBoiteDeCarte(!lecture && acteurId !== undefined ? cibleId : undefined, cle)
   const enTrajet = lecture === 'entree' || lecture === 'depart'
-  // Une étape sans carte à cliquer (« Aucun sbire engagé », menace sans manigance visible) :
-  // la ligne du haut porte alors son propre bouton. On laisse 300 ms à la mesure.
-  const [laisseMesurer, setLaisseMesurer] = useState(true)
-  useEffect(() => {
-    setLaisseMesurer(true)
-    const minuteur = window.setTimeout(() => setLaisseMesurer(false), 300)
-    return () => window.clearTimeout(minuteur)
-  }, [cle])
-  const sansCarte = !boiteActeur && (acteurId === undefined && cibleId === undefined ? true : !laisseMesurer)
   return (
     <>
       <span className="tsm-depart" aria-hidden="true" />
@@ -322,15 +313,15 @@ export function TableSansModale({
         {nombre ? <b className="tsm-nombre">{nombre}</b> : null}
         {calcul ? <span className="tsm-calcul">{calcul}</span> : null}
         {suite ? <span className="tsm-suite">{suite}</span> : null}
-        {peutAgir && (sansCarte || lecture) ? (
+        {/* « Continuer (Espace) » est TOUJOURS la, a chaque etape (19/10/2026) : plus de phrase « Clique la carte doree, ou Espace ».
+            La carte doree reste cliquable. */}
+        {peutAgir ? (
           <button type="button" className="tsm-bouton" onClick={avancer} aria-label={libelleAction} disabled={enTrajet}>
             {t('Continuer')}
-            {lecture === 'lecture' ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
+            <kbd className="tsm-touche">{t('Espace')}</kbd>
           </button>
         ) : (
-          <span className="tsm-consigne">
-            {peutAgir ? t('Clique la carte dorée, ou Espace') : (mention ?? t('La suite arrive…'))}
-          </span>
+          <span className="tsm-consigne">{mention ?? t('La suite arrive…')}</span>
         )}
         {regles && regles.length > 0 ? (
           <span className="tsm-regles">
