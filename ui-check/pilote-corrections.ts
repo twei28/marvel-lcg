@@ -64,17 +64,24 @@ export async function finDuTour(page: Page) {
  * Avance la phase du méchant (lectures, étapes, questions sans intérêt) jusqu'à ce que `predicat` soit vrai
  * pour le bandeau de question ou d'étape. Rend le texte du bandeau trouvé.
  */
-export async function avancerJusqua(page: Page, predicat: (bandeau: string) => boolean, { max = 500 }: { max?: number } = {}): Promise<string> {
+export async function avancerJusqua(page: Page, predicat: (bandeau: string) => boolean, { max = 500, aussi }: { max?: number; aussi?: () => Promise<boolean> } = {}): Promise<string> {
   for (let i = 0; i < max; i++) {
     const bandeau = (await page.locator('.tsm-bandeau').first().textContent({ timeout: 500 }).catch(() => null)) ?? ''
-    if (process.env.DEBUG_PILOTE && i % 10 === 0) console.log('pilote', i, (await page.request.get('/get_world?hot_seat&p=0').then((r) => r.json()).then((w) => w.phase + '|' + w.prompt).catch(() => '?')), JSON.stringify(bandeau.slice(0, 100)), await page.locator('.rencontre-sur-table[data-lecture]').first().getAttribute('data-lecture', { timeout: 200 }).catch(() => null))
+    if (process.env.DEBUG_PILOTE && bandeau !== (globalThis as { __dernierBandeau?: string }).__dernierBandeau) { (globalThis as { __dernierBandeau?: string }).__dernierBandeau = bandeau; console.log('bandeau', i, JSON.stringify(bandeau.slice(0, 110))) }
     if (bandeau && predicat(bandeau)) return bandeau
+    if (aussi && (await aussi())) return bandeau
     const lecture = await page.locator('.rencontre-sur-table[data-lecture]').first().getAttribute('data-lecture', { timeout: 300 }).catch(() => null)
+    // relecture JUSTE avant d'agir (le texte peut avoir changé depuis la première lecture) : on ne clique jamais sur une étape cherchée
+    const juste = (await page.locator('.tsm-bandeau').first().textContent({ timeout: 300 }).catch(() => null)) ?? ''
+    if (juste && predicat(juste)) return juste
     if (lecture === 'lecture') {
       await page.locator('.tsm-bandeau:not(.est-question) .tsm-bouton:not([disabled])').first().click({ timeout: 1500 }).catch(() => undefined)
     } else if (lecture === 'entree' || lecture === 'depart') {
       // les cartes volent : attendre
     } else if (await page.locator('.tsm-bandeau.est-question').count()) {
+      // relire JUSTE avant d'agir : la question a pu changer (Sens d'Araignée -> Qui défend ?) depuis la lecture du haut
+      const frais = (await page.locator('.tsm-bandeau').first().textContent({ timeout: 500 }).catch(() => null)) ?? ''
+      if (frais && predicat(frais)) return frais
       await questionOuPreparation(page)
     } else if (await page.locator('.tsm-bandeau.est-bilan').count()) {
       throw new Error('le bilan est arrivé avant la condition attendue')

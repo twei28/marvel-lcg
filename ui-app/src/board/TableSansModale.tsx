@@ -34,7 +34,10 @@ function boiteDeLImage(
   if (!el) return boiteDeCarte(id, cadre)
   const r = el.getBoundingClientRect()
   if (r.width === 0 || r.height === 0) return boiteDeCarte(id, cadre)
-  const bloc = el.closest<HTMLElement>('.scan-card')?.getBoundingClientRect()
+  const blocEl = el.closest<HTMLElement>('.scan-card')
+  const bloc = blocEl?.getBoundingClientRect()
+  // Une carte inclinee tourne aussi sa barre de PV : on prend le point le plus bas de tout ce que le bloc contient.
+  const basContenu = blocEl ? Math.max(0, ...Array.from(blocEl.querySelectorAll('*')).map((e) => e.getBoundingClientRect().bottom)) : 0
   const englobante: Boite = {
     x: r.left - cadre.origine.left,
     y: r.top - cadre.origine.top,
@@ -42,7 +45,7 @@ function boiteDeLImage(
     h: r.height,
     // Le bloc de la carte compte la barre de PV sous l'image : l'etiquette « Defendre avec X » se pose
     // SOUS elle au lieu de la cacher (19/10/2026).
-    bas: Math.max(r.bottom, bloc ? bloc.bottom : 0) - cadre.origine.top,
+    bas: Math.max(r.bottom, bloc ? bloc.bottom : 0, basContenu) - cadre.origine.top,
   }
   // UNE CARTE INCLINEE (epuisee : 8 degres) : le cadre doré s'incline avec elle au lieu de rester droit autour
   // de sa boite englobante (18/10/2026). L'angle se lit sur la carte et ses parents, sa taille de mise en page
