@@ -513,6 +513,16 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(85, 224, 138, 0.45);
   }
 
+  /* Premier joueur ET actif : les deux pastilles ne tiennent pas côte à côte sur la largeur d'une
+     carte. « Actif » passe sur une seconde ligne AU-DESSUS, la bande gardant sa hauteur. */
+  .top-strip:has(.est-premier-joueur):has(.pastille-actif) {
+    flex-wrap: wrap-reverse;
+    justify-content: flex-start;
+    align-content: flex-start;
+    height: 24px;
+    overflow: visible;
+  }
+
   /* Heros ACCROCHE a un ennemi (Lock Jaws) : badge dans le bandeau, meme
      gabarit que Active, au VERT de l'alligator pour s'accorder au halo des
      deux cartes liees. */
