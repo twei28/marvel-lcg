@@ -591,6 +591,7 @@ export function DemandeCentrale({
         nom: carte?.kind === 'upgrade' && source && !String(nom).includes(source) ? `${source} — ${nom}` : String(nom),
         carteId,
         enLigne: carte?.kind === 'upgrade',
+        carte: carte?.kind === 'upgrade' ? carte : undefined,
         indisponible: option.failure_reason || undefined,
         choisir: () => choisirOuInformer(option),
         survoler: (actif: boolean) => (actif ? activerOption(option, carteAuSurvol?.(option) ?? carte) : desactiverOption(option)),
