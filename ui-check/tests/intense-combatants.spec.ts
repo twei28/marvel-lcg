@@ -110,17 +110,11 @@ test('cocher la case envoie la regle au serveur (/new)', async ({ page }) => {
   await etapeMechant(page);
   await choisirMechant(page, '190. Custom (Shredder)', 'shredder');
   await page.locator(CASE).check();
-  // Jusqu'au lancement : les « Continuer » puis le bouton de lancement.
-  for (let i = 0; i < 14 && envoye === null; i++) {
-    const lancer = page.getByRole('button', { name: /^(Lancer|Launch|Jouer|Play)/ }).first();
-    if (await lancer.isVisible().catch(() => false)) { await lancer.click({ force: true, timeout: 5_000 }).catch(() => {}); await page.waitForTimeout(1_500); continue; }
-    // Le dernier écran n'a plus de bouton « Lancer » : le bouton principal du pied de page (une coche).
-    const final = page.locator('footer.nav .btn.launch');
-    const suite = page.getByRole('button', { name: /^(Continuer|Continue)$/ });
-    if (await suite.isVisible().catch(() => false)) { await suite.click(); await page.waitForTimeout(1_000); continue; }
-    if (await final.isVisible().catch(() => false)) { await final.click({ force: true, timeout: 5_000 }).catch(() => {}); await page.waitForTimeout(1_500); continue; }
-    await page.waitForTimeout(1_000);
-  }
+  // Jusqu'au lancement : « Continuer » (decks, puis final), puis « Lancer la partie » (.btn.launch).
+  await page.locator('footer.nav .btn.primary').click({ timeout: 10_000 });
+  await page.waitForTimeout(1_500);
+  await page.locator('footer.nav .btn.launch').click({ force: true, timeout: 10_000 });
+  for (let i = 0; i < 20 && envoye === null; i++) await page.waitForTimeout(500);
   expect(envoye, 'aucun appel /new intercepte').not.toBeNull();
   expect(envoye.rules).toContain('tmnt_intense_combatants');
   expect(envoye.encounter_set_names).toContain('tmnt_standard');
