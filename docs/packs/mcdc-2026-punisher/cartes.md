@@ -41,6 +41,15 @@ Il n'y a **aucun insert ni livret de règles** dans le PDF (toutes les pages son
   Artifacts ; side schemes avec incite 1, une icône Crisis et une icône Acceleration d'après la carte, le site écrit « amplify »), 4 Angry Birds (Tower Defense).
 - **Ce que le site ne donne pas** : les 4 combats de campagne, le décompte des points, les pods Kingsfall. Ils ne sont que sur les cartes.
 
+## Comparaison avec le second relevé (fichier « Marvel_Champions_Scenarios_Extraction.md », 19/10/2026)
+
+Un autre relevé du même PDF a été comparé au mien, carte par carte. **Tout concorde (textes, valeurs, boosts, menaces, tableau du combat 2)**
+sauf les NOMS d'icônes, que l'autre relevé permute : il écrit « amplification » pour « !! » (Crisis), « danger » pour la croix à trois pointes
+(Amplify) et « crise » pour « carte + » (Hazard). L'utilisateur a tranché le 19/10/2026 sur 4 cartes (Overdrive, Screwball, Putting the Pieces
+Together, Designs on Crimes) : **mon relevé est le bon**. À appliquer de même sur : Judge, Jury... (Amplify), Punisher's Arsenal (carte +),
+défi 3 (Crisis + Acceleration). Apports de l'autre relevé retenus : Bushwhacker (mentale / joker), Ringmaster et Jigsaw's Knife (mentale),
+défi 1 (ressource énergie).
+
 ## Légende
 
 **Icônes imprimées sous le texte des manigances annexes et de certains sbires** (relevées en 300 dpi le 19/10/2026) :
@@ -422,7 +431,7 @@ Chaque CAPO a une face A et une face B (B = mode expert). Les PV sont imprimés 
 - ID 6050 · CAPOS (3A/8) · PV 12 · Illustration : Scott Kolins · SCH 2 · ATK 1★
 - Traits : Capo. Circus of Crime. Criminal.
 - **Forced Response**: After Ringmaster attacks you, choose:
-  - • Spend a [ressource mentale ?] resource.
+  - • Spend a [ressource mentale] resource.
   - • Confuse a character you control.
 - *"Know the truth. The truth is this -- you belong to me."*
 
@@ -520,16 +529,16 @@ romains (I, II, III).
 - ID 6058 · Jigsaw (3/15) · Illustration : Alex Maleev · ATK +1★ · Boost 2
 - *Weapon.* Attach to Jigsaw.
 - ★ Jigsaw gains retaliate 1 and his attacks gain piercing.
-- **Hero Action**: Exhaust a character you control and spend [ressource physique] [ressource mentale ?] → discard this card.
+- **Hero Action**: Exhaust a character you control and spend [ressource physique] [ressource mentale] → discard this card.
 - *"Don't spoil the surprise! We're gonna have some fun... Frankie and Jigsaw, just like old times."*
 
 ### p117 — ✦BUSHWHACKER · Sbire
 - ID 6059 · Jigsaw (4/15) · Illustration : Patrick Gleason · SCH 1 · ATK ★ (valeur = étoile) · PV 5 · Boost 1
 - Traits : Criminal. Mercenary.
 - Patrol.
-- ★ **Forced Interrupt**: When Bushwhacker would attack, instead take 3 indirect damage. You may spend [ressource ?] or
-  [ressource ★ ?] to deal that damage to another enemy instead.
-- Icônes de ressource dans le texte à revérifier sur le scan.
+- ★ **Forced Interrupt**: When Bushwhacker would attack, instead take 3 indirect damage. You may spend [ressource mentale] or
+  [ressource joker / wild] to deal that damage to another enemy instead.
+- Icônes de ressource : mentale et joker, d'après le second relevé (fichier de l'utilisateur) qui concorde avec mon image.
 
 ### p119 / p121 / p123 — MAGGIA THUG ×3 · Sbire
 - ID 6060 / 6061 / 6062 · Jigsaw (5, 6, 7/15) · Illustration : John-Paul Bove · SCH 1 · ATK 2 · PV 3 · Boost 1
@@ -1165,7 +1174,7 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
 - **Modular sets**: Sentinels *(Mutant Genesis)*, Future Past *(Mutant Genesis)*, Doomsday Chair *(Core Set)*, Vision Nemesis
   *(Vision Hero Pack)*, Super Strength *(attachment only, Next Evolution)*.
 - **Special Rules**:
-  - • Cards with a printed [icône d'éclair/robot ?] deal 1 additional damage.
+  - • Cards with a printed [ressource énergie] deal 1 additional damage.
   - • All Future Past cards lose victory 1.
   - • When the villain stage advances, advance the main scheme to 2A.
 
