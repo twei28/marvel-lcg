@@ -150,7 +150,7 @@ import { BandeauPhase } from './board/BandeauPhase'
 import { entreesPourRepli, etapesDeroule, etapesHorsPhase, nomNettoye, tempsDeLaQuestion } from './board/deroule-phase'
 import { titreEtape } from './board/deroule-textes'
 import { etapeEnLangue } from './board/etape-en-langue'
-import { CoupHorsPhase } from './board/CoupHorsPhase'
+import { CoupHorsPhase, CoupHorsPhaseSurTable, DansLeCadre, EspaceDeLaQuestion } from './board/CoupHorsPhase'
 import { CartoucheHorsPhase, RelectureJournal } from './board/CartouchePhase'
 import type { QuestionDuMoteur } from './board/sous-cadre'
 import './board/fin-partie-bd.css'
@@ -4279,6 +4279,16 @@ export function PagePartie({
   // moteur attend et RIEN a l'ecran ne dit ou repondre. Sortie d'ici le
   // 14/09/2026, apres le defaut mesure en partie : « en mode detaille il
   // n'indique meme plus quand on peut defendre ».
+  // T16 : « Qui defend ? » hors de la phase du mechant, « Sur la table » : le bandeau lateral de la table la porte.
+  const defenseHorsPhaseSurTable =
+    modePhase === 'sur-table' &&
+    !manuel &&
+    !phaseMechantEnCours &&
+    !enMiseEnPlace &&
+    moteurAttendLeJoueur &&
+    interaction.option === undefined &&
+    carteMenu === undefined &&
+    Boolean(etat.demande?.options.some((option) => option.name === 'Defense'))
   const etatQuestion: EtatDeLaQuestion = {
     moteurAttendLeJoueur,
     demandePresente: etat.demande !== undefined,
@@ -4309,6 +4319,7 @@ export function PagePartie({
       nouvelleScenePC &&
       !phaseMechantEnCours &&
       (horsPhaseAffiche || (relectureJournal && etapesPhasePrecedente.length > 0)),
+    questionSurTableHorsPhase: defenseHorsPhaseSurTable,
   }
   // Le PANNEAU central cede la place a toutes les autres facons de repondre a
   // cette meme question : un ciblage sur la table, le menu d'une carte, une
@@ -4509,6 +4520,30 @@ export function PagePartie({
         />
       ) : null}
 
+      {defenseHorsPhaseSurTable && etat.demande ? (
+        <DansLeCadre>
+          <EspaceDeLaQuestion />
+          <DemandeCentrale
+            demande={etat.demande}
+            options={interaction.options}
+            cartesParId={cartesMondeParId}
+            choisirOption={choisirOptionDepuisMenu}
+            annuler={interaction.annuler}
+            survolerOption={setOptionSurvolee}
+            carteDeLOption={carteDeLOption}
+            carteAuSurvol={carteAuSurvol}
+            nomPorteur={nomPorteurFr}
+            texteCapacite={texteCapaciteDeLOption}
+            estEnMain={estEnMain}
+            ligneSansDefense={ligneSansDefense}
+            survolSansDefense={survolSansDefense}
+            enScene
+            surLaTable
+            annulerAction={annulerAction}
+          />
+        </DansLeCadre>
+      ) : null}
+
       {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene ? (
         <DemandeCentrale
           demande={etat.demande}
@@ -4658,7 +4693,9 @@ export function PagePartie({
       {/* Hors phase, un coup du mechant : le cartouche d'un seul coup a la
           table et au telephone ; en scene PC, le cartouche du bas « Pendant
           ton tour » (D26), defense et carte revelee comprises. */}
-      {manuel || !unCartouche || phaseMechantEnCours || nouvelleScenePC ? null : (
+      {manuel || !unCartouche || phaseMechantEnCours || nouvelleScenePC ? null : modePhase === 'sur-table' ? (
+        <CoupHorsPhaseSurTable etapes={coupsHorsPhase} ignorerLesPremiers />
+      ) : (
         <CoupHorsPhase etapes={coupsHorsPhase} ignorerLesPremiers />
       )}
       {!manuel && nouvelleScenePC && !phaseMechantEnCours ? (
