@@ -1,0 +1,249 @@
+{
+ "pc": {
+  "finTour": {
+   "w": 114,
+   "h": 30,
+   "x": 1152,
+   "y": 5,
+   "cliquable": true,
+   "couvertPar": null
+  },
+  "defense": {
+   "viewport": [
+    1280,
+    720
+   ],
+   "etiquettes": {
+    "n": 4,
+    "minW": 112,
+    "minH": 45
+   },
+   "chevauchements": [
+    [
+     1,
+     2,
+     19,
+     45
+    ],
+    [
+     2,
+     3,
+     19,
+     45
+    ]
+   ],
+   "utilisables": {
+    "n": 4,
+    "minW": 85,
+    "minH": 117
+   },
+   "boutonsBandeau": {
+    "n": 1,
+    "minW": 304,
+    "minH": 32
+   },
+   "policePhrase": "15px",
+   "cartesTable": {
+    "n": 22,
+    "minW": 49,
+    "minH": 35
+   },
+   "bandeau": {
+    "x": 348.125,
+    "y": 72,
+    "w": 583.75,
+    "h": 48
+   }
+  }
+ },
+ "paysage": {
+  "finTour": {
+   "w": 114,
+   "h": 30,
+   "x": 922,
+   "y": 5,
+   "cliquable": true,
+   "couvertPar": null
+  },
+  "defense": {
+   "viewport": [
+    1050,
+    480
+   ],
+   "etiquettes": {
+    "n": 4,
+    "minW": 112,
+    "minH": 45
+   },
+   "chevauchements": [
+    [
+     1,
+     2,
+     8,
+     45
+    ],
+    [
+     2,
+     3,
+     8,
+     45
+    ]
+   ],
+   "utilisables": {
+    "n": 4,
+    "minW": 95,
+    "minH": 132
+   },
+   "boutonsBandeau": {
+    "n": 1,
+    "minW": 304,
+    "minH": 44
+   },
+   "policePhrase": "15px",
+   "cartesTable": {
+    "n": 22,
+    "minW": 56,
+    "minH": 39
+   },
+   "bandeau": {
+    "x": 262.5,
+    "y": 67,
+    "w": 525,
+    "h": 79.75
+   }
+  }
+ },
+ "tablette": {
+  "finTour": {
+   "w": 114,
+   "h": 30,
+   "x": 1052,
+   "y": 5,
+   "cliquable": true,
+   "couvertPar": null
+  },
+  "defense": {
+   "viewport": [
+    1180,
+    820
+   ],
+   "etiquettes": {
+    "n": 4,
+    "minW": 112,
+    "minH": 45
+   },
+   "chevauchements": [
+    [
+     1,
+     2,
+     27,
+     45
+    ],
+    [
+     2,
+     3,
+     27,
+     45
+    ]
+   ],
+   "utilisables": {
+    "n": 4,
+    "minW": 78,
+    "minH": 108
+   },
+   "boutonsBandeau": {
+    "n": 1,
+    "minW": 304,
+    "minH": 44
+   },
+   "policePhrase": "15px",
+   "cartesTable": {
+    "n": 22,
+    "minW": 45,
+    "minH": 32
+   },
+   "bandeau": {
+    "x": 298.125,
+    "y": 72,
+    "w": 583.75,
+    "h": 60
+   }
+  }
+ },
+ "iphone-paysage": {
+  "finTour": {
+   "w": 114,
+   "h": 30,
+   "x": 716,
+   "y": 38,
+   "cliquable": false,
+   "couvertPar": "plateau-emplacement zone-complots-secondaires"
+  },
+  "defense": {
+   "viewport": [
+    844,
+    390
+   ],
+   "etiquettes": {
+    "n": 4,
+    "minW": 73,
+    "minH": 45
+   },
+   "chevauchements": [],
+   "utilisables": {
+    "n": 4,
+    "minW": 95,
+    "minH": 132
+   },
+   "boutonsBandeau": {
+    "n": 1,
+    "minW": 304,
+    "minH": 44
+   },
+   "policePhrase": "15px",
+   "cartesTable": {
+    "n": 22,
+    "minW": 56,
+    "minH": 39
+   },
+   "bandeau": {
+    "x": 211,
+    "y": 67,
+    "w": 422,
+    "h": 79.75
+   }
+  }
+ },
+ "mobile": {
+  "finTour": {
+   "w": 119,
+   "h": 44,
+   "x": 263,
+   "y": 0,
+   "cliquable": true,
+   "couvertPar": null
+  },
+  "defense": {
+   "viewport": [
+    390,
+    844
+   ],
+   "etiquettes": null,
+   "chevauchements": [],
+   "utilisables": null,
+   "boutonsBandeau": {
+    "n": 5,
+    "minW": 158,
+    "minH": 44
+   },
+   "policePhrase": "15px",
+   "cartesTable": null,
+   "bandeau": {
+    "x": 97.5,
+    "y": 30,
+    "w": 195,
+    "h": 349.5
+   }
+  }
+ }
+}

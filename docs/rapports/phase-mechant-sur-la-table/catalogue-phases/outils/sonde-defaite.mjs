@@ -1,0 +1,16 @@
+import * as L from './lib.mjs'
+await L.nouvellePartie({ scenario: 'klaw' })
+const { browser, ctx } = await L.contexte()
+const page = await L.ouvrir(ctx)
+await L.attendreTourJoueur([page])
+await L.cmd(["Puzzle.ChangeForm('01001b')", "Puzzle.AdvanceMainScheme(1)"])
+await L.sleep(1500)
+const s = (await L.monde()).area_schemes_main[0]; console.log(s.id, s.name, JSON.stringify(s.info))
+await L.cmd([`Puzzle.SetThreat(${s.id}, 7)`])
+await L.sleep(800)
+await page.screenshot({ path: L.OUT + '/zz-defaite-avant.png' })
+await page.getByRole('button', { name: /Fin du tour/ }).first().click()
+for (let i = 0; i < 40; i++) { await L.sleep(800); const sg = await L.signature(page); const w = await L.monde(); console.log(i, w.phase, w.game_over, sg.bandeau.slice(0,80), '|', sg.demande.slice(0,60), sg.lecture); await page.screenshot({ path: `${L.OUT}/zz-defaite-${i}.png` }); if (w.game_over) break; if (sg.lecture === 'lecture') await page.locator('.tsm-bandeau:not(.est-question) .tsm-bouton:not([disabled])').first().click().catch(() => {}); else if (sg.question || sg.demande || !sg.bandeau) await L.prepa(page, true); else await page.evaluate(() => document.querySelector('.tsm-acteur:not([disabled]), .tsm-bandeau:not(.est-bilan):not(.est-question) .tsm-bouton')?.click()) }
+await L.sleep(1500)
+await page.screenshot({ path: L.OUT + '/zz-defaite-fin.png' })
+await browser.close()

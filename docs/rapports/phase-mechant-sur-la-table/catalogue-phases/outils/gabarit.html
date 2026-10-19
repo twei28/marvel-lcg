@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalogue de la phase du méchant sur la table</title>
+<style>
+:root{--bg:#0f1117;--panel:#171a23;--bord:#2a2f3d;--txt:#e7e9ee;--doux:#a4abbb;--rouge:#e23636;--bleu:#5aa2ff;--or:#f5c542}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:28px 16px 12px;max-width:1280px;margin:0 auto}
+h1{margin:0 0 6px;font-size:1.6rem}
+h1 span{color:var(--rouge)}
+h2{margin:40px 0 6px;font-size:1.3rem;border-left:4px solid var(--rouge);padding-left:10px}
+.sub{color:var(--doux);margin:0}
+main,nav.sommaire,.barre{max-width:1280px;margin:0 auto;padding:0 16px}
+.barre{position:sticky;top:0;z-index:5;background:linear-gradient(var(--bg) 80%,transparent);padding-top:10px;padding-bottom:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.barre button{background:var(--panel);color:var(--txt);border:1px solid var(--bord);border-radius:999px;padding:8px 14px;font:inherit;min-height:44px;cursor:pointer}
+.barre button[aria-pressed=true]{background:var(--rouge);border-color:var(--rouge);color:#fff}
+.sommaire ol{columns:2 340px;padding-left:22px;margin:8px 0 0}
+.sommaire li{margin:3px 0}
+.sommaire a,.intro a,li a{color:var(--bleu)}
+.n{color:var(--doux);font-size:.8rem}
+.intro{color:var(--doux);margin:4px 0 14px}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,560px),1fr));gap:16px}
+.carte{margin:0;background:var(--panel);border:1px solid var(--bord);border-radius:10px;overflow:hidden}
+.carte img{display:block;width:100%;height:auto;background:#000}
+.carte[data-ecran=mobile] img{max-height:640px;object-fit:contain}
+figcaption{padding:10px 12px 12px}
+figcaption p{margin:6px 0 0;font-size:.92rem}
+.decl{color:var(--or)}
+.meta{color:var(--doux);font-size:.78rem!important;word-break:break-all}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;border-radius:4px;padding:1px 7px;margin-right:8px;background:#33384a;color:#fff;vertical-align:1px}
+.badge.pc{background:#2c5aa0}.badge.tablette{background:#2f7d4f}.badge.mobile{background:#9a4d1e}
+.masque{display:none}
+.ergo li,.nonr li{margin:12px 0}.voir{font-size:.88rem;color:var(--doux)}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:20;padding:8px}
+#lb.on{display:flex}#lb img{max-width:100%;max-height:100%}
+footer{max-width:1280px;margin:40px auto;padding:0 16px;color:var(--doux);font-size:.85rem}
+code{font-size:.85em;color:#c9d1e3}
+@media (max-width:600px){.barre{position:static}h1{font-size:1.3rem}.grille{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>Phase du méchant <span>sur la table</span> : catalogue visuel</h1>
+<p class="sub">%%NB%% captures réelles du build actuel (mode « Sur la table », affichage Épuré, interface en français), produites le 18 octobre 2026 par pilotage automatique du jeu. Chaque capture indique ce qui se passe, ce que le joueur doit faire et comment la situation a été montée. Les parties sont lancées en mode bac à sable pour poser les états ; le bandeau « Bac à sable » est masqué sur les images, tout le reste est tel quel.</p>
+</header>
+<div class="barre" role="toolbar" aria-label="Filtre par taille d'écran">
+<span class="sub">Taille d'écran :</span>
+<button data-f="tous" aria-pressed="true">Toutes</button>
+<button data-f="pc" aria-pressed="false">PC (1280×720 et autres)</button>
+<button data-f="tablette" aria-pressed="false">Tablette</button>
+<button data-f="mobile" aria-pressed="false">Mobile</button>
+</div>
+<nav class="sommaire"><h2 style="margin-top:14px">Sommaire</h2><ol>%%SOMMAIRE%%
+<li><a href="#ergo">Remarques d'ergonomie</a></li><li><a href="#nonr">Non réalisé / non vu</a></li></ol></nav>
+<main>
+%%SECTIONS%%
+<section id="ergo"><h2>Remarques d'ergonomie</h2><p class="intro">Ce qui gêne, tel que je l'ai vu sur les captures ci-dessus, sans me censurer. Les liens renvoient à la capture concernée.</p><ul class="ergo">%%ERGO%%</ul></section>
+<section id="nonr"><h2>Non réalisé / non vu</h2><ul class="nonr">%%NONR%%</ul></section>
+</main>
+<footer>Captures sources en PNG dans <code>captures/</code>, scripts dans <code>outils/</code>, détails dans <code>LISEZMOI.md</code>.</footer>
+<div id="lb" role="dialog" aria-label="Agrandissement"><img alt=""></div>
+<script>
+(function(){
+var btns=document.querySelectorAll('.barre button');
+function filtre(f){document.querySelectorAll('figure.carte').forEach(function(c){c.classList.toggle('masque',f!=='tous'&&c.dataset.ecran!==f)});btns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.f===f)});try{localStorage.setItem('cat-f',f)}catch(e){}}
+btns.forEach(function(b){b.addEventListener('click',function(){filtre(b.dataset.f)})});
+var lb=document.getElementById('lb');
+document.addEventListener('click',function(e){var z=e.target.closest('.zoom');if(z){e.preventDefault();lb.querySelector('img').src=z.querySelector('img').src;lb.classList.add('on')}else if(e.target.closest('#lb')){lb.classList.remove('on')}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('on')});
+})();
+</script>
+</body>
+</html>
