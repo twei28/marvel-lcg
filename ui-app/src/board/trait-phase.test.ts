@@ -148,7 +148,7 @@ describe('le trait sur une ANNONCE', () => {
 describe('la carte touchee sur la table (v3, Q7)', () => {
   it('une attaque resolue : « −3 » et l ancien niveau des PV en fantome', () => {
     const d = deltaSurTable(etape({ titre: 'attaque', etat: 'resolu', montant: 3, restant: 5, cibleId: 1 }), 10)
-    expect(d).toEqual({ texte: '−3', ton: 'degats', avant: 0.8 })
+    expect(d).toEqual({ texte: '−3 PV', ton: 'degats', avant: 0.8 })
   })
 
   it('une manigance qui atteint son seuil puis se vide : le depart vient de la menace d avant', () => {
@@ -161,7 +161,12 @@ describe('la carte touchee sur la table (v3, Q7)', () => {
   it('rien sur une annonce, sans cible, ou sans montant', () => {
     expect(deltaSurTable(etape({ titre: 'attaque', etat: 'annonce', valeurAnnoncee: 2, cibleId: 1 }))).toBeUndefined()
     expect(deltaSurTable(etape({ titre: 'attaque', etat: 'resolu', montant: 2 }))).toBeUndefined()
-    expect(deltaSurTable(etape({ titre: 'attaque', etat: 'resolu', montant: 0, cibleId: 1 }))).toBeUndefined()
+    expect(deltaSurTable(etape({ titre: 'manigance', etat: 'resolu', montant: 0, cibleId: 1 }))).toBeUndefined()
+  })
+
+  it('une attaque a 0 degat : « −0 PV » ; la riposte aussi', () => {
+    expect(deltaSurTable(etape({ titre: 'attaque', etat: 'resolu', montant: 0, restant: 5, cibleId: 1 }))?.texte).toBe('−0 PV')
+    expect(deltaSurTable(etape({ titre: 'riposte', etat: 'resolu', montant: 2, restant: 3, cibleId: 1 }))?.texte).toBe('−2 PV')
   })
 
   it('sans maximum de PV connu, pas de fantome invente', () => {

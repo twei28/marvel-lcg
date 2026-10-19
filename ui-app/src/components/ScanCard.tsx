@@ -144,6 +144,12 @@ export type CardEffectDelta =
       kind: 'damage' | 'heal' | 'threat'
     }
   | {
+      /** Des jetons nommés posés ou retirés (« rage », « web »...) : `jeton` est la clé du compteur du moteur. */
+      kind: 'token'
+      value: number
+      jeton: string
+    }
+  | {
       /**
        * Un statut pose (+1) ou retire (-1) : le badge porte son NOM, pas un
        * chiffre. `exposed` est le quatrieme etat, ajoute par le pack
@@ -152,6 +158,8 @@ export type CardEffectDelta =
       kind: 'status'
       statut: 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed' | 'intensified'
       value: 1 | -1
+      /** Les autres statuts changes dans le meme rendu (voir effets-statuts.ts) : le toast les dit tous. */
+      aussi?: Array<{ statut: 'stunned' | 'confused' | 'tough' | 'exposed' | 'cloaked' | 'dazed' | 'intensified'; value: 1 | -1 }>
     }
 
 /**

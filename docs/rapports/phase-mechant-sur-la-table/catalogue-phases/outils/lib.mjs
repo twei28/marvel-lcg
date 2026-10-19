@@ -1,7 +1,7 @@
 import { chromium } from '/home/oem/Desktop/Marvel LCG/ui-check/node_modules/playwright/index.mjs'
 import fs from 'fs'
-export const BASE = process.env.BASE || 'http://127.0.0.1:2493'
-export const OUT = '/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/2ed3e66d-9fcf-45e1-aa7f-2debf9a42af0/scratchpad/cat/out'
+export const BASE = process.env.BASE || 'http://127.0.0.1:2494'
+export const OUT = process.env.OUT || '/tmp/claude-29999/-home-oem-Desktop-Marvel-LCG/2ed3e66d-9fcf-45e1-aa7f-2debf9a42af0/scratchpad/cat/out'
 const contrat = JSON.parse(fs.readFileSync('/home/oem/Desktop/Marvel LCG/ui-check/contrat-nouvelle-partie.json', 'utf8'))
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const J = async (url) => (await fetch(BASE + url)).json()

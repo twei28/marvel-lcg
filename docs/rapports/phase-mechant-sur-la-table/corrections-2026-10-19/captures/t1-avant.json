@@ -1,0 +1,461 @@
+[
+ {
+  "ecran": "pc",
+  "w": 1280,
+  "h": 720,
+  "allies": 1,
+  "mesure": {
+   "n": 2,
+   "chev": [],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "pc",
+  "w": 1280,
+  "h": 720,
+  "allies": 2,
+  "mesure": {
+   "n": 3,
+   "chev": [
+    [
+     1,
+     2,
+     19
+    ]
+   ],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "pc",
+  "w": 1280,
+  "h": 720,
+  "allies": 3,
+  "mesure": {
+   "n": 4,
+   "chev": [
+    [
+     1,
+     2,
+     19
+    ],
+    [
+     2,
+     3,
+     19
+    ]
+   ],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Black Widow",
+     "wEtiquette": 112,
+     "wCarte": 84.7,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "tablette",
+  "w": 1180,
+  "h": 820,
+  "allies": 1,
+  "mesure": {
+   "n": 2,
+   "chev": [],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "tablette",
+  "w": 1180,
+  "h": 820,
+  "allies": 2,
+  "mesure": {
+   "n": 3,
+   "chev": [
+    [
+     1,
+     2,
+     27
+    ]
+   ],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "tablette",
+  "w": 1180,
+  "h": 820,
+  "allies": 3,
+  "mesure": {
+   "n": 4,
+   "chev": [
+    [
+     1,
+     2,
+     27
+    ],
+    [
+     2,
+     3,
+     27
+    ]
+   ],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Black Widow",
+     "wEtiquette": 112,
+     "wCarte": 78,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "paysage",
+  "w": 1050,
+  "h": 480,
+  "allies": 1,
+  "mesure": {
+   "n": 2,
+   "chev": [],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "paysage",
+  "w": 1050,
+  "h": 480,
+  "allies": 2,
+  "mesure": {
+   "n": 3,
+   "chev": [
+    [
+     1,
+     2,
+     8
+    ]
+   ],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "paysage",
+  "w": 1050,
+  "h": 480,
+  "allies": 3,
+  "mesure": {
+   "n": 4,
+   "chev": [
+    [
+     1,
+     2,
+     8
+    ],
+    [
+     2,
+     3,
+     8
+    ]
+   ],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Black Widow",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "iphone-paysage",
+  "w": 844,
+  "h": 390,
+  "allies": 1,
+  "mesure": {
+   "n": 2,
+   "chev": [],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 72.8,
+     "wCarte": 95.3,
+     "hEtiquette": 62,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "iphone-paysage",
+  "w": 844,
+  "h": 390,
+  "allies": 2,
+  "mesure": {
+   "n": 3,
+   "chev": [],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 72.8,
+     "wCarte": 95.3,
+     "hEtiquette": 62,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ },
+ {
+  "ecran": "iphone-paysage",
+  "w": 844,
+  "h": 390,
+  "allies": 3,
+  "mesure": {
+   "n": 4,
+   "chev": [],
+   "pires": [
+    {
+     "nom": "Défendre avec Spider-Man",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Hulk",
+     "wEtiquette": 112,
+     "wCarte": 95.3,
+     "hEtiquette": 45,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Vision",
+     "wEtiquette": 72.8,
+     "wCarte": 95.3,
+     "hEtiquette": 62,
+     "debordeTexte": false
+    },
+    {
+     "nom": "Défendre avec Black Widow",
+     "wEtiquette": 72.8,
+     "wCarte": 95.3,
+     "hEtiquette": 79,
+     "debordeTexte": false
+    }
+   ],
+   "ok": false
+  }
+ }
+]

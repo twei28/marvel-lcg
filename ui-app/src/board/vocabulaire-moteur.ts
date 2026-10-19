@@ -285,6 +285,7 @@ const MOTEUR_FR: Record<string, string> = {
   'Main Scheme Stage Would Be Completed': 'Un stade de la manigance principale va être achevé',
   'Main Scheme Would Advance': 'La manigance principale va avancer',
   'Message Be Instead': 'Effet remplacé',
+  'Ally Limit': 'Limite d’alliés',
   'Minion Activates Order': 'Ordre d’activation des sbires',
   'Minion Engage Player': 'Sbire engagé contre un joueur',
   'Minion Would Engage Player': 'Un sbire va s’engager contre un joueur',
@@ -441,6 +442,13 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Assign (\d+) damage$/, (m) => `Répartir ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'}`],
   [/^Take (\d+) damage$/, (m) => `Subir ${degats(m[1]!)}`],
   [/^Place (\d+) threat on the main scheme$/, (m) => `Placer ${menaces(m[1]!)} sur la manigance principale`],
+  // 19/10/2026, options laissees en anglais. Traduites SEULEMENT parce que le texte francais de leur carte existe deja
+  // (textes-fr-complets.ts « 01134 » Ultron ; textes-fr-fanmade.ts « tk022 » Lay the Beatdown) : memes mots, a la forme du
+  // bouton (infinitif, « ton »).
+  [/^Put the top card of your deck into play facedown, engaged with you as a Drone minion$/,
+    () => 'Mettre en jeu la carte du dessus de ton deck, face cachée, engagée avec toi en tant que sbire Drone'],
+  [/^Deal (\d+) indirect damage to your hero$/, (m) => `Infliger ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'} à ton héros`],
+  [/^Stun your hero$/, () => 'Sonner ton héros'],
   [/^Place (\d+) threat here$/, (m) => `Placer ${menaces(m[1]!)} ici`],
   [/^Remove (\d+) threat from a scheme$/, (m) => `Retirer ${menaces(m[1]!)} d’une manigance`],
   [/^Draw (\d+) cards?$/, (m) => `Piocher ${m[1]} ${Number(m[1]) > 1 ? 'cartes' : 'carte'}`],

@@ -115,6 +115,8 @@ import {
 import { useHistoriquePartie } from './board/HistoriquePartie'
 import { peutSuivre } from './board/suivi-vue'
 import { deltasStatuts } from './board/effets-statuts'
+import { phraseDeLEffet } from './board/phrases-effets'
+import { ToastsEffetsCartes, type ToastEffet } from './board/ToastEffetCarte'
 import { traduireMoteur } from './board/vocabulaire-moteur'
 import {
   afficherFinDePartie,
@@ -148,7 +150,7 @@ import { BandeauPhase } from './board/BandeauPhase'
 import { entreesPourRepli, etapesDeroule, etapesHorsPhase, nomNettoye, tempsDeLaQuestion } from './board/deroule-phase'
 import { titreEtape } from './board/deroule-textes'
 import { etapeEnLangue } from './board/etape-en-langue'
-import { CoupHorsPhase } from './board/CoupHorsPhase'
+import { CoupHorsPhase, CoupHorsPhaseSurTable, DansLeCadre, EspaceDeLaQuestion } from './board/CoupHorsPhase'
 import { CartoucheHorsPhase, RelectureJournal } from './board/CartouchePhase'
 import type { QuestionDuMoteur } from './board/sous-cadre'
 import './board/fin-partie-bd.css'
@@ -404,6 +406,25 @@ function valeurCompteur(carte: WorldCard, cle: 'health' | 'k_threat'): number | 
   return typeof valeur === 'number' && Number.isFinite(valeur) ? valeur : undefined
 }
 
+/**
+ * Le premier compteur nomme (`c_rage`, `k_acceleration_token`) dont la valeur a
+ * change d'un rendu a l'autre. Un compteur qui apparait part de zero.
+ */
+function changementDeJeton(avant: WorldCard, apres: WorldCard): { cle: string; variation: number } | undefined {
+  const lire = (carte: WorldCard, champ: string) => {
+    const v = carte.info[champ]
+    return typeof v === 'number' && Number.isFinite(v) ? v : 0
+  }
+  const champs = new Set([...Object.keys(avant.info), ...Object.keys(apres.info)])
+  for (const champ of champs) {
+    const nomme = champ.startsWith('c_') && !champ.endsWith('_printed')
+    if (!nomme && champ !== 'k_acceleration_token') continue
+    const variation = lire(apres, champ) - lire(avant, champ)
+    if (variation !== 0) return { cle: champ === 'k_acceleration_token' ? 'acceleration' : champ.slice(2), variation }
+  }
+  return undefined
+}
+
 /** Capture les variations de compteurs entre deux rendus du moteur. */
 function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta> {
   const [effets, setEffets] = useState<Map<number, CardEffectDelta>>(() => new Map())
@@ -431,7 +452,12 @@ function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta>
         const menaceApres = valeurCompteur(carte, 'k_threat')
         if (menaceAvant !== undefined && menaceApres !== undefined && menaceAvant !== menaceApres) {
           changements.push([id, { value: menaceApres - menaceAvant, kind: 'threat' }])
+          continue
         }
+        // Des JETONS nommes (rage, toile...) poses ou retires : le toast dit
+        // « X gagne 1 jeton Rage », pas « gagne 1 menace ».
+        const jeton = changementDeJeton(ancienne, carte)
+        if (jeton) changements.push([id, { kind: 'token', jeton: jeton.cle, value: jeton.variation }])
       }
 
       // Statuts poses ou retires (Sonne / Desoriente / Tenace). Un porteur
@@ -1588,6 +1614,7 @@ function PageEtat({
         etapes={pourLeCartouche.etapes}
         cartesDistribuees={pourLeCartouche.cartesDistribuees}
         infoCarte={(id) => indexerCartesMonde(monde).get(id)?.info}
+        accelerationEnJeu={[...(monde.area_schemes_main ?? []), ...(monde.area_schemes_side ?? [])].reduce((n, c) => n + (c.info?.acceleration_icon ?? 0), 0)}
         identitePhase={monde.round_id ?? 0}
         identitePartie={fichier}
         phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase ?? '')}
@@ -1741,7 +1768,7 @@ function EcranFinPartie({
   const [onglet, setOnglet] = useState<'resultat' | 'stats'>('resultat')
   return (
     <div
-      className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}`}
+      className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}${langueActuelle() === 'en' ? ' avec-image-en' : ''}`}
       role="dialog"
       aria-modal="true"
       aria-label={eyebrow}
@@ -2499,6 +2526,11 @@ export function PagePartie({
     const nomsHerosParJoueur = (etat.monde?.players ?? []).map(
       (joueur) => (joueur.area_hero ?? [])[0]?.name
     )
+    // T17 : les allies du monde, en jeu ou deja en defausse (ils ont quitte la table quand l'etape se lit).
+    const alliesIds = new Set<number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (kindOf(carte) === 'ally') alliesIds.add(carte.id)
+    }
     return etapesDeroule(
       etat.monde?.faits_mechant ?? [],
       entreesPourRepli(historique.entrees, PHASES_DU_MECHANT.has(etat.monde?.phase ?? ''), etat.monde?.render_id),
@@ -2506,7 +2538,9 @@ export function PagePartie({
       mechantIds,
       herosVaincusIds,
       premierJoueurId === -1 ? undefined : premierJoueurId,
-      nomsHerosParJoueur
+      nomsHerosParJoueur,
+      'phase',
+      alliesIds
     )
   }, [
     cartesMondeParId,
@@ -4164,21 +4198,18 @@ export function PagePartie({
     atterrir(depart.url || site.url || lienAccueil())
   }, [confirmer, playerId, site, spectateur])
 
-  const effetCentrale = useMemo(() => {
-    const premier = effets.entries().next().value as [number, CardEffectDelta] | undefined
-    if (!premier) return undefined
-    const [id, effet] = premier
-    const carte = cartesMondeParId.get(id)
-    if (!carte) return undefined
-    const valeur = Math.abs(effet.value)
-    // Narration ecrite ici, pas envoyee par le moteur : elle doit donc suivre
-    // la langue du client comme le reste du plateau.
-    const nom = nomAffiche(carte)
-    if (effet.kind === 'damage') return `${nom} ${t('subit')} ${valeur} ${t('dégâts')}`
-    if (effet.kind === 'heal') return `${nom} ${t('récupère')} ${valeur} ${t('PV')}`
-    return effet.value > 0
-      ? `${nom} ${t('gagne')} ${valeur} ${t('menace')}`
-      : `${nom} ${t('perd')} ${valeur} ${t('menace')}`
+  // Ce que le toast dit de chaque carte touchee : voir `phrases-effets.ts` (un statut n'est pas de la menace).
+  const toastsEffets = useMemo(() => {
+    const toasts: ToastEffet[] = []
+    for (const [id, effet] of effets) {
+      const carte = cartesMondeParId.get(id)
+      if (!carte) continue
+      // Narration ecrite ici, pas envoyee par le moteur : elle doit donc suivre
+      // la langue du client comme le reste du plateau.
+      const texte = phraseDeLEffet(nomAffiche(carte), effet)
+      if (texte) toasts.push({ id, texte })
+    }
+    return toasts
   }, [effets, cartesMondeParId])
 
   const ciblageSurTable =
@@ -4256,6 +4287,16 @@ export function PagePartie({
   // moteur attend et RIEN a l'ecran ne dit ou repondre. Sortie d'ici le
   // 14/09/2026, apres le defaut mesure en partie : « en mode detaille il
   // n'indique meme plus quand on peut defendre ».
+  // T16 : « Qui defend ? » hors de la phase du mechant, « Sur la table » : le bandeau lateral de la table la porte.
+  const defenseHorsPhaseSurTable =
+    modePhase === 'sur-table' &&
+    !manuel &&
+    !phaseMechantEnCours &&
+    !enMiseEnPlace &&
+    moteurAttendLeJoueur &&
+    interaction.option === undefined &&
+    carteMenu === undefined &&
+    Boolean(etat.demande?.options.some((option) => option.name === 'Defense'))
   const etatQuestion: EtatDeLaQuestion = {
     moteurAttendLeJoueur,
     demandePresente: etat.demande !== undefined,
@@ -4286,6 +4327,7 @@ export function PagePartie({
       nouvelleScenePC &&
       !phaseMechantEnCours &&
       (horsPhaseAffiche || (relectureJournal && etapesPhasePrecedente.length > 0)),
+    questionSurTableHorsPhase: defenseHorsPhaseSurTable,
   }
   // Le PANNEAU central cede la place a toutes les autres facons de repondre a
   // cette meme question : un ciblage sur la table, le menu d'une carte, une
@@ -4487,6 +4529,30 @@ export function PagePartie({
         />
       ) : null}
 
+      {defenseHorsPhaseSurTable && etat.demande ? (
+        <DansLeCadre>
+          <EspaceDeLaQuestion />
+          <DemandeCentrale
+            demande={etat.demande}
+            options={interaction.options}
+            cartesParId={cartesMondeParId}
+            choisirOption={choisirOptionDepuisMenu}
+            annuler={interaction.annuler}
+            survolerOption={setOptionSurvolee}
+            carteDeLOption={carteDeLOption}
+            carteAuSurvol={carteAuSurvol}
+            nomPorteur={nomPorteurFr}
+            texteCapacite={texteCapaciteDeLOption}
+            estEnMain={estEnMain}
+            ligneSansDefense={ligneSansDefense}
+            survolSansDefense={survolSansDefense}
+            enScene
+            surLaTable
+            annulerAction={annulerAction}
+          />
+        </DansLeCadre>
+      ) : null}
+
       {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene ? (
         <DemandeCentrale
           demande={etat.demande}
@@ -4506,11 +4572,13 @@ export function PagePartie({
         />
       ) : null}
 
-      {afficherEvenementCentrale ? (
+      {/* Un changement sur une carte (statut, jeton, menace, PV) : une phrase posee SUR cette carte (T15). */}
+      {afficherEvenementCentrale ? <ToastsEffetsCartes toasts={toastsEffets} /> : null}
+
+      {afficherEvenementCentrale && (toastsEffets.length === 0 || (!unCartouche && etat.validationRequise)) ? (
         <EvenementCentrale
           prompt={etat.monde.prompt}
           eventName={etat.monde.event_name}
-          message={effetCentrale}
           // En mode Détaillé, la validation appartient au cartouche
           // (DeroulePhase) : ce panneau ne doit plus jamais montrer de bouton
           // « Continuer », quelle que soit la valeur de etat.validationRequise.
@@ -4634,7 +4702,9 @@ export function PagePartie({
       {/* Hors phase, un coup du mechant : le cartouche d'un seul coup a la
           table et au telephone ; en scene PC, le cartouche du bas « Pendant
           ton tour » (D26), defense et carte revelee comprises. */}
-      {manuel || !unCartouche || phaseMechantEnCours || nouvelleScenePC ? null : (
+      {manuel || !unCartouche || phaseMechantEnCours || nouvelleScenePC ? null : modePhase === 'sur-table' ? (
+        <CoupHorsPhaseSurTable etapes={coupsHorsPhase} ignorerLesPremiers />
+      ) : (
         <CoupHorsPhase etapes={coupsHorsPhase} ignorerLesPremiers />
       )}
       {!manuel && nouvelleScenePC && !phaseMechantEnCours ? (
@@ -4692,6 +4762,7 @@ export function PagePartie({
             cartesDistribuees={cartesDistribuees}
             texteEtoile={texteBoostEtoile}
             infoCarte={infoCarte}
+            accelerationEnJeu={[...(etat.monde?.area_schemes_main ?? []), ...(etat.monde?.area_schemes_side ?? [])].reduce((n, c) => n + (c.info?.acceleration_icon ?? 0), 0)}
             infoRevelee={infoRevelee}
             // L'identite de la phase en cours, seule chose qui remet le
             // cartouche a zero. Il y a une phase du mechant par round, donc le
@@ -4823,6 +4894,7 @@ export function PagePartie({
                   raison={interaction.raison}
                   valider={interaction.valider}
                   annuler={interaction.annuler}
+                  ordreDeLaTable={interaction.option?.name === 'Minion_Activates_Order' || interaction.option?.name === 'Players_Activation_Order'}
                 />
               ) : questionEnScene && etat.demande ? (
                 <DemandeCentrale

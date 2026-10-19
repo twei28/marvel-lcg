@@ -1049,6 +1049,10 @@
     background: #1f9d55;
   }
 
+  .card-effect-token {
+    background: #2f6fb5;
+  }
+
   .card-effect-threat {
     color: var(--fond);
     background: #f3c623;

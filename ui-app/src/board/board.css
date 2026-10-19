@@ -5613,6 +5613,13 @@
     }
   }
 
+  /* Au toucher, une cible de 44 px au moins (19/10/2026, T4). */
+  @media (pointer: coarse) {
+    .bouton-fin-tour {
+      min-height: 44px;
+    }
+  }
+
   /* --- Choix des arts alternatifs (promos FFG) ------------------------------ */
   .arts-voile {
     position: fixed;
@@ -9555,8 +9562,41 @@
     }
   }
 
+  /* 19/10/2026 : « −X PV » au point d'impact, a la place du jeton de degats qui volait. Rouge Marvel,
+     lisible sur n'importe quelle carte (liseré sombre), pose ~1 s puis s'efface. */
   .delta-sur-table.est-degats {
-    color: #ff5a4f;
+    color: #e62429;
+    font-size: 34px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.85);
+    paint-order: stroke fill;
+    text-shadow:
+      0 0 8px rgba(0, 0, 0, 0.95),
+      0 2px 4px rgba(0, 0, 0, 0.9);
+    animation: delta-s-impact 1600ms ease-out forwards;
+  }
+
+  @keyframes delta-s-impact {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -40%) scale(0.6);
+    }
+    12% {
+      opacity: 1;
+      transform: translate(-50%, -100%) scale(1.2);
+    }
+    22% {
+      transform: translate(-50%, -100%) scale(1);
+    }
+    70% {
+      opacity: 1;
+      transform: translate(-50%, -120%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -170%) scale(1);
+    }
   }
 
   .delta-sur-table.est-menace {
@@ -9582,7 +9622,8 @@
     .plateau-cadre .jauge-remplissage {
       transition: none;
     }
-    .delta-sur-table {
+    .delta-sur-table,
+    .delta-sur-table.est-degats {
       animation: none;
     }
   }

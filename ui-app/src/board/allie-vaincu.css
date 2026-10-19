@@ -1,0 +1,29 @@
+/* L'allie vaincu : lu au centre, puis part en defausse (AllieVaincuSurTable.tsx). Meme geometrie que la lecture d'une carte rencontre. */
+.allie-vaincu {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 145;
+}
+
+.allie-vaincu .allie-vaincu-carte {
+  position: absolute;
+  transform-origin: top left;
+  will-change: transform;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+}
+
+.allie-vaincu .allie-vaincu-carte .scan-card,
+.allie-vaincu .allie-vaincu-carte .scan-visuel {
+  --card-w: var(--lecture-w) !important;
+  width: var(--lecture-w) !important;
+}
+
+.allie-vaincu .allie-vaincu-carte .scan-visuel {
+  gap: 0;
+  transform: none !important;
+}
+
+.allie-vaincu .allie-vaincu-carte .top-strip {
+  display: none;
+}

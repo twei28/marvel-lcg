@@ -69,6 +69,12 @@ export type EtatDeLaQuestion = {
    * tait (planche du lot 5). Absent : faux.
    */
   cartoucheHorsPhaseAffiche?: boolean
+  /**
+   * T16 : « Sur la table », hors phase, un sbire Rapide (ou toute attaque du mechant pendant le tour) demande
+   * « Qui defend ? » : la question se joue dans le bandeau lateral de la table, comme pendant la phase. Ni
+   * le panneau central ni la narration n'y touchent. Absent : faux.
+   */
+  questionSurTableHorsPhase?: boolean
 }
 
 /**
@@ -115,6 +121,7 @@ export function questionDansLaScene(e: EtatDeLaQuestion): boolean {
  */
 export function questionDansLePanneau(e: EtatDeLaQuestion): boolean {
   if (priseParLePanneauManigance(e)) return false
+  if (e.questionSurTableHorsPhase) return false
   if (!e.moteurAttendLeJoueur || !e.demandePresente) return false
   if (e.effetEnCours || e.ciblage || e.menuCarte) return false
   // La scène et le panneau ne s'affichent JAMAIS ensemble : c'est la même
@@ -135,6 +142,7 @@ export function narrationAuCentre(
   contexte: { connecte: boolean; evenementImportant: boolean }
 ): boolean {
   if (!contexte.connecte) return false
+  if (e.questionSurTableHorsPhase) return false
   // Elle se tait aussi devant le panneau de la manigance. Sans cette ligne, la
   // porte ci-dessus (la question n'est plus ni dans le panneau ni dans la
   // scène) laisserait la narration se poser au centre, par-dessus la carte

@@ -45,18 +45,19 @@ describe('les jetons des coups', () => {
     const { result, rerender } = rendre('menace:1')
     rerender({ c: 'mechant:1', p: true })
     // L'ecran de l'attaque fige deja ses PV ; la manigance attend son jeton.
-    expect(result.current).toEqual(expect.arrayContaining([{ genre: 'menace', cibleId: 7, valeur: 1 }, { genre: 'degats', cibleId: 12, valeur: 10 }]))
+    // 19/10/2026 : les PV ne sont plus figes (le jeton de degats ne vole plus), seule la menace vole.
+    expect(result.current).toEqual([{ genre: 'menace', cibleId: 7, valeur: 1 }])
     expect(animations).toHaveLength(1)
     act(() => animations[0].onfinish?.())
-    expect(result.current).toEqual([{ genre: 'degats', cibleId: 12, valeur: 10 }])
+    expect(result.current).toEqual([])
   })
 
-  it('attaque : un jeton « -3 », seulement une fois les boosts retournes', () => {
-    const { rerender } = rendre('mechant:1', false)
+  it('attaque : plus de jeton de degats, et les PV ne sont pas figes', () => {
+    const { result, rerender } = rendre('mechant:1', false)
     expect(jetons()).toHaveLength(0)
     rerender({ c: 'mechant:1', p: true })
-    expect(jetons().map((j) => j.textContent)).toEqual(['-3'])
-    expect(jetons()[0].classList.contains('est-degats')).toBe(true)
+    expect(jetons()).toHaveLength(0)
+    expect(result.current).toEqual([])
   })
 
   it('un nouvel ecran termine les vols d un coup', () => {
@@ -64,8 +65,8 @@ describe('les jetons des coups', () => {
     rerender({ c: 'mechant:1', p: true })
     rerender({ c: 'bilan', p: true })
     // Le jeton de la menace a disparu ; celui de l'attaque part a son tour.
-    expect(result.current).toEqual([{ genre: 'degats', cibleId: 12, valeur: 10 }])
-    expect(jetons().map((j) => j.textContent)).toEqual(['-3'])
+    expect(result.current).toEqual([])
+    expect(jetons()).toHaveLength(0)
   })
 
   it('animations coupees : pas de jeton, la carte est a jour des le clic', () => {

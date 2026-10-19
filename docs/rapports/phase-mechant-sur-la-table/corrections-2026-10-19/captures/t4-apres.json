@@ -1,0 +1,532 @@
+[
+ {
+  "ecran": "pc",
+  "viewport": [
+   1280,
+   720
+  ],
+  "finTour": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 1152,
+    "y": 5,
+    "w": 114,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Fin du tour",
+    "x": 575,
+    "y": 665,
+    "w": 130,
+    "h": 39,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "boutons": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 1152,
+    "y": 5,
+    "w": 114,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Fin du tour",
+    "x": 575,
+    "y": 665,
+    "w": 130,
+    "h": 39,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⌂ Menu",
+    "x": 599,
+    "y": 5,
+    "w": 69,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Voir la table",
+    "x": 674,
+    "y": 5,
+    "w": 92,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": true
+   },
+   {
+    "texte": "↶ Annuler",
+    "x": 772,
+    "y": 5,
+    "w": 84,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "💾 Sauver",
+    "x": 862,
+    "y": 6,
+    "w": 78,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Auto",
+    "x": 948,
+    "y": 7,
+    "w": 43,
+    "h": 26,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Manuel",
+    "x": 991,
+    "y": 7,
+    "w": 56,
+    "h": 26,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "FR",
+    "x": 1055,
+    "y": 5,
+    "w": 42,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⚙️",
+    "x": 1103,
+    "y": 5,
+    "w": 35,
+    "h": 30,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "chevauchements": [],
+  "debordeEcran": [],
+  "pointeurTactile": false
+ },
+ {
+  "ecran": "tablette",
+  "viewport": [
+   1180,
+   820
+  ],
+  "finTour": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 1052,
+    "y": 4,
+    "w": 114,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Fin du tour",
+    "x": 525,
+    "y": 765,
+    "w": 130,
+    "h": 39,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "boutons": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 1052,
+    "y": 4,
+    "w": 114,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Fin du tour",
+    "x": 525,
+    "y": 765,
+    "w": 130,
+    "h": 39,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⌂ Menu",
+    "x": 487,
+    "y": 4,
+    "w": 69,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Voir la table",
+    "x": 562,
+    "y": 4,
+    "w": 92,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": true
+   },
+   {
+    "texte": "↶ Annuler",
+    "x": 660,
+    "y": 4,
+    "w": 84,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "💾 Sauver",
+    "x": 750,
+    "y": 4,
+    "w": 78,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Auto",
+    "x": 836,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Manuel",
+    "x": 880,
+    "y": 4,
+    "w": 56,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "FR",
+    "x": 944,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⚙️",
+    "x": 994,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "chevauchements": [],
+  "debordeEcran": [],
+  "pointeurTactile": true
+ },
+ {
+  "ecran": "paysage-1050",
+  "viewport": [
+   1050,
+   480
+  ],
+  "finTour": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 922,
+    "y": 4,
+    "w": 114,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "boutons": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 922,
+    "y": 4,
+    "w": 114,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⌂ Menu",
+    "x": 357,
+    "y": 4,
+    "w": 69,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Voir la table",
+    "x": 432,
+    "y": 4,
+    "w": 92,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": true
+   },
+   {
+    "texte": "↶ Annuler",
+    "x": 530,
+    "y": 4,
+    "w": 84,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "💾 Sauver",
+    "x": 620,
+    "y": 4,
+    "w": 78,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Auto",
+    "x": 706,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Manuel",
+    "x": 750,
+    "y": 4,
+    "w": 56,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "FR",
+    "x": 814,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⚙️",
+    "x": 864,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "chevauchements": [],
+  "debordeEcran": [],
+  "pointeurTactile": true
+ },
+ {
+  "ecran": "iphone-paysage-844",
+  "viewport": [
+   844,
+   390
+  ],
+  "finTour": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 716,
+    "y": 4,
+    "w": 114,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "boutons": [
+   {
+    "texte": "▷ Fin du tour",
+    "x": 716,
+    "y": 4,
+    "w": 114,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⌂ Menu",
+    "x": 250,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Voir la table",
+    "x": 300,
+    "y": 4,
+    "w": 92,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": true
+   },
+   {
+    "texte": "↶ Annuler",
+    "x": 398,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "💾 Sauver",
+    "x": 448,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Auto",
+    "x": 500,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "Manuel",
+    "x": 544,
+    "y": 4,
+    "w": 56,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "FR",
+    "x": 608,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   },
+   {
+    "texte": "⚙️",
+    "x": 658,
+    "y": 4,
+    "w": 44,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "chevauchements": [],
+  "debordeEcran": [],
+  "pointeurTactile": true
+ },
+ {
+  "ecran": "mobile-portrait-390",
+  "viewport": [
+   390,
+   844
+  ],
+  "finTour": [
+   {
+    "texte": "Fin du tour",
+    "x": 263,
+    "y": 0,
+    "w": 119,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "boutons": [
+   {
+    "texte": "Fin du tour",
+    "x": 263,
+    "y": 0,
+    "w": 119,
+    "h": 44,
+    "recu": true,
+    "couvertPar": null,
+    "desactive": false
+   }
+  ],
+  "chevauchements": [],
+  "debordeEcran": [],
+  "pointeurTactile": true
+ }
+]

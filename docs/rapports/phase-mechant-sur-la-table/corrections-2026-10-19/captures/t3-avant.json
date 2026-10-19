@@ -1,0 +1,46 @@
+{
+ "phase": "avant",
+ "clics": 7,
+ "ordreTable": [
+  {
+   "x": 932,
+   "y": 252,
+   "nom": null
+  },
+  {
+   "x": 839,
+   "y": 252,
+   "nom": null
+  },
+  {
+   "x": 746,
+   "y": 252,
+   "nom": null
+  },
+  {
+   "x": 654,
+   "y": 252,
+   "nom": null
+  },
+  {
+   "x": 561,
+   "y": 252,
+   "nom": null
+  },
+  {
+   "x": 468,
+   "y": 252,
+   "nom": null
+  }
+ ],
+ "ordreActivation": [
+  "Rhino",
+  "Rhino",
+  "Rhino",
+  "Rhino",
+  "Rhino",
+  "L'Homme-Sable",
+  "Trafiquant d'Armes",
+  "Soldat d'Hydra"
+ ]
+}

@@ -10,6 +10,7 @@ import {
   type MemoireCauses,
 } from './causalite'
 import { t } from './langue'
+import { phraseMenace } from './phrases-effets'
 import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
@@ -324,7 +325,7 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
       sorties.push(
         ecart < 0
           ? entree(apres, 'threat', `${Math.abs(ecart)} ${t('menace retirée de')} ${courante.nom}`, detailAvecCause(`${courante.menace} ${t('menace restante')}`, cause), `${id}:threat:${courante.menace}`, attache)
-          : entree(apres, 'threat', `${courante.nom} ${t('gagne')} ${ecart} ${t('menace')}`, detailAvecCause(`${courante.menace} ${t('menace')}`, cause), `${id}:threat:${courante.menace}`, attache)
+          : entree(apres, 'threat', phraseMenace(courante.nom, ecart), detailAvecCause(`${courante.menace} ${t('menace')}`, cause), `${id}:threat:${courante.menace}`, attache)
       )
     }
   }

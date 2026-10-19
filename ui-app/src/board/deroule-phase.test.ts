@@ -31,6 +31,7 @@ import type {
 } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { coupsDe } from './frise-phase'
+import { titreEtape } from './deroule-textes'
 
 const attaque = (extra: Partial<FaitActivationResolue> = {}): FaitActivationResolue => ({
   genre: 'attaque',
@@ -1597,18 +1598,18 @@ describe('les cascades sous leur carte revelee (rapport Yarro n46)', () => {
   })
   const mechants = new Set([49])
 
-  it('la manigance declenchee se range SOUS la carte, plus d etape a part', () => {
+  it('la manigance declenchee reste une etape a part, JUSTE APRES sa carte (19/10/2026 : elle a ses boosts et son resultat)', () => {
     const etapes = etapesDeroule([revelation, manigance], [], 4, mechants)
     const revelees = etapes.filter((e) => e.temps === 'revelation')
-    expect(revelees).toHaveLength(1)
-    expect(revelees[0].titre).toBe('revelation')
-    expect(revelees[0].consequences?.map((c) => c.titre)).toEqual(['manigance'])
-    expect(revelees[0].consequences?.[0].auteurNom).toBe('Bloody Mary')
+    expect(revelees.map((e) => e.titre)).toEqual(['revelation', 'manigance'])
+    expect(revelees[0].consequences).toBeUndefined()
+    expect(revelees[1].auteurNom).toBe('Bloody Mary')
+    expect(revelees[1].boosts.length).toBeGreaterThan(0)
   })
 
   it('le meme ordre des faits ne change rien (activation inscrite avant la revelation)', () => {
     const etapes = etapesDeroule([manigance, revelation], [], 4, mechants)
-    expect(etapes.filter((e) => e.temps === 'revelation').map((e) => e.titre)).toEqual(['revelation'])
+    expect(etapes.filter((e) => e.temps === 'revelation').map((e) => e.titre)).toEqual(['revelation', 'manigance'])
   })
 
   it('l effet mesure sur la meme cible est retire, les autres restent', () => {
@@ -2004,16 +2005,72 @@ describe('la carte de remplacement (rapports Yarro n71 et n72, 09/10/2026)', () 
     expect(s.renfortDe).toBeUndefined()
   })
 
-  it('l attaque causee par la carte de remplacement se range sous elle, pas sous l annulee', () => {
+  it('l attaque causee par la carte de remplacement est une etape a part juste apres elle, pas apres l annulee', () => {
     const etapes = etapesDeroule([runner, vengeance, sonicBoom, attaqueKlaw], [], 3, new Set([57]))
-    const revelees = etapes.filter((e) => e.titre === 'revelation')
-    expect(revelees.find((e) => e.cibleNom === 'Sonic Boom')?.consequences?.map((c) => c.titre)).toEqual(['attaque'])
-    expect(revelees.find((e) => e.cibleNom === "Klaw's Vengeance")?.consequences).toBeUndefined()
+    const ordre = etapes.filter((e) => e.temps === 'revelation').map((e) => (e.titre === 'revelation' ? e.cibleNom : e.titre))
+    expect(ordre.indexOf('attaque')).toBe(ordre.indexOf('Sonic Boom') + 1)
+    expect(etapes.find((e) => e.cibleNom === 'Sonic Boom')?.consequences).toBeUndefined()
+    expect(etapes.find((e) => e.cibleNom === "Klaw's Vengeance")?.consequences).toBeUndefined()
+  })
+
+  it('19/10/2026 : l attaque d une carte revelee (Assaut, Se Liguer) garde SES BOOSTS et son resultat, a part, juste apres sa carte', () => {
+    const avecBoosts = attaque({
+      phase: 'Reveal Encounter Cards', round_id: 3, auteur: 'Klaw', auteur_id: 57, cible: 'Storm', cible_id: 1,
+      base: 0, boost: 2, defense: 0, inflige: 2, subi: 2, restant: 8,
+      boosts: [{ nom: 'Hydra Bomber', id: 91, apport: 1 }, { nom: 'Hydra Bomber', id: 92, apport: 1 }],
+      cause: 'Sonic Boom', cause_id: 69,
+    })
+    const etapes = etapesDeroule([runner, vengeance, sonicBoom, avecBoosts], [], 3, new Set([57]))
+    const ordre = etapes.filter((e) => e.temps === 'revelation')
+    const rang = ordre.findIndex((e) => e.titre === 'attaque')
+    expect(ordre[rang - 1]?.cibleNom).toBe('Sonic Boom')
+    expect(ordre[rang]).toMatchObject({ etat: 'resolu', montant: 2 })
+    expect(ordre[rang]?.boosts.map((b) => b.cibleId)).toEqual([91, 92])
   })
 
   it('⚠ TEMOIN : sans annulation par la meme carte, aucun lien de remplacement', () => {
     const autre = { ...vengeance, annulee_par: 'Black Widow', annulee_par_id: 41 }
     const etapes = etapesDeroule([runner, autre, sonicBoom], [], 3, new Set([57]))
     expect(etapes.some((e) => e.suivieDUnRemplacement)).toBe(false)
+  })
+})
+
+
+// T17 : un ALLIE a zero PV a son etape « X est vaincu », juste apres le coup, avant le bilan.
+describe('l allie vaincu', () => {
+  const HULK = new Set([12])
+  const activation = (etapes: EtapeDeroule[]) => etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')
+
+  it('ajoute l etape « vaincu » juste apres le coup qui met l allie a zero', () => {
+    const etapes = activation(
+      etapesDeroule([attaque({ cible: 'Hulk', cible_id: 12, subi: 1, restant: 0 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK)
+    )
+    expect(etapes.map((e) => e.titre)).toEqual(['attaque', 'vaincu'])
+    expect(etapes[1].cibleId).toBe(12)
+    expect(etapes[1].cibleNom).toBe('Hulk')
+    expect(etapes[1].defaite).toBeUndefined()
+  })
+
+  it('pas d etape pour un allie encore debout, un sbire ou un heros', () => {
+    const debout = activation(etapesDeroule([attaque({ cible_id: 12, restant: 2 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK))
+    expect(debout.map((e) => e.titre)).toEqual(['attaque'])
+    const sbire = activation(etapesDeroule([attaque({ cible_id: 99, restant: 0 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK))
+    expect(sbire.map((e) => e.titre)).toEqual(['attaque'])
+    // Un heros vaincu garde sa fenetre (`defaite`), et pas d'etape « vaincu ».
+    const heros = activation(etapesDeroule([attaque({ cible_id: 12, restant: 0 })], [], 1, AUCUN_MECHANT, new Set([12]), undefined, [], 'phase', HULK))
+    expect(heros.map((e) => e.titre)).toEqual(['attaque'])
+    expect(heros[0].defaite).toBe(true)
+  })
+
+  it('sans la liste des allies, rien ne change', () => {
+    const etapes = activation(etapesDeroule([attaque({ cible_id: 12, restant: 0 })], [], 1, AUCUN_MECHANT))
+    expect(etapes.map((e) => e.titre)).toEqual(['attaque'])
+  })
+
+  it('se lit « Hulk est vaincu »', () => {
+    const [, vaincu] = activation(
+      etapesDeroule([attaque({ cible: 'Hulk', cible_id: 12, restant: 0 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK)
+    )
+    expect(titreEtape(vaincu)).toBe('Hulk est vaincu')
   })
 })

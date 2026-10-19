@@ -1,12 +1,19 @@
 // Les coups qui arrivent sur la table (essai, 13/10/2026).
 import { describe, expect, it } from 'vitest'
-import { avecCompteursFiges, coupsDeLEtape, pointDeLaCourbe } from './coups-sur-table'
+import { avecCompteursFiges, coupsDeLEtape, coupsQuiVolent, pointDeLaCourbe } from './coups-sur-table'
 import type { EtapeDeroule } from './deroule-phase'
 import type { World } from './world'
 
 const etape = (o: Partial<EtapeDeroule>): EtapeDeroule =>
   ({ cle: 'e', temps: 'menace', titre: 'menace', regle: '', boosts: [], ...o }) as EtapeDeroule
 const CORPS = { lieu: 'boite-corps' }
+
+describe('les coups dont un jeton vole', () => {
+  it('les degats ne volent plus (19/10/2026), la menace oui', () => {
+    expect(coupsQuiVolent(etape({ temps: 'mechant', titre: 'attaque', etat: 'resolu', carteId: 50, cibleId: 12, montant: 3, restant: 7 }))).toEqual([])
+    expect(coupsQuiVolent(etape({ cibleId: 7, montant: 1, restant: 2 }))).toHaveLength(1)
+  })
+})
 
 describe('les coups d un ecran', () => {
   it('etape 1 : la menace, de la boite vers la manigance, au niveau d avant', () => {

@@ -2121,3 +2121,31 @@ html[data-epure] body:not(.mode-plateau-portrait) .actions-flottantes {
   box-shadow: inset 0 0 0 1px rgba(63, 134, 224, 0.25);
   pointer-events: auto;
 }
+
+/* --- 99. La barre du haut sur petit ecran (19/10/2026, T4) ---------------------------------------------------------
+   « Fin du tour » ne doit JAMAIS etre recouvert. A 844 x 390 la barre (hauteur fixe de 40 px) passait sur DEUX lignes :
+   la seconde, dont « Fin du tour » et les reglages, tombait sous la zone des manigances annexes (mesure : le centre du
+   bouton etait touche par `zone-complots-secondaires`). Deux regles : la barre reste sur UNE ligne (la ligne de phase,
+   deja dite par l'etiquette rouge de la table, s'efface quand la place manque) et passe AU-DESSUS de la table. Au
+   toucher, ses boutons font au moins 44 px (barre de 52 px). */
+html[data-epure] .plateau-barre {
+  position: relative;
+  z-index: 400;
+}
+
+@media (max-width: 900px) and (min-width: 641px) {
+  html[data-epure] .plateau-barre .bh-etat span { display: none; }
+  /* Menu, Annuler, Sauver : le pictogramme seul (le nom reste dans le bouton pour les lecteurs d'ecran). */
+  html[data-epure] .plateau-barre button:has(> .ico):not(.bh-fin-tour) { font-size: 0; }
+  html[data-epure] .plateau-barre button:has(> .ico):not(.bh-fin-tour) .ico { margin: 0; }
+}
+
+@media (pointer: coarse) {
+  html[data-epure] .plateau-barre { height: 52px; }
+  html[data-epure] .plateau-barre button,
+  html[data-epure] .plateau-barre .bh-facon-choix {
+    min-height: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+}

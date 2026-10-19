@@ -15,6 +15,7 @@
 // cible a RÉELLEMENT encaissé, une fois la défense déduite. Recalculer quoi que
 // ce soit ici ferait dire au trait autre chose qu'au cartouche.
 
+import { t } from './langue'
 import type { EtapeDeroule } from './deroule-phase'
 
 /** De quoi le trait parle : ce qui décide de sa couleur. */
@@ -148,12 +149,15 @@ const borne = (x: number) => Math.min(1, Math.max(0, x))
 export function deltaSurTable(etape: EtapeDeroule, pvMax?: number): DeltaTable | undefined {
   if (etape.etat !== undefined && etape.etat !== 'resolu') return undefined
   const montant = etape.montant
-  if (montant === undefined || montant === 0 || etape.cibleId === undefined) return undefined
+  if (montant === undefined || etape.cibleId === undefined) return undefined
   const restant = etape.restant
-  if (etape.titre === 'attaque') {
+  // 19/10/2026 : « −X PV » sur la carte touchee, a la place du jeton de degats qui volait.
+  // Une attaque qui passe a 0 degat l'affiche aussi (« −0 PV ») ; la Riposte aussi.
+  if (etape.titre === 'attaque' || etape.titre === 'riposte') {
     const avant = pvMax && restant !== undefined ? borne((restant + montant) / pvMax) : undefined
-    return { texte: `−${montant}`, ton: 'degats', avant }
+    return { texte: `−${montant} ${t('PV')}`, ton: 'degats', avant }
   }
+  if (montant === 0) return undefined
   if (etape.titre === 'manigance' || etape.titre === 'menace') {
     const plafond = etape.plafond
     const depart = etape.menaceAvant ?? (restant !== undefined ? restant - montant : undefined)

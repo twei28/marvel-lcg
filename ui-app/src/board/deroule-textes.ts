@@ -7,7 +7,8 @@
 
 import { nomNettoye, type EtapeDeroule, type LigneBilan } from './deroule-phase'
 import { langueActuelle, t } from './langue'
-import { libelleStatut } from './effets-statuts'
+import { libelleStatut, type Statut } from './effets-statuts'
+import { phraseStatutRecu } from './phrases-effets'
 import type { EffetRevelation } from './world'
 
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
@@ -23,6 +24,7 @@ const REDIGES = new Set([
   'vide',
   'stade',
   'sonne',
+  'vaincu',
 ])
 
 /** Ce que dit un temps passe sans rien (`avecTempsVides`, frise-phase.ts). */
@@ -50,10 +52,12 @@ function pluriel(nombre: number, singulier: string, pluriels: string): string {
  * depuis la meme table, en minuscules. Une seule table pour les deux, sans
  * quoi le badge et le cartouche pourraient se contredire.
  */
+const STATUTS_CONNUS = ['stunned', 'confused', 'tough', 'exposed', 'cloaked', 'dazed', 'intensified']
+
 export function libelleDeStatut(statut: string | undefined): string {
   const cle = (statut ?? '').toLowerCase()
-  if (cle === 'stunned' || cle === 'confused' || cle === 'tough') {
-    return libelleStatut(cle, 1, langueActuelle())
+  if (STATUTS_CONNUS.includes(cle)) {
+    return libelleStatut(cle as Statut, 1, langueActuelle())
   }
   return statut ?? ''
 }
@@ -81,13 +85,16 @@ export function titreEtape(etape: EtapeDeroule): string {
   const auteur = etape.auteurNom ?? ''
   const cible = etape.cibleNom ?? ''
 
+  // T17 : un ALLIE tombe a zero PV et part en defausse. Une ligne a part, avant le bilan.
+  if (etape.titre === 'vaincu') return cible ? t('%1 est vaincu').replace('%1', cible) : t('Un allié est vaincu')
+
   if (etape.titre === 'statut') {
     // « Klaw gagne Sonné ». Le porteur, puis la carte de statut, nommee comme
     // sur la table. Sans porteur connu, une formule impersonnelle plutot
     // qu'un « undefined gagne », comme partout ailleurs ici.
     const nom = libelleDeStatut(etape.statut)
     if (!cible) return `${t('Une carte de statut est posée')} : ${nom}`
-    return `${cible} ${t('gagne')} ${nom}`
+    return phraseStatutRecu(cible, nom)
   }
 
   if (etape.titre === 'menace') {
@@ -302,9 +309,9 @@ export function compteurEtape(etape: EtapeDeroule): string {
 export function texteLigneBilan(ligne: LigneBilan): string {
   if (ligne.genre === 'statuts') {
     const nom = libelleDeStatut(ligne.statut)
-    // « Klaw gagne Sonné », et « x2 » quand la meme carte est posee deux fois
+    // « Klaw reçoit un statut Sonné », et « x2 » quand la meme carte est posee deux fois
     // (Solide en demande deux pour mordre).
-    return `${ligne.cibleNom} ${t('gagne')} ${nom}${ligne.total > 1 ? ` x${ligne.total}` : ''}`
+    return `${phraseStatutRecu(ligne.cibleNom, nom)}${ligne.total > 1 ? ` x${ligne.total}` : ''}`
   }
   if (ligne.genre === 'degats') {
     return `${ligne.cibleNom} ${t('a pris')} ${ligne.total} ${pluriel(ligne.total, 'dégât', 'dégâts')}`
@@ -452,6 +459,7 @@ const REGLES: Record<string, string> = {
   'regle:distribution': 'Point 3 : chaque joueur reçoit une carte rencontre, face cachée.',
   'regle:revelation': 'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.',
   'regle:entree': 'Un sbire qui entre en jeu pendant la phase du méchant s\'active à l\'étape des sbires, s\'il est arrivé avant elle.',
+  'regle:vaincu': 'Un allié dont les dégâts atteignent les points de vie est vaincu : il est défaussé.',
   'regle:statut': 'Une carte de statut posée reste jusqu\'à ce qu\'elle soit consommée : sonné annule la prochaine attaque, désorienté la prochaine manigance, robuste absorbe les dégâts d\'une attaque.',
 }
 

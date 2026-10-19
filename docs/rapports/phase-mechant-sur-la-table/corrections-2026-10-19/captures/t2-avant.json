@@ -1,0 +1,250 @@
+[
+ {
+  "ecran": "pc",
+  "w": 1280,
+  "h": 720,
+  "trouve": true,
+  "survols": [
+   {
+    "carte": "defenseur-0",
+    "apercu": {
+     "x": 624,
+     "y": 118,
+     "w": 644,
+     "h": 484
+    },
+    "bandeau": {
+     "x": 353,
+     "y": 72,
+     "w": 573,
+     "h": 48
+    },
+    "recouvrement": 593,
+    "dessus": "bandeau"
+   },
+   {
+    "carte": "defenseur-1",
+    "apercu": {
+     "x": 924,
+     "y": 97,
+     "w": 345,
+     "h": 526
+    },
+    "bandeau": {
+     "x": 353,
+     "y": 72,
+     "w": 573,
+     "h": 48
+    },
+    "recouvrement": 69,
+    "dessus": "bandeau"
+   },
+   {
+    "carte": "defenseur-2",
+    "apercu": {
+     "x": 924,
+     "y": 97,
+     "w": 345,
+     "h": 526
+    },
+    "bandeau": {
+     "x": 353,
+     "y": 72,
+     "w": 573,
+     "h": 48
+    },
+    "recouvrement": 69,
+    "dessus": "bandeau"
+   },
+   {
+    "carte": "sbire",
+    "apercu": {
+     "x": 924,
+     "y": 97,
+     "w": 345,
+     "h": 526
+    },
+    "bandeau": {
+     "x": 353,
+     "y": 72,
+     "w": 573,
+     "h": 48
+    },
+    "recouvrement": 69,
+    "dessus": "bandeau"
+   }
+  ],
+  "bandeau": {
+   "x": 353,
+   "y": 72,
+   "w": 573,
+   "h": 48
+  }
+ },
+ {
+  "ecran": "tablette",
+  "w": 1180,
+  "h": 820,
+  "trouve": true,
+  "survols": [
+   {
+    "carte": "defenseur-0",
+    "apercu": {
+     "x": 524,
+     "y": 168,
+     "w": 644,
+     "h": 484
+    },
+    "bandeau": {
+     "x": 303,
+     "y": 72,
+     "w": 573,
+     "h": 60
+    },
+    "recouvrement": 0
+   },
+   {
+    "carte": "defenseur-1",
+    "apercu": {
+     "x": 824,
+     "y": 147,
+     "w": 345,
+     "h": 526
+    },
+    "bandeau": {
+     "x": 303,
+     "y": 72,
+     "w": 573,
+     "h": 60
+    },
+    "recouvrement": 0
+   },
+   {
+    "carte": "defenseur-2",
+    "apercu": {
+     "x": 824,
+     "y": 147,
+     "w": 345,
+     "h": 526
+    },
+    "bandeau": {
+     "x": 303,
+     "y": 72,
+     "w": 573,
+     "h": 60
+    },
+    "recouvrement": 0
+   },
+   {
+    "carte": "sbire",
+    "apercu": {
+     "x": 824,
+     "y": 147,
+     "w": 345,
+     "h": 526
+    },
+    "bandeau": {
+     "x": 303,
+     "y": 72,
+     "w": 573,
+     "h": 60
+    },
+    "recouvrement": 0
+   }
+  ],
+  "bandeau": {
+   "x": 303,
+   "y": 72,
+   "w": 573,
+   "h": 60
+  }
+ },
+ {
+  "ecran": "paysage",
+  "w": 1050,
+  "h": 480,
+  "trouve": true,
+  "survols": [
+   {
+    "carte": "defenseur-0",
+    "apercu": null,
+    "bandeau": {
+     "x": 263,
+     "y": 67,
+     "w": 525,
+     "h": 80
+    }
+   },
+   {
+    "carte": "defenseur-1",
+    "apercu": {
+     "x": 730,
+     "y": 12,
+     "w": 309,
+     "h": 475
+    },
+    "bandeau": {
+     "x": 263,
+     "y": 67,
+     "w": 525,
+     "h": 80
+    },
+    "recouvrement": 4619,
+    "dessus": "bandeau"
+   },
+   {
+    "carte": "defenseur-2",
+    "apercu": {
+     "x": 730,
+     "y": 12,
+     "w": 309,
+     "h": 475
+    },
+    "bandeau": {
+     "x": 263,
+     "y": 67,
+     "w": 525,
+     "h": 80
+    },
+    "recouvrement": 4619,
+    "dessus": "bandeau"
+   },
+   {
+    "carte": "sbire",
+    "apercu": {
+     "x": 730,
+     "y": 12,
+     "w": 309,
+     "h": 475
+    },
+    "bandeau": {
+     "x": 263,
+     "y": 67,
+     "w": 525,
+     "h": 80
+    },
+    "recouvrement": 4619,
+    "dessus": "bandeau"
+   }
+  ],
+  "bandeau": {
+   "x": 263,
+   "y": 67,
+   "w": 525,
+   "h": 80
+  }
+ },
+ {
+  "ecran": "mobile-portrait",
+  "w": 390,
+  "h": 844,
+  "trouve": true,
+  "survols": [],
+  "bandeau": {
+   "x": 98,
+   "y": 30,
+   "w": 195,
+   "h": 294
+  }
+ }
+]

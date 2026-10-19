@@ -371,7 +371,11 @@ export type EtapeDeroule = {
   /** Refonte, lot 5b : ce que Perçant, Robuste et Déferlement ont fait sur ce coup. */
   motsCles?: MotsClesDuCoup
   /** 13/10/2026 : les cartes qui ont réduit le coup, et de combien. */
-  reductions?: Array<{ source: string; valeur: number }>
+  reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
+  /** L'attaquant etait desoriente : il attaque quand meme (regle cachee, T11). */
+  desoriente?: boolean
+  /** D'ou viennent les bonus d'ATQ (une ligne par source dans le calcul) ; absent : « Bonus » sans nom. */
+  bonus?: Array<{ source: string; valeur: number; source_id?: number | null }>
   /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant (son écran à part dans l'essai). */
   riposte?: RiposteDuCoup
   /** La carte qui a annule a quitte le jeu en le faisant (n72, 09/10/2026). */
@@ -586,7 +590,10 @@ export function etapesDeroule(
   herosVaincusIds: Set<number> = new Set(),
   premierJoueurId?: number,
   nomsHerosParJoueur: (string | undefined)[] = [],
-  selection: 'phase' | 'hors-phase' = 'phase'
+  selection: 'phase' | 'hors-phase' = 'phase',
+  // T17 : les ALLIES du monde (en jeu ou deja en defausse). Un coup qui met l'un d'eux a zero PV
+  // ajoute l'etape « X est vaincu » juste apres. Vide : aucune etape de ce genre.
+  alliesIds: ReadonlySet<number> = new Set()
 ): EtapeDeroule[] {
   const etapes: EtapeDeroule[] = []
 
@@ -677,6 +684,8 @@ export function etapesDeroule(
       acceleration: fait.acceleration,
       joueurs: fait.joueurs,
       reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
+      bonus: fait.bonus && fait.bonus.length > 0 ? fait.bonus : undefined,
+      desoriente: fait.desoriente || undefined,
       boosts: [],
     })
   }
@@ -938,8 +947,24 @@ export function etapesDeroule(
       boosts: boostsDeroule(fait.boosts),
       motsCles: fait.mots_cles && Object.keys(fait.mots_cles).length > 0 ? fait.mots_cles : undefined,
       reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
+      bonus: fait.bonus && fait.bonus.length > 0 ? fait.bonus : undefined,
+      desoriente: fait.desoriente || undefined,
       riposte: fait.riposte ?? undefined,
     })
+    // T17 : l'allie qui tombe a zero PV est lu et part en defausse AVANT le bilan : une etape a lui,
+    // juste apres le coup. Un HEROS vaincu garde sa fenetre (`defaite`), un sbire n'a pas d'etape.
+    if (restant !== undefined && restant <= 0 && alliesIds.has(fait.cible_id) && !herosVaincusIds.has(fait.cible_id)) {
+      etapes.push({
+        cle: cleDuFait('vaincu', fait.round_id ?? round, rang, fait.cible_id),
+        temps,
+        titre: 'vaincu',
+        regle: 'regle:vaincu',
+        cibleId: fait.cible_id,
+        cibleNom: nomNettoye(fait.cible),
+        etat: 'resolu',
+        boosts: [],
+      })
+    }
   })
 
   // ---------------------------------------------------- POINT 3 : distribution
@@ -1211,6 +1236,13 @@ function rangerLesConsequences(etapes: EtapeDeroule[]): EtapeDeroule[] {
   const revelations = etapes.filter((e) => e.titre === 'revelation')
   if (revelations.length === 0) return etapes
   const gardees: EtapeDeroule[] = []
+  // UNE ATTAQUE OU UNE MANIGANCE declenchee par la carte reste une ETAPE A PART (19/10/2026, defaut signale par
+  // l'utilisateur : « Assaut » / « Se Liguer » faisaient attaquer Klaw SANS lecture des boosts ni resultat). Rangee
+  // sous sa carte, elle n'avait plus ses etapes (annonce, defense, lecture des boosts, resultat) : les degats etaient
+  // bien portes par le moteur, mais le joueur ne voyait ni les cartes boost ni le total. Elle se pose juste APRES
+  // sa carte (les activations sont construites avant les revelations : sans cela « Bloody Mary manigance » passait
+  // avant « Echo revele Psionic Slash »). Seuls les entrees de sbire et les statuts restent rangees sous la carte.
+  const apres = new Map<EtapeDeroule, EtapeDeroule[]>()
   for (const etape of etapes) {
     const parent =
       etape.titre !== 'revelation' && etape.temps === 'revelation' && (etape.causeId !== undefined || etape.cause)
@@ -1221,7 +1253,11 @@ function rangerLesConsequences(etapes: EtapeDeroule[]): EtapeDeroule[] {
       gardees.push(etape)
       continue
     }
-    parent.consequences = [...(parent.consequences ?? []), etape]
+    if (etape.titre === 'attaque' || etape.titre === 'manigance') {
+      apres.set(parent, [...(apres.get(parent) ?? []), etape])
+    } else {
+      parent.consequences = [...(parent.consequences ?? []), etape]
+    }
     if (parent.effets) {
       const restants = parent.effets.filter((effet) =>
         effet.genre === 'entree' ? effet.carte_id !== etape.carteId : effet.cible_id !== etape.cibleId
@@ -1229,7 +1265,7 @@ function rangerLesConsequences(etapes: EtapeDeroule[]): EtapeDeroule[] {
       parent.effets = restants.length > 0 ? restants : undefined
     }
   }
-  return gardees
+  return gardees.flatMap((etape) => [etape, ...(apres.get(etape) ?? [])])
 }
 
 /**

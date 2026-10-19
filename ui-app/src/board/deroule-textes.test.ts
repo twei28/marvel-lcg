@@ -600,10 +600,10 @@ describe('les cartes de statut dans le cartouche', () => {
   // desormais comme des faits de la phase (sender_unit.py).
   it('nomme le porteur et la carte de statut', () => {
     expect(titreEtape(etape({ titre: 'statut', cibleNom: 'Klaw', statut: 'Stunned' }))).toBe(
-      'Klaw gagne Sonné'
+      'Klaw reçoit un statut Sonné'
     )
     expect(titreEtape(etape({ titre: 'statut', cibleNom: 'Colossus', statut: 'Tough' }))).toBe(
-      'Colossus gagne Tenace'
+      'Colossus reçoit un statut Tenace'
     )
   })
 
@@ -626,10 +626,10 @@ describe('les cartes de statut dans le cartouche', () => {
   it('le bilan compte les statuts, et distingue lesquels', () => {
     expect(
       texteLigneBilan({ cle: 'k', genre: 'statuts', statut: 'Stunned', cibleNom: 'Klaw', total: 1 })
-    ).toBe('Klaw gagne Sonné')
+    ).toBe('Klaw reçoit un statut Sonné')
     expect(
       texteLigneBilan({ cle: 'k', genre: 'statuts', statut: 'Tough', cibleNom: 'Klaw', total: 2 })
-    ).toBe('Klaw gagne Tenace x2')
+    ).toBe('Klaw reçoit un statut Tenace x2')
   })
 })
 

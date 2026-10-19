@@ -11,7 +11,11 @@
 // cette hauteur.
 
 /** `angle` (degres) : la boite est tournee autour de son centre, comme la carte qu'elle entoure. */
-export type Boite = { x: number; y: number; w: number; h: number; angle?: number }
+export type Boite = {
+  x: number; y: number; w: number; h: number; angle?: number
+  /** Le bas du BLOC de la carte (image + barre de PV), dans le repere du cadre : l'etiquette se pose dessous. */
+  bas?: number
+}
 
 /**
  * La boite d'une carte INCLINEE, redressee : sa taille et son centre, plus son angle.

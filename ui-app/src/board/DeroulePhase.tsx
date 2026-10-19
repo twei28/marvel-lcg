@@ -29,6 +29,7 @@ import {
 } from 'react'
 import { questionDuRecit } from './table-calee'
 import { calculCoupTable } from './calcul-coup-table'
+import { reglesCachees } from './regles-cachees'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
 import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
@@ -91,7 +92,7 @@ import { cadreDeLEtape, styleDuCadre, type CadreJoueur } from './couleur-joueur'
 import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
 import { FlechesPhase } from './FlechesPhase'
 import { TrajetsPhase, animationsCoupees } from './TrajetsPhase'
-import { coupsDeLEtape } from './coups-sur-table'
+import { coupsDeLEtape, coupsQuiVolent } from './coups-sur-table'
 import { DUREE_TRAJET_MS } from './trajets-phase'
 import { EtoilesEnAttente } from './EtoilesEnAttente'
 import { NumerosSbires } from './NumerosSbires'
@@ -103,6 +104,7 @@ import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
 import './table-sans-modale.css'
 import { BilanSurTable, TableSansModale, CommandesMultiSurTable } from './TableSansModale'
+import { AllieVaincuSurTable } from './AllieVaincuSurTable'
 import { phraseHistorique } from './PhaseDynamique'
 // ⚠ APRES boutons-bd.css : CartouchePhase importe sa feuille, qui doit passer
 // la DERNIERE (cartouche-phase.css, hors couche).
@@ -171,6 +173,26 @@ function nomDOnglet(libelle: string): ReactNode {
 /** Repli stable (une nouvelle fonction a chaque rendu relancerait la mesure des fleches). */
 const joueurInconnu = (): number | undefined => undefined
 
+/**
+ * RENFORT : la pastille contre la carte lue. « une autre carte va être révélée » si elle porte Renfort ; sinon d'où elle vient
+ * (carte révélée par un Renfort). Rien pour les autres cartes.
+ */
+function renfortPourEtape(
+  etapeLue: EtapeDeroule,
+  carteScene: ((id: number, faceVisible: boolean) => ScanCardProps | undefined) | undefined
+): { phrase?: string } | undefined {
+  if (etapeLue.titre !== 'revelation') return undefined
+  const portait = etapeLue.suivieDUnRenfort || aRenfort(carteScene?.(etapeLue.carteId ?? -1, true))
+  if (!portait && !etapeLue.parSurge) return undefined
+  return {
+    phrase: portait
+      ? t('une autre carte va être révélée')
+      : etapeLue.renfortDe
+        ? t('Renfort de %1').replace('%1', etapeLue.renfortDe)
+        : undefined,
+  }
+}
+
 export function DeroulePhase({
   etapes: etapesRecues,
   presentation = 'scene',
@@ -204,6 +226,7 @@ export function DeroulePhase({
   cartesDistribuees = 0,
   texteEtoile,
   infoCarte,
+  accelerationEnJeu,
   infoRevelee,
   questionDuMoteur,
   questionDUnAutre,
@@ -472,6 +495,8 @@ export function DeroulePhase({
   texteEtoile?: (carteId: number) => string | undefined
   /** Les nombres que le monde publie sur une carte (`info` : stade, seuil). */
   infoCarte?: (id: number) => Partial<Record<string, number>> | undefined
+  /** Les icones Acceleration des manigances en jeu (la regle cachee du point 1, avant que le fait du moteur n'arrive). */
+  accelerationEnJeu?: number
   /** Ce que le catalogue sait d'une carte revelee : son Renfort, son texte imprime. */
   infoRevelee?: (carteId: number) => InfoRevelee | undefined
   /**
@@ -961,6 +986,27 @@ export function DeroulePhase({
   //    intention validee ne vaut pas validation de la resolution qui prend sa
   //    place sous la meme cle.
   const surLaDerniereEtape = etapesAffichees.length > 0 && index === etapesAffichees.length - 1
+  // LA SUITE SE DIFFERE TANT QUE L'ACTIVATION N'EST PAS RESOLUE (19/10/2026, T5). Un boost qui met une carte en jeu
+  // (Weapons Runner, ★) fait inscrire l'ENTREE de cette carte parmi les etapes AVANT que le fait de l'attaque ne passe
+  // de « annonce » a « boosts » puis « resolu » (ordre du moteur : retournement du boost, entree, degats). Le clic sur
+  // l'annonce sautait alors tout droit a l'entree : la carte apparaissait sur la table sans que ses boosts aient ete lus,
+  // et le resultat de l'attaque n'etait JAMAIS montre. Tant que l'attaque (ou la manigance) est une annonce et que la
+  // suivante n'est qu'une de ses consequences (entree, statut), on reste dessus : elle se complete sur place, on lit
+  // ses boosts et son resultat, PUIS la consequence vient.
+  const idsEntreeEnAttente = surTable && !relecture
+    ? etapesAffichees
+        .slice(index + 1)
+        .flatMap((e) => (e.titre === 'entree' && e.carteId !== undefined ? [e.carteId] : []))
+        // Le moteur journalise parfois DEUX entrees pour la meme carte : des la premiere, elle est a l'ecran.
+        .filter((id) => !etapesAffichees.slice(0, index + 1).some((e) => e.titre === 'entree' && e.carteId === id))
+    : []
+  const suiteDifferee =
+    surTable &&
+    phaseRaconteeEnCours &&
+    etape !== undefined &&
+    (etape.titre === 'attaque' || etape.titre === 'manigance') &&
+    etape.etat === 'annonce' &&
+    (etapesAffichees[index + 1]?.titre === 'entree' || etapesAffichees[index + 1]?.titre === 'statut')
   // La MEME etape sous une autre cle compte aussi : la menace tiree du journal
   // est remplacee par le fait du moteur, et sans cela le joueur la validait
   // deux fois (capture du 07/10/2026).
@@ -1050,7 +1096,7 @@ export function DeroulePhase({
     // Le joueur est vivant, et le filet anti-blocage doit le savoir meme quand
     // ce clic n'acquitte rien (voir `onActivite`).
     onActivite?.()
-    if (essai && surTable && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0)) {
+    if (essai && surTable && !animationsCoupees() && coupsQuiVolent(etape).length > 0) {
       setEnVolDeJeton(true)
       window.clearTimeout(minuteurVol.current)
       minuteurVol.current = window.setTimeout(() => setEnVolDeJeton(false), DUREE_TRAJET_MS + 250)
@@ -1087,8 +1133,8 @@ export function DeroulePhase({
       onTerminer()
       return
     }
-    // Une etape suivante est deja connue : on y va.
-    if (index + 1 < etapesAffichees.length) {
+    // Une etape suivante est deja connue : on y va (sauf si celle-ci n'est pas encore resolue : voir `suiteDifferee`).
+    if (index + 1 < etapesAffichees.length && !suiteDifferee) {
       setEnAttente(false)
       setCleCourante(etapesAffichees[index + 1].cle)
       return
@@ -1183,7 +1229,7 @@ export function DeroulePhase({
       setEnAttente(false)
       return
     }
-    if (index + 1 < etapesAffichees.length) {
+    if (index + 1 < etapesAffichees.length && !suiteDifferee) {
       setEnAttente(false)
       setCleCourante(etapesAffichees[index + 1].cle)
       return
@@ -1205,7 +1251,7 @@ export function DeroulePhase({
     // a chaque trame du moteur, donc appellerait `onTerminer` en boucle. Les
     // cinq dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
-  }, [enAttente, index, rangValidee, etapesAffichees.length, etapeValidee, phaseRaconteeEnCours])
+  }, [enAttente, index, rangValidee, etapesAffichees.length, etapeValidee, phaseRaconteeEnCours, suiteDifferee])
 
   // LE RYTHME DE LA PHASE, en une ligne : le cartouche est-il a jour ?
   //
@@ -1284,6 +1330,7 @@ export function DeroulePhase({
     etapeValidee,
     etapeEstAnnonce,
     surTable,
+    suiteDifferee,
   })
 
   // L'accuse de reception, seul endroit d'ou il part.
@@ -1578,6 +1625,18 @@ export function DeroulePhase({
     suivreLeMeneur()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tousSontPrets, clePret, questionAuJoueur, termine, etapeValidee, phaseDesCartes])
+  // UNE ETAPE DEJA VALIDEE QUI N'EST PAS LA DERNIERE : on passe a la suivante (19/10/2026, T7). La liste des etapes peut
+  // se recomposer sous les yeux du joueur (une revelation tiree du journal est remplacee par celle du moteur : sa cle
+  // disparait) ; l'index retombe alors sur la derniere etape validee, hors attente. Seul un clic en sortait, or en
+  // « Tout le monde valide » le clic est refuse et le bouton « Pret » deja marque : les deux sieges restaient
+  // « Pret · 2 / 2 » sur une etape morte, le moteur attendant un accuse qui ne partirait jamais.
+  useEffect(() => {
+    if (!etapeValidee || enAttente || suspendu || relecture || termine || questionAuJoueur || suiteDifferee) return
+    if (!etape || etape.etat === 'annonce' || etape.temps === 'bilan' || validee?.cle !== etape.cle) return
+    if (index + 1 >= etapesAffichees.length) return
+    setCleCourante(etapesAffichees[index + 1].cle)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- l'index, la liste et l'etat de validation decident
+  }, [etapeValidee, enAttente, suspendu, relecture, termine, questionAuJoueur, suiteDifferee, index, etapesAffichees.length, etape?.cle, etape?.etat])
   const nomDuSiege = (siege: number | undefined): string =>
     siege === undefined
       ? '?'
@@ -1941,7 +2000,13 @@ export function DeroulePhase({
           // Avec l'essai, le grand jeton des coups (`JetonsCoups`) prend le relais : pas deux jetons.
           actif={volMenace !== undefined && !essai}
         />
+        {/* UNE CARTE QUI ENTRE EN JEU (boost, ★) n'apparait sur la table qu'a SON etape « X entre en jeu », apres la lecture
+            des boosts et le resultat de l'attaque (19/10/2026, T5) : le monde la contient deja, on la retient. */}
+        {idsEntreeEnAttente.length > 0 || (enVolDeJeton && etape?.titre === 'entree') ? (
+          <style>{[...idsEntreeEnAttente, ...(enVolDeJeton && etape?.titre === 'entree' && etape.carteId !== undefined ? [etape.carteId] : [])].map((id) => `.plateau-cadre .scan-card[data-card-id="${id}"]:not(.rencontre-sur-table *) { visibility: hidden !important; }`).join('\n')}</style>
+        ) : null}
         <CoucheRencontreSurTable
+          renfort={etape ? renfortPourEtape(etapeEnLangue(etape, nomFr), carteScene) : undefined}
           etape={etape}
           boostsMontres={boostsMontres}
           carteScene={carteScene}
@@ -2588,7 +2653,8 @@ export function DeroulePhase({
   // Le nombre de l'etape, dans son unite, EXACTEMENT comme le trait le dit.
   const contenu = contenuDuTrait(etapeLue)
   // `phraseHistorique` : « paquet-vide » et « etoile-differe » se disent en clair, jamais sous leur nom interne.
-  const phraseEtape = phraseHistorique(lectureEnCours && activationAvecBoosts ? { ...etapeLue, etat: 'annonce' } : etapeLue)
+  const stadeRevele = etapeLue.titre === 'stade-revele' && etapeLue.carteId !== undefined ? infoCarte?.(etapeLue.carteId)?.printed_stage : undefined
+  const phraseEtape = phraseHistorique(lectureEnCours && activationAvecBoosts ? { ...etapeLue, etat: 'annonce' } : etapeLue, stadeRevele)
   const nombreEnClair =
     contenu.montant !== undefined
       ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
@@ -2736,6 +2802,10 @@ export function DeroulePhase({
     const peutAgir = !(viseUnAutreJoueur || estSpectateur())
     return enveloppe(
       <>
+        {/* T17 : un allie vaincu est lu, puis part en defausse (la ligne dit « X est vaincu »). */}
+        {etape.titre === 'vaincu' && etape.cibleId !== undefined ? (
+          <AllieVaincuSurTable key={etape.cle} id={etape.cibleId} props={carteScene?.(etape.cibleId, true)} />
+        ) : null}
         <TableSansModale
           acteurId={etape.carteId ?? etape.cibleId}
           cibleId={etape.carteId === undefined ? undefined : etape.cibleId}
@@ -2743,20 +2813,16 @@ export function DeroulePhase({
           phrase={phraseSurvolable(phraseEtape)}
           nombre={recit.texte && !(etapeLue.etat === 'annonce' && /^0(\s|$)/.test(recit.texte)) ? recit.texte : undefined}
           calcul={!lectureEnCours ? calculCoupTable(etapeLue) : undefined}
+          regles={!lectureEnCours ? reglesCachees(etapeLue, { accelerationEnJeu }) : undefined}
           lecture={lectureEnCours ? phaseDesCartes ?? 'entree' : undefined}
           peutAgir={peutAgir}
           avancer={fatalAMontrerSurTable ? () => setCoupFatalVuSurTable(true) : avancerSurTable}
           reculer={index > 0 && peutAgir ? reculer : undefined}
           mention={enAttente ? texteAttente({ autreJoueur: attendUnAutreJoueur, nom: nomJoueurAttendu }) : undefined}
           libelleAction={`${titreEtape(etapeLue)} — ${t('Suivant')}`}
-          // LE RENFORT, en clair (16/10/2026, « que le surge soit clair ») : d'où vient la carte, et
-          // qu'une autre va suivre.
-          surtitre={surtitreEtape(etapeLue) || undefined}
-          suite={
-            etapeLue.suivieDUnRenfort || (etapeLue.titre === 'revelation' && aRenfort(carteScene?.(etapeLue.carteId ?? -1, true)))
-              ? t('Renfort : une autre carte va être révélée')
-              : undefined
-          }
+          // LE RENFORT ne charge plus le bandeau (19/10/2026) : sa pastille se pose contre la carte lue. Seul « Révélée par X »
+          // (une carte de remplacement) garde son surtitre.
+          surtitre={etapeLue.parSurge ? undefined : surtitreEtape(etapeLue) || undefined}
         />
         {confirmerPasser && !passerTout ? (
           <span className="tsm-confirmer" role="alertdialog" aria-label={t('Passer toute la phase ?')}>

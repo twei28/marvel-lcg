@@ -187,20 +187,50 @@
 .tsm-etiquette {
   position: absolute;
   z-index: 141;
-  transform: translateX(-50%);
-  max-width: 220px;
-  padding: 3px 12px;
+  box-sizing: border-box;
+  /* La largeur est posee en ligne : EXACTEMENT celle de la carte, jamais plus. */
+  min-width: 0;
+  padding: 2px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: #4fd17b;
   color: #0b1a10;
   border: 2px solid #b5f0c8;
   border-radius: 4px;
   font-family: Bangers, Anton, Impact, system-ui, sans-serif;
   font-size: 16px;
-  letter-spacing: 0.04em;
-  line-height: 1.15;
+  letter-spacing: 0.02em;
+  line-height: 1.12;
   text-align: center;
-  white-space: normal;
   cursor: pointer;
+}
+
+/* Le nom : deux lignes au plus, puis des points de suspension. */
+.tsm-etiquette-texte {
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.tsm-etiquette-verbe {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78em;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.tsm-etiquette .tsm-touche {
+  margin: 1px 0 0;
+  font-size: 10px;
 }
 
 .tsm-etiquette.est-inactif {
@@ -463,6 +493,8 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
 
 @media (pointer: coarse), (max-height: 550px) {
   .tsm-bouton, .tsm-retour { min-height: 44px; min-width: 44px; }
+  /* L'etiquette garde la largeur de sa carte (jamais 44 px mini en largeur) ; seule sa hauteur grandit. */
+  .tsm-etiquette { min-height: 44px; }
 }
 
 .tsm-multi {
@@ -473,3 +505,224 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
   color: #fff; pointer-events: auto; font-size: 14px;
 }
 .tsm-multi .tsm-bouton { min-height: 44px; }
+
+/* LE BANDEAU DEPLACABLE (19/10/2026) : une poignee visible a gauche, un petit bouton de remise a droite quand la
+   ligne a bougé. Le fond du bandeau laisse passer les clics (la carte dorée dessous reste cliquable) ; seuls ses
+   boutons, sa poignée et les noms survolables les captent. */
+.tsm-bandeau { pointer-events: none; }
+.tsm-bandeau :is(.tsm-bouton, .tsm-retour, .tsm-poignee, .tsm-remise, .deroule-nom, .tsm-touche) { pointer-events: auto; }
+
+.tsm-poignee,
+.tsm-remise {
+  flex: none;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1;
+  touch-action: none;
+}
+
+.tsm-poignee {
+  width: 20px;
+  min-height: 26px;
+  cursor: grab;
+}
+
+.tsm-poignee:active { cursor: grabbing; }
+
+.tsm-poignee::before {
+  content: '⋮⋮';
+  font-size: 15px;
+  letter-spacing: -3px;
+}
+
+.tsm-remise {
+  width: 26px;
+  min-height: 26px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tsm-remise::before {
+  content: '⟲';
+  font-size: 17px;
+}
+
+.tsm-poignee:hover,
+.tsm-remise:hover,
+.tsm-poignee:focus-visible,
+.tsm-remise:focus-visible {
+  background: rgba(243, 198, 35, 0.22);
+  border-color: #f3c623;
+  color: #fff;
+}
+
+@media (pointer: coarse), (max-height: 550px) {
+  .tsm-poignee { width: 44px; min-height: 44px; }
+  .tsm-remise { width: 44px; min-height: 44px; }
+}
+
+/* PAR DEFAUT, UNE COLONNE ETROITE CONTRE LE BORD GAUCHE (19/10/2026, precision de l'utilisateur) : le bandeau
+   recouvrait l'apercu agrandi d'une carte (ancre a DROITE, 345 px, jusqu'a 650 px pour un heros recto-verso) et
+   les cartes lues au centre. Contre le bord gauche, il ne touche ni l'un ni l'autre ; les cartes gardent leur
+   taille. Sur un ecran etroit (mobile portrait) la colonne mangerait la moitie de la table : le bandeau reste
+   une ligne en haut, a la largeur de l'ecran. */
+@media (min-width: 641px) {
+  .tsm-bandeau {
+    left: 6px;
+    top: 40px;
+    transform: none;
+    width: 200px;
+    max-width: 200px;
+    box-sizing: border-box;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    max-height: calc(100% - 52px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .tsm-bandeau.est-question,
+  .tsm-bandeau.est-bilan,
+  .tsm-bandeau:has(.tsm-calcul),
+  .tsm-bandeau:has(.tsm-attente) {
+    max-width: 200px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  .tsm-bandeau .tsm-calcul { flex-basis: auto; }
+  .tsm-bandeau .tsm-bouton { width: 100%; box-sizing: border-box; }
+  .tsm-bandeau .tsm-consigne { padding-left: 0; border-left: 0; }
+  .tsm-bandeau .tsm-nombre,
+  .tsm-bandeau .tsm-surtitre,
+  .tsm-bandeau .tsm-suite { align-self: flex-start; white-space: normal; }
+  .tsm-bandeau .tsm-retour { align-self: flex-start; }
+  .tsm-bandeau .tsm-pastilles { flex-direction: column; }
+  /* La poignee devient une bande horizontale en tete de colonne, la remise un petit bouton a droite. */
+  .tsm-poignee { width: auto; height: 16px; min-height: 16px; align-self: stretch; }
+  .tsm-poignee::before { content: '⋯'; font-size: 18px; letter-spacing: 0; }
+  .tsm-remise { align-self: flex-end; }
+}
+
+@media (min-width: 641px) and (pointer: coarse) {
+  .tsm-poignee { width: auto; height: 44px; min-height: 44px; }
+  .tsm-remise { width: 44px; min-height: 44px; }
+}
+
+@media (min-width: 641px) and (max-height: 550px) {
+  .tsm-poignee { width: auto; height: 44px; min-height: 44px; }
+  .tsm-remise { width: 44px; min-height: 44px; }
+}
+
+/* LES REGLES CACHEES (19/10/2026, T11) : une ligne discrete sous la phrase, qui disparait avec le bandeau. */
+.tsm-regles {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: #aab2c0;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.25;
+}
+
+/* T14 (19/10/2026) : L'EVENTAIL DES AMELIORATIONS A CLIQUER. Une rangee de vraies cartes a cote du porteur, entierement
+   visibles, avec leur nom sous chacune ; z-index sous le bandeau (150) et sous l'apercu au survol (400). */
+.tsm-eventail {
+  position: absolute;
+  z-index: 145;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.tsm-eventail-carte {
+  --lueur: rgba(79, 209, 123, 0.55);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  width: var(--eventail-w, 112px);
+  min-width: 44px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #f4f6fa;
+  cursor: pointer;
+  position: relative;
+  animation: tsm-eventail-entree 0.18s ease-out both;
+  animation-delay: calc(var(--rang, 0) * 40ms);
+}
+@keyframes tsm-eventail-entree {
+  from { opacity: 0; transform: translateY(10px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tsm-eventail-carte { animation: none; }
+}
+.tsm-eventail-image {
+  display: block;
+  border: 3px solid #4fd17b;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 14px 3px var(--lueur);
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+}
+.tsm-eventail-image .scan-card { --card-w: calc(var(--eventail-w, 112px) - 6px); margin: 0; }
+.tsm-eventail-image .top-strip { display: none !important; }
+.tsm-eventail-carte:hover .tsm-eventail-image,
+.tsm-eventail-carte:focus-visible .tsm-eventail-image {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 22px 6px rgba(79, 209, 123, 0.85);
+}
+.tsm-eventail-nom {
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 2px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #4fd17b;
+  color: #0b1a10;
+  border: 2px solid #b5f0c8;
+  border-radius: 4px;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  line-height: 1.12;
+  text-align: center;
+  pointer-events: none;
+}
+.tsm-eventail-nom b {
+  max-width: 100%;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.tsm-eventail-nom i {
+  max-width: 100%;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tsm-eventail-carte .tsm-touche { position: absolute; top: 4px; right: 4px; background: rgba(0, 0, 0, 0.6); color: #fff; margin: 0; }
+.tsm-eventail-carte.est-inactif { cursor: not-allowed; filter: grayscale(0.8) brightness(0.8); }
