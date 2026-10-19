@@ -47,6 +47,30 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-19",
+        genre: "heros",
+        fr: "Les Tortues Ninja arrivent : Leonardo, Michelangelo, Raphael, Donatello, Casey Jones, Jennika, Alopex et Venus, avec les méchants Shredder, Bebop et Rocksteady et Baxter Stockman.",
+        en: "The Teenage Mutant Ninja Turtles arrive: Leonardo, Michelangelo, Raphael, Donatello, Casey Jones, Jennika, Alopex and Venus, with the villains Shredder, Bebop and Rocksteady and Baxter Stockman.",
+    },
+    {
+        date: "2026-10-19",
+        genre: "jeu",
+        fr: "Plus de 230 cartes d'aspect aux couleurs des Tortues. Quand seule l'image change, c'est un art alternatif de la carte officielle, proposé quand tu assignes un deck. Les autres cartes sont réservées aux héros TMNT.",
+        en: "Over 230 aspect cards in the Turtles' colours. When only the picture changes, it is an alternate art of the official card, offered when you assign a deck. The other cards are reserved for TMNT heroes.",
+    },
+    {
+        date: "2026-10-19",
+        genre: "jeu",
+        fr: "Le pack Shinobi pour les héros TMNT : onze Paths à choisir en construisant ton deck, 80 cartes Bushido, Kuji-Kiri, Ninjutsu et Taijutsu, et 12 cartes duales.",
+        en: "The Shinobi pack for TMNT heroes: eleven Paths to pick when building your deck, 80 Bushido, Kuji-Kiri, Ninjutsu and Taijutsu cards, and 12 dual cards.",
+    },
+    {
+        date: "2026-10-19",
+        genre: "jeu",
+        fr: "L'affichage Épuré, sombre, devient celui d'ouverture pour tout le monde, avec un accueil aux couleurs bleues du jeu.",
+        en: "The dark Clean display is now the opening display for everyone, with a home screen in the game's blue.",
+    },
+    {
         date: "2026-10-18",
         genre: "jeu",
         fr: "Sur ordinateur, les mises à jour ont leur propre page, classée par famille : les trois dernières de chacune, et un clic pour tout voir. L'accueil range ses tuiles en quatre rangées, avec une tuile Puzzle qui arrive bientôt.",
