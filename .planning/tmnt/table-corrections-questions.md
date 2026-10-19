@@ -33,6 +33,13 @@ moteur : « Phase : Villain » puis « Étape de la manigance principale » dire
 Options : (a) la jouer à la main avant la phase pour voir si le problème vient de `PutIntoPlay` du harnais ; (b) lancer un
 cas moteur dédié (`tools/test_capacites.py`) ; (c) laisser.
 Recommandation : (b) dans une session moteur.
+**RESOLUE (19/10/2026) : pas un defaut du moteur ni du plateau, c'est le HARNAIS de repro.** La reponse EST proposee : au
+passage de la phase des joueurs a celle du mechant, une fenetre « Reponse de heros : Attirer Leur Attention -> Le Faucon »
+(nom francais de Draw Their Fire) / « Ne pas utiliser » s'ouvre (etat moteur « End Phase », donc AVANT la ligne « Phase :
+Villain » du journal : c'est pour ca qu'on ne la voyait pas). `t6-defendre-sans-incliner.mjs` appelait `L.prepa` dans sa
+boucle de fin de tour, et `prepa` clique « Ne pas utiliser » toute seule (regex `/^Ne pas (defendre|utiliser|jouer)/`) :
+la reponse etait declinee sans trace. Preuve : `outils/t6-draw-their-fire.mjs` (sans `prepa`) accepte la fenetre, 53011 part
+a la defausse et le plateau propose « Defendre avec Le Faucon » ; cas moteur 53011 dans `tools/test_capacites.py`.
 
 ## Q5 (T11) — règles cachées : Tenace
 J'ai ajouté une ligne « Tenace : défaussé à la place des dégâts » (le moteur publie `robuste`), en plus des quatre que tu
