@@ -102,9 +102,9 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 
 ### p013 — BURNING BUILDING · Attachement
 - ID 6007 · The Big Apple (7/22) · Illustration : Juan Frigeri · Boost 1
-- **When Revealed**: Attach to an unoccupied location and place 1 [flamme] here. Otherwise, surge.
-- **Forced Response**: After the player phase ends, place 1 [flamme] here.
-- **Hero Action**: Exhaust your identity and discard cards from your deck equal to the number of [flamme] here → discard
+- **When Revealed**: Attach to an unoccupied location and place 1 acceleration token here. Otherwise, surge.
+- **Forced Response**: After the player phase ends, place 1 acceleration token here.
+- **Hero Action**: Exhaust your identity and discard cards from your deck equal to the number of acceleration tokens here → discard
   this card.
 
 ### p015 — CITIZENS IN DANGER! · Attachement
@@ -145,14 +145,14 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - Quickstrike.
 - **Forced Response**: After the round ends, attach Overdrive to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Overdrive's location, he engages them.
-- Icône dans le cadre de texte : 1 symbole « avion + » [?]
+- Icône sous le texte : 1 symbole HAZARD (confirmé par l'utilisateur le 19/10/2026)
 
 ### p027 — ✦MUSE · Sbire
 - ID 6014 · The Big Apple (14/22) · Illustration : Ron Garney · SCH 1★ · ATK 2★ · PV 4 · Boost ★ (étoile)
 - Traits : Criminal.
 - ★ **Forced Response**: After Muse activates, attach him to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Muse's location, he engages them.
-- Icônes dans le cadre de texte : 2 symboles « pile + » [?]
+- Icônes sous le texte : 2 symboles HAZARD (même icône « avion + » que sur Overdrive)
 - ★ **Boost**: Reveal this card.
 
 ### p029 — ✦SCREWBALL · Sbire
@@ -161,7 +161,7 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - **Forced Interrupt**: When Screwball would be defeated with excess damage, reset her hit points instead. Attach her
   to an unoccupied location, if able. *(She remains in play.)*
 - **Forced Interrupt**: When a player enters Screwball's location, she engages them.
-- Icône dans le cadre de texte : 1 symbole « plus » [?]
+- Icône sous le texte : 1 symbole HAZARD [?] (même famille que Overdrive)
 
 ### p031 — BUSTED! · Obligation
 - ID 6016 · The Big Apple (16/22) · Illustration : Mattia De Iulis · Boost 2
