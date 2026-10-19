@@ -351,6 +351,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Voir les': 'See the',
   'stades': 'stages',
   'Autre face': 'Other side',
+  'Premier joueur': 'First player',
   'Face en jeu': 'Side in play',
   'Carte précédente': 'Previous card',
   'Carte suivante': 'Next card',

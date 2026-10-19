@@ -560,6 +560,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     keywords: contexte.catalogue.motsCles(card.card_id),
     traits: contexte.catalogue.traits?.(card.card_id),
     codeCarte: card.card_id,
+    premierJoueur: (nombre(card.info.k_first_player_token) ?? 0) > 0 ? true : undefined,
     aspect: contexte.catalogue.aspect(card.card_id),
     // Le liseré de l'identité (Hero ou AlterEgo) : le dégradé des trois couleurs de son héros, une fois les
     // palettes chargées. Seulement l'identité : ses cartes de signature gardent leur aspect « héros ».

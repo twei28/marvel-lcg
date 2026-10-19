@@ -30,7 +30,7 @@ import '../styles/palette.css'
 import '../styles/affichage-sobre.css'
 import '../styles/affichage-epure.css'
 import '../styles/teinte.css'
-import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
+import { PlusieursJoueurs, ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
 import { CartesDuJournal, type AccesCartesJournal } from './board/NomsDeCartes'
 import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
@@ -4404,6 +4404,7 @@ export function PagePartie({
 
   return (
     <CartesDuJournal.Provider value={cartesDuPlateau}>
+      <PlusieursJoueurs.Provider value={(etat.monde?.players?.length ?? 1) > 1}>
       {/* ⚠ LA BARRE DU SPECTATEUR PASSE AVANT TOUT LE RESTE. Un plateau sans
           boutons ressemble a un plateau CASSE : elle dit, en permanence, qu'on
           regarde. Voir BarreSpectateur.tsx. */}
@@ -5555,6 +5556,7 @@ export function PagePartie({
           onDeconnexion={retourMenuPrincipal}
         />
       ) : null}
+      </PlusieursJoueurs.Provider>
     </CartesDuJournal.Provider>
   )
 }

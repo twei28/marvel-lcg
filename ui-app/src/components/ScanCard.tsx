@@ -168,6 +168,9 @@ export type CardEffectDelta =
  */
 export const ImagesParesseuses = createContext(false)
 
+/** La table compte plusieurs héros : seulement alors, le jeton de premier joueur se montre (étiquette de l'identité). */
+export const PlusieursJoueurs = createContext(false)
+
 export function versVignette(url: string): string {
   // Une carte sans image (piles vides, tests) ne doit pas faire tomber le
   // plateau : on rend ce qu'on a recu, quoi que ce soit.
@@ -226,6 +229,8 @@ export type ScanCardProps = {
    * deck special : « Invocation »). Prioritaire sur le type et sur estNemesis.
    */
   labelType?: string
+  /** L'identité qui porte le jeton de premier joueur : son étiquette de type le dit (table à plusieurs héros). */
+  premierJoueur?: boolean
   state?: CardState
   /**
    * Carte epuisee (is_ready === false). Independant de `state` : une carte peut
@@ -549,6 +554,7 @@ export function ScanCard({
   mordu = false,
   accroche = false,
   labelType,
+  premierJoueur,
   state = 'ready',
   exhausted = false,
   panorama,
@@ -597,7 +603,12 @@ export function ScanCard({
   // La zone porte déjà ce nom-là (« Méchant » posé dans la zone Méchant) : la
   // pastille le répétait, et dans les zones étroites elle se posait PAR-DESSUS
   // le titre. Voir `pastilleRedondante` dans board/zones.ts.
-  const typeMuet = masquerType === true
+  const plusieursJoueurs = useContext(PlusieursJoueurs)
+  const aLeJeton = premierJoueur === true && plusieursJoueurs && !facedown
+  // Le jeton de premier joueur prend la place du type dans l'étiquette (l'identité se reconnaît à sa
+  // carte), et elle reste visible sur la table même quand les étiquettes de type y sont retirées.
+  const typeMuet = masquerType === true && !aLeJeton
+  const etiquette = aLeJeton ? t('Premier joueur') : label
 
   // LE RETOURNEMENT (07/09/2026). Une carte rencontre arrive face cachée dans
   // la zone de révélation, puis le moteur la retourne au rendu suivant : le
@@ -737,7 +748,7 @@ export function ScanCard({
           normale de la carte. */}
       <div className="scan-visuel">
         <div className="top-strip">
-          {typeMuet ? null : <span className="kind-pill">{label}</span>}
+          {typeMuet ? null : <span className={aLeJeton ? 'kind-pill est-premier-joueur' : 'kind-pill'}>{etiquette}</span>}
           {inactif ? <span className="pastille-inactif">{t('En attente')}</span> : null}
           {estActif && !facedown ? <span className="pastille-actif">{t('Actif')}</span> : null}
           {crise && !facedown ? (

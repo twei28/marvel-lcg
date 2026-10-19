@@ -106,7 +106,7 @@ html[data-epure] .trajet-copie,
 html[data-epure] .meteo-couche,
 html[data-epure] .deroule-phase::before,
 html[data-epure] .deroule-phase::after,
-html[data-epure] .plateau-emplacement .kind-pill {
+html[data-epure] .plateau-emplacement .kind-pill:not(.est-premier-joueur) {
   display: none;
 }
 
