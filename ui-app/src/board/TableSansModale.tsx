@@ -12,7 +12,6 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProp
 import { boiteDeCarte, cadreDuPlateau, redresserBoite, type Boite } from './mesures-plateau'
 import { t } from './langue'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
-import { animationsCoupees } from './TrajetsPhase'
 import type { PiedMulti } from './CartouchePhase'
 import type { PhaseLecture } from './CoucheRencontreSurTable'
 
@@ -439,16 +438,11 @@ export function QuestionSurTable({
   // en a plusieurs, rien ne se choisit au clavier : on clique la carte voulue.
   const possibles = choix.filter((c) => !c.indisponible)
   const uniqueId = possibles.length + (refus ? 1 : 0) === 1 ? (refus ? 'refus' : possibles[0]!.id) : undefined
-  // PORTRAIT TELEPHONE (T13, 19/10/2026) : pas de cadre de plateau, mais des bandes qui defilent. Les cartes a
-  // toucher portent leur propre cible (fixe a l'ecran) et la table defile toute seule jusqu'a elles.
-  const portrait = typeof document !== 'undefined' && !!document.querySelector('.portrait-table')
-  // Les ameliorations a cliquer (interruption, reponse) s'etalent en eventail a cote de leur porteur sur le PC ;
-  // en portrait elles sont deja de vraies cartes a plat dans la bande, on les touche la.
-  const enEventail = !portrait ? choix.filter((c) => c.enLigne && c.carte && c.carteId !== undefined && !absentes.has(c.id)) : []
-  const surCarte = choix.filter((c) => (portrait || !c.enLigne) && c.carteId !== undefined && !absentes.has(c.id))
+  // Les ameliorations a cliquer (interruption, reponse) s'etalent en eventail a cote de leur porteur (PC).
+  const enEventail = choix.filter((c) => c.enLigne && c.carte && c.carteId !== undefined && !absentes.has(c.id))
+  const surCarte = choix.filter((c) => !c.enLigne && c.carteId !== undefined && !absentes.has(c.id))
   // Le bouton nomme (« Barriere energetique — Interruption ») reste dans le bandeau, quoi qu'il arrive aux cartes.
   const enLigne = choix.filter((c) => c.enLigne || c.carteId === undefined || absentes.has(c.id))
-  useDefilerVersLesChoix(portrait ? surCarte.map((c) => c.carteId!) : [])
   return (
     <>
       {soulignee !== undefined ? <style>{`
@@ -498,13 +492,9 @@ export function QuestionSurTable({
         .map((c) => (
           <VeilleCarte key={`veille-${c.id}`} choix={c} signaler={signaler} />
         ))}
-      {surCarte.map((c) =>
-        portrait ? (
-          <PuceFixe key={c.id} choix={c} signaler={signaler} unique={uniqueId === c.id} />
-        ) : (
-          <PuceSurCarte key={c.id} choix={c} signaler={signaler} unique={uniqueId === c.id} />
-        )
-      )}
+      {surCarte.map((c) => (
+        <PuceSurCarte key={c.id} choix={c} signaler={signaler} unique={uniqueId === c.id} />
+      ))}
       {enEventail.length > 0 ? <EventailAmeliorations choix={enEventail} survoler={survoler} signaler={signaler} unique={uniqueId} /> : null}
     </>
   )
@@ -565,146 +555,6 @@ function PuceSurCarte({
         {unique ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
       </button>
     </>
-  )
-}
-
-// ---------------------------------------------------------------------------------------------------------------
-// T13 (19/10/2026) : LE PORTRAIT TELEPHONE. Pas de plateau-cadre : des bandes qui defilent. Quand une question
-// demande de toucher une carte (un defenseur), la table DEFILE TOUTE SEULE jusqu'a la bande qui les porte, la bande
-// se met a plat (les cartes passent a la ligne et se reduisent pour que la plus large unite tienne dans l'ecran,
-// plus de defilement lateral), les cartes a toucher portent une cible FIXE a l'ecran, puis la table revient ou elle
-// etait. Aucun bouton de defense dans le bandeau.
-// ---------------------------------------------------------------------------------------------------------------
-type BoiteEcran = { x: number; y: number; w: number; h: number; bas: number }
-
-function boiteALEcran(id: number): BoiteEcran | undefined {
-  const el = document.querySelector<HTMLElement>(`.portrait-table .scan-card[data-card-id="${id}"] .scan-frame`)
-  if (!el) return undefined
-  const r = el.getBoundingClientRect()
-  if (r.width === 0 || r.height === 0) return undefined
-  const bloc = el.closest<HTMLElement>('.scan-card')?.getBoundingClientRect()
-  return { x: r.left, y: r.top, w: r.width, h: r.height, bas: Math.max(r.bottom, bloc?.bottom ?? 0) }
-}
-
-/** La boite d'une carte a l'ecran, remesuree pendant qu'elle bouge (defilement de la table, mise a plat de la bande). */
-function useBoiteALEcran(id: number | undefined): BoiteEcran | undefined {
-  const [boite, setBoite] = useState<BoiteEcran | undefined>(undefined)
-  useEffect(() => {
-    if (id === undefined) { setBoite(undefined); return }
-    const mesurer = () => {
-      const b = boiteALEcran(id)
-      setBoite((avant) => (avant && b && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h ? avant : b))
-    }
-    mesurer()
-    let image = 0
-    const boucle = () => { mesurer(); image = window.requestAnimationFrame(boucle) }
-    image = window.requestAnimationFrame(boucle)
-    return () => window.cancelAnimationFrame(image)
-  }, [id])
-  return boite
-}
-
-/** Les bandes qui portent les cartes a toucher, sans doublon. */
-function bandesDesCartes(ids: number[]): HTMLElement[] {
-  const bandes: HTMLElement[] = []
-  for (const id of ids) {
-    const bande = document.querySelector<HTMLElement>(`.portrait-table .scan-card[data-card-id="${id}"]`)?.closest<HTMLElement>('.bande')
-    if (bande && !bandes.includes(bande)) bandes.push(bande)
-  }
-  return bandes
-}
-
-/** Le nombre de cartes de la plus large unite (porteur + ameliorations) de la bande : de quoi calculer la largeur d'une carte. */
-function plusLargeUnite(bande: HTMLElement): number {
-  let max = 1
-  for (const unite of bande.querySelectorAll<HTMLElement>('.plateau-unite')) {
-    const n = unite.querySelectorAll(':scope > .scan-card, :scope > .est-attachee').length
-    if (n > max) max = n
-  }
-  return max
-}
-
-function useDefilerVersLesChoix(ids: number[]): void {
-  const cle = ids.join(',')
-  const retour = useRef<{ table: HTMLElement; haut: number } | null>(null)
-  useEffect(() => {
-    if (!cle) return
-    const idsDeLaCle = cle.split(',').map(Number)
-    const table = document.querySelector<HTMLElement>('.portrait-table')
-    if (!table) return
-    const bandes = bandesDesCartes(idsDeLaCle)
-    if (bandes.length === 0) return
-    if (!retour.current) retour.current = { table, haut: table.scrollTop }
-    // Largeur d'une carte : la plus large unite doit tenir dans l'ecran, sans glisser de cote.
-    const n = Math.max(...bandes.map(plusLargeUnite))
-    const largeur = Math.max(60, Math.min(140, Math.floor((window.innerWidth - 24 - 6 * (n - 1)) / n)))
-    for (const b of bandes) {
-      b.classList.add('est-bande-question')
-      b.style.setProperty('--carte-question', `${largeur}px`)
-      const rail = b.querySelector<HTMLElement>('.bande-rail')
-      if (rail) rail.scrollLeft = 0
-    }
-    const reduit = animationsCoupees()
-    const cadrer = () => {
-      const t0 = table.getBoundingClientRect()
-      const bas = Math.max(...bandes.map((b) => b.getBoundingClientRect().bottom))
-      const haut = Math.min(...bandes.map((b) => b.getBoundingClientRect().top))
-      // Le bas de la bande au bas de la table ; si elle est plus haute que la table, son haut en haut.
-      const delta = bas - haut > t0.height ? haut - t0.top : bas - t0.bottom + 8
-      if (Math.abs(delta) > 1) table.scrollTo({ top: table.scrollTop + delta, behavior: reduit ? 'auto' : 'smooth' })
-    }
-    const image = window.requestAnimationFrame(() => window.requestAnimationFrame(cadrer))
-    return () => {
-      window.cancelAnimationFrame(image)
-      for (const b of bandes) {
-        b.classList.remove('est-bande-question')
-        b.style.removeProperty('--carte-question')
-      }
-    }
-  }, [cle])
-  // La question passee : la table revient ou elle etait.
-  useEffect(() => () => {
-    const r = retour.current
-    retour.current = null
-    if (!r || !r.table.isConnected) return
-    const reduit = animationsCoupees()
-    window.requestAnimationFrame(() => r.table.scrollTo({ top: r.haut, behavior: reduit ? 'auto' : 'smooth' }))
-  }, [])
-}
-
-/** Une carte a toucher en portrait : une cible FIXE a l'ecran, le libelle pose dans le bas de la carte. */
-function PuceFixe({
-  choix,
-  signaler,
-  unique,
-}: {
-  choix: ChoixSurTable
-  signaler: (id: number, absente: boolean) => void
-  unique: boolean
-}) {
-  const boite = useBoiteALEcran(choix.carteId)
-  useEffect(() => {
-    if (boite) return
-    const minuteur = window.setTimeout(() => signaler(choix.id, true), 600)
-    return () => window.clearTimeout(minuteur)
-  }, [boite, choix.id, signaler])
-  if (!boite) return null
-  const bloque = !!choix.indisponible
-  return (
-    <button
-      type="button"
-      className={`tsm-utilisable est-fixe${bloque ? ' est-inactif' : ''}`}
-      style={{ left: `${boite.x}px`, top: `${boite.y}px`, width: `${boite.w}px`, height: `${boite.h}px` }}
-      disabled={bloque}
-      aria-label={choix.nom}
-      title={choix.indisponible ?? choix.nom}
-      onClick={choix.choisir}
-      data-choix-unique={unique ? '' : undefined}
-    >
-      <span className="tsm-etiquette-dedans" aria-hidden="true">
-        <TexteEtiquette nom={choix.nom} />
-      </span>
-    </button>
   )
 }
 
