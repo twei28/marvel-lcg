@@ -55,7 +55,7 @@ aucune fenêtre). Tests : `ou-va-la-question.test.ts`, `cartouche-hors-phase-pla
 
 **Non fait / limites.** Pas de flèche attaquant → cible ni de lecture des cartes de boost hors phase (Q3). Une demande
 qui n'est QUE une réponse (sans option « Défendre ») garde la fenêtre centrale.
-**Constaté, pas corrigé (existait avant, voir Q1)** : « Ne pas défendre » contre le Badoon fige la partie.
+**Corrigé ensuite (voir Q1)** : « Ne pas défendre » contre le Badoon figeait la partie (question imbriquée dans un geste manuel, doublon dans `asking_players`).
 
 ## T17 : l'allié vaincu a son étape
 

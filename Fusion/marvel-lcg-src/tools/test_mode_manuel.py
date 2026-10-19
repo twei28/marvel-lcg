@@ -2162,6 +2162,102 @@ def cas_geste_refuse_arme_le_rendu(game_dir, port):
             "qu'un geste applique ; un reveil sans geste n'arme rien")
 
 
+def cas_question_posee_par_un_geste(game_dir, port):
+    """Une question posee PAR un geste manuel recoit sa reponse, y compris
+    « Ne pas defendre » (`{}`) : la partie ne se fige plus.
+
+    CONSTAT (19/10/2026, agent T16, « Ne pas defendre » contre un sbire Rapide
+    pose pendant le tour). Le geste `Puzzle.PutIntoPlay('16117')` fait entrer
+    l'Assassin Badoon, qui attaque aussitot : le moteur pose la question
+    « Qui defend ? » DEPUIS `DrainSandboxCommands`, donc depuis l'interieur du
+    `DoGetInput` de la question precedente (celle du tour). Cette question-la
+    etait encore dans `asking_players` : le joueur y figurait DEUX FOIS. La
+    reponse du joueur n'en retire qu'une (`WhenInput`), `asking_players`
+    n'est donc jamais vide, et `{}` (« Ne pas defendre ») est exactement la
+    valeur qui veut dire « pas d'entree » dans le predicat d'attente : le fil
+    du jeu dormait pour toujours (« En attente de Spider-Man »). Une reponse
+    ordinaire, elle, etait prise pour l'entree d'un autre joueur et la meme
+    question revenait une seconde fois.
+
+    Meme montage que `cas_geste_refuse_arme_le_rendu` : un `DeviceManager`
+    nu, le VRAI `DoGetInput` parque sur un fil, un executeur qui pose la
+    seconde question comme le ferait le moteur. Le « client » repond depuis un
+    troisieme fil, avec le test que fait `handle_post` (le joueur doit figurer
+    dans `asking_players`).
+    """
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.manager.base import DeviceManager, AskOptionPayload
+
+    def charge():
+        return AskOptionPayload(
+            options_json="[]", ability_type="", event_name="", prompt_text="",
+            show_cancel=False, replay_input="")
+
+    def essai(reponse):
+        device_manager = DeviceManager()
+        player_id = 0
+        vu = {"imbriquee": "PAS_ENCORE", "debut": False}
+
+        def executeur(commandes):
+            vu["debut"] = True
+            vu["imbriquee"] = device_manager.DoGetInput(
+                charge(), player_id, lambda: False)
+
+        device_manager.sandbox_executor = executeur
+        # Pas de `asking_players.append` a la main : `DoGetInput` y inscrit
+        # lui-meme le joueur (le faire ici ferait un doublon qui n'existe pas).
+        resultat = {"retour": "PAS_ENCORE", "eleve": None}
+
+        def fil_du_jeu():
+            try:
+                resultat["retour"] = device_manager.DoGetInput(
+                    charge(), player_id, lambda: False)
+            except BaseException as exc:
+                resultat["eleve"] = exc
+
+        fil = threading.Thread(target=fil_du_jeu, daemon=True)
+        fil.start()
+        time.sleep(0.3)
+        assert fil.is_alive(), "premisse cassee : le fil n'attend pas"
+
+        device_manager.QueueSandboxCommands(["Puzzle.PutIntoPlay('16117')"])
+        for _ in range(40):
+            if vu["debut"]:
+                break
+            time.sleep(0.05)
+        assert vu["debut"], "premisse cassee : le geste n'a pas ete execute"
+        time.sleep(0.3)  # la seconde question est posee, le client la voit
+
+        # Ce que fait `handle_post` : repondre seulement si le joueur est interroge.
+        assert player_id in device_manager.asking_players, \
+            "premisse cassee : la seconde question n'est pas affichee"
+        device_manager.WhenInput(reponse, player_id)
+
+        fil.join(timeout=2.0)
+        return fil, resultat, vu
+
+    for reponse, nom in (("{}", "Ne pas defendre"),
+                         ('{"id":5,"targets":[81],"resources":[]}', "Defendre")):
+        fil, resultat, vu = essai(reponse)
+        assert not fil.is_alive(), (
+            f"LA PARTIE EST FIGEE sur « {nom} » : la question posee par un "
+            f"geste manuel n'a jamais recu sa reponse (le joueur figurait "
+            f"deux fois dans asking_players, `WhenInput` n'en retire qu'un)."
+        )
+        if resultat["eleve"] is not None:
+            raise resultat["eleve"]
+        assert vu["imbriquee"] == reponse, (
+            f"« {nom} » : la question du geste devait recevoir {reponse!r}, "
+            f"elle a recu {vu['imbriquee']!r} (reponse prise pour celle d'un "
+            f"autre joueur, la question revient une seconde fois)."
+        )
+
+    return ("une question posee par un geste manuel recoit sa reponse, "
+            "« Ne pas defendre » comprise")
+
+
 class _MondeFactice:
     """Juste ce que lit `GameServerGet.manuel_passer` : `manuel_actif`."""
     def __init__(self, manuel_actif):
@@ -4328,6 +4424,7 @@ CAS = {
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
     "geste_refuse_arme_le_rendu": cas_geste_refuse_arme_le_rendu,
+    "question_posee_par_un_geste": cas_question_posee_par_un_geste,
     "passer_annule_le_moteur": cas_passer_annule_le_moteur,
     "passer_refuse_question_forcee": cas_passer_refuse_question_forcee,
     "passer_aucune_question": cas_passer_aucune_question,
