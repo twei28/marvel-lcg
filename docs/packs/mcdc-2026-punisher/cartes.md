@@ -46,7 +46,7 @@ Il n'y a **aucun insert ni livret de règles** dans le PDF (toutes les pages son
 **Icônes imprimées sous le texte des manigances annexes et de certains sbires** (relevées en 300 dpi le 19/10/2026) :
 - « !! » (deux points d'exclamation) = **Crisis**.
 - « triangle vers le haut avec un trait dessous + » (« pile + ») = **Acceleration** (confirmé par l'utilisateur pour Burning Building).
-- « croix à trois branches + » (la forme du Y de boost, avec un +) = **icône de boost** (précisé par l'utilisateur : ce n'est PAS un avion).
+- « croix à trois branches + » (silhouette d'avion avec un +, sur Overdrive) = **icône de boost** (précisé par l'utilisateur ; sur le scan elle a bien la forme d'un petit avion, mais il la nomme croix à trois branches).
 - « carte + » (carré arrondi avec un +) = **carte de rencontre en plus** : une carte de rencontre supplémentaire est donnée au premier joueur (précisé par l'utilisateur le 19/10/2026). Sur Designs on Crimes et Punisher's Arsenal.
 
 - `👤` = icône « par joueur » (un nombre suivi de cette icône est multiplié par le nombre de joueurs).
@@ -1022,7 +1022,7 @@ Fond rouge sombre. Peut se mêler à d'autres rencontres : Punisher y est un sbi
 - **When Defeated**: Choose a CRIMINAL minion. That minion activates against the player it is engaged with.
 
 ### p261 — THE SYNDICATE · Manigance annexe
-- ID 6131 · The Syndicate (7/7) · Illustration : Vicentini & Sabbatini · Menace de départ 3 [👤 ?] · Boost ★ + 1
+- ID 6131 · The Syndicate (7/7) · Illustration : Vicentini & Sabbatini · Menace de départ 3 (fixe, sans icône par joueur : relu en 300 dpi) · Boost ★ + 1
 - *Beetle's Syndicate takes a collaborative approach to plotting and scheming.*
 - **When Revealed**: In player order, each player finds and reveals a SYNDICATE minion that is not in play.
 - ★ **Boost**: Deal this card to yourself as a facedown encounter card.
