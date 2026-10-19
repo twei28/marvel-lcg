@@ -1600,6 +1600,18 @@ export function DeroulePhase({
     suivreLeMeneur()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tousSontPrets, clePret, questionAuJoueur, termine, etapeValidee, phaseDesCartes])
+  // UNE ETAPE DEJA VALIDEE QUI N'EST PAS LA DERNIERE : on passe a la suivante (19/10/2026, T7). La liste des etapes peut
+  // se recomposer sous les yeux du joueur (une revelation tiree du journal est remplacee par celle du moteur : sa cle
+  // disparait) ; l'index retombe alors sur la derniere etape validee, hors attente. Seul un clic en sortait, or en
+  // « Tout le monde valide » le clic est refuse et le bouton « Pret » deja marque : les deux sieges restaient
+  // « Pret · 2 / 2 » sur une etape morte, le moteur attendant un accuse qui ne partirait jamais.
+  useEffect(() => {
+    if (!etapeValidee || enAttente || suspendu || relecture || termine || questionAuJoueur || suiteDifferee) return
+    if (!etape || etape.etat === 'annonce' || etape.temps === 'bilan' || validee?.cle !== etape.cle) return
+    if (index + 1 >= etapesAffichees.length) return
+    setCleCourante(etapesAffichees[index + 1].cle)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- l'index, la liste et l'etat de validation decident
+  }, [etapeValidee, enAttente, suspendu, relecture, termine, questionAuJoueur, suiteDifferee, index, etapesAffichees.length, etape?.cle, etape?.etat])
   const nomDuSiege = (siege: number | undefined): string =>
     siege === undefined
       ? '?'
