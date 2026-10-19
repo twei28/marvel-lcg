@@ -1988,6 +1988,7 @@ export function DeroulePhase({
           etape={etape}
           actif={!questionAuJoueur && !enVolDeJeton && !lectureEnCours}
           pvMax={etape?.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined}
+          etapes={etapes}
         />
         {/* Les cartes qui sortent du paquet rencontre : les boosts a cote du
             deck, puis la carte revelee en grand. Meme portail, meme repere. */}

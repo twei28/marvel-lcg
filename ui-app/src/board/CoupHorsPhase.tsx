@@ -13,6 +13,8 @@ import { calculCoupTable } from './calcul-coup-table'
 import { clavierBloque } from './clavier-cartouche'
 import { estSpectateur } from './moteur'
 import { phraseHistorique } from './PhaseDynamique'
+import { CoucheTraitPhase } from './CoucheTraitPhase'
+import { coupsDeLEtape } from './coups-sur-table'
 import { TableSansModale } from './TableSansModale'
 import { contenuDuTrait } from './trait-phase'
 import type { EtapeDeroule } from './deroule-phase'
@@ -121,6 +123,9 @@ export function CoupHorsPhaseSurTable({ etapes, ignorerLesPremiers = false }: { 
   const cause = texteCauseActivation(coup)
   return (
     <DansLeCadre>
+      {/* 19/10/2026 : la meme fleche attaquant > cible que la phase du mechant (pas de relecture des boosts).
+          Elle part et disparait avec le bandeau : meme `coup`, rendue tant qu'il est la. */}
+      <CoucheTraitPhase etape={coup} actif sansEtiquette={coupsDeLEtape(coup).some((c) => c.montant > 0)} />
       <TableSansModale
         acteurId={coup.carteId ?? coup.cibleId}
         cibleId={coup.carteId === undefined ? undefined : coup.cibleId}

@@ -16,11 +16,11 @@
 // vers un point inventé. Le cartouche, lui, garde le nom en clair (le fait le
 // porte) : l'information n'est pas perdue, seul le trait manque.
 
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { EtapeDeroule } from './deroule-phase'
 import { t } from './langue'
 import { boiteDeCarte, cadreDuPlateau } from './mesures-plateau'
-import { alerteMenace, contenuDuTrait, deltaSurTable, traitEntre, type Trait } from './trait-phase'
+import { alerteMenace, contenuDuTrait, deltaSurTable, deltasDesEffets, etiquetteDuTrait, traitEntre, type Trait } from './trait-phase'
 
 export function CoucheTraitPhase({
   etape,
@@ -83,14 +83,9 @@ export function CoucheTraitPhase({
   // Rien à annoncer et aucune unité : le trait montre la direction, sans
   // étiquette. Un cartouche vide ferait un point noir posé sur la table.
   // Une annonce à 0 (l'ATQ de Klaw avant ses boosts) ne dit pas « 0 dégâts » : ce serait faux.
-  const etiquette = sansEtiquette || (etape.etat === 'annonce' && contenu.montant === 0)
-    ? ''
-    : contenu.montant !== undefined
-      ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
-      : contenu.unite
-        ? t(contenu.unite)
-        : ''
-
+  // 19/10/2026 : un coup a 0 degat ne l'affiche pas non plus (le bandeau et le « −0 PV » le disent).
+  const etiquette = etiquetteDuTrait(contenu, sansEtiquette)
+  const arc = `M ${trait.x1} ${trait.y1} Q ${trait.cx} ${trait.cy} ${trait.x2} ${trait.y2}`
   return (
     <svg
       className={`trait-phase est-${contenu.ton}`}
@@ -117,15 +112,11 @@ export function CoucheTraitPhase({
       {/* Deux traits superposés : un large et sombre dessous, qui détache le
           trait des illustrations, et le trait coloré dessus. Sans lui, un trait
           rouge sur une carte rouge disparaît. */}
-      <line className="trait-phase-ombre" x1={trait.x1} y1={trait.y1} x2={trait.x2} y2={trait.y2} />
-      <line
-        className="trait-phase-ligne"
-        x1={trait.x1}
-        y1={trait.y1}
-        x2={trait.x2}
-        y2={trait.y2}
-        markerEnd="url(#trait-phase-pointe)"
-      />
+      {/* ARC QUADRATIQUE (19/10/2026) : l'ancien <line> droit pointillé est remplacé, pas supprimé en
+          pensée : `COURBURE_TRAIT` à 0 redonne la droite. `pathLength` = 1 pour que le tracé se dessine
+          de la source vers la cible (animation `trait-phase-trace`, éteinte en mouvement réduit). */}
+      <path className="trait-phase-ombre" d={arc} pathLength={1} />
+      <path className="trait-phase-ligne" d={arc} pathLength={1} markerEnd="url(#trait-phase-pointe)" />
       {etiquette ? (
         <g className="trait-phase-etiquette" transform={`translate(${trait.mx} ${trait.my})`}>
           {/* La largeur suit le texte : une boîte fixe couperait « 3 menaces »
@@ -147,6 +138,52 @@ export function CoucheTraitPhase({
   )
 }
 
+/** Combien de temps reste un « −X PV » (meme duree que celui d'une attaque : `delta-s-impact`, 1,6 s). */
+const DUREE_DELTA_EFFET_MS = 1700
+
+type DeltaPose = { cle: string; texte: string; ton: 'degats'; x: number; y: number; w: number }
+
+/**
+ * « −X PV » DES CARTES BLESSEES PAR UNE CARTE REVELEE (19/10/2026).
+ *
+ * ⚠ LES EFFETS D'UNE CARTE REVELEE N'ARRIVENT QU'A LA FIN DE SON ECRAN (constate a l'ecran, 19/10/2026) :
+ * le moteur ne les mesure qu'une fois la carte resolue, c'est-a-dire quand le joueur a fini de la lire.
+ * L'etape affichee ne les porte donc jamais : on les lit dans la LISTE des etapes, des qu'ils paraissent,
+ * quelle que soit l'etape alors a l'ecran. Chaque (etape, carte) ne se montre qu'une fois ; ce qui est
+ * deja la au premier rendu (rechargement de la page, relecture) ne se rejoue pas.
+ */
+function useDegatsDesEffets(etapes: readonly EtapeDeroule[] | undefined): DeltaPose[] {
+  const [poses, setPoses] = useState<DeltaPose[]>([])
+  const vus = useRef<Set<string> | undefined>(undefined)
+  const tous = (etapes ?? []).flatMap((e) => deltasDesEffets(e).map((d) => ({ ...d, cle: `${e.cle}#${d.cibleId}` })))
+  const signature = tous.map((d) => `${d.cle}:${d.texte}`).join('|')
+  useLayoutEffect(() => {
+    if (vus.current === undefined) {
+      vus.current = new Set(tous.map((d) => d.cle))
+      return
+    }
+    const nouveaux = tous.filter((d) => !vus.current?.has(d.cle))
+    if (nouveaux.length === 0) return
+    for (const d of nouveaux) vus.current.add(d.cle)
+    const c = cadreDuPlateau()
+    const posees: DeltaPose[] = []
+    for (const d of nouveaux) {
+      const b = c ? boiteDeCarte(d.cibleId, c) : undefined
+      if (b) posees.push({ cle: d.cle, texte: d.texte, ton: d.ton, x: b.x, y: b.y, w: b.w })
+    }
+    if (posees.length === 0) return
+    setPoses((liste) => [...liste, ...posees])
+    const minuteur = window.setTimeout(
+      () => setPoses((liste) => liste.filter((p) => !posees.some((q) => q.cle === p.cle))),
+      DUREE_DELTA_EFFET_MS
+    )
+    // Pas de nettoyage au demontage de l'effet : un nouveau rendu ne doit pas effacer un « −X PV » en cours.
+    void minuteur
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signature])
+  return poses
+}
+
 /**
  * L'ALLUMAGE ET LA CARTE TOUCHEE (v3, 10/10/2026, Q6 et Q7).
  *
@@ -162,12 +199,16 @@ export function EffetsSurTable({
   etape,
   actif,
   pvMax,
+  etapes,
 }: {
   etape: EtapeDeroule | undefined
   actif: boolean
   pvMax?: number
+  /** Toutes les etapes de la phase : les « −X PV » d'une carte revelee viennent de la leur, pas de l'etape affichee. */
+  etapes?: readonly EtapeDeroule[]
 }) {
   const [boite, setBoite] = useState<{ x: number; y: number; w: number } | undefined>(undefined)
+  const boitesEffets = useDegatsDesEffets(etapes)
   const delta = etape && actif ? deltaSurTable(etape, pvMax) : undefined
   const cibleId = etape?.cibleId
   const cle = etape?.cle
@@ -183,9 +224,20 @@ export function EffetsSurTable({
     // `delta` change d'objet a chaque rendu : la cle de l'etape suffit.
   }, [cle, cibleId, delta === undefined])
 
-  if (!actif || !etape) return null
+  // Une ligne par carte blessee par un effet revele (hors attaque, dont le « −X PV » est celui de `delta`).
+  const spansEffets = boitesEffets.map((e) => (
+    <span
+      key={e.cle}
+      className={`delta-sur-table est-${e.ton}`}
+      style={{ left: `${e.x + e.w / 2}px`, top: `${e.y}px` }}
+      aria-hidden="true"
+    >
+      {e.texte}
+    </span>
+  ))
+  if (!actif || !etape) return spansEffets.length > 0 ? <>{spansEffets}</> : null
   const ids = [etape.carteId, etape.cibleId].filter((id): id is number => id !== undefined)
-  if (ids.length === 0) return null
+  if (ids.length === 0) return spansEffets.length > 0 ? <>{spansEffets}</> : null
   const sauf = ids.map((id) => `:not([data-card-id="${id}"])`).join('')
   // 16/10/2026 : plus de contour orange épais ni de lueur sur les cartes qui agissent et qui
   // subissent. Il se calait sur le BLOC entier de la carte (pastille de type et barre de PV
@@ -219,6 +271,7 @@ export function EffetsSurTable({
           {delta.texte}
         </span>
       ) : null}
+      {spansEffets}
     </>
   )
 }

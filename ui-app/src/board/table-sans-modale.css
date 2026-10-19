@@ -414,13 +414,14 @@ html:has(.tsm-bandeau) .plateau-cadre .scan-frame {
    du jeu ») : les couleurs de l'Épuré (rouge Marvel, jaune), un trait plein plus fin, et la pastille
    en Bangers sur fond de panneau, carrée comme les autres pastilles de la ligne du haut. */
 html:has(.tsm-bandeau) .trait-phase-ombre {
-  stroke: rgba(0, 0, 0, 0.6);
-  stroke-width: 6;
+  stroke: rgba(0, 0, 0, 0.3);
+  stroke-width: 5.5;
 }
 
+/* 19/10/2026 : arc plein fin + pointe pleine (plus de `stroke-dasharray: 14 7`). */
 html:has(.tsm-bandeau) .trait-phase-ligne {
-  stroke-width: 2.5;
-  stroke-dasharray: 14 7;
+  stroke-width: 3.5;
+  stroke-dasharray: 1;
 }
 
 html:has(.tsm-bandeau) .trait-phase.est-degats .trait-phase-ligne { stroke: #e62429; }

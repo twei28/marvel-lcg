@@ -6,7 +6,7 @@
 // nombre de contre le nombre de contre ». Un trait qui dirait « 3 » sans unité
 // laisserait croire à des dégâts sur une manigance.
 import { describe, expect, it } from 'vitest'
-import { alerteMenace, contenuDuTrait, deltaSurTable, traitEntre, type Boite } from './trait-phase'
+import { alerteMenace, contenuDuTrait, deltaSurTable, deltasDesEffets, etiquetteDuTrait, traitEntre, type Boite } from './trait-phase'
 import type { EtapeDeroule } from './deroule-phase'
 
 const etape = (sur: Partial<EtapeDeroule>): EtapeDeroule =>
@@ -93,10 +93,26 @@ describe('par où le trait passe', () => {
     expect(t.y2).toBe(400)
   })
 
-  it('l’étiquette se pose au milieu du segment', () => {
+  it('l’étiquette se pose au milieu de la COURBE (arc creusé de 20 % de la corde)', () => {
     const t = traitEntre(carte(0, 0), carte(400, 0))!
+    // Corde de 300 : contrôle 60 plus haut, milieu de l'arc = moitié de ce décalage.
+    expect(t.cy).toBe(10)
     expect(t.mx).toBe(250)
-    expect(t.my).toBe(70)
+    expect(t.my).toBe(40)
+  })
+
+  it('l’arc se creuse toujours du même côté : en haut à l’horizontale, quel que soit le sens', () => {
+    const droite = traitEntre(carte(0, 0), carte(400, 0))!
+    const gauche = traitEntre(carte(400, 0), carte(0, 0))!
+    expect(droite.cy).toBeLessThan(droite.y1)
+    expect(gauche.cy).toBeLessThan(gauche.y1)
+  })
+
+  it('à la verticale, l’arc se creuse vers la droite, de haut en bas comme de bas en haut', () => {
+    const bas = traitEntre(carte(0, 0), carte(0, 400))!
+    const haut = traitEntre(carte(0, 400), carte(0, 0))!
+    expect(bas.cx).toBeGreaterThan(bas.x1)
+    expect(haut.cx).toBeGreaterThan(haut.x1)
   })
 
   it('deux cartes confondues ne donnent AUCUN trait', () => {
@@ -186,5 +202,48 @@ describe('l alerte de menace (v3, Q16)', () => {
     expect(alerteMenace(etape({ titre: 'manigance', etat: 'resolu', restant: 7, plafond: 10 }))).toBeUndefined()
     expect(alerteMenace(etape({ titre: 'attaque', etat: 'resolu', restant: 9, plafond: 10 }))).toBeUndefined()
     expect(alerteMenace(etape({ titre: 'menace', restant: 9 }))).toBeUndefined()
+  })
+})
+
+describe('l’étiquette posée sur le trait', () => {
+  it('dit le nombre et son unité', () => {
+    expect(etiquetteDuTrait({ montant: 3, unite: 'dégâts' })).toBe('3 dégâts')
+  })
+
+  it('un coup à 0 dégât ne pose AUCUNE étiquette (le bandeau et le « −0 PV » le disent)', () => {
+    expect(etiquetteDuTrait({ montant: 0, unite: 'dégâts' })).toBe('')
+  })
+
+  it('rien quand le jeton ou le bandeau porte déjà le nombre', () => {
+    expect(etiquetteDuTrait({ montant: 3, unite: 'dégâts' }, true)).toBe('')
+  })
+})
+
+describe('« −X PV » des effets d’une carte révélée', () => {
+  const effet = (cible_id: number, montant: number) => ({ genre: 'degats' as const, cible: 'C' + cible_id, cible_id, montant, restant: 3 })
+  const revelation = (sur: Partial<EtapeDeroule>) => etape({ temps: 'revelation', titre: 'revelation', ...sur })
+
+  it('une ligne par carte blessée (trois cibles à la fois)', () => {
+    const d = deltasDesEffets(revelation({ effets: [effet(1, 1), effet(83, 1), effet(84, 1)] }))
+    expect(d.map((x) => x.cibleId)).toEqual([1, 83, 84])
+    expect(d.every((x) => x.texte === '−1 PV' && x.ton === 'degats')).toBe(true)
+  })
+
+  it('deux effets sur la même carte s’additionnent', () => {
+    expect(deltasDesEffets(revelation({ effets: [effet(1, 1), effet(1, 2)] }))).toEqual([{ cibleId: 1, texte: '−3 PV', ton: 'degats' }])
+  })
+
+  it('ni menace, ni dégât à 0, ni annonce', () => {
+    expect(deltasDesEffets(revelation({ effets: [{ genre: 'menace', cible: 'M', cible_id: 5, montant: 2 }, effet(1, 0)] }))).toEqual([])
+    expect(deltasDesEffets(revelation({ etat: 'annonce', effets: [effet(1, 1)] }))).toEqual([])
+  })
+
+  it('pas de doublon avec l’attaque ou la riposte : leur « −X PV » est celui de deltaSurTable', () => {
+    expect(deltasDesEffets(etape({ temps: 'mechant', titre: 'attaque', cibleId: 1, montant: 2, restant: 3, effets: [effet(1, 2)] }))).toEqual([])
+    expect(deltasDesEffets(etape({ temps: 'revelation', titre: 'riposte', effets: [effet(1, 2)] }))).toEqual([])
+  })
+
+  it('pas hors de la révélation', () => {
+    expect(deltasDesEffets(etape({ temps: 'mechant', titre: 'manigance', effets: [effet(1, 1)] }))).toEqual([])
   })
 })

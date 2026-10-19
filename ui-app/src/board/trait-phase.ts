@@ -80,9 +80,34 @@ export type Trait = {
   y1: number
   x2: number
   y2: number
-  /** Où poser l'étiquette : au milieu du segment. */
+  /** Où poser l'étiquette : au milieu de la COURBE (t = 0,5), pas de la corde. */
   mx: number
   my: number
+  /** Point de contrôle de l'arc quadratique (19/10/2026) : la corde, décalée de sa perpendiculaire. */
+  cx: number
+  cy: number
+}
+
+/** Le creux de l'arc, en part de la longueur de la corde (19/10/2026 : « style 2 en version courbée », ~20 %). */
+export const COURBURE_TRAIT = 0.2
+
+/**
+ * Le point de contrôle d'un arc de `(x1,y1)` à `(x2,y2)` : au milieu de la corde, décalé
+ * perpendiculairement de `COURBURE_TRAIT` x longueur, TOUJOURS DU MÊME CÔTÉ (vers le haut quand la flèche
+ * est horizontale, vers la droite quand elle est verticale), quel que soit le sens du coup.
+ */
+export function pointDeControle(x1: number, y1: number, x2: number, y2: number): { x: number; y: number } {
+  const dx = x2 - x1
+  const dy = y2 - y1
+  const longueur = Math.hypot(dx, dy)
+  if (longueur === 0) return { x: x1, y: y1 }
+  let nx = dy / longueur
+  let ny = -dx / longueur
+  if (ny > 1e-9 || (Math.abs(ny) <= 1e-9 && nx < 0)) {
+    nx = -nx
+    ny = -ny
+  }
+  return { x: (x1 + x2) / 2 + nx * longueur * COURBURE_TRAIT, y: (y1 + y2) / 2 + ny * longueur * COURBURE_TRAIT }
 }
 
 /**
@@ -105,13 +130,17 @@ export function traitEntre(auteur: Boite, cible: Boite): Trait | undefined {
   if (dx === 0 && dy === 0) return undefined
   const depart = surLeBord(auteur, a, dx, dy)
   const arrivee = surLeBord(cible, b, -dx, -dy)
+  const c = pointDeControle(depart.x, depart.y, arrivee.x, arrivee.y)
   return {
     x1: depart.x,
     y1: depart.y,
     x2: arrivee.x,
     y2: arrivee.y,
-    mx: (depart.x + arrivee.x) / 2,
-    my: (depart.y + arrivee.y) / 2,
+    // Milieu de la courbe quadratique : 1/4 départ + 1/2 contrôle + 1/4 arrivée.
+    mx: depart.x / 4 + c.x / 2 + arrivee.x / 4,
+    my: depart.y / 4 + c.y / 2 + arrivee.y / 4,
+    cx: c.x,
+    cy: c.y,
   }
 }
 
@@ -165,6 +194,40 @@ export function deltaSurTable(etape: EtapeDeroule, pvMax?: number): DeltaTable |
     return { texte: montant > 0 ? `+${montant}` : `−${Math.abs(montant)}`, ton: 'menace', avant }
   }
   return undefined
+}
+
+/**
+ * Le texte posé sur le trait (« 3 dégâts », « 2 menaces »), ou rien. Vide quand le jeton ou le bandeau
+ * porte déjà le nombre (`sansEtiquette`), et pour un coup à 0 (19/10/2026 : « 0 dégâts » posé sur la
+ * flèche, alors que le bandeau et le « −0 PV » de la carte le disent déjà ; une annonce à 0 non plus).
+ */
+export function etiquetteDuTrait(contenu: { montant?: number; unite?: string }, sansEtiquette = false): string {
+  if (sansEtiquette || contenu.montant === 0) return ''
+  if (contenu.montant !== undefined) return `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
+  return contenu.unite ? t(contenu.unite) : ''
+}
+
+/**
+ * « −X PV » DES EFFETS D'UNE CARTE REVELEE (19/10/2026) : une trahison qui blesse un heros ou un allie,
+ * parfois plusieurs cibles a la fois. Une ligne par carte blessee (deux effets sur la meme carte
+ * s'additionnent), meme texte que l'attaque. Rien pour une attaque ou une riposte : leur « −X PV » est
+ * celui de `deltaSurTable` (pas de doublon), et une carte deja nommee par `cibleId` ne l'est pas deux fois.
+ */
+export type DeltaEffet = { cibleId: number; texte: string; ton: 'degats' }
+
+export function deltasDesEffets(etape: EtapeDeroule): DeltaEffet[] {
+  if (etape.etat !== undefined && etape.etat !== 'resolu') return []
+  if (etape.titre === 'attaque' || etape.titre === 'riposte') return []
+  if (!(etape.temps === 'revelation' || etape.titre === 'entree' || etape.titre === 'stade-revele')) return []
+  const parCarte = new Map<number, number>()
+  for (const effet of etape.effets ?? []) {
+    if (effet.genre !== 'degats' || effet.montant <= 0) continue
+    parCarte.set(effet.cible_id, (parCarte.get(effet.cible_id) ?? 0) + effet.montant)
+  }
+  const dejaMontre = deltaSurTable(etape) ? etape.cibleId : undefined
+  return [...parCarte]
+    .filter(([id]) => id !== dejaMontre)
+    .map(([cibleId, montant]) => ({ cibleId, texte: `−${montant} ${t('PV')}`, ton: 'degats' as const }))
 }
 
 /**
