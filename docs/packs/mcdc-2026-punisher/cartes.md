@@ -21,7 +21,7 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - « !! » (deux points d'exclamation) = **Crisis**.
 - « triangle vers le haut avec un trait dessous + » (« pile + ») = **Acceleration** (confirmé par l'utilisateur pour Burning Building).
 - « croix à trois branches + » (la forme du Y de boost, avec un +) = **icône de boost** (précisé par l'utilisateur : ce n'est PAS un avion).
-- « carte + » (carré arrondi avec un +) = icône à identifier (Designs on Crimes, Punisher's Arsenal) — probablement Hazard, à confirmer.
+- « carte + » (carré arrondi avec un +) = **carte de rencontre en plus** : une carte de rencontre supplémentaire est donnée au premier joueur (précisé par l'utilisateur le 19/10/2026). Sur Designs on Crimes et Punisher's Arsenal.
 
 - `👤` = icône « par joueur » (un nombre suivi de cette icône est multiplié par le nombre de joueurs).
 - `Boost N` = nombre d'icônes de boost (le « Y » rouge en bas à droite).
@@ -624,7 +624,7 @@ romains (I, II, III).
 - *Hobgoblin lurks in the shadows, waiting for an opportunity to take over New York's criminal underworld.*
 - **When Revealed**: Discard 3👤 cards from the encounter deck.
 - **When Defeated**: In player order, each player resolves the *"Pumpkin Bomb"* ability.
-- Icône dans le cadre : 1 icône « carte + » (carré arrondi avec + ; relu en 300 dpi)
+- Icône dans le cadre : 1 icône « carte + » = 1 carte de rencontre en plus pour le premier joueur
 
 ### p159 / p161 — GUISE TO TERRORIZE ×2 · Traîtrise
 - ID 6080 / 6081 · Hobgoblin (10, 11/15) · Illustration : Federico Vicentini · Boost 2
@@ -873,7 +873,7 @@ Fond rouge sombre. Peut se mêler à d'autres rencontres : Punisher y est un sbi
 - *Punisher stockpiles weapons and supplies in safehouses scattered throughout New York.*
 - **When Revealed**: Find an ARMAMENT attachment that is not in play and reveal it.
 - **When Defeated**: Find Punisher and reveal him. Resolve his *"Punishment"* ability.
-- Icône dans le cadre : 1 icône « carte + » (carré arrondi avec + ; relu en 300 dpi)
+- Icône dans le cadre : 1 icône « carte + » = 1 carte de rencontre en plus pour le premier joueur
 
 ---
 
