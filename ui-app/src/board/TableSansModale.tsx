@@ -628,6 +628,7 @@ export function CiblageSurTable({
   raison,
   valider,
   annuler,
+  ordreDeLaTable,
 }: {
   titre: string
   choisies: number
@@ -637,7 +638,37 @@ export function CiblageSurTable({
   raison: string
   valider: () => void
   annuler?: () => void
+  /**
+   * Une selection ORDONNEE dont l'ordre de la table est un bon defaut (ordre d'activation des sbires) : un bouton
+   * « Garder l'ordre de la table » choisit les cartes restantes dans l'ordre de la rangee et valide, en UN clic
+   * (Espace) au lieu d'un clic par sbire (19/10/2026). Les cliquer une a une reste possible.
+   */
+  ordreDeLaTable?: boolean
 }) {
+  // Les clics sur les cartes s'ajoutent dans l'etat du jeu ; la validation attend que cet etat soit a jour.
+  const [validerQuandPrete, setValiderQuandPrete] = useState(false)
+  useEffect(() => {
+    if (!validerQuandPrete || !prete) return
+    setValiderQuandPrete(false)
+    valider()
+  }, [validerQuandPrete, prete, valider])
+  const restantes = cibles.filter((c) => !c.choisie && c.etiquette === undefined)
+  const garderLOrdre = () => {
+    if (restantes.length === 0) {
+      if (prete) valider()
+      return
+    }
+    // L'ORDRE DE LA TABLE = la rangee lue de gauche a droite (puis de haut en bas) : le moteur, lui, liste les sbires
+    // du plus recemment engage au plus ancien, soit de DROITE a GAUCHE a l'ecran (mesure du 19/10/2026).
+    const cadre = cadreDuPlateau()
+    const place = (c: CibleSurTable) => {
+      const b = cadre ? boiteDeCarte(c.id, cadre) : undefined
+      return b ? { x: b.x, y: Math.round(b.y / 60) } : { x: Number.POSITIVE_INFINITY, y: 0 }
+    }
+    const rangee = [...restantes].sort((a, b) => place(a).y - place(b).y || place(a).x - place(b).x)
+    for (const c of rangee) c.agir()
+    setValiderQuandPrete(true)
+  }
   return (
     <>
       <BandeauDeplacable className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
@@ -645,9 +676,15 @@ export function CiblageSurTable({
           <b>{titre}</b>
           {maximum > 0 ? <span className="tsm-compte"> {choisies}/{maximum}</span> : null}
         </span>
+        {ordreDeLaTable && !prete ? (
+          <button type="button" className="tsm-bouton" onClick={garderLOrdre} data-choix-unique="" data-ordre-table="">
+            {choisies > 0 ? t('Finir dans l’ordre de la table') : t('Garder l’ordre de la table')}
+            <kbd className="tsm-touche">{t('Espace')}</kbd>
+          </button>
+        ) : null}
         <button
           type="button"
-          className="tsm-bouton"
+          className={`tsm-bouton${ordreDeLaTable && !prete ? ' est-refus' : ''}`}
           disabled={!prete}
           title={prete ? undefined : raison}
           onClick={valider}
@@ -661,6 +698,7 @@ export function CiblageSurTable({
             {t('Annuler')}
           </button>
         ) : null}
+        {ordreDeLaTable && !prete ? <span className="tsm-consigne">{t('ou clique les cartes une à une, dans l’ordre voulu')}</span> : null}
       </BandeauDeplacable>
       {cibles.map((c) => (
         <CarteCiblable key={c.id} cible={c} />

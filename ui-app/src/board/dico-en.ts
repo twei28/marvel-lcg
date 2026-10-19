@@ -1644,6 +1644,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Déplacer la ligne (double-clic : la remettre en place)': 'Move the bar (double-click: put it back)',
   'Glisse pour déplacer la ligne ; double-clic pour la remettre en place': 'Drag to move the bar; double-click to put it back',
   'Remettre la ligne en place': 'Put the bar back',
+  'Garder l’ordre de la table': 'Keep the table order',
+  'Finir dans l’ordre de la table': 'Finish in table order',
+  'ou clique les cartes une à une, dans l’ordre voulu': 'or click the cards one by one, in the order you want',
   'Ta décision': 'Your decision',
   'Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai':
     'Step by step: one "Next" per step of the phase. Bis and Dynamic phase: the new presentations, on trial',

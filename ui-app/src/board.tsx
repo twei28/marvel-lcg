@@ -4822,6 +4822,7 @@ export function PagePartie({
                   raison={interaction.raison}
                   valider={interaction.valider}
                   annuler={interaction.annuler}
+                  ordreDeLaTable={interaction.option?.name === 'Minion_Activates_Order' || interaction.option?.name === 'Players_Activation_Order'}
                 />
               ) : questionEnScene && etat.demande ? (
                 <DemandeCentrale
