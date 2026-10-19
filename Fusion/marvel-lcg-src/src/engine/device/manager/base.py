@@ -457,6 +457,22 @@ class DeviceManager:
         # qu'on corrige. La liste rendue rattrape ce cas, l'instantane
         # rattrape celui du lot entierement refuse : il faut les DEUX.
         un_drainage = bool(self.sandbox_commands) and self.sandbox_executor is not None
+        # ⚠ LE JOUEUR SORT DE `asking_players` AVANT DE DRAINER, PAS APRES
+        # (19/10/2026, « Ne pas defendre » contre un sbire Rapide : partie
+        # figee). Un geste peut POSER UNE QUESTION lui-meme : `Puzzle.
+        # PutIntoPlay('16117')` fait entrer l'Assassin Badoon, qui attaque
+        # aussitot, et « Qui defend ? » est demandee depuis cet appel, donc
+        # depuis l'interieur de CE `DoGetInput`. Si ce joueur y figure encore,
+        # la question imbriquee l'ajoute une seconde fois : la reponse
+        # (`WhenInput`) n'en retire qu'une, `asking_players` n'est jamais
+        # vide, et `{}` (« Ne pas defendre ») est justement la valeur que le
+        # predicat d'attente lit comme « pas d'entree » -- le fil dort pour
+        # toujours. Une autre reponse etait prise pour celle d'un autre joueur
+        # (branche « When anyone has inputted » plus bas) et la meme question
+        # revenait. Cette question-ci est de toute facon close : elle est
+        # redemandee par l'appelant (`return None` ci-dessous).
+        if un_drainage and player_id in self.asking_players:
+            self.asking_players.remove(player_id)
         applique = self.DrainSandboxCommands()
         # CORRECTIF (constat C1 de la revue finale, 20/09/2026) : ce retour
         # etait JETE. Il ne servait que de booleen (« un drainage a eu

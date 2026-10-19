@@ -1,20 +1,13 @@
 # Questions ouvertes : T15, T16, T17 (mode « Sur la table », 19/10/2026)
 
-## Q1. Refuser de défendre contre un sbire Rapide fige la partie (constaté, existait avant)
+## Q1. Refuser de défendre contre un sbire Rapide fige la partie : RÉSOLU (19/10/2026)
 
-Vu : Assassin Badoon (16117) mis en jeu pendant le tour, Spider-Man héros. On clique « Ne pas défendre ». Le moteur pose
-alors une seconde question (`WhenUnitBeingAttack`, `show_cancel` vrai) dont la seule option (Sens d'Araignée, `Play`) est
-listée dans `refus_json` avec la raison « update legal targets », et `options_json` est VIDE. `lireDemande` (ask.ts) rend
-`undefined` quand il n'y a aucune option : le plateau croit que le moteur n'attend rien, et la partie reste figée
-(« En attente de Spider-Man »). Reproduit dans l'ancien affichage aussi. Défendre avec Spider-Man ne fige pas.
-
-Options :
-1. `lireDemande` garde une demande sans option quand `show_cancel` est vrai (le panneau montre alors « Passer »).
-   Touche une logique partagée par tous les modes.
-2. Côté moteur : ne pas proposer Sens d'Araignée contre un sbire (la carte dit « quand le MÉCHANT initie une attaque »).
-3. Ne rien faire pour l'instant.
-
-Recommandation : 2 (c'est une règle du jeu mal posée), puis 1 en filet. Je n'y ai pas touché (hors périmètre).
+Cause réelle (pas Sens d'Araignée, dont le « refus » n'est que la liste des cartes injouables de la main) : la question
+« Qui défend ? » est posée PAR un geste manuel (`Puzzle.PutIntoPlay`), donc depuis l'intérieur du `DoGetInput` de la
+question précédente. Le joueur figurait deux fois dans `asking_players` ; sa réponse n'en retirait qu'une, et `{}`
+(« Ne pas défendre ») est la valeur lue comme « pas d'entrée » : le moteur dormait pour toujours. Corrigé dans
+`DeviceManager.DoGetInput` (le joueur sort de `asking_players` avant de drainer le geste). Aucune règle changée.
+Test : `tools/test_mode_manuel.py question_posee_par_un_geste` (rouge avant, vert après).
 
 ## Q2. Une seule étape par statut dans le toast quand deux statuts tombent dans le même rendu
 
