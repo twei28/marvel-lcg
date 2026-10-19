@@ -29,6 +29,12 @@ export type EtatDuCartouche = {
   etapeEstAnnonce: boolean
   /** Présentation « Sur la table » : un clic à chaque étape, annonce comprise. */
   surTable: boolean
+  /**
+   * L'étape courante est une annonce validée dont la RÉSOLUTION n'est pas encore là, alors que sa conséquence
+   * (entrée d'une carte mise en jeu par un boost) est déjà inscrite derrière : on lâche le moteur pour qu'il la
+   * résolve, sans sauter à la conséquence (19/10/2026).
+   */
+  suiteDifferee?: boolean
 }
 
 /**
@@ -52,6 +58,7 @@ export function cartoucheEstAJour(e: EtatDuCartouche): boolean {
   // permet d'ARRIVER à sa question. Ne pas acquitter ici bloquerait la partie
   // jusqu'au filet anti-blocage.
   if (e.questionAuJoueur) return true
+  if (e.suiteDifferee && e.etapeValidee) return true
   if (!e.surLaDerniereEtape) return false
   if (e.etapeValidee) return true
   return e.etapeEstAnnonce && !e.surTable

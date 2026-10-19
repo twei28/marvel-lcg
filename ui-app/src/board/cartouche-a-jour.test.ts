@@ -62,6 +62,20 @@ describe('⚠ sur la table, RIEN n’avance sans le clic du joueur', () => {
   })
 })
 
+describe('une suite différée : l’annonce validée dont la conséquence est déjà inscrite (19/10/2026)', () => {
+  it('relâche le moteur pour qu’il résolve l’attaque, sans sauter à la conséquence', () => {
+    expect(cartoucheEstAJour(enCours({ surTable: true, etapeEstAnnonce: true, etapeValidee: true, surLaDerniereEtape: false, suiteDifferee: true }))).toBe(true)
+  })
+
+  it('⚠ TÉMOIN : tant que l’annonce n’est pas validée, le moteur reste retenu', () => {
+    expect(cartoucheEstAJour(enCours({ surTable: true, etapeEstAnnonce: true, etapeValidee: false, surLaDerniereEtape: false, suiteDifferee: true }))).toBe(false)
+  })
+
+  it('⚠ TÉMOIN : sans suite différée, une étape validée qui n’est pas la dernière ne relâche rien', () => {
+    expect(cartoucheEstAJour(enCours({ surTable: true, etapeValidee: true, surLaDerniereEtape: false }))).toBe(false)
+  })
+})
+
 describe('le mode « Détaillé » garde son rythme d’origine', () => {
   it('une annonce y acquitte toute seule : c’est la décision 7 du 07/09/2026', () => {
     expect(cartoucheEstAJour(enCours({ etapeEstAnnonce: true }))).toBe(true)

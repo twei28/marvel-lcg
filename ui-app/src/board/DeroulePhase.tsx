@@ -961,6 +961,27 @@ export function DeroulePhase({
   //    intention validee ne vaut pas validation de la resolution qui prend sa
   //    place sous la meme cle.
   const surLaDerniereEtape = etapesAffichees.length > 0 && index === etapesAffichees.length - 1
+  // LA SUITE SE DIFFERE TANT QUE L'ACTIVATION N'EST PAS RESOLUE (19/10/2026, T5). Un boost qui met une carte en jeu
+  // (Weapons Runner, ★) fait inscrire l'ENTREE de cette carte parmi les etapes AVANT que le fait de l'attaque ne passe
+  // de « annonce » a « boosts » puis « resolu » (ordre du moteur : retournement du boost, entree, degats). Le clic sur
+  // l'annonce sautait alors tout droit a l'entree : la carte apparaissait sur la table sans que ses boosts aient ete lus,
+  // et le resultat de l'attaque n'etait JAMAIS montre. Tant que l'attaque (ou la manigance) est une annonce et que la
+  // suivante n'est qu'une de ses consequences (entree, statut), on reste dessus : elle se complete sur place, on lit
+  // ses boosts et son resultat, PUIS la consequence vient.
+  const idsEntreeEnAttente = surTable && !relecture
+    ? etapesAffichees
+        .slice(index + 1)
+        .flatMap((e) => (e.titre === 'entree' && e.carteId !== undefined ? [e.carteId] : []))
+        // Le moteur journalise parfois DEUX entrees pour la meme carte : des la premiere, elle est a l'ecran.
+        .filter((id) => !etapesAffichees.slice(0, index + 1).some((e) => e.titre === 'entree' && e.carteId === id))
+    : []
+  const suiteDifferee =
+    surTable &&
+    phaseRaconteeEnCours &&
+    etape !== undefined &&
+    (etape.titre === 'attaque' || etape.titre === 'manigance') &&
+    etape.etat === 'annonce' &&
+    (etapesAffichees[index + 1]?.titre === 'entree' || etapesAffichees[index + 1]?.titre === 'statut')
   // La MEME etape sous une autre cle compte aussi : la menace tiree du journal
   // est remplacee par le fait du moteur, et sans cela le joueur la validait
   // deux fois (capture du 07/10/2026).
@@ -1087,8 +1108,8 @@ export function DeroulePhase({
       onTerminer()
       return
     }
-    // Une etape suivante est deja connue : on y va.
-    if (index + 1 < etapesAffichees.length) {
+    // Une etape suivante est deja connue : on y va (sauf si celle-ci n'est pas encore resolue : voir `suiteDifferee`).
+    if (index + 1 < etapesAffichees.length && !suiteDifferee) {
       setEnAttente(false)
       setCleCourante(etapesAffichees[index + 1].cle)
       return
@@ -1183,7 +1204,7 @@ export function DeroulePhase({
       setEnAttente(false)
       return
     }
-    if (index + 1 < etapesAffichees.length) {
+    if (index + 1 < etapesAffichees.length && !suiteDifferee) {
       setEnAttente(false)
       setCleCourante(etapesAffichees[index + 1].cle)
       return
@@ -1205,7 +1226,7 @@ export function DeroulePhase({
     // a chaque trame du moteur, donc appellerait `onTerminer` en boucle. Les
     // cinq dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
-  }, [enAttente, index, rangValidee, etapesAffichees.length, etapeValidee, phaseRaconteeEnCours])
+  }, [enAttente, index, rangValidee, etapesAffichees.length, etapeValidee, phaseRaconteeEnCours, suiteDifferee])
 
   // LE RYTHME DE LA PHASE, en une ligne : le cartouche est-il a jour ?
   //
@@ -1284,6 +1305,7 @@ export function DeroulePhase({
     etapeValidee,
     etapeEstAnnonce,
     surTable,
+    suiteDifferee,
   })
 
   // L'accuse de reception, seul endroit d'ou il part.
@@ -1941,6 +1963,11 @@ export function DeroulePhase({
           // Avec l'essai, le grand jeton des coups (`JetonsCoups`) prend le relais : pas deux jetons.
           actif={volMenace !== undefined && !essai}
         />
+        {/* UNE CARTE QUI ENTRE EN JEU (boost, ★) n'apparait sur la table qu'a SON etape « X entre en jeu », apres la lecture
+            des boosts et le resultat de l'attaque (19/10/2026, T5) : le monde la contient deja, on la retient. */}
+        {idsEntreeEnAttente.length > 0 || (enVolDeJeton && etape?.titre === 'entree') ? (
+          <style>{[...idsEntreeEnAttente, ...(enVolDeJeton && etape?.titre === 'entree' && etape.carteId !== undefined ? [etape.carteId] : [])].map((id) => `.plateau-cadre .scan-card[data-card-id="${id}"]:not(.rencontre-sur-table *) { visibility: hidden !important; }`).join('\n')}</style>
+        ) : null}
         <CoucheRencontreSurTable
           etape={etape}
           boostsMontres={boostsMontres}
