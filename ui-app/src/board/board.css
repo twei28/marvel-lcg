@@ -5613,6 +5613,13 @@
     }
   }
 
+  /* Au toucher, une cible de 44 px au moins (19/10/2026, T4). */
+  @media (pointer: coarse) {
+    .bouton-fin-tour {
+      min-height: 44px;
+    }
+  }
+
   /* --- Choix des arts alternatifs (promos FFG) ------------------------------ */
   .arts-voile {
     position: fixed;
