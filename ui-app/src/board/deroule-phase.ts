@@ -1211,6 +1211,13 @@ function rangerLesConsequences(etapes: EtapeDeroule[]): EtapeDeroule[] {
   const revelations = etapes.filter((e) => e.titre === 'revelation')
   if (revelations.length === 0) return etapes
   const gardees: EtapeDeroule[] = []
+  // UNE ATTAQUE OU UNE MANIGANCE declenchee par la carte reste une ETAPE A PART (19/10/2026, defaut signale par
+  // l'utilisateur : « Assaut » / « Se Liguer » faisaient attaquer Klaw SANS lecture des boosts ni resultat). Rangee
+  // sous sa carte, elle n'avait plus ses etapes (annonce, defense, lecture des boosts, resultat) : les degats etaient
+  // bien portes par le moteur, mais le joueur ne voyait ni les cartes boost ni le total. Elle se pose juste APRES
+  // sa carte (les activations sont construites avant les revelations : sans cela « Bloody Mary manigance » passait
+  // avant « Echo revele Psionic Slash »). Seuls les entrees de sbire et les statuts restent rangees sous la carte.
+  const apres = new Map<EtapeDeroule, EtapeDeroule[]>()
   for (const etape of etapes) {
     const parent =
       etape.titre !== 'revelation' && etape.temps === 'revelation' && (etape.causeId !== undefined || etape.cause)
@@ -1221,7 +1228,11 @@ function rangerLesConsequences(etapes: EtapeDeroule[]): EtapeDeroule[] {
       gardees.push(etape)
       continue
     }
-    parent.consequences = [...(parent.consequences ?? []), etape]
+    if (etape.titre === 'attaque' || etape.titre === 'manigance') {
+      apres.set(parent, [...(apres.get(parent) ?? []), etape])
+    } else {
+      parent.consequences = [...(parent.consequences ?? []), etape]
+    }
     if (parent.effets) {
       const restants = parent.effets.filter((effet) =>
         effet.genre === 'entree' ? effet.carte_id !== etape.carteId : effet.cible_id !== etape.cibleId
@@ -1229,7 +1240,7 @@ function rangerLesConsequences(etapes: EtapeDeroule[]): EtapeDeroule[] {
       parent.effets = restants.length > 0 ? restants : undefined
     }
   }
-  return gardees
+  return gardees.flatMap((etape) => [etape, ...(apres.get(etape) ?? [])])
 }
 
 /**
