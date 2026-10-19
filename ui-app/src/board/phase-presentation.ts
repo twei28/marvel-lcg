@@ -16,9 +16,9 @@
 // 16/10/2026), toujours lu s'il n'y a pas encore de choix : `non` donne `etape`,
 // tout le reste donne `bis`, le défaut d'alors. Aucun réglage n'est perdu.
 
-export type PresentationPhase = 'etape' | 'bis' | 'dynamique'
+export type PresentationPhase = 'etape' | 'bis' | 'tris' | 'dynamique'
 
-export const PRESENTATIONS: readonly PresentationPhase[] = ['etape', 'bis', 'dynamique']
+export const PRESENTATIONS: readonly PresentationPhase[] = ['etape', 'bis', 'tris', 'dynamique']
 
 export const CLE_PRESENTATION_PHASE = 'mc_phase_presentation'
 const CLE_ANCIENNE_PHASE_BIS = 'mc_phase_bis'

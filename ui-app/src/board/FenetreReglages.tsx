@@ -284,6 +284,8 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
         ...(essai
           ? [
               { valeur: 'bis', libelle: t('Étape par étape bis') },
+              ...(['localhost', '127.0.0.1', '[::1]'].includes(globalThis.location?.hostname ?? '')
+                ? [{ valeur: 'tris', libelle: t('Étape par étape tris') }] : []),
               ...(PHASE_DYNAMIQUE_VISIBLE ? [{ valeur: 'dynamique', libelle: t('Phase dynamique') }] : []),
             ]
           : []),
@@ -295,7 +297,7 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
         { valeur: 'instantane', libelle: t('D’un coup') },
       ]}
       onChoisir={(v) => {
-        if (v === 'bis' || v === 'dynamique' || v === 'detaille') {
+        if (v === 'bis' || v === 'tris' || v === 'dynamique' || v === 'detaille') {
           if (essai) ecrirePresentationPhase(v === 'detaille' ? 'etape' : (v as PresentationPhase))
           p.changerModePhase('detaille')
           return

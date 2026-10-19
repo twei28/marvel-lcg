@@ -2604,7 +2604,8 @@ export function PagePartie({
   // Réglages, entre trois présentations (board/phase-presentation.ts).
   const [presentationPhase, setPresentationPhase] = useState(lirePresentationPhase)
   useEffect(() => suivrePresentationPhase(setPresentationPhase), [])
-  const phaseEssai = essaiPhaseCompte && presentationPhase !== 'etape'
+  const phaseTris = presentationPhase === 'tris' && ['localhost', '127.0.0.1', '[::1]'].includes(globalThis.location?.hostname ?? '')
+  const phaseEssai = essaiPhaseCompte && presentationPhase !== 'etape' && (presentationPhase !== 'tris' || phaseTris)
   // « Phase dynamique » (16/10/2026) : le cartouche détaillé, posé en panneau à droite.
   const phaseDynamique = phaseEssai && presentationPhase === 'dynamique'
   const instantanesRef = useRef<Instantanes>(new Map())
@@ -3711,8 +3712,9 @@ export function PagePartie({
   useEffect(() => {
     document.documentElement.classList.toggle('essai-phase-mechant', phaseEssai)
     document.documentElement.classList.toggle('phase-dynamique', phaseDynamique)
-    return () => document.documentElement.classList.remove('essai-phase-mechant', 'phase-dynamique')
-  }, [phaseEssai, phaseDynamique])
+    document.documentElement.classList.toggle('phase-tris', phaseTris)
+    return () => document.documentElement.classList.remove('essai-phase-mechant', 'phase-dynamique', 'phase-tris')
+  }, [phaseEssai, phaseDynamique, phaseTris])
   // Refonte du 12/10/2026 (essai) : la couleur de chaque joueur, tiree de
   // l'aspect de son deck, et le joueur a qui appartient une carte de la table.
   const cadresJoueurs = useMemo(() => cadresDesJoueurs(etat.monde, catalogue), [etat.monde, catalogue])
@@ -4712,6 +4714,7 @@ export function PagePartie({
           coups={coupsPendantTonTour}
           nomConcerne={nomDuHerosDuTour(etat.monde)}
           dynamique={phaseDynamique}
+            tris={phaseTris}
           questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
           questionDuMoteur={questionDuMoteurPC}
           masque={relectureJournal}
@@ -4750,6 +4753,7 @@ export function PagePartie({
             presentation={sceneCentrale ? 'scene' : 'table'}
             essai={phaseEssai}
             dynamique={phaseDynamique}
+            tris={phaseTris}
             cadresJoueurs={cadresJoueurs}
             joueurDeCarte={joueurDeCarteMonde}
             siegeLocal={playerId}

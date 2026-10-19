@@ -1689,3 +1689,95 @@ describe('la Phase dynamique', () => {
     expect(container.querySelector('section.est-dynamique')).not.toBeNull()
   })
 })
+
+describe('présentation tris', () => {
+  it('révéler les boosts ne valide pas l’étape', () => {
+    const montrerBoostSuivant = vi.fn()
+    const { props } = monter({ essai: true, tris: true, etapes: [attaqueResolue], boostsMontres: 0, montrerBoostSuivant })
+    const bouton = screen.getByRole('button', { name: /Révéler le boost suivant/ })
+    fireEvent.click(bouton)
+    expect(montrerBoostSuivant).toHaveBeenCalledOnce()
+    expect(props.avancer).not.toHaveBeenCalled()
+    expect(section()).toHaveClass('est-tris')
+    expect(section()?.style.getPropertyValue('--essai-carte-h')).toBe('')
+  })
+  it('annonce explicitement le passage à l’étape suivante', () => {
+    const { props } = monter({ essai: true, tris: true, etapes: [menace] })
+    fireEvent.click(screen.getByRole('button', { name: /Étape suivante/ }))
+    expect(props.avancer).toHaveBeenCalledOnce()
+  })
+})
+
+it('tris : les choix de défense restent avec leur contexte dans la zone de lecture', async () => {
+  const q = questionMoteur(demandeMoteur([defenseSM, defenseBW, sensAraignee]), { ligneSansDefense: 'ATQ 2 + 1 carte boost' })
+  const { container } = monter({ essai: true, tris: true, etapes: [annonce], questionAuJoueur: true, questionDuMoteur: q })
+  expect(corps()?.querySelector('.essai-choix-defense')).not.toBeNull()
+  if (process.env.TRIS_CAPTURE) {
+    const fs = await import('node:fs')
+    fs.writeFileSync('/tmp/tris-defense.html', container.innerHTML)
+  }
+})
+
+it('tris : deux boosts se lisent séparément, puis se retrouvent sur la synthèse sans valider l’attaque', async () => {
+  const texte = 'If this activation deals damage to you, exhaust your hero.'
+  const attaque: EtapeDeroule = { ...attaqueResolue, auteurNom: 'Klaw', boosts: [
+    { cle: 'a', nom: 'Boost immédiat', cibleId: 91, apport: 1, etoile: true },
+    { cle: 'b', nom: 'Boost différé', cibleId: 92, apport: 2, etoile: true },
+  ] }
+  const { container, props, rerender } = monter({ essai: true, tris: true, etapes: [attaque], boostsMontres: 1, texteEtoile: id => id === 92 ? texte : 'Deal 1 damage to each hero.' })
+  expect(container.querySelectorAll('.tris-boost')).toHaveLength(1)
+  expect(screen.getByText('Deal 1 damage to each hero.')).toBeInTheDocument()
+  expect(container.querySelector('.tris-resolution')).toBeNull()
+  if (process.env.TRIS_CAPTURE) {
+    const fs = await import('node:fs')
+    fs.writeFileSync('/tmp/tris-boost-premier.html', container.innerHTML)
+  }
+  rerender(<CartouchePhase {...props} boostsMontres={2} />)
+  expect(container.querySelectorAll('.tris-boost')).toHaveLength(1)
+  expect(screen.queryByText(texte)).not.toBeInTheDocument()
+  expect(screen.getByText('★ Effet après l’activation')).toBeInTheDocument()
+  expect(container.querySelector('.tris-resolution')).toBeNull()
+  if (process.env.TRIS_CAPTURE) {
+    const fs = await import('node:fs')
+    fs.writeFileSync('/tmp/tris-boost-second.html', container.innerHTML)
+  }
+  fireEvent.click(screen.getByRole('button', { name: /Voir le résultat/ }))
+  expect(props.avancer).not.toHaveBeenCalled()
+  expect(container.querySelectorAll('.tris-boost')).toHaveLength(2)
+  expect(container.querySelector('.tris-resolution')).toHaveClass('est-degats')
+  expect(screen.queryByText(texte)).not.toBeInTheDocument()
+  if (process.env.TRIS_CAPTURE) {
+    const fs = await import('node:fs')
+    fs.writeFileSync('/tmp/tris-attaque.html', container.innerHTML)
+  }
+  fireEvent.click(screen.getByRole('button', { name: /Étape suivante/ }))
+  expect(props.avancer).toHaveBeenCalledOnce()
+})
+
+it('tris : les boosts de manigance restent visibles et le résultat utilise la menace', async () => {
+  const manigance: EtapeDeroule = { ...attaqueResolue, titre: 'manigance', cibleNom: 'The Break-In!', cibleId: MANIGANCE, plafond: 7 }
+  const { container } = monter({ essai: true, tris: true, etapes: [manigance] })
+  expect(container.querySelectorAll('.tris-boost')).toHaveLength(1)
+  expect(container.querySelector('.tris-resolution')).toHaveClass('est-menace')
+  expect(container.querySelector('.tris-boost .essai-stat')?.textContent).toContain('MEN')
+  if (process.env.TRIS_CAPTURE) {
+    const fs = await import('node:fs')
+    fs.writeFileSync('/tmp/tris-manigance.html', container.innerHTML)
+  }
+})
+
+it('tris : le résultat reste masqué tant que tous les boosts ne sont pas retournés', () => {
+  const attaque = { ...attaqueResolue, boosts: [
+    ...attaqueResolue.boosts,
+    { cle: 'b2', nom: 'Second boost', cibleId: 92, apport: 2 },
+  ] }
+  const { container, rerender, props } = monter({ essai: true, tris: true, etapes: [attaque], boostsMontres: 1 })
+  expect(container.querySelectorAll('.tris-boost:not(.tris-boost-cache)')).toHaveLength(1)
+  expect(container.querySelectorAll('.tris-boost-cache')).toHaveLength(0)
+  expect(container.querySelector('.tris-resolution')).toBeNull()
+  rerender(<CartouchePhase {...props} boostsMontres={2} />)
+  expect(container.querySelector('.tris-resolution')).toBeNull()
+  fireEvent.click(screen.getByRole('button', { name: /Voir le résultat/ }))
+  expect(container.querySelector('.tris-resolution')).not.toBeNull()
+  expect(container.querySelector('.tris-boost-cache')).toBeNull()
+})

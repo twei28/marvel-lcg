@@ -62,6 +62,7 @@ import { vueSousCadre, type QuestionDuMoteur, type VueSousCadre } from './sous-c
 import { BoutonOption, CarteNue, choixEnTexte, optionDe, SousCadre } from './SousCadre'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import { NomsSurvolables, Texte, nomsMontrables, type NomDeCarte } from './noms-survolables'
+import { effetEtoileDiffere } from './etapes-essai'
 import { ajusterLesCartes, deborde, hauteurPosee } from './essai-tailles'
 import {
   compteurDesRevelations,
@@ -93,6 +94,7 @@ import './cartouche-phase.css'
 import './cartouche-essai.css'
 import './cartouche-phase-bis.css'
 import './cartouche-dynamique.css'
+import './cartouche-tris.css'
 import { HistoriqueDynamique, QuestionDynamique, useCommandeUneFois } from './PhaseDynamique'
 
 /** Les gestionnaires de `useGlisserPanneau`, poses sur la ligne du haut. */
@@ -204,6 +206,8 @@ export type CartouchePhaseProps = {
   essai?: boolean
   /** « Phase dynamique » (16/10/2026) : panneau à droite de la table (cartouche-dynamique.css). */
   dynamique?: boolean
+  /** Variante locale : guide compact, contenu lisible et actions explicites. */
+  tris?: boolean
   /** Presentation « Étape par étape » (l'ancien Bis, seule depuis le
    *  10/10/2026). Vraie par defaut ; faux pour le cartouche pose sur la table. */
   bis?: boolean
@@ -260,7 +264,7 @@ function tempsDeLaPastille(cle: ClePastille): ReadonlyArray<TempsPhase> {
 }
 
 /** Une page lue : l'etape (brute), la meme en langue, et ce qu'elle dessine. */
-type PageLue = { etape: EtapeDeroule; lue: EtapeDeroule; corps: VueCorps }
+type PageLue = { etape: EtapeDeroule; lue: EtapeDeroule; corps: VueCorps; trisResolution?: boolean }
 
 /** « 10 → 7 / 14 » ; un morceau absent se tait (rien d'invente, piege 40). */
 function texteJauge(jauge: Jauge | undefined): string {
@@ -450,6 +454,68 @@ function ResultatEssai({ rangee }: { rangee: VueRangee }) {
  * sous le defenseur son picto DEF ; le resultat sous la carte qui le subit.
  * Le calcul se lit sans un mot : [ATQ] + [boosts] − [DEF].
  */
+/** Tris : les boosts ont leur propre rangée, indépendante des portraits et du calcul. */
+function ActivationTris({ rangee, texteEtoile, grisee, totalBoosts, resolution = false }: {
+  rangee: VueRangee
+  totalBoosts: number
+  resolution?: boolean
+  texteEtoile?: (id: number) => string | undefined
+  grisee: boolean
+}) {
+  const attaque = rangee.pose?.jauge === 'pv'
+  const multiple = totalBoosts > 1
+  const lecture = multiple && !resolution
+  const boostsLus = lecture ? rangee.boosts.slice(-1) : rangee.boosts
+  return (
+    <div className={`tris-activation${multiple ? resolution ? ' est-synthese' : ' est-lecture-boost' : ''}${grisee ? ' est-grisee' : ''}`} aria-hidden={grisee || undefined}>
+      <div className="tris-socle">
+        {rangee.acteur && !multiple ? <VignetteVue vignette={rangee.acteur} /> : null}
+        <div>
+          <PictoStat genre={attaque ? 'atq' : 'men'} valeur={rangee.pose?.base} />
+          {rangee.defenseur ? <p><Texte>{rangee.defenseur.nom}</Texte> · {t('DÉF')} {rangee.pose?.defense ?? '—'}</p> : null}
+        </div>
+      </div>
+      {totalBoosts > 0 ? (
+        <section className="tris-boosts" aria-label={t('Cartes boost')}>
+          <h3>{t('Cartes boost')}</h3>
+          {boostsLus.map((boost, index) => {
+            const texte = boost.etoile && boost.carteId !== undefined ? texteEtoile?.(boost.carteId) : undefined
+            const differe = effetEtoileDiffere(texte)
+            return (
+              <article className="tris-boost" key={boost.cle}>
+                <VignetteVue vignette={{ ...boost, legende: undefined }} />
+                <div className="tris-boost-detail">
+                  <small>{t('Boost')} {lecture ? rangee.boosts.length : index + 1} / {totalBoosts}</small>
+                  <strong><Texte>{boost.nom}</Texte></strong>
+                  <PictoBoost nombre={boost.apport} etoile={boost.etoile} stat={attaque ? 'atq' : 'men'} />
+                  {boost.etoile && !resolution ? <p className="tris-boost-timing">{differe ? t('★ Effet après l’activation') : t('★ Effet au retournement')}</p> : null}
+                  {boost.etoile && !differe && !resolution ? <p className="tris-effet-immediat"><Texte>{texte ?? t('son effet de boost s’applique')}</Texte></p> : null}
+                </div>
+              </article>
+            )
+          })}
+          {Array.from({ length: lecture ? rangee.boosts.length === 0 ? 1 : 0 : Math.max(0, totalBoosts - rangee.boosts.length) }, (_, i) => (
+            <div className="tris-boost tris-boost-cache" key={`cache-${i}`}>
+              <span className="essai-dos-rencontre" aria-hidden="true" />
+              <p>{t('Boost')} {rangee.boosts.length + i + 1} / {totalBoosts}</p>
+            </div>
+          ))}
+        </section>
+      ) : null}
+      {(!multiple || resolution) && rangee.boosts.length >= totalBoosts ? <section className={`tris-resolution ${attaque ? 'est-degats' : 'est-menace'}`} aria-label={t('Résultat')}>
+        <h3>{attaque ? t('Dégâts') : t('Menace')}</h3>
+        <p className="tris-calcul">
+          {rangee.pose?.base ?? '—'}
+          {rangee.boosts.map(b => ` + ${b.apport}`).join('')}
+          {rangee.total ? ` ${rangee.total.texte}` : ''}
+        </p>
+        <ResultatEssai rangee={rangee} />
+        {rangee.motsCles?.map(ligne => <p key={ligne}><Texte>{ligne}</Texte></p>)}
+      </section> : null}
+    </div>
+  )
+}
+
 function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; grisee: boolean; encadre?: boolean }) {
   const pose = rangee.pose
   const classes = ['deroule-rangee', 'essai-calcul']
@@ -1331,7 +1397,12 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   }
   const pagesDeLEtape = (e: EtapeDeroule, contexte: ContexteVue): PageLue[] => {
     const lue = etapeEnLangue(e, props.nomFr)
-    return [{ etape: e, lue, corps: vueDeLEtape(lue, contexte) }]
+    const corps = vueDeLEtape(lue, contexte)
+    const page = { etape: e, lue, corps }
+    // Un boost lu à la fois, puis la synthèse : aucun clic de lecture ne valide le coup.
+    return props.tris && e.boosts.length > 1 && corps.genre === 'rangee' && corps.pose && !corps.annulee && !corps.riposte
+      ? [page, { ...page, trisResolution: true }]
+      : [page]
   }
   // Une etape relue est PASSEE : ses boosts sont tous retournes.
   const contexteRelu = (e: EtapeDeroule): ContexteVue => ({
@@ -1439,7 +1510,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   useLayoutEffect(() => {
     const section = refSection.current
     if (!section) return
-    if (!essai || reduit) {
+    if (!essai || reduit || props.tris) {
       section.style.removeProperty('--essai-carte-h')
       ecranAjuste.current = ''
       return
@@ -1620,7 +1691,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       />
     )
   } else if (vuePage) {
-    corps = <Corps corps={vuePage.corps} grisee={grisee} essai={essai} />
+    corps = props.tris && vuePage.corps.genre === 'rangee' && vuePage.corps.pose && !vuePage.corps.annulee && !vuePage.corps.riposte
+      ? <ActivationTris rangee={vuePage.corps} grisee={grisee} texteEtoile={props.texteEtoile} totalBoosts={etapeLue?.boosts.length ?? 0} resolution={vuePage.trisResolution} />
+      : <Corps corps={vuePage.corps} grisee={grisee} essai={essai} />
   }
 
   // LE REFUS d'une question jouee dans la rangee : a droite, sous les
@@ -1646,7 +1719,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     corps = (
       <div className="essai-revelation-cachee">
         <span className="essai-dos-rencontre" aria-hidden="true" />
-        <p>{t('Clique sur Continuer pour la retourner.')}</p>
+        <p>{props.tris ? t('Une carte rencontre attend d’être révélée') : t('Clique sur Continuer pour la retourner.')}</p>
       </div>
     )
   }
@@ -1908,6 +1981,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (essai) classes.push('est-essai')
   if (props.bis ?? true) classes.push('est-bis')
   if (essai && props.dynamique) classes.push('est-dynamique')
+  if (essai && props.tris) classes.push('est-tris')
   if (essai && reduit) classes.push('est-reduit')
   // 13/10/2026 (encadré ②) : un changement de stade secoue la boîte (rien en sobre ni en mouvement réduit).
   if (essai && etapeLue?.titre === 'stade') classes.push('est-secousse')
@@ -1989,6 +2063,11 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         outils={outils}
         numerosCarres={props.bis ?? true}
       />
+      {props.tris && !horsPhase ? (
+        <p className="tris-contexte" aria-live="polite">
+          {relu ? t('Relecture') : questionAuJoueur ? t('À toi de choisir') : carteCacheeIci ? t('Une carte rencontre attend d’être révélée') : boostsRestants > 0 ? t('Révélation des boosts') : etape?.temps === 'bilan' ? t('Le plateau est prêt pour ton tour') : t('Résolution de l’action')}
+        </p>
+      ) : null}
       {/* La cle `etape|page` remonte le corps a chaque page : c'est ce qui
           rejoue le glissement d'entree (D35). Entrer en relecture aussi. */}
       <div
@@ -1996,7 +2075,15 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         className="deroule-corps"
         aria-label={etapeLue ? titreEtape(etapeLue) : undefined}
       >
-        {corps}
+        {props.tris && defenseVue && vueQ?.genre === 'defense' ? (
+          <div className="tris-attaque">
+            {defenseVue.acteur ? <VignetteVue vignette={defenseVue.acteur} /> : null}
+            <div>
+              <strong>{q?.ligneSansDefense}</strong>
+              {etapeLue?.cibleNom ? <p>{t('Cible')} · {etapeLue.cibleNom}</p> : null}
+            </div>
+          </div>
+        ) : corps}
         {etapeLue?.defaite ? (
           <p className="deroule-defaite">
             <span aria-hidden="true">☠</span> {texteDefaite(etapeLue)}
@@ -2011,6 +2098,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         {questionAuJoueur && !q && question !== undefined ? (
           <div className="deroule-sous-cadre est-provisoire">{question}</div>
         ) : null}
+        {props.tris ? choixDefense : null}
         {essai ? mentions : null}
       </div>
       {essai && props.dynamique && !relu ? (
@@ -2019,7 +2107,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
           <QuestionDynamique q={questionAuJoueur ? q : undefined} defense={vueQ?.genre === 'defense'} />
         </>
       ) : null}
-      {choixDefense}
+      {props.tris ? null : choixDefense}
       {props.multi?.genre === 'choix-hote' ? (
         <div className="essai-choix-avance" role="group" aria-label={t('Qui fait avancer la phase du méchant ?')}>
           <strong>{t('Qui fait avancer la phase du méchant ?')}</strong>
@@ -2098,7 +2186,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             data-page-suivante=""
             onClick={() => (carteCacheeIci ? props.retournerCarte?.() : props.montrerBoostSuivant?.())}
           >
-            {t('Continuer')} <kbd>{t('Espace')}</kbd>
+            {props.tris ? (carteCacheeIci ? t('Révéler la carte') : t('Révéler le boost suivant')) : t('Continuer')} <kbd>{t('Espace')}</kbd>
           </button>
         ) : null}
         {props.multi?.genre === 'pret' && boostsRestants === 0 && etape && dernierePage && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace ? (
@@ -2142,7 +2230,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
           >
             {essai && !horsPhase && !props.defaiteLocale && etape.temps !== 'bilan' ? (
               <>
-                {t('Continuer')} <kbd>{t('Espace')}</kbd>
+                {props.tris ? (dernierePage ? t('Étape suivante') : (vuePage?.corps.genre === 'rangee' && (etapeLue?.boosts.length ?? 0) > 1 ? t('Voir le résultat') : t('Lire la suite'))) : t('Continuer')} <kbd>{t('Espace')}</kbd>
               </>
             ) : (
               libelleBouton
@@ -2182,6 +2270,8 @@ export type CartoucheHorsPhaseProps = CartesDuCartouche & {
   nomConcerne?: string
   /** « Phase dynamique » : le coup du méchant pendant le tour se pose lui aussi en panneau à droite. */
   dynamique?: boolean
+  /** Variante locale : guide compact, contenu lisible et actions explicites. */
+  tris?: boolean
   /**
    * La relecture du journal occupe le bas de l'ecran : rien a dessiner, mais
    * les coups vus restent retenus (demonter les oublierait).

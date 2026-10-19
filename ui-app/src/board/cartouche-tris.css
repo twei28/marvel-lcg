@@ -1,0 +1,209 @@
+/* Guide local : dimensions isolées de l'essai, cartes lisibles, pied stable. */
+html.phase-tris { --essai-l: clamp(360px, 29vw, 440px); }
+.deroule-phase.est-scene.est-essai.est-tris.est-tris {
+  --grande-h: 190px; --vignette-h: 140px; --essai-carte-h: 140px; --essai-zoom-corps: 1;
+  width: var(--essai-l); padding: 0; gap: 0;
+  border: 1px solid color-mix(in srgb, var(--info) 50%, transparent);
+  border-top: 3px solid var(--info);
+  border-radius: 3px 3px 12px 3px; box-shadow: 0 12px 30px #0005;
+  cursor: default; animation: cartouche-fondu 150ms ease-out;
+}
+.deroule-phase.est-scene.est-essai.est-tris::before { opacity: .12; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-ligne-haut {
+  margin: 0; padding: 16px 18px 12px; gap: 14px;
+  background: transparent; border-bottom: 1px solid #ffffff18;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastilles {
+  width: 100%; flex-wrap: nowrap; gap: 4px; background: none; border: 0;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastille {
+  min-height: 30px; padding: 4px 3px; border: 0; border-radius: 2px;
+  background: #ffffff08; color: var(--ep-doux, var(--info));
+  font: 12px/1.2 'Bangers', Impact, sans-serif; letter-spacing: .035em; overflow: visible;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastille.est-courant {
+  background: color-mix(in srgb, var(--info) 18%, transparent);
+  color: #fff; box-shadow: inset 0 -2px var(--info);
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastille.est-passe { color: var(--ep-doux, var(--info)); }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastille-numero { display: none; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastille-nom {
+  font-size: inherit; white-space: normal; text-align: center; overflow: visible;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-titre-court {
+  font-family: 'Bangers', Impact, sans-serif; font-size: 1.65rem; font-weight: 400;
+  line-height: 1.15; letter-spacing: .035em; color: inherit; text-shadow: none;
+  -webkit-line-clamp: unset; max-height: none;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-sous-titre { font-size: .9rem; line-height: 1.4; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-contexte {
+  flex: none; margin: 0; padding: 10px 18px; color: var(--ep-doux, var(--info));
+  font-size: .8rem; line-height: 1.4; border-bottom: 1px solid #ffffff0d;
+}
+.deroule-phase.est-scene.est-essai.est-tris.est-tris .deroule-corps {
+  padding: 18px; overflow: auto; overscroll-behavior: contain;
+  scrollbar-width: thin; scrollbar-color: #75839966 transparent;
+  align-content: safe center; gap: 18px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-corps::-webkit-scrollbar { display: block; width: 5px; height: 5px; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-corps > * { zoom: 1; max-width: 100%; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-rangee-cartes { flex-wrap: wrap; gap: 12px; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-question-intitule,
+.deroule-phase.est-scene.est-essai.est-tris .deroule-sous-cadre-titre,
+.deroule-phase.est-scene.est-essai.est-tris .deroule-sous-texte {
+  display: block; -webkit-line-clamp: unset; overflow: visible; font-size: .95rem; line-height: 1.5;
+}
+.deroule-phase.est-scene.est-essai.est-tris.est-tris > .deroule-boutons {
+  flex: 0 0 auto; height: auto; min-height: 76px; padding: 12px 18px; gap: 10px;
+  flex-wrap: wrap; border-top: 1px solid #ffffff18; background: #00000012;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-boutons .bh-bouton {
+  zoom: 1; min-height: 44px; padding: 10px 16px; font-size: 1.05rem;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-boutons .deroule-suivant { margin-left: auto; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-mentions { font-size: .78rem; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-suivant kbd { margin-left: 10px; font-size: .65rem; opacity: .65; }
+.deroule-phase.est-scene.est-essai.est-tris :focus-visible { outline: 2px solid var(--info); outline-offset: 3px; }
+.deroule-phase.est-scene.est-essai.est-tris.est-reduit .tris-contexte { display: none; }
+@media (max-width: 767px) {
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris {
+    width: calc(100vw - 16px); max-height: calc(100dvh - 64px); --essai-carte-h: 120px;
+  }
+}
+.deroule-phase.est-scene.est-essai.est-tris .essai-choix-defense {
+  width: 100%; gap: 8px; flex-direction: column;
+}
+.deroule-phase.est-scene.est-essai.est-tris .essai-choix {
+  flex: none; width: 100%; min-width: 0; min-height: 46px;
+  padding: 8px 12px; font-size: 1.1rem; line-height: 1.2;
+  justify-content: flex-start; text-align: left;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastille { flex: 1 1 0; min-width: 0; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-frise { width: 100%; }
+.deroule-phase.est-scene.est-essai.est-tris .deroule-pastille-bouton { width: 100%; }
+.deroule-phase.est-scene.est-essai.est-tris.est-reduit.est-reduit { height: auto; padding: 0; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-attaque {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+  padding-bottom: 14px; border-bottom: 1px solid #ffffff18;
+  --essai-carte-h: 100px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .tris-attaque p { margin: 8px 0 0; color: var(--ep-doux, var(--info)); font-size: .9rem; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-attaque .deroule-legende { display: none; }
+.deroule-phase.est-scene.est-essai.est-tris .essai-avant-defendre { width: 100%; }
+/* Les mêmes rôles chromatiques que les menus et compteurs du plateau. */
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris {
+  border-color: var(--ep-bord, var(--cadre-clair));
+  border-top-color: var(--info);
+  color: var(--ep-texte, inherit);
+}
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .deroule-ligne-haut {
+  background: var(--ep-surface, var(--fond));
+}
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .deroule-pastille.est-courant {
+  background: var(--info-fonce);
+  color: white;
+  box-shadow: inset 0 -2px var(--info);
+}
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .essai-choix.est-defendre {
+  background: var(--fond-nuit); color: var(--ep-texte, white);
+  box-shadow: inset 0 0 0 1px var(--info);
+}
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .essai-stat.est-atq {
+  --stat: var(--rouge-vif); --stat-sombre: var(--rouge);
+}
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .essai-stat.est-men {
+  --stat: var(--info-fonce); --stat-sombre: var(--fond-nuit);
+}
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .essai-stat.est-def {
+  --stat: var(--camp-nous); --stat-sombre: var(--soin);
+}
+html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .essai-stat.est-boost {
+  background: var(--cadre); color: var(--ep-texte, white);
+}
+.deroule-phase.est-scene.est-essai.est-tris .tris-activation {
+  display: flex; flex-direction: column; gap: 18px; width: 100%; min-width: 0;
+}
+.deroule-phase.est-scene.est-essai.est-tris .tris-socle {
+  display: flex; align-items: center; gap: 16px; --essai-carte-h: 84px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .tris-socle p { margin: 8px 0 0; font-size: .85rem; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-boosts { display: flex; flex-direction: column; gap: 14px; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-boost {
+  display: flex; align-items: flex-start; gap: 14px; min-width: 0;
+  padding: 14px 0; border-top: 1px solid var(--ep-bord, var(--cadre-clair));
+  --essai-carte-h: 220px; --vignette-h: 220px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .tris-boost > .deroule-vignette { flex: none; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-boost-detail { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-boost-detail strong { overflow-wrap: anywhere; font-size: 1rem; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-boost-detail p { margin: 0; font-size: .85rem; line-height: 1.5; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-boost-timing { color: var(--info); }
+.deroule-phase.est-scene.est-essai.est-tris .tris-resolution {
+  padding: 14px; background: var(--ep-surface, var(--fond-nuit));
+  border-left: 3px solid var(--rouge-vif);
+}
+.deroule-phase.est-scene.est-essai.est-tris .tris-resolution.est-menace { border-left-color: var(--menace); }
+.deroule-phase.est-scene.est-essai.est-tris .tris-resolution .deroule-resultat-texte { color: inherit; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-calcul { font-variant-numeric: tabular-nums; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-activation h3 {
+  margin: 0 0 8px; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ep-doux, var(--info));
+}
+.deroule-phase.est-scene.est-essai.est-tris .essai-etoile-differee { --essai-carte-h: 220px; }
+.deroule-phase.est-scene.est-essai.est-tris .tris-boost-cache .essai-dos-rencontre {
+  width: 154px; height: 220px; flex: none;
+}
+/* Plusieurs boosts : une grande carte en lecture, puis une synthèse sur une page distincte. */
+.deroule-phase.est-scene.est-essai.est-tris .tris-activation.est-lecture-boost,
+.deroule-phase.est-scene.est-essai.est-tris .tris-activation.est-synthese { gap: 12px; }
+.deroule-phase.est-scene.est-essai.est-tris .est-lecture-boost .tris-socle > div,
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-socle > div {
+  display: flex; align-items: center; gap: 12px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-lecture-boost .tris-socle p,
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-socle p { margin: 0; }
+.deroule-phase.est-scene.est-essai.est-tris .est-lecture-boost .tris-socle .essai-stat,
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-socle .essai-stat { font-size: .7rem; }
+.deroule-phase.est-scene.est-essai.est-tris .est-lecture-boost .tris-boost {
+  --essai-carte-h: clamp(150px, calc(100dvh - 430px), 220px);
+  --vignette-h: var(--essai-carte-h); padding: 8px 0;
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-lecture-boost .tris-boost-cache .essai-dos-rencontre {
+  height: var(--essai-carte-h); width: calc(var(--essai-carte-h) * 127 / 176);
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boosts {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boosts h3 { grid-column: 1 / -1; margin: 0; }
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boost {
+  --essai-carte-h: clamp(90px, calc(100dvh - 510px), 140px);
+  --vignette-h: var(--essai-carte-h);
+  flex-direction: column; align-items: center; gap: 6px; padding: 0; border: 0;
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boost-detail {
+  align-items: center; gap: 4px; text-align: center;
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boost-detail strong { font-size: .8rem; line-height: 1.2; }
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boost-detail .essai-stat { font-size: .7rem; }
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-resolution { padding: 8px 12px; }
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-calcul { margin: 6px 0; }
+.deroule-phase.est-scene.est-essai.est-tris .est-lecture-boost .tris-socle,
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-socle { display: none; }
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boost {
+  --essai-carte-h: clamp(80px, calc(100dvh - 540px), 120px);
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-resolution > h3 { display: none; }
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .essai-boite {
+  flex-direction: row; flex-wrap: wrap; justify-content: center;
+  gap: 4px 10px; padding: 4px 8px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .est-synthese .essai-boite .deroule-resultat-texte { font-size: 1.15rem; }
+@media (max-height: 720px) {
+  .deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boost-detail strong,
+  .deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boost-detail > small { display: none; }
+  .deroule-phase.est-scene.est-essai.est-tris .tris-activation.est-synthese { gap: 8px; }
+}
+@media (max-height: 620px) {
+  .deroule-phase.est-scene.est-essai.est-tris .tris-activation.est-synthese { gap: 6px; }
+  .deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-resolution { padding-block: 6px; }
+  .deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boosts { gap: 8px; }
+}
