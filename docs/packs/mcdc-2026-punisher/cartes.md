@@ -38,7 +38,7 @@ Il n'y a **aucun insert ni livret de règles** dans le PDF (toutes les pages son
   162 (30 doubles, 21 dos bleus joueur, 109 cartes de rencontre).
 - **Défis** : 1 Rise of the Machines (Vision), 2 Secret Agent (Captain America ; la carte p280 imprimée dit « Guerilla Warfare », alors que le site
   écrit « Superhero Jailbreak » : **la carte fait foi**, relue en 300 dpi), 3 It's A Trap! (En Sabah Nur, Arcade, Galactic
-  Artifacts ; side schemes avec incite 1, une icône Crisis et une icône Amplify), 4 Angry Birds (Tower Defense).
+  Artifacts ; side schemes avec incite 1, une icône Crisis et une icône Acceleration d'après la carte, le site écrit « amplify »), 4 Angry Birds (Tower Defense).
 - **Ce que le site ne donne pas** : les 4 combats de campagne, le décompte des points, les pods Kingsfall. Ils ne sont que sur les cartes.
 
 ## Légende
