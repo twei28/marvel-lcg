@@ -77,7 +77,8 @@ describe('les présentations de la phase du méchant', () => {
     const vus: string[] = []
     const fin = suivrePresentationPhase((p) => vus.push(p))
     ecrirePresentationPhase('dynamique')
-    expect(lirePresentationPhase()).toBe('dynamique')
+    // 19/10/2026 : « Phase dynamique » et « Étape par étape » sont cachés, ils se lisent bis (phase-trois-choix.test.tsx).
+    expect(lirePresentationPhase()).toBe('bis')
     ecrirePresentationPhase('etape')
     fin()
     ecrirePresentationPhase('bis')
@@ -86,12 +87,12 @@ describe('les présentations de la phase du méchant', () => {
 
   it("l'ancien réglage « mc_phase_bis » est repris tant qu'aucun choix n'est fait", () => {
     localStorage.setItem('mc_phase_bis', 'non')
-    expect(lirePresentationPhase()).toBe('etape')
+    expect(lirePresentationPhase()).toBe('bis')
     localStorage.setItem('mc_phase_bis', 'oui')
     expect(lirePresentationPhase()).toBe('bis')
     // Un choix explicite prime, une valeur inconnue est ignorée.
     localStorage.setItem('mc_phase_presentation', 'dynamique')
-    expect(lirePresentationPhase()).toBe('dynamique')
+    expect(lirePresentationPhase()).toBe('bis')
     localStorage.setItem('mc_phase_presentation', 'n-importe-quoi')
     expect(lirePresentationPhase()).toBe('bis')
   })

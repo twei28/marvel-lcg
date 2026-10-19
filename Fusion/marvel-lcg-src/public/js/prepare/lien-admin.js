@@ -97,6 +97,7 @@
     var CLES_DU_PREMIER_LANCEMENT = [
       'marvel-langue', 'marvel-langue-choisie', 'marvel-board-scans-fr',
       'mc_affichage_v1', 'marvel-board-mode-phase-mechant', 'mc_phase_mode_vu_v1',
+      'mc_phase_presentation', 'mc_phase_trois_choix_migre',
     ];
     bascule.addEventListener('click', function () {
       try {

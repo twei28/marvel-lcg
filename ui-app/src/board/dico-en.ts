@@ -1667,6 +1667,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Étape par étape : un « Suivant » par étape de la phase. Bis : la nouvelle présentation, en essai':
     'Step by step: one "Next" per step of the phase. Bis: the new presentation, on trial',
   'D’un coup': 'All at once',
+  'Étape par étape bis : un « Suivant » par étape de la phase. Sur la table : les cartes bougent sur la table. D’un coup : tout se joue d’un coup':
+    'Step by step bis: one "Next" per step of the phase. On the table: the cards move on the table. All at once: everything plays out at once',
   'Étape par étape : un « Suivant » par étape de la phase': 'Step by step: one "Next" per step of the phase',
   'Carte révélée en grand': 'Revealed card shown large',
   'Au centre de l’écran, le temps de la lire': 'Centre of the screen, long enough to read it',
