@@ -1183,7 +1183,15 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
 - Hawkeye's basic attacks gain ranged.
 - *Quick Draw* — **Action**: Ready Hawkeye's Bow. (Limit once per phase.)
 - *"We're fighting an army of robots and I have a bow and arrow. None of this makes sense. But I'm going back out there."*
-- **Le héros Hawkeye n'a que son identité ici** : son deck (Bow, Quiver, flèches…) n'est pas dans ce PDF.
+- **Comparaison avec le Hawkeye officiel du jeu (carte 04001a/b, Javier Pina), faite le 19/10/2026 sur les deux scans :**
+  - Même héros (Clint Barton / Hawkeye, 9 PV, traits Avenger), mais **nouvelle version** de l'alter-ego et du héros, avec de
+    nouvelles valeurs : héros THW 2 · ATK 1 · DEF 2 (officiel : THW 1 · ATK 2 · DEF 1) ; alter-ego REC 3, main 6, 9 PV (inchangés).
+  - Héros : trait **S.H.I.E.L.D.** ajouté (officiel : Avenger seul) ; nouveau texte « basic attacks gain ranged » ; *Quick Draw* devient
+    « Ready Hawkeye's Bow (limite une fois par phase) » (officiel : épuiser Hawkeye pour recharger l'arc).
+  - Alter-ego : trait S.H.I.E.L.D. Spy (officiel : S.H.I.E.L.D.) ; nouveau texte (mélanger 2 cartes ARROW de la défausse dans le deck après
+    le changement de forme ; trouver Bow **ou Quiver** et le mettre en jeu), à la place de « Weapon of Choice ».
+  - **Donc c'est le vrai Hawkeye, avec ses propres cartes de deck (Bow, Quiver, flèches), mais ces cartes ne sont pas dans ce PDF.**
+    Elles existent déjà dans notre jeu : `04002` Hawkeye's Bow et `04003` Hawkeye's Quiver (set trors, Hawkeye officiel). Reste à voir si les cartes ARROW (flèches) y sont aussi, car cette version de l'alter-ego mélange « 2 ARROW cards » dans le deck.
 
 ### p285 / p286 — MC×DC PLAYER · Fiches de joueur vierges
 - Fiche « Hero » (p285) et « Alter-Ego » (p286) à remplir à la main (cadre blanc, « '26 HUZZAH HOBBIES — ASHBURN, VA »,
