@@ -54,6 +54,12 @@ export type DeltaStatut = {
   statut: Statut
   /** +1 : le statut vient d'etre pose ; -1 : il vient d'etre retire. */
   value: 1 | -1
+  /**
+   * Les AUTRES statuts qui ont changé dans le même rendu, quand il y en a
+   * (Hulk Sonné ET Désorienté d'un coup). Le badge n'en porte qu'un ; le toast
+   * les dit tous. Absent quand il n'y en a pas d'autre.
+   */
+  aussi?: Array<{ statut: Statut; value: 1 | -1 }>
 }
 
 function compter(liste: Statut[] | undefined): Record<Statut, number> {
@@ -82,14 +88,20 @@ export function deltasStatuts(
     if (!apres.has(porteur)) continue
     const a = compter(portesAvant.get(porteur))
     const b = compter(portesApres.get(porteur))
-    let pose: Statut | undefined
-    let retire: Statut | undefined
+    const poses: Statut[] = []
+    const retires: Statut[] = []
     for (const s of STATUTS) {
-      if (b[s] > a[s]) pose = pose ?? s
-      else if (b[s] < a[s]) retire = retire ?? s
+      if (b[s] > a[s]) poses.push(s)
+      else if (b[s] < a[s]) retires.push(s)
     }
-    if (pose) deltas.push([porteur, { kind: 'status', statut: pose, value: 1 }])
-    else if (retire) deltas.push([porteur, { kind: 'status', statut: retire, value: -1 }])
+    // Un statut POSE l'emporte sur un statut RETIRE pour le badge ; le toast, lui, dit les deux.
+    const tous: Array<{ statut: Statut; value: 1 | -1 }> = [
+      ...poses.map((statut) => ({ statut, value: 1 as const })),
+      ...retires.map((statut) => ({ statut, value: -1 as const })),
+    ]
+    const [premier, ...autres] = tous
+    if (!premier) continue
+    deltas.push([porteur, { kind: 'status', statut: premier.statut, value: premier.value, ...(autres.length > 0 ? { aussi: autres } : {}) }])
   }
   return deltas
 }

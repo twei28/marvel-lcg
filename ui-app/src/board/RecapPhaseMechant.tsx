@@ -26,6 +26,7 @@ import { toScanCard, type ContexteCarte } from './card-model'
 import type { Catalogue } from './catalogue'
 import { estActivation, estResolue } from './deroule-phase'
 import { libelleDeStatut } from './deroule-textes'
+import { phraseStatutRecu } from './phrases-effets'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -506,7 +507,7 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
       return {
         cle: `moteur:${index}:statut:${fait.cible_id}:${fait.statut}`,
         genre: 'statut',
-        titre: `${noms.carte(fait.cible_id) ?? fait.cible} ${t('gagne')} ${libelleDeStatut(fait.statut)}`,
+        titre: phraseStatutRecu(noms.carte(fait.cible_id) ?? fait.cible, libelleDeStatut(fait.statut)),
         cibleId: fait.cible_id,
         cause: fait.cause || undefined,
       }

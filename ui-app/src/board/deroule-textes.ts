@@ -7,7 +7,8 @@
 
 import { nomNettoye, type EtapeDeroule, type LigneBilan } from './deroule-phase'
 import { langueActuelle, t } from './langue'
-import { libelleStatut } from './effets-statuts'
+import { libelleStatut, type Statut } from './effets-statuts'
+import { phraseStatutRecu } from './phrases-effets'
 import type { EffetRevelation } from './world'
 
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
@@ -50,10 +51,12 @@ function pluriel(nombre: number, singulier: string, pluriels: string): string {
  * depuis la meme table, en minuscules. Une seule table pour les deux, sans
  * quoi le badge et le cartouche pourraient se contredire.
  */
+const STATUTS_CONNUS = ['stunned', 'confused', 'tough', 'exposed', 'cloaked', 'dazed', 'intensified']
+
 export function libelleDeStatut(statut: string | undefined): string {
   const cle = (statut ?? '').toLowerCase()
-  if (cle === 'stunned' || cle === 'confused' || cle === 'tough') {
-    return libelleStatut(cle, 1, langueActuelle())
+  if (STATUTS_CONNUS.includes(cle)) {
+    return libelleStatut(cle as Statut, 1, langueActuelle())
   }
   return statut ?? ''
 }
@@ -87,7 +90,7 @@ export function titreEtape(etape: EtapeDeroule): string {
     // qu'un « undefined gagne », comme partout ailleurs ici.
     const nom = libelleDeStatut(etape.statut)
     if (!cible) return `${t('Une carte de statut est posée')} : ${nom}`
-    return `${cible} ${t('gagne')} ${nom}`
+    return phraseStatutRecu(cible, nom)
   }
 
   if (etape.titre === 'menace') {
@@ -302,9 +305,9 @@ export function compteurEtape(etape: EtapeDeroule): string {
 export function texteLigneBilan(ligne: LigneBilan): string {
   if (ligne.genre === 'statuts') {
     const nom = libelleDeStatut(ligne.statut)
-    // « Klaw gagne Sonné », et « x2 » quand la meme carte est posee deux fois
+    // « Klaw reçoit un statut Sonné », et « x2 » quand la meme carte est posee deux fois
     // (Solide en demande deux pour mordre).
-    return `${ligne.cibleNom} ${t('gagne')} ${nom}${ligne.total > 1 ? ` x${ligne.total}` : ''}`
+    return `${phraseStatutRecu(ligne.cibleNom, nom)}${ligne.total > 1 ? ` x${ligne.total}` : ''}`
   }
   if (ligne.genre === 'degats') {
     return `${ligne.cibleNom} ${t('a pris')} ${ligne.total} ${pluriel(ligne.total, 'dégât', 'dégâts')}`

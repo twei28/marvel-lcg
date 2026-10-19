@@ -115,6 +115,8 @@ import {
 import { useHistoriquePartie } from './board/HistoriquePartie'
 import { peutSuivre } from './board/suivi-vue'
 import { deltasStatuts } from './board/effets-statuts'
+import { phraseDeLEffet } from './board/phrases-effets'
+import { ToastsEffetsCartes, type ToastEffet } from './board/ToastEffetCarte'
 import { traduireMoteur } from './board/vocabulaire-moteur'
 import {
   afficherFinDePartie,
@@ -404,6 +406,25 @@ function valeurCompteur(carte: WorldCard, cle: 'health' | 'k_threat'): number | 
   return typeof valeur === 'number' && Number.isFinite(valeur) ? valeur : undefined
 }
 
+/**
+ * Le premier compteur nomme (`c_rage`, `k_acceleration_token`) dont la valeur a
+ * change d'un rendu a l'autre. Un compteur qui apparait part de zero.
+ */
+function changementDeJeton(avant: WorldCard, apres: WorldCard): { cle: string; variation: number } | undefined {
+  const lire = (carte: WorldCard, champ: string) => {
+    const v = carte.info[champ]
+    return typeof v === 'number' && Number.isFinite(v) ? v : 0
+  }
+  const champs = new Set([...Object.keys(avant.info), ...Object.keys(apres.info)])
+  for (const champ of champs) {
+    const nomme = champ.startsWith('c_') && !champ.endsWith('_printed')
+    if (!nomme && champ !== 'k_acceleration_token') continue
+    const variation = lire(apres, champ) - lire(avant, champ)
+    if (variation !== 0) return { cle: champ === 'k_acceleration_token' ? 'acceleration' : champ.slice(2), variation }
+  }
+  return undefined
+}
+
 /** Capture les variations de compteurs entre deux rendus du moteur. */
 function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta> {
   const [effets, setEffets] = useState<Map<number, CardEffectDelta>>(() => new Map())
@@ -431,7 +452,12 @@ function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta>
         const menaceApres = valeurCompteur(carte, 'k_threat')
         if (menaceAvant !== undefined && menaceApres !== undefined && menaceAvant !== menaceApres) {
           changements.push([id, { value: menaceApres - menaceAvant, kind: 'threat' }])
+          continue
         }
+        // Des JETONS nommes (rage, toile...) poses ou retires : le toast dit
+        // « X gagne 1 jeton Rage », pas « gagne 1 menace ».
+        const jeton = changementDeJeton(ancienne, carte)
+        if (jeton) changements.push([id, { kind: 'token', jeton: jeton.cle, value: jeton.variation }])
       }
 
       // Statuts poses ou retires (Sonne / Desoriente / Tenace). Un porteur
@@ -4164,21 +4190,18 @@ export function PagePartie({
     atterrir(depart.url || site.url || lienAccueil())
   }, [confirmer, playerId, site, spectateur])
 
-  const effetCentrale = useMemo(() => {
-    const premier = effets.entries().next().value as [number, CardEffectDelta] | undefined
-    if (!premier) return undefined
-    const [id, effet] = premier
-    const carte = cartesMondeParId.get(id)
-    if (!carte) return undefined
-    const valeur = Math.abs(effet.value)
-    // Narration ecrite ici, pas envoyee par le moteur : elle doit donc suivre
-    // la langue du client comme le reste du plateau.
-    const nom = nomAffiche(carte)
-    if (effet.kind === 'damage') return `${nom} ${t('subit')} ${valeur} ${t('dégâts')}`
-    if (effet.kind === 'heal') return `${nom} ${t('récupère')} ${valeur} ${t('PV')}`
-    return effet.value > 0
-      ? `${nom} ${t('gagne')} ${valeur} ${t('menace')}`
-      : `${nom} ${t('perd')} ${valeur} ${t('menace')}`
+  // Ce que le toast dit de chaque carte touchee : voir `phrases-effets.ts` (un statut n'est pas de la menace).
+  const toastsEffets = useMemo(() => {
+    const toasts: ToastEffet[] = []
+    for (const [id, effet] of effets) {
+      const carte = cartesMondeParId.get(id)
+      if (!carte) continue
+      // Narration ecrite ici, pas envoyee par le moteur : elle doit donc suivre
+      // la langue du client comme le reste du plateau.
+      const texte = phraseDeLEffet(nomAffiche(carte), effet)
+      if (texte) toasts.push({ id, texte })
+    }
+    return toasts
   }, [effets, cartesMondeParId])
 
   const ciblageSurTable =
@@ -4505,11 +4528,13 @@ export function PagePartie({
         />
       ) : null}
 
-      {afficherEvenementCentrale ? (
+      {/* Un changement sur une carte (statut, jeton, menace, PV) : une phrase posee SUR cette carte (T15). */}
+      {afficherEvenementCentrale ? <ToastsEffetsCartes toasts={toastsEffets} /> : null}
+
+      {afficherEvenementCentrale && (toastsEffets.length === 0 || (!unCartouche && etat.validationRequise)) ? (
         <EvenementCentrale
           prompt={etat.monde.prompt}
           eventName={etat.monde.event_name}
-          message={effetCentrale}
           // En mode Détaillé, la validation appartient au cartouche
           // (DeroulePhase) : ce panneau ne doit plus jamais montrer de bouton
           // « Continuer », quelle que soit la valeur de etat.validationRequise.
