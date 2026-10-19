@@ -372,6 +372,8 @@ export type EtapeDeroule = {
   motsCles?: MotsClesDuCoup
   /** 13/10/2026 : les cartes qui ont réduit le coup, et de combien. */
   reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
+  /** L'attaquant etait desoriente : il attaque quand meme (regle cachee, T11). */
+  desoriente?: boolean
   /** D'ou viennent les bonus d'ATQ (une ligne par source dans le calcul) ; absent : « Bonus » sans nom. */
   bonus?: Array<{ source: string; valeur: number; source_id?: number | null }>
   /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant (son écran à part dans l'essai). */
@@ -680,6 +682,7 @@ export function etapesDeroule(
       joueurs: fait.joueurs,
       reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
       bonus: fait.bonus && fait.bonus.length > 0 ? fait.bonus : undefined,
+      desoriente: fait.desoriente || undefined,
       boosts: [],
     })
   }
@@ -942,6 +945,7 @@ export function etapesDeroule(
       motsCles: fait.mots_cles && Object.keys(fait.mots_cles).length > 0 ? fait.mots_cles : undefined,
       reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
       bonus: fait.bonus && fait.bonus.length > 0 ? fait.bonus : undefined,
+      desoriente: fait.desoriente || undefined,
       riposte: fait.riposte ?? undefined,
     })
   })

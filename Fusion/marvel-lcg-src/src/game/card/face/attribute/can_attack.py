@@ -947,6 +947,8 @@ class CanAttack(CardFace):
             'base_imprimee': base_imprimee,
             # Lot 5b : Percant, Robuste, Deferlement, publies seulement quand ils ont joue.
             **({'mots_cles': mots_cles} if mots_cles else {}),
+            # 19/10/2026 : un ennemi DESORIENTE attaque quand meme (Desoriente n'empeche que de comploter) : le plateau le dit.
+            **({'desoriente': True} if CanAttack._EstDesoriente(attaquant) else {}),
             # 19/10/2026 : d'ou viennent les bonus d'ATQ (une ligne par source dans le calcul du plateau).
             **({'bonus': [{'source': n, 'source_id': i, 'valeur': v} for n, i, v in bonus_sources]} if bonus_sources else {}),
             # 13/10/2026 : les cartes qui ont reduit le coup, et de combien.
@@ -959,6 +961,13 @@ class CanAttack(CardFace):
         CanAttack._CompterDefense(cible, defenseur, subi,
                                   total_avant_defense if total_avant_defense is not None else inflige + defense)
         return True
+
+    @staticmethod
+    def _EstDesoriente(attaquant: 'CardFace') -> bool:
+        try:
+            return bool(attaquant.IsConfused())
+        except Exception:
+            return False
 
     @staticmethod
     def _EstRapide(by_effect: 'Effect|None') -> bool:

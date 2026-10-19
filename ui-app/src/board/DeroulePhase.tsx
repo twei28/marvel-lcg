@@ -29,6 +29,7 @@ import {
 } from 'react'
 import { questionDuRecit } from './table-calee'
 import { calculCoupTable } from './calcul-coup-table'
+import { reglesCachees } from './regles-cachees'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
 import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
@@ -224,6 +225,7 @@ export function DeroulePhase({
   cartesDistribuees = 0,
   texteEtoile,
   infoCarte,
+  accelerationEnJeu,
   infoRevelee,
   questionDuMoteur,
   questionDUnAutre,
@@ -492,6 +494,8 @@ export function DeroulePhase({
   texteEtoile?: (carteId: number) => string | undefined
   /** Les nombres que le monde publie sur une carte (`info` : stade, seuil). */
   infoCarte?: (id: number) => Partial<Record<string, number>> | undefined
+  /** Les icones Acceleration des manigances en jeu (la regle cachee du point 1, avant que le fait du moteur n'arrive). */
+  accelerationEnJeu?: number
   /** Ce que le catalogue sait d'une carte revelee : son Renfort, son texte imprime. */
   infoRevelee?: (carteId: number) => InfoRevelee | undefined
   /**
@@ -2804,6 +2808,7 @@ export function DeroulePhase({
           phrase={phraseSurvolable(phraseEtape)}
           nombre={recit.texte && !(etapeLue.etat === 'annonce' && /^0(\s|$)/.test(recit.texte)) ? recit.texte : undefined}
           calcul={!lectureEnCours ? calculCoupTable(etapeLue) : undefined}
+          regles={!lectureEnCours ? reglesCachees(etapeLue, { accelerationEnJeu }) : undefined}
           lecture={lectureEnCours ? phaseDesCartes ?? 'entree' : undefined}
           peutAgir={peutAgir}
           avancer={fatalAMontrerSurTable ? () => setCoupFatalVuSurTable(true) : avancerSurTable}

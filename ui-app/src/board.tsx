@@ -1588,6 +1588,7 @@ function PageEtat({
         etapes={pourLeCartouche.etapes}
         cartesDistribuees={pourLeCartouche.cartesDistribuees}
         infoCarte={(id) => indexerCartesMonde(monde).get(id)?.info}
+        accelerationEnJeu={[...(monde.area_schemes_main ?? []), ...(monde.area_schemes_side ?? [])].reduce((n, c) => n + (c.info?.acceleration_icon ?? 0), 0)}
         identitePhase={monde.round_id ?? 0}
         identitePartie={fichier}
         phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase ?? '')}
@@ -4691,6 +4692,7 @@ export function PagePartie({
             cartesDistribuees={cartesDistribuees}
             texteEtoile={texteBoostEtoile}
             infoCarte={infoCarte}
+            accelerationEnJeu={[...(etat.monde?.area_schemes_main ?? []), ...(etat.monde?.area_schemes_side ?? [])].reduce((n, c) => n + (c.info?.acceleration_icon ?? 0), 0)}
             infoRevelee={infoRevelee}
             // L'identite de la phase en cours, seule chose qui remet le
             // cartouche a zero. Il y a une phase du mechant par round, donc le

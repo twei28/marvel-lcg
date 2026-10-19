@@ -273,6 +273,8 @@ export type TableSansModaleProps = {
   surtitre?: string
   /** Après la phrase : ce qui va suivre (« Renfort : une autre carte va être révélée »). */
   suite?: string
+  /** Les règles cachées qui jouent (une ligne discrète, T11). */
+  regles?: string[]
 }
 
 export function TableSansModale({
@@ -290,6 +292,7 @@ export function TableSansModale({
   libelleAction,
   surtitre,
   suite,
+  regles,
 }: TableSansModaleProps) {
   // La carte au centre se lit sans rechercher un halo derrière elle. Aucun
   // intervalle de mesure ni rendu des halos pendant ses déplacements.
@@ -329,6 +332,13 @@ export function TableSansModale({
             {peutAgir ? t('Clique la carte dorée, ou Espace') : (mention ?? t('La suite arrive…'))}
           </span>
         )}
+        {regles && regles.length > 0 ? (
+          <span className="tsm-regles">
+            {regles.map((ligne) => (
+              <span key={ligne}>{ligne}</span>
+            ))}
+          </span>
+        ) : null}
         {enTrajet ? <span className="tsm-attente">{lecture === 'entree' ? t('Les cartes arrivent…') : t('Les cartes se placent…')}</span> : null}
       </BandeauDeplacable>
       {!lecture && boiteCible ? <span className="tsm-cible" style={boiteStyle(boiteCible)} aria-hidden="true" /> : null}
