@@ -474,8 +474,24 @@ export function detecterZoneTextePaysage(pixels, largeur, hauteur, cote = 'gauch
     }
     return null;
 }
+/** Les icônes de manigance imprimées, dans l'ordre où le scan les aligne. Boost n'en fait pas partie : il est hors de la boîte de texte. */
+const ICONES_MANIGANCE = [
+    ['Acceleration', 'acceleration'],
+    ['Crisis', 'crisis'],
+    ['Hazard', 'hazard'],
+    ['Amplify', 'amplify'],
+];
+/** Les icônes d'une carte d'après son `desc` : un champ absent, vide ou « 0 » ne s'imprime pas. */
+export function iconesImprimees(desc) {
+    if (!desc)
+        return [];
+    return ICONES_MANIGANCE.filter(([champ]) => {
+        const valeur = String(desc[champ] ?? '').trim();
+        return valeur !== '' && valeur !== '0';
+    }).map(([, jeton]) => jeton);
+}
 /** Glyphes de la police ChampionsIcons (relevés sur public/fonts/ChampionsIcons.ttf). */
-const GLYPHES = {
+export const GLYPHES = {
     physical: 'P',
     mental: 'M',
     energy: 'E',

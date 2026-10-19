@@ -3,7 +3,7 @@
 // avec les modules transpilés de ce dossier (generer-traduction-public.mjs).
 "use strict";
 
-import { detecterZoneTexte, formeDuCache, ligneDeTraits, texteEnHtml } from "./traduction-posee.js";
+import { GLYPHES, detecterZoneTexte, formeDuCache, iconesImprimees, ligneDeTraits, texteEnHtml } from "./traduction-posee.js";
 import { TRAITS_FR } from "./traits-fr.js";
 import { TEXTES_FR } from "./textes-fr.js";
 import { CODES_SCAN_FR } from "./scans-fr-liste.js";
@@ -43,6 +43,28 @@ export async function texteAPoser(code, { scanAnglais = false } = {}) {
     if (maison || !scanAnglais) return maison || null;
     if (!complets) complets = import("./textes-fr-complets.js").then((m) => m.TEXTES_FR_COMPLETS);
     return (await complets)[code] || null;
+}
+
+/** Les icônes de manigance imprimées sous le cache (Accélération, Crise...), par code de carte : cards.json, lu une fois. */
+let iconesParCarte = null;
+async function iconesDeLaCarte(code) {
+    if (!iconesParCarte) {
+        iconesParCarte = fetch("/get_cards_json")
+            .then((r) => r.json())
+            .then((donnees) => {
+                const table = new Map();
+                for (const paquet of Object.values(donnees)) {
+                    if (!Array.isArray(paquet)) continue;
+                    for (const carte of paquet) {
+                        const icones = iconesImprimees(carte && carte.desc);
+                        if (icones.length) table.set(carte.card_id, icones);
+                    }
+                }
+                return table;
+            })
+            .catch(() => new Map());
+    }
+    return (await iconesParCarte).get(String(code).replace(/_(cb|rog|rog2|m3t)$/, "")) || [];
 }
 
 /** « /hd/01001a_cb?x » -> « 01001a_cb » */
@@ -136,6 +158,19 @@ export async function poserTraduction(cadre, url, code, traits = [], options = {
     const corps = document.createElement("div");
     corps.innerHTML = texteEnHtml(texte);
     boite.append(corps);
+    const icones = await iconesDeLaCarte(code);
+    if (icones.length) {
+        boite.classList.add("tp-avec-icones");
+        const rangee = document.createElement("div");
+        rangee.className = "tp-icones-manigance";
+        for (const jeton of icones) {
+            const icone = document.createElement("span");
+            icone.className = `tp-icone tp-icone-${jeton}`;
+            icone.textContent = GLYPHES[jeton];
+            rangee.append(icone);
+        }
+        boite.append(rangee);
+    }
     cadre.append(boite);
     ajuster(boite);
     if (document.fonts) document.fonts.ready.then(() => ajuster(boite));

@@ -13,6 +13,7 @@
 // « 1/3 PV ». Rien ne casse.
 
 import { motsClesDeCarte, type MotCle } from './mots-cles'
+import { iconesImprimees } from './traduction-posee'
 
 type CartePapier = {
   card_id?: string
@@ -147,6 +148,12 @@ export type Catalogue = {
   /** Les traits IMPRIMÉS (« AERIAL », « Dark Elf »), pour la traduction posée sur le scan. */
   traits?(cardId: string): string[]
   /**
+   * Les icônes de manigance IMPRIMÉES dans la boîte de texte du scan (Accélération, Crise, Aléas, Amplification),
+   * dans leur ordre d'impression, sous leur nom de jeton (« acceleration »...). La traduction posée recouvre cette
+   * boîte : elle les redessine.
+   */
+  iconesManigance?(cardId: string): string[]
+  /**
    * Les cartes dont le nom contient ce fragment, au plus `limite` (40 par
    * defaut). Sert au mode manuel, SEUL endroit ou l'on cherche une carte qui
    * n'est PAS dans la partie — le joueur ne connait aucun card_id, seulement
@@ -200,6 +207,7 @@ export function construire(donnees: unknown): Catalogue {
   const types = new Map<string, string>()
   const textes = new Map<string, string>()
   const traits = new Map<string, string[]>()
+  const iconesManigance = new Map<string, string[]>()
   /** Nom (et pic_id eventuel) de CHAQUE carte, pour `chercherParNom`. */
   const nomsParCarte = new Map<string, { name: string; pic_id?: string }>()
   const sets = new Map<string, string>()
@@ -212,6 +220,8 @@ export function construire(donnees: unknown): Catalogue {
       if (typeof id !== 'string') continue
       if (typeof carte.text === 'string' && carte.text.trim()) textes.set(id, carte.text)
       if (Array.isArray(carte.traits) && carte.traits.length > 0) traits.set(id, carte.traits.map(String))
+      const icones = iconesImprimees(carte.desc)
+      if (icones.length > 0) iconesManigance.set(id, icones)
       if (typeof carte.set_name === 'string' && carte.set_name.trim()) sets.set(id, carte.set_name.trim())
       const pv = pvImprimes(carte.desc?.HP)
       if (pv !== undefined) parCarte.set(id, pv)
@@ -257,6 +267,7 @@ export function construire(donnees: unknown): Catalogue {
     type: (cardId) => types.get(cardId),
     texte: (cardId) => textes.get(cardId),
     traits: (cardId) => traits.get(cardId) ?? [],
+    iconesManigance: (cardId) => iconesManigance.get(cardId) ?? [],
     chercherParNom: (fragment, limite = 40) => {
       const cherche = fragment.trim().toLowerCase()
       if (cherche.length < 2) return []

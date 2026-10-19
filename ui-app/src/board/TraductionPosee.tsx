@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
+import { GLYPHES, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
+import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
 import './traduction-posee.css'
 
@@ -104,6 +105,18 @@ export function TraductionPosee({
 }) {
   const [zone, setZone] = useState<ZoneTexte | null>(null)
   const boite = useRef<HTMLDivElement | null>(null)
+  // Les icônes imprimées sous le cache (Accélération, Crise...) : on les redessine.
+  const [icones, setIcones] = useState<readonly string[]>([])
+  const code = codeImage(url)
+  useEffect(() => {
+    let vivant = true
+    void chargerCatalogue().then((catalogue) => {
+      if (vivant) setIcones(catalogue.iconesManigance?.(code) ?? [])
+    })
+    return () => {
+      vivant = false
+    }
+  }, [code])
 
   useEffect(() => {
     let vivant = true
@@ -165,7 +178,7 @@ export function TraductionPosee({
   return (
     <div
       ref={boite}
-      className="traduction-posee"
+      className={`traduction-posee${icones.length > 0 ? ' tp-avec-icones' : ''}`}
       lang="fr"
       style={{
         left: `${zone.x0 * 100}%`,
@@ -186,6 +199,15 @@ export function TraductionPosee({
       ) : null}
       {ligneTraits ? <div className="tp-traits">{ligneTraits}</div> : null}
       <div dangerouslySetInnerHTML={{ __html: texteEnHtml(texte) }} />
+      {icones.length > 0 ? (
+        <div className="tp-icones-manigance">
+          {icones.map((jeton) => (
+            <span key={jeton} className={`tp-icone tp-icone-${jeton}`}>
+              {GLYPHES[jeton]}
+            </span>
+          ))}
+        </div>
+      ) : null}
     </div>
   )
 }
