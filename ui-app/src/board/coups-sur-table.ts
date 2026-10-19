@@ -97,6 +97,11 @@ export function coupsDeLEtape(etape: EtapeDeroule | undefined): Coup[] {
   return resultat
 }
 
+/** Les coups de l'ecran dont un jeton VOLE vraiment (les degats ne volent plus, sauf `JETON_DEGATS_VOLANT`). */
+export function coupsQuiVolent(etape: EtapeDeroule | undefined): Coup[] {
+  return coupsDeLEtape(etape).filter((c) => c.montant > 0 && (JETON_DEGATS_VOLANT || c.genre !== 'degats'))
+}
+
 /** Le point de la courbe quadratique `depart` > `controle` > `arrivee` a l'instant t (0 a 1). */
 export function pointDeLaCourbe(depart: Point, controle: Point, arrivee: Point, t: number): Point {
   const u = 1 - t

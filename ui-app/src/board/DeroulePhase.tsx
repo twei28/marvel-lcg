@@ -92,7 +92,7 @@ import { cadreDeLEtape, styleDuCadre, type CadreJoueur } from './couleur-joueur'
 import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
 import { FlechesPhase } from './FlechesPhase'
 import { TrajetsPhase, animationsCoupees } from './TrajetsPhase'
-import { coupsDeLEtape } from './coups-sur-table'
+import { coupsDeLEtape, coupsQuiVolent } from './coups-sur-table'
 import { DUREE_TRAJET_MS } from './trajets-phase'
 import { EtoilesEnAttente } from './EtoilesEnAttente'
 import { NumerosSbires } from './NumerosSbires'
@@ -1095,7 +1095,7 @@ export function DeroulePhase({
     // Le joueur est vivant, et le filet anti-blocage doit le savoir meme quand
     // ce clic n'acquitte rien (voir `onActivite`).
     onActivite?.()
-    if (essai && surTable && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0)) {
+    if (essai && surTable && !animationsCoupees() && coupsQuiVolent(etape).length > 0) {
       setEnVolDeJeton(true)
       window.clearTimeout(minuteurVol.current)
       minuteurVol.current = window.setTimeout(() => setEnVolDeJeton(false), DUREE_TRAJET_MS + 250)
