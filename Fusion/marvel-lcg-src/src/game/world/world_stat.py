@@ -207,7 +207,11 @@ class WorldStat:
             if reductions is None:
                 reductions = {}
                 setattr(world.stat, '_reductions_en_cours', reductions)
-            reductions.setdefault(cible_id, []).append({'source': nom, 'valeur': int(valeur)})
+            # `source_id` (19/10/2026) : l'identifiant d'objet de la carte, pour que le plateau l'affiche sous SON nom
+            # francais (« Barriere Energetique »), comme sur la table, au lieu du nom anglais du moteur.
+            reductions.setdefault(cible_id, []).append(
+                {'source': nom, 'valeur': int(valeur),
+                 'source_id': getattr(getattr(source, 'card', None), 'object_id', None) or getattr(source, 'object_id', None)})
         except Exception:
             pass
 

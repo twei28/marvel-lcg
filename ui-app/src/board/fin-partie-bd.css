@@ -54,10 +54,13 @@
   --eclat-bord: #ffd24a;
 }
 
-/* VICTOIRE : l'image fournie par l'utilisateur (07/10/2026) remplace l'eclat
+/* 19/10/2026 : les images victory.webp / defeat.webp portent « VICTORY! » / « DEFEAT! » EN ANGLAIS. Elles ne servent plus qu'en
+   anglais (`.avec-image-en`) ; en francais, l'eclat dessine porte « VICTOIRE ! » / « DÉFAITE ! ».
+
+   VICTOIRE : l'image fournie par l'utilisateur (07/10/2026) remplace l'eclat
    dessine. Le mot reste dans le DOM (lecteurs d'ecran, tests) mais n'est plus
    peint : l'image porte deja « VICTORY! ». Image 3:1, d'ou le ratio. */
-.fin-partie.est-victoire .fin-partie-eclat {
+.fin-partie.avec-image-en.est-victoire .fin-partie-eclat {
   aspect-ratio: 3 / 1;
   width: min(640px, 90vw);
   margin-bottom: -24px;
@@ -68,7 +71,7 @@
 
 /* DEFAITE : meme principe, image fournie le 08/10/2026 (« DEFEAT! », 3:1).
    Pas pour un match nul de bataille, qui garde l'eclat dessine. */
-.fin-partie.est-defaite:not(.est-nul) .fin-partie-eclat {
+.fin-partie.avec-image-en.est-defaite:not(.est-nul) .fin-partie-eclat {
   aspect-ratio: 3 / 1;
   width: min(640px, 90vw);
   margin-bottom: -24px;
@@ -77,11 +80,16 @@
   text-shadow: none;
 }
 
-.fin-partie.est-victoire .fin-partie-eclat::before,
-.fin-partie.est-victoire .fin-partie-eclat::after,
-.fin-partie.est-defaite:not(.est-nul) .fin-partie-eclat::before,
-.fin-partie.est-defaite:not(.est-nul) .fin-partie-eclat::after {
+.fin-partie.avec-image-en.est-victoire .fin-partie-eclat::before,
+.fin-partie.avec-image-en.est-victoire .fin-partie-eclat::after,
+.fin-partie.avec-image-en.est-defaite:not(.est-nul) .fin-partie-eclat::before,
+.fin-partie.avec-image-en.est-defaite:not(.est-nul) .fin-partie-eclat::after {
   content: none;
+}
+
+/* En francais, l'eclat dessine (sans image) rentre moins dans le cartouche : les onglets Resultat / Stats restent lisibles. */
+.fin-partie:not(.avec-image-en) .fin-partie-eclat {
+  margin-bottom: -12px;
 }
 
 /* Victoire de campagne : le panneau des recompenses est haut. L'eclat
@@ -93,8 +101,8 @@
   margin-bottom: -28px;
 }
 
-.fin-partie.est-victoire:has(.camp-recomp) .fin-partie-eclat,
-.fin-partie.est-defaite:not(.est-nul):has(.camp-recomp) .fin-partie-eclat {
+.fin-partie.avec-image-en.est-victoire:has(.camp-recomp) .fin-partie-eclat,
+.fin-partie.avec-image-en.est-defaite:not(.est-nul):has(.camp-recomp) .fin-partie-eclat {
   width: min(360px, 70vw);
   font-size: 0;
   margin-bottom: -14px;

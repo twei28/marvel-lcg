@@ -289,7 +289,7 @@ export type FaitActivationResolue = FaitActivationCommun & {
   /** Refonte, lot 5b (12/10/2026) : ce que Perçant, Robuste et Déferlement ont fait sur ce coup. */
   mots_cles?: MotsClesDuCoup
   /** 13/10/2026 : les cartes qui ont réduit le coup, et de combien (moteur `WorldStat.NoterReduction`). */
-  reductions?: Array<{ source: string; valeur: number }>
+  reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
   /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant. */
   riposte?: RiposteDuCoup
 }
@@ -334,7 +334,7 @@ export type FaitMenace = FaitMechantCommun & {
   acceleration?: number
   joueurs?: number
   /** 13/10/2026 : les cartes qui ont réduit cette pose, et de combien. */
-  reductions?: Array<{ source: string; valeur: number }>
+  reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
 }
 
 /**

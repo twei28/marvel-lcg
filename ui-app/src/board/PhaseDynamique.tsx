@@ -42,8 +42,15 @@ export function evenementsConfirmes(etapes: readonly EtapeDeroule[], index: numb
 }
 
 /** Une ligne d'historique en clair : les étapes sans rédaction propre ne montrent jamais leur nom interne. */
-export function phraseHistorique(e: EtapeDeroule): string {
+export function phraseHistorique(e: EtapeDeroule, stade?: number): string {
   switch (e.titre) {
+    case 'stade-revele':
+      // « Klaw passe au stade 2 » (19/10/2026) : jamais la cle interne « stade-revele ».
+      return e.cibleNom
+        ? stade !== undefined && stade > 0
+          ? t('%1 passe au stade %2').replace('%1', e.cibleNom).replace('%2', String(stade))
+          : t('%1 passe au stade suivant').replace('%1', e.cibleNom)
+        : t('Le méchant passe au stade suivant')
     case 'paquet-vide':
       return t('Paquet rencontre vide')
     case 'etoile-differe':

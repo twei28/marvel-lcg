@@ -371,7 +371,7 @@ export type EtapeDeroule = {
   /** Refonte, lot 5b : ce que Perçant, Robuste et Déferlement ont fait sur ce coup. */
   motsCles?: MotsClesDuCoup
   /** 13/10/2026 : les cartes qui ont réduit le coup, et de combien. */
-  reductions?: Array<{ source: string; valeur: number }>
+  reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
   /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant (son écran à part dans l'essai). */
   riposte?: RiposteDuCoup
   /** La carte qui a annule a quitte le jeu en le faisant (n72, 09/10/2026). */

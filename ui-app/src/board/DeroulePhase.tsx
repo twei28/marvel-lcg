@@ -2627,7 +2627,8 @@ export function DeroulePhase({
   // Le nombre de l'etape, dans son unite, EXACTEMENT comme le trait le dit.
   const contenu = contenuDuTrait(etapeLue)
   // `phraseHistorique` : « paquet-vide » et « etoile-differe » se disent en clair, jamais sous leur nom interne.
-  const phraseEtape = phraseHistorique(lectureEnCours && activationAvecBoosts ? { ...etapeLue, etat: 'annonce' } : etapeLue)
+  const stadeRevele = etapeLue.titre === 'stade-revele' && etapeLue.carteId !== undefined ? infoCarte?.(etapeLue.carteId)?.printed_stage : undefined
+  const phraseEtape = phraseHistorique(lectureEnCours && activationAvecBoosts ? { ...etapeLue, etat: 'annonce' } : etapeLue, stadeRevele)
   const nombreEnClair =
     contenu.montant !== undefined
       ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`

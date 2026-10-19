@@ -1741,7 +1741,7 @@ function EcranFinPartie({
   const [onglet, setOnglet] = useState<'resultat' | 'stats'>('resultat')
   return (
     <div
-      className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}`}
+      className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}${langueActuelle() === 'en' ? ' avec-image-en' : ''}`}
       role="dialog"
       aria-modal="true"
       aria-label={eyebrow}
