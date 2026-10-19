@@ -756,7 +756,7 @@ romains (I, II, III).
 - ★ **Forced Response**: After Punisher attacks, remove 1 ammo counter from here.
 
 ### p191 — MEXICAN STANDOFF · Attachement (confrontation)
-- ID 6096 · Punishment (11/20) · Illustration : Marco Checchetto · Boost 2
+- ID 6096 · Punishment (11/20) · Illustration : Marco Checchetto · Boost 1 (corrigé en 300 dpi)
 - *Confrontation.* Attach to Punisher.
 - **Forced Response**: After you attack Punisher, he activates. Then, the TARGETED villain activates against you. Do not
   give either character a boost card for these activations. Discard this card.
@@ -918,7 +918,7 @@ Fond rouge sombre. Peut se mêler à d'autres rencontres : Punisher y est un sbi
 ## Set « SWAT Team » (6 cartes) — extension modulaire (police, fond bleu nuit / jaune)
 
 ### p237 — SWAT · Manigance annexe (permanente)
-- ID 6119 · SWAT Team (1/6) · Illustration : Terry Dodson · Menace de départ 1 [👤 ?] · Boost 1
+- ID 6119 · SWAT Team (1/6) · Illustration : Terry Dodson · Menace de départ 1 (fixe, sans icône par joueur : relu en 300 dpi) · Boost 1
 - Setup. Permanent. Players cannot thwart this scheme.
 - **Forced Response**: After an enemy is defeated, place 1 threat here (3 threat instead if it had the POLICE trait). Then,
   if there is 4+ threat here, remove all threat and place 1 wanted counter here.
