@@ -13,6 +13,14 @@ import type { EtapeDeroule } from './deroule-phase'
 import type { BoutFleche, Point } from './fleches-phase'
 import type { World } from './world'
 
+/**
+ * 19/10/2026 : le jeton de DEGATS ne vole plus. Demande de l'utilisateur : « on enleve les degats qui
+ * passent ; on garde la carte qui va vers la carte attaquee, et la, on voit −X PV ». Le jeton attendait
+ * en plus un clic avant de partir : les PV changent maintenant des l'annonce du resultat, avec le
+ * « −X PV » de la carte touchee (`deltaSurTable`). `true` retablit le vol (code intact).
+ */
+export const JETON_DEGATS_VOLANT = false
+
 export type GenreCoup = 'menace' | 'degats' | 'acceleration'
 
 /**
