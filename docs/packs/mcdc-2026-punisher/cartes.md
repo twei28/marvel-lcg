@@ -1188,8 +1188,11 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
     nouvelles valeurs : héros THW 2 · ATK 1 · DEF 2 (officiel : THW 1 · ATK 2 · DEF 1) ; alter-ego REC 3, main 6, 9 PV (inchangés).
   - Héros : trait **S.H.I.E.L.D.** ajouté (officiel : Avenger seul) ; nouveau texte « basic attacks gain ranged » ; *Quick Draw* devient
     « Ready Hawkeye's Bow (limite une fois par phase) » (officiel : épuiser Hawkeye pour recharger l'arc).
-  - Alter-ego : trait S.H.I.E.L.D. Spy (officiel : S.H.I.E.L.D.) ; nouveau texte (mélanger 2 cartes ARROW de la défausse dans le deck après
-    le changement de forme ; trouver Bow **ou Quiver** et le mettre en jeu), à la place de « Weapon of Choice ».
+  - **Alter-ego : une aptitude de plus.** Officiel : une seule, « Weapon of Choice » (**Action** : 1 ressource → chercher le Bow dans
+    deck + défausse, le mettre en main, mélanger). MC×DC : **deux** — une **Réponse** *(After you change to this form, shuffle 2 ARROW
+    cards from your discard pile into your deck)* **et** une **Action** *(1 ressource → trouver le Bow ou le Quiver et le mettre en jeu,
+    une fois par phase)*. La Réponse est nouvelle ; l'Action change (mise en jeu au lieu de main, Quiver possible).
+  - Alter-ego : trait S.H.I.E.L.D. Spy (officiel : S.H.I.E.L.D.).
   - **Donc c'est le vrai Hawkeye, avec ses propres cartes de deck (Bow, Quiver, flèches), mais ces cartes ne sont pas dans ce PDF.**
     Elles existent déjà dans notre jeu : `04002` Hawkeye's Bow et `04003` Hawkeye's Quiver (set trors, Hawkeye officiel). Reste à voir si les cartes ARROW (flèches) y sont aussi, car cette version de l'alter-ego mélange « 2 ARROW cards » dans le deck.
 
