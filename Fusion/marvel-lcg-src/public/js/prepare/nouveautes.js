@@ -209,6 +209,12 @@ export const NOUVEAUTES = [
         en: "Luke Cage reviewed card by card. Power Man now draws, Metal Bracer reduces damage before a tough card is lost, Jessica Jones gets +1 THW per tough card and Misty Knight loses her bonus with her tough card. Cruisin' for a Bruisin', Take a Stand, Black Belt, Augmented Jaws and Sidewinder now work as printed.",
     },
     {
+        date: "2026-10-19",
+        genre: "jeu",
+        fr: "La phase du méchant se choisit entre trois façons : « Étape par étape bis », « Sur la table » et « D'un coup ». Ceux qui étaient sur l'ancien « Étape par étape » passent sur « Étape par étape bis ».",
+        en: "The villain phase now comes in three ways: “Step by step bis”, “On the table” and “All at once”. Anyone who was on the old “Step by step” moves to “Step by step bis”.",
+    },
+    {
         date: "2026-10-10",
         genre: "jeu",
         fr: "Quand une action te fait choisir des cartes hors de la table, comme le Contrôle climatique de Storm ou une recherche dans ton deck, une seule fenêtre s'ouvre avec les cartes. Tu touches celle que tu veux, puis Valider.",

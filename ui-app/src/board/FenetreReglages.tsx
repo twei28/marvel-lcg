@@ -41,7 +41,15 @@ import type { ReglageMode } from './mobile/useModeMobile'
 import { ecrireReglageTelephone, useReglagesTelephone, type TailleTexte } from './mobile/reglages-telephone'
 import { epurePermis, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
-import { ecrirePresentationPhase, lirePresentationPhase, suivrePresentationPhase, type PresentationPhase } from './phase-presentation'
+import {
+  PHASE_BIS_POUR_TOUS,
+  PHASE_DYNAMIQUE_VISIBLE,
+  PHASE_ETAPE_VISIBLE,
+  ecrirePresentationPhase,
+  lirePresentationPhase,
+  suivrePresentationPhase,
+  type PresentationPhase,
+} from './phase-presentation'
 import { RoueTeinte } from './RoueTeinte'
 import type { Teinte } from './teinte'
 import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
@@ -246,17 +254,12 @@ function LigneVolumeSons({ disponible }: { disponible: boolean }) {
 }
 
 /**
- * La phase du méchant. Un compte qui a l'essai « nouvelle phase » (coché dans
- * /admin, 16/10/2026 : l'administrateur et Yarro) voit en plus « Étape par étape
- * bis », la nouvelle présentation ; « Étape par étape » reste celle de tout le
- * monde. Les autres comptes ne voient aucun changement (board/phase-presentation.ts).
+ * La phase du méchant : TROIS choix pour tout le monde (19/10/2026), dans l'ordre « Étape par étape bis »,
+ * « Sur la table », « D'un coup ». « Étape par étape » (l'ancien cartouche) et « Phase dynamique » sont cachés
+ * derrière `PHASE_ETAPE_VISIBLE` et `PHASE_DYNAMIQUE_VISIBLE` (board/phase-presentation.ts) : le code reste,
+ * remettre un drapeau à `true` les montre de nouveau. « bis » ne dépend plus de l'essai « nouvelle phase »
+ * de /admin (`PHASE_BIS_POUR_TOUS`).
  */
-/**
- * « Phase dynamique » CACHÉE du choix (19/10/2026, demande de l'utilisateur) : le code reste, seul
- * le choix disparaît des réglages. Remettre `true` pour la montrer de nouveau.
- */
-const PHASE_DYNAMIQUE_VISIBLE = false
-
 function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   const [essai, setEssai] = useState(false)
   useEffect(() => {
@@ -270,25 +273,21 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   }, [])
   const [presentation, setPresentation] = useState(lirePresentationPhase)
   useEffect(() => suivrePresentationPhase(setPresentation), [])
-  // Un compte d'essai qui l'avait retenue retombe sur « Étape par étape » tant qu'elle est cachée.
-  useEffect(() => {
-    if (!PHASE_DYNAMIQUE_VISIBLE && essai && presentation === 'dynamique') ecrirePresentationPhase('etape')
-  }, [essai, presentation])
-  const valeur: string = p.modePhase === 'detaille' && essai && presentation !== 'etape' ? presentation : p.modePhase
+  const bisOuvert = PHASE_BIS_POUR_TOUS || essai
+  // Le mode `detaille` se lit par sa présentation ; `lirePresentationPhase` ne rend jamais un choix caché.
+  const valeur: string = p.modePhase === 'detaille' && bisOuvert ? presentation : p.modePhase
   return (
     <LigneChoix<string>
       libelle={t('Phase du méchant')}
       valeur={valeur}
       choix={[
-        { valeur: 'detaille', libelle: t('Étape par étape') },
-        ...(essai
-          ? [
-              { valeur: 'bis', libelle: t('Étape par étape bis') },
-              ...(['localhost', '127.0.0.1', '[::1]'].includes(globalThis.location?.hostname ?? '')
-                ? [{ valeur: 'tris', libelle: t('Étape par étape tris') }] : []),
-              ...(PHASE_DYNAMIQUE_VISIBLE ? [{ valeur: 'dynamique', libelle: t('Phase dynamique') }] : []),
-            ]
+        ...(PHASE_ETAPE_VISIBLE || !bisOuvert ? [{ valeur: 'detaille', libelle: t('Étape par étape') }] : []),
+        ...(bisOuvert ? [{ valeur: 'bis', libelle: t('Étape par étape bis') }] : []),
+        // « tris » : variante de l'autre session, seulement en local (jamais sur le site en ligne).
+        ...(bisOuvert && ['localhost', '127.0.0.1', '[::1]'].includes(globalThis.location?.hostname ?? '')
+          ? [{ valeur: 'tris', libelle: t('Étape par étape tris') }]
           : []),
+        ...(bisOuvert && PHASE_DYNAMIQUE_VISIBLE ? [{ valeur: 'dynamique', libelle: t('Phase dynamique') }] : []),
         // « Sur la table » : OUVERT À TOUS depuis le 05/10/2026, quand la
         // fenêtre de préparation « Choisis ta phase du méchant » l'a
         // présenté à chaque joueur (décision de l'utilisateur). Un mode
@@ -298,17 +297,15 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
       ]}
       onChoisir={(v) => {
         if (v === 'bis' || v === 'tris' || v === 'dynamique' || v === 'detaille') {
-          if (essai) ecrirePresentationPhase(v === 'detaille' ? 'etape' : (v as PresentationPhase))
+          if (bisOuvert) ecrirePresentationPhase(v === 'detaille' ? 'etape' : (v as PresentationPhase))
           p.changerModePhase('detaille')
           return
         }
         p.changerModePhase(v as ModePhaseMechant)
       }}
       detail={
-        essai
-          ? PHASE_DYNAMIQUE_VISIBLE
-            ? t('Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai')
-            : t('Étape par étape : un « Suivant » par étape de la phase. Bis : la nouvelle présentation, en essai')
+        bisOuvert && !PHASE_ETAPE_VISIBLE
+          ? t('Étape par étape bis : un « Suivant » par étape de la phase. Sur la table : les cartes bougent sur la table. D’un coup : tout se joue d’un coup')
           : t('Étape par étape : un « Suivant » par étape de la phase')
       }
     />

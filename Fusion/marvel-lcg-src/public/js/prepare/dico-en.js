@@ -995,6 +995,7 @@ export const DICO_EN_BASE = {
   "Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.":
     "Three ways to play the villain phase, from the most detailed to the quickest.",
   "Étape par étape": "Step by step",
+  "Étape par étape bis": "Step by step bis",
   "Chaque étape de la phase est détaillée, avec un « Suivant » à chaque fois. C'est le plus long, parce que tout est expliqué.":
     "Every step of the phase is spelled out, with a “Next” each time. It is the longest one, because everything is explained.",
   "Encore en chantier : je cherche le bon équilibre.": "Still a work in progress: I am looking for the right balance.",

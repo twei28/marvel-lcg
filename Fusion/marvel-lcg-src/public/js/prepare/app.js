@@ -43,7 +43,8 @@ import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
 import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
-         doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire } from "/public/js/prepare/phase-mode-choix.js";
+         doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire,
+         migrerPhaseTroisChoix } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
 import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
 // ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
@@ -1854,9 +1855,8 @@ async function demanderLAffichage({ rouvert = false } = {}) {
  *  méchant, « un petit peu comme pour le mode sobre et le mode normal », avec
  *  une image chacune. Les images sont de vraies captures du plateau.
  *
- *  ⚠ « Étape par étape » est annoncé EN CHANTIER, parce qu'il l'est : l'auteur
- *  cherche encore le bon équilibre. Le dire ici vaut mieux que de le laisser
- *  deviner.
+ *  ⚠ Depuis le 19/10/2026 la première carte s'appelle « Étape par étape bis » (valeur
+ *  rangée `detaille`, inchangée) : l'ancien « Étape par étape » est caché.
  *
  *  ⚠ « D'un coup » dit son prix : on voit beaucoup moins, donc beaucoup moins
  *  de chances de repérer un défaut. Le choix se fait en connaissance de cause.
@@ -1866,6 +1866,8 @@ async function demanderLAffichage({ rouvert = false } = {}) {
  */
 function demanderLaPhaseDuMechant() {
     return new Promise((resolve) => {
+        // Passage unique aux trois choix (19/10/2026) : avant de lire quoi que ce soit.
+        try { migrerPhaseTroisChoix(localStorage); } catch (e) { /* stockage indisponible */ }
         let brutAvant = null;
         try { brutAvant = localStorage.getItem(CLE_MODE_PHASE); } catch (e) { /* stockage indisponible */ }
         let choix = normaliserModePhase(brutAvant);
@@ -1948,9 +1950,8 @@ function demanderLaPhaseDuMechant() {
                     el("span", { class: "dm-sub" }, t("Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.")),
                 ),
                 el("div", { class: "af-choix-grille" },
-                    carte("detaille", t("Étape par étape"),
-                        t("Chaque étape de la phase est détaillée, avec un « Suivant » à chaque fois. C'est le plus long, parce que tout est expliqué."),
-                        t("Encore en chantier : je cherche le bon équilibre.")),
+                    carte("detaille", t("Étape par étape bis"),
+                        t("Chaque étape de la phase est détaillée, avec un « Suivant » à chaque fois. C'est le plus long, parce que tout est expliqué.")),
                     carte("sur-table", t("Sur la table"),
                         t("Tu vois les cartes bouger directement sur la table. Un peu moins de détails, mais plus vivant.")),
                     carte("instantane", t("D’un coup"),
@@ -6029,6 +6030,8 @@ installerHistorique(appliquerCleTel);
     // Normal et peut en changer dans Options (`demanderLAffichage({ rouvert: true })`) ou par le bouton de l'en-tete.
     // Apres l'affichage : une seule fenetre a la fois, et la langue est deja
     // choisie. Chaque joueur la voit une fois, nouveau comme ancien.
+    // Le passage unique aux trois choix se fait aussi pour qui n'a plus la fenêtre à voir (19/10/2026).
+    try { migrerPhaseTroisChoix(localStorage); } catch (e) { /* stockage indisponible */ }
     let phaseVue = null;
     try { phaseVue = localStorage.getItem(CLE_PHASE_MODE_VU); } catch (e) { /* stockage indisponible */ }
     if (!creationCampagne() && doitProposerLaPhase(phaseVue)) {

@@ -249,7 +249,7 @@ import {
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaiPhaseMechant, essaisOuverts } from './board/essais'
-import { lirePresentationPhase, suivrePresentationPhase } from './board/phase-presentation'
+import { PHASE_BIS_POUR_TOUS, lirePresentationPhase, suivrePresentationPhase } from './board/phase-presentation'
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
 import { JournalConsole } from './board/JournalConsole'
@@ -2605,7 +2605,8 @@ export function PagePartie({
   const [presentationPhase, setPresentationPhase] = useState(lirePresentationPhase)
   useEffect(() => suivrePresentationPhase(setPresentationPhase), [])
   const phaseTris = presentationPhase === 'tris' && ['localhost', '127.0.0.1', '[::1]'].includes(globalThis.location?.hostname ?? '')
-  const phaseEssai = essaiPhaseCompte && presentationPhase !== 'etape' && (presentationPhase !== 'tris' || phaseTris)
+  // Depuis le 19/10/2026 « bis » est pour tout le monde : l'essai de compte ne compte plus (PHASE_BIS_POUR_TOUS).
+  const phaseEssai = (PHASE_BIS_POUR_TOUS || essaiPhaseCompte) && presentationPhase !== 'etape' && (presentationPhase !== 'tris' || phaseTris)
   // « Phase dynamique » (16/10/2026) : le cartouche détaillé, posé en panneau à droite.
   const phaseDynamique = phaseEssai && presentationPhase === 'dynamique'
   const instantanesRef = useRef<Instantanes>(new Map())

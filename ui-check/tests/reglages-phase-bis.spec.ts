@@ -4,7 +4,7 @@
 import { test, expect } from '@playwright/test';
 import contrat from '../contrat-nouvelle-partie.json' with { type: 'json' };
 
-test('les Réglages proposent « Étape par étape » et « Étape par étape bis », et retiennent le choix', async ({ page, request }) => {
+test('les Réglages ne proposent que trois choix : bis, Sur la table, D’un coup', async ({ page, request }) => {
   test.setTimeout(120_000);
   const scenario = await (await request.get('/get_scenario_json?rhino')).json();
   const deck = await (await request.get('/get_hero_json?spider_man')).json();
@@ -35,16 +35,13 @@ test('les Réglages proposent « Étape par étape » et « Étape par étape bi
   await page.getByRole('button', { name: /Réglages/ }).first().click();
   await page.getByRole('tab', { name: /^Jeu$/ }).or(page.getByRole('button', { name: /^Jeu$/ })).first().click();
   const fenetre = page.locator('.reglages-fenetre');
-  await expect(fenetre.getByRole('button', { name: /^Étape par étape bis$/ })).toBeVisible();
-  await expect(fenetre.getByRole('button', { name: /^Étape par étape$/ })).toBeVisible();
-  await fenetre.getByRole('button', { name: /^Étape par étape$/ }).click();
+  // 19/10/2026 : trois choix seulement, « Étape par étape » et « Phase dynamique » sont caches.
+  const ligne = fenetre.locator('.ligne-option').filter({ hasText: 'Phase du méchant' }).first();
+  await expect(ligne.getByRole('button')).toHaveText(['Étape par étape bis', 'Sur la table', 'D’un coup']);
   const choix = () => page.evaluate(() => localStorage.getItem('mc_phase_presentation'));
-  expect(await choix()).toBe('etape');
-  await fenetre.getByRole('button', { name: /^Étape par étape bis$/ }).click();
+  await ligne.getByRole('button', { name: /^Sur la table$/ }).click();
+  await ligne.getByRole('button', { name: /^Étape par étape bis$/ }).click();
   expect(await choix()).toBe('bis');
-  await expect(fenetre.getByRole('button', { name: /^Phase dynamique/ })).toBeVisible();
-  await fenetre.getByRole('button', { name: /^Phase dynamique/ }).click();
-  expect(await choix()).toBe('dynamique');
   // L'apparence : depuis le 18/10/2026 l'Épuré s'appelle « Normal » et se propose à tout le monde.
   await page.getByRole('tab', { name: /^Apparence$/ }).or(page.getByRole('button', { name: /^Apparence$/ })).first().click();
   await expect(fenetre.getByRole('button', { name: /^Normal$/ })).toBeVisible();
