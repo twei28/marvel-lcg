@@ -45,8 +45,8 @@ Il n'y a **aucun insert ni livret de règles** dans le PDF (toutes les pages son
 
 **Icônes imprimées sous le texte des manigances annexes et de certains sbires** (relevées en 300 dpi le 19/10/2026) :
 - « !! » (deux points d'exclamation) = **Crisis**.
-- « triangle vers le haut avec un trait dessous + » (« pile + ») = **Acceleration** (confirmé par l'utilisateur pour Burning Building).
-- « croix à trois branches + » (silhouette d'avion avec un +, sur Overdrive) = **icône de boost** (précisé par l'utilisateur ; sur le scan elle a bien la forme d'un petit avion, mais il la nomme croix à trois branches).
+- « toit de maison + » (triangle vers le haut avec un trait dessous) = **Acceleration** (confirmé par l'utilisateur pour Burning Building).
+- « croix à trois branches + » (silhouette d'avion avec un +, sur Overdrive) = **Amplify** (précisé par l'utilisateur : « le petit truc à trois pointes » ; c'est l'icône que je lisais comme Amplify). Sur le scan d'Overdrive elle ressemble à un petit avion avec un +.
 - « carte + » (carré arrondi avec un +) = **carte de rencontre en plus** : une carte de rencontre supplémentaire est donnée au premier joueur (précisé par l'utilisateur le 19/10/2026). Sur Designs on Crimes et Punisher's Arsenal.
 
 - `👤` = icône « par joueur » (un nombre suivi de cette icône est multiplié par le nombre de joueurs).
@@ -177,7 +177,7 @@ Il n'y a **aucun insert ni livret de règles** dans le PDF (toutes les pages son
 - Quickstrike.
 - **Forced Response**: After the round ends, attach Overdrive to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Overdrive's location, he engages them.
-- Icône sous le texte : 1 icône « croix à trois branches + » = icône de boost (précisé par l'utilisateur le 19/10/2026)
+- Icône sous le texte : 1 icône « croix à trois branches + » = Amplify (précisé par l'utilisateur le 19/10/2026)
 
 ### p027 — ✦MUSE · Sbire
 - ID 6014 · The Big Apple (14/22) · Illustration : Ron Garney · SCH 1★ · ATK 2★ · PV 4 · Boost ★ (étoile)
@@ -811,7 +811,7 @@ romains (I, II, III).
 - *In a broken system, Punisher views himself as the only true source of justice for the worst of the worst.*
 - **When Defeated**: Discard the minion with the fewest remaining hit points and deal damage to the TARGETED villain equal to
   that minion's remaining hit points. Otherwise, give Punisher a facedown boost card.
-- Icône dans le cadre : « croix à trois branches + » (icône de boost)
+- Icône dans le cadre : « croix à trois branches + » (Amplify)
 
 ### p199 / p201 — BACK AGAINST THE WALL ×2 · Traîtrise
 - ID 6100 / 6101 · Punishment (15, 16/20) · Illustration : Marco Checchetto · Boost ★ + 1
@@ -1184,7 +1184,7 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
 - **Villain**: En Sabah Nur *(Age of Apocalypse)*.
 - **Modular sets**: Arcade *(Jubilee Hero Pack)*, Galactic Artifacts *(Galaxy's Most Wanted)*.
 - **Special Rules**:
-  - • All encounter side schemes gain incite 1, **Crisis** (icône « !! ») and **l'icône « carte + »** (relu en 300 dpi ; le site écrit « a crisis icon and an amplify icon » : si le site dit vrai, « carte + » serait donc Amplify. **À trancher avec l'utilisateur**).
+  - • All encounter side schemes gain incite 1, **Crisis** (icône « !! ») et **Acceleration** (icône « toit de maison + »), précisé par l'utilisateur le 19/10/2026 (le site écrit à tort « amplify »).
   - • The villain gains steady.
   - • When the villain stage advances, advance the main scheme to 2A.
 
