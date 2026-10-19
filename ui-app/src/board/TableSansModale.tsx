@@ -8,7 +8,7 @@
 //
 // Tout est dans le repère du cadre du plateau (voir `mesures-plateau.ts`), comme le trait
 // et les cartes sorties du paquet : ce composant se rend par le même portail.
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type HTMLAttributes, type KeyboardEvent as ClavierReact, type PointerEvent as PointeurReact, type ReactNode } from 'react'
 import { boiteDeCarte, cadreDuPlateau, redresserBoite, type Boite } from './mesures-plateau'
 import { t } from './langue'
 import type { PiedMulti } from './CartouchePhase'
@@ -90,6 +90,161 @@ export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite
 }
 
 
+// ---------------------------------------------------------------------------------------------------------------
+// LE BANDEAU DEPLACABLE (19/10/2026). La ligne du haut peut cacher une carte qu'on veut lire : une POIGNEE visible
+// (souris et doigt) la glisse ailleurs ; elle reste ENTIEREMENT dans l'ecran (dans la table, jamais sur la barre
+// du haut), sa place est retenue (localStorage) d'une etape a l'autre, un double-clic sur la poignee ou le petit
+// bouton de remise la ramene a sa place d'origine. Le fond du bandeau laisse passer les clics (la carte doree
+// dessous reste cliquable) ; seuls ses boutons, sa poignee et les noms survolables les captent.
+// ---------------------------------------------------------------------------------------------------------------
+const CLE_PLACE_BANDEAU = 'marvel-tsm-bandeau-place'
+type Decalage = { dx: number; dy: number }
+const REPOS: Decalage = { dx: 0, dy: 0 }
+
+function placeRetenue(): Decalage {
+  try {
+    const brut = JSON.parse(window.localStorage.getItem(CLE_PLACE_BANDEAU) ?? 'null') as Partial<Decalage> | null
+    if (brut && Number.isFinite(brut.dx) && Number.isFinite(brut.dy)) return { dx: Number(brut.dx), dy: Number(brut.dy) }
+  } catch {
+    /* stockage refuse ou valeur abimee : la place d'origine */
+  }
+  return REPOS
+}
+
+function retenirPlace(d: Decalage) {
+  try {
+    if (d.dx === 0 && d.dy === 0) window.localStorage.removeItem(CLE_PLACE_BANDEAU)
+    else window.localStorage.setItem(CLE_PLACE_BANDEAU, JSON.stringify(d))
+  } catch {
+    /* stockage refuse : la place vaut pour cet affichage */
+  }
+}
+
+const SEUIL_GLISSER = 4
+const PAS_CLAVIER = 16
+
+export function BandeauDeplacable({
+  className,
+  children,
+  ...reste
+}: { className: string; children: ReactNode } & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'children'>) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [decalage, setDecalage] = useState<Decalage>(placeRetenue)
+  /** Le decalage reellement pose (apres cadrage), en px de la mise en page du bandeau. */
+  const pose = useRef<Decalage>(REPOS)
+  const geste = useRef<{ x: number; y: number; base: Decalage } | null>(null)
+
+  /** Ramene `voulu` pour que le bandeau reste entier dans la table ET dans l'ecran. */
+  const cadrer = useCallback((voulu: Decalage): Decalage => {
+    const el = ref.current
+    if (!el || el.offsetWidth === 0) return voulu
+    const r = el.getBoundingClientRect()
+    const echelle = r.width / el.offsetWidth || 1
+    const parent = (el.offsetParent as HTMLElement | null)?.getBoundingClientRect()
+    const gauche = Math.max(0, parent?.left ?? 0)
+    const haut = Math.max(0, parent?.top ?? 0)
+    const droite = Math.min(window.innerWidth, parent?.right ?? window.innerWidth)
+    const bas = Math.min(window.innerHeight, parent?.bottom ?? window.innerHeight)
+    // Position sans decalage, en px d'ecran.
+    const nl = r.left - pose.current.dx * echelle
+    const nr = r.right - pose.current.dx * echelle
+    const nt = r.top - pose.current.dy * echelle
+    const nb = r.bottom - pose.current.dy * echelle
+    const dx = Math.max(gauche - nl, Math.min(voulu.dx * echelle, droite - nr)) / echelle
+    const dy = Math.max(haut - nt, Math.min(voulu.dy * echelle, bas - nb)) / echelle
+    return { dx: Math.round(dx * 10) / 10, dy: Math.round(dy * 10) / 10 }
+  }, [])
+
+  const appliquer = useCallback(() => {
+    const el = ref.current
+    if (!el) return
+    const net = cadrer(decalage)
+    pose.current = net
+    el.style.translate = net.dx === 0 && net.dy === 0 ? '' : `${net.dx}px ${net.dy}px`
+    el.dataset.deplace = net.dx === 0 && net.dy === 0 ? 'non' : 'oui'
+  }, [cadrer, decalage])
+
+  // A chaque rendu (le contenu change d'une etape a l'autre), puis quand la taille de la ligne ou de la fenetre change.
+  useLayoutEffect(appliquer)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const veille = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(appliquer)
+    veille?.observe(el)
+    window.addEventListener('resize', appliquer)
+    return () => {
+      veille?.disconnect()
+      window.removeEventListener('resize', appliquer)
+    }
+  }, [appliquer])
+
+  const remettre = () => {
+    setDecalage(REPOS)
+    retenirPlace(REPOS)
+  }
+  const poser = (d: Decalage) => {
+    const net = cadrer(d)
+    setDecalage(net)
+    return net
+  }
+
+  const onPointerDown = (e: PointeurReact<HTMLButtonElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    geste.current = { x: e.clientX, y: e.clientY, base: pose.current }
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* sans capture : on suit quand meme */ }
+  }
+  const onPointerMove = (e: PointeurReact<HTMLButtonElement>) => {
+    const g = geste.current
+    if (!g) return
+    const el = ref.current
+    const echelle = el && el.offsetWidth ? el.getBoundingClientRect().width / el.offsetWidth : 1
+    const dx = e.clientX - g.x
+    const dy = e.clientY - g.y
+    if (Math.hypot(dx, dy) < SEUIL_GLISSER) return
+    poser({ dx: g.base.dx + dx / echelle, dy: g.base.dy + dy / echelle })
+  }
+  const fin = (e: PointeurReact<HTMLButtonElement>) => {
+    if (!geste.current) return
+    geste.current = null
+    try { e.currentTarget.releasePointerCapture(e.pointerId) } catch { /* deja rendue */ }
+    retenirPlace(pose.current)
+  }
+  const onKeyDown = (e: ClavierReact<HTMLButtonElement>) => {
+    if (e.key === 'Escape' || e.key === 'Home') { e.preventDefault(); remettre(); return }
+    const pas: Record<string, Decalage> = {
+      ArrowLeft: { dx: -PAS_CLAVIER, dy: 0 }, ArrowRight: { dx: PAS_CLAVIER, dy: 0 },
+      ArrowUp: { dx: 0, dy: -PAS_CLAVIER }, ArrowDown: { dx: 0, dy: PAS_CLAVIER },
+    }
+    const p = pas[e.key]
+    if (!p) return
+    e.preventDefault()
+    e.stopPropagation()
+    retenirPlace(poser({ dx: pose.current.dx + p.dx, dy: pose.current.dy + p.dy }))
+  }
+  const deplace = decalage.dx !== 0 || decalage.dy !== 0
+
+  return (
+    <div ref={ref} className={className} {...reste}>
+      <button
+        type="button"
+        className="tsm-poignee"
+        aria-label={t('Déplacer la ligne (double-clic : la remettre en place)')}
+        title={t('Glisse pour déplacer la ligne ; double-clic pour la remettre en place')}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={fin}
+        onPointerCancel={fin}
+        onDoubleClick={remettre}
+        onKeyDown={onKeyDown}
+      />
+      {children}
+      {deplace ? (
+        <button type="button" className="tsm-remise" aria-label={t('Remettre la ligne en place')} title={t('Remettre la ligne en place')} onClick={remettre} />
+      ) : null}
+    </div>
+  )
+}
+
 export type TableSansModaleProps = {
   /** La carte qui agit ; à défaut, celle qui subit (la menace n'a pas d'auteur). */
   acteurId: number | undefined
@@ -150,7 +305,7 @@ export function TableSansModale({
   return (
     <>
       <span className="tsm-depart" aria-hidden="true" />
-      <div className="tsm-bandeau" role="status" aria-live="polite">
+      <BandeauDeplacable className="tsm-bandeau" role="status" aria-live="polite">
         {reculer ? (
           <button type="button" className="tsm-retour" onClick={reculer} aria-label={t('Précédent')} title={t('Précédent')}>
             ‹
@@ -172,7 +327,7 @@ export function TableSansModale({
           </span>
         )}
         {enTrajet ? <span className="tsm-attente">{lecture === 'entree' ? t('Les cartes arrivent…') : t('Les cartes se placent…')}</span> : null}
-      </div>
+      </BandeauDeplacable>
       {!lecture && boiteCible ? <span className="tsm-cible" style={boiteStyle(boiteCible)} aria-hidden="true" /> : null}
       {!lecture && boiteActeur ? (
         <button
@@ -288,7 +443,7 @@ export function QuestionSurTable({
         .plateau-cadre .est-attachee:has(.scan-card[data-card-id="${soulignee}"]),
         .plateau-cadre .plateau-unite:has(.scan-card[data-card-id="${soulignee}"]) { z-index: 110 !important; }
       `}</style> : null}
-      <div className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
+      <BandeauDeplacable className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
         <span className="tsm-phrase">{phrase}</span>
         {enLigne.map((c) => (
           <button
@@ -321,7 +476,7 @@ export function QuestionSurTable({
             {uniqueId === 'refus' ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
           </button>
         ) : null}
-      </div>
+      </BandeauDeplacable>
       {/* Les cartes pas encore mesurées : on les surveille pour pouvoir les rabattre en ligne. */}
       {choix
         .filter((c) => !c.enLigne && c.carteId !== undefined && absentes.has(c.id))
@@ -418,7 +573,7 @@ export function BilanSurTable({
   defaite?: boolean
 }) {
   return (
-    <div className={`tsm-bandeau est-bilan${defaite ? ' est-defaite' : ''}`} role="status" aria-live="polite">
+    <BandeauDeplacable className={`tsm-bandeau est-bilan${defaite ? ' est-defaite' : ''}`} role="status" aria-live="polite">
       {reculer ? (
         <button type="button" className="tsm-retour" onClick={reculer} aria-label={t('Précédent')} title={t('Précédent')}>
           ‹
@@ -444,7 +599,7 @@ export function BilanSurTable({
       ) : (
         <span className="tsm-consigne">{mention ?? t('La suite arrive…')}</span>
       )}
-    </div>
+    </BandeauDeplacable>
   )
 }
 
@@ -485,7 +640,7 @@ export function CiblageSurTable({
 }) {
   return (
     <>
-      <div className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
+      <BandeauDeplacable className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
         <span className="tsm-phrase">
           <b>{titre}</b>
           {maximum > 0 ? <span className="tsm-compte"> {choisies}/{maximum}</span> : null}
@@ -506,7 +661,7 @@ export function CiblageSurTable({
             {t('Annuler')}
           </button>
         ) : null}
-      </div>
+      </BandeauDeplacable>
       {cibles.map((c) => (
         <CarteCiblable key={c.id} cible={c} />
       ))}

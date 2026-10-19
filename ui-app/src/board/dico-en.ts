@@ -1641,6 +1641,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Ordre d’activation des sbires': 'Minion activation order',
   'Clique la carte dorée pour continuer': 'Click the golden card to continue',
   'Clique la carte dorée, ou Espace': 'Click the golden card, or press Space',
+  'Déplacer la ligne (double-clic : la remettre en place)': 'Move the bar (double-click: put it back)',
+  'Glisse pour déplacer la ligne ; double-clic pour la remettre en place': 'Drag to move the bar; double-click to put it back',
+  'Remettre la ligne en place': 'Put the bar back',
   'Ta décision': 'Your decision',
   'Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai':
     'Step by step: one "Next" per step of the phase. Bis and Dynamic phase: the new presentations, on trial',

@@ -505,3 +505,118 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
   color: #fff; pointer-events: auto; font-size: 14px;
 }
 .tsm-multi .tsm-bouton { min-height: 44px; }
+
+/* LE BANDEAU DEPLACABLE (19/10/2026) : une poignee visible a gauche, un petit bouton de remise a droite quand la
+   ligne a bougé. Le fond du bandeau laisse passer les clics (la carte dorée dessous reste cliquable) ; seuls ses
+   boutons, sa poignée et les noms survolables les captent. */
+.tsm-bandeau { pointer-events: none; }
+.tsm-bandeau :is(.tsm-bouton, .tsm-retour, .tsm-poignee, .tsm-remise, .deroule-nom, .tsm-touche) { pointer-events: auto; }
+
+.tsm-poignee,
+.tsm-remise {
+  flex: none;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1;
+  touch-action: none;
+}
+
+.tsm-poignee {
+  width: 20px;
+  min-height: 26px;
+  cursor: grab;
+}
+
+.tsm-poignee:active { cursor: grabbing; }
+
+.tsm-poignee::before {
+  content: '⋮⋮';
+  font-size: 15px;
+  letter-spacing: -3px;
+}
+
+.tsm-remise {
+  width: 26px;
+  min-height: 26px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tsm-remise::before {
+  content: '⟲';
+  font-size: 17px;
+}
+
+.tsm-poignee:hover,
+.tsm-remise:hover,
+.tsm-poignee:focus-visible,
+.tsm-remise:focus-visible {
+  background: rgba(243, 198, 35, 0.22);
+  border-color: #f3c623;
+  color: #fff;
+}
+
+@media (pointer: coarse), (max-height: 550px) {
+  .tsm-poignee { width: 44px; min-height: 44px; }
+  .tsm-remise { width: 44px; min-height: 44px; }
+}
+
+/* PAR DEFAUT, UNE COLONNE ETROITE CONTRE LE BORD GAUCHE (19/10/2026, precision de l'utilisateur) : le bandeau
+   recouvrait l'apercu agrandi d'une carte (ancre a DROITE, 345 px, jusqu'a 650 px pour un heros recto-verso) et
+   les cartes lues au centre. Contre le bord gauche, il ne touche ni l'un ni l'autre ; les cartes gardent leur
+   taille. Sur un ecran etroit (mobile portrait) la colonne mangerait la moitie de la table : le bandeau reste
+   une ligne en haut, a la largeur de l'ecran. */
+@media (min-width: 641px) {
+  .tsm-bandeau {
+    left: 6px;
+    top: 40px;
+    transform: none;
+    width: 200px;
+    max-width: 200px;
+    box-sizing: border-box;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    max-height: calc(100% - 52px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .tsm-bandeau.est-question,
+  .tsm-bandeau.est-bilan,
+  .tsm-bandeau:has(.tsm-calcul),
+  .tsm-bandeau:has(.tsm-attente) {
+    max-width: 200px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  .tsm-bandeau .tsm-calcul { flex-basis: auto; }
+  .tsm-bandeau .tsm-bouton { width: 100%; box-sizing: border-box; }
+  .tsm-bandeau .tsm-consigne { padding-left: 0; border-left: 0; }
+  .tsm-bandeau .tsm-nombre,
+  .tsm-bandeau .tsm-surtitre,
+  .tsm-bandeau .tsm-suite { align-self: flex-start; white-space: normal; }
+  .tsm-bandeau .tsm-retour { align-self: flex-start; }
+  .tsm-bandeau .tsm-pastilles { flex-direction: column; }
+  /* La poignee devient une bande horizontale en tete de colonne, la remise un petit bouton a droite. */
+  .tsm-poignee { width: auto; height: 16px; min-height: 16px; align-self: stretch; }
+  .tsm-poignee::before { content: '⋯'; font-size: 18px; letter-spacing: 0; }
+  .tsm-remise { align-self: flex-end; }
+}
+
+@media (min-width: 641px) and (pointer: coarse) {
+  .tsm-poignee { width: auto; height: 44px; min-height: 44px; }
+  .tsm-remise { width: 44px; min-height: 44px; }
+}
+
+@media (min-width: 641px) and (max-height: 550px) {
+  .tsm-poignee { width: auto; height: 44px; min-height: 44px; }
+  .tsm-remise { width: 44px; min-height: 44px; }
+}
