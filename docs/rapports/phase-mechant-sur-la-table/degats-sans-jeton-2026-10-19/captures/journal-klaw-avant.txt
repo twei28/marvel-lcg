@@ -1,0 +1,20 @@
+{"tag":"avant","cas":"klaw","clicsHarnais":20,"clicsReels":22,"detail":["ContinuerEspace","ContinuerEspace","Ne pas utiliser Sens d'Araigné","ContinuerEspace","ContinuerEspace","Ne pas défendre (ATQ 0 + 2 car","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","Ne pas défendre (ATQ 1)","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace","ContinuerEspace"]}
+1213 clics=0 |  | jetons: est-menace | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 0 / 6 | 3 / 3 | 
+3207 clics=0 | Trafic Clandestin gagne 1 menace | jetons: est-menace | delta: +1 | PV: 10 / 10 | 3 / 3 | 12 / 12 | 0 / 6 | 3 / 3 | 
+4099 clics=1 | Klaw va attaquer Spider-Man | jetons:  | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+4699 clics=4 | Qui défend contre cette attaque ? | jetons:  | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+4883 clics=4 | Klaw va attaquer Spider-Man | jetons:  | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+5178 clics=6 | Klaw va attaquer Spider-Man | jetons:  | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | entree
+7040 clics=6 | Klaw va attaquer Spider-Man | jetons:  | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | lecture
+7229 clics=7 | Klaw va attaquer Spider-Man | jetons:  | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | depart
+9190 clics=7 | Klaw va attaquer Spider-Man | jetons:  | delta:  | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+9482 clics=9 | Klaw attaque Spider-Man | jetons: est-degats | delta: −1 | PV: 10 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+13019 clics=10 | Garde Blindé va attaquer Spider-Man | jetons:  | delta:  | PV: 9 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+13281 clics=12 | Qui défend contre cette attaque ? | jetons:  | delta:  | PV: 9 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+13454 clics=12 | Garde Blindé va attaquer Spider-Man | jetons:  | delta:  | PV: 9 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+13584 clics=13 | Garde Blindé attaque Spider-Man | jetons: est-degats | delta: −1 | PV: 9 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+13733 clics=14 |  | jetons: est-degats | delta:  | PV: 9 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 
+14480 clics=14 | Spider-Man révèle Manipulation du Son | jetons:  | delta:  | PV: 8 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | entree
+15533 clics=14 | Spider-Man révèle Manipulation du Son | jetons:  | delta:  | PV: 8 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | lecture
+15681 clics=15 | Spider-Man révèle Manipulation du Son | jetons:  | delta:  | PV: 8 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | depart
+17646 clics=15 | Spider-Man révèle Manipulation du Son | jetons:  | delta:  | PV: 8 / 10 | 3 / 3 | 12 / 12 | 1 / 6 | 3 / 3 | 

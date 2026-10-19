@@ -17,7 +17,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import jetonAccelerationImage from '../components/jetons/acceleration.png'
 import jetonDegatsImage from '../components/jetons/degats.png'
 import jetonMenaceImage from '../components/jetons/menace.png'
-import { coupsDeLEtape, pointDeLaCourbe, type Coup, type Fige, type GenreCoup } from './coups-sur-table'
+import { coupsDeLEtape, JETON_DEGATS_VOLANT, pointDeLaCourbe, type Coup, type Fige, type GenreCoup } from './coups-sur-table'
 import type { EtapeDeroule } from './deroule-phase'
 import { carteDeLaTable, elementDuBout, rect } from './FlechesPhase'
 import { traceEntre, type TraceFleche } from './fleches-phase'
@@ -107,7 +107,9 @@ export function useCoupsEnVol(
   }, [cle, actif])
 
   // Les jetons qui attendent, tant que l'ecran est affiche.
-  const coups = actif ? coupsDeLEtape(etapes.find((e) => e.cle === cle)) : []
+  // Les degats ne volent plus (`JETON_DEGATS_VOLANT`) : leur compteur n'est pas fige, il change avec l'ecran.
+  // Seul reste fige le coup a 0 (la Riposte, sur l'ecran de l'attaque qu'elle suit).
+  const coups = actif ? coupsDeLEtape(etapes.find((e) => e.cle === cle)).filter((c) => JETON_DEGATS_VOLANT || c.genre !== 'degats' || c.montant === 0) : []
   const signature = coups.map((c) => `${c.genre}:${c.cibleId}:${c.avant}:${c.montant}:${JSON.stringify(c.depuis)}`).join('|')
   useEffect(() => {
     if (!pret || cle === undefined || coups.length === 0) return
