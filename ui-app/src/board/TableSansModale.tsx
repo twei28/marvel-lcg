@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type HTMLAttributes, type KeyboardEvent as ClavierReact, type PointerEvent as PointeurReact, type ReactNode } from 'react'
 import { boiteDeCarte, cadreDuPlateau, redresserBoite, type Boite } from './mesures-plateau'
 import { t } from './langue'
+import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import type { PiedMulti } from './CartouchePhase'
 import type { PhaseLecture } from './CoucheRencontreSurTable'
 
@@ -395,6 +396,8 @@ export type ChoixSurTable = {
   carteId?: number
   /** Une amélioration dans une pile se choisit aussi par son nom, sans viser une tranche. */
   enLigne?: boolean
+  /** La carte elle-même : l'amélioration à cliquer s'étale en VRAIE carte à côté de son porteur (éventail). */
+  carte?: ScanCardProps
   indisponible?: string
   choisir: () => void
   survoler?: (actif: boolean) => void
@@ -436,7 +439,10 @@ export function QuestionSurTable({
   // en a plusieurs, rien ne se choisit au clavier : on clique la carte voulue.
   const possibles = choix.filter((c) => !c.indisponible)
   const uniqueId = possibles.length + (refus ? 1 : 0) === 1 ? (refus ? 'refus' : possibles[0]!.id) : undefined
+  // Les ameliorations a cliquer (interruption, reponse) s'etalent en eventail a cote de leur porteur (PC).
+  const enEventail = choix.filter((c) => c.enLigne && c.carte && c.carteId !== undefined && !absentes.has(c.id))
   const surCarte = choix.filter((c) => !c.enLigne && c.carteId !== undefined && !absentes.has(c.id))
+  // Le bouton nomme (« Barriere energetique — Interruption ») reste dans le bandeau, quoi qu'il arrive aux cartes.
   const enLigne = choix.filter((c) => c.enLigne || c.carteId === undefined || absentes.has(c.id))
   return (
     <>
@@ -490,6 +496,7 @@ export function QuestionSurTable({
       {surCarte.map((c) => (
         <PuceSurCarte key={c.id} choix={c} signaler={signaler} unique={uniqueId === c.id} />
       ))}
+      {enEventail.length > 0 ? <EventailAmeliorations choix={enEventail} survoler={survoler} signaler={signaler} unique={uniqueId} /> : null}
     </>
   )
 }
@@ -549,6 +556,170 @@ function PuceSurCarte({
         {unique ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
       </button>
     </>
+  )
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// T14 (19/10/2026) : L'EVENTAIL DES AMELIORATIONS A CLIQUER (interruption, reponse). Empilees sous leur porteur et a
+// moitie cachees, elles se choisissaient mal. Au moment du CHOIX elles s'etalent en rangee de VRAIES cartes a cote du
+// porteur, entierement visibles, assez grandes pour le doigt, avec leur nom ; elles se rangent des que le choix est
+// fait (le composant disparait avec la question). Le bouton nomme du bandeau reste. Le choix ne depend plus d'une
+// tranche de carte visible dans la pile.
+// ---------------------------------------------------------------------------------------------------------------
+type Rect = { x: number; y: number; w: number; h: number }
+const ECART_EVENTAIL = 8
+const HAUTEUR_LIBELLE = 38
+
+function croise(a: Rect, b: Rect, marge = 0): boolean {
+  return a.x < b.x + b.w + marge && a.x + a.w + marge > b.x && a.y < b.y + b.h + marge && a.y + a.h + marge > b.y
+}
+
+/** Ou poser la rangee : a droite de la pile, sinon a gauche, au-dessus, en dessous ; jamais sur le bandeau ni hors du cadre. */
+export function placerEventail(
+  pile: Rect,
+  total: { w: number; h: number },
+  cadre: { w: number; h: number },
+  interdits: Rect[],
+  /** Les autres cartes de la table : on cherche d'abord une place qui n'en recouvre aucune. */
+  souples: Rect[] = []
+): Rect {
+  const marge = 6
+  const dansLeCadre = (r: Rect) => r.x >= marge && r.y >= marge && r.x + r.w <= cadre.w - marge && r.y + r.h <= cadre.h - marge
+  const calage = (n: number, max: number, taille: number) => Math.max(marge, Math.min(n, max - taille - marge))
+  const yAligne = calage(pile.y, cadre.h, total.h)
+  const xAligne = calage(pile.x, cadre.w, total.w)
+  const candidats: Rect[] = [
+    { x: pile.x + pile.w + ECART_EVENTAIL, y: yAligne, w: total.w, h: total.h },
+    { x: pile.x - ECART_EVENTAIL - total.w, y: yAligne, w: total.w, h: total.h },
+    { x: xAligne, y: pile.y - ECART_EVENTAIL - total.h, w: total.w, h: total.h },
+    { x: xAligne, y: pile.y + pile.h + ECART_EVENTAIL, w: total.w, h: total.h },
+  ]
+  const sansInterdit = (r: Rect) => dansLeCadre(r) && !interdits.some((i) => croise(r, i, 4)) && !croise(r, pile)
+  const libre = candidats.find((r) => sansInterdit(r) && !souples.some((c) => croise(r, c)))
+  if (libre) return libre
+  // Une rangee decalee le long de la pile peut trouver un trou entre les cartes : on essaie des decalages.
+  const decales: Rect[] = []
+  for (const dy of [0, -total.h - ECART_EVENTAIL, pile.h + ECART_EVENTAIL, -(total.h / 2)]) {
+    for (let x = marge; x + total.w <= cadre.w - marge; x += 24) decales.push({ x, y: calage(pile.y + dy, cadre.h, total.h), w: total.w, h: total.h })
+  }
+  const proche = decales
+    .filter((r) => sansInterdit(r) && !souples.some((c) => croise(r, c)))
+    .sort((a, b) => Math.hypot(a.x - pile.x - pile.w, a.y - pile.y) - Math.hypot(b.x - pile.x - pile.w, b.y - pile.y))[0]
+  if (proche) return proche
+  const sansBandeau = candidats.find(sansInterdit)
+  if (sansBandeau) return sansBandeau
+  // Rien de libre : le meilleur compromis, dans le cadre, qui ne recouvre pas le porteur.
+  const reste = candidats.find((r) => dansLeCadre(r) && !croise(r, pile)) ?? candidats.find((r) => dansLeCadre(r))
+  return reste ?? { x: calage(candidats[0]!.x, cadre.w, total.w), y: yAligne, w: total.w, h: total.h }
+}
+
+function EventailAmeliorations({
+  choix,
+  survoler,
+  signaler,
+  unique,
+}: {
+  choix: ChoixSurTable[]
+  survoler: (c: ChoixSurTable, actif: boolean) => void
+  signaler: (id: number, absente: boolean) => void
+  unique: string | number | undefined
+}) {
+  const [place, setPlace] = useState<{ x: number; y: number; carte: number } | undefined>()
+  const ids = choix.map((c) => c.carteId!).join(',')
+  useEffect(() => {
+    const mesurer = () => {
+      const cadre = cadreDuPlateau()
+      if (!cadre) { setPlace(undefined); return }
+      // La pile : tout ce que l'unite du porteur dessine (porteur + ameliorations empilees).
+      const premiere = cadre.element.querySelector<HTMLElement>(`.scan-card[data-card-id="${choix[0]!.carteId}"]`)
+      const unite = premiere?.closest<HTMLElement>('.plateau-unite')
+      if (!unite) { setPlace(undefined); return }
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity
+      for (const f of unite.querySelectorAll<HTMLElement>('.scan-frame')) {
+        if (f.closest('.est-statut')) continue
+        const r = f.getBoundingClientRect()
+        if (r.width === 0) continue
+        x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom)
+      }
+      if (!Number.isFinite(x0)) { setPlace(undefined); return }
+      const basBloc = Math.max(y1, ...Array.from(unite.querySelectorAll('.scan-card')).map((e) => e.getBoundingClientRect().bottom))
+      const pile: Rect = { x: x0 - cadre.origine.left, y: y0 - cadre.origine.top, w: x1 - x0, h: basBloc - y0 }
+      // La largeur d'une carte : lisible et assez large pour le doigt, mais la rangee doit tenir dans la table.
+      const n = choix.length
+      const largeurMax = Math.floor((cadre.boite.w - 12 - ECART_EVENTAIL * (n - 1)) / n)
+      const w = Math.max(64, Math.min(112, largeurMax))
+      const total = { w: n * w + ECART_EVENTAIL * (n - 1), h: Math.round((w * 176) / 127) + HAUTEUR_LIBELLE }
+      const interdits: Rect[] = []
+      const bandeau = document.querySelector<HTMLElement>('.tsm-bandeau.est-question')?.getBoundingClientRect()
+      if (bandeau) interdits.push({ x: bandeau.left - cadre.origine.left, y: bandeau.top - cadre.origine.top, w: bandeau.width, h: bandeau.height })
+      // L'apercu au survol s'ouvre a DROITE de la fenetre (souris seulement) : la rangee reste a gauche de sa place.
+      if (window.matchMedia?.('(hover: hover)').matches) {
+        const largeurApercu = Math.min(380, cadre.boite.w * 0.3)
+        interdits.push({ x: cadre.boite.w - largeurApercu, y: 0, w: largeurApercu, h: cadre.boite.h })
+      }
+      const souples: Rect[] = []
+      for (const f of cadre.element.querySelectorAll<HTMLElement>('.scan-card .scan-frame')) {
+        if (unite.contains(f) || f.closest('.tsm-eventail, .carte-apercu, .rencontre-sur-table, .deroule-phase, .est-statut')) continue
+        const r = f.getBoundingClientRect()
+        if (r.width === 0 || r.height === 0) continue
+        souples.push({ x: r.left - cadre.origine.left, y: r.top - cadre.origine.top, w: r.width, h: r.height + 20 })
+      }
+      const r = placerEventail(pile, total, { w: cadre.boite.w, h: cadre.boite.h }, interdits, souples)
+      setPlace((avant) => (avant && avant.x === r.x && avant.y === r.y && avant.carte === w ? avant : { x: r.x, y: r.y, carte: w }))
+    }
+    mesurer()
+    const minuteur = window.setInterval(mesurer, 150)
+    window.addEventListener('resize', mesurer)
+    return () => { window.clearInterval(minuteur); window.removeEventListener('resize', mesurer) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- la rangee suit les cartes, pas l'identite des objets de choix
+  }, [ids])
+  // Pas de place mesurable au bout de 600 ms : les choix restent dans le bandeau (ils y sont deja).
+  useEffect(() => {
+    if (place) return
+    const minuteur = window.setTimeout(() => choix.forEach((c) => signaler(c.id, true)), 600)
+    return () => window.clearTimeout(minuteur)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [place, ids])
+  if (!place) return null
+  return (
+    <div
+      className="tsm-eventail"
+      role="group"
+      aria-label={t('Améliorations à jouer')}
+      style={{ left: `${place.x}px`, top: `${place.y}px`, '--eventail-w': `${place.carte}px` } as CSSProperties}
+    >
+      {choix.map((c, i) => {
+        const bloque = !!c.indisponible
+        const [nomCarte, capacite] = c.nom.split(' — ')
+        return (
+          <button
+            key={c.id}
+            type="button"
+            className={`tsm-eventail-carte${bloque ? ' est-inactif' : ''}`}
+            style={{ '--rang': i } as CSSProperties}
+            disabled={bloque}
+            aria-label={c.nom}
+            title={c.indisponible ?? c.nom}
+            onClick={c.choisir}
+            onMouseEnter={() => survoler(c, true)}
+            onMouseLeave={() => survoler(c, false)}
+            onFocus={() => survoler(c, true)}
+            onBlur={() => survoler(c, false)}
+            data-eventail=""
+            data-choix-unique={unique === c.id ? '' : undefined}
+          >
+            <span className="tsm-eventail-image" aria-hidden="true">
+              <ScanCard {...c.carte!} id={`eventail-${c.carte!.id}`} onSelect={undefined} highlight={false} state="ready" exhausted={false} />
+            </span>
+            <span className="tsm-eventail-nom">
+              <b>{nomCarte}</b>
+              {capacite ? <i>{capacite}</i> : null}
+            </span>
+            {unique === c.id ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
+          </button>
+        )
+      })}
+    </div>
   )
 }
 

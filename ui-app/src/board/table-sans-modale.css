@@ -634,3 +634,95 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
   font-style: italic;
   line-height: 1.25;
 }
+
+/* T14 (19/10/2026) : L'EVENTAIL DES AMELIORATIONS A CLIQUER. Une rangee de vraies cartes a cote du porteur, entierement
+   visibles, avec leur nom sous chacune ; z-index sous le bandeau (150) et sous l'apercu au survol (400). */
+.tsm-eventail {
+  position: absolute;
+  z-index: 145;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.tsm-eventail-carte {
+  --lueur: rgba(79, 209, 123, 0.55);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  width: var(--eventail-w, 112px);
+  min-width: 44px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #f4f6fa;
+  cursor: pointer;
+  position: relative;
+  animation: tsm-eventail-entree 0.18s ease-out both;
+  animation-delay: calc(var(--rang, 0) * 40ms);
+}
+@keyframes tsm-eventail-entree {
+  from { opacity: 0; transform: translateY(10px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tsm-eventail-carte { animation: none; }
+}
+.tsm-eventail-image {
+  display: block;
+  border: 3px solid #4fd17b;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 14px 3px var(--lueur);
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+}
+.tsm-eventail-image .scan-card { --card-w: calc(var(--eventail-w, 112px) - 6px); margin: 0; }
+.tsm-eventail-image .top-strip { display: none !important; }
+.tsm-eventail-carte:hover .tsm-eventail-image,
+.tsm-eventail-carte:focus-visible .tsm-eventail-image {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 22px 6px rgba(79, 209, 123, 0.85);
+}
+.tsm-eventail-nom {
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 2px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #4fd17b;
+  color: #0b1a10;
+  border: 2px solid #b5f0c8;
+  border-radius: 4px;
+  font-family: Bangers, Anton, Impact, system-ui, sans-serif;
+  line-height: 1.12;
+  text-align: center;
+  pointer-events: none;
+}
+.tsm-eventail-nom b {
+  max-width: 100%;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.tsm-eventail-nom i {
+  max-width: 100%;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tsm-eventail-carte .tsm-touche { position: absolute; top: 4px; right: 4px; background: rgba(0, 0, 0, 0.6); color: #fff; margin: 0; }
+.tsm-eventail-carte.est-inactif { cursor: not-allowed; filter: grayscale(0.8) brightness(0.8); }
