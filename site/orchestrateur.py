@@ -2488,6 +2488,205 @@ def decks_de_l_invite(hote: str, siege: int) -> dict:
     return {"invite": invite, "decks": decks}
 
 
+# --------------------------------------------------------------------------
+# Decks des joueurs, consultes et importes par l'administrateur (19/10/2026)
+# --------------------------------------------------------------------------
+# Demande du proprietaire du site : voir les decks des autres comptes et en
+# importer UN, a la fois, dans son propre compte.
+#
+# ⚠ TOUT SE VERIFIE ICI, COTE SERVEUR (`pseudo == ADMIN` dans do_GET/do_POST),
+# jamais seulement dans l'interface. Les deux routes sont
+#   GET  /api/admin/decks-joueurs            : lister, par compte
+#   POST /api/admin/decks-joueurs/importer   : copier UN deck chez l'admin
+#
+# ⚠ LECTURE SEULE SUR LES DECKS DES AUTRES. Le code ne contient aucun
+# `remove`/`rename`/ecriture dans le dossier d'un autre compte : l'import LIT le
+# fichier d'origine et ECRIT UNE COPIE dans le dossier de l'admin, en mode `x`
+# (jamais d'ecrasement : un nom pris recoit un suffixe -2, -3...).
+#
+# ⚠ AUCUN CHEMIN N'EST PRIS DANS LA REQUETE. Le compte est cherche dans la base
+# (son emplacement est un entier), le deck est un identifiant [A-Za-z0-9_-]
+# retrouve dans le dossier ; le fichier est ensuite verifie (pas un lien, bien
+# dans `deck/serveur-<n>/`). `..`, `/`, les liens et les noms exotiques sont
+# refuses AVANT toute ouverture.
+#
+# Confidentialite : la liste ne rend que le NOM D'AFFICHAGE (le pseudo) : ni
+# adresse e-mail, ni mot de passe, ni empreinte. Chaque consultation et chaque
+# import est journalise dans `journal-decks-admin.log`.
+DECK_ADMIN_MAX_OCTETS = 256 * 1024          # au-dela, un « deck » n'en est plus un
+DECK_ADMIN_MAX_PAR_COMPTE = 200
+DECK_ADMIN_IMPORTS_PAR_HEURE = 30
+DECK_ADMIN_MAX_COPIES_ADMIN = 500           # decks du dossier de l'admin, au plus
+JOURNAL_DECKS_ADMIN = os.environ.get(
+    "JOURNAL_DECKS_ADMIN",
+    os.path.join(os.path.dirname(BASE), "journal-decks-admin.log"))
+_ID_DECK = re.compile(r"^[A-Za-z0-9_-]{1,60}$")
+_IMPORTS_ADMIN: list[float] = []
+_VERROU_DECKS_ADMIN = threading.Lock()
+_NOMS_HEROS: dict[str, str] = {}
+
+
+class ErreurDeckAdmin(Exception):
+    """Refus clair : `code` est le statut HTTP, `args[0]` le message."""
+
+    def __init__(self, code: int, message: str):
+        super().__init__(message)
+        self.code = code
+
+
+def journaliser_decks_admin(action: str, **champs) -> None:
+    """Une ligne JSON par evenement : qui, quoi, quand. Ne leve jamais."""
+    ligne = {"quand": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "qui": ADMIN, "action": action}
+    ligne.update(champs)
+    try:
+        with _VERROU_DECKS_ADMIN:
+            with open(JOURNAL_DECKS_ADMIN, "a", encoding="utf-8") as f:
+                f.write(json.dumps(ligne, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
+
+
+def _racine_decks() -> str:
+    return os.path.realpath(os.path.join(RACINE_JEU, ".game", "deck"))
+
+
+def _dossier_decks_de(place) -> str | None:
+    """Le dossier `deck/serveur-<place>/` de ce compte, ou None s'il n'existe pas
+    ou s'il sort de `deck/` (lien symbolique)."""
+    if not isinstance(place, int) or isinstance(place, bool) or place < 0:
+        return None
+    racine = _racine_decks()
+    dossier = os.path.join(racine, "serveur-%d" % place)
+    if os.path.islink(dossier) or not os.path.isdir(dossier):
+        return None
+    if os.path.dirname(os.path.realpath(dossier)) != racine:
+        return None
+    return dossier
+
+
+def _fichier_deck_sur(dossier: str, identifiant: str) -> str | None:
+    """Le chemin du deck `identifiant` DANS `dossier`, ou None. Rien n'est pris
+    dans la requete a part l'identifiant, et celui-ci est filtre."""
+    if not isinstance(identifiant, str) or not _ID_DECK.match(identifiant):
+        return None
+    chemin = os.path.join(dossier, identifiant + ".json")
+    if os.path.islink(chemin) or not os.path.isfile(chemin):
+        return None
+    if os.path.dirname(os.path.realpath(chemin)) != os.path.realpath(dossier):
+        return None
+    return chemin
+
+
+def _nom_du_heros(ids) -> str:
+    """Le nom de la carte du heros, pour l'affichage ; l'identifiant sinon."""
+    cle = ids[0] if isinstance(ids, list) and ids else ""
+    cle = str(cle).split(",")[0].strip()
+    if not _NOMS_HEROS:
+        try:
+            with open(os.path.join(RACINE_JEU, "data", "cards.json"), encoding="utf-8") as f:
+                for cartes in json.load(f).values():
+                    for c in cartes if isinstance(cartes, list) else []:
+                        if isinstance(c, dict) and c.get("card_id") and c.get("name"):
+                            _NOMS_HEROS[str(c["card_id"])] = str(c["name"])
+        except (OSError, ValueError, AttributeError):
+            _NOMS_HEROS["_"] = ""
+    return _NOMS_HEROS.get(cle) or cle
+
+
+def _lire_deck_sur(chemin: str):
+    """Le deck (dict) ou None s'il est trop gros, illisible ou sans heros."""
+    try:
+        if os.path.getsize(chemin) > DECK_ADMIN_MAX_OCTETS:
+            return None
+        with open(chemin, encoding="utf-8") as f:
+            deck = json.load(f)
+    except (OSError, ValueError):
+        return None
+    return deck if isinstance(deck, dict) and deck.get("hero") else None
+
+
+def lister_decks_des_joueurs() -> list:
+    """Par compte (admin exclu) : pseudo et decks (nom, heros, nombre de cartes,
+    date). Aucun champ prive du compte n'est lu."""
+    sortie = []
+    for c in liste_comptes():
+        if c["pseudo"] == ADMIN:
+            continue
+        dossier = _dossier_decks_de(c["emplacement"])
+        decks = []
+        if dossier:
+            try:
+                noms = sorted(n for n in os.listdir(dossier) if n.endswith(".json"))
+            except OSError:
+                noms = []
+            for nom in noms[:DECK_ADMIN_MAX_PAR_COMPTE]:
+                identifiant = nom[:-5]
+                chemin = _fichier_deck_sur(dossier, identifiant)
+                deck = _lire_deck_sur(chemin) if chemin else None
+                if deck is None:
+                    continue
+                decks.append({
+                    "id": identifiant,
+                    "nom": str(deck.get("name") or identifiant)[:80],
+                    "heros": _nom_du_heros(deck.get("hero")),
+                    "cartes": len(deck.get("player_deck") or []),
+                    "date": time.strftime("%Y-%m-%d %H:%M",
+                                          time.localtime(os.path.getmtime(chemin))),
+                })
+        if decks:
+            sortie.append({"compte": c["pseudo"], "decks": decks})
+    return sortie
+
+
+def importer_deck_de_joueur(compte_source: str, identifiant: str) -> dict:
+    """Copie UN deck de `compte_source` dans le dossier de l'admin, sous
+    `de-<compte>-<deck>`. L'original n'est ni modifie ni supprime ; une copie
+    existante n'est jamais ecrasee. Leve ErreurDeckAdmin."""
+    source = compte(compte_source)
+    if source is None or source["pseudo"] == ADMIN or source["pseudo"] != compte_source:
+        raise ErreurDeckAdmin(404, "Compte introuvable.")
+    chez_lui = _dossier_decks_de(source["emplacement"])
+    chemin = _fichier_deck_sur(chez_lui, identifiant) if chez_lui else None
+    if chemin is None:
+        raise ErreurDeckAdmin(404, "Deck introuvable.")
+    deck = _lire_deck_sur(chemin)
+    if deck is None:
+        raise ErreurDeckAdmin(422, "Deck illisible ou trop volumineux.")
+    place_admin = emplacement_de(ADMIN)
+    if place_admin is None:
+        raise ErreurDeckAdmin(409, "Le compte administrateur n'a pas de place.")
+    chez_admin = os.path.join(_racine_decks(), "serveur-%d" % place_admin)
+    if os.path.islink(chez_admin):
+        raise ErreurDeckAdmin(409, "Dossier de l'administrateur invalide.")
+    os.makedirs(chez_admin, exist_ok=True)
+    try:
+        if sum(1 for n in os.listdir(chez_admin) if n.endswith(".json")) >= DECK_ADMIN_MAX_COPIES_ADMIN:
+            raise ErreurDeckAdmin(409, "Trop de decks dans le compte administrateur.")
+    except OSError:
+        raise ErreurDeckAdmin(500, "Dossier illisible.")
+    with _VERROU_DECKS_ADMIN:
+        maintenant = time.time()
+        _IMPORTS_ADMIN[:] = [t for t in _IMPORTS_ADMIN if maintenant - t < 3600]
+        if len(_IMPORTS_ADMIN) >= DECK_ADMIN_IMPORTS_PAR_HEURE:
+            raise ErreurDeckAdmin(429, "Trop d'imports cette heure-ci.")
+        _IMPORTS_ADMIN.append(maintenant)
+    # Meme alphabet que /save_deck : le moteur relit ce dossier tel quel.
+    pseudo_net = re.sub("[^a-zA-Z0-9_-]+", "_", source["pseudo"]).strip("_")[:20] or "joueur"
+    base = ("de-%s-%s" % (pseudo_net, re.sub("[^a-zA-Z0-9_-]+", "_", identifiant).strip("_")))[:56]
+    copie = dict(deck)
+    copie["name"] = ("%s (de %s)" % (deck.get("name") or identifiant, source["pseudo"]))[:100]
+    contenu = json.dumps(copie, ensure_ascii=False, indent=4)
+    for rang in range(1, 100):
+        nom = base if rang == 1 else "%s-%d" % (base, rang)
+        try:
+            with open(os.path.join(chez_admin, nom + ".json"), "x", encoding="utf-8") as f:
+                f.write(contenu)
+            return {"ok": True, "fichier": nom, "compte": source["pseudo"], "deck": identifiant}
+        except FileExistsError:
+            continue
+    raise ErreurDeckAdmin(409, "Trop de copies portant ce nom.")
+
+
 # On ne garde pas l'historique complet : un tchat de salon sert a se retrouver,
 # pas a archiver. Au-dela, les plus anciens partent.
 MESSAGES_GARDES = 200
@@ -4116,6 +4315,18 @@ PAGE_ADMIN = """<!doctype html>
   .sous-onglet[aria-selected="true"] {{ color:var(--accent); border-bottom-color:var(--accent); }}
   .sous-onglet .compte {{ color:inherit; opacity:.7; font-weight:400; margin-left:.3rem; }}
   .sous-panneau[hidden] {{ display:none; }}
+  .dj-compte {{ background:var(--panel); border:1px solid var(--border); border-radius:.6rem; padding:.8rem 1rem; margin-bottom:.8rem; }}
+  .dj-compte h3 {{ margin:0 0 .5rem; font-size:1rem; }}
+  .dj-compte ul {{ list-style:none; margin:0; padding:0; }}
+  .dj-deck {{ display:flex; justify-content:space-between; align-items:center; gap:.8rem; padding:.5rem 0; border-top:1px solid var(--border); }}
+  .dj-infos {{ display:flex; flex-direction:column; min-width:0; }}
+  .dj-meta {{ color:var(--muted); font-size:.8rem; }}
+  .dj-importer, .dj-actualiser {{ background:var(--accent); color:var(--accent-ink); border:0; border-radius:.4rem; padding:.4rem .8rem; font:inherit; font-weight:700; cursor:pointer; flex:none; }}
+  .dj-importer:hover, .dj-actualiser:hover {{ background:var(--accent-hover); }}
+  .dj-importer:disabled {{ opacity:.5; cursor:wait; }}
+  .dj-message {{ min-height:1.4rem; margin:.5rem 0; font-weight:600; }}
+  .dj-ok {{ color:#6fcf8f; }}
+  .dj-erreur {{ color:#ff6b6b; }}
   /* Les comptes, en fiches (23/09/2026, demande de l'utilisateur : le
      tableau a 6 colonnes etait illisible, surtout etroit). Une pastille
      d'initiale, le nom et son statut sur une ligne, le reste en meta. Les
@@ -4275,6 +4486,7 @@ PAGE_ADMIN = """<!doctype html>
     <button type="button" class="onglet" data-onglet="joueurs" data-n="{n_joueurs}" role="tab">Joueurs{badge_joueurs}</button>
     <button type="button" class="onglet" data-onglet="parties" data-n="0" role="tab">Parties</button>
     <button type="button" class="onglet" data-onglet="journal" data-n="0" role="tab">Journal</button>
+    <button type="button" class="onglet" data-onglet="decks" data-n="0" role="tab">{titre_decks}</button>
   </nav>
 
   <section class="panneau" data-panneau="comptes">
@@ -4365,9 +4577,14 @@ PAGE_ADMIN = """<!doctype html>
       {parties}
     </table>
   </section>
+
+  <section class="panneau" data-panneau="decks" hidden>
+    {panneau_decks}
+  </section>
 </main>
 {script_suivi}
 {script_onglets}
+{script_decks}
 """
 
 
@@ -5191,6 +5408,46 @@ def _avec_heure_locale(gabarit: str, nom: str) -> str:
 
 PAGE = _avec_heure_locale(PAGE, "PAGE")
 PAGE_ADMIN = _avec_heure_locale(PAGE_ADMIN, "PAGE_ADMIN")
+
+
+def _textes_decks_joueurs() -> dict:
+    return {
+        "aucun": lang.t("Aucun deck enregistré par les autres comptes."),
+        "cartes": lang.t("cartes"),
+        "importer": lang.t("Importer dans mon compte"),
+        "confirmer": lang.t("Importer le deck « {deck} » de {compte} dans votre compte ? L'original ne sera pas modifié."),
+        "reussi": lang.t("Deck importé dans votre compte sous le nom « {fichier} »."),
+        "echec_import": lang.t("L'import a échoué."),
+        "echec_liste": lang.t("La liste des decks n'a pas pu être chargée."),
+    }
+
+
+def _panneau_decks_joueurs() -> str:
+    return (
+        '<p class="sous">%s</p>'
+        '<p><button type="button" class="dj-actualiser">%s</button></p>'
+        '<div class="dj-message" role="status" aria-live="polite"></div>'
+        '<div class="dj-liste"><p class="vide">…</p></div>'
+        % (html.escape(lang.t("Les decks enregistrés par les autres comptes, en lecture seule. Chaque consultation et chaque import est journalisé.")),
+           html.escape(lang.t("Actualiser"))))
+
+
+def _script_decks_joueurs() -> str:
+    """Le script de l'onglet. Le panneau ne charge la liste qu'a l'ouverture de
+    l'onglet : chaque chargement est une consultation journalisee."""
+    with open(os.path.join(RACINE_SITE, "static", "admin-decks-joueurs.js"), encoding="utf-8") as f:
+        code = f.read().replace("</", "<\\/")
+    textes = json.dumps(_textes_decks_joueurs(), ensure_ascii=False).replace("</", "<\\/")
+    demarrage = (
+        "(function(){"
+        "var z=document.querySelector('[data-panneau=\"decks\"]');"
+        "var b=document.querySelector('.onglet[data-onglet=\"decks\"]');var f=false;"
+        "function go(){if(f||!z||!window.DecksJoueursAdmin)return;f=true;"
+        "window.DecksJoueursAdmin.monter(z," + textes + ");}"
+        "if(b){b.addEventListener('click',go);"
+        "if(b.getAttribute('aria-selected')==='true')go();}})();")
+    return "<script>" + code + "\n" + demarrage + "</script>"
+
 
 # La page des demandes des createurs (12/10/2026) : le gabarit commun des
 # formulaires, dont le `<form>` (qui impose un champ mot de passe) est remplace
@@ -6105,6 +6362,9 @@ class Handler(BaseHTTPRequestHandler):
                                  suivi_max=SUIVI_TERMINEES_MAX,
                                  styles_suivi=SUIVI_STYLE_BLOC,
                                  script_suivi=SUIVI_SCRIPT,
+                                 titre_decks=html.escape(lang.t("Decks des joueurs")),
+                                 panneau_decks=_panneau_decks_joueurs(),
+                                 script_decks=_script_decks_joueurs(),
                                  script_onglets=ADMIN_ONGLETS_SCRIPT).encode("utf-8")
 
     @staticmethod
@@ -6455,6 +6715,20 @@ class Handler(BaseHTTPRequestHandler):
                 siege = 0
             cle = urllib.parse.quote(partie.mot_de_passe)
             self._rediriger(f"{partie.base_url()}/spectateur?p={siege}&key={cle}")
+        elif self.chemin == "/api/admin/decks-joueurs":
+            # Reserve a l'administrateur, VERIFIE ICI (19/10/2026). Un visiteur
+            # sans session recoit 403 comme un joueur : on ne dit pas si la
+            # route existe.
+            if pseudo != ADMIN:
+                self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
+                return
+            comptes_decks = lister_decks_des_joueurs()
+            journaliser_decks_admin(
+                "consultation", comptes=len(comptes_decks),
+                decks=sum(len(c["decks"]) for c in comptes_decks))
+            corps = json.dumps({"comptes": comptes_decks}, ensure_ascii=False).encode("utf-8")
+            self._repondre(200, corps, "application/json; charset=utf-8",
+                           [("Cache-Control", "no-store")])
         elif self.chemin == "/api/suivi":
             if pseudo != ADMIN:
                 self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
@@ -6793,6 +7067,33 @@ class Handler(BaseHTTPRequestHandler):
 
             self._rediriger("/entrer", [("Set-Cookie", cookie_session)])
 
+        elif self.chemin == "/api/admin/decks-joueurs/importer":
+            # Reserve a l'administrateur, verifie AVANT de lire le corps. En-tete
+            # `X-Importer-Deck` exige : un formulaire d'un autre site ne peut
+            # pas l'ajouter (en plus du cookie SameSite=Lax).
+            if pseudo != ADMIN:
+                self._raccrocher()
+                self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
+                return
+            if self.headers.get("X-Importer-Deck") != "1" or self._taille_corps() > 4096:
+                self._raccrocher()
+                self._repondre(400, b'{"error":"requete"}', "application/json; charset=utf-8")
+                return
+            champs = self._champs()
+            cible = str(champs.get("compte", ""))
+            identifiant = str(champs.get("deck", ""))
+            try:
+                resultat = importer_deck_de_joueur(cible, identifiant)
+                code = 200
+                journaliser_decks_admin("import", compte=cible, deck=identifiant,
+                                        copie=resultat["fichier"], resultat="ok")
+            except ErreurDeckAdmin as erreur:
+                code = erreur.code
+                resultat = {"ok": False, "error": str(erreur)}
+                journaliser_decks_admin("import", compte=cible[:40], deck=identifiant[:80],
+                                        resultat="refuse %d" % code)
+            self._repondre(code, json.dumps(resultat, ensure_ascii=False).encode("utf-8"),
+                           "application/json; charset=utf-8")
         elif self.chemin == "/admin":
             # Le controle passe AVANT la lecture du corps : un inconnu n'a pas
             # a faire allouer un octet sur une route qui va le refuser.

@@ -260,6 +260,18 @@ DICO_EN: dict[str, str] = {
 
     # --- Liens de l'administrateur ------------------------------------------
     "Administration": "Administration",
+    "Decks des joueurs": "Players' decks",
+    "Aucun deck enregistré par les autres comptes.": "No deck saved by the other accounts.",
+    "cartes": "cards",
+    "Importer dans mon compte": "Import into my account",
+    "Importer le deck « {deck} » de {compte} dans votre compte ? L'original ne sera pas modifié.":
+        "Import the deck \u201c{deck}\u201d from {compte} into your account? The original will not be modified.",
+    "Deck importé dans votre compte sous le nom « {fichier} ».": "Deck imported into your account as \u201c{fichier}\u201d.",
+    "L'import a échoué.": "The import failed.",
+    "La liste des decks n'a pas pu être chargée.": "The deck list could not be loaded.",
+    "Les decks enregistrés par les autres comptes, en lecture seule. Chaque consultation et chaque import est journalisé.":
+        "The decks saved by the other accounts, read-only. Every consultation and every import is logged.",
+    "Actualiser": "Refresh",
     "Suivi des parties": "Game tracking",
 
     # --- Demandes des createurs (12/10/2026) ---------------------------------
