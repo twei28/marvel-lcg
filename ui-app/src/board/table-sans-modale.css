@@ -415,3 +415,61 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
   max-width: 100%;
   overflow-wrap: anywhere;
 }
+
+.tsm-bandeau:has(.tsm-calcul),
+.tsm-bandeau:has(.tsm-attente) {
+  flex-wrap: wrap;
+}
+
+.tsm-calcul {
+  flex-basis: 100%;
+  color: #d9e6f5;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.tsm-attente {
+  color: #e7d8a1;
+  font-size: 13px;
+}
+
+/* La lueur pulse en opacité : pas de recalcul d'ombre à chaque image. */
+.tsm-acteur {
+  animation: none;
+}
+.tsm-acteur::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  box-shadow: 0 0 18px 4px rgba(243, 198, 35, 0.6);
+  pointer-events: none;
+  animation: tsm-lueur 1.8s ease-in-out infinite;
+}
+.tsm-acteur.est-inactif::after { display: none; }
+@keyframes tsm-lueur { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+.jeton-coup, .trajet-copie { will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tsm-acteur::after { animation: none; }
+}
+
+@media (max-height: 550px) {
+  .tsm-bandeau { top: 25px; gap: 5px 8px; padding: 4px 10px; }
+  .tsm-calcul { font-size: 12px; }
+}
+
+@media (pointer: coarse), (max-height: 550px) {
+  .tsm-bouton, .tsm-retour { min-height: 44px; min-width: 44px; }
+}
+
+.tsm-multi {
+  position: absolute; z-index: 125; left: 50%; bottom: 8px;
+  transform: translateX(-50%); max-width: calc(100% - 24px);
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px;
+  padding: 8px 12px; background: #16263bf2; border: 1px solid #7498c6;
+  color: #fff; pointer-events: auto; font-size: 14px;
+}
+.tsm-multi .tsm-bouton { min-height: 44px; }

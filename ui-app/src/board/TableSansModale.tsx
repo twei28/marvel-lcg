@@ -11,6 +11,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { boiteDeCarte, cadreDuPlateau, redresserBoite, type Boite } from './mesures-plateau'
 import { t } from './langue'
+import type { PiedMulti } from './CartouchePhase'
+import type { PhaseLecture } from './CoucheRencontreSurTable'
 
 /** Le rectangle de la carte, remesuré tant qu'elle bouge (vol, mise à l'échelle). */
 /**
@@ -59,6 +61,7 @@ function angleDeLElement(el: HTMLElement, racine: HTMLElement): number {
 export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite | undefined {
   const [boite, setBoite] = useState<Boite | undefined>(undefined)
   useEffect(() => {
+    if (carteId === undefined) { setBoite(undefined); return }
     const mesurer = () => {
       const cadre = cadreDuPlateau()
       const b = cadre ? boiteDeLImage(carteId, cadre) : undefined
@@ -88,6 +91,8 @@ export type TableSansModaleProps = {
   phrase: ReactNode
   /** Le nombre qui compte (« 2 dégâts »). */
   nombre?: string
+  calcul?: string
+  lecture?: PhaseLecture
   /** Faux pour l'étape d'un autre joueur ou en spectateur : rien à cliquer. */
   peutAgir: boolean
   avancer: () => void
@@ -108,6 +113,8 @@ export function TableSansModale({
   cle,
   phrase,
   nombre,
+  calcul,
+  lecture,
   peutAgir,
   avancer,
   reculer,
@@ -116,8 +123,11 @@ export function TableSansModale({
   surtitre,
   suite,
 }: TableSansModaleProps) {
-  const boiteActeur = useBoiteDeCarte(acteurId ?? cibleId, cle)
-  const boiteCible = useBoiteDeCarte(acteurId !== undefined ? cibleId : undefined, cle)
+  // La carte au centre se lit sans rechercher un halo derrière elle. Aucun
+  // intervalle de mesure ni rendu des halos pendant ses déplacements.
+  const boiteActeur = useBoiteDeCarte(lecture ? undefined : acteurId ?? cibleId, cle)
+  const boiteCible = useBoiteDeCarte(!lecture && acteurId !== undefined ? cibleId : undefined, cle)
+  const enTrajet = lecture === 'entree' || lecture === 'depart'
   // Une étape sans carte à cliquer (« Aucun sbire engagé », menace sans manigance visible) :
   // la ligne du haut porte alors son propre bouton. On laisse 300 ms à la mesure.
   const [laisseMesurer, setLaisseMesurer] = useState(true)
@@ -139,19 +149,22 @@ export function TableSansModale({
         {surtitre ? <span className="tsm-surtitre">{surtitre}</span> : null}
         <span className="tsm-phrase">{phrase}</span>
         {nombre ? <b className="tsm-nombre">{nombre}</b> : null}
+        {calcul ? <span className="tsm-calcul">{calcul}</span> : null}
         {suite ? <span className="tsm-suite">{suite}</span> : null}
-        {peutAgir && sansCarte ? (
-          <button type="button" className="tsm-bouton" onClick={avancer} aria-label={libelleAction}>
+        {peutAgir && (sansCarte || lecture) ? (
+          <button type="button" className="tsm-bouton" onClick={avancer} aria-label={libelleAction} disabled={enTrajet}>
             {t('Continuer')}
+            {lecture === 'lecture' ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
           </button>
         ) : (
           <span className="tsm-consigne">
             {peutAgir ? t('Clique la carte dorée, ou Espace') : (mention ?? t('La suite arrive…'))}
           </span>
         )}
+        {enTrajet ? <span className="tsm-attente">{lecture === 'entree' ? t('Les cartes arrivent…') : t('Les cartes se placent…')}</span> : null}
       </div>
-      {boiteCible ? <span className="tsm-cible" style={boiteStyle(boiteCible)} aria-hidden="true" /> : null}
-      {boiteActeur ? (
+      {!lecture && boiteCible ? <span className="tsm-cible" style={boiteStyle(boiteCible)} aria-hidden="true" /> : null}
+      {!lecture && boiteActeur ? (
         <button
           type="button"
           className={`tsm-acteur${peutAgir ? '' : ' est-inactif'}`}
@@ -206,6 +219,13 @@ export function QuestionSurTable({
   // Une carte qu'on ne trouve pas sur la table (hors du cadre, disparue) ne doit JAMAIS rendre son
   // choix injouable : il passe alors dans la ligne du haut, comme un choix sans carte.
   const [absentes, setAbsentes] = useState<ReadonlySet<number>>(new Set())
+  const [soulignee, setSoulignee] = useState<number>()
+  const signatureChoix = choix.map((c) => `${c.id}:${c.carteId}`).join(',')
+  useEffect(() => { setSoulignee(undefined) }, [signatureChoix])
+  const survoler = (c: ChoixSurTable, actif: boolean) => {
+    setSoulignee(actif ? c.carteId : undefined)
+    c.survoler?.(actif)
+  }
   const signaler = (id: number, absente: boolean) =>
     setAbsentes((avant) => {
       if (avant.has(id) === absente) return avant
@@ -222,6 +242,13 @@ export function QuestionSurTable({
   const enLigne = choix.filter((c) => c.enLigne || c.carteId === undefined || absentes.has(c.id))
   return (
     <>
+      {soulignee !== undefined ? <style>{`
+        .plateau-cadre .scan-card[data-card-id="${soulignee}"]:not(.carte-apercu *) .scan-frame {
+          box-shadow: 0 0 0 3px #4fd17b, 0 0 18px rgba(79, 209, 123, .7) !important;
+        }
+        .plateau-cadre .est-attachee:has(.scan-card[data-card-id="${soulignee}"]),
+        .plateau-cadre .plateau-unite:has(.scan-card[data-card-id="${soulignee}"]) { z-index: 110 !important; }
+      `}</style> : null}
       <div className="tsm-bandeau est-question" role="group" aria-label={t('Ta décision')}>
         <span className="tsm-phrase">{phrase}</span>
         {enLigne.map((c) => (
@@ -232,10 +259,10 @@ export function QuestionSurTable({
             disabled={!!c.indisponible}
             title={c.indisponible}
             onClick={c.choisir}
-            onMouseEnter={() => c.survoler?.(true)}
-            onMouseLeave={() => c.survoler?.(false)}
-            onFocus={() => c.survoler?.(true)}
-            onBlur={() => c.survoler?.(false)}
+            onMouseEnter={() => survoler(c, true)}
+            onMouseLeave={() => survoler(c, false)}
+            onFocus={() => survoler(c, true)}
+            onBlur={() => survoler(c, false)}
             data-choix-unique={uniqueId === c.id ? '' : undefined}
           >
             {c.nom}
@@ -490,4 +517,19 @@ function CarteCiblable({ cible }: { cible: CibleSurTable }) {
       ) : null}
     </>
   )
+}
+
+/** Commandes communes aux étapes et au bilan, indépendantes des cartes du joueur visé. */
+export function CommandesMultiSurTable({ multi, enTrajet }: { multi?: PiedMulti; enTrajet: boolean }) {
+  if (!multi) return null
+  return <div className="tsm-multi" role="group" aria-label={t('Qui fait avancer la phase du méchant ?')}>
+    {multi.genre === 'choix-hote' ? <>
+      <span>{t('Qui fait avancer la phase du méchant ?')}</span>
+      {([['concerne', 'Le joueur concerné'], ['tous', 'Tout le monde valide'], ['quiconque', 'N’importe qui']] as const).map(([valeur, nom]) =>
+        <button key={valeur} type="button" className="tsm-bouton" data-politique={valeur} onClick={() => multi.choisir(valeur)}>{t(nom)}</button>)}
+    </> : multi.genre === 'pret' ? <>
+      {multi.pastilles.map((p) => <span key={p.nom} title={p.nom} style={{ color: p.couleur }}>{p.pret ? '●' : '○'} {p.nom}</span>)}
+      <button type="button" className="tsm-bouton" data-pret="" disabled={multi.pret || enTrajet} onClick={multi.marquer}>{t('Prêt')} · {multi.pastilles.filter((p) => p.pret).length} / {multi.pastilles.length}</button>
+    </> : <span>{multi.genre === 'regarde' ? `${multi.nom} — ${t('La suite arrive…')}` : t('Qui fait avancer la phase du méchant ?')}</span>}
+  </div>
 }

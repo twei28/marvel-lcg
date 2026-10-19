@@ -101,10 +101,10 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
     const c = cadreDuPlateau()
     const r = el.getBoundingClientRect()
     const origine = { x: r.left - (c?.origine.left ?? 0), y: r.top - (c?.origine.top ?? 0), w: r.width, h: r.height }
-    const pose = (b: Boite) => {
-      const base = el.offsetWidth > 0 ? { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight } : origine
-      return `translate(${b.x - base.x}px, ${b.y - base.y}px) scale(${b.w / Math.max(1, base.w)}, ${b.h / Math.max(1, base.h)})`
-    }
+    // Lire la géométrie de base une fois : aucune lecture de layout dans les keyframes.
+    const base = el.offsetWidth > 0 ? { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight } : origine
+    const pose = (b: Boite) =>
+      `translate3d(${b.x - base.x}px, ${b.y - base.y}px, 0) scale(${b.w / Math.max(1, base.w)}, ${b.h / Math.max(1, base.h)})`
     if (animationsCoupees() || !el.animate) return Promise.resolve()
     const a = el.animate([{ transform: pose(de) }, { transform: pose(vers) }], {
       duration: duree, delay: delai, fill: 'both', easing: 'cubic-bezier(0.25, 0.7, 0.3, 1)',
@@ -114,20 +114,42 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
       let image = 0
       let arrete = false
       let derniere = vers
+      const echeance = performance.now() + duree + delai
       const suivre = () => {
+        image = 0
         if (arrete) return
         const cible = destination()
-        // La table peut se réorganiser ou être redimensionnée pendant le vol.
-        // On conserve sa progression et on actualise seulement sa destination.
-        if (cible && (cible.x !== derniere.x || cible.y !== derniere.y || cible.w !== derniere.w || cible.h !== derniere.h)) {
-          derniere = cible
-          ;(a.effect as KeyframeEffect | null)?.setKeyframes([{ transform: pose(de) }, { transform: pose(cible) }])
-        }
-        image = window.requestAnimationFrame(suivre)
+        if (!cible || Math.max(Math.abs(cible.x - derniere.x), Math.abs(cible.y - derniere.y), Math.abs(cible.w - derniere.w), Math.abs(cible.h - derniere.h)) < 0.5) return
+        derniere = cible
+        const r = el.getBoundingClientRect()
+        const c = cadreDuPlateau()
+        const courant = { x: r.left - (c?.origine.left ?? 0), y: r.top - (c?.origine.top ?? 0), w: r.width, h: r.height }
+        // Repartir de la pose réellement affichée, sans déplacer le début de
+        // la courbe déjà parcourue. Une destination mobile ne crée pas de saut.
+        const effet = a.effect as KeyframeEffect | null
+        effet?.setKeyframes([{ transform: pose(courant) }, { transform: pose(cible) }])
+        effet?.updateTiming?.({ duration: Math.max(16, echeance - performance.now()), delay: 0 })
+        a.currentTime = 0
       }
-      const arreter = () => { arrete = true; window.cancelAnimationFrame(image) }
+      const demander = () => { if (!arrete && !image) image = window.requestAnimationFrame(suivre) }
+      // Les animations natives n'ont pas besoin d'un recalcul JS à 60 Hz.
+      // Relever la destination seulement quand la disposition peut changer.
+      const observateur = typeof MutationObserver === 'undefined' ? undefined : new MutationObserver((mutations) => {
+        if (mutations.some((m) => !(m.target instanceof Element) || !m.target.closest('.rencontre-sur-table, [class*="tsm-"], .trait-phase, .jeton-coup, .trajet-copie'))) demander()
+      })
+      if (c) observateur?.observe(c.element, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] })
+      const tailles = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(demander)
+      if (c) tailles?.observe(c.element)
+      window.addEventListener('resize', demander)
+      const arreter = () => {
+        arrete = true
+        window.cancelAnimationFrame(image)
+        observateur?.disconnect()
+        tailles?.disconnect()
+        window.removeEventListener('resize', demander)
+      }
       suivis.current.push(arreter)
-      image = window.requestAnimationFrame(suivre)
+      demander()
       void a.finished.then(arreter, arreter)
     }
     return a.finished
@@ -137,18 +159,34 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
     if (!ancres || etat.current !== 'entree') return
     const numero = ++generation.current
     const els = elements()
-    const arrivees = els.map((el, i) => {
-      const r = el.getBoundingClientRect()
-      const vers = { x: r.left - (cadreDuPlateau()?.origine.left ?? 0), y: r.top - (cadreDuPlateau()?.origine.top ?? 0), w: r.width, h: r.height }
-      // Les boosts arrivent l'un après l'autre, puis restent lisibles ensemble.
-      return animer(el, ancres.deck, vers, DUREE_ENTREE_MS, i * DUREE_ENTREE_MS)
-    })
-    void Promise.all(arrivees).then(() => {
+    const lancer = () => {
       if (generation.current !== numero) return
-      for (const a of vols.current) a.cancel()
-      vols.current = []
-      changer('lecture')
-    }).catch(() => { /* Annulation : une autre phase ou une autre partie a pris la main. */ })
+      for (const el of els) el.style.visibility = 'visible'
+      const arrivees = els.map((el, i) => {
+        const r = el.getBoundingClientRect()
+        const vers = { x: r.left - (cadreDuPlateau()?.origine.left ?? 0), y: r.top - (cadreDuPlateau()?.origine.top ?? 0), w: r.width, h: r.height }
+        // Les boosts arrivent l'un après l'autre, puis restent lisibles ensemble.
+        return animer(el, ancres.deck, vers, DUREE_ENTREE_MS, i * DUREE_ENTREE_MS)
+      })
+      void Promise.all(arrivees).then(() => {
+        if (generation.current !== numero) return
+        for (const a of vols.current) a.cancel()
+        vols.current = []
+        changer('lecture')
+      }).catch(() => { /* Une autre phase ou partie annule cette entrée. */ })
+    }
+    // Décoder les grands scans avant le mouvement évite une rasterisation
+    // lourde au milieu du vol. Un scan défaillant ne bloque jamais la phase.
+    const images = els.flatMap((el) => Array.from(el.querySelectorAll<HTMLImageElement>('.scan-frame img')))
+      .filter((img) => !img.complete && typeof img.decode === 'function')
+    if (!images.length) lancer()
+    else {
+      let minuteur = 0
+      void Promise.race([
+        Promise.all(images.map((img) => { img.loading = 'eager'; return img.decode().catch(() => {}) })),
+        new Promise<void>((resolve) => { minuteur = window.setTimeout(resolve, 800) }),
+      ]).then(() => { window.clearTimeout(minuteur); lancer() })
+    }
     // Seule l'arrivée des ancres déclenche l'entrée, jamais un enrichissement de l'étape.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Boolean(ancres)])
@@ -205,7 +243,7 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
       {cartes.map((carte, i) => (
         <div key={carte.id} className={`rencontre-sortie ${carte.boost ? 'est-boost' : 'est-revelee'}`} style={{
           left: places[i].x, top: places[i].y, width: places[i].w, '--lecture-w': `${places[i].w}px`,
-          visibility: phase === 'termine' ? 'hidden' : undefined,
+          visibility: phase === 'entree' || phase === 'termine' ? 'hidden' : undefined,
         } as CSSProperties}>
           <ScanCardTraduite {...carte.props} taille="grande" state={undefined} exhausted={false} counters={undefined}
             schemeThreat={undefined} allyHp={undefined} stats={undefined} jauge={undefined} jetonMenace={undefined} jetonDegats={undefined}

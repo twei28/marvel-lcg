@@ -3,6 +3,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { CartouchePhase, type CartouchePhaseProps, type PiedMulti } from './CartouchePhase'
+import { CommandesMultiSurTable } from './TableSansModale'
 import { DeroulePhase } from './DeroulePhase'
 import { publierEtape } from './etape-partagee'
 import type { EtapeDeroule } from './deroule-phase'
@@ -241,6 +242,21 @@ describe('DeroulePhase en multi (essai)', () => {
     )
   })
 
+  it('le suiveur valide aussi la résolution qui remplace une annonce de même clé', async () => {
+    vi.stubGlobal('fetch', reponses('concerne', { 1: { cle: 'a1', t: 5, boosts: 0, valide: 'a1' } }))
+    const valider = vi.fn()
+    const props = {
+      onTerminer: () => {}, onEtapeValidee: valider, essai: true, phaseMechantEnCours: true,
+      herosLocauxIds: new Set([12]), herosDesAutresIds: new Set([99]),
+      cadresJoueurs: cadres, joueurDeCarte, siegeLocal: 0, premierJoueur: 0,
+    }
+    const annonce = { ...attaques[0]!, etat: 'annonce' as const }
+    const { rerender } = render(<DeroulePhase {...props} etapes={[annonce]} />)
+    await vi.waitFor(() => expect(valider).toHaveBeenCalledWith('a1', 'annonce'))
+    rerender(<DeroulePhase {...props} etapes={[{ ...annonce, etat: 'resolu', montant: 2 }]} />)
+    await vi.waitFor(() => expect(valider).toHaveBeenCalledWith('a1', 'resolu'))
+  })
+
   it('sans essai : rien ne change, aucune lecture de la regle', () => {
     const fetchSimule = reponses('concerne', {})
     vi.stubGlobal('fetch', fetchSimule)
@@ -277,5 +293,28 @@ describe('DeroulePhase en multi (essai)', () => {
       />
     )
     expect(fetchSimule.mock.calls.some(([url]) => String(url).includes('get_avance_phase'))).toBe(false)
+  })
+})
+
+describe('commandes multi sur table', () => {
+  afterEach(cleanup)
+  it('donne à l’hôte les trois règles et transmet son choix', () => {
+    const choisir = vi.fn()
+    const { container } = render(<CommandesMultiSurTable multi={{ genre: 'choix-hote', choisir }} enTrajet={false} />)
+    expect(container.querySelectorAll('[data-politique]')).toHaveLength(3)
+    fireEvent.click(container.querySelector('[data-politique="tous"]')!)
+    expect(choisir).toHaveBeenCalledWith('tous')
+  })
+  it('bloque Prêt pendant le vol et après l’accord du joueur', () => {
+    const marquer = vi.fn()
+    const multi: PiedMulti = { genre: 'pret', pret: false, pastilles: [{ nom: 'J1', pret: false }], marquer }
+    const { container, rerender } = render(<CommandesMultiSurTable multi={multi} enTrajet />)
+    fireEvent.click(container.querySelector('[data-pret]')!)
+    expect(marquer).not.toHaveBeenCalled()
+    rerender(<CommandesMultiSurTable multi={multi} enTrajet={false} />)
+    fireEvent.click(container.querySelector('[data-pret]')!)
+    expect(marquer).toHaveBeenCalledOnce()
+    rerender(<CommandesMultiSurTable multi={{ ...multi, pret: true }} enTrajet={false} />)
+    expect(container.querySelector('[data-pret]')).toBeDisabled()
   })
 })

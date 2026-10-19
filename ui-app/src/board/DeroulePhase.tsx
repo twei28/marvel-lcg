@@ -28,6 +28,7 @@ import {
   type ReactNode,
 } from 'react'
 import { questionDuRecit } from './table-calee'
+import { calculCoupTable } from './calcul-coup-table'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
 import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
@@ -101,7 +102,7 @@ import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
 import './table-sans-modale.css'
-import { BilanSurTable, TableSansModale } from './TableSansModale'
+import { BilanSurTable, TableSansModale, CommandesMultiSurTable } from './TableSansModale'
 import { phraseHistorique } from './PhaseDynamique'
 // ⚠ APRES boutons-bd.css : CartouchePhase importe sa feuille, qui doit passer
 // la DERNIERE (cartouche-phase.css, hors couche).
@@ -1556,21 +1557,27 @@ export function DeroulePhase({
     }
     // Le meneur a valide l'etape que nous montrons : nous la validons aussi
     // (nous passons en attente de la suite, et notre accuse part).
-    if (rangSuivi === index && lectureSuivie.valide === etape.cle && validee?.cle !== etape.cle) {
+    if (rangSuivi === index && lectureSuivie.valide === etape.cle && !etapeValidee) {
       suivreLeMeneur()
       return
     }
     if (lectureSuivie.cle === '' && etape.temps === 'bilan') suivreLeMeneur()
     // eslint-disable-next-line react-hooks/exhaustive-deps -- la lecture suivie (cle, boosts, heure) pilote
-  }, [multi, lectureSuivie?.cle, lectureSuivie?.boosts, lectureSuivie?.valide, lectureSuivie?.t, rangSuivi, index, boostsMontres, questionAuJoueur, termine, etape?.cle, validee?.cle, phaseDesCartes])
-  // « Tout le monde valide » : on avance ensemble quand chaque siege est pret.
-  const prets = multi && politique === 'tous' ? siegesPrets(avanceMulti.etapes, etape?.cle, siegesTable) : []
-  const tousSontPrets = multi && politique === 'tous' && tousPrets(avanceMulti.etapes, etape?.cle, siegesTable)
+  }, [multi, lectureSuivie?.cle, lectureSuivie?.boosts, lectureSuivie?.valide, lectureSuivie?.t, rangSuivi, index, boostsMontres, questionAuJoueur, termine, etape?.cle, validee?.cle, etapeValidee, phaseDesCartes])
+  // En sur-table, chaque résolution et chaque lecture rangée demandent leur propre accord.
+  const clePret = surTable && etape
+    ? `${etape.cle}:${etape.etat}:${etape.boosts.map((b) => b.cibleId).join(',')}:${phaseDesCartes === 'termine' ? 'rangees' : 'lecture'}`
+    : etape?.cle
   useEffect(() => {
-    if (!tousSontPrets || questionAuJoueur || termine) return
+    if (surTable && multi && politique === 'tous' && etape) setBoostsMontres(etape.boosts.length)
+  }, [surTable, multi, politique, etape?.cle, etape?.boosts.length])
+  const prets = multi && politique === 'tous' ? siegesPrets(avanceMulti.etapes, clePret, siegesTable) : []
+  const tousSontPrets = multi && politique === 'tous' && tousPrets(avanceMulti.etapes, clePret, siegesTable)
+  useEffect(() => {
+    if (!tousSontPrets || questionAuJoueur || termine || etapeValidee) return
     suivreLeMeneur()
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- la cle de l'etape et l'accord pilotent
-  }, [tousSontPrets, etape?.cle, questionAuJoueur, termine])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tousSontPrets, clePret, questionAuJoueur, termine, etapeValidee, phaseDesCartes])
   const nomDuSiege = (siege: number | undefined): string =>
     siege === undefined
       ? '?'
@@ -1595,7 +1602,7 @@ export function DeroulePhase({
                 pret: prets.includes(siege),
               })),
               marquer: () => {
-                if (etape) publierExtrasEtape({ pret: etape.cle })
+                if (clePret) publierExtrasEtape({ pret: clePret })
               },
             }
           : avanceBloquee
@@ -1943,7 +1950,8 @@ export function DeroulePhase({
           controle={rencontreSurTable}
           surPhase={signalerPhaseLecture}
         />
-        {enVolDeJeton ? null : contenu}
+        {!questionAuJoueur ? <CommandesMultiSurTable multi={piedMulti} enTrajet={enVolDeJeton || phaseDesCartes === 'entree' || phaseDesCartes === 'depart'} /> : null}
+        {enVolDeJeton ? <div className="tsm-bandeau" role="status"><span className="tsm-attente">{t('Les jetons se placent…')}</span></div> : contenu}
       </>,
       cadre
     )
@@ -2734,6 +2742,8 @@ export function DeroulePhase({
           cle={etape.cle}
           phrase={phraseSurvolable(phraseEtape)}
           nombre={recit.texte && !(etapeLue.etat === 'annonce' && /^0(\s|$)/.test(recit.texte)) ? recit.texte : undefined}
+          calcul={!lectureEnCours ? calculCoupTable(etapeLue) : undefined}
+          lecture={lectureEnCours ? phaseDesCartes ?? 'entree' : undefined}
           peutAgir={peutAgir}
           avancer={fatalAMontrerSurTable ? () => setCoupFatalVuSurTable(true) : avancerSurTable}
           reculer={index > 0 && peutAgir ? reculer : undefined}

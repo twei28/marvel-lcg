@@ -9,6 +9,14 @@
   animation: none !important;
   transition: none !important;
   transform-origin: top left;
+  contain: layout style;
+  filter: none;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+}
+
+.rencontre-sur-table:is([data-lecture="entree"], [data-lecture="depart"]) .rencontre-sortie {
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .rencontre-sur-table .rencontre-sortie .scan-card,

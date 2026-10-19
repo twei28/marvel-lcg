@@ -169,4 +169,18 @@ describe('lecture et trajet des cartes rencontre', () => {
     cadre.insertAdjacentHTML('beforeend', '<div class="rencontre-sur-table"><div class="scan-card" data-card-id="66"></div></div>')
     expect(boiteDeCarte(66, { element: cadre, origine: cadre.getBoundingClientRect() })).toBeUndefined()
   })
+
+  it('ne remesure pas la table en boucle quand la destination ne bouge pas', async () => {
+    const images: FrameRequestCallback[] = []
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => { images.push(cb); return images.length })
+    const controle = createRef<ControleRencontre>()
+    render(<CoucheRencontreSurTable etape={revelation} boostsMontres={0} carteScene={scans} actif controle={controle} />)
+    await finir(0)
+    act(() => { controle.current?.valider(vi.fn()) })
+    expect(images).toHaveLength(1)
+    act(() => { images.shift()!(0) })
+    expect(images).toHaveLength(0)
+    expect(vols[1].setKeyframes).not.toHaveBeenCalled()
+    await finir(1)
+  })
 })
