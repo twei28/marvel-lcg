@@ -9,7 +9,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ScanCardProps } from '../components/ScanCard'
 import type { Demande, Option } from './ask'
-import { DemandeCentrale, libelleRefus } from './DemandeCentrale'
+import { DemandeCentrale, libelleRefus, nomDeCapacite } from './DemandeCentrale'
 import type { WorldCard } from './world'
 
 class ResizeObserverBouchon {
@@ -326,6 +326,12 @@ describe('DemandeCentrale — le bouton de refus dit ce qu il fait', () => {
     expect(libelleRefus([avec({ name: 'Spider-Sense' })], true, cartes, undefined, texte, () => false)).toBe(
       'Ne pas utiliser Sens d’Araignée'
     )
+  })
+
+  it('Garde du Corps (se011) : une option qui ne porte que le TYPE prend le nom imprimé de la capacité', () => {
+    // 19/10/2026 : le bouton disait « Interruption de héros » ; l'utilisateur veut le nom de la capacité.
+    const texte = () => 'Garde du Corps — Interruption de héros : quand un ennemi attaque, inclinez cette carte → déclarez votre héros en tant que défenseur sans l’incliner.'
+    expect(nomDeCapacite(avec({ name: 'Hero Interrupt' }), texte())).toBe('Garde du Corps')
   })
 
   it('un nom technique ou un type ne prend JAMAIS l’en-tete du texte', () => {

@@ -229,7 +229,12 @@ export function nomDeCapacite(option: Option, texteCapacite: string | undefined)
   // « Sens d'Araignée » (signale par l'utilisateur, 04/10/2026).
   const moteurNomme =
     /^["«]/.test(option.name) || /—/.test(option.name) || estNomDeCapacite(option.name)
-  return moteurNomme ? entete[1]!.trim() : nom
+  // 19/10/2026 (Garde du Corps, Yōjimbō se011) : le moteur ne nomme pas cette capacité, son
+  // option ne porte que le TYPE (« Hero Interrupt »), mais le texte de la carte lui donne un
+  // nom imprimé (« Garde du Corps — Interruption de héros : … »). Choix de l'utilisateur :
+  // le bouton dit ce nom. Seulement si l'en-tête est suivi d'un vrai type de capacité.
+  const nomImprime = /—\s*(interrupt|interruption|response|réponse|action)/i.test(texteCapacite)
+  return moteurNomme || nomImprime ? entete[1]!.trim() : nom
 }
 
 /** Un vrai nom de capacite (« Spider-Sense »), pas un TYPE ni un nom technique. */
