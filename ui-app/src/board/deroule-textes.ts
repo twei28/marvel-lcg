@@ -24,6 +24,7 @@ const REDIGES = new Set([
   'vide',
   'stade',
   'sonne',
+  'vaincu',
 ])
 
 /** Ce que dit un temps passe sans rien (`avecTempsVides`, frise-phase.ts). */
@@ -83,6 +84,9 @@ export function titreEtape(etape: EtapeDeroule): string {
   // plus, et l'etape affichait alors « Ultron attaque #88 ».
   const auteur = etape.auteurNom ?? ''
   const cible = etape.cibleNom ?? ''
+
+  // T17 : un ALLIE tombe a zero PV et part en defausse. Une ligne a part, avant le bilan.
+  if (etape.titre === 'vaincu') return cible ? t('%1 est vaincu').replace('%1', cible) : t('Un allié est vaincu')
 
   if (etape.titre === 'statut') {
     // « Klaw gagne Sonné ». Le porteur, puis la carte de statut, nommee comme
@@ -455,6 +459,7 @@ const REGLES: Record<string, string> = {
   'regle:distribution': 'Point 3 : chaque joueur reçoit une carte rencontre, face cachée.',
   'regle:revelation': 'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.',
   'regle:entree': 'Un sbire qui entre en jeu pendant la phase du méchant s\'active à l\'étape des sbires, s\'il est arrivé avant elle.',
+  'regle:vaincu': 'Un allié dont les dégâts atteignent les points de vie est vaincu : il est défaussé.',
   'regle:statut': 'Une carte de statut posée reste jusqu\'à ce qu\'elle soit consommée : sonné annule la prochaine attaque, désorienté la prochaine manigance, robuste absorbe les dégâts d\'une attaque.',
 }
 

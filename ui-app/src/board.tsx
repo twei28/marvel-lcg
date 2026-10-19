@@ -2525,6 +2525,11 @@ export function PagePartie({
     const nomsHerosParJoueur = (etat.monde?.players ?? []).map(
       (joueur) => (joueur.area_hero ?? [])[0]?.name
     )
+    // T17 : les allies du monde, en jeu ou deja en defausse (ils ont quitte la table quand l'etape se lit).
+    const alliesIds = new Set<number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (kindOf(carte) === 'ally') alliesIds.add(carte.id)
+    }
     return etapesDeroule(
       etat.monde?.faits_mechant ?? [],
       entreesPourRepli(historique.entrees, PHASES_DU_MECHANT.has(etat.monde?.phase ?? ''), etat.monde?.render_id),
@@ -2532,7 +2537,9 @@ export function PagePartie({
       mechantIds,
       herosVaincusIds,
       premierJoueurId === -1 ? undefined : premierJoueurId,
-      nomsHerosParJoueur
+      nomsHerosParJoueur,
+      'phase',
+      alliesIds
     )
   }, [
     cartesMondeParId,

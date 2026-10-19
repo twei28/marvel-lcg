@@ -31,6 +31,7 @@ import type {
 } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { coupsDe } from './frise-phase'
+import { titreEtape } from './deroule-textes'
 
 const attaque = (extra: Partial<FaitActivationResolue> = {}): FaitActivationResolue => ({
   genre: 'attaque',
@@ -2031,5 +2032,45 @@ describe('la carte de remplacement (rapports Yarro n71 et n72, 09/10/2026)', () 
     const autre = { ...vengeance, annulee_par: 'Black Widow', annulee_par_id: 41 }
     const etapes = etapesDeroule([runner, autre, sonicBoom], [], 3, new Set([57]))
     expect(etapes.some((e) => e.suivieDUnRemplacement)).toBe(false)
+  })
+})
+
+
+// T17 : un ALLIE a zero PV a son etape « X est vaincu », juste apres le coup, avant le bilan.
+describe('l allie vaincu', () => {
+  const HULK = new Set([12])
+  const activation = (etapes: EtapeDeroule[]) => etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')
+
+  it('ajoute l etape « vaincu » juste apres le coup qui met l allie a zero', () => {
+    const etapes = activation(
+      etapesDeroule([attaque({ cible: 'Hulk', cible_id: 12, subi: 1, restant: 0 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK)
+    )
+    expect(etapes.map((e) => e.titre)).toEqual(['attaque', 'vaincu'])
+    expect(etapes[1].cibleId).toBe(12)
+    expect(etapes[1].cibleNom).toBe('Hulk')
+    expect(etapes[1].defaite).toBeUndefined()
+  })
+
+  it('pas d etape pour un allie encore debout, un sbire ou un heros', () => {
+    const debout = activation(etapesDeroule([attaque({ cible_id: 12, restant: 2 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK))
+    expect(debout.map((e) => e.titre)).toEqual(['attaque'])
+    const sbire = activation(etapesDeroule([attaque({ cible_id: 99, restant: 0 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK))
+    expect(sbire.map((e) => e.titre)).toEqual(['attaque'])
+    // Un heros vaincu garde sa fenetre (`defaite`), et pas d'etape « vaincu ».
+    const heros = activation(etapesDeroule([attaque({ cible_id: 12, restant: 0 })], [], 1, AUCUN_MECHANT, new Set([12]), undefined, [], 'phase', HULK))
+    expect(heros.map((e) => e.titre)).toEqual(['attaque'])
+    expect(heros[0].defaite).toBe(true)
+  })
+
+  it('sans la liste des allies, rien ne change', () => {
+    const etapes = activation(etapesDeroule([attaque({ cible_id: 12, restant: 0 })], [], 1, AUCUN_MECHANT))
+    expect(etapes.map((e) => e.titre)).toEqual(['attaque'])
+  })
+
+  it('se lit « Hulk est vaincu »', () => {
+    const [, vaincu] = activation(
+      etapesDeroule([attaque({ cible: 'Hulk', cible_id: 12, restant: 0 })], [], 1, AUCUN_MECHANT, new Set(), undefined, [], 'phase', HULK)
+    )
+    expect(titreEtape(vaincu)).toBe('Hulk est vaincu')
   })
 })

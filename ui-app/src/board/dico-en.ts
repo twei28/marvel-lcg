@@ -648,6 +648,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'menace restante': 'threat left',
   'gagne': 'gains',
   // T15 : un statut se recoit, un jeton ou une menace se gagne (phrases-effets.ts).
+  'Un allié est vaincu': 'An ally is defeated',
+  'Un allié dont les dégâts atteignent les points de vie est vaincu : il est défaussé.': 'An ally whose damage reaches its hit points is defeated: it is discarded.',
   'reçoit un statut': 'receives the status',
   'perd le statut': 'loses the status',
   'reçoit les statuts': 'receives the statuses',

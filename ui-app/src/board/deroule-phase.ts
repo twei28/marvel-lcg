@@ -586,7 +586,10 @@ export function etapesDeroule(
   herosVaincusIds: Set<number> = new Set(),
   premierJoueurId?: number,
   nomsHerosParJoueur: (string | undefined)[] = [],
-  selection: 'phase' | 'hors-phase' = 'phase'
+  selection: 'phase' | 'hors-phase' = 'phase',
+  // T17 : les ALLIES du monde (en jeu ou deja en defausse). Un coup qui met l'un d'eux a zero PV
+  // ajoute l'etape « X est vaincu » juste apres. Vide : aucune etape de ce genre.
+  alliesIds: ReadonlySet<number> = new Set()
 ): EtapeDeroule[] {
   const etapes: EtapeDeroule[] = []
 
@@ -940,6 +943,20 @@ export function etapesDeroule(
       reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
       riposte: fait.riposte ?? undefined,
     })
+    // T17 : l'allie qui tombe a zero PV est lu et part en defausse AVANT le bilan : une etape a lui,
+    // juste apres le coup. Un HEROS vaincu garde sa fenetre (`defaite`), un sbire n'a pas d'etape.
+    if (restant !== undefined && restant <= 0 && alliesIds.has(fait.cible_id) && !herosVaincusIds.has(fait.cible_id)) {
+      etapes.push({
+        cle: cleDuFait('vaincu', fait.round_id ?? round, rang, fait.cible_id),
+        temps,
+        titre: 'vaincu',
+        regle: 'regle:vaincu',
+        cibleId: fait.cible_id,
+        cibleNom: nomNettoye(fait.cible),
+        etat: 'resolu',
+        boosts: [],
+      })
+    }
   })
 
   // ---------------------------------------------------- POINT 3 : distribution

@@ -103,6 +103,7 @@ import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
 import './table-sans-modale.css'
 import { BilanSurTable, TableSansModale, CommandesMultiSurTable } from './TableSansModale'
+import { AllieVaincuSurTable } from './AllieVaincuSurTable'
 import { phraseHistorique } from './PhaseDynamique'
 // ⚠ APRES boutons-bd.css : CartouchePhase importe sa feuille, qui doit passer
 // la DERNIERE (cartouche-phase.css, hors couche).
@@ -2776,6 +2777,10 @@ export function DeroulePhase({
     const peutAgir = !(viseUnAutreJoueur || estSpectateur())
     return enveloppe(
       <>
+        {/* T17 : un allie vaincu est lu, puis part en defausse (la ligne dit « X est vaincu »). */}
+        {etape.titre === 'vaincu' && etape.cibleId !== undefined ? (
+          <AllieVaincuSurTable key={etape.cle} id={etape.cibleId} props={carteScene?.(etape.cibleId, true)} />
+        ) : null}
         <TableSansModale
           acteurId={etape.carteId ?? etape.cibleId}
           cibleId={etape.carteId === undefined ? undefined : etape.cibleId}

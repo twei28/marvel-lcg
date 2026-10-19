@@ -148,11 +148,15 @@ describe('en mode « Sur la table », le hors phase ne change pas', () => {
     window.localStorage.removeItem(CLE_MODE_PHASE)
   })
 
-  it('un coup du mechant pendant le tour ouvre toujours le cartouche de la table', async () => {
+  // T16 (19/10/2026) : « Sur la table », le coup d'un sbire Rapide passe par le bandeau lateral de la
+  // table (meme bandeau, meme calcul, meme Continuer que la phase), plus par le cartouche d'un seul coup.
+  it('un coup du mechant pendant le tour passe par le bandeau de la table', async () => {
     const { container } = monter()
     await emettre({ monde: auTour(50, PHASE_PRECEDENTE) })
     await emettre({ monde: auTour(51, [...PHASE_PRECEDENTE, COUP_PENDANT_LE_TOUR]) })
-    expect(screen.getByText('Hors de la phase du méchant')).toBeInTheDocument()
+    expect(container.querySelector('.tsm-bandeau')).not.toBeNull()
+    expect(screen.queryByText('Hors de la phase du méchant')).toBeNull()
+    expect(container.querySelector('.deroule-phase.est-hors-phase')).toBeNull()
     expect(container.querySelector('.deroule-phase.est-scene')).toBeNull()
   })
 

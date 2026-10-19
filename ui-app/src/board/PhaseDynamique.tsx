@@ -57,6 +57,8 @@ export function phraseHistorique(e: EtapeDeroule, stade?: number): string {
       return e.auteurNom ? t('Effet ★ de %1').replace('%1', e.auteurNom) : t('Effet ★')
     case 'riposte':
       return e.auteurNom ? t('Riposte de %1').replace('%1', e.auteurNom) : t('Riposte')
+    case 'vaincu':
+      return titreEtape(e)
     case 'elimination':
       return e.cibleNom ? t('%1 est éliminé').replace('%1', e.cibleNom) : t('Un héros est éliminé')
     default:
