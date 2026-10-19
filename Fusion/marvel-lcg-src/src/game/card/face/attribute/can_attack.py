@@ -529,6 +529,7 @@ class CanAttack(CardFace):
                     boost_cards=boost_cards,
                     defenseur=defenseur_retenu, cible_annoncee=target,
                     base_imprimee=annonce_base,
+                    bonus_sources=[x for m in (would_atk_message, being_atk_message, would_attack_unit_message) for x in getattr(m, 'sources_atk', [])] or None,
                     mots_cles=CanAttack._MotsClesDuCoup(
                         percant, avait_robuste and not percant and calculated_damage > 0 and took_damage == 0,
                         damaged_overkill_target, excess_damage),
@@ -863,7 +864,8 @@ class CanAttack(CardFace):
                               defenseur: 'CardFace|None'=None,
                               cible_annoncee: 'CardFace|None'=None,
                               base_imprimee: 'int|None'=None,
-                              mots_cles: 'Dict[str, Any]|None'=None) -> bool:
+                              mots_cles: 'Dict[str, Any]|None'=None,
+                              bonus_sources: 'List[Tuple[str, int, int]]|None'=None) -> bool:
         """Inscrit une attaque D'ENNEMI au journal du bilan de phase.
 
         On ne journalise que les ennemis : ce panneau raconte la phase du
@@ -945,6 +947,8 @@ class CanAttack(CardFace):
             'base_imprimee': base_imprimee,
             # Lot 5b : Percant, Robuste, Deferlement, publies seulement quand ils ont joue.
             **({'mots_cles': mots_cles} if mots_cles else {}),
+            # 19/10/2026 : d'ou viennent les bonus d'ATQ (une ligne par source dans le calcul du plateau).
+            **({'bonus': [{'source': n, 'source_id': i, 'valeur': v} for n, i, v in bonus_sources]} if bonus_sources else {}),
             # 13/10/2026 : les cartes qui ont reduit le coup, et de combien.
             **world.stat.ChampReductions(world, cible.card.object_id),
             **({'rapide': True} if CanAttack._EstRapide(by_effect) else {}),

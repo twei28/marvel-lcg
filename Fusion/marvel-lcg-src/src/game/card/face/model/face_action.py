@@ -98,7 +98,13 @@ class ModelAction(ModelBase):
 
         if only_for_this_active_message:
             if attack:
-                only_for_this_active_message.AddGainedATK(attack)
+                # Les ICONES de boost passent par une regle (`GameRule(carte)`) et ont leur terme a part dans le calcul :
+                # seuls les bonus d'EFFETS (★ d'un boost, attachement, capacite) sont nommes ici.
+                from game.effect.rule import GameRule
+                _source = None if isinstance(by_effect, GameRule) else getattr(by_effect, 'this', None)
+                _nom = getattr(_source, 'name', None)
+                _id = getattr(getattr(_source, 'card', None), 'object_id', None) or getattr(_source, 'object_id', None)
+                only_for_this_active_message.AddGainedATK(attack, (_nom, _id) if _nom else None)
             if thwart:
                 only_for_this_active_message.AddGainedTHW(thwart)
 

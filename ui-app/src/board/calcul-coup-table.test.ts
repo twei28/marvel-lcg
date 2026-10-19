@@ -9,6 +9,16 @@ describe('calcul visible du résultat sur table', () => {
   it('sépare bonus imprimés et réduction de dégâts nommée', () => {
     expect(calculCoupTable({ ...attaque, baseImprimee: 1, montant: 0, reductions: [{ source: 'Barrière énergétique', valeur: 1 }] })).toBe('ATQ 1 + 1 Bonus + Boost 1 − DÉF 2 − 1 Barrière énergétique = 0 dégâts')
   })
+  it('une ligne PAR SOURCE quand le jeu connaît l’origine du bonus (19/10/2026)', () => {
+    const e = { ...attaque, base: 6, baseImprimee: 2, defense: 0, montant: 7, bonus: [{ source: 'Camouflé', valeur: 2, source_id: 11 }, { source: 'Fusil Laser', valeur: 2, source_id: 12 }] }
+    expect(calculCoupTable(e)).toBe('ATQ 2 + 2 Camouflé + 2 Fusil Laser + Boost 1 = 7 dégâts')
+  })
+  it('ce que les sources n’expliquent pas reste « Bonus » ; le ★ d’un boost est nommé', () => {
+    const e = { ...attaque, base: 5, baseImprimee: 2, defense: 0, montant: 6, bonus: [{ source: 'Fusil Laser', valeur: 2, source_id: 12 }] }
+    expect(calculCoupTable(e)).toBe('ATQ 2 + 2 Fusil Laser + 1 Bonus + Boost 1 = 6 dégâts')
+    const etoile = { ...attaque, base: 4, baseImprimee: 2, defense: 0, montant: 5, bonus: [{ source: 'Assaut', valeur: 2, source_id: 5 }] }
+    expect(calculCoupTable(etoile)).toBe('ATQ 2 + 2 Assaut + Boost 1 = 5 dégâts')
+  })
   it('ne ment pas sur les dégâts réellement subis après Tenace ou une prévention inconnue', () => {
     expect(calculCoupTable({ ...attaque, defense: 0, montant: 0 })).toBe('ATQ 2 + Boost 1 = 3 → 0 dégâts')
   })

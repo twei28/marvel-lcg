@@ -50,6 +50,7 @@ export function etapeEnLangue(etape: EtapeDeroule, nomFr?: (id: number) => strin
     })),
     // « Energy Barrier » -> « Barrière Énergétique » : la source d'une réduction porte son identifiant d'objet (moteur).
     reductions: etape.reductions?.map((r) => ({ ...r, source: enFrancais(r.source_id ?? undefined, r.source) ?? r.source })),
+    bonus: etape.bonus?.map((b) => ({ ...b, source: enFrancais(b.source_id ?? undefined, b.source) ?? b.source })),
     consequences: etape.consequences?.map((consequence) => etapeEnLangue(consequence, nomFr)),
     annuleePar: enFrancais(etape.annuleeParId, etape.annuleePar),
     renfortDe: enFrancais(etape.renfortDeId, etape.renfortDe),

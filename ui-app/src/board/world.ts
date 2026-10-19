@@ -290,6 +290,8 @@ export type FaitActivationResolue = FaitActivationCommun & {
   mots_cles?: MotsClesDuCoup
   /** 13/10/2026 : les cartes qui ont réduit le coup, et de combien (moteur `WorldStat.NoterReduction`). */
   reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
+  /** D'ou viennent les bonus d'ATQ du coup (moteur, 19/10/2026) : une ligne par source dans le calcul. */
+  bonus?: Array<{ source: string; valeur: number; source_id?: number | null }>
   /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant. */
   riposte?: RiposteDuCoup
 }
@@ -335,6 +337,8 @@ export type FaitMenace = FaitMechantCommun & {
   joueurs?: number
   /** 13/10/2026 : les cartes qui ont réduit cette pose, et de combien. */
   reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
+  /** D'ou viennent les bonus d'ATQ du coup (moteur, 19/10/2026) : une ligne par source dans le calcul. */
+  bonus?: Array<{ source: string; valeur: number; source_id?: number | null }>
 }
 
 /**

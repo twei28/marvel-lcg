@@ -313,8 +313,12 @@ class CanGainValueMessage(Message2):
         self.gain_thw = 0
         super().__init__(**kwargs)
 
-    def AddGainedATK(self, value: int):
+    def AddGainedATK(self, value: int, source: 'Tuple[str, int]|None'=None):
         self.gain_atk += value
+        # 19/10/2026 : QUI a donne ce bonus (nom, id d'objet, valeur), pour que le plateau dise
+        # « ATQ 2 + 2 Fusil Laser + Boost 3 » au lieu de « + 4 Bonus ». Lu par `JournaliserActivation`.
+        if source is not None and value:
+            self.__dict__.setdefault('sources_atk', []).append((source[0], source[1], int(value)))
 
     def AddGainedTHW(self, value: int):
         self.gain_thw += value
