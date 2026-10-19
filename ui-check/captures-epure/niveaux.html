@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mode Épuré – niveaux de gris</title>
+<style>
+* { box-sizing:border-box; }
+body { margin:0; padding:0 24px 80px; font-family:Inter,"Segoe UI",system-ui,sans-serif; background:#e9eaed; color:#1b1e24; line-height:1.5; }
+header, main { max-width:1500px; margin:0 auto; }
+h1 { margin:28px 0 4px; font-size:28px; }
+.sous { color:#5d636e; margin:0 0 14px; }
+.barre { position:sticky; top:0; z-index:5; background:#e9eaed; padding:10px 0 12px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.niv { border:1px solid #c6cad1; background:#fff; border-radius:12px; padding:8px 14px 8px 8px; display:flex; gap:10px; align-items:center; cursor:pointer; font:600 14px inherit; font-family:inherit; color:inherit; }
+.niv[aria-pressed="true"] { background:#f4c20d; border-color:#b88f00; }
+.sw { display:flex; border-radius:6px; overflow:hidden; box-shadow:0 0 0 1px rgba(0,0,0,.25); }
+.sw i { width:16px; height:30px; display:block; }
+.niv small { display:block; font-weight:400; color:inherit; opacity:.7; font-size:12px; }
+section { background:#fff; border:1px solid #c6cad1; border-radius:14px; padding:16px 20px 20px; margin:0 0 26px; }
+h2 { margin:0 0 10px; font-size:20px; }
+.grand { border:1px solid #c6cad1; border-radius:10px; overflow:hidden; position:relative; }
+.grand img { display:block; width:100%; }
+.etiq { position:absolute; top:10px; left:10px; background:#f4c20d; color:#14161a; font-weight:700; padding:3px 12px; border-radius:999px; font-size:13px; }
+.mosaique { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-top:12px; }
+.mosaique button { padding:0; border:2px solid transparent; border-radius:8px; overflow:hidden; background:none; cursor:pointer; position:relative; }
+.mosaique button[aria-pressed="true"] { border-color:#f4c20d; }
+.mosaique img { display:block; width:100%; }
+.mosaique span { position:absolute; left:4px; bottom:4px; background:rgba(20,22,28,.85); color:#fff; font:700 11px Inter,system-ui,sans-serif; padding:1px 7px; border-radius:999px; }
+@media (max-width:800px){ .mosaique{grid-template-columns:repeat(3,1fr);} body{padding:0 12px 60px;} }
+</style>
+</head>
+<body>
+<header>
+  <h1>Mode Épuré : le gris, six niveaux</h1>
+  <p class="sous">0 = le gris actuel. Chaque niveau suivant est un peu plus foncé (environ 9 points de luminosité de moins). Les trois pastilles montrent le fond, les panneaux et les boutons. Choisissez le niveau, il agit sur les trois écrans ; cliquez aussi une miniature.</p>
+</header>
+<div class="barre" id="barre"></div>
+<main id="pages"></main>
+<script>
+const N = [0,1,2,3,4,5].map(i => { const h = n => '#' + [n, n+2, n+7].map(v => v.toString(16).padStart(2,'0')).join(''); return { i, fond:h(196-9*i), surface:h(214-9*i), champ:h(236-9*i) }; });
+const PAGES = [['selection','Sélection des personnages'],['editeur','Éditeur de deck'],['reglages','Plateau : les Réglages']];
+let cur = 0;
+const barre = document.getElementById('barre'), main = document.getElementById('pages');
+N.forEach(n => { const b = document.createElement('button'); b.className='niv'; b.dataset.i=n.i;
+  b.innerHTML = `<span class="sw"><i style="background:${n.fond}"></i><i style="background:${n.surface}"></i><i style="background:${n.champ}"></i></span><span>${n.i===0?'Actuel':'Niveau '+n.i}<small>fond ${n.fond}</small></span>`;
+  b.onclick = () => choisir(n.i); barre.appendChild(b); });
+PAGES.forEach(([id,t]) => { const s = document.createElement('section');
+  s.innerHTML = `<h2>${t}</h2><div class="grand"><span class="etiq"></span><img id="g-${id}" alt=""></div><div class="mosaique">${N.map(n=>`<button data-i="${n.i}" data-p="${id}"><img src="niveaux/${id}-${n.i}.png" alt=""><span>${n.i===0?'Actuel':'Niveau '+n.i}</span></button>`).join('')}</div>`;
+  main.appendChild(s); });
+main.querySelectorAll('.mosaique button').forEach(b => b.onclick = () => choisir(+b.dataset.i));
+function choisir(i) { cur = i;
+  PAGES.forEach(([id]) => { const g = document.getElementById('g-'+id); g.src = `niveaux/${id}-${i}.png`; g.parentNode.querySelector('.etiq').textContent = i===0?'Actuel':'Niveau '+i; });
+  document.querySelectorAll('.niv').forEach(b => b.setAttribute('aria-pressed', +b.dataset.i===i));
+  document.querySelectorAll('.mosaique button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.i===i)); }
+choisir(0);
+</script>
+</body>
+</html>

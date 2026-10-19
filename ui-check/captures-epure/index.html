@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mode Épuré – avant / après</title>
+<style>
+:root { --fond:#eceef1; --carte:#fff; --bord:#d3d6dc; --texte:#1b1e24; --doux:#5d636e; --jaune:#f4c20d; }
+* { box-sizing: border-box; }
+body { margin:0; padding:0 24px 80px; font-family: Inter,"Segoe UI",system-ui,sans-serif; background:var(--fond); color:var(--texte); line-height:1.5; }
+header { max-width:1500px; margin:0 auto; padding:30px 0 10px; }
+h1 { margin:0 0 4px; font-size:28px; }
+.sous { color:var(--doux); margin:0 0 16px; }
+.barre { position:sticky; top:0; z-index:5; max-width:1500px; margin:0 auto 22px; padding:10px 0; background:var(--fond); display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.barre span { color:var(--doux); font-size:14px; margin-right:4px; }
+.seg { display:inline-flex; border:1px solid var(--bord); border-radius:10px; overflow:hidden; background:var(--carte); }
+.seg button { border:0; background:transparent; padding:8px 16px; font:600 14px inherit; font-family:inherit; cursor:pointer; color:var(--texte); }
+.seg button + button { border-left:1px solid var(--bord); }
+.seg button[aria-pressed="true"] { background:var(--jaune); }
+nav { max-width:1500px; margin:0 auto 22px; display:flex; flex-wrap:wrap; gap:8px; }
+nav a { text-decoration:none; color:var(--texte); background:var(--carte); border:1px solid var(--bord); border-radius:999px; padding:5px 14px; font-size:14px; }
+nav a:hover { border-color:var(--jaune); }
+section { max-width:1500px; margin:0 auto 34px; background:var(--carte); border:1px solid var(--bord); border-radius:14px; padding:18px 22px 24px; }
+section h2 { margin:0; font-size:21px; }
+section p { margin:2px 0 14px; color:var(--doux); font-size:14px; }
+.vue { position:relative; border:1px solid var(--bord); border-radius:10px; overflow:hidden; background:#ddd; }
+.vue img { display:block; width:100%; height:auto; }
+.etiq { position:absolute; top:10px; left:10px; padding:3px 12px; border-radius:999px; font:700 13px Inter,system-ui,sans-serif; background:rgba(20,22,28,.82); color:#fff; pointer-events:none; }
+.etiq.apres { background:var(--jaune); color:#14161a; }
+.cote { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.curseur .haut { position:absolute; inset:0; clip-path: inset(0 0 0 var(--p,50%)); }
+.curseur .haut img { height:100%; object-fit:cover; object-position:left top; }
+.poignee { position:absolute; top:0; bottom:0; left:var(--p,50%); width:3px; background:var(--jaune); box-shadow:0 0 0 1px rgba(0,0,0,.35); pointer-events:none; }
+.poignee::after { content:"↔"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:34px; height:34px; border-radius:50%; background:var(--jaune); display:grid; place-items:center; font-weight:700; box-shadow:0 1px 4px rgba(0,0,0,.4); }
+.curseur input[type=range] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:ew-resize; margin:0; }
+.cache { display:none !important; }
+@media (max-width: 800px) { .cote { grid-template-columns:1fr; } body { padding:0 12px 60px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Mode Épuré : avant / après</h1>
+  <p class="sous">16 octobre 2026. « Avant » : le style Windows 98. « Après » : fond gris clair, boutons plats, jaune du jeu et typo des titres dans les fenêtres, pictogrammes au trait fin dans la barre du haut. Rien n'est déployé.</p>
+</header>
+<div class="barre">
+  <span>Affichage de toutes les pages :</span>
+  <div class="seg" id="global">
+    <button data-m="apres" aria-pressed="true">Après</button>
+    <button data-m="avant" aria-pressed="false">Avant</button>
+    <button data-m="cote" aria-pressed="false">Côte à côte</button>
+    <button data-m="curseur" aria-pressed="false">Curseur</button>
+  </div>
+  <span>Astuce : sur une page, cliquez l'image pour passer d'avant à après.</span>
+</div>
+<nav id="sommaire"></nav>
+<main id="pages"></main>
+<script>
+const PAGES = [
+  ['accueil', 'Accueil', 'Les tuiles Solo, Coop, Campagne, Options… et la pastille jaune du bandeau.'],
+  ['options', 'Options : « Choisis ton affichage »', 'La petite fenêtre : bande de titre jaune, typo du jeu, bouton Valider jaune, choix actif cerné de jaune.'],
+  ['selection-personnages', 'Sélection des personnages', 'Barre de titre jaune, portraits arrondis, étapes en pastilles, boutons plats.'],
+  ['campagne', 'Campagnes', 'Cartes claires, bouton « Nouvelle campagne » jaune.'],
+  ['editeur-de-deck', 'Éditeur de deck', 'Les pastilles de filtres, onglets et panneaux repassent en clair (avant : tout sombre en bas à droite).'],
+  ['galerie', 'Galerie de cartes', 'Champs et barre du haut à plat.'],
+  ['salon', 'Salon (multijoueur)', 'Le salon sans partie ouverte : seule la mise en forme change.'],
+  ['plateau', 'Plateau de jeu : la barre du haut', 'Pictogrammes au trait fin (Menu, Annuler, Sauver, Réglages, Fin du tour), bascule Auto / Manuel, tout à plat.'],
+  ['modale-mise-en-place', 'Plateau : la mise en place (modale)', 'Le voile devient clair, le bouton « Continuer » devient jaune, la légende prend la typo du jeu.'],
+  ['reglages-plateau', 'Plateau : les Réglages', 'Bande de titre jaune, lignes d\'options claires (avant : textes presque invisibles), onglet actif jaune.']
+];
+const racine = document.getElementById('pages'), som = document.getElementById('sommaire');
+let mondial = 'apres';
+function vueHTML(id, mode) {
+  const a = `apres/${id}.png`, b = `avant/${id}.png`;
+  if (mode === 'cote') return `<div class="cote"><div class="vue"><span class="etiq">Avant</span><img src="${b}" alt=""></div><div class="vue"><span class="etiq apres">Après</span><img src="${a}" alt=""></div></div>`;
+  if (mode === 'curseur') return `<div class="vue curseur" style="--p:50%"><img src="${b}" alt=""><div class="haut"><img src="${a}" alt=""></div><span class="etiq">Avant</span><span class="etiq apres" style="left:auto;right:10px">Après</span><div class="poignee"></div><input type="range" min="0" max="100" value="50" aria-label="Curseur avant / après"></div>`;
+  const apres = mode === 'apres';
+  return `<div class="vue bascule" data-etat="${mode}" style="cursor:pointer"><span class="etiq ${apres ? 'apres' : ''}">${apres ? 'Après' : 'Avant'}</span><img src="${apres ? a : b}" alt=""></div>`;
+}
+function dessiner(sec, mode) {
+  const id = sec.dataset.id;
+  const z = sec.querySelector('.zone');
+  z.innerHTML = vueHTML(id, mode);
+  const bas = z.querySelector('.bascule');
+  if (bas) bas.onclick = () => dessiner(sec, bas.dataset.etat === 'apres' ? 'avant' : 'apres');
+  const r = z.querySelector('input[type=range]');
+  if (r) r.oninput = () => z.querySelector('.curseur').style.setProperty('--p', r.value + '%');
+}
+for (const [id, titre, texte] of PAGES) {
+  const s = document.createElement('section'); s.id = id; s.dataset.id = id;
+  s.innerHTML = `<h2>${titre}</h2><p>${texte}</p><div class="zone"></div>`;
+  racine.appendChild(s);
+  const l = document.createElement('a'); l.href = '#' + id; l.textContent = titre.replace(/^Plateau : /, 'Plateau · '); som.appendChild(l);
+  dessiner(s, mondial);
+}
+document.querySelectorAll('#global button').forEach(b => b.onclick = () => {
+  mondial = b.dataset.m;
+  document.querySelectorAll('#global button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  document.querySelectorAll('section').forEach(s => dessiner(s, mondial));
+});
+</script>
+</body>
+</html>
