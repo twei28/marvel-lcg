@@ -15,6 +15,32 @@ son numéro (`MC×DC 6001`…). **Le nom du groupe doit figurer dans les remerci
 sera intégrée, ainsi que les illustrateurs imprimés sur chaque carte (Romita Jr., Checchetto, Larraz, Maleev, Opeña,
 Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Licence d'usage : à confirmer avec l'équipe.
 
+## Sources en ligne et crédits (recherche du 19/10/2026)
+
+Il n'y a **aucun insert ni livret de règles** dans le PDF (toutes les pages sont des cartes) ni sur le site de l'équipe. Pages consultées :
+`mcdc.fun` (accueil, `/the-big-apple`, `/hobgoblin`, `/the-citys-ledger`, `/packing-list`, `/faq`).
+- **Qui** : « l'équipe MC/DC » (MC/DC Lead Team), conférence de fans **non associée à Fantasy Flight Games**, du 16 au 18/10/2026 chez
+  **Huzzah Hobbies, Ashburn (Virginie)**. Aucun nom individuel de concepteur n'est publié sur le site. **The Crash Space** a fait la
+  vidéo d'introduction / tutoriel (15 premières minutes = mise en place et règles). Contact : team@mcdc.fun, contact@mcdc.fun, Discord
+  « Marvel Champions DMV », Patreon `patreon.com/c/MC_DC` (le palier gratuit sert aux mises à jour).
+- **Contenu du billet** : 2 scénarios sur mesure, 4 sets modulaires, un booster de réimpressions non officielles en pleine illustration
+  (cartes de base et d'aspect : c'est le second PDF `2026_full_art_300dpi.pdf`, alliés Ironheart, Professor X, Spider-Man Otto Octavius,
+  SP//DR, Peter B. Parker, Quincarrier, Ingenuity… numéros MC DC 6142 et suivants).
+- **« The Big Apple »** = « le premier scénario entièrement jouable de MC/DC ». Règles confirmées par le site : 9 lieux (12 avec Uptown),
+  déplacement orthogonal en épuisant un personnage ou en payant une ressource ; chaque rangée est le **territoire** d'un capo, pas
+  d'interaction d'un territoire à l'autre (ni ressources, ni défense, ni sbires engagés) ; **3 capos tirés au hasard (4 avec Uptown)**,
+  un capo vaincu remet ses PV à zéro tant que le **Gunrunner** n'est pas découvert ; les **pistes (LEADS)** sont un nouveau type
+  d'obligation, une à la fois, les **Red Herrings** font perdre du temps. Texte d'ambiance : « The City's Ledger » (POI-1016, dockers).
+- **Hobgoblin** : « Roderick Kingsley », antagoniste de type Underling, Pumpkin Bomb = effet selon les cartes de rencontre défaussées.
+- **Contenu officiel requis, à reprendre de Fear No Evil** (page `/packing-list`) : 2 méchants de FNE au choix (Bullseye, Electro, Hammerhead,
+  Purple Man, Typhoid Mary), **tous les scénarios de FNE** (Art Heist, Protection Racket, Stop the Presses, The Getaway, The Raft Breakout),
+  **Kingpin**, les sets modulaires standard et expert au choix, plus les sets FNE **Cops** et **Tracksuit Mafia**. Manches de protection :
+  162 (30 doubles, 21 dos bleus joueur, 109 cartes de rencontre).
+- **Défis (confirmés par le site)** : 1 Rise of the Machines (Vision), 2 Secret Agent (Captain America, avec « Superhero Jailbreak » selon
+  le site, alors que j'ai lu « Guerilla Warfare » sur p280 : **à revérifier à l'image**), 3 It's A Trap! (En Sabah Nur, Arcade, Galactic
+  Artifacts ; side schemes avec incite 1, une icône Crisis et une icône Amplify), 4 Angry Birds (Tower Defense).
+- **Ce que le site ne donne pas** : les 4 combats de campagne, le décompte des points, les pods Kingsfall. Ils ne sont que sur les cartes.
+
 ## Légende
 
 **Icônes imprimées sous le texte des manigances annexes et de certains sbires** (relevées en 300 dpi le 19/10/2026) :
@@ -48,9 +74,9 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 
 ### p002 — GANG WAR (1B) · Manigance principale
 - ID 6001 · The Big Apple (1B/22) · Illustration : John Romita Jr.
-- Menace : 9👤 · menace de départ 1👤 [?] · accélération +1👤 [?]
+- Menace : 9👤 · menace de départ 1👤 · accélération +1👤 (confirmé en 300 dpi)
 - **Forced Interrupt**: When a villain would be defeated, instead reset their hit points and remove 5 threat from here.
-- **Forced Response**: After a LEAD card is added to the victory display, if there are 2 LEAD cards there, advance to
+- **Forced Response**: After a LEAD card is added to the victory display, if there are 2👤 LEAD cards there, advance to
   stage 2A (the players win by advancing).
 - If this scheme is completed, the players lose the game.
 
@@ -158,16 +184,16 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - Traits : Criminal.
 - ★ **Forced Response**: After Muse activates, attach him to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Muse's location, he engages them.
-- Icônes sous le texte : 2 icônes « croix à trois branches + » (icône de boost, comme Overdrive)
+- Icônes sous le texte : 2 icônes « triangle + trait » = **Acceleration** ×2 (relu en 300 dpi ; corrigé, je les avais prises pour des icônes de boost)
 - ★ **Boost**: Reveal this card.
 
 ### p029 — ✦SCREWBALL · Sbire
-- ID 6015 · The Big Apple (15/22) · Illustration : Marcos Martin · SCH 2 · ATK 1 · PV 3 · Boost ★ (étoile)
+- ID 6015 · The Big Apple (15/22) · Illustration : Marcos Martin · SCH 2 · ATK 1 · PV 3 · Boost 1 (corrigé en 300 dpi : ce n'est pas une étoile)
 - Traits : Content Creator. Criminal.
 - **Forced Interrupt**: When Screwball would be defeated with excess damage, reset her hit points instead. Attach her
   to an unoccupied location, if able. *(She remains in play.)*
 - **Forced Interrupt**: When a player enters Screwball's location, she engages them.
-- Icône sous le texte : 1 icône « croix à trois branches + » ? (relu en 300 dpi : voir p029)
+- Icône sous le texte : 1 icône « carte + » = 1 carte de rencontre en plus pour le premier joueur (relu en 300 dpi ; corrigé)
 
 ### p031 — BUSTED! · Obligation
 - ID 6016 · The Big Apple (16/22) · Illustration : Mattia De Iulis · Boost 2
@@ -207,7 +233,7 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - Icône dans le cadre : 1 icône « pile + » = Acceleration (relu en 300 dpi)
 
 ### p043 — LIKE AND SUBSCRIBE! · Manigance annexe
-- ID 6022 · The Big Apple (22/22) · Illustration : George Kambadais · Menace de départ 2👤 (confirmé en 300 dpi) · Boost ★
+- ID 6022 · The Big Apple (22/22) · Illustration : George Kambadais · Menace de départ 2 (fixe, sans icône par joueur : relu en 300 dpi) · Boost ★
 - *"Chat, I think we're cooked!"*
 - Hinder 2👤. Allies enter play exhausted.
 - **When Revealed**: Find and reveal Screwball. Attach her to an unoccupied location, if able.
