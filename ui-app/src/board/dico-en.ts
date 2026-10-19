@@ -1664,6 +1664,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Ta décision': 'Your decision',
   'Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai':
     'Step by step: one "Next" per step of the phase. Bis and Dynamic phase: the new presentations, on trial',
+  'Étape par étape : un « Suivant » par étape de la phase. Bis : la nouvelle présentation, en essai':
+    'Step by step: one "Next" per step of the phase. Bis: the new presentation, on trial',
   'D’un coup': 'All at once',
   'Étape par étape : un « Suivant » par étape de la phase': 'Step by step: one "Next" per step of the phase',
   'Carte révélée en grand': 'Revealed card shown large',

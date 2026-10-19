@@ -251,6 +251,12 @@ function LigneVolumeSons({ disponible }: { disponible: boolean }) {
  * bis », la nouvelle présentation ; « Étape par étape » reste celle de tout le
  * monde. Les autres comptes ne voient aucun changement (board/phase-presentation.ts).
  */
+/**
+ * « Phase dynamique » CACHÉE du choix (19/10/2026, demande de l'utilisateur) : le code reste, seul
+ * le choix disparaît des réglages. Remettre `true` pour la montrer de nouveau.
+ */
+const PHASE_DYNAMIQUE_VISIBLE = false
+
 function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   const [essai, setEssai] = useState(false)
   useEffect(() => {
@@ -264,6 +270,10 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   }, [])
   const [presentation, setPresentation] = useState(lirePresentationPhase)
   useEffect(() => suivrePresentationPhase(setPresentation), [])
+  // Un compte d'essai qui l'avait retenue retombe sur « Étape par étape » tant qu'elle est cachée.
+  useEffect(() => {
+    if (!PHASE_DYNAMIQUE_VISIBLE && essai && presentation === 'dynamique') ecrirePresentationPhase('etape')
+  }, [essai, presentation])
   const valeur: string = p.modePhase === 'detaille' && essai && presentation !== 'etape' ? presentation : p.modePhase
   return (
     <LigneChoix<string>
@@ -274,7 +284,7 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
         ...(essai
           ? [
               { valeur: 'bis', libelle: t('Étape par étape bis') },
-              { valeur: 'dynamique', libelle: t('Phase dynamique') },
+              ...(PHASE_DYNAMIQUE_VISIBLE ? [{ valeur: 'dynamique', libelle: t('Phase dynamique') }] : []),
             ]
           : []),
         // « Sur la table » : OUVERT À TOUS depuis le 05/10/2026, quand la
@@ -294,7 +304,9 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
       }}
       detail={
         essai
-          ? t('Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai')
+          ? PHASE_DYNAMIQUE_VISIBLE
+            ? t('Étape par étape : un « Suivant » par étape de la phase. Bis et Phase dynamique : les nouvelles présentations, en essai')
+            : t('Étape par étape : un « Suivant » par étape de la phase. Bis : la nouvelle présentation, en essai')
           : t('Étape par étape : un « Suivant » par étape de la phase')
       }
     />
