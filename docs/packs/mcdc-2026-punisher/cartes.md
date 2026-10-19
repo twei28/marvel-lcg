@@ -19,8 +19,8 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 
 **Icônes imprimées sous le texte des manigances annexes et de certains sbires** (relevées en 300 dpi le 19/10/2026) :
 - « !! » (deux points d'exclamation) = **Crisis**.
-- « pile + » (trois traits empilés avec un +) = **Acceleration** (confirmé par l'utilisateur pour Burning Building).
-- « avion + » (silhouette d'avion avec un +) = **icône de boost** (précisé par l'utilisateur).
+- « triangle vers le haut avec un trait dessous + » (« pile + ») = **Acceleration** (confirmé par l'utilisateur pour Burning Building).
+- « croix à trois branches + » (la forme du Y de boost, avec un +) = **icône de boost** (précisé par l'utilisateur : ce n'est PAS un avion).
 - « carte + » (carré arrondi avec un +) = icône à identifier (Designs on Crimes, Punisher's Arsenal) — probablement Hazard, à confirmer.
 
 - `👤` = icône « par joueur » (un nombre suivi de cette icône est multiplié par le nombre de joueurs).
@@ -151,14 +151,14 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - Quickstrike.
 - **Forced Response**: After the round ends, attach Overdrive to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Overdrive's location, he engages them.
-- Icône sous le texte : 1 icône « avion + » = icône de boost (précisé par l'utilisateur le 19/10/2026)
+- Icône sous le texte : 1 icône « croix à trois branches + » = icône de boost (précisé par l'utilisateur le 19/10/2026)
 
 ### p027 — ✦MUSE · Sbire
 - ID 6014 · The Big Apple (14/22) · Illustration : Ron Garney · SCH 1★ · ATK 2★ · PV 4 · Boost ★ (étoile)
 - Traits : Criminal.
 - ★ **Forced Response**: After Muse activates, attach him to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Muse's location, he engages them.
-- Icônes sous le texte : 2 icônes « avion + » (icône de boost, comme Overdrive)
+- Icônes sous le texte : 2 icônes « croix à trois branches + » (icône de boost, comme Overdrive)
 - ★ **Boost**: Reveal this card.
 
 ### p029 — ✦SCREWBALL · Sbire
@@ -167,7 +167,7 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - **Forced Interrupt**: When Screwball would be defeated with excess damage, reset her hit points instead. Attach her
   to an unoccupied location, if able. *(She remains in play.)*
 - **Forced Interrupt**: When a player enters Screwball's location, she engages them.
-- Icône sous le texte : 1 icône « avion + » ? (relu en 300 dpi : voir p029)
+- Icône sous le texte : 1 icône « croix à trois branches + » ? (relu en 300 dpi : voir p029)
 
 ### p031 — BUSTED! · Obligation
 - ID 6016 · The Big Apple (16/22) · Illustration : Mattia De Iulis · Boost 2
@@ -785,7 +785,7 @@ romains (I, II, III).
 - *In a broken system, Punisher views himself as the only true source of justice for the worst of the worst.*
 - **When Defeated**: Discard the minion with the fewest remaining hit points and deal damage to the TARGETED villain equal to
   that minion's remaining hit points. Otherwise, give Punisher a facedown boost card.
-- Icône dans le cadre : « avion + » (icône de boost)
+- Icône dans le cadre : « croix à trois branches + » (icône de boost)
 
 ### p199 / p201 — BACK AGAINST THE WALL ×2 · Traîtrise
 - ID 6100 / 6101 · Punishment (15, 16/20) · Illustration : Marco Checchetto · Boost ★ + 1
