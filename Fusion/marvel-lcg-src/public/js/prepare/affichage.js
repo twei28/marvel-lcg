@@ -6,9 +6,13 @@
 // feuilles de style lisent : aucun rechargement n'est nécessaire.
 "use strict";
 
-import { CLE_AFFICHAGE, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, valeurPermise, epurePermis, verifierEpurePermis, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
+import { CLE_AFFICHAGE, PAR_DEFAUT, migrerAffichage, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, valeurPermise, epurePermis, verifierEpurePermis, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
 import { t } from "/public/js/prepare/langue.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
+
+// Passage unique au nouvel affichage (voir `migrerAffichage`) : fait AVANT toute lecture du choix rangé.
+let migreAuChargement = false;
+try { migreAuChargement = migrerAffichage(localStorage); } catch (e) { /* stockage indisponible */ }
 
 /** Ce qui est montré : un « épuré » rangé reste « sobre » pour qui n'y a pas droit. */
 export function affichageActuel() {
@@ -44,6 +48,7 @@ function envoyer(changements) {
 
 export function choisirAffichage(valeur) {
     const choisi = normaliser(valeur);
+    migreAuChargement = false; // un choix fait par le joueur prime sur le passage unique
     try { localStorage.setItem(CLE_AFFICHAGE, choisi); } catch (e) { /* stockage indisponible */ }
     appliquerAffichage(choisi);
     envoyer({ affichage: choisi });
@@ -61,6 +66,14 @@ export async function synchroniserAffichage() {
         if (!r.ok) return null;
         reponse = await r.json();
     } catch (e) { return null; }
+    // Le passage vient d'avoir lieu : le compte porte encore l'ancien choix, qu'il ne faut pas rapporter ici.
+    if (migreAuChargement) {
+        migreAuChargement = false;
+        appliquerAffichage(PAR_DEFAUT);
+        document.querySelectorAll(".btn-affichage").forEach(dessinerBouton);
+        if (reponse && reponse.compte) envoyer({ affichage: PAR_DEFAUT });
+        return reponse;
+    }
     const maj = reconcilier(affichageActuel(), reponse);
     if (!maj) return reponse;
     if (maj.affichage !== affichageActuel()) {

@@ -25,6 +25,32 @@ export function normaliserAffichage(valeur: unknown): Affichage {
   return valeur === 'normal' || valeur === 'sobre' || valeur === 'epure' ? valeur : AFFICHAGE_PAR_DEFAUT
 }
 
+/**
+ * PASSAGE UNIQUE AU NOUVEL AFFICHAGE (19/10/2026) : jumeau de `migrerAffichage` de la preparation
+ * (public/js/prepare/affichage-choix.js), meme cle de passage, meme version. Rend vrai si le passage
+ * vient d'avoir lieu dans ce navigateur : le compte porte alors encore l'ancien choix, a corriger.
+ */
+export const CLE_MIGRATION_AFFICHAGE = 'mc_affichage_migre'
+export const VERSION_MIGRATION_AFFICHAGE = '2026-10-19'
+export function migrerAffichage(stockage: Pick<Storage, 'getItem' | 'setItem'> | null | undefined): boolean {
+  try {
+    if (!stockage || stockage.getItem(CLE_MIGRATION_AFFICHAGE) === VERSION_MIGRATION_AFFICHAGE) return false
+    stockage.setItem(CLE_AFFICHAGE, AFFICHAGE_PAR_DEFAUT)
+    stockage.setItem(CLE_MIGRATION_AFFICHAGE, VERSION_MIGRATION_AFFICHAGE)
+    return true
+  } catch {
+    return false
+  }
+}
+
+// Fait AVANT toute lecture du choix range (la preparation l'a peut-etre deja fait : alors rien).
+let migreAuChargement = false
+try {
+  migreAuChargement = migrerAffichage(globalThis.localStorage)
+} catch {
+  /* stockage indisponible */
+}
+
 /** Sobre ou epure : les deux coupent couleurs vives et mouvement. */
 export function estSobreOuEpure(affichage: Affichage): boolean {
   return affichage !== 'normal'
@@ -115,6 +141,7 @@ function envoyer(changements: Record<string, Affichage>): void {
 /** Range le choix : toujours dans le navigateur, et sur le compte s'il y en a un
     (un invite recoit un refus du serveur, sans consequence). */
 export function ecrireAffichage(affichage: Affichage): void {
+  migreAuChargement = false // un choix fait par le joueur prime sur le passage unique
   try {
     window.localStorage.setItem(CLE_AFFICHAGE, affichage)
   } catch {
@@ -146,7 +173,14 @@ export async function chercherAffichageDuCompte(): Promise<Affichage | undefined
   try {
     const r = await fetch('/get_preferences', { cache: 'no-store' })
     if (!r.ok) return undefined
-    return affichageDuCompte((await r.json()) as ReponsePreferences)
+    const reponse = (await r.json()) as ReponsePreferences
+    // Le passage vient d'avoir lieu ici : on corrige le compte et on garde le navigateur pour reference.
+    if (migreAuChargement) {
+      migreAuChargement = false
+      if (reponse?.compte) envoyer({ affichage: AFFICHAGE_PAR_DEFAUT })
+      return undefined
+    }
+    return affichageDuCompte(reponse)
   } catch {
     return undefined
   }

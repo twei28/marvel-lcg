@@ -6,7 +6,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   affichageDuCompte,
   CLE_AFFICHAGE,
+  CLE_MIGRATION_AFFICHAGE,
+  VERSION_MIGRATION_AFFICHAGE,
   ecrireAffichage,
+  migrerAffichage,
   lireAffichage,
   mouvementReduit,
   normaliserAffichage,
@@ -131,5 +134,26 @@ describe.each([
 
   it('ne declare aucune couche (elle doit passer devant toutes)', () => {
     expect(feuille).not.toMatch(/@layer/)
+  })
+})
+
+// Passage unique au nouvel affichage (19/10/2026) : jumeau du test de la preparation.
+describe('passage unique au nouvel affichage', () => {
+  it('Colore ou Sobre ranges repassent sur le nouvel affichage, une seule fois', () => {
+    for (const ancien of ['normal', 'sobre']) {
+      window.localStorage.clear()
+      window.localStorage.setItem(CLE_AFFICHAGE, ancien)
+      expect(migrerAffichage(window.localStorage)).toBe(true)
+      expect(window.localStorage.getItem(CLE_AFFICHAGE)).toBe('epure')
+      expect(window.localStorage.getItem(CLE_MIGRATION_AFFICHAGE)).toBe(VERSION_MIGRATION_AFFICHAGE)
+      // Le joueur reprend son ancien choix dans les options : respecte, le passage ne rejoue pas.
+      window.localStorage.setItem(CLE_AFFICHAGE, ancien)
+      expect(migrerAffichage(window.localStorage)).toBe(false)
+      expect(window.localStorage.getItem(CLE_AFFICHAGE)).toBe(ancien)
+    }
+  })
+
+  it('sans stockage, ne plante pas', () => {
+    expect(migrerAffichage(null)).toBe(false)
   })
 })

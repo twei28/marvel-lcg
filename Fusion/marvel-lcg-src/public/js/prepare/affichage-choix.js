@@ -20,6 +20,25 @@ export const EPURE = "epure";
 /** L'affichage de départ : "epure", qui se lit « Normal » (18/10/2026). */
 export const PAR_DEFAUT = EPURE;
 
+/**
+ * PASSAGE UNIQUE AU NOUVEL AFFICHAGE (19/10/2026, demande de l'utilisateur) : ceux qui avaient choisi
+ * l'ancien « Normal » (devenu « Coloré ») ou « Sobre » le gardaient, leur choix étant rangé. À la première
+ * connexion de chaque navigateur après cette date, tout le monde repasse sur l'affichage de départ
+ * (« Normal », valeur epure) ; un choix fait ensuite dans les options est respecté pour toujours.
+ * Une version du passage = une date : pour refaire un jour la même chose, changer `VERSION_MIGRATION_AFFICHAGE`.
+ * Rend vrai si le passage vient d'avoir lieu (l'appelant doit alors aussi corriger le compte).
+ */
+export const CLE_MIGRATION_AFFICHAGE = "mc_affichage_migre";
+export const VERSION_MIGRATION_AFFICHAGE = "2026-10-19";
+export function migrerAffichage(stockage) {
+    try {
+        if (!stockage || stockage.getItem(CLE_MIGRATION_AFFICHAGE) === VERSION_MIGRATION_AFFICHAGE) return false;
+        stockage.setItem(CLE_AFFICHAGE, PAR_DEFAUT);
+        stockage.setItem(CLE_MIGRATION_AFFICHAGE, VERSION_MIGRATION_AFFICHAGE);
+        return true;
+    } catch (e) { return false; }
+}
+
 /** Toute valeur inconnue (absente, abîmée, ancienne) vaut l'affichage de départ. */
 export function normaliser(valeur) {
     return valeur === NORMAL || valeur === SOBRE || valeur === EPURE ? valeur : PAR_DEFAUT;

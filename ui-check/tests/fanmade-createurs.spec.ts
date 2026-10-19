@@ -114,7 +114,9 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await page.locator('.ext-fanmade').click();
     await expect(page.locator('#tb-merci-vilains')).toBeHidden();
 
-    // VILAINS : chaque extension ouvre ses scenarios.
+    // VILAINS : chaque extension ouvre ses scenarios. Depuis le 19/10/2026 le filtre fan-made est ETEINT au depart
+    // (officielles seules) et ALLUME il ne montre que les fan-made : on l'allume pour les boites maison.
+    await page.locator('.ext-fanmade').click();
     const tuile = (id) => page.locator(`.tb-port[data-scn="${id}"] .tb-port-nom`);
     await page.getByRole('button', { name: 'Gorr the God Butcher (BlueHG)' }).click();
     await expect(tuile('gorr')).toHaveText('Gorr the God Butcher (BlueHG)');
@@ -126,6 +128,7 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await expect(tuile('wd_shocker')).toHaveText('Shocker (Ripper3)');
     await page.screenshot({ path: 'fanmade-vilains-createurs.png' });
     // TEMOIN : un vilain officiel reste nu, sinon on attribuerait a tort.
+    await page.locator('.ext-fanmade').click(); // filtre eteint : les boites officielles reviennent
     await page.getByRole('button', { name: /^(Core Set|Set de base)$/ }).click();
     await expect(tuile('rhino')).toHaveText('Rhino');
 

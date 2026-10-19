@@ -6,7 +6,7 @@
 // « Coloré », valeur "sobre" = « Sobre ». Les valeurs rangées n'ont pas changé.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { normaliser, suivant, attributsDe, reconcilier, CLE_AFFICHAGE, PAR_DEFAUT, doitProposerLeChoix, valeurPermise, epurePermis, reglerEpurePourTous } from "../../public/js/prepare/affichage-choix.js";
+import { migrerAffichage, CLE_MIGRATION_AFFICHAGE, VERSION_MIGRATION_AFFICHAGE, normaliser, suivant, attributsDe, reconcilier, CLE_AFFICHAGE, PAR_DEFAUT, doitProposerLeChoix, valeurPermise, epurePermis, reglerEpurePourTous } from "../../public/js/prepare/affichage-choix.js";
 
 test("la clé est celle que lit le plateau", () => {
     assert.equal(CLE_AFFICHAGE, "mc_affichage_v1");
@@ -93,4 +93,33 @@ test("ancienne règle conservée (réserve à l'administrateur) : sans droit, l'
     } finally {
         reglerEpurePourTous(true);
     }
+});
+
+// PASSAGE UNIQUE AU NOUVEL AFFICHAGE (19/10/2026) : ceux qui avaient rangé Coloré ou Sobre repassent sur « Normal »
+// (valeur epure) à leur première connexion, une seule fois ; leur choix suivant est respecté.
+function faux(init = {}) {
+    const m = new Map(Object.entries(init));
+    return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), m };
+}
+test("passage unique : un choix Coloré rangé repasse sur le nouvel affichage, et le passage est noté", () => {
+    const s = faux({ [CLE_AFFICHAGE]: "normal" });
+    assert.equal(migrerAffichage(s), true);
+    assert.equal(s.getItem(CLE_AFFICHAGE), PAR_DEFAUT);
+    assert.equal(s.getItem(CLE_MIGRATION_AFFICHAGE), VERSION_MIGRATION_AFFICHAGE);
+});
+test("passage unique : un choix Sobre rangé repasse aussi sur le nouvel affichage", () => {
+    const s = faux({ [CLE_AFFICHAGE]: "sobre" });
+    assert.equal(migrerAffichage(s), true);
+    assert.equal(s.getItem(CLE_AFFICHAGE), PAR_DEFAUT);
+});
+test("passage unique : une seule fois, le choix fait ensuite dans les options est respecté", () => {
+    const s = faux({ [CLE_AFFICHAGE]: "normal" });
+    assert.equal(migrerAffichage(s), true);
+    s.setItem(CLE_AFFICHAGE, "normal"); // le joueur reprend Coloré dans les options
+    assert.equal(migrerAffichage(s), false);
+    assert.equal(s.getItem(CLE_AFFICHAGE), "normal");
+});
+test("passage unique : sans stockage ou stockage cassé, rien ne plante", () => {
+    assert.equal(migrerAffichage(null), false);
+    assert.equal(migrerAffichage({ getItem() { throw new Error("x"); }, setItem() {} }), false);
 });

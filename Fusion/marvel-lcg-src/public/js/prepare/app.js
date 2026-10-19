@@ -5451,6 +5451,8 @@ async function preselectionDernierScenario() {
     const scs = await catalog.scenariosForExtension(ext.key);
     const sc = scs.find((s) => s.id === dernier);
     if (!sc) return false;
+    // Le dernier scénario joué est fan-made : le filtre s'allume pour qu'il reste visible.
+    state.extFanmade = /custom/i.test(ext.key);
     state.extensionTab = ext.key;
     selectScenario(sc);
     return true;
@@ -5487,8 +5489,9 @@ async function loadExtTabs() {
         && e.key !== "defis" && !/weekly/i.test(e.key));
     const nbFanmade = toutes.filter((e) => /custom/i.test(e.key)).length;
     // Le filtre « Fan-made » (16/10/2026, selection du mechant en trois colonnes) :
-    // seules les boites fan-made, comme sur l'ecran des heros.
-    const exts = state.extFanmade ? toutes.filter((e) => /custom/i.test(e.key)) : toutes;
+    // decoche = les officielles seules, coche = les fan-made seules, comme sur l'ecran des heros.
+    // Décoché (19/10/2026) : seulement les boîtes officielles ; coché : seulement les fan-made, comme pour les héros.
+    const exts = toutes.filter((e) => /custom/i.test(e.key) === !!state.extFanmade);
     // Si l'onglet courant n'existe plus dans la liste, on le recale.
     const validKeys = new Set(exts.map((e) => e.key));
     if (!state.extensionTab || !validKeys.has(state.extensionTab)) {
