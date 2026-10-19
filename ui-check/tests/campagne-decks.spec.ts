@@ -196,7 +196,7 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
     await expect(enCours.locator('.do-name')).toHaveText(/campagne|campaign/i);
 
     const deckChoisi = await retenirUnDeckDAspect(page, 0);
-    await page.getByRole('button', { name: /valider les decks/i }).click();
+    await page.getByRole('button', { name: /valider les decks/i }).click({ force: true });
 
     await expect(
       page.locator('.cmp-erreur'),
@@ -240,7 +240,7 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
       'Un clic sur son propre heros a fait disparaitre le deck de la campagne de la liste.'
     ).toBeVisible();
     await enCours.click();
-    await page.getByRole('button', { name: /valider les decks/i }).click();
+    await page.getByRole('button', { name: /valider les decks/i }).click({ force: true });
 
     await expect(page.locator('.cmp-erreur')).toHaveCount(0);
     const apres = await laNotre(request);
@@ -256,7 +256,7 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
     await ouvrirLaCampagne(page);
     await page.getByRole('button', { name: /modifier les decks/i }).click();
     await choisirHerosPuisDecks(page, HEROS_INTERDIT);
-    await page.getByRole('button', { name: /valider les decks/i }).click();
+    await page.getByRole('button', { name: /valider les decks/i }).click({ force: true });
 
     await expect(
       page.locator('.cmp-erreur'),

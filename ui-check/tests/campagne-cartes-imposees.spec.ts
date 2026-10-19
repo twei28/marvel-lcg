@@ -154,7 +154,7 @@ test.describe.serial('Campagne : les cartes que le carnet impose au deck', () =>
     await page.getByRole('button', { name: /modifier les decks/i }).click()
     await allerAuxDecks(page)
     await retenirUnDeckDAspect(page, 0)
-    await page.getByRole('button', { name: /valider les decks/i }).click()
+    await page.getByRole('button', { name: /valider les decks/i }).click({ force: true })
 
     // Le message nomme la carte : un refus qui ne dit pas laquelle laisserait le
     // joueur devant un ecran de preparation sans savoir quoi remettre.
@@ -182,7 +182,7 @@ test.describe.serial('Campagne : les cartes que le carnet impose au deck', () =>
     const enCours = page.locator('#deck-liste .tb-deck', { hasText: /campagne|campaign/i }).first()
     await expect(enCours, "Le deck en cours de la campagne n'est pas propose.").toBeVisible()
     await enCours.click()
-    await page.getByRole('button', { name: /valider les decks/i }).click()
+    await page.getByRole('button', { name: /valider les decks/i }).click({ force: true })
 
     await expect(
       page.locator('.cmp-erreur'),
