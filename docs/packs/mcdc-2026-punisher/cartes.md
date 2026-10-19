@@ -36,8 +36,8 @@ Il n'y a **aucun insert ni livret de règles** dans le PDF (toutes les pages son
   Purple Man, Typhoid Mary), **tous les scénarios de FNE** (Art Heist, Protection Racket, Stop the Presses, The Getaway, The Raft Breakout),
   **Kingpin**, les sets modulaires standard et expert au choix, plus les sets FNE **Cops** et **Tracksuit Mafia**. Manches de protection :
   162 (30 doubles, 21 dos bleus joueur, 109 cartes de rencontre).
-- **Défis (confirmés par le site)** : 1 Rise of the Machines (Vision), 2 Secret Agent (Captain America, avec « Superhero Jailbreak » selon
-  le site, alors que j'ai lu « Guerilla Warfare » sur p280 : **à revérifier à l'image**), 3 It's A Trap! (En Sabah Nur, Arcade, Galactic
+- **Défis** : 1 Rise of the Machines (Vision), 2 Secret Agent (Captain America ; la carte p280 imprimée dit « Guerilla Warfare », alors que le site
+  écrit « Superhero Jailbreak » : **la carte fait foi**, relue en 300 dpi), 3 It's A Trap! (En Sabah Nur, Arcade, Galactic
   Artifacts ; side schemes avec incite 1, une icône Crisis et une icône Amplify), 4 Angry Birds (Tower Defense).
 - **Ce que le site ne donne pas** : les 4 combats de campagne, le décompte des points, les pods Kingsfall. Ils ne sont que sur les cartes.
 
@@ -1066,9 +1066,10 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
   - • Villain: Hobgoblin *(if Gunrunner was Count Nefaria, Ringmaster, Mr. Negative, or Nightshade)*, or Jigsaw *(other 4 CAPOS)*
   - • Use Punisher's Hit List, The Syndicate, Capo of the Past sets
   - • Main scheme based on the final lead *(tableau : lieu de la dernière piste → manigance)* :
-    - Art Museum Heist · The Getaway · The Raft Breakout · Protection Racket · Stop the Presses!
-    - Colonnes du tableau : Hell's Kitchen, Theater Dist., Up. East Side, West Village, Midtown, Lw. East Side, Soho, Financial
-      Dist., Chinatown. *(Cases vertes : voir le scan p265 ; à relever précisément avant de coder.)*
+    - Tableau relu en 300 dpi (cases vertes) : **Art Museum Heist** = Theater District ou Financial District ·
+      **The Getaway** = Hell's Kitchen ou Lower East Side · **The Raft Breakout** = Upper East Side ou Midtown ·
+      **Protection Racket** = Chinatown · **Stop the Presses!** = West Village ou Soho.
+    - (Les 5 manigances sont celles de Fear No Evil, confirmé par l'utilisateur.)
 - Setup. Permanent.
 - **Victory**: Flip this card and put Punisher's Ordnance Cache into play for battle 3.
 
@@ -1143,11 +1144,12 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
 - *(Mode événement : « pods » de 2 à 4 groupes qui jouent le même scénario et comparent leurs résultats.)*
 
 ### p275 — ✦PUNISHER (Frank Castle) · Allié (Agressivité)
-- ID 6138 · Aggression · Illustration : Leinil Francis Yu · Coût 3 · THW 1 (☆ une icône « étoile » sous la valeur) · ATK 2★ (☆) ·
-  Boost / ressource physique (poing) · PV 3 [?] (pastille « 3 » en bas à droite, à revérifier)
+- ID 6138 · Aggression · Illustration : Leinil Francis Yu · Coût 3 · THW 1 · ATK 2★ · PV 3 (pastille orange en bas à droite, relu en 300 dpi)
+- Sous THW et sous ATK : une icône creuse chacune (dégâts consécutifs, comme sur les alliés officiels). Ressource : poing (Agressivité) en bas à gauche.
 - Traits : Soldier. Vigilante.
 - ★ Punisher's attacks gain piercing and ranged.
 - **Response**: After Punisher attacks and defeats a minion, deal 2 damage to an enemy.
+- Dos : dos de carte joueur Marvel standard (p276).
 - C'est l'allié mis en jeu au combat 4 (Kingsfall).
 
 ### p277 — CAPO OF THE PAST · Attachement
@@ -1182,7 +1184,7 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
 - **Villain**: En Sabah Nur *(Age of Apocalypse)*.
 - **Modular sets**: Arcade *(Jubilee Hero Pack)*, Galactic Artifacts *(Galaxy's Most Wanted)*.
 - **Special Rules**:
-  - • All encounter side schemes gain incite 1, [2 icônes d'aptitude à relever] and [?].
+  - • All encounter side schemes gain incite 1, **Crisis** (icône « !! ») and **l'icône « carte + »** (relu en 300 dpi ; le site écrit « a crisis icon and an amplify icon » : si le site dit vrai, « carte + » serait donc Amplify. **À trancher avec l'utilisateur**).
   - • The villain gains steady.
   - • When the villain stage advances, advance the main scheme to 2A.
 
@@ -1231,6 +1233,7 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
 
 ## Ce qui est lu, ce qui reste à faire
 
+- **Relu en 300 dpi le 19/10/2026, carte par carte, pour les planches 0 à 44 (Big Apple, Locations, Leads, Capos, Jigsaw, début de Hobgoblin), 45 à 72 et 73 à 87** (Syndicate, cartes de campagne, défis, Hawkeye). Corrections trouvées : voir l'historique Git. Ce qui reste incertain est marqué `[?]` ou « À trancher ».
 - **Lu** : toutes les faces du PDF (p001 à p286), soit environ 143 cartes dans 15 sets : The Big Apple, Uptown Expansion,
   Locations, Leads, CAPOS, Jigsaw, Hobgoblin, Punishment, Punisher's Hit List, Punisher's Armory, SWAT Team, The Syndicate,
   cartes de campagne (4 combats, 3 récompenses, Kingsfall), Capo of the Past, 4 défis, Hawkeye.
