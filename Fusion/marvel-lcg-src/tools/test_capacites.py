@@ -28313,6 +28313,37 @@ CAS = [
         "attendu": {"degats": [["ip024", 1]]},
     },
     {
+        "nom": "53011 Draw Their Fire — Hero Response : proposee au debut de la phase du mechant, defaussee, Falcon defend sans s'incliner",
+        "pourquoi": ("« After the villain phase begins, discard Draw Their Fire -> Falcon does "
+                     "not exhaust to defend until the end of the phase. » `Puzzle.BeginVillainPhase()` "
+                     "ouvre la phase (WhenPhaseBegin puis AfterPhaseBegin) : la Hero Response doit etre "
+                     "OFFERTE (accepter_choix la prend), la carte finir defaussee (cout), puis Falcon "
+                     "defend l'attaque de Rhino et reste PRET (mesure de l'effet, pas seulement du cout)"),
+        "scenario": "rhino",
+        "heros": "falcon",
+        "mise_en_place": ["Puzzle.ChangeForm('53001b')",
+                          "Puzzle.PutIntoPlay('53011', under_control=True)"],
+        "declencher": ["Puzzle.EndPlayerPhase()", "Puzzle.BeginVillainPhase()", "Puzzle.Attack('01094')"],
+        "main_exclusive": ["01090"],
+        "accepter_choix": True,
+        "options_attendues": ["Hero Response"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["53001a"], "defausse": ["53011"]},
+    },
+    {
+        "nom": "53011 Draw Their Fire — TEMOIN : sans la carte en jeu, Falcon s'incline pour defendre",
+        "pourquoi": ("meme position SANS la carte (le pilote ne sait pas decliner une Hero Response : elle serait prise). "
+                     "Sans Draw Their Fire, Falcon defend comme tout heros et s'incline. Prouve que la mesure « pret » "
+                     "du cas precedent vient bien de la carte et non de la position"),
+        "scenario": "rhino",
+        "heros": "falcon",
+        "mise_en_place": ["Puzzle.ChangeForm('53001b')"],
+        "declencher": ["Puzzle.EndPlayerPhase()", "Puzzle.BeginVillainPhase()", "Puzzle.Attack('01094')"],
+        "main_exclusive": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["53001a"]},
+    },
+    {
         "nom": "ip028 * Taskmaster — +1 ATQ et +1 MNG par personnage REGISTERED controle",
         "pourquoi": ("Taskmaster imprime ATQ 0 et MNG 0 : toute valeur non nulle vient du "
                      "bonus. Lui-meme recrute compte, donc au moins 1"),
