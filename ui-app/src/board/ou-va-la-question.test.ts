@@ -224,3 +224,19 @@ describe('« Sur la table » v3 (Q17) : la bulle porte la question à la place d
     expect(questionDansLaScene(defense({ sceneCentrale: false, bulleSurTable: true, ciblage: true }))).toBe(false)
   })
 })
+
+describe('T16 : « Qui défend ? » d’un sbire Rapide, hors phase, sur la table', () => {
+  const rapide = defense({ sceneCentrale: false, bulleSurTable: true, phaseMechantEnCours: false, questionSurTableHorsPhase: true })
+
+  it('le panneau central ne la prend pas : le bandeau de la table la porte', () => {
+    expect(questionDansLePanneau(rapide)).toBe(false)
+  })
+
+  it('la narration centrale se tait aussi', () => {
+    expect(narrationAuCentre({ ...rapide, effetEnCours: true }, { connecte: true, evenementImportant: true })).toBe(false)
+  })
+
+  it('sans ce drapeau, hors phase, le panneau central garde la question (autres modes)', () => {
+    expect(questionDansLePanneau({ ...rapide, questionSurTableHorsPhase: false })).toBe(true)
+  })
+})
