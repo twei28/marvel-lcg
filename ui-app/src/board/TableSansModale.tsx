@@ -8,7 +8,7 @@
 //
 // Tout est dans le repère du cadre du plateau (voir `mesures-plateau.ts`), comme le trait
 // et les cartes sorties du paquet : ce composant se rend par le même portail.
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { boiteDeCarte, cadreDuPlateau, redresserBoite, type Boite } from './mesures-plateau'
 import { t } from './langue'
 import type { PiedMulti } from './CartouchePhase'
@@ -34,12 +34,21 @@ function boiteDeLImage(
   if (!el) return boiteDeCarte(id, cadre)
   const r = el.getBoundingClientRect()
   if (r.width === 0 || r.height === 0) return boiteDeCarte(id, cadre)
-  const englobante = { x: r.left - cadre.origine.left, y: r.top - cadre.origine.top, w: r.width, h: r.height }
+  const bloc = el.closest<HTMLElement>('.scan-card')?.getBoundingClientRect()
+  const englobante: Boite = {
+    x: r.left - cadre.origine.left,
+    y: r.top - cadre.origine.top,
+    w: r.width,
+    h: r.height,
+    // Le bloc de la carte compte la barre de PV sous l'image : l'etiquette « Defendre avec X » se pose
+    // SOUS elle au lieu de la cacher (19/10/2026).
+    bas: Math.max(r.bottom, bloc ? bloc.bottom : 0) - cadre.origine.top,
+  }
   // UNE CARTE INCLINEE (epuisee : 8 degres) : le cadre doré s'incline avec elle au lieu de rester droit autour
   // de sa boite englobante (18/10/2026). L'angle se lit sur la carte et ses parents, sa taille de mise en page
   // (offsetWidth/Height) ne change pas avec la rotation.
   const angle = angleDeLElement(el, cadre.element)
-  return angle ? redresserBoite(englobante, el.offsetWidth, el.offsetHeight, angle) : englobante
+  return angle ? { ...redresserBoite(englobante, el.offsetWidth, el.offsetHeight, angle), bas: englobante.bas } : englobante
 }
 
 /** L'angle total (degres) de l'element et de ses parents jusqu'au cadre, lu sur leurs transformations. */
@@ -66,7 +75,7 @@ export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite
       const cadre = cadreDuPlateau()
       const b = cadre ? boiteDeLImage(carteId, cadre) : undefined
       setBoite((avant) =>
-        avant && b && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h && avant.angle === b.angle ? avant : b
+        avant && b && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h && avant.angle === b.angle && avant.bas === b.bas ? avant : b
       )
     }
     mesurer()
@@ -79,6 +88,7 @@ export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite
   }, [carteId, cle])
   return boite
 }
+
 
 export type TableSansModaleProps = {
   /** La carte qui agit ; à défaut, celle qui subit (la menace n'a pas d'auteur). */
@@ -175,6 +185,35 @@ export function TableSansModale({
           title={libelleAction}
         />
       ) : null}
+    </>
+  )
+}
+
+/**
+ * L'etiquette d'une carte a EXACTEMENT la largeur de la carte (19/10/2026) : jamais plus large, donc plus de
+ * chevauchement entre voisines. Le nom se coupe sur deux lignes puis par des points de suspension (le nom entier
+ * reste dans l'infobulle et dans le libelle accessible) ; la police suit la largeur. Posee SOUS la barre de PV
+ * (`bas`), ou AU-DESSUS de la carte quand elle touche le bas de la table.
+ */
+function styleEtiquette(b: Boite, auDessus: boolean): CSSProperties {
+  const base: CSSProperties = {
+    left: `${b.x}px`,
+    width: `${b.w}px`,
+    fontSize: `${Math.max(10, Math.min(16, b.w / 6.4))}px`,
+  }
+  return auDessus
+    ? { ...base, top: `${b.y - 4}px`, transform: 'translateY(-100%)' }
+    : { ...base, top: `${Math.max(b.y + b.h, b.bas ?? 0) + 3}px` }
+}
+
+/** « Défendre avec Spider-Man » : le verbe en petit sur une ligne, le nom dessous (deux lignes au plus, puis « … »). */
+function TexteEtiquette({ nom }: { nom: string }) {
+  const verbe = `${t('Défendre avec')} `
+  if (!nom.startsWith(verbe) || nom.length === verbe.length) return <span className="tsm-etiquette-texte">{nom}</span>
+  return (
+    <>
+      <span className="tsm-etiquette-verbe">{verbe.trim()}</span>
+      <span className="tsm-etiquette-texte">{nom.slice(verbe.length)}</span>
     </>
   )
 }
@@ -341,17 +380,13 @@ function PuceSurCarte({
       <button
         type="button"
         className={`tsm-etiquette${bloque ? ' est-inactif' : ''}`}
-        style={
-          // Une carte de la MAIN touche le bas de la table : l'étiquette passe au-dessus.
-          enBas
-            ? { left: `${boite.x + boite.w / 2}px`, top: `${boite.y - 6}px`, transform: 'translate(-50%, -100%)' }
-            : { left: `${boite.x + boite.w / 2}px`, top: `${boite.y + boite.h + 6}px` }
-        }
+        style={styleEtiquette(boite, enBas)}
         disabled={bloque}
+        title={choix.nom}
         onClick={choix.choisir}
         data-choix-unique={unique ? '' : undefined}
       >
-        {choix.nom}
+        <TexteEtiquette nom={choix.nom} />
         {unique ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
       </button>
     </>
@@ -496,14 +531,11 @@ function CarteCiblable({ cible }: { cible: CibleSurTable }) {
         <button
           type="button"
           className="tsm-etiquette"
-          style={
-            boite.y + boite.h + 44 > (cadreDuPlateau()?.boite.h ?? Number.POSITIVE_INFINITY)
-              ? { left: `${boite.x + boite.w / 2}px`, top: `${boite.y - 6}px`, transform: 'translate(-50%, -100%)' }
-              : { left: `${boite.x + boite.w / 2}px`, top: `${boite.y + boite.h + 6}px` }
-          }
+          style={styleEtiquette(boite, boite.y + boite.h + 44 > (cadreDuPlateau()?.boite.h ?? Number.POSITIVE_INFINITY))}
+          title={cible.etiquette}
           onClick={cible.agir}
         >
-          {cible.etiquette}
+          <TexteEtiquette nom={cible.etiquette} />
         </button>
       ) : null}
       {cible.ordre !== undefined || (cible.fois ?? 0) > 1 ? (

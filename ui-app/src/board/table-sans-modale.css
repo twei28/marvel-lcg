@@ -187,20 +187,50 @@
 .tsm-etiquette {
   position: absolute;
   z-index: 141;
-  transform: translateX(-50%);
-  max-width: 220px;
-  padding: 3px 12px;
+  box-sizing: border-box;
+  /* La largeur est posee en ligne : EXACTEMENT celle de la carte, jamais plus. */
+  min-width: 0;
+  padding: 2px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: #4fd17b;
   color: #0b1a10;
   border: 2px solid #b5f0c8;
   border-radius: 4px;
   font-family: Bangers, Anton, Impact, system-ui, sans-serif;
   font-size: 16px;
-  letter-spacing: 0.04em;
-  line-height: 1.15;
+  letter-spacing: 0.02em;
+  line-height: 1.12;
   text-align: center;
-  white-space: normal;
   cursor: pointer;
+}
+
+/* Le nom : deux lignes au plus, puis des points de suspension. */
+.tsm-etiquette-texte {
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.tsm-etiquette-verbe {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78em;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.tsm-etiquette .tsm-touche {
+  margin: 1px 0 0;
+  font-size: 10px;
 }
 
 .tsm-etiquette.est-inactif {
@@ -463,6 +493,8 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
 
 @media (pointer: coarse), (max-height: 550px) {
   .tsm-bouton, .tsm-retour { min-height: 44px; min-width: 44px; }
+  /* L'etiquette garde la largeur de sa carte (jamais 44 px mini en largeur) ; seule sa hauteur grandit. */
+  .tsm-etiquette { min-height: 44px; }
 }
 
 .tsm-multi {
