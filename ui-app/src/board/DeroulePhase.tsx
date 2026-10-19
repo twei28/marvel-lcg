@@ -171,6 +171,26 @@ function nomDOnglet(libelle: string): ReactNode {
 /** Repli stable (une nouvelle fonction a chaque rendu relancerait la mesure des fleches). */
 const joueurInconnu = (): number | undefined => undefined
 
+/**
+ * RENFORT : la pastille contre la carte lue. « une autre carte va être révélée » si elle porte Renfort ; sinon d'où elle vient
+ * (carte révélée par un Renfort). Rien pour les autres cartes.
+ */
+function renfortPourEtape(
+  etapeLue: EtapeDeroule,
+  carteScene: ((id: number, faceVisible: boolean) => ScanCardProps | undefined) | undefined
+): { phrase?: string } | undefined {
+  if (etapeLue.titre !== 'revelation') return undefined
+  const portait = etapeLue.suivieDUnRenfort || aRenfort(carteScene?.(etapeLue.carteId ?? -1, true))
+  if (!portait && !etapeLue.parSurge) return undefined
+  return {
+    phrase: portait
+      ? t('une autre carte va être révélée')
+      : etapeLue.renfortDe
+        ? t('Renfort de %1').replace('%1', etapeLue.renfortDe)
+        : undefined,
+  }
+}
+
 export function DeroulePhase({
   etapes: etapesRecues,
   presentation = 'scene',
@@ -1981,6 +2001,7 @@ export function DeroulePhase({
           <style>{[...idsEntreeEnAttente, ...(enVolDeJeton && etape?.titre === 'entree' && etape.carteId !== undefined ? [etape.carteId] : [])].map((id) => `.plateau-cadre .scan-card[data-card-id="${id}"]:not(.rencontre-sur-table *) { visibility: hidden !important; }`).join('\n')}</style>
         ) : null}
         <CoucheRencontreSurTable
+          renfort={etape ? renfortPourEtape(etapeEnLangue(etape, nomFr), carteScene) : undefined}
           etape={etape}
           boostsMontres={boostsMontres}
           carteScene={carteScene}
@@ -2789,14 +2810,9 @@ export function DeroulePhase({
           reculer={index > 0 && peutAgir ? reculer : undefined}
           mention={enAttente ? texteAttente({ autreJoueur: attendUnAutreJoueur, nom: nomJoueurAttendu }) : undefined}
           libelleAction={`${titreEtape(etapeLue)} — ${t('Suivant')}`}
-          // LE RENFORT, en clair (16/10/2026, « que le surge soit clair ») : d'où vient la carte, et
-          // qu'une autre va suivre.
-          surtitre={surtitreEtape(etapeLue) || undefined}
-          suite={
-            etapeLue.suivieDUnRenfort || (etapeLue.titre === 'revelation' && aRenfort(carteScene?.(etapeLue.carteId ?? -1, true)))
-              ? t('Renfort : une autre carte va être révélée')
-              : undefined
-          }
+          // LE RENFORT ne charge plus le bandeau (19/10/2026) : sa pastille se pose contre la carte lue. Seul « Révélée par X »
+          // (une carte de remplacement) garde son surtitre.
+          surtitre={etapeLue.parSurge ? undefined : surtitreEtape(etapeLue) || undefined}
         />
         {confirmerPasser && !passerTout ? (
           <span className="tsm-confirmer" role="alertdialog" aria-label={t('Passer toute la phase ?')}>

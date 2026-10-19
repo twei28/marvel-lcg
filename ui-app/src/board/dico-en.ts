@@ -1733,6 +1733,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Attaque de %1': '%1 attacks',
   'Manigance de %1': '%1 schemes',
   'Stade %1': 'Stage %1',
+  'une autre carte va être révélée': 'another card will be revealed',
   '%1 passe au stade %2': '%1 advances to stage %2',
   '%1 passe au stade suivant': '%1 advances to the next stage',
   'Stade suivant': 'Next stage',

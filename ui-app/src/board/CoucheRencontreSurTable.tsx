@@ -32,9 +32,14 @@ type Props = {
   controle?: Ref<ControleRencontre>
   /** Annonce chaque changement de phase : le bandeau n'annonce les degats qu'une fois les boosts lisibles. */
   surPhase?: (phase: PhaseLecture) => void
+  /**
+   * RENFORT (19/10/2026) : une pastille rouge « RENFORT » se pose contre la carte lue, avec sa phrase en petit dessous
+   * (« une autre carte va être révélée »). Le bandeau, lui, reste sur une ligne.
+   */
+  renfort?: { phrase?: string }
 }
 
-export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, actif, controle, surPhase }: Props) {
+export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, actif, controle, surPhase, renfort }: Props) {
   const cartes: CarteLue[] = []
   if (actif && etape) {
     for (const c of sceneDe(etape, true).cartes) {
@@ -54,10 +59,10 @@ export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, acti
     if (actif && rienALire && !boostsEnAttente) surPhase?.('aucune')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actif, rienALire, boostsEnAttente, etape?.cle])
-  return <LectureRencontre key={identite} cartes={cartes} apport={apport} auteurId={etape?.carteId} controle={controle} surPhase={surPhase} />
+  return <LectureRencontre key={identite} cartes={cartes} apport={apport} auteurId={etape?.carteId} controle={controle} surPhase={surPhase} renfort={renfort} />
 }
 
-function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { cartes: CarteLue[]; apport: number; auteurId?: number; controle?: Ref<ControleRencontre>; surPhase?: (phase: PhaseLecture) => void }) {
+function LectureRencontre({ cartes, apport, auteurId, controle, surPhase, renfort }: { cartes: CarteLue[]; apport: number; auteurId?: number; controle?: Ref<ControleRencontre>; surPhase?: (phase: PhaseLecture) => void; renfort?: { phrase?: string } }) {
   const couche = useRef<HTMLDivElement>(null)
   const [ancres, setAncres] = useState<{ deck: Boite; cadre: Boite; auteur?: Boite }>()
   const etat = useRef<'entree' | 'lecture' | 'depart' | 'termine'>('entree')
@@ -250,6 +255,21 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase }: { ca
             labelType={undefined} masquerType camp={undefined} />
         </div>
       ))}
+      {renfort && phase !== 'termine' && phase !== 'depart'
+        ? cartes.flatMap((carte, i) => (carte.boost ? [] : [i])).slice(0, 1).map((i) => {
+            // Contre la carte lue : a sa gauche s'il y a la place, sinon au-dessus.
+            const aGauche = places[i].x >= 168
+            return (
+              <div key="renfort" className={`rencontre-renfort${aGauche ? '' : ' est-au-dessus'}`} style={aGauche
+                ? { right: `calc(100% - ${places[i].x - 8}px)`, top: places[i].y + 6 }
+                : { left: places[i].x, top: Math.max(0, places[i].y - 46) }}
+              >
+                <span className="rencontre-renfort-pastille">{t('Renfort')}</span>
+                {renfort.phrase ? <small>{renfort.phrase}</small> : null}
+              </div>
+            )
+          })
+        : null}
       {cartes.length > 1 && phase === 'lecture' ? <div className="rencontre-total" style={{ left: places[0].x, top: Math.max(...places.map((p) => p.y + p.h)) + 12, width: places.at(-1)!.x + places.at(-1)!.w - places[0].x }}>{t('Boost')} +{apport}</div> : null}
     </div>
   )
