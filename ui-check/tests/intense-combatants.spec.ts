@@ -113,12 +113,12 @@ test('cocher la case envoie la regle au serveur (/new)', async ({ page }) => {
   // Jusqu'au lancement : les « Continuer » puis le bouton de lancement.
   for (let i = 0; i < 14 && envoye === null; i++) {
     const lancer = page.getByRole('button', { name: /^(Lancer|Launch|Jouer|Play)/ }).first();
-    if (await lancer.isVisible().catch(() => false)) { await lancer.click(); await page.waitForTimeout(1_500); continue; }
+    if (await lancer.isVisible().catch(() => false)) { await lancer.click({ force: true, timeout: 5_000 }).catch(() => {}); await page.waitForTimeout(1_500); continue; }
     // Le dernier écran n'a plus de bouton « Lancer » : le bouton principal du pied de page (une coche).
-    const final = page.locator('footer.nav .btn.primary');
+    const final = page.locator('footer.nav .btn.launch');
     const suite = page.getByRole('button', { name: /^(Continuer|Continue)$/ });
     if (await suite.isVisible().catch(() => false)) { await suite.click(); await page.waitForTimeout(1_000); continue; }
-    if (await final.isVisible().catch(() => false)) { await final.click(); await page.waitForTimeout(1_500); continue; }
+    if (await final.isVisible().catch(() => false)) { await final.click({ force: true, timeout: 5_000 }).catch(() => {}); await page.waitForTimeout(1_500); continue; }
     await page.waitForTimeout(1_000);
   }
   expect(envoye, 'aucun appel /new intercepte').not.toBeNull();
