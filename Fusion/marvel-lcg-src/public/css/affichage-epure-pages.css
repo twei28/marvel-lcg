@@ -1714,6 +1714,26 @@ html[data-epure] header .btn-affichage {
   clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
   box-shadow: inset 1px 1px 0 rgba(140, 180, 240, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.45) !important;
 }
+/* TOUTE la rangée d'icônes d'en-tête a le même style (18/10/2026, « pourquoi il n'y a que les deux premiers icônes
+   qui ont le nouveau style ? »). FR et l'affichage avaient leur règle (`.btn-langue`, `.btn-affichage`) ; les autres
+   icônes (reprise, replays, stats, compte, réglages, arts, teinte, sauvegardes, bug, documents) ne sont que des
+   `.btn-icone`, dont le fond gris plat sans bordure s'applique hors d'un `header.progress`, par exemple dans la barre
+   flottante `.reprise-boutons.est-flottante` de la page de préparation. Même fond, même bordure, mêmes coins coupés. */
+html[data-epure] .reprise-boutons .btn-icone,
+html[data-epure] .reprise-boutons > button,
+html[data-epure] .reprise-boutons > a {
+  background: linear-gradient(180deg, #34415c 0%, #232c3f 100%) !important;
+  border: 1px solid #4a5a7c !important;
+  border-radius: 0 !important;
+  color: #dbe3f3 !important;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+  box-shadow: inset 1px 1px 0 rgba(140, 180, 240, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.45) !important;
+}
+html[data-epure] .reprise-boutons .btn-icone:hover,
+html[data-epure] .reprise-boutons > button:hover,
+html[data-epure] .reprise-boutons > a:hover {
+  background: linear-gradient(180deg, #4a5d82 0%, #2f3b55 100%) !important;
+}
 html[data-epure] header .brand .brand-lockup,
 html[data-epure] header .brand .brand-lockup.logo {
   display: block !important;
