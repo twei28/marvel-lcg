@@ -85,7 +85,13 @@ test('glisser le heros sur le mechant l attaque', async ({ page, request }) => {
 
   // Le mulligan d'ouverture s'ouvre quelques instants apres le plateau : sans
   // cette attente, on cliquait dans le vide et la partie restait bloquee.
-  const confirmer = page.getByRole('button', { name: /^Confirmer$/ }).first();
+  // La mise en place carte par carte (manigance, méchant...) passe avant le mulligan : on la fait défiler.
+  for (let k = 0; k < 30 && (await page.locator('.mep-couche').count()) > 0; k++) {
+    const continuer = page.locator('.mep-couche .mep-continuer').first();
+    if (await continuer.isVisible().catch(() => false)) await continuer.click({ timeout: 1500, force: true }).catch(() => {});
+    await page.waitForTimeout(400);
+  }
+  const confirmer = page.getByRole('button', { name: /^(Confirmer|Garder ma main)/ }).first();
   await confirmer.waitFor({ state: 'visible', timeout: 40000 });
   await confirmer.click();
 

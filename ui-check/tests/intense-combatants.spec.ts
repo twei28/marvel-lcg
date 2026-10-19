@@ -28,6 +28,9 @@ async function etapeMechant(page: Page) {
 }
 
 async function choisirMechant(page: Page, boite: string, scn: string) {
+  // Depuis le 19/10/2026 la liste n'a que les boîtes officielles OU que les fan-made : le filtre « Fan-made » bascule.
+  if (/custom/i.test(boite) && (await page.locator('.ext-fanmade.on').count()) === 0) await page.locator('.ext-fanmade').click();
+  await page.waitForTimeout(500);
   await page.locator(`#ext-tabs .ext-tab[title="${boite}"]`).click();
   await page.locator(`#scn-grid .tb-port[data-scn="${scn}"]`).click();
   await page.mouse.move(5, 5);
@@ -46,7 +49,7 @@ test('la case apparait pour Shredder (TMNT Standard), decochee, avec le texte FR
   await expect(ligne).toBeVisible();
   await expect(ligne).toContainText('Intense Combatants (environnement optionnel)');
   await expect(ligne).toContainText('Interruption forcée');
-  await expect(ligne).toHaveAttribute('title', /Ensembles TMNT Standard et Expert uniquement/);
+  await expect(ligne).toHaveAttribute('title', /Sets TMNT Standard et Expert uniquement/);
   await expect(page.locator(CASE)).not.toBeChecked();
   await ligne.scrollIntoViewIfNeeded();
   await page.screenshot({ path: 'intense-combatants.png' });
@@ -108,11 +111,14 @@ test('cocher la case envoie la regle au serveur (/new)', async ({ page }) => {
   await choisirMechant(page, '190. Custom (Shredder)', 'shredder');
   await page.locator(CASE).check();
   // Jusqu'au lancement : les « Continuer » puis le bouton de lancement.
-  for (let i = 0; i < 6 && envoye === null; i++) {
+  for (let i = 0; i < 14 && envoye === null; i++) {
     const lancer = page.getByRole('button', { name: /^(Lancer|Launch|Jouer|Play)/ }).first();
     if (await lancer.isVisible().catch(() => false)) { await lancer.click(); await page.waitForTimeout(1_500); continue; }
+    // Le dernier écran n'a plus de bouton « Lancer » : le bouton principal du pied de page (une coche).
+    const final = page.locator('footer.nav .btn.primary');
     const suite = page.getByRole('button', { name: /^(Continuer|Continue)$/ });
     if (await suite.isVisible().catch(() => false)) { await suite.click(); await page.waitForTimeout(1_000); continue; }
+    if (await final.isVisible().catch(() => false)) { await final.click(); await page.waitForTimeout(1_500); continue; }
     await page.waitForTimeout(1_000);
   }
   expect(envoye, 'aucun appel /new intercepte').not.toBeNull();

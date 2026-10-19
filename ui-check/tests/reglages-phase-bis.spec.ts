@@ -16,7 +16,7 @@ test('les Réglages proposent « Étape par étape » et « Étape par étape bi
   };
   expect((await request.get('/new?data=' + encodeURIComponent(JSON.stringify(charge)))).status()).toBe(200);
   await page.setViewportSize({ width: 1600, height: 900 });
-  await page.addInitScript(() => { localStorage.setItem('marvel-langue-choisie', '1'); localStorage.setItem('mc_affichage_v1', 'normal'); });
+  await page.addInitScript(() => { localStorage.setItem('marvel-langue-choisie', '1'); localStorage.setItem('mc_affichage_v1', 'normal'); sessionStorage.setItem('mc_epure_permis', 'oui'); });
   await page.goto('/app/board.html', { waitUntil: 'networkidle' });
   // La mise en place carte par carte couvre la table : on la passe.
   for (let k = 0; k < 40; k++) {
@@ -45,7 +45,7 @@ test('les Réglages proposent « Étape par étape » et « Étape par étape bi
   await expect(fenetre.getByRole('button', { name: /^Phase dynamique/ })).toBeVisible();
   await fenetre.getByRole('button', { name: /^Phase dynamique/ }).click();
   expect(await choix()).toBe('dynamique');
-  // L'apparence : en local, l'Épuré reste proposé (moteur de la machine).
+  // L'apparence : depuis le 18/10/2026 l'Épuré s'appelle « Normal » et se propose à tout le monde.
   await page.getByRole('tab', { name: /^Apparence$/ }).or(page.getByRole('button', { name: /^Apparence$/ })).first().click();
-  await expect(fenetre.getByRole('button', { name: /^Épuré$/ })).toBeVisible();
+  await expect(fenetre.getByRole('button', { name: /^Normal$/ })).toBeVisible();
 });

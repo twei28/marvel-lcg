@@ -19,15 +19,15 @@ const DECK = { name: 'Test', hero: ['01001a'], hero_deck: [], obligations: [], n
 
 test('la tuile Bataille existe dans le selecteur de modes', async ({ page }) => {
   await page.goto('/prepare.html');
-  await page.waitForSelector('.mode-pill', { timeout: 30000 });
-  const libelles = (await page.locator('.mode-pill').allInnerTexts()).map((s) => s.trim());
+  await page.waitForSelector('.acc-tuile', { timeout: 30000 });
+  const libelles = (await page.locator('.acc-tuile').allInnerTexts()).map((s) => s.trim());
   console.log('MODES PROPOSES :', libelles.join(' | ').replace(/\n/g, ' '));
   expect(libelles.join(' ').toLowerCase()).toContain('bataille');
 });
 
 test('le descripteur de Bataille porte les deux tables, une partie ordinaire non', async ({ page }) => {
   await page.goto('/prepare.html');
-  await page.waitForSelector('.mode-pill', { timeout: 30000 });
+  await page.waitForSelector('.acc-tuile', { timeout: 30000 });
 
   const resultat = await page.evaluate(async (deck) => {
     const { catalog } = await import('/public/js/prepare/catalog.js');
