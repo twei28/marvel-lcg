@@ -17,6 +17,12 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 
 ## Légende
 
+**Icônes imprimées sous le texte des manigances annexes et de certains sbires** (relevées en 300 dpi le 19/10/2026) :
+- « !! » (deux points d'exclamation) = **Crisis**.
+- « pile + » (trois traits empilés avec un +) = **Acceleration** (confirmé par l'utilisateur pour Burning Building).
+- « avion + » (silhouette d'avion avec un +) = **icône de boost** (précisé par l'utilisateur).
+- « carte + » (carré arrondi avec un +) = icône à identifier (Designs on Crimes, Punisher's Arsenal) — probablement Hazard, à confirmer.
+
 - `👤` = icône « par joueur » (un nombre suivi de cette icône est multiplié par le nombre de joueurs).
 - `Boost N` = nombre d'icônes de boost (le « Y » rouge en bas à droite).
 - `ATK 1★` = valeur d'attaque avec astérisque (une règle du texte la précise).
@@ -145,14 +151,14 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - Quickstrike.
 - **Forced Response**: After the round ends, attach Overdrive to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Overdrive's location, he engages them.
-- Icône sous le texte : 1 symbole HAZARD (confirmé par l'utilisateur le 19/10/2026)
+- Icône sous le texte : 1 icône « avion + » = icône de boost (précisé par l'utilisateur le 19/10/2026)
 
 ### p027 — ✦MUSE · Sbire
 - ID 6014 · The Big Apple (14/22) · Illustration : Ron Garney · SCH 1★ · ATK 2★ · PV 4 · Boost ★ (étoile)
 - Traits : Criminal.
 - ★ **Forced Response**: After Muse activates, attach him to an unoccupied location, if able. *(He remains in play.)*
 - **Forced Interrupt**: When a player enters Muse's location, he engages them.
-- Icônes sous le texte : 2 symboles HAZARD (même icône « avion + » que sur Overdrive)
+- Icônes sous le texte : 2 icônes « avion + » (icône de boost, comme Overdrive)
 - ★ **Boost**: Reveal this card.
 
 ### p029 — ✦SCREWBALL · Sbire
@@ -161,7 +167,7 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - **Forced Interrupt**: When Screwball would be defeated with excess damage, reset her hit points instead. Attach her
   to an unoccupied location, if able. *(She remains in play.)*
 - **Forced Interrupt**: When a player enters Screwball's location, she engages them.
-- Icône sous le texte : 1 symbole HAZARD [?] (même famille que Overdrive)
+- Icône sous le texte : 1 icône « avion + » ? (relu en 300 dpi : voir p029)
 
 ### p031 — BUSTED! · Obligation
 - ID 6016 · The Big Apple (16/22) · Illustration : Mattia De Iulis · Boost 2
@@ -198,10 +204,10 @@ Vicentini, Kolins, Sliney, Kudranski…, repris carte par carte ci-dessous). Lic
 - *"Everybody be cool! This is a robbery!"*
 - **When Revealed**: Each player tucks a random card from their hand under this scheme.
 - **When Defeated**: Return each card tucked here to its owner's hand.
-- Icône dans le cadre de texte : 1 symbole « pile + » [?]
+- Icône dans le cadre : 1 icône « pile + » = Acceleration (relu en 300 dpi)
 
 ### p043 — LIKE AND SUBSCRIBE! · Manigance annexe
-- ID 6022 · The Big Apple (22/22) · Illustration : George Kambadais · Menace de départ 2 [👤 ?] · Boost ★
+- ID 6022 · The Big Apple (22/22) · Illustration : George Kambadais · Menace de départ 2👤 (confirmé en 300 dpi) · Boost ★
 - *"Chat, I think we're cooked!"*
 - Hinder 2👤. Allies enter play exhausted.
 - **When Revealed**: Find and reveal Screwball. Attach her to an unoccupied location, if able.
@@ -524,7 +530,7 @@ romains (I, II, III).
 - *Jigsaw was once known as "Billy the Beaut." Now he uses his terrifying visage to intimidate his way to power.*
 - **When Revealed**: Place 2 threat on this scheme for each MAGGIA character in play.
 - **When Defeated**: In player order, each player finds a MAGGIA minion that is not in play and reveals it.
-- Icône dans le cadre : crochet / griffe [?]
+- Icône dans le cadre : « !! » = **Crisis** (relu en 300 dpi)
 
 ### p131 / p133 — CUT TO PIECES ×2 · Traîtrise
 - ID 6066 / 6067 · Jigsaw (11, 12/15) · Illustration : Tan Eng Huat · Boost ★
@@ -618,7 +624,7 @@ romains (I, II, III).
 - *Hobgoblin lurks in the shadows, waiting for an opportunity to take over New York's criminal underworld.*
 - **When Revealed**: Discard 3👤 cards from the encounter deck.
 - **When Defeated**: In player order, each player resolves the *"Pumpkin Bomb"* ability.
-- Icône dans le cadre : « pile + » [?]
+- Icône dans le cadre : 1 icône « carte + » (carré arrondi avec + ; relu en 300 dpi)
 
 ### p159 / p161 — GUISE TO TERRORIZE ×2 · Traîtrise
 - ID 6080 / 6081 · Hobgoblin (10, 11/15) · Illustration : Federico Vicentini · Boost 2
@@ -779,7 +785,7 @@ romains (I, II, III).
 - *In a broken system, Punisher views himself as the only true source of justice for the worst of the worst.*
 - **When Defeated**: Discard the minion with the fewest remaining hit points and deal damage to the TARGETED villain equal to
   that minion's remaining hit points. Otherwise, give Punisher a facedown boost card.
-- Icône dans le cadre : « avion + » [?]
+- Icône dans le cadre : « avion + » (icône de boost)
 
 ### p199 / p201 — BACK AGAINST THE WALL ×2 · Traîtrise
 - ID 6100 / 6101 · Punishment (15, 16/20) · Illustration : Marco Checchetto · Boost ★ + 1
@@ -867,7 +873,7 @@ Fond rouge sombre. Peut se mêler à d'autres rencontres : Punisher y est un sbi
 - *Punisher stockpiles weapons and supplies in safehouses scattered throughout New York.*
 - **When Revealed**: Find an ARMAMENT attachment that is not in play and reveal it.
 - **When Defeated**: Find Punisher and reveal him. Resolve his *"Punishment"* ability.
-- Icône dans le cadre : « pile + » [?]
+- Icône dans le cadre : 1 icône « carte + » (carré arrondi avec + ; relu en 300 dpi)
 
 ---
 
@@ -994,7 +1000,7 @@ Fond rouge sombre. Peut se mêler à d'autres rencontres : Punisher y est un sbi
 - *Beetle's Syndicate takes a collaborative approach to plotting and scheming.*
 - **When Revealed**: In player order, each player finds and reveals a SYNDICATE minion that is not in play.
 - ★ **Boost**: Deal this card to yourself as a facedown encounter card.
-- Icônes dans le cadre : 2 symboles « pile + » [?]
+- Icônes dans le cadre : 2 icônes « pile + » (relu en 300 dpi)
 
 ---
 
