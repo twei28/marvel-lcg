@@ -1673,6 +1673,15 @@
   ],
   "max_id": "sk289b"
  },
+ "144. Custom (Galactic Storm)": {
+  "name": "galactic_storm",
+  "scenarios": [],
+  "heroes": [
+   "quasar"
+  ],
+  "encounters": [],
+  "max_id": "gs349"
+ },
  "179. Custom (Leonardo)": {
   "name": "leonardo",
   "scenarios": [],
@@ -1882,5 +1891,5 @@
   "encounters": [],
   "max_id": "se011"
  },
- "checksum": "e6c1914ae7c2e4bd9e1dddc996aa461645bb701ccae1246c9a068f5e9e7e22b9"
+ "checksum": "dd719da311555398cf0ce23691baa2afa48a999f2905e6bce86e464eff594905"
 }

@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Quasar",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aspect PROTECTION, donne par l'auteur : decklist « Starter Deck » imprimee dans le zip (Hero Packs/Quasar/Extra/starter deck Quasar.png), recopiee telle quelle (PROCESSUS-HEROS etape 3). Numeros 13 a 31 de la liste = cartes OFFICIELLES redessinees par Kajislav (« Starter deck's reskins ») : le jeu prend les officielles (Martyr 19012, Starhawk 16012, Desperate Defense 09015 x3, Powerful Punch 32014 x3, Change of Fortune 48014, Defensive Conditioning 56046, Electrostatic Armor 10031, Unflappable 09020, Cosmo 17020, Drax 18019, Gamora 19020, Martinex 21065, Multitalented 47021 x3, Energy/Genius/Strength 01088-01090, Knowhere 17022, Honorary Guardian 22035, S.H.I.E.L.D. Deputy 54033), les illustrations de l'auteur sont des ARTS ALTERNATIFS (code « quasar », data/arts_alternatifs.json ; collection de ressources « quasar »).",
+        "bandes_note": "gs301 Quantum Bands (QUASAR 1/16, n° 2 de la liste) n'est PAS dans hero_deck : c'est l'amelioration PERMANENTE que le Setup de gs300b met en jeu (modele sk002a/b, as002a/b). Le deck de heros compte donc 15 cartes (n° 3 a 12 de la liste).",
+        "numerotation_note": "card_id = gs + (300 + n) d'apres le pied « QUASAR (n/16) », les 17 cartes portant toutes le numero imprime 4 (decision du 20/10/2026) ; Quantum Bubble porte 49 : gs349 ; identite gs300a/gs300b ; copies sous le PREMIER n/16 (Flight of Light 3/16 et 4/16 = gs303 x2). Nemesis : gs099q, gs239q, gs237q, gs240q (collisions avec Binary et Imperial Guard, voir .planning/todos/2026-10-20-gs2-questions.md)."
+    },
+    "hero": [
+        "gs300a,gs300b"
+    ],
+    "hero_deck": [
+        "gs302",
+        "gs303",
+        "gs303",
+        "gs305",
+        "gs305",
+        "gs307",
+        "gs307",
+        "gs309",
+        "gs309",
+        "gs311",
+        "gs311",
+        "gs313",
+        "gs349",
+        "gs315",
+        "gs316"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "gs065"
+    ],
+    "nemesis_set": [
+        "gs099q",
+        "gs239q",
+        "gs237q",
+        "gs240q",
+        "gs240q"
+    ],
+    "player_deck": [
+        "19012",
+        "16012",
+        "09015",
+        "09015",
+        "09015",
+        "32014",
+        "32014",
+        "32014",
+        "48014",
+        "56046",
+        "10031",
+        "09020",
+        "17020",
+        "18019",
+        "19020",
+        "21065",
+        "47021",
+        "47021",
+        "47021",
+        "01088",
+        "01089",
+        "01090",
+        "17022",
+        "22035",
+        "54033"
+    ]
+}

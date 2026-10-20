@@ -217,6 +217,21 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
             patrol_faces = MainScheme.GetPatrolFaces(by_effect)
             if patrol_faces:
                 ignored_patrol = True
+        elif getattr(by_effect.context, 'patrouille_levee_au_ciblage', False) and by_effect.IsPlayerInitiator():
+            # CORRECTIF (20/10/2026, gs315 Quantum Jump de Quasar ; vaut aussi
+            # pour hc006 On the Prowl) : la Patrouille ne verrouillait qu'AU
+            # CIBLAGE (`CanBeThwartBy` plus bas). Une carte dont l'ignorance
+            # DEPEND DU PAIEMENT (rien n'est paye au ciblage : la cible reste
+            # offerte) n'etait jamais rattrapee a la resolution : payee sans
+            # la ressource voulue, elle contrecarrait quand meme le complot
+            # principal sous Patrouille. Meme verrou que la Crise ci-dessus,
+            # mais SEULEMENT pour un effet dont le ciblage a franchi la
+            # Patrouille grace a une ignorance : tout le reste est inchange.
+            patrouilleurs = MainScheme.GetPatrolFaces(by_effect)
+            if patrouilleurs:
+                message = Message.IconsActivate_Text(self, patrouilleurs, 'Patrol')
+                message.Send()
+                return 0
 
         ret_value = super().RemoveThreatInternal(by_face, value, by_effect, thw_message)
 
@@ -276,6 +291,12 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
             if MainScheme.GetPatrolFaces(effect) != []:
                 if not effect.IsIgnoreKeyword('Patrol', effect) and effect.IsPlayerInitiator():
                     return False
+                # CORRECTIF (20/10/2026) : note que CE ciblage a franchi la
+                # Patrouille grace a une ignorance, pour la reverifier a la
+                # resolution (RemoveThreatInternal plus haut). Remis a faux
+                # par `EffectContext.ResetAfterOperation`.
+                if effect.IsPlayerInitiator():
+                    effect.context.patrouille_levee_au_ciblage = True
             # CRISE : meme verrou que Patrouille juste au-dessus, ajoute le
             # 11/09/2026 apres un rapport de joueur.
             #

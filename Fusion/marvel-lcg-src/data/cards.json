@@ -117768,5 +117768,309 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "13203c8a1e9da386cc0154f3ddb1ab642b0b2c7f309a60ad880c94d3872df108"
+ "galactic_storm": [
+  {
+   "card_id": "gs300a",
+   "type": "Hero",
+   "name": "* Quasar",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "GUARDIAN"
+   ],
+   "set_name": "Quasar",
+   "text": "<i>Channel the Bands</i> — <b>Action</b>: Exhaust Quasar → ready Quantum Bands.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs300b",
+   "type": "AlterEgo",
+   "name": "* Wendell Vaughn",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "S.H.I.E.L.D"
+   ],
+   "set_name": "Quasar",
+   "text": "<i>Chosen as the Protector</i> — <b>Setup</b>: Put Quantum Bands into play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs301",
+   "type": "Upgrade",
+   "name": "* Quantum Bands",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Quasar",
+   "text": "Permanent.\nQuasar gains the [[AERIAL]] trait.\n<b>Hero Resource</b>: Exhaust Quantum Bands → generate a [wild] resource.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs302",
+   "type": "Ally",
+   "name": "* Epoch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "4",
+    "THW": "1*",
+    "ATK": "3***",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COSMIC ENTITY"
+   ],
+   "set_name": "Quasar",
+   "text": "[star] <b>Response</b>: After Epoch uses one of her basic powers, ready Quantum Bands.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs303",
+   "type": "Event",
+   "name": "Flight of Light",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If this removes the last threat from that scheme, remove 2 threat from a scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs305",
+   "type": "Event",
+   "name": "No Holding Back",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 3 damage to an enemy for each [physical] resource you used to pay for this card. Remove 2 threat from a scheme for each [mental] resource you used to pay for this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs307",
+   "type": "Event",
+   "name": "Righteous Fury",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. If this attack defeats that enemy, ready Quasar.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs309",
+   "type": "Event",
+   "name": "Unbreakable Guard",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a friendly character would take any amount of damage, prevent all of that damage. If you paid for this card with Quantum Bands give that friendly character a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs311",
+   "type": "Resource",
+   "name": "Quantum Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Quasar",
+   "text": "<b>Response</b>: After you spend this card, ready Quantum Bands.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs313",
+   "type": "Upgrade",
+   "name": "Quantum Absorption",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Interrupt</b>: When you pay for a [[DEFENSE]] event with Quantum Bands, heal 2 damage from Quasar.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs315",
+   "type": "Upgrade",
+   "name": "Quantum Jump",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Interrupt</b>: When you pay for a [[THWART]] event with Quantum Bands, that thwart removes 2 additional threat and ignores the crisis icon ([crisis]) and the patrol keyword.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs316",
+   "type": "Upgrade",
+   "name": "Quantum Weapon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Interrupt</b>: When you pay for an [[ATTACK]] event with Quantum Bands, that attack deals 1 additional damage and gains piercing and overkill.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs349",
+   "type": "Upgrade",
+   "name": "Quantum Bubble",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Quasar",
+   "text": "<b>Hero Response</b>: After you pay for an ally with Quantum Bands, give that ally a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs065",
+   "type": "Obligation",
+   "name": "Protector of the Universe",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Wendell Vaughn",
+    "Uses": "3,duty"
+   },
+   "traits": [],
+   "set_name": "Quasar",
+   "text": "<b><i>Give to the Wendell Vaughn player.</i></b>\nUses (3 duty counters).\nYou cannot flip to alter-ego form.\n<b>Hero Response</b>: After you defeat an enemy or a scheme, or defend against an attack and take no damage, remove 1 duty counter from here.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs099q",
+   "type": "Minion",
+   "name": "* Maelstrom",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2",
+    "Nemesis": "Wendell Vaughn"
+   },
+   "traits": [
+    "DEVIANT",
+    "INHUMAN"
+   ],
+   "set_name": "Quasar Nemesis",
+   "text": "<b>When Revealed</b>: Tuck Quantum Bands under Maelstrom.\n<b>Forced Response</b>: After Maelstrom leaves play, put Quantum Bands into play under the Quasar player's control.\n<i>(Quasar's nemesis minion.)</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs239q",
+   "type": "SideScheme",
+   "name": "Entropy Ascendant",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Quasar Nemesis",
+   "text": "Hinder 1 [per_player].\nEach event card gains requirement ([energy]).",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs237q",
+   "type": "Attachment",
+   "name": "Avatar of Oblivion",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Quasar Nemesis",
+   "text": "Attach to the minion with the highest ATK. If you cannot, this card gains surge.\nAttached minion gains the [[ELITE]] trait.\n<b>Forced Interrupt</b>: When attached minion would be defeated, heal all damage from it instead, then discard this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs240q",
+   "type": "Treachery",
+   "name": "Distant Manipulation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Quasar Nemesis",
+   "text": "<b>When Revealed</b>: Choose to either exhaust each card with a \"<b>Resource</b>\" ability you control or discard each resource card from your hand. If you cannot, this card gains surge.",
+   "custom": "Kajislav"
+  }
+ ],
+ "checksum": "84ca462ae1b9ff2da8439de4664dc22c751401b19f985bb27ee392a73d87f8b2"
 }
