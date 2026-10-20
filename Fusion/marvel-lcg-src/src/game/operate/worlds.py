@@ -1010,3 +1010,7 @@ class Worlds:
 
     Enemies = Enemies
 
+    # Brique commune du 20/10/2026 : plusieurs mechants, un seul « le mechant »
+    # (game/operate/villains.py, RECETTES-MOTEUR.md §15.3).
+    from game.operate.villains import Villains
+

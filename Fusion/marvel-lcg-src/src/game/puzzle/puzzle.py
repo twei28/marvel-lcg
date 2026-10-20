@@ -769,6 +769,95 @@ class RunPuzzle:
             assert False, f"{card=} n'est ni un ennemi ni un personnage allie"
         return face
 
+    def EnemyAttacks(self, card: CardName, target: CardName, defender: CardName|None=None,
+                     overkill_to: CardName|None=None, joueur: int|None=None,
+                     **options: Any) -> 'CardFace':
+        """Brique commune du 20/10/2026 : l'ennemi CARD attaque TARGET (allie,
+        sbire, mechant), par `Enemy.AttackCharacter`. `defender` arme un
+        defenseur comme `Attack` ; `overkill_to` designe la carte qui recoit
+        l'exces quand un sbire est abattu ; `options` passe tel quel
+        (`players_may_defend`, `overkill`, `additional_attack`, `give_boost`,
+        `ally_attack_is_against_player`)."""
+        from game.card.face.base import Enemy
+        face = self.FindFaceInPlay(card)
+        cible = self.FindFaceInPlay(target)
+        assert Enemy.IsType(face), f"{card=} n'est pas un ennemi"
+        if defender is not None:
+            self._DeclareDefender(defender)
+        if overkill_to is not None:
+            options['overkill_to'] = self.FindFaceInPlay(overkill_to)
+        if joueur is not None:
+            # L'INDICE du joueur « vous » des Boost (`for_player`), 0 = le premier.
+            options['for_player'] = self.world.const_players[joueur]
+        face.CastTo(Enemy).AttackCharacter(cible, self.debug_rule, **options)
+        return face
+
+    def ProtectFromPlayerCards(self, card: CardName, attached_to: CardName|None=None,
+                               trait: str|None=None) -> 'CardFace':
+        """Brique commune du 20/10/2026 : rend une carte « insensible aux cartes
+        joueur » en passant par la VRAIE fabrique
+        `AbilityFactory.CannotBeAffectedByPlayerCards`, comme le ferait le
+        script d'une carte de campagne.
+
+        - `attached_to=None` : CARD se protege elle-meme (« This », mechant
+          HIDDEN) ; `trait` ajoute la condition « tant qu'elle a ce trait ».
+        - `attached_to=X` : CARD (un attachement) est d'abord attachee a X, puis
+          protege son porteur (« AttachedCharacter », In the Crosshairs).
+
+        La fabrique ecoute l'entree en jeu de la carte : la commande inscrit la
+        capacite puis rejoue la fenetre d'entree en jeu (`ApplyAfterEnterPlay`,
+        en retournement pour ne rien relancer d'autre)."""
+        from game.ability.factory import AbilityFactory
+        from game.card.face.attribute.can_attach import CanAttach
+        source = self.FindFaceInPlay(card)
+        if attached_to is not None:
+            hote = self.FindFaceInPlay(attached_to)
+            if not source.IsInPlay():
+                source.PutIntoPlay(self.world.GetCurrentPlayer(), self.debug_rule)
+            source.CastTo(CanAttach).AttachTo2(hote, self.debug_rule)
+            which = "AttachedCharacter"
+        else:
+            which = "This"
+        while_fn = (lambda face: face.HasTrait(trait)) if trait else None
+        source.effect.RegisterTemp(
+            AbilityFactory.CannotBeAffectedByPlayerCards(which, while_fn).NoOutOfPlayLimit(),
+            unregister_after_exec=False,
+        )
+        area = source.card.area
+        source.ApplyAfterEnterPlay(area, area, self.debug_rule, True)
+        return source
+
+    # Brique commune du 20/10/2026 : plusieurs mechants (game/operate/villains.py).
+    def SetVillainRule(self, the_villain: str="Active", player_cards: str="TheVillain") -> None:
+        """Pose `Villains.Rule` sur le scenario (« le mechant » = actif ou le
+        plus a gauche ; cartes joueur = le meme, ou au choix du joueur)."""
+        from game.operate.villains import Villains
+        Villains.SetRule(self.world, Villains.Rule(the_villain=the_villain, player_cards=player_cards))  # type: ignore
+
+    def SetActiveVillain(self, card: CardName) -> 'CardFace':
+        """Pose le compteur « active » sur ce mechant (et l'ote aux autres)."""
+        from game.operate.villains import Villains
+        from game.card.face.base import Villain
+        face = self.FindFaceInPlay(card)
+        Villains.SetActive(face.CastTo(Villain), self.debug_rule)
+        return face
+
+    def RemoveVillain(self, card: CardName) -> None:
+        """Retire ce mechant sans rien reporter (`Villains.Remove`)."""
+        from game.operate.villains import Villains
+        from game.card.face.base import Villain
+        Villains.Remove(self.FindFaceInPlay(card).CastTo(Villain), self.debug_rule)
+
+    def BuildVillainDeck(self, *cards: CardName) -> None:
+        """Melange ces mechants dans le deck de mechants (`Villains.BuildVillainDeck`)."""
+        from game.operate.villains import Villains
+        Villains.BuildVillainDeck([self.FindOrCreateFace(c) for c in cards], self.debug_rule)  # type: ignore
+
+    def RevealNextVillain(self) -> 'CardFace|None':
+        """Revele le dessus du deck de mechants, en jeu le plus a droite."""
+        from game.operate.villains import Villains
+        return Villains.RevealNextVillain(self.world.GetCurrentPlayer(), self.debug_rule)
+
     def _DeclareDefender(self, card: CardName) -> 'CardFace':
         """Arme un defenseur pour la PROCHAINE attaque, puis se retire.
 

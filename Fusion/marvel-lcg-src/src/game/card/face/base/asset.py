@@ -88,5 +88,13 @@ class Asset2(CanAttach, CardFace):
             message.Send()
             return message.can_attach_to
 
-        return check_max_per_unit() and check_cannot_attach()
+        # BRIQUE 2 (20/10/2026) : une carte joueur ne s'attache pas a une face
+        # insensible aux cartes joueur (Galactic Storm p.14 « attaching upgrades
+        # or other player cards to the villain »).
+        def check_immunite():
+            from game.operate.immunity import PlayerCardImmunity
+            from game.effect.rule import GameRule
+            return not PlayerCardImmunity.Refuses(face, GameRule(self))
+
+        return check_max_per_unit() and check_cannot_attach() and check_immunite()
 

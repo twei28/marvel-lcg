@@ -197,6 +197,17 @@ la plus fréquente sur un pack vilain.
       HUIT événements FERAL, pas sept. `CostFunc.Rampage(X)`, une ligne par carte.
       Le ★ devant et sur le coût n'est qu'un rappel)
 
+## Briques communes des campagnes Punisher MC×DC et Galactic Storm (20/10/2026)
+
+- [x] immunite-cartes-joueur.md (« cannot be affected by player cards » : CIBLÉ du Punisher
+      p183, trait HIDDEN de Galactic Storm p.14 ; `PlayerCardImmunity`,
+      `AbilityFactory.CannotBeAffectedByPlayerCards`, RECETTES §16.2)
+- [x] mechants-multiples.md (« le méchant » parmi plusieurs : méchant actif, le plus à
+      gauche, choix du joueur, deck de méchants, retrait sans report ; `Villains`,
+      RECETTES §16.3)
+- un ennemi qui attaque un ennemi ou un allié n'est pas un mot-clé : `Enemy.AttackCharacter`,
+  RECETTES §16.1 ; l'excès d'overkill de ces attaques est dans overkill.md
+
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
 Vérification faite avec l'heuristique `<b>([A-Z][a-zA-Z ]{2,20})</b>` sur

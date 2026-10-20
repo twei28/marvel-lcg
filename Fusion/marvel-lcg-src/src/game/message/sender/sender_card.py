@@ -718,6 +718,13 @@ class SenderCard:
             self.would_message = self.being_message.would_message
             self.against_player = self.would_message.property.against_player
             player = self.against_player
+            # AJOUT (20/10/2026, brique « un ennemi attaque un ennemi ») : une
+            # attaque contre un ENNEMI ne vise aucun joueur ; le « vous » des
+            # capacites Boost est alors le joueur designe par la carte qui a
+            # cause l'attaque (Galactic Storm p.9). `getattr` : la manigance
+            # (SchemeProperty) n'a pas ce champ.
+            if player is None:
+                player = getattr(self.would_message.property, 'boost_player', None)
 
             if isinstance(self.being_message, Message.WhenSchemeBeingScheme):
                 self.would_sch_message: Final = self.being_message.would_sch_message

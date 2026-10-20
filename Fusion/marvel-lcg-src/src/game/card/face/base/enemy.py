@@ -205,6 +205,98 @@ class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, CanHinder, HasThreatLeve
         Effects.UnRegister(action_effects)
         return return_val
 
+    ################################################################################
+    # BRIQUE COMMUNE (20/10/2026) : « un ennemi attaque un autre ennemi ou un
+    # allie » (campagnes Punisher MC×DC et Galactic Storm). Recette :
+    # docs/reference/RECETTES-MOTEUR.md §15.1.
+    #
+    # Une ATTAQUE DE BASE de cet ennemi contre `target`, qui peut etre un allie,
+    # un sbire, le mechant ou un autre mechant, une identite. Les degats et
+    # l'exces (overkill) tombent sur la cible. Ce qui distingue cette entree de
+    # `BasicAttack([cible])`, dont elle se sert :
+    #
+    # - cible ENNEMIE : aucun joueur n'est attaque (`against_player` None, les
+    #   capacites « attacks you » ne partent pas), et `for_player` est le
+    #   « vous » des Boost (Galactic Storm p.9 : le joueur qui a revele la carte
+    #   qui provoque l'attaque ; par defaut, le joueur de l'effet ou le premier
+    #   joueur). Personne ne defend, sauf `players_may_defend=True` (Punisher
+    #   p180) ; le defenseur devient alors la cible.
+    # - cible ALLIEE : le controleur est le joueur attaque et peut defendre
+    #   (Rules Reference 1.8 p.10, « Attacks Against Allies »).
+    #   `ally_attack_is_against_player=False` applique la variante de Galactic
+    #   Storm p.4 (« attacks you » ne part pas) : question ouverte, voir
+    #   `.planning/todos/2026-10-20-briques-communes-questions.md`.
+    # - `overkill` : True/False force le mot-cle pour CETTE attaque (None :
+    #   celui que l'attaque a deja). `overkill_to` : la cible de l'exces quand
+    #   le coup abat un SBIRE (face, ou fonction `(sbire) -> face`) ; None =
+    #   « le mechant » (RR 1.8 p.31).
+    # - `additional_attack` : « attacks ... with +2 ATK » (Punishment p213).
+    # - `give_boost=False` : « do not give him a boost card ».
+    #
+    # PAS de report apres l'activation en cours (contrairement a
+    # `DoAttackYou`) : l'appelant qui remplace une activation (« attacks X
+    # instead ») l'appelle depuis son interruption, apres `SetBeInstead`.
+    def AttackCharacter(self, target: 'CardFace', by_effect: 'Effect', *,
+                        for_player: 'Player|None'=None,
+                        players_may_defend: bool=False,
+                        ally_attack_is_against_player: bool=True,
+                        overkill: bool|None=None,
+                        overkill_to: 'CardFace|Callable[[CardFace], CardFace|None]|None'=None,
+                        additional_attack: int=0,
+                        give_boost: bool=True,
+                        property: 'AttackProperty|None'=None,
+                        if_this_defeat_unit: Callable[['CardFace'], None]|None=None,
+                        if_no_attack_was_made: Callable[[], None]|None=None,
+                        if_characters_damaged_by_this: Callable[[List['Unit2']], None|int]|None=None,
+                        ) -> 'Message.AfterUnitAttackEnd|None':
+        from game.card.face.base import Friend
+        from game.card.face.card_type import Minion
+        from game.operate.worlds import Worlds
+
+        if target is None:
+            if if_no_attack_was_made:
+                if_no_attack_was_made()
+            return None
+        target = target.card.face
+
+        if property is None:
+            property = AttackProperty(is_basic_power=True)
+        property.additional_value += additional_attack
+        if not give_boost:
+            property.do_not_give_boost = True
+        if overkill is not None:
+            property.overkill = overkill
+
+        controleur = target.GetControlBy()
+        if Friend.IsType(target) and Player.IsType(controleur):
+            property.boost_player = controleur
+            if not ally_attack_is_against_player:
+                property.not_against_player = True
+        else:
+            # Cible ennemie : aucun joueur attaque.
+            property.not_against_player = True
+            property.against_player = None
+            if for_player is None:
+                # `initiator` brut : `GetInitiator()` exige un joueur (assert).
+                initiateur = getattr(by_effect, 'initiator', None)
+                for_player = initiateur if Player.IsType(initiateur) else Worlds.GetFirstPlayer(by_effect)
+            property.boost_player = for_player
+            property.players_may_defend = players_may_defend
+
+        if overkill_to is not None:
+            def cible_de_l_exces(abattu: 'Unit2') -> 'Unit2|None':
+                if Minion.IsType(abattu):
+                    face = overkill_to(abattu) if callable(overkill_to) else overkill_to
+                    return face.card.face if face is not None else None
+                return CanAttack.DefaultOverkillTarget(abattu, by_effect)
+            property.overkill_target_fn = cible_de_l_exces
+
+        return self.BasicAttack([target], by_effect,
+                                property=property,
+                                if_this_defeat_unit=if_this_defeat_unit,
+                                if_no_attack_was_made=if_no_attack_was_made,
+                                if_characters_damaged_by_this=if_characters_damaged_by_this)
+
     def DoActivate(self, against_player: 'Player', by_effect: 'Effect', operation: Callable[['Message.WhenEnemyActivateAgainstYou'], Any]|None=None, do_not_give_boost: bool=False, if_no_activate: Callable[[], Any]|None=None) -> 'Message.AfterUnitAttackEnd|Message.AfterUnitSchemeEnd|None':
         from game.operate.effects import Effects
 

@@ -108,6 +108,11 @@ class ModelGain(ModelBase):
         refuse_gain_fn = getattr(unit, 'refuse_gain_fn', None)
         if refuse_gain_fn is not None and refuse_gain_fn(effect):
             return 0
+        # BRIQUE 2 (20/10/2026) : pas de bonus ni de mot-cle venu d'une carte
+        # joueur sur une face insensible aux cartes joueur.
+        from game.operate.immunity import PlayerCardImmunity
+        if PlayerCardImmunity.Refuses(unit, effect):
+            return 0
 
         return_val = 0
 
