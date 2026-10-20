@@ -98,7 +98,7 @@ défi 1 (ressource énergie).
 
 ### p004 — SILENCE THE CITY (2B) · Manigance principale
 - ID 6002 · The Big Apple (2B/22)
-- Menace : 8👤 · menace de départ 2👤 · accélération +1👤
+- Menace : 8👤 · menace de départ 2👤 · accélération +1👤 (confirmé en 300 dpi, PU-0 20/10/2026)
 - **Forced Interrupt**: When a villain would be defeated, instead reset their hit points and place 1 quell counter on them.
 - **Forced Response**: After the end of the player phase, if each villain has at least 1 quell counter, advance to
   stage 3A (the players win by advancing).
@@ -114,7 +114,7 @@ défi 1 (ressource énergie).
 
 ### p006 — GUNRUNNER'S WAREHOUSE (3B) · Manigance principale
 - ID 6003 · The Big Apple (3B/22)
-- Menace : 9👤 · menace de départ 0 · accélération +1👤
+- Menace : 9👤 · menace de départ 0 · accélération +1👤 (confirmé en 300 dpi, PU-0 20/10/2026 : case sans icône « par joueur »)
 - *If you can take down the gunrunner before they destroy the evidence, you can search the warehouse and find out who
   else they were selling to.*
 - The villain with Gunrunner attached is the active villain and each player is considered to be in their turf.
@@ -716,7 +716,7 @@ romains (I, II, III).
 - **Setup**: Find Target Lock and attach to Punisher, FOCUSED side up. Find Justice or Punishment? and reveal its setup side.
 
 ### p176 — ONE LAST KILL (1B) · Manigance principale
-- ID 6088 · Punishment (3B/20) · Illustration : Greg Smallwood · Menace 8👤 · menace de départ 1👤 · accélération +1👤
+- ID 6088 · Punishment (3B/20) · Illustration : Greg Smallwood · Menace 8👤 · menace de départ 1👤 · accélération +1👤 (confirmé en 300 dpi, PU-0 20/10/2026)
 - *Punisher sets his sights on the villain as they try to escape. But you need them alive to get answers about the escalating
   gang war.*
 - **When Revealed**: Find and reveal Punisher's M1911s.
@@ -728,7 +728,7 @@ romains (I, II, III).
 - **When Revealed**: Find and reveal Punisher's Assault Rifle. Flip Target Lock to its DISTRACTED side.
 
 ### p178 — ESCAPING PUNISHMENT (2B) · Manigance principale
-- ID 6089 · Punishment (4B/20) · Illustration : E.M. Gist · Menace 9👤 · menace de départ 1👤 · accélération +1👤
+- ID 6089 · Punishment (4B/20) · Illustration : E.M. Gist · Menace 9👤 · menace de départ 1👤 · accélération +1👤 (confirmé en 300 dpi, PU-0 20/10/2026)
 - *The villain frantically searches for an exit. SWAT surrounds the building. Punisher is out for blood. Can you stop him and
   capture the villain alive?*
 - **Forced Response**: After resolving step one of the villain phase, the TARGETED villain activates against the first player.
@@ -1249,7 +1249,27 @@ dit la mise en place du combat et ce qu'il faut gagner pour passer au suivant. M
 - **Pas dans ce PDF** (cités par la campagne, à fournir ou à reprendre des sets officiels) : les sets « Cops » et « Tracksuit
   Mafia » (FNE = Fear No Evil), le méchant Kingpin (combat 4), les manigances principales *Art Museum Heist, The Getaway, The Raft
   Breakout, Protection Racket, Stop the Presses!* (combat 2, probablement de Fear No Evil), le set « Gunrunner » est fourni (p007).
-- **À revérifier sur les scans** (marqués `[?]`) : icônes dans les cadres de texte (ressource ou aptitude), quelques menaces de
-  départ « par joueur », le tableau des manigances principales du combat 2 (p265), les PV de l'allié Punisher (p275).
+- **Marques `[?]` levées le 20/10/2026** (PU-0, comparaison directe aux scans 200 dpi de
+  `paquets-cartes/MC x DC 2026 - campagne Punisher/scans/`, pas de doute restant après relecture) :
+  - Icônes dans les cadres de texte (ressource ou aptitude) : chaque occurrence du fichier (lignes « Icône(s) dans le
+    cadre », p041 Bank Robbery, p043 Like and Subscribe!, p129 Putting the Pieces Together, p237 SWAT, p261 The
+    Syndicate) porte déjà l'annotation « relu en 300 dpi » ; aucune occurrence sans cette annotation n'a été trouvée
+    dans le corps du fichier (recherche exhaustive sur « icône »). Rien à corriger.
+  - Menaces de départ « par joueur » (4 manigances sans l'annotation « confirmé ») : comparées scan contre texte —
+    **p004** *Silence the City (2B)* : scan = 8👤 / départ 2👤 / +1👤 → texte ligne 101 identique. **p006**
+    *Gunrunner's Warehouse (3B)* : scan = 9👤 / départ **0 sans icône « par joueur »** (case vide, pas de 👤) / +1👤 →
+    texte ligne 117 identique. **p176** *One Last Kill (1B/3B)* : scan = 8👤 / départ 1👤 / +1👤 → texte ligne 719
+    identique. **p178** *Escaping Punishment (2A/4B)* : scan = 9👤 / départ 1👤 / +1👤 → texte ligne 731 identique.
+    Les quatre valeurs étaient déjà correctement transcrites ; la mention « (confirmé en 300 dpi) » leur est ajoutée.
+  - Tableau des manigances principales du combat 2 (**p265**, *Tracking the Buyer*) : comparé case par case au scan —
+    Art Museum Heist = Theater District + Financial District ; The Getaway = Hell's Kitchen + Lower East Side ;
+    The Raft Breakout = Upper East Side + Midtown ; Protection Racket = Chinatown (seule case) ; Stop the Presses! =
+    West Village + Soho. Les 9 colonnes et 5 lignes du scan correspondent exactement au tableau déjà transcrit
+    (ligne 1077-1081). Rien à corriger.
+  - PV de l'allié Punisher (**p275**, combat 4/Kingsfall) : pastille orange en bas à droite du scan = **3**, identique
+    à la valeur déjà transcrite (ligne 1156). Rien à corriger.
+  - **Conclusion : aucune carte n'avait de valeur erronée** ; les quatre marques « menace de départ » ont reçu
+    l'annotation de confirmation qui manquait, les trois autres catégories étaient déjà annotées « relu en 300 dpi »
+    dans le corps du texte et seule cette note de synthèse, restée périmée depuis le 19/10, ne le reflétait pas.
 - **Rien n'est codé.** Pour coder, suivre `docs/reference/PROCESSUS-CARTE.md` carte par carte, avec les scans de
   `paquets-cartes/MC x DC 2026 - campagne Punisher/scans/pNNN.jpg`.
