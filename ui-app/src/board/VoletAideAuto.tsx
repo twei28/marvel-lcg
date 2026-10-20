@@ -10,6 +10,8 @@ const PENDANT_LA_PARTIE: Raccourci[] = [
   { touches: 'E  Espace', effet: 'Finir ton tour' },
   { touches: 'Entrée  Espace', effet: 'Étape suivante pendant le déroulé d’une phase' },
   { touches: 'U', effet: 'Annuler' },
+  { touches: 'B', effet: 'Copier le rapport de bug (les 20 dernières entrées du journal), sans ouvrir de panneau' },
+  { touches: '1 à 9', effet: 'Choisir l’option portant ce numéro dans le cartouche du bas' },
   { touches: 'Échap  ×', effet: 'Annuler l’action en cours : la partie revient avant le choix de la carte' },
 ]
 

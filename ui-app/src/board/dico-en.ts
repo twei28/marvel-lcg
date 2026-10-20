@@ -243,6 +243,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   "Finir ton tour": "End your turn",
   "Entrée  Espace": "Enter  Space",
   "Étape suivante pendant le déroulé d’une phase": "Next step while a phase unfolds",
+  'Copier le rapport de bug (les 20 dernières entrées du journal), sans ouvrir de panneau':
+    'Copy the bug report (the last 20 journal entries) without opening a panel',
+  'Choisir l’option portant ce numéro dans le cartouche du bas':
+    'Pick the option carrying that number in the bottom card',
   "Alt + glisser": "Alt + drag",
   "Changer la place d’une carte dans sa rangée (soutiens, alliés…) : un trait jaune montre où elle se pose. Ton ordre est gardé pendant la partie, et seul toi le vois.": "Move a card within its row (supports, allies…): a yellow line shows where it lands. Your order is kept for the game, and only you see it.",
   "Alt + glisser une amélioration": "Alt + drag an upgrade",
