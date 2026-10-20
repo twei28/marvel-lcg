@@ -114,3 +114,16 @@ le contrôle ne change pas si le jeton de premier joueur passe à un autre.
 2. Le contrôle suit le jeton de premier joueur à chaque round. Change en jeu : la protection de Rick passe d'un joueur
    à l'autre ; nécessite un transfert de contrôle à chaque début de round (non codé).
 3. Autre (préciser).
+
+## Réponses de l'utilisateur (20/10/2026)
+
+Toutes en option recommandée, donc conformes à ce qui est codé : rien à changer.
+- Q1 : « completes » lu comme « completed » (dernier stade, perte de partie à son accomplissement).
+- Q2 : une seule instance de dégâts égale au nombre de Poignes attachées.
+- Q3 : une carte joker en main n'est pas [energy]/[mental]/[physical] imprimée pour Electron/Nightside/Pulsar.
+- Q4 : une Poigne à 3-4 dégâts est mise de côté aussitôt si Death Grip quitte le jeu (état relu en continu).
+- Q5 : le joueur qui révèle Intruder Elimination choisit, parmi tous les personnages non KREE en jeu.
+- Q6 : Fang ne défausse que des cartes EN JEU (pas la main).
+- Q7 : Gladiator épargne Rick Jones (allié de rencontre, « scenario specific »).
+- Q8 : la règle des 9 cartes d'Imperial Guard s'applique partout, pas de version complète séparée.
+- Q9 : le contrôle de Rick Jones reste au premier joueur du Setup, ne suit pas le jeton de premier joueur.
