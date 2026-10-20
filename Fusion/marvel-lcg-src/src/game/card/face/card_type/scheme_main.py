@@ -299,6 +299,12 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
         return super().CanBeThwartBy(effect)
 
     def GainTargetThreatValue(self, value: int, effect: 'Effect'):
+        # AJOUT (20/10/2026, Galactic Storm gs198b Protectors of the Kree Empire) : « The target threat
+        # value of this scheme cannot be changed. » Toute modification (ajout ET retrait d'un bonus) est
+        # ignoree, ce qui garde l'aller-retour symetrique. Meme lecture du texte imprime que la regle
+        # « If this stage is completed, the players lose the game » (GetAbilities ci-dessus).
+        if "target threat value of this scheme cannot be changed" in self.paper.text:
+            return
         if self.target_threat != None:
             self.target_threat += value
 

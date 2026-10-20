@@ -1882,5 +1882,18 @@
   "encounters": [],
   "max_id": "se011"
  },
- "checksum": "e6c1914ae7c2e4bd9e1dddc996aa461645bb701ccae1246c9a068f5e9e7e22b9"
+ "144. Custom (Galactic Storm)": {
+  "name": "galactic_storm",
+  "scenarios": [
+   "gs_supreme_intelligence"
+  ],
+  "heroes": [],
+  "encounters": [
+   "gs_starforce",
+   "gs_seeds_of_corruption",
+   "gs_nega_bomb"
+  ],
+  "max_id": "gs223"
+ },
+ "checksum": "0d8c240e2cd469e10f166778321a3bab324a8072414b135689626715268c7f2c"
 }

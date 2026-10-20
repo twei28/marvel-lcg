@@ -246,6 +246,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (DEFENDER, MARTIAL ARTIST, TECHNIQUE, PERSONA, SKILL, SUPERPOWER, ITEM...) existaient deja.
         # Declaratif a l'execution, comme les autres.
         "K'UN-LUN",
+        # AJOUT (20/10/2026, Galactic Storm GS-8, Kajislav) : trait STARFORCE (sbires gs204, gs209-gs216).
+        # PAS decoratif : gs198a/gs198b/gs199a/gs208/gs217 mettent de cote, comptent et cherchent par ce trait.
+        "STARFORCE",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -342,6 +345,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, aspect TMNT Justice) : « scorch counter » de uj039 Zebulon, « rope counters »
         # de uj034 Turtle Line (Uses 3).
         'scorch', 'rope',
+        # AJOUT (20/10/2026, Galactic Storm GS-8, Kajislav) : « integrity counters » de gs200
+        # Holding Tank (Uses 7 par joueur). `time` (gs222a Nega-Bomb) existait deja.
+        'integrity',
 
         'progress', 'sym', 'luck', 'deploy', 'supply', 'missile', 'operation', 'speed', 
         'staff', 'mission', 'leap', 'lock', 'parley', 'bystander', 'doubt', 'target', 
