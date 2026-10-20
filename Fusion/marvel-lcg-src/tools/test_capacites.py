@@ -45292,6 +45292,67 @@ CAS = [
                     "defausse_sans": ["18020", "60040a"]},
     },
     {
+        "nom": "60040a Photographic Reflexes — chemin A ABSENT quand l'evenement glisse n'est pas payable (autoplay graine 4)",
+        "pourquoi": ("Decision de l'utilisateur du 20/10/2026 (backlog 13, Q1) : « you can "
+                     "discard ... TO play an event » ; le geste n'a de sens que s'il y a quoi "
+                     "jouer. Hit and Run (18020) coute 3, soit 1 apres reduction, et il ne reste "
+                     "en main QUE cette Photographic Reflexes, qui ne peut pas payer la carte "
+                     "qu'elle autorise. Avant : l'action etait offerte, la carte partait en "
+                     "defausse et rien n'etait joue (autoplay echo/rhino graine 4)"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "jouer": ["18020"],
+        "declencher_apres": ["Puzzle.Gain('60040a')"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["18020"], "action_offerte": [["60040a", False]],
+                    "main_avec": ["60040a"]},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — chemin A PRESENT et joue des que l'evenement glisse est payable",
+        "pourquoi": ("Le bout positif du cas precedent : meme position, plus une carte de "
+                     "ressource (01088) pour payer le 1 restant. Le geste est offert et va au "
+                     "bout : Hit and Run part de sous Echo (4 degats), Photographic Reflexes "
+                     "est defaussee"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "ne_pas_depenser": ["60040a"],
+        "declencher": [],
+        "jouer": ["18020"],
+        "declencher_apres": ["Puzzle.Gain('60040a')", "Puzzle.Gain('01088')"],
+        "action_en_main": ["60040a"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": [], "degats": [["01094", 4]],
+                    "defausse_avec": ["60040a", "18020"]},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — chemin A avec DEUX copies : la seconde paie l'evenement",
+        "pourquoi": ("La garde du 25/09/2026 interdit a une Photographic Reflexes de payer la "
+                     "carte qu'ELLE autorise ; elle l'autorise si une SECONDE copie porte ce "
+                     "cout. Sur le chemin A, la copie cliquee est deja defaussee comme cout : "
+                     "la seconde est donc une AUTRE carte et peut payer. Sans cela, le geste "
+                     "serait offert (le chemin B accepte la position) puis echouerait, et la "
+                     "copie cliquee serait perdue pour rien"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "jouer": ["18020"],
+        "declencher_apres": ["Puzzle.Gain('60040a')", "Puzzle.Gain('60040b')"],
+        "action_en_main": ["60040a"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": [], "degats": [["01094", 4]],
+                    "defausse_avec": ["60040a", "60040b", "18020"]},
+    },
+    {
         "nom": "60040a Photographic Reflexes — la reduction de 2 NE COUVRE PAS l'exigence de couleur",
         "pourquoi": ("LE SEUL temoin qui distingue une REDUCTION DE COUT de la generation "
                      "de deux ressources wild qu'Echo faisait avant. 28013 No Quarter coute 2 "
@@ -47331,6 +47392,61 @@ CAS = [
         "jouer": ["dt105"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["dt105"], "hors_jeu": ["dt016"], "defausse": ["dt016"]},
+    },
+    {
+        "nom": "dt105 Venompool [dt] — +1 ATQ par carte face cachee devant vous : 2 cartes, +2",
+        "pourquoi": ("« Venompool gets +1 ATK for each facedown encounter card in front of you "
+                     "(to a maximum of +3 ATK). » Trouve par l'autoplay du deck de test (backlog "
+                     "13, 20/10/2026) : `OnEvent.GameArea()` faisait planter l'entree en jeu "
+                     "(AssertionError avalee), le bonus ne partait jamais"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt105', under_control=True)"],
+        "declencher": ["Puzzle.Deal('01101')", "Puzzle.Deal('01101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dt105", "attack", 2]]},
+    },
+    {
+        "nom": "dt105 Venompool [dt] — le bonus plafonne a +3 ATQ (4 cartes face cachee)",
+        "pourquoi": "« (to a maximum of +3 ATK) » : temoin du plafond, 4 cartes distribuees, +3 seulement",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt105', under_control=True)"],
+        "declencher": ["Puzzle.Deal('01101')", "Puzzle.Deal('01101')",
+                       "Puzzle.Deal('01101')", "Puzzle.Deal('01101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dt105", "attack", 3]]},
+    },
+    {
+        "nom": "dt106 Captain Universe [dt] — degats consecutifs reduits du nombre de cartes face cachee",
+        "pourquoi": ("« Interrupt: When Captain Universe would take any amount of consequential "
+                     "damage, reduce that amount by X, where X is the number of facedown "
+                     "encounter cards in front of you. » Trouve par l'autoplay du deck de test "
+                     "(backlog 13, 20/10/2026) : `PreventDamage` n'existe pas sur ce message, "
+                     "AttributeError avalee, aucune reduction. ATQ 3** = 2 degats consecutifs ; "
+                     "2 cartes face cachee : 0 degat"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt106', under_control=True)"],
+        "declencher": ["Puzzle.Deal('01101')", "Puzzle.Deal('01101')", "Puzzle.Attack('dt106')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["dt106", 0], ["01094", 3]]},
+    },
+    {
+        "nom": "dt106 Captain Universe [dt] — temoin : sans carte face cachee, les degats consecutifs passent",
+        "pourquoi": "ligne de base du cas precedent : meme attaque, aucune carte distribuee (vert sans module, assume)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt106', under_control=True)"],
+        "declencher": ["Puzzle.Attack('dt106')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["dt106", 2], ["01094", 3]]},
     },
     {
         "nom": "dt105 Venompool [dt] — temoin : sans homonyme controle, pas de gratuite, la carte reste en main",

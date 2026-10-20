@@ -1,6 +1,20 @@
-# Questions ouvertes, backlog 13 (réserves de gabarits, 20/10/2026)
+# Questions, backlog 13 (réserves de gabarits, 20/10/2026) : CLOSES
 
-Rien ci-dessous n'a été tranché ni codé. Une question par carte (ou par
+**Les deux questions sont tranchées par l'utilisateur (20/10/2026) et
+appliquées** :
+
+- **Q1 → option A** : le geste « cliquer Photographic Reflexes en main »
+  n'est plus offert quand aucun événement glissé n'est jouable ou payable
+  après la réduction de 2. Correctif `fne/echo/__init__.py`, trois cas
+  sujets ; détail dans `2026-09-21-echo-gabarits-processus-carte.md`.
+- **Q2 → option A** : deck de test jetable
+  `tools/decks-de-test/fleeting-alias-determination.json`, autoplay fait
+  (24 parties), deux défauts trouvés et corrigés (`dt105`, `dt106`) ; détail
+  dans `2026-09-29-fleeting-alias-gabarits-processus-carte.md`.
+
+Texte d'origine des questions, conservé ci-dessous.
+
+Rien ci-dessous n'avait été tranché ni codé au moment de la rédaction. Une question par carte (ou par
 groupe de cartes au texte identique), à poser une à la fois, en montrant
 d'abord le scan indiqué (règle de `PROCESSUS-CARTE.md` étape 3 et mémoire
 « questions une à une, avec image »).

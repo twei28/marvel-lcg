@@ -231,8 +231,27 @@ l'écart de timing `IsInProcessingArea`, nommé.*
 le geste soit visible à l'écran) et l'étape 8. Le moteur est juste et mesuré ;
 l'écran ne l'est pas.
 
-*20/10/2026 : étapes 8 et 8 bis faites, preuves ci-dessus.* **Carte
-terminée : NON**, pour une seule raison nouvelle : le chemin A est offert
+*20/10/2026, plus tard : Q1 TRANCHÉE par l'utilisateur* (« retirer le geste
+quand aucun événement glissé n'est jouable ou payable après la réduction de
+2 »). Correctif dans `fne/echo/__init__.py` : `il_y_a_un_evenement_glisse`
+pose la question du chemin B (`FilterAvailableEffects` sur le « Play » de
+chaque carte glissée) PUIS vérifie le paiement (`JeuPayableSans` : somme des
+moyens listés, une entrée par carte payeuse, la Photographic Reflexes cliquée
+écartée), car l'offre du moteur ne vérifie jamais le paiement. Corollaire :
+la garde du 25/09 laisse une SECONDE copie payer sur le chemin A (la copie
+cliquée est déjà partie en coût). Trois cas sujets, vus ROUGES avant le
+correctif : « chemin A ABSENT quand l'evenement glisse n'est pas payable »
+(« action OFFERTE, attendu absente »), « chemin A avec DEUX copies »
+(« cartes glissees ['18020'], attendu [] »), et le témoin « chemin A PRESENT
+et joue des que l'evenement glisse est payable » (vert avant et après).
+Filtre `6004` : 16/16 ; filtre `Echo` : 18/18 ; fixture du plateau inchangée
+(régénérée, identique) ; autoplay echo/rhino rejoué, 8 parties, 0 traceback,
+plus aucune « Cancel » après une Photographic Reflexes (graine 4 réglée).
+**Carte terminée : OUI** (60040a, et 60040b / 60040c par le même
+constructeur).
+
+*Texte du premier passage du 20/10, conservé :* **Carte terminée : NON**,
+pour une seule raison nouvelle : le chemin A est offert
 quand aucun événement glissé n'est payable, et la carte est alors défaussée
 pour rien (autoplay graine 4, reproduit au harnais). C'est un doute de règle,
 posé en Q1 de `.planning/todos/2026-10-20-backlog-13-questions.md` ; la carte
@@ -265,7 +284,8 @@ s'arrête au calcul de ce qui est dessiné et cliquable, pas aux pixels.
       `substituer_pack.py` : rouges 2/2).
 
 **Carte terminée : NON**, pour la même raison que `60040a` (étape 8 bis).
-*20/10/2026 : même statut que `60040a`, en attente de Q1 seulement.*
+*20/10/2026 : Q1 tranchée et corrigée (voir `60040a`).* **Carte terminée :
+OUI.**
 
 ---
 
@@ -288,4 +308,5 @@ s'arrête au calcul de ce qui est dessiné et cliquable, pas aux pixels.
       rendue sur son objet 13 », rouges 1/1).
 
 **Carte terminée : NON**, pour la même raison.
-*20/10/2026 : même statut que `60040a`, en attente de Q1 seulement.*
+*20/10/2026 : Q1 tranchée et corrigée (voir `60040a`).* **Carte terminée :
+OUI.**

@@ -26,6 +26,49 @@ tenue : tout rouge ou vert surprenant se rejoue seul avant conclusion.
 > deck de test pour l'autoplay toucherait la règle « pas de deck inventé » :
 > la question est posée (Q2 de
 > `.planning/todos/2026-10-20-backlog-13-questions.md`), rien n'a été tranché.
+>
+> **LEVÉE LE 20/10/2026, après la réponse de l'utilisateur à Q2** (« oui, un
+> deck de test jetable, uniquement dans les outils de test »).
+>
+> - **Le deck est un OUTIL DE TEST** :
+>   `Fusion/marvel-lcg-src/tools/decks-de-test/fleeting-alias-determination.json`.
+>   Jamais dans `deck/starter/`, jamais proposé aux joueurs, lu seulement par
+>   `autoplay.py --deck <chemin absolu>`. Spider-Man (moitié signature de son
+>   deck de départ) + `dt087` ×3, `dt100`, `dt105`, `dt106`, `dt107`, les
+>   homonymes `dt016` Deadpool et `33019` Angel (deck volontairement non
+>   légal), le reste en cartes basiques de Spider-Man. Le motif est écrit
+>   dans son champ `metadata.outil_de_test`.
+> - **Premier passage, 12 parties contre Rhino : DEUX DÉFAUTS RÉELS**, que
+>   les cas verts ne voyaient pas (exceptions avalées par le moteur) :
+>   1. `dt105` Venompool : `change_on_event=OnEvent.GameArea()` n'a pas de
+>      `GenerateAbilities` (`assert False`, on_event.py) : l'entrée en jeu
+>      plantait et le bonus d'ATQ ne partait jamais. Corrigé en
+>      `OnEvent.DealtEncounterCard("You")` (modèle 17010 Star-Lord's Helmet).
+>   2. `dt106` Captain Universe : `message.PreventDamage` n'existe pas sur
+>      `WhenAllyWouldTakeConsequentialDamage` (AttributeError) : aucune
+>      réduction. Corrigé en `ReduceDamage`, plafonné aux dégâts prévus.
+>   Quatre cas sujets ajoutés, vus ROUGES sur le code d'avant
+>   (« dt105.attack=2 (imprime 2, attendu 4) », « attendu 5 »,
+>   « degats sur dt106 = 2 (attendu 0) ») puis verts : +2 ATQ avec 2 cartes
+>   face cachée, plafond +3 avec 4, Captain Universe 0 dégât conséquent avec
+>   2 cartes, témoin sans carte 2 dégâts. Filtre `[dt] —` : 14/14.
+> - **Second passage, 12 parties : 0 traceback** (grep
+>   `NameError|AttributeError|TypeError|KeyError|AssertionError|Traceback`
+>   sur les 12 journaux). Cartes vues en jeu dans les journaux : `dt087`
+>   joué 5 fois (attaché à Rhino après des dégâts, défaussé à la fin de la
+>   phase du méchant, 1 dégât à Rhino ET à Vulture : Fleeting et son
+>   Interrupt vont au bout) ; `dt100` 4, `dt105` 5, `dt106` 3, `dt107` 6 ;
+>   7 jeux GRATUITS par Alias, chacun suivi de la défausse d'un homonyme
+>   (ex. graine 12 : Captain Universe gratuit, Deadpool défaussé, puis
+>   « Ces dégâts sont ajustés de -1 » sur son dégât conséquent).
+> - **Une partie bloquée sur 12** (graine 5), étrangère à ces cartes : le
+>   pilote répète la `Hero_Action` de `01093` Tenacity, refusée (« failed »).
+>   Non instruit ici.
+> - **Même défaut, NON corrigé (hors périmètre, aucun cas)** : `dt112`
+>   Spiral et `dt126` Rage portent aussi `change_on_event=OnEvent.GameArea()`.
+>
+> **Cartes terminées : OUI** pour `dt087`, `dt100`, `dt105`, `dt106`,
+> `dt107` (étape 8 faite sur le deck de test).
 
 ## dt087 : "Get 'Em, Boom-Boom!"
 
