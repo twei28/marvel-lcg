@@ -94,3 +94,14 @@ Image : `z3/Scenario Packs/Supreme Intelligence.../Setup cards/04 protectors of 
   joueurs) ; gs199b : départ 1, escalade +1, objectif 11, les trois PAR JOUEUR (la transcription oubliait l'objectif).
 - Icônes au centre de la boîte de texte : Acceleration (gs203, gs205, dessin de sk229), Hazard (gs207, dessin de
   sk234), Amplify (gs206). Icône de ressource des Seeds : mentale (comparée à sk003 Wiccan, RES=B).
+
+## Réponses de l'utilisateur (20/10/2026)
+
+Principe rappelé par l'utilisateur : toujours suivre à 100 % les règles du jeu, sauf si la carte ou la campagne dit le contraire. Aucun changement de code n'est nécessaire : toutes les lectures retenues étaient déjà codées.
+- Q1 : les deux Supremor sont mis de côté avec les sbires STARFORCE (à la lettre).
+- Q2 : « Find » fouille deck et défausse rencontre et zone mise de côté, pas la pile de victoire ni la zone retirée (conforme au Rules Reference 1.6 : « find » ne cherche pas dans la pile de victoire).
+- Q3 : tout compteur nommé sur une carte en jeu, cartes joueur comprises ; choix automatique de la sorte.
+- Q4 : Holding Tank est défaussée, pas mise en pile de victoire. Règle officielle : « When a card with the victory X keyword is defeated, place it in the victory display » (Hall of Heroes, liste des mots-clés). Un attachement ne peut pas être vaincu : Uses le défausse, il ne va donc pas en pile de victoire. Le moteur est conforme, `has_uses.py` reste intact. (À rouvrir seulement si une carte de campagne dit autre chose.)
+- Q5 : seule une icône [mental] imprimée étourdit (un joker défaussé n'étourdit pas).
+- Q6 : décidée par cohérence avec Entropy Ascendant (Quasar Q-GS2-3) : un événement à 0 exige 1 ressource [mental].
+- Q7 : la Crise ne bloque pas le remplacement de 1B (la Crise n'empêche que le retrait de menace par contre ; 1B remplace l'achèvement).
