@@ -119721,7 +119721,7 @@
    "traits": [
     "NEGATIVE ZONE"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Annihilus",
    "text": "[star] <b>Forced Response</b>: After Annihilus activates against you, discard cards from the top of your deck until you discard an identity-specific card.",
    "custom": "Kajislav"
   },
@@ -119739,7 +119739,7 @@
    "traits": [
     "NEGATIVE ZONE"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Annihilus",
    "text": "Toughness.\n[star] <b>Forced Response</b>: After Annihilus activates against you, discard cards from the top of your deck until you discard an identity-specific card.",
    "custom": "Kajislav"
   },
@@ -119752,7 +119752,7 @@
     "Hinder": "1"
    },
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Annihilus",
    "text": "Hinder 1.\n<b>When Defeated</b>: Each player may shuffle 1 identity-specific card from their discard pile into their deck.",
    "custom": "Kajislav"
   },
@@ -119763,7 +119763,7 @@
    "subtitle": "",
    "desc": {},
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Annihilus",
    "text": "<b>When Revealed</b>: Discard cards from the top of your deck until you discard an identity-specific card. Take 1 indirect damage (to a maximum of 3) for each card discarded this way.",
    "custom": "Kajislav"
   },
@@ -119781,7 +119781,7 @@
    "traits": [
     "ATLANTIS"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Attuma",
    "text": "[star] While another ATLANTIS card is in play, Attuma gets +1 SCH and +1 ATK.",
    "custom": "Kajislav"
   },
@@ -119799,7 +119799,7 @@
    "traits": [
     "ATLANTIS"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Attuma",
    "text": "Toughness.\n[star] While another ATLANTIS card is in play, Attuma gets +1 SCH and +1 ATK.",
    "custom": "Kajislav"
   },
@@ -119815,7 +119815,7 @@
     "ATLANTIS",
     "ITEM"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Attuma",
    "text": "Attach to an ATLANTIS enemy. Otherwise, attach to the villain.\nAttached character gets +5 hit points.\n<b>Hero Action</b>: Spend [energy][physical] resources &rarr; discard this card.",
    "custom": "Kajislav"
   },
@@ -119831,7 +119831,7 @@
     "ARMOR",
     "ATLANTIS"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Attuma",
    "text": "Attach to an ATLANTIS enemy. Otherwise, attach to the villain.\nReduce the damage attached enemy takes from each attack by 1.\n<b>Hero Action</b>: Spend [physical][physical] resources &rarr; discard this card.",
    "custom": "Kajislav"
   },
@@ -119849,7 +119849,7 @@
     "ATLANTIS",
     "ELITE"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Attuma",
    "text": "[star] While another ATLANTIS card is in play, Andromeda gains retaliate 2.",
    "custom": "Kajislav",
    "unique": true
@@ -119865,7 +119865,7 @@
    "traits": [
     "ATLANTIS"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Attuma",
    "text": "Hinder 1.\n<b>When Revealed</b>: Place 1 threat on the main scheme for each ATLANTIS card in play.",
    "custom": "Kajislav"
   },
@@ -119883,7 +119883,7 @@
    "traits": [
     "ASGARD"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Destroyer",
    "text": "[star] Excess damage dealt by Destroyer's attacks is placed as threat on the main scheme.",
    "custom": "Kajislav"
   },
@@ -119901,7 +119901,7 @@
    "traits": [
     "ASGARD"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Destroyer",
    "text": "Toughness.\n[star] Excess damage dealt by Destroyer's attacks is placed as threat on the main scheme.",
    "custom": "Kajislav"
   },
@@ -119911,12 +119911,12 @@
    "name": "Uru Armor Plating",
    "subtitle": "",
    "desc": {
-    "Uses": "3"
+    "Uses": "3,plate"
    },
    "traits": [
     "ARMOR"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Destroyer",
    "text": "CONDITION.\nAttach to Destroyer. Otherwise, attach to the enemy with the least remaining hit points.\nUses (3 plate counters).\n<b>Forced Interrupt</b>: When attached enemy would take any amount of damage, prevent 2 of that damage and remove 1 plate counter from here.",
    "custom": "Kajislav"
   },
@@ -119929,7 +119929,7 @@
     "Hinder": "1"
    },
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Destroyer",
    "text": "<i>Loki unleashed the Destroyer on Earth to fulfill his plan to destroy Thor and his allies.</i>\nHinder 1.\n[star] <b>Boost</b>: If this attack deals excess damage, place it as threat on the main scheme.",
    "custom": "Kajislav"
   },
@@ -119940,7 +119940,7 @@
    "subtitle": "",
    "desc": {},
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Destroyer",
    "text": "<b>When Revealed</b>: Deal 3 damage to a character you control. If that character took excess damage that way, place it as threat on the main scheme.\n<hr />\n[star] <b>Boost</b>: If this attack deals excess damage, place it as threat on the main scheme.",
    "custom": "Kajislav"
   },
@@ -119959,7 +119959,7 @@
     "KREE",
     "SCIENTIST"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Doctor Minerva",
    "text": "[star] <b>Forced Response</b>: After Doctor Minerva schemes against you, deal yourself a facedown encounter card.",
    "custom": "Kajislav"
   },
@@ -119978,7 +119978,7 @@
     "KREE",
     "SCIENTIST"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Doctor Minerva",
    "text": "Toughness.\n[star] <b>Forced Response</b>: After Doctor Minerva schemes against you, deal yourself a facedown encounter card.",
    "custom": "Kajislav"
   },
@@ -119988,10 +119988,10 @@
    "name": "Induced Mutation",
    "subtitle": "",
    "desc": {
-    "Uses": "3"
+    "Uses": "3,duration"
    },
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Doctor Minerva",
    "text": "CONDITION.\nAttach to the villain and give it a tough status card.\nUses (3 duration counters).\n[star] <b>Forced Interrupt</b>: When the villain activates, give it 1 additional boost card for that activation and remove 1 duration counter from here.",
    "custom": "Kajislav"
   },
@@ -120009,7 +120009,7 @@
     "KREE",
     "SOLDIER"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Doctor Minerva",
    "text": "[star] <b>Forced Response</b>: After Captain Atlas attacks you, deal yourself a facedown encounter card.",
    "custom": "Kajislav",
    "unique": true
@@ -120023,7 +120023,7 @@
     "Hinder": "1"
    },
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Doctor Minerva",
    "text": "<i>Owl Robotics, a cover corporation on Earth that Doctor Minerva employs to conceal her experiments.</i>\nHinder 1.\n[star] <b>Boost</b>: If this activation is a scheme, reveal this card.",
    "custom": "Kajislav"
   },
@@ -120042,7 +120042,7 @@
     "GENIUS",
     "SUBTERRANEAN"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Mole Man",
    "text": "[star] <b>Forced Response</b>: After Mole Man attacks you, shuffle a SUBTERRANEAN minion from the encounter discard pile into the encounter deck.",
    "custom": "Kajislav"
   },
@@ -120061,7 +120061,7 @@
     "GENIUS",
     "SUBTERRANEAN"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Mole Man",
    "text": "Toughness.\n[star] <b>Forced Response</b>: After Mole Man attacks you, shuffle a SUBTERRANEAN minion from the encounter discard pile into the encounter deck.",
    "custom": "Kajislav"
   },
@@ -120078,7 +120078,7 @@
    "traits": [
     "SUBTERRANEAN"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Mole Man",
    "text": "Guard.\n<b>Forced Response</b>: After Moloid enters play, search the encounter deck for a SUBTERRANEAN minion and put it into play engaged with you.",
    "custom": "Kajislav"
   },
@@ -120089,7 +120089,7 @@
    "subtitle": "",
    "desc": {},
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Mole Man",
    "text": "<b>When Revealed</b>: Deal 1 damage to each non-AERIAL character you control. If no damage was dealt this way, this card gains surge. If no SUBTERRANEAN enemy is in play, shuffle this card into the encounter deck.",
    "custom": "Kajislav"
   },
@@ -120107,7 +120107,7 @@
    "traits": [
     "SKRULL"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Veranke",
    "text": "[star] Players cannot defend against Veranke's attacks.",
    "custom": "Kajislav"
   },
@@ -120125,7 +120125,7 @@
    "traits": [
     "SKRULL"
    ],
-   "set_name": "Earth Under Siege",
+   "set_name": "Veranke",
    "text": "Toughness.\n[star] Players cannot defend against Veranke's attacks.",
    "custom": "Kajislav"
   },
@@ -120136,7 +120136,7 @@
    "subtitle": "",
    "desc": {},
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Veranke",
    "text": "CONDITION.\nAttached minion gains the SKRULL trait.\n<b>When Revealed</b>: If your nemesis minion is in play, attach this card to it. Then, it activates against you. Otherwise, find your nemesis minion, reveal it and attach this card to it.",
    "custom": "Kajislav"
   },
@@ -120147,7 +120147,7 @@
    "subtitle": "",
    "desc": {},
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Veranke",
    "text": "CONDITION.\nTreat attached ally as a SKRULL minion with a blank text box. Attached minion's SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: Attach to an ally you control without Replaced attached. Attached ally engages its controller. Otherwise, this card gains surge.",
    "custom": "Kajislav"
   },
@@ -120160,7 +120160,7 @@
     "Hinder": "1"
    },
    "traits": [],
-   "set_name": "Earth Under Siege",
+   "set_name": "Veranke",
    "text": "<i>They change shape. Aliens or not, whatever they are, they got in. They got into S.H.I.E.L.D. and the Avengers.</i>\nHinder 1.\n<b>Forced Interrupt</b>: When an ally leaves play, place 1 acceleration token here.",
    "custom": "Kajislav"
   },
@@ -121144,5 +121144,5 @@
    "ability_link": "01193"
   }
  ],
- "checksum": "bb9847218527ca55fedbccdbf6213a26b7b0fd18e11a23a0c9c72c674f755057"
+ "checksum": "6abc815e5338c25e215ebe0ea4d7030113865f5abdf876eff539c26fcc321eed"
 }

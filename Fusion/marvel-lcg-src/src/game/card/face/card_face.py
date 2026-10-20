@@ -501,6 +501,15 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # scenario (gs150-gs152) via « Remove 1 hideout counter from Hala ». Sans cette entree
         # `IsCounter` refuse le nom et la pose du jeton echoue.
         'hideout',
+        # AJOUT (20/10/2026) : scenario Earth Under Siege (Galactic Storm, Kajislav, GS-7). 'safety' :
+        # jetons de SECURITE de la manigance principale gs161a/b Earthfall (« Place 6 safety counters
+        # here », puis « remove 1 safety counter from here »). Sans cette entree `IsCounter` refuse le
+        # nom et la pose du jeton echoue.
+        'safety',
+        # AJOUT (20/10/2026) : scenario Earth Under Siege (Galactic Storm, Kajislav, GS-7). 'plate'
+        # (gs178 Uru Armor Plating : « Uses (3 plate counters) ») et 'duration' (gs183 Induced Mutation :
+        # « Uses (3 duration counters) »). Sans ces entrees `IsCounter` refuse le nom.
+        'plate', 'duration',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

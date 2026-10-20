@@ -14,6 +14,9 @@ from cards.pack import *
 #  - Forgotten Life (Binary) imprime « 4 » comme Pursued by the Flame : elle
 #    prend `gs031`, son rang dans la liste du deck de depart imprimee
 #    (question Q1 de .planning/todos/2026-10-20-gs1-questions.md).
+#  - Les 10 cartes « habillees » Standard/Expert d'Earth Under Siege (Assault, Advance... reimprimees avec
+#    l'art de la boite) ne portent AUCUN numero imprime : `gsr01`-`gsr10`, decision utilisateur du
+#    20/10/2026 (lot GS-7), ability_link vers les cartes core 01186-01193.
 #
 # Sets de ce dossier (FileManager.CleanName) :
 #   - `Binary`         -> binary/
@@ -23,6 +26,9 @@ from cards.pack import *
 #   - `Majestrix's Verdict` -> majestrixs_verdict/ (scenario 2, lot GS-5)
 #   - `Supreme Intelligence`, `Starforce`, `Seeds of Corruption`, `Nega Bomb` -> supreme_intelligence/, starforce/,
 #     seeds_of_corruption/, nega_bomb/ (scenario 5 et modulaires, lot GS-8)
+#   - `Earth Under Siege`, `Annihilus`, `Attuma`, `Destroyer`, `Doctor Minerva`, `Mole Man`, `Veranke` ->
+#     earth_under_siege/ (scenario 4, lot GS-7, EN COURS). Premier scenario a cabler la brique « plusieurs
+#     mechants en jeu » (`game/operate/villains.py`, `mots-cles/mechants-multiples.md`).
 # ===========================================================================
 
 # ⚠ Les helpers partages vivent dans le `__init__.py` DU SET, pas ici (les
