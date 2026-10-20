@@ -17,6 +17,37 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
+    def resoudre_en_choisissant_la_cible(chanson: 'CardFace', joueur: 'Player',
+                                         effect: 'Effect', ref: 'Message2') -> bool:
+        """Resout la Hero Action de `chanson` en laissant le JOUEUR choisir sa cible.
+
+        CORRECTIF DU 20/10/2026 (backlog 12) : `CardFace.ResolveAbility`
+        (card_face.py) remplit les cibles tout seul avec les PREMIERES cibles
+        legales, sans rien demander (meme defaut que celui que `CiblesShowtime`
+        contourne pour les Showtime!). Pour une Hero Action a UNE cible
+        (« an enemy », « a scheme », « a non-ELITE minion »), on pose la
+        question puis on resout par le meme chemin que le moteur. Rend False
+        quand ce cas ne s'applique pas : l'appelant retombe alors sur
+        `Faces.ResolveAbility` (cibles multiples, choix internes, aucune cible).
+        """
+        if chanson.is_treat_as_if_blank:
+            return False
+        for trouve in chanson.effect.Find(type=AbilityType.HeroAction):
+            trouve.checker.UpdateLegalTargets()
+            legales = [f for f in (trouve.context.all_legal_targets or [])
+                       if f is not None]
+            fourchette = trouve.context.target_range
+            if len(legales) < 2 or tuple(fourchette) != (1, 1):
+                return False
+            choisie = joueur.AskChooseOneText(legales)
+            if choisie is None or choisie not in legales:
+                choisie = legales[0]
+            trouve.context.targets_internal = [choisie]
+            trouve.context.initiator = chanson.GetControlByOrOwner()
+            trouve.ResolveToPlayer(joueur, effect, ref)
+            return True
+        return False
+
     def karaoke(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Support)
         Unused(this)
@@ -41,8 +72,9 @@ def GetAbilities() -> Sequence['Ability']:
         # `WhenCardRevealed`, qui EST dans la liste. Modele : le defi
         # Symbiote Smackdown (2414), qui passe aussi son message.
         ref = Message.WhenPlayerInTurn(joueur, effect)
-        Faces.ResolveAbility([chanson], joueur, AbilityType.HeroAction,
-                             effect, ref)
+        if not resoudre_en_choisissant_la_cible(chanson, joueur, effect, ref):
+            Faces.ResolveAbility([chanson], joueur, AbilityType.HeroAction,
+                                 effect, ref)
         OublierLaSetlist(effect, [chanson])
         Faces.DiscardAll([chanson], effect)
 

@@ -845,6 +845,21 @@ class RunPuzzle:
         controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
         return face
 
+    def EndPlayerTurn(self) -> None:
+        """FERME le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnEnd
+        puis AfterPlayerTurnEnd).
+
+        AJOUT (20/10/2026, backlog 12, dz032 « Captivating Performance »). Ni
+        `EndPlayerPhase` ni `BeginVillainPhase` n'envoient la fin de TOUR : un
+        effet « this turn » (`RegisterTemp(until_turn_end=True)`) restait vivant et
+        un cas sur sa duree etait vert avec la mauvaise duree. Additif.
+        """
+        from game.message import Message
+        player = self.world.GetCurrentPlayer()
+        turn_end_message = Message.WhenPlayerTurnEnd(player, self.world.round_id)
+        turn_end_message.Send()
+        Message.AfterPlayerTurnEnd(player, turn_end_message).Send()
+
     def EndPlayerPhase(self) -> None:
         """FERME la phase des joueurs, comme `phase_end("Player")` du moteur.
 
