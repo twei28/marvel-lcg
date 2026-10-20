@@ -1886,7 +1886,8 @@
   "name": "galactic_storm",
   "scenarios": [
    "gs_majestrix_verdict",
-   "gs_supreme_intelligence"
+   "gs_supreme_intelligence",
+   "gs_kree_sentry"
   ],
   "heroes": [
    "binary",
@@ -1896,9 +1897,11 @@
    "gs_majestrix_verdict",
    "gs_starforce",
    "gs_seeds_of_corruption",
-   "gs_nega_bomb"
+   "gs_nega_bomb",
+   "gs_kree_sentry",
+   "gs_imperial_guard"
   ],
   "max_id": "gs223"
  },
- "checksum": "53ac02066d269e13137ea891125c12af74553bad2ea96fa309d4567281bbb811"
+ "checksum": "2395506067b66f29c050f08ea666ceb021f25e2ed30c4daaac684af5b33a2657"
 }
