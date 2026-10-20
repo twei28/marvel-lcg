@@ -73,6 +73,9 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "17028": [
     "mcdc26"
   ],
+  "18011": [
+    "mcdc26"
+  ],
   "18012": [
     "tmnt"
   ],
@@ -81,6 +84,12 @@ export const ARTS_CARTES: Record<string, string[]> = {
   ],
   "20026": [
     "tmnt"
+  ],
+  "21013": [
+    "mcdc26"
+  ],
+  "21014": [
+    "mcdc26"
   ],
   "21043": [
     "tmnt"
@@ -103,6 +112,9 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "25014": [
     "mcdc26"
   ],
+  "27010": [
+    "mcdc26"
+  ],
   "27012": [
     "mcdc26"
   ],
@@ -110,6 +122,9 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "mcdc26"
   ],
   "27044": [
+    "mcdc26"
+  ],
+  "27049": [
     "mcdc26"
   ],
   "28013": [
@@ -126,7 +141,8 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "mcdc26"
   ],
   "30019": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
   ],
   "30021": [
     "mcdc26"
@@ -138,7 +154,8 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "tmnt"
   ],
   "31029": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
   ],
   "32014": [
     "tmnt"
@@ -302,6 +319,7 @@ export const ORIGINES_CARTES: Record<string, string> = {
   "21063": "01081",
   "22019": "01065",
   "23020": "01071",
+  "25015": "18011",
   "25017": "01057",
   "34024": "05033",
   "36026": "05023",
@@ -312,6 +330,7 @@ export const ORIGINES_CARTES: Record<string, string> = {
   "45046": "18012",
   "48017": "32014",
   "50053": "06031",
+  "52022": "27049",
   "56014": "46014",
   "56015": "19030",
   "59027": "31023",

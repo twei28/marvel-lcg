@@ -28,10 +28,12 @@ CARTES = {
     "29027": ("basic", "B - ingenuity - RP.jpg", 6149),
     "13018": ("basic", "B - ironheart - RP.jpg", 6145),
     "32019": ("basic", "B - professor x - RP.jpg", 6146),
+    "27049": ("basic", "B - spider man peter - RP.jpg", 6143),
     "30021": ("basic", "B - spdr - RP.jpg", 6148),
     "31022": ("basic", "B - spider man otto - RP.jpg", 6147),
     # Aggression
     "13016": ("aggression", "A - boot camp - RP.jpg", 6157),
+    "18011": ("aggression", "A - angela - RP.jpg", 6153),
     "17028": ("aggression", "A - dive bomb - RP.jpg", 6155),
     "28017": ("aggression", "A - honed technique - RP.jpg", 6152),
     "10018": ("aggression", "A - martial prowess - RP.jpg", 6156),
@@ -45,10 +47,14 @@ CARTES = {
     "22011": ("justice", "J - eros - RP.jpg", 6164),
     "27044": ("justice", "J - field agent - RP.jpg", 6165),
     "30013": ("justice", "J - spider man pavitr - RP.jpg", 6162),
+    "30019": ("justice", "J - overwatch - RP.jpg", 6159),
     # Leadership
     "23012": ("leadership", "L - black panther - RP.jpg", 6172),
     "49015": ("leadership", "L - cyclops - RP.jpg", 6167),
     "08031": ("leadership", "L - rapid response - RP.jpg", 6170),
+    "21013": ("leadership", "L - white tiger - RP.jpg", 6169),
+    "21014": ("leadership", "L - kaluu - RP.jpg", 6171),
+    "31029": ("leadership", "L - clarity of purpose - RP.jpg", 6168),
     "45016": ("leadership", "L - side by side - RP.jpg", 6173),
     "03017": ("leadership", "L - strength in numbers - RP.jpg", 6166),
     # Protection
@@ -57,6 +63,7 @@ CARTES = {
     "10031": ("protection", "P - electrostatic armor - RP.jpg", 6181),
     "52019": ("protection", "P - ready for a fight - RP.jpg", 6175),
     "48012": ("protection", "P - rogue - RP.jpg", 6178),
+    "27010": ("protection", "P - silk - RP.jpg", 6180),
     "27012": ("protection", "P - spider UK - RP.jpg", 6177),
     "27016": ("protection", "P - what doesnt kill me - RP.jpg", 6174),
 }

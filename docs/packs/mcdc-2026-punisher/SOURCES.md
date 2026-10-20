@@ -17,6 +17,7 @@ MC/DC, `team@mcdc.fun`, non redistribués dans ce dépôt). Pour les retrouver :
 
 ## 3. Galerie des cartes MC/DC 2026 (20/10/2026)
 - Page : https://www.mcdc.fun/2026-card-gallery. Les 215 images uniques sont téléchargées dans `sources/galerie/<section>/` par `telecharger-galerie.py` (relançable) ; inventaire dans `GALERIE.md`.
-- Les 41 reprints (RP) de cette galerie sont le booster « Full-art » : 31 sont branchés comme arts alternatifs (`importer-full-art.py`, code `mcdc26`, images 615×882 dans `assets/pics/<id>_mcdc26.jpg`), 10 attendent une réponse dans `.planning/todos/2026-10-20-mcdc-full-art-questions.md`.
+- Les 41 reprints (RP) de cette galerie sont le booster « Full-art » : 38 sont branchés comme arts alternatifs (`importer-full-art.py`, code `mcdc26`, images 615×882 dans `assets/pics/<id>_mcdc26.jpg`), 3 ne le sont pas : Heli-Quincarrier et Wiccan (décision utilisateur), Punisher 6138 (voir plus bas). Décisions dans `.planning/todos/2026-10-20-mcdc-full-art-questions.md`.
+- **Punisher 6138** (`A - punisher - RP.jpg`) : carte NOUVELLE, Aggression, Ally coût 3, THW 1, ATK 2*, Soldier / Vigilante, « ★ Punisher's attacks gain piercing and ranged. Response: After Punisher attacks and defeats a minion, deal 2 damage to an enemy. » À créer avec le chantier de la campagne Punisher (PROCESSUS-CARTE.md) ; son illustration est cette image de la galerie. Aucun branchement.
 - Les autres sections (scénarios, lieux, méchants, sous-fifres, sets modulaires, cartes de campagne et de défi) sont de la matière pour la future campagne Punisher : téléchargées seulement, non intégrées.
 - Crédit : « Full Art Reprints : MC/DC 2026 (Jonah, Marvin, Scott, Tim) » dans `public/credits.html` et dans les nouveautés.

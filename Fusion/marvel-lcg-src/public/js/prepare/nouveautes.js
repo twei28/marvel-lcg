@@ -49,8 +49,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-20",
         genre: "jeu",
-        fr: "31 cartes d'aspect existent maintenant en version pleine illustration, proposée comme art alternatif à l'assignation d'un deck. Full Art Reprints : MC/DC 2026 (Jonah, Marvin, Scott, Tim).",
-        en: "31 aspect cards now exist in a full-art version, offered as an alternate art when a deck is assigned. Full Art Reprints: MC/DC 2026 (Jonah, Marvin, Scott, Tim).",
+        fr: "38 cartes d'aspect existent maintenant en version pleine illustration, proposée comme art alternatif à l'assignation d'un deck. Full Art Reprints : MC/DC 2026 (Jonah, Marvin, Scott, Tim).",
+        en: "38 aspect cards now exist in a full-art version, offered as an alternate art when a deck is assigned. Full Art Reprints: MC/DC 2026 (Jonah, Marvin, Scott, Tim).",
     },
     {
         date: "2026-10-19",

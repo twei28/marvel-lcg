@@ -38,7 +38,7 @@ def main():
     arts = json.load(open(RACINE / "data" / "arts_alternatifs.json", encoding="utf-8"))
     jeu = cartes_du_jeu()
     ids = sorted(i for i, codes in arts["cartes"].items() if CODE in codes)
-    assert len(ids) >= 30, f"attendu au moins 30 cartes {CODE}, trouve {len(ids)}"
+    assert len(ids) >= 38, f"attendu au moins 38 cartes {CODE}, trouve {len(ids)}"
     exclusifs = {s for serie in arts["series"].values() for s in serie["sets_exclusifs"]}
     http = None
     if "--http" in sys.argv:

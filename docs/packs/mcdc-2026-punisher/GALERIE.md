@@ -4,7 +4,7 @@ Source : https://www.mcdc.fun/2026-card-gallery (site Squarespace). Relevé du 2
 
 Sections : les ancres `#basic` à `#other` ne délimitent que les cinq aspects, la section « campaign-challenge » et « other » ; les images qui précèdent `#basic` dans la page (scénarios, lieux, méchants, sous-fifres, sets modulaires) sont rangées sous `campagne-punisher`. Types lus dans le nom de fichier : DS = deux faces (A/B), AE et RE = cartes de campagne, RP = REPRINT (art alternatif d'une carte du jeu). Préfixe d'un reprint : B Basic, A Aggression, J Justice, L Leadership, P Protection.
 
-Les reprints (41) sont traités par `importer-full-art.py` : la colonne « Branché » donne la carte du jeu remplacée (`card_id`) ; « question » renvoie à `.planning/todos/2026-10-20-mcdc-full-art-questions.md`. Les autres sections sont à télécharger seulement (future campagne Punisher), non intégrées.
+Les reprints (41) sont traités par `importer-full-art.py` : la colonne « Branché » donne la carte du jeu remplacée (`card_id`) ; les cas non branchés sont tranchés dans `.planning/todos/2026-10-20-mcdc-full-art-questions.md`. Les autres sections sont à télécharger seulement (future campagne Punisher), non intégrées.
 
 
 ## Campagne Punisher (scénarios, lieux, méchants, sous-fifres, sets modulaires) (154 images)
@@ -171,19 +171,19 @@ Les reprints (41) sont traités par `importer-full-art.py` : la colonne « Branc
 | N° | Nom | Type | Aspect | Fichier | Dimensions | Poids | Branché |
 |---|---|---|---|---|---|---|---|
 | 6144 | face the past | reprint (art alternatif) | Basic | oui | 1500×2150 | 424 Ko | `49022` |
-| 6142 | heli_quincarrier | reprint (art alternatif) | Basic | oui | 1500×2150 | 434 Ko | question |
+| 6142 | heli_quincarrier | reprint (art alternatif) | Basic | oui | 1500×2150 | 434 Ko | non branchée, décision utilisateur |
 | 6149 | ingenuity | reprint (art alternatif) | Basic | oui | 1500×2150 | 463 Ko | `29027` |
 | 6145 | ironheart | reprint (art alternatif) | Basic | oui | 1500×2150 | 439 Ko | `13018` |
 | 6146 | professor x | reprint (art alternatif) | Basic | oui | 1500×2150 | 361 Ko | `32019` |
 | 6148 | spdr | reprint (art alternatif) | Basic | oui | 1500×2150 | 365 Ko | `30021` |
 | 6147 | spider man otto | reprint (art alternatif) | Basic | oui | 1500×2150 | 537 Ko | `31022` |
-| 6143 | spider man peter | reprint (art alternatif) | Basic | oui | 1500×2150 | 403 Ko | question |
+| 6143 | spider man peter | reprint (art alternatif) | Basic | oui | 1500×2150 | 403 Ko | `27049` |
 
 ## #aggression (8 images)
 
 | N° | Nom | Type | Aspect | Fichier | Dimensions | Poids | Branché |
 |---|---|---|---|---|---|---|---|
-| 6153 | angela | reprint (art alternatif) | Aggression | oui | 1500×2150 | 598 Ko | question |
+| 6153 | angela | reprint (art alternatif) | Aggression | oui | 1500×2150 | 598 Ko | `18011` |
 | 6157 | boot camp | reprint (art alternatif) | Aggression | oui | 1500×2150 | 392 Ko | `13016` |
 | 6155 | dive bomb | reprint (art alternatif) | Aggression | oui | 1500×2150 | 397 Ko | `17028` |
 | 6152 | honed technique | reprint (art alternatif) | Aggression | oui | 1500×2150 | 771 Ko | `28017` |
@@ -201,22 +201,22 @@ Les reprints (41) sont traités par `importer-full-art.py` : la colonne « Branc
 | 6160 | CTA | reprint (art alternatif) | Justice | oui | 1500×2150 | 486 Ko | `04049` |
 | 6164 | eros | reprint (art alternatif) | Justice | oui | 1500×2150 | 356 Ko | `22011` |
 | 6165 | field agent | reprint (art alternatif) | Justice | oui | 1500×2150 | 407 Ko | `27044` |
-| 6159 | overwatch | reprint (art alternatif) | Justice | oui | 1500×2150 | 492 Ko | question |
+| 6159 | overwatch | reprint (art alternatif) | Justice | oui | 1500×2150 | 492 Ko | `30019` |
 | 6162 | spider man pavitr | reprint (art alternatif) | Justice | oui | 1500×2150 | 503 Ko | `30013` |
-| 6158 | wiccan | reprint (art alternatif) | Justice | oui | 1500×2150 | 425 Ko | question |
+| 6158 | wiccan | reprint (art alternatif) | Justice | oui | 1500×2150 | 425 Ko | non branchée, décision utilisateur |
 
 ## #leadership (8 images)
 
 | N° | Nom | Type | Aspect | Fichier | Dimensions | Poids | Branché |
 |---|---|---|---|---|---|---|---|
 | 6172 | black panther | reprint (art alternatif) | Leadership | oui | 1500×2150 | 439 Ko | `23012` |
-| 6168 | clarity of purpose | reprint (art alternatif) | Leadership | oui | 1500×2150 | 563 Ko | question |
+| 6168 | clarity of purpose | reprint (art alternatif) | Leadership | oui | 1500×2150 | 563 Ko | `31029` |
 | 6167 | cyclops | reprint (art alternatif) | Leadership | oui | 1500×2150 | 411 Ko | `49015` |
-| 6171 | kaluu | reprint (art alternatif) | Leadership | oui | 1500×2150 | 412 Ko | question |
+| 6171 | kaluu | reprint (art alternatif) | Leadership | oui | 1500×2150 | 412 Ko | `21014` |
 | 6170 | rapid response | reprint (art alternatif) | Leadership | oui | 1500×2150 | 532 Ko | `08031` |
 | 6173 | side by side | reprint (art alternatif) | Leadership | oui | 1500×2150 | 553 Ko | `45016` |
 | 6166 | strength in numbers | reprint (art alternatif) | Leadership | oui | 1500×2150 | 451 Ko | `03017` |
-| 6169 | white tiger | reprint (art alternatif) | Leadership | oui | 1500×2150 | 551 Ko | question |
+| 6169 | white tiger | reprint (art alternatif) | Leadership | oui | 1500×2150 | 551 Ko | `21013` |
 
 ## #protection (8 images)
 
@@ -227,7 +227,7 @@ Les reprints (41) sont traités par `importer-full-art.py` : la colonne « Branc
 | 6181 | electrostatic armor | reprint (art alternatif) | Protection | oui | 1500×2150 | 581 Ko | `10031` |
 | 6175 | ready for a fight | reprint (art alternatif) | Protection | oui | 1500×2150 | 637 Ko | `52019` |
 | 6178 | rogue | reprint (art alternatif) | Protection | oui | 1500×2150 | 419 Ko | `48012` |
-| 6180 | silk | reprint (art alternatif) | Protection | oui | 1500×2150 | 409 Ko | question |
+| 6180 | silk | reprint (art alternatif) | Protection | oui | 1500×2150 | 409 Ko | `27010` |
 | 6177 | spider UK | reprint (art alternatif) | Protection | oui | 1500×2150 | 530 Ko | `27012` |
 | 6174 | what doesnt kill me | reprint (art alternatif) | Protection | oui | 1500×2150 | 577 Ko | `27016` |
 
@@ -255,7 +255,7 @@ Les reprints (41) sont traités par `importer-full-art.py` : la colonne « Branc
 
 | N° | Nom | Type | Aspect | Fichier | Dimensions | Poids | Branché |
 |---|---|---|---|---|---|---|---|
-| 6138 | punisher | reprint (art alternatif) | Aggression | oui | 1500×2150 | 454 Ko | introuvable (question) |
+| 6138 | punisher | reprint (art alternatif) | Aggression | oui | 1500×2150 | 454 Ko | à créer avec la campagne Punisher |
 | 6139 | Capo of the Past | carte de campagne (RE) |  | oui | 1500×2150 | 392 Ko |  |
 | 6182A | Clint Barton | deux faces |  | oui | 1500×2150 | 404 Ko |  |
 | 6182B | Hawkeye | deux faces |  | oui | 1500×2150 | 418 Ko |  |

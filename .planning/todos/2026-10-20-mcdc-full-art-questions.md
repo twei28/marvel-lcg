@@ -1,4 +1,18 @@
-# Full Art Reprints MC/DC 2026 : 10 cartes non branchées, une question chacune (20/10/2026)
+# Full Art Reprints MC/DC 2026 : les 10 questions sont TRANCHÉES (20/10/2026)
+
+## Décisions de l'utilisateur (20/10/2026), toutes closes
+- BRANCHÉES (art alternatif `mcdc26`) : Q2 Spider-Man Peter (B.) Parker sur 27049 ; Q3 Angela sur 18011 ; Q4 Kaluu sur 21014 ;
+  Q5 Silk sur 27010 ; Q6 White Tiger sur 21013 (le moteur joue la carte du jeu, la clause « pas de numéro d'étape » absente de
+  l'image reste active) ; Q8 Overwatch sur 30019 ; Q9 Clarity of Purpose sur 31029 (« Max 1 » lu comme dans le jeu : par manigance /
+  par personnage). Total : 38 cartes branchées.
+- NON BRANCHÉES, décision utilisateur : Q1 Heli-Quincarrier (carte plaisanterie), Q7 Wiccan (effet différent). Les images restent
+  dans la galerie téléchargée.
+- Q10 Punisher 6138 : à CRÉER avec la campagne Punisher (carte nouvelle Aggression, alliée), voir `docs/packs/mcdc-2026-punisher/SOURCES.md` ;
+  pas de branchement.
+
+Le texte ci-dessous est l'historique des questions posées (état avant décision ; « 31 branchées » y valait avant les sept ajouts).
+
+# Historique : 10 cartes non branchées, une question chacune (20/10/2026)
 
 Contexte : la galerie https://www.mcdc.fun/2026-card-gallery contient 41 « reprints » en pleine illustration (RP, numéros MC/DC
 6138 et 6142 à 6181). 31 sont branchés comme arts alternatifs (code `mcdc26`, voir `docs/packs/mcdc-2026-punisher/GALERIE.md`
