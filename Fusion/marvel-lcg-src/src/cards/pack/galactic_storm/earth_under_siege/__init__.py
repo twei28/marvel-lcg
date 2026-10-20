@@ -114,6 +114,20 @@ def CapacitesDestroyer() -> List['Ability']:
     ]
 
 
+def CapacitesDoctorMinerva() -> List['Ability']:
+    """Stades I et II (gs181/gs182), texte identique hors Toughness. Texte imprime « Forces Response »
+    (faute d'impression, sans « d » : transcrit tel quel sur les deux stades) : « After Doctor Minerva
+    schemes against you, deal yourself a facedown encounter card. »"""
+    def apres_manigance(effect: 'Effect', message: 'Message.AfterUnitSchemeEnd') -> None:
+        joueur = message.GetAgainstPlayer()
+        if joueur is not None:
+            joueur.DealEncounterCards(1, effect)
+
+    return [
+        AbilityFactory.AfterUnitSchemeEnd(AbilityType.ForcedResponse, "This", apres_manigance),
+    ]
+
+
 def UneAutreCarteAtlantisEstEnJeu(effect: 'Effect', ui: 'List[CardFace]') -> int:
     """« While/for each ATLANTIS card is in play » hors This : partage par gs174 Andromeda et gs175 Rising
     Sea Levels."""
