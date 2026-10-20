@@ -21,7 +21,7 @@ for (const scenario of ['rhino', 'klaw', 'klaw-ameliorations', 'klaw-defense', '
   console.log(`Partie de test créée : ${scenario}`)
   await page.addInitScript(() => {
     localStorage.setItem('mc_affichage_v1', 'normal')
-    localStorage.setItem('mc_phase_presentation', 'bis')
+    localStorage.setItem('mc_phase_presentation', 'tris')
     localStorage.setItem('marvel-langue-choisie', '1')
     localStorage.setItem('marvel-langue', 'fr')
     localStorage.setItem('marvel-board-mode-phase-mechant', 'sur-table')
@@ -124,6 +124,11 @@ for (const scenario of ['rhino', 'klaw', 'klaw-ameliorations', 'klaw-defense', '
         expect(boostsLus.size, 'les boosts ont été lus avant de choisir la prévention de dégâts').toBeGreaterThan(0)
         await expect(barriere).toBeEnabled()
         await expect(page.locator('.tsm-utilisable[aria-label*="Barrière énergétique"]')).toHaveCount(0)
+        // Depuis l'éventail du 19/10/2026 (T14), l'amélioration à jouer est AUSSI une vraie carte posée à côté de son
+        // porteur : on la survole d'abord (la souris venait d'ailleurs), puis le bouton nommé du bandeau.
+        await expect(page.locator('.tsm-eventail-carte').first()).toBeVisible()
+        await page.locator('.tsm-eventail-carte').first().hover()
+        await expect(page.locator('.carte-apercu')).toBeVisible()
         await barriere.hover()
         await expect(page.locator('.carte-apercu')).toBeVisible()
         const source = page.locator('.plateau-cadre .scan-card.kind-upgrade[aria-label*="Barrière énergétique"] .scan-frame').first()

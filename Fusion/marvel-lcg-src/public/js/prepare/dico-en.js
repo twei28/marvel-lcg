@@ -990,6 +990,7 @@ export const DICO_EN_BASE = {
     "You can change it at any time: the Display button at the top of this page, or Settings during a game.",
   // Fenêtre « Choisis ta phase du méchant » (app.js, demanderLaPhaseDuMechant, 05/10/2026).
   "Choisis ta phase du méchant": "Choose your villain phase",
+  "Choix de la phase du méchant": "Choose the villain phase",
   "Image précédente": "Previous image",
   "Image suivante": "Next image",
   "Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.":
@@ -1018,6 +1019,8 @@ export const DICO_EN_BASE = {
     "You see much less of what happens: a possible bug is much harder to spot.",
   "Tu pourras changer à tout moment : Réglages en partie, onglet Jeu.":
     "You can change it at any time: Settings during a game, Game tab.",
+  "Modifiable à tout moment : Réglages en partie, onglet Jeu.":
+    "Can be changed at any time: Settings during a game, Game tab.",
   // Réglage d'affichage (affichage.js, 03/10/2026).
   "Affichage normal": "Normal display",
   "Affichage sobre": "Muted display",

@@ -118,6 +118,8 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
     // LE MODE QUI NOUS INTÉRESSE, écrit explicitement : c'est le défaut du
     // jeu, mais un test ne doit pas dépendre d'un défaut.
     localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille');
+    // « detaille » se lit « tris » depuis le 19/10/2026 (Guidée) : posé explicitement, jamais par défaut.
+    localStorage.setItem('mc_phase_presentation', 'tris');
     localStorage.setItem('marvel-board-avance-auto', 'off');
   });
 
