@@ -61,7 +61,7 @@ Ici les gains sont des **choix du joueur** (`type: "choix"`, `obligatoire: true`
 | `final` | sur le dernier | `true` sur le dernier scénario : le panneau dit « La campagne est gagnée ! » et les champs communs sautent. |
 | `defaite` | non | **Ce qui perd la campagne** (scénario final seulement) : `{"quand": "partie_perdue" \| "cle_absente", "cle": "<clé>", "expert_seulement": true, "texte": "…"}`. `partie_perdue` : perdre ce scénario perd la campagne. `cle_absente` : la campagne est perdue si `cle` manque au carnet (AoA : `Professor Saved`). `expert_seulement` : la règle ne vaut qu'en expert (**vrai partout sauf AoA**). `texte` : ce que le livret raconte. |
 | `reprise` | non | **Faut-il re-préparer avant de rejouer ?** (AOS seulement) : `{"quand": "partie_perdue", "standard_seulement": true, "titre", "texte", "cle_compte", "cle_preuves"}`. |
-| `defaite_continue` | non | `true` : **une défaite ne fait PAS rejouer** ce scénario : elle a ses propres gains, le panneau s'ouvre aussi à la défaite et la campagne passe au suivant (Hunting Season). |
+| `defaite_continue` | non | `true` : **une défaite ne fait PAS rejouer** ce scénario (ignoré sur un scénario `final`) : elle a ses propres gains, le panneau s'ouvre aussi à la défaite et la campagne passe au suivant (Hunting Season). |
 | `pages` | oui | `{ "intro": [...], "regles": [...], "epilogue": [...] }` : noms de fichiers du dossier `public/stories/<code>/`. **Tu laisses `{}`** si tu n'as pas les pages ; Claude les ajoute. Une planche qui termine un scénario ET ouvre le suivant n'est pas dupliquée. |
 | `victoire` | oui (peut être `[]`) | Les **champs du carnet** notés après ce scénario (§8.3.3). |
 | `manigance`, `environnement` | ordre libre | `manigance: true` = scénario interchangeable ; `environnement: "60205a,60205b"` = la carte qui entre en jeu selon l'issue. |
@@ -92,10 +92,10 @@ Ici les gains sont des **choix du joueur** (`type: "choix"`, `obligatoire: true`
 | `options` | non | Les `card_id` proposés : **choix** → un seul (cartes cliquables) ; **auto + liste** → plusieurs (cases à cocher) ; avec `detection`, les `options` sont **les cartes que le détecteur cherche**. |
 | `detection` | non | Un détecteur (§8.4). **Facultatif pour une boîte à collecteur**, **nécessaire** pour une boîte sans collecteur. |
 | `parametres` | non | Paramètres du détecteur (`{"compteur": "delay"}`, `{"complot": "04122", "type": "Ally"}`). |
-| `condition` | non | Le champ n'est **présenté** que si la condition est vraie. Une seule : `"complot_absent"` + `parametres.complot` (le complot n'est plus en jeu). **Une condition inconnue MASQUE le champ** : on n'accorde pas une récompense dont on ne sait pas évaluer la règle. |
-| `cumulatif` | non | `true` + `format: "int"` : le carnet **cumule** ce champ d'un scénario à l'autre (la valeur détectée est ce que la partie **ajoute**, pas le total). |
+| `condition` | non | Le champ n'est **présenté** que si la condition est vraie. Une seule : `"complot_absent"` + `parametres.complot` (le complot **annexe** n'est plus dans `area_schemes_side`). **Une condition inconnue MASQUE le champ** : on n'accorde pas une récompense dont on ne sait pas évaluer la règle. |
+| `cumulatif` | non | `true` + `format: "int"` : le carnet **cumule** ce champ d'un scénario à l'autre. Vrai pour une valeur **issue d'un détecteur** (elle est ce que la partie **ajoute**, le panneau additionne) ; une valeur relevée par le **collecteur du moteur** est déjà cumulée et n'est **pas** additionnée une seconde fois. |
 | `tirage` | non | `{"cle_piste": "<clé>", "paliers": [1, 13, 21]}` : le champ se **tire au sort** à chaque palier atteint par la piste `cle_piste`. Exige `type: "auto"`, `options` non vide, `paliers` croissants d'entiers positifs, et que `cle_piste` soit déclarée **avant** ce champ. Cumulatif et irréversible. |
-| `deck` | non | `"requis"` : le **moteur cherche cette carte dans le deck du joueur** à la mise en place suivante ; l'écran refuse, au retour de « Modifier les decks », un deck qui ne la contient plus. Exige `parJoueur`. |
+| `deck` | non | `"requis"` : **l'écran** refuse, au retour de « Modifier les decks », un deck qui ne contient plus la carte notée. Le drapeau ne fait que cela : **la recherche dans le deck est faite par ton script** à la mise en place suivante (modèle : `sm/campaign.py`). Exige `parJoueur`. |
 | `cases` | non | Un tableau de cases à cocher : `[{"titre": "Antalya", "exigences": ["Nemesis minion", "…"]}]` ; le carnet garde `« Titre: exigence »` pour chaque case cochée (Skrull Menace). |
 
 **Exemples réels, un par comportement :**
@@ -149,10 +149,10 @@ inexistant. **N'invente pas de détecteur** : s'il en manque un, `A_FAIRE_CLAUDE
 | `compteur_manigance` | la valeur d'un compteur sur la manigance principale (le **maximum** si plusieurs) | `compteur` (`"delay"`) | Pions retard de Zola |
 | `cartes_du_joueur` | parmi `options`, celles que **ce joueur possède** désormais (où qu'elles soient) | — | Alliés secourus de Taskmaster |
 | `joueurs_engages` | les **indices** (`"0"`, `"1"`) des joueurs encore engagés avec au moins un ennemi | — | Joueurs engagés de Zola |
-| `cartes_sous_complot` | les cartes **posées sous** un complot encore en jeu (même zone, `bind_object_id` = id du complot) | `complot` (card_id), `type` | Prison d'Hydra |
+| `cartes_sous_complot` | les cartes **posées sous** un complot **annexe** encore en jeu (le code ne cherche que dans `area_schemes_side`, jamais sous une manigance principale ; même zone, `bind_object_id` = id du complot ; `parametres.type` est comparé au `card_type`) | `complot` (card_id), `type` | Prison d'Hydra |
 | `pv_restants` | les PV de l'identité, **plafonnés** aux PV imprimés ; rien pour un héros éliminé | — | Livret p.17 |
 | `cartes_en_pile_victoire` | parmi `options`, celles dans la **pile de victoire** | — | Community Service de sm |
-| `cartes_dans_zone` | parmi `options`, celles présentes dans une **zone nommée** du monde | `zone` | Vilains encore en jeu de sm |
+| `cartes_dans_zone` | parmi `options`, celles présentes dans une **zone nommée** du descripteur de monde (clé du monde : `area_villain`, `area_schemes_main`, `area_schemes_side`, `area_environment`, `area_set_aside`… ; sm utilise `area_villain`) | `zone` | Vilains encore en jeu de sm |
 | `compter_trait` | le **nombre** de cartes portant un trait dans les decks, mains et défausses des joueurs | `trait` (`"ILLUSION"`) | Cartes ILLUSION de sm |
 | `conditions_reputation` | le total des **six conditions** de la piste de réputation de sm | — | sm p.22 |
 
@@ -234,13 +234,14 @@ Pour chaque champ `auto`, la valeur proposée est la **première** disponible pa
 Un champ `choix` n'est **jamais** pré-rempli par le moteur. À la validation, le carnet de la campagne devient
 `{ ...ancien carnet, ...champs validés }` : **seules les clés déclarées dans la description sont reportées.** Un
 champ `auto`/`int` **sans `detection`** est un **drapeau** : la valeur `"0"` ou vide est **retirée** avant
-l'enregistrement (sinon le moteur lirait `"0"` comme vrai). Les champs `int` **avec** `detection` (PV restants,
-compteurs) gardent leur `"0"`, qui est une vraie mesure.
+l'enregistrement (sinon le moteur lirait `"0"` comme vrai). Seul `pv_restants` peut produire `"0"` (une vraie mesure,
+gardée) ; `compteur_manigance` et `compter_trait` ne rendent rien quand la valeur est 0 : la clé reste absente. Un champ
+`parJoueur` est **sauté pour un héros éliminé**, qui échappe aussi à `obligatoire`.
 
 Le panneau est **le même** pour toutes les campagnes et à plusieurs : chaque champ `parJoueur` est saisi par son
 siège, tout le reste par l'hôte, seul à valider (`droits-carnet.ts`).
 
-### 8.8 Règles d'écriture (ce que Claude va vérifier)
+### 8.8 Règles d'écriture (ce que Claude va vérifier : `verifier-livraison-campagne.py` pour la forme, `tools/verifier_campagnes.py` pour les clés)
 
 - [ ] `code` = nom du fichier = dossier de `public/stories/` ; `cle_extension` = clé de `sets_info.json`.
 - [ ] `scenarios[].id` : chacun est dans `sets_info.json › scenarios`, a un fichier `data/scenarios/<id>.json`

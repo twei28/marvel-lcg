@@ -11,7 +11,8 @@ l'allié « Captive » de Mutant Genesis (les quatre captifs se retrouvaient dan
 
 * Un **dictionnaire `str → str`**. Toutes les valeurs sont des **chaînes**.
 * Une **case cochée** : `"1"`. Une **case non cochée** : la clé est **absente** (jamais `"0"` : le moteur teste
-  `!= ''`, et `"0"` est non vide).
+  `!= ''`, et `"0"` est non vide). **Exception** : les réglages `options_campagne` de type `case` écrivent `"0"`
+  quand le joueur clique « Non » : pour ces clés, ton script teste `== "1"` (ou `entier > 0`), jamais `!= ''`.
 * Un **nombre** : sa représentation décimale en texte (`"3"`).
 * Une **liste** : les éléments séparés par `;` (`"21181;21183"`). Vide = clé absente.
 * Une clé **par joueur** : `Player N <clé>` (N de 1 à 4 : `Player 1 Role`, `Player 2 Tech Upgrade`). Le moteur
@@ -148,8 +149,9 @@ CollectXXX(level, effect)))`). À la fin de **chaque** partie de campagne (victo
   émis *avant* que `world.game_over` soit posé, un collecteur qui lit le monde voit toujours « perdue ». (c'est ainsi que Fear No
   Evil ne cochait jamais l'affaire à la victoire, trouvé le 19/09/2026 par `tools/test_campagnes.py`.)
 * `scenario` (l'**estampille**) : le panneau **ignore en bloc** les suggestions dont l'estampille diffère de
-  l'`id` du scénario joué. Par défaut l'estampille est le `set_name` du complot principal actif, passé en
-  minuscules et soulignés (`'Ebony Maw'` → `ebony_maw`). **Elle doit être égale à l'`id` du scénario dans
+  l'`id` du scénario joué. Par défaut l'estampille est le `set_name` du **premier complot principal** (`schemes[0]`), en minuscules, espaces
+  remplacés par des soulignés, **tout caractère hors `[a-z0-9_]` supprimé** (`'Ebony Maw'` → `ebony_maw`,
+  `'Stop the Presses!'` → `stop_the_presses`). **Elle doit être égale à l'`id` du scénario dans
   `data/campagnes/<code>.json`.** Quand `set_name` ne suffit pas (`gmw` : `collector_1` pour le scénario
   `infiltrate_the_museum` ; Hunting Season : `hs_vermin`), passe-la explicitement :
   `WriteCampaignLogAtGameOver(collect, scenario_id='hs_vermin')`.

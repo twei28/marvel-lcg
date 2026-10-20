@@ -39,7 +39,7 @@ signales dans `BESOINS-MOTEUR.md`.
           │
  (3)      ▼  POST /save_campagne
      la campagne du joueur est écrite : Fusion/marvel-lcg-src/campagnes/<id>.json
-     { code, nom, difficulte, equipe[], termines: [], carnet: {}, tentatives: {}, partieEnCours: null }
+     { code, nom, difficulte, equipe[], termines: [], carnet: {}, tentatives: {}, partieEnCours: null, creee }
           │
  (4)      ▼  « Lancer le scénario »    (public/js/campagne/app.js : lancerScenario)
      - écrit partieEnCours = { scenario, depuis } et tentatives[scenario] += 1
@@ -79,7 +79,7 @@ signales dans `BESOINS-MOTEUR.md`.
 Règles importantes de ce cycle :
 
 * **Une défaite n'écrit rien** : le scénario se rejoue sans pénalité. Exceptions déclarées *dans la description
-  de campagne* : `defaite_continue` (la défaite a ses propres gains, la campagne passe au suivant), `defaite`
+  de campagne* : en **ordre libre** (Fear No Evil), l'écran enregistre lui-même la défaite au carnet (marque, affaire échouée, perte de campagne) ; `defaite_continue` (la défaite a ses propres gains, la campagne passe au suivant), `defaite`
   (perdre le scénario final perd la campagne), `reprise` (il faut re-préparer quelque chose avant de rejouer).
 * **Les sets modulaires viennent du fichier de scénario**, jamais d'un choix du joueur.
 * **Entre deux scénarios, le joueur peut modifier le contenu de ses decks** (pas l'identité). Ce que le carnet
@@ -116,7 +116,7 @@ Trois conséquences pratiques :
 1. **Le nom de la clé du carnet est le contrat.** Il apparaît à trois endroits qui doivent être **strictement
    identiques** : dans `campaign.py` (écriture et lecture), dans la description de campagne (`champ.cle`) et,
    le cas échéant, dans un script de carte. Une clé mal orthographiée **ne lève aucune erreur** : le moteur lit
-   une valeur vide et la récompense disparaît en silence. `verifier_campagnes.py` (§11) compare ces trois endroits.
+   une valeur vide et la récompense disparaît en silence. `tools/verifier_campagnes.py` (§11) compare les `cle` déclarées aux chaînes littérales du pack (`src/cards/pack/<code>/`, donc **le pack porte le même nom que `code`**) ; la lecture par `CampaignSetup` est contrôlée par `verifier-livraison-campagne.py` et par les épreuves.
 2. **Le `set_name` d'une carte décide du dossier de son script.** Un script rangé au mauvais endroit est muet.
 3. **L'identifiant d'une carte est une clé partout** : image, texte français, script, scénario, carnet. On ne le
    change jamais une fois livré.

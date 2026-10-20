@@ -63,6 +63,7 @@ def lire(chemin):
 
 
 def bloc(code, langage):
+    code = code.replace("\r\n", "\n")
     # Une fence plus longue que toute suite de backticks du contenu : le contenu ne la ferme jamais.
     plus_long = max([len(m) for m in re.findall(r"`+", code)] + [2])
     cloture = "`" * max(3, plus_long + 1)

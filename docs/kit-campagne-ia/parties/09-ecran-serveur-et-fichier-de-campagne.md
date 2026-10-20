@@ -11,12 +11,12 @@ description de campagne déclenche** et **où tes clés atterrissent**. Les fich
 | Route | Méthode | Rôle |
 |---|---|---|
 | `/list_campagnes_definies` | GET | Les **boîtes** : un en-tête par `data/campagnes/*.json` (`code`, `nom`, `nom_en`, `cle_extension`, `resume`, `resume_en`, `nb_scenarios`), **triées par le numéro de `cle_extension`**. L'écran présélectionne la première (la plus ancienne). |
-| `/get_campagne_definition?<code>` | GET | La **description complète** d'une boîte (ton fichier, tel quel). 404 si le code est inconnu. |
+| `/get_campagne_definition?<code>` | GET | La **description complète** d'une boîte (ton fichier, tel quel), **cherchée par le NOM DE FICHIER** (`data/campagnes/<code>.json`), pas par le `code` interne : d'où l'égalité obligatoire des deux. 404 si inconnu. |
 | `/get_carnet_suggere` | GET | Le contenu de `.game/campaign_log_last.json` (§7.5) : `{players_won, scenario, suggestions}`. Fichier absent : 200 avec un carnet vide. |
 | `/list_campagnes` | GET | Les campagnes **du joueur**, la plus récente en tête. |
 | `/get_campagne?<id>` | GET | Une campagne du joueur. |
 | `/get_campagne_en_cours` | GET | La campagne à laquelle appartient la partie en cours (pour **tous** les sièges d'une partie en ligne). |
-| `/save_campagne` | POST | Écrit (ou remplace) une campagne du joueur ; recalcule `derniere_activite` ; évalue les hauts faits. |
+| `/save_campagne` | POST | Écrit (ou remplace) une campagne du joueur (400 sans `campagne.code`) ; l'`id` vient du nom nettoyé (`[^a-zA-Z0-9_-]` → `_`, 60 caractères, suffixe `_2`, `_3` si pris) ; recalcule `derniere_activite` ; évalue les hauts faits. |
 | `/save_carnet_partiel` | POST | **Fusionne** des clés de carnet (un siège distant n'écrit que **ses** champs) : étroit par construction, il ne peut ni terminer un scénario ni gagner une campagne. |
 | `/delete_campagne` | POST | Supprime une campagne. |
 | `/reinitialiser_enquete` | POST | **Propre à AOS** : nouvelle taupe, preuves rendues. |
@@ -77,7 +77,7 @@ traduction entre les deux.
 
 ### 9.4 Le panneau de récompenses (plateau, `PanneauRecompenses.tsx`)
 
-S'ouvre à la **victoire**, et à la **défaite** seulement dans trois cas : la défaite perd la campagne (`defaite`),
+S'ouvre à la **victoire**, et à la **défaite** seulement dans trois cas (en ordre libre, la défaite est enregistrée par l'écran des campagnes, pas par ce panneau) : la défaite perd la campagne (`defaite`),
 elle demande une re-préparation (`reprise`), ou le scénario a `defaite_continue`. Le panneau **n'existe que si le
 monde est de campagne** (`mode_campaign` : règle posée par le lancement), jamais sur une partie ordinaire.
 
