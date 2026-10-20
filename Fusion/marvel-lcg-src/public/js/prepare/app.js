@@ -287,6 +287,8 @@ const state = {
     playerCount: 1,
     players: [0, 1, 2, 3].map((i) => ({ index: i, hero: null, deck: null, deckSource: null })),
     activeSlot: 0,
+    // Parcours sequentiel : vrai quand on rouvre un heros depuis le recapitulatif.
+    modifDeck: false,
     // homebrew : decoche = uniquement les heros officiels, coche = uniquement
     // les fan-made (Stan Lee, Hulk (Rainy), Thor (Jane Foster)).
     heroFilters: { q: "", vague: "", fav: false, homebrew: false },
@@ -381,6 +383,12 @@ function deckValide(p) { return !!(p && p.deck && p.deckValide); }
  *  par defaut compte ; en parcours sequentiel, seul un deck CLIQUE compte. */
 function deckAffiche(p) {
     return !!(p && p.deck && (!decksSequentiels() || p.deckChoisi));
+}
+
+/** Le recapitulatif des decks est-il a l'ecran ? Tous les decks sont valides et
+ *  aucun heros n'est rouvert par « Modifier ». */
+function enRecap() {
+    return decksSequentiels() && premierSiegeAValider() < 0 && !state.modifDeck;
 }
 
 /** Premier siege dont le deck n'est pas encore valide, ou -1. */
@@ -855,6 +863,7 @@ function validerDeckSiege() {
     if (p && p.deckChoisi) p.deckValide = true;
     const k = premierSiegeAValider();
     if (k >= 0) state.activeSlot = k;
+    else state.modifDeck = false;   // tout est valide : retour au recapitulatif
     rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe();
     loadDecks(state.activeSlot);
     majNav();
@@ -873,7 +882,14 @@ function heroSuivantSequentiel() {
 /** Le bouton de l'etape Decks en parcours sequentiel, ou null quand tous les
  *  decks sont valides (alors c'est « Continuer »). */
 function boutonDeckSequentiel() {
-    if (state.step !== 1 || !decksSequentiels() || premierSiegeAValider() < 0) return null;
+    if (state.step !== 1 || !decksSequentiels()) return null;
+    if (premierSiegeAValider() < 0) {
+        if (!state.modifDeck) return null;
+        return el("button", {
+            class: "btn primary", id: "btn-retour-recap",
+            onclick: () => { state.modifDeck = false; rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe(); loadDecks(state.activeSlot); majNav(); },
+        }, t("Retour au récapitulatif"));
+    }
     const p = state.players[state.activeSlot];
     const nom = p && p.hero ? nomAffiche(p.hero) : "";
     if (deckValide(p)) {
@@ -3209,6 +3225,7 @@ function rendreEquipe() {
                 // Parcours sequentiel : pas de saut en avant, on ne passe au
                 // heros suivant qu'apres avoir valide le deck du courant.
                 if (state.step === 1 && decksSequentiels()) {
+                    if (enRecap()) state.modifDeck = true;
                     const k = premierSiegeAValider();
                     if (k >= 0 && i > k) return;
                 }
@@ -4646,6 +4663,7 @@ async function ouvrirPanneauCdb(i) {
 function stepDecks() {
     // En ligne, l'hôte ne pilote que son siège : les invités choisissent
     // depuis le leur. On revient donc toujours sur le siège 0.
+    state.modifDeck = false;
     if (enLigne()) state.activeSlot = 0;
     else if (decksSequentiels()) {
         const k = premierSiegeAValider();
@@ -4721,7 +4739,7 @@ function rendreOutilsDeck() {
     if (!zone) return;
     const i = state.activeSlot;
     const p = state.players[i];
-    if (!p || !p.hero) { poser(zone); return; }
+    if (!p || !p.hero || enRecap()) { poser(zone); return; }
     if (estTel()) {
         // Téléphone : trois gros boutons au-dessus de la liste ; l'import
         // passe dans une feuille basse (le champ n'est plus posé en pleine page).
@@ -4833,7 +4851,33 @@ function nomDeckAffiche(dk) {
         .replace(/\s*[—-]\s*Mutant\s*$/i, " — " + t("Version tableur, mutant"));
 }
 
+/** Le panneau recapitulatif : un heros par ligne, son deck, et « Modifier ». */
+function rendreRecapDecks() {
+    const box = document.getElementById("deck-liste");
+    if (!box) return;
+    const compte = document.getElementById("tb-compte");
+    if (compte) compte.textContent = "";
+    box.replaceChildren(el("div", { class: "deck-recap", id: "deck-recap", style: { gridColumn: "1 / -1", display: "flex", flexDirection: "column", gap: "10px" } },
+        el("b", { style: { fontSize: "18px", letterSpacing: ".04em", textTransform: "uppercase" } }, t("Récapitulatif des decks")),
+        ...activePlayers().map((pl, idx) => el("div", {
+            class: "tb-deck recap-ligne", "data-siege": String(idx),
+            style: { display: "flex", alignItems: "center", gap: "14px", cursor: "default" },
+        },
+            el("span", { class: "tb-siege plein petit" }, portraitHeros(pl.hero)),
+            el("span", { style: { flex: "1" } },
+                el("div", { class: "do-name" }, nomAffiche(pl.hero)),
+                el("div", { class: "do-size" }, cleanNomDeck(pl.deck.name) || t("Deck de base"))),
+            el("button", {
+                type: "button", class: "tampon", "data-modifier": String(idx),
+                onclick: () => {
+                    state.activeSlot = idx; state.modifDeck = true;
+                    rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe(); loadDecks(idx); majNav();
+                },
+            }, t("Modifier"))))));
+}
+
 async function loadDecks(i) {
+    if (enRecap()) { rendreSceneDeck(); rendreRecapDecks(); return; }
     const p = state.players[i];
     await cards.load();
     const catDecks = await catalog.decksForHero(p.hero);
@@ -4897,6 +4941,8 @@ async function loadDecks(i) {
     const option = (dk) => {
         const on = deckAffiche(p) && p.deckSource === dk.source && p.deck.name === dk.deck.name;
         const st = deckStats(dk.deck);
+        // Parcours sequentiel : repere (sans selection) du dernier deck joue avec ce heros.
+        const dernierUtilise = decksSequentiels() && dk.source !== "campagne" && String(prefs.lastDeckFor(p.hero.heroCardId)) === String(dk.id);
         // Contrôle de construction : signalé, jamais bloquant.
         const ecarts = verifierDeck(dk.deck);
         const etiquette = dk.source === "base" ? t("Deck de départ")
@@ -4905,6 +4951,8 @@ async function loadDecks(i) {
             : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
         const choisir = () => {
+            // Parcours sequentiel : un AUTRE deck sur un heros valide retire sa validation.
+            if (decksSequentiels() && p.deckValide && !on) p.deckValide = false;
             p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false; p.deckChoisi = true;
             // « campagne » n'existe que sur cet ecran-ci : le retenir comme
             // dernier deck du heros ne designerait plus rien demain.
@@ -4950,6 +4998,7 @@ async function loadDecks(i) {
             el("div", { class: "do-name" }, nomDeckAffiche(dk)),
             el("div", { class: "do-tags" },
                 el("span", { class: "tag" }, etiquette),
+                ...(dernierUtilise ? [el("span", { class: "tag dernier" }, t("Dernier utilisé"))] : []),
                 ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
             ),
             aspectBar(st),

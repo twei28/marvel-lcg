@@ -71,15 +71,57 @@ test.describe('Coop locale : decks un heros apres l autre', () => {
     await choisirPremierDeck(page);
     await page.locator('#btn-valider-deck').click();
 
-    // Tous valides : « Continuer » revient, le mechant suit, puis le lancement.
+    // Tous valides : le recapitulatif s'affiche, « Continuer » est disponible.
     const continuer = page.getByRole('button', { name: /^continuer$/i });
+    await expect(page.locator('#deck-recap')).toBeVisible();
+    await expect(page.locator('.recap-ligne')).toHaveCount(2);
     await expect(continuer).toBeEnabled();
-    await page.screenshot({ path: path.join(DOSSIER, '4-coop-tous-valides.png') });
+    const nomAvant = await page.locator('.recap-ligne').nth(0).innerText();
+    await page.screenshot({ path: path.join(DOSSIER, '4-coop-recap.png') });
+
+    // « Modifier » sur la ligne du heros 1 ramene a SON ecran de deck.
+    await page.locator('[data-modifier="0"]').click();
+    await expect(page.locator('#deck-recap')).toHaveCount(0);
+    await expect(page.locator('.tb-siege').nth(0)).toHaveClass(/actif/);
+    await expect(page.locator('.tb-deck.chosen')).toHaveCount(1);
+    await expect(page.locator('#btn-retour-recap')).toBeVisible();
+
+    // Changer de deck retire la validation : « Valider le deck de ... » revient.
+    await page.locator('.deck-aspects-bascule').last().click();
+    await page.locator('.deck-aspects.est-deplie .tb-deck').first().click();
+    const non = page.locator('.deck-modal').getByRole('button', { name: /^non$/i });
+    try { await non.click({ timeout: 3000 }); } catch { /* pas de question */ }
+    await expect(page.locator('#btn-valider-deck')).toBeVisible();
+    await expect(page.locator('#btn-valider-deck')).toBeEnabled();
+    await expect(page.locator('#btn-retour-recap')).toHaveCount(0);
+    await expect(continuer).toHaveCount(0);
+    await page.screenshot({ path: path.join(DOSSIER, '5-coop-deck-change-validation-retiree.png') });
+    await page.locator('#btn-valider-deck').click();
+
+    // Revalide : retour au recapitulatif, avec le nouveau deck.
+    await expect(page.locator('#deck-recap')).toBeVisible();
+    expect(await page.locator('.recap-ligne').nth(0).innerText()).not.toBe(nomAvant);
+    await page.screenshot({ path: path.join(DOSSIER, '6-coop-recap-apres-modification.png') });
+
     await continuer.click();
     await page.getByRole('button', { name: /^Rhino\b/ }).first().click();
     await page.getByRole('button', { name: /^continuer$/i }).click();
     await expect(page.getByRole('button', { name: /lancer la partie/i })).toBeEnabled();
-    await page.screenshot({ path: path.join(DOSSIER, '5-coop-final.png') });
+    await page.screenshot({ path: path.join(DOSSIER, '7-coop-final.png') });
+
+    // Seconde partie, meme navigateur : le dernier deck joue porte l'etiquette
+    // « Dernier utilise », sans etre selectionne.
+    await ouvrir(page, /^Coop locale/, 2);
+    await recruter(page, /^Spider-Man/);
+    await recruter(page, /^Iron Man/);
+    await page.getByRole('button', { name: /continuer/i }).click();
+    await expect(page.locator('#btn-valider-deck')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('.tb-deck.chosen')).toHaveCount(0);
+    await expect(page.locator('.tag.dernier').first()).toBeAttached();
+    await expect(page.locator('#btn-valider-deck')).toBeDisabled();
+    await page.locator('.deck-aspects-bascule').last().click();
+    await page.locator('.tag.dernier').first().scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(DOSSIER, '8-coop-etiquette-dernier-utilise.png') });
   });
 
   test('solo temoin : un seul ecran de deck, deck de base retenu, Continuer direct', async ({ page }) => {
@@ -89,6 +131,6 @@ test.describe('Coop locale : decks un heros apres l autre', () => {
     await expect(page.locator('.tb-deck.chosen')).toHaveCount(1, { timeout: 30_000 });
     await expect(page.locator('#btn-valider-deck')).toHaveCount(0);
     await expect(page.getByRole('button', { name: /^continuer$/i })).toBeEnabled();
-    await page.screenshot({ path: path.join(DOSSIER, '6-solo-temoin-decks.png') });
+    await page.screenshot({ path: path.join(DOSSIER, '9-solo-temoin-decks.png') });
   });
 });
