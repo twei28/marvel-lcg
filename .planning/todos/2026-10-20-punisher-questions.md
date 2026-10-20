@@ -123,3 +123,15 @@ carte).
 2. Page Crédits seulement. Change en jeu : moins visible pendant le jeu, mais moins de travail d'interface.
 3. Page Crédits + écran de chargement de chaque scénario. Change en jeu : le plus visible des trois, mais un
    rappel répété à chaque scénario (4 fois) plutôt qu'une seule fois par campagne.
+
+## Réponses de l'utilisateur (20/10/2026)
+
+Toutes en option recommandée.
+- P1 Kingsfall : hors périmètre, la campagne s'arrête au combat 3.
+- P2 Uptown : moteur écrit pour N rangées dès le départ, les 7 cartes Uptown portées après le reste.
+- P3 Affichage ville : A + B (territoire sur la table, mini-carte, fenêtre « La Ville »).
+- P4 Défis : après la campagne, sur le modèle du pack `challenges`.
+- P5 Hawkeye MC×DC : identité alternative à choisir, le Hawkeye officiel reste intact.
+- P6 Reconnaissance du joueur (récompenses) : compte en ligne, héros en local.
+- P7 Textes FR des cartes : traduits par nous, avec le lexique officiel.
+- P8 Crédits MC×DC : page Crédits + ligne sous le titre de campagne.
