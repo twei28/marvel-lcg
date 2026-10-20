@@ -8,6 +8,11 @@ sa documentation.
 
 ## 1. Un jeu « installable » sans installer 2,5 Go de cartes (ajouté le 18/10/2026)
 
+> **Décision du 20/10/2026 : le jeu installable reste au backlog, on ne le fait pas maintenant.** Le cadrage est fait
+> (`docs/rapports/cadrage-14-15-19-2026-10-20.md`, §3) : voie recommandée = application installable de `play.` avec cache hors
+> ligne, WebP et paquets par héros/scénario. Sept décisions (I1 à I7) restent à poser le moment venu. Constat utile : la
+> phrase « pas de hors-ligne » ci-dessous est périmée (le mode navigateur `play.` fait déjà tourner le moteur chez le joueur).
+
 **Le besoin.** Que les joueurs installent le jeu sans attendre le téléchargement de toutes les cartes.
 
 **Le critère de choix, donné par l'utilisateur.** La solution qui est la plus facile pour les joueurs ET la plus
