@@ -470,13 +470,22 @@ CAS = [
        [HEROINE, *en_jeu("dz016")], [menace(COMPLOT, 6)],
        {"menace": [[COMPLOT, 6]], "en_main": ["01060"], "pret": ["dz016"]},
        main_exclusive=["01060", "dz002"], ne_pas_depenser=["01060"], cibles=[COMPLOT], jouer=["01060"]),
-    _c("dz016 Sound Collector Suit : incliner -> retirer 1 compteur sound d'une chanson de la Setlist (lecture actuelle : Action)",
-       "« or remove 1 sound counter from a SONG in the Setlist » : Rehearsal marque Beautiful Dreamer, la combinaison "
-       "efface la marque. ⚠ Le MOMENT ou cette branche s'utilise est une question ouverte (Q2) : le module en fait "
-       "une Action ; ce cas mesure l'effet, pas la fenetre",
-       [HEROINE, *en_jeu("dz016"), *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER, "Puzzle.Action('dz016', 'Action')"],
-       {"compteurs_setlist": [["dz004", "sound", 0]], "exhausted": ["dz016"], "menace": [[COMPLOT, 4]]},
-       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat"),
+    _c("dz016 Sound Collector Suit : PENDANT un paiement, incliner -> retirer 1 compteur sound (Q2)",
+       "decision utilisateur Q2 (20/10/2026) : la branche « remove 1 sound counter » ne se joue que pendant un "
+       "paiement. Rehearsal marque Beautiful Dreamer ; For Justice! (01060) est jouee et payee : la combinaison "
+       "s'incline et efface la marque",
+       [HEROINE, *en_jeu("dz016"), *dans_setlist("dz004")],
+       [menace(COMPLOT, 6), REPETER, menace(COMPLOT, 6)],
+       {"compteurs_setlist": [["dz004", "sound", 0]], "exhausted": ["dz016"]},
+       main_exclusive=["01060", "01088"], ne_pas_depenser=["01060"], cibles=[COMPLOT], jouer=["01060"],
+       verifier="dz_etat"),
+    _c("dz016 Sound Collector Suit : HORS paiement, pas d'Action pour retirer le compteur (Q2)",
+       "decision utilisateur Q2 : impossible au milieu du tour sans rien payer ; la marque reste, la combinaison "
+       "reste prete (le module offrait une Action avant le 20/10/2026)",
+       [HEROINE, *en_jeu("dz016"), *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER],
+       {"compteurs_setlist": [["dz004", "sound", 1]], "pret": ["dz016"]},
+       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat",
+       declencher_tolerant=["Puzzle.Action('dz016', 'Action')"]),
     # ============================================================ dz017a Live Concert
     # (Setup : cas historique « dz017a Live Concert — Setup : posee en jeu par Alison Blaire » de test_capacites.py)
     _c("dz017a Live Concert : Response, une chanson jouee et resolue est rangee dans la Setlist",
