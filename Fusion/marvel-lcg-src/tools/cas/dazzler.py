@@ -52,7 +52,8 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
 
 
 VERIFICATIONS = r'''
-CLES_DAZZLER = {'mains', 'setlist', 'compteurs_setlist', 'deck_joueur_taille', 'jouable'}
+CLES_DAZZLER = {'mains', 'setlist', 'compteurs_setlist', 'deck_joueur_taille', 'jouable', 'face_cachee_sous',
+                'compteurs_defausse'}
 
 
 def dz_etat(monde, aides):
@@ -66,6 +67,24 @@ def dz_etat(monde, aides):
     attendu = dict(cas.get("attendu") or {})
     propres = {k: attendu.pop(k) for k in list(attendu) if k in CLES_DAZZLER}
     soucis = []
+    for cid, compteur, n in propres.get("compteurs_defausse") or []:
+        pile = [f for f in monde.const_players[0].discard_pile.Get() if getattr(f.paper, "card_id", None) == cid]
+        if not pile:
+            soucis.append(f"{cid} absente de la defausse (compteurs_defausse)")
+            continue
+        vu = pile[0].CastTo(aides["CanPlaceCounter"]).GetCounters(compteur)
+        if vu != n:
+            soucis.append(f"{cid} en defausse porte {vu} compteur(s) {compteur} (attendu {n})")
+    for hote_id, cid, cachee in propres.get("face_cachee_sous") or []:
+        hote = aides["par_id"](monde, hote_id)
+        zone = hote.GetPlacedCardArea() if hote is not None else None
+        trouves = [f for f in (zone.Get(True) if zone is not None else [])
+                   if getattr(f.paper, "card_id", None) == cid]
+        if not trouves:
+            soucis.append(f"{cid} absente de la zone posee sous {hote_id}")
+        elif (not trouves[0].card.state.is_face_up) != cachee:
+            soucis.append(f"{cid} sous {hote_id} : face cachee = {not trouves[0].card.state.is_face_up} "
+                          f"(attendu {cachee})")
     for cid, voulu in propres.get("jouable") or []:
         j = monde.const_players[0]
         main = [f for f in j.hand_cards.GetAll() if getattr(f.paper, "card_id", None) == cid]
@@ -168,20 +187,20 @@ CAS = [
        {"attributs": {"thwart": 0}},
        main_exclusive=["01088"], cibles=["dz001a"], declencher_apres=[FIN_DE_PHASE]),
     _c("dz005 Beauty and the Beast : Showtime!, un personnage ami d'un AUTRE joueur est une cible legale (+2 THW a Spider-Man)",
-       "« a FRIENDLY character » : tout personnage du cote des joueurs, pas seulement ceux que tu controles "
+       "« a FRIENDLY character » : tout personnage du cote des joueurs, pas seulement ceux du joueur de Dazzler "
        "(le module visait `YouControlUnit` jusqu'au 20/10/2026). Partie a DEUX, Spider-Man (01001a) choisi",
        [HEROINE, "Puzzle.ChangeForm('01001b')", *dans_setlist("dz005")], [REPETER],
        {"attributs_carte": [["01001a", "thwart", 2]]},
        main_exclusive=["01088"], choisir_option=["Spider-Man"], heros2="spider_man"),
     # ============================================================ dz006 "Doll"
-    _c("dz006 Doll : Hero Interrupt, l'activation du vilain contre toi est annulee (0 degat)",
+    _c("dz006 Doll : Hero Interrupt, l'activation du vilain contre le joueur de Dazzler est annulee (0 degat)",
        "« When the villain would activate against you, cancel that activation » : Rhino (ATK 2) attaque l'heroine "
        "inclinee (pas de defense), Doll en main avec de quoi payer : aucun degat",
        [HEROINE, "Puzzle.Exhaust('dz001a')"], ["Puzzle.Attack('01094')"],
        {"degats_identite": 0},
        main_exclusive=["dz006", "01089"]),
     _c("dz006 Doll : Hero Interrupt, l'activation d'un SBIRE n'est pas annulee (Shocker, 2 degats)",
-       "« the VILLAIN » seulement : un sbire qui s'active contre toi frappe normalement",
+       "« the VILLAIN » seulement : un sbire qui s'active contre le joueur frappe normalement",
        [HEROINE, "Puzzle.Exhaust('dz001a')", *en_jeu("01103")], ["Puzzle.Attack('01103')"],
        {"degats_identite": 2},
        main_exclusive=["dz006", "01089"]),
@@ -192,7 +211,7 @@ CAS = [
        [HEROINE, "Puzzle.Exhaust('dz001a')"], ["Puzzle.Attack('01094', against='01001b')"],
        {"degats": [["01001b", 2]], "en_main": ["dz006"]},
        main_exclusive=["dz006", "01089"], heros2="spider_man"),
-    _c("dz006 Doll : Showtime!, ton identite recoit une carte Tough (Rehearsal)",
+    _c("dz006 Doll : Showtime!, l'identite du joueur recoit une carte Tough (Rehearsal)",
        "« Showtime!: Give your identity a tough status card »",
        [HEROINE, *dans_setlist("dz006")], [REPETER],
        {"statuts": [["dz001a", "Tough"]]},
@@ -248,7 +267,7 @@ CAS = [
        {"degats": [["01059", 1], ["01020", 0]]},
        main_exclusive=["01088"]),
     # ============================================================ dz010 "Rich Angel"
-    _c("dz010 Rich Angel : Hero Interrupt, tous les degats d'une ATTAQUE contre toi sont prevenus (Rhino, 0 degat)",
+    _c("dz010 Rich Angel : Hero Interrupt, tous les degats d'une ATTAQUE contre l'heroine sont prevenus (Rhino, 0 degat)",
        "« When you would take any amount of damage from an attack, prevent all of that damage » : heroine inclinee "
        "(pas de defense de base), Rhino ATK 2",
        [HEROINE, "Puzzle.Exhaust('dz001a')"], ["Puzzle.Attack('01094')"],
@@ -259,7 +278,7 @@ CAS = [
        [HEROINE], ["Puzzle.Damage('dz001a', 3)"],
        {"degats_identite": 3, "en_main": ["dz010"]},
        main_exclusive=["dz010", "01088"]),
-    _c("dz010 Rich Angel : Showtime!, 2 degats soignes sur ton identite (3 -> 1)",
+    _c("dz010 Rich Angel : Showtime!, 2 degats soignes sur l'identite du joueur (3 -> 1)",
        "« Showtime!: Heal 2 damage from an identity »",
        [HEROINE, "Puzzle.Damage('dz001a', 3)", *dans_setlist("dz010")], [REPETER],
        {"degats_identite": 1},
@@ -333,4 +352,137 @@ CAS = [
        [HEROINE, "Puzzle.Daze('dz001a')", *dans_setlist("dz013")], [REPETER],
        {"statuts_absents": [["dz001a", "Dazed"]]},
        main_exclusive=["01088"]),
+    # ============================================================ dz014 Lightbringr
+    _c("dz014 Lightbringr : Alter-Ego Action, incliner -> un evenement SONG de la main est glisse FACE CACHEE dessous",
+       "« Exhaust Lightbringr -> attach 1 SONG event from your hand facedown here »",
+       [*en_jeu("dz014")], ["Puzzle.Action('dz014', 'AlterEgoAction')"],
+       {"face_cachee_sous": [["dz014", "dz004", True]], "taille_pose_sous": [["dz014", 1]], "exhausted": ["dz014"]},
+       main_exclusive=["dz004", "01088"], verifier="dz_etat"),
+    _c("dz014 Lightbringr : Alter-Ego Action, plafond de 3 cartes (la 4e reste en main)",
+       "« (to a maximum of 3) » : trois chansons deja dessous, l'action n'est plus offerte",
+       [*en_jeu("dz014"), "Puzzle.PlaceUnder('dz007', 'dz014')", "Puzzle.PlaceUnder('dz008', 'dz014')",
+        "Puzzle.PlaceUnder('dz009', 'dz014')"], [],
+       {"taille_pose_sous": [["dz014", 3]], "en_main": ["dz004"], "pret": ["dz014"]},
+       main_exclusive=["dz004", "01088"], declencher_tolerant=["Puzzle.Action('dz014', 'AlterEgoAction')"]),
+    _c("dz014 Lightbringr : Alter-Ego Action, un evenement NON SONG ne peut pas etre glisse",
+       "« 1 SONG event » : seule For Justice! (01060, evenement sans SONG) en main, rien n'est glisse",
+       [*en_jeu("dz014")], [],
+       {"taille_pose_sous": [["dz014", 0]], "en_main": ["01060"]},
+       main_exclusive=["01060"], declencher_tolerant=["Puzzle.Action('dz014', 'AlterEgoAction')"]),
+    _c("dz014 Lightbringr : une chanson glissee dessous se JOUE comme depuis la main, 1 ressource de moins (cout 2 paye avec 1)",
+       "« Events attached to Lightbringr may be played as if they were in your hand. Reduce the resource cost of "
+       "cards played this way by 1 » : Beautiful Dreamer (cout 2) dessous, une seule carte a 1 ressource en main "
+       "(Longshot, dz002) : jouable seulement avec la reduction. Menace 6 -> 3",
+       [HEROINE, *en_jeu("dz014"), "Puzzle.PlaceUnder('dz004', 'dz014')"], [menace(COMPLOT, 6)],
+       {"menace": [[COMPLOT, 3]], "taille_pose_sous": [["dz014", 0]]},
+       main_exclusive=["dz002"], cibles=[COMPLOT], jouer_sous=[["dz014", "dz004"]]),
+    _c("dz014 Lightbringr : la reduction ne vaut PAS pour une carte jouee depuis la main (temoin, menace inchangee)",
+       "« cards played THIS WAY » : la meme chanson jouee depuis la main, payee avec Longshot seul, reste impayable",
+       [HEROINE, *en_jeu("dz014")], [menace(COMPLOT, 6)],
+       {"menace": [[COMPLOT, 6]], "en_main": ["dz004"]},
+       main_exclusive=["dz004", "dz002"], cibles=[COMPLOT], ne_pas_depenser=["dz004"], jouer=["dz004"]),
+    # ============================================================ dz015 Dazzler's Rollerskates
+    _c("dz015 Dazzler's Rollerskates : l'amelioration se joue depuis la main (cout 2 paye)",
+       "carte sans « Attach to » : elle entre en jeu dans la zone du joueur",
+       [HEROINE], [], {"en_jeu": ["dz015"]},
+       main_exclusive=["dz015", "01088"], jouer=["dz015"]),
+    _c("dz015 Dazzler's Rollerskates : Hero Action, incliner les patins -> Dazzler se redresse",
+       "« Exhaust Dazzler's Rollerskates -> ready Dazzler »",
+       [HEROINE, *en_jeu("dz015"), "Puzzle.Exhaust('dz001a')"], ["Puzzle.Action('dz015', 'HeroAction')"],
+       {"pret": ["dz001a"], "exhausted": ["dz015"]},
+       main_exclusive=["01088"]),
+    _c("dz015 Dazzler's Rollerskates : Hero Action, patins deja inclines -> pas d'action, Dazzler reste inclinee",
+       "le cout « Exhaust Dazzler's Rollerskates » doit pouvoir etre paye",
+       [HEROINE, *en_jeu("dz015"), "Puzzle.Exhaust('dz001a')", "Puzzle.Exhaust('dz015')"], [],
+       {"exhausted": ["dz001a", "dz015"]},
+       main_exclusive=["01088"], declencher_tolerant=["Puzzle.Action('dz015', 'HeroAction')"]),
+    _c("dz015 Dazzler's Rollerskates : pas de Hero Action en alter ego (Alison reste inclinee)",
+       "« Hero Action » : jouable en forme heros seulement",
+       [*en_jeu("dz015"), "Puzzle.Exhaust('dz001b')"], [],
+       {"exhausted": ["dz001b"], "pret": ["dz015"]},
+       main_exclusive=["01088"], declencher_tolerant=["Puzzle.Action('dz015', 'HeroAction')"]),
+    # ============================================================ dz016 Sound Collector Suit
+    # (« Dazzler gets +1 DEF » : cas historique « dz016 Sound Collector Suit — Dazzler gagne +1 DEF » de test_capacites.py)
+    _c("dz016 Sound Collector Suit : Resource, l'energie generee paie une CHANSON (cout 2 = Longshot + la combinaison)",
+       "« Exhaust Sound Collector Suit -> generate a [energy] resource for a SONG » : Beautiful Dreamer (cout 2) payee "
+       "avec Longshot (1 ressource) et la combinaison ; menace 6 -> 3",
+       [HEROINE, *en_jeu("dz016")], [menace(COMPLOT, 6)],
+       {"menace": [[COMPLOT, 3]], "exhausted": ["dz016"]},
+       main_exclusive=["dz004", "dz002"], ne_pas_depenser=["dz004"], cibles=[COMPLOT], jouer=["dz004"]),
+    _c("dz016 Sound Collector Suit : Resource, l'energie ne paie PAS une carte sans SONG (For Justice! reste en main)",
+       "« for a SONG » : For Justice! (01060, cout 2, sans SONG) avec Longshot seul et la combinaison : impayable",
+       [HEROINE, *en_jeu("dz016")], [menace(COMPLOT, 6)],
+       {"menace": [[COMPLOT, 6]], "en_main": ["01060"], "pret": ["dz016"]},
+       main_exclusive=["01060", "dz002"], ne_pas_depenser=["01060"], cibles=[COMPLOT], jouer=["01060"]),
+    _c("dz016 Sound Collector Suit : incliner -> retirer 1 compteur sound d'une chanson de la Setlist (lecture actuelle : Action)",
+       "« or remove 1 sound counter from a SONG in the Setlist » : Rehearsal marque Beautiful Dreamer, la combinaison "
+       "efface la marque. ⚠ Le MOMENT ou cette branche s'utilise est une question ouverte (Q2) : le module en fait "
+       "une Action ; ce cas mesure l'effet, pas la fenetre",
+       [HEROINE, *en_jeu("dz016"), *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER, "Puzzle.Action('dz016', 'Action')"],
+       {"compteurs_setlist": [["dz004", "sound", 0]], "exhausted": ["dz016"], "menace": [[COMPLOT, 4]]},
+       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat"),
+    # ============================================================ dz017a Live Concert
+    # (Setup : cas historique « dz017a Live Concert — Setup : posee en jeu par Alison Blaire » de test_capacites.py)
+    _c("dz017a Live Concert : Response, une chanson jouee et resolue est rangee dans la Setlist",
+       "« After you resolve a SONG event attach it here [...] This is the Setlist » : Beautiful Dreamer jouee "
+       "(menace 6 -> 3) puis rangee sous Live Concert, pas en defausse",
+       [HEROINE], [menace(COMPLOT, 6)],
+       {"menace": [[COMPLOT, 3]], "setlist": ["dz004"]},
+       main_exclusive=["dz004", "01089"], cibles=[COMPLOT], jouer=["dz004"], verifier="dz_etat"),
+    _c("dz017a Live Concert : Response, plafond de 4 (une 5e chanson part en defausse)",
+       "« (to a maximum of 4) » : Setlist deja pleine, Beautiful Dreamer jouee va a la defausse",
+       [HEROINE, *dans_setlist("dz007", "dz008", "dz009", "dz010")], [menace(COMPLOT, 6)],
+       {"menace": [[COMPLOT, 3]], "setlist": ["dz007", "dz008", "dz009", "dz010"], "defausse": ["dz004"]},
+       main_exclusive=["dz004", "01089"], cibles=[COMPLOT], jouer=["dz004"], verifier="dz_etat"),
+    _c("dz017a Live Concert : Response, un evenement SANS SONG n'est pas range (For Justice! en defausse)",
+       "« a SONG event » : For Justice! (01060) jouee, Setlist vide",
+       [HEROINE], [menace(COMPLOT, 6)],
+       {"setlist": [], "defausse": ["01060"]},
+       main_exclusive=["01060", "01088"], cibles=[COMPLOT], jouer=["01060"], verifier="dz_etat"),
+    _c("dz017a Live Concert : Hero Action, retourner sur Showtime! et le reveler (Setlist resolue puis videe)",
+       "« Flip this card to its Showtime! side and reveal it » : le When Revealed de dz017b part (Beautiful Dreamer "
+       "retire 2 menaces), la Setlist est defaussee, la carte revient sur Live Concert",
+       [HEROINE, *dans_setlist("dz004")], [menace(COMPLOT, 6), "Puzzle.Action('dz017a', 'HeroAction')"],
+       {"menace": [[COMPLOT, 4]], "setlist": [], "defausse": ["dz004"], "en_jeu": ["dz017a"]},
+       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat"),
+    # ============================================================ dz017b Showtime!
+    _c("dz017b Showtime! : When Revealed, chaque Showtime! de la Setlist est resolu puis la Setlist est defaussee (2 cartes)",
+       "« Resolve the Showtime! ability on each card in the Setlist [...] Then, discard all cards from the Setlist » : "
+       "Beautiful Dreamer (2 menaces) et The Serpent is Coming (2 degats) ; pas de bonus a 2 cartes",
+       [HEROINE, *dans_setlist("dz004", "dz011")], [menace(COMPLOT, 6), "Puzzle.Action('dz017a', 'HeroAction')"],
+       {"menace": [[COMPLOT, 4]], "degats": [["01094", 2]], "setlist": [], "defausse": ["dz004", "dz011"]},
+       main_exclusive=["01088"], cibles=[COMPLOT, "01094"], verifier="dz_etat"),
+    _c("dz017b Showtime! : When Revealed, 4 cartes defaussees -> 4 degats a un ennemi en prime",
+       "« If 4 cards were discarded this way, you may either deal 4 damage to an enemy or remove 4 threat from a "
+       "scheme » : Setlist de 4, premiere branche choisie (degats) : Rhino 2 (Serpent) + 4 = 6",
+       [HEROINE, *dans_setlist("dz004", "dz011", "dz007", "dz009")],
+       [menace(COMPLOT, 6), "Puzzle.Action('dz017a', 'HeroAction')"],
+       {"menace": [[COMPLOT, 4]], "degats": [["01094", 6]], "setlist": []},
+       main_exclusive=["01088"], cibles=[COMPLOT, "01094"], choisir_option=["Deal_4_damage"], verifier="dz_etat"),
+    _c("dz017b Showtime! : When Revealed, 4 cartes -> la prime peut etre 4 menaces retirees",
+       "seconde branche de la prime : complot principal 6 -> 0 (Beautiful Dreamer 2 + prime 4)",
+       [HEROINE, *dans_setlist("dz004", "dz011", "dz007", "dz009")],
+       [menace(COMPLOT, 6), "Puzzle.Action('dz017a', 'HeroAction')"],
+       {"menace": [[COMPLOT, 0]], "degats": [["01094", 2]], "setlist": []},
+       main_exclusive=["01088"], cibles=[COMPLOT, "01094"], choisir_option=["Remove_4_threat"], verifier="dz_etat"),
+    _c("dz017b Showtime! : When Revealed, 3 cartes seulement -> AUCUNE prime (Rhino 2 degats)",
+       "« If 4 cards were discarded » : a 3, pas de prime",
+       [HEROINE, *dans_setlist("dz004", "dz011", "dz007")],
+       [menace(COMPLOT, 6), "Puzzle.Action('dz017a', 'HeroAction')"],
+       {"menace": [[COMPLOT, 4]], "degats": [["01094", 2]], "setlist": []},
+       main_exclusive=["01088"], cibles=[COMPLOT, "01094"], verifier="dz_etat"),
+    _c("dz017b Showtime! : When Revealed, « in any order » : le joueur choisit l'ordre (Doll avant Velvet Sky -> plus de Tough)",
+       "« in any order » : Velvet Sky (retirer un statut) est rangee APRES Doll (Tough sur l'identite), donc au "
+       "DESSUS de la Setlist, la ou le module commence. Le joueur fait resoudre Doll d'abord, puis Velvet Sky retire "
+       "la carte Tough. Dans l'ordre impose par l'ancien module, Velvet Sky ne trouvait aucun statut et la Tough restait",
+       [HEROINE, *dans_setlist("dz006", "dz013")], ["Puzzle.Action('dz017a', 'HeroAction')"],
+       {"statuts_absents": [["dz001a", "Tough"]], "setlist": []},
+       main_exclusive=["01088"], choisir_option=['"Doll"'], verifier="dz_etat"),
+    _c("dz017b Showtime! : les chansons defaussees perdent leur compteur sound",
+       "le compteur sound est la memoire de Rehearsal DANS la Setlist ; defaussee, une chanson ne doit plus le porter "
+       "(sinon, rejouee apres Encore, elle ne serait plus repetable). Rehearsal marque Beautiful Dreamer, puis "
+       "Showtime! vide la Setlist",
+       [HEROINE, *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER, "Puzzle.Action('dz017a', 'HeroAction')"],
+       {"compteurs_defausse": [["dz004", "sound", 0]], "setlist": []},
+       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat"),
 ]

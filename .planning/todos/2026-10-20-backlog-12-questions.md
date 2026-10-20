@@ -35,3 +35,34 @@ rien demander. Aucune carte officielle ne porte cette phrase (vérifié dans
 Ce que la réponse change dans le code : `dz012.py`, fonction `showtime`
 (sélection des 3 cartes). Avec moins de 3 cartes en défausse, toutes partent
 dans les trois lectures.
+
+---
+
+## Q2. dz016 « Sound Collector Suit » : quand peut-on « retirer 1 compteur sound » ?
+
+Texte imprimé : « **Resource**: Exhaust Sound Collector Suit → generate a
+[energy] resource for a [[SONG]] **or** remove 1 sound counter from a
+[[SONG]] in the Setlist. »
+
+Les deux branches sont écrites sous un type « **Resource** ». Une capacité
+Resource ne se déclenche qu'au moment de payer un coût ; or la seconde branche
+ne produit aucune ressource. Le code actuel en fait une **Action** séparée
+(type « Action », jouable dans les deux formes, à n'importe quel moment du
+tour du joueur, hors de tout paiement).
+
+1. **Seulement pendant un paiement (recommandé, lecture littérale du type
+   Resource).** En jeu : en payant n'importe quelle carte, Dazzler peut
+   incliner la combinaison et, au lieu de produire l'énergie, effacer un
+   compteur sound. Impossible au milieu de son tour sans rien payer.
+2. **Action à tout moment du tour (code actuel).** En jeu : Dazzler
+   efface un compteur quand elle veut pendant son tour, sans rien payer, puis
+   peut répéter (Rehearsal) la chanson tout de suite.
+3. **Seulement pendant le paiement d'une carte [[SONG]].** En jeu : comme 1,
+   mais réservé au paiement d'une chanson (« for a SONG » s'appliquerait aux
+   deux branches).
+4. Autre (préciser).
+
+Ce que la réponse change dans le code : `dz016.py` (la seconde capacité :
+Action aujourd'hui ; branche d'une capacité de ressource sinon, ce qui
+demande peut-être une extension du moteur, puisqu'une carte ne peut porter
+qu'UNE `CanGenerateResources`).

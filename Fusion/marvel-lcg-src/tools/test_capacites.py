@@ -64955,8 +64955,13 @@ def executer_un_cas(game_dir, port, index):
             effet = DebugRule(monde.object_manager.card_dict[0].face)
             joueur.PlayCardsLikeInTurn([face], effet)
 
-        def jouer_carte_glissee(card_id):
+        def jouer_carte_glissee(card_id, hote_id=None):
             """Joue une carte GLISSEE sous l'identite, par le vrai chemin.
+
+            `hote_id` (ajoute le 20/10/2026, backlog 12, dz014 Lightbringr) :
+            une carte EN JEU autre que l'identite, sous laquelle la carte est
+            glissee (cle de cas `jouer_sous: [[hote, card_id]]`). Sans lui,
+            rien ne change.
 
             Cle de cas `jouer_glissee` (pack fne, Echo). Ajoutee le 21/09/2026.
 
@@ -64978,6 +64983,8 @@ def executer_un_cas(game_dir, port, index):
             from game.event.manager import EventManager
             joueur = monde.players[0]
             identite = joueur.GetIdentity()
+            if hote_id is not None:
+                identite = par_id(monde, hote_id)
             zone = identite.GetPlacedCardArea() if identite is not None else None
             face = None
             for f in (zone.Get(True) if zone is not None else []):
@@ -64985,7 +64992,8 @@ def executer_un_cas(game_dir, port, index):
                     face = f
                     break
             if face is None:
-                raise RuntimeError(f"{card_id} n'est pas glissee sous l'identite")
+                raise RuntimeError(f"{card_id} n'est pas glissee sous "
+                                   f"{hote_id or 'l identite'}")
             effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
             message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
             message.Send()
@@ -65150,6 +65158,11 @@ def executer_un_cas(game_dir, port, index):
                 except Exception as exc:
                     print(f"TOLERE: jouer_glissee {card_id} -> "
                           f"{type(exc).__name__}: {exc}", flush=True)
+            # `jouer_sous: [[hote, card_id]]` (20/10/2026, backlog 12, dz014
+            # Lightbringr) : joue une carte glissee sous une carte EN JEU autre
+            # que l'identite, par le meme chemin que `jouer_glissee`. ADDITIVE.
+            for hote_id, card_id in cas.get("jouer_sous") or []:
+                jouer_carte_glissee(card_id, hote_id)
             for card_id in cas.get("action_en_main") or []:
                 declencher_action_en_main(card_id)
             # `declencher_final` (08/10/2026, rapport n68 Hellcat) : commandes

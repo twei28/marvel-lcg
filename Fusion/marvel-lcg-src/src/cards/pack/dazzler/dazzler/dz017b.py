@@ -24,8 +24,24 @@ def GetAbilities() -> Sequence['Ability']:
             return
 
         setlist = Setlist(effect)
-        ResoudreShowtime(setlist, joueur, effect)
+        # « in ANY ORDER » : le joueur choisit, a chaque pas, la chanson dont le
+        # Showtime! part. L'ordre compte (Doll pose une Tough que Velvet Sky
+        # peut retirer ensuite). Jusqu'au 20/10/2026 le module imposait l'ordre
+        # de la zone, du dessus vers le dessous (backlog 12).
+        restantes = list(setlist)
+        while restantes:
+            choisie = joueur.AskChooseOneText(restantes) \
+                if len(restantes) > 1 else restantes[0]
+            if choisie is None or choisie not in restantes:
+                choisie = restantes[0]
+            restantes.remove(choisie)
+            ResoudreShowtime([choisie], joueur, effect)
 
+        # Les compteurs sound sont la memoire de Rehearsal DANS la Setlist :
+        # ils partent avec les cartes (`OublierLaSetlist`, prevu pour cela mais
+        # jamais appele ici avant le 20/10/2026 ; une chanson rejouee apres
+        # Encore arrivait marquee, donc non repetable).
+        OublierLaSetlist(effect, setlist)
         partis = Faces.DiscardAll(setlist, effect)
         nombre = len(partis)
 

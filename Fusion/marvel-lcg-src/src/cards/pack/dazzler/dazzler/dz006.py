@@ -24,7 +24,7 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(this)
         message.SetBeInstead(effect)
 
-    def contre_toi(effect: 'Effect', message: 'Message.WhenEnemyWouldActivate') -> bool:
+    def contre_ce_joueur(effect: 'Effect', message: 'Message.WhenEnemyWouldActivate') -> bool:
         return message.to_player is not None and \
             message.to_player == effect.GetInitiator()
 
@@ -38,7 +38,7 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroInterrupt,
             Villain,
             poupee,
-            conditions=[contre_toi],
+            conditions=[contre_ce_joueur],
         ).SetPlay().SetLabel(),
         Showtime(showtime).SetTarget("YourIdentity"),
     ]
