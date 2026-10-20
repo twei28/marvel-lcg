@@ -11,6 +11,13 @@ from . import *
 #
 # « UP TO 2 » : la fourchette part de zero, d'ou `range=(1, 2)` avec un
 # minimum a 1 puisque choisir cette option implique d'en viser au moins un.
+#
+# CORRECTIF DU 20/10/2026 (backlog 12) : « Choose: » est un choix OBLIGATOIRE
+# (`ChooseAbilities`, sans option Cancel). Le module passait par
+# `MayChooseOneAbility`, qui offrait « Cancel » : la carte pouvait etre jouee
+# pour rien.
+# « a FRIENDLY character » : `Friend` (tout personnage du cote des joueurs),
+# au lieu de « YouControlUnit » qui excluait les personnages des autres joueurs.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -29,13 +36,13 @@ def GetAbilities() -> Sequence['Ability']:
             for cible in targets:
                 RetirerUnStatut(cible, effect)
 
-        joueur.MayChooseOneAbility(
+        joueur.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility("Ready a friendly character",
                                             redresser)
-            .SetTarget("YouControlUnit", canbe_ready=True),
+            .SetTarget(Friend, canbe_ready=True),
             AbilityFactory.ForChoiceAbility("Remove a status card", nettoyer)
-            .SetTarget("YouControlUnit", has_status="Any", range=(1, 2)),
+            .SetTarget(Friend, has_status="Any", range=(1, 2)),
         )
 
     return [

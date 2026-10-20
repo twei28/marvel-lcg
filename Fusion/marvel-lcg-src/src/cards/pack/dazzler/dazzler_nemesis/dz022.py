@@ -21,14 +21,15 @@ def GetAbilities() -> Sequence['Ability']:
 
         # La trahison est revelee DEPUIS LE DECK RENCONTRE : l'initiateur de
         # l'effet est le VILAIN, pas un joueur. `Setlist(effect)` seule levait
-        # donc `AssertionError: self.initiator=Rhino`, avalee par le moteur —
-        # la Setlist n'etait jamais defaussee et le surge jamais gagne. On lit
-        # le joueur vise sur le message, comme le fait dz023.
-        joueur = message.GetToPlayer()
-        if joueur is None:
-            return
-
-        setlist = Setlist(effect, joueur)
+        # donc `AssertionError: self.initiator=Rhino`, avalee par le moteur.
+        #
+        # « DAZZLER's Setlist » : la Setlist est NOMMEE. Revelee par un autre
+        # joueur, la carte vise quand meme celle de Dazzler. Jusqu'au 20/10/2026
+        # le module lisait le joueur qui revele (`message.GetToPlayer()`), ce
+        # qui ne marchait que parce que `Concert` ignorait son filtre de joueur
+        # (corrige le meme jour, backlog 12).
+        joueur = JoueurDeDazzler(effect)
+        setlist = Setlist(effect, joueur) if joueur is not None else []
         partis = Faces.DiscardAll(setlist, effect) if setlist else []
         # Les marques `sound` partent avec les cartes, sinon une chanson
         # ramenee par Encore reviendrait « deja repetee ».

@@ -115,12 +115,31 @@ def Concert(effect: 'Effect', joueur: 'Player|None'=None) -> 'CardFace|None':
     """
     if joueur is None:
         joueur = effect.GetInitiator()
+    # ⚠ CORRECTIF DU 20/10/2026 (backlog 12) : le filtre etait passe en
+    # `check_effect_fn` a `Worlds.FindCardOnField`, qui ne transmet pas l'effet
+    # au `CardFinder` : le filtre n'etait JAMAIS appele (« Only call when has
+    # effect », card_finder/checker.py) et la fonction rendait la Live Concert
+    # de n'importe quel joueur. On filtre donc ici, a la main.
     for nom in (NOM_CONCERT, NOM_SHOWTIME):
-        face = Worlds.FindCardOnField(
-            effect, name=nom,
-            check_effect_fn=lambda eff, f: f.GetControlByPlayer() == joueur)
-        if face is not None:
-            return face
+        for face in Worlds.FindCardsOnField(effect, name=nom):
+            if face is not None and face.GetControlByPlayer() == joueur:
+                return face
+    return None
+
+
+def JoueurDeDazzler(effect: 'Effect') -> 'Player|None':
+    """Le joueur dont l'identite est Dazzler (l'une ou l'autre forme).
+
+    Pour les cartes qui NOMMENT la Setlist de Dazzler (« Dazzler's Setlist »,
+    Stealing Sound dz022) : la carte peut etre revelee par un autre joueur.
+    """
+    for joueur in effect.world.players:
+        identite = joueur.GetIdentity()
+        if identite is None:
+            continue
+        heros = identite.GetHeroFace() if hasattr(identite, "GetHeroFace") else identite
+        if heros is not None and heros.IsName(NOM_HEROS):
+            return joueur
     return None
 
 
@@ -227,10 +246,16 @@ def AngoisseEnJeu(effect: 'Effect') -> bool:
     joueur = effect.GetInitiator()
     if joueur is None:
         return False
-    face = Worlds.FindCardOnField(
-        effect, name=NOM_ANGOISSE,
-        check_effect_fn=lambda eff, f: f.GetControlByOrOwner() == joueur)
-    return face is not None
+    # Filtre a la main : `check_effect_fn` n'est pas appele par
+    # `FindCardOnField` (voir `Concert`, correctif du 20/10/2026).
+    # Une obligation « donnee » vit dans la zone d'obligations du joueur, mais
+    # son PROPRIETAIRE reste le scenario : on la reconnait donc a sa zone, pas
+    # a `GetControlByOrOwner()` (qui la faisait rater, cas dz019).
+    zone = getattr(joueur, "obligations_area", None)
+    dans_sa_zone = list(zone.Get()) if zone is not None else []
+    return any(f is not None and (f in dans_sa_zone or f.GetControlByOrOwner() == joueur)
+               for f in Worlds.FindCardsOnField(effect, name=NOM_ANGOISSE)
+               + [g for g in dans_sa_zone if g is not None and g.IsName(NOM_ANGOISSE)])
 
 
 def SongsDansLaDefausseBornee(effect: 'Effect', maximum: int = 4) -> int:
@@ -269,14 +294,36 @@ def RetirerUnStatut(face: 'CardFace', effect: 'Effect') -> bool:
     avec `rule=1` pour n'en enlever qu'une (can_status.py:98, modele Uncanny
     Resilience 07045 et The Thing th007).
 
-    Ordre : les deux statuts SUBIS d'abord, le benefique en dernier. Les deux
-    cartes visent des PERSONNAGES ALLIES : personne n'y retire son propre
-    « tough » alors qu'il est aussi etourdi.
+    CORRECTIF DU 20/10/2026 (backlog 12) : « a status card » vise TOUTES les
+    cartes d'etat du moteur (`CardFace.STATUS` : Stunned, Confused, Tough,
+    Exposed, Cloaked, Dazed, Intensified), et quand le personnage en porte
+    plusieurs, c'est le JOUEUR qui choisit laquelle part (RECETTES-MOTEUR §2,
+    modele `RetirerUneCarteDeStatut` du pack donatello). L'ancienne version ne
+    connaissait que Stunned / Confused / Tough et retirait d'office dans cet
+    ordre. Le retrait passe par `LoseState`, le chemin commun des `Discard<X>`.
     """
-    for nom, methode in (("Stunned", face.DiscardStunned),
-                         ("Confused", face.DiscardConfused),
-                         ("Tough", face.DiscardTough)):
-        if face.HasStatus(nom):
-            methode(effect, rule=1)
-            return True
-    return False
+    presents = [nom for nom in STATUTS_RETIRABLES if face.HasStatus(nom)]
+    if not presents:
+        return False
+    unite = face.CastTo(CanStatus)
+
+    def retirer(nom: str) -> None:
+        unite.LoseState(nom, effect, 1)
+
+    if len(presents) == 1:
+        retirer(presents[0])
+        return True
+    joueur = effect.GetInitiator()
+    if joueur is None:
+        return False
+    joueur.ChooseAbilities(
+        effect,
+        *[AbilityFactory.ForChoiceAbility(
+            "Discard a %s status card" % nom,
+            lambda cibles, nom=nom: retirer(nom))
+          for nom in presents])
+    return True
+
+
+STATUTS_RETIRABLES = ("Stunned", "Confused", "Tough", "Exposed", "Cloaked",
+                      "Dazed", "Intensified")

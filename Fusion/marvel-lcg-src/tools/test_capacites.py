@@ -8774,6 +8774,29 @@ CAS = [
         "attendu": {"menace": [["01097b", 1]], "defausse": ["wc009"]},
     },
     {
+        "nom": "wc014 Warping Reality — Action : la reduction dure TOUT LE ROUND (survit a la phase du vilain)",
+        "pourquoi": ("« the next card played THIS ROUND » : la reduction etait posee avec "
+                     "`in_this=\"Phase\"` et tombait a la fin de la phase des joueurs (ecart "
+                     "avoue dans le module jusqu'au 20/10/2026). Meme montage que le cas "
+                     "precedent, mais Magic Portal (wc009) est jouee APRES l'ouverture de la "
+                     "phase du vilain : payable seulement si la reduction a survecu "
+                     "(`Puzzle.EndPlayerPhase()` d'abord, sans quoi un cas sur la duree reste "
+                     "vert avec la mauvaise duree, RECETTES §5)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc014", "wc009", "01088"],
+        "cibles": ["01097b"],
+        "ne_pas_depenser": ["wc014"],
+        "jouer": ["wc014"],
+        "declencher_apres": ["Puzzle.EndPlayerPhase()", "Puzzle.BeginVillainPhase()"],
+        "jouer_apres": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["wc009"]},
+    },
+    {
         "nom": "wc015 Mother's Protection — Interrupt : 3 degats prevenus, la carte retourne dans le deck",
         "pourquoi": ("5 degats infliges a l'identite, 3 prevenus -> 2 encaisses. Le cout "
                      "(remelanger la carte dans le deck) est REEL : elle ne doit plus etre en jeu"),
@@ -16426,18 +16449,34 @@ CAS = [
     {
         "nom": "im001b Inventor — l'Action rend jouable une amelioration a 1 sans ressource",
         "pourquoi": ("`Worlds.UpdateNextCardPlayCost(joueur, -1, effect, finder=..., "
-                     "in_this='Phase')` (modele 16024 Deft Focus via aa009). Le cas est "
+                     "in_this='Round')` (modele 16024 Deft Focus via aa009). Le cas est "
                      "SUJET par construction : la main ne contient QUE im010 (cout 1), "
                      "donc aucune ressource pour la payer. Si elle entre en jeu, c'est "
-                     "que son cout est tombe a 0. ⚠ La carte imprime « this ROUND » et "
-                     "le moteur n'offre que 'Phase' ou 'Turn' : ecart assume, documente "
-                     "dans le module"),
+                     "que son cout est tombe a 0. La portee « this ROUND » a son cas "
+                     "propre, juste apres (in_this='Round' depuis le 20/10/2026)"),
         "scenario": "rhino",
         "heros": "iron_man_model_42",
         "mise_en_place": [],
         "main_exclusive": ["im010"],
         "declencher": ["Puzzle.Action('im001b')"],
         "jouer": ["im010"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["im010"]},
+    },
+    {
+        "nom": "im001b Inventor — l'Action reduit la prochaine amelioration de TOUT LE ROUND (survit a la phase du vilain)",
+        "pourquoi": ("« the next upgrade played THIS ROUND » : `in_this=\"Phase\"` faisait "
+                     "tomber la reduction a la fin de la phase des joueurs (ecart avoue dans "
+                     "le module jusqu'au 20/10/2026). Meme preuve par insuffisance que le cas "
+                     "precedent (main = im010 seule, cout 1, aucune ressource), mais im010 est "
+                     "jouee APRES `EndPlayerPhase` + `BeginVillainPhase`"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": [],
+        "main_exclusive": ["im010"],
+        "declencher": ["Puzzle.Action('im001b')"],
+        "declencher_apres": ["Puzzle.EndPlayerPhase()", "Puzzle.BeginVillainPhase()"],
+        "jouer_apres": ["im010"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["im010"]},
     },
@@ -65260,8 +65299,13 @@ def executer_un_cas(game_dir, port, index):
             effet = DebugRule(monde.object_manager.card_dict[0].face)
             joueur.PlayCardsLikeInTurn([face], effet)
 
-        def jouer_carte_glissee(card_id):
+        def jouer_carte_glissee(card_id, hote_id=None):
             """Joue une carte GLISSEE sous l'identite, par le vrai chemin.
+
+            `hote_id` (ajoute le 20/10/2026, backlog 12, dz014 Lightbringr) :
+            une carte EN JEU autre que l'identite, sous laquelle la carte est
+            glissee (cle de cas `jouer_sous: [[hote, card_id]]`). Sans lui,
+            rien ne change.
 
             Cle de cas `jouer_glissee` (pack fne, Echo). Ajoutee le 21/09/2026.
 
@@ -65283,6 +65327,8 @@ def executer_un_cas(game_dir, port, index):
             from game.event.manager import EventManager
             joueur = monde.players[0]
             identite = joueur.GetIdentity()
+            if hote_id is not None:
+                identite = par_id(monde, hote_id)
             zone = identite.GetPlacedCardArea() if identite is not None else None
             face = None
             for f in (zone.Get(True) if zone is not None else []):
@@ -65290,7 +65336,8 @@ def executer_un_cas(game_dir, port, index):
                     face = f
                     break
             if face is None:
-                raise RuntimeError(f"{card_id} n'est pas glissee sous l'identite")
+                raise RuntimeError(f"{card_id} n'est pas glissee sous "
+                                   f"{hote_id or 'l identite'}")
             effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
             message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
             message.Send()
@@ -65455,6 +65502,11 @@ def executer_un_cas(game_dir, port, index):
                 except Exception as exc:
                     print(f"TOLERE: jouer_glissee {card_id} -> "
                           f"{type(exc).__name__}: {exc}", flush=True)
+            # `jouer_sous: [[hote, card_id]]` (20/10/2026, backlog 12, dz014
+            # Lightbringr) : joue une carte glissee sous une carte EN JEU autre
+            # que l'identite, par le meme chemin que `jouer_glissee`. ADDITIVE.
+            for hote_id, card_id in cas.get("jouer_sous") or []:
+                jouer_carte_glissee(card_id, hote_id)
             for card_id in cas.get("action_en_main") or []:
                 declencher_action_en_main(card_id)
             # `declencher_final` (08/10/2026, rapport n68 Hellcat) : commandes

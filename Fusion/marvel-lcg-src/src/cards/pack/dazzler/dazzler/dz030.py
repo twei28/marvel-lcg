@@ -16,7 +16,11 @@ from . import *
 # Le « Choose » est rendu par UNE seule capacite de jeu avec un choix interne,
 # et non par deux : le moteur n'admet deux capacites `Play` sur un evenement
 # que pour une liste blanche nommee (factory.py), qu'on evite ainsi.
-
+#
+# CORRECTIF DU 20/10/2026 (backlog 12) : « Choose: » est un choix OBLIGATOIRE
+# (`ChooseAbilities`, sans option Cancel). Le module passait par
+# `MayChooseOneAbility`, qui offrait « Cancel » : la carte pouvait etre jouee
+# pour rien.
 
 CHANTEUSES = ("Dazzler", "Jem", "Lila Cheney", "Luna Snow", "Virgo")
 
@@ -44,7 +48,7 @@ def GetAbilities() -> Sequence['Ability']:
         def degats(targets: Sequence['CardFace']) -> None:
             this.DealDamage(targets, 2, effect)
 
-        joueur.MayChooseOneAbility(
+        joueur.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility("Remove 2 threat", menace)
             .SetTarget(Scheme2),
