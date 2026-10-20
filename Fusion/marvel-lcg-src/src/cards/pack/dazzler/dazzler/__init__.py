@@ -327,3 +327,66 @@ def RetirerUnStatut(face: 'CardFace', effect: 'Effect') -> bool:
 
 STATUTS_RETIRABLES = ("Stunned", "Confused", "Tough", "Exposed", "Cloaked",
                       "Dazed", "Intensified")
+
+
+# ---------------------------------------------------------------------------
+# Tribute (dz031) : une carte qui DEVIENT la copie d'une autre
+# ---------------------------------------------------------------------------
+# Decision de l'utilisateur (Q4 du backlog 12, 20/10/2026) : vraie copie,
+# limitee aux evenements jouables tout de suite en Action / Hero Action. Le
+# moteur sait deja faire porter a une carte une face qui n'est pas la sienne
+# (`Card.SwapCardFace`, chemin de `Faces.TreatAsAlly`) et la remet sur sa face
+# imprimee des qu'elle part a la defausse (`Card.CheckIfCanDiscard` :
+# `IsAsOtherCard()` -> `ResetToPrintedCard()`). C'est exactement « until it is
+# placed in the discard pile » : aucune modification du moteur commun.
+
+TYPES_JOUABLES_TOUT_DE_SUITE = ("Action", "HeroAction")
+
+
+def CapaciteDeJeu(face: 'CardFace') -> 'Effect|None':
+    """L'effet « Play » d'un evenement, s'il se joue en Action / Hero Action."""
+    for trouve in face.effect.Find(when=Message.WhenPlayerInTurn):
+        if not trouve.ability.is_play:
+            continue
+        if any(trouve.ability.type == getattr(AbilityType, t)
+               for t in TYPES_JOUABLES_TOUT_DE_SUITE):
+            return trouve
+    return None
+
+
+def DevenirCopie(face: 'CardFace', paper: 'Paper', effect: 'Effect') -> 'CardFace':
+    """`face` (sa CARTE) porte desormais la face de `paper`, plus le trait SONG.
+
+    La face d'origine revient toute seule a l'entree en defausse
+    (`CheckIfCanDiscard`)."""
+    from game.card.factory import CardFactory
+    copie = CardFactory.CreateFace(paper, effect.world)
+    face.card.SwapCardFace(copie, effect)
+    CardFactory.FaceRegisterEffects(copie)
+    copie.traits_internal[TRAIT_SONG] = [copie]
+    face.card.tribute_copie = paper
+    return copie
+
+
+def ResoudreAvecChoix(trouve: 'Effect', face: 'CardFace', joueur: 'Player',
+                      effect: 'Effect', ref: 'Message2', *, payer_cout: bool) -> None:
+    """Resout `trouve` (capacite de `face`) en laissant le JOUEUR choisir une
+    cible unique, et en payant ou non les couts avant la fleche.
+
+    `CardFace.ResolveAbility` prend les premieres cibles legales sans rien
+    demander : meme correctif que Karaoke Night (dz035)."""
+    from game.effect.effect_invoke import EffectInvoker
+    trouve.context.initiator = face.GetControlByOrOwner()
+    trouve.checker.UpdateLegalTargets()
+    legales = [f for f in (trouve.context.all_legal_targets or []) if f is not None]
+    fourchette = tuple(trouve.context.target_range)
+    if len(legales) >= 2 and fourchette == (1, 1):
+        choisie = joueur.AskChooseOneText(legales)
+        if choisie is None or choisie not in legales:
+            choisie = legales[0]
+        trouve.context.targets_internal = [choisie]
+    else:
+        trouve.context.targets_internal = legales[:fourchette[0]]
+    trouve.context.initiator = face.GetControlByOrOwner()
+    EffectInvoker.ResolveSelfInternal(trouve, None, joueur, effect, ref,
+                                      skip_cost=not payer_cout)

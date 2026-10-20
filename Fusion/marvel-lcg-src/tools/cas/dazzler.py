@@ -797,14 +797,30 @@ CAS = [
        main_exclusive=["dz030", "01088"], jouer=["dz030"], cibles=[COMPLOT],
        choisir_option=["Remove_2_threat"], questions_absentes=["Cancel"]),
     # ============================================================ dz031 Tribute
-    _c("dz031 Tribute : Hero Action (lecture actuelle), un evenement de la collection est resolu sans payer son cout",
-       "« choose 1 non-identity event in your collection. Tribute becomes a copy of that card (except for its cost) » : "
-       "le module FABRIQUE l'evenement choisi et le joue gratuitement ; Tribute (SONG) part dans la Setlist. "
-       "⚠ La lecture complete (« becomes a copy [...] keeps the SONG trait until it is placed in the discard pile ») "
-       "est une question ouverte (Q4) : ce cas mesure le comportement actuel, pas la carte",
+    _c("dz031 Tribute : Hero Action, Tribute DEVIENT la copie choisie (For Justice!) et entre ainsi dans la Setlist (Q4)",
+       "decision utilisateur Q4 (20/10/2026) : vraie copie d'un evenement NON-identite (les chansons de Dazzler, "
+       "classe Hero, n'en sont pas). Le joueur choisit For Justice! (01060) : 3 menaces retirees (6 -> 3), la "
+       "carte rangee dans la Setlist est la copie (01060), aucune carte n'arrive en main",
        [HEROINE], [menace(COMPLOT, 6)],
-       {"setlist": ["dz031"]},
-       main_exclusive=["dz031", "01090"], jouer=["dz031"], verifier="dz_etat"),
+       {"menace": [[COMPLOT, 3]], "setlist": ["01060"], "taille_main": 0},
+       main_exclusive=["dz031", "01090"], jouer=["dz031"], verifier="dz_etat",
+       cibles=["01060", COMPLOT]),
+    _c("dz031 Tribute : un evenement a Response n'est pas propose (Chase Them Down absent des choix) (Q4)",
+       "decision utilisateur Q4 : l'evenement a Interrupt / Response n'est pas propose ; avant le 20/10/2026 le "
+       "pilote prenait 01052 Chase Them Down, qui restait en main",
+       [HEROINE], [],
+       {"absent_main": ["01052"]},
+       main_exclusive=["dz031", "01090"], jouer=["dz031"], questions_absentes=["Chase_Them_Down"],
+       cibles=["01060", COMPLOT]),
+    _c("dz031 Tribute : la copie redevient Tribute en entrant dans la defausse (Showtime! de Live Concert) (Q4)",
+       "« until it is placed in the discard pile » : Setlist = copie de For Justice! ; Live Concert se retourne, "
+       "la Setlist part en defausse : c'est Tribute (dz031) qui y arrive, pas For Justice!",
+       [HEROINE],
+       [menace(COMPLOT, 6)],
+       {"defausse": ["dz031"], "setlist": []},
+       main_exclusive=["dz031", "01090"], jouer=["dz031"], verifier="dz_etat",
+       declencher_apres=["Puzzle.Action('dz017a', 'HeroAction')"],
+       cibles=["01060", COMPLOT]),
     # ============================================================ dz032 Captivating Performance
     _c("dz032 Captivating Performance : Hero Action, la carte SUIVANTE est un evenement SONG -> un ennemi etourdi",
        "« If the next card you play this turn is a SONG event, stun an enemy » : Beautiful Dreamer jouee ensuite",
