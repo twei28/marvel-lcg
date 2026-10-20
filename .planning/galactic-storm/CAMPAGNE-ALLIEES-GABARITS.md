@@ -35,33 +35,58 @@ auteur, même gabarit « carte de campagne ») :
   `mw001a` Madame Web (commentaire du moteur lui-même : « Necessaire pour
   Madame Web mw001a (ATK/THW/DEF = X) » — précédent direct, même mécanique).
 
-**Étape 2 (cartes de référence) : repérées pour 12/13 cartes**, pas encore
-codées :
+**Étape 2-3 (cartes de référence + script) : FAITES pour 10/13 cartes**
+(`src/cards/pack/galactic_storm/galactic_storm_campaign/`) :
 
-| Carte | Mécanique | Référence trouvée |
+| Carte | Mécanique | Référence utilisée |
 |---|---|---|
-| gs224 Rick Jones | rediriger l'attaque du méchant vers Rick Jones | `hood/crossfires_crew/24026` Crossfire (`WhenUnitWouldAttack` + `message.ReplaceTarget(...)`) |
-| gs225 Gladiator | après l'avoir joué depuis la main, vaincre un sbire | à préciser (trigger « play from hand » + `DefeatFace`) |
-| gs226 Lauri-Ell | après avoir attaqué et blessé, défausser les boosts de la cible | à préciser (`AfterUnitAttackUnit` + dégâts > 0 + boosts sur la cible) |
-| gs227 Binary | ATK = X (ressources énergie en main) | `mw001a` Madame Web (voir ci-dessus) |
-| gs228 Captain Marvel | Resource : défausser Captain Marvel → générer YY | `core/iron_man/01033` Pepper Potts + `falcon/falcon/53006` (CanGenerateResources, CostFunc.Discard) |
-| gs229 Crystal | When Defeated : payer 3 → remettre en jeu sous contrôle | à préciser |
-| gs230 Doctor Pym | Alter-Ego Action : +1 à chaque pouvoir de base jusqu'à la fin du round | à préciser |
-| gs231 Goliath | après pouvoir de base, défausser le dessus ; si [physical], 1 dégât à chaque ennemi | à préciser |
-| gs232 Her | après son entrée en jeu, redresser une amélioration | à préciser |
-| gs233 Living Lightning | après avoir quitté le jeu, défausser 2 ; par [energy] imprimé, redresser une carte | à préciser |
-| gs234 Sersi | Action : s'épuiser + 1 dégât à elle-même + [mental] → remplacer un statut en jeu | à préciser |
-| gs235 Spider-Woman | après avoir été défaussée DU DESSUS DE SON PROPRE DECK, étourdir jusqu'à 2 ennemis | **AUCUN précédent dans tout le dépôt** (grep exhaustif : rien sur « discarded from your deck » / « discarded from the top of your deck » dans aucun pack, officiel ou maison). Probable brique moteur manquante, pas une carte "normale" — à trancher avant de scripter. |
-| gs236 Thor | après l'avoir joué depuis la main, 1 dégât par [energy] payé pour lui à chaque sbire engagé | à préciser (ressources de paiement : `GetPaidResources`/`paid_this_resources`, vu dans `card_player.py: SetPaidResources`) |
+| gs224 Rick Jones | rediriger l'attaque du méchant vers Rick Jones | `hood/crossfires_crew/24026` Crossfire (`WhenUnitWouldAttack` + `ReplaceTarget`) |
+| gs225 Gladiator | après l'avoir joué depuis la main, vaincre un sbire | `core/spider_man/01002` Black Cat (`AfterPlayerPlayedCard` sur "This") + `jj/jessica_jones/61002` (`Faces.DefeatUnits`) |
+| gs227 Binary | ATK = X (ressources énergie en main) | `mw001a` Madame Web (`ThisGainKeyword` + `desc.ATK="0*"`) |
+| gs228 Captain Marvel | Resource : défausser Captain Marvel → générer YY | `core/iron_man/01033` Pepper Potts + `falcon/falcon/53006` (`CanGenerateResources`, `CostFunc.Discard`) — **combo cout/générateur pas vu identique ailleurs, à vérifier en étape 7** |
+| gs229 Crystal | When Defeated : payer 3 → remettre en jeu sous contrôle | `mut_gen/mutant_genesis_campaign/32173b` (`PutIntoPlay(under_control=True)`) — **aucune carte qui se relève ELLE-MÊME après sa propre défaite trouvée ailleurs : montage assemblé, priorité haute à l'étape 7** |
+| gs230 Doctor Pym | Alter-Ego Action : +1 à chaque pouvoir de base jusqu'à la fin du round | `fne/daredevil/60017` (`identity.GainUntilRoundEnd`) |
+| gs231 Goliath | après pouvoir de base, défausser le dessus ; si [physical], 1 dégât à chaque ennemi | `AbilityFactory.AfterUnitUseBasicPower` (natif) + `01002` Black Cat (`DiscardDeckTopCards`) |
+| gs232 Her | après son entrée en jeu, redresser une amélioration | `sk263` Crusader (`AfterCardEnterPlay`) + `psylocke/41011` (`canbe_ready=True`) |
+| gs233 Living Lightning | après avoir quitté le jeu, défausser 2 ; par [energy] imprimé, redresser une carte | `AfterCardLeavePlay` (natif) + `01002` + `falcon/53012` Talon Line (boucle `ChooseAbilities` x N) |
+| gs236 Thor | après l'avoir joué depuis la main, 1 dégât par [energy] payé pour lui à chaque sbire engagé | `01002` Black Cat + `Effect.GetPaidResources()` (`effect.py:512`) |
 
-**Reste à faire avant de clore ce lot** : écrire `GetAbilities()` des 13
-scripts (Étape 3), bloc texte-contre-code (Étape 5), bloc nombres (Étape 6),
-cas de test par capacité avec preuve par substitution (Étape 7, y compris
-témoin d'épuisement si besoin), autoplay ciblé (Étape 8), bloc plateau si la
-carte change ce qu'on voit (Étape 8 bis — Her/Living Lightning/Sersi
-attachent ou redressent des cartes, donc concernées).
+**Construction vérifiée** : `test_cards` 7016/7016 (+10 depuis les 7006 d'avant
+les scripts), 0 erreur. `verifier_appels_modules galactic_storm` : OK (tous
+les appels existent réellement, pas juste « ça charge »).
 
-Carte terminée (les 13) : NON — seule l'étape 1 (données) est faite et
-vérifiée ; aucun script n'existe encore, `gs224`-`gs236` tombent donc en
-« no_ga » (pas de capacité construite) dans `test_cards` (7006 ok / 0 err,
-inchangé).
+**3 cartes PAS scriptées, chacune pour une raison précise** :
+- **gs226 Lauri-Ell** — « discard each boost card on that enemy » : pas de
+  précédent clair pour des « cartes boost » qui RESTERAIENT en jeu, visibles,
+  sur un ennemi après une activation (le mécanisme `GiveFacedownBoostCards`
+  trouvé ailleurs dans le pack sert à la pioche de boost PENDANT une
+  activation, pas à un stock persistant attaché). À vérifier avant de
+  scripter : soit une vraie mécanique du pack existe quelque part (pas
+  trouvée), soit c'est à interpréter.
+- **gs234 Sersi** — « choose a status card in play. Replace that status card
+  with a different status card » : les statuts (Tough/Stunned/...) existent
+  comme capacité (`Faces.GiveStatus`) mais « choisir un statut EN JEU puis le
+  remplacer par un AUTRE » demande de retrouver quelle carte le porte et de
+  quel type, pas juste en donner un nouveau. Faisable mais pas encore
+  construit faute de temps.
+- **gs235 Spider-Woman** — « discarded from the top of your deck » :
+  **AUCUN précédent dans tout le dépôt** (grep exhaustif, officiel et maison).
+  Probable brique moteur manquante (un hook qui n'existe pas encore pour
+  qu'une carte réagisse à SA PROPRE défausse depuis le dessus du deck d'un
+  joueur), pas une carte « normale » à scripter avec les briques actuelles —
+  décision à prendre avant d'investir dedans (construire la brique moteur,
+  ou confirmer qu'elle existe sous un autre nom).
+
+**Reste à faire pour clore les 10 scriptées** : bloc texte-contre-code
+(étape 5, pas encore relu ligne à ligne), bloc nombres (étape 6), **cas de
+test par capacité avec preuve par substitution (étape 7, AUCUN cas encore
+écrit — rien n'est prouvé en jeu, seulement « ça construit »)**, autoplay
+ciblé (étape 8), bloc plateau (étape 8 bis — Her/Living Lightning
+redressent des cartes, concernées).
+
+Carte terminée (les 13) : NON. 10/13 construisent et passent
+`verifier_appels_modules`, mais ZÉRO n'a de cas de test ni de preuve par
+substitution : c'est la plus grosse étape qui reste, pas une formalité.
+3/13 ne sont même pas scriptées (voir raisons ci-dessus). Le fichier de
+campagne qui relie les 8 scénarios (`data/campagnes/galactic_storm.json`)
+n'existe toujours pas : chantier séparé, pas commencé.
