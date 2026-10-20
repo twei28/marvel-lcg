@@ -11,6 +11,40 @@ antérieur.
 
 Rapport complet : `.planning/rapports/2026-09-21-echo-conclusion.md`.
 
+> **MISE À JOUR DU 20/10/2026 (backlog 13, branche `backlog-13-reserves`).**
+> Les deux manques communs sont comblés :
+>
+> - **Étape 8 bis : FAITE pour 60040a/b/c.** Cas moteur
+>   « 60040a 60040b 60040c Photographic Reflexes — etape 8 bis : ce que le
+>   moteur ENVOIE au plateau (monde + options) » (vérificateur
+>   `echo_rendu_pour_le_plateau`) : il prend le descripteur du monde
+>   (`ToDescriptor.World`, ce que sert `/get_world`) et celui des options
+>   (`Effect.Render`, ce que sert `/get_ask`) et les écrit en fixture
+>   (`ui-app/src/board/__fixtures__/echo-photographic-reflexes.json`). Le cas
+>   plateau `ui-app/src/board/echo-photographic-reflexes-plateau.test.ts`
+>   (6 cas) relit cette fixture et affirme : les trois variantes dessinées en
+>   main, Haymaker glissé dessiné SOUS Echo (`portePar` = Echo, face cachée
+>   lisible par son propriétaire), chaque variante CLIQUABLE (rôle `porteur`),
+>   le clic en mode Détaillé choisit l'action de LA variante cliquée, Haymaker
+>   glissé cliquable à coût 0. **Vu ROUGE** : fixture régénérée avec le module
+>   `60040a` remplacé par un module vide (`substituer_pack.py`) →
+>   « carte 9: expected undefined to be 'porteur' » ; fixture d'origine
+>   remise → 6/6.
+> - **Étape 8 : FAITE.** `autoplay.py` deck `echo` contre Rhino, 8 parties
+>   (71 s), 0 partie bloquée, 5,2 rounds en moyenne ; témoin `spider_man`,
+>   8 parties, 0 bloquée, 6,9 rounds. Grep `NameError|AttributeError|
+>   TypeError|KeyError|AssertionError|Traceback` sur les 16 journaux : 0
+>   partout. Journaux lus pour les cartes du chantier : Watch and Learn part
+>   dans les 8 parties, le chemin B (« Discard_a_Photographic_Reflexes ») dans
+>   5, le chemin A (action en main) dans 2. Écart de rounds avec le témoin :
+>   Echo est éliminée plus tôt (6 éliminations sur 8 contre 4), pas de
+>   blocage.
+> - **Trouvé en lisant le journal** (graine 4, lignes 297 à 305) : le chemin A
+>   est offert quand l'événement glissé n'est PAS payable ; Photographic
+>   Reflexes est alors défaussée pour rien (reproduit au harnais). Le chemin B
+>   refuse, lui, dans la même position. **Doute de règle, non tranché** :
+>   question Q1 de `.planning/todos/2026-10-20-backlog-13-questions.md`.
+
 **Preuves communes**, citées une fois :
 
 - **Étape 7, cas** : `tools/test_capacites.py`, filtres `Echo — ` et
@@ -24,7 +58,9 @@ Rapport complet : `.planning/rapports/2026-09-21-echo-conclusion.md`.
 - **Étape 4, image** : inchangée, les quatre cartes avaient déjà la leur.
 - **Étape 8** : **PAS FAITE.** Pas d'autoplay ciblé sur le deck d'Echo, faute
   de temps machine. Dit noir sur blanc, ici et au rapport.
+  *Faite le 20/10/2026, voir la mise à jour en tête.*
 - **Étape 8 bis** : **PAS FAITE** pour le chemin A. Voir le gabarit `60040a`.
+  *Faite le 20/10/2026, voir la mise à jour en tête.*
 
 ---
 
@@ -96,9 +132,10 @@ Rapport complet : `.planning/rapports/2026-09-21-echo-conclusion.md`.
       glissee, on defausse jusqu'a 3`, quatre événements joués dans le même
       tour, **chiffre mesuré : 3 cartes restantes**, pas une présence.
 
-- [ ] **Étape 8 : autoplay ciblé** — **NON FAITE.** Ce qui manque
-      précisément : `tools/autoplay.py` sur le deck `echo` contre `rhino`, 8
-      parties, témoin `spider_man`, grep exhaustif des tracebacks.
+- [x] **Étape 8 : autoplay ciblé** — FAITE le 20/10/2026 (voir la mise à
+      jour en tête) : 8 parties `echo` / `rhino`, témoin `spider_man`
+      8 parties, 0 traceback, 0 partie bloquée ; Watch and Learn part dans
+      les 8 parties.
 
 - [x] **Étape 8 bis : la carte change-t-elle ce qu'on VOIT ?**
       **OUI** — elle glisse des cartes sous l'identité. Mais c'est du **déjà
@@ -110,6 +147,8 @@ Rapport complet : `.planning/rapports/2026-09-21-echo-conclusion.md`.
 
 **Carte terminée : OUI**, sous la réserve de l'étape 8 (autoplay non fait) et
 de l'écart de timing `IsInProcessingArea` ci-dessus, tous deux nommés.
+*20/10/2026 : la réserve de l'étape 8 est levée (autoplay fait) ; reste
+l'écart de timing `IsInProcessingArea`, nommé.*
 
 ---
 
@@ -167,9 +206,18 @@ de l'écart de timing `IsInProcessingArea` ci-dessus, tous deux nommés.
 
 - [x] **Étape 7 bis : limite imprimée ?** **NON.** Aucune.
 
-- [ ] **Étape 8 : autoplay ciblé** — **NON FAITE**, même manque que 60037a.
+- [x] **Étape 8 : autoplay ciblé** — FAITE le 20/10/2026, même fournée que
+      60037a ; le chemin A (action en main) part dans 2 parties sur 8.
 
-- [ ] **Étape 8 bis : la carte change-t-elle ce qu'on VOIT ?**
+- [x] **Étape 8 bis : la carte change-t-elle ce qu'on VOIT ?** FAITE le
+      20/10/2026 : cas plateau
+      `ui-app/src/board/echo-photographic-reflexes-plateau.test.ts`, sur une
+      fixture produite par le moteur (cas « etape 8 bis : ce que le moteur
+      ENVOIE au plateau »). Vu ROUGE avec le module `60040a` vidé (« carte 9:
+      expected undefined to be 'porteur' »), vert 6/6 avec. ⚠ Il n'y a pas eu
+      de correctif côté plateau : le dessin et le clic étaient déjà justes, le
+      rouge prouve que le cas DISCRIMINE, pas qu'un défaut a été réparé.
+      Texte d'origine de cette case, conservé :
       **OUI, ET C'EST LE POINT FAIBLE DE CE CHANTIER.** La carte devient
       cliquable en main : c'est une **action portée par une carte de la main**,
       une forme que `ui-app` n'a jamais eu à dessiner pour Echo.
@@ -182,6 +230,35 @@ de l'écart de timing `IsInProcessingArea` ci-dessus, tous deux nommés.
 **Carte terminée : NON.** Ce qui manque : l'étape 8 bis (rien ne garantit que
 le geste soit visible à l'écran) et l'étape 8. Le moteur est juste et mesuré ;
 l'écran ne l'est pas.
+
+*20/10/2026, plus tard : Q1 TRANCHÉE par l'utilisateur* (« retirer le geste
+quand aucun événement glissé n'est jouable ou payable après la réduction de
+2 »). Correctif dans `fne/echo/__init__.py` : `il_y_a_un_evenement_glisse`
+pose la question du chemin B (`FilterAvailableEffects` sur le « Play » de
+chaque carte glissée) PUIS vérifie le paiement (`JeuPayableSans` : somme des
+moyens listés, une entrée par carte payeuse, la Photographic Reflexes cliquée
+écartée), car l'offre du moteur ne vérifie jamais le paiement. Corollaire :
+la garde du 25/09 laisse une SECONDE copie payer sur le chemin A (la copie
+cliquée est déjà partie en coût). Trois cas sujets, vus ROUGES avant le
+correctif : « chemin A ABSENT quand l'evenement glisse n'est pas payable »
+(« action OFFERTE, attendu absente »), « chemin A avec DEUX copies »
+(« cartes glissees ['18020'], attendu [] »), et le témoin « chemin A PRESENT
+et joue des que l'evenement glisse est payable » (vert avant et après).
+Filtre `6004` : 16/16 ; filtre `Echo` : 18/18 ; fixture du plateau inchangée
+(régénérée, identique) ; autoplay echo/rhino rejoué, 8 parties, 0 traceback,
+plus aucune « Cancel » après une Photographic Reflexes (graine 4 réglée).
+**Carte terminée : OUI** (60040a, et 60040b / 60040c par le même
+constructeur).
+
+*Texte du premier passage du 20/10, conservé :* **Carte terminée : NON**,
+pour une seule raison nouvelle : le chemin A est offert
+quand aucun événement glissé n'est payable, et la carte est alors défaussée
+pour rien (autoplay graine 4, reproduit au harnais). C'est un doute de règle,
+posé en Q1 de `.planning/todos/2026-10-20-backlog-13-questions.md` ; la carte
+passera à OUI avec le cas sujet de l'option retenue. Non vu en navigateur :
+la capture d'écran réelle n'a pas pu être faite (copie du client compilé dans
+le dossier du jeu refusée par la permission « déploiement ») ; le cas plateau
+s'arrête au calcul de ce qui est dessiné et cliquable, pas aux pixels.
 
 ---
 
@@ -201,9 +278,14 @@ l'écran ne l'est pas.
       a attrapé le défaut de double défausse (§3c du rapport). Substitution :
       rouge sans le module.
 - [x] **Étape 7 bis** : pas de limite imprimée.
-- [ ] **Étape 8 / 8 bis** : mêmes manques que `60040a`.
+- [x] **Étape 8 / 8 bis** : faites le 20/10/2026, comme `60040a`. Le cas
+      moteur de l'étape 8 bis tombe ROUGE avec le module `60040b` vidé
+      (« 60040b en main : aucune option rendue sur son objet 11 »,
+      `substituer_pack.py` : rouges 2/2).
 
 **Carte terminée : NON**, pour la même raison que `60040a` (étape 8 bis).
+*20/10/2026 : Q1 tranchée et corrigée (voir `60040a`).* **Carte terminée :
+OUI.**
 
 ---
 
@@ -219,6 +301,12 @@ l'écran ne l'est pas.
       branché, pas d'un comportement différent ; et le cas des trois variantes
       l'attraperait.
 - [x] **Étape 7 bis** : pas de limite imprimée.
-- [ ] **Étape 8 / 8 bis** : mêmes manques.
+- [x] **Étape 8 / 8 bis** : faites le 20/10/2026, comme `60040a`. La réserve
+      « aucun cas ne clique 60040c elle-même » est en partie levée : le cas
+      moteur de l'étape 8 bis exige une option portée par l'objet de `60040c`
+      et tombe ROUGE avec son module vidé (« 60040c en main : aucune option
+      rendue sur son objet 13 », rouges 1/1).
 
 **Carte terminée : NON**, pour la même raison.
+*20/10/2026 : Q1 tranchée et corrigée (voir `60040a`).* **Carte terminée :
+OUI.**

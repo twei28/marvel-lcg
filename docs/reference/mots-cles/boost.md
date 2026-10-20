@@ -40,6 +40,12 @@ permanente ET un `WhenCardBecomeBoost`.
   `AbilityType.NonKeywordStar`, voir [[special]].
 - Les icônes de boost d'un SBIRE comptent quand ce sbire est retourné comme
   carte de boost, pas quand il est en jeu.
+- **Tester « une carte de boost supplémentaire »** : les cartes de boost sont
+  défaussées en fin d'activation, l'état final n'en garde rien. Clé de
+  harnais `boosts_sur: [[card_id, n]]` (ajoutée le 20/10/2026, Nyx `ze013`,
+  Total Eclipse `ze016`), avec un deck Rencontre réduit à une carte à boost
+  connu (Shocker `01103`) pour que les dégâts soient déterministes. Détail :
+  `RECETTES-MOTEUR.md` §7.
 
 **Variantes maison** : `gb010` (Necro-Raven, pack `gorr`) : le ★ Boost met le
 sbire en jeu engagé avec le joueur au lieu de l'envoyer à la défausse, et se
