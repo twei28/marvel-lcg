@@ -83,6 +83,11 @@ des cartes d'une partie ; étendre `sw-plateau.js` pour la version en ligne ; é
 
 ## 2. Ajouter des langues au jeu (ajouté le 18/10/2026)
 
+> **Décision du 20/10/2026 : l'espagnol est la langue choisie en premier, mais le chantier est laissé au backlog, on ne le fait pas maintenant.**
+> Un cadrage a été lancé puis arrêté avant tout résultat (aucun fichier du jeu touché). Au moment de reprendre : mesurer la couverture espagnole de MC4DB et MarvelCDB,
+> cartographier le branchement de fr/en (interface, cartes, noms, scans, site, préférence de langue), puis poser les décisions une par une (traduction machine ou relecture,
+> scans espagnols ou texte seulement, repli sur l'anglais, noms de héros officiels).
+
 **Le besoin.** Le jeu est en français et en anglais. Savoir quelles langues ajouter ensuite, et où trouver leurs
 cartes (textes et images).
 
