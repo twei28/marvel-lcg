@@ -4935,4 +4935,356 @@ export const TEXTES_FR_FANMADE = {
     'gs237q': "Attachez cette carte au sbire avec la plus haute ATQ. Si vous ne pouvez pas, cette carte gagne Renfort.\nLe sbire attaché gagne le trait [[ELITE]].\n<b>Interruption forcée</b> : quand le sbire attaché est censé être vaincu, soignez tous ses dégâts à la place. Ensuite, défaussez cette carte.",
     // galactic_storm — Distant Manipulation (Treachery)
     'gs240q': "<b>Une fois révélée</b> : choisissez : soit vous inclinez chaque carte avec une capacité \"<b>Ressource</b>\" que vous contrôlez, soit vous défaussez chaque carte Ressource de votre main. Si vous ne pouvez pas, cette carte gagne Renfort.",
+    // web_of_deceit — * Shocker (Villain)
+    'wd001a': "Solide.\n<b>Une fois vaincu</b> : retirez 5 menaces d'une manigance annexe. Retournez cette carte.",
+    // web_of_deceit — * Shocker (Villain)
+    'wd001b': "Riposte 1.\n<b>Une fois vaincu</b> : infligez 1 dégât à chaque héros. Retirez 10 menaces d'une manigance annexe. Retournez cette carte.",
+    // web_of_deceit — Shock Party (MainScheme)
+    'wd002a': "<b>Contenu</b> : Shocker (A). <i>(Shocker (B) à la place en mode expert.)</i> Sets de rencontre Shocker, City in Chaos, Power Drain II et Standard III. Un set de rencontre modulaire <i>(recommandé : Crime Wave)</i>.\n<b>Mise en place</b> : cherchez la manigance annexe The Long Night dans le deck Rencontre et révélez-la. Retirez de la partie chaque carte obligation du deck Rencontre.",
+    // web_of_deceit — Shock Party (MainScheme)
+    'wd002b': "<b>Une fois révélée</b> : cherchez l'attachement Vibro-Shock Gauntlets dans le deck Rencontre et la pile de défausse, et révélez-le.",
+    // web_of_deceit — Look Who Finally Showed (MainScheme)
+    'wd003a': "<b>Une fois révélée</b> : cherchez le sbire Rhino dans le deck Rencontre et la pile de défausse, et mettez-le en jeu engagé avec le premier joueur. Cherchez la manigance annexe Grand Larceny dans le deck Rencontre et la pile de défausse, et révélez-la. <i>(Mélangez.)</i>",
+    // web_of_deceit — Look Who Finally Showed (MainScheme)
+    'wd003b': "<b>Réponse forcée</b> : après que Shocker ou Rhino est vaincu, retirez 1[per_hero] menace de cette manigance.",
+    // web_of_deceit — The Gang's All Here (MainScheme)
+    'wd004a': "<b>Une fois révélée</b> : dans l'ordre des joueurs, chaque joueur non engagé avec un sbire unique ([star]) cherche un sbire unique ([star]) dans le deck Rencontre et la pile de défausse, et le révèle.",
+    // web_of_deceit — The Gang's All Here (MainScheme)
+    'wd004b': "Vibro-Shock Gauntlets gagne Permanent.\n<b>Si ce stade est complété, les joueurs perdent la partie.</b>",
+    // web_of_deceit — Vibro-Shock Gauntlets (Attachment)
+    'wd005': "Attachez-le à Shocker.\n[star] <b>Réponse forcée</b> : après que Shocker vous a attaqué et blessé, défaussez une carte de votre main.\n<b>Action de héros</b> : dépensez des ressources [physical] [mental] et retirez une carte d'état Sonné ou Désorienté de Shocker → défaussez Vibro-Shock Gauntlets.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // web_of_deceit — * Sandman (Minion)
+    'wd006': "Ténacité.\n[star] <b>Réponse forcée</b> : après que Sandman vous a attaqué ou engagé, défaussez les 6 cartes du dessus du deck Rencontre.",
+    // web_of_deceit — * Scorpion (Minion)
+    'wd007': "<b>Réponse forcée (héros)</b> : après que Scorpion vous a engagé, sonnez votre héros.",
+    // web_of_deceit — * Vulture (Minion)
+    'wd008': "Coup Rapide.\n<b>Réponse forcée</b> : après que Vulture vous a engagé, défaussez 1 carte prise au hasard dans votre main, sauf si votre identité a le trait AERIAL.",
+    // web_of_deceit — Feedback (Treachery)
+    'wd009': "<b>Une fois révélée</b> : sonnez votre identité et Shocker. Défaussez votre main. Piochez jusqu'à la taille de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez votre main. Piochez jusqu'à la taille de votre main.",
+    // web_of_deceit — Ionic Boots (Attachment)
+    'wd010': "Attachez-le à Shocker.\n[star] <b>Réponse forcée</b> : après que Shocker vous a attaqué et blessé, placez 2 menaces sur la manigance principale.\n<b>Action de héros</b> : dépensez des ressources [energy] [physical] [mental] → défaussez cette carte.",
+    // web_of_deceit — Grand Larceny (SideScheme)
+    'wd011': "Les menaces ne peuvent pas être retirées de The Long Night.\n<b>Réponse de héros (contre)</b> : après qu'un sbire CRIMINAL est vaincu, retirez 5 menaces de Grand Larceny.",
+    // web_of_deceit — The Getaway (Treachery)
+    'wd012': "<b>Une fois révélée</b> : choisissez :\n• Soignez 3 dégâts de Shocker. Shocker manigance.\n• Si l'attachement Vibro-Shock Gauntlets n'est pas en jeu, cherchez-le dans le deck Rencontre et la pile de défausse, et révélez-le.",
+    // web_of_deceit — The Check Cleared (Treachery)
+    'wd013': "Renfort.\n<b>Une fois révélée</b> : placez sur The Long Night un nombre de menaces égal au total combiné de MNG de chaque ennemi CRIMINAL en jeu.",
+    // web_of_deceit — Get Shocked! (Treachery)
+    'wd014': "<b>Une fois révélée</b> : sonnez votre identité. Infligez 1 dégât à chaque héros.\n<hr />\n[star] <b>Boost</b> : défaussez votre main. Piochez jusqu'à la taille de votre main.",
+    // web_of_deceit — The Long Night (SideScheme)
+    'wd015': "Permanent. Entrave 15[per_hero].\nLes joueurs ne peuvent pas gagner à moins de survivre à la nuit.\n<b>Réponse</b> : après qu'un sbire CRIMINAL est vaincu, retirez 2 menaces de The Long Night.\n<b>Interruption forcée</b> : quand la dernière menace est retirée de cette manigance, les joueurs survivent à la nuit et gagnent la partie.",
+    // web_of_deceit — Escaped Convict (Minion)
+    'wd016': "Renfort. Vulnerable. <i>(Défaussez ce personnage s'il est sonné ou désorienté.)</i>",
+    // web_of_deceit — Hired Gun (Minion)
+    'wd017': "Garde. Vulnerable. <i>(Défaussez ce personnage s'il est sonné ou désorienté.)</i>",
+    // web_of_deceit — Crime Pays (SideScheme)
+    'wd018': "<b>Une fois révélée</b> : cherchez un sbire CRIMINAL dans le deck Rencontre et mettez-le en jeu engagé avec vous. <i>(Mélangez.)</i> Si aucun sbire n'a été mis en jeu de cette façon, cette carte gagne Renfort.",
+    // web_of_deceit — Honor Among Thieves (Treachery)
+    'wd019': "<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire CRIMINAL soit défaussé. Révélez ce sbire, puis donnez à ce sbire une carte d'état Tenace et au méchant 1 carte de boost face cachée.",
+    // web_of_deceit — Power Drain (SideScheme)
+    'wd020': "<b>Une fois déjouée</b> : défaussez 2 cartes du deck Rencontre. Chaque joueur doit choisir et défausser 1 ressource de n'importe quel type de sa main pour chaque icône de boost défaussée de cette façon.",
+    // web_of_deceit — * Electro (Minion)
+    'wd021': "[star] <b>Réponse forcée</b> : après qu'Electro vous a attaqué, défaussez 1 carte du deck Rencontre. Subissez 1 dégât indirect pour chaque icône de boost défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck Rencontre.",
+    // web_of_deceit — Electromagnetic Pulse (Treachery)
+    'wd022': "<b>Une fois révélée</b> : défaussez 7 cartes du deck Rencontre. Si un sbire Electro a été défaussé de cette façon, mettez-le en jeu engagé avec vous. Si Electro n'a pas été défaussé de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck Rencontre.",
+    // web_of_deceit — Lightning Bolt (Treachery)
+    'wd023': "<b>Une fois révélée</b> : défaussez 2 cartes du deck Rencontre. Subissez 1 dégât indirect pour chaque icône de boost défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck Rencontre.",
+    // web_of_deceit — Shock Therapy (Treachery)
+    'wd024': "<b>Une fois révélée</b> : défaussez 1[per_hero] cartes du deck Rencontre. Le méchant soigne 1 dégât pour chaque icône de boost défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck Rencontre.",
+    // web_of_deceit — * Electro (Minion)
+    'wd025': "[star] Electro gagne +1 point de vie pour chaque ressource [energy] attachée à elle.\n[star] <b>Réponse forcée</b> : après qu'Electro vous a engagé ou s'est activée contre vous, choisissez 1 carte de votre main ayant une ressource [energy] imprimée et attachez-la à elle.",
+    // web_of_deceit — Bodyguard (Attachment)
+    'wd026': "Cherchez dans le deck Rencontre le sbire ayant le plus de points de vie imprimés et mettez-le en jeu avec vous, avec Bodyguard attaché à lui.\nLe sbire attaché gagne le trait ELITE, Garde, et +2 points de vie.\n<b>Interruption forcée</b> : quand le sbire attaché est vaincu, mélangez-le dans le deck Rencontre depuis la pile de défausse Rencontre.",
+    // web_of_deceit — "He's Mine!" (Treachery)
+    'wd027': "<b>Une fois révélée</b> : si l'attachement Bodyguard n'est pas en jeu, défaussez chaque sbire non ELITE engagé avec vous. Placez 1 menace sur la manigance principale pour chaque sbire défaussé de cette façon. Cherchez l'attachement Bodyguard dans le deck Rencontre et la pile de défausse, et révélez-le. Sinon, cette carte gagne Renfort.",
+    // web_of_deceit — Bodyguard (Minion)
+    'wd028': "Garde. <i>(Tant que ce sbire est engagé avec vous, vous ne pouvez pas attaquer le méchant.)</i>\n<hr />\n[star] <b>Boost</b> : choisissez de donner au méchant une carte d'état Tenace ou de soigner 4 dégâts du méchant. Si vous ne le pouvez pas, mettez cette carte en jeu engagée avec vous.",
+    // web_of_deceit — Multiverse Recruit (Attachment)
+    'wd029': "Le sbire attaché ignore la règle d'unicité et gagne Victoire 0.\n<b>Une fois révélé</b> : cherchez dans votre collection un sbire némésis et mettez-le en jeu engagé avec vous avec Multiverse Recruit attaché. <i>(Limite d'une fois par sbire par campagne.)</i>",
+    // web_of_deceit — "Vote for Fisk" (Environment)
+    'wd030': "<i>Mode standard uniquement.</i>\n[star] <b>Réponse forcée</b> : après que le méchant manigance, placez 1 menace sur la manigance annexe ayant le moins de menaces.",
+    // web_of_deceit — "Vote for Fisk" (Environment)
+    'wd031': "<i>Mode expert uniquement.</i>\n[star] <b>Réponse forcée</b> : après que le méchant manigance, placez 2 menaces sur la manigance annexe ayant le moins de menaces.",
+    // web_of_deceit — * The Great Web (Environment)
+    'wd032': "Mise en place. Renfort.\nLa règle d'unicité ne s'applique pas à chaque personnage WEB-WARRIOR ni à chaque carte ayant 'Spider' dans son titre.",
+    // web_of_deceit — * Green Goblin (Minion)
+    'wd033': "<b>Une fois révélé</b> : subissez 2 dégâts indirects. Mélangez dans le deck Rencontre chaque attachement TECH de la pile de défausse Rencontre.",
+    // web_of_deceit — * Hobgoblin (Minion)
+    'wd034': "<b>Une fois révélé</b> : subissez 2 dégâts indirects. Mélangez dans le deck Rencontre chaque attachement TECH de la pile de défausse Rencontre.",
+    // web_of_deceit — * Electro (Villain)
+    'wd035': "<b>Réponse forcée</b> : après qu'Electro s'est activé contre vous, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'une traîtrise soit défaussée.",
+    // web_of_deceit — * Electro (Villain)
+    'wd036': "<b>Une fois révélé</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un exemplaire de A.I.M. Scientist soit défaussé. Mettez-le en jeu engagé avec le premier joueur.\n<b>Réponse forcée</b> : après qu'Electro s'est activé contre vous, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'une traîtrise soit défaussée.",
+    // web_of_deceit — * Electro (Villain)
+    'wd037': "<b>Réponse forcée</b> : après qu'Electro s'est activé contre vous, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'une traîtrise ayant 1 icône de boost ou plus soit défaussée. Ensuite, défaussez un nombre égal de cartes du dessus de votre deck.",
+    // web_of_deceit — Power Outage (MainScheme)
+    'wd038a': "<b>Contenu</b> : Electro (I) et Electro (II). <i>(Electro (II) et Electro (III) à la place en mode expert.)</i> Sets de rencontre Electro, Power Drain II et Standard. Un set de rencontre modulaire <i>(recommandé : A.I.M. Science)</i>.\n<b>Mise en place</b> : mettez en jeu les environnements Electricity Clones et Grounded.",
+    // web_of_deceit — Power Outage (MainScheme)
+    'wd038b': "[star] <b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, soignez 1 dégât du méchant pour chaque jeton d'accélération et icône d'accélération ([acceleration]) en jeu.",
+    // web_of_deceit — Power Surge (MainScheme)
+    'wd039a': "<b>Une fois révélée</b> : inclinez chaque soutien et amélioration TECH allié. Chaque joueur défausse des cartes du deck Rencontre jusqu'à ce qu'il défausse un sbire A.I.M., puis révèle ce sbire. Chaque joueur cherche dans son deck et sa pile de défausse une carte ayant une ressource [energy] imprimée et l'ajoute à sa main. <i>(Mélangez.)</i>",
+    // web_of_deceit — Power Surge (MainScheme)
+    'wd039b': "[star] <b>Réponse forcée</b> : après avoir résolu une traîtrise Electro, retirez cette traîtrise de la partie.\nSi ce stade est complété, les joueurs perdent la partie.",
+    // web_of_deceit — Electricity Clones (Environment)
+    'wd040': "Permanent.\nElectro ignore la règle d'unicité. <i>(Plusieurs exemplaires d'Electro peuvent être en jeu, mais les capacités \"Réponse forcée\" d'un exemplaire d'Electro ne peuvent toujours être déclenchées que par cet exemplaire précis.)</i>",
+    // web_of_deceit — Grounded (Environment)
+    'wd041': "Permanent.\nTant que le coût total de toutes les améliorations et de tous les soutiens en jeu est inférieur à 10[per_hero], le méchant ne peut pas être vaincu.\n<b>Réponse forcée</b> : après que le méchant est vaincu, retirez cette carte de la partie → chaque joueur pioche 2 cartes.",
+    // web_of_deceit — Greased Lightning (Attachment)
+    'wd042': "Attachez-le au méchant.\n<b>Réponse forcée</b> : après que le méchant manigance, placez un jeton d'accélération ici.\n<b>Action de héros</b> : défaussez chaque carte du deck Rencontre → défaussez cette carte.",
+    // web_of_deceit — Lightning Speed (Attachment)
+    'wd043': "Attachez-le au méchant.\n<b>Réponse forcée</b> : après qu'un exemplaire d'Electro entre en jeu, placez un jeton d'accélération ici.\n<b>Action de héros</b> : défaussez chaque carte du deck Rencontre → défaussez cette carte.",
+    // web_of_deceit — A.I.M. Scientist (Minion)
+    'wd044': "Vulnerable. <i>(Défaussez ce personnage s'il est sonné ou désorienté.)</i>\n<b>Une fois vaincu</b> : cherchez la manigance annexe Dark Matter Conversion dans le deck Rencontre et la pile de défausse, et révélez-la.",
+    // web_of_deceit — * Black Cat (Minion)
+    'wd045': "[star] <b>Réponse forcée</b> : après que Black Cat vous a engagé ou a manigancé, défaussez les 2 cartes du dessus du deck Rencontre. Attribuez-vous chaque carte avec une icône étoile ([star]) défaussée de cette façon comme carte Rencontre face cachée.",
+    // web_of_deceit — * Electro (Minion)
+    'wd046': "[star] <b>Réponse forcée</b> : après qu'Electro vous a attaqué et blessé, défaussez les 7 cartes du dessus de votre deck.\n<b>Une fois vaincu</b> : retirez 4 menaces d'une manigance annexe.",
+    // web_of_deceit — * Electro (Minion)
+    'wd047': "[star] <b>Réponse forcée</b> : après qu'Electro a manigancé, défaussez les 7 cartes du dessus du deck Rencontre.\n<b>Une fois vaincu</b> : infligez 4 dégâts au méchant.",
+    // web_of_deceit — Accelerated Plans (SideScheme)
+    'wd048': "<b>Réponse forcée</b> : après que cette manigance annexe entre en jeu, placez ici 2 menaces pour chaque icône et jeton d'accélération en jeu.",
+    // web_of_deceit — Dark Matter Conversion (SideScheme)
+    'wd049': "Le méchant gagne +2 ATQ et Riposte 1.\n<b>Une fois révélée</b> : placez ici 1 menace supplémentaire pour chaque jeton d'accélération et icône d'accélération ([acceleration]) en jeu.",
+    // web_of_deceit — Charging (Treachery)
+    'wd050': "<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire soit défaussé. Si ce sbire est Electro, mettez-le en jeu et il gagne Coup Rapide. Sinon, cette carte gagne Renfort.",
+    // web_of_deceit — High Voltage (Treachery)
+    'wd051': "<b>Une fois révélée (alter ego)</b> : défaussez les 5 cartes du dessus de votre deck.\n<b>Une fois révélée (héros)</b> : défaussez les 5 cartes du dessus du deck Rencontre.\n<hr />\n[star] <b>Boost</b> : défaussez les 3 cartes du dessus du deck Rencontre.",
+    // web_of_deceit — Recharging (Treachery)
+    'wd052': "<b>Une fois révélée</b> : soignez 3 dégâts de chaque exemplaire d'Electro en jeu. Si 3 dégâts ou moins ont été soignés de cette façon, cette carte gagne Renfort.",
+    // web_of_deceit — Shocked (Treachery)
+    'wd053': "<b>Une fois révélée</b> : défaussez du dessus du deck Rencontre un nombre de cartes égal au nombre de cartes dans votre main. Si 3 cartes ou moins ont été défaussées de cette façon, cette carte gagne Renfort.",
+    // web_of_deceit — The Lizard (Villain)
+    'wd054a': "Chaque ennemi REPTILIAN gagne +1 ATQ pour chaque jeton de formule ici.\n<b>Interruption forcée</b> : quand The Lizard est censé être vaincu, à la place : défaussez chaque attachement de lui, retirez chaque jeton de formule d'ici, placez 1[per_hero] jetons de santé mentale sur Lizard Brain et retournez cette carte.",
+    // web_of_deceit — Curt Connors (Villain)
+    'wd054b': "[star] <b>Interruption forcée</b> : quand Curt Connors est censé attaquer, retirez 1 jeton de santé mentale de Lizard Brain à la place.\n[star] <b>Interruption forcée</b> : quand Curt Connors manigance, cette activation retire de la menace au lieu d'en placer. Après cette activation, retirez 1 jeton de santé mentale de Lizard Brain.",
+    // web_of_deceit — Chasing Down The Lizard (MainScheme)
+    'wd055a': "<b>Contenu</b> : The Lizard (A). Sets de rencontre The Lizard et Standard. Deux sets de rencontre modulaires <i>(City Sewers et Down to Earth)</i>.\n<b>Mise en place</b> : révélez l'environnement Lizard Brain. Placez 1 jeton de formule sur The Lizard. En mode expert, placez 1 jeton de formule supplémentaire sur The Lizard.",
+    // web_of_deceit — Chasing Down The Lizard (MainScheme)
+    'wd055b': "<b>Interruption forcée</b> : quand la dernière menace est retirée de cette manigance, passez à l'étape 2A <i>(les joueurs gagnent en avançant)</i>. Si Curt Connors est en jeu, retirez tous les jetons de santé mentale de Lizard Brain, et chaque joueur pioche 1 carte pour chaque jeton de santé mentale retiré de cette façon.\nSi cette étape est complétée, les joueurs perdent la partie.",
+    // web_of_deceit — The Cure (MainScheme)
+    'wd056a': "<b>Une fois révélée</b> : placez 1 jeton de formule sur The Lizard. Cherchez Regenerative Research dans le deck Rencontre et la pile de défausse, et révélez-la. Placez 2[per_hero] menaces sur Regenerative Research.",
+    // web_of_deceit — The Cure (MainScheme)
+    'wd056b': "<b>Action d'alter ego</b> : si vous contrôlez un personnage GENIUS, dépensez des ressources [mental] [mental] → retirez 4 menaces d'ici. <i>(Limite d'une fois par round par joueur.)</i>\nSi cette étape est complétée, les joueurs perdent la partie.\nS'il n'y a aucune menace ici et que The Lizard n'est pas en jeu, les joueurs gagnent la partie.",
+    // web_of_deceit — Lizard Brain (Environment)
+    'wd057': "Permanent.\nEn mode expert, chaque sbire gagne le trait REPTILIAN.\n[star] <b>Réponse forcée</b> : après que le dernier jeton de santé mentale a été retiré d'ici, retournez Curt Connors, puis réglez le cadran de points de vie de The Lizard sur ses points de vie imprimés.",
+    // web_of_deceit — Viper Fangs (Attachment)
+    'wd058': "Attachez-la au méchant.\n[star] <b>Interruption forcée</b> : quand le méchant attaché attaque, l'attaque gagne Perçant. Si cette attaque inflige des dégâts à une identité, placez 1 menace sur la manigance principale.\n<hr />\n[star] <b>Boost</b> : attachez cette carte à The Lizard.",
+    // web_of_deceit — Reptilian Regeneration (Attachment)
+    'wd059': "Attachez-la à l'ennemi REPTILIAN ayant le plus de points de vie imprimés et n'ayant pas déjà une autre Reptilian Regeneration attachée. Si vous ne le pouvez pas, cette carte gagne Renfort.\n<b>Interruption forcée</b> : quand la phase du méchant commence, soignez 1[per_hero] dégâts de l'ennemi attaché.",
+    // web_of_deceit — Super Reptile (Attachment)
+    'wd060': "Attachez-la à The Lizard. Sinon, Super Reptile gagne Renfort.\nLe méchant attaché gagne le trait BRUTE.\n<hr />\n[star] <b>Boost</b> : attachez cette carte à The Lizard.",
+    // web_of_deceit — Experimental Injection (Attachment)
+    'wd061': "Attachez-la à un sbire sans le trait REPTILIAN. Sinon, attachez-la au sbire ayant le moins de points de vie restants. Si vous ne le pouvez pas, cette carte gagne Renfort.\nLe sbire attaché gagne le trait REPTILIAN et +4 points de vie.",
+    // web_of_deceit — Lizardmen (Minion)
+    'wd062': "Ténacité.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace au méchant.",
+    // web_of_deceit — Giant Alligator (Minion)
+    'wd063': "Coup Rapide. Patrouille.\n<b>Une fois révélé</b> : défaussez les 5 cartes du dessus de votre deck.",
+    // web_of_deceit — Princess Python (Minion)
+    'wd064': "<b>Une fois révélée</b> : cherchez un exemplaire d'Experimental Injection dans le deck Rencontre et la pile de défausse et attachez-le à Princess Python.\n<b>Réponse forcée</b> : après que Princess Python vous a attaqué, subissez 2 dégâts indirects.",
+    // web_of_deceit — Regenerative Research (SideScheme)
+    'wd065': "Entrave 1[per_hero].\n<b>Interruption forcée</b> : quand la phase du méchant commence, soignez 1 dégât de chaque ennemi.",
+    // web_of_deceit — Scaly Setback (SideScheme)
+    'wd066': "The Lizard gagne +10 points de vie.\n<hr />\n[star] <b>Boost</b> : si le méchant attaque, cette attaque gagne Déferlement.",
+    // web_of_deceit — Martha and Billy (Treachery)
+    'wd067': "Renfort.\n<b>Une fois révélée</b> : placez 1 jeton de santé mentale sur Lizard Brain.",
+    // web_of_deceit — In Cold Blood (Treachery)
+    'wd068': "<b>Une fois révélée (alter ego)</b> : si The Lizard est en jeu, défaussez 1 carte au hasard de votre main.\n<b>Une fois révélée (héros)</b> : The Lizard vous attaque. Vous ne pouvez pas jouer d'événements avant la fin de la résolution de cette attaque. Si aucune attaque n'a eu lieu de cette façon, cette carte gagne Renfort.",
+    // web_of_deceit — Experimental Sewer Lair (SideScheme)
+    'wd069': "Chaque ennemi gagne Riposte 1.\n<hr />\n[star] <b>Boost</b> : si cette activation est :\n• Une attaque, cette attaque gagne Distance et Déferlement.\n• Une manigance, mettez Experimental Sewer Lair en jeu. Puis, placez 1 jeton d'accélération sur Experimental Sewer Lair.",
+    // web_of_deceit — Stegron (Minion)
+    'wd070': "[star] <b>Boost</b> : donnez une carte d'état Tenace au méchant. Mettez ce sbire en jeu engagé avec vous.",
+    // web_of_deceit — Trapped in the Pipes (Attachment)
+    'wd071': "Attachez-la à votre identité.\nAnnulation 1. <i>(Après que cette carte a été révélée ou retournée face visible pendant l'activation d'un ennemi, si l'un de ses effets est annulé, le joueur qui l'a révélée pioche 1 carte.)</i>\n[star] <b>Réponse forcée</b> : après que vous avez changé de forme, défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : vous êtes désorienté.",
+    // web_of_deceit — Ceiling Collapse (Treachery)
+    'wd072': "Annulation 2. <i>(Après que cette carte a été révélée ou retournée face visible pendant l'activation d'un ennemi, si l'un de ses effets est annulé, le joueur qui l'a révélée pioche 2 cartes.)</i>\n<b>Une fois révélée</b> : révélez la carte du dessus du deck Rencontre.\n<hr />\n[star] <b>Boost</b> : attribuez-vous 1 carte Rencontre face cachée.",
+    // web_of_deceit — We're Totally Lost (Treachery)
+    'wd073': "Annulation 1. <i>(Après que cette carte a été révélée ou retournée face visible pendant l'activation d'un ennemi, si l'un de ses effets est annulé, le joueur qui l'a révélée pioche 1 carte.)</i>\n<b>Une fois révélée</b> : vous êtes désorienté. Si vous êtes déjà désorienté, choisissez et défaussez 1 carte que vous contrôlez.",
+    // web_of_deceit — Vulture (Villain)
+    'wd074': "Vulture ne peut pas être attaqué pendant la phase des joueurs, sauf si l'attaquant ou l'attaque a le trait AERIAL, ou si l'attaque a Distance.",
+    // web_of_deceit — Vulture (Villain)
+    'wd075': "Vulture ne peut pas être attaqué pendant la phase des joueurs, sauf si l'attaquant ou l'attaque a le trait AERIAL, ou si l'attaque a Distance.\n<b>Une fois révélé</b> : cherchez Feather Daggers dans le deck Rencontre et la pile de défausse et révélez-le.",
+    // web_of_deceit — Vulture (Villain)
+    'wd076': "Vulture ne peut pas être attaqué pendant la phase des joueurs, sauf si l'attaquant ou l'attaque a le trait AERIAL, ou si l'attaque a Distance.\n<b>Une fois révélé</b> : attribuez une carte Rencontre à chaque joueur.",
+    // web_of_deceit — Surveillance Pigeons (MainScheme)
+    'wd077a': "<b>Contenu</b> : Vulture (I) et Vulture (II). <i>(Vulture (II) et Vulture (III) en mode expert.)</i> Sets de rencontre Vulture et Standard III. Un set de rencontre modulaire <i>(recommandé : A.I.M. Abduction)</i>.\n<b>Mise en place</b> : chaque joueur met en jeu sous son contrôle une amélioration Wingsuit. Mettez en jeu chaque exemplaire d'Aerial Advantage.",
+    // web_of_deceit — Surveillance Pigeons (MainScheme)
+    'wd077b': "<b>Interruption forcée</b> : quand une quantité quelconque de menace est censée être retirée de cette manigance, s'il y a au moins 3 jetons de pigeon ici, retirez 3 jetons de pigeon d'ici à la place.\n<b>Interruption</b> : quand vous êtes censé défausser une carte au hasard de votre main, vous pouvez placer 2 jetons de pigeon ici à la place.\nSi cette étape est complétée, les joueurs perdent la partie.",
+    // web_of_deceit — The Vulture's Plans (Treachery)
+    'wd078': "<b>Une fois révélée</b> : défaussez 1 carte au hasard de la main de chaque joueur. Placez 1 menace sur la manigance principale pour chaque type de ressource différent défaussé de cette façon.",
+    // web_of_deceit — Sweeping Swoop (Treachery)
+    'wd079': "Renfort.\n<b>Une fois révélée</b> : sonnez votre héros.\n<hr />\n[star] <b>Boost</b> : si cette activation inflige des dégâts à un personnage ami, sonnez ce personnage.",
+    // web_of_deceit — Falling (Treachery)
+    'wd080': "Péril.\n<b>Une fois révélée</b> : choisissez :\n• Inclinez une carte AERIAL que vous contrôlez.\n• Défaussez 3 cartes au hasard de votre main.\n• Subissez 5 dégâts.",
+    // web_of_deceit — Vulturion (Minion)
+    'wd081': "Coup Rapide. Vulnérable.\n<b>Une fois vaincu</b> : défaussez 1 carte au hasard de la main du joueur engagé.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte au hasard de votre main.",
+    // web_of_deceit — Fisk Helicopter (Minion)
+    'wd082': "Patrouille. Solide. Vulnérable.\n<b>Une fois vaincu</b> : choisissez :\n• Dépensez 2 ressources du même type.\n• Placez 2 menaces sur une manigance. Le joueur qui l'a vaincu subit 2 dégâts indirects.",
+    // web_of_deceit — Aggressive Surveillance (SideScheme)
+    'wd083': "Les personnages avec le trait AERIAL retirent 1 menace supplémentaire lorsqu'ils contrent cette manigance.\n<b>Une fois déjouée</b> : cherchez le sbire Fisk Helicopter dans le deck Rencontre et la pile de défausse et révélez-le.",
+    // web_of_deceit — Highway Robbery (SideScheme)
+    'wd084': "<b>Une fois révélée</b> : chaque joueur place ici, face cachée, une carte au hasard de sa main.\n<b>Une fois déjouée</b> : rendez chaque carte face cachée ici à la main de son propriétaire.",
+    // web_of_deceit — Aerial Dogfight (SideScheme)
+    'wd085': "Entrave 2[per_hero].\nRéduisez de 2 les dégâts subis par chaque personnage [[Aerial]] à chaque attaque, sauf si l'attaquant ou l'attaque a le trait [[Aerial]], ou si l'attaque a Distance.",
+    // web_of_deceit — Aerial Advantage (Attachment)
+    'wd086': "Renfort.\nAttachez-la à Vulture.\n<b>Interruption forcée</b> : quand une quantité quelconque de dégâts est censée être infligée à Vulture, défaussez Aerial Advantage à la place. Placez 1 jeton de pigeon sur la manigance principale.",
+    // web_of_deceit — Anti-Gravitational Harness (Attachment)
+    'wd087': "Attachez-la à votre identité.\nLe personnage attaché gagne le trait AERIAL.\n<b>Action d'alter ego</b> : défaussez une carte de votre main et placez 2 jetons de pigeon sur la manigance principale → défaussez cette carte.",
+    // web_of_deceit — Feather Daggers (Attachment)
+    'wd088': "Attachez-la à Vulture.\n[star] Les attaques de Vulture gagnent Perçant et Distance.\n<b>Réponse de héros</b> : après que Vulture vous a attaqué, défaussez Feather Daggers → Vulture s'active contre vous.",
+    // web_of_deceit — Aviator Goggles (Attachment)
+    'wd089': "Attachez-la à Vulture et placez 2 jetons de pigeon sur la manigance principale.\nVulture gagne Solide.\n<b>Réponse de héros</b> : après que vous avez attaqué et blessé Vulture, dépensez une ressource [energy] → défaussez Aviator Goggles.",
+    // web_of_deceit — Wingsuit V2 (Upgrade)
+    'wd090': "Mise en place. Permanent.\n<b>Action de héros</b> : inclinez une carte AERIAL que vous contrôlez et dépensez 1 ressource de n'importe quel type → un personnage ami que vous contrôlez gagne le trait AERIAL jusqu'à la fin de la phase.",
+    // web_of_deceit — Kingpin (Villain)
+    'wd091': "Ténacité. Solide.\n<b>Une fois révélé</b> : cherchez Kingpin's Suit dans le deck Rencontre et la pile de défausse et révélez-le.",
+    // web_of_deceit — Kingpin (Villain)
+    'wd092': "Ténacité. Solide.\n<b>Une fois révélé</b> : cherchez les attachements Kingpin's Suit et Kingpin's Cane dans le deck Rencontre et la pile de défausse et attachez-les à Kingpin.",
+    // web_of_deceit — Kingpin (Villain)
+    'wd093': "Ténacité. Robuste.\n<b>Une fois révélé</b> : chaque joueur met en jeu la carte du dessus de son deck, face cachée, en tant que manigance annexe CORRUPT. Cherchez Kingpin's Suit dans le deck Rencontre et la pile de défausse et révélez-le.",
+    // web_of_deceit — Shadow of the Kingpin (MainScheme)
+    'wd094a': "<b>Contenu</b> : sets de rencontre Kingpin et Standard III. Un set de rencontre modulaire <i>(recommandé : Crime Wave)</i>.\n<b>Mise en place</b> : trouvez Fisk Tower et mettez-la en jeu. Placez 1[per_hero] jetons sur Pursued by the Past.",
+    // web_of_deceit — Shadow of the Kingpin (MainScheme)
+    'wd094b': "<b>Deep Pockets — Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, le premier joueur place 1 jeton de poursuite sur Pursued by the Past.\nSi cette étape est complétée, les joueurs perdent la partie.",
+    // web_of_deceit — Fisk Tower (Environment)
+    'wd095': "Chaque manigance annexe CORRUPT face cachée a une menace de départ égale au numéro d'étape du méchant.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, soignez 1 dégât de Kingpin et de Kingpin's Suit pour chaque manigance annexe CORRUPT en jeu.",
+    // web_of_deceit — King's Gambit (Treachery)
+    'wd096': "<b>Une fois révélée</b> : mettez en jeu la carte du dessus de votre deck, face cachée, en tant que manigance annexe CORRUPT. Kingpin manigance.\n<hr />\n[star] <b>Boost</b> : défaussez 1 carte du dessus du deck Rencontre pour chaque jeton de poursuite sur Pursued by the Past.",
+    // web_of_deceit — Long Live the King (Treachery)
+    'wd097': "<b>Une fois révélée</b> : mettez en jeu la carte du dessus de votre deck, face cachée, en tant que manigance annexe CORRUPT. Placez 1 jeton de poursuite sur Pursued by the Past.",
+    // web_of_deceit — Controlling the Narrative (Attachment)
+    'wd098': "Incitation 1.\nAttachez-la à la manigance annexe non permanente ayant le plus de menace restante et n'ayant pas déjà un autre exemplaire de Controlling the Narrative attaché. Si vous ne le pouvez pas, cette carte gagne Renfort.\nLa manigance attachée gagne les icônes [acceleration] [crisis].",
+    // web_of_deceit — Kingpin's Suit (Attachment)
+    'wd099': "Attachez-la à Kingpin.\n<b>Interruption forcée</b> : quand une quantité quelconque de dégâts est censée être infligée à Kingpin, placez-la ici à la place. Ensuite, s'il y a au moins 10 dégâts ici, défaussez Kingpin's Suit.\n<hr />\n[star] <b>Boost</b> : attachez Kingpin's Suit à Kingpin.",
+    // web_of_deceit — Kingpin's Cane (Attachment)
+    'wd100': "Attachez-la à Kingpin.\n[star] <b>Interruption forcée</b> : quand Kingpin engage une attaque contre vous, mettez en jeu la carte du dessus de votre deck, face cachée, en tant que manigance annexe CORRUPT.\n<b>Action de héros</b> : dépensez des ressources [physical] [physical] [physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : après cette activation, attachez cette carte à Kingpin.",
+    // web_of_deceit — Typhoid Mary (Minion)
+    'wd101': "[star] Les attaques de Typhoid Mary infligent des dégâts indirects.\n<b>Une fois révélée</b> : subissez 1 dégât indirect pour chaque jeton de poursuite sur Pursued by the Past.",
+    // web_of_deceit — Lady Bullseye (Minion)
+    'wd102': "Coup Rapide. Vulnérable. <i>(Défaussez ce personnage s'il est sonné ou désorienté.)</i>\n<b>Une fois vaincue</b> : placez 2 jetons de poursuite sur Pursued by the Past.",
+    // web_of_deceit — Devil's Reign (SideScheme)
+    'wd103': "<i>L'hubris de Wilson Fisk en tant que maire de New York a livré la ville aux bras d'une cabale de super-vilains dangereux et mortels !</i>",
+    // web_of_deceit — "Legitimate Business" (SideScheme)
+    'wd104': "Entrave 1[per_hero].\n<b>Une fois déjouée</b> : le premier joueur défausse des cartes du dessus du deck Rencontre jusqu'à ce qu'un attachement soit défaussé, puis il révèle cette carte.",
+    // web_of_deceit — FBI Investigation (Obligation)
+    'wd105': "<b>Réponse forcée</b> : après qu'une carte que vous contrôlez a déjoué une manigance annexe, placez 1 jeton d'indice ici. Ensuite, s'il y a au moins 3 jetons d'indice ici, défaussez cette carte et placez 1 jeton de poursuite sur Pursued by the Past.",
+    // web_of_deceit — Corrupt (SideScheme)
+    'wd106': "<i>Une carte que le Kingpin a retournée contre vous.</i>",
+    // web_of_deceit — Prey for Mercy (SideScheme)
+    'wd107': "La menace ne peut pas être retirée de cette manigance tant que Kraven the Hunter est en jeu.\n<i>(Prey for Mercy est une manigance annexe némésis.)</i>",
+    // web_of_deceit — Kraven the Hunter (Minion)
+    'wd108': "Solide. Vilenie.\n[star] <b>Réponse forcée</b> : après que Kraven the Hunter a attaqué et vous a infligé des dégâts, inclinez 1 amélioration ou soutien que vous contrôlez.\n<i>(Kraven the Hunter est un sbire némésis.)</i>",
+    // web_of_deceit — Mancatcher Net (Treachery)
+    'wd109': "<b>Une fois révélée</b> : choisissez et défaussez le soutien ou l'amélioration de plus faible coût que vous contrôlez. Sonnez votre identité.",
+    // web_of_deceit — Tiger (Minion)
+    'wd110': "Coup Rapide.\n[star] Les attaques de Tiger gagnent Perçant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Perçant.",
+    // web_of_deceit — Pit Trap (Attachment)
+    'wd111': "Attachez à votre identité et subissez 1 dégât.\n<b>Interruption forcée</b> : quand le personnage attaché est censé se redresser, défaussez cette carte à la place.\n<hr />\n[star] <b>Boost</b> : attachez cette carte à votre identité.",
+    // web_of_deceit — Great Web Strand (Support)
+    'wd112': "Mise en place.\n<b>Réponse de héros</b> : après avoir changé de forme, défaussez Great Web Strand → cherchez dans votre deck et votre pile de défausse un allié WEB-WARRIOR ou un allié ayant \"Spider\" dans son titre et ajoutez-le à votre main.",
+    // web_of_deceit — Spider-Girl (Ally)
+    'wd113': "<b>Réponse</b> : après que Spider-Girl est entrée en jeu ou a quitté le jeu, choisissez :\n• Redressez votre héros.\n• Soignez 1 dégât de votre alter ego.",
+    // web_of_deceit — Spider-UK (Ally)
+    'wd114': "Ténacité.\n<b>Réponse</b> : après que Spider-UK est entré en jeu, donnez une carte d'état Tenace à un autre personnage WEB-WARRIOR. Si vous ne pouvez pas, défaussez des cartes du dessus de votre deck jusqu'à ce qu'un allié soit défaussé et ajoutez-le à votre main.",
+    // web_of_deceit — Great Web Warrior (Upgrade)
+    'wd115': "Mise en place.\nVous gagnez le trait WEB-WARRIOR.\nVous gagnez +2 points de vie.",
+    // web_of_deceit — Earth-001 (Support)
+    'wd116': "Mise en place. Permanent.\nVous pouvez inclure dans votre deck des alliés WEB-WARRIOR de n'importe quelle affinité lors de la construction de deck.",
+    // web_of_deceit — Web-Warriors (Support)
+    'wd117': "Jouez sous le contrôle de n'importe quel joueur. Limite de 1 carte TEAM par joueur.\nChacun de vos alliés WEB-WARRIOR gagne +1 point de vie et +1 ATQ.",
+    // web_of_deceit — Spider-Man Noir (Ally)
+    'wd118': "<b>Réponse</b> : après que Spider-Man Noir a quitté le jeu, soignez 4 dégâts de votre identité.",
+    // web_of_deceit — Spider-Man (Ally)
+    'wd119': "<b>Réponse</b> : après que Spider-Man a quitté le jeu, retirez 4 menaces d'une manigance.",
+    // web_of_deceit — Arana (Ally)
+    'wd120': "<b>Réponse</b> : après qu'Arana a quitté le jeu, infligez 5 dégâts à un ennemi.",
+    // web_of_deceit — Master Weaver (Support)
+    'wd121': "Chaque allié WEB-WARRIOR gagne +1 point de vie pour chaque icône de boost glissée sous lui.\n<b>Réponse</b> : après qu'un allié WEB-WARRIOR est entré en jeu, glissez la carte du dessus du deck Rencontre sous cet allié.",
+    // web_of_deceit — Radioactive Spider (Support)
+    'wd122': "Mise en place.\n<b>Action</b> : défaussez Radioactive Spider → infligez 1 dégât à votre identité. Vous gagnez +2 en taille de main jusqu'à la fin de la phase.",
+    // web_of_deceit — Venom Blast (Event)
+    'wd123': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi.\n<i>(Cette carte est à la fois une carte Récompense de campagne Web of Deceit et une carte Agressivité.)</i>",
+    // web_of_deceit — Wallcrawl (Event)
+    'wd124': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, piochez 2 cartes.\n<i>(Cette carte est à la fois une carte Récompense de campagne Web of Deceit et une carte Justice.)</i>",
+    // web_of_deceit — Spider-Healing Factor (Upgrade)
+    'wd125': "Vous gagnez +3 points de vie.\n<b>Réponse</b> : après le début de votre tour, inclinez Spider-Healing Factor → soignez 1 dégât de votre identité.\n<i>(Cette carte est à la fois une carte Récompense de campagne Web of Deceit et une carte Pool.)</i>",
+    // web_of_deceit — Proportionate Strength and Speed (Upgrade)
+    'wd126': "Vous gagnez +3 points de vie et votre héros gagne +1 DEF et +1 ATQ.\n<i>(Cette carte est à la fois une carte Récompense de campagne Web of Deceit et une carte Protection.)</i>",
+    // web_of_deceit — Doppelganger (Ally)
+    'wd127': "<b>Réponse</b> : après que Doppelganger a quitté le jeu, cherchez dans votre deck et votre pile de défausse une carte SUPERPOWER et ajoutez-la à votre main.\n<i>(Cette carte est à la fois une carte Récompense de campagne Web of Deceit et une carte Commandement.)</i>",
+    // web_of_deceit — Radioactive Power (Resource)
+    'wd128': "",
+    // web_of_deceit — Radioactive Power (Resource)
+    'wd129': "",
+    // web_of_deceit — Dynamo (Upgrade)
+    'wd130': "Utilisations <i>(3 jetons Énergie)</i>.\n<b>Réponse</b> : après avoir joué une carte SUPERPOWER, retirez 1 jeton Énergie de Dynamo → sonnez un ennemi et infligez-lui 2 dégâts.",
+    // web_of_deceit — Camouflage (Upgrade)
+    'wd131': "Utilisations <i>(3 jetons Énergie)</i>.\n<b>Réponse</b> : après avoir joué une carte SUPERPOWER, retirez 1 jeton Énergie de Camouflage → désorientez un ennemi et donnez une carte d'état Tenace à votre identité.",
+    // web_of_deceit — Spider-Tingle (Upgrade)
+    'wd132': "Mise en place.\n<b>Interruption</b> : quand vous révélez une traîtrise, défaussez Spider-Tingle → annulez les effets \"Une fois révélée\" de cette traîtrise.",
+    // web_of_deceit — Spider-Sense (Upgrade)
+    'wd133': "<b>Interruption de héros</b> : quand le méchant initie une attaque contre vous, piochez 1 carte.",
+    // web_of_deceit — Clairvoyant Sight (Upgrade)
+    'wd134': "Mise en place. Permanent.\nVous gagnez le trait PSIONIC.",
+    // web_of_deceit — Sensing Trouble (Event)
+    'wd135': "<b>Action de héros</b> <i>(contre)</i> : redressez votre identité → retirez 3 menaces d'une manigance.",
+    // web_of_deceit — Team Spider-Sense (Event)
+    'wd136': "Alliance.\n<b>Interruption</b> : quand une carte traîtrise est révélée depuis le deck Rencontre, annulez ses effets \"Une fois révélée\". Chaque joueur pioche 1 carte.",
+    // web_of_deceit — Arachno-Telepathy (Upgrade)
+    'wd137': "<b>Action</b> <i>(contre)</i> : inclinez Arachno-Telepathy et défaussez 1 carte du deck Rencontre → retirez 1 menace d'une manigance pour chaque icône défaussée de cette manière.",
+    // web_of_deceit — Backflip (Event)
+    'wd138': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros est censé subir n'importe quelle quantité de dégâts d'une attaque ennemie, prévenez tous ces dégâts.",
+    // web_of_deceit — Backflip (Event)
+    'wd139': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros est censé subir n'importe quelle quantité de dégâts d'une attaque ennemie, prévenez tous ces dégâts.",
+    // web_of_deceit — See the Future (PlayerSideScheme)
+    'wd140': "Victoire 0.\n<b>Une fois déjouée</b> : chaque joueur pioche 2 cartes. Jusqu'à la fin du round, jouez avec la carte du dessus du deck Rencontre face visible.",
+    // web_of_deceit — Madame Web (Support)
+    'wd141': "Chaque personnage PSIONIC que vous contrôlez gagne le trait WEB-WARRIOR.\n<b>Action d'alter ego</b> <i>(contre)</i> : inclinez Madame Web → pour chaque carte WEB-WARRIOR que vous contrôlez, choisissez une manigance et retirez-lui 1 menace.",
+    // web_of_deceit — Black Suit (Upgrade)
+    'wd142': "Permanent. Mise en place.\nVotre héros gagne le trait SYMBIOTE.\n<b>Ressource de héros</b> : subissez 1 dégât → générez une ressource [wild]. <i>(Limite d'une fois par phase.)</i>",
+    // web_of_deceit — Greater Power (Resource)
+    'wd143': "<b>Réponse de héros</b> : après avoir dépensé cette carte, soignez 2 dégâts de votre héros. Puis, placez 2 menaces sur une manigance.",
+    // web_of_deceit — Greater Responsibility (Resource)
+    'wd144': "<b>Réponse de héros</b> : après avoir dépensé cette carte, redressez votre héros. Puis, placez 2 menaces sur une manigance.",
+    // web_of_deceit — Flee the Scene (Event)
+    'wd145': "<b>Réponse</b> : après que votre héros a déjoué une manigance et lui a retiré des menaces, subissez 1 dégât → redressez votre héros.",
+    // web_of_deceit — Not My Problem (Event)
+    'wd146': "<b>Interruption de héros</b> : quand une carte traîtrise est censée être révélée, annulez sa capacité \"Une fois révélée\". Puis, placez 2 menaces sur une manigance.",
+    // web_of_deceit — Out of Patience (Event)
+    'wd147': "<b>Réponse</b> : après que votre héros a attaqué un sbire et lui a infligé des dégâts, subissez 1 dégât → redressez votre héros.",
+    // web_of_deceit — Monstrous (Resource)
+    'wd148': "<b>Réponse de héros</b> : après avoir dépensé cette carte, infligez 3 dégâts au méchant. Puis, placez 3 menaces sur une manigance.",
+    // web_of_deceit — Monstrous (Resource)
+    'wd149': "<b>Réponse de héros</b> : après avoir dépensé cette carte, infligez 3 dégâts au méchant. Puis, placez 3 menaces sur une manigance.",
+    // web_of_deceit — Get it Off! (Upgrade)
+    'wd150': "Permanent. Mise en place.\nTant qu'il y a 5 cartes Symbiosis dans la pile de victoire, vous gagnez +1 à chacun de vos pouvoirs de base et +1 en taille de main.\n<b>Action de héros</b> : inclinez cette carte → trouvez une carte Symbiosis et ajoutez-la à la pile de victoire. Piochez 1 carte.",
+    // web_of_deceit — Unity (Upgrade)
+    'wd151': "Permanent. Mise en place.\nVous gagnez +1 à chacun de vos pouvoirs de base et +1 en taille de main.",
+    // web_of_deceit — Web-Shooter (Upgrade)
+    'wd152': "Mise en place. Utilisations <i>(3 jetons Toile)</i>.\n<b>Ressource de héros</b> : inclinez Web-Shooter et retirez-lui 1 jeton Toile → générez une ressource [wild].",
+    // web_of_deceit — Quick Reload (Event)
+    'wd153': "<b>Action de héros</b> : choisissez deux des effets suivants <i>(vous pouvez choisir deux fois le même)</i> :\n• Redressez une carte TECH que vous contrôlez.\n• Placez 1 jeton polyvalent sur une amélioration TECH que vous contrôlez.",
+    // web_of_deceit — Spider-Bots (Upgrade)
+    'wd154': "Utilisations <i>(4 jetons Robot)</i>.\n<b>Action de héros</b> <i>(contre)</i> : inclinez Spider-Bots et retirez-lui 1 jeton Robot → retirez à une manigance un nombre de menaces égal au total de ressources [mental] et [wild] imprimées dans votre main.",
+    // web_of_deceit — Bag Head (Upgrade)
+    'wd155': "Victoire 1.\n<b>Action</b> : ajoutez Bag Head à la pile de victoire → passez sous forme de héros. Piochez jusqu'à atteindre votre taille de main.",
+    // web_of_deceit — The Power of Web (Resource)
+    'wd156': "",
+    // web_of_deceit — Spider-Mobile (Support)
+    'wd157': "Réduisez de 1 le coût pour jouer cette carte pour chaque carte WEB-WARRIOR que vous contrôlez.\n<b>Réponse de héros</b> : après avoir défendu contre une attaque, inclinez Spider-Mobile → redressez votre identité.",
+    // web_of_deceit — Spider-Boy (Ally)
+    'wd158': "<b>Réponse</b> : après que Spider-Boy est entré en jeu ou a quitté le jeu, retirez 1 menace d'une manigance.",
+    // web_of_deceit — Web Swing! (Event)
+    'wd159': "<b>Action de héros</b> : redressez votre héros. Votre identité gagne +1 à chacun de ses pouvoirs de base jusqu'à la fin du round.",
+    // web_of_deceit — Web Swing! (Event)
+    'wd160': "<b>Action de héros</b> : redressez votre héros. Votre identité gagne +1 à chacun de ses pouvoirs de base jusqu'à la fin du round.",
+    // web_of_deceit — Webbed (Upgrade)
+    'wd161': "Attachez à un ennemi.\nL'ennemi attaché perd Solide et Robuste.\n<b>Interruption forcée</b> : quand un ennemi est censé s'activer, défaussez Webbed à la place.",
+    // web_of_deceit — Vulture (Villain)
+    'wd162': "<b>Mise en place</b> : cherchez l'environnement Skies Above New York et révélez-le.\nVulture gagne Riposte 2 pendant la phase des joueurs, sauf si l'attaquant ou l'attaque a le trait AERIAL.",
+    // web_of_deceit — Vulture (Villain)
+    'wd163': "<b>Mise en place</b> : cherchez l'environnement Skies Above New York et révélez-le.\nVulture gagne Riposte 2 pendant la phase des joueurs, sauf si l'attaquant ou l'attaque a le trait AERIAL.",
+    // web_of_deceit — Vulture (Villain)
+    'wd164': "<b>Une fois révélée</b> : cherchez dans le deck Rencontre et la pile de défausse l'attachement Feather Daggers et révélez-le.\nVulture gagne Riposte 3 pendant la phase des joueurs, sauf si l'attaquant ou l'attaque a le trait AERIAL.",
+    // web_of_deceit — Skies Above New York (Environment)
+    'wd165': "<b>Une fois révélée</b> : défaussez chaque autre environnement SETTING en jeu.\n<b>Action de héros</b> : inclinez une carte AERIAL que vous contrôlez ou dépensez une ressource [energy] → un personnage allié que vous contrôlez gagne le trait AERIAL jusqu'à la fin du round.",
 };
