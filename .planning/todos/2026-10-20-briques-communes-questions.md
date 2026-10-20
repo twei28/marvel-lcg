@@ -106,5 +106,5 @@ attaque de joueur en deux temps, un « jusqu'à la fin de la phase »).
 
 - Q1 : livret dans Galactic Storm (`ally_attack_is_against_player=False` dans ses cartes seulement), Rules Reference partout ailleurs.
 - Q2 : les joueurs PEUVENT défendre (`players_may_defend=True` pour Kree Sentry).
-- Q3 : le Punisher aussi, sans question (`Villains.Rule(the_villain="Active", player_cards="TheVillain")`). Recherche en ligne faite : rien d'officiel sur les cartes joueur (la carte p180 ne parle que des cartes rencontre) ; à revoir si le guide de campagne dit autre chose.
+- Q3 : CORRIGÉE le 20/10/2026 après réponse en ligne (rapportée par l'utilisateur : « les player cards peuvent viser n'importe qui ») : une carte joueur qui parle de « le méchant » peut viser N'IMPORTE LEQUEL des méchants en jeu, le joueur choisit (`Villains.Rule(the_villain="Active", player_cards="PlayerChooses")`). Les cartes rencontre, elles, visent le Punisher seulement (texte p180). Reste à vérifier au codage : le CIBLÉ est insensible aux cartes joueur (p183) ; s'il n'est pas un choix valide, la question ne le propose pas.
 - Q4 : l'effet en cours sur un méchant retiré s'arrête, sans se reporter sur le suivant.
