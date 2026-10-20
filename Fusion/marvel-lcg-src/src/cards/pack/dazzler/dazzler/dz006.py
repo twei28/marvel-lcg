@@ -9,6 +9,12 @@ from . import *
 # Modele Web Binding (27006) : `SetBeInstead` EST l'annulation d'activation
 # dans ce moteur. Ici on filtre sur le VILAIN — le texte ne parle pas des
 # sbires, contrairement a Web Binding qui vise n'importe quel ennemi.
+#
+# « against YOU » : la fabrique `WhenEnemyWouldActivate` n'a PAS de filtre de
+# joueur (son `against_you` est commente dans factory/activate.py). Sans la
+# condition `ContreToi`, Doll annulait aussi une activation du vilain contre
+# un AUTRE joueur (ecart invisible en solo, corrige le 20/10/2026, backlog 12,
+# cas a deux joueurs). Le joueur vise est `message.to_player`.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -17,6 +23,10 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Event)
         Unused(this)
         message.SetBeInstead(effect)
+
+    def contre_toi(effect: 'Effect', message: 'Message.WhenEnemyWouldActivate') -> bool:
+        return message.to_player is not None and \
+            message.to_player == effect.GetInitiator()
 
     def showtime(effect: 'Effect', message: 'Message2') -> None:
         this = effect.this.CastTo(Event)
@@ -28,6 +38,7 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroInterrupt,
             Villain,
             poupee,
+            conditions=[contre_toi],
         ).SetPlay().SetLabel(),
         Showtime(showtime).SetTarget("YourIdentity"),
     ]

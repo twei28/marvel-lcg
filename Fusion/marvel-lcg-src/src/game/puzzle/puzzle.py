@@ -630,12 +630,16 @@ class RunPuzzle:
                              under_control=under_control, exhaust=exhaust)
             return face
 
-    def PlaceUnder(self, card: CardName, host: CardName) -> 'CardFace':
+    def PlaceUnder(self, card: CardName, host: CardName, face_up: bool=False) -> 'CardFace':
         """Glisse CARD face cachee sous HOST (en jeu), sans passer par une
-        capacite : sert a monter un plafond « Max N cards tucked here »."""
+        capacite : sert a monter un plafond « Max N cards tucked here ».
+
+        `face_up=True` (ajoute le 20/10/2026, backlog 12, pack dazzler) : pose
+        la carte FACE VISIBLE, comme Live Concert (dz017a) range une chanson
+        dans sa Setlist. Additif : sans l'argument, rien ne change."""
         face = self.FindOrCreateFace(card)
         hote = self.FindFaceInPlay(host)
-        hote.PlaceCardHere([face], False, self.debug_rule)
+        hote.PlaceCardHere([face], face_up, self.debug_rule)
         return face
 
     def TurnEncounterTopFaceUp(self) -> 'CardFace|None':
@@ -704,7 +708,8 @@ class RunPuzzle:
                     return face
         return self.FindOrCreateFace(card)
 
-    def Attack(self, card: CardName, defender: CardName|None=None) -> 'CardFace':
+    def Attack(self, card: CardName, defender: CardName|None=None,
+               against: CardName|None=None) -> 'CardFace':
         """Fait attaquer une carte : un ennemi frappe le joueur courant, un
         allie ou un heros fait son attaque de base.
 
@@ -714,12 +719,20 @@ class RunPuzzle:
         `WhenUnitWouldDefend` n'est jamais envoye et TOUTES les cartes
         « Hero Interrupt (defense) » (Unbeatable! sg016, Desperate Defense
         09015, Bulletproof vr002...) restent hors de portee des tests.
+
+        `against` (ajoute le 20/10/2026, backlog 12, dz006 « Doll ») : l'identite
+        du joueur VISE par l'activation d'un ennemi, dans une partie a plusieurs.
+        Sans lui l'ennemi frappe le joueur courant, et un « activate against
+        YOU » ne pouvait pas etre distingue d'une activation contre un autre
+        joueur. Additif : sans l'argument, rien ne change.
         """
         from game.card.face.base import Enemy, Friend
         from game.card.face.attribute.can_attack import AttackProperty
         from game.message import Message
         face = self.FindFaceInPlay(card)
         player = self.world.GetCurrentPlayer()
+        if against is not None:
+            player = self.FindFaceInPlay(against).GetControlByPlayer() or player
 
         if defender is not None:
             self._DeclareDefender(defender)
