@@ -21,8 +21,10 @@ class Json:
         return json.dumps(items, default=lambda o:o.__dict__, indent=indent, sort_keys=sort_keys)
 
     @staticmethod
-    def DumpGZip(items: Any) -> bytes:
-        return gzip.compress(Json.Dumps(items).encode('utf-8'))
+    def DumpGZip(items: Any, niveau: int = 9) -> bytes:
+        # `niveau` : 9 par defaut (comportement historique, saves et partie). `/get_world` passe 6 :
+        # ~3 fois moins de CPU par client et par trame pour ~5 % d'octets de plus (decision du 20/10/2026).
+        return gzip.compress(Json.Dumps(items).encode('utf-8'), compresslevel=niveau)
 
     @staticmethod
     def DumpsSize(items: Any) -> int:

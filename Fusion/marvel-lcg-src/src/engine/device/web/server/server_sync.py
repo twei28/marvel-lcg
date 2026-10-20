@@ -104,7 +104,8 @@ class GameServerSync(GameServerBase):
         # dictionnaire, qui n'a pas d'attribut.
         render_id = data.render_id
         data = self.MasquerCeQuOnNaPasLeDroitDeVoir(data, request)
-        compressed_data = Json.DumpGZip(data)
+        # Niveau 6 (decision du 20/10/2026) : la compression etait la plus grosse part du CPU par client.
+        compressed_data = Json.DumpGZip(data, 6)
 
         self.device_manager.AddSize("World", len(compressed_data))
         Log.DebugSilent("SYNC", f"[Client] Get world {render_id}, player_id: {player_ids}")
