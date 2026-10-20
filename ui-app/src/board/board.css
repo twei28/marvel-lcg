@@ -2703,6 +2703,7 @@
      encadre de regle dessous. L'apercu reste ancre a droite : il s'elargit vers la
      gauche. */
   .carte-apercu.a-jumelles {
+    --echelle-raccord: 1;
     display: flex;
     align-items: flex-start;
     gap: 0;
