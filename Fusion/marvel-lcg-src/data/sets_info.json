@@ -1884,13 +1884,17 @@
  },
  "144. Custom (Galactic Storm)": {
   "name": "galactic_storm",
-  "scenarios": [],
+  "scenarios": [
+   "gs_majestrix_verdict"
+  ],
   "heroes": [
    "binary",
    "quasar"
   ],
-  "encounters": [],
-  "max_id": "gs001b"
+  "encounters": [
+   "gs_majestrix_verdict"
+  ],
+  "max_id": "gs137"
  },
- "checksum": "c3315bd59fdb0618c78c6af16f6b1a07971f212686f295ec47d42056c3d56134"
+ "checksum": "be07428132c3a7dd15ca0d0a25151275ba3d09222ce1c296524f424754aaee66"
 }

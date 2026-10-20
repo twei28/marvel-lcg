@@ -65,6 +65,8 @@ Gabarit à copier pour chaque nouvelle fiche :
       les ressources listees, elles ne s'ajoutent pas au cout)
 - [x] starting.md (Fear No Evil : choix FACULTATIF de prendre la carte en main
       avant la pioche, une seule carte starting par deck)
+- [x] assault.md (base native lue dans `desc.Assault` : le contre de BASE contre
+      cette manigance utilise l'ATQ ; Imprisoned on Chandilar `gs119`, Galactic Storm)
 - [x] chi-counter.md (compteur `chi` du héros officiel Iron Fist, MC64EN : posé
       sur la CARTE d'identité, partagé par les deux faces, gardé au retournement ;
       riposte dynamique d'Embody the Dragon `64009`)

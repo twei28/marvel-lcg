@@ -1792,3 +1792,23 @@ Harnais (`tools/cas/quasar.py`) :
 - Le joker d'une carte se precise par `choisir_option: ["R"]` (question `AskSpecifyResources`, options « R », « B »...).
 - Fixture de plateau produite par le moteur : verificateur `qz_fixture_plateau` + `QUASAR_FIXTURE_DIR`
   (modele Echo, §7).
+
+## 19. Scénario Majestrix's Verdict (Galactic Storm, `gs114`-`gs137`, 20/10/2026) : ce que ce scénario a payé
+
+| Mécanique imprimée | Montage | Modèle | Piège |
+|---|---|---|---|
+| « Tuck » face VISIBLE (livret Galactic Storm p.4) | `hote.PlaceCardHere(faces, True, effect)` | `gs117a`, `gs119` | `TuckCardUnderHere` pose FACE CACHÉE (`50081`) |
+| Mettre en jeu une carte glissée « under any player's control » | `face.Reset(False)` PUIS `PutIntoPlay(Worlds.FindPlayer(None, effect), effect, under_control=True)` | `gs119` (`MettreEnJeuSousControle`), `50088b` | ⚠ l'entrée en jeu depuis une `PlaceCardArea` NE remet PAS la carte à zéro (`card.py`, Fix 39035) : glissée depuis la réserve du scénario, elle entrait avec ATQ 0, Riposte 0, sans Toughness (« s'apprête à infliger 0 dégât ») |
+| « If X is in play » quand X peut être glissé sous une carte | filtrer `face.IsInPlay()` sur `Worlds.FindCardsOnField` | `gs137` (`EnJeu`) | `FindCardOnField` rend aussi une carte GLISSÉE (zone sur le terrain, hors jeu) |
+| « When Defeated: flip this card and take control of it » (manigance annexe) | le « When Defeated » note le joueur ; `RegisterTemp(AfterSchemeBeDefeated(Temp0, "This", op).NoOutOfPlayLimit(), unregister_after_exec=True)` retourne et met en jeu | `gs120a` | ⚠ fait DANS le When Defeated, `Scheme.OnBeDefeated` défausse ensuite la carte retournée (« if self.IsInPlay(): DiscardAll ») ; `message.GetDefeatingPlayer()` AFFIRME qu'il y a un joueur : lire `message.defeating_player` |
+| « X cannot be defeated, if <condition> » + défaite dès que la condition tombe | `UnitCannotBeDefeatedWhile(condition=..)` SANS `change_on_event`, plus `Condition.GetEventAbilities(OnEvent.PlayAreaCard(..), NonKeyword, <condition inverse>, relancer)` | `gs115`, `gs116` (`DeathbirdInvaincue`), `50129a` | le `change_on_event` de la fabrique ne relance la défaite que tant que la condition « invaincu » est VRAIE |
+| « When this stage would be completed, flip this card and reveal it instead » | `WhenMainSchemeStageWouldBeCompleted` + `SetBeInstead` + `card.Flip(effect)` (le retournement d'une manigance en jeu la RÉVÈLE) | `gs118b`, `sk145b` | une carte retournée GARDE ses pions : retirer la menace du stade qui recommence (`ignore_crisis=True`), sinon il est « accompli » aussitôt |
+| « she attacks that ally instead with +1 ATK » | `WhenUnitWouldAttack(ForcedInterrupt, "This")` : `message.ReplaceTarget(allie)` + `GainATKForThisAttack(1)` ; boost en plus : `GiveAdditionalBoostCardForThisActivation(1)` | `gs114`-`gs116`, `50089b` | moteur NATIF (un ennemi attaque un allié) : ce n'est pas la brique commune « un ennemi attaque un ennemi » |
+| « <allié> attacks you (resolve her ATK against you without exhausting) » | `allie.BasicAttack([identite], effect)` | `gs137`, `22031` | — |
+
+Harnais : la main de départ de Spider-Man contient Great Responsibility (`01061`), qui remplace une pose de menace
+par des dégâts pendant une ACTIVATION : fixer la main (`main_exclusive`). Peter Parker (alter ego) a sa propre
+ressource [mental] : un cas qui prouve une ressource [mental] se joue en HÉROS. La limite de 3 alliés s'applique
+aux alliés libérés (le pilote défausse le 4e, qui retourne en prison) : monter les cas « plus aucun glissé » en
+passant par l'exécution de 2A. `Puzzle.Damage('<sbire>')` vise d'abord un exemplaire du DECK rencontre : vider le
+deck (`EmptyEncounterDeck` + `CreateEncounterDeck`) avant `PutIntoPlay` d'un sbire en plusieurs exemplaires.

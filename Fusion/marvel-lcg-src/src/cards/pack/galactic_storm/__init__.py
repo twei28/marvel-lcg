@@ -20,6 +20,7 @@ from cards.pack import *
 #   - `Binary Nemesis` -> binary_nemesis/
 #   - `Quasar`         -> quasar/
 #   - `Quasar Nemesis` -> quasar_nemesis/
+#   - `Majestrix's Verdict` -> majestrixs_verdict/ (scenario 2, lot GS-5)
 # ===========================================================================
 
 # ⚠ Les helpers partages vivent dans le `__init__.py` DU SET, pas ici (les
