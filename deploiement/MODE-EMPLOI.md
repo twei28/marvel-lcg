@@ -21,6 +21,74 @@ Tout se pilote depuis ce dossier (`Bureau\Marvel LCG\deploiement`).
   dans `installer-serveur.ps1`.
 - Serveur créé avec la clé SSH `cle_narwhal` de ce dossier.
 
+## Déployer sous Linux
+
+Depuis le 20/10/2026, le déploiement se fait avec **`deployer-linux.sh`** :
+plus de PowerShell ni de `wslpath`. Les sections Windows plus bas (étapes 1 à 3,
+`deployer.ps1`, `DEPLOYER.bat`) sont conservées pour mémoire : **ne plus les
+utiliser** (sauf `installer-serveur.ps1` si le serveur est à refaire, tant
+qu'aucun équivalent Linux n'existe).
+
+```bash
+bash deploiement/deployer-linux.sh                     # SIMULATION (par défaut)
+bash deploiement/deployer-linux.sh --oui               # déploiement réel
+bash deploiement/deployer-linux.sh --oui --annonce 10  # annonce de 10 min (15 par défaut)
+bash deploiement/deployer-linux.sh --oui --site-seul   # sans Play
+bash deploiement/deployer-linux.sh --oui --play-seul   # Play seul : ni annonce ni redémarrage
+bash deploiement/deployer-linux.sh --oui --commit <sha>
+bash deploiement/deployer-linux.sh --retour-arriere /root/rollback-code-<id>.tgz --oui
+```
+
+**Garde-fous**
+
+- Simulation par défaut : aucune connexion au serveur. Elle prépare tout en
+  local (copie propre, construction, archives, contrôles de contenu) et affiche
+  les commandes qui partiraient. Elle ne lit pas le nombre de joueurs et ne lance
+  pas la simulation de `publier.py` (elle se connecte au serveur).
+- Mode réel : `--oui` **et** une phrase à taper (`Je deploie <commit court>`).
+- Refus si un fichier suivi est modifié (les fichiers non suivis sont tolérés),
+  si `--commit` n'est pas la tête du dépôt, ou si le journal des nouveautés
+  (`nouveautes.js`) est en retard sur le code (`NOUVEAUTES_A_JOUR=1` pour passer
+  outre, comme pour `deployer-tout.sh`).
+- Le nombre de connexions établies sur les ports 80 et 443 est lu (lecture seule)
+  et affiché **avant tout envoi** ; s'il est supérieur à zéro, le script demande
+  « oui ». C'est une approximation : un joueur peut ouvrir plusieurs connexions.
+- Arrêt à la première erreur. Si l'échec survient avant le remplacement du code,
+  l'annonce est retirée ; après, le script affiche la commande de retour arrière.
+- `narwhal.service` et le `Caddyfile` du serveur ne sont jamais écrits
+  (`synchroniser-conf.sh` les compare seulement). Comptes, bases `.db` et
+  rapports ne sont jamais touchés par l'extraction.
+- Journal horodaté : `deploiement/dernier-deploiement.log` (ignoré par git).
+
+**Déroulé (site normal)** : pré-contrôles, joueurs connectés, confirmation, copie
+propre `.claude/worktrees/deploy-prod3` + `ui-app/deployer.sh`, annonce aux
+joueurs (texte vouvoyé), archives `/tmp/narwhal-code-<id>.tgz` et
+`narwhal-conf-<id>.tgz` envoyées sans extraction, simulation de Play pendant
+l'attente, puis à l'échéance : archive de retour arrière
+`/root/rollback-code-<id>.tgz` sur le serveur, extraction, synchronisation de la
+conf, dépendances, vignettes, scans HD, redémarrage, sauvegarde des comptes,
+vérification (md5 de `board-*.js`, service actif, HTTP 200), publication de Play
+(`publier.py --oui --sans-construire`, sons, md5, HTTP 200), retrait de
+l'annonce et résumé (avec la commande de retour arrière).
+
+**Prérequis** : `deploiement/cle_narwhal`, `.venv-linux/bin/python` et
+`.venv-linux/bin/python3.10` (pour Play), `ui-app/node_modules`,
+`ui-check/node_modules`. Variables d'environnement facultatives :
+`DEPLOYER_HOTE`, `DEPLOYER_CLE`, `DEPLOYER_PLAY_PYTHON`, `DEPLOYER_PY310`.
+
+**Retour arrière** : restaure code, public et `site/` depuis l'archive du
+serveur, puis redémarre ; il ne restaure pas Play (republier un ancien commit).
+
+**Tests de logique** (aucun accès réseau, fausses commandes ssh/scp/curl) :
+`bash deploiement/tests/test-deployer-linux.sh`.
+
+---
+
+## Ancien mode d'emploi Windows (conservé pour mémoire)
+
+> Ce qui suit décrit le poste Windows (PowerShell). Il n'est plus utilisé
+> depuis le 20/10/2026 ; pour déployer, voir « Déployer sous Linux » ci-dessus.
+
 ## À faire, dans l'ordre
 
 ### 1. Installer le serveur — une seule fois
