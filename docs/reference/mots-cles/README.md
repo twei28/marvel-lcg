@@ -65,6 +65,9 @@ Gabarit à copier pour chaque nouvelle fiche :
       les ressources listees, elles ne s'ajoutent pas au cout)
 - [x] starting.md (Fear No Evil : choix FACULTATIF de prendre la carte en main
       avant la pioche, une seule carte starting par deck)
+- [x] chi-counter.md (compteur `chi` du héros officiel Iron Fist, MC64EN : posé
+      sur la CARTE d'identité, partagé par les deux faces, gardé au retournement ;
+      riposte dynamique d'Embody the Dragon `64009`)
 
 ⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
 Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),

@@ -1,0 +1,32 @@
+{
+    "version": "0.5.9",
+    "name": "Iron Fist",
+    "metadata": {
+        "url": "https://www.fantasyflightgames.com/way-of-the-iron-fist/",
+        "deck_note": "Hero Pack officiel MC64EN (sortie novembre 2026). Seul ce qui est imprime et publie : identite et 15 cartes signature. Obligation et set nemesis : non publies au 20/10/2026, laisses vides. player_deck vide (PROCESSUS-HEROS etape 3)."
+    },
+    "hero": [
+        "64001a,64001b"
+    ],
+    "hero_deck": [
+        "64002",
+        "64002",
+        "64002",
+        "64003",
+        "64004",
+        "64004",
+        "64005",
+        "64005",
+        "64006",
+        "64007",
+        "64008",
+        "64009",
+        "64010",
+        "64011",
+        "64012"
+    ],
+    "set_aside": [],
+    "obligations": [],
+    "nemesis_set": [],
+    "player_deck": []
+}

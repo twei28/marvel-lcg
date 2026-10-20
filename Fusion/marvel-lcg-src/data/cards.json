@@ -81430,6 +81430,241 @@
    "text": "Play only if any player controls a [[Martial Artist]] card.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[Martial Artist]] trait."
   }
  ],
+ "iron_fist": [
+  {
+   "card_id": "64001a",
+   "type": "Hero",
+   "name": "* Iron Fist",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "DEFENDER",
+    "K'UN-LUN",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "Iron Fist",
+   "text": "<i>Martial Arts Master</i> — <b>Response</b>: After you play a card, place 1 chi counter here.\n<b>Forced Response</b>: After the player phase ends, remove all but 4 chi counters from here and heal 1 damage for each chi counter removed this way."
+  },
+  {
+   "card_id": "64001b",
+   "type": "AlterEgo",
+   "name": "* Danny Rand",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "Iron Fist",
+   "text": "Your [[Technique]] cards lose temporary.\n<i>Meditation</i> — <b>Action</b>: Search your deck and discard pile for a [[Technique]] card. Put that card into play. (Limit once per phase.)"
+  },
+  {
+   "card_id": "64002",
+   "type": "Event",
+   "name": "Deep Breathing",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "MaxPerDeck": "3",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Iron Fist",
+   "text": "<b>Hero Action</b>: Discard cards from the top of your deck until you discard an Iron Fist card and add it to your hand."
+  },
+  {
+   "card_id": "64003",
+   "type": "Event",
+   "name": "Dragon Punch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Iron Fist",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. You may remove up to 5 chi counters from your identity to deal 2 additional damage for each chi counter removed this way. If you removed at least 3 counters, also stun that enemy."
+  },
+  {
+   "card_id": "64004",
+   "type": "Event",
+   "name": "Fists of Fury",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Iron Fist",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to an enemy. Deal 1 damage to an enemy. Deal 1 damage to an enemy."
+  },
+  {
+   "card_id": "64005",
+   "type": "Event",
+   "name": "The Way of Things",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "THWART"
+   ],
+   "set_name": "Iron Fist",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. You may remove 2 chi counters from Iron Fist to remove 2 threat from a scheme."
+  },
+  {
+   "card_id": "64006",
+   "type": "Support",
+   "name": "* Lei Kung",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "K'UN-LUN",
+    "MARTIAL ARTIST",
+    "PERSONA"
+   ],
+   "set_name": "Iron Fist",
+   "text": "<b>Action</b>: Exhaust Lei Kung and remove 1 chi counter from your identity → draw 1 card."
+  },
+  {
+   "card_id": "64007",
+   "type": "Upgrade",
+   "name": "* Book of the Iron Fist",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "K'UN-LUN"
+   ],
+   "set_name": "Iron Fist",
+   "text": "<b>Hero Action</b>: Exhaust this card → if the top card of your discard pile is a [[Technique]], put it into play."
+  },
+  {
+   "card_id": "64008",
+   "type": "Upgrade",
+   "name": "Channel the Iron Fist",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Hero",
+    "Temporary": "1"
+   },
+   "traits": [
+    "TECHNIQUE"
+   ],
+   "set_name": "Iron Fist",
+   "text": "Temporary.\n<b>Hero Interrupt</b>: When you attack, remove 1 chi counter from Iron Fist → increase the amount of damage that attack deals by 1 (by 2 instead if it is a basic attack)."
+  },
+  {
+   "card_id": "64009",
+   "type": "Upgrade",
+   "name": "Embody the Dragon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "Class": "Hero",
+    "Temporary": "1"
+   },
+   "traits": [
+    "TECHNIQUE"
+   ],
+   "set_name": "Iron Fist",
+   "text": "Temporary.\nIron Fist gains retaliate X, where X is equal to the number of chi counters on this card.\n<b>Hero Action</b>: Move 1 chi counter from Iron Fist to this card."
+  },
+  {
+   "card_id": "64010",
+   "type": "Upgrade",
+   "name": "Feel the Flow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "MaxPerDeck": "1",
+    "Class": "Hero",
+    "Temporary": "1"
+   },
+   "traits": [
+    "TECHNIQUE"
+   ],
+   "set_name": "Iron Fist",
+   "text": "Temporary.\n<b>Hero Action</b> <i>(thwart)</i>: Remove 1 chi counter from Iron Fist → remove 1 threat from a scheme."
+  },
+  {
+   "card_id": "64011",
+   "type": "Upgrade",
+   "name": "Keep 'Em Coming",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "Class": "Hero",
+    "Temporary": "1"
+   },
+   "traits": [
+    "TECHNIQUE"
+   ],
+   "set_name": "Iron Fist",
+   "text": "Temporary.\n<b>Hero Action</b>: Remove 2 chi counters from Iron Fist → ready him."
+  },
+  {
+   "card_id": "64012",
+   "type": "Upgrade",
+   "name": "Redirect Chi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Hero",
+    "Temporary": "1"
+   },
+   "traits": [
+    "TECHNIQUE"
+   ],
+   "set_name": "Iron Fist",
+   "text": "Temporary.\n<b>Hero Resource</b>: Remove 2 chi counters from Iron Fist → generate [wild] [wild] resources."
+  }
+ ],
  "red_guardian": [
   {
    "card_id": "rg001a",
@@ -117533,5 +117768,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "6e0cce2909eed4dc14b65ff58e620f25d5d4fc9defd76472bc9eaa2cbb554d2d"
+ "checksum": "13203c8a1e9da386cc0154f3ddb1ab642b0b2c7f309a60ad880c94d3872df108"
 }
