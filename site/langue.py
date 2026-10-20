@@ -74,9 +74,9 @@ def detecter(entete_cookie: str = "", accept_language: str = "") -> str:
 # ---------------------------------------------------------------------------
 DICO_EN: dict[str, str] = {
     # --- Le squelette de toutes les pages -----------------------------------
-    "Ton espace de jeu est a toi : tes decks, tes campagnes en cours et tes "
-    "hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu "
-    "n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien "
+    "Ton espace de jeu est à toi : tes decks, tes campagnes en cours et tes "
+    "hauts faits t'y attendent d'une fois sur l'autre. Éteindre le jeu "
+    "n'efface rien. Tes invités, eux, rejoignent ta partie par leur lien "
     "sans avoir besoin d'un compte. Extinction automatique au bout de "
     "{heures} h d'allumage.":
         "This space is yours: your decks, your campaigns in progress and your "
@@ -124,60 +124,60 @@ DICO_EN: dict[str, str] = {
         "to the pool. Write to me and I will give it back.",
 
     # --- La barre, en haut de chaque page -----------------------------------
-    "Connecte": "Signed in",
+    "Connecté": "Signed in",
     "Menu": "Menu",
-    "Se deconnecter": "Sign out",
+    "Se déconnecter": "Sign out",
     "Mes signalements": "My reports",
     "Accueil": "Home",
-    "siege": "seat",
-    "Envoye depuis un autre siege de ta table : la reponse part a la personne qui l'a ecrit.": "Sent from another seat at your table: the reply goes to whoever wrote it.",
+    "siège": "seat",
+    "Envoyé depuis un autre siège de ta table : la réponse part à la personne qui l'a écrit.": "Sent from another seat at your table: the reply goes to whoever wrote it.",
 
     # --- Le suivi d'un signalement ------------------------------------------
-    "Ce que tu as signale, et ma reponse.": "What you reported, and my answer.",
-    "Rien a suivre pour l'instant.": "Nothing to follow yet.",
+    "Ce que tu as signalé, et ma réponse.": "What you reported, and my answer.",
+    "Rien à suivre pour l'instant.": "Nothing to follow yet.",
     "Aucun signalement": "No reports",
-    "Quand un bug te gene en partie, le bouton « Signaler un bug » l'envoie "
-    "avec ta capture d'ecran et le journal de la partie. Tu retrouveras ici ma "
-    "reponse.":
+    "Quand un bug te gêne en partie, le bouton « Signaler un bug » l'envoie "
+    "avec ta capture d'écran et le journal de la partie. Tu retrouveras ici ma "
+    "réponse.":
         "When a bug gets in your way during a game, the “Report a bug” button "
         "sends it along with your screenshot and the game log. My answer will "
         "be waiting for you here.",
-    "Pas encore de reponse.": "No answer yet.",
+    "Pas encore de réponse.": "No answer yet.",
     "Voir la capture": "View the screenshot",
     "Ajouter quelque chose": "Add something",
     "Envoyer": "Send",
-    "Reponse": "Answer",
+    "Réponse": "Answer",
     "Moi": "Me",
     # Les quatre etats d'un ticket, tels que le joueur les lit.
-    "Recu": "Received",
+    "Reçu": "Received",
     "En cours": "In progress",
-    "Corrige": "Fixed",
-    "Refuse": "Declined",
+    "Corrigé": "Fixed",
+    "Refusé": "Declined",
 
     # --- « Ta partie t'attend » ---------------------------------------------
-    "Tu etais en pleine partie.": "You were in the middle of a game.",
+    "Tu étais en pleine partie.": "You were in the middle of a game.",
     "Ta partie t'attend": "Your game is waiting",
-    "Interrompue le {quand}{motif}. Elle a ete sauvegardee : "
-    "tu peux la reprendre la ou tu l'avais laissee.":
+    "Interrompue le {quand}{motif}. Elle a été sauvegardée : "
+    "tu peux la reprendre là où tu l'avais laissée.":
         "Interrupted on {quand}{motif}. It was saved: you can pick it up right "
         "where you left off.",
     "Reprendre cette partie": "Resume this game",
     "On recharge la sauvegarde et on te remet au plateau.":
         "We load the save and put you back at the table.",
     "Commencer autre chose": "Start something else",
-    "La sauvegarde reste dans « Reprendre », sur l'ecran de preparation.":
+    "La sauvegarde reste dans « Reprendre », sur l'écran de préparation.":
         "The save stays under “Resume”, on the setup screen.",
 
     # --- Le temps que la table s'allume -------------------------------------
     "Un instant.": "One moment.",
-    "Ton jeu demarre": "Your game is starting",
+    "Ton jeu démarre": "Your game is starting",
     "Le premier allumage prend une minute ou deux. "
-    "Cette page bascule toute seule des que c'est pret.":
+    "Cette page bascule toute seule dès que c'est prêt.":
         "The first start takes a minute or two. This page will switch over on "
         "its own as soon as it is ready.",
-    "Quelque chose a coince.": "Something went wrong.",
-    "Ton jeu n'a pas demarre": "Your game did not start",
-    "Reessayer": "Try again",
+    "Quelque chose a coincé.": "Something went wrong.",
+    "Ton jeu n'a pas démarré": "Your game did not start",
+    "Réessayer": "Try again",
 
     # --- Ce qui peut refuser une connexion ou une inscription ---------------
     "Pseudo invalide : 3 à 24 caractères, lettres, chiffres, - et _.":
@@ -198,9 +198,9 @@ DICO_EN: dict[str, str] = {
     "Changer la langue du site": "Change the language of the site",
 
     # --- L'appli sur le telephone -------------------------------------------
-    "Installer l'application sur ce telephone":
+    "Installer l'application sur ce téléphone":
         "Install the app on this phone",
-    "Sur iPhone : bouton Partager, puis « Sur l'ecran d'accueil ».":
+    "Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ».":
         "On iPhone: Share button, then “Add to Home Screen”.",
     "C'est un raccourci vers le jeu, pas une version hors ligne : "
     "il faut une connexion pour jouer.":
@@ -209,9 +209,9 @@ DICO_EN: dict[str, str] = {
 
     # --- Quand le reseau manque ---------------------------------------------
     "Pas de connexion": "No connection",
-    "NarwhalChampions a besoin du reseau pour tourner : la partie "
-    "se joue sur le serveur, pas sur ton telephone. Reconnecte-toi "
-    "et reessaie.":
+    "NarwhalChampions a besoin du réseau pour tourner : la partie "
+    "se joue sur le serveur, pas sur ton téléphone. Reconnecte-toi "
+    "et réessaie.":
         "NarwhalChampions needs the network to run: the game is played on the "
         "server, not on your phone. Get back online and try again.",
 
@@ -246,18 +246,18 @@ DICO_EN: dict[str, str] = {
 
     # --- L'activite Discord (salon vocal) -----------------------------------
     "Un instant": "One moment",
-    "La table de {hote} n'est pas encore prete. Cette page reessaie toute seule.":
+    "La table de {hote} n'est pas encore prête. Cette page réessaie toute seule.":
         "{hote}'s table isn't ready yet. This page will retry on its own.",
-    "Table complete": "Table full",
-    "La table de {hote} n'a plus de siege libre.":
+    "Table complète": "Table full",
+    "La table de {hote} n'a plus de siège libre.":
         "{hote}'s table has no seat left.",
     "Rejoindre la table de {hote}": "Join {hote}'s table",
     "Tu peux jouer avec ton compte (tu retrouveras ce qui t'appartient), "
-    "ou simplement en invite.":
+    "ou simplement en invité.":
         "You can play with your own account (you'll get back what's yours), "
         "or just join as a guest.",
     "J’ai un compte": "I have an account",
-    "Je suis invite": "I'm a guest",
+    "Je suis invité": "I'm a guest",
 
     # --- Liens de l'administrateur ------------------------------------------
     "Administration": "Administration",
@@ -275,7 +275,7 @@ DICO_EN: dict[str, str] = {
     "Actualiser": "Refresh",
     "Suivi des parties": "Game tracking",
 
-    # --- Demandes des createurs (12/10/2026) ---------------------------------
+    # --- Demandes des créateurs (12/10/2026) ---------------------------------
     "Crédits et retrait": "Credits and removal",
     "Si j'ai oublié de te créditer, ou si tu veux que tes créations soient"
     " retirées du site, dis-le-moi ici. Je lis chaque demande.":

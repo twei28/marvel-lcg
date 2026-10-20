@@ -79,7 +79,7 @@ partie.cles_sieges = ["cle0", "cle1", "cle2", "cle3"]
 attente = o.page_attente("chloe").decode("utf-8")
 verifier("l'attente se rafraichit toute seule",
          'http-equiv="refresh"' in attente and "/entrer" in attente)
-verifier("l'attente dit ce qu'on attend", "Ton jeu demarre" in attente)
+verifier("l'attente dit ce qu'on attend", "Ton jeu démarre" in attente)
 
 o.ERREURS_DEMARRAGE["chloe"] = "Le moteur n'a pas repondu a temps."
 casse = o.page_attente("chloe").decode("utf-8")
@@ -88,7 +88,7 @@ verifier("en cas d'echec, la page ne boucle PAS", 'http-equiv="refresh"' not in 
 # morceau qui n'en contient pas, sans quoi le cas passerait a cote.
 verifier("en cas d'echec, la raison est dite",
          "pas repondu a temps" in casse, casse[-400:])
-verifier("en cas d'echec, on peut reessayer", "Reessayer" in casse)
+verifier("en cas d'echec, on peut reessayer", "Réessayer" in casse)
 o.ERREURS_DEMARRAGE.pop("chloe", None)
 
 arret = o.page_arret("chloe").decode("utf-8")
@@ -97,7 +97,7 @@ verifier("l'arret propose de rallumer", "/entrer" in arret)
 # Le geste a un effet que personne ne devinerait : il coupe les acces des
 # invites. Une page qui le fait sans le dire vaut un piege.
 verifier("l'arret annonce que les invites sont mis dehors",
-         "ne rouvrent plus" in arret and "invites" in arret, arret[-500:])
+         "ne rouvrent plus" in arret and "invités" in arret, arret[-500:])
 
 # --- Le bouton Administration n'est pose QUE pour l'administrateur ---------
 # ⚠ On appelle VRAIMENT `_config_partie`. Se contenter de poser la cle
@@ -627,7 +627,7 @@ _code, _, _corps = appel("POST", "/connexion", b"pseudo=inconnu-x&mdp=faux")
 _texte = _corps.decode("utf-8", "replace")
 verifier("la tentative suivante est REFUSEE", _code == 429, str(_code))
 verifier("et on dit au joueur combien de temps attendre",
-         "Trop de tentatives" in _texte and "Reessaie dans" in _texte,
+         "Trop de tentatives" in _texte and "Réessaie dans" in _texte,
          _texte[:300])
 
 # Par ADRESSE : changer de compte ne relache rien, le flot vient du meme
@@ -1698,8 +1698,8 @@ try:
     _dit = ""
 except ValueError as _e:
     _dit = str(_e)
-verifier("la connexion d'un compte expire dit pourquoi", "expire" in _dit, _dit)
-verifier("et dit quoi faire", "Ecris-moi" in _dit, _dit)
+verifier("la connexion d'un compte expire dit pourquoi", "expiré" in _dit, _dit)
+verifier("et dit quoi faire", "Écris-moi" in _dit, _dit)
 
 # Sa session en cours est coupee : le statut est relu en base a chaque requete.
 verifier("un compte expire ne garde pas sa session",
@@ -2631,10 +2631,10 @@ _page_fr = o.page_signalements("yarro").decode("utf-8")
 _lang.poser("en")
 _page_en = o.page_signalements("yarro").decode("utf-8")
 _lang.poser("fr")
-verifier("la meme page parle francais", "Ce que tu as signale" in _page_fr)
+verifier("la meme page parle francais", "Ce que tu as signalé" in _page_fr)
 verifier("⚠ et anglais", "What you reported" in _page_en, _page_en[:120])
 verifier("sans laisser de francais derriere",
-         "Se deconnecter" not in _page_en and "Mes signalements" not in _page_en)
+         "Se déconnecter" not in _page_en and "Mes signalements" not in _page_en)
 
 
 print()

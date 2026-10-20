@@ -10,22 +10,16 @@ titres en Bangers), jetons repris de `Fusion/marvel-lcg-src/public/css/affichage
 (connexion, inscription, réinitialisation, confirmations, page des créateurs). L'ancien habillage rouge reste dans le code derrière
 `EPURE_FORMULAIRE` (False pour y revenir). Le mode sobre redéfinit les variables par-dessus dans les deux cas.
 
-## 2. Sélecteur FR / EN
+## 2. Sélecteur FR / EN sur mobile : TRANCHÉE (oui), FAIT
+Les mêmes boutons que sur PC, à droite du bandeau.
 
-Le nouvel en-tête fin l'accueille à droite, pour que la page soit montrable en anglais (avant : aucune bascule sur ces pages).
-Sur mobile, l'en-tête disparaît au profit du bandeau : pas de bascule de langue (comme avant). 
-- Option A (recommandée) : laisser ainsi (la langue vient du cookie, puis du navigateur).
-- Option B : ajouter la bascule dans le bandeau mobile, à droite du titre (un bouton de plus dans un bandeau de 56 px).
+## 3. Illustration de la scène : TRANCHÉE, la mascotte du moment reste.
 
-## 3. Illustration de la scène
-
-La scène montre la mascotte du moment (`/narwhal.png`, change toutes les trois heures) et le titre de la page.
-La fiche dit « illustration » sans préciser laquelle.
-- Option A (recommandée) : la mascotte du moment.
-- Option B : une illustration fixe de héros ou de vilain, comme l'assistant (choix et droits d'image à trancher).
-
-## 4. Accents ailleurs sur le site
-
-Remis : connexion, inscription, réinitialisation, erreurs de ces formulaires. Restent sans accent (hors périmètre de la fiche) :
-écran de reprise, signalements, écran d'attente, page d'arrêt, bouton d'installation (clés de `langue.py`, tous les « Reponse », « Recu », « Reessayer », etc.).
-Question : étendre aux autres pages (même opération, clés et tests à renommer) ?
+## 4. Accents sur tout le site : TRANCHÉE (oui), FAIT
+Remis sur toutes les pages rendues par `site/orchestrateur.py` (reprise, signalements, attente, arrêt, installation de l'appli, Discord,
+administration, pied de page, barre) et dans les clés de `site/langue.py`. Laissés tels quels volontairement :
+- les codes machine comparés par le code ou le client (`"invite inconnu"`, `"pas connecte"`, `"siege invalide"` de l'API d'invitation,
+  états et statuts de base de données) ;
+- les commentaires et docstrings, les journaux techniques, les chaînes d'erreur internes.
+Hors périmètre « accents seulement » : quelques messages restent en français brut, sans passer par `lang.t` (ex. « Trop de tentatives »,
+« Ton compte a expiré ... »). À traduire, si souhaité, dans un autre passage.

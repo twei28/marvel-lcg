@@ -58,6 +58,11 @@ test.describe('connexion et inscription du site', () => {
           const bouton = await page.locator('form button[type=submit]').boundingBox();
           expect(bouton!.y + bouton!.height).toBeLessThanOrEqual(t.height);
           expect(bouton!.height).toBeGreaterThanOrEqual(44);
+          // Le sélecteur FR / EN est à droite du bandeau, mêmes boutons que sur PC.
+          const sel = await page.locator('a.lang').boundingBox();
+          expect(sel!.x + sel!.width).toBeGreaterThan(t.width - 24);
+          expect(sel!.y + sel!.height).toBeLessThanOrEqual(scene!.height + 2);
+          await expect(page.locator('a.lang span')).toHaveText(['FR', 'EN']);
         } else {
           // Scène ~30 %, formulaire à droite, rien à faire défiler.
           const part = scene!.width / t.width;
@@ -100,6 +105,17 @@ test.describe('connexion et inscription du site', () => {
     await ctx.addCookies([{ name: 'nc_langue', value: 'en', url: SITE }]);
     await page.goto(SITE + '/connexion');
     expect(await page.locator('.pied').innerText()).toContain('Forgotten your password');
+    await ctx.close();
+  });
+
+  test('accents : aucune forme sans accent sur connexion et inscription', async ({ browser }) => {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    for (const chemin of ['/connexion', '/inscription']) {
+      await page.goto(SITE + chemin);
+      const texte = await page.locator('body').innerText();
+      expect(texte).not.toMatch(/\b(Deja|reinitialisation|Ecris|comptees)\b/);
+    }
     await ctx.close();
   });
 });

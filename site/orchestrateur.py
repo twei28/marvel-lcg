@@ -199,8 +199,8 @@ ETATS_RAPPORT = ("nouveau", "en cours", "traite", "refuse")
 LIBELLES_ETAT_RAPPORT = {
     "nouveau": "Nouveaux",
     "en cours": "En cours",
-    "traite": "Traites",
-    "refuse": "Refuses",
+    "traite": "Traités",
+    "refuse": "Refusés",
 }
 # Au-dela de ce delai, un rapport CLASSE « traite » n'a plus rien a apprendre a
 # personne et sa capture ne fait que peser. Le plafond de debit est de 12
@@ -323,7 +323,7 @@ JETONS_SITE: dict[str, str] = {}         # jeton -> pseudo (voir Partie.jeton_si
 VERROU = threading.Lock()
 
 # --------------------------------------------------------------------------
-# Activite Discord : une table par salon vocal (demande de l'utilisateur,
+# Activité Discord : une table par salon vocal (demande de l'utilisateur,
 # 28/09/2026 -- « jouer depuis Discord »).
 # --------------------------------------------------------------------------
 # instance_id (fourni par le SDK Discord embarque, un par lancement d'une
@@ -493,7 +493,7 @@ def _port_libre(port: int) -> bool:
 
 
 def _nettoyer_emplacement(emplacement: int) -> None:
-    """Efface les donnees de la partie precedente sur cet emplacement.
+    """Efface les donnees de la partie précédente sur cet emplacement.
 
     Sans ca, le groupe suivant heriterait des decks, des sauvegardes et des
     hauts faits du precedent. Les dossiers COMMUNS (images, catalogue, decks
@@ -642,7 +642,7 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
                     f"Le moteur s'est arrete au demarrage. Journal : "
                     f".site/moteur-{emplacement}.log")
             time.sleep(1)
-        raise RuntimeError("Le moteur n'a pas repondu a temps.")
+        raise RuntimeError("Le moteur n'a pas répondu à temps.")
     except Exception:
         eteindre_jeu(pseudo)
         raise
@@ -695,7 +695,7 @@ def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
     try:
         # ⚠ `/debug` EXIGE DEUX COOKIES, PAS SEULEMENT LE MOT DE PASSE
         # (25/09/2026, signale en jeu : « Reprendre cette partie » retombait
-        # toujours sur l'ecran de preparation). `session_token` ET
+        # toujours sur l'écran de preparation). `session_token` ET
         # `app_version` (IsAuthenticate/IsVersionMatch, web_server.py) : sans
         # eux, le moteur repond un simple 200 + page d'authentification —
         # PAS une erreur — et la commande /load n'est jamais executee.
@@ -718,7 +718,7 @@ def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
         #
         # ⚠ TOUTE LA COMMANDE PASSE PAR `quote()`, PAS SEULEMENT LE FICHIER
         # (25/09/2026, trouve APRES le correctif des cookies ci-dessus : le
-        # bouton retombait toujours sur l'ecran de preparation). L'espace
+        # bouton retombait toujours sur l'écran de preparation). L'espace
         # entre « /load » et le chemin restait litteral dans l'URL — Python
         # 3.10 le refuse net : `http.client.InvalidURL: URL can't contain
         # control characters ... (found at least ' ')`. Cette exception
@@ -1855,8 +1855,8 @@ def verifier(identifiant: str, mot_de_passe: str) -> str:
         # aurait envoye quelqu'un attendre indefiniment quelque chose qui ne
         # viendra pas : personne ne sait, cote site, qu'il est revenu.
         raise ValueError(
-            "Ton compte a expire : plus de %d jours sans venir, et la place est "
-            "retournee au pot. Ecris-moi, je te la rends." % EXPIRATION_JOURS)
+            "Ton compte a expiré : plus de %d jours sans venir, et la place est "
+            "retournée au pot. Écris-moi, je te la rends." % EXPIRATION_JOURS)
     if ligne["statut"] != "valide":
         raise ValueError("Ton compte attend encore ma validation.")
     with _cx() as cx:
@@ -2075,7 +2075,7 @@ def reinitialiser_mot_de_passe(jeton: str, mot_de_passe: str) -> str:
         # ⚠ Relu et consomme dans la MEME transaction, comme une invitation :
         # deux envois du formulaire ne doivent pas poser deux mots de passe.
         if l is None or l["utilise_le"] is not None or _age_secondes(l["cree_le"]) > REINITIALISATION_DUREE:
-            raise ValueError("Ce lien n'est plus valable. Demande un nouveau lien a l'administrateur.")
+            raise ValueError("Ce lien n'est plus valable. Demande un nouveau lien à l'administrateur.")
         sel = secrets.token_bytes(16).hex()
         cx.execute("UPDATE comptes SET sel = ?, empreinte = ? WHERE pseudo = ?",
                    (sel, _empreinte(mot_de_passe, sel), l["pseudo"]))
@@ -2221,7 +2221,7 @@ def bloc_stats_play() -> str:
     st = stats_play()
     present = "<p class=\"sous\"><b>En ce moment sur play : %d</b></p>" % presents_play()
     if not st["total"]:
-        return present + '<p class="vide">Aucune partie lancee sur play ces %d derniers jours.</p>' % st["jours"]
+        return present + '<p class="vide">Aucune partie lancée sur play ces %d derniers jours.</p>' % st["jours"]
 
     def tableau(titre, lignes):
         corps = "".join('<tr><td data-label="%s">%s</td><td data-label="Parties">%d</td></tr>'
@@ -2229,7 +2229,7 @@ def bloc_stats_play() -> str:
         return "<h3>%s</h3><table><tr><th>%s</th><th>Parties</th></tr>%s</table>" % (
             html.escape(titre), html.escape(titre.split()[0]), corps)
 
-    return (present + "<p class=\"sous\">%d partie(s) lancee(s) sur play ces %d derniers jours.</p>"
+    return (present + "<p class=\"sous\">%d partie(s) lancée(s) sur play ces %d derniers jours.</p>"
             % (st["total"], st["jours"])
             + tableau("Jour (UTC)", st["par_jour"])
             + tableau("Mechants les plus joues", st["mechants"])
@@ -2294,7 +2294,7 @@ def _il_y_a(quand: str) -> str:
     if ecart is None:
         return ""
     if ecart < 90:
-        return "a l'instant"
+        return "à l'instant"
     if ecart < 5400:
         return "il y a %d min" % round(ecart / 60)
     if ecart < 172800:
@@ -3133,7 +3133,7 @@ ANNONCE_MINUTES_MAX = 180
 # La phrase par defaut, ECRITE POUR UN JOUEUR. Elle dit ce qui va se passer et
 # ce qu'il faut faire, dans cet ordre. Le decompte est ajoute par le client,
 # qui seul sait combien de minutes il reste au moment ou il dessine.
-ANNONCE_DEPLOIEMENT = ("Mise a jour du jeu en approche : les parties en cours "
+ANNONCE_DEPLOIEMENT = ("Mise à jour du jeu en approche : les parties en cours "
                        "seront interrompues. Sauvegarde la tienne avec le "
                        "bouton Save du plateau.")
 
@@ -3609,9 +3609,9 @@ def _pied_de_page() -> str:
     texte a chaque rendu.
     """
     return lang.t(
-        "Ton espace de jeu est a toi : tes decks, tes campagnes en cours et tes "
-        "hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu "
-        "n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien "
+        "Ton espace de jeu est à toi : tes decks, tes campagnes en cours et tes "
+        "hauts faits t'y attendent d'une fois sur l'autre. Éteindre le jeu "
+        "n'efface rien. Tes invités, eux, rejoignent ta partie par leur lien "
         "sans avoir besoin d'un compte. Extinction automatique au bout de "
         "{heures} h d'allumage.").replace("{heures}", str(int(DUREE_MAX_HEURES))) \
         + '<span class="mention-legale">%s</span>' % _mention_courte()
@@ -3712,9 +3712,9 @@ def _barre(pseudo: str) -> str:
             '<nav class="barre-nav">%s%s%s'
             '<a href="/deconnexion" class="sortie">%s</a>'
             '</nav></header>'
-            % (lang.t("Menu"), lang.t("Connecte"), html.escape(pseudo),
+            % (lang.t("Menu"), lang.t("Connecté"), html.escape(pseudo),
                signalements, admin, _bouton_langue(),
-               lang.t("Se deconnecter")))
+               lang.t("Se déconnecter")))
 
 
 def page_reprise(pseudo: str, attendue: dict) -> bytes:
@@ -3772,18 +3772,18 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
              % (portrait,
                 lang.t("Ta partie t'attend"),
                 etiquettes,
-                lang.t("Interrompue le {quand}{motif}. Elle a ete sauvegardee : "
-                       "tu peux la reprendre la ou tu l'avais laissee.")
+                lang.t("Interrompue le {quand}{motif}. Elle a été sauvegardée : "
+                       "tu peux la reprendre là où tu l'avais laissée.")
                 .replace("{quand}", _horodate(attendue.get("quand") or ""))
                 .replace("{motif}", (", " + html.escape(motif)) if motif else ""),
                 icone_nouvelle,
                 lang.t("Commencer autre chose"),
-                lang.t("La sauvegarde reste dans « Reprendre », sur l'ecran de "
-                       "preparation."),
+                lang.t("La sauvegarde reste dans « Reprendre », sur l'écran de "
+                       "préparation."),
                 icone_reprendre,
                 lang.t("Reprendre cette partie"),
                 lang.t("On recharge la sauvegarde et on te remet au plateau.")))
-    return PAGE.format(tete="", sous=lang.t("Tu etais en pleine partie."),
+    return PAGE.format(tete="", sous=lang.t("Tu étais en pleine partie."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
@@ -3795,10 +3795,10 @@ def etiquette_ticket(etat: str) -> str:
     chargement du module, quand aucune requete n'existe et donc aucune langue.
     """
     return {
-        "nouveau": lang.t("Recu"),
+        "nouveau": lang.t("Reçu"),
         "en cours": lang.t("En cours"),
-        "traite": lang.t("Corrige"),
-        "refuse": lang.t("Refuse"),
+        "traite": lang.t("Corrigé"),
+        "refuse": lang.t("Refusé"),
     }.get(etat, etat)
 
 
@@ -3820,11 +3820,11 @@ def page_signalements(pseudo: str) -> bytes:
                  '<strong>%s</strong></div>'
                  '<p class="mdp">%s</p></div>'
                  % (lang.t("Aucun signalement"),
-                    lang.t("Quand un bug te gene en partie, le bouton "
-                           "« Signaler un bug » l'envoie avec ta capture d'ecran "
+                    lang.t("Quand un bug te gêne en partie, le bouton "
+                           "« Signaler un bug » l'envoie avec ta capture d'écran "
                            "et le journal de la partie. Tu retrouveras ici ma "
-                           "reponse.")))
-        return PAGE.format(tete="", sous=lang.t("Rien a suivre pour l'instant."),
+                           "réponse.")))
+        return PAGE.format(tete="", sous=lang.t("Rien à suivre pour l'instant."),
                            barre=_barre(pseudo), corps=corps,
                            pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
@@ -3835,11 +3835,11 @@ def page_signalements(pseudo: str) -> bytes:
         for m in r.get("messages") or []:
             fil += ('<p class="msg %s"><b>%s</b> <span class="mdp">%s</span><br>%s</p>'
                     % ("de-lui" if m["auteur"] == "admin" else "de-moi",
-                       lang.t("Reponse") if m["auteur"] == "admin" else lang.t("Moi"),
+                       lang.t("Réponse") if m["auteur"] == "admin" else lang.t("Moi"),
                        _horodate(m["quand"] or ""),
                        html.escape(m["texte"] or "").replace("\n", "<br>")))
         if not fil:
-            fil = '<p class="mdp">%s</p>' % lang.t("Pas encore de reponse.")
+            fil = '<p class="mdp">%s</p>' % lang.t("Pas encore de réponse.")
         capture = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
                    '%s</a></p>' % (r["id"], lang.t("Voir la capture"))) if r["capture"] else ""
         # Le siege n'est montre QUE s'il n'est pas le sien : « siege 0 », c'est
@@ -3847,12 +3847,12 @@ def page_signalements(pseudo: str) -> bytes:
         siege = int(r["siege"] or 0)
         if siege:
             provenance = (' &middot; %s %d (%s)'
-                          % (lang.t("siege"), siege, html.escape(r["nom"] or "")))
+                          % (lang.t("siège"), siege, html.escape(r["nom"] or "")))
             # Pas de formulaire : voir `rapports_de_ses_tables`. Repondre ici
             # ferait passer l'hote pour l'auteur du signalement.
             repondre = ('<p class="mdp">%s</p>'
-                        % lang.t("Envoye depuis un autre siege de ta table : "
-                                 "la reponse part a la personne qui l'a ecrit."))
+                        % lang.t("Envoyé depuis un autre siège de ta table : "
+                                 "la réponse part à la personne qui l'a écrit."))
         else:
             provenance = ""
             repondre = ('<form method="post" action="/signalements" class="repondre">'
@@ -3868,7 +3868,7 @@ def page_signalements(pseudo: str) -> bytes:
                   % (html.escape((r["description"] or "")[:160]),
                      etiquette_ticket(etat),
                      _horodate(r["quand"] or ""), provenance, fil, capture, repondre))
-    return PAGE.format(tete="", sous=lang.t("Ce que tu as signale, et ma reponse."),
+    return PAGE.format(tete="", sous=lang.t("Ce que tu as signalé, et ma réponse."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
@@ -3883,14 +3883,14 @@ def page_attente(pseudo: str) -> bytes:
     erreur = ERREURS_DEMARRAGE.get(pseudo, "")
     if erreur:
         tete = ""
-        sous = lang.t("Quelque chose a coince.")
+        sous = lang.t("Quelque chose a coincé.")
         corps = ('<div class="table">'
                  '<div class="entete"><strong>%s</strong></div>'
                  '<p class="mdp">%s</p>'
                  '<form method="get" action="/entrer" style="margin-top:1rem">'
                  '<button type="submit">%s</button></form></div>'
-                 % (lang.t("Ton jeu n'a pas demarre"), html.escape(erreur),
-                    lang.t("Reessayer")))
+                 % (lang.t("Ton jeu n'a pas démarré"), html.escape(erreur),
+                    lang.t("Réessayer")))
     else:
         # ⚠ PLUS DE `meta refresh` COMME MOTEUR DE L'ATTENTE (17/09/2026).
         # Il rechargeait la page ENTIERE toutes les trois secondes : l'ecran
@@ -3922,9 +3922,9 @@ def page_attente(pseudo: str) -> bytes:
                  '})();'
                  '</script>'
                  % (narval_du_moment.tranche(),
-                    lang.t("Ton jeu demarre"),
+                    lang.t("Ton jeu démarre"),
                     lang.t("Le premier allumage prend une minute ou deux. "
-                           "Cette page bascule toute seule des que c'est pret."),
+                           "Cette page bascule toute seule dès que c'est prêt."),
                     lang.t("Tu peux laisser cet onglet ouvert.")))
     return PAGE.format(tete=tete, sous=sous, barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
@@ -3996,8 +3996,8 @@ def page_activite_discord_participant(hote: str, instance_id: str, prete: bool) 
     """
     if not prete:
         titre = lang.t("Un instant")
-        texte = lang.t("La table de {hote} n'est pas encore prete. Cette page "
-                       "reessaie toute seule.").replace("{hote}", html.escape(hote))
+        texte = lang.t("La table de {hote} n'est pas encore prête. Cette page "
+                       "réessaie toute seule.").replace("{hote}", html.escape(hote))
         corps = '<script>setTimeout(function(){location.reload();},3000);</script>'
         return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps, mention=_mention_courte()).encode("utf-8")
 
@@ -4010,19 +4010,19 @@ def page_activite_discord_participant(hote: str, instance_id: str, prete: bool) 
 
     titre = lang.t("Rejoindre la table de {hote}").replace("{hote}", html.escape(hote))
     texte = lang.t("Tu peux jouer avec ton compte (tu retrouveras ce qui t'appartient), "
-                   "ou simplement en invite.")
+                   "ou simplement en invité.")
     corps = ('<div class="choix">'
              '<a class="bouton principal" href="%s">%s</a>'
              '<a class="bouton" href="%s">%s</a>'
              '</div>'
              % (html.escape(lien_connexion), lang.t("J’ai un compte"),
-                html.escape(lien_invite), lang.t("Je suis invite")))
+                html.escape(lien_invite), lang.t("Je suis invité")))
     return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps, mention=_mention_courte()).encode("utf-8")
 
 
 def page_activite_discord_complete(hote: str) -> bytes:
-    titre = lang.t("Table complete")
-    texte = lang.t("La table de {hote} n'a plus de siege libre.").replace(
+    titre = lang.t("Table complète")
+    texte = lang.t("La table de {hote} n'a plus de siège libre.").replace(
         "{hote}", html.escape(hote))
     return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps="", mention=_mention_courte()).encode("utf-8")
 
@@ -4054,7 +4054,7 @@ PAGE_ACTIVITE_DISCORD_AMORCE = """<!doctype html>
            justify-content:center; opacity:.75; }}
   #jeu {{ position:absolute; inset:0; width:100%; height:100%; border:0; display:none; }}
 </style>
-<p id="etat">Connexion a Discord…</p>
+<p id="etat">Connexion à Discord…</p>
 <iframe id="jeu" title="NarwhalChampions" allow="autoplay; fullscreen"></iframe>
 <script type="module">
   const etat = document.getElementById('etat');
@@ -4064,12 +4064,12 @@ PAGE_ACTIVITE_DISCORD_AMORCE = """<!doctype html>
     // Garde sur `window` : le SDK doit vivre aussi longtemps que la page.
     const sdk = window.discordSdk = new DiscordSDK({client_id!r});
     await sdk.ready();
-    if (!sdk.instanceId) throw new Error('instanceId absent apres ready()');
+    if (!sdk.instanceId) throw new Error('instanceId absent après ready()');
     jeu.addEventListener('load', () => {{ etat.style.display = 'none'; jeu.style.display = 'block'; }}, {{ once: true }});
     jeu.src = '/activite_discord?instance_id=' + encodeURIComponent(sdk.instanceId);
   }} catch (erreur) {{
-    console.error('Activite Discord : ', erreur);
-    etat.textContent = "Impossible de demarrer l'activite (" + (erreur && erreur.message || erreur) + "). "
+    console.error('Activité Discord : ', erreur);
+    etat.textContent = "Impossible de démarrer l'activité (" + (erreur && erreur.message || erreur) + "). "
         + "Voir DISCORD.md.";
   }}
 </script>
@@ -4094,15 +4094,15 @@ def page_enchainer(vers: str) -> bytes:
 
 def page_arret(pseudo: str) -> bytes:
     corps = ('<div class="table">'
-             '<div class="entete"><strong>Ton jeu est eteint</strong></div>'
+             '<div class="entete"><strong>Ton jeu est éteint</strong></div>'
              '<p class="mdp">Rien n\'est perdu : tes decks, tes campagnes et tes '
              'hauts faits t\'attendent au prochain allumage.</p>'
-             '<p class="mdp">Eteindre ferme aussi la porte aux invites de la '
-             'partie precedente : leur lien et leur navigateur ne rouvrent plus '
+             '<p class="mdp">Éteindre ferme aussi la porte aux invités de la '
+             'partie précédente : leur lien et leur navigateur ne rouvrent plus '
              'ta table. Toi, tu rentres par ce bouton, comme d\'habitude.</p>'
              '<form method="get" action="/entrer" style="margin-top:1rem">'
              '<button type="submit">Rallumer mon jeu</button></form></div>')
-    return PAGE.format(tete="", sous="A tout de suite.", barre=_barre(pseudo),
+    return PAGE.format(tete="", sous="À tout de suite.", barre=_barre(pseudo),
                        corps=corps, pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
 
@@ -4172,7 +4172,11 @@ PAGE_FORMULAIRE = """<!doctype html>
      colonnes. */
   @media (max-width:767px) {{
     body {{ min-height:100dvh; padding-bottom:1.5rem; }}
-    .entete {{ display:none; }}
+    /* L'en-tete se reduit a la bascule FR / EN, posee sur la droite du bandeau (20/10/2026). */
+    .entete {{ position:fixed; top:0; right:0; z-index:6; height:56px; padding:0 .7rem; background:none;
+              border:0; pointer-events:none; }}
+    .entete-marque {{ display:none; }}
+    .entete .lang {{ pointer-events:auto; background:var(--panel); }}
     .cadre {{ display:block; }}
     .scene {{ position:sticky; top:0; z-index:5; flex-direction:row; justify-content:flex-start; align-items:center; gap:.7rem;
              min-height:56px; padding:.4rem 1rem; clip-path:none; border-bottom:1px solid var(--border);
@@ -4187,7 +4191,6 @@ PAGE_FORMULAIRE = """<!doctype html>
     button {{ min-height:48px; }}
     .pied, .mention-legale {{ margin-left:1rem; margin-right:1rem; }}
     .pied a {{ display:inline-flex; align-items:center; min-height:44px; min-width:44px; }}
-    .lang {{ position:fixed; top:.5rem; right:.7rem; z-index:6; background:var(--panel); }}
     .lang span {{ display:flex; align-items:center; min-height:40px; padding:0 .8rem; }}
   }}
 </style>
@@ -4508,11 +4511,11 @@ PAGE_ADMIN = """<!doctype html>
                  style="width:4.5rem;font:inherit;background:var(--panel-2);color:inherit;
                         border:1px solid var(--border);border-radius:0;padding:.3rem .5rem">
           minutes</label>
-        <input name="texte" type="text" maxlength="400" placeholder="Message (vide = preavis de mise a jour)"
+        <input name="texte" type="text" maxlength="400" placeholder="Message (vide = préavis de mise à jour)"
                style="width:100%;box-sizing:border-box;margin:.5rem 0;font:inherit;
                       background:var(--panel-2);color:inherit;border:1px solid var(--border);
                       border-radius:0;padding:.4rem .6rem">
-        <button class="oui" type="submit">Prevenir</button>
+        <button class="oui" type="submit">Prévenir</button>
       </form>
     </div>
   </div>
@@ -4533,27 +4536,27 @@ PAGE_ADMIN = """<!doctype html>
       <button type="button" class="sous-onglet" data-sous="comptes-mdp" role="tab">Mots de passe <span class="compte">{nb_reinit}</span></button>
     </nav>
     <div class="sous-panneau" data-sous-panneau="comptes-liste">
-      <p class="sous">{valides} valide(s) sur {max}. {regle_expiration}
+      <p class="sous">{valides} validé(s) sur {max}. {regle_expiration}
       <a href="/">Retour au site</a></p>
       <div class="comptes">
         {lignes}
       </div>
     </div>
     <div class="sous-panneau" data-sous-panneau="comptes-invitations" hidden>
-      <p class="sous">Un lien vaut une place, une seule fois. Celui qui le recoit
+      <p class="sous">Un lien vaut une place, une seule fois. Celui qui le reçoit
       entre directement, sans passer par la file d'attente.</p>
       <form method="post" action="/admin" style="margin-bottom:1rem">
         <input type="hidden" name="action" value="inviter">
-        <button class="oui" type="submit">Creer un lien d'invitation</button>
+        <button class="oui" type="submit">Créer un lien d'invitation</button>
       </form>
       <div class="comptes">
         {invitations}
       </div>
     </div>
     <div class="sous-panneau" data-sous-panneau="comptes-mdp" hidden>
-      <p class="sous">Le bouton « Mot de passe » d'un compte cree un lien a usage
-      unique, valable 24 heures. Transmets-le a la personne : elle y choisit son
-      nouveau mot de passe, et ses anciennes sessions sont fermees.</p>
+      <p class="sous">Le bouton « Mot de passe » d'un compte crée un lien à usage
+      unique, valable 24 heures. Transmets-le à la personne : elle y choisit son
+      nouveau mot de passe, et ses anciennes sessions sont fermées.</p>
       <div class="comptes">
         {reinitialisations}
       </div>
@@ -4561,15 +4564,15 @@ PAGE_ADMIN = """<!doctype html>
   </section>
 
   <section class="panneau" data-panneau="rapports" hidden>
-    <p class="sous">Les 60 derniers, le plus recent en haut, ranges par etat
-    (code couleur, comme sur chaque rapport). Deplie pour voir la capture et
+    <p class="sous">Les 60 derniers, le plus récent en haut, rangés par état
+    (code couleur, comme sur chaque rapport). Déplie pour voir la capture et
     le journal de la partie.</p>
     {rapports}
   </section>
 
   <section class="panneau" data-panneau="joueurs" hidden>
-    <p class="sous">Qui est la, et de quoi on se parle. Un message part tout de
-    suite : la personne voit une pastille dans son jeu, et te repond de la.</p>
+    <p class="sous">Qui est là, et de quoi on se parle. Un message part tout de
+    suite : la personne voit une pastille dans son jeu, et te répond de là.</p>
     {salon}
   </section>
 
@@ -4583,34 +4586,34 @@ PAGE_ADMIN = """<!doctype html>
         <button type="button" class="sous-onglet" data-sous="parties-play" role="tab">Play</button>
       </nav>
       <div class="sous-panneau" data-sous-panneau="parties-play" hidden>
-        <p class="sous">Les parties lancees sur play (le jeu dans le navigateur, sans compte).
+        <p class="sous">Les parties lancées sur play (le jeu dans le navigateur, sans compte).
         Compteur anonyme : ni adresse, ni identifiant.</p>
         {stats_play}
       </div>
       <div class="sous-panneau" data-sous-panneau="parties-revoir" hidden>
-        <p class="sous">Les 3 dernieres parties TERMINEES de chaque joueur (rangees chez l'hote de la
-        table). Telecharge le fichier, puis ouvre-le dans « Revoir » sur l'ecran de preparation.</p>
+        <p class="sous">Les 3 dernières parties TERMINÉES de chaque joueur (rangées chez l'hôte de la
+        table). Télécharge le fichier, puis ouvre-le dans « Revoir » sur l'écran de préparation.</p>
         {parties_a_revoir}
       </div>
       <div class="sous-panneau" data-sous-panneau="parties-encours">
-        <p class="sous">Qui joue en ce moment. Rafraichi tout seul toutes les
+        <p class="sous">Qui joue en ce moment. Rafraîchi tout seul toutes les
         30 s <small id="maj" style="color:var(--muted)">chargement…</small>.</p>
         <div id="encours"><p class="vide">…</p></div>
       </div>
       <div class="sous-panneau" data-sous-panneau="parties-historique" hidden>
-        <p class="sous">Les {suivi_max} dernieres parties finies : heros, deck,
-        aspect, mechant, rounds et resultat. Les abandons sont en orange. 20
-        affichees d'abord, le reste sur demande. La meme chose, a epingler sur
-        le telephone : <a href="/suivi">page de suivi</a>.</p>
+        <p class="sous">Les {suivi_max} dernières parties finies : héros, deck,
+        aspect, méchant, rounds et résultat. Les abandons sont en orange. 20
+        affichées d'abord, le reste sur demande. La même chose, à épingler sur
+        le téléphone : <a href="/suivi">page de suivi</a>.</p>
         <div id="terminees"><p class="vide">…</p></div>
       </div>
     </div>
   </section>
 
   <section class="panneau" data-panneau="journal" hidden>
-    <p class="sous">Allumage et extinction des 25 dernieres tables.</p>
+    <p class="sous">Allumage et extinction des 25 dernières tables.</p>
     <table>
-      <tr><th>Table</th><th>Hote</th><th>Ouverte le</th><th>Fermee le</th></tr>
+      <tr><th>Table</th><th>Hôte</th><th>Ouverte le</th><th>Fermée le</th></tr>
       {parties}
     </table>
   </section>
@@ -4669,7 +4672,7 @@ def _pseudos_par_emplacement() -> dict:
 def _depuis(secondes: float) -> str:
     secondes = max(0, int(secondes))
     if secondes < 90:
-        return "a l'instant"
+        return "à l'instant"
     if secondes < 5400:
         return "depuis %d min" % round(secondes / 60)
     if secondes < 172800:
@@ -4680,7 +4683,7 @@ def _depuis(secondes: float) -> str:
 def _il_y_a_horodatage(quand: float) -> str:
     ecart = max(0, time.time() - float(quand))
     if ecart < 90:
-        return "a l'instant"
+        return "à l'instant"
     if ecart < 5400:
         return "il y a %d min" % round(ecart / 60)
     if ecart < 172800:
@@ -5112,7 +5115,7 @@ ADMIN_ONGLETS_SCRIPT = """<script>
     });
   }
 
-  // L'historique des parties : 20 affichees d'abord, le reste sur demande
+  // L'historique des parties : 20 affichées d'abord, le reste sur demande
   // (23/09/2026). ⚠ ON NE TOUCHE PAS A SUIVI_SCRIPT (partage avec /suivi,
   // hors perimetre de cette refonte) : ce bloc observe seulement le DOM
   // qu'il produit dans #terminees, et le complete sans le modifier.
@@ -5301,10 +5304,10 @@ def page_hors_ligne() -> bytes:
     return (PAGE_HORS_LIGNE
             .replace("{titre}", lang.t("Pas de connexion"))
             .replace("{corps}", lang.t(
-                "NarwhalChampions a besoin du reseau pour tourner : la partie "
-                "se joue sur le serveur, pas sur ton telephone. Reconnecte-toi "
-                "et reessaie."))
-            .replace("{bouton}", lang.t("Reessayer"))
+                "NarwhalChampions a besoin du réseau pour tourner : la partie "
+                "se joue sur le serveur, pas sur ton téléphone. Reconnecte-toi "
+                "et réessaie."))
+            .replace("{bouton}", lang.t("Réessayer"))
             ).encode("utf-8")
 
 SERVICE_WORKER = """// NarwhalChampions : un service worker qui ne fait RIEN, et c'est voulu.
@@ -5374,9 +5377,9 @@ def _bouton_appli() -> str:
     'border:1px solid var(--border);border-radius:.5rem;background:var(--panel-2);font-size:.9rem">'
     '<button id="appli-bouton" type="button" style="width:100%;font:inherit;font-weight:600;background:var(--accent);'
     'color:var(--accent-ink);border:0;border-radius:.5rem;padding:.7rem;cursor:pointer">'
-    + lang.t("Installer l'application sur ce telephone") + '</button>'
+    + lang.t("Installer l'application sur ce téléphone") + '</button>'
     '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:var(--muted)">'
-    + lang.t("Sur iPhone : bouton Partager, puis « Sur l'ecran d'accueil ».") + '</p>'
+    + lang.t("Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ».") + '</p>'
     # ⚠ DIT AVANT L'INSTALLATION, pas apres. Une icone sur l'ecran d'accueil
     # laisse croire au hors ligne ; le jeu tourne sur le serveur, il n'y a
     # rien a jouer sans connexion.
@@ -6120,17 +6123,17 @@ class Handler(BaseHTTPRequestHandler):
             except OSError:
                 continue
             lignes.append('<li><a href="/admin/sauvegarde-code?n=%d">%s</a> (%.0f Mo)%s</li>'
-                          % (rang, html.escape(nom), taille, " &larr; la plus recente" if rang == 0 else ""))
-        corps = "".join(lignes) or "<li>Aucune sauvegarde pour l'instant : elle se cree au prochain deploiement.</li>"
+                          % (rang, html.escape(nom), taille, " &larr; la plus récente" if rang == 0 else ""))
+        corps = "".join(lignes) or "<li>Aucune sauvegarde pour l'instant : elle se crée au prochain déploiement.</li>"
         return ("<!doctype html><meta charset=utf-8><title>Sauvegardes du code</title>"
                 "<body style='font-family:system-ui;background:#0d1116;color:#e8edf2;padding:2rem'>"
                 "<h1>Sauvegardes du code</h1>"
-                "<p>Tout le projet sans les images, historique compris. Un zip par deploiement, les 5 derniers. "
+                "<p>Tout le projet sans les images, historique compris. Un zip par déploiement, les 5 derniers. "
                 "La notice de restauration est dans le zip (LISEZ-MOI.txt).</p>"
                 "<ul style='line-height:2'>%s</ul>"
                 "<h2>Images</h2>"
                 "<p><a href='/admin/images'>Toutes les images (scans, vignettes, HD, sons, documents), environ 2,5 Go</a>"
-                " : un fichier .tar fabrique a l'instant depuis le serveur. Apres une restauration, l'extraire dans "
+                " : un fichier .tar fabriqué à l'instant depuis le serveur. Après une restauration, l'extraire dans "
                 "<code>Fusion/marvel-lcg-src/</code> (il contient le dossier <code>assets/</code>).</p>"
                 "<style>a{color:#f0b95f}</style></body>" % corps).encode("utf-8")
 
@@ -6223,7 +6226,7 @@ class Handler(BaseHTTPRequestHandler):
                             '<input type="hidden" name="action" value="reinitialiser">'
                             '<input type="hidden" name="pseudo" value="%s">'
                             '<button type="submit" title="Mot de passe"'
-                            ' aria-label="Creer un lien pour choisir un nouveau mot de passe">%s</button>'
+                            ' aria-label="Créer un lien pour choisir un nouveau mot de passe">%s</button>'
                             '</form>' % (html.escape(c["pseudo"]), icone_svg % ICONE_CLE))
             essai = bool("essai_phase" in c.keys() and c["essai_phase"])
             actions += ('<form method="post" action="/admin">'
@@ -6261,7 +6264,7 @@ class Handler(BaseHTTPRequestHandler):
                 '<div class="compte-avatar">?</div>'
                 '<div class="compte-info">'
                 '<div class="compte-nom">Lien d\'invitation <span class="etat-pastille attente">libre</span></div>'
-                '<div class="compte-meta"><code>%s</code> &middot; cree le %s</div>'
+                '<div class="compte-meta"><code>%s</code> &middot; créé le %s</div>'
                 '</div>'
                 '<div class="compte-actions"><form method="post" action="/admin">'
                 '<input type="hidden" name="action" value="annuler">'
@@ -6276,13 +6279,13 @@ class Handler(BaseHTTPRequestHandler):
                 '<div class="compte-ligne">'
                 '<div class="compte-avatar">%s</div>'
                 '<div class="compte-info">'
-                '<div class="compte-nom">%s <span class="etat-pastille oui">utilisee</span></div>'
-                '<div class="compte-meta">cree le %s &middot; utilisee le %s</div>'
+                '<div class="compte-nom">%s <span class="etat-pastille oui">utilisée</span></div>'
+                '<div class="compte-meta">créé le %s &middot; utilisée le %s</div>'
                 '</div></div>'
                 % (html.escape(initiale), html.escape(i["utilise_par"] or "?"),
                    _horodate(i["cree_le"]), html.escape(i["utilise_le"] or "")))
         if not inv:
-            inv.append('<p class="sous">Aucune invitation. Cree-en une ci-dessus.</p>')
+            inv.append('<p class="sous">Aucune invitation. Crée-en une ci-dessus.</p>')
         reinit = []
         for r in reinitialisations_ouvertes():
             lien = "%s/reinitialisation?r=%s" % (base, r["jeton"])
@@ -6292,7 +6295,7 @@ class Handler(BaseHTTPRequestHandler):
                 '<div class="compte-avatar">%s</div>'
                 '<div class="compte-info">'
                 '<div class="compte-nom">%s</div>'
-                '<div class="compte-meta"><code>%s</code> &middot; cree le %s</div>'
+                '<div class="compte-meta"><code>%s</code> &middot; créé le %s</div>'
                 '</div>'
                 '<div class="compte-actions"><form method="post" action="/admin">'
                 '<input type="hidden" name="action" value="reinit_annuler">'
@@ -6303,7 +6306,7 @@ class Handler(BaseHTTPRequestHandler):
                    _horodate(r["cree_le"]), html.escape(r["jeton"]), icone_svg % ICONE_CROIX))
         if not reinit:
             reinit.append('<p class="sous">Aucun lien en cours. Le bouton '
-                          '« Mot de passe » d\'un compte en cree un.</p>')
+                          '« Mot de passe » d\'un compte en crée un.</p>')
         # Rapports : groupes repliables par etat, chacun avec un compte en
         # COULEUR (23/09/2026, demande de l'utilisateur) -- meme code couleur
         # que le badge de chaque rapport individuel (`.etat.*`, voir
@@ -6329,9 +6332,9 @@ class Handler(BaseHTTPRequestHandler):
         # n'existe que s'il y a quelque chose a annuler.
         en_cours = annonce_courante()
         if en_cours is None:
-            annonce_etat = ("Aucune annonce. Le message apparait en haut du "
-                            "plateau et de l'assistant, avec le decompte, "
-                            "chez tous les joueurs connectes.")
+            annonce_etat = ("Aucune annonce. Le message apparaît en haut du "
+                            "plateau et de l'assistant, avec le décompte, "
+                            "chez tous les joueurs connectés.")
             annonce_annuler = ""
         else:
             annonce_etat = ('Annonce en cours, encore %d minute(s) : « %s »'
@@ -6371,7 +6374,7 @@ class Handler(BaseHTTPRequestHandler):
                 '<form method="post" action="/admin" style="display:flex;gap:.5rem;margin-top:.6rem">'
                 '<input type="hidden" name="action" value="message">'
                 '<input type="hidden" name="a" value="%s">'
-                '<input name="texte" maxlength="%d" placeholder="Ecrire a %s" required'
+                '<input name="texte" maxlength="%d" placeholder="Écrire à %s" required'
                 ' style="flex:1;font:inherit;background:var(--panel-2);color:inherit;'
                 'border:1px solid var(--border);border-radius:0;padding:.4rem .6rem">'
                 '<button class="oui" type="submit">Envoyer</button>'
@@ -6383,14 +6386,14 @@ class Handler(BaseHTTPRequestHandler):
                    lignes_msg, html.escape(personne["pseudo"]),
                    TAILLE_MESSAGE, html.escape(personne["pseudo"])))
         if not salon:
-            salon = '<p class="sous">Aucun compte valide a qui ecrire.</p>'
+            salon = '<p class="sous">Aucun compte validé à qui écrire.</p>'
         nb_invitations = len(invitations_libres()) + len(invitations_utilisees())
         nb_reinit = len(reinitialisations_ouvertes())
         n_rapports = nb_rapports_nouveaux()
         n_joueurs = attente_salon["nouveaux"]
         parties = "".join(
             # `data-label` : au telephone, chaque ligne devient une carte.
-            '<tr><td data-label="Table">%s</td><td data-label="Hote">%s</td>'
+            '<tr><td data-label="Table">%s</td><td data-label="Hôte">%s</td>'
             '<td data-label="Ouverte le">%s</td><td data-label="Fermee le">%s</td></tr>' % (
                 html.escape(p["nom"]), html.escape(p["hote"]),
                 html.escape(p["ouverte_le"]),
@@ -6467,7 +6470,7 @@ class Handler(BaseHTTPRequestHandler):
                              html.escape(d["nom"]), html.escape(d["contact"]),
                              _horodate(d["quand"] or ""),
                              html.escape(d["message"]).replace("\n", "<br>"), bouton))
-        return ('<details class="groupe"%s><summary>Demandes des createurs '
+        return ('<details class="groupe"%s><summary>Demandes des créateurs '
                 '<span class="etat nouveau">%d</span></summary>%s</details>'
                 % (" open" if nouvelles else "", nouvelles, corps))
 
@@ -6500,10 +6503,10 @@ class Handler(BaseHTTPRequestHandler):
             journal = ('<details><summary class="sous">Journal de la partie</summary>'
                        '<pre>%s</pre></details>' % html.escape(r["journal"]))
         else:
-            journal = '<p class="sous">Aucun journal (rapport envoye hors partie).</p>'
+            journal = '<p class="sous">Aucun journal (rapport envoyé hors partie).</p>'
         ou = r["ecran"] or "?"
         if r["siege"]:
-            ou += " · siege %d" % r["siege"]
+            ou += " · siège %d" % r["siege"]
 
         # ⚠ LE FIL N'EXISTE QUE POUR UN TICKET. Un rapport d'invite n'a pas de
         # proprietaire connu (voir `_est_un_ticket`) : lui offrir un champ de
@@ -6523,12 +6526,12 @@ class Handler(BaseHTTPRequestHandler):
             fil += ('<form method="post" action="/admin" class="repondre">'
                     '<input type="hidden" name="action" value="rapport_repondre">'
                     '<input type="hidden" name="id" value="%d">'
-                    '<textarea name="texte" rows="2" placeholder="Repondre a %s"></textarea>'
-                    '<button type="submit">Repondre</button></form>'
+                    '<textarea name="texte" rows="2" placeholder="Répondre à %s"></textarea>'
+                    '<button type="submit">Répondre</button></form>'
                     % (r["id"], html.escape(r["hote"] or "")))
         else:
-            fil = ('<p class="sous">Rapport envoye depuis un siege invite : on ne '
-                   'sait pas a quel compte il appartient, il n\'y a donc pas de fil.</p>')
+            fil = ('<p class="sous">Rapport envoyé depuis un siège invité : on ne '
+                   'sait pas à quel compte il appartient, il n\'y a donc pas de fil.</p>')
 
         return ('<details class="rapport">'
                 '<summary><span class="etat %s">%s</span>'
@@ -6615,8 +6618,8 @@ class Handler(BaseHTTPRequestHandler):
             # poignee de main, puis redirige lui-meme vers
             # `/activite_discord?instance_id=...`. Voir DISCORD.md.
             if not DISCORD_CLIENT_ID:
-                self._repondre(404, b"Activite Discord non configuree "
-                                    b"(DISCORD_CLIENT_ID absent).",
+                self._repondre(404, ("Activité Discord non configurée "
+                                    "(DISCORD_CLIENT_ID absent).").encode("utf-8"),
                                "text/plain; charset=utf-8")
                 return
             self._repondre(200, page_activite_discord_amorce())
@@ -6737,12 +6740,12 @@ class Handler(BaseHTTPRequestHandler):
             jeton = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("r", [""])[0]
             if reinitialisation_valide(jeton) is None:
                 self._repondre(410, self._formulaire_reinitialisation(
-                    "", "Ce lien n'est plus valable. Demande un nouveau lien a l'administrateur."))
+                    "", "Ce lien n'est plus valable. Demande un nouveau lien à l'administrateur."))
                 return
             self._repondre(200, self._formulaire_reinitialisation(jeton))
         elif self.chemin == "/admin":
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_admin())
         elif self.chemin == "/suivi":
@@ -6752,7 +6755,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/")
                 return
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._repondre(200, PAGE_SUIVI.encode("utf-8"))
         elif self.chemin == "/regarder":
@@ -6769,7 +6772,7 @@ class Handler(BaseHTTPRequestHandler):
             # mot de passe de la table (`comptes.mdp_jeu`). Le moteur, de son
             # cote, ouvre la lecture sans distribuer de siege (`/spectateur`).
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             vise = (self.parametres.get("joueur") or [""])[0].strip().lower()
             try:
@@ -6867,7 +6870,7 @@ class Handler(BaseHTTPRequestHandler):
         elif self.chemin == "/admin/sauvegardes":
             # La liste des sauvegardes du code, reservee a l'administrateur.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_sauvegardes())
         elif self.chemin == "/admin/images":
@@ -6875,19 +6878,19 @@ class Handler(BaseHTTPRequestHandler):
             # a jour, rien de stocke en double. Plusieurs Go : le site sert un
             # fil par requete, les joueurs ne l'attendent pas.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_images()
         elif self.chemin == "/admin/partie-joueur":
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_partie_joueur()
         elif self.chemin == "/admin/sauvegarde-code":
             # Le zip designe par son RANG dans la liste (0 = le plus recent),
             # jamais par un nom venu de l'adresse : pas de traversee de dossier.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_sauvegarde()
         elif self.chemin.startswith("/admin/capture"):
@@ -6896,7 +6899,7 @@ class Handler(BaseHTTPRequestHandler):
             # l'adresse : on lit celui que la base associe au numero demande,
             # sans quoi n'importe quel chemin sortirait du dossier.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_capture()
         elif self.chemin == "/etat":
@@ -7072,7 +7075,7 @@ class Handler(BaseHTTPRequestHandler):
             reste = attente_connexion(cle)
             if reste:
                 self._repondre(429, self._formulaire(
-                    "connexion", "Trop de tentatives. Reessaie dans %s."
+                    "connexion", "Trop de tentatives. Réessaie dans %s."
                                  % delai_lisible(reste),
                     instance_discord=instance_en_attente))
                 return
@@ -7172,7 +7175,7 @@ class Handler(BaseHTTPRequestHandler):
             # a faire allouer un octet sur une route qui va le refuser.
             if pseudo != ADMIN:
                 self._raccrocher()
-                self._repondre(403, b"Reserve a l'administrateur.",
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"),
                                "text/plain; charset=utf-8")
                 return
             champs = self._champs()
