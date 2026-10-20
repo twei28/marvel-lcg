@@ -15,6 +15,8 @@ import type { CibleHorsTable } from './interaction'
 import { t } from './langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import './selecteur-fenetre.css'
+import { useOrdreGlisser } from './ordre-glisser'
+import './ordre-glisser.css'
 
 /**
  * LA FENETRE DE CHOIX (rapport n76, Yarro, 10/10/2026). Quand TOUTES les
@@ -47,6 +49,7 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre }: SelecteurC
   // l'effet qui repercute `regardee` a chaque changement.
   const { regardee, survol, quitter, viser } = useApercuSurvol(cibles, (cible) => cible.props.id)
   const remonter = survoler
+  const glisserOrdre = useOrdreGlisser()
   useEffect(() => {
     remonter?.(regardee?.props)
   }, [regardee, remonter])
@@ -111,7 +114,7 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre }: SelecteurC
         {cibles.map((cible) => (
           <span
             key={cible.props.id}
-            className="plateau-selecteur-carte"
+            {...glisserOrdre(cible.props.id, cible.permuterAvec, 'plateau-selecteur-carte')}
             // Le clavier n'a pas de pointeur : il vise explicitement.
             onFocus={() => viser(cible.props.id)}
             onBlur={() => viser(undefined)}

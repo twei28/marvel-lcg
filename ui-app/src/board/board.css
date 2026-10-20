@@ -4899,6 +4899,31 @@
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.42);
   }
 
+  /* Un vol GROUPE (au-dela de dix cartes) : la pile fantome porte deux bords
+     decales derriere elle, et le nombre de cartes en pastille. */
+  .vol-carte.est-pile .vol-carte-geste {
+    box-shadow:
+      5px 5px 0 -1px rgba(30, 30, 40, 0.92),
+      10px 10px 0 -2px rgba(30, 30, 40, 0.8),
+      0 14px 28px rgba(0, 0, 0, 0.55);
+  }
+
+  .vol-carte-nombre {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 26px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--rouge-marvel, #e23636);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+
   .vol-carte-image {
     display: block;
     width: 100%;

@@ -12,7 +12,8 @@ describe('l’aide du mode auto', () => {
   it('sur PC : les touches du clavier et le glisser-Alt', () => {
     render(<VoletAideAuto ouvert ouvrir={rien} fermer={rien} />)
     const aide = screen.getByRole('dialog', { name: 'Aide' })
-    for (const texte of ['E  Espace', 'Alt + glisser', 'Double-clic sur le titre']) expect(aide.textContent).toContain(texte)
+    // Les touches existantes sont toutes listees (E, Espace, U, B, chiffres, Échap).
+    for (const texte of ['E  Espace', 'U', 'Copier le rapport de bug', '1 à 9', 'Choisir l’option portant ce numéro', 'Échap', 'Alt + glisser', 'Double-clic sur le titre']) expect(aide.textContent).toContain(texte)
     expect(aide.textContent).not.toContain('Languette de droite')
   })
 

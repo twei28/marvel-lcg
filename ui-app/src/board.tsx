@@ -4863,6 +4863,7 @@ export function PagePartie({
                         ordre: e.ordre,
                         ordreReculer: e.ordreReculer,
                         ordreAvancer: e.ordreAvancer,
+                        permuterAvec: e.permuterAvec,
                         assignerReste: e.assignerReste,
                         assignerResteQuantite: e.assignerResteQuantite,
                         agir: e.agir,

@@ -127,6 +127,13 @@ export type EtatInteractif = {
   /** Symetrique de `ordreReculer`, vers le voisin de rang superieur. */
   ordreAvancer?: () => void
   /**
+   * Echange cette carte avec N'IMPORTE LAQUELLE des autres cartes choisies
+   * (glisser-deposer, voir `ordre-glisser.ts`) : meme `permuterCibles` que les
+   * boutons, mais sans se limiter au voisin. Absent hors selection ordonnee
+   * ou tant que la carte n'est pas choisie.
+   */
+  permuterAvec?: (autreId: number) => void
+  /**
    * Assigne d'un coup tout ce que cette carte peut encore recevoir dans une
    * selection repetable (`cibleRepetable`), plutot qu'un clic par point.
    * Demande de l'utilisateur relayee par Yarro (28/09/2026, nice-to-have) :
@@ -184,6 +191,8 @@ export type CibleHorsTable = {
   ordreReculer?: () => void
   /** Voir `EtatInteractif.ordreAvancer`. */
   ordreAvancer?: () => void
+  /** Voir `EtatInteractif.permuterAvec`. */
+  permuterAvec?: (autreId: number) => void
   /** Voir `EtatInteractif.assignerReste`. */
   assignerReste?: () => void
   /** Voir `EtatInteractif.assignerResteQuantite`. */
@@ -962,6 +971,7 @@ export function useInteraction(
           position >= 0 && position < cibles.length - 1
             ? () => permuterCibles(cible, cibles[position + 1])
             : undefined,
+        permuterAvec: position >= 0 ? (autre) => permuterCibles(cible, autre) : undefined,
         assignerReste:
           maxParCible > 1 && peutViser && resteQuantite > 1
             ? () => assignerReste(cible, resteQuantite)
@@ -1134,6 +1144,7 @@ export function useInteraction(
           position >= 0 && position < cibles.length - 1
             ? () => permuterCibles(cible, cibles[position + 1])
             : undefined,
+        permuterAvec: position >= 0 ? (autre) => permuterCibles(cible, autre) : undefined,
         assignerReste:
           maxParCible > 1 && resteQuantite > 1 ? () => assignerReste(cible, resteQuantite) : undefined,
         assignerResteQuantite: maxParCible > 1 && resteQuantite > 1 ? resteQuantite : undefined,

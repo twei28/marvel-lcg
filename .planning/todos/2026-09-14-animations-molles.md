@@ -107,3 +107,7 @@ autrement. Non commencé.
 
 ⚠ La garde d'essai est du code TEMPORAIRE : le jour où l'utilisateur valide le
 poids et le geste à l'usage, le drapeau et ses deux branches disparaissent.
+
+## Point 5 traité le 20/10/2026
+
+Au-delà de `MAX_VOLS`, chaque groupe (pioche, mise en jeu, défausse) vole en UNE pile fantôme avec le nombre de cartes en pastille (`regrouper`, `CoucheAnimations.tsx`). La garde d'essai n'est pas retirée : l'utilisateur n'a pas validé le geste. Preuve : `ui-check/tests/animations-vol-groupe.spec.ts` (12 cartes piochées dans une vraie partie, 1 fantôme).

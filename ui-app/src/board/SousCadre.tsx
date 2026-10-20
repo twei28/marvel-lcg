@@ -28,6 +28,8 @@ import type { Option } from './ask'
 import { avecIcones, coutEnIcones, marquerRessources, ressourcesEnMots } from './icones-ressources'
 import { t } from './langue'
 import { raisonDite } from './phrase-etat'
+import { useOrdreGlisser, type PropsOrdreGlisser } from './ordre-glisser'
+import './ordre-glisser.css'
 import type { CibleVue, QuestionDuMoteur, VignetteOption, VueSousCadre } from './sous-cadre'
 
 /**
@@ -124,8 +126,22 @@ export function BoutonOption({ vignette, choisir }: { vignette: VignetteOption; 
 }
 
 /** Une cible, une carte de la main qui paie, ou un sbire a ordonner. */
-function BoutonCarte({ cible, rang, agir, couleur }: { cible: CibleVue; rang: number; agir: () => void; couleur?: string }) {
+function BoutonCarte({
+  cible,
+  rang,
+  agir,
+  couleur,
+  glisser,
+}: {
+  cible: CibleVue
+  rang: number
+  agir: () => void
+  couleur?: string
+  /** Le glisser-deposer qui permute deux cartes choisies (`ordre-glisser.ts`). */
+  glisser?: PropsOrdreGlisser
+}) {
   const classes = ['deroule-vignette', 'est-choix']
+  if (glisser) classes.push(...glisser.className.split(' ').filter((c) => c.startsWith('est-')))
   if (couleur) classes.push('est-cadre-joueur')
   if (cible.choisie) classes.push('est-choisie')
   if (cible.pulse) classes.push('est-pulse')
@@ -138,6 +154,12 @@ function BoutonCarte({ cible, rang, agir, couleur }: { cible: CibleVue; rang: nu
       aria-label={cible.nom}
       aria-pressed={cible.choisie}
       onClick={agir}
+      draggable={glisser?.draggable}
+      onDragStart={glisser?.onDragStart}
+      onDragOver={glisser?.onDragOver}
+      onDragLeave={glisser?.onDragLeave}
+      onDrop={glisser?.onDrop}
+      onDragEnd={glisser?.onDragEnd}
       style={couleur ? ({ '--couleur-joueur': couleur } as CSSProperties) : undefined}
     >
       <span className="deroule-vignette-carte">
@@ -174,6 +196,14 @@ export type SousCadreProps = {
 
 export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadreProps) {
   const i = q.interaction
+  // Demande de Yarro (28/09/2026) : permuter deux cartes a ordonner en les
+  // glissant, EN PLUS des numeros et des touches. Meme `permuterCibles` que les
+  // fleches de la table, voir `ordre-glisser.ts`.
+  const glisserOrdre = useOrdreGlisser()
+  const permuterAvecDe = (cible: CibleVue) =>
+    cible.horsTable
+      ? i.ciblesHorsTable.find((hors) => hors.props.id === String(cible.carteId))?.permuterAvec
+      : i.cartes.get(cible.carteId)?.permuterAvec
   const choisirOption = (optionId: number) => {
     const option = optionDe(q, optionId)
     if (option) q.choisirOption(option)
@@ -246,6 +276,7 @@ export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadrePr
           rang={rang + 1}
           agir={() => agirSur(cible)}
           couleur={essai ? couleurDeCarte?.(cible.carteId) : undefined}
+          glisser={glisserOrdre(String(cible.carteId), permuterAvecDe(cible), 'deroule-vignette')}
         />
       ))
       if (essai) {
