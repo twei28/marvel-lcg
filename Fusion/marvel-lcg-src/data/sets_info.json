@@ -1882,5 +1882,14 @@
   "encounters": [],
   "max_id": "se011"
  },
- "checksum": "e6c1914ae7c2e4bd9e1dddc996aa461645bb701ccae1246c9a068f5e9e7e22b9"
+ "144. Custom (Galactic Storm)": {
+  "name": "galactic_storm",
+  "scenarios": [],
+  "heroes": [
+   "binary"
+  ],
+  "encounters": [],
+  "max_id": "gs001b"
+ },
+ "checksum": "2e8aeade3c612dedf9a3e18d14ed1281c1d14207284879a8b3db82807acc9d11"
 }

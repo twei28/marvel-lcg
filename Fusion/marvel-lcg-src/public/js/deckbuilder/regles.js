@@ -408,6 +408,34 @@ function identitePourUnicite(hero, carte) {
     return heros.flatMap((t) => (alters.length ? alters : [""]).map((alt) => ({ t, s: "", alt })));
 }
 
+/** « You must include an equal number of cards with a printed [energy], [mental],
+ *  and [physical] resource in your deck » (Carol Danvers, gs001b, Galactic Storm).
+ *  Declare dans `metadata.deckbuilding.ressources_egales` : `{ couleurs: ["Y","B","R"], label }`.
+ *  On compte des CARTES (une Energy YY compte une fois en [energy]) ; une carte a deux
+ *  couleurs compte pour chacune ; le [wild] (G) ne compte pour aucune. Signatures du heros
+ *  comprises (le livret p.22 : elles sont deja equilibrees, 5/5/5). Les cartes de CAMPAGNE
+ *  ne comptent pas (FAQ du livret 1.2 p.22). Ajoute le 20/10/2026 (lot GS-1). */
+export function problemesRessourcesEgales(hero, choisies, carte, t = brut) {
+    const decl = reglesDeclarees(hero);
+    const regle = decl && decl.ressources_egales;
+    if (!regle || !Array.isArray(regle.couleurs) || regle.couleurs.length < 2) return [];
+    const compte = new Map(regle.couleurs.map((c) => [String(c).toUpperCase(), 0]));
+    const ajouter = (c, n) => {
+        if (!c) return;
+        const classe = String(c.class || (c.desc && c.desc.Class) || "");
+        if (/Campaign/i.test(classe)) return;
+        const res = String((c.desc && c.desc.RES) || "").toUpperCase();
+        for (const couleur of compte.keys()) if (res.includes(couleur)) compte.set(couleur, compte.get(couleur) + n);
+    };
+    for (const id of ((hero.deck && hero.deck.hero_deck) || [])) ajouter(carte(String(id).split(",")[0]), 1);
+    for (const [id, n] of choisies) ajouter(carte(id), n);
+    const nombres = [...compte.values()];
+    if (Math.min(...nombres) === Math.max(...nombres)) return [];
+    const NOMS = { Y: t("énergie"), B: t("mentale"), R: t("physique"), G: t("joker") };
+    return [`${t("Il faut")} ${regle.label || t("autant de cartes de chaque ressource")} — ${t("actuellement")} `
+        + [...compte].map(([c, n]) => `${NOMS[c] || c} ${n}`).join(", ")];
+}
+
 function problemesUnicite(hero, choisies, carte, t) {
     const out = [];
     const uniques = [];
@@ -653,6 +681,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     }
     if (nbStarting > 1) problemes.push(`${t("Une seule carte Starting par deck :")} ${starting.join(", ")}`);
     problemes.push(...problemesUnicite(hero, choisies, carte, t));
+    problemes.push(...problemesRessourcesEgales(hero, choisies, carte, t));
     // Autant de cartes de chaque aspect : Spider-Woman (04031b, ses deux
     // aspects) et Adam Warlock (21031b, les quatre).
     const egaux = idHeros === "spider_woman" ? 2 : idHeros === "adam_warlock" ? 4 : 0;

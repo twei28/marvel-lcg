@@ -52,6 +52,8 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   dh_ghostspider: ['01088_dh_ghostspider', '01089_dh_ghostspider', '01090_dh_ghostspider'],
   // Collection fan-made « ekAugust », livree avec le pack Jessica Jones (73xxx).
   ekaug_jj: ['01088_ekaug_jj', '01089_ekaug_jj', '01090_ekaug_jj'],
+  // Collection « Kajislav », livree avec le heros Binary (Galactic Storm, gs001, 20/10/2026).
+  binary: ['01088_binary', '01089_binary', '01090_binary'],
   // Reeditions d'extension (art different, vrais codes de carte).
   // Sinister Motives (27020-22) est exclu : meme visuel que le jeu de base.
   mutant: ['32022', '32023', '32024'],

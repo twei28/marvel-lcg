@@ -38,6 +38,17 @@
     "TMNT Shinobi Dual",
     "TMNT Shinobi Paths"
    ]
+  },
+  "binary": {
+   "nom": "Binary (Kajislav)",
+   "nom_en": "Binary (Kajislav)",
+   "heros_cartes": [
+    "gs001"
+   ],
+   "heros_ids": [
+    "binary"
+   ],
+   "sets_exclusifs": []
   }
  },
  "cartes": {
@@ -173,7 +184,8 @@
   ],
   "49022": [
    "tmnt",
-   "mcdc26"
+   "mcdc26",
+   "binary"
   ],
   "50058": [
    "tmnt"
@@ -183,10 +195,12 @@
    "mcdc26"
   ],
   "54016": [
-   "tmnt"
+   "tmnt",
+   "binary"
   ],
   "56013": [
-   "tmnt"
+   "tmnt",
+   "binary"
   ],
   "56046": [
    "tmnt"
@@ -322,6 +336,54 @@
   ],
   "27016": [
    "mcdc26"
+  ],
+  "43035": [
+   "binary"
+  ],
+  "16045": [
+   "binary"
+  ],
+  "43018": [
+   "binary"
+  ],
+  "42023": [
+   "binary"
+  ],
+  "43037": [
+   "binary"
+  ],
+  "06017": [
+   "binary"
+  ],
+  "16024": [
+   "binary"
+  ],
+  "41019": [
+   "binary"
+  ],
+  "33032": [
+   "binary"
+  ],
+  "43036": [
+   "binary"
+  ],
+  "13013": [
+   "binary"
+  ],
+  "12030": [
+   "binary"
+  ],
+  "43034": [
+   "binary"
+  ],
+  "40204": [
+   "binary"
+  ],
+  "01084": [
+   "binary"
+  ],
+  "43021": [
+   "binary"
   ]
  }
 }

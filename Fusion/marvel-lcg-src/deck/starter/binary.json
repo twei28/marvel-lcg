@@ -1,0 +1,76 @@
+{
+    "version": "0.5.8",
+    "name": "Binary",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aspect AGRESSIVITE, donne par l'auteur : liste « Starter Deck » imprimee dans le zip (Hero Packs/Binary/Extra/starter deck Binary.png), recopiee telle quelle (PROCESSUS-HEROS etape 3). Les cartes d'aspect et basiques de la liste sont les cartes OFFICIELLES (l'auteur en fournit des arts redessines, branches en arts alternatifs `binary`). Comptes par couleur imprimee : 9 [energy] / 9 [mental] / 9 [physical], la regle de Carol Danvers est tenue.",
+        "hero_deck_note": "La liste imprimee ecrit « 10 Energy Conversion » SANS « x2 », mais le pack fournit deux exemplaires (bandeaux BINARY 13/15 et 14/15) et le livret p.21 dit « Energy Conversion (x2) » : 15 cartes signature, comme le bandeau n/15.",
+        "linked_note": "Specialized Training (43021) met de cote ses quatre SPECIALIZATION (43034-43037, Linked) : mecanique officielle deja portee, rien a ajouter ici.",
+        "deckbuilding": {
+            "ressources_egales": {
+                "couleurs": ["Y", "B", "R"],
+                "label": "autant de cartes à ressource imprimée [énergie], [mentale] et [physique] (Carol Danvers)"
+            }
+        }
+    },
+    "hero": [
+        "gs001a,gs001b"
+    ],
+    "hero_deck": [
+        "gs002",
+        "gs002",
+        "gs003",
+        "gs003",
+        "gs004",
+        "gs004",
+        "gs005",
+        "gs005",
+        "gs006",
+        "gs007",
+        "gs008",
+        "gs009",
+        "gs010",
+        "gs010",
+        "gs011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "gs031"
+    ],
+    "nemesis_set": [
+        "gs032",
+        "gs239",
+        "gs237",
+        "gs240",
+        "gs240"
+    ],
+    "player_deck": [
+        "13013",
+        "13013",
+        "12030",
+        "12030",
+        "54016",
+        "54016",
+        "54016",
+        "43018",
+        "06017",
+        "56013",
+        "16045",
+        "16045",
+        "16045",
+        "33032",
+        "33032",
+        "41019",
+        "41019",
+        "49022",
+        "40204",
+        "01084",
+        "43021",
+        "01088",
+        "01089",
+        "01090",
+        "01091",
+        "16024",
+        "42023"
+    ]
+}

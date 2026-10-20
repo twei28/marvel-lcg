@@ -4,6 +4,13 @@
 
 export const DICO_EN_DECKBUILDER = {
     "ARTS": "ARTS",
+    // Regle declaree `ressources_egales` (Carol Danvers, Galactic Storm, 20/10/2026).
+    "Il faut": "Required:",
+    "autant de cartes de chaque ressource": "the same number of cards of each resource",
+    "énergie": "energy",
+    "mentale": "mental",
+    "physique": "physical",
+    "joker": "wild",
     "Cartes réservées aux héros TMNT :": "Cards reserved to TMNT heroes:",
     "Illustration officielle": "Official artwork",
     "Illustration": "Artwork",

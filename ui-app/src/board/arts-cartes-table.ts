@@ -20,6 +20,9 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "01081": [
     "tmnt"
   ],
+  "01084": [
+    "binary"
+  ],
   "03017": [
     "mcdc26"
   ],
@@ -35,6 +38,9 @@ export const ARTS_CARTES: Record<string, string[]> = {
   ],
   "05033": [
     "tmnt"
+  ],
+  "06017": [
+    "binary"
   ],
   "06031": [
     "tmnt"
@@ -55,6 +61,12 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "10031": [
     "mcdc26"
   ],
+  "12030": [
+    "binary"
+  ],
+  "13013": [
+    "binary"
+  ],
   "13016": [
     "mcdc26"
   ],
@@ -67,8 +79,14 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "15019": [
     "tmnt"
   ],
+  "16024": [
+    "binary"
+  ],
   "16043": [
     "tmnt"
+  ],
+  "16045": [
+    "binary"
   ],
   "17028": [
     "mcdc26"
@@ -149,6 +167,9 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "32041": [
     "mcdc26"
   ],
+  "33032": [
+    "binary"
+  ],
   "35014": [
     "mcdc26"
   ],
@@ -161,14 +182,41 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "40060": [
     "tmnt"
   ],
+  "40204": [
+    "binary"
+  ],
   "41012": [
     "mcdc26"
   ],
   "41017": [
     "tmnt"
   ],
+  "41019": [
+    "binary"
+  ],
+  "42023": [
+    "binary"
+  ],
+  "43018": [
+    "binary"
+  ],
   "43019": [
     "tmnt"
+  ],
+  "43021": [
+    "binary"
+  ],
+  "43034": [
+    "binary"
+  ],
+  "43035": [
+    "binary"
+  ],
+  "43036": [
+    "binary"
+  ],
+  "43037": [
+    "binary"
   ],
   "45016": [
     "tmnt",
@@ -206,7 +254,8 @@ export const ARTS_CARTES: Record<string, string[]> = {
   ],
   "49022": [
     "tmnt",
-    "mcdc26"
+    "mcdc26",
+    "binary"
   ],
   "50058": [
     "tmnt"
@@ -219,10 +268,12 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "mcdc26"
   ],
   "54016": [
-    "tmnt"
+    "tmnt",
+    "binary"
   ],
   "56013": [
-    "tmnt"
+    "tmnt",
+    "binary"
   ],
   "56046": [
     "tmnt"
@@ -291,8 +342,10 @@ export const ORIGINES_CARTES: Record<string, string> = {
   "03016": "01071",
   "04041": "01057",
   "04046": "01065",
+  "08019": "01084",
   "14016": "01081",
   "15017": "01065",
+  "16042": "13013",
   "18017": "01057",
   "21045": "01057",
   "21049": "01060",
@@ -302,20 +355,24 @@ export const ORIGINES_CARTES: Record<string, string> = {
   "21063": "01081",
   "22019": "01065",
   "23020": "01071",
+  "25016": "06017",
   "25017": "01057",
   "34024": "05033",
   "36026": "05023",
   "37017": "32019",
   "38013": "09020",
   "40055": "30019",
+  "43017": "12030",
   "43027": "05023",
   "45046": "18012",
   "48017": "32014",
+  "49023": "16024",
   "50053": "06031",
   "56014": "46014",
   "56015": "19030",
   "59027": "31023",
-  "60051": "32014"
+  "60051": "32014",
+  "ma026": "12030"
 }
 
 export type SerieArt = {
@@ -365,5 +422,16 @@ export const SERIES_ARTS: Record<string, SerieArt> = {
       "TMNT Shinobi Dual",
       "TMNT Shinobi Paths"
     ]
+  },
+  "binary": {
+    "nom": "Binary (Kajislav)",
+    "nom_en": "Binary (Kajislav)",
+    "heros_cartes": [
+      "gs001"
+    ],
+    "heros_ids": [
+      "binary"
+    ],
+    "sets_exclusifs": []
   }
 }
