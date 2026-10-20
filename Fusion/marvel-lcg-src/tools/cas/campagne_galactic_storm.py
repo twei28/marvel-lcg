@@ -39,6 +39,19 @@ CAS = [
        "« When the villain attacks you, it attacks Rick Jones instead » : ReplaceTarget avant resolution",
        en_jeu("gs224") + ["Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
        {"degats_identite": 0, "hors_jeu": ["gs224"]}),
+    # ============================================================ gs226 Lauri-Ell
+    # ⚠ Substitution NON concluante (meme famille que gs224, rouges 0/1) : aucune commande `Puzzle.*` ne
+    # permet de donner a un ennemi une carte boost FACE CACHEE HORS activation (le seul chemin existant,
+    # `CanBoost.GiveFacedownBoostCardsInternal`, est reserve a des cartes comme `fne/kingpin/60165` James
+    # Wesley, pas reproductibles simplement via Puzzle) : sans pile de boost a vider, ce cas ne mesure que
+    # « l'attaque se deroule normalement », vrai avec ou sans le module. Le retrait reel d'une pile non
+    # vide (`components.boostable.GetDeck()` + `Faces.DiscardAll`) reste verifie par relecture de code
+    # (memes appels que `fne/kingpin/60165`), PAS par un cas qui la monte en jeu — a reprendre si on trouve
+    # un chemin Puzzle pour seeder une pile de boost HORS activation.
+    _c("gs226 Lauri-Ell : apres avoir attaque et blesse un ennemi, la Reponse part sans planter (pile de boost vide)",
+       "« Response: After Lauri-Ell attacks and damages an enemy, discard each boost card on that enemy »",
+       en_jeu("gs226") + ["Puzzle.PutIntoPlay('01101')"], ["Puzzle.Attack('gs226')"],
+       {"degats": [["01101", 2]], "en_jeu": ["gs226", "01101"]}),
     # ============================================================ gs225 Gladiator
     _c("gs225 Gladiator : apres l'avoir joue depuis la main, un sbire est vaincu",
        "« After you play Gladiator from your hand, defeat a minion »",
@@ -97,6 +110,23 @@ CAS = [
                           "Puzzle.PutIntoPlay('01018')", "Puzzle.Exhaust('01018')"],
        ["Puzzle.Discard('gs233')"],
        {"pret": ["01018"]}, accepter_choix=True),
+    # ============================================================ gs234 Sersi
+    _c("gs234 Sersi : Action, remplace Sonne par Desoriente sur un sbire",
+       "« Action: Exhaust Sersi, deal 1 damage to her, and spend a [mental] resource -> choose a status "
+       "card in play. Replace that status card with a different status card »",
+       en_jeu("gs234") + ["Puzzle.PutIntoPlay('01101')", "Puzzle.Stun('01101')"],
+       ["Puzzle.Action('gs234', 'Action')"],
+       {"statuts": [["01101", "Confused"]], "statuts_absents": [["01101", "Stunned"]],
+        "exhausted": ["gs234"], "degats": [["gs234", 1]]},
+       main_exclusive=["01089"], accepter_choix=True, choisir_option=["Confused"]),
+    # ============================================================ gs235 Spider-Woman
+    _c("gs235 Spider-Woman : defaussee de son deck, etourdit jusqu'a 2 ennemis",
+       "« Response: After Spider-Woman is discarded from the top of your deck, stun up to 2 enemies »",
+       ["Puzzle.PutIntoPlay('01101')", "Puzzle.PutIntoPlay('01103')",
+        "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('gs235')"],
+       ["Puzzle.Discard('gs235')"],
+       {"statuts": [["01101", "Stunned"], ["01103", "Stunned"]]},
+       accepter_choix=True, cibles=["01101", "01103"]),
     # ============================================================ gs236 Thor
     _c("gs236 Thor : apres l'avoir joue depuis la main, 1 degat par [energy] paye a chaque sbire engage",
        "« deal 1 damage to each minion engaged with you for each [energy] resource you used to pay for him »",
