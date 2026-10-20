@@ -74,3 +74,47 @@
 .carte-apercu.au-dessus-de-la-fenetre {
   z-index: 710;
 }
+
+/* Le bandeau colle (fiche du 07/10/2026) : le panneau d'action est le haut du selecteur de cibles, meme largeur,
+   aucun ecart ; la poignee du texte (ou celle de l'entete) deplace l'ensemble. */
+.plateau-selecteur.avec-bandeau {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.plateau-selecteur-bandeau {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 10px 14px;
+  background: rgba(24, 28, 38, 0.98);
+  border-bottom: 1px solid rgba(240, 185, 95, 0.55);
+}
+
+.plateau-selecteur-bandeau-texte {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.plateau-selecteur-bandeau-texte strong {
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.plateau-selecteur-bandeau .plateau-selecteur-boutons {
+  padding: 0;
+}
+
+.plateau-selecteur.avec-bandeau .plateau-selecteur-entete {
+  padding: 10px 14px 0;
+}
+
+.plateau-selecteur.avec-bandeau .plateau-selecteur-cartes {
+  padding: 8px 14px 12px;
+}
