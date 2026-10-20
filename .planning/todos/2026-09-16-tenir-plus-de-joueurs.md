@@ -329,3 +329,87 @@ passage par le plateau (étape 8 bis de PROCESSUS-CARTE).
 Note du 06/10/2026 : `outils/charge-serveur.py` appelle maintenant `/get_world` (la vraie charge) ET
 `/get_partie_en_cours` (petite fiche, uniquement pour détecter la fin de partie et enchaîner la
 suivante). Non rejoué depuis la correction.
+
+## Backlog 22, 20/10/2026 : banc rejoué, profil refait AVEC `/get_world`, deux gains exacts
+
+### Le banc de charge, rejoué en local : chiffres inexploitables, et pourquoi
+
+Le banc (`outils/charge-serveur.py`) est fait pour le serveur ; il est interdit d'y toucher. Il a été
+rejoué sur la machine de développement (8 cœurs), avec deux ajouts au script : `PYTHON_JEU` (choisir
+l'interpréteur) et `cpu_tables_s` (temps CPU cumulé des moteurs, lu dans `/proc/<pid>/stat`).
+
+    RACINE_JEU="$PWD/Fusion/marvel-lcg-src" PYTHON_JEU=<python3.10 du .venv-linux> PLACE_DEPART=101 \
+      python3.10 outils/charge-serveur.py --tables 8 --palier 4 --palier-s 120 --tenue-s 240 \
+      --site-max-ms 1000000 --sortie <fichier.jsonl>
+
+(`--site-max-ms` relevé : il n'y a pas de site sur la machine de développement, la sonde rend
+10 000 ms et le garde-fou arrêterait tout.)
+
+⚠ **La machine était partagée avec d'autres sessions : charge moyenne de 45 à 97 pendant les
+mesures**, ports 2454 et 2457 pris par d'autres serveurs. Des tables n'ont jamais démarré (240 s
+d'attente dépassées), d'autres sont mortes sur « port indisponible ». Les latences et le nombre de
+tables tenues NE SONT PAS des mesures du moteur, et ne sont pas reportés comme tels. Seul chiffre
+utilisable : le **temps CPU par coup joué**, ~0,58 s (avant) pendant la tenue à 7 tables, création
+de parties comprise. Un banc A/B (ancien moteur recopié, places 201+, et nouveau, places 301+,
+lancés en même temps) a donné 0,68 s → 0,57 s par coup (−16 %), sur trop peu de coups (127 et 87)
+pour valoir plus qu'une tendance.
+
+**Le chiffre de référence « joueurs tenus » reste à prendre sur le serveur**, hors heures de jeu,
+avec les bots sur une autre machine (piste 4 plus haut).
+
+### Le banc du descripteur (nouveau, déterministe)
+
+`outils/banc-descripteur.py` joue une partie complète dans un processus, au pilote d'autoplay (graine
+fixée), et simule à chaque rendu `/get_world` pour deux clients (siège partagé, et siège 0 masqué).
+Modes `temps`, `profil` (cProfile), `empreinte` (sha256 par rendu du JSON servi et du dictionnaire
+enregistré, plus un contrôle strict type par type). Deux passes « avant » sur 5 parties
+(3853 rendus) : empreintes identiques, le banc est rejouable.
+
+**Profil (Spider-Man contre Rhino, graine 1, 1097 rendus, 10 rounds), temps CPU** :
+
+| Poste | Part du CPU de la table |
+|---|---|
+| `dataclasses.asdict` (enregistrement + masque) | **31 %** |
+| Construction du descripteur (`ToDescriptor.World`) | 27 % |
+| JSON + gzip niveau 9 de `/get_world` (deux clients) | ~28 % |
+| Logique de jeu, pilote, reste | ~14 % |
+
+Dans la construction : paquet rencontre 28 %, paquet joueur 19 %, défausse joueur 13 %, défausse
+rencontre 10 %, mises de côté 6 %, tout le reste 24 %. Le rendu a un EFFET DE BORD :
+`GetRenderInfo` recalcule `face.crc`.
+
+### Fait : deux gains EXACTS (rien ne change de ce que reçoivent les joueurs)
+
+Les trois pistes de septembre (décompte seul, version par pile, cache par carte) ne sont PAS faites :
+la première change le descripteur (le plateau lit le contenu des paquets), les deux autres ont une
+invalidation incertaine. Questions en multichoix : `.planning/todos/2026-10-20-backlog-22-questions.md`.
+
+1. **`asdict_rapide`** (`src/engine/lib/en_dict.py`) remplace `dataclasses.asdict` pour
+   l'enregistrement « Revoir sa partie » (`world_render.py`) et pour `/get_world`. Même algorithme
+   que la bibliothèque standard, sans le `copy.deepcopy` appelé sur chaque entier et chaque chaîne.
+   **7,1 → 1,7 ms** par conversion (deux héros), ×4.
+2. **Masque en une passe** (`asdict_masque`, même fichier ; `server_sync.py`) : la conversion et le
+   masque des cartes cachées se font ensemble, au lieu d'une copie complète puis d'un second parcours
+   Python. **6,9 → 2,0 ms** par client et par trame (deux héros), ×3,4.
+
+**Mesure avant/après entrelacée** (référence et nouvelle version lancées en même temps, médiane de
+3 paires, temps CPU d'une partie entière, Spider-Man contre Rhino graine 1) :
+
+| | Avant | Après |
+|---|---|---|
+| CPU de la partie | 34,6 s | **28,4 s (−18 %)** |
+| Rendu (construction + enregistrement) | 15,4 s | 12,5 s |
+| `/get_world`, deux clients | 15,6 s | 12,0 s |
+
+Par client masqué et par trame, une table à deux héros passe de ~14 ms à ~9 ms ; le gain grandit
+avec le nombre de clients.
+
+**Preuves d'équivalence** : 5 parties à graine fixe (solo et deux héros, 5 vilains), 3853 rendus,
+JSON servi (non masqué et masqué) et dictionnaire enregistré identiques octet pour octet à l'avant ;
+contrôle strict type par type d'`asdict_rapide` contre `dataclasses.asdict` et du masque en une passe
+contre l'ancien code recopié, pour les sièges {0}, {1} et {7} : 3853/3853. `test_capacites` filtré
+(`ho0` 26/26, `[dazed` 48/48, `[cloak` 17/17), `test_mode_manuel` vert, `test_cards` ok=6810
+err=0, `verifier_prefixes` OK.
+
+**Ce qui coûte encore, par trame** : construction ~9 ms (solo) à ~15 ms (deux héros) ; par client,
+gzip niveau 9 ~3 à 6 ms (question Q4 : niveau 6, ~2 ms de moins par client, contenu identique).
