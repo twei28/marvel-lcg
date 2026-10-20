@@ -60,8 +60,7 @@ Le dossier **`livraison/`** de l'IA, tel quel (avec `MANIFESTE.md`, `QUESTIONS.m
 ## Ce que le vérificateur dit des modèles eux-mêmes (calibrage)
 
 `python3 verifier-livraison-campagne.py modeles/A-officielle-the-mad-titans-shadow/livraison --officiel` → **0 erreur**.
-`python3 verifier-livraison-campagne.py modeles/B-maison-web-of-deceit/livraison` → **1 erreur, et elle est vraie** :
-la campagne Web of Deceit n'a **aucun texte français** dans le jeu (manque connu, voir le §13.2 du manuel).
+`python3 verifier-livraison-campagne.py modeles/B-maison-web-of-deceit/livraison` → **0 erreur**.
 Les avertissements des deux modèles sont de vrais doutes (liste vide justifiée par un commentaire, `name` de set en
 minuscules, épreuves sans test de l'estampille…) : un avertissement n'est jamais « sans importance », il s'explique.
 

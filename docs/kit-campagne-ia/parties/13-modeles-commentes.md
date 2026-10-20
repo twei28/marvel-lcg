@@ -56,8 +56,7 @@ vraies images et pages de livret, pour fixer les formats) et `README.md`.
   mécanique inédite peut se ramener à un mécanisme existant : on l'écrit, on n'invente pas.**
 * **Un vilain qui se retourne au lieu d'être vaincu** (Shocker), des
   environnements mis de côté qui entrent en jeu par un effet (`set_aside` : « Vote for Fisk », « The Great Web »).
-* **Ce que ce modèle n'a PAS (et qu'il faut avoir)** : **aucun texte français** (`textes-fr-fanmade.ts` ne contient
-  aucune entrée `wd…`) ; **pas de collecteur** (donc pas d'estampille à tester) ; la `custom` y est bien.
+* **Ce que ce modèle n'a PAS (et qu'il faut avoir)** : **pas de collecteur** (donc pas d'estampille à tester) ; la `custom` y est bien.
 
 Le **journal de portage** complet (`annexes/G-journal-portage-web-of-deceit.md`, 1 500 lignes) est le meilleur
 récit de ce qu'une campagne maison demande : inventaire du Drive, croisement avec l'existant, scénario par

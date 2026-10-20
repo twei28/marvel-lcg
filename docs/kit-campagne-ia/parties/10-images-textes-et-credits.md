@@ -50,8 +50,7 @@ exemplaires en double** (recopie le même texte), au format exact du fichier :
   '<card_id>': "texte français avec <b>balises</b>, [star], [[TRAIT]]…",
 ```
 
-**Entrées réelles de Hunting Season** (modèle de forme ; le pack Web of Deceit n'a pas encore ses textes
-français : c'est un manque connu) :
+**Entrées réelles de Hunting Season** (modèle de forme ; Web of Deceit a aussi ses 176 entrées `wd…`) :
 {{TEXTESFR:hs|6}}
 
 **Vocabulaire officiel (Guide de référence v1.8 FR) — la gate `vocabulaire-statuts.test.ts` échoue sinon :**

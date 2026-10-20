@@ -291,7 +291,7 @@ class HeroDescriptor:
 | faces listées dans `hero` | 2 : 144, 3 : 5, 5 : 2, 6 : 1 |
 | héros dont la face héros porte `custom` (fan-made ; `cards.json` + `cards_custom.json`) | 79 |
 | decks qui sont des **variantes** (`variante_de`) | 2 |
-| clés de `metadata` les plus courantes | `url` ×152, `deck_note` ×53, `collision_note` ×25, `nemesis_note` ×16, `author` ×15, `aspect_note` ×12, `auteur` ×12, `note` ×11 |
+| clés de `metadata` les plus courantes | `url` ×152, `author` ×68, `deck_note` ×53, `collision_note` ×25, `nemesis_note` ×16, `aspect_note` ×12, `auteur` ×12, `note` ×11 |
 
 ### 2.4 Ce qui existe en plus, et que tu ne produis pas
 
@@ -873,6 +873,7 @@ Les deux exemples réels, côté métadonnées seulement :
 
 ```json
     "metadata": {
+        "author": "DesignHacker",
         "url": "https://drive.google.com/drive/folders/10dzfME7sX4EDR5CbjsI48X3hAzZVUv5w",
         "hero_alts": [
             {

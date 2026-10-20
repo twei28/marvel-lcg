@@ -5104,8 +5104,7 @@ exemplaires en double** (recopie le même texte), au format exact du fichier :
   '<card_id>': "texte français avec <b>balises</b>, [star], [[TRAIT]]…",
 ```
 
-**Entrées réelles de Hunting Season** (modèle de forme ; le pack Web of Deceit n'a pas encore ses textes
-français : c'est un manque connu) :
+**Entrées réelles de Hunting Season** (modèle de forme ; Web of Deceit a aussi ses 176 entrées `wd…`) :
 ```typescript
   // hunting_season — Vermin (Villain)
   'hs001': "[star] <b>Réponse forcée</b> : après que Vermin s'est activé contre vous, défaussez la carte du dessus du deck Rencontre. Si un sbire [[RAT]] a été défaussé de cette façon, mettez-le en jeu engagé avec vous.",
@@ -6122,7 +6121,7 @@ vraies images et pages de livret, pour fixer les formats) et `README.md`.
 | Scénarios | 12 fichiers : `wd_electro`, `wd_electro_expert`, `wd_kingpin`, `wd_kingpin_expert`, `wd_shocker`, `wd_shocker_expert`, `wd_the_lizard`, `wd_the_lizard_expert`, `wd_vulture`, `wd_vulture_expert`, `wd_vulture_underling`, `wd_vulture_underling_expert` |
 | Sets de rencontre propres au pack | 11 : `bodyguard`, `city_sewers`, `crime_wave`, `electro`, `kingpin`, `kraven_the_hunter`, `power_drain_ii`, `shocker`, `the_lizard`, `underling`, `vulture` |
 | Scripts de cartes | **164** fichiers dans 12 dossiers de set |
-| Textes français | **aucune entrée** (manque connu) |
+| Textes français | 176 entrées |
 | Épreuves de boucle | 4 |
 
 **Ce qu'il faut y voir :**
@@ -6141,8 +6140,7 @@ vraies images et pages de livret, pour fixer les formats) et `README.md`.
   mécanique inédite peut se ramener à un mécanisme existant : on l'écrit, on n'invente pas.**
 * **Un vilain qui se retourne au lieu d'être vaincu** (Shocker), des
   environnements mis de côté qui entrent en jeu par un effet (`set_aside` : « Vote for Fisk », « The Great Web »).
-* **Ce que ce modèle n'a PAS (et qu'il faut avoir)** : **aucun texte français** (`textes-fr-fanmade.ts` ne contient
-  aucune entrée `wd…`) ; **pas de collecteur** (donc pas d'estampille à tester) ; la `custom` y est bien.
+* **Ce que ce modèle n'a PAS (et qu'il faut avoir)** : **pas de collecteur** (donc pas d'estampille à tester) ; la `custom` y est bien.
 
 Le **journal de portage** complet (`annexes/G-journal-portage-web-of-deceit.md`, 1 500 lignes) est le meilleur
 récit de ce qu'une campagne maison demande : inventaire du Drive, croisement avec l'existant, scénario par
@@ -6158,7 +6156,7 @@ scénario, **trois écarts assumés** par lot, mesures. Lis au moins les §7 à 
 | Sets de rencontre propres au pack | 4 : `hs_feral_instincts`, `hs_lizard_thralls`, `hs_red_vulture`, `hs_savage_six` |
 | Scripts de cartes | **239** fichiers dans 14 dossiers de set |
 | Textes français | 239 entrées |
-| Épreuves de boucle | 17 |
+| Épreuves de boucle | 19 |
 
 Le dossier `modeles/C-livraison-exemple-hunting-season/` contient ce que Claude a **reçu** de l'IA de Nugget :
 
