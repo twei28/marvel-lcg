@@ -913,6 +913,15 @@
   "encounters": [],
   "max_id": "62037"
  },
+ "64. Iron Fist": {
+  "name": "iron_fist",
+  "scenarios": [],
+  "heroes": [
+   "iron_fist"
+  ],
+  "encounters": [],
+  "max_id": "64012"
+ },
  "99. Custom (Rainy)": {
   "name": "rainy",
   "scenarios": [],
@@ -1873,5 +1882,5 @@
   "encounters": [],
   "max_id": "se011"
  },
- "checksum": "3be616ffc00565664543aaac385546d370588e923e68f96272457d3215b86e21"
+ "checksum": "e6c1914ae7c2e4bd9e1dddc996aa461645bb701ccae1246c9a068f5e9e7e22b9"
 }

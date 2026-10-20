@@ -241,6 +241,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "OATH", "SENPAI",
         # Les Paths Shinobi (se001-se011) impriment leur(s) type(s) Shinobi en ligne de traits.
         "BUSHIDO", "KUJI-KIRI", "NINJUTSU", "TAIJUTSU",
+        # AJOUT (20/10/2026) : pack officiel Iron Fist (MC64EN). « K'UN-LUN » est imprime sur le
+        # heros 64001a, Lei Kung 64006 et Book of the Iron Fist 64007. Les autres traits du pack
+        # (DEFENDER, MARTIAL ARTIST, TECHNIQUE, PERSONA, SKILL, SUPERPOWER, ITEM...) existaient deja.
+        # Declaratif a l'execution, comme les autres.
+        "K'UN-LUN",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

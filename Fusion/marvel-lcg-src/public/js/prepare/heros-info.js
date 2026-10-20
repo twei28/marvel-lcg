@@ -37,6 +37,19 @@ export const HEROS_INFO = {
         apparition: "Luke Cage, Hero for Hire #1 (1972)",
     },
 
+    "64001a": {
+        bio: "Enfant, Danny Rand perd ses parents dans l'Himalaya, sur la route de K'un-Lun, la cité mystique qui n'apparaît sur Terre qu'une fois tous les dix ans. Recueilli et formé aux arts martiaux par Lei Kung le Tonnerre, il affronte le dragon Shou-Lao et plonge les poings dans son cœur en fusion : il devient l'Iron Fist, capable de concentrer son chi en un poing aussi dur que l'acier. Revenu à New York, héritier de la Rand Corporation, il fonde les Héros à louer avec Luke Cage, son meilleur ami.",
+        bioEn: "As a child, Danny Rand loses his parents in the Himalayas, on the road to K'un-Lun, the mystical city that appears on Earth only once every ten years. Taken in and trained in the martial arts by Lei Kung the Thunderer, he faces the dragon Shou-Lao and plunges his fists into its molten heart: he becomes the Iron Fist, able to focus his chi into a fist as hard as steel. Back in New York, heir to the Rand Corporation, he founds Heroes for Hire with Luke Cage, his best friend.",
+        civil: "Daniel « Danny » Rand",
+        civilEn: "Daniel \"Danny\" Rand",
+        base: "New York",
+        equipes: "Héros à louer, Défenseurs, Vengeurs",
+        equipesEn: "Heroes for Hire, Defenders, Avengers",
+        ennemis: "Steel Serpent, la Main",
+        ennemisEn: "Steel Serpent, the Hand",
+        apparition: "Marvel Premiere #15 (1974)",
+    },
+
     "kb001a": {
         bio: "Fille d'un riche homme d'affaires new-yorkais, Kate Bishop n'a aucun pouvoir : seulement un arc, une discipline de fer et un culot à toute épreuve. Elle rejoint les Jeunes Vengeurs alors que Clint Barton passe pour mort, et c'est lui, de retour, qui lui laisse le nom de Hawkeye. Partenaire de Clint, patronne des Vengeurs de la côte Ouest, détective à Los Angeles à ses heures, elle est la preuve qu'on peut tenir tête à un dieu avec des flèches et une grande gueule.",
         bioEn: "Daughter of a wealthy New York businessman, Kate Bishop has no powers: just a bow, iron discipline and boundless nerve. She joins the Young Avengers while Clint Barton is believed dead, and it is Clint himself, once back, who lets her keep the name Hawkeye. Clint's partner, boss of the West Coast Avengers, part-time detective in Los Angeles, she is living proof that you can stand up to a god with arrows and a big mouth.",

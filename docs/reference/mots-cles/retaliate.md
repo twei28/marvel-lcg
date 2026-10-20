@@ -42,6 +42,14 @@ elle a un script (`AbilityFactory.GiveKeywordToAttached`), mais ce script
 code sa capacité d'ATTACHEMENT (donner Defense 1 et Retaliate 1 à
 Captain America), pas le mot-clé Retaliate en tant que tel.
 
+**Retaliate X à valeur dynamique** (officiel, `64009` Embody the Dragon, Iron
+Fist MC64EN : « Iron Fist gains retaliate X, where X is equal to the number of chi
+counters on this card ») : `GiveKeywordToInPlayWhenApplyThis(Hero,
+control_by="You", retaliate=1, get_new_value=<compteurs de la carte>,
+change_on_event=OnEvent.Counter("This", 'chi'))`. La valeur est relue à chaque
+pose/retrait de compteur ; « Iron Fist » est le NOM de la face héros, donc pas de
+riposte pour l'alter ego (contre-cas `[iron_fist] 64009`).
+
 **Variantes maison** : aucune recensée pour l'instant.
 
 
