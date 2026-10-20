@@ -921,4 +921,36 @@ CAS = [
        [*en_jeu("dz014")], ["Puzzle.Action('dz014', 'AlterEgoAction')"],
        {"rendu_sous": [["dz014", "dz004", False]]},
        main_exclusive=["dz004", "01088"], verifier="dz_rendu"),
+    # ============================================================ reponses du 20/10/2026 (Q1 a Q5)
+    _c("dz012 Too Good to be True : Showtime!, le JOUEUR choisit les 3 cartes de la defausse (Q1)",
+       "decision utilisateur Q1 (20/10/2026) : le joueur choisit. Defausse de 4 (dessus = Energy 01088) ; le joueur "
+       "prend Tenacity, Helicarrier et Surveillance Team : Energy, la carte du DESSUS, reste en defausse "
+       "(l'ancien module prenait les 3 du dessus). Deck : 1 (main_exclusive prend un 01090 du deck) + 3 = 4",
+       [HEROINE, SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090')", *dans_setlist("dz012")],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('01093', '01092', '01064', '01088')", REPETER],
+       {"deck_joueur_taille": [[0, 4]], "defausse": ["01088"]},
+       main_exclusive=["01090"], verifier="dz_etat",
+       choisir_option=["Tenacity", "Helicarrier", "Surveillance_Team"]),
+    _c("dz021 Solid Sound Body : contre le scenario Klaw, le vilain Klaw gagne aussi +10 PV (Q3)",
+       "decision utilisateur Q3 (20/10/2026) : tout Klaw en jeu, donc le vilain Klaw du scenario (01113, "
+       "12 -> 22). Le sbire nemesis (dz020, « * Klaw », unique) ne peut PAS entrer en jeu a cote du vilain "
+       "« * Klaw » : le moteur refuse deux cartes uniques de meme titre (constate ici, dz020 reste hors jeu) ; "
+       "la carte de boost du When Defeated va au premier Klaw trouve",
+       [*en_jeu("dz020", "dz021")], [],
+       {"pv_max": [["01113", 22]], "hors_jeu": ["dz020"]},
+       scenario="klaw", main_exclusive=["01088"]),
+    _c("dz035 Karaoke Night : la Hero Action a COUT de Song of Leadership se paie (allie incline puis soigne) (Q5)",
+       "decision utilisateur Q5 (20/10/2026) : le cout se paie. Song of Leadership dans la Setlist, Jessica Jones "
+       "blessee de 2, 1 chanson en defausse : Karaoke Night -> l'allie est incline puis soigne de 1",
+       [HEROINE, *en_jeu("dz035", "01059"), "Puzzle.Damage('01059', 2)", *dans_setlist("dz026")],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('dz007')", "Puzzle.Action('dz035', 'Action')"],
+       {"exhausted": ["01059", "dz035"], "degats": [["01059", 1]], "setlist": []},
+       main_exclusive=["01088"], verifier="dz_etat"),
+    _c("dz035 Karaoke Night : sans allie pret, Song of Leadership n'est pas proposee (Q5)",
+       "decision utilisateur Q5 : le cout « Exhaust an ally » impayable -> ce choix n'est pas propose ; seule "
+       "chanson de la Setlist, l'Action n'est pas offerte et la chanson reste",
+       [HEROINE, *en_jeu("dz035", "01059"), "Puzzle.Exhaust('01059')", *dans_setlist("dz026")], [],
+       {"pret": ["dz035"], "setlist": ["dz026"]},
+       main_exclusive=["01088"], verifier="dz_etat",
+       declencher_tolerant=["Puzzle.Action('dz035', 'Action')"]),
 ]

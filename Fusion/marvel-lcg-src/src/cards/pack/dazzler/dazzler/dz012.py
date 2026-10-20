@@ -35,12 +35,25 @@ def GetAbilities() -> Sequence['Ability']:
         if joueur is None:
             return
 
-        # « 3 cards from your discard pile » : on prend les 3 premieres si la
-        # defausse en contient moins, on prend ce qu'il y a.
+        # « 3 cards from your discard pile » : LE JOUEUR CHOISIT les 3 cartes
+        # (decision de l'utilisateur, Q1 du backlog 12, 20/10/2026 ; avant, le
+        # module prenait d'office les 3 du dessus). Avec moins de 3 cartes en
+        # defausse, toutes partent, sans question.
         defausse = [f for f in joueur.discard_pile.Get(True) if f is not None]
         if not defausse:
             return
-        Faces.ShuffleAllTo(defausse[:3], joueur.player_deck, effect)
+        if len(defausse) <= 3:
+            choisies = defausse
+        else:
+            choisies = []
+            restantes = list(defausse)
+            while len(choisies) < 3 and restantes:
+                carte = joueur.AskChooseOneText(restantes)
+                if carte is None or carte not in restantes:
+                    carte = restantes[0]
+                restantes.remove(carte)
+                choisies.append(carte)
+        Faces.ShuffleAllTo(choisies, joueur.player_deck, effect)
 
     return [
         AbilityFactory.WhenInYourPlayTurn(
