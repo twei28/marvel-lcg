@@ -236,8 +236,32 @@ Mécaniques neuves notables de ce quart du lot :
 
 **Statut final du lot GS-7** : les 36 cartes propres (gs161-gs194) sont toutes scriptées et
 construction-vérifiées (`test_cards` : 7006/7006, 0 erreur ; `verifier_appels_modules galactic_storm` :
-OK). Les 10 reskins (gsr01-gsr10) sont des entrées `cards.json` pures (`ability_link`), aucun script requis
-— pas encore vérifiées à l'image en jeu (art/texte affichés).
+OK). Les 10 reskins (gsr01-gsr10) sont des entrées `cards.json` pures (`ability_link`), aucun script requis.
+
+**Images (21/10/2026)** : écart découvert — contrairement aux 7 autres sous-lots du pack Galactic Storm,
+aucun script `copier_images_*` n'existait pour ce lot, donc `assets/pics/` n'avait aucun scan pour
+gs161-gs194 ni gsr01-gsr10 (fallback `no_image` en jeu). Corrigé : `copier_images_earth_under_siege.py`
+(recette `copier_images_gs4.py`), mapping bâti à partir des deux transcriptions
+(`docs/packs/galactic-storm/transcriptions/earth-under-siege.md` et `earth-under-siege-ensembles.md`).
+Paysage (rotation 90°) : `gs161a/b` (manigance principale), `gs162a/b` (manigance annexe de scénario),
+`gs168`/`gs175`/`gs179`/`gs185`/`gs194` (manigances annexes d'ensemble, une par méchant sauf Mole Man qui
+n'en a pas). 46/46 images copiées, résolution confirmée (882×615 paysage, 615×882 portrait). Vérification
+du texte reskin ↔ carte core (`ability_link`) faite sur les 10 gsr0X : identique au mot près, citation en
+plus côté reskin (conforme à la recette « carte habillée »).
+
+Confirmé au passage (recherche de code) : `ability_link` ne relie QUE la logique (le script de la carte
+core visée) — nom, texte et art restent propres à la carte reskin, lus depuis son propre `card_id`. C'est
+le même pattern qu'utilise déjà TMNT Standard/Expert avec les mêmes cartes core 01186-01193 (`te021-te027`,
+`te121-te123`), scans déjà en place là-bas — bonne confirmation indépendante que le pattern fonctionne.
+
+Reste donc seulement le point 4 (vraie partie à plusieurs méchants simultanés) pour clore visuellement le
+lot, plus la décision utilisateur sur le 0% de victoire / parties à rallonge de l'autoplay ciblé
+(voir section dédiée ci-dessus) et, si on veut aller plus loin, le mystère du harnais de test (`Puzzle`)
+qui ne déclenche pas les abilities à 2 cartes/branches "Otherwise" — repassé une fois (21/10/2026) : pistes
+simples (enregistrement tardif, aire `set_aside` vs `encounters`, filtrage par `related_faces`,
+`Condition.AgainstYou`) toutes écartées après relecture de `src/game/card/factory.py`,
+`src/game/event/manager.py`, `src/game/condition.py` ; cause encore non identifiée, nécessiterait une
+exécution instrumentée (pas rentable vu que l'autoplay réel tourne sans erreur sur les 36 cartes).
 
 ## Autoplay ciblé (étape 8, 20/10/2026)
 
