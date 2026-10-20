@@ -16,7 +16,10 @@ const URL_ = process.argv[5] || "http://localhost:8770/navigateur.html";
 const OUT = path.join(ICI, "captures") + "/";
 const tag = nav + (mobile ? "-mobile" : "");
 const log = (...a) => console.log(`[${tag}]`, ...a);
-const b = await pw[nav].launch();
+// WebKit Playwright (build WPE, Linux) : sans cette variable, le processus de rendu s'ABORTE (« Could not negotiate a
+// suitable buffer format ») des qu'une page affiche 5 images ou plus (voir docs/rapports/play-webkit-plantage-2026-10-20.md).
+// Defaut du banc : atlas DMA-BUF coupe. Pour reproduire le plantage : WEBKIT_DISABLE_DMABUF_ATLAS=0 node ... webkit
+const b = await pw[nav].launch(nav === "webkit" ? { env: { ...process.env, WEBKIT_DISABLE_DMABUF_ATLAS: process.env.WEBKIT_DISABLE_DMABUF_ATLAS ?? "1" } } : {});
 const ctx = await b.newContext(mobile
   ? { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: nav !== "firefox", deviceScaleFactor: 2 }
   : { viewport: { width: 1440, height: 900 } });
