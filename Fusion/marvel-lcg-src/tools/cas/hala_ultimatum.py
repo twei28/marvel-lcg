@@ -108,7 +108,7 @@ CAS = [
     _c("gs141b Forced Interrupt : un sbire vaincu retire 1 jeton de repli de Hala",
        "« When a minion is defeated, remove 1 hideout counter from Hala »",
        DECK_NEUTRE + ["Puzzle.PutIntoPlay('01103')"], ["Puzzle.Damage('01103', 3)"],
-       {"jetons": [["gs143", "hideout", 3]]}),
+       {"compteurs": [["gs143", "hideout", 3]]}),
     _c("gs141b Forced Response : le DERNIER jeton de repli retire -> avance a 2A",
        "« After the last hideout counter is removed from Hala, advance to stage 2A »",
        DECK_NEUTRE + ["Puzzle.PlaceCounters('gs143', 'hideout', 1)", "Puzzle.PutIntoPlay('01103')"],
@@ -116,7 +116,7 @@ CAS = [
     # ============================================================== gs143 Hala : jetons et action
     _c("gs143 entree en jeu : 2 + 2[per_hero] jetons de repli (un joueur : 4)",
        "« Enters play with 2 hideout counters, plus 2[per_hero] additional hideout counters »",
-       [], [], {"jetons": [["gs143", "hideout", 4]]}),
+       [], [], {"compteurs": [["gs143", "hideout", 4]]}),
     _c("gs143 Scour the Planet : cherche un sbire KREE et le revele, puis pioche 1 carte",
        "« Action: Search the encounter deck and discard pile for a KREE minion and reveal it -> draw 1 "
        "card »",
