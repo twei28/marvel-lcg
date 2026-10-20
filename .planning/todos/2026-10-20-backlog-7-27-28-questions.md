@@ -81,3 +81,11 @@ sur plusieurs sbires et alliés, « actuellement clic par clic ») ?
   une décision au joueur, il faudrait donc la proposer sans jamais l'imposer.
 
 **Ce qu'il faut de l'utilisateur** : A ou B (et la règle de répartition en B).
+
+---
+
+## Réponses de l'utilisateur (20/10/2026)
+
+- Q1 : option A, faite (ligne « Raccourcis » dans l'aide du plateau, sans nouvelle touche).
+- Q2 : option A, rien à coder, point clos dans la fiche Yarro.
+- Q3 : option A, couvert par `assignerReste`, point clos dans la fiche Yarro.
