@@ -101,6 +101,17 @@ describe('CoucheAnimations : une carte sans scan vole quand meme', () => {
   })
 
 
+  it('la carte du dessus du deck, deja a l\'ecran, vole elle aussi quand on la pioche', () => {
+    // Elle change de zone au lieu d'apparaitre : sans ce cas, la premiere carte
+    // d'une pioche ne volait pas (douze piochees = onze dans la pile groupee).
+    const { main } = poserScene()
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    const dessus = document.querySelector('.zone-piles-joueur [data-card-id="deck"]')!
+    main.append(dessus)
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+    expect(container.querySelectorAll('.vol-carte')).toHaveLength(1)
+  })
+
   it('anime la defausse d\'une carte sans image', () => {
     const { main } = poserScene()
     const jouee = carte('9')

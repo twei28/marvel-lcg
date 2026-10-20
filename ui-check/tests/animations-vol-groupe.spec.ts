@@ -85,6 +85,10 @@ test('douze cartes piochees d un coup volent en une pile groupee', async ({ page
   });
 
   const avant = await page.locator('.zone-main .scan-card[data-card-id]').count();
+  const dessusDuDeck = await page
+    .locator('.zone-piles-joueur .scan-card[data-card-id]')
+    .evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.cardId));
+  console.log('piles joueur avant :', JSON.stringify(dessusDuDeck));
   await page.screenshot({ path: 'captures-tmp/vol-groupe-avant.png', animations: 'allow' });
 
   const rep = await page.request.post('/sandbox_command?p=0', { data: { commands: ['Puzzle.Draw(12)'] } });
@@ -101,12 +105,17 @@ test('douze cartes piochees d un coup volent en une pile groupee', async ({ page
     () => (window as unknown as { __vols: { max: number; pile: number; nombre: string } }).__vols
   );
   const apres = await page.locator('.zone-main .scan-card[data-card-id]').count();
+  const enMain = await page
+    .locator('.zone-main .scan-card[data-card-id]')
+    .evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.cardId));
+  console.log('cartes vues dans les piles puis en main :', JSON.stringify(dessusDuDeck.filter((id) => enMain.includes(id))));
   console.log(`mains : ${avant} -> ${apres} ; fantomes simultanes max : ${mesure.max} ; piles : ${mesure.pile} ; pastille : ${mesure.nombre}`);
 
   expect(apres - avant, 'la pioche de 12 cartes n est pas arrivee').toBeGreaterThanOrEqual(11);
   // Un seul fantome pour toute la pioche, pas douze et pas zero.
   expect(mesure.max).toBeLessThanOrEqual(2);
-  expect(Number(mesure.nombre)).toBeGreaterThanOrEqual(11);
+  // Les douze, la carte du dessus du deck comprise (elle etait comptee a part avant le 20/10/2026).
+  expect(Number(mesure.nombre)).toBe(12);
   // Toutes les vraies cartes sont revenues visibles.
   const cachees = await page.$$eval('.zone-main .scan-card', (els) =>
     els.filter((e) => (e as HTMLElement).style.visibility === 'hidden').length

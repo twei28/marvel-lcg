@@ -390,6 +390,19 @@ export function CoucheAnimations({
           if (m.zone === 'zone-main' && deckJoueur) {
             brouillons.push({ groupe: GROUPE_PIOCHE, src: m.src, depart: deckJoueur, arrivee: m.rect, el: m.el })
           }
+        } else if (
+          avant.zone === 'zone-piles-joueur' &&
+          m.zone === 'zone-main' &&
+          deckJoueur &&
+          Math.abs(avant.rect.x - deckJoueur.x) < 2 &&
+          Math.abs(avant.rect.y - deckJoueur.y) < 2
+        ) {
+          // LA CARTE DU DESSUS DU DECK. Elle est deja a l'ecran (la pile montre sa
+          // carte du dessus) : elle n'« apparait » donc pas dans la main, elle
+          // change de zone. Sans ce cas, la premiere carte d'une pioche ne volait
+          // pas (12 cartes piochees : 11 dans la pile groupee, mesure du 20/10/2026).
+          // Seule la pile du DECK compte, pas la defausse : meme zone, autre place.
+          brouillons.push({ groupe: GROUPE_PIOCHE, src: m.src || avant.src, depart: deckJoueur, arrivee: m.rect, el: m.el })
         } else if (avant.zone === 'zone-main' && m.zone !== 'zone-main') {
           // Carte qui QUITTE la main vers la table = mise en jeu.
           brouillons.push({ groupe: GROUPE_JEU, src: m.src || avant.src, depart: avant.rect, arrivee: m.rect, el: m.el })
