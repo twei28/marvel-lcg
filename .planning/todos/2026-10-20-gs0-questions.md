@@ -99,3 +99,17 @@ cibles multiples) dans des questions de lot.** 2. Demander à l'auteur.
 
 Le cadrage propose de ranger les 4 zips dans `~/Desktop/Marvel LCG-contenu/kajislav/`. 1. **(Recommandé) Oui, déplacement par
 l'utilisateur.** 2. Laisser à la racine du dépôt. Aucun effet en jeu.
+
+---
+## DÉCISIONS DE L'UTILISATEUR (20/10/2026)
+- Q1 : `gs` + numéro imprimé sur 3 chiffres (+ a/b), avec exceptions : Quasar décalé de 300 d'après le pied « n/16 » (gs301 à gs316, gs349 pour Quantum Bubble), némésis en collision de Quasar suffixés `q`, reskins Standard/Expert sans numéro en gs241 à gs250.
+- Q2 : porter les 319 images, sans chercher à retrouver 305.
+- Q3 : un identifiant par numéro imprimé avec le nombre d'exemplaires du paquet (comme Skrull Menace).
+- Q4 : « Forces Response » traité comme « Forced Response » (idem « completes », « highes » : coquilles).
+- Q5 : le nom imprimé fait foi.
+- Q6 : « ★ » = convention Skrull Menace ; étoile blanche à contour = dégâts consécutifs ; pastille orange = points de vie ; Quantum Bands = ressource joker au choix de celui qui paie.
+- Q7 : livret 1.2 partout.
+- Q8 : les 10 reskins Standard-Expert d'Earth Under Siege = cartes propres au scénario 4, identifiants gs241 à gs250.
+- Q9 : Imperial Guard : retrait des cartes non-traîtrises aux scénarios 1 et 2 seulement, comme écrit.
+- Q10 : ne rien inventer là où le livret est vide ; noter les ambiguïtés en questions de lot.
+- Q11 : rangement des zips : laissé à l'utilisateur (sans effet en jeu).
