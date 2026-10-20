@@ -808,6 +808,37 @@ class RunPuzzle:
         source.ApplyAfterEnterPlay(area, area, self.debug_rule, True)
         return source
 
+    # Brique commune du 20/10/2026 : plusieurs mechants (game/operate/villains.py).
+    def SetVillainRule(self, the_villain: str="Active", player_cards: str="TheVillain") -> None:
+        """Pose `Villains.Rule` sur le scenario (« le mechant » = actif ou le
+        plus a gauche ; cartes joueur = le meme, ou au choix du joueur)."""
+        from game.operate.villains import Villains
+        Villains.SetRule(self.world, Villains.Rule(the_villain=the_villain, player_cards=player_cards))  # type: ignore
+
+    def SetActiveVillain(self, card: CardName) -> 'CardFace':
+        """Pose le compteur « active » sur ce mechant (et l'ote aux autres)."""
+        from game.operate.villains import Villains
+        from game.card.face.base import Villain
+        face = self.FindFaceInPlay(card)
+        Villains.SetActive(face.CastTo(Villain), self.debug_rule)
+        return face
+
+    def RemoveVillain(self, card: CardName) -> None:
+        """Retire ce mechant sans rien reporter (`Villains.Remove`)."""
+        from game.operate.villains import Villains
+        from game.card.face.base import Villain
+        Villains.Remove(self.FindFaceInPlay(card).CastTo(Villain), self.debug_rule)
+
+    def BuildVillainDeck(self, *cards: CardName) -> None:
+        """Melange ces mechants dans le deck de mechants (`Villains.BuildVillainDeck`)."""
+        from game.operate.villains import Villains
+        Villains.BuildVillainDeck([self.FindOrCreateFace(c) for c in cards], self.debug_rule)  # type: ignore
+
+    def RevealNextVillain(self) -> 'CardFace|None':
+        """Revele le dessus du deck de mechants, en jeu le plus a droite."""
+        from game.operate.villains import Villains
+        return Villains.RevealNextVillain(self.world.GetCurrentPlayer(), self.debug_rule)
+
     def _DeclareDefender(self, card: CardName) -> 'CardFace':
         """Arme un defenseur pour la PROCHAINE attaque, puis se retire.
 

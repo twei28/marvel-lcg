@@ -273,9 +273,147 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 0, "exhausted": ["01001a"]},
     },
+
+    # =================================================================== BRIQUE 3
+    # Montage : Rhino (01094, en jeu des la mise en place, donc le plus a GAUCHE)
+    # puis Ultron (01134) mis en jeu par le cas, donc a DROITE.
+    {
+        "nom": "[briques][mechants] TEMOIN sans regle : Ultron porte le compteur actif -> « le mechant » = Ultron (ordre d'avant inchange)",
+        "pourquoi": "aucune regle posee : Scenario.GetVillain garde son ordre (actif d'abord), Sinister Six et Wrecking Crew n'y voient rien",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01134')", "Puzzle.SetActiveVillain('01134')"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "briques_le_mechant",
+        "attendu": {"rencontre": "01134", "joueur": "01134", "tous": 2, "ordre": ["01094", "01134"]},
+    },
+    {
+        "nom": "[briques][mechants] regle « Active » (Punisher p180) : le mechant actif (Ultron, a droite) pour les cartes rencontre ET joueur",
+        "pourquoi": "« Punisher is the active villain. Encounter cards referring to or affecting \"the villain\" refer only to Punisher »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01134')", "Puzzle.SetVillainRule('Active')",
+                          "Puzzle.SetActiveVillain('01134')"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "briques_le_mechant",
+        "attendu": {"rencontre": "01134", "joueur": "01134", "tous": 2},
+    },
+    {
+        "nom": "[briques][mechants] regle « Leftmost » (Galactic Storm p.16) : le plus a gauche (Rhino), meme si Ultron porte le compteur actif",
+        "pourquoi": "« Encounter cards that refer to \"the villain\" only refer to the leftmost villain »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01134')", "Puzzle.SetVillainRule('Leftmost')",
+                          "Puzzle.SetActiveVillain('01134')"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "briques_le_mechant",
+        "attendu": {"rencontre": "01094", "joueur": "01094", "tous": 2},
+    },
+    {
+        "nom": "[briques][mechants] « PlayerChooses » : l'exces d'un overkill du joueur sur un sbire -> le joueur CHOISIT le mechant (question posee)",
+        "pourquoi": ("Galactic Storm p.16 : « If a minion takes any amount of excess damage from an attack with the "
+                     "overkill keyword, the attacking player must choose which villain that excess damage is dealt to » ; "
+                     "le pilote prend le premier propose (Rhino) : 4 degats"),
+        "scenario": "rhino", "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01134')",
+                          "Puzzle.SetVillainRule('Leftmost', 'PlayerChooses')",
+                          "Puzzle.PutIntoPlay('39043')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "questions_presentes": ["Choose the villain"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"], "degats": [["01094", 4], ["01134", 0]]},
+    },
+    {
+        "nom": "[briques][mechants] « PlayerChooses » + Rhino insensible aux cartes joueur : l'exces va a Ultron, SANS question",
+        "pourquoi": "les mechants proteges (brique 2) ne sont pas proposes ; un seul candidat, aucune question",
+        "scenario": "rhino", "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01134')",
+                          "Puzzle.SetVillainRule('Leftmost', 'PlayerChooses')",
+                          "Puzzle.ProtectFromPlayerCards('01094')",
+                          "Puzzle.PutIntoPlay('39043')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "questions_absentes": ["Choose the villain"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"], "degats": [["01094", 0], ["01134", 4]]},
+    },
+    {
+        "nom": "[briques][mechants] retrait SANS REPORT : Rhino (actif, Robuste, Sonne, Charge attachee) quitte la partie, Charge defaussee, Ultron devient « le mechant » sans rien recevoir",
+        "pourquoi": ("Galactic Storm p.16 : « all tokens, status cards, and attachments on the just-defeated villain "
+                     "are discarded instead of carrying over to the next villain »"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('01134')", "Puzzle.SetVillainRule('Active')",
+                          "Puzzle.SetActiveVillain('01094')", "Puzzle.Tough('01094')", "Puzzle.Stun('01094')",
+                          "Puzzle.PutIntoPlay('01099')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.RemoveVillain('01094')"],
+        "verifier": "briques_le_mechant",
+        "attendu": {"rencontre": "01134", "tous": 1, "ordre": ["01134"],
+                    "hors_jeu": ["01094", "01099"], "defausse_rencontre": ["01099"],
+                    "statuts_absents": [["01134", "Tough"], ["01134", "Stunned"]],
+                    "taille_attaches": [["01134", 0]]},
+    },
+    {
+        "nom": "[briques][mechants] deck de mechants : Ultron puis Klaw reveles arrivent a DROITE, Rhino reste le plus a gauche (« le mechant » en Leftmost)",
+        "pourquoi": ("Galactic Storm p.16 : « place the newly revealed villain as the rightmost villain, so that the "
+                     "villain that has been in play the longest is always the leftmost villain »"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.SetVillainRule('Leftmost')", "Puzzle.BuildVillainDeck('01134', '01113')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.RevealNextVillain()", "Puzzle.RevealNextVillain()"],
+        "verifier": "briques_le_mechant",
+        "attendu": {"rencontre": "01094", "tous": 3, "ordre_debut": ["01094"], "deck_de_mechants": 0,
+                    "en_jeu": ["01134", "01113"]},
+    },
 ]
 
 VERIFICATIONS = r'''
+def briques_le_mechant(monde, aides):
+    """Qui est « le mechant » ? `rencontre` : card_id rendu par
+    Worlds.FindVillain pour un effet de carte RENCONTRE (le complot principal) ;
+    `joueur` : idem pour un effet de carte JOUEUR (l'identite) ; `tous` : nombre
+    de mechants (« a villain ») ; `ordre` / `ordre_debut` : card_id de la zone
+    des mechants de gauche a droite (en entier / le debut) ;
+    `deck_de_mechants` : cartes restant dans le deck de mechants. Le reste de
+    `attendu` va a etat_attendu."""
+    from game.effect.rule import GameRule
+    from game.operate.worlds import Worlds
+    from game.operate.villains import Villains
+    attendu = aides["cas"].get("attendu") or {}
+    propres = {"rencontre", "joueur", "tous", "ordre", "ordre_debut", "deck_de_mechants"}
+    soucis = []
+    cid = lambda f: getattr(getattr(f, "paper", None), "card_id", None) if f is not None else None
+    effet_rencontre = GameRule(Worlds.GetAllMainSchemes(monde)[0])
+    effet_joueur = GameRule(aides["identite"](monde))
+    mesures = {
+        "rencontre": cid(Worlds.FindVillain(effet_rencontre)),
+        "joueur": cid(Worlds.FindVillain(effet_joueur)),
+        "tous": len(Villains.All(effet_rencontre)),
+        "ordre": [cid(v) for v in monde.GetScenario().area_villain.Get()],
+        "deck_de_mechants": Villains.VillainDeckSize(effet_rencontre),
+    }
+    for cle in ("rencontre", "joueur", "tous", "ordre", "deck_de_mechants"):
+        if cle in attendu and mesures[cle] != attendu[cle]:
+            soucis.append(f"{cle} = {mesures[cle]} (attendu {attendu[cle]})")
+    if "ordre_debut" in attendu and mesures["ordre"][:len(attendu["ordre_debut"])] != attendu["ordre_debut"]:
+        soucis.append(f"ordre = {mesures['ordre']} (doit commencer par {attendu['ordre_debut']})")
+    reste = {k: v for k, v in attendu.items() if k not in propres}
+    if reste:
+        copie = dict(aides); copie["cas"] = dict(aides["cas"]); copie["cas"]["attendu"] = reste
+        ok, message = etat_attendu(monde, copie)
+        if not ok:
+            soucis.append(message)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"le mechant : {mesures}"
+
 def briques_effets_directs(monde, aides):
     """Applique a Rhino, au nom du HEROS (GameRule(identite) : `this` est une
     carte joueur, aucun ciblage), cinq effets directs ; puis 2 degats au nom de
