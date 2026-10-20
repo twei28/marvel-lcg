@@ -1409,6 +1409,15 @@ moteur, seule l'image change.
   restent des cartes et forment la collection `tmnt` de `COLLECTIONS`, par
   défaut pour un héros TMNT.
 
+- **Full Art Reprints MC/DC 2026 (20/10/2026)** : code d'art `mcdc26` (affiché
+  « MCDC26 » dans la modale), proposé à tous, jamais par défaut. 31 cartes
+  d'aspect (images 615×882, comme les arts TMNT, `assets/pics/<id>_mcdc26.jpg`).
+  Données : `docs/packs/mcdc-2026-punisher/importer-full-art.py` (table
+  `CARTES`, relançable) ; test : `tools/test_arts_mcdc26.py` (`--http <port>`
+  vérifie que le moteur sert chaque image). Les 10 cartes à doute attendent
+  `.planning/todos/2026-10-20-mcdc-full-art-questions.md`. Inventaire de la
+  galerie : `docs/packs/mcdc-2026-punisher/GALERIE.md`.
+
 **Les deux tables doivent rester alignées** entre le plateau et le wizard,
 sinon le sélecteur propose un art que le plateau n'affichera pas.
 

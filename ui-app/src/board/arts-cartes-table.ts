@@ -20,11 +20,15 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "01081": [
     "tmnt"
   ],
+  "03017": [
+    "mcdc26"
+  ],
   "04047": [
     "tmnt"
   ],
   "04049": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
   ],
   "05023": [
     "tmnt"
@@ -35,6 +39,9 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "06031": [
     "tmnt"
   ],
+  "08031": [
+    "mcdc26"
+  ],
   "09020": [
     "tmnt"
   ],
@@ -42,13 +49,29 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "tmnt"
   ],
   "10018": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
+  ],
+  "10031": [
+    "mcdc26"
+  ],
+  "13016": [
+    "mcdc26"
+  ],
+  "13018": [
+    "mcdc26"
+  ],
+  "15012": [
+    "mcdc26"
   ],
   "15019": [
     "tmnt"
   ],
   "16043": [
     "tmnt"
+  ],
+  "17028": [
+    "mcdc26"
   ],
   "18012": [
     "tmnt"
@@ -71,14 +94,45 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "21061": [
     "tmnt"
   ],
+  "22011": [
+    "mcdc26"
+  ],
+  "23012": [
+    "mcdc26"
+  ],
+  "25014": [
+    "mcdc26"
+  ],
+  "27012": [
+    "mcdc26"
+  ],
+  "27016": [
+    "mcdc26"
+  ],
+  "27044": [
+    "mcdc26"
+  ],
   "28013": [
     "tmnt"
   ],
   "28017": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
+  ],
+  "29027": [
+    "mcdc26"
+  ],
+  "30013": [
+    "mcdc26"
   ],
   "30019": [
     "tmnt"
+  ],
+  "30021": [
+    "mcdc26"
+  ],
+  "31022": [
+    "mcdc26"
   ],
   "31023": [
     "tmnt"
@@ -89,11 +143,26 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "32014": [
     "tmnt"
   ],
+  "32019": [
+    "mcdc26"
+  ],
+  "32041": [
+    "mcdc26"
+  ],
+  "35014": [
+    "mcdc26"
+  ],
   "35018": [
     "tmnt"
   ],
+  "38012": [
+    "mcdc26"
+  ],
   "40060": [
     "tmnt"
+  ],
+  "41012": [
+    "mcdc26"
   ],
   "41017": [
     "tmnt"
@@ -102,7 +171,8 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "tmnt"
   ],
   "45016": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
   ],
   "45043": [
     "tmnt"
@@ -119,23 +189,34 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "47015": [
     "tmnt"
   ],
+  "48012": [
+    "mcdc26"
+  ],
   "48014": [
     "tmnt"
   ],
   "48016": [
     "tmnt"
   ],
+  "49015": [
+    "mcdc26"
+  ],
   "49018": [
     "tmnt"
   ],
   "49022": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
   ],
   "50058": [
     "tmnt"
   ],
+  "52017": [
+    "mcdc26"
+  ],
   "52019": [
-    "tmnt"
+    "tmnt",
+    "mcdc26"
   ],
   "54016": [
     "tmnt"
@@ -224,6 +305,7 @@ export const ORIGINES_CARTES: Record<string, string> = {
   "25017": "01057",
   "34024": "05033",
   "36026": "05023",
+  "37017": "32019",
   "38013": "09020",
   "40055": "30019",
   "43027": "05023",
