@@ -4934,4 +4934,41 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'gs237': "Si Rogue est en jeu, attachez cette carte à un personnage autre que Rogue. Sinon, cette carte gagne Renfort.\nTant que Touched est attachée à :\n• un sbire, Rogue gagne Riposte 2 ;\n• un méchant, réduisez de 2 les dégâts que Rogue subit de chaque attaque ;\n• un allié, Rogue gagne +2 ATQ ;\n• une identité, Rogue gagne Vilenie.",
   'gs239': "Tant que Touched est attachée à un personnage ami, Rogue gagne +1 MNG.\nTant que Touched est attachée à un personnage ennemi, Rogue gagne +1 ATQ.",
   'gs240': "<b>Une fois révélée</b> : défaussez chaque ressource [energy] de votre main. Si aucune carte n'a été défaussée de cette façon, subissez 3 dégâts.",
+  // ===== galactic_storm — heros QUASAR (Kajislav, lot GS-2, 20/10/2026) =====
+  // galactic_storm — Quasar (Hero)
+  'gs300a': "<i>Canaliser les Bandes</i> — <b>Action</b> : inclinez Quasar → redressez Quantum Bands.",
+  // galactic_storm — Wendell Vaughn (AlterEgo)
+  'gs300b': "<i>Élu Protecteur</i> — <b>Mise en place</b> : mettez en jeu Quantum Bands.",
+  // galactic_storm — Quantum Bands (Upgrade)
+  'gs301': "Permanent.\nQuasar gagne le trait [[AERIAL]].\n<b>Ressource de héros</b> : inclinez Quantum Bands → générez une ressource [wild].",
+  // galactic_storm — Epoch (Ally)
+  'gs302': "[star] <b>Réponse</b> : après qu'Epoch a utilisé l'un de ses pouvoirs de base, redressez Quantum Bands.",
+  // galactic_storm — Flight of Light (Event)
+  'gs303': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, retirez 2 menaces d'une manigance.",
+  // galactic_storm — No Holding Back (Event)
+  'gs305': "<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 3 dégâts à un ennemi pour chaque ressource [physical] utilisée pour payer cette carte. Retirez 2 menaces d'une manigance pour chaque ressource [mental] utilisée pour payer cette carte.",
+  // galactic_storm — Righteous Fury (Event)
+  'gs307': "<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Si cette attaque vainc cet ennemi, redressez Quasar.",
+  // galactic_storm — Unbreakable Guard (Event)
+  'gs309': "<b>Interruption de héros</b> <i>(défense)</i> : quand un personnage allié est censé subir n'importe quelle quantité de dégâts, prévenez tous ces dégâts. Si vous avez payé cette carte avec Quantum Bands, donnez une carte d'état Tenace à ce personnage allié.",
+  // galactic_storm — Quantum Energy (Resource)
+  'gs311': "<b>Réponse</b> : après avoir dépensé cette carte, redressez Quantum Bands.",
+  // galactic_storm — Quantum Absorption (Upgrade)
+  'gs313': "<b>Interruption de héros</b> : quand vous payez un événement [[DEFENSE]] avec Quantum Bands, soignez 2 dégâts de Quasar.",
+  // galactic_storm — Quantum Jump (Upgrade)
+  'gs315': "<b>Interruption de héros</b> : quand vous payez un événement [[THWART]] avec Quantum Bands, ce contre retire 2 menaces supplémentaires et ignore l'icône Crise ([crisis]) et le mot-clé Patrouille.",
+  // galactic_storm — Quantum Weapon (Upgrade)
+  'gs316': "<b>Interruption de héros</b> : quand vous payez un événement [[ATTACK]] avec Quantum Bands, cette attaque inflige 1 dégât supplémentaire et gagne Perçant et Déferlement.",
+  // galactic_storm — Quantum Bubble (Upgrade)
+  'gs349': "<b>Réponse de héros</b> : après avoir payé un allié avec Quantum Bands, donnez une carte d'état Tenace à cet allié.",
+  // galactic_storm — Protector of the Universe (Obligation)
+  'gs065': "<b><i>Donnez cette carte au joueur Wendell Vaughn.</i></b>\nUtilisations (3 jetons Devoir).\nVous ne pouvez pas passer sous forme d'alter ego.\n<b>Réponse de héros</b> : après avoir vaincu un ennemi ou une manigance, ou avoir défendu contre une attaque sans subir de dégâts, retirez 1 jeton Devoir d'ici.",
+  // galactic_storm — Maelstrom (Minion)
+  'gs099q': "<b>Une fois révélé</b> : glissez Quantum Bands sous Maelstrom.\n<b>Réponse forcée</b> : après que Maelstrom a quitté le jeu, mettez en jeu Quantum Bands sous le contrôle du joueur Quasar.\n<i>(Sbire némésis de Quasar.)</i>",
+  // galactic_storm — Entropy Ascendant (SideScheme)
+  'gs239q': "Entrave 1[per_hero].\nChaque carte Événement gagne Exigence ([energy]).",
+  // galactic_storm — Avatar of Oblivion (Attachment)
+  'gs237q': "Attachez cette carte au sbire avec la plus haute ATQ. Si vous ne pouvez pas, cette carte gagne Renfort.\nLe sbire attaché gagne le trait [[ELITE]].\n<b>Interruption forcée</b> : quand le sbire attaché est censé être vaincu, soignez tous ses dégâts à la place. Ensuite, défaussez cette carte.",
+  // galactic_storm — Distant Manipulation (Treachery)
+  'gs240q': "<b>Une fois révélée</b> : choisissez : soit vous inclinez chaque carte avec une capacité \"<b>Ressource</b>\" que vous contrôlez, soit vous défaussez chaque carte Ressource de votre main. Si vous ne pouvez pas, cette carte gagne Renfort.",
 }

@@ -1886,10 +1886,11 @@
   "name": "galactic_storm",
   "scenarios": [],
   "heroes": [
-   "binary"
+   "binary",
+   "quasar"
   ],
   "encounters": [],
   "max_id": "gs001b"
  },
- "checksum": "2e8aeade3c612dedf9a3e18d14ed1281c1d14207284879a8b3db82807acc9d11"
+ "checksum": "c3315bd59fdb0618c78c6af16f6b1a07971f212686f295ec47d42056c3d56134"
 }

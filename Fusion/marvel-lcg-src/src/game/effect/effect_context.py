@@ -39,6 +39,10 @@ class EffectContext:
         # moment du paiement plus rien ne dit d'ou elle venait. La Reserve en a
         # besoin : une carte jouee depuis la main ne se finance que par la main.
         self.play_from_area: 'Deck|None' = None
+        # CORRECTIF (20/10/2026, gs315 Quantum Jump) : ce ciblage a franchi une
+        # Patrouille grace a une ignorance (scheme_main.py `CanBeThwartBy`) ;
+        # `RemoveThreatInternal` la reverifie a la resolution.
+        self.patrouille_levee_au_ciblage: bool = False
 
         # CORRECTIF (21/09/2026, signalement Aghenatak) : le SAS de recherche.
         # Chaque paire dit « cette carte est sortie de ce deck vers la zone de
@@ -102,6 +106,7 @@ class EffectContext:
         self.paid_this_res_effects: List['Effect'] = []
 
         self.play_from_area: 'Deck|None' = None # CORRECTIF (pack brawn)
+        self.patrouille_levee_au_ciblage = False # CORRECTIF (20/10/2026, gs315)
 
         self.initiator: User = self.effect.this.GetControlByOrOwner()
 

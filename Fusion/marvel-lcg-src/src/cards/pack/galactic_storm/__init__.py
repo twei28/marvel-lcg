@@ -18,6 +18,8 @@ from cards.pack import *
 # Sets de ce dossier (FileManager.CleanName) :
 #   - `Binary`         -> binary/
 #   - `Binary Nemesis` -> binary_nemesis/
+#   - `Quasar`         -> quasar/
+#   - `Quasar Nemesis` -> quasar_nemesis/
 # ===========================================================================
 
 # ⚠ Les helpers partages vivent dans le `__init__.py` DU SET, pas ici (les

@@ -63,3 +63,7 @@ AbilityFactory.WhenInYourPlayTurn(AbilityType.ForcedAction, suggestion)
 **Variantes maison** : aucune. Les packs maison qui emploient `Uses`
 (`br012` Unworthy, `sr013` Bad Publicity, `tg011` Trouble in Central Park)
 suivent tous la règle officielle sans l'étendre.
+
+**Obligation a Uses** (`gs065` Protector of the Universe, Galactic Storm, 20/10/2026) : « Uses (3 duty counters) »
+sur une obligation qui reste dans la zone des obligations ; les pions sont poses a la revelation et la carte part au
+dernier pion retire, sans script (cas `[quasar] gs065 ... DERNIER pion`). Compteur `duty` ajoute a `CardFace.COUNTER`.

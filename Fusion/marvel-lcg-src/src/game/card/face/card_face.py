@@ -74,6 +74,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, scenario TMNT Bebop & Rocksteady, prefixe `tk`).
         # ALERT / K.O. / ENRAGED / ROWDY / TEMPER / HOG / RHINO sont LUS par les
         # scripts du pack (etat des vilains, attachements Temper).
+        # AJOUT (20/10/2026, heros Quasar de Galactic Storm, Kajislav, prefixe `gs`) : trait imprime
+        # sur gs099q Maelstrom (« DEVIANT. INHUMAN. »).
+        "DEVIANT",
         "WARTHOG", "RHINOCEROS", "ALERT", "K.O.", "HOG", "RHINO", "ROWDY",
         "TEMPER", "ENRAGED", "BESTIES", "BERSERK", "FERAL", "SUNGLASSES",
         "HELMET", "STREETS", "VELOCIRAPTOR",
@@ -272,6 +275,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, aspects TMNT Dual-Aspect, Inkwire) : « amp counter »
         # de ud003 Heavy Metal (« enters play with 2 amp counters on her »).
         'amp',
+        # AJOUT (20/10/2026, heros Quasar de Galactic Storm, Kajislav) : « Uses (3 duty counters) »
+        # de l'obligation gs065 Protector of the Universe.
+        'duty',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',

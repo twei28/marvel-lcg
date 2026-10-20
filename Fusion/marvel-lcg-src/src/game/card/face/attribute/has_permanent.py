@@ -31,6 +31,14 @@ class HasPermanent(HasAttribute):
             elif self.name == "Milano":
                 if by_effect.this.name == "The Missing Milano":
                     pass
+            # CORRECTIF (20/10/2026, Galactic Storm de Kajislav) : gs099q
+            # Maelstrom, nemesis de Quasar (set « Quasar Nemesis »), GLISSE
+            # nommement les Quantum Bands (gs301, Permanent, set « Quasar »)
+            # sous lui : « When Revealed: Tuck Quantum Bands under Maelstrom. »
+            # Le texte vise la carte : il l'emporte sur le mot-cle.
+            elif self.name == "Quantum Bands" and by_effect.this.name == "Maelstrom" \
+                    and by_effect.this.paper.set_name == "Quasar Nemesis":
+                pass
             elif self.paper.set_name != by_effect.this.paper.set_name:
                 return False
         return super().OnWhenCardLeavePlay(message)

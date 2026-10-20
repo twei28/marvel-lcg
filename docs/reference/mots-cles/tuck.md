@@ -58,3 +58,9 @@ finder=CarteShinobi(), range=(1, 1)))`, et le plafond « Max 2 » est une CONDIT
 autre hôte). ⚠ La clé de cas `jouer` AMÈNE en main une carte absente : elle ne prouve pas la permission.
 
 **Variantes maison** : aucune.
+
+**`gs099q` Maelstrom (Galactic Storm, 20/10/2026)** : « When Revealed: Tuck Quantum Bands under Maelstrom. Forced
+Response: After Maelstrom leaves play, put Quantum Bands into play under the Quasar player's control. » Glisser une
+carte EN JEU (amelioration permanente) : `TuckCardUnderHere` la retourne face cachee ; la reference de la carte est
+gardee sur l'objet carte de Maelstrom (`card.bandes_glissees_par_maelstrom`) pour la remettre en jeu (retournee face
+visible) dans `AfterCardLeavePlay(ForcedResponse, "This", ...)`. Voir aussi permanent.md.

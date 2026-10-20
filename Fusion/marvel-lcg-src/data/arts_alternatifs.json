@@ -49,6 +49,17 @@
     "binary"
    ],
    "sets_exclusifs": []
+  },
+  "quasar": {
+   "nom": "Quasar (Kajislav)",
+   "nom_en": "Quasar (Kajislav)",
+   "heros_cartes": [
+    "gs300"
+   ],
+   "heros_ids": [
+    "quasar"
+   ],
+   "sets_exclusifs": []
   }
  },
  "cartes": {
@@ -87,7 +98,8 @@
    "tmnt"
   ],
   "09020": [
-   "tmnt"
+   "tmnt",
+   "quasar"
   ],
   "10014": [
    "tmnt"
@@ -142,7 +154,8 @@
    "mcdc26"
   ],
   "32014": [
-   "tmnt"
+   "tmnt",
+   "quasar"
   ],
   "35018": [
    "tmnt"
@@ -176,7 +189,8 @@
    "tmnt"
   ],
   "48014": [
-   "tmnt"
+   "tmnt",
+   "quasar"
   ],
   "48016": [
    "tmnt"
@@ -205,7 +219,8 @@
    "binary"
   ],
   "56046": [
-   "tmnt"
+   "tmnt",
+   "quasar"
   ],
   "56047": [
    "tmnt"
@@ -328,7 +343,8 @@
    "mcdc26"
   ],
   "10031": [
-   "mcdc26"
+   "mcdc26",
+   "quasar"
   ],
   "48012": [
    "mcdc26"
@@ -404,6 +420,39 @@
   ],
   "01091": [
    "binary"
+  ],
+  "21065": [
+   "quasar"
+  ],
+  "22035": [
+   "quasar"
+  ],
+  "17022": [
+   "quasar"
+  ],
+  "16012": [
+   "quasar"
+  ],
+  "17020": [
+   "quasar"
+  ],
+  "18019": [
+   "quasar"
+  ],
+  "47021": [
+   "quasar"
+  ],
+  "54033": [
+   "quasar"
+  ],
+  "19012": [
+   "quasar"
+  ],
+  "09015": [
+   "quasar"
+  ],
+  "19020": [
+   "quasar"
   ]
  }
 }

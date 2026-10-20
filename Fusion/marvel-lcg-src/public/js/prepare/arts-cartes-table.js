@@ -52,8 +52,12 @@ export const ARTS_CARTES = {
   "08031": [
     "mcdc26"
   ],
+  "09015": [
+    "quasar"
+  ],
   "09020": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "10014": [
     "tmnt"
@@ -63,7 +67,8 @@ export const ARTS_CARTES = {
     "mcdc26"
   ],
   "10031": [
-    "mcdc26"
+    "mcdc26",
+    "quasar"
   ],
   "12030": [
     "binary"
@@ -83,6 +88,9 @@ export const ARTS_CARTES = {
   "15019": [
     "tmnt"
   ],
+  "16012": [
+    "quasar"
+  ],
   "16024": [
     "binary"
   ],
@@ -92,6 +100,12 @@ export const ARTS_CARTES = {
   "16045": [
     "binary"
   ],
+  "17020": [
+    "quasar"
+  ],
+  "17022": [
+    "quasar"
+  ],
   "17028": [
     "mcdc26"
   ],
@@ -100,6 +114,15 @@ export const ARTS_CARTES = {
   ],
   "18012": [
     "tmnt"
+  ],
+  "18019": [
+    "quasar"
+  ],
+  "19012": [
+    "quasar"
+  ],
+  "19020": [
+    "quasar"
   ],
   "19030": [
     "tmnt"
@@ -125,8 +148,14 @@ export const ARTS_CARTES = {
   "21061": [
     "tmnt"
   ],
+  "21065": [
+    "quasar"
+  ],
   "22011": [
     "mcdc26"
+  ],
+  "22035": [
+    "quasar"
   ],
   "23012": [
     "mcdc26"
@@ -180,7 +209,8 @@ export const ARTS_CARTES = {
     "mcdc26"
   ],
   "32014": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "32019": [
     "mcdc26"
@@ -258,11 +288,15 @@ export const ARTS_CARTES = {
   "47015": [
     "tmnt"
   ],
+  "47021": [
+    "quasar"
+  ],
   "48012": [
     "mcdc26"
   ],
   "48014": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "48016": [
     "tmnt"
@@ -292,12 +326,16 @@ export const ARTS_CARTES = {
     "tmnt",
     "binary"
   ],
+  "54033": [
+    "quasar"
+  ],
   "56013": [
     "tmnt",
     "binary"
   ],
   "56046": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "56047": [
     "tmnt"
@@ -370,6 +408,7 @@ export const ORIGINES_CARTES = {
   "10023": "01091",
   "14016": "01081",
   "15017": "01065",
+  "16013": "09015",
   "16042": "13013",
   "18017": "01057",
   "21021": "01091",
@@ -380,6 +419,8 @@ export const ORIGINES_CARTES = {
   "21057": "01074",
   "21063": "01081",
   "22019": "01065",
+  "22020": "17020",
+  "22021": "17022",
   "23020": "01071",
   "25015": "18011",
   "25016": "06017",
@@ -452,6 +493,17 @@ export const SERIES_ARTS = {
     ],
     "heros_ids": [
       "binary"
+    ],
+    "sets_exclusifs": []
+  },
+  "quasar": {
+    "nom": "Quasar (Kajislav)",
+    "nom_en": "Quasar (Kajislav)",
+    "heros_cartes": [
+      "gs300"
+    ],
+    "heros_ids": [
+      "quasar"
     ],
     "sets_exclusifs": []
   }

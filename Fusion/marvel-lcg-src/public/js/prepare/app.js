@@ -3701,6 +3701,7 @@ const COLLECTIONS_RESSOURCES = [
     { code: "mm", nom: "Ms. Marvel", apercu: "01089_mm" },
     { code: "mutant", nom: "Mutant Genesis", apercu: "32023" },
     { code: "dh_nebula", nom: "Nebula", apercu: "01089_dh_nebula" },
+    { code: "quasar", nom: "Quasar", apercu: "01089_quasar" },  // Galactic Storm (Kajislav), reskins du deck de Quasar
     { code: "dh_quicksilver", nom: "Quicksilver", apercu: "01089_dh_quicksilver" },
     { code: "dh_rocket", nom: "Rocket", apercu: "01089_dh_rocket" },
     { code: "dh_scarletwitch", nom: "Scarlet Witch", apercu: "01089_dh_scarletwitch" },
