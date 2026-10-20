@@ -10,35 +10,47 @@ from . import *
 #
 # Cartes de reference :
 #  - **`mut_gen/mutant_genesis_campaign/32173b`** : `face.CastTo(Ally).PutIntoPlay(initiator, effect,
-#    under_control=True)`, modele direct pour « put ... into play under your control ».
-#  - cout optionnel "Spend 3 resources of any type" : `CostFunc.Spend(Cost("3"))` (meme notation que le
-#    cout imprime d'une carte, generique, aucune couleur imposee — contrairement a Requirement).
+#    under_control=True)`, modele pour « put ... into play under your control » — MAIS sur une AUTRE
+#    carte (restee facedown sous un Environment), jamais la carte qui se defait elle-meme.
+#  - **`game/operate/run_at.py`** `RunAt.AfterEventEnd` / **`game/ability/factory/card_move.py`**
+#    `AfterCardLeavePlayInternal` (forme tuple) : le motif « differer une operation a l'evenement APRES »
+#    via `effect.RegisterTemp(ability, unregister_after_exec=True)` pose PENDANT la reaction courante.
+#
+# ⚠⚠ PIEGE TROUVE EN ECRIVANT LE CAS DE TEST (21/10/2026), resolu par instrumentation directe :
+#  - `WhenUnitBeDefeated` (forme "When") fire AVANT que la carte quitte reellement le jeu : a ce moment,
+#    `effect.this.card.area` est ENCORE la zone de jeu (confirme : `card.area.flags.is_in_play` vrai,
+#    `this.IsInPlay()` vrai). Appeler `PutIntoPlay(..., under_control=True)` a cet instant essaie de
+#    deplacer la carte vers la zone ou elle est DEJA (`CheckIfCanMove` : `if self.area == into_area: return
+#    False`) : `PutIntoPlay` rend donc `False` silencieusement, sans lever d'erreur.
+#  - `AfterUnitBeDefeated(ability_type, "This", ...)` pose comme ABILITY STANDARD (dans `GetAbilities()`)
+#    NE SE DECLENCHE JAMAIS pour la carte elle-meme : ses capacites sont deja desenregistrees au moment ou
+#    l'evenement "After" de SA PROPRE defaite part (confirme : aucune trace, meme avec un operateur trivial
+#    qui ne fait que poser de la menace).
+#  - **Solution qui marche** (confirmee par cas de test, `ok=True`) : depuis la reaction `WhenUnitBeDefeated`
+#    (qui, elle, se declenche bien), **differer** la remise en jeu via `effect.this.effect.RegisterTemp(...,
+#    unregister_after_exec=True)` sur une ability TEMPORAIRE liee a `Message.AfterUnitBeDefeated` — enregistree
+#    PENDANT que la carte est encore active, elle survit jusqu'a l'evenement "After" reel, qui arrive
+#    APRES le deplacement vers la defausse.
 #
 # ⚠ Mots-pieges :
 #  - « When Defeated » sur l'allie LUI-MEME (pas un observateur externe) : la capacite s'offre au moment
 #    ou Crystal est vaincue, le joueur peut refuser de payer (cout optionnel, pas une Reponse forcee) ;
 #  - « of any type » : pas de Requirement sur CE paiement, contrairement au Requirement d'entree en jeu.
-# ⚠⚠ ETAPE 7 FAITE, CARTE EN ECHEC CONFIRME (21/10/2026). Cas de test ecrit
-#   (`[gsc] gs229`, `tools/cas/campagne_galactic_storm.py`) : `effect.this.CastTo(Ally).PutIntoPlay(joueur,
-#   effect, under_control=True)` rend FAUX (verifie en instrumentant la valeur de retour : un cas de debug
-#   dedie confirme `ok=False`), silencieusement, sans lever d'erreur. Piste la plus probable (NON
-#   confirmee, pas eu le temps de creuser plus loin) : `Ally.OnPutIntoPlay` (`card_type/ally.py:92`) appelle
-#   `Faces.MoveAllTo([self], player.allies, by_effect)`, qui echoue — `face.card.MoveToArea(...)` a
-#   peut-etre une precondition qui refuse de deplacer une carte depuis la defausse DANS LA MEME fenetre de
-#   resolution que celle ou elle vient d'y entrer (contrairement a `32173b`, qui deplace une AUTRE carte,
-#   restee facedown sous un Environment, jamais passee par le chemin normal de defaite). Cout
-#   (`CostFunc.Spend`) laisse en place (conforme au texte imprime) mais N'EST PAS la cause : le meme echec
-#   survient cout retire. A reprendre avec plus de temps : soit un `Faces.MoveAllTo` direct vers
-#   `player.allies` plutot que via `PutIntoPlay`, soit une instrumentation du moteur pour voir la raison
-#   exacte du refus de `MoveToArea`.
 
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def crystal(effect: 'Effect', message: 'Message.WhenUnitBeDefeated') -> None:
+    def revenir(effect: 'Effect', message: 'Message.AfterUnitBeDefeated') -> None:
         Unused(message)
         joueur = effect.this.GetControlByPlayer() or effect.GetInitiator()
         effect.this.CastTo(Ally).PutIntoPlay(joueur, effect, under_control=True)
+
+    def crystal(effect: 'Effect', message: 'Message.WhenUnitBeDefeated') -> None:
+        Unused(message)
+        effect.this.effect.RegisterTemp(
+            AbilityFactory.AfterUnitBeDefeated(AbilityType.Temp2, "This", revenir),
+            unregister_after_exec=True,
+        )
 
     return [
         AbilityFactory.WhenUnitBeDefeated(
