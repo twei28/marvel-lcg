@@ -1571,4 +1571,32 @@ EPREUVES += [
         "suivant": "gs_supreme_intelligence",
         "attendu": {"menace": [["gs222a", 20]], "deck_rencontre": ["gs223"]},
     },
+    {
+        # Graine 42 : sans correction, le tirage aleatoire de l'environnement Imperial Guard au
+        # scenario 2 tombe sur gs092 (meme tirage que celui constate au scenario 1 plus haut,
+        # DETERMINISTE par graine) — exactement la carte que ce carnet entrant dit deja retiree de
+        # la campagne. `CorrigerImperialGuardExclue` doit la remplacer par une AUTRE carte du meme
+        # groupe (gs091 ou gs093), jamais par gs092 lui-meme.
+        "nom": "galactic_storm — une carte Imperial Guard deja retiree de la campagne n'est pas repiochee au scenario suivant",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "carnet": {"Imperial Guard Removed": "gs092"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "gs_majestrix_verdict",
+        "attendu": {"pas_en_jeu": ["gs092"], "un_parmi": [["en_jeu", ["gs091", "gs093"]]]},
+    },
+    {
+        # Quasar porte gs302 Epoch (allie IDENTITY-SPECIFIC, desc.Class "Hero") dans son hero_deck.
+        # Le pilote de test accepte toujours la PREMIERE option offerte : avec gs227 (Binary)
+        # disponible en reserve, « chaque_joueur_peut_remplacer_un_allie » doit retirer Epoch et
+        # poser Binary a la place.
+        "nom": "galactic_storm — remplacement cible d'un allie d'identite par un allie de campagne au scenario 5",
+        "scenario": "gs_kree_sentry",
+        "heros": "quasar",
+        "carnet": {"Campaign Pool: gs227": "1"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "gs_supreme_intelligence",
+        "heros_suivant": "quasar",
+        "attendu": {"pas_deck": ["gs302"], "deck": ["gs227"]},
+    },
 ]

@@ -14,12 +14,16 @@ invente donc pas non plus : elles restent à l'appréciation des joueurs, comme 
 sont seulement DOCUMENTÉES dans le journal (identité jouée, cartes uniques en jeu) pour que le
 panneau de récompenses les affiche.
 
-Simplification assumée : le retrait des cartes Imperial Guard « de la campagne » (victoire des
-scénarios 1 et 2) est enregistré au carnet (« Imperial Guard Removed », informationnel) mais
-N'EXCLUT PAS ces cartes du tirage aléatoire du modulaire aux scénarios suivants — ce tirage est
-piloté par `data/encounter_sets/gs_imperial_guard.json` (`random_pick`), qui ne lit pas le carnet.
-Écart mineur (le set tire parmi 23 cartes au lieu de, au pire, 17) : à reprendre si on veut la
-fidélité totale.
+Retrait Imperial Guard (décision utilisateur du 21/10/2026, fidélité totale demandée) :
+`CardFactory.RandomPick` (`game/card/factory.py`) construit le deck de rencontre AVANT que
+`WhenCampaignSetup` ne parte (c'est la face 1A de la manigance principale, mise en place APRÈS la
+formation du deck) — on ne peut donc pas lui passer une liste d'exclusion a priori sans toucher un
+mécanisme PARTAGÉ du moteur (actuellement le seul consommateur de `random_pick` est ce lot, mais le
+modifier reste un risque pour tout pack futur qui s'en servirait). Solution retenue, confinée à ce
+pack : `CorrigerImperialGuardExclue` (appelée APRÈS la mise en place), qui repère les cartes déjà
+notées « Imperial Guard Removed » si elles ont été piochées à nouveau (environnement en jeu, ou
+sbire dans le deck de rencontre) et les remplace par une autre carte du même groupe, encore
+disponible. Fonctionnellement équivalent à une vraie exclusion du tirage.
 
 Odd cards (§ "Odd cards", p.6) : le livret dit lui-même "entirely optional... players may still
 discuss them" — aucune vérification mécanique n'existe même au jeu de plateau (les joueurs
@@ -43,7 +47,9 @@ STARJAMMER_BASIC_ALLIES = {
     'gs122': "Ch'od", 'gs123': 'Corsair', 'gs124': 'Hepzibah', 'gs125': 'Korvus', 'gs126': 'Raza',
 }
 # gs091-gs111 : les 21 cartes NON-traîtrise du modulaire Imperial Guard (gs112/gs113 exclues).
-IMPERIAL_GUARD_NON_TREACHERY = [f'gs{n:03d}' for n in range(91, 112)]
+IMPERIAL_GUARD_ENVIRONMENTS = ['gs091', 'gs092', 'gs093']
+IMPERIAL_GUARD_MINIONS = [f'gs{n:03d}' for n in range(94, 112)]
+IMPERIAL_GUARD_NON_TREACHERY = IMPERIAL_GUARD_ENVIRONMENTS + IMPERIAL_GUARD_MINIONS
 GLADIATOR_MINION = 'gs098'  # le sbire Imperial Guard, distinct de l'allié de campagne gs225.
 NEGA_BOMB = 'gs222a'
 GREEN_INTERFERENCE = 'gs223'
@@ -79,6 +85,42 @@ def EnregistrerImperialGuardRetiree(effect: 'Effect', updates: dict) -> None:
     nouvelles = deja | set(utilisees)
     if nouvelles:
         updates['Imperial Guard Removed'] = ';'.join(sorted(nouvelles))
+
+
+def CorrigerImperialGuardExclue(effect: 'Effect', message: 'Message.WhenCampaignSetup') -> None:
+    """Remplace, APRÈS la mise en place, toute carte Imperial Guard déjà retirée de la campagne
+    (carnet « Imperial Guard Removed ») qui aurait quand même été piochée par le tirage aléatoire
+    du modulaire (`data/encounter_sets/gs_imperial_guard.json`). Voir le mot en tête de fichier."""
+    Unused(message)
+    retirees = set(CampaignLog.GetListInternal('Imperial Guard Removed', effect))
+    if not retirees:
+        return
+
+    # L'environnement SETTING en jeu.
+    for face in Worlds.GetOnFieldEnvironment(effect):
+        cid = face.paper.card_id
+        if cid in retirees and cid in IMPERIAL_GUARD_ENVIRONMENTS:
+            candidats = [c for c in IMPERIAL_GUARD_ENVIRONMENTS if c not in retirees]
+            if not candidats:
+                continue
+            Faces.RemoveAllFromGame([face], effect)
+            remplacement = CardFactory.GenerateCard(candidats[0], None, effect.world)
+            remplacement.face.CastTo(Environment).PutIntoPlay('FirstPlayer', effect)
+
+    # Les sbires déjà mélangés dans le deck de rencontre.
+    deck = Worlds.GetEncounterDeckCards(effect)
+    presents = {f.paper.card_id for f in deck}
+    for face in deck:
+        cid = face.paper.card_id
+        if cid in retirees and cid in IMPERIAL_GUARD_MINIONS:
+            candidats = [c for c in IMPERIAL_GUARD_MINIONS if c not in retirees and c not in presents]
+            if not candidats:
+                continue
+            choisi = candidats[0]
+            presents.add(choisi)
+            Faces.RemoveAllFromGame([face], effect)
+            remplacement = CardFactory.GenerateCard(choisi, None, effect.world)
+            Faces.ShuffleAllTo([remplacement.face], 'EncounterDeck', effect)
 
 
 def EnregistrerTimePressure(effect: 'Effect', updates: dict) -> None:
@@ -178,6 +220,8 @@ def SetupScenario5() -> List['Ability']:
                 CampaignLog.SetStr(CleCampagnePool(cid), '1', effect.world)
 
     def chaque_joueur_peut_piocher_un_allie(effect: 'Effect', message: 'Message.WhenCampaignSetup') -> None:
+        """« Each player may shuffle one ally from the campaign pool ... into their deck » : un
+        AJOUT pur, sans retirer quoi que ce soit (distinct de la fonction suivante, qui REMPLACE)."""
         Unused(message)
         for player in Worlds.GetPlayers(effect):
             disponibles = [cid for cid in ALLIES_IDENTITY_SPECIFIC
@@ -198,16 +242,54 @@ def SetupScenario5() -> List['Ability']:
                 AbilityFactory.ForChoiceAbility("Ne rien mélanger", lambda _t: None),
             )
 
+    def chaque_joueur_peut_remplacer_un_allie(effect: 'Effect', message: 'Message.WhenCampaignSetup') -> None:
+        """« Each player may choose one identity-specific ally in their deck and replace it with a
+        campaign identity-specific ally from the Galactic Storm set ... » : RETIRE un allié
+        IDENTITY-SPECIFIC du deck (desc.Class, `ClassCard.IsClass`, base native du moteur) et pose
+        un allié de la réserve à la place — distinct de la fonction précédente, qui ne fait
+        qu'ajouter. « ne correspond à aucune carte unique » (prohibited cards, p.6) : non vérifié
+        mécaniquement ici, voir le mot en tête de fichier sur la restriction de deckbuilding."""
+        Unused(message)
+        for player in Worlds.GetPlayers(effect):
+            disponibles = [cid for cid in ALLIES_IDENTITY_SPECIFIC
+                           if CampaignLog.GetStrInternal(CleCampagnePool(cid), effect) == '1']
+            allies_identite = [f for f in player.player_deck.FindCards(card_type=Ally)
+                                if f.IsClass("IdentitySpecific")]
+            if not disponibles or not allies_identite:
+                continue
+
+            def remplacer(ancien: 'CardFace', cid: str):
+                def action(_targets: Sequence['CardFace']):
+                    Faces.RemoveAllFromGame([ancien], effect)
+                    card = CardFactory.GenerateCard(cid, player.player_deck, effect.world)
+                    Faces.ShuffleAllTo([card.face], player.player_deck, effect)
+                return action
+            choix = [
+                AbilityFactory.ForChoiceAbility(
+                    f"Remplacer {ancien.paper.card_id} ({ancien.paper.name}) par {cid} (réserve de campagne)",
+                    remplacer(ancien, cid))
+                for ancien in allies_identite for cid in disponibles
+            ]
+            player.ChooseAbilities(
+                effect, *choix,
+                AbilityFactory.ForChoiceAbility("Ne rien remplacer", lambda _t: None),
+            )
+
     return [
         AbilityFactoryCampaign.WhenCampaignSetup(placer_nega_bomb),
         AbilityFactoryCampaign.WhenCampaignSetup(melanger_green_interference),
         AbilityFactoryCampaign.WhenCampaignSetup(allies_bonus_odd_cards),
         AbilityFactoryCampaign.WhenCampaignSetup(chaque_joueur_peut_piocher_un_allie),
+        AbilityFactoryCampaign.WhenCampaignSetup(chaque_joueur_peut_remplacer_un_allie),
     ]
 
 
 def CampaignSetup(level: int) -> List['Ability']:
     abilities: List['Ability'] = []
+    if level in (1, 2, 4):
+        # Imperial Guard est utilisée (et sa randomisation corrigée pour tenir compte des cartes
+        # déjà retirées) aux scénarios 1, 2 et 4 (absente du scénario 3, voir REGLES.md §10/11).
+        abilities.append(AbilityFactoryCampaign.WhenCampaignSetup(CorrigerImperialGuardExclue))
     if level == 5:
         abilities += SetupScenario5()
     abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())

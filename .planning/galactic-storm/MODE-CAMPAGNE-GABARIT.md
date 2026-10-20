@@ -31,25 +31,43 @@ Shadow), la boîte la plus proche en volume (234 lignes) et déjà conçue pour
     tel quel dans REGLES.md §11).
   - Time Pressure (round du cadran) : enregistrée aux scénarios 2-4,
     REMPLACÉE SEULEMENT SI LA NOUVELLE VALEUR EST PLUS HAUTE (texte imprimé
-    pris au pied de la lettre, voir « Écart assumé » plus bas).
+    pris au pied de la lettre — confirmé avec l'utilisateur le 21/10/2026,
+    aucun changement).
+  - **Imperial Guard, exclusion RÉELLE** (décision utilisateur du 21/10/2026) :
+    `CorrigerImperialGuardExclue`, appelée après la mise en place aux
+    scénarios 1, 2 et 4, remplace toute carte déjà notée « Imperial Guard
+    Removed » si le tirage aléatoire du modulaire l'a quand même repiochée
+    (environnement en jeu ou sbire dans le deck de rencontre), par une autre
+    carte du même groupe encore disponible. `CardFactory.RandomPick`
+    lui-même n'a pas été touché (mécanisme partagé, réutilisable par
+    d'autres packs à l'avenir) : la correction reste confinée à ce pack.
   - Scénario 5 (Supreme Intelligence), mise en place : Nega-Bomb (gs222a) en
     jeu avec menace = Time Pressure × nombre de joueurs (remplace sa menace
     imprimée 8[par héros]) ; les deux Green Interference (gs223) mélangées au
     deck de rencontre ; pour chaque bonne devinette « Odd card » (case saisie
     par le joueur, voir plus bas), le groupe choisit un allié IDENTITY-SPECIFIC
     à ajouter à la réserve ; chaque joueur peut ensuite mélanger un allié de la
-    réserve dans son deck.
+    réserve dans son deck ; **et désormais, remplacement CIBLÉ** (décision
+    utilisateur du 21/10/2026) : `chaque_joueur_peut_remplacer_un_allie`
+    retire un allié IDENTITY-SPECIFIC du deck (`ClassCard.IsClass`, base
+    native) et pose un allié de la réserve à sa place, fidèle au texte
+    imprimé.
   - Expert : PV persistants + soin par pion accélération réutilisés tels
     quels depuis `mts.campaign` (`ExpertCampaignSetPlayersHPToTheirRemainingHP`,
     `ExpertMayPlaceAccelerationToHeal`), aucun code propre nécessaire.
-- **`tools/epreuves_campagnes.py`** : 3 épreuves (boucle complète victoire →
-  mise en place suivante), **3/3 vertes** :
+- **`tools/epreuves_campagnes.py`** : 5 épreuves (boucle complète victoire →
+  mise en place suivante), **5/5 vertes** :
   1. victoire Kree Sentry avec Gladiator vaincu : Rick Jones + Gladiator
      recrutés, Imperial Guard retirée notée ;
   2. victoire Kree Sentry sans Gladiator : seul Rick Jones recruté (contre-cas) ;
   3. Time Pressure cumulée → menace de départ de la Nega-Bombe au scénario 5
      (la preuve la plus importante : un carnet ENTRANT change vraiment la mise
-     en place de la partie SUIVANTE).
+     en place de la partie SUIVANTE) ;
+  4. une carte Imperial Guard déjà retirée de la campagne (carnet entrant)
+     n'est pas repiochée au scénario suivant, remplacée par une autre du
+     même groupe ;
+  5. remplacement ciblé d'un allié d'identité (Epoch, Quasar) par un allié de
+     campagne (Binary) disponible en réserve.
 - `test_cards` 7019/7019, `verifier_appels_modules galactic_storm` : OK.
 - Corrections au passage : `data/sets_info.json` « 144. Custom (Galactic
   Storm) » listait 4 scénarios sur 5 (Earth Under Siege manquait) et un
@@ -88,13 +106,8 @@ Shadow), la boîte la plus proche en volume (234 lignes) et déjà conçue pour
   et le jeu de plateau lui-même ne la vérifie pas mécaniquement non plus
   (le joueur la respecte en la lisant sur son carnet). Pas de code ajouté ;
   le carnet continue d'enregistrer l'identité jouée à chaque partie (déjà
-  fait nativement par `WriteCampaignLogAtGameOver`, réutilisé).
-- **Retrait Imperial Guard pas réellement exclu du tirage aléatoire futur** :
-  noté au carnet (affiché au joueur), mais le tirage « 1 environnement + 6
-  sbires au hasard » (`data/encounter_sets/gs_imperial_guard.json`,
-  `random_pick`) ne lit pas cette liste. Écart mineur documenté en tête de
-  `campaign.py` : à reprendre si on veut la fidélité totale (il faudrait
-  paramétrer `CardFactory.RandomPick` avec une liste d'exclusion).
+  fait nativement par `WriteCampaignLogAtGameOver`, réutilisé). Confirmé
+  avec l'utilisateur le 21/10/2026 : pas de nouveau chantier moteur pour ça.
 - **Odd cards** : le livret lui-même dit que c'est une devinette facultative,
   non vérifiée mécaniquement même au jeu de plateau (« players may still
   discuss them to determine which was the Odd card »). Implémenté fidèlement
@@ -104,24 +117,15 @@ Shadow), la boîte la plus proche en volume (234 lignes) et déjà conçue pour
   higher than the Time Pressure value recorded, replace it with the dial
   value » — la valeur ne BAISSE jamais, même si elle semble aller à l'encontre
   de l'esprit « fewer rounds, better position » décrit juste au-dessus dans le
-  même livret. Appliqué tel qu'imprimé (règle du projet : fidélité à 100 %,
-  ne jamais « corriger » un texte qui semble bizarre sans trancher avec
-  l'utilisateur) — **point à confirmer avec l'utilisateur si besoin**, pas
-  encore posé en question.
+  même livret. **Confirmé avec l'utilisateur le 21/10/2026** : lecture
+  littérale retenue, aucun changement.
 
 ## Reste à faire pour une fidélité totale
 
-- Trancher avec l'utilisateur le point Time Pressure ci-dessus (lecture
-  littérale retenue par défaut, pas encore validée).
-- Exclusion réelle des cartes Imperial Guard retirées du tirage aléatoire
-  futur (actuellement informationnel seulement).
-- « Each player may choose one identity-specific ally in their deck and
-  replace it with a campaign identity-specific ally » (scénario 5) :
-  implémenté de façon SIMPLIFIÉE (mélanger un allié de la réserve dans son
-  deck, sans retirer/remplacer un allié existant précis) — le remplacement
-  ciblé n'a pas été construit faute de temps.
-- Aucune partie manuelle/autoplay complète des 5 scénarios enchaînés n'a été
-  jouée : seules les épreuves ciblées (3/3) et la construction (`test_cards`)
-  sont vérifiées. Une vraie partie de bout en bout reste le seul juge final
-  (comme toujours, voir PROCESSUS-CARTE.md §"Ce que ces blocs ne peuvent pas
-  voir").
+- gs224 Rick Jones et gs226 Lauri-Ell (lot des 13 cartes de campagne, pas le
+  mode campagne) : substitution non concluante, investigation demandée par
+  l'utilisateur, en cours (voir CAMPAGNE-ALLIEES-GABARITS.md).
+- Partie/autoplay complète des 5 scénarios enchaînés : demandée par
+  l'utilisateur, en cours.
+- Pages de livret pour l'écran de campagne (`pages_regles`, `intro`/`regles`/
+  `epilogue` par scénario) : demandées par l'utilisateur, en cours.
