@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.galactic_storm.campaign import CampaignSetup
 
 # Sentry Awakens (1A) — MANIGANCE PRINCIPALE, stade 1 (Kree Sentry).
 # Contents: Kree Sentry (I) and Kree Sentry (II) (Kree Sentry (II) and Kree Sentry (III) instead for expert mode).
@@ -28,4 +29,5 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenCardSetup("This", mise_en_place),
+        *CampaignSetup(1),
     ]

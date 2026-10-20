@@ -1,0 +1,179 @@
+{
+ "version": "1.0",
+ "code": "galactic_storm",
+ "cle_extension": "144. Custom (Galactic Storm)",
+ "nom": "Tempête Galactique",
+ "nom_en": "Galactic Storm",
+ "resume": "Kree et Shi'ar s'affrontent jusqu'à menacer la Terre et Hala d'une arme capable d'effacer un peuple entier. Chaque joueur incarne trois identités différentes au fil des cinq scénarios, et la Suprême Intelligence tire les ficelles depuis le début.",
+ "resume_en": "Kree and Shi'ar collide until a weapon capable of erasing a people threatens both Earth and Hala. Each player plays three different heroes across the five scenarios, and the Supreme Intelligence has been pulling the strings all along.",
+ "expert": {
+  "pv_persistants": true
+ },
+ "pages_regles": [],
+ "scenarios": [
+  {
+   "id": "gs_kree_sentry",
+   "numero": 1,
+   "nom": "Kree Sentry",
+   "nom_fr": "Sentinelle Kree",
+   "resume": "Une Sentinelle Kree s'éveille sur Terre. Rick Jones, piégé sous une Poigne de la Sentinelle, devient la cible de ses attaques.",
+   "enjeu": "Rick Jones et, si Gladiator tombe, l'Accusateur Shi'ar rejoignent votre réserve de campagne. Les cartes Imperial Guard utilisées ici quittent la campagne.",
+   "victoire": [
+    {
+     "cle": "Recruited Allies",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Alliés recrutés",
+     "aide": "Rick Jones rejoint toujours la réserve de campagne ; Gladiator (s'il est vaincu) aussi."
+    },
+    {
+     "cle": "Imperial Guard Removed",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Cartes Imperial Guard retirées de la campagne",
+     "aide": "Les cartes non-traîtrises de l'Imperial Guard utilisées dans cette partie ne reviendront plus dans les scénarios suivants qui emploient ce modulaire (note informative : le tirage aléatoire du set ne les exclut pas encore automatiquement)."
+    },
+    {
+     "cle": "Odd Guesses Correct",
+     "type": "choix",
+     "format": "int",
+     "libelle": "Devinette « Odd card » juste ? (0 ou 1, comparée aux solutions p.19 une fois la campagne terminée)",
+     "aide": "Optionnel, sans effet avant le scénario 5 : chaque bonne devinette enregistrée sur les scénarios 1 à 4 donne un allié de campagne supplémentaire à la mise en place du scénario 5."
+    }
+   ],
+   "pages": {"intro": [], "regles": [], "epilogue": []}
+  },
+  {
+   "id": "gs_majestrix_verdict",
+   "numero": 2,
+   "nom": "Majestrix's Verdict",
+   "nom_fr": "Le Verdict de la Majestrix",
+   "resume": "Les Starjammers croupissent dans les geôles de Chandilar pendant que Deathbird juge Lilandra. Chaque Starjammer libéré peut rejoindre votre camp.",
+   "enjeu": "Les Starjammers libérés et, si Gladiator tombe, l'Accusateur rejoignent votre réserve de campagne. Le nombre de rounds joués devient votre « Time Pressure » de départ.",
+   "victoire": [
+    {
+     "cle": "Recruited Allies",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Alliés recrutés",
+     "aide": "Chaque Starjammer basique (Ch'od, Corsair, Hepzibah, Korvus, Raza) encore en jeu à la victoire rejoint la réserve de campagne ; Gladiator aussi s'il est vaincu."
+    },
+    {
+     "cle": "Imperial Guard Removed",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Cartes Imperial Guard retirées de la campagne",
+     "aide": "Voir scénario 1."
+    },
+    {
+     "cle": "Time Pressure",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Time Pressure (valeur du cadran de round)",
+     "aide": "Décide de la menace de départ de la Néga-Bombe au scénario 5. Le livret ne fait JAMAIS redescendre cette valeur d'un scénario à l'autre (seulement la remplacer si le scénario suivant est plus long)."
+    },
+    {
+     "cle": "Odd Guesses Correct",
+     "type": "choix",
+     "format": "int",
+     "libelle": "Devinette « Odd card » juste ?",
+     "aide": "Voir scénario 1."
+    }
+   ],
+   "pages": {"intro": [], "regles": [], "epilogue": []}
+  },
+  {
+   "id": "gs_hala_ultimatum",
+   "numero": 3,
+   "nom": "Hala Ultimatum",
+   "nom_fr": "Ultimatum sur Hala",
+   "resume": "Le Chef Kree, caché (HIDDEN), prépare un ultimatum pour la Terre depuis Hala.",
+   "enjeu": "Lauri-Ell rejoint votre réserve de campagne. Le scénario n'emploie pas l'Imperial Guard : aucun retrait ici.",
+   "victoire": [
+    {
+     "cle": "Recruited Allies",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Alliés recrutés",
+     "aide": "Lauri-Ell rejoint toujours la réserve de campagne."
+    },
+    {
+     "cle": "Time Pressure",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Time Pressure (valeur du cadran de round)",
+     "aide": "Voir scénario 2."
+    },
+    {
+     "cle": "Odd Guesses Correct",
+     "type": "choix",
+     "format": "int",
+     "libelle": "Devinette « Odd card » juste ?",
+     "aide": "Voir scénario 1."
+    }
+   ],
+   "pages": {"intro": [], "regles": [], "epilogue": []}
+  },
+  {
+   "id": "gs_earth_under_siege",
+   "numero": 4,
+   "nom": "Earth Under Siege",
+   "nom_fr": "La Terre assiégée",
+   "resume": "Annihilus, Attuma, Destroyer, Doctor Minerva, Mole Man et Veranke frappent la Terre tous ensemble, un méchant à la fois révélé.",
+   "enjeu": "Si Gladiator tombe, il rejoint votre réserve de campagne. Le nombre de rounds joués peut encore augmenter votre « Time Pressure ».",
+   "victoire": [
+    {
+     "cle": "Recruited Allies",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Alliés recrutés",
+     "aide": "Gladiator rejoint la réserve de campagne s'il est vaincu."
+    },
+    {
+     "cle": "Time Pressure",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Time Pressure (valeur du cadran de round)",
+     "aide": "Voir scénario 2. Dernière occasion de l'augmenter avant le scénario 5."
+    },
+    {
+     "cle": "Odd Guesses Correct",
+     "type": "choix",
+     "format": "int",
+     "libelle": "Devinette « Odd card » juste ?",
+     "aide": "Voir scénario 1. Dernier scénario qui porte une carte intruse."
+    }
+   ],
+   "pages": {"intro": [], "regles": [], "epilogue": []}
+  },
+  {
+   "id": "gs_supreme_intelligence",
+   "numero": 5,
+   "nom": "Supreme Intelligence",
+   "nom_fr": "Suprême Intelligence",
+   "resume": "La Suprême Intelligence, qui a manipulé toute la campagne depuis l'ombre, lance la Néga-Bombe sur Hala.",
+   "enjeu": "Scénario final : vaincre la Suprême Intelligence termine la campagne. La Néga-Bombe entre en jeu avec une menace fixée par votre Time Pressure cumulée ; vos bonnes devinettes « Odd card » donnent des alliés de campagne supplémentaires.",
+   "victoire": [
+    {
+     "cle": "Campaign Completed",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Campagne terminée",
+     "aide": "La Suprême Intelligence est vaincue : la campagne Galactic Storm est gagnée."
+    }
+   ],
+   "pages": {"intro": [], "regles": [], "epilogue": []}
+  }
+ ],
+ "victoire_commune_expert": [
+  {
+   "cle": "Remaining hit points",
+   "parJoueur": true,
+   "type": "auto",
+   "format": "int",
+   "detection": "pv_restants",
+   "libelle": "Points de vie restants",
+   "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie (plafonnés à la valeur imprimée)."
+  }
+ ]
+}

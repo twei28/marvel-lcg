@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.galactic_storm.campaign import CampaignSetup
 
 # Protectors of the Kree Empire (1A) — COMPLOT PRINCIPAL (Supreme Intelligence).
 # Contents: Supreme Intelligence (I) and (II) (... (II) and (III) instead for expert mode). Supreme
@@ -34,4 +35,5 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenCardSetup("This", mise_en_place),
+        *CampaignSetup(5),
     ]

@@ -1888,7 +1888,8 @@
    "gs_majestrix_verdict",
    "gs_supreme_intelligence",
    "gs_kree_sentry",
-   "gs_hala_ultimatum"
+   "gs_hala_ultimatum",
+   "gs_earth_under_siege"
   ],
   "heroes": [
    "binary",
@@ -1904,7 +1905,7 @@
    "gs_hala_ultimatum",
    "gs_accuser_corps"
   ],
-  "max_id": "gs223"
+  "max_id": "gs349"
  },
  "checksum": "448899ef45a159143d320a556f462b35ba83bf2415f05dcffe75d685603909ef"
 }

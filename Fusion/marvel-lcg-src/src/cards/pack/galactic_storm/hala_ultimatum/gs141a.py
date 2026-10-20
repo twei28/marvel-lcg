@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.galactic_storm.campaign import CampaignSetup
 
 # Hidden Might of Hala (1A) — MANIGANCE PRINCIPALE, stade 1.
 # Contents: Kree Leader (I) and Kree Leader (II) (Kree Leader (II) and Kree Leader (III) instead for expert
@@ -31,4 +32,5 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenCardSetup("This", mise_en_place),
+        *CampaignSetup(3),
     ]

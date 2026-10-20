@@ -1519,3 +1519,56 @@ EPREUVES += [
         "attendu": {"taille_main": 6},
     },
 ]
+
+
+# ============================================================ Galactic Storm (galactic_storm)
+#
+# Carnet : « Recruited Allies » / « Campaign Pool: <nom> » (listes/drapeaux cumulatifs), « Imperial
+# Guard Removed » (liste, informationnel — voir le mot en tete de cards/pack/galactic_storm/
+# campaign.py), « Time Pressure » (entier, ne baisse jamais), « Odd Guesses Correct » (entier,
+# saisi par le joueur), « Campaign Completed ». Le moteur ecrit tout (campaign.py), le panneau
+# n'a rien a detecter seul (victoire majoritairement "auto" sans "detection").
+EPREUVES += [
+    {
+        "nom": "galactic_storm — victoire Kree Sentry, Gladiator vaincu : Rick Jones ET Gladiator rejoignent la reserve, l'Imperial Guard utilisee est notee",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "avant": [
+            "Puzzle.PutIntoPlay('gs098')", "Puzzle.Damage('gs098', 8)",
+            "Puzzle.PutIntoPlay('gs094')",
+        ],
+        "carnet_attendu": {
+            "gagnee": True,
+            "cles": {
+                "Recruited Allies": "Rick Jones;Gladiator",
+                "Campaign Pool: Rick Jones": "1",
+                "Campaign Pool: Gladiator": "1",
+                "Imperial Guard Removed": "gs092;gs094;gs098",
+            },
+        },
+    },
+    {
+        # gs092 (un des 3 environnements Loyal Devotion/Disciplined Training/Noble Bearing) entre
+        # TOUJOURS en jeu de base des que le modulaire Imperial Guard est actif (un seul SETTING en
+        # jeu, choisi au hasard a la mise en place du scenario) : sa presence dans « Imperial Guard
+        # Removed » ne depend donc PAS d'un allie explicitement pose par l'epreuve.
+        "nom": "galactic_storm — victoire Kree Sentry SANS Gladiator vaincu : seul Rick Jones rejoint la reserve, l'environnement Imperial Guard de base est quand meme note",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "carnet_attendu": {
+            "gagnee": True,
+            "cles": {"Recruited Allies": "Rick Jones", "Campaign Pool: Rick Jones": "1",
+                      "Imperial Guard Removed": "gs092"},
+            "cles_absentes": ["Campaign Pool: Gladiator"],
+        },
+    },
+    {
+        "nom": "galactic_storm — Time Pressure cumulee (venue du carnet) fixe la menace de depart de la Nega-Bombe au scenario 5",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "carnet": {"Time Pressure": "20"},
+        "carnet_attendu": {"gagnee": True, "cles": {"Time Pressure": "20"}},
+        "suivant": "gs_supreme_intelligence",
+        "attendu": {"menace": [["gs222a", 20]], "deck_rencontre": ["gs223"]},
+    },
+]

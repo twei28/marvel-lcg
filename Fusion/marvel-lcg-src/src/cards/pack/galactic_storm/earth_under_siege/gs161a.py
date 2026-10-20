@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.galactic_storm.campaign import CampaignSetup
 
 # Earthfall (1A) — MANIGANCE PRINCIPALE, stade 1.
 # Content: Earth Under Siege, Annihilus, Attuma, Destroyer, Doctor Minerva, Mole Man, Veranke and Standard
@@ -52,4 +53,5 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenCardSetup("This", mise_en_place),
+        *CampaignSetup(4),
     ]

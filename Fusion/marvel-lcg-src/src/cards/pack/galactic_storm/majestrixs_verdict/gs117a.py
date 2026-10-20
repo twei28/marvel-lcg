@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.galactic_storm.campaign import CampaignSetup
 
 # Earn the People's Favor (1A) — MANIGANCE PRINCIPALE, stade 1 (Majestrix's Verdict).
 # Contents: Deathbird (I) and Deathbird (II) (Deathbird (II) and Deathbird (III) instead for expert mode).
@@ -31,4 +32,5 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenCardSetup("This", mise_en_place),
+        *CampaignSetup(2),
     ]
