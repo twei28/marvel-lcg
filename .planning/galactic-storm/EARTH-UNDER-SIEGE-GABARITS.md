@@ -189,12 +189,34 @@ Prochaine étape pour clore ce doute : relire `src/game/card/face/model/face_on_
 (`AbilityFactoryActivate.AfterEnemyActivationEnd`) avec plus de temps, ou vérifier directement en partie
 réelle / autoplay (le chemin de code normal du jeu, pas celui de `Puzzle.Reveal`/`Puzzle.Attack`).
 
-## Reste du lot (gs170-gs194, gsr01-gsr10)
+## Attuma (gs170-gs175) : CONSTRUCTION VÉRIFIÉE, PREUVE PAR CAS ÉLARGIE À ÉCHOUÉ
+
+**⚠ Deuxième découverte, qui élargit celle d'Annihilus.** gs170/gs171 (bonus SCH/ATK conditionnel,
+`ThisGainKeyword` + `check_fn`), gs174 (riposte conditionnelle, même mécanique), gs172/gs173 (attache avec
+branche « Otherwise, attach to the villain », `AttachToFaceWhenPutIntoPlay` + `otherwise_attach_to`), gs175
+(When Revealed, compte « for each »): les 6 cartes construisent sans erreur mais **aucune** ne prouve son
+effet dans ce harnais, dès que le montage implique DEUX cartes de l'ensemble en jeu en même temps ou une
+branche de secours (« Otherwise »). Vérifié directement : `Worlds.FindCardsOnField(effect,
+CardFinder(trait="ATLANTIS"))` trouve bien les deux cartes attendues quand on l'appelle à la main (logique
+saine) — c'est le DÉCLENCHEMENT/RECALCUL depuis l'ability (`ThisGainKeyword`/`WhileValid`,
+`AttachToFaceWhenPutIntoPlay` à deux branches) qui ne mord pas sous `Puzzle.PutIntoPlay`, avec ou sans
+`change_on_event=OnEvent.CardInPlay(...)` explicite. Piste non confirmée : le harnais `Puzzle` ne génère
+peut-être pas l'événement qui ferait recalculer un effet continu/une sélection à deux branches en dehors du
+déroulement normal du jeu — à vérifier avec plus de temps ou en partie réelle. Les 10 cartes de ce lot
+(Annihilus + Attuma) partagent donc le même statut : **construction correcte, comportement à confirmer
+hors de ce harnais**.
+
+## Reste du lot (gs176-gs194, gsr01-gsr10)
 
 Entrées `cards.json` écrites et vérifiées (`test_cards`, 0 erreur), mais **aucun script ni cas de test
-encore écrit** pour les 5 méchants restants (Attuma, Destroyer, Doctor Minerva, Mole Man, Veranke) ni pour
-les 10 reskins (ability_link, pas de script attendu mais pas encore vérifiés en jeu). Prochaine étape du
-lot : un méchant à la fois, dans l'ordre du scénario, questions une à une avec capture quand un doute se
-présente. Pour les capacités « When Revealed »/« When Defeated » des cartes d'ensemble, privilégier la
-preuve par construction + lecture attentive plutôt que de re-creuser la même piste de harnais à chaque
-carte — remonter le doute une seule fois (ci-dessus), pas 6 fois.
+encore écrit** pour les 4 méchants restants (Destroyer, Doctor Minerva, Mole Man, Veranke) ni pour les 10
+reskins (ability_link, pas de script attendu mais pas encore vérifiés en jeu). Prochaine étape du lot : un
+méchant à la fois, dans l'ordre du scénario, questions une à une avec capture quand un doute se présente.
+
+**Vu le volume de capacités qui ne se prouvent pas dans ce harnais (voir Annihilus et Attuma ci-dessus),
+les méchants restants sont construits et vérifiés par `test_cards`/lecture attentive du texte imprimé
+contre le code, SANS reprendre un cas de test par capacité à chaque fois** — cela éviterait de dépenser le
+budget restant à re-découvrir le même problème 4 fois de plus. Cas de test écrits seulement pour les
+mécaniques qui n'impliquent qu'UNE SEULE carte en jeu sans branche de secours (celles-là ont prouvé marcher :
+gs163, gs164, gs165, gs168). Point à trancher avec l'utilisateur en fin de lot : vérification complète en
+partie réelle / autoplay avant de considérer GS-7 clos.

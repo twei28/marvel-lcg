@@ -73,3 +73,31 @@ def CapacitesAnnihilus() -> List['Ability']:
     return [
         AbilityFactory.AfterEnemyActivatesAgainstYou(AbilityType.ForcedResponse, "This", apres_activation),
     ]
+
+
+def CapacitesAttuma() -> List['Ability']:
+    """Stades I et II (gs170/gs171), texte identique hors Toughness (native, desc.Toughness, stade II
+    seulement) : « [star] While another ATLANTIS card is in play, Attuma gets +1 SCH and +1 ATK. »"""
+    def autre_atlantis(effect: 'Effect', ui: List['CardFace']) -> int:
+        autres = [f for f in Worlds.FindCardsOnField(effect, CardFinder(trait="ATLANTIS")) if f is not effect.this]
+        if autres:
+            ui.append(autres[0])
+            return 1
+        return 0
+
+    return [
+        AbilityFactory.ThisGainKeyword(
+            autre_atlantis, attack=1, scheme=1,
+            change_on_event=OnEvent.CardInPlay(CardFinder(trait="ATLANTIS")),
+        ),
+    ]
+
+
+def UneAutreCarteAtlantisEstEnJeu(effect: 'Effect', ui: 'List[CardFace]') -> int:
+    """« While/for each ATLANTIS card is in play » hors This : partage par gs174 Andromeda et gs175 Rising
+    Sea Levels."""
+    autres = [f for f in Worlds.FindCardsOnField(effect, CardFinder(trait="ATLANTIS")) if f is not effect.this]
+    if autres:
+        ui.append(autres[0])
+        return 1
+    return 0
