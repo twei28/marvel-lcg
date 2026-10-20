@@ -4916,4 +4916,22 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '64011': "Temporaire.\n<b>Action de héros</b> : retirez 2 jetons Chi d'Iron Fist → redressez-le.",
   '64012': "Temporaire.\n<b>Ressource de héros</b> : retirez 2 jetons Chi d'Iron Fist → générez des ressources [wild] [wild].",
 
+  // Binary (Galactic Storm, Kajislav, lot GS-1, 20/10/2026) : heros, signatures, obligation, nemesis.
+  'gs001a': "X est égal au nombre de ressources [energy] dans votre main (5 maximum).\n<i>Burnout</i> — <b>Réponse forcée</b> : après la fin de votre tour, défaussez chaque ressource [energy] de votre main.",
+  'gs001b': "Votre deck doit contenir autant de cartes avec une ressource imprimée [energy], [mental] et [physical].\n<i>Exploring Space</i> — <b>Action</b> : piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
+  'gs002': "1 max par round.\n<b>Action de héros</b> : piochez 3 cartes. Subissez 1 dégât pour chaque ressource autre que [energy] piochée de cette façon.",
+  'gs003': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, pour chaque ressource [energy] dans votre main, évitez 1 de ces dégâts et soignez 1 dégât de Binary.",
+  'gs004': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si vous avez au moins des ressources [energy] [energy] dans votre main, redressez Binary.",
+  'gs005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si vous avez au moins des ressources [energy] [energy] dans votre main, infligez 2 dégâts supplémentaires à cet ennemi.",
+  'gs006': "<b>Réponse</b> : après avoir dépensé cette carte, mélangez-la dans votre deck.",
+  'gs007': "<b>Action</b> : inclinez Prophet-Singer → regardez la carte du dessus de votre deck et échangez-la avec une carte de votre main.",
+  'gs008': "<b>Action de héros</b> : inclinez White Hole → défaussez des cartes du dessus de votre deck jusqu'à défausser une carte avec une ressource [energy] imprimée. Ajoutez cette carte à votre main.",
+  'gs009': "Tant que le nombre de ressources [energy] dans votre main est égal à :\n• 1 ou 2 - Binary gagne Riposte 1.\n• 3 ou 4 - Binary gagne Riposte 2.\n• 5 ou plus - Binary gagne Riposte 3.",
+  'gs010': "Temporaire.\nConsidérez les ressources imprimées de chaque carte de votre main comme des ressources [energy].",
+  'gs011': "Tant que le nombre de ressources [energy] dans votre main est d'au moins :\n• 1 - Vos attaques de base gagnent À Distance.\n• 2 - Vos attaques de base gagnent aussi Perçant.\n• 3 - Vos attaques de base gagnent aussi Déferlement.",
+  'gs031': "<b><i>Donnez cette carte au joueur Carol Danvers.</i></b>\nTant que vous êtes sous forme de héros, votre taille de main est réduite de 1.\n<b>Action d'alter ego</b> : inclinez Carol Danvers et défaussez une carte propre à l'identité de votre main → retirez Forgotten Life de la partie.",
+  'gs032': "<b>Réponse forcée</b> : après le début de la phase des joueurs, trouvez Touched et attachez-la à un personnage autre que Rogue. S'il s'agit d'un personnage ami, inclinez ce personnage.\n<b>Une fois vaincu</b> : défaussez Touched.\n<i>(Sbire némésis de Binary.)</i>",
+  'gs237': "Si Rogue est en jeu, attachez cette carte à un personnage autre que Rogue. Sinon, cette carte gagne Renfort.\nTant que Touched est attachée à :\n• un sbire, Rogue gagne Riposte 2 ;\n• un méchant, réduisez de 2 les dégâts que Rogue subit de chaque attaque ;\n• un allié, Rogue gagne +2 ATQ ;\n• une identité, Rogue gagne Vilenie.",
+  'gs239': "Tant que Touched est attachée à un personnage ami, Rogue gagne +1 MNG.\nTant que Touched est attachée à un personnage ennemi, Rogue gagne +1 ATQ.",
+  'gs240': "<b>Une fois révélée</b> : défaussez chaque ressource [energy] de votre main. Si aucune carte n'a été défaussée de cette façon, subissez 3 dégâts.",
 }

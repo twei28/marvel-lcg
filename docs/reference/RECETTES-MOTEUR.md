@@ -1753,3 +1753,19 @@ vérificateur, infliger des dégâts « au nom » d'une carte par `cible.TakeDam
 
 Banc : `Puzzle.SetVillainRule`, `Puzzle.SetActiveVillain`, `Puzzle.RemoveVillain`, `Puzzle.BuildVillainDeck`,
 `Puzzle.RevealNextVillain`.
+
+## 17. Binary (Galactic Storm, Kajislav, `gs001a`-`gs240`, 20/10/2026) : ce que ce pack a payé
+
+| Mécanique imprimée | Fabrique / chemin | Carte modèle | Piège |
+|---|---|---|---|
+| « X is the number of [energy] resources in your hand » (statistique imprimée X) | `ThisGainKeyword(fn, attack=1, change_on_event=[OnEvent.HandCards("EngagedPlayer"), OnEvent.CardInPlay(CardFinder(name="Energy Conversion"))])`, `desc.ATK = "0"` | `gs001a`, `mw001a`, `27154` | compter des ICÔNES avec `FacesCounter.GetPrintedResourcesCount([f], "Y")` (passe par `WhenCountingResourcesOnCards`, donc voit les conversions) ; un effet qui change la COULEUR sans bouger la main doit être ajouté aux événements de recalcul |
+| « Treat the printed resources of each card in your hand as if they were [energy] » | `WhenCountingResourcesOnCards(None, op, from_where=<main du contrôleur>)` + `message.SetReturnValue(Resources("Y" * n))` | `gs010`, `29038` Haywire | Haywire ramène à UNE icône : garder le NOMBRE ; vaut aussi à la dépense (le paiement lit `printed_resource`) |
+| « discard ... until you discard a card with a printed [energy] resource » | `joueur.DiscardDeckUntil(effect, has_printed_res="Y")` | `gs008` | `Deck.DiscardUntil` rend None quand il vide le deck même si la dernière carte est la cherchée (§7unvicies) : repérer la cible AVANT et la rendre |
+| « Your basic attacks gain ranged / piercing / overkill » (paliers) | trois `UnitAttackGainKeyword("You", is_basic_attack=True, conditions=[seuil], ranged=/piercing=/overkill=True)` | `gs011` | témoins : Whiplash 01172 (Riposte), Rhino Tenace, sbire à 1 PV pour l'excès |
+| Attachement de rencontre posé sur N'IMPORTE QUEL personnage, effets selon le TYPE du porteur | `AttachToFaceWhenPutIntoPlay(CardFinder(card_type=Unit2, check_effect_fn=...), if_cannot_gain_surge=True)` + `GiveKeywordToInPlayWhenApplyThis(<cible>, retaliate=/attack=/villainous=1, get_new_value=fn, change_on_event=[OnEvent.TemplateTrigger(Message.AfterCardAttachTo), OnEvent.TemplateTrigger(Message.AfterCardDetachFrom), ...])` | `gs237` Touched, `gs239` | `get_new_value` REMPLACE la valeur (rendre 0 hors palier) ; le porteur se lit par `attached_face` ; « Rogue » désigné par nom ET type (`Minion`) à cause du héros officiel Rogue 38001a et de son Touched 38002 |
+| Règle de deck « equal number of cards with a printed [x], [y], [z] resource » | `metadata.deckbuilding.ressources_egales = {couleurs, label}` du deck de départ, jugée par `problemesRessourcesEgales` (`public/js/deckbuilder/regles.js`) | `gs001b` | compte des CARTES, wild exclu, cartes de campagne exclues ; test `tools/tests-lanceur/regles-ressources-egales.test.mjs` |
+
+Harnais : `Puzzle.Gain('<id>')` (donc `main_exclusive`) PREND la carte dans le deck si elle y est (§7novemdecies) : une
+main faite d'un id présent dans le deck construit par le cas le vide en silence (cas White Hole). « After your turn
+ends » / « after the player phase begins » : vérificateurs `bn_fin_de_tour` / `bn_debut_phase` de `tools/cas/binary.py`
+(envoi direct de `AfterPlayerTurnEnd` / `WhenPhaseBegin` + `AfterPhaseBegin`).

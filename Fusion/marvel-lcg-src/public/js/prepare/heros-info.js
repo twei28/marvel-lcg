@@ -1435,6 +1435,17 @@ export const HEROS_INFO = {
         apparition: "Amazing Spider-Man #656 (2011)",
     },
 
+    "gs001a": {
+        bio: "Pilote de l'US Air Force devenue Ms. Marvel, Carol Danvers est enlevee par les Brood, qui la soumettent a des experiences genetiques. Elle en sort transformee en Binary : son corps est relie a l'energie d'un trou blanc et brule comme une etoile. Elle part alors dans l'espace avec les Starjammers de Corsair, avant de revenir combattre aux cotes des Vengeurs pendant la guerre Kree-Shi'ar.",
+        bioEn: "A US Air Force pilot turned Ms. Marvel, Carol Danvers is abducted by the Brood and subjected to genetic experiments. She emerges as Binary: her body is linked to the energy of a white hole and burns like a star. She then travels the cosmos with Corsair's Starjammers, before returning to fight beside the Avengers during the Kree-Shi'ar War.",
+        civil: "Carol Danvers",
+        equipes: "Starjammers, Vengeurs",
+        equipesEn: "Starjammers, Avengers",
+        ennemis: "Rogue, la Brood",
+        ennemisEn: "Rogue, the Brood",
+        apparition: "Uncanny X-Men #164 (1982)",
+    },
+
     "sk001a": {
         bio: "Teddy Altman a grandi a New York en se croyant humain, avant d'apprendre qu'il est le fils du Kree Mar-Vell et de la princesse skrull Anelle : l'heritier de deux empires ennemis depuis des millenaires. Metamorphe comme les Skrulls, dote de la force des Kree, il fonde les Jeunes Vengeurs aux cotes de Wiccan, qui deviendra son mari. Sous le nom de Dorrek VIII, il finit par prendre la tete de l'alliance Kree-Skrull, sans jamais savoir tout a fait de quel cote il est ne.",
         bioEn: "Teddy Altman grew up in New York believing he was human, until he learned he is the son of the Kree Mar-Vell and the Skrull princess Anelle: heir to two empires at war for millennia. A shapeshifter like the Skrulls, with the strength of the Kree, he founds the Young Avengers alongside Wiccan, who will become his husband. As Dorrek VIII he ends up leading the Kree-Skrull alliance, never quite sure which side he was born on.",

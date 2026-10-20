@@ -3677,6 +3677,9 @@ const COLLECTIONS_RESSOURCES = [
     { code: "dh_adamwarlock", nom: "Adam Warlock", apercu: "01089_dh_adamwarlock" },
     { code: "shield", nom: "Agents of SHIELD", apercu: "50026" },
     { code: "am", nom: "Ant-Man", apercu: "01089_am" },
+    // Ressources redessinees livrees avec le heros Binary (Galactic Storm, Kajislav, 20/10/2026) ;
+    // par defaut pour Binary (collectionDuHeros : meme nom que le heros).
+    { code: "binary", nom: "Binary", apercu: "01089_binary" },
     { code: "bp", nom: "Black Panther", apercu: "01089_bp" },
     { code: "bw", nom: "Black Widow", apercu: "01089_bw" },
     { code: "ca", nom: "Captain America", apercu: "01089_ca" },
