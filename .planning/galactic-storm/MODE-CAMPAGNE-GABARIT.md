@@ -140,9 +140,69 @@ Shadow), la boîte la plus proche en volume (234 lignes) et déjà conçue pour
   (`"Class": "Encounter"`, modèle `16142` Milano/`60153` Ben Urich), checksum
   de `cards.json` recalculé (`tools/recalculer_checksums.py`).
 
+## Autoplay enchaîné des 5 scénarios (21/10/2026)
+
+`tools/jouer_campagne_galactic_storm.py` (nouveau) : enchaîne les 5 scénarios
+avec le VRAI pilote d'autoplay (pas le pilote scripté de
+`test_campagnes.py`), le carnet circulant réellement via
+`campaign_log_last.json` — même mécanisme que l'écran de campagne réel.
+
+- Scénarios 1, 2, 3 : joués jusqu'au bout sans plantage. Défaites (un seul
+  héros, IA modeste contre un contenu pensé pour 2-4 joueurs qui tournent 3
+  identités) — cohérent avec le constat déjà accepté par l'utilisateur sur
+  GS-7 (0 % de victoire en solo, aucun rééquilibrage demandé).
+- Scénario 4 (Earth Under Siege) : parties longues (déjà connu, accepté),
+  dépasse le minuteur de l'outil en solo — pas un blocage, un format de
+  partie plus long.
+- **Un vrai bug moteur trouvé et corrigé en chemin** : `gs082` Sentry's
+  Grasp (Attachement « considéré comme Enemy » pour l'attaque de base, voir
+  son propre commentaire) fait planter `checker.py` (`AttributeError:
+  'Attachment' object has no attribute 'CanHeath'`) dès qu'un effet de soin
+  filtré (`canbe_heal`) balaie les unités en jeu — `Unit2.IsType` accepte la
+  carte via `consider_as` mais elle n'implémente pas réellement `CanHealth`.
+  Corrigé dans `game/card/card_finder/checker.py` (garde `isinstance(face,
+  CanHealth)` avant d'appeler `CanHeath()`) ; aurait fait planter N'IMPORTE
+  QUEL pack utilisant le même patron `consider_as=(.., Enemy)` sur un
+  Attachement/Asset, pas seulement Galactic Storm.
+
+## Pages de livret (21/10/2026)
+
+Source retrouvée (rulebook 1.2, déjà rendu en 24 planches PNG) dans un
+worktree Git orphelin ; copiée dans le dépôt avec l'accord de l'utilisateur :
+`docs/packs/galactic-storm/sources/livret12/` (PNG) et `rulebook_1.2_
+compressed.pdf` — ignorés par git comme le reste de `sources/` pour cette
+boîte (gros fichiers, « hors dépôt », même traitement que les scans déjà en
+place).
+
+Pages découpées et redimensionnées (975 px, convention `tools/
+pages_livret.py`) dans `public/stories/galactic_storm/` (gitignoré comme
+`public/stories/` pour TOUTES les boîtes — ces images ne sont jamais
+commitées, y compris celles de mts etc. déjà en place ; seul le JSON qui les
+référence l'est) :
+
+| Scénario | intro | règles | épilogue |
+|---|---|---|---|
+| 1 Kree Sentry | p.9 | p.10 | p.11 (Interlude I) |
+| 2 Majestrix's Verdict | p.12 | p.13 | p.18 (Interlude II) |
+| 3 Hala Ultimatum | p.14 | p.15 | p.18 (partagée) |
+| 4 Earth Under Siege | p.16 | p.17 | p.18 (partagée) |
+| 5 Supreme Intelligence | p.19 (même page que règles) | p.19 | p.20 |
+
+Cette boîte compresse récit + mise en place sur UNE SEULE page par scénario
+(pas de planche BD à part comme les boîtes officielles) : « intro » et
+« règles » couvrent souvent la même image (modèle le plus proche dans ce
+dépôt : `hunting_season`, où le constat est identique). p.18 (Interlude II)
+sert d'épilogue aux trois scénarios parallèles ET d'intro au scénario 5,
+convention déjà établie (`gmw`, `mts` : « une planche sert d'épilogue à un
+scénario ET d'intro au suivant, sans être dupliquée »).
+
+⚠ **Seul `pages.epilogue` est réellement lu par l'écran** aujourd'hui
+(`ui-app/src/board/campagne/PanneauRecompenses.tsx`) ; `intro`/`regles`/
+`pages_regles` sont renseignés par souci de fidélité au schéma des autres
+campagnes mais n'ont pas encore de consommateur côté UI.
+
 ## Reste à faire pour une fidélité totale
 
-- Partie/autoplay complète des 5 scénarios enchaînés : demandée par
-  l'utilisateur, en cours.
-- Pages de livret pour l'écran de campagne (`pages_regles`, `intro`/`regles`/
-  `epilogue` par scénario) : demandées par l'utilisateur, en cours.
+Plus rien d'identifié à ce stade — les 7 points de la revue multichoix du
+21/10/2026 sont tous clos (voir ci-dessus pour 5, 6, 7 ; 1-4 étaient déjà
+actés sans changement de code).

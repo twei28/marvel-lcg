@@ -41,7 +41,7 @@
      "aide": "Optionnel, sans effet avant le scénario 5 : chaque bonne devinette enregistrée sur les scénarios 1 à 4 donne un allié de campagne supplémentaire à la mise en place du scénario 5."
     }
    ],
-   "pages": {"intro": [], "regles": [], "epilogue": []}
+   "pages": {"intro": ["01-gs_kree_sentry-intro-1.jpg"], "regles": ["01-gs_kree_sentry-regles-1.jpg"], "epilogue": ["01-gs_kree_sentry-epilogue-1.jpg"]}
   },
   {
    "id": "gs_majestrix_verdict",
@@ -80,7 +80,7 @@
      "aide": "Voir scénario 1."
     }
    ],
-   "pages": {"intro": [], "regles": [], "epilogue": []}
+   "pages": {"intro": ["02-gs_majestrix_verdict-intro-1.jpg"], "regles": ["02-gs_majestrix_verdict-regles-1.jpg"], "epilogue": ["02-gs_majestrix_verdict-epilogue-1.jpg"]}
   },
   {
    "id": "gs_hala_ultimatum",
@@ -112,7 +112,7 @@
      "aide": "Voir scénario 1."
     }
    ],
-   "pages": {"intro": [], "regles": [], "epilogue": []}
+   "pages": {"intro": ["03-gs_hala_ultimatum-intro-1.jpg"], "regles": ["03-gs_hala_ultimatum-regles-1.jpg"], "epilogue": ["02-gs_majestrix_verdict-epilogue-1.jpg"]}
   },
   {
    "id": "gs_earth_under_siege",
@@ -144,7 +144,7 @@
      "aide": "Voir scénario 1. Dernier scénario qui porte une carte intruse."
     }
    ],
-   "pages": {"intro": [], "regles": [], "epilogue": []}
+   "pages": {"intro": ["04-gs_earth_under_siege-intro-1.jpg"], "regles": ["04-gs_earth_under_siege-regles-1.jpg"], "epilogue": ["02-gs_majestrix_verdict-epilogue-1.jpg"]}
   },
   {
    "id": "gs_supreme_intelligence",
@@ -162,7 +162,7 @@
      "aide": "La Suprême Intelligence est vaincue : la campagne Galactic Storm est gagnée."
     }
    ],
-   "pages": {"intro": [], "regles": [], "epilogue": []}
+   "pages": {"intro": ["05-gs_supreme_intelligence-regles-1.jpg"], "regles": ["05-gs_supreme_intelligence-regles-1.jpg"], "epilogue": ["05-gs_supreme_intelligence-epilogue-1.jpg"]}
   }
  ],
  "victoire_commune_expert": [
