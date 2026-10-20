@@ -248,8 +248,14 @@ def AngoisseEnJeu(effect: 'Effect') -> bool:
         return False
     # Filtre a la main : `check_effect_fn` n'est pas appele par
     # `FindCardOnField` (voir `Concert`, correctif du 20/10/2026).
-    return any(f is not None and f.GetControlByOrOwner() == joueur
-               for f in Worlds.FindCardsOnField(effect, name=NOM_ANGOISSE))
+    # Une obligation « donnee » vit dans la zone d'obligations du joueur, mais
+    # son PROPRIETAIRE reste le scenario : on la reconnait donc a sa zone, pas
+    # a `GetControlByOrOwner()` (qui la faisait rater, cas dz019).
+    zone = getattr(joueur, "obligations_area", None)
+    dans_sa_zone = list(zone.Get()) if zone is not None else []
+    return any(f is not None and (f in dans_sa_zone or f.GetControlByOrOwner() == joueur)
+               for f in Worlds.FindCardsOnField(effect, name=NOM_ANGOISSE)
+               + [g for g in dans_sa_zone if g is not None and g.IsName(NOM_ANGOISSE)])
 
 
 def SongsDansLaDefausseBornee(effect: 'Effect', maximum: int = 4) -> int:

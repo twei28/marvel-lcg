@@ -141,6 +141,54 @@ def dz_etat(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, msg
+
+
+def dz_rendu(monde, aides):
+    """Etape 8 bis cote MOTEUR : ce que le descripteur envoie au plateau.
+
+    `attendu.rendu_sous` = [[hote_id, carte_id, face_visible]] : dans les zones du
+    joueur 0 (`ToDescriptor.Player`), la carte est emise, liee a l'hote
+    (`bind_object_id` = id de l'hote) et avec la face attendue. Rend aussi, dans
+    le message, la ZONE ou l'hote est emis (sert au cas plateau vitest).
+    Delegue le reste a dz_etat."""
+    from game.render.to_descriptor import ToDescriptor
+    cas = aides["cas"]
+    attendu = dict(cas.get("attendu") or {})
+    voulu = attendu.pop("rendu_sous", [])
+    joueur = monde.const_players[0]
+    desc = ToDescriptor.Player(joueur)
+    zones = {}
+    for nom in ("area_hero", "allies", "supports", "obligations_area"):
+        zones[nom] = list(getattr(desc, nom, []) or [])
+    soucis, vus = [], []
+    for hote_id, carte_id, visible in voulu:
+        hote = None
+        zone_hote = None
+        for nom, cartes in zones.items():
+            for c in cartes:
+                if c.card_id == hote_id:
+                    hote, zone_hote = c, nom
+        if hote is None:
+            soucis.append(f"{hote_id} n'est emis dans aucune zone du joueur")
+            continue
+        enfants = [c for c in zones[zone_hote] if c.card_id == carte_id and c.bind_object_id == hote.id]
+        if not enfants:
+            soucis.append(f"{carte_id} n'est pas emis sous {hote_id} (zone {zone_hote})")
+            continue
+        if bool(enfants[0].is_face_up) != bool(visible):
+            soucis.append(f"{carte_id} sous {hote_id} : is_face_up={enfants[0].is_face_up} (attendu {visible})")
+        vus.append(f"{carte_id} sous {hote_id} dans {zone_hote} (bind {hote.id}, face_up {enfants[0].is_face_up})")
+    sauvegarde = cas["attendu"]
+    cas["attendu"] = attendu
+    try:
+        ok, msg = dz_etat(monde, aides)
+    finally:
+        cas["attendu"] = sauvegarde
+    if not ok:
+        soucis.append(msg)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, " ; ".join(vus) or msg
 '''
 
 
@@ -861,4 +909,16 @@ CAS = [
        [HEROINE], [],
        {"jouable": [["dz038", False]]},
        main_exclusive=["dz038", "01090"], verifier="dz_etat"),
+    # ============================================================ etape 8 bis, cote moteur
+    _c("dz017a Live Concert : rendu, une chanson jouee est EMISE face visible sous Live Concert (descripteur)",
+       "etape 8 bis : ce que `ToDescriptor.Player` envoie au plateau ; le cas plateau "
+       "`ui-app/src/board/dazzler-setlist-lightbringr.test.ts` reprend cet etat",
+       [HEROINE], [menace(COMPLOT, 6)],
+       {"rendu_sous": [["dz017a", "dz004", True]]},
+       main_exclusive=["dz004", "01089"], cibles=[COMPLOT], jouer=["dz004"], verifier="dz_rendu"),
+    _c("dz014 Lightbringr : rendu, la chanson glissee est EMISE face cachee sous Lightbringr (descripteur)",
+       "etape 8 bis : la carte glissee par l'Alter-Ego Action suit Lightbringr, liee par `bind_object_id`",
+       [*en_jeu("dz014")], ["Puzzle.Action('dz014', 'AlterEgoAction')"],
+       {"rendu_sous": [["dz014", "dz004", False]]},
+       main_exclusive=["dz004", "01088"], verifier="dz_rendu"),
 ]

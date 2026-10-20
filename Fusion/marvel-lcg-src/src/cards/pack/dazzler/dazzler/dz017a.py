@@ -70,6 +70,13 @@ def GetAbilities() -> Sequence['Ability']:
                 # « You cannot [...] use the 'Hero Action' on Live Concert »
                 # tant que Performance Anxiety (dz019) est posee chez toi.
                 lambda effect, message: not AngoisseEnJeu(effect),
+                # Setlist vide : retourner, ne rien resoudre, ne rien defausser,
+                # retourner de nouveau ne change RIEN a la partie. Comme
+                # Rehearsal (dz001a) et Karaoke Night (dz035), l'action n'est
+                # alors pas offerte (piege wd165). Constate a l'autoplay du
+                # 20/10/2026 (backlog 12) : 6 parties sur 8 bloquees, le pilote
+                # reprenant sans fin cette Hero Action sans effet.
+                lambda effect, message: len(Setlist(effect)) > 0,
             ],
         ).SetTarget("This"),
     ]
