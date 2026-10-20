@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-20",
+        genre: "heros",
+        fr: "Nouvelle campagne fan-made Tempête Galactique (Galactic Storm, de Kajislav), en cinq scénarios : Sentinelle Kree, Verdict de la Majestrix, Ultimatum d'Hala, La Terre assiégée et Suprême Intelligence. Chaque joueur incarne trois identités différentes au fil de la campagne. Binary et Quasar rejoignent le roster, et des alliés de campagne (Rick Jones, Gladiator, Lauri-Ell, les Starjammers...) se recrutent au fil des victoires.",
+        en: "New fan-made campaign Galactic Storm (by Kajislav), in five scenarios: Kree Sentry, Majestrix's Verdict, Hala Ultimatum, Earth Under Siege and Supreme Intelligence. Each player plays three different heroes across the campaign. Binary and Quasar join the roster, and campaign allies (Rick Jones, Gladiator, Lauri-Ell, the Starjammers...) are recruited along the way.",
+    },
+    {
+        date: "2026-10-20",
         genre: "jeu",
         fr: "38 cartes d'aspect existent maintenant en version pleine illustration, proposée comme art alternatif à l'assignation d'un deck. Full Art Reprints : MC/DC 2026 (Jonah, Marvin, Scott, Tim).",
         en: "38 aspect cards now exist in a full-art version, offered as an alternate art when a deck is assigned. Full Art Reprints: MC/DC 2026 (Jonah, Marvin, Scott, Tim).",
