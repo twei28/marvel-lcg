@@ -144,6 +144,13 @@ def CapacitesMoleMan() -> List['Ability']:
     ]
 
 
+
+def CapacitesVeranke() -> List['Ability']:
+    """Stades I et II (gs190/gs191), texte identique hors Toughness : « [star] Players cannot defend
+    against Veranke's attacks. »"""
+    return AbilityFactory.UnitCannotDefend(Unit2, "This", cannot_trigger_defense_ability=True)
+
+
 def UneAutreCarteAtlantisEstEnJeu(effect: 'Effect', ui: 'List[CardFace]') -> int:
     """« While/for each ATLANTIS card is in play » hors This : partage par gs174 Andromeda et gs175 Rising
     Sea Levels."""
