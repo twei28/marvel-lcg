@@ -473,8 +473,8 @@ class Livraison:
             for k in ("version", "name", "encounters"):
                 if k not in d:
                     r.erreur(lieu, "cle absente : %s" % k)
-            if d.get("version") != "0.5.8":
-                r.erreur(lieu, "`version` doit valoir \"0.5.8\"")
+            if d.get("version") not in ("0.5.8", "0.5.9"):
+                r.erreur(lieu, "`version` doit valoir \"0.5.8\" (ou \"0.5.9\")")
             if isinstance(d.get("name"), str) and d["name"] and d["name"] == d["name"].lower() and not self.officiel:
                 r.avert(lieu, "`name` est affiche tel quel au joueur : ecris-le en casse normale (« %s »)" % d["name"].replace("_", " ").title())
             for cid in d.get("encounters", []):
@@ -505,8 +505,8 @@ class Livraison:
             inconnues = set(d) - set(CLES_SCENARIO) - {"challenges"}
             if inconnues:
                 r.avert(lieu, "cles inattendues : %s" % sorted(inconnues))
-            if d.get("version") != "0.5.8":
-                r.erreur(lieu, "`version` doit valoir \"0.5.8\"")
+            if d.get("version") not in ("0.5.8", "0.5.9"):
+                r.erreur(lieu, "`version` doit valoir \"0.5.8\" (ou \"0.5.9\")")
             if bool(d.get("expert")) != est_expert:
                 r.erreur(lieu, "`expert` doit valoir %s dans ce fichier" % str(est_expert).lower())
             if not est_expert and nom + "_expert" not in self.scenarios_livres \
