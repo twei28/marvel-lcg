@@ -1,0 +1,49 @@
+{
+  "version": "0.5.8",
+  "name": "Majestrix's Verdict",
+  "villain": [
+    "gs114",
+    "gs115"
+  ],
+  "expert": false,
+  "schemes": [
+    "gs117a,gs117b",
+    "gs118a,gs118b"
+  ],
+  "set_aside": [
+    "gs119",
+    "gs120a,gs120b",
+    "gs121",
+    "gs122",
+    "gs123",
+    "gs124",
+    "gs125",
+    "gs126"
+  ],
+  "encounters": [
+    "gs127",
+    "gs128",
+    "gs129",
+    "gs129",
+    "gs130",
+    "gs131",
+    "gs131",
+    "gs131",
+    "gs131",
+    "gs132",
+    "gs133",
+    "gs134",
+    "gs135",
+    "gs135",
+    "gs136",
+    "gs136",
+    "gs137",
+    "gs137"
+  ],
+  "encounter_sets": [
+    "standard"
+  ],
+  "modular_sets": [
+    "kree_militants"
+  ]
+}

@@ -198,6 +198,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # mutuellement des qu'une carte ROTATION entre en jeu.
         "RANGER", "ROTATION", "DEMON",
         "CYBORG",  # CORRECTIF : trait du pack custom beta_ray_bill (Rainy)
+        "STARJAMMER", "SHI'AR",  # CORRECTIF : traits du scenario Majestrix's Verdict, Galactic Storm (Kajislav), lot GS-5
         # AJOUT (25/09/2026) : traits des packs custom conan et red_sonja (RyCoRan).
         # THIEF, KING et TITLE existaient deja. Lus par cn002 Belit, cn009 et la
         # remise « Discount 1 (KING) ».

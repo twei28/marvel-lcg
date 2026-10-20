@@ -117768,5 +117768,456 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "13203c8a1e9da386cc0154f3ddb1ab642b0b2c7f309a60ad880c94d3872df108"
+ "checksum": "0de62086158816e0943bf8b901b59b64e86b7174fd9843ed588d17c9a76d08df",
+ "galactic_storm": [
+  {
+   "card_id": "gs114",
+   "type": "Villain",
+   "name": "* Deathbird",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "[star] <b>Forced interrupt</b>: When Deathbird initiates an attack against you, if you control a [[STARJAMMER]] ally, she attacks that ally instead with +1 ATK.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs115",
+   "type": "Villain",
+   "name": "* Deathbird",
+   "subtitle": "",
+   "desc": {
+    "HP": "19*",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "2"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Deathbird cannot be defeated, if players do not control Lilandra and the Shi'ar Throne support.\n[star] <b>Forced interrupt</b>: When Deathbird initiates an attack against you, if you control a [[STARJAMMER]] ally, she attacks that ally instead with +1 ATK.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs116",
+   "type": "Villain",
+   "name": "* Deathbird",
+   "subtitle": "",
+   "desc": {
+    "HP": "21*",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Deathbird cannot be defeated, if players do not control Lilandra and the Shi'ar Throne support.\n[star] <b>Forced interrupt</b>: When Deathbird initiates an attack against you, if you control a [[STARJAMMER]] ally, she attacks that ally instead. Give her 1 additional boost card for that activation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs117a",
+   "type": "MainScheme",
+   "name": "Earn the People's Favor",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>Contents</b>: Deathbird (I) and Deathbird (II) <i>(Deathbird (II) and Deathbird (III) instead for expert mode)</i>. Majestrix's Verdict, and Standard encounter sets. One modular encounter set <i>(Imperial Guard)</i>.\n<b>Setup</b>: Set the Shi'ar Throne side scheme aside. Put the Imprisoned on Chandilar side scheme into play and tuck each [[STARJAMMER]] ally under it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs117b",
+   "type": "MainScheme",
+   "name": "Earn the People's Favor",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1",
+    "TargetThreat": "3*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "0"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Revealed</b>: Place 1[per_hero] threat on Imprisoned on Chandilar.\n[star] <b>Forced Response</b>: After resolving step one of the villain phase, place 2 threat on Imprisoned on Chandilar for each player in alter-ego form.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs118a",
+   "type": "MainScheme",
+   "name": "Majestrix's Verdict",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Revealed</b>: The players as a group choose 1 [[STARJAMMER]] ally tucked under Imprisoned on Chandilar and remove it from the game <i>(2 [[STARJAMMER]] allies instead in expert mode)</i>. Otherwise, the players as a group choose 1 [[STARJAMMER]] ally in play and remove it from the game. Advance to stage 2B.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs118b",
+   "type": "MainScheme",
+   "name": "Majestrix's Verdict",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2",
+    "TargetThreat": "5*",
+    "EscalationThreat": "2*",
+    "StartingThreat": "0"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Revealed</b>: Place 1[per_hero] threat on Imprisoned on Chandilar.\n<b>Forced Interrupt</b>: When this stage would be completed, flip this card and reveal it instead.\n[star] <b>Forced Response</b>: After resolving step one of the villain phase, place 2 threat on Imprisoned on Chandilar for each player in alter-ego form.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs119",
+   "type": "SideScheme",
+   "name": "Imprisoned on Chandilar",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "6",
+    "Assault": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "Assault. Permanent.\n<b>Forced Response</b>: After a [[STARJAMMER]] ally leaves play, tuck it under here.\n<b>Forced Interrupt</b>: When the last threat is removed from here, the players as a group choose a [[STARJAMMER]] ally tucked under here, put that ally into play under any player's control and place 6 threat here.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs120a",
+   "type": "SideScheme",
+   "name": "Shi'ar Throne",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Defeated</b>: The defeating player flips this card and takes control of it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs120b",
+   "type": "Support",
+   "name": "* Shi'ar Throne",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION",
+    "SHI'AR"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>Resource</b>: Exhaust Shi'ar Throne → generate a [mental] resource for any player.\n<b>Forced Response</b>: After Shi'ar Throne or Lilandra leaves play, flip this card and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs121",
+   "type": "Ally",
+   "name": "* Lilandra",
+   "subtitle": "Lilandra Neramani",
+   "desc": {
+    "HP": "4",
+    "THW": "1",
+    "ATK": "2*",
+    "Class": "Encounter"
+   },
+   "traits": [
+    "SHI'AR",
+    "STARJAMMER"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Does not count against your ally limit.\n<b>Forced Response</b>: After Lilandra enters play, reveal the set aside Shi'ar Throne side scheme.\n<b>If Lilandra is removed from the game, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs122",
+   "type": "Ally",
+   "name": "* Ch'od",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "6",
+    "THW": "1*",
+    "ATK": "3**",
+    "RES": "B",
+    "Retaliate": "2",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Retaliate 2.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs123",
+   "type": "Ally",
+   "name": "* Corsair",
+   "subtitle": "Christopher Summers",
+   "desc": {
+    "Cost": "3",
+    "HP": "4",
+    "THW": "2*",
+    "ATK": "2*",
+    "RES": "Y",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "[star] Corsair's attacks gain ranged.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs124",
+   "type": "Ally",
+   "name": "* Hepzibah",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "THW": "2*",
+    "ATK": "3*",
+    "RES": "R",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "[star] Hepzibah's attacks gain piercing.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs125",
+   "type": "Ally",
+   "name": "* Korvus",
+   "subtitle": "Korvus Rook'shir",
+   "desc": {
+    "Cost": "3",
+    "HP": "5",
+    "THW": "1*",
+    "ATK": "3**",
+    "RES": "Y",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "SHI'AR",
+    "STARJAMMER"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "[star] Korvus's attacks gain overkill.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs126",
+   "type": "Ally",
+   "name": "* Raza",
+   "subtitle": "Raza Longknife",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "THW": "2*",
+    "ATK": "2*",
+    "RES": "B",
+    "Toughness": "1",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "CYBORG",
+    "STARJAMMER"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Toughness.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs127",
+   "type": "Attachment",
+   "name": "Royal Cape of the Shi'ar",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Attach to Deathbird.\nAttached character gets +2 hit points and gains retaliate 1.\n<b>Response</b>: After Lilandra attacks Deathbird, spend a [energy] resource → attach this card to Lilandra.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs128",
+   "type": "Attachment",
+   "name": "Shi'ar Crest",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "SCH+": "1",
+    "THW+": "1"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Attach to Deathbird.\nAttached character gains steady.\n<b>Response</b>: After Lilandra attacks Deathbird, spend a [mental] resource → attach this card to Lilandra.\n<hr />\n[star] <b>Boost</b>: Give the activating enemy a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs129",
+   "type": "Attachment",
+   "name": "Shi'ar Javelin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "ATK+": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Attach to Deathbird.\n[star] Attached character's attacks gain piercing and overkill.\n<b>Response</b>: After Lilandra attacks Deathbird, spend a [physical] resource → attach this card to Lilandra.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains piercing and overkill.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs130",
+   "type": "Minion",
+   "name": "* Araki",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "3",
+    "ATK": "1",
+    "Patrol": "1",
+    "Vulnerable": "1"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Patrol. Vulnerable.\n<b>When Defeated</b>: Place 2 threat on each scheme in play.\n<hr />\n[star] <b>Boost</b>: Place 1 threat on each scheme in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs131",
+   "type": "Minion",
+   "name": "Jailor of Chandilar",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "1",
+    "ATK": "2",
+    "Retaliate": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Majestrix's Verdict",
+   "text": "Retaliate 1.\n<b>When Defeated</b>: Remove 2 threat from Imprisoned on Chandilar.\n<hr />\n[star] <b>Boost</b>: Place 1 threat on Imprisoned on Chandilar.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs132",
+   "type": "SideScheme",
+   "name": "Private Audience",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "Allies cannot attack the villain or thwart the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs133",
+   "type": "SideScheme",
+   "name": "Tapping the M'kraan Force",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Hinder": "2*",
+    "Amplify": "1",
+    "Hazard": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "Hinder 2[per_hero].\n<b>When Defeated</b>: Heal 1 damage from each [[STARJAMMER]] ally in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs134",
+   "type": "SideScheme",
+   "name": "Tortured Prisoners",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "Crisis": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Revealed</b>: Place 1 additional threat here for each [[STARJAMMER]] ally tucked under Imprisoned on Chandilar.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs135",
+   "type": "Treachery",
+   "name": "Birthright to the Throne",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Revealed</b>: If the Shi'ar Throne support is in play, Deathbird attacks the player who controls it <i>(even if that player is in alter ego form)</i>. Otherwise, Deathbird schemes.\n<hr />\n[star] <b>Boost</b>: Give Deathbird a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs136",
+   "type": "Treachery",
+   "name": "Exemplar Punishment",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Revealed</b>: For each [[STARJAMMER]] ally tucked under Imprisoned on Chandilar choose to either take 1 indirect damage or place 1 threat on the main scheme. If there is no ally tucked under Imprisoned on Chandilar, place 2 threat on it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs137",
+   "type": "Treachery",
+   "name": "Sister's Deception",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Majestrix's Verdict",
+   "text": "<b>When Revealed</b>: If Lilandra is in play, she attacks you <i>(resolve her ATK against you without exhausting her, but with taking consequential damage)</i>. Otherwise, place 3 threat on Imprisoned on Chandilar.",
+   "custom": "Kajislav"
+  }
+ ]
 }

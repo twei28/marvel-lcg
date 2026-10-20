@@ -1882,5 +1882,16 @@
   "encounters": [],
   "max_id": "se011"
  },
- "checksum": "e6c1914ae7c2e4bd9e1dddc996aa461645bb701ccae1246c9a068f5e9e7e22b9"
+ "144. Custom (Galactic Storm)": {
+  "name": "galactic_storm",
+  "scenarios": [
+   "gs_majestrix_verdict"
+  ],
+  "heroes": [],
+  "encounters": [
+   "gs_majestrix_verdict"
+  ],
+  "max_id": "gs137"
+ },
+ "checksum": "6a32c1cd23b26159f28832bece46bb2f5c3f2a1ef69d8588db324d3394e92deb"
 }
