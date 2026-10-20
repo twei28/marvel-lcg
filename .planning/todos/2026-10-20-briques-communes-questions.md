@@ -101,3 +101,10 @@ attaque de joueur en deux temps, un « jusqu'à la fin de la phase »).
   Rocksteady (`tk006a`, même montage), la question peut tomber pendant une vérification de jouabilité si une carte
   joueur lit `Worlds.FindVillain` dans une **condition**. Aucune carte connue ne le fait ; à surveiller en autoplay
   quand Earth Under Siege sera porté.
+
+## Réponses de l'utilisateur (20/10/2026)
+
+- Q1 : livret dans Galactic Storm (`ally_attack_is_against_player=False` dans ses cartes seulement), Rules Reference partout ailleurs.
+- Q2 : les joueurs PEUVENT défendre (`players_may_defend=True` pour Kree Sentry).
+- Q3 : le Punisher aussi, sans question (`Villains.Rule(the_villain="Active", player_cards="TheVillain")`). Recherche en ligne faite : rien d'officiel sur les cartes joueur (la carte p180 ne parle que des cartes rencontre) ; à revoir si le guide de campagne dit autre chose.
+- Q4 : l'effet en cours sur un méchant retiré s'arrête, sans se reporter sur le suivant.
