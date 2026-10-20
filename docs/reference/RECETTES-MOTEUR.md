@@ -179,7 +179,7 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 | « After this card attaches to a character, <statut> » | `AfterCardAttachTo(ForcedResponse, "This", Unit2, op)` ; `message.to_face` = le porteur | 60122/60124/60125 | part aussi pour l'attache initiale faite par `AttachToFaceWhenPutIntoPlay` (log « s'équipe de ») ; un porteur STALWART refuse stun/confuse en silence : retirer les autres œuvres avant de mesurer |
 | « X is 1 more than the number of ... » (escalade dynamique d'un complot) | `EscalationThreat "0"` + `WhenCalcThisSchemeEscalation(fn)` avec `Worlds.GetPlayerNumIcon(effect) * (1 + n)` | 60121b, 16091b | `Puzzle.BeginVillainPhase()` ne POSE PAS la menace : le vérificateur envoie `Message.CalcMainSchemeEscalation(complot, 0, [], [])` et lit `escalation_threat` (`fne_escalade`) |
 | « You may spend RRR to A. Otherwise, B » | `ChooseAbilities(ForChoiceAbilityWithCost(Cost("RRR"), nom, op, conditions=[payable]), Otherwise(op2))` | 60127 Tug of War, 50134 | ⚠⚠ **Otherwise n'est offerte que si AUCUNE autre option n'existe**, et la branche payante est offerte MÊME IMPAYABLE (mesure : « couvert = 2 » sur RRR) : le joueur la prend, le paiement échoue, la carte ne fait rien. La condition doit donc tester le paiement : `PeutCouvrirLeCout(joueur, effect, cout)` (`cards/pack/fne/__init__.py`, icônes imprimées de la main + réserve). Et le JOUEUR vient de la clôture du `WhenCardRevealed` : `message.GetToPlayer()` n'existe pas sur `WhenPlayerChooseAbility` (exception avalée = condition fausse = branche jamais offerte) |
-| Un sbire qui ATTAQUE LE VILAIN (« it attacks the villain instead ») | `WhenUnitWouldScheme(ForcedInterrupt, "This", op)` : `message.SetBeInstead(effect)` puis `this.BasicAttack([Worlds.FindVillain(effect)], effect)` | 60182 Cop | `BasicAttack` accepte un ennemi comme cible d'un ennemi (2 dégâts mesurés sur Hammerhead) |
+| Un sbire qui ATTAQUE LE VILAIN (« it attacks the villain instead ») | `WhenUnitWouldScheme(ForcedInterrupt, "This", op)` : `message.SetBeInstead(effect)` puis `this.BasicAttack([Worlds.FindVillain(effect)], effect)` | 60182 Cop | `BasicAttack` accepte un ennemi comme cible d'un ennemi (2 dégâts mesurés sur Hammerhead). Depuis le 20/10/2026, la primitive dédiée est `Enemy.AttackCharacter` (§15.1 : défense, « vous » des Boost, cible de l'excès) |
 | Bonus dynamique « +X où X = le plus haut THW en jeu » | `ThisGainKeyword(fn, scheme=1, change_on_event=OnEvent.Form(Friend))` | 60091 Chameleon | ⚠ `OnEvent.Form` refuse une UNION de types (`'UnionType' object has no attribute 'IsType'`, avalé en partie) : passer la classe mère (`Friend`), pas `Identity|Ally` |
 | Un héros qui « gains villainous » EN CONTINU (amélioration) | `*GiveKeywordToAttached(CardFinder(name=…), villainous=1)` | hc010 Outer Demons | Paramètre `villainous` ajouté à la fabrique le 11/09/2026 (`Gain` l'acceptait déjà, dd001a le posait via `GainUntilRoundEnd`). Le héros reçoit alors une carte boost à chaque **attaque** de base (`can_attack.py:264`) ; **pas au contre** (can_thwart.py n'a pas l'équivalent) : écart assumé sur les deux packs |
 | Bonus dynamique « +X where X is… » sur une AUTRE carte | `*GiveKeywordToInPlayWhenApplyThis(finder, attack=1, get_new_value=fn)` | hc014 Battle for a Soul | ⚠ Rend une **LISTE** : déballage `*` obligatoire, sinon « 'list' object has no attribute 'paper' » au setup. `get_new_value(effect, face)` **remplace** la valeur (environment_helper.py:184) et est relu à chaque application |
@@ -1637,3 +1637,67 @@ avec un événement `attack` à plusieurs cibles. ⚠ « Exhaust a WEAPON you co
 | « Remove N <compteurs> from <identité> → » (coût) | `.SetCostFunc(CostFunc.Counter("YourIdentity", n, 'chi'))` + `conditions=[AuMoinsChi(n)]` | `64006`, `64010`-`64012` | sans la condition, la capacité est offerte impayable (RECETTES §5) |
 
 Harnais : `main_exclusive` DÉFAUSSE la main de départ APRÈS `mise_en_place` ; avec un deck de départ fait de cartes signature, la défausse se remplit de cartes du pack. Toute défausse construite pour un cas (fouille « deck and discard pile », « top card of your discard pile ») se pose donc dans `declencher`, après `Puzzle.EmptyPlayerDiscardPile()`. `cibles` : le pilote vise la PREMIÈRE cible listée encore en jeu à chaque choix (les trois coups de Fists of Fury sur la même), d'où le montage « sbire à 1 PV » pour prouver des choix indépendants. Lancer le harnais avec `CAS_PREFIX=<nom>` : sans préfixe, les journaux `/tmp/capacites_<index>.log` se mêlent à ceux des autres sessions.
+
+## 15. Briques communes Punisher MC×DC / Galactic Storm (20/10/2026)
+
+Trois primitives du moteur, écrites UNE fois pour les deux campagnes (décision de l'utilisateur du 20/10/2026,
+cadrage `docs/rapports/cadrage-14-15-19-2026-10-20.md` §0.3, M6, M7, G7, G10, G11). Aucune carte de campagne n'est
+portée ici : ces sections disent quelle fabrique la carte appellera. Cas : `tools/cas/briques_communes.py`, filtre
+`[briques]` (28 cas, témoins compris). Questions ouvertes (chaque réponse est un réglage, rien n'est en dur) :
+`.planning/todos/2026-10-20-briques-communes-questions.md`. Fiches : `mots-cles/immunite-cartes-joueur.md`,
+`mots-cles/mechants-multiples.md`, `mots-cles/overkill.md` (excès d'une attaque d'ennemi).
+
+### 15.1 Un ennemi attaque un autre ennemi ou un allié
+
+| Texte imprimé | Appel | Modèle / règle | Piège |
+|---|---|---|---|
+| « X attacks <sbire / le méchant / un allié> » | `ennemi.AttackCharacter(cible, effect)` (`base/enemy.py`) | Target Lock p181, Rachel p195, Kree Sentry (GS p.9) ; RR 1.8 p.10 « Attacks Against Allies » | c'est une ATTAQUE DE BASE (boost pour un méchant ou un sbire Villainous) ; contrairement à `DoAttackYou`, AUCUN report après l'activation en cours : l'appeler depuis l'interruption qui a fait `SetBeInstead` |
+| cible ENNEMIE : « attacks you » | rien à faire : `against_player` reste None, les capacités « vous attaque » ne partent pas | GS p.9 | le « vous » des **Boost** est `for_player=` (défaut : le joueur de l'effet, sinon le premier joueur) ; `AfterUnitAttackUnit.GetToPlayer()` lève toujours un assert quand la cible est un ennemi (hack `44014`) : une réponse « après cette attaque » lit `message.would_atk_message.property.boost_player` |
+| « Players may defend any attack, even ones targeting enemies » | `players_may_defend=True` | Punisher p180 | sans lui, personne ne défend une attaque contre un ennemi (seul le contrôleur de la cible défend, `ThisCanDefense`, friend.py) ; le défenseur devient la cible |
+| « with +2 ATK » / « do not give him a boost card » | `additional_attack=2` / `give_boost=False` | Punishment p213, p191 | — |
+| « attacks gain overkill » pour CETTE attaque | `overkill=True` | — | l'excès d'un sbire abattu va par défaut à « le méchant » (`CanAttack.DefaultOverkillTarget`, RR 1.8 p.31), donc au méchant lui-même s'il est l'attaquant (Kree Sentry, GS p.9) |
+| « His overkill damage on minions is dealt to the TARGETED villain » | `overkill_to=<face>` ou `overkill_to=lambda sbire: ...` | Punisher's Assault Rifle p185 | ne vaut que pour un SBIRE abattu ; un allié abattu garde la règle (identité de son contrôleur) |
+| allié attaqué directement, variante Galactic Storm p.4 (« attacks you » ne part pas) | `ally_attack_is_against_player=False` | GS p.4 | contredit le RR 1.8 p.10 : question Q1 |
+
+Champs ajoutés à `AttackProperty` (`can_attack.py`), inertes à leur valeur par défaut : `boost_player`,
+`players_may_defend`, `overkill_target_fn`, `not_against_player`. Banc : `Puzzle.EnemyAttacks(attaquant, cible,
+defender=None, overkill_to=None, joueur=None, **options)`. ⚠ Le « vous » d'un Boost n'est discriminant qu'à DEUX
+joueurs : à un joueur, le moteur retombe de toute façon sur le joueur courant (cas vert sous substitution) ; le cas
+qui le prouve monte la partie avec `heros2`.
+
+### 15.2 « Cannot be affected by player cards » (CIBLÉ, HIDDEN)
+
+| Texte imprimé | Appel | Modèle / règle | Piège |
+|---|---|---|---|
+| « Attached character ... cannot be affected by player cards » | `AbilityFactory.CannotBeAffectedByPlayerCards("AttachedCharacter")` dans `GetAbilities()` de l'attachement | In the Crosshairs p183 | la protection est INSCRITE à l'entrée en jeu de la source (`AfterCardEnterPlay`, et à chaque retournement) puis vaut tant que la source est en jeu sur cette face |
+| trait HIDDEN du méchant | `AbilityFactory.CannotBeAffectedByPlayerCards("This", while_fn=lambda face: face.HasTrait("HIDDEN"))` sur CHAQUE face de stade | Hala Ultimatum, GS p.14 | `HIDDEN` (et `TARGETED`) ne sont pas encore dans l'énum `TRAITS` ; `while_fn` est relu à chaque question, la face DISCOVERED (sans le trait) n'est donc plus protégée |
+| interroger | `PlayerCardImmunity.Refuses(face, effect)` / `.IsProtected(face)` (`game/operate/immunity.py`) | — | « carte joueur » = `PlayerCard.IsType(effect.this)`, identité comprise (RR 1.8 p.33) : l'attaque de base du héros est donc refusée aussi ; SEULE la défense de base (`func_names` « DEF », elle vise l'attaquant) passe |
+
+Ce que la brique refuse, et où (chaque point est commenté « BRIQUE 2 ») : cible légale (`selector.py` : une carte à
+cible unique devient injouable, une carte à cibles multiples garde les autres, GS p.14), dégâts y compris l'excès
+d'un overkill du joueur (`can_health.py` `TakeDamageNoDeath`), poser un état (`can_status.py` `GainStatus`),
+défausser un état, Robuste par perforant compris (`LoseState`), bonus et mots-clés (`face_gain.py` `Gain`), attacher
+une carte joueur (`asset.py` `CanAttachTo`, `can_attach.py` `AttachTo2`), poser des compteurs (`faces.py`
+`PlaceCountersOn`). Tout ce qui vient d'une carte RENCONTRE passe (Rachel attaque le CIBLÉ, Bullet Spray le blesse).
+Coût nul hors de ces scénarios : sans protection inscrite, `Refuses` rend Faux sans créer ni message ni objet.
+Banc : `Puzzle.ProtectFromPlayerCards(carte, attached_to=None, trait=None)` passe par la VRAIE fabrique.
+⚠ Harnais : la source d'un « AttachedCharacter » est prise dans le deck rencontre si elle n'est pas en jeu ;
+vider le deck (`Puzzle.EmptyEncounterDeck()`) avant, sinon `Puzzle.Discard` vise un autre exemplaire.
+⚠ `heros.DealDamage(..., GameRule(heros))` lève `'GameRule' object has no attribute 'ability'` : dans un
+vérificateur, infliger des dégâts « au nom » d'une carte par `cible.TakeDamage(source, n, GameRule(source))`.
+
+### 15.3 Plusieurs méchants en jeu, un seul « le méchant »
+
+| Texte imprimé | Appel | Modèle / règle | Piège |
+|---|---|---|---|
+| règle du scénario | `Villains.SetRule(effect, Villains.Rule(the_villain="Active"\|"Leftmost", player_cards="TheVillain"\|"PlayerChooses"))` à la mise en place | Punisher p180 (`Active`) ; Earth Under Siege GS p.16 (`Leftmost` + `PlayerChooses`) | sans règle, RIEN ne change (`Scenario.GetVillain` : crochet `GettingVillain`, puis compteur actif, puis le premier) ; un crochet `AbilityFactory.GetVillain` du scénario reste prioritaire sur la règle |
+| « the villain » | `Villains.TheVillain(effect)` = `Worlds.FindVillain(effect)` | 246 scripts l'appellent déjà | une carte (rencontre OU joueur) ATTACHÉE à un méchant désigne ce méchant (GS p.16) dès qu'une règle est posée |
+| « a villain », « each villain » | `Villains.All(effect)` ou `SetTarget(Villain)` | — | ordre de gauche à droite = ordre d'arrivée dans `area_villain` |
+| « the active villain » / déplacer le compteur | `Villains.Active(effect)`, `Villains.SetActive(mechant, effect)` | Sinister Six, Wrecking Crew | compteur `active` ordinaire (`Villain.SetActive`) |
+| « the leftmost villain » | `Villains.Leftmost(effect)` (`Rightmost` aussi) | GS p.16 | — |
+| « Player cards that refer to "the villain" only refer to the villain chosen by the player » ; excès d'overkill du joueur sur un sbire | `player_cards="PlayerChooses"` | GS p.16 | une question par EFFET (mémorisée sur l'effet, comme `tk006a`), libellé « Choose the villain » ; les méchants insensibles aux cartes joueur ne sont pas proposés |
+| « remove that villain from the game ... discarded instead of carrying over » | `Villains.Remove(mechant, effect)` | GS p.16 | le moteur défaussait DÉJÀ attachements et états d'une carte qui quitte le jeu (cas vert sous substitution : valeur native) ; `Remove` le fait explicitement. Le report n'existe qu'au changement de stade du MÊME nom (`AdvanceVillainStage`, `SetAsCard`) |
+| deck de méchants, « place the newly revealed villain as the rightmost » | `Villains.BuildVillainDeck(faces, effect)`, `Villains.RevealNextVillain(joueur, effect)`, `Villains.VillainDeckSize(effect)` | Earth Under Siege | deck créé À LA DEMANDE (`scenario.deck_de_mechants`) : un deck de plus dans chaque scénario décalerait la numérotation des objets de toutes les parties ; distinct de `Scenario.villain_deck` (les stades) |
+
+Banc : `Puzzle.SetVillainRule`, `Puzzle.SetActiveVillain`, `Puzzle.RemoveVillain`, `Puzzle.BuildVillainDeck`,
+`Puzzle.RevealNextVillain`.

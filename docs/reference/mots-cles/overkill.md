@@ -42,6 +42,14 @@ paiement).
   Wrecking Crew compris : **décision de l'utilisateur du 12/10/2026 pour Wrecking
   Crew, sans ruling officiel**. Le moteur le faisait déjà (`Worlds.FindVillain` →
   `Scenario.GetVillain`, qui renvoie le méchant `IsActive()` en premier).
+- **Un ENNEMI qui abat un sbire avec overkill** (brique commune du 20/10/2026, `Enemy.AttackCharacter`) : la règle
+  ne distingue pas l'attaquant, l'excès va à « le méchant » (`CanAttack.DefaultOverkillTarget`), donc au méchant
+  lui-même s'il attaque (Kree Sentry, Galactic Storm p.9). Une carte qui désigne une autre cible passe
+  `overkill_to=` (Punisher p185 : « His overkill damage on minions is dealt to the TARGETED villain »).
+- **Plusieurs méchants, règle `PlayerChooses`** (Galactic Storm p.16) : l'excès d'une attaque DU JOUEUR sur un sbire
+  va au méchant qu'il choisit (`mots-cles/mechants-multiples.md`).
+- **Méchant insensible aux cartes joueur** (CIBLÉ, HIDDEN) : l'excès d'une attaque de joueur ne le blesse pas
+  (`mots-cles/immunite-cartes-joueur.md`) ; celui d'une attaque d'ennemi, si.
 - Cas : « Overkill [regle] » dans `tools/test_capacites.py` (un méchant, deux
   défaites simultanées, Sinister Six, Wrecking Crew, ennemi sur un allié).
 
