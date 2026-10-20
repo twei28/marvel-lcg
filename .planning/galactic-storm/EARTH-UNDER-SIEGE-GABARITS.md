@@ -1,11 +1,14 @@
 # Gabarits PROCESSUS-CARTE.md — Scénario 4 Earth Under Siege (gs161-gs194, gsr01-gsr10), lot GS-7
 
-EN COURS. Dernier scénario de Galactic Storm restant (GS-4, GS-5, GS-6 et GS-8 sont clos). Scans extraits
-des 4 zips Kajislav (`MC custom content by Kajislav-20261014T200011Z-1-00{1,2,3}.zip`, dossiers z1/z2/z3
-des transcriptions). Transcriptions : `docs/packs/galactic-storm/transcriptions/earth-under-siege.md` et
-`earth-under-siege-ensembles.md`. Preuves : `Fusion/marvel-lcg-src/tools/cas/earth_under_siege.py` (filtre
-`[eus]`), 8/8 cas verts. `test_cards` : 6974/6974 constructions OK, 0 erreur (toutes cartes du lot
-construites, y compris les 32 restant sans script). `verifier_appels_modules galactic_storm` : OK.
+**Les 36 cartes du scénario sont écrites** (gs161a/b, gs162a/b, gs163-165, et les 6 méchants complets
+gs166-194). `test_cards` : 7006/7006 constructions OK, 0 erreur. `verifier_appels_modules galactic_storm` :
+OK. Scans extraits des 4 zips Kajislav (`MC custom content by Kajislav-20261014T200011Z-1-00{1,2,3}.zip`,
+dossiers z1/z2/z3 des transcriptions). Transcriptions :
+`docs/packs/galactic-storm/transcriptions/earth-under-siege.md` et `earth-under-siege-ensembles.md`.
+
+Reste avant de clore le lot : autoplay ciblé (étape 8, en cours — voir section dédiée en fin de fichier) et
+une décision avec l'utilisateur sur les capacités d'ensemble non prouvées par cas (voir « Découverte
+importante » ci-dessous) — partie réelle ou nouvelle tentative de harnais avec plus de temps.
 
 **Découverte majeure du lot** : ce scénario est le PREMIER à câbler réellement la brique moteur
 « plusieurs méchants en jeu » (`src/game/operate/villains.py`, `docs/reference/mots-cles/mechants-multiples.md`),
