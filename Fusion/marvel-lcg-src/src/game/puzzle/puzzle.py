@@ -750,6 +750,29 @@ class RunPuzzle:
             assert False, f"{card=} n'est ni un ennemi ni un personnage allie"
         return face
 
+    def EnemyAttacks(self, card: CardName, target: CardName, defender: CardName|None=None,
+                     overkill_to: CardName|None=None, joueur: int|None=None,
+                     **options: Any) -> 'CardFace':
+        """Brique commune du 20/10/2026 : l'ennemi CARD attaque TARGET (allie,
+        sbire, mechant), par `Enemy.AttackCharacter`. `defender` arme un
+        defenseur comme `Attack` ; `overkill_to` designe la carte qui recoit
+        l'exces quand un sbire est abattu ; `options` passe tel quel
+        (`players_may_defend`, `overkill`, `additional_attack`, `give_boost`,
+        `ally_attack_is_against_player`)."""
+        from game.card.face.base import Enemy
+        face = self.FindFaceInPlay(card)
+        cible = self.FindFaceInPlay(target)
+        assert Enemy.IsType(face), f"{card=} n'est pas un ennemi"
+        if defender is not None:
+            self._DeclareDefender(defender)
+        if overkill_to is not None:
+            options['overkill_to'] = self.FindFaceInPlay(overkill_to)
+        if joueur is not None:
+            # L'INDICE du joueur « vous » des Boost (`for_player`), 0 = le premier.
+            options['for_player'] = self.world.const_players[joueur]
+        face.CastTo(Enemy).AttackCharacter(cible, self.debug_rule, **options)
+        return face
+
     def _DeclareDefender(self, card: CardName) -> 'CardFace':
         """Arme un defenseur pour la PROCHAINE attaque, puis se retire.
 

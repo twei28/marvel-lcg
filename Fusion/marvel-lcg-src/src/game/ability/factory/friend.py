@@ -216,9 +216,14 @@ class AbilityFactoryFriend:
                     effect.SetMustChoose()
             return True
 
+        from game.card.face.base import Unit2
         return AbilityFactory.WhenUnitBeingAttack(
             AbilityType.BasicPower,
-            Friend,
+            # AJOUT (20/10/2026, brique « un ennemi attaque un ennemi ») : `Unit2`
+            # au lieu de `Friend`, pour que la defense puisse etre proposee quand
+            # la cible est un ENNEMI ; la condition ci-dessous garde, pour une
+            # cible `Friend`, exactement la regle d'avant (seul son controleur).
+            Unit2,
             None,
             set_defender,
             # has_defender=False,
@@ -226,7 +231,13 @@ class AbilityFactoryFriend:
             conditions=[
                 lambda effect, message:
                     effect.this != message.attacker and \
-                    effect.initiator == message.trigger.card.GetController(),
+                    ((Friend.IsType(message.trigger) and
+                      effect.initiator == message.trigger.card.GetController()) or
+                     # Cible ENNEMIE : seulement si la carte permet de defendre
+                     # (Punisher p180 « Players may defend any attack, even ones
+                     # targeting enemies »). Le defenseur devient la cible.
+                     (not Friend.IsType(message.trigger) and
+                      getattr(message.would_atk_message.property, 'players_may_defend', False))),
                 check_must_defend_with_ally,
                 check_defender,
                 *conditions

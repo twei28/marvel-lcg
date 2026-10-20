@@ -20,6 +20,35 @@ class AttackProperty(PowerProperty):
 
     would_act_message: 'Message.WhenEnemyWouldActivate|None' = field(default=None)
 
+    # AJOUT (20/10/2026, brique commune « un ennemi attaque un ennemi ou un
+    # allie », campagnes Punisher MC×DC et Galactic Storm). Trois reglages,
+    # poses par `Enemy.AttackCharacter` ; a leur valeur par defaut, le moteur
+    # se comporte exactement comme avant.
+    #
+    # `boost_player` : le joueur que designe « vous » dans une capacite Boost
+    # quand l'attaque ne vise AUCUN joueur (cible ennemie : `against_player`
+    # reste None, sans quoi les capacites « attacks you » partiraient).
+    # Galactic Storm p.9 : « the player who revealed the card that caused
+    # Kree Sentry to attack the minion ».
+    boost_player: 'Player|None' = field(default=None)
+    # `players_may_defend` : les joueurs peuvent declarer un defenseur alors
+    # que la cible est un ENNEMI (Punisher p180 « Players may defend any
+    # attack, even ones targeting enemies »). Sans lui, une attaque contre un
+    # ennemi n'est jamais defendue (seul le controleur de la cible defend).
+    players_may_defend: bool = field(default=False)
+    # `overkill_target_fn(cible) -> Unit2|None` : qui recoit l'exces d'un coup
+    # overkill qui abat CETTE cible. None = regle du livret (sbire -> « le
+    # mechant », allie -> identite de son controleur). Punisher p185 : « His
+    # overkill damage on minions is dealt to the TARGETED villain ».
+    overkill_target_fn: 'Callable[[Unit2], Unit2|None]|None' = field(default=None)
+    # `not_against_player` : l'attaque d'un ALLIE n'est pas consideree comme
+    # dirigee contre son controleur (`against_player` reste None, « attacks
+    # you » ne part pas ; le controleur reste le « vous » des Boost via
+    # `boost_player`). Galactic Storm p.4 l'exige ; le Rules Reference 1.8
+    # (« Attacks Against Allies », p.10) dit l'inverse : c'est la carte ou le
+    # scenario qui choisit, voir `Enemy.AttackCharacter`.
+    not_against_player: bool = field(default=False)
+
     def HasKeyWord(self):
         return self.overkill or self.ranged or self.piercing
 
@@ -433,10 +462,12 @@ class CanAttack(CardFace):
             overkill_target = None
             damaged_overkill_target = None
             if would_attack_unit_message.IsOverKill():
-                if Minion.IsType(atk_target):
-                    overkill_target = Worlds.FindVillain(by_effect)
-                elif Ally.IsType(atk_target):
-                    overkill_target = atk_target.GetControlByPlayer().GetIdentity()
+                if property.overkill_target_fn is not None:
+                    # Brique commune (20/10/2026) : la carte designe elle-meme
+                    # la cible de l'exces (Punisher p185 : le mechant CIBLE).
+                    overkill_target = property.overkill_target_fn(atk_target)
+                else:
+                    overkill_target = CanAttack.DefaultOverkillTarget(atk_target, by_effect)
 
             took_damage_targets: List['Unit2'] = []
 
@@ -1086,7 +1117,22 @@ class CanAttack(CardFace):
         return targets
 
     @staticmethod
-    def SpecialAttack(this: 'Unit2|CanAttack', units: Sequence['CardFace'], by_effect: 'Effect', *, property: 'AttackProperty') -> 'Message.AfterUnitAttackEnd|None':
+    def DefaultOverkillTarget(atk_target: 'CardFace', by_effect: 'Effect') -> 'Unit2|None':
+        """Cible de l'exces d'un coup overkill, regle du livret (RR 1.8 p.31) :
+        sbire abattu -> « le mechant » (le mechant actif, ou celui que designe
+        la regle des mechants multiples, `Villains.Rule`) ; allie abattu ->
+        identite de son controleur ; toute autre cible -> aucune."""
+        from game.card.face.card_type import Ally
+        from game.card.face.card_type import Minion
+        from game.operate.worlds import Worlds
+        if Minion.IsType(atk_target):
+            return Worlds.FindVillain(by_effect)
+        if Ally.IsType(atk_target):
+            return atk_target.GetControlByPlayer().GetIdentity()
+        return None
+
+    @staticmethod
+    def SpecialAttack(this:'Unit2|CanAttack', units: Sequence['CardFace'], by_effect: 'Effect', *, property: 'AttackProperty') -> 'Message.AfterUnitAttackEnd|None':
         targets = CanAttack.GetUnits(units)
 
         message = CanAttack.AttackInternal(this, targets, by_effect, property=property)
@@ -1116,7 +1162,7 @@ class CanAttack(CardFace):
             property.is_basic_power = True
 
         controller = units[0].GetControlBy()
-        if Player.IsType(controller):
+        if Player.IsType(controller) and not property.not_against_player:
             property.against_player = controller
 
         targets = CanAttack.GetUnits(units)
