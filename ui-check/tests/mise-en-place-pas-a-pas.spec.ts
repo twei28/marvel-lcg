@@ -39,6 +39,8 @@ async function partie(page: Page, largeur: number, hauteur: number) {
       localStorage.setItem('marvel-langue', en ? 'en' : 'fr');
       // La mise en place pas à pas n'existe que dans ce mode (10/10/2026).
       localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille');
+      // « detaille » se lit « tris » depuis le 19/10/2026 (Guidée) : posé explicitement, jamais par défaut.
+      localStorage.setItem('mc_phase_presentation', 'tris');
     } catch { /* */ }
   }, EN);
   await page.goto('/app/board.html', { waitUntil: 'networkidle' });

@@ -32,6 +32,7 @@ import '../styles/affichage-epure.css'
 import '../styles/teinte.css'
 import { PlusieursJoueurs, ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
+import { consigne, phraseEtat } from './board/phrase-etat'
 import { CartesDuJournal, type AccesCartesJournal } from './board/NomsDeCartes'
 import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
@@ -4363,6 +4364,42 @@ export function PagePartie({
     ciblesHorsTableVisibles.length > 0 &&
     !(ciblageEnScene && nouvelleScenePC) &&
     interaction.ciblesHorsTable.length >= interaction.assistant.ciblePossibles
+  // LE BANDEAU COLLE (fiche du 07/10/2026) : des cibles aussi sur la table, donc pas de fenetre modale. Le panneau
+  // d'action ne flotte plus a cote du selecteur hors table, il en devient le haut, et les deux se deplacent ensemble.
+  // Le paiement, lui, garde le panneau d'action (le selecteur n'est la que pour choisir).
+  const bandeauColleActif =
+    !fenetreChoix &&
+    ciblesHorsTableVisibles.length > 0 &&
+    !(ciblageEnScene && nouvelleScenePC) &&
+    interaction.option !== undefined &&
+    interaction.assistant.etape === 'target' &&
+    etat.connecte &&
+    etat.aNous &&
+    etat.demande !== undefined &&
+    !manuel &&
+    !porteHorsPhase &&
+    !ciblageSurTable &&
+    !(nouvelleScenePC && phaseMechantEnCours)
+  const bandeauColle = (() => {
+    if (!bandeauColleActif || !interaction.option) return undefined
+    const option = interaction.option
+    const nomAction = nomLisible(option)
+    const porteur = cartesMondeParId.get(option.bind_id)
+    const porteurEstIdentite = porteur?.card_type === 'Hero' || porteur?.card_type === 'AlterEgo'
+    const nomDuPorteur =
+      designEssai && option.bind_id !== 0 && !porteurEstIdentite
+        ? (nomPorteurFr(option.bind_id) ?? (porteur ? nomAffiche(porteur) : undefined))
+        : undefined
+    return {
+      surtitre: nomDuPorteur ?? nomAction,
+      consigne: consigne(interaction.assistant, nomAction),
+      phrase: phraseEtat(interaction.assistant, interaction.prete) || undefined,
+      libelleValider: (nomDuPorteur ? `${nomAction} ${nomDuPorteur}` : nomAction) || t('Confirmer'),
+      prete: interaction.prete,
+      valider: interaction.valider,
+      annuler: interaction.annuler,
+    }
+  })()
   // LA QUESTION STRUCTUREE du cartouche du bas (scene PC, lots 4 et 5) : la
   // defense et le choix d'une carte revelee dans sa rangee, le reste dans son
   // sous-cadre. Pendant la phase, c'est DeroulePhase qui la porte ; hors
@@ -4487,6 +4524,7 @@ export function PagePartie({
           cibles={ciblesHorsTableVisibles}
           titre={interaction.option ? nomLisible(interaction.option) : ''}
           survoler={setApercuSelecteur}
+          bandeau={bandeauColle}
           fenetre={
             fenetreChoix
               ? {
@@ -4621,7 +4659,7 @@ export function PagePartie({
         />
       ) : null}
 
-      {manuel || fenetreChoix || porteHorsPhase ? null : (
+      {manuel || fenetreChoix || porteHorsPhase || bandeauColleActif ? null : (
         <AssistantAction
           demande={etat.demande}
           interaction={interaction}

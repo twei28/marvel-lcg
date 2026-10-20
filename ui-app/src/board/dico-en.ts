@@ -1691,6 +1691,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Accéléré': 'Fast Forward',
   'Guidée : un « Suivant » par étape de la phase. Plateau animé : les cartes bougent sur la table. Accéléré : tout se joue d’un coup':
     'Guided: one "Next" per step of the phase. Animated Board: the cards move on the table. Fast Forward: everything plays out at once',
+  'Guidée : « Lire la suite » puis « Étape suivante » à chaque étape de la phase. Plateau animé : les cartes bougent sur la table. Accéléré : tout se joue d’un coup':
+    'Guided: "Read more" then "Next step" at each step of the phase. Animated Board: the cards move on the table. Fast Forward: everything plays out at once',
   'Étape par étape bis : un « Suivant » par étape de la phase. Sur la table : les cartes bougent sur la table. D’un coup : tout se joue d’un coup':
     'Step by step bis: one "Next" per step of the phase. On the table: the cards move on the table. All at once: everything plays out at once',
   'Étape par étape : un « Suivant » par étape de la phase': 'Step by step: one "Next" per step of the phase',

@@ -32,6 +32,22 @@ export type FenetreChoix = {
   annuler: () => void
 }
 
+/**
+ * LE BANDEAU COLLE (fiche du 07/10/2026, « le bouton qui valide se colle au-dessus de la modale, et quand on bouge
+ * l'un ou l'autre, les deux bougent »). Quand des cibles sont aussi sur la table, la table doit rester cliquable :
+ * pas de fenetre modale. Le panneau d'action (titre, consigne, Annuler, bouton qui valide) ne flotte plus a cote du
+ * selecteur : il devient le haut du selecteur, meme largeur, aucun ecart, et une seule poignee deplace l'ensemble.
+ */
+export type BandeauColle = {
+  surtitre: string
+  consigne: string
+  phrase?: string
+  libelleValider: string
+  prete: boolean
+  valider: () => void
+  annuler: () => void
+}
+
 export type SelecteurCiblesProps = {
   cibles: CibleHorsTable[]
   /** Titre de l'action en cours, pour savoir ce qu'on choisit. */
@@ -40,9 +56,11 @@ export type SelecteurCiblesProps = {
   survoler?: (carte: ScanCardProps | undefined) => void
   /** Present : le selecteur est une fenetre modale avec ses propres boutons. */
   fenetre?: FenetreChoix
+  /** Present (et pas de fenetre) : le panneau d'action est colle au-dessus du selecteur, les deux ne font qu'un. */
+  bandeau?: BandeauColle
 }
 
-export function SelecteurCibles({ cibles, titre, survoler, fenetre }: SelecteurCiblesProps) {
+export function SelecteurCibles({ cibles, titre, survoler, fenetre, bandeau }: SelecteurCiblesProps) {
   // Survol ecoute sur le CONTENEUR, agrandissement DERIVE de `cibles` : la
   // regle commune, expliquee dans `apercu-survol.ts`. Ici l'agrandissement
   // n'est pas monte par ce panneau mais remonte a la table (`survoler`), d'ou
@@ -68,7 +86,7 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre }: SelecteurC
   const pret = fenetre ? fenetre.choisies >= Math.max(1, fenetre.minimum) : false
   const panneau = (
     <div
-      className={`plateau-selecteur${fenetre ? ' est-fenetre' : ''}`}
+      className={`plateau-selecteur${fenetre ? ' est-fenetre' : ''}${bandeau && !fenetre ? ' avec-bandeau' : ''}`}
       role={fenetre ? 'dialog' : 'group'}
       aria-modal={fenetre ? true : undefined}
       aria-label={fenetre ? titre : `${t('Cibles possibles :')} ${titre}`}
@@ -85,6 +103,36 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre }: SelecteurC
       onMouseOver={survol}
       onMouseLeave={quitter}
     >
+      {bandeau && !fenetre ? (
+        <div className="plateau-selecteur-bandeau">
+          <div
+            className="plateau-selecteur-bandeau-texte poignee-glisser"
+            onPointerDown={gestesGlisser.onPointerDown}
+            onPointerMove={gestesGlisser.onPointerMove}
+            onPointerUp={gestesGlisser.onPointerUp}
+            onPointerCancel={gestesGlisser.onPointerCancel}
+          >
+            <span className="plateau-eyebrow">{bandeau.surtitre}</span>
+            <strong>{bandeau.consigne}</strong>
+            {bandeau.phrase ? <span className="plateau-selecteur-compte">{bandeau.phrase}</span> : null}
+          </div>
+          <div className="plateau-selecteur-boutons">
+            <button type="button" className="plateau-selecteur-annuler" onClick={bandeau.annuler}>
+              {t('Annuler')}
+            </button>
+            <button
+              type="button"
+              className="plateau-selecteur-valider"
+              disabled={!bandeau.prete}
+              onClick={() => {
+                if (bandeau.prete) bandeau.valider()
+              }}
+            >
+              {bandeau.libelleValider}
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div
         className="plateau-selecteur-entete poignee-glisser"
         onPointerDown={gestesGlisser.onPointerDown}

@@ -14,6 +14,12 @@
 
 export const CLE_MODE_PHASE = "marvel-board-mode-phase-mechant";
 export const CLE_PHASE_MODE_VU = "mc_phase_mode_vu_v1";
+// REAFFICHAGE UNIQUE (decision de l'utilisateur, 20/10/2026) : la fenetre est posee une fois de plus a TOUS les joueurs,
+// y compris ceux qui avaient deja vu l'ancienne (cle `mc_phase_mode_vu_v1` a « 1 », qui ne compte plus). Meme mecanisme
+// que la migration datee : la cle porte la VERSION du choix ; valeur a jour = jamais plus. Aucune migration des choix
+// ici (les choix deja ranges sont gardes et preselectionnes).
+export const CLE_PHASE_CHOIX_VU = "mc_phase_choix_vu";
+export const VERSION_CHOIX_PHASE = "2026-10-20";
 
 export const DETAILLE = "detaille";
 export const SUR_TABLE = "sur-table";
@@ -62,9 +68,9 @@ export function normaliser(valeur) {
     return MODES.includes(valeur) ? valeur : DETAILLE;
 }
 
-/** Faut-il montrer la fenêtre ? Seulement à qui ne l'a jamais vue. */
+/** Faut-il montrer la fenêtre ? Seulement si la version vue n'est pas la version courante (`CLE_PHASE_CHOIX_VU`). */
 export function doitProposerLeChoix(vu) {
-    return vu !== "1";
+    return vu !== VERSION_CHOIX_PHASE;
 }
 
 /**

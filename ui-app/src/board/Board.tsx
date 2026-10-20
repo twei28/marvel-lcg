@@ -667,6 +667,16 @@ function ApercuAutreFace({
   )
 }
 
+/**
+ * Le volet d'aide du mode manuel (fiche du 07/10/2026) : ouvert, il occupe la colonne de droite et cachait
+ * l'agrandissement (z-index 610 contre 545). L'agrandissement se range a SA GAUCHE, languette comprise. Aucune
+ * borne quand le volet est ferme (rien d'attache au document) ou plein ecran (petit ecran : pas de place a cote).
+ */
+function bornesDuVoletAide(): readonly string[] {
+  if (typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 760px), (max-height: 520px)').matches) return []
+  return ['.volet-aide', '.volet-aide-languette.est-ouvert']
+}
+
 export function CarteApercu({
   carte,
   statuts,
@@ -758,7 +768,10 @@ export function CarteApercu({
     // EN HAUT A GAUCHE : la borner a son bord gauche rejetait l'apercu a
     // gauche de l'ecran. Le selecteur ne trouve alors rien, et l'apercu reste
     // ancre a droite comme avant.
-    borneDroite: borneDroite ?? (nbFaces === 1 ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : undefined),
+    borneDroite: [
+      ...(borneDroite ?? (nbFaces === 1 ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : [])),
+      ...bornesDuVoletAide(),
+    ],
     signature: `${carte.id}|${nbFaces}`,
   })
 

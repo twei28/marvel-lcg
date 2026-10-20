@@ -305,7 +305,7 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
       }}
       detail={
         bisOuvert && !PHASE_ETAPE_VISIBLE
-          ? t('Guidée : un « Suivant » par étape de la phase. Plateau animé : les cartes bougent sur la table. Accéléré : tout se joue d’un coup')
+          ? t('Guidée : « Lire la suite » puis « Étape suivante » à chaque étape de la phase. Plateau animé : les cartes bougent sur la table. Accéléré : tout se joue d’un coup')
           : t('Étape par étape : un « Suivant » par étape de la phase')
       }
     />
