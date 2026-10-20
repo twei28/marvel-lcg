@@ -113,11 +113,13 @@ class WorldRender:
         from game.test import Test
         if not Test.IsInTesting():
             from engine.enregistrement import Enregistrement, entete_de, ressources_des_mains
-            from dataclasses import asdict
+            # `asdict_rapide` et non `dataclasses.asdict` (backlog 22, 20/10/2026) :
+            # resultat identique, trois fois moins cher (voir engine/lib/en_dict.py).
+            from engine.lib.en_dict import asdict_rapide
             session = game.session
             Enregistrement.Rendu(
                 f"{getattr(session, 'game_uid', '')}-{getattr(session, 'game_id', '')}",
-                asdict(self.descriptor),
+                asdict_rapide(self.descriptor),
                 lambda: entete_de(game),
                 ressources_des_mains(world),
             )
