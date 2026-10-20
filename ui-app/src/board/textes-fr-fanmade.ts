@@ -912,9 +912,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // lockjaw — Central Park (Support)
   'lj030': "<b>Action d'alter ego</b> : inclinez Central Park → soignez 1 dégât d'un [[PET AVENGER]] ou d'un [[GOOD BOY]].",
   // stanlee — Stan Lee (Hero)
-  '90101a': "Stan Lee possède les zones de texte de chaque héros utilisé avec la capacité <i>Marvelous</i>.",
+  '90101a': "Stan Lee possède les zones de texte de chaque héros utilisé avec la capacité <i>Marvelous</i>.\n(Stan Lee, c'est pour s'amuser. Si une chose semble devoir marcher, elle marche !)\n<i>« Excelsior! »</i>",
   // stanlee — Stan Lee (AlterEgo)
-  '90101b': "Stan Lee possède les zones de texte de chaque alter ego utilisée avec la capacité <i>Marvelous</i>.\n<i>Marvelous</i> — Pendant la construction du deck, votre deck doit inclure 15 cartes spécifiques à un héros, prises parmi les autres sets de héros de votre collection.",
+  '90101b': "Stan Lee possède les zones de texte de chaque alter ego utilisé avec la capacité <i>Marvelous</i>.\n<i>Marvelous</i> — Pendant la construction du deck, votre deck doit inclure 15 cartes spécifiques à un héros, prises parmi les autres sets de héros de votre collection.",
   // rainy — Hulk (Hero)
   '90102a': "Colère — <b>Réponse</b> : après que Hulk a subi des dégâts, infligez 1 dégât à un ennemi.",
   // rainy — Bruce Banner (AlterEgo)

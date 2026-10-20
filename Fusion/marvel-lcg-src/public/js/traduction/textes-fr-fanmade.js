@@ -913,9 +913,9 @@ export const TEXTES_FR_FANMADE = {
     // lockjaw — Central Park (Support)
     'lj030': "<b>Action d'alter ego</b> : inclinez Central Park → soignez 1 dégât d'un [[PET AVENGER]] ou d'un [[GOOD BOY]].",
     // stanlee — Stan Lee (Hero)
-    '90101a': "Stan Lee possède les zones de texte de chaque héros utilisé avec la capacité <i>Marvelous</i>.",
+    '90101a': "Stan Lee possède les zones de texte de chaque héros utilisé avec la capacité <i>Marvelous</i>.\n(Stan Lee, c'est pour s'amuser. Si une chose semble devoir marcher, elle marche !)\n<i>« Excelsior! »</i>",
     // stanlee — Stan Lee (AlterEgo)
-    '90101b': "Stan Lee possède les zones de texte de chaque alter ego utilisée avec la capacité <i>Marvelous</i>.\n<i>Marvelous</i> — Pendant la construction du deck, votre deck doit inclure 15 cartes spécifiques à un héros, prises parmi les autres sets de héros de votre collection.",
+    '90101b': "Stan Lee possède les zones de texte de chaque alter ego utilisé avec la capacité <i>Marvelous</i>.\n<i>Marvelous</i> — Pendant la construction du deck, votre deck doit inclure 15 cartes spécifiques à un héros, prises parmi les autres sets de héros de votre collection.",
     // rainy — Hulk (Hero)
     '90102a': "Colère — <b>Réponse</b> : après que Hulk a subi des dégâts, infligez 1 dégât à un ennemi.",
     // rainy — Bruce Banner (AlterEgo)
@@ -4864,4 +4864,20 @@ export const TEXTES_FR_FANMADE = {
     'se010': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Jardinier</i> — <b>Réponse de héros</b> : après que vous avez joué un événement [[ATTACK]] ou [[DEFENSE]], subissez 1 dégât → hébétez un ennemi.",
     // se011 Yōjimbō (Path hybride, Bushido + Ninjutsu)
     'se011': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Garde du Corps</i> — <b>Interruption de héros</b> : quand un ennemi attaque, inclinez cette carte → déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je suis à tes côtés. »</i>",
+    // iron_fist — pack OFFICIEL MC64EN (novembre 2026) : traduction PROVISOIRE, faite le 20/10/2026 avant
+    // toute version francaise publiee. A remplacer par le texte officiel (textes-fr-complets.ts, genere)
+    // des que fr.marvelcdb.com l'aura, puis retirer ces entrees.
+    '64001a': "<i>Maître des arts martiaux</i> — <b>Réponse</b> : après que vous avez joué une carte, placez 1 jeton Chi ici.\n<b>Réponse forcée</b> : après la fin de la phase des Joueurs, retirez d'ici tous les jetons Chi sauf 4 et soignez 1 dégât pour chaque jeton Chi ainsi retiré.",
+    '64001b': "Vos cartes [[Technique]] perdent le mot-clé Temporaire.\n<i>Méditation</i> — <b>Action</b> : cherchez une carte [[Technique]] dans votre deck et votre défausse. Mettez cette carte en jeu. (Limite d'une fois par phase.)",
+    '64002': "<b>Action de héros</b> : défaussez des cartes du dessus de votre deck jusqu'à défausser une carte Iron Fist, et ajoutez-la à votre main.",
+    '64003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez retirer jusqu'à 5 jetons Chi de votre identité pour infliger 2 dégâts supplémentaires pour chaque jeton Chi ainsi retiré. Si vous en avez retiré au moins 3, sonnez aussi cet ennemi.",
+    '64004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi. Infligez 1 dégât à un ennemi. Infligez 1 dégât à un ennemi.",
+    '64005': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Vous pouvez retirer 2 jetons Chi d'Iron Fist pour retirer 2 menaces d'une manigance.",
+    '64006': "<b>Action</b> : inclinez Lei Kung et retirez 1 jeton Chi de votre identité → piochez 1 carte.",
+    '64007': "<b>Action de héros</b> : inclinez cette carte → si la carte du dessus de votre défausse est une [[Technique]], mettez-la en jeu.",
+    '64008': "Temporaire.\n<b>Interruption de héros</b> : quand vous attaquez, retirez 1 jeton Chi d'Iron Fist → augmentez de 1 la quantité de dégâts infligés par cette attaque (de 2 à la place s'il s'agit d'une attaque de base).",
+    '64009': "Temporaire.\nIron Fist gagne Riposte X, où X est égal au nombre de jetons Chi sur cette carte.\n<b>Action de héros</b> : déplacez 1 jeton Chi d'Iron Fist sur cette carte.",
+    '64010': "Temporaire.\n<b>Action de héros</b> <i>(contre)</i> : retirez 1 jeton Chi d'Iron Fist → retirez 1 menace d'une manigance.",
+    '64011': "Temporaire.\n<b>Action de héros</b> : retirez 2 jetons Chi d'Iron Fist → redressez-le.",
+    '64012': "Temporaire.\n<b>Ressource de héros</b> : retirez 2 jetons Chi d'Iron Fist → générez des ressources [wild] [wild].",
 };
