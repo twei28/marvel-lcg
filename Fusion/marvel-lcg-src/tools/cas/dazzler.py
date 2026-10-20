@@ -52,7 +52,7 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
 
 
 VERIFICATIONS = r'''
-CLES_DAZZLER = {'mains', 'setlist', 'compteurs_setlist', 'deck_joueur_taille'}
+CLES_DAZZLER = {'mains', 'setlist', 'compteurs_setlist', 'deck_joueur_taille', 'jouable'}
 
 
 def dz_etat(monde, aides):
@@ -60,11 +60,21 @@ def dz_etat(monde, aides):
     - mains : [[rang du joueur, taille]] (taille de la main de CHAQUE joueur, « each player ») ;
     - setlist : liste EXACTE des card_id dans la Setlist (zone posee sous Live Concert, l'une ou l'autre face) ;
     - compteurs_setlist : [[card_id, compteur, n]] sur une carte de la Setlist (hors jeu, donc invisible a `compteurs`) ;
-    - deck_joueur_taille : [[rang du joueur, taille]]."""
+    - deck_joueur_taille : [[rang du joueur, taille]] ;
+    - jouable : [[card_id, bool]], la carte EN MAIN du joueur 0 est-elle jouable (`CanPlayBy`) ?"""
     cas = aides["cas"]
     attendu = dict(cas.get("attendu") or {})
     propres = {k: attendu.pop(k) for k in list(attendu) if k in CLES_DAZZLER}
     soucis = []
+    for cid, voulu in propres.get("jouable") or []:
+        j = monde.const_players[0]
+        main = [f for f in j.hand_cards.GetAll() if getattr(f.paper, "card_id", None) == cid]
+        if not main:
+            soucis.append(f"{cid} absente de la main")
+            continue
+        vu = bool(main[0].CanPlayBy(j))
+        if vu != voulu:
+            soucis.append(f"{cid} jouable={vu} (attendu {voulu})")
     for rang, taille in propres.get("mains") or []:
         j = monde.const_players[rang]
         vu = len(list(j.hand_cards.GetAll()))
@@ -203,4 +213,124 @@ CAS = [
        [HEROINE, *dans_setlist("dz007")], [REPETER],
        {"mains": [[0, 2], [1, 7]]},
        main_exclusive=["01088"], heros2="spider_man", verifier="dz_etat"),
+    # ============================================================ dz008 "In the Darkest Light"
+    _c("dz008 In the Darkest Light : Hero Action, 2 degats a CHAQUE ennemi (Rhino et Shocker)",
+       "« Deal 2 damage to each enemy » : le vilain et le sbire, sans selection",
+       [HEROINE, *en_jeu("01103")], [], {"degats": [["01094", 2], ["01103", 2]]},
+       main_exclusive=["dz008", "01089"], jouer=["dz008"]),
+    _c("dz008 In the Darkest Light : Showtime!, le sbire choisi est etourdi (Shocker)",
+       "« Showtime!: Stun a non-ELITE enemy » : Rhino et Shocker sont candidats, Shocker choisi",
+       [HEROINE, *en_jeu("01103"), *dans_setlist("dz008")], [REPETER],
+       {"statuts": [["01103", "Stunned"]], "statuts_absents": [["01094", "Stunned"]]},
+       main_exclusive=["01088"], choisir_option=["Shocker"]),
+    _c("dz008 In the Darkest Light : Showtime!, un sbire ELITE n'est pas une cible (Klaw ecarte, Rhino etourdi)",
+       "« non-ELITE » : Klaw (dz020, ELITE) en jeu, seul Rhino est candidat et le recoit",
+       [HEROINE, *en_jeu("dz020"), *dans_setlist("dz008")], [REPETER],
+       {"statuts": [["01094", "Stunned"]], "statuts_absents": [["dz020", "Stunned"]]},
+       main_exclusive=["01088"]),
+    # ============================================================ dz009 "Out and Proud"
+    _c("dz009 Out and Proud : Hero Action, le sbire non-ELITE choisi est vaincu (Shocker)",
+       "« Defeat a non-ELITE minion » : Shocker (3 PV, aucun degat) quitte le jeu",
+       [HEROINE, *en_jeu("01103")], [], {"hors_jeu": ["01103"]},
+       main_exclusive=["dz009", "01088", "01089"], cibles=["01103"], jouer=["dz009"]),
+    _c("dz009 Out and Proud : Hero Action, un sbire ELITE n'est pas une cible (seul Klaw en jeu : la carte reste en main)",
+       "« non-ELITE » : sans autre sbire, aucune cible legale, la carte n'est pas jouee et Klaw reste en jeu",
+       [HEROINE, *en_jeu("dz020")], [], {"en_jeu": ["dz020"], "jouable": [["dz009", False]]},
+       main_exclusive=["dz009", "01088", "01089"], verifier="dz_etat"),
+    _c("dz009 Out and Proud : Hero Action, temoin de jouabilite (Klaw ET Shocker en jeu : la carte est jouable)",
+       "temoin du cas precedent : le meme montage avec un sbire non-ELITE rend la carte jouable",
+       [HEROINE, *en_jeu("dz020", "01103")], [], {"jouable": [["dz009", True]]},
+       main_exclusive=["dz009", "01088", "01089"], verifier="dz_etat"),
+    _c("dz009 Out and Proud : Showtime!, 1 degat soigne sur CHAQUE allie en jeu (2 -> 1 et 1 -> 0)",
+       "« Showtime!: Heal 1 damage from each ally in play » : deux allies blesses",
+       [HEROINE, *en_jeu("01059", "01020"), "Puzzle.Damage('01059', 2)", "Puzzle.Damage('01020', 1)",
+        *dans_setlist("dz009")], [REPETER],
+       {"degats": [["01059", 1], ["01020", 0]]},
+       main_exclusive=["01088"]),
+    # ============================================================ dz010 "Rich Angel"
+    _c("dz010 Rich Angel : Hero Interrupt, tous les degats d'une ATTAQUE contre toi sont prevenus (Rhino, 0 degat)",
+       "« When you would take any amount of damage from an attack, prevent all of that damage » : heroine inclinee "
+       "(pas de defense de base), Rhino ATK 2",
+       [HEROINE, "Puzzle.Exhaust('dz001a')"], ["Puzzle.Attack('01094')"],
+       {"degats_identite": 0},
+       main_exclusive=["dz010", "01088"]),
+    _c("dz010 Rich Angel : Hero Interrupt, des degats qui ne viennent PAS d'une attaque ne sont pas prevenus (3 degats)",
+       "« from an ATTACK » : 3 degats directs (Puzzle.Damage) sont encaisses, la carte reste en main",
+       [HEROINE], ["Puzzle.Damage('dz001a', 3)"],
+       {"degats_identite": 3, "en_main": ["dz010"]},
+       main_exclusive=["dz010", "01088"]),
+    _c("dz010 Rich Angel : Showtime!, 2 degats soignes sur ton identite (3 -> 1)",
+       "« Showtime!: Heal 2 damage from an identity »",
+       [HEROINE, "Puzzle.Damage('dz001a', 3)", *dans_setlist("dz010")], [REPETER],
+       {"degats_identite": 1},
+       main_exclusive=["01088"]),
+    _c("dz010 Rich Angel : Showtime!, l'identite d'un AUTRE joueur peut etre soignee (Spider-Man 3 -> 1)",
+       "« an identity » : n'importe laquelle, partie a deux, Spider-Man choisi",
+       [HEROINE, "Puzzle.ChangeForm('01001b')", "Puzzle.Damage('01001a', 3)", "Puzzle.Damage('dz001a', 3)",
+        *dans_setlist("dz010")], [REPETER],
+       {"degats": [["01001a", 1]], "degats_identite": 3},
+       main_exclusive=["01088"], heros2="spider_man", choisir_option=["Spider-Man"]),
+    # ============================================================ dz011 "The Serpent is Coming"
+    _c("dz011 The Serpent is Coming : Hero Action (attack), 6 degats a l'ennemi choisi (Rhino)",
+       "« Deal 6 damage to an enemy »",
+       [HEROINE], [], {"degats": [["01094", 6]]},
+       main_exclusive=["dz011", "01088", "01089"], cibles=["01094"], jouer=["dz011"]),
+    _c("dz011 The Serpent is Coming : Hero Action, l'attaque est A DISTANCE (Riposte 2 ignoree)",
+       "« This attack gains ranged » : Tracksuit Mafioso (60202, Retaliate 2) garde en vie par une carte Tough ; "
+       "une attaque sans distance ferait encaisser 2 degats a l'heroine. La carte Tough consommee prouve "
+       "que l'attaque a bien eu lieu",
+       [HEROINE, "Puzzle.Tough(Puzzle.PutIntoPlay('60202'))"], [],
+       {"degats_identite": 0, "en_jeu": ["60202"], "statuts_absents": [["60202", "Tough"]]},
+       main_exclusive=["dz011", "01088", "01089"], cibles=["60202"], jouer=["dz011"]),
+    _c("dz011 The Serpent is Coming : Showtime!, 2 degats a un ennemi (Rhino)",
+       "« Showtime!: Deal 2 damage to an enemy »",
+       [HEROINE, *dans_setlist("dz011")], [REPETER],
+       {"degats": [["01094", 2]]},
+       main_exclusive=["01088"]),
+    # ============================================================ dz012 "Too Good to be True"
+    _c("dz012 Too Good to be True : Hero Action, pioche 3 puis defausse 1 carte choisie (main 0 -> 2, deck 5 -> 2)",
+       "« Draw 3 cards. Choose and discard 1 card from your hand » : la main ne contient que la carte et Genius "
+       "(paiement) ; apres la pioche de 3 et la defausse de 1, il reste 2 cartes en main",
+       [HEROINE, SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090', '01090', '01090', '01090')"], [],
+       {"taille_main": 2, "deck_joueur_taille": [[0, 2]]},
+       main_exclusive=["dz012", "01089"], jouer=["dz012"], verifier="dz_etat"),
+    _c("dz012 Too Good to be True : Showtime!, 3 cartes de la defausse sont melangees dans le deck (defausse de 3 exactement)",
+       "« Showtime!: Shuffle 3 cards from your discard pile into your deck » : defausse construite de 3 cartes, "
+       "deck de 2 -> 5, defausse videe. Le CHOIX des 3 quand la defausse en a plus est une question ouverte "
+       "(`.planning/todos/2026-10-20-backlog-12-questions.md`)",
+       [HEROINE, SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090')", *dans_setlist("dz012")],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('01092', '01093', '01064')", REPETER],
+       {"deck_joueur_taille": [[0, 5]]},
+       main_exclusive=["01088"], verifier="dz_etat"),
+    # ============================================================ dz013 "Velvet Sky"
+    _c("dz013 Velvet Sky : Hero Interrupt, la traitrise revelee est annulee et defaussee (Stampede : aucune attaque)",
+       "« When a treachery is revealed from the encounter deck, cancel all of its effects and discard it » : "
+       "Stampede (01106, « Rhino attacks you ») revelee, heroine inclinee : 0 degat, Stampede en defausse rencontre",
+       [HEROINE, "Puzzle.Exhaust('dz001a')"], ["Puzzle.Reveal('01106')"],
+       {"degats_identite": 0, "defausse_rencontre": ["01106"]},
+       main_exclusive=["dz013", "01088"]),
+    _c("dz013 Velvet Sky : Showtime!, une carte de statut retiree d'un personnage ami (heroine etourdie)",
+       "« Showtime!: Remove a status card from a friendly character »",
+       [HEROINE, "Puzzle.Stun('dz001a')", *dans_setlist("dz013")], [REPETER],
+       {"statuts_absents": [["dz001a", "Stunned"]]},
+       main_exclusive=["01088"]),
+    _c("dz013 Velvet Sky : Showtime!, le personnage ami d'un AUTRE joueur est une cible (Spider-Man desoriente)",
+       "« a FRIENDLY character » : partie a deux, Spider-Man (01001a) desoriente, choisi ; le module visait "
+       "`YouControlUnit` jusqu'au 20/10/2026",
+       [HEROINE, "Puzzle.ChangeForm('01001b')", "Puzzle.Confuse('01001a')", "Puzzle.Stun('dz001a')",
+        *dans_setlist("dz013")], [REPETER],
+       {"statuts_absents": [["01001a", "Confused"]], "statuts": [["dz001a", "Stunned"]]},
+       main_exclusive=["01088"], heros2="spider_man", choisir_option=["Spider-Man"]),
+    _c("dz013 Velvet Sky : Showtime!, avec DEUX statuts le joueur choisit lequel retirer (Tough retire, Stunned reste)",
+       "« Remove A status card » : une seule, au choix du joueur (RECETTES §2, « plusieurs statuts -> le CHOIX "
+       "revient au joueur »). L'ancien helper retirait d'office Stunned avant Tough",
+       [HEROINE, "Puzzle.Stun('dz001a')", "Puzzle.Tough('dz001a')", *dans_setlist("dz013")], [REPETER],
+       {"statuts": [["dz001a", "Stunned"]], "statuts_absents": [["dz001a", "Tough"]]},
+       main_exclusive=["01088"], choisir_option=["Discard_a_Tough_status_card"]),
+    _c("dz013 Velvet Sky : Showtime!, une carte d'etat d'un autre genre (Dazed) est aussi retiree",
+       "« a status card » : toutes les cartes d'etat du moteur (Dazed, Exposed, Cloaked...), pas seulement "
+       "Stunned / Confused / Tough que l'ancien helper connaissait",
+       [HEROINE, "Puzzle.Daze('dz001a')", *dans_setlist("dz013")], [REPETER],
+       {"statuts_absents": [["dz001a", "Dazed"]]},
+       main_exclusive=["01088"]),
 ]

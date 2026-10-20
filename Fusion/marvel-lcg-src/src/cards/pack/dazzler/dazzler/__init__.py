@@ -269,14 +269,36 @@ def RetirerUnStatut(face: 'CardFace', effect: 'Effect') -> bool:
     avec `rule=1` pour n'en enlever qu'une (can_status.py:98, modele Uncanny
     Resilience 07045 et The Thing th007).
 
-    Ordre : les deux statuts SUBIS d'abord, le benefique en dernier. Les deux
-    cartes visent des PERSONNAGES ALLIES : personne n'y retire son propre
-    « tough » alors qu'il est aussi etourdi.
+    CORRECTIF DU 20/10/2026 (backlog 12) : « a status card » vise TOUTES les
+    cartes d'etat du moteur (`CardFace.STATUS` : Stunned, Confused, Tough,
+    Exposed, Cloaked, Dazed, Intensified), et quand le personnage en porte
+    plusieurs, c'est le JOUEUR qui choisit laquelle part (RECETTES-MOTEUR §2,
+    modele `RetirerUneCarteDeStatut` du pack donatello). L'ancienne version ne
+    connaissait que Stunned / Confused / Tough et retirait d'office dans cet
+    ordre. Le retrait passe par `LoseState`, le chemin commun des `Discard<X>`.
     """
-    for nom, methode in (("Stunned", face.DiscardStunned),
-                         ("Confused", face.DiscardConfused),
-                         ("Tough", face.DiscardTough)):
-        if face.HasStatus(nom):
-            methode(effect, rule=1)
-            return True
-    return False
+    presents = [nom for nom in STATUTS_RETIRABLES if face.HasStatus(nom)]
+    if not presents:
+        return False
+    unite = face.CastTo(CanStatus)
+
+    def retirer(nom: str) -> None:
+        unite.LoseState(nom, effect, 1)
+
+    if len(presents) == 1:
+        retirer(presents[0])
+        return True
+    joueur = effect.GetInitiator()
+    if joueur is None:
+        return False
+    joueur.ChooseAbilities(
+        effect,
+        *[AbilityFactory.ForChoiceAbility(
+            "Discard a %s status card" % nom,
+            lambda cibles, nom=nom: retirer(nom))
+          for nom in presents])
+    return True
+
+
+STATUTS_RETIRABLES = ("Stunned", "Confused", "Tough", "Exposed", "Cloaked",
+                      "Dazed", "Intensified")
