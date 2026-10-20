@@ -9,6 +9,8 @@
 // Ce sont des DONNEES, pas de la logique par carte : declarer une paire, c'est
 // ajouter UNE ligne ci-dessous. Ne declarer que les paires dont l'image se
 // raccorde reellement ET que l'utilisateur a confirmees une a une.
+import type { ScanCardProps } from '../components/ScanCard'
+import type { UniteAffichee } from './zones'
 import type { WorldCard } from './world'
 
 export type PaireJumelle = {
@@ -39,6 +41,48 @@ export function trouverPaire(cartes: readonly WorldCard[]): { gauche: WorldCard;
     const gauche = cartes.find((c) => c.card_id === paire.gauche)
     const droite = cartes.find((c) => c.card_id === paire.droite)
     if (gauche && droite) return { gauche, droite }
+  }
+  return undefined
+}
+
+/**
+ * Decision du 20/10/2026 : au survol d'une moitie de paire jumelle SUR LA TABLE, quand les deux moities sont en
+ * jeu, l'apercu agrandi montre les deux, collees bord a bord, avec leur libelle et leur encadre de regle. Faux =
+ * ancien comportement (apercu d'UNE carte). Le code de l'ancien comportement reste en place derriere ce drapeau.
+ */
+export const APERCU_JUMELLES_DOUBLE = true
+
+/** Une moitie telle que l'apercu double la dessine. */
+export type ApercuJumelle = {
+  carte: ScanCardProps
+  panorama: CotePanorama
+  statuts?: ScanCardProps[]
+  raisons?: string[]
+}
+
+/**
+ * Les deux moities (gauche puis droite) a montrer dans l'apercu de la carte `id`, ou `undefined` pour l'apercu d'UNE
+ * carte. Lit la table TELLE QUE DESSINEE : seules les unites marquees `panorama` par `zones.ts` (les deux moities en
+ * jeu, hors main) comptent. Une seule moitie en jeu, la main, une pile (defausse...), le constructeur ou la
+ * galerie ne portent aucune unite panorama : `undefined`, apercu inchange.
+ */
+export function jumellesPourApercu(
+  emplacements: readonly { groupes: readonly (readonly UniteAffichee[])[] }[],
+  id: string
+): [{ carte: ScanCardProps; panorama: 'gauche' }, { carte: ScanCardProps; panorama: 'droite' }] | undefined {
+  for (const emplacement of emplacements) {
+    for (const groupe of emplacement.groupes) {
+      for (let rang = 0; rang + 1 < groupe.length; rang++) {
+        const g = groupe[rang]
+        const d = groupe[rang + 1]
+        if (g.panorama !== 'gauche' || d.panorama !== 'droite') continue
+        if (g.carte.id !== id && d.carte.id !== id) continue
+        return [
+          { carte: g.carte, panorama: 'gauche' },
+          { carte: d.carte, panorama: 'droite' },
+        ]
+      }
+    }
   }
   return undefined
 }

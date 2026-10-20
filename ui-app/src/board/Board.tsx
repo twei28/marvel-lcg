@@ -42,6 +42,7 @@ import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } fr
 import { TraductionPosee } from './TraductionPosee'
 import { coteDuTexte, useTraductionFr } from './traduction-carte'
 import { texteEnHtml } from './traduction-posee'
+import { APERCU_JUMELLES_DOUBLE, jumellesPourApercu, type ApercuJumelle } from './panorama-jumelles'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
@@ -677,35 +678,19 @@ function bornesDuVoletAide(): readonly string[] {
   return ['.volet-aide', '.volet-aide-languette.est-ouvert']
 }
 
-export function CarteApercu({
+/** Une carte de l'aperçu : le scan agrandi et tout ce qui se lit dessous (une par carte, deux pour une paire jumelle). */
+function FaceCarteApercu({
   carte,
   statuts,
   raisons,
-  classe,
-  borneDroite,
+  panorama,
 }: {
   carte: ScanCardProps
-  /** Cartes de statut posees sur ce personnage : montrees comme sur la table. */
   statuts?: ScanCardProps[]
-  /**
-   * Pourquoi cette carte est injouable, une ligne par action refusee.
-   * Deja mises en phrase (voir `raisons-refus.ts`) : l'apercu ne fait que les
-   * poser. Vide ou absent quand la carte est jouable, ou quand le moteur n'a
-   * rien a dire.
-   */
   raisons?: string[]
-  /**
-   * Classe en plus sur l'apercu. Sert a un appelant qui vit PLUS HAUT que la
-   * table : l'apercu est monte dans <body> avec un z-index taille pour passer
-   * devant le plateau (400), pas devant un panneau plein ecran. Le bilan de la
-   * phase du mechant (540) le recouvrirait sans cela.
-   */
-  classe?: string
-  /** Panneaux a ne pas recouvrir, a la place de la colonne des manigances (le volet du journal). */
-  borneDroite?: readonly string[]
+  /** Moitié d'une paire jumelle : le scan se raccorde à son voisin (mêmes classes que sur la table). */
+  panorama?: 'gauche' | 'droite'
 }) {
-  const autresFaces = carte.autresFaces ?? []
-  const nbFaces = 1 + autresFaces.length
   // Un complot s'agrandit TOUJOURS en paysage, meme si en main il etait montre
   // en portrait pour tenir dans l'eventail (voir card-model : isLandscape).
   const estComplot = carte.kind === 'main-scheme' || carte.kind === 'side-scheme'
@@ -727,25 +712,6 @@ export function CarteApercu({
       />
     ) : undefined
 
-  // L'apercu est le DERNIER servi : il cede la place a tout panneau de decision
-  // deja ouvert. Sur une carte recto-verso paysage il fait pres de 930 px de
-  // large — sans cette regle il mangeait le centre de la table pendant qu'on
-  // choisissait. Il reste ancre a droite tant que la place y est libre.
-  // L'aperçu NE BOUGE PAS. Une seule position candidate, donc toujours la même
-  // place, quoi qu'il y ait dessous.
-  //
-  // C'est l'inverse de la règle des panneaux de décision, et c'est voulu. Une
-  // décision est rare et il faut lire la carte qu'elle recouvre : elle esquive.
-  // Un agrandissement, lui, s'ouvre à CHAQUE survol : s'il change de coin selon
-  // ce qui est libre, l'œil doit le rechercher à chaque fois. Essayé, et c'est
-  // franchement désagréable — la prévisibilité vaut plus ici que la place
-  // gagnée. Il passe simplement devant (z-index 400) : il est transitoire et
-  // voulu, alors que le panneau, lui, reste.
-  //
-  // On garde le hook malgré tout, pour la seule chose qu'il apporte encore ici :
-  // l'aperçu est borné à la fenêtre et re-mesuré quand elle change ou quand les
-  // images finissent de charger. Il sortait de l'écran par la droite sur une
-  // carte recto-verso paysage, qui fait près de 930 px de large.
   // Rien sous la carte quand elle n'a ni jeton ni statut : le bloc vide
   // decalerait l'apercu sans rien dire.
   const aQuelqueChoseDessous =
@@ -754,47 +720,7 @@ export function CarteApercu({
     !!carte.jetonDegats ||
     (carte.counters?.length ?? 0) > 0
 
-  const apercu = useRef<HTMLDivElement | null>(null)
-  const { style: stylePlacement } = usePlacement(apercu, {
-    preferee: 'droite',
-    candidats: ['droite'],
-    // Une carte SEULE est étroite (~345 px) : elle se range à gauche de la
-    // colonne des manigances, qu'elle n'a aucune raison de recouvrir. Une carte
-    // recto-verso fait près de 930 px : la borner la pousserait jusqu'au centre,
-    // sur le panneau de décision — pour elle, mieux vaut la colonne.
-    //
-    // ⚠ SANS LA BANDE DES MANIGANCES SEULEMENT (signalement du 04/10/2026,
-    // « avant c'etait a droite »). Avec la bande, la manigance principale est
-    // EN HAUT A GAUCHE : la borner a son bord gauche rejetait l'apercu a
-    // gauche de l'ecran. Le selecteur ne trouve alors rien, et l'apercu reste
-    // ancre a droite comme avant.
-    borneDroite: [
-      ...(borneDroite ?? (nbFaces === 1 ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : [])),
-      ...bornesDuVoletAide(),
-    ],
-    signature: `${carte.id}|${nbFaces}`,
-  })
-
-  // L'agrandissement est monte DANS <body>, pas dans la table, et c'est ce qui
-  // le fait passer DEVANT les boutons de decision.
-  //
-  // Sans ce portail il vivait a l'interieur de `.plateau`, qui est un contexte
-  // d'empilement a `z-index: 1`. Son propre `z-index: 400` ne valait alors que
-  // DANS ce contexte : compare aux panneaux, c'est le 1 du parent qui comptait,
-  // et 1 perd contre 92. La carte agrandie passait donc sous les boutons quoi
-  // qu'on ecrive comme z-index — signale en jeu, et c'est bien ce qu'on voyait.
-  return createPortal(
-    <div
-      ref={apercu}
-      className={`carte-apercu${nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}`}
-      style={stylePlacement}
-      aria-hidden="true"
-    >
-      {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,
-          pastilles), juste beaucoup plus grand. Jamais agissant.
-          `est-paysage` sert au CSS a caler les blocs de texte sous la carte sur
-          la LARGEUR de cette carte : l'orientation ne se lit que sur la carte
-          elle-meme, qui est leur soeur, pas leur ancetre. */}
+  return (
       <div className={`apercu-face${carteAgrandie.isLandscape ? ' est-paysage' : ''}`}>
         {/* En GRAND, les jetons quittent l'illustration : ils cachaient le
             texte de la carte, qui est justement ce qu'on vient y lire. Ils se
@@ -802,6 +728,7 @@ export function CarteApercu({
             l'utilisateur, 09/09/2026. */}
         <ScanCard
           {...carteAgrandie}
+          panorama={panorama}
           jetonMenace={undefined}
           jetonDegats={undefined}
           counters={undefined}
@@ -879,11 +806,118 @@ export function CarteApercu({
         ) : null}
         {!carte.facedown ? <ApercuMarvelcdb codeCarte={carte.codeCarte} artAlternatif={carte.artAlternatif} masquerRepli={traductionPosee && !!surcouche} /> : null}
       </div>
+  )
+}
+
+export function CarteApercu({
+  carte,
+  statuts,
+  raisons,
+  classe,
+  borneDroite,
+  jumelles,
+}: {
+  carte: ScanCardProps
+  /**
+   * Paire jumelle EN JEU sur la table (`APERCU_JUMELLES_DOUBLE`) : les deux moities, dans l'ordre de l'illustration
+   * (gauche puis droite), montrees collees bord a bord. Absent = apercu d'UNE carte, comme avant.
+   */
+  jumelles?: readonly ApercuJumelle[]
+  /** Cartes de statut posees sur ce personnage : montrees comme sur la table. */
+  statuts?: ScanCardProps[]
+  /**
+   * Pourquoi cette carte est injouable, une ligne par action refusee.
+   * Deja mises en phrase (voir `raisons-refus.ts`) : l'apercu ne fait que les
+   * poser. Vide ou absent quand la carte est jouable, ou quand le moteur n'a
+   * rien a dire.
+   */
+  raisons?: string[]
+  /**
+   * Classe en plus sur l'apercu. Sert a un appelant qui vit PLUS HAUT que la
+   * table : l'apercu est monte dans <body> avec un z-index taille pour passer
+   * devant le plateau (400), pas devant un panneau plein ecran. Le bilan de la
+   * phase du mechant (540) le recouvrirait sans cela.
+   */
+  classe?: string
+  /** Panneaux a ne pas recouvrir, a la place de la colonne des manigances (le volet du journal). */
+  borneDroite?: readonly string[]
+}) {
+  const autresFaces = carte.autresFaces ?? []
+  const nbFaces = 1 + autresFaces.length
+  // L'apercu est le DERNIER servi : il cede la place a tout panneau de decision
+  // deja ouvert. Sur une carte recto-verso paysage il fait pres de 930 px de
+  // large — sans cette regle il mangeait le centre de la table pendant qu'on
+  // choisissait. Il reste ancre a droite tant que la place y est libre.
+  // L'aperçu NE BOUGE PAS. Une seule position candidate, donc toujours la même
+  // place, quoi qu'il y ait dessous.
+  //
+  // C'est l'inverse de la règle des panneaux de décision, et c'est voulu. Une
+  // décision est rare et il faut lire la carte qu'elle recouvre : elle esquive.
+  // Un agrandissement, lui, s'ouvre à CHAQUE survol : s'il change de coin selon
+  // ce qui est libre, l'œil doit le rechercher à chaque fois. Essayé, et c'est
+  // franchement désagréable — la prévisibilité vaut plus ici que la place
+  // gagnée. Il passe simplement devant (z-index 400) : il est transitoire et
+  // voulu, alors que le panneau, lui, reste.
+  //
+  // On garde le hook malgré tout, pour la seule chose qu'il apporte encore ici :
+  // l'aperçu est borné à la fenêtre et re-mesuré quand elle change ou quand les
+  // images finissent de charger. Il sortait de l'écran par la droite sur une
+  // carte recto-verso paysage, qui fait près de 930 px de large.
+  const apercu = useRef<HTMLDivElement | null>(null)
+  const { style: stylePlacement } = usePlacement(apercu, {
+    preferee: 'droite',
+    candidats: ['droite'],
+    // Une carte SEULE est étroite (~345 px) : elle se range à gauche de la
+    // colonne des manigances, qu'elle n'a aucune raison de recouvrir. Une carte
+    // recto-verso fait près de 930 px : la borner la pousserait jusqu'au centre,
+    // sur le panneau de décision — pour elle, mieux vaut la colonne.
+    //
+    // ⚠ SANS LA BANDE DES MANIGANCES SEULEMENT (signalement du 04/10/2026,
+    // « avant c'etait a droite »). Avec la bande, la manigance principale est
+    // EN HAUT A GAUCHE : la borner a son bord gauche rejetait l'apercu a
+    // gauche de l'ecran. Le selecteur ne trouve alors rien, et l'apercu reste
+    // ancre a droite comme avant.
+    borneDroite: [
+      ...(borneDroite ?? (nbFaces === 1 && !jumelles ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : [])),
+      ...bornesDuVoletAide(),
+    ],
+    signature: `${carte.id}|${nbFaces}|${jumelles ? 'j' : ''}`,
+  })
+
+  // L'agrandissement est monte DANS <body>, pas dans la table, et c'est ce qui
+  // le fait passer DEVANT les boutons de decision.
+  //
+  // Sans ce portail il vivait a l'interieur de `.plateau`, qui est un contexte
+  // d'empilement a `z-index: 1`. Son propre `z-index: 400` ne valait alors que
+  // DANS ce contexte : compare aux panneaux, c'est le 1 du parent qui comptait,
+  // et 1 perd contre 92. La carte agrandie passait donc sous les boutons quoi
+  // qu'on ecrive comme z-index — signale en jeu, et c'est bien ce qu'on voyait.
+  return createPortal(
+    <div
+      ref={apercu}
+      className={`carte-apercu${jumelles ? ' a-jumelles' : nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}`}
+      style={stylePlacement}
+      aria-hidden="true"
+    >
+      {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,
+          pastilles), juste beaucoup plus grand. Jamais agissant.
+          `est-paysage` sert au CSS a caler les blocs de texte sous la carte sur
+          la LARGEUR de cette carte : l'orientation ne se lit que sur la carte
+          elle-meme, qui est leur soeur, pas leur ancetre. */}
+      {jumelles ? (
+        <>
+          {jumelles.map((j) => (
+            <FaceCarteApercu key={j.carte.id} carte={j.carte} statuts={j.statuts} raisons={j.raisons} panorama={j.panorama} />
+          ))}
+        </>
+      ) : (
+        <FaceCarteApercu carte={carte} statuts={statuts} raisons={raisons} />
+      )}
       {/* Carte multi-faces (recto-verso, ou 3 formes comme Ant-Man) : on montre
           AUSSI les autres faces (image seule, badges masques par le CSS car ils
           ne valent pas pour ces faces-la). */}
       {autresFaces.map((face) => (
-        <ApercuAutreFace key={face.url} carte={carte} face={face} paysageVisible={!!carteAgrandie.isLandscape} />
+        <ApercuAutreFace key={face.url} carte={carte} face={face} paysageVisible={carte.kind === 'main-scheme' || carte.kind === 'side-scheme' ? true : !!carte.isLandscape} />
       ))}
     </div>,
     document.body
@@ -1362,6 +1396,18 @@ export function Board({
 
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
   const statutsApercu = apercuId ? statutsParId.get(apercuId) : undefined
+  // Paire jumelle dont les DEUX moities sont sur la table : l'apercu les montre ensemble.
+  const jumellesApercu = useMemo(() => {
+    if (!APERCU_JUMELLES_DOUBLE || !apercuId) return undefined
+    const paire = jumellesPourApercu(plateau.emplacements, apercuId)
+    if (!paire) return undefined
+    return paire.map(({ carte, panorama }): ApercuJumelle => ({
+      carte,
+      panorama,
+      statuts: statutsParId.get(carte.id),
+      raisons: raisonsRefus?.get(Number(carte.id)),
+    }))
+  }, [apercuId, plateau, statutsParId, raisonsRefus])
 
   // Pile publique ouverte pour etre regardee (defausse, victoire, retirees...).
   const [pileOuverte, setPileRegardee] = useState<PileRegardee | null>(null)
@@ -1567,6 +1613,7 @@ export function Board({
           // sont indexees par leur identifiant d'objet NUMERIQUE partout
           // ailleurs (`interactifs`, `effets`). On convertit ici, une fois.
           raisons={apercuId === null ? undefined : raisonsRefus?.get(Number(apercuId))}
+          jumelles={jumellesApercu}
         />
       ) : null}
 
