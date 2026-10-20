@@ -177,3 +177,6 @@ parties-joueurs/
 ui-check/captures-tmp/
 .planning/hunting-season/reference/*.pdf
 ui-check/*.png
+
+# Sources MC/DC 2026 (fichiers de l equipe MC/DC, pas redistribues ici ; liens Drive dans SOURCES.md)
+docs/packs/mcdc-2026-punisher/sources/
