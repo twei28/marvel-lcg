@@ -296,6 +296,18 @@ CAS = [
        "« If you cannot, this card gains surge »",
        ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01109', '01105')", HEROS, BANDES_INCLINEES,
         ], ["Puzzle.Reveal('gs240q')"], {"carte_du_surge": "01105"}, main_exclusive=["gs303"], avec_boost=True),
+    # ================================================================== etape 8 bis : ce que le plateau DESSINE
+    _c("gs099q gs065 gs237q gs239q gs349 plateau : fixture du descripteur (Bandes glissees, duty, Avatar, Entropy, Tenace)",
+       "PROCESSUS-CARTE 8 bis : le descripteur PRODUIT PAR LE MOTEUR, relu par ui-app/src/board/quasar-plateau.test.ts",
+       [HEROS, "Puzzle.Reveal('gs065')", *en_jeu("21065"), "Puzzle.Tough('21065')", "Puzzle.Reveal('gs099q')",
+        "Puzzle.Reveal('gs239q')", *en_jeu("01103"), "Puzzle.Reveal('gs237q')"], [],
+       {"pose_sous": [["gs099q", "gs301"]], "fixture": "quasar-maelstrom.json"},
+       main_exclusive=["01090"], verifier="qz_fixture_plateau"),
+    _c("gs099q gs301 plateau : fixture apres la defaite de Maelstrom (Bandes revenues sur Quasar)",
+       "PROCESSUS-CARTE 8 bis : la carte revient en jeu, dessinee sur l'identite",
+       [HEROS, "Puzzle.Reveal('gs099q')"], ["Puzzle.Damage('gs099q', 5)"],
+       {"en_jeu": ["gs301"], "fixture": "quasar-bandes-revenues.json"},
+       main_exclusive=["01090"], verifier="qz_fixture_plateau"),
 ]
 
 
@@ -334,4 +346,36 @@ def qz_etat(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, msg
+
+
+def qz_fixture_plateau(monde, aides):
+    """Etape 8 bis : qz_etat (sans la cle `fixture`), puis ecrit le descripteur du monde
+    (`ToDescriptor.World`, ce que sert /get_world, sans les decks) dans QUASAR_FIXTURE_DIR/<fixture>."""
+    import json, os
+    from dataclasses import asdict, is_dataclass
+    from game.render.to_descriptor import ToDescriptor
+    cas = aides["cas"]
+    attendu = dict(cas.get("attendu") or {})
+    nom = attendu.pop("fixture", None)
+    sauvegarde = cas["attendu"]
+    cas["attendu"] = attendu
+    try:
+        ok, msg = qz_etat(monde, aides)
+    finally:
+        cas["attendu"] = sauvegarde
+    descripteur = ToDescriptor.World(monde, "", "")
+    brut = json.loads(json.dumps(asdict(descripteur) if is_dataclass(descripteur) else descripteur,
+                                 default=lambda o: asdict(o) if is_dataclass(o) else str(o)))
+    siege = brut["players"][0]
+    for cle in ("player_deck", "player_discard_pile", "additional_deck", "hand_cards"):
+        if cle in siege:
+            siege[cle] = []
+    dossier = os.environ.get("QUASAR_FIXTURE_DIR")
+    if dossier and nom:
+        communes = {k: v for k, v in brut.items() if k.startswith("area_")}
+        fixture = {"monde": {"render_id": 1, "players": [siege], **communes},
+                   "identite": monde.players[0].GetIdentity().card.object_id}
+        with open(os.path.join(dossier, nom), "w", encoding="utf-8") as f:
+            json.dump(fixture, f, ensure_ascii=False, indent=1, sort_keys=True)
+    return ok, msg
 '''

@@ -1759,4 +1759,13 @@ export const HEROS_INFO = {
         ennemis: "Jasper Barlow, Groundchuck, Dirtbag",
         ennemisEn: "Jasper Barlow, Groundchuck, Dirtbag",
     },
+    "gs300a": {
+        bio: "Wendell Vaughn, agent du S.H.I.E.L.D. trop prudent pour le terrain, enfile les Bandes Quantiques que le savant Kree Mar-Vell portait avant lui et decouvre qu'elles obeissent a sa volonte. Choisi par l'entite cosmique Eon, il devient Quasar, le Protecteur de l'Univers, capable de faconner l'energie quantique en armes, en boucliers ou en sauts a travers l'espace. Il sert aux cotes des Vengeurs et affronte Maelstrom, qui veut s'emparer des Bandes pour hater la fin de toutes choses.",
+        bioEn: "Wendell Vaughn, a S.H.I.E.L.D. agent too cautious for field work, puts on the Quantum Bands once worn by the Kree scientist Mar-Vell and finds that they answer to his will. Chosen by the cosmic entity Eon, he becomes Quasar, the Protector of the Universe, able to shape quantum energy into weapons, shields or jumps across space. He serves alongside the Avengers and faces Maelstrom, who wants the Bands to hasten the end of all things.",
+        civil: "Wendell Vaughn",
+        equipes: "S.H.I.E.L.D., Vengeurs",
+        equipesEn: "S.H.I.E.L.D., Avengers",
+        ennemis: "Maelstrom, Annihilus",
+        apparition: "Captain America #217 (1978)",
+    },
 };

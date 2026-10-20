@@ -1664,3 +1664,26 @@ avec un événement `attack` à plusieurs cibles. ⚠ « Exhaust a WEAPON you co
 | « Remove N <compteurs> from <identité> → » (coût) | `.SetCostFunc(CostFunc.Counter("YourIdentity", n, 'chi'))` + `conditions=[AuMoinsChi(n)]` | `64006`, `64010`-`64012` | sans la condition, la capacité est offerte impayable (RECETTES §5) |
 
 Harnais : `main_exclusive` DÉFAUSSE la main de départ APRÈS `mise_en_place` ; avec un deck de départ fait de cartes signature, la défausse se remplit de cartes du pack. Toute défausse construite pour un cas (fouille « deck and discard pile », « top card of your discard pile ») se pose donc dans `declencher`, après `Puzzle.EmptyPlayerDiscardPile()`. `cibles` : le pilote vise la PREMIÈRE cible listée encore en jeu à chaque choix (les trois coups de Fists of Fury sur la même), d'où le montage « sbire à 1 PV » pour prouver des choix indépendants. Lancer le harnais avec `CAS_PREFIX=<nom>` : sans préfixe, les journaux `/tmp/capacites_<index>.log` se mêlent à ceux des autres sessions.
+
+## 15. Quasar (Galactic Storm, Kajislav, `gs300a`-`gs349`, `gs065`, `gs099q`-`gs240q`, 20/10/2026) : ce que ce pack a paye
+
+| Mecanique imprimee | Fabrique / chemin | Carte modele | Piege |
+|---|---|---|---|
+| « When / After you pay for <X> with <carte EN JEU a capacite Resource> » | `AbilityFactory.AfterGenerateResources(type, "You", op, conditions=[...])` sur `Message.WhenCardBeSpendAsResource` (`message.trigger` = la carte qui paie, `message.pay_for_card` = la carte jouee, `message.for_effect` = son effet) ; helper `QuandLesBandesPaient` | `galactic_storm/quasar/gs313`, `gs315`, `gs316` | `WhenYouSpendThisCardToPlay` (32047) ne vaut que pour la carte DEPENSEE ELLE-MEME ; filtre en `conditions` (RECETTES §1) |
+| « If you paid for this card with <carte en jeu> » | `any(... e.this ... for e in effect.context.paid_this_res_effects)` | `gs309` (modele `tj004`) | les effets payeurs d'une carte EN JEU y figurent comme ceux de la main |
+| « After you pay for an ALLY with <carte> » (etat a poser) | `AfterPlayerPlayedCard(type, "You", CardFinder(card_type=Ally), op, conditions=[... message.paid_res_effects ...])` | `gs349` | le message porte `paid_res_effects` ; l'allie est EN JEU a ce moment |
+| Ignorer Crise / Patrouille SELON LA CARTE qui a paye | capacite CONSTANTE NonKeyword sur `Message.CheckIfEffectIsIgnoreKeyWord` : vraie au ciblage (rien de paye : `paid_this_res_effects == []`) si la carte PEUT payer, puis vraie a la resolution si le paiement est MARQUE (la liste `paid_this_res_effects` de l'activation, comparee par `is`) | `gs315` | ⚠ un `RegisterTemp(Ability(Temp0, CheckIfEffectIsIgnoreKeyWord, ...))` n'est JAMAIS consulte (mesure : la Crise mordait malgre l'Interruption) ; ⚠ `paid_this_resources` n'est PAS remis a zero entre deux activations (absent de `ResetAfterOperation`) : ne pas s'en servir pour « rien n'est encore paye » ; Patrouille reverifiee a la resolution : CORRECTIF `scheme_main.py` (fiche patrol.md) |
+| « Each event card gains requirement ([x]) » | `WhenCalculateEffectCost(NonKeyword, op, conditions=[is_play et Event])`, `op` convertit une ressource generique du cout en [x] (`ResRBYGA`) | `gs239q` | fiche requirement.md |
+| Glisser une carte PERMANENTE d'un autre set | exception nommee dans `has_permanent.py` | `gs099q` | fiches permanent.md / tuck.md |
+| Amelioration permanente posee au Setup | `SetupPutIntoPlay(["gs301"])` sur l'alter ego | `gs300b` (modeles `sk001b`, `as001b`) | la carte est FABRIQUEE : absente des 15 cartes du deck de heros |
+
+Harnais (`tools/cas/quasar.py`) :
+- ⚠ `main_exclusive` remplace la main APRES `mise_en_place` : une commande de `mise_en_place` qui inflige des degats
+  (`Puzzle.Damage`) ou revele une carte (`Puzzle.Reveal` d'une traitrise qui lit la main) voit la main de DEPART.
+  Avec un deck a evenements de defense, Unbreakable Guard de la main de depart prevenait les degats poses par le cas.
+  Remede : `Puzzle.EmptyHand()` avant, ou la commande dans `declencher`.
+- Un moyen de paiement EN JEU s'impose par `payer_avec: ["<card_id>"]` quand sa couleur generee egale son RES
+  imprime (gs301 : G et G) ; `ne_pas_depenser` l'interdit.
+- Le joker d'une carte se precise par `choisir_option: ["R"]` (question `AskSpecifyResources`, options « R », « B »...).
+- Fixture de plateau produite par le moteur : verificateur `qz_fixture_plateau` + `QUASAR_FIXTURE_DIR`
+  (modele Echo, §7).

@@ -42,8 +42,12 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "08031": [
     "mcdc26"
   ],
+  "09015": [
+    "quasar"
+  ],
   "09020": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "10014": [
     "tmnt"
@@ -53,7 +57,8 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "mcdc26"
   ],
   "10031": [
-    "mcdc26"
+    "mcdc26",
+    "quasar"
   ],
   "13016": [
     "mcdc26"
@@ -67,14 +72,32 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "15019": [
     "tmnt"
   ],
+  "16012": [
+    "quasar"
+  ],
   "16043": [
     "tmnt"
+  ],
+  "17020": [
+    "quasar"
+  ],
+  "17022": [
+    "quasar"
   ],
   "17028": [
     "mcdc26"
   ],
   "18012": [
     "tmnt"
+  ],
+  "18019": [
+    "quasar"
+  ],
+  "19012": [
+    "quasar"
+  ],
+  "19020": [
+    "quasar"
   ],
   "19030": [
     "tmnt"
@@ -94,8 +117,14 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "21061": [
     "tmnt"
   ],
+  "21065": [
+    "quasar"
+  ],
   "22011": [
     "mcdc26"
+  ],
+  "22035": [
+    "quasar"
   ],
   "23012": [
     "mcdc26"
@@ -141,7 +170,8 @@ export const ARTS_CARTES: Record<string, string[]> = {
     "tmnt"
   ],
   "32014": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "32019": [
     "mcdc26"
@@ -189,11 +219,15 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "47015": [
     "tmnt"
   ],
+  "47021": [
+    "quasar"
+  ],
   "48012": [
     "mcdc26"
   ],
   "48014": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "48016": [
     "tmnt"
@@ -221,11 +255,15 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "54016": [
     "tmnt"
   ],
+  "54033": [
+    "quasar"
+  ],
   "56013": [
     "tmnt"
   ],
   "56046": [
-    "tmnt"
+    "tmnt",
+    "quasar"
   ],
   "56047": [
     "tmnt"
@@ -293,6 +331,7 @@ export const ORIGINES_CARTES: Record<string, string> = {
   "04046": "01065",
   "14016": "01081",
   "15017": "01065",
+  "16013": "09015",
   "18017": "01057",
   "21045": "01057",
   "21049": "01060",
@@ -301,6 +340,8 @@ export const ORIGINES_CARTES: Record<string, string> = {
   "21057": "01074",
   "21063": "01081",
   "22019": "01065",
+  "22020": "17020",
+  "22021": "17022",
   "23020": "01071",
   "25017": "01057",
   "34024": "05033",
@@ -365,5 +406,16 @@ export const SERIES_ARTS: Record<string, SerieArt> = {
       "TMNT Shinobi Dual",
       "TMNT Shinobi Paths"
     ]
+  },
+  "quasar": {
+    "nom": "Quasar (Kajislav)",
+    "nom_en": "Quasar (Kajislav)",
+    "heros_cartes": [
+      "gs300"
+    ],
+    "heros_ids": [
+      "quasar"
+    ],
+    "sets_exclusifs": []
   }
 }

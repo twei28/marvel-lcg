@@ -77,6 +77,9 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   magneto: ['49043', '49044', '49045'],
   the_thing: ['th016', 'th017', 'th018'],
   wave: ['65017', '65018', '65019'],
+  // Galactic Storm (Kajislav, 20/10/2026) : Energy / Genius / Strength redessinees du deck de
+  // depart de Quasar (« Starter deck's reskins »), art seul, memes regles.
+  quasar: ['01088_quasar', '01089_quasar', '01090_quasar'],
 }
 
 /**

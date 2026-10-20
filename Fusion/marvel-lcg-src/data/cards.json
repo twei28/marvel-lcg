@@ -118040,7 +118040,7 @@
    },
    "traits": [],
    "set_name": "Quasar Nemesis",
-   "text": "Hinder 1 [per_player].\nEach event card gains requirement ([energy]).",
+   "text": "Hinder 1[per_hero].\nEach event card gains requirement ([energy]).",
    "custom": "Kajislav"
   },
   {
@@ -118072,5 +118072,5 @@
    "custom": "Kajislav"
   }
  ],
- "checksum": "84ca462ae1b9ff2da8439de4664dc22c751401b19f985bb27ee392a73d87f8b2"
+ "checksum": "ea4f28bcdf2d5bd74f67f7ef9ac4080adbdac2f208f57b3103f2f052c1678b53"
 }

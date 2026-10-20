@@ -58,7 +58,7 @@ CARDS = [
    "<b>When Revealed</b>: Tuck Quantum Bands under Maelstrom.\n<b>Forced Response</b>: After Maelstrom leaves play, put Quantum Bands into play under the Quasar player's control.\n<i>(Quasar's nemesis minion.)</i>",
    set_name=N),
  c("gs239q", "SideScheme", "Entropy Ascendant", {"StartingThreat": "3", "Hinder": "1*", "Boost": "3"}, [],
-   "Hinder 1 [per_player].\nEach event card gains requirement ([energy]).", set_name=N),
+   "Hinder 1[per_hero].\nEach event card gains requirement ([energy]).", set_name=N),
  c("gs237q", "Attachment", "Avatar of Oblivion", {"ATK+": "1"}, ["TITLE"],
    "Attach to the minion with the highest ATK. If you cannot, this card gains surge.\nAttached minion gains the [[ELITE]] trait.\n<b>Forced Interrupt</b>: When attached minion would be defeated, heal all damage from it instead, then discard this card.",
    set_name=N),
