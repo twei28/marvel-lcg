@@ -209,6 +209,29 @@ la plus fréquente sur un pack vilain.
       RECETTES §16.3)
 - un ennemi qui attaque un ennemi ou un allié n'est pas un mot-clé : `Enemy.AttackCharacter`,
   RECETTES §16.1 ; l'excès d'overkill de ces attaques est dans overkill.md
+- ⚠ **PU-0 (20/10/2026) : pas de fiche séparée pour « CIBLÉ (TARGETED) / méchant actif » (M7 du
+  cadrage Punisher)**, vérifié en relisant tout ce dossier avant d'écrire : le recoupement est total
+  avec les deux fiches ci-dessus, déjà écrites pour Galactic Storm le 20/10/2026 et directement
+  réutilisables pour Punisher (p179-p183, p175-p178) sans redéveloppement — `immunite-cartes-joueur.md`
+  couvre déjà littéralement « CIBLÉ / TARGETED » dans son titre, `mechants-multiples.md` couvre déjà
+  « the active villain » (p180 *Justice or Punishment?* y est cité). Une fiche de plus aurait fait
+  doublon.
+
+## Punisher MC×DC 2026, lot PU-0 (20/10/2026, préparation sans script)
+
+- [x] lieu.md (type de carte LOCATION, grille 3×3, déplacement par l'action de *The City* p009 ;
+      mécanique M1 du cadrage, aucun mécanisme moteur existant, brique à écrire)
+- [x] territoire.md (« turf » de *Never Sleeps* p011 : rangée = zone de jeu d'un CAPO ; mécanique M2,
+      base partielle dans le moteur — `World.CreateGameArea`/`GameArea.AddPlayer`, modèle Kang — mais
+      manigances/deck rencontre partagés et changement de territoire en cours de partie restent à
+      écrire)
+- [x] piste-lead.md (trait *Lead* des 9 obligations p077-p093, deck LEADS commun à la table, pile de
+      victoire ; mécanique M3, aucun mécanisme moteur existant pour un deck de côté COMMUN — distinct
+      du deck annexe PAR JOUEUR d'Iron Patriot)
+- [x] jeton-recherche.md (« wanted counter » de SWAT p237, set modulaire SWAT Team : seconde condition
+      de défaite indépendante de la menace, compteur nommé ordinaire + seuil fixe)
+- uses.md complétée d'une note « ARMAMENT + Uses » (armes de Punisher p185-p219 : ARMAMENT est un TRAIT,
+  pas un mot-clé, comme ELITE ; le `Uses` lui-même suit la règle déjà fichée sans extension)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

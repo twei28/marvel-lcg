@@ -67,3 +67,13 @@ suivent tous la règle officielle sans l'étendre.
 **Obligation a Uses** (`gs065` Protector of the Universe, Galactic Storm, 20/10/2026) : « Uses (3 duty counters) »
 sur une obligation qui reste dans la zone des obligations ; les pions sont poses a la revelation et la carte part au
 dernier pion retire, sans script (cas `[quasar] gs065 ... DERNIER pion`). Compteur `duty` ajoute a `CardFace.COUNTER`.
+
+**ARMAMENT + Uses (munitions)** (Punisher MC×DC 2026, PU-0 20/10/2026, pas encore porté) : neuf armes de Punisher
+(p185-p189 *Punisher's M1911s*, *Assault Rifle*, *Sniper Rifle* ; p217-p219 et le set `Armory`) portent toutes
+*Armament. Weapon.* en italique sous le texte — **`ARMAMENT` est un TRAIT imprimé, pas un mot-clé** (même avertissement
+que `ELITE`, README ligne 74, et que `registered.md`) — et `Uses (N👤 ammo counters)` comme n'importe quelle carte de
+cette fiche : rien à ajouter au mécanisme ci-dessus pour les munitions elles-mêmes. Ce que ces armes ajoutent en plus
+de `Uses` : une capacité **When Revealed** « Discard each other ARMAMENT card in play » (une seule arme en jeu à la
+fois, filtrée par le TRAIT, pas par le nom), à coder séparément de `has_uses.py` au moment du portage (lot PU-4 du
+cadrage `docs/rapports/cadrage-14-15-19-2026-10-20.md`). `Uses (1+1👤 ammo counters)` (ex. p181) est une NOTATION
+COMPOSÉE encore à clarifier au portage (1 fixe + 1 par joueur, ou somme), pas un format `Uses` déjà vu dans le dépôt.
