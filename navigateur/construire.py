@@ -136,6 +136,11 @@ def pages_publiques():
                 open(d, "w", encoding="utf-8").write(t)
             else:
                 shutil.copy(s, d)
+    # Le plateau enregistre /sw-plateau.js a la racine (le moteur le sert ainsi) ; sans lui, un 404 au chargement
+    # (constate le 20/10/2026 en emulation mobile). C'est le service worker minimal : il ne garde rien en cache.
+    sw = os.path.join(src, "pwa", "sw-plateau.js")
+    if os.path.isfile(sw):
+        shutil.copy(sw, os.path.join(DIST, "sw-plateau.js"))
 
 def empreintes():
     """Chaque adresse de code (js, css) des pages porte l'empreinte de la publication.
