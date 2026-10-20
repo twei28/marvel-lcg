@@ -180,3 +180,6 @@ ui-check/*.png
 
 # Sources MC/DC 2026 (fichiers de l equipe MC/DC, pas redistribues ici ; liens Drive dans SOURCES.md)
 docs/packs/mcdc-2026-punisher/sources/
+
+# Galactic Storm (GS-0) : images et livrets extraits des zips Kajislav, hors depot.
+docs/packs/galactic-storm/sources/
