@@ -128,6 +128,22 @@ def CapacitesDoctorMinerva() -> List['Ability']:
     ]
 
 
+def CapacitesMoleMan() -> List['Ability']:
+    """Stades I et II (gs186/gs187), texte identique hors Toughness : « [star] Forced Response: After Mole
+    Man attacks you, shuffle a SUBTERRANEAN minion from the encounter discard pile into the encounter
+    deck. »"""
+    def apres_attaque(effect: 'Effect', message: 'Message.AfterEnemyActivationEnd') -> None:
+        if message.atk_message is None:
+            return
+        candidats = [f for f in Worlds.GetEncounterDiscardPileCards(effect) if f.HasTrait("SUBTERRANEAN") and Minion.IsType(f)]
+        if candidats:
+            Faces.ShuffleAllTo([candidats[0]], "EncounterDeck", effect)
+
+    return [
+        AbilityFactory.AfterEnemyActivatesAgainstYou(AbilityType.ForcedResponse, "This", apres_attaque),
+    ]
+
+
 def UneAutreCarteAtlantisEstEnJeu(effect: 'Effect', ui: 'List[CardFace]') -> int:
     """« While/for each ATLANTIS card is in play » hors This : partage par gs174 Andromeda et gs175 Rising
     Sea Levels."""
