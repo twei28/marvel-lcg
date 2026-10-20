@@ -1664,6 +1664,12 @@ html[data-epure] .assistant-action .assistant-slot {
   background: rgba(63, 134, 224, 0.12);
   clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
 }
+/* Emplacement rempli : la tuile en deux tons de la ressource l'habille (fond
+   de la couleur + picto voisin), sans le pointille bleu ni la teinte du panneau. */
+html[data-epure] .assistant-action .assistant-slot.est-rempli:has(.icone-res.deux-tons) {
+  border: 0;
+  background: transparent;
+}
 html[data-epure] .assistant-action .assistant-detail {
   color: #dbe3f3;
   font-family: var(--ep-police);

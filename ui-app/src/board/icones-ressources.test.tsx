@@ -41,7 +41,7 @@ describe('les ressources en icones', () => {
     const icones = container.querySelectorAll('i.icone-res')
     expect(icones).toHaveLength(2)
     expect(icones[0]?.textContent).toBe('M')
-    expect(icones[0]?.className).toBe('icone-res res-mental')
+    expect(icones[0]?.className).toBe('icone-res res-mental deux-tons')
     expect(icones[0]?.getAttribute('aria-label')).toBe('mentale')
     expect(container.textContent).toBe('Paie 1 M puis E')
   })
