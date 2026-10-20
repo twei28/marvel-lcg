@@ -333,10 +333,27 @@ CAS = [
        "« [energy] resource from your HAND » : lue apres la conversion",
        [HEROS, *en_jeu("gs010")], [VIDER_DEFAUSSE, "Puzzle.Reveal('gs240')"],
        {"main_ids": [], "defausse_avec": ["01090"], "degats_identite": 0}, main_exclusive=["01090"]),
+    # ============================================================ etape 8 bis : ce que le PLATEAU recoit
+    _c("gs237 gs239 gs032 gs009 gs007 etape 8 bis : Touched sur BINARY, Goin' Rogue, Rogue, Body in Flames, Prophet-Singer au descripteur",
+       "fixture produite par le moteur (ToDescriptor.World) pour ui-app/src/board/binary-plateau.test.ts",
+       [HEROS, "Puzzle.PutIntoPlay('gs032')", "Puzzle.PutIntoPlay('gs239')", *en_jeu("gs009", "gs007")],
+       ["Puzzle.AttachReel('gs237', 'gs001a')"],
+       {"porteur_touched": "gs001a", "fixture": "binary-touched-heros.json"}, verifier="bn_fixture_plateau",
+       main_exclusive=["01090"]),
+    _c("gs237 etape 8 bis : Touched sur un ALLIE (Hope Summers) au descripteur",
+       "fixture produite par le moteur pour ui-app/src/board/binary-plateau.test.ts",
+       [HEROS, "Puzzle.PutIntoPlay('gs032')", *en_jeu("40204")], ["Puzzle.AttachReel('gs237', '40204')"],
+       {"porteur_touched": "40204", "fixture": "binary-touched-allie.json"}, verifier="bn_fixture_plateau",
+       main_exclusive=["01090"]),
+    _c("gs237 etape 8 bis : Touched sur le VILAIN (Rhino) au descripteur",
+       "fixture produite par le moteur pour ui-app/src/board/binary-plateau.test.ts",
+       [HEROS, "Puzzle.PutIntoPlay('gs032')"], ["Puzzle.AttachReel('gs237', '01094')"],
+       {"porteur_touched": "01094", "fixture": "binary-touched-vilain.json"}, verifier="bn_fixture_plateau",
+       main_exclusive=["01090"]),
 ]
 
 VERIFICATIONS = r'''
-CLES_BINARY = {'main_ids', 'attrs', 'defausse_avec', 'defausse_sans', 'dessus_deck', 'porteur_touched', 'retiree'}
+CLES_BINARY = {'fixture', 'main_ids', 'attrs', 'defausse_avec', 'defausse_sans', 'dessus_deck', 'porteur_touched', 'retiree'}
 
 
 def bn_etat(monde, aides):
@@ -420,4 +437,51 @@ def bn_fin_de_round(monde, aides):
     from game.effect.rule import GameRule
     monde.ProcessTemporary(GameRule(monde.const_players[0].GetIdentity()))
     return bn_etat(monde, aides)
+
+
+def bn_fixture_plateau(monde, aides):
+    """Etape 8 bis : le descripteur du monde (`ToDescriptor.World`, ce que sert `/get_world`) contient
+    Touched (gs237) RATTACHEE a son porteur (`bind_object_id`). Ecrit `attendu["fixture"]` dans
+    BINARY_FIXTURE_DIR si la variable est posee (decks des joueurs vides pour rester lisible) ; le cas
+    plateau `ui-app/src/board/binary-plateau.test.ts` relit ces fichiers."""
+    import json, os
+    from dataclasses import asdict, is_dataclass
+    from game.render.to_descriptor import ToDescriptor
+    ok, msg = bn_etat(monde, aides)
+    if not ok:
+        return ok, msg
+    descripteur = ToDescriptor.World(monde, "", "")
+    brut = json.loads(json.dumps(asdict(descripteur) if is_dataclass(descripteur) else descripteur,
+                                 default=lambda o: asdict(o) if is_dataclass(o) else str(o)))
+
+    def cartes(noeud):
+        if isinstance(noeud, dict):
+            if "card_id" in noeud and "id" in noeud:
+                yield noeud
+            for v in noeud.values():
+                yield from cartes(v)
+        elif isinstance(noeud, list):
+            for v in noeud:
+                yield from cartes(v)
+
+    tout = list(cartes(brut))
+    touched = [c for c in tout if c.get("card_id") == "gs237"]
+    porteur_id = aides["cas"]["attendu"]["porteur_touched"]
+    porteurs = [c for c in tout if c.get("card_id") == porteur_id]
+    if not touched or not porteurs:
+        return False, f"descripteur : Touched ({len(touched)}) ou porteur {porteur_id} ({len(porteurs)}) absent"
+    if touched[0].get("bind_object_id") != porteurs[0].get("id"):
+        return False, (f"descripteur : Touched rattachee a {touched[0].get('bind_object_id')}, "
+                       f"porteur {porteur_id} = {porteurs[0].get('id')}")
+    dossier = os.environ.get("BINARY_FIXTURE_DIR")
+    if dossier:
+        for siege in brut.get("players", []):
+            for cle in ("player_deck", "player_discard_pile", "additional_deck"):
+                if cle in siege:
+                    siege[cle] = []
+        brut["render_id"] = 1
+        with open(os.path.join(dossier, aides["cas"]["attendu"]["fixture"]), "w", encoding="utf-8") as f:
+            json.dump({"monde": brut, "touched": touched[0]["id"], "porteur": porteurs[0]["id"]},
+                      f, ensure_ascii=False, indent=1, sort_keys=True)
+    return True, f"Touched {touched[0]['id']} rattachee a {porteur_id} ({porteurs[0]['id']}) dans le descripteur"
 '''

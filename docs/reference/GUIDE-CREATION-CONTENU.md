@@ -1418,6 +1418,17 @@ moteur, seule l'image change.
   `.planning/todos/2026-10-20-mcdc-full-art-questions.md`. Inventaire de la
   galerie : `docs/packs/mcdc-2026-punisher/GALERIE.md`.
 
+- **Reskins de Binary (Galactic Storm, Kajislav, 20/10/2026)** : code d'art `binary`
+  (affiché « BINARY »), 19 cartes officielles du deck de départ de Binary, chacune
+  comparée à l'officielle (texte, coût, ressource, traits, stats, unicité) ; SÉRIE
+  `binary` dans `arts_alternatifs.json` (`heros_cartes: ["gs001"]`) : art par défaut
+  pour Binary seulement, proposé à tous. Manigances de joueur (43018, 43021) en
+  882×615. Ressources Energy/Genius/Strength : collection `binary` de `COLLECTIONS`
+  (plateau) et `COLLECTIONS_RESSOURCES` (préparation). Scripts relançables :
+  `.planning/galactic-storm/binary/importer_images_binary.py` et
+  `brancher_arts_binary.py` ; test : `tools/test_arts_binary.py`. Avengers Mansion
+  (trait imprimé « AVENGERS ») attend `.planning/todos/2026-10-20-gs1-questions.md` Q2.
+
 **Les deux tables doivent rester alignées** entre le plateau et le wizard,
 sinon le sélecteur propose un art que le plateau n'affichera pas.
 

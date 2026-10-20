@@ -5,6 +5,7 @@
         "url": "",
         "aspect_note": "Aspect AGRESSIVITE, donne par l'auteur : liste « Starter Deck » imprimee dans le zip (Hero Packs/Binary/Extra/starter deck Binary.png), recopiee telle quelle (PROCESSUS-HEROS etape 3). Les cartes d'aspect et basiques de la liste sont les cartes OFFICIELLES (l'auteur en fournit des arts redessines, branches en arts alternatifs `binary`). Comptes par couleur imprimee : 9 [energy] / 9 [mental] / 9 [physical], la regle de Carol Danvers est tenue.",
         "hero_deck_note": "La liste imprimee ecrit « 10 Energy Conversion » SANS « x2 », mais le pack fournit deux exemplaires (bandeaux BINARY 13/15 et 14/15) et le livret p.21 dit « Energy Conversion (x2) » : 15 cartes signature, comme le bandeau n/15.",
+        "collision_note": "⚠ HOMONYME : Carol Danvers est aussi l'alter ego de Captain Marvel officielle (core). `desc.GiveTo` de l'obligation gs031 vise « Carol Danvers » : ce n'est ambigu que si les DEUX heros sont a la meme table. La nemesis (Rogue gs032, Touched gs237) se designe par nom ET type, pour ne pas se confondre avec le heros officiel Rogue (38001a) et son amelioration Touched (38002).",
         "linked_note": "Specialized Training (43021) met de cote ses quatre SPECIALIZATION (43034-43037, Linked) : mecanique officielle deja portee, rien a ajouter ici.",
         "deckbuilding": {
             "ressources_egales": {
