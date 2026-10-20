@@ -17,36 +17,54 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def resoudre_en_choisissant_la_cible(chanson: 'CardFace', joueur: 'Player',
-                                         effect: 'Effect', ref: 'Message2') -> bool:
-        """Resout la Hero Action de `chanson` en laissant le JOUEUR choisir sa cible.
+    def action_de(chanson: 'CardFace') -> 'Effect|None':
+        trouves = chanson.effect.Find(type=AbilityType.HeroAction)
+        return trouves[0] if trouves else None
 
-        CORRECTIF DU 20/10/2026 (backlog 12) : `CardFace.ResolveAbility`
-        (card_face.py) remplit les cibles tout seul avec les PREMIERES cibles
-        legales, sans rien demander (meme defaut que celui que `CiblesShowtime`
-        contourne pour les Showtime!). Pour une Hero Action a UNE cible
-        (« an enemy », « a scheme », « a non-ELITE minion »), on pose la
-        question puis on resout par le meme chemin que le moteur. Rend False
-        quand ce cas ne s'applique pas : l'appelant retombe alors sur
-        `Faces.ResolveAbility` (cibles multiples, choix internes, aucune cible).
+    def cout_payable(chanson: 'CardFace') -> bool:
+        """Le cout AVANT LA FLECHE de la Hero Action peut-il etre paye ?
+
+        Decision de l'utilisateur (Q5 du backlog 12, 20/10/2026) : le cout se
+        paie (Song of Leadership, « Exhaust an ally -> ») ; sans allie pret, ce
+        choix n'est pas propose. Les chansons sans cout sont toujours payables.
         """
-        if chanson.is_treat_as_if_blank:
+        trouve = action_de(chanson)
+        if trouve is None or chanson.is_treat_as_if_blank:
             return False
-        for trouve in chanson.effect.Find(type=AbilityType.HeroAction):
-            trouve.checker.UpdateLegalTargets()
-            legales = [f for f in (trouve.context.all_legal_targets or [])
-                       if f is not None]
-            fourchette = trouve.context.target_range
-            if len(legales) < 2 or tuple(fourchette) != (1, 1):
-                return False
+        trouve.context.initiator = chanson.GetControlByOrOwner()
+        return all(cf.HasTargets(trouve) for cf in trouve.cost_func.GetAll())
+
+    def resoudre(chanson: 'CardFace', joueur: 'Player', effect: 'Effect',
+                 ref: 'Message2') -> None:
+        """Resout la Hero Action de `chanson` : cible choisie par le JOUEUR, cout
+        PAYE.
+
+        - Cible : `CardFace.ResolveAbility` (card_face.py) remplit les cibles
+          tout seul avec les PREMIERES cibles legales ; pour une Hero Action a
+          UNE cible, on pose la question (correctif du 20/10/2026, cas
+          « le joueur CHOISIT la cible »).
+        - Cout : `ResolveToPlayer` passe `skip_cost=True` ; on appelle le meme
+          chemin (`EffectInvoker.ResolveSelfInternal`) avec `skip_cost=False`,
+          ce qui fait payer « Exhaust an ally -> » comme une carte jouee (Q5).
+        """
+        from game.effect.effect_invoke import EffectInvoker
+        trouve = action_de(chanson)
+        if trouve is None or chanson.is_treat_as_if_blank:
+            return
+        trouve.context.initiator = chanson.GetControlByOrOwner()
+        trouve.checker.UpdateLegalTargets()
+        legales = [f for f in (trouve.context.all_legal_targets or []) if f is not None]
+        fourchette = tuple(trouve.context.target_range)
+        if len(legales) >= 2 and fourchette == (1, 1):
             choisie = joueur.AskChooseOneText(legales)
             if choisie is None or choisie not in legales:
                 choisie = legales[0]
             trouve.context.targets_internal = [choisie]
-            trouve.context.initiator = chanson.GetControlByOrOwner()
-            trouve.ResolveToPlayer(joueur, effect, ref)
-            return True
-        return False
+        else:
+            trouve.context.targets_internal = legales[:fourchette[0]]
+        trouve.context.initiator = chanson.GetControlByOrOwner()
+        EffectInvoker.ResolveSelfInternal(trouve, None, joueur, effect, ref,
+                                          skip_cost=False)
 
     def karaoke(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Support)
@@ -55,13 +73,13 @@ def GetAbilities() -> Sequence['Ability']:
         if joueur is None:
             return
 
-        setlist = Setlist(effect)
+        setlist = [c for c in Setlist(effect) if cout_payable(c)]
         if not setlist:
             return
         chanson = joueur.AskChooseOneText(setlist) if len(setlist) > 1 \
             else setlist[0]
-        if chanson is None:
-            return
+        if chanson is None or chanson not in setlist:
+            chanson = setlist[0]
 
         # CORRECTIF (partie reelle) : il faut FOURNIR le message de reference.
         # Un « Hero Action » est accroche a `Message.WhenPlayerInTurn`, qui ne
@@ -72,9 +90,7 @@ def GetAbilities() -> Sequence['Ability']:
         # `WhenCardRevealed`, qui EST dans la liste. Modele : le defi
         # Symbiote Smackdown (2414), qui passe aussi son message.
         ref = Message.WhenPlayerInTurn(joueur, effect)
-        if not resoudre_en_choisissant_la_cible(chanson, joueur, effect, ref):
-            Faces.ResolveAbility([chanson], joueur, AbilityType.HeroAction,
-                                 effect, ref)
+        resoudre(chanson, joueur, effect, ref)
         OublierLaSetlist(effect, [chanson])
         Faces.DiscardAll([chanson], effect)
 
@@ -84,7 +100,8 @@ def GetAbilities() -> Sequence['Ability']:
             karaoke,
             conditions=[
                 # Sans Setlist, l'action ne changerait rien : on ne l'offre pas.
-                lambda effect, message: len(Setlist(effect)) > 0,
+                # Q5 : une chanson dont le cout est impayable n'est pas proposee.
+                lambda effect, message: any(cout_payable(c) for c in Setlist(effect)),
             ],
         ).SetCostFunc(CostFunc.Exhaust("This")),
     ]

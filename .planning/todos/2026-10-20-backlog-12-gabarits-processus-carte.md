@@ -181,7 +181,7 @@ Carte terminée : OUI (sous réserve de l'autoplay commun).
 - [x] Étape 6 : coût 1, B, 3/1/3 : conformes.
 - [x] Étape 7 : 2 cas (pioche/défausse ; défausse de 3 exactement). 2/2.
 
-Carte terminée : NON — question Q1 (choix des 3 cartes du Showtime!).
+Carte terminée : OUI (20/10/2026, réponse Q1 : le joueur choisit ; cas « (Q1) », rouge avec l'ancien code).
 
 ### dz013 : "Velvet Sky"
 
@@ -231,7 +231,8 @@ Carte terminée : OUI (sous réserve de l'autoplay commun).
 - [x] Étape 6 : coût 2, Y, +1 : conformes.
 - [x] Étape 7 : 3 cas + 1 historique (+1 DEF). Substitution 3/4.
 
-Carte terminée : NON — question Q2.
+Carte terminée : OUI (20/10/2026, réponse Q2 : seulement pendant un paiement ; Réponse au message de paiement,
+ écart assumé et documenté dans le module ; cas « (Q2) » ×2, rouges avec l'ancien code).
 
 ### dz017a : Live Concert
 
@@ -293,7 +294,8 @@ Carte terminée : OUI (sous réserve de l'autoplay commun).
 - [x] Étape 7 : 3 cas. Substitution 2/3 (le cas de données reste vert) ;
       mutation de données (Amplify retiré) → rouge.
 
-Carte terminée : NON — question Q3.
+Carte terminée : OUI (20/10/2026, réponse Q3 : tout Klaw en jeu, comportement déjà en place ; cas « (Q3) » ;
+ contre le scénario Klaw le sbire némésis unique ne peut pas entrer à côté du vilain unique de même titre).
 
 ### dz022 : Stealing Sound (némésis)
 
@@ -346,7 +348,10 @@ Cartes terminées : OUI (sous réserve de l'autoplay commun).
       fabriquée ; une Response choisie reste en MAIN) → Q4.
 - [x] Étape 7 : 1 cas (comportement actuel). 1/1.
 
-Carte terminée : NON — question Q4 (et extension du moteur probable).
+Carte terminée : OUI (20/10/2026, réponse Q4 : vraie copie par `Card.SwapCardFace`, retour à Tribute par
+ `CheckIfCanDiscard`, aucune modification du moteur commun ; cas « (Q4) » ×3, deux rouges avec l'ancien code,
+ le troisième est un contre-cas). Réserve : « from your HAND » non codé (jouée depuis Lightbringr, la copie
+ se fait aussi).
 
 ### dz032 : Captivating Performance
 
@@ -381,7 +386,7 @@ Carte terminée : OUI (sous réserve de l'autoplay commun).
       joueur (corrigé). Coût avant la flèche d'une Hero Action résolue → Q5.
 - [x] Étape 7 : 3 cas. 2/3 (absence).
 
-Carte terminée : NON — question Q5.
+Carte terminée : OUI (20/10/2026, réponse Q5 : le coût se paie ; cas « (Q5) » ×2, rouges avec l'ancien code).
 
 ### dz036 : * DJ
 
@@ -459,3 +464,13 @@ KeyError|AssertionError|Traceback` sur chaque `/tmp/autoplay_<deck>_rhino_*.log`
   seulement ; dz010 : réserve multijoueur sur l'alter ego d'un autre joueur).
 - Carte terminée : **NON** pour dz012 (Q1), dz016 (Q2), dz021 (Q3), dz031
   (Q4, extension du moteur probable), dz035 (Q5).
+
+## Après les réponses de l'utilisateur (20/10/2026, Q1 à Q5)
+
+- Cinq cartes passées OUI : dz012, dz016, dz021, dz031, dz035 (voir chaque
+  gabarit et `.planning/todos/2026-10-20-backlog-12-questions.md`, closes).
+- Non-régression : passe « dz0 » 131/131 ; `test_cards` 6810 ok, 0 erreur ;
+  `test_mode_manuel` 15/15 vert ; autoplay Dazzler (8 parties contre Rhino) :
+  0 blocage, 0 erreur Python dans les journaux (même profil que le témoin).
+- Toujours ouvert : la cause de la réserve sur dz010 (l'alter ego d'un autre
+  joueur n'est pas une cible légale de « an identity ») n'a pas été trouvée.

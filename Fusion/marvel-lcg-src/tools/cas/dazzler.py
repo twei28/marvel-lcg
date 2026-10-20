@@ -470,13 +470,22 @@ CAS = [
        [HEROINE, *en_jeu("dz016")], [menace(COMPLOT, 6)],
        {"menace": [[COMPLOT, 6]], "en_main": ["01060"], "pret": ["dz016"]},
        main_exclusive=["01060", "dz002"], ne_pas_depenser=["01060"], cibles=[COMPLOT], jouer=["01060"]),
-    _c("dz016 Sound Collector Suit : incliner -> retirer 1 compteur sound d'une chanson de la Setlist (lecture actuelle : Action)",
-       "« or remove 1 sound counter from a SONG in the Setlist » : Rehearsal marque Beautiful Dreamer, la combinaison "
-       "efface la marque. ⚠ Le MOMENT ou cette branche s'utilise est une question ouverte (Q2) : le module en fait "
-       "une Action ; ce cas mesure l'effet, pas la fenetre",
-       [HEROINE, *en_jeu("dz016"), *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER, "Puzzle.Action('dz016', 'Action')"],
-       {"compteurs_setlist": [["dz004", "sound", 0]], "exhausted": ["dz016"], "menace": [[COMPLOT, 4]]},
-       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat"),
+    _c("dz016 Sound Collector Suit : PENDANT un paiement, incliner -> retirer 1 compteur sound (Q2)",
+       "decision utilisateur Q2 (20/10/2026) : la branche « remove 1 sound counter » ne se joue que pendant un "
+       "paiement. Rehearsal marque Beautiful Dreamer ; For Justice! (01060) est jouee et payee : la combinaison "
+       "s'incline et efface la marque",
+       [HEROINE, *en_jeu("dz016"), *dans_setlist("dz004")],
+       [menace(COMPLOT, 6), REPETER, menace(COMPLOT, 6)],
+       {"compteurs_setlist": [["dz004", "sound", 0]], "exhausted": ["dz016"]},
+       main_exclusive=["01060", "01088"], ne_pas_depenser=["01060"], cibles=[COMPLOT], jouer=["01060"],
+       verifier="dz_etat"),
+    _c("dz016 Sound Collector Suit : HORS paiement, pas d'Action pour retirer le compteur (Q2)",
+       "decision utilisateur Q2 : impossible au milieu du tour sans rien payer ; la marque reste, la combinaison "
+       "reste prete (le module offrait une Action avant le 20/10/2026)",
+       [HEROINE, *en_jeu("dz016"), *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER],
+       {"compteurs_setlist": [["dz004", "sound", 1]], "pret": ["dz016"]},
+       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat",
+       declencher_tolerant=["Puzzle.Action('dz016', 'Action')"]),
     # ============================================================ dz017a Live Concert
     # (Setup : cas historique « dz017a Live Concert — Setup : posee en jeu par Alison Blaire » de test_capacites.py)
     _c("dz017a Live Concert : Response, une chanson jouee et resolue est rangee dans la Setlist",
@@ -788,14 +797,30 @@ CAS = [
        main_exclusive=["dz030", "01088"], jouer=["dz030"], cibles=[COMPLOT],
        choisir_option=["Remove_2_threat"], questions_absentes=["Cancel"]),
     # ============================================================ dz031 Tribute
-    _c("dz031 Tribute : Hero Action (lecture actuelle), un evenement de la collection est resolu sans payer son cout",
-       "« choose 1 non-identity event in your collection. Tribute becomes a copy of that card (except for its cost) » : "
-       "le module FABRIQUE l'evenement choisi et le joue gratuitement ; Tribute (SONG) part dans la Setlist. "
-       "⚠ La lecture complete (« becomes a copy [...] keeps the SONG trait until it is placed in the discard pile ») "
-       "est une question ouverte (Q4) : ce cas mesure le comportement actuel, pas la carte",
+    _c("dz031 Tribute : Hero Action, Tribute DEVIENT la copie choisie (For Justice!) et entre ainsi dans la Setlist (Q4)",
+       "decision utilisateur Q4 (20/10/2026) : vraie copie d'un evenement NON-identite (les chansons de Dazzler, "
+       "classe Hero, n'en sont pas). Le joueur choisit For Justice! (01060) : 3 menaces retirees (6 -> 3), la "
+       "carte rangee dans la Setlist est la copie (01060), aucune carte n'arrive en main",
        [HEROINE], [menace(COMPLOT, 6)],
-       {"setlist": ["dz031"]},
-       main_exclusive=["dz031", "01090"], jouer=["dz031"], verifier="dz_etat"),
+       {"menace": [[COMPLOT, 3]], "setlist": ["01060"], "taille_main": 0},
+       main_exclusive=["dz031", "01090"], jouer=["dz031"], verifier="dz_etat",
+       cibles=["01060", COMPLOT]),
+    _c("dz031 Tribute : un evenement a Response n'est pas propose (Chase Them Down absent des choix) (Q4)",
+       "decision utilisateur Q4 : l'evenement a Interrupt / Response n'est pas propose ; avant le 20/10/2026 le "
+       "pilote prenait 01052 Chase Them Down, qui restait en main",
+       [HEROINE], [],
+       {"absent_main": ["01052"]},
+       main_exclusive=["dz031", "01090"], jouer=["dz031"], questions_absentes=["Chase_Them_Down"],
+       cibles=["01060", COMPLOT]),
+    _c("dz031 Tribute : la copie redevient Tribute en entrant dans la defausse (Showtime! de Live Concert) (Q4)",
+       "« until it is placed in the discard pile » : Setlist = copie de For Justice! ; Live Concert se retourne, "
+       "la Setlist part en defausse : c'est Tribute (dz031) qui y arrive, pas For Justice!",
+       [HEROINE],
+       [menace(COMPLOT, 6)],
+       {"defausse": ["dz031"], "setlist": []},
+       main_exclusive=["dz031", "01090"], jouer=["dz031"], verifier="dz_etat",
+       declencher_apres=["Puzzle.Action('dz017a', 'HeroAction')"],
+       cibles=["01060", COMPLOT]),
     # ============================================================ dz032 Captivating Performance
     _c("dz032 Captivating Performance : Hero Action, la carte SUIVANTE est un evenement SONG -> un ennemi etourdi",
        "« If the next card you play this turn is a SONG event, stun an enemy » : Beautiful Dreamer jouee ensuite",
@@ -921,4 +946,36 @@ CAS = [
        [*en_jeu("dz014")], ["Puzzle.Action('dz014', 'AlterEgoAction')"],
        {"rendu_sous": [["dz014", "dz004", False]]},
        main_exclusive=["dz004", "01088"], verifier="dz_rendu"),
+    # ============================================================ reponses du 20/10/2026 (Q1 a Q5)
+    _c("dz012 Too Good to be True : Showtime!, le JOUEUR choisit les 3 cartes de la defausse (Q1)",
+       "decision utilisateur Q1 (20/10/2026) : le joueur choisit. Defausse de 4 (dessus = Energy 01088) ; le joueur "
+       "prend Tenacity, Helicarrier et Surveillance Team : Energy, la carte du DESSUS, reste en defausse "
+       "(l'ancien module prenait les 3 du dessus). Deck : 1 (main_exclusive prend un 01090 du deck) + 3 = 4",
+       [HEROINE, SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090')", *dans_setlist("dz012")],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('01093', '01092', '01064', '01088')", REPETER],
+       {"deck_joueur_taille": [[0, 4]], "defausse": ["01088"]},
+       main_exclusive=["01090"], verifier="dz_etat",
+       choisir_option=["Tenacity", "Helicarrier", "Surveillance_Team"]),
+    _c("dz021 Solid Sound Body : contre le scenario Klaw, le vilain Klaw gagne aussi +10 PV (Q3)",
+       "decision utilisateur Q3 (20/10/2026) : tout Klaw en jeu, donc le vilain Klaw du scenario (01113, "
+       "12 -> 22). Le sbire nemesis (dz020, « * Klaw », unique) ne peut PAS entrer en jeu a cote du vilain "
+       "« * Klaw » : le moteur refuse deux cartes uniques de meme titre (constate ici, dz020 reste hors jeu) ; "
+       "la carte de boost du When Defeated va au premier Klaw trouve",
+       [*en_jeu("dz020", "dz021")], [],
+       {"pv_max": [["01113", 22]], "hors_jeu": ["dz020"]},
+       scenario="klaw", main_exclusive=["01088"]),
+    _c("dz035 Karaoke Night : la Hero Action a COUT de Song of Leadership se paie (allie incline puis soigne) (Q5)",
+       "decision utilisateur Q5 (20/10/2026) : le cout se paie. Song of Leadership dans la Setlist, Jessica Jones "
+       "blessee de 2, 1 chanson en defausse : Karaoke Night -> l'allie est incline puis soigne de 1",
+       [HEROINE, *en_jeu("dz035", "01059"), "Puzzle.Damage('01059', 2)", *dans_setlist("dz026")],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('dz007')", "Puzzle.Action('dz035', 'Action')"],
+       {"exhausted": ["01059", "dz035"], "degats": [["01059", 1]], "setlist": []},
+       main_exclusive=["01088"], verifier="dz_etat"),
+    _c("dz035 Karaoke Night : sans allie pret, Song of Leadership n'est pas proposee (Q5)",
+       "decision utilisateur Q5 : le cout « Exhaust an ally » impayable -> ce choix n'est pas propose ; seule "
+       "chanson de la Setlist, l'Action n'est pas offerte et la chanson reste",
+       [HEROINE, *en_jeu("dz035", "01059"), "Puzzle.Exhaust('01059')", *dans_setlist("dz026")], [],
+       {"pret": ["dz035"], "setlist": ["dz026"]},
+       main_exclusive=["01088"], verifier="dz_etat",
+       declencher_tolerant=["Puzzle.Action('dz035', 'Action')"]),
 ]

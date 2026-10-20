@@ -1,4 +1,9 @@
-# Backlog 12 : questions ouvertes (vérification des cartes hors irefrixs, pack Dazzler)
+# Backlog 12 : questions (vérification des cartes hors irefrixs, pack Dazzler)
+
+> **CLOSES le 20/10/2026** : l'utilisateur a répondu aux cinq questions
+> (relais du coordinateur). Chaque réponse est codée, avec ses cas
+> `[dazzler] ... (Qn)` dans `tools/cas/dazzler.py`, rouges sans le correctif.
+> Détail sous chaque question (« Réponse »).
 
 Ouvert le 20/10/2026. Règle absolue de `docs/reference/PROCESSUS-CARTE.md`
 (« En cas de doute : DEMANDER, carte par carte ») : ces points n'ont PAS été
@@ -38,6 +43,13 @@ dans les trois lectures.
 
 ---
 
+**Réponse (20/10/2026) : option 1, le joueur choisit les 3 cartes** (moins de
+3 : toutes partent). Codé dans `dz012.py` (trois choix successifs) ; cas
+« le JOUEUR choisit les 3 cartes de la defausse (Q1) », rouge avec l'ancien
+code (la carte du dessus partait).
+
+---
+
 ## Q2. dz016 « Sound Collector Suit » : quand peut-on « retirer 1 compteur sound » ?
 
 Texte imprimé : « **Resource**: Exhaust Sound Collector Suit → generate a
@@ -73,6 +85,17 @@ qu'UNE `CanGenerateResources`).
 
 ---
 
+**Réponse (20/10/2026) : option 1, seulement pendant un paiement.** Codé
+dans `dz016.py` : la seconde branche n'est plus une Action mais une Réponse
+au message de paiement `AfterCardsBeSpendAsResource` (incliner la
+combinaison, effacer un compteur). **Écart assumé**, faute de pouvoir porter
+deux `CanGenerateResources` ou une ressource nulle (`assert res.val > 0`) :
+la fenêtre n'existe que si au moins une ressource a été dépensée, et elle
+arrive juste après la dépense. Cas « PENDANT un paiement » et « HORS
+paiement, pas d'Action » (Q2), rouges avec l'ancien code.
+
+---
+
 ## Q3. dz021 « Solid Sound Body » : quel « Klaw » reçoit +10 PV et la carte de boost ?
 
 Texte imprimé : « Klaw gets +10 hit points. *(When this scheme is defeated,
@@ -100,6 +123,15 @@ carte « Klaw » en jeu (le vilain compris), et la carte de boost va au
 Hors scénario Klaw (cas le plus courant), les trois lectures donnent le même
 résultat. Ce que la réponse change dans le code : `dz021.py`
 (`CardFinder(name="Klaw")` et `FindCardOnField(name="Klaw")`).
+
+---
+
+**Réponse (20/10/2026) : option 2, tous les « Klaw » en jeu** (comportement
+actuel) ; la carte de boost va au premier Klaw trouvé. Aucun code changé.
+Cas « contre le scenario Klaw, le vilain Klaw gagne aussi +10 PV (Q3) ».
+Constat : le sbire némésis « * Klaw » ne peut PAS entrer en jeu à côté du
+vilain « * Klaw » (unicité de même titre, refus du moteur) : contre ce
+scénario, seul le vilain est concerné.
 
 ---
 
@@ -150,6 +182,20 @@ copiée, plus [[SONG]], jusqu'à l'entrée en défausse).
 
 ---
 
+**Réponse (20/10/2026) : option 1, vraie copie limitée aux événements
+jouables tout de suite en Action / Hero Action.** Codé sans toucher au moteur
+commun : `Card.SwapCardFace` donne à Tribute la face de la carte choisie
+(plus [[SONG]]) et `Card.CheckIfCanDiscard` la remet sur sa face imprimée à
+l'entrée en défausse (`DevenirCopie`, `dazzler/__init__.py`) ; choix en
+voyant les cartes (`AskChooseFace`, modèle Cameo 58031), les événements de
+classe Hero (identité) exclus ; Live Concert range la copie dans la Setlist.
+Cas (Q4) : copie résolue et rangée (rouge avec l'ancien code), Response non
+proposée (rouge), retour à Tribute en défausse (vert aussi avec l'ancien
+code : contre-cas). Reste non codé : « from your HAND » (Tribute jouée
+depuis Lightbringr déclenche aussi la copie).
+
+---
+
 ## Q5. dz035 « Karaoke Night » : une Hero Action à COÛT (« X → Y ») résolue depuis la Setlist
 
 Texte imprimé : « **Action**: Exhaust Karaoke Night and choose a [[SONG]] in
@@ -176,3 +222,10 @@ quand même défaussée).
 Les autres chansons (aucune flèche) ne sont pas concernées. Ce que la réponse
 change dans le code : `dz035.py` (et peut-être `dz026.py`, pour lire l'allié
 choisi hors paiement).
+
+**Réponse (20/10/2026) : option 1, le coût se paie.** Codé dans `dz035.py` :
+la Hero Action est résolue par `EffectInvoker.ResolveSelfInternal(...,
+skip_cost=False)` ; une chanson au coût impayable n'est pas proposée (et
+l'Action n'est pas offerte si aucune ne l'est). Cas (Q5) : Song of
+Leadership incline puis soigne l'allié ; sans allié prêt, rien n'est proposé
+(les deux rouges avec l'ancien code).

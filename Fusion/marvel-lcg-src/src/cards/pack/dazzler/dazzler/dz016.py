@@ -48,14 +48,30 @@ def GetAbilities() -> Sequence['Ability']:
             Resources("Y"),
             conditions=[paie_une_chanson],
         ).SetCostFunc(CostFunc.Exhaust("This")),
-        AbilityFactory.WhenInYourPlayTurn(
-            AbilityType.Action,
-            effacer,
-            conditions=[
-                # Sans chanson marquee, l'option ne doit pas etre offerte :
-                # elle ne changerait rien et le pilote la reprendrait en
-                # boucle (piege wd165).
+        # « ... OR remove 1 sound counter from a SONG in the Setlist » : branche
+        # de la capacite RESOURCE, donc jouable SEULEMENT PENDANT UN PAIEMENT
+        # (decision de l'utilisateur, Q2 du backlog 12, 20/10/2026, Rules
+        # Reference v1.8 RESOURCE ABILITY). Le moteur n'admet qu'UNE
+        # `CanGenerateResources` par carte et exige qu'une ressource generee
+        # vaille au moins 1 (`assert res.val > 0`, resources.py) : une branche
+        # « sans ressource » n'y est pas exprimable. ECART ASSUME : la fenetre
+        # est la Reponse au message de paiement `AfterCardsBeSpendAsResource`
+        # (des cartes viennent d'etre depensees pour payer une carte du
+        # joueur). Consequences : la fenetre n'existe que si au moins une
+        # ressource a ete depensee (une carte a cout 0 ne l'ouvre pas), et elle
+        # arrive juste APRES la depense plutot qu'au choix des moyens de
+        # paiement. La combinaison s'incline : elle ne peut plus produire
+        # d'energie, ce qui garde le « au lieu de » de la carte.
+        Ability(
+            AbilityType.Response,
+            Message.AfterCardsBeSpendAsResource,
+            [
+                lambda effect, message:
+                    effect.this.IsInPlay() and
+                    message.GetToPlayer() == effect.this.GetControlBy() and
+                    effect.this not in (message.faces or []),
                 lambda effect, message: len(SongsAvecCompteur(effect)) > 0,
             ],
+            effacer,
         ).SetCostFunc(CostFunc.Exhaust("This")),
     ]
