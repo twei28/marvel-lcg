@@ -81,6 +81,11 @@ Unused(Worlds)
 Unused(AsideModularSet)
 Unused(Stores)
 
+# Briques communes Punisher MC×DC / Galactic Storm (20/10/2026),
+# RECETTES-MOTEUR.md §15 : « insensible aux cartes joueur ».
+from game.operate.immunity import PlayerCardImmunity
+Unused(PlayerCardImmunity)
+
 from game.element.utility import IsCounter, IsTrait
 Unused(IsCounter, IsTrait)
 

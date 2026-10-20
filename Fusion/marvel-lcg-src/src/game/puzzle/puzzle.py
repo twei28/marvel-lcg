@@ -773,6 +773,41 @@ class RunPuzzle:
         face.CastTo(Enemy).AttackCharacter(cible, self.debug_rule, **options)
         return face
 
+    def ProtectFromPlayerCards(self, card: CardName, attached_to: CardName|None=None,
+                               trait: str|None=None) -> 'CardFace':
+        """Brique commune du 20/10/2026 : rend une carte « insensible aux cartes
+        joueur » en passant par la VRAIE fabrique
+        `AbilityFactory.CannotBeAffectedByPlayerCards`, comme le ferait le
+        script d'une carte de campagne.
+
+        - `attached_to=None` : CARD se protege elle-meme (« This », mechant
+          HIDDEN) ; `trait` ajoute la condition « tant qu'elle a ce trait ».
+        - `attached_to=X` : CARD (un attachement) est d'abord attachee a X, puis
+          protege son porteur (« AttachedCharacter », In the Crosshairs).
+
+        La fabrique ecoute l'entree en jeu de la carte : la commande inscrit la
+        capacite puis rejoue la fenetre d'entree en jeu (`ApplyAfterEnterPlay`,
+        en retournement pour ne rien relancer d'autre)."""
+        from game.ability.factory import AbilityFactory
+        from game.card.face.attribute.can_attach import CanAttach
+        source = self.FindFaceInPlay(card)
+        if attached_to is not None:
+            hote = self.FindFaceInPlay(attached_to)
+            if not source.IsInPlay():
+                source.PutIntoPlay(self.world.GetCurrentPlayer(), self.debug_rule)
+            source.CastTo(CanAttach).AttachTo2(hote, self.debug_rule)
+            which = "AttachedCharacter"
+        else:
+            which = "This"
+        while_fn = (lambda face: face.HasTrait(trait)) if trait else None
+        source.effect.RegisterTemp(
+            AbilityFactory.CannotBeAffectedByPlayerCards(which, while_fn).NoOutOfPlayLimit(),
+            unregister_after_exec=False,
+        )
+        area = source.card.area
+        source.ApplyAfterEnterPlay(area, area, self.debug_rule, True)
+        return source
+
     def _DeclareDefender(self, card: CardName) -> 'CardFace':
         """Arme un defenseur pour la PROCHAINE attaque, puis se retire.
 

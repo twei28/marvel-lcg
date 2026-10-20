@@ -212,9 +212,14 @@ class Faces:
     @staticmethod
     def PlaceCountersOn(targets: Sequence['TC'], value: int|Literal["1*", "2*", "3*", "6*"], name: 'CardFace.COUNTER|Literal["all-purpose"]', by_effect: 'Effect', *, maximum: int|None=None, by_player: 'Player|None'=None) -> int|None:
         from game.card.face import CanPlaceCounter
+        from game.operate.immunity import PlayerCardImmunity
         total = 0
         for target in targets:
             target = target.card.CastTo(CanPlaceCounter)
+            # BRIQUE 2 (20/10/2026) : pas de compteur pose par une carte joueur
+            # sur une face insensible aux cartes joueur.
+            if PlayerCardImmunity.Refuses(target, by_effect):
+                continue
             total += target.PlaceCountersInternal(value, name, by_effect, maximum=maximum)
         return total
 

@@ -375,6 +375,13 @@ class CanHealth(HasHealth):
         if this.IsDefeated():
             return None
 
+        # BRIQUE 2 (20/10/2026) : aucun degat d'une carte joueur sur une face
+        # insensible aux cartes joueur, exces d'un coup overkill compris (le
+        # `by_effect` de l'exces est celui de l'attaque qui l'a produit).
+        from game.operate.immunity import PlayerCardImmunity
+        if PlayerCardImmunity.Refuses(this, by_effect):
+            return None
+
         if isinstance(property, int):
             property = DamageProperty(property)
 
