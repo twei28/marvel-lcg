@@ -319,7 +319,7 @@ découpe, traits, texte, stats, unicité) :
 | 25 | Energy | 01088 | aucun | collection de ressources `binary` |
 | 26 | Genius | 01089 | aucun | collection de ressources `binary` |
 | 27 | Strength | 01090 | aucun | collection de ressources `binary` |
-| 28 | Avengers Mansion | 01091 | **trait « AVENGERS. »** | **non (Q2)** |
+| 28 | Avengers Mansion | 01091 | trait « AVENGERS. » (coquille de l auteur) | oui (Q2 tranchée le 20/10/2026) |
 | 29 | Deft Focus | 16024 | aucun | oui |
 | 30 | Soaring Acrobatics | 42023 | aucun | oui |
 | 36 | Combat Specialist | 43034 | aucun | oui |

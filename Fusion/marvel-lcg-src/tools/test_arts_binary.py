@@ -4,8 +4,8 @@
     python3 tools/test_arts_binary.py                 # fichiers et donnees
     python3 tools/test_arts_binary.py --http 8765     # + chaque art servi par un moteur deja lance
 
-Controle : 19 cartes officielles declarees `binary` (Avengers Mansion 01091 exclue tant que la
-question Q2 n'est pas tranchee), chacune presente dans cards.json, son image
+Controle : 20 cartes officielles declarees `binary` (dont Avengers Mansion 01091 : trait « AVENGERS »
+du scan juge coquille de l'auteur, question Q2 tranchee le 20/10/2026), chacune presente dans cards.json, son image
 `assets/pics/<id>_binary.jpg` (JPEG 615x882, 882x615 pour une manigance de joueur) ; la serie
 `binary` designe le heros gs001 ; la collection de ressources `binary` (01088-01090) a ses trois
 images et figure dans les DEUX tables (plateau `variantes.ts`, preparation `app.js`) ; les tables
@@ -21,9 +21,9 @@ ICI = Path(__file__).resolve().parent
 RACINE = ICI.parent
 CODE = "binary"
 ATTENDUES = {"43035", "49022", "16045", "43018", "42023", "54016", "43037", "06017", "16024", "41019",
-             "33032", "56013", "43036", "13013", "12030", "43034", "40204", "01084", "43021"}
+             "33032", "56013", "43036", "13013", "12030", "43034", "40204", "01084", "43021", "01091"}
 PAYSAGE = {"43018", "43021"}
-EXCLUES = {"01091"}
+EXCLUES = set()
 
 
 def cartes_du_jeu():

@@ -81,3 +81,10 @@ d'icônes et vaut aussi à la dépense (« treat ... as if they were ») ; Burno
 carte à ressource de la main ; Energy Conversion x2 dans le deck (la liste imprimée oublie « x2 », les deux scans
 13/15 et 14/15 et le livret p.21 le donnent) ; Rogue et Touched désignés par nom ET type (un héros officiel Rogue et
 son amélioration Touched 38002 existent) ; Rogue « When Defeated: Discard Touched » ne défausse que la Touched EN JEU.
+
+## Réponses de l'utilisateur (20/10/2026)
+
+- Q1 : `gs031` pour Forgotten Life (gs004 = Pursued by the Flame).
+- Q2 : coquille de l'auteur, art `binary` branché sur 01091 (`assets/pics/01091_binary.jpg`, entrée ajoutée à `arts_alternatifs.json`, tables régénérées, `tools/test_arts_binary.py` à 20 arts : OK). La carte reste 01091 avec le trait AVENGER.
+- Q3 : un [wild] en main n'est PAS [energy] (lecture codée dans `EnergieDeLaCarte`, rien à changer).
+- Q4 : Fuel the Fire soigne N, non plafonné (lecture codée, rien à changer).
