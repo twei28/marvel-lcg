@@ -673,6 +673,21 @@ class RunPuzzle:
             villain.DoActivate(player, self.debug_rule)
         return face
 
+    def GiveFacedownBoost(self, target: CardName, card: CardName) -> 'CardFace':
+        """Donne a TARGET (en jeu) une carte boost face cachee HORS
+        activation : pile persistante (`components.boostable.GetDeck()`),
+        comme `fne/kingpin/60165` James Wesley (« give him a facedown boost
+        card »), pas la pioche normale du dessus du deck rencontre (`Boost`).
+
+        Sans cette commande, aucun cas ne peut monter une pile de boost non
+        vide sur un ennemi en dehors d'une activation reelle (gs226 Lauri-Ell,
+        « discard each boost card on that enemy » : preuve par substitution
+        bloquee faute de pile a vider, voir CAMPAGNE-ALLIEES-GABARITS.md)."""
+        cible = self.FindFaceInPlay(target)
+        face = self.FindOrCreateFace(card)
+        cible.components.boostable.GiveBoostCard(face, self.debug_rule)
+        return face
+
     def Deal(self, card: CardName, joueur: int|None=None) -> 'CardFace':
         """`joueur` : l'INDICE du joueur servi (0 = le premier). Ajoute le
         19/09/2026 : sans lui, une carte ne pouvait etre distribuee qu'au

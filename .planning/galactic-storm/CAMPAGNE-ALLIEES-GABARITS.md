@@ -57,28 +57,38 @@ auteur, même gabarit « carte de campagne ») :
 **Construction vérifiée** : `test_cards` 7019/7019, 0 erreur.
 `verifier_appels_modules galactic_storm` : OK.
 
-**Étape 7 (cas de test, preuve par substitution) : FAITE pour les 13 cartes**
+**Étape 7 (cas de test, preuve par substitution) : FAITE pour les 13 cartes,
+y compris gs224 et gs226 (résolu le 21/10/2026)**
 (`tools/cas/campagne_galactic_storm.py`, filtre `[gsc]`) :
 
 - `test_capacites` : **15/15 cas verts** (13 cartes, gs227 et gs231 ont
   chacune 2 cas).
-- Preuve par substitution (`substituer_pack.py`) : gs225, gs228, gs229,
-  gs230, gs232, gs233, gs234, gs235, gs236 → rouges 1/1. gs227 et gs231 →
-  rouges 1/2, l'autre cas étant un CONTRE-CAS D'ABSENCE qui reste vert sans
-  module par construction (assumé, pas un défaut).
-- **gs224 Rick Jones et gs226 Lauri-Ell : substitution NON concluante**
-  (rouges 0/1 chacune, commentaire dédié dans
-  `tools/cas/campagne_galactic_storm.py`) :
-  - gs224 : le cas reste vert même sans le module — `Puzzle.Attack` sans
-    `defender=` semble choisir seul un personnage à « défendre » dès qu'un
-    allié est en jeu (comportement du pilote de test, pas du moteur de
-    règles). Le code (`ReplaceTarget`, modèle Crossfire) reste la bonne
-    méthode ; seule la mesure ne l'isole pas.
-  - gs226 : aucune commande `Puzzle.*` ne permet de seeder une pile de boost
-    FACE CACHÉE hors activation sur un ennemi (seul chemin trouvé,
-    `fne/kingpin/60165`, n'est pas reproductible simplement) : le cas prouve
-    seulement que la Réponse ne plante pas (pile vide, cas normal) ; le
-    retrait réel d'une pile non vide reste vérifié par relecture de code.
+- Preuve par substitution (`substituer_pack.py`) : **13/13 cartes → rouges
+  1/1** (gs227 et gs231 → rouges 1/2, l'autre cas étant un CONTRE-CAS
+  D'ABSENCE qui reste vert sans module par construction, assumé).
+- **gs224 Rick Jones, résolu** : la substitution restait verte non pas à
+  cause de la carte, mais d'un piège dans le TEXTE du cas lui-même —
+  `questions_absentes=["Peter Parker est attaqué"]` ne matchait jamais,
+  car le moteur rend le prompt avec un crochet fermant collé au nom :
+  `"[(01,01001b) Peter Parker] est attaqué par..."`. Corrigé en
+  `questions_absentes=["Peter Parker] est attaqué"]` → rouges 1/1.
+- **gs226 Lauri-Ell, résolu** : deux pièges superposés.
+  1. Une commande `Puzzle.GiveFacedownBoost(cible, carte)` a été ajoutée à
+     `game/puzzle/puzzle.py` (modèle `fne/kingpin/60165` James Wesley,
+     `components.boostable.GiveBoostCard`) pour pouvoir enfin seeder une
+     pile de boost hors activation sur un ennemi — absente jusqu'ici.
+  2. Avec cette commande, le cas restait quand même vert sans module : la
+     clé `hors_jeu` (`par_id`/`IsInPlay`) est TOUJOURS vraie pour une carte
+     posée FACE CACHÉE dans `components.boostable.GetDeck()` — AVANT même
+     toute attaque, puisque `IsInPlay()` exige `IsFaceUp()`. Remplacé par un
+     vérificateur `gsc_gs226_pile_boost_videe` qui mesure directement
+     `cible.components.boostable.GetDeck().GetSize()` après l'attaque.
+  3. **Un vrai bug de carte a été trouvé par ce chemin** : `gs226.py` lisait
+     `message.damage_targets`, un attribut qui n'existe pas sur
+     `Message.AfterUnitAttackUnit` (`AttributeError` en partie réelle, à
+     chaque fois que Lauri-Ell blessait un ennemi). Corrigé en
+     `message.took_damage_targets` (le vrai champ, confirmé dans
+     `sender_damage.py`). → rouges 1/1.
 - **Pièges réels trouvés et corrigés en écrivant ces cas** (gardés en
   commentaire dans chaque script, donc pas perdus) :
   - gs227 Binary : `ThisGainKeyword` ne se recalculait pas quand la main
@@ -113,14 +123,10 @@ auteur, même gabarit « carte de campagne ») :
 5, couvert en pratique par les mots-pièges notés dans chaque script mais pas
 relu formellement ligne à ligne), bloc nombres (étape 6, idem), autoplay
 ciblé (étape 8, pas fait), bloc plateau (étape 8 bis — Her/Living Lightning
-redressent des cartes, concernées, pas fait), fiabiliser les 2 cas de
-substitution non concluants (gs224, gs226 — la carte n'est probablement pas
-en cause, mais ce n'est pas prouvé par cas).
+redressent des cartes, concernées, pas fait).
 
-**Statut final** : **13/13 cartes construites, scriptées, testées**. 11/13
-preuve par substitution pleinement concluante ; 2/13 (gs224, gs226) ont un
-code qui suit un modèle éprouvé mais dont le cas de test ne prouve pas
-l'isolation (limite du harnais, pas un défaut de carte identifié). Reste
-séparé : `data/campagnes/galactic_storm.json` + le fichier mécanique
-`src/cards/pack/galactic_storm/campaign.py` (mode campagne proprement dit,
-pas commencé).
+**Statut final** : **13/13 cartes construites, scriptées, testées, 13/13
+preuve par substitution pleinement concluante** (gs224/gs226 résolus le
+21/10/2026, voir ci-dessus). Mode campagne proprement dit (`data/campagnes/
+galactic_storm.json` + `src/cards/pack/galactic_storm/campaign.py`) :
+construit séparément, voir `MODE-CAMPAGNE-GABARIT.md`.

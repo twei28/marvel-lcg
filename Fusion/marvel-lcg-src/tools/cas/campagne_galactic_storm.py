@@ -27,31 +27,38 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
 
 CAS = [
     # ============================================================ gs224 Rick Jones
-    # ⚠ Substitution NON concluante (21/10/2026) : ce cas reste VERT meme sans le module (`rouges 0/1`).
-    # Confirme par instrumentation : SANS l'ability, l'identite encaisse deja 0 degat et Rick Jones quitte
-    # quand meme le jeu — le harnais `Puzzle.Attack` sans `defender=` choisit apparemment seul un
-    # personnage a « defendre » des qu'un allie est en jeu (comportement du pilote auto-reponse, pas du
-    # moteur de regles). Le code (`ReplaceTarget`, modele direct `hood/crossfires_crew/24026` Crossfire)
-    # reste la bonne methode pour ce texte ; seul CE cas de test ne l'isole pas proprement. A reprendre :
-    # soit trouver comment refuser la defense automatique du pilote, soit mesurer autrement (ex. verifier
-    # l'ORDRE des messages plutot que le resultat net).
-    _c("gs224 Rick Jones : Forced Interrupt redirige l'attaque du mechant sur lui (identite epargnee)",
+    # Cause trouvee (21/10/2026, TRACE_OPTIONS + journal) : SANS le module, Rhino attaque bien
+    # l'identite d'abord, puis le moteur pose normalement « Defense » (regle de base du jeu : tout
+    # allie en jeu peut defendre a la place du joueur) — le pilote de test accepte TOUJOURS la
+    # premiere option offerte, donc Rick Jones finit quand meme par encaisser, MEME SANS son
+    # ability : meme etat final que la redirection, mesurer le resultat net ne suffit pas.
+    # ⚠ « questions_absentes": ["Defense"] » etait TROP strict : une fois la cible redirigee sur
+    # Rick Jones par `ReplaceTarget`, une question de defense LEGITIME part quand meme (« qui
+    # defend RICK JONES ? », reponse normale du jeu, pas un defaut). Ce qui distingue vraiment les
+    # deux scenarios : le PROMPT de la toute premiere question d'attaque nomme Peter Parker (SANS
+    # le module) ou Rick Jones (AVEC) comme cible — jamais les deux.
+    _c("gs224 Rick Jones : Forced Interrupt redirige l'attaque du mechant sur lui AVANT toute resolution "
+       "(l'identite n'est jamais la cible annoncee de l'attaque)",
        "« When the villain attacks you, it attacks Rick Jones instead » : ReplaceTarget avant resolution",
        en_jeu("gs224") + ["Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
-       {"degats_identite": 0, "hors_jeu": ["gs224"]}),
+       {"degats_identite": 0, "hors_jeu": ["gs224"]}, questions_absentes=["Peter Parker] est attaqué"]),
     # ============================================================ gs226 Lauri-Ell
-    # ⚠ Substitution NON concluante (meme famille que gs224, rouges 0/1) : aucune commande `Puzzle.*` ne
-    # permet de donner a un ennemi une carte boost FACE CACHEE HORS activation (le seul chemin existant,
-    # `CanBoost.GiveFacedownBoostCardsInternal`, est reserve a des cartes comme `fne/kingpin/60165` James
-    # Wesley, pas reproductibles simplement via Puzzle) : sans pile de boost a vider, ce cas ne mesure que
-    # « l'attaque se deroule normalement », vrai avec ou sans le module. Le retrait reel d'une pile non
-    # vide (`components.boostable.GetDeck()` + `Faces.DiscardAll`) reste verifie par relecture de code
-    # (memes appels que `fne/kingpin/60165`), PAS par un cas qui la monte en jeu — a reprendre si on trouve
-    # un chemin Puzzle pour seeder une pile de boost HORS activation.
-    _c("gs226 Lauri-Ell : apres avoir attaque et blesse un ennemi, la Reponse part sans planter (pile de boost vide)",
+    # `Puzzle.GiveFacedownBoost` ajoutee le 21/10/2026 (meme famille que
+    # `fne/kingpin/60165`) pour monter une pile de boost HORS activation :
+    # l'ancien cas (pile vide) ne mesurait que « l'attaque se deroule
+    # normalement », vrai avec ou sans le module.
+    # ⚠ « hors_jeu » (via `par_id`/`IsInPlay`) ne convient PAS ici : une carte
+    # posee FACE CACHEE dans `components.boostable.GetDeck()` est deja
+    # `IsInPlay() == False` (face cachee) des l'instant ou elle y est posee,
+    # AVANT meme toute attaque — `hors_jeu` restait donc vrai avec ou sans le
+    # module (meme piege que gs224, trouve le 21/10/2026). Verifier custom :
+    # mesure directement la TAILLE de la pile de boost de la cible apres
+    # l'attaque (doit etre vide seulement si la Reponse l'a vraiment videe).
+    _c("gs226 Lauri-Ell : apres avoir attaque et blesse un ennemi, sa pile de boost (hors activation) est defaussee",
        "« Response: After Lauri-Ell attacks and damages an enemy, discard each boost card on that enemy »",
-       en_jeu("gs226") + ["Puzzle.PutIntoPlay('01101')"], ["Puzzle.Attack('gs226')"],
-       {"degats": [["01101", 2]], "en_jeu": ["gs226", "01101"]}),
+       en_jeu("gs226") + ["Puzzle.PutIntoPlay('01101')", "Puzzle.GiveFacedownBoost('01101', '01105')"],
+       ["Puzzle.Attack('gs226')"],
+       {}, verifier="gsc_gs226_pile_boost_videe"),
     # ============================================================ gs225 Gladiator
     _c("gs225 Gladiator : apres l'avoir joue depuis la main, un sbire est vaincu",
        "« After you play Gladiator from your hand, defeat a minion »",
@@ -136,3 +143,19 @@ CAS = [
        main_exclusive=["gs236", "01088", "01089"],
        payer_avec=["01088", "01089"], jouer=["gs236"]),
 ]
+
+VERIFICATIONS = r'''
+def gsc_gs226_pile_boost_videe(monde, aides):
+    cible = aides["par_id"](monde, "01101")
+    if cible is None:
+        return False, "01101 n'est plus en jeu"
+    if cible.max_health - cible.health != 2:
+        return False, f"degats sur 01101 = {cible.max_health - cible.health} (attendu 2)"
+    attaquante = aides["par_id"](monde, "gs226")
+    if attaquante is None:
+        return False, "gs226 n'est plus en jeu"
+    taille = cible.components.boostable.GetDeck().GetSize()
+    if taille != 0:
+        return False, f"pile de boost hors activation de 01101 non videe ({taille} carte(s) restante(s))"
+    return True, "pile de boost hors activation videe"
+'''

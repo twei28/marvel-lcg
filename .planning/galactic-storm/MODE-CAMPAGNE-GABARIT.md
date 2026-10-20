@@ -120,11 +120,28 @@ Shadow), la boîte la plus proche en volume (234 lignes) et déjà conçue pour
   même livret. **Confirmé avec l'utilisateur le 21/10/2026** : lecture
   littérale retenue, aucun changement.
 
+## Trouvé en terminant l'investigation gs224/gs226 (21/10/2026)
+
+- **gs224 et gs226 sont maintenant 13/13 en preuve par substitution**, voir
+  CAMPAGNE-ALLIEES-GABARITS.md pour le détail des deux pièges de cas de test
+  (un crochet fermant dans le prompt, `hors_jeu` trivialement vrai sur une
+  carte face cachée) et du vrai bug trouvé au passage dans `gs226.py`
+  (`message.damage_targets` n'existe pas, corrigé en `took_damage_targets` —
+  Lauri-Ell plantait en partie réelle des qu'elle blessait un ennemi).
+- Nouvelle commande `Puzzle.GiveFacedownBoost(cible, carte)` ajoutée à
+  `game/puzzle/puzzle.py` (seeder une pile de boost hors activation, utile à
+  tout futur pack qui mesure ce genre de capacité).
+- **Bug de données pré-existant trouvé en chaînant la campagne vers le
+  scénario 2** : `gs120b` (Shi'ar Throne face B) n'avait aucun `desc.Class`
+  dans `data/cards.json`, ce qui faisait planter `CheckPrintedValue`
+  (`assert self.card_classes != []`) dès que `CreateSetAside` construisait
+  la mise en place réelle de Majestrix's Verdict — jamais détecté avant
+  faute d'un test qui montait cette mise en place en entier. Corrigé
+  (`"Class": "Encounter"`, modèle `16142` Milano/`60153` Ben Urich), checksum
+  de `cards.json` recalculé (`tools/recalculer_checksums.py`).
+
 ## Reste à faire pour une fidélité totale
 
-- gs224 Rick Jones et gs226 Lauri-Ell (lot des 13 cartes de campagne, pas le
-  mode campagne) : substitution non concluante, investigation demandée par
-  l'utilisateur, en cours (voir CAMPAGNE-ALLIEES-GABARITS.md).
 - Partie/autoplay complète des 5 scénarios enchaînés : demandée par
   l'utilisateur, en cours.
 - Pages de livret pour l'écran de campagne (`pages_regles`, `intro`/`regles`/
