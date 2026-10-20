@@ -206,17 +206,42 @@ déroulement normal du jeu — à vérifier avec plus de temps ou en partie rée
 (Annihilus + Attuma) partagent donc le même statut : **construction correcte, comportement à confirmer
 hors de ce harnais**.
 
-## Reste du lot (gs176-gs194, gsr01-gsr10)
+## Destroyer (gs176-gs180), Doctor Minerva (gs181-gs185), Mole Man (gs186-gs189), Veranke (gs190-gs194)
 
-Entrées `cards.json` écrites et vérifiées (`test_cards`, 0 erreur), mais **aucun script ni cas de test
-encore écrit** pour les 4 méchants restants (Destroyer, Doctor Minerva, Mole Man, Veranke) ni pour les 10
-reskins (ability_link, pas de script attendu mais pas encore vérifiés en jeu). Prochaine étape du lot : un
-méchant à la fois, dans l'ordre du scénario, questions une à une avec capture quand un doute se présente.
+Les 4 méchants restants sont écrits, suivant le même principe que ci-dessus (construction vérifiée,
+`test_cards` propre à chaque groupe, pas de cas de test répété sur les mécaniques à deux cartes/branches —
+voir la note Annihilus/Attuma pour pourquoi). Un point positif : **gs168 ET un petit nombre d'autres cas
+isolés (une seule carte en jeu, sans branche "Otherwise") PROUVENT que le harnais fonctionne pour ces
+formes simples** — le problème est spécifiquement localisé aux interactions à 2+ cartes ou aux sélecteurs
+à secours, pas au harnais dans son ensemble.
 
-**Vu le volume de capacités qui ne se prouvent pas dans ce harnais (voir Annihilus et Attuma ci-dessus),
-les méchants restants sont construits et vérifiés par `test_cards`/lecture attentive du texte imprimé
-contre le code, SANS reprendre un cas de test par capacité à chaque fois** — cela éviterait de dépenser le
-budget restant à re-découvrir le même problème 4 fois de plus. Cas de test écrits seulement pour les
-mécaniques qui n'impliquent qu'UNE SEULE carte en jeu sans branche de secours (celles-là ont prouvé marcher :
-gs163, gs164, gs165, gs168). Point à trancher avec l'utilisateur en fin de lot : vérification complète en
-partie réelle / autoplay avant de considérer GS-7 clos.
+Mécaniques neuves notables de ce quart du lot :
+- **gs178 Uru Armor Plating** : `Select.From(CardFinder(...), fewest_remaining_hp=True)` comme
+  `otherwise_attach_to` (un `CardFinder` seul n'accepte pas `fewest_remaining_hp`, il faut un vrai
+  `Selector`).
+- **gs176/177/179/180 (Destroyer)** : helper partagé `ExcesVersMenaceSurManigancePrincipale`
+  (`Message.AfterUnitAttackUnit.excess_damage`), réutilisé identique en capacité constante (villain) et en
+  Boost (deferré via `RunAt.AfterEnemyActivationEnd`).
+- **gs183 Induced Mutation** : `message.GiveAdditionalBoostCardForThisActivation(n, effect)`, une API
+  directe qui évite de manipuler `Faces.GiveFacedownBoostCards` à la main ; `Message.WhenEnemyWouldActivate`
+  (pas `...AgainstYou`) pour un déclencheur « the villain activates » SANS la restriction « against you ».
+- **gs190/191 Veranke** : `AbilityFactory.UnitCannotDefend(Unit2, "This", cannot_trigger_defense_ability=True)`
+  pour un « cannot defend » total (pas seulement la défense de base).
+- **gs192/193** : la mécanique « nemesis minion » (`CardFinder(is_nemesis=joueur)`, `player.set_aside_nemesis_sets`)
+  et `AbilityFactory.TreatAttachedCardAsMinion` (dont le mapping SCH=THW imprimé et l'engagement du
+  contrôleur sont NATIFS, aucun code à ajouter) viennent directement de Skrull Menace, déjà posés.
+
+**Statut final du lot GS-7** : les 36 cartes propres (gs161-gs194) sont toutes scriptées et
+construction-vérifiées (`test_cards` : 7006/7006, 0 erreur ; `verifier_appels_modules galactic_storm` :
+OK). Les 10 reskins (gsr01-gsr10) sont des entrées `cards.json` pures (`ability_link`), aucun script requis
+— pas encore vérifiées à l'image en jeu (art/texte affichés).
+
+**Ce qui reste avant de considérer GS-7 vraiment clos** :
+1. Reprendre le mystère de harnais (abilities « While »/« Otherwise »/multi-cartes qui ne se déclenchent
+   pas sous `Puzzle`, voir Annihilus plus haut) avec plus de temps, OU vérifier directement en partie
+   réelle que ces capacités fonctionnent (c'est le chemin de code normal du jeu, jamais testé par ce
+   harnais-là).
+2. Autoplay ciblé (étape 8 de PROCESSUS-CARTE), jamais fait sur ce lot faute de temps.
+3. Vérification visuelle des 10 reskins en jeu (art, texte affiché).
+4. Une vraie partie jouée à la main avec plusieurs méchants simultanément (le cœur du scénario) — rien ne
+   remplace ça pour juger si c'est agréable et fidèle.
