@@ -287,6 +287,8 @@ const state = {
     playerCount: 1,
     players: [0, 1, 2, 3].map((i) => ({ index: i, hero: null, deck: null, deckSource: null })),
     activeSlot: 0,
+    // Parcours sequentiel : vrai quand on rouvre un heros depuis le recapitulatif.
+    modifDeck: false,
     // homebrew : decoche = uniquement les heros officiels, coche = uniquement
     // les fan-made (Stan Lee, Hulk (Rainy), Thor (Jane Foster)).
     heroFilters: { q: "", vague: "", fav: false, homebrew: false },
@@ -356,6 +358,44 @@ function activePlayers() {
     return state.players.slice(0, state.playerCount);
 }
 
+/**
+ * COOP LOCALE : UN HEROS APRES L'AUTRE (backlog 9, 20/10/2026).
+ * Vrai : a plusieurs heros sur le meme poste, chaque deck doit etre CHOISI
+ * (un clic) puis VALIDE, heros par heros ; plus aucun deck de base n'est pose
+ * d'office. Faux : l'ancien comportement (deck de base ou dernier deck utilise,
+ * Continuer ouvert des l'arrivee). Les trois questions encore ouvertes
+ * (retour arriere, recapitulatif, deck de base explicite) sont dans
+ * `.planning/todos/2026-10-20-backlog-9-questions.md` ; le comportement actuel
+ * est le plus simple de chacune.
+ */
+const COOP_DECKS_SEQUENTIELS = true;
+
+/** Ce parcours s'applique-t-il ? Coop locale (2 a 4 heros, meme poste) ; ni solo,
+ *  ni salon en ligne, ni creation d'equipe de campagne (decks deja fixes). */
+function decksSequentiels() {
+    return COOP_DECKS_SEQUENTIELS && state.playerCount > 1 && !enLigne() && !creationCampagne();
+}
+
+/** Le deck de ce siege est-il VALIDE ? (sans objet hors parcours sequentiel) */
+function deckValide(p) { return !!(p && p.deck && p.deckValide); }
+
+/** Le deck est-il montre comme choisi ? Hors parcours sequentiel, le deck pose
+ *  par defaut compte ; en parcours sequentiel, seul un deck CLIQUE compte. */
+function deckAffiche(p) {
+    return !!(p && p.deck && (!decksSequentiels() || p.deckChoisi));
+}
+
+/** Le recapitulatif des decks est-il a l'ecran ? Tous les decks sont valides et
+ *  aucun heros n'est rouvert par « Modifier ». */
+function enRecap() {
+    return decksSequentiels() && premierSiegeAValider() < 0 && !state.modifDeck;
+}
+
+/** Premier siege dont le deck n'est pas encore valide, ou -1. */
+function premierSiegeAValider() {
+    return activePlayers().findIndex((p) => !deckValide(p));
+}
+
 function stepComplete(step) {
     const active = activePlayers();
     switch (step) {
@@ -364,7 +404,9 @@ function stepComplete(step) {
         // heros sans rien pouvoir faire. Seul son propre siege le retient ; le
         // LANCEMENT, lui, attend tout le monde (validate + salon.prete).
         case 0: return !!state.mode && (enLigne() ? !!active[0] && !!active[0].hero : active.every((p) => p.hero));
-        case 1: return enLigne() ? !!active[0] && !!active[0].deck : active.every((p) => p.deck);
+        case 1:
+            if (decksSequentiels()) return active.every(deckValide);
+            return enLigne() ? !!active[0] && !!active[0].deck : active.every((p) => p.deck);
         case 2: return !!state.scenario && (!estBataille() || !!state.scenario2);
         case 3: return validate(state).ok;
         default: return false;
@@ -444,6 +486,9 @@ function assignHero(slotIndex, hero) {
     // Deck posé automatiquement : l'étape Decks pourra le remplacer par le
     // dernier deck utilisé pour ce héros (mémoire des choix).
     p.deckAuto = true;
+    // Parcours sequentiel : un nouveau heros repart sans deck choisi ni valide.
+    p.deckChoisi = false;
+    p.deckValide = false;
 }
 
 /* ---------------- Salon multijoueur ---------------- */
@@ -809,8 +854,62 @@ function gotoTel(i) {
     goto(i);
 }
 
+/**
+ * Parcours sequentiel : valide le deck du siege actif, puis passe au heros
+ * suivant (ou rend la main a « Continuer » apres le dernier).
+ */
+function validerDeckSiege() {
+    const p = state.players[state.activeSlot];
+    if (p && p.deckChoisi) p.deckValide = true;
+    const k = premierSiegeAValider();
+    if (k >= 0) state.activeSlot = k;
+    else state.modifDeck = false;   // tout est valide : retour au recapitulatif
+    rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe();
+    loadDecks(state.activeSlot);
+    majNav();
+}
+
+/** Heros suivant, sans rien valider (le deck du siege actif l'est deja). */
+function heroSuivantSequentiel() {
+    const k = premierSiegeAValider();
+    if (k < 0) return;
+    state.activeSlot = k;
+    rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe();
+    loadDecks(k);
+    majNav();
+}
+
+/** Le bouton de l'etape Decks en parcours sequentiel, ou null quand tous les
+ *  decks sont valides (alors c'est « Continuer »). */
+function boutonDeckSequentiel() {
+    if (state.step !== 1 || !decksSequentiels()) return null;
+    if (premierSiegeAValider() < 0) {
+        if (!state.modifDeck) return null;
+        return el("button", {
+            class: "btn primary", id: "btn-retour-recap",
+            onclick: () => { state.modifDeck = false; rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe(); loadDecks(state.activeSlot); majNav(); },
+        }, t("Retour au récapitulatif"));
+    }
+    const p = state.players[state.activeSlot];
+    const nom = p && p.hero ? nomAffiche(p.hero) : "";
+    if (deckValide(p)) {
+        return el("button", {
+            class: "btn primary", id: "btn-heros-suivant",
+            onclick: () => { jouerSon(SON.etapeSuivante); heroSuivantSequentiel(); },
+        }, t("Héros suivant"));
+    }
+    return el("button", {
+        class: "btn primary", id: "btn-valider-deck",
+        disabled: !(p && p.deckChoisi) || undefined,
+        title: p && p.deckChoisi ? undefined : t("Un deck doit d'abord être choisi"),
+        onclick: () => { jouerSon(SON.etapeSuivante); validerDeckSiege(); },
+    }, t("Valider le deck de") + " " + nom);
+}
+
 /** Le bouton principal de la barre du bas : Continuer, Valider ou Lancer. */
 function boutonPrincipalNav() {
+    const seq = boutonDeckSequentiel();
+    if (seq) return seq;
     return state.step < LAST_STEP
         ? el("button", {
             class: "btn primary",
@@ -946,7 +1045,7 @@ function rendreSceneDeckTel() {
         poserBandeauTel(scene, { art: el("div", { class: "tb-art vide" }), titre: t("Aucun héros"), sous: t("Arsenal") });
         return;
     }
-    const st = p.deck ? deckStats(p.deck) : null;
+    const st = deckAffiche(p) ? deckStats(p.deck) : null;
     const aspects = st ? Object.keys(st.asp).filter((x) => x !== "basic") : [];
     const options = optionsDuHeros(h, contexteVariantes(h));
     poserBandeauTel(scene, {
@@ -1205,7 +1304,7 @@ function navBar() {
                 onclick: () => { jouerSon(SON.aleatoire); randomize(); },
             }, t("Aléatoire"))
             : el("span"),
-        state.step < LAST_STEP
+        boutonDeckSequentiel() || (state.step < LAST_STEP
             ? el("button", {
                 class: "btn primary",
                 disabled: !canContinue() || undefined,
@@ -1221,7 +1320,7 @@ function navBar() {
                     class: "btn launch",
                     disabled: (!validate(state).ok || (enLigne() && !state.salon.prete)) || undefined,
                     onclick: () => { jouerSon(SON.lancement); doLaunch(); },
-                }, t("Lancer la partie")),
+                }, t("Lancer la partie"))),
     );
 }
 
@@ -1289,6 +1388,7 @@ async function reprendreEquipeCampagne() {
         // entree, sinon il serait le seul choix impossible a re-selectionner.
         p.deckSource = "campagne";
         p.deckAuto = false;
+        p.deckChoisi = true; p.deckValide = true;
         DECKS_CAMPAGNE.set(i, m.deck);
     });
 }
@@ -3122,6 +3222,13 @@ function rendreEquipe() {
             title: pilotable ? (pl.hero ? nomAffiche(pl.hero) : t("Joueur") + " " + (i + 1)) : t("Ce joueur choisit depuis son propre écran"),
             onclick: () => {
                 if (!pilotable) return;
+                // Parcours sequentiel : pas de saut en avant, on ne passe au
+                // heros suivant qu'apres avoir valide le deck du courant.
+                if (state.step === 1 && decksSequentiels()) {
+                    if (enRecap()) state.modifDeck = true;
+                    const k = premierSiegeAValider();
+                    if (k >= 0 && i > k) return;
+                }
                 state.activeSlot = i;
                 herosApercuTel = null;
                 rendreEquipe();
@@ -3132,7 +3239,7 @@ function rendreEquipe() {
             },
         },
             pl.hero ? portraitHeros(pl.hero) : el("span", { class: "plus" }, "+"),
-            el("span", { class: "tb-siege-nom" }, state.step === 1 && pl.deck
+            el("span", { class: "tb-siege-nom" }, state.step === 1 && deckAffiche(pl)
                 ? cleanNomDeck(pl.deck.name)
                 : (pl.hero ? nomAffiche(pl.hero) : t("Joueur") + " " + (i + 1))),
         ));
@@ -4141,6 +4248,7 @@ function ouvrirModaleVariantes(i, h) {
                     p.deck = deckDeLaVersion(h, choix.version);
                     p.deckSource = "base";
                     p.deckAuto = true;
+                    p.deckChoisi = false; p.deckValide = false;
                     p.identity = identites.find((v) => cleIdentite(v) === choix.identite) || null;
                     prefs.setArtsHeros(h.heroCardId, choix.art, choix.artAE);
                     prefs.setVariantes(h.id, { version: choix.version, identite: choix.identite });
@@ -4465,7 +4573,7 @@ async function ouvrirPanneauCdb(i) {
                 alert(t("Ce deck n’a pas pu être converti proprement, il n’est pas proposé."));
                 return;
             }
-            p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
+            p.deck = deck; p.deckSource = "imported"; p.deckAuto = false; p.deckChoisi = true;
             fermerModale(overlay);
             render();
             proposerArts(p);
@@ -4555,7 +4663,12 @@ async function ouvrirPanneauCdb(i) {
 function stepDecks() {
     // En ligne, l'hôte ne pilote que son siège : les invités choisissent
     // depuis le leur. On revient donc toujours sur le siège 0.
+    state.modifDeck = false;
     if (enLigne()) state.activeSlot = 0;
+    else if (decksSequentiels()) {
+        const k = premierSiegeAValider();
+        if (k >= 0) state.activeSlot = k;
+    }
     const wrap = el("section", { class: "step team-b arsenal" },
         el("div", { class: "tb-scene", id: "tb-scene" }),
     );
@@ -4595,7 +4708,7 @@ function rendreSceneDeck() {
         ajusterNomGeant(scene);
         return;
     }
-    const st = p.deck ? deckStats(p.deck) : null;
+    const st = deckAffiche(p) ? deckStats(p.deck) : null;
     const aspects = st ? Object.keys(st.asp).filter((x) => x !== "basic") : [];
     poser(scene,
         // Scan anglais même en français : le scan FR porte un filigrane, très
@@ -4608,7 +4721,8 @@ function rendreSceneDeck() {
             el("small", {}, t("Arsenal de")),
             nomAffiche(h)),
         el("div", { class: "tb-tampons" },
-            p.deck ? el("span", { class: "tampon jaune" }, cleanNomDeck(p.deck.name) || t("Deck de base")) : null,
+            deckAffiche(p) ? el("span", { class: "tampon jaune" }, cleanNomDeck(p.deck.name) || t("Deck de base")) : null,
+            (!deckAffiche(p) && decksSequentiels()) ? el("span", { class: "tampon" }, t("Aucun deck choisi")) : null,
             st ? el("span", { class: "tampon" }, st.total + " " + t("cartes")) : null,
             ...aspects.map((x) => el("span", {
                 class: "tampon aspect",
@@ -4625,7 +4739,7 @@ function rendreOutilsDeck() {
     if (!zone) return;
     const i = state.activeSlot;
     const p = state.players[i];
-    if (!p || !p.hero) { poser(zone); return; }
+    if (!p || !p.hero || enRecap()) { poser(zone); return; }
     if (estTel()) {
         // Téléphone : trois gros boutons au-dessus de la liste ; l'import
         // passe dans une feuille basse (le champ n'est plus posé en pleine page).
@@ -4694,7 +4808,7 @@ async function doImport(i, fichier) {
             ? await importO8d(i, await fichier.text(), fichier.name)
             : await importMarvelcdb(i, input.value);
         const p = state.players[i];
-        p.hero = hero; p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
+        p.hero = hero; p.deck = deck; p.deckSource = "imported"; p.deckAuto = false; p.deckChoisi = true;
         // Les lignes d'un fichier OCTGN qu'aucun GUID ni aucun nom n'a retrouvees : dites, pas tues.
         const manque = (inconnues || []).length
             ? `\n\n${t("Cartes non reprises (inconnues du jeu, souvent les cartes propres à un autre héros) :")} ` + inconnues.map((c) => `${c.qte}× ${c.nom}`).join(", ")
@@ -4737,7 +4851,33 @@ function nomDeckAffiche(dk) {
         .replace(/\s*[—-]\s*Mutant\s*$/i, " — " + t("Version tableur, mutant"));
 }
 
+/** Le panneau recapitulatif : un heros par ligne, son deck, et « Modifier ». */
+function rendreRecapDecks() {
+    const box = document.getElementById("deck-liste");
+    if (!box) return;
+    const compte = document.getElementById("tb-compte");
+    if (compte) compte.textContent = "";
+    box.replaceChildren(el("div", { class: "deck-recap", id: "deck-recap", style: { gridColumn: "1 / -1", display: "flex", flexDirection: "column", gap: "10px" } },
+        el("b", { style: { fontSize: "18px", letterSpacing: ".04em", textTransform: "uppercase" } }, t("Récapitulatif des decks")),
+        ...activePlayers().map((pl, idx) => el("div", {
+            class: "tb-deck recap-ligne", "data-siege": String(idx),
+            style: { display: "flex", alignItems: "center", gap: "14px", cursor: "default" },
+        },
+            el("span", { class: "tb-siege plein petit" }, portraitHeros(pl.hero)),
+            el("span", { style: { flex: "1" } },
+                el("div", { class: "do-name" }, nomAffiche(pl.hero)),
+                el("div", { class: "do-size" }, cleanNomDeck(pl.deck.name) || t("Deck de base"))),
+            el("button", {
+                type: "button", class: "tampon", "data-modifier": String(idx),
+                onclick: () => {
+                    state.activeSlot = idx; state.modifDeck = true;
+                    rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe(); loadDecks(idx); majNav();
+                },
+            }, t("Modifier"))))));
+}
+
 async function loadDecks(i) {
+    if (enRecap()) { rendreSceneDeck(); rendreRecapDecks(); return; }
     const p = state.players[i];
     await cards.load();
     const catDecks = await catalog.decksForHero(p.hero);
@@ -4772,7 +4912,9 @@ async function loadDecks(i) {
     // Mémoire des choix : si le deck actuel a été posé automatiquement à
     // l'assignation du héros, on présélectionne le dernier deck utilisé pour
     // ce héros, s'il est encore disponible (base ou sauvegardé).
-    if (p.deckAuto) {
+    // Parcours sequentiel : aucun deck n'est presélectionné, le joueur choisit.
+    if (p.deckAuto && decksSequentiels()) p.deckAuto = false;
+    else if (p.deckAuto) {
         p.deckAuto = false;
         const dernierId = prefs.lastDeckFor(p.hero.heroCardId);
         let dk = dernierId != null ? decks.find((d) => d.id === dernierId) : null;
@@ -4797,8 +4939,10 @@ async function loadDecks(i) {
     if (compte) compte.textContent = decks.length + " " + t("decks");
 
     const option = (dk) => {
-        const on = p.deckSource === dk.source && p.deck && p.deck.name === dk.deck.name;
+        const on = deckAffiche(p) && p.deckSource === dk.source && p.deck.name === dk.deck.name;
         const st = deckStats(dk.deck);
+        // Parcours sequentiel : repere (sans selection) du dernier deck joue avec ce heros.
+        const dernierUtilise = decksSequentiels() && dk.source !== "campagne" && String(prefs.lastDeckFor(p.hero.heroCardId)) === String(dk.id);
         // Contrôle de construction : signalé, jamais bloquant.
         const ecarts = verifierDeck(dk.deck);
         const etiquette = dk.source === "base" ? t("Deck de départ")
@@ -4807,7 +4951,9 @@ async function loadDecks(i) {
             : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
         const choisir = () => {
-            p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false;
+            // Parcours sequentiel : un AUTRE deck sur un heros valide retire sa validation.
+            if (decksSequentiels() && p.deckValide && !on) p.deckValide = false;
+            p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false; p.deckChoisi = true;
             // « campagne » n'existe que sur cet ecran-ci : le retenir comme
             // dernier deck du heros ne designerait plus rien demain.
             if (dk.source !== "campagne") prefs.setLastDeck(p.hero.heroCardId, dk.id);
@@ -4852,6 +4998,7 @@ async function loadDecks(i) {
             el("div", { class: "do-name" }, nomDeckAffiche(dk)),
             el("div", { class: "do-tags" },
                 el("span", { class: "tag" }, etiquette),
+                ...(dernierUtilise ? [el("span", { class: "tag dernier" }, t("Dernier utilisé"))] : []),
                 ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
             ),
             aspectBar(st),
