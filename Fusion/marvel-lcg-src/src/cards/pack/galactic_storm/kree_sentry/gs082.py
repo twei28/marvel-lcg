@@ -7,7 +7,10 @@ from . import *
 #
 # Cartes de reference :
 #  - « Any player can attack this card as if it were a minion », degats sur la carte, seuil de degats : modele OFFICIEL
-#    54035 Encased in Ice (`ThisGainKeyword(consider_as=(trait, Minion))` + `IfCardHasOrMoreCounters(.., 'damage', ..)`) ;
+#    54035 Encased in Ice (`ThisGainKeyword(consider_as=(trait, ..))` + `IfCardHasOrMoreCounters(.., 'damage', ..)`) ;
+#    ⚠ considere comme ENEMY (cible de l'attaque de base : `SetTarget(Enemy)`) et NON comme Minion, contrairement a 54035 :
+#    `Worlds.GetOnFieldMinions` testait `Minion.IsType` et rendait la Poigne, dont Teamwork (can_teamwork.py) lisait
+#    `.teamwork` -> AttributeError sur l'attachement (mesure du 20/10/2026, Loyal Devotion + deux sbires IMPERIAL GUARD) ;
 #    le seuil est dynamique (`at_least` accepte une fonction) car Death Grip (gs085) le porte a 5.
 #  - « can only attack Kree Sentry or this card » : `CheckIfUnitCanBeAttackBy` + `SetCannotBeAttack`, memes
 #    messages que `UnitCannotAttackTarget` (54035 : `can_only_attack="This"`) ; la fabrique n'accepte qu'UNE
@@ -73,7 +76,7 @@ def GetAbilities() -> Sequence['Ability']:
         ),
         AbilityFactory.ThisGainKeyword(
             lambda effect, ui: 1,
-            consider_as=("CONDITION", Minion),
+            consider_as=("CONDITION", Enemy),
         ),
         AbilityFactory.IfCardHasOrMoreCounters(
             "This",

@@ -119755,7 +119755,7 @@
     "IMPERIAL GUARD"
    ],
    "set_name": "Imperial Guard",
-   "text": "<b>When Revealed</b>: Defeat a non-scenario specific ally you control. If no ally was defeated this way, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I would gladly sacrifice your entire galaxy to save the life of a single Shi'ar!\"</i>",
+   "text": "Victory 0.\n<b>When Revealed</b>: Defeat a non-scenario specific ally you control. If no ally was defeated this way, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I would gladly sacrifice your entire galaxy to save the life of a single Shi'ar!\"</i>",
    "custom": "Kajislav"
   },
   {
@@ -120019,5 +120019,5 @@
    "custom": "Kajislav"
   }
  ],
- "checksum": "3731d8179d622ab0554380515193882aa090e9911b87c042086860cbcfc99102"
+ "checksum": "429cad5947007115c22d80634d874be1f507a9a2f5e919d8cace85df391ca36c"
 }
