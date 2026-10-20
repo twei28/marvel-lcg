@@ -5,18 +5,22 @@ from . import *
 # Honorary.
 # X is the number of [energy] resource in your hand.
 #
-# Carte de reference :
+# Cartes de reference :
 #  - **`mw001a`** Madame Web (pack custom) : ATK/THW/DEF imprimes « X » sur la carte -> `desc.ATK = "0*"`
 #    (0, pas « X », sinon le parseur natif plante : `can_attack.py:81`, `int(value)`) + capacite constante
 #    `AbilityFactory.ThisGainKeyword(check_fn, attack=1, change_on_event=...)` qui remonte la stat au
 #    nombre voulu. Meme montage ici : `check_fn` compte les cartes [energy] dans la main.
+#  - **`galactic_storm/binary/gs001a`** Binary (meme auteur, meme texte « X is the number of [energy]
+#    resources in your hand ») : `change_on_event=OnEvent.HandCards("EngagedPlayer")`, SEULE carte a tirer
+#    une statistique de la main — sans cet evenement la valeur ne se recalcule qu'au prochain
+#    `OnResetKeywords` (debut de partie/round), pas quand la main change en cours de cas. Trouve en
+#    ecrivant le cas de test (gs227 restait a 2 apres avoir vide la main de ses [energy]).
 #
 # ⚠ Mots-pieges :
 #  - « resource IN YOUR HAND » : des cartes de la MAIN du controleur (pas en jeu, pas le deck), chacune
 #    portant une icone de ressource energie imprimee (`has_printed_res="Y"`) ;
-#  - recalcul en continu : la main change a chaque tour, `change_on_event=OnEvent.NONE` suffit car
-#    `ThisGainKeyword` est deja reevalue a chaque `OnResetKeywords` (modele mw001a, pas d'evenement
-#    specifique necessaire pour une carte en main qui change par les moyens normaux du jeu).
+#  - recalcul en continu : `change_on_event=OnEvent.HandCards("EngagedPlayer")`, sinon la stat reste figee
+#    a la main de depart.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -33,5 +37,6 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactory.ThisGainKeyword(
             energie_en_main,
             attack=1,
+            change_on_event=OnEvent.HandCards("EngagedPlayer"),
         ).SetName("X"),
     ]

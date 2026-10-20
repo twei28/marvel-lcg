@@ -9,9 +9,10 @@ from . import *
 # Cartes de reference :
 #  - **`core/spider_man/01002`** Black Cat : `AbilityFactory.AfterPlayerPlayedCard(ForcedResponse, "You",
 #    "This", ...)`.
-#  - **`game/effect/effect.py:512`** `Effect.GetPaidResources()` : rend les ressources REELLEMENT
-#    utilisees pour payer la carte (`effect.context.paid_this_resources`), pose par `ClassCard.Play`
-#    (`card_player.py:143`, `SetPaidResources`) a chaque mise en jeu depuis la main.
+#  - **`message.paid_resources`** (`sender_player.py:211`, `AfterPlayerPlayedCard`) : rend les ressources
+#    REELLEMENT utilisees pour payer LA CARTE JOUEE, posees sur le MESSAGE (pas sur `effect`, qui est ici
+#    celui de la Reponse declenchee APRES coup — `effect.GetPaidResources()` lirait le paiement de CETTE
+#    reponse, vide, pas celui de Thor ; piege trouve en ecrivant le cas de test, 0 degat au lieu de 2).
 #
 # ⚠ Mots-pieges :
 #  - « for each [energy] resource YOU USED TO PAY for him » : les ressources du PAIEMENT de Thor
@@ -23,10 +24,9 @@ from . import *
 def GetAbilities() -> Sequence['Ability']:
 
     def thor(effect: 'Effect', message: 'Message.AfterPlayerPlayedCard') -> None:
-        Unused(message)
         this = effect.this.CastTo(Ally)
         joueur = this.GetControlByPlayer()
-        nombre = effect.GetPaidResources().rbyg.y
+        nombre = message.paid_resources.rbyg.y
         if nombre <= 0:
             return
         sbires = [m.CastTo(Minion) for m in Worlds.FindCardsOnField(effect, CardFinder(card_type=Minion))
