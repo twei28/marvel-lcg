@@ -172,3 +172,22 @@ règle « N cartes sur M » qu'Imperial Guard porte (livret p.14, lot GS-4). Le 
    sous-ensemble aléatoire d'Accuser Corps à chaque partie — non étayé par le texte actuel.
 3. Autre (préciser, par exemple demander confirmation à l'auteur ou chercher une règle manquante dans le
    livret).
+
+## Réponses de l'utilisateur (20/10/2026)
+
+Q1, Q2, Q3, Q9, Q10 : toutes en option recommandée, conformes au code déjà écrit.
+- Q1 : « House of Fiyero » (nom corrigé).
+- Q2 : « Secrets of Detention Core ».
+- Q3 : HIDDEN, cas limite sans joueur visé : attaque annulée, sans carte distribuée.
+- Q9 : set « Expert » ajouté en mode Expert, par cohérence avec Kree Sentry.
+- Q10 : Accuser Corps complet, sans tirage partiel.
+
+Q4 (corrigée) : ce n'était pas un défaut moteur mais une erreur de clé de vérification dans le harnais
+(`jetons` au lieu de `compteurs`) ; corrigé le 20/10/2026 (commit `481f5a4e`), les deux cas passent
+désormais (`[hu]` 17/23). Le compteur de repli de Hala fonctionne normalement.
+
+Q5 à Q8 : pas de choix à trancher, options recommandées déjà appliquées (ne rien changer au code, qui
+suit des modèles déjà validés ailleurs dans le dépôt ; noter le défaut de preuve, à vérifier en partie
+réelle). Ces capacités (gs144, gs147, gs150, gs153, gs154, gs156, gs160) restent du travail NON TERMINÉ :
+l'utilisateur a demandé d'arrêter après ce lot (20/10/2026), donc ces cartes et leurs cas restent en
+l'état (6 cas rouges sur le filtre [hu], non élucidés) pour une session future.
