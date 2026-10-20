@@ -55,7 +55,10 @@ CAS = [
     _c("gs119 Forced Response : un STARJAMMER vaincu (Corsair) est glisse a nouveau sous la prison",
        "« After a STARJAMMER ally leaves play, tuck it under here » (modele 50081, face visible)",
        [LIBERER], ["Puzzle.Damage('gs123', 9)"], {"glisses": ["gs121", "gs122", "gs123", "gs124", "gs125", "gs126"],
-                                                  "glisses_visibles": True, "hors_jeu": ["gs123"]}, cibles=["gs123"]),
+                                                  "glisses_visibles": True, "hors_jeu": ["gs123"],
+                                                  # la liberation a bien eu lieu avant (6 menaces revenues) : sans
+                                                  # le module, Corsair ne sort jamais et l'etat final serait le meme
+                                                  "menace": [["gs119", 6]]}, cibles=["gs123"]),
     _c("gs119 Forced Response, TEMOIN : un allie NON STARJAMMER vaincu n'est pas glisse",
        "« a STARJAMMER ally » : Black Widow (01075, sans le trait) part en defausse, la prison garde ses 6 glisses",
        ["Puzzle.PutIntoPlay('01075', under_control=True)"], ["Puzzle.Damage('01075', 9)"],
@@ -257,6 +260,15 @@ CAS = [
        "base automatique `desc.Vulnerable`",
        ["Puzzle.PutIntoPlay('gs130')"], ["Puzzle.Stun('gs130')"],
        {"hors_jeu": ["gs130"], "menace": [["gs119", 7], ["gs117b", 0]]}),
+    _c("gs130 Araki Patrol : engage, le contre du heros ne peut pas viser la principale (2 restent, la prison prend 2)",
+       "base automatique `desc.Patrol` ; menace posee dans `declencher` : `main_exclusive` n'agit qu'APRES la mise en place, et "
+       "Great Responsibility transformait la pose de menace en degats",
+       [HEROS, "Puzzle.PutIntoPlay('gs130')"], ["Puzzle.SetThreat('gs117b', 2)", "Puzzle.Thwart('01001a')"],
+       {"menace": [["gs117b", 2], ["gs119", 5]]}, cibles=["gs117b"], main_exclusive=["01088"]),
+    _c("gs130 Araki Patrol, TEMOIN : sans Araki, le meme contre vise la principale (2 -> 1)",
+       "ligne de base du precedent",
+       [HEROS], ["Puzzle.SetThreat('gs117b', 2)", "Puzzle.Thwart('01001a')"],
+       {"menace": [["gs117b", 1], ["gs119", 7]]}, cibles=["gs117b"], main_exclusive=["01088"]),
     _c("gs127 Royal Cape revelee depuis le deck rencontre : elle s'attache a Deathbird",
        "« Attach to Deathbird » par le chemin reel de revelation (`AttachToFaceWhenPutIntoPlay`)",
        [], ["Puzzle.Reveal('gs127')"], {"accroche_a": [["gs127", "gs114"]]}),

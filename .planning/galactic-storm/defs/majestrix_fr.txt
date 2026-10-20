@@ -1,0 +1,54 @@
+  // galactic_storm — Deathbird (Villain, stade I)
+  'gs114': "[star] <b>Interruption forcée</b> : quand Deathbird initie une attaque contre vous, si vous contrôlez un allié [[STARJAMMER]], elle attaque cet allié à la place, avec +1 ATQ.",
+  // galactic_storm — Deathbird (Villain, stade II)
+  'gs115': "Deathbird ne peut pas être vaincue si les joueurs ne contrôlent pas Lilandra et le soutien Shi'ar Throne.\n[star] <b>Interruption forcée</b> : quand Deathbird initie une attaque contre vous, si vous contrôlez un allié [[STARJAMMER]], elle attaque cet allié à la place, avec +1 ATQ.",
+  // galactic_storm — Deathbird (Villain, stade III)
+  'gs116': "Deathbird ne peut pas être vaincue si les joueurs ne contrôlent pas Lilandra et le soutien Shi'ar Throne.\n[star] <b>Interruption forcée</b> : quand Deathbird initie une attaque contre vous, si vous contrôlez un allié [[STARJAMMER]], elle attaque cet allié à la place. Donnez-lui 1 carte de boost supplémentaire pour cette activation.",
+  // galactic_storm — Earn the People's Favor (MainScheme, 1A)
+  'gs117a': "<b>Contenu</b> : Deathbird (I) et Deathbird (II) <i>(Deathbird (II) et Deathbird (III) en mode expert)</i>. Les sets de rencontre Majestrix's Verdict et Standard. Un set de rencontre modulaire <i>(Imperial Guard)</i>.\n<b>Mise en place</b> : mettez de côté la manigance annexe Shi'ar Throne. Mettez en jeu la manigance annexe Imprisoned on Chandilar et glissez dessous chaque allié [[STARJAMMER]].",
+  // galactic_storm — Earn the People's Favor (MainScheme, 1B)
+  'gs117b': "<b>Une fois révélée</b> : placez 1[per_hero] menace sur Imprisoned on Chandilar.\n[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, placez 2 menaces sur Imprisoned on Chandilar pour chaque joueur en forme alter ego.",
+  // galactic_storm — Majestrix's Verdict (MainScheme, 2A)
+  'gs118a': "<b>Une fois révélée</b> : les joueurs choisissent collectivement 1 allié [[STARJAMMER]] glissé sous Imprisoned on Chandilar et le retirent de la partie <i>(2 alliés [[STARJAMMER]] en mode expert)</i>. Sinon, les joueurs choisissent collectivement 1 allié [[STARJAMMER]] en jeu et le retirent de la partie. Passez au stade 2B.",
+  // galactic_storm — Majestrix's Verdict (MainScheme, 2B)
+  'gs118b': "<b>Une fois révélée</b> : placez 1[per_hero] menace sur Imprisoned on Chandilar.\n<b>Interruption forcée</b> : quand ce stade est censé être achevé, retournez cette carte et révélez-la à la place.\n[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, placez 2 menaces sur Imprisoned on Chandilar pour chaque joueur en forme alter ego.",
+  // galactic_storm — Imprisoned on Chandilar (SideScheme)
+  'gs119': "Assaut. Permanent.\n<b>Réponse forcée</b> : après qu'un allié [[STARJAMMER]] a quitté le jeu, glissez-le sous cette carte.\n<b>Interruption forcée</b> : quand la dernière menace est retirée de cette carte, les joueurs choisissent collectivement un allié [[STARJAMMER]] glissé dessous, le mettent en jeu sous le contrôle de n'importe quel joueur et placent 6 menaces sur cette carte.",
+  // galactic_storm — Shi'ar Throne (SideScheme, face A)
+  'gs120a': "<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance retourne cette carte et en prend le contrôle.",
+  // galactic_storm — Shi'ar Throne (Support, face B)
+  'gs120b': "<b>Ressource</b> : inclinez Shi'ar Throne → générez une ressource [mental] pour n'importe quel joueur.\n<b>Réponse forcée</b> : après que Shi'ar Throne ou Lilandra a quitté le jeu, retournez cette carte et révélez-la.",
+  // galactic_storm — Lilandra (Ally)
+  'gs121': "Ne compte pas dans votre limite d'alliés.\n<b>Réponse forcée</b> : après que Lilandra est entrée en jeu, révélez la manigance annexe Shi'ar Throne mise de côté.\n<b>Si Lilandra est retirée de la partie, les joueurs perdent la partie.</b>",
+  // galactic_storm — Ch'od (Ally)
+  'gs122': "Riposte 2.",
+  // galactic_storm — Corsair (Ally)
+  'gs123': "[star] Les attaques de Corsair gagnent Distance.",
+  // galactic_storm — Hepzibah (Ally)
+  'gs124': "[star] Les attaques de Hepzibah gagnent Perçant.",
+  // galactic_storm — Korvus (Ally)
+  'gs125': "[star] Les attaques de Korvus gagnent Déferlement.",
+  // galactic_storm — Raza (Ally)
+  'gs126': "Ténacité.",
+  // galactic_storm — Royal Cape of the Shi'ar (Attachment)
+  'gs127': "Attachez cette carte à Deathbird.\nLe personnage attaché gagne +2 points de vie et Riposte 1.\n<b>Réponse</b> : après que Lilandra a attaqué Deathbird, dépensez une ressource [energy] → attachez cette carte à Lilandra.",
+  // galactic_storm — Shi'ar Crest (Attachment)
+  'gs128': "Attachez cette carte à Deathbird.\nLe personnage attaché gagne Robuste.\n<b>Réponse</b> : après que Lilandra a attaqué Deathbird, dépensez une ressource [mental] → attachez cette carte à Lilandra.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à l'ennemi qui s'active.",
+  // galactic_storm — Shi'ar Javelin (Attachment)
+  'gs129': "Attachez cette carte à Deathbird.\n[star] Les attaques du personnage attaché gagnent Perçant et Déferlement.\n<b>Réponse</b> : après que Lilandra a attaqué Deathbird, dépensez une ressource [physical] → attachez cette carte à Lilandra.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Perçant et Déferlement.",
+  // galactic_storm — Araki (Minion)
+  'gs130': "Patrouille. Vulnérable.\n<b>Une fois vaincu</b> : placez 2 menaces sur chaque manigance en jeu.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur chaque manigance en jeu.",
+  // galactic_storm — Jailor of Chandilar (Minion)
+  'gs131': "Riposte 1.\n<b>Une fois vaincu</b> : retirez 2 menaces de Imprisoned on Chandilar.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur Imprisoned on Chandilar.",
+  // galactic_storm — Private Audience (SideScheme)
+  'gs132': "Les alliés ne peuvent ni attaquer le méchant ni contrer la manigance principale.",
+  // galactic_storm — Tapping the M'kraan Force (SideScheme)
+  'gs133': "Entrave 2[per_hero].\n<b>Une fois déjouée</b> : soignez 1 dégât de chaque allié [[STARJAMMER]] en jeu.",
+  // galactic_storm — Tortured Prisoners (SideScheme)
+  'gs134': "<b>Une fois révélée</b> : placez 1 menace supplémentaire sur cette carte pour chaque allié [[STARJAMMER]] glissé sous Imprisoned on Chandilar.",
+  // galactic_storm — Birthright to the Throne (Treachery)
+  'gs135': "<b>Une fois révélée</b> : si le soutien Shi'ar Throne est en jeu, Deathbird attaque le joueur qui le contrôle <i>(même si ce joueur est en forme alter ego)</i>. Sinon, Deathbird manigance.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à Deathbird.",
+  // galactic_storm — Exemplar Punishment (Treachery)
+  'gs136': "<b>Une fois révélée</b> : pour chaque allié [[STARJAMMER]] glissé sous Imprisoned on Chandilar, choisissez : soit vous subissez 1 dégât indirect, soit vous placez 1 menace sur la manigance principale. S'il n'y a aucun allié glissé sous Imprisoned on Chandilar, placez-y 2 menaces.",
+  // galactic_storm — Sister's Deception (Treachery)
+  'gs137': "<b>Une fois révélée</b> : si Lilandra est en jeu, elle vous attaque <i>(résolvez son ATQ contre vous sans l'incliner, mais elle subit ses dégâts consécutifs)</i>. Sinon, placez 3 menaces sur Imprisoned on Chandilar.",

@@ -57,4 +57,16 @@ finder=CarteShinobi(), range=(1, 1)))`, et le plafond « Max 2 » est une CONDIT
 2`). Preuves : `[se] se005` (Kanpeki, plafond 2 et 1, forme alter-ego, jouable comme en main par `IsLikeInHand()`, témoin sous un
 autre hôte). ⚠ La clé de cas `jouer` AMÈNE en main une carte absente : elle ne prouve pas la permission.
 
+**Galactic Storm (`gs119` Imprisoned on Chandilar, scénario Majestrix's Verdict, 20/10/2026)** : le livret 1.2
+p.4 définit « Tuck » : « place the tucked card FACEUP under the other card. The tucked card is not in play. When a
+card leaves play, any cards tucked under it are discarded. » Trois pièges mesurés :
+- `TuckCardUnderHere` pose FACE CACHÉE (`face_up=False`, modèle officiel Abduct Superhumans `50081`) : pour un
+  glissement face visible, `PlaceCardHere(faces, True, effect)` (helper `Glisser` du set) ;
+- une carte qui ENTRE EN JEU depuis une `PlaceCardArea` n'est pas remise à zéro (`card.py`, « Fix 39035 ») : une
+  carte glissée directement depuis la réserve du scénario n'a jamais calculé ses mots-clés et entrait en jeu
+  avec ATQ 0, Riposte 0, sans Toughness. `face.Reset(False)` avant `PutIntoPlay` (helper `MettreEnJeuSousControle`) ;
+- `Worlds.FindCardOnField` VOIT les cartes glissées (zone sur le terrain mais hors jeu) : une Lilandra glissée
+  passait pour « en jeu ». Filtrer sur `IsInPlay()` (helper `EnJeu`).
+Le plateau dessine les cartes glissées sous une manigance annexe : cas `ui-app/src/board/glisse-sous-manigance.test.ts`.
+
 **Variantes maison** : aucune.
