@@ -246,6 +246,12 @@ CAS = [
        [HEROS, chi("64001a", 1), *en_jeu("64008")], [],
        {"degats": [["01094", 4]], "compteurs_identite": [["chi", 1]]},
        main_exclusive=["01087", "01088"], jouer=["01087"]),
+    _c("64008 Channel the Iron Fist : Fists of Fury + 3 chi -> 3 declenchements, 3 chi, 6 degats (Q1 tranchee)",
+       "decision utilisateur du 20/10/2026 (Q1) : chaque « Deal 1 damage » est une attaque distincte (ruling des "
+       "cartes a phrases repetees, Dance of Death) : Channel part a chacune, 2 + 2 + 2 ; chi 3 -> 0, +1 Reponse = 1",
+       [HEROS, chi("64001a", 3), *en_jeu("64008")], [],
+       {"degats": [["01094", 6]], "compteurs_identite": [["chi", 1]]},
+       main_exclusive=["64004", "01090"], jouer=["64004"]),
     _c("64008 Channel the Iron Fist : sans chi, rien (attaque de base : 2 degats)",
        "cout impayable : l'Interruption n'est pas offerte",
        [HEROS, *en_jeu("64008")], ["Puzzle.Attack('64001a')"], {"degats": [["01094", 2]]}, main_exclusive=["01090"]),

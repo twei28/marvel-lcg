@@ -7,6 +7,11 @@ d'autre n'a été tranché.
 
 ## Q1 — 64008 Channel the Iron Fist : combien de fois sur Fists of Fury (et tout événement à plusieurs « Deal N damage ») ?
 
+**TRANCHÉE le 20/10/2026 par l'utilisateur : option 1** (garder le comportement du moteur : chaque « Deal 1
+damage » est une attaque distincte, Channel peut se déclencher à chacune ; confirmé par le ruling officiel des
+cartes à phrases répétées, type Dance of Death). Aucun changement de code. Cas ajouté : « [iron_fist] 64008
+Channel the Iron Fist : Fists of Fury + 3 chi -> 3 declenchements, 3 chi, 6 degats (Q1 tranchee) ».
+
 Carte : *Hero Interrupt : When you attack, remove 1 chi counter from Iron Fist → increase the amount of
 damage that attack deals by 1 (by 2 instead if it is a basic attack).* (scan c3.png)
 Situation : Iron Fist joue **Fists of Fury** (64004, « Deal 1 damage to an enemy. Deal 1 damage to an

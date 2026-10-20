@@ -11,7 +11,7 @@ Sources : `.planning/iron-fist-officiel/` (relevé Hall of Heroes, lecture, cinq
 `lecture-reponses.md`, question ouverte `creation-questions.md`). Chaque carte relue sur son image avant le
 code (`hoh-iron-fist/c1`-`c11-1`, `s1`, `s2`) : aucun écart avec le relevé.
 
-**Cas** : `Fusion/marvel-lcg-src/tools/cas/iron_fist.py`, préfixe `[iron_fist]`, **56 cas, 56 verts**
+**Cas** : `Fusion/marvel-lcg-src/tools/cas/iron_fist.py`, préfixe `[iron_fist]`, **57 cas, 57 verts**
 (`CAS_PREFIX=ironfist_ PARALLELES=4 test_capacites.py .game-src 31000 <rapport> "[iron_fist]"`).
 **Substitution** : `tools/substituer_pack.py .game-src 32000 640`, **13/13** cartes rouges sans leur module,
 empreinte md5 du pack identique avant/après (`6d6a74b3…`). Les cas restés verts sous substitution sont tous
@@ -199,18 +199,19 @@ Carte terminée : NON — étape 8 non exercée : l'Action du Livre n'a été ac
 
 - [x] Étape 2 : « When you attack … increase the amount of damage that attack deals by 1 » → `winter/54002`,
       `32047`, `blade/bl008` (`DealAdditionalDamage`) ; attaque de base → `IsBasicAttack()`.
-- [ ] Étape 5 : « by 2 INSTEAD if basic » (cas base +2, événement +1) ; coût 1 chi (absent sans chi) ;
-      Temporary natif. **DOUTE DE RÈGLE OUVERT** : le moteur traite chaque « Deal N damage » d'un événement
-      comme une attaque séparée ; Channel se déclenche donc jusqu'à 3 fois sur Fists of Fury (journal
-      autoplay : 3 chi, 2 + 2 + 2). Question Q1, `.planning/iron-fist-officiel/creation-questions.md`.
+- [x] Étape 5 : « by 2 INSTEAD if basic » (cas base +2, événement +1) ; coût 1 chi (absent sans chi) ;
+      Temporary natif. « that attack » sur un événement à plusieurs « Deal N damage » : chaque coup est une
+      attaque distincte, Channel peut partir à chacun (Q1 TRANCHÉE par l'utilisateur le 20/10/2026, ruling
+      des cartes à phrases répétées type Dance of Death ; cas Fists of Fury + 3 chi = 6 dégâts). Résultat : OK.
 - [x] Étape 6 : coût 0, [energy], 1 chi, +1 / +2. Résultat : OK.
-- [x] Étape 7 : 3 cas, 2 rouges sans module ; vert assumé : sans chi, 2 dégâts. Résultat : OK pour ce qui est
-      tranché.
+- [x] Étape 7 : 4 cas, 3 rouges sans module (substitution relancée le 20/10/2026 : 3/4) ; vert assumé : sans
+      chi, 2 dégâts. Résultat : OK.
 - [x] Étape 7 bis : limite imprimée ? NON.
-- [x] Étape 8 : 4 activations (attaque de base 4 dégâts ; Fists of Fury ×3, voir le doute) ; 0 traceback.
+- [x] Étape 8 : 6 activations sur 24 parties (attaque de base : 4 dégâts ; Fists of Fury : 3 déclenchements,
+      2 + 2 + 2, conforme à Q1) ; 0 traceback. Résultat : OK.
 - [x] Étape 8 bis : OUI (attache). Plateau « cinq Techniques sous l'identité ».
 
-Carte terminée : NON — question Q1 en attente (nombre de déclenchements sur un événement à plusieurs coups).
+Carte terminée : OUI
 
 ### 64009 : Embody the Dragon (Technique)
 
@@ -279,9 +280,25 @@ Carte terminée : NON — étape 8 non exercée : la Ressource de héros n'a pay
   (`assets/pics/<id>.png`, non versionnées), biographie `heros-info.js` (`64001a`, syntaxe vérifiée par
   `node --check` ; survol dans le wizard NON vérifié), texte FR provisoire `textes-fr-fanmade.ts`. Pas de
   `data/nemesis/` (rien de publié).
-- « Carte terminée : OUI » : 64001a, 64001b, 64003, 64004, 64005, 64006, 64009, 64010, 64011.
-  NON : 64008 (question Q1), 64002, 64007, 64012 (étape 8 non exercée par le pilote).
+- « Carte terminée : OUI » : 64001a, 64001b, 64003, 64004, 64005, 64006, 64008, 64009, 64010, 64011.
+  NON : 64002, 64007, 64012 (étape 8 non exercée par le pilote, voir ci-dessous).
 - `verifier_tous_les_decks` (DECK_NOM=iron_fist) : vert.
 - Partie complète : 24 parties d'autoplay ; aucune partie humaine.
 
-**Héros terminé : NON** (quatre cartes NON ci-dessus ; obligation et set némésis non publiés).
+**Héros terminé : NON** (trois cartes NON ci-dessus ; obligation et set némésis non publiés).
+
+### Essai de partie dirigée pour 64002, 64007, 64012 (20/10/2026)
+
+Deck de test `deck-dirige.json` (scratchpad de session, non versionné : identité + 15 signature + 10
+ressources basiques), `autoplay.py --vilains rhino --profils equilibre --parties 4 --trace 2000`, graines
+1-4 : 0 traceback, mais AUCUNE des trois capacités jouée. Pourquoi, d'après le pilote (`tools/autoplay.py`) :
+- Deep Breathing : `scorer` note « Play » d'après des mots-clés du texte (`MOTS_TAGS`) ; « Discard cards …
+  add it to your hand » n'en contient aucun, la carte vaut 0, sous « End Phase » (0,5) : le pilote ne la jouera
+  JAMAIS, quel que soit le montage, sans modifier son barème ;
+- Book of the Iron Fist : le Livre n'est entré en jeu dans aucune des 4 parties dirigées (3 fois dans les 24
+  autres, sans que son Action soit prise) ;
+- Redirect Chi : `payer()` compte UNE ressource par carte et dépense d'abord les cartes les plus chères ; la
+  Technique (coût 0) n'est jamais choisie pour payer.
+Le pilote ne peut donc pas fournir la preuve demandée sans toucher à son barème (outil partagé, non modifié).
+Ces trois capacités restent prouvées par les cas du harnais seulement (vrai moteur, partie montée, coût
+réellement payé pour Redirect Chi) ; à jouer à la main dans le navigateur.
