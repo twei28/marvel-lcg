@@ -589,9 +589,15 @@ class RunPuzzle:
 
     ################################################################################
     #
-    def Reveal(self, card: CardName, *, call_back: Callable[['CardFace'], None]|None=None) -> 'CardFace':
+    def Reveal(self, card: CardName, *, call_back: Callable[['CardFace'], None]|None=None,
+               by: CardName|None=None) -> 'CardFace':
+        # `by` (ajoute le 20/10/2026, backlog 12, dz022 « Stealing Sound ») :
+        # l'identite du joueur qui REVELE la carte, dans une partie a plusieurs.
+        # Sans lui, c'est le joueur courant. Additif.
         face = self.FindOrCreateFace(card)
         player = self.world.GetCurrentPlayer()
+        if by is not None:
+            player = self.FindFaceInPlay(by).GetControlByPlayer() or player
         # La carte doit VENIR du deck Rencontre. `FindOrCreateFace` la fabrique
         # dans la reserve quand elle n'est nulle part ailleurs, et
         # `message.IsFromEncounterDeck()` est alors faux : toutes les

@@ -66,3 +66,33 @@ Ce que la réponse change dans le code : `dz016.py` (la seconde capacité :
 Action aujourd'hui ; branche d'une capacité de ressource sinon, ce qui
 demande peut-être une extension du moteur, puisqu'une carte ne peut porter
 qu'UNE `CanGenerateResources`).
+
+---
+
+## Q3. dz021 « Solid Sound Body » : quel « Klaw » reçoit +10 PV et la carte de boost ?
+
+Texte imprimé : « Klaw gets +10 hit points. *(When this scheme is defeated,
+Klaw loses those hit points.)* **When Defeated**: Give Klaw a facedown boost
+card. »
+
+Le complot vient du set némésis de Dazzler, dont le sbire s'appelle Klaw
+(`dz020`). Mais le scénario officiel « Klaw » (boîte de base) a un VILAIN qui
+s'appelle aussi Klaw. Contre ce scénario, les deux sont en jeu en même temps.
+Le code actuel cherche par le nom : le bonus +10 PV s'applique à **toute**
+carte « Klaw » en jeu (le vilain compris), et la carte de boost va au
+**premier** Klaw trouvé (sbire ou vilain, selon l'ordre interne).
+
+1. **Seulement le sbire Klaw du set némésis (recommandé).** En jeu : contre le
+   scénario Klaw, le vilain garde ses PV normaux ; seul le sbire némésis devient
+   un mur de 16 PV, et c'est lui qui reçoit la carte de boost.
+2. **Tous les « Klaw » en jeu (code actuel pour les PV).** En jeu : contre le
+   scénario Klaw, le vilain prend aussi +10 PV tant que le complot est en jeu,
+   ce qui rallonge beaucoup la partie ; la carte de boost va à l'un des deux.
+3. **Le vilain Klaw s'il est en jeu, sinon le sbire.** En jeu : le complot
+   renforce le vilain du scénario Klaw, et le sbire némésis dans tous les
+   autres scénarios.
+4. Autre (préciser).
+
+Hors scénario Klaw (cas le plus courant), les trois lectures donnent le même
+résultat. Ce que la réponse change dans le code : `dz021.py`
+(`CardFinder(name="Klaw")` et `FindCardOnField(name="Klaw")`).

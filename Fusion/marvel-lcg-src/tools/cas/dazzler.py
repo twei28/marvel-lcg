@@ -53,7 +53,7 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
 
 VERIFICATIONS = r'''
 CLES_DAZZLER = {'mains', 'setlist', 'compteurs_setlist', 'deck_joueur_taille', 'jouable', 'face_cachee_sous',
-                'compteurs_defausse'}
+                'compteurs_defausse', 'boost_sur'}
 
 
 def dz_etat(monde, aides):
@@ -67,6 +67,14 @@ def dz_etat(monde, aides):
     attendu = dict(cas.get("attendu") or {})
     propres = {k: attendu.pop(k) for k in list(attendu) if k in CLES_DAZZLER}
     soucis = []
+    for cid, n in propres.get("boost_sur") or []:
+        face = aides["par_id"](monde, cid)
+        if face is None:
+            soucis.append(f"{cid} introuvable en jeu (boost_sur)")
+            continue
+        vu = face.card.components.boostable.GetDeck().GetSize()
+        if vu != n:
+            soucis.append(f"{cid} porte {vu} carte(s) de boost face cachee (attendu {n})")
     for cid, compteur, n in propres.get("compteurs_defausse") or []:
         pile = [f for f in monde.const_players[0].discard_pile.Get() if getattr(f.paper, "card_id", None) == cid]
         if not pile:
@@ -485,4 +493,131 @@ CAS = [
        [HEROINE, *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER, "Puzzle.Action('dz017a', 'HeroAction')"],
        {"compteurs_defausse": [["dz004", "sound", 0]], "setlist": []},
        main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat"),
+    # ============================================================ dz018 Sound Absorption
+    _c("dz018 Sound Absorption : Response, depensee -> 2 compteurs sound sur l'identite",
+       "« After you spend this card, place 2 sound counters on your identity » : Beautiful Dreamer payee avec "
+       "Sound Absorption (2 energies)",
+       [HEROINE], [menace(COMPLOT, 6)],
+       {"compteurs_identite": [["sound", 2]], "menace": [[COMPLOT, 3]]},
+       main_exclusive=["dz004", "dz018"], ne_pas_depenser=["dz004"], cibles=[COMPLOT], jouer=["dz004"]),
+    _c("dz018 Sound Absorption : sans depense, aucun compteur (temoin)",
+       "la Reponse ne part qu'a la DEPENSE : payee avec Genius, Sound Absorption reste en main, 0 compteur",
+       [HEROINE], [menace(COMPLOT, 6)],
+       {"compteurs_identite": [["sound", 0]], "en_main": ["dz018"]},
+       main_exclusive=["dz004", "dz018", "01089"], ne_pas_depenser=["dz004", "dz018"], cibles=[COMPLOT],
+       jouer=["dz004"]),
+    # ============================================================ dz019 Performance Anxiety
+    _c("dz019 Performance Anxiety : donnee a l'heroine, elle PEUT repasser en alter ego (accepte)",
+       "« Give to the Alison Blaire player. You may flip to alter-ego form » : revelee en forme heros, la bascule "
+       "est offerte et acceptee ; l'obligation reste en jeu",
+       [HEROINE], ["Puzzle.Reveal('dz019')"],
+       {"forme": "AlterEgo", "en_jeu": ["dz019"]},
+       main_exclusive=["01088"]),
+    _c("dz019 Performance Anxiety : la bascule est facultative (refusee, l'heroine reste heroine)",
+       "« YOU MAY flip » : refus (Cancel)",
+       [HEROINE], ["Puzzle.Reveal('dz019')"],
+       {"forme": "Hero", "en_jeu": ["dz019"]},
+       main_exclusive=["01088"], choisir_option=["Cancel"]),
+    _c("dz019 Performance Anxiety : Songwriter interdit tant qu'elle est en jeu",
+       "« You cannot use your Songwriter ability » : Alison Blaire, une chanson au sommet du deck, l'Action "
+       "Songwriter n'est pas offerte (la chanson reste dans le deck)",
+       [SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090', 'dz004')"], ["Puzzle.Reveal('dz019')"],
+       {"en_jeu": ["dz019"], "absent_main": ["dz004"]},
+       main_exclusive=["01088"], declencher_tolerant=["Puzzle.Action('dz001b', 'AlterEgoAction')"]),
+    _c("dz019 Performance Anxiety : temoin, sans l'obligation Songwriter ramene la chanson en main",
+       "temoin du cas precedent : meme deck, pas d'obligation, Songwriter trouve Beautiful Dreamer",
+       [SANS_DECK, "Puzzle.CreatePlayerDeck('01090', '01090', 'dz004')"], ["Puzzle.Action('dz001b', 'AlterEgoAction')"],
+       {"en_main": ["dz004"]},
+       main_exclusive=["01088"]),
+    _c("dz019 Performance Anxiety : la Hero Action de Live Concert est interdite (la Setlist ne bouge pas)",
+       "« or use the 'Hero Action' on Live Concert » : obligation en jeu (bascule refusee), Setlist intacte",
+       [HEROINE, *dans_setlist("dz004")], [menace(COMPLOT, 6), "Puzzle.Reveal('dz019')"],
+       {"setlist": ["dz004"], "menace": [[COMPLOT, 6]], "en_jeu": ["dz019"]},
+       main_exclusive=["01088"], choisir_option=["Cancel"], cibles=[COMPLOT], verifier="dz_etat",
+       declencher_tolerant=["Puzzle.Action('dz017a', 'HeroAction')"]),
+    _c("dz019 Performance Anxiety : Action, incliner l'identite ET defausser une amelioration -> retiree de la partie",
+       "« Exhaust your identity and discard a support or upgrade you control -> remove this obligation from the "
+       "game » : Rollerskates (dz015) defaussee, identite inclinee, obligation hors jeu",
+       [*en_jeu("dz015")], ["Puzzle.Reveal('dz019')", "Puzzle.Action('dz019', 'Action')"],
+       {"hors_jeu": ["dz019", "dz015"], "defausse": ["dz015"], "exhausted": ["dz001b"]},
+       main_exclusive=["01088"]),
+    _c("dz019 Performance Anxiety : Action impossible sans soutien ni amelioration a defausser (Live Concert est PERMANENT)",
+       "le cout « discard a support or upgrade you control » : seule Live Concert (Permanent) est en jeu, "
+       "l'Action n'est pas offerte, l'obligation reste et l'identite reste prete",
+       [], ["Puzzle.Reveal('dz019')"],
+       {"en_jeu": ["dz019", "dz017a"], "pret": ["dz001b"]},
+       main_exclusive=["01088"], declencher_tolerant=["Puzzle.Action('dz019', 'Action')"]),
+    # ============================================================ dz020 Klaw (nemesis)
+    _c("dz020 Klaw : Forced Response, apres avoir attaque ET blesse un personnage, il l'etourdit",
+       "« After Klaw attacks and damages a character, stun that character » : heroine inclinee, Klaw (ATK 1) "
+       "frappe : 1 degat et Stunned",
+       [HEROINE, "Puzzle.Exhaust('dz001a')", *en_jeu("dz020")], ["Puzzle.Attack('dz020')"],
+       {"degats_identite": 1, "statuts": [["dz001a", "Stunned"]]},
+       main_exclusive=["01088"]),
+    _c("dz020 Klaw : Forced Response, attaque sans degat (Tough) -> pas d'etourdissement",
+       "« and DAMAGES » : la carte Tough de l'heroine absorbe le coup, aucun Stunned",
+       [HEROINE, "Puzzle.Exhaust('dz001a')", "Puzzle.Tough('dz001a')", *en_jeu("dz020")], ["Puzzle.Attack('dz020')"],
+       {"degats_identite": 0, "statuts_absents": [["dz001a", "Stunned"], ["dz001a", "Tough"]]},
+       main_exclusive=["01088"]),
+    # ============================================================ dz021 Solid Sound Body (nemesis)
+    _c("dz021 Solid Sound Body : Klaw gagne +10 PV tant que le complot est en jeu (6 -> 16)",
+       "« Klaw gets +10 hit points » : complot annexe et Klaw (dz020) en jeu",
+       [*en_jeu("dz020", "dz021")], [],
+       {"pv_max": [["dz020", 16]]},
+       main_exclusive=["01088"]),
+    _c("dz021 Solid Sound Body : menace de depart 4 + Hinder 1 (solo) = 5, et l'icone Amplify est PORTEE",
+       "scan : « 4 » imprime, « Hinder 1[per_hero] », et l'icone Amplify (comparee aux complots officiels 16054, "
+       "16144, 27173, 32027) que `desc` n'avait pas avant le 20/10/2026",
+       [*en_jeu("dz021")], [],
+       {"menace": [["dz021", 5]], "icones": [["Amplify", 1]]},
+       main_exclusive=["01088"]),
+    _c("dz021 Solid Sound Body : When Defeated, Klaw recoit une carte de boost face cachee et perd les 10 PV",
+       "« When Defeated: Give Klaw a facedown boost card » et « (When this scheme is defeated, Klaw loses those "
+       "hit points.) » : menace retiree jusqu'a 0",
+       [*en_jeu("dz020", "dz021")], [menace("dz021", 0)],
+       {"hors_jeu": ["dz021"], "pv_max": [["dz020", 6]], "boost_sur": [["dz020", 1]]},
+       main_exclusive=["01088"], verifier="dz_etat"),
+    # ============================================================ dz022 Stealing Sound (nemesis)
+    _c("dz022 Stealing Sound : When Revealed, toutes les chansons de la Setlist sont defaussees, pas de surge",
+       "« Discard all SONG events from Dazzler's Setlist » : Setlist de 2 -> 0 ; la carte suivante du deck "
+       "rencontre (I'm Tough, 01105) n'est PAS revelee, Rhino n'a pas de Tough",
+       [*dans_setlist("dz004", "dz007")], ["Puzzle.Reveal('dz022')"],
+       {"setlist": [], "defausse": ["dz004", "dz007"], "statuts_absents": [["01094", "Tough"]]},
+       main_exclusive=["01088"], verifier="dz_etat"),
+    _c("dz022 Stealing Sound : When Revealed, Setlist vide -> la carte gagne SURGE (I'm Tough revelee)",
+       "« If no cards were discarded this way, this card gains surge »",
+       [], ["Puzzle.Reveal('dz022')"],
+       {"statuts": [["01094", "Tough"]]},
+       main_exclusive=["01088"]),
+    _c("dz022 Stealing Sound : les chansons defaussees perdent leur compteur sound",
+       "meme exigence que Showtime! : une chanson marquee par Rehearsal ne garde pas sa marque en defausse",
+       [HEROINE, *dans_setlist("dz004")], [menace(COMPLOT, 6), REPETER, "Puzzle.Reveal('dz022')"],
+       {"compteurs_defausse": [["dz004", "sound", 0]], "setlist": []},
+       main_exclusive=["01088"], cibles=[COMPLOT], verifier="dz_etat"),
+    _c("dz022 Stealing Sound : revelee par un AUTRE joueur, c'est la Setlist de DAZZLER qui est defaussee",
+       "« Dazzler's Setlist » : la Setlist est nommee, pas « your Setlist ». Partie a deux, Peter Parker revele la "
+       "carte : la Setlist de Dazzler (2 chansons) part, et pas de surge",
+       [*dans_setlist("dz004", "dz007")], ["Puzzle.Reveal('dz022', by='01001b')"],
+       {"setlist": [], "defausse": ["dz004", "dz007"], "statuts_absents": [["01094", "Tough"]]},
+       main_exclusive=["01088"], heros2="spider_man", verifier="dz_etat"),
+    # ============================================================ dz023 Taunting Light (nemesis)
+    _c("dz023 Taunting Light : When Revealed, le joueur est Dazzler (heroine) : le vilain l'attaque (2 degats)",
+       "« If you are Dazzler, the villain attacks you » : heroine inclinee, Rhino ATK 2 (boost a 0 icone)",
+       [HEROINE, "Puzzle.Exhaust('dz001a')"], ["Puzzle.Reveal('dz023')"],
+       {"degats_identite": 2, "defausse_rencontre": ["dz023"]},
+       main_exclusive=["01088"]),
+    _c("dz023 Taunting Light : When Revealed, en alter ego (Alison Blaire) : pas d'attaque, boost au vilain, carte remelangee",
+       "« If you are Dazzler » = le nom de la forme en cours (precedents officiels 01015 « if you are Carol "
+       "Danvers », 10025 « If you are Bruce Banner ») ; « If no attack was made this way, give the villain a "
+       "facedown boost card and shuffle this card into the encounter deck »",
+       [], ["Puzzle.Reveal('dz023')"],
+       {"degats_identite": 0, "boost_sur": [["01094", 1]], "dans_deck_rencontre": ["dz023"]},
+       main_exclusive=["01088"], verifier="dz_etat"),
+    _c("dz023 Taunting Light : When Revealed, vilain etourdi -> l'attaque n'a PAS lieu : boost au vilain, carte remelangee",
+       "« If no attack was made this way » : Rhino etourdi defausse son Stunned au lieu d'attaquer ; le module "
+       "comptait l'attaque comme faite des qu'il la lancait (avant le 20/10/2026)",
+       [HEROINE, "Puzzle.Exhaust('dz001a')", "Puzzle.Stun('01094')"], ["Puzzle.Reveal('dz023')"],
+       {"degats_identite": 0, "statuts_absents": [["01094", "Stunned"]], "boost_sur": [["01094", 1]],
+        "dans_deck_rencontre": ["dz023"]},
+       main_exclusive=["01088"], verifier="dz_etat"),
 ]

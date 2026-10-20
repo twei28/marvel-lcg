@@ -115,12 +115,31 @@ def Concert(effect: 'Effect', joueur: 'Player|None'=None) -> 'CardFace|None':
     """
     if joueur is None:
         joueur = effect.GetInitiator()
+    # ⚠ CORRECTIF DU 20/10/2026 (backlog 12) : le filtre etait passe en
+    # `check_effect_fn` a `Worlds.FindCardOnField`, qui ne transmet pas l'effet
+    # au `CardFinder` : le filtre n'etait JAMAIS appele (« Only call when has
+    # effect », card_finder/checker.py) et la fonction rendait la Live Concert
+    # de n'importe quel joueur. On filtre donc ici, a la main.
     for nom in (NOM_CONCERT, NOM_SHOWTIME):
-        face = Worlds.FindCardOnField(
-            effect, name=nom,
-            check_effect_fn=lambda eff, f: f.GetControlByPlayer() == joueur)
-        if face is not None:
-            return face
+        for face in Worlds.FindCardsOnField(effect, name=nom):
+            if face is not None and face.GetControlByPlayer() == joueur:
+                return face
+    return None
+
+
+def JoueurDeDazzler(effect: 'Effect') -> 'Player|None':
+    """Le joueur dont l'identite est Dazzler (l'une ou l'autre forme).
+
+    Pour les cartes qui NOMMENT la Setlist de Dazzler (« Dazzler's Setlist »,
+    Stealing Sound dz022) : la carte peut etre revelee par un autre joueur.
+    """
+    for joueur in effect.world.players:
+        identite = joueur.GetIdentity()
+        if identite is None:
+            continue
+        heros = identite.GetHeroFace() if hasattr(identite, "GetHeroFace") else identite
+        if heros is not None and heros.IsName(NOM_HEROS):
+            return joueur
     return None
 
 
@@ -227,10 +246,10 @@ def AngoisseEnJeu(effect: 'Effect') -> bool:
     joueur = effect.GetInitiator()
     if joueur is None:
         return False
-    face = Worlds.FindCardOnField(
-        effect, name=NOM_ANGOISSE,
-        check_effect_fn=lambda eff, f: f.GetControlByOrOwner() == joueur)
-    return face is not None
+    # Filtre a la main : `check_effect_fn` n'est pas appele par
+    # `FindCardOnField` (voir `Concert`, correctif du 20/10/2026).
+    return any(f is not None and f.GetControlByOrOwner() == joueur
+               for f in Worlds.FindCardsOnField(effect, name=NOM_ANGOISSE))
 
 
 def SongsDansLaDefausseBornee(effect: 'Effect', maximum: int = 4) -> int:

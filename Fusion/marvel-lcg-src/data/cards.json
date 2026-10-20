@@ -83684,7 +83684,8 @@
    "desc": {
     "Boost": "2",
     "StartingThreat": "4",
-    "Hinder": "1*"
+    "Hinder": "1*",
+    "Amplify": "1"
    },
    "traits": [],
    "set_name": "Dazzler Nemesis",
@@ -117768,5 +117769,5 @@
    "custom": "Inkwire"
   }
  ],
- "checksum": "13203c8a1e9da386cc0154f3ddb1ab642b0b2c7f309a60ad880c94d3872df108"
+ "checksum": "a68baa332c475474a9728f655867ef01035548774ff133ecdcaa2e1af1e6a6ea"
 }
