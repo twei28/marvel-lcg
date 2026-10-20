@@ -214,6 +214,13 @@ CAS = [
         "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('gs202', '01105', '01105')"],
        ["Puzzle.Reveal('gs208')"],
        {"en_jeu": ["gs202"], "menace": [["gs198b", 0]], "starforce_mis_de_cote": 0}),
+    _c("gs198b Protectors 1B : l'objectif atteint par une pose de menace -> le sbire STARFORCE entre en jeu AVANT l'avance en 2A",
+       "Mesure discriminante de l'avance : 6 sbires de cote, menace posee a 6 hors phase du mechant. Avec le module : un "
+       "sbire STARFORCE en jeu, 5 de cote remelanges par 2A (0 de cote), complot 2B. Sans le module : 1B s'acheve, 2A "
+       "remelange les 6, AUCUN sbire STARFORCE en jeu",
+       [SANS_STARFORCE_EN_JEU, "Puzzle.Remove('gs204')", "Puzzle.Remove('gs204')", "Puzzle.Remove('gs213')", *NEUTRE],
+       ["Puzzle.SetThreat('gs198b', 6)"],
+       {"starforce_en_jeu": 1, "starforce_mis_de_cote": 0, "complot": "gs199b"}),
     _c("gs198b TEMOIN : sur 2B (sans la phrase), la meme modification de +3 passe (11 -> 14)",
        "Contre-cas du verrou : l'ajout moteur ne touche que le complot qui imprime « cannot be changed »",
        [SANS_STARFORCE_EN_JEU, *NEUTRE, "Puzzle.AdvanceMainScheme()"], [],
@@ -375,6 +382,13 @@ CAS = [
        ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01165')"], ["Puzzle.Reveal('gs221')"],
        {"absent_deck_rencontre": ["01165"]},
        scenario=ESSAI, declencher_tolerant=["Puzzle.Reveal('gs221')"]),
+    _c("gs221 Whisper in the Mind : revelee par le Renfort de l'obligation ELLE-MEME (en cours de revelation) -> pas de seconde revelation, Renfort",
+       "Autoplay du 20/10/2026 : Eviction Notice (Renfort) revele Whisper, qui retrouvait Eviction Notice en defausse et la "
+       "revelait une 2e fois (AssertionError is_revealing). L'obligation en cours de resolution n'est pas trouvable : Whisper "
+       "gagne Renfort et revele Kree Infantry",
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', 'gs202', 'gs221')"], ["Puzzle.Reveal('01165')"],
+       {"en_jeu": ["gs202"], "aucune_en_resolution": True},
+       scenario=ESSAI, declencher_tolerant=["Puzzle.Reveal('01165')"]),
     _c("gs221 Whisper in the Mind : obligation introuvable -> Renfort",
        "« If your obligation was not revealed this way, this card gains surge » : deck sans 01165, le dessus est revele",
        ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', 'gs202')", "Puzzle.Remove('01165')"],

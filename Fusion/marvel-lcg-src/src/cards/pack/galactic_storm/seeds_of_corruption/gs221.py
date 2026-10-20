@@ -36,6 +36,10 @@ def GetAbilities() -> Sequence['Ability']:
             include_set_aside=True,
             card_type=Obligation,
             obligation_give_to=joueur,
+            # Une obligation EN COURS DE REVELATION (Eviction Notice dont le Renfort a revele cette carte, puis
+            # defaussee) n'est pas « trouvable » : la reveler une seconde fois fait `assert is_revealing == False`
+            # (face_on_event.py). Constate en autoplay le 20/10/2026 (deux parties sur 32).
+            check_face_fn=lambda f: not f.card.state.is_revealing,
         )
         if face is not None:
             face.Reveal(joueur, effect)
