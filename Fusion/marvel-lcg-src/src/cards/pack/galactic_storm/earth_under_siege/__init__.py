@@ -93,6 +93,27 @@ def CapacitesAttuma() -> List['Ability']:
     ]
 
 
+def ExcesVersMenaceSurManigancePrincipale(effect: 'Effect', exces: int) -> None:
+    """« Excess damage ... is placed as threat on the main scheme. » Partage par gs176/gs177 Destroyer
+    (capacite constante) et gs179/gs180 (Boost « if this attack deals excess damage »)."""
+    if exces <= 0:
+        return
+    complot = Worlds.FindMainScheme(effect)
+    if complot is not None:
+        complot.PlaceThreatOnSchemes([complot], exces, effect)
+
+
+def CapacitesDestroyer() -> List['Ability']:
+    """Stades I et II (gs176/gs177), texte identique hors Toughness : « [star] Excess damage dealt by
+    Destroyer's attacks is placed as threat on the main scheme. »"""
+    def apres_attaque(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> None:
+        ExcesVersMenaceSurManigancePrincipale(effect, message.excess_damage)
+
+    return [
+        AbilityFactory.AfterUnitAttackUnit(AbilityType.ForcedResponse, "This", Unit2, apres_attaque),
+    ]
+
+
 def UneAutreCarteAtlantisEstEnJeu(effect: 'Effect', ui: 'List[CardFace]') -> int:
     """« While/for each ATLANTIS card is in play » hors This : partage par gs174 Andromeda et gs175 Rising
     Sea Levels."""
