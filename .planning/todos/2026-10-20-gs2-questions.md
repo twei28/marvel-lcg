@@ -71,3 +71,12 @@ ressources « Quasar » pour Energy / Genius / Strength).
    Kajislav sans rien regler ; il peut revenir a l'officielle carte par carte.
 2. Jamais par defaut (comme MCDC26) : retirer la serie, garder seulement le choix carte par carte.
 3. Par defaut aussi pour les ressources (code a ajouter dans `collectionPourJoueur`).
+
+## Réponses de l'utilisateur (20/10/2026)
+
+Toutes en option recommandée, donc conformes à ce qui est codé : rien à changer.
+- Q-GS2-1 : Maelstrom = `gs099q` (Hobgoblin garde `gs099`).
+- Q-GS2-2 : Distant Manipulation incline toute capacité Resource, « Hero Resource » et « Alter-Ego Resource » comprises, identité incluse.
+- Q-GS2-3 : sous Entropy Ascendant, un événement à 0 dépense quand même une [energy].
+- Q-GS2-4 : Quantum Bubble se résout dès que l'allié payé est entré en jeu.
+- Q-GS2-5 : arts Kajislav par défaut pour les 16 cartes du joueur Quasar ; ressources en Standard.
