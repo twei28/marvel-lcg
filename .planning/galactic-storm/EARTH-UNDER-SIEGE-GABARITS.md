@@ -263,6 +263,13 @@ simples (enregistrement tardif, aire `set_aside` vs `encounters`, filtrage par `
 `src/game/event/manager.py`, `src/game/condition.py` ; cause encore non identifiée, nécessiterait une
 exécution instrumentée (pas rentable vu que l'autoplay réel tourne sans erreur sur les 36 cartes).
 
+**Décisions utilisateur (21/10/2026)** : le 0% de victoire / parties à rallonge est accepté tel quel (6
+méchants simultanés, difficulté et longueur jugées cohérentes avec le concept, pas de retouche de rythme).
+La partie manuelle à plusieurs méchants et le mystère du harnais sont reportés à plus tard (non bloquants).
+**GS-7 est donc considéré clos côté contenu** : 36 cartes + 10 reskins scriptés/vérifiés, images copiées,
+autoplay ciblé fait. Prochain chantier : Punisher MC×DC 2026 (PU-0 fait, PU-1 à PU-13 cadrés), ou reprise
+des deux points reportés si l'envie vient avant.
+
 ## Autoplay ciblé (étape 8, 20/10/2026)
 
 `tools/autoplay.py --deck spider_man --vilains gs_earth_under_siege --difficultes normal --profils
