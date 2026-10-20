@@ -46,3 +46,30 @@ def RevelerProchainMechantEtMelangerLeReste(effect: 'Effect', player: 'Player') 
         if reste:
             Faces.ShuffleAllTo(reste, "EncounterDeck", effect)
     return mechant
+
+
+def DefausserJusquaCarteIdentitaire(effect: 'Effect', joueur: 'Player') -> 'Tuple[CardFace|None, Sequence[CardFace]]':
+    """« Discard cards from the top of your deck until you discard an
+    identity-specific card. » Partage par gs166/gs167 Annihilus (Forced
+    Response) et gs169 Annihilation Wave (When Revealed). Rend (carte
+    identitaire trouvee ou None si le deck s'est vide avant, autres cartes
+    defaussees au passage). Modele `Worlds.DiscardEncounterCardsUntil`
+    (`deck.DiscardUntil`, deja generique : fonctionne sur N'IMPORTE QUEL
+    deck, pas seulement le deck de rencontre)."""
+    return joueur.player_deck.DiscardUntil(
+        effect, name=None, trait=None, card_type=CardFace, card_class="IdentitySpecific")
+
+
+def CapacitesAnnihilus() -> List['Ability']:
+    """Stades I et II (gs166/gs167), texte identique hors Toughness (native, desc.Toughness, stade II
+    seulement) : « Forced Response: After Annihilus activates against you, discard cards from the top of
+    your deck until you discard an identity-specific card. »"""
+    def apres_activation(effect: 'Effect', message: 'Message.AfterEnemyActivationEnd') -> None:
+        Unused(message)
+        joueur = message.GetAgainstPlayer()
+        if joueur is not None:
+            DefausserJusquaCarteIdentitaire(effect, joueur)
+
+    return [
+        AbilityFactory.AfterEnemyActivatesAgainstYou(AbilityType.ForcedResponse, "This", apres_activation),
+    ]

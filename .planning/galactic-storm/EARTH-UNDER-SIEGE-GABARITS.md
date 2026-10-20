@@ -142,11 +142,59 @@ Carte terminée : NON — aucun cas de preuve, construction seulement.
 
 ---
 
-## Reste du lot (gs163-gs194, gsr01-gsr10)
+## gs163, gs164, gs165 : cartes générales
 
-Entrées `cards.json` écrites et vérifiées (`test_cards` 6974/6974, 0 erreur), mais **aucun script ni cas de
-test encore écrit** pour les 32 cartes restantes (3 cartes générales, 6 méchants × 2 stades, 6 ensembles de
-rencontre) ni pour les 10 reskins (ability_link, pas de script attendu mais pas encore vérifiés en jeu).
-Prochaine étape du lot : une carte à la fois, dans l'ordre du scénario (Main Concern/Observe the
-Perimeter/Threat on the Horizon, puis chaque méchant et son ensemble), questions une à une avec capture
-quand un doute se présente.
+Faites, prouvées, commitées (voir commits dédiés). gs163 Main Concern : 5/5 cas verts, substitution faite.
+gs164 Observe the Perimeter : 2/2 cas verts, substitution faite. gs165 Threat on the Horizon : 2/2 cas
+verts (la vraie mise en place du scénario est nécessaire : "rhino" porte sa propre manigance principale et
+fausse `Worlds.FindMainScheme`).
+
+## Annihilus (gs166-gs169) : CONSTRUCTION VÉRIFIÉE, PREUVE PAR CAS INCOMPLÈTE
+
+**⚠ Découverte importante, à signaler.** gs166/gs167 (Forced Response `AfterEnemyActivatesAgainstYou`) et
+gs169 (When Revealed `WhenThisRevealed`) construisent sans erreur (`test_cards`) et suivent des modèles
+exacts déjà utilisés ailleurs dans le projet (`sm/venom_goblin/27114.py`, `night_thrasher_nemesis/nt013.py`
+pour le premier ; `gs165` — LE MÊME PACK — pour le second). Mais dans ce harnais `test_capacites.py`, leurs
+opérations ne se déclenchent JAMAIS, malgré de très nombreuses variantes testées (carte inline vs helper
+partagé, avec/sans `Villains.SetRule`, avec/sans Rhino en jeu, forme héros/alter-ego, `.SetName()`, vraie
+mise en place du scénario vs mise en place manuelle, carte fraîchement créée vs copie réelle mélangée dans
+l'ensemble du méchant). gs165 (même `WhenThisRevealed`, même pack) fonctionne pourtant parfaitement par
+ailleurs — preuve que le mécanisme n'est pas cassé EN GÉNÉRAL dans ce pack.
+
+Piste la plus probable (non confirmée) : `Puzzle.Reveal`/`FindOrCreateFace` du harnais se comporte
+différemment pour une carte créée directement dans `scenario.encounter_deck` à la construction du scénario
+(cas de gs165, listée dans `encounters`) que pour une carte créée via `set_aside` puis déplacée par
+`Faces.ShuffleAllTo` (cas de gs169, dans l'ensemble du méchant) — ou pour un méchant mis en jeu « à la
+main » (`Puzzle.PutIntoPlay`) plutôt que révélé par `Villains.RevealNextVillain` (cas de gs166). Si c'est
+confirmé, **toutes les cartes d'ensemble « When Revealed »/« When Defeated » des 6 méchants** de ce
+scénario pourraient être affectées par la même limite de harnais (pas forcément un vrai défaut de jeu : une
+vraie partie pioche normalement dans un deck déjà mélangé, sans passer par ce chemin de code specifique au
+test).
+
+**gs168** (`WhenSchemeBeDefeated`) a, lui, été rattrapé : première passe en échec parce que le TEST
+utilisait `Puzzle.Gain`+`Puzzle.Discard` sur une carte dont 2 exemplaires existent déjà dans le deck de
+départ (`FindOrCreateFace` créait un 3e fantôme et le défaussait, sans toucher à la carte gagnée) — une
+fois le test corrigé (carte déjà en défausse par le mulligan), **l'ability a bien fonctionné**. Correctif
+retenu au passage, à appliquer partout ailleurs : `AbilityType.ForcedInterrupt`, PAS
+`AbilityType.WhenDefeated`, pour un `WhenSchemeBeDefeated` sur une manigance de RENCONTRE — le moteur le
+dit explicitement (`defeated.py` : « Don't try to use "AbilityType.WhenDefeated", see "11033" »).
+
+**Statut carte par carte** :
+- gs166, gs167 (Annihilus I/II) : construction OK, preuve par cas NON FAITE (voir ci-dessus).
+- gs168 (Portal to the Negative Zone) : **5/5 preuve réelle** (voir ci-dessous, une fois le test corrigé).
+- gs169 (Annihilation Wave) : construction OK, preuve par cas NON FAITE (voir ci-dessus).
+
+Prochaine étape pour clore ce doute : relire `src/game/card/face/model/face_on_event.py`
+(`OnWhenCardRevealed`) et `src/game/ability/factory/activate.py`
+(`AbilityFactoryActivate.AfterEnemyActivationEnd`) avec plus de temps, ou vérifier directement en partie
+réelle / autoplay (le chemin de code normal du jeu, pas celui de `Puzzle.Reveal`/`Puzzle.Attack`).
+
+## Reste du lot (gs170-gs194, gsr01-gsr10)
+
+Entrées `cards.json` écrites et vérifiées (`test_cards`, 0 erreur), mais **aucun script ni cas de test
+encore écrit** pour les 5 méchants restants (Attuma, Destroyer, Doctor Minerva, Mole Man, Veranke) ni pour
+les 10 reskins (ability_link, pas de script attendu mais pas encore vérifiés en jeu). Prochaine étape du
+lot : un méchant à la fois, dans l'ordre du scénario, questions une à une avec capture quand un doute se
+présente. Pour les capacités « When Revealed »/« When Defeated » des cartes d'ensemble, privilégier la
+preuve par construction + lecture attentive plutôt que de re-creuser la même piste de harnais à chaque
+carte — remonter le doute une seule fois (ci-dessus), pas 6 fois.
