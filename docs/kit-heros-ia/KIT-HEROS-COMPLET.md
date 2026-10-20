@@ -167,7 +167,7 @@ toujours, avec **ce qui est imprimé et rien d'autre**.
 
 1. **Le lanceur** (`public/prepare.html`, `public/js/prepare/`) lit `deck/starter/*.json` : un fichier = une tuile
    de héros. Il range chaque héros dans son **extension** grâce à la liste `heroes` de `data/sets_info.json`. Une
-   extension dont la clé contient « Custom » (`117. Custom (Lockjaw)`) est rangée parmi les héros **fan-made**
+   extension dont la clé contient « Custom » (`117. Custom (Lockjaw)`) (ou un héros sans extension) est rangée parmi les héros **fan-made**
    (`isHomebrew`, `catalog.js`) et affiche le nom du créateur (champ `custom` de la face héros, `auteur.js`).
 2. **Au survol d'une tuile**, le lanceur affiche la **biographie** (`public/js/prepare/heros-info.js`, indexée par le
    `card_id` de la **face héros**). Au recrutement, une **réplique** s'affiche sur la carte
@@ -284,12 +284,12 @@ class HeroDescriptor:
 | Mesure sur les 152 decks de départ | Valeurs : nombre de decks |
 |---|---|
 | cartes dans `hero_deck` | 7 : 1, 15 : 145, 16 : 5, 19 : 1 |
-| plus grand nombre d'exemplaires d'un titre | 1 : 12, 2 : 44, 3 : 86, 4 : 8, 5 : 2 |
+| plus grand nombre d'exemplaires d'un même card_id | 1 : 12, 2 : 44, 3 : 86, 4 : 8, 5 : 2 |
 | cartes dans `obligations` | 0 : 1, 1 : 148, 2 : 2, 4 : 1 |
 | cartes dans `nemesis_set` | 0 : 2, 2 : 1, 4 : 3, 5 : 145, 8 : 1 |
 | cartes dans `player_deck` | 0 : 53, 15 : 1, 24 : 4, 25 : 90, 26 : 2, 27 : 2 |
 | faces listées dans `hero` | 2 : 144, 3 : 5, 5 : 2, 6 : 1 |
-| héros dont la face héros porte `custom` (fan-made) | 79 |
+| héros dont la face héros porte `custom` (fan-made ; `cards.json` + `cards_custom.json`) | 79 |
 | decks qui sont des **variantes** (`variante_de`) | 2 |
 | clés de `metadata` les plus courantes | `url` ×152, `deck_note` ×53, `collision_note` ×25, `nemesis_note` ×16, `author` ×15, `aspect_note` ×12, `auteur` ×12, `note` ×11 |
 
@@ -327,7 +327,7 @@ Chemins relatifs à la racine du moteur (`Fusion/marvel-lcg-src/`) sauf mention.
 | 8 | `textes-fr/<pack>.fragment.txt` | lignes `'<card_id>': "texte français",` pour `textes-fr-fanmade.ts` | **oui** (fan-made) | 7.1 |
 | 9 | `public/js/prepare/heros-info.fragment.js` | l'entrée de biographie, indexée par la face héros | **oui** (fan-made) | 7.3 |
 | 10 | `public/js/prepare/repliques-heros.fragment.js` | la ligne de répliques, indexée par l'id de deck | non (à proposer) | 7.4 |
-| 11 | `tools/prefixes.<pack>.fragment.json` | l'entrée de `prefixes_fanmade.json` | **oui** (fan-made) | 4.4 |
+| 11 | `tools/prefixes.<pack>.fragment.json` | l'entrée de `prefixes_fanmade.json` | **oui** (fan-made) | 4.8 |
 | 12 | `tools/cas/<héros>.py` | cas de test de capacité | recommandé | 8.2 |
 | 13 | `tools/decks-de-test.fragment.json` | moitié d'aspect **de test** (harnais seulement) | non | 8.4 |
 | 14 | `MANIFESTE.md` `QUESTIONS.md` `BESOINS-MOTEUR.md` `A_FAIRE_CLAUDE.md` `GABARITS.md` `AUTO-VERIFICATION.md` `images.md` `CREDITS.md` | le suivi | oui | 9 |
@@ -340,7 +340,7 @@ Chemins relatifs à la racine du moteur (`Fusion/marvel-lcg-src/`) sauf mention.
 
 | Fichier | Quoi |
 |---|---|
-| `data/cards.json` | fusion de ton fragment ; **checksum recalculé** (le moteur rejette en silence un fichier au checksum faux) |
+| `data/cards.json` | fusion de ton fragment ; **checksum recalculé** (un checksum faux est journalisé comme `Mismatch` par le moteur et fait refuser l'envoi de rejeux au serveur : le fichier fusionné doit donc être recalculé) |
 | `data/sets_info.json` | fusion de ton fragment ; numéro `N.` attribué |
 | `assets/pics/<card_id>.<jpg\|png\|webp>` | les images que l'utilisateur donne, uniformisées (`outils/uniformiser-scans.py`) |
 | `ui-app/src/board/textes-fr-fanmade.ts` | fusion de ton fragment texte |
@@ -398,7 +398,9 @@ ton affaire.
 ### 4.2 Les cartes d'un pack de héros, dans l'ordre où on les numérote
 
 Mesuré : Iron Fist compte 13 cartes, Harry Osborn 18, Lockjaw 31, Ant-Man 35 (avec ses cartes d'aspect). La
-numérotation suit **l'ordre imprimé de la boîte** (numéro de collection) :
+numérotation suit **l'ordre imprimé de la boîte** (numéro de collection). Le tableau ci-dessous est celui de Lockjaw ; une boîte
+officielle mêle les rangs (Ant-Man : signature `12002`–`12010`, aspect `12011`–`12024`, obligation `12025`, némésis
+`12026`–`12029`, puis d'autres cartes d'aspect `12030`–`12033`) :
 
 | Rang | Cartes | `type` | `set_name` | Exemple (Lockjaw) |
 |---|---|---|---|---|
@@ -412,7 +414,7 @@ numérotation suit **l'ordre imprimé de la boîte** (numéro de collection) :
   le numéro de carte est le **numéro de collection imprimé** (1A/1B, 2 à 12…). Les cartes d'aspect de la boîte ont
   un `set_name` vide (`""`) et une classe d'aspect (`Leadership`, `Basic`…).
 * **Héros fan-made** : **deux lettres de préfixe**, trois chiffres, suffixe de face (`lj001a`). Le préfixe est
-  choisi **avant la première carte** et déclaré dans `tools/prefixes_fanmade.json` (§4.4).
+  choisi **avant la première carte** et déclaré dans `tools/prefixes_fanmade.json` (§4.8).
 * **Numérotation continue, sans trou.** Le plus grand identifiant du pack se déclare dans `sets_info` (`max_id`).
 
 ### 4.3 Les deux faces de l'identité
@@ -423,9 +425,9 @@ Une identité est une **paire** : face `a` = **héros** (type `Hero`), face `b` 
 | Face | `type` | `desc` obligatoire | Notes |
 |---|---|---|---|
 | héros `…a` | `Hero` | `HP` `ATK` `THW` `DEF` `HS` | `ATK` (attaque), `THW` (contre-manigance), `DEF` (défense), `HS` (taille de main) |
-| alter ego `…b` | `AlterEgo` | `HP` `REC` `HS` | `REC` (récupération) ; **pas** de `ATK` `THW` `DEF` |
+| alter ego `…b` | `AlterEgo` (exception unique : `31001b` de SP//dr est un `Support`) | `HP` `REC` `HS` | `REC` (récupération) ; **pas** de `ATK` `THW` `DEF` |
 
-* Le **nom** commence par `"* "` (carte unique) sur **les deux faces** : `"* Lockjaw"`, `"* Scott Lang"`.
+* Le **nom** commence par `"* "` (carte unique) sur **les deux faces** (une seule exception : `21001a` Spectrum) : `"* Lockjaw"`, `"* Scott Lang"`.
 * Les **traits** diffèrent d'une face à l'autre (`["INHUMAN", "PET AVENGER"]` côté héros, `["INHUMAN", "GOOD BOY"]`
   côté alter ego).
 * Les deux faces ont **le même `set_name`** (le nom du héros) et, pour un héros maison, la **même clé `custom`**.
@@ -507,9 +509,9 @@ DEF 3, HS 4) :
 
 ### 4.4 Les cartes signature
 
-* `desc.Class` = **`"Hero"`**. C'est ce qui en fait la carte *de ce héros* : le deck-builder s'en sert pour les
+* `desc.Class` = **`"Hero"`** (exceptions réelles : les signatures à double classe `Hero;Aggression`… des decks TMNT Shinobi, et un alias `full_link` sans `Class`, `13007`). C'est ce qui en fait la carte *de ce héros* : le deck-builder s'en sert pour les
   proposer, et le contrôle « jamais la signature d'un autre héros » (règle 11) s'appuie dessus.
-* `set_name` = **le nom du héros**, exactement comme sur la face héros (« Lockjaw »).
+* `set_name` = **le nom du héros**, exactement comme sur la face héros (« Lockjaw ») ; 17 cartes de `hero_deck` du jeu ont un autre `set_name` (cas particuliers : en cas de doute, question).
 * `desc` classique d'une carte joueur : `Cost`, `RES` (lettres `R` physique, `B` mentale, `Y` énergie, `G` joker),
   `HP`/`ATK`/`THW` pour un allié (`"ATK": "4*"` = dégâts consécutifs), `MaxPerDeck` si imprimé.
 * **15 exemplaires** au total dans `hero_deck` pour 145 des 152 héros du jeu (§5.2).
@@ -565,8 +567,8 @@ DEF 3, HS 4) :
 * `type` = `Obligation`, `set_name` = le nom du héros.
 * **`desc.GiveTo` = le nom de l'ALTER EGO** (sans l'étoile) : `"Lockjaw"`. C'est ce qui l'adresse au bon joueur.
   Contrôle du vérificateur : `GiveTo` doit être le nom de la face `b` (148 decks sur 152 ont **une** obligation ;
-  deux seulement ont un `GiveTo` qui diffère du nom de l'alter ego, tous deux pour des noms de personnage à
-  tiroirs : Iron Lad, SP//dr).
+  trois seulement ont un `GiveTo` qui diffère du nom de l'alter ego : Iron Lad, SP//dr et Stan Lee, dont
+  l'obligation `01165` est donnée à « Peter Parker »).
 * `desc.Boost` : le nombre d'icônes de boost (l'obligation est aussi une carte de rencontre).
 * Le texte commence par `<b><i>Give to the <Héros> player.</i></b>`.
 
@@ -589,7 +591,7 @@ DEF 3, HS 4) :
 
 ### 4.6 Le set némésis
 
-* `set_name` = **`"<Héros> Nemesis"`** pour **toutes** les cartes du set.
+* `set_name` = **`"<Héros> Nemesis"`** pour **toutes** les cartes du set (42 entrées de `nemesis_set` du jeu font autrement : sets **empruntés** à un autre héros, ou `set_name` vide).
 * En général **5 cartes** (145 decks sur 152) : un **sbire némésis** (`Minion`, souvent `ELITE`), un **complot
   annexe** (`SideScheme`, image **paysage**), des sbires ou attachements/traîtrises de renfort. Les quantités se
   déclarent dans `nemesis_set` du deck de départ (id répété = exemplaires multiples).
@@ -699,7 +701,7 @@ le jeu (voir `reference/decks-existants.json`, 152 identifiants). C'est aussi la
 | `metadata` | objet | `url` (source, ou `""`), `author`/`auteur`, `note`/`deck_note`, variantes, règles de deck-building (§5.3, §5.7) | toujours |
 | `hero` | liste d'**une** chaîne | `"<face a>,<face b>[,<forme de plus>…]"` : héros d'abord, alter ego ensuite | toujours |
 | `hero_deck` | liste de card_id | les cartes signature, **un id par exemplaire** (id répété = plusieurs exemplaires) | 15 cartes pour 145 decks |
-| `set_aside` | liste | `[]` : **le moteur ne le lit pas en partie** (§2.2) | présent dans 150 |
+| `set_aside` | liste | `[]` pour toi : **le moteur ne le lit pas en partie** (§2.2) ; le lanceur et le deck-builder le recopient, 34 decks anciens l'ont rempli | présent dans 150 |
 | `obligations` | liste de card_id | l'obligation (UNE) | 1 pour 148 decks |
 | `nemesis_set` | liste de card_id | le set némésis, exemplaires comptés | 5 pour 145 decks |
 | `player_deck` | liste de card_id | la moitié d'aspect **fournie par l'auteur** ; **`[]` sinon** (règle 10) | `[]` pour 53 decks, 25 cartes pour 90, 24 à 27 pour 8, 15 pour 1 |
@@ -826,7 +828,7 @@ vides, `player_deck` vide, et une `deck_note` qui dit ce qui manque et pourquoi.
 2. **`hero_deck`** : ne contient que des cartes **de classe `Hero` de CE héros** (même `set_name`). **Jamais la
    carte signature d'un autre héros** (règle 11). Compte attendu : 15 (145 decks sur 152) ; un autre total se
    **justifie** dans `QUESTIONS.md` (le deck imprimé est-il vraiment différent ?).
-3. **Exemplaires** : le plus grand nombre d'exemplaires d'un même titre vaut 3 dans 86 decks, 2 dans 44, 1 dans 12, 4 dans 8, 5 dans 2. Si la carte
+3. **Exemplaires** : le plus grand nombre d'exemplaires d'un même `card_id` vaut 3 dans 86 decks, 2 dans 44, 1 dans 12, 4 dans 8, 5 dans 2. Si la carte
    imprime `MaxPerDeck`, c'est la limite. Plus de 3 sans `MaxPerDeck` → vérifie l'image.
 4. **`obligations`** : une carte de type `Obligation`, avec `desc.GiveTo` = nom de l'alter ego.
 5. **`nemesis_set`** : des cartes de rencontre (jamais des cartes joueur), de `set_name` `"<Héros> Nemesis"` ;
@@ -879,11 +881,11 @@ Les deux exemples réels, côté métadonnées seulement :
 
 ### 5.4 `data/nemesis/<héros>_nemesis.json` (facultatif)
 
-⚠ **Ce n'est pas « pour l'interface »** (vérifié au grep) : ni le lanceur ni le plateau ne lisent ce dossier. Le
-`nemesis_set` affiché vient du **deck de départ**, et le moteur le lit au même endroit. Le fichier sert à
+⚠ **Ce n'est pas la source du set némésis** : le `nemesis_set` utilisé vient du **deck de départ**, et le moteur le lit au même endroit.
+Le lanceur liste bien ces fichiers (classés « nemesis », puis filtrés : ils ne s'affichent pas). Le fichier sert à
 charger le set némésis **comme un set de rencontre nommé** (`data/nemesis/` figure dans les dossiers de sets de
-rencontre du moteur) : utile le jour où une carte ou un scénario le réclame par son nom. Cinq packs récents
-n'en ont pas et fonctionnent. Si tu le livres, `encounters` = **exactement** `nemesis_set` :
+rencontre du moteur) : utile le jour où une carte ou un scénario le réclame par son nom. 72 des 152 decks n'ont pas
+de fichier `<id>_nemesis.json` et fonctionnent : il est facultatif. Si tu le livres, `encounters` = **exactement** `nemesis_set` :
 
 *Fichier `Fusion/marvel-lcg-src/data/nemesis/lockjaw_nemesis.json` (copie exacte, lue dans le depot au moment de la construction).*
 
@@ -1073,7 +1075,7 @@ en ont :
 
 Les clés reconnues (`public/js/deckbuilder/regles.js`) : `aspects {min, max, label}`, `hors_aspect {max, traits,
 types, compte, label}` (`"compte": "titres"` compte des titres et non des exemplaires), `types_interdits`,
-`types_interdits_aspect`, `ressources_egales {couleurs, label}`, `path {…}` (voies TMNT Shinobi). Toute autre
+`types_interdits_aspect`, `ressources_egales {couleurs, label}`, `path {…}` (voies TMNT Shinobi). `note` (texte libre) est tolérée. Toute autre
 clé est une **erreur**. Une règle que ces clés ne savent pas dire → `BESOINS-MOTEUR.md`.
 
 
@@ -1219,7 +1221,7 @@ Chaque script commence par **`from . import *`**.
   (`lj001a.py`, `lj001b.py`). Une face sans capacité imprimée n'a **pas** de script (Harry Osborn n'a pas de
   `ho001b.py`).
 * Le **commentaire d'en-tête** de chaque script recopie le texte imprimé de la carte, cite les **cartes de
-  référence** (celles dont tu as copié la fabrique) et liste les **mots-pièges** du texte (§6.6). Ce n'est pas
+  référence** (celles dont tu as copié la fabrique) et liste les **mots-pièges** du texte (§6.8). Ce n'est pas
   décoratif : c'est ce que Claude relit pour décider si ton script est fidèle.
 
 La face **héros** et la face **alter ego** d'un héros à capacité de fouille et de mise en jeu (Lockjaw) :
@@ -1906,9 +1908,9 @@ les cartes (c'est la source de vérité de tout ce qui est imprimé) et tu livre
 
 * Dans le jeu : **`assets/pics/<card_id>.<jpg|png|webp>`** — l'extension est obligatoire, le nom est le `card_id`
   (`lj001a.png`). Une face d'identité a **une image par face** ; une carte `full_link` n'a pas d'image propre.
-* Tailles mesurées : cartes de héros maison **615 × 882** (png ou jpg) ; cartes officielles récentes
-  **300 × ~430**, parfois **600 × 860**. Les **complots annexes de rencontre** sont **en paysage** (882 × 615) :
-  l'image est stockée **couchée** telle quelle, c'est le serveur qui la tourne. N'ajuste rien : Claude
+* Tailles mesurées : cartes de héros maison **615 × 882** (png, jpg ou webp) ; cartes officielles récentes
+  **300 × ~430**, parfois **600 × 860** (les cartes custom existent aussi en 600 × 840). Les **complots annexes de rencontre** sont **en paysage** (882 × 615) :
+  l'image est stockée **couchée** telle quelle, le serveur la redresse à la lecture (`TryRotateImage`). N'ajuste rien : Claude
   uniformise les scans (`outils/uniformiser-scans.py`) et calibre les bulles de statistiques d'après l'image.
 * **Lecture des planches** : si l'utilisateur te donne des planches de plusieurs cartes, ne transcris pas plus de
   **quatre cartes par lecture** : au-delà, le texte d'encart n'est plus fiable. Une carte lue à moitié se pose en
@@ -1932,7 +1934,7 @@ de jeu). Elle est indexée par le **`card_id` de la face héros** et jamais par 
 #### Étape 7 : Biographie *(case à cocher avec preuve, pas une ligne qu'on oublie)*
 
 Le wizard affiche, au survol du héros, une fiche qui décrit le personnage
-(voir `showHeroHover` dans `public/js/prepare/app.js`) : c'est de la culture
+(lecture de `HEROS_INFO[h.heroCardId]` dans `public/js/prepare/app.js`) : c'est de la culture
 Marvel, jamais sa mécanique de jeu.
 
 Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
@@ -1957,7 +1959,7 @@ Règles : tout champ optionnel sauf `bio`/`bioEn` (mieux vaut omettre que
 d'inventer ; un champ absent disparaît simplement de la fiche) ; les `*En`
 seulement si la traduction diffère (« New York » ou « Thanos » se passent
 de doublon, en anglais un `*En` absent affiche la version française) ;
-**`civilEn` et `baseEn` existent aussi** (`app.js:1068-1069`), même si le
+**`civilEn` et `baseEn` existent aussi** (`app.js`, autour de la ligne 3204), même si le
 gabarit ci-dessus ne les montre pas — utile pour « Institut Xavier » /
 « Xavier Institute » (constaté au portage `bt001a`, 31/08/2026) ;
 viser 3-4 phrases (panneau étroit, 314 px) ; libellés affichés via `t()`
@@ -2003,7 +2005,7 @@ rien ne casse, la fiche manque.
 
 Au recrutement, une phrase s'affiche sur la carte. Plusieurs par héros, tirées au sort sans répéter la dernière.
 Elle est indexée par l'**identifiant de deck** (le nom du fichier `deck/starter/<id>.json`), **jamais par le nom**
-(« Spider-Man » désigne trois decks). Un héros sans réplique retombe sur une onomatopée générique puis sur
+(« Spider-Man » désigne quatre decks). Un héros sans réplique retombe sur l'onomatopée propre à son id dans `ONOMATOPEES` (`app.js`), puis sur
 « BAM ! ». Les répliques sont des **répliques** (comics, films), gardées en anglais avec leur casse et leur
 ponctuation : **ne les traduis pas** ; les onomatopées de pouvoirs restent dans le style « MOT ! ». **Ne les
 invente pas** : si tu n'en connais pas de véritable, demande à l'utilisateur (c'est lui qui établit la liste).
@@ -2353,8 +2355,8 @@ non plus et satisfait donc `hors_jeu`.
 6. **Une capacité de tour de jeu** : `Puzzle.Attack` / `Puzzle.Scheme` / `Puzzle.Action`.
 
 Le code du vérificateur générique `etat_attendu` et la liste **complète** de ses clés sont dans le zip :
-`commun/outils/test_capacites.extraits.py`. Une clé inconnue de `etat_attendu` fait **échouer** le cas (elle était
-ignorée en silence jusqu'au 11/09/2026) : n'invente pas de clé, ajoute un `VERIFICATIONS` propre au héros comme
+`commun/outils/test_capacites.extraits.py`. Une clé inconnue fait **échouer** le cas quand il utilise directement `"verifier": "etat_attendu"` (elle était
+ignorée en silence jusqu'au 11/09/2026 ; un vérificateur maison qui appelle `etat_attendu` lit ses propres clés) : n'invente pas de clé, ajoute un `VERIFICATIONS` propre au héros comme
 `if_etat` d'Iron Fist.
 
 ### 8.3 Tout ce que le montage d'un cas peut utiliser : l'API `Puzzle`
@@ -2455,8 +2457,8 @@ Puzzle.End(message='')
 
 Un héros maison à `player_deck` vide a, pour le harnais **seulement**, une moitié d'aspect de test : sans elle, la
 main de départ n'est faite que de cartes signature et le pilote déclenche leurs interruptions au milieu de la
-mise en place. Le harnais complète lui-même un deck vide (`remplir_les_decks_vides`) avec cette moitié, ou à
-défaut 25 ressources basiques inertes. **Tu n'as pas à la composer** : si un de tes cas a besoin d'une carte
+mise en place. Le harnais complète lui-même un deck vide (`remplir_les_decks_vides`) avec cette moitié ; depuis le 13/09/2026
+un deck absent de ce fichier reste vide (le repli « 25 ressources » a été retiré). **Tu n'as pas à la composer** : si un de tes cas a besoin d'une carte
 précise en main, il la donne par `main_exclusive`.
 
 ### 8.5 La gate qui rend un héros jouable : `verifier_tous_les_decks.py`
@@ -2483,7 +2485,7 @@ chose que tu ne peux pas régler seul.
 |---|---|---|
 | Légalité des decks (signatures étrangères) | bloc python du §10 de PROCESSUS-HEROS | 2 s |
 | Un deck + témoin | `DECK_NOM=<pack> ... verifier_tous_les_decks.py` | ~40 s |
-| Les 107 decks (fichier partagé touché) | passe complète | ~20 min |
+| Tous les decks (152 au 20/10/2026 ; fichier partagé touché) | passe complète | ~20 min |
 | Cas du pack | `test_capacites.py ... "<prefixe>"` | ~10 s/cas |
 | Substitutions du pack | `substituer_pack.py` | ~30 s/carte |
 | Statique | `test_cards.py`, `verifier_api_cartes.py`, `audit_cartes.py` | ~2 min chacun |
@@ -2494,7 +2496,7 @@ chose que tu ne peux pas régler seul.
 ### 8.7 Ce que Claude exécute, dans l'ordre, sur ta livraison
 
 1. `verifier-livraison-heros.py` (le même que le tien) et la **comparaison** avec le dépôt si le héros est déjà
-   intégré (`outils/comparer-livraison-au-depot.py`) : *identique / différent / manquant / en trop*.
+   intégré (`outils/comparer-livraison-heros-au-depot.py`) : *identique / différent / manquant / en trop*.
 2. Fusion des fragments (cartes, `sets_info`, textes français, biographie, réplique, préfixe) ; recalcul des
    checksums ; images posées ; bulles de statistiques et palette générées.
 3. Les gates statiques (niveau 2), puis les cas (niveau 3) et la substitution (niveau 4).

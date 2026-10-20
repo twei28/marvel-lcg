@@ -53,8 +53,8 @@ Et la fonction de vérification propre au héros (les clés d'`attendu` qu'il aj
 {{SECTION:docs/kit-campagne-ia/KIT-CAMPAGNE-COMPLET.md|**Les clés d'un cas|### 11.3 Niveau 4|2}}
 
 Le code du vérificateur générique `etat_attendu` et la liste **complète** de ses clés sont dans le zip :
-`commun/outils/test_capacites.extraits.py`. Une clé inconnue de `etat_attendu` fait **échouer** le cas (elle était
-ignorée en silence jusqu'au 11/09/2026) : n'invente pas de clé, ajoute un `VERIFICATIONS` propre au héros comme
+`commun/outils/test_capacites.extraits.py`. Une clé inconnue fait **échouer** le cas quand il utilise directement `"verifier": "etat_attendu"` (elle était
+ignorée en silence jusqu'au 11/09/2026 ; un vérificateur maison qui appelle `etat_attendu` lit ses propres clés) : n'invente pas de clé, ajoute un `VERIFICATIONS` propre au héros comme
 `if_etat` d'Iron Fist.
 
 ### 8.3 Tout ce que le montage d'un cas peut utiliser : l'API `Puzzle`
@@ -68,8 +68,8 @@ générée à la construction du kit — **n'en utilise aucune autre**) :
 
 Un héros maison à `player_deck` vide a, pour le harnais **seulement**, une moitié d'aspect de test : sans elle, la
 main de départ n'est faite que de cartes signature et le pilote déclenche leurs interruptions au milieu de la
-mise en place. Le harnais complète lui-même un deck vide (`remplir_les_decks_vides`) avec cette moitié, ou à
-défaut 25 ressources basiques inertes. **Tu n'as pas à la composer** : si un de tes cas a besoin d'une carte
+mise en place. Le harnais complète lui-même un deck vide (`remplir_les_decks_vides`) avec cette moitié ; depuis le 13/09/2026
+un deck absent de ce fichier reste vide (le repli « 25 ressources » a été retiré). **Tu n'as pas à la composer** : si un de tes cas a besoin d'une carte
 précise en main, il la donne par `main_exclusive`.
 
 ### 8.5 La gate qui rend un héros jouable : `verifier_tous_les_decks.py`
@@ -94,7 +94,7 @@ chose que tu ne peux pas régler seul.
 ### 8.7 Ce que Claude exécute, dans l'ordre, sur ta livraison
 
 1. `verifier-livraison-heros.py` (le même que le tien) et la **comparaison** avec le dépôt si le héros est déjà
-   intégré (`outils/comparer-livraison-au-depot.py`) : *identique / différent / manquant / en trop*.
+   intégré (`outils/comparer-livraison-heros-au-depot.py`) : *identique / différent / manquant / en trop*.
 2. Fusion des fragments (cartes, `sets_info`, textes français, biographie, réplique, préfixe) ; recalcul des
    checksums ; images posées ; bulles de statistiques et palette générées.
 3. Les gates statiques (niveau 2), puis les cas (niveau 3) et la substitution (niveau 4).

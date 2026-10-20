@@ -1383,7 +1383,7 @@ Scénario à DEUX vilains qui s'activent ensemble, chacun à deux faces ALERT / 
 |---|---|---|
 | Légalité des decks (signatures étrangères) | bloc python du §10 de PROCESSUS-HEROS | 2 s |
 | Un deck + témoin | `DECK_NOM=<pack> ... verifier_tous_les_decks.py` | ~40 s |
-| Les 107 decks (fichier partagé touché) | passe complète | ~20 min |
+| Tous les decks (152 au 20/10/2026 ; fichier partagé touché) | passe complète | ~20 min |
 | Cas du pack | `test_capacites.py ... "<prefixe>"` | ~10 s/cas |
 | Substitutions du pack | `substituer_pack.py` | ~30 s/carte |
 | Statique | `test_cards.py`, `verifier_api_cartes.py`, `audit_cartes.py` | ~2 min chacun |

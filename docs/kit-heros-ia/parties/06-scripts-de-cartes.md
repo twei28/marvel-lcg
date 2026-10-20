@@ -50,7 +50,7 @@ Chaque script commence par **`from . import *`**.
   (`lj001a.py`, `lj001b.py`). Une face sans capacité imprimée n'a **pas** de script (Harry Osborn n'a pas de
   `ho001b.py`).
 * Le **commentaire d'en-tête** de chaque script recopie le texte imprimé de la carte, cite les **cartes de
-  référence** (celles dont tu as copié la fabrique) et liste les **mots-pièges** du texte (§6.6). Ce n'est pas
+  référence** (celles dont tu as copié la fabrique) et liste les **mots-pièges** du texte (§6.8). Ce n'est pas
   décoratif : c'est ce que Claude relit pour décider si ton script est fidèle.
 
 La face **héros** et la face **alter ego** d'un héros à capacité de fouille et de mise en jeu (Lockjaw) :

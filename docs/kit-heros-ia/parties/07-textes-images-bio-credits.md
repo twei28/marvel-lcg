@@ -39,9 +39,9 @@ les cartes (c'est la source de vérité de tout ce qui est imprimé) et tu livre
 
 * Dans le jeu : **`assets/pics/<card_id>.<jpg|png|webp>`** — l'extension est obligatoire, le nom est le `card_id`
   (`lj001a.png`). Une face d'identité a **une image par face** ; une carte `full_link` n'a pas d'image propre.
-* Tailles mesurées : cartes de héros maison **615 × 882** (png ou jpg) ; cartes officielles récentes
-  **300 × ~430**, parfois **600 × 860**. Les **complots annexes de rencontre** sont **en paysage** (882 × 615) :
-  l'image est stockée **couchée** telle quelle, c'est le serveur qui la tourne. N'ajuste rien : Claude
+* Tailles mesurées : cartes de héros maison **615 × 882** (png, jpg ou webp) ; cartes officielles récentes
+  **300 × ~430**, parfois **600 × 860** (les cartes custom existent aussi en 600 × 840). Les **complots annexes de rencontre** sont **en paysage** (882 × 615) :
+  l'image est stockée **couchée** telle quelle, le serveur la redresse à la lecture (`TryRotateImage`). N'ajuste rien : Claude
   uniformise les scans (`outils/uniformiser-scans.py`) et calibre les bulles de statistiques d'après l'image.
 * **Lecture des planches** : si l'utilisateur te donne des planches de plusieurs cartes, ne transcris pas plus de
   **quatre cartes par lecture** : au-delà, le texte d'encart n'est plus fiable. Une carte lue à moitié se pose en
@@ -78,7 +78,7 @@ rien ne casse, la fiche manque.
 
 Au recrutement, une phrase s'affiche sur la carte. Plusieurs par héros, tirées au sort sans répéter la dernière.
 Elle est indexée par l'**identifiant de deck** (le nom du fichier `deck/starter/<id>.json`), **jamais par le nom**
-(« Spider-Man » désigne trois decks). Un héros sans réplique retombe sur une onomatopée générique puis sur
+(« Spider-Man » désigne quatre decks). Un héros sans réplique retombe sur l'onomatopée propre à son id dans `ONOMATOPEES` (`app.js`), puis sur
 « BAM ! ». Les répliques sont des **répliques** (comics, films), gardées en anglais avec leur casse et leur
 ponctuation : **ne les traduis pas** ; les onomatopées de pouvoirs restent dans le style « MOT ! ». **Ne les
 invente pas** : si tu n'en connais pas de véritable, demande à l'utilisateur (c'est lui qui établit la liste).

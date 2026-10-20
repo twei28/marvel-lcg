@@ -51,7 +51,7 @@ CLES_DECK = {"version", "name", "metadata", "hero", "hero_deck", "set_aside", "o
 CLES_LIEE = {"hero", "hero_deck", "set_aside", "obligations", "nemesis_set", "player_deck"}
 CLES_INFO_HEROS = {"bio", "bioEn", "civil", "civilEn", "base", "baseEn", "equipes", "equipesEn", "ennemis",
                    "ennemisEn", "apparition"}
-CLES_DECKBUILDING = {"aspects", "hors_aspect", "types_interdits", "types_interdits_aspect", "ressources_egales", "path"}
+CLES_DECKBUILDING = {"note", "aspects", "hors_aspect", "types_interdits", "types_interdits_aspect", "ressources_egales", "path"}
 STATS_HERO = ("HP", "ATK", "THW", "DEF", "HS")
 STATS_ALTER = ("HP", "REC", "HS")
 NOTE_DECKLIST = re.compile(r"decklist|deck list|liste", re.I)

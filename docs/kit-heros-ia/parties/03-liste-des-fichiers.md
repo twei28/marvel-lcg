@@ -20,7 +20,7 @@ Chemins relatifs à la racine du moteur (`Fusion/marvel-lcg-src/`) sauf mention.
 | 8 | `textes-fr/<pack>.fragment.txt` | lignes `'<card_id>': "texte français",` pour `textes-fr-fanmade.ts` | **oui** (fan-made) | 7.1 |
 | 9 | `public/js/prepare/heros-info.fragment.js` | l'entrée de biographie, indexée par la face héros | **oui** (fan-made) | 7.3 |
 | 10 | `public/js/prepare/repliques-heros.fragment.js` | la ligne de répliques, indexée par l'id de deck | non (à proposer) | 7.4 |
-| 11 | `tools/prefixes.<pack>.fragment.json` | l'entrée de `prefixes_fanmade.json` | **oui** (fan-made) | 4.4 |
+| 11 | `tools/prefixes.<pack>.fragment.json` | l'entrée de `prefixes_fanmade.json` | **oui** (fan-made) | 4.8 |
 | 12 | `tools/cas/<héros>.py` | cas de test de capacité | recommandé | 8.2 |
 | 13 | `tools/decks-de-test.fragment.json` | moitié d'aspect **de test** (harnais seulement) | non | 8.4 |
 | 14 | `MANIFESTE.md` `QUESTIONS.md` `BESOINS-MOTEUR.md` `A_FAIRE_CLAUDE.md` `GABARITS.md` `AUTO-VERIFICATION.md` `images.md` `CREDITS.md` | le suivi | oui | 9 |
@@ -33,7 +33,7 @@ Chemins relatifs à la racine du moteur (`Fusion/marvel-lcg-src/`) sauf mention.
 
 | Fichier | Quoi |
 |---|---|
-| `data/cards.json` | fusion de ton fragment ; **checksum recalculé** (le moteur rejette en silence un fichier au checksum faux) |
+| `data/cards.json` | fusion de ton fragment ; **checksum recalculé** (un checksum faux est journalisé comme `Mismatch` par le moteur et fait refuser l'envoi de rejeux au serveur : le fichier fusionné doit donc être recalculé) |
 | `data/sets_info.json` | fusion de ton fragment ; numéro `N.` attribué |
 | `assets/pics/<card_id>.<jpg\|png\|webp>` | les images que l'utilisateur donne, uniformisées (`outils/uniformiser-scans.py`) |
 | `ui-app/src/board/textes-fr-fanmade.ts` | fusion de ton fragment texte |

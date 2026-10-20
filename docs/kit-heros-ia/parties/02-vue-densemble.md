@@ -23,7 +23,7 @@ toujours, avec **ce qui est imprimé et rien d'autre**.
 
 1. **Le lanceur** (`public/prepare.html`, `public/js/prepare/`) lit `deck/starter/*.json` : un fichier = une tuile
    de héros. Il range chaque héros dans son **extension** grâce à la liste `heroes` de `data/sets_info.json`. Une
-   extension dont la clé contient « Custom » (`117. Custom (Lockjaw)`) est rangée parmi les héros **fan-made**
+   extension dont la clé contient « Custom » (`117. Custom (Lockjaw)`) (ou un héros sans extension) est rangée parmi les héros **fan-made**
    (`isHomebrew`, `catalog.js`) et affiche le nom du créateur (champ `custom` de la face héros, `auteur.js`).
 2. **Au survol d'une tuile**, le lanceur affiche la **biographie** (`public/js/prepare/heros-info.js`, indexée par le
    `card_id` de la **face héros**). Au recrutement, une **réplique** s'affiche sur la carte

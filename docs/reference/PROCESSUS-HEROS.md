@@ -142,7 +142,7 @@ ensuite par `outils/uniformiser-scans.py --sauvegarde`.
 ## Étape 7 : Biographie *(case à cocher avec preuve, pas une ligne qu'on oublie)*
 
 Le wizard affiche, au survol du héros, une fiche qui décrit le personnage
-(voir `showHeroHover` dans `public/js/prepare/app.js`) : c'est de la culture
+(lecture de `HEROS_INFO[h.heroCardId]` dans `public/js/prepare/app.js`) : c'est de la culture
 Marvel, jamais sa mécanique de jeu.
 
 Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
@@ -167,7 +167,7 @@ Règles : tout champ optionnel sauf `bio`/`bioEn` (mieux vaut omettre que
 d'inventer ; un champ absent disparaît simplement de la fiche) ; les `*En`
 seulement si la traduction diffère (« New York » ou « Thanos » se passent
 de doublon, en anglais un `*En` absent affiche la version française) ;
-**`civilEn` et `baseEn` existent aussi** (`app.js:1068-1069`), même si le
+**`civilEn` et `baseEn` existent aussi** (`app.js`, autour de la ligne 3204), même si le
 gabarit ci-dessus ne les montre pas — utile pour « Institut Xavier » /
 « Xavier Institute » (constaté au portage `bt001a`, 31/08/2026) ;
 viser 3-4 phrases (panneau étroit, 314 px) ; libellés affichés via `t()`
