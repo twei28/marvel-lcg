@@ -8,9 +8,11 @@ from . import *
 #  - « Give the villain a tough status card. If ... already ... » : `DonnerTenaceAuVillainOuSinon`
 #    (hala_ultimatum/__init__.py, partagee avec gs154/gs155).
 #  - « discard cards from the encounter deck until you discard an attachment OR a minion and reveal it » :
-#    `Worlds.DiscardEncounterCardsUntil` avec `CardFinder(check_face_fn=...)` pour l'alternative « OR »
-#    (aucun `card_type` simple ne couvre deux types a la fois), modele `skrull_menace/paibok/__init__.py`
-#    (`RevelerPouvoirDuDeck`) pour le motif general.
+#    `Worlds.DiscardEncounterCardsUntil` avec `check_face_fn=...` EN KWARG DIRECT (il n'a pas de parametre
+#    `finder` -- seulement `**kwargs: Unpack[CardFinder.KWArgs]` transmis tel quel au `CardFinder` final ;
+#    `finder=CardFinder(...)` levait `TypeError` a l'execution, constate le 20/10/2026, corrige ici) pour
+#    l'alternative « OR » (aucun `card_type` simple ne couvre deux types a la fois), modele
+#    `skrull_menace/paibok/__init__.py` (`RevelerPouvoirDuDeck`) pour le motif general.
 #
 # ⚠ Mots-pieges : « an attachment OR a minion » (deux types valides, pas un seul) ; « reveal it » = la
 # carte qui a stoppe la defausse, pas une autre ; « ALREADY has » = l'etat au moment ou cette carte se
@@ -26,7 +28,7 @@ def GetAbilities() -> Sequence['Ability']:
             Unused(villain)
             face = Worlds.DiscardEncounterCardsUntil(
                 effect,
-                finder=CardFinder(check_face_fn=lambda f: Attachment.IsType(f) or Minion.IsType(f)),
+                check_face_fn=lambda f: Attachment.IsType(f) or Minion.IsType(f),
             )
             if face is not None and joueur is not None:
                 face.Reveal(joueur, effect)

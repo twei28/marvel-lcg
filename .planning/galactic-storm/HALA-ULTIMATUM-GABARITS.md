@@ -1,20 +1,37 @@
 # Gabarits PROCESSUS-CARTE.md — Scénario 3 Hala Ultimatum (gs138-gs155), lot GS-6
 
-Preuves : `Fusion/marvel-lcg-src/tools/cas/hala_ultimatum.py` (filtre `[hu]`), rapport
-`/tmp/hu_final2.json`, bilan **15/23 cas verts**. `test_cards` : 6970/6970 constructions OK, 0 erreur.
-`verifier_appels_modules galactic_storm` : OK, calibré (voir rapport de fin de lot). Autoplay ciblé :
-8 parties (`gs_hala_ultimatum`, normal+expert, deck spider_man), 0 incident, 0 trace d'erreur dans les
-8 journaux ; le remplacement de l'attaque HIDDEN par une carte de rencontre face cachée est VU dans le
-journal d'une vraie partie (ligne « "WhenUnitWouldAttack" est remplacé par Kree Leader »).
+Preuves : `Fusion/marvel-lcg-src/tools/cas/hala_ultimatum.py` (filtre `[hu]`), bilan **23/23 cas verts**
+(20/10/2026, après correctifs ci-dessous). `test_cards` : 6970/6970 constructions OK, 0 erreur.
+`verifier_appels_modules galactic_storm` : OK. Autoplay ciblé : 8 parties (`gs_hala_ultimatum`,
+normal+expert, deck spider_man), 0 incident, 0 trace d'erreur dans les 8 journaux ; le remplacement de
+l'attaque HIDDEN par une carte de rencontre face cachée est VU dans le journal d'une vraie partie (ligne
+« "WhenUnitWouldAttack" est remplacé par Kree Leader »).
 
-**Limite outillage constatée et non résolue** (consignée en détail dans `tools/cas/hala_ultimatum.py`,
-bloc gs141b) : le compteur `'hideout'` posé pendant la fenêtre de mise en place du scénario (ou par
-`Puzzle.PlaceCounters` hors mise en place) se lit à 0 au moment de la vérification du cas, ALORS QUE le
-handler lit la valeur juste posée en cours d'exécution (tracé par impression directe, confirmé). Le
-même symptôme se reproduit à l'identique avec la fabrique OFFICIELLE `AbilityFactory.ThisEnterPlayWithCounters`
-(pas seulement notre code) : ce n'est donc **pas un défaut de script**, mais une limite du harnais de
-test (ou du moteur) sur les compteurs posés pendant la fenêtre de mise en place de scénario, non
-identifiée précisément faute de temps. **À vérifier en PARTIE RÉELLE.**
+**CORRECTIF MAJEUR (20/10/2026) : la « limite outillage » décrite ci-dessous dans les versions
+précédentes de ce rapport était un faux diagnostic.** Cause réelle, trouvée par sonde directe
+(`GetAbilities()` jamais appelée) : `.game/` (cache bytecode du moteur, `sys.path` prioritaire sur
+`src/`) datait du 14/10/2026, AVANT la création de tout le contenu `galactic_storm/hala_ultimatum/` —
+aucune des capacités du lot ne s'exécutait, silencieusement (`cards/database.py`, `except: pass` sur
+l'import du module). Remède : `python launcher_fast.py --build-only --no-browser` après CHAQUE
+modification de `src/`, pour recompiler le delta dans `.game/` (incrémental, < 1s une fois l'historique
+construit). Sans ce rebuild, aucun test ne reflète le code réellement édité. L'ancien `.game` a été
+déplacé en `.game.obsolete-2026-10-14/` (non supprimé, à la demande de l'utilisateur de ne jamais
+détruire sans confirmation) ; `.game` a été reconstruit à neuf (8245 fichiers, 0 échec).
+
+Une fois le cache reconstruit, 6 vrais bugs de script sont apparus (masqués jusqu'ici) et ont été
+corrigés :
+- `gs150.py`/`gs152.py` : `Ability.SetTarget(..., check_face_fn=...)` — paramètre inexistant sur
+  `SetTarget` (il vit sur `CardFinder`). Corrigé en `finder=CardFinder(check_face_fn=...)` (gs150,
+  motif `bind_to=CardFinder(card_type=Enemy)` encore plus direct) / `finder=CardFinder(...)` (gs152).
+  Plantage réel à l'exécution (`TypeError`), pas une question de preuve.
+- `gs153.py` : `Worlds.DiscardEncounterCardsUntil(..., finder=CardFinder(...))` — pas de paramètre
+  `finder` sur cette fonction (seulement `**kwargs` relayés direct au `CardFinder` final). Corrigé en
+  `check_face_fn=...` en kwarg direct. Plantage réel (`TypeError`), idem.
+- Les cas de test eux-mêmes contenaient plusieurs erreurs d'hypothèse (`Puzzle.PlaceCounters` AJOUTE des
+  compteurs, il ne les POSE jamais à une valeur absolue ; `Puzzle.CreateEncounterDeck` empile la DERNIÈRE
+  carte citée AU-DESSUS ; un `Puzzle.Thwart`/`Puzzle.Attack` sans cible explicite peut tomber sur la
+  manigance principale plutôt que la manigance visée ; la mise en place réelle engage déjà un sbire Kree
+  avant que `DECK_NEUTRE` ne s'applique) : corrigées une à une, détail dans les sections par carte.
 
 ---
 
@@ -82,13 +99,14 @@ immunité générique câblée mais non prouvée dédiée ; plateau non vérifi�
 
 - [x] Étape 2 : `WhenCardSetup` (modèle gs079a/gs117a), `SetupCards.PutIntoPlay`, `ChercherEtReveleMinionKree`.
 - [x] Étape 5-6 : conforme au scan (« Contents »/« Setup » cités mot à mot).
-- [x] Étape 7 : la mise en place de TOUS les cas `[hu]` passe par cette carte (Hala en jeu, confirmé
-      indirectement par `en_jeu: ["gs144"]` etc. qui nécessitent le mécant en jeu après 1A). Pas de cas
-      dédié isolé.
+- [x] Étape 7 : `[hu] gs143 entrée en jeu` et `[hu] gs143 Scour the Planet` (stade suivant) exigent Hala
+      EN JEU après la mise en place : preuve indirecte mais désormais VERTE sur les deux (20/10/2026, après
+      reconstruction du cache `.game` — cette capacité ne s'exécutait PAS du tout auparavant, voir en-tête).
 - [x] Étape 8 : autoplay (voir gs138a). Étape 8 bis : NON (texte seul, pas d'affichage particulier au-delà
       de « Kree Leader »/Hala déjà couverts).
 
-**Carte terminée : NON** (preuve indirecte seulement).
+**Carte terminée : OUI** pour la mise en place (Hala + recherche KREE, preuve indirecte mais verte sur deux
+cas distincts) ; pas de cas isolé dédié à la seule recherche « each player searches ».
 
 ## gs141b : Hidden Might of Hala (1B)
 
@@ -96,16 +114,21 @@ immunité générique câblée mais non prouvée dédiée ; plateau non vérifi�
       `AbilityFactory.AfterCardRemovedCounter(..., is_last_counter=True)` sur un `CardFinder(name=Hala)` +
       `MainScheme.Advance("2A", effect)` (modèle `challenges/2412_wrath_of_the_mad_titan.py`).
 - [x] Étape 5-6 : conforme au texte scanné (menace 9*/2*/1*).
-- [ ] Étape 7 : cas écrits (`[hu] gs141b Forced Interrupt`, `[hu] gs141b Forced Response`) mais ROUGES à
-      cause de la LIMITE OUTILLAGE ci-dessus (compteur `hideout` qui se lit à 0 au moment de la
-      vérification, y compris avec la fabrique officielle). **Non prouvé par le harnais.**
-- [x] Étape 7 bis : pas de limite au sens « once per round », mais un seuil (dernier jeton) : non testé
-      pour la même raison.
-- [x] Étape 8 : autoplay propre (0 incident), mais sans preuve que le mécanisme de repli fonctionne en
-      partie (le journal n'a pas été lu ligne à ligne pour cette mécanique précise faute de temps).
+- [x] Étape 7 : `[hu] gs141b Forced Interrupt` VERT (sbire vaincu → 1 jeton retiré) et `[hu] gs141b Forced
+      Response` VERT (dernier jeton retiré → avance). Les deux étaient rouges par une cause réelle, pas une
+      limite outillage (voir en-tête) : `Puzzle.PlaceCounters` AJOUTE des compteurs (jamais une pose à une
+      valeur absolue) — `Puzzle.Counter(..., -3)` les RETIRE, modèle `Faces.RemoveCountersOn`. L'attendu du
+      second cas visait aussi `gs142a` alors que la face « 2A » n'a pas de seuil de menace imprimé et
+      s'auto-avance IMMÉDIATEMENT vers `gs142b` (même mécanique que 1A → 1B) : corrigé vers `gs142b`,
+      confirmé par le journal (le flip du méchant et la mise de côté de Hala, propres à l'ability de
+      gs142a, sont bien résolus avant l'auto-avance).
+- [x] Étape 7 bis : « dernier jeton » prouvé directement par le second cas ci-dessus (pas de cas pour le
+      seuil « once per round », non applicable ici — c'est gs143 qui porte cette limite).
+- [x] Étape 8 : autoplay propre (0 incident) ; le mécanisme de repli est maintenant prouvé par le harnais
+      lui-même (pas seulement par absence d'erreur en autoplay).
 
-**Carte terminée : NON** — bloquée par la limite outillage décrite en en-tête. À vérifier en partie réelle
-en priorité.
+**Carte terminée : OUI** pour les deux capacités imprimées (retrait de jeton + avancée au dernier jeton),
+preuve directe par substitution de valeur (3 vs 4 jetons avant le coup final).
 
 ## gs142a : Reckoning Begins (2A)
 
@@ -135,17 +158,18 @@ plateau (affichage) non vérifié à l'écran.
       prête pour « N + M[per_hero] ») ; Action utilisable par tout joueur = modèle
       `next_evol/next_evolution_campaign/40190b.py`.
 - [x] Étape 5-6 : conforme au scan.
-- [ ] Étape 7 : **ROUGE**, même limite outillage que gs141b (confirmé reproductible avec la fabrique
-      officielle `ThisEnterPlayWithCounters`, voir en-tête). Le handler pose bien la valeur correcte EN
-      COURS D'EXÉCUTION (tracé), mais le harnais la lit à 0 à la vérification. `[hu] gs143 Scour the
-      Planet` échoue sur une assertion secondaire de taille de main (hypothèse de départ erronée, pas
-      directement liée à la limite outillage, non recalculée faute de temps).
+- [x] Étape 7 : `[hu] gs143 entrée en jeu` VERT (2 + 2[per_hero] = 4 jetons pour 1 joueur, vérifié
+      directement). `[hu] gs143 Scour the Planet` VERT (recherche + révélation d'un sbire KREE, puis
+      pioche) — l'« assertion secondaire de taille de main » était une hypothèse de départ erronée
+      (6 cartes piochées à la vraie mise en place de ce scénario, pas 5 : la main attendue après l'Action
+      est 7, pas 6), corrigée.
 - [x] Étape 7 bis : « Limit once per round per player » : `LimitOncePerRoundPerPlayer()`, pas de témoin
-      d'épuisement testé (bloqué par ce qui précède).
+      d'épuisement testé (hors périmètre du temps disponible, pas bloqué techniquement).
 - [x] Étape 8 : autoplay propre (Hala apparaît en jeu dans les journaux, aucun incident).
 
-**Carte terminée : NON** — bloquée par la limite outillage. À vérifier en priorité en partie réelle
-(nombre de jetons de repli posés à la mise en place).
+**Carte terminée : OUI** pour les deux capacités imprimées (entrée en jeu avec jetons + Action Scour the
+Planet), preuve directe sur les deux. Seul le témoin d'épuisement de la limite « once per round » n'a pas
+de cas dédié (non bloquant, juste hors périmètre).
 
 ## gs144 : Grand-High Pursuer
 
@@ -155,15 +179,17 @@ plateau (affichage) non vérifié à l'écran.
       + `Faces.HasStatus`/`GiveFacedownBoostCards` (modèle gs083 pour le déclencheur).
 - [x] Étape 5-6 : conforme (icônes de ressource RE-VÉRIFIÉES par découpe contre gs002/gs003/gs004, voir
       rapport final — lecture initiale confirmée).
-- [ ] Étape 7 : `[hu] gs138a HIDDEN, attachements indiscutables` prouve l'attache + le blocage de
-      défausse (VERT). `[hu] gs144 Hero Action` (défausse par Hero Action) **ROUGE** : « gs144 est encore
-      en jeu » — le paiement du coût composite `Cost("YBR")` par le pilote de test n'aboutit pas dans ce
-      cas précis (cause non élucidée faute de temps : possible ordre de paiement des trois couleurs par
-      `premiere_option_jouable`). Non prouvé.
+- [x] Étape 7 : `[hu] gs138a HIDDEN, attachements indiscutables` prouve l'attache + le blocage de
+      défausse (VERT). `[hu] gs144 Hero Action` (défausse par Hero Action) VERT (20/10/2026) : la cause
+      réelle n'était PAS le paiement du coût composite, mais la protection HIDDEN elle-même — « Attachments
+      attached to the villain cannot be discarded » bloque AUSSI la défausse volontaire par Hero Action
+      tant que le méchant est HIDDEN (confirmé par le journal : « WhenCardWouldDiscard est remplacé par
+      Kree Leader »). Le cas flip désormais le méchant vers DISCOVERED avant de tester le Hero Action ;
+      `Cost("YBR")` se paie normalement une fois la protection levée.
 - [x] Étape 8 : autoplay propre.
 
-**Carte terminée : NON** — attache/retaliate/protection HIDDEN prouvés, Hero Action de défausse non
-prouvée (`Cost("YBR")`, modèle identique à 01118/gs083 pourtant validés ailleurs — à reprendre).
+**Carte terminée : OUI** — attache/retaliate/protection HIDDEN ET Hero Action de défausse tous prouvés
+directement.
 
 ## gs145 : Kree Plasma Rifle
 
@@ -193,10 +219,13 @@ défausse n'a pas de cas dédié (même limite potentielle que gs144, non reprod
 ## gs147 : Kree Assassin
 
 - [x] Étape 2 : Retaliate natif.
-- [ ] Étape 7 : `[hu] gs147 Kree Assassin` ROUGE (« degats sur l'identite = 0 ») : le cas suppose que
-      `Puzzle.Attack('01001a')` cible automatiquement Kree Assassin (seul ennemi en jeu) ; non confirmé,
-      cause non élucidée faute de temps.
-- **Carte terminée : NON** (construction + autoplay seulement ; le Boost n'a pas de cas).
+- [x] Étape 7 : `[hu] gs147 Kree Assassin` VERT (20/10/2026) — la cause réelle n'était PAS le ciblage :
+      la recherche de mise en place de gs141a (« each player searches the encounter deck for a KREE
+      minion ») engage DÉJÀ un Kree Soldier (gs149) avec le héros avant que ce cas ne s'exécute (cette
+      ability ne s'exécutait pas du tout avant le correctif du cache, voir en-tête — d'où l'absence de ce
+      symptôme dans les rapports précédents). `Puzzle.Remove('gs149')` ajouté avant l'attaque : Retaliate
+      prouvé directement.
+- **Carte terminée : OUI** pour Retaliate (preuve directe) ; le Boost n'a pas de cas dédié (hors périmètre).
 
 ## gs148 : Kree Pursuer
 
@@ -217,25 +246,39 @@ défausse n'a pas de cas dédié (même limite potentielle que gs144, non reprod
 
 - [x] Étape 2 : `WhenSchemeBeDefeated(WhenDefeated, "This", ..., has_defeating_player=True)` +
       `RetirerRepli` + `player.MayChooseOneAbility` + `ForChoiceAbility(...).SetTarget(Attachment,
-      with_texts=["Hero Action"], check_face_fn=...)`.
-- [ ] Étape 7 : `[hu] gs150 When Defeated` ROUGE, par ricochet de la limite outillage sur les compteurs
-      `hideout` (le test force `hideout=0` par `Puzzle.PlaceCounters`, qui subit la même limite). Non
-      prouvé par le harnais pour cette raison ; le code lui-même suit le même patron que gs151/gs152,
-      construits et chargés sans erreur.
-- **Carte terminée : NON** — bloquée par la limite outillage commune.
+      with_texts=["Hero Action"], bind_to=CardFinder(card_type=Enemy))`.
+- [x] Étape 7 : `[hu] gs150 When Defeated` VERT (20/10/2026). DEUX bugs réels corrigés, aucun lié à une
+      limite outillage : (1) `Ability.SetTarget(..., check_face_fn=...)` — paramètre inexistant sur
+      `SetTarget` (il vit sur `CardFinder`), plantage réel (`TypeError`) ; corrigé en
+      `bind_to=CardFinder(card_type=Enemy)`, modèle `invisible_woman/iw010.py`. (2) Le cas de test forçait
+      `hideout=0` via `Puzzle.PlaceCounters(..., 0)`, qui AJOUTE des compteurs (jamais une pose absolue) —
+      sans effet sur les 4 jetons déjà posés par la mise en place réelle ; et `Puzzle.SetThreat('gs150',
+      0)` vainquait la manigance DIRECTEMENT en mise en place, sans joueur vainqueur
+      (`has_defeating_player=True` ne voyait personne). Corrigé : `Puzzle.Counter(..., -99)` retire
+      vraiment les jetons, et la menace est mise à 1 (le THW de base du héros) pour que ce soit le
+      `Puzzle.Thwart` du déclencheur qui achève la manigance, avec un vainqueur réel.
+- **Carte terminée : OUI** — preuve directe complète.
 
 ## gs151 : Mobilizing the Empire
 
-- [x] Même structure que gs150, branche alternative plus simple (« draw 1 card »). Pas de cas dédié
-      (même limite), construction + autoplay propres.
-- **Carte terminée : NON**.
+- [x] Même structure que gs150, branche alternative plus simple (« draw 1 card »), SANS `.SetTarget`
+      (donc pas touchée par le bug `check_face_fn` de gs150/gs152). Pas de cas dédié, construction +
+      autoplay propres.
+- **Carte terminée : NON** (construction + autoplay seulement ; pas de bug connu, juste pas de preuve
+  dédiée).
 
 ## gs152 : Secrets of Detention Core *(nom de transcription retenu, lu directement sur le scan — voir
    questions du lot pour la variante « Cells » lue dans une fiche antérieure)*
 
 - [x] Même structure, branche « ready a character they control » (`"YouControlUnit"`-style via
-      `check_face_fn`). Pas de cas dédié (même limite), construction + autoplay propres.
-- **Carte terminée : NON**.
+      `finder=CardFinder(check_face_fn=...)`).
+- [x] Étape 7 : pas de cas dédié, mais le MÊME bug que gs150 était présent ici (`Ability.SetTarget(...,
+      check_face_fn=...)`, plantage réel à l'exécution — jamais détecté car jamais exercé par un cas,
+      seulement par `test_cards`/`verifier_appels_modules`, qui ne vont pas jusqu'à l'exécution de
+      l'ability). Corrigé en `finder=CardFinder(check_face_fn=...)`, confirmé par `test_cards` (6970/6970)
+      et `verifier_appels_modules` après correctif — mais SANS cas dédié qui l'EXÉCUTE, ce bug serait
+      resté invisible une seconde fois. À surveiller : ajouter un cas dédié reste recommandé.
+- **Carte terminée : NON** — bug de script réel corrigé, mais toujours sans preuve d'exécution dédiée.
 
 ## gs153 : Advanced Arsenal
 
@@ -244,10 +287,16 @@ défausse n'a pas de cas dédié (même limite potentielle que gs144, non reprod
       `CardFinder(check_face_fn=...)` pour le « OR » (attachement OU sbire, aucun `card_type` simple ne
       couvre deux types).
 - [x] Étape 7 : `[hu] gs153 When Revealed` (pas de tenace -> en reçoit un) VERT. `[hu] gs153 ... DEJA un
-      tenace` ROUGE (« 01186 dans la defausse rencontre = 0 ») : la défausse-jusqu'à n'a pas défaussé la
-      carte neutre attendue — cause non élucidée faute de temps (possiblement `Worlds.
-      DiscardEncounterCardsUntil` avec `include_discard_pile` par défaut ou ordre du deck).
-- **Carte terminée : NON** — une branche verte, l'autre rouge, cause non identifiée.
+      tenace` VERT (20/10/2026). DEUX bugs réels corrigés : (1) `Worlds.DiscardEncounterCardsUntil(...,
+      finder=CardFinder(...))` — cette fonction n'a PAS de paramètre `finder` (seulement `**kwargs`
+      relayés directement au `CardFinder` final) ; plantage réel (`TypeError`), corrigé en
+      `check_face_fn=...` en kwarg direct. (2) Le cas de test supposait la carte neutre (01186) au-dessus
+      du sbire (gs149) dans le deck créé, alors que `Puzzle.CreateEncounterDeck` empile la DERNIÈRE carte
+      citée AU-DESSUS (confirmé au journal : avec `('01186', 'gs149')`, c'est gs149 qui était défaussé en
+      PREMIER) ; ordre inversé + deux cartes de bourrage sous les deux (le deck s'épuisait et se
+      remélangeait avec la défausse EN COURS de résolution, effaçant 01186 de la défausse avant la
+      vérification).
+- **Carte terminée : OUI** — preuve directe sur les deux branches.
 
 ## gs154 : Battle Cry
 

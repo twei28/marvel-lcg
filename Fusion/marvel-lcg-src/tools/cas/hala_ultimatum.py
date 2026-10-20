@@ -96,23 +96,26 @@ CAS = [
         "Puzzle.Remove('gs139a')"],
        ["Puzzle.Reveal('gs140b')"], {"attaches": [["gs140b", "gs144"]]}),
     # ============================================================== gs141b : repli et avancee vers 2A
-    # LIMITE OUTILLAGE CONSTATEE (20/10/2026) : le compteur 'hideout' pose sur gs143 pendant la mise en
-    # place reelle du scenario (ou par Puzzle.PlaceCounters hors mise en place) se lit a 0 au moment de la
-    # verification, ALORS QUE le handler lit bien la valeur juste posee EN COURS D'EXECUTION (trace par
-    # impression directe). Meme symptome reproduit avec la fabrique OFFICIELLE
-    # `AbilityFactory.ThisEnterPlayWithCounters` (pas seulement notre code) : ce n'est donc PAS un defaut de
-    # script, mais une limite du harnais de test (ou du moteur) sur les compteurs poses pendant la fenetre
-    # de mise en place de scenario, non identifiee precisement faute de temps. A verifier en PARTIE REELLE
-    # (voir rapport de fin de lot et questions). Les cas ci-dessous restent dans le fichier (ne pas les
-    # queue effacer) mais NE PROUVENT PAS la mecanique a ce jour.
+    # CORRECTIF (20/10/2026, apres reconstruction de .game) : le rapport precedent accusait une « limite
+    # outillage » sur les compteurs poses pendant la mise en place -- FAUX : `Puzzle.PlaceCounters` AJOUTE
+    # des compteurs (il ne les POSE jamais a une valeur absolue), et la mise en place reelle de gs141a a
+    # DEJA place 4 jetons hideout (2 + 2[per_hero], un joueur) avant que ce cas ne s'execute. Le cas
+    # `Puzzle.PlaceCounters('gs143', 'hideout', 1)` portait donc Hala a 4+1=5, jamais a 1 : le dernier jeton
+    # retire par le sbire vaincu ne tombait jamais a 0, et « avancer » n'etait jamais appelee -- confirme
+    # par sonde (`check_is_last_counter` voyait `left_counter=4`, jamais 0). `Puzzle.Counter(..., -3)`
+    # RETIRE 3 jetons (modele `Faces.RemoveCountersOn`), ramenant Hala a 1 avant le declencheur.
     _c("gs141b Forced Interrupt : un sbire vaincu retire 1 jeton de repli de Hala",
        "« When a minion is defeated, remove 1 hideout counter from Hala »",
        DECK_NEUTRE + ["Puzzle.PutIntoPlay('01103')"], ["Puzzle.Damage('01103', 3)"],
        {"compteurs": [["gs143", "hideout", 3]]}),
     _c("gs141b Forced Response : le DERNIER jeton de repli retire -> avance a 2A",
        "« After the last hideout counter is removed from Hala, advance to stage 2A »",
-       DECK_NEUTRE + ["Puzzle.PlaceCounters('gs143', 'hideout', 1)", "Puzzle.PutIntoPlay('01103')"],
-       ["Puzzle.Damage('01103', 3)"], {"principale": "gs142a"}),
+       DECK_NEUTRE + ["Puzzle.Counter('gs143', 'hideout', -3)", "Puzzle.PutIntoPlay('01103')"],
+       # `principale` attend gs142b, pas gs142a : comme 1A -> 1B, la face « 2A » (gs142a) n'a pas de
+       # seuil de menace imprime (`desc.Stage` seul) -- elle s'auto-avance VERS gs142b, SA PROPRE capacite
+       # (le flip du mechant, Hala mise de cote, pioche) deja resolue entre-temps (confirme par sonde :
+       # gs138b en jeu, gs143 hors jeu, apres l'enchainement complet).
+       ["Puzzle.Damage('01103', 3)"], {"principale": "gs142b", "en_jeu": ["gs138b"], "hors_jeu": ["gs143"]}),
     # ============================================================== gs143 Hala : jetons et action
     _c("gs143 entree en jeu : 2 + 2[per_hero] jetons de repli (un joueur : 4)",
        "« Enters play with 2 hideout counters, plus 2[per_hero] additional hideout counters »",
@@ -121,11 +124,20 @@ CAS = [
        "« Action: Search the encounter deck and discard pile for a KREE minion and reveal it -> draw 1 "
        "card »",
        ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('gs149', '01186')", HEROS],
-       ["Puzzle.Action('gs143')"], {"en_jeu": ["gs149"], "taille_main": 6}),
+       # CORRECTIF (20/10/2026) : la mise en place reelle de ce scenario fait piocher 6 cartes (pas 5), le
+       # pioche de l'Action porte donc la main a 7, pas 6 (hypothese de depart erronee signalee dans le
+       # rapport de fin de lot -- confirme par le journal : « Spider-Man pioche 6 carte(s) » a la mise en
+       # place, puis « Spider-Man pioche 1 carte(s) » pour l'Action).
+       ["Puzzle.Action('gs143')"], {"en_jeu": ["gs149"], "taille_main": 7}),
     # ============================================================== Attachements du mechant
     _c("gs144 Hero Action : depenser [energy][mental][physical] defausse la carte",
        "« Spend [energy][mental][physical] resources -> discard this card »",
-       ["Puzzle.PutIntoPlay('gs144')", HEROS, "Puzzle.CreateHandCards('gs006', 'gs003', 'gs008')"],
+       # CORRECTIF (20/10/2026) : tant que le mechant est HIDDEN (gs138a), la protection « Attachments
+       # attached to the villain cannot be discarded » (testee a part sur gs138a) bloque AUSSI cette
+       # defausse volontaire -- confirme par le journal (« WhenCardWouldDiscard est remplace par Kree
+       # Leader »). Il faut flip le mechant vers DISCOVERED (Tanalth, gs138b) avant de pouvoir prouver le
+       # Hero Action lui-meme.
+       ["Puzzle.Flip('gs138a')", "Puzzle.PutIntoPlay('gs144')", HEROS, "Puzzle.CreateHandCards('gs006', 'gs003', 'gs008')"],
        ["Puzzle.Action('gs144')"], {"hors_jeu": ["gs144"]}),
     _c("gs146 Kree Resilience : le mechant peut porter DEUX tenaces (cap de base 1 + 1 supplementaire)",
        "« Attached villain can have 1 additional tough status card » : `RetenirTenaceSupplementaire(1)` "
@@ -142,7 +154,11 @@ CAS = [
        "degat consequentiel",
        "desc.Retaliate, fiche mots-cles/retaliate.md : « after this character is attacked, deal 1 damage "
        "to the attacking character »",
-       DECK_NEUTRE + ["Puzzle.PutIntoPlay('gs147')", HEROS], ["Puzzle.Attack('01001a')"],
+       # CORRECTIF (20/10/2026, apres reconstruction de .game) : la recherche de mise en place de gs141a
+       # (« each player searches the encounter deck for a KREE minion and reveals it ») engage DEJA un
+       # Kree Soldier (gs149) avec le heros AVANT que ce cas ne s'execute -- sans le retirer, l'attaque de
+       # base ciblait gs149 au lieu de gs147 (0 degat mesure, Kree Assassin jamais touche).
+       DECK_NEUTRE + ["Puzzle.PutIntoPlay('gs147')", HEROS, "Puzzle.Remove('gs149')"], ["Puzzle.Attack('01001a')"],
        {"degats_identite": 1}),
     _c("gs148 Kree Pursuer When Defeated : le mechant a un tenace -> Kree Pursuer rejoint le deck rencontre",
        "« When Defeated: If the villain has a tough status card, shuffle Kree Pursuer into the encounter "
@@ -154,9 +170,16 @@ CAS = [
        "attachement « Hero Action » d'un ennemi",
        "« If you cannot, the defeating player may discard an attachment with the text \"Hero Action\" from "
        "an enemy »",
-       DECK_NEUTRE + ["Puzzle.PlaceCounters('gs143', 'hideout', 0)", "Puzzle.PutIntoPlay('gs150')",
-                      "Puzzle.PutIntoPlay('gs144')", HEROS, "Puzzle.SetThreat('gs150', 0)"],
-       ["Puzzle.Thwart('01001a')"], {"hors_jeu": ["gs144"]}),
+       # CORRECTIF (20/10/2026, apres reconstruction de .game) : `Puzzle.PlaceCounters` AJOUTE des
+       # compteurs (il n'en pose jamais a 0 pile) -- `Puzzle.Counter(..., -N)` les RETIRE, modele
+       # `Faces.RemoveCountersOn`. Et `Puzzle.SetThreat('gs150', 0)` vainc la manigance DIRECTEMENT en mise
+       # en place, sans joueur vainqueur (`has_defeating_player=True` ne voit personne) : gs144 ne se
+       # defaussait donc jamais. Menace mise a 1 (= le THW de base de Spider-Man) pour que ce soit bien le
+       # `Puzzle.Thwart` du declencheur qui l'acheve, avec un vainqueur reel ; `cibles` force ce contre ET
+       # non contre la manigance principale (egalement valide).
+       DECK_NEUTRE + ["Puzzle.Counter('gs143', 'hideout', -99)", "Puzzle.PutIntoPlay('gs150')",
+                      "Puzzle.PutIntoPlay('gs144')", HEROS, "Puzzle.SetThreat('gs150', 1)"],
+       ["Puzzle.Thwart('01001a')"], {"hors_jeu": ["gs144"]}, cibles=["gs150"]),
     # ============================================================== Traitrises
     _c("gs153 When Revealed : le mechant n'a pas de tenace -> il en recoit un",
        "« Give the villain a tough status card »",
@@ -165,8 +188,14 @@ CAS = [
        "revele",
        "« If the villain already has a tough status card, discard cards from the encounter deck until you "
        "discard an attachment or a minion and reveal it »",
+       # CORRECTIF (20/10/2026) : `Puzzle.CreateEncounterDeck` empile chaque carte au-dessus de la
+       # precedente -- la DERNIERE citee finit DESSUS (confirme par journal : avec ('01186', 'gs149'),
+       # gs149 etait defaussee EN PREMIER, jamais 01186). Ordre inverse pour que 01186 (ni attachement ni
+       # sbire) soit bien la premiere carte defaussee, et gs149 (sbire) celle qui arrete la defausse ; deux
+       # cartes de bourrage SOUS les deux (le deck epuise en cours de resolution est remelange avec la
+       # defausse -- constate au journal -- ce qui effacait 01186 de la defausse avant la verification).
        DECK_NEUTRE + ["Puzzle.AddTough('gs138a', 1)", "Puzzle.EmptyEncounterDeck()",
-                      "Puzzle.CreateEncounterDeck('01186', 'gs149')"],
+                      "Puzzle.CreateEncounterDeck('01186', '01186', 'gs149', '01186')"],
        ["Puzzle.Reveal('gs153')"], {"defausse_rencontre_n": [["01186", 1]], "en_jeu": ["gs149"]}),
     # gs154 Boost (« +2 boost icons si l'ennemi qui s'active a un tenace ») : construction verifiee
     # (test_cards, verifier_appels_modules), PAS de preuve par cas faute de temps — a verifier en partie
