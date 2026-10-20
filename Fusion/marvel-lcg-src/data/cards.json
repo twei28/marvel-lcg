@@ -119095,7 +119095,9 @@
    "type": "Support",
    "name": "* Shi'ar Throne",
    "subtitle": "",
-   "desc": {},
+   "desc": {
+    "Class": "Encounter"
+   },
    "traits": [
     "LOCATION",
     "SHI'AR"
@@ -121644,5 +121646,5 @@
    "ability_link": "01193"
   }
  ],
- "checksum": "096a843ec4f578d76e72d935a5c6d5f69db23fa4469859faeafedda90340d712"
+ "checksum": "01d02c8ea437b86893ace9eda945d27799584551395ca59d01dd3fc439109d4c"
 }
