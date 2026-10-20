@@ -3440,6 +3440,41 @@
      l'energie jaune. Pas de glyphe dans la police : un SVG a la place. */
   .icone-res.res-lightning { --res: #5ec8ff; }
 
+  /* Les icones en DEUX TONS (20/10/2026), comme imprimees dans le coin des
+     cartes : un fond de la couleur de la ressource, le picto dessus dans une
+     teinte voisine. Les valeurs viennent de TONS_RESSOURCES (icones-
+     ressources.tsx), posees en `--res-fond` / `--res-picto` sur chaque icone.
+     Active par le drapeau ICONES_DEUX_TONS (classe `deux-tons`). */
+  .icone-res.deux-tons {
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 1.45em;
+    height: 1.45em;
+    font-size: 1em;
+    margin: 0 0.1em;
+    vertical-align: -0.3em;
+    border-radius: 0.3em;
+    background: var(--res-fond);
+    color: var(--res-picto);
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.35);
+  }
+  .icone-res.deux-tons > svg {
+    width: 0.95em;
+    height: 0.95em;
+    vertical-align: 0;
+    fill: currentColor;
+    stroke: none;
+  }
+  /* Une icone de ressource : le glyphe a la taille du texte, le fond autour. */
+  .icone-res.deux-tons:not(:has(svg)) {
+    font-size: 0.95em;
+    width: 1.5em;
+    height: 1.5em;
+  }
+
   /* Crise sur le complot principal, dans l'apercu au survol. */
   /* Le pave rouge a laisse la place au filigrane sur la carte (ScanCard.css,
      .filigrane-crise). Il ne reste ici que ce que le picto ne peut pas dire :
@@ -8439,6 +8474,28 @@
 
   .assistant-action.design-essai .assistant-slot.est-y .icone-res {
     --res: var(--fond);
+  }
+
+  /* Deux tons : l'icone REMPLIT l'emplacement (sa tuile fait office de
+     pastille), a la place du disque colore + picto uni. */
+  .assistant-action.design-essai .assistant-slot .icone-res.deux-tons {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-size: 1.1rem;
+    vertical-align: 0;
+    border-radius: 0;
+    -webkit-text-stroke: 0;
+  }
+  .assistant-action.design-essai .assistant-slot .icone-res.deux-tons > svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .assistant-action .assistant-slot.est-rempli:has(.icone-res.deux-tons) {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
   }
 
   .assistant-action.design-essai .assistant-eyebrow {

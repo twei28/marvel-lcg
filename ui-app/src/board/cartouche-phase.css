@@ -790,6 +790,22 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-corps {
   background: var(--menace, #f0b95f);
 }
 
+/* Deux tons : la pastille remplie porte l'icone de la ressource (fond de sa
+   couleur + picto voisin), sans le disque ambre autour. */
+.deroule-phase.est-scene .deroule-cout-pastille.est-rempli:has(.icone-res.deux-tons) {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.deroule-phase.est-scene .deroule-cout-pastille .icone-res.deux-tons {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-size: 0.8rem;
+  vertical-align: 0;
+}
+
 /* --- Les choix en vignettes (D7, D8, D18, D32, D37) -------------------------
    La vignette ENTIERE est le bouton : la carte, son numero « (1) » pour le
    clavier, son nom, et dessous son texte. */

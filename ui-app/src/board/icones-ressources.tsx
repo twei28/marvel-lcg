@@ -10,7 +10,7 @@
 // icone au moment d'afficher, dans la police ChampionsIcons deja embarquee
 // (P poing, M cerveau, E eclair, W etoile), coloree par ressource.
 
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { t } from './langue'
 
 export type Ressource = {
@@ -32,6 +32,33 @@ export const RESSOURCES: readonly Ressource[] = [
   // du moteur. Distincte de l'energie : un eclair ne paie pas un cout energie.
   { lettre: 'L', glyphe: 'L', cle: 'lightning', nom: 'éclair' },
 ]
+
+/**
+ * Les DEUX TONS de chaque ressource, comme l'icone imprimee dans le coin des
+ * cartes : un fond de la couleur de la ressource, le picto dessus dans une
+ * teinte voisine (demande de l'utilisateur, 20/10/2026). SOURCE UNIQUE : ces
+ * valeurs arrivent sur chaque icone en variables CSS (`--res-fond`,
+ * `--res-picto`), et toute pastille de ressource de l'interface les lit.
+ *
+ * Fonds echantillonnes au pixel sur les icones imprimees. Pictos : echantillon
+ * de l'impression, puis ajuste au besoin pour garder un contraste >= 3,5:1
+ * (energie : olive plus fonce ; libre : vert vif plus clair ; physique et
+ * mentale : plus clairs).
+ */
+export const TONS_RESSOURCES: Record<Ressource['cle'], { fond: string; picto: string }> = {
+  physical: { fond: '#9f2115', picto: '#f0a590' }, // imprime : #9f2115 / #e2876d
+  mental: { fond: '#5c63a5', picto: '#d0d5ec' }, // imprime : #5c63a5 / #b9c0de
+  energy: { fond: '#e6bf4f', picto: '#6b5a14' }, // imprime : #e6bf4f / #85742f
+  wild: { fond: '#296329', picto: '#78c872' }, // imprime : #296329 / #508f4c
+  // Maison (Zeus) : bleu electrique, a part de l'energie.
+  lightning: { fond: '#2a7fc0', picto: '#d6f0ff' },
+}
+
+/**
+ * Drapeau : true = icones en deux tons (fond + picto) ; false = l'ancien rendu
+ * monochrome (picto colore sans fond), conserve derriere ce drapeau.
+ */
+export const ICONES_DEUX_TONS = true
 
 const PAR_GLYPHE = new Map(RESSOURCES.map((r) => [r.glyphe, r]))
 const PAR_CLE = new Map(RESSOURCES.map((r) => [r.cle, r]))
@@ -107,7 +134,15 @@ export function avecIcones(texte: string): ReactNode {
       morceaux.push(
         <i
           key={`icone-${rang}`}
-          className={`icone-res res-${ressource.cle}`}
+          className={`icone-res res-${ressource.cle}${ICONES_DEUX_TONS ? ' deux-tons' : ''}`}
+          style={
+            ICONES_DEUX_TONS
+              ? ({
+                  '--res-fond': TONS_RESSOURCES[ressource.cle].fond,
+                  '--res-picto': TONS_RESSOURCES[ressource.cle].picto,
+                } as CSSProperties)
+              : undefined
+          }
           role="img"
           aria-label={t(ressource.nom)}
           title={t(ressource.nom)}
