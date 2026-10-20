@@ -184,3 +184,8 @@ docs/packs/mcdc-2026-punisher/sources/
 # Galactic Storm (GS-0) : images et livrets extraits des zips Kajislav, hors depot.
 docs/packs/galactic-storm/sources/
 deploiement/dernier-deploiement.log
+
+# Kit de creation de campagne (20/10/2026) : le zip et les tomes de code se RECONSTRUISENT
+# (outils/construire-kit-campagne.py, outils/construire-tomes-code.py), on ne les suit pas.
+kit-campagne-ia.zip
+kit-code-tomes/

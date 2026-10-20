@@ -5,6 +5,9 @@
 - Une carte : `reference/PROCESSUS-CARTE.md`
 - Un héros complet : `reference/PROCESSUS-HEROS.md`
 - Un scénario : `reference/GUIDE-CREATION-CONTENU.md` §6
+- **Une campagne complète à faire produire par une autre IA** (cartes, scénarios, scripts, carnet, textes,
+  preuves) : `kit-campagne-ia/` (manuel, liste des fichiers, architecture ; le zip se reconstruit avec
+  `python3 outils/construire-kit-campagne.py`)
 - Comprendre un mot-clé (officiel ou maison) : `reference/mots-cles/`
 - Où vit chaque type de fichier, les deux copies du moteur, le format de
   `cards.json`, l'API de scripting : `reference/GUIDE-CREATION-CONTENU.md`
