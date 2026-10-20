@@ -492,6 +492,33 @@ simplement injouable). Écrire `effect.this.printed_cost.val` (modèles `50081`,
   couleur générée diffère de l'imprimée** (Mount Olympus : génère L, imprime
   R). Repli : `surpayer: True`, qui dépense tout ce qui est offert, et un ordre
   tel que la capacité passe en dernier.
+- **Compter les cartes de boost reçues : clé `boosts_sur`** (20/10/2026,
+  Nyx `ze013`, Total Eclipse `ze016`). `[[card_id, n]]` = nombre de cartes de
+  boost que la face `card_id` a reçues depuis le début du cas (mise en place
+  comprise), compté par un crochet sur `Boostable.GiveBoostCard`. Pour que les
+  DÉGÂTS soient déterministes aussi, vider le deck Rencontre et le remplir
+  d'une carte à boost connu sans étoile : `Puzzle.EmptyEncounterDeck()`,
+  `Puzzle.CreateEncounterDeck('01103', '01103', '01103', '01103')` (Shocker,
+  boost 2). ⚠ Une carte posée par un `MoveTo` direct dans le paquet de boost,
+  sans passer par `GiveBoostCard`, n'est pas comptée.
+- **`defausse_rencontre: 0` NE MESURE RIEN** (constaté le 20/10/2026, non
+  corrigé) : la clé attend une LISTE de `card_id`, et `0 or []` donne une liste
+  vide. Les cas qui l'écrivent pour dire « défausse vide » passent sans rien
+  vérifier. Écrire une vérification dédiée.
+- **`substituer_pack.py` doit être lancé par le python du venv, par son vrai
+  chemin** (`.venv-linux/bin/python3.10`). Lancé par un lien symbolique vers
+  ce binaire, `sys.executable` perd le venv, chaque cas fils meurt sur
+  `typing_extensions` introuvable, et l'outil écrivait « rouges 3/3 » sans
+  qu'aucun cas n'ait tourné. Garde-fou ajouté le 20/10/2026 : les processus
+  morts sont comptés à part et la carte n'est plus déclarée prouvée.
+- **Fixture de plateau PRODUITE PAR LE MOTEUR** (20/10/2026, Echo 60040a) :
+  pour l'étape 8 bis d'une carte qui rend cliquable une carte de la main ou une
+  carte glissée, un vérificateur peut écrire `ToDescriptor.World(monde, "",
+  "")` (ce que sert `/get_world`) et `asdict(effet.Render(None, 0))` (ce que
+  sert `/get_ask`) dans un JSON, que le cas Vitest relit (`construirePlateau` +
+  `useInteraction`). Modèle : `echo_rendu_pour_le_plateau` et
+  `ui-app/src/board/echo-photographic-reflexes-plateau.test.ts`. Le rouge se
+  voit en régénérant la fixture module vidé.
 
 ### 7bis. Quatre façons de mesurer *rien* et de le croire vert
 

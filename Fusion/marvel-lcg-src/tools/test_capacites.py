@@ -30189,6 +30189,65 @@ CAS = [
         "attendu": {"defausse_joueur": 1},
     },
     {
+        "nom": "ze013 Nyx — energie imprimee au dessus : 1 carte de boost SUPPLEMENTAIRE, appliquee a l'attaque",
+        "pourquoi": ("« If that card has a printed [energy] icon, give Nyx 1 additional boost "
+                     "card. » Reserve du 11/09/2026 levee le 20/10/2026 (backlog 13) par la cle "
+                     "`boosts_sur`. Dessus du deck : Thunderbolt (ze008, energie imprimee). "
+                     "Villainous donne 1 carte, Nyx 1 de plus : 2 cartes recues. Deck Rencontre "
+                     "reduit a des Shocker (01103, boost 2, sans etoile) : ATQ 1 + 2 + 2 = 5, "
+                     "Zeus defend (DEF 2), 3 degats. Sans le module : 1 carte, 1 degat. La "
+                     "mesure des degats prouve que la carte donnee est bien RESOLUE, pas "
+                     "seulement posee"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze013')",
+                          "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('ze010', 'ze008')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01103', '01103', '01103', '01103')"],
+        "declencher": ["Puzzle.Attack('ze013')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"boosts_sur": [["ze013", 2]], "degats_identite": 3,
+                    "defausse": ["ze008"]},
+    },
+    {
+        "nom": "ze013 Nyx — CONTRE-CAS : carte du dessus sans energie, AUCUNE carte de boost supplementaire",
+        "pourquoi": ("Dessus du deck : Hephaestus (ze010, mental). Il est defausse, mais Nyx ne "
+                     "recoit que la carte de Villainous : 1 carte, ATQ 1 + 2 = 3, DEF 2, 1 degat. "
+                     "Vert sans le module (contre-cas d'ABSENCE, assume) : c'est le cas "
+                     "precedent qui le rend discriminant"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze013')",
+                          "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('ze008', 'ze010')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01103', '01103', '01103', '01103')"],
+        "declencher": ["Puzzle.Attack('ze013')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"boosts_sur": [["ze013", 1]], "degats_identite": 1,
+                    "defausse": ["ze010"]},
+    },
+    {
+        "nom": "ze016 Total Eclipse — Boost : l'ennemi qui s'active recoit 1 carte de boost supplementaire",
+        "pourquoi": ("« [star] Boost: Give the activating enemy an additional boost card. » "
+                     "Reserve du 11/09/2026 levee le 20/10/2026 (backlog 13) par la cle "
+                     "`boosts_sur`. Total Eclipse est la carte de boost de Rhino "
+                     "(`Puzzle.Boost`), le reste du deck Rencontre est fait de Shocker "
+                     "(01103, boost 2). Rhino recoit 2 cartes : ATQ 2 + 1 (Total Eclipse) "
+                     "+ 2 (Shocker) = 5, Zeus defend (DEF 2), 3 degats. Sans le module : "
+                     "1 carte, 1 degat"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01103', '01103', '01103', '01103')"],
+        "declencher": ["Puzzle.Boost('ze016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"boosts_sur": [["01094", 2]], "degats_identite": 3},
+    },
+    {
         "nom": "ze014 The Mother of Night — 2 cartes a energie imprimee glissees dessous, +1 menace chacune",
         "pourquoi": ("« search their deck and discard pile for 2 cards with printed [energy] "
                      "icons and place them facedown under here. Place 1 additional threat "
@@ -45129,6 +45188,27 @@ CAS = [
                     "defausse_avec": ["60040a", "01087"], "glissees": []},
     },
     {
+        "nom": "60040a 60040b 60040c Photographic Reflexes — etape 8 bis : ce que le moteur ENVOIE au plateau (monde + options)",
+        "pourquoi": ("Reserve du 21/09/2026 levee le 20/10/2026 (backlog 13). La carte rend "
+                     "cliquable une carte de la MAIN (chemin A) et une carte GLISSEE sous Echo "
+                     "(chemin B). Ce cas exige, cote moteur, que les trois variantes soient en "
+                     "main dans le descripteur du monde avec une option disponible portee par "
+                     "LEUR objet, et que Haymaker glisse soit rattache a Echo avec une option "
+                     "Play. Avec ECHO_FIXTURE_DIR, il ecrit ces descripteurs pour le cas "
+                     "plateau `echo-photographic-reflexes-plateau.test.ts`"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["01087", "01088", "60040a", "60040b", "60040c"],
+        "cibles": ["01094"],
+        "ne_pas_depenser": ["60040a", "60040b", "60040c"],
+        "declencher": [],
+        "jouer": ["01087"],
+        "verifier": "echo_rendu_pour_le_plateau",
+        "attendu": {"en_main": ["60040a", "60040b", "60040c"], "glissees": ["01087"],
+                    "fixture": "echo-photographic-reflexes.json"},
+    },
+    {
         "nom": "60037a Echo — Watch and Learn ne re-glisse PAS l'evenement joue depuis sous Echo",
         "pourquoi": "« You cannot trigger Echo's Watch and Learn ability for that event » : apres le rejeu, la carte finit en defausse, pas sous Echo",
         "scenario": "rhino",
@@ -56510,6 +56590,8 @@ CLES_ETAT_ATTENDU = {
     'face_identite',
     # ajoutees le 09/10/2026 (Hunting Season, bloc 5) : paquets de pieges.
     'paquet_pieges', 'defausse_pieges', 'pieges_distribues',
+    # ajoutee le 20/10/2026 (backlog 13, Zeus : Nyx et Total Eclipse).
+    'boosts_sur',
 }
 
 # ---------------------------------------------------------------- pack fne (bloc 1)
@@ -57510,6 +57592,25 @@ def etat_attendu(monde, aides):
         n = face.CountBoostIconsInternal()
         if n != attendu_n:
             soucis.append(f"{card_id} a {n} icone(s) de boost (attendu {attendu_n})")
+
+    # Cle `boosts_sur` (AJOUT 20/10/2026, backlog 13, Zeus) : [[card_id, n]] ->
+    # nombre de cartes de boost que la carte `card_id` a RECUES depuis le debut
+    # du cas, toutes activations confondues. Le compteur est pose par
+    # `executer_un_cas` sur `Boostable.GiveBoostCard` (voir le commentaire
+    # la-bas). Les cartes de boost sont defaussees en fin d'activation : aucune
+    # autre cle ne peut voir leur nombre.
+    if attendu.get("boosts_sur"):
+        from game.card.face.component.boostable import Boostable
+        recus = getattr(Boostable, "_harnais_boosts_recus", None)
+        if recus is None:
+            soucis.append("compteur de boosts absent (boosts_sur) : le crochet de "
+                          "executer_un_cas n'est pas pose")
+        else:
+            for card_id, attendu_n in attendu["boosts_sur"]:
+                n = recus.get(card_id, 0)
+                if n != attendu_n:
+                    soucis.append(f"{card_id} a recu {n} carte(s) de boost "
+                                  f"(attendu {attendu_n} ; compteur = {dict(recus)})")
 
     if attendu.get("dans_deck_rencontre"):
         from game.operate.worlds import Worlds
@@ -61012,6 +61113,106 @@ def cibles_legales_proposees(monde, aides):
     if manquantes or interdites:
         return False, f"cibles proposees {sorted(cibles)} ; manquantes {manquantes} ; interdites {interdites}"
     return True, f"cibles proposees {sorted(cibles)}"
+
+
+def echo_rendu_pour_le_plateau(monde, aides):
+    """60040a/b/c Photographic Reflexes, etape 8 bis (backlog 13, 20/10/2026).
+
+    Ce que le PLATEAU recoit, produit par le moteur lui-meme, pas ecrit a la
+    main : le descripteur du monde (`ToDescriptor.World`, celui que sert
+    `/get_world`) et le descripteur de chaque option offerte (`Effect.Render`,
+    celui que sert `/get_ask`). On exige ici, cote moteur :
+      - chaque variante de `attendu["en_main"]` est EN MAIN dans le
+        descripteur et porte une option disponible dont le `bind_id` est
+        SON objet (chemin A : c'est elle que le joueur clique) ;
+      - chaque carte de `attendu["glissees"]` est dans le descripteur,
+        rattachee a l'identite (`bind_object_id`), et porte une option
+        « Play » disponible (chemin B).
+    Puis on ecrit le tout dans `attendu["fixture"]` (si la variable
+    d'environnement ECHO_FIXTURE_DIR est posee) : le cas plateau
+    `ui-app/src/board/echo-photographic-reflexes-plateau.test.ts` le relit et
+    affirme ce que la table en DESSINE et ce qui y est CLIQUABLE.
+    Les options sont filtrees comme le fait le moteur au tour du joueur
+    (`WhenPlayerLikeInTurn` + `EventManager.FilterAvailableEffects`), le meme
+    chemin que les cles `action_en_main` / `jouer_glissee`."""
+    import json, os
+    from dataclasses import asdict, is_dataclass
+    from game.message import Message
+    from game.effect.rule import GameRule
+    from game.event.manager import EventManager
+    from game.render.to_descriptor import ToDescriptor
+    attendu = aides["cas"]["attendu"]
+    joueur = monde.players[0]
+    identite = joueur.GetIdentity()
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(identite))
+    message.Send()
+
+    def options_de(face, effets):
+        dispo = EventManager.FilterAvailableEffects(message, effets, joueur, monde, None)
+        return [asdict(e.Render(None, 0)) for e in dispo]
+
+    soucis = []
+    options = []
+    for card_id in attendu.get("en_main", []):
+        face = next((f for f in joueur.hand_cards.GetAll()
+                     if getattr(f.paper, "card_id", None) == card_id), None)
+        if face is None:
+            soucis.append(f"{card_id} n'est pas en main")
+            continue
+        effets = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn)
+                  if not x.ability.is_play]
+        rendues = options_de(face, effets)
+        if not any(o["bind_id"] == face.card.object_id and not o["failure_reason"]
+                   for o in rendues):
+            soucis.append(f"{card_id} en main : aucune option rendue sur son objet "
+                          f"{face.card.object_id} (rendues : {rendues})")
+        options += rendues
+    zone = identite.GetPlacedCardArea()
+    for card_id in attendu.get("glissees", []):
+        face = next((f for f in zone.Get(True)
+                     if f is not None and getattr(f.paper, "card_id", None) == card_id), None)
+        if face is None:
+            soucis.append(f"{card_id} n'est pas glissee sous l'identite")
+            continue
+        rendues = options_de(face, face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn))
+        if not any(o["bind_id"] == face.card.object_id and not o["failure_reason"]
+                   for o in rendues):
+            soucis.append(f"{card_id} glissee : aucune option « Play » rendue sur son objet")
+        options += rendues
+
+    descripteur = ToDescriptor.World(monde, "", "")
+    brut = json.loads(json.dumps(asdict(descripteur) if is_dataclass(descripteur) else descripteur,
+                                 default=lambda o: asdict(o) if is_dataclass(o) else str(o)))
+    siege = brut["players"][0]
+    ids_main = [c.get("card_id") for c in siege.get("hand_cards", [])]
+    for card_id in attendu.get("en_main", []):
+        if card_id not in ids_main:
+            soucis.append(f"{card_id} absent de hand_cards du descripteur ({ids_main})")
+    id_identite = identite.card.object_id
+    tout = [c for zone_cartes in siege.values() if isinstance(zone_cartes, list)
+            for c in zone_cartes if isinstance(c, dict)]
+    for card_id in attendu.get("glissees", []):
+        portees = [c for c in tout if c.get("card_id") == card_id]
+        if not any(c.get("bind_object_id") == id_identite for c in portees):
+            soucis.append(f"{card_id} glissee absente du descripteur, ou non rattachee "
+                          f"a l'identite {id_identite} ({portees})")
+
+    dossier = os.environ.get("ECHO_FIXTURE_DIR")
+    if dossier and attendu.get("fixture"):
+        # Le siege 0 seulement, sans ses decks (des dizaines de cartes qui ne
+        # changent rien a ce qu'on mesure) : la fixture reste lisible.
+        for cle in ("player_deck", "player_discard_pile", "additional_deck"):
+            if cle in siege:
+                siege[cle] = []
+        fixture = {"monde": {"render_id": 1, "players": [siege]},
+                   "options": options, "identite": id_identite}
+        with open(os.path.join(dossier, attendu["fixture"]), "w", encoding="utf-8") as f:
+            json.dump(fixture, f, ensure_ascii=False, indent=1, sort_keys=True)
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, (f"{len(options)} option(s) rendue(s) sur "
+                  f"{sorted({o['bind_id'] for o in options})} ; identite {id_identite}")
 
 
 def sd021_chaines(monde, aides):
@@ -64739,6 +64940,33 @@ def executer_un_cas(game_dir, port, index):
     from engine.network.web_server import WebServer
     WebServer.IsAuthenticate = lambda self, request=None: True
     WebServer.IsVersionMatch = lambda self, request=None: True
+
+    # COMPTEUR DES CARTES DE BOOST RECUES (AJOUT 20/10/2026, backlog 13, Zeus).
+    # Une carte de boost ne vit que le temps d'une activation : elle est
+    # retournee, appliquee puis defaussee, et l'etat final ne garde aucune trace
+    # de COMBIEN l'ennemi en a recu. « give Nyx 1 additional boost card »
+    # (ze013) et « Give the activating enemy an additional boost card » (ze016)
+    # etaient donc hors de portee du harnais depuis le 11/09/2026. Toutes les
+    # sources (activation, Villainous, capacites de cartes) finissent par
+    # `Boostable.GiveBoostCard` (boostable.py) : on y compte, par `card_id` de
+    # la face qui RECOIT la carte, chaque deplacement reussi. Lu par la cle
+    # `boosts_sur` de `etat_attendu`. Compte depuis le DEBUT du cas (mise en
+    # place comprise) : un cas qui active un ennemi pendant sa mise en place
+    # doit en tenir compte dans son attendu.
+    from game.card.face.component.boostable import Boostable
+    _boosts_recus = {}
+    _donner_d_origine = Boostable.GiveBoostCard
+
+    def _donner_et_compter(self, face, by_effect):
+        reussi = _donner_d_origine(self, face, by_effect)
+        if reussi:
+            receveur = getattr(getattr(self.parent, "face", None), "paper", None)
+            cle = getattr(receveur, "card_id", None)
+            _boosts_recus[cle] = _boosts_recus.get(cle, 0) + 1
+        return reussi
+
+    Boostable.GiveBoostCard = _donner_et_compter
+    Boostable._harnais_boosts_recus = _boosts_recus
 
     from engine.device.manager.base import DeviceManager
 

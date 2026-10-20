@@ -19,6 +19,14 @@ tournaient en même temps). `.game` non touché.
 sur le même dossier peut donc laisser un état qui fausse le suivant. Règle
 tenue : tout rouge ou vert surprenant se rejoue seul avant conclusion.
 
+> **POINT DU 20/10/2026 (backlog 13) : réserve NON LEVÉE, toujours vraie.**
+> Vérifié : aucun deck du dépôt ne contient `dt087`, `dt100`, `dt105`, `dt106`
+> ou `dt107` (seul `deck/starter/venompool.json` cite `dt105`, dans une note
+> qui l'EXCLUT). Les cas sont toujours verts : filtre `[dt]` 10/10. Monter un
+> deck de test pour l'autoplay toucherait la règle « pas de deck inventé » :
+> la question est posée (Q2 de
+> `.planning/todos/2026-10-20-backlog-13-questions.md`), rien n'a été tranché.
+
 ## dt087 : "Get 'Em, Boom-Boom!"
 
 - [x] Étape 2 : carte de référence : `44032` The Merc with the Mouth
