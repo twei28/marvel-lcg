@@ -239,12 +239,32 @@ construction-vérifiées (`test_cards` : 7006/7006, 0 erreur ; `verifier_appels_
 OK). Les 10 reskins (gsr01-gsr10) sont des entrées `cards.json` pures (`ability_link`), aucun script requis
 — pas encore vérifiées à l'image en jeu (art/texte affichés).
 
+## Autoplay ciblé (étape 8, 20/10/2026)
+
+`tools/autoplay.py --deck spider_man --vilains gs_earth_under_siege --difficultes normal --profils
+equilibre --parties 6`. Résultat (`/tmp/autoplay.json`, journaux `/tmp/autoplay_spider_man_gs_earth_under_siege_*.log`) :
+
+- **0 plantage** : grep `NameError|AttributeError|TypeError|KeyError|AssertionError` sur les 6 journaux =
+  0 partout. Les 36 cartes fonctionnent ensemble dans le VRAI moteur de jeu (pas le harnais `Puzzle` qui a
+  posé problème plus haut) — bon indice que le doute Annihilus/Attuma est bien une limite du harnais de
+  test, pas un défaut réel.
+- **⚠ 0 victoire sur 6** (5 défaites « All players were eliminated », 1 minuteur sans verdict).
+- **⚠ Parties anormalement longues** : 175, (minuteur, coupée après 345+ rounds), 11, 295, 165, 12 rounds —
+  très loin des ~20-40 rounds habituels. La partie minuteur tournait encore au round 346, avec le modulaire
+  Imperial Guard (gs092/106/111/112, déjà livré au lot GS-4) qui semblait boucler sans que la partie avance
+  vers une fin, en combinaison avec Earthfall/la sécurité d'Earthfall.
+- Les deux parties les plus courtes (11, 12 rounds) se sont soldées par une défaite rapide : plausible que
+  le profil pilote « équilibré » solo soit simplement dépassé par jusqu'à 6 méchants, ou qu'un réglage de
+  rythme (compteurs de sécurité, cadence de révélation) soit trop dur/trop lent. Pas creusé plus loin faute
+  de temps — point à trancher avec l'utilisateur.
+
 **Ce qui reste avant de considérer GS-7 vraiment clos** :
-1. Reprendre le mystère de harnais (abilities « While »/« Otherwise »/multi-cartes qui ne se déclenchent
-   pas sous `Puzzle`, voir Annihilus plus haut) avec plus de temps, OU vérifier directement en partie
-   réelle que ces capacités fonctionnent (c'est le chemin de code normal du jeu, jamais testé par ce
-   harnais-là).
-2. Autoplay ciblé (étape 8 de PROCESSUS-CARTE), jamais fait sur ce lot faute de temps.
+1. Décider avec l'utilisateur : le 0% de victoire et les parties à rallonge sont-ils juste la difficulté
+   attendue d'un scénario à 6 méchants, ou un signe qu'il faut revoir le rythme (sécurité d'Earthfall,
+   cadence de révélation) ou chercher une interaction qui bloque avec Imperial Guard ?
+2. Reprendre le mystère de harnais (abilities « While »/« Otherwise »/multi-cartes qui ne se déclenchent
+   pas sous `Puzzle`, voir Annihilus plus haut) avec plus de temps si on veut une preuve par cas complète —
+   l'autoplay suggère que ce n'est pas un vrai défaut, mais ça reste à confirmer carte par carte.
 3. Vérification visuelle des 10 reskins en jeu (art, texte affiché).
 4. Une vraie partie jouée à la main avec plusieurs méchants simultanément (le cœur du scénario) — rien ne
    remplace ça pour juger si c'est agréable et fidèle.
