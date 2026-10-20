@@ -10,6 +10,7 @@
 ## Questions
 
 ### Q1. WebKit (Safari) : le processus de rendu plante quand on ouvre la fiche du héros dans l'assistant
+MISE A JOUR 20/10/2026 : cause trouvée, défaut du WebKit Playwright (WPE) et non de notre code, voir `docs/rapports/play-webkit-plantage-2026-10-20.md` (parcours complet OK avec `WEBKIT_DISABLE_DMABUF_ATLAS=1`). Reste l'essai sur un vrai Safari ou iPhone.
 Constat : avec le WebKit de Playwright (build WPE, Linux, 26.5), la page se charge, le moteur démarre et l'accueil s'affiche, puis le processus web se termine (`SIGABRT`, « Target crashed ») dès qu'on choisit un héros dans l'assistant (ouverture de la fenêtre du deck). Reproductible à chaque essai. Les pages d'accueil, `cards.html`, `credits.html` restent 40 s sans plantage. La cause n'est pas isolée (moteur Python/mémoire, rendu 3D de la fiche, ou défaut propre au build WPE de test). La machine d'essai était de plus très chargée (charge 50 à 77 sur 8 cœurs, swap plein), ce qui ne permet pas d'exclure la mémoire.
 Recommandation : ne pas annoncer Safari/iOS comme pris en charge. Faire un essai sur un vrai Safari (Mac ou iPhone) avant toute ouverture publique ; en attendant, garder l'avertissement « expérimental » et le bouton vers les tables du serveur pour les appareils Apple.
 Question : disposez-vous d'un Mac ou d'un iPhone pour un essai réel, ou Safari est-il hors périmètre pour Play ?
