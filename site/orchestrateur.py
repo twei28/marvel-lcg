@@ -4181,7 +4181,7 @@ PAGE_FORMULAIRE = """<!doctype html>
     body {{ min-height:100dvh; padding-bottom:1.5rem; }}
     .entete {{ display:none; }}
     .cadre {{ display:block; }}
-    .scene {{ position:sticky; top:0; z-index:5; flex-direction:row; align-items:center; gap:.7rem;
+    .scene {{ position:sticky; top:0; z-index:5; flex-direction:row; justify-content:flex-start; align-items:center; gap:.7rem;
              min-height:56px; padding:.4rem 1rem; clip-path:none; border-bottom:1px solid var(--border);
              background:linear-gradient(90deg, var(--accent-soft), transparent 70%), var(--panel); }}
     .scene img {{ width:2.3rem; box-shadow:0 0 0 1px var(--border); }}
