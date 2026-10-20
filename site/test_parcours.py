@@ -1032,7 +1032,7 @@ verifier("un lien de plus de 24 heures ne vaut plus rien",
          and not [r for r in o.reinitialisations_ouvertes() if r["jeton"] == "vieux-jeton"], "encore valable")
 _code, _, _corps = appel("GET", "/connexion")
 verifier("la page de connexion dit ou demander un lien",
-         b"Mot de passe oublie" in _corps, "rappel absent")
+         "Mot de passe oublié".encode() in _corps, "rappel absent")
 _oublier_oublieux()
 
 # --- Le nom du DECK, et le suivi servi DANS /admin -------------------------

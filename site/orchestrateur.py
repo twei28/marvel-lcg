@@ -1715,26 +1715,26 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
     pseudo = (pseudo or "").strip().lower()
     email = (email or "").strip().lower()
     if not (3 <= len(pseudo) <= 24) or not pseudo.replace("_", "").replace("-", "").isalnum():
-        raise ValueError(lang.t("Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _."))
+        raise ValueError(lang.t("Pseudo invalide : 3 à 24 caractères, lettres, chiffres, - et _."))
     # Controle volontairement minimal : on verifie qu'une adresse ressemble a
     # une adresse, pas qu'elle existe. Seule la validation manuelle fait foi.
     if "@" not in email or "." not in email.split("@")[-1] or len(email) < 6:
         raise ValueError(lang.t("Adresse e-mail invalide."))
     if len(mot_de_passe or "") < 8:
-        raise ValueError(lang.t("Mot de passe trop court : 8 caracteres au minimum."))
+        raise ValueError(lang.t("Mot de passe trop court : 8 caractères au minimum."))
     if not INSCRIPTION_LIBRE and not invitation_valide(jeton) and pseudo != ADMIN:
-        raise ValueError(lang.t("Il faut un lien d'invitation pour creer un compte ici."))
+        raise ValueError(lang.t("Il faut un lien d'invitation pour créer un compte ici."))
     with VERROU_COMPTES, _cx() as cx:
         if cx.execute("SELECT 1 FROM comptes WHERE pseudo = ?", (pseudo,)).fetchone():
-            raise ValueError(lang.t("Ce pseudo est deja pris."))
+            raise ValueError(lang.t("Ce pseudo est déjà pris."))
         if cx.execute("SELECT 1 FROM comptes WHERE email = ?", (email,)).fetchone():
-            raise ValueError(lang.t("Cette adresse est deja utilisee."))
+            raise ValueError(lang.t("Cette adresse est déjà utilisée."))
         # ⚠ LE PLAFOND NE COMPTE QUE LES COMPTES VALIDES. Sinon une vague
         # d'inscriptions en attente suffirait a bloquer les vraies demandes.
         valides = cx.execute(
             "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
         if valides >= MAX_COMPTES and pseudo != ADMIN:
-            raise ValueError(f"Le site est complet ({MAX_COMPTES} comptes).")
+            raise ValueError(lang.t("Le site est complet ({n} comptes).").replace("{n}", str(MAX_COMPTES)))
         # ⚠ LE JETON EST RELU ET CONSOMME DANS LA MEME TRANSACTION que la
         # creation du compte. Le verifier avant puis le consommer apres
         # laisserait deux personnes cliquant en meme temps sur le meme lien
@@ -2068,7 +2068,7 @@ def reinitialiser_mot_de_passe(jeton: str, mot_de_passe: str) -> str:
     ouvertes du compte (un mot de passe change parce qu'on a un doute : les
     sessions d'avant ne doivent pas survivre). Rend le pseudo."""
     if len(mot_de_passe or "") < 8:
-        raise ValueError(lang.t("Mot de passe trop court : 8 caracteres au minimum."))
+        raise ValueError(lang.t("Mot de passe trop court : 8 caractères au minimum."))
     with _cx() as cx:
         l = cx.execute("SELECT pseudo, cree_le, utilise_le FROM reinitialisations WHERE jeton = ?",
                        (jeton or "",)).fetchone()
@@ -3617,6 +3617,12 @@ def _pied_de_page() -> str:
         + '<span class="mention-legale">%s</span>' % _mention_courte()
 
 
+def _lignes_pied(*phrases: str) -> str:
+    """Le pied des formulaires : une phrase par ligne (20/10/2026). Elles
+    s'empilaient en un bloc de texte gris ; chacune a maintenant sa ligne."""
+    return "".join('<span class="ligne">%s</span>' % p for p in phrases if p)
+
+
 def _mention_courte() -> str:
     """La mention legale en une ligne (10/10/2026, texte valide mot pour mot
     par l'utilisateur : ne pas le reformuler). Jumelle de
@@ -4108,22 +4114,44 @@ PAGE_FORMULAIRE = """<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <style>
+  /* ===== REFONTE (20/10/2026, decision du 09/10) ===========================
+     Connexion, inscription et pages cousines sur le modele de l'assistant de
+     preparation : un EN-TETE FIN, une SCENE a gauche (~30 %, bord en biais,
+     la mascotte du moment et le titre en affiche) et le formulaire a droite.
+     Au telephone la scene devient un BANDEAU colle en haut, le formulaire
+     dessous. Toutes les couleurs passent par les variables : le mode sobre
+     (SOBRE_SITE) les redefinit sans rien toucher ici. */
   :root {{
     color-scheme: dark;
     --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
     --text:#eef1f5; --muted:#8b95a3;
-    --accent:#e62429; --accent-hover:#ff3b40; --accent-ink:#fff;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14); --accent-ink:#fff;
     --danger:#f85149;
     --affiche: "Anton", "Arial Narrow", sans-serif;
   }}
   * {{ box-sizing:border-box; }}
   body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--text);
-         min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2.5rem 1.1rem; }}
-  main {{ width:100%; max-width:23rem; }}
-  .marque {{ display:flex; align-items:center; gap:.7rem; margin:0 0 1.6rem; }}
-  .marque img {{ width:2.5rem; height:2.5rem; border-radius:50%; box-shadow:0 0 0 2px var(--border); }}
-  h1 {{ font:clamp(1.5rem,6vw,1.85rem)/1 var(--affiche); margin:0; font-weight:400;
-       letter-spacing:.01em; text-transform:uppercase; }}
+         min-height:100vh; display:flex; flex-direction:column; }}
+  .entete {{ flex:none; display:flex; align-items:center; justify-content:space-between; gap:1rem;
+            height:3rem; padding:0 1.2rem; background:var(--panel); border-bottom:1px solid var(--border); }}
+  .entete-marque {{ display:flex; align-items:center; gap:.6rem; font:1.15rem/1 var(--affiche);
+                   letter-spacing:.04em; text-transform:uppercase; }}
+  .entete-marque img {{ width:1.9rem; height:1.9rem; border-radius:50%; box-shadow:0 0 0 1px var(--border); }}
+  .lang {{ display:inline-flex; align-items:center; border:1px solid var(--border);
+          font-size:.8rem; font-weight:600; text-decoration:none; }}
+  .lang span {{ padding:.2rem .5rem; color:var(--muted); }}
+  .lang span.lang-active {{ background:var(--accent); color:var(--accent-ink); }}
+  .cadre {{ flex:1; display:grid; grid-template-columns:minmax(17rem,30%) 1fr; min-height:0; }}
+  .scene {{ position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end;
+           gap:1.2rem; padding:2rem 5rem 2.6rem 2rem;
+           background:radial-gradient(circle at 35% 38%, var(--accent-soft), transparent 62%), var(--panel);
+           clip-path:polygon(0 0,100% 0,calc(100% - 3.5rem) 100%,0 100%); }}
+  .scene img {{ width:min(100%,14rem); aspect-ratio:1; height:auto; border-radius:50%;
+               box-shadow:0 0 0 2px var(--border), 0 18px 40px -16px rgba(0,0,0,.8); }}
+  h1 {{ font:clamp(1.9rem,3.3vw,3rem)/1 var(--affiche); margin:0; font-weight:400;
+       letter-spacing:.01em; text-transform:uppercase; text-wrap:balance; }}
+  .contenu {{ display:flex; align-items:center; justify-content:center; padding:2rem 1.5rem; }}
+  .colonne {{ width:100%; max-width:24rem; }}
   .carte {{ background:var(--panel); border:1px solid var(--border); border-radius:.9rem;
            padding:1.5rem 1.4rem; box-shadow:0 12px 28px -18px rgba(0,0,0,.7); }}
   form {{ margin:0; }}
@@ -4137,43 +4165,59 @@ PAGE_FORMULAIRE = """<!doctype html>
   button:hover {{ background:var(--accent-hover); }}
   .erreur {{ border:1px solid var(--danger); background:#1d1113; color:#ff7b72;
             border-radius:.5rem; padding:.7rem .9rem; margin-bottom:1.2rem; font-size:.9rem; }}
-  p {{ color:var(--muted); font-size:.85rem; line-height:1.6; margin:1.2rem .1rem 0; }}
-  p.mention-legale {{ color:#5b6270; font-size:.75rem; }}
+  /* Le pied : une ligne par phrase, lisible (la premiere, celle qui sert, en clair). */
+  .pied {{ margin:1.1rem .1rem 0; color:var(--muted); font-size:.85rem; line-height:1.55; }}
+  .pied .ligne {{ display:block; margin-top:.4rem; }}
+  .pied .ligne:first-child {{ margin-top:0; color:var(--text); font-size:.92rem; }}
+  .mention-legale {{ color:var(--muted); opacity:.75; font-size:.72rem; line-height:1.5; margin:1.4rem .1rem 0; }}
   a {{ color:var(--accent); }}
-  /* TELEPHONE (zone 2 de la refonte du 09/10/2026) : un bandeau fin colle en
-     haut, le formulaire juste dessous (plus centre dans l'ecran), champs et
-     bouton de 44 px. Le clavier ne cache pas le bouton : la page retrecit
-     avec lui (`interactive-widget`), et le champ touche fait defiler jusqu'au
-     bouton (script plus bas). Au-dessus de 768 px, rien ne change. */
+  /* TELEPHONE : la scene devient un bandeau fin colle en haut (mascotte + titre
+     sur une ligne), le formulaire juste dessous, champs et bouton de 44 px. Le
+     clavier ne cache pas le bouton : la page retrecit avec lui
+     (`interactive-widget`), et le champ touche fait defiler jusqu'au bouton
+     (script plus bas). Au-dessus de 768 px, c'est la mise en page a deux
+     colonnes. */
   @media (max-width:767px) {{
-    body {{ display:block; min-height:100dvh; padding:0 0 1.5rem; }}
-    main {{ max-width:none; }}
-    .marque {{ position:sticky; top:0; z-index:5; gap:.6rem; min-height:52px; margin:0 0 1rem;
-              padding:.35rem 1rem; background:#05060a; border-bottom:1px solid var(--border); }}
-    .marque img {{ width:2.2rem; height:2.2rem; }}
-    .marque h1 {{ font-size:1.3rem; }}
+    body {{ min-height:100dvh; padding-bottom:1.5rem; }}
+    .entete {{ display:none; }}
+    .cadre {{ display:block; }}
+    .scene {{ position:sticky; top:0; z-index:5; flex-direction:row; align-items:center; gap:.7rem;
+             min-height:56px; padding:.4rem 1rem; clip-path:none; border-bottom:1px solid var(--border);
+             background:linear-gradient(90deg, var(--accent-soft), transparent 70%), var(--panel); }}
+    .scene img {{ width:2.3rem; box-shadow:0 0 0 1px var(--border); }}
+    h1 {{ font-size:1.35rem; }}
+    .contenu {{ display:block; padding:1rem 0 0; }}
+    .colonne {{ max-width:none; }}
     .carte {{ margin:0 1rem; padding:1.1rem 1rem; border-radius:.7rem; }}
     label {{ margin-bottom:.8rem; }}
     input {{ min-height:44px; font-size:16px; }}
     button {{ min-height:48px; }}
-    p {{ margin:1rem 1rem 0; }}
-    p a {{ display:inline-flex; align-items:center; min-height:44px; min-width:44px; justify-content:center; }}
+    .pied, .mention-legale {{ margin-left:1rem; margin-right:1rem; }}
+    .pied a {{ display:inline-flex; align-items:center; min-height:44px; min-width:44px; }}
+    .lang {{ position:fixed; top:.5rem; right:.7rem; z-index:6; background:var(--panel); }}
+    .lang span {{ display:flex; align-items:center; min-height:40px; padding:0 .8rem; }}
   }}
 </style>
-<main>
-  <div class="marque"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></div>
-  <div class="carte">
-    {erreur}
-    <form method="post" action="{action}">
-      {champs}
-      <label>{mdp}<input name="mdp" type="password" autocomplete="{auto}" required></label>
-      <button type="submit">{bouton}</button>
-    </form>
-  </div>
-  <p>{pied}</p>
-  <p class="mention-legale">{mention}</p>
-  {bouton_appli}
-</main>
+<header class="entete">
+  <span class="entete-marque"><img src="/narwhal.png" alt="" width="512" height="512">NarwhalChampions</span>
+  {langue}
+</header>
+<div class="cadre">
+  <aside class="scene"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></aside>
+  <main class="contenu"><div class="colonne">
+    <div class="carte">
+      {erreur}
+      <form method="post" action="{action}">
+        {champs}
+        <label>{mdp}<input name="mdp" type="password" autocomplete="{auto}" required></label>
+        <button type="submit">{bouton}</button>
+      </form>
+    </div>
+    <div class="pied">{pied}</div>
+    <p class="mention-legale">{mention}</p>
+    {bouton_appli}
+  </div></main>
+</div>
 <script>(function(){{
   // Telephone : le clavier ne doit pas cacher le bouton d'envoi. Au toucher
   // d'un champ, une fois le clavier ouvert, on amene le bouton dans l'ecran.
@@ -5896,7 +5940,8 @@ class Handler(BaseHTTPRequestHandler):
         if instance_discord:
             champs += '<input type="hidden" name="da" value="%s">' % html.escape(instance_discord)
         return PAGE_FORMULAIRE.format(
-            titre=lang.t("Creer un compte") if inscription else lang.t("Se connecter"),
+                langue=_bouton_langue(),
+            titre=lang.t("Créer un compte") if inscription else lang.t("Se connecter"),
             action="/inscription" if inscription else "/connexion",
             bouton=lang.t("Demander un compte") if inscription else lang.t("Entrer"),
             auto="new-password" if inscription else "current-password",
@@ -5904,20 +5949,20 @@ class Handler(BaseHTTPRequestHandler):
             champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             bouton_appli=_bouton_appli(), mention=_mention_complete(),
-            pied=((lang.t("Tu es invite : ton compte sera actif tout de suite.")
+            pied=_lignes_pied(*((lang.t("Tu es invité : ton compte sera actif tout de suite.")
                    if invitation_valide(jeton) else
-                   lang.t("Ton compte devra etre valide a la main avant de servir."))
-                  + ' ' + lang.t('Deja un compte ? <a href="/connexion">Se connecter</a>.')
+                   lang.t("Ton compte devra être validé à la main avant de servir."),
+                  lang.t('Déjà un compte ? <a href="/connexion">Se connecter</a>.'))
                   if inscription else
-                  lang.t('Pas encore de compte ? <a href="/inscription">En demander un</a>.')
-                  + ' ' + lang.t("Mot de passe oublie ? Demande un lien de reinitialisation a l'administrateur.")
+                  (lang.t('Pas encore de compte ? <a href="/inscription">En demander un</a>.'),
+                  lang.t("Mot de passe oublié ? Demande un lien de réinitialisation à l'administrateur."),
                   # ⚠ LA REGLE EST ANNONCEE, PAS SUBIE. Le site ne sait pas
                   # envoyer de courriel : personne ne peut etre prevenu de son
                   # expiration. La seule facon honnete de la faire accepter est
                   # de l'ecrire la ou tout le monde passe.
-                  + ' ' + lang.t("Les places sont comptees : {jours} jours sans venir et la tienne"
-                                 " retourne au pot. Ecris-moi, je te la rends.").replace(
-                      "{jours}", str(EXPIRATION_JOURS))),
+                  lang.t("Les places sont comptées : {jours} jours sans venir et la tienne"
+                         " retourne au pot. Écris-moi, je te la rends.").replace(
+                      "{jours}", str(EXPIRATION_JOURS))))),
         ).encode("utf-8")
 
     def _page_contact_createurs(self, erreur: str = "", valeurs: dict | None = None,
@@ -5955,6 +6000,7 @@ class Handler(BaseHTTPRequestHandler):
                    lang.t("Ton message : ce que tu as créé, et où ça apparaît sur le site"), v["message"],
                    lang.t("Envoyer")))
         return PAGE_CONTACT_CREATEURS.format(
+            langue=_bouton_langue(),
             titre=lang.t("Crédits et retrait"),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             formulaire=formulaire,
@@ -5966,14 +6012,15 @@ class Handler(BaseHTTPRequestHandler):
     def _formulaire_reinitialisation(self, jeton: str, erreur: str = "") -> bytes:
         """Le formulaire du nouveau mot de passe, sur le gabarit commun."""
         return PAGE_FORMULAIRE.format(
+                langue=_bouton_langue(),
             titre=lang.t("Nouveau mot de passe"),
             action="/reinitialisation", bouton=lang.t("Enregistrer"), auto="new-password",
             mdp=lang.t("Mot de passe"),
             champs='<input type="hidden" name="r" value="%s">' % html.escape(jeton),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             bouton_appli=_bouton_appli(), mention=_mention_complete(),
-            pied=lang.t("Huit caracteres au minimum. Tes sessions ouvertes seront fermees.")
-                 + ' ' + lang.t('<a href="/connexion">Se connecter</a>.'),
+            pied=_lignes_pied(lang.t("Huit caractères au minimum. Tes sessions ouvertes seront fermées."),
+                              lang.t('<a href="/connexion">Se connecter</a>.')),
         ).encode("utf-8")
 
     def _servir_capture(self) -> None:
@@ -6635,7 +6682,7 @@ class Handler(BaseHTTPRequestHandler):
             jeton = urllib.parse.parse_qs(requete.query).get("i", [""])[0]
             if not INSCRIPTION_LIBRE and not invitation_valide(jeton):
                 self._repondre(403, self._formulaire(
-                    "inscription", "Il faut un lien d'invitation pour creer un compte ici."))
+                    "inscription", lang.t("Il faut un lien d'invitation pour créer un compte ici.")))
                 return
             self._repondre(200, self._formulaire("inscription", jeton=jeton))
         elif self.chemin == "/connexion":
@@ -6956,7 +7003,8 @@ class Handler(BaseHTTPRequestHandler):
                     "inscription", str(erreur), champs.get("i", "")))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
-                titre=lang.t("Demande enregistree"), action="/connexion",
+                langue=_bouton_langue(),
+                titre=lang.t("Demande enregistrée"), action="/connexion",
                 bouton=lang.t("Entrer"), auto="current-password", erreur="",
                 mdp=lang.t("Mot de passe"),
                 bouton_appli=_bouton_appli(), mention=_mention_complete(),
@@ -6975,7 +7023,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(400, self._formulaire_reinitialisation(champs.get("r", ""), str(erreur)))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
-                titre=lang.t("Mot de passe enregistre"), action="/connexion",
+                langue=_bouton_langue(),
+                titre=lang.t("Mot de passe enregistré"), action="/connexion",
                 bouton=lang.t("Entrer"), auto="current-password", erreur="",
                 mdp=lang.t("Mot de passe"),
                 champs='<label>%s<input name="pseudo" '

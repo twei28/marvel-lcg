@@ -102,24 +102,24 @@ DICO_EN: dict[str, str] = {
 
     # --- Connexion et inscription -------------------------------------------
     "Se connecter": "Sign in",
-    "Creer un compte": "Create an account",
+    "Créer un compte": "Create an account",
     "Demander un compte": "Request an account",
     "Entrer": "Enter",
     "Pseudo": "Username",
     "Adresse e-mail": "Email address",
     "Pseudo ou adresse e-mail": "Username or email address",
-    "Tu es invite : ton compte sera actif tout de suite.":
+    "Tu es invité : ton compte sera actif tout de suite.":
         "You have an invitation: your account will be active right away.",
-    "Ton compte devra etre valide a la main avant de servir.":
+    "Ton compte devra être validé à la main avant de servir.":
         "Your account will have to be approved by hand before it works.",
-    'Deja un compte ? <a href="/connexion">Se connecter</a>.':
+    'Déjà un compte ? <a href="/connexion">Se connecter</a>.':
         'Already have an account? <a href="/connexion">Sign in</a>.',
     'Pas encore de compte ? <a href="/inscription">En demander un</a>.':
         'No account yet? <a href="/inscription">Request one</a>.',
-    "Mot de passe oublie ? Demande un lien de reinitialisation a l'administrateur.":
+    "Mot de passe oublié ? Demande un lien de réinitialisation à l'administrateur.":
         "Forgotten your password? Ask the administrator for a reset link.",
-    "Les places sont comptees : {jours} jours sans venir et la tienne"
-    " retourne au pot. Ecris-moi, je te la rends.":
+    "Les places sont comptées : {jours} jours sans venir et la tienne"
+    " retourne au pot. Écris-moi, je te la rends.":
         "Seats are limited: {jours} days without visiting and yours goes back "
         "to the pool. Write to me and I will give it back.",
 
@@ -180,15 +180,16 @@ DICO_EN: dict[str, str] = {
     "Reessayer": "Try again",
 
     # --- Ce qui peut refuser une connexion ou une inscription ---------------
-    "Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _.":
+    "Pseudo invalide : 3 à 24 caractères, lettres, chiffres, - et _.":
         "Invalid username: 3 to 24 characters, letters, digits, - and _.",
     "Adresse e-mail invalide.": "Invalid email address.",
-    "Mot de passe trop court : 8 caracteres au minimum.":
+    "Mot de passe trop court : 8 caractères au minimum.":
         "Password too short: 8 characters minimum.",
-    "Il faut un lien d'invitation pour creer un compte ici.":
+    "Il faut un lien d'invitation pour créer un compte ici.":
         "You need an invitation link to create an account here.",
-    "Ce pseudo est deja pris.": "That username is already taken.",
-    "Cette adresse est deja utilisee.": "That address is already in use.",
+    "Ce pseudo est déjà pris.": "That username is already taken.",
+    "Cette adresse est déjà utilisée.": "That address is already in use.",
+    "Le site est complet ({n} comptes).": "The site is full ({n} accounts).",
     "Plus aucun espace de jeu disponible.": "No game space left.",
     "Identifiant ou mot de passe incorrect.":
         "Incorrect username or password.",
@@ -215,7 +216,7 @@ DICO_EN: dict[str, str] = {
         "server, not on your phone. Get back online and try again.",
 
     # --- Apres une reinitialisation de mot de passe -------------------------
-    "Mot de passe enregistre": "Password saved",
+    "Mot de passe enregistré": "Password saved",
     "Ton nouveau mot de passe est en place : connecte-toi.":
         "Your new password is set: sign in.",
 
@@ -231,13 +232,13 @@ DICO_EN: dict[str, str] = {
     # --- Le nouveau mot de passe, depuis un lien de reinitialisation --------
     "Nouveau mot de passe": "New password",
     "Enregistrer": "Save",
-    "Huit caracteres au minimum. Tes sessions ouvertes seront fermees.":
+    "Huit caractères au minimum. Tes sessions ouvertes seront fermées.":
         "Eight characters minimum. Your open sessions will be closed.",
     '<a href="/connexion">Se connecter</a>.':
         '<a href="/connexion">Sign in</a>.',
 
     # --- Apres une demande d'inscription ------------------------------------
-    "Demande enregistree": "Request received",
+    "Demande enregistrée": "Request received",
     "Ton compte est actif : connecte-toi.": "Your account is active: sign in.",
     "Ton compte attend une validation manuelle. Reviens une fois"
     " qu'elle est faite.":
