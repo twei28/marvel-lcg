@@ -13,4 +13,10 @@ MC/DC, `team@mcdc.fun`, non redistribués dans ce dépôt). Pour les retrouver :
 - Drive : https://drive.google.com/drive/folders/1qCDqiOTbvYG9vG2p5Ebn9p71dPt6rRso (créé le 11/10/2026).
 - Un seul fichier visible par l'accès actuel : `P - dr sinclair - RP.jpg` (1500 × 2150 px, 450 Ko), une version « pleine illustration » de **Dr. Sinclair** (MC/DC 6176, Protection, Soutien, Persona. Thérapeute, coût 2 ; illustration de Tana Ford) :
   `sources/full-art-reprint-dr-sinclair-6176.jpg`. Le guide annonce un booster « Full-art » de 20 cartes : les 19 autres ne sont pas dans le dossier partagé (ou pas visibles).
-- La carte Dr. Sinclair n'existe pas encore dans le jeu (aucune carte de ce nom dans `cards.json`) : l'art alternatif ne peut se brancher (`data/arts_alternatifs.json`) qu'une fois la carte créée.
+- **Correction du 20/10/2026** : la carte Dr. Sinclair EXISTE dans le jeu : `52017` (pack fan-made `silk`, Protection, Support, Persona. Therapist, coût 2, texte identique à l'image). Elle est branchée comme art alternatif `mcdc26` (`data/arts_alternatifs.json`).
+
+## 3. Galerie des cartes MC/DC 2026 (20/10/2026)
+- Page : https://www.mcdc.fun/2026-card-gallery. Les 215 images uniques sont téléchargées dans `sources/galerie/<section>/` par `telecharger-galerie.py` (relançable) ; inventaire dans `GALERIE.md`.
+- Les 41 reprints (RP) de cette galerie sont le booster « Full-art » : 31 sont branchés comme arts alternatifs (`importer-full-art.py`, code `mcdc26`, images 615×882 dans `assets/pics/<id>_mcdc26.jpg`), 10 attendent une réponse dans `.planning/todos/2026-10-20-mcdc-full-art-questions.md`.
+- Les autres sections (scénarios, lieux, méchants, sous-fifres, sets modulaires, cartes de campagne et de défi) sont de la matière pour la future campagne Punisher : téléchargées seulement, non intégrées.
+- Crédit : « Full Art Reprints : MC/DC 2026 (Jonah, Marvin, Scott, Tim) » dans `public/credits.html` et dans les nouveautés.
