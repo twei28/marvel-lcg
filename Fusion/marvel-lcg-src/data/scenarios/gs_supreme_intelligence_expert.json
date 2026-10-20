@@ -1,0 +1,49 @@
+{
+  "version": "0.5.8",
+  "name": "Supreme Intelligence",
+  "villain": [
+    "gs196",
+    "gs197"
+  ],
+  "expert": true,
+  "schemes": [
+    "gs198a,gs198b",
+    "gs199a,gs199b"
+  ],
+  "set_aside": [
+    "gs200"
+  ],
+  "encounters": [
+    "gs201",
+    "gs201",
+    "gs202",
+    "gs202",
+    "gs202",
+    "gs202",
+    "gs203",
+    "gs204",
+    "gs204",
+    "gs205",
+    "gs206",
+    "gs207",
+    "gs207",
+    "gs208",
+    "gs208",
+    "gs209",
+    "gs210",
+    "gs211",
+    "gs212",
+    "gs213",
+    "gs214",
+    "gs215",
+    "gs216",
+    "gs217"
+  ],
+  "encounter_sets": [
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "gs_seeds_of_corruption"
+  ]
+}

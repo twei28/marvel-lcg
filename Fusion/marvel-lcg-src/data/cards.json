@@ -118805,7 +118805,558 @@
    "set_name": "Majestrix's Verdict",
    "text": "<b>When Revealed</b>: If Lilandra is in play, she attacks you <i>(resolve her ATK against you without exhausting her, but with taking consequential damage)</i>. Otherwise, place 3 threat on Imprisoned on Chandilar.",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs195",
+   "type": "Villain",
+   "name": "* Supreme Intelligence",
+   "subtitle": "",
+   "desc": {
+    "HP": "13*",
+    "SCH": "2",
+    "ATK": "1",
+    "Stage": "1"
+   },
+   "traits": [
+    "KREE"
+   ],
+   "set_name": "Supreme Intelligence",
+   "text": "<b>Forced Response</b>: After a [[KREE]] minion is defeated, heal 1 damage from the villain. If that minion has the [[ELITE]] trait, give the villain a facedown boost card.\n<i>\"...I am the living embodiment of power...for I am the Supreme Intelligence of the majestic race of the Kree!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs196",
+   "type": "Villain",
+   "name": "* Supreme Intelligence",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "SCH": "2",
+    "ATK": "2",
+    "Stage": "2",
+    "Toughness": "1"
+   },
+   "traits": [
+    "KREE"
+   ],
+   "set_name": "Supreme Intelligence",
+   "text": "Toughness.\n<b>Forced Response</b>: After a [[KREE]] minion is defeated, heal 1 damage from the villain. If that minion has the [[ELITE]] trait, give the villain a facedown boost card.\n<i>\"...I am the living embodiment of power...for I am the Supreme Intelligence of the majestic race of the Kree!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs197",
+   "type": "Villain",
+   "name": "* Supreme Intelligence",
+   "subtitle": "",
+   "desc": {
+    "HP": "15*",
+    "SCH": "3",
+    "ATK": "2",
+    "Stage": "3",
+    "Toughness": "1"
+   },
+   "traits": [
+    "KREE"
+   ],
+   "set_name": "Supreme Intelligence",
+   "text": "Toughness.\n<b>Forced Response</b>: After a [[KREE]] minion is defeated, heal 1 damage from the villain and give it a facedown boost card.\n<i>\"...I am the living embodiment of power...for I am the Supreme Intelligence of the majestic race of the Kree!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs198a",
+   "type": "MainScheme",
+   "name": "Protectors of the Kree Empire",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "<b>Contents</b>: Supreme Intelligence (I) and (II) <i>(Supreme Intelligence (II) and (III) instead for expert mode)</i>. Supreme Intelligence, Starforce, and Standard sets. One modular encounter set <i>(Seeds of Corruption)</i>.\n<b>Setup</b>: Set each [[STARFORCE]] minion aside and put 1 of them at random into play engaged with the first player. Attach Holding Tank to the villain.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs198b",
+   "type": "MainScheme",
+   "name": "Protectors of the Kree Empire",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1",
+    "TargetThreat": "6",
+    "EscalationThreat": "2",
+    "StartingThreat": "0"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "The target threat value of this scheme cannot be changed.\n[star] <b>Forced Interrupt</b>: When this scheme would be completed, remove all threat from here instead and put a random set aside [[STARFORCE]] minion into play engaged with the first player. Then, if there are 5 or less set aside [[STARFORCE]] minions, advance to stage 2A.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs199a",
+   "type": "MainScheme",
+   "name": "The Endless Mind",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "<i>\"The Supreme Intelligence. It killed every person who it admired or who opposed it, and added their minds, dead and screaming, to its own.\" —Carol Danvers</i>\n<b>When Revealed</b>: Shuffle each set aside [[STARFORCE]] minion into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs199b",
+   "type": "MainScheme",
+   "name": "The Endless Mind",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2",
+    "TargetThreat": "11*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "<i>The Supreme Intelligence is the collective of the greatest Kree minds in history removed upon their deaths and assimilated by the supercomputer in a process called \"Supremorization\".</i>\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs200",
+   "type": "Attachment",
+   "name": "Holding Tank",
+   "subtitle": "",
+   "desc": {
+    "Uses": "7*,integrity",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "Uses (7[per_hero] integrity counters). Victory 0.\nReduce the amount of damage the villain takes from each attack by 2.\n<b>Forced Response</b>: After an enemy takes any amount of damage, remove 1 integrity counter from here.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs201",
+   "type": "Attachment",
+   "name": "Genetic Augmentation",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Supreme Intelligence",
+   "text": "Attach to the [[KREE]] minion with the most remaining hit points. Otherwise, this card gains surge.\nAttached minion gets +2 hit points and gains the [[ELITE]] trait.\n<i>\"I used the crystal's power on my Kree subjects...effecting countless millennia of evolution in mere moments.\" —Supreme Intelligence</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs202",
+   "type": "Minion",
+   "name": "Kree Infantry",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Guard": "1",
+    "Patrol": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "KREE"
+   ],
+   "set_name": "Supreme Intelligence",
+   "text": "Guard. Patrol.\n<b>When Defeated</b>: Place 2 threat on the main scheme.\n<i>\"The Kree ascension is now and those who stand in its way will fall.\" —Minister Marvel</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs203",
+   "type": "Minion",
+   "name": "* Ren-Varr",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "1",
+    "Vulnerable": "1",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "GENIUS",
+    "KREE"
+   ],
+   "set_name": "Supreme Intelligence",
+   "text": "Vulnerable.\n<b>When Defeated</b>: Give the villain a tough status card.\n<i>\"I have the power to undo the annihilation of the Kree race!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs204",
+   "type": "Minion",
+   "name": "Supremor",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "1",
+    "ATK": "1",
+    "Villainous": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Supreme Intelligence",
+   "text": "Villainous.\n[star] Supremor gets +1 hit point for each [[KREE]] minion in the victory display.\n<i>\"The Kree will erase your misbegotten race from existence!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs205",
+   "type": "SideScheme",
+   "name": "Loyalty to Supremor",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Acceleration": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "<i>\"Revenge. Yes! That is something something a Kree can understand!\" —Doctor Minerva</i>\nEach minion gains guard.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs206",
+   "type": "SideScheme",
+   "name": "Selective Breeding",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "6",
+    "Amplify": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "<b>When Revealed</b>: Shuffle each [[KREE]] minion from the encounter discard pile into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs207",
+   "type": "SideScheme",
+   "name": "Supremor Seed",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4*",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "<b>When Defeated</b>: The defeating player may place 1 [[KREE]] minion from the victory display in the encounter discard pile.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs208",
+   "type": "Treachery",
+   "name": "Summon Reinforcements",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Supreme Intelligence",
+   "text": "<b>When Revealed</b>: If there is at least 1 [[STARFORCE]] minion set aside, the villain schemes. Otherwise, discard cards from the top of the encounter deck until a minion is discarded and reveal it.\n<i>\"The Supreme Intelligence of the Kree calls you. I know who you are.\" —Supreme Intelligence</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs209",
+   "type": "Minion",
+   "name": "* Cadmi-M the Pursuer",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "1",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Retaliate 1. Villainous. Victory 1.\nWhile Cadmi-M the Pursuer is in the victory display, the villain gains retaliate 1.\n<i>\"Oh well...improvisation works well too.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs210",
+   "type": "Minion",
+   "name": "* Doctor Minerva",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "2",
+    "ATK": "1",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Villainous. Victory 1.\nWhile Doctor Minerva is in the victory display, the villain gets +1 SCH.\n<i>\"Don't hurt your primitive human brain. Let me.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs211",
+   "type": "Minion",
+   "name": "* Inndig-O the Accuser",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "2",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Villainous. Victory 1.\nWhile Inndig-O the Accuser is in the victory display, the villain gets +1 ATK.\n<i>\"...I know an accusation when I hear one!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs212",
+   "type": "Minion",
+   "name": "* Korath the Pursuer",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "1",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Retaliate 1. Villainous. Victory 1.\nWhile Korath the Pursuer is in the victory display, the villain gains retaliate 1.\n<i>\"One touch of my beta-baton will wipe your smirk from all existence...\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs213",
+   "type": "Minion",
+   "name": "* Protector",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "1",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3",
+    "Steady": "1"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Steady. Villainous. Victory 1.\nWhile Protector is in the victory display, the villain gains steady.\n<i>\"Each of us in this unit has a job.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs214",
+   "type": "Minion",
+   "name": "* Ronan the Accuser",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "2",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Villainous. Victory 1.\nWhile Ronan the Accuser is in the victory display, the villain gets +1 ATK.\n<i>\"...this is the highes crime of all, to be un-Kree...\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs215",
+   "type": "Minion",
+   "name": "* Shatterax",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "1*",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Villainous. Victory 1.\n[star] Shatterax's attacks gain piercing.\nWhile Shatterax is in the victory display, the villain's attacks gain piercing.\n<i>\"Agent Shatterax to Hala Command and Control. Action against alien intrusion on Outpost SIK/SIGMA now in progress.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs216",
+   "type": "Minion",
+   "name": "* Ultimus",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "1*",
+    "Villainous": "1",
+    "Victory": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "KREE",
+    "STARFORCE"
+   ],
+   "set_name": "Starforce",
+   "text": "Villainous. Victory 1.\n[star] Ultimus's attacks gain overkill.\nWhile Ultimus is in the victory display, the villain's attacks gain overkill.\n<i>\"Such a fool deserves death!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs217",
+   "type": "Treachery",
+   "name": "Starformation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Starforce",
+   "text": "<b>When Revealed</b>: Give each [[STARFORCE]] minion a tough status card and a facedown boost card. Otherwise, give the villain a tough status card and a facedown boost card.\n<i>\"We have been gathered by the Supreme Intelligence for a reason, for this is a turning point in our history, and we are needed!\" —Ultimus</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs218",
+   "type": "Attachment",
+   "name": "Manipulated Memories",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Seeds of Corruption",
+   "text": "Attach to your identity.\nEach event card in your hand gains requirement ([mental]).\n<b>Hero Action</b>: Spend 2 resources of the same type → discard this card.\n<hr />\n[star] <b>Boost</b>: If this activation is a scheme, you are confused. Otherwise, you are stunned.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs219",
+   "type": "SideScheme",
+   "name": "Psychic Shackles",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Seeds of Corruption",
+   "text": "<i>\"Now that you are truly helpless, I will assimilate your intellect, conquering your mind as well as your body!\" —Supreme Intelligence</i>\nHinder 1[per_hero].\nPlayers cannot play cards with a printed [mental] resource.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs220",
+   "type": "Treachery",
+   "name": "Mental Torture",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Seeds of Corruption",
+   "text": "<b>When Revealed</b>: Discard 1 random card from your hand. If a [mental] resource was discarded this way, stun your identity.\n<i>\"While you writhe in abject helplessness, I have probed your primitive brains! And now... I am done!\" —Supreme Intelligence</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs221",
+   "type": "Treachery",
+   "name": "Whisper in the Mind",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Seeds of Corruption",
+   "text": "<b>When Revealed</b>: Find a copy of your obligation and reveal it. If your obligation was not revealed this way, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If your obligation is in the victory display or if it was removed from the game, shuffle it into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs222a",
+   "type": "SideScheme",
+   "name": "Nega-Bomb",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "8*",
+    "Setup": "1",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "Nega-Bomb",
+   "text": "<i>\"The Nega-Bomb is the most abominable devices the Shi'ar people have ever created.\"</i>\nSetup. Victory 0.\nEnters play with 4 time counters on it.\n<b>Forced Response</b>: After resolving step one of the villain phase, remove 1 time counter from here. If there is no time counter here, flip this card and reveal Detonation.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs222b",
+   "type": "Environment",
+   "name": "Detonation",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Nega-Bomb",
+   "text": "<b>When Revealed</b>: Deal X damage to each friendly character and minion in play ignoring any tough status card, where X is equal to the amount of threat here divided by the total number of friendly characters and minions in play (rounded up). Remove this card from the game.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs223",
+   "type": "Treachery",
+   "name": "Green Interference",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Nega-Bomb",
+   "text": "<b>When Revealed</b>: Remove 1 all-purpose counter from each card in play. If no counter was removed this way, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Remove 1 all-purpose counter from a card in play.",
+   "custom": "Kajislav"
   }
  ],
- "checksum": "98d76e4b7b7d1791fe39348f5ebc5e6a5fb0c31072e73324d042b9f58e4a209f"
+ "checksum": "6173e5029de854db2008f94d1cce844e937abff9f62ddca8e078b77f64ebe789"
 }

@@ -119,6 +119,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // Packs TMNT (16/10/2026) : essaims de Donatello (td016/td017, PV = compteurs) et
   // Mutagen Bomb de Raphael (tr014).
   swarm: 'essaim',
+  // Galactic Storm, scenario 5 (20/10/2026) : « Uses (7[per_hero] integrity counters) » de gs200 Holding Tank.
+  integrity: 'intégrité',
   knucklehead: 'andouille',
   // Aspects TMNT Dual-Aspect (16/10/2026) : ud003 Heavy Metal entre en jeu avec 2 « amp counters ».
   amp: 'ampli',

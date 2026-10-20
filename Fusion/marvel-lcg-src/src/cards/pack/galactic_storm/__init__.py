@@ -21,6 +21,8 @@ from cards.pack import *
 #   - `Quasar`         -> quasar/
 #   - `Quasar Nemesis` -> quasar_nemesis/
 #   - `Majestrix's Verdict` -> majestrixs_verdict/ (scenario 2, lot GS-5)
+#   - `Supreme Intelligence`, `Starforce`, `Seeds of Corruption`, `Nega Bomb` -> supreme_intelligence/, starforce/,
+#     seeds_of_corruption/, nega_bomb/ (scenario 5 et modulaires, lot GS-8)
 # ===========================================================================
 
 # ⚠ Les helpers partages vivent dans le `__init__.py` DU SET, pas ici (les

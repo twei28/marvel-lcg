@@ -1885,16 +1885,20 @@
  "144. Custom (Galactic Storm)": {
   "name": "galactic_storm",
   "scenarios": [
-   "gs_majestrix_verdict"
+   "gs_majestrix_verdict",
+   "gs_supreme_intelligence"
   ],
   "heroes": [
    "binary",
    "quasar"
   ],
   "encounters": [
-   "gs_majestrix_verdict"
+   "gs_majestrix_verdict",
+   "gs_starforce",
+   "gs_seeds_of_corruption",
+   "gs_nega_bomb"
   ],
-  "max_id": "gs137"
+  "max_id": "gs223"
  },
- "checksum": "be07428132c3a7dd15ca0d0a25151275ba3d09222ce1c296524f424754aaee66"
+ "checksum": "53ac02066d269e13137ea891125c12af74553bad2ea96fa309d4567281bbb811"
 }
