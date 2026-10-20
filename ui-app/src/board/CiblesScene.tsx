@@ -12,6 +12,8 @@ import { useApercuSurvol } from './apercu-survol'
 import { CarteApercu } from './Board'
 import { t } from './langue'
 import { avecIcones, marquerRessources } from './icones-ressources'
+import { useOrdreGlisser } from './ordre-glisser'
+import './ordre-glisser.css'
 
 export type CibleScene = {
   props: ScanCardProps
@@ -24,6 +26,8 @@ export type CibleScene = {
   ordreReculer?: () => void
   /** Voir `EtatInteractif.ordreAvancer`. */
   ordreAvancer?: () => void
+  /** Voir `EtatInteractif.permuterAvec`. */
+  permuterAvec?: (autreId: number) => void
   /** Voir `EtatInteractif.assignerReste`. */
   assignerReste?: () => void
   /** Voir `EtatInteractif.assignerResteQuantite`. */
@@ -68,6 +72,7 @@ export function CiblesScene({
     cibles,
     (cible) => cible.props.id
   )
+  const glisserOrdre = useOrdreGlisser()
   return (
     <div
       className="cibles-scene"
@@ -89,7 +94,10 @@ export function CiblesScene({
       {cibles.length > 0 ? (
         <div className="cibles-scene-cartes">
           {cibles.map((cible) => (
-            <span key={cible.props.id} className="cibles-scene-carte">
+            <span
+              key={cible.props.id}
+              {...glisserOrdre(cible.props.id, cible.permuterAvec, 'cibles-scene-carte')}
+            >
               <ScanCard
                 {...cible.props}
                 state={cible.choisie ? 'selected' : 'targetable'}
