@@ -2697,6 +2697,17 @@
     gap: 14px;
   }
 
+  /* PAIRE JUMELLE EN JEU (decision du 20/10/2026, APERCU_JUMELLES_DOUBLE) : les deux
+     moities, a la taille de l'apercu d'une carte, collees bord a bord pour retrouver
+     l'illustration continue. Chaque moitie garde son libelle (sur le scan) et son
+     encadre de regle dessous. L'apercu reste ancre a droite : il s'elargit vers la
+     gauche. */
+  .carte-apercu.a-jumelles {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+  }
+
   /* Le texte des cartes doit rester LISIBLE meme a trois faces : a 208px les
      identites multi-formes (Amadeus Cho, Ant-Man) etaient illisibles. On
      agrandit, en bornant a la largeur de fenetre pour ne pas deborder sur les
