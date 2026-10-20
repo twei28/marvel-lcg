@@ -3,15 +3,12 @@
 La fiche du 09/10 tranche la mise en page, le bandeau mobile, les deux corrections de texte et le pied de page.
 Elle ne tranche pas les points ci-dessous : rien n'a été codé pour eux.
 
-## 1. Palette : rouge actuel du site, ou bleu Épuré ?
+## 1. Palette : TRANCHÉE le 20/10/2026 (Épuré)
 
-La fiche dit « respecter le mode sobre » ; la mémoire du projet dit que l'Épuré est devenu la base visuelle (fond #111318, accent bleu #3f86e0,
-titres en Bangers). Le site n'a pas de mode Épuré (seul `SOBRE_SITE` existe) et ses pages gardent le rouge Marvel.
-Fait : la page n'utilise que des variables CSS, donc le mode sobre la ternit comme les autres pages du site.
-- Option A (recommandée) : laisser le rouge et le fond du site pour l'instant. Connexion, accueil du site et admin restent cohérents entre eux.
-- Option B : passer ces pages seules en Épuré (fond #111318, bouton bleu, titres en Bangers). Écran : plus proche de l'accueil du jeu, mais
-  la page de connexion ne ressemble plus au reste du site (accueil, admin, signalements) tant qu'ils ne suivent pas.
-- Option C : Épuré sur tout le site, chantier à part.
+Décision de l'utilisateur : ces pages passent en Épuré (fond #111318, surface #1c2028, champ #292e38, filet #383e49, accent bleu #3f86e0,
+titres en Bangers), jetons repris de `Fusion/marvel-lcg-src/public/css/affichage-epure-pages.css`. Appliqué au gabarit commun
+(connexion, inscription, réinitialisation, confirmations, page des créateurs). L'ancien habillage rouge reste dans le code derrière
+`EPURE_FORMULAIRE` (False pour y revenir). Le mode sobre redéfinit les variables par-dessus dans les deux cas.
 
 ## 2. Sélecteur FR / EN
 

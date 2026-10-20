@@ -38,6 +38,15 @@ test.describe('connexion et inscription du site', () => {
         await expect(page.locator('h1')).toHaveText(l.titre);
         await expect(page.getByRole('button', { name: l.bouton })).toBeVisible();
         expect(await sansDebordement(page)).toBe(true);
+        // Épuré (20/10/2026) : fond #111318, bouton bleu Captain #3f86e0, titres en Bangers.
+        const couleurs = await page.evaluate(() => ({
+          fond: getComputedStyle(document.body).backgroundColor,
+          bouton: getComputedStyle(document.querySelector('form button[type=submit]')!).backgroundColor,
+          titre: getComputedStyle(document.querySelector('h1')!).fontFamily,
+        }));
+        expect(couleurs.fond).toBe('rgb(17, 19, 24)');
+        expect(couleurs.bouton).toBe('rgb(63, 134, 224)');
+        expect(couleurs.titre).toContain('Bangers');
 
         const scene = await page.locator('.scene').boundingBox();
         const carte = await page.locator('.carte').boundingBox();

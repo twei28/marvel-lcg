@@ -4121,14 +4121,7 @@ PAGE_FORMULAIRE = """<!doctype html>
      Au telephone la scene devient un BANDEAU colle en haut, le formulaire
      dessous. Toutes les couleurs passent par les variables : le mode sobre
      (SOBRE_SITE) les redefinit sans rien toucher ici. */
-  :root {{
-    color-scheme: dark;
-    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
-    --text:#eef1f5; --muted:#8b95a3;
-    --accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14); --accent-ink:#fff;
-    --danger:#f85149;
-    --affiche: "Anton", "Arial Narrow", sans-serif;
-  }}
+  /*JETONS*/
   * {{ box-sizing:border-box; }}
   body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--text);
          min-height:100vh; display:flex; flex-direction:column; }}
@@ -5427,6 +5420,37 @@ _TETE_POUR_FORMAT = TETE_APPLI.replace("{", "{{").replace("}", "}}")
 # que chaque `.format` remplit avec `_bouton_appli()`.
 PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT)
 PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT)
+
+# LES COULEURS DES PAGES DE FORMULAIRE (20/10/2026, decision de l'utilisateur :
+# « passer ces pages en Epure »). EPURE_FORMULAIRE = True : les jetons de
+# `Fusion/marvel-lcg-src/public/css/affichage-epure-pages.css` (fond #111318,
+# surface #1c2028, champ #292e38, filet #383e49, accent bleu Captain #3f86e0,
+# titres Bangers). False : l'ancien habillage rouge du site, conserve tel quel.
+# ⚠ Une seule bascule pour TOUT le gabarit (connexion, inscription,
+# reinitialisation, confirmations, page des createurs), pour qu'elles restent
+# coherentes entre elles. Le mode sobre (SOBRE_SITE) redefinit ces variables
+# par-dessus, dans les deux cas.
+EPURE_FORMULAIRE = True
+_JETONS_FORMULAIRE_ROUGE = """:root {{
+    color-scheme: dark;
+    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
+    --text:#eef1f5; --muted:#8b95a3;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14); --accent-ink:#fff;
+    --danger:#f85149;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
+  }}"""
+_JETONS_FORMULAIRE_EPURE = """:root {{
+    color-scheme: dark;
+    --bg:#111318; --panel:#1c2028; --panel-2:#292e38; --border:#383e49;
+    --text:#f2f3f5; --muted:#9da5b3;
+    --accent:#3f86e0; --accent-hover:#5a9bf0; --accent-soft:rgba(63,134,224,.16); --accent-ink:#fff;
+    --danger:#f85149;
+    --affiche: "Bangers", "Anton", Impact, "Arial Black", sans-serif;
+  }}"""
+PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace(
+    "/*JETONS*/", _JETONS_FORMULAIRE_EPURE if EPURE_FORMULAIRE else _JETONS_FORMULAIRE_ROUGE)
+if EPURE_FORMULAIRE:
+    PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("family=Anton&display", "family=Bangers&display")
 
 # L'heure locale, ajoutee aux deux pages qui montrent des dates ABSOLUES.
 #
