@@ -27,9 +27,11 @@ from majestrix_cards import CARDS, ENCOUNTERS, SET_ASIDE  # noqa: E402
 CLE_SET = "144. Custom (Galactic Storm)"
 PACK = "galactic_storm"
 SCENARIO = "gs_majestrix_verdict"
-# Le set modulaire du livret, Imperial Guard, appartient au lot GS-4 (pas encore porte) : en attendant, un set
-# officiel au theme Kree-Shi'ar (question Q1 de .planning/todos/2026-10-20-gs5-questions.md).
-MODULAIRE = "kree_militants"
+# Le set modulaire du livret est Imperial Guard, porte par le lot GS-4 (20/10/2026) : le modulaire PROVISOIRE (Kree Militants,
+# officiel, theme Kree-Shi'ar, question Q1 de .planning/todos/2026-10-20-gs5-questions.md) est remplace. L'utilisateur
+# ne tranchera ce module qu'a la fin : cette ligne est la seule a changer pour revenir en arriere
+# (MODULAIRE = "kree_militants").
+MODULAIRE = "gs_imperial_guard"
 
 
 def ecrire(chemin, obj, indent):

@@ -270,11 +270,30 @@ class CardFactory:
 
     @staticmethod
     # return like ['01001', '01002']
-    def LoadEncounterSet(encounter_set: str) -> List[str]:
+    def LoadEncounterSet(encounter_set: str, world: 'World|None'=None) -> List[str]:
         from game.scene.replay.encounter_set import EncounterSetDescriptor
         file_path = FileManager.FindJsonPath('EncounterSet', encounter_set)
         if file_path:
-            return Json.LoadAs(file_path, EncounterSetDescriptor).encounters
+            descriptor = Json.LoadAs(file_path, EncounterSetDescriptor)
+            if world is not None and descriptor.random_pick:
+                return CardFactory.RandomPick(descriptor.encounters, descriptor.random_pick, world)
+            return descriptor.encounters
         else:
             return []
+
+    @staticmethod
+    # AJOUT (20/10/2026, Galactic Storm, Imperial Guard, livret p.8) : un set de rencontre peut ne garder qu'une
+    # PARTIE de ses cartes, tirees au hasard au moment de former le deck rencontre. `random_pick` = liste de groupes
+    # `{"from": [card_id...], "count": n}` : n cartes du groupe sont gardees (au hasard, par le hasard de la partie,
+    # donc rejouable), les autres sont ecartees ; les cartes d'aucun groupe sont toujours gardees. L'ordre du set
+    # est conserve.
+    def RandomPick(encounters: List[str], groups: List[Dict[str, Any]], world: 'World') -> List[str]:
+        from game.operate.rand import Rand
+        removed: List[int] = []
+        for group in groups:
+            members = set(group["from"])
+            indexes = [i for i, name in enumerate(encounters) if name in members and i not in removed]
+            Rand.Shuffle(indexes, world)  # type: ignore
+            removed += indexes[int(group["count"]):]
+        return [name for i, name in enumerate(encounters) if i not in removed]
 

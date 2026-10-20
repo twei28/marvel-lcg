@@ -119356,7 +119356,668 @@
    "set_name": "Nega-Bomb",
    "text": "<b>When Revealed</b>: Remove 1 all-purpose counter from each card in play. If no counter was removed this way, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Remove 1 all-purpose counter from a card in play.",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs076",
+   "type": "Villain",
+   "name": "Kree Sentry",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "ATK": "1",
+    "SCH": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "KREE",
+    "ROBOT"
+   ],
+   "set_name": "Kree Sentry",
+   "text": "[star] <b>Forced Response</b>: After Kree Sentry attacks and damages a character, attach a set aside copy of Sentry's Grasp to that character. If you cannot, place 1 threat on the main scheme.\n<i>\"I am Intergalactic Sentry #372, re-activated for the first time since my posting on this primitive planet some 250 centuries ago.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs077",
+   "type": "Villain",
+   "name": "Kree Sentry",
+   "subtitle": "",
+   "desc": {
+    "HP": "18*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "2"
+   },
+   "traits": [
+    "KREE",
+    "ROBOT"
+   ],
+   "set_name": "Kree Sentry",
+   "text": "<b>When Revealed</b>: Attach a set aside copy of Sentry's Grasp to Rick Jones.\n[star] <b>Forced Response</b>: After Kree Sentry attacks and damages a character, attach a set aside copy of Sentry's Grasp to that character. If you cannot, place 2 threat on the main scheme.\n<i>\"I am Intergalactic Sentry #372, re-activated for the first time since my posting on this primitive planet some 250 centuries ago.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs078",
+   "type": "Villain",
+   "name": "Kree Sentry",
+   "subtitle": "",
+   "desc": {
+    "HP": "21*",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "KREE",
+    "ROBOT"
+   ],
+   "set_name": "Kree Sentry",
+   "text": "<b>When Revealed</b>: Attach each set aside copy of Sentry's Grasp to Rick Jones.\n[star] <b>Forced Response</b>: After Kree Sentry attacks and damages a character, attach a set aside copy of Sentry's Grasp to that character. If you cannot, place 3 threat on the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs079a",
+   "type": "MainScheme",
+   "name": "Sentry Awakens",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<b>Contents</b>: Kree Sentry (I) and Kree Sentry (II) <i>(Kree Sentry (II) and Kree Sentry (III) instead for expert mode)</i>. Kree Sentry, and Standard encounter sets. One modular encounter set <i>(Imperial Guard)</i>.\n<b>Setup</b>: Put Rick Jones into play under the first player's control. Set 1 copy of Sentry's Grasp aside and attach the other to Rick Jones.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs079b",
+   "type": "MainScheme",
+   "name": "Sentry Awakens",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1",
+    "TargetThreat": "7*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<i>Buried deep within an abandoned Kree outpost, the Psyche Magnitron remained dormant—until the vault was breached. Now, Sentry #372 has awakened, programmed to eliminate all intruders and protect its ancient charge at all costs.</i>\n[star] <b>Forced Response</b>: After resolving step one of the villain phase, deal 1 damage to each character for each copy of Sentry's Grasp attached to it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs080a",
+   "type": "MainScheme",
+   "name": "Self-Destruct Sequence",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<i>Realizing the Psyche Magnitron's value, the Kree Sentry redirected all power to its self-destruct sequence.</i>\n<b>When Revealed</b>: If the Outpost Collapse Protocol side scheme is in play, place 2[per_hero] threat and 1 acceleration token on it. Otherwise, search the encounter deck and discard pile for the Outpost Collapse Protocol side scheme and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs080b",
+   "type": "MainScheme",
+   "name": "Self-Destruct Sequence",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2",
+    "TargetThreat": "10*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "[star] <b>Forced Response</b>: After resolving step one of the villain phase, deal 1 damage to each character for each copy of Sentry's Grasp attached to it.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs081",
+   "type": "Ally",
+   "name": "* Rick Jones",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "THW": "1",
+    "ATK": "2**",
+    "Class": "Encounter"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "Kree Sentry",
+   "text": "The first player controls Rick Jones. He does not count against your ally limit.\n<b>Forced Interrupt</b>: When Kree Sentry attacks you, it attacks Rick Jones instead.\n<b>If Rick Jones leaves play, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs082",
+   "type": "Attachment",
+   "name": "Sentry's Grasp",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Kree Sentry",
+   "text": "Attached character cannot thwart or scheme and can only attack Kree Sentry or this card.\nAny player can attack this card as if it were a minion. If there is 3 or more damage here, set Sentry's Grasp aside.\n<b>Forced Interrupt</b>: When this card would leave play, set it aside instead.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs083",
+   "type": "Attachment",
+   "name": "Optic Blast Cannon",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "ATK+": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Kree Sentry",
+   "text": "Attach to Kree Sentry.\n[star] Kree Sentry's attacks gain piercing and ranged.\n<b>Hero Action</b>: Spend [physical][physical] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains piercing and ranged.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs084",
+   "type": "Attachment",
+   "name": "Repulsor Blast Unit",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "ATK+": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Kree Sentry",
+   "text": "Attach to Kree Sentry.\n[star] Kree Sentry's attacks gain overkill and ranged.\n<b>Forced Interrupt</b>: When Sentry's Grasp would be set aside, if there is 5 or more damage on it, discard Repulsor Blast Unit.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains overkill.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs085",
+   "type": "SideScheme",
+   "name": "Death Grip",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<i>Determined to hold the line, his grip tightens with deadly intent. Every move you make only brings his massive hand closer, ready to end the fight in an instant.</i>\nSentry's Grasp is set aside when there is 5 or more damage on it instead of 3.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs086",
+   "type": "SideScheme",
+   "name": "Locking on Target",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Amplify": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<i>\"A sentry can never surrender. A sentry must be true to its programming.\" —Kree Sentry</i>\nHinder 1[per_hero].",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs087",
+   "type": "SideScheme",
+   "name": "Outpost Collapse Protocol",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1",
+    "Hinder": "2*",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<i>As the battle rages, the outpost begins to collapse and falling debris threatens everyone inside.</i>\nHinder 2[per_hero].\n<b>Forced Response</b>: After resolving step one of the villain phase, the first player deals 1 damage to each character they control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs088",
+   "type": "Treachery",
+   "name": "\"Gotcha!\"",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<b>When Revealed</b>: Attach a set aside copy of Sentry's Grasp to Rick Jones. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Attach a set aside copy of Sentry's Grasp to Rick Jones.\n<i>\"The sentry is programmed to destroy you — and destroy you I shall!\" —Kree Sentry</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs089",
+   "type": "Treachery",
+   "name": "Caught in Its Sights",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<b>When Revealed</b>: You may spend 2 resources of any type. If you do not, Kree Sentry attacks Rick Jones.\n<i>\"Prioritizing threat matrix... Targets acquired. Execute primary.\" —Kree Sentry</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs090",
+   "type": "Treachery",
+   "name": "Intruder Elimination",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Kree Sentry",
+   "text": "<b>When Revealed</b>: Choose a non-[[KREE]] character. Kree Sentry attacks that character <i>(even if that character is an alter-ego)</i>. If an enemy was attacked this way, this card gains surge.\n<i>\"All intruders are to be destroyed!\" —Kree Sentry</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs091",
+   "type": "Environment",
+   "name": "Disciplined Training",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SETTING"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "Setup.\nEach [[IMPERIAL GUARD]] minion gains toughness.\n<b>Special</b>: Deal 1 damage to your identity.\n<b>When Revealed</b>: Discard each other [[SETTING]] environment in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs092",
+   "type": "Environment",
+   "name": "Loyal Devotion",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SETTING"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "Setup.\nEach [[IMPERIAL GUARD]] minion gains teamwork ([[IMPERIAL GUARD]]).\n<b>Special</b>: Place 1 threat on the main scheme.\n<b>When Revealed</b>: Discard each other [[SETTING]] environment in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs093",
+   "type": "Environment",
+   "name": "Noble Bearing",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SETTING"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "Setup.\nEach [[IMPERIAL GUARD]] minion gains guard and the [[ELITE]] trait.\n<b>Special</b>: Discard the top 3 cards of the encounter deck.\n<b>When Revealed</b>: Discard each other [[SETTING]] environment in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs094",
+   "type": "Minion",
+   "name": "* Astra",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard an identity-specific card you control. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"You will cause no more trouble, mutant, once I reach through you intangibly--then materialize my arm ever so slightly-just enough to shock your system to its foundations!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs095",
+   "type": "Minion",
+   "name": "* Earthquake",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Exhaust your identity. If you were already exhausted, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I am called Earthquake, mammals...behold the reason why!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs096",
+   "type": "Minion",
+   "name": "* Electron",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD",
+    "SHI'AR"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard a [energy] resource from your hand. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"Metal projectiles are useless against Electron, cretins...a man who controls magnetic force!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs097",
+   "type": "Minion",
+   "name": "* Fang",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard a card you control with a printed [wild] resource. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"In our culture, the warrior title of Fang is won in nigh-mortal combat.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs098",
+   "type": "Minion",
+   "name": "* Gladiator",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "3",
+    "Victory": "0"
+   },
+   "traits": [
+    "ELITE",
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "Victory 0.\n<b>When Revealed</b>: Defeat a non-scenario specific ally you control. If no ally was defeated this way, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I would gladly sacrifice your entire galaxy to save the life of a single Shi'ar!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs099",
+   "type": "Minion",
+   "name": "* Hobgoblin",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "3",
+    "ATK": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Resolve a \"<b>When Revealed</b>\" ability of another [[IMPERIAL GUARD]] minion in play. If no ability was resolved this way, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I've a bitter lesson for you, my praetor, things are not always what they seem.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs100",
+   "type": "Minion",
+   "name": "* Hussar",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard an upgrade you control. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"Ah! Another Terran to humble! I forget your name, but that hardly matters.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs101",
+   "type": "Minion",
+   "name": "* Magique",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD",
+    "SHI'AR"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Give the villain a tough status card. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"My spells will keep them from ensnaring me...\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs102",
+   "type": "Minion",
+   "name": "* Manta",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: You are stunned. If you were already stunned, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"You are to be held until a proper trial is scheduled for you.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs103",
+   "type": "Minion",
+   "name": "* Mentor",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "3",
+    "ATK": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard a player side scheme from play. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"The Imperial Guard will not allow this travesty to proceed any further.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs104",
+   "type": "Minion",
+   "name": "* Neutron",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard a support you control. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I've a bitter lesson for you, my praetor, things are not always what they seem.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs105",
+   "type": "Minion",
+   "name": "* Nightside",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard a [mental] resource from your hand. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"My name, in your primitive tongue, would be... Nightside. Does that give you a hint what my special power is?\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs106",
+   "type": "Minion",
+   "name": "* Oracle",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "3",
+    "ATK": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: You are confused. If you were already confused, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"If I cannot read your lips, youth...I shall instead read your mind!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs107",
+   "type": "Minion",
+   "name": "* Pulsar",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard a [physical] resource from your hand. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I will kill you extremely slowly for your insolence!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs108",
+   "type": "Minion",
+   "name": "* Smasher",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard an event from your hand. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"I am recalling you to serve, Superguardian.\" —Gladiator</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs109",
+   "type": "Minion",
+   "name": "* Starbolt",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Remove 1 all-purpose counter from a card you control. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"My body was converted to energy. Its physical weaknesses, its... attributes... are no more.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs110",
+   "type": "Minion",
+   "name": "* Titan",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "0",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard a resource card from your hand. If you cannot, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"Let's see you survive a foot-stomp, little mammal!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs111",
+   "type": "Minion",
+   "name": "* Warstar",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "IMPERIAL GUARD",
+    "ROBOT"
+   ],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard the top card of the encounter deck. If that card is an [[IMPERIAL GUARD]] minion, reveal it. Otherwise, resolve the \"<b>Special</b>\" ability on the [[SETTING]] environment.\n<i>\"Do not struggle, Terran. It merely forces us to increase the force of our grip.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs112",
+   "type": "Treachery",
+   "name": "Guard Assembles",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until you discard an [[IMPERIAL GUARD]] minion and reveal it.\n<i>\"I am recalling you to serve, Superguardian. Ready your family and report to the flagship, Lilandra. I will be waiting for you there.\" —Gladiator</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "gs113",
+   "type": "Treachery",
+   "name": "Imperial Formation",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Imperial Guard",
+   "text": "<b>When Revealed</b>: Resolve the \"<b>When Revealed</b>\" ability of each [[IMPERIAL GUARD]] minion in play. If you cannot, search the encounter deck and discard pile for an [[IMPERIAL GUARD]] minion and reveal it.\n<i>\"You are here to answer for your crimes.\" —Gladiator</i>",
+   "custom": "Kajislav"
   }
  ],
- "checksum": "6173e5029de854db2008f94d1cce844e937abff9f62ddca8e078b77f64ebe789"
+ "checksum": "429cad5947007115c22d80634d874be1f507a9a2f5e919d8cace85df391ca36c"
 }

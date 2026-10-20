@@ -367,7 +367,7 @@ class World(WorldAction, WorldFind):
         if not message.skip_create_encounter_deck:
             encounters: List[str] = campaign.encounters[:]
             for encounter_set in self.CompetitiveEncounterSets(message.encounter_set_names):
-                encounters += CardFactory.LoadEncounterSet(encounter_set)
+                encounters += CardFactory.LoadEncounterSet(encounter_set, self)
             CardFactory.GenerateCards(encounters, deck, self)
             Message.WhenDeckCreated_Text(deck)
 
@@ -508,7 +508,7 @@ class World(WorldAction, WorldFind):
             encounters: List[str] = campaign.encounters[:]
             from game.card.factory import CardFactory
             for encounter_set in self.CompetitiveEncounterSets(message.encounter_set_names):
-                encounters += CardFactory.LoadEncounterSet(encounter_set)
+                encounters += CardFactory.LoadEncounterSet(encounter_set, self)
 
             CardFactory.GenerateCards(encounters, scenario.encounter_deck, self)
             Message.WhenDeckCreated_Text(scenario.encounter_deck)
