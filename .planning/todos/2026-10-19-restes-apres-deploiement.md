@@ -12,7 +12,7 @@ En ligne : corrections « Sur la table » (T1 à T17, jeton de dégâts retiré,
 - **Cache téléphone/tablette** de la version en ligne (fichiers servis avec max-age 1 an) : pas de solution durable ; empreintes `?v=` comme sur Play à concevoir, sans toucher BUILD à l'aveugle.
 - **Version en ligne et défaut d'Assaut** : code identique côté rangement, moteur juste ; non confirmé en navigateur.
 - **Palettes** corrigées (75 vilains + TMNT) jamais envoyées en ligne (`data/palettes-heros-corrections.json` exclu des déploiements).
-- **Script de déploiement Linux** réutilisable (la procédure du 19/10 a été faite à la main, voir la mémoire `deploiement-verifier-joueurs-en-ligne`).
+- ~~**Script de déploiement Linux** réutilisable~~ : fait le 20/10/2026, `deploiement/deployer-linux.sh` (simulation par défaut, `--oui`, `--retour-arriere`), tests `deploiement/tests/test-deployer-linux.sh`. Jamais lancé en réel : premier vrai déploiement à surveiller.
 
 ## Mis de côté (voir aussi 2026-10-19-table-telephone-tablette.md)
 - Téléphone et tablette pour la phase du méchant (T13 abandonnée).
