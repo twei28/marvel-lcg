@@ -70,3 +70,11 @@ resource → attach this card to Lilandra. » Aucun « you » dans la phrase ; l
 - **Lilandra et le Trône** : la face soutien `gs120b` n'existe que via la défaite de la face manigance `gs120a`.
 - **Starjammers basiques** (`Class: Campaign;Basic`) : ils n'apparaissent pas dans l'éditeur de deck hors campagne
   (cartes recrutées en campagne, comme Magneto `32172b`). Lilandra : `Class: Encounter`.
+
+## Réponses de l'utilisateur (20/10/2026)
+
+Principe : suivre les règles du jeu à 100 %, sauf si la carte ou la campagne dit le contraire.
+- Q1 (modulaire du scénario seul) : « On attend de tout finir ». Aucun choix définitif maintenant : le module provisoire Kree Militants reste codé pour pouvoir lancer le scénario, et sera remplacé par Imperial Guard quand ce set (GS-4) sera porté (une ligne `MODULAIRE` dans `inserer_majestrix.py`).
+- Q2 (gs136, « place 2 threat on it ») : « it » = Imprisoned on Chandilar (lecture codée).
+- Q3 (gs119, les 6 menaces sans allié à libérer) : décidée par la règle (« faire ce qu'on peut » ; la manigance Permanente ne peut pas rester à 0) : les 6 menaces reviennent même sans allié (lecture codée).
+- Q4 (gs127/128/129, qui paie la Réponse) : décidée par précédent officiel (`32173b` Rescue Captives, carte de rencontre sans « you ») : n'importe quel joueur (lecture codée).
