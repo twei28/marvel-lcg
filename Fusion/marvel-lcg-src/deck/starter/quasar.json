@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Quasar",
     "metadata": {
+        "author": "Kajislav",
         "url": "",
         "aspect_note": "Aspect PROTECTION, donne par l'auteur : decklist « Starter Deck » imprimee dans le zip (Hero Packs/Quasar/Extra/starter deck Quasar.png), recopiee telle quelle (PROCESSUS-HEROS etape 3). Numeros 13 a 31 de la liste = cartes OFFICIELLES redessinees par Kajislav (« Starter deck's reskins ») : le jeu prend les officielles (Martyr 19012, Starhawk 16012, Desperate Defense 09015 x3, Powerful Punch 32014 x3, Change of Fortune 48014, Defensive Conditioning 56046, Electrostatic Armor 10031, Unflappable 09020, Cosmo 17020, Drax 18019, Gamora 19020, Martinex 21065, Multitalented 47021 x3, Energy/Genius/Strength 01088-01090, Knowhere 17022, Honorary Guardian 22035, S.H.I.E.L.D. Deputy 54033), les illustrations de l'auteur sont des ARTS ALTERNATIFS (code « quasar », data/arts_alternatifs.json ; collection de ressources « quasar »).",
         "bandes_note": "gs301 Quantum Bands (QUASAR 1/16, n° 2 de la liste) n'est PAS dans hero_deck : c'est l'amelioration PERMANENTE que le Setup de gs300b met en jeu (modele sk002a/b, as002a/b). Le deck de heros compte donc 15 cartes (n° 3 a 12 de la liste).",

@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Hulk (Rainy)",
     "metadata": {
+        "author": "Rainy",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 02/09/2026).",
         "forme_note": "13014 Surprise Attack (« Hero Response (attack): After you change form, deal 3 damage to a minion ») s'ajoute a hk009 The Other Guy, qui recompense DEJA chaque changement de forme. Le pack force la bascule par construction : hk007 Natural Genius ne se depense qu'en alter-ego, hk008 Unnatural Strength qu'en heros, et hk003 Brilliant Mind est une Alter-Ego Action.",

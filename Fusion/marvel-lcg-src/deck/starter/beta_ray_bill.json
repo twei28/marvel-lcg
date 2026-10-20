@@ -2,6 +2,7 @@
   "version": "0.5.8",
   "name": "Beta Ray Bill",
   "metadata": {
+    "author": "Rainy",
     "url": "",
     "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage). Les re-skins du pack qui s'y trouvaient (br011) restent au catalogue et au deck-builder.",
     "nemesis_note": "⚠ LE ZIP N'A AUCUN SET NEMESIS : il s'arrete a l'obligation br012 Unworthy. Le deck EMPRUNTE donc celui de THOR (06026 reste l'obligation de Thor et n'est PAS reprise ; 06027-06030 sont les 5 cartes nemesis : Family Feud, Loki, deux Frost Giants, Trickster). C'est le calque de ce qui a ete fait pour hulk_rainy (qui emprunte le Hulk officiel) et viv_vision (qui prend le modulaire Zzzax). Troisieme pack de Rainy dans ce cas. L'emprunt n'est jouable que depuis le correctif moteur du 02/09/2026 (« un deck peut enfin EMPRUNTER le set nemesis d'un autre heros »), sans lequel 01190 Shadow of the Past ne trouvait pas de sbire nemesis.",

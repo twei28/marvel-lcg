@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Armored Spidey",
     "metadata": {
+        "author": "Kajislav",
         "url": "",
         "aspect_note": "PREMIER PACK DE LA SERIE A FOURNIR SA DECKLIST. Kajislav livre le deck de depart carte par carte (scans « 48/49 starter deck armored spidey »), aspect PROTECTION : aucune question d'aspect n'a ete posee, contrairement a hulk_rainy, lady_sif et iron_man_model_42. Les 25 cartes ci-dessous sont exactement celles de la liste imprimee, dans son ordre.",
         "armure_note": "LA MECANIQUE VEDETTE. as002a/as002b Spider Armor est une amelioration PERMANENTE RECTO-VERSO, posee au Setup par as001b avec 3 compteurs `metal`. Six cartes en depensent (as001a previent 2 degats, as004 frappe chaque ennemi, as006 etourdit, as007 pioche 2 par compteur, as008 punit une traitrise annulee, as009 desoriente), deux en posent (as002a a chaque retour sur OPERATIONAL, as013 jusqu'a 3), trois lisent la face (as003 la repare, as012 donne +1 CTR et ignore Garde/Patrouille, as013 donne Riposte 1 et Stoique) et as005 reagit au retrait. Le dernier compteur retire retourne l'armure sur DESTROYED : -1 ATQ et -1 DEF jusqu'a reparation. Depenser du metal est toujours un pari.",

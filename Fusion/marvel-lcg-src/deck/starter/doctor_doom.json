@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Doctor Doom",
     "metadata": {
+        "author": "Grawlix Ipsum",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite + Justice + Commandement (construite par le portage, aspect arbitre le 01/09/2026).",
         "collision_note": "« Mister Fantastic » (dd015) est un SBIRE nemesis. Le meme nom porte le HEROS officiel mf001a et l'allie Leadership iw002 (pack Invisible Woman) : les trois peuvent coexister en jeu, et les cas de test visent dd015 par son card_id, jamais par son nom.",

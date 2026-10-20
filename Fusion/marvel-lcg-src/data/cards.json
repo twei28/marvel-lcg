@@ -100071,7 +100071,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top card of the encounter deck. If a [[RAT]] minion was discarded this way, put it into play engaged with you."
+   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top card of the encounter deck. If a [[RAT]] minion was discarded this way, put it into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs002",
@@ -100089,7 +100090,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top two cards of the encounter deck. Put the first [[RAT]] minion that was discarded this way, into play engaged with you."
+   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top two cards of the encounter deck. Put the first [[RAT]] minion that was discarded this way, into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs003",
@@ -100107,7 +100109,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top two cards of the encounter deck. Put each [[RAT]] minion that was discarded this way, into play engaged with you. Resolve the \"Special\" effect on Even More Rats."
+   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top two cards of the encounter deck. Put each [[RAT]] minion that was discarded this way, into play engaged with you. Resolve the \"Special\" effect on Even More Rats.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs004a",
@@ -100119,7 +100122,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>Contents</b>: Vermin (I) and Vermin (II). <i>(Vermin (II) and Vermin (III) instead for expert mode.)</i> Vermin and Standard encounter sets. One modular encounter set <i>(recommended: Feral Instincts)</i>.\n<b>Setup</b>: Put the Even More Rats environment into play. Put a Regular Rats minion into play engaged with each player. Shuffle the encounter deck. Advance to stage 1B."
+   "text": "<b>Contents</b>: Vermin (I) and Vermin (II). <i>(Vermin (II) and Vermin (III) instead for expert mode.)</i> Vermin and Standard encounter sets. One modular encounter set <i>(recommended: Feral Instincts)</i>.\n<b>Setup</b>: Put the Even More Rats environment into play. Put a Regular Rats minion into play engaged with each player. Shuffle the encounter deck. Advance to stage 1B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs004b",
@@ -100134,7 +100138,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "[star] <b>Forced Response</b>: After step one of the villain phase, place 1 threat on each [[RAT]] minion. Resolve the \"Special\" effect on Even More Rats."
+   "text": "[star] <b>Forced Response</b>: After step one of the villain phase, place 1 threat on each [[RAT]] minion. Resolve the \"Special\" effect on Even More Rats.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs005a",
@@ -100146,7 +100151,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Bringer of Plague and reveal it. Advance to stage 2B."
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Bringer of Plague and reveal it. Advance to stage 2B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs005b",
@@ -100161,7 +100167,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "[star] <b>Forced Response</b>: After step one of the villain phase, place 1 threat on each [[RAT]] minion. Resolve the \"Special\" effect on Even More Rats.\n<b>If this scheme is completed, rats have invaded the city and the players lose the game.</b>"
+   "text": "[star] <b>Forced Response</b>: After step one of the villain phase, place 1 threat on each [[RAT]] minion. Resolve the \"Special\" effect on Even More Rats.\n<b>If this scheme is completed, rats have invaded the city and the players lose the game.</b>",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs006",
@@ -100171,7 +100178,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Vermin",
-   "text": "Threat on [[RAT]] minions cannot be thwarted.\n<b>Special</b>: If the total number of threat on [[RAT]] minions and on the main scheme is equal to or more than the target threat value of the main scheme, the current stage of the main scheme is completed."
+   "text": "Threat on [[RAT]] minions cannot be thwarted.\n<b>Special</b>: If the total number of threat on [[RAT]] minions and on the main scheme is equal to or more than the target threat value of the main scheme, the current stage of the main scheme is completed.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs007",
@@ -100189,7 +100197,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs008",
@@ -100207,7 +100216,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs009",
@@ -100225,7 +100235,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs010",
@@ -100243,7 +100254,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs011",
@@ -100262,7 +100274,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs012",
@@ -100281,7 +100294,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs013",
@@ -100300,7 +100314,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs014",
@@ -100319,7 +100334,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs015",
@@ -100338,7 +100354,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation."
+   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs016",
@@ -100357,7 +100374,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation."
+   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs017",
@@ -100376,7 +100394,8 @@
     "RAT"
    ],
    "set_name": "Vermin",
-   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation."
+   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs018",
@@ -100390,7 +100409,8 @@
     "CONDITION"
    ],
    "set_name": "Vermin",
-   "text": "Attach to your identity.\nEach [[RAT]] minion engaged with you gains guard.\n<b>Interrupt</b>: After you defeat a [[RAT]] minion engaged with you, discard two cards from your hand → discard this card."
+   "text": "Attach to your identity.\nEach [[RAT]] minion engaged with you gains guard.\n<b>Interrupt</b>: After you defeat a [[RAT]] minion engaged with you, discard two cards from your hand → discard this card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs019",
@@ -100404,7 +100424,8 @@
     "CONDITION"
    ],
    "set_name": "Vermin",
-   "text": "Attach to your identity.\nEach [[RAT]] minion engaged with you gains guard.\n<b>Interrupt</b>: After you defeat a [[RAT]] minion engaged with you, discard two cards from your hand → discard this card."
+   "text": "Attach to your identity.\nEach [[RAT]] minion engaged with you gains guard.\n<b>Interrupt</b>: After you defeat a [[RAT]] minion engaged with you, discard two cards from your hand → discard this card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs020",
@@ -100418,7 +100439,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a copy of Vermin Clone and put it into play engaged with the first player."
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a copy of Vermin Clone and put it into play engaged with the first player.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs021",
@@ -100432,7 +100454,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: Place threat here equal to the amount of threat on [[RAT]] minions in play."
+   "text": "<b>When Revealed</b>: Place threat here equal to the amount of threat on [[RAT]] minions in play.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs022",
@@ -100444,7 +100467,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain’s stage number. For each [[RAT]] minion discarded this way, choose to either place 2 threat on the main scheme or put that minion into play engaged with you."
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain’s stage number. For each [[RAT]] minion discarded this way, choose to either place 2 threat on the main scheme or put that minion into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs023",
@@ -100456,7 +100480,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain’s stage number. For each [[RAT]] minion discarded this way, choose to either place 2 threat on the main scheme or put that minion into play engaged with you."
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain’s stage number. For each [[RAT]] minion discarded this way, choose to either place 2 threat on the main scheme or put that minion into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs024",
@@ -100468,7 +100493,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed (Alter-Ego)</b>: Vermin schemes. If there are no [[RAT]] minions engaged with you, this card gains surge.\n<b>When Revealed (Hero)</b>: Vermin attacks you. If there are no [[RAT]] minions engaged with you, this card gains surge."
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vermin schemes. If there are no [[RAT]] minions engaged with you, this card gains surge.\n<b>When Revealed (Hero)</b>: Vermin attacks you. If there are no [[RAT]] minions engaged with you, this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs025",
@@ -100480,7 +100506,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed (Alter-Ego)</b>: Vermin schemes. If there are no [[RAT]] minions engaged with you, this card gains surge.\n<b>When Revealed (Hero)</b>: Vermin attacks you. If there are no [[RAT]] minions engaged with you, this card gains surge."
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vermin schemes. If there are no [[RAT]] minions engaged with you, this card gains surge.\n<b>When Revealed (Hero)</b>: Vermin attacks you. If there are no [[RAT]] minions engaged with you, this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs026",
@@ -100492,7 +100519,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs027",
@@ -100504,7 +100532,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs028",
@@ -100516,7 +100545,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs029",
@@ -100528,7 +100558,8 @@
    },
    "traits": [],
    "set_name": "Vermin",
-   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs030",
@@ -100545,7 +100576,8 @@
     "CRIMINAL"
    ],
    "set_name": "Scorpion",
-   "text": "[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion."
+   "text": "[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs031",
@@ -100562,7 +100594,8 @@
     "CRIMINAL"
    ],
    "set_name": "Scorpion",
-   "text": "Scorpion cannot be stunned.\n[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion."
+   "text": "Scorpion cannot be stunned.\n[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs032",
@@ -100579,7 +100612,8 @@
     "CRIMINAL"
    ],
    "set_name": "Scorpion",
-   "text": "Scorpion cannot be stunned.\n<b>When Revealed</b>: Search the encounter deck and discard pile for Tail Laser and reveal it.\n[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion."
+   "text": "Scorpion cannot be stunned.\n<b>When Revealed</b>: Search the encounter deck and discard pile for Tail Laser and reveal it.\n[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs033a",
@@ -100591,7 +100625,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>Contents</b>: Scorpion (I) and Scorpion (II). <i>(Scorpion (II) and Scorpion (III) instead for expert mode.)</i> Scorpion and Standard encounter sets. One modular encounter set <i>(recommended: Feral Instincts)</i>.\n<b>Setup</b>: Put the J. Jonah Jameson support into play under the first player’s control. Put the Scorpion’s Tail upgrade into play, and attach it to Scorpion. Advance to stage 1B."
+   "text": "<b>Contents</b>: Scorpion (I) and Scorpion (II). <i>(Scorpion (II) and Scorpion (III) instead for expert mode.)</i> Scorpion and Standard encounter sets. One modular encounter set <i>(recommended: Feral Instincts)</i>.\n<b>Setup</b>: Put the J. Jonah Jameson support into play under the first player’s control. Put the Scorpion’s Tail upgrade into play, and attach it to Scorpion. Advance to stage 1B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs033b",
@@ -100606,7 +100641,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Completed</b>: Place 1 wound counter on the J. Jonah Jameson support."
+   "text": "<b>When Completed</b>: Place 1 wound counter on the J. Jonah Jameson support.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs034a",
@@ -100618,7 +100654,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed</b>: Advance to stage 2B."
+   "text": "<b>When Revealed</b>: Advance to stage 2B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs034b",
@@ -100633,7 +100670,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>Forced Interrupt</b>: When this scheme would be completed, place 1 wound counter on the J. Jonah Jameson support instead. Then, remove all threat from this scheme and any upgrades and attachments attached to it."
+   "text": "<b>Forced Interrupt</b>: When this scheme would be completed, place 1 wound counter on the J. Jonah Jameson support instead. Then, remove all threat from this scheme and any upgrades and attachments attached to it.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs035",
@@ -100647,7 +100685,8 @@
     "PERSONA"
    ],
    "set_name": "Scorpion",
-   "text": "Permanent.\n<b>Interrupt</b>: When a friendly character would take any amount of damage, place 1 wound counter here → prevent all of that damage.\n<b>Forced Interrupt</b>: When there are 3 + 1[per_hero] or more wound counters here, the players lose the game."
+   "text": "Permanent.\n<b>Interrupt</b>: When a friendly character would take any amount of damage, place 1 wound counter here → prevent all of that damage.\n<b>Forced Interrupt</b>: When there are 3 + 1[per_hero] or more wound counters here, the players lose the game.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs036",
@@ -100662,7 +100701,8 @@
     "WEAPON"
    ],
    "set_name": "Scorpion",
-   "text": "[star] <b>Forced Response</b>: After Scorpion attacks and damages a character, that character is stunned. If the character is already stunned, deal 1 damage to that character.\n<b>Interrupt</b>: When Scorpion would take any amount of damage, it may be placed here instead. Then, if there is 10[per_hero] or more damage here, set Scorpion’s Tail aside, out of play. Then, Scorpion takes 8[per_hero] damage."
+   "text": "[star] <b>Forced Response</b>: After Scorpion attacks and damages a character, that character is stunned. If the character is already stunned, deal 1 damage to that character.\n<b>Interrupt</b>: When Scorpion would take any amount of damage, it may be placed here instead. Then, if there is 10[per_hero] or more damage here, set Scorpion’s Tail aside, out of play. Then, Scorpion takes 8[per_hero] damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs037",
@@ -100678,7 +100718,8 @@
     "TECH"
    ],
    "set_name": "Scorpion",
-   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When damage would be placed on Scorpion’s Tail, place it here instead. If there is 8 or more damage here, discard Tail Armor."
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When damage would be placed on Scorpion’s Tail, place it here instead. If there is 8 or more damage here, discard Tail Armor.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs038",
@@ -100693,7 +100734,8 @@
     "TECH"
    ],
    "set_name": "Scorpion",
-   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion attacks, he gets +1 ATK for that attack, and the attack gains piercing.\n<hr />\n[star] <b>Boost</b>: Shuffle this card into the encounter deck."
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion attacks, he gets +1 ATK for that attack, and the attack gains piercing.\n<hr />\n[star] <b>Boost</b>: Shuffle this card into the encounter deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs039",
@@ -100708,7 +100750,8 @@
     "TECH"
    ],
    "set_name": "Scorpion",
-   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion attacks, the attack gains ranged and overkill.\n<hr />\n[star] <b>Boost</b>: Shuffle this card into the encounter deck."
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion attacks, the attack gains ranged and overkill.\n<hr />\n[star] <b>Boost</b>: Shuffle this card into the encounter deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs040",
@@ -100724,7 +100767,8 @@
     "CONDITION"
    ],
    "set_name": "Scorpion",
-   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. If Scorpion’s Tail is attached to Scorpion, attach Coiled Up to your identity. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion’s Tail is set aside, discard Coiled Up."
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. If Scorpion’s Tail is attached to Scorpion, attach Coiled Up to your identity. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion’s Tail is set aside, discard Coiled Up.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs041",
@@ -100740,7 +100784,8 @@
     "CONDITION"
    ],
    "set_name": "Scorpion",
-   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. If Scorpion’s Tail is attached to Scorpion, attach Coiled Up to your identity. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion’s Tail is set aside, discard Coiled Up."
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. If Scorpion’s Tail is attached to Scorpion, attach Coiled Up to your identity. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion’s Tail is set aside, discard Coiled Up.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs042",
@@ -100758,7 +100803,8 @@
     "MUTATE"
    ],
    "set_name": "Scorpion",
-   "text": "<b>Forced Interrupt</b>: When Human Fly would take any amount of damage from an attack, prevent all of that damage. <i>(Limit once per round.)</i>\n<hr />\n[star] <b>Boost</b>: After this activation ends, deal yourself this card as a facedown encounter card."
+   "text": "<b>Forced Interrupt</b>: When Human Fly would take any amount of damage from an attack, prevent all of that damage. <i>(Limit once per round.)</i>\n<hr />\n[star] <b>Boost</b>: After this activation ends, deal yourself this card as a facedown encounter card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs043",
@@ -100776,7 +100822,8 @@
     "MUTATE"
    ],
    "set_name": "Scorpion",
-   "text": "<b>Forced Interrupt</b>: When Human Fly would take any amount of damage from an attack, prevent all of that damage. <i>(Limit once per round.)</i>\n<hr />\n[star] <b>Boost</b>: After this activation ends, deal yourself this card as a facedown encounter card."
+   "text": "<b>Forced Interrupt</b>: When Human Fly would take any amount of damage from an attack, prevent all of that damage. <i>(Limit once per round.)</i>\n<hr />\n[star] <b>Boost</b>: After this activation ends, deal yourself this card as a facedown encounter card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs044",
@@ -100794,7 +100841,8 @@
     "MUTATE"
    ],
    "set_name": "Scorpion",
-   "text": "[star] <b>Forced Interrupt</b>: When Grizzly attacks, the attack gains piercing.\n<hr />\n[star] <b>Boost</b>: This attack gains piercing."
+   "text": "[star] <b>Forced Interrupt</b>: When Grizzly attacks, the attack gains piercing.\n<hr />\n[star] <b>Boost</b>: This attack gains piercing.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs045",
@@ -100813,7 +100861,8 @@
     "MUTATE"
    ],
    "set_name": "Scorpion",
-   "text": "Toughness.\n<hr />\n[star] <b>Boost</b>: This attack gains overkill."
+   "text": "Toughness.\n<hr />\n[star] <b>Boost</b>: This attack gains overkill.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs046",
@@ -100827,7 +100876,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here."
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs047",
@@ -100841,7 +100891,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed</b>: Place 2 additional threat here for each stunned friendly character."
+   "text": "<b>When Revealed</b>: Place 2 additional threat here for each stunned friendly character.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs048",
@@ -100853,7 +100904,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[TAIL]] attachment is discarded. Reveal that card.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[TAIL]] attachment attached to Scorpion."
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[TAIL]] attachment is discarded. Reveal that card.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[TAIL]] attachment attached to Scorpion.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs049",
@@ -100865,7 +100917,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[TAIL]] attachment is discarded. Reveal that card.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[TAIL]] attachment attached to Scorpion."
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[TAIL]] attachment is discarded. Reveal that card.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[TAIL]] attachment attached to Scorpion.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs050",
@@ -100877,7 +100930,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed (Alter-Ego)</b>: Scorpion schemes. If you are stunned, Scorpion gets +2 SCH for this activation.\n<b>When Revealed (Hero)</b>: Scorpion attacks you. After this activation, if you are stunned, you are confused."
+   "text": "<b>When Revealed (Alter-Ego)</b>: Scorpion schemes. If you are stunned, Scorpion gets +2 SCH for this activation.\n<b>When Revealed (Hero)</b>: Scorpion attacks you. After this activation, if you are stunned, you are confused.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs051",
@@ -100889,7 +100943,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed (Alter-Ego)</b>: Scorpion schemes. If you are stunned, Scorpion gets +2 SCH for this activation.\n<b>When Revealed (Hero)</b>: Scorpion attacks you. After this activation, if you are stunned, you are confused."
+   "text": "<b>When Revealed (Alter-Ego)</b>: Scorpion schemes. If you are stunned, Scorpion gets +2 SCH for this activation.\n<b>When Revealed (Hero)</b>: Scorpion attacks you. After this activation, if you are stunned, you are confused.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs052",
@@ -100901,7 +100956,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed</b>: Choose to either spend [physical][physical] or stun your identity. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to you, exhaust your hero."
+   "text": "<b>When Revealed</b>: Choose to either spend [physical][physical] or stun your identity. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to you, exhaust your hero.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs053",
@@ -100913,7 +100969,8 @@
    },
    "traits": [],
    "set_name": "Scorpion",
-   "text": "<b>When Revealed</b>: Choose to either spend [physical][physical] or stun your identity. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to you, exhaust your hero."
+   "text": "<b>When Revealed</b>: Choose to either spend [physical][physical] or stun your identity. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to you, exhaust your hero.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs054a",
@@ -100931,7 +100988,8 @@
     "SCIENTIST"
    ],
    "set_name": "The Lizard",
-   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 1 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors."
+   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 1 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs054b",
@@ -100949,7 +101007,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 1[per_hero] cards from the top of the encounter deck. Reveal each [[REPTILE]] attachment that was discarded this way."
+   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 1[per_hero] cards from the top of the encounter deck. Reveal each [[REPTILE]] attachment that was discarded this way.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs055a",
@@ -100967,7 +101026,8 @@
     "SCIENTIST"
    ],
    "set_name": "The Lizard",
-   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 1 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors."
+   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 1 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs055b",
@@ -100985,7 +101045,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 1[per_hero] cards from the top of the encounter deck. Each player in player order must reveal the topmost [[REPTILE]] attachment in the encounter discard pile."
+   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 1[per_hero] cards from the top of the encounter deck. Each player in player order must reveal the topmost [[REPTILE]] attachment in the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs056a",
@@ -101003,7 +101064,8 @@
     "SCIENTIST"
    ],
    "set_name": "The Lizard",
-   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 2 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors."
+   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 2 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs056b",
@@ -101021,7 +101083,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 2[per_hero] cards from the top of the encounter deck. Each player in player order must reveal the topmost [[REPTILE]] attachment in the encounter discard pile."
+   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 2[per_hero] cards from the top of the encounter deck. Each player in player order must reveal the topmost [[REPTILE]] attachment in the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs057a",
@@ -101033,7 +101096,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>Contents</b>: Curtis Connors (I) and Curtis Connors (II). <i>(Curtis Connors (II) and Curtis Connors (III) instead for expert mode.)</i> The Lizard and Standard encounter sets. One modular encounter set <i>(recommended: Lizard Thralls)</i>.\n<b>Setup</b>: Put the Reptilian Rage environment into play. The villain starts on the Curtis Connors side. Advance to stage 1B."
+   "text": "<b>Contents</b>: Curtis Connors (I) and Curtis Connors (II). <i>(Curtis Connors (II) and Curtis Connors (III) instead for expert mode.)</i> The Lizard and Standard encounter sets. One modular encounter set <i>(recommended: Lizard Thralls)</i>.\n<b>Setup</b>: Put the Reptilian Rage environment into play. The villain starts on the Curtis Connors side. Advance to stage 1B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs057b",
@@ -101048,7 +101112,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Completed</b>: Put shame counters on the Reptilian Rage environment so that it has 3 shame counters on it. If The Lizard is not in play, flip Curtis Connors."
+   "text": "<b>When Completed</b>: Put shame counters on the Reptilian Rage environment so that it has 3 shame counters on it. If The Lizard is not in play, flip Curtis Connors.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs058a",
@@ -101060,7 +101125,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a copy of Reptile Research and reveal it. Advance to stage 2B."
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a copy of Reptile Research and reveal it. Advance to stage 2B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs058b",
@@ -101075,7 +101141,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "X is the number of [[REPTILE]] cards (including The Lizard) in play."
+   "text": "X is the number of [[REPTILE]] cards (including The Lizard) in play.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs059a",
@@ -101087,7 +101154,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: If The Lizard is not in play, flip Curtis Connors. Put shame counters on the Reptilian Rage environment so that it has 3 shame counters. Advance to stage 3B."
+   "text": "<b>When Revealed</b>: If The Lizard is not in play, flip Curtis Connors. Put shame counters on the Reptilian Rage environment so that it has 3 shame counters. Advance to stage 3B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs059b",
@@ -101102,7 +101170,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "The Lizard cannot be flipped.\nThreat cannot be removed from this scheme.\n<b>If this stage is completed, Curtis Connors is dead and the players lose the game.</b>"
+   "text": "The Lizard cannot be flipped.\nThreat cannot be removed from this scheme.\n<b>If this stage is completed, Curtis Connors is dead and the players lose the game.</b>",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs060",
@@ -101112,7 +101181,8 @@
    "desc": {},
    "traits": [],
    "set_name": "The Lizard",
-   "text": "The Lizard gets +1 ATK for each shame counter on Reptilian Rage. (Max 3 shame counters.) While there is 1 or more shame counters here, The Lizard’s attacks gain overkill.\n<b>Forced Response</b>: After The Lizard attacks, remove shame counters from Reptilian Rage:\nVillain Stage I: Remove 2 shame counters.\nVillain Stage II: Remove 1 shame counter.\nVillain Stage III: Remove 0 shame counters."
+   "text": "The Lizard gets +1 ATK for each shame counter on Reptilian Rage. (Max 3 shame counters.) While there is 1 or more shame counters here, The Lizard’s attacks gain overkill.\n<b>Forced Response</b>: After The Lizard attacks, remove shame counters from Reptilian Rage:\nVillain Stage I: Remove 2 shame counters.\nVillain Stage II: Remove 1 shame counter.\nVillain Stage III: Remove 0 shame counters.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs061",
@@ -101127,7 +101197,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n<b>Interrupt</b>: When an event is played, cancel the effects of that event and discard it. Then, place Enhanced Lizard Senses at the bottom of the encounter discard pile."
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n<b>Interrupt</b>: When an event is played, cancel the effects of that event and discard it. Then, place Enhanced Lizard Senses at the bottom of the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs062",
@@ -101142,7 +101213,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n<b>Interrupt</b>: When an event is played, cancel the effects of that event and discard it. Then, place Enhanced Lizard Senses at the bottom of the encounter discard pile."
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n<b>Interrupt</b>: When an event is played, cancel the effects of that event and discard it. Then, place Enhanced Lizard Senses at the bottom of the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs063",
@@ -101156,7 +101228,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\nThe Lizard gains retaliate 1.\n<b>Hero Action</b>: Spend a [energy] resource and take 1 damage → place Komodo Claws at the bottom of the encounter discard pile."
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\nThe Lizard gains retaliate 1.\n<b>Hero Action</b>: Spend a [energy] resource and take 1 damage → place Komodo Claws at the bottom of the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs064",
@@ -101170,7 +101243,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\nThe Lizard gains retaliate 1.\n<b>Hero Action</b>: Spend a [energy] resource and take 1 damage → place Komodo Claws at the bottom of the encounter discard pile."
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\nThe Lizard gains retaliate 1.\n<b>Hero Action</b>: Spend a [energy] resource and take 1 damage → place Komodo Claws at the bottom of the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs065",
@@ -101185,7 +101259,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks, the attack gains ranged.\n<b>Hero Action</b>: Spend a [mental] resource and place 1 threat on the main scheme → place Lizard Tail at the bottom of the encounter discard pile."
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks, the attack gains ranged.\n<b>Hero Action</b>: Spend a [mental] resource and place 1 threat on the main scheme → place Lizard Tail at the bottom of the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs066",
@@ -101200,7 +101275,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks, the attack gains piercing.\n<b>Hero Action</b>: Spend a [physical] resource and exhaust your hero → place Alligator Jaws at the bottom of the encounter discard pile."
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks, the attack gains piercing.\n<b>Hero Action</b>: Spend a [physical] resource and exhaust your hero → place Alligator Jaws at the bottom of the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs067",
@@ -101214,7 +101290,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks and damages a character, deal damage to another friendly character equal to the attacked character’s ATK.\n<b>Hero Action</b>: Confuse your hero → place Ancient Reptilian Brain at the bottom of the encounter discard pile."
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks and damages a character, deal damage to another friendly character equal to the attacked character’s ATK.\n<b>Hero Action</b>: Confuse your hero → place Ancient Reptilian Brain at the bottom of the encounter discard pile.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs068",
@@ -101228,7 +101305,8 @@
     "CONDITION"
    ],
    "set_name": "The Lizard",
-   "text": "Attach to your identity.\nAttached identity cannot trigger the \"Hero Action\" effect on [[REPTILE]] attachments.\n<b>Forced Interrupt</b>: When the hero phase ends, discard Boa Constricted."
+   "text": "Attach to your identity.\nAttached identity cannot trigger the \"Hero Action\" effect on [[REPTILE]] attachments.\n<b>Forced Interrupt</b>: When the hero phase ends, discard Boa Constricted.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs069",
@@ -101242,7 +101320,8 @@
     "CONDITION"
    ],
    "set_name": "The Lizard",
-   "text": "Attach to your identity.\nAttached identity cannot trigger the \"Hero Action\" effect on [[REPTILE]] attachments.\n<b>Forced Interrupt</b>: When the hero phase ends, discard Boa Constricted."
+   "text": "Attach to your identity.\nAttached identity cannot trigger the \"Hero Action\" effect on [[REPTILE]] attachments.\n<b>Forced Interrupt</b>: When the hero phase ends, discard Boa Constricted.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs070",
@@ -101254,7 +101333,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you. Place 1 threat on the main scheme for each [[REPTILE]] attachment attached to the villain.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 1 threat on the main scheme."
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you. Place 1 threat on the main scheme for each [[REPTILE]] attachment attached to the villain.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 1 threat on the main scheme.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs071",
@@ -101266,7 +101346,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you. Place 1 threat on the main scheme for each [[REPTILE]] attachment attached to the villain.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 1 threat on the main scheme."
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you. Place 1 threat on the main scheme for each [[REPTILE]] attachment attached to the villain.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 1 threat on the main scheme.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs072",
@@ -101278,7 +101359,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Place shame counters on the Reptilian Rage environment so that it has 3 shame counters. Choose to either exhaust your hero or the villain schemes. This activation ignores confused status cards.\n<hr />\n[star] <b>Boost</b>: Place 1 shame counter on the Reptilian Rage environment."
+   "text": "<b>When Revealed</b>: Place shame counters on the Reptilian Rage environment so that it has 3 shame counters. Choose to either exhaust your hero or the villain schemes. This activation ignores confused status cards.\n<hr />\n[star] <b>Boost</b>: Place 1 shame counter on the Reptilian Rage environment.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs073",
@@ -101290,7 +101372,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Place shame counters on the Reptilian Rage environment so that it has 3 shame counters. Choose to either exhaust your hero or the villain schemes. This activation ignores confused status cards.\n<hr />\n[star] <b>Boost</b>: Place 1 shame counter on the Reptilian Rage environment."
+   "text": "<b>When Revealed</b>: Place shame counters on the Reptilian Rage environment so that it has 3 shame counters. Choose to either exhaust your hero or the villain schemes. This activation ignores confused status cards.\n<hr />\n[star] <b>Boost</b>: Place 1 shame counter on the Reptilian Rage environment.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs074",
@@ -101302,7 +101385,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Heal 3 damage from the villain and remove each status card from him. Give the villain a tough status card.\n<hr />\n[star] <b>Boost</b>: Give the villain a tough status card."
+   "text": "<b>When Revealed</b>: Heal 3 damage from the villain and remove each status card from him. Give the villain a tough status card.\n<hr />\n[star] <b>Boost</b>: Give the villain a tough status card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs075",
@@ -101314,7 +101398,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Heal 3 damage from the villain and remove each status card from him. Give the villain a tough status card.\n<hr />\n[star] <b>Boost</b>: Give the villain a tough status card."
+   "text": "<b>When Revealed</b>: Heal 3 damage from the villain and remove each status card from him. Give the villain a tough status card.\n<hr />\n[star] <b>Boost</b>: Give the villain a tough status card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs076",
@@ -101332,7 +101417,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "[star] Iguana gets +1 SCH and +1 ATK for each [[REPTILE]] card in play (to a maximum of +4 SCH and +4 ATK)."
+   "text": "[star] Iguana gets +1 SCH and +1 ATK for each [[REPTILE]] card in play (to a maximum of +4 SCH and +4 ATK).",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs077",
@@ -101350,7 +101436,8 @@
     "REPTILE"
    ],
    "set_name": "The Lizard",
-   "text": "[star] The Chameleon has SCH and ATK equal to the villain’s SCH and ATK."
+   "text": "[star] The Chameleon has SCH and ATK equal to the villain’s SCH and ATK.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs078",
@@ -101364,7 +101451,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Place 1 additional threat here for each [[REPTILE]] card in play."
+   "text": "<b>When Revealed</b>: Place 1 additional threat here for each [[REPTILE]] card in play.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs079",
@@ -101378,7 +101466,8 @@
    },
    "traits": [],
    "set_name": "The Lizard",
-   "text": "<b>When Revealed</b>: Place 1 additional threat here for each [[REPTILE]] card in play."
+   "text": "<b>When Revealed</b>: Place 1 additional threat here for each [[REPTILE]] card in play.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs080",
@@ -101396,7 +101485,8 @@
     "CRIMINAL"
    ],
    "set_name": "Vulture",
-   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged."
+   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs081",
@@ -101414,7 +101504,8 @@
     "CRIMINAL"
    ],
    "set_name": "Vulture",
-   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with less than half of their maximum hit points remaining, he gets +1 ATK for that attack."
+   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with less than half of their maximum hit points remaining, he gets +1 ATK for that attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs082",
@@ -101432,7 +101523,8 @@
     "CRIMINAL"
    ],
    "set_name": "Vulture",
-   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with less than half of their maximum hit points remaining, he gets +1 ATK for that attack."
+   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with less than half of their maximum hit points remaining, he gets +1 ATK for that attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs083a",
@@ -101444,7 +101536,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>Contents</b>: Vulture (I) and Vulture (II). <i>(Vulture (II) and Vulture (III) instead for expert mode.)</i> Vulture and Standard encounter sets. One modular encounter set <i>(recommended: Red Vulture)</i>.\n<b>Setup</b>: Search the encounter deck and discard pile for the S.H.I.E.L.D. Wing Suits environment and put it into play. Advance to stage 1B."
+   "text": "<b>Contents</b>: Vulture (I) and Vulture (II). <i>(Vulture (II) and Vulture (III) instead for expert mode.)</i> Vulture and Standard encounter sets. One modular encounter set <i>(recommended: Red Vulture)</i>.\n<b>Setup</b>: Search the encounter deck and discard pile for the S.H.I.E.L.D. Wing Suits environment and put it into play. Advance to stage 1B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs083b",
@@ -101459,7 +101552,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>Forced Response</b>: After a character you control without the [[AERIAL]] trait thwarts and removes threat from this scheme, choose to either deal 1 damage to that character or place 1 threat on this scheme.\n<b>If this scheme is completed, the players lose the game.</b>"
+   "text": "<b>Forced Response</b>: After a character you control without the [[AERIAL]] trait thwarts and removes threat from this scheme, choose to either deal 1 damage to that character or place 1 threat on this scheme.\n<b>If this scheme is completed, the players lose the game.</b>",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs084",
@@ -101469,7 +101563,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>Hero Action</b>: Spend a resource of any type → your hero and each ally you control gains the [[AERIAL]] trait until the end of the round."
+   "text": "<b>Hero Action</b>: Spend a resource of any type → your hero and each ally you control gains the [[AERIAL]] trait until the end of the round.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs085",
@@ -101488,7 +101583,8 @@
     "MUTATE"
    ],
    "set_name": "Vulture",
-   "text": "[star] <b>Forced Response</b>: After Armadillo attacks and damages a character, that character gains the [[AERIAL]] trait until the end of the round.\n<hr />\n[star] <b>Boost</b>: If this attack damages you, you gain the [[AERIAL]] trait until the end of the round."
+   "text": "[star] <b>Forced Response</b>: After Armadillo attacks and damages a character, that character gains the [[AERIAL]] trait until the end of the round.\n<hr />\n[star] <b>Boost</b>: If this attack damages you, you gain the [[AERIAL]] trait until the end of the round.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs086",
@@ -101505,7 +101601,8 @@
     "CRIMINAL"
    ],
    "set_name": "Vulture",
-   "text": "[star] <b>Forced Response</b>: After White Rabbit attacks and damages you, if you don’t have the [[AERIAL]] trait, discard a random card from your hand.\n<hr />\n[star] <b>Boost</b>: If this attack damages you, discard a card from your hand."
+   "text": "[star] <b>Forced Response</b>: After White Rabbit attacks and damages you, if you don’t have the [[AERIAL]] trait, discard a random card from your hand.\n<hr />\n[star] <b>Boost</b>: If this attack damages you, discard a card from your hand.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs087",
@@ -101524,7 +101621,8 @@
     "MUTANT"
    ],
    "set_name": "Vulture",
-   "text": "Guard.\n<b>Forced Interrupt</b>: When Gibbon would take any amount of damage, prevent 1 of that damage."
+   "text": "Guard.\n<b>Forced Interrupt</b>: When Gibbon would take any amount of damage, prevent 1 of that damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs088",
@@ -101540,7 +101638,8 @@
     "TECH"
    ],
    "set_name": "Vulture",
-   "text": "Attach to Vulture.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with the [[AERIAL]] trait, he gets +1 ATK for that attack.\n<b>Hero Action</b>: Exhaust your hero and discard two cards from your hand → discard Wing Harness. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+   "text": "Attach to Vulture.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with the [[AERIAL]] trait, he gets +1 ATK for that attack.\n<b>Hero Action</b>: Exhaust your hero and discard two cards from your hand → discard Wing Harness. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs089",
@@ -101554,7 +101653,8 @@
     "WEAPON"
    ],
    "set_name": "Vulture",
-   "text": "Attach to Vulture.\nVulture gains retaliate 1.\n[star] <b>Forced Interrupt</b>: When Vulture attacks, the attack gains piercing.\n<b>Hero Response</b>: After you attack Vulture, discard a card from your hand → discard Metal Talons."
+   "text": "Attach to Vulture.\nVulture gains retaliate 1.\n[star] <b>Forced Interrupt</b>: When Vulture attacks, the attack gains piercing.\n<b>Hero Response</b>: After you attack Vulture, discard a card from your hand → discard Metal Talons.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs090",
@@ -101568,7 +101668,8 @@
     "WEAPON"
    ],
    "set_name": "Vulture",
-   "text": "Attach to Vulture.\n<b>Forced Interrupt</b>: When Vulture attacks you, discard Projectile Feathers and take 2 indirect damage (3 indirect damage instead if you have the [[AERIAL]] trait).\n<b>Hero Action</b>: Spend [energy][energy] resources → discard Projectile Feathers. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+   "text": "Attach to Vulture.\n<b>Forced Interrupt</b>: When Vulture attacks you, discard Projectile Feathers and take 2 indirect damage (3 indirect damage instead if you have the [[AERIAL]] trait).\n<b>Hero Action</b>: Spend [energy][energy] resources → discard Projectile Feathers. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs091",
@@ -101582,7 +101683,8 @@
     "WEAPON"
    ],
    "set_name": "Vulture",
-   "text": "Attach to Vulture.\n<b>Forced Interrupt</b>: When Vulture attacks you, discard Projectile Feathers and take 2 indirect damage (3 indirect damage instead if you have the [[AERIAL]] trait).\n<b>Hero Action</b>: Spend [energy][energy] resources → discard Projectile Feathers. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+   "text": "Attach to Vulture.\n<b>Forced Interrupt</b>: When Vulture attacks you, discard Projectile Feathers and take 2 indirect damage (3 indirect damage instead if you have the [[AERIAL]] trait).\n<b>Hero Action</b>: Spend [energy][energy] resources → discard Projectile Feathers. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs092",
@@ -101594,7 +101696,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "You gain the [[AERIAL]] trait. You cannot change to alter-ego form.\n<b>Forced Response</b>: After you attack Vulture, choose to either take 2 damage or spend a [physical] resource. Discard Forcefully Elevated."
+   "text": "You gain the [[AERIAL]] trait. You cannot change to alter-ego form.\n<b>Forced Response</b>: After you attack Vulture, choose to either take 2 damage or spend a [physical] resource. Discard Forcefully Elevated.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs093",
@@ -101606,7 +101709,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "You gain the [[AERIAL]] trait. You cannot change to alter-ego form.\n<b>Forced Response</b>: After you attack Vulture, choose to either take 2 damage or spend a [physical] resource. Discard Forcefully Elevated."
+   "text": "You gain the [[AERIAL]] trait. You cannot change to alter-ego form.\n<b>Forced Response</b>: After you attack Vulture, choose to either take 2 damage or spend a [physical] resource. Discard Forcefully Elevated.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs094",
@@ -101620,7 +101724,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "Surge.\n<b>Forced Interrupt</b>: When the villain phase begins, place 3 threat on the main scheme and discard Aerial Kidnapping.\n<b>When Defeated</b>: Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+   "text": "Surge.\n<b>Forced Interrupt</b>: When the villain phase begins, place 3 threat on the main scheme and discard Aerial Kidnapping.\n<b>When Defeated</b>: Vulture loses the [[AERIAL]] trait until the end of the active player’s turn.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs095",
@@ -101634,7 +101739,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "Surge.\n<b>Forced Interrupt</b>: When the villain phase begins, place 3 threat on the main scheme and discard Aerial Kidnapping.\n<b>When Defeated</b>: Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+   "text": "Surge.\n<b>Forced Interrupt</b>: When the villain phase begins, place 3 threat on the main scheme and discard Aerial Kidnapping.\n<b>When Defeated</b>: Vulture loses the [[AERIAL]] trait until the end of the active player’s turn.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs096",
@@ -101648,7 +101754,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>When Revealed</b>: Place an additional 1 threat here for each character with less than half of their maximum hit points remaining."
+   "text": "<b>When Revealed</b>: Place an additional 1 threat here for each character with less than half of their maximum hit points remaining.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs097",
@@ -101661,7 +101768,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage."
+   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs098",
@@ -101674,7 +101782,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage."
+   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs099",
@@ -101687,7 +101796,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage."
+   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs100",
@@ -101699,7 +101809,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>When Revealed</b>: Stun your identity and discard 1 card from your hand. If you have the [[AERIAL]] trait, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If the activating character has the [[AERIAL]] trait, it gets an additional boost card for this activation."
+   "text": "<b>When Revealed</b>: Stun your identity and discard 1 card from your hand. If you have the [[AERIAL]] trait, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If the activating character has the [[AERIAL]] trait, it gets an additional boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs101",
@@ -101711,7 +101822,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>When Revealed</b>: Stun your identity and discard 1 card from your hand. If you have the [[AERIAL]] trait, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If the activating character has the [[AERIAL]] trait, it gets an additional boost card for this activation."
+   "text": "<b>When Revealed</b>: Stun your identity and discard 1 card from your hand. If you have the [[AERIAL]] trait, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If the activating character has the [[AERIAL]] trait, it gets an additional boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs102",
@@ -101723,7 +101835,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>When Revealed (Alter-Ego)</b>: Vulture schemes. If you have less than half of your maximum hit points remaining, this card gains surge.\n<b>When Revealed (Hero)</b>: Vulture attacks you. If you have less than half of your maximum hit points remaining this card gains surge."
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vulture schemes. If you have less than half of your maximum hit points remaining, this card gains surge.\n<b>When Revealed (Hero)</b>: Vulture attacks you. If you have less than half of your maximum hit points remaining this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs103",
@@ -101735,7 +101848,8 @@
    },
    "traits": [],
    "set_name": "Vulture",
-   "text": "<b>When Revealed (Alter-Ego)</b>: Vulture schemes. If you have less than half of your maximum hit points remaining, this card gains surge.\n<b>When Revealed (Hero)</b>: Vulture attacks you. If you have less than half of your maximum hit points remaining this card gains surge."
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vulture schemes. If you have less than half of your maximum hit points remaining, this card gains surge.\n<b>When Revealed (Hero)</b>: Vulture attacks you. If you have less than half of your maximum hit points remaining this card gains surge.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs104",
@@ -101753,7 +101867,8 @@
     "HUNTER"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit once per round per player.)"
+   "text": "<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit once per round per player.)",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs105",
@@ -101771,7 +101886,8 @@
     "HUNTER"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for the Tooth Necklace attachment and reveal it.\n<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit once per round per player.)"
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for the Tooth Necklace attachment and reveal it.\n<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit once per round per player.)",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs106",
@@ -101789,7 +101905,8 @@
     "HUNTER"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Each player deals themselves a [[TRAP]] card from the [[TRAP]] deck.\n<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit twice per round per player.)"
+   "text": "<b>When Revealed</b>: Each player deals themselves a [[TRAP]] card from the [[TRAP]] deck.\n<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit twice per round per player.)",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs107a",
@@ -101801,7 +101918,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>Contents</b>: Kraven The Hunter (I) and Kraven The Hunter (II). <i>(Kraven The Hunter (II) and Kraven The Hunter (III) instead for expert mode.)</i> Kraven The Hunter and Standard encounter sets. One modular encounter set <i>(recommended: Savage Six)</i>.\n<b>Setup</b>: Shuffle all of the [[TRAP]] cards into a separate [[TRAP]] deck. Advance to stage 1B."
+   "text": "<b>Contents</b>: Kraven The Hunter (I) and Kraven The Hunter (II). <i>(Kraven The Hunter (II) and Kraven The Hunter (III) instead for expert mode.)</i> Kraven The Hunter and Standard encounter sets. One modular encounter set <i>(recommended: Savage Six)</i>.\n<b>Setup</b>: Shuffle all of the [[TRAP]] cards into a separate [[TRAP]] deck. Advance to stage 1B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs107b",
@@ -101816,7 +101934,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "[star] <b>Forced Interrupt</b>: When you change to hero form, place 2 threat here.\n<b>Forced Response</b>: After you change to alter-ego form, remove 1 threat from here."
+   "text": "[star] <b>Forced Interrupt</b>: When you change to hero form, place 2 threat here.\n<b>Forced Response</b>: After you change to alter-ego form, remove 1 threat from here.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs108a",
@@ -101828,7 +101947,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for The Calypso Serum side scheme and reveal it. Shuffle the encounter deck. Advance to stage 2B."
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for The Calypso Serum side scheme and reveal it. Shuffle the encounter deck. Advance to stage 2B.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs108b",
@@ -101843,7 +101963,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>Forced Response</b>: After a [[TRAP]] card is revealed, place 1 threat here. (Limit once per round per player.)\n<b>If this scheme is completed, the players lose the game.</b>"
+   "text": "<b>Forced Response</b>: After a [[TRAP]] card is revealed, place 1 threat here. (Limit once per round per player.)\n<b>If this scheme is completed, the players lose the game.</b>",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs109",
@@ -101862,7 +101983,8 @@
     "ELITE"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "<b>Forced Interrupt</b>: When a character you control attacks Last Son of Kraven, deal yourself a [[TRAP]] card from the [[TRAP]] deck. (Limit once per round.)\n<hr />\n[star] <b>Boost</b>: After this activation ends, shuffle this card into the encounter deck."
+   "text": "<b>Forced Interrupt</b>: When a character you control attacks Last Son of Kraven, deal yourself a [[TRAP]] card from the [[TRAP]] deck. (Limit once per round.)\n<hr />\n[star] <b>Boost</b>: After this activation ends, shuffle this card into the encounter deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs110",
@@ -101879,7 +102001,8 @@
     "CRIMINAL"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "Chameleon cannot take damage.\n<b>Forced Interrupt</b>: When Chameleon would attack, he schemes instead.\n<b>Forced Interrupt</b>: When an enemy would be defeated, discard Chameleon instead."
+   "text": "Chameleon cannot take damage.\n<b>Forced Interrupt</b>: When Chameleon would attack, he schemes instead.\n<b>Forced Interrupt</b>: When an enemy would be defeated, discard Chameleon instead.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs111",
@@ -101893,7 +102016,8 @@
     "WEAPON"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "Attach to Kraven The Hunter.\n[star] <b>Forced Response</b>: After Kraven The Hunter attacks and damages a character, confuse that character.\n<b>Interrupt</b>: When you attack Kraven The Hunter, discard a random card from your hand → discard this attachment."
+   "text": "Attach to Kraven The Hunter.\n[star] <b>Forced Response</b>: After Kraven The Hunter attacks and damages a character, confuse that character.\n<b>Interrupt</b>: When you attack Kraven The Hunter, discard a random card from your hand → discard this attachment.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs112",
@@ -101908,7 +102032,8 @@
     "WEAPON"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "Attach to Kraven The Hunter.\nKraven The Hunter gains retaliate 1.\n<b>Interrupt</b>: When you attack Kraven The Hunter, deal 3 damage to your identity → discard this attachment."
+   "text": "Attach to Kraven The Hunter.\nKraven The Hunter gains retaliate 1.\n<b>Interrupt</b>: When you attack Kraven The Hunter, deal 3 damage to your identity → discard this attachment.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs113",
@@ -101922,7 +102047,8 @@
     "WEAPON"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "Attach to Kraven The Hunter.\n<b>Forced Response</b>: After Kraven The Hunter attacks you and you take no damage from that attack, take 1 damage.\n<b>Interrupt</b>: When you attack Kraven The Hunter, spend any 2 resources → discard this attachment."
+   "text": "Attach to Kraven The Hunter.\n<b>Forced Response</b>: After Kraven The Hunter attacks you and you take no damage from that attack, take 1 damage.\n<b>Interrupt</b>: When you attack Kraven The Hunter, spend any 2 resources → discard this attachment.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs114",
@@ -101937,7 +102063,8 @@
     "WEAPON"
    ],
    "set_name": "Kraven The Hunter",
-   "text": "Attach to Kraven The Hunter.\n[star] <b>Forced Response</b>: After Kraven The Hunter schemes, search the encounter deck and discard pile for a [[WEAPON]] attachment and reveal it.\n<b>Interrupt</b>: When you attack Kraven The Hunter, place 2[per_hero] threat on the main scheme → discard this attachment."
+   "text": "Attach to Kraven The Hunter.\n[star] <b>Forced Response</b>: After Kraven The Hunter schemes, search the encounter deck and discard pile for a [[WEAPON]] attachment and reveal it.\n<b>Interrupt</b>: When you attack Kraven The Hunter, place 2[per_hero] threat on the main scheme → discard this attachment.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs115",
@@ -101951,7 +102078,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\nEach enemy gets +1 SCH and +1 ATK."
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\nEach enemy gets +1 SCH and +1 ATK.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs116",
@@ -101965,7 +102093,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\nEach friendly character gets -1 ATK."
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\nEach friendly character gets -1 ATK.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs117",
@@ -101977,7 +102106,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Kraven The Hunter attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation. If you have a [[TRAP]] attachment attached to you, deal yourself a [[TRAP]] card from the [[TRAP]] deck.\n<hr />\n[star] <b>Boost</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation. If you have a [[TRAP]] attachment attached to you, deal yourself a [[TRAP]] card from the [[TRAP]] deck.\n<hr />\n[star] <b>Boost</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs118",
@@ -101989,7 +102119,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Kraven The Hunter attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation. If you have a [[TRAP]] attachment attached to you, deal yourself a [[TRAP]] card from the [[TRAP]] deck.\n<hr />\n[star] <b>Boost</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation. If you have a [[TRAP]] attachment attached to you, deal yourself a [[TRAP]] card from the [[TRAP]] deck.\n<hr />\n[star] <b>Boost</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs119",
@@ -102001,7 +102132,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to triple the villain’s stage number. Reveal the first [[ITEM]] or [[WEAPON]] attachment discarded this way. If no attachment was revealed this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to triple the villain’s stage number. Reveal the first [[ITEM]] or [[WEAPON]] attachment discarded this way. If no attachment was revealed this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs120",
@@ -102013,7 +102145,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to triple the villain’s stage number. Reveal the first [[ITEM]] or [[WEAPON]] attachment discarded this way. If no attachment was revealed this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to triple the villain’s stage number. Reveal the first [[ITEM]] or [[WEAPON]] attachment discarded this way. If no attachment was revealed this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs121",
@@ -102025,7 +102158,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Kraven The Hunter attacks the hero with the highest printed hit points. Other characters cannot defend against this attack. If no attack was made this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks the hero with the highest printed hit points. Other characters cannot defend against this attack. If no attack was made this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs122",
@@ -102037,7 +102171,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Kraven The Hunter attacks the hero with the highest printed hit points. Other characters cannot defend against this attack. If no attack was made this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks the hero with the highest printed hit points. Other characters cannot defend against this attack. If no attack was made this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs123",
@@ -102049,7 +102184,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck. Place 1 threat on the main scheme for each [[TRAP]] card dealt to you.\n<hr />\n[star] <b>Boost</b>: If you have 1 or more [[TRAP]] cards dealt to you, place 1 threat on the main scheme."
+   "text": "<b>When Revealed</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck. Place 1 threat on the main scheme for each [[TRAP]] card dealt to you.\n<hr />\n[star] <b>Boost</b>: If you have 1 or more [[TRAP]] cards dealt to you, place 1 threat on the main scheme.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs124",
@@ -102061,7 +102197,8 @@
    },
    "traits": [],
    "set_name": "Kraven The Hunter",
-   "text": "<b>When Revealed</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck. Place 1 threat on the main scheme for each [[TRAP]] card dealt to you.\n<hr />\n[star] <b>Boost</b>: If you have 1 or more [[TRAP]] cards dealt to you, place 1 threat on the main scheme."
+   "text": "<b>When Revealed</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck. Place 1 threat on the main scheme for each [[TRAP]] card dealt to you.\n<hr />\n[star] <b>Boost</b>: If you have 1 or more [[TRAP]] cards dealt to you, place 1 threat on the main scheme.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs125",
@@ -102078,7 +102215,8 @@
     "ANIMAL"
    ],
    "set_name": "Trap",
-   "text": "[star] While attacking, Ferocious Lion gets +1 ATK if the attack is undefended.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Ferocious Lion attacks that player."
+   "text": "[star] While attacking, Ferocious Lion gets +1 ATK if the attack is undefended.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Ferocious Lion attacks that player.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs126",
@@ -102095,7 +102233,8 @@
     "ANIMAL"
    ],
    "set_name": "Trap",
-   "text": "[star] While attacking, Ferocious Lion gets +1 ATK if the attack is undefended.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Ferocious Lion attacks that player."
+   "text": "[star] While attacking, Ferocious Lion gets +1 ATK if the attack is undefended.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Ferocious Lion attacks that player.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs127",
@@ -102112,7 +102251,8 @@
     "ANIMAL"
    ],
    "set_name": "Trap",
-   "text": "Fierce Cheetah’s attacks gain piercing.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Fierce Cheetah attacks that player."
+   "text": "Fierce Cheetah’s attacks gain piercing.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Fierce Cheetah attacks that player.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs128",
@@ -102129,7 +102269,8 @@
     "ANIMAL"
    ],
    "set_name": "Trap",
-   "text": "Fierce Cheetah’s attacks gain piercing.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Fierce Cheetah attacks that player."
+   "text": "Fierce Cheetah’s attacks gain piercing.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Fierce Cheetah attacks that player.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs129",
@@ -102141,7 +102282,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, take 1 damage.\n<b>Action</b>: Spend a [physical] resource and take 2 damage → discard this card."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, take 1 damage.\n<b>Action</b>: Spend a [physical] resource and take 2 damage → discard this card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs130",
@@ -102153,7 +102295,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, take 1 damage.\n<b>Action</b>: Spend a [physical] resource and take 2 damage → discard this card."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, take 1 damage.\n<b>Action</b>: Spend a [physical] resource and take 2 damage → discard this card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs131",
@@ -102165,7 +102308,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, spend a [physical] resource or exhaust your identity.\n<b>Interrupt</b>: When you would attack, spend a [physical] resource → discard Capture Net instead."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, spend a [physical] resource or exhaust your identity.\n<b>Interrupt</b>: When you would attack, spend a [physical] resource → discard Capture Net instead.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs132",
@@ -102177,7 +102321,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, spend a [physical] resource or exhaust your identity.\n<b>Interrupt</b>: When you would attack, spend a [physical] resource → discard Capture Net instead."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, spend a [physical] resource or exhaust your identity.\n<b>Interrupt</b>: When you would attack, spend a [physical] resource → discard Capture Net instead.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs133",
@@ -102193,7 +102338,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Interrupt</b>: When you play an event card, cancel its effects and discard that event → discard Quicksand."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Interrupt</b>: When you play an event card, cancel its effects and discard that event → discard Quicksand.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs134",
@@ -102209,7 +102355,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Interrupt</b>: When you play an event card, cancel its effects and discard that event → discard Quicksand."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Interrupt</b>: When you play an event card, cancel its effects and discard that event → discard Quicksand.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs135",
@@ -102221,7 +102368,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage."
+   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs136",
@@ -102233,7 +102381,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage."
+   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs137",
@@ -102245,7 +102394,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage."
+   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs138",
@@ -102257,7 +102407,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs139",
@@ -102269,7 +102420,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs140",
@@ -102281,7 +102433,8 @@
     "TRAP"
    ],
    "set_name": "Trap",
-   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage."
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs141",
@@ -102294,7 +102447,8 @@
    },
    "traits": [],
    "set_name": "Feral Instincts",
-   "text": "Attach to the villain.\n[star] <b>Forced Interrupt</b>: When the villain would scheme against you, it attacks you instead. This attack gains overkill. Do not give the villain a boost card for this activation. Then, discard Feral Instincts."
+   "text": "Attach to the villain.\n[star] <b>Forced Interrupt</b>: When the villain would scheme against you, it attacks you instead. This attack gains overkill. Do not give the villain a boost card for this activation. Then, discard Feral Instincts.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs142",
@@ -102309,7 +102463,8 @@
     "SKILL"
    ],
    "set_name": "Feral Instincts",
-   "text": "Attach to the villain.\nX is equal to the villain’s stage number.\n<b>Interrupt</b>: When the villain attacks you, choose to either spend [physical][physical] resources or exhaust your identity → discard Primal Strength."
+   "text": "Attach to the villain.\nX is equal to the villain’s stage number.\n<b>Interrupt</b>: When the villain attacks you, choose to either spend [physical][physical] resources or exhaust your identity → discard Primal Strength.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs143",
@@ -102321,7 +102476,8 @@
    },
    "traits": [],
    "set_name": "Feral Instincts",
-   "text": "<b>When Revealed</b>: The villain attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if this activation is an attack."
+   "text": "<b>When Revealed</b>: The villain attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if this activation is an attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs144",
@@ -102333,7 +102489,8 @@
    },
    "traits": [],
    "set_name": "Feral Instincts",
-   "text": "<b>When Revealed</b>: You take 1 damage. If the villain has taken 6[per_hero] or more damage, choose to either spend a [energy] resource or take 2 indirect damage. If the villain has taken 12[per_hero] or more damage, choose to either discard a random card from your hand or place 2 threat on the main scheme."
+   "text": "<b>When Revealed</b>: You take 1 damage. If the villain has taken 6[per_hero] or more damage, choose to either spend a [energy] resource or take 2 indirect damage. If the villain has taken 12[per_hero] or more damage, choose to either discard a random card from your hand or place 2 threat on the main scheme.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs145",
@@ -102345,7 +102502,8 @@
    },
    "traits": [],
    "set_name": "Feral Instincts",
-   "text": "<b>When Revealed</b>: You take 1 damage. If the villain has taken 6[per_hero] or more damage, choose to either spend a [energy] resource or take 2 indirect damage. If the villain has taken 12[per_hero] or more damage, choose to either discard a random card from your hand or place 2 threat on the main scheme."
+   "text": "<b>When Revealed</b>: You take 1 damage. If the villain has taken 6[per_hero] or more damage, choose to either spend a [energy] resource or take 2 indirect damage. If the villain has taken 12[per_hero] or more damage, choose to either discard a random card from your hand or place 2 threat on the main scheme.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs146",
@@ -102358,7 +102516,8 @@
    },
    "traits": [],
    "set_name": "Lizard Thralls",
-   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\n<b>Forced Interrupt</b>: When the villain phase begins, search the encounter deck and discard pile for a copy of Lizard Thrall and put it into play engaged with the first player."
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\n<b>Forced Interrupt</b>: When the villain phase begins, search the encounter deck and discard pile for a copy of Lizard Thrall and put it into play engaged with the first player.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs147",
@@ -102376,7 +102535,8 @@
     "REPTILE"
    ],
    "set_name": "Lizard Thralls",
-   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs148",
@@ -102394,7 +102554,8 @@
     "REPTILE"
    ],
    "set_name": "Lizard Thralls",
-   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs149",
@@ -102412,7 +102573,8 @@
     "REPTILE"
    ],
    "set_name": "Lizard Thralls",
-   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs150",
@@ -102430,7 +102592,8 @@
     "REPTILE"
    ],
    "set_name": "Lizard Thralls",
-   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs151",
@@ -102450,7 +102613,8 @@
     "MUTATE"
    ],
    "set_name": "Red Vulture",
-   "text": "Quickstrike. Villainous.\n[star] <b>Forced Response</b>: After Vulture (James Natale) attacks and damages you, discard cards from the top of your deck equal to the amount of damage you took."
+   "text": "Quickstrike. Villainous.\n[star] <b>Forced Response</b>: After Vulture (James Natale) attacks and damages you, discard cards from the top of your deck equal to the amount of damage you took.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs152",
@@ -102464,7 +102628,8 @@
    },
    "traits": [],
    "set_name": "Red Vulture",
-   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Vulture (James Natale) and put it into play engaged with the identity with the least amount of hit points left."
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Vulture (James Natale) and put it into play engaged with the identity with the least amount of hit points left.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs153",
@@ -102476,7 +102641,8 @@
    },
    "traits": [],
    "set_name": "Red Vulture",
-   "text": "<b>When Revealed</b>: Discard the top 5 cards of the encounter deck. For each boost icon on the cards discarded this way, discard the top card of your deck.\n<hr />\n[star] <b>Boost</b>: After this attack, discard the top card of your deck for each damage you took from that attack."
+   "text": "<b>When Revealed</b>: Discard the top 5 cards of the encounter deck. For each boost icon on the cards discarded this way, discard the top card of your deck.\n<hr />\n[star] <b>Boost</b>: After this attack, discard the top card of your deck for each damage you took from that attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs154",
@@ -102488,7 +102654,8 @@
    },
    "traits": [],
    "set_name": "Red Vulture",
-   "text": "<b>When Revealed</b>: Discard the top 5 cards of the encounter deck. For each boost icon on the cards discarded this way, discard the top card of your deck.\n<hr />\n[star] <b>Boost</b>: After this attack, discard the top card of your deck for each damage you took from that attack."
+   "text": "<b>When Revealed</b>: Discard the top 5 cards of the encounter deck. For each boost icon on the cards discarded this way, discard the top card of your deck.\n<hr />\n[star] <b>Boost</b>: After this attack, discard the top card of your deck for each damage you took from that attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs155",
@@ -102500,7 +102667,8 @@
    },
    "traits": [],
    "set_name": "Red Vulture",
-   "text": "<b>When Revealed (Hero)</b>: Vulture (James Natale) attacks your hero. If Vulture (James Natale) did not attack you this way, discard the top 6 cards of the encounter deck and if Vulture (James Natale) is in the encounter discard pile, put him into play engaged with you."
+   "text": "<b>When Revealed (Hero)</b>: Vulture (James Natale) attacks your hero. If Vulture (James Natale) did not attack you this way, discard the top 6 cards of the encounter deck and if Vulture (James Natale) is in the encounter discard pile, put him into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs156",
@@ -102512,7 +102680,8 @@
    },
    "traits": [],
    "set_name": "Red Vulture",
-   "text": "<b>When Revealed (Hero)</b>: Vulture (James Natale) attacks your hero. If Vulture (James Natale) did not attack you this way, discard the top 6 cards of the encounter deck and if Vulture (James Natale) is in the encounter discard pile, put him into play engaged with you."
+   "text": "<b>When Revealed (Hero)</b>: Vulture (James Natale) attacks your hero. If Vulture (James Natale) did not attack you this way, discard the top 6 cards of the encounter deck and if Vulture (James Natale) is in the encounter discard pile, put him into play engaged with you.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs157",
@@ -102526,7 +102695,8 @@
    },
    "traits": [],
    "set_name": "Savage Six",
-   "text": "<b>When Revealed</b>: Each [[SAVAGE SIX]] minion attacks the hero it is engaged with. If no attacks were made this way, search the encounter deck and discard pile for a [[SAVAGE SIX]] minion and put it into play engaged with the first player."
+   "text": "<b>When Revealed</b>: Each [[SAVAGE SIX]] minion attacks the hero it is engaged with. If no attacks were made this way, search the encounter deck and discard pile for a [[SAVAGE SIX]] minion and put it into play engaged with the first player.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs158",
@@ -102545,7 +102715,8 @@
     "SAVAGE SIX"
    ],
    "set_name": "Savage Six",
-   "text": "[star] <b>Forced Response</b>: After Vulture attacks you, deal yourself an encounter card. Then, shuffle Vulture into the encounter deck.\n<hr />\n[star] <b>Boost</b>: After this activation ends, shuffle this card into the encounter deck."
+   "text": "[star] <b>Forced Response</b>: After Vulture attacks you, deal yourself an encounter card. Then, shuffle Vulture into the encounter deck.\n<hr />\n[star] <b>Boost</b>: After this activation ends, shuffle this card into the encounter deck.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs159",
@@ -102564,7 +102735,8 @@
     "SAVAGE SIX"
    ],
    "set_name": "Savage Six",
-   "text": "[star] Rhino’s attacks gain overkill.\n<b>Forced Interrupt</b>: When the villain phase ends, give Rhino a tough status card.\n<hr />\n[star] <b>Boost</b>: This attack gains overkill."
+   "text": "[star] Rhino’s attacks gain overkill.\n<b>Forced Interrupt</b>: When the villain phase ends, give Rhino a tough status card.\n<hr />\n[star] <b>Boost</b>: This attack gains overkill.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs160",
@@ -102583,7 +102755,8 @@
     "SAVAGE SIX"
    ],
    "set_name": "Savage Six",
-   "text": "[star] Scorpion gets +1 SCH while the identity he is engaged with is stunned.\n[star] <b>Forced Response</b>: After Scorpion attacks and damages a character, that character is stunned.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if you are stunned."
+   "text": "[star] Scorpion gets +1 SCH while the identity he is engaged with is stunned.\n[star] <b>Forced Response</b>: After Scorpion attacks and damages a character, that character is stunned.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if you are stunned.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs161",
@@ -102601,7 +102774,8 @@
     "SAVAGE SIX"
    ],
    "set_name": "Savage Six",
-   "text": "[star] Tarantula gets +1 ATK while the identity he is engaged with is confused.\n[star] <b>Forced Response</b>: After Tarantula attacks and damages a character, that character is confused.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if you are confused."
+   "text": "[star] Tarantula gets +1 ATK while the identity he is engaged with is confused.\n[star] <b>Forced Response</b>: After Tarantula attacks and damages a character, that character is confused.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if you are confused.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs162",
@@ -102619,7 +102793,8 @@
     "SERPENT SOCIETY"
    ],
    "set_name": "Savage Six",
-   "text": "While King Cobra is engaged with you, your hero cannot attack other enemies.\n<hr />\n[star] <b>Boost</b>: If this attack deals damage to you, exhaust your identity."
+   "text": "While King Cobra is engaged with you, your hero cannot attack other enemies.\n<hr />\n[star] <b>Boost</b>: If this attack deals damage to you, exhaust your identity.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs163",
@@ -102637,7 +102812,8 @@
     "SAVAGE SIX"
    ],
    "set_name": "Savage Six",
-   "text": "[star] Stegron gets +1 SCH for each [[SAVAGE SIX]] enemy in play (max +4 SCH).\n<b>Forced Response</b>: After Stegron enters play, he schemes.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if at least one [[SAVAGE SIX]] minion is in play."
+   "text": "[star] Stegron gets +1 SCH for each [[SAVAGE SIX]] enemy in play (max +4 SCH).\n<b>Forced Response</b>: After Stegron enters play, he schemes.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if at least one [[SAVAGE SIX]] minion is in play.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs164",
@@ -102657,7 +102833,8 @@
     "OUTLAW"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 4.\n[star] Rocket Raccoon’s basic attack gains ranged, piercing and overkill."
+   "text": "Experience Cost 4.\n[star] Rocket Raccoon’s basic attack gains ranged, piercing and overkill.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs165",
@@ -102677,7 +102854,8 @@
     "X-MAN"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 4.\n<b>Interrupt</b>: When Old Man Logan defends against an attack, deal damage to the attacker equal to Old Man Logan’s ATK."
+   "text": "Experience Cost 4.\n<b>Interrupt</b>: When Old Man Logan defends against an attack, deal damage to the attacker equal to Old Man Logan’s ATK.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs166",
@@ -102696,7 +102874,8 @@
     "HERO FOR HIRE"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 4.\n[star] <b>Forced Response</b>: After Black Cat thwarts, discard the top card of your deck. If that card has a printed [mental] resource, add it to your hand."
+   "text": "Experience Cost 4.\n[star] <b>Forced Response</b>: After Black Cat thwarts, discard the top card of your deck. If that card has a printed [mental] resource, add it to your hand.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs167",
@@ -102716,7 +102895,8 @@
     "SAVAGE LAND"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 4.\n<b>Response</b>: After Ka-Zar enters play, deal damage to the villain equal to the villain’s stage number."
+   "text": "Experience Cost 4.\n<b>Response</b>: After Ka-Zar enters play, deal damage to the villain equal to the villain’s stage number.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs168",
@@ -102736,7 +102916,8 @@
     "MUTANT"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 1.\n<b>Interrupt</b>: When Gibbon would take any amount of damage, prevent 1 of that damage. (Limit once per phase.)"
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When Gibbon would take any amount of damage, prevent 1 of that damage. (Limit once per phase.)",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs169",
@@ -102753,7 +102934,8 @@
     "SKILL"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card."
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs170",
@@ -102770,7 +102952,8 @@
     "SKILL"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card."
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs171",
@@ -102787,7 +102970,8 @@
     "SKILL"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card."
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs172",
@@ -102803,7 +102987,8 @@
     "TACTIC"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way."
+   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs173",
@@ -102819,7 +103004,8 @@
     "TACTIC"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way."
+   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs174",
@@ -102835,7 +103021,8 @@
     "TACTIC"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way."
+   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs175",
@@ -102849,7 +103036,8 @@
    },
    "traits": [],
    "set_name": "The Lodge",
-   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects."
+   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs176",
@@ -102863,7 +103051,8 @@
    },
    "traits": [],
    "set_name": "The Lodge",
-   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects."
+   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs177",
@@ -102877,7 +103066,8 @@
    },
    "traits": [],
    "set_name": "The Lodge",
-   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects."
+   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs178",
@@ -102893,7 +103083,8 @@
     "ATTACK"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards."
+   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs179",
@@ -102909,7 +103100,8 @@
     "ATTACK"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards."
+   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs180",
@@ -102925,7 +103117,8 @@
     "ATTACK"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards."
+   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs181",
@@ -102939,7 +103132,8 @@
    },
    "traits": [],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card."
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs182",
@@ -102953,7 +103147,8 @@
    },
    "traits": [],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card."
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs183",
@@ -102967,7 +103162,8 @@
    },
    "traits": [],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card."
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs184",
@@ -102984,7 +103180,8 @@
     "SAVAGE LAND"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 4.\n<b>Hero Action</b>: Exhaust Savage Land and deal 1 damage to a hero or ally → that character gets +1 THW and +1 ATK until the end of the round."
+   "text": "Experience Cost 4.\n<b>Hero Action</b>: Exhaust Savage Land and deal 1 damage to a hero or ally → that character gets +1 THW and +1 ATK until the end of the round.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs185",
@@ -103002,7 +103199,8 @@
     "WEAPON"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged."
+   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs186",
@@ -103020,7 +103218,8 @@
     "WEAPON"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged."
+   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs187",
@@ -103038,7 +103237,8 @@
     "WEAPON"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged."
+   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs188",
@@ -103055,7 +103255,8 @@
     "WEAPON"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack."
+   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs189",
@@ -103072,7 +103273,8 @@
     "WEAPON"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack."
+   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs190",
@@ -103089,7 +103291,8 @@
     "WEAPON"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack."
+   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs191",
@@ -103106,7 +103309,8 @@
     "ROBOT"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot."
+   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs192",
@@ -103123,7 +103327,8 @@
     "ROBOT"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot."
+   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs193",
@@ -103140,7 +103345,8 @@
     "ROBOT"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot."
+   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs194",
@@ -103156,7 +103362,8 @@
     "PREPARATION"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand."
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs195",
@@ -103172,7 +103379,8 @@
     "PREPARATION"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand."
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs196",
@@ -103188,7 +103396,8 @@
     "PREPARATION"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand."
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs197",
@@ -103204,7 +103413,8 @@
     "PREPARATION"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation."
+   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs198",
@@ -103220,7 +103430,8 @@
     "PREPARATION"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation."
+   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs199",
@@ -103236,7 +103447,8 @@
     "PREPARATION"
    ],
    "set_name": "The Lodge",
-   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation."
+   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs200",
@@ -103256,7 +103468,8 @@
     "PREDATOR"
    ],
    "set_name": "Hunt Campaign Set",
-   "text": "Vermin enters play with 3 rat counters.\n<b>Interrupt</b>: When Vermin attacks, remove a rat counter from him → Vermin does not take consequential damage for this attack."
+   "text": "Vermin enters play with 3 rat counters.\n<b>Interrupt</b>: When Vermin attacks, remove a rat counter from him → Vermin does not take consequential damage for this attack.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs201",
@@ -103276,7 +103489,8 @@
     "PREDATOR"
    ],
    "set_name": "Hunt Campaign Set",
-   "text": "<b>Response</b>: After Scorpion attacks and damages an enemy, deal 1 damage to Scorpion → stun that enemy and deal 1 damage to it."
+   "text": "<b>Response</b>: After Scorpion attacks and damages an enemy, deal 1 damage to Scorpion → stun that enemy and deal 1 damage to it.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs202",
@@ -103296,7 +103510,8 @@
     "PREDATOR"
    ],
    "set_name": "Hunt Campaign Set",
-   "text": "While you are in alter-ego form, Lizard gets +3 THW.\nWhile you are in hero form, Lizard gets +3 ATK."
+   "text": "While you are in alter-ego form, Lizard gets +3 THW.\nWhile you are in hero form, Lizard gets +3 ATK.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs203",
@@ -103317,7 +103532,8 @@
     "CRIMINAL"
    ],
    "set_name": "Hunt Campaign Set",
-   "text": "<b>Action</b>: Exhaust Vulture and deal 1 damage to him → ready a friendly character and that character gains the [[AERIAL]] trait until the end of the phase."
+   "text": "<b>Action</b>: Exhaust Vulture and deal 1 damage to him → ready a friendly character and that character gains the [[AERIAL]] trait until the end of the phase.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs204",
@@ -103335,7 +103551,8 @@
     "RAT"
    ],
    "set_name": "Hunt Campaign Set",
-   "text": "Vermin enters play with 3 rat counters.\n<b>Forced Interrupt</b>: When Vermin would take any amount of damage, remove a rat counter from him instead."
+   "text": "Vermin enters play with 3 rat counters.\n<b>Forced Interrupt</b>: When Vermin would take any amount of damage, remove a rat counter from him instead.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs205",
@@ -103355,7 +103572,8 @@
     "REPTILE"
    ],
    "set_name": "Hunt Campaign Set",
-   "text": "Quickstrike. Retaliate 1.\n<b>Forced Interrupt</b>: When Lizard attacks, the attack gains piercing."
+   "text": "Quickstrike. Retaliate 1.\n<b>Forced Interrupt</b>: When Lizard attacks, the attack gains piercing.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs206",
@@ -103373,7 +103591,8 @@
     "MERCENARY"
    ],
    "set_name": "Expert Campaign Set",
-   "text": "Quickstrike."
+   "text": "Quickstrike.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs207",
@@ -103383,7 +103602,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs208",
@@ -103393,7 +103613,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs209",
@@ -103403,7 +103624,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs210",
@@ -103421,7 +103643,8 @@
     "MERCENARY"
    ],
    "set_name": "Expert Campaign Set",
-   "text": "Quickstrike."
+   "text": "Quickstrike.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs211",
@@ -103431,7 +103654,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs212",
@@ -103441,7 +103665,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs213",
@@ -103451,7 +103676,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs214",
@@ -103469,7 +103695,8 @@
     "MERCENARY"
    ],
    "set_name": "Expert Campaign Set",
-   "text": "Quickstrike."
+   "text": "Quickstrike.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs215",
@@ -103479,7 +103706,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs216",
@@ -103489,7 +103717,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs217",
@@ -103499,7 +103728,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs218",
@@ -103517,7 +103747,8 @@
     "MERCENARY"
    ],
    "set_name": "Expert Campaign Set",
-   "text": "Quickstrike."
+   "text": "Quickstrike.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs219",
@@ -103527,7 +103758,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs220",
@@ -103537,7 +103769,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs221",
@@ -103547,7 +103780,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Expert Campaign Set",
-   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs222",
@@ -103557,7 +103791,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Hunter Mode",
-   "text": "<i>Hunter Mode Only.</i>\nVermin and Vermin Clone get +1 ATK.\n<b>Forced Response</b>: After a [[RAT]] minion enters play, place 1 threat on that minion."
+   "text": "<i>Hunter Mode Only.</i>\nVermin and Vermin Clone get +1 ATK.\n<b>Forced Response</b>: After a [[RAT]] minion enters play, place 1 threat on that minion.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs223",
@@ -103567,7 +103802,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Hunter Mode",
-   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After the villain phase ends, the first player must choose to either place 1 wound counter on J. Jonah Jameson or discard cards from the top of the encounter deck until an attachment is discarded and reveal it."
+   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After the villain phase ends, the first player must choose to either place 1 wound counter on J. Jonah Jameson or discard cards from the top of the encounter deck until an attachment is discarded and reveal it.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs224",
@@ -103577,7 +103813,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Hunter Mode",
-   "text": "<i>Hunter Mode Only.</i>\nThe target threat value of the main scheme is reduced by 1[per_hero].\n<b>Forced Response</b>: After Curtis Connors activates against your hero, deal yourself 1 facedown encounter card."
+   "text": "<i>Hunter Mode Only.</i>\nThe target threat value of the main scheme is reduced by 1[per_hero].\n<b>Forced Response</b>: After Curtis Connors activates against your hero, deal yourself 1 facedown encounter card.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs225",
@@ -103587,7 +103824,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Hunter Mode",
-   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, place 1 threat on the main scheme for each identity without the [[AERIAL]] trait. Each identity with the [[AERIAL]] trait takes 2 indirect damage."
+   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, place 1 threat on the main scheme for each identity without the [[AERIAL]] trait. Each identity with the [[AERIAL]] trait takes 2 indirect damage.",
+   "custom": "Nugget"
   },
   {
    "card_id": "hs226",
@@ -103597,7 +103835,8 @@
    "desc": {},
    "traits": [],
    "set_name": "Hunter Mode",
-   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, deal each player 1 facedown [[TRAP]] card.\n<b>Forced Interrupt</b>: When the [[TRAP]] discard pile is shuffled back into the [[TRAP]] deck, deal the first player 1 facedown encounter card."
+   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, deal each player 1 facedown [[TRAP]] card.\n<b>Forced Interrupt</b>: When the [[TRAP]] discard pile is shuffled back into the [[TRAP]] deck, deal the first player 1 facedown encounter card.",
+   "custom": "Nugget"
   }
  ],
  "skrull_menace": [
@@ -121405,5 +121644,5 @@
    "ability_link": "01193"
   }
  ],
- "checksum": "aafc8cf4f00131acc2a7a18273e6275b46767a7b74d8676d33ab9c4b2aad86c8"
+ "checksum": "096a843ec4f578d76e72d935a5c6d5f69db23fa4469859faeafedda90340d712"
 }

@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Ms. America",
     "metadata": {
+        "author": "jakxin",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice (construite par le portage, aspect arbitre le 30/08/2026). Les re-skins du pack qui s'y trouvaient (ma023, ma024, ma027, ma028, ma029) restent au catalogue et au deck-builder.",
         "deckbuilding_note": "L'alter-ego imprime « You may include upgrade cards that modify your basic powers from any aspect in your deck » : cette regle est ASPECT-AGNOSTIQUE, elle permet de piocher Combat Training (Aggression), Heroic Intuition (Justice) ou Armored Vest (Protection) quel que soit l'aspect retenu. Implementee dans public/js/deckbuilder/app.js, fonction exemptDeLaLimiteAspect (§14.1 du guide), troisieme cas apres Madame Web et Patriot.",
