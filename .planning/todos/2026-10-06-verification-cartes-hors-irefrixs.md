@@ -1,5 +1,17 @@
 # Vérification carte par carte des cartes hors irefrixs
 
+> **Mise à jour du 20/10/2026 (backlog 12, branche `backlog-12-dazzler`)** :
+> pack Dazzler vérifié de dz004 à dz038 (36 cartes) ; `im001b` et `wc014`
+> passés en portée « Round ». Gabarits et preuves :
+> `.planning/todos/2026-10-20-backlog-12-gabarits-processus-carte.md`.
+> Cinq cartes attendent une réponse (dz012, dz016, dz021, dz031, dz035) :
+> `.planning/todos/2026-10-20-backlog-12-questions.md`. ⚠ La méthode de la
+> fiche (une carte montrée à l'utilisateur, « OK / à corriger ») n'a PAS été
+> suivie pour ce lot : vérification faite par un agent, sans dialogue ; les
+> points de lecture sont tous dans le fichier de questions. RESTE : les autres
+> packs hors irefrixs (fne, web_of_deceit, determination, synthezoid, jj,
+> iron_patriot, hercules, luke_cage...).
+
 > **Mise à jour du 07/10/2026 (audit du backlog)** : « dz003 non commité » est PÉRIMÉ : corrigée et commitée (`f7b4e6a0`). RESTE : dz004 à dz038, autoplay Dazzler, puis les cartes hors irefrixs ; même écart « this round » encore en « Phase » dans im001b et wc014.
 
 Ouvert le 06/10/2026. **STATUT : EN PAUSE** (arrêté à la carte 4/40 du pack

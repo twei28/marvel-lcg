@@ -1637,3 +1637,29 @@ avec un événement `attack` à plusieurs cibles. ⚠ « Exhaust a WEAPON you co
 | « Remove N <compteurs> from <identité> → » (coût) | `.SetCostFunc(CostFunc.Counter("YourIdentity", n, 'chi'))` + `conditions=[AuMoinsChi(n)]` | `64006`, `64010`-`64012` | sans la condition, la capacité est offerte impayable (RECETTES §5) |
 
 Harnais : `main_exclusive` DÉFAUSSE la main de départ APRÈS `mise_en_place` ; avec un deck de départ fait de cartes signature, la défausse se remplit de cartes du pack. Toute défausse construite pour un cas (fouille « deck and discard pile », « top card of your discard pile ») se pose donc dans `declencher`, après `Puzzle.EmptyPlayerDiscardPile()`. `cibles` : le pilote vise la PREMIÈRE cible listée encore en jeu à chaque choix (les trois coups de Fists of Fury sur la même), d'où le montage « sbire à 1 PV » pour prouver des choix indépendants. Lancer le harnais avec `CAS_PREFIX=<nom>` : sans préfixe, les journaux `/tmp/capacites_<index>.log` se mêlent à ceux des autres sessions.
+
+## 15. Vérification du pack Dazzler (backlog 12, 20/10/2026) : ce qu'elle a payé
+
+| Texte imprimé | Montage | Modèle | Piège |
+|---|---|---|---|
+| « a **friendly** character » | `SetTarget(Friend, ...)` ; dans une fabrique de déclencheur, `Friend` comme `which_unit` | `01080`, `40012`, `dz005`, `dz013`, `dz027`-`dz029`, `dz033` | `"YouControlUnit"` / `"YouControlCharacter"` excluent les personnages des AUTRES joueurs : invisible en solo, un cas `heros2` est obligatoire. Sept cartes du pack l'avaient |
+| « **Choose**: • A • B » | `joueur.ChooseAbilities(effect, ForChoiceAbility(...), ...)` | `dz028`-`dz030`, `dz038` | `MayChooseOneAbility` ajoute une option « Cancel » : la carte se jouait pour rien. Témoin : `questions_absentes: ["Cancel"]`. « you MAY » reste `MayChooseOneAbility` (`dz004`) |
+| « when the villain would activate **against you** » | `WhenEnemyWouldActivate(..., conditions=[message.to_player == effect.GetInitiator()])` | `dz006` | la fabrique n'a PAS de filtre de joueur (`against_you` commenté dans `factory/activate.py`) |
+| « If no attack was made this way » | `DoAttackYou(joueur, effect, if_no_attack_was_made=fn)` | `27029`, `22031`, `dz023` | un vilain étourdi défausse son Stunned au lieu d'attaquer : un drapeau « attaque lancée » ne le voit pas |
+| « the next card you play **this turn** » | `RegisterTemp(..., unregister_after_exec=True, until_turn_end=True)` | `dz032` | sans durée, la promesse attend la prochaine carte jouée, même des rounds plus tard. Harnais : `Puzzle.EndPlayerTurn()` (ajouté) avant `EndPlayerPhase`, qui n'envoie pas la fin de TOUR |
+| « resolve the Hero Action / Showtime! of that card » (résoudre la capacité d'une AUTRE carte) | `Faces.ResolveAbility`, ou pour UNE cible : relire `all_legal_targets`, faire choisir, poser `targets_internal`, `ResolveToPlayer` | `dz035` (`resoudre_en_choisissant_la_cible`), `CiblesShowtime` | `CardFace.ResolveAbility` prend les PREMIÈRES cibles légales sans rien demander |
+| « in any order » (résoudre plusieurs capacités) | boucle `AskChooseOneText(restantes)` puis résolution une par une | `dz017b` | l'ordre change le résultat (une Tough posée puis retirée) |
+| « Remove a status card » | toutes les cartes d'état (`LoseState`), choix du joueur s'il y en a plusieurs | `RetirerUnStatut` (dazzler), `RetirerUneCarteDeStatut` (donatello) | ne pas coder trois statuts : Dazed, Exposed, Cloaked, Intensified existent |
+| Filtre de joueur sur une recherche en jeu | filtrer À LA MAIN le retour de `Worlds.FindCardsOnField` | `Concert`, `AngoisseEnJeu` (dazzler) | `check_effect_fn` passé à `FindCardOnField` n'est JAMAIS appelé (« Only call when has effect », `checker.py`) : le filtre est inerte, sans erreur |
+| Filtre « autre que X » dans `SetTarget` | `SetTarget(CardFinder(..., check_effect_fn=fn), range=...)` | `dz033` | `check_fn=` est commenté dans `selector/factory.py` : ignoré en silence |
+| Action « sans effet » sur une zone vide (retourner puis retourner) | condition `len(zone) > 0` sur l'action | `dz017a`, `dz001a`, `dz035` | l'autoplay la reprend sans fin : 6 parties sur 8 bloquées (20/10/2026) ; seul l'autoplay le voit |
+| Une obligation « donnée » chez un joueur | la reconnaître à `joueur.obligations_area` | `AngoisseEnJeu` (dazzler) | son propriétaire reste le SCÉNARIO : `GetControlByOrOwner() == joueur` est faux |
+| Icône de complot inconnue | comparer au scan d'un complot officiel qui la porte | `dz021` (Amplify, vs 16054 / 16144 / 27173 / 32027) | l'icône « + avion » est **Amplify** ; absente de `desc`, aucun outil ne le voit |
+
+Harnais (ajouts additifs du 20/10/2026) : `Puzzle.PlaceUnder(carte, hote, face_up=True)` (poser dans une zone
+« Setlist » face visible) ; `Puzzle.Attack(ennemi, against='<identite>')` et `Puzzle.Reveal(carte, by='<identite>')`
+(activation / révélation chez un AUTRE joueur) ; `Puzzle.EndPlayerTurn()` ; clé de cas `jouer_sous: [[hote, carte]]`
+(jouer une carte glissée sous un soutien, comme `jouer_glissee` pour l'identité). En partie à deux, un héros prêt
+DÉFEND pour l'autre joueur : incliner les héros avant de mesurer des dégâts (`dz006`). La menace posée par
+`Puzzle.SetThreat` est absorbée par Great Responsibility (01061) dans la main de Spider-Man (`heros2`) : préférer une
+carte sans cible de menace (`dz033`).

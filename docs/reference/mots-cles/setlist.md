@@ -1,5 +1,17 @@
 # Setlist
 
+> **Mise à jour du 20/10/2026 (backlog 12).** `Concert()` passait son filtre
+> de joueur en `check_effect_fn` à `Worlds.FindCardOnField`, qui ne l'appelle
+> jamais : la fonction rendait la Live Concert de n'importe quel joueur. Le
+> filtre est maintenant fait à la main (même correctif pour `AngoisseEnJeu`,
+> qui reconnaît l'obligation à la ZONE d'obligations du joueur : son
+> propriétaire reste le scénario). La Hero Action de Live Concert n'est plus
+> offerte quand la Setlist est vide (blocage du pilote d'autoplay).
+> `JoueurDeDazzler()` désigne la Setlist de DAZZLER pour les cartes qui la
+> nomment (`dz022` Stealing Sound). Les compteurs `sound` partent avec les
+> cartes à CHAQUE vidage de la Setlist (Showtime!, Karaoke Night, Stealing
+> Sound).
+
 **Texte imprimé / définition** : « Setlist » désigne, dans le pack maison
 `dazzler` (héroïne custom **Dazzler**, contenu de « Lord Havok »), la zone
 de jeu créée par l'upgrade permanent **Live Concert** (`dz017a`) où
