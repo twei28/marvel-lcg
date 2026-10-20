@@ -256,6 +256,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (20/10/2026, Galactic Storm GS-8, Kajislav) : trait STARFORCE (sbires gs204, gs209-gs216).
         # PAS decoratif : gs198a/gs198b/gs199a/gs208/gs217 mettent de cote, comptent et cherchent par ce trait.
         "STARFORCE",
+        # AJOUT (20/10/2026, Galactic Storm GS-6, scenario Hala Ultimatum, Kajislav) : HIDDEN (faces gs138a/
+        # gs139a/gs140a, mechant Kree Leader) et TARGETED (reserve, Punisher MC x DC 2026 p183 In the Crosshairs,
+        # pas encore porte). PAS decoratifs : HIDDEN est lu par AbilityFactory.CannotBeAffectedByPlayerCards
+        # (while_fn=lambda face: face.HasTrait("HIDDEN"), deja en place, voir mots-cles/immunite-cartes-joueur.md)
+        # et par la moitie « attaque » codee dans ce lot (mots-cles/hidden.md).
+        "HIDDEN", "TARGETED",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -489,6 +495,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (tx013 Superfly). `swarm` existe deja (td016/td017). Sans ces entrees `IsCounter` refuse
         # le nom et le sbire tombe a la mise en place.
         'cable', 'shield', 'ooze',
+        # AJOUT (20/10/2026) : scenario Hala Ultimatum (Galactic Storm, Kajislav, GS-6). 'hideout' :
+        # jetons de REPLI de l'environnement gs143 Hala (« Enters play with 2 hideout counters, plus
+        # 2[per_hero] additional hideout counters »), retires par gs141b et les cartes annexes du
+        # scenario (gs150-gs152) via « Remove 1 hideout counter from Hala ». Sans cette entree
+        # `IsCounter` refuse le nom et la pose du jeton echoue.
+        'hideout',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

@@ -1887,7 +1887,8 @@
   "scenarios": [
    "gs_majestrix_verdict",
    "gs_supreme_intelligence",
-   "gs_kree_sentry"
+   "gs_kree_sentry",
+   "gs_hala_ultimatum"
   ],
   "heroes": [
    "binary",
@@ -1899,9 +1900,11 @@
    "gs_seeds_of_corruption",
    "gs_nega_bomb",
    "gs_kree_sentry",
-   "gs_imperial_guard"
+   "gs_imperial_guard",
+   "gs_hala_ultimatum",
+   "gs_accuser_corps"
   ],
   "max_id": "gs223"
  },
- "checksum": "2395506067b66f29c050f08ea666ceb021f25e2ed30c4daaac684af5b33a2657"
+ "checksum": "448899ef45a159143d320a556f462b35ba83bf2415f05dcffe75d685603909ef"
 }
