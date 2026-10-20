@@ -211,8 +211,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-19",
         genre: "jeu",
-        fr: "La phase du méchant se choisit entre trois façons : « Guidée », « Plateau animé » et « Accéléré ». Les anciennes présentations « Étape par étape » passent sur « Guidée ».",
-        en: "The villain phase now comes in three ways: “Guided”, “Animated Board” and “Fast Forward”. The former “Step by step” presentations move to “Guided”.",
+        fr: "La phase du méchant se choisit entre trois façons : « Guidée », « Plateau animé » et « Accéléré ». Les anciennes présentations « Étape par étape » passent sur « Guidée ». La fenêtre de choix se pose une dernière fois à chacun, le choix déjà fait y est conservé.",
+        en: "The villain phase now comes in three ways: “Guided”, “Animated Board” and “Fast Forward”. The former “Step by step” presentations move to “Guided”. The choice window appears one last time for everyone, with the choice already made kept in it.",
     },
     {
         date: "2026-10-10",

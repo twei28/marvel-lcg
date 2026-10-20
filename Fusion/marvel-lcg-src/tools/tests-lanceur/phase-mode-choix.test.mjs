@@ -3,7 +3,7 @@
 //     node --test tools/tests-lanceur/phase-mode-choix.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES, normaliser, doitProposerLeChoix, modeAEcrire }
+import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES, normaliser, doitProposerLeChoix, modeAEcrire }
     from "../../public/js/prepare/phase-mode-choix.js";
 
 test("la clé du mode est celle que lit le plateau", () => {
@@ -23,7 +23,10 @@ test("toute valeur inconnue vaut detaille", () => {
 test("la fenêtre n'est montrée qu'à qui ne l'a jamais vue", () => {
     assert.equal(doitProposerLeChoix(null), true);
     assert.equal(doitProposerLeChoix(""), true);
-    assert.equal(doitProposerLeChoix("1"), false);
+    assert.equal(doitProposerLeChoix("1"), true, "l'ancienne cle « 1 » ne compte plus : reaffichage unique du 20/10/2026");
+    assert.equal(doitProposerLeChoix(VERSION_CHOIX_PHASE), false);
+    assert.equal(VERSION_CHOIX_PHASE, "2026-10-20");
+    assert.equal(CLE_PHASE_CHOIX_VU, "mc_phase_choix_vu");
 });
 
 test("rien n'est écrit quand le choix ne change rien", () => {
@@ -40,4 +43,25 @@ test("un autre mode est écrit", () => {
 
 test("un choix invalide n'écrit rien", () => {
     assert.equal(modeAEcrire("detaille", "fluo"), null);
+});
+
+test("réaffichage unique du 20/10/2026 : fenêtre posée, choix conservé, aucune nouvelle migration", async () => {
+    const { migrerPhaseTroisChoix, CLE_MIGRATION_PHASE, VERSION_MIGRATION_PHASE, CLE_PRESENTATION_PHASE } =
+        await import("../../public/js/prepare/phase-mode-choix.js");
+    const magasin = new Map([
+        [CLE_MIGRATION_PHASE, VERSION_MIGRATION_PHASE],   // déjà passé aux trois choix
+        [CLE_MODE_PHASE, "instantane"],                    // son choix
+        [CLE_PRESENTATION_PHASE, "tris"],
+        [CLE_PHASE_MODE_VU, "1"],                          // a vu l'ancienne fenêtre
+    ]);
+    const stockage = { getItem: (k) => (magasin.has(k) ? magasin.get(k) : null), setItem: (k, v) => magasin.set(k, String(v)) };
+    // clé absente (ancien joueur ou navigateur neuf) : la fenêtre est posée
+    assert.equal(doitProposerLeChoix(stockage.getItem(CLE_PHASE_CHOIX_VU)), true);
+    // la migration datée ne repasse pas et ne touche à rien
+    assert.equal(migrerPhaseTroisChoix(stockage), false);
+    assert.equal(normaliser(stockage.getItem(CLE_MODE_PHASE)), "instantane", "le choix est conservé, donc présélectionné");
+    // validation : la clé est posée à jour, la fenêtre ne revient plus
+    stockage.setItem(CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE);
+    assert.equal(doitProposerLeChoix(stockage.getItem(CLE_PHASE_CHOIX_VU)), false);
+    assert.equal(modeAEcrire(stockage.getItem(CLE_MODE_PHASE), "instantane"), null);
 });

@@ -42,7 +42,7 @@ import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
 import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
-import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
+import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire,
          migrerPhaseTroisChoix, PHASE_IMAGES_VISIBLES } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
@@ -1938,6 +1938,7 @@ function demanderLaPhaseDuMechant() {
             try {
                 if (aEcrire) localStorage.setItem(CLE_MODE_PHASE, aEcrire);
                 localStorage.setItem(CLE_PHASE_MODE_VU, "1");
+                localStorage.setItem(CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE);
             } catch (e) { /* stockage refuse : la fenetre reviendra, c'est tout */ }
             arreter();
             fermerModale(overlay);
@@ -6031,7 +6032,7 @@ installerHistorique(appliquerCleTel);
     // Le passage unique aux trois choix se fait aussi pour qui n'a plus la fenêtre à voir (19/10/2026).
     try { migrerPhaseTroisChoix(localStorage); } catch (e) { /* stockage indisponible */ }
     let phaseVue = null;
-    try { phaseVue = localStorage.getItem(CLE_PHASE_MODE_VU); } catch (e) { /* stockage indisponible */ }
+    try { phaseVue = localStorage.getItem(CLE_PHASE_CHOIX_VU); } catch (e) { /* stockage indisponible */ }
     if (!creationCampagne() && doitProposerLaPhase(phaseVue)) {
         await demanderLaPhaseDuMechant();
     }
