@@ -186,6 +186,7 @@ docs/packs/galactic-storm/sources/
 deploiement/dernier-deploiement.log
 
 # Kit de creation de campagne (20/10/2026) : le zip et les tomes de code se RECONSTRUISENT
-# (outils/construire-kit-campagne.py, outils/construire-tomes-code.py), on ne les suit pas.
+# (outils/construire-kit-campagne.py, outils/construire-kit-heros.py, outils/construire-tomes-code.py), on ne les suit pas.
 kit-campagne-ia.zip
+kit-heros-ia.zip
 kit-code-tomes/

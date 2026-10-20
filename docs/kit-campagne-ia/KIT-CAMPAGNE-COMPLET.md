@@ -1024,7 +1024,7 @@ Les neuf clés sont **toutes obligatoires**, même vides :
 
 | Clé | Sens |
 |---|---|
-| `version` | Toujours `"0.5.8"`. |
+| `version` | `"0.5.8"` (132 decks, 226 scénarios) ; les fichiers récents portent parfois `"0.5.9"` : **aucun effet** (`UpdateVersion()` ne fait rien). Écris `"0.5.8"`. |
 | `name` | Le nom **affiché** du scénario (`"Rhino"`, `"The Lizard"`). |
 | `villain` | La liste des cartes de vilain **dans l'ordre des stades**. Standard : stades 1 et 2 (`["01094", "01095"]`). Expert : stades 2 et 3 (`["01095", "01096"]`). Un vilain recto-verso s'écrit en **une chaîne** `"wd054a,wd054b"` ; en expert on **inverse** parfois l'ordre des faces (`"wd001b,wd001a"`). **`[]` pour un scénario à plusieurs vilains** (voir ci-dessous). |
 | `expert` | `false` dans le fichier standard, `true` dans le fichier `_expert`. |
@@ -1678,7 +1678,7 @@ héros posées dessus, mélange ; `set_aside` → zone « de côté » ; **11.**
 
 ### 5.7 Checklist de relecture d'un scénario
 
-- [ ] Les 9 clés sont toutes présentes, `version: "0.5.8"`.
+- [ ] Les 9 clés sont toutes présentes, `version` = `"0.5.8"` (ou `"0.5.9"`).
 - [ ] Chaque `card_id` cité existe dans ta livraison **ou** dans `reference/ids-existants.json`.
 - [ ] Chaque set de `encounter_sets` et de `modular_sets` existe (ton fragment ou `reference/sets-existants.json`).
 - [ ] `schemes` : une chaîne `"a,b"` par stade ; `villain` : stades corrects pour standard et expert.
@@ -6158,7 +6158,7 @@ scénario, **trois écarts assumés** par lot, mesures. Lis au moins les §7 à 
 | Sets de rencontre propres au pack | 4 : `hs_feral_instincts`, `hs_lizard_thralls`, `hs_red_vulture`, `hs_savage_six` |
 | Scripts de cartes | **239** fichiers dans 14 dossiers de set |
 | Textes français | 239 entrées |
-| Épreuves de boucle | 14 |
+| Épreuves de boucle | 17 |
 
 Le dossier `modeles/C-livraison-exemple-hunting-season/` contient ce que Claude a **reçu** de l'IA de Nugget :
 
