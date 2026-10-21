@@ -63,6 +63,28 @@ CAS = [
     _z("ville : le lieu (1,1) est occupe par le joueur, le lieu (0,0) est inoccupe",
        "FAQ : « lieu inoccupe = sans aucun joueur present »",
        [], ["Puzzle.InstallerVille(%s)" % G], {"occupe": [[[1, 1], True], [[0, 0], False]]}),
+    # ---------------------------------------------------------------- etape 5 : un CAPO par territoire
+    _z("capos : deux vilains, un par zone (regle « le plus a gauche ») : chaque zone voit SON vilain",
+       "R6 : « le methant » = celui du territoire du joueur",
+       ["Puzzle.PutIntoPlay('pu056a')"],
+       ["Puzzle.SetVillainRule('Leftmost')", "Puzzle.CreateGameArea()", "Puzzle.MoveCardToGameArea('pu056a', 1)"],
+       {"mechant_vu": [[0, "01094"], [1, "pu056a"]]}),
+    _z("capos : phase du vilain, le joueur est dans la zone du 2e vilain -> SEUL Jigsaw (ATQ 1) s'active contre lui, pas Rhino (ATQ 2)",
+       "R6 : « les mechants s'activent uniquement contre les joueurs de leur territoire »",
+       ["Puzzle.PutIntoPlay('pu056a')"],
+       ["Puzzle.SetVillainRule('Leftmost')", "Puzzle.CreateGameArea()", "Puzzle.MoveCardToGameArea('pu056a', 1)",
+        "Puzzle.MovePlayerToGameArea(1)", "Puzzle.RunVillainPhase()"],
+       {"degats_identite": 1}, passer_sur_option="Defense"),
+    _z("capos : TEMOIN, joueur dans la zone de Rhino -> Rhino (ATQ 2) s'active, pas Jigsaw",
+       "contre-cas", ["Puzzle.PutIntoPlay('pu056a')"],
+       ["Puzzle.SetVillainRule('Leftmost')", "Puzzle.CreateGameArea()", "Puzzle.MoveCardToGameArea('pu056a', 1)",
+        "Puzzle.RunVillainPhase()"], {"degats_identite": 2}, passer_sur_option="Defense"),
+    # ---------------------------------------------------------------- deux joueurs : pas d'interaction entre territoires
+    _z("deux joueurs : l'allie du joueur 0 est vu depuis sa zone, PAS depuis la zone du joueur 1 (R5)",
+       "« les joueurs ne peuvent pas interagir avec les cartes dans les aires de jeu des autres joueurs d'un autre territoire »",
+       ["Puzzle.PutIntoPlay('01075', under_control=True)"],
+       ["Puzzle.InstallerVille(%s)" % G, "Puzzle.DeplacerDansLaVille((0, 1), 1)"],
+       {"allies_vus": [[3, 1], [2, 0]], "case_de": [[0, [1, 1]], [1, [0, 1]]]}, heros2="spider_man"),
 ]
 
 VERIFICATIONS = r'''
@@ -72,7 +94,7 @@ def ville_etat(monde, aides):
     from game.operate.worlds import Worlds
     attendu = aides["cas"].get("attendu") or {}
     soucis = []
-    reste = {k: v for k, v in attendu.items() if k in ("menace",)}
+    reste = {k: v for k, v in attendu.items() if k in ("menace", "degats_identite")}
     if reste:
         aides["cas"]["attendu"] = reste
         ok, msg = etat_attendu(monde, aides)
@@ -95,6 +117,10 @@ def ville_etat(monde, aides):
         if vus != n:
             soucis.append(f"complots principaux vus depuis la zone {z} = {vus} (attendu {n})")
     from game.operate.ville import Ville
+    for z, n in attendu.get("allies_vus") or []:
+        vus = len(Worlds.GetOnFieldAllies(zones[z]))
+        if vus != n:
+            soucis.append(f"allies vus depuis la zone {z} = {vus} (attendu {n})")
     for indice, case in attendu.get("case_de") or []:
         vu = Ville.Case(monde, monde.const_players[indice])
         if list(vu or []) != list(case):

@@ -112,3 +112,17 @@ class Ville:
         if case[0] != depuis[0]:
             world.MovePlayerToGameArea(joueur, etat.zones[case[0]])
         return True
+
+    ############################################################################
+    # Conditions des capacites de lieu
+    @staticmethod
+    def AuLieu(effect: 'Effect', message: 'Message2') -> bool:
+        """Condition des capacites d'une carte de LIEU (R3 : « on n'interagit qu'avec le lieu qu'on occupe ») : le joueur qui declenche
+        la capacite occupe-t-il cette carte ? A poser dans `conditions=[Ville.AuLieu]`. Une carte attachee a un lieu (M5) pose la meme
+        condition sur le lieu qui la porte."""
+        from game.player import Player
+        joueur = message.GetToPlayer() if hasattr(message, 'GetToPlayer') else None
+        if not isinstance(joueur, Player):
+            initiateur = getattr(effect, 'initiator', None)
+            joueur = initiateur if isinstance(initiateur, Player) else None
+        return joueur is not None and Ville.Occupe(effect, joueur, effect.this)
