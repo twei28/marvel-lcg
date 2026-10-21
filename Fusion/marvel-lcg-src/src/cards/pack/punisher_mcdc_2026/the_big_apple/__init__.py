@@ -1,5 +1,5 @@
 from ..commun import *
-from ..leads_the_big_apple import CreerPaquetPistes, RevelerPiste, PistesEnVictoire
+from ..leads_the_big_apple import CreerPaquetPistes, RevelerPiste, PistesEnVictoire, Joueur, ControlePar
 
 # Set The Big Apple (pack MC×DC 2026) : scenario 1, la ville. Environnements The City / Never Sleeps, complots Gang War / Silence the City /
 # Gunrunner's Warehouse, attachement Gunrunner, sbires et cartes de rencontre.
@@ -15,6 +15,20 @@ def TousLesJoueurs(effect: 'Effect') -> 'List[Player]':
     """TOUS les joueurs, quelle que soit leur zone (`Worlds.GetPlayers` filtre par la zone de la carte qui resout : un complot de la zone commune
     n'y voit AUCUN joueur)."""
     return [j for j in effect.world.const_players if j.area_hero.GetSize() > 0]
+
+
+def LeVilain(effect: 'Effect', joueur: 'Player') -> 'Villain|None':
+    """« the villain » d'un joueur dans la ville (R6) : le CAPO de SA zone ; hors ville (banc de test), le vilain courant."""
+    zone = joueur.GetIdentity().card.GetGameArea()
+    for v in Worlds.GetAllVillains(effect):
+        if v.card.GetGameArea() is zone:
+            return v
+    return Worlds.FindVillain(effect)
+
+
+def LieuDeLaPiste(card_id_piste: str) -> str:
+    """Le lieu d'une piste : pu039 -> pu030 ... pu047 -> pu038 (meme numero que dans le titre)."""
+    return "pu%03d" % (int(card_id_piste[2:]) - 9)
 
 
 def MisDeCote(effect: 'Effect', card_id: str) -> 'CardFace|None':

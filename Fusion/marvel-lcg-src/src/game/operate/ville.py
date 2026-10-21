@@ -106,9 +106,20 @@ class Ville:
         case n'est pas voisine. Le cout (epuiser un personnage ou 1 ressource) est paye par l'appelant (l'Action de The City)."""
         from game.operate.worlds import Worlds
         world = Worlds.CastWorld(effect_or_world)
+        depuis = Ville.Case(world, joueur)
+        if depuis is None or case not in Ville.Adjacentes(world, depuis):
+            return False
+        return Ville.Placer(world, joueur, case)
+
+    @staticmethod
+    def Placer(effect_or_world: 'Effect|World', joueur: 'Player', case: Case) -> bool:
+        """Pose le joueur sur une case QUELCONQUE de la grille (« Move to a location », Red Herring), sans condition d'adjacence ; change de zone si
+        la ligne change. Rend False si la case n'existe pas."""
+        from game.operate.worlds import Worlds
+        world = Worlds.CastWorld(effect_or_world)
         etat = Ville.Etat(world)
         depuis = Ville.Case(world, joueur)
-        if etat is None or depuis is None or case not in Ville.Adjacentes(world, depuis):
+        if etat is None or depuis is None or case not in etat.cases:
             return False
         etat.positions[joueur.player_id] = case
         if case[0] != depuis[0]:

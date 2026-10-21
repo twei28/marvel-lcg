@@ -102,5 +102,14 @@ Engine ajoute : `World.AdvanceMainScheme` met le NOUVEAU stade dans la zone comm
 - A faire plus tard : « deal any cards attached to locations as facedown encounter cards » (3A) : code ecrit, NON PROUVE tant que les attachements de lieu (pu007, pu008, pu010) n'existent pas ; la parenthese de campagne de 2A (noter le lieu de la derniere piste) : PU-9.
 Carte terminee : OUI (script) sauf le point ci-dessus (3A, cartes attachees aux lieux).
 
+### Cartes de rencontre, lot 1 : pu009 Hunted by the Past, pu011 Bellona, pu012 Black Tarantula, pu016 Busted!, pu017 Conflicting Evidence, pu018 Red Herring, pu020 Shootout, pu021 Bank Robbery : `[renc]`, 22 cas
+Harnais : `tools/cas/big_apple_rencontre.py`. Engine : `Ville.Placer` (deplacement sans adjacence, Red Herring).
+- Refs : Machete 50098 (Bellona), 01166 Highway Robbery (Bank Robbery), 27153 / valk 25028 (Busted!), pu110 (`do_not_give_boost`), gs204 (`OnEvent.Victory`), pu109 (Hunted), `CardFinder(is_nemesis=joueur)`.
+- Substitution (module vide) : toutes rouges sauf les temoins ; pu017 verifie en plus en retournant `do_not_give_boost` (2 rouges).
+- DECISIONS SANS TEXTE DE RR : Busted! « you cannot attack the villain » = identite ET allies ; Red Herring exclut aussi le lieu actuel et laisse le joueur choisir ; Shootout « character in this turf » = identites, allies et sbires de la zone + le CAPO.
+- ⚠ Pieges : `EnemyAttacks` ne distribue PAS de carte de boost (utiliser `Puzzle.Attack('<ennemi>')` ou `Puzzle.Boost`) ; `Puzzle.Action(card, 'AlterEgoAction')` ; une carte Tough absorbe la 1re vague de degats ; `Puzzle.Boost` pour tester un Boost.
+- Non prouve : Red Herring et Shootout en mode EXPERT (incite 1, epuisement) : pas de cas expert.
+Cartes terminees : OUI (hors point expert).
+
 ## Bilan (22/10/2026)
 11 cartes de lieu/environnement faites : 55 cas `[big]` verts, 15 `[ville]` verts, `test_cards` : 7103 ok, 0 erreur. Non fait : autoplay ciblé (étape 8, il faut le scénario jouable) et plateau (étape 8 bis, PU-8).
