@@ -517,8 +517,58 @@ LOCATION_CARDS = [
 LOCATIONS_SET_ASIDE = ["pu030", "pu031", "pu032", "pu033", "pu034", "pu035", "pu036", "pu037", "pu038"]
 
 # ======================================================================================================
+# Set "CAPOS" (scenario 1 « The Big Apple », ID 6048-6055) : 8 vilains, face A (standard) / face B (expert), PV NON par joueur
+# (pied de carte « HIT POINTS 13 »). card_id = pu048..pu055 + a (standard) / b (expert). Releve p095-p110 relu sur les scans le 22/10/2026.
+# Mis de cote par le scenario, 3 tires au hasard (Gang War). Un CAPO n'a pas de stade imprime.
+# ======================================================================================================
+PU_CAPOS = "CAPOS"
+CAPO_PAGES = {"pu048": 95, "pu049": 97, "pu050": 99, "pu051": 101, "pu052": 103, "pu053": 105, "pu054": 107, "pu055": 109}
+
+
+def capo(num, nom, traits, stats, texte, devise="", pv=("13", "15")):
+    """stats = ((SCH, ATK) face A, (SCH, ATK) face B) ; texte = (texte A, texte B) ou un texte commun."""
+    textes = texte if isinstance(texte, tuple) else (texte, texte)
+    out = []
+    for i, face in enumerate("ab"):
+        out.append(c(num + face, "Villain", "* " + nom, {"HP": pv[i], "SCH": stats[i][0], "ATK": stats[i][1]}, traits, textes[i], PU_CAPOS,
+                     page="p%03d" % (CAPO_PAGES[num] + i), subtitle=devise))
+    return out
+
+
+CAPO_CARDS = (
+    capo("pu048", "Count Nefaria", ["CAPO", "IMMORTAL", "MAGGIA"], (("1", "2\u2605"), ("1", "3\u2605")),
+         "[star] Count Nefaria's attacks gain overkill and ranged.",
+         '"You have no idea who or what you are up against... What power you are taunting."', pv=("13", "15"))
+    + capo("pu049", "Crime-Master", ["CAPO", "CRIMINAL", "SAVAGE SIX"], (("2", "1\u2605"), ("2", "2\u2605")),
+           "[star] Crime-Master gets +1 ATK for each minion engaged with you (to a maximum of +2 ATK).",
+           '"Soon there will be none who will doubt that it is the Crime-Master who is the lord of the underworld!"', pv=("13", "15"))
+    + capo("pu050", "Ringmaster", ["CAPO", "CIRCUS OF CRIME", "CRIMINAL"], (("2", "1\u2605"), ("3", "1\u2605")),
+           '<b>Forced Response</b>: After Ringmaster attacks you, choose:\n\u2022 Spend a [mental] resource.\n\u2022 Confuse a character you control.',
+           '"Know the truth. The truth is this -- you belong to me."', pv=("12", "14"))
+    + capo("pu051", "Lady Yulan", ["CAPO", "MARTIAL ARTIST", "VAMPIRE"], (("1", "2\u2605"), ("2", "3\u2605")),
+           ('[star] <b>Forced Response</b>: After Lady Yulan attacks, choose:\n\u2022 Heal 2 damage from Lady Yulan.\n\u2022 Discard the top 6 cards of your deck.',
+            '[star] <b>Forced Response</b>: After Lady Yulan attacks, choose:\n\u2022 Heal 3 damage from Lady Yulan.\n\u2022 Discard the top 10 cards of your deck.'),
+           '"Do not mistake my grace for mercy."', pv=("14", "16"))
+    + capo("pu052", "Mister Negative", ["CAPO", "CRIMINAL"], (("2", "1\u2605"), ("2", "2\u2605")),
+           ('[star] <b>Forced Interrupt</b>: When Mister Negative attacks, choose:\n\u2022 Give him 1 additional boost card for this attack.\n\u2022 After this attack, stun a character you control.',
+            '[star] <b>Forced Interrupt</b>: When Mister Negative attacks, choose:\n\u2022 Give him 1 additional boost card for this attack. This attack gains overkill.\n\u2022 After this attack, stun a character you control.'),
+           '"The only way to fight a monster is to become one."', pv=("11", "13"))
+    + capo("pu053", "The Rose", ["CAPO", "CRIMINAL", "HYDRA"], (("2", "1\u2605"), ("2", "2\u2605")),
+           '[star] <b>Forced Interrupt</b>: When The Rose attacks, choose:\n\u2022 Place 2 threat on the main scheme.\n\u2022 The Rose gets +2 ATK for this attack.',
+           '"I have a son. Richard. I thought him dead... but he\'s back. He\'s back, and I\'m afraid..." -- Wilson Fisk', pv=("12", "14"))
+    + capo("pu054", "Nightshade", ["CAPO", "CRIMINAL", "GENIUS"], (("2", "1\u2605"), ("2", "2\u2605")),
+           "[star] <b>Forced Response</b>: After Nightshade attacks you, take 1 indirect damage for each ally you control.",
+           '"Now, controlling men is my main gig, but I\'ve always been pretty good at everything I\'ve tried."', pv=("13", "15"))
+    + capo("pu055", "Diamondback", ["CAPO", "CRIMINAL"], (("1", "2"), ("2", "2")),
+           "<b>Forced Response</b>: After Diamondback takes at least 3 damage from an attack, give him a facedown boost card.",
+           '"I\'ll do this to every one of these idiots who would actually defend this city."', pv=("13", "15"))
+)
+# Les 8 CAPO (16 faces) : mis de cote par le scenario, 3 tires au hasard par Gang War (Uptown : un 4e).
+CAPO_SET_ASIDE = ["pu048a", "pu049a", "pu050a", "pu051a", "pu052a", "pu053a", "pu054a", "pu055a"]
+
+# ======================================================================================================
 # Recapitulatif : 13 + 14 + 5 + 7 + 1 = 40 card_id distincts, pour 15 + 15 + 5 + 7 + 1 = 43 cartes
 # physiques (releve "contenu simple" du cadrage section 1.2 : "aucune brique neuve au-dela de M6-M9").
 # ======================================================================================================
-ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS
+ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS + CAPO_CARDS
 assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id en double dans ce fichier"

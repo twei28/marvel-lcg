@@ -1,0 +1,14 @@
+{
+    "version": "0.5.8",
+    "name": "CAPOS",
+    "encounters": [
+        "pu048a",
+        "pu049a",
+        "pu050a",
+        "pu051a",
+        "pu052a",
+        "pu053a",
+        "pu054a",
+        "pu055a"
+    ]
+}

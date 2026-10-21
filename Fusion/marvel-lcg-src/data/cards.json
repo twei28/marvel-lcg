@@ -123129,7 +123129,307 @@
    "set_name": "Locations - The Big Apple",
    "text": "<b>Interrupt</b>: When you would be dealt an encounter card, instead discard from the encounter deck until a minion is discarded. Reveal that minion. <i>(Limit once per round.)</i>",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu048a",
+   "type": "Villain",
+   "name": "* Count Nefaria",
+   "subtitle": "\"You have no idea who or what you are up against... What power you are taunting.\"",
+   "desc": {
+    "HP": "13",
+    "SCH": "1",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAPO",
+    "IMMORTAL",
+    "MAGGIA"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] Count Nefaria's attacks gain overkill and ranged.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu048b",
+   "type": "Villain",
+   "name": "* Count Nefaria",
+   "subtitle": "\"You have no idea who or what you are up against... What power you are taunting.\"",
+   "desc": {
+    "HP": "15",
+    "SCH": "1",
+    "ATK": "3**"
+   },
+   "traits": [
+    "CAPO",
+    "IMMORTAL",
+    "MAGGIA"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] Count Nefaria's attacks gain overkill and ranged.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu049a",
+   "type": "Villain",
+   "name": "* Crime-Master",
+   "subtitle": "\"Soon there will be none who will doubt that it is the Crime-Master who is the lord of the underworld!\"",
+   "desc": {
+    "HP": "13",
+    "SCH": "2",
+    "ATK": "1**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL",
+    "SAVAGE SIX"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] Crime-Master gets +1 ATK for each minion engaged with you (to a maximum of +2 ATK).",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu049b",
+   "type": "Villain",
+   "name": "* Crime-Master",
+   "subtitle": "\"Soon there will be none who will doubt that it is the Crime-Master who is the lord of the underworld!\"",
+   "desc": {
+    "HP": "15",
+    "SCH": "2",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL",
+    "SAVAGE SIX"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] Crime-Master gets +1 ATK for each minion engaged with you (to a maximum of +2 ATK).",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu050a",
+   "type": "Villain",
+   "name": "* Ringmaster",
+   "subtitle": "\"Know the truth. The truth is this -- you belong to me.\"",
+   "desc": {
+    "HP": "12",
+    "SCH": "2",
+    "ATK": "1**"
+   },
+   "traits": [
+    "CAPO",
+    "CIRCUS OF CRIME",
+    "CRIMINAL"
+   ],
+   "set_name": "CAPOS",
+   "text": "<b>Forced Response</b>: After Ringmaster attacks you, choose:\n• Spend a [mental] resource.\n• Confuse a character you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu050b",
+   "type": "Villain",
+   "name": "* Ringmaster",
+   "subtitle": "\"Know the truth. The truth is this -- you belong to me.\"",
+   "desc": {
+    "HP": "14",
+    "SCH": "3",
+    "ATK": "1**"
+   },
+   "traits": [
+    "CAPO",
+    "CIRCUS OF CRIME",
+    "CRIMINAL"
+   ],
+   "set_name": "CAPOS",
+   "text": "<b>Forced Response</b>: After Ringmaster attacks you, choose:\n• Spend a [mental] resource.\n• Confuse a character you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu051a",
+   "type": "Villain",
+   "name": "* Lady Yulan",
+   "subtitle": "\"Do not mistake my grace for mercy.\"",
+   "desc": {
+    "HP": "14",
+    "SCH": "1",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAPO",
+    "MARTIAL ARTIST",
+    "VAMPIRE"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Response</b>: After Lady Yulan attacks, choose:\n• Heal 2 damage from Lady Yulan.\n• Discard the top 6 cards of your deck.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu051b",
+   "type": "Villain",
+   "name": "* Lady Yulan",
+   "subtitle": "\"Do not mistake my grace for mercy.\"",
+   "desc": {
+    "HP": "16",
+    "SCH": "2",
+    "ATK": "3**"
+   },
+   "traits": [
+    "CAPO",
+    "MARTIAL ARTIST",
+    "VAMPIRE"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Response</b>: After Lady Yulan attacks, choose:\n• Heal 3 damage from Lady Yulan.\n• Discard the top 10 cards of your deck.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu052a",
+   "type": "Villain",
+   "name": "* Mister Negative",
+   "subtitle": "\"The only way to fight a monster is to become one.\"",
+   "desc": {
+    "HP": "11",
+    "SCH": "2",
+    "ATK": "1**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Interrupt</b>: When Mister Negative attacks, choose:\n• Give him 1 additional boost card for this attack.\n• After this attack, stun a character you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu052b",
+   "type": "Villain",
+   "name": "* Mister Negative",
+   "subtitle": "\"The only way to fight a monster is to become one.\"",
+   "desc": {
+    "HP": "13",
+    "SCH": "2",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Interrupt</b>: When Mister Negative attacks, choose:\n• Give him 1 additional boost card for this attack. This attack gains overkill.\n• After this attack, stun a character you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu053a",
+   "type": "Villain",
+   "name": "* The Rose",
+   "subtitle": "\"I have a son. Richard. I thought him dead... but he's back. He's back, and I'm afraid...\" -- Wilson Fisk",
+   "desc": {
+    "HP": "12",
+    "SCH": "2",
+    "ATK": "1**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL",
+    "HYDRA"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Interrupt</b>: When The Rose attacks, choose:\n• Place 2 threat on the main scheme.\n• The Rose gets +2 ATK for this attack.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu053b",
+   "type": "Villain",
+   "name": "* The Rose",
+   "subtitle": "\"I have a son. Richard. I thought him dead... but he's back. He's back, and I'm afraid...\" -- Wilson Fisk",
+   "desc": {
+    "HP": "14",
+    "SCH": "2",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL",
+    "HYDRA"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Interrupt</b>: When The Rose attacks, choose:\n• Place 2 threat on the main scheme.\n• The Rose gets +2 ATK for this attack.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu054a",
+   "type": "Villain",
+   "name": "* Nightshade",
+   "subtitle": "\"Now, controlling men is my main gig, but I've always been pretty good at everything I've tried.\"",
+   "desc": {
+    "HP": "13",
+    "SCH": "2",
+    "ATK": "1**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL",
+    "GENIUS"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Response</b>: After Nightshade attacks you, take 1 indirect damage for each ally you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu054b",
+   "type": "Villain",
+   "name": "* Nightshade",
+   "subtitle": "\"Now, controlling men is my main gig, but I've always been pretty good at everything I've tried.\"",
+   "desc": {
+    "HP": "15",
+    "SCH": "2",
+    "ATK": "2**"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL",
+    "GENIUS"
+   ],
+   "set_name": "CAPOS",
+   "text": "[star] <b>Forced Response</b>: After Nightshade attacks you, take 1 indirect damage for each ally you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu055a",
+   "type": "Villain",
+   "name": "* Diamondback",
+   "subtitle": "\"I'll do this to every one of these idiots who would actually defend this city.\"",
+   "desc": {
+    "HP": "13",
+    "SCH": "1",
+    "ATK": "2"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL"
+   ],
+   "set_name": "CAPOS",
+   "text": "<b>Forced Response</b>: After Diamondback takes at least 3 damage from an attack, give him a facedown boost card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu055b",
+   "type": "Villain",
+   "name": "* Diamondback",
+   "subtitle": "\"I'll do this to every one of these idiots who would actually defend this city.\"",
+   "desc": {
+    "HP": "15",
+    "SCH": "2",
+    "ATK": "2"
+   },
+   "traits": [
+    "CAPO",
+    "CRIMINAL"
+   ],
+   "set_name": "CAPOS",
+   "text": "<b>Forced Response</b>: After Diamondback takes at least 3 damage from an attack, give him a facedown boost card.",
+   "custom": "MC×DC 2026"
   }
  ],
- "checksum": "503d215b6c6a4d440914c6105033c7e08d772598b177a577074e8b86e4f3983c"
+ "checksum": "f2823f938030e1d849ff5ba91184b59589965de8245749bb064aa7be1aa64cda"
 }

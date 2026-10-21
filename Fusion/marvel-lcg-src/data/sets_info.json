@@ -1934,9 +1934,10 @@
    "swat_team",
    "punishment",
    "the_big_apple",
-   "locations_the_big_apple"
+   "locations_the_big_apple",
+   "capos"
   ],
   "max_id": "pu139"
  },
- "checksum": "747e6f450e66de6aaa0aa21baa56a94d229d51aa47a3c1432dda56d47c4a0b26"
+ "checksum": "b824943557be5c2477235c487da35b9afe5f1a9e02ef9f0bc5d67510c88acefc"
 }

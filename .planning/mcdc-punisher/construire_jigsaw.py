@@ -21,6 +21,7 @@ PAGE = {'pu071a': 141, 'pu071b': 142, 'pu072a': 143, 'pu072b': 144, 'pu073': 145
         'pu119': 237, 'pu120': 239, 'pu121': 241, 'pu123': 245,
         'pu114': 227, 'pu115': 229, 'pu116': 231, 'pu117': 233, 'pu118': 235, 'pu125': 249, 'pu126': 251, 'pu127': 253,
         'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277,
+        'pu048a': 95, 'pu048b': 96, 'pu049a': 97, 'pu049b': 98, 'pu050a': 99, 'pu050b': 100, 'pu051a': 101, 'pu051b': 102, 'pu052a': 103, 'pu052b': 104, 'pu053a': 105, 'pu053b': 106, 'pu054a': 107, 'pu054b': 108, 'pu055a': 109, 'pu055b': 110,
         'pu005': 9, 'pu006': 11, 'pu030': 59, 'pu031': 61, 'pu032': 63, 'pu033': 65, 'pu034': 67, 'pu035': 69, 'pu036': 71, 'pu037': 73, 'pu038': 75,
         'pu056a': 111, 'pu056b': 112, 'pu057a': 113, 'pu057b': 114, 'pu058': 115, 'pu059': 117, 'pu060': 119,
         'pu063': 125, 'pu064': 127, 'pu065': 129, 'pu066': 131, 'pu068': 135, 'pu070': 139}
@@ -36,7 +37,7 @@ def stat(v):
 
 cartes = []
 CORRECTIONS = {'pu131': {'Amplify': '2'}, 'pu113': {'Hazard': '1'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
-for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS:
+for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS:
     d = {k: stat(v) for k, v in x['desc'].items()}
     if x['card_id'] in STAGE: d['Stage'] = STAGE[x['card_id']]
     d.update(CORRECTIONS.get(x['card_id'], {}))
@@ -70,6 +71,7 @@ ecrire('data/encounter_sets/swat_team.json', {'version': '0.5.8', 'name': 'SWAT 
 ecrire('data/encounter_sets/punishment.json', {'version': '0.5.8', 'name': 'Punishment', 'encounters': defs.PUNISHMENT_ENCOUNTERS})
 ecrire('data/encounter_sets/the_big_apple.json', {'version': '0.5.8', 'name': 'The Big Apple', 'encounters': defs.BIGAPPLE_ENCOUNTERS})
 ecrire('data/encounter_sets/locations_the_big_apple.json', {'version': '0.5.8', 'name': 'Locations - The Big Apple', 'encounters': defs.LOCATIONS_SET_ASIDE})
+ecrire('data/encounter_sets/capos.json', {'version': '0.5.8', 'name': 'CAPOS', 'encounters': defs.CAPO_SET_ASIDE})
 ecrire('data/encounter_sets/hobgoblin.json', {'version': '0.5.8', 'name': 'Hobgoblin', 'encounters': defs.HOBGOBLIN_ENCOUNTERS})
 
 MANIGANCES = ['art_museum_heist', 'the_getaway', 'protection_racket', 'the_raft_breakout', 'stop_the_presses']
@@ -108,7 +110,7 @@ p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))
 cle = '208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)'
 somme = si.pop('checksum', None); si.pop(cle, None)
-si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple'], 'max_id': 'pu139'}
+si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple', 'capos'], 'max_id': 'pu139'}
 if somme: si['checksum'] = somme
 with open(p, 'w', encoding='utf-8', newline='\n') as f:
     json.dump(si, f, ensure_ascii=False, indent=1)
