@@ -1919,7 +1919,9 @@
    "the_getaway_hobgoblin",
    "protection_racket_hobgoblin",
    "the_raft_breakout_hobgoblin",
-   "stop_the_presses_hobgoblin"
+   "stop_the_presses_hobgoblin",
+   "one_last_kill_jigsaw",
+   "one_last_kill_hobgoblin"
   ],
   "heroes": [],
   "encounters": [
@@ -1934,5 +1936,5 @@
   ],
   "max_id": "pu139"
  },
- "checksum": "406d0114331fd916e10752fe75e28c1310b3d9cdace0d72514959d6d503a66f2"
+ "checksum": "747e6f450e66de6aaa0aa21baa56a94d229d51aa47a3c1432dda56d47c4a0b26"
 }

@@ -460,8 +460,10 @@ PUNISHMENT_CARDS = [
       subtitle='"We\'re nothing alike, me and the enemy. We both deal in death, but they sell theirs. I give it away."'),
 ]
 # Paquet de rencontre du scenario (Punishment 20 cartes physiques, sans les cartes de mise en place).
-PUNISHMENT_ENCOUNTERS = ["pu091a,pu091b", "pu092", "pu093", "pu094", "pu095", "pu096", "pu097", "pu098", "pu099",
+PUNISHMENT_ENCOUNTERS = ["pu093", "pu094", "pu095", "pu096", "pu097", "pu098", "pu099",
                          "pu100", "pu100", "pu102", "pu102", "pu104", "pu105"]
+# Cartes mises de cote par le scenario (« Find Target Lock », « Find Justice or Punishment? », In the Crosshairs).
+PUNISHMENT_SET_ASIDE = ["pu091a,pu091b", "pu090a,pu090b", "pu092"]
 
 # ======================================================================================================
 # Recapitulatif : 13 + 14 + 5 + 7 + 1 = 40 card_id distincts, pour 15 + 15 + 5 + 7 + 1 = 43 cartes

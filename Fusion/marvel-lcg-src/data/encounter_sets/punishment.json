@@ -2,8 +2,6 @@
     "version": "0.5.8",
     "name": "Punishment",
     "encounters": [
-        "pu091a,pu091b",
-        "pu092",
         "pu093",
         "pu094",
         "pu095",

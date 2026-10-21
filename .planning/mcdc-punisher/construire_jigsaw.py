@@ -89,6 +89,18 @@ for suffixe, affiche, jeu_rencontre, standard, expert_v in VILAINS:
             ecrire('data/scenarios/%s.json' % nom, s)
             if not expert: noms.append('%s_%s' % (m, suffixe))
 
+# --- Scenario 3 « One Last Kill » : Punisher + un vilain SOUS-FIFRE (Jigsaw ou Hobgoblin), standard et expert.
+for suffixe, fif_std, fif_exp, ens in (('jigsaw', 'pu056a', 'pu056b', 'jigsaw'), ('hobgoblin', 'pu071a', 'pu071b', 'hobgoblin')):
+    for expert in (False, True):
+        s = {'version': '0.5.8', 'name': 'One Last Kill (%s)' % suffixe.capitalize(),
+             'villain': ['pu086b', 'pu087b'] if expert else ['pu086a', 'pu087a'], 'expert': expert,
+             'schemes': ['pu088a,pu088b', 'pu089a,pu089b'],
+             'set_aside': list(defs.PUNISHMENT_SET_ASIDE) + [fif_exp if expert else fif_std],
+             'encounters': [], 'encounter_sets': ['punishment', ens, 'standard'] + (['expert'] if expert else []),
+             'modular_sets': ['punishers_armory']}
+        ecrire('data/scenarios/one_last_kill_%s%s.json' % (suffixe, '_expert' if expert else ''), s)
+        if not expert: noms.append('one_last_kill_%s' % suffixe)
+
 p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))
 cle = '208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)'
