@@ -35,3 +35,9 @@ Chaque lot : tests, vérification au navigateur, aide du manuel mise à jour, co
 - NON FAIT : « Choisir un set et le mélanger dans le deck Rencontre » : le monde ne donne pas le set de chaque carte (`WorldCard` n'a ni set ni pack). Il faudrait l'exposer côté moteur.
 
 - « Choisir un set et le mélanger dans le deck Rencontre » : FAIT le 07/10 (set lu dans le catalogue, `set_name` de cards.json, pas de changement moteur), une entrée par set dans le menu de la table, confirmation, une seule commande. Tests unitaires seulement : aucune carte mise de côté dans la partie d'essai pour le voir en vrai.
+
+## Reste à vérifier (backlog item 4, relu le 21/10/2026 au soir)
+
+Table éclatée et carte à deux faces (Rhino) : **OK**, `ui-check/tests/mode-manuel.spec.ts` rejoué en vrai contre un serveur local, cas vert. Le chemin « Victoire » : **OK**, même fichier, cas vert.
+
+**Un vrai défaut trouvé en rejouant la suite** (pas lié à une modification de cette session) : le cas « mise en pause PENDANT une question ouverte (le mulligan), geste manuel, et la reprise repose cette même question » échoue de façon reproductible (2/2) — un dégât appliqué via le menu triche PENDANT la pause (mulligan en cours) n'est jamais publié à l'écran : la pastille de vie reste à sa valeur de départ (`10 / 10` au lieu de `7 / 10` attendu), timeout de 30 s sur l'attente du changement. Aucun commit récent sur `sandbox_command` ou le mécanisme de pause ne l'explique ; cause non recherchée plus loin faute de temps en fin de session. À reprendre : voir si le geste pendant une pause est vraiment publié côté moteur (`/sandbox_command` répond, mais le rendu ne suit pas), ou si c'est la lecture de la pastille qui échoue.
