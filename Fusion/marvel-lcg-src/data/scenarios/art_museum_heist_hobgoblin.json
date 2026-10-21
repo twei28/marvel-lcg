@@ -1,0 +1,28 @@
+{
+    "version": "0.5.8",
+    "name": "Art Museum Heist (Hobgoblin)",
+    "villain": [
+        "pu071a",
+        "pu072a"
+    ],
+    "expert": false,
+    "schemes": [
+        "60121a,60121b"
+    ],
+    "set_aside": [
+        "60122",
+        "60123",
+        "60124",
+        "60125"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "hobgoblin",
+        "art_museum_heist",
+        "standard"
+    ],
+    "modular_sets": [
+        "cops",
+        "the_owl"
+    ]
+}

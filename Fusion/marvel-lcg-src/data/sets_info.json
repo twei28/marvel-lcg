@@ -1914,13 +1914,19 @@
    "the_getaway_jigsaw",
    "protection_racket_jigsaw",
    "the_raft_breakout_jigsaw",
-   "stop_the_presses_jigsaw"
+   "stop_the_presses_jigsaw",
+   "art_museum_heist_hobgoblin",
+   "the_getaway_hobgoblin",
+   "protection_racket_hobgoblin",
+   "the_raft_breakout_hobgoblin",
+   "stop_the_presses_hobgoblin"
   ],
   "heroes": [],
   "encounters": [
-   "jigsaw"
+   "jigsaw",
+   "hobgoblin"
   ],
-  "max_id": "pu070"
+  "max_id": "pu084"
  },
- "checksum": "b8f7ecfada9f88e0507f05eac36e72591a5800da861e74084cbabc8783ff28a3"
+ "checksum": "6a67b4ed2804a9312d036334edc6808ca679109547d5f1661bfe4e4aae0506c2"
 }

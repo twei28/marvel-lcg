@@ -142,8 +142,7 @@ HOBGOBLIN_CARDS = [
       "Steady.\n[star] Hobgoblin's attacks gain ranged.\n" + HOB_PUMPKIN_X2, PU_HOB, page="p142",
       subtitle='"Sorry, but there\'s no profit to be made in my own annihilation!"'),
     c("pu072a", "Villain", "* Hobgoblin", {"HP": "17👤", "SCH": "2", "ATK": "1★", "Stage": "2", "Steady": "1"}, ["SINISTER_SIX", "UNDERLING"],
-      "Steady.\n[star] Hobgoblin's attacks gain ranged.\n" + HOB_PUMPKIN_X2
-      + " (texte identique a la face 1B, confirme cartes.md)", PU_HOB, page="p143"),
+      "Steady.\n[star] Hobgoblin's attacks gain ranged.\n" + HOB_PUMPKIN_X2, PU_HOB, page="p143"),
     c("pu072b", "Villain", "* Hobgoblin", {"HP": "19👤", "SCH": "2", "ATK": "2★", "Stage": "2", "Steady": "1"}, ["SINISTER_SIX", "UNDERLING"],
       "Steady.\n[star] Hobgoblin's attacks gain ranged.\n" + HOB_PUMPKIN_X2, PU_HOB, page="p144",
       subtitle='"This place is ruined. Worse for wear, but the important thing is... it\'s mine now! HAHAHAHA!"'),
@@ -168,10 +167,10 @@ HOBGOBLIN_CARDS = [
       "[star] <b>Forced Response</b>: After The Enforcers activate against you, discard 3 cards from the encounter "
       "deck. Take 1 indirect damage for each treachery discarded this way.", PU_HOB, page="p153",
       subtitle="Montana, Ox, and Fancy Dan will employ each of their special skills for the highest bidder."),
-    c("pu078", "Treachery", "Torn to Pieces", {"Boost": "1"}, [],
+    c("pu078", "Obligation", "Torn to Pieces", {}, [],
       '<b>Forced Response</b>: After your hero uses a basic power, resolve the "Pumpkin Bomb" ability.\n'
       "<b>Alter-Ego Action</b>: Exhaust your identity and discard 3 cards from the encounter deck → discard this "
-      "card.", PU_HOB, page="p155 (Obligation, pas Treachery -- a confirmer au portage)",
+      "card.", PU_HOB, page="p155",
       subtitle='"You will pay! So says the Hobgoblin!"'),
     c("pu079", "SideScheme", "Designs on Crimes", {"StartingThreat": "3👤", "Boost": "1", "Hazard": "1"}, [],
       "<b>When Revealed</b>: Discard 3👤 cards from the encounter deck.\n"
