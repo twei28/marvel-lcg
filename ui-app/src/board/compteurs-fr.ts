@@ -131,6 +131,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   fuel: 'carburant',
   // Galactic Storm, heros Quasar (20/10/2026) : « Uses (3 duty counters) » de gs065 Protector of the Universe.
   duty: 'devoir',
+  // Punisher MC×DC 2026, set Hobgoblin (21/10/2026) : Rabble (pu076) entre en jeu avec 2 « drone counters ».
+  drone: 'drone',
   // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).

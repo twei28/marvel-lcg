@@ -288,6 +288,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (20/10/2026, heros Quasar de Galactic Storm, Kajislav) : « Uses (3 duty counters) »
         # de l'obligation gs065 Protector of the Universe.
         'duty',
+        # AJOUT (21/10/2026, set Hobgoblin MC×DC 2026) : « Rabble enters play with 2 drone counters on her » (pu076).
+        'drone',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',

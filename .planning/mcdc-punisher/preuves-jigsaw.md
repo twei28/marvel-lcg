@@ -60,3 +60,12 @@ Carte terminée : OUI (script).
 ## Bilan du set Jigsaw (21/10/2026)
 
 13 cartes scriptées ou vérifiées (pu056a/b, 057a/b, 058, 059, 060, 063, 064, 065, 066, 068, 070), 30 cas `[jig]` verts. Autoplay 48 parties (4 scénarios dont 3 Jigsaw, normal et expert, Hammerhead en témoin) : 0 incident, 0 traceback.
+
+# Set Hobgoblin (21/10/2026, sans question : la RR tranche)
+
+14 cartes scriptées : Hobgoblin (pu071a/b, pu072a/b), Glider pu073, Flaming Sword pu074, Prowler pu075, Rabble pu076, The Enforcers pu077, Torn to Pieces pu078 (Obligation), Designs on Crimes pu079, Guise to Terrorize pu080, Smashing Pumpkins pu082, Wrath of the Hobgoblin pu084. « Pumpkin Bomb » = UNE fonction (`hobgoblin/__init__.py`, `ResoudrePumpkinBomb`).
+
+- 27 cas `[hob]` (`tools/cas/hobgoblin.py`) verts. Rouge par substitution (tous les modules vidés) : 24 cas rouges sur 27 ; les 3 restants sont des témoins sans module.
+- Compteur `drone` ajouté (`CardFace.COUNTER`, `compteurs-fr.ts`).
+- ⚠ Pièges rencontrés : `SideScheme` n'existe pas comme nom (utiliser `EncounterSideScheme`) et une `NameError` dans un script est avalée par le moteur sans message ; pour qu'un pouvoir de base du héros se résolve, le cas doit fournir `cibles` ; `effect.GetInitiator()` peut être vide dans une Réponse forcée d'obligation (utiliser `message.trigger.GetControlByPlayer()`) ; Protection Racket (60134b) pose déjà 1 menace quand le vilain attaque ; `Puzzle.Boost` tire sa carte en tête de liste alors que `DiscardEncounterCards` la prend en fin : les cas utilisent des decks homogènes.
+- Non vérifié en détail : pu075 (soutien/amélioration défaussés, branche amélioration), pu078 Alter-Ego Action sans identité épuisée possible.
