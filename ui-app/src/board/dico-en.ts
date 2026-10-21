@@ -1832,6 +1832,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'K.O.': 'K.O.',
   'Carte rencontre %1/%2': 'Encounter card %1/%2',
   'Demander à %1 de défendre': 'Ask %1 to defend',
+  'Demander à %1 d’agir': 'Ask %1 to act',
+  'Demander à un autre joueur d’agir': 'Ask another player to act',
   'Demander à un autre joueur de défendre': 'Ask another player to defend',
   'Tu peux aussi cliquer la carte directement sur la table.': 'You can also click the card directly on the table.',
   'Tu peux aussi cliquer les cartes directement sur la table.': 'You can also click the cards directly on the table.',

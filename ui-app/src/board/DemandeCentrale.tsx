@@ -7,6 +7,7 @@ import type { Demande, Option } from './ask'
 import { CarteApercu } from './Board'
 import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
+import { DEMANDER_A_UN_AUTRE, estDemandeAUnAutre, libelleDemandeAUnAutre } from './demande-a-un-autre'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import { usePlacement } from './placement/usePlacement'
 import { useGlisserPanneau, styleAvecDecalage } from './placement/useGlisserPanneau'
@@ -239,6 +240,7 @@ export function nomDeCapacite(option: Option, texteCapacite: string | undefined)
 
 /** Un vrai nom de capacite (« Spider-Sense »), pas un TYPE ni un nom technique. */
 function estNomDeCapacite(nomMoteur: string): boolean {
+  if (nomMoteur === DEMANDER_A_UN_AUTRE) return false
   if (nomMoteur.includes('_')) return false
   return !TYPES_DE_CAPACITE.test(nomMoteur.trim())
 }
@@ -268,6 +270,8 @@ export function libelleRefus(
   if (!reaction) return t('Passer')
   if (options.length !== 1) return t('Ne rien jouer')
   const option = options[0]!
+  // Seule la demande a un autre joueur reste : la refuser, c'est que personne ne defend.
+  if (estDemandeAUnAutre(option)) return t('Ne pas défendre')
   const carte = nomSource(option, cartesParId, nomPorteur)
   if (estEnMain?.(option.bind_id)) return carte ? `${t('Ne pas jouer')} ${carte}` : t('Ne rien jouer')
   // Capacite en jeu : le MEME nom que son bouton (« Spider-Sense », « Objection
@@ -584,7 +588,9 @@ export function DemandeCentrale({
       : titreDepuisSource(demande, options, cartesParId).replace(/\s*\(\+0\)\s*$/, '')
     const posees = new Set<number>()
     const choix: ChoixSurTable[] = options.map((option) => {
-      const nomBrut = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+      const nomBrut = estDemandeAUnAutre(option)
+        ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
+        : reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
       const source = nomSource(option, cartesParId, nomPorteur)
       const defense = option.name === 'Defense' && source !== undefined
       const nom = defense ? `${t('Défendre avec')} ${source}` : nomBrut
@@ -678,7 +684,8 @@ export function DemandeCentrale({
           en jeu… »). Masqué hors Épuré (board.css) : les autres affichages gardent leur fenêtre. */}
       {reaction && !enScene
         ? (() => {
-            const textes = [...new Set(options.map((option) => texteCapacite?.(option)).filter((x): x is string => Boolean(x)))]
+            // La demande a un autre joueur n'a pas de texte : celui de son porteur serait une autre capacite.
+            const textes = [...new Set(options.filter((option) => !estDemandeAUnAutre(option)).map((option) => texteCapacite?.(option)).filter((x): x is string => Boolean(x)))]
             if (textes.length === 0) return null
             // « Réponse : après que… » : le nom de la capacité en gras, le reste en clair.
             const brut = textes.join(' ')
@@ -702,7 +709,9 @@ export function DemandeCentrale({
           seule vignette et on ne saurait plus ce qu'on choisit.
         */}
         {options.map((option) => {
-          const nomBrut = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+          const nomBrut = estDemandeAUnAutre(option)
+            ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
+            : reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
           const source = nomSource(option, cartesParId, nomPorteur)
           // « Défendre avec Domino » plutôt que « DÉFENDRE / Domino » : le bouton
           // dit d'un trait QUI défend (demande de l'utilisateur, 03/10/2026).

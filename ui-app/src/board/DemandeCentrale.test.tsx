@@ -494,3 +494,40 @@ describe('améliorations superposées pendant une décision sur table', () => {
     expect(choisir).toHaveBeenCalledWith(options[1])
   })
 })
+
+describe('DemandeCentrale — la demande a un autre joueur ne prend pas le nom d’une capacite (21/10/2026)', () => {
+  // Capture du 21/10/2026 : Captain America attaque, la seule option est « Ask »
+  // (Laura Kinney peut defendre a sa place). Le bouton disait « I Can Do This All
+  // Day! », le refus « Ne pas utiliser I Can Do This All Day! » : « Ask » etait
+  // pris pour un nom de capacite, et le nom imprime sur la carte du porteur suivait.
+  const cartesCap = new Map<number, WorldCard>([
+    [20, { id: 20, name: 'Captain America', card_type: 'Hero', card_id: '03001a' } as unknown as WorldCard],
+    [30, { id: 30, name: 'Laura Kinney', card_type: 'Hero', card_id: '43001a' } as unknown as WorldCard],
+  ])
+  const ask = (): Option => ({ ...option(), id: 3, name: 'Ask', bind_id: 20, all_legal_targets: [30] })
+  const attaque = (): Demande =>
+    ({
+      options: [ask()],
+      prompt_text: 'Captain America is being attacked by Ancient Warrior',
+      event_name: 'WhenUnitBeingAttack',
+      show_cancel: true,
+      ability_type: 'Interrupt',
+    }) as unknown as Demande
+  const texteCap = () => '« I Can Do This All Day! » — Action : défaussez 1 carte de votre main → redressez Captain America.'
+
+  it('le bouton dit qui on sollicite et pour quoi', () => {
+    rendre({ demande: attaque(), options: [ask()], cartesParId: cartesCap, texteCapacite: texteCap })
+    expect(screen.getByRole('button', { name: /Demander à Laura Kinney de défendre/ })).toBeInTheDocument()
+    expect(screen.queryByText(/I Can Do This All Day/)).toBeNull()
+  })
+
+  it('le refus dit que personne ne defend', () => {
+    expect(libelleRefus([ask()], true, cartesCap, undefined, texteCap)).toBe('Ne pas défendre')
+  })
+
+  it('sur la table aussi', () => {
+    rendre({ demande: attaque(), options: [ask()], cartesParId: cartesCap, texteCapacite: texteCap, surLaTable: true })
+    expect(screen.getAllByText(/Demander à Laura Kinney de défendre/).length).toBeGreaterThan(0)
+    expect(screen.queryByText(/I Can Do This All Day/)).toBeNull()
+  })
+})
