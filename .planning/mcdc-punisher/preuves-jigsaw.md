@@ -56,3 +56,7 @@ Carte terminée : OUI (script).
 - pu070 : alter ego = défausser un allié EN JEU (choisi par le joueur qui révèle ; aucun → 1 menace par joueur sur chaque complot) ; héros = 1 carte de boost face cachée à Jigsaw, +1 si un sbire MAGGIA est en jeu ; ★ boost = `RunAt.AfterEnemyActivationEnd`. 6 cas verts (dont un témoin), 4 rouges sans le script.
 - Vérificateur maison `jigsaw_etat` (clé `boosts_jigsaw`) dans `tools/cas/jigsaw.py`.
 - Batterie `[jig]` : 29/29.
+
+## Bilan du set Jigsaw (21/10/2026)
+
+13 cartes scriptées ou vérifiées (pu056a/b, 057a/b, 058, 059, 060, 063, 064, 065, 066, 068, 070), 30 cas `[jig]` verts. Autoplay 48 parties (4 scénarios dont 3 Jigsaw, normal et expert, Hammerhead en témoin) : 0 incident, 0 traceback.
