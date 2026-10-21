@@ -323,3 +323,18 @@ describe('la table attend le « Continuer » (13/10/2026)', () => {
     expect(appels).toBe(1)
   })
 })
+
+it('Spectrum : ne rejoue pas les formes Énergie face visible avant leur retournement de setup', () => {
+  const m = monde(1)
+  m.players[0].area_hero = [
+    carte(1, 'AlterEgo', { card_id: '21001b' }),
+    ...['21002', '21003', '21004'].map((code, i) => carte(10 + i, 'Upgrade', { card_id: code })),
+    carte(20, 'Upgrade', { card_id: '21011' }),
+  ]
+  const premiere = etapesNouvelles(new Map(), m, SANS_PANNEAU)
+  expect(premiere.etapes.map(e => e.carteId)).toEqual([20])
+  const finale = { ...m, render_id: 2, players: [{ ...m.players[0], area_hero: m.players[0].area_hero.map(c =>
+    ['21002', '21003', '21004'].includes(c.card_id) ? { ...c, is_face_up: false } : c
+  ) }] }
+  expect(etapesNouvelles(premiere.memoire, finale, SANS_PANNEAU).etapes).toEqual([])
+})

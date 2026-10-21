@@ -12,6 +12,7 @@ import { nomAffiche } from './noms-cartes-fr'
 import { t } from './langue'
 import { picIdAffiche } from './variantes'
 import { picIdFr } from './scans-fr'
+import { estFormeEnergieSpectrum } from './formes-energie-spectrum'
 import { referenceMenace } from './jauge-reference'
 
 /**
@@ -480,7 +481,10 @@ function compteursAffiches(card: WorldCard): Array<{ label: string; value: numbe
 }
 
 export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardProps {
-  const visible = isVisibleFor(card, contexte.playerId)
+  // Une forme d'énergie connue reste physiquement face cachée tant qu'elle est inactive.
+  // Les autres cartes conservent leur aperçu « connue / face cachée » habituel.
+  const visible = isVisibleFor(card, contexte.playerId) &&
+    (!estFormeEnergieSpectrum(card) || card.is_face_up || contexte.dansLaMain === true)
   const dos = card.down_card_ids[0]
 
   // Une carte visible mais posee face cachee sur la table : le cadre en

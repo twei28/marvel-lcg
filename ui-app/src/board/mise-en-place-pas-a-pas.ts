@@ -10,6 +10,7 @@
 
 import type { World, WorldCard } from './world'
 import { estUneCarte } from './world'
+import { estFormeEnergieSpectrum } from './formes-energie-spectrum'
 import type { Fige } from './coups-sur-table'
 
 export type GenreEtape = 'arrivee' | 'retournement' | 'degats' | 'menace'
@@ -156,6 +157,9 @@ export function etapesNouvelles(
     const cle = `${monde.render_id}-${carte.id}`
     if (!avant) {
       if (IDENTITES.has(carte.card_type)) continue
+      // Le setup moteur les pose puis les retourne : ne pas mémoriser leur image
+      // transitoire face visible comme une arrivée à rejouer au joueur.
+      if (estFormeEnergieSpectrum(carte)) continue
       if (presenteeParUnPanneau(carte, reglages)) continue
       arrivees.push(
         etape(carte, legendeDe(carte), `${cle}-e`, engageAvec ? { cle: 'héros', valeur: engageAvec } : undefined)
