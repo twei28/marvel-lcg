@@ -21,3 +21,12 @@ MC/DC, `team@mcdc.fun`, non redistribués dans ce dépôt). Pour les retrouver :
 - **Punisher 6138** (`A - punisher - RP.jpg`) : carte NOUVELLE, Aggression, Ally coût 3, THW 1, ATK 2*, Soldier / Vigilante, « ★ Punisher's attacks gain piercing and ranged. Response: After Punisher attacks and defeats a minion, deal 2 damage to an enemy. » À créer avec le chantier de la campagne Punisher (PROCESSUS-CARTE.md) ; son illustration est cette image de la galerie. Aucun branchement.
 - Les autres sections (scénarios, lieux, méchants, sous-fifres, sets modulaires, cartes de campagne et de défi) sont de la matière pour la future campagne Punisher : téléchargées seulement, non intégrées.
 - Crédit : « Full Art Reprints : MC/DC 2026 (Jonah, Marvin, Scott, Tim) » dans `public/credits.html` et dans les nouveautés.
+
+## Guide officiel anglais et zip du 21/10/2026
+
+- **Guide de campagne officiel (anglais)** : `paquets-cartes/MC x DC 2026 - campagne Punisher/2026_Campaign_Guide_EN.pdf` (8 pages-images, hors dépôt) :
+  mise en place recommandée de The Big Apple, FAQ (territoires, Teamwork, lieux inoccupés, « une fois par round »), tableau de
+  choix du scénario 2. C'est la RÉFÉRENCE ; le livret français de bubblepack (`regles-fr.md`) en est la version non officielle.
+- **Nom de la campagne** (acté le 21/10/2026) : « The City Never Sleeps » / **« La ville ne dort jamais »**, par l'équipe MC×DC 2026.
+  « Punisher » n'est que le méchant du scénario 3 et le nom de travail du dossier.
+- **Zip d'une autre IA** : voir `.planning/mcdc-punisher/zip-qx/LISEZ-MOI.md` (catalogue de 174 faces relues, besoins du moteur ; pas de code qui tourne).
