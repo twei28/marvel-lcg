@@ -68,6 +68,9 @@ class World(WorldAction, WorldFind):
         scenario = self.GetScenario()
 
         self.game_areas: List['GameArea'] = [GameArea(self)]
+        # AJOUT (21/10/2026, PU-5, spec-ville-m1-m2 G1) : zone COMMUNE a toutes les zones (manigances, environnements : « The City Never
+        # Sleeps », livret p.2). None hors scenario de ville : le moteur se comporte exactement comme avant.
+        self.game_area_commune: 'GameArea|None' = None
 
         self.players: List['Player'] = []
         # Add separate game area
@@ -180,6 +183,19 @@ class World(WorldAction, WorldFind):
 
     def GetFirstGameArea(self) -> 'GameArea':
         return self.game_areas[0]
+
+    def MovePlayerToGameArea(self, player: 'Player', game_area: 'GameArea') -> None:
+        """Un joueur change de territoire (PU-5, spec G4) : lui et tout ce qu'il possede (sbires engages compris) passent dans la
+        zone, SANS emporter les manigances (communes). Peut etre appele autant de fois que voulu (contrairement a Kang)."""
+        if player.GetIdentity().card.game_area is game_area:
+            return
+        game_area.AddPlayer(player, avec_manigances=False)
+
+    def CreateCommonGameArea(self) -> 'GameArea':
+        """Cree la zone commune (une seule) : les cartes qu'elle contient sont vues, et reagissent, depuis TOUTES les zones."""
+        assert self.game_area_commune is None
+        self.game_area_commune = self.CreateGameArea()
+        return self.game_area_commune
 
     def CreateGameArea(self) -> 'GameArea':
         self.game_areas.append(GameArea(self))

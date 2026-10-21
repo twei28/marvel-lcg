@@ -85,6 +85,8 @@ Unused(Stores)
 # RECETTES-MOTEUR.md §15 : « insensible aux cartes joueur ».
 from game.operate.immunity import PlayerCardImmunity
 from game.operate.villains import Villains
+from game.operate.ville import Ville
+Unused(Ville)
 Unused(PlayerCardImmunity)
 Unused(Villains)
 

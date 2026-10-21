@@ -268,6 +268,10 @@ class Ability:
         from game.message import TriggerPlayerMessage, TriggerMessage
         if not self.ignore.game_area and not isinstance(self.on_event, OnEvent.GameArea): # Fix for "11004"
             def check_game_area(effect: 'Effect', message: 'Message2') -> bool:
+                # PU-5 (21/10/2026) : une carte de la zone COMMUNE (manigances, environnements de la ville) reagit depuis toutes les zones.
+                commune = effect.world.game_area_commune
+                if commune is not None and effect.this.card.GetGameArea() is commune:
+                    return True
                 # Fix "43021" in Kang stage 2
                 if isinstance(message, TriggerPlayerMessage) and message.to_player != None:
                     return effect.this.card.GetGameArea() == message.GetToPlayer().GetGameArea() or \

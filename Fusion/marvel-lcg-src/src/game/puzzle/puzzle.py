@@ -1300,6 +1300,41 @@ class RunPuzzle:
             self.world.PassFirstPlayerToken(camp, self.debug_rule)
         self.world.round_id += 1
 
+    def CreateGameArea(self) -> int:
+        """AJOUT (21/10/2026, PU-5, spec-ville-m1-m2 etape 1) : cree une zone de jeu et rend son INDICE dans `world.game_areas`
+        (0 = la premiere). Banc des territoires : aucune carte de campagne requise."""
+        self.world.CreateGameArea()
+        return len(self.world.game_areas) - 1
+
+    def CreateCommonGameArea(self) -> int:
+        """AJOUT (21/10/2026, PU-5 etape 2) : cree la zone COMMUNE (`world.game_area_commune`) et rend son indice."""
+        self.world.CreateCommonGameArea()
+        return len(self.world.game_areas) - 1
+
+    def MoveCardToGameArea(self, card: CardName, zone: int) -> None:
+        """AJOUT (21/10/2026, PU-5) : une carte (et ses attachements) change de zone."""
+        face = self.FindFaceInPlay(card)
+        self.world.game_areas[zone].AddCard(face.card)
+
+    def MovePlayerToGameArea(self, zone: int, player: int=0) -> None:
+        """AJOUT (21/10/2026, PU-5) : `GameArea.AddPlayer` (le joueur et tout ce qu'il possede changent de zone)."""
+        self.world.MovePlayerToGameArea(self.world.const_players[player], self.world.game_areas[zone])
+
+    def InstallerVille(self, grille: List[List[str]], depart: Tuple[int, int]=(1, 1)) -> None:
+        """AJOUT (21/10/2026, PU-5 etape 3) : pose la ville du banc : une zone COMMUNE, une zone par ligne de la grille, les cartes de
+        lieu (`grille[ligne][colonne]` : un identifiant de carte, juste une reference), tous les joueurs sur `depart`."""
+        from game.operate.ville import Ville
+        self.world.CreateCommonGameArea()
+        zones = {ligne: self.world.CreateGameArea() for ligne in range(len(grille))}
+        cases = {(l, c): self.CreateCard(cid) for l, rang in enumerate(grille) for c, cid in enumerate(rang)}
+        Ville.Installer(self.world, cases, zones, tuple(depart))
+
+    def DeplacerDansLaVille(self, case: Tuple[int, int], player: int=0) -> None:
+        """AJOUT (21/10/2026, PU-5) : `Ville.Deplacer` (sans le cout : l'Action de The City le paie). Refus silencieux si la case n'est
+        pas voisine ; l'etat se lit ensuite avec `case_de`."""
+        from game.operate.ville import Ville
+        Ville.Deplacer(self.world, self.world.const_players[player], tuple(case))
+
     def SendRoundEnd(self) -> None:
         """AJOUT (21/10/2026, Punisher MC×DC, Target Lock DISTRACTED « At the end of the round, flip this card ») : envoie
         `WhenRoundEnd`, que `EndRound` (mode manuel) ne partait jamais, pour tester un effet « a la fin de la manche »."""

@@ -136,10 +136,20 @@ class Worlds:
         else:
             return None
     @staticmethod
+    def ZonesVisibles(game_area_effect: 'GameArea|Effect') -> List['GameArea']:
+        """Les zones dont les cartes sont vues depuis cette zone : la zone elle-meme et, si le scenario en a une, la zone COMMUNE
+        (PU-5). Sans zone commune : [zone], comme avant."""
+        game_area = Worlds.CastGameArea(game_area_effect)
+        commune = game_area_effect.world.game_area_commune
+        if commune is not None and commune is not game_area:
+            return [game_area, commune]
+        return [game_area]
+
+    @staticmethod
     def GetMainSchemes(game_area_effect: 'GameArea|Effect') -> List['MainScheme']:
         world = game_area_effect.world
-        game_area = Worlds.CastGameArea(game_area_effect)
-        return [x for x in world.area_schemes_main.Get() if x.card.GetGameArea() == game_area ]
+        zones = Worlds.ZonesVisibles(game_area_effect)
+        return [x for x in world.area_schemes_main.Get() if x.card.GetGameArea() in zones ]
 
     @staticmethod
     def GetOnFieldSchemes(game_area_effect: 'GameArea|Effect', finder: 'CardFinder|None'=None) -> List['MainScheme|EncounterSideScheme|PlayerSideScheme']:
@@ -151,8 +161,8 @@ class Worlds:
     @staticmethod
     def GetSideSchemes(game_area_effect: 'GameArea|Effect') -> List['EncounterSideScheme|PlayerSideScheme']:
         world = game_area_effect.world
-        game_area = Worlds.CastGameArea(game_area_effect)
-        return [x for x in world.area_schemes_side.Get() if x.card.GetGameArea() == game_area and (EncounterSideScheme.IsType(x) or PlayerSideScheme.IsType(x))]
+        zones = Worlds.ZonesVisibles(game_area_effect)
+        return [x for x in world.area_schemes_side.Get() if x.card.GetGameArea() in zones and (EncounterSideScheme.IsType(x) or PlayerSideScheme.IsType(x))]
 
     @staticmethod
     def FilterSideScheme(by_effect: 'Effect',
@@ -274,8 +284,8 @@ class Worlds:
         for unit in Worlds.GetPlayersIdentities(game_area_effect):
             player = unit.GetControlByPlayer()
             faces += player.area_environment.Get()
-        game_area = Worlds.CastGameArea(game_area_effect)
-        faces += [x for x in game_area_effect.world.area_environment.Get() if x.card.game_area == game_area]
+        zones = Worlds.ZonesVisibles(game_area_effect)
+        faces += [x for x in game_area_effect.world.area_environment.Get() if x.card.game_area in zones]
         return faces
 
     @staticmethod
@@ -396,6 +406,7 @@ class Worlds:
         # from game.card.face.card_type import Identity
         world = game_area_effect.world
         game_area = Worlds.CastGameArea(game_area_effect)
+        zones = Worlds.ZonesVisibles(game_area_effect)
 
         faces: List['CardFace'] = []
         areas: List[Deck] = []
@@ -405,7 +416,7 @@ class Worlds:
 
         for area in [world.area_schemes_main, world.area_schemes_side, world.area_environment, world.scenario.area_villain] + areas:
             for face in area.GetAll():
-                if face.card.game_area == game_area:
+                if face.card.game_area in zones:
                     def get_faces(*check_faces: 'CardFace'):
                         found: List['CardFace'] = []
                         for x in check_faces:
