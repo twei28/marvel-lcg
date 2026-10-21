@@ -17,3 +17,11 @@ Une seule capacité commune (`jigsaw_commun.py`), quatre faces. Le scan a été 
 Autres corrections de la passe : les 5 scénarios expert Jigsaw n'avaient pas l'ensemble de rencontre « expert » (le complot n'était alors pas posé ; corrigé, script de construction aussi).
 
 Carte terminée : OUI pour le script. Restent hors de cette preuve : les 4 doutes de `jigsaw-doutes.md` (stades, étoile `N**`, tuiles d'accueil, scan tourné).
+
+### pu058 : Jigsaw's Knife
+
+- [x] Étape 2 : références `skrull_menace/paibok/sk148.py` (attache + Riposte + action de défausse à coût), `ts201` (piercing). `ATK+ 1**` natif.
+- [x] Question à l'utilisateur (21/10) : « exhaust a character you control » = au choix parmi ses personnages prêts. Réponse : oui, recommandé.
+- [x] Étape 7 : 5 cas `[jig] pu058` verts (attache + Riposte 1, témoin sans couteau, piercing, témoin Tenace, action de héros avec héros épuisé). Rouge par substitution (piercing retiré, Riposte à 0, épuisement retiré) : 3 cas rouges sur 5 (les deux témoins restent verts). Restauré, 8/8 `[jig]` verts.
+- [x] Limite imprimée : NON. Autoplay : couvert par les 16 parties précédentes (la carte est dans le deck Jigsaw). Plateau : NON (attachement standard).
+Carte terminée : OUI (script). Boost ATK+ « 1** » dépend du doute n°2 (étoile).

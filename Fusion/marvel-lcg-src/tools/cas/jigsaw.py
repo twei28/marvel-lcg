@@ -46,3 +46,34 @@ CAS = [
        {"menace_joueur": 2}, attaquant="pu057b", scenario=SCE, avant_attaque="Puzzle.AdvanceVillain()",
        verifier="fne3p_racket", main_exclusive=["01088"], **SANS_DEFENSE),
 ]
+
+# ============================================================== pu058 : Jigsaw's Knife
+def _k(nom, pourquoi, mise, declencher, attendu, **cle):
+    cas = {"nom": "[jig] " + nom, "pourquoi": pourquoi, "scenario": SC, "heros": "spider_man",
+           "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')", HEROS, *mise],
+           "declencher": declencher, "verifier": "etat_attendu", "attendu": attendu}
+    cas.update(cle)
+    return cas
+
+
+CAS += [
+    _k("pu058 Jigsaw's Knife : attache a Jigsaw, Jigsaw gagne Riposte 1",
+       "« Attach to Jigsaw » ; « Jigsaw gains retaliate 1 » (modele sk148)",
+       ["Puzzle.PutIntoPlay('pu058')"], [], {"accroche_a": [["pu058", "pu056a"]], "attributs_carte": [["pu056a", "retaliate", 1]]},
+       main_exclusive=["01088"]),
+    _k("pu058 TEMOIN : sans le couteau, Jigsaw n'a pas de Riposte",
+       "contre-cas", [], [], {"attributs_carte": [["pu056a", "retaliate", 0]]}, main_exclusive=["01088"]),
+    _k("pu058 « his attacks gain piercing » : l'attaque sur un allie Tenace defausse la carte Tenace et blesse",
+       "piercing : sans Tenace l'allie meurt (2 PV), avec le couteau la Tenace saute et il meurt quand meme ; TEMOIN ci-dessous = 0 degat", ["Puzzle.PutIntoPlay('pu058')", "Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.Tough('01075')"],
+       ["Puzzle.EnemyAttacks('pu056a', '01075')"], {"hors_jeu": ["01075"]},
+       main_exclusive=["01088"], **SANS_DEFENSE),
+    _k("pu058 piercing, TEMOIN : sans le couteau la carte Tenace absorbe l'attaque",
+       "contre-cas", ["Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.Tough('01075')"],
+       ["Puzzle.EnemyAttacks('pu056a', '01075')"], {"statuts_absents": [["01075", "Tough"]], "degats": [["01075", 0]]},
+       main_exclusive=["01088"], **SANS_DEFENSE),
+    _k("pu058 Hero Action : epuiser un personnage et depenser [mental][physical] -> couteau defausse, le heros est epuise",
+       "cout `BR` + « exhaust a character you control » (seul le heros est pret)",
+       ["Puzzle.PutIntoPlay('pu058')"], ["Puzzle.Action('pu058', 'HeroAction')"],
+       {"hors_jeu": ["pu058"], "exhausted": ["01001a"]},
+       main_exclusive=["01089", "01090"], payer_avec=["01089", "01090"], payer_tout=True),
+]
