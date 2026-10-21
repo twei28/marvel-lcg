@@ -25,3 +25,11 @@ Carte terminée : OUI pour le script. Restent hors de cette preuve : les 4 doute
 - [x] Étape 7 : 5 cas `[jig] pu058` verts (attache + Riposte 1, témoin sans couteau, piercing, témoin Tenace, action de héros avec héros épuisé). Rouge par substitution (piercing retiré, Riposte à 0, épuisement retiré) : 3 cas rouges sur 5 (les deux témoins restent verts). Restauré, 8/8 `[jig]` verts.
 - [x] Limite imprimée : NON. Autoplay : couvert par les 16 parties précédentes (la carte est dans le deck Jigsaw). Plateau : NON (attachement standard).
 Carte terminée : OUI (script). Boost ATK+ « 1** » dépend du doute n°2 (étoile).
+
+### pu059 : Bushwhacker
+
+- [x] Étape 2 : références sk099/sk185 (`WhenUnitWouldAttack` + `SetBeInstead`), 27176 (`ChooseAbilities` + coût), 60133 (indirect sur l'identité).
+- [x] Question à l'utilisateur (21/10) : qui encaisse et paie ? Réponse : le joueur visé (engagé avec Bushwhacker).
+- [x] Étape 7 : 2 cas `[jig] pu059` verts (3 indirects sur le héros ; paiement de [mental] → 3 dégâts sur Jigsaw, héros indemne). Rouge par substitution : le cas « payer » passe au rouge. ⚠ Le cas 1 reste vert quand on retire `SetBeInstead` (ATQ 0★ : l'attaque ne ferait aucun dégât de toute façon) : l'effet « à la place » n'est donc prouvé que par l'ATQ 0. Les « 3 dégâts indirects sur un ennemi » passent par `DamageProperty(is_indirect_damage=True)` (`TakeIndirectDamage` n'agit que sur le camp d'un joueur).
+- [x] « ★ » de l'ATQ (`0**`) : doute n°2. Limite imprimée : NON. Plateau : NON.
+Carte terminée : OUI (script).

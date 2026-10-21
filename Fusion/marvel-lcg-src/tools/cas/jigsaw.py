@@ -77,3 +77,16 @@ CAS += [
        {"hors_jeu": ["pu058"], "exhausted": ["01001a"]},
        main_exclusive=["01089", "01090"], payer_avec=["01089", "01090"], payer_tout=True),
 ]
+
+# ============================================================== pu059 : Bushwhacker
+CAS += [
+    _k("pu059 Forced Interrupt : Bushwhacker veut attaquer -> a la place le joueur prend 3 degats indirects (aucun degat d'attaque)",
+       "« instead take 3 indirect damage » ; ATQ 0* donc aucun autre degat ; le joueur choisit l'option par defaut",
+       ["Puzzle.PutIntoPlay('pu059')"], ["Puzzle.Attack('pu059')"], {"degats_identite": 3},
+       main_exclusive=["01088"], choisir_option="Take_3_indirect_damage"),
+    _k("pu059 « may spend [mental] » : le joueur paie [mental] -> les 3 degats vont a Jigsaw, le heros n'en prend aucun",
+       "« deal that damage to another enemy instead » (Jigsaw = le seul autre ennemi)",
+       ["Puzzle.PutIntoPlay('pu059')"], ["Puzzle.Attack('pu059')"], {"degats": [["pu056a", 3]], "degats_identite": 0},
+       main_exclusive=["01089"], payer_avec=["01089"], payer_tout=True,
+       preferer_option="to another enemy"),
+]
