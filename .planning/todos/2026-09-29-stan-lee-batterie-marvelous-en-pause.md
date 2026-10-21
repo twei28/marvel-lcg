@@ -1,5 +1,14 @@
 # Stan Lee : batterie « Marvelous » en pause (29/09/2026)
 
+**REPRISE le 21/10/2026** (demande de l'utilisateur). La liste de cas a grandi depuis : **3 076 cas**
+(1 538 cartes) au lieu de 2 808, des héros ayant été insérés au milieu (les index ne désignent plus les
+mêmes cartes). Les 1 462 cas du rapport partiel sont tous encore dans la liste ; il en restait **1 614**.
+Nouvelle variable `MARVELOUS_SAUF=<rapport.json>` (`batterie_test_capacites.py`) : ne rejoue que les cas dont le
+NOM n'est pas dans ce rapport. Lancée en arrière-plan : harnais gelé dans `/tmp/marvelous-frozen/`, dossier de jeu
+`.game-src-stanlee`, `PARALLELES=3`, `nice 19`, rapport `/tmp/marvelous-suite.json`, journal
+`/tmp/marvelous-suite.log`. À analyser ensuite avec `analyser.py` en fusionnant les deux rapports
+(`.planning/stan-lee/marvelous-partiel-0-1461.json` + celui-ci).
+
 Arrêtée à la demande de l'utilisateur (trop de consommation). Reprise prévue la
 semaine du 05/10/2026.
 
