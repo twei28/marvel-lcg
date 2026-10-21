@@ -2983,9 +2983,24 @@ def reponses_non_lues(pseudo: str) -> int:
 
 
 def liste_rapports(limite: int = 60) -> list[dict]:
+    """Les rapports ACTIFS (nouveau, en cours) au complet, jamais tronqués,
+    suivis des `limite` derniers rapports CLASSÉS (traité, refusé).
+
+    Archivage du 21/10/2026 (item 23 du backlog) : avant cette distinction,
+    `ORDER BY id DESC LIMIT` seul pouvait repousser hors de la fenêtre un
+    rapport actif ancien derrière une pile de tickets déjà corrigés/refusés,
+    si le suivi se remplissait. Les classés restent consultables (le fil et
+    la capture jusqu'à la purge à 30 jours), seulement plus loin dans la
+    liste une fois `limite` dépassée.
+    """
     with _cx() as cx:
-        return [dict(r) for r in cx.execute(
-            "SELECT * FROM rapports ORDER BY id DESC LIMIT ?", (limite,))]
+        actifs = [dict(r) for r in cx.execute(
+            "SELECT * FROM rapports WHERE etat IN ('nouveau', 'en cours') OR etat IS NULL"
+            " ORDER BY id DESC")]
+        classes = [dict(r) for r in cx.execute(
+            "SELECT * FROM rapports WHERE etat IN ('traite', 'refuse')"
+            " ORDER BY id DESC LIMIT ?", (limite,))]
+    return actifs + classes
 
 
 def nb_rapports_nouveaux() -> int:
