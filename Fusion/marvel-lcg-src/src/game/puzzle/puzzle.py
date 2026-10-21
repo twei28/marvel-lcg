@@ -1374,11 +1374,29 @@ class RunPuzzle:
         from game.operate.ville import Ville
         Ville.Deplacer(self.world, self.world.const_players[player], tuple(case))
 
+    def AttacherAuLieu(self, card: CardName, lieu: CardName) -> None:
+        """AJOUT (22/10/2026, PU-7 M5) : `Ville.AttacherSbire` (le sbire en jeu est glisse sous le lieu, sans choix ni condition de joueur).
+        Refus silencieux (lieu occupe...) : l'etat se lit avec `attache_a`."""
+        from game.operate.ville import Ville
+        Ville.AttacherSbire(self.debug_rule, self.FindFaceInPlay(card), self.FindFaceInPlay(lieu))
+
+    def PlacerDansLaVille(self, case: Tuple[int, int], player: int=0) -> None:
+        """AJOUT (22/10/2026, PU-7 M5) : `Ville.Placer` (deplacement SANS adjacence, avec les interruptions de depart / d'arrivee)."""
+        from game.operate.ville import Ville
+        Ville.Placer(self.world, self.world.const_players[player], tuple(case))
+
     def SendRoundEnd(self) -> None:
         """AJOUT (21/10/2026, Punisher MC×DC, Target Lock DISTRACTED « At the end of the round, flip this card ») : envoie
         `WhenRoundEnd`, que `EndRound` (mode manuel) ne partait jamais, pour tester un effet « a la fin de la manche »."""
         from game.message import Message
         Message.WhenRoundEnd(self.world).Send()
+
+    def SendAfterRoundEnd(self) -> None:
+        """AJOUT (22/10/2026, PU-7 M5, Overdrive « After the round ends ») : `WhenRoundEnd` PUIS `AfterRoundEnd`, comme `World.RoundLoop`."""
+        from game.message import Message
+        fin = Message.WhenRoundEnd(self.world)
+        fin.Send()
+        Message.AfterRoundEnd(fin).Send()
 
     def SwapWithDeckTop(self, card: CardName, player: int=0, siege: int|None=None):
         """« Switch Card with top Deck Card » d'OCTGN (menu de la main).

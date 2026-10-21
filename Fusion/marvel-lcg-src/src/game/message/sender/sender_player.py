@@ -103,8 +103,27 @@ class SenderPlayer:
 
     class AfterPlayerMovedInCity(TriggerPlayerMessage):
         """AJOUT (22/10/2026, PU-7, brique Ville) : un joueur change de LIEU (meme sans changer de rangee). Sert aux effets continus de lieu
-        (West Village, Lower East Side...) qui doivent se recalculer quand on arrive ou part."""
-        def __init__(self, player: 'Player') -> None:
+        (West Village, Lower East Side...) qui doivent se recalculer quand on arrive ou part. `depuis` / `vers` : les cartes de lieu quittee et
+        atteinte (`depuis` est None a la mise en place)."""
+        def __init__(self, player: 'Player', depuis: 'CardFace|None'=None, vers: 'CardFace|None'=None) -> None:
+            self.depuis: Final = depuis
+            self.vers: Final = vers
+            super().__init__(player=player)
+
+    class WhenPlayerWouldLeaveLocation(TriggerPlayerMessage):
+        """AJOUT (22/10/2026, PU-7) : « When a player leaves this location » (Interruption, avant le depart). `lieu` = la carte de lieu quittee,
+        `vers` = celle ou le joueur va."""
+        def __init__(self, player: 'Player', lieu: 'CardFace', vers: 'CardFace') -> None:
+            self.lieu: Final = lieu
+            self.vers: Final = vers
+            super().__init__(player=player)
+
+    class WhenPlayerWouldEnterLocation(TriggerPlayerMessage):
+        """AJOUT (22/10/2026, PU-7) : « When a player enters this location » (Interruption, avant l'arrivee). `lieu` = la carte de lieu atteinte,
+        `depuis` = celle que le joueur quitte."""
+        def __init__(self, player: 'Player', lieu: 'CardFace', depuis: 'CardFace') -> None:
+            self.lieu: Final = lieu
+            self.depuis: Final = depuis
             super().__init__(player=player)
 
     class GameAreaAddCard(TriggerFaceMessage):

@@ -935,6 +935,7 @@ class SenderDamage:
             self.by_effect: Final = by_effect
             self.killer: Final = killer
             self.being_message: Final = being_atk_message
+            self.excess_damage = 0   # AJOUT (22/10/2026) : degats au-dela des PV restants, poses par `Unit.OnWouldDefeated`
             super().__init__(trigger=trigger, being_atk_message=being_atk_message, end_event=Message.AfterUnitBeDefeated)
 
         def IsByConsequentialDamage(self) -> bool:

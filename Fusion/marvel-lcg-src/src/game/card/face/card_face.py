@@ -293,6 +293,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'drone',
         # AJOUT (21/10/2026, set SWAT Team MC×DC 2026) : les « wanted counters » de la manigance SWAT (pu119).
         'wanted',
+        # AJOUT (22/10/2026, The Big Apple pu007 Burning Building) : « acceleration token » posee sur un ATTACHEMENT (les manigances ont leurs
+        # propres jetons `acceleration_token`).
+        'acceleration',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',

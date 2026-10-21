@@ -38,7 +38,7 @@ class Ville:
         for joueur in world.const_players:
             etat.positions[joueur.player_id] = depart
             world.MovePlayerToGameArea(joueur, zones[depart[0]])
-            Message.AfterPlayerMovedInCity(joueur).Send()
+            Message.AfterPlayerMovedInCity(joueur, None, etat.cases.get(depart)).Send()
 
     @staticmethod
     def Etat(effect_or_world: 'Effect|World') -> 'EtatVille|None':
@@ -121,11 +121,77 @@ class Ville:
         depuis = Ville.Case(world, joueur)
         if etat is None or depuis is None or case not in etat.cases:
             return False
+        from game.message import Message
+        ancien = etat.cases.get(depuis)
+        nouveau = etat.cases[case]
+        if case != depuis and ancien is not None:
+            # Interruptions « When a player leaves / enters this location » : AVANT que la position ne change (M5, 22/10/2026).
+            Message.WhenPlayerWouldLeaveLocation(joueur, ancien, nouveau).Send()
+            Message.WhenPlayerWouldEnterLocation(joueur, nouveau, ancien).Send()
         etat.positions[joueur.player_id] = case
         if case[0] != depuis[0]:
             world.MovePlayerToGameArea(joueur, etat.zones[case[0]])
-        from game.message import Message
-        Message.AfterPlayerMovedInCity(joueur).Send()
+        Message.AfterPlayerMovedInCity(joueur, ancien, nouveau).Send()
+        return True
+
+    ############################################################################
+    # M5 : cartes attachees aux lieux (sbires « attaches » = glisses sous le lieu)
+    @staticmethod
+    def Lieux(effect_or_world: 'Effect|World') -> List['CardFace']:
+        """Les cartes de lieu de la grille, dans l'ordre de la grille (rangee par rangee)."""
+        etat = Ville.Etat(effect_or_world)
+        return [] if etat is None else [etat.cases[c] for c in sorted(etat.cases)]
+
+    @staticmethod
+    def LieuxInoccupes(effect_or_world: 'Effect|World') -> List['CardFace']:
+        return [lieu for lieu in Ville.Lieux(effect_or_world) if Ville.Inoccupe(effect_or_world, lieu)]
+
+    @staticmethod
+    def Hote(carte: 'CardFace') -> 'CardFace|None':
+        """Le lieu auquel ce sbire est attache (None s'il ne l'est pas)."""
+        return getattr(carte.card, 'ville_hote', None)
+
+    @staticmethod
+    def SbiresAttaches(lieu: 'CardFace') -> List['CardFace']:
+        return [f for f in lieu.GetPlacedCardArea().GetAll() if Ville.Hote(f) is lieu]
+
+    @staticmethod
+    def AttacherSbire(effect: 'Effect', sbire: 'CardFace', lieu: 'CardFace|None') -> bool:
+        """« Attach <sbire> to an unoccupied location, if able. (He remains in play.) » : le sbire quitte son joueur et est GLISSE (face visible)
+        sous la carte de lieu ; ses points de vie sont gardes pour son retour. Refus (rien ne bouge) : pas de lieu, lieu occupe ou hors ville
+        (FAQ : « Rien. Le sbire reste avec le joueur engage »)."""
+        etat = Ville.Etat(effect)
+        if etat is None or lieu is None or not any(c is lieu.card for c in (f.card for f in etat.cases.values())):
+            return False
+        if not Ville.Inoccupe(effect, lieu):
+            return False
+        pv = sbire.health
+        # Les cartes de statut partent avec la carte quand elle quitte le jeu : on retient lesquelles, pour les redonner au retour.
+        statuts = [n for n in ('Tough', 'Stunned', 'Confused') if sbire.HasStatus(n)]
+        if not lieu.PlaceCardHere([sbire], True, effect):
+            return False
+        sbire.card.ville_hote = lieu
+        sbire.card.ville_pv = pv
+        sbire.card.ville_statuts = statuts
+        return True
+
+    @staticmethod
+    def DegagerSbire(effect: 'Effect', sbire: 'CardFace', joueur: 'Player') -> bool:
+        """Le sbire attache s'engage avec `joueur` (« he engages them ») : il revient en jeu, engage, avec les PV qu'il avait."""
+        pv = getattr(sbire.card, 'ville_pv', None)
+        sbire.card.ville_hote = None
+        # ⚠ `PutIntoPlay` depuis la zone « glissee » engage DEUX fois (Quickstrike deux fois, mesure du 22/10/2026) : un seul deplacement
+        # vers la zone des sbires engages du joueur suffit, `OnWhenCardEnterPlay` fait l'engagement.
+        from game.operate.faces import Faces
+        if not Faces.MoveAllTo([sbire], joueur.engaged_minions, effect):
+            return False
+        if pv is not None and sbire.IsInPlay():
+            sbire.components.health.SetHealth(min(pv, sbire.max_health))
+        from game.operate.faces import Faces
+        for nom in getattr(sbire.card, 'ville_statuts', []):
+            if sbire.IsInPlay() and not sbire.HasStatus(nom):
+                Faces.GiveStatus([sbire], nom, effect)
+        sbire.card.ville_statuts = []
         return True
 
     ############################################################################
@@ -140,4 +206,6 @@ class Ville:
         if not isinstance(joueur, Player):
             initiateur = getattr(effect, 'initiator', None)
             joueur = initiateur if isinstance(initiateur, Player) else None
-        return joueur is not None and Ville.Occupe(effect, joueur, effect.this)
+        carte = effect.this
+        hote = getattr(carte, 'bind_face', None)   # une carte ATTACHEE a un lieu (M5) : le lieu qui la porte
+        return joueur is not None and Ville.Occupe(effect, joueur, hote if hote is not None else carte)

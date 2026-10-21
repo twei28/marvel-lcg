@@ -223,6 +223,13 @@ class Log:
             function_name = ""
 
         info = Log.FailedTrace(category, exc)
+        # AJOUT (22/10/2026) : `MCLCG_TRACE_CRASH=<fichier>` ajoute chaque exception avalee par le moteur (capacite de carte qui plante) au fichier,
+        # pour la voir en test sans l'avaler (le harnais ne l'affiche pas).
+        import os as _os
+        _trace = _os.environ.get('MCLCG_TRACE_CRASH')
+        if _trace:
+            with open(_trace, 'a') as _f:
+                _f.write(f"== {name} / {function_name}\n{info}\n")
         Log.Debug(category, name, function_name)
         # Log.Notify(CATEGORY_NAME, "Error", function_name)
 

@@ -299,6 +299,8 @@ class CanHealth(HasHealth):
 
                     units.remove(unit)
 
+                    # AJOUT (22/10/2026, Screwball pu015) : l'exces de CE coup, lu par `WhenUnitWouldBeDefeated.excess_damage`.
+                    unit.exces_en_cours = excess_damage if unit is self else 0
                     if unit.health <= 0 and \
                         unit.Death(source, by_effect, would_attack_unit_message):
                         if would_attack_unit_message:

@@ -93,3 +93,47 @@ def MettreEnPlaceLaVille(effect: 'Effect', rangees: int=3) -> 'List[Villain]':
     for joueur in TousLesJoueurs(effect):
         RevelerPiste(effect, joueur)
     return capos
+
+
+################################################################################
+# M5 : cartes liees aux lieux (22/10/2026)
+def ChoisirLieuInoccupe(effect: 'Effect', joueur: 'Player') -> 'CardFace|None':
+    """« an unoccupied location » : le JOUEUR concerne choisit parmi les lieux sans joueur (aucun : None)."""
+    libres = Ville.LieuxInoccupes(effect)
+    if not libres:
+        return None
+    return libres[0] if len(libres) == 1 else joueur.AskChooseFace(libres, effect)
+
+
+def AttacherAuLieuInoccupe(effect: 'Effect', sbire: 'CardFace', joueur: 'Player|None') -> bool:
+    """« attach <sbire> to an unoccupied location, if able » (Overdrive, Muse, Screwball) : rien si aucun lieu libre ou plus de ville."""
+    if joueur is None:
+        return False
+    return Ville.AttacherSbire(effect, sbire, ChoisirLieuInoccupe(effect, joueur))
+
+
+def SbireEngagePar(sbire: 'CardFace') -> 'Player|None':
+    try:
+        return sbire.CastTo(Minion).engaged_player
+    except AssertionError:
+        return None
+
+
+def EngageQuandOnEntreDansSonLieu() -> 'Ability':
+    """« Forced Interrupt : When a player enters <le sbire>'s location, he engages them. » Capacite portee par le sbire ATTACHE, donc hors jeu
+    (`NoOutOfPlayLimit`) : le joueur qui arrive est celui du message, le lieu celui qui porte le sbire."""
+    def lieu_du_sbire(effect: 'Effect', message: 'Message.WhenPlayerWouldEnterLocation') -> bool:
+        return Ville.Hote(effect.this) is message.lieu
+
+    def engage(effect: 'Effect', message: 'Message.WhenPlayerWouldEnterLocation') -> None:
+        Ville.DegagerSbire(effect, effect.this, message.GetToPlayer())
+
+    return Ability(AbilityType.ForcedInterrupt, Message.WhenPlayerWouldEnterLocation, [lieu_du_sbire], engage).NoOutOfPlayLimit().NoGameAreaLimit()
+
+
+def AuLieuDeLAttachement(message_lieu: 'Callable[[Message2], CardFace|None]') -> 'Callable[[Effect, Message2], bool]':
+    """Condition : le lieu du message est celui qui PORTE cet attachement (`bind_face`)."""
+    def condition(effect: 'Effect', message: 'Message2') -> bool:
+        hote = getattr(effect.this, 'bind_face', None)
+        return hote is not None and message_lieu(message) is hote
+    return condition
