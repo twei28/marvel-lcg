@@ -1621,18 +1621,32 @@ function titreSet(nom) {
 
 /** Un set de la mise en place, sous le NOM de son fichier (`name`) : l'identifiant
  *  d'un set fan-made porte un prefixe (« hs_feral_instincts »). Le titre deduit
- *  de l'identifiant s'affiche le temps de la lecture, et reste si elle echoue. */
+ *  de l'identifiant s'affiche le temps de la lecture, et reste si elle echoue.
+ *
+ *  ⚠ UN SEUL REESSAI, APRES UN COURT DELAI (21/10/2026, item 18 du backlog) :
+ *  au tout premier chargement, cet appel peut partir avant que le cookie
+ *  `app_version` (pose par un `get_version` qui tourne en parallele) ne soit
+ *  ecrit — le serveur repond alors sa page « Version Mismatch » a la place du
+ *  JSON attendu, `res.json()` leve une exception, et sans reessai le nom
+ *  recherche n'etait JAMAIS affiche pour le reste de cette visite (identifiant
+ *  brut mis en forme a la place, « Hs Feral Instincts »). Le cookie est pose
+ *  bien avant 400 ms dans tous les cas observes : un seul reessai suffit. */
 const _nomsSets = new Map();
 function ligneSet(id) {
     const li = el("li", {}, _nomsSets.get(id) || titreSet(id));
     if (!_nomsSets.has(id)) {
+        const appliquer = (json) => {
+            if (!json || !json.name) return;
+            _nomsSets.set(id, json.name);
+            li.textContent = json.name;
+        };
         api.encounterSet(id)
-            .then((json) => {
-                if (!json || !json.name) return;
-                _nomsSets.set(id, json.name);
-                li.textContent = json.name;
-            })
-            .catch(() => undefined);
+            .then(appliquer)
+            .catch(() => {
+                setTimeout(() => {
+                    api.encounterSet(id).then(appliquer).catch(() => undefined);
+                }, 400);
+            });
     }
     return li;
 }
