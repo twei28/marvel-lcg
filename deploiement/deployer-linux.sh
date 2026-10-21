@@ -282,6 +282,30 @@ attendre_echeance() {
   fi
 }
 
+images_custom() {
+  # ⚠ TROUVE LE 21/10/2026, PREMIER VRAI DEPLOIEMENT REEL AVEC CE SCRIPT :
+  # `deployer.ps1` avait sa propre etape « Images custom » (comparaison taille
+  # par taille, assets/pics SEUL — assets/pics-fr est un depot ponctuel, fait
+  # a la main, jamais resynchronise ici) ; ce script-ci n'avait AUCUN
+  # equivalent. L'archive de code exclut deja `assets/pics` (voir plus bas,
+  # "les scans voyagent par une etape a part") : sans cette fonction, un scan
+  # tout neuf (ex. les portraits Quasar/Binary de Galactic Storm) n'atteint
+  # JAMAIS le serveur, silencieusement — la carte manque a l'ecran, rien ne le
+  # signale. `rsync --delete` remplace la comparaison manuelle de deployer.ps1 :
+  # memes effets (envoie ce qui manque ou differe, efface ce qui a disparu en
+  # local), beaucoup moins de code.
+  etape "5b. Images custom (assets/pics)"
+  local source="$RACINE/Fusion/marvel-lcg-src/assets/pics/"
+  local cible="$DIST/Fusion/marvel-lcg-src/assets/pics/"
+  if [ "$REEL" -eq 0 ]; then
+    dire "[simulation] rsync -az --delete $source -> $cible"
+    return 0
+  fi
+  rsync -az --delete -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
+    "$source" "$HOTE:$cible"
+  dire "images custom envoyees."
+}
+
 redemarrer() {
   distant_script "dependances, vignettes, scans HD, redemarrage" <<REMOTE
 set -e
@@ -323,6 +347,7 @@ rm -rf /tmp/narwhal-conf; mkdir -p /tmp/narwhal-conf
 tar -xzf /tmp/narwhal-conf.tgz -C /tmp/narwhal-conf
 bash /tmp/narwhal-conf/synchroniser-conf.sh $DIST narwhal $DOMAINE
 REMOTE
+  images_custom
   redemarrer
 }
 
