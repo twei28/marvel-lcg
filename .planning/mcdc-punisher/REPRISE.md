@@ -1,6 +1,6 @@
 # Reprise du chantier « La ville ne dort jamais » (campagne MC×DC 2026, préfixe `pu`)
 
-État au 21/10/2026, dernier commit de travail Punisher : `c64696fb` (PU-5). Tout est commité ; rien n'est poussé sur GitHub, rien n'est déployé (ne JAMAIS déployer sans demande explicite de l'utilisateur).
+État au 22/10/2026, dernier commit de travail Punisher : `ce71924f` (rencontre lot 1). Tout est commité ; rien n'est poussé sur GitHub, rien n'est déployé (ne JAMAIS déployer sans demande explicite de l'utilisateur).
 
 ## Règles de travail (rappel)
 - Réponses en français, courtes et directes. L'utilisateur veut un topo court toutes les 20 minutes si c'est demandé.
@@ -28,11 +28,21 @@
 ## Fait le 22/10 : environnements et 9 lieux du scénario 1 (`pu005 pu006 pu030-pu038`)
 Scripts `src/cards/pack/punisher_mcdc_2026/{the_big_apple,locations_the_big_apple}/`, cas `tools/cas/big_apple.py` (`[big]`, 55), preuves `.planning/mcdc-punisher/preuves-big-apple.md` (pièges trouvés dedans : lire avant de continuer). Harnais ville réelle : `Puzzle.InstallerVille(grille, depart, en_jeu=True)`. Message `AfterPlayerMovedInCity` pour les effets continus de lieu. Échafaudage étendu (`defs/punisher_cards.py`, `construire_jigsaw.py` : sets `the_big_apple` (partiel) et `locations_the_big_apple`). Commits db7d3291, aff819d5 + le dernier.
 
+## Fait le 22/10 (suite) : CAPO, pistes, complots, rencontre lot 1 (commits 95c2ede8, 4bba4d4d, 48aefa38, ce71924f)
+| Set | Cas | Fichiers |
+|---|---|---|
+| 8 CAPO (16 faces pu048-pu055) | `[capo]` 30 | `capos/`, `tools/cas/capos.py` |
+| 9 pistes LEAD pu039-pu047, paquet `LeadsDeck` | `[pist]` 29 | `leads_the_big_apple/`, `tools/cas/pistes.py` |
+| Complots pu001-pu003 + Gunrunner pu004, scénario `the_big_apple(_expert).json` (mise en place réelle) | `[gang]` 20 | `the_big_apple/`, `tools/cas/gang_war.py` |
+| Rencontre lot 1 : pu009 011 012 016 017 018 020 021 | `[renc]` 22 | `the_big_apple/`, `tools/cas/big_apple_rencontre.py` |
+Preuves : `preuves-big-apple.md`. Moteur ajouté : zone commune pour le nouveau stade (`World.AdvanceMainScheme`), `Ville.Placer`, compteurs maison, `Puzzle.CreateLeadsDeck/AddToVictoryDisplay/PlaceCountersOnVillains/DamageAllVillains`. Échafaudage : `construire_jigsaw.py` (défs de TOUTES les cartes de rencontre déjà dans `defs/`).
+
 ## Ce qui RESTE (ordre proposé)
-1. **PU-7 suite : le reste du scénario 1 « The Big Apple »** (lieux, The City, Never Sleeps : FAITS) : 8 vilains CAPO (4 cartes recto-verso, p095+), les complots Gang War/Silence the City/Gunrunner's Warehouse (p001-p007), sbires attachés à un lieu (Overdrive, Muse, Screwball : M5), pistes/LEADS (9 + 3 Uptown, M3), attachements de lieu. Mise en place du scénario : zone commune + une zone par rangée via `Ville.Installer`, `Villains.SetRule("Leftmost")`.
-2. **Capo of the Past (pu139)** : échafaudé, script reporté (cherche un CAPO au hasard : dépend des 8 CAPO).
-3. **PU-6** pistes (M3) et sbires attachés (M5) ; **PU-8** interface « La Ville » (captures en Épuré, une à la fois, thème sombre) ; **PU-9** campagne (livret FR : `docs/packs/mcdc-2026-punisher/regles-fr.md`) ; **PU-10** Uptown ; **PU-11** défis + Hawkeye MC×DC ; **PU-12** textes FR ; **PU-13** batterie complète (~1 h) + audit.
-4. Questions techniques ouvertes : blocage d'autoplay sur l'Action de héros de Tenacity (01093) dans une partie `one_last_kill_hobgoblin_expert` graine 3 ; `DealDamage` avec un vilain et des sbires dans UNE liste ne blesse pas le vilain (appeler séparément).
+1. **Cartes liées aux lieux (M5)** : pu007 Burning Building, pu008 Citizens in Danger!, pu010 « It's a Trap! » (attachements : `AttachTo2(lieu)` marche sur un lieu), pu013 Overdrive, pu014 Muse, pu015 Screwball (sbires « attachés » : plan = `lieu.TuckCardUnderHere([sbire])` + `Ability(...).NoOutOfPlayLimit()`), pu022 Like and Subscribe!. Nouveaux messages à créer : `WhenPlayerWouldLeaveLocation(joueur, lieu)` (avant le départ) et `from/to` sur `AfterPlayerMovedInCity` (dans `Ville.Placer`). Helpers prévus : `Ville.Attacher`, lieux inoccupés, `Ville.Porte`.
+2. Puis : prouver l'étape 3A « cartes attachées aux lieux distribuées face cachée » (code écrit dans pu003a, non prouvé) ; mettre `BIGAPPLE_ENCOUNTERS = BIGAPPLE_ENCOUNTER_IDS` dans `defs/punisher_cards.py` (le scénario a encore `encounters: []`) et relancer l'échafaudage ; autoplay du scénario ; cas EXPERT de pu018/pu020.
+3. **Capo of the Past (pu139)** (dépend des CAPO : faisable maintenant).
+4. PU-8 interface « La Ville » ; PU-9 campagne (livret : `docs/packs/mcdc-2026-punisher/regles-fr.md`, noter le lieu de la dernière piste en 2A) ; PU-10 Uptown ; PU-11 défis ; PU-12 textes FR ; PU-13 batterie complète (~1 h) + audit.
+5. Décisions prises sans texte de RR, à confirmer en partie réelle : voir `preuves-big-apple.md` (pu039 sbire/allié, identité seule pour « you defend/thwart », Busted!, Red Herring, Shootout).
 
 ## Pièges de harnais (déjà payés cher)
 - Toute commande Bash dont le texte contient `tools/test_capacites.py` fait REFUSER le harnais (« un autre harnais tourne ») : mettre la commande dans un fichier script (`/tmp/xxx.sh`, créé avec l'outil Write) et lancer `bash /tmp/xxx.sh`. Ajouter `< /dev/null` pour que le harnais ne mange pas l'entrée du shell.
