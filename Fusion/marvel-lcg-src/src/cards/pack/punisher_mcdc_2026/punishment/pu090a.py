@@ -13,7 +13,7 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def mise_en_place(effect: 'Effect', message: 'Message.WhenCardSetup') -> None:
+    def mise_en_place(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
         this = effect.this
         premier = Worlds.GetFirstPlayer(effect)
         punisher = Punisher(effect)
@@ -31,5 +31,6 @@ def GetAbilities() -> Sequence['Ability']:
         this.card.Flip(effect)
 
     return [
-        AbilityFactory.WhenCardSetup("This", mise_en_place),
+        # Revelee par `Find.FindAndReveal` depuis la mise en place de pu088a : c'est la REVELATION qui declenche le Setup.
+        AbilityFactory.WhenThisRevealed(None, mise_en_place),
     ]

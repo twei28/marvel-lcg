@@ -20,11 +20,11 @@ def GetAbilities() -> Sequence['Ability']:
         if persos:
             this.DealDamage(persos, 1, effect)
         cibles = list(joueur.engaged_minions.Get())
-        cible = VilainCible(effect)
-        if cible is not None:
-            cibles.append(cible)
         if cibles:
             this.DealDamage(cibles, 1, effect)
+        cible = VilainCible(effect)
+        if cible is not None:
+            this.DealDamage([cible], 1, effect)
 
     def boost(effect: 'Effect', message: 'Message.WhenCardBecomeBoost') -> None:
         cible = VilainCible(effect)
