@@ -43,3 +43,31 @@ Carte terminée : OUI.
 - [x] Réf. 53009 (`WhenPlayerWouldBeDealtEncounterCard` + `SetBeInstead`), 16057. « When YOU would be dealt » = le joueur au lieu. 3 cas : traitrise non distribuée, Shocker révélé (1 dégât) ; épuisement ; pas-au-lieu.
 - [x] Substitution : sans limite, sans AuLieu, sans instead, sans reveal : tous rouges.
 Carte terminée : OUI.
+
+### pu037 Financial District
+- [x] Réf. 15030 (`Worlds.FindVillain(effect).DoAttackYou`), 27151, 53003 (`FacesCounter.CountTotalBoostStarAndBoost`). 5 cas : Tough + boost 2 icônes → pioche 2 ; boost pu131 (1 icône + ★) → pioche 2 ; 3 dégâts → aucune pioche ; épuisement ; pas-au-lieu. Le CAPO de la rangée est mis dans la zone du joueur.
+- ⚠ Spider-Man pioche 1 (Spider-Sense) quand le vilain l'attaque : la main compte ce +1.
+- [x] Substitution : la 1re passe était FAUSSE-VERTE (`atk.attacked` n'est pas une liste → exception avalée → aucune pioche, cas « 3 dégâts » vert par accident). Corrigé ; sans limite / sans AuLieu / sans attaque / seuil 4 / seuil 0 / sans étoile : tous rouges.
+Carte terminée : OUI. « You take » = l'identité (allié défenseur = 0 pour vous) : lecture à confirmer en partie réelle.
+
+### pu035 Lower East Side
+- [x] Réf. up039 (`TemporaryGain(effect, would_atk_message, retaliate=+1)` sur `WhenCalculatingAttackDamage`), `GiveKeywordToInPlayWhenApplyThis(..., get_new_value, change_on_event)`. Message ajouté : `Message.AfterPlayerMovedInCity` (envoyé par `Ville.Installer` et `Ville.Deplacer`).
+- [x] 8 cas : riposte du héros, du sbire engagé, du vilain (par attaque) ; témoins Midtown ; arrivée/départ. Substitutions : sans continu, sans lieu, sans message, sans riposte du vilain, vilain partout : tous rouges.
+Carte terminée : OUI.
+
+### pu033 West Village
+- [x] Réf. an002/06007 (+1 hand size, Identity = les deux formes), 39026b (`WhenVillainPhaseStepStart(ForcedInterrupt, 3, ...)`). 7 cas dont l'alter ego, arrivée/départ, phase du vilain (Rhino déplacé dans la zone ; Jigsaw évité car il met un sbire en jeu depuis le dessus du deck).
+- [x] Substitution : sans carte, sans taille, sans lieu, sans message : rouges.
+Carte terminée : OUI.
+
+### pu030 Hell's Kitchen
+- [x] Réf. ip018 (`CheckIfUnitCanThwart` + `SetCannotThwart`), `Search.EncounterCard`, 27150 (`CostFunc.Custom`), sk024. « cannot scheme » des sbires = `WhenUnitWouldScheme` + `SetBeInstead` (rien n'arrive, pas de boost) : décision, la RR ne prévoit que « si on ne peut pas, rien ».
+- ⚠ `CardFinder(...) & CardFinder(...)` plante (`issubclass`) dans `Select.From(finder=...)` : la 2e condition de coût passe par `conditions=[peut_payer]`.
+- [x] 12 cas (toughness sbire/allié/arrivée, allié ne contre pas, sbire ne manigance pas, Action + 2 témoins de coût + pas-au-lieu). Substitutions : 9 variantes, toutes rouges (`peut_payer` demandait un cas dédié : identité déjà Tough).
+Carte terminée : OUI.
+
+### pu006 Never Sleeps
+- Aucun script : les trois puces sont la structure même de la ville (une zone par rangée, vilain par zone, manigances communes), prouvées par les cas `[ville]` (R5, R6, R7) ; pas de capacité propre à scripter. Carte terminée : OUI (à relier au Setup du scénario).
+
+## Bilan (22/10/2026)
+11 cartes de lieu/environnement faites : 55 cas `[big]` verts, 15 `[ville]` verts, `test_cards` : 7103 ok, 0 erreur. Non fait : autoplay ciblé (étape 8, il faut le scénario jouable) et plateau (étape 8 bis, PU-8).

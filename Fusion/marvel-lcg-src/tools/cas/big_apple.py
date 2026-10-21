@@ -6,7 +6,7 @@ FORME_HEROS = "Puzzle.ChangeForm('01001b')"
 RIEN = ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"]
 GRILLE_REELLE = [["pu030", "pu031", "pu032"], ["pu033", "pu034", "pu035"], ["pu036", "pu037", "pu038"]]
 G = repr(GRILLE_REELLE)
-CLES_VILLE = ("case_de", "zone_de", "occupe", "zones", "schemes_vus", "allies_vus", "mechant_vu")
+CLES_VILLE = ("case_de", "zone_de", "occupe", "zones", "schemes_vus", "allies_vus", "mechant_vu", "tenace")
 
 
 def ville(depart=(1, 1), communs=("pu005", "pu006")):
@@ -203,6 +203,45 @@ CAS = [
        "ligne de base",
        [*ville((1, 1)), "Puzzle.MoveCardToGameArea('01094', 3)", "Puzzle.RunVillainPhase()"], {"hors_jeu": ["01110"], "dans_deck_rencontre": ["01110"]},
        mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01110', '01105', '01105', '01105')"], passer_sur_option="Defense"),
+    # ---------------------------------------------------------------- pu030 Hell's Kitchen (rangee 0, colonne 0)
+    _b("pu030 Hell's Kitchen : un sbire engage avec un joueur present gagne toughness",
+       "« minions in Hell's Kitchen ... gain toughness »", ["Puzzle.PutIntoPlay('01130')", *ville((0, 0))], {"tenace": [["01130", True]]}),
+    _b("pu030 Hell's Kitchen, TEMOIN : a Theater District (MEME rangee, pas au lieu) le sbire n'est pas tenace",
+       "R3", ["Puzzle.PutIntoPlay('01130')", *ville((0, 1))], {"tenace": [["01130", False]]}),
+    _b("pu030 Hell's Kitchen : un allie present gagne toughness",
+       "« allies ... gain toughness »", ["Puzzle.PutIntoPlay('01075', under_control=True)", *ville((0, 0))], {"tenace": [["01075", True]]}),
+    _b("pu030 Hell's Kitchen : le joueur ARRIVE puis REPART -> toughness apparait puis disparait",
+       "recalcul au deplacement", ["Puzzle.PutIntoPlay('01130')", *ville((0, 1)), "Puzzle.DeplacerDansLaVille((0, 0))"], {"tenace": [["01130", True]]}),
+    _b("pu030 Hell's Kitchen : l'allie (Black Widow, THW 2) ne peut PAS contrer : la menace reste a 5",
+       "« allies ... cannot thwart »", ["Puzzle.PutIntoPlay('01075', under_control=True)", *ville((0, 0)), "Puzzle.MoveCardToGameArea('01097b', 1)", "Puzzle.SetThreat('01097b', 5)", "Puzzle.Thwart('01075')"], {"menace": [["01097b", 5]]}),
+    _b("pu030 Hell's Kitchen, TEMOIN : a Theater District l'allie contre : 5 - 2 = 3",
+       "ligne de base", ["Puzzle.PutIntoPlay('01075', under_control=True)", *ville((0, 1)), "Puzzle.MoveCardToGameArea('01097b', 1)", "Puzzle.SetThreat('01097b', 5)", "Puzzle.Thwart('01075')"], {"menace": [["01097b", 3]]}),
+    _b("pu030 Hell's Kitchen : un sbire (Whirlwind) ne peut PAS manigancer : la menace reste a 5",
+       "« minions ... cannot scheme »",
+       ["Puzzle.PutIntoPlay('01130')", *ville((0, 0)), "Puzzle.MoveCardToGameArea('01097b', 1)", "Puzzle.SetThreat('01097b', 5)", "Puzzle.Scheme('01130')"],
+       {"menace": [["01097b", 5]]}, alter=True),
+    _b("pu030 Hell's Kitchen, TEMOIN : a Theater District le sbire manigance : la menace monte",
+       "ligne de base",
+       ["Puzzle.PutIntoPlay('01130')", *ville((0, 1)), "Puzzle.MoveCardToGameArea('01097b', 1)", "Puzzle.SetThreat('01097b', 5)", "Puzzle.Scheme('01130')"],
+       {"menace_min": [["01097b", 6]]}, alter=True),
+    _b("pu030 Hell's Kitchen : Action -> l'identite est confuse ET Tough (cout), Hydra Mercenary (01101) est cherche dans le deck et revele (en jeu)",
+       "« Confuse and give a tough status card to your identity -> search the encounter deck for a minion and reveal it »",
+       [*ville((0, 0)), "Puzzle.Action('pu030', 'Action')"], {"en_jeu": ["01101"], "statuts": [["01001a", "Confused"], ["01001a", "Tough"]]},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01120', '01105', '01101', '01105')"]),
+    _b("pu030 Hell's Kitchen, TEMOIN DE COUT : seconde Action (identite deja confuse et Tough) -> refusee, Armored Guard (01120) reste dans le deck",
+       "le cout ne peut plus etre paye", [*ville((0, 0)), "Puzzle.Action('pu030', 'Action')"],
+       {"en_jeu": ["01101"], "dans_deck_rencontre": ["01120"]},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01120', '01105', '01101', '01105')"],
+       declencher_tolerant=["Puzzle.Action('pu030', 'Action')"]),
+    _b("pu030 Hell's Kitchen, TEMOIN DE COUT : identite deja Tough (mais pas confuse) -> l'Action ne peut pas etre payee, rien n'est revele",
+       "« give a tough status card » fait partie du cout : une identite deja Tough ne peut pas payer",
+       [*ville((0, 0)), "Puzzle.Tough('01001a')"], {"dans_deck_rencontre": ["01101"]},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01101', '01105')"],
+       declencher_tolerant=["Puzzle.Action('pu030', 'Action')"]),
+    _b("pu030 Hell's Kitchen, TEMOIN : a Theater District (MEME rangee) l'Action n'est pas offerte",
+       "R3", [*ville((0, 1))], {"dans_deck_rencontre": ["01101"]},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01101', '01105')"],
+       declencher_tolerant=["Puzzle.Action('pu030', 'Action')"]),
 ]
 
 VERIFICATIONS = r'''
@@ -210,8 +249,15 @@ def big_etat(monde, aides):
     """Scinde `attendu` : les cles de la ville vont a `ville_etat` (banc de zones), le reste a `etat_attendu`."""
     cas = aides["cas"]
     attendu = cas.get("attendu") or {}
-    cles_ville = ("case_de", "zone_de", "occupe", "zones", "schemes_vus", "allies_vus", "mechant_vu")
+    cles_ville = ("case_de", "zone_de", "occupe", "zones", "schemes_vus", "allies_vus", "mechant_vu", "tenace")
     soucis = []
+    for card_id, voulu in attendu.get("tenace") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable")
+        elif bool(face.IsToughness()) != voulu:
+            soucis.append(f"{card_id} tenace = {face.IsToughness()} (attendu {voulu})")
+    attendu = {k: v for k, v in attendu.items() if k != "tenace"}
     for fn, garde in ((ville_etat, lambda k: k in cles_ville), (etat_attendu, lambda k: k not in cles_ville)):
         part = {k: v for k, v in attendu.items() if garde(k)}
         if not part:
