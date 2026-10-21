@@ -863,6 +863,15 @@ class RunPuzzle:
         from game.card.face.base import Villain
         Villains.Remove(self.FindFaceInPlay(card).CastTo(Villain), self.debug_rule)
 
+    def CreateLeadsDeck(self, *cards: CardName) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : cree le paquet LEADS (pistes) du banc avec ces cartes (le DESSUS est choisi en
+        n'en donnant qu'une). Proprietaire du paquet : le premier mechant en jeu."""
+        from game.operate.worlds import Worlds
+        from game.deck.deck_type import DeckType
+        villain = Worlds.GetVillains(self.debug_rule)[0]
+        Worlds.ScenarioDeck(self.debug_rule, "LeadsDeck").Create(
+            self.debug_rule, villain, list(cards), type=DeckType.AdditionalDeck, has_discard_pile=False)
+
     def BuildVillainDeck(self, *cards: CardName) -> None:
         """Melange ces mechants dans le deck de mechants (`Villains.BuildVillainDeck`)."""
         from game.operate.villains import Villains

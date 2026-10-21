@@ -773,6 +773,9 @@ class Worlds:
         # paquet IMPOSTOR, 20 cartes double face (allie CAMOUFLAGED / sbire REVEALED),
         # avec sa defausse (insert p.16).
         "ImpostorDeck",
+        # AJOUT (22/10/2026, pack custom Punisher MC×DC 2026, scenario 1 The Big Apple) : le paquet LEADS,
+        # 9 pistes (obligations LEAD) melangees, COMMUN a toute la table ; chaque joueur en revele une.
+        "LeadsDeck",
     ]
 
     SCENARIO_AREA_NAME: TypeAlias = Literal[

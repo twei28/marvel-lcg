@@ -80,5 +80,16 @@ Mots-cles ouverts avant d'ecrire : overkill, ranged (fiches), boost. PV non par 
 - Limite imprimee : NON. Etape 8 (autoplay) : reportee au scenario jouable. Etape 8 bis (plateau) : NON (les CAPO sont des vilains ordinaires ; la rangee / jeton de position : PU-8).
 Carte terminee : OUI (script) pour les 16 faces ; mise en place (3 au hasard, un par rangee) = Gang War.
 
+### pu039 ... pu047 : les 9 PISTES (LEAD, p077-p093) : `[pist]`, 29 cas
+Harnais : `tools/cas/pistes.py` (ville reelle, piste dans l'aire du joueur, paquet LEADS cree par `Puzzle.CreateLeadsDeck`, nouveau). Scripts : `leads_the_big_apple/` (`__init__.py` : `Joueur`, `EnLieu`, `CreerPaquetPistes`, `RevelerPiste`, `PisteTerminee`, `CompteurPuisFin`).
+Engine : paquet `LeadsDeck` ajoute a `Worlds.ASIDE_DECK_NAME` (modele PlanetDeck) ; compteurs `bouncer culture curse rent stock takeout dojo hustle quell` ajoutes a `CardFace.COUNTER`.
+- [x] Etape 2 : refs. vz035 (`Ability(Response, Message.AfterUnitHealHealth ...)`), skrull_empire `CreerPaquetPlanete/RevelerPlanete` (deck commun), fne typhoid_mary (jetons `damage`, `SetBeInstead`), tuck.md (`TuckCardUnderHere`), fabriques `AfterUnitDefeatedScheme/AfterPlayerRevealCard/AfterPlayerPlayedCard/AfterUnitDefendAgainstAttack/AfterUnitDefeatedUnit`.
+- [x] Etape 5 : mots-pieges. « While in X » lu AU DECLENCHEMENT (`EnLieu`) ; « you » = le joueur dans l'aire duquel est la piste ; seuils 3/3/—/4/3/8/3/3/2 (pu042 : 4, pu047 : 2, pu044 : 8 degats) ; « Then, if there are N or more » apres le compteur ; fin commune = victoire + piste du dessus + 1 carte ; pu044 « instead » = le vilain ne subit rien.
+- ⚠ DECISIONS SANS TEXTE DE RR (a confirmer en partie reelle) : pu039 « a minion or ally you control » = tout sbire defait dans son territoire OU un allie que je controle ; « you defend / you thwart » = l'IDENTITE (pas un allie) ; « you defeat » (pu047/pu041) = la fabrique « You ».
+- [x] Etape 6 : nombres relus (texte ↔ code). Etape 7 : substitution (module vide) : pu039 4 rouges, pu040 2, pu041 1, pu042 3, pu043 2, pu044 2, pu045 2, pu046 2, pu047 2 ; le temoin « pas au lieu » reste vert (absence d'effet).
+- ⚠ Pieges : `GetControlByOrOwner()` d'une obligation rend le VILAIN : le joueur = `Obligation.GetGaveToPlayer()` ; `AbilityFactory.AfterUnitThwartScheme(..., "You")` ne lit PAS « You » (chaine passee a `CheckWhichCard`) : `Ability` a la main ; `AfterUnitDefendAgainstAttack("You")` = identite seulement ; `Puzzle.Attack('<ennemi>')` fait attaquer l'ennemi : pour que le HEROS attaque, `Puzzle.Attack('01001a')` + `cibles=[...]` ; `Puzzle.PlaceCounters` sur la piste avant qu'elle soit en jeu : mal ordonne (le harnais range ces lignes APRES la piste).
+- Limite imprimee : NON. Etape 8 : au scenario jouable. Etape 8 bis : la piste glisse une carte (pu043) et pose des compteurs : a montrer en PU-8 (interface).
+Carte terminee : OUI (script) pour les 9 ; Uptown (3 pistes) a faire avec l'extension.
+
 ## Bilan (22/10/2026)
 11 cartes de lieu/environnement faites : 55 cas `[big]` verts, 15 `[ville]` verts, `test_cards` : 7103 ok, 0 erreur. Non fait : autoplay ciblé (étape 8, il faut le scénario jouable) et plateau (étape 8 bis, PU-8).

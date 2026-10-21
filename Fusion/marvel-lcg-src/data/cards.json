@@ -122986,6 +122986,109 @@
    "custom": "MC×DC 2026"
   },
   {
+   "card_id": "pu001a",
+   "type": "MainScheme",
+   "name": "Gang War",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>Contents</b>: 3 CAPO villains, side A (B for expert). The Big Apple, 9 location & 9 LEAD cards, and Standard sets. Two modular sets. <i>(Optional: Uptown Expansion.)</i>\n<b>Setup</b>: Place the 9 locations in numerical order in a 3x3 grid. Place one chosen CAPO villain next to each row. Create the 9-card LEADS deck. Reveal The City and Never Sleeps environments. Each player reveals a card from the LEADS deck.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu001b",
+   "type": "MainScheme",
+   "name": "Gang War",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "9*",
+    "EscalationThreat": "1*",
+    "Stage": "1B"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>Forced Interrupt</b>: When a villain would be defeated, instead reset their hit points and remove 5 threat from here.\n<b>Forced Response</b>: After a LEAD card is added to the victory display, if there are 2👤 LEAD cards there, advance to stage 2A <i>(the players win by advancing)</i>.\nIf this scheme is completed, the players lose the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu002a",
+   "type": "MainScheme",
+   "name": "Silence the City",
+   "subtitle": "You've gathered the information you need. Before you move against the culprit behind the arms deal, you've got to quell the raging gang war. It's time to clean up this town!",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed</b>: Deal each player an encounter card.\n<i>(In campaign mode, record the location where the final LEAD card was added to the victory display.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu002b",
+   "type": "MainScheme",
+   "name": "Silence the City",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "TargetThreat": "8*",
+    "EscalationThreat": "1*",
+    "Stage": "2B"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>Forced Interrupt</b>: When a villain would be defeated, instead reset their hit points and place 1 quell counter on them.\n<b>Forced Response</b>: After the end of the player phase, if each villain has at least 1 quell counter, advance to stage 3A <i>(the players win by advancing)</i>.\nIf this scheme is completed, the players lose the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu003a",
+   "type": "MainScheme",
+   "name": "Gunrunner's Warehouse",
+   "subtitle": "You've followed the leads to a warehouse, only... you're too late! The arms buyer is already gone, but you can still catch the gunrunner!",
+   "desc": {
+    "Stage": "3A"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed</b>: In player order, deal any cards attached to locations as facedown encounter cards. Set all locations aside. Reveal a random CAPO villain from the set-aside area, reveal Gunrunner, and attach it to them. Set all other CAPOS aside.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu003b",
+   "type": "MainScheme",
+   "name": "Gunrunner's Warehouse",
+   "subtitle": "If you can take down the gunrunner before they destroy the evidence, you can search the warehouse and find out who else they were selling to.",
+   "desc": {
+    "StartingThreat": "0",
+    "TargetThreat": "9*",
+    "EscalationThreat": "1*",
+    "Stage": "3B"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "The villain with Gunrunner attached is the active villain and each player is considered to be in their turf.\nIf this scheme is completed, the players lose the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu004",
+   "type": "Attachment",
+   "name": "Gunrunner",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1",
+    "ATK+": "1",
+    "Linked": "Gunrunner's Warehouse",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "Linked (Gunrunner's Warehouse). Permanent.\nAttached villain gains steady and gets +7👤 hit points.\n<b>When Revealed</b>: Give the villain a tough status card.\nWhen attached villain is defeated, the players win the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
    "card_id": "pu005",
    "type": "Environment",
    "name": "The City",
@@ -123429,7 +123532,124 @@
    "set_name": "CAPOS",
    "text": "<b>Forced Response</b>: After Diamondback takes at least 3 damage from an attack, give him a facedown boost card.",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu039",
+   "type": "Obligation",
+   "name": "Bar Fight at Josie's (1)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in Hell's Kitchen, after a minion or ally you control is defeated, place 1 bouncer counter here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu040",
+   "type": "Obligation",
+   "name": "Art Heals the Soul (2)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in The Theater District, after you heal a friendly character, place 1 culture counter here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu041",
+   "type": "Obligation",
+   "name": "A Walk in the Park (3)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in Upper East Side, after you defeat a side scheme, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu042",
+   "type": "Obligation",
+   "name": "Village of the Damned (4)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in West Village, after you reveal an encounter card, place 1 curse counter here.\nThen, if there are 4 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu043",
+   "type": "Obligation",
+   "name": "Midtown Memories (5)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in Midtown, after you thwart a scheme, look at the top two cards of the encounter deck. Tuck one of them here.\nThen, if there are 3 or more cards tucked here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu044",
+   "type": "Obligation",
+   "name": "Kings of Yancy Street (6)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Interrupt</b>: While in Lower East Side, when you attack the villain, place that attack's damage here instead.\nThen, if there is 8 or more damage here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu045",
+   "type": "Obligation",
+   "name": "\"Where's My Rent!?\" (7)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in Soho, after you play an event, place 1 rent counter here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu046",
+   "type": "Obligation",
+   "name": "Play the Market (8)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in the Financial District, after you defend an attack, place 1 stock counter here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu047",
+   "type": "Obligation",
+   "name": "Forget It... It's Chinatown (9)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Leads - The Big Apple",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in Chinatown, after you defeat a minion, place 1 takeout counter here.\nThen if there are 2 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
   }
  ],
- "checksum": "f2823f938030e1d849ff5ba91184b59589965de8245749bb064aa7be1aa64cda"
+ "checksum": "5dcd599edc56c864b131775c909002e2533f1d0668c7c603490565420a1ea40e"
 }

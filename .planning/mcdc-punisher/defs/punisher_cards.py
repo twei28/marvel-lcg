@@ -475,6 +475,38 @@ PU_LOC = "Locations - The Big Apple"
 LOC_LIMIT = " <i>(Limit once per round.)</i>"
 
 BIGAPPLE_CARDS = [
+    # --- Les trois complots principaux (p001-p006, ID 6001-6003) et l'attachement Gunrunner (p007, ID 6004).
+    c("pu001a", "MainScheme", "Gang War", {"Stage": "1A"}, [],
+      "<b>Contents</b>: 3 CAPO villains, side A (B for expert). The Big Apple, 9 location & 9 LEAD cards, and Standard sets. Two modular "
+      "sets. <i>(Optional: Uptown Expansion.)</i>\n<b>Setup</b>: Place the 9 locations in numerical order in a 3x3 grid. Place one chosen "
+      "CAPO villain next to each row. Create the 9-card LEADS deck. Reveal The City and Never Sleeps environments. Each player reveals "
+      "a card from the LEADS deck.", PU_BIG, page="p001"),
+    c("pu001b", "MainScheme", "Gang War", {"StartingThreat": "1\U0001F464", "TargetThreat": "9\U0001F464", "EscalationThreat": "1\U0001F464", "Stage": "1B"}, [],
+      "<b>Forced Interrupt</b>: When a villain would be defeated, instead reset their hit points and remove 5 threat from here.\n"
+      "<b>Forced Response</b>: After a LEAD card is added to the victory display, if there are 2\U0001F464 LEAD cards there, advance to "
+      "stage 2A <i>(the players win by advancing)</i>.\nIf this scheme is completed, the players lose the game.", PU_BIG, page="p002"),
+    c("pu002a", "MainScheme", "Silence the City", {"Stage": "2A"}, [],
+      "<b>When Revealed</b>: Deal each player an encounter card.\n<i>(In campaign mode, record the location where the final LEAD card "
+      "was added to the victory display.)</i>", PU_BIG, page="p003",
+      subtitle="You've gathered the information you need. Before you move against the culprit behind the arms deal, you've got to quell "
+               "the raging gang war. It's time to clean up this town!"),
+    c("pu002b", "MainScheme", "Silence the City", {"StartingThreat": "2\U0001F464", "TargetThreat": "8\U0001F464", "EscalationThreat": "1\U0001F464", "Stage": "2B"}, [],
+      "<b>Forced Interrupt</b>: When a villain would be defeated, instead reset their hit points and place 1 quell counter on them.\n"
+      "<b>Forced Response</b>: After the end of the player phase, if each villain has at least 1 quell counter, advance to stage 3A "
+      "<i>(the players win by advancing)</i>.\nIf this scheme is completed, the players lose the game.", PU_BIG, page="p004"),
+    c("pu003a", "MainScheme", "Gunrunner's Warehouse", {"Stage": "3A"}, [],
+      "<b>When Revealed</b>: In player order, deal any cards attached to locations as facedown encounter cards. Set all locations aside. "
+      "Reveal a random CAPO villain from the set-aside area, reveal Gunrunner, and attach it to them. Set all other CAPOS aside.",
+      PU_BIG, page="p005",
+      subtitle="You've followed the leads to a warehouse, only... you're too late! The arms buyer is already gone, but you can still catch the gunrunner!"),
+    c("pu003b", "MainScheme", "Gunrunner's Warehouse", {"StartingThreat": "0", "TargetThreat": "9\U0001F464", "EscalationThreat": "1\U0001F464", "Stage": "3B"}, [],
+      "The villain with Gunrunner attached is the active villain and each player is considered to be in their turf.\n"
+      "If this scheme is completed, the players lose the game.", PU_BIG, page="p006",
+      subtitle="If you can take down the gunrunner before they destroy the evidence, you can search the warehouse and find out who else they were selling to."),
+    c("pu004", "Attachment", "Gunrunner", {"SCH+": "1", "ATK+": "1", "Linked": "Gunrunner's Warehouse", "Permanent": "1"}, [],
+      "Linked (Gunrunner's Warehouse). Permanent.\nAttached villain gains steady and gets +7\U0001F464 hit points.\n"
+      "<b>When Revealed</b>: Give the villain a tough status card.\nWhen attached villain is defeated, the players win the game.",
+      PU_BIG, page="p007"),
     c("pu005", "Environment", "The City", {"Setup": "1", "Permanent": "1"}, [],
       "Setup. Permanent.\n\u2022 Players mark their location in the city with a token, starting in Midtown.\n\u2022 Players can only interact with "
       "locations (abilities & cards attached) they occupy.\n<b>Action</b>: Exhaust a character you control or spend 1 resource of any type "
@@ -484,6 +516,38 @@ BIGAPPLE_CARDS = [
       "their turf.\n\u2022 Players can only interact with villains or other players (including their play areas) if they are in the same "
       "turf.\n\u2022 Players can interact with all schemes.", PU_BIG, page="p011"),
 ]
+
+# Les 9 pistes (LEADS, p077-p093, ID 6039-6047) : obligations a trait LEAD, une par lieu, melangees dans le paquet LEADS (mis de cote).
+PU_LEADS = "Leads - The Big Apple"
+LEAD_FIN = ("Then, if there {est} {n} or more {quoi} here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.")
+
+
+def lead(num, nom, texte, page, n_lieu):
+    return c("pu0%d" % num, "Obligation", nom, {}, ["LEAD"], "<i>Lead.</i>\n" + texte, PU_LEADS, page=page)
+
+
+LEAD_CARDS = [
+    lead(39, "Bar Fight at Josie's (1)", "<b>Response</b>: While in Hell's Kitchen, after a minion or ally you control is defeated, place 1 bouncer counter "
+         "here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.", "p077", 1),
+    lead(40, "Art Heals the Soul (2)", "<b>Response</b>: While in The Theater District, after you heal a friendly character, place 1 culture counter "
+         "here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.", "p079", 2),
+    lead(41, "A Walk in the Park (3)", "<b>Response</b>: While in Upper East Side, after you defeat a side scheme, add this card to the victory "
+         "display, reveal the top LEAD card, and draw 1 card.", "p081", 3),
+    lead(42, "Village of the Damned (4)", "<b>Response</b>: While in West Village, after you reveal an encounter card, place 1 curse counter "
+         "here.\nThen, if there are 4 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.", "p083", 4),
+    lead(43, "Midtown Memories (5)", "<b>Response</b>: While in Midtown, after you thwart a scheme, look at the top two cards of the encounter deck. "
+         "Tuck one of them here.\nThen, if there are 3 or more cards tucked here, add this card to the victory display, reveal the top LEAD card, "
+         "and draw 1 card.", "p085", 5),
+    lead(44, "Kings of Yancy Street (6)", "<b>Interrupt</b>: While in Lower East Side, when you attack the villain, place that attack's damage here "
+         "instead.\nThen, if there is 8 or more damage here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.", "p087", 6),
+    lead(45, "\"Where's My Rent!?\" (7)", "<b>Response</b>: While in Soho, after you play an event, place 1 rent counter here.\nThen, if there are 3 or "
+         "more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.", "p089", 7),
+    lead(46, "Play the Market (8)", "<b>Response</b>: While in the Financial District, after you defend an attack, place 1 stock counter here.\n"
+         "Then, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.", "p091", 8),
+    lead(47, "Forget It... It's Chinatown (9)", "<b>Response</b>: While in Chinatown, after you defeat a minion, place 1 takeout counter here.\n"
+         "Then if there are 2 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.", "p093", 9),
+]
+LEADS_SET_ASIDE = ["pu039", "pu040", "pu041", "pu042", "pu043", "pu044", "pu045", "pu046", "pu047"]
 
 # Jeu de rencontre du scenario 1 : PARTIEL (environnements seulement), complete au fil de PU-7.
 BIGAPPLE_ENCOUNTERS = []
@@ -570,5 +634,5 @@ CAPO_SET_ASIDE = ["pu048a", "pu049a", "pu050a", "pu051a", "pu052a", "pu053a", "p
 # Recapitulatif : 13 + 14 + 5 + 7 + 1 = 40 card_id distincts, pour 15 + 15 + 5 + 7 + 1 = 43 cartes
 # physiques (releve "contenu simple" du cadrage section 1.2 : "aucune brique neuve au-dela de M6-M9").
 # ======================================================================================================
-ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS + CAPO_CARDS
+ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS + CAPO_CARDS + LEAD_CARDS
 assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id en double dans ce fichier"

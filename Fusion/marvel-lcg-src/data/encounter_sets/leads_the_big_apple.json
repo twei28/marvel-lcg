@@ -1,0 +1,15 @@
+{
+    "version": "0.5.8",
+    "name": "Leads - The Big Apple",
+    "encounters": [
+        "pu039",
+        "pu040",
+        "pu041",
+        "pu042",
+        "pu043",
+        "pu044",
+        "pu045",
+        "pu046",
+        "pu047"
+    ]
+}
