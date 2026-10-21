@@ -10,7 +10,7 @@ PACK = 'punisher_mcdc_2026'
 spec = importlib.util.spec_from_file_location('defs', os.path.join(RACINE, '.planning/mcdc-punisher/defs/punisher_cards.py'))
 defs = importlib.util.module_from_spec(spec); spec.loader.exec_module(defs)
 
-ROT_HORAIRE = ('pu001a', 'pu002a', 'pu003a', 'pu065', 'pu114', 'pu131', 'pu113', 'pu119', 'pu088a', 'pu089a', 'pu099')   # scan couche, texte montant
+ROT_HORAIRE = ('pu021', 'pu022', 'pu001a', 'pu002a', 'pu003a', 'pu065', 'pu114', 'pu131', 'pu113', 'pu119', 'pu088a', 'pu089a', 'pu099')   # scan couche, texte montant
 ROT_ANTIHORAIRE = ('pu088b', 'pu089b', 'pu001b', 'pu002b', 'pu003b')                                                   # scan couche, texte descendant
 PAGE = {'pu071a': 141, 'pu071b': 142, 'pu072a': 143, 'pu072b': 144, 'pu073': 145, 'pu074': 147, 'pu075': 149,
         'pu076': 151, 'pu077': 153, 'pu078': 155, 'pu079': 157, 'pu080': 159, 'pu082': 163, 'pu084': 167,
@@ -23,6 +23,7 @@ PAGE = {'pu071a': 141, 'pu071b': 142, 'pu072a': 143, 'pu072b': 144, 'pu073': 145
         'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277,
         'pu048a': 95, 'pu048b': 96, 'pu049a': 97, 'pu049b': 98, 'pu050a': 99, 'pu050b': 100, 'pu051a': 101, 'pu051b': 102, 'pu052a': 103, 'pu052b': 104, 'pu053a': 105, 'pu053b': 106, 'pu054a': 107, 'pu054b': 108, 'pu055a': 109, 'pu055b': 110,
         'pu001a': 1, 'pu001b': 2, 'pu002a': 3, 'pu002b': 4, 'pu003a': 5, 'pu003b': 6, 'pu004': 7, 'pu039': 77, 'pu040': 79, 'pu041': 81, 'pu042': 83, 'pu043': 85, 'pu044': 87, 'pu045': 89, 'pu046': 91, 'pu047': 93,
+        'pu007': 13, 'pu008': 15, 'pu009': 17, 'pu010': 19, 'pu011': 21, 'pu012': 23, 'pu013': 25, 'pu014': 27, 'pu015': 29, 'pu016': 31, 'pu017': 33, 'pu018': 35, 'pu020': 39, 'pu021': 41, 'pu022': 43,
         'pu005': 9, 'pu006': 11, 'pu030': 59, 'pu031': 61, 'pu032': 63, 'pu033': 65, 'pu034': 67, 'pu035': 69, 'pu036': 71, 'pu037': 73, 'pu038': 75,
         'pu056a': 111, 'pu056b': 112, 'pu057a': 113, 'pu057b': 114, 'pu058': 115, 'pu059': 117, 'pu060': 119,
         'pu063': 125, 'pu064': 127, 'pu065': 129, 'pu066': 131, 'pu068': 135, 'pu070': 139}
@@ -38,7 +39,7 @@ def stat(v):
 
 cartes = []
 CORRECTIONS = {'pu131': {'Amplify': '2'}, 'pu113': {'Hazard': '1'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
-for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS:
+for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS:
     d = {k: stat(v) for k, v in x['desc'].items()}
     if x['card_id'] in STAGE: d['Stage'] = STAGE[x['card_id']]
     d.update(CORRECTIONS.get(x['card_id'], {}))
@@ -107,6 +108,19 @@ for suffixe, fif_std, fif_exp, ens in (('jigsaw', 'pu056a', 'pu056b', 'jigsaw'),
              'modular_sets': ['punishers_armory']}
         ecrire('data/scenarios/one_last_kill_%s%s.json' % (suffixe, '_expert' if expert else ''), s)
         if not expert: noms.append('one_last_kill_%s' % suffixe)
+
+# --- Scenario 1 « The Big Apple » : villain [] (les 3 CAPO sont tires par Gang War, comme Earthfall pour Earth Under Siege), trois complots,
+# les 9 lieux, les 9 pistes, les CAPO (face A en standard, B en expert), The City / Never Sleeps mis de cote ; Gunrunner est LIE a 3A/3B.
+for expert in (False, True):
+    s = {'version': '0.5.8', 'name': 'The Big Apple', 'villain': [], 'expert': expert,
+         'schemes': ['pu001a,pu001b', 'pu002a,pu002b', 'pu003a,pu003b'],
+         'set_aside': ['pu005', 'pu006'] + list(defs.LOCATIONS_SET_ASIDE) + list(defs.LEADS_SET_ASIDE)
+                      + [c[:-1] + ('b' if expert else 'a') for c in defs.CAPO_SET_ASIDE],
+         'encounters': list(defs.BIGAPPLE_ENCOUNTERS),
+         'encounter_sets': ['standard'] + (['expert'] if expert else []),
+         'modular_sets': ['cops', 'tracksuit_mafia']}
+    ecrire('data/scenarios/the_big_apple%s.json' % ('_expert' if expert else ''), s)
+noms.append('the_big_apple')
 
 p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))

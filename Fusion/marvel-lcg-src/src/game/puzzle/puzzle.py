@@ -863,6 +863,25 @@ class RunPuzzle:
         from game.card.face.base import Villain
         Villains.Remove(self.FindFaceInPlay(card).CastTo(Villain), self.debug_rule)
 
+    def PlaceCountersOnVillains(self, name: str, val: int, skip: int=0) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : pose des compteurs sur TOUS les vilains en jeu (sauf les `skip` premiers). Les CAPO d'une
+        vraie mise en place sont tires au hasard : on ne peut pas les nommer."""
+        from game.operate.worlds import Worlds
+        for villain in list(Worlds.GetAllVillains(self.world))[skip:]:
+            villain.PlaceCountersInternal(val, name, self.debug_rule)
+
+    def DamageAllVillains(self, val: int) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : inflige `val` degats a chaque vilain en jeu (ceux d'une vraie mise en place sont tires au hasard)."""
+        from game.operate.worlds import Worlds
+        for villain in list(Worlds.GetAllVillains(self.world)):
+            self.Damage(villain, val)
+
+    def AddToVictoryDisplay(self, *cards: CardName) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : ces cartes vont dans la pile de victoire (Gang War : « after a LEAD card is added to
+        the victory display »). Envoie le message de deplacement habituel."""
+        from game.operate.faces import Faces
+        Faces.AddToVictoryDisplay([self.FindOrCreateFace(c) for c in cards], self.debug_rule)
+
     def CreateLeadsDeck(self, *cards: CardName) -> None:
         """AJOUT (22/10/2026, Punisher MC×DC 2026) : cree le paquet LEADS (pistes) du banc avec ces cartes (le DESSUS est choisi en
         n'en donnant qu'une). Proprietaire du paquet : le premier mechant en jeu."""

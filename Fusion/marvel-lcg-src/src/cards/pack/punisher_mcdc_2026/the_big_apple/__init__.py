@@ -1,3 +1,81 @@
 from ..commun import *
+from ..leads_the_big_apple import CreerPaquetPistes, RevelerPiste, PistesEnVictoire
 
-# Set The Big Apple (pack MC×DC 2026) : scenario 1, la ville. Les environnements The City et Never Sleeps.
+# Set The Big Apple (pack MC×DC 2026) : scenario 1, la ville. Environnements The City / Never Sleeps, complots Gang War / Silence the City /
+# Gunrunner's Warehouse, attachement Gunrunner, sbires et cartes de rencontre.
+#
+# Vocabulaire : « le CAPO d'une rangee » = le vilain de la zone de jeu de cette rangee ; les zones : indice 0 = zone de depart, puis la zone
+# COMMUNE (manigances, environnements de la ville), puis une zone par rangee (`Ville.Installer`).
+
+GRILLE_DES_LIEUX = [["pu030", "pu031", "pu032"], ["pu033", "pu034", "pu035"], ["pu036", "pu037", "pu038"]]
+CASE_DE_DEPART = (1, 1)   # Midtown
+
+
+def TousLesJoueurs(effect: 'Effect') -> 'List[Player]':
+    """TOUS les joueurs, quelle que soit leur zone (`Worlds.GetPlayers` filtre par la zone de la carte qui resout : un complot de la zone commune
+    n'y voit AUCUN joueur)."""
+    return [j for j in effect.world.const_players if j.area_hero.GetSize() > 0]
+
+
+def MisDeCote(effect: 'Effect', card_id: str) -> 'CardFace|None':
+    """La carte `card_id` dans la zone de mise de cote du scenario."""
+    for face in Worlds.GetSetAsideAreaCards(effect):
+        if face.paper.card_id == card_id:
+            return face
+    return None
+
+
+def CapoDe(effect: 'Effect', zone: 'GameArea') -> 'Villain|None':
+    for v in Worlds.GetVillains(effect):
+        if v.card.game_area is zone and v.HasTrait("CAPO"):
+            return v
+    return None
+
+
+def MettreEnPlaceLaVille(effect: 'Effect', rangees: int=3) -> 'List[Villain]':
+    """Gang War 1A, Setup : « Place the 9 locations in numerical order in a 3x3 grid. Place one chosen CAPO villain next to each row. Create
+    the 9-card LEADS deck. Reveal The City and Never Sleeps environments. Each player reveals a card from the LEADS deck. »
+    Rend les CAPO en jeu, de la rangee 0 a la derniere."""
+    world = effect.world
+    this = effect.this
+    premier = Worlds.GetFirstPlayer(effect)
+
+    commune = world.CreateCommonGameArea()
+    zones = {ligne: world.CreateGameArea() for ligne in range(rangees)}
+
+    cases = {}
+    for ligne, rangee in enumerate(GRILLE_DES_LIEUX[:rangees]):
+        for colonne, card_id in enumerate(rangee):
+            lieu = MisDeCote(effect, card_id)
+            if lieu is None:
+                continue
+            lieu.PutIntoPlay(premier, effect)
+            zones[ligne].AddCard(lieu.card)
+            cases[(ligne, colonne)] = lieu
+
+    for card_id in ("pu005", "pu006"):
+        environnement = MisDeCote(effect, card_id)
+        if environnement is not None:
+            environnement.PutIntoPlay(premier, effect)
+            commune.AddCard(environnement.card)
+    commune.AddCard(this.card)
+
+    # « Place one chosen CAPO villain next to each row » : trois tires au hasard parmi ceux mis de cote (face A en standard, B en expert :
+    # le scenario ne met de cote que la bonne face). Les autres restent dans le deck de mechants : « Reveal a random CAPO villain from the
+    # set-aside area » (3A) en tire un.
+    candidats = [f.CastTo(Villain) for f in Worlds.GetSetAsideAreaCards(effect, CardFinder(card_type=Villain)) if f.HasTrait("CAPO")]
+    Villains.BuildVillainDeck(candidats, effect)
+    capos: List['Villain'] = []
+    for ligne in range(rangees):
+        capo = Villains.RevealNextVillain(premier, effect)
+        if capo is not None:
+            zones[ligne].AddCard(capo.card)
+            capos.append(capo)
+    Villains.SetRule(effect, Villains.Rule(the_villain="Leftmost", player_cards="TheVillain"))
+
+    if capos:
+        CreerPaquetPistes(effect, capos[0])
+    Ville.Installer(world, cases, zones, CASE_DE_DEPART)
+    for joueur in TousLesJoueurs(effect):
+        RevelerPiste(effect, joueur)
+    return capos

@@ -1,0 +1,49 @@
+{
+    "version": "0.5.8",
+    "name": "The Big Apple",
+    "villain": [],
+    "expert": false,
+    "schemes": [
+        "pu001a,pu001b",
+        "pu002a,pu002b",
+        "pu003a,pu003b"
+    ],
+    "set_aside": [
+        "pu005",
+        "pu006",
+        "pu030",
+        "pu031",
+        "pu032",
+        "pu033",
+        "pu034",
+        "pu035",
+        "pu036",
+        "pu037",
+        "pu038",
+        "pu039",
+        "pu040",
+        "pu041",
+        "pu042",
+        "pu043",
+        "pu044",
+        "pu045",
+        "pu046",
+        "pu047",
+        "pu048a",
+        "pu049a",
+        "pu050a",
+        "pu051a",
+        "pu052a",
+        "pu053a",
+        "pu054a",
+        "pu055a"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "standard"
+    ],
+    "modular_sets": [
+        "cops",
+        "tracksuit_mafia"
+    ]
+}

@@ -123649,7 +123649,246 @@
    "set_name": "Leads - The Big Apple",
    "text": "<i>Lead.</i>\n<b>Response</b>: While in Chinatown, after you defeat a minion, place 1 takeout counter here.\nThen if there are 2 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu007",
+   "type": "Attachment",
+   "name": "Burning Building",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed</b>: Attach to an unoccupied location and place 1 acceleration token here. Otherwise, surge.\n<b>Forced Response</b>: After the player phase ends, place 1 acceleration token here.\n<b>Hero Action</b>: Exhaust your identity and discard cards from your deck equal to the number of acceleration tokens here → discard this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu008",
+   "type": "Attachment",
+   "name": "Citizens in Danger!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed</b>: Exhaust your identity. Attach this card to your current location; if you cannot, surge.\n<b>Forced Interrupt</b>: When a player leaves this location, deal them a facedown encounter card and discard this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu009",
+   "type": "Attachment",
+   "name": "Hunted by the Past",
+   "subtitle": "\"There are no good men. Only good prey.\"",
+   "desc": {
+    "SCH+": "1",
+    "ATK+": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "Attached minion gets +3 hit points.\n<b>When Revealed</b>: Find your nemesis minion, reveal it, and attach this card to it.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu010",
+   "type": "Attachment",
+   "name": "\"It's a Trap!\"",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed</b>: Attach to your current location; if you cannot, surge.\n<b>Forced Interrupt</b>: When a player enters or leaves this location, they find a minion not in play and reveal it. Each minion engaged with that player activates. Then, discard this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu011",
+   "type": "Minion",
+   "name": "* Bellona",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1**",
+    "HP": "5",
+    "Boost": "3",
+    "Toughness": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "CLONE",
+    "CRIMINAL",
+    "MUTANT"
+   ],
+   "set_name": "The Big Apple",
+   "text": "Toughness. Villainous.\n[star] Bellona's attacks gain piercing.\n<b>When Defeated</b>: Shuffle Bellona into the encounter deck. The defeating player may take 2 damage to discard her instead.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu012",
+   "type": "Minion",
+   "name": "* Black Tarantula",
+   "subtitle": "\"You've uncovered many important details, but you lack one crucial fact!\"",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "4",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "The Big Apple",
+   "text": "If the total number of LEAD cards in the victory display is at least:\n• 1👤 — This minion gains quickstrike.\n• 2👤 — This minion gains +3 hit points.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu013",
+   "type": "Minion",
+   "name": "* Overdrive",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "2",
+    "HP": "3",
+    "Boost": "1",
+    "Quickstrike": "1",
+    "Amplify": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "VEHICLE"
+   ],
+   "set_name": "The Big Apple",
+   "text": "Quickstrike.\n<b>Forced Response</b>: After the round ends, attach Overdrive to an unoccupied location, if able. <i>(He remains in play.)</i>\n<b>Forced Interrupt</b>: When a player enters Overdrive's location, he engages them.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu014",
+   "type": "Minion",
+   "name": "* Muse",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1**",
+    "ATK": "2**",
+    "HP": "4",
+    "Boost": "0**",
+    "Acceleration": "2"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "The Big Apple",
+   "text": "[star] <b>Forced Response</b>: After Muse activates, attach him to an unoccupied location, if able. <i>(He remains in play.)</i>\n<b>Forced Interrupt</b>: When a player enters Muse's location, he engages them.\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu015",
+   "type": "Minion",
+   "name": "* Screwball",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "3",
+    "Boost": "1",
+    "Hazard": "1"
+   },
+   "traits": [
+    "CONTENT CREATOR",
+    "CRIMINAL"
+   ],
+   "set_name": "The Big Apple",
+   "text": "<b>Forced Interrupt</b>: When Screwball would be defeated with excess damage, reset her hit points instead. Attach her to an unoccupied location, if able. <i>(She remains in play.)</i>\n<b>Forced Interrupt</b>: When a player enters Screwball's location, she engages them.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu016",
+   "type": "Obligation",
+   "name": "Busted!",
+   "subtitle": "\"Hey, did you do your 'I-don't-break' speech yet?\"",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "The Big Apple",
+   "text": "You cannot attack the villain or trigger abilities on LEAD cards.\n<b>Alter-Ego Action</b>: Exhaust your identity and discard a card from your hand → discard this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu017",
+   "type": "Treachery",
+   "name": "Conflicting Evidence",
+   "subtitle": "\"Thanks to your interference, I'll simply resort to... brute force!\"",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed (Alter-Ego)</b>: The villain attacks you. Do not give them a boost card for this attack.\n<b>When Revealed (Hero)</b>: The villain schemes. Do not give them a boost card for this scheme.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu018",
+   "type": "Treachery",
+   "name": "Red Herring",
+   "subtitle": "\"Yadda yadda yadda... This isn't the right place.\"",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "In expert mode, this card gains incite 1.\n<b>When Revealed</b>: Move to a location not mentioned on the LEAD card in your play area, if able. Choose to either stun or confuse your identity.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu020",
+   "type": "Treachery",
+   "name": "Shootout",
+   "subtitle": "\"Multiple shooters! Get down!\" — Cole North",
+   "desc": {
+    "Boost": "1**"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed</b>: Deal 1 damage to the villain and each character in this turf. In expert mode, exhaust a character you control.\n[star] <b>Boost</b>: Deal 1 damage to each character you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu021",
+   "type": "SideScheme",
+   "name": "Bank Robbery",
+   "subtitle": "\"Everybody be cool! This is a robbery!\"",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "<b>When Revealed</b>: Each player tucks a random card from their hand under this scheme.\n<b>When Defeated</b>: Return each card tucked here to its owner's hand.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu022",
+   "type": "SideScheme",
+   "name": "Like and Subscribe!",
+   "subtitle": "\"Chat, I think we're cooked!\"",
+   "desc": {
+    "StartingThreat": "2",
+    "Boost": "0**",
+    "Hinder": "2*"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "Hinder 2👤. Allies enter play exhausted.\n<b>When Revealed</b>: Find and reveal Screwball. Attach her to an unoccupied location, if able.\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "MC×DC 2026"
   }
  ],
- "checksum": "5dcd599edc56c864b131775c909002e2533f1d0668c7c603490565420a1ea40e"
+ "checksum": "2b9a006a9dd31d56532431504c2d8f296f5597df0b96d7281ec25559f1adb8aa"
 }

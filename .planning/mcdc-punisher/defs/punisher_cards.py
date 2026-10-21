@@ -550,7 +550,66 @@ LEAD_CARDS = [
 LEADS_SET_ASIDE = ["pu039", "pu040", "pu041", "pu042", "pu043", "pu044", "pu045", "pu046", "pu047"]
 
 # Jeu de rencontre du scenario 1 : PARTIEL (environnements seulement), complete au fil de PU-7.
-BIGAPPLE_ENCOUNTERS = []
+BIGAPPLE_ENCOUNTERS = []   # rempli plus bas (BIGAPPLE_ENCOUNTER_IDS) une fois les cartes ecrites
+
+# Cartes de rencontre du scenario 1 (ID 6007-6022, p013-p043), relevees sur cartes.md (relu en 300 dpi le 19/10/2026).
+BIGAPPLE_ENCOUNTER_CARDS = [
+    c("pu007", "Attachment", "Burning Building", {"Boost": "1"}, [],
+      "<b>When Revealed</b>: Attach to an unoccupied location and place 1 acceleration token here. Otherwise, surge.\n<b>Forced Response</b>: After "
+      "the player phase ends, place 1 acceleration token here.\n<b>Hero Action</b>: Exhaust your identity and discard cards from your deck equal "
+      "to the number of acceleration tokens here \u2192 discard this card.", PU_BIG, page="p013"),
+    c("pu008", "Attachment", "Citizens in Danger!", {"Boost": "1"}, [],
+      "<b>When Revealed</b>: Exhaust your identity. Attach this card to your current location; if you cannot, surge.\n<b>Forced Interrupt</b>: "
+      "When a player leaves this location, deal them a facedown encounter card and discard this card.", PU_BIG, page="p015"),
+    c("pu009", "Attachment", "Hunted by the Past", {"SCH+": "1", "ATK+": "1", "Boost": "3"}, [],
+      "Attached minion gets +3 hit points.\n<b>When Revealed</b>: Find your nemesis minion, reveal it, and attach this card to it.", PU_BIG,
+      page="p017", subtitle='"There are no good men. Only good prey."'),
+    c("pu010", "Attachment", "\"It's a Trap!\"", {"Boost": "1"}, [],
+      "<b>When Revealed</b>: Attach to your current location; if you cannot, surge.\n<b>Forced Interrupt</b>: When a player enters or leaves this "
+      "location, they find a minion not in play and reveal it. Each minion engaged with that player activates. Then, discard this card.",
+      PU_BIG, page="p019"),
+    c("pu011", "Minion", "* Bellona", {"SCH": "1", "ATK": "1\u2605", "HP": "5", "Boost": "3", "Toughness": "1", "Villainous": "1"},
+      ["CLONE", "CRIMINAL", "MUTANT"],
+      "Toughness. Villainous.\n[star] Bellona's attacks gain piercing.\n<b>When Defeated</b>: Shuffle Bellona into the encounter deck. The "
+      "defeating player may take 2 damage to discard her instead.", PU_BIG, page="p021"),
+    c("pu012", "Minion", "* Black Tarantula", {"SCH": "2", "ATK": "2", "HP": "4", "Boost": "1"}, ["CRIMINAL", "MARTIAL ARTIST"],
+      "If the total number of LEAD cards in the victory display is at least:\n\u2022 1\U0001F464 \u2014 This minion gains quickstrike.\n\u2022 2\U0001F464 \u2014 "
+      "This minion gains +3 hit points.", PU_BIG, page="p023", subtitle='"You\'ve uncovered many important details, but you lack one crucial fact!"'),
+    c("pu013", "Minion", "* Overdrive", {"SCH": "0", "ATK": "2", "HP": "3", "Boost": "1", "Quickstrike": "1", "Amplify": "1"}, ["CRIMINAL", "VEHICLE"],
+      "Quickstrike.\n<b>Forced Response</b>: After the round ends, attach Overdrive to an unoccupied location, if able. <i>(He remains in play.)</i>\n"
+      "<b>Forced Interrupt</b>: When a player enters Overdrive's location, he engages them.", PU_BIG, page="p025"),
+    c("pu014", "Minion", "* Muse", {"SCH": "1\u2605", "ATK": "2\u2605", "HP": "4", "Boost": "\u2605", "Acceleration": "2"}, ["CRIMINAL"],
+      "[star] <b>Forced Response</b>: After Muse activates, attach him to an unoccupied location, if able. <i>(He remains in play.)</i>\n"
+      "<b>Forced Interrupt</b>: When a player enters Muse's location, he engages them.\n[star] <b>Boost</b>: Reveal this card.", PU_BIG, page="p027"),
+    c("pu015", "Minion", "* Screwball", {"SCH": "2", "ATK": "1", "HP": "3", "Boost": "1", "Hazard": "1"}, ["CONTENT CREATOR", "CRIMINAL"],
+      "<b>Forced Interrupt</b>: When Screwball would be defeated with excess damage, reset her hit points instead. Attach her to an unoccupied "
+      "location, if able. <i>(She remains in play.)</i>\n<b>Forced Interrupt</b>: When a player enters Screwball's location, she engages them.",
+      PU_BIG, page="p029"),
+    c("pu016", "Obligation", "Busted!", {"Boost": "2"}, ["CONDITION"],
+      "You cannot attack the villain or trigger abilities on LEAD cards.\n<b>Alter-Ego Action</b>: Exhaust your identity and discard a card from "
+      "your hand \u2192 discard this card.", PU_BIG, page="p031", subtitle='"Hey, did you do your \'I-don\'t-break\' speech yet?"'),
+    c("pu017", "Treachery", "Conflicting Evidence", {"Boost": "2"}, [],
+      "<b>When Revealed (Alter-Ego)</b>: The villain attacks you. Do not give them a boost card for this attack.\n<b>When Revealed (Hero)</b>: The "
+      "villain schemes. Do not give them a boost card for this scheme.", PU_BIG, page="p033",
+      subtitle='"Thanks to your interference, I\'ll simply resort to... brute force!"'),
+    # 2 exemplaires identiques (ID 6018/6019) -> 1 card_id, x2 au deck.
+    c("pu018", "Treachery", "Red Herring", {"Boost": "1"}, [],
+      "In expert mode, this card gains incite 1.\n<b>When Revealed</b>: Move to a location not mentioned on the LEAD card in your play area, if "
+      "able. Choose to either stun or confuse your identity.", PU_BIG, page="p035/p037 (x2, ID 6018/6019)",
+      subtitle='"Yadda yadda yadda... This isn\'t the right place."'),
+    c("pu020", "Treachery", "Shootout", {"Boost": "\u2605+1"}, [],
+      "<b>When Revealed</b>: Deal 1 damage to the villain and each character in this turf. In expert mode, exhaust a character you control.\n"
+      "[star] <b>Boost</b>: Deal 1 damage to each character you control.", PU_BIG, page="p039", subtitle='"Multiple shooters! Get down!" \u2014 Cole North'),
+    c("pu021", "SideScheme", "Bank Robbery", {"StartingThreat": "3\U0001F464", "Boost": "2", "Acceleration": "1"}, [],
+      "<b>When Revealed</b>: Each player tucks a random card from their hand under this scheme.\n<b>When Defeated</b>: Return each card tucked here "
+      "to its owner's hand.", PU_BIG, page="p041", subtitle='"Everybody be cool! This is a robbery!"'),
+    c("pu022", "SideScheme", "Like and Subscribe!", {"StartingThreat": "2", "Boost": "\u2605", "Hinder": "2\U0001F464"}, [],
+      "Hinder 2\U0001F464. Allies enter play exhausted.\n<b>When Revealed</b>: Find and reveal Screwball. Attach her to an unoccupied location, if able.\n"
+      "[star] <b>Boost</b>: Reveal this card.", PU_BIG, page="p043", subtitle='"Chat, I think we\'re cooked!"'),
+]
+# Jeu de rencontre du scenario 1 : les 16 cartes physiques (ID 6007-6022) = 15 card_id, Red Herring x2.
+BIGAPPLE_ENCOUNTER_IDS = ["pu007", "pu008", "pu009", "pu010", "pu011", "pu012", "pu013", "pu014", "pu015", "pu016", "pu017", "pu018", "pu018",
+                          "pu020", "pu021", "pu022"]
 
 LOCATION_CARDS = [
     c("pu030", "Environment", "Hell's Kitchen", {}, ["LOCATION"],
@@ -634,5 +693,5 @@ CAPO_SET_ASIDE = ["pu048a", "pu049a", "pu050a", "pu051a", "pu052a", "pu053a", "p
 # Recapitulatif : 13 + 14 + 5 + 7 + 1 = 40 card_id distincts, pour 15 + 15 + 5 + 7 + 1 = 43 cartes
 # physiques (releve "contenu simple" du cadrage section 1.2 : "aucune brique neuve au-dela de M6-M9").
 # ======================================================================================================
-ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS + CAPO_CARDS + LEAD_CARDS
+ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS + CAPO_CARDS + LEAD_CARDS + BIGAPPLE_ENCOUNTER_CARDS
 assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id en double dans ce fichier"

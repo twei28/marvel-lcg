@@ -1425,6 +1425,10 @@ class World(WorldAction, WorldFind):
             # Fix "32127b"
             if not prev_scheme.card.area.flags.is_victory_display:
                 Faces.RemoveAllFromGame([prev_scheme], GameRule(prev_scheme))
+            # AJOUT (22/10/2026, Punisher MC×DC 2026) : avec une zone COMMUNE (La ville), le nouveau stade vit dans cette zone, sinon ses
+            # capacites (When Revealed...) ne repondent pas aux messages de la partie. Sans zone commune, rien ne change.
+            if self.game_area_commune is not None:
+                self.game_area_commune.AddCard(scheme.card)
             scheme.PlaceAccelerationToken(acceleration_token, GameRule(scheme))
             scheme.Reveal(None, by_effect)
             nouvelle = scheme

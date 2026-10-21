@@ -1921,7 +1921,8 @@
    "the_raft_breakout_hobgoblin",
    "stop_the_presses_hobgoblin",
    "one_last_kill_jigsaw",
-   "one_last_kill_hobgoblin"
+   "one_last_kill_hobgoblin",
+   "the_big_apple"
   ],
   "heroes": [],
   "encounters": [
@@ -1940,5 +1941,5 @@
   ],
   "max_id": "pu139"
  },
- "checksum": "f1e246bf6d9f0ccb01548c48f9528a53e7630f778ffa3117c1e49e938069b892"
+ "checksum": "9f577f889f53e1fa95b5f683821961b4a1627d1159d9fbc04b3de1622ce81675"
 }
