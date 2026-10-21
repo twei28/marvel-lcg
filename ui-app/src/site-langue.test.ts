@@ -92,6 +92,11 @@ function clesDuFichier(source: string): Set<string> {
   return cles
 }
 
+/** Les clés du dictionnaire qu'une page enregistre pour tous ses fichiers. */
+function dicoDeLaPage(fichier: string): Set<string> {
+  return clesDeclarees(codeSeul(path.join(SITE, fichier)))
+}
+
 /** Chaque `t('…')` écrit en toutes lettres dans les scripts du site. */
 function clesUtilisees(): Map<string, string[]> {
   const cles = new Map<string, string[]>()
@@ -105,6 +110,14 @@ function clesUtilisees(): Map<string, string[]> {
       if (!entree.name.endsWith('.js') || entree.name.includes('dico-en')) continue
       const source = codeSeul(chemin)
       const locales = clesDuFichier(source)
+      // ⚠ UN DICTIONNAIRE PAR PAGE, PAS PAR FICHIER. `deckbuilder/app.js` enregistre
+      // `DICO_EN_DECKBUILDER` une fois pour toute la page ; `regles.js`, `filtres.js`
+      // et les autres s'en servent par le `t()` commun sans rien importer. Ne lire que
+      // l'import du fichier faisait rougir « Il faut », « joker »… alors qu'ils
+      // s'affichent bien en anglais (constaté le 21/10/2026).
+      if (path.relative(SITE, dossier).replace(/\\/g, '/') === 'deckbuilder') {
+        for (const cle of dicoDeLaPage('deckbuilder/dico-en.js')) locales.add(cle)
+      }
       // ⚠ SEULEMENT LES LITTÉRAUX, comme la gate du plateau. `t(variable)` ne se
       // vérifie pas statiquement : le compter ici produirait de faux manquants,
       // et la gate serait désarmée par le bruit.
