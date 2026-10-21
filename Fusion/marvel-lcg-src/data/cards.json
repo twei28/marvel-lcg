@@ -122984,6 +122984,151 @@
    "set_name": "Punishment",
    "text": "<b>When Revealed (Alter-Ego)</b>: Deal damage to the TARGETED villain equal to Punisher's ATK.\n<b>When Revealed (Hero)</b>: Take damage equal to Punisher's ATK. You may exhaust your hero or discard an ally you control to prevent this damage.",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu005",
+   "type": "Environment",
+   "name": "The City",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "Setup. Permanent.\n• Players mark their location in the city with a token, starting in Midtown.\n• Players can only interact with locations (abilities & cards attached) they occupy.\n<b>Action</b>: Exhaust a character you control or spend 1 resource of any type → move to an adjacent (↔ or ↕) location.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu006",
+   "type": "Environment",
+   "name": "Never Sleeps",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "The Big Apple",
+   "text": "Setup. Permanent.\n• Each row of locations is the \"turf\" of the villain in that row. Villains only activate against players in their turf.\n• Players can only interact with villains or other players (including their play areas) if they are in the same turf.\n• Players can interact with all schemes.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu030",
+   "type": "Environment",
+   "name": "Hell's Kitchen",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "Allies and minions in Hell's Kitchen cannot thwart or scheme and gain toughness.\n<b>Action</b>: Confuse and give a tough status card to your identity → search the encounter deck for a minion and reveal it.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu031",
+   "type": "Environment",
+   "name": "Theater District",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "<b>Action</b>: Exhaust a character you control → heal 2 damage from that character. <i>(Limit once per round.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu032",
+   "type": "Environment",
+   "name": "Upper East Side",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "<b>Action</b>: Discard cards from the encounter deck until a side scheme is discarded. Reveal that scheme. <i>(Limit once per round.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu033",
+   "type": "Environment",
+   "name": "West Village",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "Each player in West Village gets +1 hand size.\n<b>Forced Interrupt</b>: During step 3 of the villain phase, deal yourself an additional encounter card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu034",
+   "type": "Environment",
+   "name": "Midtown",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "<b>Action</b>: Choose a player in this turf. They play an AVENGER, S.H.I.E.L.D., or TECH card from their hand, reducing its cost by 1. <i>(Limit once per round.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu035",
+   "type": "Environment",
+   "name": "Lower East Side",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "Each character <i>(including the villain for players here)</i> in Lower East Side gains retaliate 1.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu036",
+   "type": "Environment",
+   "name": "Soho",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "Increase the cost of each event you play by 1.\n<b>Action</b>: Draw 2 cards, then discard 2 cards. <i>(Limit once per round.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu037",
+   "type": "Environment",
+   "name": "Financial District",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "<b>Hero Action</b>: The villain attacks you. If you take less than 2 damage from this attack, draw 1 card for each printed ★ and [boost] on the attack's boost card(s). <i>(Limit once per round.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu038",
+   "type": "Environment",
+   "name": "Chinatown",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Locations - The Big Apple",
+   "text": "<b>Interrupt</b>: When you would be dealt an encounter card, instead discard from the encounter deck until a minion is discarded. Reveal that minion. <i>(Limit once per round.)</i>",
+   "custom": "MC×DC 2026"
   }
  ],
  "checksum": "503d215b6c6a4d440914c6105033c7e08d772598b177a577074e8b86e4f3983c"

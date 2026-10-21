@@ -1320,13 +1320,24 @@ class RunPuzzle:
         """AJOUT (21/10/2026, PU-5) : `GameArea.AddPlayer` (le joueur et tout ce qu'il possede changent de zone)."""
         self.world.MovePlayerToGameArea(self.world.const_players[player], self.world.game_areas[zone])
 
-    def InstallerVille(self, grille: List[List[str]], depart: Tuple[int, int]=(1, 1)) -> None:
+    def InstallerVille(self, grille: List[List[str]], depart: Tuple[int, int]=(1, 1), en_jeu: bool=False) -> None:
         """AJOUT (21/10/2026, PU-5 etape 3) : pose la ville du banc : une zone COMMUNE, une zone par ligne de la grille, les cartes de
         lieu (`grille[ligne][colonne]` : un identifiant de carte, juste une reference), tous les joueurs sur `depart`."""
         from game.operate.ville import Ville
         self.world.CreateCommonGameArea()
         zones = {ligne: self.world.CreateGameArea() for ligne in range(len(grille))}
-        cases = {(l, c): self.CreateCard(cid) for l, rang in enumerate(grille) for c, cid in enumerate(rang)}
+        if en_jeu:
+            # (22/10/2026, PU-7) lieux REELS : chaque carte est mise en jeu dans la zone de SA rangee (spec G7), les capacites tournent.
+            joueur = self.world.GetCurrentPlayer()
+            cases = {}
+            for l, rang in enumerate(grille):
+                for c, cid in enumerate(rang):
+                    face = self.CreateCard(cid)
+                    face.PutIntoPlay(joueur, self.debug_rule)
+                    zones[l].AddCard(face.card)
+                    cases[(l, c)] = face
+        else:
+            cases = {(l, c): self.CreateCard(cid) for l, rang in enumerate(grille) for c, cid in enumerate(rang)}
         Ville.Installer(self.world, cases, zones, tuple(depart))
 
     def DeplacerDansLaVille(self, case: Tuple[int, int], player: int=0) -> None:

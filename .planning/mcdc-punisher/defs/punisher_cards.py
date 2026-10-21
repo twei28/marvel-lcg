@@ -466,8 +466,59 @@ PUNISHMENT_ENCOUNTERS = ["pu093", "pu094", "pu095", "pu096", "pu097", "pu098", "
 PUNISHMENT_SET_ASIDE = ["pu091a,pu091b", "pu090a,pu090b", "pu092"]
 
 # ======================================================================================================
+# Scenario 1 « The Big Apple » (PU-5 fin / PU-7) : les 2 environnements de la ville et les 9 LIEUX (ID 6030-6038).
+# Un lieu = carte Environnement a trait LOCATION (spec ville M1) ; le chiffre imprime dans le coin est le numero de case
+# de la grille 3x3, PAS une valeur de jeu. Les 9 lieux sont mis de cote par le scenario et poses par `Ville.Installer`.
+# ======================================================================================================
+PU_BIG = "The Big Apple"
+PU_LOC = "Locations - The Big Apple"
+LOC_LIMIT = " <i>(Limit once per round.)</i>"
+
+BIGAPPLE_CARDS = [
+    c("pu005", "Environment", "The City", {"Setup": "1", "Permanent": "1"}, [],
+      "Setup. Permanent.\n\u2022 Players mark their location in the city with a token, starting in Midtown.\n\u2022 Players can only interact with "
+      "locations (abilities & cards attached) they occupy.\n<b>Action</b>: Exhaust a character you control or spend 1 resource of any type "
+      "\u2192 move to an adjacent (\u2194 or \u2195) location.", PU_BIG, page="p009"),
+    c("pu006", "Environment", "Never Sleeps", {"Setup": "1", "Permanent": "1"}, [],
+      "Setup. Permanent.\n\u2022 Each row of locations is the \"turf\" of the villain in that row. Villains only activate against players in "
+      "their turf.\n\u2022 Players can only interact with villains or other players (including their play areas) if they are in the same "
+      "turf.\n\u2022 Players can interact with all schemes.", PU_BIG, page="p011"),
+]
+
+# Jeu de rencontre du scenario 1 : PARTIEL (environnements seulement), complete au fil de PU-7.
+BIGAPPLE_ENCOUNTERS = []
+
+LOCATION_CARDS = [
+    c("pu030", "Environment", "Hell's Kitchen", {}, ["LOCATION"],
+      "Allies and minions in Hell's Kitchen cannot thwart or scheme and gain toughness.\n<b>Action</b>: Confuse and give a tough status card to "
+      "your identity \u2192 search the encounter deck for a minion and reveal it.", PU_LOC, page="p059"),
+    c("pu031", "Environment", "Theater District", {}, ["LOCATION"],
+      "<b>Action</b>: Exhaust a character you control \u2192 heal 2 damage from that character." + LOC_LIMIT, PU_LOC, page="p061"),
+    c("pu032", "Environment", "Upper East Side", {}, ["LOCATION"],
+      "<b>Action</b>: Discard cards from the encounter deck until a side scheme is discarded. Reveal that scheme." + LOC_LIMIT, PU_LOC, page="p063"),
+    c("pu033", "Environment", "West Village", {}, ["LOCATION"],
+      "Each player in West Village gets +1 hand size.\n<b>Forced Interrupt</b>: During step 3 of the villain phase, deal yourself an additional "
+      "encounter card.", PU_LOC, page="p065"),
+    c("pu034", "Environment", "Midtown", {}, ["LOCATION"],
+      "<b>Action</b>: Choose a player in this turf. They play an AVENGER, S.H.I.E.L.D., or TECH card from their hand, reducing its cost by 1."
+      + LOC_LIMIT, PU_LOC, page="p067"),
+    c("pu035", "Environment", "Lower East Side", {}, ["LOCATION"],
+      "Each character <i>(including the villain for players here)</i> in Lower East Side gains retaliate 1.", PU_LOC, page="p069"),
+    c("pu036", "Environment", "Soho", {}, ["LOCATION"],
+      "Increase the cost of each event you play by 1.\n<b>Action</b>: Draw 2 cards, then discard 2 cards." + LOC_LIMIT, PU_LOC, page="p071"),
+    c("pu037", "Environment", "Financial District", {}, ["LOCATION"],
+      "<b>Hero Action</b>: The villain attacks you. If you take less than 2 damage from this attack, draw 1 card for each printed \u2605 and "
+      "[boost] on the attack's boost card(s)." + LOC_LIMIT, PU_LOC, page="p073"),
+    c("pu038", "Environment", "Chinatown", {}, ["LOCATION"],
+      "<b>Interrupt</b>: When you would be dealt an encounter card, instead discard from the encounter deck until a minion is discarded. "
+      "Reveal that minion." + LOC_LIMIT, PU_LOC, page="p075"),
+]
+# Mis de cote par le scenario (poses dans la grille par Ville.Installer).
+LOCATIONS_SET_ASIDE = ["pu030", "pu031", "pu032", "pu033", "pu034", "pu035", "pu036", "pu037", "pu038"]
+
+# ======================================================================================================
 # Recapitulatif : 13 + 14 + 5 + 7 + 1 = 40 card_id distincts, pour 15 + 15 + 5 + 7 + 1 = 43 cartes
 # physiques (releve "contenu simple" du cadrage section 1.2 : "aucune brique neuve au-dela de M6-M9").
 # ======================================================================================================
-ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS
+ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS
 assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id en double dans ce fichier"
