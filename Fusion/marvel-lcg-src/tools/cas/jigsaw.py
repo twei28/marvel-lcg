@@ -90,3 +90,17 @@ CAS += [
        main_exclusive=["01089"], payer_avec=["01089"], payer_tout=True,
        preferer_option="to another enemy"),
 ]
+
+# ============================================================== pu063 : Man Mountain Marko
+CAS += [
+    _k("pu063 When Revealed : un personnage qu'on controle est epuise (le heros, seul pret)",
+       "« Exhaust a character you control » (modele 60133)",
+       [], ["Puzzle.Reveal('pu063')"], {"exhausted": ["01001a"]}, main_exclusive=["01088"]),
+    _k("pu063 When Revealed, TEMOIN : sans le script le heros reste pret (cas de reference : un autre sbire, Shocker 01103)",
+       "contre-cas", [], ["Puzzle.Reveal('01103')"], {"pret": ["01001a"]}, main_exclusive=["01088"]),
+    _k("pu063 Teamwork (MAGGIA) : un autre MAGGIA en jeu (Maggia Thug pu060) -> Marko s'active contre le joueur a son arrivee (ATQ 3 : 3 degats sur l'identite, ou la defense)",
+       "Teamwork natif lu dans desc ; l'activation contre le joueur : attaque (SCH 0)",
+       ["Puzzle.PutIntoPlay('pu060')"], ["Puzzle.Reveal('pu063')"], {"degats_identite": 3}, main_exclusive=["01088"], **SANS_DEFENSE),
+    _k("pu063 Teamwork, TEMOIN : aucun autre MAGGIA en jeu -> pas d'activation (aucun degat sur l'identite)",
+       "contre-cas", [], ["Puzzle.Reveal('pu063')"], {"degats_identite": 0}, main_exclusive=["01088"]),
+]

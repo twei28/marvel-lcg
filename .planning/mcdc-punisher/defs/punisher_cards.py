@@ -91,7 +91,7 @@ JIGSAW_CARDS = [
     c("pu060", "Minion", "Maggia Thug", {"SCH": "1", "ATK": "2", "HP": "3", "Boost": "1", "Guard": "1", "Patrol": "1"}, ["CRIMINAL", "MAGGIA"],
       'Guard. Patrol.\n"Jigsaw uses his standing as a Maggia capo to exert his "influence" on those that resist '
       'him."', PU, page="p119/p121/p123 (x3 exemplaires identiques, ID 6060/6061/6062)"),
-    c("pu063", "Minion", "* Man Mountain Marko", {"SCH": "0", "ATK": "3", "HP": "6", "Boost": "2", "Toughness": "1"}, ["CRIMINAL", "FIST", "MAGGIA"],
+    c("pu063", "Minion", "* Man Mountain Marko", {"SCH": "0", "ATK": "3", "HP": "6", "Boost": "2", "Toughness": "1", "Teamwork": "MAGGIA"}, ["CRIMINAL", "FIST", "MAGGIA"],
       "Teamwork (MAGGIA). Toughness.\n<b>When Revealed</b>: Exhaust a character you control.", PU, page="p125",
       subtitle='"This time you ain\'t walking away!"'),
     c("pu064", "Minion", "* Eel", {"SCH": "1", "ATK": "2★", "HP": "4", "Boost": "1", "Quickstrike": "1"}, ["CRIMINAL", "MAGGIA"],

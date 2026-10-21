@@ -121839,7 +121839,8 @@
     "ATK": "3",
     "HP": "6",
     "Boost": "2",
-    "Toughness": "1"
+    "Toughness": "1",
+    "Teamwork": "MAGGIA"
    },
    "traits": [
     "CRIMINAL",
@@ -121925,5 +121926,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "5fec1e4021bb85fe1ef1c6bcc7354a4c30acdbbd4b64cc20ef78129ba2beffed"
+ "checksum": "2433c5ebf6db991cc8f23082f7355ce5b18be481c1cdde33d81240ef6ec48921"
 }

@@ -33,3 +33,11 @@ Carte terminée : OUI (script). Boost ATK+ « 1** » dépend du doute n°2 (éto
 - [x] Étape 7 : 2 cas `[jig] pu059` verts (3 indirects sur le héros ; paiement de [mental] → 3 dégâts sur Jigsaw, héros indemne). Rouge par substitution : le cas « payer » passe au rouge. ⚠ Le cas 1 reste vert quand on retire `SetBeInstead` (ATQ 0★ : l'attaque ne ferait aucun dégât de toute façon) : l'effet « à la place » n'est donc prouvé que par l'ATQ 0. Les « 3 dégâts indirects sur un ennemi » passent par `DamageProperty(is_indirect_damage=True)` (`TakeIndirectDamage` n'agit que sur le camp d'un joueur).
 - [x] « ★ » de l'ATQ (`0**`) : doute n°2. Limite imprimée : NON. Plateau : NON.
 Carte terminée : OUI (script).
+
+### pu063 : Man Mountain Marko
+
+- [x] Étape 2 : 60133 (Pedestrians). Teamwork et Toughness natifs (fiche `teamwork.md`).
+- [x] Étape 5/6 : **`desc.Teamwork = "MAGGIA"` manquait à l'échafaudage** (le texte l'imprimait, pas le `desc`) : ajouté dans `cards.json` (checksum recalculé) et dans `defs/punisher_cards.py`. Tout autre mot-clé natif des cartes à venir est à vérifier de même dans `desc`.
+- [x] Étape 7 : 4 cas `[jig] pu063` verts (épuisement ; témoin ; Teamwork avec un autre MAGGIA en jeu → 3 dégâts ; témoin sans MAGGIA → aucun). Rouge par substitution : l'épuisement retiré rend le cas 1 rouge. Restauré, 14/14 `[jig]` verts.
+- [x] Pas de question à l'utilisateur : « un personnage que vous contrôlez » = personnage prêt du joueur (RR).
+Carte terminée : OUI (script).
