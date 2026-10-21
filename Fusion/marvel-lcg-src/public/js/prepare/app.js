@@ -3203,7 +3203,11 @@ function bioDuHeros(h) {
         el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)),
         info.civil ? detailRow(t("Identité civile"), champ(info.civil, info.civilEn)) : null,
         info.base ? detailRow(t("Base"), champ(info.base, info.baseEn)) : null,
-        info.equipes ? detailRow(t("Équipes"), champ(info.equipes, info.equipesEn)) : null,
+        // Équipes TOUJOURS en anglais, même site en français (demande du
+        // 21/10/2026) : ce sont des noms propres (Avengers, X-Men…), pas du
+        // texte à traduire. Repli sur la version FR si une fiche plus recente
+        // n'a pas encore sa version anglaise.
+        info.equipes ? detailRow(t("Équipes"), info.equipesEn || info.equipes) : null,
         info.ennemis ? detailRow(t("Ennemis"), champ(info.ennemis, info.ennemisEn)) : null,
         info.apparition ? detailRow(t("Première apparition"), info.apparition) : null,
     ]);
