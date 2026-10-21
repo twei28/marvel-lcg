@@ -903,7 +903,19 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                 tuple(sorted(nombre(getattr(s, "health", 0))
                              for s in ctx.get("sbires") or [])),
                 compteurs_du_joueur(ctx),
+                positions_ville(),
                 tuple(sorted(str(o.get("id")) for o in options)))
+
+    def positions_ville():
+        """AJOUT (22/10/2026, « La ville ne dort jamais ») : la case de chaque joueur dans la ville. Se deplacer (The City) change le plateau
+        sans toucher aucun des autres termes, donc deux deplacements d'affilee passaient pour « le plateau n'a pas bouge ». (Le pilote peut
+        encore boucler en allant et venant entre deux lieux : l'empreinte revient alors a l'identique, c'est une limite de SON heuristique,
+        pas un defaut du moteur.)"""
+        try:
+            ville = getattr(monde(), "ville", None)
+            return () if ville is None else tuple(sorted(ville.positions.items()))
+        except Exception:
+            return ()
 
     def clef_option(o):
         """Identite d'une option pour le compteur anti-repetition `deja`.
@@ -1005,6 +1017,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             ctx.get("taille_defausse", 0),
             len(ctx["allies"]) + len(ctx["sbires"]) + len(ctx["schemes_secondaires"]),
             compteurs_du_joueur(ctx),
+            positions_ville(),   # (22/10/2026) un deplacement dans la ville est un progres
         )
         if brute and brute == etat.get("derniere_question_brute") \
                 and progres == etat.get("dernier_progres") \

@@ -21,9 +21,15 @@ def GetAbilities() -> Sequence['Ability']:
         lieux = [] if etat is None else [etat.cases[c] for c in sorted(etat.cases)]
 
         # 1. cartes attachees aux lieux, distribuees face cachee en tournant
-        attachees = [a for lieu in lieux for a in list(lieu.GetAttachedAttachments())]
+        # (« cards attached to locations » : attachements ET sbires attaches, glisses sous leur lieu, M5)
+        attachees = []
+        for lieu in lieux:
+            attachees += list(lieu.GetAttachedAttachments()) + Ville.SbiresAttaches(lieu)
         for i, carte in enumerate(attachees):
             joueur = joueurs[i % len(joueurs)]
+            if Ville.Hote(carte) is not None:
+                carte.card.ville_hote = None
+                Faces.FlipAllTo([carte], False, effect)
             Faces.MoveAllTo([carte], joueur.dealt_encounter_cards, effect)
 
         # 2. les lieux sont mis de cote, la ville n'a plus de grille

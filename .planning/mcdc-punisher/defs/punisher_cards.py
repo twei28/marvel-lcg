@@ -610,6 +610,7 @@ BIGAPPLE_ENCOUNTER_CARDS = [
 # Jeu de rencontre du scenario 1 : les 16 cartes physiques (ID 6007-6022) = 15 card_id, Red Herring x2.
 BIGAPPLE_ENCOUNTER_IDS = ["pu007", "pu008", "pu009", "pu010", "pu011", "pu012", "pu013", "pu014", "pu015", "pu016", "pu017", "pu018", "pu018",
                           "pu020", "pu021", "pu022"]
+BIGAPPLE_ENCOUNTERS = BIGAPPLE_ENCOUNTER_IDS   # (22/10/2026) jeu de rencontre complet : les 16 cartes physiques
 
 LOCATION_CARDS = [
     c("pu030", "Environment", "Hell's Kitchen", {}, ["LOCATION"],

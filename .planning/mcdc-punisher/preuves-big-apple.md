@@ -124,5 +124,13 @@ Engine ajoute : `Message.WhenPlayerWouldLeaveLocation / WhenPlayerWouldEnterLoca
 - Non prouve : manigance (et non attaque) de Muse ; autoplay ; etape 8 bis (le sbire glisse n'est pas encore dessine : PU-8).
 Cartes terminees : OUI (script), hors points ci-dessus.
 
+### Scenario 1 : branchement et fin (22/10/2026)
+- Jeu de rencontre branche : `BIGAPPLE_ENCOUNTERS = BIGAPPLE_ENCOUNTER_IDS` (16 cartes), scenarios standard et expert regeneres (`construire_jigsaw.py`).
+- pu003a (3A) : les attachements ET les sbires attaches aux lieux sont distribues face cachee (`[gang]` 3 cas, rouges sans le module ; sans l'extension « sbires » le cas sbire est rouge).
+- Cas EXPERT : pu018 incite 1 (menace 1 -> 2, temoin standard 1) ; pu020 epuise un personnage (temoin standard : identite prete) ; rouges sans module.
+- Autoplay (32 parties, standard + expert + temoin Rhino) : 0 exception avalee (`MCLCG_TRACE_CRASH`), 0 erreur dans les 16 journaux Big Apple. Le pilote perd partout (Rhino compris : deck de depart) ; 6/16 parties « bloquees » = le pilote va et vient entre deux lieux (limite de son heuristique, pas du moteur : verifie que The City refuse l'Action quand rien n'est payable). `autoplay.py` : la case de chaque joueur entre dans l'empreinte.
+- Regression : [gang] 27, [lieu] 41, [renc] 23, [big] 55, [ville] 15, [pist] 29, [capo] 30, [pun] 32, [jig] 31, [hob] 30 verts ; `test_cards` 7150 ok, 0 erreur.
+- RESTE pour le scenario 1 : interface « La Ville » (PU-8), instructions de CAMPAGNE (environnement « Guerre des Gangs a Big Apple ! », lieu de la derniere piste, Trafiquant d'armes, recompense, PV en experte : PU-9), effets « en jeu » autres que Collaboration vis-a-vis des sbires attaches.
+
 ## Bilan (22/10/2026)
 11 cartes de lieu/environnement faites : 55 cas `[big]` verts, 15 `[ville]` verts, `test_cards` : 7103 ok, 0 erreur. Non fait : autoplay ciblé (étape 8, il faut le scénario jouable) et plateau (étape 8 bis, PU-8).

@@ -38,7 +38,24 @@
         "pu054b",
         "pu055b"
     ],
-    "encounters": [],
+    "encounters": [
+        "pu007",
+        "pu008",
+        "pu009",
+        "pu010",
+        "pu011",
+        "pu012",
+        "pu013",
+        "pu014",
+        "pu015",
+        "pu016",
+        "pu017",
+        "pu018",
+        "pu018",
+        "pu020",
+        "pu021",
+        "pu022"
+    ],
     "encounter_sets": [
         "standard",
         "expert"
