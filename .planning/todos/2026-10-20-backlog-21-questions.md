@@ -1,6 +1,13 @@
 # Backlog 21 (mode navigateur « Play ») : questions restantes après l'essai multi-navigateurs du 20/10/2026
 
-**Statut : EN ATTENTE DE DÉCISION.** Essai joué avec Playwright sur la construction locale (`navigateur/construire.py`, serveur `navigateur/serveur-local.py`), parcours `navigateur/essais/navigateurs.mjs` : page, moteur, assistant solo (Spider-Man contre Rhino), mulligan, un tour, phase du méchant, retour au round 2. Rien publié, rien déployé.
+**Statut : CLOSES le 21/10/2026 au soir.** Q1 (Safari/iPhone) : hors périmètre
+pour l'instant, pas d'appareil Apple. Q2 (Firefox lent) : accepté tel quel.
+Q3 (téléphone) : confirmé OK sur un vrai téléphone par l'utilisateur. Q4
+(ouverture publique) : pas encore, play. reste sans lien depuis le site.
+Q5 (brancher publier.py sur le déploiement) : déjà fait sans le savoir —
+`deployer-linux.sh` publie automatiquement play. à chaque déploiement du
+site (étape « 7. Play », vu sur les deux déploiements réels du 21/10),
+contrairement à l'ancien `deployer.ps1` qui séparait les deux commandes. Essai joué avec Playwright sur la construction locale (`navigateur/construire.py`, serveur `navigateur/serveur-local.py`), parcours `navigateur/essais/navigateurs.mjs` : page, moteur, assistant solo (Spider-Man contre Rhino), mulligan, un tour, phase du méchant, retour au round 2. Rien publié, rien déployé.
 
 ## Ce qui a été corrigé en route (petit, clair)
 - `serveur-local.py` ne servait pas les sons (`/survol.wav`, `/voix-*.mp3` : 404 en rafale). Le Caddyfile de production les sert : seul le serveur d'essai manquait. Corrigé.
