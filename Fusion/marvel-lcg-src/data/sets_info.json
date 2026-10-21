@@ -1924,9 +1924,12 @@
   "heroes": [],
   "encounters": [
    "jigsaw",
-   "hobgoblin"
+   "hobgoblin",
+   "punishers_armory",
+   "the_syndicate",
+   "capo_of_the_past"
   ],
-  "max_id": "pu084"
+  "max_id": "pu139"
  },
- "checksum": "6a67b4ed2804a9312d036334edc6808ca679109547d5f1661bfe4e4aae0506c2"
+ "checksum": "151c6a5779f17616ead6f871ccd59524ac35d0c5d54b6f1965a115b2e045563d"
 }

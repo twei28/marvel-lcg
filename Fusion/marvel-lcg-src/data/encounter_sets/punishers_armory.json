@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Punisher's Armory",
+    "encounters": [
+        "pu114",
+        "pu115",
+        "pu116",
+        "pu117",
+        "pu118"
+    ]
+}

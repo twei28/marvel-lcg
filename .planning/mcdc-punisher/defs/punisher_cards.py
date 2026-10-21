@@ -271,7 +271,7 @@ SYNDICATE_ENCOUNTERS = ["pu125", "pu126", "pu127", "pu128", "pu129", "pu130", "p
 # ======================================================================================================
 
 CAPO_OF_THE_PAST_CARDS = [
-    c("pu139", "Treachery", "Capo of the Past", {"Boost": "2+★", "Permanent": "1", "Victory": "0"}, [],
+    c("pu139", "Attachment", "Capo of the Past", {"Boost": "2+★", "Permanent": "1", "Victory": "0"}, [],
       "Permanent. Victory 0.\nTreat attached character as an ELITE minion. It gains steady, villainous, and "
       "victory 0.\n<b>When Revealed</b>: Search your collection for a random CAPO villain. Put it into play "
       "engaged with you and attach this card to it.\n[star] <b>Boost</b>: Deal this to yourself as a facedown "
