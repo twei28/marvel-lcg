@@ -1,0 +1,25 @@
+{
+    "version": "0.5.8",
+    "name": "The Raft Breakout (Jigsaw)",
+    "villain": [
+        "pu056a",
+        "pu057a"
+    ],
+    "expert": false,
+    "schemes": [
+        "60142a,60142b"
+    ],
+    "set_aside": [
+        "60143"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "jigsaw",
+        "the_raft_breakout",
+        "standard"
+    ],
+    "modular_sets": [
+        "the_owl",
+        "tombstone"
+    ]
+}

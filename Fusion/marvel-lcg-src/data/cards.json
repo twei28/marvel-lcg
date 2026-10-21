@@ -121688,5 +121688,242 @@
    "ability_link": "01193"
   }
  ],
- "checksum": "9bb3c55b15040864f669d8fafe858c035e80fd4dae4a231ed139caa0afae1bf5"
+ "punisher_mcdc_2026": [
+  {
+   "card_id": "pu056a",
+   "type": "Villain",
+   "name": "* Jigsaw",
+   "subtitle": "\"How does it feel, Frank? You think I wouldn't know you were coming?\"",
+   "desc": {
+    "HP": "14*",
+    "SCH": "2",
+    "ATK": "1**",
+    "Stage": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MAGGIA",
+    "UNDERLING"
+   ],
+   "set_name": "Jigsaw",
+   "text": "[star] <b>Forced Response</b>: After Jigsaw attacks you, if the top of the encounter discard pile is a minion, put it into play engaged with you. Otherwise, place 1 threat on the main scheme.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu056b",
+   "type": "Villain",
+   "name": "* Jigsaw",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "SCH": "2",
+    "ATK": "2**",
+    "Stage": "2",
+    "Steady": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MAGGIA",
+    "UNDERLING"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Steady.\n[star] <b>Forced Response</b>: After Jigsaw attacks you, if the top of the encounter discard pile is a minion, put it into play engaged with you. Otherwise, place 1 threat on the main scheme.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu057a",
+   "type": "Villain",
+   "name": "* Jigsaw",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "SCH": "2",
+    "ATK": "2**",
+    "Stage": "2",
+    "Steady": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MAGGIA",
+    "UNDERLING"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Steady.\n[star] <b>Forced Response</b>: After Jigsaw attacks you, if the top of the encounter discard pile is a minion, put it into play engaged with you. Otherwise, place 1 threat on the main scheme.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu057b",
+   "type": "Villain",
+   "name": "* Jigsaw",
+   "subtitle": "\"How does it feel, Frank? You think I wouldn't know you were coming?\"",
+   "desc": {
+    "HP": "18*",
+    "SCH": "3",
+    "ATK": "2**",
+    "Stage": "3",
+    "Steady": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MAGGIA",
+    "UNDERLING"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Steady.\n[star] <b>Forced Response</b>: After Jigsaw attacks you, if the top of the encounter discard pile is a minion, put it into play engaged with you. Otherwise, place 2 threat on the main scheme.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu058",
+   "type": "Attachment",
+   "name": "Jigsaw's Knife",
+   "subtitle": "\"Don't spoil the surprise! We're gonna have some fun... Frankie and Jigsaw, just like old times.\"",
+   "desc": {
+    "ATK+": "1**",
+    "Boost": "2"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Weapon. Attach to Jigsaw.\n[star] Jigsaw gains retaliate 1 and his attacks gain piercing.\n<b>Hero Action</b>: Exhaust a character you control and spend [physical][mental] → discard this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu059",
+   "type": "Minion",
+   "name": "* Bushwhacker",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "0**",
+    "HP": "5",
+    "Boost": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MERCENARY"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Patrol.\n[star] <b>Forced Interrupt</b>: When Bushwhacker would attack, instead take 3 indirect damage. You may spend [mental] or [wild] to deal that damage to another enemy instead.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu060",
+   "type": "Minion",
+   "name": "Maggia Thug",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "3",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MAGGIA"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Guard. Patrol.\n\"Jigsaw uses his standing as a Maggia capo to exert his \"influence\" on those that resist him.\"",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu063",
+   "type": "Minion",
+   "name": "* Man Mountain Marko",
+   "subtitle": "\"This time you ain't walking away!\"",
+   "desc": {
+    "SCH": "0",
+    "ATK": "3",
+    "HP": "6",
+    "Boost": "2",
+    "Toughness": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "FIST",
+    "MAGGIA"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Teamwork (MAGGIA). Toughness.\n<b>When Revealed</b>: Exhaust a character you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu064",
+   "type": "Minion",
+   "name": "* Eel",
+   "subtitle": "\"I got real power in the underworld now! I got juice! And what do you got?\"",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2**",
+    "HP": "4",
+    "Boost": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MAGGIA"
+   ],
+   "set_name": "Jigsaw",
+   "text": "Quickstrike.\n[star] <b>Forced Response</b>: After Eel attacks and damages a character, exhaust that character. Otherwise, stun it.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu065",
+   "type": "SideScheme",
+   "name": "Putting the Pieces Together",
+   "subtitle": "\"Jigsaw was once known as \"Billy the Beaut.\" Now he uses his terrifying visage to intimidate his way to power.\"",
+   "desc": {
+    "StartingThreat": "1*",
+    "Boost": "2",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "set_name": "Jigsaw",
+   "text": "<b>When Revealed</b>: Place 2 threat on this scheme for each MAGGIA character in play.\n<b>When Defeated</b>: In player order, each player finds a MAGGIA minion that is not in play and reveals it.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu066",
+   "type": "Treachery",
+   "name": "Cut to Pieces",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0**"
+   },
+   "traits": [],
+   "set_name": "Jigsaw",
+   "text": "<b>When Revealed</b>: Jigsaw activates against you. If this activation is an attack, he gets +1 ATK.\n[star] <b>Boost</b>: Place 1 threat on the main scheme and heal 1 damage from Jigsaw.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu068",
+   "type": "Treachery",
+   "name": "Friends of Ours",
+   "subtitle": "\"Get 'em boys!\"",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Jigsaw",
+   "text": "<b>When Revealed</b>: Find a MAGGIA minion that is not in play and reveal it. Each MAGGIA minion activates against the player it is engaged with.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu070",
+   "type": "Treachery",
+   "name": "A Made Man",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1**"
+   },
+   "traits": [],
+   "set_name": "Jigsaw",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Discard an ally from play. Otherwise, place 1👤 threat on each scheme.\n<b>When Revealed (Hero)</b>: Give Jigsaw a facedown boost card. If a MAGGIA minion is in play, give him an additional boost card.\n[star] <b>Boost</b>: After this activation, give Jigsaw a facedown boost card.",
+   "custom": "MC×DC 2026"
+  }
+ ],
+ "checksum": "5fec1e4021bb85fe1ef1c6bcc7354a4c30acdbbd4b64cc20ef78129ba2beffed"
 }

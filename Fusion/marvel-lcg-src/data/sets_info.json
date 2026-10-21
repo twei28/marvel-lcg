@@ -1907,5 +1907,20 @@
   ],
   "max_id": "gs349"
  },
- "checksum": "46617fcf708222abd5e247c037ff116790ec27691ce7c5ce15a2dbffeee02800"
+ "208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)": {
+  "name": "punisher_mcdc_2026",
+  "scenarios": [
+   "art_museum_heist_jigsaw",
+   "the_getaway_jigsaw",
+   "protection_racket_jigsaw",
+   "the_raft_breakout_jigsaw",
+   "stop_the_presses_jigsaw"
+  ],
+  "heroes": [],
+  "encounters": [
+   "jigsaw"
+  ],
+  "max_id": "pu070"
+ },
+ "checksum": "b8f7ecfada9f88e0507f05eac36e72591a5800da861e74084cbabc8783ff28a3"
 }
