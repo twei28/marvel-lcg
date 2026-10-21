@@ -19,7 +19,8 @@
     "encounter_sets": [
         "jigsaw",
         "art_museum_heist",
-        "standard"
+        "standard",
+        "expert"
     ],
     "modular_sets": [
         "cops",

@@ -57,6 +57,8 @@ for m in MANIGANCES:
         s['villain'] = ['pu056b', 'pu057b'] if expert else ['pu056a', 'pu057a']
         s['expert'] = expert
         s['encounter_sets'] = ['jigsaw' if e == 'hammerhead' else e for e in s['encounter_sets']]
+        if expert and 'expert' not in s['encounter_sets']:
+            s['encounter_sets'].append('expert')  # comme les scenarios Hammerhead expert
         nom = '%s_jigsaw%s' % (m, '_expert' if expert else '')
         ecrire('data/scenarios/%s.json' % nom, s)
         if not expert: noms.append('%s_jigsaw' % m)
