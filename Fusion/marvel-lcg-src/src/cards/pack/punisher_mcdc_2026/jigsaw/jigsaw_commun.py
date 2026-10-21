@@ -36,3 +36,11 @@ def Jigsaw(menace_sinon: int) -> 'Ability':
         "You",
         apres_attaque,
     )
+
+
+def TrouverJigsaw(effect: 'Effect') -> 'Villain|None':
+    """Le vilain en jeu qui s'appelle Jigsaw (les textes de rencontre disent « Jigsaw », jamais « the villain »)."""
+    for v in Worlds.GetVillains(effect):
+        if v.paper.name.strip("* ") == "Jigsaw":
+            return v
+    return None

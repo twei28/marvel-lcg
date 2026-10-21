@@ -139,3 +139,58 @@ CAS += [
        "contre-cas", ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105')"], ["Puzzle.Reveal('pu068')"],
        {"hors_jeu": ["pu060"], "degats_identite": 0}, main_exclusive=["01088"]),
 ]
+
+# ============================================================== pu066 : Cut to Pieces
+CAS += [
+    _k("pu066 When Revealed (heros) : Jigsaw attaque, ATQ 1* + 1 -> 2 degats sur l'identite (aucune carte de boost)",
+       "« If this activation is an attack, he gets +1 ATK » (ATQ de base 1 : 1 + 1)",
+       [], ["Puzzle.Reveal('pu066')"], {"degats_identite": 2}, main_exclusive=["01088"], **SANS_DEFENSE),
+    _k("pu066 Boost : 1 menace sur la principale ET 1 degat soigne sur Jigsaw (4 degats - 1 = 3, + 1 degat que Puzzle.Boost inflige a Jigsaw avec n'importe quelle carte : sonde du 21/10 = 4)",
+       "« Place 1 threat on the main scheme and heal 1 damage from Jigsaw » ; sans soin le cas mesurerait 5",
+       ["Puzzle.Damage('pu056a', 4)"], ["Puzzle.Boost('pu066')"], {"menace": [["60134b", 3]], "degats": [["pu056a", 4]]},
+       main_exclusive=["01088"], **SANS_DEFENSE),
+]
+
+
+# ============================================================== pu070 : A Made Man
+ALTER_EGO = "Puzzle.ChangeForm('01001a')"
+CAS += [
+    _k("pu070 When Revealed (heros) : Jigsaw recoit 1 carte de boost face cachee (aucun sbire MAGGIA)",
+       "« Give Jigsaw a facedown boost card »", [], ["Puzzle.Reveal('pu070')"], {"boosts_jigsaw": 1},
+       main_exclusive=["01088"], verifier="jigsaw_etat"),
+    _k("pu070 When Revealed (heros) : un sbire MAGGIA en jeu (pu060) -> 1 + 1 supplementaire = 2 cartes de boost",
+       "« If a MAGGIA minion is in play, give him an additional boost card »",
+       ["Puzzle.PutIntoPlay('pu060')"], ["Puzzle.Reveal('pu070')"], {"boosts_jigsaw": 2},
+       main_exclusive=["01088"], verifier="jigsaw_etat"),
+    _k("pu070 When Revealed (alter ego) : un allie en jeu (Spider-Woman 01011) est defausse, aucune menace posee",
+       "« Discard an ally from play. Otherwise ... »",
+       [ALTER_EGO, "Puzzle.PutIntoPlay('01011', under_control=True)"], ["Puzzle.Reveal('pu070')"],
+       {"hors_jeu": ["01011"], "menace": [["60134b", 0]]}, main_exclusive=["01088"]),
+    _k("pu070 When Revealed (alter ego) : AUCUN allie -> 1 menace par joueur sur chaque complot (0 + 1 = 1)",
+       "« Otherwise, place 1[per hero] threat on each scheme »",
+       [ALTER_EGO], ["Puzzle.Reveal('pu070')"], {"menace": [["60134b", 1]]}, main_exclusive=["01088"]),
+    _k("pu070 Boost : apres l'activation (Jigsaw attaque le heros), Jigsaw recoit 1 carte de boost face cachee",
+       "« After this activation, give Jigsaw a facedown boost card » (modele sk196 : RunAt.AfterEnemyActivationEnd)",
+       [], ["Puzzle.Boost('pu070')"], {"boosts_jigsaw": 1}, main_exclusive=["01088"], verifier="jigsaw_etat", **SANS_DEFENSE),
+    _k("pu070 Boost, TEMOIN : avec une carte de boost quelconque (01105), Jigsaw n'a aucune carte face cachee apres",
+       "contre-cas", [], ["Puzzle.Boost('01105')"], {"boosts_jigsaw": 0}, main_exclusive=["01088"], verifier="jigsaw_etat", **SANS_DEFENSE),
+]
+
+
+VERIFICATIONS = r'''
+def jigsaw_etat(monde, aides):
+    """etat_attendu + `boosts_jigsaw` (cartes de boost face cachee de Jigsaw), `menace_complots` ([[card_id, n]])."""
+    attendu = aides["cas"].get("attendu") or {}
+    propres = {"boosts_jigsaw"}
+    inconnues = sorted(set(attendu) - set(CLES_ETAT_ATTENDU) - propres)
+    if inconnues:
+        return False, f"cle(s) attendu INCONNUE(S) de jigsaw_etat : {inconnues}"
+    ok, message = etat_attendu(monde, aides)
+    soucis = [] if ok else [message]
+    if "boosts_jigsaw" in attendu:
+        v = aides["par_id"](monde, "pu056a")
+        n = v.components.boostable.GetDeck().GetSize()
+        if n != attendu["boosts_jigsaw"]:
+            soucis.append(f"cartes de boost face cachee de Jigsaw = {n} (attendu {attendu['boosts_jigsaw']})")
+    return (False, " ; ".join(soucis)) if soucis else (True, "etat Jigsaw conforme")
+'''

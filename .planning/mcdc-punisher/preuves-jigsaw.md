@@ -48,3 +48,11 @@ Carte terminée : OUI (script).
 - pu065 : « 2 menaces par personnage MAGGIA en jeu » (sbires + vilain + alliés) ; « When Defeated » = `WhenSchemeBeDefeated(WhenDefeated, "This")` (modèle 27068), chaque joueur `Find.FindAndReveal(trait MAGGIA)`. 3 cas verts (3 menaces avec Jigsaw seul, 5 avec le Thug, défaite → Thug révélé), rouges sans le script. Crisis natif.
 - pu068 : trouver/révéler un MAGGIA hors jeu puis `Worlds.Enemies.AllMinionActivateAgainstEngagedPlayer(trait=MAGGIA)`. 2 cas (Thug trouvé puis il attaque : 2 dégâts ; témoin sans MAGGIA), le premier rouge sans le script.
 - ⚠ Piège de harnais : une commande qui contient la chaîne `tools/test_capacites.py` peut faire refuser le démarrage (« un autre harnais tourne ») ; passer par un script (`/tmp/jigrun.sh`).
+
+### pu066 Cut to Pieces, pu070 A Made Man (21/10, sans question)
+
+- pu066 : `villain.DoActivate(joueur, effect, op)`, +1 ATQ par `GainForThisActive(effect, would_message, attack=1)` (⚠ `would_message`, pas l'`activation` ni `IncreaseDamage`, qui ne changeaient rien) ; boost : 1 menace sur le complot principal + `HealHealth(1)` sur Jigsaw. 2 cas verts, rouges sans le script.
+- ⚠ **Artefact de harnais** : `Puzzle.Boost(<n'importe quelle carte>)` fait attaquer Jigsaw (1 dégât mesuré sur lui) et pose 2 menaces (alter ego) ; les attendus du cas Boost en tiennent compte (témoin sans soin = 5).
+- pu070 : alter ego = défausser un allié EN JEU (choisi par le joueur qui révèle ; aucun → 1 menace par joueur sur chaque complot) ; héros = 1 carte de boost face cachée à Jigsaw, +1 si un sbire MAGGIA est en jeu ; ★ boost = `RunAt.AfterEnemyActivationEnd`. 6 cas verts (dont un témoin), 4 rouges sans le script.
+- Vérificateur maison `jigsaw_etat` (clé `boosts_jigsaw`) dans `tools/cas/jigsaw.py`.
+- Batterie `[jig]` : 29/29.
