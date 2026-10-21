@@ -35,7 +35,7 @@ Statut : spec de travail, **pas encore relue** par un second regard (le cadrage 
 |---|---|---|
 | G1 | Les manigances doivent être **communes** à toutes les zones (R7) alors que `GetMainSchemes` filtre par zone | Ajouter une **zone commune** réservée (`world.game_area_commune`, créée seulement par le scénario) ; quand elle existe, `GetMainSchemes/GetSideSchemes/GetOnFieldSchemes` y ajoutent ses cartes pour TOUTE zone. Sans zone commune : comportement inchangé (garde pour ~250 scripts) |
 | G2 | Les icônes accélération/aléas/amplification/crise doivent compter pour tous (R7) | Elles suivent les manigances : si les manigances sont dans la zone commune, vérifier que `Worlds.GetIconsNum` les compte pour chaque zone ; sinon l'étendre au même garde |
-| G3 | Le deck rencontre et la défausse sont **uniques** (R8) alors que chaque vilain a son deck rencontre | Un seul deck, celui de la zone commune ; chaque capo lit ce deck (`Worlds.GetEncounterDeck`). À vérifier : `DealEncounterCards`, boost, `DiscardEncounterCards` |
+| G3 | Le deck rencontre et la défausse doivent être **uniques** (R8) | **Déjà le cas** : un vilain mis en jeu prend le deck rencontre du scénario (`villain.py:64-71`, `SetEncounterDeck(scenario.encounter_deck)`) et `Worlds.GetEncounterDeck` retombe sur celui du scénario. À confirmer par un cas : deux capos en jeu piochent le même deck |
 | G4 | Un joueur doit **changer de zone plusieurs fois** (R2) ; `AddCard` a `assert card.game_area != self` et `AddPlayer` embarque les manigances annexes de l'ancienne zone | Nouvelle fonction `World.MovePlayerToGameArea(joueur, zone)` : retire l'assert pour ce chemin, N'EMBARQUE PAS les cartes de la zone commune, envoie `OnLeaveGameArea` / `OnEnterGameArea` |
 | G5 | Les sbires **engagés** suivent-ils le joueur qui change de rangée ? Le livret : « pas d'interaction entre territoires, y compris les sbires dans les aires de jeu » | Ils **restent avec le joueur** (ils sont dans son aire de jeu : `AddPlayer` les emmène déjà) ; c'est la lecture du livret p.2. Cas test dédié |
 | G6 | Phase du vilain : chaque capo s'active contre les joueurs de sa zone seulement (R6) | Crochet `GettingVillainsToActivate` (brique du 16/10) déjà prévu pour plusieurs vilains ; à brancher par zone du joueur (`Villains.Rule` ne suffit pas : « le méchant » dépend de la zone) |
@@ -79,7 +79,7 @@ Les 9 lieux : chaque carte de lieu est dans la zone de sa rangée (pour que « l
 
 ## 7. Risques et ce que je ne sais pas encore
 
-- **Le risque principal** : le partage du deck rencontre entre zones (G3). Le moteur donne un deck rencontre PAR vilain ; plusieurs vilains en jeu partagent-ils déjà un deck dans Galactic Storm (« Earth Under Siege ») ? À lire avant de coder.
+- **Le risque principal** devient G1 (manigances communes à toutes les zones) : tout ce qui lit `GetMainSchemes(zone)` ou `GetSideSchemes(zone)` (~250 scripts via les filtres) doit rester inchangé sans zone commune, d'où le garde et la batterie avant/après. Le partage du deck rencontre (G3) est, lui, déjà acquis (`villain.py:64-71`).
 - **`GetIconsNum` et le calcul de menace** : non lus ; si ils filtrent par zone, G2 est plus gros que prévu.
 - **L'interface** (PU-8) dépend de l'état « position + zone » ; les captures viendront après l'étape 3.
 - Questions de règle : aucune ouverte, le livret FR répond aux cas de la FAQ ; les cas non couverts (ex. un capo vaincu pendant que des joueurs sont dans sa rangée) seront tranchés par la RR et notés.
