@@ -18,7 +18,7 @@ def GetAbilities() -> Sequence['Ability']:
         if blesses:
             Faces.ExhaustAll(blesses, effect)
             return
-        cible = message.defender or message.attacked[0]
+        cible = message.defender or message.attacked
         Faces.GiveStatus([cible], "Stunned", effect)
 
     return [

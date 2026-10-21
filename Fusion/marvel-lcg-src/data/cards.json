@@ -122214,7 +122214,7 @@
    "name": "Punisher's SMG",
    "subtitle": "",
    "desc": {
-    "ATK": "0**",
+    "ATK+": "0**",
     "Boost": "2",
     "Uses": "1+1*,ammo"
    },
@@ -122394,5 +122394,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "04c8e85f191862d86995bf7ba710bc3d80f14af9932455ebb48bc2787cf97daa"
+ "checksum": "eb371124d85293399fa2be321524d51f598e6a6b0a695da320c59aef37dda793"
 }

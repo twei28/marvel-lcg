@@ -119,6 +119,14 @@ CAS += [
        {"statuts": [["01075", "Stunned"]]}, main_exclusive=["01088"]),
 ]
 
+# pu064, branche « Otherwise » SANS defenseur : le heros Tenace absorbe l'attaque d'Eel -> il est etourdi
+CAS += [
+    _k("pu064 Forced Response, sans defenseur : le heros (Tenace) ne subit aucun degat -> il est etourdi",
+       "« Otherwise, stun it » : la cible de l'attaque est le heros lui-meme",
+       ["Puzzle.Tough('01001a')"], ["Puzzle.PutIntoPlay('pu064')"], {"statuts": [["01001a", "Stunned"]]},
+       main_exclusive=["01088"], **SANS_DEFENSE),
+]
+
 # ============================================================== pu065 / pu068
 CAS += [
     _k("pu065 When Revealed : Jigsaw seul MAGGIA en jeu -> 2 menaces + menace de depart 1 = 3 sur le complot annexe",

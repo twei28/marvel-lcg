@@ -219,7 +219,7 @@ ARMORY_CARDS = [
       "[star] Attached character's attacks gain piercing and ranged.\n"
       "[star] <b>Forced Response</b>: After attached character attacks, remove 1 counter from here.", PU_ARM,
       page="p231"),
-    c("pu117", "Attachment", "Punisher's SMG", {"ATK": "★", "Boost": "2", "Uses": "1+1👤,ammo"}, ["ARMAMENT", "WEAPON"],
+    c("pu117", "Attachment", "Punisher's SMG", {"ATK+": "★", "Boost": "2", "Uses": "1+1👤,ammo"}, ["ARMAMENT", "WEAPON"],
       "Armament. Weapon. Attach to Punisher. Otherwise, attach to the villain. Uses (1+1👤 ammo counters).\n"
       "<b>When Revealed</b>: Discard each other ARMAMENT card in play.\n"
       "[star] <b>Forced Response</b>: After attached character attacks, each player deals 1 damage to a character "
