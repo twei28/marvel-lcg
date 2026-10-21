@@ -170,9 +170,9 @@
   "gs": {
    "pack": "galactic_storm",
    "libelle": "144. Custom (Galactic Storm)",
-   "cartes": 35,
+   "cartes": 221,
    "depuis": "2026-08-29",
-   "note": "EN COURS (proposition du lot GS-0, 20/10/2026) : MATERIEL COMPLET, plus « incomplet ». Auteur Kajislav, memes quatre archives « MC custom content by Kajislav » que Skrull Menace. Inventaire, transcriptions de 319 cartes, regles (livret 1.2) et questions : docs/packs/galactic-storm/ et .planning/todos/2026-10-20-gs0-questions.md. CAMPAGNE de 5 scenarios (Kree Sentry, Majestrix's Verdict, Hala Ultimatum, Earth Under Siege, Supreme Intelligence), 2 heros (Binary, Quasar), 5 modulaires (Imperial Guard, Accuser Corps, Nega Bomb, Seeds of Corruption, Starforce), 13 cartes de campagne (n° 224-236), 42 reskins d'officielles. Le livret annonce 305 cartes, le decompte reel des images est 319 : voir INVENTAIRE.md. Numerotation a valider (Q1).  LOT GS-1 (20/10/2026) : heros BINARY porte, 17 card_id : gs001a/b, gs002-gs011, gs031 (Forgotten Life, imprime « 4 » comme Pursued by the Flame : rang du livret de deck), nemesis gs032 Rogue, gs237 Touched, gs239 Goin' Rogue, gs240 Energy Transfer ; 19 reskins en arts alternatifs `binary`. LOT GS-2 (20/10/2026) : heros QUASAR porte, 18 card_id (gs300a/b identite, gs301-gs316 + gs349 d'apres le pied « QUASAR (n/16) » + 300, obligation gs065, nemesis gs099q gs237q gs239q gs240q), 19 reskins en arts alternatifs `quasar`."
+   "note": "TERMINE (clos le 21/10/2026 : les 13 cartes de campagne gs224-gs236 prouvees par substitution 13/13, mode campagne complet cable sur les 5 scenarios, autoplay enchaine, pages du livret reliees a l'ecran). Auteur Kajislav, memes quatre archives « MC custom content by Kajislav » que Skrull Menace. Inventaire, transcriptions de 319 cartes, regles (livret 1.2) et questions : docs/packs/galactic-storm/ et .planning/todos/2026-10-20-gs0-questions.md. CAMPAGNE de 5 scenarios (Kree Sentry, Majestrix's Verdict, Hala Ultimatum, Earth Under Siege, Supreme Intelligence), 2 heros (Binary, Quasar), 5 modulaires (Imperial Guard, Accuser Corps, Nega Bomb, Seeds of Corruption, Starforce), 13 cartes de campagne (n° 224-236), reskins d'officielles. LOT GS-1 : heros BINARY porte, 17 card_id : gs001a/b, gs002-gs011, gs031 (Forgotten Life, imprime « 4 » comme Pursued by the Flame : rang du livret de deck), nemesis gs032 Rogue, gs237 Touched, gs239 Goin' Rogue, gs240 Energy Transfer ; 19 reskins en arts alternatifs `binary`. LOT GS-2 : heros QUASAR porte, 18 card_id (gs300a/b identite, gs301-gs316 + gs349 d'apres le pied « QUASAR (n/16) » + 300, obligation gs065, nemesis gs099q gs237q gs239q gs240q), 19 reskins en arts alternatifs `quasar`."
   },
   "hc": {
    "pack": "hellcat",
@@ -368,9 +368,9 @@
   "sk": {
    "pack": "skrull_menace",
    "libelle": "143. Custom (Skrull Menace)",
-   "cartes": 31,
+   "cartes": 323,
    "depuis": "2026-08-29",
-   "note": "EN COURS depuis le 15/10/2026. Auteur Kajislav, archive « MC custom content by Kajislav » (Drive, 4 zip) : le materiel COMPLET est enfin la (heros, scenarios, sets modulaires, cartes de campagne), contrairement aux zips de septembre qui n'avaient que la couche campagne. CAMPAGNE de 5 scenarios (Skrull Empire, Super-Skrull, Paibok, Skrull Pantheon, Secret Invasion), 2 heros (Hulkling, Lyja), ~12 sets modulaires, 26 cartes de campagne (n° 263-288), Cooperation Area. card_id = `sk` + numero IMPRIME sur 3 chiffres (+a/b). LIVRE : heros Hulkling (31 card_id, sk001a-sk036 ; set « Hulkling (Kajislav) » car un Hulkling OFFICIEL existe, cw 56029a). Trait HYBRID et compteur 'individual' ajoutes aux enums. Plan, decisions et transcriptions : .planning/skrull-menace/."
+   "note": "TERMINE (LIVRE le 16/10/2026, nouveautes joueur du meme jour). Auteur Kajislav, archive « MC custom content by Kajislav » (Drive, 4 zip) : le materiel COMPLET (heros, scenarios, sets modulaires, cartes de campagne) est scripte en entier. CAMPAGNE de 5 scenarios (Skrull Empire, Super-Skrull, Paibok, Skrull Pantheon, Secret Invasion), 2 heros (Hulkling, Lyja), les sets modulaires et elites (Skymax, Xavin, Crusader, War Skrull, Jazinda), 26 cartes de campagne, Cooperation Area. card_id = `sk` + numero IMPRIME sur 3 chiffres (+a/b). Trait HYBRID et compteur 'individual' ajoutes aux enums. Plan, decisions et transcriptions : .planning/skrull-menace/."
   },
   "sm": {
    "pack": "spider_man_2099",
