@@ -1,0 +1,169 @@
+{
+    "version": "0.5.9.200",
+    "metadata": {
+        "sign": "456c77cdff47017fc5dd6bc7e399641a",
+        "seed": 42,
+        "time": "2026-10-21 19-11",
+        "playtime": "1.9"
+    },
+    "rules": [],
+    "campaign": {
+        "version": "0.5.8",
+        "name": "Rhino",
+        "villain": [
+            "01094",
+            "01095"
+        ],
+        "expert": false,
+        "challenges": [],
+        "schemes": [
+            "01097a,01097b"
+        ],
+        "set_aside": [],
+        "encounters": [
+            "01098",
+            "01099",
+            "01099",
+            "01100",
+            "01101",
+            "01101",
+            "01102",
+            "01103",
+            "01104",
+            "01104",
+            "01105",
+            "01105",
+            "01106",
+            "01106",
+            "01106",
+            "01107",
+            "01108"
+        ],
+        "encounter_sets": [
+            "standard",
+            "bomb_scare"
+        ],
+        "campaign_log": {}
+    },
+    "campaign_2": {
+        "version": "",
+        "name": "",
+        "villain": [],
+        "expert": false,
+        "challenges": [],
+        "schemes": [],
+        "set_aside": [],
+        "encounters": [],
+        "encounter_sets": [],
+        "modular_sets": [],
+        "campaign_log": {}
+    },
+    "players": [
+        {
+            "version": "0.5.8",
+            "name": "Spider-Man",
+            "hero": [
+                "01001a,01001b"
+            ],
+            "hero_deck": [
+                "01002",
+                "01003",
+                "01003",
+                "01004",
+                "01004",
+                "01005",
+                "01005",
+                "01005",
+                "01006",
+                "01007",
+                "01007",
+                "01008",
+                "01008",
+                "01009",
+                "01009"
+            ],
+            "obligations": [
+                "01165"
+            ],
+            "nemesis_set": [
+                "01166",
+                "01167",
+                "01168",
+                "01168",
+                "01169"
+            ],
+            "player_deck": [
+                "01058",
+                "01059",
+                "01060",
+                "01060",
+                "01061",
+                "01061",
+                "01062",
+                "01062",
+                "01063",
+                "01063",
+                "01064",
+                "01064",
+                "01065",
+                "01065",
+                "01083",
+                "01084",
+                "01085",
+                "01086",
+                "01087",
+                "01088",
+                "01089",
+                "01090",
+                "01091",
+                "01092",
+                "01093"
+            ],
+            "linked_identity": {},
+            "team": 0
+        }
+    ],
+    "puzzle": [],
+    "manuel_commands": [],
+    "manuel_commands_step": [],
+    "corrigee_a_la_main": false,
+    "pause_par": "",
+    "pause_a": "",
+    "pause_epoch": 0.0,
+    "reprise_auto": "",
+    "inputs": [
+        {
+            "step": 0,
+            "event": "m117 WhenPlayerChooseAbility",
+            "effect": {
+                "id": "e1 Choose c1 01001b",
+                "targets": [],
+                "resources": []
+            },
+            "crc": "{1:37,15:-2,22:-2,26:-2,27:-4,28:-2,30:-3,36:-2,46:-2,48:9,49:34,59:-3,66:-4}"
+        },
+        {
+            "step": 1,
+            "event": "m552 WhenUnitWouldAttack",
+            "effect": {
+                "id": "e2 Spider-Sense c1 01001a",
+                "targets": [
+                    "c1 01001a"
+                ],
+                "resources": []
+            },
+            "crc": "{1:39,26:-3,27:-4,30:-3,42:-2,46:-4,48:9,49:34,84:-4,86:-3,87:35,88:1,89:1,90:1,91:1,92:1,93:1,94:1,95:1,96:1,97:1,98:1}"
+        },
+        {
+            "step": 2,
+            "event": "m581 WhenUnitBeingAttack",
+            "effect": {
+                "id": "",
+                "targets": [],
+                "resources": []
+            },
+            "crc": "{1:39,18:-3,26:-3,27:-4,30:-2,42:-2,46:-4,48:9,49:34,84:-4,85:-3,87:35,88:1,89:1,90:1,91:1,92:1,93:1,94:1,95:1,96:1,97:1,98:1}"
+        }
+    ],
+    "checksum": "1b4aa405d6cc7fc070ed27c8a82804915fd3d7bc2cb76016cb8002b4a5976da3"
+}

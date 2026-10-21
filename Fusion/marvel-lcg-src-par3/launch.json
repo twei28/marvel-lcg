@@ -1,0 +1,33 @@
+{
+  "server_addresses": [
+    "127.0.0.1:40103"
+  ],
+  "password": "",
+  "translate_file": "./data/translate_fr.json",
+  "game_statistics_file": "../statistics.json",
+  "statistics": true,
+  "show_image_text": true,
+  "check_for_new_version_on_startup": false,
+  "image_servers": [
+    "https://cerebrodatastorage.blob.core.windows.net/cerebro-cards/official/{card_id:U}.jpg",
+    "https://marvelcdb.com/bundles/cards/{card_id}.jpg"
+  ],
+  "image_folders": [
+    "./assets/pics/",
+    "./assets/pics-fr/"
+  ],
+  "sound_folders": [
+    "./assets/sounds/"
+  ],
+  "replay_folders": [
+    "../replays/"
+  ],
+  "starter_deck_folder": "./deck/starter/",
+  "cache_max_age": 60,
+  "games_history_file": "../games_history.json",
+  "legacy_file": "../legacy.json",
+  "cards_json_custom_file": "./data/cards_custom.json",
+  "deck_folders": [
+    "./deck/custom/"
+  ]
+}

@@ -1,0 +1,155 @@
+{
+    "version": "0.5.9.200",
+    "metadata": {
+        "sign": "456c77cdff47017fc5dd6bc7e399641a",
+        "seed": 1048683594,
+        "time": "2026-10-20 18-46",
+        "playtime": "3.1"
+    },
+    "rules": [
+        "confirm_main_scheme",
+        "confirm_scheme_setup_order",
+        "confirm_side_scheme",
+        "no_crisis_of_infinite_deadpools",
+        "no_encounter_cards_ignore_crisis",
+        "v16_all",
+        "v18_all"
+    ],
+    "campaign": {
+        "version": "0.5.8",
+        "name": "Majestrix's Verdict",
+        "villain": [
+            "gs114",
+            "gs115"
+        ],
+        "expert": false,
+        "challenges": [],
+        "schemes": [
+            "gs117a,gs117b",
+            "gs118a,gs118b"
+        ],
+        "set_aside": [
+            "gs119",
+            "gs120a,gs120b",
+            "gs121",
+            "gs122",
+            "gs123",
+            "gs124",
+            "gs125",
+            "gs126"
+        ],
+        "encounters": [
+            "gs127",
+            "gs128",
+            "gs129",
+            "gs129",
+            "gs130",
+            "gs131",
+            "gs131",
+            "gs131",
+            "gs131",
+            "gs132",
+            "gs133",
+            "gs134",
+            "gs135",
+            "gs135",
+            "gs136",
+            "gs136",
+            "gs137",
+            "gs137"
+        ],
+        "encounter_sets": [
+            "standard",
+            "gs_imperial_guard"
+        ],
+        "campaign_log": {}
+    },
+    "campaign_2": {
+        "version": "",
+        "name": "",
+        "villain": [],
+        "expert": false,
+        "challenges": [],
+        "schemes": [],
+        "set_aside": [],
+        "encounters": [],
+        "encounter_sets": [],
+        "modular_sets": [],
+        "campaign_log": {}
+    },
+    "players": [
+        {
+            "version": "0.5.8",
+            "name": "Quasar",
+            "hero": [
+                "gs300a,gs300b"
+            ],
+            "hero_deck": [
+                "gs302",
+                "gs303",
+                "gs303",
+                "gs305",
+                "gs305",
+                "gs307",
+                "gs307",
+                "gs309",
+                "gs309",
+                "gs311",
+                "gs311",
+                "gs313",
+                "gs349",
+                "gs315",
+                "gs316"
+            ],
+            "obligations": [
+                "gs065"
+            ],
+            "nemesis_set": [
+                "gs099q",
+                "gs239q",
+                "gs237q",
+                "gs240q",
+                "gs240q"
+            ],
+            "player_deck": [
+                "19012",
+                "16012",
+                "09015",
+                "09015",
+                "09015",
+                "32014",
+                "32014",
+                "32014",
+                "48014",
+                "56046",
+                "10031",
+                "09020",
+                "17020",
+                "18019",
+                "19020",
+                "21065",
+                "47021",
+                "47021",
+                "47021",
+                "01088",
+                "01089",
+                "01090",
+                "17022",
+                "22035",
+                "54033"
+            ],
+            "linked_identity": {},
+            "team": 0
+        }
+    ],
+    "puzzle": [],
+    "manuel_commands": [],
+    "manuel_commands_step": [],
+    "corrigee_a_la_main": false,
+    "pause_par": "",
+    "pause_a": "",
+    "pause_epoch": 0.0,
+    "reprise_auto": "",
+    "inputs": [],
+    "checksum": "ff3c0791f088fca9a6c17520d44ea00d5a647705ea293208c5bade8cc1fb3558"
+}

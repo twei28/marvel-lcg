@@ -34,9 +34,11 @@ class Ville:
         etat.cases = dict(cases)
         etat.zones = dict(zones)
         world.ville = etat
+        from game.message import Message
         for joueur in world.const_players:
             etat.positions[joueur.player_id] = depart
             world.MovePlayerToGameArea(joueur, zones[depart[0]])
+            Message.AfterPlayerMovedInCity(joueur).Send()
 
     @staticmethod
     def Etat(effect_or_world: 'Effect|World') -> 'EtatVille|None':
@@ -111,6 +113,8 @@ class Ville:
         etat.positions[joueur.player_id] = case
         if case[0] != depuis[0]:
             world.MovePlayerToGameArea(joueur, etat.zones[case[0]])
+        from game.message import Message
+        Message.AfterPlayerMovedInCity(joueur).Send()
         return True
 
     ############################################################################

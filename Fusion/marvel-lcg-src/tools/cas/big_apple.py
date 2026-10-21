@@ -16,9 +16,9 @@ def ville(depart=(1, 1), communs=("pu005", "pu006")):
             *["Puzzle.MoveCardToGameArea('%s', 1)" % x for x in communs]]
 
 
-def _b(nom, pourquoi, declencher, attendu, mise=(), **cle):
+def _b(nom, pourquoi, declencher, attendu, mise=(), alter=False, **cle):
     cas = {"nom": "[big] " + nom, "pourquoi": pourquoi, "scenario": "rhino", "heros": "spider_man",
-           "mise_en_place": [*RIEN, FORME_HEROS, *mise], "declencher": declencher, "verifier": "big_etat",
+           "mise_en_place": [*RIEN, *([] if alter else [FORME_HEROS]), *mise], "declencher": declencher, "verifier": "big_etat",
            "attendu": attendu, "main_exclusive": ["01088"]}
     cas.update(cle)
     return cas
@@ -129,6 +129,80 @@ CAS = [
     _b("pu038 Chinatown, TEMOIN : le joueur est a Financial District (MEME rangee, pas au lieu) -> aucune interruption, aucun sbire",
        "R3 : seul le lieu occupe", [*ville((2, 1)), "Puzzle.Deal('01105')"], {"hors_jeu": ["01103"], "degats_identite": 0},
        mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01103', '01105')"]),
+    # ---------------------------------------------------------------- pu037 Financial District (rangee 2, colonne 1)
+    # ⚠ Spider-Man (01001a) a Spider-Sense : Interrupt, +1 carte quand le vilain l'attaque : la main compte toujours ce +1.
+    # Le CAPO de la rangee 2 (zone 4) est Jigsaw (pu056a, ATQ 1), mis en jeu avant la ville puis range dans la zone de la rangee.
+    _b("pu037 Financial District : Jigsaw (ATQ 1) attaque, identite Tough (0 degat), boost Shocker (2 icones) -> pioche 2",
+       "« less than 2 damage » : 0 < 2 ; 1 carte par icone de boost imprimee",
+       ["Puzzle.PutIntoPlay('pu056a')", *ville((2, 1)), "Puzzle.MoveCardToGameArea('pu056a', 4)", "Puzzle.Tough('01001a')",
+        "Puzzle.Action('pu037', 'HeroAction')"], {"taille_main": 4, "degats_identite": 0},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01103')"]),
+    _b("pu037 Financial District : boost pu131 (icone 1 + ETOILE) -> pioche 2 (l'etoile compte)",
+       "« each printed ★ and [boost] » : 1 + 1 = 2",
+       ["Puzzle.PutIntoPlay('pu056a')", *ville((2, 1)), "Puzzle.MoveCardToGameArea('pu056a', 4)", "Puzzle.Tough('01001a')",
+        "Puzzle.Action('pu037', 'HeroAction')"], {"taille_main": 4},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', 'pu131')"]),
+    _b("pu037 Financial District : sans Tough, ATQ 1 + boost 2 = 3 degats (>= 2) -> aucune pioche",
+       "« If you take less than 2 damage » : 3 degats, pas de carte",
+       ["Puzzle.PutIntoPlay('pu056a')", *ville((2, 1)), "Puzzle.MoveCardToGameArea('pu056a', 4)", "Puzzle.Action('pu037', 'HeroAction')"],
+       {"taille_main": 2, "degats_identite": 3},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01103')"], passer_sur_option="Defense"),
+    _b("pu037 Financial District, TEMOIN D'EPUISEMENT : seconde Action du round -> refusee (pas de seconde attaque, pas de seconde pioche)",
+       "« Limit once per round » globale",
+       ["Puzzle.PutIntoPlay('pu056a')", *ville((2, 1)), "Puzzle.MoveCardToGameArea('pu056a', 4)", "Puzzle.Tough('01001a')",
+        "Puzzle.Action('pu037', 'HeroAction')"], {"taille_main": 4},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01103', '01103')"],
+       declencher_tolerant=["Puzzle.Action('pu037', 'HeroAction')"]),
+    _b("pu037 Financial District, TEMOIN : le joueur est a Soho (MEME rangee, pas au lieu) -> l'Action n'est pas offerte (aucune attaque, main intacte)",
+       "R3", ["Puzzle.PutIntoPlay('pu056a')", *ville((2, 0)), "Puzzle.MoveCardToGameArea('pu056a', 4)"], {"taille_main": 1, "degats_identite": 0},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01103')"],
+       declencher_tolerant=["Puzzle.Action('pu037', 'HeroAction')"]),
+    # ---------------------------------------------------------------- pu035 Lower East Side (rangee 1, colonne 2)
+    _b("pu035 Lower East Side : un sbire engage (Whirlwind, ATQ 2) attaque le joueur ICI -> l'identite riposte (retaliate 1) : le sbire perd 1 PV",
+       "« each character in Lower East Side gains retaliate 1 » : le heros du joueur present",
+       ["Puzzle.PutIntoPlay('01130')", *ville((1, 2)), "Puzzle.Attack('01130')"], {"degats": [["01130", 1]]}, passer_sur_option="Defense"),
+    _b("pu035 Lower East Side, TEMOIN : le meme sbire attaque un joueur a Midtown (MEME rangee, pas ici) -> aucune riposte",
+       "R3 : seuls les personnages des joueurs presents", ["Puzzle.PutIntoPlay('01130')", *ville((1, 1)), "Puzzle.Attack('01130')"],
+       {"degats": [["01130", 0]]}, passer_sur_option="Defense"),
+    _b("pu035 Lower East Side : le HEROS attaque le sbire engage (ici) -> le sbire gagne retaliate 1 : le heros perd 1 PV",
+       "le sbire engage avec un joueur present est « dans » le lieu",
+       ["Puzzle.PutIntoPlay('01130')", *ville((1, 2)), "Puzzle.Attack('01001a')"], {"degats_identite": 1}, cibles=["01130"]),
+    _b("pu035 Lower East Side, TEMOIN : le heros attaque le sbire a Midtown -> pas de riposte",
+       "ligne de base", ["Puzzle.PutIntoPlay('01130')", *ville((1, 1)), "Puzzle.Attack('01001a')"], {"degats_identite": 0}, cibles=["01130"]),
+    _b("pu035 Lower East Side : le joueur ARRIVE depuis Midtown -> la riposte apparait (recalcul au deplacement)",
+       "message `AfterPlayerMovedInCity` : un effet continu doit suivre le joueur",
+       ["Puzzle.PutIntoPlay('01130')", *ville((1, 1)), "Puzzle.DeplacerDansLaVille((1, 2))", "Puzzle.Attack('01130')"],
+       {"degats": [["01130", 1]]}, passer_sur_option="Defense"),
+    _b("pu035 Lower East Side : le joueur PART vers Midtown -> la riposte disparait",
+       "meme message, a la sortie", ["Puzzle.PutIntoPlay('01130')", *ville((1, 2)), "Puzzle.DeplacerDansLaVille((1, 1))", "Puzzle.Attack('01130')"],
+       {"degats": [["01130", 0]]}, passer_sur_option="Defense"),
+    _b("pu035 Lower East Side : le heros attaque le VILAIN de sa rangee (Jigsaw) -> il gagne retaliate 1 contre ce joueur : le heros perd 1 PV",
+       "« including the villain for players here »",
+       ["Puzzle.PutIntoPlay('pu056a')", *ville((1, 2)), "Puzzle.MoveCardToGameArea('pu056a', 3)", "Puzzle.Attack('01001a')"],
+       {"degats_identite": 1}, cibles=["pu056a"]),
+    _b("pu035 Lower East Side, TEMOIN : le heros attaque le vilain depuis Midtown -> pas de riposte",
+       "le vilain ne riposte que contre les joueurs d'ici",
+       ["Puzzle.PutIntoPlay('pu056a')", *ville((1, 1)), "Puzzle.MoveCardToGameArea('pu056a', 3)", "Puzzle.Attack('01001a')"],
+       {"degats_identite": 0}, cibles=["pu056a"]),
+    # ---------------------------------------------------------------- pu033 West Village (rangee 1, colonne 0)
+    _b("pu033 West Village : le joueur present (forme heros) gagne +1 taille de main",
+       "« each player in West Village gets +1 hand size »", [*ville((1, 0))], {"attributs": {"hand_size": 1}}),
+    _b("pu033 West Village, AUTRE FORME : l'alter-ego present gagne aussi +1 (le texte dit « player », pas « hero »)",
+       "contre-cas de forme exige par RECETTES-MOTEUR", [*ville((1, 0))], {"attributs": {"hand_size": 1}}, alter=True),
+    _b("pu033 West Village, TEMOIN : a Midtown (MEME rangee) la taille de main est inchangee",
+       "R3", [*ville((1, 1))], {"attributs": {"hand_size": 0}}),
+    _b("pu033 West Village : le joueur ARRIVE depuis Midtown -> +1 ; il REPART -> 0",
+       "recalcul au deplacement", [*ville((1, 1)), "Puzzle.DeplacerDansLaVille((1, 0))"], {"attributs": {"hand_size": 1}}),
+    _b("pu033 West Village : il part puis revient puis repart -> 0",
+       "recalcul a la sortie", [*ville((1, 0)), "Puzzle.DeplacerDansLaVille((1, 1))"], {"attributs": {"hand_size": 0}}),
+    _b("pu033 West Village : phase du vilain, etape 3 -> DEUX cartes rencontre distribuees : la traitrise ET Hydra Bomber (01110) s'engage",
+       "Forced Interrupt : une carte de plus pour le joueur present (Rhino, deplace dans la zone de la rangee 1, s'active a l'etape 2 et prend une carte de boost ; Jigsaw est evite : il met en jeu un sbire du dessus du deck)",
+       [*ville((1, 0)), "Puzzle.MoveCardToGameArea('01094', 3)", "Puzzle.RunVillainPhase()"], {"en_jeu": ["01110"]},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01110', '01105', '01105', '01105')"], passer_sur_option="Defense"),
+    _b("pu033 West Village, TEMOIN : a Midtown une seule carte est distribuee, Hydra Bomber reste dans le deck",
+       "ligne de base",
+       [*ville((1, 1)), "Puzzle.MoveCardToGameArea('01094', 3)", "Puzzle.RunVillainPhase()"], {"hors_jeu": ["01110"], "dans_deck_rencontre": ["01110"]},
+       mise=["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01110', '01105', '01105', '01105')"], passer_sur_option="Defense"),
 ]
 
 VERIFICATIONS = r'''

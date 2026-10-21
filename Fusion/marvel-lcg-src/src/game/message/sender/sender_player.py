@@ -101,6 +101,12 @@ class SenderPlayer:
             text = TransText("{player} enters game area", player=player)
             self.Present(text, "activate", player.GetIdentity())
 
+    class AfterPlayerMovedInCity(TriggerPlayerMessage):
+        """AJOUT (22/10/2026, PU-7, brique Ville) : un joueur change de LIEU (meme sans changer de rangee). Sert aux effets continus de lieu
+        (West Village, Lower East Side...) qui doivent se recalculer quand on arrive ou part."""
+        def __init__(self, player: 'Player') -> None:
+            super().__init__(player=player)
+
     class GameAreaAddCard(TriggerFaceMessage):
         def __init__(self, face: 'CardFace') -> None:
             # from game.message import OnEvent

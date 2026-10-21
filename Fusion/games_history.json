@@ -1,0 +1,237 @@
+[
+ {
+  "time": 1792594759,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792594831,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792595090,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792595100,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792595198,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792595278,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792598661,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 1
+ },
+ {
+  "time": 1792598704,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792598707,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792598862,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792598942,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792598996,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792599951,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 1
+ }
+]
