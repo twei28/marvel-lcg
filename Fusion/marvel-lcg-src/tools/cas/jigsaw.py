@@ -104,3 +104,38 @@ CAS += [
     _k("pu063 Teamwork, TEMOIN : aucun autre MAGGIA en jeu -> pas d'activation (aucun degat sur l'identite)",
        "contre-cas", [], ["Puzzle.Reveal('pu063')"], {"degats_identite": 0}, main_exclusive=["01088"]),
 ]
+
+# ============================================================== pu064 : Eel
+# ⚠ Quickstrike : l'entree en jeu d'Eel (engage avec le heros) declenche deja une attaque.
+CAS += [
+    _k("pu064 Forced Response : l'attaque Quickstrike d'Eel blesse le heros -> il est epuise, pas etourdi",
+       "« attacks and damages a character, exhaust that character »",
+       ["Puzzle.PutIntoPlay('pu064')"], [], {"exhausted": ["01001a"], "statuts_absents": [["01001a", "Stunned"]]},
+       main_exclusive=["01088"], **SANS_DEFENSE),
+    _k("pu064 Forced Response : l'allie Tenace defend, ne subit aucun degat -> il est etourdi (Otherwise, stun it)",
+       "« Otherwise, stun it » : le defenseur est la cible ; la Tenace absorbe",
+       ["Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.Tough('01075')"],
+       ["Puzzle.PutIntoPlay('pu064')", "Puzzle.EnemyAttacks('pu064', '01001a', defender='01075')"],
+       {"statuts": [["01075", "Stunned"]]}, main_exclusive=["01088"]),
+]
+
+# ============================================================== pu065 / pu068
+CAS += [
+    _k("pu065 When Revealed : Jigsaw seul MAGGIA en jeu -> 2 menaces + menace de depart 1 = 3 sur le complot annexe",
+       "« 2 threat for each MAGGIA character in play » : le vilain compte",
+       [], ["Puzzle.Reveal('pu065')"], {"menace": [["pu065", 3]]}, main_exclusive=["01088"]),
+    _k("pu065 When Revealed : Jigsaw + Maggia Thug (pu060) = 2 MAGGIA -> 4 menaces + 1 = 5",
+       "« for each » : un par personnage MAGGIA",
+       ["Puzzle.PutIntoPlay('pu060')"], ["Puzzle.Reveal('pu065')"], {"menace": [["pu065", 5]]}, main_exclusive=["01088"]),
+    _k("pu065 When Defeated : une fois vaincu, le joueur trouve un sbire MAGGIA hors jeu et le revele (Maggia Thug du deck rencontre)",
+       "« finds a MAGGIA minion that is not in play and reveals it »",
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('pu060')", "Puzzle.PutIntoPlay('pu065')"],
+       ["Puzzle.SetThreat('pu065', 1)", "Puzzle.Thwart('01001a')"], {"en_jeu": ["pu060"]}, main_exclusive=["01088"]),
+    _k("pu068 When Revealed : un MAGGIA hors jeu (pu060 dans le deck) est trouve et revele, puis tous les MAGGIA engages s'activent -> Thug (ATQ 2) attaque : 2 degats sur l'identite",
+       "ordre : trouver/reveler d'abord, activer ensuite (le nouveau compris)",
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('pu060')"], ["Puzzle.Reveal('pu068')"],
+       {"en_jeu": ["pu060"], "degats_identite": 2}, main_exclusive=["01088"], **SANS_DEFENSE),
+    _k("pu068 When Revealed, TEMOIN : aucun MAGGIA a trouver -> rien n'entre en jeu, aucun degat",
+       "contre-cas", ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105')"], ["Puzzle.Reveal('pu068')"],
+       {"hors_jeu": ["pu060"], "degats_identite": 0}, main_exclusive=["01088"]),
+]

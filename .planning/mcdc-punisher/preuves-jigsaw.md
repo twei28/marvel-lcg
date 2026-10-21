@@ -41,3 +41,10 @@ Carte terminée : OUI (script).
 - [x] Étape 7 : 4 cas `[jig] pu063` verts (épuisement ; témoin ; Teamwork avec un autre MAGGIA en jeu → 3 dégâts ; témoin sans MAGGIA → aucun). Rouge par substitution : l'épuisement retiré rend le cas 1 rouge. Restauré, 14/14 `[jig]` verts.
 - [x] Pas de question à l'utilisateur : « un personnage que vous contrôlez » = personnage prêt du joueur (RR).
 Carte terminée : OUI (script).
+
+### pu064 Eel, pu065 Putting the Pieces Together, pu068 Friends of Ours (21/10, sans question : la RR tranche)
+
+- pu064 : `AfterUnitAttackUnit` ForcedResponse ; blessé → épuisé, sinon le défenseur est étourdi. 2 cas verts (héros blessé par le Quickstrike ; allié Tenace défenseur → étourdi), les deux rouges sans le script.
+- pu065 : « 2 menaces par personnage MAGGIA en jeu » (sbires + vilain + alliés) ; « When Defeated » = `WhenSchemeBeDefeated(WhenDefeated, "This")` (modèle 27068), chaque joueur `Find.FindAndReveal(trait MAGGIA)`. 3 cas verts (3 menaces avec Jigsaw seul, 5 avec le Thug, défaite → Thug révélé), rouges sans le script. Crisis natif.
+- pu068 : trouver/révéler un MAGGIA hors jeu puis `Worlds.Enemies.AllMinionActivateAgainstEngagedPlayer(trait=MAGGIA)`. 2 cas (Thug trouvé puis il attaque : 2 dégâts ; témoin sans MAGGIA), le premier rouge sans le script.
+- ⚠ Piège de harnais : une commande qui contient la chaîne `tools/test_capacites.py` peut faire refuser le démarrage (« un autre harnais tourne ») ; passer par un script (`/tmp/jigrun.sh`).
