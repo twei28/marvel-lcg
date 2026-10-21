@@ -109,7 +109,7 @@ semblent toutes tranchées par le code, à confirmer en jeu).
 
 | # | Item | → MAJ 21/10 | Taille | Dépendances |
 |---|---|---|---|---|
-| 10 | Données des joueurs : décision en suspens (`lightningmantis`) | Inchangé | petit | décision de l'utilisateur |
+| ~~10~~ | ~~Données des joueurs : décision en suspens (`lightningmantis`)~~ | **CLOS le 21/10/2026.** Décision de l'utilisateur : ne rien lui dire | — | — |
 
 ### 2.3 Contenu et cartes
 
@@ -121,7 +121,7 @@ et corrigées en 6 lots, `im001b` et `wc014` corrigés en portée Round, gabarit
 |---|---|---|---|---|
 | ~~13~~ | ~~Réserves de gabarits PROCESSUS-CARTE~~ | **CLOS le 21/10/2026.** Zeus, Echo et Fleeting/Alias : les trois réserves levées. Fleeting/Alias : les deux questions du 20/10 (`2026-10-20-backlog-13-questions.md`) ont été tranchées PAR L'UTILISATEUR le jour même (Q1→A, Q2→A) et appliquées (deck de test jetable `tools/decks-de-test/fleeting-alias-determination.json`, 24 parties d'autoplay, 2 défauts trouvés et corrigés sur dt105/dt106) : la fiche dit maintenant « Cartes terminées : OUI » pour les 5 cartes (dt087, dt100, dt105, dt106, dt107). **Raphael (biographie)** : vérifiée en vrai (serveur local) le 21/10/2026, s'affiche correctement — dernier point de l'item, désormais clos. Note en passant (hors périmètre de cet item, non corrigée) : `dt112` Spiral et `dt126` Rage partagent le même défaut `change_on_event` que les cartes Fleeting, documenté mais jamais traité, aucun cas | — | — |
 | 14 | Campagne Punisher MC×DC 2026 | Cadrage avancé : lot PU-0 (préfixe, mots-clés, données simples), réponses utilisateur aux 8 décisions P1-P8. **Toujours aucun script de carte ni moteur de scénario écrit** | gros | crédits MC×DC à nommer à l'intégration |
-| 16 | Crédits des auteurs fan-made, par héros | Inchangé pour `sets_info.json` (toujours aucune entrée « auteur »). **Nuance nouvelle** : les decks fan-made eux-mêmes portent maintenant `metadata.author` (53 decks, commit du 20/10) — une pièce adjacente, mais ne remplace pas l'affichage dans la modale héros demandé par la fiche | petit | validation de la liste par l'utilisateur |
+| ~~16~~ | ~~Crédits des auteurs fan-made, par héros~~ | **CLOS le 21/10/2026.** Liste acceptée, affichage dans la modale du héros (« Pack créé par X »), lisant le champ `custom` déjà posé sur les cartes (mécanisme déjà utilisé par `catalog.js` pour les scénarios). Conan et Red Sonja complétés (RyCoRan). Vérifié en vrai | — | — |
 | 17 | Stan Lee : batterie « Marvelous » en pause | Toujours en pause (`marvelous-partiel-0-1461.json` inchangé depuis le 29/09). Un commit sans rapport (« phrase et citation du scan ajoutées ») a touché le même sujet Stan Lee mais pas la batterie elle-même | moyen | consommation de calcul de la batterie |
 | ~~18~~ | ~~Mots et textes : « Hs Feral Instincts »~~ | **CLOS le 21/10/2026** (`ad118548`) : course avec le cookie `app_version`, un réessai suffit | — | — |
 
@@ -133,7 +133,7 @@ et corrigées en 6 lots, `im001b` et `wc014` corrigés en portée Round, gabarit
 | 20 | BACKLOG n°2 : ajouter des langues | **Décision du 20/10 : espagnol choisi en premier, mais chantier laissé au backlog**, cohérent avec `docs/BACKLOG.md` §2. Aucun code | gros | chantier 19 (poids des scans) |
 | 21 | Mode navigateur (Pyodide) : finitions | **Clos le 21/10/2026 au soir**, les 5 questions tranchées (`2026-10-20-backlog-21-questions.md`) : Safari/iPhone hors périmètre (pas d'appareil), Firefox lent accepté tel quel, téléphone réel confirmé OK par l'utilisateur, ouverture publique pas encore, et Q5 (brancher `publier.py`) s'est révélée déjà réglée — `deployer-linux.sh` publie automatiquement play. à chaque déploiement du site, contrairement à l'ancien `deployer.ps1` | — | — |
 | ~~22~~ | ~~Tenir plus de joueurs~~ | **CLOS le 21/10/2026**, retiré du backlog par décision de l'utilisateur (« ça marche bien comme ça »). Optimisation faite : `asdict` exact et masqué en une passe, -18 % de CPU par table (commit perf du 20/10), banc de charge du descripteur ajouté. Le banc de charge complet (25-40 tables) n'a jamais été rejoué — il ne donne des chiffres fiables que lancé contre le vrai serveur, hors heures de jeu, bots sur une autre machine (fiche `2026-09-16-tenir-plus-de-joueurs.md`) ; jugé pas nécessaire pour l'instant | — | — |
-| 23 | Archivage des tickets de bug | Inchangé | petit | aucune |
+| ~~23~~ | ~~Archivage des tickets de bug~~ | **CLOS le 21/10/2026.** Décision de l'utilisateur : archiver maintenant. `liste_rapports` remonte tous les tickets actifs sans troncature, les classés (traité/refusé) limités aux 60 plus récents, toujours consultables au-delà | — | — |
 
 ### 2.5 Mis de côté par décision ou très lointain
 
@@ -150,8 +150,8 @@ maintenant couvert par un vrai geste Playwright, dépôt réussi et refus affich
 | ~~30~~ | ~~Revoir les couleurs du halo : validation et envoi des palettes~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. « Jamais envoyées au serveur » n'était pas un défaut (voir item 1(i), sens unique volontaire) ; la passe de validation des couleurs encore fausses ne sera pas faite | — | — |
 | ~~31~~ | ~~Recherche de decks MarvelCDB : une vraie partie~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. L'import depuis MarvelCDB fonctionne déjà (confirmé par l'utilisateur) | — | — |
 
-**Items clos ou retirés depuis le rapport du 19/10** : 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 15, 18, 21, 22, 26, 27,
-28, 29, 30, 31 (21 items). **9 items encore ouverts** : 10, 14, 16, 17, 19, 20, 23, 24, 25.
+**Items clos ou retirés depuis le rapport du 19/10** : 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 16, 18, 21, 22,
+23, 26, 27, 28, 29, 30, 31 (24 items). **6 items encore ouverts** : 14, 17, 19, 20, 24, 25.
 
 ---
 
