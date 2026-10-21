@@ -4,6 +4,13 @@ Question de l'utilisateur, 16/09/2026 : « si j'enlève la limite de 20 places,
 je pourrai avoir combien de joueurs en même temps ? », puis « comment passer à
 100 sans payer plus ? ».
 
+**CLOS le 21/10/2026** (item 22 du backlog, retiré) : décision de l'utilisateur,
+« ça marche bien comme ça ». Le banc de charge complet (25-40 tables) ne sera
+pas rejoué — il ne donne des chiffres fiables que contre le vrai serveur, hors
+heures de jeu, bots sur une autre machine (voir plus bas), jugé pas nécessaire
+pour l'instant. Les deux gains exacts du 20/10 (`asdict_rapide`, masque en une
+passe, -18 % de CPU) restent en place.
+
 
 ## ⚠ CORRECTION DU 06/10/2026 (soir) : le banc de charge interrogeait la MAUVAISE route
 
