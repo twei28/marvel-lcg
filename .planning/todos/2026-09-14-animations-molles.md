@@ -110,4 +110,20 @@ poids et le geste à l'usage, le drapeau et ses deux branches disparaissent.
 
 ## Point 5 traité le 20/10/2026
 
-Au-delà de `MAX_VOLS`, chaque groupe (pioche, mise en jeu, défausse) vole en UNE pile fantôme avec le nombre de cartes en pastille (`regrouper`, `CoucheAnimations.tsx`). La garde d'essai n'est pas retirée : l'utilisateur n'a pas validé le geste. Preuve : `ui-check/tests/animations-vol-groupe.spec.ts` (12 cartes piochées dans une vraie partie, 1 fantôme).
+Au-delà de `MAX_VOLS`, chaque groupe (pioche, mise en jeu, défausse) vole en UNE pile fantôme avec le nombre de cartes en pastille (`regrouper`, `CoucheAnimations.tsx`). Preuve : `ui-check/tests/animations-vol-groupe.spec.ts` (12 cartes piochées dans une vraie partie, 1 fantôme).
+
+## CORRECTION du 21/10/2026 : la garde d'essai des animations n'existe plus dans le code
+
+Cette fiche (ci-dessus) dit encore « derrière la garde d'essai » pour les points (1) à (4), et que
+le point (5) attend la validation du geste. **Faux aujourd'hui** : relu dans `CoucheAnimations.tsx`,
+aucune des cinq animations n'est conditionnée par `essaisOuverts()` ou tout autre drapeau — la classe
+`est-essai` posée sur la racine du composant est un nom resté dans le code mais ne correspond à AUCUN
+sélecteur CSS (vérifié : `grep -rn "est-essai" styles/`, zéro résultat). Les cinq points sont donc
+déjà live pour tout le monde, sans garde, depuis une date non retrouvée dans l'historique.
+
+Ce qui reste réellement réservé par `board/essais.ts` (`essaisOuverts()`) aujourd'hui : l'Épuré est
+déjà ouvert à tous (`epurePourTous = true`, `affichage.ts`) ; seule la **couleur du halo/des marques**
+(héros + méchant) reste derrière la garde — voir `2026-09-14-revoir-les-couleurs-du-halo.md` (item 30,
+retiré du backlog le 21/10/2026, couleurs encore fausses pour certains héros, pas de passe de
+validation prévue). Décision de l'utilisateur le 21/10/2026 : garder cette garde en place pour cette
+raison. Item 7 du backlog clos.
