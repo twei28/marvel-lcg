@@ -207,6 +207,33 @@ copie_propre() {
   dire "plateau construit : $(basename "$BOARD_LOCAL") ($MD5_LOCAL)"
 }
 
+palettes_corrections() {
+  # Les couleurs corrigees a la main se font a DEUX endroits (editeur local et
+  # editeur en ligne) et valent pour tout le monde. Ce fichier est exclu de
+  # l'archive du code (plus bas), sinon l'archive ecraserait celui du serveur ;
+  # il voyage donc par cette etape, qui FUSIONNE au lieu d'ecraser :
+  # `outils/fusionner-palettes.py` (a trois : base = derniere synchro). Rien
+  # n'est envoye ici, tout part avec le code (`remplacer_code`) : un arret avant
+  # laisse le serveur intact.
+  # 21/10/2026, demande de l'utilisateur : « si je le fais en local, je veux que
+  # ca passe en ligne ». Avant : le fichier n'allait JAMAIS dans ce sens.
+  etape "3b. Couleurs corrigees a la main (poste <-> serveur)"
+  local data="$RACINE/Fusion/marvel-lcg-src/data"
+  PALETTES_LOCAL="$data/palettes-heros-corrections.json"
+  PALETTES_BASE="$data/palettes-heros-corrections.synchro.json"
+  PALETTES_FUSION="$TMP_ARCHIVES/palettes-corrections-$ID.json"
+  if [ "$REEL" -eq 0 ]; then
+    dire "[simulation] lecture du fichier du serveur, fusion a trois avec le poste (le poste gagne un conflit), envoi avec le code."
+    PALETTES_FUSION=""
+    return 0
+  fi
+  local serveur="$TMP_ARCHIVES/palettes-serveur-$ID.json"
+  ssh_h "cat $DIST/Fusion/marvel-lcg-src/data/palettes-heros-corrections.json 2>/dev/null || true" </dev/null > "$serveur"
+  python3 "$RACINE/outils/fusionner-palettes.py" "$PALETTES_BASE" "$PALETTES_LOCAL" "$serveur" "$PALETTES_FUSION" \
+    || arret "la fusion des couleurs a echoue : le serveur n'a pas ete touche."
+  envoyer "$PALETTES_FUSION" /tmp/narwhal-palettes-corrections.json
+}
+
 archives() {
   etape "4. Archives"
   local code="$TMP_ARCHIVES/narwhal-code-$ID.tgz" conf="$TMP_ARCHIVES/narwhal-conf-$ID.tgz"
@@ -323,6 +350,25 @@ systemctl is-active narwhal
 REMOTE
 }
 
+palettes_installer() {
+  # Pose la fusion sur le serveur (le `chown -R` de `redemarrer` lui donne son
+  # proprietaire), puis la rend au depot : le fichier du poste ET la base de la
+  # prochaine fusion deviennent ce qui est maintenant en ligne.
+  if [ "$REEL" -eq 0 ]; then
+    dire "[simulation] serveur : data/palettes-heros-corrections.json <- fusion ; poste : fichier et base mis a jour."
+    return 0
+  fi
+  distant_script "couleurs corrigees : pose de la fusion" <<REMOTE
+set -e
+test -s /tmp/narwhal-palettes-corrections.json
+cp /tmp/narwhal-palettes-corrections.json $DIST/Fusion/marvel-lcg-src/data/palettes-heros-corrections.json
+rm -f /tmp/narwhal-palettes-corrections.json
+REMOTE
+  cp "$PALETTES_FUSION" "$PALETTES_LOCAL"
+  cp "$PALETTES_FUSION" "$PALETTES_BASE"
+  dire "couleurs : fichier du poste et base de synchronisation mis a jour (a commiter)."
+}
+
 remplacer_code() {
   etape "6. Remplacement du code sur le serveur"
   distant_script "archive de retour arriere $ROLLBACK" <<REMOTE
@@ -347,6 +393,7 @@ rm -rf /tmp/narwhal-conf; mkdir -p /tmp/narwhal-conf
 tar -xzf /tmp/narwhal-conf.tgz -C /tmp/narwhal-conf
 bash /tmp/narwhal-conf/synchroniser-conf.sh $DIST narwhal $DOMAINE
 REMOTE
+  palettes_installer
   images_custom
   redemarrer
 }
@@ -481,6 +528,7 @@ main() {
   copie_propre
   if [ "$SITE" -eq 1 ]; then
     poser_annonce
+    palettes_corrections
     archives
   fi
   if [ "$PLAY" -eq 1 ]; then play_simulation_en_parallele; fi

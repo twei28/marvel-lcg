@@ -5,6 +5,7 @@
 #   bash deploiement/tests/test-deployer-linux.sh
 set -uo pipefail
 SCRIPT_REEL="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/deployer-linux.sh"
+OUTILS="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../outils" && pwd)"
 BASE="$(mktemp -d)"; trap 'rm -rf "$BASE"' EXIT
 ECHECS=0; REUSSIS=0
 ok()  { REUSSIS=$((REUSSIS+1)); echo "  ok   : $1"; }
@@ -22,6 +23,7 @@ cat > "$BIN/ssh" <<'FAKE'
 echo "SSH $*" >> "$APPELS"
 if [ "${*: -1}" = "bash -s" ]; then cat >> "$APPELS"; echo "--fin-script" >> "$APPELS"; exit 0; fi
 case "$*" in
+  *"palettes-heros-corrections.json"*) printf '%s' "${FAUX_PALETTES_SERVEUR:-}" ;;
   *"ss -Htn"*) echo "${FAUX_JOUEURS:-0}" ;;
   *"md5sum /opt/narwhal-play/"*) echo "$FAUX_MD5_PLAY" ;;
   *"md5sum"*) echo "${FAUX_MD5_SITE}"; echo active ;;
@@ -33,6 +35,10 @@ FAKE
 cat > "$BIN/scp" <<'FAKE'
 #!/usr/bin/env bash
 echo "SCP $*" >> "$APPELS"
+FAKE
+cat > "$BIN/rsync" <<'FAKE'
+#!/usr/bin/env bash
+echo "RSYNC $*" >> "$APPELS"
 FAKE
 cat > "$BIN/curl" <<'FAKE'
 #!/usr/bin/env bash
@@ -57,8 +63,9 @@ nouveau_depot() {
   git init -q . && git config user.email t@t && git config user.name t
   mkdir -p deploiement ui-app ui-check navigateur site Fusion/marvel-lcg-src/public/js/prepare Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/data
   cp "$SCRIPT_REEL" deploiement/
+  mkdir -p outils; cp "$OUTILS/fusionner-palettes.py" outils/
   for f in synchroniser-conf.sh sauvegarde.sh purge.sh narwhal.service narwhal-sauvegarde.service narwhal-purge.service narwhal-sauvegarde.timer narwhal-purge.timer Caddyfile; do echo "# $f" > "deploiement/$f"; done
-  echo 'date: "2026-10-20"' > Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js
+  echo "date: \"$(date +%F)\"" > Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js
   echo "print(1)" > site/app.py; echo "x" > Fusion/marvel-lcg-src/src/m.py
   printf '#!/usr/bin/env bash\nmkdir -p Fusion/marvel-lcg-src/public/app/assets\necho board > Fusion/marvel-lcg-src/public/app/assets/board-abc.js\n' > ui-app/deployer.sh
   echo "cle-factice" > deploiement/cle_narwhal
@@ -100,7 +107,7 @@ lancer "" --commit "$PREMIER"; verifie "ancien commit refuse" '[ "$CODE" != 0 ] 
 
 echo "4. nouveautes en retard refusees"
 nouveau_depot nouv
-sed -i 's/2026-10-20/2000-01-01/' Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js; git commit -q -am "docs"
+sed -i 's/date: \"[0-9-]*\"/date: \"2000-01-01\"/' Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js; git commit -q -am "docs"
 echo y >> site/app.py; git commit -q -am "feat(site): chose neuve"
 lancer ""; verifie "refus" '[ "$CODE" != 0 ] && grep -q "journal des nouveautes" <<<"$SORTIE"'
 export NOUVEAUTES_A_JOUR=1; lancer ""; unset NOUVEAUTES_A_JOUR
@@ -127,7 +134,7 @@ verifie "code 0" '[ "$CODE" = 0 ]' || echo "$SORTIE" | tail -20
 verifie "annonce de 5 minutes" 'grep -q "dans 5 minutes" "$APPELS"'
 verifie "ordre : annonce < scp < rollback < extraction < restart < retrait" \
   'a=$(grep -n "INSERT INTO annonces" "$APPELS" | head -1 | cut -d: -f1); s=$(grep -n "^SCP" "$APPELS" | head -1 | cut -d: -f1); r=$(grep -n "tar -czf /root/rollback-code" "$APPELS" | head -1 | cut -d: -f1); e=$(grep -n "tar -xzmf" "$APPELS" | head -1 | cut -d: -f1); x=$(grep -n "systemctl restart narwhal" "$APPELS" | head -1 | cut -d: -f1); z=$(grep -n "annonce retiree" "$APPELS" | head -1 | cut -d: -f1); [ "$a" -lt "$s" ] && [ "$s" -lt "$r" ] && [ "$r" -lt "$e" ] && [ "$e" -lt "$x" ] && [ "$x" -lt "$z" ]'
-verifie "deux scp vers /tmp/narwhal-*.tgz" '[ "$(grep -c "^SCP" "$APPELS")" = 2 ] && grep -q "test.invalid:/tmp/narwhal-code.tgz" "$APPELS"'
+verifie "trois scp : code, conf et couleurs fusionnees" '[ "$(grep -c "^SCP" "$APPELS")" = 3 ] && grep -q "test.invalid:/tmp/narwhal-code.tgz" "$APPELS" && grep -q "test.invalid:/tmp/narwhal-palettes-corrections.json" "$APPELS"'
 verifie "comptes preserves a l'extraction" 'grep -q "! -name comptes.json" "$APPELS" && grep -q "! -name rapports" "$APPELS"'
 verifie "jamais d'ecriture dans narwhal.service/Caddyfile cote serveur" '! grep -E "(install|cp|mv|tee|sed -i).*(/etc/systemd/system/narwhal.service|/etc/caddy/Caddyfile)" "$APPELS"'
 verifie "publier : simulation puis --oui --sans-construire" 'grep -q "^PUBLIER .*publier.py$" "$APPELS" && grep -q "publier.py --oui --sans-construire" "$APPELS"'
@@ -135,6 +142,27 @@ verifie "variables NARWHAL_CLE / PY310 passees" 'grep -q "py310=.*python3.10" "$
 verifie "sons copies" 'grep -q "originaux/sounds" "$APPELS"'
 verifie "HTTP 200 site et play" '[ "$(grep -c "^CURL" "$APPELS")" = 2 ] && grep -q "HTTP site / play  : 200 / 200" <<<"$SORTIE"'
 verifie "resume : joueurs vus et commande de retour" 'grep -q "joueurs vus       : 2" <<<"$SORTIE" && grep -q "pour restaurer" <<<"$SORTIE"'
+
+echo "7b. couleurs corrigees a la main : poste <-> serveur, a trois"
+nouveau_depot pal; export FAUX_JOUEURS=2
+D_DATA=Fusion/marvel-lcg-src/data
+printf '{"_lisez_moi":"x","palettes":{"a":[[1,1,1]],"b":[[1,1,1]]},"version":1}' > "$D_DATA/palettes-heros-corrections.synchro.json"
+printf '{"_lisez_moi":"x","palettes":{"a":[[9,9,9]],"b":[[1,1,1]]},"version":1}' > "$D_DATA/palettes-heros-corrections.json"
+git add -A && git commit -q -m "couleurs du poste"; COURT="$(git rev-parse --short HEAD)"
+# le serveur a corrige b en ligne ; a est reste comme a la derniere synchro
+export FAUX_PALETTES_SERVEUR='{"_lisez_moi":"x","palettes":{"a":[[1,1,1]],"b":[[7,7,7]]},"version":1}'
+lancer "oui\nJe deploie $COURT\n" --oui --annonce 5; unset FAUX_PALETTES_SERVEUR
+verifie "code 0" '[ "$CODE" = 0 ]'
+verifie "la correction du poste (a) part en ligne ET celle du serveur (b) est gardee" \
+  'python3 -c "import json,sys; p=json.load(open(sys.argv[1]))[\"palettes\"]; sys.exit(0 if p[\"a\"]==[[9,9,9]] and p[\"b\"]==[[7,7,7]] else 1)" "$D_DATA/palettes-heros-corrections.json"'
+verifie "le fichier du poste ET la base sont rendus identiques apres le deploiement" 'cmp -s "$D_DATA/palettes-heros-corrections.json" "$D_DATA/palettes-heros-corrections.synchro.json"'
+verifie "pose cote serveur avant le redemarrage" 'p=$(grep -n "cp /tmp/narwhal-palettes-corrections.json" "$APPELS" | head -1 | cut -d: -f1); x=$(grep -n "systemctl restart narwhal" "$APPELS" | head -1 | cut -d: -f1); [ -n "$p" ] && [ "$p" -lt "$x" ]'
+verifie "le fichier de corrections reste exclu de l'archive du code" '! tar -tzf "$BASE"/tmp/narwhal-code-*.tgz | grep -q "palettes-heros-corrections.json"'
+
+echo "7c. simulation : rien lu, rien envoye pour les couleurs"
+nouveau_depot palsim
+lancer ""
+verifie "etape annoncee, aucun appel reseau" 'grep -q "Couleurs corrigees a la main" <<<"$SORTIE" && [ ! -s "$APPELS" ]'
 
 echo "8. echec de Play avant extraction : annonce retiree, code serveur intact"
 nouveau_depot reel4; export FAUX_JOUEURS=0; COURT="$(git rev-parse --short HEAD)"

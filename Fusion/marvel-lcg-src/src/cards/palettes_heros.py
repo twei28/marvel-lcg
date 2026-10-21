@@ -41,10 +41,13 @@ PALETTES_HEROS_FILE = ConfigVariables.File('palettes_heros_file', './data/palett
 # serait effacee a la premiere regeneration. Elle vit donc a cote, et se pose
 # PAR-DESSUS le releve genere.
 #
-# ⚠ LE DEPLOIEMENT NE DOIT PAS L'ECRASER. `deploiement/deployer.ps1` l'exclut
-# de l'archive de code et le rapatrie dans le depot apres l'envoi : le serveur
-# est l'endroit ou l'on corrige (c'est la qu'on joue), le depot est l'endroit
-# ou l'on garde.
+# ⚠ LE DEPLOIEMENT NE DOIT PAS L'ECRASER, NI L'IGNORER. On corrige aux DEUX
+# endroits (editeur local, editeur en ligne) et une correction vaut pour tout le
+# monde. `deploiement/deployer-linux.sh` exclut ce fichier de l'archive de code
+# et le FUSIONNE a part (`outils/fusionner-palettes.py`, a trois : base = derniere
+# synchro) : une carte changee d'un seul cote prend ce cote, changee des deux, le
+# poste gagne. Avant le 21/10/2026 il n'allait que dans le sens serveur -> depot,
+# et les corrections locales n'arrivaient jamais en ligne.
 # ===========================================================================
 PALETTES_CORRECTIONS_FILE = ConfigVariables.File(
     'palettes_heros_corrections_file', './data/palettes-heros-corrections.json')
