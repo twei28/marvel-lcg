@@ -122,7 +122,7 @@ et corrigées en 6 lots, `im001b` et `wc014` corrigés en portée Round, gabarit
 | ~~13~~ | ~~Réserves de gabarits PROCESSUS-CARTE~~ | **CLOS le 21/10/2026.** Zeus, Echo et Fleeting/Alias : les trois réserves levées. Fleeting/Alias : les deux questions du 20/10 (`2026-10-20-backlog-13-questions.md`) ont été tranchées PAR L'UTILISATEUR le jour même (Q1→A, Q2→A) et appliquées (deck de test jetable `tools/decks-de-test/fleeting-alias-determination.json`, 24 parties d'autoplay, 2 défauts trouvés et corrigés sur dt105/dt106) : la fiche dit maintenant « Cartes terminées : OUI » pour les 5 cartes (dt087, dt100, dt105, dt106, dt107). **Raphael (biographie)** : vérifiée en vrai (serveur local) le 21/10/2026, s'affiche correctement — dernier point de l'item, désormais clos. Note en passant (hors périmètre de cet item, non corrigée) : `dt112` Spiral et `dt126` Rage partagent le même défaut `change_on_event` que les cartes Fleeting, documenté mais jamais traité, aucun cas | — | — |
 | 14 | Campagne Punisher MC×DC 2026 | Cadrage avancé : lot PU-0 (préfixe, mots-clés, données simples), réponses utilisateur aux 8 décisions P1-P8. **Toujours aucun script de carte ni moteur de scénario écrit** | gros | crédits MC×DC à nommer à l'intégration |
 | ~~16~~ | ~~Crédits des auteurs fan-made, par héros~~ | **CLOS le 21/10/2026.** Liste acceptée, affichage dans la modale du héros (« Pack créé par X »), lisant le champ `custom` déjà posé sur les cartes (mécanisme déjà utilisé par `catalog.js` pour les scénarios). Conan et Red Sonja complétés (RyCoRan). Vérifié en vrai | — | — |
-| 17 | Stan Lee : batterie « Marvelous » en pause | Toujours en pause (`marvelous-partiel-0-1461.json` inchangé depuis le 29/09). Un commit sans rapport (« phrase et citation du scan ajoutées ») a touché le même sujet Stan Lee mais pas la batterie elle-même | moyen | consommation de calcul de la batterie |
+| ~~17~~ | ~~Stan Lee : batterie « Marvelous » en pause~~ | **CLOS le 21/10/2026**, arrêté à la demande de l'utilisateur. Batterie complète jouée (3 076 cas) : 1 163 cartes vertes, 12 des 21 écarts corrigés (munitions War Machine, traits prêtés, 2 artefacts du test), 9 documentés (mise en place propre à un héros). 354 cas non concluants non traités. Voir la fiche | — | — |
 | ~~18~~ | ~~Mots et textes : « Hs Feral Instincts »~~ | **CLOS le 21/10/2026** (`ad118548`) : course avec le cookie `app_version`, un réessai suffit | — | — |
 
 ### 2.4 Infrastructure, distribution, charge
@@ -151,7 +151,7 @@ maintenant couvert par un vrai geste Playwright, dépôt réussi et refus affich
 | ~~31~~ | ~~Recherche de decks MarvelCDB : une vraie partie~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. L'import depuis MarvelCDB fonctionne déjà (confirmé par l'utilisateur) | — | — |
 
 **Items clos ou retirés depuis le rapport du 19/10** : 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 16, 18, 21, 22,
-23, 26, 27, 28, 29, 30, 31 (24 items). **6 items encore ouverts** : 14, 17, 19, 20, 24, 25.
+23, 17, 26, 27, 28, 29, 30, 31 (25 items). **5 items encore ouverts** : 14, 19, 20, 24, 25.
 
 ---
 

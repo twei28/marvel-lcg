@@ -47,3 +47,12 @@ vide est vert), les capacités déclenchées plus tard (Response, Interrupt), et
 les cartes dont la mise en place exige une cible absente : elles rougissent
 pour le témoin aussi et sont classées NON CONCLUANT, pas ÉCART. Ce sont les
 cas à écrire à la main, un par un, quand la batterie générique est verte.
+
+## Reprise après une pause (21/10/2026)
+
+`MARVELOUS_SAUF=<rapport.json>` ne rejoue que les cas dont le NOM n'est pas déjà dans ce rapport. Ne pas
+reprendre « à partir de l'index N » : la liste grandit (nouveaux héros insérés au milieu) et les index ne
+désignent plus les mêmes cartes. Deux garde-fous du générateur, nés de faux rouges : une carte à
+`Requirement` ne reçoit en main que les couleurs exigées, et une carte `(thwart)` voit de la menace posée sur
+le complot principal APRÈS le remplacement de la main (sinon une interruption de départ la rejoue seule).
+Bilan et écarts restants : `.planning/todos/2026-09-29-stan-lee-batterie-marvelous-en-pause.md`.

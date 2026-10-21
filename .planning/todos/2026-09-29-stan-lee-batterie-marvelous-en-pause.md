@@ -1,16 +1,35 @@
 # Stan Lee : batterie « Marvelous » en pause (29/09/2026)
 
-**REPRISE le 21/10/2026** (demande de l'utilisateur). La liste de cas a grandi depuis : **3 076 cas**
-(1 538 cartes) au lieu de 2 808, des héros ayant été insérés au milieu (les index ne désignent plus les
-mêmes cartes). Les 1 462 cas du rapport partiel sont tous encore dans la liste ; il en restait **1 614**.
-Nouvelle variable `MARVELOUS_SAUF=<rapport.json>` (`batterie_test_capacites.py`) : ne rejoue que les cas dont le
-NOM n'est pas dans ce rapport. Lancée en arrière-plan : harnais gelé dans `/tmp/marvelous-frozen/`, dossier de jeu
-`.game-src-stanlee`, `PARALLELES=3`, `nice 19`, rapport `/tmp/marvelous-suite.json`, journal
-`/tmp/marvelous-suite.log`. À analyser ensuite avec `analyser.py` en fusionnant les deux rapports
-(`.planning/stan-lee/marvelous-partiel-0-1461.json` + celui-ci).
+**CLOS le 21/10/2026, arrêté à la demande de l'utilisateur** (« ça demande trop d'effort pour un perso »).
 
-Arrêtée à la demande de l'utilisateur (trop de consommation). Reprise prévue la
-semaine du 05/10/2026.
+Reprise le 21/10 : la liste de cas avait grandi (3 076 cas, 1 538 cartes), les 1 614 manquants ont été
+rejoués (variable `MARVELOUS_SAUF`). Bilan sur 1 538 cartes : **VERT 1 163, ÉCART 21, NON CONCLUANT 354**.
+
+**12 écarts corrigés** (vérifiés un par un, 2/2) :
+- 23008, 23010, 23011 (War Machine) : Stan Lee reçoit l'aptitude « Locked and Loaded » (5 jetons `ammo`),
+  `APTITUDES_PRETEES` dans `stanlee/stan_lee/__init__.py` ;
+- iw008, iw009 (Invisible Woman), ok012, ok013, ok015, ok016 (Okoye), 13006 Wasp Sting (côté TINY) : Stan Lee
+  reçoit les TRAITS des identités empruntées (`TraitsAPreter`) ;
+- ze006 Wrath of Olympus et 40003 Mind Scan : artefacts du CAS, pas du moteur (`generer_cas.py` : exigence
+  de couleur, menace sur le complot posée APRÈS le remplacement de la main).
+
+**9 écarts documentés, NON corrigés** : cartes qui dépendent de la MISE EN PLACE propre à leur héros, que
+Stan Lee n'a pas (jetons / cartes mises de côté) : 09005 Master of the Mystic Arts (deck d'Invocation, Doctor
+Strange), 26011 Phase Disruption (amélioration « Intangible », Vision), 32009 Bulletproof Protector (carte
+Tenace, Colossus), 34013 Phoenix Firebird (Phoenix Force), 36009 Weather Goddess (deck météo, Storm), 38007
+Energy Transfer (amélioration « Touched », Rogue), 46009 Arctic Attack (Frostbite, Iceman), as004 Burst It! et
+as007 Sell It! (Spider Armor, Armored Spidey). Les corriger = équiper le deck de Stan Lee des cartes mises de
+côté de chaque héros prêté, héros par héros, avec des conflits possibles quand deux héros partagent un deck
+additionnel. Pas fait : la carte dit « si ça semble devoir marcher, ça marche ». Wasp Sting côté GIANT reste
+impossible (transformation).
+
+**Non fait** : les 354 cas NON CONCLUANTS (témoin rouge : cible absente, coût spécial) à écrire à la main.
+La batterie complète rejouée après ces corrections a été arrêtée à ~1 060 cas sur 3 076 : 0 cas Stan Lee passé de
+vert à rouge ; 80 passés de rouge à vert (dont des témoins, grâce à la menace posée). 6 témoins de cartes de dos
+de face (ex. 34002b Phoenix Force) « ne sont pas en main » : la vérification `AssertJouable`, absente de la
+passe de septembre, les rejette ; ce n'est pas une régression du moteur.
+
+Ancien état (29/09), conservé pour mémoire :
 
 ## Où on en est
 
