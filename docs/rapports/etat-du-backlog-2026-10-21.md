@@ -1,0 +1,195 @@
+# État du backlog au 21/10/2026 (mise à jour du rapport du 19/10)
+
+**Ceci est une MISE À JOUR du rapport `docs/rapports/etat-du-backlog-2026-10-19.md`, pas une relecture complète à
+zéro.** Entre le 19/10 (18h13) et aujourd'hui, 154 commits sont tombés sur la branche de travail
+(`sauvegarde-cle-usb-2026-10-14`, HEAD au commit `5e41c99e`), dont une grosse session consacrée à finir Galactic
+Storm, une vague de corrections du pack Dazzler, la refonte connexion/inscription, la coop locale, et le cadrage
+de trois gros chantiers (Punisher, jeu installable, langues).
+
+Méthode : pour chacun des 31 items OUVERT du rapport du 19/10, un `git log --since="2026-10-19 18:13"` ciblé par
+mots-clés + un grep sur les fichiers cités dans la colonne « Preuve » de l'ancien rapport. Moins approfondi que
+l'audit original (qui avait relu les 176 fiches une par une) : cette passe ne revérifie QUE les 31 items ouverts et
+confirme/infirme leur statut, elle ne refait pas le tri des fiches « FAIT mais pas à jour » ni des « INCERTAIN ».
+
+---
+
+## 1. Résumé
+
+- **Galactic Storm (ex-item 15) est CLOS** depuis le 21/10/2026 (voir section 1 bis). C'est le changement le plus
+  important depuis le 19/10.
+- Sur les 31 items ouverts du 19/10 : **9 sont maintenant clos** (2, 3, 7-partiel, 8, 9, 12, 15, 27, 28), **1 a
+  nettement avancé sans être clos** (21, questions posées à l'utilisateur), **1 a légèrement avancé** (13, Zeus et
+  Echo levés, Fleeting/Alias en question), **2 progressent côté cadrage sans code livré** (14 Punisher, 19/20
+  volontairement laissés au backlog par décision du 20/10). Les 18 autres n'ont pas bougé.
+- **Items ouverts restants : 21** sur les 30 non-Galactic-Storm (voir section 2).
+- **Deux champs périmés corrigés dans `tools/prefixes_fanmade.json`** à l'occasion de cette passe : `sk` (Skrull
+  Menace) disait « EN COURS, 31 cartes » alors que les 5 scénarios et les 323 cartes sont livrés depuis le 16/10 ;
+  `gs` (Galactic Storm) disait « EN COURS, 35 cartes » alors que les 221 entrées de `cards.json` et le mode
+  campagne complet sont maintenant clos. Commit `5e41c99e`.
+- Les 19 fiches à en-tête périmé (section 3 du rapport du 19/10) **n'ont pas été corrigées dans cette passe**
+  (hors budget de cette mise à jour) : la liste reste valable telle quelle, reportée section 3 ci-dessous sans
+  changement.
+- Les 11 points « INCERTAIN » (section 4 du rapport du 19/10) n'ont pas été revérifiés non plus : reportés tels
+  quels en section 4.
+
+---
+
+## 1 bis. Galactic Storm (item 15), détail de la clôture
+
+Terminé le 21/10/2026, preuves :
+- **13/13 cartes de campagne** (gs224-gs236) prouvées par substitution 1/1 chacune (`tools/substituer_pack.py`),
+  y compris gs224 Rick Jones et gs226 Lauri-Ell dont la preuve restait non concluante au 20/10 (deux pièges de cas
+  de test corrigés, et un vrai bug trouvé dans `gs226.py` : `message.damage_targets` n'existe pas, corrigé en
+  `took_damage_targets`).
+- **Mode campagne complet** : `data/campagnes/galactic_storm.json` + `src/cards/pack/galactic_storm/campaign.py`,
+  les 5 scénarios reliés (`*CampaignSetup(N)` sur chaque manigance principale 1A), retrait réel de l'Imperial
+  Guard déjà utilisée, remplacement d'allié ciblé. `tools/epreuves_campagnes.py` : 5/5 épreuves de boucle vertes.
+- **Autoplay enchaîné des 5 scénarios** (`tools/jouer_campagne_galactic_storm.py`, nouveau) : joue sans planter
+  (scénarios 1-3 confirmés, scénario 4 dépasse le minuteur en solo — parties longues déjà connues et acceptées).
+  A débusqué un vrai bug moteur (`game/card/card_finder/checker.py`, `AttributeError` sur un Attachement
+  « consider_as » Enemy) corrigé au passage — pas spécifique à Galactic Storm, aurait pu toucher n'importe quel
+  pack avec le même patron.
+- **Pages du livret** (intro/règles/épilogue) découpées depuis le rulebook 1.2 et reliées à l'écran de campagne
+  pour les 5 scénarios.
+- **Bug de données pré-existant trouvé et corrigé en chemin** : `gs120b` (Shi'ar Throne face B) n'avait aucun
+  `desc.Class`, ce qui faisait planter la mise en place complète du scénario 2 — jamais détecté avant faute d'un
+  test qui montait cette mise en place en entier.
+- **Entrée « Nouveautés »** ajoutée pour les joueurs (`public/js/prepare/nouveautes.js`, 20/10/2026) — absente
+  jusque-là contrairement à Skrull Menace et Hunting Season.
+- Commits (branche `gs7-earth-under-siege`, poussée sur `master` les 20 et 21/10) : `63419a9f`, `22e3b0bc`,
+  `8c768f78`, `716db68d`, `7d4ccf86`, `ba20f4a8`, `5e41c99e`.
+
+Résidus non bloquants, déjà actés avec l'utilisateur plus tôt : 0 % de victoire en solo (IA modeste contre un
+contenu pensé pour 2-4 joueurs tournant 3 identités, pas de rééquilibrage demandé), partie manuelle complète par
+un humain pas encore jouée (reportée par l'utilisateur).
+
+---
+
+## 2. OUVERT (mis à jour)
+
+Items du rapport du 19/10 reconduits tels quels sauf mention « → MAJ 21/10 ». Les items clos sont retirés du
+tableau et listés en tête de chaque sous-section.
+
+### 2.1 Plateau et phase du méchant
+
+**Clos depuis le 19/10** : item 2 (modale de choix collée au panneau hors table — `choix de cibles hors table : le
+panneau d'action est collé au-dessus du sélecteur et les deux se déplacent ensemble`, cas mixte traité) ; item 3
+(mode manuel, l'agrandissement de la carte se range à gauche du volet d'aide ouvert, captures avant/après).
+
+| # | Item | → MAJ 21/10 | Taille | Dépendances |
+|---|---|---|---|---|
+| 1 | Restes du déploiement du 19/10 | **Largement fait** : test `klaw-ameliorations` réparé, texte d'aide aligné sur les boutons, specs qui posaient `'bis'`/`'etape'` corrigées en `'tris'` explicite, fenêtre « Choisis ta phase » tranchée (reposée une seule fois, clé `mc_phase_choix_vu`, aucune nouvelle migration), script de déploiement Linux livré (`deployer-linux.sh`). **Reste** : (f) « −X PV » affiché au bilan seulement — non touché ; (g) cache téléphone/tablette — mis de côté avec le reste du mobile ; (h) défaut d'Assaut en ligne non confirmé en navigateur ; (i) **palettes corrigées toujours jamais envoyées au serveur** (`deployer-linux.sh:220` et `deployer.ps1:174` excluent toujours `data/palettes-heros-corrections.json` de l'archive, seul le rapatriement existe) ; passe complète du tutoiement non faite (un seul écran traité) | petit (4 sous-points) | (g) mis de côté, (h) un essai en ligne |
+| 4 | Mode manuel : restes de vérification en vraie partie | Inchangé | petit | une partie jouée à la main |
+| 5 | Relecture et spectateur : voir 100 % de ce que le joueur voit | Inchangé, rien trouvé dans le journal depuis | gros | — |
+| 6 | Table personnalisable : choix par héros en multijoueur | Inchangé, arbitrage utilisateur toujours en attente | moyen | arbitrage préalable de l'utilisateur |
+| 7 | Animations : point 5 et retrait de la garde d'essai | **Point 5 fait** (`au-delà de dix mouvements, un vol groupé au lieu de ne rien animer`). **Garde d'essai (`DUREE_AVANT_ESSAIS`, `essais.ts`) toujours en place**, non retirée | petit (1 sous-point restant) | validation de l'utilisateur à l'usage |
+
+### 2.2 Préparation, comptes, salon
+
+**Clos depuis le 19/10** : item 8 (refonte connexion/inscription — en-tête fin, scène 30 %, bandeau mobile,
+accents remis sur toutes les pages, « le site est complet » traduit) ; item 9 (coop locale : parcours séquentiel un
+héros après l'autre, retour arrière, récapitulatif, repère « Dernier utilisé » — les 3 questions de la fiche
+semblent toutes tranchées par le code, à confirmer en jeu).
+
+| # | Item | → MAJ 21/10 | Taille | Dépendances |
+|---|---|---|---|---|
+| 10 | Données des joueurs : décision en suspens (`lightningmantis`) | Inchangé | petit | décision de l'utilisateur |
+| 11 | Decks absents en campagne | Inchangé | petit | une question à l'utilisateur |
+
+### 2.3 Contenu et cartes
+
+**Clos depuis le 19/10** : item 12 (vérification des cartes hors irefrixs — dz004 à dz038 intégralement vérifiées
+et corrigées en 6 lots, `im001b` et `wc014` corrigés en portée Round, gabarits PROCESSUS-CARTE et RECETTES §15
+écrits).
+
+| # | Item | → MAJ 21/10 | Taille | Dépendances |
+|---|---|---|---|---|
+| 13 | Réserves de gabarits PROCESSUS-CARTE | **Zeus et Echo : réserves levées** (`test(backlog-13): réserves de gabarits Zeus et Echo levées`). Fleeting/Alias : cas déjà rouges 1/2 et 1/1 selon la fiche, mais remis « en question » par le commit du 20/10 — à relire directement dans la fiche pour trancher ce qui reste précisément. Raphael (biographie, partie humaine) : non retrouvé dans le journal de cette fenêtre, probablement toujours ouvert | petit chacun (3 restants sur 4) | aucune |
+| 14 | Campagne Punisher MC×DC 2026 | Cadrage avancé : lot PU-0 (préfixe, mots-clés, données simples), réponses utilisateur aux 8 décisions P1-P8. **Toujours aucun script de carte ni moteur de scénario écrit** | gros | crédits MC×DC à nommer à l'intégration |
+| 16 | Crédits des auteurs fan-made, par héros | Inchangé pour `sets_info.json` (toujours aucune entrée « auteur »). **Nuance nouvelle** : les decks fan-made eux-mêmes portent maintenant `metadata.author` (53 decks, commit du 20/10) — une pièce adjacente, mais ne remplace pas l'affichage dans la modale héros demandé par la fiche | petit | validation de la liste par l'utilisateur |
+| 17 | Stan Lee : batterie « Marvelous » en pause | Toujours en pause (`marvelous-partiel-0-1461.json` inchangé depuis le 29/09). Un commit sans rapport (« phrase et citation du scan ajoutées ») a touché le même sujet Stan Lee mais pas la batterie elle-même | moyen | consommation de calcul de la batterie |
+| 18 | Mots et textes : « Hs Feral Instincts » | Inchangé | petit | incertain |
+
+### 2.4 Infrastructure, distribution, charge
+
+| # | Item | → MAJ 21/10 | Taille | Dépendances |
+|---|---|---|---|---|
+| 19 | BACKLOG n°1 : jeu « installable » | **Décision du 20/10 : laissé au backlog, pas maintenant** (cadrage fusionné avec Punisher et Galactic Storm dans un même lot de décisions, `docs(cadrage)` du 20/10). Aucun code | gros | décisions déjà actées, reste à lancer le jour venu |
+| 20 | BACKLOG n°2 : ajouter des langues | **Décision du 20/10 : espagnol choisi en premier, mais chantier laissé au backlog**, cohérent avec `docs/BACKLOG.md` §2. Aucun code | gros | chantier 19 (poids des scans) |
+| 21 | Mode navigateur (Pyodide) : finitions | **Nettement avancé** : essai multi-navigateurs joué (Chromium, Firefox, WebKit, émulation mobile), 3 petits bugs trouvés et corrigés (sons non servis, service worker absent du build, tutoiement). Le crash WebKit est identifié comme un défaut du WebKit de test Playwright (WPE), pas du code. **5 questions posées à l'utilisateur, en attente de réponse** (`2026-10-20-backlog-21-questions.md`) : Safari/iPhone réel, vitesse Firefox, téléphone réel, ouverture publique, branchement `publier.py`/`deployer.ps1` | moyen | réponses de l'utilisateur |
+| 22 | Tenir plus de joueurs | **Optimisation faite** : `asdict` exact et masqué en une passe, -18 % de CPU par table (commit perf du 20/10), banc de charge du descripteur ajouté. **Le banc de charge complet (25-40 tables) n'a pas été rejoué** pour confirmer le gain à l'échelle | moyen | rejouer le banc de charge complet |
+| 23 | Archivage des tickets de bug | Inchangé | petit | aucune |
+
+### 2.5 Mis de côté par décision ou très lointain
+
+**Clos depuis le 19/10** : item 27 (nice-to-have Yarro — points a, b, c, d tous faits : écarter des cartes, dégâts
+en un coup, raccourcis clavier, glisser-déposer pour permuter) ; item 28 (glisser-déposer du plateau — `onDepot`
+maintenant couvert par un vrai geste Playwright, dépôt réussi et refus affiché).
+
+| # | Item | → MAJ 21/10 | Taille | Dépendances |
+|---|---|---|---|---|
+| 24 | Téléphone et tablette pour la phase « Sur la table » | Inchangé, toujours mis de côté | gros | mis de côté |
+| 25 | Mode tablette simple et mode téléphone (suite) | Inchangé, toujours mis de côté | gros | mis de côté |
+| 26 | Mode PvP Arena | Inchangé, très lointain | gros | aucune |
+| 29 | Revoir les sons : quels déclencheurs tombent mal | Inchangé, toujours une question à poser | petit | une question à l'utilisateur |
+| 30 | Revoir les couleurs du halo : validation et envoi des palettes | Inchangé — voir aussi item 1(i) ci-dessus, même défaut (palettes jamais envoyées au serveur) | petit | passe de l'utilisateur dans l'éditeur |
+| 31 | Recherche de decks MarvelCDB : une vraie partie | Inchangé | petit | incertain |
+
+**Items clos retirés du compte des 31** : 2, 3, 8, 9, 12, 15, 27, 28 (8 items), plus la moitié de l'item 7 (reste
+un sous-point). **21 items encore ouverts** (30 moins les 8 clos, moins Galactic Storm qui était déjà compté à
+part comme le 9ᵉ).
+
+---
+
+## 3. FAIT mais fiche pas à jour (reporté sans changement)
+
+Les 19 entrées du rapport du 19/10 n'ont pas été revérifiées ni corrigées dans cette passe (hors budget). La liste
+reste celle du rapport du 19/10 : mode manuel « comme OCTGN », mode manuel sans automatisation, mode Legacy,
+éditeur de deck, salon invité, choix du héros 30/70, mode sobre des menus, écran de campagne « livre ouvert »,
+inviter un connecté, table par briques, zones renommables, Luke Cage officiel, contradiction copie vivante,
+six défauts priorité absolue du 14/09, revoir les sons, dz003, plan héros/vilains fan-made (à corriger : Skrull
+Menace et Galactic Storm y sont maintenant bien marqués FAIT, c'est `prefixes_fanmade.json` qui avait le retard,
+corrigé ce jour), roue du hasard, phase du méchant « à améliorer ».
+
+**À faire la prochaine fois** : corriger ces 19 en-têtes pour que le prochain relevé n'ait plus à refaire ce tri.
+
+---
+
+## 4. INCERTAIN (reporté sans changement)
+
+Les 11 points du rapport du 19/10 n'ont pas été revérifiés dans cette passe : déploiement effectif de plusieurs
+fonctions livrées les 18-19/10, écart assumé « inviter un connecté », couverture du mode « Accéléré », le mode
+navigateur en ligne (partiellement clarifié par l'item 21 ci-dessus, mais l'ouverture publique reste une
+décision), « Hs Feral Instincts », recherche MarvelCDB, portée exacte du tutoiement, packs TMNT et Shinobi (hors
+`.planning/todos`, non audités ici), test `klaw-ameliorations` (**résolu depuis**, voir item 1), cartouche
+« Détaillé » qui déborde, Doctor Doom Alt Arts.
+
+---
+
+## 5. CLOS (mis à jour)
+
+Catégorie « Chantiers et campagnes livrés » : **+1** depuis le 19/10 (Galactic Storm, voir section 1 bis).
+Les autres comptages (gabarits, portages, relevés, préparations, bugs corrigés) n'ont pas été revérifiés dans
+cette passe — reportés tels quels du rapport du 19/10.
+
+---
+
+## 6. Ordre de reprise proposé (mis à jour)
+
+L'ordre du 19/10 reste globalement valable, Galactic Storm en moins (clos) et avec les nouveaux éléments connus :
+
+1. **Fermer le reste de l'item 1** (−X PV au bilan, confirmer le défaut d'Assaut en ligne, envoyer enfin les
+   palettes corrigées au serveur — items 1(i) et 30 sont le même défaut). Petit, presque fini.
+2. **Réponses aux 5 questions du mode navigateur Pyodide (item 21)** : bloque une décision d'ouverture publique
+   qui ne demande plus que des réponses de l'utilisateur, le travail technique est fait.
+3. **Refonte connexion/inscription (item 8) : CLOSE**, retirée de cet ordre.
+4. **Coop locale (item 9) : CLOSE**, retirée de cet ordre. Reste à confirmer en jeu que les 3 questions sont bien
+   résolues comme le code le suggère.
+5. **Décider la technique du jeu installable (item 19)** : toujours le plus gros chantier, toujours en attente des
+   arbitrages de l'utilisateur, inchangé depuis le 19/10.
+
+Hors priorités, inchangé : téléphone/tablette (24, 25), PvP (26), campagne Punisher (14, cadrage avancé mais à
+lancer), langues (20, après le chantier 19).
+
+À corriger au passage dans la documentation (reporté du 19/10, pas fait cette fois) : les 19 en-têtes de fiches
+listées en section 3.
