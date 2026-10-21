@@ -78,3 +78,9 @@ Autoplay Hobgoblin (60 parties, 5 scénarios dont Hammerhead témoin) : 0 incide
 - 15 cas `[syn]` verts (8 témoins). Tous les modules vidés : 8 cas sur 15 rouges, les 7 témoins restent verts.
 - ⚠ Pièges : une attaque d'ennemi sur un ALLIÉ demande « Defense » au héros (sans `passer_sur_option`, il défend et le test est vide) ; Protection Racket (60134b) pose 1 menace à toute attaque d'un ennemi ; pour Trapstr (Quickstrike) le joueur visé se lit sur l'engagement, `message.GetToPlayer()` est vide.
 - Non testé : le Boost de pu131 (carte donnée face cachée au joueur) et la réduction de Beetle contre une attaque AERIAL.
+
+# Punisher's Armory + Capo of the Past (21/10/2026)
+
+- **Armory** : 5 cartes scriptées (pu114-118), 10 cas `[arm]` verts, tous modules vidés → 9 rouges sur 10 (le témoin reste vert). Les armes s'attachent à « Punisher », sinon au vilain (Punisher n'existe pas encore : PU-4). Aides : `AttacherPunisherSinonVilain`, `DefausserLesAutresArmements`. ⚠ `message.attacked` d'`AfterUnitAttackUnit` est la FACE ciblée, pas une liste : un `attacked[0]` caché dans un `or` n'explose que dans la branche rarement jouée (bug trouvé sur Eel pu064, corrigé, cas ajouté).
+- **Capo of the Past (pu139)** : échafaudé, script REPORTÉ. « Cherche un vilain CAPO au hasard » = l'un des 8 vilains CAPO du scénario 1 Big Apple (PU-7), qui n'existent pas encore ; il faut en plus qu'un vilain entre en jeu comme sbire engagé et soit « traité comme un sbire ELITE ». À faire avec PU-7.
+- `test_cards` : 7057 cartes OK, 0 erreur.
