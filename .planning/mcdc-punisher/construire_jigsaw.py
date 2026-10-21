@@ -12,6 +12,8 @@ defs = importlib.util.module_from_spec(spec); spec.loader.exec_module(defs)
 
 PAGE = {'pu071a': 141, 'pu071b': 142, 'pu072a': 143, 'pu072b': 144, 'pu073': 145, 'pu074': 147, 'pu075': 149,
         'pu076': 151, 'pu077': 153, 'pu078': 155, 'pu079': 157, 'pu080': 159, 'pu082': 163, 'pu084': 167,
+        'pu106a': 211, 'pu106b': 212, 'pu107': 213, 'pu108': 215, 'pu109': 217, 'pu110': 219, 'pu111': 221, 'pu113': 225,
+        'pu119': 237, 'pu120': 239, 'pu121': 241, 'pu123': 245,
         'pu114': 227, 'pu115': 229, 'pu116': 231, 'pu117': 233, 'pu118': 235, 'pu125': 249, 'pu126': 251, 'pu127': 253,
         'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277,
         'pu056a': 111, 'pu056b': 112, 'pu057a': 113, 'pu057b': 114, 'pu058': 115, 'pu059': 117, 'pu060': 119,
@@ -23,12 +25,12 @@ STAGE = {'pu056a': '1', 'pu056b': '2', 'pu057a': '2', 'pu057b': '3',
 def stat(v):
     v = str(v).replace('\U0001F464', '*')
     if v == '★': return '0**'
-    return v.replace('★+1', '1**').replace('2+★', '2**').replace('★', '**')
+    return v.replace('★+1', '1**').replace('2+★', '2**').replace('★+2', '2**').replace('★', '**')
 
 
 cartes = []
-CORRECTIONS = {'pu131': {'Amplify': '2'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
-for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS:
+CORRECTIONS = {'pu131': {'Amplify': '2'}, 'pu113': {'Hazard': '1'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
+for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS:
     d = {k: stat(v) for k, v in x['desc'].items()}
     if x['card_id'] in STAGE: d['Stage'] = STAGE[x['card_id']]
     d.update(CORRECTIONS.get(x['card_id'], {}))
@@ -45,7 +47,7 @@ with open(p, 'w', encoding='utf-8', newline='\n') as f:
 
 for cid, n in PAGE.items():
     im = Image.open(os.path.join(SCANS, 'p%d.jpg' % n)).convert('RGB')
-    if cid in ('pu065', 'pu114', 'pu131'): im = im.rotate(-90, expand=True)     # manigance annexe : scan couche, on remet a plat
+    if cid in ('pu065', 'pu114', 'pu131', 'pu113', 'pu119'): im = im.rotate(-90, expand=True)     # manigance annexe : scan couche, on remet a plat
     im.save(os.path.join(JEU, 'assets/pics', cid + '.jpg'), quality=92)
 
 def ecrire(chemin, obj):
@@ -56,6 +58,8 @@ ecrire('data/encounter_sets/jigsaw.json', {'version': '0.5.8', 'name': 'Jigsaw',
 ecrire('data/encounter_sets/punishers_armory.json', {'version': '0.5.8', 'name': "Punisher's Armory", 'encounters': defs.ARMORY_ENCOUNTERS})
 ecrire('data/encounter_sets/the_syndicate.json', {'version': '0.5.8', 'name': 'The Syndicate', 'encounters': defs.SYNDICATE_ENCOUNTERS})
 ecrire('data/encounter_sets/capo_of_the_past.json', {'version': '0.5.8', 'name': 'Capo of the Past', 'encounters': defs.CAPO_OF_THE_PAST_ENCOUNTERS})
+ecrire('data/encounter_sets/punishers_hit_list.json', {'version': '0.5.8', 'name': "Punisher's Hit List", 'encounters': defs.HITLIST_ENCOUNTERS})
+ecrire('data/encounter_sets/swat_team.json', {'version': '0.5.8', 'name': 'SWAT Team', 'encounters': defs.SWAT_ENCOUNTERS})
 ecrire('data/encounter_sets/hobgoblin.json', {'version': '0.5.8', 'name': 'Hobgoblin', 'encounters': defs.HOBGOBLIN_ENCOUNTERS})
 
 MANIGANCES = ['art_museum_heist', 'the_getaway', 'protection_racket', 'the_raft_breakout', 'stop_the_presses']
@@ -82,7 +86,7 @@ p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))
 cle = '208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)'
 somme = si.pop('checksum', None); si.pop(cle, None)
-si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past'], 'max_id': 'pu139'}
+si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team'], 'max_id': 'pu139'}
 if somme: si['checksum'] = somme
 with open(p, 'w', encoding='utf-8', newline='\n') as f:
     json.dump(si, f, ensure_ascii=False, indent=1)

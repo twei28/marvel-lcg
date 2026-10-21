@@ -1,0 +1,12 @@
+{
+    "version": "0.5.8",
+    "name": "SWAT Team",
+    "encounters": [
+        "pu119",
+        "pu120",
+        "pu121",
+        "pu121",
+        "pu123",
+        "pu123"
+    ]
+}

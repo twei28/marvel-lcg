@@ -187,7 +187,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
-        "ARMAMENT", "SYNDICATE", "CAPO", "FIST",  # AJOUT 21/10/2026 : traits du pack Punisher MC×DC 2026 (Armory, Syndicate, Capo of the Past, Marko)
+        "ARMAMENT", "SYNDICATE", "CAPO", "FIST", "MARINE",  # AJOUT 21/10/2026 : traits du pack Punisher MC×DC 2026 (Armory, Syndicate, Capo of the Past, Marko)
         "MAGGIA", "POLICE",  # CORRECTIF : traits du pack officiel Fear No Evil (Hammerhead, Cops), 18/09/2026
         "INFLUENCED", "HAND", "NINJA",  # CORRECTIF : Fear No Evil bloc 2 (Purple Man, Lady Bullseye, Hand Lookout), 18/09/2026
         "DECEIVED", "DISASTER", "DAILY BUGLE", "TRACKSUIT", "PRISONER", "BADOON", "MARTIAL ARTIST",  # CORRECTIF : Fear No Evil blocs 3-4 (Baron Zemo, Disasters, Stop the Presses!, Tracksuit Mafia, The Raft Breakout, Drang, Kingpin), 18/09/2026
@@ -291,6 +291,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'duty',
         # AJOUT (21/10/2026, set Hobgoblin MC×DC 2026) : « Rabble enters play with 2 drone counters on her » (pu076).
         'drone',
+        # AJOUT (21/10/2026, set SWAT Team MC×DC 2026) : les « wanted counters » de la manigance SWAT (pu119).
+        'wanted',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',

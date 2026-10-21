@@ -4,6 +4,9 @@ from . import *
 class AttackProperty(PowerProperty):
     additional_boost_card: int = field(default=0) # Only for basic attack
     do_not_give_boost: bool = field(default=False)
+    # AJOUT (21/10/2026, Punisher MC×DC, Punishment) : « Ignore "Boost" abilities for this attack » : les icones de boost
+    # comptent, le TEXTE des cartes de boost est ignore (`WouldAttack.IgnoreBoost(ability=True)`).
+    ignore_boost_abilities: bool = field(default=False)
 
     overkill: bool = field(default=False)
     ranged: bool = field(default=False) # ignore retaliate
@@ -292,6 +295,8 @@ class CanAttack(CardFace):
                 can_boost = this
                 if CanBoost.IsType(can_boost):
                     can_boost.GiveFacedownBoostCardsInternal(can_boost.GetBoostCardNum(would_atk_message) + property.additional_boost_card, GameRule(this), would_atk_message)
+            if is_base_attack and property.ignore_boost_abilities:
+                would_atk_message.IgnoreBoost(GameRule(this), ability=True)
 
             # choose defender
             being_atk_message = Message.WhenUnitBeingAttack(target, would_atk_message)

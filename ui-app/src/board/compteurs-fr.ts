@@ -133,6 +133,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   duty: 'devoir',
   // Punisher MC×DC 2026, set Hobgoblin (21/10/2026) : Rabble (pu076) entre en jeu avec 2 « drone counters ».
   drone: 'drone',
+  // SWAT Team (21/10/2026) : les « wanted counters » de la manigance SWAT (pu119).
+  wanted: 'recherché',
   // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).

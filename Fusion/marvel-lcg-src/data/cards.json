@@ -122392,7 +122392,211 @@
    "set_name": "Capo of the Past",
    "text": "Permanent. Victory 0.\nTreat attached character as an ELITE minion. It gains steady, villainous, and victory 0.\n<b>When Revealed</b>: Search your collection for a random CAPO villain. Put it into play engaged with you and attach this card to it.\n[star] <b>Boost</b>: Deal this to yourself as a facedown encounter card.",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu106a",
+   "type": "Environment",
+   "name": "Punisher's Hit List",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Punisher's Hit List",
+   "text": "Setup. Permanent.\n<b>Forced Response</b>: After Punisher defeats a character, add 1 counter here. Then, if there are at least 2+1👤 counters here, remove all counters and flip this card.\n<b>Forced Response</b>: After the player phase ends, resolve Punisher's \"Punishment\" ability, if able.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu106b",
+   "type": "Environment",
+   "name": "Satchel Charge",
+   "subtitle": "\"I don't have to come find you. You're next on my list.\"",
+   "desc": {},
+   "traits": [],
+   "set_name": "Punisher's Hit List",
+   "text": "This card's effects cannot be canceled.\n<b>When Revealed</b>: Deal 2👤 damage to the villain. The players as a group take 3👤 indirect damage. Shuffle Punisher and each ARMAMENT card in play and in the encounter discard pile into the encounter deck. Flip this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu107",
+   "type": "Minion",
+   "name": "* Punisher",
+   "subtitle": "\"All the scum. All in one place. It's perfect.\"",
+   "desc": {
+    "SCH": "0",
+    "ATK": "1",
+    "HP": "7",
+    "Boost": "3",
+    "Steady": "1",
+    "Toughness": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "ELITE",
+    "VIGILANTE"
+   ],
+   "set_name": "Punisher's Hit List",
+   "text": "Steady. Toughness. Villainous.\n\"Punishment\" -- <b>Special</b>: Punisher attacks the minion with the fewest remaining hit points with +2 ATK. Ignore \"Boost\" abilities for this attack. If the attack defeats that minion, repeat this ability.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu108",
+   "type": "Minion",
+   "name": "* Rachel Cole-Alves",
+   "subtitle": "\"Every last one of them will be punished for what they've done. Every. Last. One.\"",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "5",
+    "Boost": "2"
+   },
+   "traits": [
+    "MARINE",
+    "VIGILANTE"
+   ],
+   "set_name": "Punisher's Hit List",
+   "text": "Punisher cannot attack this minion.\n<b>When Revealed</b>: Resolve Punisher's \"Punishment\" ability. Otherwise, Rachel Cole-Alves attacks you. If you are in hero form, give her a boost card for this attack.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu109",
+   "type": "Attachment",
+   "name": "Punisher's Katana",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1**",
+    "Boost": "1**"
+   },
+   "traits": [
+    "ARMAMENT",
+    "WEAPON"
+   ],
+   "set_name": "Punisher's Hit List",
+   "text": "Armament. Weapon.\n[star] Punisher's attacks gain piercing.\n<b>When Revealed</b>: Find Punisher, reveal him, and attach this to him. Resolve his \"Punishment\" ability.\n[star] <b>Boost</b>: If this attack defeats an ally, add a counter to Punisher's Hit List.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu110",
+   "type": "Attachment",
+   "name": "Punisher's M1911",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1**",
+    "Boost": "1**"
+   },
+   "traits": [
+    "ARMAMENT",
+    "WEAPON"
+   ],
+   "set_name": "Punisher's Hit List",
+   "text": "Armament. Weapon.\n[star] Punisher's attacks gain ranged.\n<b>When Revealed</b>: Find Punisher, reveal him, and attach this to him. He attacks you. Do not give him a boost card for this attack. Resolve his \"Punishment\" ability.\n[star] <b>Boost</b>: If this attack defeats an ally, add a counter to Punisher's Hit List.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu111",
+   "type": "Treachery",
+   "name": "Dramatic Entrance",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2**"
+   },
+   "traits": [],
+   "set_name": "Punisher's Hit List",
+   "text": "<b>When Revealed</b>: Find Punisher and reveal him. He attacks the villain and then attacks you. Resolve his \"Punishment\" ability.\n[star] <b>Boost</b>: If this attack defeats an ally, add a counter to Punisher's Hit List.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu113",
+   "type": "SideScheme",
+   "name": "Punisher's Arsenal",
+   "subtitle": "Punisher stockpiles weapons and supplies in safehouses scattered throughout New York.",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "1",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Punisher's Hit List",
+   "text": "<b>When Revealed</b>: Find an ARMAMENT attachment that is not in play and reveal it.\n<b>When Defeated</b>: Find Punisher and reveal him. Resolve his \"Punishment\" ability.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu119",
+   "type": "SideScheme",
+   "name": "SWAT",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1",
+    "Boost": "1",
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "SWAT Team",
+   "text": "Setup. Permanent. Players cannot thwart this scheme.\n<b>Forced Response</b>: After an enemy is defeated, place 1 threat here (3 threat instead if it had the POLICE trait). Then, if there is 4+ threat here, remove all threat and place 1 wanted counter here.\nIf there are 5 or more wanted counters here, the players lose the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu120",
+   "type": "Minion",
+   "name": "* Cole North",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2**",
+    "ATK": "2**",
+    "HP": "4",
+    "Boost": "3",
+    "Patrol": "1"
+   },
+   "traits": [
+    "DETECTIVE",
+    "POLICE"
+   ],
+   "set_name": "SWAT Team",
+   "text": "Patrol.\n[star] When Cole North schemes, place that threat on SWAT, if able.\n[star] <b>Forced Interrupt</b>: When Cole North would attack, if there are fewer than 3 wanted counters on SWAT, remove 2 threat from the main scheme instead.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu121",
+   "type": "Minion",
+   "name": "Riot Police",
+   "subtitle": "\"DISPERSE AND CLEAR THE AREA!\"",
+   "desc": {
+    "SCH": "1**",
+    "ATK": "0",
+    "HP": "6",
+    "Boost": "1",
+    "Guard": "1",
+    "Retaliate": "2",
+    "Toughness": "1"
+   },
+   "traits": [
+    "POLICE"
+   ],
+   "set_name": "SWAT Team",
+   "text": "Guard. Retaliate 2. Toughness.\n[star] When Riot Police schemes, place that threat on SWAT, if able.\n<b>Hero Action</b>: Spend 1 resource of any type and discard an ally you control → discard Riot Police and remove 2 threat from SWAT.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu123",
+   "type": "Minion",
+   "name": "Tactical Sniper",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1**",
+    "ATK": "3**",
+    "HP": "4",
+    "Boost": "2",
+    "Vulnerable": "1"
+   },
+   "traits": [
+    "POLICE"
+   ],
+   "set_name": "SWAT Team",
+   "text": "Vulnerable.\n[star] When Tactical Sniper schemes, place that threat on SWAT, if able.\n[star] <b>Forced Interrupt</b>: When Tactical Sniper would attack, if there are fewer than 3 wanted counters on SWAT, it attacks the enemy with the fewest remaining hit points without the POLICE trait instead.",
+   "custom": "MC×DC 2026"
   }
  ],
- "checksum": "eb371124d85293399fa2be321524d51f598e6a6b0a695da320c59aef37dda793"
+ "checksum": "58d08d0efb3555e8ce566a8833591e72cec9b4b11cad99da77e44f9224bf5e6f"
 }

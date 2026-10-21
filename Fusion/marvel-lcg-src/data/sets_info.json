@@ -1927,9 +1927,11 @@
    "hobgoblin",
    "punishers_armory",
    "the_syndicate",
-   "capo_of_the_past"
+   "capo_of_the_past",
+   "punishers_hit_list",
+   "swat_team"
   ],
   "max_id": "pu139"
  },
- "checksum": "151c6a5779f17616ead6f871ccd59524ac35d0c5d54b6f1965a115b2e045563d"
+ "checksum": "0862fac2961a4256330e4db37bdc09c2e4e9d12014b1d6f71e3ea36f0678bc80"
 }

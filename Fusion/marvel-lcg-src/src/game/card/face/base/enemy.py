@@ -244,6 +244,7 @@ class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, CanHinder, HasThreatLeve
                         overkill_to: 'CardFace|Callable[[CardFace], CardFace|None]|None'=None,
                         additional_attack: int=0,
                         give_boost: bool=True,
+                        ignore_boost_abilities: bool=False,
                         property: 'AttackProperty|None'=None,
                         if_this_defeat_unit: Callable[['CardFace'], None]|None=None,
                         if_no_attack_was_made: Callable[[], None]|None=None,
@@ -264,6 +265,8 @@ class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, CanHinder, HasThreatLeve
         property.additional_value += additional_attack
         if not give_boost:
             property.do_not_give_boost = True
+        if ignore_boost_abilities:
+            property.ignore_boost_abilities = True
         if overkill is not None:
             property.overkill = overkill
 

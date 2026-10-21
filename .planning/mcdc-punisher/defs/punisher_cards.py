@@ -283,8 +283,80 @@ CAPO_OF_THE_PAST_CARDS = [
 CAPO_OF_THE_PAST_ENCOUNTERS = ["pu139"]
 
 # ======================================================================================================
+# Set "Punisher's Hit List" (8 cartes physiques, 7 card_id) -- modulaire ; Punisher y est un sbire elite (ID 6106-6113).
+# Releve cartes.md relu sur les scans p211-p219 le 21/10/2026 (conforme).
+# ======================================================================================================
+PU_HIT = "Punisher's Hit List"
+PU_SWAT = "SWAT Team"
+
+HITLIST_CARDS = [
+    c("pu106a", "Environment", "Punisher's Hit List", {"Setup": "1", "Permanent": "1"}, [],
+      'Setup. Permanent.\n<b>Forced Response</b>: After Punisher defeats a character, add 1 counter here. Then, if '
+      'there are at least 2+1👤 counters here, remove all counters and flip this card.\n<b>Forced Response</b>: After '
+      'the player phase ends, resolve Punisher\'s "Punishment" ability, if able.', PU_HIT, page="p211"),
+    c("pu106b", "Environment", "Satchel Charge", {}, [],
+      "This card's effects cannot be canceled.\n<b>When Revealed</b>: Deal 2👤 damage to the villain. The players as a "
+      "group take 3👤 indirect damage. Shuffle Punisher and each ARMAMENT card in play and in the encounter discard "
+      "pile into the encounter deck. Flip this card.", PU_HIT, page="p212",
+      subtitle='"I don\'t have to come find you. You\'re next on my list."'),
+    c("pu107", "Minion", "* Punisher", {"SCH": "0", "ATK": "1", "HP": "7", "Boost": "3", "Steady": "1", "Toughness": "1", "Villainous": "1"},
+      ["ELITE", "VIGILANTE"],
+      'Steady. Toughness. Villainous.\n"Punishment" -- <b>Special</b>: Punisher attacks the minion with the fewest '
+      'remaining hit points with +2 ATK. Ignore "Boost" abilities for this attack. If the attack defeats that minion, '
+      'repeat this ability.', PU_HIT, page="p213", subtitle='"All the scum. All in one place. It\'s perfect."'),
+    c("pu108", "Minion", "* Rachel Cole-Alves", {"SCH": "1", "ATK": "2", "HP": "5", "Boost": "2"}, ["MARINE", "VIGILANTE"],
+      'Punisher cannot attack this minion.\n<b>When Revealed</b>: Resolve Punisher\'s "Punishment" ability. Otherwise, '
+      'Rachel Cole-Alves attacks you. If you are in hero form, give her a boost card for this attack.', PU_HIT, page="p215",
+      subtitle='"Every last one of them will be punished for what they\'ve done. Every. Last. One."'),
+    c("pu109", "Attachment", "Punisher's Katana", {"ATK+": "1★", "Boost": "★+1"}, ["ARMAMENT", "WEAPON"],
+      "Armament. Weapon.\n[star] Punisher's attacks gain piercing.\n<b>When Revealed</b>: Find Punisher, reveal him, "
+      'and attach this to him. Resolve his "Punishment" ability.\n[star] <b>Boost</b>: If this attack defeats an ally, '
+      "add a counter to Punisher's Hit List.", PU_HIT, page="p217"),
+    c("pu110", "Attachment", "Punisher's M1911", {"ATK+": "1★", "Boost": "★+1"}, ["ARMAMENT", "WEAPON"],
+      "Armament. Weapon.\n[star] Punisher's attacks gain ranged.\n<b>When Revealed</b>: Find Punisher, reveal him, "
+      'and attach this to him. He attacks you. Do not give him a boost card for this attack. Resolve his "Punishment" '
+      "ability.\n[star] <b>Boost</b>: If this attack defeats an ally, add a counter to Punisher's Hit List.", PU_HIT, page="p219"),
+    # 2 exemplaires identiques (ID 6111/6112) -> 1 card_id, x2 au deck.
+    c("pu111", "Treachery", "Dramatic Entrance", {"Boost": "★+2"}, [],
+      '<b>When Revealed</b>: Find Punisher and reveal him. He attacks the villain and then attacks you. Resolve his '
+      '"Punishment" ability.\n[star] <b>Boost</b>: If this attack defeats an ally, add a counter to Punisher\'s Hit List.',
+      PU_HIT, page="p221/p223 (x2, ID 6111/6112)"),
+    c("pu113", "SideScheme", "Punisher's Arsenal", {"StartingThreat": "2👤", "Boost": "1"}, [],
+      "<b>When Revealed</b>: Find an ARMAMENT attachment that is not in play and reveal it.\n<b>When Defeated</b>: Find "
+      'Punisher and reveal him. Resolve his "Punishment" ability.', PU_HIT, page="p225",
+      subtitle="Punisher stockpiles weapons and supplies in safehouses scattered throughout New York."),
+]
+HITLIST_ENCOUNTERS = ["pu106a,pu106b", "pu107", "pu108", "pu109", "pu110", "pu111", "pu111", "pu113"]
+
+# ======================================================================================================
+# Set "SWAT Team" (6 cartes physiques, 4 card_id) -- modulaire, la police (ID 6119-6124). Releve p237-p247.
+# ======================================================================================================
+SWAT_CARDS = [
+    c("pu119", "SideScheme", "SWAT", {"StartingThreat": "1", "Boost": "1", "Setup": "1", "Permanent": "1"}, [],
+      "Setup. Permanent. Players cannot thwart this scheme.\n<b>Forced Response</b>: After an enemy is defeated, place 1 "
+      "threat here (3 threat instead if it had the POLICE trait). Then, if there is 4+ threat here, remove all threat "
+      "and place 1 wanted counter here.\nIf there are 5 or more wanted counters here, the players lose the game.",
+      PU_SWAT, page="p237"),
+    c("pu120", "Minion", "* Cole North", {"SCH": "2★", "ATK": "2★", "HP": "4", "Boost": "3", "Patrol": "1"}, ["DETECTIVE", "POLICE"],
+      "Patrol.\n[star] When Cole North schemes, place that threat on SWAT, if able.\n[star] <b>Forced Interrupt</b>: When "
+      "Cole North would attack, if there are fewer than 3 wanted counters on SWAT, remove 2 threat from the main scheme "
+      "instead.", PU_SWAT, page="p239"),
+    # 2 exemplaires identiques (ID 6121/6122)
+    c("pu121", "Minion", "Riot Police", {"SCH": "1★", "ATK": "0", "HP": "6", "Boost": "1", "Guard": "1", "Retaliate": "2", "Toughness": "1"}, ["POLICE"],
+      "Guard. Retaliate 2. Toughness.\n[star] When Riot Police schemes, place that threat on SWAT, if able.\n<b>Hero "
+      "Action</b>: Spend 1 resource of any type and discard an ally you control → discard Riot Police and remove 2 "
+      'threat from SWAT.', PU_SWAT, page="p241/p243 (x2, ID 6121/6122)", subtitle='"DISPERSE AND CLEAR THE AREA!"'),
+    # 2 exemplaires identiques (ID 6123/6124)
+    c("pu123", "Minion", "Tactical Sniper", {"SCH": "1★", "ATK": "3★", "HP": "4", "Boost": "2", "Vulnerable": "1"}, ["POLICE"],
+      "Vulnerable.\n[star] When Tactical Sniper schemes, place that threat on SWAT, if able.\n[star] <b>Forced "
+      "Interrupt</b>: When Tactical Sniper would attack, if there are fewer than 3 wanted counters on SWAT, it attacks "
+      "the enemy with the fewest remaining hit points without the POLICE trait instead.", PU_SWAT, page="p245/p247 (x2, ID 6123/6124)"),
+]
+SWAT_ENCOUNTERS = ["pu119", "pu120", "pu121", "pu121", "pu123", "pu123"]
+
+# ======================================================================================================
 # Recapitulatif : 13 + 14 + 5 + 7 + 1 = 40 card_id distincts, pour 15 + 15 + 5 + 7 + 1 = 43 cartes
 # physiques (releve "contenu simple" du cadrage section 1.2 : "aucune brique neuve au-dela de M6-M9").
 # ======================================================================================================
-ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS
+ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS
 assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id en double dans ce fichier"
