@@ -9,7 +9,8 @@
  "expert": {
   "pv_persistants": true
  },
- "pages_regles": [],
+ "pages_intro": ["00-campagne-intro-1.jpg"],
+ "pages_regles": ["00-campagne-regles-1.jpg", "00-campagne-regles-2.jpg", "00-campagne-regles-3.jpg", "00-campagne-regles-4.jpg"],
  "scenarios": [
   {
    "id": "gs_kree_sentry",
