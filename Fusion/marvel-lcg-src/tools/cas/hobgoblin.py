@@ -141,3 +141,6 @@ CAS += [
     _h("pu084 When Revealed, TEMOIN : sans jeton d'acceleration, ATQ 1 = 1 degat",
        "contre-cas", ["01105"] * 4, [], ["Puzzle.Reveal('pu084')"], {"degats_identite": 1}, main_exclusive=["01088"], **SANS_DEFENSE),
 ]
+CAS.append(_h("Stades expert : pu071b vaincu -> pu072b prend la releve (pas de victoire)", "expert = deux stades (II puis III), comme Hammerhead expert", ["01105"], [], ["Puzzle.Damage('pu071b', 17)"], {"en_jeu": ["pu072b"]}, main_exclusive=["01088"], scenario=SCE))
+CAS.append(_h("Stades standard : pu071a vaincu -> pu072a prend la releve", "standard = deux stades (I puis II)", ["01105"], [], ["Puzzle.Damage('pu071a', 15)"], {"en_jeu": ["pu072a"]}, main_exclusive=["01088"]))
+CAS.append(_h("Stades expert : pu071b vaincu PAR UNE ATTAQUE du heros -> pu072b", "meme chemin que la defaite par degats", ["01105"], ["Puzzle.Damage('pu071b', 16)"], ["Puzzle.Attack('01001a')"], {"en_jeu": ["pu072b"]}, main_exclusive=["01088"], scenario=SCE, cibles=["pu071b"]))
