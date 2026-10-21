@@ -96,7 +96,7 @@ panneau d'action est collé au-dessus du sélecteur et les deux se déplacent en
 |---|---|---|---|---|
 | 1 | Restes du déploiement du 19/10 | **Largement fait**, et encore avancé le 21/10 au soir : test `klaw-ameliorations` réparé, texte d'aide aligné sur les boutons, specs corrigées, fenêtre « Choisis ta phase » tranchée, script de déploiement Linux livré ET éprouvé en réel (`deployer-linux.sh`). (h) défaut d'Assaut : **clos**, confirmé en ligne par le déploiement réel du 21/10. (i) palettes : **pas un défaut**, sens unique volontaire (voir section 1, Résumé). **Reste** : (f) « −X PV » affiché au bilan seulement — identifié (constructeur d'étapes animables de `deroule-phase.ts`, pas un simple oubli), reporté après déploiement ; (g) cache téléphone/tablette — mis de côté ; passe complète du tutoiement non faite | petit (2 sous-points) | (g) mis de côté |
 | ~~4~~ | ~~Mode manuel : restes de vérification en vraie partie~~ | **CLOS le 21/10/2026** (`ui-check/tests/mode-manuel.spec.ts` rejoué contre un serveur local) : table éclatée OK, carte à deux faces OK, chemin Victoire OK. Un défaut trouvé en route (geste manuel via menu triche appliqué PENDANT une pause sur question ouverte comme le mulligan, jamais publié à l'écran) a été jugé trop pointu par l'utilisateur pour être suivi : abandonné, voir `2026-10-07-manuel-100-pourcent-octgn.md` | — | — |
-| 5 | Relecture et spectateur : voir 100 % de ce que le joueur voit | Inchangé, rien trouvé dans le journal depuis | gros | — |
+| ~~5~~ | ~~Relecture et spectateur : voir 100 % de ce que le joueur voit~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. Rien n'avait été commencé | — | — |
 | 6 | Table personnalisable : choix par héros en multijoueur | Inchangé, arbitrage utilisateur toujours en attente | moyen | arbitrage préalable de l'utilisateur |
 | 7 | Animations : point 5 et retrait de la garde d'essai | **Point 5 fait** (`au-delà de dix mouvements, un vol groupé au lieu de ne rien animer`). **Garde d'essai (`DUREE_AVANT_ESSAIS`, `essais.ts`) toujours en place**, non retirée | petit (1 sous-point restant) | validation de l'utilisateur à l'usage |
 
@@ -145,14 +145,14 @@ maintenant couvert par un vrai geste Playwright, dépôt réussi et refus affich
 |---|---|---|---|---|
 | 24 | Téléphone et tablette pour la phase « Sur la table » | Inchangé, toujours mis de côté | gros | mis de côté |
 | 25 | Mode tablette simple et mode téléphone (suite) | Inchangé, toujours mis de côté | gros | mis de côté |
-| 26 | Mode PvP Arena | Inchangé, très lointain | gros | aucune |
-| 29 | Revoir les sons : quels déclencheurs tombent mal | Inchangé, toujours une question à poser | petit | une question à l'utilisateur |
-| 30 | Revoir les couleurs du halo : validation et envoi des palettes | « Jamais envoyées au serveur » n'est **pas un défaut** (voir item 1(i) : sens unique volontaire, l'éditeur corrige directement sur le serveur). Reste seulement la vraie partie non résolue : une passe de validation de l'utilisateur dans l'éditeur, pour corriger les couleurs encore fausses | petit | passe de l'utilisateur dans l'éditeur |
-| 31 | Recherche de decks MarvelCDB : une vraie partie | Inchangé | petit | incertain |
+| ~~26~~ | ~~Mode PvP Arena~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. Très lointain, rien commencé | — | — |
+| ~~29~~ | ~~Revoir les sons : quels déclencheurs tombent mal~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. La question ne sera pas posée | — | — |
+| ~~30~~ | ~~Revoir les couleurs du halo : validation et envoi des palettes~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. « Jamais envoyées au serveur » n'était pas un défaut (voir item 1(i), sens unique volontaire) ; la passe de validation des couleurs encore fausses ne sera pas faite | — | — |
+| ~~31~~ | ~~Recherche de decks MarvelCDB : une vraie partie~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. L'import depuis MarvelCDB fonctionne déjà (confirmé par l'utilisateur) | — | — |
 
-**Items clos retirés du compte des 31** : 2, 3, 8, 9, 12, 15, 27, 28 (8 items), plus la moitié de l'item 7 (reste
-un sous-point). **21 items encore ouverts** (30 moins les 8 clos, moins Galactic Storm qui était déjà compté à
-part comme le 9ᵉ).
+**Items clos ou retirés depuis le rapport du 19/10** : 2, 3, 4, 5, 8, 9, 12, 13, 15, 18, 21, 22, 26, 27, 28, 29,
+30, 31 (18 items), plus la moitié de l'item 7 (reste un sous-point). **12 items encore ouverts** : 1, 6, 7, 10,
+14, 16, 17, 19, 20, 23, 24, 25.
 
 ---
 
@@ -203,7 +203,7 @@ L'ordre du 19/10 reste globalement valable, Galactic Storm en moins (clos) et av
 5. **Décider la technique du jeu installable (item 19)** : toujours le plus gros chantier, toujours en attente des
    arbitrages de l'utilisateur, inchangé depuis le 19/10.
 
-Hors priorités, inchangé : téléphone/tablette (24, 25), PvP (26), campagne Punisher (14, cadrage avancé mais à
+Hors priorités, inchangé : téléphone/tablette (24, 25), campagne Punisher (14, cadrage avancé mais à
 lancer), langues (20, après le chantier 19).
 
 À corriger au passage dans la documentation (reporté du 19/10, pas fait cette fois) : les 19 en-têtes de fiches
