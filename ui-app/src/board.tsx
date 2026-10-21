@@ -5285,6 +5285,7 @@ export function PagePartie({
               manuel={manuel}
               commenceEnManuel={modeManuelDeclare}
               lectureSeule={spectateur}
+              questionOuverte={moteurAttendLeJoueur}
               onManuel={() => basculerPause(true)}
               onReprendre={() => basculerPause(false)}
               onReprendreA={reprendreEnAuto}
