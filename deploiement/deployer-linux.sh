@@ -223,12 +223,23 @@ archives() {
     narwhal-sauvegarde.service narwhal-purge.service narwhal-sauvegarde.timer narwhal-purge.timer Caddyfile
   dire "code : $code ($(du -h "$code" | cut -f1)) ; conf : $conf"
   # Verifications de contenu : le plateau construit et le journal du jour doivent y etre.
-  tar -tzf "$code" | grep -q "^Fusion/marvel-lcg-src/public/app/assets/$(basename "$BOARD_LOCAL")$" \
+  # ⚠ NE JAMAIS FAIRE `tar -tzf ... | grep -q ...` (21/10/2026, deploiement reel) : sous
+  # `set -o pipefail`, des que `grep -q` trouve sa ligne il ferme le pipe et sort, ce qui
+  # envoie SIGPIPE a `tar` encore en train d'ecrire le reste d'une longue liste (des
+  # milliers d'entrees ici) ; `pipefail` remonte alors le code d'erreur de `tar` (signal),
+  # PAS celui de `grep`, et la verification echoue alors que le fichier est bel et bien
+  # present. Capturer d'abord la liste dans une variable, puis grep DESSUS (plus de pipe
+  # vers un `tar` qui ecrit encore) : la seule facon fiable sous `pipefail`.
+  local liste_code liste_conf nouveautes_contenu
+  liste_code="$(tar -tzf "$code")"
+  liste_conf="$(tar -tzf "$conf")"
+  nouveautes_contenu="$(tar -xzOf "$code" "Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js")"
+  grep -q "^Fusion/marvel-lcg-src/public/app/assets/$(basename "$BOARD_LOCAL")$" <<<"$liste_code" \
     || arret "le plateau $(basename "$BOARD_LOCAL") n'est pas dans l'archive du code."
-  tar -xzOf "$code" "Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js" | grep -q "date: \"$NOUVEAUTE_DU_JOUR\"" \
+  grep -q "date: \"$NOUVEAUTE_DU_JOUR\"" <<<"$nouveautes_contenu" \
     || arret "la page de nouveautes du $NOUVEAUTE_DU_JOUR n'est pas dans l'archive."
-  tar -tzf "$code" | grep -q '^site/' || arret "le dossier site/ manque dans l'archive."
-  tar -tzf "$conf" | grep -q '^synchroniser-conf.sh$' || arret "synchroniser-conf.sh manque dans l'archive de conf."
+  grep -q '^site/' <<<"$liste_code" || arret "le dossier site/ manque dans l'archive."
+  grep -q '^synchroniser-conf.sh$' <<<"$liste_conf" || arret "synchroniser-conf.sh manque dans l'archive de conf."
   dire "contenu verifie (plateau, nouveautes du $NOUVEAUTE_DU_JOUR, site/, conf)."
   envoyer "$code" /tmp/narwhal-code.tgz
   envoyer "$conf" /tmp/narwhal-conf.tgz
