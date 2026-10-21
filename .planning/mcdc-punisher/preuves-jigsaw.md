@@ -71,3 +71,10 @@ Carte terminée : OUI (script).
 - Non vérifié en détail : pu075 (soutien/amélioration défaussés, branche amélioration), pu078 Alter-Ego Action sans identité épuisée possible.
 
 Autoplay Hobgoblin (60 parties, 5 scénarios dont Hammerhead témoin) : 0 incident, 0 traceback. Les « victoires » de l'option `expert` d'autoplay sont de vraies fins de partie du dernier stade du scénario standard (II, 17 PV) : l'outil rejoue le scénario standard avec le drapeau expert, il ne charge pas les fichiers `*_expert`. 3 cas `[hob]` couvrent l'enchaînement des stades (standard et expert, par dégâts et par attaque).
+
+# Set The Syndicate (21/10/2026, sans question)
+
+7 cartes scriptées (pu125-131), aptitude « When Defeated » commune (`DefaiteSyndicate`, choix par le premier joueur : le texte ne dit pas qui choisit), aides communes dans `punisher_mcdc_2026/commun.py` (`FaceCacheeAuJoueur`, `CartesQueTuControles`, `AuChoixDuJoueur`). 4 traits ajoutés à l'enum (`ARMAMENT`, `SYNDICATE`, `CAPO`, `FIST`).
+- 15 cas `[syn]` verts (8 témoins). Tous les modules vidés : 8 cas sur 15 rouges, les 7 témoins restent verts.
+- ⚠ Pièges : une attaque d'ennemi sur un ALLIÉ demande « Defense » au héros (sans `passer_sur_option`, il défend et le test est vide) ; Protection Racket (60134b) pose 1 menace à toute attaque d'un ennemi ; pour Trapstr (Quickstrike) le joueur visé se lit sur l'engagement, `message.GetToPlayer()` est vide.
+- Non testé : le Boost de pu131 (carte donnée face cachée au joueur) et la réduction de Beetle contre une attaque AERIAL.
