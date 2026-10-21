@@ -3210,6 +3210,15 @@ function bioDuHeros(h) {
         info.equipes ? detailRow(t("Équipes"), info.equipesEn || info.equipes) : null,
         info.ennemis ? detailRow(t("Ennemis"), champ(info.ennemis, info.ennemisEn)) : null,
         info.apparition ? detailRow(t("Première apparition"), info.apparition) : null,
+        // Auteur du pack fan-made (21/10/2026) : lu sur `custom` de la carte
+        // héros elle-même (seule source, déjà posée pack par pack à la
+        // création — voir `catalog.js` qui fait pareil pour les scénarios).
+        // Absent sur les héros officiels : rien à afficher.
+        (() => {
+            const carte = cards.get(h.heroCardId);
+            const auteur = carte && carte.custom;
+            return auteur ? detailRow(t("Pack créé par"), auteur) : null;
+        })(),
     ]);
 }
 

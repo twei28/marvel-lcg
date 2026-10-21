@@ -297,6 +297,7 @@ export const DICO_EN_BASE = {
     "Équipes": "Teams",
     "Ennemis": "Enemies",
     "Première apparition": "First appearance",
+    "Pack créé par": "Pack created by",
     "méchants": "villains",
     "Méchant(s)": "Villain(s)",
     "Pas de méchant fixe": "No fixed villain",

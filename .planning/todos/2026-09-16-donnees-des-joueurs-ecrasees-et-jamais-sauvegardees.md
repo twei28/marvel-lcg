@@ -122,5 +122,7 @@ hauts faits, 2 fiches Legacy, 10 comptes dans la base restaurée).
 ## Statut
 
 **Les trois défauts sont corrigés le 16/09/2026**, et la sauvegarde complète
-est vérifiée sur le serveur. Reste la décision sur `lightningmantis` et la
-question de fond ci-dessus.
+est vérifiée sur le serveur.
+
+**CLOS le 21/10/2026** (item 10 du backlog) : décision de l'utilisateur sur
+`lightningmantis`, ne rien lui dire — il repart de zéro sans explication.

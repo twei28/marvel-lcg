@@ -99371,7 +99371,8 @@
     "ADVENTURER"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>She-Devil</b> — <b>Action</b>: Exhaust a <b>WEAPON</b> upgrade you control → play an event from your hand, reducing its resource cost by 1."
+   "text": "<b>She-Devil</b> — <b>Action</b>: Exhaust a <b>WEAPON</b> upgrade you control → play an event from your hand, reducing its resource cost by 1.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs001b",
@@ -99387,7 +99388,8 @@
     "ADVENTURER"
    ],
    "set_name": "Red Sonja",
-   "text": "During deck-building you may include up to 6 events from aspects other than your chosen aspect.\n<b>Day of the Sword</b> — <b>Action</b>: Search your deck for the Hyrkanium Blade upgrade and add it to your hand."
+   "text": "During deck-building you may include up to 6 events from aspects other than your chosen aspect.\n<b>Day of the Sword</b> — <b>Action</b>: Search your deck for the Hyrkanium Blade upgrade and add it to your hand.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs002",
@@ -99406,7 +99408,8 @@
     "ADVENTURER"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>Interrupt</b>: When you use one of Conan's basic powers, exhaust a <b>WEAPON</b> upgrade you control → Conan gets +X to that power for this use, where X is equal to that card's printed cost."
+   "text": "<b>Interrupt</b>: When you use one of Conan's basic powers, exhaust a <b>WEAPON</b> upgrade you control → Conan gets +X to that power for this use, where X is equal to that card's printed cost.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs003",
@@ -99423,7 +99426,8 @@
     "ATTACK"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. For each point of excess damage dealt by this attack, reduce the cost of the next event you play this phase by 1."
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. For each point of excess damage dealt by this attack, reduce the cost of the next event you play this phase by 1.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs004",
@@ -99440,7 +99444,8 @@
     "THWART"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 6 threat from a scheme. For each point of excess threat removed by this thwart, reduce the cost of the next event you play this phase by 1."
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 6 threat from a scheme. For each point of excess threat removed by this thwart, reduce the cost of the next event you play this phase by 1.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs005",
@@ -99457,7 +99462,8 @@
     "DEFENSE"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attacks, prevent all damage from that attack. After this attack, give Red Sonja a tough status card."
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attacks, prevent all damage from that attack. After this attack, give Red Sonja a tough status card.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs006",
@@ -99474,7 +99480,8 @@
     "ATTACK"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If you used your \"She-Devil\" ability to reduce the cost of this card, stun that enemy."
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If you used your \"She-Devil\" ability to reduce the cost of this card, stun that enemy.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs007",
@@ -99491,7 +99498,8 @@
     "THWART"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme. If you used your \"She-Devil\" ability to reduce the cost of this card, confuse an enemy."
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme. If you used your \"She-Devil\" ability to reduce the cost of this card, confuse an enemy.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs008",
@@ -99509,7 +99517,8 @@
     "THWART"
    ],
    "set_name": "Red Sonja",
-   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 5 damage to an enemy. Remove 5 threat from a scheme. If you used your \"She-Devil\" ability to reduce the cost of this card, this action ignores the guard and patrol keywords and any crisis icons in play."
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 5 damage to an enemy. Remove 5 threat from a scheme. If you used your \"She-Devil\" ability to reduce the cost of this card, this action ignores the guard and patrol keywords and any crisis icons in play.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs009",
@@ -99525,7 +99534,8 @@
    },
    "traits": [],
    "set_name": "Red Sonja",
-   "text": "Victory 0.\nOnly Red Sonja can remove threat from this scheme. She may use her basic ATK, DEF or THW to do so.\nWhile Queen of Sogaria is in the victory display, Red Sonja gains: \"<b>Response</b>: After you exhaust Hyrkanium Blade, draw 1 card. <i>(Limit once per round.)</i>\""
+   "text": "Victory 0.\nOnly Red Sonja can remove threat from this scheme. She may use her basic ATK, DEF or THW to do so.\nWhile Queen of Sogaria is in the victory display, Red Sonja gains: \"<b>Response</b>: After you exhaust Hyrkanium Blade, draw 1 card. <i>(Limit once per round.)</i>\"",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs010",
@@ -99538,7 +99548,8 @@
    },
    "traits": [],
    "set_name": "Red Sonja",
-   "text": "<b>Hero Response</b>: After you spend this card, ready a weapon upgrade you control."
+   "text": "<b>Hero Response</b>: After you spend this card, ready a weapon upgrade you control.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs011",
@@ -99556,7 +99567,8 @@
     "SKILL"
    ],
    "set_name": "Red Sonja",
-   "text": "Red Sonja gets +1 THW.\nUses (2 stealth counters).\n<b>Hero Response</b>: After a minion enters play, remove 1 stealth counter from here → cancel that minion's \"When Revealed\" effect."
+   "text": "Red Sonja gets +1 THW.\nUses (2 stealth counters).\n<b>Hero Response</b>: After a minion enters play, remove 1 stealth counter from here → cancel that minion's \"When Revealed\" effect.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs012",
@@ -99573,7 +99585,8 @@
     "WEAPON"
    ],
    "set_name": "Red Sonja",
-   "text": "Restricted.\n<b>Response</b>: After you play an event, exhaust Bloodmoon Battleaxe → deal 2 damage to an enemy."
+   "text": "Restricted.\n<b>Response</b>: After you play an event, exhaust Bloodmoon Battleaxe → deal 2 damage to an enemy.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs013",
@@ -99589,7 +99602,8 @@
     "WEAPON"
    ],
    "set_name": "Red Sonja",
-   "text": "Red Sonja's basic attacks gain piercing.\n<b>Response</b>: After you defeat a side scheme or minion, ready Hyrkanium Blade. <i>(Limit once per round.)</i>"
+   "text": "Red Sonja's basic attacks gain piercing.\n<b>Response</b>: After you defeat a side scheme or minion, ready Hyrkanium Blade. <i>(Limit once per round.)</i>",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs014",
@@ -99601,7 +99615,8 @@
    },
    "traits": [],
    "set_name": "Red Sonja Nemesis",
-   "text": "Give to the Sonja of Hyrkania player. Choose:\n• Exhaust your identity and discard Hyrkanium Blade → remove A Warrior's Burden from the game.\n• Search the encounter deck and discard pile for 2 minions and reveal them → discard this card."
+   "text": "Give to the Sonja of Hyrkania player. Choose:\n• Exhaust your identity and discard Hyrkanium Blade → remove A Warrior's Burden from the game.\n• Search the encounter deck and discard pile for 2 minions and reveal them → discard this card.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs015",
@@ -99614,7 +99629,8 @@
    },
    "traits": [],
    "set_name": "Red Sonja Nemesis",
-   "text": "Players cannot ready <b>WEAPON</b> upgrades."
+   "text": "Players cannot ready <b>WEAPON</b> upgrades.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs016",
@@ -99633,7 +99649,8 @@
     "MYSTIC"
    ],
    "set_name": "Red Sonja Nemesis",
-   "text": "<b>When Defeated</b>: The defeating player discards cards from the top of the encounter deck and reveals the first minion discarded this way.\n<i>(Red Sonja's nemesis minion.)</i>\n[star] <b>Boost</b>: Put this minion into play engaged with you."
+   "text": "<b>When Defeated</b>: The defeating player discards cards from the top of the encounter deck and reveals the first minion discarded this way.\n<i>(Red Sonja's nemesis minion.)</i>\n[star] <b>Boost</b>: Put this minion into play engaged with you.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs017",
@@ -99652,7 +99669,8 @@
     "CREATURE"
    ],
    "set_name": "Red Sonja Nemesis",
-   "text": "Guard. Toughness.\n[star] Yeti Warrior's attacks gain overkill."
+   "text": "Guard. Toughness.\n[star] Yeti Warrior's attacks gain overkill.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs018",
@@ -99665,7 +99683,8 @@
    },
    "traits": [],
    "set_name": "Red Sonja Nemesis",
-   "text": "Uses (3 fetter counters).\n<b>When Revealed</b>: Attach to your identity and exhaust each <b>WEAPON</b> upgrade you control.\n<b>Forced Interrupt</b>: When a <b>WEAPON</b> upgrade you control would ready, spend 1 resource of any type. If you do, remove 1 fetter counter from here <i>(and ready that upgrade)</i>. Otherwise, that upgrade does not ready."
+   "text": "Uses (3 fetter counters).\n<b>When Revealed</b>: Attach to your identity and exhaust each <b>WEAPON</b> upgrade you control.\n<b>Forced Interrupt</b>: When a <b>WEAPON</b> upgrade you control would ready, spend 1 resource of any type. If you do, remove 1 fetter counter from here <i>(and ready that upgrade)</i>. Otherwise, that upgrade does not ready.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "rs019",
@@ -99677,7 +99696,8 @@
    },
    "traits": [],
    "set_name": "Red Sonja Nemesis",
-   "text": "<b>When Revealed</b>: For each upgrade you control (to a maximum of 3), choose:\n• Take 1 indirect damage.\n• Place 1 threat on the main scheme."
+   "text": "<b>When Revealed</b>: For each upgrade you control (to a maximum of 3), choose:\n• Take 1 indirect damage.\n• Place 1 threat on the main scheme.",
+   "custom": "RyCoRan"
   }
  ],
  "conan": [
@@ -99698,7 +99718,8 @@
     "THIEF"
    ],
    "set_name": "Conan",
-   "text": "<i>Rogue's Intuition</i> — <b>Response</b>: After you remove 4 or more threat from a scheme in a phase, place 1 Crom counter on The Cimmerian."
+   "text": "<i>Rogue's Intuition</i> — <b>Response</b>: After you remove 4 or more threat from a scheme in a phase, place 1 Crom counter on The Cimmerian.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn001b",
@@ -99715,7 +99736,8 @@
     "THIEF"
    ],
    "set_name": "Conan",
-   "text": "<i>Savage Vitality</i> — <b>Setup</b>: Set King Conan aside. Put The Cimmerian upgrade into play, [[TITLE]] side faceup.\n<b>Action</b>: Spend 1 resource of any type → place 1 Crom counter on The Cimmerian. <i>(Limit once per round.)</i>"
+   "text": "<i>Savage Vitality</i> — <b>Setup</b>: Set King Conan aside. Put The Cimmerian upgrade into play, [[TITLE]] side faceup.\n<b>Action</b>: Spend 1 resource of any type → place 1 Crom counter on The Cimmerian. <i>(Limit once per round.)</i>",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn001c",
@@ -99734,7 +99756,8 @@
     "BARBARIAN"
    ],
    "set_name": "Conan",
-   "text": "<i>Born of Battle</i> — <b>Response</b>: After you deal 5 or more damage to an enemy in a phase, place 1 Crom counter on The Cimmerian."
+   "text": "<i>Born of Battle</i> — <b>Response</b>: After you deal 5 or more damage to an enemy in a phase, place 1 Crom counter on The Cimmerian.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn001d",
@@ -99753,7 +99776,8 @@
     "KING"
    ],
    "set_name": "Conan",
-   "text": "<i>Crown of Aquilonia</i> — <b>Response</b>: After you use a basic power, place 2 Crom counters on The Cimmerian."
+   "text": "<i>Crown of Aquilonia</i> — <b>Response</b>: After you use a basic power, place 2 Crom counters on The Cimmerian.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn001e",
@@ -99769,7 +99793,8 @@
     "KING"
    ],
    "set_name": "Conan",
-   "text": "<i>Battle-Forged</i> — <b>Response</b>: After you change to this form, choose:\n• Give King Conan a tough status card.\n• Remove all crom counters from The Cimmerian → heal 1 damage from King Conan for each crom counter removed this way."
+   "text": "<i>Battle-Forged</i> — <b>Response</b>: After you change to this form, choose:\n• Give King Conan a tough status card.\n• Remove all crom counters from The Cimmerian → heal 1 damage from King Conan for each crom counter removed this way.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn002",
@@ -99789,7 +99814,8 @@
     "PIRATE"
    ],
    "set_name": "Conan",
-   "text": "While you have the [[THIEF]] or [[KING]] trait, Bêlit gets +1 THW.\nWhile you have the [[BARBARIAN]] or [[KING]] trait, Bêlit gets +1 ATK.\n<b>Response</b>: After Bêlit enters play, if you have the [[KING]] trait, ready your identity."
+   "text": "While you have the [[THIEF]] or [[KING]] trait, Bêlit gets +1 THW.\nWhile you have the [[BARBARIAN]] or [[KING]] trait, Bêlit gets +1 ATK.\n<b>Response</b>: After Bêlit enters play, if you have the [[KING]] trait, ready your identity.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn003",
@@ -99806,7 +99832,8 @@
     "ATTACK"
    ],
    "set_name": "Conan",
-   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy (4 damage instead if you are King Conan)."
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy (4 damage instead if you are King Conan).",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn004",
@@ -99823,7 +99850,8 @@
     "THWART"
    ],
    "set_name": "Conan",
-   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme (3 threat instead if you are King Conan)."
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme (3 threat instead if you are King Conan).",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn005",
@@ -99840,7 +99868,8 @@
     "DEFENSE"
    ],
    "set_name": "Conan",
-   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent all of that damage. Place 1 Crom counter on The Cimmerian (2 counters instead if you are King Conan)."
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent all of that damage. Place 1 Crom counter on The Cimmerian (2 counters instead if you are King Conan).",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn006",
@@ -99858,7 +99887,8 @@
     "THWART"
    ],
    "set_name": "Conan",
-   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 5 damage to an enemy or remove 4 threat from a scheme. If you are:\n• Conan the Thief, confuse an enemy.\n• Conan the Barbarian, stun an enemy.\n• King Conan, all of the above."
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 5 damage to an enemy or remove 4 threat from a scheme. If you are:\n• Conan the Thief, confuse an enemy.\n• Conan the Barbarian, stun an enemy.\n• King Conan, all of the above.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn007",
@@ -99876,7 +99906,8 @@
     "THWART"
    ],
    "set_name": "Conan",
-   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack/thwart)</i>: After you defend against an enemy attack, deal damage to an enemy equal to your ATK or remove threat from a scheme equal to your THW."
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack/thwart)</i>: After you defend against an enemy attack, deal damage to an enemy equal to your ATK or remove threat from a scheme equal to your THW.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn008",
@@ -99893,7 +99924,8 @@
     "THWART"
    ],
    "set_name": "Conan",
-   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack/thwart)</i>: Exhaust your hero → deal damage to an enemy or remove threat from a scheme equal to the total of your hero's THW, ATK and DEF values."
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack/thwart)</i>: Exhaust your hero → deal damage to an enemy or remove threat from a scheme equal to the total of your hero's THW, ATK and DEF values.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn009",
@@ -99909,7 +99941,8 @@
    },
    "traits": [],
    "set_name": "Conan",
-   "text": "Victory 0.\nWhile The Scarlet Citadel is in the victory display, if you have the:\n• [[THIEF]] trait, you get +1 THW and ignore the patrol keyword.\n• [[BARBARIAN]] trait you get +1 ATK and ignore the guard keyword.\n• [[KING]] trait, all of the above."
+   "text": "Victory 0.\nWhile The Scarlet Citadel is in the victory display, if you have the:\n• [[THIEF]] trait, you get +1 THW and ignore the patrol keyword.\n• [[BARBARIAN]] trait you get +1 ATK and ignore the guard keyword.\n• [[KING]] trait, all of the above.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn010",
@@ -99922,7 +99955,8 @@
    },
    "traits": [],
    "set_name": "Conan",
-   "text": "<b>Hero Response</b>: After you spend this card, place 1 Crom counter on The Cimmerian (2 instead if you are King Conan)."
+   "text": "<b>Hero Response</b>: After you spend this card, place 1 Crom counter on The Cimmerian (2 instead if you are King Conan).",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn011",
@@ -99939,7 +99973,8 @@
     "WEAPON"
    ],
    "set_name": "Conan",
-   "text": "Restricted.\n<b>Hero Response</b> <i>(attack/thwart)</i>: After you play an event, exhaust Atlantean Sword → deal damage to an enemy or remove threat from a scheme equal to that event's printed cost."
+   "text": "Restricted.\n<b>Hero Response</b> <i>(attack/thwart)</i>: After you play an event, exhaust Atlantean Sword → deal damage to an enemy or remove threat from a scheme equal to that event's printed cost.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn012a",
@@ -99955,7 +99990,8 @@
     "TITLE"
    ],
    "set_name": "Conan",
-   "text": "Permanent.\n<b>Response</b>: After there are at least 8 Crom counters here, ready your identity and swap him with King Conan. Remove your other identities from the game. Flip this card."
+   "text": "Permanent.\n<b>Response</b>: After there are at least 8 Crom counters here, ready your identity and swap him with King Conan. Remove your other identities from the game. Flip this card.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn012b",
@@ -99971,7 +100007,8 @@
     "KING"
    ],
    "set_name": "Conan",
-   "text": "Permanent.\n<b>Hero Interrupt</b>: When you use one of King Conan's basic powers, remove X Crom counters from here and exhaust The Cimmerian → King Conan gets +X to that power for this use."
+   "text": "Permanent.\n<b>Hero Interrupt</b>: When you use one of King Conan's basic powers, remove X Crom counters from here and exhaust The Cimmerian → King Conan gets +X to that power for this use.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn013",
@@ -99987,7 +100024,8 @@
    },
    "traits": [],
    "set_name": "Conan Nemesis",
-   "text": "Give to the Conan player.\nUses (3 serpent counters). Victory 0.\n<b>Hero Action</b>: Spend 1 resource of any type or remove 1 Crom counter from The Cimmerian → remove 1 serpent counter from here."
+   "text": "Give to the Conan player.\nUses (3 serpent counters). Victory 0.\n<b>Hero Action</b>: Spend 1 resource of any type or remove 1 Crom counter from The Cimmerian → remove 1 serpent counter from here.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn014",
@@ -100001,7 +100039,8 @@
    },
    "traits": [],
    "set_name": "Conan Nemesis",
-   "text": "<b>Forced Response</b>: After an identity changes form place 2 threat here."
+   "text": "<b>Forced Response</b>: After an identity changes form place 2 threat here.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn015",
@@ -100020,7 +100059,8 @@
     "GIANT"
    ],
    "set_name": "Conan Nemesis",
-   "text": "Toughness.\n<b>Response</b>: After you make a basic attack against Hrothgar, deal 1 damage to Hymdul.\n<i>(Conan's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: You are stunned."
+   "text": "Toughness.\n<b>Response</b>: After you make a basic attack against Hrothgar, deal 1 damage to Hymdul.\n<i>(Conan's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: You are stunned.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn016",
@@ -100039,7 +100079,8 @@
     "GIANT"
    ],
    "set_name": "Conan Nemesis",
-   "text": "Toughness.\n<b>Response</b>: After you make a basic attack against Hymdul, deal 1 damage to Hrothgar.\n<i>(Conan's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: You are confused."
+   "text": "Toughness.\n<b>Response</b>: After you make a basic attack against Hymdul, deal 1 damage to Hrothgar.\n<i>(Conan's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: You are confused.",
+   "custom": "RyCoRan"
   },
   {
    "card_id": "cn017",
@@ -100051,7 +100092,8 @@
    },
    "traits": [],
    "set_name": "Conan Nemesis",
-   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a [[GIANT]] minion and put it into play engaged with you. Otherwise, take 4 damage."
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a [[GIANT]] minion and put it into play engaged with you. Otherwise, take 4 damage.",
+   "custom": "RyCoRan"
   }
  ],
  "hunting_season": [
@@ -121646,5 +121688,5 @@
    "ability_link": "01193"
   }
  ],
- "checksum": "01d02c8ea437b86893ace9eda945d27799584551395ca59d01dd3fc439109d4c"
+ "checksum": "9bb3c55b15040864f669d8fafe858c035e80fd4dae4a231ed139caa0afae1bf5"
 }
