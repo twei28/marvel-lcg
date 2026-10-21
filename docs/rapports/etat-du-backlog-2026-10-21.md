@@ -94,7 +94,7 @@ panneau d'action est collé au-dessus du sélecteur et les deux se déplacent en
 
 | # | Item | → MAJ 21/10 | Taille | Dépendances |
 |---|---|---|---|---|
-| 1 | Restes du déploiement du 19/10 | **Largement fait**, et encore avancé le 21/10 au soir : test `klaw-ameliorations` réparé, texte d'aide aligné sur les boutons, specs corrigées, fenêtre « Choisis ta phase » tranchée, script de déploiement Linux livré ET éprouvé en réel (`deployer-linux.sh`). (h) défaut d'Assaut : **clos**, confirmé en ligne par le déploiement réel du 21/10. (i) palettes : **pas un défaut**, sens unique volontaire (voir section 1, Résumé). **Reste** : (f) « −X PV » affiché au bilan seulement — identifié (constructeur d'étapes animables de `deroule-phase.ts`, pas un simple oubli), reporté après déploiement ; (g) cache téléphone/tablette — mis de côté ; passe complète du tutoiement non faite | petit (2 sous-points) | (g) mis de côté |
+| ~~1~~ | ~~Restes du déploiement du 19/10~~ | **CLOS le 21/10/2026.** Test `klaw-ameliorations` réparé, texte d'aide aligné sur les boutons, specs corrigées, fenêtre « Choisis ta phase » tranchée, script de déploiement Linux livré ET éprouvé en réel. (h) défaut d'Assaut : clos, confirmé en ligne. (i) palettes : pas un défaut, sens unique volontaire. **Passe tutoiement** : close (dernières poches de « vous » corrigées). **(f) « −X PV »** : pas un vrai trou — le texte s'affiche déjà en direct sous la carte révélée (vérifié dans le code) ; seul le badge animé manque, jugé pas assez important pour le risque de régression sur les animations stabilisées le 19/10, décision de l'utilisateur de ne pas y toucher. (g) cache téléphone/tablette : reste mis de côté (hors scope, pas un blocage de clôture) | — | — |
 | ~~4~~ | ~~Mode manuel : restes de vérification en vraie partie~~ | **CLOS le 21/10/2026** (`ui-check/tests/mode-manuel.spec.ts` rejoué contre un serveur local) : table éclatée OK, carte à deux faces OK, chemin Victoire OK. Un défaut trouvé en route (geste manuel via menu triche appliqué PENDANT une pause sur question ouverte comme le mulligan, jamais publié à l'écran) a été jugé trop pointu par l'utilisateur pour être suivi : abandonné, voir `2026-10-07-manuel-100-pourcent-octgn.md` | — | — |
 | ~~5~~ | ~~Relecture et spectateur : voir 100 % de ce que le joueur voit~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. Rien n'avait été commencé | — | — |
 | ~~6~~ | ~~Table personnalisable : choix par héros en multijoueur~~ | **CLOS le 21/10/2026.** Les 5 questions tranchées par l'utilisateur correspondaient exactement à ce que le code faisait déjà (zone commune par nombre de joueurs, vue propre à chaque joueur, PC seulement). Vérifié en vrai (partie 2 joueurs) : « Modifier la table » s'ouvre, la zone « Alliés, sbires et environnement » s'affiche et se déplace sans erreur. Rien à coder | — | — |
@@ -150,8 +150,8 @@ maintenant couvert par un vrai geste Playwright, dépôt réussi et refus affich
 | ~~30~~ | ~~Revoir les couleurs du halo : validation et envoi des palettes~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. « Jamais envoyées au serveur » n'était pas un défaut (voir item 1(i), sens unique volontaire) ; la passe de validation des couleurs encore fausses ne sera pas faite | — | — |
 | ~~31~~ | ~~Recherche de decks MarvelCDB : une vraie partie~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. L'import depuis MarvelCDB fonctionne déjà (confirmé par l'utilisateur) | — | — |
 
-**Items clos ou retirés depuis le rapport du 19/10** : 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 15, 18, 21, 22, 26, 27, 28,
-29, 30, 31 (20 items). **10 items encore ouverts** : 1, 10, 14, 16, 17, 19, 20, 23, 24, 25.
+**Items clos ou retirés depuis le rapport du 19/10** : 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 15, 18, 21, 22, 26, 27,
+28, 29, 30, 31 (21 items). **9 items encore ouverts** : 10, 14, 16, 17, 19, 20, 23, 24, 25.
 
 ---
 
@@ -192,10 +192,8 @@ cette passe — reportés tels quels du rapport du 19/10.
 
 L'ordre du 19/10 reste globalement valable, Galactic Storm en moins (clos) et avec les nouveaux éléments connus :
 
-1. **Fermer le reste de l'item 1** (−X PV au bilan, confirmer le défaut d'Assaut en ligne, envoyer enfin les
-   palettes corrigées au serveur — items 1(i) et 30 sont le même défaut). Petit, presque fini.
-2. **Réponses aux 5 questions du mode navigateur Pyodide (item 21)** : bloque une décision d'ouverture publique
-   qui ne demande plus que des réponses de l'utilisateur, le travail technique est fait.
+1. **Item 1 : CLOS**, retiré de cet ordre.
+2. **Mode navigateur Pyodide (item 21) : CLOS**, retiré de cet ordre.
 3. **Refonte connexion/inscription (item 8) : CLOSE**, retirée de cet ordre.
 4. **Coop locale (item 9) : CLOSE**, retirée de cet ordre. Reste à confirmer en jeu que les 3 questions sont bien
    résolues comme le code le suggère.
