@@ -147,7 +147,7 @@ maintenant couvert par un vrai geste Playwright, dépôt réussi et refus affich
 | 25 | Mode tablette simple et mode téléphone (suite) | Inchangé, toujours mis de côté | gros | mis de côté |
 | 26 | Mode PvP Arena | Inchangé, très lointain | gros | aucune |
 | 29 | Revoir les sons : quels déclencheurs tombent mal | Inchangé, toujours une question à poser | petit | une question à l'utilisateur |
-| 30 | Revoir les couleurs du halo : validation et envoi des palettes | Inchangé — voir aussi item 1(i) ci-dessus, même défaut (palettes jamais envoyées au serveur) | petit | passe de l'utilisateur dans l'éditeur |
+| 30 | Revoir les couleurs du halo : validation et envoi des palettes | « Jamais envoyées au serveur » n'est **pas un défaut** (voir item 1(i) : sens unique volontaire, l'éditeur corrige directement sur le serveur). Reste seulement la vraie partie non résolue : une passe de validation de l'utilisateur dans l'éditeur, pour corriger les couleurs encore fausses | petit | passe de l'utilisateur dans l'éditeur |
 | 31 | Recherche de decks MarvelCDB : une vraie partie | Inchangé | petit | incertain |
 
 **Items clos retirés du compte des 31** : 2, 3, 8, 9, 12, 15, 27, 28 (8 items), plus la moitié de l'item 7 (reste
