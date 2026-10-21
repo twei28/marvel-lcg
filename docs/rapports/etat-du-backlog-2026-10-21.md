@@ -21,7 +21,23 @@ confirme/infirme leur statut, elle ne refait pas le tri des fiches « FAIT mais 
   nettement avancé sans être clos** (21, questions posées à l'utilisateur), **1 a légèrement avancé** (13, Zeus et
   Echo levés, Fleeting/Alias en question), **2 progressent côté cadrage sans code livré** (14 Punisher, 19/20
   volontairement laissés au backlog par décision du 20/10). Les 18 autres n'ont pas bougé.
-- **Items ouverts restants : 21** sur les 30 non-Galactic-Storm (voir section 2).
+- **Items ouverts restants : 20** sur les 30 non-Galactic-Storm (voir section 2), après la revue point par point
+  du 21/10/2026 au soir (déploiement réel effectué le même soir, commit `6dc43bb6` puis `ad118548`) :
+  - **1(i) palettes** : pas un défaut — le sens unique (serveur → dépôt) est volontaire et documenté dans
+    `deployer.ps1:168-174` (l'éditeur `/palettes-heros.html` écrit sur le serveur, l'envoyer depuis le poste
+    écraserait le travail en ligne). Aucun code changé.
+  - **1(h) défaut d'Assaut** : clos par le déploiement réel du 21/10 au soir (le fix `147d783a` du 19/10 était déjà
+    en attente de déploiement, maintenant confirmé en ligne : site et `play.` à HTTP 200, plateau identique).
+  - **18 (nom de set Hunting Season)** : corrigé (`ad118548`). Vraie course entre l'appel `api.encounterSet()` et
+    la pose du cookie `app_version` (un `get_version` en parallèle) : le serveur répond sa page « Version
+    Mismatch » à la place du JSON, et aucun réessai n'était tenté. Un seul réessai 400 ms plus tard suffit.
+  - **11 (decks absents en campagne)** clos sans code : chaîne relue (`DECKS_CAMPAGNE` → `memeHeros`), aucun
+    défaut trouvé, et aucun exemple concret de deck manquant n'a jamais été fourni (décision de l'utilisateur).
+  - **29 (sons mal placés)** : rien à signaler pour l'instant, reste en l'état.
+  - **Bonus hors backlog, trouvé en déployant pour de vrai** : `deployer-linux.sh` avait son propre bug —
+    `tar -tzf archive | grep -q motif` sous `set -o pipefail` peut échouer même quand le motif EST présent (SIGPIPE
+    de `tar` qui remonte au lieu du succès de `grep`), a bloqué le tout premier essai de déploiement réel avant
+    tout envoi au serveur. Corrigé (`6dc43bb6`).
 - **Deux champs périmés corrigés dans `tools/prefixes_fanmade.json`** à l'occasion de cette passe : `sk` (Skrull
   Menace) disait « EN COURS, 31 cartes » alors que les 5 scénarios et les 323 cartes sont livrés depuis le 16/10 ;
   `gs` (Galactic Storm) disait « EN COURS, 35 cartes » alors que les 221 entrées de `cards.json` et le mode
@@ -78,7 +94,7 @@ panneau d'action est collé au-dessus du sélecteur et les deux se déplacent en
 
 | # | Item | → MAJ 21/10 | Taille | Dépendances |
 |---|---|---|---|---|
-| 1 | Restes du déploiement du 19/10 | **Largement fait** : test `klaw-ameliorations` réparé, texte d'aide aligné sur les boutons, specs qui posaient `'bis'`/`'etape'` corrigées en `'tris'` explicite, fenêtre « Choisis ta phase » tranchée (reposée une seule fois, clé `mc_phase_choix_vu`, aucune nouvelle migration), script de déploiement Linux livré (`deployer-linux.sh`). **Reste** : (f) « −X PV » affiché au bilan seulement — non touché ; (g) cache téléphone/tablette — mis de côté avec le reste du mobile ; (h) défaut d'Assaut en ligne non confirmé en navigateur ; (i) **palettes corrigées toujours jamais envoyées au serveur** (`deployer-linux.sh:220` et `deployer.ps1:174` excluent toujours `data/palettes-heros-corrections.json` de l'archive, seul le rapatriement existe) ; passe complète du tutoiement non faite (un seul écran traité) | petit (4 sous-points) | (g) mis de côté, (h) un essai en ligne |
+| 1 | Restes du déploiement du 19/10 | **Largement fait**, et encore avancé le 21/10 au soir : test `klaw-ameliorations` réparé, texte d'aide aligné sur les boutons, specs corrigées, fenêtre « Choisis ta phase » tranchée, script de déploiement Linux livré ET éprouvé en réel (`deployer-linux.sh`). (h) défaut d'Assaut : **clos**, confirmé en ligne par le déploiement réel du 21/10. (i) palettes : **pas un défaut**, sens unique volontaire (voir section 1, Résumé). **Reste** : (f) « −X PV » affiché au bilan seulement — identifié (constructeur d'étapes animables de `deroule-phase.ts`, pas un simple oubli), reporté après déploiement ; (g) cache téléphone/tablette — mis de côté ; passe complète du tutoiement non faite | petit (2 sous-points) | (g) mis de côté |
 | 4 | Mode manuel : restes de vérification en vraie partie | Inchangé | petit | une partie jouée à la main |
 | 5 | Relecture et spectateur : voir 100 % de ce que le joueur voit | Inchangé, rien trouvé dans le journal depuis | gros | — |
 | 6 | Table personnalisable : choix par héros en multijoueur | Inchangé, arbitrage utilisateur toujours en attente | moyen | arbitrage préalable de l'utilisateur |
@@ -94,7 +110,6 @@ semblent toutes tranchées par le code, à confirmer en jeu).
 | # | Item | → MAJ 21/10 | Taille | Dépendances |
 |---|---|---|---|---|
 | 10 | Données des joueurs : décision en suspens (`lightningmantis`) | Inchangé | petit | décision de l'utilisateur |
-| 11 | Decks absents en campagne | Inchangé | petit | une question à l'utilisateur |
 
 ### 2.3 Contenu et cartes
 
@@ -108,7 +123,7 @@ et corrigées en 6 lots, `im001b` et `wc014` corrigés en portée Round, gabarit
 | 14 | Campagne Punisher MC×DC 2026 | Cadrage avancé : lot PU-0 (préfixe, mots-clés, données simples), réponses utilisateur aux 8 décisions P1-P8. **Toujours aucun script de carte ni moteur de scénario écrit** | gros | crédits MC×DC à nommer à l'intégration |
 | 16 | Crédits des auteurs fan-made, par héros | Inchangé pour `sets_info.json` (toujours aucune entrée « auteur »). **Nuance nouvelle** : les decks fan-made eux-mêmes portent maintenant `metadata.author` (53 decks, commit du 20/10) — une pièce adjacente, mais ne remplace pas l'affichage dans la modale héros demandé par la fiche | petit | validation de la liste par l'utilisateur |
 | 17 | Stan Lee : batterie « Marvelous » en pause | Toujours en pause (`marvelous-partiel-0-1461.json` inchangé depuis le 29/09). Un commit sans rapport (« phrase et citation du scan ajoutées ») a touché le même sujet Stan Lee mais pas la batterie elle-même | moyen | consommation de calcul de la batterie |
-| 18 | Mots et textes : « Hs Feral Instincts » | Inchangé | petit | incertain |
+| ~~18~~ | ~~Mots et textes : « Hs Feral Instincts »~~ | **CLOS le 21/10/2026** (`ad118548`) : course avec le cookie `app_version`, un réessai suffit | — | — |
 
 ### 2.4 Infrastructure, distribution, charge
 
