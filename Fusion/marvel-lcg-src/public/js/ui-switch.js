@@ -134,7 +134,7 @@
 
         var texte = document.createElement('span');
         var fort = document.createElement('strong');
-        fort.textContent = "Vous utilisez l'ancienne version.";
+        fort.textContent = "Tu utilises l'ancienne version.";
         texte.appendChild(fort);
         bandeau.appendChild(texte);
 

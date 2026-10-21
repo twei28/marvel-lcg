@@ -1759,7 +1759,7 @@ function EcranFinPartie({
     ? bataille.nul
       ? t('Aucun camp ne l\u2019emporte')
       : gagne
-        ? t('Votre camp l\u2019emporte !')
+        ? t('Ton camp l\u2019emporte !')
         : t('Le camp adverse l\u2019emporte')
     : gagne
       ? t('Les héros l\u2019emportent !')

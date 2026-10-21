@@ -142,7 +142,7 @@ export const DEFIS_INFO = {
     },
     "2419_lone_wolf": {
         titre: "Lone Wolf",
-        regle: "Tous les Alliés sont retirés des decks des joueurs avant la mise en place. En compensation, chaque fois que votre identité vainc un Sbire, piochez une carte.",
+        regle: "Tous les Alliés sont retirés des decks des joueurs avant la mise en place. En compensation, chaque fois que ton identité vainc un Sbire, pioche une carte.",
         regleEn: "All allies are removed from the players' decks before setup. In exchange, each time your identity defeats a minion, draw a card.",
         contrainte: "Un seul héros (défi à jouer en solo) uniquement.",
         contrainteEn: "A single hero (solo challenge) only.",

@@ -428,7 +428,7 @@ export function PanneauRecompenses({
               ? reprise.titre || t('Ce scénario est à re-préparer')
               : estFinal
                 ? t('La campagne est gagnée !')
-                : t('Ce que vous gagnez')}
+                : t('Ce que tu gagnes')}
         </strong>
       </header>
 
@@ -447,9 +447,9 @@ export function PanneauRecompenses({
           <p className="camp-recomp-reprise-compte">
             {preuvesRendues > 0
               ? `${preuvesRendues} ${
-                  preuvesRendues > 1 ? t('preuves vous seront rendues') : t('preuve vous sera rendue')
+                  preuvesRendues > 1 ? t('preuves te seront rendues') : t('preuve te sera rendue')
                 }`
-              : t('Aucune preuve ne vous sera rendue : le Conseil n’a jamais fini vidé de ses secrets.')}
+              : t('Aucune preuve ne te sera rendue : le Conseil n’a jamais fini vidé de ses secrets.')}
           </p>
         </div>
       ) : null}

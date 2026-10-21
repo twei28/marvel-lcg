@@ -868,7 +868,7 @@ export const DICO_EN_BASE = {
     "scénarios": "scenarios",
     "Supprimer cette campagne": "Delete this campaign",
     "Supprimer définitivement la campagne": "Permanently delete the campaign",
-    "Aucune campagne en cours. Une campagne enchaîne les scénarios d'une boîte dans l'ordre : ce que vous y gagnez vous suit d'un scénario au suivant.":
+    "Aucune campagne en cours. Une campagne enchaîne les scénarios d'une boîte dans l'ordre : ce que tu y gagnes te suit d'un scénario au suivant.":
       "No campaign under way. A campaign plays the scenarios of a box in order: what you earn follows you from one scenario to the next.",
     "Impossible de charger les campagnes :": "Could not load the campaigns:",
     "La campagne n'a pas pu être créée :": "The campaign could not be created:",

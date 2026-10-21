@@ -416,7 +416,7 @@ function vueListe() {
             ),
             cartes.length
                 ? el("div", { class: "cmp-grille" }, cartes)
-                : el("p", { class: "cmp-vide" }, t("Aucune campagne en cours. Une campagne enchaîne les scénarios d'une boîte dans l'ordre : ce que vous y gagnez vous suit d'un scénario au suivant.")),
+                : el("p", { class: "cmp-vide" }, t("Aucune campagne en cours. Une campagne enchaîne les scénarios d'une boîte dans l'ordre : ce que tu y gagnes te suit d'un scénario au suivant.")),
         ),
     );
 }
