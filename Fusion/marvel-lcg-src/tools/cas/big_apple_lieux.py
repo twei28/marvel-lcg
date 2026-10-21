@@ -140,6 +140,16 @@ CAS = [
        [*ville()], ["Puzzle.PutIntoPlay('01075', under_control=True)"], {"pret": ["01075"]}),
     _l("pu022 Like and Subscribe! (Boost) : revelee comme carte de boost -> elle entre en jeu (manigance annexe)", "« ★ Boost : Reveal this card »",
        [], ["Puzzle.Boost('pu022')"], {"en_jeu": ["pu022"], "engage": [["pu015", 0]]}, deck=("01105", "pu015")),
+    # ------------------------------------------------------------------------------------------------ FAQ « Collaboration » (Teamwork)
+    _l("FAQ Collaboration : un sbire ACOLYTE d'un AUTRE territoire (Exodus engage avec le 2e joueur, a Hell's Kitchen) suffit -> Fabian Cortez (Teamwork ACOLYTE) s'active : le heros prend des degats",
+       "FAQ : les sbires « en jeu » ne sont PAS limites a un territoire",
+       [*ville()], ["Puzzle.PlacerDansLaVille((0, 0), 1)", "Puzzle.PutIntoPlay('37032')", "Puzzle.Engage('37032', 1)", "Puzzle.Reveal('32159')"],
+       {"degats_identite_min": 1}, deck=("32159", "01105"), heros2="spider_man", **SANS_DEFENSE),
+    _l("FAQ Collaboration : un sbire ACOLYTE ATTACHE a un lieu (Exodus sous Hell's Kitchen, « reste en jeu ») suffit aussi", "un sbire attache est en jeu",
+       [*ville(), "Puzzle.PutIntoPlay('37032')", "Puzzle.AttacherAuLieu('37032', 'pu030')"], ["Puzzle.Reveal('32159')"],
+       {"degats_identite_min": 1}, deck=("32159", "01105"), **SANS_DEFENSE),
+    _l("FAQ Collaboration, TEMOIN : aucun autre ACOLYTE -> Fabian ne s'active pas (0 degat)", "ligne de base",
+       [*ville()], ["Puzzle.Reveal('32159')"], {"degats_identite": 0}, deck=("32159", "01105")),
 ]
 
 
