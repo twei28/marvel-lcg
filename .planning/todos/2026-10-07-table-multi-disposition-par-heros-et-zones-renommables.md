@@ -34,3 +34,14 @@ ajoute seulement un choix de rangée par joueur à l'intérieur de la zone.
 
 - **Renommer une zone** : double-clic sur le titre de la zone, seulement en mode « Modifier la table ». Entrée valide, Échap annule. Vider le champ remet le titre automatique. Le nom vaut pour ce joueur, toutes ses parties, sur ce navigateur (gardé avec sa disposition) ; les autres joueurs gardent les leurs. Constat de l'utilisateur : « je n'arrive pas à cliquer à un endroit pour changer le nom de la zone » (rien n'était codé).
 - **Améliorations à gauche ou à droite de la carte** (demande nouvelle : « il y a des gens qui aiment avoir les améliorations du côté gauche de la carte du héros ou de l'allié ») : réglage dans Réglages, onglet Jeu ; s'applique à TOUTES les cartes qui portent des améliorations (héros, alliés, méchant, sbires) ; droite par défaut, comme aujourd'hui.
+
+## CLOS le 21/10/2026 : les 5 questions tranchées, et c'était déjà fait
+
+Questions posées une à une, réponses de l'utilisateur :
+1. **Qui décide en multi** : chaque joueur règle sa propre vue (pas l'hôte pour tous).
+2. **Zones d'un autre héros** : on garde toujours SA PROPRE disposition, quel que soit le héros regardé (pas celle du héros consulté).
+3. **Mémorisation** : par nombre de joueurs (pas par composition exacte de héros).
+4. **Granularité alliés/sbires** : la brique commune actuelle (une zone « Alliés, sbires et environnement » pour toute la table, rangée par joueur à l'intérieur) suffit — PAS de zone séparée par héros. Lève la contradiction du 05/10 : plus besoin d'assouplir la règle « une brique par type ».
+5. **Téléphone** : éditeur réservé au PC (inchangé).
+
+**Vérifié en vrai** (serveur local, partie 2 joueurs Adam Warlock + Angel) : ces 5 réponses correspondent EXACTEMENT à ce que le code fait déjà (`EditeurTable.tsx`, `table-briques.ts`, `enregistrerDisposition(nombreDeJoueurs, ...)`, garde `modePlateau !== 'mobile'`). L'éditeur « Modifier la table » s'ouvre dans les Réglages en vraie partie multijoueur, affiche la zone commune « Alliés, sbires et environnement », un glisser-déposer fonctionne sans erreur. **Rien à coder : item 6 du backlog clos.**

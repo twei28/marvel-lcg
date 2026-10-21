@@ -97,7 +97,7 @@ panneau d'action est collé au-dessus du sélecteur et les deux se déplacent en
 | 1 | Restes du déploiement du 19/10 | **Largement fait**, et encore avancé le 21/10 au soir : test `klaw-ameliorations` réparé, texte d'aide aligné sur les boutons, specs corrigées, fenêtre « Choisis ta phase » tranchée, script de déploiement Linux livré ET éprouvé en réel (`deployer-linux.sh`). (h) défaut d'Assaut : **clos**, confirmé en ligne par le déploiement réel du 21/10. (i) palettes : **pas un défaut**, sens unique volontaire (voir section 1, Résumé). **Reste** : (f) « −X PV » affiché au bilan seulement — identifié (constructeur d'étapes animables de `deroule-phase.ts`, pas un simple oubli), reporté après déploiement ; (g) cache téléphone/tablette — mis de côté ; passe complète du tutoiement non faite | petit (2 sous-points) | (g) mis de côté |
 | ~~4~~ | ~~Mode manuel : restes de vérification en vraie partie~~ | **CLOS le 21/10/2026** (`ui-check/tests/mode-manuel.spec.ts` rejoué contre un serveur local) : table éclatée OK, carte à deux faces OK, chemin Victoire OK. Un défaut trouvé en route (geste manuel via menu triche appliqué PENDANT une pause sur question ouverte comme le mulligan, jamais publié à l'écran) a été jugé trop pointu par l'utilisateur pour être suivi : abandonné, voir `2026-10-07-manuel-100-pourcent-octgn.md` | — | — |
 | ~~5~~ | ~~Relecture et spectateur : voir 100 % de ce que le joueur voit~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. Rien n'avait été commencé | — | — |
-| 6 | Table personnalisable : choix par héros en multijoueur | Inchangé, arbitrage utilisateur toujours en attente | moyen | arbitrage préalable de l'utilisateur |
+| ~~6~~ | ~~Table personnalisable : choix par héros en multijoueur~~ | **CLOS le 21/10/2026.** Les 5 questions tranchées par l'utilisateur correspondaient exactement à ce que le code faisait déjà (zone commune par nombre de joueurs, vue propre à chaque joueur, PC seulement). Vérifié en vrai (partie 2 joueurs) : « Modifier la table » s'ouvre, la zone « Alliés, sbires et environnement » s'affiche et se déplace sans erreur. Rien à coder | — | — |
 | ~~7~~ | ~~Animations : point 5 et retrait de la garde d'essai~~ | **CLOS le 21/10/2026.** Point 5 fait (au-delà de dix mouvements, un vol groupé au lieu de ne rien animer) et déjà SANS garde pour tout le monde (vérifié dans le code : `CoucheAnimations` n'est conditionné par aucun drapeau d'essai). La garde `essaisOuverts()` restante ne protège en réalité QUE la couleur du halo/des marques (héros + méchant) — pas les animations. Décision de l'utilisateur : la garde reste en place (couleurs encore fausses pour certains héros, item 30 retiré sans correction) | — | — |
 
 ### 2.2 Préparation, comptes, salon
@@ -150,9 +150,8 @@ maintenant couvert par un vrai geste Playwright, dépôt réussi et refus affich
 | ~~30~~ | ~~Revoir les couleurs du halo : validation et envoi des palettes~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. « Jamais envoyées au serveur » n'était pas un défaut (voir item 1(i), sens unique volontaire) ; la passe de validation des couleurs encore fausses ne sera pas faite | — | — |
 | ~~31~~ | ~~Recherche de decks MarvelCDB : une vraie partie~~ | **RETIRÉ le 21/10/2026**, décision de l'utilisateur. L'import depuis MarvelCDB fonctionne déjà (confirmé par l'utilisateur) | — | — |
 
-**Items clos ou retirés depuis le rapport du 19/10** : 2, 3, 4, 5, 8, 9, 12, 13, 15, 18, 21, 22, 26, 27, 28, 29,
-30, 31 (18 items), plus la moitié de l'item 7 (reste un sous-point). **12 items encore ouverts** : 1, 6, 7, 10,
-14, 16, 17, 19, 20, 23, 24, 25.
+**Items clos ou retirés depuis le rapport du 19/10** : 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 15, 18, 21, 22, 26, 27, 28,
+29, 30, 31 (20 items). **10 items encore ouverts** : 1, 10, 14, 16, 17, 19, 20, 23, 24, 25.
 
 ---
 
