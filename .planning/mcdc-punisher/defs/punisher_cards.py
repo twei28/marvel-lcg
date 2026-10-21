@@ -355,8 +355,117 @@ SWAT_CARDS = [
 SWAT_ENCOUNTERS = ["pu119", "pu120", "pu121", "pu121", "pu123", "pu123"]
 
 # ======================================================================================================
+# Set "Punishment" (20 cartes physiques, 18 card_id) -- le Punisher, vilain final (ID 6086-6105). Releve p171-p209 relu le 21/10/2026.
+# Vilain a 3 stades (I, II, II, III) : 6086 = I (1A, a) / II (1B, b) ; 6087 = II (2A, a) / III (2B, b) ; standard = pu086a -> pu087a,
+# expert = pu086b -> pu087b (meme schema que Jigsaw et Hobgoblin).
+# ======================================================================================================
+PU_PUN = "Punishment"
+PUN_HERO_RESP_ANY = ('<b>Hero Response</b>: After you attack Punisher, spend 2 resources of any type → flip Target Lock '
+                     'to its DISTRACTED side and discard one non-permanent attachment from Punisher.')
+PUN_HERO_RESP_SAME = ('<b>Hero Response</b>: After you attack Punisher, spend 2 resources of the same type → flip Target '
+                      'Lock to its DISTRACTED side and discard one non-permanent attachment from Punisher.')
+
+PUNISHMENT_CARDS = [
+    c("pu086a", "Villain", "* Punisher", {"HP": "16👤", "SCH": "0", "ATK": "1", "Stage": "1", "Toughness": "1"}, ["SOLDIER", "VIGILANTE"],
+      "Toughness.\n" + PUN_HERO_RESP_ANY, PU_PUN, page="p171",
+      subtitle='"My actions aren\'t vengeance. No, not vengeance. Punishment!"'),
+    c("pu086b", "Villain", "* Punisher", {"HP": "18👤", "SCH": "0", "ATK": "2", "Stage": "2", "Steady": "1", "Toughness": "1"}, ["SOLDIER", "VIGILANTE"],
+      "Steady. Toughness.\n" + PUN_HERO_RESP_SAME, PU_PUN, page="p172",
+      subtitle='"You need a role model? His name is Captain America, and he\'d be happy to have you."'),
+    c("pu087a", "Villain", "* Punisher", {"HP": "18👤", "SCH": "0", "ATK": "2", "Stage": "2", "Steady": "1", "Toughness": "1"}, ["SOLDIER", "VIGILANTE"],
+      "Steady. Toughness.\n" + PUN_HERO_RESP_SAME, PU_PUN, page="p173",
+      subtitle='"My actions aren\'t vengeance. No, not vengeance. Punishment!"'),
+    c("pu087b", "Villain", "* Punisher", {"HP": "20👤", "SCH": "0", "ATK": "3", "Stage": "3", "Steady": "1", "Toughness": "1"}, ["SOLDIER", "VIGILANTE"],
+      "Steady. Toughness.\n" + PUN_HERO_RESP_SAME + " Give Punisher a facedown boost card.", PU_PUN, page="p174"),
+    c("pu088a", "MainScheme", "One Last Kill", {"Stage": "1A"}, [],
+      "<b>Contents</b>: Punisher I and II (II and III for expert mode) and one UNDERLING villain. Punishment, UNDERLING "
+      "villain's set, and Standard sets. One modular set (Punisher's Armory).\n<b>Setup</b>: Find Target Lock and attach "
+      "to Punisher, FOCUSED side up. Find Justice or Punishment? and reveal its setup side.", PU_PUN, page="p175",
+      subtitle="You've chased down the villain and move in to apprehend them when suddenly a shot rings out!"),
+    c("pu088b", "MainScheme", "One Last Kill", {"StartingThreat": "1👤", "TargetThreat": "8👤", "EscalationThreat": "1👤", "Stage": "1B"}, [],
+      "<b>When Revealed</b>: Find and reveal Punisher's M1911s.\n<b>Forced Response</b>: After resolving step one of the "
+      "villain phase, the TARGETED villain activates against the first player.", PU_PUN, page="p176",
+      subtitle="Punisher sets his sights on the villain as they try to escape. But you need them alive to get answers about the escalating gang war."),
+    c("pu089a", "MainScheme", "Escaping Punishment", {"Stage": "2A"}, [],
+      "<b>When Revealed</b>: Find and reveal Punisher's Assault Rifle. Flip Target Lock to its DISTRACTED side.", PU_PUN, page="p177",
+      subtitle="Punisher's target nears escape. Angered by your interference, he sets his sights on you!"),
+    c("pu089b", "MainScheme", "Escaping Punishment", {"StartingThreat": "1👤", "TargetThreat": "9👤", "EscalationThreat": "1👤", "Stage": "2B"}, [],
+      "<b>Forced Response</b>: After resolving step one of the villain phase, the TARGETED villain activates against the first "
+      "player.\nIf this scheme is completed, the TARGETED villain escapes and the players lose the game.", PU_PUN, page="p178",
+      subtitle="The villain frantically searches for an exit. SWAT surrounds the building. Punisher is out for blood. Can you stop him and capture the villain alive?"),
+    c("pu090a", "Environment", "Justice or Punishment?", {"Setup": "1"}, [],
+      "<b>Setup</b>: Reveal the UNDERLING villain (I for standard, II for expert mode). Set their hit points to the numeral "
+      "(ignoring 👤) in their printed hit point value.\nAttach In the Crosshairs to them.\nShuffle their encounter cards "
+      "into the encounter deck, following any <b>Setup</b> and <b>When Revealed</b> instructions.\nFlip this card.", PU_PUN, page="p179"),
+    c("pu090b", "Environment", "Justice or Punishment?", {"Permanent": "1"}, [],
+      "Permanent.\n• Punisher is the active villain. Encounter cards referring to or affecting \"the villain\" refer only to "
+      "Punisher.\n• Players may defend any attack, even ones targeting enemies.\nIf Punisher's final stage is defeated, the "
+      "players win the game.", PU_PUN, page="p180"),
+    c("pu091a", "Attachment", "Target Lock", {"SCH+": "★", "ATK+": "★", "Setup": "1", "Permanent": "1"}, [],
+      "Focused. Setup. Permanent.\n[star] <b>Forced Interrupt</b>: When Punisher would activate, he attacks the enemy with "
+      "the fewest remaining hit points instead. If this attack damages an enemy or ally, place threat on the main scheme "
+      "equal to the number of boost icons on the top card of the encounter discard pile.", PU_PUN, page="p181"),
+    c("pu091b", "Attachment", "Target Lock", {"SCH+": "★", "ATK+": "1", "Permanent": "1"}, [],
+      "Distracted. Permanent. Attach to Punisher.\n[star] <b>Forced Interrupt</b>: When Punisher would scheme, flip this "
+      "card instead.\n<b>Forced Interrupt</b>: At the end of the round, flip this card.", PU_PUN, page="p182"),
+    c("pu092", "Attachment", "In the Crosshairs", {"Setup": "1", "Permanent": "1"}, [],
+      "Targeted. Setup. Permanent.\nAttached character gets +5👤 hit points, gains the TARGETED trait, and cannot be affected "
+      "by player cards.\nIf attached character's current stage is defeated, the players lose the game.", PU_PUN, page="p183",
+      subtitle="With every hit from Punisher, his target grows increasingly desperate to escape."),
+    c("pu093", "Attachment", "Punisher's Assault Rifle", {"ATK+": "1★", "Boost": "1", "Uses": "2👤,ammo"}, ["ARMAMENT", "WEAPON"],
+      "Armament. Weapon. Attach to Punisher. Uses (2👤 ammo counters).\n<b>When Revealed</b>: Discard each other ARMAMENT "
+      "card in play.\n[star] Punisher's attacks gain overkill. His overkill damage on minions is dealt to the TARGETED "
+      "villain.\n[star] <b>Forced Response</b>: After Punisher attacks, remove 1 ammo counter from here.", PU_PUN, page="p185"),
+    c("pu094", "Attachment", "Punisher's RPG", {"ATK+": "2★", "Boost": "2", "Uses": "1+1👤,ammo"}, ["ARMAMENT", "WEAPON"],
+      "Armament. Weapon. Attach to Punisher. Uses (1+1👤 ammo counters).\n<b>When Revealed</b>: Discard each other ARMAMENT "
+      "card in play.\n[star] Punisher's attacks deal indirect damage. Exhaust any character damaged by his attack.\n[star] "
+      "<b>Forced Response</b>: After Punisher attacks, remove 1 ammo counter from here.", PU_PUN, page="p187"),
+    c("pu095", "Attachment", "Punisher's M1911s", {"ATK+": "1★", "Boost": "2", "Uses": "2👤,ammo"}, ["ARMAMENT", "WEAPON"],
+      "Armament. Weapon. Attach to Punisher. Uses (2👤 ammo counters).\n<b>When Revealed</b>: Discard each other ARMAMENT "
+      "card in play.\n[star] Punisher's attacks gain ranged.\n[star] <b>Forced Response</b>: After Punisher attacks, remove "
+      "1 ammo counter from here.", PU_PUN, page="p189"),
+    c("pu096", "Attachment", "Mexican Standoff", {"Boost": "1"}, ["CONFRONTATION"],
+      "Confrontation. Attach to Punisher.\n<b>Forced Response</b>: After you attack Punisher, he activates. Then, the "
+      "TARGETED villain activates against you. Do not give either character a boost card for these activations. Discard "
+      "this card.", PU_PUN, page="p191", subtitle='"So, which one of us is going to make the first move?"'),
+    c("pu097", "Minion", "* Microchip", {"SCH": "★", "ATK": "★", "HP": "3", "Boost": "1"}, ["GENIUS", "VIGILANTE"],
+      "Punisher cannot attack this minion.\n[star] <b>Forced Interrupt</b>: When Microchip would activate, give Punisher a "
+      "facedown boost card instead.\n<b>When Defeated</b>: Reveal the top WEAPON attachment in the encounter discard pile.",
+      PU_PUN, page="p193"),
+    c("pu098", "Minion", "* Rachel Cole-Alves", {"SCH": "★", "ATK": "2", "HP": "5", "Boost": "1"}, ["MARINE", "VIGILANTE"],
+      "Punisher cannot attack this minion.\n[star] <b>Forced Interrupt</b>: When Rachel Cole-Alves would scheme, she "
+      "attacks the TARGETED villain instead.", PU_PUN, page="p195",
+      subtitle='"Nobody could ever be as driven as us. Nobody else knows pain like we do, Frank."'),
+    c("pu099", "SideScheme", "Judge, Jury... Execution!", {"StartingThreat": "3👤", "Boost": "2", "Amplify": "1"}, [],
+      "<b>When Defeated</b>: Discard the minion with the fewest remaining hit points and deal damage to the TARGETED villain "
+      "equal to that minion's remaining hit points. Otherwise, give Punisher a facedown boost card.", PU_PUN, page="p197",
+      subtitle="In a broken system, Punisher views himself as the only true source of justice for the worst of the worst."),
+    # 2 exemplaires identiques (ID 6100/6101)
+    c("pu100", "Treachery", "Back Against the Wall", {"Boost": "★+1"}, [],
+      "<b>When Revealed (Alter-Ego)</b>: Deal damage to Punisher equal to the TARGETED villain's ATK.\n<b>When Revealed "
+      "(Hero)</b>: Flip Target Lock to its DISTRACTED side. Punisher activates.\n[star] <b>Boost</b>: Give Punisher a "
+      "facedown boost card (if he is activating, resolve it).", PU_PUN, page="p199/p201 (x2, ID 6100/6101)"),
+    # 2 exemplaires identiques (ID 6102/6103)
+    c("pu102", "Treachery", "Bullet Spray", {"Boost": "★"}, [],
+      "<b>When Revealed</b>: Deal 1 damage to each character you control. Deal 1 damage to the TARGETED villain and each "
+      "minion engaged with you.\n[star] <b>Boost</b>: Deal 1 damage to the TARGETED villain.", PU_PUN,
+      page="p203/p205 (x2, ID 6102/6103)", subtitle='"I\'m fine. They\'re not."'),
+    c("pu104", "Treachery", "Flash-Bang", {"Boost": "★"}, ["WEAPON"],
+      "<b>When Revealed</b>: Stun each character you control. Stun the TARGETED villain and each minion engaged with you.\n"
+      "[star] <b>Boost</b>: Stun a character you control.", PU_PUN, page="p207", subtitle="FWOOOSH!!"),
+    c("pu105", "Treachery", "Say Good Night", {"Boost": "1"}, [],
+      "<b>When Revealed (Alter-Ego)</b>: Deal damage to the TARGETED villain equal to Punisher's ATK.\n<b>When Revealed "
+      "(Hero)</b>: Take damage equal to Punisher's ATK. You may exhaust your hero or discard an ally you control to prevent "
+      "this damage.", PU_PUN, page="p209",
+      subtitle='"We\'re nothing alike, me and the enemy. We both deal in death, but they sell theirs. I give it away."'),
+]
+# Paquet de rencontre du scenario (Punishment 20 cartes physiques, sans les cartes de mise en place).
+PUNISHMENT_ENCOUNTERS = ["pu091a,pu091b", "pu092", "pu093", "pu094", "pu095", "pu096", "pu097", "pu098", "pu099",
+                         "pu100", "pu100", "pu102", "pu102", "pu104", "pu105"]
+
+# ======================================================================================================
 # Recapitulatif : 13 + 14 + 5 + 7 + 1 = 40 card_id distincts, pour 15 + 15 + 5 + 7 + 1 = 43 cartes
 # physiques (releve "contenu simple" du cadrage section 1.2 : "aucune brique neuve au-dela de M6-M9").
 # ======================================================================================================
-ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS
+ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS
 assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id en double dans ce fichier"

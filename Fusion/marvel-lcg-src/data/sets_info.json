@@ -1929,9 +1929,10 @@
    "the_syndicate",
    "capo_of_the_past",
    "punishers_hit_list",
-   "swat_team"
+   "swat_team",
+   "punishment"
   ],
   "max_id": "pu139"
  },
- "checksum": "0862fac2961a4256330e4db37bdc09c2e4e9d12014b1d6f71e3ea36f0678bc80"
+ "checksum": "406d0114331fd916e10752fe75e28c1310b3d9cdace0d72514959d6d503a66f2"
 }

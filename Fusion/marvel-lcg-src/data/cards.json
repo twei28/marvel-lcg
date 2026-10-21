@@ -122596,7 +122596,395 @@
    "set_name": "SWAT Team",
    "text": "Vulnerable.\n[star] When Tactical Sniper schemes, place that threat on SWAT, if able.\n[star] <b>Forced Interrupt</b>: When Tactical Sniper would attack, if there are fewer than 3 wanted counters on SWAT, it attacks the enemy with the fewest remaining hit points without the POLICE trait instead.",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu086a",
+   "type": "Villain",
+   "name": "* Punisher",
+   "subtitle": "\"My actions aren't vengeance. No, not vengeance. Punishment!\"",
+   "desc": {
+    "HP": "16*",
+    "SCH": "0",
+    "ATK": "1",
+    "Stage": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SOLDIER",
+    "VIGILANTE"
+   ],
+   "set_name": "Punishment",
+   "text": "Toughness.\n<b>Hero Response</b>: After you attack Punisher, spend 2 resources of any type → flip Target Lock to its DISTRACTED side and discard one non-permanent attachment from Punisher.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu086b",
+   "type": "Villain",
+   "name": "* Punisher",
+   "subtitle": "\"You need a role model? His name is Captain America, and he'd be happy to have you.\"",
+   "desc": {
+    "HP": "18*",
+    "SCH": "0",
+    "ATK": "2",
+    "Stage": "2",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SOLDIER",
+    "VIGILANTE"
+   ],
+   "set_name": "Punishment",
+   "text": "Steady. Toughness.\n<b>Hero Response</b>: After you attack Punisher, spend 2 resources of the same type → flip Target Lock to its DISTRACTED side and discard one non-permanent attachment from Punisher.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu087a",
+   "type": "Villain",
+   "name": "* Punisher",
+   "subtitle": "\"My actions aren't vengeance. No, not vengeance. Punishment!\"",
+   "desc": {
+    "HP": "18*",
+    "SCH": "0",
+    "ATK": "2",
+    "Stage": "2",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SOLDIER",
+    "VIGILANTE"
+   ],
+   "set_name": "Punishment",
+   "text": "Steady. Toughness.\n<b>Hero Response</b>: After you attack Punisher, spend 2 resources of the same type → flip Target Lock to its DISTRACTED side and discard one non-permanent attachment from Punisher.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu087b",
+   "type": "Villain",
+   "name": "* Punisher",
+   "subtitle": "",
+   "desc": {
+    "HP": "20*",
+    "SCH": "0",
+    "ATK": "3",
+    "Stage": "3",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SOLDIER",
+    "VIGILANTE"
+   ],
+   "set_name": "Punishment",
+   "text": "Steady. Toughness.\n<b>Hero Response</b>: After you attack Punisher, spend 2 resources of the same type → flip Target Lock to its DISTRACTED side and discard one non-permanent attachment from Punisher. Give Punisher a facedown boost card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu088a",
+   "type": "MainScheme",
+   "name": "One Last Kill",
+   "subtitle": "You've chased down the villain and move in to apprehend them when suddenly a shot rings out!",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>Contents</b>: Punisher I and II (II and III for expert mode) and one UNDERLING villain. Punishment, UNDERLING villain's set, and Standard sets. One modular set (Punisher's Armory).\n<b>Setup</b>: Find Target Lock and attach to Punisher, FOCUSED side up. Find Justice or Punishment? and reveal its setup side.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu088b",
+   "type": "MainScheme",
+   "name": "One Last Kill",
+   "subtitle": "Punisher sets his sights on the villain as they try to escape. But you need them alive to get answers about the escalating gang war.",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "8*",
+    "EscalationThreat": "1*",
+    "Stage": "1B"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>When Revealed</b>: Find and reveal Punisher's M1911s.\n<b>Forced Response</b>: After resolving step one of the villain phase, the TARGETED villain activates against the first player.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu089a",
+   "type": "MainScheme",
+   "name": "Escaping Punishment",
+   "subtitle": "Punisher's target nears escape. Angered by your interference, he sets his sights on you!",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>When Revealed</b>: Find and reveal Punisher's Assault Rifle. Flip Target Lock to its DISTRACTED side.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu089b",
+   "type": "MainScheme",
+   "name": "Escaping Punishment",
+   "subtitle": "The villain frantically searches for an exit. SWAT surrounds the building. Punisher is out for blood. Can you stop him and capture the villain alive?",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "9*",
+    "EscalationThreat": "1*",
+    "Stage": "2B"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>Forced Response</b>: After resolving step one of the villain phase, the TARGETED villain activates against the first player.\nIf this scheme is completed, the TARGETED villain escapes and the players lose the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu090a",
+   "type": "Environment",
+   "name": "Justice or Punishment?",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>Setup</b>: Reveal the UNDERLING villain (I for standard, II for expert mode). Set their hit points to the numeral (ignoring 👤) in their printed hit point value.\nAttach In the Crosshairs to them.\nShuffle their encounter cards into the encounter deck, following any <b>Setup</b> and <b>When Revealed</b> instructions.\nFlip this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu090b",
+   "type": "Environment",
+   "name": "Justice or Punishment?",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "Permanent.\n• Punisher is the active villain. Encounter cards referring to or affecting \"the villain\" refer only to Punisher.\n• Players may defend any attack, even ones targeting enemies.\nIf Punisher's final stage is defeated, the players win the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu091a",
+   "type": "Attachment",
+   "name": "Target Lock",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "0**",
+    "ATK+": "0**",
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "Focused. Setup. Permanent.\n[star] <b>Forced Interrupt</b>: When Punisher would activate, he attacks the enemy with the fewest remaining hit points instead. If this attack damages an enemy or ally, place threat on the main scheme equal to the number of boost icons on the top card of the encounter discard pile.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu091b",
+   "type": "Attachment",
+   "name": "Target Lock",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "0**",
+    "ATK+": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "Distracted. Permanent. Attach to Punisher.\n[star] <b>Forced Interrupt</b>: When Punisher would scheme, flip this card instead.\n<b>Forced Interrupt</b>: At the end of the round, flip this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu092",
+   "type": "Attachment",
+   "name": "In the Crosshairs",
+   "subtitle": "With every hit from Punisher, his target grows increasingly desperate to escape.",
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "Targeted. Setup. Permanent.\nAttached character gets +5👤 hit points, gains the TARGETED trait, and cannot be affected by player cards.\nIf attached character's current stage is defeated, the players lose the game.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu093",
+   "type": "Attachment",
+   "name": "Punisher's Assault Rifle",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1**",
+    "Boost": "1",
+    "Uses": "2*,ammo"
+   },
+   "traits": [
+    "ARMAMENT",
+    "WEAPON"
+   ],
+   "set_name": "Punishment",
+   "text": "Armament. Weapon. Attach to Punisher. Uses (2👤 ammo counters).\n<b>When Revealed</b>: Discard each other ARMAMENT card in play.\n[star] Punisher's attacks gain overkill. His overkill damage on minions is dealt to the TARGETED villain.\n[star] <b>Forced Response</b>: After Punisher attacks, remove 1 ammo counter from here.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu094",
+   "type": "Attachment",
+   "name": "Punisher's RPG",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "2**",
+    "Boost": "2",
+    "Uses": "1+1*,ammo"
+   },
+   "traits": [
+    "ARMAMENT",
+    "WEAPON"
+   ],
+   "set_name": "Punishment",
+   "text": "Armament. Weapon. Attach to Punisher. Uses (1+1👤 ammo counters).\n<b>When Revealed</b>: Discard each other ARMAMENT card in play.\n[star] Punisher's attacks deal indirect damage. Exhaust any character damaged by his attack.\n[star] <b>Forced Response</b>: After Punisher attacks, remove 1 ammo counter from here.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu095",
+   "type": "Attachment",
+   "name": "Punisher's M1911s",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1**",
+    "Boost": "2",
+    "Uses": "2*,ammo"
+   },
+   "traits": [
+    "ARMAMENT",
+    "WEAPON"
+   ],
+   "set_name": "Punishment",
+   "text": "Armament. Weapon. Attach to Punisher. Uses (2👤 ammo counters).\n<b>When Revealed</b>: Discard each other ARMAMENT card in play.\n[star] Punisher's attacks gain ranged.\n[star] <b>Forced Response</b>: After Punisher attacks, remove 1 ammo counter from here.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu096",
+   "type": "Attachment",
+   "name": "Mexican Standoff",
+   "subtitle": "\"So, which one of us is going to make the first move?\"",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONFRONTATION"
+   ],
+   "set_name": "Punishment",
+   "text": "Confrontation. Attach to Punisher.\n<b>Forced Response</b>: After you attack Punisher, he activates. Then, the TARGETED villain activates against you. Do not give either character a boost card for these activations. Discard this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu097",
+   "type": "Minion",
+   "name": "* Microchip",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0**",
+    "ATK": "0**",
+    "HP": "3",
+    "Boost": "1"
+   },
+   "traits": [
+    "GENIUS",
+    "VIGILANTE"
+   ],
+   "set_name": "Punishment",
+   "text": "Punisher cannot attack this minion.\n[star] <b>Forced Interrupt</b>: When Microchip would activate, give Punisher a facedown boost card instead.\n<b>When Defeated</b>: Reveal the top WEAPON attachment in the encounter discard pile.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu098",
+   "type": "Minion",
+   "name": "* Rachel Cole-Alves",
+   "subtitle": "\"Nobody could ever be as driven as us. Nobody else knows pain like we do, Frank.\"",
+   "desc": {
+    "SCH": "0**",
+    "ATK": "2",
+    "HP": "5",
+    "Boost": "1"
+   },
+   "traits": [
+    "MARINE",
+    "VIGILANTE"
+   ],
+   "set_name": "Punishment",
+   "text": "Punisher cannot attack this minion.\n[star] <b>Forced Interrupt</b>: When Rachel Cole-Alves would scheme, she attacks the TARGETED villain instead.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu099",
+   "type": "SideScheme",
+   "name": "Judge, Jury... Execution!",
+   "subtitle": "In a broken system, Punisher views himself as the only true source of justice for the worst of the worst.",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2",
+    "Amplify": "1"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>When Defeated</b>: Discard the minion with the fewest remaining hit points and deal damage to the TARGETED villain equal to that minion's remaining hit points. Otherwise, give Punisher a facedown boost card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu100",
+   "type": "Treachery",
+   "name": "Back Against the Wall",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1**"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Deal damage to Punisher equal to the TARGETED villain's ATK.\n<b>When Revealed (Hero)</b>: Flip Target Lock to its DISTRACTED side. Punisher activates.\n[star] <b>Boost</b>: Give Punisher a facedown boost card (if he is activating, resolve it).",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu102",
+   "type": "Treachery",
+   "name": "Bullet Spray",
+   "subtitle": "\"I'm fine. They're not.\"",
+   "desc": {
+    "Boost": "0**"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>When Revealed</b>: Deal 1 damage to each character you control. Deal 1 damage to the TARGETED villain and each minion engaged with you.\n[star] <b>Boost</b>: Deal 1 damage to the TARGETED villain.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu104",
+   "type": "Treachery",
+   "name": "Flash-Bang",
+   "subtitle": "FWOOOSH!!",
+   "desc": {
+    "Boost": "0**"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Punishment",
+   "text": "<b>When Revealed</b>: Stun each character you control. Stun the TARGETED villain and each minion engaged with you.\n[star] <b>Boost</b>: Stun a character you control.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu105",
+   "type": "Treachery",
+   "name": "Say Good Night",
+   "subtitle": "\"We're nothing alike, me and the enemy. We both deal in death, but they sell theirs. I give it away.\"",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Punishment",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Deal damage to the TARGETED villain equal to Punisher's ATK.\n<b>When Revealed (Hero)</b>: Take damage equal to Punisher's ATK. You may exhaust your hero or discard an ally you control to prevent this damage.",
+   "custom": "MC×DC 2026"
   }
  ],
- "checksum": "58d08d0efb3555e8ce566a8833591e72cec9b4b11cad99da77e44f9224bf5e6f"
+ "checksum": "503d215b6c6a4d440914c6105033c7e08d772598b177a577074e8b86e4f3983c"
 }
