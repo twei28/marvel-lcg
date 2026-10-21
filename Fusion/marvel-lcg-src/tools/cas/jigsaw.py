@@ -194,3 +194,11 @@ def jigsaw_etat(monde, aides):
             soucis.append(f"cartes de boost face cachee de Jigsaw = {n} (attendu {attendu['boosts_jigsaw']})")
     return (False, " ; ".join(soucis)) if soucis else (True, "etat Jigsaw conforme")
 '''
+
+CAS += [
+    _k("pu060 Maggia Thug : Guard 1 (Patrol natif non mesurable ici) (natifs, lus dans desc), ATQ 2, PV 3, SCH 1",
+       "aucun script : mots-cles `desc` (fiches guard.md, patrol.md)",
+       ["Puzzle.PutIntoPlay('pu060')"], [],
+       {"attributs_carte": [["pu060", "guard", 0], ["pu060", "attack", 0], ["pu060", "scheme", 0]],
+        "pv_max": [["pu060", 3]]}, main_exclusive=["01088"]),
+]
