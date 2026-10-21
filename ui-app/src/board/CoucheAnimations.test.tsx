@@ -186,45 +186,21 @@ describe('la duree suit la distance, et l inclinaison le sens du trajet', () => 
 })
 
 /**
- * LE FILET QUI PROTEGE LES AUTRES JOUEURS.
+ * LE VOL GROUPE, DEVENU LE SEUL COMPORTEMENT (21/10/2026, backlog item 7).
  *
- * Le poids, le geste et le « clac » sont des ESSAIS reserves a un seul compte
- * (board/essais.ts). ⚠ Sans le drapeau, le rendu doit etre celui d'AVANT, a
- * l'identique : 250 ms fixes, aucune inclinaison, aucun depassement. Si cette
- * garde lachait, tous les joueurs recevraient un essai non valide sans que
- * personne l'ait decide.
+ * Valide a l'usage : la garde d'essai (board/essais.ts) et l'ancien repli a
+ * 250 ms fixes ont disparu. La couche porte desormais toujours sa classe, et
+ * la duree suit toujours la distance.
  */
-describe('sans le drapeau d essai, le rendu est celui d avant', () => {
+describe('la couche porte toujours sa classe, la duree suit la distance', () => {
   const volDe = (container: HTMLElement) =>
     container.querySelector<HTMLElement>('.vol-carte')
 
-  it('la duree redevient fixe et l inclinaison nulle', () => {
+  it('la classe est posee et la duree suit la distance', () => {
     const { main } = poserScene()
     const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
-    main.append(carte('20', 'https://exemple.test/scan.png'))
-    rerender(<CoucheAnimations renderId={rendu()} actif />)
-
-    const vol = volDe(container)
-    expect(vol?.style.transitionDuration).toBe('250ms')
-    const geste = container.querySelector<HTMLElement>('.vol-carte-geste')
-    expect(geste?.style.getPropertyValue('--angle')).toBe('0deg')
-  })
-
-  it('la couche ne porte pas la classe des essais', () => {
-    const { main } = poserScene()
-    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
-    main.append(carte('21'))
-    rerender(<CoucheAnimations renderId={rendu()} actif />)
-    expect(container.querySelector('.couche-animations.est-essai')).toBeNull()
-  })
-
-  it('avec le drapeau, la couche la porte et la duree suit la distance', () => {
-    // Meme structure exacte que le cas « duree fixe » ci-dessus, drapeau en plus :
-    // seule la presence de `essais` doit faire la difference.
-    const { main } = poserScene()
-    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif essais />)
     main.append(carte('22', 'https://exemple.test/scan.png'))
-    rerender(<CoucheAnimations renderId={rendu()} actif essais />)
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
     expect(volDe(container), 'aucun vol produit').not.toBeNull()
     expect(container.querySelector('.couche-animations.est-essai')).not.toBeNull()
     expect(volDe(container)?.style.transitionDuration).not.toBe('250ms')

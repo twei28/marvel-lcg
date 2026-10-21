@@ -265,26 +265,12 @@ export function regrouper<T extends BrouillonGroupable>(brouillons: T[]): T[] {
   return resultat
 }
 
-/** L'ancienne duree, gardee pour tout le monde sauf les essais. */
-const DUREE_AVANT_ESSAIS = 250
-
 export function CoucheAnimations({
   renderId,
   actif,
-  essais = false,
 }: {
   renderId: number
   actif: boolean
-  /**
-   * Le poids, le geste et le « clac » (14/09/2026).
-   *
-   * ⚠ RESERVES A UN SEUL COMPTE tant qu'ils ne sont pas valides a l'usage
-   * (voir `board/essais.ts`). Faux = comportement d'avant, a l'identique :
-   * 250 ms fixes, aucune inclinaison, aucun depassement, aucun tressaillement.
-   * C'est du code TEMPORAIRE : le jour ou l'utilisateur valide, ce drapeau et
-   * les deux branches disparaissent.
-   */
-  essais?: boolean
 }) {
   const [vols, setVols] = useState<Vol[]>([])
   const compteur = useRef(0)
@@ -469,7 +455,7 @@ export function CoucheAnimations({
           dureeMax = 0
           liste.forEach((b, i) => {
             const delai = base + i * CASCADE
-            const duree = essais ? dureeDe(b.depart, b.arrivee) : DUREE_AVANT_ESSAIS
+            const duree = dureeDe(b.depart, b.arrivee)
             dureeMax = Math.max(dureeMax, duree)
             nouveaux.push({
               cle: `v${compteur.current++}`,
@@ -479,12 +465,12 @@ export function CoucheAnimations({
               delai,
               duree,
               nombre: b.nombre ?? 1,
-              angle: essais ? inclinaisonDe(b.depart, b.arrivee) : 0,
-              clac: essais && seule,
+              angle: inclinaisonDe(b.depart, b.arrivee),
+              clac: seule,
             })
             if (b.el) masquer(b.el, delai, duree)
             for (const autre of b.autres ?? []) masquer(autre, delai, duree)
-            if (essais) tressaillir(b.elArrivee, 20 + delai + duree)
+            tressaillir(b.elArrivee, 20 + delai + duree)
           })
           base += (liste.length - 1) * CASCADE + dureeMax + GAP
         }
@@ -499,11 +485,11 @@ export function CoucheAnimations({
     }
 
     memoire = courant
-  }, [renderId, actif, essais])
+  }, [renderId, actif])
 
   if (vols.length === 0) return null
   return (
-    <div className={`couche-animations${essais ? ' est-essai' : ''}`} aria-hidden="true">
+    <div className="couche-animations est-essai" aria-hidden="true">
       {vols.map((vol) => (
         <VolCarte key={vol.cle} vol={vol} />
       ))}

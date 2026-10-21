@@ -5576,7 +5576,6 @@ export function PagePartie({
           phaseMechantEnCours,
           enMiseEnPlace,
         })}
-        essais={essais}
       />
       <CoucheRefusEffets refus={etat.monde.refus_effets} />
       <CoucheTriche
