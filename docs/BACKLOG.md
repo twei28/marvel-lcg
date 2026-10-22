@@ -146,8 +146,10 @@ OCTGN et DragnCards pour les scans ; mesurer le poids d'une langue en WebP.
 
 ## 3. Une « barre d'avantage » sur le plateau, comme aux échecs (ajouté le 22/10/2026)
 
-> **Décision du 22/10/2026 : idée notée, on ne fait rien maintenant** (l'utilisateur est limité en tokens). Aucune maquette, aucun code. Reprendre
-> ce sujet seulement s'il le demande.
+> **FAIT le 22/10/2026 (version 1, formule simple)** : l'utilisateur a donné son go après la maquette. Code : `ui-app/src/board/barre-avantage.ts` (formule pure, 6 tests),
+> `BarreAvantage.tsx` + `barre-avantage.css` (barre de 7 px au bord gauche, détail au survol), `barre-avantage-reglage.ts` et `LigneBarreAvantage` dans `FenetreReglages.tsx`
+> (option **désactivée par défaut**, clé `mc_barre_avantage`). **Pas encore fait** : les fiches réglage par scénario atypique ; la calibration des poids sur de vraies parties
+> (seuils 0,4 et 0,6, 12 tours « confortables »). Vérifié sur Rhino en navigateur : absente par défaut, présente une fois activée, repart quand on la désactive.
 
 **L'idée de l'utilisateur.** Dans les programmes d'échecs, une barre verticale sur le côté monte ou descend selon qui a l'avantage. Il voudrait
 l'équivalent pour Marvel Champions : une barre qui dit, au fil de la partie, si **les héros** ou **le méchant** ont l'avantage.
