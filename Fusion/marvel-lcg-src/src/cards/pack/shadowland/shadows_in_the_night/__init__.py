@@ -96,9 +96,10 @@ def AbilitesComplotAvecVilainRetourne(*, plus_sch_expert: bool, plus_pv_expert: 
 
 
 def CartesControlees(joueur: 'Player') -> List['CardFace']:
-    """« a card you control » en jeu : allies, ameliorations (y compris celles des allies) et soutiens. Ni l'identite ni la main."""
+    """« a card you control » en jeu : allies, ameliorations (y compris celles des allies) et soutiens. Ni l'identite, ni la main, ni une carte Permanent."""
     allies = [c for c in joueur.GetControlCharacters() if Ally.IsType(c)]
-    return allies + list(joueur.GetControlUpgrade()) + list(joueur.supports.Get())
+    # Jamais une carte PERMANENTE (Creeping Corruption sl072 : le moteur plante si on la defausse, assert `is_eliminated` de `DiscardInternal`) : `canbe_discard`.
+    return CardFinder(canbe_discard=True).Checks(allies + list(joueur.GetControlUpgrade()) + list(joueur.supports.Get()))
 
 
 def ChangerSiPasChange(effect: 'Effect') -> None:

@@ -124834,7 +124834,8 @@
    "desc": {
     "SCH": "1",
     "ATK": "2",
-    "HP": "3"
+    "HP": "3",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124852,7 +124853,9 @@
     "SCH": "1",
     "ATK": "1",
     "HP": "2",
-    "Boost": "2"
+    "Boost": "2",
+    "Toughness": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124870,7 +124873,8 @@
     "SCH": "1",
     "ATK": "1",
     "HP": "2",
-    "Boost": "1"
+    "Boost": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124889,7 +124893,8 @@
     "ATK": "1",
     "HP": "2",
     "Boost": "1",
-    "Guard": "1"
+    "Guard": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124908,7 +124913,8 @@
     "ATK": "1",
     "HP": "2",
     "Boost": "2",
-    "Patrol": "1"
+    "Patrol": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124926,7 +124932,8 @@
     "SCH": "1",
     "ATK": "1",
     "HP": "2",
-    "Boost": "1"
+    "Boost": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124953,7 +124960,8 @@
    "name": "Countless Numbers",
    "subtitle": "",
    "desc": {
-    "Surge": "1"
+    "Surge": "1",
+    "Boost": "1"
    },
    "traits": [],
    "set_name": "Ninja Swarm",
@@ -125535,7 +125543,11 @@
    "type": "Upgrade",
    "name": "Creeping Corruption",
    "subtitle": "",
-   "desc": {},
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "MaxPerUnit": "1"
+   },
    "traits": [],
    "set_name": "Black Flower",
    "text": "Permanent. Setup. Max 1 per player.\nIf there are at least 5 corruption counters here, remove each of them from here and flip this card.\n<b>Action</b>: Exhaust Creeping Corruption and place 1 corruption counter here → draw 1 card."
@@ -125545,7 +125557,10 @@
    "type": "Upgrade",
    "name": "Creeping Corruption",
    "subtitle": "",
-   "desc": {},
+   "desc": {
+    "Permanent": "1",
+    "MaxPerUnit": "1"
+   },
    "traits": [
     "OVERPOWERING"
    ],
@@ -125595,6 +125610,7 @@
    "name": "Binding Ritual",
    "subtitle": "",
    "desc": {
+    "StartingThreat": "1*",
     "Crisis": "1",
     "Boost": "2"
    },
@@ -125608,7 +125624,8 @@
    "name": "Roots of a Black Flower",
    "subtitle": "",
    "desc": {
-    "Acceleration": "1"
+    "StartingThreat": "1",
+    "Acceleration": "2"
    },
    "traits": [],
    "set_name": "Black Flower",
@@ -125637,5 +125654,5 @@
    "text": "<b>When Revealed</b>: Place 1 corruption counter on your Creeping Corruption. If it has the <b><i>OVERPOWERING</i></b> trait, place 1 threat on the main scheme; otherwise, take 1 damage.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or take 4 indirect damage."
   }
  ],
- "checksum": "13004454f40be060f1e6c5360027bc6bbc0b97b2968835f8e7d01de00ce5ba74"
+ "checksum": "b59ba6b50435689b79232f1468a39d92ddd12da1489db557882f8b4455d12207"
 }
