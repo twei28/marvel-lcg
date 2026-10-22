@@ -6,7 +6,7 @@ from .commun import *
 #
 # Cartes de reference : challenges/2421_battle_of_the_bots (`GiveKeywordToInPlayWhenApplyThis(..., trait=...)` sur un type et un trait), 2412 (complot en 2A).
 # DECISION SANS TEXTE DE RR : la carte imprime « Guerilla Warfare (Civil War) » pour le complot 2, nom ABSENT du moteur (aucune carte de ce nom) : on prend
-# Secret Avengers (56142), le 2B de Captain America, deja associe a Gathering Support. A confirmer par l'utilisateur.
+# Resistance Tactics (56142a) puis Guerilla Warfare (pu284b), confirme par la carte fournie par l utilisateur.
 
 
 def GetAbilities() -> Sequence['Ability']:

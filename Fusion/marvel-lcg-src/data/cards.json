@@ -124076,7 +124076,7 @@
    "card_id": "pu140",
    "type": "Environment",
    "name": "Big Apple Gang War!",
-   "subtitle": "Crates of military-grade weapons slipped through the abandoned docks under cover of darkness, arming gangs that carved the city into bloody little kingdoms by sunrise.",
+   "subtitle": "Crates of military-grade weapons slipped through the abandoned docks under cover of darkness, arming gangs that carved the city into bloody little kingdoms by sunrise. Following shell casings, paid-off manifests, and whispered names, [POI-1016] uncovered a web of smugglers and corrupt officials feeding the chaos. Shipment after shipment flooded his streets. By dawn, the docks would be ash, the traffickers would be ghosts, and the weapons would never find their targets.",
    "desc": {
     "Setup": "1",
     "Permanent": "1"
@@ -124435,5 +124435,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "5d2abbfb50116e3d08b18212706e9d45b7719c6de89fda7477a0d3f4f8f13f76"
+ "checksum": "ed2d101d459e19bdfcfc5b91c5bf4d73e7cf14309db9190d31d7e1c14c359c02"
 }
