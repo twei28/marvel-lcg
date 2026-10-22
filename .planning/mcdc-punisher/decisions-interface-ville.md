@@ -10,3 +10,4 @@ Le 22/10/2026, l'utilisateur remplace le plan « A + B » (mini-carte permanente
 | 4 | Declenchement du deplacement | **Les deux** : clic sur une case verte puis choix du cout (epuiser un personnage / 1 ressource), ET l'Action habituelle de la carte The City reste disponible |
 | 5 | Detail d'un lieu | **Survol = carte agrandie** (comme les autres cartes du plateau) ; le clic reste reserve au deplacement |
 | 6 | Infos sur chaque case | **Les quatre** : pions des joueurs, pastille de sbire attache, compteurs de piste poses sur le lieu, indicateur « capacite deja utilisee ce round » (limite commune a tous) |
+| 7 | Position de la carte agrandie (volet ouvert) | **A GAUCHE du volet, collee a lui**, pour ne pas masquer la zone de jeu (pas a l'endroit habituel). Hauteur **fixe, centree verticalement** (ne bouge pas d'un lieu a l'autre) |
