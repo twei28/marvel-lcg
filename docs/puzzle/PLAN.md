@@ -1,0 +1,131 @@
+# Puzzles : plan d'implémentation (22/10/2026)
+
+Complète `CAHIER-DES-CHARGES.md`. Aucun code écrit. Une seule livraison, mais
+construite dans cet ordre (chaque étape testable seule).
+
+## Ce qui existe déjà (à réutiliser)
+- **Moteur** : `src/game/puzzle/` (`PuzzleData`, `RunPuzzle` avec ~80 commandes
+  `Puzzle.*` : Damage, Stun, Exhaust, MoveTo, Attach, PutIntoPlay, Win, Lose, End…).
+  7 puzzles officiels dans `Fusion/marvel-lcg-src/puzzle/*.json`, avec checksum.
+- **Routes serveur** : `/list_puzzle_files`, `/get_puzzle_json`, `/load_puzzle`,
+  `/new_puzzle`, `/new_puzzle_replay` (`server_new_game.py`, `server_get.py`).
+- **Interface** : `navigateur/dist/js/prepare/puzzles.js` (liste + chargement),
+  `puzzle_editor.html` (ancien éditeur texte), et surtout le **bac à sable**
+  (`js/sandbox/app.js`) : un panneau avec catalogue de cartes qui pilote la partie en
+  cours via `POST /sandbox_command` (commandes `Puzzle.*`, seules autorisées).
+- **Replays** : le moteur sait déjà rejouer une partie (`is_puzzle`).
+
+## Constats qui pèsent sur le plan
+1. `play_puzzle` ne met en place que `players[0]` (main, deck, défausse) : le
+   **multi-héros (1 à 4)** demande d'étendre moteur et format.
+2. Il n'existe pas de commande pour : premier joueur, ressources en réserve, phase
+   de départ, stade du méchant, objectifs. À ajouter.
+3. Il manque l'inverse de tout ça : **capturer l'état du plateau** et le convertir
+   en puzzle. C'est la plus grosse pièce.
+4. Un puzzle publié exécute des commandes sur la machine d'autres joueurs :
+   il faut une **liste blanche stricte** (déjà `Puzzle.<méthode>` seulement).
+5. Deux déploiements : serveur (Python) et navigateur (Pyodide, `navigateur/`).
+   Toute nouveauté moteur doit passer le contrôle d'équivalence.
+6. Le moteur existe en plusieurs copies : lire `GUIDE-CREATION-CONTENU.md` §1 avant
+   de toucher quoi que ce soit dans `Fusion/`.
+
+## Étapes
+
+### E0. Cadrage (petit)
+- Lire GUIDE §1, étudier `puzzle.py`, `puzzle_data.py`, le bac à sable et ses tests.
+- Décider définitivement : étendre `PuzzleData` (version 2, compatible avec les 7
+  puzzles existants, checksum conservé ou assoupli).
+
+### E1. Format de puzzle v2
+Ajouter : titre, description, difficulté, indices, objectifs (ET/OU, cible du
+complot), visibilité de la solution, solution de référence (replay), état détaillé
+par héros (PV, forme, statuts, premier joueur, ressources), phase de départ,
+auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schéma.
+
+### E2. Moteur : mise en place complète
+- `play_puzzle` pour 1 à 4 héros.
+- Nouvelles commandes `Puzzle.*` : premier joueur, ressources, phase/étape de départ,
+  stade et PV du méchant, complot (étape, menace, accélération), mise en jeu avec
+  dégâts/compteurs/statuts/attachements.
+- Garder la liste blanche ; tests unitaires de chaque commande.
+
+### E3. Moteur : objectifs et fin de puzzle
+- Détection automatique : vaincre le méchant ce tour, survivre jusqu'à la fin du
+  tour, terminer le complot ciblé, combinaisons ET/OU. Objectif libre : bouton manuel.
+- Écran de réussite / d'échec (réutiliser les bannières Victoire/Défaite).
+- Mode automatique forcé en puzzle.
+
+### E4. Capture de l'état (cœur de l'éditeur)
+- Convertir le plateau courant en `PuzzleData` v2 (zones, ordre des decks, cartes en
+  jeu avec états, méchant, complot, rencontre).
+- Test d'aller-retour : état → puzzle → rechargement → état identique.
+
+### E5. Éditeur sur le vrai plateau
+- Entrée : la mise en place classique (héros, deck, méchant, sets) puis plateau en
+  **mode édition** (bandeau et panneaux d'une teinte distincte).
+- Étendre le bac à sable : catalogue + recherche/filtres (glisser) et menu clic droit
+  par zone ; panneau chiffré + clic sur jetons ; réglage méchant/complot/héros.
+- Liste réordonnable des decks + mélanger ; avertissement si deck illégal.
+- Annuler/Refaire (Ctrl+Z/Y), bouton **Tester/Éditer** (instantané puis retour).
+- Brouillons automatiques dans le navigateur.
+
+### E6. Publication (côté client)
+- Écran titre/description/difficulté/indices/objectifs/visibilité de la solution.
+- Enregistrement optionnel de la solution de référence (replay) ; mention
+  « non vérifié » sinon.
+- Affichage du code, du lien et de la clé d'édition (une fois, puis dans Mes puzzles).
+
+### E7. Serveur de puzzles
+- API : publier, lire par code, modifier/supprimer avec la clé, stockage disque.
+- Codes courts uniques (type PZ-A4F9), liens cliquables, limites de taille et de
+  débit, validation stricte du contenu (liste blanche des commandes).
+- Aucune donnée personnelle : pseudo libre uniquement.
+
+### E8. Résolution
+- Écran d'intro (titre, histoire, difficulté, objectif) puis plateau.
+- Bandeau d'objectif repliable ; indices un par un ; annuler et recommencer
+  illimités ; decks cachés mais ordre fixe (même graine à chaque essai).
+- Solution de référence : visible ou non selon le choix du créateur.
+- Résolution sur mobile/tablette (l'édition reste PC).
+
+### E9. Accueil et « Mes puzzles »
+- Le bouton Puzzle ouvre un menu à 3 choix : Résoudre par code, Créer, Mes puzzles.
+- Mes puzzles : créés (brouillons + publiés, code, clé), résolus, en cours,
+  sauvegardés par code (stockage navigateur).
+- Reprendre/remplacer `puzzles.js` et l'ancien `puzzle_editor.html` ; décider du
+  sort des 7 puzzles officiels (rubrique « officiels » ou conservés tels quels).
+
+### E10. Hors ligne et navigateur
+- Création/résolution locales dans la version navigateur (Pyodide) ; publication et
+  lecture par code seulement avec le serveur.
+- Contrôle d'équivalence moteur serveur / navigateur sur les nouveaux scénarios.
+
+### E11. Robustesse
+- Garde de compatibilité : après modification d'une carte, rejouer les solutions de
+  référence et marquer les obsolètes.
+- Tests UI (Playwright, dossier `ui-check`) : créer, tester, publier, résoudre,
+  modifier, supprimer, reprise après rechargement, mobile en résolution.
+- Batterie complète en fin de chantier (gros regroupement), filtres ciblés entre
+  les étapes.
+
+### E12. Documentation et fin
+- `docs/puzzle/` : guide créateur et guide technique ; mise à jour de `docs/README.md`.
+- Commit par étape. **Pas de déploiement sans demande** ; avant tout déploiement,
+  vérifier les joueurs en ligne. Push GitHub seulement en fin de session.
+
+## Ordre et dépendances
+E0 → E1 → E2 → E3 → E4 → E5 → E6 → E7 → E8 → E9 → E10 → E11 → E12.
+E7 peut avancer en parallèle de E5/E6 dès que E1 est figé. E4 est le point à plus
+haut risque : à attaquer tôt et à valider par l'aller-retour avant l'interface.
+
+## Risques
+- Capture d'état exhaustive (cartes avec effets en cours, attachements, jetons
+  rares, modes particuliers comme la ville Punisher).
+- Déterminisme : le même ordre de decks et la même graine à chaque essai, y
+  compris dans le navigateur.
+- Scripts de cartes qui changent : puzzles et solutions à revalider.
+- Taille de l'éditeur : l'interface est la plus grosse part du travail.
+
+## Questions restantes pour plus tard
+- Sort des 7 puzzles existants (E9).
+- Durée de conservation des puzzles publiés sur le serveur.
