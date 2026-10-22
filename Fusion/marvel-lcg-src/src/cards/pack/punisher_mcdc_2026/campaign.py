@@ -217,3 +217,45 @@ def ScenarioDuCombat3(sous_fifre_du_combat_2: str, expert: bool=False) -> str:
     """Le fichier de scenario du combat 3 d'apres le carnet ('' si le sous-fifre du combat 2 n'est pas note)."""
     autre = {'jigsaw': 'hobgoblin', 'hobgoblin': 'jigsaw'}.get(sous_fifre_du_combat_2.strip().lower())
     return f"punishment_{autre}" + ('_expert' if expert else '') if autre else ''
+
+
+# ------------------------------------------------------------------------------------------------------ campagne experte, combats 2 a 4
+def SoignerParRec(effect: 'Effect') -> None:
+    """Le corps de `SoinExpertParRec`, appelable depuis le Setup d'une carte qui sort du jeu elle-meme (pu147 : sa 2e capacite ne partirait pas)."""
+    if not Worlds.IsExpert(effect) or not Worlds.IsCampaign(effect):
+        return
+    this = effect.this
+    for joueur in Worlds.GetPlayers(effect):
+        identite = joueur.GetIdentity()
+        if identite is None:
+            continue
+
+        def soigner(cibles: 'Sequence[CardFace]', joueur: 'Player'=joueur, identite: 'CardFace'=identite) -> None:
+            joueur.DealEncounterCards(1, effect)
+            this.HealthUnits([identite], getattr(identite, 'recover', 0), effect)
+
+        joueur.MayChooseOneAbility(
+            effect,
+            AbilityFactory.ForChoiceAbility(
+                "Deal yourself 1 facedown encounter card to heal damage from your identity equal to your REC",
+                soigner,
+            ).SetTarget([identite], canbe_heal=True),
+        )
+
+
+
+
+def SoinExpertParRec() -> 'Ability':
+    """Instructions de campagne des combats 2, 3 et 4, « Campagne experte uniquement » : « chaque joueur a le droit de s'attribuer une carte Rencontre face
+    cachee pour soigner son identite d'un nombre de degats egal a sa REC ».
+
+    Cartes de reference : `game/ability/factory/campaign.py` `ExpertCampaignEachPlayerMayDealFacedownEncounterCardYpHealHP` (sm, next_evol : la meme carte face
+    cachee, mais soin COMPLET), `aos/campaign.py` `SoinExpertDuConseil` (soin de la REC : `identite.recover`, lue sur la face alter-ego active au debut).
+    ⚠ Pieges : (1) « a player MAY » : `MayChooseOneAbility`, le joueur peut refuser ; (2) soigne de la REC, pas jusqu'aux PV imprimes ; (3) APRES la remise des
+    PV reportes (`ExpertCampaignSetPlayersHPToTheirRemainingHP`, dans le scenario ou dans la carte de campagne) : donc `AfterGameSetup` (apres toute la mise en
+    place de campagne) ; (4) campagne experte seulement (`Worlds.IsExpert`) ; (5) la carte vient du deck rencontre (`DealEncounterCards`)."""
+    def mise_en_place(effect: 'Effect', message: 'Message.WhenGameWouldBegin') -> None:
+        Unused(message)
+        SoignerParRec(effect)
+
+    return AbilityFactory.AfterGameSetup(mise_en_place)

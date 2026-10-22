@@ -22,6 +22,7 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactoryCampaign.WhenCampaignSetup(mise_en_place),
         # Le scenario Punishment (One Last Kill) n'ecrit AUCUN releve de campagne : pu144 le fait elle-meme (pas de collecteur partage ici).
         AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP(),
+        SoinExpertParRec(),
         WriteCampaignLogAtGameOver(ReleveCombat3, scenario_id='punishment'),
         *RetournerPunishment(),
     ]

@@ -19,4 +19,4 @@ def GetAbilities() -> Sequence['Ability']:
         EnregistrerLeReleve(effect, lambda e, m: ReleveCombat2(sous_fifre, e, m), 'tracking_the_buyer')
         MettreLesRecompenses(effect, (CLE_CAISSES, CAISSES))
 
-    return [AbilityFactoryCampaign.WhenCampaignSetup(mise_en_place)]
+    return [AbilityFactoryCampaign.WhenCampaignSetup(mise_en_place), SoinExpertParRec()]

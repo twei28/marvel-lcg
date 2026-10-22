@@ -8,6 +8,13 @@ FORME_HEROS = "Puzzle.ChangeForm('01001b')"
 HEROS_K = FORME_HEROS
 
 
+def _rec(nom, pourquoi, scenario, pv_restants, attendu, **cle):
+    """Regle experte « soigner de sa REC » : le carnet donne les PV restants du joueur 1 (Peter Parker, 10 PV, REC 3), forme alter-ego du depart."""
+    carnet = {"Punisher Ally": "1", "Seized Tech Crates": "1", "Punisher's Ordnance Cache": "1", "Underling": "Jigsaw",
+              "Player 1 Identity": "Spider-Man", "Player 1 Remaining hit points": str(pv_restants)}
+    return _c(nom, pourquoi, [], [], attendu, scenario=scenario, campagne=True, carnet=carnet, **cle)
+
+
 def _k(nom, pourquoi, mise, declencher, attendu, **cle):
     """Combat 4 : scenario genere Kingsfall (Kingpin + SWAT + Tracksuit Mafia), campagne, carnet du combat 3 (allie Punisher gagne)."""
     cle.setdefault("carnet", {"Punisher Ally": "1", "Player 1 Identity": "Spider-Man"})
@@ -277,6 +284,20 @@ CAS = [
        [HEROS_K, "Puzzle.PlaceCounters('pu148', 'counter', 2)"],
        ["Puzzle.SetThreat('60161b', 7)", "Puzzle.Action('pu148', 'Action')"], {"menace": [["60161b", 5]]},
        choisir_option="Remove_2_threat_from_a_scheme", declencher_tolerant=["Puzzle.Action('pu148', 'Action')", "Puzzle.Action('pu148', 'Action')"]),
+    # ---------------------------------------------------------------------------------------------------------- regle experte : soin par REC (combats 2 a 4)
+    _rec("combat 3 EXPERT : PV reportes 5/10, le joueur accepte -> 1 carte de rencontre donnee face cachee, identite soignee de sa REC (Peter Parker 3) : 5 degats -> 2",
+         "« Campagne experte uniquement : chaque joueur a le droit de s'attribuer une carte Rencontre face cachee pour soigner son identite d'un nombre de degats egal a sa REC »",
+         "punishment_hobgoblin_expert", 5, {"degats_identite": 2, "cartes_donnees": 1}, accepter_choix=True),
+    _rec("combat 3 EXPERT, TEMOIN : le joueur REFUSE (« a le droit ») -> rien n'est donne, les 5 degats restent", "le soin est facultatif",
+         "punishment_hobgoblin_expert", 5, {"degats_identite": 5, "cartes_donnees": 0}, refuser_mise_en_place="Deal yourself 1 facedown encounter card"),
+    _rec("combat 3 STANDARD : pas de regle (campagne experte seulement) -> aucune carte donnee, aucun degat", "« Campagne experte uniquement »",
+         "punishment_hobgoblin", 5, {"degats_identite": 0, "cartes_donnees": 0}, accepter_choix=True),
+    _rec("combat 3 EXPERT : REC superieure aux degats (9/10 restants = 1 degat) -> soigne jusqu'a 0, pas plus", "on soigne de sa REC, sans depasser les PV",
+         "punishment_hobgoblin_expert", 9, {"degats_identite": 0, "cartes_donnees": 1}, accepter_choix=True),
+    _rec("combat 2 EXPERT : meme regle (PV 5/10 -> 2 degats, 1 carte donnee)", "instructions de campagne du combat 2",
+         "tracking_the_buyer_the_getaway_jigsaw_expert", 5, {"degats_identite": 2, "cartes_donnees": 1}, accepter_choix=True),
+    _rec("combat 4 EXPERT : meme regle (PV 5/10 -> 2 degats, 1 carte donnee)", "instructions de campagne du combat 4",
+         "kingsfall_expert", 5, {"degats_identite": 2, "cartes_donnees": 1}, accepter_choix=True),
 ]
 
 VERIFICATIONS = r'''
