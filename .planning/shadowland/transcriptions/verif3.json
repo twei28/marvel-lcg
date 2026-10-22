@@ -1,0 +1,137 @@
+[
+ {
+  "id_scan": "65061B",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "stats",
+    "ancien": "{\"nombre_haut_gauche\":\"9 par_joueur\",\"menace_cible\":\"2 par_joueur\",\"escalade\":\"+1 par_joueur avec étoile (+1[per_hero][star])\"}",
+    "nouveau": "{\"menace_cible\":\"9 par_joueur\",\"menace_depart\":\"2 par_joueur\",\"escalade\":\"+1 par_joueur avec étoile (+1[per_hero][star])\"}",
+    "raison": "Rond en haut à gauche = 9 + icône joueur = menace CIBLE ; nombre en bas à droite = 2 + icône joueur = menace de DÉPART ; escalade +1 [per_hero] avec étoile au-dessus."
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65062",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65063",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65064",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65065",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65066",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65067",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65068",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65069",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65070",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "[\"marqueur rouge en Y x2 (bas gauche)\", \"icône noire centrale (croix dans un pentagone/maison) : voir incertitudes\"]",
+    "nouveau": "[\"boost x2 (rouge en Y x2, bas gauche)\", \"hazard (carte avec + inclinée, noire, centre)\"]",
+    "raison": "L'icône noire centrale est la carte inclinée avec un + = HAZARD."
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65071",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65072A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65072B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65073",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65074",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65075",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65076",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "[\"boost: 1 étoile rouge [star] (bas gauche)\", \"deux icônes noires (croix dans pentagone avec barre dessous) au centre\"]",
+    "nouveau": "[\"boost étoile [star] (bas gauche)\", \"acceleration x2 (maison/toit avec + et barre, deux fois, centre)\"]",
+    "raison": "Les deux icônes noires centrales sont maison/toit avec + et barre = ACCELERATION, x2."
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65077",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65078",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ }
+]

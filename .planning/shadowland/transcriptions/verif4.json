@@ -1,0 +1,126 @@
+[
+ {
+  "id_scan": "65001A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65001B",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "stats",
+    "ancien": "{\"StartingThreat\": \"7 par_joueur\", \"escalade\": \"+1 par_joueur\", \"TargetThreat\": \"2 par_joueur\"}",
+    "nouveau": "{\"StartingThreat\": \"2 par_joueur\", \"escalade\": \"+1 par_joueur\", \"TargetThreat\": \"7 par_joueur\"}",
+    "raison": "Rond en haut a gauche (7 par joueur) = menace CIBLE; nombre en bas a droite (2 par joueur) = menace de DEPART (convention etablie)"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65002A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65002B",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "stats",
+    "ancien": "{\"StartingThreat\": \"8 par_joueur\", \"escalade\": \"+1 par_joueur\", \"TargetThreat\": \"2 par_joueur\"}",
+    "nouveau": "{\"StartingThreat\": \"2 par_joueur\", \"escalade\": \"+1 par_joueur\", \"TargetThreat\": \"8 par_joueur\"}",
+    "raison": "Rond en haut a gauche (8 par joueur) = menace CIBLE; nombre en bas a droite (2 par joueur) = menace de DEPART (convention etablie)"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65003A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65003B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65004A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65004B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65005",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65006",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65007",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65008",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65009",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65010",
+  "ok": true,
+  "corrections": [],
+  "doutes": [
+   "Les guillemets autour de \"When Revealed\" dans la ligne Boost semblent en gras aussi (<b>\"When Revealed\"</b>); detail typographique mineur"
+  ]
+ },
+ {
+  "id_scan": "65011",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65012A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65012B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65013A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ }
+]

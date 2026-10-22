@@ -1,0 +1,132 @@
+[
+ {
+  "id_scan": "65013B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65014A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65014B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65015A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65015B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65016A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65016B",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65017A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65017B",
+  "ok": true,
+  "corrections": [],
+  "doutes": [
+   "Pied coupe en bas de l'image : seuls 'Bruno Frenda & Sara Cuomo' (partiel), '17B' lisibles ; le reste est complete par analogie avec 17A."
+  ]
+ },
+ {
+  "id_scan": "65018",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65019",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65020",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65021",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65022",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65023",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65024",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "icône de carte avec signe plus (noire) en bas du texte, probablement crisis ou amplify, non sûre",
+    "nouveau": "hazard",
+    "raison": "Icone noire 'carte avec + inclinee' au bas du texte = HAZARD selon la convention"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65025",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "icône hazard (point d'exclamation dans un éclat)",
+    "nouveau": "crisis",
+    "raison": "Icone noire '!! dans un eclat' au bas du texte = CRISIS selon la convention (pas hazard)"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65026",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65027",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ }
+]
