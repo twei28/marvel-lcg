@@ -220,4 +220,4 @@ Lu dans `ui-app/src/board/world.ts` (le type `World`, ce que le moteur envoie au
 
 `docs/maquettes/barre-avantage.html` : une barre fine au bord gauche sur une capture réelle du plateau en Normal ; le survol donne le détail ; quatre états (équilibrée, les héros
 dominent, la partie tourne mal, scénario inconnu) et trois curseurs pour essayer à la main (formule fictive : moyenne de trois valeurs, juste pour juger l'allure).
-**Constat de la maquette** : au bord gauche, la barre frôle la **pile de cartes de gauche** de la table. Il faudra décaler un peu le plateau ou laisser une marge de quelques pixels.
+**Constat de la maquette** : à 22 px de large la barre frôlait la **pile de cartes de gauche** ; l'utilisateur l'a voulue **beaucoup plus fine** (7 px sur un plateau de 1440 px) : elle ne touche plus la pile, pas de marge à ajouter.
