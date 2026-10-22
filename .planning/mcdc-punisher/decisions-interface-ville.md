@@ -11,4 +11,3 @@ Le 22/10/2026, l'utilisateur remplace le plan « A + B » (mini-carte permanente
 | 5 | Detail d'un lieu | **Survol = carte agrandie** (comme les autres cartes du plateau) ; le clic reste reserve au deplacement |
 | 6 | Infos sur chaque case | **Les quatre** : pions des joueurs, pastille de sbire attache, compteurs de piste poses sur le lieu, indicateur « capacite deja utilisee ce round » (limite commune a tous) |
 | 7 | Position de la carte agrandie (volet ouvert) | **A GAUCHE du volet, collee a lui**, pour ne pas masquer la zone de jeu (pas a l'endroit habituel). Hauteur **fixe, centree verticalement** (ne bouge pas d'un lieu a l'autre) |
-| 8 | Assemblee (multi-tables) : comment les groupes se retrouvent | **Un code d'assemblee partage** : la 1re table qui lance Kingsfall epique cree l'assemblee, recoit un code court ; les autres tables l'entrent en creant leur partie ; la 1re table = organisatrice (Longue vie et Le Roi vivent chez elle) |
