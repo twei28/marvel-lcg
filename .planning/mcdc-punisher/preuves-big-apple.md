@@ -271,3 +271,6 @@ Decisions de l'utilisateur : `decisions-multi-tables.md` (1 code d'assemblee par
 
 ### Audit mecanique PU-13 (22/10/2026, soir)
 160 cartes du pack `punisher_mcdc_2026` : 160 avec image, 158 avec script (pu060 Maggia Thug = sbire sans capacite, pu006 Never Sleeps = regles de mise en place portees par `Ville`/pu001a), 159 citees dans les cas (pu087b couverte par les cas Target Lock DISTRACTED de punishment.py), 156 avec texte FR (pu279-pu282, cartes Defi, volontairement hors table FR : leur identifiant n a pas le format d un code de carte, le plateau ne les affiche jamais). Reste de l'audit : comparaison visuelle carte par carte aux scans (non refaite ce soir).
+
+### Audit visuel PU-13 : 160 cartes contre les scans (22/10/2026, 4 lectures independantes)
+Aucun ecart de regle ni de valeur. Corriges : pu140 (flavor incomplet), commentaire pu280, ligne de debug oubliee dans `jigsaw_commun.py` (ecrivait dans /tmp a chaque attaque de Jigsaw ; 31/31 cas `[jig]` apres retrait). Laisses tels quels : pu094 RPG (indirect seulement contre un joueur, voulu et teste : sinon le moteur annule l'attaque contre un ennemi), pu282 (restriction « Only AERIAL & identity specific allies » = regle de deck non verifiee par le moteur), numero d'ordre 1-9 des lieux non stocke, « It » de pu047.

@@ -19,7 +19,6 @@ def Jigsaw(menace_sinon: int) -> 'Ability':
 
     def apres_attaque(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> None:
         this = effect.this.CastTo(EncounterVillain)
-        open("/tmp/jigdbg.txt","a").write("appel %s\n" % this.paper.card_id)
         joueur = message.GetToPlayer()
 
         pile = list(Worlds.GetEncounterDiscardPile(effect).Get(True))
