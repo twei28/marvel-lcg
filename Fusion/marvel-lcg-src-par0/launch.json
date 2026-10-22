@@ -1,6 +1,6 @@
 {
   "server_addresses": [
-    "127.0.0.1:40104"
+    "127.0.0.1:40072"
   ],
   "password": "",
   "translate_file": "./data/translate_fr.json",

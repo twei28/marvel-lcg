@@ -81663,6 +81663,168 @@
    ],
    "set_name": "Iron Fist",
    "text": "Temporary.\n<b>Hero Resource</b>: Remove 2 chi counters from Iron Fist → generate [wild] [wild] resources."
+  },
+  {
+   "card_id": "64014",
+   "type": "Ally",
+   "name": "* Iron Fist",
+   "subtitle": "Lin Lie",
+   "desc": {
+    "Cost": "4",
+    "RES": "R",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "1*",
+    "Class": "Protection"
+   },
+   "traits": [
+    "AGENT OF ATLAS",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "",
+   "text": "[star] <b>Response</b>: After Iron Fist <i>(this ally)</i> attacks an enemy who has been attacked by a hero this phase, stun that enemy. If Iron Fist defeated that enemy, he takes -2 consequential damage ([consequential]) from this attack."
+  },
+  {
+   "card_id": "64019",
+   "type": "Upgrade",
+   "name": "No Time to Bleed",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2*",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Protection",
+    "Temporary": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "[star] Discount 1 ([[Martial Artist]] or [[Soldier]]).\nTemporary. Max 1 per player.\n<b>Response</b>: After you play a card <i>(including this one)</i>, heal 1 damage from your identity."
+  },
+  {
+   "card_id": "64021",
+   "type": "Ally",
+   "name": "* Colleen Wing",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "Class": "Basic"
+   },
+   "traits": [
+    "HERO FOR HIRE",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "",
+   "text": "[star] Colleen Wing takes -1 consequential damage ([consequential]) after she attacks an enemy who has been attacked by another [[Martial Artist]] character this phase."
+  },
+  {
+   "card_id": "64022",
+   "type": "Ally",
+   "name": "* Luke Cage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "R",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "Toughness": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "DEFENDER",
+    "HERO FOR HIRE"
+   ],
+   "set_name": "",
+   "text": "Toughness.\nIf your hero shares a [[trait]] with Luke Cage, your hero gets +1 DEF."
+  },
+  {
+   "card_id": "64023",
+   "type": "Event",
+   "name": "Punch, Reverse Punch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "R",
+    "Class": "Basic"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "[star] Discount 1 ([[Martial Artist]]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to an enemy. Deal 1 damage to an enemy."
+  },
+  {
+   "card_id": "64025",
+   "type": "Support",
+   "name": "* Thunder Dojo",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Basic"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "",
+   "text": "Prerequisite ([[Defender]] or [[Martial Artist]]).\n<b>Alter-Ego Action</b>: Exhaust this card → shuffle up to 2 [[Attack]] events from your discard pile into your deck. Any player may trigger this ability."
+  },
+  {
+   "card_id": "64030",
+   "type": "Upgrade",
+   "name": "Death by a Thousand Cuts",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2*",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Aggression",
+    "Temporary": "1"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "[star] Discount 1 ([[Martial Artist]] or [[Soldier]]).\nTemporary. Max 1 per player.\n<b>Response</b> <i>(attack)</i>: After you play a card <i>(including this one)</i>, deal 1 damage to an enemy."
+  },
+  {
+   "card_id": "64031",
+   "type": "Event",
+   "name": "Zen-Like Calm",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Action</b>: Heal 1 damage from a [[Martial Artist]] character. Then, if that character has no sustained damage, heal 1 damage from another character."
+  },
+  {
+   "card_id": "64032",
+   "type": "Upgrade",
+   "name": "Sensei",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2*",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "",
+   "text": "[star] Discount 2 ([[Martial Artist]]).\nMax 1 per player.\nEach [[Martial Artist]] ally you control takes -2 consequential damage ([consequential]) after they exactly defeat an enemy or side scheme."
   }
  ],
  "red_guardian": [
@@ -124252,5 +124414,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "2673f84935fc00efd1f9851d7a47ff1ee3ecd97bea104d5331d8d377e9f24f21"
+ "checksum": "ecae70219dda3627cbd6b1c64ac8b4503a7c78b272e97841eb1ea8965844f662"
 }

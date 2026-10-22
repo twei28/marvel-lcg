@@ -233,5 +233,6240 @@
   "won": false,
   "reason": "All players were eliminated",
   "rounds": 1
+ },
+ {
+  "time": 1792607435,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 1
+ },
+ {
+  "time": 1792607994,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792608119,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792611036,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792611047,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792611123,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792611293,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792611546,
+  "scenario": "Secret Invasion",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "The Final Stage of the Villain was Defeated",
+  "rounds": 1
+ },
+ {
+  "time": 1792612969,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792613118,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792613622,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792613698,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640101,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640104,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640111,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640113,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640117,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640120,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640251,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640254,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640260,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640263,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640267,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640270,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640319,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640322,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640329,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640331,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640335,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640338,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640494,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640497,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640504,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640507,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640510,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640513,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640547,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640550,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640557,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640560,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640564,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640567,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640601,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640604,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640611,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640614,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640618,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640621,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640657,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640660,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640667,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640669,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640673,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640676,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640710,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640713,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640720,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640723,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640726,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640729,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640764,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640768,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640774,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640777,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640781,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640784,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640818,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640822,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640828,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640831,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640835,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640837,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640872,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640875,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640882,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640885,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640888,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640891,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640936,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640939,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640946,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640949,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792640953,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792640956,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792641061,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792641610,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792641686,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792641992,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792642984,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792642987,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792642995,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792642998,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643001,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643004,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643033,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643036,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643038,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643041,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643287,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643290,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643292,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643295,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643351,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643353,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643356,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643358,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643415,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643417,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643419,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643422,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643475,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643478,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643480,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643482,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643535,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643538,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643540,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643543,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643596,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643599,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643601,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643603,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643657,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643659,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643662,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643664,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643718,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643720,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643722,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643725,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643760,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643763,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643770,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643773,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643776,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643779,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643807,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643809,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643812,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792643814,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792643966,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792644440,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792644516,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792644817,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645036,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645041,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645044,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645047,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645109,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645112,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645177,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645179,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645333,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645336,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645338,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645341,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645362,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645365,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645452,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645454,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645457,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645459,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645480,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645483,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645559,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645561,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645563,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645566,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645587,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645590,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645666,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645668,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645671,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645673,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645694,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645697,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645773,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645776,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645778,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645780,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645801,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645803,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645880,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645883,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645885,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645888,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645909,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645912,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792645990,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645993,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645995,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792645998,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646020,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646023,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646104,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646106,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646109,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646111,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646137,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646140,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646233,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646236,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646238,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646241,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646263,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646266,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646338,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646341,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646348,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646351,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646355,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646358,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646386,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646389,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646391,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646394,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646467,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792646470,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792646601,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792647104,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792647181,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792647486,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792648951,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792648955,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792648962,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792648965,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792648968,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792648972,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649001,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649004,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649008,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649010,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792649097,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649100,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792649449,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649451,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649454,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649456,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792649479,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649482,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792649720,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649723,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649725,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649728,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792649752,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649755,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792649870,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649873,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649881,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649884,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649888,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792649891,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649923,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649925,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649928,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792649931,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792650011,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792650014,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792650102,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792650145,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792650234,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792650950,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792650954,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792650961,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792650964,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792650968,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792650971,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651001,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651004,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651007,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651010,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792651087,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651090,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792651677,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651681,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651688,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651690,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651694,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792651697,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651724,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651727,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651729,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651731,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792651802,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792651805,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792652041,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792652052,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792652128,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792652505,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792653250,
+  "scenario": "Kingsfall",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792653252,
+  "scenario": "Kingsfall",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792653750,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792653753,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792653756,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792653759,
+  "scenario": "Kingsfall",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654210,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654213,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654220,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654222,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654226,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792654229,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654257,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654259,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654262,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654264,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792654336,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654339,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792654408,
+  "scenario": "Kingsfall",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792654410,
+  "scenario": "Kingsfall",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792656538,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656542,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656548,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656551,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656555,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792656558,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656585,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656588,
+  "scenario": "Tracking the Buyer: The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656591,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656593,
+  "scenario": "Tracking the Buyer: The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792656666,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656668,
+  "scenario": "Punishment: One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792656738,
+  "scenario": "Kingsfall",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792656741,
+  "scenario": "Kingsfall",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice",
+     "Aggression"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792657068,
+  "scenario": "The Big Apple",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792657156,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792657236,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792657412,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792661823,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "pu283b",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792661830,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "pu283b",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 6
+ },
+ {
+  "time": 1792661836,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "pu283b",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792661842,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Hawkeye",
+    "card_id": "pu283a",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792661849,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "pu283b",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 6
+ },
+ {
+  "time": 1792661857,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "pu283b",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 7
+ },
+ {
+  "time": 1792661862,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "pu283b",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792661868,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "pu283b",
+    "deck": "Hawkeye (MC×DC 2026)",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792661872,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Hawkeye",
+    "card_id": "04001a",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792661877,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "04001b",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792661887,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "04001b",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 8
+ },
+ {
+  "time": 1792661892,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Hawkeye",
+    "card_id": "04001a",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792661904,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "04001b",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 9
+ },
+ {
+  "time": 1792661912,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "04001b",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 7
+ },
+ {
+  "time": 1792661918,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Hawkeye",
+    "card_id": "04001a",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792661928,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Clint Barton",
+    "card_id": "04001b",
+    "deck": "Hawkeye",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 7
+ },
+ {
+  "time": 1792663025,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Agatha Harkness",
+    "card_id": "aa001a",
+    "deck": "Agatha Harkness",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 1
+ },
+ {
+  "time": 1792663149,
+  "scenario": "Gorr the God Butcher",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792663154,
+  "scenario": "MaGog",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 1
  }
 ]

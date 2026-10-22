@@ -9,11 +9,19 @@
   "victoires_1": 1792595090,
   "victoire_rapide": 1792595090,
   "victoire_tres_rapide": 1792595090,
-  "encaisse_10": 1792599951
+  "encaisse_10": 1792599951,
+  "victoires_10": 1792663025,
+  "victoires_25": 1792663025,
+  "victoires_50": 1792663025,
+  "victoires_100": 1792663025,
+  "parties_50": 1792663025,
+  "scenarios_3": 1792663025,
+  "expert_1": 1792663025
  },
  "par_heros": {
   "victoire_heros": {
-   "01001a": 1792595090
+   "01001a": 1792595090,
+   "01001b": 1792663025
   }
  }
 }

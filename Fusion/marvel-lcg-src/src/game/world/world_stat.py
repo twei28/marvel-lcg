@@ -13,6 +13,11 @@ class WorldStat:
         self.once_per_phase_effects: List['Effect'] = []
         self.this_turn_made_attack: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
         self.this_turn_made_thwart: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
+        # Les attaques de TOUTE la phase (22/10/2026, Iron Fist 64014 et Colleen Wing 64021 :
+        # « an enemy who has been attacked by a hero THIS PHASE »). `this_turn_made_attack` est
+        # remise a zero a chaque tour de joueur, donc muette sur l'attaque d'un autre heros en
+        # multijoueur. Meme forme : (attaquant, effet, cibles attaquees).
+        self.this_phase_made_attack: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
         # self.played_cards_this_turn: List[Tuple['Player', 'CardFace']] = []
 
         # --- Journal de la phase du mechant (ajout local, lu par ui-app) ------
@@ -101,6 +106,7 @@ class WorldStat:
     def OnPhaseEnd(self):
         self.once_per_phase_effects = []
         self.once_per_phase_player_effects = {}
+        self.this_phase_made_attack = []
 
     ################################################################################
     #
@@ -326,6 +332,7 @@ class WorldStat:
 
     def RecordAttack(self, end_message: 'Message.AfterUnitAttackEnd'):
         self.this_turn_made_attack.append((end_message.attacker, end_message.by_effect, end_message.attacked_targets))
+        self.this_phase_made_attack.append((end_message.attacker, end_message.by_effect, end_message.attacked_targets))
 
     def RecordThwart(self, end_message: 'Message.AfterUnitThwartEnd'):
         self.this_turn_made_thwart.append((end_message.trigger, end_message.by_effect, end_message.schemes))

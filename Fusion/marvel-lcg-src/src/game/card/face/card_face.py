@@ -251,6 +251,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (DEFENDER, MARTIAL ARTIST, TECHNIQUE, PERSONA, SKILL, SUPERPOWER, ITEM...) existaient deja.
         # Declaratif a l'execution, comme les autres.
         "K'UN-LUN",
+        # AJOUT (22/10/2026) : cartes d'aspect du pack Iron Fist. « AGENT OF ATLAS » est imprime sur
+        # Iron Fist (Lin Lie, 64014). Declaratif a l'execution.
+        "AGENT OF ATLAS",
         # AJOUT (20/10/2026) : heros custom Binary (Galactic Storm, Kajislav, prefixe `gs`). STARJAMMER
         # est imprime sur la face heros gs001a, ASTRONAUT sur l'alter ego gs001b. Declaratifs.
         "STARJAMMER", "ASTRONAUT",
