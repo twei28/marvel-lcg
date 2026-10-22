@@ -524,6 +524,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # curse, rent, stock, takeout), des 3 pistes Uptown (dojo, hustle) et 'quell' (Silence the City, « place 1 quell counter on
         # them »). Sans ces entrees `IsCounter` refuse le nom.
         'bouncer', 'culture', 'curse', 'rent', 'stock', 'takeout', 'dojo', 'hustle', 'quell',
+        # AJOUT (22/10/2026) : pack Shadowland (MC65) : « corruption counter » (Creeping Corruption) et « passage counter » (Shadow Labyrinth).
+        'corruption', 'passage',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
