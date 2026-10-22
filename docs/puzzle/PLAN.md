@@ -60,14 +60,39 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
   jeu avec états, méchant, complot, rencontre).
 - Test d'aller-retour : état → puzzle → rechargement → état identique.
 
-### E5. Éditeur sur le vrai plateau
-- Entrée : la mise en place classique (héros, deck, méchant, sets) puis plateau en
-  **mode édition** (bandeau et panneaux d'une teinte distincte).
-- Étendre le bac à sable : catalogue + recherche/filtres (glisser) et menu clic droit
-  par zone ; panneau chiffré + clic sur jetons ; réglage méchant/complot/héros.
-- Liste réordonnable des decks + mélanger ; avertissement si deck illégal.
-- Annuler/Refaire (Ctrl+Z/Y), bouton **Tester/Éditer** (instantané puis retour).
-- Brouillons automatiques dans le navigateur.
+### E5. Création : assistant guidé, puis plateau libre
+Principe (décision du 22/10) : **hyper simple et intuitif**. Un assistant à ordre
+fixe, une étape par écran, barre de progression, bouton Retour, bouton Passer :
+toute étape est facultative et se règle avec des valeurs par défaut raisonnables.
+Chaque étape montre un aperçu en direct de la situation.
+
+Étapes (ordre logique, du général au détail) :
+1. **Qui joue** : nombre de héros, héros, deck de chacun (decks de départ proposés).
+2. **L'ennemi** : méchant, stade, mode expert/standard, sets de rencontre.
+3. **L'état de la menace** : PV du méchant, complot principal (étape, menace).
+4. **Les mains** : cartes en main de chaque héros (recherche + glisser).
+5. **Les decks** : ordre des decks héros et rencontre (liste glissable, mélanger).
+6. **Ce qui est en jeu** : alliés, soutiens, améliorations, serviteurs, complots
+   annexes, attachements (ajout par recherche, glisser sur le plateau).
+7. **Les états** : PV des héros, dégâts, statuts, compteurs, prêt/épuisé, ressources,
+   premier joueur, phase de départ. Clic sur une carte = petit panneau à gros boutons.
+8. **L'objectif** : cases à cocher (vaincre, survivre, terminer le complot…), texte
+   libre, indices.
+9. **Présentation et test** : titre, histoire, difficulté ; bouton Tester ; solution
+   de référence facultative ; Publier.
+
+Règles de conception :
+- Un seul geste par action (clic ou glisser), jamais de menu caché obligatoire.
+- Texte clair en français, bulles d'aide, aucun jargon de moteur.
+- Contrôle en direct : avertissement doux si deck illégal ou situation incohérente
+  (ex. héros à 0 PV), jamais bloquant.
+- **« Affiner sur le plateau »** à tout moment : bascule sur le vrai plateau en mode
+  édition (catalogue, clic droit, jetons, annuler/refaire Ctrl+Z/Y, bouton
+  Tester/Éditer). On peut revenir à l'assistant ; les deux modifient le même état.
+- Brouillon sauvegardé automatiquement dans le navigateur à chaque étape.
+- Chaque étape = un composant indépendant, testable seul (Playwright).
+- Tests d'utilisabilité : faire créer un puzzle à quelqu'un qui n'a pas vu l'outil ;
+  le premier puzzle doit prendre moins de 5 minutes.
 
 ### E6. Publication (côté client)
 - Écran titre/description/difficulté/indices/objectifs/visibilité de la solution.
@@ -131,9 +156,10 @@ haut risque : à attaquer tôt et à valider par l'aller-retour avant l'interfac
 - Déterminisme : le même ordre de decks et la même graine à chaque essai, y
   compris dans le navigateur.
 - Scripts de cartes qui changent : puzzles et solutions à revalider.
-- Taille de l'éditeur : l'interface est la plus grosse part du travail.
+- Taille de l'assistant et du plateau libre : l'interface est la plus grosse part du travail ; la simplicité demande plusieurs essais de maquette.
 
 ## Décisions du 22/10
 - Les 7 puzzles existants sont supprimés.
+- Création par assistant guidé à ordre fixe, étapes facultatives, plateau libre en option.
 - Puzzles publiés conservés 28 jours depuis le dernier jeu ; tout jeu remet le compteur
   à zéro.

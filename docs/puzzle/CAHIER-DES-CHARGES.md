@@ -12,6 +12,10 @@ Mise en place classique (héros, deck, méchant,
 sets), puis le vrai plateau s'ouvre en **mode édition**.
 
 ## 2. Création (PC seulement)
+**Priorité : hyper simple et intuitif.** Un assistant guidé à ordre fixe (9 étapes
+facultatives : qui joue, ennemi, menace, mains, decks, en jeu, états, objectif,
+présentation), puis « Affiner sur le plateau » pour la liberté totale. Les
+fonctions ci-dessous sont les réglages offerts dans ces étapes.
 - **Joueurs** : 1 à 4 héros ; un seul résolveur les joue tous.
 - **Cartes** : toutes (officielles + maison), avertissement visible si deck illégal.
 - **Ajout de carte** : catalogue avec recherche/filtres (glisser) ET clic droit sur
