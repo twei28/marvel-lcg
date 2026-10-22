@@ -3,7 +3,7 @@
 // nom de capacité imprimé sur la carte doit rester en anglais.
 import { afterEach, describe, expect, it } from 'vitest'
 import { tonaliteAction } from './action-style'
-import { traduireMoteur } from './vocabulaire-moteur'
+import { sansIndexDeCapacite, traduireMoteur } from './vocabulaire-moteur'
 
 const enFrancais = () => window.localStorage.setItem('marvel-langue', 'fr')
 const enAnglais = () => window.localStorage.setItem('marvel-langue', 'en')
@@ -112,11 +112,14 @@ describe('traduireMoteur', () => {
     expect(traduireMoteur('Attack')).toBe('Attack')
   })
 
-  it('traduit la capacité dupliquée en la numérotant pour un humain', () => {
+  it('ne numérote jamais une capacité dupliquée (demande du 22/10/2026 : plus de « Action 1 / Action 2 »)', () => {
     enFrancais()
-    // Le moteur écrit `Attack_1` pour la SECONDE occurrence (effect.py) ;
-    // `nomLisible` l'a déjà transformée en « Attack 1 ».
-    expect(traduireMoteur('Attack 1')).toBe('Attaquer (2)')
+    // Le moteur écrit `Attack_1` pour la SECONDE occurrence (effect.py) ; l'index interne n'a aucun sens
+    // pour un joueur. Les actions d'une même carte se distinguent par leur paragraphe (`nomActionParlant`).
+    expect(traduireMoteur('Attack 1')).toBe('Attaquer')
+    expect(sansIndexDeCapacite('Hero Action 1')).toBe('Hero Action')
+    expect(sansIndexDeCapacite('Action 2')).toBe('Action')
+    expect(sansIndexDeCapacite('Spend 1 resource')).toBe('Spend 1 resource')
   })
 
   it('ne numérote pas ce qu’il ne connaît pas', () => {

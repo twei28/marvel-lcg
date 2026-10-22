@@ -271,7 +271,7 @@ import { SelecteurCibles } from './board/SelecteurCibles'
 import { transformDecalage, useGlisserPanneau } from './board/placement/useGlisserPanneau'
 import { installerGlisserPartout } from './board/placement/glisserPartout'
 import { cibleDeLaTouche, SELECTEURS_BLOQUANTS } from './board/clavier-cartouche'
-import { nomLisible } from './board/BarreAction'
+import { nomLisible, nomLisibleParlant } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
 import type { Demande, Option, Reponse } from './board/ask'
 import {
@@ -2172,6 +2172,25 @@ export function PagePartie({
     },
     [cartesMondeParId, catalogue, etat.demande?.ability_type, textesFrComplets]
   )
+  // Le texte imprime d'une carte (francais quand le plateau l'a, anglais de cards.json sinon) et le nom d'une OPTION qui s'en sert : une carte qui
+  // offre deux actions du meme type les nomme par leur paragraphe (demande du 22/10/2026 : jamais « Action » / « Action 1 »).
+  const texteImprimeDeLaCarte = useCallback(
+    (cardId: string | undefined): string | undefined => {
+      if (!cardId) return undefined
+      const francais = scansFrActifs()
+        ? (TEXTES_FR[cardId] ?? TEXTES_FR_FANMADE[cardId] ?? textesFrComplets?.[cardId])
+        : undefined
+      return francais ?? catalogue.texte(cardId)
+    },
+    [catalogue, textesFrComplets]
+  )
+  const nomActionDe = useCallback(
+    (option: Option): string => {
+      const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
+      return nomLisibleParlant(option, texteImprimeDeLaCarte(porteuse?.card_id))
+    },
+    [cartesMondeParId, texteImprimeDeLaCarte]
+  )
   // L'EFFET BOOST ★ d'une carte rencontre, en une phrase (D10) : la ligne
   // « ★ Sweeping Swoop : … » sous la rangee du cartouche du bas. Meme source
   // que le texte d'une capacite : le francais quand le plateau l'a, l'anglais
@@ -2360,7 +2379,7 @@ export function PagePartie({
       if (!option || !plateau) return false
       const cartes = ciblesHorsTablePourOption(option, cartesMondeParId, plateau, joueurActif, catalogue)
       if (cartes.length === 0) return false
-      setCiblesMenu({ titre: nomLisible(option), cartes })
+      setCiblesMenu({ titre: nomActionDe(option), cartes })
       return true
     },
     [cartesMondeParId, catalogue, plateau, joueurActif]
@@ -3047,7 +3066,7 @@ export function PagePartie({
         if (cible.carteId !== undefined) {
           const actions = optionsDuDepot(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
           const nomCible = nomPorteurFr(cible.carteId) ?? ''
-          if (actions.length === 1) return `${nomLisible(actions[0]!)} · ${nomCible}`
+          if (actions.length === 1) return `${nomActionDe(actions[0]!)} · ${nomCible}`
           if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
           // ⚠ Le code brut du moteur ne se montre JAMAIS au joueur : il passe
           // par la meme table que l'agrandissement (`phraseDuRefus`), sinon on
@@ -3064,14 +3083,14 @@ export function PagePartie({
         if (parZone !== undefined) {
           const actions = optionsDuDepot(optionsCourantes, sourceId, parZone, idIdentiteGlisser)
           const nomCible = nomPorteurFr(parZone) ?? ''
-          if (actions[0] && actions.length === 1) return `${nomLisible(actions[0])} · ${nomCible}`
+          if (actions[0] && actions.length === 1) return `${nomActionDe(actions[0])} · ${nomCible}`
           if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
         }
         // La carte ne vise rien : c'est le TERRAIN qui l'accueille, et on
         // annonce l'action elle-meme, sans nom de cible puisqu'il n'y en a pas.
         if (cible.zone && zonesSansCible(optionsCourantes, sourceId, idIdentiteGlisser).has(cible.zone)) {
           const sansCible = optionsSansCible(optionsCourantes, sourceId, idIdentiteGlisser)
-          if (sansCible[0] && sansCible.length === 1) return nomLisible(sansCible[0])
+          if (sansCible[0] && sansCible.length === 1) return nomActionDe(sansCible[0])
           if (sansCible.length > 1) return `${sansCible.length} ${t('actions possibles')}`
         }
         return cible.zone ? t('Pas ici') : undefined
@@ -3173,7 +3192,7 @@ export function PagePartie({
         const refus = refusPourJouer(sourceId)
         if (refus !== undefined) return traduireRefusGlisser(refus) ?? t('Pas maintenant')
         const option = jouer(sourceId)
-        if (option && surLaTable(cible) && !viseUneCible(sourceId, cible)) return nomLisible(option)
+        if (option && surLaTable(cible) && !viseUneCible(sourceId, cible)) return nomActionDe(option)
         return regles.libelle(sourceId, cible)
       },
       onDepot: (sourceId, cible) => {
@@ -4389,7 +4408,7 @@ export function PagePartie({
   const bandeauColle = (() => {
     if (!bandeauColleActif || !interaction.option) return undefined
     const option = interaction.option
-    const nomAction = nomLisible(option)
+    const nomAction = nomActionDe(option)
     const porteur = cartesMondeParId.get(option.bind_id)
     const porteurEstIdentite = porteur?.card_type === 'Hero' || porteur?.card_type === 'AlterEgo'
     const nomDuPorteur =
@@ -4529,7 +4548,7 @@ export function PagePartie({
       {ciblageEnScene && nouvelleScenePC ? null : (
         <SelecteurCibles
           cibles={ciblesHorsTableVisibles}
-          titre={interaction.option ? nomLisible(interaction.option) : ''}
+          titre={interaction.option ? nomActionDe(interaction.option) : ''}
           survoler={setApercuSelecteur}
           bandeau={bandeauColle}
           fenetre={
@@ -4547,7 +4566,7 @@ export function PagePartie({
       )}
       {porteHorsPhase && interaction.option ? (
         <CiblageSurTable
-          titre={nomLisible(interaction.option)}
+          titre={nomActionDe(interaction.option)}
           choisies={interaction.cibles.length}
           maximum={interaction.option.target_num_range[1]}
           cibles={[...pilesARechercher].map(([id, libelle]) => ({
@@ -4646,6 +4665,7 @@ export function PagePartie({
           precisement ce qu'on vient faire. */}
       {carteMenu && !interaction.option ? (
         <MenuActionsCarte
+          texteDeCarte={texteImprimeDeLaCarte}
           carte={carteMenu}
           carteMonde={cartesMondeParId.get(Number(carteMenu.id))}
           options={interaction.options}
@@ -4883,7 +4903,7 @@ export function PagePartie({
                     options: (etat.demande?.options ?? []).map((option) => ({
                       id: option.id,
                       bindId: option.bind_id,
-                      nom: nomPorteurFr(option.bind_id) ?? nomLisible(option),
+                      nom: nomPorteurFr(option.bind_id) ?? nomActionDe(option),
                     })),
                   }
                 : undefined
@@ -4894,7 +4914,7 @@ export function PagePartie({
             question={
               nouvelleScenePC ? undefined : ciblageEnScene && interaction.option ? (
                 <CiblesScene
-                  titre={nomLisible(interaction.option)}
+                  titre={nomActionDe(interaction.option)}
                   cibles={[
                     ...[...interaction.cartes.entries()]
                       .filter(([, e]) => e.role === 'cible')
@@ -4927,7 +4947,7 @@ export function PagePartie({
                 />
               ) : ciblageSurTable ? (
                 <CiblageSurTable
-                  titre={nomLisible(interaction.option!)}
+                  titre={nomActionDe(interaction.option!)}
                   choisies={interaction.cibles.length}
                   maximum={interaction.option!.target_num_range[1]}
                   cibles={[

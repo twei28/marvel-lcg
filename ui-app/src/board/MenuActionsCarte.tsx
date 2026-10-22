@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboa
 import { ScanCard, kindLabel, type ScanCardProps } from '../components/ScanCard'
 import { nombreDeRessources, paiementCourant, type Option } from './ask'
 import { classeTonaliteAction } from './action-style'
-import { nomLisible } from './BarreAction'
+import { nomLisible, nomLisibleParlant } from './BarreAction'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import type { Catalogue } from './catalogue'
 import { t } from './langue'
@@ -32,6 +32,8 @@ type MenuActionsCarteProps = {
   mode?: 'source' | 'target'
   ciblePreselectionnee?: number
   affichage?: 'simple' | 'detailed'
+  /** Texte imprime d'une carte (francais si disponible) : sert a nommer chaque action quand une carte en offre plusieurs du meme type. */
+  texteDeCarte?: (cardId: string | undefined) => string | undefined
 }
 
 type ActionAffichee = {
@@ -430,6 +432,7 @@ export function MenuActionsCarte({
   mode = 'source',
   ciblePreselectionnee,
   affichage = 'detailed',
+  texteDeCarte,
 }: MenuActionsCarteProps) {
   const ref = useRef<HTMLElement>(null)
   const [raisonVisible, setRaisonVisible] = useState<number | undefined>(undefined)
@@ -535,8 +538,9 @@ export function MenuActionsCarte({
     () =>
       options
         .map((option, ordre) => {
-          const nom = nomLisible(option)
           const source = option.bind_id ? cartesParId.get(option.bind_id) : undefined
+          // Deux actions du meme type sur une carte : chacune porte le resume de son paragraphe, jamais « Action » / « Action 1 ».
+          const nom = nomLisibleParlant(option, texteDeCarte?.((source ?? carteMonde)?.card_id))
           const cartePourStat = mode === 'target' ? source : carteMonde
           return {
             option,
@@ -565,7 +569,7 @@ export function MenuActionsCarte({
           if (a.priorite !== b.priorite) return a.priorite - b.priorite
           return a.ordre - b.ordre
         }),
-    [options, carteMonde, catalogue, cartesParId, idsAffiches, playerId, ciblePreselectionnee, mode]
+    [options, carteMonde, catalogue, cartesParId, idsAffiches, playerId, ciblePreselectionnee, mode, texteDeCarte]
   )
 
   const groupesActions = useMemo(() => {

@@ -86,6 +86,10 @@ const MOTEUR_FR: Record<string, string> = {
   // — Types de capacité (`AbilityType`), utilisés quand la carte n'a pas nommé
   //   la sienne, et affichés en surtitre du panneau de décision —
   Action: 'Action',
+  // The City (pu005, 22/10/2026) : UNE action « se déplacer », puis le choix du coût.
+  Move: 'Se déplacer',
+  'Exhaust a character you control': 'Épuiser un personnage que vous contrôlez',
+  'Spend 1 resource of any type': 'Dépenser 1 ressource de n’importe quel type',
   'Forced Action': 'Action forcée',
   'Hero Action': 'Action de héros',
   'Alter-Ego Action': 'Action d’alter ego',
@@ -398,6 +402,12 @@ const MOTEUR_FR: Record<string, string> = {
  */
 const SUFFIXE_INDEX = /^(.*?) (\d+)$/
 
+/** « Action 1 » -> « Action » : retire l'index interne du moteur d'un type de capacité (Action, Hero Action, Interrupt...). */
+export function sansIndexDeCapacite(libelle: string): string {
+  const m = /^((?:.+ )?(?:Action|Interrupt|Response))[ _]\d+$/.exec(libelle)
+  return m ? m[1]! : libelle
+}
+
 const degats = (n: string) => `${n} ${Number(n) > 1 ? 'dégâts' : 'dégât'}`
 const menaces = (n: string) => `${n} ${Number(n) > 1 ? 'menaces' : 'menace'}`
 
@@ -493,10 +503,12 @@ export function traduireMoteur(libelle: string): string {
     if (trouve) return rendre(trouve)
   }
 
+  // « Action 1 », « Hero Action 2 »... : l'index interne du moteur n'a aucun sens pour un joueur
+  // (demande du 22/10/2026 : plus jamais « Action 1 / Action 2 ») ; on garde le nom du type seul.
   const numerote = SUFFIXE_INDEX.exec(libelle)
   if (numerote) {
     const base = MOTEUR_FR[numerote[1]!]
-    if (base) return `${base} (${Number(numerote[2]) + 1})`
+    if (base) return base
   }
 
   return libelle

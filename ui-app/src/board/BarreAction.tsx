@@ -8,7 +8,8 @@ import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import { t } from './langue'
 import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
-import { traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
+import { nomActionParlant } from './texte-capacite'
+import { sansIndexDeCapacite, traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
 
 /**
  * Les noms d'options arrivent avec des soulignes, et parfois prefixes de "p_"
@@ -22,8 +23,19 @@ import { traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocab
  */
 export function nomLisible(option: Option): string {
   const brut = option.name.startsWith('p_') ? option.name.slice(2) : option.name
-  const lisible = brut.replaceAll('_', ' ').trim()
+  const lisible = sansIndexDeCapacite(brut.replaceAll('_', ' ').trim())
   return lisible ? traduireMoteur(lisible) : t('Action')
+}
+
+/**
+ * Le nom d'une option, avec le RESUME de son paragraphe quand la carte offre plusieurs actions du meme type
+ * (« Action de héros : Dépensez [energy] → piochez 1 carte »). Sans texte, ou avec une seule action, c'est `nomLisible`.
+ * Demande du 22/10/2026 : plus jamais « Action » et « Action 1 » sans savoir laquelle fait quoi.
+ */
+export function nomLisibleParlant(option: Option, texteCarte: string | undefined): string {
+  const resume = nomActionParlant(option.name, texteCarte)
+  const nom = nomLisible(option)
+  return resume ? `${nom} : ${resume}` : nom
 }
 
 /**

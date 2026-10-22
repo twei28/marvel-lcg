@@ -5287,4 +5287,317 @@ export const TEXTES_FR_FANMADE = {
     'wd164': "<b>Une fois révélée</b> : cherchez dans le deck Rencontre et la pile de défausse l'attachement Feather Daggers et révélez-le.\nVulture gagne Riposte 3 pendant la phase des joueurs, sauf si l'attaquant ou l'attaque a le trait AERIAL.",
     // web_of_deceit — Skies Above New York (Environment)
     'wd165': "<b>Une fois révélée</b> : défaussez chaque autre environnement SETTING en jeu.\n<b>Action de héros</b> : inclinez une carte AERIAL que vous contrôlez ou dépensez une ressource [energy] → un personnage allié que vous contrôlez gagne le trait AERIAL jusqu'à la fin du round.",
+    // ---- Punisher MC×DC 2026 « La ville ne dort jamais » (PU-12, 22/10/2026) : texte FR des cartes pu, noms propres en anglais ----
+    // punisher_mcdc_2026 — Gang War (MainScheme)
+    'pu001a': "<b>Contenu</b> : 3 méchants CAPO, face A (face B en mode expert). Les sets The Big Apple, 9 cartes lieu et 9 cartes LEAD, et Standard. Deux sets modulaires. <i>(Optionnel : extension Uptown.)</i>\n<b>Mise en place</b> : placez les 9 lieux dans l'ordre numérique en une grille de 3x3. Placez un méchant CAPO choisi à côté de chaque ligne. Créez le deck de 9 cartes LEAD. Révélez les environnements The City et Never Sleeps. Chaque joueur révèle une carte du deck LEAD.",
+    // punisher_mcdc_2026 — Gang War (MainScheme)
+    'pu001b': "<b>Interruption forcée</b> : quand un méchant devrait être vaincu, réinitialisez à la place ses points de vie et retirez 5 menaces d'ici.\n<b>Réponse forcée</b> : après qu'une carte LEAD a été ajoutée à la pile de victoire, s'il y a 2👤 cartes LEAD dedans, passez au stade 2A <i>(les joueurs gagnent en avançant)</i>.\nSi cette manigance est complétée, les joueurs perdent la partie.",
+    // punisher_mcdc_2026 — Silence the City (MainScheme)
+    'pu002a': "<b>Une fois révélée</b> : attribuez une carte Rencontre à chaque joueur.\n<i>(En mode campagne, notez le lieu où la dernière carte LEAD a été ajoutée à la pile de victoire.)</i>",
+    // punisher_mcdc_2026 — Silence the City (MainScheme)
+    'pu002b': "<b>Interruption forcée</b> : quand un méchant devrait être vaincu, réinitialisez à la place ses points de vie et placez sur lui 1 compteur de répression.\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, si chaque méchant a au moins 1 compteur de répression, passez au stade 3A <i>(les joueurs gagnent en avançant)</i>.\nSi cette manigance est complétée, les joueurs perdent la partie.",
+    // punisher_mcdc_2026 — Gunrunner's Warehouse (MainScheme)
+    'pu003a': "<b>Une fois révélée</b> : dans l'ordre du tour, attribuez les cartes attachées aux lieux comme cartes Rencontre face cachée. Mettez tous les lieux de côté. Révélez un méchant CAPO au hasard parmi ceux de la zone mise de côté, révélez Gunrunner et attachez-le à ce méchant. Mettez tous les autres CAPO de côté.",
+    // punisher_mcdc_2026 — Gunrunner's Warehouse (MainScheme)
+    'pu003b': "Le méchant auquel Gunrunner est attaché est le méchant actif et chaque joueur est considéré comme étant dans son territoire.\nSi cette manigance est complétée, les joueurs perdent la partie.",
+    // punisher_mcdc_2026 — Gunrunner (Attachment)
+    'pu004': "Linked (Gunrunner's Warehouse). Permanent.\nLe méchant attaché gagne Solide et gagne +7👤 points de vie.\n<b>Une fois révélée</b> : donnez une carte d'état Tenace au Méchant.\nQuand le méchant attaché est vaincu, les joueurs gagnent la partie.",
+    // punisher_mcdc_2026 — The City (Environment)
+    'pu005': "Mise en place. Permanent.\n• Les joueurs marquent leur position dans la ville avec un jeton, en commençant à Midtown.\n• Les joueurs ne peuvent interagir qu'avec les lieux (capacités et cartes attachées) qu'ils occupent.\n<b>Action</b> : inclinez un personnage que vous contrôlez ou dépensez 1 ressource de n'importe quel type → déplacez-vous vers un lieu adjacent (↔ ou ↕).",
+    // punisher_mcdc_2026 — Never Sleeps (Environment)
+    'pu006': "Mise en place. Permanent.\n• Chaque ligne de lieux est le « territoire » du méchant de cette ligne. Les méchants ne s'activent que contre les joueurs de leur territoire.\n• Les joueurs ne peuvent interagir avec les méchants ou les autres joueurs (y compris leurs aires de jeu) que s'ils sont dans le même territoire.\n• Les joueurs peuvent interagir avec toutes les manigances.",
+    // punisher_mcdc_2026 — Burning Building (Attachment)
+    'pu007': "<b>Une fois révélée</b> : attachez-la à un lieu inoccupé et placez-y 1 jeton d'accélération. Sinon, renfort.\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, placez 1 jeton d'accélération ici.\n<b>Action de héros</b> : inclinez votre identité et défaussez de votre deck un nombre de cartes égal au nombre de jetons d'accélération ici → défaussez cette carte.",
+    // punisher_mcdc_2026 — Citizens in Danger! (Attachment)
+    'pu008': "<b>Une fois révélée</b> : inclinez votre identité. Attachez cette carte à votre lieu actuel ; si vous ne pouvez pas, renfort.\n<b>Interruption forcée</b> : quand un joueur quitte ce lieu, attribuez-lui une carte Rencontre face cachée et défaussez cette carte.",
+    // punisher_mcdc_2026 — Hunted by the Past (Attachment)
+    'pu009': "Le sbire attaché gagne +3 points de vie.\n<b>Une fois révélée</b> : cherchez votre sbire nemesis, révélez-le et attachez-lui cette carte.",
+    // punisher_mcdc_2026 — "It's a Trap!" (Attachment)
+    'pu010': "<b>Une fois révélée</b> : attachez-la à votre lieu actuel ; si vous ne pouvez pas, renfort.\n<b>Interruption forcée</b> : quand un joueur entre dans ce lieu ou le quitte, il cherche un sbire qui n'est pas en jeu et le révèle. Chaque sbire engagé avec ce joueur s'active. Puis, défaussez cette carte.",
+    // punisher_mcdc_2026 — Bellona (Minion)
+    'pu011': "Ténacité. Vilenie.\n[star] Les attaques de Bellona gagnent perçant.\n<b>Une fois vaincue</b> : mélangez Bellona dans le deck rencontre. Le joueur qui l'a vaincue peut subir 2 dégâts pour la défausser à la place.",
+    // punisher_mcdc_2026 — Black Tarantula (Minion)
+    'pu012': "Si le nombre total de cartes LEAD dans la pile de victoire est d'au moins :\n• 1👤 — Ce sbire gagne coup rapide.\n• 2👤 — Ce sbire gagne +3 points de vie.",
+    // punisher_mcdc_2026 — Overdrive (Minion)
+    'pu013': "Coup Rapide.\n<b>Réponse forcée</b> : après la fin du round, attachez Overdrive à un lieu inoccupé, si possible. <i>(Il reste en jeu.)</i>\n<b>Interruption forcée</b> : quand un joueur entre dans le lieu d'Overdrive, il s'engage avec lui.",
+    // punisher_mcdc_2026 — Muse (Minion)
+    'pu014': "[star] <b>Réponse forcée</b> : après que Muse s'est activé, attachez-le à un lieu inoccupé, si possible. <i>(Il reste en jeu.)</i>\n<b>Interruption forcée</b> : quand un joueur entre dans le lieu de Muse, il s'engage avec lui.\n[star] <b>Boost</b> : révélez cette carte.",
+    // punisher_mcdc_2026 — Screwball (Minion)
+    'pu015': "<b>Interruption forcée</b> : quand Screwball devrait être vaincue par des dégâts en excès, réinitialisez à la place ses points de vie. Attachez-la à un lieu inoccupé, si possible. <i>(Elle reste en jeu.)</i>\n<b>Interruption forcée</b> : quand un joueur entre dans le lieu de Screwball, elle s'engage avec lui.",
+    // punisher_mcdc_2026 — Busted! (Obligation)
+    'pu016': "Vous ne pouvez pas attaquer le Méchant ni déclencher les capacités des cartes LEAD.\n<b>Action d'alter ego</b> : inclinez votre identité et défaussez une carte de votre main → défaussez cette carte.",
+    // punisher_mcdc_2026 — Conflicting Evidence (Treachery)
+    'pu017': "<b>Une fois révélée (Alter ego)</b> : le Méchant vous attaque. Ne lui donnez pas de carte de boost pour cette attaque.\n<b>Une fois révélée (Héros)</b> : le Méchant manigance. Ne lui donnez pas de carte de boost pour cette manigance.",
+    // punisher_mcdc_2026 — Red Herring (Treachery)
+    'pu018': "En mode expert, cette carte gagne incitation 1.\n<b>Une fois révélée</b> : déplacez-vous vers un lieu non mentionné sur la carte LEAD de votre aire de jeu, si possible. Choisissez de sonner ou de désorienter votre identité.",
+    // punisher_mcdc_2026 — Shootout (Treachery)
+    'pu020': "<b>Une fois révélée</b> : infligez 1 dégât au Méchant et à chaque personnage de ce territoire. En mode expert, inclinez un personnage que vous contrôlez.\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage que vous contrôlez.",
+    // punisher_mcdc_2026 — Bank Robbery (SideScheme)
+    'pu021': "<b>Une fois révélée</b> : chaque joueur glisse une carte au hasard de sa main sous cette manigance.\n<b>Une fois vaincue</b> : rendez chaque carte glissée ici à la main de son propriétaire.",
+    // punisher_mcdc_2026 — Like and Subscribe! (SideScheme)
+    'pu022': "Entrave 2👤. Les alliés entrent en jeu inclinés.\n<b>Une fois révélée</b> : cherchez Screwball et révélez-la. Attachez-la à un lieu inoccupé, si possible.\n[star] <b>Boost</b> : révélez cette carte.",
+    // punisher_mcdc_2026 — Upper West Side (Environment)
+    'pu023': "<b>Interruption de héros</b> : quand un héros utilise un pouvoir de base, choisissez de gagner +1 ou -1 à ce pouvoir pour cette utilisation. <i>(Limite une fois par phase.)</i>",
+    // punisher_mcdc_2026 — Harlem (Environment)
+    'pu024': "<b>Réponse</b> : après qu'une identité a utilisé un pouvoir de base, redressez un allié à ce lieu. <i>(Limite une fois par phase.)</i>",
+    // punisher_mcdc_2026 — The Bronx (Environment)
+    'pu025': "Chaque attaque à The Bronx gagne déferlement.",
+    // punisher_mcdc_2026 — West Side Warrior (U1) (Obligation)
+    'pu026': "<i>Lead.</i>\n<b>Réponse</b> : à Upper West Side, après que vous avez défendu exactement une attaque, ou vaincu exactement un ennemi ou une manigance annexe, ajoutez un compteur de dojo ici.\nPuis, s'il y a 3 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — The Harlem Hustle (U2) (Obligation)
+    'pu027': "<i>Lead.</i>\n<b>Réponse</b> : à Harlem, après qu'un personnage que vous contrôlez a effectué une attaque de base, placez un compteur de combine ici et ajoutez 3 menaces sur la manigance principale.\nPuis, s'il y a 3 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Bronx Bombered (U3) (Obligation)
+    'pu028': "<i>Lead.</i>\n<b>Réponse</b> : à The Bronx, après que vous avez infligé des dégâts au Méchant, placez ici une quantité égale de dégâts.\nPuis, s'il y a ici des dégâts égaux ou supérieurs aux points de vie imprimés du Méchant, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Hell's Kitchen (Environment)
+    'pu030': "Les alliés et les sbires à Hell's Kitchen ne peuvent ni contrer ni manigancer et gagnent Ténacité.\n<b>Action</b> : désorientez votre identité et donnez-lui une carte d'état Tenace → cherchez un sbire dans le deck rencontre et révélez-le.",
+    // punisher_mcdc_2026 — Theater District (Environment)
+    'pu031': "<b>Action</b> : inclinez un personnage que vous contrôlez → soignez 2 dégâts de ce personnage. <i>(Limite une fois par round.)</i>",
+    // punisher_mcdc_2026 — Upper East Side (Environment)
+    'pu032': "<b>Action</b> : défaussez des cartes du deck rencontre jusqu'à ce qu'une manigance annexe soit défaussée. Révélez cette manigance. <i>(Limite une fois par round.)</i>",
+    // punisher_mcdc_2026 — West Village (Environment)
+    'pu033': "Chaque joueur à West Village gagne +1 en taille de main.\n<b>Interruption forcée</b> : pendant l'étape 3 de la phase du Méchant, attribuez-vous une carte Rencontre supplémentaire.",
+    // punisher_mcdc_2026 — Midtown (Environment)
+    'pu034': "<b>Action</b> : choisissez un joueur de ce territoire. Il joue une carte AVENGER, S.H.I.E.L.D. ou TECH de sa main, en réduisant son coût de 1. <i>(Limite une fois par round.)</i>",
+    // punisher_mcdc_2026 — Lower East Side (Environment)
+    'pu035': "Chaque personnage <i>(y compris le Méchant pour les joueurs présents ici)</i> à Lower East Side gagne riposte 1.",
+    // punisher_mcdc_2026 — Soho (Environment)
+    'pu036': "Augmentez de 1 le coût de chaque événement que vous jouez.\n<b>Action</b> : piochez 2 cartes, puis défaussez 2 cartes. <i>(Limite une fois par round.)</i>",
+    // punisher_mcdc_2026 — Financial District (Environment)
+    'pu037': "<b>Action de héros</b> : le Méchant vous attaque. Si vous subissez moins de 2 dégâts de cette attaque, piochez 1 carte par ★ et [boost] imprimé sur la ou les cartes de boost de l'attaque. <i>(Limite une fois par round.)</i>",
+    // punisher_mcdc_2026 — Chinatown (Environment)
+    'pu038': "<b>Interruption</b> : quand une carte Rencontre devrait vous être attribuée, défaussez à la place des cartes du deck rencontre jusqu'à ce qu'un sbire soit défaussé. Révélez ce sbire. <i>(Limite une fois par round.)</i>",
+    // punisher_mcdc_2026 — Bar Fight at Josie's (1) (Obligation)
+    'pu039': "<i>Lead.</i>\n<b>Réponse</b> : à Hell's Kitchen, après qu'un sbire ou un allié que vous contrôlez a été vaincu, placez 1 compteur de videur ici.\nPuis, s'il y a 3 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Art Heals the Soul (2) (Obligation)
+    'pu040': "<i>Lead.</i>\n<b>Réponse</b> : au Theater District, après que vous avez soigné un personnage allié, placez 1 compteur de culture ici.\nPuis, s'il y a 3 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — A Walk in the Park (3) (Obligation)
+    'pu041': "<i>Lead.</i>\n<b>Réponse</b> : à Upper East Side, après que vous avez vaincu une manigance annexe, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Village of the Damned (4) (Obligation)
+    'pu042': "<i>Lead.</i>\n<b>Réponse</b> : à West Village, après que vous avez révélé une carte Rencontre, placez 1 compteur de malédiction ici.\nPuis, s'il y a 4 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Midtown Memories (5) (Obligation)
+    'pu043': "<i>Lead.</i>\n<b>Réponse</b> : à Midtown, après que vous avez contré une manigance, regardez les deux cartes du dessus du deck rencontre. Glissez-en une ici.\nPuis, s'il y a 3 cartes glissées ici ou plus, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Kings of Yancy Street (6) (Obligation)
+    'pu044': "<i>Lead.</i>\n<b>Interruption</b> : à Lower East Side, quand vous attaquez le Méchant, placez ici les dégâts de cette attaque à la place.\nPuis, s'il y a 8 dégâts ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — "Where's My Rent!?" (7) (Obligation)
+    'pu045': "<i>Lead.</i>\n<b>Réponse</b> : à Soho, après que vous avez joué un événement, placez 1 compteur de loyer ici.\nPuis, s'il y a 3 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Play the Market (8) (Obligation)
+    'pu046': "<i>Lead.</i>\n<b>Réponse</b> : au Financial District, après que vous avez défendu une attaque, placez 1 compteur de bourse ici.\nPuis, s'il y a 3 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Forget It... It's Chinatown (9) (Obligation)
+    'pu047': "<i>Lead.</i>\n<b>Réponse</b> : à Chinatown, après que vous avez vaincu un sbire, placez 1 compteur de plat à emporter ici.\nPuis, s'il y a 2 compteurs ou plus ici, ajoutez cette carte à la pile de victoire, révélez la carte LEAD du dessus et piochez 1 carte.",
+    // punisher_mcdc_2026 — Count Nefaria (Villain)
+    'pu048a': "[star] Les attaques de Count Nefaria gagnent déferlement et à distance.",
+    // punisher_mcdc_2026 — Count Nefaria (Villain)
+    'pu048b': "[star] Les attaques de Count Nefaria gagnent déferlement et à distance.",
+    // punisher_mcdc_2026 — Crime-Master (Villain)
+    'pu049a': "[star] Crime-Master gagne +1 ATQ par sbire engagé avec vous (jusqu'à un maximum de +2 ATQ).",
+    // punisher_mcdc_2026 — Crime-Master (Villain)
+    'pu049b': "[star] Crime-Master gagne +1 ATQ par sbire engagé avec vous (jusqu'à un maximum de +2 ATQ).",
+    // punisher_mcdc_2026 — Ringmaster (Villain)
+    'pu050a': "<b>Réponse forcée</b> : après que Ringmaster vous a attaqué, choisissez :\n• Dépensez une ressource [mental].\n• Désorientez un personnage que vous contrôlez.",
+    // punisher_mcdc_2026 — Ringmaster (Villain)
+    'pu050b': "<b>Réponse forcée</b> : après que Ringmaster vous a attaqué, choisissez :\n• Dépensez une ressource [mental].\n• Désorientez un personnage que vous contrôlez.",
+    // punisher_mcdc_2026 — Lady Yulan (Villain)
+    'pu051a': "[star] <b>Réponse forcée</b> : après que Lady Yulan a attaqué, choisissez :\n• Soignez 2 dégâts de Lady Yulan.\n• Défaussez les 6 premières cartes de votre deck.",
+    // punisher_mcdc_2026 — Lady Yulan (Villain)
+    'pu051b': "[star] <b>Réponse forcée</b> : après que Lady Yulan a attaqué, choisissez :\n• Soignez 3 dégâts de Lady Yulan.\n• Défaussez les 10 premières cartes de votre deck.",
+    // punisher_mcdc_2026 — Mister Negative (Villain)
+    'pu052a': "[star] <b>Interruption forcée</b> : quand Mister Negative attaque, choisissez :\n• Donnez-lui 1 carte de boost supplémentaire pour cette attaque.\n• Après cette attaque, sonnez un personnage que vous contrôlez.",
+    // punisher_mcdc_2026 — Mister Negative (Villain)
+    'pu052b': "[star] <b>Interruption forcée</b> : quand Mister Negative attaque, choisissez :\n• Donnez-lui 1 carte de boost supplémentaire pour cette attaque. Cette attaque gagne déferlement.\n• Après cette attaque, sonnez un personnage que vous contrôlez.",
+    // punisher_mcdc_2026 — The Rose (Villain)
+    'pu053a': "[star] <b>Interruption forcée</b> : quand The Rose attaque, choisissez :\n• Placez 2 menaces sur la manigance principale.\n• The Rose gagne +2 ATQ pour cette attaque.",
+    // punisher_mcdc_2026 — The Rose (Villain)
+    'pu053b': "[star] <b>Interruption forcée</b> : quand The Rose attaque, choisissez :\n• Placez 2 menaces sur la manigance principale.\n• The Rose gagne +2 ATQ pour cette attaque.",
+    // punisher_mcdc_2026 — Nightshade (Villain)
+    'pu054a': "[star] <b>Réponse forcée</b> : après que Nightshade vous a attaqué, subissez 1 dégât indirect par allié que vous contrôlez.",
+    // punisher_mcdc_2026 — Nightshade (Villain)
+    'pu054b': "[star] <b>Réponse forcée</b> : après que Nightshade vous a attaqué, subissez 1 dégât indirect par allié que vous contrôlez.",
+    // punisher_mcdc_2026 — Diamondback (Villain)
+    'pu055a': "<b>Réponse forcée</b> : après que Diamondback a subi au moins 3 dégâts d'une attaque, donnez-lui une carte de boost face cachée.",
+    // punisher_mcdc_2026 — Diamondback (Villain)
+    'pu055b': "<b>Réponse forcée</b> : après que Diamondback a subi au moins 3 dégâts d'une attaque, donnez-lui une carte de boost face cachée.",
+    // punisher_mcdc_2026 — Jigsaw (Villain)
+    'pu056a': "[star] <b>Réponse forcée</b> : après que Jigsaw vous a attaqué, si le dessus de la pile de défausse du deck rencontre est un sbire, mettez-le en jeu engagé avec vous. Sinon, placez 1 menace sur la manigance principale.",
+    // punisher_mcdc_2026 — Jigsaw (Villain)
+    'pu056b': "Solide.\n[star] <b>Réponse forcée</b> : après que Jigsaw vous a attaqué, si le dessus de la pile de défausse du deck rencontre est un sbire, mettez-le en jeu engagé avec vous. Sinon, placez 1 menace sur la manigance principale.",
+    // punisher_mcdc_2026 — Jigsaw (Villain)
+    'pu057a': "Solide.\n[star] <b>Réponse forcée</b> : après que Jigsaw vous a attaqué, si le dessus de la pile de défausse du deck rencontre est un sbire, mettez-le en jeu engagé avec vous. Sinon, placez 1 menace sur la manigance principale.",
+    // punisher_mcdc_2026 — Jigsaw (Villain)
+    'pu057b': "Solide.\n[star] <b>Réponse forcée</b> : après que Jigsaw vous a attaqué, si le dessus de la pile de défausse du deck rencontre est un sbire, mettez-le en jeu engagé avec vous. Sinon, placez 2 menaces sur la manigance principale.",
+    // punisher_mcdc_2026 — Jigsaw's Knife (Attachment)
+    'pu058': "Weapon. Attachez-la à Jigsaw.\n[star] Jigsaw gagne riposte 1 et ses attaques gagnent perçant.\n<b>Action de héros</b> : inclinez un personnage que vous contrôlez et dépensez [physical][mental] → défaussez cette carte.",
+    // punisher_mcdc_2026 — Bushwhacker (Minion)
+    'pu059': "Patrouille.\n[star] <b>Interruption forcée</b> : quand Bushwhacker devrait attaquer, il subit 3 dégâts indirects à la place. Vous pouvez dépenser [mental] ou [wild] pour infliger ces dégâts à un autre ennemi à la place.",
+    // punisher_mcdc_2026 — Maggia Thug (Minion)
+    'pu060': "Garde. Patrouille.\n« Jigsaw utilise son statut de capo de la Maggia pour exercer son “influence” sur ceux qui lui résistent. »",
+    // punisher_mcdc_2026 — Man Mountain Marko (Minion)
+    'pu063': "Collaboration (MAGGIA). Ténacité.\n<b>Une fois révélée</b> : inclinez un personnage que vous contrôlez.",
+    // punisher_mcdc_2026 — Eel (Minion)
+    'pu064': "Coup Rapide.\n[star] <b>Réponse forcée</b> : après qu'Eel a attaqué et infligé des dégâts à un personnage, inclinez ce personnage. Sinon, sonnez-le.",
+    // punisher_mcdc_2026 — Putting the Pieces Together (SideScheme)
+    'pu065': "<b>Une fois révélée</b> : placez 2 menaces sur cette manigance par personnage MAGGIA en jeu.\n<b>Une fois vaincue</b> : dans l'ordre du tour, chaque joueur cherche un sbire MAGGIA qui n'est pas en jeu et le révèle.",
+    // punisher_mcdc_2026 — Cut to Pieces (Treachery)
+    'pu066': "<b>Une fois révélée</b> : Jigsaw s'active contre vous. Si cette activation est une attaque, il gagne +1 ATQ.\n[star] <b>Boost</b> : placez 1 menace sur la manigance principale et soignez 1 dégât de Jigsaw.",
+    // punisher_mcdc_2026 — Friends of Ours (Treachery)
+    'pu068': "<b>Une fois révélée</b> : cherchez un sbire MAGGIA qui n'est pas en jeu et révélez-le. Chaque sbire MAGGIA s'active contre le joueur avec lequel il est engagé.",
+    // punisher_mcdc_2026 — A Made Man (Treachery)
+    'pu070': "<b>Une fois révélée (Alter ego)</b> : défaussez un allié en jeu. Sinon, placez 1👤 menace sur chaque manigance.\n<b>Une fois révélée (Héros)</b> : donnez à Jigsaw une carte de boost face cachée. Si un sbire MAGGIA est en jeu, donnez-lui une carte de boost supplémentaire.\n[star] <b>Boost</b> : après cette activation, donnez à Jigsaw une carte de boost face cachée.",
+    // punisher_mcdc_2026 — Hobgoblin (Villain)
+    'pu071a': "[star] Les attaques de Hobgoblin gagnent à distance.\n[star] « Citrouille explosive » — <b>Réponse forcée</b> : après que Hobgoblin vous a attaqué, résolvez la capacité « Citrouille explosive ».",
+    // punisher_mcdc_2026 — Hobgoblin (Villain)
+    'pu071b': "Solide.\n[star] Les attaques de Hobgoblin gagnent à distance.\n[star] « Citrouille explosive » — <b>Réponse forcée</b> : après que Hobgoblin vous a attaqué, résolvez deux fois la capacité « Citrouille explosive ».",
+    // punisher_mcdc_2026 — Hobgoblin (Villain)
+    'pu072a': "Solide.\n[star] Les attaques de Hobgoblin gagnent à distance.\n[star] « Citrouille explosive » — <b>Réponse forcée</b> : après que Hobgoblin vous a attaqué, résolvez deux fois la capacité « Citrouille explosive ».",
+    // punisher_mcdc_2026 — Hobgoblin (Villain)
+    'pu072b': "Solide.\n[star] Les attaques de Hobgoblin gagnent à distance.\n[star] « Citrouille explosive » — <b>Réponse forcée</b> : après que Hobgoblin vous a attaqué, résolvez deux fois la capacité « Citrouille explosive ».",
+    // punisher_mcdc_2026 — Hobgoblin's Glider (Attachment)
+    'pu073': "Mise en place. Permanent. Attachez-la à Hobgoblin.\n« Citrouille explosive » — <b>Spécial</b> : défaussez une carte du deck rencontre. Si cette carte est :\n- Une traîtrise : placez 1 menace sur la manigance principale.\n- Un sbire ou une manigance annexe : subissez 1 dégât indirect.\n- Autre : défaussez 3 cartes du deck rencontre.",
+    // punisher_mcdc_2026 — Flaming Sword (Attachment)
+    'pu074': "Weapon. Attachez-la à Hobgoblin.\n[star] Les attaques de Hobgoblin gagnent perçant.\n<b>Action de héros</b> : inclinez votre héros et résolvez deux fois la capacité « Citrouille explosive » → défaussez cette carte.",
+    // punisher_mcdc_2026 — Prowler (Minion)
+    'pu075': "Coup Rapide.\n<b>Réponse forcée</b> : après que Prowler a infligé des dégâts à votre héros, défaussez 2 cartes du deck rencontre. Si une traîtrise a été défaussée de cette façon, défaussez une amélioration ou un soutien que vous contrôlez.",
+    // punisher_mcdc_2026 — Rabble (Minion)
+    'pu076': "Vulnérable.\nRabble entre en jeu avec 2 compteurs de drone.\n<b>Interruption forcée</b> : quand Rabble devrait subir des dégâts → retirez 1 compteur de drone → prévenez ces dégâts et défaussez 2 cartes du deck rencontre à la place.",
+    // punisher_mcdc_2026 — The Enforcers (Minion)
+    'pu077': "[star] <b>Réponse forcée</b> : après que The Enforcers se sont activés contre vous, défaussez 3 cartes du deck rencontre. Subissez 1 dégât indirect par traîtrise défaussée de cette façon.",
+    // punisher_mcdc_2026 — Torn to Pieces (Obligation)
+    'pu078': "<b>Réponse forcée</b> : après que votre héros a utilisé un pouvoir de base, résolvez la capacité « Citrouille explosive ».\n<b>Action d'alter ego</b> : inclinez votre identité et défaussez 3 cartes du deck rencontre → défaussez cette carte.",
+    // punisher_mcdc_2026 — Designs on Crimes (SideScheme)
+    'pu079': "<b>Une fois révélée</b> : défaussez 3👤 cartes du deck rencontre.\n<b>Une fois vaincue</b> : dans l'ordre du tour, chaque joueur résout la capacité « Citrouille explosive ».",
+    // punisher_mcdc_2026 — Guise to Terrorize (Treachery)
+    'pu080': "<b>Une fois révélée</b> : défaussez une carte du deck rencontre. Si la carte défaussée est une traîtrise, résolvez la capacité « Citrouille explosive ». Sinon, révélez cette carte.",
+    // punisher_mcdc_2026 — Smashing Pumpkins (Treachery)
+    'pu082': "<b>Une fois révélée</b> : résolvez trois fois la capacité « Citrouille explosive ».\n[star] <b>Boost</b> : résolvez la capacité « Citrouille explosive ».",
+    // punisher_mcdc_2026 — Wrath of the Hobgoblin (Treachery)
+    'pu084': "<b>Une fois révélée</b> : Hobgoblin s'active contre vous avec +1 MNG et +1 ATQ par jeton d'accélération sur la manigance principale.\n[star] <b>Boost</b> : défaussez 2 cartes du deck rencontre.",
+    // punisher_mcdc_2026 — Punisher (Villain)
+    'pu086a': "Ténacité.\n<b>Réponse de héros</b> : après que vous avez attaqué Punisher, dépensez 2 ressources de n'importe quel type → retournez Target Lock sur sa face DISTRACTED et défaussez un attachement non permanent de Punisher.",
+    // punisher_mcdc_2026 — Punisher (Villain)
+    'pu086b': "Solide. Ténacité.\n<b>Réponse de héros</b> : après que vous avez attaqué Punisher, dépensez 2 ressources du même type → retournez Target Lock sur sa face DISTRACTED et défaussez un attachement non permanent de Punisher.",
+    // punisher_mcdc_2026 — Punisher (Villain)
+    'pu087a': "Solide. Ténacité.\n<b>Réponse de héros</b> : après que vous avez attaqué Punisher, dépensez 2 ressources du même type → retournez Target Lock sur sa face DISTRACTED et défaussez un attachement non permanent de Punisher.",
+    // punisher_mcdc_2026 — Punisher (Villain)
+    'pu087b': "Solide. Ténacité.\n<b>Réponse de héros</b> : après que vous avez attaqué Punisher, dépensez 2 ressources du même type → retournez Target Lock sur sa face DISTRACTED et défaussez un attachement non permanent de Punisher. Donnez à Punisher une carte de boost face cachée.",
+    // punisher_mcdc_2026 — One Last Kill (MainScheme)
+    'pu088a': "<b>Contenu</b> : Punisher I et II (II et III en mode expert) et un méchant UNDERLING. Les sets Punishment, celui du méchant UNDERLING et Standard. Un set modulaire (Punisher's Armory).\n<b>Mise en place</b> : cherchez Target Lock et attachez-le à Punisher, face FOCUSED visible. Cherchez Justice or Punishment? et révélez sa face de mise en place.",
+    // punisher_mcdc_2026 — One Last Kill (MainScheme)
+    'pu088b': "<b>Une fois révélée</b> : cherchez Punisher's M1911s et révélez-le.\n<b>Réponse forcée</b> : après avoir résolu l'étape un de la phase du Méchant, le méchant TARGETED s'active contre le premier joueur.",
+    // punisher_mcdc_2026 — Escaping Punishment (MainScheme)
+    'pu089a': "<b>Une fois révélée</b> : cherchez Punisher's Assault Rifle et révélez-le. Retournez Target Lock sur sa face DISTRACTED.",
+    // punisher_mcdc_2026 — Escaping Punishment (MainScheme)
+    'pu089b': "<b>Réponse forcée</b> : après avoir résolu l'étape un de la phase du Méchant, le méchant TARGETED s'active contre le premier joueur.\nSi cette manigance est complétée, le méchant TARGETED s'échappe et les joueurs perdent la partie.",
+    // punisher_mcdc_2026 — Justice or Punishment? (Environment)
+    'pu090a': "<b>Mise en place</b> : révélez le méchant UNDERLING (I en mode standard, II en mode expert). Fixez ses points de vie à la valeur numérique (en ignorant 👤) de ses points de vie imprimés.\nAttachez-lui In the Crosshairs.\nMélangez ses cartes Rencontre dans le deck rencontre, en suivant toute instruction de <b>Mise en place</b> et d'<b>Une fois révélée</b>.\nRetournez cette carte.",
+    // punisher_mcdc_2026 — Justice or Punishment? (Environment)
+    'pu090b': "Permanent.\n• Punisher est le méchant actif. Les cartes Rencontre qui font référence au « Méchant » ou l'affectent ne font référence qu'à Punisher.\n• Les joueurs peuvent défendre n'importe quelle attaque, même celles qui ciblent des ennemis.\nSi le dernier stade de Punisher est vaincu, les joueurs gagnent la partie.",
+    // punisher_mcdc_2026 — Target Lock (Attachment)
+    'pu091a': "Focused. Mise en place. Permanent.\n[star] <b>Interruption forcée</b> : quand Punisher devrait s'activer, il attaque à la place l'ennemi ayant le moins de points de vie restants. Si cette attaque inflige des dégâts à un ennemi ou à un allié, placez sur la manigance principale une quantité de menace égale au nombre d'icônes de boost sur la carte du dessus de la pile de défausse du deck rencontre.",
+    // punisher_mcdc_2026 — Target Lock (Attachment)
+    'pu091b': "Distracted. Permanent. Attachez-la à Punisher.\n[star] <b>Interruption forcée</b> : quand Punisher devrait manigancer, retournez cette carte à la place.\n<b>Interruption forcée</b> : à la fin du round, retournez cette carte.",
+    // punisher_mcdc_2026 — In the Crosshairs (Attachment)
+    'pu092': "Targeted. Mise en place. Permanent.\nLe personnage attaché gagne +5👤 points de vie, gagne le trait TARGETED et ne peut pas être affecté par les cartes joueur.\nSi le stade actuel du personnage attaché est vaincu, les joueurs perdent la partie.",
+    // punisher_mcdc_2026 — Punisher's Assault Rifle (Attachment)
+    'pu093': "Armament. Weapon. Attachez-la à Punisher. Utilisations (2👤 compteurs de munitions).\n<b>Une fois révélée</b> : défaussez chaque autre carte ARMAMENT en jeu.\n[star] Les attaques de Punisher gagnent déferlement. Ses dégâts en excès sur les sbires sont infligés au méchant TARGETED.\n[star] <b>Réponse forcée</b> : après que Punisher a attaqué, retirez 1 compteur de munitions de cette carte.",
+    // punisher_mcdc_2026 — Punisher's RPG (Attachment)
+    'pu094': "Armament. Weapon. Attachez-la à Punisher. Utilisations (1+1👤 compteurs de munitions).\n<b>Une fois révélée</b> : défaussez chaque autre carte ARMAMENT en jeu.\n[star] Les attaques de Punisher infligent des dégâts indirects. Inclinez tout personnage blessé par son attaque.\n[star] <b>Réponse forcée</b> : après que Punisher a attaqué, retirez 1 compteur de munitions de cette carte.",
+    // punisher_mcdc_2026 — Punisher's M1911s (Attachment)
+    'pu095': "Armament. Weapon. Attachez-la à Punisher. Utilisations (2👤 compteurs de munitions).\n<b>Une fois révélée</b> : défaussez chaque autre carte ARMAMENT en jeu.\n[star] Les attaques de Punisher gagnent à distance.\n[star] <b>Réponse forcée</b> : après que Punisher a attaqué, retirez 1 compteur de munitions de cette carte.",
+    // punisher_mcdc_2026 — Mexican Standoff (Attachment)
+    'pu096': "Confrontation. Attachez-la à Punisher.\n<b>Réponse forcée</b> : après que vous avez attaqué Punisher, il s'active. Puis, le méchant TARGETED s'active contre vous. Ne donnez de carte de boost à aucun des deux personnages pour ces activations. Défaussez cette carte.",
+    // punisher_mcdc_2026 — Microchip (Minion)
+    'pu097': "Punisher ne peut pas attaquer ce sbire.\n[star] <b>Interruption forcée</b> : quand Microchip devrait s'activer, donnez à la place une carte de boost face cachée à Punisher.\n<b>Une fois vaincue</b> : révélez l'attachement WEAPON du dessus de la pile de défausse du deck rencontre.",
+    // punisher_mcdc_2026 — Rachel Cole-Alves (Minion)
+    'pu098': "Punisher ne peut pas attaquer ce sbire.\n[star] <b>Interruption forcée</b> : quand Rachel Cole-Alves devrait manigancer, elle attaque à la place le méchant TARGETED.",
+    // punisher_mcdc_2026 — Judge, Jury... Execution! (SideScheme)
+    'pu099': "<b>Une fois vaincue</b> : défaussez le sbire ayant le moins de points de vie restants et infligez au méchant TARGETED des dégâts égaux aux points de vie restants de ce sbire. Sinon, donnez à Punisher une carte de boost face cachée.",
+    // punisher_mcdc_2026 — Back Against the Wall (Treachery)
+    'pu100': "<b>Une fois révélée (Alter ego)</b> : infligez à Punisher des dégâts égaux à l'ATQ du méchant TARGETED.\n<b>Une fois révélée (Héros)</b> : retournez Target Lock sur sa face DISTRACTED. Punisher s'active.\n[star] <b>Boost</b> : donnez à Punisher une carte de boost face cachée (s'il est en train de s'activer, résolvez-la).",
+    // punisher_mcdc_2026 — Bullet Spray (Treachery)
+    'pu102': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage que vous contrôlez. Infligez 1 dégât au méchant TARGETED et à chaque sbire engagé avec vous.\n[star] <b>Boost</b> : infligez 1 dégât au méchant TARGETED.",
+    // punisher_mcdc_2026 — Flash-Bang (Treachery)
+    'pu104': "<b>Une fois révélée</b> : sonnez chaque personnage que vous contrôlez. Sonnez le méchant TARGETED et chaque sbire engagé avec vous.\n[star] <b>Boost</b> : sonnez un personnage que vous contrôlez.",
+    // punisher_mcdc_2026 — Say Good Night (Treachery)
+    'pu105': "<b>Une fois révélée (Alter ego)</b> : infligez au méchant TARGETED des dégâts égaux à l'ATQ de Punisher.\n<b>Une fois révélée (Héros)</b> : subissez des dégâts égaux à l'ATQ de Punisher. Vous pouvez incliner votre héros ou défausser un allié que vous contrôlez pour prévenir ces dégâts.",
+    // punisher_mcdc_2026 — Punisher's Hit List (Environment)
+    'pu106a': "Mise en place. Permanent.\n<b>Réponse forcée</b> : après que Punisher a vaincu un personnage, ajoutez 1 compteur sur cette carte. Puis, s'il y a au moins 2+1👤 compteurs ici, retirez tous les compteurs et retournez cette carte.\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, résolvez la capacité « Châtiment » de Punisher, si possible.",
+    // punisher_mcdc_2026 — Satchel Charge (Environment)
+    'pu106b': "Les effets de cette carte ne peuvent pas être annulés.\n<b>Une fois révélée</b> : infligez 2👤 dégâts au Méchant. Les joueurs, collectivement, subissent 3👤 dégâts indirects. Mélangez Punisher et chaque carte ARMAMENT en jeu et dans la pile de défausse du deck rencontre dans le deck rencontre. Retournez cette carte.",
+    // punisher_mcdc_2026 — Punisher (Minion)
+    'pu107': "Solide. Ténacité. Vilenie.\n« Châtiment » — <b>Spécial</b> : Punisher attaque le sbire ayant le moins de points de vie restants avec +2 ATQ. Ignorez les capacités « Boost » pour cette attaque. Si l'attaque vainc ce sbire, répétez cette capacité.",
+    // punisher_mcdc_2026 — Rachel Cole-Alves (Minion)
+    'pu108': "Punisher ne peut pas attaquer ce sbire.\n<b>Une fois révélée</b> : résolvez la capacité « Châtiment » de Punisher. Sinon, Rachel Cole-Alves vous attaque. Si vous êtes sous forme de héros, donnez-lui une carte de boost pour cette attaque.",
+    // punisher_mcdc_2026 — Punisher's Katana (Attachment)
+    'pu109': "Armament. Weapon.\n[star] Les attaques de Punisher gagnent perçant.\n<b>Une fois révélée</b> : cherchez Punisher, révélez-le et attachez-lui cette carte. Résolvez sa capacité « Châtiment ».\n[star] <b>Boost</b> : si cette attaque vainc un allié, ajoutez un compteur sur Punisher's Hit List.",
+    // punisher_mcdc_2026 — Punisher's M1911 (Attachment)
+    'pu110': "Armament. Weapon.\n[star] Les attaques de Punisher gagnent à distance.\n<b>Une fois révélée</b> : cherchez Punisher, révélez-le et attachez-lui cette carte. Il vous attaque. Ne lui donnez pas de carte de boost pour cette attaque. Résolvez sa capacité « Châtiment ».\n[star] <b>Boost</b> : si cette attaque vainc un allié, ajoutez un compteur sur Punisher's Hit List.",
+    // punisher_mcdc_2026 — Dramatic Entrance (Treachery)
+    'pu111': "<b>Une fois révélée</b> : cherchez Punisher et révélez-le. Il attaque le Méchant, puis il vous attaque. Résolvez sa capacité « Châtiment ».\n[star] <b>Boost</b> : si cette attaque vainc un allié, ajoutez un compteur sur Punisher's Hit List.",
+    // punisher_mcdc_2026 — Punisher's Arsenal (SideScheme)
+    'pu113': "<b>Une fois révélée</b> : cherchez un attachement ARMAMENT qui n'est pas en jeu et révélez-le.\n<b>Une fois vaincue</b> : cherchez Punisher et révélez-le. Résolvez sa capacité « Châtiment ».",
+    // punisher_mcdc_2026 — Punisher's Armory (SideScheme)
+    'pu114': "<b>Réponse forcée</b> : après le début de la phase du Méchant, s'il n'y a aucun attachement WEAPON sur le Méchant, défaussez des cartes du deck rencontre jusqu'à ce qu'un WEAPON soit défaussé. Révélez cette carte.\n<b>Une fois vaincue</b> : mélangez chaque WEAPON de la pile de défausse du deck rencontre dans le deck rencontre.\n[star] <b>Boost</b> : révélez cette carte.",
+    // punisher_mcdc_2026 — Punisher's Shotgun (Attachment)
+    'pu115': "Armament. Weapon. Attachez-la à Punisher. Sinon, attachez-la au Méchant. Utilisations (2👤 compteurs de munitions).\n<b>Une fois révélée</b> : défaussez chaque autre carte ARMAMENT en jeu.\n[star] <b>Réponse forcée</b> : après que le personnage attaché a attaqué, retirez 1 compteur de munitions de cette carte et sonnez la cible de l'attaque.",
+    // punisher_mcdc_2026 — Punisher's Sniper Rifle (Attachment)
+    'pu116': "Armament. Weapon. Attachez-la à Punisher. Sinon, attachez-la au Méchant. Utilisations (1+1👤 compteurs de munitions).\n<b>Une fois révélée</b> : défaussez chaque autre carte ARMAMENT en jeu.\n[star] Les attaques du personnage attaché gagnent perçant et à distance.\n[star] <b>Réponse forcée</b> : après que le personnage attaché a attaqué, retirez 1 compteur de cette carte.",
+    // punisher_mcdc_2026 — Punisher's SMG (Attachment)
+    'pu117': "Armament. Weapon. Attachez-la à Punisher. Sinon, attachez-la au Méchant. Utilisations (1+1👤 compteurs de munitions).\n<b>Une fois révélée</b> : défaussez chaque autre carte ARMAMENT en jeu.\n[star] <b>Réponse forcée</b> : après que le personnage attaché a attaqué, chaque joueur inflige 1 dégât à un personnage qu'il contrôle. Retirez 1 compteur de munitions de cette carte.",
+    // punisher_mcdc_2026 — Frag Grenade (Treachery)
+    'pu118': "Weapon.\n<b>Une fois révélée</b> : subissez 3 dégâts indirects. Vous pouvez défausser une carte que vous contrôlez pour prévenir X de ces dégâts, où X est égal au coût de cette carte.",
+    // punisher_mcdc_2026 — SWAT (SideScheme)
+    'pu119': "Mise en place. Permanent. Les joueurs ne peuvent pas contrer cette manigance.\n<b>Réponse forcée</b> : après qu'un ennemi a été vaincu, placez 1 menace ici (3 menaces à la place s'il avait le trait POLICE). Puis, s'il y a 4+ menaces ici, retirez toutes les menaces et placez 1 compteur « Recherché » ici.\nS'il y a 5 compteurs « Recherché » ou plus ici, les joueurs perdent la partie.",
+    // punisher_mcdc_2026 — Cole North (Minion)
+    'pu120': "Patrouille.\n[star] Quand Cole North manigance, placez cette menace sur SWAT, si possible.\n[star] <b>Interruption forcée</b> : quand Cole North devrait attaquer, s'il y a moins de 3 compteurs « Recherché » sur SWAT, retirez 2 menaces de la manigance principale à la place.",
+    // punisher_mcdc_2026 — Riot Police (Minion)
+    'pu121': "Garde. Riposte 2. Ténacité.\n[star] Quand Riot Police manigance, placez cette menace sur SWAT, si possible.\n<b>Action de héros</b> : dépensez 1 ressource de n'importe quel type et défaussez un allié que vous contrôlez → défaussez Riot Police et retirez 2 menaces de SWAT.",
+    // punisher_mcdc_2026 — Tactical Sniper (Minion)
+    'pu123': "Vulnérable.\n[star] Quand Tactical Sniper manigance, placez cette menace sur SWAT, si possible.\n[star] <b>Interruption forcée</b> : quand Tactical Sniper devrait attaquer, s'il y a moins de 3 compteurs « Recherché » sur SWAT, il attaque à la place l'ennemi sans le trait POLICE ayant le moins de points de vie restants.",
+    // punisher_mcdc_2026 — Beetle (Minion)
+    'pu125': "Réduisez de 1 les dégâts que Beetle subit des attaques non AERIAL.\n<b>Une fois vaincue</b> : choisissez un sbire CRIMINAL. Ce sbire s'active contre le joueur avec lequel il est engagé.",
+    // punisher_mcdc_2026 — White Rabbit (Minion)
+    'pu126': "[star] <b>Réponse forcée</b> : après que White Rabbit a attaqué et vous a infligé des dégâts, défaussez une carte que vous contrôlez.\n<b>Une fois vaincue</b> : choisissez un sbire CRIMINAL. Ce sbire s'active contre le joueur avec lequel il est engagé.",
+    // punisher_mcdc_2026 — Electro (Minion)
+    'pu127': "Vilenie. Les attaques d'Electro infligent des dégâts indirects.\n<b>Une fois vaincue</b> : choisissez un sbire CRIMINAL. Ce sbire s'active contre le joueur avec lequel il est engagé.",
+    // punisher_mcdc_2026 — Lady Octopus (Minion)
+    'pu128': "Incitation 2. Ténacité.\n[star] <b>Réponse forcée</b> : après que Lady Octopus a attaqué, placez 2 menaces sur la manigance principale.\n<b>Une fois vaincue</b> : choisissez un sbire CRIMINAL. Ce sbire s'active contre le joueur avec lequel il est engagé.",
+    // punisher_mcdc_2026 — Scorpia (Minion)
+    'pu129': "Garde. Patrouille.\n[star] Les attaques de Scorpia gagnent perçant.\n<b>Une fois vaincue</b> : choisissez un sbire CRIMINAL. Ce sbire s'active contre le joueur avec lequel il est engagé.",
+    // punisher_mcdc_2026 — Trapstr (Minion)
+    'pu130': "Coup Rapide.\n[star] <b>Interruption forcée</b> : quand Trapstr vous attaque, sonnez un personnage que vous contrôlez.\n<b>Une fois vaincue</b> : choisissez un sbire CRIMINAL. Ce sbire s'active contre le joueur avec lequel il est engagé.",
+    // punisher_mcdc_2026 — The Syndicate (SideScheme)
+    'pu131': "<b>Une fois révélée</b> : dans l'ordre du tour, chaque joueur cherche un sbire SYNDICATE qui n'est pas en jeu et le révèle.\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
+    // punisher_mcdc_2026 — Capo of the Past (Attachment)
+    'pu139': "Permanent. Victoire 0.\nConsidérez le personnage attaché comme un sbire ELITE. Il gagne Solide, Vilenie et victoire 0.\n<b>Une fois révélée</b> : cherchez dans votre collection un méchant CAPO au hasard. Mettez-le en jeu engagé avec vous et attachez-lui cette carte.\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
+    // punisher_mcdc_2026 — Big Apple Gang War! (Environment)
+    'pu140': "<b>Mise en place du combat</b> :\n• Scénario : The Big Apple\n• N'incluez pas l'extension Uptown\n• Chaque joueur a besoin d'un jeton de joueur\n• Utilisez les sets Policiers et Mafia des Survêtes (FNE)\nMise en place. Permanent.\n<b>Victoire</b> : retournez cette carte et mettez Seized Tech Crates en jeu pour les combats 2 et 3.",
+    // punisher_mcdc_2026 — Seized Tech Crates (Upgrade)
+    'pu141': "Permanent.\n<b>Mise en place</b> : placez 1 compteur ici, plus 1 compteur par joueur qui n'a pas joué la partie précédente avec vous.\n<b>Action</b> : retirez 1 compteur → choisissez <i>(n'importe quel joueur peut déclencher cette capacité, limite une fois par joueur et par round)</i> :\n• Réduisez de 1 le coût de la prochaine carte que vous jouez pendant cette phase.\n• Cherchez un soutien ou une amélioration de coût 2 ou moins et ajoutez-le à votre main.",
+    // punisher_mcdc_2026 — Tracking the Buyer (Environment)
+    'pu142': "<b>Mise en place du combat</b> :\n• Méchant : Hobgoblin <i>(si Gunrunner était Count Nefaria, Ringmaster, Mr. Negative ou Nightshade)</i>, ou Jigsaw <i>(les 4 autres CAPO)</i>\n• Utilisez les sets Punisher's Hit List, The Syndicate, Capo of the Past\n• Manigance principale selon la dernière piste : Art Museum Heist (Theater District, Financial District), The Getaway (Hell's Kitchen, Lower East Side), The Raft Breakout (Upper East Side, Midtown), Protection Racket (Chinatown), Stop the Presses! (West Village, Soho)\nMise en place. Permanent.\n<b>Victoire</b> : retournez cette carte et mettez Punisher's Ordnance Cache en jeu pour le combat 3.",
+    // punisher_mcdc_2026 — Punisher's Ordnance Cache (Upgrade)
+    'pu143': "Permanent.\n<b>Mise en place</b> : placez 1 compteur ici, plus 1 compteur par joueur qui n'a pas joué la partie précédente avec vous.\n<b>Action</b> : retirez 1 compteur d'ici et placez 3 menaces sur la manigance principale → cherchez dans votre deck, votre pile de défausse et votre collection une carte WEAPON d'aspect ou de base et ajoutez-la à votre main. N'importe quel joueur peut déclencher cette capacité.",
+    // punisher_mcdc_2026 — Punishment (Environment)
+    'pu144': "<b>Mise en place du combat</b> :\n• Scénario : Châtiment\n• UNDERLING : l'UNDERLING MC×DC (Hobgoblin ou Jigsaw) que vous n'avez <b>pas</b> utilisé au combat 2 de la campagne\n• Utilisez le set Punisher's Armory\nMise en place. Permanent.\n<b>Réponse forcée</b> : après que le premier stade de Punisher est vaincu ou que la manigance principale passe au stade 2A, retournez cette carte.",
+    // punisher_mcdc_2026 — S.H.I.E.L.D. Support Team (Upgrade)
+    'pu145': "Permanent.\n<b>Réponse forcée</b> : après que cette carte est entrée en jeu, placez 1 compteur de renseignement ici, plus 1 compteur par joueur qui n'a pas joué la partie précédente avec vous.\n<b>Réponse</b> : après qu'un joueur a vaincu un sbire, retirez 1 compteur d'ici → chaque joueur pioche 1 carte. Attribuez une carte Rencontre à 1 joueur.",
+    // punisher_mcdc_2026 — Punisher (Ally)
+    'pu146': "[star] Les attaques de Punisher gagnent perçant et à distance.\n<b>Réponse</b> : après que Punisher a attaqué et vaincu un sbire, infligez 2 dégâts à un ennemi.",
+    // punisher_mcdc_2026 — Long Live the King? (Environment)
+    'pu147': "<b>Mise en place du combat</b> :\n• Scénario : Le Caïd\n• Utilisez les sets SWAT Team et Mafia des Survêtes\n• Répartissez les joueurs en assemblées de 2 à 4 groupes.\n• Désignez une personne par assemblée comme organisateur de l'assemblée. Cette personne met en jeu les environnements Long Live et The King dans sa zone de jeu, et est chargée de suivre et de transmettre les résultats aux organisateurs de l'événement.\n<b>Mise en place</b> : mettez l'allié Punisher en jeu sous le contrôle d'un joueur. Retournez cette carte et placez-y 1 compteur.",
+    // punisher_mcdc_2026 — Power to the People (Upgrade)
+    'pu148': "Permanent.\n<b>Action</b> : retirez 1 compteur d'ici → choisissez <i>(n'importe quel joueur peut déclencher cette capacité, chaque choix ne peut être choisi qu'une fois par groupe et par round)</i> :\n• Retirez 2 menaces d'une manigance.\n• Jouez une carte de votre main, en réduisant son coût de 1.",
+    // punisher_mcdc_2026 — Long Live (Environment)
+    'pu149a': "Mise en place. Permanent.\n<b>Action d'assemblée</b> : choisissez un groupe de l'assemblée. Déplacez 1 compteur de votre Public Support vers son Power to the People.\n<b>Interruption forcée</b> : à la fin de la phase des joueurs, déplacez chaque jeton de soutien de votre Public Support vers cette carte. Puis, s'il y a 2[per_hero]+2[per_group] compteurs ici, retournez cette carte.",
+    // punisher_mcdc_2026 — Down With (Environment)
+    'pu149b': "Permanent.\n<b>Une fois révélée</b> : chaque groupe réinitialise le nombre de jetons de soutien sur son Public Support à 2[per_hero]+3 compteurs.\n<b>Action d'assemblée</b> : choisissez un groupe de l'assemblée. Déplacez 1 compteur de votre Public Support vers son Power to the People.",
+    // punisher_mcdc_2026 — The King (Environment)
+    'pu151': "Mise en place. Permanent.\n<b>Interruption forcée</b> : quand Kingpin est vaincu dans cette assemblée, placez ici 1 dégât par joueur de cette partie.\n<b>Interruption forcée</b> : quand les joueurs perdent une partie dans cette assemblée, placez ici 1 menace par joueur de cette partie.\n<b>À la fin de toutes les parties, si la quantité de dégâts ici est supérieure ou égale à la quantité de menaces, l'assemblée gagne !</b>",
+    // punisher_mcdc_2026 — Hawkeye (Hero)
+    'pu283a': "Les attaques de base de Hawkeye gagnent à distance.\n« Quick Draw » — <b>Action</b> : redressez Hawkeye's Bow. <i>(Limite une fois par phase.)</i>",
+    // punisher_mcdc_2026 — Clint Barton (AlterEgo)
+    'pu283b': "<b>Réponse</b> : après que vous êtes passé sous cette forme, mélangez 2 cartes [[Arrow]] de votre pile de défausse dans votre deck.\n<b>Action</b> : dépensez 1 ressource de n'importe quel type → cherchez Hawkeye's Bow ou Hawkeye's Quiver et mettez-le en jeu. <i>(Limite une fois par phase.)</i>",
+    // punisher_mcdc_2026 — Guerilla Warfare (MainScheme)
+    'pu284b': "<b>Réponse forcée</b> : après qu'une carte d'état a été placée sur le chef ennemi, placez 1 menace ici.\n<b>Si ce stade est complété, les joueurs perdent la partie.</b>",
+    // punisher_mcdc_2026 — Superhero Jailbreak (MainScheme)
+    'pu285b': "[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, chaque joueur défausse la première carte du deck Rencontre. Chaque joueur qui défausse ainsi un sbire le met en jeu engagé avec lui.\n<b>Si ce stade est complété, les joueurs perdent la partie.</b>",
 };
