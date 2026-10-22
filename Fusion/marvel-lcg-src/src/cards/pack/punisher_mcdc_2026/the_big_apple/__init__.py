@@ -12,12 +12,6 @@ GRILLE_DES_LIEUX = [["pu030", "pu031", "pu032"], ["pu033", "pu034", "pu035"], ["
 CASE_DE_DEPART = (1, 1)   # Midtown
 
 
-def TousLesJoueurs(effect: 'Effect') -> 'List[Player]':
-    """TOUS les joueurs, quelle que soit leur zone (`Worlds.GetPlayers` filtre par la zone de la carte qui resout : un complot de la zone commune
-    n'y voit AUCUN joueur)."""
-    return [j for j in effect.world.const_players if j.area_hero.GetSize() > 0]
-
-
 def LeVilain(effect: 'Effect', joueur: 'Player') -> 'Villain|None':
     """« the villain » d'un joueur dans la ville (R6) : le CAPO de SA zone ; hors ville (banc de test), le vilain courant."""
     zone = joueur.GetIdentity().card.GetGameArea()

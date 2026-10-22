@@ -729,4 +729,18 @@ CAMPAIGN_CARDS = [
       "Permanent.\n<b>Setup</b>: Place 1 counter here, plus 1 more for each player who did not play the last game together.\n<b>Action</b>: Remove 1 "
       "counter from here and place 3 threat on the main scheme \u2192 search your deck, discard pile, and collection for an aspect or basic WEAPON "
       "card and add it to your hand. Any player may trigger this ability.", PU_CAMP, page="p266 (Campaign Reward 2, ID 6133)"),
+    c("pu144", "Environment", "Punishment", {"Setup": "1", "Permanent": "1"}, [],
+      "<b>Battle Setup</b>:\n\u2022 Scenario: Punishment\n\u2022 UNDERLING: the MC\u00d7DC UNDERLING (Hobgoblin or Jigsaw) that you did "
+      "<b>not</b> use in campaign battle 2\n\u2022 Use Punisher's Armory set\nSetup. Permanent.\n<b>Forced Response</b>: After Punisher's first stage "
+      "is defeated or the main scheme advances to stage 2A, flip this card.", PU_CAMP, page="p267 (Campaign Battle 3, ID 6134)",
+      subtitle="Rain slicked the rooftop of an abandoned warehouse as the Punisher finally cornered his target. The one flooding the streets with "
+               "purchased weapons, staining the city with fear. One more corpse, he figured, would balance the scales of his twisted justice. His weapon "
+               "rose, steady and certain. The city held its breath. \"Where there is crime,\" he said, voice cold as the storm, \"there is punishment.\""),
+    c("pu145", "Upgrade", "S.H.I.E.L.D. Support Team", {"Permanent": "1"}, [],
+      "Permanent.\n<b>Forced Response</b>: After this card enters play, place 1 intelligence counter here, plus 1 more for each player who did not play "
+      "the last game together.\n<b>Response</b>: After a player defeats a minion, remove 1 counter from here \u2192 each player draws 1 card. Deal 1 "
+      "player an encounter card.", PU_CAMP, page="p268 (Campaign Reward 3, ID 6134)"),
+    c("pu146", "Ally", "* Punisher", {"Cost": "3", "HP": "3", "ATK": "2**", "THW": "1*", "RES": "R", "Class": "Aggression"}, ["SOLDIER", "VIGILANTE"],
+      "[star] Punisher's attacks gain piercing and ranged.\n<b>Response</b>: After Punisher attacks and defeats a minion, deal 2 damage to an enemy.",
+      PU_CAMP, page="p275 (Ally, ID 6138)", subtitle="Frank Castle"),
 ]

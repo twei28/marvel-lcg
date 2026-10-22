@@ -135,6 +135,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   drone: 'drone',
   // SWAT Team (21/10/2026) : les « wanted counters » de la manigance SWAT (pu119).
   wanted: 'recherché',
+  // Campagne Punisher (22/10/2026) : S.H.I.E.L.D. Support Team (pu145).
+  intelligence: 'renseignement',
   // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).

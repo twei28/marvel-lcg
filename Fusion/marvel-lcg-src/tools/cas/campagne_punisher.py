@@ -24,6 +24,16 @@ def _b(nom, pourquoi, mise, declencher, attendu, **cle):
     return _c(nom, pourquoi, mise, declencher, attendu, scenario=cle.pop("scenario", "tracking_the_buyer_the_getaway_jigsaw"), campagne=True, **cle)
 
 
+HEROS = "Puzzle.ChangeForm('01001b')"
+RIEN3 = ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105')"]
+
+
+def _t(nom, pourquoi, mise, declencher, attendu, **cle):
+    """Combat 3 : scenario genere Punishment contre Hobgoblin (le sous-fifre du combat 2 etait Jigsaw), carnet du combat 2."""
+    cle.setdefault("carnet", {"Seized Tech Crates": "1", "Punisher's Ordnance Cache": "1", "Underling": "Jigsaw", "Player 1 Identity": "Spider-Man"})
+    return _c(nom, pourquoi, mise, declencher, attendu, scenario=cle.pop("scenario", "punishment_hobgoblin"), campagne=True, **cle)
+
+
 def _caisses(nom, pourquoi, mise, declencher, attendu, carnet=None, **cle):
     """pu141 : `rhino`, Spider-Man, la carte en jeu SOUS LE CONTROLE du premier joueur (`under_control`)."""
     cle.setdefault("carnet", carnet if carnet is not None else {"Player 1 Identity": "Spider-Man"})
@@ -129,6 +139,48 @@ CAS = [
          {"en_jeu": ["pu142", "pu141"]}, scenario=f"tracking_the_buyer_{m}_{u}{ex}")
       for m in ("art_museum_heist", "the_getaway", "the_raft_breakout", "protection_racket", "stop_the_presses")
       for u in ("jigsaw", "hobgoblin") for ex in ("", "_expert")],
+    # ---------------------------------------------------------------------------------------------------------- combat 3 : pu144, pu145, pu146
+    _t("pu144 mise en place (campagne, Punishment + Hobgoblin) : l'environnement est en jeu, avec Seized Tech Crates et Ordnance Cache (le carnet les a gagnees)",
+       "Battle Setup + « Mettez en jeu ... si vous l'avez gagnee »", [], [], {"en_jeu": ["pu144", "pu141", "pu143"], "hors_jeu": ["pu145"]}),
+    _t("pu144, TEMOIN : le carnet n'a gagne ni les Caisses ni la Cache -> ni pu141 ni pu143", "la recompense depend du carnet", [], [],
+       {"en_jeu": ["pu144"], "hors_jeu": ["pu141", "pu143"]}, carnet={"Underling": "Jigsaw", "Player 1 Identity": "Spider-Man"}),
+    _t("pu144 Forced Response : le complot principal avance au stade 2A -> l'environnement est retourne : pu144 part, S.H.I.E.L.D. Support Team entre en jeu avec 1 compteur",
+       "« After ... the main scheme advances to stage 2A, flip this card »", [], ["Puzzle.AdvanceMainScheme(1)"],
+       {"hors_jeu": ["pu144"], "en_jeu": ["pu145"], "compteurs": [["pu145", "intelligence", 1]]}),
+    _t("pu144 Forced Response : le premier stade du Punisher est vaincu -> l'environnement est retourne (1re vague absorbee par Tough, 2e vainc)",
+       "« After Punisher's first stage is defeated ... flip this card »", RIEN3, ["Puzzle.Damage('pu086a', 99)", "Puzzle.Damage('pu086a', 99)"],
+       {"hors_jeu": ["pu144"], "en_jeu": ["pu145", "pu087a"]}),
+    _t("pu144, TEMOIN : sans rien de tout cela, l'environnement reste en jeu et pu145 n'existe pas", "pas de retournement spontane", [], [],
+       {"en_jeu": ["pu144"], "hors_jeu": ["pu145"]}),
+    _t("pu144 : une seule fois -> stade 1 vaincu PUIS complot en 2A : UNE seule S.H.I.E.L.D. Support Team", "la carte retournee ne se retourne pas deux fois",
+       RIEN3, ["Puzzle.Damage('pu086a', 99)", "Puzzle.Damage('pu086a', 99)", "Puzzle.AdvanceMainScheme(1)"], {"copies_en_jeu": [["pu145", 1]]}),
+    _t("pu144 releve (victoire) : l'allie Punisher est gagne (Punisher Ally = 1), estampille punishment", "« VICTOIRE : Vous avez gagne l'allie Punisher (6138) »",
+       [], ["Puzzle.Win()"], {"carnet_cles": {"Punisher Ally": "1"}, "carnet_scenario": "punishment", "carnet_gagnee": True}),
+    _t("pu144 releve (DEFAITE) : pas d'allie", "rien a la defaite", [], ["Puzzle.Lose()"], {"carnet_cles_absentes": ["Punisher Ally"], "carnet_gagnee": False}),
+    _t("pu145 entre en jeu : 1 compteur intelligence (le seul joueur etait dans la partie precedente)", "« After this card enters play, place 1 intelligence counter here, plus 1 ... »",
+       ["Puzzle.PutIntoPlay('pu145', under_control=True)"], [], {"compteurs": [["pu145", "intelligence", 1]]}),
+    _t("pu145 entre en jeu : un 2e joueur (Iron Man) absent de la partie precedente -> 2 compteurs", "idem pu141", ["Puzzle.PutIntoPlay('pu145', under_control=True)"], [],
+       {"compteurs": [["pu145", "intelligence", 2]]}, heros2="iron_man"),
+    _t("pu145 Response : un joueur vainc un sbire -> 1 compteur retire, chaque joueur pioche 1 carte, 1 carte de rencontre est donnee",
+       "« After a player defeats a minion, remove 1 counter -> each player draws 1 card. Deal 1 player an encounter card »",
+       [*RIEN3, HEROS, "Puzzle.PutIntoPlay('pu145', under_control=True)", "Puzzle.PutIntoPlay('01110')"], ["Puzzle.Damage('01110', 1)", "Puzzle.Attack('01001a')"],
+       {"compteurs": [["pu145", "intelligence", 0]], "taille_main": 2, "hors_jeu": ["01110"], "cartes_donnees": 1}, cibles=["01110"]),
+    _t("pu145 Response, TEMOIN : sans compteur, rien (la main reste a 1 carte)", "le retrait est un cout",
+       [*RIEN3, HEROS, "Puzzle.PutIntoPlay('pu145', under_control=True)", "Puzzle.PutIntoPlay('01110')", "Puzzle.PlaceCounters('pu145', 'intelligence', -1)"],
+       ["Puzzle.Damage('01110', 1)", "Puzzle.Attack('01001a')"], {"compteurs": [["pu145", "intelligence", 0]], "taille_main": 1, "hors_jeu": ["01110"], "cartes_donnees": 0},
+       cibles=["01110"]),
+    _t("pu146 Punisher : son attaque gagne PERCING -> il vainc un sbire Tough (Hydra Bomber 2 PV) d'une attaque (ATK 2)", "« Punisher's attacks gain piercing and ranged »",
+       ["Puzzle.PutIntoPlay('pu146', under_control=True)", "Puzzle.PutIntoPlay('01110')", "Puzzle.Tough('01110')"], ["Puzzle.Attack('pu146')"],
+       {"hors_jeu": ["01110"]}, cibles=["01110"]),
+    _t("pu146 Response : apres avoir vaincu un sbire (Hydra Bomber), 2 degats a un AUTRE ennemi (Shocker, 3 PV : il en garde 1)", "« After Punisher attacks and defeats a minion, deal 2 damage to an enemy »",
+       ["Puzzle.PutIntoPlay('pu146', under_control=True)", "Puzzle.PutIntoPlay('01110')", "Puzzle.PutIntoPlay('01103')"], ["Puzzle.Attack('pu146')"],
+       {"hors_jeu": ["01110"], "degats": [["01103", 2]]}, cibles=["01110", "01103"]),
+    _t("pu146 Response, TEMOIN : le sbire attaque SURVIT (Shocker 3 PV, ATK 2) -> pas de Response, aucun autre ennemi blesse (Hydra Bomber intact)",
+       "« defeats a minion » : sans defaite, rien", ["Puzzle.PutIntoPlay('pu146', under_control=True)", "Puzzle.PutIntoPlay('01110')", "Puzzle.PutIntoPlay('01103')"],
+       ["Puzzle.Attack('pu146')"], {"en_jeu": ["01103"], "degats": [["01103", 2], ["01110", 0]]}, cibles=["01103", "01110"]),
+    # ---------------------------------------------------------------------------------------------------------- le choix du scenario du combat 3
+    _c("Combat 3 : le sous-fifre du combat 2 note au carnet designe le scenario de l'AUTRE (Jigsaw -> Hobgoblin, Hobgoblin -> Jigsaw), standard et expert, et ils existent",
+       "« the UNDERLING that you did not use in campaign battle 2 »", [], [], {}, scenario="rhino", verifier="camp_choix3"),
     # ---------------------------------------------------------------------------------------------------------- pu143
     _caisses("pu143 Setup : le seul joueur etait dans la partie precedente -> 1 compteur", "« Place 1 counter here, plus 1 more for each player who did not play the last game together »",
              ["Puzzle.PutIntoPlay('pu143', under_control=True)"], ["Puzzle.SendGameWouldBegin()"], {"compteurs": [["pu143", "counter", 1]]}),
@@ -171,7 +223,7 @@ def camp_etat(monde, aides):
     cas = aides["cas"]
     attendu = cas.get("attendu") or {}
     propres = ("partie", "store_sans", "carnet_cles", "carnet_cles_absentes", "carnet_cles_presentes", "carnet_gagnee", "carnet_scenario",
-               "trafiquant_egal_porteur", "main_ok", "main_arme")
+               "trafiquant_egal_porteur", "main_ok", "main_arme", "copies_en_jeu", "cartes_donnees")
     soucis = []
     if "partie" in attendu:
         etat = "en_cours" if not monde.is_game_over else ("gagnee" if monde.game_over.players_won else "perdue")
@@ -222,6 +274,15 @@ def camp_etat(monde, aides):
             cout = f.printed_cost.val
             if cout > voulu["cout_max"]:
                 soucis.append(f"{f.paper.card_id} coute {cout} (> {voulu['cout_max']})")
+    for card_id, n in attendu.get("copies_en_jeu") or []:
+        vues = [o for o in monde.object_manager.card_dict.values()
+                if getattr(getattr(getattr(o, "face", None), "paper", None), "card_id", None) == card_id and o.face.IsInPlay()]
+        if len(vues) != n:
+            soucis.append(f"{len(vues)} exemplaire(s) de {card_id} en jeu (attendu {n})")
+    if "cartes_donnees" in attendu:
+        donnees = sum(len(j.dealt_encounter_cards.Get()) for j in monde.const_players)
+        if donnees != attendu["cartes_donnees"]:
+            soucis.append(f"{donnees} carte(s) de rencontre donnee(s) (attendu {attendu['cartes_donnees']})")
     if "main_arme" in attendu:
         main = monde.players[0].hand_cards.GetAll()
         nouvelles = [f for f in main if f.paper.card_id != "01088"]
@@ -264,5 +325,21 @@ def camp_choix(monde, aides):
     if ScenarioDuCombat2("Atlantis", "Count Nefaria") != "" or ScenarioDuCombat2("Soho", "Inconnu") != "":
         soucis.append("un carnet incomplet doit rendre une chaine vide")
     return (False, " ; ".join(soucis[:6])) if soucis else (True, "144 combinaisons, tous les scenarios existent")
+
+
+def camp_choix3(monde, aides):
+    import os
+    from cards.pack.punisher_mcdc_2026.campaign import ScenarioDuCombat3
+    voulu = {"Jigsaw": "hobgoblin", "Hobgoblin": "jigsaw", "jigsaw": "hobgoblin"}
+    soucis = []
+    for nord, autre in voulu.items():
+        for expert in (False, True):
+            nom = ScenarioDuCombat3(nord, expert)
+            attendu = f"punishment_{autre}" + ("_expert" if expert else "")
+            if nom != attendu or not os.path.exists(os.path.join("data", "scenarios", nom + ".json")):
+                soucis.append(f"{nord}/{expert} -> {nom!r} (attendu {attendu!r}, fichier present : {os.path.exists(os.path.join('data', 'scenarios', attendu + '.json'))})")
+    if ScenarioDuCombat3("") != "" or ScenarioDuCombat3("Inconnu") != "":
+        soucis.append("un carnet incomplet doit rendre une chaine vide")
+    return (False, " ; ".join(soucis)) if soucis else (True, "les 4 scenarios du combat 3 existent")
 '''
 

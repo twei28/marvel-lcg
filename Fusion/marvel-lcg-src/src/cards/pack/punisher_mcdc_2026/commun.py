@@ -39,3 +39,9 @@ def AuChoixDuJoueur(effect: 'Effect', joueur: 'Player', operation: Callable[[Seq
         effect,
         AbilityFactory.ForChoiceAbility("", lambda cibles: operation(cibles)).SetTarget("YouControlUnit", **filtre),
     )
+
+
+def TousLesJoueurs(effect: 'Effect') -> 'List[Player]':
+    """TOUS les joueurs, quelle que soit leur zone (`Worlds.GetPlayers` filtre par la zone de la carte qui resout : un complot de la zone commune
+    n'y voit AUCUN joueur)."""
+    return [j for j in effect.world.const_players if j.area_hero.GetSize() > 0]

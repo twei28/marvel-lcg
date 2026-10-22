@@ -296,6 +296,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (22/10/2026, The Big Apple pu007 Burning Building) : « acceleration token » posee sur un ATTACHEMENT (les manigances ont leurs
         # propres jetons `acceleration_token`).
         'acceleration',
+        # AJOUT (22/10/2026, campagne Punisher MC×DC 2026) : les « intelligence counters » de pu145 S.H.I.E.L.D. Support Team.
+        'intelligence',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',

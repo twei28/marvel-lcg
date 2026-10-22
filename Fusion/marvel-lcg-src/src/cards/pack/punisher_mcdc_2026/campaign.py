@@ -16,6 +16,7 @@ Cles du carnet (toutes declarees dans `data/campagnes/punisher_mcdc_2026.json`, 
     Jigsaw sinon) ;
   - "Big Apple Gang War!" : "Flipped" une fois le combat 1 gagne ;
   - "Seized Tech Crates" : "1" une fois gagnee (a mettre en jeu aux combats 2 et 3) ;
+  - "Punisher Ally" : "1" une fois gagne au combat 3 (a mettre en jeu au combat 4 ; Kingsfall le demande) ;
   - "Tracking the Buyer" : "Flipped" une fois le combat 2 gagne ; "Punisher's Ordnance Cache" : "1" (a mettre en jeu au combat 3) ;
     "Underling" : le sous-fifre affronte au combat 2 (Hobgoblin ou Jigsaw : au combat 3, l'AUTRE) ;
   - "Player N Remaining hit points", "Player N Identity" (communes a toutes les boites).
@@ -36,6 +37,10 @@ CLE_CACHE = "Punisher's Ordnance Cache"
 CLE_SOUS_FIFRE = 'Underling'
 ENVIRONNEMENT_COMBAT_2 = 'pu142'
 CACHE = 'pu143'
+ENVIRONNEMENT_COMBAT_3 = 'pu144'
+SOUTIEN_SHIELD = 'pu145'
+ALLIE_PUNISHER = 'pu146'
+CLE_ALLIE_PUNISHER = 'Punisher Ally'
 
 # Les 9 lieux, dans l'ordre de la grille (un LEAD pu039..pu047 porte le meme numero que son lieu pu030..pu038).
 NOMS_DES_LIEUX = {'pu030': "Hell's Kitchen", 'pu031': 'Theater District', 'pu032': 'Upper East Side',
@@ -171,3 +176,43 @@ def ScenarioDuCombat2(lieu: str, trafiquant: str, expert: bool=False) -> str:
     if manigance is None or sous_fifre is None:
         return ''
     return f"tracking_the_buyer_{manigance}_{sous_fifre}" + ('_expert' if expert else '')
+
+
+# ------------------------------------------------------------------------------------------------------------------------------ combat 3
+def ReleveCombat3(effect: 'Effect', message: 'Message.WhenGameOver') -> dict:
+    """Instructions de campagne du combat 3 : « VICTOIRE : Vous avez gagne l'allie Punisher (6138). » Rien a la defaite."""
+    if not message.players_won:
+        return {}
+    return {CLE_ALLIE_PUNISHER: '1'}
+
+
+def RetournerPunishment() -> 'List[Ability]':
+    """pu144 : « Forced Response : After Punisher's first stage is defeated or the main scheme advances to stage 2A, flip this card. »
+    L'environnement (6134A) a pour verso la recompense S.H.I.E.L.D. Support Team (6134B) : on retire pu144 et on met pu145 en jeu (une seule fois,
+    la carte disparaissant avec son retournement)."""
+    from game.card.factory import CardFactory
+
+    def retourner(effect: 'Effect', message: 'Message2') -> None:
+        Unused(message)
+        premier = Worlds.GetFirstPlayer(effect)
+        Faces.RemoveAllFromGame([effect.this], effect)
+        carte = CardFactory.GenerateCard(SOUTIEN_SHIELD, None, effect.world)
+        carte.face.PutIntoPlay(premier, effect, under_control=True)
+
+    def vers_2a(effect: 'Effect', message: 'Message.AfterMainSchemeAdvanced') -> bool:
+        return message.scheme.paper.card_id.startswith('pu089a')
+
+    def premier_stade_du_punisher(effect: 'Effect', message: 'Message.AfterVillainAdvanced') -> bool:
+        return message.trigger.paper.name.lstrip('* ').startswith('Punisher')
+
+    return [
+        Ability(AbilityType.ForcedResponse, Message.AfterMainSchemeAdvanced, [vers_2a], retourner),
+        Ability(AbilityType.ForcedResponse, Message.AfterVillainAdvanced, [premier_stade_du_punisher], retourner),
+    ]
+
+
+# Combat 3 : le sous-fifre que l'on n'a PAS affronte au combat 2 (« Hobgoblin or Jigsaw that you did not use in campaign battle 2 »).
+def ScenarioDuCombat3(sous_fifre_du_combat_2: str, expert: bool=False) -> str:
+    """Le fichier de scenario du combat 3 d'apres le carnet ('' si le sous-fifre du combat 2 n'est pas note)."""
+    autre = {'jigsaw': 'hobgoblin', 'hobgoblin': 'jigsaw'}.get(sous_fifre_du_combat_2.strip().lower())
+    return f"punishment_{autre}" + ('_expert' if expert else '') if autre else ''
