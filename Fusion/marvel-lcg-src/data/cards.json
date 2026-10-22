@@ -123958,7 +123958,7 @@
   {
    "card_id": "pu047",
    "type": "Obligation",
-   "name": "Forget It... It's Chinatown (9)",
+   "name": "Forget it... It's Chinatown (9)",
    "subtitle": "",
    "desc": {},
    "traits": [
@@ -124570,5 +124570,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "0751e9d1d39f83904279a4e9a2947b7e945642824e61d39f57b8e34945c30703"
+ "checksum": "023fe3a95e9b16d7e7cb2497c4677c2fb0f9fa5894641aad1ad90bfa876b653f"
 }
