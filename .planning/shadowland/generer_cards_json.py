@@ -31,7 +31,7 @@ def val(s):
 def entree(x):
     num = int(x['id_scan'][:5]); face = x['id_scan'][5:].lower()
     t = TYPES[x['type']]
-    recto_verso = t in ('MainScheme', 'Villain') or (t == 'Environment' and face)
+    recto_verso = t in ('MainScheme', 'Villain') or (t in ('Environment', 'Upgrade') and face)
     cid = 'sl%03d%s' % (num - 65000, face if (recto_verso and face) else '')
     desc = {}
     for k, v in (x.get('stats') or {}).items():
@@ -40,6 +40,7 @@ def entree(x):
         elif k in CLES:
             desc[k] = val(v).replace('★', '') if k in ('ATK', 'SCH') else val(v)
     nb_boost = 0
+    if t == 'Minion' and 'cout' in (x.get('stats') or {}): desc['HP'] = str(x['stats']['cout'])     # le cercle de la carte Ninja Swarm / Black Flower : transcrit « cout » = PV (verifie sur sl030 : 2)
     if t == 'Minion' and 'Boost' in (x.get('stats') or {}):
         desc['HP'] = str((x['stats'] or {})['Boost'])
     icones = x.get('icones') or []
@@ -50,6 +51,8 @@ def entree(x):
         nombre = 1 if isinstance(ic, str) else ic['nombre']
         m = re.match(r'^boost (\d+)$', nom)
         if m: pass         # « boost 5 » des transcriptions de sbires = le cercle en bas a droite de l'illustration = les POINTS DE VIE (verifie sur sl020 : 5, pas 5 icones)
+        elif re.match(r'^boost x(\d+)', nom): nb_boost += int(re.match(r'^boost x(\d+)', nom).group(1))
+        elif re.search(r'en y x(\d+)', nom): nb_boost += int(re.search(r'en y x(\d+)', nom).group(1))
         elif 'ensemble de rencontre' in nom and 'rouge' in nom:     # « 2 icones d'ensemble de rencontre (Y rouge) » = les icones de BOOST (Y rouges, bas droite)
             mm = re.match(r'^(\d+)', nom); nb_boost += int(mm.group(1)) if mm else 1
         elif 'crisis' in nom: desc['Crisis'] = str(nombre)
