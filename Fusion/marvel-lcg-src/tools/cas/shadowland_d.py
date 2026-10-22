@@ -7,6 +7,15 @@ CC = "Puzzle.PutIntoPlay('sl072a,sl072b', under_control=True)"          # la Cre
 CC_B = "Puzzle.PutIntoPlay('sl072b,sl072a', under_control=True)"        # face B visible
 
 
+def _r(nom, pourquoi, mise, declencher, attendu, forme_heros=True, **cle):
+    """Cas du scenario REEL d'essai (voir plus bas) : le deck de rencontre est vide puis rempli de trois « I'm Tough » (zero icone de boost)."""
+    cas = {"nom": "[sld] " + nom, "pourquoi": pourquoi, "scenario": "sl_essai_ninja_black_flower", "heros": HEROS,
+           "mise_en_place": [*([] if cle.pop("deck_reel", False) else ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"]), *([FORME_HEROS] if forme_heros else []), *mise],
+           "declencher": declencher, "verifier": "sld_etat", "attendu": attendu, "main_exclusive": cle.pop("main_exclusive", ["01088"]), "regles": ["v16_all", "v18_all"]}
+    cas.update(cle)
+    return cas
+
+
 def _s(nom, pourquoi, mise, declencher, attendu, verifier="sld_etat", forme_heros=True, deck=None, **cle):
     avant = cle.pop("avant_forme", [])   # ⚠ PIEGE : `ChangeForm` remet la menace du complot a 0 -> poser la menace AVANT
     # `deck` = cartes du deck de rencontre, LA DERNIERE AU DESSUS (comme 60201 de tools/test_capacites.py) ; par defaut trois « I'm Tough » inoffensifs
@@ -242,6 +251,25 @@ CAS += [
        [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 1]], "degats_identite": 2}, deck=["sl078"]),
     _s("sl078 Boost, branche 2 : 4 degats INDIRECTS (2 + 4 = 6), aucun compteur", "la 2e branche",
        [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 0]], "degats_identite": 6}, deck=["sl078"], preferer_option="Take 4 indirect"),
+    # ======================================================================================================== PARTIE REELLE : scenario Shadows in the Night + modulaires Ninja Swarm et Black Flower
+    # Scenario d'essai `sl_essai_ninja_black_flower` (data/scenarios) : `shadows_in_the_night` + `modular_sets: [ninja_swarm, black_flower]`. La Creeping Corruption se pose a la main (CC), car son Setup
+# ne s'execute que pour un exemplaire du deck JOUEUR (voir DECISIONS-d.md n°10).
+    # Graine 42 = vilain Elektra (sl014a). Le deck de rencontre est vide puis rempli de traitrises inoffensives (zero icone de boost) avant les cas qui mesurent des degats ou de la menace.
+    _r("[reel] les 9 cartes Ninja Swarm et les 9 cartes Black Flower entrent dans le deck de rencontre par `modular_sets`, la Creeping Corruption (Setup, exemplaire du deck JOUEUR) n'est pas dans le deck de rencontre",
+       "chargement des sets data/encounter_sets/ninja_swarm.json et black_flower.json",
+       [], [], {"dans_deck_rencontre": ["sl028", "sl029", "sl030", "sl031", "sl032", "sl033", "sl034", "sl035", "sl036", "sl073", "sl074", "sl075", "sl076", "sl077", "sl078"], "hors_jeu": ["sl072a", "sl072b"]}, forme_heros=False, deck_reel=True),
+    _r("[reel] Teamwork en chaine : Kirigi seul (aucune activation), Bo Staff arrive (Kirigi present) -> s'active (ATQ 1 + 1 = 2 degats), Fukiya arrive -> s'active (2 degats) : 4 au total, pas de double activation (Kirigi, ATQ 2 + 1, ajouterait 3)",
+       "regle de jeu reelle v16 : seul le sbire qui ARRIVE s'active ; la position des deux cartes sl003a/sl004a est identique au depart : +1 ATQ a chaque personnage",
+       ["Puzzle.Exhaust('01001a')", "Puzzle.PutIntoPlay('sl029')"], ["Puzzle.PutIntoPlay('sl030')", "Puzzle.PutIntoPlay('sl031')"], {"en_jeu": ["sl029", "sl030", "sl031"], "degats_identite": 4}),
+    _r("[reel] Black Mountain, Kirigi et Bo Staff engages : Kirigi (NINJA, autre que Black Mountain) ne peut pas etre attaque, Black Mountain si",
+       "Black Mountain en partie reelle, avec Teamwork des deux autres",
+       ["Puzzle.Exhaust('01001a')", "Puzzle.PutIntoPlay('sl028')", "Puzzle.PutIntoPlay('sl029')", "Puzzle.PutIntoPlay('sl030')"], ["Puzzle.Attack('01001a')"], {"degats": [["sl029", 0], ["sl030", 0], ["sl028", 0]]}, cibles=["sl029"]),
+    _r("[reel] la Creeping Corruption posee : Aka (Quickstrike) entre en jeu (Quickstrike) -> Interruption, 1 compteur et attaque annulee",
+       "Creeping Corruption du Setup + Aka (Black Flower) en partie reelle",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.PutIntoPlay('sl073')"], {"compteurs": [["sl072a", "corruption", 1]], "degats_identite": 0}),
+    _r("[reel] Malediction (alter-ego, refus) : Elektra manigance avec +2 SCH -> 2 de depart + 3 = 5 menaces sur le complot",
+       "« If you do not, the villain schemes with +2 SCH » dans le vrai scenario",
+       [CC], ["Puzzle.Reveal('sl077')"], {"menace": [["sl001b", 5]], "compteurs": [["sl072a", "corruption", 0]]}, forme_heros=False, choisir_option="Cancel"),
 ]
 
 
