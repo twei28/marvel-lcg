@@ -239,6 +239,20 @@ function mechantsDe(sc) {
  *  la vignette PARTAGÉE entre ses méchants (deux moitiés, quatre quarts), pour
  *  qu'on voie d'un coup d'oeil que c'est un scénario à plusieurs (Wrecking
  *  Crew). Demande de l'utilisateur, 7 septembre 2026. */
+/** Tuile d'un scenario a vilain INTERCHANGEABLE (Fear No Evil) : l'image du SCENARIO (sa manigance), jamais le dernier vilain
+ *  choisi sur l'appareil (22/10/2026, signalement de Yarro : « les images des scenarios ne sont pas les bonnes »). La manigance est
+ *  une carte paysage, livree redressee en portrait : on la remet a plat dans la tuile (voir .portrait-manigance, prepare.css). */
+function portraitManigance(sc, cls) {
+    // Face B de la manigance (l'illustration pleine) quand elle existe ; la face A n'est que du texte de mise en place.
+    const faces = String(((sc.schemes || [])[0]) || sc.tileImage || "").split(",");
+    // ...mais seulement si elle porte le NOM du scenario (Protection Racket : sa face B s'appelle « Battle in the Bodega »).
+    const nom = String(sc.name || "").trim().toLowerCase();
+    const memeNom = (c) => { const k = cards.get(c); return !!k && String(k.name || "").replace(/^\*\s*/, "").trim().toLowerCase() === nom; };
+    const id = [...faces].reverse().find(memeNom) || faces[0];
+    return el("div", { class: "portrait portrait-manigance " + (cls || "") },
+        el("img", { src: cardImageUrlEn(id), alt: "" }));
+}
+
 function portraitScenario(sc, cls) {
     const ids = mechantsDe(sc);
     if (ids.length < 2) {
@@ -5775,7 +5789,7 @@ async function loadScnGrid() {
             onmouseenter: estTel() ? undefined : () => rendreSceneMechant(concret),
             onmouseleave: estTel() ? undefined : () => rendreSceneMechant(state.scenario),
         },
-            portraitScenario(concret),
+            plusieurs ? portraitManigance(concret) : portraitScenario(concret),
             el("span", { class: "tb-port-nom" }, nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
             plusieurs ? el("span", { class: "st-exp" }, sc.underlings.length + " " + t("vilains au choix")) : null,
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
