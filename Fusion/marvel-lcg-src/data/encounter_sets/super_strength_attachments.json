@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Super Strength (attachments only)",
+    "encounters": [
+        "40155",
+        "40156",
+        "40157"
+    ]
+}

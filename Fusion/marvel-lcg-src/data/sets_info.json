@@ -1925,6 +1925,10 @@
    "the_big_apple",
    "the_big_apple_uptown",
    "kingsfall",
+   "rise_of_the_machines",
+   "secret_agent",
+   "its_a_trap",
+   "angry_birds",
    "punishment_hobgoblin",
    "punishment_jigsaw",
    "tracking_the_buyer_art_museum_heist_hobgoblin",
@@ -1952,9 +1956,10 @@
    "locations_the_big_apple",
    "capos",
    "leads_the_big_apple",
-   "uptown_expansion"
+   "uptown_expansion",
+   "super_strength_attachments"
   ],
-  "max_id": "pu151"
+  "max_id": "pu282"
  },
  "checksum": "9dd847d2d0b2542353d3534a2e13348821bb34d4ecb4e590dd85db44eab4b3f3"
 }

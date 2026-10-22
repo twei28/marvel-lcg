@@ -66094,6 +66094,10 @@ def executer_un_cas(game_dir, port, index):
         scene.campaign.campaign_log |= {str(k): str(v) for k, v in (cas.get("carnet") or {}).items()}
         if "mode_campaign" not in scene.rules:
             scene.rules.append("mode_campaign")
+    # `defis` (22/10/2026, defis MC×DC 2026 p279-p282) : les cartes `Challenge` a mettre en jeu, comme `launcher.js` (`challenges: raw.challenges`) les passe
+    # a `game_session` : sans cette cle le harnais montait les scenarios de defi SANS leur carte de regles speciales.
+    if cas.get("defis"):
+        scene.campaign.SetChallenge(*cas["defis"])
     remplir_les_decks_vides(scene)
     # `deck_ajoute` (17/10/2026, pack TMNT Shinobi) : card_id ajoutes au `player_deck` du joueur 1 AVANT la mise
     # en place, comme le ferait le constructeur de deck. Sert a prouver qu'un PATH choisi au deck-building

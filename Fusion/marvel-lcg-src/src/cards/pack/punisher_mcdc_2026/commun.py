@@ -45,3 +45,19 @@ def TousLesJoueurs(effect: 'Effect') -> 'List[Player]':
     """TOUS les joueurs, quelle que soit leur zone (`Worlds.GetPlayers` filtre par la zone de la carte qui resout : un complot de la zone commune
     n'y voit AUCUN joueur)."""
     return [j for j in effect.world.const_players if j.area_hero.GetSize() > 0]
+
+# Les 4 defis MC×DC 2026 (p279-p282). ⚠ Le dossier porte le nom du set nettoye (`Punisher Challenges`).
+# Aide commune aux defis 1 a 3 : « When the villain stage advances, advance the main scheme to 2A. » (modele : pack challenges/2412_wrath_of_the_mad_titan,
+# qui avance le complot a 2A a la mise en place ; ici le declencheur est `AfterVillainAdvanced`).
+
+
+def ComplotEn2A() -> 'Ability':
+    def avancer(effect: 'Effect', message: 'Message.AfterVillainAdvanced') -> None:
+        # Seulement si un stade 2 attend encore dans la pile des complots (un complot deja au stade 2 ne bouge plus : le moteur l'exige).
+        if effect.world.main_schemes_deck.FindCard(CardFinder(stage=2), card_type=MainScheme) is None:
+            return
+        for complot in Worlds.GetAllMainSchemes(effect):
+            complot.Advance("2A", effect)
+            return
+
+    return Ability(AbilityType.Challenge, Message.AfterVillainAdvanced, [], avancer)

@@ -809,3 +809,32 @@ UPTOWN_CARDS = [
 ]
 UPTOWN_LOCATIONS_SET_ASIDE = ["pu023", "pu024", "pu025"]
 UPTOWN_LEADS_SET_ASIDE = ["pu026", "pu027", "pu028"]
+
+
+# ======================================================================================================
+# Les 4 defis MC×DC 2026 (PU-11, 22/10/2026) : cartes `Challenge` p279-p282 (IDs imprimes 6140, 6140, 6141, 6141 : doublons, donc card_id = page).
+# Chaque defi est un scenario (data/scenarios/<defi>*.json, cle `challenges`) ; la carte porte les REGLES SPECIALES imprimees.
+# ======================================================================================================
+PU_DEFI = "Punisher Challenges"
+DEFI_CARDS = [
+    c("pu279", "Challenge", "Rise of the Machines", {}, [],
+      "Villain: Vision (Synthezoid Smackdown). Main schemes: Rallying Call, Neighborhood Protectors (Civil War). Modular sets: Sentinels, Future Past, "
+      "Doomsday Chair, Vision Nemesis, Super Strength (attachments only).\nCards with a printed [energy] deal 1 additional damage.\n"
+      "All Future Past cards lose victory 1.\nWhen the villain stage advances, advance the main scheme to 2A.", PU_DEFI,
+      subtitle="Challenge 1 - Difficulty 5 (Extreme)", page="p279 (ID 6140)"),
+    c("pu280", "Challenge", "Secret Agent", {}, [],
+      "Villain: Captain America (Civil War). Main schemes: Gathering Support, Guerilla Warfare (Civil War). Modular sets: Hydra Assault, Hydra Patrol, "
+      "Legions of Hydra, Captain America Nemesis.\nCaptain America gains the HYDRA trait.\nAll HYDRA minions gain quickstrike.\n"
+      "When the villain stage advances, advance the main scheme to 2A.", PU_DEFI,
+      subtitle="Challenge 2 - Difficulty 4 (Very Hard)", page="p280 (ID 6140)"),
+    c("pu281", "Challenge", "It's a Trap!", {}, [],
+      "Villain: En Sabah Nur (Age of Apocalypse). Modular sets: Arcade, Galactic Artifacts.\nAll encounter side schemes gain incite 1, crisis and acceleration.\n"
+      "The villain gains steady.\nWhen the villain stage advances, advance the main scheme to 2A.", PU_DEFI,
+      subtitle="Challenge 3 - Difficulty 3 (Hard)", page="p281 (ID 6141)"),
+    c("pu282", "Challenge", "Angry Birds", {}, [],
+      "Villain: Tower Defense (Mad Titan's Shadow). Red Birds: Angel, Falcon, Nova, Rogue, Spectrum, Wonder Man. Blue Birds: Captain Marvel, Doctor Strange, "
+      "Magneto, Phoenix, Rocket, Star Lord, Storm, Thor, Valkyrie, Vision, War Machine, Wasp. Blue birds begin the game with their AERIAL upgrade in play, "
+      "but -2 hand size for their opening hand.\nOnly AERIAL and identity specific allies.\nAll allies gain: \"<b>Action</b>: Discard this ally -> deal 1 damage "
+      "to Avenger's Tower and 4 damage to the villain.\"", PU_DEFI,
+      subtitle="Challenge 4 - Difficulty 1 (Easy)", page="p282 (ID 6141)"),
+]

@@ -20,7 +20,7 @@ PAGE = {'pu071a': 141, 'pu071b': 142, 'pu072a': 143, 'pu072b': 144, 'pu073': 145
         'pu106a': 211, 'pu106b': 212, 'pu107': 213, 'pu108': 215, 'pu109': 217, 'pu110': 219, 'pu111': 221, 'pu113': 225,
         'pu119': 237, 'pu120': 239, 'pu121': 241, 'pu123': 245,
         'pu114': 227, 'pu115': 229, 'pu116': 231, 'pu117': 233, 'pu118': 235, 'pu125': 249, 'pu126': 251, 'pu127': 253,
-        'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277, 'pu140': 263, 'pu141': 264, 'pu142': 265, 'pu143': 266, 'pu144': 267, 'pu145': 268, 'pu146': 275, 'pu023': 45, 'pu024': 47, 'pu025': 49, 'pu026': 51, 'pu027': 53, 'pu028': 55, 'pu147': 269, 'pu148': 270, 'pu149a': 271, 'pu149b': 272, 'pu151': 273,
+        'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277, 'pu140': 263, 'pu141': 264, 'pu142': 265, 'pu143': 266, 'pu144': 267, 'pu145': 268, 'pu146': 275, 'pu023': 45, 'pu024': 47, 'pu025': 49, 'pu026': 51, 'pu027': 53, 'pu028': 55, 'pu147': 269, 'pu148': 270, 'pu149a': 271, 'pu149b': 272, 'pu151': 273, 'pu279': 279, 'pu280': 280, 'pu281': 281, 'pu282': 282,
         'pu048a': 95, 'pu048b': 96, 'pu049a': 97, 'pu049b': 98, 'pu050a': 99, 'pu050b': 100, 'pu051a': 101, 'pu051b': 102, 'pu052a': 103, 'pu052b': 104, 'pu053a': 105, 'pu053b': 106, 'pu054a': 107, 'pu054b': 108, 'pu055a': 109, 'pu055b': 110,
         'pu001a': 1, 'pu001b': 2, 'pu002a': 3, 'pu002b': 4, 'pu003a': 5, 'pu003b': 6, 'pu004': 7, 'pu039': 77, 'pu040': 79, 'pu041': 81, 'pu042': 83, 'pu043': 85, 'pu044': 87, 'pu045': 89, 'pu046': 91, 'pu047': 93,
         'pu007': 13, 'pu008': 15, 'pu009': 17, 'pu010': 19, 'pu011': 21, 'pu012': 23, 'pu013': 25, 'pu014': 27, 'pu015': 29, 'pu016': 31, 'pu017': 33, 'pu018': 35, 'pu020': 39, 'pu021': 41, 'pu022': 43,
@@ -39,7 +39,7 @@ def stat(v):
 
 cartes = []
 CORRECTIONS = {'pu131': {'Amplify': '2'}, 'pu113': {'Hazard': '1'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
-for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS + defs.UPTOWN_CARDS:
+for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS + defs.UPTOWN_CARDS + defs.DEFI_CARDS:
     d = {k: stat(v) for k, v in x['desc'].items()}
     if x['card_id'] in STAGE: d['Stage'] = STAGE[x['card_id']]
     d.update(CORRECTIONS.get(x['card_id'], {}))
@@ -143,6 +143,25 @@ for expert in (False, True):
     ecrire('data/scenarios/kingsfall%s.json' % ('_expert' if expert else ''), s)
 noms.append('kingsfall')
 
+# --- Les 4 defis MC×DC 2026 (PU-11) : un scenario officiel deja porte + complots/sets modulaires imprimes sur la carte `Challenge` (`challenges`).
+# Super Strength « attachment only » (p279) = les 3 attachements du set (40155-40157), sans le Treachery.
+ecrire('data/encounter_sets/super_strength_attachments.json', {'version': '0.5.8', 'name': 'Super Strength (attachments only)', 'encounters': ['40155', '40156', '40157']})
+DEFIS = [  # (nom, carte, scenario de base, complots ou None, sets modulaires)
+    ('rise_of_the_machines', 'pu279', 'vision_pvp', ['56199a,56199b', '56173a,56173b'],
+     ['sentinels', 'future_past', 'the_doomsday_chair', 'vision_nemesis', 'super_strength_attachments']),
+    ('secret_agent', 'pu280', 'captain_america', None, ['hydra_assault', 'hydra_patrol', 'legions_of_hydra', 'captain_america_nemesis']),
+    ('its_a_trap', 'pu281', 'en_sabah_nur', None, ['arcade', 'galactic_artifacts']),
+    ('angry_birds', 'pu282', 'the_tower_defense', None, []),
+]
+for nom, carte, base, complots, modulaires in DEFIS:
+    for expert in (False, True):
+        s = json.load(open(os.path.join(JEU, 'data/scenarios/%s%s.json' % (base, '_expert' if expert else '')), encoding='utf-8'))
+        s['challenges'] = [carte]
+        s['modular_sets'] = list(modulaires)
+        if complots: s['schemes'] = list(complots)
+        ecrire('data/scenarios/%s%s.json' % (nom, '_expert' if expert else ''), s)
+    noms.append(nom)
+
 # --- Combats 2 et 3 de la campagne : les scenarios generes (`tracking_the_buyer_<manigance>_<sous-fifre>`, `punishment_<sous-fifre>`) doivent etre
 # dans la liste de l'extension pour que l'ecran de campagne (catalog.scenariosForExtension) les trouve ; leur choix est fait par le carnet
 # (`catalogue_selon_carnet`, public/js/campagne/catalogue-carnet.js). Les fichiers sont ecrits par ailleurs : on ne fait que les inscrire.
@@ -156,7 +175,7 @@ p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))
 cle = '208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)'
 somme = si.pop('checksum', None); si.pop(cle, None)
-si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple', 'capos', 'leads_the_big_apple', 'uptown_expansion'], 'max_id': 'pu151'}
+si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple', 'capos', 'leads_the_big_apple', 'uptown_expansion', 'super_strength_attachments'], 'max_id': 'pu282'}
 if somme: si['checksum'] = somme
 with open(p, 'w', encoding='utf-8', newline='\n') as f:
     json.dump(si, f, ensure_ascii=False, indent=1)
