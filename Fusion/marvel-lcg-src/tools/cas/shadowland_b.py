@@ -144,6 +144,9 @@ CAS = [
     _t("sl043 vaincue, deck SANS sbire ni manigance : tout le deck est defausse, rien n'est revele (regle habituelle : le deck vide est remelange avec sa defausse : 2 cartes dans le deck, sl043 en defausse)", "« until a minion or side scheme is discarded » (aucune)",
        ["Puzzle.PutIntoPlay('sl043')", "Puzzle.SetThreat('sl043', 1)", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105')"], ["Puzzle.Thwart('01001a')"],
        {"taille_deck_rencontre": 2, "taille_defausse_rencontre": 1, "hors_jeu": ["sl043"]}, cibles=["sl043"]),
+    _t("sl043 vaincue par le JOUEUR 2 (Black Panther) : c'est lui qui retire les 5 menaces et a qui le sbire trouve est REVELE (engage avec le joueur 2)", "« The defeating player removes 5 threat ... then reveal it »",
+       ["Puzzle.SetThreat('sl038b', 12)", "Puzzle.PutIntoPlay('sl043')", "Puzzle.SetThreat('sl043', 2)", "Puzzle.ChangeForm('01040b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01101', '01105')"],
+       ["Puzzle.Thwart('01040a')"], {"menace": [["sl038b", 7]], "engage_avec": [["01101", 1]], "hors_jeu": ["sl043"]}, heros2="black_panther", cibles=["sl043"]),
     _t("sl043, TEMOIN : contree sans etre vaincue (menace 3, contre de 1) : rien ne se passe", "« When Defeated » seulement",
        ["Puzzle.SetThreat('sl038b', 12)", "Puzzle.PutIntoPlay('sl043')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01108', '01105')"], ["Puzzle.Thwart('01001a')"],
        {"menace": [["sl038b", 12], ["sl043", 2]], "taille_deck_rencontre": 2}, cibles=["sl043"]),
@@ -274,6 +277,17 @@ CAS = [
     _t("sl049 en BOOST (manigance d'Elektra, alter-ego) : 1 degat a CHAQUE personnage controle : l'alter-ego ET l'allie Black Widow", "« Boost: Deal 1 damage to each character you control »",
        [AVANCE, "Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105')"], ["Puzzle.Boost('sl049')"],
        {"degats_identite": 1, "degats": [["01075", 1]]}, forme_heros=False),
+    # ------------------------------------------------------------------------------------------------------ mots-cles et icones natifs (lus dans desc ; cas de DONNEES, verts sans module)
+    _t("sl042 Dead End : Assault natif : le contre de base du heros (THW 1, ATQ 2) retire 2 menaces (2 de depart : vaincue)", "« Assault. (Basic thwarts against this scheme use ATK instead of THW.) »",
+       ["Puzzle.PutIntoPlay('sl042')"], ["Puzzle.Thwart('01001a')"], {"hors_jeu": ["sl042"]}, cibles=["sl042"]),
+    _t("sl042 Dead End porte 1 icone CRISIS", "icone imprimee (point d'exclamation)", ["Puzzle.PutIntoPlay('sl042')"], [], {"icones": [["Crisis", 1]], "icones_boost": [["sl042", 3]]}),
+    _t("sl043 Hall of Hidden Doors porte 1 icone ACCELERATION (3 menaces de depart, pas par joueur)", "icone imprimee (toit avec une croix)", ["Puzzle.PutIntoPlay('sl043')"], [],
+       {"icones": [["Acceleration", 1]], "menace": [["sl043", 3]]}),
+    _t("sl047 Iron Monk : Toughness natif (statut Tough a l'entree en jeu), 4 PV", "« Patrol. Toughness. » et PV 4", ["Puzzle.PutIntoPlay('sl047')"], [], {"statuts": [["sl047", "Tough"]], "pv_max": [["sl047", 4]]}),
+    _t("sl047 Iron Monk : Patrol natif : engage, il interdit au heros de contrer le complot principal (25 reste 25)", "« Patrol »", ["Puzzle.PutIntoPlay('sl047')"], ["Puzzle.Thwart('01001a')"], {"menace": [["sl038b", 25]]}),
+    _t("sl041 Lord Deathstrike : Patrol natif, 5 PV", "« Patrol. »", ["Puzzle.PutIntoPlay('sl041')"], ["Puzzle.Thwart('01001a')"], {"menace": [["sl038b", 25]], "pv_max": [["sl041", 5]]}),
+    _t("sl048 Hall of Punishment porte 1 icone CRISIS (2 menaces de depart par joueur)", "icone imprimee", ["Puzzle.PutIntoPlay('sl048')"], [], {"icones": [["Crisis", 1]], "menace": [["sl048", 2]]}),
+    _t("sl049 Path of a Thousand Cuts : 5 menaces de depart (fixe)", "pas de menace par joueur", ["Puzzle.PutIntoPlay('sl049')"], [], {"menace": [["sl049", 5]]}, heros2="spider_man"),
 ]
 
 
@@ -283,7 +297,7 @@ def slb_etat(monde, aides):
     `dans_paquet_piege` / `dans_defausse_piege` : [card_id] presents ; `n_dans_paquet_piege` : [[card_id, n]] ; `dessus_paquet_piege` : card_id du sommet ;
     `taille_deck_rencontre` / `taille_defausse_rencontre` ; `vilains` : card_id des vilains EN JEU (liste exacte) ; `gagnee` / `perdue` : fin de partie ;
     `face_visible` : [[prefixe, card_id]] ; `vilain_choisi_de_cote` : le vilain Dark Protege tire est de cote, ses cartes liees (et elles seules) sont dans le deck ;
-    `sosie` : le vilain traite comme un sbire (Whisper in the Dark) ; `aucun_sosie` ; `pas_de_carte_generique_en_defausse`."""
+    `sosie` : le vilain traite comme un sbire (Whisper in the Dark) ; `aucun_sosie` ; `pas_de_carte_generique_en_defausse` ; `engage_avec` : [[card_id, rang du joueur]]."""
     import re as _re
     from game.operate.worlds import Worlds as _W
     cas = aides["cas"]
@@ -388,6 +402,12 @@ def slb_etat(monde, aides):
             if not deck: soucis.append(f"aucune carte liee a {nom} dans le deck de rencontre")
     sosies = [o.face for o in monde.object_manager.card_dict.values()
               if getattr(getattr(o, "face", None), "sl_sosie_du_vilain", False) and o.face.IsInPlay()]
+    for card_id, rang in attendu.get("engage_avec") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (engage_avec)")
+        elif face.GetEngagedPlayer() is not monde.const_players[rang]:
+            soucis.append(f"{card_id} engage avec {face.GetEngagedPlayer()} (attendu le joueur {rang})")
     if attendu.get("aucun_sosie") and sosies:
         soucis.append(f"un sosie du vilain est encore en jeu : {[s.name for s in sosies]}")
     voulu = attendu.get("sosie")
@@ -417,7 +437,7 @@ def slb_etat(monde, aides):
                 soucis.append(f"ATQ du sosie {s.attack} (attendu {voulu['attaque']})")
     reste = {k: v for k, v in attendu.items() if k not in (
         "dans_paquet_piege", "dans_defausse_piege", "n_dans_paquet_piege", "dessus_paquet_piege", "taille_deck_rencontre", "taille_defausse_rencontre",
-        "pas_de_carte_generique_en_defausse", "vilains", "gagnee", "perdue", "pas_finie", "face_visible", "vilain_choisi_de_cote", "aucun_sosie", "sosie")}
+        "pas_de_carte_generique_en_defausse", "vilains", "gagnee", "perdue", "pas_finie", "face_visible", "vilain_choisi_de_cote", "aucun_sosie", "sosie", "engage_avec")}
     cas["attendu"] = reste
     try:
         ok, msg = etat_attendu(monde, aides)
