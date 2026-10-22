@@ -696,3 +696,25 @@ CAPO_SET_ASIDE = ["pu048a", "pu049a", "pu050a", "pu051a", "pu052a", "pu053a", "p
 # ======================================================================================================
 ALL_CARDS = JIGSAW_CARDS + HOBGOBLIN_CARDS + ARMORY_CARDS + SYNDICATE_CARDS + CAPO_OF_THE_PAST_CARDS + HITLIST_CARDS + SWAT_CARDS + PUNISHMENT_CARDS + BIGAPPLE_CARDS + LOCATION_CARDS + CAPO_CARDS + LEAD_CARDS + BIGAPPLE_ENCOUNTER_CARDS
 assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id en double dans ce fichier"
+
+
+# ======================================================================================================
+# Cartes de CAMPAGNE (22/10/2026) : combat 1 « Big Apple Gang War! » (environnement, ID 6132) et sa recompense « Seized Tech Crates »
+# (amelioration, ID 6132 aussi : « Campaign Reward 1 »). Les deux portent le MEME ID imprime : la convention « pu + 3 derniers chiffres »
+# les ferait se heurter, d'ou pu140 / pu141 (au-dela de pu139). Releve cartes.md p263-p264, relu sur les scans le 22/10/2026 (conforme).
+# ======================================================================================================
+PU_CAMP = "Campaign - The City Never Sleeps"
+CAMPAIGN_CARDS = [
+    c("pu140", "Environment", "Big Apple Gang War!", {}, [],
+      "<b>Battle Setup</b>:\n\u2022 Scenario: The Big Apple\n\u2022 Do not include Uptown Expansion\n\u2022 Each player requires a player token\n"
+      "\u2022 Use Cops & Tracksuit Mafia sets (FNE)\nSetup. Permanent.\n<b>Victory</b>: Flip this card and put Seized Tech Crates into play for "
+      "battles 2 and 3.", PU_CAMP, page="p263 (Campaign Battle 1, ID 6132)",
+      subtitle="Crates of military-grade weapons slipped through the abandoned docks under cover of darkness, arming gangs that carved the city "
+               "into bloody little kingdoms by sunrise."),
+    c("pu141", "Upgrade", "Seized Tech Crates", {"Permanent": "1"}, [],
+      "Permanent.\n<b>Setup</b>: Place 1 counter here, plus 1 more for each player who did not play the last game together.\n"
+      "<b>Action</b>: Remove 1 counter \u2192 choose <i>(any player may trigger this ability, limit once per player per round)</i>:\n"
+      "\u2022 Reduce the cost of the next card you play this phase by 1.\n"
+      "\u2022 Find a support or upgrade with a cost of 2 or less and add it to your hand.", PU_CAMP,
+      page="p264 (Campaign Reward 1, ID 6132)"),
+]

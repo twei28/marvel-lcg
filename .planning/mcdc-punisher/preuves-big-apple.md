@@ -132,5 +132,11 @@ Cartes terminees : OUI (script), hors points ci-dessus.
 - Regression : [gang] 27, [lieu] 41, [renc] 23, [big] 55, [ville] 15, [pist] 29, [capo] 30, [pun] 32, [jig] 31, [hob] 30 verts ; `test_cards` 7150 ok, 0 erreur.
 - RESTE pour le scenario 1 : interface « La Ville » (PU-8), instructions de CAMPAGNE (environnement « Guerre des Gangs a Big Apple ! », lieu de la derniere piste, Trafiquant d'armes, recompense, PV en experte : PU-9), effets « en jeu » autres que Collaboration vis-a-vis des sbires attaches.
 
+### Campagne, combat 1 : donnees des cartes (22/10/2026)
+- pu140 Big Apple Gang War! (environnement, p263) et pu141 Seized Tech Crates (amelioration, p264) ajoutees aux definitions et a `cards.json` (136 cartes), images `pu140/pu141.jpg`, `max_id` pu141, checksums recalcules. Les deux scans relus : texte conforme a `cartes.md`.
+- ID imprime 6132 COMMUN aux deux cartes : la convention « pu + 3 derniers chiffres » les ferait se heurter, d'ou pu140 / pu141.
+- Etat : DONNEES SEULEMENT, aucun script, aucun cas (etapes 2 a 8 de PROCESSUS-CARTE a faire). `test_cards` : 7150 ok, 0 erreur.
+- A faire : fichier `data/campagnes/` + module `campaign.py` (modele `web_of_deceit`, 45 lignes), mise en place (Gang War en jeu, jeton de joueur, sets Cops et Tracksuit Mafia), releve de fin de partie (lieu de la derniere piste, Trafiquant d'armes, PV en expert), victoire (retourner l'environnement, Seized Tech Crates pour les combats 2 et 3).
+
 ## Bilan (22/10/2026)
 11 cartes de lieu/environnement faites : 55 cas `[big]` verts, 15 `[ville]` verts, `test_cards` : 7103 ok, 0 erreur. Non fait : autoplay ciblé (étape 8, il faut le scénario jouable) et plateau (étape 8 bis, PU-8).

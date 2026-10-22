@@ -123888,7 +123888,31 @@
    "set_name": "The Big Apple",
    "text": "Hinder 2👤. Allies enter play exhausted.\n<b>When Revealed</b>: Find and reveal Screwball. Attach her to an unoccupied location, if able.\n[star] <b>Boost</b>: Reveal this card.",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu140",
+   "type": "Environment",
+   "name": "Big Apple Gang War!",
+   "subtitle": "Crates of military-grade weapons slipped through the abandoned docks under cover of darkness, arming gangs that carved the city into bloody little kingdoms by sunrise.",
+   "desc": {},
+   "traits": [],
+   "set_name": "Campaign - The City Never Sleeps",
+   "text": "<b>Battle Setup</b>:\n• Scenario: The Big Apple\n• Do not include Uptown Expansion\n• Each player requires a player token\n• Use Cops & Tracksuit Mafia sets (FNE)\nSetup. Permanent.\n<b>Victory</b>: Flip this card and put Seized Tech Crates into play for battles 2 and 3.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu141",
+   "type": "Upgrade",
+   "name": "Seized Tech Crates",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Campaign - The City Never Sleeps",
+   "text": "Permanent.\n<b>Setup</b>: Place 1 counter here, plus 1 more for each player who did not play the last game together.\n<b>Action</b>: Remove 1 counter → choose <i>(any player may trigger this ability, limit once per player per round)</i>:\n• Reduce the cost of the next card you play this phase by 1.\n• Find a support or upgrade with a cost of 2 or less and add it to your hand.",
+   "custom": "MC×DC 2026"
   }
  ],
- "checksum": "2b9a006a9dd31d56532431504c2d8f296f5597df0b96d7281ec25559f1adb8aa"
+ "checksum": "61fdca5124e2ef3ac511275065d8d3859e2f1f2edd63bd2b729abc6d2a6000b7"
 }
