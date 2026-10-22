@@ -169,6 +169,111 @@ CAS = [
        {"paquet_pieges": 3, "defausse_pieges": 0, "taille_deck_rencontre": 1}),
     _t("sl045 : paquet piege vide ET defausse vide : rien n'est revele (le deck de rencontre perd tout de meme ses 3 cartes dans le paquet)", "pas de plantage sur un paquet vide",
        [*sans_pieges(*TOUS_LES_PIEGES), "Puzzle.EmptyEncounterDeck()"], ["Puzzle.Reveal('sl045')"], {"paquet_pieges": 0, "defausse_pieges": 0}),
+    # ------------------------------------------------------------------------------------------------------ les 7 pieges de Deadly Contraptions : Avoid / Disarm / Trip
+    # sl050 Blinding Powder
+    _t("sl050 Avoid : defausse un evenement THWART de la main (Emergency) : aucun degat, l'autre carte reste, le piege va en defausse piege", "« Avoid — Discard a THWART event from your hand »",
+       [], ["Puzzle.Reveal('sl050')"], {"defausse": ["01085"], "degats_identite": 0, "en_main": ["01088"], "dans_defausse_piege": ["sl050"]}, main_exclusive=["01085", "01088"], preferer_option="Avoid"),
+    _t("sl050 Disarm : 2 cartes au hasard de la main (les 2) puis un statut Tough a un personnage controle", "« Disarm — Discard 2 cards at random from your hand, then give a character you control a tough status card »",
+       [], ["Puzzle.Reveal('sl050')"], {"defausse": ["01088", "01089"], "taille_main": 0, "statuts": [["01001a", "Tough"]], "degats_identite": 0}, main_exclusive=["01088", "01089"], preferer_option="Disarm"),
+    _t("sl050 Trip (seule option : pas d'evenement THWART, main d'une carte) : 2 degats a l'identite, confuse", "« Trip — Deal 2 damage to your identity and confuse it »",
+       [], ["Puzzle.Reveal('sl050')"], {"degats_identite": 2, "statuts": [["01001a", "Confused"]], "en_main": ["01088"]}),
+    _t("sl050, TEMOIN : un evenement DEFENSE (Backflip) n'est PAS un evenement THWART : Avoid n'est pas offerte, Trip a lieu et la carte reste en main", "Avoid ne vaut que pour un evenement THWART",
+       [], ["Puzzle.Reveal('sl050')"], {"degats_identite": 2, "en_main": ["01003"]}, main_exclusive=["01003"]),
+    # sl051 Caltrops
+    _t("sl051 Avoid : defausse un evenement DEFENSE de la main (Backflip) : aucun degat", "« Avoid — Discard a DEFENSE event from your hand »",
+       [], ["Puzzle.Reveal('sl051')"], {"defausse": ["01003"], "degats_identite": 0}, main_exclusive=["01003"], preferer_option="Avoid"),
+    _t("sl051 Disarm : defausse 1 carte specifique au heros de la main (Backflip) puis 2 degats a un ennemi (Hydra Mercenary, 3 PV)", "« Disarm — Discard 1 identity-specific card from your hand, then deal 2 damage to an enemy »",
+       ["Puzzle.PutIntoPlay('01101')"], ["Puzzle.Reveal('sl051')"], {"defausse": ["01003"], "degats": [["01101", 2]], "degats_identite": 0}, main_exclusive=["01003"], preferer_option="Disarm", cibles=["01101"]),
+    _t("sl051 Disarm sans carte specifique au heros (main : Energy, carte de base) : pas offerte, Trip : 2 degats et etourdi", "« identity-specific » : une carte de base ne convient pas",
+       ["Puzzle.PutIntoPlay('01101')"], ["Puzzle.Reveal('sl051')"], {"degats_identite": 2, "statuts": [["01001a", "Stunned"]], "degats": [["01101", 0]], "en_main": ["01088"]}, preferer_option="Disarm"),
+    # sl052 Flame Spout
+    _t("sl052 Avoid : defausse un allie de la main (Mockingbird)", "« Avoid — Discard an ally from your hand »",
+       [], ["Puzzle.Reveal('sl052')"], {"defausse": ["01083"], "degats_identite": 0, "en_main": ["01088"]}, main_exclusive=["01083", "01088"], preferer_option="Avoid"),
+    _t("sl052 Disarm : defausse un allie EN JEU (Black Widow) puis pioche 2 cartes (main 1 -> 3)", "« Disarm — Discard an ally you control, then draw 2 cards »",
+       [*DECK10, "Puzzle.PutIntoPlay('01075', under_control=True)"], ["Puzzle.Reveal('sl052')"], {"defausse": ["01075"], "taille_main": 3, "degats_identite": 0}, preferer_option="Disarm"),
+    _t("sl052 Trip : 3 degats a l'identite puis les 3 cartes du dessus du deck defaussees (deck 10 -> 7)", "« Trip — Deal 3 damage to your identity. Discard the top 3 cards of your deck »",
+       DECK10, ["Puzzle.Reveal('sl052')"], {"degats_identite": 3, "taille_deck_joueur": 7}),
+    # sl053 Oil Slick
+    _t("sl053 Avoid : defausse une amelioration de la main (Web-Shooter)", "« Avoid — Discard an upgrade from your hand »",
+       [], ["Puzzle.Reveal('sl053')"], {"defausse": ["01008"], "degats_identite": 0}, main_exclusive=["01008"], preferer_option="Avoid"),
+    _t("sl053 Disarm : defausse une amelioration EN JEU (Web-Shooter) puis retire 4 menaces du complot principal (10 -> 6)", "« Disarm — Discard an upgrade you control, then remove 4 threat from the main scheme »",
+       ["Puzzle.SetThreat('sl038b', 10)", "Puzzle.Attach('01008', '01001a')"], ["Puzzle.Reveal('sl053')"], {"defausse": ["01008"], "menace": [["sl038b", 6]]}, preferer_option="Disarm"),
+    _t("sl053 Trip : 1 carte de la main defaussee puis 8 cartes du dessus du deck (main 2 -> 1, deck 10 -> 2)", "« Trip — Discard 1 card from your hand. Discard the top 8 cards of your deck »",
+       DECK10, ["Puzzle.Reveal('sl053')"], {"taille_main": 1, "taille_deck_joueur": 2, "degats_identite": 0}, main_exclusive=["01088", "01089"]),
+    # sl054 Poison Darts
+    _t("sl054 Avoid : depenser [energy][energy] (Energy 01088) : aucun degat", "« Avoid — Spend [energy][energy] resources »",
+       [], ["Puzzle.Reveal('sl054')"], {"defausse": ["01088"], "degats_identite": 0}, preferer_option="Avoid"),
+    _t("sl054 Disarm : depenser [mental][mental][physical] (Genius + Strength) puis 3 degats au VILAIN : Shifting Corridors les convertit en 3 menaces retirees (25 -> 22)", "« Disarm — Spend [mental][mental][physical] resources, then deal 3 damage to the villain »",
+       [], ["Puzzle.Reveal('sl054')"], {"defausse": ["01089", "01090"], "menace": [["sl038b", 22]], "degats_identite": 0}, main_exclusive=["01089", "01090"], preferer_option="Disarm"),
+    _t("sl054 Disarm apres le stade 2 : 3 degats au vilain Elektra", "« deal 3 damage to the villain »",
+       [AVANCE], ["Puzzle.Reveal('sl054')"], {"degats": [["sl014a", 3]], "defausse": ["01089", "01090"]}, main_exclusive=["01089", "01090"], preferer_option="Disarm"),
+    _t("sl054 Trip (main : Genius seul, ni YY ni BBR) : 3 degats a l'identite et epuisee", "« Trip — Deal 3 damage to your identity and exhaust it »",
+       [], ["Puzzle.Reveal('sl054')"], {"degats_identite": 3, "exhausted": ["01001a"], "en_main": ["01089"]}, main_exclusive=["01089"]),
+    # sl055 Pressure Plate
+    _t("sl055 Avoid : depenser [mental][mental] (Genius)", "« Avoid — Spend [mental][mental] resources »",
+       [], ["Puzzle.Reveal('sl055')"], {"defausse": ["01089"], "degats_identite": 0}, main_exclusive=["01089"], preferer_option="Avoid"),
+    _t("sl055 Disarm : depenser [energy][physical][physical] (Energy + Strength) puis chercher dans les 4 cartes du dessus du deck : 1 carte en main, deck 10 -> 9", "« Disarm — Spend ..., then search the top 4 cards of your deck for a card and add it to your hand »",
+       DECK10, ["Puzzle.Reveal('sl055')"], {"defausse": ["01088", "01090"], "taille_main": 1, "taille_deck_joueur": 9, "degats_identite": 0}, main_exclusive=["01088", "01090"], preferer_option="Disarm"),
+    _t("sl055 Trip : le deck de rencontre est defausse jusqu'au premier SBIRE (Hydra Mercenary), qui est revele ; la carte avant lui est defaussee", "« Trip — Discard cards from the top of the encounter deck until a minion is discarded, then reveal it »",
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01101', '01105')"], ["Puzzle.Reveal('sl055')"],
+       {"en_jeu": ["01101"], "defausse_rencontre": ["01105"], "taille_deck_rencontre": 1, "degats_identite": 0}),
+    # sl056 Tripwire
+    _t("sl056 Avoid : defausse un evenement ATTACK de la main (Haymaker)", "« Avoid — Discard an ATTACK event from your hand »",
+       [], ["Puzzle.Reveal('sl056')"], {"defausse": ["01087"], "degats_identite": 0}, main_exclusive=["01087"], preferer_option="Avoid"),
+    _t("sl056 Disarm : defausse un soutien EN JEU (Aunt May) puis retire 3 menaces d'une manigance (le complot principal : 10 -> 7)", "« Disarm — Discard a support you control, then remove 3 threat from a scheme »",
+       ["Puzzle.SetThreat('sl038b', 10)", "Puzzle.PutIntoPlay('01006', under_control=True)"], ["Puzzle.Reveal('sl056')"], {"defausse": ["01006"], "menace": [["sl038b", 7]]}, preferer_option="Disarm"),
+    _t("sl056 Trip : le deck de rencontre est defausse jusqu'a la premiere manigance ANNEXE (Crowd Control), revelee", "« Trip — Discard cards from the top of the encounter deck until a side scheme is discarded, then reveal it »",
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01108', '01105')"], ["Puzzle.Reveal('sl056')"],
+       {"en_jeu": ["01108"], "defausse_rencontre": ["01105"], "taille_deck_rencontre": 1}),
+    # ------------------------------------------------------------------------------------------------------ sl046 : Nervous Jitters
+    _t("sl046 Revele : s'attache a l'IDENTITE du joueur", "« Attach to your identity »", [], ["Puzzle.Reveal('sl046')"], {"hotes": [["sl046", "01001a"]]}),
+    _t("sl046 : Avoid sur Poison Darts, type nomme « Minion » mais la carte defaussee est une TRAITRISE : 4 degats indirects et Jitters est defausse (+ l'Avoid se resout : Energy depensee)",
+       "« If the card discarded this way was not of the named type, take 4 indirect damage and discard this attachment »",
+       ["Puzzle.Reveal('sl046')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105')"], ["Puzzle.Reveal('sl054')"],
+       {"degats_identite": 4, "hors_jeu": ["sl046"], "defausse": ["01088"], "taille_deck_rencontre": 1}, preferer_option=["Avoid", "Minion"]),
+    _t("sl046 : Avoid, type nomme « Minion » ET la carte defaussee est un SBIRE (Hydra Mercenary) : aucun degat, Jitters reste attache", "meme type = rien",
+       ["Puzzle.Reveal('sl046')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01101')"], ["Puzzle.Reveal('sl054')"],
+       {"degats_identite": 0, "hotes": [["sl046", "01001a"]], "defausse": ["01088"], "defausse_rencontre": ["01101"]}, preferer_option=["Avoid", "Minion"]),
+    _t("sl046 : Disarm AUSSI declenche Jitters (Poison Darts Disarm : 3 degats au vilain = 3 menaces en moins ; type rate : 4 degats indirects)", "« the 'Avoid' effect or the 'Disarm' effect »",
+       ["Puzzle.Reveal('sl046')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105')"], ["Puzzle.Reveal('sl054')"],
+       {"degats_identite": 4, "hors_jeu": ["sl046"], "menace": [["sl038b", 22]], "defausse": ["01089", "01090"]}, main_exclusive=["01089", "01090"], preferer_option=["Disarm", "Minion"]),
+    _t("sl046, TEMOIN : Trip ne declenche PAS Jitters (3 degats seulement, deck de rencontre intact, Jitters reste)", "« Avoid or Disarm » seulement",
+       ["Puzzle.Reveal('sl046')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105')"], ["Puzzle.Reveal('sl054')"],
+       {"degats_identite": 3, "hotes": [["sl046", "01001a"]], "taille_deck_rencontre": 1}, main_exclusive=["01089"]),
+    _t("sl046 : Jitters porte par le joueur 1 ne reagit PAS au choix du joueur 2 (2 joueurs : le piege est revele au joueur 2, Avoid, type rate : le joueur 1 ne perd rien)", "« When YOU choose » : le porteur",
+       ["Puzzle.Reveal('sl046')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105')"], ["Puzzle.Reveal('sl054', by='01040a')"],
+       {"degats_identite": 0, "hotes": [["sl046", "01001a"]], "taille_deck_rencontre": 1}, heros2="black_panther", main_exclusive=["01088"], forme_heros=True),
+    # ------------------------------------------------------------------------------------------------------ sl047 : Iron Monk
+    _t("sl047 engage avec le joueur : l'Avoid est INTERDITE (Blinding Powder, main : Emergency) : Trip, 2 degats, la carte reste en main", "« While Iron Monk is engaged with you, you cannot choose the 'Avoid' effect on TRAP! cards »",
+       ["Puzzle.PutIntoPlay('sl047')"], ["Puzzle.Reveal('sl050')"], {"degats_identite": 2, "en_main": ["01085"]}, main_exclusive=["01085"], preferer_option="Avoid"),
+    _t("sl047, TEMOIN : sans Iron Monk, la meme main permet l'Avoid (Emergency defaussee, aucun degat)", "la carte seule interdit l'Avoid",
+       [], ["Puzzle.Reveal('sl050')"], {"degats_identite": 0, "defausse": ["01085"]}, main_exclusive=["01085"], preferer_option="Avoid"),
+    _t("sl047, TEMOIN : Disarm reste permis sous Iron Monk (Poison Darts : 3 degats au vilain = 3 menaces en moins)", "seule l'option Avoid est interdite",
+       ["Puzzle.PutIntoPlay('sl047')"], ["Puzzle.Reveal('sl054')"], {"menace": [["sl038b", 22]], "defausse": ["01089", "01090"], "degats_identite": 0}, main_exclusive=["01089", "01090"], preferer_option="Disarm"),
+    _t("sl047, TEMOIN : sous Iron Monk, Trip reste permis (Poison Darts, main : Genius : 3 degats et epuise)", "Trip n'est pas interdit",
+       ["Puzzle.PutIntoPlay('sl047')"], ["Puzzle.Reveal('sl054')"], {"degats_identite": 3, "exhausted": ["01001a"]}, main_exclusive=["01089"]),
+    _t("sl047 engage avec le JOUEUR 2 seulement : le joueur 1 peut encore choisir l'Avoid (Emergency defaussee, aucun degat)", "« engaged with YOU »",
+       ["Puzzle.PutIntoPlay('sl047', player=1)"], ["Puzzle.Reveal('sl050')"], {"degats_identite": 0, "defausse": ["01085"]}, heros2="black_panther", main_exclusive=["01085"], preferer_option="Avoid"),
+    # ------------------------------------------------------------------------------------------------------ sl048 : Hall of Punishment
+    _t("sl048 en jeu : le choix de Trip (Caltrops) fait defausser les 3 cartes du dessus du DECK du joueur (10 -> 7), en plus des 2 degats et de l'etourdissement", "« When you choose the 'Trip' effect on a TRAP! card, discard the top 3 cards of your deck »",
+       [*DECK10, "Puzzle.PutIntoPlay('sl048')"], ["Puzzle.Reveal('sl051')"], {"taille_deck_joueur": 7, "degats_identite": 2, "statuts": [["01001a", "Stunned"]]}),
+    _t("sl048 en jeu, TEMOIN : Avoid (Caltrops, Backflip) ne defausse rien du deck (10)", "Trip seulement",
+       [*DECK10, "Puzzle.PutIntoPlay('sl048')"], ["Puzzle.Reveal('sl051')"], {"taille_deck_joueur": 10, "defausse": ["01003"]}, main_exclusive=["01003"], preferer_option="Avoid"),
+    _t("sl048 en BOOST (manigance d'Elektra, forme alter-ego) : 1 menace sur le complot par personnage controle (alter-ego seul : 1 + SCH 1 d'Elektra = 3 sur 2B depuis 1)", "« Boost: Place 1 threat on the main scheme for each character you control »",
+       [AVANCE, "Puzzle.SetThreat('sl039b', 1)", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105')"], ["Puzzle.Boost('sl048')"], {"menace": [["sl039b", 3]]}, forme_heros=False),
+    _t("sl048 en BOOST avec un allie (Black Widow) : 2 personnages = 2 menaces (1 + 1 + 2 = 4)", "« each character you control » : allies compris",
+       [AVANCE, "Puzzle.SetThreat('sl039b', 1)", "Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105')"], ["Puzzle.Boost('sl048')"],
+       {"menace": [["sl039b", 4]]}, forme_heros=False),
+    # ------------------------------------------------------------------------------------------------------ sl049 : Path of a Thousand Cuts
+    _t("sl049 en jeu : l'Avoid (Poison Darts, Energy depensee) coute 2 degats INDIRECTS", "« When you choose the 'Avoid' effect or the 'Trip' effect on a TRAP! card, take 2 indirect damage »",
+       ["Puzzle.PutIntoPlay('sl049')"], ["Puzzle.Reveal('sl054')"], {"degats_identite": 2, "defausse": ["01088"]}, preferer_option="Avoid"),
+    _t("sl049 en jeu : le Trip (Caltrops : 2 degats, etourdi) coute 2 degats indirects de plus (4)", "Trip aussi",
+       ["Puzzle.PutIntoPlay('sl049')"], ["Puzzle.Reveal('sl051')"], {"degats_identite": 4, "statuts": [["01001a", "Stunned"]]}),
+    _t("sl049 en jeu, TEMOIN : le Disarm (Poison Darts : 3 degats au vilain) ne coute rien a l'identite", "Disarm n'est PAS cite",
+       ["Puzzle.PutIntoPlay('sl049')"], ["Puzzle.Reveal('sl054')"], {"degats_identite": 0, "menace": [["sl038b", 22]]}, main_exclusive=["01089", "01090"], preferer_option="Disarm"),
+    _t("sl049 en BOOST (manigance d'Elektra, alter-ego) : 1 degat a CHAQUE personnage controle : l'alter-ego ET l'allie Black Widow", "« Boost: Deal 1 damage to each character you control »",
+       [AVANCE, "Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105')"], ["Puzzle.Boost('sl049')"],
+       {"degats_identite": 1, "degats": [["01075", 1]]}, forme_heros=False),
 ]
 
 
@@ -197,10 +302,11 @@ def slb_etat(monde, aides):
             if face is None:
                 continue
             zone = getattr(getattr(getattr(objet, "area", None), "deck_type", None), "name", "?")
-            if zone in ("PlayerDeck", "HandsArea", "DiscardPile") or str(face.paper.card_id).startswith("0"):
+            if zone in ("PlayerDeck", "HandsArea", "DiscardPile") or (str(face.paper.card_id).startswith("0") and str(face.paper.card_id) not in ("01101", "01105")):
                 continue
             lignes.append(f"{face.paper.card_id}@{zone}")
         lignes.append("GAMEOVER=" + str(monde.is_game_over))
+        lignes.append("ENC=" + ",".join(ids(_W.GetEncounterDeckCards(monde)[:6])))
         if piege is not None and piege.initialize:
             lignes.append("PIEGE=" + ",".join(ids(piege.deck.GetAll())) + " DEFAUSSE=" + ",".join(ids(piege.discard_pile.GetAll())))
         return False, " | ".join(sorted(lignes))[:3500]
