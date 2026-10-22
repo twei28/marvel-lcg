@@ -20,7 +20,7 @@ PAGE = {'pu071a': 141, 'pu071b': 142, 'pu072a': 143, 'pu072b': 144, 'pu073': 145
         'pu106a': 211, 'pu106b': 212, 'pu107': 213, 'pu108': 215, 'pu109': 217, 'pu110': 219, 'pu111': 221, 'pu113': 225,
         'pu119': 237, 'pu120': 239, 'pu121': 241, 'pu123': 245,
         'pu114': 227, 'pu115': 229, 'pu116': 231, 'pu117': 233, 'pu118': 235, 'pu125': 249, 'pu126': 251, 'pu127': 253,
-        'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277, 'pu140': 263, 'pu141': 264, 'pu142': 265, 'pu143': 266, 'pu144': 267, 'pu145': 268, 'pu146': 275, 'pu023': 45, 'pu024': 47, 'pu025': 49, 'pu026': 51, 'pu027': 53, 'pu028': 55, 'pu147': 269, 'pu148': 270, 'pu149a': 271, 'pu149b': 272, 'pu151': 273, 'pu279': 279, 'pu280': 280, 'pu281': 281, 'pu282': 282,
+        'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277, 'pu140': 263, 'pu141': 264, 'pu142': 265, 'pu143': 266, 'pu144': 267, 'pu145': 268, 'pu146': 275, 'pu023': 45, 'pu024': 47, 'pu025': 49, 'pu026': 51, 'pu027': 53, 'pu028': 55, 'pu147': 269, 'pu148': 270, 'pu149a': 271, 'pu149b': 272, 'pu151': 273, 'pu283a': 284, 'pu283b': 283, 'pu279': 279, 'pu280': 280, 'pu281': 281, 'pu282': 282,
         'pu048a': 95, 'pu048b': 96, 'pu049a': 97, 'pu049b': 98, 'pu050a': 99, 'pu050b': 100, 'pu051a': 101, 'pu051b': 102, 'pu052a': 103, 'pu052b': 104, 'pu053a': 105, 'pu053b': 106, 'pu054a': 107, 'pu054b': 108, 'pu055a': 109, 'pu055b': 110,
         'pu001a': 1, 'pu001b': 2, 'pu002a': 3, 'pu002b': 4, 'pu003a': 5, 'pu003b': 6, 'pu004': 7, 'pu039': 77, 'pu040': 79, 'pu041': 81, 'pu042': 83, 'pu043': 85, 'pu044': 87, 'pu045': 89, 'pu046': 91, 'pu047': 93,
         'pu007': 13, 'pu008': 15, 'pu009': 17, 'pu010': 19, 'pu011': 21, 'pu012': 23, 'pu013': 25, 'pu014': 27, 'pu015': 29, 'pu016': 31, 'pu017': 33, 'pu018': 35, 'pu020': 39, 'pu021': 41, 'pu022': 43,
@@ -39,7 +39,7 @@ def stat(v):
 
 cartes = []
 CORRECTIONS = {'pu131': {'Amplify': '2'}, 'pu113': {'Hazard': '1'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
-for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS + defs.UPTOWN_CARDS + defs.DEFI_CARDS:
+for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS + defs.UPTOWN_CARDS + defs.DEFI_CARDS + defs.HAWKEYE_CARDS:
     d = {k: stat(v) for k, v in x['desc'].items()}
     if x['card_id'] in STAGE: d['Stage'] = STAGE[x['card_id']]
     d.update(CORRECTIONS.get(x['card_id'], {}))
@@ -171,11 +171,19 @@ for f in sorted(glob.glob(os.path.join(JEU, 'data/scenarios/tracking_the_buyer_*
     if not nom.endswith('_expert') and nom not in noms:
         noms.append(nom)
 
+# --- Hawkeye MC×DC 2026 (identite alternative, decision P5) : le deck de depart du Hawkeye OFFICIEL (Arc, Carquois, fleches, obligation 04026, nemesis 04027-04030),
+# avec l'identite pu283a,pu283b. `catalog.heroes()` lit `deck/starter/*.json`.
+officiel = json.load(open(os.path.join(JEU, 'deck/starter/hawkeye.json'), encoding='utf-8'))
+officiel['name'] = 'Hawkeye (MC×DC 2026)'
+officiel['metadata'] = {'url': ''}
+officiel['hero'] = ['pu283a,pu283b']
+ecrire('deck/starter/hawkeye_mcdc_2026.json', officiel)
+
 p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))
 cle = '208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)'
 somme = si.pop('checksum', None); si.pop(cle, None)
-si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple', 'capos', 'leads_the_big_apple', 'uptown_expansion', 'super_strength_attachments'], 'max_id': 'pu282'}
+si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': ['hawkeye_mcdc_2026'], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple', 'capos', 'leads_the_big_apple', 'uptown_expansion', 'super_strength_attachments'], 'max_id': 'pu283b'}
 if somme: si['checksum'] = somme
 with open(p, 'w', encoding='utf-8', newline='\n') as f:
     json.dump(si, f, ensure_ascii=False, indent=1)

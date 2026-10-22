@@ -1942,7 +1942,9 @@
    "tracking_the_buyer_the_raft_breakout_hobgoblin",
    "tracking_the_buyer_the_raft_breakout_jigsaw"
   ],
-  "heroes": [],
+  "heroes": [
+   "hawkeye_mcdc_2026"
+  ],
   "encounters": [
    "jigsaw",
    "hobgoblin",
@@ -1959,7 +1961,7 @@
    "uptown_expansion",
    "super_strength_attachments"
   ],
-  "max_id": "pu282"
+  "max_id": "pu283b"
  },
  "checksum": "9dd847d2d0b2542353d3534a2e13348821bb34d4ecb4e590dd85db44eab4b3f3"
 }

@@ -838,3 +838,19 @@ DEFI_CARDS = [
       "to Avenger's Tower and 4 damage to the villain.\"", PU_DEFI,
       subtitle="Challenge 4 - Difficulty 1 (Easy)", page="p282 (ID 6141)"),
 ]
+
+
+# ======================================================================================================
+# Hawkeye MC×DC 2026 (PU-11, decision P5 : IDENTITE ALTERNATIVE ; le Hawkeye officiel 04001 reste intact). Une carte a deux faces : pu283a = HEROS (p284),
+# pu283b = ALTER-EGO (p283) ; ID imprime « JG ». Le deck (Arc 04002, Carquois 04003, fleches...) est celui du Hawkeye OFFICIEL (cartes deja dans le jeu).
+# ======================================================================================================
+PU_HAWK = "Hawkeye MCDC 2026"
+HAWKEYE_CARDS = [
+    c("pu283a", "Hero", "* Hawkeye", {"HP": "9", "ATK": "1", "THW": "2", "DEF": "2", "HS": "5"}, ["AVENGER", "S.H.I.E.L.D"],
+      "Hawkeye's basic attacks gain ranged.\n\"Quick Draw\" — <b>Action</b>: Ready Hawkeye's Bow. <i>(Limit once per phase.)</i>", PU_HAWK,
+      subtitle="MC×DC 2026", page="p284 (face heros, ID JG)"),
+    c("pu283b", "AlterEgo", "* Clint Barton", {"HP": "9", "REC": "3", "HS": "6"}, ["S.H.I.E.L.D", "SPY"],
+      "<b>Response</b>: After you change to this form, shuffle 2 [[Arrow]] cards from your discard pile into your deck.\n"
+      "<b>Action</b>: Spend 1 resource of any type → find either Hawkeye's Bow or Hawkeye's Quiver and put it into play. <i>(Limit once per phase.)</i>", PU_HAWK,
+      subtitle="MC×DC 2026", page="p283 (face alter-ego, ID JG)"),
+]

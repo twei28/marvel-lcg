@@ -124180,6 +124180,44 @@
    "set_name": "Punisher Challenges",
    "text": "Villain: Tower Defense (Mad Titan's Shadow). Red Birds: Angel, Falcon, Nova, Rogue, Spectrum, Wonder Man. Blue Birds: Captain Marvel, Doctor Strange, Magneto, Phoenix, Rocket, Star Lord, Storm, Thor, Valkyrie, Vision, War Machine, Wasp. Blue birds begin the game with their AERIAL upgrade in play, but -2 hand size for their opening hand.\nOnly AERIAL and identity specific allies.\nAll allies gain: \"<b>Action</b>: Discard this ally -> deal 1 damage to Avenger's Tower and 4 damage to the villain.\"",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu283a",
+   "type": "Hero",
+   "name": "* Hawkeye",
+   "subtitle": "MC×DC 2026",
+   "desc": {
+    "HP": "9",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER",
+    "S.H.I.E.L.D"
+   ],
+   "set_name": "Hawkeye MCDC 2026",
+   "text": "Hawkeye's basic attacks gain ranged.\n\"Quick Draw\" — <b>Action</b>: Ready Hawkeye's Bow. <i>(Limit once per phase.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu283b",
+   "type": "AlterEgo",
+   "name": "* Clint Barton",
+   "subtitle": "MC×DC 2026",
+   "desc": {
+    "HP": "9",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "S.H.I.E.L.D",
+    "SPY"
+   ],
+   "set_name": "Hawkeye MCDC 2026",
+   "text": "<b>Response</b>: After you change to this form, shuffle 2 [[Arrow]] cards from your discard pile into your deck.\n<b>Action</b>: Spend 1 resource of any type → find either Hawkeye's Bow or Hawkeye's Quiver and put it into play. <i>(Limit once per phase.)</i>",
+   "custom": "MC×DC 2026"
   }
  ],
  "checksum": "a99c4aeba0466f5d8f2c2ea8e5fdc16970f4059dce498ee8fe26e8ab99b7b5d1"
