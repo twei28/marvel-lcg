@@ -1982,7 +1982,11 @@
    "tracking_the_buyer_the_raft_breakout_hobgoblin",
    "tracking_the_buyer_the_raft_breakout_jigsaw"
   ],
-  "tuile_manigance": true
+  "tuile_manigance": true,
+  "tuile_manigance_scenarios": [
+   "the_big_apple",
+   "the_big_apple_uptown"
+  ]
  },
  "210. Custom (Challenges)": {
   "name": "punisher_mcdc_2026",
@@ -1998,5 +2002,5 @@
   ],
   "max_id": "pu283b"
  },
- "checksum": "a37f20a298c00b8ecfe863a0b73194907e5f599dc922ef887a86431197947aa4"
+ "checksum": "b18e1a333d4fee59ad7bfad7c39888694c66b0be2be474b8f04e38dab5d4c96f"
 }

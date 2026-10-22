@@ -239,6 +239,14 @@ function mechantsDe(sc) {
  *  la vignette PARTAGÉE entre ses méchants (deux moitiés, quatre quarts), pour
  *  qu'on voie d'un coup d'oeil que c'est un scénario à plusieurs (Wrecking
  *  Crew). Demande de l'utilisateur, 7 septembre 2026. */
+/** MC×DC (22/10/2026) : la tuile montre la MANIGANCE ANNEXE (affaire), pas le vilain. Les cartes manigance sont EN PAYSAGE ; le serveur
+ *  les sert tournees de 90° (cartes du jeu) : on les remet a l'endroit (rotation CSS dans un conteneur `cq`). null = pas une tuile d'affaire. */
+function portraitAffaire(ext, sc) {
+    if (!ext || !ext.tuileManigance) return null;
+    const id = sc.interchangeable ? sc.tileImage : ((ext.tuileManiganceScenarios || []).includes(sc.id) ? String((sc.schemes || [])[0] || "").split(",")[0] : "");
+    if (!id) return null;
+    return el("div", { class: "portrait pivote" }, el("i", { style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } }));
+}
 function portraitScenario(sc, cls) {
     const ids = mechantsDe(sc);
     if (ids.length < 2) {
@@ -5778,7 +5786,7 @@ async function loadScnGrid() {
             onmouseleave: estTel() ? undefined : () => rendreSceneMechant(state.scenario),
         },
             // MC×DC (22/10/2026) : la tuile d'une affaire montre la MANIGANCE ANNEXE (`tuile_manigance`), pas le sous-fifre.
-            portraitScenario(ext && ext.tuileManigance && sc.interchangeable ? { ...concret, tileImage: sc.tileImage } : concret),
+            portraitAffaire(ext, sc) || portraitScenario(concret),
             el("span", { class: "tb-port-nom" }, nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
             plusieurs ? el("span", { class: "st-exp" }, sc.underlings.length + " " + t("vilains au choix")) : null,
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
