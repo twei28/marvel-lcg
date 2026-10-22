@@ -88,3 +88,15 @@ Defis (commit 9dc29565) : 4 cartes `Challenge` pu279-pu282, 8 scenarios, cle `de
 
 ## Interface « La Ville » (PU-8) : DECIDEE le 22/10/2026, a coder au moment logique
 Les 7 decisions sont dans `decisions-interface-ville.md` (onglet lateral « Ville » a cote de Journal et Aide, volet par-dessus la table, mini-carte 3x3 dans l'onglet ferme, survol = carte agrandie A GAUCHE du volet, etc.). L'utilisateur : « tu le fais quand c'est le plus logique ». Ordre retenu : apres la batterie complete et l'audit PU-13, AVANT le mode multi-tables. Raison : le moteur doit d'abord exporter l'etat de la ville vers l'interface (positions, CAPO par rangee, sbires attaches, capacites utilisees ce round), ce qui touche `src/` ; ne pas le faire pendant une batterie. Fichiers UI de depart : `ui-app/src/board/VoletJournal.tsx` (modele de volet), `board.tsx`, `board/world.ts`. Exemple HTML de principe : artefact « La Ville ne dort jamais ».
+
+
+## ETAT AU 22/10/2026 (fin d'apres-midi) : la campagne est COMPLETE, il reste verification et decisions
+FAIT depuis la derniere mise a jour : pages de livret (24 planches FR/EN, `0411801b`) ; The City = une action « Se deplacer » puis choix du cout ; plus jamais « Action 1 / Action 2 » (nom parlant par paragraphe, toute carte) ; onglet « Ville » (export moteur, volet, aperçu a gauche) ; defaite au combat 4 = campagne perdue (decision) ; **Kingsfall multi-tables COMPLET** (assemblees : stockage SQLite commun, cartes en miroir, Action d'assemblee, Le Roi, serveur, orchestrateur, onglet « Assemblee », ecran de campagne) ; autoplay 168 parties sans plantage ; batterie 7831/7835 (4 echecs connus Squirrel Girl) AVANT le multi-tables, relancee APRES (voir `/tmp/claude-29999/batterie2.log`).
+RESTE (rien n'est deploye ni pousse apres `d0bb5c2f`) :
+1. lire la batterie 2 ; audit final PU-13 (cartes vs scans, preuves a jour) ;
+2. jouer une VRAIE partie multi-tables dans un navigateur (deux onglets / deux joueurs), et l'ecran de campagne (bloc « Combat a plusieurs tables ») : jamais vus en vrai ;
+3. le verdict de l'assemblee sur l'ecran de fin de partie (seul l'onglet le montre) ;
+4. decisions sans texte de regle a confirmer en partie reelle (liste dans `preuves-big-apple.md`) ; pu280 : carte Guerilla Warfare fournie par l'utilisateur (OK) ;
+5. deux tests UI rouges sans lien (`aspect.test` IdentitySpecific, `zones-arts-alternatifs` 03017_mcdc26) ;
+6. deploiement : SEULEMENT sur demande, apres verification des joueurs en ligne (le serveur redemarre) ; le deploiement envoie `public/stories` (planches de livret) et cree `assemblees.db` au premier usage.
+Shadowland : en pause (memoire `shadowland-en-pause`).
