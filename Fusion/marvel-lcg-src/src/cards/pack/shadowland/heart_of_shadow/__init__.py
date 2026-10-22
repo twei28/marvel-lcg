@@ -93,7 +93,8 @@ def InterruptMoinsATQ(attaquant: str='This') -> 'Ability':
 
 
 def CartesControleesDefaussables(joueur: 'Player') -> List['CardFace']:
-    """« A card you control » en jeu que l'on PEUT defausser : `CartesControlees` (allies, ameliorations, soutiens) SANS la Creeping Corruption, qui est Permanent
-    (fiche mots-cles/permanent.md : une carte Permanent ne quitte pas le jeu par un effet d'un AUTRE set) : la proposer ferait « defausser » a vide."""
-    return [c for c in CartesControlees(joueur)
-            if str(c.paper.card_id) not in CREEPING_CORRUPTION and not getattr(c, 'permanent', False)]
+    """« A card you control » en jeu que l'on PEUT defausser : allies, ameliorations (y compris celles des allies) et soutiens du joueur, SANS la Creeping Corruption, qui est
+    Permanent (fiche mots-cles/permanent.md : une carte Permanent ne quitte pas le jeu par un effet d'un AUTRE set) : la proposer ferait « defausser » a vide. Ni l'identite, ni la main."""
+    allies = [c for c in joueur.GetControlCharacters() if Ally.IsType(c)]
+    cartes = allies + list(joueur.GetControlUpgrade()) + list(joueur.supports.Get())
+    return [c for c in cartes if str(c.paper.card_id) not in CREEPING_CORRUPTION and not getattr(c, 'permanent', False)]

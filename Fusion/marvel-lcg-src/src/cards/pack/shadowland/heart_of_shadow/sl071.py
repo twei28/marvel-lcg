@@ -22,7 +22,7 @@ def GetAbilities() -> Sequence['Ability']:
         def retirer_et_attaque(cibles: Sequence['CardFace']) -> None:
             Unused(cibles)
             RetirerCorruption(effect, joueur)
-            vilain = Worlds.FindVillain(effect)
+            vilain = Worlds.FindVillain(effect, KRAHLLAK)
             if vilain is not None:
                 vilain.DoAttackYou(joueur, effect)
 
