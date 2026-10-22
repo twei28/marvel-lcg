@@ -221,6 +221,7 @@ import { ModaleAmbiance } from './board/ModaleAmbiance'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { publierEtape, useSuiviDuJoueur } from './board/etape-partagee'
 import { appliquerEtiquettesTable, lireEtiquettesTable } from './board/etiquettes-table'
+import { BarreAvantage } from './board/BarreAvantage'
 import { lecteurActif, estRelecture, type Lecteur } from './board/relecture/lecteur'
 import { PageRelecture } from './board/relecture/PageRelecture'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
@@ -4514,6 +4515,7 @@ export function PagePartie({
       {/* En mode detaille, BandeauPhase (plus bas) annonce deja la phase du
           mechant, plus fort : ce splash-ci ne doit pas la doubler. */}
       <SplashTour monde={etat.monde} annonceMechantAilleurs={unCartouche} saut={etat.saut === true} />
+      <BarreAvantage monde={etat.monde} />
 
 
       {/* Le cartouche du bas (scene PC, lot 4) montre les cibles hors table

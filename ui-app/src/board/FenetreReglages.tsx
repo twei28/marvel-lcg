@@ -24,6 +24,7 @@
 // une refonte : chaque interrupteur continue d'appeler exactement la meme
 // fonction qu'avant.
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
+import { ecrireBarreAvantage, lireBarreAvantage } from './barre-avantage-reglage'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { choisirPolitique, lirePolitique, type PolitiqueAvance } from './avance-multi'
@@ -346,6 +347,21 @@ function LigneEtiquettesTable() {
   )
 }
 
+function LigneBarreAvantage() {
+  const [actif, setActif] = useState(lireBarreAvantage)
+  return (
+    <LigneBascule
+      libelle={t('Barre d’avantage (estimation)')}
+      detail={t('Une fine barre au bord gauche : elle monte quand les héros dominent. Une estimation, pas une probabilité')}
+      actif={actif}
+      onBascule={() => {
+        ecrireBarreAvantage(!actif)
+        setActif(!actif)
+      }}
+    />
+  )
+}
+
 function LigneCoteAmeliorations() {
   const [cote, setCote] = useState<CoteAmeliorations>(lireCoteAmeliorations)
   return (
@@ -520,6 +536,7 @@ export function ContenuOnglet({
           </div>
         ) : null}
         <LigneEtiquettesTable />
+        <LigneBarreAvantage />
         {p.telephone ? (
           <>
             <LigneTailleTexte />
