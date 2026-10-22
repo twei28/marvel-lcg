@@ -51,6 +51,15 @@ fichiers.forEach((f, i) => {
     const fond = correction.fond ?? couleurDuFond(pixels, L, H, [x0 + 0.02, y0 + 0.02, x1 - 0.02, y1 - 0.02]) ?? [240, 240, 240]
     zone = { x0, y0, x1, y1, fond, bords: [[x0, x1]] }
   }
+  // La carte s'affiche a 0,72 de rapport (largeur / hauteur) alors que le scan fait 0,697 : l'image est recadree en haut et en bas
+  // (object-fit: cover), donc une fraction de HAUTEUR du scan ne tombe pas au meme endroit a l'ecran. Les zones des cartes MC×DC
+  // sont mesurees au pixel sur le scan, on les reporte donc dans le repere de la carte affichee (sinon le cache s'arrete ~7 px trop haut).
+  if (zone && /_mcdc26$/.test(cle)) {
+    const A = 1.0356
+    const B = -0.0178
+    const y = (v) => Math.max(0, Math.min(1, v * A + B))
+    zone = { ...zone, y0: y(zone.y0), y1: y(zone.y1) }
+  }
   if (!zone) {
     zones[cle] = null
     return
