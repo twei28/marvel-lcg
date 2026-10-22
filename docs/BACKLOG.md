@@ -205,3 +205,19 @@ Approche 1 : une fonction pure + son test + un petit composant de barre + une op
 **Reste à faire le jour où on s'y met :** une maquette HTML sur le vrai plateau (comme celle de La Ville) pour juger l'effet, puis la fonction pure + test,
 le composant de barre, l'option « cacher » dans les Réglages. Détail de ce que fait le bac à sable pour tester : parties de la section « bac à sable » de
 `docs/README.md`. Rien n'est commencé.
+
+### Vérification des données disponibles (22/10/2026, lecture seule, rien codé)
+
+Lu dans `ui-app/src/board/world.ts` (le type `World`, ce que le moteur envoie au plateau) et dans les usages du plateau. **Les chiffres dont la formule a besoin existent déjà** :
+- **Menace de la manigance** : `info.k_threat` (menace posée), `info.target_threat` (seuil), `info.k_acceleration_token` (jetons d'accélération), `info.acceleration_icon`,
+  `info.crisis` ; les faits de phase du méchant portent aussi `restant`, `plafond`, `escalade`, `acceleration`, `joueurs` (type `FaitMenace`).
+- **PV** : `info.health` et `info.max_health` sur chaque carte (méchant, sbires, identités) ; `info.is_infinite_health` pour les PV infinis.
+- **Autour** : `hand_size` du joueur, `allies`, `supports`, `area_hero`, `dealt_encounter_cards`, `bind_object_id` (cartes attachées), `info.victory`.
+- **Limites** : le moteur local n'était pas lancé ce jour-là, donc **non testé sur une partie vivante** ; à confirmer au premier essai (sur Rhino, puis sur un scénario atypique). Les compteurs propres à un
+  scénario (pistes, jetons « recherché », etc.) sont dans `info` sous des clés variables : c'est là que les fiches réglage devront aller les lire.
+
+### Maquette (faite le 22/10/2026)
+
+`docs/maquettes/barre-avantage.html` : une barre fine au bord gauche sur une capture réelle du plateau en Normal ; le survol donne le détail ; quatre états (équilibrée, les héros
+dominent, la partie tourne mal, scénario inconnu) et trois curseurs pour essayer à la main (formule fictive : moyenne de trois valeurs, juste pour juger l'allure).
+**Constat de la maquette** : au bord gauche, la barre frôle la **pile de cartes de gauche** de la table. Il faudra décaler un peu le plateau ou laisser une marge de quelques pixels.
