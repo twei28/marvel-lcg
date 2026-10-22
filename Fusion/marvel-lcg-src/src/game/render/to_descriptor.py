@@ -109,6 +109,23 @@ class ToDescriptor:
         return player_descriptor
 
     @staticmethod
+    def Assemblee(world: 'World') -> Dict[str, Any]:
+        """L'etat de l'assemblee (Kingsfall multi-tables) vu depuis CETTE table, ou {} hors assemblee. Lu dans le stockage commun a chaque rendu :
+        c'est ce qui fait voir aux joueurs les jetons, les degats et la menace des AUTRES tables sans attendre une action."""
+        from game.operate.assemblee import Assemblee
+        pod = getattr(world.rule, 'assemblee', None)
+        if pod is None:
+            return {}
+        try:
+            etat = Assemblee.Etat(pod[0])
+        except Exception:
+            return {}
+        if etat is None:
+            return {}
+        etat['table'] = pod[1]
+        return etat
+
+    @staticmethod
     def Ville(world: 'World') -> Dict[str, Any]:
         """L'etat de la ville pour l'onglet « Ville » (vide hors campagne MC×DC 2026).
 
@@ -220,6 +237,7 @@ class ToDescriptor:
         for player in world.const_seat_order_players:
             world_descriptor.players.append(ToDescriptor.Player(player))
         world_descriptor.ville = ToDescriptor.Ville(world)
+        world_descriptor.assemblee = ToDescriptor.Assemblee(world)
 
         scenario = world.GetScenario()
 

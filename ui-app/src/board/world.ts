@@ -609,7 +609,27 @@ export type VilleLigne = { ligne: number; capo: number | null; capo_card_id: str
 export type VilleJoueur = { player_id: number; ligne: number; colonne: number }
 export type VilleExport = { lignes: VilleLigne[]; cases: VilleCase[]; joueurs: VilleJoueur[] }
 
+/** L'assemblee de Kingsfall multi-tables vue depuis cette table (`ToDescriptor.Assemblee`). Absente ou vide hors assemblee. */
+export type AssembleeGroupe = { tab: string; joueurs: number; noms: string; etat: 0 | 1 | 2 | 3; recus: number }
+export type AssembleeExport = {
+  code: string
+  /** Cette table. */
+  table: string
+  organisateur: string
+  total_jetons: number
+  seuil: number
+  retournee: boolean
+  degats: number
+  menace: number
+  joueurs: number
+  groupes: AssembleeGroupe[]
+  terminee: boolean
+  gagnee: boolean
+}
+
 export type World = {
+  /** L'assemblee de Kingsfall multi-tables (onglet « Assemblée »). */
+  assemblee?: Partial<AssembleeExport>
   /** La ville de la campagne MC×DC 2026 (onglet « Ville »). */
   ville?: Partial<VilleExport>
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */

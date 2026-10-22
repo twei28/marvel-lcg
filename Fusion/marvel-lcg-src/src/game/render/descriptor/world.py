@@ -122,6 +122,9 @@ class WorldDescriptor:
     # joueur, les sbires attaches, les compteurs des pistes et les limites « une fois par round » deja utilisees. Dictionnaire VIDE hors de la
     # ville : l'onglet « Ville » de l'interface ne s'ouvre alors pas. Forme : `ToDescriptor.Ville` (to_descriptor.py).
     ville: Dict[str, Any] = field(default_factory=lambda: {})
+    # L'ASSEMBLEE de Kingsfall multi-tables (22/10/2026) : code, cette table, groupes (nom, joueurs, etat), total de Longue vie et seuil, degats / menace
+    # du Roi, verdict. Dictionnaire VIDE hors assemblee. Forme : `ToDescriptor.Assemblee`.
+    assemblee: Dict[str, Any] = field(default_factory=lambda: {})
     # Fin de partie exposee au client (ajout local, lu par ui-app)
     game_over: bool = field(default=False)
     players_won: bool = field(default=False)

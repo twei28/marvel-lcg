@@ -1,0 +1,60 @@
+/* L'onglet « Assemblée » (VoletAssemblee.tsx). Hors couche, comme VoletJournal.css. Sous la languette de la Ville (300px), au-dessus du Journal. */
+.volet-assemblee {
+  position: fixed; right: 0; top: 8dvh; z-index: 622;
+  width: min(420px, 94vw); max-height: 84dvh;
+  display: flex; flex-direction: column;
+  background: rgba(18, 21, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.22); border-right: none; border-radius: 12px 0 0 12px;
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.55);
+  color: #e8eef6;
+  animation: volet-assemblee-entre 180ms ease-out;
+}
+@keyframes volet-assemblee-entre { from { transform: translateX(100%); } to { transform: none; } }
+.volet-assemblee-tete { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+.volet-assemblee-tete h2 { margin: 0; font-size: 1rem; font-weight: 900; }
+.assemblee-corps { padding: 12px; overflow-y: auto; display: grid; gap: 14px; }
+.assemblee-bloc h3 { margin: 0 0 6px; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #aebccd; }
+.assemblee-petit { margin: 6px 0 0; font-size: 0.82rem; color: #aebccd; }
+.assemblee-attente { margin: 0; font-size: 0.9rem; color: #cbd5e1; }
+.assemblee-verdict { margin: 0; padding: 10px 12px; border-radius: 8px; font-weight: 800; font-size: 1.05rem; border: 1px solid; }
+.assemblee-verdict.est-gagnee { background: rgba(95, 192, 138, 0.16); border-color: #5fc08a; color: #bff1d3; }
+.assemblee-verdict.est-perdue { background: rgba(230, 36, 41, 0.16); border-color: #e62429; color: #ffc9ca; }
+.assemblee-code { display: flex; align-items: center; gap: 10px; }
+.assemblee-code code { font: 700 1.25rem ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.1em; padding: 6px 10px; background: rgba(255, 255, 255, 0.07); border-radius: 6px; }
+.assemblee-code button { all: unset; cursor: pointer; padding: 6px 12px; border: 1px solid #3f86e0; border-radius: 6px; font-weight: 700; font-size: 0.85rem; }
+.assemblee-code button:hover { background: rgba(63, 134, 224, 0.18); }
+.assemblee-code button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.assemblee-barre { height: 10px; background: rgba(255, 255, 255, 0.12); border-radius: 5px; overflow: hidden; }
+.assemblee-barre i { display: block; height: 100%; background: #3f86e0; transition: width 240ms; }
+.assemblee-roi { display: flex; gap: 12px; }
+.assemblee-roi span { flex: 1; padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.06); font-size: 0.85rem; }
+.assemblee-roi b { display: block; font-size: 1.6rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.assemblee-roi .est-degats b { color: #5fc08a; }
+.assemblee-roi .est-menace b { color: #ff7b7e; }
+.assemblee-groupes { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.assemblee-groupes li { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid transparent; font-size: 0.88rem; }
+.assemblee-groupes li.est-ici { border-color: rgba(63, 134, 224, 0.7); }
+.assemblee-groupe-nom em { font-style: normal; color: #8c97ab; }
+.assemblee-groupe-etat { font-weight: 700; }
+.assemblee-groupes li.est-victoire .assemblee-groupe-etat { color: #5fc08a; }
+.assemblee-groupes li.est-defaite .assemblee-groupe-etat, .assemblee-groupes li.est-abandon .assemblee-groupe-etat { color: #ff7b7e; }
+.assemblee-groupe-recus { padding: 1px 7px; border-radius: 9px; background: #2b3a58; border: 1px solid #7fa9e6; font-weight: 700; font-size: 0.78rem; }
+
+.volet-assemblee-languette {
+  position: fixed; right: 0; top: 430px; z-index: 612;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 5px;
+  font: inherit; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #d9e1ea;
+  background: rgba(30, 34, 44, 0.94); border: 1px solid rgba(255, 255, 255, 0.24); border-right: none; border-radius: 8px 0 0 8px; cursor: pointer;
+}
+.volet-assemblee-languette:focus-visible { outline: 2px solid #3f86e0; outline-offset: 2px; }
+.volet-assemblee-languette.est-gagnee { border-color: #5fc08a; }
+.volet-assemblee-languette.est-perdue { border-color: #e62429; }
+.volet-assemblee-languette.est-ouvert { right: min(420px, 94vw); z-index: 626; }
+.volet-assemblee-languette-texte { writing-mode: vertical-rl; transform: rotate(180deg); }
+.assemblee-mini { width: 8px; height: 34px; background: rgba(255, 255, 255, 0.14); border-radius: 3px; display: flex; align-items: flex-end; overflow: hidden; }
+.assemblee-mini i { display: block; width: 100%; background: #3f86e0; }
+
+@media (max-width: 700px), (max-height: 520px) {
+  .volet-assemblee { top: 0; max-height: 100dvh; width: 100vw; border-radius: 0; }
+  .volet-assemblee-languette.est-ouvert { display: none; }
+}

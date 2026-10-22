@@ -255,6 +255,8 @@ import { PHASE_BIS_POUR_TOUS, lirePresentationPhase, phaseTrisUtilisable, suivre
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
 import { VoletVille } from './board/VoletVille'
+import { VoletAssemblee } from './board/VoletAssemblee'
+import { assembleeDuMonde } from './board/assemblee-etat'
 import { optionSeDeplacer, villeDuMonde } from './board/ville-etat'
 import { JournalConsole } from './board/JournalConsole'
 import {
@@ -2195,6 +2197,9 @@ export function PagePartie({
   )
   // L'onglet « Ville » (campagne MC×DC 2026) : l'etat exporte par le moteur, ouvert ou non, et le nom de chaque joueur (son heros).
   const [villeOuverte, setVilleOuverte] = useState(false)
+  // L'onglet « Assemblée » (Kingsfall multi-tables) : l'etat commun relu par le moteur a chaque rendu.
+  const [assembleeOuverte, setAssembleeOuverte] = useState(false)
+  const assembleeExportee = useMemo(() => assembleeDuMonde(etat.monde), [etat.monde])
   const villeExportee = useMemo(() => villeDuMonde(etat.monde), [etat.monde])
   const nomsJoueursVille = useMemo(() => {
     const noms: Record<number, string> = {}
@@ -5564,6 +5569,14 @@ export function PagePartie({
           telephone={modePlateau === 'mobile'}
         />
       )}
+      {assembleeExportee ? (
+        <VoletAssemblee
+          assemblee={assembleeExportee}
+          ouvert={assembleeOuverte}
+          ouvrir={() => setAssembleeOuverte(true)}
+          fermer={() => setAssembleeOuverte(false)}
+        />
+      ) : null}
       {villeExportee ? (
         <VoletVille
           ville={villeExportee}
