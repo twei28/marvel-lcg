@@ -7,14 +7,14 @@ Deja tranche sans question (preuve par comparaison a des cartes officielles) : i
 ## A. Lectures de chiffres et de symboles (avec le scan)
 
 1. **sl037 Shifting Corridors** : « SCH 0★ / ATK 0★ / HP ∞ ». Que veut dire l'etoile apres 0 (valeur definie par le texte) et que faut-il faire du « ∞ » ?
-2. **sl038b Into the Labyrinth** : menace de depart « ∞ », escalade +1 par joueur, seuil 25 par joueur. Lecture a confirmer.
-3. **sl039b Chamber of Vile Secrets** : « 9 par joueur / +1 par joueur / 1 par joueur » : quel nombre est la menace de depart, lequel est le seuil ?
-4. **sl060b Dark Invitation** et **sl061b Beast Be Praised** : meme question (6 / +1 / 2 par joueur ; 9 / +1★ / 2 par joueur).
-5. **sl001b, sl002b** : menace de depart 7 et 8 par joueur, seuil 2 par joueur : confirmer.
-6. **Villains et sbires avec « ATK 1★ / 2★ / 3★ / 4★ »** (sl012, sl013, sl014... sl057-059) : l'etoile renvoie-t-elle a un effet du texte qui modifie l'ATK ?
-7. **sl072a/b Creeping Corruption** : le petit rectangle blanc en haut a gauche (cout vide ?) et la ligne « OVERPOWERING » (trait ? mot-cle ?).
-8. **sl040, sl046, sl050-sl056 : « TRAP! »** en police speciale au centre du texte : est-ce un trait ou un mot-cle de type ?
-9. **Icones de ressource dans le texte** (sl004a, sl004b, sl015, sl018, sl054, sl055, sl063) : poing = physique, eclair = energie, silhouette = mentale ? A confirmer contre une carte officielle (jamais a vue).
+2. ~~sl038b Into the Labyrinth~~ : RESOLU sans question (voir journal : TargetThreat ∞, StartingThreat 25 par joueur).
+3. ~~sl039b Chamber of Vile Secrets~~ : RESOLU (rond en haut a gauche = TargetThreat, bas droite = StartingThreat, par comparaison a 01097b).
+4. ~~sl060b, sl061b~~ : RESOLU pour les nombres ; RESTE la petite etoile de l'escalade de sl061b (« +1★ »).
+5. ~~sl001b, sl002b~~ : RESOLU (cible 7 et 8 par joueur, depart 2 par joueur).
+6. ~~Villains et sbires avec « ATK 1★ / 2★ / 3★ / 4★ »~~ : RESOLU par principe (Q2/Q3 : on affiche le ★ comme sur le scan ; sur Krahllak sl057 il annonce l'Interruption ★ « gets –3 ATK »). **Villains et sbires avec « ATK 1★ / 2★ / 3★ / 4★ »** (sl012, sl013, sl014... sl057-059) : l'etoile renvoie-t-elle a un effet du texte qui modifie l'ATK ?
+7. ~~sl072a/b Creeping Corruption~~ : RESOLU (rectangle blanc = case de cout vide, pas de `Cost` dans `desc` ; OVERPOWERING = trait imprime, a AJOUTER au `Literal` TRAITS du moteur). Ancienne question : **sl072a/b Creeping Corruption** : le petit rectangle blanc en haut a gauche (cout vide ?) et la ligne « OVERPOWERING » (trait ? mot-cle ?).
+8. ~~« TRAP! »~~ : RESOLU (trait `TRAP`, deja dans le `Literal` TRAITS ; les cartes citent « a TRAP! card »). Ancienne question : **sl040, sl046, sl050-sl056 : « TRAP! »** en police speciale au centre du texte : est-ce un trait ou un mot-cle de type ?
+9. ~~Icones de ressource dans le texte~~ : RESOLU par comparaison a 01088/01089/01090 (eclair = energie `Y`, petit reseau de noeuds = mentale `B` comme sur Genius 01089, poing = physique `R`) ; sequences a relire carte par carte a l'ecriture des scripts. Ancienne question : **Icones de ressource dans le texte** (sl004a, sl004b, sl015, sl018, sl054, sl055, sl063) : poing = physique, eclair = energie, silhouette = mentale ? A confirmer contre une carte officielle (jamais a vue).
 10. **sl011 / sl010 / etc.** : les doublons de numerotation sont des exemplaires multiples (quantite deduite). Confirmer les quantites par carte quand le livret sera la.
 
 ## B. Choix de modelisation (impact en jeu)
@@ -27,3 +27,11 @@ Deja tranche sans question (preuve par comparaison a des cartes officielles) : i
 
 14. **Livret officiel du pack** (PDF FFG, mc65 rulebook) : pas encore dans le depot. Il donne la mise en place, les difficultes, la mini-campagne.
 15. **Textes francais** : pas de source VF pour l'instant.
+
+## Decisions prises (journal)
+
+- **Q1, 22/10/2026 : sl037 Shifting Corridors, « HIT POINTS ∞ »** -> vrai « ∞ » affiche, la carte ne peut jamais etre vaincue par les degats (degats comptes mais jamais letaux). Demande une extension du moteur (a faire plus tard : valeur de PV « infinie » dans `desc`, rendu « ∞ » sur la carte).
+- **Q2, 22/10/2026 : sl037, « SCH 0★ / ATK 0★ »** -> valeur 0 avec le ★ affiche comme sur le scan.
+- **Sans question (22/10/2026)** : roles des nombres des complots principaux, par comparaison a 01097b (voir `cartes.md`). **sl038b TargetThreat ∞** : meme principe que Q1 (∞ reel affiche, extension du moteur plus tard) ; a rappeler a l'utilisateur au moment du cadrage moteur.
+- **Q3, 22/10/2026 : sl061b, « +1 par joueur ★ » (escalade)** -> escalade +1 par joueur avec le ★ affiche.
+- **Sans question (22/10/2026)** : ★ apres un ATK/SCH (principe de Q2), case de cout vide de sl072a/b (pas de `Cost`), « TRAP! » = trait `TRAP`, icones de ressource (poing/eclair/reseau). Traits absents du `Literal` TRAITS du moteur (`src/game/card/face/card_face.py:73`, typage seul, aucun controle a l'execution) : **OVERPOWERING, POSSESSED**. A ajouter le moment venu.

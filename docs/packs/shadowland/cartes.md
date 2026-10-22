@@ -26,6 +26,10 @@ Corrections par rapport aux lectures brutes plus bas : sl025 est **Crisis** (lu 
 
 L'etoile rouge isolee en bas (sl043, sl048, sl076...) est l'icone de Boost « ★ » : l'effet est ecrit dans le texte (« ★ Boost: ... »). A modeliser comme les autres cartes a Boost-etoile du jeu (regarder 01123 Sonic Boom) au moment de l'entree JSON.
 
+## Correction : roles des nombres d'un complot principal (face B)
+
+Les agents de transcription ont inverse les deux nombres. Sur la carte officielle **01097b The Break-In!** (`desc` : StartingThreat 0, TargetThreat 7*, EscalationThreat 1*), le **rond en haut a gauche** (7 par joueur) est le **TargetThreat** et le **nombre en bas a droite** (0) est le **StartingThreat**. Les valeurs de sl001b, sl002b, sl038b, sl039b, sl060b, sl061b sont recorrigees en consequence ci-dessous (la transcription brute `toutes.json` n'est pas modifiee). Consequence : sl038b a un **TargetThreat ∞** (la menace ne peut jamais completer l'etape) et part de 25 par joueur.
+
 ## Recapitulatif par set
 
 | Set | Numeros | Faces | Exemplaires |
@@ -48,7 +52,7 @@ L'etoile rouge isolee en bas (sl043, sl048, sl076...) est l'icone de Boost « �
   > <b>Setup</b>: Put each The Streets Below environment into play. Set the Dark Protégé encounter set aside. Choose 1 random villain from that set and reveal its side A, then shuffle each card linked to that villain into the encounter deck.
 
 #### sl001b (65001B) : A Barricade of Blades — MAIN SCHEME 1B, 1/13, x1
-- Valeurs : StartingThreat=7 par_joueur, escalade=+1 par_joueur, TargetThreat=2 par_joueur
+- Valeurs (CORRIGE 22/10/2026, voir plus haut) : TargetThreat=7 par_joueur (rond en haut a gauche), StartingThreat=2 par_joueur (en bas a droite), EscalationThreat=+1 par_joueur
 - Texte :
   > In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.
   > <b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.
@@ -62,7 +66,7 @@ L'etoile rouge isolee en bas (sl043, sl048, sl076...) est l'icone de Boost « �
   > <b>When Revealed</b>: Change the villain's position. Each player searches the encounter deck and discard pile for a minion and reveals it. <i>(Shuffle.)</i>
 
 #### sl002b (65002B) : Fortress Lockdown — MAIN SCHEME 2B, 2/13, x1
-- Valeurs : StartingThreat=8 par_joueur, escalade=+1 par_joueur, TargetThreat=2 par_joueur
+- Valeurs (CORRIGE 22/10/2026, voir plus haut) : TargetThreat=8 par_joueur, StartingThreat=2 par_joueur, EscalationThreat=+1 par_joueur
 - Texte :
   > In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.
   > <b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.
@@ -460,7 +464,7 @@ L'etoile rouge isolee en bas (sl043, sl048, sl076...) est l'icone de Boost « �
   > <b>Setup</b>: Create the trap deck <i>(see rulebook, p. 12)</i>. Set the Dark Protégé encounter set aside. Choose 1 random villain from that set, then shuffle each card linked to that villain into the encounter deck <i>(keep the chosen villain set aside)</i>.
 
 #### sl038b (65038B) : Into the Labyrinth — MAIN SCHEME 1B, 2/11, x1
-- Valeurs : StartingThreat=∞, escalade=+1 par_joueur, TargetThreat=25 par_joueur, niveau_etape=1
+- Valeurs (CORRIGE 22/10/2026, voir plus haut) : TargetThreat=∞, StartingThreat=25 par_joueur, EscalationThreat=+1 par_joueur, Stage=1
 - Texte :
   > <b>When Revealed:</b> Place 10[per_hero] passage counters on Shifting Corridors (7[per_hero] instead in expert mode).
   > <b>Forced Interrupt</b>: When Shifting Corridors would take any amount of damage, remove that much threat from here instead.
@@ -475,7 +479,7 @@ L'etoile rouge isolee en bas (sl043, sl048, sl076...) est l'icone de Boost « �
   > 3. Reveal the chosen villain's side A (side B instead in expert mode).
 
 #### sl039b (65039B) : Chamber of Vile Secrets — MAIN SCHEME 2B, 3/11, x1
-- Valeurs : StartingThreat=9 par_joueur, escalade=+1 par_joueur, TargetThreat=1 par_joueur, niveau_etape=2
+- Valeurs (CORRIGE 22/10/2026, voir plus haut) : TargetThreat=9 par_joueur, StartingThreat=1 par_joueur, EscalationThreat=+1 par_joueur, Stage=2
 - Texte :
   > <b>When Revealed</b>: In expert mode, the villain activates against each player.
   > <b>Forced Response</b>: After you or an ally you control thwarts this scheme, reveal the top card of the trap deck. (Limit once per round per player.)
@@ -679,7 +683,7 @@ L'etoile rouge isolee en bas (sl043, sl048, sl076...) est l'icone de Boost « �
   > <b>Setup</b>: Each player puts a Creeping Corruption upgrade into play. Set the rest aside.
 
 #### sl060b (65060B) : Dark Invitation — MAIN SCHEME 1B, 4/17, x1
-- Valeurs : StartingThreat=6 par_joueur, escalade=+1 par_joueur, TargetThreat=2 par_joueur, niveau_etape=1B
+- Valeurs (CORRIGE 22/10/2026, voir plus haut) : TargetThreat=6 par_joueur, StartingThreat=2 par_joueur, EscalationThreat=+1 par_joueur, Stage=1
 - Texte :
   > <b>Forced Interrupt</b>: When this stage would be completed, instead remove all threat from here and each player chooses:
   > • Place 2 corruption counters on their Creeping Corruption.
@@ -694,7 +698,7 @@ L'etoile rouge isolee en bas (sl043, sl048, sl076...) est l'icone de Boost « �
   > <b>When Revealed</b>: Each player whose Creeping Corruption has the <b>OVERPOWERING</b> trait discards 1 random card from their hand. Each other player discards a card they control from play. In expert mode, deal each player 1 facedown encounter card.
 
 #### sl061b (65061B) : Beast Be Praised — MAIN SCHEME 2B, 5/17, x1
-- Valeurs : nombre_haut_gauche=9 par_joueur, menace_cible=2 par_joueur, escalade=+1 par_joueur avec étoile (+1[per_hero][star])
+- Valeurs (CORRIGE 22/10/2026, voir plus haut) : TargetThreat=9 par_joueur, StartingThreat=2 par_joueur, EscalationThreat=+1★ par_joueur (etoile a confirmer), Stage=2
 - Icones (lecture brute) : acceleration/escalade: +1 par_joueur étoile (encart bas droite)
 - Texte :
   > [star] <b>Forced Response</b>: After resolving step one of the villain phase, each player chooses:
