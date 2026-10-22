@@ -35,3 +35,17 @@ def CorruptionOverpowering(joueur: 'Player') -> bool:
     """« If your Creeping Corruption has the OVERPOWERING trait » : lu sur la face COURANTE (le trait n'est imprime que sur sl072b). Faux sans Creeping Corruption."""
     cc = CreepingCorruptionDe(joueur)
     return cc is not None and cc.HasTrait("OVERPOWERING")
+
+
+def BrancheCorruption(effect: 'Effect', joueur: 'Player', nombre: int=1, *, apres: 'Callable[[], None]|None'=None, libelle: 'str|None'=None) -> 'Ability':
+    """Une branche de choix « Place N corruption counter(s) on your Creeping Corruption » (boosts, « Choose: either ... or ... »). Offerte seulement si le joueur a une
+    Creeping Corruption en jeu (sans elle, la pose est impossible : la branche n'est pas choisissable). `apres` = ce qui suit la pose (ex. annuler l'attaque d'Aka)."""
+    def poser(cibles: Sequence['CardFace']) -> None:
+        if PoserCorruption(effect, joueur, nombre) and apres is not None:
+            apres()
+    texte = libelle or f"Place {nombre} corruption counter{'s' if nombre > 1 else ''} on your Creeping Corruption"
+    return AbilityFactory.ForChoiceAbility(texte, poser, condition=PeutPoserCorruption(joueur))
+
+
+def MainVide(joueur: 'Player') -> bool:
+    return len(joueur.hand_cards.Get()) == 0

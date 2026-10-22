@@ -146,6 +146,102 @@ CAS += [
        ["Puzzle.CreateEncounterDiscardPile('sl006', '01121')"], ["Puzzle.Boost('sl036')"], {"defausse_rencontre": ["01121"], "absents_defausse_rencontre": ["sl006"]}, deck=["01105", "01105", "01105", "01105"]),
     _s("sl036 Surge (natif) : apres sa revelation, une carte de rencontre SUPPLEMENTAIRE est revelee puis defaussee (01105)", "desc : Surge 1",
        [], ["Puzzle.Reveal('sl036')"], {"defausse_rencontre": ["sl036", "01105"]}, deck=["01105", "01105", "01105", "01105"]),
+    # ======================================================================================================== BLACK FLOWER
+    # Le heros est EPUISE quand une attaque doit faire des degats (sinon le pilote defend avec Spider-Man, DEF 3) ; la Creeping Corruption se pose face A (CC) ou face B (CC_B).
+    # ------------------------------------------------------------------------------------------------------ sl073 : Aka
+    _s("sl073 Aka entre en jeu (Quickstrike) : l'Interruption est offerte, le joueur place 1 compteur et l'attaque est ANNULEE (identite intacte)", "« you may place 1 corruption counter on your Creeping Corruption. If you do, cancel that attack »",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.PutIntoPlay('sl073')"], {"compteurs": [["sl072a", "corruption", 1]], "degats_identite": 0}),
+    _s("sl073, refus (« you MAY ») : pas de compteur et l'attaque a lieu (ATQ 3)", "l'Interruption est facultative",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.PutIntoPlay('sl073')"], {"compteurs": [["sl072a", "corruption", 0]], "degats_identite": 3}, passer_sur_option="Interrupt"),
+    _s("sl073, sans Creeping Corruption : aucune annulation possible, l'attaque a lieu (ATQ 3)", "« If you do » : sans compteur pose, pas d'annulation",
+       ["Puzzle.Exhaust('01001a')"], ["Puzzle.PutIntoPlay('sl073')"], {"degats_identite": 3}),
+    _s("sl073, 5e compteur pose par l'Interruption (4 -> 5) : la carte se retourne (face B, 0 compteur) ET l'attaque est annulee", "le seuil se franchit pendant le cout, l'annulation suit",
+       [CC, "Puzzle.Counter('sl072a', 'corruption', 4)", "Puzzle.Exhaust('01001a')"], ["Puzzle.PutIntoPlay('sl073')"], {"compteurs": [["sl072b", "corruption", 0]], "face_visible": [["sl072", "sl072b"]], "degats_identite": 0}),
+    _s("sl073 Boost, branche 1 : place 1 compteur sur la Creeping Corruption (Rhino attaque : ATQ 2 + 1 icone = 3 degats)", "« Choose: Either place 1 corruption counter on your Creeping Corruption, or discard 1 random card »",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 1]], "degats_identite": 3, "en_main": ["01088"]}, deck=["sl073"]),
+    _s("sl073 Boost, branche 2 : defausse 1 carte AU HASARD de la main (la seule) et AUCUN compteur (Black Panther : sa main ne se remplit pas pendant l'attaque)", "« or discard 1 random card from your hand »",
+       [CC, "Puzzle.Exhaust('01040a')"], ["Puzzle.EmptyHand()", "Puzzle.CreateHandCards('01088')", "Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 0]], "main_exacte": []}, deck=["sl073"], preferer_option="Discard 1 random", heros="black_panther", forme_heros=False, avant_forme=["Puzzle.ChangeForm('01040b')"]),
+    _s("sl073 Boost, main VIDE : la branche « defausser » est masquee, il reste la branche compteur", "echappatoire a la corruption refusee (DECISIONS-d.md n°8)",
+       [CC, "Puzzle.Exhaust('01040a')"], ["Puzzle.EmptyHand()", "Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 1]]}, deck=["sl073"], preferer_option="Discard 1 random", heros="black_panther", forme_heros=False, avant_forme=["Puzzle.ChangeForm('01040b')"]),
+    _s("sl073 Boost, SANS Creeping Corruption : seule la branche « defausser » existe (la carte de la main est defaussee)", "la branche compteur est impossible",
+       ["Puzzle.Exhaust('01040a')"], ["Puzzle.EmptyHand()", "Puzzle.CreateHandCards('01088')", "Puzzle.Attack('01094')"], {"main_exacte": []}, deck=["sl073"], heros="black_panther", forme_heros=False, avant_forme=["Puzzle.ChangeForm('01040b')"]),
+    # ------------------------------------------------------------------------------------------------------ sl074 : Tongue of the Beast
+    _s("sl074 Tongue of the Beast vaincue : le joueur qui l'a vaincue place 2 compteurs sur sa Creeping Corruption", "« The defeating player places 2 corruption counters on their Creeping Corruption »",
+       [CC, "Puzzle.PutIntoPlay('sl074')"], ["Puzzle.Damage('sl074', 99)"], {"compteurs": [["sl072a", "corruption", 2]]}),
+    _s("sl074 vaincue avec 4 compteurs : 2 d'un coup (4 -> 6) -> TOUS les compteurs partent et la carte se retourne", "seuil franchi par une pose de 2",
+       [CC, "Puzzle.Counter('sl072a', 'corruption', 4)", "Puzzle.PutIntoPlay('sl074')"], ["Puzzle.Damage('sl074', 99)"], {"compteurs": [["sl072b", "corruption", 0]], "face_visible": [["sl072", "sl072b"]]}),
+    _s("sl074 vaincue SANS Creeping Corruption : rien ne se passe (pas d'erreur)", "pas de carte, pas de compteur",
+       ["Puzzle.PutIntoPlay('sl074')"], ["Puzzle.Damage('sl074', 99)"], {"hors_jeu": ["sl074"]}),
+    _s("sl074 vaincue par le joueur 2 (Black Panther) : les 2 compteurs vont sur LA Creeping Corruption de CE joueur", "« their Creeping Corruption » (une par joueur)",
+       [CC, "Puzzle.PutIntoPlay('sl072a,sl072b', under_control=True, player=1)", "Puzzle.PutIntoPlay('sl074')"], ["Puzzle.Damage('sl074', 99, Puzzle.FindFaceInPlay('01040a'))"],
+       {"corruption_joueurs": [[0, 0, "sl072a"], [1, 2, "sl072a"]]}, heros2="black_panther"),
+    _s("sl074 Boost, branche 1 : 1 compteur (Rhino attaque : ATQ 2, aucune icone sur cette carte)", "« Choose: Either place 1 corruption counter ... or this card gains [boost][boost][boost] »",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 1]], "degats_identite": 2}, deck=["sl074"]),
+    _s("sl074 Boost, branche 2 : la carte gagne 3 icones -> ATQ 2 + 3 = 5 et AUCUN compteur", "la 2e branche",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 0]], "degats_identite": 5}, deck=["sl074"], preferer_option="gains"),
+    # ------------------------------------------------------------------------------------------------------ sl075 : Binding Ritual
+    _s("sl075 Binding Ritual revelee, branche 1 : le joueur place 1 compteur (menace de depart 1 par joueur = 1, rien d'ajoute)", "« Each player chooses: Place 1 corruption counter on their Creeping Corruption »",
+       [CC], ["Puzzle.Reveal('sl075')"], {"compteurs": [["sl072a", "corruption", 1]], "menace": [["sl075", 1]]}),
+    _s("sl075 revelee, branche 2 : 3 menaces ici (1 + 3 = 4), aucun compteur", "« Place 3 threat here »",
+       [CC], ["Puzzle.Reveal('sl075')"], {"compteurs": [["sl072a", "corruption", 0]], "menace": [["sl075", 4]]}, preferer_option="Place 3 threat"),
+    _s("sl075 revelee SANS Creeping Corruption : seule la branche menace existe (4)", "la branche compteur est impossible",
+       [], ["Puzzle.Reveal('sl075')"], {"menace": [["sl075", 4]]}),
+    _s("sl075 revelee a DEUX joueurs : chacun place le compteur sur SA Creeping Corruption (menace de depart 2)", "« each player chooses »",
+       [CC, "Puzzle.PutIntoPlay('sl072a,sl072b', under_control=True, player=1)"], ["Puzzle.Reveal('sl075')"],
+       {"corruption_joueurs": [[0, 1, "sl072a"], [1, 1, "sl072a"]], "menace": [["sl075", 2]]}, heros2="black_panther"),
+    _s("sl075 revelee a DEUX joueurs, les deux choisissent la menace : 2 + 3 + 3 = 8", "chaque joueur choisit pour lui",
+       [CC, "Puzzle.PutIntoPlay('sl072a,sl072b', under_control=True, player=1)"], ["Puzzle.Reveal('sl075')"],
+       {"corruption_joueurs": [[0, 0, "sl072a"], [1, 0, "sl072a"]], "menace": [["sl075", 8]]}, heros2="black_panther", preferer_option="Place 3 threat"),
+    _s("sl075 : icone Crisis (desc)", "Crisis 1",
+       [], ["Puzzle.Reveal('sl075')"], {"icones": [["Crisis", 1]]}, preferer_option="Place 3 threat"),
+    # ------------------------------------------------------------------------------------------------------ sl076 : Roots of a Black Flower
+    _s("sl076 Roots of a Black Flower revelee : menace de depart 1 (fixe) et 2 icones Acceleration", "desc : StartingThreat 1, Acceleration 2",
+       [], ["Puzzle.Reveal('sl076')"], {"menace": [["sl076", 1]], "icones": [["Acceleration", 2]]}),
+    _s("sl076 vaincue par le joueur : 2 compteurs sur sa Creeping Corruption", "« The defeating player places 2 corruption counters on their Creeping Corruption »",
+       [CC, "Puzzle.Reveal('sl076')", "Puzzle.PutIntoPlay('01075', under_control=True)"], ["Puzzle.Thwart('01075')"], {"compteurs": [["sl072a", "corruption", 2]]}, cibles=["sl076"]),
+    _s("sl076 vaincue avec 4 compteurs (4 -> 6) : la Creeping Corruption se retourne et se vide", "seuil franchi par 2 compteurs d'un coup",
+       [CC, "Puzzle.Counter('sl072a', 'corruption', 4)", "Puzzle.Reveal('sl076')", "Puzzle.PutIntoPlay('01075', under_control=True)"], ["Puzzle.Thwart('01075')"],
+       {"compteurs": [["sl072b", "corruption", 0]], "face_visible": [["sl072", "sl072b"]]}, cibles=["sl076"]),
+    _s("sl076, TEMOIN : en jeu mais PAS vaincue, aucun compteur n'est pose (le compteur ne part qu'a la defaite)", "« When Defeated »",
+       [CC, "Puzzle.PutIntoPlay('sl076')"], [], {"compteurs": [["sl072a", "corruption", 0]], "menace": [["sl076", 1]]}),
+    _s("sl076 Boost, branche 1 : 1 compteur (Rhino : ATQ 2, aucune icone)", "« Choose: Either place 1 corruption counter ... or place 4 threat on the main scheme »",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 1]], "menace": [["01097b", 0]], "degats_identite": 2}, deck=["sl076"]),
+    _s("sl076 Boost, branche 2 : 4 menaces sur le complot PRINCIPAL, aucun compteur", "la 2e branche",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 0]], "menace": [["01097b", 4]]}, deck=["sl076"], preferer_option="Place 4 threat"),
+    # ------------------------------------------------------------------------------------------------------ sl077 : Malediction
+    _s("sl077 Malediction revelee en ALTER-EGO, accepte : 2 compteurs et le vilain ne manigance pas", "« You may place 2 corruption counters on your Creeping Corruption. If you do not, the villain schemes with +2 SCH »",
+       [CC], ["Puzzle.Reveal('sl077')"], {"compteurs": [["sl072a", "corruption", 2]], "menace": [["01097b", 0]]}, forme_heros=False),
+    _s("sl077 en ALTER-EGO, refuse : aucun compteur et le vilain manigance avec +2 SCH (Rhino SCH 1 + 2 = 3 menaces)", "« If you do not »",
+       [CC], ["Puzzle.Reveal('sl077')"], {"compteurs": [["sl072a", "corruption", 0]], "menace": [["01097b", 3]]}, forme_heros=False, choisir_option="Cancel"),
+    _s("sl077 en ALTER-EGO, SANS Creeping Corruption : impossible d'accepter -> le vilain manigance avec +2 SCH (3 menaces)", "refus par impossibilite",
+       [], ["Puzzle.Reveal('sl077')"], {"menace": [["01097b", 3]]}, forme_heros=False),
+    _s("sl077 en ALTER-EGO, accepte avec 4 compteurs (4 -> 6) : la Creeping Corruption se retourne et se vide, le vilain ne manigance pas", "deux compteurs d'un coup",
+       [CC, "Puzzle.Counter('sl072a', 'corruption', 4)"], ["Puzzle.Reveal('sl077')"], {"compteurs": [["sl072b", "corruption", 0]], "face_visible": [["sl072", "sl072b"]], "menace": [["01097b", 0]]}, forme_heros=False),
+    _s("sl077 revelee en HEROS, Creeping Corruption face A (sans OVERPOWERING) : le vilain ATTAQUE (Rhino ATQ 2), pas de manigance", "« otherwise, the villain attacks you »",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Reveal('sl077')"], {"degats_identite": 2, "menace": [["01097b", 0]]}),
+    _s("sl077 en HEROS, Creeping Corruption face B (OVERPOWERING) : le vilain MANIGANCE avec +1 SCH (1 + 1 = 2 menaces), pas d'attaque", "« the villain schemes with +1 SCH »",
+       [CC_B, "Puzzle.Exhaust('01001a')"], ["Puzzle.Reveal('sl077')"], {"degats_identite": 0, "menace": [["01097b", 2]]}),
+    _s("sl077 en HEROS, SANS Creeping Corruption : « otherwise », le vilain attaque (2)", "pas de trait OVERPOWERING",
+       ["Puzzle.Exhaust('01001a')"], ["Puzzle.Reveal('sl077')"], {"degats_identite": 2, "menace": [["01097b", 0]]}),
+    _s("sl077 a DEUX joueurs : Spider-Man (revele) a la face A, Black Panther la face B -> c'est SA Creeping Corruption qui compte : le vilain ATTAQUE", "« YOUR Creeping Corruption »",
+       [CC, "Puzzle.PutIntoPlay('sl072b,sl072a', under_control=True, player=1)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Reveal('sl077')"], {"degats_identite": 2, "menace": [["01097b", 0]]}, heros2="black_panther"),
+    _s("sl077 a DEUX joueurs : Spider-Man (revele) a la face B, Black Panther la face A -> le vilain MANIGANCE avec +1 SCH (2 menaces)", "le trait est lu sur la Creeping Corruption du joueur qui revele",
+       [CC_B, "Puzzle.PutIntoPlay('sl072a,sl072b', under_control=True, player=1)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Reveal('sl077')"], {"degats_identite": 0, "menace": [["01097b", 2]]}, heros2="black_panther"),
+    _s("sl077 : icone de boost 1 (desc)", "desc : Boost 1",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"degats_identite": 3}, deck=["sl077"], preferer_option="Place 2"),
+    # ------------------------------------------------------------------------------------------------------ sl078 : Invasive Thoughts
+    _s("sl078 Invasive Thoughts revelee, Creeping Corruption face A : 1 compteur puis, sans OVERPOWERING, 1 degat a l'identite", "« place 1 corruption counter ... otherwise, take 1 damage »",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Reveal('sl078')"], {"compteurs": [["sl072a", "corruption", 1]], "degats_identite": 1, "menace": [["01097b", 0]]}),
+    _s("sl078 revelee, Creeping Corruption face B (OVERPOWERING) : 1 compteur puis 1 menace sur le complot principal, pas de degat", "« If it has the OVERPOWERING trait, place 1 threat on the main scheme »",
+       [CC_B], ["Puzzle.Reveal('sl078')"], {"compteurs": [["sl072b", "corruption", 1]], "degats_identite": 0, "menace": [["01097b", 1]]}),
+    _s("sl078 revelee avec 4 compteurs sur la face A : le 5e la retourne (face B) PUIS le test lit OVERPOWERING -> 1 menace, pas de degat", "« If IT has the trait » : lu APRES la pose",
+       [CC, "Puzzle.Counter('sl072a', 'corruption', 4)"], ["Puzzle.Reveal('sl078')"], {"compteurs": [["sl072b", "corruption", 0]], "face_visible": [["sl072", "sl072b"]], "degats_identite": 0, "menace": [["01097b", 1]]}),
+    _s("sl078 revelee SANS Creeping Corruption : pas de compteur, pas d'OVERPOWERING -> 1 degat (DECISIONS-d.md n°9)", "« otherwise, take 1 damage »",
+       [], ["Puzzle.Reveal('sl078')"], {"degats_identite": 1, "menace": [["01097b", 0]]}),
+    _s("sl078 Boost, branche 1 : 1 compteur (Rhino : ATQ 2 sans icone)", "« Choose: Either place 1 corruption counter ... or take 4 indirect damage »",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 1]], "degats_identite": 2}, deck=["sl078"]),
+    _s("sl078 Boost, branche 2 : 4 degats INDIRECTS (2 + 4 = 6), aucun compteur", "la 2e branche",
+       [CC, "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"], {"compteurs": [["sl072a", "corruption", 0]], "degats_identite": 6}, deck=["sl078"], preferer_option="Take 4 indirect"),
 ]
 
 
@@ -186,7 +282,11 @@ def sld_etat(monde, aides):
                 soucis.append(f"{cid} est encore dans la defausse de rencontre {ids_def}")
         if "defausse_rencontre_taille" in attendu and len(ids_def) != attendu["defausse_rencontre_taille"]:
             soucis.append(f"defausse de rencontre de {len(ids_def)} cartes {ids_def} (attendu {attendu['defausse_rencontre_taille']})")
-    propres = ("face_visible", "partie_finie", "corruption_joueurs", "absents_defausse_rencontre", "defausse_rencontre_taille")
+    if "main_exacte" in attendu:
+        ids_main = sorted(str(f.paper.card_id) for f in monde.players[0].hand_cards.Get())
+        if ids_main != sorted(attendu["main_exacte"]):
+            soucis.append(f"main {ids_main} (attendu {sorted(attendu['main_exacte'])})")
+    propres = ("main_exacte", "face_visible", "partie_finie", "corruption_joueurs", "absents_defausse_rencontre", "defausse_rencontre_taille")
     reste = {k: v for k, v in attendu.items() if k not in propres}
     cas["attendu"] = reste
     try:
