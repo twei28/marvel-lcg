@@ -124967,7 +124967,7 @@
    "desc": {
     "SCH": "0",
     "ATK": "0",
-    "HP": "∞",
+    "HP": "INF",
     "Stalwart": "1"
    },
    "traits": [
@@ -124996,7 +124996,6 @@
    "desc": {
     "StartingThreat": "25*",
     "EscalationThreat": "1*",
-    "TargetThreat": "∞",
     "Stage": "1"
    },
    "traits": [],
@@ -125036,9 +125035,11 @@
    "name": "Whisper in the Dark",
    "subtitle": "",
    "desc": {},
-   "traits": [],
+   "traits": [
+    "TRAP!"
+   ],
    "set_name": "Shadow Labyrinth",
-   "text": "<i>TRAP!</i>\nTreat attached villain as an <b>ELITE</b> minion with 6 printed hit points. It gains: \"Guard. Villainous. <b>When Defeated</b>: Set this minion aside.\"\n<b>When Revealed</b>: If Shifting Corridors is in play, put the set-aside chosen villain into play engaged with you, side A faceup, with this card attached; otherwise, set this card aside and the villain schemes."
+   "text": "Treat attached villain as an <b>ELITE</b> minion with 6 printed hit points. It gains: \"Guard. Villainous. <b>When Defeated</b>: Set this minion aside.\"\n<b>When Revealed</b>: If Shifting Corridors is in play, put the set-aside chosen villain into play engaged with you, side A faceup, with this card attached; otherwise, set this card aside and the villain schemes."
   },
   {
    "card_id": "sl041",
@@ -125091,7 +125092,8 @@
    "name": "No Time to Think!",
    "subtitle": "",
    "desc": {
-    "Peril": "1"
+    "Peril": "1",
+    "Boost": "1"
    },
    "traits": [],
    "set_name": "Shadow Labyrinth",
@@ -125102,7 +125104,9 @@
    "type": "Treachery",
    "name": "Sudden Shift",
    "subtitle": "",
-   "desc": {},
+   "desc": {
+    "Boost": "2"
+   },
    "traits": [],
    "set_name": "Shadow Labyrinth",
    "text": "<b>When Revealed</b>: Shuffle the trap discard pile and the top 3 cards of the encounter deck into the trap deck. Reveal the top card of the trap deck.\n★ <b>Boost</b>: Shuffle the trap discard pile and the top 2 cards of the encounter deck into the trap deck."
@@ -125173,7 +125177,7 @@
    "subtitle": "",
    "desc": {},
    "traits": [
-    "TRAP"
+    "TRAP!"
    ],
    "set_name": "Deadly Contraptions",
    "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>THWART</b> event from your hand.\n• <i>Disarm</i> — Discard 2 cards at random from your hand, then give a character you control a tough status card.\n• <i>Trip</i> — Deal 2 damage to your identity and confuse it."
@@ -125187,7 +125191,7 @@
     "Boost": "1"
    },
    "traits": [
-    "TRAP"
+    "TRAP!"
    ],
    "set_name": "Deadly Contraptions",
    "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>DEFENSE</b> event from your hand.\n• <i>Disarm</i> — Discard 1 identity-specific card from your hand, then deal 2 damage to an enemy.\n• <i>Trip</i> — Deal 2 damage to your identity and stun it."
@@ -125201,7 +125205,7 @@
     "Boost": "3"
    },
    "traits": [
-    "TRAP"
+    "TRAP!"
    ],
    "set_name": "Deadly Contraptions",
    "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an ally from your hand.\n• <i>Disarm</i> — Discard an ally you control, then draw 2 cards.\n• <i>Trip</i> — Deal 3 damage to your identity. Discard the top 3 cards of your deck."
@@ -125215,7 +125219,7 @@
     "Boost": "1"
    },
    "traits": [
-    "TRAP"
+    "TRAP!"
    ],
    "set_name": "Deadly Contraptions",
    "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an upgrade from your hand.\n• <i>Disarm</i> — Discard an upgrade you control, then remove 4 threat from the main scheme.\n• <i>Trip</i> — Discard 1 card from your hand. Discard the top 8 cards of your deck."
@@ -125229,7 +125233,7 @@
     "Boost": "2"
    },
    "traits": [
-    "TRAP"
+    "TRAP!"
    ],
    "set_name": "Deadly Contraptions",
    "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [energy] [energy] resources.\n• <i>Disarm</i> — Spend [mental] [mental] [physical] resources, then deal 3 damage to the villain.\n• <i>Trip</i> — Deal 3 damage to your identity and exhaust it."
@@ -125241,7 +125245,7 @@
    "subtitle": "",
    "desc": {},
    "traits": [
-    "TRAP"
+    "TRAP!"
    ],
    "set_name": "Deadly Contraptions",
    "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [mental] [mental] resources.\n• <i>Disarm</i> — Spend [energy] [physical] [physical] resources, then search the top 4 cards of your deck for a card and add it to your hand. <i>(Shuffle.)</i>\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a minion is discarded, then reveal it."
@@ -125255,7 +125259,7 @@
     "Boost": "2"
    },
    "traits": [
-    "TRAP"
+    "TRAP!"
    ],
    "set_name": "Deadly Contraptions",
    "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an <b>ATTACK</b> event from your hand.\n• <i>Disarm</i> — Discard a support you control, then remove 3 threat from a scheme.\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a side scheme is discarded, then reveal it."
@@ -125633,5 +125637,5 @@
    "text": "<b>When Revealed</b>: Place 1 corruption counter on your Creeping Corruption. If it has the <b><i>OVERPOWERING</i></b> trait, place 1 threat on the main scheme; otherwise, take 1 damage.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or take 4 indirect damage."
   }
  ],
- "checksum": "5daf8175c3480acc5072cbd79f7187fbc0afabe5da6b1c0be3267f2c6701e9fc"
+ "checksum": "b561d83ee30ac0e3775edb64482d132b8fbf4a014a93f7f72a651aaad343d389"
 }

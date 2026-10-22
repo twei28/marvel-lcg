@@ -1,0 +1,64 @@
+{
+    "version": "0.5.8",
+    "name": "Shadow Labyrinth",
+    "villain": [
+        "sl037"
+    ],
+    "expert": false,
+    "schemes": [
+        "sl038a,sl038b",
+        "sl039a,sl039b"
+    ],
+    "set_aside": [
+        "sl040",
+        "sl050",
+        "sl051",
+        "sl052",
+        "sl053",
+        "sl054",
+        "sl055",
+        "sl056",
+        "sl012a,sl012b",
+        "sl013a,sl013b",
+        "sl014a,sl014b",
+        "sl015a,sl015b",
+        "sl016a,sl016b",
+        "sl017a,sl017b",
+        "sl018",
+        "sl019",
+        "sl020",
+        "sl021",
+        "sl022",
+        "sl023",
+        "sl024",
+        "sl025",
+        "sl026",
+        "sl027"
+    ],
+    "encounters": [
+        "sl028",
+        "sl029",
+        "sl030",
+        "sl031",
+        "sl032",
+        "sl033",
+        "sl034",
+        "sl035",
+        "sl036",
+        "sl041",
+        "sl042",
+        "sl043",
+        "sl044",
+        "sl044",
+        "sl045",
+        "sl045",
+        "sl046",
+        "sl047",
+        "sl048",
+        "sl049"
+    ],
+    "encounter_sets": [
+        "standard"
+    ],
+    "modular_sets": []
+}
