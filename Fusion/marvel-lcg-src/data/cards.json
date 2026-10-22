@@ -124834,7 +124834,8 @@
    "desc": {
     "SCH": "1",
     "ATK": "2",
-    "HP": "3"
+    "HP": "3",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124852,7 +124853,9 @@
     "SCH": "1",
     "ATK": "1",
     "HP": "2",
-    "Boost": "2"
+    "Boost": "2",
+    "Toughness": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124870,7 +124873,8 @@
     "SCH": "1",
     "ATK": "1",
     "HP": "2",
-    "Boost": "1"
+    "Boost": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124889,7 +124893,8 @@
     "ATK": "1",
     "HP": "2",
     "Boost": "1",
-    "Guard": "1"
+    "Guard": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124908,7 +124913,8 @@
     "ATK": "1",
     "HP": "2",
     "Boost": "2",
-    "Patrol": "1"
+    "Patrol": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124926,7 +124932,8 @@
     "SCH": "1",
     "ATK": "1",
     "HP": "2",
-    "Boost": "1"
+    "Boost": "1",
+    "Teamwork": "NINJA"
    },
    "traits": [
     "HAND",
@@ -124953,7 +124960,8 @@
    "name": "Countless Numbers",
    "subtitle": "",
    "desc": {
-    "Surge": "1"
+    "Surge": "1",
+    "Boost": "1"
    },
    "traits": [],
    "set_name": "Ninja Swarm",
@@ -125598,6 +125606,7 @@
    "name": "Binding Ritual",
    "subtitle": "",
    "desc": {
+    "StartingThreat": "1*",
     "Crisis": "1",
     "Boost": "2"
    },
@@ -125611,7 +125620,8 @@
    "name": "Roots of a Black Flower",
    "subtitle": "",
    "desc": {
-    "Acceleration": "1"
+    "StartingThreat": "1",
+    "Acceleration": "2"
    },
    "traits": [],
    "set_name": "Black Flower",
@@ -125640,5 +125650,5 @@
    "text": "<b>When Revealed</b>: Place 1 corruption counter on your Creeping Corruption. If it has the <b><i>OVERPOWERING</i></b> trait, place 1 threat on the main scheme; otherwise, take 1 damage.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or take 4 indirect damage."
   }
  ],
- "checksum": "42ef4c740b4bd11b8b625e1d3012d8b057ff371d2d33550af15e0dbbd41566dd"
+ "checksum": "924a95b3b07950c5b91a86a157fb0c1753358d1d567b79acaf8697b0675e5b6a"
 }
