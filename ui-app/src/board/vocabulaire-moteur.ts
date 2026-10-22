@@ -88,6 +88,8 @@ const MOTEUR_FR: Record<string, string> = {
   Action: 'Action',
   // The City (pu005, 22/10/2026) : UNE action « se déplacer », puis le choix du coût.
   Move: 'Se déplacer',
+  // Kingsfall multi-tables (assemblées) : l'Action de Longue vie / À bas.
+  'Pod Action': 'Action d’assemblée',
   'Exhaust a character you control': 'Épuiser un personnage que vous contrôlez',
   'Spend 1 resource of any type': 'Dépenser 1 ressource de n’importe quel type',
   'Forced Action': 'Action forcée',
@@ -481,6 +483,8 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   // Choix « payer un coût » (`ForChoiceAbilityWithCost`, Sonic Boom 01123) : les
   // jetons [[energy]] restent, ils deviennent des icônes à l'affichage.
   [/^Spend (\[\[.+)$/, (m) => `Dépenser ${m[1]}`],
+  // Action d'assemblée : « <heros> (<table>) - this table » -> le groupe de cette table.
+  [/^(.+) - this table$/, (m) => `${m[1]} (cette table)`],
   [/^Exhaust each character you control$/, () => 'Incliner chacun de tes personnages'],
   // « Combien de fois ce choix ? » (player_action.py, `ChooseAbilities(repeat=...)`).
   [/^(\d+) times?$/, (m) => `${m[1]} fois`],

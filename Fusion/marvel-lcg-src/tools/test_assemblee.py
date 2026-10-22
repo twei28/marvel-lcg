@@ -120,5 +120,19 @@ def _():
     [f.join() for f in fils]
     assert Assemblee.Etat(code)["total_jetons"] == 100
 
+@cas("fermeture d'une table : defaite de son groupe dans chaque assemblee ou il joue encore, une table deja finie ne compte pas deux fois")
+def _():
+    a = Assemblee.Creer("p1", 2)
+    Assemblee.Rejoindre(a, "p2", 3)
+    b = Assemblee.Creer("p2", 4)           # p2 est aussi dans une 2e assemblee (apres la fin d'une partie, une table en rouvre une)
+    Assemblee.Terminer(a, "p1", True)
+    assert Assemblee.AbandonnerTable("p2") == 2
+    ea, eb = Assemblee.Etat(a), Assemblee.Etat(b)
+    assert (ea["degats"], ea["menace"], ea["terminee"], ea["gagnee"]) == (2, 3, True, False)
+    assert (eb["degats"], eb["menace"], eb["terminee"]) == (0, 4, True)
+    assert Assemblee.AbandonnerTable("p2") == 0 and Assemblee.AbandonnerTable("inconnue") == 0
+    assert [g["etat"] for g in ea["groupes"]] == [VICTOIRE, ABANDON]
+
+
 print("\nBILAN :", "tout passe" if not echecs else f"{len(echecs)} echec(s)")
 sys.exit(1 if echecs else 0)

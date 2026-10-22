@@ -47,6 +47,10 @@ def construire_config(base: dict, place: int) -> dict:
     # valait False : une partie finie ne laissait aucune trace jouable, sauf si
     # quelqu'un avait pense a appuyer sur Save. Le bouton « Revoir » de
     # l'assistant, lui, savait deja les rejouer.
+    # KINGSFALL MULTI-TABLES (22/10/2026) : le nom de cette table et le fichier d'etat COMMUN des assemblees (le meme pour toutes les places : c'est ce
+    # qui fait que les tables se parlent). Chemin relatif a `.game/`, comme les autres.
+    cfg["table_nom"] = f"p{place}"
+    cfg["assemblees_fichier"] = "../assemblees.db"
     cfg["auto_save_after_game_over"] = True
     cfg["games_history_file"] = f"../games_history-serveur-{place}.json"
     cfg["game_statistics_file"] = f"../statistics-serveur-{place}.json"

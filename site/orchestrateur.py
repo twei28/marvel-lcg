@@ -926,6 +926,24 @@ def oublier_partie_interrompue(pseudo: str) -> None:
         cx.execute("DELETE FROM parties_interrompues WHERE pseudo = ?", (pseudo,))
 
 
+def _abandonner_les_assemblees(partie) -> None:
+    """KINGSFALL MULTI-TABLES (22/10/2026, decision 2 de l'utilisateur) : une table qui ferme avant la fin de sa partie compte comme une DEFAITE de son groupe
+    dans chaque assemblee ou elle joue encore. Le stockage commun est un petit fichier SQLite du jeu (`assemblees.db`, a la racine du moteur) ; le module
+    est autonome (stdlib), on le charge par son chemin. Ne bloque JAMAIS l'extinction d'une table."""
+    try:
+        import importlib.util
+        chemin_module = os.path.join(RACINE_JEU, "src", "game", "operate", "assemblee.py")
+        if not os.path.exists(chemin_module) or not os.path.exists(os.path.join(RACINE_JEU, "assemblees.db")):
+            return
+        os.environ["MCLCG_ASSEMBLEES"] = os.path.join(RACINE_JEU, "assemblees.db")
+        spec = importlib.util.spec_from_file_location("assemblee_site", chemin_module)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.Assemblee.AbandonnerTable(f"p{partie.emplacement}")
+    except Exception as souci:
+        sys.stderr.write("abandon d'assemblee non note : %r\n" % (souci,))
+
+
 def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     """Arrete le moteur. ⚠ NE TOUCHE PAS AUX DONNEES : elles appartiennent au
     compte et doivent etre la au prochain allumage.
@@ -966,6 +984,7 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     # `journal_partie_fermee` ne touche que les lignes encore ouvertes : la
     # rappeler est sans effet.
     journal_partie_fermee(partie.code)
+    _abandonner_les_assemblees(partie)
     processus = partie.processus
     if processus is not None:
         # `start_new_session` a mis le moteur dans son propre groupe : on tue

@@ -3,9 +3,15 @@ from aiohttp import web
 from engine.device.web.server.server_base import GameServerBase
 
 from engine.lib import Json
+from engine.config import ConfigVariables
 # from engine.log import Log
 from game.puzzle.puzzle_data import PuzzleData
 from game.game_run.game_new import NewGameDescriptor
+
+# Kingsfall multi-tables : le nom de cette table et le fichier d'etat commun des assemblees (poses par `tools/config_serveur.py`).
+TABLE_NOM = ConfigVariables.Str('table_nom', 'local')
+ASSEMBLEES_FICHIER = ConfigVariables.Str('assemblees_fichier', '')
+
 
 class GameServerNewGame(GameServerBase):
 
@@ -45,8 +51,46 @@ class GameServerNewGame(GameServerBase):
                 new_game.campaign_log = {**(new_game.campaign_log or {}), **secret}
         except Exception:
             pass
+        # KINGSFALL MULTI-TABLES (22/10/2026). Le client demande `assemblee_creer` (cette table ouvre l'assemblee et en est l'organisatrice) ou
+        # `assemblee_rejoindre_<CODE>` ; le serveur s'inscrit dans le stockage COMMUN AVANT de lancer la partie et remplace la demande par la regle
+        # `assemblee_<CODE>_<TABLE>` que le monde lit. Un refus (code inconnu, assemblee pleine) arrete le lancement avec son message.
+        try:
+            self._inscrire_dans_une_assemblee(new_game)
+        except Exception as erreur:
+            from game.operate.assemblee import ErreurAssemblee
+            if isinstance(erreur, ErreurAssemblee):
+                return web.json_response({'error': str(erreur)}, status=400)
+            raise
         self.game.NewGame(new_game)
         return web.json_response({'result': "New game created"})
+
+    def _inscrire_dans_une_assemblee(self, new_game: 'NewGameDescriptor') -> None:
+        from game.operate.assemblee import Assemblee
+        rules = list(new_game.rules or [])
+        demande = next((r for r in rules if r == 'assemblee_creer' or r.startswith('assemblee_rejoindre_')), None)
+        if demande is None:
+            return
+        table = TABLE_NOM.value or 'local'
+        fichier = ASSEMBLEES_FICHIER.value
+        if fichier:
+            import os
+            os.environ['MCLCG_ASSEMBLEES'] = os.path.abspath(fichier)
+        noms = []
+        for heros in new_game.hero_json or []:
+            try:
+                import json
+                noms.append(str(json.loads(heros).get('name') or '').strip())
+            except Exception:
+                noms.append('')
+        joueurs = max(1, len(new_game.hero_json or []))
+        libelle = ', '.join(n for n in noms if n)
+        if demande == 'assemblee_creer':
+            code = Assemblee.Creer(table, joueurs, libelle)
+        else:
+            code = demande[len('assemblee_rejoindre_'):].strip().upper()
+            Assemblee.Rejoindre(code, table, joueurs, libelle)
+        rules = [r for r in rules if r != demande] + [f'assemblee_{code}_{table}']
+        new_game.rules = rules
 
     async def load_replay(self, request: web.Request) -> web.Response:
         self.table_ordinaire = False

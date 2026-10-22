@@ -137,6 +137,9 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   wanted: 'recherché',
   // Campagne Punisher (22/10/2026) : S.H.I.E.L.D. Support Team (pu145).
   intelligence: 'renseignement',
+  // Kingsfall multi-tables (22/10/2026) : Le Roi (pu151) montre les degats et la menace COMMUNS de l'assemblee.
+  king_damage: 'dégâts du Roi',
+  king_threat: 'menace du Roi',
   // Pack TMNT Venus (16/10/2026) : compteurs de dragage poses sur l'identite (tv001a, tv001b, tv003-tv013).
   dredge: 'dragage',
   // Pack Jennika (16/10/2026) : les compteurs de Fearless Resolve (tj006).

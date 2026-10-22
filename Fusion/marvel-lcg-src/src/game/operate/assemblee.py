@@ -192,6 +192,18 @@ class Assemblee:
         assert etat_final is not None
         return etat_final
 
+    @staticmethod
+    def AbandonnerTable(table: str) -> int:
+        """La table `table` ferme (extinction, bouton « Eteindre », deploiement) : dans CHAQUE assemblee ou son groupe joue encore, c'est une DEFAITE
+        (decision 2 : 1 menace par joueur du groupe). Rend le nombre de groupes ainsi abandonnes. Sans effet si la table n'est dans aucune assemblee."""
+        n = 0
+        with _Transaction() as base:
+            for g in base.execute('SELECT code, joueurs FROM groupes WHERE tab=? AND etat=0', (table,)).fetchall():
+                base.execute('UPDATE groupes SET etat=? WHERE code=? AND tab=?', (ABANDON, g['code'], table))
+                base.execute('UPDATE assemblees SET menace = menace + ?, version = version + 1 WHERE code=?', (g['joueurs'], g['code']))
+                n += 1
+        return n
+
     ############################################################################
     # Cote monde : la table courante
     @staticmethod
