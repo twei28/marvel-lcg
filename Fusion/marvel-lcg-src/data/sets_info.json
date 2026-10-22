@@ -1923,6 +1923,7 @@
    "one_last_kill_jigsaw",
    "one_last_kill_hobgoblin",
    "the_big_apple",
+   "the_big_apple_uptown",
    "kingsfall",
    "punishment_hobgoblin",
    "punishment_jigsaw",
@@ -1950,7 +1951,8 @@
    "the_big_apple",
    "locations_the_big_apple",
    "capos",
-   "leads_the_big_apple"
+   "leads_the_big_apple",
+   "uptown_expansion"
   ],
   "max_id": "pu151"
  },

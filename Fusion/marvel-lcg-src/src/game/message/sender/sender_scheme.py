@@ -236,6 +236,7 @@ class SenderScheme:
             self.killer: Final = killer
             self.scheme: Final = scheme
             self.by_effect: Final = by_effect
+            self.excess_thwart = 0   # AJOUT (22/10/2026) : menace enlevee au-dela de la menace restante (« exactly defeat »), posee par `Scheme2.OnBeDefeated`
             super().__init__(trigger=killer, thwarter=killer, thwarted=[scheme])
             self.AddRelatedFace(killer, scheme, by_effect)
 

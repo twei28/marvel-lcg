@@ -10,6 +10,10 @@ from ..leads_the_big_apple import CreerPaquetPistes, RevelerPiste, PistesEnVicto
 
 GRILLE_DES_LIEUX = [["pu030", "pu031", "pu032"], ["pu033", "pu034", "pu035"], ["pu036", "pu037", "pu038"]]
 CASE_DE_DEPART = (1, 1)   # Midtown
+# Extension Uptown (optionnelle, p057) : une 4e rangee U1 U2 U3 AU-DESSUS de la grille. Numerotee -1 : les lignes 0 a 2 et le depart (1, 1) ne bougent pas,
+# et la case (-1, c) est la voisine du nord de (0, c) (`Ville.Adjacentes`).
+LIGNE_UPTOWN = -1
+RANGEE_UPTOWN = ["pu023", "pu024", "pu025"]
 
 
 def LeVilain(effect: 'Effect', joueur: 'Player') -> 'Villain|None':
@@ -50,10 +54,17 @@ def MettreEnPlaceLaVille(effect: 'Effect', rangees: int=3) -> 'List[Villain]':
     premier = Worlds.GetFirstPlayer(effect)
 
     commune = world.CreateCommonGameArea()
-    zones = {ligne: world.CreateGameArea() for ligne in range(rangees)}
+    # Uptown : la presence de ses lieux parmi les cartes de cote (scenario `the_big_apple_uptown`) ajoute la rangee U et un 4e CAPO.
+    uptown = MisDeCote(effect, RANGEE_UPTOWN[0]) is not None
+    grille = {ligne: rangee for ligne, rangee in enumerate(GRILLE_DES_LIEUX[:rangees])}
+    if uptown:
+        grille[LIGNE_UPTOWN] = RANGEE_UPTOWN
+    lignes = sorted(grille)           # Uptown (-1) d'abord, puis 0, 1, 2
+    zones = {ligne: world.CreateGameArea() for ligne in lignes}
 
     cases = {}
-    for ligne, rangee in enumerate(GRILLE_DES_LIEUX[:rangees]):
+    for ligne in lignes:
+        rangee = grille[ligne]
         for colonne, card_id in enumerate(rangee):
             lieu = MisDeCote(effect, card_id)
             if lieu is None:
@@ -75,7 +86,7 @@ def MettreEnPlaceLaVille(effect: 'Effect', rangees: int=3) -> 'List[Villain]':
     candidats = [f.CastTo(Villain) for f in Worlds.GetSetAsideAreaCards(effect, CardFinder(card_type=Villain)) if f.HasTrait("CAPO")]
     Villains.BuildVillainDeck(candidats, effect)
     capos: List['Villain'] = []
-    for ligne in range(rangees):
+    for ligne in lignes:
         capo = Villains.RevealNextVillain(premier, effect)
         if capo is not None:
             zones[ligne].AddCard(capo.card)

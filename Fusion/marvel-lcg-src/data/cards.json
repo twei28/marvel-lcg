@@ -124058,6 +124058,84 @@
    "set_name": "Campaign - The City Never Sleeps",
    "text": "Setup. Permanent.\n<b>Forced Interrupt</b>: When Kingpin is defeated in this pod, place 1 damage here for each player in that game.\n<b>Forced Interrupt</b>: When the players lose a game in this pod, place 1 threat here for each player in that game.\n<b>At the end of all games, if the amount of damage here is equal to or greater than the amount of threat, the pod wins!</b>",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu023",
+   "type": "Environment",
+   "name": "Upper West Side",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Uptown Expansion",
+   "text": "<b>Hero Interrupt</b>: When a hero uses a basic power, choose to get either +1 or -1 to that power for this use. <i>(Limit once per phase.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu024",
+   "type": "Environment",
+   "name": "Harlem",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Uptown Expansion",
+   "text": "<b>Response</b>: After an identity uses a basic power, ready an ally at this location. <i>(Limit once per phase.)</i>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu025",
+   "type": "Environment",
+   "name": "The Bronx",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Uptown Expansion",
+   "text": "Each attack in The Bronx gains overkill.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu026",
+   "type": "Obligation",
+   "name": "West Side Warrior (U1)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Uptown Expansion",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in Upper West Side, after you exactly defend an attack or exactly defeat an enemy or side scheme, add a dojo counter here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu027",
+   "type": "Obligation",
+   "name": "The Harlem Hustle (U2)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Uptown Expansion",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in Harlem, after a character you control makes a basic attack, place a hustle counter here and add 3 threat to the main scheme.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu028",
+   "type": "Obligation",
+   "name": "Bronx Bombered (U3)",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LEAD"
+   ],
+   "set_name": "Uptown Expansion",
+   "text": "<i>Lead.</i>\n<b>Response</b>: While in The Bronx, after you deal damage to the villain, place an equal amount of damage here.\nThen, if there is damage here equal to or greater than the villain's printed hit points, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+   "custom": "MC×DC 2026"
   }
  ],
  "checksum": "a99c4aeba0466f5d8f2c2ea8e5fdc16970f4059dce498ee8fe26e8ab99b7b5d1"

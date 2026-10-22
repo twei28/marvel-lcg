@@ -778,3 +778,34 @@ KINGSFALL_CARDS = [
       "<b>At the end of all games, if the amount of damage here is equal to or greater than the amount of threat, the pod wins!</b>", PU_CAMP,
       page="p273 (Kingsfall 3/3, ID 6137)"),
 ]
+
+
+# ======================================================================================================
+# Extension optionnelle « Uptown » (PU-10, 22/10/2026) : 3 lieux (U1 U2 U3, ID 6023-6025) au-dessus de la grille, 3 pistes de plus (ID 6026-6028) et un
+# 4e CAPO ; la 7e carte (ID 6029, p057) est la carte d'instructions, sans jeu. IDs : pu023-pu028 (6023-6028, libres). Releve cartes.md p045-p057.
+# ======================================================================================================
+PU_UPTOWN = "Uptown Expansion"
+UPTOWN_CARDS = [
+    c("pu023", "Environment", "Upper West Side", {}, ["LOCATION"],
+      "<b>Hero Interrupt</b>: When a hero uses a basic power, choose to get either +1 or -1 to that power for this use." + " <i>(Limit once per phase.)</i>",
+      PU_UPTOWN, page="p045 (U1, ID 6023)"),
+    c("pu024", "Environment", "Harlem", {}, ["LOCATION"],
+      "<b>Response</b>: After an identity uses a basic power, ready an ally at this location." + " <i>(Limit once per phase.)</i>",
+      PU_UPTOWN, page="p047 (U2, ID 6024)"),
+    c("pu025", "Environment", "The Bronx", {}, ["LOCATION"],
+      "Each attack in The Bronx gains overkill.", PU_UPTOWN, page="p049 (U3, ID 6025)"),
+    c("pu026", "Obligation", "West Side Warrior (U1)", {}, ["LEAD"],
+      "<i>Lead.</i>\n<b>Response</b>: While in Upper West Side, after you exactly defend an attack or exactly defeat an enemy or side scheme, add a dojo "
+      "counter here.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+      PU_UPTOWN, page="p051 (U1, ID 6026)"),
+    c("pu027", "Obligation", "The Harlem Hustle (U2)", {}, ["LEAD"],
+      "<i>Lead.</i>\n<b>Response</b>: While in Harlem, after a character you control makes a basic attack, place a hustle counter here and add 3 threat "
+      "to the main scheme.\nThen, if there are 3 or more counters here, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+      PU_UPTOWN, page="p053 (U2, ID 6027)"),
+    c("pu028", "Obligation", "Bronx Bombered (U3)", {}, ["LEAD"],
+      "<i>Lead.</i>\n<b>Response</b>: While in The Bronx, after you deal damage to the villain, place an equal amount of damage here.\nThen, if there is "
+      "damage here equal to or greater than the villain's printed hit points, add this card to the victory display, reveal the top LEAD card, and draw 1 card.",
+      PU_UPTOWN, page="p055 (U3, ID 6028)"),
+]
+UPTOWN_LOCATIONS_SET_ASIDE = ["pu023", "pu024", "pu025"]
+UPTOWN_LEADS_SET_ASIDE = ["pu026", "pu027", "pu028"]

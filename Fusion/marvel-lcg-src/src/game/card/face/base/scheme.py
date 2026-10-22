@@ -71,6 +71,8 @@ class Scheme2(HasAmplify, HasHazard, CanHinder, HasThreatLevel, CanPlaceCounter,
         if not killer:
             killer = by_effect.this
         unit_defeated_message = Message.AfterUnitDefeatedScheme(killer, self, by_effect)
+        # AJOUT (22/10/2026, Uptown pu026 « exactly defeat a side scheme ») : la menace enlevee en trop (retrait demande - menace retiree).
+        unit_defeated_message.excess_thwart = getattr(self, 'excedent_de_menace', 0)
         unit_defeated_message.Send()
 
     @override
@@ -141,6 +143,7 @@ class Scheme2(HasAmplify, HasHazard, CanHinder, HasThreatLevel, CanPlaceCounter,
             remove_message.Send()
             if remove_message.value and not remove_message.is_be_instead and not remove_message.cannot_be_removed:
                 threat = min(self.threat, remove_message.value)
+                self.excedent_de_menace = max(0, remove_message.value - threat)
                 super().RemoveTokensInternal(threat, 'threat', by_effect, forced=True)
                 message = Message.AfterSchemeRemoveThreat(self, threat, by_effect, remove_message)
                 message.Send()

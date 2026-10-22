@@ -64,11 +64,14 @@ pu147 Long Live the King? (Setup : allie Punisher au choix des joueurs si gagne,
 ## Fait le 22/10 (nuit, suite) : pu139 + ecran de campagne
 pu139 Capo of the Past (commit 6f1c8462) ; ecran de campagne : 4 combats, choix du scenario des combats 2 et 3 d'apres le carnet (`catalogue-carnet.js`, `tools/test_catalogue_carnet.mjs`, 4 epreuves `test_campagnes.py punisher`, `ui-check/tests/campagne-punisher.spec.ts`). Preuves : `preuves-big-apple.md`. Regle experte REC faite (combats 2 a 4, 6 cas). RESTE du chantier campagne : pages de livret, ecran de fin du combat 4.
 
+## Fait le 22/10 (nuit, fin) : regle experte REC + Uptown
+Regle experte REC (commit 37b504fb) ; extension Uptown (PU-10) : pu023-pu028, scenario `the_big_apple_uptown(_expert)`, rangee U = ligne -1, 4 CAPO, 12 pistes, `AfterUnitDefeatedScheme.excess_thwart`, 33 cas `[upt]`, mutations rouges. Regression complete verte (17 filtres, test_cards 7168 ok). Preuves : `preuves-big-apple.md`. Piege : le banc ne tire pas les boosts dans une zone de rangee ; `Worlds.FindMainScheme` ne voit pas la zone commune depuis l'aire d'un joueur (`GetAllMainSchemes`). Mutations : un seul passage par carte, filtre cible (`[upt] pu0NN`).
+
 ## Ce qui RESTE (ordre propose)
 1. ~~Combat 4 Kingsfall, version normale~~ FAIT (voir ci-dessus). Reste : ajouter le combat 4 a `data/campagnes/punisher_mcdc_2026.json` / l'ecran de campagne. Ancien texte : : scans p269-p273 (Long Live the King? 1A, Power to the People, Long Live, Down With the King, The King), scenario Kingpin (FNE) + sets SWAT et Tracksuit Mafia, Setup « allie Punisher en jeu » si pu146 gagne (cle `Punisher Ally`), victoire = campagne gagnee. Montrer les scans UN PAR UN et poser les questions une a une (regle utilisateur). Dire d'abord quelles cartes servent hors mode multi-tables.
 2. **pu139 Capo of the Past** (set modulaire du combat 2, sans script) : « Treat attached character as an ELITE minion » : un VILAIN CAPO traite comme sbire (`TreatAsMinion` ne gere que allie/heros : extension moteur). Question a poser a l'utilisateur avec le scan.
 3. **Ecran de campagne** (`Fusion/marvel-lcg-src/public/js/campagne/app.js`) : choisir le scenario des combats 2 et 3 d'apres le carnet (`ScenarioDuCombat2/3` existent cote moteur) ; pages de livret.
-4. Regle experte « chaque joueur peut s'attribuer une carte rencontre pour soigner REC » (combats 2 a 4) ; autoplay en mode campagne ; Uptown (PU-10) ; defis p279+ (PU-11) ; textes FR (PU-12) ; batterie complete (~1 h) + audit (PU-13).
+4. ~~Regle experte REC~~ et ~~Uptown~~ FAITS ; autoplay en mode campagne ; defis p279+ (PU-11, 4 scenarios, + Hawkeye MC×DC p283-p284) ; textes FR (PU-12) ; batterie complete (~1 h) + audit (PU-13).
 5. Interface « La Ville » (PU-8) : EN ATTENTE ; l'utilisateur a dit « on verra en temps voulu » (design « A + B », maquette `docs/packs/mcdc-2026-punisher/maquette-ville.html`).
 6. Effets « en jeu » autres que Collaboration vis-a-vis des sbires attaches (cas par cas).
 7. Decisions sans texte de RR a confirmer en partie reelle : voir `preuves-big-apple.md`.

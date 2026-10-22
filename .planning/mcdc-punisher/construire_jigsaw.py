@@ -20,7 +20,7 @@ PAGE = {'pu071a': 141, 'pu071b': 142, 'pu072a': 143, 'pu072b': 144, 'pu073': 145
         'pu106a': 211, 'pu106b': 212, 'pu107': 213, 'pu108': 215, 'pu109': 217, 'pu110': 219, 'pu111': 221, 'pu113': 225,
         'pu119': 237, 'pu120': 239, 'pu121': 241, 'pu123': 245,
         'pu114': 227, 'pu115': 229, 'pu116': 231, 'pu117': 233, 'pu118': 235, 'pu125': 249, 'pu126': 251, 'pu127': 253,
-        'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277, 'pu140': 263, 'pu141': 264, 'pu142': 265, 'pu143': 266, 'pu144': 267, 'pu145': 268, 'pu146': 275, 'pu147': 269, 'pu148': 270, 'pu149a': 271, 'pu149b': 272, 'pu151': 273,
+        'pu128': 255, 'pu129': 257, 'pu130': 259, 'pu131': 261, 'pu139': 277, 'pu140': 263, 'pu141': 264, 'pu142': 265, 'pu143': 266, 'pu144': 267, 'pu145': 268, 'pu146': 275, 'pu023': 45, 'pu024': 47, 'pu025': 49, 'pu026': 51, 'pu027': 53, 'pu028': 55, 'pu147': 269, 'pu148': 270, 'pu149a': 271, 'pu149b': 272, 'pu151': 273,
         'pu048a': 95, 'pu048b': 96, 'pu049a': 97, 'pu049b': 98, 'pu050a': 99, 'pu050b': 100, 'pu051a': 101, 'pu051b': 102, 'pu052a': 103, 'pu052b': 104, 'pu053a': 105, 'pu053b': 106, 'pu054a': 107, 'pu054b': 108, 'pu055a': 109, 'pu055b': 110,
         'pu001a': 1, 'pu001b': 2, 'pu002a': 3, 'pu002b': 4, 'pu003a': 5, 'pu003b': 6, 'pu004': 7, 'pu039': 77, 'pu040': 79, 'pu041': 81, 'pu042': 83, 'pu043': 85, 'pu044': 87, 'pu045': 89, 'pu046': 91, 'pu047': 93,
         'pu007': 13, 'pu008': 15, 'pu009': 17, 'pu010': 19, 'pu011': 21, 'pu012': 23, 'pu013': 25, 'pu014': 27, 'pu015': 29, 'pu016': 31, 'pu017': 33, 'pu018': 35, 'pu020': 39, 'pu021': 41, 'pu022': 43,
@@ -39,7 +39,7 @@ def stat(v):
 
 cartes = []
 CORRECTIONS = {'pu131': {'Amplify': '2'}, 'pu113': {'Hazard': '1'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
-for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS:
+for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS + defs.UPTOWN_CARDS:
     d = {k: stat(v) for k, v in x['desc'].items()}
     if x['card_id'] in STAGE: d['Stage'] = STAGE[x['card_id']]
     d.update(CORRECTIONS.get(x['card_id'], {}))
@@ -75,6 +75,7 @@ ecrire('data/encounter_sets/the_big_apple.json', {'version': '0.5.8', 'name': 'T
 ecrire('data/encounter_sets/locations_the_big_apple.json', {'version': '0.5.8', 'name': 'Locations - The Big Apple', 'encounters': defs.LOCATIONS_SET_ASIDE})
 ecrire('data/encounter_sets/leads_the_big_apple.json', {'version': '0.5.8', 'name': 'Leads - The Big Apple', 'encounters': defs.LEADS_SET_ASIDE})
 ecrire('data/encounter_sets/capos.json', {'version': '0.5.8', 'name': 'CAPOS', 'encounters': defs.CAPO_SET_ASIDE})
+ecrire('data/encounter_sets/uptown_expansion.json', {'version': '0.5.8', 'name': 'Uptown Expansion', 'encounters': defs.UPTOWN_LOCATIONS_SET_ASIDE + defs.UPTOWN_LEADS_SET_ASIDE})
 ecrire('data/encounter_sets/hobgoblin.json', {'version': '0.5.8', 'name': 'Hobgoblin', 'encounters': defs.HOBGOBLIN_ENCOUNTERS})
 
 MANIGANCES = ['art_museum_heist', 'the_getaway', 'protection_racket', 'the_raft_breakout', 'stop_the_presses']
@@ -122,6 +123,16 @@ for expert in (False, True):
     ecrire('data/scenarios/the_big_apple%s.json' % ('_expert' if expert else ''), s)
 noms.append('the_big_apple')
 
+# --- Extension Uptown (optionnelle) : meme scenario + 3 lieux (rangee U au-dessus de la grille), 3 pistes, un 4e CAPO (`MettreEnPlaceLaVille` detecte
+# pu023 dans les cartes de cote). Le combat 1 de la campagne l'EXCLUT (« Do not include Uptown Expansion ») : il garde `the_big_apple`.
+for expert in (False, True):
+    nom = 'the_big_apple%s' % ('_expert' if expert else '')
+    s = json.load(open(os.path.join(JEU, 'data/scenarios/%s.json' % nom), encoding='utf-8'))
+    s['name'] = 'The Big Apple (Uptown)'
+    s['set_aside'] = list(s['set_aside']) + list(defs.UPTOWN_LOCATIONS_SET_ASIDE) + list(defs.UPTOWN_LEADS_SET_ASIDE)
+    ecrire('data/scenarios/the_big_apple_uptown%s.json' % ('_expert' if expert else ''), s)
+noms.append('the_big_apple_uptown')
+
 # --- Combat 4 « Kingsfall » : le scenario Kingpin (FNE) + SWAT Team + Tracksuit Mafia, pu147 (Long Live the King?) et pu149a/b (Long Live / Down With)
 # mis en jeu a la mise en place ; pu148 (verso de pu147) et pu146 (allie) sont crees par pu147.
 for expert in (False, True):
@@ -145,7 +156,7 @@ p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))
 cle = '208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)'
 somme = si.pop('checksum', None); si.pop(cle, None)
-si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple', 'capos', 'leads_the_big_apple'], 'max_id': 'pu151'}
+si[cle] = {'name': PACK, 'scenarios': noms, 'heroes': [], 'encounters': ['jigsaw', 'hobgoblin', 'punishers_armory', 'the_syndicate', 'capo_of_the_past', 'punishers_hit_list', 'swat_team', 'punishment', 'the_big_apple', 'locations_the_big_apple', 'capos', 'leads_the_big_apple', 'uptown_expansion'], 'max_id': 'pu151'}
 if somme: si['checksum'] = somme
 with open(p, 'w', encoding='utf-8', newline='\n') as f:
     json.dump(si, f, ensure_ascii=False, indent=1)
