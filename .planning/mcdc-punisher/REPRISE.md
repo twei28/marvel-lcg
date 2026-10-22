@@ -100,3 +100,8 @@ RESTE (rien n'est deploye ni pousse apres `d0bb5c2f`) :
 5. deux tests UI rouges sans lien (`aspect.test` IdentitySpecific, `zones-arts-alternatifs` 03017_mcdc26) ;
 6. deploiement : SEULEMENT sur demande, apres verification des joueurs en ligne (le serveur redemarre) ; le deploiement envoie `public/stories` (planches de livret) et cree `assemblees.db` au premier usage.
 Shadowland : en pause (memoire `shadowland-en-pause`).
+
+## MISE A JOUR 22/10/2026 (soir)
+- Batterie 2 TERMINEE : 7852/7856, les 4 echecs sont les Squirrel Girl connus (sg006/007/009/013) : aucune regression MCDC.
+- Extension renommee « La ville ne dort jamais (MCDC 2026) » (cle 208) ; les 4 defis dans l'extension fan-made 210 « Challenges / Defis (MCDC 2026) » ; tuiles d'affaires de la liste libre = image de la manigance annexe (`tuile_manigance` dans sets_info).
+- RESTE : audit final PU-13, vrai navigateur (tuiles, bloc multi-tables), verdict d'assemblee en fin de partie.
