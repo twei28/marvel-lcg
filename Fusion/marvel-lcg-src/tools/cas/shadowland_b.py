@@ -106,7 +106,7 @@ CAS = [
         "mis_de_cote_scenario": ["sl014a"], "paquet_pieges": 7}),
     _t("sl040 : le sosie vaincu (6 degats) QUITTE la partie (« set this minion aside ») : Whisper est defausse (defausse piege), la vraie carte du vilain reste de cote, rien de generique en defausse de rencontre",
        "« When Defeated : Set this minion aside »", ["Puzzle.Reveal('sl040')"], ["Puzzle.Damage('Elektra', 6)"],
-       {"aucun_sosie": True, "dans_defausse_piege": ["sl040"], "mis_de_cote_scenario": ["sl014a"], "pas_de_carte_generique_en_defausse": True, "taille_defausse_rencontre": 0}),
+       {"aucun_sosie": True, "sosie_retire": True, "dans_defausse_piege": ["sl040"], "mis_de_cote_scenario": ["sl014a"], "pas_de_carte_generique_en_defausse": True, "taille_defausse_rencontre": 0}),
     _t("sl040, TEMOIN : le sosie blesse sans etre vaincu (5 degats) reste en jeu avec Whisper", "6 PV imprimes (pas 15)", ["Puzzle.Reveal('sl040')"], ["Puzzle.Damage('Elektra', 5)"],
        {"sosie": {"pv": 6, "attaches": ["sl040"]}}),
     _t("sl040 Revele APRES le stade 2 (Corridors de cote) : Whisper est mis de cote (aside), pas defausse, et le vilain manigance contre le joueur (au moins 1 menace de plus sur 2B)",
@@ -297,7 +297,7 @@ def slb_etat(monde, aides):
     `dans_paquet_piege` / `dans_defausse_piege` : [card_id] presents ; `n_dans_paquet_piege` : [[card_id, n]] ; `dessus_paquet_piege` : card_id du sommet ;
     `taille_deck_rencontre` / `taille_defausse_rencontre` ; `vilains` : card_id des vilains EN JEU (liste exacte) ; `gagnee` / `perdue` : fin de partie ;
     `face_visible` : [[prefixe, card_id]] ; `vilain_choisi_de_cote` : le vilain Dark Protege tire est de cote, ses cartes liees (et elles seules) sont dans le deck ;
-    `sosie` : le vilain traite comme un sbire (Whisper in the Dark) ; `aucun_sosie` ; `pas_de_carte_generique_en_defausse` ; `engage_avec` : [[card_id, rang du joueur]]."""
+    `sosie` : le vilain traite comme un sbire (Whisper in the Dark) ; `aucun_sosie` ; `pas_de_carte_generique_en_defausse` ; `engage_avec` : [[card_id, rang du joueur]] ; `sosie_retire` : un sosie a existe et n'est plus en jeu."""
     import re as _re
     from game.operate.worlds import Worlds as _W
     cas = aides["cas"]
@@ -408,6 +408,12 @@ def slb_etat(monde, aides):
             soucis.append(f"{card_id} introuvable en jeu (engage_avec)")
         elif face.GetEngagedPlayer() is not monde.const_players[rang]:
             soucis.append(f"{card_id} engage avec {face.GetEngagedPlayer()} (attendu le joueur {rang})")
+    if attendu.get("sosie_retire"):
+        tous = [o.face for o in monde.object_manager.card_dict.values() if getattr(getattr(o, "face", None), "sl_sosie_du_vilain", False)]
+        if not tous:
+            soucis.append("aucun sosie n'a jamais existe (la revelation de Whisper n'a rien cree)")
+        elif any(t.IsInPlay() for t in tous):
+            soucis.append("un sosie est encore en jeu")
     if attendu.get("aucun_sosie") and sosies:
         soucis.append(f"un sosie du vilain est encore en jeu : {[s.name for s in sosies]}")
     voulu = attendu.get("sosie")
@@ -437,7 +443,7 @@ def slb_etat(monde, aides):
                 soucis.append(f"ATQ du sosie {s.attack} (attendu {voulu['attaque']})")
     reste = {k: v for k, v in attendu.items() if k not in (
         "dans_paquet_piege", "dans_defausse_piege", "n_dans_paquet_piege", "dessus_paquet_piege", "taille_deck_rencontre", "taille_defausse_rencontre",
-        "pas_de_carte_generique_en_defausse", "vilains", "gagnee", "perdue", "pas_finie", "face_visible", "vilain_choisi_de_cote", "aucun_sosie", "sosie", "engage_avec")}
+        "pas_de_carte_generique_en_defausse", "vilains", "gagnee", "perdue", "pas_finie", "face_visible", "vilain_choisi_de_cote", "aucun_sosie", "sosie", "engage_avec", "sosie_retire")}
     cas["attendu"] = reste
     try:
         ok, msg = etat_attendu(monde, aides)

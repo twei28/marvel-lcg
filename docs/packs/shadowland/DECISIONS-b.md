@@ -77,3 +77,32 @@ Le moteur ne sait « traiter comme un sbire » que des allies et des heros (`tre
 - **Moteur** : `Deck.DiscardUntil` rend « rien » quand la carte cherchee est la DERNIERE du deck (`deck.py`, `if self.GetSize() == 0: return None`). Le sbire / la manigance est pourtant defausse(e). Cas rares (sl043, sl055, sl056), non modifie (fichier partage) : les cas `[slb]` mettent une carte de plus sous la cible.
 - Un deck de rencontre epuise pendant « discard until » est remelange avec sa defausse + 1 jeton d'acceleration (regle standard, observee).
 - Aucune partie reelle jouee par un humain : le plateau (`ui-app`) n'a pas ete regarde pour le paquet piege ni le sosie de Whisper (etape 8 bis non faite faute d'outil de capture dans cette session).
+
+## 8. Gabarits du processus carte (synthese, une ligne par carte)
+
+Etapes 2 (cartes de reference) et 5-6 (mots-pieges, nombres) : en tete de chaque script (`src/cards/pack/shadowland/shadow_labyrinth/`, `.../deadly_contraptions/`). Etape 7 : cas `tools/cas/shadowland_b.py` (111 cas `[slb]`), preuve par substitution `tools/substituer_pack.py` (module remplace par un stub vide : le cas doit tomber au rouge). Une ligne « verts » = temoins d'ABSENCE d'effet ou mots-cles / icones natifs lus dans `desc` (verts sans module, assume).
+
+| Carte | Cas | Rouges sans module | Verts sans module (assumes) |
+|---|---|---|---|
+| sl037 Shifting Corridors | 6 | 3/4 | Stalwart natif |
+| sl038a Setup | 8 | 8/8 | |
+| sl038b | 9 | 8/8 | |
+| sl039a | 2 | 2/2 | |
+| sl039b | 12 | 5/7 | menace 9 = defaite (natif), temoin standard |
+| sl040 Whisper in the Dark | 4 | 3/3 (apres ajout de `sosie_retire`) | |
+| sl041 Lord Deathstrike | 4 | 3/4 | Patrol natif |
+| sl042 Dead End | 6 | 4/6 | Assault et Crisis natifs |
+| sl043 Hall of Hidden Doors | 7 | 4/6 | deck sans cible (absence), Acceleration natif |
+| sl044 No Time to Think! | 4 | 3/4 | boost d'une manigance (absence) |
+| sl045 Sudden Shift | 3 | 2/3 | paquet et defausse vides (absence) |
+| sl046 Nervous Jitters | 6 | 5/5 | |
+| sl047 Iron Monk | 7 | 1/4 | joueur 2 engage (absence), Toughness et Patrol natifs |
+| sl048 Hall of Punishment | 5 | 3/5 | temoin Avoid (absence), Crisis natif |
+| sl049 Path of a Thousand Cuts | 5 | 3/5 | temoin Disarm (absence), menace de depart |
+| sl050-sl056 (7 pieges) | 3 a 4 chacun | 3/3, 3/3, 3/3, 3/3, 4/4, 3/3, 3/3 | |
+
+Limite imprimee : une seule, sl039b « once per round per player » : temoin d'epuisement = cas « LIMITE » (2e contre du meme joueur dans le round : menace -3 mais aucun 2e piege : paquet 7, 2 degats seulement) et cas « PAR JOUEUR » (le 2e joueur revele bien son piege : paquet 6).
+
+Autoplay (etape 8) : 24 parties solo (Spider-Man, profils prudent et agressif, standard et expert, graines 1-6) + 8 parties a deux joueurs (Spider-Man + Black Panther, profil equilibre, 4 graines x 2 modes) : **0 NameError / AttributeError / TypeError / KeyError / AssertionError / Traceback sur les 32 journaux**. Toutes les parties vont a leur fin (defaite : elimination, dernier passage ou complot 2B accompli ; 4 parties solo atteignent le stade 2 : le vilain Elektra est revele). Aucune victoire du pilote (0 % : le scenario est dur et le pilote est une heuristique ; ni plus ni moins significatif sans temoin de meme niveau). **2 parties a deux joueurs « bloquees »** (graine 1, standard et expert) : la question repetee est « Hero Action de 01093 Tenacity failed », une carte de BASE hors pack, deja vue sur une partie d'un autre scenario Shadowland (heart_of_shadow) : defaut du pilote ou de Tenacity, sans rapport avec ce scenario.
+
+Etape 8 bis (plateau) : NON faite. Les compteurs `passage` sont des compteurs generiques (aucune table par nom cote `ui-app`), le paquet piege est un `SetAsideDeck` comme celui de Hunting Season, le sosie de Whisper est un vrai sbire : aucune capacite d'affichage nouvelle, mais personne n'a regarde le plateau. A faire a l'integration avec un humain.
