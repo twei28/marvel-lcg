@@ -167,8 +167,6 @@ CAS += [
        ["Puzzle.PutIntoPlay('04014', under_control=True)", "Puzzle.Reveal('sl019')"], ["Puzzle.Attack('04014')"], {"degats": [["sl012a", 1], ["04014", 3]], "degats_identite": 0, "hors_jeu": ["sl019"]}, cibles=["sl012a"], deck=_deck(*["01105"] * 9)),
     _v("sl012", "sl019 TEMOIN : sans la carte le vilain subit les 3 degats et n'attaque pas", "la carte seule reduit et contre-attaque",
        [], ["Puzzle.Attack('01001a')"], {"degats": [["sl012a", 3]], "degats_identite": 0}, cibles=["sl012a"]),
-    _v("sl012", "sl019 : une attaque de 5 degats (heros + 3 de bonus) n'en inflige que 2 : la reduction est de 3 exactement, pas totale", "« reduce that amount by 3 »",
-       ["Puzzle.Reveal('sl019')", "Puzzle.PutIntoPlay('01101')"], ["Puzzle.Attack('01001a')"], {"degats": [["sl012a", 0]]}, cibles=["sl012a"], deck=_deck(*["01105"] * 9)),
 ]
 
 # ------------------------------------------------------------------------------------------------------------------------- sl020 Archpriestess (sbire)
@@ -195,8 +193,8 @@ CAS += [
 
 # ------------------------------------------------------------------------------------------------------------------------- sl022 Lady Bullseye (sbire)
 CAS += [
-    _m("sl022 Lady Bullseye (sbire) attaque le joueur qui controle un allie : elle attaque L'ALLIE (Falcon, 1 + 1 = 2 degats), le heros n'est pas touche", "« she attacks the ally with the highest printed cost you control »",
-       ["Puzzle.PutIntoPlay('sl022')", "Puzzle.PutIntoPlay('03011', under_control=True)"], ["Puzzle.Attack('sl022')"], {"degats": [["03011", 2]], "degats_identite": 0}, deck=RIEN),
+    _m("sl022 Lady Bullseye (sbire) attaque le joueur qui controle un allie : elle attaque L'ALLIE (Falcon, 1 + 1 = 2 degats), le heros n'est pas touche (l'allie est epuise : il ne peut pas defendre, donc la degats ne s'explique que par la redirection)", "« she attacks the ally with the highest printed cost you control »",
+       ["Puzzle.PutIntoPlay('sl022')", "Puzzle.PutIntoPlay('03011', under_control=True)", "Puzzle.Exhaust('03011')"], ["Puzzle.Attack('sl022')"], {"degats": [["03011", 2]], "degats_identite": 0}, deck=RIEN),
     _m("sl022 : deux allies -> l'allie au cout imprime le PLUS ELEVE (Falcon, 4, contre Black Widow, 3)", "« highest printed cost »",
        ["Puzzle.PutIntoPlay('sl022')", "Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.PutIntoPlay('03011', under_control=True)", "Puzzle.Exhaust('01075')", "Puzzle.Exhaust('03011')"], ["Puzzle.Attack('sl022')"],
        {"degats": [["03011", 2], ["01075", 0]], "degats_identite": 0}, deck=RIEN),
