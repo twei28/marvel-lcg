@@ -46,3 +46,36 @@ Le dossier `.planning/shadowland/brouillons/cards_65028_65078.json` (sortie du g
 - La Creeping Corruption est supposee « Permanent » apres fusion (le `desc` de sl072a n'a pas la cle ici) ; les cas ne la defaussent jamais, ils ne dependent pas de ce point.
 - « Place 2 corruption counters » qui franchit le seuil de 5 (retournement ou defaite de sl072) : ordre des fenetres a prouver avec le code de l'agent d (aucun cas ici : sans script de sl072 le jeton se pose sans retournement).
 - Une Interruption (non forcee) de Dark Shroud pour un ALLIE qui inflige 4 degats ou plus n'est pas prouvee au harnais (aucun allie du depot n'a 4 d'ATQ) : seule l'identite (Swinging Web Kick, 8 degats) l'est.
+
+## 5. Gabarits PROCESSUS-CARTE (une ligne par etape, resume pour les 17 cartes)
+
+Methode commune. **Etape 2** (references) : en tete de chaque script (`heart_of_shadow/slNNN.py`), carte modele + pourquoi + pieges. **Etape 5** (mots-pieges) : « ⚠ Mots-pieges » dans l'en-tete de chaque script (each / you / unless / if you do / instead / defeated / Forced / Interrupt / basic / attached...). **Etape 6** (nombres) : valeurs de chaque scan relues contre `cards.json` (sl057-sl071 : 7 corrections, voir §1), et dans le script (3 / 4 / 5 jetons, 2 / 3 / 4 / 5 / 6 / 9 menace, -3 ATK, 4 degats, 6 soin, 2 PV restants). **Etape 7** (cas + substitution) : `tools/cas/shadowland_c.py`, 91 cas `[slc]`, tous verts ; preuve par substitution (module remplace par `GetAbilities -> []`, `/tmp/claude-29999/slc_mut/mut.sh`) puis 18 mutations semantiques (`mut2.py`, une valeur ou une condition changee a la fois) et 7 mutations de donnees (`mut3.py`, `cards.json` remis dans son etat d'avant). **Etape 7 bis** : aucune limite « once per ... » imprimee sur le set, donc aucun temoin d'epuisement. **Etape 8** (autoplay) : 8 parties standard + 16 expert (equilibre et agressif), 0 traceback, 0 `NameError`...; un blocage (voir §6). **Etape 8 bis** (plateau) : `ui-app/src/board/shadowland-heart-of-shadow-plateau.test.ts`, 6 tests, rouges sous mutation de l'etat pose.
+
+| Carte | Cas (preuve par substitution : rouges / total) | Reste vert sous substitution, et pourquoi |
+|---|---|---|
+| sl057 | 5 (3 rouges sur 5) | temoin sans Creeping Corruption, valeurs de desc (Steady) |
+| sl058 | 4 (2/4) | desc seul : Toughness, Steady, temoin de refus |
+| sl059 | 5 (3/5) | desc seul : Retaliate, Tough d'entree (les cartes de reference sont natives) |
+| sl060a | 4 (2/4) | vilain tire par le scenario (donnees) |
+| sl060b | 10 (6/10) | temoins d'absence + victoire native (pile des vilains vide) |
+| sl061a | 6 (5/6) | temoin « rien a defausser » : rouge sous mutation de `CartesControleesDefaussables` |
+| sl061b | 4 (3/4) | condition d'accomplissement : la perte est portee par `IfThisSchemeStageIsCompletedPlayersLoseTheGame` (testee par mutation de donnees) |
+| sl062 | 5 (4/5) | temoin sans carte |
+| sl063 | 6 (5/6) | temoin sans carte |
+| sl064 | 5 (5/5) | |
+| sl065 | 3 (3/3) | |
+| sl066 | 6 (2/6) | Retaliate 2, Patrol, absence : lus dans `desc` (rouge sous mutation de donnees) |
+| sl067 | 6 (5/6) | temoin « 3 PV restants » |
+| sl068 | 4 (2/4) | temoins de refus / sans Creeping Corruption |
+| sl069 | 8 (6/8) | deux temoins sans jeton |
+| sl070 | 5 (2/5) | valeurs de desc (menace, Hazard, boost) : rouges sous mutation de donnees ; temoin sans Creeping Corruption |
+| sl071 | 6 (6/6) | |
+
+Carte terminee : OUI pour les 17 cartes, **sous les reserves du §4 et du §6** (aucune partie jouee par un humain dans le navigateur ; Creeping Corruption sl072 non codee ici).
+
+## 6. Ce qui n'a pas ete prouve
+
+- **Aucune partie jouee par un humain dans le navigateur.** Outil manquant : un navigateur pilote (le plateau, la fenetre « Interrupt » de Krahllak, le choix « each player chooses »). Les cas du harnais et l'autoplay ne voient pas ce que le joueur lit.
+- **Autoplay** (`tools/autoplay.py`, deck `spider_man`, pilote heuristique) : 0 victoire sur 8 standard et sur 16 expert, mais 0 victoire aussi sur 16 parties contre Rhino (temoin) : ce pilote ne gagne pas avec le deck de depart. Un blocage sur 40 parties (expert, graine 7) : Hero Action de `01093 Tenacity` (carte OFFICIELLE du deck, pas une carte du set) reproposee a l'identique. Le mode « expert » d'`autoplay.py` retire le premier vilain de la liste et pose `expert` a faux pour `normal` : l'expert a donc ete joue avec `heart_of_shadow_expert` + difficulte `normal`, ce qui n'active pas `Worlds.IsExpert` (la clause expert de sl061a n'est prouvee que par le harnais, cas `[slc] sl061a (EXPERT)`).
+- **Mini-campagne** et **mode campagne** : rien (livret absent).
+- **Interaction avec la Creeping Corruption reelle** (retournement a 5 jetons, defaite de l'identite) : cas a ecrire apres la fusion avec la branche de l'agent d.
