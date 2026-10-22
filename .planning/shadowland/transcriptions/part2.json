@@ -1,0 +1,509 @@
+[
+ {
+  "id_scan": "65013B",
+  "titre": "Daredevil",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "B",
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "18 par_joueur"
+  },
+  "icones": [],
+  "texte": "Steady. Toughness.\n<b>Forced Response</b>: After you or an ally you control attacks Daredevil, choose: Either discard 1 random card from your hand, or Daredevil attacks you. (Limit once per round per player.)",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "2/16",
+  "pied": "Joey Vazquez © MARVEL © 2026 FFG 13B",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Mots-clés Steady. et Toughness. en texte normal (non gras) sur la carte, transcrits sans <b>"
+  ]
+ },
+ {
+  "id_scan": "65014A",
+  "titre": "Elektra",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "A",
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "2★",
+   "HP": "15 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 2"
+  ],
+  "texte": "[star] <b>Forced Interrupt</b>: When Elektra attacks you, discard the top card of your deck. If that card's printed cost is an odd number, Elektra gets +1 ATK for this attack; otherwise, this attack gains overkill and piercing.",
+  "citation": "\"The Hand guides me, and death follows.\"",
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "3/16",
+  "pied": "Joey Vazquez © MARVEL © 2026 FFG 14A",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65014B",
+  "titre": "Elektra",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "B",
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2★",
+   "HP": "18 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 2"
+  ],
+  "texte": "Steady. Toughness.\n[star] <b>Forced Interrupt</b>: When Elektra attacks you, discard the top card of your deck. If that card's printed cost is an odd number, Elektra gets +1 ATK for this attack; otherwise, this attack gains overkill and piercing.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "3/16",
+  "pied": "Joey Vazquez © MARVEL © 2026 FFG 14B",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65015A",
+  "titre": "Gorgon",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "A",
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "2★",
+   "HP": "15 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 2"
+  ],
+  "texte": "[star] <b>Forced Interrupt</b>: When Gorgon attacks you, choose:\n• Spend a [physical] resource.\n• Stun your identity.\n• Take 2 indirect damage.",
+  "citation": "\"I've died and been born again. There is nothing I fear.\"",
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "4/16",
+  "pied": "Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 15A",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icône de ressource dans 'Spend a ... resource' : poing noir, nommée [physical] à vue"
+  ]
+ },
+ {
+  "id_scan": "65015B",
+  "titre": "Gorgon",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "B",
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2★",
+   "HP": "18 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 2"
+  ],
+  "texte": "Steady. Toughness.\n[star] <b>Forced Interrupt</b>: When Gorgon attacks you, choose:\n• Spend a [physical] resource.\n• Stun your identity.\n• Take 2 indirect damage.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "4/16",
+  "pied": "Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 15B",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icône de ressource : poing noir, nommée [physical] à vue"
+  ]
+ },
+ {
+  "id_scan": "65016A",
+  "titre": "Lady Bullseye",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "A",
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "1★",
+   "HP": "15 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 1"
+  ],
+  "texte": "[star] <b>Forced Response</b>: After Lady Bullseye attacks you, if that attack was undefended, take 1 indirect damage; otherwise, place 1 threat on the main scheme.",
+  "citation": "\"I plan to take my time with you.\"",
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "5/16",
+  "pied": "Joey Vazquez © MARVEL © 2026 FFG 16A",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65016B",
+  "titre": "Lady Bullseye",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "B",
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2★",
+   "HP": "18 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 2"
+  ],
+  "texte": "Steady. Toughness.\n[star] <b>Forced Response</b>: After Lady Bullseye attacks you, if that attack was undefended, take 1 indirect damage; otherwise, place 1 threat on the main scheme.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "5/16",
+  "pied": "Joey Vazquez © MARVEL © 2026 FFG 16B",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65017A",
+  "titre": "White Tiger",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "A",
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "0★",
+   "HP": "15 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 0"
+  ],
+  "texte": "[star] <b>Forced Response</b>: After White Tiger attacks you, she attacks you again with +1 ATK. (Limit once per round per player.)",
+  "citation": "\"Civilization will fall into chaos and darkness, and we who walk the left-hand path will kneel before the Beast!\"",
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "6/16",
+  "pied": "Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 17A",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65017B",
+  "titre": "White Tiger",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "B",
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "1★",
+   "HP": "18 par_joueur"
+  },
+  "icones": [
+   "étoile (★) à côté de l'ATK 1"
+  ],
+  "texte": "Steady. Toughness.\n[star] <b>Forced Response</b>: After White Tiger attacks you, she attacks you again. (Limit once per round per player.)",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "6/16",
+  "pied": "Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 17B (pied partiellement coupé en bas de l'image)",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Pied de carte coupé en bas de l'image : illustrateurs et copyright partiellement lisibles, complétés par analogie avec 17A"
+  ]
+ },
+ {
+  "id_scan": "65018",
+  "titre": "Art of the Kill",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ATTACHMENT",
+  "face": null,
+  "traits": [],
+  "stats": {},
+  "icones": [
+   "icône d'ensemble de rencontre (Y rouge) en bas à droite"
+  ],
+  "texte": "Linked (Elektra, Lady Bullseye, or White Tiger).\nAttach to your identity.\n<b>Forced Interrupt</b>: When an enemy attacks you, it gets +1 ATK for that attack. If that attack defeats a character, place 1 threat on the main scheme.\n<b>Alter-Ego Action</b>: Spend [energy] [mental] [physical] resources → discard this card.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "7/16",
+  "pied": "Rowel Palapar © MARVEL © 2026 FFG 18",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Titre imprimé verticalement à gauche ; carte portrait",
+   "Trois icônes de ressources dans l'action Alter-Ego : éclair, forme ressemblant à des figures/silhouette, poing ; nommées [energy] [mental] [physical] à vue, ordre éclair/mental/poing",
+   "Pas de ligne de traits (aucun trait imprimé)"
+  ]
+ },
+ {
+  "id_scan": "65019",
+  "titre": "Krahllak's Blessing",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ATTACHMENT",
+  "face": null,
+  "traits": [
+   "CONDITION",
+   "SPELL"
+  ],
+  "stats": {},
+  "icones": [
+   "icône d'ensemble de rencontre (Y rouge) en bas à droite"
+  ],
+  "texte": "Linked (Archpriestess, Daredevil, or Gorgon).\nAttach to the villain.\n<b>Forced Interrupt</b>: When attached villain would take any amount of damage from a character, reduce that amount by 3. Attached villain attacks that character. Discard this card.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "8/16",
+  "pied": "© MARVEL © 2026 FFG 19",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Titre imprimé verticalement à gauche ; carte portrait"
+  ]
+ },
+ {
+  "id_scan": "65020",
+  "titre": "Archpriestess",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "MYSTIC"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "1",
+   "Boost": "5"
+  },
+  "icones": [
+   "boost 5",
+   "2 icônes d'ensemble de rencontre (Y rouge)"
+  ],
+  "texte": "Linked (Gorgon, Lady Bullseye, or White Tiger).\nVillainous.\n<b>When Revealed</b>: Each other minion engaged with you attacks you. If no attack was made this way, discard the top 3 cards of the encounter deck.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "9/16",
+  "pied": "© MARVEL © 2026 FFG 20",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Mot-clé Villainous. en texte normal (non gras)"
+  ]
+ },
+ {
+  "id_scan": "65021",
+  "titre": "Gorgon",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "BRUTE",
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "0",
+   "ATK": "1",
+   "Boost": "5"
+  },
+  "icones": [
+   "boost 5",
+   "2 icônes d'ensemble de rencontre (Y rouge)"
+  ],
+  "texte": "Linked (Daredevil, Elektra, or Lady Bullseye).\nGuard. Villainous.\n<b>Forced Response</b>: After a character attacks and damages Gorgon, stun that character.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "10/16",
+  "pied": "© MARVEL © 2026 FFG 21",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65022",
+  "titre": "Lady Bullseye",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "1★",
+   "Boost": "5"
+  },
+  "icones": [
+   "boost 5",
+   "étoile (★) à côté de l'ATK 1",
+   "2 icônes d'ensemble de rencontre (Y rouge)"
+  ],
+  "texte": "Linked (Archpriestess, Gorgon, or White Tiger).\nVillainous.\n[star] <b>Forced Interrupt</b>: When Lady Bullseye attacks you, this attack gains ranged and she attacks the ally with the highest printed cost you control, if able.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "11/16",
+  "pied": "© MARVEL © 2026 FFG 22",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65023",
+  "titre": "White Tiger",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "2",
+   "Boost": "5"
+  },
+  "icones": [
+   "boost 5",
+   "2 icônes d'ensemble de rencontre (Y rouge)"
+  ],
+  "texte": "Linked (Archpriestess, Daredevil, or Elektra).\nVillainous.\n<b>When Revealed</b>: Take 2 indirect damage.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "12/16",
+  "pied": "© MARVEL © 2026 FFG 23",
+  "orientation": "portrait",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65024",
+  "titre": "Rite of Offering",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": [],
+  "stats": {
+   "StartingThreat": "1"
+  },
+  "icones": [
+   "icône de carte avec signe plus (noire) en bas du texte, probablement crisis ou amplify, non sûre"
+  ],
+  "texte": "Linked (Archpriestess, Elektra, or White Tiger).\n<b>When Defeated</b>: The defeating player removes an ally they control from the game. If no ally was removed this way, that player takes 3 damage.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "13/16",
+  "pied": "© MARVEL © 2026 FFG 24",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Icône noire (carte avec +) : type non identifié avec certitude",
+   "Menace de départ '1' en bas à gauche : pas d'icône par_joueur visible",
+   "Aucun trait imprimé"
+  ]
+ },
+ {
+  "id_scan": "65025",
+  "titre": "Shadowy Plot",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": [],
+  "stats": {
+   "StartingThreat": "2"
+  },
+  "icones": [
+   "icône hazard (point d'exclamation dans un éclat)"
+  ],
+  "texte": "Linked (Daredevil, Gorgon, or Lady Bullseye).\n<b>When Defeated</b>: The defeating player looks at the top 3 cards of the encounter deck, reveals 1 of them, and discards the rest.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "14/16",
+  "pied": "© MARVEL © 2026 FFG 25",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Icône à point d'exclamation nommée hazard à vue",
+   "Menace de départ '2' : pas d'icône par_joueur visible",
+   "Aucun trait imprimé"
+  ]
+ },
+ {
+  "id_scan": "65026",
+  "titre": "Darkness Within",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [],
+  "stats": {},
+  "icones": [
+   "boost : 1 étoile rouge (★)",
+   "1 icône d'ensemble de rencontre (Y rouge)"
+  ],
+  "texte": "Linked (Archpriestess, Gorgon, or Lady Bullseye).\n<b>When Revealed</b>: Change to hero form. The villain attacks you.\n---\n[star] <b>Boost</b>: If this activation is an attack, it gains overkill.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "15/16",
+  "pied": "© MARVEL © 2026 FFG 26",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Séparateur horizontal entre texte principal et boost noté ---",
+   "Étoile rouge en bas à droite = icône boost (symbole étoile) probable"
+  ]
+ },
+ {
+  "id_scan": "65027",
+  "titre": "Embraced by Darkness",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [],
+  "stats": {},
+  "icones": [
+   "boost : 1 étoile rouge (★)",
+   "1 icône d'ensemble de rencontre (Y rouge)"
+  ],
+  "texte": "Linked (Daredevil, Elektra, or White Tiger).\n<b>When Revealed</b>: The villain schemes. If 2 or less threat was placed on the main scheme this way, discard the top 3 cards of the encounter deck.\n---\n[star] <b>Boost</b>: If this activation is an attack, place 2 threat on the main scheme.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "16/16",
+  "pied": "Eduardo Mello © MARVEL © 2026 FFG 27",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Séparateur horizontal noté ---",
+   "Étoile rouge en bas à droite = icône boost probable"
+  ]
+ }
+]

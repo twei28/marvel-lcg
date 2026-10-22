@@ -1,0 +1,479 @@
+[
+ {
+  "id_scan": "65028",
+  "titre": "Black Mountain",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "BRUTE",
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2",
+   "cout": "5"
+  },
+  "icones": [
+   "étoile boost (bas droite)"
+  ],
+  "texte": "Guard.\nWhile Black Mountain is engaged with you, each other <b>NINJA</b> minion engaged with you cannot be attacked.\n<b>★ Boost</b>: If an ally is defending against this attack, reveal this minion.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "1/9",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 28",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Pas de PV imprimes visibles",
+   "NINJA en gras italique dans le texte"
+  ]
+ },
+ {
+  "id_scan": "65029",
+  "titre": "Kirigi",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "2",
+   "cout": "3"
+  },
+  "icones": [
+   "étoile boost (bas droite)"
+  ],
+  "texte": "Teamwork (<b>NINJA</b>).\n<b>When Defeated</b>: The defeating player either spends 2 resources of any type or shuffles Kirigi into the encounter deck.\n<b>★ Boost</b>: If an ally is defending against this attack, this card gains [boost][boost] and this attack gains overkill.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "2/9",
+  "pied": "Sebastián Guidobono © MARVEL © 2026 FFG 29",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Les deux icones dans 'this card gains' : deux symboles rouges en Y (boost ?), nom a confirmer",
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact"
+  ]
+ },
+ {
+  "id_scan": "65030",
+  "titre": "Bo Staff Ninja",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "1",
+   "cout": "2"
+  },
+  "icones": [
+   "boost x2 (deux icones Y rouges bas droite)"
+  ],
+  "texte": "Teamwork (<b>NINJA</b>). Toughness.\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "3/9",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 30",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact"
+  ]
+ },
+ {
+  "id_scan": "65031",
+  "titre": "Fukiya Ninja",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "1★",
+   "cout": "2"
+  },
+  "icones": [
+   "boost x1 (icone Y rouge bas droite)"
+  ],
+  "texte": "Teamwork (<b>NINJA</b>).\n★ This minion's attacks gain ranged.\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "4/9",
+  "pied": "Aitor Prieto © MARVEL © 2026 FFG 31",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact",
+   "ATK '1' suivi d'une petite etoile (superscript)"
+  ]
+ },
+ {
+  "id_scan": "65032",
+  "titre": "Katana Ninja",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "1",
+   "cout": "2"
+  },
+  "icones": [
+   "boost x1 (icone Y rouge bas droite)"
+  ],
+  "texte": "Guard. Teamwork (<b>NINJA</b>).\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "5/9",
+  "pied": "© MARVEL © 2026 FFG 32",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact",
+   "Pas d'illustrateur imprime"
+  ]
+ },
+ {
+  "id_scan": "65033",
+  "titre": "Kusarigama Ninja",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "1",
+   "cout": "2"
+  },
+  "icones": [
+   "boost x2 (deux icones Y rouges bas droite)"
+  ],
+  "texte": "Patrol. Teamwork (<b>NINJA</b>).\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "6/9",
+  "pied": "© MARVEL © 2026 FFG 33",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact",
+   "Pas d'illustrateur imprime"
+  ]
+ },
+ {
+  "id_scan": "65034",
+  "titre": "Shuriken Ninja",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "1★",
+   "cout": "2"
+  },
+  "icones": [
+   "boost x1 (icone Y rouge bas droite)"
+  ],
+  "texte": "Teamwork (<b>NINJA</b>).\n★ This minion's attacks gain piercing.\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "7/9",
+  "pied": "© MARVEL © 2026 FFG 34",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact",
+   "ATK '1' suivi d'une petite etoile",
+   "Pas d'illustrateur imprime"
+  ]
+ },
+ {
+  "id_scan": "65035",
+  "titre": "Dancing Shadows",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": [],
+  "stats": {
+   "StartingThreat": "3"
+  },
+  "icones": [
+   "étoile boost (bas gauche)"
+  ],
+  "texte": "Each <b>NINJA</b> minion gets +1 hit point.\nThreat cannot be removed from this scheme while at least 1 <b>NINJA</b> minion is in play.\n<b>★ Boost</b>: Reveal this card.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "8/9",
+  "pied": "© MARVEL © 2026 FFG 35",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Le '3' du coin bas gauche : menace de depart ; sans icone par joueur visible",
+   "Pas d'illustrateur imprime"
+  ]
+ },
+ {
+  "id_scan": "65036",
+  "titre": "Countless Numbers",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [],
+  "stats": {},
+  "icones": [
+   "étoile boost + 1 icone Y rouge (bas droite)"
+  ],
+  "texte": "Surge.\n<b>When Revealed</b>: Shuffle each <b>NINJA</b> minion in the encounter discard pile into the encounter deck.\n<b>★ Boost</b>: Resolve this card's \"<b>When Revealed</b>\" ability.",
+  "citation": null,
+  "set": "NINJA SWARM",
+  "numero_dans_set": "9/9",
+  "pied": "© MARVEL © 2026 FFG 36",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact",
+   "Surge imprime en texte simple (non gras)"
+  ]
+ },
+ {
+  "id_scan": "65037",
+  "titre": "Shifting Corridors",
+  "unique": false,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "A",
+  "traits": [
+   "LOCATION"
+  ],
+  "stats": {
+   "SCH": "0★",
+   "ATK": "0★",
+   "HP": "∞"
+  },
+  "icones": [],
+  "texte": "Stalwart.\n<b>★ Forced Interrupt</b>: When Shifting Corridors would activate against you, instead remove 1 passage counter from here and reveal the top card of the trap deck.\n<b>If the last passage counter is removed from here, the players lose the game.</b>",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "1/11",
+  "pied": "HIT POINTS ∞ ; Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 37",
+  "orientation": "portrait",
+  "incertitudes": [
+   "SCH et ATK '0' avec petite etoile",
+   "'HIT POINTS ∞' imprime dans le pied (pas de bloc PV)",
+   "Etoile devant Forced Interrupt (★)"
+  ]
+ },
+ {
+  "id_scan": "65038A",
+  "titre": "Into the Labyrinth",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "1A",
+  "traits": [],
+  "stats": {},
+  "icones": [],
+  "texte": "<b>Contents</b>: Shifting Corridors (A). Shadow Labyrinth, Dark Protégé, Deadly Contraptions, and Standard encounter sets. One modular encounter set <i>(Ninja Swarm)</i>.\n<b>Setup</b>: Create the trap deck <i>(see rulebook, p. 12)</i>. Set the Dark Protégé encounter set aside. Choose 1 random villain from that set, then shuffle each card linked to that villain into the encounter deck <i>(keep the chosen villain set aside)</i>.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "2/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 38A",
+  "orientation": "paysage",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65038B",
+  "titre": "Into the Labyrinth",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "1B",
+  "traits": [],
+  "stats": {
+   "StartingThreat": "∞",
+   "escalade": "+1 par_joueur",
+   "TargetThreat": "25 par_joueur",
+   "niveau_etape": "1"
+  },
+  "icones": [],
+  "texte": "<b>When Revealed:</b> Place 10[per_hero] passage counters on Shifting Corridors (7[per_hero] instead in expert mode).\n<b>Forced Interrupt</b>: When Shifting Corridors would take any amount of damage, remove that much threat from here instead.\n<b>Forced Interrupt</b>: When the last threat is removed from this scheme, advance to stage 2A <i>(the players win by advancing)</i>.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "2/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 38B",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Menace de depart : symbole infini ∞ (coin haut gauche)",
+   "Dernier forced interrupt : italique partiel seulement sur la parenthese"
+  ]
+ },
+ {
+  "id_scan": "65039A",
+  "titre": "Chamber of Vile Secrets",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "2A",
+  "traits": [],
+  "stats": {},
+  "icones": [],
+  "texte": "<b>When Revealed</b>: Do each of the following:\n1. Set Shifting Corridors aside.\n2. Find the chosen Dark Protégé villain. Discard each status card, token, and attached card from it.\n3. Reveal the chosen villain's side A (side B instead in expert mode).",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "3/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 39A",
+  "orientation": "paysage",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65039B",
+  "titre": "Chamber of Vile Secrets",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "2B",
+  "traits": [],
+  "stats": {
+   "StartingThreat": "9 par_joueur",
+   "escalade": "+1 par_joueur",
+   "TargetThreat": "1 par_joueur",
+   "niveau_etape": "2"
+  },
+  "icones": [],
+  "texte": "<b>When Revealed</b>: In expert mode, the villain activates against each player.\n<b>Forced Response</b>: After you or an ally you control thwarts this scheme, reveal the top card of the trap deck. (Limit once per round per player.)\n<b>If this stage is completed, the players lose the game.</b>",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "3/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 39B",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Seuil '1 par joueur' sous le +1 ; verifier que c'est bien le seuil cible",
+   "Menace de depart 9 par joueur (coin haut gauche)"
+  ]
+ },
+ {
+  "id_scan": "65040",
+  "titre": "Whisper in the Dark",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ATTACHMENT",
+  "face": null,
+  "traits": [],
+  "stats": {},
+  "icones": [],
+  "texte": "<i>TRAP!</i>\nTreat attached villain as an <b>ELITE</b> minion with 6 printed hit points. It gains: \"Guard. Villainous. <b>When Defeated</b>: Set this minion aside.\"\n<b>When Revealed</b>: If Shifting Corridors is in play, put the set-aside chosen villain into play engaged with you, side A faceup, with this card attached; otherwise, set this card aside and the villain schemes.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "4/11",
+  "pied": "© MARVEL © 2026 FFG 40",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Titre imprime verticalement sur le cote gauche",
+   "'TRAP!' en italique gras en tete du texte (traite comme trait ? a confirmer)",
+   "Pas d'illustrateur imprime"
+  ]
+ },
+ {
+  "id_scan": "65041",
+  "titre": "Lord Deathstrike",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2",
+   "cout": "5"
+  },
+  "icones": [
+   "étoile boost (bas droite)"
+  ],
+  "texte": "Patrol.\n<b>When Revealed</b>: If Shifting Corridors is in play, shuffle the top 2 cards of the encounter deck into the trap deck; otherwise, reveal the top card of the trap deck.\n<b>★ Boost</b>: Put this minion into play engaged with you.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "5/11",
+  "pied": "© MARVEL © 2026 FFG 41",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Pas d'illustrateur imprime"
+  ]
+ },
+ {
+  "id_scan": "65042",
+  "titre": "Dead End",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": [],
+  "stats": {
+   "StartingThreat": "2 par_joueur"
+  },
+  "icones": [
+   "boost x3 (trois icones Y rouges, bord gauche)",
+   "icone crisis (point d'exclamation dans un eclat)"
+  ],
+  "texte": "Assault. <i>(Basic thwarts against this scheme use ATK instead of THW.)</i>\n<b>When Revealed</b>: If Shifting Corridors is in play, remove 1 passage counter from it; otherwise, place 1[per_hero] threat here.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "6/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 42",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Les icones rouges en forme de Y/pointe sont interpretees comme icones de boost, non certain du nom exact",
+   "Icone '!' dans un eclat noir consideree comme crisis, non certain"
+  ]
+ },
+ {
+  "id_scan": "65043",
+  "titre": "Hall of Hidden Doors",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": [],
+  "stats": {
+   "StartingThreat": "3"
+  },
+  "icones": [
+   "étoile boost (bas gauche)",
+   "icone acceleration (croix sur forme de toit)"
+  ],
+  "texte": "<b>When Defeated</b>: The defeating player removes 5 threat from the main scheme. They discard cards from the encounter deck until a minion or side scheme is discarded, then reveal it.\n<b>★ Boost</b>: Place 3 threat on the main scheme.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "7/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 43",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Icone centrale (croix sur forme de toit) interpretee comme acceleration, non certain",
+   "Menace de depart 3 sans icone par joueur visible"
+  ]
+ }
+]

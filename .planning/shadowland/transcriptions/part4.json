@@ -1,0 +1,474 @@
+[
+ {
+  "id_scan": "65044",
+  "titre": "No Time to Think!",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": [
+   "etoile rouge (coin bas droit, icone d'ecran de menace / acceleration ?)",
+   "boost x1 (chevron rouge en Y)"
+  ],
+  "texte": "Peril. <i>(While you are resolving this card, other players cannot help you.)</i>\n<b>When Revealed</b>: The villain activates against you.\n★ <b>Boost</b>: If this activation is an attack, this card gains [boost][boost] and this attack gains overkill.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "8/11",
+  "pied": "Kyle Petchock © MARVEL © 2026 FFG 44",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icone etoile rouge en bas a droite : nature (acceleration/crisis/autre) non certaine",
+   "Les deux icones dans le texte 'gains [boost][boost]' lues comme icone boost (chevron en Y), non certain",
+   "Etoile du Boost lue comme ★"
+  ]
+ },
+ {
+  "id_scan": "65045",
+  "titre": "Sudden Shift",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": [
+   "etoile rouge (coin bas droit)",
+   "boost x2 (chevrons rouges en Y)"
+  ],
+  "texte": "<b>When Revealed</b>: Shuffle the trap discard pile and the top 3 cards of the encounter deck into the trap deck. Reveal the top card of the trap deck.\n★ <b>Boost</b>: Shuffle the trap discard pile and the top 2 cards of the encounter deck into the trap deck.",
+  "citation": null,
+  "set": "SHADOW LABYRINTH",
+  "numero_dans_set": "10/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 45",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icone etoile rouge : nature non certaine"
+  ]
+ },
+ {
+  "id_scan": "65046",
+  "titre": "Nervous Jitters",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ATTACHMENT",
+  "face": null,
+  "traits": [
+   "CONDITION"
+  ],
+  "stats": null,
+  "icones": [
+   "boost x1 (chevron rouge en Y)"
+  ],
+  "texte": "<i>CONDITION.</i>\nAttach to your identity.\n<b>Forced Interrupt</b>: When you choose the \"<i>Avoid</i>\" effect or the \"<i>Disarm</i>\" effect on a <b>TRAP!</b> card, name an encounter card type, then discard the top card of the encounter deck. If the card discarded this way was not of the named type, take 4 indirect damage and discard this attachment.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "1/11",
+  "pied": "Eduardo Mello © MARVEL © 2026 FFG 46",
+  "orientation": "portrait (titre vertical sur la gauche)",
+  "incertitudes": [
+   "Mise en forme de TRAP! (police speciale) rendue par <b>"
+  ]
+ },
+ {
+  "id_scan": "65047",
+  "titre": "Iron Monk",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "MYSTIC"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "1",
+   "cout_ou_PV": "4 (cercle orange-rouge en bas a droite de l'image, probablement PV)"
+  },
+  "icones": [
+   "boost x2 (chevrons rouges en Y)"
+  ],
+  "texte": "Patrol. Toughness.\nWhile Iron Monk is engaged with you, you cannot choose the \"<i>Avoid</i>\" effect on <b>TRAP!</b> cards.",
+  "citation": "\"Your only path is through me. Let us begin.\"",
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "2/11",
+  "pied": "Facundo Moyano © MARVEL © 2026 FFG 47",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Le 4 dans le cercle : identifie comme PV (pas de mention par joueur visible)"
+  ]
+ },
+ {
+  "id_scan": "65048",
+  "titre": "Hall of Punishment",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": null,
+  "stats": {
+   "StartingThreat": "2 par_joueur"
+  },
+  "icones": [
+   "icone crisis/acceleration (point d'exclamation dans un eclat noir, au centre)",
+   "etoile rouge (coin bas gauche)"
+  ],
+  "texte": "<b>Forced Interrupt</b>: When you choose the \"<i>Trip</i>\" effect on a <b>TRAP!</b> card, discard the top 3 cards of your deck.\n★ <b>Boost</b>: Place 1 threat on the main scheme for each character you control.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "3/11",
+  "pied": "Facundo Moyano © MARVEL © 2026 FFG 48",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Icone '!' au centre : crisis presume, non certain",
+   "Icone etoile rouge bas gauche : nature non certaine"
+  ]
+ },
+ {
+  "id_scan": "65049",
+  "titre": "Path of a Thousand Cuts",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": null,
+  "stats": {
+   "StartingThreat": "5"
+  },
+  "icones": [
+   "etoile rouge (coin bas gauche)"
+  ],
+  "texte": "<i>Every step is a test of resilience.</i>\n<b>Forced Interrupt</b>: When you choose the \"<i>Avoid</i>\" effect or the \"<i>Trip</i>\" effect on a <b>TRAP!</b> card, take 2 indirect damage.\n★ <b>Boost</b>: Deal 1 damage to each character you control.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "4/11",
+  "pied": "Kyle Petchock © MARVEL © 2026 FFG 49",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Menace de depart 5 sans icone par joueur visible",
+   "Icone etoile rouge : nature non certaine",
+   "Ligne en italique d'ouverture traitee comme ambiance/reglement et laissee dans texte"
+  ]
+ },
+ {
+  "id_scan": "65050",
+  "titre": "Blinding Powder",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [
+   "TRAP"
+  ],
+  "stats": null,
+  "icones": [],
+  "texte": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>THWART</b> event from your hand.\n• <i>Disarm</i> — Discard 2 cards at random from your hand, then give a character you control a tough status card.\n• <i>Trip</i> — Deal 2 damage to your identity and confuse it.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "5/11",
+  "pied": "Kyle Petchock © MARVEL © 2026 FFG 50",
+  "orientation": "portrait",
+  "incertitudes": [
+   "TRAP! en ligne centree gras italique, traite comme trait",
+   "Aucune icone boost visible"
+  ]
+ },
+ {
+  "id_scan": "65051",
+  "titre": "Caltrops",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [
+   "TRAP"
+  ],
+  "stats": null,
+  "icones": [
+   "boost x1"
+  ],
+  "texte": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>DEFENSE</b> event from your hand.\n• <i>Disarm</i> — Discard 1 identity-specific card from your hand, then deal 2 damage to an enemy.\n• <i>Trip</i> — Deal 2 damage to your identity and stun it.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "6/11",
+  "pied": "Aitor Prieto © MARVEL © 2026 FFG 51",
+  "orientation": "portrait",
+  "incertitudes": [
+   "TRAP! en ligne centree traite comme trait"
+  ]
+ },
+ {
+  "id_scan": "65052",
+  "titre": "Flame Spout",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [
+   "TRAP"
+  ],
+  "stats": null,
+  "icones": [
+   "boost x3"
+  ],
+  "texte": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an ally from your hand.\n• <i>Disarm</i> — Discard an ally you control, then draw 2 cards.\n• <i>Trip</i> — Deal 3 damage to your identity. Discard the top 3 cards of your deck.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "7/11",
+  "pied": "Facundo Moyano © MARVEL © 2026 FFG 52",
+  "orientation": "portrait",
+  "incertitudes": [
+   "TRAP! en ligne centree traite comme trait"
+  ]
+ },
+ {
+  "id_scan": "65053",
+  "titre": "Oil Slick",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [
+   "TRAP"
+  ],
+  "stats": null,
+  "icones": [
+   "boost x1"
+  ],
+  "texte": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an upgrade from your hand.\n• <i>Disarm</i> — Discard an upgrade you control, then remove 4 threat from the main scheme.\n• <i>Trip</i> — Discard 1 card from your hand. Discard the top 8 cards of your deck.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "8/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 53",
+  "orientation": "portrait",
+  "incertitudes": [
+   "TRAP! en ligne centree traite comme trait"
+  ]
+ },
+ {
+  "id_scan": "65054",
+  "titre": "Poison Darts",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [
+   "TRAP"
+  ],
+  "stats": null,
+  "icones": [
+   "boost x2"
+  ],
+  "texte": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [energy] [energy] resources.\n• <i>Disarm</i> — Spend [mental] [mental] [physical] resources, then deal 3 damage to the villain.\n• <i>Trip</i> — Deal 3 damage to your identity and exhaust it.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "9/11",
+  "pied": "Eduardo Mello © MARVEL © 2026 FFG 54",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icones de ressources dans le texte : eclair = energy, petite icone 'silhouette' = mental, poing = physical ; nommees a vue, non 100% certain",
+   "TRAP! centree traite comme trait"
+  ]
+ },
+ {
+  "id_scan": "65055",
+  "titre": "Pressure Plate",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [
+   "TRAP"
+  ],
+  "stats": null,
+  "icones": [],
+  "texte": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [mental] [mental] resources.\n• <i>Disarm</i> — Spend [energy] [physical] [physical] resources, then search the top 4 cards of your deck for a card and add it to your hand. <i>(Shuffle.)</i>\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a minion is discarded, then reveal it.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "10/11",
+  "pied": "Eduardo Mello © MARVEL © 2026 FFG 55",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icones de ressources nommees a vue (silhouette=mental, eclair=energy, poing=physical), non 100% certain",
+   "Aucune icone boost visible",
+   "TRAP! centree traite comme trait"
+  ]
+ },
+ {
+  "id_scan": "65056",
+  "titre": "Tripwire",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": [
+   "TRAP"
+  ],
+  "stats": null,
+  "icones": [
+   "boost x2"
+  ],
+  "texte": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an <b>ATTACK</b> event from your hand.\n• <i>Disarm</i> — Discard a support you control, then remove 3 threat from a scheme.\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a side scheme is discarded, then reveal it.",
+  "citation": null,
+  "set": "DEADLY CONTRAPTIONS",
+  "numero_dans_set": "11/11",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 56",
+  "orientation": "portrait",
+  "incertitudes": [
+   "TRAP! centree traite comme trait"
+  ]
+ },
+ {
+  "id_scan": "65057",
+  "titre": "Krahllak",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": null,
+  "traits": [
+   "DEMON",
+   "HAND"
+  ],
+  "stats": {
+   "niveau_etape": "I",
+   "SCH": "2",
+   "ATK": "3★ (etoile en exposant)",
+   "HP": "18 par_joueur"
+  },
+  "icones": null,
+  "texte": "Steady.\n★ <b>Interrupt</b>: When Krahllak attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do, Krahllak gets –3 ATK for this attack.",
+  "citation": "\"There is only the Beast!\"",
+  "set": "HEART OF SHADOW",
+  "numero_dans_set": "1/17",
+  "pied": "Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 57",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Etoile en exposant a cote de ATK : indique ATK avec effet de carte (consideree)",
+   "Tiret de '–3 ATK' est un tiret en (–)"
+  ]
+ },
+ {
+  "id_scan": "65058",
+  "titre": "Krahllak",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": null,
+  "traits": [
+   "DEMON",
+   "HAND"
+  ],
+  "stats": {
+   "niveau_etape": "II",
+   "SCH": "2",
+   "ATK": "4★",
+   "HP": "21 par_joueur"
+  },
+  "icones": null,
+  "texte": "Steady. Toughness.\n★ Krahllak's attacks gain overkill.\n★ <b>Interrupt</b>: When Krahllak attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do, Krahllak gets –3 ATK for this attack.",
+  "citation": null,
+  "set": "HEART OF SHADOW",
+  "numero_dans_set": "2/17",
+  "pied": "Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 58",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Etoile en exposant sur ATK"
+  ]
+ },
+ {
+  "id_scan": "65059",
+  "titre": "Krahllak",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": null,
+  "traits": [
+   "DEMON",
+   "HAND"
+  ],
+  "stats": {
+   "niveau_etape": "III",
+   "SCH": "3",
+   "ATK": "4★",
+   "HP": "25 par_joueur"
+  },
+  "icones": null,
+  "texte": "Retaliate 1. Steady. Toughness.\n★ Krahllak's attacks gain overkill and piercing.\n★ <b>Interrupt</b>: When Krahllak attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do, Krahllak gets –3 ATK for this attack.",
+  "citation": null,
+  "set": "HEART OF SHADOW",
+  "numero_dans_set": "3/17",
+  "pied": "Bruno Frenda & Sara Cuomo © MARVEL © 2026 FFG 59",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Etoile en exposant sur ATK"
+  ]
+ },
+ {
+  "id_scan": "65060A",
+  "titre": "Dark Invitation",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "1A",
+  "traits": null,
+  "stats": {
+   "niveau_etape": "1A"
+  },
+  "icones": null,
+  "texte": "<b>Contents</b>: Krahllak (I) and Krahllak (II). <i>(Krahllak (II) and Krahllak (III) instead for expert mode.)</i> Heart of Shadow, Black Flower, and Standard encounter sets. One modular encounter set <i>(Ninja Swarm)</i>.\n<b>Setup</b>: Each player puts a Creeping Corruption upgrade into play. Set the rest aside.",
+  "citation": null,
+  "set": "HEART OF SHADOW",
+  "numero_dans_set": "4/17",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 60A",
+  "orientation": "paysage",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65060B",
+  "titre": "Dark Invitation",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "1B",
+  "traits": null,
+  "stats": {
+   "StartingThreat": "6 par_joueur",
+   "escalade": "+1 par_joueur",
+   "TargetThreat": "2 par_joueur",
+   "niveau_etape": "1B"
+  },
+  "icones": null,
+  "texte": "<b>Forced Interrupt</b>: When this stage would be completed, instead remove all threat from here and each player chooses:\n• Place 2 corruption counters on their Creeping Corruption.\n• Take 3 damage and deal themself 1 facedown encounter card.\n<b>Forced Response</b>: After Krahllak is defeated, advance this scheme to stage 2A.",
+  "citation": null,
+  "set": "HEART OF SHADOW",
+  "numero_dans_set": "4/17",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG 60B",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Role exact des trois nombres (6 / +1 / 2 par joueur) : 6 = menace de depart (gros chiffre a gauche), +1 = escalade, 2 = seuil ; a confirmer sur le moteur",
+   "Le 2 par joueur en bas a droite pourrait etre un seuil de menace"
+  ]
+ },
+ {
+  "id_scan": "65061A",
+  "titre": "Beast Be Praised",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "2A",
+  "traits": null,
+  "stats": {
+   "niveau_etape": "2A"
+  },
+  "icones": null,
+  "texte": "<i>An inferno erupts in the throne room, punishing those who have yet to succumb to Krahllak's dark will.</i>\n<b>When Revealed</b>: Each player whose Creeping Corruption has the <b>OVERPOWERING</b> trait discards 1 random card from their hand. Each other player discards a card they control from play. In expert mode, deal each player 1 facedown encounter card.",
+  "citation": null,
+  "set": "HEART OF SHADOW",
+  "numero_dans_set": "5/17",
+  "pied": "© MARVEL © 2026 FFG 61A",
+  "orientation": "paysage",
+  "incertitudes": []
+ }
+]
