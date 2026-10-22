@@ -195,9 +195,13 @@ mécaniques propres (Punisher qui attaque le sous-méchant, pods multi-groupes d
 Approche 1 : une fonction pure + son test + un petit composant de barre + une option dans `FenetreReglages.tsx` + une maquette HTML sur le vrai plateau avant de coder
 (comme celle de `docs/packs/mcdc-2026-punisher/maquette-ville.html`). Les fiches des scénarios atypiques viennent après, au cas par cas.
 
-### À trancher avant de commencer
+### Décisions de l'utilisateur (22/10/2026), questions une à une
 
-- Quelle approche (1 conseillée) ; faut-il afficher aussi un nombre (ex. « +0,4 ») ou seulement la barre ?
-- La barre vaut-elle pour le solo seulement, ou aussi coop 2 à 4 joueurs et bataille 1v1 (où « héros contre méchant » n'a plus de sens : deux camps) ?
-- Où la placer (gauche ou droite, sans gêner la mini-carte de La Ville ni le journal) ?
-- Que faire en mode manuel et en bac à sable ?
+1. **Approche : formule simple** (l'approche 1), avec fiches réglage pour les scénarios atypiques.
+2. **Affichage : la barre seule, le détail au survol** (pas de nombre permanent, pour ne pas la faire passer pour une probabilité).
+3. **Modes : solo et coop.** Pas de barre en Bataille 1v1 (deux camps, autre logique) ni en mode manuel.
+4. **Place : le bord gauche**, fine barre verticale, sans gêner le journal ni la mini-carte de La Ville à droite.
+
+**Reste à faire le jour où on s'y met :** une maquette HTML sur le vrai plateau (comme celle de La Ville) pour juger l'effet, puis la fonction pure + test,
+le composant de barre, l'option « cacher » dans les Réglages. Détail de ce que fait le bac à sable pour tester : parties de la section « bac à sable » de
+`docs/README.md`. Rien n'est commencé.
