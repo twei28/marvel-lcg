@@ -87,13 +87,17 @@ class Assemblee:
     ############################################################################
     # Inscription
     @staticmethod
-    def Creer(table: str, joueurs: int, noms: str = '') -> str:
+    def Creer(table: str, joueurs: int, noms: str = '', code: 'str|None' = None) -> str:
         """La 1re table cree l'assemblee et en est l'organisatrice. Rend le code a donner aux autres."""
         with _Transaction() as base:
-            for _ in range(20):
-                code = _code_aleatoire()
-                if base.execute('SELECT 1 FROM assemblees WHERE code=?', (code,)).fetchone() is None:
-                    break
+            if code is not None:        # code impose (tests) : refuse s'il existe deja
+                if base.execute('SELECT 1 FROM assemblees WHERE code=?', (code,)).fetchone() is not None:
+                    raise ErreurAssemblee(f'Assemblee deja creee : {code}')
+            else:
+                for _ in range(20):
+                    code = _code_aleatoire()
+                    if base.execute('SELECT 1 FROM assemblees WHERE code=?', (code,)).fetchone() is None:
+                        break
             base.execute('INSERT INTO assemblees (code, cree, organisateur) VALUES (?,?,?)', (code, time.time(), table))
             base.execute('INSERT INTO groupes (code, tab, joueurs, noms) VALUES (?,?,?,?)', (code, table, joueurs, noms))
         return code

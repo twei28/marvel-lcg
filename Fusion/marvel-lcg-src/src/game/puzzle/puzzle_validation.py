@@ -201,3 +201,18 @@ def validate_puzzle(puzzle: Any, allowed_methods: Optional[Collection[str]] = No
                 if len(errors) >= 30:
                     break
     return errors
+
+
+def warn_puzzle(puzzle: Any) -> List[str]:
+    """Avertissements NON bloquants (l'assistant les montre, il ne refuse rien)."""
+    warnings: List[str] = []
+    if not puzzle.encounter_deck and not puzzle.encounter_discard_pile:
+        warnings.append(
+            "Le deck rencontre est vide : la partie se termine dès que le méchant doit "
+            "révéler une carte rencontre (règle du moteur).")
+    for index, player in enumerate(puzzle.players, start=1):
+        if not player.player_deck and not player.player_discard_pile:
+            warnings.append(f"Héros {index} : deck et défausse vides, il ne pourra rien piocher.")
+    if not puzzle.objectives:
+        warnings.append("Aucun objectif : le puzzle ne pourra pas être déclaré réussi.")
+    return warnings

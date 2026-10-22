@@ -88,59 +88,9 @@ class GameServerNewGame(GameServerBase):
 
     def play_puzzle(self, puzzle: 'PuzzleData'):
         from game.scene.scene import Scene
+        from game.puzzle.puzzle_scene import BuildPuzzleScene
 
-        def get_cards_text(cards: List[str]) -> str:
-            text = ",".join(f"'{x}'" for x in cards)
-            return text
-
-        puzzle_pre_command: List[str] = []
-
-        def append_puzzle_command(command: str, cards: List[str]) -> None:
-            text = get_cards_text(cards)
-            if text:
-                puzzle_pre_command.append(f"{command}({text})")
-
-        append_puzzle_command("Puzzle.CreateEncounterDeck", puzzle.encounter_deck)
-        append_puzzle_command("Puzzle.CreateEncounterDiscardPile", puzzle.encounter_discard_pile)
-        append_puzzle_command("Puzzle.CreateHandCards", puzzle.players[0].hand_cards)
-        append_puzzle_command("Puzzle.CreatePlayerDiscardPile", puzzle.players[0].player_discard_pile)
-        append_puzzle_command("Puzzle.CreatePlayerDeck", puzzle.players[0].player_deck)
-        append_puzzle_command("Puzzle.CreatePlayerAdditionalDeck", puzzle.players[0].set_aside)
-
-        puzzle_data = {
-            "version": puzzle.version,
-            "metadata": {
-                "seed": puzzle.seed,
-                "comment": puzzle.comment,
-                "cover": puzzle.cover,
-                "is_puzzle": True
-            },
-            "campaign": {
-                "version": puzzle.version,
-                "name": "Villain",
-                "villain": puzzle.villain,
-                "expert": puzzle.expert,
-                "schemes": puzzle.schemes,
-                "set_aside": puzzle.set_aside,
-                "encounters": [],
-                "encounter_sets": [],
-                "modular_sets": []
-            },
-            "players": [
-                {
-                    "version": puzzle.version,
-                    "name": f"Player {index}",
-                    "hero": puzzle.players[index].identities,
-                    "hero_deck": [],
-                    "obligations": [],
-                    "nemesis_set": [],
-                    "set_aside": puzzle.players[index].set_aside,
-                    "player_deck": []
-                }
-                for index in range(len(puzzle.players))
-            ],
-            "puzzle": puzzle_pre_command + puzzle.puzzle_command,
-        }
+        puzzle_data = BuildPuzzleScene(puzzle)
 
         scene = Json.LoadsAs(Json.Dumps(puzzle_data), Scene)
         scene.UpdateVersion()

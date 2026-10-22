@@ -31,6 +31,11 @@ def GetAbilities() -> Sequence['Ability']:
         pouvoir = CardFactory.GenerateCard(POUVOIR_AU_PEUPLE, None, effect.world)
         pouvoir.face.PutIntoPlay(premier, effect, under_control=True)
         Faces.PlaceCountersOn([pouvoir.face], 1, 'counter', effect)
+        if Pod(effect) is not None:
+            # ASSEMBLEE (decision 3 de l'utilisateur) : Le Roi est en jeu chez TOUS, en miroir du total commun (Longue vie est deja en jeu par le scenario).
+            roi = CardFactory.GenerateCard('pu151', None, effect.world)
+            roi.face.PutIntoPlay(premier, effect)
+            SynchroniserLaTable(effect)
 
     return [
         AbilityFactory.AfterGameSetup(mise_en_place),

@@ -31,6 +31,7 @@ def GetAbilities() -> Sequence['Ability']:
     def un_choix_utilisable(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
         """Decision de l'utilisateur (22/10/2026) : l'Action n'est offerte que s'il reste un choix REELLEMENT utilisable (le jeton n'est pas perdu pour rien) :
         « retirer 2 menaces » (libre ce round) ou « jouer une carte » (libre ET une carte de la main du joueur est jouable)."""
+        SynchroniserLaTable(effect)      # assemblee : les jetons envoyes par d'autres groupes arrivent avant qu'on ne decide
         choisis = deja_choisis(effect)
         if MENACE not in choisis:
             return True

@@ -1260,6 +1260,17 @@ class World(WorldAction, WorldFind):
                 self.reprise_demandee = None
                 self.manuel_actif = False
                 self.render.PresentForceNoWait()
+        elif self.scene.is_puzzle and self.scene.reprise_auto in ("mechant", "tour"):
+            # PUZZLE QUI DEMARRE APRES LA PHASE HEROS (22/10/2026, format v2,
+            # `start_phase`) : meme convention que la reprise d'une partie
+            # manuelle, dont on reprend le depart. "mechant" saute la phase
+            # heros et ouvre la phase du mechant ; "tour" clot d'abord le round
+            # puis en ouvre un neuf. Un puzzle ordinaire (reprise_auto vide) ne
+            # passe pas ici : son deroule est celui d'avant.
+            if self.round_id == 0:
+                self.round_id = 1
+            reprise = True
+            depart = self.scene.reprise_auto
 
         if self.is_game_over:
             return

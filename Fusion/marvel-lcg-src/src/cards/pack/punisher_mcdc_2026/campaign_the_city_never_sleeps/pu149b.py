@@ -3,7 +3,7 @@ from cards.pack.fne.kingpin import TrouverPublicSupport
 
 # Down With — ENVIRONNEMENT de campagne (combat 4, p272, face 2B de Kingsfall, verso de pu149a Long Live). Permanent.
 # When Revealed : Each group resets the number of support counters on their Public Support to 2[per_hero]+3 counters.
-# Pod Action : Choose a group in the pod. Move 1 counter from your Public Support to their Power to the People.   [MODE MULTI-TABLES : pas ecrite ici]
+# Pod Action : Choose a group in the pod. Move 1 counter from your Public Support to their Power to the People.   [MULTI-TABLES : `ActionDAssemblee`, set __init__]
 #
 # Cartes de reference : fne/kingpin/60163a Public Support (`TrouverPublicSupport`, jeton `support`), 60161b / 60162a (`WhenThisRevealed(None, ...)`), pu149a.
 # ⚠ Mots-pieges :
@@ -25,6 +25,12 @@ def GetAbilities() -> Sequence['Ability']:
         elif actuel < cible:
             Faces.PlaceCountersOn([soutien], cible - actuel, 'support', effect)
 
+    def synchroniser(effect: 'Effect', message: 'Message.WhenPhaseBegin') -> None:
+        Unused(message)
+        SynchroniserLaTable(effect)
+
     return [
         AbilityFactory.WhenThisRevealed(None, reinitialiser),
+        AbilityFactory.WhenVillainPhaseBegin(AbilityType.ForcedInterrupt, synchroniser),
+        ActionDAssemblee(),
     ]

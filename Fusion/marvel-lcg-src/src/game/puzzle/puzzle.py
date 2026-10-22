@@ -136,6 +136,19 @@ class RunPuzzle:
         faces = [self.FindOrCreateFace(x) for x in cards]
         return faces
 
+    def _JoueurDeMiseEnPlace(self, siege: int|None=None) -> 'Player':
+        """Le joueur dont une commande de mise en place remplit ou vide les zones.
+
+        `siege` (22/10/2026, puzzles a 1 a 4 heros) est un rang dans
+        `const_seat_order_players`, l'ordre des SIEGES, qui ne bouge jamais.
+        Sans lui (`None`), le premier joueur : le comportement d'avant, dont
+        dependent tous les cas du depot. Un siege inexistant leve, jamais un
+        repli sur un autre joueur.
+        """
+        if siege is None:
+            return self.world.GetFirstPlayer()
+        return self.world.const_seat_order_players[siege]
+
     ################################################################################
     #
     def CreateEncounterDiscardPile(self, *cards: str):
@@ -194,19 +207,19 @@ class RunPuzzle:
         for card in cards:
             CardFactory.GenerateCard(card, villain.encounter_deck, self.world)
 
-    def CreateHandCards(self, *cards: str):
+    def CreateHandCards(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.hand_cards, self.world)
 
-    def CreatePlayerDiscardPile(self, *cards: str):
+    def CreatePlayerDiscardPile(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.discard_pile, self.world)
 
-    def EmptyPlayerDeck(self):
+    def EmptyPlayerDeck(self, siege: int|None=None):
         """Vide le deck du joueur, pour le reconstruire carte par carte.
 
         AJOUTEE le 09/09/2026, meme motif que `EmptyEncounterDeck` :
@@ -224,14 +237,14 @@ class RunPuzzle:
         # que 8 des 14 cartes (journal du 09/09/2026), `RemoveAllFromGame`
         # travaillant sur la liste que la zone est en train de modifier.
         from game.operate.faces import Faces
-        joueur = self.world.GetFirstPlayer()
+        joueur = self._JoueurDeMiseEnPlace(siege)
         for _ in range(50):
             faces = [f for f in joueur.player_deck.GetAll() if f is not None]
             if not faces:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
-    def EmptyPlayerDiscardPile(self):
+    def EmptyPlayerDiscardPile(self, siege: int|None=None):
         """Vide la defausse du premier joueur (AJOUTEE le 16/10/2026, pack alopex,
         Prowl : « 1 card with a printed [mental] resource from your discard pile »).
 
@@ -241,14 +254,14 @@ class RunPuzzle:
         sont RETIREES DE LA PARTIE, comme `EmptyPlayerDeck`.
         """
         from game.operate.faces import Faces
-        joueur = self.world.GetFirstPlayer()
+        joueur = self._JoueurDeMiseEnPlace(siege)
         for _ in range(50):
             faces = [f for f in joueur.discard_pile.GetAll() if f is not None]
             if not faces:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
-    def EmptyPlayerAdditionalDeck(self):
+    def EmptyPlayerAdditionalDeck(self, siege: int|None=None):
         """Vide le DECK ANNEXE du joueur (deck d'Invocation, deck REGISTERED...).
 
         AJOUTEE le 10/09/2026, meme motif que `EmptyPlayerDeck` et
@@ -261,32 +274,48 @@ class RunPuzzle:
         `RemoveAllFromGame` travaille sur la liste que la zone modifie.
         """
         from game.operate.faces import Faces
-        joueur = self.world.GetFirstPlayer()
+        joueur = self._JoueurDeMiseEnPlace(siege)
         for _ in range(50):
             faces = [f for f in joueur.additional_deck.GetAll() if f is not None]
             if not faces:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
-    def CreatePlayerDeck(self, *cards: str):
+    def CreatePlayerDeck(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.player_deck, self.world)
 
-    def EmptyHand(self):
+    def SetFirstPlayer(self, siege: int):
+        """Donne le jeton de PREMIER JOUEUR au siege `siege` (puzzles, 22/10/2026).
+
+        L'ordre des joueurs vit dans `world.players`, dont `players[0]` est le
+        premier joueur et qui tourne comme `end_round` le fait (`Types.Rotate`) :
+        on fait tourner la liste jusqu'a ce que le siege visé soit en tete, ce qui
+        garde l'ordre autour de la table. Un siege inexistant leve.
+        """
+        voulu = self.world.const_seat_order_players[siege]
+        assert voulu in self.world.players, f"le siege {siege} est elimine"
+        for _ in range(len(self.world.players)):
+            if self.world.players[0] is voulu:
+                break
+            self.world.players = Types.Rotate(self.world.players, 1)
+        self.world.UpdatePlayersOrder(self.debug_rule)
+
+    def EmptyHand(self, siege: int|None=None):
         """Defausse toute la main du premier joueur (cas « main vide »). `Discard`
         ne peut pas viser une carte de la main : `FindOrCreateFace` n'y cherche pas."""
         from game.operate.faces import Faces
-        player = self.world.GetFirstPlayer()
+        player = self._JoueurDeMiseEnPlace(siege)
         faces = list(player.hand_cards.GetAll())
         if faces:
             Faces.DiscardAll(faces, DebugRule(faces[0]))
 
-    def EmptyAdditionalDeck(self):
+    def EmptyAdditionalDeck(self, siege: int|None=None):
         """Retire du jeu toutes les cartes du deck annexe du premier joueur (Sens de Daredevil, ecureuils...)."""
         from game.operate.faces import Faces
-        player = self.world.GetFirstPlayer()
+        player = self._JoueurDeMiseEnPlace(siege)
         faces = list(player.additional_deck.Get())
         if faces:
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
@@ -313,9 +342,9 @@ class RunPuzzle:
                     Faces.MoveAllToDeck([face], player.additional_deck, "Top", DebugRule(face))
                     break
 
-    def CreatePlayerAdditionalDeck(self, *cards: str):
+    def CreatePlayerAdditionalDeck(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.additional_discard_pile, self.world)
 
@@ -1385,6 +1414,23 @@ class RunPuzzle:
         """AJOUT (22/10/2026, PU-7 M5) : `Ville.Placer` (deplacement SANS adjacence, avec les interruptions de depart / d'arrivee)."""
         from game.operate.ville import Ville
         Ville.Placer(self.world, self.world.const_players[player], tuple(case))
+
+    def AssembleeAutreTable(self, action: str, *arguments: Any) -> None:
+        """AJOUT (22/10/2026, Kingsfall multi-tables) : modifie l'etat COMMUN de l'assemblee COMME UNE AUTRE TABLE le ferait, EN COURS de partie
+        (`verser`, n) / (`envoyer`, table) / (`terminer`, table, victoire). Le harnais ne peut pas faire jouer deux tables a la fois : c'est le seul moyen de
+        prouver que cette table SE SYNCHRONISE (et ne se contente pas de lire l'etat posee avant la mise en place)."""
+        from game.operate.assemblee import Assemblee
+        pod = self.world.rule.assemblee
+        assert pod is not None, "la partie n'appartient a aucune assemblee"
+        code = pod[0]
+        if action == 'verser':
+            Assemblee.VerserJetons(code, int(arguments[0]))
+        elif action == 'envoyer':
+            Assemblee.EnvoyerJeton(code, str(arguments[0]))
+        elif action == 'terminer':
+            Assemblee.Terminer(code, str(arguments[0]), bool(arguments[1]))
+        else:
+            raise AssertionError(f"action d'assemblee inconnue : {action}")
 
     def SendRoundEnd(self) -> None:
         """AJOUT (21/10/2026, Punisher MC×DC, Target Lock DISTRACTED « At the end of the round, flip this card ») : envoie

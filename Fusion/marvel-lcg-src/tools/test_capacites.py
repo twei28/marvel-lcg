@@ -66053,6 +66053,29 @@ def executer_un_cas(game_dir, port, index):
     # dont le texte parle des autres joueurs (« play under any player's
     # control », « give to the X player ») : en solo elles ne peuvent pas etre
     # exercees, et rien ne le signale.
+    # `assemblee_avant` (22/10/2026, Kingsfall multi-tables) : l'etat de l'assemblee AVANT la mise en place, comme le serveur le fait en creant /
+    # rejoignant l'assemblee avant de lancer la partie. Une liste d'etapes : {"creer": [table, joueurs], "code": "KING-TEST"} ou
+    # {"rejoindre": [table, joueurs], "code": ...} ; {"verser": n} / {"terminer": [table, victoire]} / {"envoyer": table} pour poser l'etat des AUTRES tables.
+    # Le fichier est propre au cas (`MCLCG_ASSEMBLEES`).
+    if cas.get("assemblee_avant"):
+        _chemin_assemblee = f"/tmp/capacites_assemblee_{os.environ.get('CAS_PREFIX', '')}{index}.db"
+        for _suffixe in ("", "-wal", "-shm"):
+            if os.path.exists(_chemin_assemblee + _suffixe):
+                os.remove(_chemin_assemblee + _suffixe)
+        os.environ["MCLCG_ASSEMBLEES"] = _chemin_assemblee
+        from game.operate.assemblee import Assemblee as _Assemblee
+        _code_assemblee = None
+        for _etape in cas["assemblee_avant"]:
+            if "creer" in _etape:
+                _code_assemblee = _Assemblee.Creer(_etape["creer"][0], _etape["creer"][1], code=_etape.get("code"))
+            elif "rejoindre" in _etape:
+                _Assemblee.Rejoindre(_etape.get("code") or _code_assemblee, _etape["rejoindre"][0], _etape["rejoindre"][1])
+            elif "verser" in _etape:
+                _Assemblee.VerserJetons(_code_assemblee, _etape["verser"])
+            elif "terminer" in _etape:
+                _Assemblee.Terminer(_code_assemblee, _etape["terminer"][0], bool(_etape["terminer"][1]))
+            elif "envoyer" in _etape:
+                _Assemblee.EnvoyerJeton(_code_assemblee, _etape["envoyer"])
     noms_heros = [cas["heros"]]
     if cas.get("heros2"):
         noms_heros.append(cas["heros2"])
