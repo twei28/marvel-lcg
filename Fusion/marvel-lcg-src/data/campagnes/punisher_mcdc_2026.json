@@ -9,7 +9,9 @@
     "expert": {
         "pv_persistants": true
     },
-    "pages_regles": [],
+    "pages_regles": [
+        "00-campagne-regles-1.jpg"
+    ],
     "scenarios": [
         {
             "id": "the_big_apple",
@@ -50,7 +52,11 @@
             ],
             "pages": {
                 "intro": [],
-                "regles": [],
+                "regles": [
+                    "01-the_big_apple-regles-1.jpg",
+                    "01-the_big_apple-regles-2.jpg",
+                    "01-the_big_apple-regles-3.jpg"
+                ],
                 "epilogue": []
             }
         },
@@ -119,7 +125,10 @@
             ],
             "pages": {
                 "intro": [],
-                "regles": [],
+                "regles": [
+                    "02-tracking_the_buyer-regles-1.jpg",
+                    "02-tracking_the_buyer-regles-2.jpg"
+                ],
                 "epilogue": []
             }
         },
@@ -154,7 +163,11 @@
             ],
             "pages": {
                 "intro": [],
-                "regles": [],
+                "regles": [
+                    "03-punishment-regles-1.jpg",
+                    "03-punishment-regles-2.jpg",
+                    "03-punishment-regles-3.jpg"
+                ],
                 "epilogue": []
             }
         },
@@ -168,7 +181,10 @@
             "victoire": [],
             "pages": {
                 "intro": [],
-                "regles": [],
+                "regles": [
+                    "04-kingsfall-regles-1.jpg",
+                    "04-kingsfall-regles-2.jpg"
+                ],
                 "epilogue": []
             }
         }
@@ -183,5 +199,6 @@
             "libelle": "PV restants",
             "aide": "Campagne experte : ils deviennent les PV de départ du combat suivant."
         }
-    ]
+    ],
+    "livret_fr": true
 }
