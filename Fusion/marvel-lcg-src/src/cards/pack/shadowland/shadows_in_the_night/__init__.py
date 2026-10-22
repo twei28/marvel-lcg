@@ -1,4 +1,5 @@
 from cards.pack.shadowland import *
+from cards.pack.fne import PeutCouvrirLeCout
 
 
 def PositionsDifferentes(effect: 'Effect') -> bool:
@@ -20,3 +21,20 @@ def AbilitesPositionVilain() -> Sequence['Ability']:
         AbilityFactory.ReduceCharacterTakeDamageBy("Character", 1, from_each_attack=True, conditions=[degats_moins_un]),
         AbilityFactory.ThreatCannotBeRemovedFromWhile(MainScheme, conditions=[menace_non_retirable]),
     ]
+
+
+def ActionPositionHeros(branches: Callable[['Effect', 'Player', Callable[[], None]], Sequence['Ability']]) -> 'Ability':
+    """« First Player Action : Resolve one of the effects below, then flip this card » (sl004a/b).
+    `branches(effect, joueur, retourner)` rend les trois choix ; chacun appelle `retourner()` une fois SON effet resolu.
+    Modeles : gmw/16143 (First Player Action d'un environnement), fne/60127 (choix payants)."""
+
+    def action(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
+        this = effect.this.CastTo(Environment)
+        joueur = message.GetToPlayer()
+
+        def retourner() -> None:
+            this.card.Flip(effect)
+
+        joueur.ChooseAbilities(effect, *branches(effect, joueur, retourner))
+
+    return AbilityFactory.WhenInYourPlayTurn(AbilityType.FirstPlayerAction, action)
