@@ -61,6 +61,9 @@ Decisions de l'utilisateur : le combat 4 (Kingsfall) est jouable SEUL (le livret
 ## Fait le 22/10 (nuit) : combat 4 Kingsfall, version normale (non commite au moment de l'ecriture : voir git log)
 pu147 Long Live the King? (Setup : allie Punisher au choix des joueurs si gagne, echange en pu148 + 1 jeton), pu148 Power to the People, pu149a/b Long Live / Down With, scenario genere `kingsfall(_expert)`, 11 cas `[camp]`, mutations rouges. pu151 The King = donnees seulement. Pod Action, pods, The King : MODE MULTI-TABLES (a la toute fin). Preuves : `preuves-big-apple.md` (bloc combat 4).
 
+## Fait le 22/10 (nuit, suite) : pu139 + ecran de campagne
+pu139 Capo of the Past (commit 6f1c8462) ; ecran de campagne : 4 combats, choix du scenario des combats 2 et 3 d'apres le carnet (`catalogue-carnet.js`, `tools/test_catalogue_carnet.mjs`, 4 epreuves `test_campagnes.py punisher`, `ui-check/tests/campagne-punisher.spec.ts`). Preuves : `preuves-big-apple.md`. RESTE du chantier campagne : regle experte REC, pages de livret, ecran de fin du combat 4.
+
 ## Ce qui RESTE (ordre propose)
 1. ~~Combat 4 Kingsfall, version normale~~ FAIT (voir ci-dessus). Reste : ajouter le combat 4 a `data/campagnes/punisher_mcdc_2026.json` / l'ecran de campagne. Ancien texte : : scans p269-p273 (Long Live the King? 1A, Power to the People, Long Live, Down With the King, The King), scenario Kingpin (FNE) + sets SWAT et Tracksuit Mafia, Setup « allie Punisher en jeu » si pu146 gagne (cle `Punisher Ally`), victoire = campagne gagnee. Montrer les scans UN PAR UN et poser les questions une a une (regle utilisateur). Dire d'abord quelles cartes servent hors mode multi-tables.
 2. **pu139 Capo of the Past** (set modulaire du combat 2, sans script) : « Treat attached character as an ELITE minion » : un VILAIN CAPO traite comme sbire (`TreatAsMinion` ne gere que allie/heros : extension moteur). Question a poser a l'utilisateur avec le scan.

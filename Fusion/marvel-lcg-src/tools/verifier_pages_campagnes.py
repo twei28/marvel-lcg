@@ -58,7 +58,7 @@ def main():
                         erreurs.append(f"{code} : planche minuscule {nom} {im.size}")
                 except Exception as e:
                     erreurs.append(f"{code} : planche illisible {nom} ({e})")
-        orphelines = [x for x in os.listdir(base) if x.endswith('.jpg') and x != '00-couverture.jpg' and x not in set(pages)]
+        orphelines = [] if not os.path.isdir(base) else [x for x in os.listdir(base) if x.endswith('.jpg') and x != '00-couverture.jpg' and x not in set(pages)]
         if orphelines:
             notes.append(f"{code} : planches non citees {orphelines[:4]}")
     print(f"{lues} planches lues")

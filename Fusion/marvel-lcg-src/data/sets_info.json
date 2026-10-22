@@ -1923,7 +1923,19 @@
    "one_last_kill_jigsaw",
    "one_last_kill_hobgoblin",
    "the_big_apple",
-   "kingsfall"
+   "kingsfall",
+   "punishment_hobgoblin",
+   "punishment_jigsaw",
+   "tracking_the_buyer_art_museum_heist_hobgoblin",
+   "tracking_the_buyer_art_museum_heist_jigsaw",
+   "tracking_the_buyer_protection_racket_hobgoblin",
+   "tracking_the_buyer_protection_racket_jigsaw",
+   "tracking_the_buyer_stop_the_presses_hobgoblin",
+   "tracking_the_buyer_stop_the_presses_jigsaw",
+   "tracking_the_buyer_the_getaway_hobgoblin",
+   "tracking_the_buyer_the_getaway_jigsaw",
+   "tracking_the_buyer_the_raft_breakout_hobgoblin",
+   "tracking_the_buyer_the_raft_breakout_jigsaw"
   ],
   "heroes": [],
   "encounters": [

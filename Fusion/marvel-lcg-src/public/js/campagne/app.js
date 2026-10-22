@@ -54,6 +54,7 @@ import { launch } from "/public/js/prepare/launcher.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
 import * as OL from "/public/js/campagne/ordre-libre.js";
 import * as LP from "/public/js/campagne/livre-pages.js";
+import { scenarioDuCatalogueDeLEtape } from "/public/js/campagne/catalogue-carnet.js";
 import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
 import { installerHistorique, noterEcran, reculerVers } from "/public/js/prepare/tel.js";
 
@@ -1080,7 +1081,8 @@ function vueCampagne() {
     const perdue = Boolean(campagne.perdue);
     const finie = perdue || estTerminee(campagne, definition);
     const scenario = finie ? definition.scenarios[definition.scenarios.length - 1] : definition.scenarios[index];
-    const duCatalogue = etat.scenarios.find((s) => s.id === scenario.id);
+    // Le fichier du catalogue peut dependre du carnet (Punisher MC×DC : combats 2 et 3) ; sinon c'est l'id de l'etape.
+    const duCatalogue = etat.scenarios.find((s) => s.id === scenarioDuCatalogueDeLEtape(scenario, campagne.carnet, campagne.difficulte === "expert"));
 
     const enCours = campagne.partieEnCours && campagne.partieEnCours.scenario === scenario.id;
     const tentatives = (campagne.tentatives || {})[scenario.id] || 0;
@@ -1678,7 +1680,8 @@ async function lancerScenario(scenario, options = {}) {
     // (`<affaire>_<vilain>`) ou d'un id de catalogue propre au final : l'id de
     // la definition reste celui que le plateau et l'estampille du moteur
     // connaissent, seul le fichier lance change.
-    const idCatalogue = options.catalogue || scenario.catalogue || scenario.id;
+    const idCatalogue = options.catalogue
+        || scenarioDuCatalogueDeLEtape(scenario, campagne.carnet, campagne.difficulte === "expert");
     const duCatalogue = etat.scenarios.find((s) => s.id === idCatalogue);
     if (!duCatalogue) throw new Error(t("Scénario introuvable dans le catalogue :") + " " + idCatalogue);
 

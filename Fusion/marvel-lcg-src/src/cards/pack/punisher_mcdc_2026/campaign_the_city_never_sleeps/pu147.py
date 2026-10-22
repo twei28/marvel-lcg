@@ -19,6 +19,8 @@ def GetAbilities() -> Sequence['Ability']:
     def mise_en_place(effect: 'Effect', message: 'Message.WhenGameWouldBegin') -> None:
         Unused(message)
         premier = Worlds.GetFirstPlayer(effect)
+        # Le scenario Kingpin (FNE) ecrit deja son releve ; pu147 n'y ajoute que l'estampille `kingsfall` (l'id du combat 4 dans `data/campagnes/`), sans cle.
+        EnregistrerLeReleve(effect, lambda e, m: {}, 'kingsfall')
         if CampaignLog.GetStrInternal(CLE_ALLIE_PUNISHER, effect) == '1':
             allie = CardFactory.GenerateCard(ALLIE_PUNISHER, None, effect.world)
             joueurs = TousLesJoueurs(effect)

@@ -53,6 +53,124 @@
                 "regles": [],
                 "epilogue": []
             }
+        },
+        {
+            "id": "tracking_the_buyer",
+            "numero": 2,
+            "nom": "Tracking the Buyer",
+            "nom_fr": "Super Bouffon / Jigsaw",
+            "resume": "Les pistes ont mené le Punisher à l'entrepôt du trafiquant d'armes. Le méchant subordonné (Hobgoblin ou Jigsaw) et la manigance principale dépendent du combat 1.",
+            "enjeu": "Le scénario joué est choisi d'après le carnet : la manigance selon le lieu de la dernière piste, le méchant selon le Trafiquant d'armes. La victoire note le subordonné affronté et vous donne la Cache d'armement du Punisher pour le combat 3.",
+            "catalogue_selon_carnet": {
+                "modele": "tracking_the_buyer_{manigance}_{sous_fifre}",
+                "variables": {
+                    "manigance": {
+                        "cle": "Final LEAD Location",
+                        "table": {
+                            "Theater District": "art_museum_heist",
+                            "Financial District": "art_museum_heist",
+                            "Hell's Kitchen": "the_getaway",
+                            "Lower East Side": "the_getaway",
+                            "Upper East Side": "the_raft_breakout",
+                            "Midtown": "the_raft_breakout",
+                            "Chinatown": "protection_racket",
+                            "West Village": "stop_the_presses",
+                            "Soho": "stop_the_presses"
+                        }
+                    },
+                    "sous_fifre": {
+                        "cle": "Gunrunner",
+                        "table": {
+                            "Count Nefaria": "hobgoblin",
+                            "Ringmaster": "hobgoblin",
+                            "Mister Negative": "hobgoblin",
+                            "Nightshade": "hobgoblin",
+                            "Crime-Master": "jigsaw",
+                            "Lady Yulan": "jigsaw",
+                            "The Rose": "jigsaw",
+                            "Diamondback": "jigsaw"
+                        }
+                    }
+                },
+                "defaut": "tracking_the_buyer_the_getaway_jigsaw"
+            },
+            "victoire": [
+                {
+                    "cle": "Underling",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Méchant subordonné affronté",
+                    "aide": "Hobgoblin ou Jigsaw : le combat 3 affronte l'autre."
+                },
+                {
+                    "cle": "Tracking the Buyer",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Trouver l'Acheteur retournée",
+                    "aide": "Victoire : l'environnement est retourné."
+                },
+                {
+                    "cle": "Punisher's Ordnance Cache",
+                    "type": "auto",
+                    "format": "int",
+                    "libelle": "Cache d'armement du Punisher",
+                    "aide": "Gagnée : à mettre en jeu au combat 3."
+                }
+            ],
+            "pages": {
+                "intro": [],
+                "regles": [],
+                "epilogue": []
+            }
+        },
+        {
+            "id": "punishment",
+            "numero": 3,
+            "nom": "Punishment",
+            "nom_fr": "Châtiment",
+            "resume": "Le Punisher a acculé sa cible sur le toit d'un entrepôt. Le méchant subordonné est celui que vous n'avez pas affronté au combat 2.",
+            "enjeu": "Le scénario joué est choisi d'après le carnet : le subordonné est l'autre de celui du combat 2. La victoire vous donne l'allié Punisher pour le combat 4.",
+            "catalogue_selon_carnet": {
+                "modele": "punishment_{autre}",
+                "variables": {
+                    "autre": {
+                        "cle": "Underling",
+                        "table": {
+                            "jigsaw": "hobgoblin",
+                            "hobgoblin": "jigsaw"
+                        }
+                    }
+                },
+                "defaut": "punishment_hobgoblin"
+            },
+            "victoire": [
+                {
+                    "cle": "Punisher Ally",
+                    "type": "auto",
+                    "format": "int",
+                    "libelle": "Allié Punisher gagné",
+                    "aide": "Victoire : l'allié Punisher est mis en jeu au combat 4."
+                }
+            ],
+            "pages": {
+                "intro": [],
+                "regles": [],
+                "epilogue": []
+            }
+        },
+        {
+            "id": "kingsfall",
+            "numero": 4,
+            "nom": "Kingsfall",
+            "nom_fr": "La Chute du Roi",
+            "resume": "Le Caïd voit son empire se fissurer et ses alliés fuir. À l'aube, le Roi sera-t-il encore debout ?",
+            "enjeu": "Dernier combat : vaincre le Caïd gagne la campagne. L'allié Punisher entre en jeu si vous l'avez gagné au combat 3.",
+            "victoire": [],
+            "pages": {
+                "intro": [],
+                "regles": [],
+                "epilogue": []
+            }
         }
     ],
     "victoire_commune_expert": [

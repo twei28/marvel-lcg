@@ -132,6 +132,15 @@ for expert in (False, True):
     ecrire('data/scenarios/kingsfall%s.json' % ('_expert' if expert else ''), s)
 noms.append('kingsfall')
 
+# --- Combats 2 et 3 de la campagne : les scenarios generes (`tracking_the_buyer_<manigance>_<sous-fifre>`, `punishment_<sous-fifre>`) doivent etre
+# dans la liste de l'extension pour que l'ecran de campagne (catalog.scenariosForExtension) les trouve ; leur choix est fait par le carnet
+# (`catalogue_selon_carnet`, public/js/campagne/catalogue-carnet.js). Les fichiers sont ecrits par ailleurs : on ne fait que les inscrire.
+import glob
+for f in sorted(glob.glob(os.path.join(JEU, 'data/scenarios/tracking_the_buyer_*.json')) + glob.glob(os.path.join(JEU, 'data/scenarios/punishment_*.json'))):
+    nom = os.path.basename(f)[:-5]
+    if not nom.endswith('_expert') and nom not in noms:
+        noms.append(nom)
+
 p = os.path.join(JEU, 'data/sets_info.json')
 si = json.load(open(p, encoding='utf-8'))
 cle = '208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)'

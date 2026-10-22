@@ -1600,3 +1600,51 @@ EPREUVES += [
         "attendu": {"pas_deck": ["gs302"], "deck": ["gs227"]},
     },
 ]
+
+
+# ============================================ La ville ne dort jamais (punisher_mcdc_2026)
+#
+# Carnet : « Final LEAD Location », « Gunrunner », « Seized Tech Crates » (combat 1) ; « Underling », « Punisher's Ordnance Cache » (combat 2) ;
+# « Punisher Ally » (combat 3). Le moteur ecrit tout (cards/pack/punisher_mcdc_2026/campaign.py) ; l'ecran choisit le scenario des combats 2 et 3
+# d'apres le carnet (public/js/campagne/catalogue-carnet.js, teste par tools/test_catalogue_carnet.mjs).
+EPREUVES += [
+    {
+        "nom": "punisher — victoire au combat 2 (Jigsaw) : le sous-fifre et la Cache sont notes, et le combat 3 met en jeu les Caisses, la Cache et Punishment",
+        "scenario": "tracking_the_buyer_the_getaway_jigsaw",
+        "heros": "spider_man",
+        "carnet": {"Seized Tech Crates": "1", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "tracking_the_buyer",
+            "cles": {"Underling": "Jigsaw", "Punisher's Ordnance Cache": "1"},
+        },
+        "suivant": "punishment_hobgoblin",
+        "attendu": {"en_jeu": ["pu144", "pu141", "pu143"], "pas_en_jeu": ["pu145"]},
+    },
+    {
+        "nom": "punisher — victoire au combat 3 : l'allie Punisher est gagne, et le combat 4 le met en jeu avec Power to the People",
+        "scenario": "punishment_hobgoblin",
+        "heros": "spider_man",
+        "carnet": {"Seized Tech Crates": "1", "Punisher's Ordnance Cache": "1", "Underling": "Jigsaw", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {"gagnee": True, "scenario": "punishment", "cles": {"Punisher Ally": "1"}},
+        "suivant": "kingsfall",
+        "attendu": {"en_jeu": ["pu146", "pu148", "pu149a"], "pas_en_jeu": ["pu147"], "compteurs": [["pu148", "counter", 1]]},
+    },
+    {
+        "nom": "punisher — DEFAITE au combat 3 : pas d'allie, et le combat 4 n'a pas le Punisher (mais Power to the People y est)",
+        "scenario": "punishment_hobgoblin",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet": {"Seized Tech Crates": "1", "Punisher's Ordnance Cache": "1", "Underling": "Jigsaw", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {"gagnee": False, "scenario": "punishment", "cles_absentes": ["Punisher Ally"]},
+        "suivant": "kingsfall",
+        "attendu": {"en_jeu": ["pu148", "pu149a"], "pas_en_jeu": ["pu146"]},
+    },
+    {
+        "nom": "punisher — victoire au combat 4 (Kingsfall) : estampille `kingsfall`, campagne gagnee",
+        "scenario": "kingsfall",
+        "heros": "spider_man",
+        "carnet": {"Punisher Ally": "1", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {"gagnee": True, "scenario": "kingsfall"},
+    },
+]
