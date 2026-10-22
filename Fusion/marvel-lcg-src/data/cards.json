@@ -125531,7 +125531,11 @@
    "type": "Upgrade",
    "name": "Creeping Corruption",
    "subtitle": "",
-   "desc": {},
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "MaxPerUnit": "1"
+   },
    "traits": [],
    "set_name": "Black Flower",
    "text": "Permanent. Setup. Max 1 per player.\nIf there are at least 5 corruption counters here, remove each of them from here and flip this card.\n<b>Action</b>: Exhaust Creeping Corruption and place 1 corruption counter here → draw 1 card."
@@ -125541,7 +125545,10 @@
    "type": "Upgrade",
    "name": "Creeping Corruption",
    "subtitle": "",
-   "desc": {},
+   "desc": {
+    "Permanent": "1",
+    "MaxPerUnit": "1"
+   },
    "traits": [
     "OVERPOWERING"
    ],
@@ -125633,5 +125640,5 @@
    "text": "<b>When Revealed</b>: Place 1 corruption counter on your Creeping Corruption. If it has the <b><i>OVERPOWERING</i></b> trait, place 1 threat on the main scheme; otherwise, take 1 damage.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or take 4 indirect damage."
   }
  ],
- "checksum": "5daf8175c3480acc5072cbd79f7187fbc0afabe5da6b1c0be3267f2c6701e9fc"
+ "checksum": "42ef4c740b4bd11b8b625e1d3012d8b057ff371d2d33550af15e0dbbd41566dd"
 }
