@@ -15,7 +15,7 @@ import { picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
 import { serieDuHeros } from "/public/js/prepare/arts-cartes-choix.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
-import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
+import { regrouperUnderlings, faceB, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
 import { nomAvecAuteur, createursDeTout, auteurConnuDeLExtension } from "/public/js/prepare/auteur.js";
 // LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
@@ -243,7 +243,7 @@ function mechantsDe(sc) {
  *  les sert tournees de 90° (cartes du jeu) : on les remet a l'endroit (rotation CSS dans un conteneur `cq`). null = pas une tuile d'affaire. */
 function portraitAffaire(ext, sc) {
     if (!ext || !ext.tuileManigance) return null;
-    const id = sc.interchangeable ? sc.tileImage : ((ext.tuileManiganceScenarios || []).includes(sc.id) ? String((sc.schemes || [])[0] || "").split(",")[0] : "");
+    const id = sc.interchangeable ? sc.tileImage : ((ext.tuileManiganceScenarios || []).includes(sc.id) ? faceB((sc.schemes || [])[0]) : "");
     if (!id) return null;
     return el("div", { class: "portrait pivote" }, el("i", { style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } }));
 }

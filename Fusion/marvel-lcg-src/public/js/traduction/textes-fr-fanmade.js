@@ -4614,7 +4614,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_protection — Cyber Ninja (Ally) ; « cloak » = poser une carte d'état Camouflé
     'up007': "<b>Réponse</b> : après que Cyber Ninja est entré en jeu, défaussez une amélioration de votre main → piochez 1 carte et camouflez Cyber Ninja.\n<i>« Il fut un temps où de tels sentiments troublaient mon jugement. J'ai corrigé ça... »</i>",
     // tmnt_aspect_protection — Demoralize (Event)
-    'up009': "<b>Action de héros</b> : choisissez un ennemi. Il vous attaque. Désorientez cet ennemi.\n<i>« C'est l'heure de faire tomber des têtes ! »</i> —Raphael",
     // tmnt_aspect_protection — Electrostatic Armor (Upgrade), reskin de 10031
     'up010': "Jouez cette carte sous le contrôle de n'importe quel joueur.\n1 max par joueur.\n<b>Réponse</b> : après que vous avez défendu contre une attaque, infligez 1 dégât au personnage attaquant.",
     // tmnt_aspect_protection — Energy Barrier (Upgrade), reskin de 05017
@@ -4624,7 +4623,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_protection — Grotto (Ally), texte de 09014 Iron Fist, jetons « brute »
     'up014': "Grotto entre en jeu avec 2 jetons Brute sur lui.\n<b>Interruption</b> : quand Grotto attaque un ennemi, retirez-lui 1 jeton Brute → sonnez cet ennemi et infligez-lui 1 dégât.",
     // tmnt_aspect_protection — Helpful Bystander (Ally)
-    'up015': "Vulnérable. 1 max par deck.\nVotre héros gagne +1 en taille de main.\n<b>Interruption forcée</b> : quand un ennemi vous attaque, il attaque Helpful Bystander à la place. Cette attaque gagne Déferlement.",
     // tmnt_aspect_protection — Herman (Ally)
     'up016': "Ténacité. Herman peut avoir jusqu'à 3 cartes d'état Tenace.\n<b>Interruption</b> : quand Herman entre en jeu, placez sur lui une carte d'état Tenace supplémentaire (2 max) pour chaque ressource payée en trop pour son coût.",
     // tmnt_aspect_protection — Honor Blade (Ally), reskin de 56041 Patriot
@@ -4644,7 +4642,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_protection — Rabid Infection (Upgrade)
     'up028': "Attachez cette carte à un sbire que votre héros a attaqué ce tour-ci. Si elle est attachée à un sbire non-[[ÉLITE]], il gagne Vulnérable.\n<b>Interruption</b> : quand le sbire attaché s'active, infligez 1 dégât à un ennemi.",
     // tmnt_aspect_protection — Redirection Mastery (Upgrade) ; « exactly defend » : question Q-UP1
-    'up030': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez défendu contre une attaque dont la valeur était exactement égale à votre DEF, infligez à l'attaquant des dégâts égaux à votre DEF pour cette attaque.",
     // tmnt_aspect_protection — Road Rage (Ally), modifiée de 01066 Hawkeye
     'up031': "Road Rage entre en jeu avec 3 jetons Carburant sur lui.\n<b>Réponse</b> : après qu'un sbire est entré en jeu, retirez 1 jeton Carburant de Road Rage → infligez 2 dégâts à ce sbire.\n<i>« Ça faisait longtemps que je voulais te rattraper. »</i>",
     // tmnt_aspect_protection — Senkon (Upgrade)
@@ -4652,7 +4649,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_protection — Seymour Gutz (Ally), reskin de 48012 Rogue
     'up034': "<b>Action</b> : infligez 1 dégât à un autre personnage ami → jusqu'à la fin du round, Seymour Gutz gagne tous les [[TRAITS]] de ce personnage et ajoute la CTR et l'ATQ imprimées de ce personnage à ses pouvoirs correspondants. (Limite d'une fois par round.)",
     // tmnt_aspect_protection — Tonfa (Upgrade)
-    'up039': "Restreint.\n<b>Interruption de héros</b> : pendant le calcul des dégâts d'une attaque contre vous, inclinez cette carte → donnez à votre héros soit +1 DEF, soit Riposte 1 pour cette attaque.",
     // tmnt_aspect_protection — Usagi Yōjimbō (Ally)
     'up041': "Riposte 2. Ténacité.\nUsagi Yōjimbō ne s'incline pas pour défendre.\n<i>« Je te protégerai au péril de ma vie. »</i>",
     // tmnt_aspect_protection — What Doesn't Kill Me (Event), reskin de 27016
@@ -4891,6 +4887,13 @@ export const TEXTES_FR_FANMADE = {
     '64031': "<b>Action</b> : soignez 1 dégât d'un personnage [[ARTISTE MARTIAL]]. Ensuite, si ce personnage n'a plus aucun dégât, soignez 1 dégât d'un autre personnage.",
     '64032': "[star] Réduction 2 ([[ARTISTE MARTIAL]]).\n1 max par joueur.\nChaque allié [[ARTISTE MARTIAL]] que vous contrôlez subit 2 dégâts consécutifs ([consequential]) de moins après avoir vaincu exactement un ennemi ou une manigance annexe.",
     '64033': "Cette carte génère une ressource [physical] pour chaque personnage [[DÉFENSEUR]] que vous contrôlez (maximum 4) et peut être dépensée pour un autre joueur dont l'identité a le trait [[DÉFENSEUR]].",
+    '64024': "En Équipe <i>(Iron Fist et Luke Cage)</i>. 1 max par deck.\n<b>Action de héros</b> (<i>attaque</i>) : infligez 2 dégâts à un ennemi et donnez une carte d'état Tenace à un personnage.",
+    '64017': "Utilisations (3 jetons Soin).\n<b>Action</b>: retirez 1 jeton Soin de L'Infirmière de nuit et inclinez-la → soignez 1 dégât d'un héros et défaussez 1 de ses cartes d'état.",
+    '64015': "<b>Interruption de héros</b> <i>(défense)</i> : quand une carte de boost d'un ennemi vous attaquant est censée être retournée face visible, défaussez-là à la place.",
+    '64020': "Restreint.\n<b>Interruption de héros</b> : pendant le calcul des dégâts d'une attaque contre vous, inclinez cette carte → donnez à votre héros soit +1 DEF, soit Riposte 1 pour cette attaque.",
+    '64018': "Jouez cette carte sous le contrôle de n'importe quel joueur. 1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez défendu contre une attaque dont la valeur était exactement égale à votre DEF, infligez à l'attaquant des dégâts égaux à votre DEF pour cette attaque.",
+    '64016': "<b>Action de héros</b> : choisissez un ennemi. Il vous attaque. Désorientez cet ennemi.",
+    '64013': "Vulnérable. 1 max par deck.\nVotre héros gagne +1 en taille de main.\n<b>Interruption forcée</b> : quand un ennemi vous attaque, il attaque Helpful Bystander à la place. Cette attaque gagne Déferlement.",
     // Binary (Galactic Storm, Kajislav, lot GS-1, 20/10/2026) : heros, signatures, obligation, nemesis.
     'gs001a': "X est égal au nombre de ressources [energy] dans votre main (5 maximum).\n<i>Burnout</i> — <b>Réponse forcée</b> : après la fin de votre tour, défaussez chaque ressource [energy] de votre main.",
     'gs001b': "Votre deck doit contenir autant de cartes avec une ressource imprimée [energy], [mental] et [physical].\n<i>Exploring Space</i> — <b>Action</b> : piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
