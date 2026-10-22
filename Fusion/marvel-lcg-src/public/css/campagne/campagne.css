@@ -562,3 +562,8 @@ body:has(.cmp-page-campagne.avec-livre)>#app{flex:1 1 auto;min-height:0;height:a
 .cmp-elites-t { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
 .cmp-elite { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
 .cmp-elite img { width: 36px; border-radius: 4px; border: 1px solid #ffd45a; }
+
+/* Kingsfall multi-tables : le bloc « Combat a plusieurs tables » et le champ du code d'assemblee. */
+.cmp-assemblee-saisie{display:flex;flex-direction:column;gap:6px;margin-top:10px;max-width:260px;font-size:.85rem}
+.cmp-assemblee-code{font:700 1.1rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.07);color:inherit}
+.cmp-assemblee-code:focus-visible{outline:2px solid #3f86e0;outline-offset:2px}

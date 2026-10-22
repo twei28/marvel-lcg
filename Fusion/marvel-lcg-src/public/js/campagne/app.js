@@ -1133,6 +1133,7 @@ function vueCampagne() {
             blocEliteDuScenario(campagne, definition, scenario.numero, enCours),
         ),
         blocOptionsCampagne(campagne, definition, enCours),
+        blocAssemblee(scenario, enCours),
         el("div", { class: "cmp-bloc cmp-bloc-lancer" },
         el("div", { class: "cmp-lancer" },
             tentatives ? el("p", { class: "cmp-tentatives" },
@@ -1676,6 +1677,10 @@ async function ouvrirCampagne(id) {
  */
 async function lancerScenario(scenario, options = {}) {
     const campagne = etat.campagne;
+    const choixAssemblee = scenario.assemblee ? etat.assembleeChoix : null;
+    if (choixAssemblee && choixAssemblee.mode === "rejoindre" && !String(choixAssemblee.code || "").trim()) {
+        throw new Error(t("Saisis le code de l'assemblée à rejoindre."));
+    }
     // En ordre libre, le fichier du catalogue depend du vilain choisi
     // (`<affaire>_<vilain>`) ou d'un id de catalogue propre au final : l'id de
     // la definition reste celui que le plateau et l'estampille du moteur
@@ -1724,7 +1729,41 @@ async function lancerScenario(scenario, options = {}) {
             selectedModularSets: duCatalogue.rawJson.modular_sets || [],
         },
         campaignLog: campagne.carnet || {},
+        // Kingsfall multi-tables : « creer » une assemblee ou en « rejoindre » une avec son code (jamais pour les autres scenarios).
+        assemblee: scenario.assemblee && etat.assembleeChoix && etat.assembleeChoix.mode !== "seule" ? { ...etat.assembleeChoix } : null,
     });
+}
+
+/**
+ * KINGSFALL MULTI-TABLES (22/10/2026) : jouer le combat 4 seul, ou en ASSEMBLEE avec d'autres tables. Decision de l'utilisateur : un CODE d'assemblee partage.
+ * La premiere table en CREE une (elle devient l'organisatrice et recoit le code a donner), les autres en REJOIGNENT une en saisissant ce code.
+ * Le scenario l'annonce par `assemblee: true` dans `data/campagnes/<code>.json`.
+ */
+function blocAssemblee(scenario, enCours) {
+    if (!scenario.assemblee || enCours) return null;
+    const choix = etat.assembleeChoix || (etat.assembleeChoix = { mode: "seule", code: "" });
+    const modes = [
+        ["seule", t("Une seule table")],
+        ["creer", t("Créer une assemblée")],
+        ["rejoindre", t("Rejoindre une assemblée")],
+    ];
+    const champ = el("input", {
+        type: "text", id: "cmp-assemblee-code", class: "cmp-assemblee-code", maxlength: "16", autocomplete: "off", spellcheck: "false",
+        placeholder: "KING-XXXX", value: choix.code || "", "aria-label": t("Code de l'assemblée"),
+        oninput: (e) => { choix.code = e.target.value.toUpperCase(); },
+    });
+    return el("div", { class: "cmp-bloc cmp-bloc-assemblee" },
+        el("h2", { class: "cmp-bloc-t" }, t("Combat à plusieurs tables")),
+        el("p", { class: "cmp-bloc-aide" }, t("La Chute du Roi se joue seul, ou en assemblée de 2 à 4 groupes qui s'entraident entre tables.")),
+        el("div", { class: "cmp-segments", role: "group", "aria-label": t("Combat à plusieurs tables") },
+            modes.map(([mode, libelle]) => el("button", {
+                class: "cmp-segment" + (choix.mode === mode ? " sel" : ""), type: "button", "aria-pressed": String(choix.mode === mode),
+                onclick: () => { choix.mode = mode; rendre(); },
+            }, libelle))),
+        choix.mode === "creer" ? el("p", { class: "cmp-bloc-aide" }, t("Tu recevras un code à donner aux autres groupes, dans l'onglet Assemblée du plateau.")) : null,
+        choix.mode === "rejoindre" ? el("label", { class: "cmp-assemblee-saisie", for: "cmp-assemblee-code" },
+            el("span", {}, t("Code de l'assemblée")), champ) : null,
+    );
 }
 
 /* ----------------------------------------------------------------- rendu -- */

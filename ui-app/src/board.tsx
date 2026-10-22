@@ -256,7 +256,7 @@ import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
 import { VoletVille } from './board/VoletVille'
 import { VoletAssemblee } from './board/VoletAssemblee'
-import { assembleeDuMonde } from './board/assemblee-etat'
+import { useAssembleeEnDirect } from './board/use-assemblee-en-direct'
 import { optionSeDeplacer, villeDuMonde } from './board/ville-etat'
 import { JournalConsole } from './board/JournalConsole'
 import {
@@ -2199,7 +2199,7 @@ export function PagePartie({
   const [villeOuverte, setVilleOuverte] = useState(false)
   // L'onglet « Assemblée » (Kingsfall multi-tables) : l'etat commun relu par le moteur a chaque rendu.
   const [assembleeOuverte, setAssembleeOuverte] = useState(false)
-  const assembleeExportee = useMemo(() => assembleeDuMonde(etat.monde), [etat.monde])
+  const assembleeExportee = useAssembleeEnDirect(etat.monde, joueurActif)
   const villeExportee = useMemo(() => villeDuMonde(etat.monde), [etat.monde])
   const nomsJoueursVille = useMemo(() => {
     const noms: Record<number, string> = {}

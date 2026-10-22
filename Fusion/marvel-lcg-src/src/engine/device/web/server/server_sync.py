@@ -90,6 +90,16 @@ class GameServerSync(GameServerBase):
         self.device_manager.AddSize("Ask", len(compressed_data))
         return web.Response(body=compressed_data, content_type='application/json', headers={'Content-Encoding': 'gzip'})
 
+    async def handle_get_assemblee(self, request: web.Request) -> web.Response:
+        """KINGSFALL MULTI-TABLES (22/10/2026) : l'etat COMMUN de l'assemblee, relu a la demande. Le rendu du monde ne se refait que quand CETTE table joue :
+        sans cette route, une table n'apprendrait qu'a son prochain coup qu'un autre groupe a rejoint, verse des jetons ou fini sa partie. `{}` hors assemblee."""
+        controller = self.get_first_controller(request)
+        monde = controller.world
+        if not monde:
+            return web.json_response({})
+        from game.render.to_descriptor import ToDescriptor
+        return web.json_response(ToDescriptor.Assemblee(monde))
+
     async def handle_get_world(self, request: web.Request) -> web.Response:
         player_ids = self.get_player_ids(request)
         controller = self.get_first_controller(request)
@@ -183,6 +193,7 @@ class GameServerSync(GameServerBase):
         self.AddAwaitGetSecurity('/client_updated', self.handle_client_updated)
         self.AddAwaitGetSecurity('/get_ask', self.handle_get_ask)
         self.AddAwaitGetSecurity('/get_world', self.handle_get_world)
+        self.AddAwaitGetSecurity('/get_assemblee', self.handle_get_assemblee)
 
         self.AddPostSecurity('/post', self.handle_post)
 

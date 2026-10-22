@@ -30,6 +30,12 @@ function buildRules(state) {
     const rules = [];
     if (state.difficulty.skirmish) rules.push("mode_skirmish");
     if (state.mode.id === "campaign") rules.push("mode_campaign");
+    // Kingsfall multi-tables (assemblees, 22/10/2026) : le serveur du moteur s'inscrit dans l'assemblee AVANT de lancer la partie et remplace cette demande
+    // par la regle `assemblee_<CODE>_<TABLE>` (server_new_game.py). Une demande sans code ne part pas.
+    if (state.assemblee && state.assemblee.mode === "creer") rules.push("assemblee_creer");
+    if (state.assemblee && state.assemblee.mode === "rejoindre" && String(state.assemblee.code || "").trim()) {
+        rules.push("assemblee_rejoindre_" + String(state.assemblee.code).trim().toUpperCase());
+    }
     const h = state.difficulty.heroic | 0;
     if (h > 0) rules.push("mode_heroic_" + h);
     // Règles v16 débrayables depuis le bloc « Avancé » (actives par défaut).
@@ -227,7 +233,12 @@ export async function launch(state) {
     const descriptor = await buildDescriptor(state);
     const cmd = encodeURIComponent(JSON.stringify(descriptor));
     const res = await fetch("new?data=" + cmd);
-    if (!res.ok) throw new Error("Failed to create the game (HTTP " + res.status + ")");
+    if (!res.ok) {
+        // Un refus du serveur qui dit POURQUOI (assemblee inconnue, pleine...) : on montre son message plutot qu'un code HTTP.
+        let message = "Failed to create the game (HTTP " + res.status + ")";
+        try { const corps = await res.json(); if (corps && corps.error) message = corps.error; } catch (e) { /* corps absent : le code HTTP suffit */ }
+        throw new Error(message);
+    }
 
     // Mode Decouverte : on arme le coach du plateau, et on le DESARME pour tout
     // autre mode. La cle est lue par ui-app/src/board/CoucheCoach.tsx

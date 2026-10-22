@@ -191,7 +191,8 @@
                 "quand": "partie_perdue",
                 "expert_seulement": false,
                 "texte": "Le Caïd reste le roi de New York, qu’il tient dans le creux de sa main. Vous avez perdu la campagne."
-            }
+            },
+            "assemblee": true
         }
     ],
     "victoire_commune_expert": [

@@ -11,7 +11,7 @@
 // doivent jamais etre edites a la main. On les lit, c'est tout.
 
 import { estMultijoueur } from './moteur'
-import type { World } from './world'
+import type { World, AssembleeExport } from './world'
 
 const DOSSIER_ETATS = '/public/js/fixtures'
 
@@ -88,4 +88,14 @@ export async function chargerPartieEnCours(playerId: number): Promise<World> {
     throw new Error('/get_world did not return a game descriptor.')
   }
   return monde as World
+}
+
+/** L'etat COMMUN de l'assemblee (Kingsfall multi-tables), relu a la demande : `{}` hors assemblee. Voir `handle_get_assemblee` cote moteur. */
+export async function chargerAssemblee(playerId: number): Promise<Partial<AssembleeExport>> {
+  const siege = estMultijoueur() ? `p=${playerId}` : `hot_seat&p=${playerId}`
+  const reponse = await fetch(`/get_assemblee?${siege}`, { cache: 'no-store' })
+  if (!reponse.ok) throw new Error(`/get_assemblee answered ${reponse.status}.`)
+  const texte = await reponse.text()
+  if (pageAuLieuDeDonnees(texte)) throw new Error('/get_assemblee returned an HTML page.')
+  return JSON.parse(texte) as Partial<AssembleeExport>
 }
