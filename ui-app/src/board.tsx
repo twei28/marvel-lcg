@@ -257,6 +257,7 @@ import { VoletJournal } from './board/VoletJournal'
 import { VoletVille } from './board/VoletVille'
 import { VoletAssemblee } from './board/VoletAssemblee'
 import { useAssembleeEnDirect } from './board/use-assemblee-en-direct'
+import { VerdictAssembleeFin } from './board/VerdictAssembleeFin'
 import { optionSeDeplacer, villeDuMonde } from './board/ville-etat'
 import { JournalConsole } from './board/JournalConsole'
 import {
@@ -1822,6 +1823,7 @@ function EcranFinPartie({
         {raison ? (
           <span className="fin-partie-raison">{traduireMoteur(raison)}</span>
         ) : null}
+        <VerdictAssembleeFin monde={monde} siege={siege} />
         {heros.length || mechants.length ? (
           <span className="fin-partie-detail">
             {heros.join(', ')}

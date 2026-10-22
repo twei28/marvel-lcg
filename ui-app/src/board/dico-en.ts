@@ -1063,6 +1063,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'L’assemblée perd.': 'The pod loses.',
   'groupes jouent encore.': 'groups are still playing.',
   'Un groupe joue encore.': 'One group is still playing.',
+  'Ta table a fini. L’assemblée attend les autres groupes.': 'Your table is done. The pod is waiting for the other groups.',
   'Code de l’assemblée': 'Pod code',
   Copié: 'Copied',
   'Donnez ce code aux autres groupes : ils le saisissent en lançant leur partie.': 'Give this code to the other groups: they enter it when they start their game.',
