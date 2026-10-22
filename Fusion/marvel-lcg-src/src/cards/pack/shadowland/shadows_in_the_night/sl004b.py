@@ -6,7 +6,8 @@ from . import *
 #  • depenser [energy][energy] ;
 #  • defausser un allie ou une amelioration que vous controlez.
 # Cartes de reference : voir sl004a (+ fne/art_museum_heist/60127 pour Cost("YY")).
-# ⚠ Mots-pieges : « an ally or upgrade you control » = l'un des deux types, a votre controle (pas la main) ; mêmes regles de retournement que sl004a.
+# ⚠ Mots-pieges : « an ally or upgrade you control » = l'un des deux types, a votre controle (pas la main) ; JAMAIS une carte PERMANENTE (`canbe_discard=True`) : la Creeping Corruption (sl072)
+#  est une amelioration Permanent et le moteur plante (assert `is_eliminated`) si on la defausse, trouve en autoplay le 22/10/2026 ; mêmes regles de retournement que sl004a.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -30,7 +31,7 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityFactory.ForChoiceAbilityWithCost(Cost("YY"), "Spend [energy][energy] resources", deux_energies,
                                                     conditions=[lambda e, m: PeutCouvrirLeCout(joueur, e, Cost("YY"))]),
             AbilityFactory.ForChoiceAbility("Discard an ally or upgrade you control", defausser_allie_ou_amelioration)
-            .SetTarget(finder=CardFinder(card_type=Ally|Upgrade), from_where=["YouControlCards"], range=(1, 1)),
+            .SetTarget(finder=CardFinder(card_type=Ally|Upgrade, canbe_discard=True), from_where=["YouControlCards"], range=(1, 1)),
         ]
 
     return [ActionPositionHeros(branches)]

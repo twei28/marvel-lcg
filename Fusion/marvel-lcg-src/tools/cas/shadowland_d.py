@@ -270,6 +270,17 @@ CAS += [
     _r("[reel] Malediction (alter-ego, refus) : Elektra manigance avec +2 SCH -> 2 de depart + 3 = 5 menaces sur le complot",
        "« If you do not, the villain schemes with +2 SCH » dans le vrai scenario",
        [CC], ["Puzzle.Reveal('sl077')"], {"menace": [["sl001b", 5]], "compteurs": [["sl072a", "corruption", 0]]}, forme_heros=False, choisir_option="Cancel"),
+    # ======================================================================================================== interactions avec le scenario 1 (agent A) : une carte PERMANENTE ne se defausse jamais
+    # Trouve en autoplay (22/10/2026) : « discard an ally or upgrade you control » (sl004b) pouvait cibler la Creeping Corruption, et le moteur plantait (assert `is_eliminated`).
+    _s("sl004b, branche « defausser un allie ou une amelioration » avec la Creeping Corruption (Permanent) ET un allie : l'allie est defausse, la Creeping Corruption RESTE", "une carte Permanent n'est jamais une cible de defausse",
+       [CC, "Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.PutIntoPlay('sl003a,sl003b')", "Puzzle.PutIntoPlay('sl004b,sl004a')"], ["Puzzle.Action('sl004b', 'FirstPlayerAction')"],
+       {"defausse": ["01075"], "en_jeu": ["sl072a"], "face_visible": [["sl004", "sl004a"]]}, preferer_option="Discard an ally"),
+    _s("sl004b avec la seule Creeping Corruption en jeu : la branche « defausser » n'est PAS offerte (aucune cible), le pilote prend la premiere (3 degats) ; pas de plantage, la carte reste", "meme regle",
+       [CC, "Puzzle.PutIntoPlay('sl003a,sl003b')", "Puzzle.PutIntoPlay('sl004b,sl004a')"], ["Puzzle.Action('sl004b', 'FirstPlayerAction')"],
+       {"en_jeu": ["sl072a"], "degats_identite": 3, "face_visible": [["sl004", "sl004a"]]}, preferer_option="Discard an ally"),
+    _s("sl006 Ghost Maker vaincu, vilain aux Streets -> Atop the Tenshu : « discard 1 card you control » avec la seule Creeping Corruption : rien n'est defausse (Permanent), pas de plantage", "meme regle",
+       [CC, "Puzzle.PutIntoPlay('sl003a,sl003b')", "Puzzle.PutIntoPlay('sl004a,sl004b')", "Puzzle.PutIntoPlay('sl006')"], ["Puzzle.Damage('sl006', 99)"],
+       {"en_jeu": ["sl072a"], "face_visible": [["sl003", "sl003b"]]}),
 ]
 
 
