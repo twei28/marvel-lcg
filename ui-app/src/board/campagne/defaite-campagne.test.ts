@@ -12,6 +12,8 @@
 // pas : perdre un scénario intermédiaire se rejoue, et perdre le dernier en
 // mode standard aussi. Une règle trop large effacerait la progression de
 // quelqu'un sans aucun moyen de la lui rendre.
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { verdictDeCampagne, type RegleDefaite } from './defaite-campagne'
 
@@ -80,5 +82,35 @@ describe("AoA : la campagne se perd sur la mission, pas sur la défaite", () => 
   it('ne perd JAMAIS une campagne sur une règle sans clé déclarée', () => {
     const bancale: RegleDefaite = { quand: 'cle_absente' }
     expect(verdictDeCampagne({ ...base, regle: bancale, gagne: true }).perdue).toBe(false)
+  })
+})
+
+// La ville ne dort jamais (MC×DC 2026, p.11 du livret FR) : « DÉFAITE : Le Caïd reste le roi de New York… Vous avez perdu la campagne. »
+// Décision de l'utilisateur du 22/10/2026 : perdue TOUJOURS (standard comme expert), malgré la règle générale de réessai de l'introduction.
+describe('La ville ne dort jamais : défaite au combat 4', () => {
+  const definition = JSON.parse(
+    readFileSync(resolve(__dirname, '../../../../Fusion/marvel-lcg-src/data/campagnes/punisher_mcdc_2026.json'), 'utf8')
+  ) as { scenarios: Array<{ id: string; defaite?: RegleDefaite }> }
+  const dernier = definition.scenarios[definition.scenarios.length - 1]!
+  const faits = { final: true, regle: dernier.defaite, gagne: false, expert: false, carnet: {} }
+
+  it('Kingsfall est le dernier combat et porte la règle', () => {
+    expect(dernier.id).toBe('kingsfall')
+    expect(dernier.defaite?.quand).toBe('partie_perdue')
+    expect(dernier.defaite?.expert_seulement).toBe(false)
+  })
+  it('perdre Kingsfall perd la campagne, en standard comme en expert, avec la phrase du livret', () => {
+    expect(verdictDeCampagne(faits).perdue).toBe(true)
+    expect(verdictDeCampagne(faits).texte).toContain('Vous avez perdu la campagne')
+    expect(verdictDeCampagne({ ...faits, expert: true }).perdue).toBe(true)
+  })
+  it('gagner Kingsfall ne perd pas la campagne', () => {
+    expect(verdictDeCampagne({ ...faits, gagne: true }).perdue).toBe(false)
+  })
+  it('perdre un combat intermédiaire se rejoue : aucune règle sur les combats 1 à 3', () => {
+    for (const s of definition.scenarios.slice(0, 3)) {
+      expect(s.defaite).toBeUndefined()
+      expect(verdictDeCampagne({ ...faits, final: false, regle: s.defaite }).perdue).toBe(false)
+    }
   })
 })
