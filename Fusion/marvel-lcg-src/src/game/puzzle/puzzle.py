@@ -1198,6 +1198,9 @@ class RunPuzzle:
         # Ne PAS renommer 'AsideDeck' : on ajoute, on ne deplace pas.
         'AsideScenario':        lambda w: w.aside_deck,
         'AsideModular':         lambda w: w.aside_modular,
+        # AJOUT (22/10/2026, scenario Shadow Labyrinth) : le paquet piege (« trap deck ») et sa defausse, crees a la mise en place de sl038a.
+        'TrapDeck':             lambda w: w.scenario_decks['TrapDeck'].deck,
+        'TrapDiscardPile':      lambda w: w.scenario_decks['TrapDeck'].discard_pile,
     }
 
     def _JoueurVise(self, player: int, siege: int|None) -> 'Player':
