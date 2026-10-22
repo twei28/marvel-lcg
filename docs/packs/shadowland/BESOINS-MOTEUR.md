@@ -9,7 +9,7 @@ Etabli le 22/10/2026 a partir des textes transcrits (`cartes.md`), des decisions
 | **Compteur `corruption`** | tout le set Black Flower / Heart of Shadow | a ajouter au `Literal` `CardFace.COUNTER` (`card_face.py:277`) |
 | **Compteur `passage`** | sl037, sl038b, sl042 | idem |
 | **Traits `OVERPOWERING`, `POSSESSED`** | sl072b, sl061a, sl077, sl078 ; sl013, sl014... | a ajouter au `Literal` `CardFace.TRAITS` (typage seul) |
-| **Orthographe du trait des pieges** | sl040, sl046-sl056 | **CORRECTION (22/10)** : l'enumeration du moteur contient `"TRAP!"` (avec « ! », utilise par les cartes Jubilee), pas `TRAP` ; Hunting Season ecrit `TRAP` sans « ! ». Le scan imprime « TRAP! » : utiliser `TRAP!` et verifier que le `TrapDeck` de Hunting Season ne s'en trouve pas casse |
+| **Trait des pieges : `TRAP!`** | sl040, sl046-sl056 | **DECIDE le 22/10/2026** : Shadowland ecrit `TRAP!` (comme imprime, comme Jubilee, Sinister Six et Web of Deceit, deja presents dans l'enumeration `TRAITS`). **Hunting Season reste inchange** avec `TRAP` : c'est une AUTRE mecanique (pieges distribues face cachee a chaque joueur, `DonnerPiege`), alors que Shadowland a un trap deck commun revele sur la table avec les choix Avoid / Disarm / Trip. On ne reutilise du `TrapDeck` que la plomberie (pile a part + defausse liee) ; la logique de distribution et de revelation est a ecrire pour Shadowland. Ne pas appeler `EstPiege` / `DonnerPiege` de Hunting Season |
 | **PV infinis, menace cible infinie (∞)** | sl037, sl038b | decision Q1 ; valeur « infinie » dans `desc` + rendu « ∞ » |
 | **★ apres une valeur** (ATQ, SCH, escalade) | sl012-sl017, sl031, sl034, sl037, sl057-sl059, sl061b... | decisions Q2/Q3 ; rendu a creer, la valeur reste celle du `desc` |
 
