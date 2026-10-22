@@ -1,6 +1,6 @@
 # Reprise du chantier « La ville ne dort jamais » (campagne MC×DC 2026, préfixe `pu`)
 
-État au 22/10/2026, dernier commit de travail Punisher : `204094e5` (données des cartes de campagne pu140/pu141). Tout est commité ; rien n'est poussé sur GitHub, rien n'est déployé (ne JAMAIS déployer sans demande explicite de l'utilisateur).
+État au 22/10/2026 (soir), dernier commit de travail Punisher : `725d3dc0` (campagne combat 3). Combats 1, 2 et 3 : moteur + carnet FAITS, commités. Tout est commité ; rien n'est poussé sur GitHub, rien n'est déployé (ne JAMAIS déployer sans demande explicite de l'utilisateur).
 
 ## Règles de travail (rappel)
 - Réponses en français, courtes et directes. L'utilisateur veut un topo court toutes les 20 minutes si c'est demandé.
@@ -50,12 +50,22 @@ Regression (derniere) : [gang] 27, [lieu] 41, [renc] 23, [big] 55, [ville] 15, [
 ## Fait le 22/10 (campagne combat 1, scripts + carnet)
 pu140 (mots-cles, mise en jeu par `CampaignSetup()` de pu001a), pu141 (Setup + Action), note du lieu (pu002a), releve (`punisher_mcdc_2026/campaign.py`), `data/campagnes/punisher_mcdc_2026.json`, cas `[camp]` 20, 8 mutations rouges. Preuves : `preuves-big-apple.md`. Piege : dossier de set = nom nettoye (`campaign_the_city_never_sleeps`).
 
+## Fait le 22/10 (soir) : combats 2 et 3 de la campagne (commits 0fb67924, 725d3dc0)
+| Quoi | Cas | Fichiers |
+|---|---|---|
+| Combat 2 : pu142 Tracking the Buyer, pu143 Punisher's Ordnance Cache, 20 scenarios `tracking_the_buyer_<manigance>_<sous-fifre>(_expert)`, table lieu x CAPO (`ScenarioDuCombat2`), releve partage avec Fear No Evil (`world.campagne_collecteurs`, `mts/campaign.py`) | `[camp]` | `campaign_the_city_never_sleeps/pu142.py pu143.py`, `campaign.py` |
+| Combat 3 : pu144 Punishment (retournee en pu145 S.H.I.E.L.D. Support Team), pu146 allie Punisher, 4 scenarios `punishment_<sous-fifre>(_expert)` (`ScenarioDuCombat3`), compteur `intelligence` | `[camp]` 69 au total | `pu144.py pu145.py pu146.py` |
+Regression (derniere, verte) : [camp] 69, [gang] 27, [lieu] 41, [renc] 23, [big] 55, [pist] 29, [capo] 30, [pun] 32, [jig] 31, [hob] 30, [ville] 15, [syn] 15, [arm] 10, [hit] 12, [swat] 15 ; `test_cards` 7157 ok. Preuves : `preuves-big-apple.md` (blocs combat 1, 2, 3).
+Decisions de l'utilisateur : le combat 4 (Kingsfall) est jouable SEUL (le livret dit que le multi-tables « pods » est une VARIANTE epique) ; on finit TOUTE la campagne classique avant d'envisager le multi-tables (partie a part : etat commun entre parties).
+
 ## Ce qui RESTE (ordre propose)
-1. ~~Campagne, combat 1~~ FAIT (voir ci-dessus). Reste : brancher pu141 aux combats 2 et 3, table du combat 2, autoplay campagne. Ancien texte : scripts de pu140 (environnement : Setup permanent, jeton de joueur, sets Cops + Tracksuit Mafia, Victoire = retourner + Seized Tech Crates pour les combats 2 et 3) et pu141 (Setup : 1 compteur + 1 par joueur qui n'a pas joue la partie precedente (decision P6 : par compte en ligne / par heros en local) ; Action : retirer 1 compteur -> reduire de 1 le cout de la prochaine carte OU chercher un soutien/amelioration de cout <= 2 ; limite 1 par joueur par round). Puis `data/campagnes/punisher.json` + `campaign.py` (modele `web_of_deceit/campaign.py`, 45 lignes ; `trors` 100 lignes) : mise en place Gang War, releve de fin de partie (lieu de la derniere piste ajoutee a la pile de victoire au stade 2A, CAPO Trafiquant d'armes, PV restants en experte). Scans p263/p264, texte `docs/packs/mcdc-2026-punisher/cartes.md` l.1040+, livret FR `regles-fr.md`. Les combats 2 a 4 (6133-6135, Kingsfall) sont a part.
-2. **Interface « La Ville » (PU-8)** : EN ATTENTE de la confirmation de l'utilisateur du design « A + B » (ma rangee sur la table, mini-carte 3x3 dans un coin, fenetre « La Ville » au clic ; maquette `docs/packs/mcdc-2026-punisher/maquette-ville.html`). Poser la question, puis une capture a la fois (Epure). Le sbire attache (glisse sous le lieu) doit etre dessine et lisible au survol avec ses PV et ses statuts. UI dans `ui-app/` (pas dans Fusion/).
-3. Effets « en jeu » autres que Collaboration vis-a-vis des sbires attaches : un sbire attache est HORS JEU pour le moteur (glisse sous le lieu, PV et statuts gardes), donc invisible pour eux ; a traiter au cas par cas.
-4. Capo of the Past (pu139), autoplay en mode campagne, Uptown (PU-10), defis (PU-11), textes FR (PU-12), batterie complete (~1 h) + audit (PU-13).
-5. Decisions prises sans texte de RR, a confirmer en partie reelle : voir `preuves-big-apple.md` (sbire attache = glisse sous le lieu ; pu039, Busted!, Red Herring, Shootout...).
+1. **Combat 4 Kingsfall, version normale** : scans p269-p273 (Long Live the King? 1A, Power to the People, Long Live, Down With the King, The King), scenario Kingpin (FNE) + sets SWAT et Tracksuit Mafia, Setup « allie Punisher en jeu » si pu146 gagne (cle `Punisher Ally`), victoire = campagne gagnee. Montrer les scans UN PAR UN et poser les questions une a une (regle utilisateur). Dire d'abord quelles cartes servent hors mode multi-tables.
+2. **pu139 Capo of the Past** (set modulaire du combat 2, sans script) : « Treat attached character as an ELITE minion » : un VILAIN CAPO traite comme sbire (`TreatAsMinion` ne gere que allie/heros : extension moteur). Question a poser a l'utilisateur avec le scan.
+3. **Ecran de campagne** (`Fusion/marvel-lcg-src/public/js/campagne/app.js`) : choisir le scenario des combats 2 et 3 d'apres le carnet (`ScenarioDuCombat2/3` existent cote moteur) ; pages de livret.
+4. Regle experte « chaque joueur peut s'attribuer une carte rencontre pour soigner REC » (combats 2 a 4) ; autoplay en mode campagne ; Uptown (PU-10) ; defis p279+ (PU-11) ; textes FR (PU-12) ; batterie complete (~1 h) + audit (PU-13).
+5. Interface « La Ville » (PU-8) : EN ATTENTE ; l'utilisateur a dit « on verra en temps voulu » (design « A + B », maquette `docs/packs/mcdc-2026-punisher/maquette-ville.html`).
+6. Effets « en jeu » autres que Collaboration vis-a-vis des sbires attaches (cas par cas).
+7. Decisions sans texte de RR a confirmer en partie reelle : voir `preuves-big-apple.md`.
 
 ## Pièges de harnais (déjà payés cher)
 - Toute commande Bash dont le texte contient `tools/test_capacites.py` fait REFUSER le harnais (« un autre harnais tourne ») : mettre la commande dans un fichier script (`/tmp/xxx.sh`, créé avec l'outil Write) et lancer `bash /tmp/xxx.sh`. Ajouter `< /dev/null` pour que le harnais ne mange pas l'entrée du shell.
