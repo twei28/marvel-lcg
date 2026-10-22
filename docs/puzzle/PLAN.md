@@ -80,6 +80,12 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
 - Codes courts uniques (type PZ-A4F9), liens cliquables, limites de taille et de
   débit, validation stricte du contenu (liste blanche des commandes).
 - Aucune donnée personnelle : pseudo libre uniquement.
+- **Conservation : 28 jours** à partir de la dernière fois où le puzzle a été joué
+  (la création compte comme premier jeu). Chaque partie lancée par quelqu'un remet le
+  compteur à zéro. Passé 28 jours sans jeu, le puzzle est supprimé automatiquement
+  (nettoyage périodique côté serveur). Le créateur peut aussi le supprimer avec sa clé.
+- Prévoir l'affichage « expire dans N jours » dans Mes puzzles, et l'avertissement
+  au créateur d'un puzzle proche de l'expiration (côté navigateur, à l'ouverture).
 
 ### E8. Résolution
 - Écran d'intro (titre, histoire, difficulté, objectif) puis plateau.
@@ -92,8 +98,9 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
 - Le bouton Puzzle ouvre un menu à 3 choix : Résoudre par code, Créer, Mes puzzles.
 - Mes puzzles : créés (brouillons + publiés, code, clé), résolus, en cours,
   sauvegardés par code (stockage navigateur).
-- Reprendre/remplacer `puzzles.js` et l'ancien `puzzle_editor.html` ; décider du
-  sort des 7 puzzles officiels (rubrique « officiels » ou conservés tels quels).
+- Remplacer `puzzles.js` et l'ancien `puzzle_editor.html`. **Les 7 puzzles
+  existants sont supprimés** (décision du 22/10) : fichiers `puzzle/*.json`, routes
+  et copie dans le paquet navigateur (`construire.py`) à retirer proprement.
 
 ### E10. Hors ligne et navigateur
 - Création/résolution locales dans la version navigateur (Pyodide) ; publication et
@@ -126,6 +133,7 @@ haut risque : à attaquer tôt et à valider par l'aller-retour avant l'interfac
 - Scripts de cartes qui changent : puzzles et solutions à revalider.
 - Taille de l'éditeur : l'interface est la plus grosse part du travail.
 
-## Questions restantes pour plus tard
-- Sort des 7 puzzles existants (E9).
-- Durée de conservation des puzzles publiés sur le serveur.
+## Décisions du 22/10
+- Les 7 puzzles existants sont supprimés.
+- Puzzles publiés conservés 28 jours depuis le dernier jeu ; tout jeu remet le compteur
+  à zéro.

@@ -63,6 +63,8 @@ Le puzzle est simplement « réussi » (détection auto) ou non.
 - Clé d'édition secrète à la publication : suppression ou modification
   (modification libre).
 - Hors ligne : création et résolution locales ; publication (codes) en ligne.
+- Conservation : 28 jours après le dernier jeu ; chaque partie remet le compteur à zéro.
+- Les anciens puzzles du moteur sont supprimés.
 - Carte modifiée plus tard : puzzle conservé ; la solution de référence est rejouée et signalée obsolète si elle ne passe plus.
 
 ## 6. Interface
