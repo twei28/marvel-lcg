@@ -331,6 +331,29 @@ images_custom() {
   rsync -az --delete -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
     "$source" "$HOTE:$cible"
   dire "images custom envoyees."
+  planches_livret
+}
+
+planches_livret() {
+  # ⚠ TROUVE LE 22/10/2026 : `public/stories/` (planches des livrets de campagne)
+  # est dans le .gitignore, donc ABSENT de la copie propre dont l'archive de code
+  # est tiree ; or l'etape 6 fait `rm -rf .../public` sur le serveur avant
+  # d'extraire. Chaque deploiement effacait donc toutes les planches en ligne :
+  # le livret de l'ecran de campagne s'affichait vide (« No booklet page for
+  # this step »). On les renvoie depuis le poste, apres l'extraction, SANS
+  # --delete : on ajoute et on remplace, on n'efface jamais.
+  etape "5c. Planches de livret (public/stories)"
+  local source="$RACINE/Fusion/marvel-lcg-src/public/stories/"
+  local cible="$DIST/Fusion/marvel-lcg-src/public/stories/"
+  [ -d "$source" ] || arret "public/stories introuvable sur le poste : le livret serait vide en ligne."
+  if [ "$REEL" -eq 0 ]; then
+    dire "[simulation] rsync -az $source -> $cible"
+    return 0
+  fi
+  rsync -az -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
+    "$source" "$HOTE:$cible"
+  ssh_h "chown -R narwhal:narwhal $cible"
+  dire "planches de livret envoyees."
 }
 
 redemarrer() {
