@@ -71,6 +71,8 @@ export function regrouperUnderlings(scenarios, ext, memoire) {
         const courant = choix.find((c) => c.id === voulu) || choix[rang % choix.length];
         tuiles.set(manigance, {
             ...courant.scenario,
+            // 22/10/2026 (MC×DC) : l'image de la tuile est celle de l'AFFAIRE (manigance annexe), pas du sous-fifre, qui se choisit au clic.
+            ...(ext.tuileManigance && (courant.scenario.schemes || [])[0] ? { tileImage: String(courant.scenario.schemes[0]).split(",")[0] } : {}),
             id: manigance,
             name: nomDeManigance(courant.scenario.name),
             interchangeable: true,

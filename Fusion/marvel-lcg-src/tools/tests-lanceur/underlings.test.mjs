@@ -104,13 +104,16 @@ test("sansVariantesDeCampagne : la partie libre retire les variantes de campagne
 
 test("MC×DC 2026 reel : 5 tuiles d'affaires a 2 sous-fifres (Jigsaw, Hobgoblin), zero variante de campagne dans la liste libre", () => {
     const info = Object.values(JSON.parse(readFileSync(new URL("../../data/sets_info.json", import.meta.url), "utf8"))).find((v) => v && v.name === "punisher_mcdc_2026");
-    const ext = { manigances: info.manigances, underlings: info.underlings, scenariosCampagne: info.scenarios_campagne };
+    const ext = { manigances: info.manigances, underlings: info.underlings, scenariosCampagne: info.scenarios_campagne, tuileManigance: info.tuile_manigance };
     const nomDe = (id) => JSON.parse(readFileSync(new URL(`../../data/scenarios/${id}.json`, import.meta.url), "utf8")).name;
-    const catalogueReel = info.scenarios.map((id) => ({ id, name: nomDe(id), villainCards: ["x"], tileImage: "x" }));
+    const schemesDe = (id) => JSON.parse(readFileSync(new URL(`../../data/scenarios/${id}.json`, import.meta.url), "utf8")).schemes;
+    const catalogueReel = info.scenarios.map((id) => ({ id, name: nomDe(id), villainCards: ["x"], tileImage: "x", schemes: schemesDe(id) }));
     const libre = regrouperUnderlings(sansVariantesDeCampagne(catalogueReel, ext), ext, {});
     const tuiles = libre.filter((t) => t.interchangeable);
     assert.deepEqual(tuiles.map((t) => t.id), ["art_museum_heist", "the_getaway", "protection_racket", "the_raft_breakout", "stop_the_presses"]);
     for (const t of tuiles) assert.deepEqual(t.underlings.map((u) => u.id), ["jigsaw", "hobgoblin"]);
+    // la tuile montre l'AFFAIRE (manigance annexe), pas le sous-fifre (demande du 22/10/2026)
+    for (const t of tuiles) assert.equal(t.tileImage, schemesDe(t.courant.scenarioId)[0].split(",")[0]);
     assert.equal(libre.filter((s) => /^tracking_the_buyer_|^punishment_/.test(s.id)).length, 0);
     // le reste : The Big Apple x2, La Chute du Roi, One Last Kill x2 (les 4 defis vivent dans leur propre extension fan-made, 22/10/2026)
     const autres = libre.filter((t) => !t.interchangeable).map((s) => s.id).sort();

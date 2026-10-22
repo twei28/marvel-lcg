@@ -1981,7 +1981,8 @@
    "tracking_the_buyer_the_getaway_jigsaw",
    "tracking_the_buyer_the_raft_breakout_hobgoblin",
    "tracking_the_buyer_the_raft_breakout_jigsaw"
-  ]
+  ],
+  "tuile_manigance": true
  },
  "210. Custom (Challenges)": {
   "name": "punisher_mcdc_2026",
@@ -1997,5 +1998,5 @@
   ],
   "max_id": "pu283b"
  },
- "checksum": "0337f76a98348b33ed029f0ad67b89ca46e126a9084e4cde71a5ae125b5521d2"
+ "checksum": "a37f20a298c00b8ecfe863a0b73194907e5f599dc922ef887a86431197947aa4"
 }
