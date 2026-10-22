@@ -1,6 +1,6 @@
 # Reprise du chantier « La ville ne dort jamais » (campagne MC×DC 2026, préfixe `pu`)
 
-État au 22/10/2026, dernier commit de travail Punisher : `ce71924f` (rencontre lot 1). Tout est commité ; rien n'est poussé sur GitHub, rien n'est déployé (ne JAMAIS déployer sans demande explicite de l'utilisateur).
+État au 22/10/2026, dernier commit de travail Punisher : `204094e5` (données des cartes de campagne pu140/pu141). Tout est commité ; rien n'est poussé sur GitHub, rien n'est déployé (ne JAMAIS déployer sans demande explicite de l'utilisateur).
 
 ## Règles de travail (rappel)
 - Réponses en français, courtes et directes. L'utilisateur veut un topo court toutes les 20 minutes si c'est demandé.
@@ -37,12 +37,22 @@ Scripts `src/cards/pack/punisher_mcdc_2026/{the_big_apple,locations_the_big_appl
 | Rencontre lot 1 : pu009 011 012 016 017 018 020 021 | `[renc]` 22 | `the_big_apple/`, `tools/cas/big_apple_rencontre.py` |
 Preuves : `preuves-big-apple.md`. Moteur ajouté : zone commune pour le nouveau stade (`World.AdvanceMainScheme`), `Ville.Placer`, compteurs maison, `Puzzle.CreateLeadsDeck/AddToVictoryDisplay/PlaceCountersOnVillains/DamageAllVillains`. Échafaudage : `construire_jigsaw.py` (défs de TOUTES les cartes de rencontre déjà dans `defs/`).
 
-## Ce qui RESTE (ordre proposé)
-1. **Cartes liées aux lieux (M5)** : pu007 Burning Building, pu008 Citizens in Danger!, pu010 « It's a Trap! » (attachements : `AttachTo2(lieu)` marche sur un lieu), pu013 Overdrive, pu014 Muse, pu015 Screwball (sbires « attachés » : plan = `lieu.TuckCardUnderHere([sbire])` + `Ability(...).NoOutOfPlayLimit()`), pu022 Like and Subscribe!. Nouveaux messages à créer : `WhenPlayerWouldLeaveLocation(joueur, lieu)` (avant le départ) et `from/to` sur `AfterPlayerMovedInCity` (dans `Ville.Placer`). Helpers prévus : `Ville.Attacher`, lieux inoccupés, `Ville.Porte`.
-2. Puis : prouver l'étape 3A « cartes attachées aux lieux distribuées face cachée » (code écrit dans pu003a, non prouvé) ; mettre `BIGAPPLE_ENCOUNTERS = BIGAPPLE_ENCOUNTER_IDS` dans `defs/punisher_cards.py` (le scénario a encore `encounters: []`) et relancer l'échafaudage ; autoplay du scénario ; cas EXPERT de pu018/pu020.
-3. **Capo of the Past (pu139)** (dépend des CAPO : faisable maintenant).
-4. PU-8 interface « La Ville » ; PU-9 campagne (livret : `docs/packs/mcdc-2026-punisher/regles-fr.md`, noter le lieu de la dernière piste en 2A) ; PU-10 Uptown ; PU-11 défis ; PU-12 textes FR ; PU-13 batterie complète (~1 h) + audit.
-5. Décisions prises sans texte de RR, à confirmer en partie réelle : voir `preuves-big-apple.md` (pu039 sbire/allié, identité seule pour « you defend/thwart », Busted!, Red Herring, Shootout).
+## Fait le 22/10 (fin) : cartes liees aux lieux, scenario 1 branche, campagne (donnees) (commits fd41ae4d, 35544b11, 38ad67cf, 204094e5)
+| Quoi | Cas | Fichiers |
+|---|---|---|
+| pu007 pu008 pu010 pu013 pu014 pu015 pu022 + FAQ Collaboration | `[lieu]` 41 | `the_big_apple/pu0xx.py`, `tools/cas/big_apple_lieux.py` |
+| 3A distribue aussi les sbires attaches ; cas EXPERT pu018/pu020 | `[gang]` 27 | `pu003a.py`, `tools/cas/gang_war.py` |
+| Jeu de rencontre branche (`BIGAPPLE_ENCOUNTERS`), scenarios standard/expert regeneres | autoplay 32 parties, 0 exception | `defs/punisher_cards.py`, `data/scenarios/the_big_apple*.json` |
+| pu140 Big Apple Gang War! + pu141 Seized Tech Crates : DONNEES SEULEMENT (ID imprime 6132 commun, d'ou pu140/pu141) | aucun | `defs/`, `cards.json`, `assets/pics` |
+Moteur ajoute : messages `WhenPlayerWouldLeaveLocation / WhenPlayerWouldEnterLocation`, `AfterPlayerMovedInCity(depuis, vers)`, `Ville.Lieux/LieuxInoccupes/AttacherSbire/DegagerSbire/Hote/SbiresAttaches`, `WhenUnitWouldBeDefeated.excess_damage`, `Puzzle.AttacherAuLieu/PlacerDansLaVille/SendAfterRoundEnd`, `can_teamwork.py` (Collaboration compte tous les territoires + sbires attaches), outil `MCLCG_TRACE_CRASH=<fichier>` (trace des exceptions avalees par le moteur : INDISPENSABLE pour debugger un script de carte). Preuves : `preuves-big-apple.md`.
+Regression (derniere) : [gang] 27, [lieu] 41, [renc] 23, [big] 55, [ville] 15, [pist] 29, [capo] 30, [pun] 32, [jig] 31, [hob] 30 verts ; `test_cards` 7150 ok.
+
+## Ce qui RESTE (ordre propose)
+1. **Campagne, combat 1** (PU-9) : scripts de pu140 (environnement : Setup permanent, jeton de joueur, sets Cops + Tracksuit Mafia, Victoire = retourner + Seized Tech Crates pour les combats 2 et 3) et pu141 (Setup : 1 compteur + 1 par joueur qui n'a pas joue la partie precedente (decision P6 : par compte en ligne / par heros en local) ; Action : retirer 1 compteur -> reduire de 1 le cout de la prochaine carte OU chercher un soutien/amelioration de cout <= 2 ; limite 1 par joueur par round). Puis `data/campagnes/punisher.json` + `campaign.py` (modele `web_of_deceit/campaign.py`, 45 lignes ; `trors` 100 lignes) : mise en place Gang War, releve de fin de partie (lieu de la derniere piste ajoutee a la pile de victoire au stade 2A, CAPO Trafiquant d'armes, PV restants en experte). Scans p263/p264, texte `docs/packs/mcdc-2026-punisher/cartes.md` l.1040+, livret FR `regles-fr.md`. Les combats 2 a 4 (6133-6135, Kingsfall) sont a part.
+2. **Interface « La Ville » (PU-8)** : EN ATTENTE de la confirmation de l'utilisateur du design « A + B » (ma rangee sur la table, mini-carte 3x3 dans un coin, fenetre « La Ville » au clic ; maquette `docs/packs/mcdc-2026-punisher/maquette-ville.html`). Poser la question, puis une capture a la fois (Epure). Le sbire attache (glisse sous le lieu) doit etre dessine et lisible au survol avec ses PV et ses statuts. UI dans `ui-app/` (pas dans Fusion/).
+3. Effets « en jeu » autres que Collaboration vis-a-vis des sbires attaches : un sbire attache est HORS JEU pour le moteur (glisse sous le lieu, PV et statuts gardes), donc invisible pour eux ; a traiter au cas par cas.
+4. Capo of the Past (pu139), autoplay en mode campagne, Uptown (PU-10), defis (PU-11), textes FR (PU-12), batterie complete (~1 h) + audit (PU-13).
+5. Decisions prises sans texte de RR, a confirmer en partie reelle : voir `preuves-big-apple.md` (sbire attache = glisse sous le lieu ; pu039, Busted!, Red Herring, Shootout...).
 
 ## Pièges de harnais (déjà payés cher)
 - Toute commande Bash dont le texte contient `tools/test_capacites.py` fait REFUSER le harnais (« un autre harnais tourne ») : mettre la commande dans un fichier script (`/tmp/xxx.sh`, créé avec l'outil Write) et lancer `bash /tmp/xxx.sh`. Ajouter `< /dev/null` pour que le harnais ne mange pas l'entrée du shell.
