@@ -66056,7 +66056,7 @@ def executer_un_cas(game_dir, port, index):
     noms_heros = [cas["heros"]]
     if cas.get("heros2"):
         noms_heros.append(cas["heros2"])
-    scene = SceneLoader.NewScene(cas["scenario"], None, noms_heros, 42)
+    scene = SceneLoader.NewScene(cas["scenario"], None, noms_heros, int(cas.get("graine", 42)))   # `graine` (22/10/2026) : tirages au hasard differents (vilain de Shadowland)
     # ⚠ LE HARNAIS NE JOUE PAS LES MEMES REGLES QU'UNE VRAIE PARTIE.
     # `launcher.js` pousse `v16_all` des que « regles v1.6 » est coche (c'est
     # le cas par defaut), et `SetRule` bascule alors TOUS les `v16_*` :

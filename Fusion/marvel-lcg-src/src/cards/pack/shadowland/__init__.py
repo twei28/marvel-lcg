@@ -1,4 +1,5 @@
 from cards.pack import *
+import re
 
 # ===========================================================================
 # Helpers partages du pack SHADOWLAND (pack scenario officiel MC65, prefixe `sl`,
@@ -55,3 +56,25 @@ def ChangerPositionVilain(effect: 'Effect', *, si_pas_change_cette_phase: bool=F
     face.card.Flip(effect)
     monde._sl_phase_position = monde.phase_id
     return True
+
+
+################################################################################
+# CARTES LIEES (mot-cle « Linked (A, B, or C) » de Dark Protege, sl018 a sl027). La carte est liee aux TROIS vilains nommes : quand le vilain tire au hasard
+# est l'un d'eux, la carte est melangee dans le deck de rencontre ; sinon elle reste de cote. `desc.Linked` du moteur n'accepte qu'UN nom : on lit donc
+# la liste dans le TEXTE imprime (« Linked (Elektra, Lady Bullseye, or White Tiger). »), le seul endroit ou elle est complete.
+################################################################################
+_LIEE = re.compile(r'Linked \(([^)]*)\)')
+
+
+def VilainsLies(face: 'CardFace') -> List[str]:
+    """Les noms de vilains auxquels la carte est liee, [] si elle ne porte pas « Linked (...) »."""
+    m = _LIEE.search(face.paper.text or '')
+    if m is None:
+        return []
+    # « A, B, or C » : la virgule est suivie de « or » devant le DERNIER nom (piege : sans ca, « or White Tiger » ne correspond a aucun vilain)
+    return [re.sub(r'^or\s+', '', n.strip()) for n in re.split(r',\s*|\s+or\s+', m.group(1)) if n.strip()]
+
+
+def NomDuVilain(face: 'CardFace') -> str:
+    """« * Gorgon » -> « Gorgon » (les uniques portent une etoile devant leur nom)."""
+    return face.paper.name.lstrip('* ').strip()
