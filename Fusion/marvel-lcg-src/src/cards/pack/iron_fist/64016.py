@@ -1,5 +1,7 @@
 from . import *
 
+# 22/10/2026 : carte OFFICIELLE du pack Iron Fist (MC64, n° de collection 16), ex-`up009` (aspects TMNT d'Inkwire, meme texte). `up009` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `64016` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 # Demoralize — EVENEMENT 0 [mental], aspect Protection (TMNT Aspects, Inkwire). TACTIC.
 # Hero Action: Choose an enemy. It attacks you. Confuse that enemy.
 #

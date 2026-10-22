@@ -433,3 +433,47 @@ Carte terminée : OUI
 - [x] Étape 7 bis : aucune limite imprimée. Étape 8 : OK (la carte n'a pas été jouée par le pilote : son deck d'essai n'en contenait pas ; couverte par les 9 cas). Étape 8 bis : NON.
 
 Carte terminée : OUI
+
+## Réimpressions : nouvelle carte = SOURCE, ancienne carte = lien (décision utilisateur du 22/10/2026)
+
+Sept cartes de la page ont déjà le même texte (champ par champ : coût, ressource, traits, PV, mots-clés, texte) qu'une carte du jeu. Seule différence relevée :
+la citation de Demoralize (« That axe is not all I'm gonna break » — Luke Cage, contre « Time to crack some heads! » — Raphael) ; Defiance imprime aussi « No. » —Shang-Chi,
+absente du jeu. Les scans de la page font 300 px (lecture des icônes de ressource à la forme, comparée aux cartes du même pack).
+
+| Nouvelle (source) | Carte | Ancienne | Ce qu'elle devient |
+|---|---|---|---|
+| 64013 | Helpful Bystander | `up015` (TMNT, Inkwire) | art alternatif `tmnt` de 64013 |
+| 64015 | Defiance | `26018` | réimpression `full_link` -> 64015 |
+| 64016 | Demoralize | `up009` (TMNT, Inkwire) | art alternatif `tmnt` de 64016 |
+| 64017 | The Night Nurse | `09019` (et `56044`, déjà lien de 09019) | `full_link` -> 64017 |
+| 64018 | Redirection Mastery | `up030` (TMNT, Inkwire) | art alternatif `tmnt` de 64018 |
+| 64020 | Tonfa | `up039` (TMNT, Inkwire) | art alternatif `tmnt` de 64020 |
+| 64024 | Power Man and Iron Fist | `62023` | `full_link` -> 64024 |
+
+Ce qui a changé techniquement :
+- **Scripts déplacés** (`git mv`, historique conservé) vers `src/cards/pack/iron_fist/<id>.py` : le chargeur d'un `full_link` lit le module de la SOURCE
+  (`cards.pack.<pack de la source>.<id>`). Aucune ligne de logique modifiée (en-tête des ex-TMNT complété).
+- **`cards.json`** : les sources sont des entrées normales du pack `iron_fist` (`set_name` vide, `custom` retiré). Les liens (`{"card_id": "09019", "full_link": "64017"}`)
+  sont rangés DANS la liste `iron_fist`, APRÈS leurs sources : le chargeur (`CardsDB.Initialize`) copie le papier de la source et plante (`KeyError`) si la source n'est pas
+  encore chargée ; or `drs`, `vision`, `luke_cage` et `cw` (où se trouvait `56044`) précèdent `iron_fist` dans le fichier. `56044` est repointé vers `64017`.
+  Les quatre cartes TMNT sont RETIRÉES de `cards.json` et déclarées dans `data/arts_alternatifs.json` (`"64013": ["tmnt"]`...), image `64013_tmnt.jpg` copiée depuis
+  `up015.jpg` (outil `convertir_reskins_art_seul.py` rejoué à la main sur ces seules quatre cartes : les trois autres « art seul » `ub011`, `ub016`, `ub054` n'ont PAS été touchées) ;
+  origines renseignées dans `tools/tmnt_aspects_numerotation.tsv` ; tables d'arts régénérées (`generer_arts_cartes.py`).
+- **Cas** : les cas `[up]` des quatre ex-TMNT (`tools/cas/tmnt_aspect_protection.py`) pointent maintenant les nouveaux identifiants ; les trois réimpressions du coeur du jeu
+  (64015, 64017, 64024) n'avaient aucun cas « sujet » : 10 cas ajoutés dans `tools/cas/iron_fist_aspects.py`.
+- **Images** : `assets/pics/<nouveau>.png` = scan de la page (300 px, ou HD pour Defiance et The Night Nurse) ; les anciens identifiants affichent l'image de la source
+  (`Cache.SetLinkPic`), donc ce changement est visible dans le jeu pour `26018`, `09019`, `56044`, `62023` (anciennes images : jpg de 21 à 183 Ko).
+- **Textes FR** : entrées `64013`, `64015`-`64018`, `64020`, `64024` ajoutées dans `textes-fr-fanmade.ts` (texte des anciennes cartes, sans les citations TMNT) ;
+  les entrées `up009/up015/up030/up039` sont retirées. Les anciens identifiants gardent leur texte FR officiel.
+
+**Gates** : substitution (par carte) : 64013 2/2, 64015 1/3, 64016 2/2, 64017 1/3, 64018 2/5, 64020 2/3, 64024 1/2 rouges ; verts assumés : valeurs imprimées (`desc`), unicité,
+témoins d'absence/de ligne de base. Cas des anciennes cartes rejoués : `62023` et `up022 ... 09019` verts via le lien. Aucune partie humaine n'a été jouée dans le navigateur.
+
+Gabarits PROCESSUS-CARTE des quatre ex-TMNT : `.planning/tmnt/aspects-protection-gabarits.md` (inchangés, identifiants anciens). Pour 64015, 64017, 64024 :
+
+- **64015 Defiance** : étape 2 : `01077`/`up028` (interruption de défense) ; étape 5 : « HERO Interrupt (defense) », « on an enemy ATTACKING YOU », « discard it INSTEAD » (le boost n'est pas retourné) ;
+  étape 6 : coût 0, ressource Y (éclair) ; étape 7 : 3 cas (hero : 0 dégât ; témoin sans carte : 2 ; alter ego : 4), 1/3 rouge ; 7 bis : NON ; 8 bis : NON. Carte terminée : OUI
+- **64017 The Night Nurse** : étape 2 : `up022` (même Action, modèle) ; étape 5 : « Exhaust AND remove 1 medical counter » (deux coûts), « a HERO » (forme héros), « discard 1 status card from IT » ; étape 6 :
+  coût 1, ressource B, Uses 3 ; étape 7 : 3 cas (Action, 3 compteurs, unicité), 1/3 rouge ; 7 bis : NON ; 8 bis : NON (compteur `medical` rendu génériquement). Carte terminée : OUI
+- **64024 Power Man and Iron Fist** : étape 2 : `35023` Fastball Special (Team-Up, cibles décalées) ; étape 5 : Team-Up (Iron Fist ET Luke Cage en jeu), 2 dégâts PUIS un statut Tough à « a character »
+  (celui de son choix) ; étape 6 : coût 0, ressource R, Max 1 per deck ; étape 7 : 2 cas (Team-Up rempli, contre-cas sans Luke Cage), 1/2 rouge ; 7 bis : NON ; 8 bis : NON. Carte terminée : OUI

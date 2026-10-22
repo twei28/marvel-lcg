@@ -1,5 +1,7 @@
 from . import *
 
+# 22/10/2026 : carte OFFICIELLE du pack Iron Fist (MC64, n° de collection 18), ex-`up030` (aspects TMNT d'Inkwire, meme texte). `up030` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `64018` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 # Redirection Mastery — AMELIORATION 2 [physical], aspect Protection (TMNT Aspects, Inkwire). SKILL.
 # Play under any player's control. Max 1 per player.
 # Hero Response: After you exactly defend an attack, deal damage to the attacker equal to your DEF for

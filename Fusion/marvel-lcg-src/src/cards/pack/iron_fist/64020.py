@@ -1,5 +1,7 @@
 from . import *
 
+# 22/10/2026 : carte OFFICIELLE du pack Iron Fist (MC64, n° de collection 20), ex-`up039` (aspects TMNT d'Inkwire, meme texte). `up039` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `64020` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 # Tonfa — AMELIORATION 1 [physical], aspect Protection (TMNT Aspects, Inkwire). ITEM. WEAPON.
 # Restricted.
 # Hero Interrupt: When calculating damage during an attack against you, exhaust this card -> give your hero

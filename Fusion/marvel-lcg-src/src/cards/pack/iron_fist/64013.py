@@ -1,5 +1,7 @@
 from . import *
 
+# 22/10/2026 : carte OFFICIELLE du pack Iron Fist (MC64, n° de collection 13), ex-`up015` (aspects TMNT d'Inkwire, meme texte). `up015` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `64013` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 # Helpful Bystander — ALLIE 1 [physical], aspect Protection (TMNT Aspects, Inkwire). CIVILIAN.
 # THW –, ATK –, PV 1.
 # Vulnerable. Max 1 per deck.

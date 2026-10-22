@@ -403,28 +403,28 @@ CAS += [
        {"en_jeu": ["up007"], "statuts_absents": [["up007", "Cloaked"]], "en_main": ["01003"], "taille_main": 1},
        main_exclusive=["up007", "01089", "01003"], payer_avec=["01089"], jouer=["up007"], accepter_choix=True),
 
-    # ------------------------------------------------------------------ up009 Demoralize
-    _c("up009 Demoralize : Rhino attaque le heros (incline : 2 degats) puis est Desoriente",
+    # ------------------------------------------------------------------ 64016 Demoralize
+    _c("64016 Demoralize : Rhino attaque le heros (incline : 2 degats) puis est Desoriente",
        "« Choose an enemy. It attacks you. Confuse that enemy »",
        [HEROS, "Puzzle.Exhaust('01001a')"], [],
-       {"degats_identite": 2, "statuts": [["01094", "Confused"]], "defausse": ["up009"]},
-       main_exclusive=["up009"], jouer=["up009"], cibles=["01094"]),
-    _c("up009 Demoralize : un SBIRE choisi (Hydra Mercenary) attaque puis est Desoriente ; Rhino intact",
+       {"degats_identite": 2, "statuts": [["01094", "Confused"]], "defausse": ["64016"]},
+       main_exclusive=["64016"], jouer=["64016"], cibles=["01094"]),
+    _c("64016 Demoralize : un SBIRE choisi (Hydra Mercenary) attaque puis est Desoriente ; Rhino intact",
        "« an enemy » : un sbire aussi ; « that enemy » = le meme",
        [HEROS, "Puzzle.Exhaust('01001a')", SBIRE], [],
-       {"statuts": [["01101", "Confused"]], "statuts_absents": [["01094", "Confused"]], "defausse": ["up009"]},
-       main_exclusive=["up009"], jouer=["up009"], cibles=["01101"]),
+       {"statuts": [["01101", "Confused"]], "statuts_absents": [["01094", "Confused"]], "defausse": ["64016"]},
+       main_exclusive=["64016"], jouer=["64016"], cibles=["01101"]),
 
-    # ------------------------------------------------------------------ up015 Helpful Bystander
-    _c("up015 Helpful Bystander : Rhino attaque le joueur -> attaque le Bystander a la place, deferlement 1 sur l'identite",
+    # ------------------------------------------------------------------ 64013 Helpful Bystander
+    _c("64013 Helpful Bystander : Rhino attaque le joueur -> attaque le Bystander a la place, deferlement 1 sur l'identite",
        "« it attacks Helpful Bystander instead. This attack gains overkill » : ATQ 2 sur 1 PV -> vaincu, 1 d'exces a "
        "l'identite (overkill.md : allie vaincu -> identite du controleur)",
-       [HEROS, "Puzzle.PutIntoPlay('up015', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
-       {"hors_jeu": ["up015"], "degats_identite": 1},
+       [HEROS, "Puzzle.PutIntoPlay('64013', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+       {"hors_jeu": ["64013"], "degats_identite": 1},
        main_exclusive=["01090"]),
-    _c("up015 Helpful Bystander : votre heros gagne +1 taille de main",
+    _c("64013 Helpful Bystander : votre heros gagne +1 taille de main",
        "« Your hero gets +1 hand size »",
-       [HEROS, "Puzzle.PutIntoPlay('up015', under_control=True)"], [],
+       [HEROS, "Puzzle.PutIntoPlay('64013', under_control=True)"], [],
        {"attributs": {"hand_size": 1}},
        main_exclusive=["01090"]),
 
@@ -534,19 +534,19 @@ CAS += [
        {"carte": "up033", "restricted": 1}, verifier="up_restricted",
        main_exclusive=["up033", "01090"], jouer=["up033"], cibles=["01001a"]),
 
-    # ------------------------------------------------------------------ up039 Tonfa
-    _c("up039 Tonfa : attaque non defendue de Rhino -> option riposte 1 : Rhino subit 1",
+    # ------------------------------------------------------------------ 64020 Tonfa
+    _c("64020 Tonfa : attaque non defendue de Rhino -> option riposte 1 : Rhino subit 1",
        "« give your hero either +1 DEF or retaliate 1 for this attack » : option riposte",
-       [HEROS, "Puzzle.PutIntoPlay('up039', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
-       {"degats": [["01094", 1]], "degats_identite": 2, "exhausted": ["up039"]},
+       [HEROS, "Puzzle.PutIntoPlay('64020', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+       {"degats": [["01094", 1]], "degats_identite": 2, "exhausted": ["64020"]},
        main_exclusive=["01090"], accepter_choix=True, preferer_option="retaliate"),
-    _c("up039 Tonfa : Titania (ATQ 6) attaque, le heros defend (DEF 3) -> option +1 DEF : 2 degats au lieu de 3",
+    _c("64020 Tonfa : Titania (ATQ 6) attaque, le heros defend (DEF 3) -> option +1 DEF : 2 degats au lieu de 3",
        "option +1 DEF ; ligne de base : cas suivant (3 degats sans Tonfa)",
-       [HEROS, "Puzzle.PutIntoPlay('up039', under_control=True)", "Puzzle.PutIntoPlay('01162')"],
+       [HEROS, "Puzzle.PutIntoPlay('64020', under_control=True)", "Puzzle.PutIntoPlay('01162')"],
        ["Puzzle.Attack('01162', defender='01001a')"],
-       {"degats_identite": 2, "exhausted": ["up039"]},
+       {"degats_identite": 2, "exhausted": ["64020"]},
        main_exclusive=["01090"], accepter_choix=True, preferer_option="+1 DEF"),
-    _c("up039 Tonfa : ligne de base SANS Tonfa, Titania contre DEF 3 -> 3 degats",
+    _c("64020 Tonfa : ligne de base SANS Tonfa, Titania contre DEF 3 -> 3 degats",
        "ligne de base du cas precedent",
        [HEROS, "Puzzle.PutIntoPlay('01162')"], ["Puzzle.Attack('01162', defender='01001a')"],
        {"degats_identite": 3},
@@ -589,36 +589,36 @@ CAS += [
 ]
 
 
-# ===================================================================== up030 Redirection Mastery (17/10/2026)
+# ===================================================================== 64018 Redirection Mastery (17/10/2026)
 # Lecture choisie : DEFENSE EXACTE (attaque, boosts compris, == DEF du heros pour cette attaque).
 SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
               "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105')"]
-RM = [HEROS, "Puzzle.PutIntoPlay('up030', under_control=True)", "Puzzle.Attach('up030', '01001a')"]
+RM = [HEROS, "Puzzle.PutIntoPlay('64018', under_control=True)", "Puzzle.Attach('64018', '01001a')"]
 CAS += [
-    _c("up030 Redirection Mastery : attaque = DEF (Melter ATQ 3 contre DEF 3, coup pare pile) -> Melter subit 3 degats",
+    _c("64018 Redirection Mastery : attaque = DEF (Melter ATQ 3 contre DEF 3, coup pare pile) -> Melter subit 3 degats",
        "« After you exactly defend an attack, deal damage to the attacker equal to your DEF for that attack » : "
        "0 degat au heros, 3 au Melter (5 PV)",
        [*RM, "Puzzle.PutIntoPlay('01132')", *SANS_BOOST], ["Puzzle.Attack('01132', defender='01001a')"],
        {"degats": [["01132", 3]], "degats_identite": 0},
        main_exclusive=["01090"], accepter_choix=True),
-    _c("up030 Redirection Mastery : attaque > DEF (Titania, 3 degats passent) -> pas de Reponse, Titania intacte",
+    _c("64018 Redirection Mastery : attaque > DEF (Titania, 3 degats passent) -> pas de Reponse, Titania intacte",
        "defense non exacte : l'attaque depasse la DEF ; ligne de base 3 degats comme le cas Tonfa",
        [*RM, "Puzzle.PutIntoPlay('01162')", *SANS_BOOST], ["Puzzle.Attack('01162', defender='01001a')"],
        {"degats": [["01162", 0]], "degats_identite": 3},
        main_exclusive=["01090"], accepter_choix=True),
-    _c("up030 Redirection Mastery : attaque < DEF (Rhino ATQ 2 contre DEF 3) -> pas de Reponse, Rhino intact",
+    _c("64018 Redirection Mastery : attaque < DEF (Rhino ATQ 2 contre DEF 3) -> pas de Reponse, Rhino intact",
        "defense non exacte : la DEF excede l'attaque (0 degat aussi, mais PAS une parade pile)",
        [*RM, *SANS_BOOST], ["Puzzle.Attack('01094', defender='01001a')"],
        {"degats": [["01094", 0]], "degats_identite": 0},
        main_exclusive=["01090"], accepter_choix=True),
-    _c("up030 Redirection Mastery : les BOOSTS comptent (Rhino ATQ 2 + boost 1 = 3 = DEF) -> Rhino subit 3",
+    _c("64018 Redirection Mastery : les BOOSTS comptent (Rhino ATQ 2 + boost 1 = 3 = DEF) -> Rhino subit 3",
        "« exactly defend an attack » : valeur de l'attaque boosts compris ; 01101 (Boost 1) en tete du deck rencontre",
        [*RM, "Puzzle.EmptyEncounterDeck()",
         "Puzzle.CreateEncounterDeck('01101', '01101', '01101', '01101', '01101', '01101')"],
        ["Puzzle.Attack('01094', defender='01001a')"],
        {"degats": [["01094", 3]], "degats_identite": 0},
        main_exclusive=["01090"], accepter_choix=True),
-    _c("up030 Redirection Mastery : TEMOIN sans la carte, parade pile de Melter -> Melter ne subit rien",
+    _c("64018 Redirection Mastery : TEMOIN sans la carte, parade pile de Melter -> Melter ne subit rien",
        "ligne de base du premier cas : sans Redirection Mastery, aucun degat ne repart",
        [HEROS, "Puzzle.PutIntoPlay('01132')", *SANS_BOOST], ["Puzzle.Attack('01132', defender='01001a')"],
        {"degats": [["01132", 0]], "degats_identite": 0},
