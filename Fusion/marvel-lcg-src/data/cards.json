@@ -81868,7 +81868,7 @@
     "TACTIC"
    ],
    "set_name": "",
-   "text": "<b>Hero Action</b>: Choose an enemy. It attacks you. Confuse that enemy.\n<i>\"Time to crack some heads!\"</i> —Raphael"
+   "text": "<b>Hero Action</b>: Choose an enemy. It attacks you. Confuse that enemy."
   },
   {
    "card_id": "64018",
@@ -124435,5 +124435,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "5e3970b8e9bc94821af22dc75b4282dc58e9468151de2e0ae93f0720eb74cb0e"
+ "checksum": "5d2abbfb50116e3d08b18212706e9d45b7719c6de89fda7477a0d3f4f8f13f76"
 }
