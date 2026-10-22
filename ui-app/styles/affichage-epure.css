@@ -1512,6 +1512,15 @@ html[data-epure] .deroule-phase .deroule-boutons .bh-bouton * {
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
+/* ⚠ ET LES PICTOGRAMMES DE RESSOURCES GARDENT LEUR POLICE (19/10/2026) : la règle ci-dessus, avec son !important, les
+   repassait en Bangers dans les boutons (« Dépenser [E][M][P] » montrait les LETTRES E, M, P au lieu des icônes). */
+html[data-epure] .demande-centrale .af-action i.icone-res,
+html[data-epure] .demande-centrale .dc-continue i.icone-res,
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton i.icone-res {
+  font-family: 'ChampionsIcons' !important;
+  letter-spacing: 0;
+  text-transform: none;
+}
 /* La croix et l'étiquette de la carte en scène : même habillage. */
 html[data-epure] .demande-centrale .dc-croix {
   border-radius: 0;
