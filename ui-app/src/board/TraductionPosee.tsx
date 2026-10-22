@@ -25,7 +25,7 @@ export function codeImage(url: string): string {
   return segment.replace(/\.(jpe?g|png|webp)$/i, '').replace(/^fr_/, '')
 }
 
-const SERIES_ALTERNATIVES = /_(cb|rog|rog2|m3t)$/
+const SERIES_ALTERNATIVES = /_(cb|rog|rog2|m3t|mcdc26)$/
 
 export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneTexte | null> {
   const cle = paysage ? `${url}|${paysage}` : url

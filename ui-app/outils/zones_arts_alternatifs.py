@@ -21,7 +21,7 @@ from PIL import Image, ImageDraw
 ICI = os.path.dirname(os.path.abspath(__file__))
 UI = os.path.dirname(ICI)
 PICS = os.path.join(UI, "..", "Fusion", "marvel-lcg-src", "assets", "pics")
-SERIES = re.compile(r"^(.+_(cb|rog|rog2|m3t))\.(jpg|jpeg|png|webp)$")
+SERIES = re.compile(r"^(.+_(cb|rog|rog2|m3t|mcdc26))\.(jpg|jpeg|png|webp)$")
 L, H = 300, 420
 
 

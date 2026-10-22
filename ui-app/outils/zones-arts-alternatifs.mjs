@@ -14,7 +14,7 @@ import { transpiler } from './generer-traduction-public.mjs'
 
 const ICI = dirname(fileURLToPath(import.meta.url))
 const BOARD = resolve(ICI, '../src/board')
-const SERIES = /^(.+_(cb|rog|rog2|m3t))\.(jpg|jpeg|png|webp)$/
+const SERIES = /^(.+_(cb|rog|rog2|m3t|mcdc26))\.(jpg|jpeg|png|webp)$/
 const L = 300
 const H = 420
 const LIGNES = 40
