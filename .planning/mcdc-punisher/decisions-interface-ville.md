@@ -7,3 +7,4 @@ Le 22/10/2026, l'utilisateur remplace le plan « A + B » (mini-carte permanente
 | 1 | Ouverture du panneau | **Panneau lateral PAR-DESSUS la table** (comme un tiroir) ; la table garde sa taille |
 | 2 | Onglet ferme | **Mini-carte 3×3 en miniature** dans l'onglet (9 cases, pions, toujours visible sur le cote) |
 | 3 | Territoire d'un autre joueur | **La carte montre les 3 rangees, la mienne en surbrillance** ; un clic sur le pion d'un coequipier affiche sa rangee et ses sbires en lecture seule, sans changer ma table |
+| 4 | Declenchement du deplacement | **Les deux** : clic sur une case verte puis choix du cout (epuiser un personnage / 1 ressource), ET l'Action habituelle de la carte The City reste disponible |
