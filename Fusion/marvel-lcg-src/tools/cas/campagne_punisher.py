@@ -220,6 +220,20 @@ CAS = [
              ["Puzzle.Action('pu141', 'Action')", "Puzzle.Action('pu141', 'Action', siege=1)"],
              {"compteurs": [["pu141", "counter", 1]]}, heros2="spider_man", carnet={"Player 1 Identity": "Spider-Man", "Player 2 Identity": "Spider-Man"},
              declencher_tolerant=["Puzzle.Action('pu141', 'Action')"]),
+    # ---------------------------------------------------------------------------------------------------------- pu139 Capo of the Past
+    _b("pu139 When Revealed : un CAPO tire au hasard (face A) entre en jeu comme SBIRE ELITE engage avec le joueur, Steady, Villainous, victory 0, pu139 attachee",
+       "« Treat attached character as an ELITE minion. It gains steady, villainous, and victory 0 » + « put it into play engaged with you and attach this card to it »",
+       [], ["Puzzle.Reveal('pu139')"], {"capo_du_passe": {"face": "a"}}),
+    _b("pu139 When Revealed, EXPERT : la face B du CAPO tire au hasard", "face B en expert", [], ["Puzzle.Reveal('pu139')"],
+       {"capo_du_passe": {"face": "b"}}, scenario="tracking_the_buyer_the_getaway_jigsaw_expert"),
+    _b("pu139, DEFAITE du CAPO-sbire : il quitte le jeu avec pu139 (aucun CAPO en jeu ensuite)", "le sbire se bat comme un sbire : degats, defaite",
+       [], ["Puzzle.Reveal('pu139')", "Puzzle.Damage('minion', 99)"], {"capo_du_passe": {"face": "a", "absent": True}}),
+    _b("pu139, TEMOIN de la defaite : 1 seul degat -> le CAPO-sbire est TOUJOURS en jeu (le cas de defaite ne passe donc pas a vide)", "un sbire a PV fixes ne tombe pas au 1er degat",
+       [], ["Puzzle.Reveal('pu139')", "Puzzle.Damage('minion', 1)"], {"capo_du_passe": {"face": "a"}}),
+    _b("pu139, PHASE DU MECHANT : le CAPO-sbire engage active (attaque ou manigance) sans erreur", "un sbire engage s'active comme un sbire",
+       [HEROS_K], ["Puzzle.Reveal('pu139')", "Puzzle.RunVillainPhase()"], {"capo_du_passe": {"face": "a"}}),
+    _b("pu139 Boost : la carte est donnee au joueur face cachee (1 carte de rencontre donnee)", "« Deal this to yourself as a facedown encounter card »",
+       RIEN, ["Puzzle.Boost('pu139')"], {"cartes_donnees": 1}),
     # ---------------------------------------------------------------------------------------------------------- combat 4 : pu147, pu148, pu149a/b
     _k("pu147 Setup (Kingsfall, l'allie Punisher est gagne) : l'allie pu146 entre en jeu, pu147 est retournee en pu148 Power to the People avec 1 compteur, Long Live (pu149a) est en jeu",
        "« Put the Punisher ally into play under a player's control. Flip this card and place 1 counter on it. »", [], [],
@@ -271,7 +285,7 @@ def camp_etat(monde, aides):
     cas = aides["cas"]
     attendu = cas.get("attendu") or {}
     propres = ("partie", "store_sans", "carnet_cles", "carnet_cles_absentes", "carnet_cles_presentes", "carnet_gagnee", "carnet_scenario",
-               "trafiquant_egal_porteur", "main_ok", "main_arme", "copies_en_jeu", "cartes_donnees")
+               "trafiquant_egal_porteur", "main_ok", "main_arme", "copies_en_jeu", "cartes_donnees", "capo_du_passe")
     soucis = []
     if "partie" in attendu:
         etat = "en_cours" if not monde.is_game_over else ("gagnee" if monde.game_over.players_won else "perdue")
@@ -331,6 +345,38 @@ def camp_etat(monde, aides):
         donnees = sum(len(j.dealt_encounter_cards.Get()) for j in monde.const_players)
         if donnees != attendu["cartes_donnees"]:
             soucis.append(f"{donnees} carte(s) de rencontre donnee(s) (attendu {attendu['cartes_donnees']})")
+    if "capo_du_passe" in attendu:
+        from cards.database import CardsDB
+        voulu = attendu["capo_du_passe"]
+        trouves = [o.face for o in monde.object_manager.card_dict.values()
+                   if str(getattr(getattr(o, "face", None), "pic_id", "")).startswith("pu0") and getattr(o.face, "pic_id", "")[-1:] == voulu["face"]
+                   and type(o.face).__name__ == "Minion" and o.face.IsInPlay()]
+        if voulu.get("absent"):
+            if trouves:
+                soucis.append(f"{len(trouves)} sbire(s) CAPO encore en jeu (attendu 0)")
+        elif len(trouves) != 1:
+            soucis.append(f"{len(trouves)} sbire(s) CAPO face {voulu['face']} en jeu (attendu 1)")
+        else:
+            f = trouves[0]
+            papier = CardsDB.FindCardPaper(f.pic_id)
+            for trait in ("ELITE", "CAPO"):
+                if not f.HasTrait(trait):
+                    soucis.append(f"trait {trait} absent")
+            if f.GetKeyword("Steady") < 1:
+                soucis.append("pas Steady")
+            if not f.IsVillainous():
+                soucis.append("pas Villainous")
+            if f.printed_victory != 0:
+                soucis.append(f"victory = {f.printed_victory} (attendu 0)")
+            if f.printed_health_numeral != int(papier.desc["HP"]):
+                soucis.append(f"PV = {f.printed_health_numeral} (attendu {papier.desc['HP']} : {f.pic_id})")
+            if f.printed_name != papier.name:
+                soucis.append(f"nom = {f.printed_name!r} (attendu {papier.name!r})")
+            if f.GetEngagedPlayer() is not monde.players[0]:
+                soucis.append("pas engage avec le joueur 1")
+            pu139 = [o.face for o in monde.object_manager.card_dict.values() if getattr(getattr(getattr(o, "face", None), "paper", None), "card_id", None) == "pu139"]
+            if not pu139 or pu139[0].attached_face is not f:
+                soucis.append(f"pu139 non attachee au CAPO (porteur = {pu139[0].attached_face if pu139 else 'carte absente'})")
     if "main_arme" in attendu:
         main = monde.players[0].hand_cards.GetAll()
         nouvelles = [f for f in main if f.paper.card_id != "01088"]

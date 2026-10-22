@@ -34,7 +34,7 @@ def GetAbilities() -> Sequence['Ability']:
         choisis = deja_choisis(effect)
         if MENACE not in choisis:
             return True
-        joueur = message.player
+        joueur = message.GetToPlayer()
         return JOUER not in choisis and any(face.CanPlayBy(joueur) for face in joueur.hand_cards.Get())
 
     def action(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:

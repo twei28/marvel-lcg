@@ -37,7 +37,7 @@ def CrimeMaster() -> 'List[Ability]':
             return
         n = min(2, len(joueur.GetEngagedMinions()))
         if n > 0:
-            effect.this.CastTo(EncounterVillain).GainForThisActive(effect, message, attack=n)
+            effect.this.CastTo(Enemy).GainForThisActive(effect, message, attack=n)
 
     return [AbilityFactory.WhenUnitAttackYou(AbilityType.ForcedInterrupt, "This", plus_atk)]
 
@@ -69,7 +69,7 @@ def LadyYulan(soin: int, cartes: int) -> 'List[Ability]':
     """★ Forced Response : After Lady Yulan attacks, choose : heal `soin` damage from her / discard the top `cartes` cards of your deck."""
 
     def apres_attaque(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> None:
-        this = effect.this.CastTo(EncounterVillain)
+        this = effect.this.CastTo(Enemy)
         joueur = JoueurVise(message)
         if joueur is None:
             return
@@ -116,7 +116,7 @@ def TheRose() -> 'List[Ability]':
     """★ Forced Interrupt : When The Rose attacks, choose : place 2 threat on the main scheme / she gets +2 ATK for this attack."""
 
     def avant_attaque(effect: 'Effect', message: 'Message.WhenUnitWouldAttack') -> None:
-        this = effect.this.CastTo(EncounterVillain)
+        this = effect.this.CastTo(Enemy)
         joueur = JoueurVise(message)
         if joueur is None:
             return
@@ -139,7 +139,7 @@ def Nightshade() -> 'List[Ability]':
     """★ Forced Response : After Nightshade attacks you, take 1 indirect damage for each ally you control."""
 
     def apres_attaque(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> None:
-        this = effect.this.CastTo(EncounterVillain)
+        this = effect.this.CastTo(Enemy)
         joueur = JoueurVise(message)
         if joueur is None:
             return
