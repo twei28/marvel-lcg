@@ -1,5 +1,7 @@
 from . import *
 
+# 22/10/2026 : carte OFFICIELLE du pack Elektra Natchios (MC63, n° de collection 17), ex-`ua011` (aspects TMNT d'Inkwire, meme texte). `ua011` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `63017` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 # Combo Move — EVENEMENT 1 [energy], aspect Aggression (TMNT Reskins, Inkwire). ATTACK.
 # Hero Action (attack): Deal 2 damage among enemies in play (3 damage instead if your identity has the
 #   MARTIAL ARTIST trait).

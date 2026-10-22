@@ -14,3 +14,4 @@ def GetAbilities() -> Sequence['Ability']:
         return True
     return [AbilityFactory.CanPlayThisUpgradeCard(CardFinder(card_type=Enemy), conditions=[check_team_up]),
             AbilityFactory.WhenInYourPlayTurn(AbilityType.HeroAction, dance_with_the_devil).SetLabel('attack')]
+# 22/10/2026 : source de la carte officielle 63027 (Elektra Natchios, n° 27) ; `60031` (pack Daredevil) en est maintenant un lien `full_link`.

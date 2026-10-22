@@ -1,5 +1,7 @@
 from . import *
 from cards.pack.fne import DiscountAbility
+# 22/10/2026 : carte OFFICIELLE du pack Elektra Natchios (MC63, n° de collection 19), ex-`ua030` (aspects TMNT d'Inkwire, meme texte). `ua030` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `63019` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 
 # Nerve Strike — EVENEMENT 3* [energy], aspect Aggression (TMNT Aspects, Inkwire). ATTACK. SKILL.
 # [star] Discount 1 (MARTIAL ARTIST).

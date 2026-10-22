@@ -1,5 +1,7 @@
 from . import *
 
+# 22/10/2026 : carte OFFICIELLE du pack Elektra Natchios (MC63, n° de collection 18), ex-`ua008` (aspects TMNT d'Inkwire, meme texte). `ua008` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `63018` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 # Chain Reaction — EVENEMENT 2 [physical], aspect Aggression (TMNT Reskins, Inkwire). ATTACK.
 # Hero Action (attack): Deal 2 damage to an enemy. If that enemy is defeated, deal 2 damage to a second
 #   enemy. If that enemy is defeated, deal 3 damage to a third enemy.

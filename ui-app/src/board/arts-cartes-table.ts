@@ -393,6 +393,18 @@ export const ARTS_CARTES: Record<string, string[]> = {
   "62019": [
     "tmnt"
   ],
+  "63017": [
+    "tmnt"
+  ],
+  "63018": [
+    "tmnt"
+  ],
+  "63019": [
+    "tmnt"
+  ],
+  "63020": [
+    "tmnt"
+  ],
   "64013": [
     "tmnt"
   ],

@@ -4402,9 +4402,7 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_aggression — Attack Training (Upgrade), MODIFIÉE de 32043
     'ua004': "Attachez cette carte à un allié [[NINJA]] ou [[MUTANIMAL]]. 1 amélioration [[ENTRAÎNEMENT]] max par allié.\nL'allié attaché gagne +1 ATQ et +2 points de vie.\n<i>« Suivez le rythme, les gars ! »</i> —Uno",
     // tmnt_aspect_aggression — Chain Reaction (Event)
-    'ua008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi est vaincu, infligez 2 dégâts à un deuxième ennemi. Si cet ennemi est vaincu, infligez 3 dégâts à un troisième ennemi.\n<i>« Encore un qui mord la poussière. »</i> —Michelangelo",
     // tmnt_aspect_aggression — Combo Move (Event)
-    'ua011': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts répartis entre les ennemis en jeu (3 dégâts à la place si votre identité a le trait [[ARTISTE MARTIAL]]).\n<i>« Qu'est-ce que tu dis de ça ? »</i> —Donatello",
     // tmnt_aspect_aggression — Commando (Ally)
     'ua012': "<b>Réponse</b> : après que Commando est entré en jeu, défaussez un événement de votre main → sonnez un ennemi.\n<i>« Chargez les armes, les gars. »</i>",
     // tmnt_aspect_aggression — Critical Wound (Upgrade)
@@ -4412,7 +4410,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_aggression — Daitō (Upgrade)
     'ua014': "Attachez cette carte à un personnage ami. Tant qu'elle est attachée à une identité, cette carte gagne Restreint.\n<b>Interruption</b> : quand le personnage attaché attaque un ennemi, inclinez Daitō → cette attaque inflige 1 dégât supplémentaire et gagne Perçant.",
     // tmnt_aspect_aggression — Flow of Battle (Upgrade) ; « Prerequisite » : question Q-UA1
-    'ua019': "Prérequis ([[ARTISTE MARTIAL]]).\n1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez attaqué et vaincu exactement un ennemi, défaussez cette carte → piochez 3 cartes.\n<i>« Trouve la paix dans le chaos. »</i> —Leonardo",
     // tmnt_aspect_aggression — Guerilla Trap (Upgrade)
     'ua021': "Réduisez de 1 le coût pour jouer cette carte si vous contrôlez un soutien [[NYC]].\n<b>Réponse de héros</b> : après qu'un sbire vous a engagé, défaussez Guerilla Trap → hébétez ce sbire et camouflez votre héros.",
     // tmnt_aspect_aggression — Kitsune (Ally)
@@ -4420,7 +4417,6 @@ export const TEXTES_FR_FANMADE = {
     // tmnt_aspect_aggression — Leatherhead (Ally)
     'ua026': "<b>Réponse</b> : après que Leatherhead a attaqué et vaincu un sbire, soignez-le de 2 dégâts.\n<i>« Nous ne sommes pas amis. Tu n'es qu'un moyen d'arriver à mes fins. »</i>",
     // tmnt_aspect_aggression — Nerve Strike (Event)
-    'ua030': "[star] Réduction 1 ([[ARTISTE MARTIAL]]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Sonnez ou désorientez cet ennemi.\n<i>« On dirait que j'ai touché un nerf. »</i> —Nobody",
     // tmnt_aspect_aggression — Pete (Support) ; question Q-UA3
     'ua033': "Utilisations (3 jetons Pistolet).\n<b>Réponse</b> : après que vous avez infligé des dégâts à un ennemi, inclinez Pete et retirez-lui 1 jeton Pistolet → infligez 1 dégât à cet ennemi.\n<i>« Salut, moi c'est Pete ! »</i>",
     // tmnt_aspect_aggression — Ray Fillet (Ally)
@@ -4887,6 +4883,11 @@ export const TEXTES_FR_FANMADE = {
     '64031': "<b>Action</b> : soignez 1 dégât d'un personnage [[ARTISTE MARTIAL]]. Ensuite, si ce personnage n'a plus aucun dégât, soignez 1 dégât d'un autre personnage.",
     '64032': "[star] Réduction 2 ([[ARTISTE MARTIAL]]).\n1 max par joueur.\nChaque allié [[ARTISTE MARTIAL]] que vous contrôlez subit 2 dégâts consécutifs ([consequential]) de moins après avoir vaincu exactement un ennemi ou une manigance annexe.",
     '64033': "Cette carte génère une ressource [physical] pour chaque personnage [[DÉFENSEUR]] que vous contrôlez (maximum 4) et peut être dépensée pour un autre joueur dont l'identité a le trait [[DÉFENSEUR]].",
+    '63027': "En Équipe (Daredevil et Elektra).\nMax 1 par deck.\nAttachez cette carte à un ennemi.\n<b>Action de héros</b> (<i>attaque</i>) : défaussez cette carte → infligez 3 dégâts à l'ennemi attaché.",
+    '63020': "Prérequis ([[ARTISTE MARTIAL]]).\n1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez attaqué et vaincu exactement un ennemi, défaussez cette carte → piochez 3 cartes.",
+    '63019': "[star] Réduction 1 ([[ARTISTE MARTIAL]]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Sonnez ou désorientez cet ennemi.",
+    '63018': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi est vaincu, infligez 2 dégâts à un deuxième ennemi. Si cet ennemi est vaincu, infligez 3 dégâts à un troisième ennemi.",
+    '63017': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts répartis entre les ennemis en jeu (3 dégâts à la place si votre identité a le trait [[ARTISTE MARTIAL]]).",
     '64024': "En Équipe <i>(Iron Fist et Luke Cage)</i>. 1 max par deck.\n<b>Action de héros</b> (<i>attaque</i>) : infligez 2 dégâts à un ennemi et donnez une carte d'état Tenace à un personnage.",
     '64017': "Utilisations (3 jetons Soin).\n<b>Action</b>: retirez 1 jeton Soin de L'Infirmière de nuit et inclinez-la → soignez 1 dégât d'un héros et défaussez 1 de ses cartes d'état.",
     '64015': "<b>Interruption de héros</b> <i>(défense)</i> : quand une carte de boost d'un ennemi vous attaquant est censée être retournée face visible, défaussez-là à la place.",

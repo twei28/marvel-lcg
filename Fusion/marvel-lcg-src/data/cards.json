@@ -63351,23 +63351,6 @@
    "text": "Max 1 per player.\nYou may play the upgrade tucked here as if it were in your hand.\n<b>Action</b>: Choose 1 upgrade in your hand that can attach to a minion or side scheme. Tuck that upgrade under here (to a maximum of 1)."
   },
   {
-   "card_id": "60031",
-   "type": "Upgrade",
-   "name": "Dance with the Devil",
-   "subtitle": "",
-   "desc": {
-    "Cost": "0",
-    "RES": "G",
-    "Class": "Basic",
-    "MaxPerDeck": "1"
-   },
-   "traits": [
-    "DANCE"
-   ],
-   "set_name": "",
-   "text": "Team-Up (Daredevil and Elektra). Max 1 per deck.\nAttach to an enemy.\n<b>Hero Action</b> <i>(attack)</i>: Discard this card → deal 3 damage to attached enemy."
-  },
-  {
    "card_id": "60032",
    "type": "Obligation",
    "name": "Sensory Overload",
@@ -81373,6 +81356,228 @@
    ],
    "set_name": "",
    "text": "Play only if any player controls a [[Martial Artist]] card.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[Martial Artist]] trait."
+  }
+ ],
+ "elektra": [
+  {
+   "card_id": "63015",
+   "type": "Ally",
+   "name": "* Shang-Chi",
+   "subtitle": "Zheng Shang-Chi",
+   "desc": {
+    "Cost": "4",
+    "RES": "R",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "HERO FOR HIRE",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "",
+   "text": "Shang-Chi enters play with 10 ring counters on him.\n<b>Action</b>: Remove 1 ring counter from here → deal 1 damage to an enemy. (Limit twice per round.)"
+  },
+  {
+   "card_id": "63016",
+   "type": "Ally",
+   "name": "* Black Cat",
+   "subtitle": "Felicia Hardy",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "Villainous": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "HERO FOR HIRE",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "",
+   "text": "[star] Villainous. <i>(When this character uses a basic power, give it a boost card.)</i>"
+  },
+  {
+   "card_id": "63017",
+   "type": "Event",
+   "name": "Combo Move",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage among enemies in play (3 damage instead if your identity has the [[MARTIAL ARTIST]] trait)."
+  },
+  {
+   "card_id": "63018",
+   "type": "Event",
+   "name": "Chain Reaction",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy is defeated, deal 2 damage to a second enemy. If that enemy is defeated, deal 3 damage to a third enemy."
+  },
+  {
+   "card_id": "63019",
+   "type": "Event",
+   "name": "Nerve Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3*",
+    "RES": "Y",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "[star] Discount 1 ([[MARTIAL ARTIST]]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Stun or confuse that enemy."
+  },
+  {
+   "card_id": "63020",
+   "type": "Upgrade",
+   "name": "Flow of Battle",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Prerequisite ([[MARTIAL ARTIST]]).\nMax 1 per player.\n<b>Hero Response</b>: After you attack and exactly defeat an enemy, discard this card → draw 3 cards."
+  },
+  {
+   "card_id": "63021",
+   "type": "Upgrade",
+   "name": "Shuriken",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2*",
+    "RES": "Y",
+    "Uses": "3,shuriken",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "",
+   "text": "[star] Discount 1 ([[Martial Artist]]).\nUses (3 shuriken counters).\n<b>Hero Action</b>: Remove 1 shuriken counter from here → deal 1 damage to an enemy."
+  },
+  {
+   "card_id": "63022",
+   "type": "Ally",
+   "name": "* Stone",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "1*",
+    "Class": "Basic"
+   },
+   "traits": [
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "",
+   "text": "<b>Response</b>: After Stone exactly defeats an enemy or side scheme, heal 2 damage from Stone."
+  },
+  {
+   "card_id": "63023",
+   "type": "Event",
+   "name": "Hunting Shadows",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b>: Search the top 8 cards of the encounter deck for a card and set it aside. Shuffle the encounter deck and put the set-aside card on top of it."
+  },
+  {
+   "card_id": "63027",
+   "type": "Upgrade",
+   "name": "Dance with the Devil",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "Class": "Basic",
+    "MaxPerDeck": "1"
+   },
+   "traits": [
+    "DANCE"
+   ],
+   "set_name": "",
+   "text": "Team-Up (Daredevil and Elektra). Max 1 per deck.\nAttach to an enemy.\n<b>Hero Action</b> <i>(attack)</i>: Discard this card → deal 3 damage to attached enemy."
+  },
+  {
+   "card_id": "63038",
+   "type": "Ally",
+   "name": "* Moondragon",
+   "subtitle": "Heather Douglas",
+   "desc": {
+    "Cost": "4",
+    "RES": "R",
+    "HP": "5",
+    "ATK": "1*",
+    "THW": "1*",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "DEFENDER",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "",
+   "text": "[star] <b>Interrupt</b>: When Moondragon uses a basic power, choose a number from 1 to 3. Moondragon gets +X to that power and takes +X consequential damage ([consequential]) for this use, where X is equal to the chosen number."
+  },
+  {
+   "card_id": "63039",
+   "type": "Ally",
+   "name": "* Moon Knight",
+   "subtitle": "Marc Spector",
+   "desc": {
+    "Cost": "4",
+    "RES": "Y",
+    "HP": "5",
+    "ATK": "2**",
+    "THW": "2**",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENDER",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "",
+   "text": "<b>Interrupt</b>: When Moon Knight defends, spend up to 3 resources → if you spent at least 1:\n[energy] — Prevent 2 damage from this attack.\n[mental] — Discard 1 boost card from the attacker.\n[physical] — Deal 2 damage to the attacker."
+  },
+  {
+   "card_id": "60031",
+   "full_link": "63027"
   }
  ],
  "iron_fist": [
@@ -113115,40 +113320,6 @@
    ]
   },
   {
-   "card_id": "ua008",
-   "type": "Event",
-   "name": "Chain Reaction",
-   "subtitle": "",
-   "desc": {
-    "Cost": "2",
-    "RES": "R",
-    "Class": "Aggression"
-   },
-   "traits": [
-    "ATTACK"
-   ],
-   "set_name": "TMNT Aggression",
-   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy is defeated, deal 2 damage to a second enemy. If that enemy is defeated, deal 3 damage to a third enemy.\n<i>\"Another one bites the dust.\"</i> —Michelangelo",
-   "custom": "Inkwire"
-  },
-  {
-   "card_id": "ua011",
-   "type": "Event",
-   "name": "Combo Move",
-   "subtitle": "",
-   "desc": {
-    "Cost": "1",
-    "RES": "Y",
-    "Class": "Aggression"
-   },
-   "traits": [
-    "ATTACK"
-   ],
-   "set_name": "TMNT Aggression",
-   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage among enemies in play (3 damage instead if your identity has the [[MARTIAL ARTIST]] trait).\n<i>\"What do you think about this?\"</i> —Donatello",
-   "custom": "Inkwire"
-  },
-  {
    "card_id": "ua012",
    "type": "Ally",
    "name": "* Commando",
@@ -113269,24 +113440,6 @@
    "ability_link": "54014"
   },
   {
-   "card_id": "ua019",
-   "type": "Upgrade",
-   "name": "Flow of Battle",
-   "subtitle": "",
-   "desc": {
-    "Cost": "1",
-    "RES": "B",
-    "MaxPerUnit": "1",
-    "Class": "Aggression"
-   },
-   "traits": [
-    "SKILL"
-   ],
-   "set_name": "TMNT Aggression",
-   "text": "Prerequisite ([[MARTIAL ARTIST]]).\nMax 1 per player.\n<b>Hero Response</b>: After you attack and exactly defeat an enemy, discard this card → draw 3 cards.\n<i>\"Find peace in the chaos.\"</i> —Leonardo",
-   "custom": "Inkwire"
-  },
-  {
    "card_id": "ua021",
    "type": "Upgrade",
    "name": "Guerilla Trap",
@@ -113369,24 +113522,6 @@
    ],
    "set_name": "TMNT Aggression",
    "text": "<b>Response</b>: After Leatherhead attacks and defeats a minion, heal 2 damage from him.\n<i>\"We are not friends. You are a means to an end.\"</i>",
-   "custom": "Inkwire"
-  },
-  {
-   "card_id": "ua030",
-   "type": "Event",
-   "name": "Nerve Strike",
-   "subtitle": "",
-   "desc": {
-    "Cost": "3*",
-    "RES": "Y",
-    "Class": "Aggression"
-   },
-   "traits": [
-    "ATTACK",
-    "SKILL"
-   ],
-   "set_name": "TMNT Aggression",
-   "text": "[star] Discount 1 ([[MARTIAL ARTIST]]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Stun or confuse that enemy.\n<i>\"Seems I've struck a nerve.\"</i> —Nobody",
    "custom": "Inkwire"
   },
   {
@@ -124435,5 +124570,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "ed2d101d459e19bdfcfc5b91c5bf4d73e7cf14309db9190d31d7e1c14c359c02"
+ "checksum": "0751e9d1d39f83904279a4e9a2947b7e945642824e61d39f57b8e34945c30703"
 }

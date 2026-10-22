@@ -1,5 +1,7 @@
 from . import *
 
+# 22/10/2026 : carte OFFICIELLE du pack Elektra Natchios (MC63, n° de collection 20), ex-`ua019` (aspects TMNT d'Inkwire, meme texte). `ua019` n'existe plus : c'est maintenant
+# l'art alternatif « tmnt » de `63020` (data/arts_alternatifs.json). Script, cas et gabarit PROCESSUS-CARTE repris tels quels.
 # Flow of Battle — AMELIORATION 1 [mental], aspect Aggression (TMNT Aspects, Inkwire). SKILL.
 # Prerequisite (MARTIAL ARTIST).
 # Max 1 per player.
