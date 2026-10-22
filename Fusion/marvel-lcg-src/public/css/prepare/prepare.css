@@ -1504,7 +1504,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
    certains héros sortaient du cadre. */
 .tb-port .portrait{position:absolute;inset:0;width:100%;height:100%;border:0;box-shadow:none;background-position:center 25%;background-size:var(--affiche-portrait-zoom,154%)}
 .tb-port .portrait.pivote{container-type:size;overflow:hidden;background:none}
-.tb-port .portrait.pivote>i{position:absolute;top:50%;left:50%;width:100cqh;height:100cqw;transform:translate(-50%,-50%) rotate(90deg);background-size:cover;background-position:center}
+.tb-port .portrait.pivote>i{position:absolute;top:50%;left:50%;width:100cqh;height:100cqw;transform:translate(-50%,-50%) rotate(90deg);background-size:200% auto;background-position:100% 20%;background-repeat:no-repeat}
 .tb-port .portrait-duo .portrait.duo{background-size:210%}
 /* La vignette d'un scénario à plusieurs méchants : partagée en moitiés ou en
    quarts, une tête par case, sur fond noir pour marquer les coupes. */
