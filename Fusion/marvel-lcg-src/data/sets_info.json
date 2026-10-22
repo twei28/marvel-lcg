@@ -1985,10 +1985,12 @@
   "tuile_manigance": true,
   "tuile_manigance_scenarios": [
    "the_big_apple",
-   "the_big_apple_uptown",
-   "one_last_kill_jigsaw",
-   "one_last_kill_hobgoblin"
-  ]
+   "the_big_apple_uptown"
+  ],
+  "tuile_sbire_scenarios": {
+   "one_last_kill_jigsaw": "pu056a",
+   "one_last_kill_hobgoblin": "pu071a"
+  }
  },
  "210. Custom (Challenges)": {
   "name": "punisher_mcdc_2026",
@@ -2004,5 +2006,5 @@
   ],
   "max_id": "pu283b"
  },
- "checksum": "d5cc8972c8970d1dc22cced2cab279016201a7f43a720e07dae8e15b582bb46c"
+ "checksum": "2c43cbcc9c3da4000e2e5e3d1259b396413d0a7c379eeec04c2b6f97f042bef7"
 }

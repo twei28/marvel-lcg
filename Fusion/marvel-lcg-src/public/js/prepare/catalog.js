@@ -335,7 +335,7 @@ export const catalog = {
             // Fear No Evil (18/09/2026) : manigances a vilain interchangeable,
             // repliees en une tuile par manigance (underlings.js).
             underlings: v.underlings || [], manigances: v.manigances || [],
-            tuileManigance: !!v.tuile_manigance, tuileManiganceScenarios: v.tuile_manigance_scenarios || [],
+            tuileManigance: !!v.tuile_manigance, tuileManiganceScenarios: v.tuile_manigance_scenarios || [], tuileSbireScenarios: v.tuile_sbire_scenarios || {},
             // MC×DC 2026 : les variantes de CAMPAGNE (combats 2 et 3), retirees de la liste libre (underlings.js `sansVariantesDeCampagne`).
             scenariosCampagne: v.scenarios_campagne || [],
         })).sort((a, b) => num(a.key) - num(b.key));

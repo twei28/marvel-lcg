@@ -5786,7 +5786,11 @@ async function loadScnGrid() {
             onmouseleave: estTel() ? undefined : () => rendreSceneMechant(state.scenario),
         },
             // MC×DC (22/10/2026) : la tuile d'une affaire montre la MANIGANCE ANNEXE (`tuile_manigance`), pas le sous-fifre.
-            portraitAffaire(ext, sc) || portraitScenario(concret),
+            portraitAffaire(ext, sc) || portraitScenario(
+                // One Last Kill : la tuile montre le SOUS-FIFRE (Jigsaw / Hobgoblin), pas le Punisher commun aux deux (22/10/2026).
+                ext && ext.tuileSbireScenarios && ext.tuileSbireScenarios[sc.id]
+                    ? { ...concret, tileImage: ext.tuileSbireScenarios[sc.id], villainCards: [ext.tuileSbireScenarios[sc.id]] }
+                    : concret),
             el("span", { class: "tb-port-nom" }, nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
             plusieurs ? el("span", { class: "st-exp" }, sc.underlings.length + " " + t("vilains au choix")) : null,
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
