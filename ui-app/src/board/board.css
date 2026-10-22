@@ -10074,9 +10074,10 @@
 /* Le lot d'un choix (« Role: Brawler ») : ses cartes cote a cote, au centre, devant le plateau (DemandeCentrale). */
 .apercu-lot {
   position: fixed;
+  /* EN HAUT : le panneau de decision est au centre, et ce sont SES boutons qu'on vise pendant qu'on lit le lot. */
   left: 50%;
-  top: 52%;
-  transform: translate(-50%, -50%);
+  top: 12px;
+  transform: translateX(-50%);
   z-index: 545;
   display: flex;
   gap: 10px;
@@ -10085,6 +10086,6 @@
 }
 
 .apercu-lot .scan-card {
-  --card-w: min(230px, 17vw);
+  --card-w: min(200px, 15vw);
   --inspect-scale: 1;
 }
