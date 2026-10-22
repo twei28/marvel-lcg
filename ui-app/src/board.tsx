@@ -254,6 +254,8 @@ import { essaiPhaseMechant, essaisOuverts } from './board/essais'
 import { PHASE_BIS_POUR_TOUS, lirePresentationPhase, phaseTrisUtilisable, suivrePresentationPhase } from './board/phase-presentation'
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
+import { VoletVille } from './board/VoletVille'
+import { optionSeDeplacer, villeDuMonde } from './board/ville-etat'
 import { JournalConsole } from './board/JournalConsole'
 import {
   appliquerAffichage,
@@ -2191,6 +2193,16 @@ export function PagePartie({
     },
     [cartesMondeParId, texteImprimeDeLaCarte]
   )
+  // L'onglet « Ville » (campagne MC×DC 2026) : l'etat exporte par le moteur, ouvert ou non, et le nom de chaque joueur (son heros).
+  const [villeOuverte, setVilleOuverte] = useState(false)
+  const villeExportee = useMemo(() => villeDuMonde(etat.monde), [etat.monde])
+  const nomsJoueursVille = useMemo(() => {
+    const noms: Record<number, string> = {}
+    ;(etat.monde?.players ?? []).forEach((p, i) => {
+      noms[i] = p?.area_hero?.[0]?.name?.replace(/^\W*/, '') || `${t('Joueur')} ${i + 1}`
+    })
+    return noms
+  }, [etat.monde])
   // L'EFFET BOOST ★ d'une carte rencontre, en une phrase (D10) : la ligne
   // « ★ Sweeping Swoop : … » sous la rangee du cartouche du bas. Meme source
   // que le texte d'une capacite : le francais quand le plateau l'a, l'anglais
@@ -5552,6 +5564,19 @@ export function PagePartie({
           telephone={modePlateau === 'mobile'}
         />
       )}
+      {villeExportee ? (
+        <VoletVille
+          ville={villeExportee}
+          moi={joueurActif}
+          nomsJoueurs={nomsJoueursVille}
+          optionDeplacement={optionSeDeplacer(etat.demande?.options)}
+          seDeplacer={(option, objetLieu) => choisirOptionDepuisMenu(option, [objetLieu], true)}
+          catalogue={catalogue}
+          ouvert={villeOuverte}
+          ouvrir={() => setVilleOuverte(true)}
+          fermer={() => setVilleOuverte(false)}
+        />
+      ) : null}
       <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
         <CartesDuJournal.Provider value={cartesDuVolet}>
         <MessageRapport message={rapport.message} />

@@ -1040,6 +1040,21 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Jouer pour lui': 'Play for them',
 
   // ---- board/JournalHeros.tsx ----
+  // — Onglet « Ville » (campagne MC×DC 2026) —
+  'Refermer la ville': 'Close the city',
+  'Ouvrir la ville': 'Open the city',
+  Ville: 'City',
+  'La ville': 'The city',
+  'Vous regardez la rangée de': 'You are looking at the row of',
+  'Cliquez votre pion pour revenir à la vôtre.': 'Click your pawn to go back to yours.',
+  'Cliquez une case verte pour vous y déplacer.': 'Click a green space to move there.',
+  'Vous pourrez vous déplacer à votre tour.': 'You can move on your turn.',
+  'Se déplacer': 'Move',
+  'Sbire attaché à ce lieu': 'Minion attached to this location',
+  'Compteurs de la piste posée ici': 'Counters on the lead placed here',
+  Piste: 'Lead',
+  'Capacité de ce lieu déjà utilisée ce round': 'This location’s ability was already used this round',
+  Utilisé: 'Used',
   'Journal': 'Log',
   'Journal du héros': 'Hero log',
 

@@ -592,7 +592,26 @@ export type RefusEffet = {
   source_code?: string
 }
 
+/** L'etat de la ville exporte par le moteur (`ToDescriptor.Ville`, campagne MC×DC 2026). Absent ou vide hors de la ville. */
+export type VilleCase = {
+  ligne: number
+  colonne: number
+  /** Identifiant d'objet de la carte de lieu : c'est ce que le moteur attend comme cible de « Move ». */
+  objet: number
+  card_id: string
+  joueurs: number[]
+  sbires_attaches: number[]
+  /** Une capacite « une fois par round » de ce lieu a deja servi ce round (limite commune a tous les joueurs). */
+  limite_utilisee: boolean
+  piste: { objet: number; card_id: string; porteur: number; compteurs: Record<string, number> } | null
+}
+export type VilleLigne = { ligne: number; capo: number | null; capo_card_id: string }
+export type VilleJoueur = { player_id: number; ligne: number; colonne: number }
+export type VilleExport = { lignes: VilleLigne[]; cases: VilleCase[]; joueurs: VilleJoueur[] }
+
 export type World = {
+  /** La ville de la campagne MC×DC 2026 (onglet « Ville »). */
+  ville?: Partial<VilleExport>
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */
   render_id: number
   round_id: number

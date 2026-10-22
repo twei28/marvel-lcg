@@ -1,0 +1,139 @@
+/* L'onglet « Ville » (VoletVille.tsx). Hors couche, comme VoletJournal.css. Dessous le Journal (620) mais au-dessus du plateau.
+   Decisions du 22/10/2026 : panneau PAR-DESSUS la table ; carte agrandie A GAUCHE du volet, centree verticalement. */
+
+.volet-ville {
+  --ville-largeur: min(500px, 94vw);
+  position: fixed;
+  right: 0;
+  top: 8dvh;
+  z-index: 622;
+  width: var(--ville-largeur);
+  max-height: 84dvh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 21, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.55);
+  color: #e8eef6;
+  animation: volet-ville-entre 180ms ease-out;
+}
+@keyframes volet-ville-entre {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+.volet-ville-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.volet-ville-tete h2 { margin: 0; font-size: 1rem; font-weight: 900; }
+.volet-ville-aide { margin: 0; padding: 8px 12px 0; font-size: 0.85rem; color: #aebccd; }
+
+.ville-grille { padding: 10px 12px 14px; overflow-y: auto; display: grid; gap: 8px; }
+.ville-rangee {
+  display: grid;
+  grid-template-columns: 52px repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.ville-rangee.est-regardee { border-color: rgba(63, 134, 224, 0.75); background: rgba(63, 134, 224, 0.1); }
+.ville-capo, .ville-case { position: relative; min-width: 0; }
+.ville-capo .scan-card { --card-w: 100%; --inspect-scale: 1; width: 100%; pointer-events: none; }
+.ville-case { display: flex; justify-content: center; }
+.ville-case .scan-card { --card-w: 112px; --inspect-scale: 1; pointer-events: none; }
+.ville-case { border-radius: 6px; outline: 2px solid transparent; }
+.ville-case .scan-card { opacity: 0.55; transition: opacity 120ms; }
+.ville-case.est-ici .scan-card { opacity: 1; }
+.ville-case.est-ici { outline-color: #3f86e0; }
+.ville-case.est-atteignable { outline-color: #5fc08a; cursor: pointer; }
+.ville-case.est-atteignable .scan-card { opacity: 0.95; }
+.ville-case:focus-visible { outline: 3px solid #fff; outline-offset: 1px; }
+
+.ville-pions { position: absolute; left: 4px; top: 4px; display: flex; gap: 3px; z-index: 2; }
+.ville-pion {
+  all: unset;
+  box-sizing: border-box;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid #0e1117;
+  color: #0e1117;
+  font: 800 11px/18px system-ui, sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+.ville-pion.est-moi { box-shadow: 0 0 0 2px #3f86e0; }
+.ville-pion:focus-visible { outline: 2px solid #fff; }
+
+.ville-badge {
+  position: absolute; z-index: 2;
+  padding: 1px 6px;
+  border-radius: 9px;
+  font: 700 11px/16px system-ui, sans-serif;
+  color: #fff;
+}
+.ville-badge.est-sbire { right: 4px; top: 4px; background: #e62429; }
+.ville-badge.est-piste { left: 4px; bottom: 4px; background: #2b3a58; border: 1px solid #7fa9e6; }
+.ville-badge.est-utilise { right: 4px; bottom: 4px; background: rgba(30, 34, 44, 0.92); border: 1px solid rgba(255, 255, 255, 0.3); color: #cbd5e1; }
+
+/* La carte agrandie : A GAUCHE du volet, centree verticalement, jamais sur la zone de jeu. */
+.ville-apercu {
+  position: fixed;
+  right: min(500px, 94vw);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 623;
+  pointer-events: none;
+  padding-right: 10px;
+}
+.ville-apercu .scan-card { --card-w: min(300px, 22vw); --inspect-scale: 1; }
+
+/* L'onglet : la languette, sous celle de l'Aide (120px) et au-dessus de celle du Journal. */
+.volet-ville-languette {
+  position: fixed;
+  right: 0;
+  top: 300px;
+  z-index: 612;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 5px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d9e1ea;
+  background: rgba(30, 34, 44, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+}
+.volet-ville-languette:focus-visible { outline: 2px solid #3f86e0; outline-offset: 2px; }
+.volet-ville-languette.est-ouvert { right: min(500px, 94vw); z-index: 626; }
+.volet-ville-languette-texte { writing-mode: vertical-rl; transform: rotate(180deg); }
+.ville-mini { display: grid; grid-template-columns: repeat(3, 12px); gap: 2px; }
+.ville-mini-case {
+  position: relative;
+  width: 12px; height: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+  display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 1px;
+}
+.ville-mini-case.est-ici { outline: 1px solid #3f86e0; background: rgba(63, 134, 224, 0.4); }
+.ville-mini-case.est-atteignable { background: rgba(95, 192, 138, 0.55); }
+.ville-mini-case i { display: block; width: 5px; height: 5px; border-radius: 50%; }
+
+@media (max-width: 700px), (max-height: 520px) {
+  .volet-ville { top: 0; max-height: 100dvh; width: 100vw; border-radius: 0; }
+  .volet-ville-languette.est-ouvert { display: none; }
+  .ville-apercu { display: none; }
+}
