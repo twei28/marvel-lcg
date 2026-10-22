@@ -223,3 +223,38 @@ Lu dans `ui-app/src/board/world.ts` (le type `World`, ce que le moteur envoie au
 `docs/maquettes/barre-avantage.html` : une barre fine au bord gauche sur une capture réelle du plateau en Normal ; le survol donne le détail ; quatre états (équilibrée, les héros
 dominent, la partie tourne mal, scénario inconnu) et trois curseurs pour essayer à la main (formule fictive : moyenne de trois valeurs, juste pour juger l'allure).
 **Constat de la maquette** : à 22 px de large la barre frôlait la **pile de cartes de gauche** ; l'utilisateur l'a voulue **beaucoup plus fine** (7 px sur un plateau de 1440 px) : elle ne touche plus la pile, pas de marge à ajouter.
+
+---
+
+## 4. La barre d'adresse dans l'appli installée, sur la page d'une table (ajouté le 22/10/2026)
+
+**Le signalement (Yarro, 22/10/2026).** Dans l'appli installée (Chrome « Installer l'application »), une fine barre apparaît en haut du plateau : une croix, l'adresse
+`https://p9.narwhalchampions.com` et le titre « Board - Marvel Champions ». Les autres applis (Dragn Cards…) n'ont pas ça. Contournement connu : passer en mode web puis plein écran (F11).
+
+**La cause (vérifiée dans le code et le manifeste servi en ligne).** `site/orchestrateur.py` (`MANIFESTE_APPLI`) déclare l'appli pour `narwhalchampions.com` : `scope: "/"`,
+`start_url: "/entrer"`. La table, elle, est servie sur `p<N>.narwhalchampions.com`, un AUTRE site pour le navigateur : hors du périmètre de l'appli, Chrome affiche sa barre de
+sécurité. **Le code le dit déjà** (commentaire « Contrepartie assumée : une fois sur la table, le navigateur garde une fine barre d'adresse »). La barre n'est donc pas un défaut du plateau.
+
+**Pourquoi un sous-domaine par table (docstring en tête de `orchestrateur.py`).** Le client du jeu utilise des chemins ABSOLUS (`/ws`, `/save_deck`, `/app/board.html`...) : environ
+**164 routes** côté moteur. Les servir sous `narwhalchampions.com/partie3/` les ferait partir à la racine du site. Le routage est statique dans Caddy (`p1..p30` → ports 2351..2380).
+
+### Les voies examinées
+
+1. **Table sous un chemin du même domaine** (`narwhalchampions.com/p9/...`) : la « vraie » solution, mais il faut réécrire les ~164 appels absolus du client (JS de `public/`, plateau React
+   `ui-app/`, WebSocket) ou les réécrire en Caddy. **Gros chantier, risque élevé** (invitations, spectateurs, activité Discord, clés de siège dans les URL).
+2. **Même domaine, table choisie par cookie dans Caddy** (les chemins restent à la racine ; un cookie `table=N`, posé par l'orchestrateur, envoie les routes du moteur vers le bon port).
+   Contre : collisions avec les routes du site (`/`, `/admin`, `/entrer`...), **une seule table par navigateur** (l'admin ne pourrait plus en regarder une autre en jouant), invités et
+   spectateurs à revoir. **Chantier moyen à gros, risque moyen.**
+3. **Appli installée sur la table, pas sur le site** (un manifeste servi par chaque `p<N>`, `start_url` sur sa propre adresse). Contre : l'appli est liée à UNE adresse ; la table est
+   éteinte quand personne ne joue (l'appli afficherait une erreur au lieu d'allumer la table : à contourner côté Caddy en renvoyant vers `/entrer`, qui fait sortir du périmètre une
+   seconde), et le cookie de site ne voyage pas jusqu'à `p<N>` (connexion à repenser). **Chantier moyen, plusieurs inconnues.**
+4. **`scope_extensions`** (le périmètre de l'appli étendu aux sous-domaines, `"origin": "https://*.narwhalchampions.com"` + fichier `/.well-known/web-app-origin-association`) : la voie
+   propre sans toucher au routage, MAIS d'après la documentation Chrome (page de décembre 2023) c'était un essai (« origin trial ») **sans Android** et seulement sur ordinateur ;
+   son état actuel est inconnu. À revérifier avant de s'y fier. **Petit chantier si ça marche, à tester sur un vrai Chrome installé.**
+5. **Ne rien changer, et le dire** : garder le contournement (mode web + plein écran) et l'expliquer dans la FAQ / les nouveautés.
+
+### À décider avant de coder
+
+- Quelle voie (recommandation provisoire : tester 4 d'abord, c'est le seul test peu coûteux ; sinon 5, puis 2 si l'utilisateur veut vraiment supprimer la barre).
+- Sur ordinateur seulement, ou aussi sur téléphone ? (4 ne couvre pas le téléphone.)
+- Rien n'a été codé.
