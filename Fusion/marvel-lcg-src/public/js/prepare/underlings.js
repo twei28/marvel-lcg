@@ -105,3 +105,16 @@ export function tuileContient(tuile, scenarioId) {
     if (tuile.id === scenarioId) return true;
     return !!(tuile.scenarioIds && tuile.scenarioIds.includes(scenarioId));
 }
+
+
+/**
+ * Les scénarios que l'écran de campagne SEUL doit jouer : dans la liste libre ils doublaient les scénarios interchangeables (« Tracking the Buyer: Art Museum
+ * Heist (Jigsaw) » à côté de « Art Museum Heist (Jigsaw) »), ce qui donnait l'impression de voir plusieurs fois le même scénario (22/10/2026, MC×DC 2026).
+ * Déclarés dans data/sets_info.json, sur l'extension : "scenarios_campagne": [...]. `campagne: true` rend la liste COMPLETE (l'écran de campagne les choisit lui-même
+ * d'après le carnet) ; sinon (partie libre) ils sont retirés.
+ */
+export function sansVariantesDeCampagne(scenarios, ext, { campagne = false } = {}) {
+    const cachees = new Set((ext && ext.scenariosCampagne) || []);
+    if (campagne || !cachees.size) return scenarios.slice();
+    return scenarios.filter((sc) => !cachees.has(sc.id));
+}

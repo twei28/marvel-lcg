@@ -1,6 +1,7 @@
 // catalog.js — construit les modèles de haut niveau (héros, scénarios, extensions,
 // sets de rencontre) à partir des données brutes + métadonnées de cartes.
 "use strict";
+import { sansVariantesDeCampagne } from "/public/js/prepare/underlings.js";
 import { api, fileName } from "/public/js/prepare/api.js";
 import { regrouperVariantes, cleIdentite } from "/public/js/prepare/variantes.js";
 import { cards } from "/public/js/prepare/cards.js";
@@ -334,6 +335,8 @@ export const catalog = {
             // Fear No Evil (18/09/2026) : manigances a vilain interchangeable,
             // repliees en une tuile par manigance (underlings.js).
             underlings: v.underlings || [], manigances: v.manigances || [],
+            // MC×DC 2026 : les variantes de CAMPAGNE (combats 2 et 3), retirees de la liste libre (underlings.js `sansVariantesDeCampagne`).
+            scenariosCampagne: v.scenarios_campagne || [],
         })).sort((a, b) => num(a.key) - num(b.key));
         // Onglet synthétique « Défis » : les défis mensuels de data/challenges
         // sont des scénarios complets (méchant fixe + carte Défi via
@@ -630,7 +633,14 @@ export const catalog = {
         };
     },
 
-    async scenariosForExtension(extKey) {
+    async scenariosForExtension(extKey, options = {}) {
+        // `options.campagne` : l'ecran de campagne veut TOUS les scenarios de la boite (les variantes de campagne comprises) ; la partie libre ne les voit pas.
+        const cacheComplet = await this._scenariosComplets(extKey);
+        const ext = (await this.extensions()).find((e) => e.key === extKey);
+        return sansVariantesDeCampagne(cacheComplet, ext, options);
+    },
+
+    async _scenariosComplets(extKey) {
         if (_scenariosByExt.has(extKey)) return _scenariosByExt.get(extKey);
         await cards.load();
         const exts = await this.extensions();

@@ -1660,7 +1660,7 @@ async function ouvrirCampagne(id) {
     const campagne = await apiCampagne.charger(id);
     const definition = await apiCampagne.definition(campagne.code);
     await cards.load();
-    const scenarios = await catalog.scenariosForExtension(definition.cle_extension);
+    const scenarios = await catalog.scenariosForExtension(definition.cle_extension, { campagne: true });
     etat.campagne = campagne;
     etat.definition = definition;
     etat.scenarios = scenarios;

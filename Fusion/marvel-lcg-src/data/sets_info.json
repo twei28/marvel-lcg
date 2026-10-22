@@ -1961,7 +1961,32 @@
    "uptown_expansion",
    "super_strength_attachments"
   ],
-  "max_id": "pu283b"
+  "max_id": "pu283b",
+  "manigances": [
+   "art_museum_heist",
+   "the_getaway",
+   "protection_racket",
+   "the_raft_breakout",
+   "stop_the_presses"
+  ],
+  "underlings": [
+   "jigsaw",
+   "hobgoblin"
+  ],
+  "scenarios_campagne": [
+   "punishment_hobgoblin",
+   "punishment_jigsaw",
+   "tracking_the_buyer_art_museum_heist_hobgoblin",
+   "tracking_the_buyer_art_museum_heist_jigsaw",
+   "tracking_the_buyer_protection_racket_hobgoblin",
+   "tracking_the_buyer_protection_racket_jigsaw",
+   "tracking_the_buyer_stop_the_presses_hobgoblin",
+   "tracking_the_buyer_stop_the_presses_jigsaw",
+   "tracking_the_buyer_the_getaway_hobgoblin",
+   "tracking_the_buyer_the_getaway_jigsaw",
+   "tracking_the_buyer_the_raft_breakout_hobgoblin",
+   "tracking_the_buyer_the_raft_breakout_jigsaw"
+  ]
  },
- "checksum": "9dd847d2d0b2542353d3534a2e13348821bb34d4ecb4e590dd85db44eab4b3f3"
+ "checksum": "124fabf9f42f5f9737702377906b9a726dbfeccb31a014c53d87292e1c3efdba"
 }

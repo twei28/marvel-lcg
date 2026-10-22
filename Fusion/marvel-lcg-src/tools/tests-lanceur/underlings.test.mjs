@@ -89,3 +89,30 @@ test("les noms", () => {
     assert.equal(nomDuVilain("Art Museum Heist (Typhoid Mary)", "typhoid_mary"), "Typhoid Mary");
     assert.equal(nomDuVilain("sans parenthese", "purple_man"), "Purple Man");
 });
+
+// ---- MC×DC 2026 : la liste libre n'a plus de doublons (22/10/2026) ------------------------------------------------------------------------------------
+import { readFileSync } from "node:fs";
+import { sansVariantesDeCampagne } from "../../public/js/prepare/underlings.js";
+
+test("sansVariantesDeCampagne : la partie libre retire les variantes de campagne, la campagne les garde toutes", () => {
+    const e = { scenariosCampagne: ["tracking_the_buyer_x_jigsaw"] };
+    const liste = [sc("x_jigsaw", "X (Jigsaw)", "1"), sc("tracking_the_buyer_x_jigsaw", "Tracking the Buyer: X (Jigsaw)", "1")];
+    assert.deepEqual(sansVariantesDeCampagne(liste, e).map((s) => s.id), ["x_jigsaw"]);
+    assert.deepEqual(sansVariantesDeCampagne(liste, e, { campagne: true }).map((s) => s.id), ["x_jigsaw", "tracking_the_buyer_x_jigsaw"]);
+    assert.deepEqual(sansVariantesDeCampagne(liste, {}).map((s) => s.id), ["x_jigsaw", "tracking_the_buyer_x_jigsaw"]);   // extension sans declaration : rien ne change
+});
+
+test("MC×DC 2026 reel : 5 tuiles d'affaires a 2 sous-fifres (Jigsaw, Hobgoblin), zero variante de campagne dans la liste libre", () => {
+    const info = Object.values(JSON.parse(readFileSync(new URL("../../data/sets_info.json", import.meta.url), "utf8"))).find((v) => v && v.name === "punisher_mcdc_2026");
+    const ext = { manigances: info.manigances, underlings: info.underlings, scenariosCampagne: info.scenarios_campagne };
+    const nomDe = (id) => JSON.parse(readFileSync(new URL(`../../data/scenarios/${id}.json`, import.meta.url), "utf8")).name;
+    const catalogueReel = info.scenarios.map((id) => ({ id, name: nomDe(id), villainCards: ["x"], tileImage: "x" }));
+    const libre = regrouperUnderlings(sansVariantesDeCampagne(catalogueReel, ext), ext, {});
+    const tuiles = libre.filter((t) => t.interchangeable);
+    assert.deepEqual(tuiles.map((t) => t.id), ["art_museum_heist", "the_getaway", "protection_racket", "the_raft_breakout", "stop_the_presses"]);
+    for (const t of tuiles) assert.deepEqual(t.underlings.map((u) => u.id), ["jigsaw", "hobgoblin"]);
+    assert.equal(libre.filter((s) => /^tracking_the_buyer_|^punishment_/.test(s.id)).length, 0);
+    // le reste : The Big Apple x2, La Chute du Roi, One Last Kill x2, les 4 defis
+    const autres = libre.filter((t) => !t.interchangeable).map((s) => s.id).sort();
+    assert.deepEqual(autres, ["angry_birds", "its_a_trap", "kingsfall", "one_last_kill_hobgoblin", "one_last_kill_jigsaw", "rise_of_the_machines", "secret_agent", "the_big_apple", "the_big_apple_uptown"]);
+});
