@@ -35,3 +35,7 @@ Deja tranche sans question (preuve par comparaison a des cartes officielles) : i
 - **Sans question (22/10/2026)** : roles des nombres des complots principaux, par comparaison a 01097b (voir `cartes.md`). **sl038b TargetThreat ∞** : meme principe que Q1 (∞ reel affiche, extension du moteur plus tard) ; a rappeler a l'utilisateur au moment du cadrage moteur.
 - **Q3, 22/10/2026 : sl061b, « +1 par joueur ★ » (escalade)** -> escalade +1 par joueur avec le ★ affiche.
 - **Sans question (22/10/2026)** : ★ apres un ATK/SCH (principe de Q2), case de cout vide de sl072a/b (pas de `Cost`), « TRAP! » = trait `TRAP`, icones de ressource (poing/eclair/reseau). Traits absents du `Literal` TRAITS du moteur (`src/game/card/face/card_face.py:73`, typage seul, aucun controle a l'execution) : **OVERPOWERING, POSSESSED**. A ajouter le moment venu.
+- **Q4, 22/10/2026 : positions sl003/sl004** -> deux vraies cartes Environnement recto-verso, visibles sur le plateau, qu'on retourne (texte actif different de chaque cote).
+- **Q5, 22/10/2026 : vilain de Shadows in the Night** -> tirage au hasard parmi les 6 Dark Proteges, comme imprime (sl001a) ; pas de choix a la main.
+- **Sans question** : « In expert mode » des complots 1B/2B (+1 SCH, +3 PV par joueur) = appliques uniquement en mode expert, comme les autres scenarios du jeu.
+- **Restent ouvertes (documents manquants)** : Q10 quantites par carte (livret ou MarvelCDB), Q14 livret officiel, Q15 textes francais.
