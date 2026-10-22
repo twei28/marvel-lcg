@@ -854,3 +854,16 @@ HAWKEYE_CARDS = [
       "<b>Action</b>: Spend 1 resource of any type → find either Hawkeye's Bow or Hawkeye's Quiver and put it into play. <i>(Limit once per phase.)</i>", PU_HAWK,
       subtitle="MC×DC 2026", page="p283 (face alter-ego, ID JG)"),
 ]
+
+
+# Guerilla Warfare (Civil War, Resistance 6/8, carte 201, illustration Denis Medri) : le 2B imprime sur le defi p280, ABSENT du moteur. Fourni par l'utilisateur
+# (capture, 22/10/2026), puis image HD de hallofheroeslcg.com/civil-war ; AUDIT du set Civil War le 22/10/2026 : ce site liste 221 images, le moteur en manque 5 faces = 2 vraies cartes (56201 Guerilla Warfare, 56202 Superhero Jailbreak) ; 56206b « Now It's Personal » y est deja sous l'id 56128b. Face A = le 2A officiel 56142a (« Resistance Tactics »), paire `56142a,pu284b`.
+GUERILLA_CARDS = [
+    c("pu284b", "MainScheme", "Guerilla Warfare", {"StartingThreat": "0", "TargetThreat": "9*", "EscalationThreat": "1*", "Stage": "2B"}, [],
+      "<b>Forced Response</b>: After a status card is placed on the enemy leader, place 1 threat here.\n<b>If this stage is completed, the players lose the game.</b>",
+      "Resistance", page="hallofheroeslcg.com/civil-war/56201b (Resistance 6/8, carte 201)"),
+    c("pu285b", "MainScheme", "Superhero Jailbreak", {"StartingThreat": "0", "TargetThreat": "9*", "EscalationThreat": "1*", "Stage": "2B"}, [],
+      "[star] <b>Forced Response</b>: After resolving step 1 of the villain phase, each player discards the top card of the encounter deck. Each player who discards a minion this way "
+      "puts it into play engaged with them.\n<b>If this stage is completed, the players lose the game.</b>",
+      "Resistance", page="hallofheroeslcg.com/civil-war/56202b (Resistance 8/8, carte 202)"),
+]

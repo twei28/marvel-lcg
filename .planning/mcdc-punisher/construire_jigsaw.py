@@ -39,7 +39,7 @@ def stat(v):
 
 cartes = []
 CORRECTIONS = {'pu131': {'Amplify': '2'}, 'pu113': {'Hazard': '1'}}   # deux icones Amplify imprimees (scan p261), absentes des defs
-for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS + defs.UPTOWN_CARDS + defs.DEFI_CARDS + defs.HAWKEYE_CARDS:
+for x in defs.JIGSAW_CARDS + defs.HOBGOBLIN_CARDS + defs.ARMORY_CARDS + defs.SYNDICATE_CARDS + defs.CAPO_OF_THE_PAST_CARDS + defs.HITLIST_CARDS + defs.SWAT_CARDS + defs.PUNISHMENT_CARDS + defs.BIGAPPLE_CARDS + defs.LOCATION_CARDS + defs.CAPO_CARDS + defs.LEAD_CARDS + defs.BIGAPPLE_ENCOUNTER_CARDS + defs.CAMPAIGN_CARDS + defs.KINGSFALL_CARDS + defs.UPTOWN_CARDS + defs.DEFI_CARDS + defs.HAWKEYE_CARDS + defs.GUERILLA_CARDS:
     d = {k: stat(v) for k, v in x['desc'].items()}
     if x['card_id'] in STAGE: d['Stage'] = STAGE[x['card_id']]
     d.update(CORRECTIONS.get(x['card_id'], {}))
@@ -59,6 +59,10 @@ for cid, n in PAGE.items():
     if cid in ROT_HORAIRE: im = im.rotate(-90, expand=True)
     elif cid in ROT_ANTIHORAIRE: im = im.rotate(90, expand=True)     # manigance annexe : scan couche, on remet a plat
     im.save(os.path.join(JEU, 'assets/pics', cid + '.jpg'), quality=92)
+
+import shutil
+for _id in ('pu284b', 'pu285b'):
+    shutil.copy(os.path.join(RACINE, '.planning/mcdc-punisher/assets/%s.jpg' % _id), os.path.join(JEU, 'assets/pics/%s.jpg' % _id))   # carte fournie par capture (pas de scan du PDF)
 
 def ecrire(chemin, obj):
     with open(os.path.join(JEU, chemin), 'w', encoding='utf-8', newline='\n') as f:
@@ -149,7 +153,7 @@ ecrire('data/encounter_sets/super_strength_attachments.json', {'version': '0.5.8
 DEFIS = [  # (nom, carte, scenario de base, complots ou None, sets modulaires)
     ('rise_of_the_machines', 'pu279', 'vision_pvp', ['56199a,56199b', '56173a,56173b'],
      ['sentinels', 'future_past', 'the_doomsday_chair', 'vision_nemesis', 'super_strength_attachments']),
-    ('secret_agent', 'pu280', 'captain_america', None, ['hydra_assault', 'hydra_patrol', 'legions_of_hydra', 'captain_america_nemesis']),
+    ('secret_agent', 'pu280', 'captain_america', ['56141a,56141b', '56142a,pu284b'], ['hydra_assault', 'hydra_patrol', 'legions_of_hydra', 'captain_america_nemesis']),
     ('its_a_trap', 'pu281', 'en_sabah_nur', None, ['arcade', 'galactic_artifacts']),
     ('angry_birds', 'pu282', 'the_tower_defense', None, []),
 ]

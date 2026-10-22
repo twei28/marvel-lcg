@@ -72,6 +72,20 @@ CAS = [
        {"defausse": ["01075"], "degats": [["21095", 4]], "compteurs_n": [["21100a", "damage", 2]]}),   # la Tour a DEJA 1 compteur de degats avant l'action (voir le temoin) : 1 + 1
     _d("pu282, TEMOIN : sans l'action, Avengers Tower n'a que son compteur de depart et le vilain actif aucun degat", "base de mesure du cas precedent", M282, "pu282",
        ["Puzzle.PutIntoPlay('21100a')", "Puzzle.PutIntoPlay('01075', under_control=True)"], [], {"compteurs_n": [["21100a", "damage", 1]], "degats": [["21095", 0]]}),
+    # ------------------------------------------------------------------------------------------------------------ pu284b Guerilla Warfare (2B du defi p280)
+    _d("pu284b Guerilla Warfare : un statut (Sonne) sur le Leader adverse -> 1 menace sur ce complot", "« After a status card is placed on the enemy leader, place 1 threat here »",
+       M280, "pu280", ["Puzzle.AdvanceMainScheme(1)"], ["Puzzle.Stun('56137')"], {"menace": [["pu284b", 1]]}),
+    _d("pu284b Guerilla Warfare : un AUTRE statut (Desoriente) compte aussi", "« a status card » = tout statut", M280, "pu280",
+       ["Puzzle.AdvanceMainScheme(1)"], ["Puzzle.Confuse('56137')"], {"menace": [["pu284b", 1]]}),
+    _d("pu284b Guerilla Warfare, TEMOIN : un statut sur un SBIRE ne pose rien", "« the enemy LEADER » seulement", M280, "pu280",
+       ["Puzzle.AdvanceMainScheme(1)", "Puzzle.PutIntoPlay('01101')"], ["Puzzle.Stun('01101')"], {"menace": [["pu284b", 0]]}),
+    # ------------------------------------------------------------------------------------------------------------ pu285b Superhero Jailbreak (2B de la carte 202, absent du moteur)
+    _d("pu285b Superhero Jailbreak : apres l'etape 1 de la phase du mechant, le sbire du dessus du deck de rencontre est defausse puis mis en jeu engage", "« each player discards the top card ... each player who discards a minion this way puts it into play engaged with them »",
+       "captain_america", None, ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01101')", "Puzzle.PutIntoPlay('pu285b')"], ["Puzzle.RunVillainPhase()"], {"en_jeu": ["01101"]}),
+    _d("pu285b, TEMOIN : une carte qui n'est PAS un sbire reste dans la defausse de rencontre", "« discards a MINION this way »", "captain_america", None,
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105')", "Puzzle.PutIntoPlay('pu285b')"], ["Puzzle.RunVillainPhase()"], {"defausse_rencontre": ["01105"]}),
+    _d("pu285b, TEMOIN : sans le complot, seul le sbire distribue par l'etape 3 entre en jeu, le second reste dans le deck de rencontre", "la regle vient de la carte", "captain_america", None,
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01101', '01101')"], ["Puzzle.RunVillainPhase()"], {"dans_deck_rencontre": ["01101"]}),
 ]
 
 VERIFICATIONS = r'''

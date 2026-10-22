@@ -124218,7 +124218,39 @@
    "set_name": "Hawkeye MCDC 2026",
    "text": "<b>Response</b>: After you change to this form, shuffle 2 [[Arrow]] cards from your discard pile into your deck.\n<b>Action</b>: Spend 1 resource of any type → find either Hawkeye's Bow or Hawkeye's Quiver and put it into play. <i>(Limit once per phase.)</i>",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu284b",
+   "type": "MainScheme",
+   "name": "Guerilla Warfare",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "0",
+    "TargetThreat": "9*",
+    "EscalationThreat": "1*",
+    "Stage": "2B"
+   },
+   "traits": [],
+   "set_name": "Resistance",
+   "text": "<b>Forced Response</b>: After a status card is placed on the enemy leader, place 1 threat here.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu285b",
+   "type": "MainScheme",
+   "name": "Superhero Jailbreak",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "0",
+    "TargetThreat": "9*",
+    "EscalationThreat": "1*",
+    "Stage": "2B"
+   },
+   "traits": [],
+   "set_name": "Resistance",
+   "text": "[star] <b>Forced Response</b>: After resolving step 1 of the villain phase, each player discards the top card of the encounter deck. Each player who discards a minion this way puts it into play engaged with them.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "MC×DC 2026"
   }
  ],
- "checksum": "a99c4aeba0466f5d8f2c2ea8e5fdc16970f4059dce498ee8fe26e8ab99b7b5d1"
+ "checksum": "2673f84935fc00efd1f9851d7a47ff1ee3ecd97bea104d5331d8d377e9f24f21"
 }
