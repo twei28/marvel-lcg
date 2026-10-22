@@ -87,6 +87,8 @@ from game.operate.immunity import PlayerCardImmunity
 from game.operate.villains import Villains
 from game.operate.ville import Ville
 Unused(Ville)
+from game.operate.assemblee import Assemblee, ErreurAssemblee
+Unused(Assemblee, ErreurAssemblee)
 Unused(PlayerCardImmunity)
 Unused(Villains)
 

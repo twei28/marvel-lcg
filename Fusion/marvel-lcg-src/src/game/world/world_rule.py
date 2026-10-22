@@ -91,6 +91,7 @@ class WorldRule:
         # on saura toujours qu'une partie n'a pas ete jouee par les regles.
         self.mode_manuel                    = VariableBool(self, False, "mode_manuel")
         self.mode_heroic                    : int = 0
+        self.assemblee                      : 'tuple[str, str] | None' = None   # (code, table) : Kingsfall multi-tables, voir SetRule
         # te201 Intense Combatants (TMNT), environnement OPTIONNEL (decision de
         # l'utilisateur du 16/10/2026) : une case de l'ecran de preparation,
         # decochee par defaut. Pose par la liste `rules`, donc conserve dans la
@@ -112,6 +113,12 @@ class WorldRule:
             self.disable_setup_draw_cards = True
             self.disable_resolve_mulligans = True
 
+        # ASSEMBLEE (Kingsfall multi-tables, 22/10/2026) : la regle `assemblee_<CODE>_<TABLE>` (ex. `assemblee_KING-7F3A_p2`) porte le code de
+        # l'assemblee et le nom de cette table. Absente = partie ordinaire, rien d'autre ne change.
+        for rule in rules:
+            if rule.startswith("assemblee_") and rule.count("_") >= 2:
+                _, code, table = rule.split("_", 2)
+                self.assemblee = (code, table)
         for rule in rules:
             if rule.startswith("mode_heroic_"):
                 self.mode_heroic = int(rule.lstrip("mode_heroic_"))
