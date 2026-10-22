@@ -28,7 +28,9 @@ def GetAbilities() -> Sequence['Ability']:
             sbire.GainVillainous(1, effect)
             this.AttachTo2(sbire, effect)
         else:
-            Faces.MoveAllTo([this], Worlds.AsideDeck(effect), effect)
+            # « set this card aside » : l'attachement non pose est defausse par le moteur a la fin de la revelation (`Attachment.OnWhenCardRevealed`) vers SA pile de
+            # defausse liee (`card.bind_discard_pile`, `card.py` CheckIfCanDiscard) : on la change pour la zone de mise de cote du scenario.
+            this.card.bind_discard_pile = Worlds.AsideDeck(effect)
             vilain = Worlds.FindVillain(effect)
             if vilain is not None:
                 vilain.DoSchemes(joueur, effect)
