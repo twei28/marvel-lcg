@@ -30,3 +30,18 @@ Pas de livret officiel en ligne et personne a qui poser la question : chaque arb
 ## Cartes recto-verso et positions
 
 Les vilains etant des cartes recto-verso retournees par sl001b/sl002b (`AbilitesComplotAvecVilainRetourne`), leurs capacites sont enregistrees par la face visible : verifie par les cas A et B de chaque vilain.
+
+## Gabarit PROCESSUS-CARTE (resume par groupe de cartes)
+
+Les seize cartes (22 faces) partagent les memes etapes ; le detail par capacite (carte de reference, mots-pieges, nombres) est en tete du constructeur correspondant dans `dark_protégé/__init__.py`.
+
+- Etape 1 (cards.json) : les 22 entrees ont ete relues sur les scans (`assets/pics/sl012a` a `sl027`) : SCH/ATQ/PV, icones de boost, PV des sbires (5, rond en bas a droite), traits, texte. Aucune correction necessaire ; l'etoile apres l'ATQ n'est pas dans `desc` (marqueur renvoyant au texte, convention du pack).
+- Etape 2 (references) : listees dans le docstring de chaque constructeur.
+- Etape 3 (mots-cles) : fiches `docs/reference/mots-cles/` lues avant le code : villainous, guard, steady, toughness, linked, overkill, piercing, ranged. Steady/Toughness/Guard/Villainous = bases automatiques lues dans `desc` (aucun script) ; Linked a trois noms lu dans le texte (`VilainsLies`, deja code par sl001a).
+- Etape 5/6 (texte contre code, nombres) : dans les docstrings (mots-pieges) ; nombres : 3 PV de reduction (sl019), 3 cartes defaussees (sl012, sl020, sl027), 2 indirects (sl015, sl023), 1 indirect (sl016), +1 ATQ (sl014, sl017a, sl018), 3 degats (sl024), 2 menaces (sl027), seuil « 2 or less » (sl027), 3 cartes regardees (sl025), cout `YBR` (sl018).
+- Etape 7 (cas + substitution) : `tools/cas/shadowland_a.py`, 79 cas `[sla]`, tous verts. Preuve par substitution (module remplace par `GetAbilities -> []`) : chaque carte a au moins un cas qui passe au ROUGE et revient au vert ; les cas qui restent verts sous stub sont des temoins d'absence ou de tirage (liste dans le rapport). Ressource mixte `YBR` : le pilote du harnais ne la paie qu'avec `surpayer` et six cartes en main (voir le cas sl018).
+- Etape 7 bis (limite imprimee) : Daredevil (sl013a/b) et White Tiger (sl017a/b) ont un temoin d'epuisement (deux declenchements dans le meme round, chiffre mesure au second : degats identite 3 au lieu de 6 pour Daredevil, 4 au lieu de 6 pour White Tiger A, 6 au lieu de 8 pour B).
+- Etape 8 (autoplay) : voir le rapport de fin (parties par vilain, standard et expert).
+- Etape 8 bis (plateau) : sl018 et sl019 s'attachent (identite / vilain), sl015 etourdit, sl012 pose un Tough : mecanismes deja affiches par le plateau ; **aucun cas plateau `.ts` ecrit** (non fait). Une partie reelle dans le navigateur reste le seul juge.
+
+Carte terminee : OUI pour le moteur (cas + substitution) ; NON pour la verification plateau et la partie humaine.
