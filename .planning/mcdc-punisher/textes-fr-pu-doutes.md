@@ -1,0 +1,15 @@
+- tous : noms de cartes (Punisher's Hit List, Target Lock, Public Support, Power to the People, Gang War...) gardés en anglais (règle noms propres), alors que le livret FR les traduit (Liste noire du Punisher, Précision, Soutien des Citoyens, Guerre des gangs...). Choix : anglais.
+- tous : traits et étiquettes en capitales (UNDERLING, TARGETED, FOCUSED, DISTRACTED, LEAD, CAPO, MAGGIA, WEAPON, ARMAMENT, "Lead.", "Weapon.", "Linked") gardés en anglais ; le livret dit SUBORDONNE, CIBLE, CONCENTRE, DISTRAIT, PISTE. Choix : anglais (traits).
+- pu071a etc. : capacités nommées "Pumpkin Bomb" / "Punishment" / "Quick Draw" traduites comme "Spécial" (livret : Citrouille explosive, Châtiment ; Quick Draw -> « Dégaine rapide », invention).
+- pu140, pu142, pu144, pu147 : noms de sets et de scénarios : Cops et Tracksuit Mafia -> Policiers et Mafia des Survêtes (livret), Punishment -> Châtiment, Kingpin -> Le Caïd (livret) ; SWAT Team gardé, Punisher's Armory / Hit List / Capo of the Past gardés en anglais.
+- pu065 etc. : « in player order » -> « dans l'ordre du tour ».
+- pu119, pu120, pu123 : « wanted counter » -> compteur « Recherché » (invention).
+- pu002a/b : « quell counter » -> compteur de répression (invention).
+- compteurs maison traduits : drone, munitions (ammo), videur (bouncer), culture, malédiction (curse), loyer (rent), bourse (stock), plat à emporter (takeout), dojo, combine (hustle), renseignement (intelligence).
+- pu149a/b : « support counters » -> jetons de soutien ; « Pod Action » -> Action d'assemblée (pod = assemblée, livret) ; « group » -> groupe.
+- pu060 : citation d'ambiance traduite avec guillemets imbriqués « ... “influence” ... ».
+- pu090a : « Once ... » n/a ; « following any Setup and When Revealed instructions » -> « en suivant toute instruction de Mise en place et d'Une fois révélée ».
+- pu106b : « The players as a group » -> « Les joueurs, collectivement, ».
+- pu091a/b, pu088a : « side » d'une carte -> « face » ; « active villain » -> « méchant actif ».
+- pu043 : « Tuck » -> « Glissez » (convention existante).
+- pu127 : Villainous -> Vilenie (mots-cles.ts), Ranged -> à distance.
