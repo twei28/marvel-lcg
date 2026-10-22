@@ -4582,21 +4582,25 @@ export function PagePartie({
         />
       )}
       {porteHorsPhase && interaction.option ? (
-        <CiblageSurTable
-          titre={nomActionDe(interaction.option)}
-          choisies={interaction.cibles.length}
-          maximum={interaction.option.target_num_range[1]}
-          cibles={[...pilesARechercher].map(([id, libelle]) => ({
-            id,
-            choisie: false,
-            etiquette: libelle,
-            agir: () => setPileFouillee(id),
-          }))}
-          prete={interaction.prete}
-          raison={interaction.raison}
-          valider={interaction.valider}
-          annuler={interaction.annuler}
-        />
+        // Dans le cadre du plateau : les cadres verts se placent dans SON repere (la barre du haut
+        // le decale de 42 px du haut de la page), sinon ils flottent au-dessus des piles.
+        <DansLeCadre>
+          <CiblageSurTable
+            titre={nomActionDe(interaction.option)}
+            choisies={interaction.cibles.length}
+            maximum={interaction.option.target_num_range[1]}
+            cibles={[...pilesARechercher].map(([id, libelle]) => ({
+              id,
+              choisie: false,
+              etiquette: libelle,
+              agir: () => setPileFouillee(id),
+            }))}
+            prete={interaction.prete}
+            raison={interaction.raison}
+            valider={interaction.valider}
+            annuler={interaction.annuler}
+          />
+        </DansLeCadre>
       ) : null}
       {apercuSelecteur ? (
         <CarteApercu carte={apercuSelecteur} classe={fenetreChoix ? 'au-dessus-de-la-fenetre' : undefined} />
