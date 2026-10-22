@@ -244,3 +244,6 @@ Donnees : `defs/punisher_cards.py` `GUERILLA_CARDS` (set « Resistance », image
 - Substitution (script vide) : pu284b 2 rouges/3 (le temoin d'absence reste vert, assume) ; pu285b 1 rouge/3 (idem).
 - Piege harnais : sans la carte, la phase du mechant (etape 3) distribue deja un sbire au heros : le temoin de pu285b utilise donc 2 sbires dans le deck. Lancer avec `.venv-linux/bin/python` (aiohttp), `tools/test_capacites.py .game-src <port> <rapport> "<filtre>"`.
 - Non prouve : plusieurs joueurs pour pu285b (ordre de defausse), « enemy leader » quand le Leader n'est pas le vilain actif, partie reelle jusqu'a la fin.
+
+### Batterie complete (PU-13), 22/10/2026 apres Guerilla Warfare / Superhero Jailbreak
+`test_capacites` sans filtre : **7831/7835 cas passes**, 4 echecs = les echecs deja connus de Squirrel Girl (sg006, sg007, sg009, sg013), aucun cas du Punisher (`[defi]`, `[hawk]`, `[big]`, `[camp]`, `[upt]`, etc.) ni de l'assistant de puzzles en echec. Lancee avec `.venv-linux/bin/python`, PARALLELES=4, sur l'arbre de travail comprenant les modifications non commitees de l'assistant de puzzles.
