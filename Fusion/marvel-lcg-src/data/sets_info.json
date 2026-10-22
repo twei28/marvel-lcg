@@ -1922,7 +1922,8 @@
    "stop_the_presses_hobgoblin",
    "one_last_kill_jigsaw",
    "one_last_kill_hobgoblin",
-   "the_big_apple"
+   "the_big_apple",
+   "kingsfall"
   ],
   "heroes": [],
   "encounters": [
@@ -1939,7 +1940,7 @@
    "capos",
    "leads_the_big_apple"
   ],
-  "max_id": "pu141"
+  "max_id": "pu151"
  },
  "checksum": "9dd847d2d0b2542353d3534a2e13348821bb34d4ecb4e590dd85db44eab4b3f3"
 }

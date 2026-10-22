@@ -5,6 +5,14 @@
 # ⚠ `Puzzle.SendGameWouldBegin()` : le Setup de pu141 (`AfterGameSetup`) part une fois, AVANT le montage d'un cas : on le renvoie a la main.
 SC = "the_big_apple"
 FORME_HEROS = "Puzzle.ChangeForm('01001b')"
+HEROS_K = FORME_HEROS
+
+
+def _k(nom, pourquoi, mise, declencher, attendu, **cle):
+    """Combat 4 : scenario genere Kingsfall (Kingpin + SWAT + Tracksuit Mafia), campagne, carnet du combat 3 (allie Punisher gagne)."""
+    cle.setdefault("carnet", {"Punisher Ally": "1", "Player 1 Identity": "Spider-Man"})
+    return _c(nom, pourquoi, mise, declencher, attendu, scenario="kingsfall", campagne=True, **cle)
+
 RIEN = ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"]
 DEUX_PISTES = ["Puzzle.AddToVictoryDisplay('pu041')", "Puzzle.AddToVictoryDisplay('pu042')"]   # pu041 = piste 3 (Upper East Side), pu042 = piste 4 (West Village)
 GUNRUNNER = ["Puzzle.AdvanceMainScheme(1)", "Puzzle.AdvanceMainScheme(1)"]                      # 1B -> 2A -> 3A (Gunrunner attache a un CAPO)
@@ -212,6 +220,42 @@ CAS = [
              ["Puzzle.Action('pu141', 'Action')", "Puzzle.Action('pu141', 'Action', siege=1)"],
              {"compteurs": [["pu141", "counter", 1]]}, heros2="spider_man", carnet={"Player 1 Identity": "Spider-Man", "Player 2 Identity": "Spider-Man"},
              declencher_tolerant=["Puzzle.Action('pu141', 'Action')"]),
+    # ---------------------------------------------------------------------------------------------------------- combat 4 : pu147, pu148, pu149a/b
+    _k("pu147 Setup (Kingsfall, l'allie Punisher est gagne) : l'allie pu146 entre en jeu, pu147 est retournee en pu148 Power to the People avec 1 compteur, Long Live (pu149a) est en jeu",
+       "« Put the Punisher ally into play under a player's control. Flip this card and place 1 counter on it. »", [], [],
+       {"en_jeu": ["pu146", "pu148", "pu149a"], "hors_jeu": ["pu147", "pu149b"], "compteurs": [["pu148", "counter", 1]]}),
+    _k("pu147 Setup, TEMOIN : le carnet ne dit pas que l'allie est gagne -> pas de Punisher, mais le retournement (pu148, 1 compteur) a lieu quand meme",
+       "« Ne mettez pas en jeu l'allie Punisher si vous n'avez pas gagne le scenario precedent »", [], [],
+       {"en_jeu": ["pu148"], "hors_jeu": ["pu146", "pu147"], "compteurs": [["pu148", "counter", 1]]}, carnet={"Player 1 Identity": "Spider-Man"}),
+    _k("pu149a Forced Interrupt : fin de la phase des joueurs -> TOUS les jetons de soutien de Public Support passent sur Long Live (2 -> 0 ici, 2 ici)",
+       "« move each support counter from your Public Support to here »", [HEROS_K, "Puzzle.Counter('60163a', 'support', 2)"], ["Puzzle.EndPlayerPhase()"],
+       {"compteurs": [["60163a", "support", 0], ["pu149a", "support", 2]], "en_jeu": ["pu149a"]}),
+    _k("pu149a Forced Interrupt : le total ici atteint 2 x 1 + 2 = 4 -> Long Live est retournee en Down With (pu149b), qui remet Public Support a 2 x 1 + 3 = 5",
+       "« Then, if there are 2[per_hero]+2[per_group] counters here, flip this card » + Down With : « resets ... to 2[per_hero]+3 »",
+       [HEROS_K, "Puzzle.Counter('pu149a', 'support', 2)", "Puzzle.Counter('60163a', 'support', 2)"], ["Puzzle.EndPlayerPhase()"],
+       {"en_jeu": ["pu149b"], "hors_jeu": ["pu149a"], "compteurs": [["60163a", "support", 5]]}),
+    _k("pu149a, TEMOIN : 3 jetons seulement (2 x 1 + 2 = 4 requis) -> pas de retournement", "le seuil est 4, pas 3",
+       [HEROS_K, "Puzzle.Counter('pu149a', 'support', 2)", "Puzzle.Counter('60163a', 'support', 1)"], ["Puzzle.EndPlayerPhase()"],
+       {"en_jeu": ["pu149a"], "hors_jeu": ["pu149b"], "compteurs": [["pu149a", "support", 3]]}),
+    _k("pu149b When Revealed : Public Support a PLUS de jetons (9) -> ramene a 5 (reset TO, pas seulement un plafond inverse)",
+       "« resets the number of support counters ... to 2[per_hero]+3 »",
+       [HEROS_K, "Puzzle.Counter('pu149a', 'support', 3)", "Puzzle.Counter('60163a', 'support', 9)"], ["Puzzle.EndPlayerPhase()"],
+       {"en_jeu": ["pu149b"], "compteurs": [["60163a", "support", 5]]}),
+    _k("pu148 Action (retirer 2 menaces) : 1 compteur retire, 2 menaces en moins sur le complot principal", "« Remove 1 counter from here -> ... Remove 2 threat from a scheme »",
+       [HEROS_K, "Puzzle.PlaceCounters('pu148', 'counter', 1)"],
+       ["Puzzle.SetThreat('60161b', 5)", "Puzzle.Action('pu148', 'Action')"], {"compteurs": [["pu148", "counter", 1]], "menace": [["60161b", 3]]}, choisir_option="Remove_2_threat_from_a_scheme"),
+    _k("pu148 Action (jouer une carte) : 1 compteur retire, Black Widow (cout 3) est jouee pour 2 icones (Genius BB) : cout reduit de 1", "« Play a card from your hand, reducing its cost by 1 »",
+       [HEROS_K, ], ["Puzzle.Action('pu148', 'Action')"],
+       {"compteurs": [["pu148", "counter", 0]], "en_jeu": ["01075"]}, choisir_option="Play_a_card_from_your_hand,_reducing_its_cost_by_1",
+       main_exclusive=["01075", "01089"], cibles=["01001a", "01075"], payer_avec=["01089"]),
+    _k("pu148 Action, TEMOIN : sans compteur, l'Action n'est pas offerte (menace intacte)", "le retrait du compteur est un cout",
+       [HEROS_K, "Puzzle.PlaceCounters('pu148', 'counter', -1)"], ["Puzzle.SetThreat('60161b', 5)"],
+       {"compteurs": [["pu148", "counter", 0]], "menace": [["60161b", 5]]}, declencher_tolerant=["Puzzle.Action('pu148', 'Action')"]),
+    _k("pu148 : chaque choix UNE fois par round -> 3 Actions avec le meme choix : une seule retire 2 menaces (7 -> 5)",
+       "« each choice may only be chosen once per group per round » (temoin d'epuisement)",
+       [HEROS_K, "Puzzle.PlaceCounters('pu148', 'counter', 2)"],
+       ["Puzzle.SetThreat('60161b', 7)", "Puzzle.Action('pu148', 'Action')", "Puzzle.Action('pu148', 'Action')"], {"menace": [["60161b", 5]]},
+       choisir_option="Remove_2_threat_from_a_scheme", declencher_tolerant=["Puzzle.Action('pu148', 'Action')"]),
 ]
 
 VERIFICATIONS = r'''

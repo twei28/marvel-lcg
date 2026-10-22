@@ -40,6 +40,7 @@ CACHE = 'pu143'
 ENVIRONNEMENT_COMBAT_3 = 'pu144'
 SOUTIEN_SHIELD = 'pu145'
 ALLIE_PUNISHER = 'pu146'
+POUVOIR_AU_PEUPLE = 'pu148'
 CLE_ALLIE_PUNISHER = 'Punisher Ally'
 
 # Les 9 lieux, dans l'ordre de la grille (un LEAD pu039..pu047 porte le meme numero que son lieu pu030..pu038).

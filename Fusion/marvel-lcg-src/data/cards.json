@@ -123990,6 +123990,74 @@
    "set_name": "Campaign - The City Never Sleeps",
    "text": "[star] Punisher's attacks gain piercing and ranged.\n<b>Response</b>: After Punisher attacks and defeats a minion, deal 2 damage to an enemy.",
    "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu147",
+   "type": "Environment",
+   "name": "Long Live the King?",
+   "subtitle": "For years, Kingpin ruled from the shadows, buying silence and burying truth. Then the city pushed back. People found their courage and refused to look away. As his empire cracked and allies fled, the man who once owned the city watched it slip through his fingers. By dawn, will the King fall?",
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Campaign - The City Never Sleeps",
+   "text": "<b>Battle Setup</b>:\n• Scenario: Kingpin\n• Use SWAT Team & Tracksuit Mafia sets\n• Separate players into pods of 2-4 groups each.\n• Designate one person per pod as the pod organizer. That person puts the Long Live and The King environments into play in their game area, and is responsible for tracking and reporting results to the event organizers.\n<b>Setup</b>: Put the Punisher ally into play under a player's control. Flip this card and place 1 counter on it.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu148",
+   "type": "Upgrade",
+   "name": "Power to the People",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Campaign - The City Never Sleeps",
+   "text": "Permanent.\n<b>Action</b>: Remove 1 counter from here → choose <i>(any player may trigger this ability, each choice may only be chosen once per group per round)</i>:\n• Remove 2 threat from a scheme.\n• Play a card from your hand, reducing its cost by 1.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu149a",
+   "type": "Environment",
+   "name": "Long Live",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Campaign - The City Never Sleeps",
+   "text": "Setup. Permanent.\n<b>Pod Action</b>: Choose a group in the pod. Move 1 counter from your Public Support to their Power to the People.\n<b>Forced Interrupt</b>: At the end of the player phase, move each support counter from your Public Support to here. Then, if there are 2[per_hero]+2[per_group] counters here, flip this card.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu149b",
+   "type": "Environment",
+   "name": "Down With",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Campaign - The City Never Sleeps",
+   "text": "Permanent.\n<b>When Revealed</b>: Each group resets the number of support counters on their Public Support to 2[per_hero]+3 counters.\n<b>Pod Action</b>: Choose a group in the pod. Move 1 counter from your Public Support to their Power to the People.",
+   "custom": "MC×DC 2026"
+  },
+  {
+   "card_id": "pu151",
+   "type": "Environment",
+   "name": "The King",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Campaign - The City Never Sleeps",
+   "text": "Setup. Permanent.\n<b>Forced Interrupt</b>: When Kingpin is defeated in this pod, place 1 damage here for each player in that game.\n<b>Forced Interrupt</b>: When the players lose a game in this pod, place 1 threat here for each player in that game.\n<b>At the end of all games, if the amount of damage here is equal to or greater than the amount of threat, the pod wins!</b>",
+   "custom": "MC×DC 2026"
   }
  ],
  "checksum": "a99c4aeba0466f5d8f2c2ea8e5fdc16970f4059dce498ee8fe26e8ab99b7b5d1"

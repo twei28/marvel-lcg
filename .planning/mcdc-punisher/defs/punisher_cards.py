@@ -744,3 +744,37 @@ CAMPAIGN_CARDS = [
       "[star] Punisher's attacks gain piercing and ranged.\n<b>Response</b>: After Punisher attacks and defeats a minion, deal 2 damage to an enemy.",
       PU_CAMP, page="p275 (Ally, ID 6138)", subtitle="Frank Castle"),
 ]
+
+
+# ======================================================================================================
+# Combat 4 « Kingsfall » (22/10/2026) : p269-p273, IDs imprimes 6135 (x2), 6136 (x2), 6137. pu147 Long Live the King? (env. 1A), pu148 Power to the
+# People (amelioration 1B, verso de 1A), pu149a/b Long Live / Down With (environnement recto-verso 2A/2B), pu151 The King (3/3, MODE MULTI-TABLES
+# seulement : ecrite avec les « pods », pas jouee en version normale). Scans relus le 22/10/2026.
+# ======================================================================================================
+KINGSFALL_CARDS = [
+    c("pu147", "Environment", "Long Live the King?", {"Setup": "1", "Permanent": "1"}, [],
+      "<b>Battle Setup</b>:\n• Scenario: Kingpin\n• Use SWAT Team & Tracksuit Mafia sets\n• Separate players into pods of 2-4 groups each.\n"
+      "• Designate one person per pod as the pod organizer. That person puts the Long Live and The King environments into play in their game "
+      "area, and is responsible for tracking and reporting results to the event organizers.\n<b>Setup</b>: Put the Punisher ally into play under a "
+      "player's control. Flip this card and place 1 counter on it.", PU_CAMP, page="p269 (Campaign Battle 4, ID 6135)",
+      subtitle="For years, Kingpin ruled from the shadows, buying silence and burying truth. Then the city pushed back. People found their courage and "
+               "refused to look away. As his empire cracked and allies fled, the man who once owned the city watched it slip through his fingers. "
+               "By dawn, will the King fall?"),
+    c("pu148", "Upgrade", "Power to the People", {"Permanent": "1"}, [],
+      "Permanent.\n<b>Action</b>: Remove 1 counter from here → choose <i>(any player may trigger this ability, each choice may only be chosen once "
+      "per group per round)</i>:\n• Remove 2 threat from a scheme.\n• Play a card from your hand, reducing its cost by 1.", PU_CAMP,
+      page="p270 (Campaign Battle 4, ID 6135)"),
+    c("pu149a", "Environment", "Long Live", {"Setup": "1", "Permanent": "1"}, [],
+      "Setup. Permanent.\n<b>Pod Action</b>: Choose a group in the pod. Move 1 counter from your Public Support to their Power to the People.\n"
+      "<b>Forced Interrupt</b>: At the end of the player phase, move each support counter from your Public Support to here. Then, if there are "
+      "2[per_hero]+2[per_group] counters here, flip this card.", PU_CAMP, page="p271 (Kingsfall 2A, ID 6136)"),
+    c("pu149b", "Environment", "Down With", {"Permanent": "1"}, [],
+      "Permanent.\n<b>When Revealed</b>: Each group resets the number of support counters on their Public Support to 2[per_hero]+3 counters.\n"
+      "<b>Pod Action</b>: Choose a group in the pod. Move 1 counter from your Public Support to their Power to the People.", PU_CAMP,
+      page="p272 (Kingsfall 2B, ID 6136)"),
+    c("pu151", "Environment", "The King", {"Setup": "1", "Permanent": "1"}, [],
+      "Setup. Permanent.\n<b>Forced Interrupt</b>: When Kingpin is defeated in this pod, place 1 damage here for each player in that game.\n"
+      "<b>Forced Interrupt</b>: When the players lose a game in this pod, place 1 threat here for each player in that game.\n"
+      "<b>At the end of all games, if the amount of damage here is equal to or greater than the amount of threat, the pod wins!</b>", PU_CAMP,
+      page="p273 (Kingsfall 3/3, ID 6137)"),
+]
