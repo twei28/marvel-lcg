@@ -289,6 +289,3 @@
   }
 }
 
-/* Tuile d'un scenario a vilain interchangeable : la manigance (carte paysage livree en portrait) remise a plat. */
-.portrait.portrait-manigance{position:relative;overflow:hidden;container-type:size;background:#10131a}
-.portrait.portrait-manigance>img{position:absolute;left:50%;top:50%;width:100cqh;height:100cqw;object-fit:cover;transform:translate(-50%,-50%) rotate(90deg)}
