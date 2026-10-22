@@ -1,4 +1,5 @@
 from ..commun import *
+from ..campaign import CampaignSetup, NoterLeLieuDeLaDernierePiste
 from ..leads_the_big_apple import CreerPaquetPistes, RevelerPiste, PistesEnVictoire, Joueur, ControlePar
 
 # Set The Big Apple (pack MC×DC 2026) : scenario 1, la ville. Environnements The City / Never Sleeps, complots Gang War / Silence the City /

@@ -1093,7 +1093,7 @@ class RunPuzzle:
                                         would_act_message=would_act))
         return face
 
-    def Action(self, card: CardName, type: str|None=None, index: int=0) -> 'CardFace':
+    def Action(self, card: CardName, type: str|None=None, index: int=0, siege: int|None=None) -> 'CardFace':
         """Active une action offerte par une carte en jeu.
 
         `type` restreint au type de capacite (« HeroAction », « AlterEgoAction »,
@@ -1105,7 +1105,8 @@ class RunPuzzle:
         from game.effect.rule import GameRule
 
         face = self.FindFaceInPlay(card)
-        player = self.world.GetCurrentPlayer()
+        # `siege` (AJOUT 22/10/2026, pu141 « any player may trigger ») : le joueur qui declenche l'action, quand ce n'est pas le courant.
+        player = self.world.GetCurrentPlayer() if siege is None else self.world.const_players[siege]
 
         ability_type = getattr(AbilityType, type) if type else None
         candidats = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn,
@@ -1397,6 +1398,12 @@ class RunPuzzle:
         fin = Message.WhenRoundEnd(self.world)
         fin.Send()
         Message.AfterRoundEnd(fin).Send()
+
+    def SendGameWouldBegin(self) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC, pu141 « Setup : ... ») : envoie `WhenGameWouldBegin`, que `AbilityFactory.AfterGameSetup` ecoute
+        et que le harnais manquait toujours (le message part une fois, a la FIN de la mise en place, avant le montage d'un cas)."""
+        from game.message import Message
+        Message.WhenGameWouldBegin(self.world).Send()
 
     def SwapWithDeckTop(self, card: CardName, player: int=0, siege: int|None=None):
         """« Switch Card with top Deck Card » d'OCTGN (menu de la main).

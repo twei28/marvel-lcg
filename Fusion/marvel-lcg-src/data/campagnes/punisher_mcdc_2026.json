@@ -1,0 +1,69 @@
+{
+    "version": "1.0",
+    "code": "punisher_mcdc_2026",
+    "cle_extension": "208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)",
+    "nom": "La ville ne dort jamais",
+    "nom_en": "The City Never Sleeps",
+    "resume": "Quatre combats pour une ville : la guerre des gangs de Big Apple, la traque de l'acheteur, le Châtiment du Punisher et la chute du Caïd. Entre deux combats, ce que vous avez saisi vous suit.",
+    "resume_en": "Four battles. One city. The Big Apple gang war, the hunt for the buyer, the Punisher's reckoning and the fall of the Kingpin. What you seize between battles follows you.",
+    "expert": {
+        "pv_persistants": true
+    },
+    "pages_regles": [],
+    "scenarios": [
+        {
+            "id": "the_big_apple",
+            "numero": 1,
+            "nom": "The Big Apple",
+            "nom_fr": "The Big Apple",
+            "resume": "Trois CAPO se partagent les rangées d'une ville en grille, neuf lieux et neuf pistes. Suivez les pistes, éteignez la guerre des gangs, puis remontez jusqu'au Trafiquant d'armes.",
+            "enjeu": "Le carnet retient le lieu de la dernière piste et le CAPO qui était le Trafiquant d'armes (ils fixent le combat 2) ; la victoire retourne l'environnement et vous donne les Caisses de technologie saisies pour les combats 2 et 3.",
+            "victoire": [
+                {
+                    "cle": "Final LEAD Location",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Lieu de la dernière piste",
+                    "aide": "Au stade 2A, le lieu de la dernière piste ajoutée à la pile de victoire. Il fixe la manigance principale du combat 2 (tableau de la carte « Tracking the Buyer »)."
+                },
+                {
+                    "cle": "Gunrunner",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "CAPO Trafiquant d'armes",
+                    "aide": "Le CAPO auquel Gunrunner était attaché. Combat 2 : Hobgoblin si c'était Count Nefaria, Ringmaster, Mister Negative ou Nightshade ; Jigsaw sinon."
+                },
+                {
+                    "cle": "Big Apple Gang War!",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Guerre des gangs à Big Apple ! retournée",
+                    "aide": "Victoire : l'environnement est retourné."
+                },
+                {
+                    "cle": "Seized Tech Crates",
+                    "type": "auto",
+                    "format": "int",
+                    "libelle": "Caisses de technologie saisies",
+                    "aide": "Gagnées : à mettre en jeu aux combats 2 et 3."
+                }
+            ],
+            "pages": {
+                "intro": [],
+                "regles": [],
+                "epilogue": []
+            }
+        }
+    ],
+    "victoire_commune_expert": [
+        {
+            "cle": "Remaining hit points",
+            "type": "auto",
+            "format": "int",
+            "parJoueur": true,
+            "detection": "pv_restants",
+            "libelle": "PV restants",
+            "aide": "Campagne experte : ils deviennent les PV de départ du combat suivant."
+        }
+    ]
+}

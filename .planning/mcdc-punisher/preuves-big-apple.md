@@ -140,3 +140,15 @@ Cartes terminees : OUI (script), hors points ci-dessus.
 
 ## Bilan (22/10/2026)
 11 cartes de lieu/environnement faites : 55 cas `[big]` verts, 15 `[ville]` verts, `test_cards` : 7103 ok, 0 erreur. Non fait : autoplay ciblé (étape 8, il faut le scénario jouable) et plateau (étape 8 bis, PU-8).
+
+### Campagne, combat 1 : pu140 Big Apple Gang War!, pu141 Seized Tech Crates, carnet (22/10/2026) : `[camp]`, 20 cas
+Harnais : `tools/cas/campagne_punisher.py` (verifier `camp_etat` : carnet SORTANT relu comme `fnefin_carnet_sortant`). Scripts : `punisher_mcdc_2026/campaign.py` (mise en place + releve), `campaign_the_city_never_sleeps/pu140.py` (vide, mots-cles dans `desc`) et `pu141.py`, `the_big_apple/pu001a.py` (`CampaignSetup()`) et `pu002a.py` (note du lieu). Donnees : `data/campagnes/punisher_mcdc_2026.json` (`verifier_campagnes` OK).
+Moteur ajoute : `Puzzle.SendGameWouldBegin()`, `Puzzle.Action(..., siege=)`.
+- [x] Etape 2 : refs. fne 60113a (Setup/Permanent dans `desc`), 60112 (`AfterGameSetup`), mf007 (`CostFunc.Counter("This")`), sk281 (`AnyPlayerCanDoThis`), skrull_empire (`LimitOncePerRoundPerPlayer`), dz003 (`UpdateNextCardPlayCost`), an001b (`Search.PlayerCard` + `GainCard`), mts/skrull_menace `campaign.py` (`WriteCampaignLogAtGameOver`).
+- [x] Etape 5 : mots-pieges. « final LEAD card » = la derniere ajoutee (dessus de la pile : `Get(True)[0]`, prouve par deux ordres) ; « did not play the last game together » = un HEROS absent de `Player N Identity` du carnet precedent (decision P6) ; « this phase » (`in_this="Phase"`) ; « Find » = deck seulement ; « limit once per PLAYER per round » ; « any player » ; defaite : rien de coche.
+- [x] Etape 6 : nombres. 1 compteur de base (+1 par nouveau) ; cout <= 2 ; -1 au cout ; limite 1.
+- [x] Etape 7 : substitution (8 mutations, toutes rouges) : pu141 vide 9 rouges ; sans AnyPlayer 2 ; sans limite 2 ; pu001a sans CampaignSetup 5 ; pu002a sans note 2 ; sans Trafiquant 1 ; defaite sans PV 1 ; lieu = premiere piste 2.
+- DECISIONS SANS TEXTE DE RR : (1) sans carnet de la partie precedente, pu141 ne compte aucun joueur en plus ; (2) « Find » ne fouille que le deck ; (3) l'environnement pu140 « retourne » = cle `Big Apple Gang War!` = Flipped au carnet ; (4) le CAPO Trafiquant d'armes est note seulement a la victoire.
+- ⚠ Pieges : le dossier d'un set doit porter le nom NETTOYE du set (`FileManager.CleanName`) sinon la carte n'a AUCUNE capacite, sans erreur ; `WriteCampaignLogAtGameOver` utilise `Worlds.GetPlayers`, qui ne voit AUCUN joueur depuis une carte de zone commune (PV restants et identites manquaient : ecrits par `_par_joueur`) ; au `WhenGameOver` de la victoire par Gunrunner, `FindCardsOnField` ne voit plus pu004 (parcourir `object_manager.card_dict`) ; `printed_cost` est un objet `Cost` (`.val`) ; `choisir_option` = libelle complet avec underscores.
+- Non prouve : pu141 branchee aux combats 2 et 3 (scenarios FNE, a part) ; table du combat 2 (Hobgoblin/Jigsaw selon le CAPO) ; autoplay en mode campagne.
+Cartes terminees : OUI (script + carnet), hors points ci-dessus.

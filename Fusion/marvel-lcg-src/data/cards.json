@@ -123894,7 +123894,10 @@
    "type": "Environment",
    "name": "Big Apple Gang War!",
    "subtitle": "Crates of military-grade weapons slipped through the abandoned docks under cover of darkness, arming gangs that carved the city into bloody little kingdoms by sunrise.",
-   "desc": {},
+   "desc": {
+    "Setup": "1",
+    "Permanent": "1"
+   },
    "traits": [],
    "set_name": "Campaign - The City Never Sleeps",
    "text": "<b>Battle Setup</b>:\n• Scenario: The Big Apple\n• Do not include Uptown Expansion\n• Each player requires a player token\n• Use Cops & Tracksuit Mafia sets (FNE)\nSetup. Permanent.\n<b>Victory</b>: Flip this card and put Seized Tech Crates into play for battles 2 and 3.",
@@ -123914,5 +123917,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "61fdca5124e2ef3ac511275065d8d3859e2f1f2edd63bd2b729abc6d2a6000b7"
+ "checksum": "dc082d76739dc7c9a52958ff56d69f3dbe1ea52987471cf06262b6af88cae229"
 }

@@ -705,7 +705,7 @@ assert len({card["card_id"] for card in ALL_CARDS}) == len(ALL_CARDS), "card_id 
 # ======================================================================================================
 PU_CAMP = "Campaign - The City Never Sleeps"
 CAMPAIGN_CARDS = [
-    c("pu140", "Environment", "Big Apple Gang War!", {}, [],
+    c("pu140", "Environment", "Big Apple Gang War!", {"Setup": "1", "Permanent": "1"}, [],
       "<b>Battle Setup</b>:\n\u2022 Scenario: The Big Apple\n\u2022 Do not include Uptown Expansion\n\u2022 Each player requires a player token\n"
       "\u2022 Use Cops & Tracksuit Mafia sets (FNE)\nSetup. Permanent.\n<b>Victory</b>: Flip this card and put Seized Tech Crates into play for "
       "battles 2 and 3.", PU_CAMP, page="p263 (Campaign Battle 1, ID 6132)",

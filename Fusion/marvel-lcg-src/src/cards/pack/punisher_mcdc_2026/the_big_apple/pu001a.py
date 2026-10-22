@@ -8,6 +8,7 @@ from . import *
 #
 # Cartes de reference : galactic_storm/earth_under_siege/gs161a.py (`WhenCardSetup("This")`, `villain: []` dans le scenario,
 # `Villains.BuildVillainDeck/RevealNextVillain/SetRule`), briques `Ville.Installer` et zone commune (spec M1/M2), paquet LEADS (`CreerPaquetPistes`).
+# Campagne (p263) : `CampaignSetup()` met pu140 en jeu et ecrit le releve a la victoire (voir `punisher_mcdc_2026/campaign.py`).
 # ⚠ « Place the 9 locations in NUMERICAL order » : pu030..pu038 en 3 rangees de 3 ; chaque lieu est dans la zone de SA rangee ; The City,
 # Never Sleeps et le complot principal dans la zone COMMUNE ; tous les joueurs partent a Midtown.
 
@@ -16,4 +17,7 @@ def GetAbilities() -> Sequence['Ability']:
     def mise_en_place(effect: 'Effect', message: 'Message.WhenCardSetup') -> None:
         MettreEnPlaceLaVille(effect)
 
-    return [AbilityFactory.WhenCardSetup("This", mise_en_place)]
+    return [
+        AbilityFactory.WhenCardSetup("This", mise_en_place),
+        *CampaignSetup(),   # mode campagne : pu140 en jeu, releve du carnet (campaign.py)
+    ]
