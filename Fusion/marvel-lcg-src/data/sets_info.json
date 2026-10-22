@@ -1985,7 +1985,9 @@
   "tuile_manigance": true,
   "tuile_manigance_scenarios": [
    "the_big_apple",
-   "the_big_apple_uptown"
+   "the_big_apple_uptown",
+   "one_last_kill_jigsaw",
+   "one_last_kill_hobgoblin"
   ]
  },
  "210. Custom (Challenges)": {
@@ -2002,5 +2004,5 @@
   ],
   "max_id": "pu283b"
  },
- "checksum": "b18e1a333d4fee59ad7bfad7c39888694c66b0be2be474b8f04e38dab5d4c96f"
+ "checksum": "d5cc8972c8970d1dc22cced2cab279016201a7f43a720e07dae8e15b582bb46c"
 }
