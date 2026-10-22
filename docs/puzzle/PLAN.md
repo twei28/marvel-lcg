@@ -31,12 +31,12 @@ construite dans cet ordre (chaque étape testable seule).
 
 ## Étapes
 
-### E0. Cadrage (petit)
+### E0. Cadrage — FAIT (22/10)
 - Lire GUIDE §1, étudier `puzzle.py`, `puzzle_data.py`, le bac à sable et ses tests.
 - Décider définitivement : étendre `PuzzleData` (version 2, compatible avec les 7
   puzzles existants, checksum conservé ou assoupli).
 
-### E1. Format de puzzle v2
+### E1. Format de puzzle v2 — FAIT (22/10), voir FORMAT-V2.md
 Ajouter : titre, description, difficulté, indices, objectifs (ET/OU, cible du
 complot), visibilité de la solution, solution de référence (replay), état détaillé
 par héros (PV, forme, statuts, premier joueur, ressources), phase de départ,
@@ -163,3 +163,11 @@ haut risque : à attaquer tôt et à valider par l'aller-retour avant l'interfac
 - Création par assistant guidé à ordre fixe, étapes facultatives, plateau libre en option.
 - Puzzles publiés conservés 28 jours depuis le dernier jeu ; tout jeu remet le compteur
   à zéro.
+
+## Avancement
+- **E0/E1 faits** (22/10) : `puzzle_data.py` v2 (compatible v1), `puzzle_validation.py`,
+  `outils/test_puzzle_format.py` (12 fichiers v1 relus, 30+ commandes hostiles refusées).
+- Constat : `PuzzleHelper.Exec` laisse passer les commandes sans appel (voir
+  FORMAT-V2.md) → corrigé en E3 (v2) et filtré à la publication/lecture en E7.
+- Interface : les modales et panneaux d'édition sont **en orange** (consigne du 22/10).
+- Prochaine étape : E2 (moteur, mise en place complète, 1 à 4 héros).
