@@ -717,4 +717,16 @@ CAMPAIGN_CARDS = [
       "\u2022 Reduce the cost of the next card you play this phase by 1.\n"
       "\u2022 Find a support or upgrade with a cost of 2 or less and add it to your hand.", PU_CAMP,
       page="p264 (Campaign Reward 1, ID 6132)"),
+    c("pu142", "Environment", "Tracking the Buyer", {"Setup": "1", "Permanent": "1"}, [],
+      "<b>Battle Setup</b>:\n\u2022 Villain: Hobgoblin <i>(if Gunrunner was Count Nefaria, Ringmaster, Mr. Negative, or Nightshade)</i>, or Jigsaw "
+      "<i>(other 4 CAPOS)</i>\n\u2022 Use Punisher's Hit List, The Syndicate, Capo of the Past sets\n\u2022 Main scheme based on the final lead: "
+      "Art Museum Heist (Theater District, Financial District), The Getaway (Hell's Kitchen, Lower East Side), The Raft Breakout (Upper East Side, "
+      "Midtown), Protection Racket (Chinatown), Stop the Presses! (West Village, Soho)\nSetup. Permanent.\n<b>Victory</b>: Flip this card and put "
+      "Punisher's Ordnance Cache into play for battle 3.", PU_CAMP, page="p265 (Campaign Battle 2, ID 6133)",
+      subtitle="Whispered leads brought the Punisher to the gunrunner's warehouse. Inside, another shipment of death was set in motion. The guards "
+               "opened fire, but Frank cut through them like a storm through smoke. One way or another, this ended tonight."),
+    c("pu143", "Upgrade", "Punisher's Ordnance Cache", {"Permanent": "1"}, [],
+      "Permanent.\n<b>Setup</b>: Place 1 counter here, plus 1 more for each player who did not play the last game together.\n<b>Action</b>: Remove 1 "
+      "counter from here and place 3 threat on the main scheme \u2192 search your deck, discard pile, and collection for an aspect or basic WEAPON "
+      "card and add it to your hand. Any player may trigger this ability.", PU_CAMP, page="p266 (Campaign Reward 2, ID 6133)"),
 ]

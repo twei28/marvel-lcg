@@ -18,6 +18,12 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
     return cas
 
 
+def _b(nom, pourquoi, mise, declencher, attendu, **cle):
+    """Combat 2 : scenario genere The Getaway + Jigsaw, campagne, carnet du combat 1 (Caisses gagnees)."""
+    cle.setdefault("carnet", {"Seized Tech Crates": "1", "Player 1 Identity": "Spider-Man"})
+    return _c(nom, pourquoi, mise, declencher, attendu, scenario=cle.pop("scenario", "tracking_the_buyer_the_getaway_jigsaw"), campagne=True, **cle)
+
+
 def _caisses(nom, pourquoi, mise, declencher, attendu, carnet=None, **cle):
     """pu141 : `rhino`, Spider-Man, la carte en jeu SOUS LE CONTROLE du premier joueur (`under_control`)."""
     cle.setdefault("carnet", carnet if carnet is not None else {"Player 1 Identity": "Spider-Man"})
@@ -97,6 +103,52 @@ CAS = [
              ["Puzzle.PutIntoPlay('pu141', under_control=True)", "Puzzle.PlaceCounters('pu141', 'counter', 2)"],
              ["Puzzle.Action('pu141', 'Action')"],
              {"compteurs": [["pu141", "counter", 1]]}, main_exclusive=["01006"], declencher_tolerant=["Puzzle.Action('pu141', 'Action')"]),
+    # ---------------------------------------------------------------------------------------------------------- combat 2 : pu142
+    _b("pu142 mise en place (campagne, scenario The Getaway + Jigsaw) : l'environnement est en jeu, Seized Tech Crates aussi (le carnet l'a gagnee) avec 1 compteur",
+       "Setup par `encounters` du scenario genere ; « put Seized Tech Crates into play for battles 2 and 3 » (WhenCampaignSetup)", [], [],
+       {"en_jeu": ["pu142", "pu141"], "compteurs": [["pu141", "counter", 1]]}),
+    _b("pu142, TEMOIN : le carnet n'a PAS gagne les Caisses -> pu141 n'entre pas en jeu", "la recompense depend du carnet", [], [],
+       {"en_jeu": ["pu142"], "hors_jeu": ["pu141"]}, carnet={"Player 1 Identity": "Spider-Man"}),
+    _b("pu142 releve (victoire, Jigsaw) : environnement retourne, Ordnance Cache gagnee, sous-fifre = Jigsaw, estampille tracking_the_buyer",
+       "Victory : « Flip this card and put Punisher's Ordnance Cache into play for battle 3 »", [], ["Puzzle.Win()"],
+       {"carnet_cles": {"Tracking the Buyer": "Flipped", "Punisher's Ordnance Cache": "1", "Underling": "Jigsaw"}, "carnet_scenario": "tracking_the_buyer",
+        "carnet_gagnee": True}),
+    _b("pu142 releve (victoire, Hobgoblin) : sous-fifre = Hobgoblin", "le sous-fifre affronte est note (combat 3 : l'autre)", [], ["Puzzle.Win()"],
+       {"carnet_cles": {"Underling": "Hobgoblin"}}, scenario="tracking_the_buyer_the_getaway_hobgoblin"),
+    _b("pu142 releve, le releve Fear No Evil de la manigance est CONSERVE (l'ecriture est partagee, pas ecrasee)", "collecteur partage : `Completed Scenarios` = the_getaway ET les cles Punisher",
+       [], ["Puzzle.Win()"], {"carnet_cles": {"Completed Scenarios": "the_getaway", "Tracking the Buyer": "Flipped"}}),
+    _b("pu142 releve (DEFAITE) : rien de coche", "pas de recompense a la defaite", [], ["Puzzle.Lose()"],
+       {"carnet_cles_absentes": ["Tracking the Buyer", "Punisher's Ordnance Cache", "Underling"], "carnet_gagnee": False}),
+    # ---------------------------------------------------------------------------------------------------------- le choix du scenario du combat 2
+    _c("Combat 2 : le tableau de p265 (9 lieux x 8 CAPO) designe toujours un scenario qui existe, avec la bonne manigance et le bon sous-fifre",
+       "« Main scheme based on the final lead » + « Hobgoblin (Nefaria, Ringmaster, Mr. Negative, Nightshade) or Jigsaw (other 4) »",
+       [], [], {}, scenario="rhino", verifier="camp_choix"),
+    # ---------------------------------------------------------------------------------------------------------- les 20 scenarios du combat 2
+    *[_b(f"Combat 2 : le scenario {m}_{u}{ex} se monte en campagne (la scene se cree ; pu142 et pu141 en jeu)",
+         "scenario genere (modular_sets Hit List + Syndicate + Capo of the Past, pu142 dans `encounters`)", [], [],
+         {"en_jeu": ["pu142", "pu141"]}, scenario=f"tracking_the_buyer_{m}_{u}{ex}")
+      for m in ("art_museum_heist", "the_getaway", "the_raft_breakout", "protection_racket", "stop_the_presses")
+      for u in ("jigsaw", "hobgoblin") for ex in ("", "_expert")],
+    # ---------------------------------------------------------------------------------------------------------- pu143
+    _caisses("pu143 Setup : le seul joueur etait dans la partie precedente -> 1 compteur", "« Place 1 counter here, plus 1 more for each player who did not play the last game together »",
+             ["Puzzle.PutIntoPlay('pu143', under_control=True)"], ["Puzzle.SendGameWouldBegin()"], {"compteurs": [["pu143", "counter", 1]]}),
+    _caisses("pu143 Setup : un 2e joueur (Iron Man) etait absent -> 2 compteurs", "idem pu141 (decision P6)",
+             ["Puzzle.PutIntoPlay('pu143', under_control=True)"], ["Puzzle.SendGameWouldBegin()"], {"compteurs": [["pu143", "counter", 2]]}, heros2="iron_man"),
+    _caisses("pu143 Action (collection) : 1 compteur retire, 3 menaces sur le complot principal, UNE arme d'aspect ou basique rejoint la main",
+             "« Remove 1 counter and place 3 threat on the main scheme -> search ... and add it to your hand » ; aucune arme dans le deck : la collection",
+             ["Puzzle.PutIntoPlay('pu143', under_control=True)", "Puzzle.PlaceCounters('pu143', 'counter', 2)"], ["Puzzle.SetThreat('01097b', 1)", "Puzzle.Action('pu143', 'Action')"],
+             {"compteurs": [["pu143", "counter", 1]], "menace": [["01097b", 4]], "main_arme": {"taille": 2}}),
+    _caisses("pu143 Action (deck) : une arme est dans le deck -> c'est elle qui rejoint la main (Hand Cannon 16046)",
+             "le deck est fouille avant la collection",
+             ["Puzzle.PutIntoPlay('pu143', under_control=True)", "Puzzle.PlaceCounters('pu143', 'counter', 2)", "Puzzle.MoveTo('16046', 'PlayerDeck')"],
+             ["Puzzle.Action('pu143', 'Action')"], {"compteurs": [["pu143", "counter", 1]], "en_main": ["16046"]}, accepter_choix=True),
+    _caisses("pu143 Action : sans compteur, l'Action n'est pas offerte (menace intacte)", "le retrait du compteur est un cout",
+             ["Puzzle.PutIntoPlay('pu143', under_control=True)"], ["Puzzle.SetThreat('01097b', 1)"],
+             {"compteurs": [["pu143", "counter", 0]], "menace": [["01097b", 1]]}, declencher_tolerant=["Puzzle.Action('pu143', 'Action')"]),
+    _caisses("pu143 Action : N'IMPORTE QUEL joueur peut la declencher (joueur 2) -> 1 compteur retire, 3 menaces", "« Any player may trigger this ability »",
+             ["Puzzle.PutIntoPlay('pu143', under_control=True)", "Puzzle.PlaceCounters('pu143', 'counter', 2)"],
+             ["Puzzle.SetThreat('01097b', 1)", "Puzzle.Action('pu143', 'Action', siege=1)"], {"compteurs": [["pu143", "counter", 1]], "menace": [["01097b", 4]]}, heros2="spider_man",
+             carnet={"Player 1 Identity": "Spider-Man", "Player 2 Identity": "Spider-Man"}),
     _caisses("pu141 Action : N'IMPORTE QUEL joueur peut la declencher, une fois chacun -> joueur 1 puis joueur 2 : 3 compteurs -> 1",
              "« any player may trigger this ability, limit once per player per round » : la limite est PAR JOUEUR",
              ["Puzzle.PutIntoPlay('pu141', under_control=True)", "Puzzle.PlaceCounters('pu141', 'counter', 3)"],
@@ -119,7 +171,7 @@ def camp_etat(monde, aides):
     cas = aides["cas"]
     attendu = cas.get("attendu") or {}
     propres = ("partie", "store_sans", "carnet_cles", "carnet_cles_absentes", "carnet_cles_presentes", "carnet_gagnee", "carnet_scenario",
-               "trafiquant_egal_porteur", "main_ok")
+               "trafiquant_egal_porteur", "main_ok", "main_arme")
     soucis = []
     if "partie" in attendu:
         etat = "en_cours" if not monde.is_game_over else ("gagnee" if monde.game_over.players_won else "perdue")
@@ -170,6 +222,14 @@ def camp_etat(monde, aides):
             cout = f.printed_cost.val
             if cout > voulu["cout_max"]:
                 soucis.append(f"{f.paper.card_id} coute {cout} (> {voulu['cout_max']})")
+    if "main_arme" in attendu:
+        main = monde.players[0].hand_cards.GetAll()
+        nouvelles = [f for f in main if f.paper.card_id != "01088"]
+        if len(main) != attendu["main_arme"]["taille"] or len(nouvelles) != attendu["main_arme"]["taille"] - 1:
+            soucis.append(f"main = {[f.paper.card_id for f in main]}")
+        for f in nouvelles:
+            if "WEAPON" not in f.paper.traits or f.paper.desc.get("Class") not in ("Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Basic"):
+                soucis.append(f"{f.paper.card_id} n'est pas une arme d'aspect/basique ({f.paper.desc.get('Class')})")
     cas["attendu"] = {k: v for k, v in attendu.items() if k not in propres}
     try:
         if cas["attendu"]:
@@ -179,4 +239,30 @@ def camp_etat(monde, aides):
     finally:
         cas["attendu"] = attendu
     return (False, " ; ".join(soucis)) if soucis else (True, "campagne conforme")
+
+
+def camp_choix(monde, aides):
+    """`ScenarioDuCombat2` : chaque (lieu, CAPO) donne un fichier existant ; les valeurs du tableau de p265 sont relues une a une."""
+    import os
+    from cards.pack.punisher_mcdc_2026.campaign import ScenarioDuCombat2, MANIGANCE_DU_LIEU, SOUS_FIFRE_DU_TRAFIQUANT
+    voulu_lieu = {"Theater District": "art_museum_heist", "Financial District": "art_museum_heist", "Hell's Kitchen": "the_getaway",
+                  "Lower East Side": "the_getaway", "Upper East Side": "the_raft_breakout", "Midtown": "the_raft_breakout",
+                  "Chinatown": "protection_racket", "West Village": "stop_the_presses", "Soho": "stop_the_presses"}
+    voulu_capo = {"Count Nefaria": "hobgoblin", "Ringmaster": "hobgoblin", "Mister Negative": "hobgoblin", "Nightshade": "hobgoblin",
+                  "Crime-Master": "jigsaw", "Lady Yulan": "jigsaw", "The Rose": "jigsaw", "Diamondback": "jigsaw"}
+    soucis = []
+    if MANIGANCE_DU_LIEU != voulu_lieu:
+        soucis.append("tableau des lieux different de p265")
+    if SOUS_FIFRE_DU_TRAFIQUANT != voulu_capo:
+        soucis.append("tableau des CAPO different de p265")
+    for lieu in voulu_lieu:
+        for capo in voulu_capo:
+            for expert in (False, True):
+                nom = ScenarioDuCombat2(lieu, capo, expert)
+                if not nom or not os.path.exists(os.path.join("data", "scenarios", nom + ".json")):
+                    soucis.append(f"{lieu} / {capo} / expert={expert} -> {nom!r} introuvable")
+    if ScenarioDuCombat2("Atlantis", "Count Nefaria") != "" or ScenarioDuCombat2("Soho", "Inconnu") != "":
+        soucis.append("un carnet incomplet doit rendre une chaine vide")
+    return (False, " ; ".join(soucis[:6])) if soucis else (True, "144 combinaisons, tous les scenarios existent")
 '''
+

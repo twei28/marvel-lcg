@@ -1,0 +1,33 @@
+{
+    "version": "0.5.8",
+    "name": "Tracking the Buyer: Stop the Presses! (Hobgoblin) (Expert)",
+    "villain": [
+        "pu071b",
+        "pu072b"
+    ],
+    "expert": true,
+    "schemes": [
+        "60151a,60151b"
+    ],
+    "set_aside": [
+        "60152",
+        "60153",
+        "60154",
+        "60155",
+        "60156"
+    ],
+    "encounters": [
+        "pu142"
+    ],
+    "encounter_sets": [
+        "hobgoblin",
+        "stop_the_presses",
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "punishers_hit_list",
+        "the_syndicate",
+        "capo_of_the_past"
+    ]
+}
