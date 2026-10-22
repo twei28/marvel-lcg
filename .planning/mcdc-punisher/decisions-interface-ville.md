@@ -9,3 +9,4 @@ Le 22/10/2026, l'utilisateur remplace le plan « A + B » (mini-carte permanente
 | 3 | Territoire d'un autre joueur | **La carte montre les 3 rangees, la mienne en surbrillance** ; un clic sur le pion d'un coequipier affiche sa rangee et ses sbires en lecture seule, sans changer ma table |
 | 4 | Declenchement du deplacement | **Les deux** : clic sur une case verte puis choix du cout (epuiser un personnage / 1 ressource), ET l'Action habituelle de la carte The City reste disponible |
 | 5 | Detail d'un lieu | **Survol = carte agrandie** (comme les autres cartes du plateau) ; le clic reste reserve au deplacement |
+| 6 | Infos sur chaque case | **Les quatre** : pions des joueurs, pastille de sbire attache, compteurs de piste poses sur le lieu, indicateur « capacite deja utilisee ce round » (limite commune a tous) |
