@@ -141,3 +141,63 @@ le même chemin : textes de cartes, textes de l'interface (`dico-en`-like), scan
 
 **Pistes de départ.** Chiffrer le travail pour l'espagnol (textes MarvelCDB + interface) ; regarder les modules
 OCTGN et DragnCards pour les scans ; mesurer le poids d'une langue en WebP.
+
+---
+
+## 3. Une « barre d'avantage » sur le plateau, comme aux échecs (ajouté le 22/10/2026)
+
+> **Décision du 22/10/2026 : idée notée, on ne fait rien maintenant** (l'utilisateur est limité en tokens). Aucune maquette, aucun code. Reprendre
+> ce sujet seulement s'il le demande.
+
+**L'idée de l'utilisateur.** Dans les programmes d'échecs, une barre verticale sur le côté monte ou descend selon qui a l'avantage. Il voudrait
+l'équivalent pour Marvel Champions : une barre qui dit, au fil de la partie, si **les héros** ou **le méchant** ont l'avantage.
+
+**Ce que ce n'est pas.** Aux échecs, un moteur calcule les coups à l'avance, information complète. Ici : jeu coopératif, decks cachés et mélangés, hasard
+(cartes de rencontre, boosts), choix très nombreux. **On ne peut pas calculer « qui gagne » : on ne peut que l'ESTIMER.** La barre doit s'appeler
+« estimation » et ne jamais prétendre être une probabilité exacte.
+
+**Ce que la barre montre.** Héros contre méchant (pas blanc contre noir). Haut = les héros dominent ; bas = le méchant va gagner. En Normal (ex-Épuré),
+une barre verticale sur un côté du plateau, à l'allure du reste (panneau bleu, coins coupés de 6 px). **Au survol : le détail**, par exemple
+« 2 tours avant la défaite · méchant à 40 % ». **Une option dans les Réglages pour la cacher.** Pas sur téléphone (le projet ne travaille que sur PC).
+
+### Les trois approches, de la moins chère à la plus chère
+
+1. **Indicateur par formule (recommandé si on s'y met).** Une fonction pure qui lit l'état du jeu (`/get_world`, le même que le plateau lit déjà) et rend un
+   nombre de -1 à +1 plus ses raisons. Entrées utiles : menace sur la manigance par rapport à son seuil et accélération (= tours avant la défaite) ; PV restants du
+   méchant, stade ; PV des héros (identités) ; sbires engagés et leur menace ; taille de la main, alliés en jeu ; phase du tour. Instantané, expliquable, testable avec
+   les parties du bac à sable. Ne donne PAS une probabilité de victoire : dit si la partie « tourne mal ».
+2. **Simulation (Monte-Carlo).** Copier l'état du moteur, rejouer des centaines de fins de partie avec des pioches tirées au hasard, compter les victoires. Plus juste,
+   mais : coût de calcul, copie d'état du moteur à vérifier (est-elle possible et rapide ?), et il faut un **pilote** qui joue correctement pour simuler (il existe un
+   pilote de test dans `ui-check/pilote-*.ts`, à évaluer, pas fait pour ça).
+3. **Modèle appris** sur des parties jouées (historique des parties, statistiques). Le plus précis, mais exige beaucoup de données et de travail : à écarter sauf
+   si 1 et 2 ne suffisent pas.
+
+### Valable pour tous les scénarios ?
+
+**Oui pour une version générale, non pour une version exacte partout.** Presque tous les scénarios ont une manigance principale avec seuil de menace, un méchant avec des
+PV, des héros avec des PV : le **cœur de la formule est universel** (course « tours avant la défaite » contre « dégâts avant la victoire »).
+
+**Ce qui casse la formule générale** (cas atypiques) : conditions de victoire ou de défaite inhabituelles (ex. *La ville ne dort jamais* : deux pistes pour passer le stade 1,
+méchants qui remettent leurs PV à zéro quand on les « bat », victoire en battant le Gunrunner ; scénarios officiels où l'on gagne autrement qu'en battant le méchant) ;
+mécaniques propres (Punisher qui attaque le sous-méchant, pods multi-groupes de Kingsfall) ; mode campagne et multijoueur.
+
+### Architecture envisagée (décision de l'utilisateur, 22/10/2026)
+
+- **Une formule de base générale** qui marche partout (approche 1).
+- **Une « fiche réglage » par scénario atypique, seulement pour eux** : quelques lignes qui REMPLACENT la partie qui ne convient pas (« ici le danger, c'est le nombre
+  de pistes qui manquent » ; « on gagne en battant le Gunrunner, pas le CAPO »). Elle ne refait pas toute la formule. Comme pour les cartes : la plupart suivent les
+  règles du jeu, seules celles à effet inhabituel ont un traitement à part.
+- **Un repli honnête** : si le scénario n'est pas connu et ne ressemble pas au cas général, afficher « **estimation indisponible** » plutôt qu'un chiffre faux. C'est aussi
+  le repli des scénarios sur mesure ajoutés plus tard, tant qu'on n'a pas écrit leur fiche.
+
+### Estimation du travail (à confirmer)
+
+Approche 1 : une fonction pure + son test + un petit composant de barre + une option dans `FenetreReglages.tsx` + une maquette HTML sur le vrai plateau avant de coder
+(comme celle de `docs/packs/mcdc-2026-punisher/maquette-ville.html`). Les fiches des scénarios atypiques viennent après, au cas par cas.
+
+### À trancher avant de commencer
+
+- Quelle approche (1 conseillée) ; faut-il afficher aussi un nombre (ex. « +0,4 ») ou seulement la barre ?
+- La barre vaut-elle pour le solo seulement, ou aussi coop 2 à 4 joueurs et bataille 1v1 (où « héros contre méchant » n'a plus de sens : deux camps) ?
+- Où la placer (gauche ou droite, sans gêner la mini-carte de La Ville ni le journal) ?
+- Que faire en mode manuel et en bac à sable ?
