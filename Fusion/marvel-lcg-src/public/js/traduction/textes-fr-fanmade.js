@@ -4890,6 +4890,7 @@ export const TEXTES_FR_FANMADE = {
     '64030': "[star] Réduction 1 ([[ARTISTE MARTIAL]] ou [[SOLDAT]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> <i>(attaque)</i> : après avoir joué une carte <i>(y compris celle-ci)</i>, infligez 1 dégât à un ennemi.",
     '64031': "<b>Action</b> : soignez 1 dégât d'un personnage [[ARTISTE MARTIAL]]. Ensuite, si ce personnage n'a plus aucun dégât, soignez 1 dégât d'un autre personnage.",
     '64032': "[star] Réduction 2 ([[ARTISTE MARTIAL]]).\n1 max par joueur.\nChaque allié [[ARTISTE MARTIAL]] que vous contrôlez subit 2 dégâts consécutifs ([consequential]) de moins après avoir vaincu exactement un ennemi ou une manigance annexe.",
+    '64033': "Cette carte génère une ressource [physical] pour chaque personnage [[DÉFENSEUR]] que vous contrôlez (maximum 4) et peut être dépensée pour un autre joueur dont l'identité a le trait [[DÉFENSEUR]].",
     // Binary (Galactic Storm, Kajislav, lot GS-1, 20/10/2026) : heros, signatures, obligation, nemesis.
     'gs001a': "X est égal au nombre de ressources [energy] dans votre main (5 maximum).\n<i>Burnout</i> — <b>Réponse forcée</b> : après la fin de votre tour, défaussez chaque ressource [energy] de votre main.",
     'gs001b': "Votre deck doit contenir autant de cartes avec une ressource imprimée [energy], [mental] et [physical].\n<i>Exploring Space</i> — <b>Action</b> : piochez 1 carte. <i>(Limite d'une fois par round.)</i>",

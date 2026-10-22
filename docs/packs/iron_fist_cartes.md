@@ -316,7 +316,7 @@ Moteur ajouté pour ces cartes : `world.stat.this_phase_made_attack` (attaques d
 à chaque tour de joueur), trait `AGENT OF ATLAS` (`card_face.py`). Décision utilisateur du 22/10 : les NOUVELLES cartes sont la source
 (script, image officielle, tests), les anciennes cartes de même texte deviennent des liens (voir plus bas, section « réimpressions »).
 
-**Gates (9 cartes nouvelles, hors The Defenders)** : 61 cas `[if_aspect]` au dernier passage, 100 % verts ; `test_cards` 7186 ok / 0 erreur ;
+**Gates (10 cartes nouvelles, The Defenders comprise)** : 70 cas `[if_aspect]` au dernier passage, 100 % verts ; `test_cards` 7186 ok / 0 erreur ;
 `verifier_prefixes` OK ; `verifier_appels_modules iron_fist` OK ; `verifier_api_cartes` : aucun problème dans `iron_fist` ;
 **substitution** `substituer_pack.py .game-src 34000 640` : 22/22 cartes avec au moins un cas rouge sans leur module (les 9 cartes ci-dessous :
 64014 2/6, 64019 4/8, 64021 1/5, 64022 3/7, 64023 2/3, 64025 3/6, 64030 4/8, 64031 2/3, 64032 3/11 (repassée après l'ajout de la branche manigance annexe) ; les cas restés verts sont tous des témoins
@@ -417,5 +417,19 @@ Carte terminée : OUI
       parade qui défait exactement une annexe) ; verts : témoins/absences (sans Sensei, allié non Martial Artist, annexe qui survit, excès).
       La réduction côté parade n'a pas de cas « excès » (aucun allié Martial Artist de THW 2 dans le jeu) : couvert par `excedent_de_menace` du moteur (pu026).
 - [x] Étape 7 bis : « Max 1 per player » : témoin. Étape 8 : OK (88 lignes). Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64033 : The Defenders — ressource Basic (variable, multijoueur)
+
+- [x] Étape 2 : `28019` Everyday Hero (« this card can be spent for any player » = `CheckThisCanDropPay(...).AnyPlayerCanDoThis()`, ressource dépensée depuis la main de son
+      propriétaire pour le coût d'un autre joueur) ; `58006` Energy Siphon (quantité VARIABLE : `DoDiscardThisToGenerateResources(res_fn=...)` + `CheckThisCanDropPay(fn)`).
+      Aucune fonction moteur ajoutée : le mécanisme de dépense « pour un autre joueur » existait déjà.
+- [x] Étape 5 : « for each DEFENDER character YOU control » : « vous » = le PROPRIÉTAIRE qui dépense la carte ; identité (forme courante) + alliés, max 4 ; « a [physical] resource » : du R ;
+      « for ANOTHER player whose identity has the Defender trait » : identité de celui qui PAIE (condition `pour_un_defender`, le propriétaire se sert toujours lui-même). OK.
+- [x] Étape 6 : max 4 (cas à 6 Defender : un coût 5 n'est pas payable) ; `desc.RES = "R"` est un repère (la carte n'imprime aucune icône). Étape 7 : 9 cas dont 3 multijoueur ;
+      substitution 3/9 rouges (les cas qui exigent plusieurs ressources) ; verts assumés : témoins d'insuffisance (le stub génère 1 ressource, jamais assez). Le contre-cas « joueur 1 en
+      alter ego » est prouvé par son jumeau positif (même montage, forme héros → la carte paie).
+- [x] Étape 7 bis : aucune limite imprimée. Étape 8 : OK (la carte n'a pas été jouée par le pilote : son deck d'essai n'en contenait pas ; couverte par les 9 cas). Étape 8 bis : NON.
 
 Carte terminée : OUI
