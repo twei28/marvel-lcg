@@ -3657,7 +3657,7 @@ function showExtHover(ext, tabEl) {
     }
     box.replaceChildren(
         el("img", { class: "hh-card", src: extensionImageUrl(ext.key), alt: ext.key }),
-        el("div", { class: "hh-name mvl" }, nomExtension(ext.key, langueActuelle())),
+        el("div", { class: "hh-name mvl" }, libelleExtension(ext, _auteursExtensions.get(ext.key))),
         detailRow(t("Scénarios"), String(ext.scenarios.length)),
         detailRow(t("Héros"), String(ext.heroes.length)),
         detailRow(t("Sets de rencontre"), String(ext.encounters.length)),
@@ -5777,7 +5777,8 @@ async function loadScnGrid() {
             onmouseenter: estTel() ? undefined : () => rendreSceneMechant(concret),
             onmouseleave: estTel() ? undefined : () => rendreSceneMechant(state.scenario),
         },
-            portraitScenario(concret),
+            // MC×DC (22/10/2026) : la tuile d'une affaire montre la MANIGANCE ANNEXE (`tuile_manigance`), pas le sous-fifre.
+            portraitScenario(ext && ext.tuileManigance && sc.interchangeable ? { ...concret, tileImage: sc.tileImage } : concret),
             el("span", { class: "tb-port-nom" }, nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
             plusieurs ? el("span", { class: "st-exp" }, sc.underlings.length + " " + t("vilains au choix")) : null,
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
