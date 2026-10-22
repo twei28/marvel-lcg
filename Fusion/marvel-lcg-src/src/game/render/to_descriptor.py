@@ -109,6 +109,64 @@ class ToDescriptor:
         return player_descriptor
 
     @staticmethod
+    def Ville(world: 'World') -> Dict[str, Any]:
+        """L'etat de la ville pour l'onglet « Ville » (vide hors campagne MC×DC 2026).
+
+        {"lignes": [{"ligne": 0, "capo": <object_id|None>, "capo_card_id": "pu048a"}...],
+         "cases":  [{"ligne": 0, "colonne": 0, "objet": <object_id du lieu>, "card_id": "pu030", "joueurs": [player_id...],
+                     "sbires_attaches": [object_id...], "limite_utilisee": bool, "piste": {"objet": id, "card_id": "pu039", "porteur": player_id,
+                     "compteurs": {"bouncer": 2}} | None}...],
+         "joueurs": [{"player_id": 0, "ligne": 1, "colonne": 1}...]}
+        Les lignes sont numerotees comme dans le moteur (la rangee Uptown est -1)."""
+        from game.operate.ville import Ville
+        etat = Ville.Etat(world)
+        if etat is None:
+            return {}
+        scenario = world.GetScenario()
+
+        def limite_utilisee(face: 'CardFace') -> bool:
+            from game.ability.condition import Condition
+            from game.ability.condition.once_per import GetForDelayAbility
+            try:
+                for effet in face.effect.Find():
+                    if Condition.LimitOncePerRound in effet.ability.conditions:
+                        if not world.stat.IsOncePerRound(GetForDelayAbility(effet)):
+                            return True
+            except Exception:
+                return False
+            return False
+
+        # les pistes (LEAD) sont dans l'aire des joueurs ; piste n (pu039..pu047) <-> lieu n (pu030..pu038)
+        pistes: Dict[str, Dict[str, Any]] = {}
+        for joueur in world.const_seat_order_players:
+            for face in joueur.obligations_area.Get():
+                cid = str(face.paper.card_id)
+                if cid.startswith('pu') and cid[2:].isdigit() and 39 <= int(cid[2:]) <= 47:
+                    pistes['pu%03d' % (int(cid[2:]) - 9)] = {
+                        'objet': face.card.object_id, 'card_id': cid, 'porteur': joueur.player_id,
+                        'compteurs': {k: v for k, v in face.components.counter.counters.items() if v}}
+
+        cases: List[Dict[str, Any]] = []
+        for (ligne, colonne), lieu in sorted(etat.cases.items()):
+            cid = str(lieu.paper.card_id)
+            cases.append({
+                'ligne': ligne, 'colonne': colonne, 'objet': lieu.card.object_id, 'card_id': cid,
+                'joueurs': [pid for pid, case in etat.positions.items() if case == (ligne, colonne)],
+                'sbires_attaches': [s.card.object_id for s in Ville.SbiresAttaches(lieu)],
+                'limite_utilisee': limite_utilisee(lieu),
+                'piste': pistes.get(cid),
+            })
+        lignes: List[Dict[str, Any]] = []
+        for ligne in sorted({l for (l, _c) in etat.cases}):
+            zone = etat.zones.get(ligne)
+            capos = [v for v in scenario.area_villain.Get() if zone is not None and v.card.game_area is zone]
+            lignes.append({'ligne': ligne, 'capo': capos[0].card.object_id if capos else None,
+                           'capo_card_id': str(capos[0].paper.card_id) if capos else ''})
+        joueurs = [{'player_id': p.player_id, 'ligne': etat.positions[p.player_id][0], 'colonne': etat.positions[p.player_id][1]}
+                   for p in world.const_seat_order_players if p.player_id in etat.positions]
+        return {'lignes': lignes, 'cases': cases, 'joueurs': joueurs}
+
+    @staticmethod
     def World(world: 'World', event_name: str, sound_name: str) -> 'WorldDescriptor':
         world_descriptor = WorldDescriptor()
 
@@ -161,6 +219,7 @@ class ToDescriptor:
         world_descriptor.players = []
         for player in world.const_seat_order_players:
             world_descriptor.players.append(ToDescriptor.Player(player))
+        world_descriptor.ville = ToDescriptor.Ville(world)
 
         scenario = world.GetScenario()
 
