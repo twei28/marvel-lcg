@@ -4915,6 +4915,16 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '64010': "Temporaire.\n<b>Action de héros</b> <i>(contre)</i> : retirez 1 jeton Chi d'Iron Fist → retirez 1 menace d'une manigance.",
   '64011': "Temporaire.\n<b>Action de héros</b> : retirez 2 jetons Chi d'Iron Fist → redressez-le.",
   '64012': "Temporaire.\n<b>Ressource de héros</b> : retirez 2 jetons Chi d'Iron Fist → générez des ressources [wild] [wild].",
+  // iron_fist, cartes d'ASPECT (22/10/2026, scans Hall of Heroes) : traduction PROVISOIRE, meme statut que ci-dessus.
+  '64014': "[star] <b>Réponse</b> : après qu'Iron Fist <i>(cet allié)</i> a attaqué un ennemi qui a été attaqué par un héros durant cette phase, sonnez cet ennemi. Si Iron Fist a vaincu cet ennemi, il subit 2 dégâts consécutifs ([consequential]) de moins pour cette attaque.",
+  '64019': "[star] Réduction 1 ([[ARTISTE MARTIAL]] ou [[SOLDAT]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> : après avoir joué une carte <i>(y compris celle-ci)</i>, soignez 1 dégât de votre identité.",
+  '64021': "[star] Colleen Wing subit 1 dégât consécutif ([consequential]) de moins après avoir attaqué un ennemi qui a été attaqué par un autre personnage [[ARTISTE MARTIAL]] durant cette phase.",
+  '64022': "Tenacité.\nSi votre héros partage un [[trait]] avec Luke Cage, votre héros gagne +1 DEF.",
+  '64023': "[star] Réduction 1 ([[ARTISTE MARTIAL]]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi. Infligez 1 dégât à un ennemi.",
+  '64025': "Prérequis ([[DÉFENSEUR]] ou [[ARTISTE MARTIAL]]).\n<b>Action d'alter ego</b> : inclinez cette carte → mélangez dans votre deck jusqu'à 2 événements [[ATTAQUE]] de votre pile de défausse. N'importe quel joueur peut déclencher cette capacité.",
+  '64030': "[star] Réduction 1 ([[ARTISTE MARTIAL]] ou [[SOLDAT]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> <i>(attaque)</i> : après avoir joué une carte <i>(y compris celle-ci)</i>, infligez 1 dégât à un ennemi.",
+  '64031': "<b>Action</b> : soignez 1 dégât d'un personnage [[ARTISTE MARTIAL]]. Ensuite, si ce personnage n'a plus aucun dégât, soignez 1 dégât d'un autre personnage.",
+  '64032': "[star] Réduction 2 ([[ARTISTE MARTIAL]]).\n1 max par joueur.\nChaque allié [[ARTISTE MARTIAL]] que vous contrôlez subit 2 dégâts consécutifs ([consequential]) de moins après avoir vaincu exactement un ennemi ou une manigance annexe.",
 
   // Binary (Galactic Storm, Kajislav, lot GS-1, 20/10/2026) : heros, signatures, obligation, nemesis.
   'gs001a': "X est égal au nombre de ressources [energy] dans votre main (5 maximum).\n<i>Burnout</i> — <b>Réponse forcée</b> : après la fin de votre tour, défaussez chaque ressource [energy] de votre main.",

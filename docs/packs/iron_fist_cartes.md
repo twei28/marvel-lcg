@@ -302,3 +302,120 @@ ressources basiques), `autoplay.py --vilains rhino --profils equilibre --parties
 Le pilote ne peut donc pas fournir la preuve demandée sans toucher à son barème (outil partagé, non modifié).
 Ces trois capacités restent prouvées par les cas du harnais seulement (vrai moteur, partie montée, coût
 réellement payé pour Redirect Chi) ; à jouer à la main dans le navigateur.
+
+---
+
+# Cartes d'ASPECT du pack Iron Fist (22/10/2026) : gabarits PROCESSUS-CARTE
+
+Sources : page Hall of Heroes (7 images 300 px, n° 13-24) et captures « content creator » (12 scans HD 1400x2000, dont 10 cartes d'aspect) ;
+relevé, correspondance image/carte et décisions dans `.planning/iron-fist-officiel/aspects-plan.md`. Numérotation = numéro de collection
+imprimé (64013-64033). Scripts à la RACINE du pack (`src/cards/pack/iron_fist/<id>.py`, `set_name` vide, comme `luke_cage/62012.py`) ;
+helpers dans `iron_fist/__init__.py`. Cas : `tools/cas/iron_fist_aspects.py`, préfixe `[if_aspect]`.
+
+Moteur ajouté pour ces cartes : `world.stat.this_phase_made_attack` (attaques de TOUTE la phase ; `this_turn_made_attack` est remis à zéro
+à chaque tour de joueur), trait `AGENT OF ATLAS` (`card_face.py`). Décision utilisateur du 22/10 : les NOUVELLES cartes sont la source
+(script, image officielle, tests), les anciennes cartes de même texte deviennent des liens (voir plus bas, section « réimpressions »).
+
+**Gates (9 cartes nouvelles, hors The Defenders)** : 61 cas `[if_aspect]` au dernier passage, 100 % verts ; `test_cards` 7186 ok / 0 erreur ;
+`verifier_prefixes` OK ; `verifier_appels_modules iron_fist` OK ; `verifier_api_cartes` : aucun problème dans `iron_fist` ;
+**substitution** `substituer_pack.py .game-src 34000 640` : 22/22 cartes avec au moins un cas rouge sans leur module (les 9 cartes ci-dessous :
+64014 2/6, 64019 4/8, 64021 1/5, 64022 3/7, 64023 2/3, 64025 3/6, 64030 4/8, 64031 2/3, 64032 3/11 (repassée après l'ajout de la branche manigance annexe) ; les cas restés verts sont tous des témoins
+d'ABSENCE (« pas sonné », « pas jouée », « pas de bonus ») ou des valeurs imprimées dans `desc` (Toughness, Temporary, Max 1 per player, PV/ATQ/CTR,
+coût de départ), listés carte par carte) ; **autoplay** `autoplay.py --deck <deck avec les 9 cartes> --vilains rhino,klaw --profils equilibre,agressif
+--parties 4` : 16 parties, 0 blocage, 0 traceback (journaux lus : les cartes sont jouées, Colleen 969 lignes, Luke Cage 579, Death by a Thousand
+Cuts 290, Punch 247, No Time to Bleed 190, Thunder Dojo 119, Sensei 88, Zen-Like Calm 86 ; Lin Lie n'est pas distinguable du héros dans le journal).
+Plateau (8 bis) : aucun compteur, zone ni élément visuel nouveau (dégâts consécutifs, Tough, statuts, soins : rendus génériques) : NON.
+Textes FR provisoires : `textes-fr-fanmade.ts` (comme le reste du pack). Aucune partie humaine n'a été jouée dans le navigateur.
+
+Points à vérifier en PARTIE RÉELLE (non tranchables par le harnais) : (a) Death by a Thousand Cuts : la Réponse (attaque) part aussi en alter ego
+(le moteur l'offre ; le texte dit « Response » et pas « Hero Response ») ; (b) Zen-Like Calm lit « un personnage » littéralement (ennemis compris,
+comme le texte imprimé) ; (c) Thunder Dojo : « Prerequisite » = l'IDENTITÉ a le trait (décision du 17/10/2026), donc Danny Rand en alter ego
+(CIVILIAN seulement) ne peut pas la jouer, Iron Fist en forme héros oui.
+
+### 64014 : ✦ Iron Fist (Lin Lie) — allié Protection
+
+- [x] Étape 2 : `32091` Cannonball (`AfterUnitAttackAndDefeatUnit` + `GainForThisActive(..., message.GetWouldAtkMessage(), attack_consequential_damage=-N)`) ;
+      `01077`/`64004` (`Faces.GiveStatus(..., "Stunned")` après une attaque) ; moteur `this_phase_made_attack`.
+- [x] Étape 5 : « attacked BY A HERO » = identité en forme héros (jamais un allié, cas Vision) ; « THIS PHASE » = toute la phase ; « stun THAT enemy »
+      = si encore en jeu ; « If Iron Fist defeated that enemy » : −2 sur les dégâts consécutifs de cette attaque seulement (ATK 2** = 2 → 0),
+      conditionné à l'attaque antérieure d'un héros. Résultat : OK.
+- [x] Étape 6 : coût 4, PV 3, THW 1*, ATK 2** (2 icônes ✪ lues sur le scan HD), ressource R (poing rouge, comparée à Luke Cage 22/Helpful Bystander).
+- [x] Étape 7 : 6 cas, 2 rouges sans module (étourdi, −2 sur la victoire) ; verts assumés : valeurs, seul, allié non héros (absence), victoire sans héros (valeur imprimée).
+- [x] Étape 7 bis : limite imprimée ? NON. Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64019 : No Time to Bleed — amélioration Protection (Condition)
+
+- [x] Étape 2 : `60027` Move in Shadow (Discount 1, Temporary, Max 1 per player, « After you play a card (including this one) ») ; `43011` Pain Tolerance (soin de l'identité).
+- [x] Étape 5 : « (including this one) » : sa propre Réponse (cas) ; « your IDENTITY » ; un soin par carte jouée (cas 2 cartes). OK.
+- [x] Étape 6 : coût 2★, ressource B (icône bleue « nœuds reliés »), Max 1 per player = `MaxPerUnit`, Temporary. Discount 1 (Martial Artist **or Soldier**) : les DEUX traits ont un cas (Lei Kung, War Machine).
+- [x] Étape 7 : 11 cas ; rouges sans module : 3 soins + remises ; verts assumés : Temporary, Max 1, contre-cas sans trait.
+- [x] Étape 7 bis : « Max 1 per player » : témoin d'épuisement (copie en jeu → 2e non jouable, raison `check_max_per_player`). Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64021 : ✦ Colleen Wing — allié Basic
+
+- [x] Étape 2 : `33016` Coordinated Attack / `32091` Cannonball (réduction des dégâts consécutifs pour CETTE attaque) ; moteur `this_phase_made_attack`.
+- [x] Étape 5 : « who HAS BEEN attacked » = attaque antérieure (la sienne ne compte pas : cas deux attaques) ; « ANOTHER Martial Artist character » (héros ou allié, jamais elle) ;
+      « THIS PHASE ». OK.
+- [x] Étape 6 : coût 3, PV 3, THW 1*, ATK 2* (1 icône ✪), ressource R. Étape 7 : 6 cas, 1 rouge sans module (héros puis Colleen = 0), verts assumés : témoins.
+- [x] Étape 7 bis : NON. Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64022 : ✦ Luke Cage — allié Basic
+
+- [x] Étape 2 : `40204` Hope Summers / `hulkling_kajislav` (bonus conditionné à un trait de l'identité, recalcul `OnEvent.Form/Faceup/Trait`) ; `an002` (« your hero gets +1 »).
+- [x] Étape 5 : « your HERO » (forme héros seulement) ; « shares a trait WITH LUKE CAGE » (traits courants) ; bonus recalculé au retournement (cas). OK.
+- [x] Étape 6 : coût 4, PV 3, THW 1*, ATK 2*, Toughness 1, ressource R. Étape 7 : 7 cas, 3 rouges (les +1 DEF), verts : Tough/valeurs (desc), Spider-Man, témoin DEF 2.
+- [x] Étape 7 bis : NON. Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64023 : Punch, Reverse Punch — événement Basic
+
+- [x] Étape 2 : `64004` Fists of Fury (deux « Deal 1 damage » = deux choix de cible indépendants) ; `ua030` (`DiscountAbility`).
+- [x] Étape 5 : deux phrases = deux choix, 1 dégât chacun ; Discount 1 : Iron Fist (MARTIAL ARTIST) la joue pour 0. OK.
+- [x] Étape 6 : coût 1★, ressource R. Étape 7 : 3 cas, 2 rouges ; vert assumé : Danny Rand (absence). Étape 7 bis : NON. Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64025 : ✦ Thunder Dojo — soutien Basic (Location)
+
+- [x] Étape 2 : `14007` Serval Industries (shuffle depuis la défausse, coût Exhaust) ; `22009` Combat Ready (« up to 2 » = `range=(1, 2)`) ; `40197` Safehouse (`AnyPlayerCanDoThis`) ; `ua019` (Prerequisite, décision du 17/10/2026).
+- [x] Étape 5 : « up to 2 ATTACK events » (type + trait) ; « YOUR discard pile into YOUR deck » = celui qui déclenche (cas multijoueur : le joueur 2 sert son propre deck) ;
+      « Alter-Ego Action » (absente en forme héros, cas) ; « Prerequisite (Defender or Martial Artist) » = identité (cas 3 formes). OK.
+- [x] Étape 6 : coût 1, ressource Y (éclair), unique. Étape 7 : 8 cas, 3 rouges ; verts : absence (forme héros), prérequis rempli, unicité (moteur).
+- [x] Étape 7 bis : aucune limite imprimée. Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64030 : Death by a Thousand Cuts — amélioration Aggression
+
+- [x] Étape 2 : `60027` Move in Shadow (enveloppe) ; `08010` Widow's Bite / `13014` (« Response (attack): ... deal N damage » = `.SetLabel('attack')` + `DealDamage`).
+- [x] Étape 5 : « (including this one) » (cas) ; « an enemy » ; 1 dégât par carte jouée (cas 2 cartes) ; Discount 1 (Martial Artist or Soldier) : deux traits testés. OK.
+- [x] Étape 6 : coût 2★, ressource R, Max 1 per player, Temporary. Étape 7 : 11 cas, 4 rouges sans module (3 Réponses + remise) ; verts : Temporary, Max 1, contre-cas Danny.
+- [x] Étape 7 bis : « Max 1 per player » : témoin d'épuisement. Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64031 : Zen-Like Calm — événement Leadership (Tactic)
+
+- [x] Étape 2 : `40197` Safehouse (`HealthUnits`, `canbe_heal=True`) ; `60068b` Damaged Spine (« Then, if there is no damage here »).
+- [x] Étape 5 : « a Martial Artist CHARACTER » (littéral, tout personnage) ; « THAT character has no sustained damage » testé APRÈS le soin ; « ANOTHER character ». OK.
+- [x] Étape 6 : coût 0, ressource Y. Étape 7 : 3 cas, 2 rouges ; vert assumé : Danny Rand non jouable (aucune cible). Étape 7 bis : NON. Étape 8 : OK. Étape 8 bis : NON.
+
+Carte terminée : OUI
+
+### 64032 : Sensei — amélioration Leadership (Title)
+
+- [x] Étape 2 : `32091` Cannonball + `ua019`/`pu026` (`has_excess_damage=False` = « exactly ») ; `40022` Uncanny X-Force (thwart d'une annexe, `AfterUnitThwartScheme`) ; `scheme.excedent_de_menace`.
+- [x] Étape 5 : « EACH Martial Artist ALLY YOU CONTROL » ; « EXACTLY defeat » (excès : cas) ; « enemy OR side scheme » (attaque ET parade) ; réduction au moment de la victoire. OK.
+- [x] Étape 6 : coût 2★ (Discount 2 : Iron Fist la joue pour 0), ressource R, Max 1 per player. Étape 7 : 11 cas, 3 rouges sans module (remise, victoire sur un ennemi,
+      parade qui défait exactement une annexe) ; verts : témoins/absences (sans Sensei, allié non Martial Artist, annexe qui survit, excès).
+      La réduction côté parade n'a pas de cas « excès » (aucun allié Martial Artist de THW 2 dans le jeu) : couvert par `excedent_de_menace` du moteur (pu026).
+- [x] Étape 7 bis : « Max 1 per player » : témoin. Étape 8 : OK (88 lignes). Étape 8 bis : NON.
+
+Carte terminée : OUI

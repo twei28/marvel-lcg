@@ -1,0 +1,319 @@
+# Cas test_capacites des CARTES D'ASPECT du pack Iron Fist (MC64, 64013-64033), noms prefixes « [if_aspect] ».
+# Un cas par capacite, sujet = le card_id dans le nom (substituer_pack.py filtre dessus). Gabarits PROCESSUS-CARTE :
+# docs/packs/iron_fist_cartes.md. Plan : .planning/iron-fist-officiel/aspects-plan.md.
+#
+# Montage (comme tools/cas/iron_fist.py) : Iron Fist demarre en ALTER EGO (64001b Danny Rand, trait CIVILIAN seulement) ;
+# `Puzzle.ChangeToFace('64001b', '64001a')` le passe en forme HEROS (DEFENDER, K'UN-LUN, MARTIAL ARTIST). Vilain Rhino 01094
+# (14 PV). `main_exclusive` dit avec QUOI on paie : 01088 Energy = YY, 01089 Genius = BB, 01090 Strength = RR, et
+# 01055 The Power of Aggression = UNE ressource wild pour une carte non Aggression (sert aux temoins de remise : un cout
+# de 1 ne se paie pas avec 2).
+SC = "rhino"
+HEROS = "Puzzle.ChangeToFace('64001b', '64001a')"
+CIVIL = "Puzzle.ChangeToFace('64001a', '64001b')"
+SANS_DECK = "Puzzle.EmptyPlayerDeck()"
+SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
+              "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')"]
+VIDER_DEFAUSSE = "Puzzle.EmptyPlayerDiscardPile()"
+
+
+def en_jeu(*ids):
+    return [f"Puzzle.PutIntoPlay('{i}', under_control=True)" for i in ids]
+
+
+def _c(nom, pourquoi, mise, declencher, attendu, **cle):
+    if not cle.pop("avec_boost", False):
+        mise = SANS_BOOST + list(mise)
+    cas = {"nom": "[if_aspect] " + nom, "pourquoi": pourquoi, "scenario": cle.pop("scenario", SC),
+           "heros": cle.pop("heros", "iron_fist"), "mise_en_place": mise, "declencher": declencher,
+           "verifier": cle.pop("verifier", "if_etat"), "attendu": attendu}
+    cas.update(cle)
+    return cas
+
+
+CAS = [
+    # ============================================================ 64019 No Time to Bleed
+    _c("64019 No Time to Bleed : jouee, sa propre Response soigne 1 (3 degats -> 2) et l'amelioration reste en jeu",
+       "« Response: After you play a card (INCLUDING THIS ONE), heal 1 damage from your identity »",
+       ["Puzzle.Damage('64001b', 3)"], [], {"en_jeu": ["64019"], "degats_identite": 2},
+       main_exclusive=["64019", "01090"], jouer=["64019"]),
+    _c("64019 No Time to Bleed : en jeu, une AUTRE carte jouee soigne 1 (3 -> 2)",
+       "« After you play A card » : toute carte jouee (Feel the Flow, 0 de cout)",
+       [*en_jeu("64019"), "Puzzle.Damage('64001b', 3)"], [], {"en_jeu": ["64019", "64010"], "degats_identite": 2},
+       main_exclusive=["64010", "01090"], jouer=["64010"]),
+    _c("64019 No Time to Bleed : deux cartes jouees -> 2 soins (4 degats -> 2)",
+       "un soin PAR carte jouee, pas un seul par round",
+       [*en_jeu("64019"), "Puzzle.Damage('64001b', 4)"], [], {"degats_identite": 2},
+       main_exclusive=["64010", "64011", "01090"], jouer=["64010", "64011"]),
+    _c("64019 No Time to Bleed : Discount 1 (Martial Artist) : avec Lei Kung en jeu, UNE ressource suffit (cout 2 -> 1)",
+       "« [star] Discount 1 (Martial Artist or Soldier) » : Lei Kung (64006) est MARTIAL ARTIST",
+       [*en_jeu("64006")], [], {"en_jeu": ["64019"]}, main_exclusive=["64019", "01055"], jouer=["64019"]),
+    _c("64019 No Time to Bleed : CONTRE-CAS sans Martial Artist ni Soldier : une ressource ne suffit pas (cout 2)",
+       "la remise exige un personnage au trait ; Danny Rand (CIVILIAN) n'en est pas un",
+       [], [], {"en_main": ["64019"]}, main_exclusive=["64019", "01055"], jouer=["64019"]),
+    _c("64019 No Time to Bleed : Temporary, defaussee a la fin du round",
+       "« Temporary » (desc.Temporary, ProcessTemporary)",
+       [*en_jeu("64019")], [], {"hors_jeu": ["64019"]}, main_exclusive=["01090"], verifier="if_fin_de_round"),
+    _c("64019 No Time to Bleed : Max 1 per player, une copie en jeu, la 2e en main n'est PAS jouable (raison lisible)",
+       "« Max 1 per player » (MaxPerUnit), controle generique du moteur (modele 08031)",
+       ["Puzzle.Gain('64019')", *en_jeu("64019")], [],
+       {"carte": "64019", "jouable": False, "en_jeu": 1, "raison": "check_max_per_player"},
+       main=["01088", "01089", "01088"], verifier="max_par_joueur_jouable"),
+    _c("64019 No Time to Bleed : Max 1 per player, TEMOIN : aucune copie en jeu, celle en main est jouable",
+       "contre-cas du precedent", ["Puzzle.Gain('64019')"], [],
+       {"carte": "64019", "jouable": True, "en_jeu": 0}, main=["01088", "01089", "01088"],
+       verifier="max_par_joueur_jouable"),
+    # ============================================================ 64030 Death by a Thousand Cuts
+    _c("64030 Death by a Thousand Cuts : jouee, sa propre Response inflige 1 degat a Rhino",
+       "« Response (attack): After you play a card (INCLUDING THIS ONE), deal 1 damage to an enemy »",
+       [HEROS], [], {"en_jeu": ["64030"], "degats": [["01094", 1]]},
+       main_exclusive=["64030", "01090"], jouer=["64030"], cibles=["01094"]),
+    _c("64030 Death by a Thousand Cuts : en jeu, une AUTRE carte jouee inflige 1 degat",
+       "« After you play A card »",
+       [HEROS, *en_jeu("64030")], [], {"degats": [["01094", 1]]},
+       main_exclusive=["64010", "01090"], jouer=["64010"], cibles=["01094"]),
+    _c("64030 Death by a Thousand Cuts : deux cartes jouees -> 2 degats (un par carte)",
+       "un coup de 1 PAR carte jouee",
+       [HEROS, *en_jeu("64030")], [], {"degats": [["01094", 2]]},
+       main_exclusive=["64010", "64011", "01090"], jouer=["64010", "64011"], cibles=["01094"]),
+    _c("64030 Death by a Thousand Cuts : Discount 1 (Martial Artist) : Iron Fist (MARTIAL ARTIST) la paie 1 ressource",
+       "« [star] Discount 1 (Martial Artist or Soldier) » : cout 2 -> 1, payee par UNE ressource",
+       [HEROS], [], {"en_jeu": ["64030"]}, main_exclusive=["64030", "01079"], jouer=["64030"], cibles=["01094"]),
+    _c("64030 Death by a Thousand Cuts : CONTRE-CAS Danny Rand (sans le trait) : une ressource ne suffit pas",
+       "contre-cas dans l'AUTRE forme : l'alter ego n'a ni MARTIAL ARTIST ni SOLDIER",
+       [], [], {"en_main": ["64030"]}, main_exclusive=["64030", "01079"], jouer=["64030"], cibles=["01094"]),
+    _c("64030 Death by a Thousand Cuts : Temporary, defaussee a la fin du round",
+       "« Temporary »", [HEROS, *en_jeu("64030")], [], {"hors_jeu": ["64030"]}, main_exclusive=["01090"],
+       verifier="if_fin_de_round"),
+    _c("64030 Death by a Thousand Cuts : Max 1 per player, une copie en jeu, la 2e en main n'est PAS jouable",
+       "« Max 1 per player » (MaxPerUnit)", [HEROS, "Puzzle.Gain('64030')", *en_jeu("64030")], [],
+       {"carte": "64030", "jouable": False, "en_jeu": 1, "raison": "check_max_per_player"},
+       main=["01088", "01089", "01088"], verifier="max_par_joueur_jouable"),
+    _c("64030 Death by a Thousand Cuts : Max 1 per player, TEMOIN : aucune copie en jeu, celle en main est jouable",
+       "contre-cas du precedent", [HEROS, "Puzzle.Gain('64030')"], [],
+       {"carte": "64030", "jouable": True, "en_jeu": 0}, main=["01088", "01089", "01088"],
+       verifier="max_par_joueur_jouable"),
+    # ============================================================ 64023 Punch, Reverse Punch
+    _c("64023 Punch, Reverse Punch : deux fois 1 degat -> 2 degats sur Rhino, payee 0 (Discount 1 : Iron Fist est MARTIAL ARTIST)",
+       "« Deal 1 damage to an enemy. Deal 1 damage to an enemy. » ; cout 1* - 1 = 0 : aucune ressource n'est depensee",
+       [HEROS], [], {"degats": [["01094", 2]]}, main_exclusive=["64023"], jouer=["64023"]),
+    _c("64023 Punch, Reverse Punch : cibles independantes : Tiger Shark a 1 PV tombe au 1er coup, Rhino prend le 2e",
+       "deux choix de cible independants (le pilote vise Tiger Shark tant qu'il est la)",
+       [HEROS, "Puzzle.PutIntoPlay('01131')", "Puzzle.Damage('01131', 5)"], [],
+       {"hors_jeu": ["01131"], "degats": [["01094", 1]]},
+       main_exclusive=["64023"], jouer=["64023"], cibles=["01131", "01094"]),
+    _c("64023 Punch, Reverse Punch : CONTRE-CAS Danny Rand (sans le trait) : cout 1, 0 ressource -> pas jouee",
+       "la remise exige un MARTIAL ARTIST ; en alter ego l'evenement d'attaque n'est de toute facon pas une Hero Action",
+       [], [], {"jouable": [["64023", False]]}, main_exclusive=["64023"], verifier="if_jouable"),
+    # ============================================================ 64031 Zen-Like Calm
+    _c("64031 Zen-Like Calm : soigne 1 sur Iron Fist (MARTIAL ARTIST, 3 -> 2) ; il garde des degats -> PAS de 2e soin",
+       "« Then, IF THAT CHARACTER HAS NO SUSTAINED DAMAGE » : il en reste, donc rien de plus (un allie blesse reste blesse)",
+       [HEROS, "Puzzle.Damage('64001a', 3)", *en_jeu("01068"), "Puzzle.Damage('01068', 2)"], [],
+       {"degats_identite": 2, "degats": [["01068", 2]]}, main_exclusive=["64031"], jouer=["64031"],
+       cibles=["64001a", "01068"]),
+    _c("64031 Zen-Like Calm : Iron Fist 1 -> 0 degat, alors 2e soin sur un AUTRE personnage (allie 2 -> 1)",
+       "« if that character has no sustained damage, heal 1 damage from another character »",
+       [HEROS, "Puzzle.Damage('64001a', 1)", *en_jeu("01068"), "Puzzle.Damage('01068', 2)"], [],
+       {"degats_identite": 0, "degats": [["01068", 1]]}, main_exclusive=["64031"], jouer=["64031"],
+       cibles=["64001a", "01068"]),
+    _c("64031 Zen-Like Calm : la cible du soin DOIT etre Martial Artist : Danny Rand (CIVILIAN) n'est pas ciblable",
+       "« a MARTIAL ARTIST character » : en alter ego, aucune cible (Danny n'a pas le trait) -> carte non jouable",
+       [], [], {"jouable": [["64031", False]]}, main_exclusive=["64031"], verifier="if_jouable"),
+    # ============================================================ 64025 Thunder Dojo
+    _c("64025 Thunder Dojo : Alter-Ego Action : remet les 2 evenements ATTACK de la defausse dans le deck, soutien epuise",
+       "« shuffle up to 2 ATTACK events from your discard pile into your deck » ; cout : epuiser la carte",
+       [*en_jeu("64025"), SANS_DECK, "Puzzle.CreatePlayerDeck('01090')"],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('64004', '64023', '01088')", "Puzzle.Action('64025', 'AlterEgoAction')"],
+       {"dans_deck_joueur": ["64004", "64023"], "exhausted": ["64025"]}, main_exclusive=["01089"],
+       cibles=["64004", "64023"]),
+    _c("64025 Thunder Dojo : un evenement qui n'est PAS ATTACK (Fists... non : 01088 ressource) reste dans la defausse",
+       "« ATTACK events » : seuls type Evenement + trait ATTACK ; une ressource basique n'est pas eligible",
+       [*en_jeu("64025"), SANS_DECK, "Puzzle.CreatePlayerDeck('01090')"],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('64004', '01088')", "Puzzle.Action('64025', 'AlterEgoAction')"],
+       {"dans_deck_joueur": ["64004"], "defausse_avec": ["01088"]}, main_exclusive=["01089"], cibles=["64004"]),
+    _c("64025 Thunder Dojo : absente en forme HEROS (l'Action est une Alter-Ego Action) : rien ne bouge",
+       "contre-cas dans l'AUTRE forme",
+       [HEROS, *en_jeu("64025"), SANS_DECK, "Puzzle.CreatePlayerDeck('01090')"],
+       [VIDER_DEFAUSSE, "Puzzle.CreatePlayerDiscardPile('64004')"],
+       {"dans_deck_joueur": ["01090"], "defausse_avec": ["64004"]}, main_exclusive=["01089"]),
+    _c("64025 Thunder Dojo : Prerequisite : Iron Fist en forme HEROS (DEFENDER, MARTIAL ARTIST) peut la jouer",
+       "« Prerequisite (Defender or Martial Artist) » : l'IDENTITE a l'un des deux traits (decision du 17/10/2026)",
+       [HEROS], [], {"jouable": [["64025", True]]}, main_exclusive=["64025", "01090"], verifier="if_jouable"),
+    _c("64025 Thunder Dojo : CONTRE-CAS Prerequisite : Danny Rand (CIVILIAN seulement) ne peut pas la jouer",
+       "l'alter ego n'a ni DEFENDER ni MARTIAL ARTIST",
+       [], [], {"jouable": [["64025", False]]}, main_exclusive=["64025", "01090"], verifier="if_jouable"),
+    _c("64025 Thunder Dojo : unique (✦) : une copie en jeu, la 2e en main n'est PAS jouable",
+       "« ✦ » : unicite par nom (comme 01063 Interrogation Room, un soutien unique)",
+       [HEROS, "Puzzle.Gain('64025')", *en_jeu("64025")], [],
+       {"carte": "64025", "jouable": False, "en_jeu": 1},
+       main=["01088", "01089", "01088"], verifier="max_par_joueur_jouable"),
+    # ============================================================ 64022 Luke Cage
+    _c("64022 Luke Cage : Toughness, entre en jeu avec une carte de statut Tough",
+       "« Toughness. » (desc.Toughness, lu par le moteur)",
+       [*en_jeu("64022")], [], {"statuts": [["64022", "Tough"]]}, main_exclusive=["01090"]),
+    _c("64022 Luke Cage : valeurs imprimees PV 3, ATQ 2, CTR 1, trait DEFENDER et HERO FOR HIRE",
+       "nombres texte <-> code (scan 22) : HIT POINTS 3, ATK 2, THW 1",
+       [*en_jeu("64022")], [],
+       {"attrs": [["64022", "max_health", 3], ["64022", "attack", 2], ["64022", "thwart", 1]],
+        "traits_de": [["64022", "DEFENDER"], ["64022", "HERO FOR HIRE"]]}, main_exclusive=["01090"]),
+    _c("64022 Luke Cage : « If your hero shares a trait » : Iron Fist (DEFENDER) en forme heros gagne +1 DEF (2 -> 3)",
+       "trait commun DEFENDER entre l'identite heros et Luke Cage",
+       [HEROS, *en_jeu("64022")], [], {"attrs": [["64001a", "defense", 3]]}, main_exclusive=["01090"]),
+    _c("64022 Luke Cage : le bonus se calcule AU RETOURNEMENT : Danny Rand (alter ego) puis forme heros -> +1 DEF",
+       "recalcul a chaque changement de forme : Luke Cage en jeu AVANT le retournement",
+       [*en_jeu("64022")], [HEROS], {"attrs": [["64001a", "defense", 3]]}, main_exclusive=["01090"]),
+    _c("64022 Luke Cage : CONTRE-CAS Spider-Man (AVENGER : aucun trait commun) : DEF inchangee (3)",
+       "« shares a trait WITH LUKE CAGE » : Spider-Man n'a ni DEFENDER ni HERO FOR HIRE",
+       ["Puzzle.ChangeToFace('01001b', '01001a')", *en_jeu("64022")], [], {"attrs": [["01001a", "defense", 3]]},
+       heros="spider_man", main_exclusive=["01090"]),
+    _c("64022 Luke Cage : TEMOIN de la valeur imprimee : sans Luke Cage, la DEF d'Iron Fist reste 2",
+       "« +1 DEF » vient de Luke Cage seulement (scan 1A : DEF 2)",
+       [HEROS], [], {"attrs": [["64001a", "defense", 2]]}, main_exclusive=["01090"]),
+    _c("64022 Luke Cage : le bonus DISPARAIT au retour en alter ego puis REVIENT en forme heros (3)",
+       "« your HERO » : Danny Rand (alter ego) n'a pas de DEF a augmenter ; le recalcul suit les deux retournements",
+       [HEROS, *en_jeu("64022"), CIVIL], [HEROS], {"attrs": [["64001a", "defense", 3]]}, main_exclusive=["01090"]),
+    # ============================================================ 64021 Colleen Wing
+    _c("64021 Colleen Wing : valeurs imprimees PV 3, ATQ 2, CTR 1, traits HERO FOR HIRE et MARTIAL ARTIST",
+       "nombres texte <-> code (scan 21)",
+       [*en_jeu("64021")], [],
+       {"attrs": [["64021", "max_health", 3], ["64021", "attack", 2], ["64021", "thwart", 1]],
+        "traits_de": [["64021", "HERO FOR HIRE"], ["64021", "MARTIAL ARTIST"]]}, main_exclusive=["01090"]),
+    _c("64021 Colleen Wing : SEULE, elle attaque Rhino et prend 1 degat consecutif (ATK 2*)",
+       "TEMOIN de la valeur imprimee : sans attaque anterieure, le degat consecutif reste 1",
+       [*en_jeu("64021")], ["Puzzle.Attack('64021')"], {"degats": [["01094", 2], ["64021", 1]]},
+       main_exclusive=["01090"]),
+    _c("64021 Colleen Wing : Rhino deja attaque par Iron Fist (MARTIAL ARTIST, heros) -> 0 degat consecutif",
+       "« takes -1 consequential damage after she attacks an enemy who has been attacked by ANOTHER Martial Artist character this phase »",
+       [HEROS, *en_jeu("64021")], ["Puzzle.Attack('64001a')", "Puzzle.Attack('64021')"],
+       {"degats": [["01094", 4], ["64021", 0]]}, main_exclusive=["01090"]),
+    _c("64021 Colleen Wing : CONTRE-CAS Rhino deja attaque par un allie NON Martial Artist (Vision) -> elle prend 1",
+       "« another MARTIAL ARTIST character » : Vision (ANDROID, AVENGER) ne compte pas",
+       [*en_jeu("64021", "01068")], ["Puzzle.Attack('01068')", "Puzzle.Attack('64021')"],
+       {"degats": [["64021", 1]]}, main_exclusive=["01090"]),
+    _c("64021 Colleen Wing : CONTRE-CAS elle attaque deux fois : sa propre 1re attaque ne compte pas (1 degat chacune)",
+       "« ANOTHER Martial Artist character » : Colleen elle-meme est exclue ; 2 attaques = 2 degats consecutifs",
+       [*en_jeu("64021")], ["Puzzle.Attack('64021')", "Puzzle.Ready('64021')", "Puzzle.Attack('64021')"],
+       {"degats": [["64021", 2]]}, main_exclusive=["01090"]),
+    # ============================================================ 64014 Iron Fist (Lin Lie)
+    _c("64014 Iron Fist (Lin Lie) : valeurs imprimees PV 3, ATQ 2, CTR 1, traits AGENT OF ATLAS et MARTIAL ARTIST",
+       "nombres texte <-> code (scan 14)",
+       [*en_jeu("64014")], [],
+       {"attrs": [["64014", "max_health", 3], ["64014", "attack", 2], ["64014", "thwart", 1]],
+        "traits_de": [["64014", "AGENT OF ATLAS"], ["64014", "MARTIAL ARTIST"]]}, main_exclusive=["01090"]),
+    _c("64014 Iron Fist (Lin Lie) : SEUL, il attaque Rhino : 2 degats consecutifs (ATK 2**), Rhino PAS sonne",
+       "TEMOIN de la valeur imprimee : aucune attaque anterieure d'un heros, ni etourdi ni reduction",
+       [*en_jeu("64014")], ["Puzzle.Attack('64014')"],
+       {"degats": [["01094", 2]], "hors_statuts": [["01094", "Stunned"]]}, main_exclusive=["01090"]),
+    _c("64014 Iron Fist (Lin Lie) : Rhino deja attaque par un HEROS (Iron Fist) -> il est sonne apres l'attaque",
+       "« After Iron Fist attacks an enemy who has been attacked by a hero this phase, stun that enemy »",
+       [HEROS, *en_jeu("64014")], ["Puzzle.Attack('64001a')", "Puzzle.Attack('64014')"],
+       {"degats": [["01094", 4]], "statuts": [["01094", "Stunned"]]}, main_exclusive=["01090"]),
+    _c("64014 Iron Fist (Lin Lie) : CONTRE-CAS Rhino deja attaque par un ALLIE (Vision) : pas sonne",
+       "« attacked by a HERO » : un allie n'est pas un heros",
+       [*en_jeu("64014", "01068")], ["Puzzle.Attack('01068')", "Puzzle.Attack('64014')"],
+       {"hors_statuts": [["01094", "Stunned"]]}, main_exclusive=["01090"]),
+    _c("64014 Iron Fist (Lin Lie) : Tiger Shark (1 PV) deja attaque par un heros et VAINCU -> pas de degat consecutif (2 -2)",
+       "« If Iron Fist defeated that enemy, he takes -2 consequential damage » : ATK 2** (2) - 2 = 0",
+       [HEROS, "Puzzle.PutIntoPlay('01131')", "Puzzle.Damage('01131', 2)", *en_jeu("64014")],
+       ["Puzzle.Attack('64001a')", "Puzzle.Attack('64014')"], {"hors_jeu": ["01131"], "degats": [["64014", 0]]},
+       main_exclusive=["01090"], cibles=["01131"]),
+    _c("64014 Iron Fist (Lin Lie) : CONTRE-CAS meme victoire SANS attaque anterieure d'un heros : 2 degats consecutifs",
+       "la reduction de -2 depend de la meme condition que l'etourdissement",
+       ["Puzzle.PutIntoPlay('01131')", "Puzzle.Damage('01131', 4)", *en_jeu("64014")],
+       ["Puzzle.Attack('64014')"], {"hors_jeu": ["01131"], "degats": [["64014", 2]]},
+       main_exclusive=["01090"], cibles=["01131"]),
+    # ============================================================ 64032 Sensei
+    _c("64032 Sensei : Discount 2 (Martial Artist) : Iron Fist (heros) la paie 0 ressource",
+       "cout 2* - 2 = 0 : aucune ressource depensee ; Iron Fist est MARTIAL ARTIST",
+       [HEROS], [], {"en_jeu": ["64032"]}, main_exclusive=["64032"], jouer=["64032"]),
+    _c("64032 Sensei : CONTRE-CAS Danny Rand (sans le trait) : cout 2, aucune ressource -> pas jouee",
+       "la remise exige un MARTIAL ARTIST", [], [], {"en_main": ["64032"]}, main_exclusive=["64032"], jouer=["64032"]),
+    _c("64032 Sensei : Max 1 per player, une copie en jeu, la 2e en main n'est PAS jouable",
+       "« Max 1 per player »", [HEROS, "Puzzle.Gain('64032')", *en_jeu("64032")], [],
+       {"carte": "64032", "jouable": False, "en_jeu": 1, "raison": "check_max_per_player"},
+       main=["01088", "01089", "01088"], verifier="max_par_joueur_jouable"),
+    _c("64032 Sensei : allie Martial Artist (Colleen) qui VAINC Tiger Shark (exactement) : 0 degat consecutif (1 - 2)",
+       "« takes -2 consequential damage after they exactly defeat an enemy »",
+       [*en_jeu("64032", "64021"), "Puzzle.PutIntoPlay('01131')", "Puzzle.Damage('01131', 4)"],
+       ["Puzzle.Attack('64021')"], {"hors_jeu": ["01131"], "degats": [["64021", 0]]},
+       main_exclusive=["01090"], cibles=["01131"]),
+    _c("64032 Sensei : CONTRE-CAS sans Sensei : la meme victoire coute 1 degat consecutif a Colleen",
+       "temoin de la valeur imprimee", [*en_jeu("64021"), "Puzzle.PutIntoPlay('01131')", "Puzzle.Damage('01131', 4)"],
+       ["Puzzle.Attack('64021')"], {"hors_jeu": ["01131"], "degats": [["64021", 1]]},
+       main_exclusive=["01090"], cibles=["01131"]),
+    _c("64032 Sensei : CONTRE-CAS allie NON Martial Artist (Vision) : sa victoire coute toujours 1 degat consecutif",
+       "« Each MARTIAL ARTIST ally »", [*en_jeu("64032", "01068"), "Puzzle.PutIntoPlay('01131')", "Puzzle.Damage('01131', 4)"],
+       ["Puzzle.Attack('01068')"], {"hors_jeu": ["01131"], "degats": [["01068", 1]]},
+       main_exclusive=["01090"], cibles=["01131"]),
+    _c("64032 Sensei : CONTRE-CAS victoire AVEC exces (Rhino... Tiger Shark a 1 PV, Colleen ATK 2) : pas de reduction",
+       "« EXACTLY defeat » : 2 degats sur 1 PV restant = exces, le degat consecutif reste 1",
+       [*en_jeu("64032", "64021"), "Puzzle.PutIntoPlay('01131')", "Puzzle.Damage('01131', 5)"],
+       ["Puzzle.Attack('64021')"], {"hors_jeu": ["01131"], "degats": [["64021", 1]]},
+       main_exclusive=["01090"], cibles=["01131"]),
+    _c("64032 Sensei : allie Martial Artist (Colleen) qui DEJOUE exactement une manigance annexe : 0 degat consecutif (1 - 2)",
+       "« ... after they exactly defeat an enemy OR SIDE SCHEME » : parade (THW 1*) qui retire les 1 menace restantes de Breakin' & Takin'",
+       [*en_jeu("64032", "64021"), "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)"],
+       ["Puzzle.Thwart('64021')"], {"hors_jeu": ["01107"], "degats": [["64021", 0]]},
+       main_exclusive=["01090"], cibles=["01107"]),
+    _c("64032 Sensei : CONTRE-CAS sans Sensei : la meme parade coute 1 degat consecutif a Colleen",
+       "temoin de la valeur imprimee (THW 1*)",
+       [*en_jeu("64021"), "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)"],
+       ["Puzzle.Thwart('64021')"], {"hors_jeu": ["01107"], "degats": [["64021", 1]]},
+       main_exclusive=["01090"], cibles=["01107"]),
+    _c("64032 Sensei : CONTRE-CAS la manigance annexe SURVIT (2 menaces, 1 retiree) : pas de reduction, 1 degat consecutif",
+       "« after they exactly DEFEAT » : sans victoire, les degats consecutifs restent",
+       [*en_jeu("64032", "64021"), "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 2)"],
+       ["Puzzle.Thwart('64021')"], {"en_jeu": ["01107"], "degats": [["64021", 1]]},
+       main_exclusive=["01090"], cibles=["01107"]),
+    _c("64032 Sensei : CONTRE-CAS allie NON Martial Artist (Vision) qui dejoue exactement l'annexe : 1 degat consecutif",
+       "« Each MARTIAL ARTIST ally » : Vision (ANDROID, AVENGER) ne compte pas",
+       [*en_jeu("64032", "01068"), "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)"],
+       ["Puzzle.Thwart('01068')"], {"hors_jeu": ["01107"], "degats": [["01068", 1]]},
+       main_exclusive=["01090"], cibles=["01107"]),
+    # ============================================================ complements (Soldier, alter ego, multijoueur)
+    _c("64019 No Time to Bleed : Discount 1 (SOLDIER) : avec War Machine (01030) en jeu, UNE ressource suffit",
+       "« Discount 1 (Martial Artist or SOLDIER) » : l'autre trait du « or » ; War Machine est SOLDIER",
+       [*en_jeu("01030")], [], {"en_jeu": ["64019"]}, main_exclusive=["64019", "01055"], jouer=["64019"]),
+    _c("64030 Death by a Thousand Cuts : Discount 1 (SOLDIER) : avec War Machine (01030) en jeu, UNE ressource suffit",
+       "« Discount 1 (Martial Artist or SOLDIER) » : l'autre trait du « or »",
+       [*en_jeu("01030")], [], {"en_jeu": ["64030"]}, main_exclusive=["64030", "01079"], jouer=["64030"], cibles=["01094"]),
+    _c("64030 Death by a Thousand Cuts : en ALTER EGO (Danny Rand), la Response (attack) part aussi : 1 degat a Rhino",
+       "« Response (attack) » sans « Hero » : le moteur l'offre dans les deux formes (comportement a verifier en partie reelle)",
+       [], [], {"en_jeu": ["64030"], "degats": [["01094", 1]]},
+       main_exclusive=["64030", "01090"], jouer=["64030"], cibles=["01094"]),
+    _c("64025 Thunder Dojo : N'IMPORTE QUEL joueur peut la declencher : le joueur 2 remet SES evenements ATTACK dans SON deck",
+       "« Any player may trigger this ability » : la defausse et le deck sont ceux de celui qui declenche (joueur 2), pas du proprietaire",
+       [*en_jeu("64025"), SANS_DECK, "Puzzle.CreatePlayerDeck('01090')", "Puzzle.EmptyPlayerDeck(siege=1)", "Puzzle.CreatePlayerDeck('01090', siege=1)",
+        "Puzzle.EmptyPlayerDiscardPile(siege=1)", "Puzzle.CreatePlayerDiscardPile('64004', '64023', '01088', siege=1)"],
+       ["Puzzle.Action('64025', 'AlterEgoAction', siege=1)"],
+       {"deck_siege1": ["64004", "64023", "01090"], "defausse_siege1_sans": ["64004", "64023"],
+        "defausse_siege1_avec": ["01088"], "deck_siege0_sans": ["64004", "64023"]},
+       verifier="ifa_siege1", heros2="spider_man", main_exclusive=["01089"], cibles=["64004", "64023"]),
+]
+
+
+VERIFICATIONS = r'''
+def ifa_siege1(monde, aides):
+    """Cas multijoueur : cles propres `deck_siege1` / `defausse_siege1_sans` / `defausse_siege1_avec` (card_id presents ou
+    absents du deck et de la defausse du JOUEUR 2) et `deck_siege0_sans` (absents du deck du joueur 1)."""
+    attendu = aides["cas"]["attendu"]
+    j0, j1 = monde.const_players[0], monde.const_players[1]
+    deck1 = [getattr(f.paper, "card_id", "?") for f in j1.player_deck.GetAll()]
+    defausse1 = [getattr(f.paper, "card_id", "?") for f in j1.discard_pile.Get()]
+    deck0 = [getattr(f.paper, "card_id", "?") for f in j0.player_deck.GetAll()]
+    soucis = []
+    for cid in attendu.get("deck_siege1", []):
+        if cid not in deck1:
+            soucis.append(f"{cid} absent du deck du joueur 2 (deck = {deck1})")
+    for cid in attendu.get("defausse_siege1_sans", []):
+        if cid in defausse1:
+            soucis.append(f"{cid} encore dans la defausse du joueur 2 (defausse = {defausse1})")
+    for cid in attendu.get("defausse_siege1_avec", []):
+        if cid not in defausse1:
+            soucis.append(f"{cid} absent de la defausse du joueur 2 (defausse = {defausse1})")
+    for cid in attendu.get("deck_siege0_sans", []):
+        if cid in deck0:
+            soucis.append(f"{cid} dans le deck du joueur 1 : l'action a servi le mauvais joueur")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "multi conforme"
+'''
