@@ -247,28 +247,7 @@ CAS += [
        [], ["Puzzle.Boost('sl027')"], {"menace": [["sl001b", 4]]}),
 ]
 
-import os as _os
-if _os.environ.get("SLA_SONDE"):
-    import copy as _copy
-    _cas = [c for c in CAS if c["nom"].startswith("[sla] " + _os.environ["SLA_SONDE"])]
-    CAS = []
-    for _c in _cas:
-        _c = _copy.deepcopy(_c); _c["nom"] = "[slaS] " + _c["nom"][6:]; _c["verifier"] = "sla_sonde"; CAS.append(_c)
-
 VERIFICATIONS = r'''
-def sla_sonde(monde, aides):
-    lignes = []
-    for obj in monde.object_manager.card_dict.values():
-        f = getattr(obj, "face", None)
-        if f is not None and f.IsInPlay():
-            try:
-                lignes.append(f"{f.paper.card_id}:{f.max_health - f.health}/{f.max_health}")
-            except Exception:
-                lignes.append(f"{f.paper.card_id}")
-    main = [str(f.paper.card_id) for f in monde.players[0].hand_cards.GetAll()]
-    disc = [str(f.paper.card_id) for f in monde.players[0].discard_pile.Get()]
-    return False, "EN JEU " + " ".join(lignes) + " MAIN " + " ".join(main) + " DEFAUSSE " + " ".join(disc)
-
 def sla_etat(monde, aides):
     """sl_etat (shadowland.py) + `vilain_id` (la FACE du vilain en jeu), `deck_rencontre` (taille du deck de rencontre du vilain), `defausse_rencontre_taille`, `defausse_rencontre_n` [[card_id, n]]."""
     from game.operate.worlds import Worlds as _W

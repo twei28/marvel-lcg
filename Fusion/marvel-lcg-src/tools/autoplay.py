@@ -669,6 +669,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # jamais rendre "bloquee". Aucun code a changer.
             deja_prise = (ctx.get("actes_du_round") or {}).get(nom, 0)
             fixe = 20.0 / (1.0 + deja_prise)
+            # ⚠ AJOUT 22/10/2026 (Shadowland, sl004a/b « HERO POSITION ») : l'Action du premier joueur se RETOURNE apres usage, donc elle
+            # est de nouveau offerte juste apres : le pilote la reprenait a chaque ask (3 menaces ou 3 degats a chaque fois), partie
+            # perdue au round 1. Les trois effets sont des COUTS (3 menaces, 3 degats a soi, defausse d'un allie) : le pilote, qui ne sait pas les
+            # chiffrer, ne la prend jamais (les cas test_capacites [sl] couvrent ses six branches).
+            if nom == "First_Player_Action" and str(infos_carte(ctx, option.get("bind_id")).get("card_id") or "").startswith("sl004"):
+                fixe = 0.0
 
         if fixe is not None:
             return fixe
