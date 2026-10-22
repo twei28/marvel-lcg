@@ -125306,7 +125306,9 @@
     "SCH": "3",
     "ATK": "4",
     "HP": "25*",
-    "Retaliate": "1"
+    "Steady": "1",
+    "Retaliate": "1",
+    "Toughness": "1"
    },
    "traits": [
     "DEMON",
@@ -125363,7 +125365,6 @@
     "TargetThreat": "9*",
     "StartingThreat": "2*",
     "EscalationThreat": "1*",
-    "Acceleration": "1",
     "Stage": "2"
    },
    "traits": [],
@@ -125376,7 +125377,7 @@
    "name": "Dark Shroud",
    "subtitle": "",
    "desc": {
-    "ATK": "1",
+    "ATK+": "1",
     "Boost": "1"
    },
    "traits": [
@@ -125405,7 +125406,7 @@
    "name": "Mark of the Wicked",
    "subtitle": "",
    "desc": {
-    "ATK": "2",
+    "ATK+": "2",
     "Boost": "3"
    },
    "traits": [
@@ -125420,6 +125421,7 @@
    "name": "Pull of Power",
    "subtitle": "",
    "desc": {
+    "THW+": "2",
     "Boost": "2"
    },
    "traits": [
@@ -125439,7 +125441,7 @@
     "HP": "6",
     "Boost": "2",
     "Patrol": "1",
-    "Retaliate": "1"
+    "Retaliate": "2"
    },
    "traits": [
     "HAND",
@@ -125510,6 +125512,8 @@
    "name": "Veil of Nightmares",
    "subtitle": "",
    "desc": {
+    "StartingThreat": "5*",
+    "Hazard": "1",
     "Boost": "2"
    },
    "traits": [],
@@ -125633,5 +125637,5 @@
    "text": "<b>When Revealed</b>: Place 1 corruption counter on your Creeping Corruption. If it has the <b><i>OVERPOWERING</i></b> trait, place 1 threat on the main scheme; otherwise, take 1 damage.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or take 4 indirect damage."
   }
  ],
- "checksum": "5daf8175c3480acc5072cbd79f7187fbc0afabe5da6b1c0be3267f2c6701e9fc"
+ "checksum": "13004454f40be060f1e6c5360027bc6bbc0b97b2968835f8e7d01de00ce5ba74"
 }

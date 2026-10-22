@@ -1,0 +1,47 @@
+{
+    "version": "0.5.8",
+    "name": "Heart of Shadow",
+    "villain": [
+        "sl058",
+        "sl059"
+    ],
+    "expert": true,
+    "schemes": [
+        "sl060a,sl060b",
+        "sl061a,sl061b"
+    ],
+    "set_aside": [
+        "sl072a,sl072b",
+        "sl072a,sl072b",
+        "sl072a,sl072b",
+        "sl072a,sl072b"
+    ],
+    "encounters": [
+        "sl062",
+        "sl063",
+        "sl064",
+        "sl065",
+        "sl066",
+        "sl067",
+        "sl068",
+        "sl069",
+        "sl070",
+        "sl070",
+        "sl071",
+        "sl071",
+        "sl073",
+        "sl074",
+        "sl075",
+        "sl075",
+        "sl076",
+        "sl077",
+        "sl077",
+        "sl078",
+        "sl078"
+    ],
+    "encounter_sets": [
+        "standard",
+        "expert"
+    ],
+    "modular_sets": []
+}
