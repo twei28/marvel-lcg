@@ -11,7 +11,7 @@ from . import *
 # ⚠ Mots-pieges :
 #  - « Remove 1 counter -> » : le retrait est le COUT, paye avant le choix ; sans jeton l'Action n'est pas offerte ;
 #  - « any player » : `AnyPlayerCanDoThis` ; « each choice ONCE per group per round » : PAS une limite de l'Action (on peut l'utiliser deux fois par round si
-#    les deux choix sont differents) : memorise par (round, choix) sur le monde ; une table = un groupe ; l'Action n'est offerte que s'il reste un choix libre ;
+#    les deux choix sont differents) : memorise par (round, choix) sur le monde ; une table = un groupe ; l'Action n'est offerte que s'il reste un choix UTILISABLE (decision de l'utilisateur) ;
 #  - « a scheme » : n'importe quelle manigance ; « from YOUR hand » : la main du joueur qui declenche ; « reducing its cost by 1 » : -1 (cout en ressources) ;
 #  - le jeton est un jeton `counter` (comme pu141/pu143). La Pod Action (mode multi-tables, pas ici) y DEPLACERA un jeton de SOUTIEN : a convertir en `counter` a ce moment-la.
 
@@ -28,8 +28,14 @@ def GetAbilities() -> Sequence['Ability']:
             monde.pu148_choisis = set()
         return monde.pu148_choisis
 
-    def un_choix_libre(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
-        return len(deja_choisis(effect)) < 2
+    def un_choix_utilisable(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
+        """Decision de l'utilisateur (22/10/2026) : l'Action n'est offerte que s'il reste un choix REELLEMENT utilisable (le jeton n'est pas perdu pour rien) :
+        « retirer 2 menaces » (libre ce round) ou « jouer une carte » (libre ET une carte de la main du joueur est jouable)."""
+        choisis = deja_choisis(effect)
+        if MENACE not in choisis:
+            return True
+        joueur = message.player
+        return JOUER not in choisis and any(face.CanPlayBy(joueur) for face in joueur.hand_cards.Get())
 
     def action(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         Unused(message)
@@ -54,7 +60,7 @@ def GetAbilities() -> Sequence['Ability']:
         joueur.ChooseAbilities(effect, *options)
 
     return [
-        AbilityFactory.WhenInYourPlayTurn(AbilityType.Action, action, conditions=[un_choix_libre])
+        AbilityFactory.WhenInYourPlayTurn(AbilityType.Action, action, conditions=[un_choix_utilisable])
         .SetCostFunc(CostFunc.Counter("This", 1, 'counter'))
         .AnyPlayerCanDoThis(),
     ]

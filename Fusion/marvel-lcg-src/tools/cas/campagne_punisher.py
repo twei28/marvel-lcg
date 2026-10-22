@@ -251,11 +251,15 @@ CAS = [
     _k("pu148 Action, TEMOIN : sans compteur, l'Action n'est pas offerte (menace intacte)", "le retrait du compteur est un cout",
        [HEROS_K, "Puzzle.PlaceCounters('pu148', 'counter', -1)"], ["Puzzle.SetThreat('60161b', 5)"],
        {"compteurs": [["pu148", "counter", 0]], "menace": [["60161b", 5]]}, declencher_tolerant=["Puzzle.Action('pu148', 'Action')"]),
-    _k("pu148 : chaque choix UNE fois par round -> 3 Actions avec le meme choix : une seule retire 2 menaces (7 -> 5)",
+    _k("pu148, TEMOIN : seul le choix \u00ab jouer une carte \u00bb reste (menace deja choisie ce round) et la main n'a aucune carte jouable -> l'Action n'est PAS offerte, le jeton est conserve",
+       "decision de l'utilisateur : pas de jeton perdu pour rien", [HEROS_K, "Puzzle.PlaceCounters('pu148', 'counter', 2)"],
+       ["Puzzle.SetThreat('60161b', 7)", "Puzzle.Action('pu148', 'Action')"], {"menace": [["60161b", 5]], "compteurs": [["pu148", "counter", 2]]},
+       choisir_option="Remove_2_threat_from_a_scheme", declencher_tolerant=["Puzzle.Action('pu148', 'Action')", "Puzzle.Action('pu148', 'Action')"]),
+    _k("pu148 : chaque choix UNE fois par round -> 3 Actions avec le meme choix : une seule retire 2 menaces (7 -> 5), les suivantes ne sont pas offertes",
        "« each choice may only be chosen once per group per round » (temoin d'epuisement)",
        [HEROS_K, "Puzzle.PlaceCounters('pu148', 'counter', 2)"],
-       ["Puzzle.SetThreat('60161b', 7)", "Puzzle.Action('pu148', 'Action')", "Puzzle.Action('pu148', 'Action')"], {"menace": [["60161b", 5]]},
-       choisir_option="Remove_2_threat_from_a_scheme", declencher_tolerant=["Puzzle.Action('pu148', 'Action')"]),
+       ["Puzzle.SetThreat('60161b', 7)", "Puzzle.Action('pu148', 'Action')"], {"menace": [["60161b", 5]]},
+       choisir_option="Remove_2_threat_from_a_scheme", declencher_tolerant=["Puzzle.Action('pu148', 'Action')", "Puzzle.Action('pu148', 'Action')"]),
 ]
 
 VERIFICATIONS = r'''
