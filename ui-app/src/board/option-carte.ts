@@ -87,3 +87,57 @@ export function carteNommeeParOption(
     { playerId, actives: new Set(), catalogue }
   )
 }
+
+/**
+ * Les cartes que le moteur NE POSE PAS encore quand il fait choisir un lot.
+ *
+ * Mutant Genesis (campagne) : au scenario 1, chaque joueur choisit un ROLE —
+ * un lot de cinq ameliorations dont UNE sera tiree au hasard. Le moteur propose
+ * « Role: Brawler » (mut_gen/campaign.py, `ROLE_SETS`) sans aucune carte
+ * derriere : le survol montrait la manigance qui porte la question, ce qui ne
+ * dit rien du role (signale le 22/10/2026). Ces cartes ne sont dans aucune
+ * zone du monde, on les construit donc depuis leur identifiant, et on les
+ * montre TOUTES : tirer au hasard ne doit pas cacher ce qu'on choisit.
+ *
+ * ⚠ Copie de `ROLE_SETS` du moteur : a tenir ensemble.
+ */
+export const LOTS_DE_ROLE: Readonly<Record<string, readonly string[]>> = {
+  Brawler: ['32176', '32177', '32178', '32179', '32180'],
+  Commander: ['32181', '32182', '32183', '32184', '32185'],
+  Defender: ['32186', '32187', '32188', '32189', '32190'],
+  Peacekeeper: ['32191', '32192', '32193', '32194', '32195'],
+}
+
+/** Les cartes du lot que l'option designe (« Role: Brawler »), ou rien. */
+export function cartesDuLotParOption(
+  option: Option,
+  playerId: number,
+  catalogue: Catalogue
+): ScanCardProps[] | undefined {
+  const role = /^Role:\s*(.+)$/.exec(option.name.trim())?.[1]?.trim()
+  const lot = role ? LOTS_DE_ROLE[role] : undefined
+  if (!lot) return undefined
+  return lot.map((cardId) =>
+    toScanCard(
+      {
+        // Identifiant negatif : aucune carte du monde n'en porte.
+        id: -Number(cardId),
+        is_ready: true,
+        is_face_up: true,
+        visible_for_players: [playerId],
+        bind_object_id: 0,
+        name: cardId,
+        info: {},
+        traits: {},
+        buffs: {},
+        card_id: cardId,
+        pic_id: cardId,
+        down_card_ids: [],
+        card_type: catalogue.type(cardId) ?? 'Upgrade',
+        cost: 0,
+        resources: [],
+      },
+      { playerId, actives: new Set(), catalogue }
+    )
+  )
+}

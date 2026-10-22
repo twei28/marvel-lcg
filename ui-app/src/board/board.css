@@ -10070,3 +10070,21 @@
   cursor: pointer;
   white-space: nowrap;
 }
+
+/* Le lot d'un choix (« Role: Brawler ») : ses cartes cote a cote, au centre, devant le plateau (DemandeCentrale). */
+.apercu-lot {
+  position: fixed;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  z-index: 545;
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.62));
+}
+
+.apercu-lot .scan-card {
+  --card-w: min(230px, 17vw);
+  --inspect-scale: 1;
+}

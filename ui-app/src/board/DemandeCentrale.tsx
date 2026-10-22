@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEven
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { classeTonaliteAction } from './action-style'
 import type { Demande, Option } from './ask'
+import { createPortal } from 'react-dom'
 import { CarteApercu } from './Board'
 import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
@@ -43,6 +44,11 @@ type DemandeCentraleProps = {
    * carteDeLOption.
    */
   carteAuSurvol?: (option: Option) => ScanCardProps | undefined
+  /**
+   * Les cartes d'un LOT que l'option designe (« Role: Brawler » : les cinq ameliorations du role), montrees TOUTES
+   * au survol A LA PLACE de la carte porteuse (la manigance, qui ne dit rien du choix). Voir option-carte.ts.
+   */
+  cartesDuLot?: (option: Option) => ScanCardProps[] | undefined
   /** Le nom (francais si connu) de la carte qui porte l'option, comme dans la barre d'action. */
   nomPorteur?: (bindId: number) => string | undefined
   /**
@@ -439,6 +445,7 @@ export function DemandeCentrale({
   survolerOption,
   carteDeLOption,
   carteAuSurvol,
+  cartesDuLot,
   nomPorteur,
   texteCapacite,
   estEnMain,
@@ -471,6 +478,7 @@ export function DemandeCentrale({
   // compris). C'est LUI qui repond a « je ne sais pas ce que fait la carte » :
   // la vignette du bouton ne fait que la reconnaitre.
   const [carteRegardee, setCarteRegardee] = useState<ScanCardProps | undefined>(undefined)
+  const [lotRegarde, setLotRegarde] = useState<ScanCardProps[] | undefined>(undefined)
   const signature = useMemo(
     () => `${demande.event_name}|${demande.ability_type}|${options.map((option) => option.id).join(',')}`,
     [demande.ability_type, demande.event_name, options]
@@ -549,6 +557,7 @@ export function DemandeCentrale({
     const vise = options.find((option) => String(option.id) === zone?.dataset.optionId)
     if (!vise) {
       setCarteRegardee(undefined)
+      setLotRegarde(undefined)
       survolerOption?.(undefined)
       return
     }
@@ -557,18 +566,22 @@ export function DemandeCentrale({
 
   const quitterZone = () => {
     setCarteRegardee(undefined)
+    setLotRegarde(undefined)
     survolerOption?.(undefined)
   }
 
   const activerOption = (option: Option, carte?: ScanCardProps) => {
     // L'agrandissement s'ouvre MEME sur une option indisponible : savoir
     // pourquoi on ne peut pas la prendre demande de lire la carte.
-    setCarteRegardee(carte)
+    const lot = cartesDuLot?.(option)
+    setLotRegarde(lot)
+    setCarteRegardee(lot ? undefined : carte)
     if (!option.failure_reason) survolerOption?.(option)
   }
 
   const desactiverOption = (option: Option) => {
     setCarteRegardee(undefined)
+    setLotRegarde(undefined)
     if (!option.failure_reason) survolerOption?.(undefined)
   }
 
@@ -624,6 +637,7 @@ export function DemandeCentrale({
         }
       />
       {carteRegardee ? <CarteApercu carte={carteRegardee} /> : null}
+      {lotRegarde ? <ApercuLot cartes={lotRegarde} /> : null}
       </>
     )
   }
@@ -797,6 +811,19 @@ export function DemandeCentrale({
           texte francais. Il se monte dans <body> (portail) et passe devant ce
           panneau, comme il passe devant la table. */}
       {carteRegardee ? <CarteApercu carte={carteRegardee} /> : null}
+      {lotRegarde ? <ApercuLot cartes={lotRegarde} /> : null}
     </section>
+  )
+}
+
+/** Les cartes d'un lot, cote a cote, montees dans <body> comme l'apercu d'une carte (voir CarteApercu). */
+function ApercuLot({ cartes }: { cartes: readonly ScanCardProps[] }) {
+  return createPortal(
+    <div className="apercu-lot" aria-hidden="true">
+      {cartes.map((carte) => (
+        <ScanCard key={carte.id} {...carte} state="ready" highlight={false} />
+      ))}
+    </div>,
+    document.body
   )
 }

@@ -157,6 +157,25 @@ describe('DemandeCentrale — la carte au survol', () => {
   })
 })
 
+describe('DemandeCentrale — le lot d\'un choix (Role: Brawler, 22/10/2026)', () => {
+  it('montre les cartes du lot au survol, et PAS la carte porteuse', () => {
+    const lot = [1, 2, 3].map((n) => ({ ...scan, id: `lot${n}` }))
+    rendre({ carteAuSurvol: () => scan, cartesDuLot: () => lot })
+    fireEvent.mouseOver(screen.getByRole('button', { name: /Play|Jouer/ }))
+    expect(document.querySelectorAll('.apercu-lot .scan-card').length).toBe(3)
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+  })
+
+  it('referme le lot quand le pointeur quitte le bouton', () => {
+    rendre({ cartesDuLot: () => [scan] })
+    const bouton = screen.getByRole('button', { name: /Play|Jouer/ })
+    fireEvent.focus(bouton)
+    expect(document.querySelector('.apercu-lot')).not.toBeNull()
+    fireEvent.blur(bouton)
+    expect(document.querySelector('.apercu-lot')).toBeNull()
+  })
+})
+
 describe('DemandeCentrale — le nom de la carte porteuse', () => {
   it('prend le nom français fourni par le plateau', () => {
     rendre({ nomPorteur: () => 'Salto arrière' })

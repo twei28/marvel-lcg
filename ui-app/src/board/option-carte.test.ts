@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { catalogueVide } from './catalogue'
-import { carteNommeeParOption, cleNomCarte, indexerCartesMondeParNom } from './option-carte'
+import { carteNommeeParOption, cartesDuLotParOption, cleNomCarte, indexerCartesMondeParNom } from './option-carte'
 import type { Option } from './ask'
 import type { WorldCard } from './world'
 
@@ -91,5 +91,17 @@ describe('carteNommeeParOption', () => {
     // meme AskChooseOneText que les cartes.
     const parNomCourt = indexerCartesMondeParNom(new Map([[1, carte(1, 'R', 'x')]]))
     expect(carteNommeeParOption(option('R'), parNomCourt, 0, catalogueVide)).toBeUndefined()
+  })
+})
+
+describe('cartesDuLotParOption : le lot d\'un role (Mutant Genesis, 22/10/2026)', () => {
+  it('montre les cinq ameliorations du role choisi, sans les chercher dans le monde', () => {
+    const lot = cartesDuLotParOption(option('Role: Brawler', 99), 0, catalogueVide)
+    expect(lot?.map((c) => c.codeCarte)).toEqual(['32176', '32177', '32178', '32179', '32180'])
+  })
+
+  it('ne dit rien d\'une option qui n\'est pas un role', () => {
+    expect(cartesDuLotParOption(option('Role: Inconnu'), 0, catalogueVide)).toBeUndefined()
+    expect(cartesDuLotParOption(option('Defense'), 0, catalogueVide)).toBeUndefined()
   })
 })

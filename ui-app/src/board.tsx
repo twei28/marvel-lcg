@@ -106,7 +106,7 @@ import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
 import { autresFacesDe, kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
-import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
+import { cartesDuLotParOption, carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
   EvenementCentrale,
@@ -2111,6 +2111,11 @@ export function PagePartie({
   const carteDeLOption = useCallback(
     (option: Option) => carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue),
     [cartesMondeParNom, joueurActif, catalogue]
+  )
+  // Un choix de LOT (« Role: Brawler ») montre les cartes du lot, pas la carte porteuse.
+  const cartesDuLot = useCallback(
+    (option: Option) => cartesDuLotParOption(option, joueurActif, catalogue),
+    [joueurActif, catalogue]
   )
   // Au SURVOL d'un bouton de decision : la carte nommee si l'option en nomme
   // une, sinon la carte qui PORTE l'option (« Spider-Sense » sur une
@@ -4584,6 +4589,7 @@ export function PagePartie({
             survolerOption={setOptionSurvolee}
             carteDeLOption={carteDeLOption}
             carteAuSurvol={carteAuSurvol}
+            cartesDuLot={cartesDuLot}
             nomPorteur={nomPorteurFr}
             texteCapacite={texteCapaciteDeLOption}
             estEnMain={estEnMain}
@@ -4606,6 +4612,7 @@ export function PagePartie({
           survolerOption={setOptionSurvolee}
           carteDeLOption={carteDeLOption}
           carteAuSurvol={carteAuSurvol}
+          cartesDuLot={cartesDuLot}
           nomPorteur={nomPorteurFr}
           texteCapacite={texteCapaciteDeLOption}
           estEnMain={estEnMain}
@@ -4952,6 +4959,7 @@ export function PagePartie({
                   survolerOption={setOptionSurvolee}
                   carteDeLOption={carteDeLOption}
                   carteAuSurvol={carteAuSurvol}
+                  cartesDuLot={cartesDuLot}
                   nomPorteur={nomPorteurFr}
                   texteCapacite={texteCapaciteDeLOption}
                   estEnMain={estEnMain}
