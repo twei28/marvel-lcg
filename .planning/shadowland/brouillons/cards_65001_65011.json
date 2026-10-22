@@ -1,0 +1,194 @@
+[
+ {
+  "card_id": "sl001a",
+  "type": "MainScheme",
+  "name": "A Barricade of Blades",
+  "subtitle": "",
+  "desc": {
+   "Stage": "1"
+  },
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b>Contents</b>: Shadows in the Night, Dark Protégé, and Standard encounter sets. One modular encounter set <i>(Ninja Swarm)</i>.\n<b>Setup</b>: Put each The Streets Below environment into play. Set the Dark Protégé encounter set aside. Choose 1 random villain from that set and reveal its side A, then shuffle each card linked to that villain into the encounter deck."
+ },
+ {
+  "card_id": "sl001b",
+  "type": "MainScheme",
+  "name": "A Barricade of Blades",
+  "subtitle": "",
+  "desc": {
+   "StartingThreat": "2*",
+   "EscalationThreat": "1*",
+   "TargetThreat": "7*",
+   "Stage": "1"
+  },
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.\n<b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.\n<b>If the villain is defeated on side B, the players win the game.</b>"
+ },
+ {
+  "card_id": "sl002a",
+  "type": "MainScheme",
+  "name": "Fortress Lockdown",
+  "subtitle": "",
+  "desc": {
+   "Stage": "2"
+  },
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<i>While the forces on the outside hold the heroes back, ninjas on the inside lock every door and window.</i>\nIn expert mode, the villain gets +3[per_hero] hit points.\n<b>When Revealed</b>: Change the villain's position. Each player searches the encounter deck and discard pile for a minion and reveals it. <i>(Shuffle.)</i>"
+ },
+ {
+  "card_id": "sl002b",
+  "type": "MainScheme",
+  "name": "Fortress Lockdown",
+  "subtitle": "",
+  "desc": {
+   "StartingThreat": "2*",
+   "EscalationThreat": "1*",
+   "TargetThreat": "8*",
+   "Stage": "2"
+  },
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.\n<b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.\n<b>If the villain is defeated on side B, the players win the game.</b>\n<b>If this stage is completed, the players lose the game.</b>"
+ },
+ {
+  "card_id": "sl003a",
+  "type": "Environment",
+  "name": "The Streets Below",
+  "subtitle": "",
+  "desc": {},
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b><i>VILLAIN POSITION.</i></b>\nIf both positions are the same:\n• Each character gets +1 ATK.\nIf the positions are different:\n• Reduce the amount of damage each character takes from each attack by 1.\n• Threat cannot be removed from the main scheme."
+ },
+ {
+  "card_id": "sl003b",
+  "type": "Environment",
+  "name": "Atop the Tenshu",
+  "subtitle": "",
+  "desc": {},
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b><i>VILLAIN POSITION.</i></b>\nIf both positions are the same:\n• Each character gets +1 ATK.\nIf the positions are different:\n• Reduce the amount of damage each character takes from each attack by 1.\n• Threat cannot be removed from the main scheme."
+ },
+ {
+  "card_id": "sl004a",
+  "type": "Environment",
+  "name": "The Streets Below",
+  "subtitle": "",
+  "desc": {},
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b><i>HERO POSITION.</i></b>\n<b>First Player Action</b>: Resolve one of the effects below, then flip this card:\n• Place 3 threat on the main scheme and stun your identity.\n• Spend [physical] [physical] resources.\n• Spend 1 resource of any type and exhaust an <b><i>AERIAL</i></b> character you control."
+ },
+ {
+  "card_id": "sl004b",
+  "type": "Environment",
+  "name": "Atop the Tenshu",
+  "subtitle": "",
+  "desc": {},
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b><i>HERO POSITION.</i></b>\n<b>First Player Action</b>: Resolve one of the effects below, then flip this card:\n• Deal 3 damage to your identity.\n• Spend [energy] [energy] resources.\n• Discard an ally or upgrade you control."
+ },
+ {
+  "card_id": "sl005",
+  "type": "Minion",
+  "name": "* Black Tarantula",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "5",
+   "Boost": "3",
+   "Guard": "1"
+  },
+  "traits": [
+   "BRUTE",
+   "HAND"
+  ],
+  "set_name": "Shadows In The Night",
+  "text": "Guard.\n<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, Black Tarantula attacks you; otherwise, give the villain and Black Tarantula each a tough status card."
+ },
+ {
+  "card_id": "sl006",
+  "type": "Minion",
+  "name": "* Ghost Maker",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "2",
+   "HP": "4"
+  },
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "set_name": "Shadows In The Night",
+  "text": "<b>When Defeated</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, discard 1 card you control; otherwise, take 2 indirect damage.\n<b>[star] Boost</b>: If an ally is defending against this attack, reveal this minion."
+ },
+ {
+  "card_id": "sl007",
+  "type": "SideScheme",
+  "name": "Sealed Entrances",
+  "subtitle": "",
+  "desc": {
+   "StartingThreat": "4",
+   "Crisis": "1",
+   "Boost": "2",
+   "Assault": "1"
+  },
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "Assault. <i>(Basic thwarts against this scheme use ATK instead of THW.)</i>\n<b>When Defeated</b>: Change the villain's position if it has not changed this phase."
+ },
+ {
+  "card_id": "sl008",
+  "type": "SideScheme",
+  "name": "Strategic Positioning",
+  "subtitle": "",
+  "desc": {
+   "StartingThreat": "3*",
+   "Boost": "2"
+  },
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<i>Under Shadowland, the Hand rules the streets.</i>\nWhile the villain's position is The Streets Below, this scheme gains 1 acceleration icon ([acceleration]).\nWhile the villain's position is Atop the Tenshu, this scheme gains 1 hazard icon ([hazard])."
+ },
+ {
+  "card_id": "sl009",
+  "type": "SideScheme",
+  "name": "Surround the Fortress",
+  "subtitle": "",
+  "desc": {
+   "StartingThreat": "2*",
+   "Crisis": "1",
+   "Boost": "1"
+  },
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, place 1[per_hero] threat on the main scheme; otherwise, place 1[per_hero] threat here."
+ },
+ {
+  "card_id": "sl010",
+  "type": "Treachery",
+  "name": "Chaos in Hell's Kitchen",
+  "subtitle": "",
+  "desc": {},
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, place 2 threat on the main scheme; otherwise, take 2 damage.\n<b>[star] Boost</b>: Resolve this card's \"<b>When Revealed</b>\" ability."
+ },
+ {
+  "card_id": "sl011",
+  "type": "Treachery",
+  "name": "Moonlit Silhouette",
+  "subtitle": "",
+  "desc": {},
+  "traits": [],
+  "set_name": "Shadows In The Night",
+  "text": "<b>When Revealed (Alter-Ego)</b>: Change the villain's position if it has not changed this phase. You are confused.\n<b>When Revealed (Hero)</b>: If the villain's position is Atop the Tenshu, the villain schemes; otherwise, the villain attacks you."
+ }
+]
