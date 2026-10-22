@@ -70,26 +70,23 @@ def PeutPayerCorruption(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -
 
 
 def InterruptMoinsATQ(attaquant: str='This') -> 'Ability':
-    """L'Interruption commune de Krahllak (sl057-sl059) et de Retainer (sl068) : « When <X> attacks you, you may place 1 corruption counter on your Creeping
-    Corruption. If you do, <X> gets -3 ATK for this attack. » Le joueur attaque ET c'est lui qui decide (« you may ») : on lui pose la question ; sans Creeping
-    Corruption il n'y a rien a proposer."""
-    def interruption(effect: 'Effect', message: 'Message.WhenUnitWouldAttack') -> None:
+    """L'Interruption commune de Krahllak (sl057-sl059) et de Retainer (sl068) : « When <X> attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do,
+    <X> gets -3 ATK for this attack. » Modele hs142 (Interrupt d'une carte ENNEMIE quand elle vous attaque : `WhenUnitWouldAttack(Interrupt, .., against_player="You")`). Le « you may » EST la
+    fenetre d'Interruption du moteur (le joueur attaque l'accepte ou passe) : le jeton est le COUT (« If you do »), pose seulement s'il l'accepte et IMPAYABLE sans Creeping Corruption (la
+    capacite n'est alors pas offerte) ; l'effet ne fait que retirer 3 ATK a CETTE attaque."""
+    def a_une_creeping_corruption(effect: 'Effect', message: 'Message.WhenUnitWouldAttack') -> bool:
         joueur = message.GetAgainstPlayer()
-        if joueur is None or not PeutPlacerCorruption(joueur):
-            return
+        return joueur is not None and PeutPlacerCorruption(joueur)
 
-        def accepter(cibles: Sequence['CardFace']) -> None:
-            Unused(cibles)
-            if PlacerCorruption(effect, joueur):
-                if message.IsBasicAttack():
-                    message.GainATKForThisAttack(-3, effect)
+    def moins_trois(effect: 'Effect', message: 'Message.WhenUnitWouldAttack') -> None:
+        if message.IsBasicAttack():
+            message.GainATKForThisAttack(-3, effect)
+        else:
+            message.DealAdditionalDamage(-3, effect)
 
-        joueur.MayChooseOneAbility(
-            effect,
-            AbilityFactory.ForChoiceAbility("Place 1 corruption counter on your Creeping Corruption: -3 ATK for this attack", accepter),
-        )
-
-    return AbilityFactory.WhenUnitWouldAttack(AbilityType.Interrupt, attaquant, interruption, against_player="You")
+    return AbilityFactory.WhenUnitWouldAttack(
+        AbilityType.Interrupt, attaquant, moins_trois, against_player="You", conditions=[a_une_creeping_corruption],
+    ).SetCostFunc(CoutPlacerCorruption(1))
 
 
 def CartesControleesDefaussables(joueur: 'Player') -> List['CardFace']:
