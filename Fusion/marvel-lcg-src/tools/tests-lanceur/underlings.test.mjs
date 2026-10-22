@@ -112,7 +112,7 @@ test("MC×DC 2026 reel : 5 tuiles d'affaires a 2 sous-fifres (Jigsaw, Hobgoblin)
     assert.deepEqual(tuiles.map((t) => t.id), ["art_museum_heist", "the_getaway", "protection_racket", "the_raft_breakout", "stop_the_presses"]);
     for (const t of tuiles) assert.deepEqual(t.underlings.map((u) => u.id), ["jigsaw", "hobgoblin"]);
     assert.equal(libre.filter((s) => /^tracking_the_buyer_|^punishment_/.test(s.id)).length, 0);
-    // le reste : The Big Apple x2, La Chute du Roi, One Last Kill x2, les 4 defis
+    // le reste : The Big Apple x2, La Chute du Roi, One Last Kill x2 (les 4 defis vivent dans leur propre extension fan-made, 22/10/2026)
     const autres = libre.filter((t) => !t.interchangeable).map((s) => s.id).sort();
-    assert.deepEqual(autres, ["angry_birds", "its_a_trap", "kingsfall", "one_last_kill_hobgoblin", "one_last_kill_jigsaw", "rise_of_the_machines", "secret_agent", "the_big_apple", "the_big_apple_uptown"]);
+    assert.deepEqual(autres, ["kingsfall", "one_last_kill_hobgoblin", "one_last_kill_jigsaw", "the_big_apple", "the_big_apple_uptown"]);
 });

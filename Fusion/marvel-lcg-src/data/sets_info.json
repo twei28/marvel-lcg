@@ -1907,7 +1907,7 @@
   ],
   "max_id": "gs349"
  },
- "208. Custom (Punisher MC×DC 2026 « La ville ne dort jamais »)": {
+ "208. Custom (La ville ne dort jamais)": {
   "name": "punisher_mcdc_2026",
   "scenarios": [
    "art_museum_heist_jigsaw",
@@ -1925,10 +1925,6 @@
    "the_big_apple",
    "the_big_apple_uptown",
    "kingsfall",
-   "rise_of_the_machines",
-   "secret_agent",
-   "its_a_trap",
-   "angry_birds",
    "punishment_hobgoblin",
    "punishment_jigsaw",
    "tracking_the_buyer_art_museum_heist_hobgoblin",
@@ -1958,8 +1954,7 @@
    "locations_the_big_apple",
    "capos",
    "leads_the_big_apple",
-   "uptown_expansion",
-   "super_strength_attachments"
+   "uptown_expansion"
   ],
   "max_id": "pu283b",
   "manigances": [
@@ -1988,5 +1983,19 @@
    "tracking_the_buyer_the_raft_breakout_jigsaw"
   ]
  },
- "checksum": "124fabf9f42f5f9737702377906b9a726dbfeccb31a014c53d87292e1c3efdba"
+ "210. Custom (Challenges)": {
+  "name": "punisher_mcdc_2026",
+  "scenarios": [
+   "rise_of_the_machines",
+   "secret_agent",
+   "its_a_trap",
+   "angry_birds"
+  ],
+  "heroes": [],
+  "encounters": [
+   "super_strength_attachments"
+  ],
+  "max_id": "pu283b"
+ },
+ "checksum": "0337f76a98348b33ed029f0ad67b89ca46e126a9084e4cde71a5ae125b5521d2"
 }

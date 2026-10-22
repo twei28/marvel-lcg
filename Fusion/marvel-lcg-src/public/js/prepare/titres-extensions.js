@@ -29,6 +29,7 @@ export const TITRES_FR = {
     50: "Agents du S.H.I.E.L.D.",
     60: "Peur de Rien",
     90: "Set modulaire Ronan",
+    210: "Custom (Défis)",
 };
 
 /** Le numéro que porte une clé d'extension (« 12. Ant-Man » -> 12), ou null. */

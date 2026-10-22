@@ -67,6 +67,9 @@ export const AUTEURS_EXTENSIONS = {
     "gorr the god butcher": "BlueHG",
     // Le set « Custom (Shredder) » contient les cartes du scénario ET celles du set TMNT : le nom ne retrouve pas le créateur seul (18/10/2026).
     "shredder": "Inkwire",
+    // Campagne MC×DC 2026 (demande du 22/10/2026) : « La ville ne dort jamais (MCDC 2026) », et ses défis à part.
+    "la ville ne dort jamais": "MCDC 2026",
+    "challenges": "MCDC 2026",
 };
 
 /** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas. */
