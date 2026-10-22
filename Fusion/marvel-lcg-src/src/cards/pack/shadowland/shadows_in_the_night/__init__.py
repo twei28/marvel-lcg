@@ -93,3 +93,19 @@ def AbilitesComplotAvecVilainRetourne(*, plus_sch_expert: bool, plus_pv_expert: 
     if plus_pv_expert:
         capacites += AbilitesPvExpert()
     return capacites
+
+
+def CartesControlees(joueur: 'Player') -> List['CardFace']:
+    """« a card you control » en jeu : allies, ameliorations (y compris celles des allies) et soutiens. Ni l'identite ni la main."""
+    allies = [c for c in joueur.GetControlCharacters() if Ally.IsType(c)]
+    return allies + list(joueur.GetControlUpgrade()) + list(joueur.supports.Get())
+
+
+def ChangerSiPasChange(effect: 'Effect') -> None:
+    """« Change the villain's position if it has not changed this phase. » (9 cartes du set)"""
+    ChangerPositionVilain(effect, si_pas_change_cette_phase=True)
+
+
+def AuTenshu(effect: 'Effect') -> bool:
+    """« If the villain's position is Atop the Tenshu » (sinon : The Streets Below). Faux si la carte de position n'est pas en jeu."""
+    return PositionDuVilain(effect) == TENSHU

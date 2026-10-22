@@ -13,6 +13,15 @@ def _s(nom, pourquoi, mise, declencher, attendu, **cle):
     return cas
 
 
+def _t(nom, pourquoi, mise, declencher, attendu, forme_heros=True, **cle):
+    """Cas du scenario REEL `shadows_in_the_night` (graine 42 -> vilain Elektra sl014a), sans deck de rencontre superflu."""
+    cas = {"nom": "[sl] " + nom, "pourquoi": pourquoi, "scenario": "shadows_in_the_night", "heros": HEROS,
+           "mise_en_place": [*([FORME_HEROS] if forme_heros else []), *mise], "declencher": declencher, "verifier": "sl_etat", "attendu": attendu,
+           "main_exclusive": cle.pop("main_exclusive", ["01088"])}
+    cas.update(cle)
+    return cas
+
+
 def _pos(v, h):
     # une carte recto-verso se cree par PAIRE « visible,verso » (comme les complots « 56141a,56141b ») : sans le verso, Flip() ne fait rien
     autre = {"a": "b", "b": "a"}
@@ -103,6 +112,45 @@ CAS = [
      "scenario": "shadows_in_the_night_expert", "heros": "spider_man", "mise_en_place": [], "declencher": [], "verifier": "sl_etat", "attendu": {"vilain_pv_max": 18}, "main_exclusive": ["01088"]},
     {"nom": "[sl] expert, TEMOIN : en standard le meme vilain garde ses 15 PV", "pourquoi": "le bonus ne vaut qu'en expert",
      "scenario": "shadows_in_the_night", "heros": "spider_man", "mise_en_place": [], "declencher": [], "verifier": "sl_etat", "attendu": {"vilain_pv_max": 15}, "main_exclusive": ["01088"]},
+    # ------------------------------------------------------------------------------------------------------ sbires, manigances et traitrises de Shadows in the Night
+    # Scenario REEL, graine 42 = vilain ELEKTRA (sl014a). Position de depart : le vilain sur sl003a (The Streets Below) ; `Puzzle.Flip('sl003a')` le met sur sl003b (Atop the Tenshu)
+    # SANS compter comme un changement de cette phase.
+    _t("sl005 Black Tarantula revelee, vilain aux Streets : la position passe a Atop the Tenshu et elle ATTAQUE le joueur (ATQ 2 - 1 : les positions different, -1 degat par attaque)", "« Change ... if it has not changed this phase. If the position is Atop the Tenshu, Black Tarantula attacks you »",
+       [], ["Puzzle.Reveal('sl005')"], {"face_visible": [["sl003", "sl003b"]], "degats_identite": 1}, forme_heros=False),
+    _t("sl005, vilain deja Atop the Tenshu : la position passe aux Streets, pas d'attaque, le vilain ET Black Tarantula recoivent un statut Tough", "branche « otherwise »",
+       ["Puzzle.Flip('sl003a')"], ["Puzzle.Reveal('sl005')"], {"face_visible": [["sl003", "sl003a"]], "degats_identite": 0, "statuts": [["sl005", "Tough"], ["sl014a", "Tough"]]}, forme_heros=False),
+    _t("sl005, TEMOIN de la limite par phase : la position a DEJA change cette phase (stade 2A) -> elle ne rechange pas, elle attaque (1 degat : positions differentes)", "« if it has not changed this phase »",
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105')"], ["Puzzle.AdvanceMainScheme(1)", "Puzzle.Reveal('sl005')"], {"face_visible": [["sl003", "sl003b"]], "degats_identite": 1}, forme_heros=False),
+    _t("sl006 Ghost Maker vaincu, vilain aux Streets : la position passe a Atop the Tenshu -> le joueur defausse 1 carte qu'il controle (son allie)", "« If the villain's position is Atop the Tenshu, discard 1 card you control »",
+       ["Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.PutIntoPlay('sl006')"], ["Puzzle.Damage('sl006', 99)"], {"face_visible": [["sl003", "sl003b"]], "defausse": ["01075"], "degats_identite": 0}, cibles=["01075"]),
+    _t("sl006, vilain deja Atop the Tenshu : la position passe aux Streets -> 2 degats INDIRECTS au joueur, il garde son allie", "« otherwise, take 2 indirect damage »",
+       ["Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.PutIntoPlay('sl006')", "Puzzle.Flip('sl003a')"], ["Puzzle.Damage('sl006', 99)"], {"face_visible": [["sl003", "sl003a"]], "en_jeu": ["01075"], "degats_identite": 2}),
+    _t("sl007 Sealed Entrances vaincue : la position du vilain change (Streets -> Tenshu)", "« When Defeated : Change the villain's position if it has not changed this phase »",
+       ["Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.PutIntoPlay('sl007')", "Puzzle.SetThreat('sl007', 1)"], ["Puzzle.Thwart('01075')"], {"face_visible": [["sl003", "sl003b"]]}),
+    _t("sl007, TEMOIN : tant qu'elle n'est pas vaincue (menace 3, un contre de 2), la position ne bouge pas", "le changement n'a lieu qu'a la defaite",
+       ["Puzzle.PutIntoPlay('01075', under_control=True)", "Puzzle.PutIntoPlay('sl007')", "Puzzle.SetThreat('sl007', 3)"], ["Puzzle.Thwart('01075')"], {"face_visible": [["sl003", "sl003a"]]}),
+    _t("sl008 Strategic Positioning, vilain aux Streets : elle gagne 1 icone ACCELERATION (et pas d'aleas)", "« While the villain's position is The Streets Below, this scheme gains 1 acceleration icon »",
+       ["Puzzle.PutIntoPlay('sl008')"], [], {"icones": [["Acceleration", 1], ["Hazard", 0]]}),
+    _t("sl008, vilain Atop the Tenshu : elle gagne 1 icone ALEAS (et plus d'acceleration)", "« While ... Atop the Tenshu, this scheme gains 1 hazard icon »",
+       ["Puzzle.PutIntoPlay('sl008')", "Puzzle.Flip('sl003a')"], [], {"icones": [["Acceleration", 0], ["Hazard", 1]]}),
+    _t("sl009 Surround the Fortress revelee, vilain aux Streets : la position passe a Atop the Tenshu -> 1 menace (1 joueur) sur le complot PRINCIPAL", "« If Atop the Tenshu, place 1[per_hero] threat on the main scheme »",
+       [], ["Puzzle.Reveal('sl009')"], {"face_visible": [["sl003", "sl003b"]], "menace": [["sl001b", 3]]}),
+    _t("sl009, vilain deja Atop the Tenshu : la position passe aux Streets -> 1 menace sur CETTE manigance (2 au depart + 1 = 3), le complot principal ne bouge pas", "« otherwise, place 1[per_hero] threat here »",
+       ["Puzzle.Flip('sl003a')"], ["Puzzle.Reveal('sl009')"], {"face_visible": [["sl003", "sl003a"]], "menace": [["sl009", 3], ["sl001b", 2]]}),
+    _t("sl010 Chaos in Hell's Kitchen revelee, vilain aux Streets : la position passe a Atop the Tenshu -> 2 menaces sur le complot principal", "« If Atop the Tenshu, place 2 threat on the main scheme »",
+       [], ["Puzzle.Reveal('sl010')"], {"face_visible": [["sl003", "sl003b"]], "menace": [["sl001b", 4]], "degats_identite": 0}),
+    _t("sl010, vilain deja Atop the Tenshu : la position passe aux Streets -> le joueur subit 2 degats, le complot principal ne bouge pas", "« otherwise, take 2 damage »",
+       ["Puzzle.Flip('sl003a')"], ["Puzzle.Reveal('sl010')"], {"face_visible": [["sl003", "sl003a"]], "menace": [["sl001b", 2]], "degats_identite": 2}),
+    _t("sl011 Moonlit Silhouette revelee en ALTER-EGO : la position change (Streets -> Tenshu) et l'identite est CONFUSE", "« When Revealed (Alter-Ego) : Change ... You are confused »",
+       [], ["Puzzle.Reveal('sl011')"], {"face_visible": [["sl003", "sl003b"]], "statuts": [["01001b", "Confused"]]}, forme_heros=False),
+    _t("sl011 revelee en HEROS, vilain aux Streets : la position ne change PAS (rien d'imprime sur cette branche) et le vilain attaque le joueur", "« When Revealed (Hero) : ... otherwise, the villain attacks you »",
+       [], ["Puzzle.Reveal('sl011')"], {"face_visible": [["sl003", "sl003a"]], "exhausted": ["01001a"]}),
+    _t("sl011 revelee en HEROS, vilain Atop the Tenshu : le vilain MANIGANCE (au moins 1 menace de plus sur le complot, SCH 1 d'Elektra A)", "« If Atop the Tenshu, the villain schemes »",
+       ["Puzzle.Flip('sl003a')"], ["Puzzle.Reveal('sl011')"], {"face_visible": [["sl003", "sl003b"]], "menace": [["sl001b", 3]], "degats_identite": 0}),
+    _t("sl010 en BOOST : « Resolve this card's When Revealed ability » -> meme effet que la revelation (vilain aux Streets : position Tenshu et 2 menaces sur le complot)", "[star] Boost",
+       [], ["Puzzle.Boost('sl010')"], {"face_visible": [["sl003", "sl003b"]], "menace": [["sl001b", 4]]}),
+    _t("sl006 en boost SANS attaque ni allie qui defend : n'est PAS revelee", "« If an ally is defending against this attack, reveal this minion » : sans attaque, rien",
+       [], ["Puzzle.Boost('sl006')"], {"hors_jeu": ["sl006"]}),
 ]
 
 
