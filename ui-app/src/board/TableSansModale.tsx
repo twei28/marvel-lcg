@@ -681,7 +681,14 @@ function EventailAmeliorations({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [place, ids])
   if (!place) return null
+  // Les originales restent dans la pile du porteur : on les masque (la place est conservee) tant que
+  // l'eventail les montre, sinon chaque amelioration apparait deux fois.
+  const masquer = choix.map((c) => `.plateau-cadre .est-attachee:has(.scan-card[data-card-id="${c.carteId}"])`).join(',\n        ')
   return (
+    <>
+    <style>{`
+        ${masquer} { visibility: hidden !important; }
+      `}</style>
     <div
       className="tsm-eventail"
       role="group"
@@ -720,6 +727,7 @@ function EventailAmeliorations({
         )
       })}
     </div>
+    </>
   )
 }
 
