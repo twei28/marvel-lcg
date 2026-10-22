@@ -36,15 +36,6 @@
         "sl027"
     ],
     "encounters": [
-        "sl028",
-        "sl029",
-        "sl030",
-        "sl031",
-        "sl032",
-        "sl033",
-        "sl034",
-        "sl035",
-        "sl036",
         "sl041",
         "sl042",
         "sl043",
@@ -61,5 +52,7 @@
         "standard",
         "expert"
     ],
-    "modular_sets": []
+    "modular_sets": [
+        "ninja_swarm"
+    ]
 }

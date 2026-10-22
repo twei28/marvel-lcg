@@ -41,5 +41,7 @@
     "encounter_sets": [
         "standard"
     ],
-    "modular_sets": []
+    "modular_sets": [
+        "ninja_swarm"
+    ]
 }

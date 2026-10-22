@@ -280,3 +280,8 @@ def sla_etat(monde, aides):
         soucis.append(msg)
     return (False, " ; ".join(soucis)) if soucis else (True, "etat conforme")
 '''
+
+# Ces cas mesurent des cartes sur le scenario 1 SANS son modulaire Ninja Swarm (graine -> vilain, deck de rencontre prevu) : voir `sans_modulaires` dans test_capacites.py.
+for _c in CAS:
+    if _c.get("scenario") == "shadows_in_the_night":
+        _c["sans_modulaires"] = True

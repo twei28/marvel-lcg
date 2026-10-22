@@ -66056,7 +66056,10 @@ def executer_un_cas(game_dir, port, index):
     noms_heros = [cas["heros"]]
     if cas.get("heros2"):
         noms_heros.append(cas["heros2"])
-    scene = SceneLoader.NewScene(cas["scenario"], None, noms_heros, int(cas.get("graine", 42)))   # `graine` (22/10/2026) : tirages au hasard differents (vilain de Shadowland)
+    # `sans_modulaires` (22/10/2026, Shadowland) : le scenario SANS ses modulaires recommandes (Ninja Swarm) : les modulaires changent le nombre de cartes
+    # melangees avant le tirage du vilain, donc la graine donne un autre vilain.
+    sets_exacts = (["standard"] + (["expert"] if cas["scenario"].endswith("_expert") else [])) if cas.get("sans_modulaires") else None
+    scene = SceneLoader.NewScene(cas["scenario"], sets_exacts, noms_heros, int(cas.get("graine", 42)))   # `graine` (22/10/2026) : tirages au hasard differents (vilain de Shadowland)
     # ⚠ LE HARNAIS NE JOUE PAS LES MEMES REGLES QU'UNE VRAIE PARTIE.
     # `launcher.js` pousse `v16_all` des que « regles v1.6 » est coche (c'est
     # le cas par defaut), et `SetRule` bascule alors TOUS les `v16_*` :

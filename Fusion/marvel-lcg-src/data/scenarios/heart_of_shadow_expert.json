@@ -43,5 +43,7 @@
         "standard",
         "expert"
     ],
-    "modular_sets": []
+    "modular_sets": [
+        "ninja_swarm"
+    ]
 }
