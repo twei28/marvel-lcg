@@ -92,6 +92,13 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
   d'un mode (ville Punisher).
 
 ### E5. Création : assistant guidé, puis plateau libre
+**Avancement E5 (23/10)** : couche de données faite, interface pas commencée. Le brouillon de
+l'assistant et sa traduction en puzzle v2 vivent dans `public/js/prepare/puzzle-brouillon.js`
+(module pur, tourne sous Node ; mêmes commandes `Restore*` que la capture). Cas
+`brouillon_vers_moteur` : le puzzle produit en JS est monté par le moteur et sa capture redit
+la même chose. Décision (23/10, laissée à Claude) : le créateur s'ouvre depuis le panneau
+« Puzzles » (`puzzles.js`, bouton « Créer un puzzle »), en modale orange plein écran ; ce panneau
+est débranché du site à la demande de l'utilisateur, il se rallume à la livraison.
 Principe (décision du 22/10) : **hyper simple et intuitif**. Un assistant à ordre
 fixe, une étape par écran, barre de progression, bouton Retour, bouton Passer :
 toute étape est facultative et se règle avec des valeurs par défaut raisonnables.

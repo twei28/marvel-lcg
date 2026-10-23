@@ -535,6 +535,43 @@ def cas_capture_avertit_de_ce_qu_elle_ne_rend_pas():
     return "ok"
 
 
+def cas_brouillon_vers_moteur():
+    """Le brouillon de l'assistant (JS, sous Node) devient un puzzle v2 que le moteur monte tel quel ; sa capture redit la meme chose."""
+    brouillon = {
+        "title": "Essai", "description": "d", "difficulty": 2, "hints": ["h"], "villain": ["01094", "01095"],
+        "schemes": ["01097a,01097b"], "expert": False, "villainStage": 1,
+        "players": [{"identity": "01001b", "hand": ["01071"], "deck": ["01072", "01073"], "discard": ["01075"],
+                     "setAside": [], "state": {"health": 6, "exhausted": True}}],
+        "encounterDeck": [], "encounterDiscard": [], "setAside": [],
+        "villainState": {"health": 9, "statuses": [["Stunned", 1]]}, "schemeState": {"threat": 4},
+        "enJeu": [
+            {"kind": "ally", "card": "01059", "siege": 0, "state": {"health": 2}},
+            {"kind": "upgrade", "card": "01008", "siege": 0, "hostRef": "h0", "state": {"counters": [["web", 1]]}},
+            {"kind": "minion", "card": "01101", "siege": 0, "engaged": True, "state": {}},
+            {"kind": "upgrade", "card": "01098", "siege": 0, "host": 2, "state": {}},
+        ],
+        "firstPlayer": 0, "startPhase": "", "objectives": [{"kind": "defeat_villain"}], "objectivesMode": "all",
+        "solutionVisibility": "after",
+    }
+    script = ("import {brouillonVersPuzzle, erreursDuBrouillon} from %r;"
+              "const b = JSON.parse(process.argv[1]);"
+              "console.log(JSON.stringify({erreurs: erreursDuBrouillon(b), puzzle: brouillonVersPuzzle(b)}));"
+              % ("file://" + os.path.join(MOTEUR, "public", "js", "prepare", "puzzle-brouillon.js")))
+    r = subprocess.run(["node", "--input-type=module", "-e", script, json.dumps(brouillon)],
+                       capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stderr[-1500:]
+    sortie = json.loads(r.stdout)
+    assert sortie["erreurs"] == [], sortie["erreurs"]
+    puzzle = sortie["puzzle"]
+    c = capturer(puzzle)
+    texte = "\n".join(c["puzzle"]["puzzle_command"])
+    for attendu in ("'01059', 'ally'", "'01008', 'upgrade'", "'01101', 'minion'", "'01098', 'upgrade'",
+                    "health=9", "threat=4", "Puzzle.AdvanceVillain()"):
+        assert attendu in texte, (attendu, texte)
+    assert not c["avertissements"], c["avertissements"]
+    return "ok (%d commandes)" % len(puzzle["puzzle_command"])
+
+
 CAS = {n[4:]: f for n, f in sorted(globals().items()) if n.startswith("cas_")}
 
 
