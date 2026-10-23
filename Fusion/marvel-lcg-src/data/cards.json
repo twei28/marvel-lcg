@@ -81536,6 +81536,58 @@
    "text": "Team-Up (Daredevil and Elektra). Max 1 per deck.\nAttach to an enemy.\n<b>Hero Action</b> <i>(attack)</i>: Discard this card → deal 3 damage to attached enemy."
   },
   {
+   "card_id": "63034",
+   "type": "PlayerSideScheme",
+   "name": "* Double-Cross",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "StartingThreat": "2*",
+    "Class": "Justice",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Victory 0.\n<b>When Defeated</b>: If there is not already a copy of Double-Cross in the victory display, shuffle the set-aside Backstab, Misdirect, and Sabotage treachery cards into the top 10 cards of the encounter deck <i>(or the whole deck if there are fewer than 10 cards)</i>."
+  },
+  {
+   "card_id": "63035",
+   "type": "Treachery",
+   "name": "Backstab",
+   "subtitle": "",
+   "desc": {
+    "Linked": "Double-Cross"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Linked (Double-Cross).\n<b>When Revealed</b>: Deal 4 damage to the villain. This card gains surge.\n<hr />\n[star] <b>Boost</b>: If an enemy is activating, deal 2 damage to it. Otherwise, this card gains [boost][boost]."
+  },
+  {
+   "card_id": "63036",
+   "type": "Treachery",
+   "name": "Misdirect",
+   "subtitle": "",
+   "desc": {
+    "Linked": "Double-Cross"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Linked (Double-Cross).\n<b>When Revealed</b>: Heal 4 damage from an identity. This card gains surge.\n<hr />\n[star] <b>Boost</b>: Stun an enemy.\n<i>\"I slipped away just in time. The new recruit is taking the heat...for now.\"</i> —Sharon Carter"
+  },
+  {
+   "card_id": "63037",
+   "type": "Treachery",
+   "name": "Sabotage",
+   "subtitle": "",
+   "desc": {
+    "Linked": "Double-Cross"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Linked (Double-Cross).\n<b>When Revealed</b>: Remove 3 threat from the main scheme. This card gains surge.\n<hr />\n[star] <b>Boost</b>: Confuse an enemy.\n<i>\"Destroying the control panel now.\"</i> —Sharon Carter"
+  },
+  {
    "card_id": "63038",
    "type": "Ally",
    "name": "* Moondragon",
@@ -124570,5 +124622,5 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "023fe3a95e9b16d7e7cb2497c4677c2fb0f9fa5894641aad1ad90bfa876b653f"
+ "checksum": "68506586786818a5d2135a4fe073b4b82ac8cf6a7ceba1b2dee2f81a314e47ea"
 }
