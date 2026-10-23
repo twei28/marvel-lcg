@@ -2332,7 +2332,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // spider_man_2099 — * Electro (Minion, némésis)
   'sm015': "<b><i>Coup Rapide</i></b>. <b><i>Riposte</i></b> 1.\n[star] <b>Réponse forcée</b> : après qu'Electro vous attaque, défaussez les 4 cartes du dessus de votre deck. Subissez 1 dégât indirect pour chaque ressource [energy] défaussée ainsi.",
   // spider_man_2099 — Power Surge (Treachery, némésis, x2)
-  'sm016': "<b>Une fois révélée</b> : défaussez les 5 cartes du dessus de votre deck. Subissez autant de dégâts indirects qu'il y avait de ressources [energy] défaussées ainsi. Si 2 dégâts ou moins ont été infligés ainsi, cette carte gagne <b><i>Déferlement</i></b>.\n[star] <b>Renfort</b> : cette carte gagne +1 icône de renfort ([boost]) pour chaque ressource [energy] dans votre main.",
+  'sm016': "<b>Une fois révélée</b> : défaussez les 5 cartes du dessus de votre deck. Subissez autant de dégâts indirects qu'il y avait de ressources [energy] défaussées ainsi. Si 2 dégâts ou moins ont été infligés ainsi, cette carte gagne <b><i>Déferlement</i></b>.\n[star] <b>Boost</b> : cette carte gagne +1 icône de renfort ([boost]) pour chaque ressource [energy] dans votre main.",
   // spider_man_2099 — Charged (Attachment, némésis)
   'sm017': "<b><i>Attachez-la à votre identité.</i></b>\n<b>Réponse forcée</b> : après que vous défaussez un nombre quelconque de cartes du dessus de votre deck, subissez 1 dégât indirect.\n<b>Action de héros</b> : choisissez de subir 2 dégâts indirects ou de défausser une carte que vous contrôlez portant une ressource [energy] imprimée → défaussez cette carte.",
   // superior_spider_man — * Spider-Man (Hero)
@@ -2370,9 +2370,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // superior_spider_man — Goblin Protocol (SideScheme, némésis)
   'su015': "<i>Le réseau de surveillance de Spider-Man a été compromis : les criminels passent désormais inaperçus !</i>\nLa menace posée sur les sbires pistés compte dans le seuil de la manigance principale. La menace posée ici ne peut être retirée ni par les Spider-Bots ni par le pistage.",
   // superior_spider_man — * Hobgoblin (Minion, némésis)
-  'su016': "Machiavélique.\n[star] <b>Réponse forcée</b> : après qu'Hobgoblin vous attaque, subissez 2 dégâts indirects.\n<i>(Sbire némésis de Spider-Man.)</i>\n<hr />\n[star] <b>Renfort</b> : subissez 2 dégâts indirects.",
+  'su016': "Machiavélique.\n[star] <b>Réponse forcée</b> : après qu'Hobgoblin vous attaque, subissez 2 dégâts indirects.\n<i>(Sbire némésis de Spider-Man.)</i>\n<hr />\n[star] <b>Boost</b> : subissez 2 dégâts indirects.",
   // superior_spider_man — Lunatic Laugh (Treachery, némésis)
-  'su017': "<b>Une fois révélée</b> : subissez 2 dégâts indirects. Désorientez chaque personnage blessé ainsi.\n<hr />\n[star] <b>Renfort</b> : chaque joueur subit 1 dégât indirect.",
+  'su017': "<b>Une fois révélée</b> : subissez 2 dégâts indirects. Désorientez chaque personnage blessé ainsi.\n<hr />\n[star] <b>Boost</b> : chaque joueur subit 1 dégât indirect.",
   // superior_spider_man — Goblin Glider (Attachment, némésis)
   'su018': "Attachez-la à l'ennemi ayant le plus de points de vie imprimés et ne portant pas déjà un Goblin Glider. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>.\n<b>Action de héros</b> : dépensez [energy][energy] → défaussez cette carte.",
   // superior_spider_man — Pumpkin Bombs (Attachment, némésis)
@@ -4918,7 +4918,18 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '64031': "<b>Action</b> : soignez 1 dégât d'un personnage [[ARTISTE MARTIAL]]. Ensuite, si ce personnage n'a plus aucun dégât, soignez 1 dégât d'un autre personnage.",
   '64032': "[star] Réduction 2 ([[ARTISTE MARTIAL]]).\n1 max par joueur.\nChaque allié [[ARTISTE MARTIAL]] que vous contrôlez subit 2 dégâts consécutifs ([consequential]) de moins après avoir vaincu exactement un ennemi ou une manigance annexe.",
   '64033': "Cette carte génère une ressource [physical] pour chaque personnage [[DÉFENSEUR]] que vous contrôlez (maximum 4) et peut être dépensée pour un autre joueur dont l'identité a le trait [[DÉFENSEUR]].",
-  '63027': "En Équipe (Daredevil et Elektra).\nMax 1 par deck.\nAttachez cette carte à un ennemi.\n<b>Action de héros</b> (<i>attaque</i>) : défaussez cette carte → infligez 3 dégâts à l'ennemi attaché.",
+  '63015': "Shang-Chi entre en jeu avec 10 jetons anneau.\n<b>Action</b> : retirez 1 jeton anneau de cette carte → infligez 1 dégât à un ennemi. (Limite de deux fois par round.)",
+  '63016': "[star] Malveillant. <i>(Quand ce personnage utilise un pouvoir de base, donnez-lui une carte de renfort.)</i>",
+  '63021': "[star] Réduction 1 ([[ARTISTE MARTIAL]]).\nUtilisations (3 jetons Shuriken). <i>(Entre en jeu avec 3 jetons. Quand il n'y en a plus, défaussez cette carte)</i>\n<b>Action de héros</b> : retirez 1 jeton shuriken de cette carte → infligez 1 dégât à un ennemi.",
+  '63022': "<b>Réponse</b> : après que Stone a vaincu exactement un ennemi ou une manigance annexe, soignez 2 dégâts de Stone.",
+  '63023': "<b>Action de héros</b> : cherchez parmi les 8 cartes du dessus du deck de rencontre une carte et mettez-la de côté. Mélangez le deck de rencontre et placez la carte mise de côté sur le dessus.",
+  '63034': "Victoire 0.\n<b>Une fois déjouée</b> : s'il n'y a pas déjà un exemplaire de Double-Cross dans l'affichage de victoire, mélangez les cartes Traîtrise Backstab, Misdirect et Sabotage mises de côté parmi les 10 cartes du dessus du deck de rencontre <i>(ou tout le deck s'il y a moins de 10 cartes)</i>.",
+  '63035': "Liée (Double-Cross).\n<b>Une fois révélée</b> : infligez 4 dégâts au méchant. Cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : si un ennemi est en train d'activer, infligez-lui 2 dégâts. Sinon, cette carte gagne [boost][boost].",
+  '63036': "Liée (Double-Cross).\n<b>Une fois révélée</b> : soignez 4 dégâts d'une identité. Cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : sonnez un ennemi.\n<i>« J'ai filé juste à temps. La nouvelle recrue encaisse... pour l'instant. »</i> — Sharon Carter",
+  '63037': "Liée (Double-Cross).\n<b>Une fois révélée</b> : retirez 3 menaces du complot principal. Cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : désorientez un ennemi.\n<i>« Je détruis le panneau de contrôle. »</i> — Sharon Carter",
+  '63038': "[star] <b>Interruption</b> : quand Moondragon utilise un pouvoir de base, choisissez un nombre de 1 à 3. Moondragon obtient +X à ce pouvoir et subit +X dégâts consécutifs ([consequential]) pour cet usage, X étant égal au nombre choisi.",
+  '63039': "<b>Interruption</b> : quand Moon Knight défend, dépensez jusqu'à 3 ressources → si vous en avez dépensé au moins 1 :\n[energy] — Prévenez 2 dégâts de cette attaque.\n[mental] — Défaussez 1 carte de renfort de l'attaquant.\n[physical] — Infligez 2 dégâts à l'attaquant.",
+  '63027': "En Équipe (Daredevil et Elektra).\n1 max par deck.\nAttachez cette carte à un ennemi.\n<b>Action de héros</b> (<i>attaque</i>) : défaussez cette carte → infligez 3 dégâts à l'ennemi attaché.",
   '63020': "Prérequis ([[ARTISTE MARTIAL]]).\n1 max par joueur.\n<b>Réponse de héros</b> : après que vous avez attaqué et vaincu exactement un ennemi, défaussez cette carte → piochez 3 cartes.",
   '63019': "[star] Réduction 1 ([[ARTISTE MARTIAL]]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Sonnez ou désorientez cet ennemi.",
   '63018': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi est vaincu, infligez 2 dégâts à un deuxième ennemi. Si cet ennemi est vaincu, infligez 3 dégâts à un troisième ennemi.",
