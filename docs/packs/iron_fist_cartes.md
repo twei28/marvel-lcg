@@ -457,7 +457,7 @@ Ce qui a changé techniquement :
   sont rangés DANS la liste `iron_fist`, APRÈS leurs sources : le chargeur (`CardsDB.Initialize`) copie le papier de la source et plante (`KeyError`) si la source n'est pas
   encore chargée ; or `drs`, `vision`, `luke_cage` et `cw` (où se trouvait `56044`) précèdent `iron_fist` dans le fichier. `56044` est repointé vers `64017`.
   Les quatre cartes TMNT sont RETIRÉES de `cards.json` et déclarées dans `data/arts_alternatifs.json` (`"64013": ["tmnt"]`...), image `64013_tmnt.jpg` copiée depuis
-  `up015.jpg` (outil `convertir_reskins_art_seul.py` rejoué à la main sur ces seules quatre cartes : les trois autres « art seul » `ub011`, `ub016`, `ub054` n'ont PAS été touchées) ;
+  `up015.jpg` (outil `convertir_reskins_art_seul.py` rejoué à la main sur ces seules quatre cartes : les trois autres « art seul » `ub011`, `ub016`, `ub054` n'ont PAS été touchées, et c'est VOLONTAIRE : ce sont les ressources Basic Energy/Genius/Strength, identiques à `01088`/`01089`/`01090` ; elles forment la collection de ressources « tmnt » choisie à la préparation, comme Gwenpool ou Howard (`RESSOURCES_DOUBLES` dans `convertir_reskins_art_seul.py`). Décision de l'utilisateur du 23/10/2026 : les laisser telles quelles) ;
   origines renseignées dans `tools/tmnt_aspects_numerotation.tsv` ; tables d'arts régénérées (`generer_arts_cartes.py`).
 - **Cas** : les cas `[up]` des quatre ex-TMNT (`tools/cas/tmnt_aspect_protection.py`) pointent maintenant les nouveaux identifiants ; les trois réimpressions du coeur du jeu
   (64015, 64017, 64024) n'avaient aucun cas « sujet » : 10 cas ajoutés dans `tools/cas/iron_fist_aspects.py`.
