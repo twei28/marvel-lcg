@@ -159,6 +159,18 @@ Règles de conception :
 - Prévoir l'affichage « expire dans N jours » dans Mes puzzles, et l'avertissement
   au créateur d'un puzzle proche de l'expiration (côté navigateur, à l'ouverture).
 
+**E7 FAIT (23/10)** : `site/puzzles_publies.py` (stockage SQLite, codes `PZ-XXXX`, clé d'édition dont seule
+l'empreinte est gardée, liste blanche de commandes de mise en place — ni `Win`, `Lose`, `End` ni
+`ValidateObjective` —, validation stricte du moteur à la publication ET à la lecture, cartes inconnues
+refusées, 28 jours depuis le dernier jeu, nettoyage paresseux), `site/api_puzzles.py` (routes
+`GET /api/puzzle/PZ-XXXX[?jouer=1]`, `POST /api/puzzle/publier`, `.../modifier`, `.../supprimer` ;
+CORS limité au domaine, ses sous-domaines et le jeu local ; freins par adresse : 10 publications par
+heure) branchées dans `orchestrateur.py` (`do_GET`, `do_POST`, `do_OPTIONS`). Tests :
+`python3 site/test_puzzles_publies.py` (53), `python3 site/test_api_puzzles.py` (serveur HTTP réel),
+`python3 outils/test_puzzle_format.py` (garde-fou : défauts et commandes permises vs moteur).
+**Pas déployé** : la route `/api/puzzle/` n'existe sur le site qu'après déploiement ; Caddy n'a rien
+à changer (même service que le site). Restent : « Mes puzzles » (E9), l'envoi depuis l'assistant (E6).
+
 ### E8. Résolution
 - Écran d'intro (titre, histoire, difficulté, objectif) puis plateau.
 - Bandeau d'objectif repliable ; indices un par un ; annuler et recommencer

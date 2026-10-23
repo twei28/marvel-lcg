@@ -5631,6 +5631,18 @@ def _portrait_vilain(slug: str) -> bytes | None:
         return None
 
 
+# --- Puzzles publies (E7, docs/puzzle/PLAN.md) : la logique est dans puzzles_publies.py et api_puzzles.py.
+_PUZZLES_PUBLIES = []
+
+
+def puzzles_publies():
+    """Le serveur de puzzles, cree au premier appel (il charge le catalogue des cartes)."""
+    if not _PUZZLES_PUBLIES:
+        import puzzles_publies as _pp
+        _PUZZLES_PUBLIES.append(_pp.PuzzlesPublies(BASE))
+    return _PUZZLES_PUBLIES[0]
+
+
 class Handler(BaseHTTPRequestHandler):
 
     @property
@@ -6579,7 +6591,32 @@ class Handler(BaseHTTPRequestHandler):
                    html.escape(r["description"] or "").replace("\n", "<br>"),
                    image, journal, fil, boutons))
 
+    def _api_puzzle(self, methode: str) -> bool:
+        """Les routes /api/puzzle/... : JSON, sans compte ni cookie. Vrai si la route est la leur."""
+        import api_puzzles
+        if not api_puzzles.est_route_puzzle(self.chemin):
+            return False
+        corps = b""
+        if methode == "POST":
+            taille = self._taille_corps()
+            if taille < 0 or taille > api_puzzles.CORPS_MAX_OCTETS:
+                self._corps_refuse()
+                return True
+            corps = self.rfile.read(taille)
+        statut, contenu, entetes = api_puzzles.traiter(
+            puzzles_publies(), methode, self.chemin, self.parametres, corps, self._adresse_client(),
+            self.headers.get("Origin", ""), DOMAINE)
+        donnees = b"" if statut == 204 else json.dumps(contenu, ensure_ascii=False).encode("utf-8")
+        self._repondre(statut, donnees, "application/json; charset=utf-8", entetes)
+        return True
+
+    def do_OPTIONS(self):
+        if not self._api_puzzle("OPTIONS"):
+            self._repondre(404, b"", "text/plain; charset=utf-8")
+
     def do_GET(self):
+        if self._api_puzzle("GET"):
+            return
         self._poser_langue()
         pseudo = self._session()
         if self.chemin in ("/", "/index.html"):
@@ -6969,6 +7006,8 @@ class Handler(BaseHTTPRequestHandler):
                                  self.headers.get("Accept-Language") or ""))
 
     def do_POST(self):
+        if self._api_puzzle("POST"):
+            return
         self._poser_langue()
         # ⚠ L'ORDRE DE CES TROIS LIGNES EST LE CORRECTIF. On plafonne le corps
         # AVANT de le lire, et on identifie qui parle AVANT de le lire aussi.

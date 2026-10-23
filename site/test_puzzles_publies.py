@@ -14,6 +14,7 @@ ICI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ICI)
 
 import puzzles_publies as pp  # noqa: E402
+from puzzle_exemple import PUZZLE  # noqa: E402
 
 echecs = []
 
@@ -35,18 +36,6 @@ def refuse(nom, serveur, donnees, morceau, statut=400):
     else:
         cas(nom, "publié", "refusé")
 
-
-PUZZLE = {
-    "version": "0.5.8", "author": "", "cover": "01094", "comment": "", "seed": 1,
-    "villain": ["01094"], "schemes": ["01097a,01097b"], "encounter_deck": ["01110"],
-    "encounter_discard_pile": [], "set_aside": [], "expert": False,
-    "players": [{"identities": ["01001b"], "hand_cards": ["01071"], "player_deck": ["01072"],
-                 "player_discard_pile": [], "set_aside": [], "deck_name": "Spider-Man"}],
-    "puzzle_command": ["Puzzle.RestoreCard('e1', '01059', 'ally', siege=0, health=2)", "Puzzle.SetHealth('01094', 9)"],
-    "format": 2, "title": "Mon puzzle", "description": "d", "difficulty": 2, "hints": ["h"],
-    "objectives": [{"kind": "defeat_villain", "target": "", "text": ""}], "objectives_mode": "all",
-    "start_phase": "", "start_step": "", "first_player": 0, "solution_visibility": "after", "has_solution": False,
-}
 
 temps = [1_000_000.0]
 with tempfile.TemporaryDirectory() as dossier:
