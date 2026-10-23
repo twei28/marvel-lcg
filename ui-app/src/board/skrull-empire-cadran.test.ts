@@ -58,6 +58,6 @@ describe("le cadran de PV de l'environnement Skrull Empire", () => {
     const collector = carteSurTable(10, '16080b', 'EncounterVillain', 'Collector', {
       info: { is_infinite_health: 1, health: 1, max_health: 0 },
     })
-    expect(toScanCard(collector, contexte()).allyHp).toBe('INF')
+    expect(toScanCard(collector, contexte()).allyHp).toBe('∞')
   })
 })

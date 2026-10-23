@@ -170,7 +170,7 @@ function pvAffiches(card: WorldCard, catalogue: Catalogue): string | undefined {
   // invulnerable (Collector, Hela), ce qu'il n'est pas.
   if ((card.info.pv_sur_environnement ?? 0) > 0) return undefined
 
-  if (card.info.is_infinite_health) return 'INF'
+  if (card.info.is_infinite_health) return '∞'
 
   const courants = nombre(card.info.health)
   if (courants === undefined) return undefined
@@ -223,7 +223,7 @@ function borne(part: number): number {
  */
 function jaugeAffichee(card: WorldCard, catalogue: Catalogue): CardGauge | undefined {
   if (porteDesPv(card)) {
-    // Des PV infinis ne se jaugent pas : la pastille dit deja « INF ».
+    // Des PV infinis ne se jaugent pas : la pastille dit deja « ∞ ».
     if (card.info.is_infinite_health) return undefined
     const courants = nombre(card.info.health)
     if (courants === undefined) return undefined

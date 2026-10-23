@@ -85,7 +85,7 @@ describe('Sets modulaires Skrull Menace : ce que leurs cartes dessinent', () => 
 
   // sk228 : PV infinis (badge ∞ du scan) : la pastille dit « INF », sans jauge.
   it('Shaper of Worlds montre « INF » et aucune jauge', () => {
-    expect(scan(monde(), SHAPER).allyHp).toBe('INF')
+    expect(scan(monde(), SHAPER).allyHp).toBe('∞')
     expect(scan(monde(), SHAPER).jauge).toBeUndefined()
   })
 
