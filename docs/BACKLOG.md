@@ -278,3 +278,9 @@ Aucune capture HD disponible ne contient ces cartes. Les arts alternatifs TMNT d
 
 **Décision de l'utilisateur (23/10/2026) : laisser les textes provisoires jusqu'au français officiel.** Les 33 textes des cartes d'aspect (`63015`-`63039` sauf les trous, `64013`-`64033`) sont une traduction de travail dans `ui-app/src/board/textes-fr-fanmade.ts`, avec le vocabulaire officiel du jeu (`traits-fr.ts`, textes des cartes déjà traduites). Il n'existe pas encore de version française officielle de ces deux paquets : quand elle sortira, remplacer chaque entrée par le texte officiel puis régénérer `public/js/traduction/textes-fr-fanmade.js` (`node ui-app/outils/generer-traduction-public.mjs`). Rien d'autre à faire d'ici là.
 
+---
+
+## À revérifier le 23/11/2026 (décision de l'utilisateur, 23/10/2026)
+
+Un mois après : regarder si des **scans HD** d'Iron Fist et d'Elektra existent (n°5) et si le **français officiel** de ces deux paquets est sorti (n°6). Si oui, remplacer ; sinon, reporter d'un mois.
+
