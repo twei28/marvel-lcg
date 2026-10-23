@@ -63,6 +63,26 @@
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
+/* Paire jumelle (The City + Never Sleeps) : les deux scans colles bord a bord, sans espace (23/10/2026). */
+.mep-paire {
+  display: flex;
+  gap: 0;
+}
+
+.mep-paire .mep-cadre {
+  width: min(300px, 45vw, calc((100vh - 230px) * 176 / 246));
+}
+
+.mep-paire .mep-cadre:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.mep-paire .mep-cadre:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
 .mep-cadre img {
   position: absolute;
   inset: 0;

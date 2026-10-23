@@ -201,6 +201,8 @@ export type ScanCardProps = {
    * agissent deja.
    */
   inactif?: boolean
+  /** Le mot de la pastille d'une carte `inactif` (defaut « En attente ») : « Autre territoire » pour le vilain d'une autre rangee de La ville. */
+  etiquetteInactif?: string
   /**
    * Identite du joueur ACTIF (hot-seat) : badge vert « Active » sur la carte,
    * pour voir d'un coup d'oeil quel heros a la main.
@@ -553,6 +555,7 @@ export function ScanCard({
   kind,
   estNemesis = false,
   inactif = false,
+  etiquetteInactif,
   estActif = false,
   crise,
   deckSpecial = false,
@@ -757,7 +760,7 @@ export function ScanCard({
       <div className="scan-visuel">
         <div className="top-strip">
           {typeMuet ? null : <span className={aLeJeton ? 'kind-pill est-premier-joueur' : 'kind-pill'}>{etiquette}</span>}
-          {inactif ? <span className="pastille-inactif">{t('En attente')}</span> : null}
+          {inactif ? <span className="pastille-inactif">{etiquetteInactif ?? t('En attente')}</span> : null}
           {estActif && !facedown ? <span className="pastille-actif">{t('Actif')}</span> : null}
           {crise && !facedown ? (
             <span className="pastille-crise" title={`${t('Crise : la menace ne peut pas être retirée d’ici tant que')} ${crise} ${t('est en jeu.')}`}>

@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
+import { ScanCardTraduite } from './traduction-carte'
 import type { Option } from './ask'
 import type { Catalogue } from './catalogue'
 import { toScanCard } from './card-model'
@@ -224,7 +225,7 @@ export function VoletVille({
           {carteSurvolee
             ? createPortal(
                 <div className="ville-apercu" aria-hidden="true">
-                  <ScanCard {...carteSurvolee} state="ready" highlight={false} masquerType />
+                  <ScanCardTraduite {...carteSurvolee} state="ready" highlight={false} masquerType />
                 </div>,
                 document.body
               )

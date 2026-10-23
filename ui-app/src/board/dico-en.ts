@@ -415,6 +415,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Environnement': 'Environment',
   'État': 'Status',
   'En attente': 'Waiting',
+  'Autre territoire': 'Other turf',
   'Actif': 'Active',
   'Accroché': 'Latched',
   'Mordu': 'Bitten',

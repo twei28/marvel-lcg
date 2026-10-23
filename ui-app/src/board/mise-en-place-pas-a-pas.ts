@@ -12,6 +12,8 @@ import type { World, WorldCard } from './world'
 import { estUneCarte } from './world'
 import { estFormeEnergieSpectrum } from './formes-energie-spectrum'
 import type { Fige } from './coups-sur-table'
+import { environnementVisible } from './ville-etat'
+import { PAIRES_JUMELLES } from './panorama-jumelles'
 
 export type GenreEtape = 'arrivee' | 'retournement' | 'degats' | 'menace'
 
@@ -53,14 +55,15 @@ export function cartesEnJeu(monde: World): CarteEnJeu[] {
   for (const carte of cartes(monde.area_villain)) liste.push({ carte })
   for (const carte of cartes(monde.area_schemes_main)) liste.push({ carte })
   for (const carte of cartes(monde.area_schemes_side)) liste.push({ carte })
-  for (const carte of cartes(monde.area_environment)) liste.push({ carte })
+  // La ville : la mise en place ne presente que le lieu de DEPART (Midtown), pas les neuf lieux (23/10/2026). Tous les joueurs y partent.
+  for (const carte of environnementVisible(monde, 0, cartes(monde.area_environment))) liste.push({ carte })
   for (const joueur of monde.players ?? []) {
     const heros = cartes(joueur.area_hero).find((c) => IDENTITES.has(c.card_type))
     for (const carte of cartes(joueur.engaged_enemies)) liste.push({ carte, engageAvec: heros?.name })
     for (const carte of cartes(joueur.area_hero)) liste.push({ carte })
     for (const carte of cartes(joueur.allies)) liste.push({ carte })
     for (const carte of cartes(joueur.supports)) liste.push({ carte })
-    for (const carte of cartes(joueur.environment_area)) liste.push({ carte })
+    for (const carte of environnementVisible(monde, (monde.players ?? []).indexOf(joueur), cartes(joueur.environment_area))) liste.push({ carte })
   }
   return liste
 }
@@ -313,4 +316,35 @@ export function avecFacesDAvant(monde: World, faces: AttenteSurTable['faces']): 
       return { ...c, pic_id: f.pic, card_id: f.code ?? c.card_id, info }
     }),
   }
+}
+
+/**
+ * Paire jumelle EN TETE de file (The City + Never Sleeps, 23/10/2026) : les deux cartes se montrent ENSEMBLE, collées bord à bord, la 1re à
+ * gauche, et un seul « Continuer » les pose toutes les deux. Le moteur les fait arriver dans deux trames différentes : la moitié pas encore
+ * arrivée est montrée d'après son code (son étape, quand elle arrive, est écartée par `sansMoitiesDejaMontrees`). `undefined` : la tête se
+ * montre seule.
+ */
+const estUneArrivee = (e: EtapeMiseEnPlace): boolean => e.genre === undefined || e.genre === 'arrivee'
+
+export function paireEnTete(file: readonly EtapeMiseEnPlace[]): { gauche: EtapeMiseEnPlace; droite: EtapeMiseEnPlace } | undefined {
+  const tete = file[0]
+  if (!tete || !estUneArrivee(tete)) return undefined
+  for (const paire of PAIRES_JUMELLES) {
+    if (tete.codeCarte !== paire.gauche && tete.codeCarte !== paire.droite) continue
+    const autreCode = tete.codeCarte === paire.gauche ? paire.droite : paire.gauche
+    const autre: EtapeMiseEnPlace = file.find((e) => estUneArrivee(e) && e.codeCarte === autreCode) ?? {
+      ...tete,
+      cle: `${tete.cle}-jumelle`,
+      carteId: -1,
+      picId: autreCode,
+      codeCarte: autreCode,
+    }
+    return tete.codeCarte === paire.gauche ? { gauche: tete, droite: autre } : { gauche: autre, droite: tete }
+  }
+  return undefined
+}
+
+/** Les arrivées d'une moitié de paire DÉJÀ montrée avec sa sœur ne se montrent pas une seconde fois. */
+export function sansMoitiesDejaMontrees(etapes: readonly EtapeMiseEnPlace[], montrees: ReadonlySet<string>): EtapeMiseEnPlace[] {
+  return etapes.filter((e) => !estUneArrivee(e) || !montrees.has(e.codeCarte))
 }

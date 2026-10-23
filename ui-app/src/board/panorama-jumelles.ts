@@ -27,6 +27,7 @@ export const PAIRES_JUMELLES: readonly PaireJumelle[] = [
   { gauche: 'td011', droite: 'td012' }, // Bo et Shell de Donatello (14/15 + 15/15), confirmee le 16/10/2026
   { gauche: 'ta009', droite: 'ta010' }, // Kama d'Alopex (14/16 + 15/16), confirmee le 16/10/2026
   { gauche: 'tj009', droite: 'tj010' }, // Tekko-Kagi de Jennika (14/16 + 15/16), confirmee le 16/10/2026
+  { gauche: 'pu005', droite: 'pu006' }, // The City + Never Sleeps (La ville ne dort jamais), confirmee le 23/10/2026 : deux ENVIRONNEMENTS posees sur la table, images recollees (.planning/mcdc-punisher/panorama-city.py)
 ]
 
 /** Cote ou se dessine cette carte dans son panneau, ou `undefined` si elle n'est dans aucune paire. */

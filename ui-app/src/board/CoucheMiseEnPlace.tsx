@@ -17,6 +17,8 @@ import { TraductionSurCarte, typeDeBoite } from './traduction-carte'
 import {
   etapesNouvelles,
   ordonnerRetournements,
+  paireEnTete,
+  sansMoitiesDejaMontrees,
   type EtapeMiseEnPlace,
   type MemoireMiseEnPlace,
   type Reglages,
@@ -41,6 +43,8 @@ export function useMiseEnPlacePasAPas(monde: World | undefined, etat: EtatMiseEn
   const memoire = useRef<MemoireMiseEnPlace>(new Map())
   const dernier = useRef<number | undefined>(undefined)
   const [file, setFile] = useState<EtapeMiseEnPlace[]>([])
+  // Les codes des moities de paire jumelle deja montrees ensemble (paireEnTete).
+  const montreesEnPaire = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     if (!monde) return
@@ -64,11 +68,12 @@ export function useMiseEnPlacePasAPas(monde: World | undefined, etat: EtatMiseEn
       setFile([])
       return
     }
-    if (!etat.enCours || etat.muet || etapes.length === 0) return
+    const aMontrer = sansMoitiesDejaMontrees(etapes, montreesEnPaire.current)
+    if (!etat.enCours || etat.muet || aMontrer.length === 0) return
     // Toute la file en attente se reordonne, tete comprise : une etape masquee
     // (choix de la tour de Tower Defense) n'a pas encore ete vue, et 2B y
     // attendait quand 1B est arrive.
-    setFile((f) => ordonnerRetournements([...f, ...etapes], monde, 0))
+    setFile((f) => ordonnerRetournements([...f, ...aMontrer], monde, 0))
   }, [monde, monde?.render_id, etat.enCours, etat.voile, etat.muet])
 
   // Plus de mise en place (partie lancée, ou finie avant d'y arriver) : ce qui
@@ -91,10 +96,23 @@ export function useMiseEnPlacePasAPas(monde: World | undefined, etat: EtatMiseEn
           panneauAnnexe: monde.confirm_side_scheme === true,
         }).etapes
 
-  const suivant = useCallback(() => setFile((f) => f.slice(1)), [])
+  // Une paire jumelle en tete passe d'un seul « Continuer » : ses deux etapes quittent la file ensemble.
+  const suivant = useCallback(
+    () =>
+      setFile((f) => {
+        const paire = paireEnTete(f)
+        if (!paire) return f.slice(1)
+        montreesEnPaire.current.add(paire.gauche.codeCarte)
+        montreesEnPaire.current.add(paire.droite.codeCarte)
+        return f.filter((e) => e !== paire.gauche && e !== paire.droite)
+      }),
+    []
+  )
+  const paire = paireEnTete(file)
   return {
     etape: file[0] as EtapeMiseEnPlace | undefined,
-    restantes: file.length,
+    paire,
+    restantes: paire && paire.gauche.carteId > 0 && paire.droite.carteId > 0 ? file.length - 1 : file.length,
     suivant,
     /** Les étapes pas encore validées, celle affichée comprise. */
     enAttente: apercu.length > 0 ? [...file, ...apercu] : file,
@@ -176,11 +194,14 @@ export function PlacesEnAttente({ ids }: { ids: ReadonlySet<number> }) {
 
 export function CoucheMiseEnPlace({
   etape,
+  paire,
   restantes,
   suivant,
   animations,
 }: {
   etape: EtapeMiseEnPlace | undefined
+  /** Paire jumelle en tete (paireEnTete) : les deux cartes se montrent collees. */
+  paire?: { gauche: EtapeMiseEnPlace; droite: EtapeMiseEnPlace }
   restantes: number
   suivant: () => void
   /** Animations permises (réglage du joueur, hors mode sobre). */
@@ -188,6 +209,7 @@ export function CoucheMiseEnPlace({
 }) {
   const cadre = useRef<HTMLDivElement>(null)
   const [enVol, setEnVol] = useState(false)
+  const cadreDroite = useRef<HTMLDivElement>(null)
 
   const continuer = useCallback(() => {
     if (!etape || enVol) return
@@ -195,15 +217,21 @@ export function CoucheMiseEnPlace({
       setEnVol(false)
       // La place se remplit (pointillés retirés, jeton mis à jour), puis la suivante.
       suivant()
-      marquer(etape.carteId, animations)
+      if (paire) {
+        marquer(paire.gauche.carteId, animations)
+        marquer(paire.droite.carteId, animations)
+      } else marquer(etape.carteId, animations)
     }
     if (!animations) {
       poser()
       return
     }
     setEnVol(true)
-    glisser(cadre.current, etape.carteId, poser)
-  }, [etape, enVol, animations, suivant])
+    if (paire) {
+      glisser(cadreDroite.current, paire.droite.carteId)
+      glisser(cadre.current, paire.gauche.carteId, poser)
+    } else glisser(cadre.current, etape.carteId, poser)
+  }, [etape, paire, enVol, animations, suivant])
 
   useEffect(() => {
     if (!etape) return
@@ -219,7 +247,6 @@ export function CoucheMiseEnPlace({
   }, [etape, continuer])
 
   if (!etape) return null
-  const src = scanUrl(etape.picId)
   const detail = etape.detail
   let ligne: string | null = null
   if (detail?.cle === 'héros') ligne = `${t('Engagé avec')} ${detail.valeur}`
@@ -231,16 +258,14 @@ export function CoucheMiseEnPlace({
     <div className={`mep-couche${animations ? ' est-anime' : ''}${enVol ? ' est-en-vol' : ''}`} role="dialog" aria-modal="true" aria-label={t('Mise en place')}>
       <div className="mep-contenu" key={etape.cle}>
         <p className="mep-titre">{t('Mise en place')}</p>
-        <div ref={cadre} className={`mep-cadre${etape.paysage ? ' est-paysage' : ''}`}>
-          <img src={src} alt={etape.legende} />
-          <TraductionSurCarte
-            codeCarte={etape.codeCarte}
-            imageUrl={src}
-            traits={etape.traits}
-            type={typeDeBoite(etape.type)}
-            paysage={etape.paysage}
-          />
-        </div>
+        {paire ? (
+          <div className="mep-paire">
+            <CadreEtape etape={paire.gauche} cadre={cadre} />
+            <CadreEtape etape={paire.droite} cadre={cadreDroite} />
+          </div>
+        ) : (
+          <CadreEtape etape={etape} cadre={cadre} />
+        )}
         <p className="mep-legende">{t(etape.legende)}</p>
         {ligne ? <p className="mep-detail">{ligne}</p> : null}
         <button type="button" className="mep-continuer" onClick={continuer} autoFocus>
@@ -248,6 +273,23 @@ export function CoucheMiseEnPlace({
           {restantes > 1 ? <span className="mep-reste"> · {restantes - 1}</span> : null}
         </button>
       </div>
+    </div>
+  )
+}
+
+/** Le grand scan d'une etape, avec sa traduction posee. */
+function CadreEtape({ etape, cadre }: { etape: EtapeMiseEnPlace; cadre: React.RefObject<HTMLDivElement | null> }) {
+  const src = scanUrl(etape.picId)
+  return (
+    <div ref={cadre} className={`mep-cadre${etape.paysage ? ' est-paysage' : ''}`}>
+      <img src={src} alt={etape.legende} />
+      <TraductionSurCarte
+        codeCarte={etape.codeCarte}
+        imageUrl={src}
+        traits={etape.traits}
+        type={typeDeBoite(etape.type)}
+        paysage={etape.paysage}
+      />
     </div>
   )
 }

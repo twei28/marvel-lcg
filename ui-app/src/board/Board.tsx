@@ -526,6 +526,8 @@ function Emplacement({
             // tous les autres emplacements (`groupesPiles` n'est fourni que
             // par `terrain-combat`, zones.ts).
             data-pile={emplacement.groupesPiles?.[index]}
+            // Les environnements ne se chevauchent JAMAIS (23/10/2026) : la regle de compression des lignes chargees (board.css) les exclut.
+            data-brique={emplacement.groupesBriques?.[index]}
             // Le siege du joueur a qui est ce groupe (lot 5 du 06/10/2026) :
             // une carte lachee dedans, en mode manuel, arrive chez lui.
             data-joueur={emplacement.proprietaires?.[index]}

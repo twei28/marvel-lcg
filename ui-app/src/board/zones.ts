@@ -19,6 +19,7 @@ import { t } from './langue'
 import { trouverPaire, type CotePanorama } from './panorama-jumelles'
 import type { CleBrique } from './table-briques'
 import { collectionPourJoueur, lireArtsRessources } from './variantes'
+import { environnementVisible, vilainDUnAutreTerritoire } from './ville-etat'
 import { estUneCarte, isVisibleFor, type World, type WorldCard, type WorldPlayer } from './world'
 
 /** Une carte posee, avec ce qui lui est attache (ameliorations, statuts). */
@@ -337,8 +338,22 @@ function enUnites(
     return (attacheesPar.get(id) ?? []).flatMap((fille) => [fille, ...descendants(fille.id, vu)])
   }
 
-  const racines = liste.filter((carte) => carte.bind_object_id === 0 || !ids.has(carte.bind_object_id))
-  return racines.flatMap((carte): UniteAffichee[] => {
+  const toutesRacines = liste.filter((carte) => carte.bind_object_id === 0 || !ids.has(carte.bind_object_id))
+  // Paire jumelle posee SUR LA TABLE (deux environnements, The City + Never Sleeps) : ni l'une ni l'autre ne porte l'autre, ce sont deux
+  // racines. Elles se posent collees, la 1re a gauche, a l'endroit ou arrive la premiere des deux ; le reste de la liste suit.
+  const paireRacines = options.dansLaMain ? undefined : trouverPaire(toutesRacines)
+  const racines = paireRacines
+    ? toutesRacines.filter((carte) => carte.id !== paireRacines.gauche.id && carte.id !== paireRacines.droite.id)
+    : toutesRacines
+  const unitesDeLaPaire: UniteAffichee[] = paireRacines
+    ? ([[paireRacines.gauche, 'gauche'], [paireRacines.droite, 'droite']] as const).map(([jumelle, panorama]) => ({
+        cle: `carte-${jumelle.id}`,
+        carte: toScanCard(jumelle, ctxCarte),
+        attachees: sousArbre(jumelle.id).map((fille) => toScanCard(fille, ctxCarte)),
+        panorama,
+      }))
+    : []
+  return unitesDeLaPaire.concat(racines.flatMap((carte): UniteAffichee[] => {
     const pendantes = sousArbre(carte.id)
     const paire = options.dansLaMain ? undefined : trouverPaire(pendantes)
     if (!paire) {
@@ -375,7 +390,7 @@ function enUnites(
       unite(paire.gauche, 'gauche'),
       unite(paire.droite, 'droite'),
     ]
-  })
+  }))
 }
 
 /** Un groupe de cartes posees. Vide = pas de groupe. */
@@ -650,6 +665,13 @@ function estVilain(carte: unknown): boolean {
 
 function airesVilains(world: World, rendu: Rendu): UniteAffichee[] {
   const actifs = posees(world.area_villain, rendu)
+  // La ville : le CAPO d'une autre rangee que la notre est grise (on n'interagit qu'avec les vilains de son territoire).
+  for (const unite of actifs) {
+    if (vilainDUnAutreTerritoire(world, rendu.ctx.playerId, Number(unite.carte.id))) {
+      unite.carte.inactif = true
+      unite.carte.etiquetteInactif = t('Autre territoire')
+    }
+  }
   // Le tri par nom se fait sur le nom du MOTEUR, jamais sur celui qui est
   // dessine : `UniteAffichee.carte.name` est traduit depuis le 11/09/2026
   // (voir noms-cartes-fr.ts) alors que `WorldCard.name` reste anglais. Les
@@ -924,8 +946,8 @@ export function construirePlateau(world: World, options: Options): Plateau {
         // la zone, apres tout le monde — pas seulement apres NOTRE ligne de
         // combat, sinon un autre joueur s'intercalerait entre les deux en
         // multijoueur.
-        posees(world.area_environment, rendu),
-        posees(notre?.environment_area, rendu),
+        posees(environnementVisible(world, options.playerId, world.area_environment), rendu),
+        posees(environnementVisible(world, options.playerId, notre?.environment_area), rendu),
       ],
       // Lot 5 du 06/10/2026 (question 6) : le siege de chaque groupe, pour
       // poser une carte chez le joueur du groupe vise. L'environnement n'est a

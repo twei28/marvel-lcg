@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Option } from './ask'
-import { casesAtteignables, casesDeLaLigne, lignesOrdonnees, optionSeDeplacer, positionDuJoueur, resumeCompteurs, villeDuMonde } from './ville-etat'
+import { environnementVisible, casesAtteignables, casesDeLaLigne, lignesOrdonnees, optionSeDeplacer, positionDuJoueur, resumeCompteurs, villeDuMonde } from './ville-etat'
 import type { VilleCase, World } from './world'
 
 const lieu = (ligne: number, colonne: number, objet: number): VilleCase => ({
@@ -47,5 +47,13 @@ describe('etat de la ville', () => {
     expect(resumeCompteurs({ bouncer: 2 })).toBe('2')
     expect(resumeCompteurs({ culture: 1, hustle: 2 })).toBe('1 + 2')
     expect(resumeCompteurs({})).toBe('')
+  })
+  it("l'environnement de la table ne montre que le lieu occupe, et rend tout hors de la ville", () => {
+    const cartes = [{ id: 10 }, { id: 11 }, { id: 14 }, { id: 20 }, { id: 99 }]
+    expect(environnementVisible(monde, 0, cartes).map((c) => c.id)).toEqual([14, 99])
+    expect(environnementVisible({ ville: {} } as unknown as World, 0, cartes).map((c) => c.id)).toEqual([10, 11, 14, 20, 99])
+    const avantLaGrille = [{ id: 1, card_id: 'pu034', traits: { t_LOCATION: 1 } }, { id: 2, card_id: 'pu005', traits: {} }, { id: 3, card_id: 'zz001', traits: { t_location: 1 } }]
+    expect(environnementVisible(undefined, 0, avantLaGrille).map((c) => c.id)).toEqual([2, 3])
+    expect(environnementVisible(undefined, 0, undefined)).toEqual([])
   })
 })

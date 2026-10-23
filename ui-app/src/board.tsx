@@ -5706,6 +5706,7 @@ export function PagePartie({
       <PlacesEnAttente ids={attenteMep.cachees} />
       <CoucheMiseEnPlace
         etape={panneauPrioritaire || mechantRetenu ? undefined : miseEnPlace.etape}
+        paire={miseEnPlace.paire}
         restantes={miseEnPlace.restantes}
         suivant={miseEnPlace.suivant}
         animations={animationsActives}

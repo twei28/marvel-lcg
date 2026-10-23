@@ -2833,6 +2833,13 @@
     );
   }
 
+  /* Les ENVIRONNEMENTS (et les lieux de La ville) restent visibles en entier, jamais a moitie sous leur voisine : seuls les allies et les
+     sbires se serrent (23/10/2026, demande de l'utilisateur). */
+  .zone-rencontre .plateau-groupe[data-brique='environnements'] > * + *,
+  .zone-terrain-combat .plateau-groupe[data-brique='environnements'] > * + * {
+    margin-left: 0;
+  }
+
   /* --- Largeur utile et ancrage du zoom, zone par zone ----------------------
      --place doit suivre grid-template-columns. L'ancrage evite qu'une carte de
      bord grandisse hors de l'ecran : une carte de gauche grandit vers la droite,
