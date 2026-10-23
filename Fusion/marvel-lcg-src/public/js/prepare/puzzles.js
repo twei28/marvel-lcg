@@ -101,6 +101,7 @@ function blocMesPuzzles() {
         el("div", { class: "puzzle-infos" },
             el("div", { class: "puzzle-titre" }, p.titre || p.code),
             el("div", { class: "puzzle-sous" }, p.code)),
+        p.brouillon && el("button", { class: "puzzles-fermer", style: "margin:0", onclick: () => { document.querySelector(".puzzles-panneau")?.remove(); ouvrirAssistant({ code: p.code, cle: p.cle, brouillon: p.brouillon }); } }, t("Modifier")),
         el("button", { class: "puzzles-fermer", style: "margin:0", onclick: () => { try { navigator.clipboard.writeText(p.cle); } catch (e) { /* rien */ } } }, t("Copier la clé")),
         el("button", { class: "puzzles-fermer", style: "margin:0", onclick: async (e) => {
             const bouton = e.currentTarget;
@@ -116,7 +117,6 @@ function blocMesPuzzles() {
 // ---------------------------------------------------------------- panneau --
 async function ouvrirPanneau() {
     document.querySelector(".puzzles-panneau")?.remove();
-    const liste = el("div", {}, el("div", { style: "color:#999" }, t("Chargement des puzzles...")));
     const panneau = el("div", { class: "puzzles-panneau", onclick: (e) => { if (e.target === panneau) panneau.remove(); } },
         el("div", { class: "puzzles-boite" },
             el("h2", {}, "🧩 Puzzles"),
@@ -124,54 +124,12 @@ async function ouvrirPanneau() {
                 t("Une position de départ imposée : à toi de trouver la meilleure suite de coups.")),
             blocParCode(),
             blocMesPuzzles(),
-            liste,
             el("button", { class: "puzzle-jouer", style: "margin-right:8px", onclick: () => { panneau.remove(); ouvrirAssistant(); } }, "🧩 " + t("Créer un puzzle")),
             el("button", { class: "puzzles-fermer", onclick: () => panneau.remove() }, t("Fermer")),
         ),
     );
     document.body.append(panneau);
 
-    const fichiers = (await lireJson("/list_puzzle_files")) || [];
-    try { await cards.load(); } catch (e) { /* les noms retomberont sur les ids */ }
-    if (!fichiers.length) {
-        liste.replaceChildren(el("div", { style: "color:#999" }, t("Aucun puzzle disponible.")));
-        return;
-    }
-    const lignes = await Promise.all(fichiers.map(async (chemin) => {
-        const info = (await lireJson("/get_puzzle_json?" + chemin)) || {};
-        const mechant = nomCarte(info.villain);
-        const heros = (info.players || []).map(nomCarte).join(", ");
-        const art = info.cover || info.villain;
-        return el("div", { class: "puzzle-ligne" },
-            el("img", {
-                class: "puzzle-art",
-                src: art ? cardImageUrl(String(art).split(",")[0]) : "",
-                alt: mechant, loading: "lazy",
-            }),
-            el("div", { class: "puzzle-infos" },
-                el("div", { class: "puzzle-titre" }, heros || chemin.replace(/^.*\//, "")),
-                el("div", { class: "puzzle-sous" },
-                    t("contre") + " " + (mechant || "?") + (info.author ? " · " + t("par") + " " + info.author : "")),
-                info.comment ? el("div", { class: "puzzle-comment", title: info.comment }, info.comment) : null,
-            ),
-            el("button", {
-                class: "puzzle-jouer",
-                onclick: async (e) => {
-                    const bouton = e.currentTarget;
-                    bouton.disabled = true;
-                    bouton.textContent = "...";
-                    const r = await fetch("/load_puzzle?" + chemin).catch(() => null);
-                    if (r && r.ok) window.location.href = "/app/board.html";
-                    else {
-                        bouton.disabled = false;
-                        bouton.textContent = t("Jouer");
-                        alert(t("Impossible de lancer ce puzzle."));
-                    }
-                },
-            }, t("Jouer")),
-        );
-    }));
-    liste.replaceChildren(...lignes);
 }
 
 // ---------------------------------------------------------------- bouton --

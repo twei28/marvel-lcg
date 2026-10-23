@@ -90,7 +90,8 @@ export function mesPuzzles(stockage = globalThis.localStorage) {
 }
 export function memoriserPuzzle(entree, stockage = globalThis.localStorage) {
     const liste = mesPuzzles(stockage).filter((x) => x.code !== entree.code);
-    liste.unshift({ code: entree.code, cle: entree.cle, titre: entree.titre || "", cree: entree.cree || Date.now(), expire_le: entree.expire_le || 0 });
+    // `brouillon` : le brouillon de l'assistant, pour pouvoir MODIFIER le puzzle plus tard (l'inverse puzzle -> brouillon n'existe pas).
+    liste.unshift({ code: entree.code, cle: entree.cle, titre: entree.titre || "", cree: entree.cree || Date.now(), expire_le: entree.expire_le || 0, brouillon: entree.brouillon || null });
     try { stockage.setItem(CLE_MES_PUZZLES, JSON.stringify(liste.slice(0, 200))); return true; } catch (e) { return false; }
 }
 export function oublierPuzzle(code, stockage = globalThis.localStorage) {

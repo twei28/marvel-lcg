@@ -69,7 +69,7 @@ for c in hostiles:
     verifie(validate_command(c, METHODES) is not None, f"commande hostile acceptée : {c!r}")
 
 # 4. Un puzzle v2 complet : aller-retour JSON puis validation.
-p = charge(os.path.join(MOTEUR, "puzzle", "puzzle-01071.json"))
+p = charge(os.path.join(MOTEUR, "puzzle", "test", "puzzle-01071.json"))
 p.format = 2
 p.title = "Défaite du Rhino"
 p.description = "Vous avez 3 cartes."

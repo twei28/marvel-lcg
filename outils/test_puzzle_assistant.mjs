@@ -78,8 +78,20 @@ const gardes = await p.evaluate(() => JSON.parse(localStorage.getItem("mc-puzzle
 if (!gardes.some((x) => x.code === code && x.cle)) erreurs.push("la clé n'est pas gardée dans Mes puzzles");
 await p.getByRole("button", { name: "Fermer" }).click();
 
-// --- Résoudre par code, depuis le panneau Puzzles
+// --- Modifier : « Mes puzzles » rouvre l'assistant sur ce puzzle et met le MÊME code à jour
 await p.evaluate(() => import("/public/js/prepare/puzzles.js"));
+await p.getByRole("button", { name: /Puzzles/ }).first().click();
+await p.getByRole("button", { name: "Modifier" }).first().click();
+await p.waitForSelector(".pa-carte");
+for (let i = 0; i < 7; i++) { await p.getByRole("button", { name: "Suivant" }).click(); await p.waitForTimeout(250); }
+await p.locator("input.pa-texte").first().fill("Titre modifié");
+await p.getByRole("button", { name: "Enregistrer les changements" }).click();
+await p.waitForSelector("text=Puzzle mis à jour", { timeout: 15000 });
+const apres = await p.evaluate(async ({ port, code }) => (await (await fetch("http://127.0.0.1:" + port + "/api/puzzle/" + code)).json()).puzzle.title, { port: portSite, code });
+if (apres !== "Titre modifié") erreurs.push("le puzzle n'a pas été modifié : " + apres);
+await p.getByRole("button", { name: "Fermer" }).click();
+
+// --- Résoudre par code, depuis le panneau Puzzles
 await p.getByRole("button", { name: /Puzzles/ }).first().click();
 await p.waitForSelector("text=Mes puzzles");
 await photo("10-panneau");

@@ -116,6 +116,10 @@ export const DICO_EN_BASE = {
     "Les puzzles publiés demandent une connexion au site (indisponible hors ligne).": "Published puzzles need a connection to the site (unavailable offline).",
     "Le site ne répond pas.": "The site is not responding.",
     "Le moteur a refusé ce puzzle.": "The engine refused this puzzle.",
+    "Puzzle mis à jour": "Puzzle updated",
+    "est mis à jour, avec le même code :": "has been updated, with the same code:",
+    "Enregistrer les changements": "Save changes",
+    "Modifier un puzzle": "Edit a puzzle",
     "Reprendre": "Resume",
     /* ---- Regles de construction des Paths Shinobi (18/10/2026, deckbuilder/regles.js) ---- */
     "Un seul Path par deck :": "Only one Path per deck:",
