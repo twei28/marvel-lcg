@@ -279,6 +279,30 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         except Exception as exc:
             print("CAPTURE ECHOUEE:", exc, flush=True)
 
+    # ---------------------------- une photo par ROUND (calibration de la barre d'avantage) --
+    # ⚠ AUCUN EFFET SANS `AUTOPLAY_INSTANTANES` (comme `AUTOPLAY_CAPTURE`) : outillage, pas de changement de comportement.
+    # Ecrit, au PREMIER tour de chaque round, le descripteur que le plateau lit (`world.render.descriptor`, celui de `/get_world`) dans
+    # `<dossier>/<etiquette>-r<round>.json`. `ui-app/outils/calibrer-barre-avantage.mjs` rejoue `estimerAvantage` dessus et le confronte au verdict
+    # final (`verdict` / `gagne` du fichier de resultat de la partie).
+    instantanes = {"dossier": os.environ.get("AUTOPLAY_INSTANTANES") or "", "dernier": -1}
+
+    def photographier_le_round():
+        if not instantanes["dossier"]:
+            return
+        try:
+            from engine import Engine
+            from engine.lib import Json
+            ronde = nombre(getattr(Engine.game.world, "round_id", 0))
+            if ronde <= instantanes["dernier"]:
+                return
+            instantanes["dernier"] = ronde
+            d = Engine.game.world.render.descriptor
+            os.makedirs(instantanes["dossier"], exist_ok=True)
+            with open(os.path.join(instantanes["dossier"], f"{etiquette}-r{ronde:03d}.json"), "w", encoding="utf-8") as f:
+                f.write(Json.Dumps(d, indent=0))
+        except Exception as exc:
+            print("INSTANTANE ECHOUE:", exc, flush=True)
+
     # ------------------------------------------------- lecture de l'etat --
     def lire_etat():
         """Photographie du monde utile a la decision, tolerante aux absences."""
@@ -958,6 +982,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         except Exception:
             etat["joueur_interroge"] = 0
         capturer_si_phase_mechant()
+        photographier_le_round()
         if etat["asks"] > MAX_ASKS:
             rendre("bloquee", f"plafond de {MAX_ASKS} questions atteint")
         try:
