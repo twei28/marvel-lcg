@@ -45702,6 +45702,28 @@ CAS = [
         "attendu": {'menace': [['01097b', 2]]},
     },
     {
+        "nom": '60006 Superior Taste — la Reponse est AUSSI offerte quand le contre VIDE la manigance (menace 2 -> 0)',
+        "pourquoi": ("rapport n°101 (BL-Stark) : « Toucher Parfait ne trigger pas quand je vide la Manigance Principale ». Aucune menace ne "
+                     "reste a retirer, mais la Reponse reste jouable (elle defausse la carte, qui retourne sous le deck Sens) : "
+                     "acceptee, Superior Taste quitte la manigance"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.SetThreat('01097b', 2)", "Puzzle.AttachReel('60006', '01097b')"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {'menace': [['01097b', 0]], 'hors_jeu': ['60006']},
+    },
+    {
+        "nom": '60006 Superior Taste — la Reponse est offerte sur Attack on Mount Athena (Crossbones) quand le contre la VIDE (menace 2 -> 0)',
+        "pourquoi": "rapport n°101 (BL-Stark) reproduit tel quel : scenario Crossbones, manigance principale 04061b",
+        "scenario": "crossbones",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.SetThreat('04061b', 2)", "Puzzle.AttachReel('60006', '04061b')"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {'menace': [['04061b', 0]], 'hors_jeu': ['60006']},
+    },
+    {
         "nom": '60006 Superior Taste — CONTRE-CAS : la Reponse se REFUSE, seul le contre retire de la menace',
         "pourquoi": 'preuve du refus : Passer est offert ; repondu, la menace ne baisse que de 2 (6 -> 4)',
         "scenario": "rhino",
