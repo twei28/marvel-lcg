@@ -183,10 +183,11 @@ du puzzle à l'écran : `Scene.puzzle_info` → `WorldDescriptor.puzzle_info` �
 (introduction plein écran une seule fois par puzzle, panneau repliable en haut à droite, indices dévoilés
 un par un, « Relire l'introduction », « Recommencer » en deux temps qui renvoie le puzzle courant gardé
 par `puzzle-client.js` à `POST /new_puzzle`). Mémoire dans `sessionStorage`, par puzzle. 6 tests vitest,
-2 cas moteur (`enonce_*`). « Annuler » existait déjà sur le plateau. **Pas fait** : solution de référence
-(enregistrer / rejouer un replay, visibilité `after/always/never`), plateau mobile, test dans le vrai
+2 cas moteur (`enonce_*`). « Annuler » existait déjà sur le plateau. **Solution de référence : FAITE en TEXTE** (choix du
+23/10 ; champ `solution_text`, 4000 car., visibilité `after/always/never`, bouton « Voir la solution » dans le panneau Énoncé ; la
+version REPLAY reste au plan, trop lourde : route moteur, replay d'un inconnu à blinder). **Pas fait** : plateau mobile, test dans le vrai
 plateau (le plateau compilé ne se recopie qu'au déploiement, `ui-app/deployer.sh`, non lancé).
-Batterie complète à lancer en fin de chantier (`scene.py` touché).
+**Batterie complète faite le 23/10 (20 h 33) : 8419/8423, les 4 échecs sont les Squirrel Girl connus.**
 
 ### E9. Accueil et « Mes puzzles »
 - Le bouton Puzzle ouvre un menu à 3 choix : Résoudre par code, Créer, Mes puzzles.

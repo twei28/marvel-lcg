@@ -7226,6 +7226,7 @@
   .panneau-enonce-corps button { padding: 5px 10px; border: 1px solid var(--puzzle-orange, #f08a24); border-radius: 7px; background: rgba(240, 138, 36, .14); color: #ffd9aa; cursor: pointer; font: inherit; }
   .panneau-enonce-corps button:hover { background: rgba(240, 138, 36, .3); }
   .panneau-enonce-corps button.danger { background: #8a2a14; border-color: #ff7a5a; color: #fff; }
+  .panneau-enonce-solution { border-top: 1px dashed rgba(240, 138, 36, .5); padding-top: 8px; display: grid; gap: 6px; }
   .panneau-enonce-actions { display: flex; gap: 6px; flex-wrap: wrap; }
   .panneau-objectifs-titre {
     display: flex;

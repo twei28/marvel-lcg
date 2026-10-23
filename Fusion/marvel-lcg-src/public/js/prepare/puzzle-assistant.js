@@ -522,6 +522,11 @@ function etapePresentation(ctx) {
         el("div", { class: "pa-champ" }, el("label", {}, t("Indices")), indices, indice,
             el("button", { class: "pa-mini", style: "justify-self:start", onclick: () => { if (indice.value.trim() && b.hints.length < 10) { b.hints.push(indice.value.trim()); ctx.redessiner(); } } }, t("Ajouter un indice"))),
     ];
+    const solution = el("textarea", { class: "pa-texte", maxlength: 4000, placeholder: t("Ta solution, étape par étape (facultatif)."),
+        oninput: (e) => { b.solution = e.target.value; } }, b.solution || "");
+    blocs.push(el("div", { class: "pa-champ" }, el("label", {}, t("Solution de référence")), solution,
+        el("div", { class: "pa-choix" }, [["after", "Montrée après la partie"], ["always", "Toujours montrable"], ["never", "Jamais montrée"]].map(([v, nom]) => el("button", {
+            class: (b.solutionVisibility || "after") === v ? "actif" : "", onclick: () => { b.solutionVisibility = v; ctx.redessiner(); } }, t(nom))))));
     if (b.players.length > 1) {
         blocs.push(el("div", { class: "pa-champ" }, el("label", {}, t("Premier joueur")),
             el("div", { class: "pa-choix" }, b.players.map((_, i) => el("button", {

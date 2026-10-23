@@ -70,4 +70,39 @@ describe('enonce du puzzle', () => {
     fireEvent.click(screen.getByText('Relire l’introduction'))
     expect(screen.getByRole('dialog')).toBeTruthy()
   })
+
+  describe('solution de reference', () => {
+    const AVEC = (visibilite: string) => ({ ...INFO, solution_text: 'Etourdis Rhino puis attaque.', solution_visibility: visibilite })
+    const ouvrir = (info: typeof INFO & { solution_text?: string; solution_visibility?: string }, termine: boolean) => {
+      window.sessionStorage.setItem(`mc-enonce-vu:${info.title}|${info.description}`, '1')
+      render(<PanneauEnonce info={info} termine={termine} />)
+      fireEvent.click(screen.getByText('Énoncé'))
+    }
+
+    it('« after » : cachee pendant la partie, visible une fois la partie finie', () => {
+      ouvrir(AVEC('after'), false)
+      expect(screen.queryByText('Voir la solution')).toBeNull()
+      cleanup()
+      ouvrir(AVEC('after'), true)
+      fireEvent.click(screen.getByText('Voir la solution'))
+      expect(screen.getByText(/Etourdis Rhino/)).toBeTruthy()
+    })
+
+    it('« always » : disponible tout de suite, mais derriere un clic', () => {
+      ouvrir(AVEC('always'), false)
+      expect(screen.queryByText(/Etourdis Rhino/)).toBeNull()
+      fireEvent.click(screen.getByText('Voir la solution'))
+      expect(screen.getByText(/Etourdis Rhino/)).toBeTruthy()
+    })
+
+    it('« never » : jamais, meme partie finie', () => {
+      ouvrir(AVEC('never'), true)
+      expect(screen.queryByText('Voir la solution')).toBeNull()
+    })
+
+    it('pas de solution ecrite : pas de bouton', () => {
+      ouvrir({ ...INFO, solution_text: '', solution_visibility: 'always' }, true)
+      expect(screen.queryByText('Voir la solution')).toBeNull()
+    })
+  })
 })

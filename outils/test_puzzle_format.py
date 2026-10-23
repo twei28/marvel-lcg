@@ -95,6 +95,8 @@ def defaut(modif, motif):
 defaut(lambda q: setattr(q, "difficulty", 9), "difficulté")
 defaut(lambda q: setattr(q, "title", "x" * 200), "titre")
 defaut(lambda q: setattr(q, "hints", ["a"] * 50), "indices")
+defaut(lambda q: setattr(q, "solution_text", "x" * 5000), "solution")
+defaut(lambda q: setattr(q, "solution_text", 5), "solution")
 defaut(lambda q: setattr(q, "objectives_mode", "xor"), "mode d'objectifs")
 defaut(lambda q: setattr(q, "objectives", [PuzzleObjective(kind="magie")]), "inconnu")
 defaut(lambda q: setattr(q, "objectives", [PuzzleObjective(kind="free_text")]), "texte est obligatoire")

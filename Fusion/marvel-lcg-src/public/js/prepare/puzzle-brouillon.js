@@ -26,7 +26,7 @@ export function brouillonVide() {
         enJeu: [],
         firstPlayer: 0, startPhase: "",
         objectives: [], objectivesMode: "all",
-        solutionVisibility: "after",
+        solution: "", solutionVisibility: "after",
     };
 }
 
@@ -129,7 +129,8 @@ export function brouillonVersPuzzle(b, { auteur = "", version = "0.5.8", graine 
         format: 2, title: b.title, description: b.description, difficulty: b.difficulty || 0,
         hints: [...b.hints], objectives: b.objectives.map((o) => ({ kind: o.kind, target: o.target || "", text: o.text || "" })),
         objectives_mode: b.objectivesMode, start_phase: b.startPhase || "", start_step: "",
-        first_player: b.firstPlayer || 0, solution_visibility: b.solutionVisibility || "after", has_solution: false,
+        first_player: b.firstPlayer || 0, solution_visibility: b.solutionVisibility || "after",
+        solution_text: (b.solution || "").trim(), has_solution: !!(b.solution || "").trim(),
     };
 }
 
@@ -150,6 +151,7 @@ export function erreursDuBrouillon(b) {
     if (b.description.length > 2000) erreurs.push("Histoire trop longue (2000 caractères au plus).");
     if (b.hints.length > 10) erreurs.push("10 indices au plus.");
     if (b.objectives.length > 6) erreurs.push("6 objectifs au plus.");
+    if ((b.solution || "").length > 4000) erreurs.push("Solution trop longue (4000 caractères au plus).");
     b.enJeu.forEach((c, i) => {
         if (!GENRES_EN_JEU.includes(c.kind)) erreurs.push(`Carte en jeu ${i + 1} : genre inconnu.`);
         if ((c.siege || 0) >= b.players.length) erreurs.push(`Carte en jeu ${i + 1} : ce héros n'existe pas.`);

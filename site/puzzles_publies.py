@@ -48,7 +48,7 @@ DEFAUTS: Dict[str, Any] = {
     "encounter_deck": [], "encounter_discard_pile": [], "set_aside": [], "expert": False, "players": [],
     "puzzle_command": [], "format": 1, "title": "", "description": "", "difficulty": 0, "hints": [],
     "objectives": [], "objectives_mode": "all", "start_phase": "", "start_step": "", "first_player": 0,
-    "solution_visibility": "after", "has_solution": False,
+    "solution_visibility": "after", "has_solution": False, "solution_text": "",
 }
 DEFAUTS_JOUEUR: Dict[str, Any] = {
     "identities": [], "hand_cards": [], "player_deck": [], "player_discard_pile": [], "set_aside": [],

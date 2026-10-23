@@ -13,6 +13,9 @@ export type EnoncePuzzle = {
   difficulty?: number
   hints?: string[]
   author?: string
+  /** Solution de reference ecrite par le createur (vide si aucune) et QUAND on peut la voir : after (partie finie), always, never. */
+  solution_text?: string
+  solution_visibility?: string
 }
 
 const CLE_PUZZLE_COURANT = 'mc-puzzle-courant'
@@ -56,18 +59,24 @@ export function PanneauEnonce({
   info,
   objectifs,
   recommencer = recommencerPuzzle,
+  termine = false,
 }: {
   info?: EnoncePuzzle
   objectifs?: readonly ObjectifPuzzle[]
   recommencer?: () => unknown
+  /** La partie est finie (gagnee ou perdue) : la solution « after » devient visible. */
+  termine?: boolean
 }) {
   const sig = info ? signature(info) : ''
   const [intro, setIntro] = useState(() => lire(`mc-enonce-vu:${sig}`) !== '1')
   const [ouvert, setOuvert] = useState(false)
   const [indices, setIndices] = useState(() => Math.max(0, Number(lire(`mc-enonce-indices:${sig}`)) || 0))
   const [sur, setSur] = useState(false)
+  const [solutionVue, setSolutionVue] = useState(false)
   if (!info || (!info.title && !info.description && !(info.hints && info.hints.length))) return null
   const hints = info.hints ?? []
+  const visibilite = info.solution_visibility ?? 'after'
+  const solutionPermise = Boolean(info.solution_text) && (visibilite === 'always' || (visibilite === 'after' && termine))
   const etoiles = info.difficulty ? '★'.repeat(info.difficulty) + '☆'.repeat(Math.max(0, 5 - info.difficulty)) : ''
 
   const commencer = () => {
@@ -119,6 +128,18 @@ export function PanneauEnonce({
                     {t('Indice suivant')} ({indices}/{hints.length})
                   </button>
                 ) : null}
+              </div>
+            ) : null}
+            {solutionPermise ? (
+              <div className="panneau-enonce-solution">
+                {solutionVue ? (
+                  <>
+                    <strong>{t('Solution de référence')}</strong>
+                    <p>{info.solution_text}</p>
+                  </>
+                ) : (
+                  <button type="button" onClick={() => setSolutionVue(true)}>{t('Voir la solution')}</button>
+                )}
               </div>
             ) : null}
             <div className="panneau-enonce-actions">

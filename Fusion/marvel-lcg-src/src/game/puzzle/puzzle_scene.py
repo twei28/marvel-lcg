@@ -96,5 +96,6 @@ def BuildPuzzleScene(puzzle: PuzzleData) -> Dict[str, Any]:
         "puzzle_info": json.dumps({
             "title": puzzle.title, "description": puzzle.description, "difficulty": puzzle.difficulty,
             "hints": puzzle.hints, "author": puzzle.author,
-        }, ensure_ascii=False) if puzzle.format >= 2 and (puzzle.title or puzzle.description or puzzle.hints) else "",
+            "solution_text": puzzle.solution_text, "solution_visibility": puzzle.solution_visibility,
+        }, ensure_ascii=False) if puzzle.format >= 2 and (puzzle.title or puzzle.description or puzzle.hints or puzzle.solution_text) else "",
     }

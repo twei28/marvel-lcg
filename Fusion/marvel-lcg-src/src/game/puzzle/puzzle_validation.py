@@ -25,6 +25,7 @@ MAX_DESCRIPTION = 2000
 MAX_HINTS = 10
 MAX_HINT_LENGTH = 500
 MAX_OBJECTIVES = 6
+MAX_SOLUTION = 4000
 
 # Les seules commandes `Puzzle.<Méthode>` qu'un puzzle de format 2 peut appeler : de la MISE EN PLACE.
 # Aucune ne termine la partie (Win, Lose, End), ne valide un objectif (ValidateObjective) ni ne sort de
@@ -155,6 +156,7 @@ def validate_puzzle(puzzle: Any, allowed_methods: Optional[Collection[str]] = No
     text("titre", puzzle.title, MAX_TITLE)
     text("description", puzzle.description, MAX_DESCRIPTION)
     text("auteur", puzzle.author, MAX_TITLE)
+    text("solution", puzzle.solution_text, MAX_SOLUTION)
     if not isinstance(puzzle.difficulty, int) or not 0 <= puzzle.difficulty <= 5:
         errors.append("difficulté : un entier de 0 à 5 est attendu")
 

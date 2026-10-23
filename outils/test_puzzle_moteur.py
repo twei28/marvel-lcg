@@ -575,12 +575,14 @@ def cas_brouillon_vers_moteur():
 def cas_enonce_du_puzzle_expose_au_client():
     """Titre, histoire, difficulte et indices d'un puzzle v2 arrivent dans le descripteur du monde ; un puzzle v1 n'en a pas."""
     p = puzzle_de_base([joueur(SPIDER)], format=2, title="Mon puzzle", description="Il faut vaincre Rhino.",
-                       difficulty=3, hints=["Pense a la Tenacite", "Regarde la defausse"], author="Moi")
+                       difficulty=3, hints=["Pense a la Tenacite", "Regarde la defausse"], author="Moi",
+                       solution_text="Etourdis Rhino.", solution_visibility="always")
     jeu, monde, vue = monter(p)
     from game.render.to_descriptor import ToDescriptor
     info = ToDescriptor.World(monde, "", "").puzzle_info
     assert info["title"] == "Mon puzzle" and info["difficulty"] == 3 and len(info["hints"]) == 2, info
     assert info["author"] == "Moi" and "Rhino" in info["description"], info
+    assert info["solution_text"] == "Etourdis Rhino." and info["solution_visibility"] == "always", info
     return "ok"
 
 

@@ -7,6 +7,12 @@
 "use strict";
 
 export const DICO_EN_BASE = {
+    "Solution de référence": "Reference solution",
+    "Ta solution, étape par étape (facultatif).": "Your solution, step by step (optional).",
+    "Montrée après la partie": "Shown after the game",
+    "Toujours montrable": "Always available",
+    "Jamais montrée": "Never shown",
+    "Solution trop longue (4000 caractères au plus).": "Solution too long (4000 characters at most).",
     /* ---- Créateur de puzzles : assistant, publication, résolution par code (E5/E6, 23/10/2026) ---- */
     "Ajouter": "Add",
     "Ajouter à :": "Add to:",

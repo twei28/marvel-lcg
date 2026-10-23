@@ -4758,7 +4758,7 @@ export function PagePartie({
           tourne sur du vieux code. Les deux peuvent se produire ensemble. */}
       <BandeauMiseAJour visible={majDisponible} />
       <PanneauObjectifs objectifs={etat.monde?.puzzle_objectives} />
-      <PanneauEnonce info={etat.monde?.puzzle_info} objectifs={etat.monde?.puzzle_objectives} />
+      <PanneauEnonce info={etat.monde?.puzzle_info} objectifs={etat.monde?.puzzle_objectives} termine={Boolean(etat.monde?.game_over)} />
       {etat.joueurDemande !== undefined &&
       etat.siegesAbsents.includes(etat.joueurDemande) ? (
         <BandeauAbsent

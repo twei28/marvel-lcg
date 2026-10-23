@@ -69,6 +69,8 @@ await p.locator("input.pa-texte").first().fill("Puzzle de test");
 await photo("8-presentation");
 // --- Publier : le code s'affiche, la clé est gardée dans « Mes puzzles »
 await p.locator("input.pa-texte").nth(1).fill("Testeur");
+await p.locator("textarea.pa-texte").nth(1).fill("Etourdis Rhino puis attaque.");
+await p.getByRole("button", { name: "Toujours montrable" }).click();
 await p.getByRole("button", { name: "Publier" }).click();
 await p.waitForSelector("text=Puzzle publié", { timeout: 15000 });
 const code = (await p.locator(".pa-corps strong").first().textContent()).trim();
@@ -89,6 +91,8 @@ await p.getByRole("button", { name: "Enregistrer les changements" }).click();
 await p.waitForSelector("text=Puzzle mis à jour", { timeout: 15000 });
 const apres = await p.evaluate(async ({ port, code }) => (await (await fetch("http://127.0.0.1:" + port + "/api/puzzle/" + code)).json()).puzzle.title, { port: portSite, code });
 if (apres !== "Titre modifié") erreurs.push("le puzzle n'a pas été modifié : " + apres);
+const solution = await p.evaluate(async ({ port, code }) => { const j = (await (await fetch("http://127.0.0.1:" + port + "/api/puzzle/" + code)).json()).puzzle; return [j.solution_text, j.solution_visibility, j.has_solution]; }, { port: portSite, code });
+if (solution[0] !== "Etourdis Rhino puis attaque." || solution[1] !== "always" || solution[2] !== true) erreurs.push("la solution n'a pas voyagé : " + JSON.stringify(solution));
 await p.getByRole("button", { name: "Fermer" }).click();
 
 // --- Résoudre par code, depuis le panneau Puzzles

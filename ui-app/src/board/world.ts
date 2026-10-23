@@ -829,7 +829,7 @@ export type World = {
   /** Objectifs d'un puzzle (vide hors puzzle a objectifs) : `kind` = defeat_villain, survive, complete_scheme ou free_text. */
   puzzle_objectives?: { kind: string; text: string; target: string; done: boolean }[]
   /** Enonce d'un puzzle de format 2 (titre, histoire, difficulte, indices, auteur) ; vide sinon. */
-  puzzle_info?: { title?: string; description?: string; difficulty?: number; hints?: string[]; author?: string }
+  puzzle_info?: { title?: string; description?: string; difficulty?: number; hints?: string[]; author?: string; solution_text?: string; solution_visibility?: string }
   /**
    * Mode Bataille : le camp gagnant (-1 s'il n'y en a pas) et le camp de
    * chaque siege. Le meme ecran de fin sert aux deux tables : sans eux, il

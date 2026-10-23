@@ -57,3 +57,5 @@ class PuzzleData:
     # 'always' ou 'never'. La solution elle-même est stockée à part (replay).
     solution_visibility: str = "after"
     has_solution: bool = False
+    # Solution de reference ECRITE par le createur (E8) : montree selon `solution_visibility`. Vide = aucune.
+    solution_text: str = ""

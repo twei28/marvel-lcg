@@ -367,6 +367,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Indice suivant': 'Next hint',
   'Relire l’introduction': 'Read the introduction again',
   'Recommencer': 'Start over',
+  'Voir la solution': 'Show the solution',
+  'Solution de référence': 'Reference solution',
   'Oui, recommencer': 'Yes, start over',
 
   // ---- board/Board.tsx : entête, stades, aperçu ----

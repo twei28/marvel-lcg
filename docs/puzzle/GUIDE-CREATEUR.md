@@ -25,7 +25,8 @@ Ton brouillon est gardé dans ton navigateur à chaque étape : si tu fermes, on
    normale du moteur.
 8. **Présentation et test.** Titre (obligatoire pour publier), histoire, difficulté (étoiles), indices (jusqu'à 10,
    dévoilés un par un au joueur), premier joueur, moment de départ (début de phase joueur, phase du méchant, fin de
-   round), ton pseudo.
+   round), ton pseudo, et la **solution de référence** : un texte (4000 caractères au plus) que tu écris, montré au joueur
+   derrière un clic « Voir la solution » : *après la partie* (finie, gagnée ou perdue), *toujours*, ou *jamais*.
 
 ## Tester
 **Tester ce puzzle** monte la table avec ton puzzle, tel que le verra le joueur. Joue-le : si tu n'y arrives pas toi-même,
@@ -51,5 +52,5 @@ Panneau Puzzles → saisis le code → **Résoudre par code**. Une introduction 
 une seule fois ; le panneau **Énoncé** garde l'histoire, les indices (un par un) et **Recommencer**.
 
 ## Ce qui n'est pas encore là
-- **Solution de référence** (enregistrer ta solution pour la montrer après résolution) : non faite, voir `PLAN.md`.
+- **Solution de référence en replay** (rejouer tes coups à l'écran) : non faite ; la solution est un **texte** (voir étape 8).
 - Glisser-déposer (l'ordre se règle avec les flèches), ressources en réserve, aperçu en direct, « Affiner sur le plateau ».
