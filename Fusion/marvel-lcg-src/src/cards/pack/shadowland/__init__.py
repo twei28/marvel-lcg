@@ -78,3 +78,51 @@ def VilainsLies(face: 'CardFace') -> List[str]:
 def NomDuVilain(face: 'CardFace') -> str:
     """« * Gorgon » -> « Gorgon » (les uniques portent une etoile devant leur nom)."""
     return face.paper.name.lstrip('* ').strip()
+
+
+################################################################################
+# CAMPAGNE (livret FR p. 4-6, instructions de campagne) : les Sombres Proteges RETIRES de la campagne.
+# Le carnet note (`Dark Protege Removed`) les vilains deja utilises aux scenarios 1 et 2 (ecrits par `campaign.py`). S'y ajoutent, des la mise en place du scenario 1,
+# les vilains qui PARTAGENT LE NOM d'une identite des joueurs (Daredevil, Elektra) : « cochez le mechant qui partage ce nom, ensuite retirez ce mechant de la campagne ».
+# Hors campagne : AUCUN vilain n'est retire (le tirage est libre, comme imprime sur sl001a / sl038a).
+################################################################################
+CLE_VILAINS_RETIRES = 'Dark Protege Removed'
+VILAINS_SOMBRES_PROTEGES = {
+    'sl012': 'Archpriestess', 'sl013': 'Daredevil', 'sl014': 'Elektra', 'sl015': 'Gorgon', 'sl016': 'Lady Bullseye', 'sl017': 'White Tiger',
+}
+_BASE_VILAIN = re.compile(r'^(sl\d{3})')
+
+
+def BaseDuVilain(card_id: str) -> str:
+    """« sl014a » -> « sl014 »."""
+    m = _BASE_VILAIN.match(str(card_id))
+    return m.group(1) if m else str(card_id)
+
+
+def VilainsDeLIdentite(effect: 'Effect') -> List[str]:
+    """Bases (« sl013 ») des vilains Sombres Proteges dont le nom est celui d'un heros de la table (Daredevil, Elektra)."""
+    noms = set()
+    for joueur in Worlds.GetPlayers(effect):
+        noms.add(str(getattr(joueur, 'hero_name', '') or '').lstrip('* ').strip().lower())
+        identite = joueur.GetIdentity()
+        if identite is not None:
+            noms.add(str(identite.paper.name).lstrip('* ').strip().lower())
+    return [base for base, nom in VILAINS_SOMBRES_PROTEGES.items() if nom.lower() in noms]
+
+
+def VilainsRetiresDeLaCampagne(effect: 'Effect') -> List[str]:
+    """Bases (« sl014 ») des vilains Sombres Proteges retires de la campagne ; vide hors campagne."""
+    if not Worlds.IsCampaign(effect):
+        return []
+    retires = {BaseDuVilain(x) for x in CampaignLog.GetListInternal(CLE_VILAINS_RETIRES, effect)}
+    retires.update(VilainsDeLIdentite(effect))
+    return sorted(retires)
+
+
+def VilainsTirables(effect: 'Effect') -> List['CardFace']:
+    """Les vilains Sombres Proteges mis de cote que le tirage au hasard peut designer (ceux de la campagne encore en lice). Si TOUS sont retires, on retombe sur la
+    liste complete : le livret ne dit rien de ce cas, mieux vaut un scenario jouable qu'une mise en place vide."""
+    vilains = [x for x in Worlds.GetSetAsideAreaCards(effect) if Villain.IsType(x)]
+    retires = set(VilainsRetiresDeLaCampagne(effect))
+    restants = [x for x in vilains if BaseDuVilain(x.paper.card_id) not in retires]
+    return restants or vilains

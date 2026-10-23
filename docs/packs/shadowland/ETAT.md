@@ -11,6 +11,9 @@
 ## Decisions (aucun livret officiel en ligne : regle muette = Rules Reference habituelle)
 Une par lot : `DECISIONS-a.md` (Dark Protege), `DECISIONS-b.md` (Shadow Labyrinth, paquet de pieges deduit des cartes puisque le livret p.12 manque), `DECISIONS-c.md` (Heart of Shadow), `DECISIONS-d.md` (Ninja Swarm, Black Flower). A confirmer par le livret quand il sera disponible : la mecanique du paquet piege (b), les quantites par carte de sl075/sl077/sl078 (d).
 
+## Mini-campagne (23/10/2026, livret FR)
+Codee : voir `CAMPAGNE.md` (`campaign.py`, `data/campagnes/shadowland.json`, 62 cas `[slcamp]`, 496 cas `[sl*]` verts). Deck Piege conforme au livret (`DECISIONS-b.md` §8).
+
 ## Pas fait
 - Aucune partie jouee par un humain dans le navigateur ; pas de cas plateau (ui-app) pour les compteurs `corruption` / `passage` et le paquet piege.
 - Defaut moteur connu non corrige : la recherche dans un paquet ne trouve pas la carte quand elle est la derniere (`Deck.DiscardUntil`), rare (sl043, sl055, sl056).

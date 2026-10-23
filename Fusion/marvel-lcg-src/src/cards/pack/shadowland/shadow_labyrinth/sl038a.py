@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.shadowland.campaign import CampaignSetup
 
 # Into the Labyrinth (1A) — MANIGANCE PRINCIPALE, stade 1.
 # Contents : Shifting Corridors (A). Shadow Labyrinth, Dark Protege, Deadly Contraptions, and Standard encounter sets. One modular encounter set (Ninja Swarm).
@@ -19,7 +20,8 @@ def GetAbilities() -> Sequence['Ability']:
     def mise_en_place(effect: 'Effect', message: 'Message.WhenCardSetup') -> None:
         Unused(message)
         CreerPaquetPiege(effect)
-        vilains = [x for x in Worlds.GetSetAsideAreaCards(effect) if Villain.IsType(x)]
+        # CAMPAGNE (livret FR) : les Sombres Proteges deja utilises ou partageant le nom d'un heros sont retires du tirage (`VilainsTirables`).
+        vilains = VilainsTirables(effect)
         if not vilains:
             return
         vilain = Rand.RandomChoice(vilains, effect)
@@ -31,4 +33,6 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenCardSetup('This', mise_en_place),
+        # Campagne (livret FR) : le niveau est le numero du scenario dans `data/campagnes/shadowland.json`.
+        *CampaignSetup(2),
     ]

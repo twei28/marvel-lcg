@@ -1,0 +1,162 @@
+{
+  "version": "1.0",
+  "code": "shadowland",
+  "cle_extension": "209. Shadowland",
+  "nom": "Shadowland",
+  "nom_en": "Shadowland",
+  "resume": "La Main a bâti une forteresse au cœur de Hell's Kitchen. Trois scénarios, dans l'ordre : l'assaut des toits, le labyrinthe piégé, puis le rituel de Krahllak. Votre Corruption Insidieuse grandit à chaque victoire, et ce qu'elle vous coûte se paie au scénario suivant.",
+  "resume_en": "The Hand has built a fortress in the heart of Hell's Kitchen. Three scenarios, in order: the rooftop assault, the trapped labyrinth, then Krahllak's ritual. Your Creeping Corruption grows with every victory, and what it costs you is paid in the next scenario.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "pages_regles": [
+    "00-campagne-regles-1.jpg",
+    "00-campagne-regles-2.jpg",
+    "00-campagne-regles-3.jpg",
+    "00-campagne-regles-4.jpg"
+  ],
+  "livret_fr": false,
+  "scenarios": [
+    {
+      "id": "shadows_in_the_night",
+      "numero": 1,
+      "nom": "Shadows in the Night",
+      "nom_fr": "Des Ombres dans la Nuit",
+      "resume": "Un clan ninja, la Main, a fait de Shadowland une forteresse. Un tenshu, des ninjas par centaines : vous arrivez au pied des murs, une silhouette bondit des toits et attaque.",
+      "enjeu": "Un des Sombres Protégés quitte la campagne. Votre Corruption Insidieuse, si elle devient INSOUTENABLE, vous suivra, et vous pouvez inscrire une carte à emporter.",
+      "victoire": [
+        {
+          "cle": "Dark Protege Removed",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Sombres Protégés retirés de la campagne",
+          "aide": "Le méchant affronté dans ce scénario (et Daredevil ou Elektra si l'un de vos héros porte ce nom) est coché au registre : il ne reviendra plus dans les scénarios suivants.",
+          "options": [
+            "sl012a",
+            "sl013a",
+            "sl014a",
+            "sl015a",
+            "sl016a",
+            "sl017a"
+          ]
+        },
+        {
+          "cle": "Overpowering Scenario 1",
+          "parJoueur": true,
+          "type": "auto",
+          "format": "int",
+          "libelle": "Corruption INSOUTENABLE ?",
+          "aide": "Coché si la Corruption Insidieuse du joueur a le trait INSOUTENABLE à la fin du scénario : elle recevra un jeton Corruption supplémentaire à la mise en place des scénarios suivants."
+        },
+        {
+          "cle": "Recorded Card 1",
+          "parJoueur": true,
+          "type": "choix",
+          "obligatoire": false,
+          "deck": "requis",
+          "libelle": "Soutien ou amélioration inscrit(e) au registre",
+          "aide": "Facultatif : le numéro d'une carte de coût 2 ou moins (jamais une carte sans coût) que vous contrôlez. Elle pourra entrer en jeu au scénario suivant, contre un jeton Corruption."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "01-shadows_in_the_night-intro-1.jpg"
+        ],
+        "regles": [
+          "01-shadows_in_the_night-regles-1.jpg",
+          "01-shadows_in_the_night-regles-2.jpg",
+          "01-shadows_in_the_night-regles-3.jpg"
+        ]
+      }
+    },
+    {
+      "id": "shadow_labyrinth",
+      "numero": 2,
+      "nom": "Shadow Labyrinth",
+      "nom_fr": "Le Labyrinthe des Ombres",
+      "resume": "Un vaste labyrinthe de couloirs et d'impasses, conçu pour désorienter et punir les intrus. Fléchettes, chausse-trapes, murs qui bougent : le complexe lui-même est le prochain ennemi.",
+      "enjeu": "Un deuxième Sombre Protégé quitte la campagne. Votre Corruption continue de grandir et vous pouvez inscrire une seconde carte pour le dernier scénario.",
+      "victoire": [
+        {
+          "cle": "Dark Protege Removed",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Sombres Protégés retirés de la campagne",
+          "aide": "Le méchant affronté dans ce scénario (et Daredevil ou Elektra si l'un de vos héros porte ce nom) est coché au registre : il ne reviendra plus dans les scénarios suivants.",
+          "options": [
+            "sl012a",
+            "sl013a",
+            "sl014a",
+            "sl015a",
+            "sl016a",
+            "sl017a"
+          ]
+        },
+        {
+          "cle": "Overpowering Scenario 2",
+          "parJoueur": true,
+          "type": "auto",
+          "format": "int",
+          "libelle": "Corruption INSOUTENABLE ?",
+          "aide": "Coché si la Corruption Insidieuse du joueur a le trait INSOUTENABLE à la fin du scénario : elle recevra un jeton Corruption supplémentaire à la mise en place des scénarios suivants."
+        },
+        {
+          "cle": "Recorded Card 2",
+          "parJoueur": true,
+          "type": "choix",
+          "obligatoire": false,
+          "deck": "requis",
+          "libelle": "Soutien ou amélioration inscrit(e) au registre",
+          "aide": "Facultatif : le numéro d'une carte de coût 2 ou moins (jamais une carte sans coût) que vous contrôlez. Elle pourra entrer en jeu au scénario suivant, contre un jeton Corruption."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "02-shadow_labyrinth-intro-1.jpg"
+        ],
+        "regles": [
+          "02-shadow_labyrinth-regles-1.jpg",
+          "02-shadow_labyrinth-regles-2.jpg",
+          "02-shadow_labyrinth-regles-3.jpg",
+          "02-shadow_labyrinth-regles-4.jpg"
+        ]
+      }
+    },
+    {
+      "id": "heart_of_shadow",
+      "numero": 3,
+      "nom": "Heart of Shadow",
+      "nom_fr": "Cœur d'Ombre",
+      "final": true,
+      "resume": "Dans la dernière salle, Krahllak, le maître de la magie noire, accomplit un rituel qui répandra sur New York comme une fleur noire. Quatre sbires des Sombres Protégés vous attendent, et votre propre corruption vous tire vers lui.",
+      "enjeu": "Rien à reporter : c'est le dernier scénario.",
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "03-heart_of_shadow-intro-1.jpg"
+        ],
+        "regles": [
+          "03-heart_of_shadow-regles-1.jpg"
+        ]
+      }
+    }
+  ],
+  "victoire_commune": [],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "parJoueur": true,
+      "type": "auto",
+      "format": "int",
+      "detection": "pv_restants",
+      "libelle": "Points de vie restants",
+      "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie (ou vous vous soignez en vous attribuant une carte Rencontre face cachée)."
+    }
+  ],
+  "pages_expert": [
+    "00-campagne-expert-1.jpg"
+  ],
+  "pages_intro": [
+    "00-couverture.jpg"
+  ]
+}

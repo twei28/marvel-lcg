@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.shadowland.campaign import CampaignSetup
 
 # Dark Invitation (1A) — MANIGANCE PRINCIPALE, stade 1.
 # Contents : Krahllak (I) and Krahllak (II). (Krahllak (II) and Krahllak (III) instead for expert mode.) Heart of Shadow, Black Flower, and Standard encounter sets. One
@@ -24,4 +25,6 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenCardSetup('This', mise_en_place),
+        # Campagne (livret FR) : le niveau est le numero du scenario dans `data/campagnes/shadowland.json`.
+        *CampaignSetup(3),
     ]
