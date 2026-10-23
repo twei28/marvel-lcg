@@ -11,6 +11,7 @@
 import { cardImageUrl } from "/public/js/prepare/api.js?v=dfcc19da";
 import { cards } from "/public/js/prepare/cards.js";
 import { t } from "/public/js/prepare/langue.js";
+import { ouvrirAssistant } from "/public/js/prepare/puzzle-assistant.js";
 
 function el(tag, attrs, ...enfants) {
     const noeud = document.createElement(tag);
@@ -81,6 +82,7 @@ async function ouvrirPanneau() {
             el("p", { class: "puzzles-note" },
                 t("Une position de départ imposée : à toi de trouver la meilleure suite de coups.")),
             liste,
+            el("button", { class: "puzzle-jouer", style: "margin-right:8px", onclick: () => { panneau.remove(); ouvrirAssistant(); } }, "🧩 " + t("Créer un puzzle")),
             el("button", { class: "puzzles-fermer", onclick: () => panneau.remove() }, t("Fermer")),
         ),
     );
