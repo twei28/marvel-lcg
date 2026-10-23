@@ -72,7 +72,36 @@ comptes.forEach((c, k) => {
   console.log(`${tranches[k]!.toFixed(1)} - ${Math.min(1, tranches[k + 1]!).toFixed(1)}`.padEnd(21) + String(c.n).padStart(6) + '   ' + part)
 })
 
-// Pente simple : si la barre « predit », la part gagnee doit croitre de la tranche basse a la haute.
-const parts = comptes.filter((c) => c.n >= 5).map((c) => c.gagnees / c.n)
-const croissante = parts.every((x, i) => i === 0 || x >= parts[i - 1]! - 0.05)
-console.log(`\nMonte avec la part de victoires : ${parts.length >= 2 ? (croissante ? 'OUI' : 'NON') : 'trop peu de donnees'}`)
+// Mesure 2, valable MEME quand on perd toujours (le pilote d'autoplay ne gagne pas avec le deck de depart) : la valeur de la barre selon le nombre de
+// rounds qui RESTENT avant la fin de la partie. Une barre qui predit doit descendre a l'approche de la defaite.
+const restants = new Map<number, { somme: number; n: number }>()
+for (const p of parties.values()) {
+  if (p.gagne !== false || p.points.length === 0) continue
+  const fin = Math.max(...p.points.map((x) => x.round))
+  for (const { round, valeur } of p.points) {
+    const r = Math.min(4, fin - round) // 0 = dernier round photographie ; 4 = 4 rounds ou plus avant la fin
+    const c = restants.get(r) ?? { somme: 0, n: 0 }
+    c.somme += valeur
+    c.n++
+    restants.set(r, c)
+  }
+}
+console.log('\nPARTIES PERDUES : valeur moyenne de la barre selon les rounds restants avant la defaite')
+for (const r of [4, 3, 2, 1, 0]) {
+  const c = restants.get(r)
+  console.log((r === 4 ? '4 ou plus' : String(r)).padEnd(10) + (c ? `${(c.somme / c.n).toFixed(2)}  (${c.n} photos)` : '-'))
+}
+const moyennes = [4, 3, 2, 1, 0].map((r) => restants.get(r)).filter((c): c is { somme: number; n: number } => !!c && c.n >= 5).map((c) => c.somme / c.n)
+const descend = moyennes.length >= 3 && moyennes.every((x, i) => i === 0 || x <= moyennes[i - 1]! + 0.03)
+console.log(`La barre DESCEND a l'approche de la defaite : ${moyennes.length >= 3 ? (descend ? 'OUI' : 'NON') : 'trop peu de donnees'}`)
+
+// Mesure 1 : seulement si la base contient AUSSI des victoires.
+const totalGagnees = comptes.reduce((a, c) => a + c.gagnees, 0)
+const totalPhotos = comptes.reduce((a, c) => a + c.n, 0)
+if (totalGagnees === 0 || totalGagnees === totalPhotos) {
+  console.log('\nMesure « part des victoires » : INDETERMINEE (aucune partie gagnee, ou aucune perdue : rien a comparer).')
+} else {
+  const parts = comptes.filter((c) => c.n >= 5).map((c) => c.gagnees / c.n)
+  const croissante = parts.every((x, i) => i === 0 || x >= parts[i - 1]! - 0.05)
+  console.log(`\nMonte avec la part de victoires : ${parts.length >= 2 ? (croissante ? 'OUI' : 'NON') : 'trop peu de donnees'}`)
+}
