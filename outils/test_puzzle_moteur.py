@@ -40,7 +40,7 @@ def joueur(identite, main=(), deck=(), defausse=()):
 
 
 # --------------------------------------------------------------------------- moteur
-def monter(puzzle_dict, attente=120):
+def monter(puzzle_dict, attente=120, fin_ok=False):
     """Démarre le moteur sur ce puzzle ; rend (jeu, monde, vue_au_premier_choix)."""
     tmp = tempfile.mkdtemp(prefix="puzzle-moteur-")
     jeu_dir = os.path.join(tmp, "jeu")
@@ -107,6 +107,9 @@ def monter(puzzle_dict, attente=120):
             if jeu.GameSetup():
                 jeu.GameLoop()
             monde = jeu.world
+            if fin_ok and not pret.is_set():
+                vue.update(fini=True, raison=monde.game_over.reason, gagne=bool(getattr(monde.game_over, "players_won", False)))
+                pret.set()
             if not pret.is_set():
                 print("La boucle s'est terminée sans question : partie finie=%s, round=%s, raison=%s"
                       % (monde.is_game_over, monde.round_id, (monde.game_over.reason, [str(x) for x in (monde.game_over.players_won or [])])),
@@ -299,6 +302,119 @@ def cas_mise_en_jeu_avec_etats():
     assert allie.max_health - allie.health == 1, ("degats", allie.max_health - allie.health)
     complot = Worlds.GetAllMainSchemes(monde)[0]
     assert complot.threat == 4, complot.threat
+    return "ok"
+
+
+# --------------------------------------------------------------------------- E3 : objectifs et fin
+def objectif(kind, target="", text=""):
+    return {"kind": kind, "target": target, "text": text}
+
+
+def cas_objectif_vaincre_le_mechant_gagne():
+    p = puzzle_de_base([joueur(SPIDER)], format=2, objectives=[objectif("defeat_villain")],
+                       puzzle_command=["Puzzle.Damage('01094', 99)"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and vue["gagne"] and vue["raison"] == "Players Won", vue
+    return "vue=%s" % vue
+
+
+def cas_sans_objectif_la_fin_du_moteur_reste():
+    """Un puzzle sans objectif garde la fin d'avant (raison native du moteur)."""
+    p = puzzle_de_base([joueur(SPIDER)], format=2, puzzle_command=["Puzzle.Damage('01094', 99)"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and vue["gagne"] and vue["raison"] == "The Final Stage of the Villain was Defeated", vue
+    return "vue=%s" % vue
+
+
+def cas_objectif_tous_requis_la_partie_continue():
+    """Mode `all` : vaincre le mechant ne suffit pas si « survivre » reste a faire."""
+    p = puzzle_de_base([joueur(SPIDER, main=["01071"])], format=2,
+                       objectives=[objectif("defeat_villain"), objectif("survive")],
+                       puzzle_command=["Puzzle.Damage('01094', 99)"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert not vue.get("fini"), vue
+    assert not monde.is_game_over
+    assert [x["done"] for x in monde.puzzle_objectives.Status()] == [True, False], monde.puzzle_objectives.Status()
+    return "ok"
+
+
+def cas_objectif_un_seul_requis_mode_any():
+    p = puzzle_de_base([joueur(SPIDER)], format=2, objectives_mode="any",
+                       objectives=[objectif("defeat_villain"), objectif("free_text", text="autre")],
+                       puzzle_command=["Puzzle.Damage('01094', 99)"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and vue["gagne"], vue
+    return "ok"
+
+
+def cas_objectif_survivre_gagne_a_la_fin_du_round():
+    p = puzzle_de_base([joueur(SPIDER, main=["01071"])], format=2, start_phase="end_round",
+                       objectives=[objectif("survive")], encounter_deck=["01105", "01105"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and vue["gagne"] and vue["raison"] == "Players Won", vue
+    return "vue=%s" % vue
+
+
+def cas_objectif_non_atteint_a_la_fin_du_round_perd():
+    p = puzzle_de_base([joueur(SPIDER, main=["01071"])], format=2, start_phase="end_round",
+                       objectives=[objectif("defeat_villain")], encounter_deck=["01105", "01105"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and not vue["gagne"] and vue["raison"] == "The Puzzle Objectives were not Met", vue
+    return "vue=%s" % vue
+
+
+def cas_objectif_libre_valide_a_la_main():
+    p = puzzle_de_base([joueur(SPIDER)], format=2, objectives=[objectif("free_text", text="Garde Black Cat en vie")],
+                       puzzle_command=["Puzzle.ValidateObjective(0)"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and vue["gagne"], vue
+    return "ok"
+
+
+def cas_objectif_libre_refuse_sur_un_autre_type():
+    p = puzzle_de_base([joueur(SPIDER)], format=2, objectives=[objectif("survive")])
+    jeu, monde, vue = monter(p)
+    try:
+        monde.puzzle_objectives.ValidateFree(0)
+    except ValueError as e:
+        return "refuse : %s" % e
+    raise AssertionError("la validation manuelle d'un objectif automatique aurait du etre refusee")
+
+
+def cas_objectif_terminer_le_complot_principal():
+    """Cible = le complot principal : l'achever est la REUSSITE, pas la defaite."""
+    p = puzzle_de_base([joueur(SPIDER)], format=2, objectives=[objectif("complete_scheme", "01097a")],
+                       puzzle_command=["Puzzle.AdvanceMainScheme()"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and vue["gagne"] and vue["raison"] == "Players Won", vue
+    return "vue=%s" % vue
+
+
+def cas_complot_principal_achieve_sans_etre_l_objectif_perd():
+    p = puzzle_de_base([joueur(SPIDER)], format=2, objectives=[objectif("defeat_villain")],
+                       puzzle_command=["Puzzle.AdvanceMainScheme()"])
+    jeu, monde, vue = monter(p, fin_ok=True)
+    assert vue.get("fini") and not vue["gagne"], vue
+    return "vue=%s" % vue
+
+
+def cas_objectif_terminer_un_complot_annexe():
+    p = puzzle_de_base([joueur(SPIDER)], format=2, objectives=[objectif("complete_scheme", "01109")],
+                       puzzle_command=["Puzzle.PutIntoPlay('01109')"])
+    jeu, monde, vue = monter(p)
+    from game.operate.worlds import Worlds
+    from game.effect.rule import GameRule
+    annexe = next(f for f in Worlds.GetAllSideSchemes(monde) if f.paper.card_id == "01109")
+    assert not monde.is_game_over
+    annexe.Defeated(None, GameRule(annexe))
+    assert monde.is_game_over and monde.game_over.reason == "Players Won", (monde.game_over.reason,)
+    return "ok"
+
+
+def cas_puzzle_force_le_mode_automatique():
+    p = puzzle_de_base([joueur(SPIDER)], format=2)
+    jeu, monde, vue = monter(p)
+    assert monde.scene.is_puzzle and not monde.rule.mode_manuel
     return "ok"
 
 

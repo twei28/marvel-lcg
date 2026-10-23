@@ -112,6 +112,8 @@ class WorldRule:
         if is_puzzle:
             self.disable_setup_draw_cards = True
             self.disable_resolve_mulligans = True
+            # Mode automatique FORCE (E3) : les regles sont appliquees par le moteur, jamais en partie manuelle.
+            self.mode_manuel.Set(False)
 
         # ASSEMBLEE (Kingsfall multi-tables, 22/10/2026) : la regle `assemblee_<CODE>_<TABLE>` (ex. `assemblee_KING-7F3A_p2`) porte le code de
         # l'assemblee et le nom de cette table. Absente = partie ordinaire, rien d'autre ne change.

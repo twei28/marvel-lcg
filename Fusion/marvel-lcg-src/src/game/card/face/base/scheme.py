@@ -66,6 +66,7 @@ class Scheme2(HasAmplify, HasHazard, CanHinder, HasThreatLevel, CanPlaceCounter,
         super().OnBeDefeated(would_defeated_message, as_asset=as_asset, ignore_when_defeated=ignore_when_defeated)
         if self.IsInPlay():
             Faces.DiscardAll([self], by_effect)
+        self.card.world.puzzle_objectives.OnSchemeDefeated(self)
         after_defeated_message = Message.AfterSchemeBeDefeated(self, by_effect, defeated_message)
         after_defeated_message.Send()
         if not killer:

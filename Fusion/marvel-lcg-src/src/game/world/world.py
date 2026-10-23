@@ -115,6 +115,8 @@ class World(WorldAction, WorldFind):
         self.scene = scene
 
         self.game_over = GameOverReason(self)
+        from game.puzzle.puzzle_objectives import PuzzleObjectives
+        self.puzzle_objectives = PuzzleObjectives(self)
         # Fin de partie a deux camps. Inerte hors mode competitif : rien ne
         # l'interroge, et aucune condition ne s'y enregistre.
         self.competitive = Competitive(self)
@@ -1117,6 +1119,9 @@ class World(WorldAction, WorldFind):
                 self.current_player = None
                 round_message = Message.WhenRoundEnd(self)
                 round_message.Send()
+                self.puzzle_objectives.OnRoundEnd()
+                if self.is_game_over:
+                    return
                 self.stat.OnRoundEnd()
                 self.buff_manager.OnRoundEnd()
 

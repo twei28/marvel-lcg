@@ -21,6 +21,7 @@ class EncounterSideScheme(SchemeSide2, CanCrisis, HasSetup, HasPermanent, Encoun
             # messages que le cas general, sans la defausse.
             defeated_message = Message.WhenSchemeBeDefeated(self, would_defeated_message, ignore_when_defeated)
             defeated_message.Send()
+            self.card.world.puzzle_objectives.OnSchemeDefeated(self)
             after_defeated_message = Message.AfterSchemeBeDefeated(self, would_defeated_message.by_effect, defeated_message)
             after_defeated_message.Send()
         else:

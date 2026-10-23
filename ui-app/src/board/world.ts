@@ -826,6 +826,8 @@ export type World = {
   players_won?: boolean
   /** Texte du moteur : « The Final Stage of the Villain was Defeated »... */
   game_over_reason?: string
+  /** Objectifs d'un puzzle (vide hors puzzle a objectifs) : `kind` = defeat_villain, survive, complete_scheme ou free_text. */
+  puzzle_objectives?: { kind: string; text: string; target: string; done: boolean }[]
   /**
    * Mode Bataille : le camp gagnant (-1 s'il n'y en a pas) et le camp de
    * chaque siege. Le meme ecran de fin sert aux deux tables : sans eux, il

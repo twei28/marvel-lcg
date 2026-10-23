@@ -278,6 +278,7 @@ class ToDescriptor:
         # was Defeated"...).
         _victoire = getattr(world.game_over, 'players_won', None)
         world_descriptor.game_over = _victoire is not None
+        world_descriptor.puzzle_objectives = world.puzzle_objectives.Status()
         world_descriptor.players_won = bool(_victoire) if _victoire is not None else False
         world_descriptor.game_over_reason = (world.game_over.reason or '') if _victoire is not None else ''
         if world_descriptor.game_over:

@@ -3,6 +3,7 @@
 Sorti de `server_new_game.py` le 22/10/2026 pour que le serveur ET les tests
 montent un puzzle par le meme chemin, et pour mettre en place 1 a 4 heros.
 """
+import json
 from typing import Any, Dict, List
 
 from game.puzzle.puzzle_data import PuzzleData
@@ -87,4 +88,9 @@ def BuildPuzzleScene(puzzle: PuzzleData) -> Dict[str, Any]:
         ],
         "puzzle": BuildPuzzleCommands(puzzle) + puzzle.puzzle_command,
         "reprise_auto": START_PHASE_TO_RESUME.get(puzzle.start_phase, ''),
+        "puzzle_objectifs": [
+            json.dumps({"kind": x.kind, "target": x.target, "text": x.text}, ensure_ascii=False)
+            for x in puzzle.objectives
+        ],
+        "puzzle_objectifs_mode": puzzle.objectives_mode,
     }

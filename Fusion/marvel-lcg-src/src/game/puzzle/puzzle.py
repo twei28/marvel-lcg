@@ -1598,6 +1598,10 @@ class RunPuzzle:
 
     ################################################################################
     #
+    def ValidateObjective(self, index: int):
+        """Valide a la main l'objectif LIBRE `index` (0 = le premier) ; peut finir le puzzle."""
+        self.world.puzzle_objectives.ValidateFree(int(index))
+
     def Win(self):
         """Termine la partie par une VICTOIRE des joueurs.
 

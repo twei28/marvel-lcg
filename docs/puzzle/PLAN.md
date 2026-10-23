@@ -49,11 +49,21 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
   dégâts/compteurs/statuts/attachements.
 - Garder la liste blanche ; tests unitaires de chaque commande.
 
-### E3. Moteur : objectifs et fin de puzzle
+### E3. Moteur : objectifs et fin de puzzle — MOTEUR FAIT (23/10) ; écran de réussite (interface) à faire avec l'utilisateur
 - Détection automatique : vaincre le méchant ce tour, survivre jusqu'à la fin du
   tour, terminer le complot ciblé, combinaisons ET/OU. Objectif libre : bouton manuel.
 - Écran de réussite / d'échec (réutiliser les bannières Victoire/Défaite).
 - Mode automatique forcé en puzzle.
+- Fait : `src/game/puzzle/puzzle_objectives.py` ; objectifs portés par la scène (`puzzle_objectifs`,
+  `puzzle_objectifs_mode`), exposés au client (`puzzle_objectives`). Règles : tous les objectifs
+  (`all`) ou un seul (`any`) → victoire « Players Won » ; round fini sans les atteindre →
+  défaite « The Puzzle Objectives were not Met » ; défaite du moteur (héros éliminés, complot
+  principal achevé qui n'est pas la cible, deck de rencontre vide) reste une défaite. « Terminer
+  le complot » : complot annexe = vaincu (menace à 0) ; complot principal = achevé (réussite,
+  pas défaite). Objectif libre : `Puzzle.ValidateObjective(i)`. Sans objectif : fin du moteur
+  inchangée. 13 cas dans `outils/test_puzzle_moteur.py` (lancer avec `~/.marvel-venv/bin/python`).
+- Reste (interface, E5/E7) : afficher la liste des objectifs, le bouton « objectif libre
+  rempli », l'écran de réussite (bannières Victoire/Défaite déjà en place).
 
 ### E4. Capture de l'état (cœur de l'éditeur)
 - Convertir le plateau courant en `PuzzleData` v2 (zones, ordre des decks, cartes en

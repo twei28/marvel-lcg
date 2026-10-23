@@ -9,6 +9,8 @@ GAME_OVER_REASON_RULE = Literal[
     "The Final Stage of the Villain was Defeated",
     "The Final Stage of the Main Scheme was Completed",
     "The Main Scheme was Completed",
+    # Puzzle (E3, 23/10/2026) : le round s'est termine sans que les objectifs soient atteints.
+    "The Puzzle Objectives were not Met",
 ]
 
 GAME_OVER_REASON_SIMPLE = Literal[
@@ -40,6 +42,7 @@ GAME_OVER_REASON_MAP: Dict[GAME_OVER_REASON, bool|None] = {
     "The Final Stage of the Villain was Defeated": True,
     "The Final Stage of the Main Scheme was Completed": False,
     "The Main Scheme was Completed": False,
+    "The Puzzle Objectives were not Met": False,
     "Players Won": True,
     "Players Lost": False,
     # Un camp a gagne : la partie est gagnee, et `winning_team` dit par qui.
@@ -64,6 +67,9 @@ class GameOverReason:
 
     def SetGameOver(self, reason: 'GAME_OVER_REASON', by_effect: 'Effect|None'):
         if not self.is_game_over:
+            # Puzzle a objectifs (E3) : la fin « naturelle » du moteur devient un objectif atteint ou non.
+            if by_effect is not None and self.world.puzzle_objectives.InterceptGameOver(reason, by_effect):
+                return
             from engine import Engine
             game = Engine.game
             from game.message import Message
