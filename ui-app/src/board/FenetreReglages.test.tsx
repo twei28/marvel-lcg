@@ -128,7 +128,7 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
     ],
     son: ['Bruitages', 'Musique de fond'],
     jeu: [
-      'Phase du méchant',
+      'Présentation',
       'Carte révélée en grand',
       'Le jeu agit pour moi quand il n’y a qu’un choix',
       'Choisir la seule cible possible',
@@ -395,7 +395,7 @@ describe('le mode « Sur la table » est proposé à tous', () => {
   // `MODE_SUR_TABLE_OUVERT` repasse à faux, ces cas rougissent et rappellent de
   // réécrire ce qu'on attend. Ils ont déjà joué ce rôle une fois.
   const modes = () =>
-    within(screen.getByText('Phase du méchant').closest('.ligne-option') as HTMLElement)
+    within(screen.getByText('Présentation').closest('.ligne-option') as HTMLElement)
       .getAllByRole('button')
       .map((b) => b.textContent)
 

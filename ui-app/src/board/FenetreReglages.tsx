@@ -26,7 +26,8 @@
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireBarreAvantage, lireBarreAvantage } from './barre-avantage-reglage'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { filtrerReglages } from './recherche-reglages'
 import { choisirPolitique, lirePolitique, type PolitiqueAvance } from './avance-multi'
 import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { ReglagesApercuAmbiance, type ApercuMeteo } from './CoucheMeteo'
@@ -285,7 +286,7 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   const valeur: string = p.modePhase === 'detaille' && bisOuvert ? presentation : p.modePhase
   return (
     <LigneChoix<string>
-      libelle={t('Phase du méchant')}
+      libelle={t('Présentation')}
       valeur={valeur}
       choix={[
         ...(PHASE_ETAPE_VISIBLE || !bisOuvert ? [{ valeur: 'detaille', libelle: t('Étape par étape') }] : []),
@@ -337,6 +338,11 @@ function LigneDelaiAutoPhase() {
       detail={t('Chaque étape se valide toute seule après ce délai ; un clic la passe tout de suite. Réglage personnel.')}
     />
   )
+}
+
+/** Le titre d'une section d'un onglet (« Phase du méchant », « Mon tour »...). Même style que l'ancien titre de groupe. */
+function TitreSection({ children }: { children: string }) {
+  return <p className="reglages-groupe">{children}</p>
 }
 
 function LigneFaconDeJouer() {
@@ -532,6 +538,7 @@ export function ContenuOnglet({
     const sobre = p.affichage === 'sobre'
     return (
       <>
+        <TitreSection>{t('Affichage')}</TitreSection>
         {/* Trois affichages au choix (18/10/2026) : Normal (valeur `epure`, celui de depart), Colore (valeur
             `normal`), Sobre. Sans droit a l'epure (ancienne reserve), Normal n'est pas propose. */}
         <LigneChoix
@@ -551,23 +558,6 @@ export function ContenuOnglet({
             <span className="reglage-teinte-titre">{t('Couleur de la table')}</span>
             <RoueTeinte valeur={p.teinte} changer={p.changerTeinte} reinitialiser={p.reinitialiserTeinte} />
           </div>
-        ) : null}
-        {/* La table personnalisable (04/10/2026). PC seulement. */}
-        {p.modifierLaTable ? (
-          <div className="reglage-teinte reglage-table">
-            <span className="reglage-teinte-titre">{t('Placement des zones')}</span>
-            <button type="button" className="bh-bouton" onClick={p.modifierLaTable}>
-              {t('Modifier la table')}
-            </button>
-          </div>
-        ) : null}
-        <LigneEtiquettesTable />
-        <LigneBarreAvantage />
-        {p.telephone ? (
-          <>
-            <LigneTailleTexte />
-            <LigneVerrouPortrait />
-          </>
         ) : null}
         <LigneBascule
           libelle={t('Animations')}
@@ -592,6 +582,25 @@ export function ContenuOnglet({
           reponseAmbiance={p.reponseAmbiance}
           cyclerReponseAmbiance={p.cyclerReponseAmbiance}
         />
+        <TitreSection>{t('Sur la table')}</TitreSection>
+        {/* La table personnalisable (04/10/2026). PC seulement. */}
+        {p.modifierLaTable ? (
+          <div className="reglage-teinte reglage-table">
+            <span className="reglage-teinte-titre">{t('Placement des zones')}</span>
+            <button type="button" className="bh-bouton" onClick={p.modifierLaTable}>
+              {t('Modifier la table')}
+            </button>
+          </div>
+        ) : null}
+        <LigneEtiquettesTable />
+        <LigneBarreAvantage />
+        {p.telephone ? (
+          <>
+            <LigneTailleTexte />
+            <LigneVerrouPortrait />
+          </>
+        ) : null}
+        <TitreSection>{t('Langue et cartes')}</TitreSection>
         {/* La langue n'est pas un interrupteur oui/non : deux pastilles nommees,
             pour qu'on lise ou on va avant de cliquer. */}
         <LigneChoix
@@ -640,6 +649,7 @@ export function ContenuOnglet({
   if (onglet === 'son') {
     return (
       <>
+        <TitreSection>{t('Sons')}</TitreSection>
         <LigneBascule
           libelle={t('Bruitages')}
           detail={t('Coups, cartes jouées, menaces')}
@@ -648,6 +658,7 @@ export function ContenuOnglet({
         />
         <LigneVolumeSons disponible={p.sons} />
         {p.telephone ? <LigneVibrations /> : null}
+        <TitreSection>{t('Musique')}</TitreSection>
         <LigneBascule
           libelle={t('Musique de fond')}
           detail={t('Si un fichier de musique est installé')}
@@ -661,8 +672,7 @@ export function ContenuOnglet({
   if (onglet === 'jeu') {
     return (
       <>
-        <LigneFaconDeJouer />
-        <LigneCoteAmeliorations />
+        <TitreSection>{t('Phase du méchant')}</TitreSection>
         <LignePhaseMechant p={p} />
         {p.modePhase !== 'instantane' ? <LigneDelaiAutoPhase /> : null}
         {p.avancePhaseHote ? <LigneAvancePhase /> : null}
@@ -697,7 +707,10 @@ export function ContenuOnglet({
               : t('Au centre de l’écran, le temps de la lire')
           }
         />
-        <p className="reglages-groupe">{t('Le jeu agit pour moi quand il n’y a qu’un choix')}</p>
+        <TitreSection>{t('Mon tour')}</TitreSection>
+        <LigneFaconDeJouer />
+        <LigneCoteAmeliorations />
+        <TitreSection>{t('Le jeu agit pour moi quand il n’y a qu’un choix')}</TitreSection>
         <LigneBascule
           libelle={t('Choisir la seule cible possible')}
           actif={p.autoCible}
@@ -719,6 +732,7 @@ export function ContenuOnglet({
           actif={p.finTourAuto}
           onBascule={p.basculerFinTourAuto}
         />
+        <TitreSection>{t('Partie')}</TitreSection>
         <LigneBascule
           libelle={t('Sauvegarde à chaque phase')}
           detail={t('En plus des trois emplacements')}
@@ -731,6 +745,7 @@ export function ContenuOnglet({
 
   return (
     <>
+      <TitreSection>{t('Plateau')}</TitreSection>
       <LigneBascule
         libelle={t('Nouveau plateau')}
         detail={t('Non : l’ancien plateau (avant septembre)')}
@@ -749,12 +764,6 @@ export function ContenuOnglet({
         disponible={p.designEssai}
         detail={t('Ce que dit le panneau quand tu joues une carte')}
       />
-      <LigneBascule
-        libelle={t('Curseurs des autres joueurs')}
-        detail={t('En multijoueur, voir le curseur des autres joueurs')}
-        actif={p.curseurs}
-        onBascule={p.basculerCurseurs}
-      />
       {/* Montre UNIQUEMENT sur un appareil mobile : sur un PC le plateau est de
           toute facon rendu en mode PC, le reglage n'aurait aucun effet et c'est
           lui qui a un jour enferme l'utilisateur. */}
@@ -772,6 +781,13 @@ export function ContenuOnglet({
           detail={t('Non : la vue téléphone, adaptée à l’écran')}
         />
       ) : null}
+      <TitreSection>{t('Multijoueur')}</TitreSection>
+      <LigneBascule
+        libelle={t('Curseurs des autres joueurs')}
+        detail={t('En multijoueur, voir le curseur des autres joueurs')}
+        actif={p.curseurs}
+        onBascule={p.basculerCurseurs}
+      />
       <p className="options-raccourcis">
         {t(
           'Raccourcis : E ou Espace = fin du tour, Entrée ou Espace = étape suivante pendant le déroulé d’une phase, U = annuler, Échap = annuler l’action en cours'
@@ -794,6 +810,18 @@ export function FenetreReglages({
 }: { ouvert: boolean; fermer: () => void; lectureSeule?: boolean } & ProprietesReglages) {
   const [onglet, setOnglet] = useState<Onglet>('apparence')
   const boite = useRef<HTMLDivElement | null>(null)
+  // La recherche (23/10/2026) : non vide, les quatre onglets se rendent a la suite et le filtre cache ce qui ne correspond pas.
+  const [recherche, setRecherche] = useState('')
+  const [aucunResultat, setAucunResultat] = useState(false)
+  const enRecherche = recherche.trim() !== ''
+  const contenu = useRef<HTMLDivElement | null>(null)
+  // A CHAQUE rendu : une ligne recreee par React (un reglage qui change) doit retrouver son etat cache ou montre.
+  useLayoutEffect(() => {
+    const racine = contenu.current
+    if (!racine) return
+    const visibles = filtrerReglages(racine, recherche)
+    setAucunResultat(enRecherche && visibles === 0)
+  })
   // Deplacement volontaire, a la poignee -- meme mecanisme que
   // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
   // « toutes les fenetres, tous les panneaux »).
@@ -842,6 +870,21 @@ export function FenetreReglages({
           >
             {t('Réglages')}
           </h2>
+          <input
+            type="search"
+            className="reglages-recherche"
+            value={recherche}
+            placeholder={t('Chercher un réglage…')}
+            aria-label={t('Chercher un réglage')}
+            onChange={(e) => setRecherche(e.target.value)}
+            onKeyDown={(e) => {
+              // Échap efface d'abord la recherche ; une seconde fois, il ferme la fenêtre.
+              if (e.key === 'Escape' && recherche !== '') {
+                e.stopPropagation()
+                setRecherche('')
+              }
+            }}
+          />
           <button type="button" className="reglages-fermer" onClick={fermer} title={t('Fermer')}>
             ×
           </button>
@@ -855,19 +898,33 @@ export function FenetreReglages({
               key={o}
               type="button"
               role="tab"
-              aria-selected={onglet === o}
-              className={`reglages-onglet${onglet === o ? ' est-actif' : ''}`}
-              onClick={() => setOnglet(o)}
+              aria-selected={onglet === o && !enRecherche}
+              className={`reglages-onglet${onglet === o && !enRecherche ? ' est-actif' : ''}`}
+              onClick={() => {
+                setRecherche('')
+                setOnglet(o)
+              }}
             >
               {libelleOnglet(o)}
             </button>
           ))}
         </nav>
-        <div className="reglages-contenu" role="tabpanel" aria-label={libelleOnglet(onglet)}>
+        <div className="reglages-contenu" role="tabpanel" aria-label={enRecherche ? t('Résultats de la recherche') : libelleOnglet(onglet)} ref={contenu}>
           {lectureSeule ? <p className="reglages-lecture-seule">{t('Réglages du joueur, en lecture seule.')}</p> : null}
           <div {...(lectureSeule ? { inert: true } : {})}>
-            <ContenuOnglet onglet={onglet} p={p} />
+            {enRecherche ? (
+              ONGLETS.map((o) => (
+                <div key={o} data-onglet={o}>
+                  <ContenuOnglet onglet={o} p={p} />
+                </div>
+              ))
+            ) : (
+              <div data-onglet={onglet}>
+                <ContenuOnglet onglet={onglet} p={p} />
+              </div>
+            )}
           </div>
+          {aucunResultat ? <p className="reglages-aucun-resultat">{t('Aucun réglage ne correspond à cette recherche.')}</p> : null}
         </div>
       </div>
     </div>

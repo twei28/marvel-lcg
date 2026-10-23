@@ -114,7 +114,7 @@ describe('les réglages', () => {
       ...sur,
     }) as unknown as ProprietesReglages
   const choix = () =>
-    within(screen.getByText('Phase du méchant').closest('.ligne-option') as HTMLElement)
+    within(screen.getByText('Présentation').closest('.ligne-option') as HTMLElement)
       .getAllByRole('button')
       .map((b) => b.textContent)
   it('exactement trois choix, Guidée visible sans l’essai de compte ni hôte local', () => {

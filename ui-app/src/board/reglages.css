@@ -45,6 +45,13 @@
   color: var(--menace, #f0b95f);
 }
 
+/* Le premier titre d'un onglet n'a rien au-dessus de lui : ni filet, ni marge. */
+.reglages-fenetre.est-reglages .reglages-contenu .reglages-groupe:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
 .reglages-fenetre.est-reglages .reglages-onglet {
   font-size: 1rem;
 }
@@ -76,4 +83,176 @@
 .ligne-option-curseur:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+/* La recherche d'un reglage, dans l'en-tete de la fenetre (23/10/2026). */
+.reglages-fenetre.est-reglages .reglages-recherche {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 360px;
+  margin-inline: auto 8px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #e8eef6;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+}
+
+.reglages-fenetre.est-reglages .reglages-recherche:focus-visible {
+  outline: 2px solid var(--ambre, #f2a516);
+  outline-offset: 1px;
+}
+
+.reglages-fenetre.est-reglages .reglages-aucun-resultat {
+  margin: 24px 0;
+  color: rgba(248, 250, 252, 0.62);
+}
+
+/* =========================================================================
+   LA MEME FENETRE QUE LA MAQUETTE (23/10/2026), AVEC LES COULEURS DU JEU
+   Onglets en rangee sous l'en-tete, lignes a plat separees par un filet fin, interrupteurs a la place du « Oui / Non ». Les couleurs sont
+   celles du jeu (--ep-* : fond sombre, bleu du jeu, typo des titres) ; hors theme Normal, elles retombent sur l'ambre des reglages.
+   ========================================================================= */
+.reglages-fenetre.est-reglages {
+  width: min(760px, 94vw);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-areas:
+    'tete'
+    'onglets'
+    'contenu';
+}
+
+.reglages-fenetre.est-reglages .reglages-onglets {
+  flex-direction: row;
+  gap: 2px;
+  padding: 0 12px;
+  border-right: 0;
+  border-bottom: 1px solid var(--ep-bord, rgba(255, 255, 255, 0.12));
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+html .reglages-fenetre.est-reglages .reglages-onglet {
+  flex: none;
+  padding: 11px 18px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  margin-bottom: -1px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ep-doux, #b9c4d2);
+  font-weight: 700;
+}
+
+html .reglages-fenetre.est-reglages .reglages-onglet:hover:not(.est-actif) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ep-texte, #fff);
+}
+
+html[data-epure] .reglages-fenetre.est-reglages .reglages-onglet.est-actif,
+html[data-epure] .reglages-fenetre.est-reglages .reglages-onglet[aria-selected='true'],
+html .reglages-fenetre.est-reglages .reglages-onglet.est-actif {
+  background: transparent;
+  box-shadow: none;
+  color: var(--ep-texte, #fff);
+  border-bottom-color: var(--ep-jaune, var(--menace, #f2a516));
+}
+
+/* Les lignes : a plat, un filet fin entre deux. */
+html[data-epure] .reglages-fenetre.est-reglages .ligne-option,
+html .reglages-fenetre.est-reglages .ligne-option {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ep-bord, #383e49) 55%, transparent);
+  border-radius: 0;
+  padding-inline: 6px;
+}
+
+html[data-epure] .reglages-fenetre.est-reglages .ligne-option:hover:not(.est-etabli):not(.est-desactive) {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: none;
+}
+
+/* L'interrupteur : le texte « Oui / Non » reste pour les lecteurs d'ecran, mais ne se voit plus. */
+.reglages-fenetre.est-reglages .ligne-option[role='switch'] .ligne-option-etat {
+  position: relative;
+  flex: none;
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ep-bord, #4a5160) 80%, #000);
+  font-size: 0;
+  transition: background 0.15s;
+}
+
+.reglages-fenetre.est-reglages .ligne-option[role='switch'] .ligne-option-etat::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #cfd5df;
+  transition: transform 0.15s;
+}
+
+html[data-epure] .reglages-fenetre.est-reglages .ligne-option[role='switch'].est-actif .ligne-option-etat,
+html .reglages-fenetre.est-reglages .ligne-option[role='switch'].est-actif .ligne-option-etat {
+  background: var(--ep-jaune, var(--menace, #f2a516));
+}
+
+.reglages-fenetre.est-reglages .ligne-option[role='switch'].est-actif .ligne-option-etat::after {
+  transform: translateX(18px);
+  background: #fff;
+}
+
+.reglages-fenetre.est-reglages .ligne-option[role='switch']:focus-visible {
+  outline: 2px solid var(--ep-jaune, var(--menace, #f2a516));
+  outline-offset: -2px;
+}
+
+/* Le grise reste lisible : l'interrupteur coupe devient plus pale, sans disparaitre. */
+.reglages-fenetre.est-reglages .ligne-option[role='switch'].est-desactive .ligne-option-etat {
+  opacity: 0.4;
+}
+
+@media (max-width: 760px) {
+  .reglages-fenetre.est-reglages .reglages-onglets {
+    padding: 0 6px;
+  }
+  html .reglages-fenetre.est-reglages .reglages-onglet {
+    padding: 11px 13px;
+  }
+}
+
+/* LE CHOIX ACTIF SE VOIT (23/10/2026). En theme Normal, la regle des boutons de la fenetre (`html[data-epure] .reglages-fenetre button`) passait
+   devant `.mode-actions button.est-actif` : toutes les pastilles avaient le meme fond et on ne voyait plus quel choix etait en vigueur. */
+html[data-epure] .reglages-fenetre.est-reglages .mode-actions button.est-actif {
+  background: var(--ep-jaune, var(--menace, #f2a516));
+  color: #fff;
+  font-weight: 800;
+  box-shadow: none;
+}
+
+html[data-epure] .reglages-fenetre.est-reglages .mode-actions button.est-actif:disabled {
+  opacity: 0.55;
+}
+
+/* Le champ de recherche, lisible sur la barre de titre bleue du theme Normal. */
+html[data-epure] .reglages-fenetre.est-reglages .reglages-recherche {
+  background: var(--ep-fond, #111318);
+  color: var(--ep-texte, #f2f3f5);
+  border: 1px solid var(--ep-bord, #383e49);
+  box-shadow: none;
+}
+
+html[data-epure] .reglages-fenetre.est-reglages .reglages-recherche::placeholder {
+  color: var(--ep-doux, #9da5b3);
+  opacity: 1;
 }

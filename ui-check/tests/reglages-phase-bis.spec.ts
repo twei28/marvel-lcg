@@ -36,7 +36,7 @@ test('les Réglages ne proposent que trois choix : Guidée, Plateau animé, Acc�
   await page.getByRole('tab', { name: /^Jeu$/ }).or(page.getByRole('button', { name: /^Jeu$/ })).first().click();
   const fenetre = page.locator('.reglages-fenetre');
   // 19/10/2026 : trois choix seulement, « Étape par étape » et « Phase dynamique » sont caches.
-  const ligne = fenetre.locator('.ligne-option').filter({ hasText: 'Phase du méchant' }).first();
+  const ligne = fenetre.locator('.ligne-option').filter({ hasText: 'Présentation' }).first();
   await expect(ligne.getByRole('button')).toHaveText(['Guidée', 'Plateau animé', 'Accéléré']);
   const choix = () => page.evaluate(() => localStorage.getItem('mc_phase_presentation'));
   await ligne.getByRole('button', { name: /^Plateau animé$/ }).click();
