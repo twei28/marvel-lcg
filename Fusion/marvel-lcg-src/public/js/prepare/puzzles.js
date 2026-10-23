@@ -12,6 +12,7 @@ import { cardImageUrl } from "/public/js/prepare/api.js?v=dfcc19da";
 import { cards } from "/public/js/prepare/cards.js";
 import { t } from "/public/js/prepare/langue.js";
 import { ouvrirAssistant } from "/public/js/prepare/puzzle-assistant.js";
+import { jouerParCode, mesPuzzles, oublierPuzzle, supprimerPuzzle, urlSite } from "/public/js/prepare/puzzle-client.js";
 
 function el(tag, attrs, ...enfants) {
     const noeud = document.createElement(tag);
@@ -72,6 +73,46 @@ style.textContent = `
 `;
 document.head.append(style);
 
+// ---------------------------------------------------------------- par code / mes puzzles --
+function blocParCode() {
+    const champ = el("input", { type: "text", placeholder: "PZ-XXXX", maxlength: "12",
+        style: "flex:1;padding:8px 10px;border-radius:8px;border:1px solid #6b4a26;background:#120a03;color:#f3e3d0;text-transform:uppercase" });
+    const message = el("div", { style: "color:#ff9a8a;font-size:.8rem;min-height:1em" });
+    const aller = async () => {
+        message.textContent = "";
+        try {
+            await jouerParCode(champ.value.trim());
+            window.location.href = "/app/board.html";
+        } catch (e) {
+            message.textContent = (e.raisons || [String(e)]).join(" ; ");
+        }
+    };
+    champ.addEventListener("keydown", (e) => { if (e.key === "Enter") aller(); });
+    return el("div", { style: "margin-bottom:14px" },
+        el("div", { style: "display:flex;gap:8px" }, champ,
+            el("button", { class: "puzzle-jouer", onclick: aller, title: urlSite() ? "" : t("Indisponible hors ligne") }, t("Résoudre par code"))),
+        message);
+}
+
+function blocMesPuzzles() {
+    const mes = mesPuzzles();
+    if (!mes.length) return null;
+    const lignes = mes.map((p) => el("div", { class: "puzzle-ligne" },
+        el("div", { class: "puzzle-infos" },
+            el("div", { class: "puzzle-titre" }, p.titre || p.code),
+            el("div", { class: "puzzle-sous" }, p.code)),
+        el("button", { class: "puzzles-fermer", style: "margin:0", onclick: () => { try { navigator.clipboard.writeText(p.cle); } catch (e) { /* rien */ } } }, t("Copier la clé")),
+        el("button", { class: "puzzles-fermer", style: "margin:0", onclick: async (e) => {
+            const bouton = e.currentTarget;
+            const ligne = bouton.closest(".puzzle-ligne");
+            bouton.disabled = true;
+            try { await supprimerPuzzle(p.code, p.cle); } catch (err) { if (err.statut !== 403 && err.statut !== 404) { bouton.disabled = false; return; } }
+            oublierPuzzle(p.code);
+            ligne.remove();
+        } }, t("Supprimer"))));
+    return el("div", { style: "margin-bottom:14px" }, el("h2", { style: "font-size:1rem" }, t("Mes puzzles")), ...lignes);
+}
+
 // ---------------------------------------------------------------- panneau --
 async function ouvrirPanneau() {
     document.querySelector(".puzzles-panneau")?.remove();
@@ -81,6 +122,8 @@ async function ouvrirPanneau() {
             el("h2", {}, "🧩 Puzzles"),
             el("p", { class: "puzzles-note" },
                 t("Une position de départ imposée : à toi de trouver la meilleure suite de coups.")),
+            blocParCode(),
+            blocMesPuzzles(),
             liste,
             el("button", { class: "puzzle-jouer", style: "margin-right:8px", onclick: () => { panneau.remove(); ouvrirAssistant(); } }, "🧩 " + t("Créer un puzzle")),
             el("button", { class: "puzzles-fermer", onclick: () => panneau.remove() }, t("Fermer")),
@@ -114,13 +157,14 @@ async function ouvrirPanneau() {
             el("button", {
                 class: "puzzle-jouer",
                 onclick: async (e) => {
-                    e.currentTarget.disabled = true;
-                    e.currentTarget.textContent = "...";
+                    const bouton = e.currentTarget;
+                    bouton.disabled = true;
+                    bouton.textContent = "...";
                     const r = await fetch("/load_puzzle?" + chemin).catch(() => null);
                     if (r && r.ok) window.location.href = "/app/board.html";
                     else {
-                        e.currentTarget.disabled = false;
-                        e.currentTarget.textContent = t("Jouer");
+                        bouton.disabled = false;
+                        bouton.textContent = t("Jouer");
                         alert(t("Impossible de lancer ce puzzle."));
                     }
                 },

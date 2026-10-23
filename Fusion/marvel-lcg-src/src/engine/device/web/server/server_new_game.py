@@ -133,6 +133,15 @@ class GameServerNewGame(GameServerBase):
     def play_puzzle(self, puzzle: 'PuzzleData'):
         from game.scene.scene import Scene
         from game.puzzle.puzzle_scene import BuildPuzzleScene
+        from game.puzzle.puzzle_validation import PUBLISHED_METHODS, validate_puzzle
+
+        # Un puzzle de format 2 peut venir d'un inconnu (publie sur le site, lu par code) : meme
+        # controle strict qu'au serveur de puzzles, avec la liste blanche de mise en place. Les
+        # fichiers du depot (format 1) sont les notres et restent tels quels.
+        if puzzle.format >= 2:
+            erreurs = validate_puzzle(puzzle, PUBLISHED_METHODS)
+            if erreurs:
+                raise web.HTTPBadRequest(text='Puzzle refusé : ' + ' ; '.join(erreurs[:5]))
 
         puzzle_data = BuildPuzzleScene(puzzle)
 
@@ -162,6 +171,13 @@ class GameServerNewGame(GameServerBase):
         self.play_puzzle(puzzle)
         return web.json_response({'result': "New game created"})
 
+    async def new_puzzle_post(self, request: web.Request) -> web.Response:
+        """Comme `/new_puzzle`, mais le puzzle est dans le CORPS : une adresse ne porte pas un vrai deck
+        (la ligne de requete est plafonnee a 8 Ko)."""
+        puzzle = Json.LoadsAs(await request.text(), PuzzleData)
+        self.play_puzzle(puzzle)
+        return web.json_response({'result': "New game created"})
+
     async def new_game_online(self, request: web.Request) -> web.Response:
         ip = request.query.get('ip')
         port = int(request.query.get('port', 2345))
@@ -185,6 +201,7 @@ class GameServerNewGame(GameServerBase):
         self.AddAwaitGetSecurity('/load_puzzle', self.load_puzzle)
         self.AddAwaitGetSecurity('/new_puzzle_replay', self.new_puzzle_replay)
         self.AddAwaitGetSecurity('/new_puzzle', self.new_puzzle)
+        self.AddPostSecurity('/new_puzzle', self.new_puzzle_post)
         self.AddAwaitGetSecurity('/new_game_online', self.new_game_online)
         self.AddAwaitGetSecurity('/new_game_lan', self.new_game_lan)
 

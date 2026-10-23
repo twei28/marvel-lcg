@@ -26,6 +26,20 @@ MAX_HINTS = 10
 MAX_HINT_LENGTH = 500
 MAX_OBJECTIVES = 6
 
+# Les seules commandes `Puzzle.<Méthode>` qu'un puzzle de format 2 peut appeler : de la MISE EN PLACE.
+# Aucune ne termine la partie (Win, Lose, End), ne valide un objectif (ValidateObjective) ni ne sort de
+# la table (AssembleeAutreTable). SOURCE UNIQUE : le serveur de puzzles (site/puzzles_publies.py) la lit
+# ici, et `play_puzzle` s'en sert aussi pour refuser un puzzle venu d'ailleurs. Un test
+# (outils/test_puzzle_format.py) vérifie que chaque nom existe dans `RunPuzzle`.
+PUBLISHED_METHODS = frozenset("""
+CreateEncounterDeck CreateEncounterDiscardPile CreateHandCards CreatePlayerDeck CreatePlayerDiscardPile
+CreatePlayerAdditionalDeck SetFirstPlayer RestoreCard RestoreState AdvanceVillain AdvanceMainScheme
+SetHealth SetThreat Damage Heal Stun Confuse Tough Cloak Daze Expose AddStatus AddTough AddCloak Intensify
+Exhaust Ready Counter Token PlaceCounters PlaceThreat PutIntoPlay PlaceUnder Attach AttachReel Engage
+MoveTo Shuffle Flip ChangeForm ChangeToFace Draw Gain Discard Remove EmptyHand EmptyPlayerDeck
+EmptyPlayerDiscardPile EmptyEncounterDeck EmptyEncounterDiscardPile
+""".split())
+
 OBJECTIVE_KINDS = ('defeat_villain', 'survive', 'complete_scheme', 'free_text')
 OBJECTIVE_MODES = ('all', 'any')
 START_PHASES = ('', 'player', 'villain', 'end_round')

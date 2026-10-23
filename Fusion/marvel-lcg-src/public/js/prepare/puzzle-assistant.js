@@ -11,6 +11,7 @@ import { api, cardImageUrl, fileName } from "/public/js/prepare/api.js?v=dfcc19d
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog } from "/public/js/prepare/catalog.js";
 import { t } from "/public/js/prepare/langue.js";
+import { monterPuzzle, publierPuzzle, memoriserPuzzle, urlSite } from "/public/js/prepare/puzzle-client.js";
 import { brouillonVide, brouillonVersPuzzle, erreursDuBrouillon, joueurVide } from "/public/js/prepare/puzzle-brouillon.js";
 
 const ORANGE = "#f08a24";
@@ -511,8 +512,11 @@ function etapePresentation(ctx) {
     const indice = el("input", { class: "pa-texte", maxlength: 500, placeholder: t("Un indice (dévoilé au besoin)") });
     const indices = b.hints.map((h, i) => el("div", { class: "pa-ligne" }, el("span", { class: "nom" }, h),
         el("button", { class: "pa-mini", onclick: () => { b.hints.splice(i, 1); ctx.redessiner(); } }, "✕")));
+    const pseudo = el("input", { class: "pa-texte", maxlength: 30, value: ctx.pseudo || "", placeholder: t("Anonyme"),
+        oninput: (e) => { ctx.pseudo = e.target.value; } });
     const blocs = [
         el("div", { class: "pa-champ" }, el("label", {}, t("Titre")), titre),
+        el("div", { class: "pa-champ" }, el("label", {}, t("Ton pseudo (affiché avec le puzzle, rien d'autre n'est gardé)")), pseudo),
         el("div", { class: "pa-champ" }, el("label", {}, t("Histoire")), histoire),
         el("div", { class: "pa-champ" }, el("label", {}, t("Difficulté")), etoiles),
         el("div", { class: "pa-champ" }, el("label", {}, t("Indices")), indices, indice,
@@ -536,6 +540,27 @@ ETAPES.push(
     { titre: "L'objectif", aide: "Ce qu'il faut réussir. Laisse vide pour une partie normale.", rendre: etapeObjectifs },
     { titre: "Présentation et test", aide: "Le titre, l'histoire, la difficulté et le moment de départ. Puis teste ton puzzle.", rendre: etapePresentation },
 );
+
+// ------------------------------------------------------------------ publication
+/** L'écran de réussite : le code, la clé d'édition (montrée ICI et gardée dans « Mes puzzles »). */
+function afficherPublication(corps, pub, titre) {
+    const copier = (texte, bouton) => {
+        try { navigator.clipboard.writeText(texte); bouton.textContent = t("Copié"); } catch (e) { /* tant pis */ }
+    };
+    const code = el("strong", { style: "font-size:2rem;letter-spacing:.15em;color:" + ORANGE }, pub.code);
+    const cle = el("code", { style: "word-break:break-all" }, pub.cle);
+    const b1 = el("button", { class: "pa-mini", onclick: () => copier(pub.code, b1) }, t("Copier le code"));
+    const b2 = el("button", { class: "pa-mini", onclick: () => copier(pub.cle, b2) }, t("Copier la clé"));
+    const jours = Math.max(1, Math.round((pub.expire_le - Date.now() / 1000) / 86400));
+    corps.replaceChildren(
+        el("h3", {}, t("Puzzle publié")),
+        el("p", { class: "pa-aide" }, `« ${titre} » ${t("est en ligne. Donne ce code à qui veut le résoudre :")}`),
+        el("div", { class: "pa-zone", style: "text-align:center;padding:16px" }, code, el("div", {}, b1)),
+        el("p", { class: "pa-aide" }, `${t("Il disparaît après")} ${jours} ${t("jours sans que personne y joue ; chaque partie remet le compteur à zéro.")}`),
+        el("h3", {}, t("Ta clé d'édition")),
+        el("p", { class: "pa-aide" }, t("Elle permet de modifier ou de supprimer le puzzle. Elle est gardée dans « Mes puzzles » sur ce navigateur ; note-la si tu changes d'appareil.")),
+        el("div", { class: "pa-zone" }, cle, el("div", { style: "margin-top:6px" }, b2)));
+}
 
 // ------------------------------------------------------------------ brouillon enregistré
 // Le brouillon est gardé dans le navigateur à chaque étape (jamais envoyé nulle part). Tout accès
@@ -576,24 +601,51 @@ export async function ouvrirAssistant() {
     const passer = el("button", { class: "pa-bouton discret", onclick: () => { ctx.etape += 1; dessiner(); } }, t("Passer"));
     const suivant = el("button", { class: "pa-bouton principal", onclick: () => { ctx.etape += 1; dessiner(); } }, t("Suivant"));
     const tester = el("button", {
-        class: "pa-bouton principal",
+        class: "pa-bouton",
         onclick: async (e) => {
             const problemes = erreursDuBrouillon(ctx.brouillon);
             erreurs.replaceChildren(...problemes.map((p) => el("li", {}, t(p))));
             if (problemes.length) return;
-            e.currentTarget.disabled = true;
-            const puzzle = brouillonVersPuzzle(ctx.brouillon);
-            const r = await fetch("/new_puzzle?" + JSON.stringify(puzzle)).catch(() => null);
-            if (r && r.ok) window.location.href = "/app/board.html";
-            else { e.currentTarget.disabled = false; erreurs.replaceChildren(el("li", {}, t("Le moteur a refusé ce puzzle."))); }
+            const bouton = e.currentTarget;
+            bouton.disabled = true;
+            try {
+                await monterPuzzle(brouillonVersPuzzle(ctx.brouillon));
+                window.location.href = "/app/board.html";
+            } catch (err) {
+                bouton.disabled = false;
+                erreurs.replaceChildren(...err.raisons.map((r) => el("li", {}, r)));
+            }
         },
     }, t("Tester ce puzzle"));
+    const publier = el("button", {
+        class: "pa-bouton principal",
+        title: urlSite() ? "" : t("Indisponible hors ligne"),
+        onclick: async (e) => {
+            const problemes = erreursDuBrouillon(ctx.brouillon);
+            if (!ctx.brouillon.title.trim()) problemes.push("Donne un titre à ton puzzle (dernière étape).");
+            erreurs.replaceChildren(...problemes.map((p) => el("li", {}, t(p))));
+            if (problemes.length) return;
+            const bouton = e.currentTarget;
+            bouton.disabled = true;
+            try {
+                const pseudo = (ctx.pseudo || "").trim();
+                const puzzle = brouillonVersPuzzle(ctx.brouillon, { auteur: pseudo });
+                const pub = await publierPuzzle(puzzle, pseudo);
+                memoriserPuzzle({ code: pub.code, cle: pub.cle, titre: ctx.brouillon.title, expire_le: pub.expire_le });
+                afficherPublication(corps, pub, ctx.brouillon.title);
+                erreurs.replaceChildren();
+            } catch (err) {
+                erreurs.replaceChildren(...err.raisons.map((r) => el("li", {}, r)));
+            }
+            bouton.disabled = false;
+        },
+    }, t("Publier"));
     const fermer = el("button", { class: "pa-bouton discret", onclick: () => fond.remove() }, t("Fermer"));
     const fond = el("div", { class: "pa-fond" },
         el("div", { class: "pa-boite" },
             el("div", { class: "pa-tete" }, titre, barre),
             corps,
-            el("div", { class: "pa-pied" }, fermer, erreurs, el("span", { class: "espace" }), retour, passer, suivant, tester)));
+            el("div", { class: "pa-pied" }, fermer, erreurs, el("span", { class: "espace" }), retour, passer, suivant, tester, publier)));
     document.body.append(fond);
 
     function dessiner() {
@@ -609,6 +661,7 @@ export async function ouvrirAssistant() {
         retour.disabled = ctx.etape === 0;
         passer.style.display = derniere ? "none" : "";
         suivant.style.display = derniere ? "none" : "";
+        publier.style.display = derniere ? "" : "none";
     }
 
     try {

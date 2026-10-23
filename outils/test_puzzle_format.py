@@ -131,7 +131,11 @@ for classe, defauts, nom in ((PuzzleData, pp.DEFAUTS, "PuzzleData"),
     for cle, valeur in defauts.items():
         if cle in champs and champs[cle] is not None:
             verifie(champs[cle] == valeur, f"{nom}.{cle} : défaut {valeur!r} au serveur, {champs[cle]!r} au moteur")
-verifie(pp.COMMANDES_PERMISES <= METHODES, f"commandes permises inconnues du moteur : {sorted(pp.COMMANDES_PERMISES - METHODES)}")
+from game.puzzle.puzzle_validation import PUBLISHED_METHODS  # noqa: E402
+verifie(pp.COMMANDES_PERMISES == PUBLISHED_METHODS, "le serveur de puzzles ne lit pas la liste du moteur")
+for interdite in ("Win", "Lose", "End", "ValidateObjective", "AssembleeAutreTable", "Action", "Attack"):
+    verifie(interdite not in PUBLISHED_METHODS, f"{interdite} ne doit pas être permise à un puzzle publié")
+verifie(PUBLISHED_METHODS <= METHODES, f"commandes permises inconnues du moteur : {sorted(PUBLISHED_METHODS - METHODES)}")
 
 print("OK" if not echecs else f"{len(echecs)} échec(s)")
 sys.exit(1 if echecs else 0)

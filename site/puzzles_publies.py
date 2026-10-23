@@ -38,17 +38,8 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOTEUR = os.path.join(RACINE, "Fusion", "marvel-lcg-src")
 VALIDATION = os.path.join(MOTEUR, "src", "game", "puzzle", "puzzle_validation.py")
 
-# Les seules commandes qu'un puzzle publié peut appeler : de la MISE EN PLACE. Aucune ne termine
-# la partie (Win, Lose, End), ne valide un objectif (ValidateObjective) ni ne sort de la table
-# (AssembleeAutreTable). Les noms viennent de `puzzle_capture.py` et de `puzzle-brouillon.js`.
-COMMANDES_PERMISES = frozenset("""
-CreateEncounterDeck CreateEncounterDiscardPile CreateHandCards CreatePlayerDeck CreatePlayerDiscardPile
-CreatePlayerAdditionalDeck SetFirstPlayer RestoreCard RestoreState AdvanceVillain AdvanceMainScheme
-SetHealth SetThreat Damage Heal Stun Confuse Tough Cloak Daze Expose AddStatus AddTough AddCloak Intensify
-Exhaust Ready Counter Token PlaceCounters PlaceThreat PutIntoPlay PlaceUnder Attach AttachReel Engage
-MoveTo Shuffle Flip ChangeForm ChangeToFace Draw Gain Discard Remove EmptyHand EmptyPlayerDeck
-EmptyPlayerDiscardPile EmptyEncounterDeck EmptyEncounterDiscardPile
-""".split())
+# Les seules commandes qu'un puzzle publié peut appeler : celles du moteur (`PUBLISHED_METHODS` dans
+# puzzle_validation.py, source unique), de la MISE EN PLACE seulement.
 
 # Les valeurs par défaut d'un fichier de puzzle (celles de `PuzzleData`, puzzle_data.py : un test du
 # moteur, outils/test_puzzle_format.py, vérifie qu'elles ne dérivent pas).
@@ -66,6 +57,17 @@ DEFAUTS_JOUEUR: Dict[str, Any] = {
 DEFAUTS_OBJECTIF: Dict[str, Any] = {"kind": "", "target": "", "text": ""}
 
 
+def _charger_validation():
+    spec = importlib.util.spec_from_file_location("puzzle_validation_serveur", VALIDATION)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_VALIDATION = _charger_validation()
+COMMANDES_PERMISES = _VALIDATION.PUBLISHED_METHODS
+
+
 class ErreurPuzzle(ValueError):
     """Un puzzle refusé ; `args[0]` est la liste des raisons, lisible par le créateur."""
 
@@ -73,13 +75,6 @@ class ErreurPuzzle(ValueError):
         super().__init__(raisons)
         self.raisons = raisons
         self.statut = statut
-
-
-def _charger_validation():
-    spec = importlib.util.spec_from_file_location("puzzle_validation_serveur", VALIDATION)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def cartes_du_catalogue() -> frozenset:
@@ -132,7 +127,7 @@ class PuzzlesPublies:
         self.base = base
         self.horloge = horloge
         self.cartes = frozenset(cartes) if cartes is not None else cartes_du_catalogue()
-        self._validation = _charger_validation()
+        self._validation = _VALIDATION
         with self._connexion() as cx:
             cx.execute("""CREATE TABLE IF NOT EXISTS puzzles_publies (
                 code TEXT PRIMARY KEY, cle TEXT NOT NULL, pseudo TEXT NOT NULL, titre TEXT NOT NULL,
