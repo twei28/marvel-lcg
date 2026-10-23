@@ -441,6 +441,14 @@ html[data-epure] .db-info * {
   text-shadow: none;
 }
 
+/* La traduction posée sur un scan anglais (traduction-posee.css) s'écrit en sombre sur le cartouche CLAIR de la carte : la règle
+   ci-dessus, qui rend tout le texte de ces colonnes clair, la rendait blanc sur blanc (signalé sur l'aperçu du deckbuilder,
+   23/10/2026, Helpful Bystander). Placée APRES elle, à spécificité égale. */
+html[data-epure] .traduction-posee,
+html[data-epure] .traduction-posee * {
+  color: #1a1a1a;
+}
+
 html[data-epure] .db-retour-prep,
 html[data-epure] .db-tri,
 html[data-epure] .db-recherche-zone,
