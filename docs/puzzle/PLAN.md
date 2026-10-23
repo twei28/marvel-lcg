@@ -99,6 +99,15 @@ l'assistant et sa traduction en puzzle v2 vivent dans `public/js/prepare/puzzle-
 la même chose. Décision (23/10, laissée à Claude) : le créateur s'ouvre depuis le panneau
 « Puzzles » (`puzzles.js`, bouton « Créer un puzzle »), en modale orange plein écran ; ce panneau
 est débranché du site à la demande de l'utilisateur, il se rallume à la livraison.
+**E5 assistant FAIT (23/10)** : `public/js/prepare/puzzle-assistant.js`, 8 étapes (les mains et les
+decks sont réunis en une étape « Les cartes des héros »), modale orange, Retour / Passer / Suivant,
+Tester (envoie le puzzle à `/new_puzzle`, ouvre le plateau), brouillon enregistré à chaque étape
+dans le navigateur avec proposition de reprise. Test navigateur rejouable :
+`node outils/test_puzzle_assistant.mjs [dossier_captures]` (le jeu doit tourner, `LANCEUR-LINUX.sh`).
+Limites connues : le panneau Objectifs n'apparaît qu'avec le plateau COMPILÉ (recopie au
+déploiement) ; pas encore de glisser-déposer (ordre par flèches) ; pas de ressources en réserve ;
+pas d'avertissements doux (deck illégal) ; pas de « Affiner sur le plateau » ; pas d'aperçu en
+direct ; l'édition de l'ordre du deck de rencontre n'est pas proposée (ordre du scénario).
 Principe (décision du 22/10) : **hyper simple et intuitif**. Un assistant à ordre
 fixe, une étape par écran, barre de progression, bouton Retour, bouton Passer :
 toute étape est facultative et se règle avec des valeurs par défaut raisonnables.

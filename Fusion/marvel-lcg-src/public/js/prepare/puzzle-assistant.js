@@ -537,6 +537,24 @@ ETAPES.push(
     { titre: "Présentation et test", aide: "Le titre, l'histoire, la difficulté et le moment de départ. Puis teste ton puzzle.", rendre: etapePresentation },
 );
 
+// ------------------------------------------------------------------ brouillon enregistré
+// Le brouillon est gardé dans le navigateur à chaque étape (jamais envoyé nulle part). Tout accès
+// est protégé : le stockage peut être vide, bloqué ou refuser d'écrire.
+const CLE_BROUILLON = "mc-puzzle-brouillon";
+function lireBrouillonEnregistre() {
+    try {
+        const brut = localStorage.getItem(CLE_BROUILLON);
+        const donnees = brut ? JSON.parse(brut) : null;
+        return donnees && donnees.brouillon && Array.isArray(donnees.brouillon.players) ? donnees : null;
+    } catch (e) { return null; }
+}
+function enregistrerBrouillon(brouillon, etape) {
+    try { localStorage.setItem(CLE_BROUILLON, JSON.stringify({ brouillon, etape })); } catch (e) { /* tant pis */ }
+}
+function oublierBrouillon() {
+    try { localStorage.removeItem(CLE_BROUILLON); } catch (e) { /* rien */ }
+}
+
 // ------------------------------------------------------------------ ouverture
 export async function ouvrirAssistant() {
     document.querySelector(".pa-fond")?.remove();
@@ -583,6 +601,7 @@ export async function ouvrirAssistant() {
         const derniere = ctx.etape >= total - 1;
         ctx.etape = Math.min(ctx.etape, total - 1);
         const etape = ETAPES[ctx.etape];
+        enregistrerBrouillon(ctx.brouillon, ctx.etape);
         titre.textContent = `🧩 ${t("Créer un puzzle")} · ${t(etape.titre)} (${ctx.etape + 1}/${total})`;
         barre.replaceChildren(...ETAPES.map((_, i) => el("span", { class: i < ctx.etape ? "fait" : i === ctx.etape ? "ici" : "" })));
         sous.textContent = t(etape.aide);
@@ -594,6 +613,17 @@ export async function ouvrirAssistant() {
 
     try {
         ctx.donnees = await chargerDonnees();
+        const enregistre = lireBrouillonEnregistre();
+        if (enregistre) {
+            // Un brouillon attend : on laisse le choix avant de dessiner la première étape.
+            await new Promise((fini) => {
+                corps.replaceChildren(el("h3", {}, t("Un brouillon t'attend")),
+                    el("p", { class: "pa-aide" }, t("Tu as un puzzle commencé dans ce navigateur.")),
+                    el("div", { class: "pa-choix" },
+                        el("button", { class: "actif", onclick: () => { ctx.brouillon = enregistre.brouillon; ctx.etape = enregistre.etape || 0; fini(); } }, t("Reprendre mon brouillon")),
+                        el("button", { onclick: () => { oublierBrouillon(); fini(); } }, t("Repartir de zéro"))));
+            });
+        }
         ctx.villainDe = {};
         for (const e of ctx.donnees.extensions) {
             for (const s of e.scenarios) ctx.villainDe[fileName(s)] = null;
