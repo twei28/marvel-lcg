@@ -31,6 +31,11 @@ CAS = [
     # ------------------------------------------------------------------------------------------------------ sl038a : mise en place
     _t("sl038a Setup : le paquet piege contient les 8 cartes TRAP! (Whisper in the Dark + les 7 pieges), la defausse piege est vide", "« Create the trap deck »",
        [], [], {"paquet_pieges": 8, "defausse_pieges": 0, "dans_paquet_piege": TOUS_LES_PIEGES}),
+    _t("sl038a Setup avec le modulaire Arcade (3 cartes PIEGE ! : 47031 a 47033) : les 3 cartes PIEGE ! d'Arcade rejoignent le deck Piege (11 cartes) et ne sont plus dans le deck de rencontre",
+       "livret FR p. 12 : « integrez-les egalement au deck Piege »", [], [], {"paquet_pieges": 11, "dans_paquet_piege": TOUS_LES_PIEGES + ["47031", "47032", "47033"]},
+       modulaires_en_plus=["arcade"]),
+    _t("sl038a Setup SANS Arcade, TEMOIN : seulement les 8 cartes (aucune carte d'un autre set)", "le deck Piege ne grossit que si un modulaire PIEGE ! est choisi",
+       [], [], {"paquet_pieges": 8}),
     _t("sl038a Setup : un vilain Dark Protege est tire et RESTE de cote (aucun n'est en jeu), seules ses cartes liees sont dans le deck de rencontre", "« Choose 1 random villain ... shuffle each card linked to that villain into the encounter deck (keep the chosen villain set aside) »",
        [], [], {"vilain_choisi_de_cote": True, "vilains": ["sl037"]}),
 ] + [

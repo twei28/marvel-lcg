@@ -90,6 +90,9 @@ def CreerPaquetPiege(effect: 'Effect') -> None:
     paquet = PaquetPiege(effect)
     paquet.Create(effect, support, type=DeckType.AdditionalDeck)
     pieges = [f for f in Worlds.AsideDeck(effect).Get(True) if f.HasTrait("TRAP!")]
+    # AJOUT (23/10/2026, livret FR p. 12) : « si les joueurs personnalisent ce scenario avec d'autres sets modulaires comprenant des cartes PIEGE !,
+    # integrez-les egalement au deck Piege ». Le deck de rencontre est cree avant la mise en place du complot : ces cartes y sont deja, on les en retire.
+    pieges += [f for f in Worlds.GetEncounterDeckCards(effect) if f.HasTrait("TRAP!") and f not in pieges]
     Faces.ShuffleAllTo(pieges, paquet.deck, effect)
     Faces.BindDiscardPile(pieges, paquet.discard_pile)
 

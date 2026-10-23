@@ -66218,6 +66218,12 @@ def executer_un_cas(game_dir, port, index):
     # `sans_modulaires` (22/10/2026, Shadowland) : le scenario SANS ses modulaires recommandes (Ninja Swarm) : les modulaires changent le nombre de cartes
     # melangees avant le tirage du vilain, donc la graine donne un autre vilain.
     sets_exacts = (["standard"] + (["expert"] if cas["scenario"].endswith("_expert") else [])) if cas.get("sans_modulaires") else None
+    # `modulaires_en_plus` (23/10/2026, Shadowland, livret FR p. 12) : des sets modulaires AJOUTES a ceux du scenario (« si les joueurs personnalisent ce scenario... »).
+    if cas.get("modulaires_en_plus") and sets_exacts is None:
+        import json as _json
+        with open(os.path.join("data", "scenarios", cas["scenario"] + ".json"), encoding="utf-8") as _f:
+            _sc = _json.load(_f)
+        sets_exacts = list(_sc.get("encounter_sets", [])) + list(_sc.get("modular_sets", [])) + list(cas["modulaires_en_plus"])
     scene = SceneLoader.NewScene(cas["scenario"], sets_exacts, noms_heros, int(cas.get("graine", 42)))   # `graine` (22/10/2026) : tirages au hasard differents (vilain de Shadowland)
     # ⚠ LE HARNAIS NE JOUE PAS LES MEMES REGLES QU'UNE VRAIE PARTIE.
     # `launcher.js` pousse `v16_all` des que « regles v1.6 » est coche (c'est
