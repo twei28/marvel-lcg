@@ -118,6 +118,8 @@ class WorldDescriptor:
     # l'affichage, il traverse le meme JSON que le reste, et lui donner une
     # forme figee obligerait a la maintenir des deux cotes pour rien.
     faits_mechant: List[Dict[str, Any]] = field(default_factory=lambda: [])
+    # Les choix a UNE SEULE option resolus d'office (voir WorldStat.choix_uniques) : l'interface en affiche un bandeau.
+    choix_uniques: List[Dict[str, Any]] = field(default_factory=lambda: [])
     # LA VILLE (campagne MC×DC 2026 « La ville ne dort jamais », 22/10/2026) : la grille de lieux, le CAPO de chaque rangee, la case de chaque
     # joueur, les sbires attaches, les compteurs des pistes et les limites « une fois par round » deja utilisees. Dictionnaire VIDE hors de la
     # ville : l'onglet « Ville » de l'interface ne s'ouvre alors pas. Forme : `ToDescriptor.Ville` (to_descriptor.py).

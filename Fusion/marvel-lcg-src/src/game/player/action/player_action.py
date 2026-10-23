@@ -658,6 +658,10 @@ class PlayerAction:
         if effect is not None and len(filtered_effects) == 1 and len(effects) > 1 \
                 and type(message) is Message.WhenPlayerChooseAbility and not effect.IsName("Cancel"):
             Message.ChooseAbilityOnlyOption_Text(player, message.by_effect.this.GetDisplayName(), effect.GetDisplayName())
+            source = message.by_effect.this
+            player.world.stat.RecordChoixUnique(
+                source.card.object_id, str(source.paper.card_id), source.paper.name,
+                effect.GetDisplayName(), player.player_id)
         return effect
 
     def ChooseAbilities(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, repeat: int=1, choose_x_different_options: int|None=None, for_second_target: bool=False, titre: str="") -> List['Effect']:

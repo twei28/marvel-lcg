@@ -1061,3 +1061,56 @@ describe('useInteraction, toutes les cibles imposees (le vilain et ses sbires)',
     expect(result.current.assistant.cibleNombre).toBe(0)
   })
 })
+
+describe('useInteraction, le vilain et les sbires d\'UN joueur (plusieurs joueurs engages)', () => {
+  const VILAIN = 400
+  const monde = {
+    render_id: 1,
+    players: [
+      { area_hero: [carte(HEROS, { card_type: 'hero' })], engaged_enemies: [carte(301, { card_type: 'minion' })] },
+      {
+        area_hero: [carte(101, { card_type: 'hero' })],
+        engaged_enemies: [carte(302, { card_type: 'minion' }), carte(303, { card_type: 'minion' })],
+      },
+    ],
+    villains: [carte(VILAIN, { card_type: 'villain' })],
+  } as unknown as World
+  const option = (): Option => ({
+    ...optionTroisCibles(),
+    name: 'Special',
+    all_legal_targets: [VILAIN, 301, 302, 303],
+    target_num_range: [4, 4],
+    target_payment: {},
+    select_rule: 'VillainAndMinionsEngagedSamePlayer',
+  })
+  const monterDeux = (place: number) => {
+    const demande: Demande = { options: [option()], refus: [], prompt_text: '', event_name: 'test', show_cancel: true, ability_type: '' }
+    return renderHook(() =>
+      useInteraction(monde, demande, vi.fn(), new Set([VILAIN, 301, 302, 303]), place, CATALOGUE, 'simple')
+    )
+  }
+
+  it('propose le vilain et les sbires du joueur qui agit, et la reponse est prete', async () => {
+    const { result } = monterDeux(0)
+    act(() => result.current.choisirOption(option()))
+    await waitFor(() => expect(result.current.assistant.cibleNombre).toBe(2))
+    expect(result.current.assistant.cibleMinimum).toBe(2)
+    expect(result.current.prete).toBe(true)
+  })
+
+  it('cliquer un sbire d\'un autre joueur bascule sur ce joueur : le vilain et TOUS ses sbires', async () => {
+    const { result } = monterDeux(0)
+    act(() => result.current.choisirOption(option()))
+    await waitFor(() => expect(result.current.assistant.cibleNombre).toBe(2))
+    act(() => result.current.cartes.get(302)?.agir?.())
+    await waitFor(() => expect(result.current.assistant.cibleNombre).toBe(3))
+    expect(result.current.assistant.cibleMinimum).toBe(3)
+    expect(result.current.prete).toBe(true)
+  })
+
+  it('un joueur sans sbire engage voit les sbires du premier joueur engage', async () => {
+    const { result } = monterDeux(1)
+    act(() => result.current.choisirOption(option()))
+    await waitFor(() => expect(result.current.assistant.cibleNombre).toBe(3))
+  })
+})

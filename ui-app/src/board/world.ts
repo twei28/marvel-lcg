@@ -576,6 +576,16 @@ export type FaitMechant =
   | FaitSonne
 
 /** Un effet refusé en silence, et pourquoi (voir `refus-effets.tsx`). */
+export type ChoixUnique = {
+  id: number
+  carte_id: number
+  carte_code?: string
+  carte: string
+  /** Le libelle moteur de l'option appliquee (« Deal 1 damage to Robert Kelly »). */
+  option: string
+  joueur: number
+}
+
 export type RefusEffet = {
   /** Numéro croissant dans la partie : le plateau ne montre que les nouveaux. */
   n: number
@@ -771,6 +781,11 @@ export type World = {
    * plateau n'affiche que les nouveaux. Absent des moteurs non mis à jour.
    */
   refus_effets?: RefusEffet[]
+  /**
+   * Les choix a UNE SEULE option que le moteur a resolus d'office (`WorldStat.choix_uniques`, rapport BL-Stark n°99). Numerotes (`id`)
+   * pour que le plateau n'annonce que les nouveaux. Absent des moteurs non mis a jour.
+   */
+  choix_uniques?: ChoixUnique[]
   area_schemes_main: WorldCard[]
   main_schemes_deck: WorldCard[]
   area_schemes_side: WorldCard[]

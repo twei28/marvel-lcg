@@ -189,6 +189,7 @@ import { CadreJoueur } from './board/CadreJoueur'
 import { suivreDefilements, useDefilementsDuJoueur } from './board/defilement-partage'
 import { phraseDuRefus } from './board/raisons-refus'
 import { CoucheRefusEffets } from './board/refus-effets'
+import { CoucheChoixUniques } from './board/choix-uniques'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { CiblageSurTable } from './board/TableSansModale'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
@@ -5653,6 +5654,7 @@ export function PagePartie({
         })}
       />
       <CoucheRefusEffets refus={etat.monde.refus_effets} />
+      <CoucheChoixUniques choix={etat.monde.choix_uniques} />
       <CoucheTriche
         actif={triche.actif}
         manuel={triche.manuel}

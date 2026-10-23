@@ -1429,6 +1429,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Injouable': 'Unplayable',
   // Effets refusés en silence par le moteur (refus-effets.tsx).
   'Pas {statut} : {raison}': 'Not {statut}: {raison}',
+  '{carte} : une seule option possible, appliquée d’office : {option}': '{carte}: only one option is possible, applied automatically: {option}',
   'déjà {statut}': 'already {statut}',
   'immunisé': 'immune',
   'Jouable seulement sous forme de héros': 'Playable only in hero form',

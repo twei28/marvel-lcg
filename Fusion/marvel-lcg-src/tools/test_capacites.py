@@ -45824,6 +45824,26 @@ CAS = [
         "attendu": {"degats_identite": 1, "degats": [["60007", 0]]},
     },
     {
+        "nom": "27131 Common Criminal — une seule option possible : le choix est enregistre pour le bandeau de l'interface",
+        "pourquoi": "rapport n°99 (BL-Stark) : le journal seul passait inapercu ; le monde exporte aussi `choix_uniques`, que l'interface annonce",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Engage('27131')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('27131', 'AlterEgoAction')"],
+        "verifier": "choix_option_unique_enregistre",
+    },
+    {
+        "nom": "27131 Common Criminal — DEUX options possibles : rien d'enregistre pour le bandeau",
+        "pourquoi": "temoin du cas precedent",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Engage('27131')", "Puzzle.PutIntoPlay('27133')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('27131', 'AlterEgoAction')"],
+        "verifier": "choix_option_unique_non_enregistre",
+    },
+    {
         "nom": "27131 Common Criminal — une seule option possible (aucune manigance annexe) : le journal le dit",
         "pourquoi": ("rapport n°69 (BL-Stark, 08/10/2026) : sans manigance annexe en jeu, le choix « piocher "
                      "1 carte OU retirer 3 menaces » n'a qu'UNE option, appliquee en silence, et le joueur "
@@ -60533,6 +60553,20 @@ def choix_option_unique_dit(monde, aides):
     if re.search(r"(only one option is possible|une seule option est possible)", contenu):
         return True, "le journal dit qu'une seule option est possible"
     return False, "aucune ligne « une seule option » : le choix est reste silencieux"
+
+
+def choix_option_unique_enregistre(monde, aides):
+    """Rapport n°99 : le choix reduit a une option est AUSSI inscrit pour l'interface (bandeau), avec la carte et l'option."""
+    liste = monde.stat.choix_uniques
+    if len(liste) == 1 and liste[0]["carte_id"] and liste[0]["option"] and "[" not in liste[0]["carte"]:
+        return True, f"un choix unique enregistre : {liste[0]['option']}"
+    return False, f"choix_uniques attendu avec 1 entree, obtenu {liste}"
+
+
+def choix_option_unique_non_enregistre(monde, aides):
+    """Temoin : deux options possibles, rien n'est enregistre pour le bandeau."""
+    liste = monde.stat.choix_uniques
+    return (not liste), (f"choix_uniques inattendu : {liste}" if liste else "aucun choix unique enregistre")
 
 
 def choix_option_unique_absent(monde, aides):

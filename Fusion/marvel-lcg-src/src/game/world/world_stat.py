@@ -78,6 +78,11 @@ class WorldStat:
         # laisserait le cartouche sur « va attaquer » jusqu'a la fin de la phase.
         self.faits_mechant: List[Dict[str, Any]] = []
         self._faits_mechant_round: int = -1
+        # Les « choisis l'un ou l'autre » dont UNE SEULE option etait possible : le moteur les applique sans rien demander et l'interface
+        # le DIT au joueur (rapport BL-Stark n°99 : « Robert Kelly n'a rien subi », il avait perdu 1 PV sans que rien ne s'affiche).
+        # Forme : {id, carte_id, carte_code, carte, option, joueur}. `id` numerote sans jamais reculer, c'est lui que l'interface compare.
+        self.choix_uniques: List[Dict[str, Any]] = []
+        self._choix_unique_suivant: int = 1
         # Le compteur des activations du round. Il numerote, il ne compte pas :
         # sa seule fonction est de lier l'intention a sa resolution. Reparti de
         # zero a chaque round, comme le journal lui-meme.
@@ -182,6 +187,15 @@ class WorldStat:
         # descripteur envoye a chaque rendu.
         if len(self.faits_mechant) > 200:
             del self.faits_mechant[:-200]
+
+    def RecordChoixUnique(self, carte_id: int, carte_code: str, carte: str, option: str, joueur: int) -> None:
+        """Inscrit un choix resolu d'office faute d'alternative (voir `choix_uniques`). Garde les 20 derniers."""
+        self.choix_uniques.append({
+            'id': self._choix_unique_suivant, 'carte_id': carte_id, 'carte_code': carte_code, 'carte': carte, 'option': option,
+            'joueur': joueur,
+        })
+        self._choix_unique_suivant += 1
+        del self.choix_uniques[:-20]
 
     def _DemarrerLeRound(self, round_id: int) -> None:
         """Vide le journal au premier fait d'un round different du dernier vu.

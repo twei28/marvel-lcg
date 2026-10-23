@@ -35,6 +35,13 @@ import type { Catalogue } from './catalogue'
 import { optionsDeLaSource } from './glisser/cibles'
 import { cibleRefuseeParLaRegle } from './regles-selection'
 import { libellesCible } from './libelles-cible'
+import {
+  choixDeJoueurNecessaire,
+  groupesVilainEtSbires,
+  joueurRetenu,
+  optionPourJoueur,
+  selectionDuJoueur,
+} from './vilain-et-sbires'
 import { demandeHorsPanneauManigance } from './manigance-face-a'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -575,7 +582,19 @@ export function useInteraction(
     [empreinte, idOption, cibles, ressources, carteFocus, cibleFocus, sourceDepot]
   )
 
-  const option = options.find((o) => o.id === idOption)
+  const optionBrute = options.find((o) => o.id === idOption)
+  // « Le vilain et les sbires d'UN joueur » a plusieurs joueurs engages : voir vilain-et-sbires.ts.
+  const groupesChoixJoueur = useMemo(() => {
+    const groupes = optionBrute ? groupesVilainEtSbires(optionBrute, world) : undefined
+    return choixDeJoueurNecessaire(groupes) ? groupes : undefined
+  }, [optionBrute, world])
+  const option = useMemo(
+    () =>
+      optionBrute && groupesChoixJoueur
+        ? optionPourJoueur(optionBrute, groupesChoixJoueur, joueurRetenu(groupesChoixJoueur, cibles, playerId))
+        : optionBrute,
+    [optionBrute, groupesChoixJoueur, cibles, playerId]
+  )
   const paiement = option ? paiementCourant(option, cibles) : undefined
   const requis = nombreDeRessources(paiement)
   const index = useMemo(() => indexerCartes(world), [world])
@@ -766,8 +785,15 @@ export function useInteraction(
     if (toutesLesCiblesImposees(option) && cibles.length === 0) {
       autoCibleFaite.current = option.id
       setCibles([...ciblesParOccurrence(option).keys()])
+      return
     }
-  }, [option, cibleMinimum, cibleMaximum, ciblePossibles, cibles.length])
+    // A plusieurs joueurs engages : on propose le vilain et les sbires du joueur qui agit ; cliquer un sbire d'un autre joueur bascule
+    // sur celui-la (voir `basculerCible`).
+    if (groupesChoixJoueur && cibles.length === 0) {
+      autoCibleFaite.current = option.id
+      setCibles(selectionDuJoueur(groupesChoixJoueur, joueurRetenu(groupesChoixJoueur, [], playerId)))
+    }
+  }, [option, cibleMinimum, cibleMaximum, ciblePossibles, cibles.length, groupesChoixJoueur, playerId])
 
   const abandonnerOption = useCallback(() => {
     setIdOption(undefined)
@@ -794,6 +820,13 @@ export function useInteraction(
   const basculerCible = useCallback(
     (id: number, max: number, maxParCible = 1) => {
       setCibles((actuelles) => {
+        // Un sbire d'un AUTRE joueur que celui deja retenu : on change de joueur (le vilain et tous ses sbires), au lieu de melanger.
+        if (groupesChoixJoueur && !groupesChoixJoueur.vilains.includes(id)) {
+          const retenu = joueurRetenu(groupesChoixJoueur, actuelles, playerId)
+          for (const [place, sbires] of groupesChoixJoueur.parJoueur) {
+            if (place !== retenu && sbires.includes(id)) return selectionDuJoueur(groupesChoixJoueur, place)
+          }
+        }
         const deja = nombreDeFois(actuelles, id)
         if (deja > 0) {
           const peutAjouter = deja < maxParCible && (max <= 0 || actuelles.length < max)
@@ -806,7 +839,7 @@ export function useInteraction(
       // ne veulent plus rien dire.
       setRessources([])
     },
-    []
+    [groupesChoixJoueur, playerId]
   )
 
   /**

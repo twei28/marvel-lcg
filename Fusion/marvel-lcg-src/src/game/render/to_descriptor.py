@@ -232,6 +232,7 @@ class ToDescriptor:
         # pas la liste vivante : le descripteur est serialise plus tard, et le
         # moteur peut avoir repris sa course d'ici la.
         world_descriptor.faits_mechant = list(world.stat.faits_mechant)
+        world_descriptor.choix_uniques = list(world.stat.choix_uniques)
 
         world_descriptor.players = []
         for player in world.const_seat_order_players:

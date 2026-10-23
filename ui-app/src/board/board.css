@@ -5246,6 +5246,18 @@
     color: #ffb3b3;
   }
 
+  /* Choix a une seule option applique d'office (choix-uniques.tsx) : une information, pas un empechement, donc orange et non rouge. */
+  .bulle-choix-unique {
+    background: rgba(40, 28, 12, 0.96);
+    border-color: #ff9f43;
+    box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.25), 0 6px 18px rgba(0, 0, 0, 0.5);
+    animation-duration: 6s;
+  }
+
+  .bulle-choix-unique .bulle-refus-effet-icone {
+    color: #ffc78a;
+  }
+
   @keyframes bulle-refus-effet {
     0% { opacity: 0; transform: translate(-50%, -30%) scale(0.9); }
     8% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
