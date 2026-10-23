@@ -568,6 +568,23 @@ class Worlds:
             card_type=card_type,
             **kwargs
         )
+        # CORRECTIF (23/10/2026) : « defausser jusqu'a trouver » CONTINUE apres le remelange du deck epuise. Le deck vide se remelange avec sa
+        # defausse (regle du deck de rencontre epuise) ; si la fouille a echoue ALORS qu'une carte valable se trouve maintenant dans ce deck
+        # remelange (un sbire qui etait en defausse), on cherche UNE fois de plus. Sans carte valable dans le deck, rien de plus n'est defausse
+        # (un seul passage, comme avant). Avant : la fouille s'arretait au remelange et la carte en defausse n'etait jamais trouvee.
+        if face is None and encounter_deck.GetSize() > 0:
+            from game.card.card_finder import CardFinder
+            from game.card.face.card_face import CardFace
+            valable = CardFinder(name=name, trait=trait, card_type=CardFace if isinstance(card_type, CardFace) else card_type, **kwargs)
+            if any(valable.Check(candidate) for candidate in encounter_deck.Get()):
+                face, apres = encounter_deck.DiscardUntil(
+                    by_effect,
+                    name=name,
+                    trait=trait,
+                    card_type=card_type,
+                    **kwargs
+                )
+                other = list(other) + list(apres)
         if return_other_faces != None:
             return_other_faces.clear()
             return_other_faces.extend(other)
