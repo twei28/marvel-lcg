@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-23",
+        genre: "heros",
+        fr: "Les cartes d'aspect des paquets officiels Iron Fist et Elektra Natchios sont jouables : Shang-Chi, Black Cat, Moon Knight, Moondragon, The Defenders, Double-Cross et bien d'autres. Les anciennes versions Tortues Ninja de plusieurs de ces cartes restent disponibles en art alternatif.",
+        en: "The aspect cards of the official Iron Fist and Elektra Natchios packs are now playable: Shang-Chi, Black Cat, Moon Knight, Moondragon, The Defenders, Double-Cross and many more. The older Ninja Turtles versions of several of these cards remain available as an alternate art.",
+    },
+    {
         date: "2026-10-20",
         genre: "heros",
         fr: "Nouvelle campagne fan-made Tempête Galactique (Galactic Storm, de Kajislav), en cinq scénarios : Sentinelle Kree, Verdict de la Majestrix, Ultimatum d'Hala, La Terre assiégée et Suprême Intelligence. Chaque joueur incarne trois identités différentes au fil de la campagne. Binary et Quasar rejoignent le roster, et des alliés de campagne (Rick Jones, Gladiator, Lauri-Ell, les Starjammers...) se recrutent au fil des victoires.",
