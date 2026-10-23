@@ -3,6 +3,7 @@
 #
 #   bash tools/batterie_complete.sh            # lance et attend
 #   bash tools/batterie_complete.sh --fond     # lance en arriere-plan, rend la main tout de suite
+#   FILTRE='sl043' bash tools/batterie_complete.sh   # essai rapide sur quelques cas (sous-chaines separees par |)
 #
 # Ecrit dans /tmp/batterie_complete/<date-heure>/ : `sortie.txt` (le journal), `rapport.json`, et `RESUME.txt` (le bilan et les echecs).
 # Echecs CONNUS avant ce script : les 4 cas Squirrel Girl (sg006 sg007 sg009 sg013). Un cas « processus mort » est un plantage de la machine
@@ -17,7 +18,7 @@ mkdir -p "$SORTIE"
 
 lancer() {
     # Port BAS (< 49152 : plage dynamique de Windows/WSL2, sinon des cas tombent sur des ports pris).
-    CAS_PREFIX="bc_$(date +%H%M)_" PARALLELES="${PARALLELES:-4}" "$PYTHON" tools/test_capacites.py .game-src 38000 "$SORTIE/rapport.json" > "$SORTIE/sortie.txt" 2>&1
+    CAS_PREFIX="bc_$(date +%H%M)_" PARALLELES="${PARALLELES:-4}" "$PYTHON" tools/test_capacites.py .game-src 38000 "$SORTIE/rapport.json" ${FILTRE:+"$FILTRE"} > "$SORTIE/sortie.txt" 2>&1
     {
         echo "Batterie complete du $(date '+%d/%m/%Y %H:%M')"
         grep "^BILAN" "$SORTIE/sortie.txt" || echo "BILAN introuvable (la batterie a ete interrompue ?)"
