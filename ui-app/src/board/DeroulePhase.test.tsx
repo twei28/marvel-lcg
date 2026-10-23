@@ -11,6 +11,7 @@ import { CartoucheHorsPhase } from './CartouchePhase'
 import type { EtapeDeroule } from './deroule-phase'
 import type { ScanCardProps } from '../components/ScanCard'
 import { ecran as screen } from '../test-textes'
+import { ecrireDelaiAutoPhase } from './moteur'
 import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import type { QuestionDuMoteur } from './sous-cadre'
@@ -4082,3 +4083,61 @@ describe('lot 4 : l ecran du resultat se signale a la table', () => {
     expect(vus.every((v) => v === false)).toBe(true)
   })
 })
+
+// « Phase du méchant automatique » : Non / 2 s / 5 s (réglage personnel, demande du 23/10/2026).
+describe('cartouche du deroule : phase du mechant automatique', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+    vi.useFakeTimers()
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    window.localStorage.clear()
+  })
+
+  it('par defaut (Non) : l etape attend le clic, meme apres 10 s', () => {
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      vi.advanceTimersByTime(10000)
+    })
+    expect(etapeLue()).toBe('Menace sur la manigance principale')
+  })
+
+  it('2 s : l etape suivante s affiche toute seule apres 2 s, pas avant', () => {
+    window.localStorage.setItem('marvel-board-phase-auto', '2000')
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      vi.advanceTimersByTime(1900)
+    })
+    expect(etapeLue()).toBe('Menace sur la manigance principale')
+    act(() => {
+      vi.advanceTimersByTime(200)
+    })
+    expect(etapeLue()).toBe('Ultron attaque Shuri')
+  })
+
+  it('5 s : rien a 4 s, l etape suivante a 5 s', () => {
+    window.localStorage.setItem('marvel-board-phase-auto', '5000')
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      vi.advanceTimersByTime(4000)
+    })
+    expect(etapeLue()).toBe('Menace sur la manigance principale')
+    act(() => {
+      vi.advanceTimersByTime(1100)
+    })
+    expect(etapeLue()).toBe('Ultron attaque Shuri')
+  })
+
+  it('le reglage change en cours de phase : pris en compte tout de suite', () => {
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      ecrireDelaiAutoPhase(2000)
+    })
+    act(() => {
+      vi.advanceTimersByTime(2100)
+    })
+    expect(etapeLue()).toBe('Ultron attaque Shuri')
+  })
+})
+

@@ -34,6 +34,10 @@ import { t, langueActuelle } from './langue'
 import {
   type ModeActions,
   type ModePhaseMechant,
+  type DelaiAutoPhase,
+  ecrireDelaiAutoPhase,
+  lireDelaiAutoPhase,
+  suivreDelaiAutoPhase,
   type ModeRevelation,
   type ReponseAmbiance,
   MODE_SUR_TABLE_OUVERT,
@@ -309,6 +313,28 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
           ? t('Guidée : « Lire la suite » puis « Étape suivante » à chaque étape de la phase. Plateau animé : les cartes bougent sur la table. Accéléré : tout se joue d’un coup')
           : t('Étape par étape : un « Suivant » par étape de la phase')
       }
+    />
+  )
+}
+
+/** « Phase du méchant automatique : Non / 2 s / 5 s » (23/10/2026). Sans objet en « Accéléré » : rien n'y attend de clic. */
+function LigneDelaiAutoPhase() {
+  const [delai, setDelai] = useState<DelaiAutoPhase>(lireDelaiAutoPhase)
+  useEffect(() => suivreDelaiAutoPhase(setDelai), [])
+  return (
+    <LigneChoix<DelaiAutoPhase>
+      libelle={t('Phase du méchant automatique')}
+      valeur={delai}
+      choix={[
+        { valeur: 0, libelle: t('Non') },
+        { valeur: 2000, libelle: t('2 s') },
+        { valeur: 5000, libelle: t('5 s') },
+      ]}
+      onChoisir={(vers) => {
+        ecrireDelaiAutoPhase(vers)
+        setDelai(vers)
+      }}
+      detail={t('Chaque étape se valide toute seule après ce délai ; un clic la passe tout de suite. Réglage personnel.')}
     />
   )
 }
@@ -638,6 +664,7 @@ export function ContenuOnglet({
         <LigneFaconDeJouer />
         <LigneCoteAmeliorations />
         <LignePhaseMechant p={p} />
+        {p.modePhase !== 'instantane' ? <LigneDelaiAutoPhase /> : null}
         {p.avancePhaseHote ? <LigneAvancePhase /> : null}
         {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par
             decision » regle a la preparation fait expirer les attentes du

@@ -31,7 +31,7 @@ import { questionDuRecit } from './table-calee'
 import { calculCoupTable } from './calcul-coup-table'
 import { reglesCachees } from './regles-cachees'
 import { createPortal } from 'react-dom'
-import { estSpectateur } from './moteur'
+import { estSpectateur, lireDelaiAutoPhase, suivreDelaiAutoPhase } from './moteur'
 import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
 import {
   choisirPolitique,
@@ -1688,7 +1688,17 @@ export function DeroulePhase({
   // NOTRE clic, le temps de voir le coup.
   // L'avance auto est retiree (pas a pas strict, 03/10/2026) : ce minuteur ne
   // sert plus qu'a cela.
-  const delaiAvant = surTable && viseUnAutreJoueur ? DELAI_ETAPE_D_UN_AUTRE_MS : undefined
+  // « Phase du mechant automatique » (reglage des options, 23/10/2026) : chaque etape se valide seule apres 2 s ou 5 s, pour les deux
+  // presentations a cartouche (le mode « Accelere » n'en a pas). Le delai ne court qu'une fois la lecture des cartes finie
+  // (`avantResultat`) : on ne passe pas une attaque dont les boosts sont encore en train d'arriver.
+  const [delaiAuto, setDelaiAuto] = useState(lireDelaiAutoPhase)
+  useEffect(() => suivreDelaiAutoPhase(setDelaiAuto), [])
+  const delaiAvant =
+    delaiAuto > 0 && !avantResultat
+      ? delaiAuto
+      : surTable && viseUnAutreJoueur
+        ? DELAI_ETAPE_D_UN_AUTRE_MS
+        : undefined
 
   // L'HORLOGE du cartouche, la seule de toute la phase. Elle passe seule, sur
   // la table, l'etape qui vise un autre joueur (delai de lecture).

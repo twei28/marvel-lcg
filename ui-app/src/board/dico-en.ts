@@ -1862,6 +1862,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Paquet rencontre mélangé': 'Encounter deck shuffled',
   'Défaussé : %1': 'Discarded: %1',
   'Carte de boost : %1': 'Boost card: %1',
+  'Phase du méchant automatique': 'Villain phase on auto',
+  '2 s': '2 s',
+  'Chaque étape se valide toute seule après ce délai ; un clic la passe tout de suite. Réglage personnel.':
+    'Each step confirms itself after this delay; a click skips it at once. Personal setting.',
   'AUCUN DÉGÂT': 'NO DAMAGE',
   'réduit': 'reduced',
   '%1e': '#%1',
