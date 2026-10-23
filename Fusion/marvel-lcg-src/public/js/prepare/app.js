@@ -5688,10 +5688,10 @@ async function loadExtTabs() {
     majMerciVilains();
     tabs.replaceChildren(...exts.map((e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
-        title: e.key,
+        // Plus de fenetre au survol d'une extension (23/10/2026, demande de l'utilisateur) : ni l'apercu en grand (`showExtHover`) ni
+        // l'infobulle du navigateur (« 56. Civil War »).
+        "aria-label": e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key)),
         onclick: () => { hideHover(); state.extensionTab = e.key; loadExtTabs(); loadScnGrid(); },
-        onmouseenter: auSurvol((ev) => showExtHover(e, ev.currentTarget)),
-        onmouseleave: auSurvol(scheduleHide),
     },
         e.key === "defis" || e.key === "210. Custom (Challenges)"
             ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
