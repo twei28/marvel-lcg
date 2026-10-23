@@ -11,6 +11,8 @@
 - **Un héros complet à faire produire par une autre IA** (cartes, deck de départ, scripts, textes, biographie,
   preuves) : `kit-heros-ia/` (manuel, liste des fichiers ; le zip se reconstruit avec
   `python3 outils/construire-kit-heros.py`)
+- **Un puzzle** (créer, publier, résoudre) : `puzzle/GUIDE-CREATEUR.md` ; comment ça marche, où est quoi, les pièges et les
+  tests : `puzzle/GUIDE-TECHNIQUE.md` ; le plan et l'avancement : `puzzle/PLAN.md`
 - Comprendre un mot-clé (officiel ou maison) : `reference/mots-cles/`
 - Où vit chaque type de fichier, les deux copies du moteur, le format de
   `cards.json`, l'API de scripting : `reference/GUIDE-CREATION-CONTENU.md`
