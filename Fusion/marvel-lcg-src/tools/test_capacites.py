@@ -45824,6 +45824,16 @@ CAS = [
         "attendu": {"degats_identite": 1, "degats": [["60007", 0]]},
     },
     {
+        "nom": "60001b Matt Murdock — le deck Sens est consultable : ses 5 cartes sont visibles pour Daredevil",
+        "pourquoi": "rapport n°100 (BL-Stark) : la pile Sens s'affichait sans pouvoir s'ouvrir, car ses cartes face cachee n'etaient pas visibles pour leur proprietaire",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeToFace('60001b', '60001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "dd_deck_sens_consultable",
+    },
+    {
         "nom": "27131 Common Criminal — une seule option possible : le choix est enregistre pour le bandeau de l'interface",
         "pourquoi": "rapport n°99 (BL-Stark) : le journal seul passait inapercu ; le monde exporte aussi `choix_uniques`, que l'interface annonce",
         "scenario": "rhino",
@@ -60553,6 +60563,19 @@ def choix_option_unique_dit(monde, aides):
     if re.search(r"(only one option is possible|une seule option est possible)", contenu):
         return True, "le journal dit qu'une seule option est possible"
     return False, "aucune ligne « une seule option » : le choix est reste silencieux"
+
+
+def dd_deck_sens_consultable(monde, aides):
+    """Rapport n°100 (BL-Stark) : le deck Sens de Daredevil est consultable par son proprietaire a tout moment (livret p.26) : TOUTES ses
+    cartes, y compris celles face cachee, lui sont visibles (l'interface n'ouvre la pile que dans ce cas)."""
+    joueur = monde.players[0]
+    cartes = joueur.additional_deck.Get()
+    if len(cartes) != 5:
+        return False, f"deck Sens attendu a 5 cartes, obtenu {len(cartes)}"
+    cachees = [f.paper.card_id for f in cartes if not f.card.IsVisible(joueur)]
+    if cachees:
+        return False, f"cartes du deck Sens invisibles pour son proprietaire : {cachees}"
+    return True, "les 5 cartes du deck Sens sont visibles pour Daredevil"
 
 
 def choix_option_unique_enregistre(monde, aides):
