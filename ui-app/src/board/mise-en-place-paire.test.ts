@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { paireEnTete, sansMoitiesDejaMontrees, type EtapeMiseEnPlace } from './mise-en-place-pas-a-pas'
+import { etapesNouvelles, paireEnTete, sansMoitiesDejaMontrees, type EtapeMiseEnPlace } from './mise-en-place-pas-a-pas'
+import { carteSurTable } from './plateau-de-test'
+import type { World } from './world'
 
 describe('paire jumelle en tete de la mise en place (The City + Never Sleeps)', () => {
   // `genre: 'arrivee'` comme les vraies arrivees (etapesNouvelles), sinon le test passe a cote du cas reel.
@@ -23,5 +25,13 @@ describe('paire jumelle en tete de la mise en place (The City + Never Sleeps)', 
       ['pu034', 'arrivee'],
       ['pu006', 'degats'],
     ])
+  })
+})
+
+describe('traits de la mise en place', () => {
+  it("retire le prefixe « t_ » des clefs du moteur (sinon « T_LOCATION. » s'affiche)", () => {
+    const carte = carteSurTable(1, 'zz001', 'Environment', 'Test', { traits: { t_LOCATION: 1, t_DARK_ELF: 1 } })
+    const { etapes } = etapesNouvelles(new Map(), { area_environment: [carte], players: [] } as unknown as World, { panneauPrincipale: false, panneauAnnexe: false })
+    expect(etapes[0]?.traits).toEqual(['LOCATION', 'DARK ELF'])
   })
 })

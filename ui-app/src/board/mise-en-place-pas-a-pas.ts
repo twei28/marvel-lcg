@@ -118,7 +118,8 @@ function etape(
     picId: carte.pic_id,
     codeCarte: carte.card_id,
     type: carte.card_type,
-    traits: Object.keys(carte.traits ?? {}),
+    // Les clefs du moteur portent un prefixe « t_ » (`t_LOCATION`) : sans lui, la traduction du trait (LIEU) est retrouvee.
+    traits: Object.keys(carte.traits ?? {}).map((cle) => (cle.startsWith('t_') ? cle.slice(2).replace(/_/g, ' ') : cle)),
     legende,
     detail,
     paysage: TYPES_PAYSAGE.has(carte.card_type),

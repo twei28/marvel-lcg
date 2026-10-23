@@ -76,11 +76,14 @@ describe('le catalogue reel', () => {
     // deux, « Bushido;Kuji-Kiri ») ne sont ni un aspect ni Basic : le moteur ne leur peint aucune couleur de
     // cadre (`image_creator.py`), il n'y a donc aucun liseré à leur donner (RECETTES-MOTEUR, « carte Shinobi »).
     const CLASSES_SHINOBI = ['Bushido', 'Kuji-Kiri', 'Ninjutsu', 'Taijutsu']
+    // `IdentitySpecific` : les cartes propres a UNE identite (cartes de campagne de Galactic Storm, gs227-gs236, « Campaign;IdentitySpecific »).
+    // Classe du moteur (`card_player.py`) qui n'est pas un aspect : aucune couleur de cadre a leur donner non plus.
+    const CLASSES_PROPRES_A_UNE_IDENTITE = ['IdentitySpecific']
     const inconnues = new Set<string>()
     for (const c of cartes) {
       const brut = c.desc?.Class
       if (!brut || aspectDeClasse(brut)) continue
-      for (const p of brut.split(';')) if (!['Campaign', 'Encounter', ...CLASSES_SHINOBI].includes(p.trim())) inconnues.add(p)
+      for (const p of brut.split(';')) if (!['Campaign', 'Encounter', ...CLASSES_SHINOBI, ...CLASSES_PROPRES_A_UNE_IDENTITE].includes(p.trim())) inconnues.add(p)
     }
     expect([...inconnues]).toEqual([])
   })
