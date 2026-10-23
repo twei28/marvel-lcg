@@ -43,7 +43,13 @@ export function proposerArtsCartes({ deck, heros, el, t, ouvrirModale, fermerMod
         ),
         corps,
     );
-    const overlay = el("div", { class: "deck-modal ac-modal", onclick: (e) => { if (e.target === overlay) fermer(); } }, panneau);
+    // L'illustration survolee, en grand a droite de la fenetre comme sur la table. Sa place est reservee des l'ouverture (la fenetre ne
+    // bouge pas au survol) ; elle disparait seule sur un ecran trop etroit (voir arts-cartes.css).
+    const grandeImage = el("img", { class: "ac-grand-img", alt: "" });
+    const grand = el("div", { class: "ac-grand", "aria-hidden": "true" }, grandeImage);
+    const montrer = (src) => { grandeImage.src = src; grand.classList.add("on"); };
+    const cacher = () => grand.classList.remove("on");
+    const overlay = el("div", { class: "deck-modal ac-modal", onclick: (e) => { if (e.target === overlay) fermer(); } }, panneau, grand);
     const fermer = () => fermerModale(overlay);
 
     const poserQuestion = () => {
@@ -73,6 +79,10 @@ export function proposerArtsCartes({ deck, heros, el, t, ouvrirModale, fermerMod
                     type: "button", class: "ac-vignette" + (code === ligne.affiche ? " on" : ""), "data-code": code,
                     title: code === STANDARD ? t("Illustration officielle") : `${t("Illustration")} ${code.toUpperCase()}`,
                     onclick: () => { ecrireChoixCartes({ [ligne.id]: code }); marquer(code); },
+                    onmouseenter: () => montrer(imageUrl(picIdAvecArt(ligne.id, code))),
+                    onmouseleave: cacher,
+                    onfocus: () => montrer(imageUrl(picIdAvecArt(ligne.id, code))),
+                    onblur: cacher,
                 },
                     el("img", { src: imageUrl(picIdAvecArt(ligne.id, code)), alt: "", loading: "lazy" }),
                     el("span", {}, code === STANDARD ? t("Officielle") : code.toUpperCase()),
