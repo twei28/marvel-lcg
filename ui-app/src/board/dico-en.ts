@@ -1859,6 +1859,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Trouvé : %1': 'Found: %1',
   'Paquet rencontre mélangé': 'Encounter deck shuffled',
   'Défaussé : %1': 'Discarded: %1',
+  'Carte de boost : %1': 'Boost card: %1',
   'AUCUN DÉGÂT': 'NO DAMAGE',
   'réduit': 'reduced',
   '%1e': '#%1',
