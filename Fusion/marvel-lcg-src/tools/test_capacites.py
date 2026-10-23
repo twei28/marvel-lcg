@@ -66543,10 +66543,13 @@ def main():
     # recoit toujours l'index ABSOLU dans CAS, et le rapport reste comparable
     # a celui d'une passe complete.
     filtre = sys.argv[4] if len(sys.argv) > 4 else None
+    # AJOUT 23/10/2026 : plusieurs sous-chaines separees par « | » (un cas est retenu s'il en contient UNE). C'est ce que produit
+    # `tools/cas_impactes.py` (selection des cas a rejouer apres un changement). Sans « | » : comportement inchange.
+    alternatives = [x for x in (filtre or "").split("|") if x]
     selection = [(i, c) for i, c in enumerate(CAS)
-                 if not filtre or filtre in c["nom"]]
+                 if not alternatives or any(x in c["nom"] for x in alternatives)]
     if filtre:
-        print(f"FILTRE « {filtre} » : {len(selection)}/{len(CAS)} cas retenus")
+        print(f"FILTRE « {filtre[:120]}{'...' if len(filtre) > 120 else ''} » : {len(selection)}/{len(CAS)} cas retenus")
 
     # ⚠ AVANT `preparer_dossiers_paralleles`, QUI CREE N DOSSIERS DE JEU : une
     # passe qu'on va refuser n'a pas a semer des dossiers derriere elle.
