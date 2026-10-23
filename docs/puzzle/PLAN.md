@@ -86,7 +86,7 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
   départ). Stades du méchant / du complot : position dans les listes de la campagne (un
   `AdvanceMainScheme` = un stade). 3 cas d'aller-retour dans `outils/test_puzzle_moteur.py`
   (`capture_*`), la capture rechargée dans un processus neuf est identique.
-- **Pas encore capturé** (signalé en avertissement ou ignoré) : cartes glissées sous une
+- **Pas encore capturé** (signalé en avertissement : réserve, rising tide, cartes distribuées, deck annexe, ressources, face cachée ; ignoré : le reste) : cartes glissées sous une
   autre, obligations en jeu, ressources en réserve, deck annexe (écureuils, invocations),
   cartes retournées / face cachée, contrôleur d'un sbire non engagé, cartes spéciales
   d'un mode (ville Punisher).

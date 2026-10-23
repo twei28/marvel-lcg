@@ -524,6 +524,17 @@ def cas_capture_forme_doubles_et_stade_du_complot():
     return "ok"
 
 
+def cas_capture_avertit_de_ce_qu_elle_ne_rend_pas():
+    """Des ressources en reserve ne sont pas capturees : la capture le DIT."""
+    jeu, monde, vue = monter(puzzle_de_base([joueur(SPIDER)]))
+    from game.element.resources import Resources
+    from game.puzzle.puzzle_capture import CapturePuzzle
+    monde.const_seat_order_players[0].res_pool.Set(Resources("GG"))
+    avertissements = CapturePuzzle(monde)["avertissements"]
+    assert any("ressources" in a for a in avertissements), avertissements
+    return "ok"
+
+
 CAS = {n[4:]: f for n, f in sorted(globals().items()) if n.startswith("cas_")}
 
 

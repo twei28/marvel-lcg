@@ -139,6 +139,16 @@ def CapturePuzzle(world: Any) -> Dict[str, Any]:
             "deck_name": "",
         })
 
+    # ---- zones et etats que la capture ne sait pas rendre : dits, jamais tus
+    for siege, joueur in enumerate(sieges):
+        for nom, zone in (("reserve", joueur.reserve), ("rising tide", joueur.rising_tide),
+                          ("cartes de rencontre distribuees", joueur.dealt_encounter_cards),
+                          ("deck annexe", joueur.additional_deck)):
+            if zone.GetSize() > 0:
+                cap.avertissements.append(f"joueur {siege} : {nom} non capture ({zone.GetSize()} carte(s))")
+        if joueur.res_pool.Get().val > 0:
+            cap.avertissements.append(f"joueur {siege} : ressources en reserve non capturees ({joueur.res_pool.Get()})")
+
     # ---- cartes DEJA en jeu au depart : leur etat
     for siege, joueur in enumerate(sieges):
         heros = joueur.area_hero.GetAll()
@@ -175,6 +185,9 @@ def CapturePuzzle(world: Any) -> Dict[str, Any]:
         if face is None or not face.IsInPlay() or id(face) in cap.cles or StatusCard.IsType(face):
             continue
         cap.avertissements.append(f"carte en jeu non capturee : {face.name} ({face.paper.card_id})")
+    for face in [f for objet in world.object_manager.card_dict.values() for f in [objet.face]
+                 if f is not None and id(f) in cap.cles and not f.IsFaceUp()]:
+        cap.avertissements.append(f"carte face cachee restauree face visible : {face.name} ({face.paper.card_id})")
 
     # ---- avancement du mechant et du complot principal : leur POSITION dans les listes
     # de la campagne (la pile de victoire ne les garde pas, mesure du 23/10/2026).
