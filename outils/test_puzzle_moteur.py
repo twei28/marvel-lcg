@@ -418,6 +418,112 @@ def cas_puzzle_force_le_mode_automatique():
     return "ok"
 
 
+
+
+# --------------------------------------------------------------------------- E4 : capture
+def capturer(jeu_puzzle):
+    """Monte le puzzle (dictionnaire PuzzleData) dans CE processus et rend sa capture."""
+    jeu, monde, vue = monter(jeu_puzzle)
+    from game.puzzle.puzzle_capture import CapturePuzzle
+    return CapturePuzzle(monde)
+
+
+def capturer_ailleurs(jeu_puzzle):
+    """Comme `capturer`, dans un processus NEUF (le moteur est un singleton global)."""
+    with tempfile.TemporaryDirectory(prefix="puzzle-capture-") as tmp:
+        entree, sortie = os.path.join(tmp, "in.json"), os.path.join(tmp, "out.json")
+        json.dump(jeu_puzzle, open(entree, "w"))
+        r = subprocess.run([sys.executable, os.path.abspath(__file__), "--capture", entree, sortie],
+                           capture_output=True, text=True, timeout=300)
+        assert r.returncode == 0, r.stderr[-1500:]
+        return json.load(open(sortie))
+
+
+def cas_capture_piles_et_etats():
+    """Un plateau garni -> capture ; la capture rechargee puis recapturee est IDENTIQUE (aller-retour)."""
+    p = puzzle_de_base(
+        [joueur(SPIDER, main=["01071"], deck=["01072", "01073", "01074"], defausse=["01074", "01075"])],
+        puzzle_command=[
+            "Puzzle.PutIntoPlay('01059', under_control=True)", "Puzzle.Damage('01059', 1)", "Puzzle.Stun('01059')",
+            "Puzzle.PutIntoPlay('01006', under_control=True, exhaust=True)",
+            "Puzzle.SetHealth('01094', 9)", "Puzzle.SetThreat('01097a', 4)",
+            "Puzzle.Token('01097a', 'acceleration_token', 2)",
+        ])
+    c1 = capturer(p)
+    q = c1["puzzle"]
+    assert q["format"] == 2 and q["villain"] == ["01094"], q
+    assert q["players"][0]["hand_cards"] == ["01071"], q["players"][0]
+    assert q["players"][0]["player_deck"] == ["01074", "01073", "01072"], q["players"][0]["player_deck"]
+    assert q["players"][0]["player_discard_pile"] == ["01075", "01074"], q["players"][0]["player_discard_pile"]
+    texte = "\n".join(q["puzzle_command"])
+    assert "RestoreCard('e" in texte and "'01059'" in texte and "'01006'" in texte, texte
+    assert "health=9" in texte and "threat=4" in texte and "exhausted=True" in texte, texte
+    assert not c1["avertissements"], c1["avertissements"]
+    c2 = capturer_ailleurs(c1["puzzle"])
+    assert c2["puzzle"] == c1["puzzle"], (c1["puzzle"], c2["puzzle"])
+    return "ok (%d commandes)" % len(q["puzzle_command"])
+
+
+def cas_capture_en_jeu_complet():
+    """Ameliorations (heros, mechant, allie), sbire engage, complot annexe, environnement, stade du mechant : aller-retour identique."""
+    p = puzzle_de_base(
+        [joueur(SPIDER, main=["01071"], deck=["01072", "01073"]), joueur(AUTRE, defausse=["01075"])],
+        encounter_deck=["01110", "01154"], encounter_discard_pile=["01190"], villain=["01094", "01095"],
+        puzzle_command=[
+            "Puzzle.AdvanceVillain()",
+            "Puzzle.PutIntoPlay('01059', under_control=True)", "Puzzle.AttachReel('01008', '01001b')",
+            "Puzzle.PutIntoPlay('01101')", "Puzzle.Engage('01101', siege=1)", "Puzzle.Damage('01101', 1)",
+            "Puzzle.AttachReel('01098', '01095')",
+            "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 3)",
+            "Puzzle.PutIntoPlay('01140')",
+            "Puzzle.Damage('01001b', 4)", "Puzzle.Exhaust('01001b')", "Puzzle.Stun('01095')",
+            "Puzzle.SetFirstPlayer(1)",
+        ])
+    c1 = capturer(p)
+    q = c1["puzzle"]
+    texte = "\n".join(q["puzzle_command"])
+    for attendu in ("'01008', 'upgrade'", "'01101', 'minion'", "engaged=True", "'01107', 'side_scheme'",
+                    "'01140', 'environment'", "'01098', 'upgrade'", "Puzzle.AdvanceVillain()"):
+        assert attendu in texte, (attendu, texte)
+    assert q["first_player"] == 1, q["first_player"]
+    assert len(q["players"]) == 2 and q["players"][1]["player_discard_pile"] == ["01075"], q["players"]
+    assert q["encounter_deck"] and q["encounter_discard_pile"] == ["01190"], (q["encounter_deck"], q["encounter_discard_pile"])
+    assert not c1["avertissements"], c1["avertissements"]
+    c2 = capturer_ailleurs(q)
+    assert c2["puzzle"] == q, (q, c2["puzzle"])
+    return "ok (%d commandes)" % len(q["puzzle_command"])
+
+
+def cas_capture_forme_doubles_et_stade_du_complot():
+    """Forme heros, double en deck ET en jeu (seul celui en jeu est blesse), 2e stade du complot, commandes valides pour un puzzle publie."""
+    p = puzzle_de_base(
+        [joueur(SPIDER, deck=["01059", "01059", "01072"])], villain=["01113"], schemes=["01116a,01116b", "01117a,01117b"],
+        puzzle_command=["Puzzle.ChangeForm('01001b')", "Puzzle.AdvanceMainScheme()",
+                        "Puzzle.PutIntoPlay('01059', under_control=True)"])
+    jeu, monde, vue = monter(p)
+    s0 = monde.const_seat_order_players[0]
+    en_jeu = next(f for f in s0.allies.GetAll() if f.paper.card_id == "01059")
+    assert en_jeu.card.area is s0.allies
+    from game.puzzle.puzzle import RunPuzzle
+    from game.puzzle.puzzle_capture import CapturePuzzle
+    from game.puzzle.puzzle_data import PuzzleData
+    from game.puzzle.puzzle_validation import validate_puzzle
+    from engine.lib.json import Json
+    en_jeu.TakeDamage(en_jeu, 2, RunPuzzle(monde).debug_rule)
+    c = CapturePuzzle(monde)
+    q = c["puzzle"]
+    assert q["players"][0]["identities"] == ["01001a"], q["players"][0]["identities"]
+    assert sorted(q["players"][0]["player_deck"]) == ["01059", "01072"], q["players"][0]
+    assert q["puzzle_command"].count("Puzzle.AdvanceMainScheme()") == 1, q["puzzle_command"]
+    assert any("'01059', 'ally'" in x and "health=1" in x for x in q["puzzle_command"]), q["puzzle_command"]
+    autorisees = {n for n in dir(RunPuzzle) if n[:1].isupper()}
+    erreurs = validate_puzzle(Json.LoadsAs(json.dumps(q), PuzzleData), autorisees)
+    assert not erreurs, erreurs
+    c2 = capturer_ailleurs(q)
+    assert c2["puzzle"] == q, (q, c2["puzzle"])
+    return "ok"
+
+
 CAS = {n[4:]: f for n, f in sorted(globals().items()) if n.startswith("cas_")}
 
 
@@ -425,6 +531,14 @@ def main():
     if len(sys.argv) > 2 and sys.argv[1] == "--fils":
         try:
             print(CAS[sys.argv[2]](), flush=True)
+        except BaseException:
+            import traceback
+            traceback.print_exc()
+            os._exit(1)
+        os._exit(0)
+    if len(sys.argv) > 3 and sys.argv[1] == "--capture":
+        try:
+            json.dump(capturer(json.load(open(sys.argv[2]))), open(sys.argv[3], "w"))
         except BaseException:
             import traceback
             traceback.print_exc()

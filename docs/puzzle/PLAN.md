@@ -75,6 +75,21 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
 - Convertir le plateau courant en `PuzzleData` v2 (zones, ordre des decks, cartes en
   jeu avec états, méchant, complot, rencontre).
 - Test d'aller-retour : état → puzzle → rechargement → état identique.
+- **FAIT (23/10)** : `src/game/puzzle/puzzle_capture.py` (`CapturePuzzle(world)` rend le
+  `PuzzleData` v2 + une liste `avertissements` de tout ce qui n'a pas pu être capturé).
+  Piles dans les champs du format (dessus en premier) ; le reste en commandes
+  `Puzzle.RestoreState(cible, key=…)` (identité, méchant, complot principal) et
+  `Puzzle.RestoreCard(clé, id, kind, siege=…, host=…)` (alliés, soutiens, sbires engagés,
+  complots annexes, environnement, améliorations). Chaque carte posée porte une **clé** :
+  viser par identifiant serait ambigu avec un double dans un deck. Les compteurs, jetons et
+  cartes d'état sont des valeurs **absolues** (une carte arrive en jeu avec ses compteurs de
+  départ). Stades du méchant / du complot : position dans les listes de la campagne (un
+  `AdvanceMainScheme` = un stade). 3 cas d'aller-retour dans `outils/test_puzzle_moteur.py`
+  (`capture_*`), la capture rechargée dans un processus neuf est identique.
+- **Pas encore capturé** (signalé en avertissement ou ignoré) : cartes glissées sous une
+  autre, obligations en jeu, ressources en réserve, deck annexe (écureuils, invocations),
+  cartes retournées / face cachée, contrôleur d'un sbire non engagé, cartes spéciales
+  d'un mode (ville Punisher).
 
 ### E5. Création : assistant guidé, puis plateau libre
 Principe (décision du 22/10) : **hyper simple et intuitif**. Un assistant à ordre

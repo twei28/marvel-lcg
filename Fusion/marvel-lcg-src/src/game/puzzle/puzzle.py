@@ -1597,6 +1597,111 @@ class RunPuzzle:
         villains[0].Advance(self.debug_rule)
 
     ################################################################################
+    # E4 : remise en etat depuis une capture du plateau (`puzzle_capture.py`).
+    #
+    # Une capture nomme chaque carte posee par une CLE (« e1 », « e2 »...) : viser
+    # une carte par son identifiant serait ambigu des qu'un deck ou une defausse
+    # en contient un double (`FindOrCreateFace` fouille les decks d'abord). Le
+    # registre vit sur le monde, car `PuzzleHelper.Exec` fabrique un `RunPuzzle`
+    # neuf a chaque appel.
+    KINDS_RESTAURES = ('ally', 'support', 'minion', 'side_scheme', 'environment', 'upgrade')
+
+    def _Registre(self) -> Dict[str, 'CardFace']:
+        registre = getattr(self.world, 'puzzle_restaurees', None)
+        if registre is None:
+            registre = {}
+            self.world.puzzle_restaurees = registre
+        return registre
+
+    def _CarteRestauree(self, cible: str) -> 'CardFace':
+        face = self._Registre().get(cible)
+        if face is not None:
+            return face
+        return self.FindFaceInPlay(cible)
+
+    def _AppliquerEtat(self, face: 'CardFace', exhausted: bool|None, health: int|None,
+                       statuses: List[List[Any]]|None, counters: List[List[Any]]|None,
+                       tokens: List[List[Any]]|None, threat: int|None) -> None:
+        """Pose l'etat voulu sur `face`. L'ordre compte : les cartes d'etat, compteurs
+        et jetons d'abord, puis la menace, l'epuisement, et les PV EN DERNIER (une
+        amelioration deja attachee peut changer les PV max)."""
+        # Valeurs ABSOLUES : une carte qui arrive en jeu porte deja ses compteurs de
+        # depart (Web-Shooter : 3), la capture dit ce qu'elle porte A LA FIN.
+        composants = face.card.components
+        if statuses is not None:
+            voulus = {str(nom): int(n) for nom, n in statuses}
+            for nom in ("Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed", "Intensified"):
+                ecart = voulus.get(nom, 0) - getattr(composants.status, nom.lower())
+                if ecart > 0:
+                    self.AddStatus(face, nom, ecart)
+                elif ecart < 0:
+                    composants.status.DiscardStatusCard(nom, self.debug_rule, -ecart)
+        if counters is not None:
+            voulus = {str(nom): int(n) for nom, n in counters}
+            for nom in set(voulus) | set(composants.counter.counters):
+                ecart = voulus.get(nom, 0) - composants.counter.GetCounters(nom)
+                if ecart:
+                    self.Counter(face, nom, ecart)
+        if tokens is not None:
+            voulus = {str(nom): int(n) for nom, n in tokens}
+            for nom in set(voulus) | set(composants.token.token):
+                if nom == 'first_player_token' or (nom == 'threat' and threat is not None):
+                    continue
+                ecart = voulus.get(nom, 0) - composants.token.GetTokens(nom)
+                if ecart:
+                    self.Token(face, nom, ecart)
+        if threat is not None:
+            self.SetThreat(face, int(threat))
+        if exhausted is True and face.IsReady():
+            self.Exhaust(face)
+        elif exhausted is False and not face.IsReady():
+            self.Ready(face)
+        if health is not None:
+            self.SetHealth(face, int(health))
+
+    def RestoreState(self, target: str, key: str|None=None, exhausted: bool|None=None,
+                     health: int|None=None, statuses: List[List[Any]]|None=None,
+                     counters: List[List[Any]]|None=None, tokens: List[List[Any]]|None=None,
+                     threat: int|None=None) -> 'CardFace':
+        """Regle l'etat d'une carte DEJA EN JEU (identite, mechant, complot principal,
+        ou une carte posee par `RestoreCard`, designee par sa cle). `key` lui donne une
+        cle, pour que `RestoreCard` puisse y attacher des ameliorations."""
+        face = self._CarteRestauree(target)
+        if key:
+            self._Registre()[key] = face
+        self._AppliquerEtat(face, exhausted, health, statuses, counters, tokens, threat)
+        return face
+
+    def RestoreCard(self, key: str, card: str, kind: str, siege: int=0, host: str|None=None,
+                    engaged: bool=False, exhausted: bool|None=None, health: int|None=None,
+                    statuses: List[List[Any]]|None=None, counters: List[List[Any]]|None=None,
+                    tokens: List[List[Any]]|None=None, threat: int|None=None) -> 'CardFace':
+        """Cree une carte NEUVE (jamais celle d'un deck, meme si l'identifiant s'y
+        trouve) et la pose en jeu avec son etat. `kind` : ally, support, minion,
+        side_scheme, environment, ou upgrade (alors `host` est la cle de la carte
+        porteuse). `siege` est le joueur qui la controle (ou, pour un sbire, celui qui
+        l'engage quand `engaged` est vrai)."""
+        from game.card.face.base import ClassCard
+        from game.card.face.attribute.can_attach import CanAttach
+        assert kind in RunPuzzle.KINDS_RESTAURES, f"kind inconnu : {kind}"
+        joueur = self.world.const_seat_order_players[siege]
+        face = self.CreateCard(card)
+        if ClassCard.IsType(face):
+            face.card.SetOwner(joueur)
+        if kind == 'upgrade':
+            assert host, "une amelioration demande son porteur (host)"
+            hote = self._Registre()[host]
+            assert face.CastTo(CanAttach).AttachTo2(hote, self.debug_rule), f"{card} n'a pas pu s'attacher a {host}"
+        else:
+            # Les cartes des joueurs sont sous leur controle ; celles de la rencontre non.
+            face.PutIntoPlay(joueur, self.debug_rule, under_control=kind in ('ally', 'support'))
+            if kind == 'minion' and engaged and face.card.area is not joueur.engaged_minions:
+                self.Engage(face, siege=siege)
+        self._Registre()[key] = face
+        self._AppliquerEtat(face, exhausted, health, statuses, counters, tokens, threat)
+        return face
+
+    ################################################################################
     #
     def ValidateObjective(self, index: int):
         """Valide a la main l'objectif LIBRE `index` (0 = le premier) ; peut finir le puzzle."""
