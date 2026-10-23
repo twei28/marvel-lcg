@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « décisions, « code lu, rien modifié » »). Preuve : `ui-app/src/board/table-briques.ts`, `EditeurTable.tsx:22-32` ; `3a6afcf0` ; déployé le 05/10 (`0a65abd2`) (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°10).
+
 # Table personnalisable par briques : décisions du 05/10/2026 (questions une à une)
 
 Point de départ : la table (disposition.ts, EditeurTable.tsx) n'a que 9 zones fixes. Certaines

@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « Rien n'est commencé » puis « en cours de codage » »). Preuve : `EditeurTable.tsx:227` (double-clic pour renommer), `cote-ameliorations.ts:9`, `FenetreReglages.tsx:356` (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°11).
+
 # Table personnalisable : aussi en multijoueur, par héros, et zones renommables (07/10/2026)
 
 **Statut : BACKLOG, demande de l'utilisateur. Rien n'est commencé.** Suite de la fiche

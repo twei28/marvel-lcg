@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « pas encore déployé » »). Preuve : `public/css/affichage-sobre-pages.css` présent ; test `ui-check/tests/affichage-sobre-pages.spec.ts` ; déploiement non établi (section 4) (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°7).
+
 # Mode sobre sur les menus (décidé et codé le 09/10/2026, validé sur captures, pas encore déployé)
 
 Aujourd'hui (`public/css/prepare/prepare.css`, bloc AFFICHAGE SOBRE vers la ligne 2690) : le mode sobre des pages ne fait

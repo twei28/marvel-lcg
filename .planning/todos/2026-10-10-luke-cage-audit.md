@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « RIEN CORRIGÉ », puis « Non déployé » »). Preuve : branche `luke-cage-correctifs` ancêtre de HEAD ; `2026-10-10-taches-en-pause.md` : déployé le 10/10 à 16h37 (« Luke Cage (9 cartes) ») ; réserves mineures : Sidewinder en multijoueur réel, ★ d'Augmented Jaws, doutes 62029 et 62014 (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°12).
+
 # Luke Cage officiel (62xxx) : audit du 10/10/2026, RIEN CORRIGÉ (demande : vérifier d'abord)
 
 Rapports d'Aghenatak du 10/10 (n°73, 74, 75, état « nouveau » sur le serveur) : les trois sont de VRAIS bugs,

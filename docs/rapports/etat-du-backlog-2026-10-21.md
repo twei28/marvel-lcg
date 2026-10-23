@@ -205,3 +205,12 @@ lancer), langues (20, après le chantier 19).
 
 À corriger au passage dans la documentation (reporté du 19/10, pas fait cette fois) : les 19 en-têtes de fiches
 listées en section 3.
+
+---
+
+## MISE À JOUR du 23/10/2026 : la dette de tri est soldée (décision de l'utilisateur)
+
+- **Les 19 fiches à en-tête périmé** (§3 du rapport du 19/10) portent maintenant, EN TÊTE, une ligne « MISE À JOUR 23/10/2026 : FAIT » avec la preuve du rapport (fichiers de `.planning/todos/`). Aucun autre contenu de fiche n'a été modifié.
+- **Les 11 points « incertains »** (§4 du rapport du 19/10) sont CLOS : les n°4 (Pyodide en ligne), 5 (Hs Feral Instincts), 6 (recherche MarvelCDB) et 9 (test klaw) avaient déjà été tranchés le 21/10 ; les n°1, 2, 3, 7, 8, 10 et 11 sont clos SANS enquête, à la demande de l'utilisateur. Si l'un d'eux se manifeste en jeu, il rouvre un point neuf.
+- Le point n°4 de `docs/BACKLOG.md` (barre d'adresse de l'appli installée) est retiré : déjà traité.
+

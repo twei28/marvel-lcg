@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « cases [ ] ouvertes en cours de fiche »). Preuve : toutes les cases visibles sont [x] ; `roue-hasard.spec.ts`, `roue-hasard-ecran.spec.ts` ; `8309f2d9` (Épure). Reste mineur : jamais vu à 3 ou 4 invités réels, écart de 1 à 2 s entre hôte et invité (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°18).
+
 # Partie au hasard : la roue
 
 Proposition d'un joueur, relayée le 08/10/2026 : le bouton « Aléatoire » ne

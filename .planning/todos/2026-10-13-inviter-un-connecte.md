@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « NON COMMITÉ, NON DÉPLOYÉ » »). Preuve : Commité : `efb0709b` (branche `multi-invitations`, 2 commits que HEAD ne contient pas par leur identifiant) ; mais les fichiers sont **identiques** dans HEAD (`git diff --stat HEAD multi-invitations` sur `site/orchestrateur.py`, `retour-salon.ts`, `invitations.js` : 0 ligne), arrivés par `4f40f966`. Le code est donc dans les … (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°9).
+
 # Inviter un joueur connecté (multi en ligne avec comptes)
 
 Statut : CODÉ ET VÉRIFIÉ À DEUX NAVIGATEURS le 13/10/2026. NON COMMITÉ, NON DÉPLOYÉ (voir « Fait » en bas).

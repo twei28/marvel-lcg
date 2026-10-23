@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « dz003 non commité » »). Preuve : `f7b4e6a0` ; annotation du 07/10. Reste l'item 12 (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°16).
+
 # Vérification carte par carte des cartes hors irefrixs
 
 > **Mise à jour du 20/10/2026 (backlog 12, branche `backlog-12-dazzler`)** :

@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « non commité » »). Preuve : `b175b2ef` (07/10) ; l'annotation du 07/10 le dit. Reste l'item 29 (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°15).
+
 # Revoir les sons
 
 **RETIRÉ du backlog le 21/10/2026** (item 29), décision de l'utilisateur. La question « quels
