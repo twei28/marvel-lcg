@@ -45846,6 +45846,16 @@ CAS = [
         "attendu": {"degats_identite": 1, "degats": [["60007", 0]]},
     },
     {
+        "nom": "04069 Piller l'Armurerie : le journal du mechant dit ce qui est defausse (Se Liguer) et trouve (Pistolet d'Hydra), sans « paquet melange »",
+        "pourquoi": "rapport n°102 (BL-Stark) : 4 cartes defilaient sans explication, et le panneau annoncait a tort que le paquet etait melange",
+        "scenario": "crossbones",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('04149', '01189')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "faits_piller_armurerie",
+    },
+    {
         "nom": "60001b Matt Murdock — le deck Sens est consultable : ses 5 cartes sont visibles pour Daredevil",
         "pourquoi": "rapport n°100 (BL-Stark) : la pile Sens s'affichait sans pouvoir s'ouvrir, car ses cartes face cachee n'etaient pas visibles pour leur proprietaire",
         "scenario": "rhino",
@@ -60585,6 +60595,22 @@ def choix_option_unique_dit(monde, aides):
     if re.search(r"(only one option is possible|une seule option est possible)", contenu):
         return True, "le journal dit qu'une seule option est possible"
     return False, "aucune ligne « une seule option » : le choix est reste silencieux"
+
+
+def faits_piller_armurerie(monde, aides):
+    """Rapport n°102 : Piller l'Armurerie publie ce qu'elle defausse en chemin (Se Liguer) et ce qu'elle trouve (Pistolet d'Hydra), SANS
+    pretendre que le paquet rencontre a ete remelange (le deck n'est pas epuise)."""
+    erreur = _a2_distribue_puis_revele(monde, '04069')
+    if erreur:
+        return False, erreur
+    faits = [f for f in monde.stat.faits_mechant if f.get('genre') == 'revelation' and f.get('carte') == 'Raid the Armory']
+    if len(faits) != 1 or not faits[0].get('recherches'):
+        return False, f"aucune recherche publiee : {monde.stat.faits_mechant}"
+    recherche = faits[0]['recherches'][0]
+    attendu = {'trouve': ['Hydra Sidearm'], 'paquet': False, 'defausse': ['Gang-Up']}
+    if recherche != attendu:
+        return False, f"recherche = {recherche}, attendu {attendu}"
+    return True, f"recherche publiee : {recherche}"
 
 
 def dd_deck_sens_consultable(monde, aides):

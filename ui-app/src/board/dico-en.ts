@@ -1858,6 +1858,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Recherche : rien trouvé': 'Search: nothing found',
   'Trouvé : %1': 'Found: %1',
   'Paquet rencontre mélangé': 'Encounter deck shuffled',
+  'Défaussé : %1': 'Discarded: %1',
   'AUCUN DÉGÂT': 'NO DAMAGE',
   'réduit': 'reduced',
   '%1e': '#%1',

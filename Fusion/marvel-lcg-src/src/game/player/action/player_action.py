@@ -270,19 +270,23 @@ class PlayerAction:
         return True
 
     @staticmethod
-    def NoterRecherche(world: 'World', trouvees: 'Sequence[CardFace]', *, fouille_paquet: bool) -> None:
+    def NoterRecherche(world: 'World', trouvees: 'Sequence[CardFace]', *, fouille_paquet: bool,
+                       defaussees: 'Sequence[CardFace]' = ()) -> None:
         """Note une recherche rencontre sur la carte revelee en cours (13/10/2026).
 
         `trouve` : les noms des cartes trouvees, vide si rien ; `paquet` : le
-        paquet rencontre a ete fouille (donc remelange). Hors d'une revelation
+        paquet rencontre a ete fouille (donc remelange) ; `defausse` : les cartes defaussees en chemin
+        (« defausser jusqu'a trouver », rapport n°102), absent sinon. Hors d'une revelation
         de la phase du mechant, rien n'est note.
         """
         try:
             pile = PlayerAction._RevelationsEnCours(world)
             if not pile:
                 return
-            pile[-1].setdefault('recherches', []).append(
-                {'trouve': [face.name for face in trouvees], 'paquet': bool(fouille_paquet)})
+            note = {'trouve': [face.name for face in trouvees], 'paquet': bool(fouille_paquet)}
+            if defaussees:
+                note['defausse'] = [face.name for face in defaussees]
+            pile[-1].setdefault('recherches', []).append(note)
         except Exception:
             pass
 

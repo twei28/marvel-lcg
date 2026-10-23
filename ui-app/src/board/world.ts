@@ -409,7 +409,7 @@ export type FaitRevelation = FaitMechantCommun & {
    * `PlayerAction.NoterRecherche`) : ce qu'elle a trouvé (vide : rien), et si
    * le paquet rencontre a été fouillé, donc remélangé. Absent sur un moteur plus ancien.
    */
-  recherches?: Array<{ trouve: string[]; paquet: boolean }>
+  recherches?: Array<{ trouve: string[]; paquet: boolean; defausse?: string[] }>
   /** Son effet « Une fois révélée » a été ANNULÉ, par cette carte (04/10/2026). */
   annulee_par?: string
   annulee_par_id?: number

@@ -341,7 +341,7 @@ export type EtapeDeroule = {
   /** Essai (13/10/2026, encadré ⑥) : les boosts ★ dont la condition n'est pas remplie, dits en une ligne. */
   etoilesSansEffet?: string[]
   /** Les recherches rencontre de la carte révélée (13/10/2026) : trouvée ou non, paquet fouillé. */
-  recherches?: Array<{ trouve: string[]; paquet: boolean }>
+  recherches?: Array<{ trouve: string[]; paquet: boolean; defausse?: string[] }>
   /**
    * Sur une revelation : cette carte a ete revelee par un Renfort (Surge)
    * declenche par la precedente, pas par la distribution ordinaire du point

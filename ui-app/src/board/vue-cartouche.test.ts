@@ -351,6 +351,11 @@ describe('piege 40 : des valeurs nulles, rien d invente', () => {
   it('13/10/2026 : ce qu une recherche a donne, trouvee ou non', () => {
     expect(textesRecherches([{ trouve: [], paquet: true }])).toEqual(['Recherche : rien trouvé', 'Paquet rencontre mélangé'])
     expect(textesRecherches([{ trouve: ['* Le Requin-Tigre'], paquet: false }])).toEqual(['Trouvé : Le Requin-Tigre'])
+    // Piller l'Armurerie (rapport n°102) : ce qui est défaussé en chemin, puis ce qui est trouvé, sans prétendre que le paquet est mélangé.
+    expect(textesRecherches([{ trouve: ['Hydra Sidearm'], paquet: false, defausse: ['Gang-Up'] }])).toEqual([
+      'Défaussé : Gang-Up',
+      'Trouvé : Hydra Sidearm',
+    ])
     expect(textesRecherches(undefined)).toEqual([])
   })
 

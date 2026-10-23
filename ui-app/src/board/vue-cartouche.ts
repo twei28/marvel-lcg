@@ -938,12 +938,16 @@ function resultatCourt(etape: EtapeDeroule): string | undefined {
 
 /**
  * Les recherches d'une carte révélée (13/10/2026, encadré ⑫) : « Recherche :
- * rien trouvé » ou « Trouvé : X », puis « Paquet rencontre mélangé » si le
+ * rien trouvé » ou « Défaussé : A » puis « Trouvé : X », puis « Paquet rencontre mélangé » si le
  * paquet a été fouillé. Rien d'inventé : tout vient du fait du moteur.
  */
 export function textesRecherches(recherches: EtapeDeroule['recherches']): string[] {
   const lignes: string[] = []
   for (const recherche of recherches ?? []) {
+    // « Défausser jusqu'à trouver » (Piller l'Armurerie, rapport BL-Stark n°102) : ce qui a été défaussé en chemin, avant ce qui est trouvé.
+    if (recherche.defausse && recherche.defausse.length > 0) {
+      lignes.push(t('Défaussé : %1').replace('%1', recherche.defausse.map((nom) => nomNettoye(nom) ?? nom).join(', ')))
+    }
     lignes.push(
       recherche.trouve.length === 0
         ? t('Recherche : rien trouvé')

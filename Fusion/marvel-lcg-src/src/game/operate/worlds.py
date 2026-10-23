@@ -560,6 +560,7 @@ class Worlds:
                                     **kwargs: Unpack['CardFinder.KWArgs'],
                                     ) -> 'TC|None':
         encounter_deck = Worlds.GetEncounterDeck(by_effect)
+        taille_avant = encounter_deck.GetSize()
         face, other = encounter_deck.DiscardUntil(
             by_effect,
             name=name,
@@ -572,8 +573,12 @@ class Worlds:
             return_other_faces.extend(other)
         # 13/10/2026 (encadre 12) : « defausser jusqu'a trouver » se publie comme
         # une recherche, trouvee ou non, sur la carte revelee en cours.
+        # Rapport BL-Stark n°102 : le panneau annoncait « Paquet rencontre melange » a chaque fois, alors que le deck ne se remelange que s'il
+        # s'epuise en cours de route (plus de cartes defaussees que le deck n'en avait). Il dit maintenant AUSSI ce qui a ete defausse en chemin.
         from game.player.action.player_action import PlayerAction
-        PlayerAction.NoterRecherche(by_effect.world, [face] if face else [], fouille_paquet=True)
+        retirees = len(other) + (1 if face else 0)
+        PlayerAction.NoterRecherche(by_effect.world, [face] if face else [], fouille_paquet=retirees > taille_avant,
+                                    defaussees=[x for x in other if x is not face])
         return face
 
     @staticmethod
