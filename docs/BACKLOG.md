@@ -260,3 +260,15 @@ sécurité. **Le code le dit déjà** (commentaire « Contrepartie assumée : un
 - Quelle voie (recommandation provisoire : tester 4 d'abord, c'est le seul test peu coûteux ; sinon 5, puis 2 si l'utilisateur veut vraiment supprimer la barre).
 - Sur ordinateur seulement, ou aussi sur téléphone ? (4 ne couvre pas le téléphone.)
 - Rien n'a été codé.
+
+---
+
+## 5. Scans HD des cartes d'aspect d'Iron Fist et d'Elektra (ajouté le 23/10/2026)
+
+**Décision de l'utilisateur (23/10/2026) : attendre des scans HD officiels, rien à faire d'ici là.** Sur les 33 cartes d'aspect, 18 sont déjà en HD (cartes recadrées dans les captures « content creator » de `.planning/*-officiel/cc-spoil/`, ou images de 615 px). **15 restent en 300 px** (images de la page Hall of Heroes, lisibles) :
+
+- Elektra (MC63) : `63015` Shang-Chi, `63016` Black Cat, `63017` Combo Move, `63018` Chain Reaction, `63019` Nerve Strike, `63020` Flow of Battle, `63023` Hunting Shadows, `63027` Dance with the Devil (réimpression de `60031`, 300 px elle aussi).
+- Iron Fist (MC64) : `64013` Helpful Bystander, `64016` Demoralize, `64018` Redirection Mastery, `64019` No Time to Bleed, `64020` Tonfa, `64022`, `64024` Power Man and Iron Fist (réimpression de `62023`, 300 px).
+
+Aucune capture HD disponible ne contient ces cartes. Les arts alternatifs TMNT de `63017`-`63020`, `64013`, `64016`, `64018` et `64020` sont, eux, déjà en 615 px (images d'Inkwire). Remplacement : recadrer le scan HD dans `assets/pics/<id>.png`, comme pour `63034`-`63037` (outil de recadrage jetable, sortie ignorée par git).
+
