@@ -1,10 +1,14 @@
 # Module AUTONOME (stdlib seule) : testable sans demarrer le moteur (tools/test_assemblee.py).
+from __future__ import annotations
 from typing import Any, Dict, Tuple
 
 import json
 import os
 import re
-import sqlite3
+try:
+    import sqlite3
+except ImportError:   # Pyodide (Play, navigateur) n'a pas sqlite3 : les assemblees n'existent que sur le serveur
+    sqlite3 = None  # type: ignore
 import time
 
 ################################################################################
