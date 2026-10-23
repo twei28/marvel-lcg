@@ -84,7 +84,7 @@ function blocParCode() {
             await jouerParCode(champ.value.trim());
             window.location.href = "/app/board.html";
         } catch (e) {
-            message.textContent = (e.raisons || [String(e)]).join(" ; ");
+            message.textContent = (e.raisons || [String(e)]).map((r) => t(r)).join(" ; ");
         }
     };
     champ.addEventListener("keydown", (e) => { if (e.key === "Enter") aller(); });

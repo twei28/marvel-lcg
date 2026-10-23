@@ -613,7 +613,7 @@ export async function ouvrirAssistant() {
                 window.location.href = "/app/board.html";
             } catch (err) {
                 bouton.disabled = false;
-                erreurs.replaceChildren(...err.raisons.map((r) => el("li", {}, r)));
+                erreurs.replaceChildren(...err.raisons.map((r) => el("li", {}, t(r))));
             }
         },
     }, t("Tester ce puzzle"));
@@ -635,7 +635,7 @@ export async function ouvrirAssistant() {
                 afficherPublication(corps, pub, ctx.brouillon.title);
                 erreurs.replaceChildren();
             } catch (err) {
-                erreurs.replaceChildren(...err.raisons.map((r) => el("li", {}, r)));
+                erreurs.replaceChildren(...err.raisons.map((r) => el("li", {}, t(r))));
             }
             bouton.disabled = false;
         },

@@ -178,6 +178,16 @@ heure) branchées dans `orchestrateur.py` (`do_GET`, `do_POST`, `do_OPTIONS`). T
 - Solution de référence : visible ou non selon le choix du créateur.
 - Résolution sur mobile/tablette (l'édition reste PC).
 
+**E8 FAIT en grande partie (23/10)** : l'énoncé (titre, histoire, difficulté, indices, auteur) voyage
+du puzzle à l'écran : `Scene.puzzle_info` → `WorldDescriptor.puzzle_info` → `ui-app/src/board/PanneauEnonce.tsx`
+(introduction plein écran une seule fois par puzzle, panneau repliable en haut à droite, indices dévoilés
+un par un, « Relire l'introduction », « Recommencer » en deux temps qui renvoie le puzzle courant gardé
+par `puzzle-client.js` à `POST /new_puzzle`). Mémoire dans `sessionStorage`, par puzzle. 6 tests vitest,
+2 cas moteur (`enonce_*`). « Annuler » existait déjà sur le plateau. **Pas fait** : solution de référence
+(enregistrer / rejouer un replay, visibilité `after/always/never`), plateau mobile, test dans le vrai
+plateau (le plateau compilé ne se recopie qu'au déploiement, `ui-app/deployer.sh`, non lancé).
+Batterie complète à lancer en fin de chantier (`scene.py` touché).
+
 ### E9. Accueil et « Mes puzzles »
 - Le bouton Puzzle ouvre un menu à 3 choix : Résoudre par code, Créer, Mes puzzles.
 - Mes puzzles : créés (brouillons + publiés, code, clé), résolus, en cours,

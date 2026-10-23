@@ -83,6 +83,14 @@ try {
   try { await client.lirePuzzle(pub.code, { site }); cas("supprimé", "lu", "404"); }
   catch (e) { cas("supprimé : 404", e.statut, 404); }
 
+  // le puzzle monté est gardé pour « Recommencer »
+  const mem0 = new Map();
+  const stock0 = { getItem: (k) => mem0.get(k) ?? null, setItem: (k, v) => mem0.set(k, v) };
+  await client.monterPuzzle(puzzle, { f: async () => ({ ok: true, status: 200 }), stockage: stock0 });
+  cas("puzzle courant gardé tel quel", JSON.parse(mem0.get("mc-puzzle-courant")).title, "Essai client");
+  await client.monterPuzzle(puzzle, { f: async () => ({ ok: true, status: 200 }), stockage: { setItem: () => { throw new Error("bloqué"); } } });
+  cas("stockage bloqué : le puzzle monte quand même", true, true);
+
   // refus du moteur local
   try { await client.monterPuzzle(puzzle, { f: async () => ({ ok: false, status: 400, text: async () => "Puzzle refusé : x" }) }); cas("moteur", "monté", "refusé"); }
   catch (e) { cas("moteur : le refus remonte", e.raisons[0], "Puzzle refusé : x"); }

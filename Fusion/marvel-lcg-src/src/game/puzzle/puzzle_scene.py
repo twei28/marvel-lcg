@@ -93,4 +93,8 @@ def BuildPuzzleScene(puzzle: PuzzleData) -> Dict[str, Any]:
             for x in puzzle.objectives
         ],
         "puzzle_objectifs_mode": puzzle.objectives_mode,
+        "puzzle_info": json.dumps({
+            "title": puzzle.title, "description": puzzle.description, "difficulty": puzzle.difficulty,
+            "hints": puzzle.hints, "author": puzzle.author,
+        }, ensure_ascii=False) if puzzle.format >= 2 and (puzzle.title or puzzle.description or puzzle.hints) else "",
     }

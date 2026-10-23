@@ -140,6 +140,7 @@ import { BandeauAbsent } from './board/BandeauAbsent'
 import { BandeauAnnonce } from './board/BandeauAnnonce'
 import { BandeauMiseAJour } from './board/BandeauMiseAJour'
 import { BilanObjectifs, PanneauObjectifs } from './board/PanneauObjectifs'
+import { PanneauEnonce } from './board/PanneauEnonce'
 import { BoutonVoirLaTable } from './board/BoutonVoirLaTable'
 import { useMiseAJour } from './board/maj'
 import { cheminEmplacement, dossierSauvegardes } from './board/sauvegardes'
@@ -4757,6 +4758,7 @@ export function PagePartie({
           tourne sur du vieux code. Les deux peuvent se produire ensemble. */}
       <BandeauMiseAJour visible={majDisponible} />
       <PanneauObjectifs objectifs={etat.monde?.puzzle_objectives} />
+      <PanneauEnonce info={etat.monde?.puzzle_info} objectifs={etat.monde?.puzzle_objectives} />
       {etat.joueurDemande !== undefined &&
       etat.siegesAbsents.includes(etat.joueurDemande) ? (
         <BandeauAbsent

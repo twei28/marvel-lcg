@@ -156,6 +156,8 @@ class Scene:
     # Vides hors puzzle a objectifs : la fin de partie est alors celle du moteur.
     puzzle_objectifs: List[str] = field(default_factory=lambda: [])
     puzzle_objectifs_mode: str = field(default="all")
+    # L'ENONCE d'un puzzle (E8, 23/10/2026) : un JSON `{title, description, difficulty, hints, author}`, vide hors puzzle v2.
+    puzzle_info: str = field(default="")
 
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
 

@@ -6,6 +6,7 @@
 "use strict";
 
 const CLE_MES_PUZZLES = "mc-puzzles-crees";
+const CLE_PUZZLE_COURANT = "mc-puzzle-courant";   // lue par PanneauEnonce.tsx (ui-app)
 
 /** L'adresse du site qui garde les puzzles, ou null hors ligne.
  *
@@ -60,9 +61,12 @@ export function supprimerPuzzle(code, cle, { site = urlSite(), f = globalThis.fe
     return appeler(site, "POST", `/api/puzzle/${encodeURIComponent(code)}/supprimer`, { cle }, f);
 }
 
-/** Monte un puzzle sur la table (le puzzle voyage dans le CORPS : une adresse est trop courte). */
-export async function monterPuzzle(puzzle, { f = globalThis.fetch } = {}) {
-    const reponse = await f("/new_puzzle", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(puzzle) });
+/** Monte un puzzle sur la table (le puzzle voyage dans le CORPS : une adresse est trop courte).
+ *  Il est gardé comme « puzzle courant » : le bouton « Recommencer » du plateau le renvoie tel quel. */
+export async function monterPuzzle(puzzle, { f = globalThis.fetch, stockage = globalThis.localStorage } = {}) {
+    const corps = JSON.stringify(puzzle);
+    try { stockage.setItem(CLE_PUZZLE_COURANT, corps); } catch (e) { /* « Recommencer » sera indisponible, rien d'autre */ }
+    const reponse = await f("/new_puzzle", { method: "POST", headers: { "Content-Type": "application/json" }, body: corps });
     if (!reponse.ok) {
         const texte = await reponse.text().catch(() => "");
         throw erreur([texte || "Le moteur a refusé ce puzzle."], reponse.status);

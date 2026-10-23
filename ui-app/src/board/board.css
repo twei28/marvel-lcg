@@ -7207,6 +7207,26 @@
     font: 14px/1.35 system-ui, sans-serif;
     box-shadow: 0 8px 30px rgba(0, 0, 0, .55);
   }
+  /* PUZZLE (E8, 23/10/2026) : l'enonce. Introduction plein ecran puis panneau repliable en haut a DROITE, meme orange. */
+  .enonce-fond { position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center; background: rgba(12, 6, 0, .86); }
+  .enonce-boite { width: min(560px, 92vw); max-height: 86vh; overflow: auto; padding: 22px 26px; border: 2px solid var(--puzzle-orange, #f08a24); border-radius: 14px; background: linear-gradient(180deg, rgba(48, 26, 6, .98), rgba(28, 15, 3, .98)); color: #fbe3c4; font: 15px/1.5 system-ui, sans-serif; box-shadow: 0 12px 50px rgba(0, 0, 0, .7); }
+  .enonce-boite h2 { margin: 0 0 4px; color: #fff; font-size: 1.4rem; }
+  .enonce-boite h3 { margin: 14px 0 4px; color: var(--puzzle-orange, #f08a24); font-size: 1rem; }
+  .enonce-difficulte { color: var(--puzzle-orange, #f08a24); letter-spacing: .1em; }
+  .enonce-auteur { font-size: .85rem; color: #c9a77c; }
+  .enonce-histoire { white-space: pre-wrap; margin: 12px 0; }
+  .enonce-objectifs { margin: 0; padding-left: 20px; }
+  .enonce-commencer { margin-top: 18px; padding: 10px 26px; border: 0; border-radius: 9px; background: var(--puzzle-orange, #f08a24); color: #1d1208; font-weight: 700; font-size: 1rem; cursor: pointer; }
+  .panneau-enonce { position: fixed; top: 56px; right: 12px; z-index: 650; min-width: 120px; max-width: min(340px, 70vw); border: 2px solid var(--puzzle-orange, #f08a24); border-radius: 10px; background: linear-gradient(180deg, rgba(48, 26, 6, .97), rgba(28, 15, 3, .97)); color: #fbe3c4; font: 14px/1.35 system-ui, sans-serif; box-shadow: 0 8px 30px rgba(0, 0, 0, .55); }
+  .panneau-enonce-titre { display: block; width: 100%; padding: 7px 12px; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 700; text-align: left; cursor: pointer; }
+  .panneau-enonce-titre:hover { background: rgba(240, 138, 36, .18); }
+  .panneau-enonce-corps { padding: 4px 12px 12px; display: grid; gap: 8px; max-height: 60vh; overflow: auto; }
+  .panneau-enonce-corps p { margin: 0; white-space: pre-wrap; }
+  .panneau-enonce-corps .indice { color: #ffd9aa; }
+  .panneau-enonce-corps button { padding: 5px 10px; border: 1px solid var(--puzzle-orange, #f08a24); border-radius: 7px; background: rgba(240, 138, 36, .14); color: #ffd9aa; cursor: pointer; font: inherit; }
+  .panneau-enonce-corps button:hover { background: rgba(240, 138, 36, .3); }
+  .panneau-enonce-corps button.danger { background: #8a2a14; border-color: #ff7a5a; color: #fff; }
+  .panneau-enonce-actions { display: flex; gap: 6px; flex-wrap: wrap; }
   .panneau-objectifs-titre {
     display: flex;
     width: 100%;

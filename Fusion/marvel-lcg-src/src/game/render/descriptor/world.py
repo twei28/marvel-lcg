@@ -133,6 +133,8 @@ class WorldDescriptor:
     game_over_reason: str = field(default='')
     # Objectifs d'un puzzle (E3) : `[{kind, text, target, done}]`, vide hors puzzle a objectifs.
     puzzle_objectives: List[Dict[str, Any]] = field(default_factory=lambda: [])
+    # Enonce d'un puzzle (E8) : `{title, description, difficulty, hints, author}`, vide hors puzzle v2.
+    puzzle_info: Dict[str, Any] = field(default_factory=lambda: {})
     # Mode competitif : le meme ecran de fin sert aux deux tables, il faut donc
     # dire QUI a gagne et a quel camp appartient chaque siege. -1 = pas de camp
     # gagnant (partie ordinaire, deux camps perdants, egalite parfaite) ; la

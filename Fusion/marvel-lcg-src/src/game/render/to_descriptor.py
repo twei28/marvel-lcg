@@ -76,6 +76,9 @@ def deck_to_descriptors(deck: 'Deck') -> List['CardDescriptor']:
         ToDescriptor.Card(face.card) for face in deck.GetAll()
     ))
 
+import json
+
+
 class ToDescriptor:
 
     @staticmethod
@@ -279,6 +282,10 @@ class ToDescriptor:
         _victoire = getattr(world.game_over, 'players_won', None)
         world_descriptor.game_over = _victoire is not None
         world_descriptor.puzzle_objectives = world.puzzle_objectives.Status()
+        try:
+            world_descriptor.puzzle_info = json.loads(world.scene.puzzle_info) if world.scene.puzzle_info else {}
+        except ValueError:
+            world_descriptor.puzzle_info = {}
         world_descriptor.players_won = bool(_victoire) if _victoire is not None else False
         world_descriptor.game_over_reason = (world.game_over.reason or '') if _victoire is not None else ''
         if world_descriptor.game_over:

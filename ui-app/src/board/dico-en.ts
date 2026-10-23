@@ -358,6 +358,16 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Survivre jusqu’à la fin du round': 'Survive until the end of the round',
   'Terminer la manigance': 'Complete the scheme',
   'Objectif libre': 'Free objective',
+  // Puzzle : énoncé, indices, recommencer (E8, 23/10/2026)
+  'Énoncé': 'Statement',
+  'Énoncé du puzzle': 'Puzzle statement',
+  'Puzzle': 'Puzzle',
+  'Difficulté': 'Difficulty',
+  'Commencer': 'Start',
+  'Indice suivant': 'Next hint',
+  'Relire l’introduction': 'Read the introduction again',
+  'Recommencer': 'Start over',
+  'Oui, recommencer': 'Yes, start over',
 
   // ---- board/Board.tsx : entête, stades, aperçu ----
   'Stades': 'Stages',

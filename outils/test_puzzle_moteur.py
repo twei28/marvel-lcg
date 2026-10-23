@@ -572,6 +572,25 @@ def cas_brouillon_vers_moteur():
     return "ok (%d commandes)" % len(puzzle["puzzle_command"])
 
 
+def cas_enonce_du_puzzle_expose_au_client():
+    """Titre, histoire, difficulte et indices d'un puzzle v2 arrivent dans le descripteur du monde ; un puzzle v1 n'en a pas."""
+    p = puzzle_de_base([joueur(SPIDER)], format=2, title="Mon puzzle", description="Il faut vaincre Rhino.",
+                       difficulty=3, hints=["Pense a la Tenacite", "Regarde la defausse"], author="Moi")
+    jeu, monde, vue = monter(p)
+    from game.render.to_descriptor import ToDescriptor
+    info = ToDescriptor.World(monde, "", "").puzzle_info
+    assert info["title"] == "Mon puzzle" and info["difficulty"] == 3 and len(info["hints"]) == 2, info
+    assert info["author"] == "Moi" and "Rhino" in info["description"], info
+    return "ok"
+
+
+def cas_enonce_absent_hors_puzzle_v2():
+    jeu, monde, vue = monter(puzzle_de_base([joueur(SPIDER)]))
+    from game.render.to_descriptor import ToDescriptor
+    assert ToDescriptor.World(monde, "", "").puzzle_info == {}, "un puzzle v1 n'a pas d'enonce"
+    return "ok"
+
+
 CAS = {n[4:]: f for n, f in sorted(globals().items()) if n.startswith("cas_")}
 
 
