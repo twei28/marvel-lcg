@@ -170,6 +170,9 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
                     'escalade': self.escalation_threat,
                     'acceleration': message.escalation_threat - self.escalation_threat,
                     'joueurs': world.GetPlayerNumIcon(),
+                    # D'OU VIENT L'ACCELERATION (rapport BL-Stark n°104 : « la manigance a pris 2 menaces d'un coup », l'icone venait d'un allie,
+                    # Cloak) : les cartes en jeu qui portent une icone d'acceleration, par leur nom.
+                    'sources_acceleration': [face.name for face in acceleration_icons],
                 }
             except Exception:
                 decomposition = {}

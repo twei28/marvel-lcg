@@ -474,6 +474,8 @@ export type EtapeDeroule = {
   /** Sur la menace du point 1 : l'escalade, l'acceleration, le nombre de joueurs. */
   escalade?: number
   acceleration?: number
+  /** Les cartes qui portent l'icône d'accélération comptée (rapport n°104). */
+  sourcesAcceleration?: string[]
   joueurs?: number
   /** Sur une revelation : le type de la carte, nom de classe du moteur (« Treachery »). */
   typeCarte?: string
@@ -682,6 +684,7 @@ export function etapesDeroule(
       plafond: fait.plafond ?? undefined,
       escalade: fait.escalade,
       acceleration: fait.acceleration,
+      sourcesAcceleration: fait.sources_acceleration && fait.sources_acceleration.length > 0 ? fait.sources_acceleration : undefined,
       joueurs: fait.joueurs,
       reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
       bonus: fait.bonus && fait.bonus.length > 0 ? fait.bonus : undefined,

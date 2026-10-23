@@ -45856,6 +45856,16 @@ CAS = [
         "verifier": "faits_piller_armurerie",
     },
     {
+        "nom": "Menace du point 1 : l'icone d'acceleration de Cloak (allie) est NOMMEE dans le journal du mechant",
+        "pourquoi": "rapport n°104 (BL-Stark) : « la manigance a pris 2 menaces d'un coup » ; l'icone venait de Cloak, sans que rien ne le dise",
+        "scenario": "crossbones",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.PutIntoPlay('60020', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "menace_nomme_la_source_acceleration",
+    },
+    {
         "nom": "60001b Matt Murdock — le deck Sens est consultable : ses 5 cartes sont visibles pour Daredevil",
         "pourquoi": "rapport n°100 (BL-Stark) : la pile Sens s'affichait sans pouvoir s'ouvrir, car ses cartes face cachee n'etaient pas visibles pour leur proprietaire",
         "scenario": "rhino",
@@ -64193,6 +64203,27 @@ def a6_menace_acceleree(monde, aides):
                        f"montant {fait['montant']}")
     return True, (f"menace +{fait['montant']} = escalade {fait['escalade']} + acceleration "
                   f"{fait['acceleration']} ({fait['joueurs']} joueur(s))")
+
+def menace_nomme_la_source_acceleration(monde, aides):
+    """Rapport n°104 : le fait de menace du point 1 NOMME les cartes dont l'icone d'acceleration est comptee (Cloak, un allie)."""
+    from game.world.phase import Phase
+    from game.operate.worlds import Worlds
+
+    monde.phase.SetState(Phase.State.PlaceThreat)
+    monde.current_player = None
+    maniganes = Worlds.GetAllMainSchemes(monde)
+    if len(maniganes) != 1:
+        return False, f"{len(maniganes)} manigance(s) principale(s) (attendu 1)"
+    _a2_vider_le_journal(monde)
+    maniganes[0].Phase()
+    faits = _a2_faits(monde, 'menace')
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) de menace ; journal = {monde.stat.faits_mechant}"
+    fait = faits[0]
+    if fait.get('acceleration') != 1 or fait.get('sources_acceleration') != ['Cloak']:
+        return False, f"acceleration={fait.get('acceleration')} sources={fait.get('sources_acceleration')} (attendu 1 et ['Cloak'])"
+    return True, f"menace +{fait['montant']} : acceleration 1 venant de {fait['sources_acceleration']}"
+
 
 def a6_stade_porte_les_stats(monde, aides):
     """E5 : `avant_id`, `stats_avant`, `stats_apres` sur le fait `stade`."""

@@ -560,7 +560,13 @@ function plafondDe(etape: EtapeDeroule, ctx: ContexteVue): number | undefined {
   )
 }
 
-/** « 1 par joueur + 1 accélération = 2 » (D12), seulement si le moteur l'a decompose. */
+/** « (Cloak) » : les cartes dont l'icône d'accélération est comptée (rapport BL-Stark n°104). Vide quand le moteur ne les donne pas. */
+function sourcesAcceleration(etape: EtapeDeroule): string {
+  const noms = [...new Set((etape.sourcesAcceleration ?? []).map((nom) => nomNettoye(nom) ?? nom))]
+  return noms.length > 0 ? ` (${noms.join(', ')})` : ''
+}
+
+/** « 1 par joueur + 1 accélération (Cloak) = 2 » (D12), seulement si le moteur l'a decompose. */
 export function calculMenace(etape: EtapeDeroule): string | undefined {
   const { escalade, acceleration, joueurs } = etape
   if (!nombre(escalade) || !nombre(joueurs) || joueurs < 1) return undefined
@@ -569,7 +575,7 @@ export function calculMenace(etape: EtapeDeroule): string | undefined {
   const morceaux = [
     escalade % joueurs === 0 ? `${escalade / joueurs} ${t('par joueur')}` : `${escalade} ${t('d’escalade')}`,
   ]
-  if (nombre(acceleration) && acceleration > 0) morceaux.push(`${acceleration} ${t('accélération')}`)
+  if (nombre(acceleration) && acceleration > 0) morceaux.push(`${acceleration} ${t('accélération')}${sourcesAcceleration(etape)}`)
   return `${morceaux.join(' + ')} = ${etape.montant ?? 0}`
 }
 
@@ -601,7 +607,7 @@ function decompositionMenace(
       parJoueur: escalade % joueurs === 0,
     })
   }
-  if (nombre(acceleration) && acceleration > 0) sources.push({ libelle: t('Accélération'), valeur: acceleration })
+  if (nombre(acceleration) && acceleration > 0) sources.push({ libelle: `${t('Accélération')}${sourcesAcceleration(etape)}`, valeur: acceleration })
   // Sans decomposition publiee, une seule ligne : le total tel quel.
   if (sources.length === 0) sources.push({ libelle: t('Manigance'), valeur: montant })
   // 13/10/2026 : la somme prévue, puis chaque carte qui a réduit la pose (« Surveillance −1 »).
