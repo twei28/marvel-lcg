@@ -25,8 +25,8 @@ Deja tranche sans question (preuve par comparaison a des cartes officielles) : i
 
 ## C. Absences
 
-14. **Livret officiel du pack** (PDF FFG, mc65 rulebook) : pas encore dans le depot. Il donne la mise en place, les difficultes, la mini-campagne.
-15. **Textes francais** : pas de source VF pour l'instant.
+14. ~~**Livret officiel du pack**~~ : RECU le 23/10/2026 en FRANCAIS (11 pages du PDF, 20 pages du livret). Transcrit dans `livret-fr.md`. Il donne le deck Piege, les jetons Passage, les PV infinis, la mini-campagne (instructions de mise en place et de victoire des 3 scenarios, registre, campagne experte).
+15. ~~**Textes francais**~~ : le livret VF donne le vocabulaire officiel (Sombres Proteges, Fleur Noire, Mecanismes Mortels, Vague de Ninjas, Corruption Insidieuse, Couloirs Changeants, Deck Piege, jetons Passage...) et les instructions de campagne ; table de correspondance dans `livret-fr.md`. Les textes des CARTES restent a traduire (pas dans le livret).
 
 ## Decisions prises (journal)
 
@@ -41,3 +41,5 @@ Deja tranche sans question (preuve par comparaison a des cartes officielles) : i
 - **Restent ouvertes (documents manquants)** : Q10 quantites par carte (livret ou MarvelCDB), Q14 livret officiel, Q15 textes francais.
 - **Relecture complete, 22/10/2026** : les 93 faces ont ete relues par un second regard independant (5 lots croises). 23 corrections appliquees (nombres cible/depart de 65001B, 65002B, 65038B, 65039B, 65060B, 65061B ; icones de 65024, 65025, 65044-65049, 65070, 65076 ; ligne de traits retiree du texte de 65046 et 65050-65056 ; HP de 65047). Doutes restants, sans effet sur le jeu : pied de carte de 65017B coupe sur le scan (credits d'illustrateur incomplets), gras des deux-points et des guillemets de 65010 et 65038B.
 - **Decision, 22/10/2026 : trait des pieges** -> Shadowland utilise `TRAP!` (imprime) ; Hunting Season garde `TRAP` (mecanique differente : pieges distribues a chaque joueur) ; on ne partage que la plomberie du `TrapDeck`. Verifie dans le code le 22/10 : 16 cartes `TRAP` (Hunting Season) contre 5 cartes `TRAP!` (Jubilee x3, Sinister Six, Web of Deceit).
+
+- **23/10/2026, livret FR recu** : le deck Piege du livret (p. 12) CONFIRME la decision b : 8 cartes (7 PIEGE ! de Mecanismes Mortels + « Un Murmure Dans le Noir »), defausse Piege a part, carte sans PIEGE ! revelee depuis le deck Piege = defausse Rencontre, deck vide = on remelange la defausse Piege SANS jeton Acceleration (`ShuffleWithDiscardPile(penalty=False)`, deja le cas). **Ecart trouve** : d'autres sets modulaires portant des cartes PIEGE ! doivent AUSSI rejoindre le deck Piege (le code ne prend que les cartes de mise de cote). Jetons Passage / PV infinis : conformes. Q10 (quantites par carte) : le livret n'en parle pas. **Mini-campagne : NON codee** (pas de `data/campagnes/shadowland.json`) : chantier ouvert, voir `livret-fr.md` (instructions de campagne des 3 scenarios).
