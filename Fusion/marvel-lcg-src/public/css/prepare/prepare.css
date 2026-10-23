@@ -2242,6 +2242,13 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .vh-panel .res-art{margin-top:14px}
 .vh-note{font-size:12px;opacity:.72;margin-top:12px}
 .vh-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+/* Fenetres de choix sans art (vilain interchangeable, version, identite) : elles prenaient les 1120 px du panneau
+   pour trois vignettes de 74 px. On les cale sur leur contenu et on montre les cartes en grand (23/10/2026). */
+@media (min-width:700px){
+  .deck-modal-panel.vh-compact{width:fit-content;min-width:min(440px,92vw);max-width:min(94vw,820px)}
+  .vh-compact .ra-choix{gap:14px}
+  .vh-compact .ra-option{width:150px;padding:6px;font-size:13px}
+}
 .tb-variantes-rappel{display:flex;align-items:center;gap:12px;margin-top:10px;font-size:13px;opacity:.9}
 .tb-variantes-texte{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 

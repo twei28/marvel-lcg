@@ -4202,7 +4202,7 @@ function ouvrirModaleUnderling(tuile) {
         tuile.underlings.map((u) => ({ code: u.id, nom: u.nom, apercu: u.villainCardId })),
         choix.vilain, (code) => { choix.vilain = code; });
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
-        el("div", { class: "deck-modal-panel vh-panel", style: { "--sections": "1" } },
+        el("div", { class: "deck-modal-panel vh-panel vh-compact", style: { "--sections": "1" } },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, tuile.name),
                 el("span", { class: "dm-sub" }, t("Vilain de ce scénario")),
@@ -4257,7 +4257,7 @@ function ouvrirModaleVariantes(i, h) {
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
         // `--sections` : sur telephone, la feuille dimensionne ses vignettes
         // pour que TOUTES les sections tiennent sans defiler (prepare.css).
-        el("div", { class: "deck-modal-panel vh-panel" + (avecArts ? " vh-arts" : ""),
+        el("div", { class: "deck-modal-panel vh-panel" + (avecArts ? " vh-arts" : " vh-compact"),
             style: { "--sections": String(sections.length), "--autres": String(sections.length - (avecArts ? 1 : 0)) } },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, nomAffiche(h)),
@@ -5693,7 +5693,7 @@ async function loadExtTabs() {
         onmouseenter: auSurvol((ev) => showExtHover(e, ev.currentTarget)),
         onmouseleave: auSurvol(scheduleHide),
     },
-        e.key === "defis"
+        e.key === "defis" || e.key === "210. Custom (Challenges)"
             ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${pochetteBoite(e.key)}")` } }),
         el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
