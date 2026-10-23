@@ -2921,6 +2921,16 @@
     left: 4px;
   }
 
+  /* Le PAQUET DE PIEGES (Shadow Labyrinth, Kraven) forme un 2e groupe de piles : il se pose SOUS le deck et la defausse de rencontre, dans la case
+     vide de la grille juste dessous (23/10/2026, demande de l'utilisateur). Sans 2e groupe, rien ne change. */
+  .zone-piles-rencontre .plateau-cartes:has(.plateau-groupe + .plateau-groupe) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    align-self: flex-start;
+    justify-content: flex-start;
+  }
+
   /* ⚠ « Mises de côté / autres piles » a couvert DEUX RANGÉES du 14/09 au
      18/09/2026 ; depuis, elle n'a que la rangée de la main (voir la grille).
      Elle grandissait alors vers le HAUT au-delà de deux piles, dans la rangée

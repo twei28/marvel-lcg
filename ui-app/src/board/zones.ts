@@ -900,6 +900,12 @@ export function construirePlateau(world: World, options: Options): Plateau {
     cartes: pile,
   }))
 
+  // Le paquet de pieges (cartes TRAP) et sa defausse ont leurs propres piles ; les autres decks supplementaires restent fondus.
+  const paquetsDePieges = decksSupplementaires.filter((pile) => sontDesPieges(pile.cartes))
+  const defaussesDePieges = defaussesSupplementaires.filter((pile) => sontDesPieges(pile.cartes))
+  const autresDecks = decksSupplementaires.filter((pile) => !sontDesPieges(pile.cartes))
+  const autresDefausses = defaussesSupplementaires.filter((pile) => !sontDesPieges(pile.cartes))
+
   const emplacements = [
     emplacement('piles-rencontre', t('Deck Rencontre'), [
       piles(
@@ -914,6 +920,16 @@ export function construirePlateau(world: World, options: Options): Plateau {
             regardable: true,
             titre: t('Défausse Rencontre'),
           },
+        ],
+        rendu
+      ),
+      // Shadow Labyrinth / Kraven : le paquet de pieges et sa defausse, SOUS le deck et la defausse de rencontre (23/10/2026, demande de
+      // l'utilisateur : il y a la place). Ce sont des decks supplementaires du moteur ; ils ne sont plus dans la pile « Cartes cachees ».
+      piles(
+        'pieges',
+        [
+          ...paquetsDePieges.map((pile) => ({ ...pile, videAffichable: true, titre: t('Paquet de pièges') })),
+          ...defaussesDePieges.map((pile) => ({ ...pile, regardable: true, videAffichable: true, titre: t('Défausse de pièges') })),
         ],
         rendu
       ),
@@ -1187,9 +1203,9 @@ export function construirePlateau(world: World, options: Options): Plateau {
           },
           { cle: 'victoire', cartes: world.victory_display, titre: t('Pile de victoire') },
           { cle: 'retirees', cartes: world.area_removed, titre: t('Retirées de la partie') },
-          ...defaussesSupplementaires.map((pile, index) => ({
+          ...autresDefausses.map((pile, index) => ({
             ...pile,
-            titre: sontDesPieges(pile.cartes) ? t('Défausse de pièges') : `${t('Défausse supplémentaire')} ${index + 1}`,
+            titre: `${t('Défausse supplémentaire')} ${index + 1}`,
           })),
         ],
         rendu,
@@ -1200,9 +1216,9 @@ export function construirePlateau(world: World, options: Options): Plateau {
         t('Cartes cachées'),
         [
           { cle: 'mise-de-cote', cartes: notre?.set_aside_deck, titre: t('Deck mis de côté') },
-          ...decksSupplementaires.map((pile, index) => ({
+          ...autresDecks.map((pile, index) => ({
             ...pile,
-            titre: sontDesPieges(pile.cartes) ? t('Paquet de pièges') : `${t('Deck supplémentaire')} ${index + 1}`,
+            titre: `${t('Deck supplémentaire')} ${index + 1}`,
           })),
         ],
         rendu,
