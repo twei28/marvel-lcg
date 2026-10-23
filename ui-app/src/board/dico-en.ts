@@ -350,6 +350,14 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Plus rien n’est jouable — termine ton tour': 'Nothing left to play — end your turn',
   'Terminer ton tour': 'End your turn',
   'Fin du tour': 'End turn',
+  // Puzzle : panneau et bilan des objectifs (E3, 23/10/2026)
+  'Objectifs': 'Objectives',
+  'Objectifs du puzzle': 'Puzzle objectives',
+  'Bilan des objectifs': 'Objectives summary',
+  'Vaincre le méchant': 'Defeat the villain',
+  'Survivre jusqu’à la fin du round': 'Survive until the end of the round',
+  'Terminer la manigance': 'Complete the scheme',
+  'Objectif libre': 'Free objective',
 
   // ---- board/Board.tsx : entête, stades, aperçu ----
   'Stades': 'Stages',

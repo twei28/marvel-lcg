@@ -139,6 +139,7 @@ import {
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { BandeauAnnonce } from './board/BandeauAnnonce'
 import { BandeauMiseAJour } from './board/BandeauMiseAJour'
+import { BilanObjectifs, PanneauObjectifs } from './board/PanneauObjectifs'
 import { BoutonVoirLaTable } from './board/BoutonVoirLaTable'
 import { useMiseAJour } from './board/maj'
 import { cheminEmplacement, dossierSauvegardes } from './board/sauvegardes'
@@ -1825,6 +1826,7 @@ function EcranFinPartie({
           <span className="fin-partie-raison">{traduireMoteur(raison)}</span>
         ) : null}
         <VerdictAssembleeFin monde={monde} siege={siege} />
+        <BilanObjectifs objectifs={monde?.puzzle_objectives} />
         {heros.length || mechants.length ? (
           <span className="fin-partie-detail">
             {heros.join(', ')}
@@ -4754,6 +4756,7 @@ export function PagePartie({
           l'annonce previent d'une coupure a venir, celle-ci constate qu'on
           tourne sur du vieux code. Les deux peuvent se produire ensemble. */}
       <BandeauMiseAJour visible={majDisponible} />
+      <PanneauObjectifs objectifs={etat.monde?.puzzle_objectives} />
       {etat.joueurDemande !== undefined &&
       etat.siegesAbsents.includes(etat.joueurDemande) ? (
         <BandeauAbsent

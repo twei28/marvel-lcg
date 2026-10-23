@@ -148,6 +148,35 @@ class GameServerGet(GameServerBase):
 
         return web.json_response({'result': 'queued', 'count': len(commands)})
 
+    async def puzzle_objectif(self, request: web.Request) -> web.Response:
+        """Le joueur coche un objectif LIBRE d'un puzzle (E3, 23/10/2026).
+
+        Route dediee, et non `/sandbox_command` : un puzzle publie ne doit pas ouvrir toute l'API `Puzzle.*` a celui qui le resout. Elle
+        n'accepte que `{"index": n}` sur une partie de puzzle, pour un objectif de type `free_text`, et depose la seule commande
+        `Puzzle.ValidateObjective(n)`.
+        """
+        from game.puzzle.puzzle import PuzzleHelper
+
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+        data = await request.json()
+        index = data.get('index', None)
+        if not isinstance(index, int) or isinstance(index, bool):
+            return web.json_response({'error': 'index must be an integer'}, status=400)
+        world = self.game.world
+        if world is None:
+            return web.json_response({'error': 'no game in progress'}, status=409)
+        if not world.scene.is_puzzle:
+            return web.json_response({'error': 'not a puzzle'}, status=409)
+        objectifs = world.puzzle_objectives.items
+        if not 0 <= index < len(objectifs) or objectifs[index].get('kind') != 'free_text':
+            return web.json_response({'error': 'not a free objective'}, status=400)
+        jeu = self.game
+        manager = self.device_manager
+        manager.sandbox_executor = lambda cmds: PuzzleHelper.Exec(cmds, jeu.world)
+        manager.QueueSandboxCommands([f"Puzzle.ValidateObjective({index})"])
+        return web.json_response({'result': 'queued'})
+
     async def manuel_pause(self, request: web.Request) -> web.Response:
         """Bascule la pause manuelle EN COURS DE PARTIE (tache 1).
 
@@ -2355,6 +2384,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/save_deck', self.save_deck)
         self.AddPostSecurity('/delete_deck', self.delete_deck)
         self.AddPostSecurity('/sandbox_command', self.sandbox_command)
+        self.AddPostSecurity('/puzzle_objectif', self.puzzle_objectif)
         self.AddPostSecurity('/manuel_undo', self.manuel_undo)
         self.AddPostSecurity('/manuel_pause', self.manuel_pause)
         self.AddPostSecurity('/manuel_passer', self.manuel_passer)

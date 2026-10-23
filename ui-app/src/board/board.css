@@ -7192,6 +7192,56 @@
   }
   .bandeau-maj button:hover { background: rgba(240, 180, 41, .18); }
 
+  /* PUZZLE (E3, 23/10/2026) : le panneau des objectifs, repliable, en haut a gauche, en ORANGE (choix de l'utilisateur), et le bilan de fin. */
+  .panneau-objectifs {
+    position: fixed;
+    top: 56px;
+    left: 12px;
+    z-index: 650;
+    min-width: 168px;
+    max-width: min(320px, 70vw);
+    border: 2px solid var(--puzzle-orange, #f08a24);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(48, 26, 6, .97), rgba(28, 15, 3, .97));
+    color: #fbe3c4;
+    font: 14px/1.35 system-ui, sans-serif;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .55);
+  }
+  .panneau-objectifs-titre {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 12px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .panneau-objectifs-titre:hover { background: rgba(240, 138, 36, .18); }
+  .panneau-objectifs-compte { color: var(--puzzle-orange, #f08a24); }
+  .panneau-objectifs-liste {
+    margin: 0;
+    padding: 4px 12px 10px 12px;
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+  .panneau-objectifs-liste li.est-atteint { color: #9be58e; }
+  .panneau-objectifs-coche { display: inline-block; width: 1.1em; }
+  .bilan-objectifs {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 4px;
+    font: 15px/1.35 system-ui, sans-serif;
+  }
+  .bilan-objectifs .est-atteint { color: #7ddc6e; }
+  .bilan-objectifs .est-manque { color: #f2665a; }
+
   .bandeau-annonce {
     position: fixed;
     top: 0;

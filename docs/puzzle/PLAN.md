@@ -62,8 +62,14 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
   le complot » : complot annexe = vaincu (menace à 0) ; complot principal = achevé (réussite,
   pas défaite). Objectif libre : `Puzzle.ValidateObjective(i)`. Sans objectif : fin du moteur
   inchangée. 13 cas dans `outils/test_puzzle_moteur.py` (lancer avec `~/.marvel-venv/bin/python`).
-- Reste (interface, E5/E7) : afficher la liste des objectifs, le bouton « objectif libre
-  rempli », l'écran de réussite (bannières Victoire/Défaite déjà en place).
+- Interface faite (23/10, choix de l'utilisateur) : panneau « Objectifs » repliable en haut à
+  gauche, en orange (`ui-app/src/board/PanneauObjectifs.tsx`), case à cocher pour l'objectif
+  libre (route dédiée `/puzzle_objectif`, jamais `/sandbox_command`), écran de fin = bannière
+  Victoire/Défaite + bilan des objectifs (coche / croix). 7 tests vitest.
+- Reste : boutons Rejouer / Voir la solution / Retour aux puzzles sur l'écran de fin (E7) ;
+  la route `/puzzle_objectif` n'existe pas encore côté navigateur (Pyodide, `navigateur/`) :
+  à reporter avec le contrôle d'équivalence ; aucune capture réelle du panneau en partie
+  (écrit et testé en unitaire seulement).
 
 ### E4. Capture de l'état (cœur de l'éditeur)
 - Convertir le plateau courant en `PuzzleData` v2 (zones, ordre des decks, cartes en
