@@ -64,7 +64,10 @@ et cas `[ua]` inchangés (2 à 4 cas chacun, verts).
   déclencheurs ; « heal 2 damage from Stone » sur lui-même.
 - ⚠ Ordre du moteur : la Réponse part avant les dégâts consécutifs (Stone avec 2 dégâts, Tiger Shark achevé
   exactement : soigné 2 → 0 puis consécutifs 2 = 2). Constaté sur le cas, commun à toutes les Réponses
-  « après avoir vaincu » du moteur.
+  « après avoir vaincu » du moteur. **Vérifié contre la Rules Reference v1.8 le 23/10/2026 : CONFORME.**
+  « Consequential damage is dealt to an ally after resolving abilities that are triggered by the ally attacking
+  or thwarting » (article Consequential Damage) et la liste de priorité place les Réponses (étape 4) avant les
+  dégâts consécutifs (étape 5). Rien à corriger.
 - Étape 6 : PV 3, ATQ 2**, CTR 1*. Étape 7 : 6 cas. Carte terminée : OUI.
 
 ### 63023 Hunting Shadows (événement Basic, coût 0)
