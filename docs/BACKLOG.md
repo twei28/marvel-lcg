@@ -228,6 +228,8 @@ dominent, la partie tourne mal, scénario inconnu) et trois curseurs pour essaye
 
 ## 4. La barre d'adresse dans l'appli installée, sur la page d'une table (ajouté le 22/10/2026)
 
+> **RETIRÉ le 23/10/2026, décision de l'utilisateur : déjà traité.** Ce n'était pas un défaut du plateau (voir la cause ci-dessous) ; rien n'a été changé dans le code.
+
 **Le signalement (Yarro, 22/10/2026).** Dans l'appli installée (Chrome « Installer l'application »), une fine barre apparaît en haut du plateau : une croix, l'adresse
 `https://p9.narwhalchampions.com` et le titre « Board - Marvel Champions ». Les autres applis (Dragn Cards…) n'ont pas ça. Contournement connu : passer en mode web puis plein écran (F11).
 
