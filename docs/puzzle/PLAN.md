@@ -201,6 +201,14 @@ Batterie complète à lancer en fin de chantier (`scene.py` touché).
   lecture par code seulement avec le serveur.
 - Contrôle d'équivalence moteur serveur / navigateur sur les nouveaux scénarios.
 
+**E10 FAIT (23/10)** : le paquet navigateur se reconstruit depuis les sources (`python3 navigateur/construire.py
+--sans-pages`, `dist/` ignoré par git) et embarque donc `puzzle_capture.py`, `RestoreCard/RestoreState`, la validation
+et `POST /new_puzzle` (le shim `navigateur/src/shim.js` transmet déjà le corps des POST). Contrôle d'équivalence
+des puzzles : `python3 navigateur/essais/equivalence_puzzle.py` (moteur normal Python 3.10 contre Pyodide 3.12 sur
+3 puzzles : la CAPTURE de l'état monté doit être identique) → 3 identiques. La création et la résolution hors
+ligne marchent ; publier et lire par code demandent le site (`urlSite()` rend null hors ligne, message clair).
+Pas encore essayé : l'assistant et le plateau eux-mêmes dans le navigateur (`navigateur.html`).
+
 ### E11. Robustesse
 - Garde de compatibilité : après modification d'une carte, rejouer les solutions de
   référence et marquer les obsolètes.
