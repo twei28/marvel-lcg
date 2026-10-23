@@ -2013,5 +2013,19 @@
   ],
   "max_id": "pu283b"
  },
- "checksum": "be21af273c926bb5925a2949b1deee9f96b3ed905cde78bd875bf7aadde863ab"
+ "209. Shadowland": {
+  "name": "shadowland",
+  "scenarios": [
+   "shadows_in_the_night",
+   "shadow_labyrinth",
+   "heart_of_shadow"
+  ],
+  "heroes": [],
+  "encounters": [
+   "ninja_swarm",
+   "black_flower"
+  ],
+  "max_id": "sl078"
+ },
+ "checksum": "0ac2fec045ab5ae1edca0fe77bb40204222fb75023014fa52bbace0de6c0f49a"
 }

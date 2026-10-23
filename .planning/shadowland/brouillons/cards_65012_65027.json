@@ -1,0 +1,364 @@
+[
+ {
+  "card_id": "sl012a",
+  "type": "Villain",
+  "name": "* Archpriestess",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "1",
+   "HP": "15*"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "[star] <b>Forced Response</b>: After Archpriestess attacks you, give a minion a tough status card. If no tough status card was placed this way, discard the top 3 cards of the encounter deck, then deal 1 minion discarded this way to yourself as a facedown encounter card."
+ },
+ {
+  "card_id": "sl012b",
+  "type": "Villain",
+  "name": "* Archpriestess",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "18*",
+   "Steady": "1",
+   "Toughness": "1"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Steady. Toughness.\n[star] <b>Forced Response</b>: After Archpriestess attacks you, give a minion a tough status card. If no tough status card was placed this way, discard the top 3 cards of the encounter deck, then deal 1 minion discarded this way to yourself as a facedown encounter card."
+ },
+ {
+  "card_id": "sl013a",
+  "type": "Villain",
+  "name": "* Daredevil",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "2",
+   "HP": "15*"
+  },
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "<b>Forced Response</b>: After you or an ally you control attacks Daredevil, choose: Either discard 1 random card from your hand, or Daredevil attacks you. (Limit once per round per player.)"
+ },
+ {
+  "card_id": "sl013b",
+  "type": "Villain",
+  "name": "* Daredevil",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "18*",
+   "Steady": "1",
+   "Toughness": "1"
+  },
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Steady. Toughness.\n<b>Forced Response</b>: After you or an ally you control attacks Daredevil, choose: Either discard 1 random card from your hand, or Daredevil attacks you. (Limit once per round per player.)"
+ },
+ {
+  "card_id": "sl014a",
+  "type": "Villain",
+  "name": "* Elektra",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "2",
+   "HP": "15*"
+  },
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "[star] <b>Forced Interrupt</b>: When Elektra attacks you, discard the top card of your deck. If that card's printed cost is an odd number, Elektra gets +1 ATK for this attack; otherwise, this attack gains overkill and piercing."
+ },
+ {
+  "card_id": "sl014b",
+  "type": "Villain",
+  "name": "* Elektra",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "18*",
+   "Steady": "1",
+   "Toughness": "1"
+  },
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Steady. Toughness.\n[star] <b>Forced Interrupt</b>: When Elektra attacks you, discard the top card of your deck. If that card's printed cost is an odd number, Elektra gets +1 ATK for this attack; otherwise, this attack gains overkill and piercing."
+ },
+ {
+  "card_id": "sl015a",
+  "type": "Villain",
+  "name": "* Gorgon",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "2",
+   "HP": "15*"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "[star] <b>Forced Interrupt</b>: When Gorgon attacks you, choose:\n• Spend a [physical] resource.\n• Stun your identity.\n• Take 2 indirect damage."
+ },
+ {
+  "card_id": "sl015b",
+  "type": "Villain",
+  "name": "* Gorgon",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "18*",
+   "Steady": "1",
+   "Toughness": "1"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Steady. Toughness.\n[star] <b>Forced Interrupt</b>: When Gorgon attacks you, choose:\n• Spend a [physical] resource.\n• Stun your identity.\n• Take 2 indirect damage."
+ },
+ {
+  "card_id": "sl016a",
+  "type": "Villain",
+  "name": "* Lady Bullseye",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "1",
+   "HP": "15*"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "[star] <b>Forced Response</b>: After Lady Bullseye attacks you, if that attack was undefended, take 1 indirect damage; otherwise, place 1 threat on the main scheme."
+ },
+ {
+  "card_id": "sl016b",
+  "type": "Villain",
+  "name": "* Lady Bullseye",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "18*",
+   "Steady": "1",
+   "Toughness": "1"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Steady. Toughness.\n[star] <b>Forced Response</b>: After Lady Bullseye attacks you, if that attack was undefended, take 1 indirect damage; otherwise, place 1 threat on the main scheme."
+ },
+ {
+  "card_id": "sl017a",
+  "type": "Villain",
+  "name": "* White Tiger",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "0",
+   "HP": "15*"
+  },
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "[star] <b>Forced Response</b>: After White Tiger attacks you, she attacks you again with +1 ATK. (Limit once per round per player.)"
+ },
+ {
+  "card_id": "sl017b",
+  "type": "Villain",
+  "name": "* White Tiger",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "1",
+   "HP": "18*",
+   "Steady": "1",
+   "Toughness": "1"
+  },
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Steady. Toughness.\n[star] <b>Forced Response</b>: After White Tiger attacks you, she attacks you again. (Limit once per round per player.)"
+ },
+ {
+  "card_id": "sl018",
+  "type": "Attachment",
+  "name": "Art of the Kill",
+  "subtitle": "",
+  "desc": {
+   "Boost": "1"
+  },
+  "traits": [],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Elektra, Lady Bullseye, or White Tiger).\nAttach to your identity.\n<b>Forced Interrupt</b>: When an enemy attacks you, it gets +1 ATK for that attack. If that attack defeats a character, place 1 threat on the main scheme.\n<b>Alter-Ego Action</b>: Spend [energy] [mental] [physical] resources → discard this card."
+ },
+ {
+  "card_id": "sl019",
+  "type": "Attachment",
+  "name": "Krahllak's Blessing",
+  "subtitle": "",
+  "desc": {
+   "Boost": "1"
+  },
+  "traits": [
+   "CONDITION",
+   "SPELL"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Archpriestess, Daredevil, or Gorgon).\nAttach to the villain.\n<b>Forced Interrupt</b>: When attached villain would take any amount of damage from a character, reduce that amount by 3. Attached villain attacks that character. Discard this card."
+ },
+ {
+  "card_id": "sl020",
+  "type": "Minion",
+  "name": "* Archpriestess",
+  "subtitle": "",
+  "desc": {
+   "SCH": "2",
+   "ATK": "1",
+   "HP": "5",
+   "Boost": "2",
+   "Villainous": "1"
+  },
+  "traits": [
+   "HAND",
+   "MYSTIC"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Gorgon, Lady Bullseye, or White Tiger).\nVillainous.\n<b>When Revealed</b>: Each other minion engaged with you attacks you. If no attack was made this way, discard the top 3 cards of the encounter deck."
+ },
+ {
+  "card_id": "sl021",
+  "type": "Minion",
+  "name": "* Gorgon",
+  "subtitle": "",
+  "desc": {
+   "SCH": "0",
+   "ATK": "1",
+   "HP": "5",
+   "Boost": "2",
+   "Guard": "1",
+   "Villainous": "1"
+  },
+  "traits": [
+   "BRUTE",
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Daredevil, Elektra, or Lady Bullseye).\nGuard. Villainous.\n<b>Forced Response</b>: After a character attacks and damages Gorgon, stun that character."
+ },
+ {
+  "card_id": "sl022",
+  "type": "Minion",
+  "name": "* Lady Bullseye",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "1",
+   "HP": "5",
+   "Boost": "2",
+   "Villainous": "1"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Archpriestess, Gorgon, or White Tiger).\nVillainous.\n[star] <b>Forced Interrupt</b>: When Lady Bullseye attacks you, this attack gains ranged and she attacks the ally with the highest printed cost you control, if able."
+ },
+ {
+  "card_id": "sl023",
+  "type": "Minion",
+  "name": "* White Tiger",
+  "subtitle": "",
+  "desc": {
+   "SCH": "1",
+   "ATK": "2",
+   "HP": "5",
+   "Boost": "2",
+   "Villainous": "1"
+  },
+  "traits": [
+   "HAND"
+  ],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Archpriestess, Daredevil, or Elektra).\nVillainous.\n<b>When Revealed</b>: Take 2 indirect damage."
+ },
+ {
+  "card_id": "sl024",
+  "type": "SideScheme",
+  "name": "Rite of Offering",
+  "subtitle": "",
+  "desc": {
+   "StartingThreat": "1",
+   "Hazard": "1"
+  },
+  "traits": [],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Archpriestess, Elektra, or White Tiger).\n<b>When Defeated</b>: The defeating player removes an ally they control from the game. If no ally was removed this way, that player takes 3 damage."
+ },
+ {
+  "card_id": "sl025",
+  "type": "SideScheme",
+  "name": "Shadowy Plot",
+  "subtitle": "",
+  "desc": {
+   "StartingThreat": "2",
+   "Crisis": "1"
+  },
+  "traits": [],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Daredevil, Gorgon, or Lady Bullseye).\n<b>When Defeated</b>: The defeating player looks at the top 3 cards of the encounter deck, reveals 1 of them, and discards the rest."
+ },
+ {
+  "card_id": "sl026",
+  "type": "Treachery",
+  "name": "Darkness Within",
+  "subtitle": "",
+  "desc": {
+   "Boost": "1"
+  },
+  "traits": [],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Archpriestess, Gorgon, or Lady Bullseye).\n<b>When Revealed</b>: Change to hero form. The villain attacks you.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains overkill."
+ },
+ {
+  "card_id": "sl027",
+  "type": "Treachery",
+  "name": "Embraced by Darkness",
+  "subtitle": "",
+  "desc": {
+   "Boost": "1"
+  },
+  "traits": [],
+  "set_name": "Dark Protégé",
+  "text": "Linked (Daredevil, Elektra, or White Tiger).\n<b>When Revealed</b>: The villain schemes. If 2 or less threat was placed on the main scheme this way, discard the top 3 cards of the encounter deck.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 2 threat on the main scheme."
+ }
+]

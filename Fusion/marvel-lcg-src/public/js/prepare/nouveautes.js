@@ -48,6 +48,18 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-23",
+        genre: "jeu",
+        fr: "Shadowland (paquet officiel MC65) : trois nouveaux scénarios, Shadows in the Night, Shadow Labyrinth et Heart of Shadow, en standard et en expert, avec Ninja Swarm en module recommandé. Le livret officiel n'étant pas encore disponible, quelques règles (le paquet de pièges notamment) sont déduites des cartes et pourront être ajustées.",
+        en: "Shadowland (official pack MC65): three new scenarios, Shadows in the Night, Shadow Labyrinth and Heart of Shadow, in standard and expert, with Ninja Swarm as the recommended modular set. The official rulebook is not out yet, so a few rules (the trap deck in particular) are inferred from the cards and may be adjusted.",
+    },
+    {
+        date: "2026-10-23",
+        genre: "correction",
+        fr: "La ville ne dort jamais : la table ne montre plus que le lieu où l'on se trouve (les autres restent dans l'onglet Ville), The City et Never Sleeps s'affichent en une seule image continue, les méchants des autres territoires sont grisés, et les agrandissements de l'onglet Ville sont traduits. Les boîtes Galactic Storm et La ville ne dort jamais ont leur pochette, et la fenêtre de choix du vilain est plus compacte.",
+        en: "The City Never Sleeps: the table now shows only the location you are in (the others stay in the City tab), The City and Never Sleeps display as one continuous picture, villains from other turfs are greyed out, and the enlarged cards in the City tab are translated. The Galactic Storm and The City Never Sleeps boxes now have their cover art, and the villain choice window is more compact.",
+    },
+    {
+        date: "2026-10-23",
         genre: "heros",
         fr: "Les cartes d'aspect des paquets officiels Iron Fist et Elektra Natchios sont jouables : Shang-Chi, Black Cat, Moon Knight, Moondragon, The Defenders, Double-Cross et bien d'autres. Les anciennes versions Tortues Ninja de plusieurs de ces cartes restent disponibles en art alternatif.",
         en: "The aspect cards of the official Iron Fist and Elektra Natchios packs are now playable: Shang-Chi, Black Cat, Moon Knight, Moondragon, The Defenders, Double-Cross and many more. The older Ninja Turtles versions of several of these cards remain available as an alternate art.",

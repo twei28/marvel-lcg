@@ -124622,5 +124622,1411 @@
    "custom": "MC×DC 2026"
   }
  ],
- "checksum": "68506586786818a5d2135a4fe073b4b82ac8cf6a7ceba1b2dee2f81a314e47ea"
+ "shadowland": [
+  {
+   "card_id": "sl001a",
+   "type": "MainScheme",
+   "name": "A Barricade of Blades",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b>Contents</b>: Shadows in the Night, Dark Protégé, and Standard encounter sets. One modular encounter set <i>(Ninja Swarm)</i>.\n<b>Setup</b>: Put each The Streets Below environment into play. Set the Dark Protégé encounter set aside. Choose 1 random villain from that set and reveal its side A, then shuffle each card linked to that villain into the encounter deck."
+  },
+  {
+   "card_id": "sl001b",
+   "type": "MainScheme",
+   "name": "A Barricade of Blades",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "EscalationThreat": "1*",
+    "TargetThreat": "7*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.\n<b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.\n<b>If the villain is defeated on side B, the players win the game.</b>"
+  },
+  {
+   "card_id": "sl002a",
+   "type": "MainScheme",
+   "name": "Fortress Lockdown",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<i>While the forces on the outside hold the heroes back, ninjas on the inside lock every door and window.</i>\nIn expert mode, the villain gets +3[per_hero] hit points.\n<b>When Revealed</b>: Change the villain's position. Each player searches the encounter deck and discard pile for a minion and reveals it. <i>(Shuffle.)</i>"
+  },
+  {
+   "card_id": "sl002b",
+   "type": "MainScheme",
+   "name": "Fortress Lockdown",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "EscalationThreat": "1*",
+    "TargetThreat": "8*",
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.\n<b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.\n<b>If the villain is defeated on side B, the players win the game.</b>\n<b>If this stage is completed, the players lose the game.</b>"
+  },
+  {
+   "card_id": "sl003a",
+   "type": "Environment",
+   "name": "The Streets Below",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b><i>VILLAIN POSITION.</i></b>\nIf both positions are the same:\n• Each character gets +1 ATK.\nIf the positions are different:\n• Reduce the amount of damage each character takes from each attack by 1.\n• Threat cannot be removed from the main scheme."
+  },
+  {
+   "card_id": "sl003b",
+   "type": "Environment",
+   "name": "Atop the Tenshu",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b><i>VILLAIN POSITION.</i></b>\nIf both positions are the same:\n• Each character gets +1 ATK.\nIf the positions are different:\n• Reduce the amount of damage each character takes from each attack by 1.\n• Threat cannot be removed from the main scheme."
+  },
+  {
+   "card_id": "sl004a",
+   "type": "Environment",
+   "name": "The Streets Below",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b><i>HERO POSITION.</i></b>\n<b>First Player Action</b>: Resolve one of the effects below, then flip this card:\n• Place 3 threat on the main scheme and stun your identity.\n• Spend [physical] [physical] resources.\n• Spend 1 resource of any type and exhaust an <b><i>AERIAL</i></b> character you control."
+  },
+  {
+   "card_id": "sl004b",
+   "type": "Environment",
+   "name": "Atop the Tenshu",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b><i>HERO POSITION.</i></b>\n<b>First Player Action</b>: Resolve one of the effects below, then flip this card:\n• Deal 3 damage to your identity.\n• Spend [energy] [energy] resources.\n• Discard an ally or upgrade you control."
+  },
+  {
+   "card_id": "sl005",
+   "type": "Minion",
+   "name": "* Black Tarantula",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "5",
+    "Boost": "3",
+    "Guard": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "HAND"
+   ],
+   "set_name": "Shadows in the Night",
+   "text": "Guard.\n<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, Black Tarantula attacks you; otherwise, give the villain and Black Tarantula each a tough status card."
+  },
+  {
+   "card_id": "sl006",
+   "type": "Minion",
+   "name": "* Ghost Maker",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "4"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Shadows in the Night",
+   "text": "<b>When Defeated</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, discard 1 card you control; otherwise, take 2 indirect damage.\n<hr />\n[star] <b>Boost</b>: If an ally is defending against this attack, reveal this minion."
+  },
+  {
+   "card_id": "sl007",
+   "type": "SideScheme",
+   "name": "Sealed Entrances",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Crisis": "1",
+    "Boost": "2",
+    "Assault": "1"
+   },
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "Assault. <i>(Basic thwarts against this scheme use ATK instead of THW.)</i>\n<b>When Defeated</b>: Change the villain's position if it has not changed this phase."
+  },
+  {
+   "card_id": "sl008",
+   "type": "SideScheme",
+   "name": "Strategic Positioning",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<i>Under Shadowland, the Hand rules the streets.</i>\nWhile the villain's position is The Streets Below, this scheme gains 1 acceleration icon ([acceleration]).\nWhile the villain's position is Atop the Tenshu, this scheme gains 1 hazard icon ([hazard])."
+  },
+  {
+   "card_id": "sl009",
+   "type": "SideScheme",
+   "name": "Surround the Fortress",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Crisis": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, place 1[per_hero] threat on the main scheme; otherwise, place 1[per_hero] threat here."
+  },
+  {
+   "card_id": "sl010",
+   "type": "Treachery",
+   "name": "Chaos in Hell's Kitchen",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, place 2 threat on the main scheme; otherwise, take 2 damage.\n<hr />\n[star] <b>Boost</b>: Resolve this card's \"<b>When Revealed</b>\" ability."
+  },
+  {
+   "card_id": "sl011",
+   "type": "Treachery",
+   "name": "Moonlit Silhouette",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Shadows in the Night",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Change the villain's position if it has not changed this phase. You are confused.\n<b>When Revealed (Hero)</b>: If the villain's position is Atop the Tenshu, the villain schemes; otherwise, the villain attacks you."
+  },
+  {
+   "card_id": "sl012a",
+   "type": "Villain",
+   "name": "* Archpriestess",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "15*"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "[star] <b>Forced Response</b>: After Archpriestess attacks you, give a minion a tough status card. If no tough status card was placed this way, discard the top 3 cards of the encounter deck, then deal 1 minion discarded this way to yourself as a facedown encounter card."
+  },
+  {
+   "card_id": "sl012b",
+   "type": "Villain",
+   "name": "* Archpriestess",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "18*",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Steady. Toughness.\n[star] <b>Forced Response</b>: After Archpriestess attacks you, give a minion a tough status card. If no tough status card was placed this way, discard the top 3 cards of the encounter deck, then deal 1 minion discarded this way to yourself as a facedown encounter card."
+  },
+  {
+   "card_id": "sl013a",
+   "type": "Villain",
+   "name": "* Daredevil",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "15*"
+   },
+   "traits": [
+    "HAND",
+    "POSSESSED"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "<b>Forced Response</b>: After you or an ally you control attacks Daredevil, choose: Either discard 1 random card from your hand, or Daredevil attacks you. (Limit once per round per player.)"
+  },
+  {
+   "card_id": "sl013b",
+   "type": "Villain",
+   "name": "* Daredevil",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "18*",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HAND",
+    "POSSESSED"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Steady. Toughness.\n<b>Forced Response</b>: After you or an ally you control attacks Daredevil, choose: Either discard 1 random card from your hand, or Daredevil attacks you. (Limit once per round per player.)"
+  },
+  {
+   "card_id": "sl014a",
+   "type": "Villain",
+   "name": "* Elektra",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "15*"
+   },
+   "traits": [
+    "HAND",
+    "POSSESSED"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "[star] <b>Forced Interrupt</b>: When Elektra attacks you, discard the top card of your deck. If that card's printed cost is an odd number, Elektra gets +1 ATK for this attack; otherwise, this attack gains overkill and piercing."
+  },
+  {
+   "card_id": "sl014b",
+   "type": "Villain",
+   "name": "* Elektra",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "18*",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HAND",
+    "POSSESSED"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Steady. Toughness.\n[star] <b>Forced Interrupt</b>: When Elektra attacks you, discard the top card of your deck. If that card's printed cost is an odd number, Elektra gets +1 ATK for this attack; otherwise, this attack gains overkill and piercing."
+  },
+  {
+   "card_id": "sl015a",
+   "type": "Villain",
+   "name": "* Gorgon",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "15*"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "[star] <b>Forced Interrupt</b>: When Gorgon attacks you, choose:\n• Spend a [physical] resource.\n• Stun your identity.\n• Take 2 indirect damage."
+  },
+  {
+   "card_id": "sl015b",
+   "type": "Villain",
+   "name": "* Gorgon",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "18*",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Steady. Toughness.\n[star] <b>Forced Interrupt</b>: When Gorgon attacks you, choose:\n• Spend a [physical] resource.\n• Stun your identity.\n• Take 2 indirect damage."
+  },
+  {
+   "card_id": "sl016a",
+   "type": "Villain",
+   "name": "* Lady Bullseye",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "15*"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "[star] <b>Forced Response</b>: After Lady Bullseye attacks you, if that attack was undefended, take 1 indirect damage; otherwise, place 1 threat on the main scheme."
+  },
+  {
+   "card_id": "sl016b",
+   "type": "Villain",
+   "name": "* Lady Bullseye",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "18*",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Steady. Toughness.\n[star] <b>Forced Response</b>: After Lady Bullseye attacks you, if that attack was undefended, take 1 indirect damage; otherwise, place 1 threat on the main scheme."
+  },
+  {
+   "card_id": "sl017a",
+   "type": "Villain",
+   "name": "* White Tiger",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "0",
+    "HP": "15*"
+   },
+   "traits": [
+    "HAND",
+    "POSSESSED"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "[star] <b>Forced Response</b>: After White Tiger attacks you, she attacks you again with +1 ATK. (Limit once per round per player.)"
+  },
+  {
+   "card_id": "sl017b",
+   "type": "Villain",
+   "name": "* White Tiger",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "18*",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HAND",
+    "POSSESSED"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Steady. Toughness.\n[star] <b>Forced Response</b>: After White Tiger attacks you, she attacks you again. (Limit once per round per player.)"
+  },
+  {
+   "card_id": "sl018",
+   "type": "Attachment",
+   "name": "Art of the Kill",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Elektra, Lady Bullseye, or White Tiger).\nAttach to your identity.\n<b>Forced Interrupt</b>: When an enemy attacks you, it gets +1 ATK for that attack. If that attack defeats a character, place 1 threat on the main scheme.\n<b>Alter-Ego Action</b>: Spend [energy] [mental] [physical] resources → discard this card."
+  },
+  {
+   "card_id": "sl019",
+   "type": "Attachment",
+   "name": "Krahllak's Blessing",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SPELL"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Archpriestess, Daredevil, or Gorgon).\nAttach to the villain.\n<b>Forced Interrupt</b>: When attached villain would take any amount of damage from a character, reduce that amount by 3. Attached villain attacks that character. Discard this card."
+  },
+  {
+   "card_id": "sl020",
+   "type": "Minion",
+   "name": "* Archpriestess",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "5",
+    "Boost": "2",
+    "Villainous": "1"
+   },
+   "traits": [
+    "HAND",
+    "MYSTIC"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Gorgon, Lady Bullseye, or White Tiger).\nVillainous.\n<b>When Revealed</b>: Each other minion engaged with you attacks you. If no attack was made this way, discard the top 3 cards of the encounter deck."
+  },
+  {
+   "card_id": "sl021",
+   "type": "Minion",
+   "name": "* Gorgon",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "1",
+    "HP": "5",
+    "Boost": "2",
+    "Guard": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Daredevil, Elektra, or Lady Bullseye).\nGuard. Villainous.\n<b>Forced Response</b>: After a character attacks and damages Gorgon, stun that character."
+  },
+  {
+   "card_id": "sl022",
+   "type": "Minion",
+   "name": "* Lady Bullseye",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "5",
+    "Boost": "2",
+    "Villainous": "1"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Archpriestess, Gorgon, or White Tiger).\nVillainous.\n[star] <b>Forced Interrupt</b>: When Lady Bullseye attacks you, this attack gains ranged and she attacks the ally with the highest printed cost you control, if able."
+  },
+  {
+   "card_id": "sl023",
+   "type": "Minion",
+   "name": "* White Tiger",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "5",
+    "Boost": "2",
+    "Villainous": "1"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Archpriestess, Daredevil, or Elektra).\nVillainous.\n<b>When Revealed</b>: Take 2 indirect damage."
+  },
+  {
+   "card_id": "sl024",
+   "type": "SideScheme",
+   "name": "Rite of Offering",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Archpriestess, Elektra, or White Tiger).\n<b>When Defeated</b>: The defeating player removes an ally they control from the game. If no ally was removed this way, that player takes 3 damage."
+  },
+  {
+   "card_id": "sl025",
+   "type": "SideScheme",
+   "name": "Shadowy Plot",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Daredevil, Gorgon, or Lady Bullseye).\n<b>When Defeated</b>: The defeating player looks at the top 3 cards of the encounter deck, reveals 1 of them, and discards the rest."
+  },
+  {
+   "card_id": "sl026",
+   "type": "Treachery",
+   "name": "Darkness Within",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Archpriestess, Gorgon, or Lady Bullseye).\n<b>When Revealed</b>: Change to hero form. The villain attacks you.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it gains overkill."
+  },
+  {
+   "card_id": "sl027",
+   "type": "Treachery",
+   "name": "Embraced by Darkness",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Dark Protégé",
+   "text": "Linked (Daredevil, Elektra, or White Tiger).\n<b>When Revealed</b>: The villain schemes. If 2 or less threat was placed on the main scheme this way, discard the top 3 cards of the encounter deck.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 2 threat on the main scheme."
+  },
+  {
+   "card_id": "sl028",
+   "type": "Minion",
+   "name": "* Black Mountain",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "5",
+    "Guard": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Ninja Swarm",
+   "text": "Guard.\nWhile Black Mountain is engaged with you, each other <b>NINJA</b> minion engaged with you cannot be attacked.\n<b>★ Boost</b>: If an ally is defending against this attack, reveal this minion."
+  },
+  {
+   "card_id": "sl029",
+   "type": "Minion",
+   "name": "* Kirigi",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "3",
+    "Teamwork": "NINJA"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Ninja Swarm",
+   "text": "Teamwork (<b>NINJA</b>).\n<b>When Defeated</b>: The defeating player either spends 2 resources of any type or shuffles Kirigi into the encounter deck.\n<b>★ Boost</b>: If an ally is defending against this attack, this card gains [boost][boost] and this attack gains overkill."
+  },
+  {
+   "card_id": "sl030",
+   "type": "Minion",
+   "name": "Bo Staff Ninja",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "2",
+    "Boost": "2",
+    "Toughness": "1",
+    "Teamwork": "NINJA"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Ninja Swarm",
+   "text": "Teamwork (<b>NINJA</b>). Toughness.\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way."
+  },
+  {
+   "card_id": "sl031",
+   "type": "Minion",
+   "name": "Fukiya Ninja",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "2",
+    "Boost": "1",
+    "Teamwork": "NINJA"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Ninja Swarm",
+   "text": "Teamwork (<b>NINJA</b>).\n★ This minion's attacks gain ranged.\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way."
+  },
+  {
+   "card_id": "sl032",
+   "type": "Minion",
+   "name": "Katana Ninja",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "2",
+    "Boost": "1",
+    "Guard": "1",
+    "Teamwork": "NINJA"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Ninja Swarm",
+   "text": "Guard. Teamwork (<b>NINJA</b>).\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way."
+  },
+  {
+   "card_id": "sl033",
+   "type": "Minion",
+   "name": "Kusarigama Ninja",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "2",
+    "Boost": "2",
+    "Patrol": "1",
+    "Teamwork": "NINJA"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Ninja Swarm",
+   "text": "Patrol. Teamwork (<b>NINJA</b>).\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way."
+  },
+  {
+   "card_id": "sl034",
+   "type": "Minion",
+   "name": "Shuriken Ninja",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "2",
+    "Boost": "1",
+    "Teamwork": "NINJA"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Ninja Swarm",
+   "text": "Teamwork (<b>NINJA</b>).\n★ This minion's attacks gain piercing.\n<b>When Defeated</b>: The defeating player discards the top 2 cards of the encounter deck and reveals the first minion with the teamwork keyword discarded this way."
+  },
+  {
+   "card_id": "sl035",
+   "type": "SideScheme",
+   "name": "Dancing Shadows",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3"
+   },
+   "traits": [],
+   "set_name": "Ninja Swarm",
+   "text": "Each <b>NINJA</b> minion gets +1 hit point.\nThreat cannot be removed from this scheme while at least 1 <b>NINJA</b> minion is in play.\n<b>★ Boost</b>: Reveal this card."
+  },
+  {
+   "card_id": "sl036",
+   "type": "Treachery",
+   "name": "Countless Numbers",
+   "subtitle": "",
+   "desc": {
+    "Surge": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Ninja Swarm",
+   "text": "Surge.\n<b>When Revealed</b>: Shuffle each <b>NINJA</b> minion in the encounter discard pile into the encounter deck.\n<b>★ Boost</b>: Resolve this card's \"<b>When Revealed</b>\" ability."
+  },
+  {
+   "card_id": "sl037",
+   "type": "Villain",
+   "name": "Shifting Corridors",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "0",
+    "HP": "INF",
+    "Stalwart": "1"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Shadow Labyrinth",
+   "text": "Stalwart.\n<b>★ Forced Interrupt</b>: When Shifting Corridors would activate against you, instead remove 1 passage counter from here and reveal the top card of the trap deck.\n<b>If the last passage counter is removed from here, the players lose the game.</b>"
+  },
+  {
+   "card_id": "sl038a",
+   "type": "MainScheme",
+   "name": "Into the Labyrinth",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "<b>Contents</b>: Shifting Corridors (A). Shadow Labyrinth, Dark Protégé, Deadly Contraptions, and Standard encounter sets. One modular encounter set <i>(Ninja Swarm)</i>.\n<b>Setup</b>: Create the trap deck <i>(see rulebook, p. 12)</i>. Set the Dark Protégé encounter set aside. Choose 1 random villain from that set, then shuffle each card linked to that villain into the encounter deck <i>(keep the chosen villain set aside)</i>."
+  },
+  {
+   "card_id": "sl038b",
+   "type": "MainScheme",
+   "name": "Into the Labyrinth",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "25*",
+    "EscalationThreat": "1*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "<b>When Revealed:</b> Place 10[per_hero] passage counters on Shifting Corridors (7[per_hero] instead in expert mode).\n<b>Forced Interrupt</b>: When Shifting Corridors would take any amount of damage, remove that much threat from here instead.\n<b>Forced Interrupt</b>: When the last threat is removed from this scheme, advance to stage 2A <i>(the players win by advancing)</i>."
+  },
+  {
+   "card_id": "sl039a",
+   "type": "MainScheme",
+   "name": "Chamber of Vile Secrets",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "<b>When Revealed</b>: Do each of the following:\n1. Set Shifting Corridors aside.\n2. Find the chosen Dark Protégé villain. Discard each status card, token, and attached card from it.\n3. Reveal the chosen villain's side A (side B instead in expert mode)."
+  },
+  {
+   "card_id": "sl039b",
+   "type": "MainScheme",
+   "name": "Chamber of Vile Secrets",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "EscalationThreat": "1*",
+    "TargetThreat": "9*",
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "<b>When Revealed</b>: In expert mode, the villain activates against each player.\n<b>Forced Response</b>: After you or an ally you control thwarts this scheme, reveal the top card of the trap deck. (Limit once per round per player.)\n<b>If this stage is completed, the players lose the game.</b>"
+  },
+  {
+   "card_id": "sl040",
+   "type": "Attachment",
+   "name": "Whisper in the Dark",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Shadow Labyrinth",
+   "text": "Treat attached villain as an <b>ELITE</b> minion with 6 printed hit points. It gains: \"Guard. Villainous. <b>When Defeated</b>: Set this minion aside.\"\n<b>When Revealed</b>: If Shifting Corridors is in play, put the set-aside chosen villain into play engaged with you, side A faceup, with this card attached; otherwise, set this card aside and the villain schemes."
+  },
+  {
+   "card_id": "sl041",
+   "type": "Minion",
+   "name": "* Lord Deathstrike",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "5",
+    "Patrol": "1"
+   },
+   "traits": [
+    "HAND"
+   ],
+   "set_name": "Shadow Labyrinth",
+   "text": "Patrol.\n<b>When Revealed</b>: If Shifting Corridors is in play, shuffle the top 2 cards of the encounter deck into the trap deck; otherwise, reveal the top card of the trap deck.\n<b>★ Boost</b>: Put this minion into play engaged with you."
+  },
+  {
+   "card_id": "sl042",
+   "type": "SideScheme",
+   "name": "Dead End",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Crisis": "1",
+    "Boost": "3",
+    "Assault": "1"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "Assault. <i>(Basic thwarts against this scheme use ATK instead of THW.)</i>\n<b>When Revealed</b>: If Shifting Corridors is in play, remove 1 passage counter from it; otherwise, place 1[per_hero] threat here."
+  },
+  {
+   "card_id": "sl043",
+   "type": "SideScheme",
+   "name": "Hall of Hidden Doors",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "<b>When Defeated</b>: The defeating player removes 5 threat from the main scheme. They discard cards from the encounter deck until a minion or side scheme is discarded, then reveal it.\n<b>★ Boost</b>: Place 3 threat on the main scheme."
+  },
+  {
+   "card_id": "sl044",
+   "type": "Treachery",
+   "name": "No Time to Think!",
+   "subtitle": "",
+   "desc": {
+    "Peril": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "Peril. <i>(While you are resolving this card, other players cannot help you.)</i>\n<b>When Revealed</b>: The villain activates against you.\n★ <b>Boost</b>: If this activation is an attack, this card gains [boost][boost] and this attack gains overkill."
+  },
+  {
+   "card_id": "sl045",
+   "type": "Treachery",
+   "name": "Sudden Shift",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Shadow Labyrinth",
+   "text": "<b>When Revealed</b>: Shuffle the trap discard pile and the top 3 cards of the encounter deck into the trap deck. Reveal the top card of the trap deck.\n★ <b>Boost</b>: Shuffle the trap discard pile and the top 2 cards of the encounter deck into the trap deck."
+  },
+  {
+   "card_id": "sl046",
+   "type": "Attachment",
+   "name": "Nervous Jitters",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "Attach to your identity.\n<b>Forced Interrupt</b>: When you choose the \"<i>Avoid</i>\" effect or the \"<i>Disarm</i>\" effect on a <b>TRAP!</b> card, name an encounter card type, then discard the top card of the encounter deck. If the card discarded this way was not of the named type, take 4 indirect damage and discard this attachment."
+  },
+  {
+   "card_id": "sl047",
+   "type": "Minion",
+   "name": "* Iron Monk",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "4",
+    "Boost": "2",
+    "Patrol": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HAND",
+    "MYSTIC"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "Patrol. Toughness.\nWhile Iron Monk is engaged with you, you cannot choose the \"<i>Avoid</i>\" effect on <b>TRAP!</b> cards."
+  },
+  {
+   "card_id": "sl048",
+   "type": "SideScheme",
+   "name": "Hall of Punishment",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>Forced Interrupt</b>: When you choose the \"<i>Trip</i>\" effect on a <b>TRAP!</b> card, discard the top 3 cards of your deck.\n★ <b>Boost</b>: Place 1 threat on the main scheme for each character you control."
+  },
+  {
+   "card_id": "sl049",
+   "type": "SideScheme",
+   "name": "Path of a Thousand Cuts",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "5"
+   },
+   "traits": [],
+   "set_name": "Deadly Contraptions",
+   "text": "<i>Every step is a test of resilience.</i>\n<b>Forced Interrupt</b>: When you choose the \"<i>Avoid</i>\" effect or the \"<i>Trip</i>\" effect on a <b>TRAP!</b> card, take 2 indirect damage.\n★ <b>Boost</b>: Deal 1 damage to each character you control."
+  },
+  {
+   "card_id": "sl050",
+   "type": "Treachery",
+   "name": "Blinding Powder",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>THWART</b> event from your hand.\n• <i>Disarm</i> — Discard 2 cards at random from your hand, then give a character you control a tough status card.\n• <i>Trip</i> — Deal 2 damage to your identity and confuse it."
+  },
+  {
+   "card_id": "sl051",
+   "type": "Treachery",
+   "name": "Caltrops",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>DEFENSE</b> event from your hand.\n• <i>Disarm</i> — Discard 1 identity-specific card from your hand, then deal 2 damage to an enemy.\n• <i>Trip</i> — Deal 2 damage to your identity and stun it."
+  },
+  {
+   "card_id": "sl052",
+   "type": "Treachery",
+   "name": "Flame Spout",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an ally from your hand.\n• <i>Disarm</i> — Discard an ally you control, then draw 2 cards.\n• <i>Trip</i> — Deal 3 damage to your identity. Discard the top 3 cards of your deck."
+  },
+  {
+   "card_id": "sl053",
+   "type": "Treachery",
+   "name": "Oil Slick",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an upgrade from your hand.\n• <i>Disarm</i> — Discard an upgrade you control, then remove 4 threat from the main scheme.\n• <i>Trip</i> — Discard 1 card from your hand. Discard the top 8 cards of your deck."
+  },
+  {
+   "card_id": "sl054",
+   "type": "Treachery",
+   "name": "Poison Darts",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [energy] [energy] resources.\n• <i>Disarm</i> — Spend [mental] [mental] [physical] resources, then deal 3 damage to the villain.\n• <i>Trip</i> — Deal 3 damage to your identity and exhaust it."
+  },
+  {
+   "card_id": "sl055",
+   "type": "Treachery",
+   "name": "Pressure Plate",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [mental] [mental] resources.\n• <i>Disarm</i> — Spend [energy] [physical] [physical] resources, then search the top 4 cards of your deck for a card and add it to your hand. <i>(Shuffle.)</i>\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a minion is discarded, then reveal it."
+  },
+  {
+   "card_id": "sl056",
+   "type": "Treachery",
+   "name": "Tripwire",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "TRAP!"
+   ],
+   "set_name": "Deadly Contraptions",
+   "text": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an <b>ATTACK</b> event from your hand.\n• <i>Disarm</i> — Discard a support you control, then remove 3 threat from a scheme.\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a side scheme is discarded, then reveal it."
+  },
+  {
+   "card_id": "sl057",
+   "type": "Villain",
+   "name": "* Krahllak",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "3",
+    "HP": "18*",
+    "Steady": "1"
+   },
+   "traits": [
+    "DEMON",
+    "HAND"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "Steady.\n★ <b>Interrupt</b>: When Krahllak attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do, Krahllak gets –3 ATK for this attack."
+  },
+  {
+   "card_id": "sl058",
+   "type": "Villain",
+   "name": "* Krahllak",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "4",
+    "HP": "21*",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "DEMON",
+    "HAND"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "Steady. Toughness.\n★ Krahllak's attacks gain overkill.\n★ <b>Interrupt</b>: When Krahllak attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do, Krahllak gets –3 ATK for this attack."
+  },
+  {
+   "card_id": "sl059",
+   "type": "Villain",
+   "name": "* Krahllak",
+   "subtitle": "",
+   "desc": {
+    "SCH": "3",
+    "ATK": "4",
+    "HP": "25*",
+    "Steady": "1",
+    "Retaliate": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "DEMON",
+    "HAND"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "Retaliate 1. Steady. Toughness.\n★ Krahllak's attacks gain overkill and piercing.\n★ <b>Interrupt</b>: When Krahllak attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do, Krahllak gets –3 ATK for this attack."
+  },
+  {
+   "card_id": "sl060a",
+   "type": "MainScheme",
+   "name": "Dark Invitation",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Heart of Shadow",
+   "text": "<b>Contents</b>: Krahllak (I) and Krahllak (II). <i>(Krahllak (II) and Krahllak (III) instead for expert mode.)</i> Heart of Shadow, Black Flower, and Standard encounter sets. One modular encounter set <i>(Ninja Swarm)</i>.\n<b>Setup</b>: Each player puts a Creeping Corruption upgrade into play. Set the rest aside."
+  },
+  {
+   "card_id": "sl060b",
+   "type": "MainScheme",
+   "name": "Dark Invitation",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "EscalationThreat": "1*",
+    "TargetThreat": "6*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Heart of Shadow",
+   "text": "<b>Forced Interrupt</b>: When this stage would be completed, instead remove all threat from here and each player chooses:\n• Place 2 corruption counters on their Creeping Corruption.\n• Take 3 damage and deal themself 1 facedown encounter card.\n<b>Forced Response</b>: After Krahllak is defeated, advance this scheme to stage 2A."
+  },
+  {
+   "card_id": "sl061a",
+   "type": "MainScheme",
+   "name": "Beast Be Praised",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Heart of Shadow",
+   "text": "<i>An inferno erupts in the throne room, punishing those who have yet to succumb to Krahllak's dark will.</i>\n<b>When Revealed</b>: Each player whose Creeping Corruption has the <b>OVERPOWERING</b> trait discards 1 random card from their hand. Each other player discards a card they control from play. In expert mode, deal each player 1 facedown encounter card."
+  },
+  {
+   "card_id": "sl061b",
+   "type": "MainScheme",
+   "name": "Beast Be Praised",
+   "subtitle": "",
+   "desc": {
+    "TargetThreat": "9*",
+    "StartingThreat": "2*",
+    "EscalationThreat": "1*",
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Heart of Shadow",
+   "text": "[star] <b>Forced Response</b>: After resolving step one of the villain phase, each player chooses:\n• Place 1 corruption counter on their Creeping Corruption.\n• Place 3 threat here.\n<b>If this stage is completed, the players lose the game.</b>"
+  },
+  {
+   "card_id": "sl062",
+   "type": "Attachment",
+   "name": "Dark Shroud",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "Attach to Krahllak.\n<b>Interrupt</b>: When you or an ally you control would deal 4 or more damage to Krahllak with an attack, instead prevent all of that damage, place 1 corruption counter on your Creeping Corruption, and discard this card."
+  },
+  {
+   "card_id": "sl063",
+   "type": "Attachment",
+   "name": "Fear Projection",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "Attach to Krahllak.\nKrahllak gains retaliate 1.\n<b>Hero Action</b>: Place 2 corruption counters on your Creeping Corruption → discard this card.\n<b>Alter-Ego Action</b>: Spend [mental] [mental] [mental] resources → discard this card. Remove 1 corruption counter from your Creeping Corruption."
+  },
+  {
+   "card_id": "sl064",
+   "type": "Attachment",
+   "name": "Mark of the Wicked",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "2",
+    "Boost": "3"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "<b>When Revealed</b>: You may attach this card to your identity. If you do not, take 4 damage, stun your identity, remove 1 corruption counter from your Creeping Corruption, and discard this card.\n[star] <b>Forced Response</b>: After attached hero makes a basic attack, place 1 corruption counter on your Creeping Corruption."
+  },
+  {
+   "card_id": "sl065",
+   "type": "Attachment",
+   "name": "Pull of Power",
+   "subtitle": "",
+   "desc": {
+    "THW+": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "<b>When Revealed</b>: You may attach this card to your identity. If you do not, take 4 damage, confuse your identity, remove 1 corruption counter from your Creeping Corruption, and discard this card.\n[star] <b>Forced Response</b>: After attached hero makes a basic thwart, place 1 corruption counter on your Creeping Corruption."
+  },
+  {
+   "card_id": "sl066",
+   "type": "Minion",
+   "name": "* Fist",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "6",
+    "Boost": "2",
+    "Patrol": "1",
+    "Retaliate": "2"
+   },
+   "traits": [
+    "HAND",
+    "UNDEAD"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "Patrol. Retaliate 2.\n<b>Hero Action</b>: Place 1 corruption counter on your Creeping Corruption → deal 4 damage to Fist."
+  },
+  {
+   "card_id": "sl067",
+   "type": "Minion",
+   "name": "* Hellbride",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "3",
+    "HP": "7",
+    "Boost": "3"
+   },
+   "traits": [
+    "DEMON",
+    "HAND"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "<b>When Defeated</b>: The defeating player places 2 corruption counters on their Creeping Corruption, then heals 6 damage from their identity.\n<b>Hero Action</b>: If Hellbride has 2 or fewer remaining hit points, exhaust your hero → discard Hellbride. Remove 1 corruption counter from your Creeping Corruption."
+  },
+  {
+   "card_id": "sl068",
+   "type": "Minion",
+   "name": "* Retainer",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "4",
+    "HP": "9",
+    "Boost": "3"
+   },
+   "traits": [
+    "BRUTE",
+    "DEMON",
+    "HAND"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "[star] Retainer's attacks gain overkill.\n[star] <b>Interrupt</b>: When Retainer attacks you, you may place 1 corruption counter on your Creeping Corruption. If you do, Retainer gets –3 ATK for this attack."
+  },
+  {
+   "card_id": "sl069",
+   "type": "Minion",
+   "name": "* Snakeroot Elders",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "8",
+    "Boost": "3"
+   },
+   "traits": [
+    "HAND",
+    "MYSTIC",
+    "NINJA"
+   ],
+   "set_name": "Heart of Shadow",
+   "text": "While there is at least 1 corruption counter here, Snakeroot Elders gains guard and patrol.\n<b>When Revealed</b>: You may place 1 corruption counter on your Creeping Corruption. If you do not, place 1 corruption counter here."
+  },
+  {
+   "card_id": "sl070",
+   "type": "SideScheme",
+   "name": "Veil of Nightmares",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "5*",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Heart of Shadow",
+   "text": "<i>Krahllak's dark magic can tap into a person's deepest fears.</i>\n<b>Hero Action</b>: Place 1 corruption counter on your Creeping Corruption → remove 5 threat from this scheme."
+  },
+  {
+   "card_id": "sl071",
+   "type": "Treachery",
+   "name": "Submit or Suffer",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Heart of Shadow",
+   "text": "<b>When Revealed</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or remove 1 corruption counter from your Creeping Corruption and Krahllak attacks you.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or stun your identity."
+  },
+  {
+   "card_id": "sl072a",
+   "type": "Upgrade",
+   "name": "Creeping Corruption",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "MaxPerUnit": "1"
+   },
+   "traits": [],
+   "set_name": "Black Flower",
+   "text": "Permanent. Setup. Max 1 per player.\nIf there are at least 5 corruption counters here, remove each of them from here and flip this card.\n<b>Action</b>: Exhaust Creeping Corruption and place 1 corruption counter here → draw 1 card."
+  },
+  {
+   "card_id": "sl072b",
+   "type": "Upgrade",
+   "name": "Creeping Corruption",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "OVERPOWERING"
+   ],
+   "set_name": "Black Flower",
+   "text": "Permanent. Max 1 per player.\n<b>If there are at least 5 corruption counters here, you are defeated.</b>\n<b>Action</b>: Exhaust Creeping Corruption and place 1 corruption counter here → draw 2 cards, then discard 1 card from your hand."
+  },
+  {
+   "card_id": "sl073",
+   "type": "Minion",
+   "name": "* Aka",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "3",
+    "HP": "6",
+    "Boost": "1",
+    "Quickstrike": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "HAND",
+    "NINJA"
+   ],
+   "set_name": "Black Flower",
+   "text": "Quickstrike. Villainous.\n[star] <b>Interrupt</b>: When Aka would attack you, you may place 1 corruption counter on your Creeping Corruption. If you do, cancel that attack.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or discard 1 random card from your hand."
+  },
+  {
+   "card_id": "sl074",
+   "type": "Minion",
+   "name": "* Tongue of the Beast",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "1"
+   },
+   "traits": [
+    "DEMON",
+    "HAND"
+   ],
+   "set_name": "Black Flower",
+   "text": "<b>When Defeated</b>: The defeating player places 2 corruption counters on their Creeping Corruption.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or this card gains [boost][boost][boost]."
+  },
+  {
+   "card_id": "sl075",
+   "type": "SideScheme",
+   "name": "Binding Ritual",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "Crisis": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Black Flower",
+   "text": "<i>\"He whom we serve shall reign supreme!\"</i>\n<i>—Takashi</i>\n<b>When Revealed</b>: Each player chooses:\n• Place 1 corruption counter on their Creeping Corruption.\n• Place 3 threat here."
+  },
+  {
+   "card_id": "sl076",
+   "type": "SideScheme",
+   "name": "Roots of a Black Flower",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1",
+    "Acceleration": "2"
+   },
+   "traits": [],
+   "set_name": "Black Flower",
+   "text": "<b>When Defeated</b>: The defeating player places 2 corruption counters on their Creeping Corruption.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or place 4 threat on the main scheme."
+  },
+  {
+   "card_id": "sl077",
+   "type": "Treachery",
+   "name": "Malediction",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Black Flower",
+   "text": "<b>When Revealed (Alter-Ego)</b>: You may place 2 corruption counters on your Creeping Corruption. If you do not, the villain schemes with +2 SCH.\n<b>When Revealed (Hero)</b>: If your Creeping Corruption has the <b><i>OVERPOWERING</i></b> trait, the villain schemes with +1 SCH; otherwise, the villain attacks you."
+  },
+  {
+   "card_id": "sl078",
+   "type": "Treachery",
+   "name": "Invasive Thoughts",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Black Flower",
+   "text": "<b>When Revealed</b>: Place 1 corruption counter on your Creeping Corruption. If it has the <b><i>OVERPOWERING</i></b> trait, place 1 threat on the main scheme; otherwise, take 1 damage.\n<hr />\n[star] <b>Boost</b>: Choose: Either place 1 corruption counter on your Creeping Corruption, or take 4 indirect damage."
+  }
+ ],
+ "checksum": "182bca29d193fc75e23ee73f9eea42e73494ae4305b2b2c6fe29f0850eb7872b"
 }

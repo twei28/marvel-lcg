@@ -29,4 +29,4 @@ set-aside NYC card and put it into play »).
 - `FindCardPaper("Welcome to the Jungle")` cherche par NOM : le nom doit rester
   unique dans tout le catalogue.
 
-**Variantes maison** : aucune.
+**Variantes maison** : « Linked (A, B, or C) » a TROIS noms (Shadowland, set Dark Protege, sl018 a sl027) : `desc.Linked` n'accepte qu'un nom, donc rien n'y est ecrit ; la liste est lue dans le texte imprime par `VilainsLies` (`cards/pack/shadowland/__init__.py`) et `sl001a` melange dans le deck de rencontre les seules cartes liees au vilain tire (les autres restent de cote).
