@@ -119,6 +119,12 @@ CAS = [
              ["Puzzle.Action('pu141', 'Action')"],
              {"compteurs": [["pu141", "counter", 1]], "main_ok": {"taille": 2, "types": ["Support", "Upgrade"], "cout_max": 2}},
              choisir_option="Find_a_support_or_upgrade_with_a_cost_of_2_or_less_and_add_it_to_your_hand"),
+    _caisses("pu141 Action, 2e choix, la seule carte eligible est dans la DEFAUSSE du joueur (deck vide) -> elle rejoint la main (find = toutes les zones, decision du 23/10/2026)",
+             "« Find a support or upgrade ... » : la Rules Reference du moteur (`find.py`) fouille deck, defausse, zone de jeu, mises de cote",
+             ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDiscardPile('01007')", "Puzzle.PutIntoPlay('pu141', under_control=True)", "Puzzle.PlaceCounters('pu141', 'counter', 2)"],
+             ["Puzzle.Action('pu141', 'Action')"],
+             {"compteurs": [["pu141", "counter", 1]], "main_ok": {"taille": 2, "types": ["Support", "Upgrade"], "cout_max": 2}},
+             choisir_option="Find_a_support_or_upgrade_with_a_cost_of_2_or_less_and_add_it_to_your_hand"),
     _caisses("pu141 Action : sans compteur, l'Action n'est pas offerte (rien ne change)",
              "« Remove 1 counter -> » : le retrait est le cout",
              ["Puzzle.PutIntoPlay('pu141', under_control=True)"], [],
@@ -209,6 +215,10 @@ CAS = [
              "le deck est fouille avant la collection",
              ["Puzzle.PutIntoPlay('pu143', under_control=True)", "Puzzle.PlaceCounters('pu143', 'counter', 2)", "Puzzle.MoveTo('16046', 'PlayerDeck')"],
              ["Puzzle.Action('pu143', 'Action')"], {"compteurs": [["pu143", "counter", 1]], "en_main": ["16046"]}, accepter_choix=True),
+    _caisses("pu143 Action (defausse) : une arme est dans la DEFAUSSE -> c'est elle qui rejoint la main : la defausse retombe a sa taille de depart, 6 (UNE recherche sur les 3 zones, 23/10/2026)",
+             "« search your deck, discard pile, and collection »",
+             ["Puzzle.PutIntoPlay('pu143', under_control=True)", "Puzzle.PlaceCounters('pu143', 'counter', 2)", "Puzzle.CreatePlayerDiscardPile('16046')"],
+             ["Puzzle.Action('pu143', 'Action')"], {"compteurs": [["pu143", "counter", 1]], "en_main": ["16046"], "defausse_joueur": 6}),
     _caisses("pu143 Action : sans compteur, l'Action n'est pas offerte (menace intacte)", "le retrait du compteur est un cout",
              ["Puzzle.PutIntoPlay('pu143', under_control=True)"], ["Puzzle.SetThreat('01097b', 1)"],
              {"compteurs": [["pu143", "counter", 0]], "menace": [["01097b", 1]]}, declencher_tolerant=["Puzzle.Action('pu143', 'Action')"]),
@@ -235,6 +245,8 @@ CAS = [
        {"capo_du_passe": {"face": "b"}}, scenario="tracking_the_buyer_the_getaway_jigsaw_expert"),
     _b("pu139, DEFAITE du CAPO-sbire : il quitte le jeu avec pu139 (aucun CAPO en jeu ensuite)", "le sbire se bat comme un sbire : degats, defaite",
        [], ["Puzzle.Reveal('pu139')", "Puzzle.Damage('minion', 99)"], {"capo_du_passe": {"face": "a", "absent": True}}),
+    _b("pu139, DEFAITE du CAPO-sbire : Victory 0 -> il va dans la PILE DE VICTOIRE (pas la defausse)", "« victory 0 » : la carte vaincue est ajoutee a la pile de victoire (decision du 23/10/2026)",
+       [], ["Puzzle.Reveal('pu139')", "Puzzle.Damage('minion', 99)"], {"capo_du_passe": {"face": "a", "en_victoire": True}}),
     _b("pu139, TEMOIN de la defaite : 1 seul degat -> le CAPO-sbire est TOUJOURS en jeu (le cas de defaite ne passe donc pas a vide)", "un sbire a PV fixes ne tombe pas au 1er degat",
        [], ["Puzzle.Reveal('pu139')", "Puzzle.Damage('minion', 1)"], {"capo_du_passe": {"face": "a"}}),
     _b("pu139, PHASE DU MECHANT : le CAPO-sbire engage active (attaque ou manigance) sans erreur", "un sbire engage s'active comme un sbire",
@@ -375,7 +387,14 @@ def camp_etat(monde, aides):
         trouves = [o.face for o in monde.object_manager.card_dict.values()
                    if str(getattr(getattr(o, "face", None), "pic_id", "")).startswith("pu0") and getattr(o.face, "pic_id", "")[-1:] == voulu["face"]
                    and type(o.face).__name__ == "Minion" and o.face.IsInPlay()]
-        if voulu.get("absent"):
+        if voulu.get("en_victoire"):
+            # DEFAITE du CAPO-sbire : Victory 0 = il va dans la PILE DE VICTOIRE, pas dans la defausse (decision du 23/10/2026).
+            en_pile = [f for f in monde.victory_display.Get() if str(getattr(f, "pic_id", "")).startswith("pu0") and f.pic_id[-1:] == voulu["face"]]
+            if trouves:
+                soucis.append(f"{len(trouves)} sbire(s) CAPO encore en jeu (attendu 0)")
+            if len(en_pile) != 1:
+                soucis.append(f"{len(en_pile)} CAPO-sbire(s) dans la pile de victoire (attendu 1)")
+        elif voulu.get("absent"):
             if trouves:
                 soucis.append(f"{len(trouves)} sbire(s) CAPO encore en jeu (attendu 0)")
         elif len(trouves) != 1:

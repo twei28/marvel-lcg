@@ -274,3 +274,14 @@ Decisions de l'utilisateur : `decisions-multi-tables.md` (1 code d'assemblee par
 
 ### Audit visuel PU-13 : 160 cartes contre les scans (22/10/2026, 4 lectures independantes)
 Aucun ecart de regle ni de valeur. Corriges : pu140 (flavor incomplet), commentaire pu280, ligne de debug oubliee dans `jigsaw_commun.py` (ecrivait dans /tmp a chaque attaque de Jigsaw ; 31/31 cas `[jig]` apres retrait). Laisses tels quels : pu094 RPG (indirect seulement contre un joueur, voulu et teste : sinon le moteur annule l'attaque contre un ennemi), pu282 (restriction « Only AERIAL & identity specific allies » = regle de deck non verifiee par le moteur), numero d'ordre 1-9 des lieux non stocke, « It » de pu047 (CORRIGE ensuite : « Forget it... It's Chinatown »). Reverifie sur les scans le 22/10/2026 : le numero 1-9 des lieux est leur place dans la grille 3x3 (« Locations - The Big Apple (1/9) »), l'ordre vient des identifiants, rien a stocker ; pu094 : texte imprime sans condition, mais l'indirect n'a de sens que contre un joueur (RR), voulu et teste ; pu282 : la restriction de deck n'est verifiee par le moteur pour AUCUN defi (meme cas que `UsingOnlyHeroes`).
+
+### Decisions sans texte de RR : REVUE AVEC L'UTILISATEUR, question par question (23/10/2026)
+Confirmees telles quelles : pu039 (sbire OU allie que je controle), pu046 / pu043 (« you defend / thwart » = l'identite seulement), pu016 Busted! (identite ET allies),
+pu018 Red Herring (exclut aussi le lieu actuel, le joueur choisit), pu020 Shootout (tout, CAPO inclus), pu013/014/015 (le sbire attache garde PV et statuts), pu007 (action
+permise, on defausse ce qu'il reste), pu141 (sans carnet, aucun joueur en plus), pu142 (les 3 sets REMPLACENT les modulaires FNE), pu145 (le premier joueur choisit),
+pu149a (une table tardive demarre retournee), Pod Action (jetons a la prochaine synchro).
+CORRIGEES : (1) pu047 / pu041 « you defeat » = identite seulement : le code l'etait deja, 2 cas TEMOINS ajoutes (`[pist]`, un allie vainc : aucun effet) ; (2) « find » = TOUTES les
+zones (RR dans `game/operate/find.py`) : seule pu141 cherchait dans le deck, elle utilise maintenant `Find.Find` (sauf cartes en main et elle-meme), cas « defausse » rouge puis vert ;
+les autres cartes utilisaient deja `Find.Find*` ; (3) pu143 : UNE recherche sur deck + defausse + collection (liste unique, exemplaires physiques d'abord, deck melange s'il a ete fouille),
+5 aspects classiques SANS Determination, cas « defausse » ; correctif moteur au passage : `AskChoosePaper` / `MayChoosePaper` coupaient le prefixe avec `lstrip('p_')` (mange le « p »
+d'un identifiant `pu...`), remplace par `name[2:]` ; (4) pu139 : la Victory 0 du CAPO-sbire va dans la pile de victoire (deja le cas, maintenant PROUVE).

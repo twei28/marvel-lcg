@@ -35,14 +35,14 @@ class PlayerAsk:
         name_list = [f"p_{x}" for x in name_list]
         name = self.MayChooseOneText(name_list)
         if name:
-            return name.lstrip('p_')
+            return name[2:]
         else:
             return None
 
     def AskChoosePaper(self, name_list: Sequence[str]|Sequence[None]) -> str:
         name_list = [f"p_{x}" for x in name_list]
         name = self.AskChooseOneText(name_list)
-        return name.lstrip('p_')
+        return name[2:]
 
     T = TypeVar("T")
     def MayChooseOneText(self, item_list: Sequence[T], text_list: Sequence[str]|None=None) -> T|None:

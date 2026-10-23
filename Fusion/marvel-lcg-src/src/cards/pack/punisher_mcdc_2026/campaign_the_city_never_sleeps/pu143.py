@@ -10,14 +10,14 @@ from . import *
 # ⚠ Mots-pieges :
 #  - « Remove 1 counter AND place 3 threat -> » : DEUX couts, payes avant la recherche ; sans compteur (ou sans complot principal) l'Action n'est
 #    pas offerte ; « on the main scheme » : 3 menaces fixes (pas par joueur).
-#  - « aspect or basic WEAPON » : classe Aggression / Justice / Leadership / Protection / 'Pool / Determination (sixieme aspect officiel) / Basic, trait WEAPON ; JAMAIS une carte de
+#  - « aspect or basic WEAPON » : les 5 aspects classiques Aggression / Justice / Leadership / Protection / 'Pool (SANS Determination : decision du 23/10/2026) / Basic, trait WEAPON ; JAMAIS une carte de
 #    classe Hero (cartes de heros) ni Campaign.
-#  - « search your deck, discard pile, AND collection » : une seule carte, prise dans l'une des trois zones. Le deck et la defausse sont proposes
-#    d'abord (facultatif) ; si le joueur n'y prend rien, la collection (`Search.Collection`, carte fabriquee) ; la carte va en MAIN.
+#  - « search your deck, discard pile, AND collection » : UNE seule recherche sur les trois zones (decision du 23/10/2026) : une liste unique, les
+#    armes du deck et de la defausse d'abord, puis la collection ; la carte va en MAIN.
 #  - `CardFinder(trait=...)` seul est refuse (il exige un `card_type`) : le trait WEAPON est teste dans `check_face_fn`.
 #  - Pas de limite par round imprimee (contrairement a pu141) : seul le nombre de compteurs borne l'usage.
 
-CLASSES_PERMISES = ('Aggression', 'Justice', 'Leadership', 'Protection', "'Pool", 'Determination', 'Basic')
+CLASSES_PERMISES = ('Aggression', 'Justice', 'Leadership', 'Protection', "'Pool", 'Basic')
 
 
 def _arme_permise(classe: 'str|None') -> bool:
@@ -35,21 +35,27 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = effect.GetInitiator()
         if joueur is None:
             return
-        face = Search.PlayerCard(
-            effect, joueur,
-            include_player_deck=True,
-            include_discard_pile=True,
-            may=True,
-            finder=CardFinder(check_face_fn=lambda f: f.HasTrait("WEAPON") and _arme_permise(f.paper.desc.get("Class"))),
-        )
+        # UNE seule recherche sur les trois zones (decision du 23/10/2026) : le joueur choisit UNE arme dans la liste « mon deck, ma defausse,
+        # puis le reste de la collection » (les exemplaires physiques d'abord) ; si l'arme choisie est dans le deck ou la defausse c'est CETTE carte
+        # qui rejoint la main (le deck est melange s'il a ete fouille), sinon un exemplaire est tire de la collection.
+        from cards.database import CardsDB
+        from game.card.factory import CardFactory
+        physiques: List['CardFace'] = []
+        for zone in (joueur.player_deck, joueur.discard_pile):
+            physiques += [f for f in zone.Get() if f.HasTrait("WEAPON") and _arme_permise(f.paper.desc.get("Class"))]
+        ids = Types.RemoveDuplicates([f.paper.card_id for f in physiques])
+        ids += [x for x in CardsDB.GetPapers(trait="WEAPON", check_fn=lambda paper: _arme_permise(paper.desc.get("Class"))) if x not in ids]
+        if not ids:
+            return
+        choisi = joueur.AskChoosePaper(ids)
+        face = next((f for f in physiques if f.paper.card_id == choisi), None)
         if face is None:
-            face = Search.Collection(
-                effect, joueur,
-                trait="WEAPON",
-                check_fn=lambda paper: _arme_permise(paper.desc.get("Class")),
-            )
-        if face is not None:
-            joueur.GainCard([face], effect)
+            joueur.GainCard([CardFactory.GenerateCard(choisi, joueur.discard_pile, effect.world).face], effect)
+            return
+        du_deck = face in joueur.player_deck.Get()
+        joueur.GainCard([face], effect)
+        if du_deck:
+            joueur.player_deck.Shuffle(effect)
 
     return [
         AbilityFactory.AfterGameSetup(mise_en_place),
