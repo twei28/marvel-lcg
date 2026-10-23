@@ -1029,3 +1029,35 @@ describe('useInteraction, cout « jusqu a N » (UpTo)', () => {
     expect(result.current.prete).toBe(true)
   })
 })
+
+describe('useInteraction, toutes les cibles imposees (le vilain et ses sbires)', () => {
+  const imposee = (plus: Partial<Option> = {}): Option => ({
+    ...optionTroisCibles(),
+    name: 'Special',
+    all_legal_targets: [201, 202],
+    target_num_range: [2, 2],
+    target_payment: {},
+    select_rule: 'VillainAndMinionsEngagedSamePlayer',
+    ...plus,
+  })
+
+  it('coche toutes les cibles toute seule : rien a choisir (Morsure d araignees, rapport BL-Stark)', async () => {
+    const { result } = monter(imposee())
+    act(() => result.current.choisirOption(imposee()))
+    await waitFor(() => expect(result.current.assistant.cibleNombre).toBe(2))
+  })
+
+  it('TEMOIN : une selection libre (meme nombre de cibles, autre regle) reste a faire a la main', async () => {
+    const libre = imposee({ select_rule: '' })
+    const { result } = monter(libre)
+    act(() => result.current.choisirOption(libre))
+    expect(result.current.assistant.cibleNombre).toBe(0)
+  })
+
+  it('TEMOIN : des cibles en trop pour le nombre demande se choisissent encore', async () => {
+    const trop = imposee({ all_legal_targets: [201, 202, 203] })
+    const { result } = monter(trop)
+    act(() => result.current.choisirOption(trop))
+    expect(result.current.assistant.cibleNombre).toBe(0)
+  })
+})

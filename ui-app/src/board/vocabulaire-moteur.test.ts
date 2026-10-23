@@ -189,3 +189,11 @@ describe('tonaliteAction — les couleurs survivent à la traduction', () => {
     expect(tonaliteAction('Mystic Blast')).toBe('general')
   })
 })
+
+describe('Build Support (rapport BL-Stark du 23/10/2026)', () => {
+  it('le choix de recherche d un soutien est en francais', () => {
+    expect(traduireMoteur('Search their deck and discard pile for a support with a cost of 3 or less and put it into play')).toBe(
+      'Chercher un soutien de coût 3 ou moins dans ton deck ou ta défausse et le mettre en jeu'
+    )
+  })
+})

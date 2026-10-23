@@ -413,6 +413,17 @@ function reglesCout(paiement: Paiement | undefined): string[] {
     .map((regle) => regle.replace(/([a-z])([A-Z])/g, '$1 $2'))
 }
 
+/**
+ * Les regles de selection « le vilain et ses sbires » (VillainAndMinionsEngagedSamePlayer / WithYou) imposent TOUTES leurs cibles : le moteur
+ * demande autant de cibles qu'il y a de candidats. Vrai quand c'est le cas, sans doublon (un doublon dit « repartir » et se choisit a la main).
+ */
+export function toutesLesCiblesImposees(option: Option): boolean {
+  if (!/^VillainAndMinionsEngaged/.test(option.select_rule)) return false
+  const [min, max] = option.target_num_range
+  const distinctes = new Set(option.all_legal_targets)
+  return min >= 1 && min === max && distinctes.size === min && option.all_legal_targets.length === distinctes.size
+}
+
 function optionDemarreAuto(option: Option): boolean {
   return option.failure_reason === '' && option.name.toLowerCase().includes('mulligan')
 }
@@ -748,6 +759,13 @@ export function useInteraction(
         autoCibleFaite.current = option.id
         setCibles([seule])
       }
+      return
+    }
+    // « Le vilain et chaque sbire engage avec ce joueur » (Morsure d'araignees de Shuri...) : TOUTES les cibles sont imposees, il n'y a rien
+    // a choisir. Les cliquer une a une etait penible (rapport BL-Stark du 22/10/2026) : on les coche toutes, le joueur peut encore decocher.
+    if (toutesLesCiblesImposees(option) && cibles.length === 0) {
+      autoCibleFaite.current = option.id
+      setCibles([...ciblesParOccurrence(option).keys()])
     }
   }, [option, cibleMinimum, cibleMaximum, ciblePossibles, cibles.length])
 

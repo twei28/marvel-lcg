@@ -435,6 +435,9 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Choose which villain activates first against (.+)$/,
     (m) => `Choisis le méchant qui s’active d’abord contre ${m[1]}`],
   [/^Choose Bebop or Rocksteady$/, () => 'Choisis Bebop ou Rocksteady'],
+  // Build Support (51026, rapport BL-Stark du 23/10/2026) : « Search their deck and discard pile for a support with a cost of 3 or less... ».
+  [/^Search (?:their|your) deck and discard pile for an? (support|ally|upgrade) with a cost of (\d+) or less and put it into play$/,
+    (m) => `Chercher ${({ support: 'un soutien', ally: 'un allié', upgrade: 'une amélioration' } as Record<string, string>)[m[1]!]} de coût ${m[2]} ou moins dans ton deck ou ta défausse et le mettre en jeu`],
   // Pack TMNT Venus (`venus/__init__.py`, ProposerRetraitDragage) : retrait facultatif de compteurs de dragage.
   [/^Remove (\d+) dredge counters to draw (\d+) cards$/,
     (m) => `Retirer ${m[1]} compteurs de dragage pour piocher ${m[2]} cartes`],

@@ -89,4 +89,9 @@ describe('nomDeCompteur', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('dredge')).toBe('dragage')
   })
+
+  it('traduit le compteur de doute de l obligation de Shuri (doubt, rapport BL-Stark du 23/10/2026)', () => {
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('doubt')).toBe('doute')
+  })
 })
