@@ -198,7 +198,7 @@ EPREUVES += [
         "heros": "captain_america",
         # 21180a « Secure the Landing Pad » vaincu se retourne sur 21180b
         # « * Cosmo » : c'est cette face que CollectMTS cherche en jeu.
-        "avant": ["Puzzle.PutIntoPlay('21180b', under_control=True)"],
+        "avant": ["Puzzle.Flip('21180a')"],
         "carnet_attendu": {
             "gagnee": True,
             "cles": {"Campaign Pool: Cosmo": "1"},
@@ -206,6 +206,14 @@ EPREUVES += [
         },
         "suivant": "thanos",
         "attendu": {"en_jeu": ["21180b"]},
+    },
+    {
+        "nom": "mts — scenario 3 : la manigance de campagne Hack Sanctuary's Computer est recto-verso (elle se retourne, elle ne se couche pas)",
+        "scenario": "the_tower_defense",
+        "heros": "captain_america",
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "thanos",
+        "attendu": {"en_jeu": ["21184a"], "avec_dos": ["21184a"]},
     },
     {
         "nom": "mts — Cosmo NON libere : rien au carnet, et aucun allie de campagne au scenario 3",
@@ -233,7 +241,7 @@ EPREUVES += [
         # 21182a « Save the Shawarma Place » retourne sur 21182b « * Black
         # Swan » : la carte existe (Shawarma), et elle n'est pas dans la pile
         # de victoire (Black Swan reste avec vous).
-        "avant": ["Puzzle.PutIntoPlay('21182b')"],
+        "avant": ["Puzzle.Flip('21182a')"],
         "carnet_attendu": {
             "cles": {"Campaign Pool: Shawarma": "1", "Campaign Pool: Black Swan": "1"},
         },
@@ -247,7 +255,7 @@ EPREUVES += [
         "scenario": "the_tower_defense",
         "heros": "captain_america",
         "avant": [
-            "Puzzle.PutIntoPlay('21182b')",
+            "Puzzle.Flip('21182a')",
             "Puzzle.MoveTo('21182b', 'VictoryDisplay')",
         ],
         "carnet_attendu": {
@@ -281,7 +289,7 @@ EPREUVES += [
         "scenario": "thanos",
         "heros": "captain_america",
         "avant": [
-            "Puzzle.PutIntoPlay('21184b')",
+            "Puzzle.Flip('21184a')",
             "Puzzle.MoveTo('21184b', 'VictoryDisplay')",
         ],
         "carnet_attendu": {"cles_absentes": ["Campaign Pool: System Shock"]},
@@ -313,7 +321,7 @@ EPREUVES += [
         "heros": "captain_america",
         # 21186b « Retrieve Odin's Armor » existe (la quete a ete retournee)
         # mais n'est pas en pile de victoire : la pierre, pas l'armure.
-        "avant": ["Puzzle.PutIntoPlay('21186b')"],
+        "avant": ["Puzzle.Flip('21186a')"],
         "carnet_attendu": {
             "cles": {"Campaign Pool: Norn Stone": "1"},
             "cles_absentes": ["Campaign Pool: Odin"],
@@ -326,7 +334,7 @@ EPREUVES += [
         "scenario": "hela",
         "heros": "captain_america",
         "avant": [
-            "Puzzle.PutIntoPlay('21186b')",
+            "Puzzle.Flip('21186a')",
             "Puzzle.MoveTo('21186b', 'VictoryDisplay')",
         ],
         "carnet_attendu": {

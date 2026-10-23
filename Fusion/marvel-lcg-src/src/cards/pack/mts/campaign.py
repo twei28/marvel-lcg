@@ -9,8 +9,11 @@ def LogSet(name: str):
         return (CampaignLog.GetStrInternal(name, effect) != '')
     return check
 def PutSideSchemeIntoPlay(card_id: str) -> 'Ability':
+    # ⚠ La manigance de campagne est RECTO-VERSO (21184a/21184b...) : sans la face b, « Flip this card over » ne fait que la
+    # coucher face cachee (rapport #105 : Hack Sanctuary's Computer ne se retournait pas). Meme convention que Puzzle.PutIntoPlay('a,b').
+    paire = f'{card_id},{card_id[:-1]}b'
     def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
-        card = CardFactory.GenerateCard(card_id, None, effect.world)
+        card = CardFactory.GenerateCard(paire, None, effect.world)
         card.face.PutIntoPlay('FirstPlayer', effect)
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 def PutIntoPlayIfPool(card_id: str, pool_name: str, *, under_control: bool = False) -> 'Ability':
