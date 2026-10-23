@@ -1,20 +1,25 @@
-// Shadowland, Shadow Labyrinth : le paquet de pieges et sa defausse se montrent comme deux piles, a cote du deck de rencontre (23/10/2026).
-// Le moteur les exporte sous `trap_deck` / `trap_discard_pile` ; absents hors de ce scenario.
+// Shadowland, Shadow Labyrinth : le paquet de pieges est un « deck supplementaire » du moteur (additional_decks) ; la pile des cartes cachees
+// l'appelle « Paquet de pieges » quand toutes ses cartes portent le trait TRAP (cle `t_TRAP` dans le descripteur), sinon « Deck supplementaire ».
 import { describe, expect, it } from 'vitest'
-import { carteSurTable as carte, cartesDessinees, siege, tableAvec } from './plateau-de-test'
+import { construirePlateau } from './zones'
+import { catalogueVide } from './catalogue'
+import { carteSurTable as carte, siege, tableAvec } from './plateau-de-test'
 import type { World } from './world'
 
-const piege = (id: number, code: string) => carte(id, code, 'Treachery', 'Piege', { is_face_up: false, visible_for_players: [] })
+const piege = (id: number, code: string) => carte(id, code, 'Treachery', 'Piege', { traits: { t_TRAP: 1 }, is_face_up: false, visible_for_players: [] })
+
+const titres = (m: World): string[] => {
+  const plateau = construirePlateau(m, { playerId: 0, catalogue: catalogueVide })
+  return JSON.stringify(plateau).match(/(Paquet de pièges|Deck supplémentaire \d)/g) ?? []
+}
 
 describe('paquet de pieges sur la table', () => {
-  it('montre deux piles quand le moteur les exporte', () => {
-    const m = tableAvec(siege(), { trap_deck: [piege(1, 'sl050'), piege(2, 'sl051')], trap_discard_pile: [piege(3, 'sl052')] } as Partial<World>)
-    const zones = cartesDessinees(m).filter((c) => c.zone === 'piles-rencontre').map((c) => c.id)
-    expect(zones.length).toBeGreaterThanOrEqual(2)
+  it('nomme « Paquet de pièges » un deck supplementaire fait de cartes TRAP', () => {
+    const m = tableAvec(siege(), { additional_decks: [[piege(1, 'sl050'), piege(2, 'sl051')]], additional_discard_piles: [[]] } as Partial<World>)
+    expect(titres(m)).toContain('Paquet de pièges')
   })
-  it("n'ajoute aucune pile hors de Shadow Labyrinth", () => {
-    const sans = cartesDessinees(tableAvec(siege())).filter((c) => c.zone === 'piles-rencontre').length
-    const avec = cartesDessinees(tableAvec(siege(), { trap_deck: [], trap_discard_pile: [] } as Partial<World>)).filter((c) => c.zone === 'piles-rencontre').length
-    expect(avec).toBe(sans)
+  it('garde « Deck supplémentaire » pour tout autre deck', () => {
+    const m = tableAvec(siege(), { additional_decks: [[carte(3, 'sl001a', 'MainScheme', 'X')]], additional_discard_piles: [[]] } as Partial<World>)
+    expect(titres(m)).not.toContain('Paquet de pièges')
   })
 })

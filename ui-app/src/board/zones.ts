@@ -669,6 +669,15 @@ function nomDeckSpecial(liste: readonly unknown[] | undefined): string | undefin
   return mot.charAt(0) + mot.slice(1).toLowerCase()
 }
 
+/** Un deck (ou une defausse) supplementaire dont TOUTES les cartes portent le trait TRAP : le paquet de pieges (Shadow Labyrinth, Kraven). Cle du moteur : `t_TRAP`, sans le « ! » du trait imprime. */
+function sontDesPieges(liste: readonly unknown[] | undefined): boolean {
+  const cartesDeck = (Array.isArray(liste) ? liste : []).filter(estUneCarte)
+  return (
+    cartesDeck.length > 0 &&
+    cartesDeck.every((carte) => Object.keys(carte.traits ?? {}).some((trait) => trait.toUpperCase() === 'T_TRAP'))
+  )
+}
+
 /** Une carte de type vilain (utilise sur le brut du descripteur ou une WorldCard). */
 function estVilain(carte: unknown): boolean {
   return (
@@ -905,15 +914,6 @@ export function construirePlateau(world: World, options: Options): Plateau {
             regardable: true,
             titre: t('Défausse Rencontre'),
           },
-        ],
-        rendu
-      ),
-      // Shadowland (Shadow Labyrinth) : le paquet de pieges et sa defausse, a cote du deck de rencontre. Rien hors de ce scenario.
-      piles(
-        'pieges',
-        [
-          { cle: 'trap-deck', cartes: world.trap_deck },
-          { cle: 'trap-discard', cartes: world.trap_discard_pile, regardable: true, titre: t('Défausse de pièges') },
         ],
         rendu
       ),
@@ -1189,7 +1189,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
           { cle: 'retirees', cartes: world.area_removed, titre: t('Retirées de la partie') },
           ...defaussesSupplementaires.map((pile, index) => ({
             ...pile,
-            titre: `${t('Défausse supplémentaire')} ${index + 1}`,
+            titre: sontDesPieges(pile.cartes) ? t('Défausse de pièges') : `${t('Défausse supplémentaire')} ${index + 1}`,
           })),
         ],
         rendu,
@@ -1202,7 +1202,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
           { cle: 'mise-de-cote', cartes: notre?.set_aside_deck, titre: t('Deck mis de côté') },
           ...decksSupplementaires.map((pile, index) => ({
             ...pile,
-            titre: `${t('Deck supplémentaire')} ${index + 1}`,
+            titre: sontDesPieges(pile.cartes) ? t('Paquet de pièges') : `${t('Deck supplémentaire')} ${index + 1}`,
           })),
         ],
         rendu,

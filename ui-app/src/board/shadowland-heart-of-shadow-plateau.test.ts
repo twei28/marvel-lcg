@@ -65,11 +65,12 @@ describe('sl064 / sl065 : les attachements de l identité sont dessinés, porté
 })
 
 describe('Creeping Corruption, sl069 : les jetons corruption sont dessinés', () => {
-  it('la Creeping Corruption est une amélioration attachée à l identité, avec ses jetons', () => {
+  it('la Creeping Corruption est une amélioration attachée à l identité, POSÉE À CÔTÉ d elle (jamais à moitié cachée), avec ses jetons', () => {
     for (const n of [0, 1, 4]) {
       const m = tableAvec(siege({ area_hero: [heros(), cc(n)] }))
       expect(dessinee(m, CORRUPTION)?.kind).toBe('upgrade')
-      expect(dessinee(m, CORRUPTION)?.portePar).toBe(IDENTITE)
+      // 23/10/2026 : elle sort de la cascade (CARTES_A_COTE) ; `portePar: 0` = posee seule, comme une carte de la rangee
+      expect(dessinee(m, CORRUPTION)?.portePar).toBe(0)
       expect(dessinee(m, CORRUPTION)?.compteurs.corruption ?? 0).toBe(n)
     }
   })

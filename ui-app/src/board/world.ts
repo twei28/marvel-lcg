@@ -806,9 +806,6 @@ export type World = {
   villain_deck: WorldCard[]
   encounter_deck: WorldCard[]
   encounter_discard_pile: WorldCard[]
-  /** Shadowland, Shadow Labyrinth : le paquet de pieges (`TrapDeck`) et sa defausse. Absents (ou vides) hors de ce scenario. */
-  trap_deck?: WorldCard[]
-  trap_discard_pile?: WorldCard[]
   area_boost: WorldCard[]
   area_environment: WorldCard[]
   area_evidence: WorldCard[]
