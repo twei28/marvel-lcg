@@ -47,7 +47,9 @@ for f in fichiers:
 # 2. Commandes valides.
 for c in ["Puzzle.Damage(c3, 12)", "Puzzle.PutIntoPlay('Iron Man');", "Puzzle.PlaceThreat(c5, -3)",
           "Puzzle.End('Let\\'s go!')", "Puzzle.MoveTo(c4, 'Hand', player=1)",
-          "Puzzle.InstallerVille([['a','b'],['c','d']], (1, 1))", "Puzzle.End()"]:
+          "Puzzle.InstallerVille([['a','b'],['c','d']], (1, 1))", "Puzzle.End()",
+          # E2 (23/10/2026) : PV absolus, et gain / pioche d'un siege precis
+          "Puzzle.SetHealth('01094', 9)", "Puzzle.Draw(1, siege=2)", "Puzzle.Gain('01072', siege=1)"]:
     verifie(validate_command(c, METHODES) is None, f"commande valide refusée : {c} -> {validate_command(c, METHODES)}")
 
 # 3. Commandes hostiles ou mal formées : toutes doivent être refusées.

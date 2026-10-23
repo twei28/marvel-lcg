@@ -83,6 +83,9 @@ def noms_changes(chemin_depot, depuis):
         debut, nombre = int(m.group(1)), int(m.group(2) or "1")
         pour = range(debut, debut + max(nombre, 1))
         for n in pour:
+            # Une ligne VIDE (ou un commentaire seul) ajoutee ou retiree ne change aucun comportement : elle ne designe aucune fonction.
+            if 0 < n <= len(lignes) and (not lignes[n - 1].strip() or lignes[n - 1].lstrip().startswith("#")):
+                continue
             nom = None
             indent_ligne = len(lignes[n - 1]) - len(lignes[n - 1].lstrip()) if 0 < n <= len(lignes) else 0
             for k in range(min(n, len(lignes)) - 1, -1, -1):
@@ -217,7 +220,8 @@ def main():
         return 0
     env = dict(os.environ, PARALLELES=os.environ.get("PARALLELES", "4"), CAS_PREFIX="imp_")
     rapport = "/tmp/cas_impactes_rapport.json"
-    cmd = [sys.executable, os.path.join(RACINE, "tools", "test_capacites.py"), ".game-src", str(a.port), rapport, "|".join(liste)]
+    python = os.environ.get("PYTHON") or os.path.expanduser("~/.marvel-venv/bin/python")   # le moteur exige Python 3.10 (pas celui du systeme)
+    cmd = [python, os.path.join(RACINE, "tools", "test_capacites.py"), ".game-src", str(a.port), rapport, "|".join(liste)]
     return subprocess.call(cmd, cwd=RACINE, env=env)
 
 

@@ -350,15 +350,24 @@ class RunPuzzle:
 
     ################################################################################
     #
-    def Gain(self, *cards: CardName, call_back: Callable[['CardFace'], None]|None=None):
-        player = self.world.GetCurrentPlayer()
+    def _JoueurDeJeu(self, siege: int|None=None) -> 'Player':
+        """Le joueur visé par une commande de JEU (piocher, gagner une carte) : celui dont c'est le tour, ou le siege `siege` (rang dans
+        `const_seat_order_players`, puzzles a 1 a 4 heros, 23/10/2026). Un siege inexistant ou elimine leve : jamais de repli sur un autre joueur."""
+        if siege is None:
+            return self.world.GetCurrentPlayer()
+        joueur = self.world.const_seat_order_players[siege]
+        assert not joueur.is_eliminated, f"le siege {siege} est elimine"
+        return joueur
+
+    def Gain(self, *cards: CardName, call_back: Callable[['CardFace'], None]|None=None, siege: int|None=None):
+        player = self._JoueurDeJeu(siege)
         for face in self.FindCommandCards(*cards):
             player.GainCard(face, self.debug_rule)
             if call_back:
                 call_back(face)
 
-    def Draw(self, num: int):
-        player = self.world.GetCurrentPlayer()
+    def Draw(self, num: int, siege: int|None=None):
+        player = self._JoueurDeJeu(siege)
         effect = DebugRule(player.GetIdentity())
         player.DrawUp(num, effect)
 
@@ -419,6 +428,23 @@ class RunPuzzle:
             face.TakeDamage(source, val, self.debug_rule)
         else:
             self._RefuserEnManuel(face, "Degats")
+
+    def SetHealth(self, card: CardName, hp: int):
+        """Regle les POINTS DE VIE ACTUELS de la carte a `hp` (23/10/2026, puzzles : « le mechant est a 12 PV »). C'est un reglage ABSOLU, la ou
+        `Damage` et `Heal` sont relatifs : on lit les PV courants, puis on inflige ou on soigne la difference (par le chemin normal du moteur,
+        donc les capacites « When damaged / healed » partent comme en jeu). `hp` est borne a [0, PV max] ; une carte a PV infinis ne se regle pas."""
+        face = self.FindOrCreateFace(card)
+        from game.card.face.attribute.can_health import CanHealth
+        if not CanHealth.IsType(face):
+            self._RefuserEnManuel(face, "PV")
+            return
+        assert not face.is_infinite_health, "PV infinis : rien a regler"
+        voulu = max(0, min(int(hp), face.max_health))
+        ecart = face.health - voulu
+        if ecart > 0:
+            self.Damage(face, ecart)
+        elif ecart < 0:
+            self.Heal(face, -ecart)
 
     def PlaceCounters(self, card: CardName, name: str, val: int):
         """AJOUT (01/09/2026, pack custom doctor_doom) : poser des compteurs.

@@ -207,10 +207,11 @@ def cas_depart_phase_joueur():
 
 
 def cas_depart_phase_mechant():
-    """La phase des héros est sautée (cartes sans surge : 01190 boucle sans némésis) ; la première question est celle du round 2
-    (la phase du méchant et la fin de round ont été jouées)."""
+    """La phase des héros est sautée ; la première question est celle du round 2 (la phase du méchant et la fin de round ont été jouées).
+    ⚠ Cartes de rencontre SANS Surge (01105 « I'm Tough » : un statut sur Rhino) : une carte à Surge (01191 Exhaustion) révèle la suivante,
+    et avec un deck qui se remélange la boucle ne finit jamais (la phase du méchant « ne pose jamais de question »)."""
     p = puzzle_de_base([joueur(SPIDER, main=["01071"])], start_phase="villain",
-                       encounter_deck=["01191", "01191"])
+                       encounter_deck=["01105", "01105"])
     jeu, monde, vue = monter(p)
     assert vue["round_id"] == 2 and "PlayerTurn" in vue["phase_state"], vue
     return "vue=%s" % vue
@@ -233,6 +234,72 @@ def cas_depart_fin_de_round():
     jeu, monde, vue = monter(p)
     assert vue["round_id"] == 2 and "PlayerTurn" in vue["phase_state"], vue
     return "vue=%s" % vue
+
+
+HEROS3 = "01010a,01010b"
+HEROS4 = "01029a,01029b"
+HEROS5 = "01040a,01040b"
+
+
+def cas_quatre_heros_zones_separees():
+    """4 heros : chaque siege a SA main, SON deck et SA defausse (rien ne glisse chez le premier joueur)."""
+    mains = [["01071"], ["01072", "01072"], ["12007"], ["12009", "12009", "12009"]]
+    ident = [SPIDER, HEROS3, HEROS4, HEROS5]
+    p = puzzle_de_base([joueur(ident[i], main=mains[i], defausse=[["12011"], ["01071"], ["01072"], ["12003"]][i]) for i in range(4)])
+    jeu, monde, vue = monter(p)
+    for i in range(4):
+        siege = monde.const_seat_order_players[i]
+        assert sorted(ids(siege.hand_cards)) == sorted(mains[i]), (i, ids(siege.hand_cards))
+        assert ids(siege.discard_pile) == [["12011"], ["01071"], ["01072"], ["12003"]][i], (i, ids(siege.discard_pile))
+    return "ok"
+
+
+def cas_set_health_absolu():
+    """Puzzle.SetHealth regle les PV ACTUELS en absolu : vers le bas (degats) comme vers le haut (soin)."""
+    p = puzzle_de_base([joueur(SPIDER)], puzzle_command=["Puzzle.SetHealth('01094', 9)"])
+    jeu, monde, vue = monter(p)
+    from game.operate.worlds import Worlds
+    rhino = Worlds.GetAllVillains(monde)[0]
+    assert rhino.health == 9, rhino.health
+    q = puzzle_de_base([joueur(SPIDER)], puzzle_command=["Puzzle.SetHealth('01094', 5)", "Puzzle.SetHealth('01094', 11)"])
+    return "ok (bas : %d ; la remontee est jouee dans le meme processus, voir cas suivant)" % rhino.health
+
+
+def cas_set_health_remonte():
+    p = puzzle_de_base([joueur(SPIDER)], puzzle_command=["Puzzle.SetHealth('01094', 5)", "Puzzle.SetHealth('01094', 11)"])
+    jeu, monde, vue = monter(p)
+    from game.operate.worlds import Worlds
+    rhino = Worlds.GetAllVillains(monde)[0]
+    assert rhino.health == 11, rhino.health
+    return "ok"
+
+
+def cas_gain_et_pioche_visent_un_siege():
+    """`siege=` fait gagner / piocher le joueur voulu, pas celui dont c'est le tour."""
+    p = puzzle_de_base(
+        [joueur(SPIDER, deck=["01072", "01072", "01072"]), joueur(HEROS3, deck=["01071", "01071", "01071"])],
+        puzzle_command=["Puzzle.Draw(2, siege=1)", "Puzzle.Gain('01072', siege=1)"],
+    )
+    jeu, monde, vue = monter(p)
+    s0, s1 = monde.const_seat_order_players[0], monde.const_seat_order_players[1]
+    assert sorted(ids(s1.hand_cards)) == ["01071", "01071", "01072"], ("main du siege 1", ids(s1.hand_cards))
+    assert ids(s0.hand_cards) == [], ("main du siege 0", ids(s0.hand_cards))
+    return "ok"
+
+
+def cas_mise_en_jeu_avec_etats():
+    """Un puzzle pose un allie en jeu avec ses degats et un statut, regle la menace du complot et ses jetons d'acceleration."""
+    p = puzzle_de_base([joueur(SPIDER)], puzzle_command=[
+        "Puzzle.PutIntoPlay('01059')", "Puzzle.Damage('01059', 1)", "Puzzle.Stun('01059')",
+        "Puzzle.SetThreat('01097a', 4)", "Puzzle.Token('01097a', 'acceleration_token', 2)"])
+    jeu, monde, vue = monter(p)
+    from game.operate.worlds import Worlds
+    joueur0 = monde.const_seat_order_players[0]
+    allie = next(f for f in joueur0.allies.GetAll() if f.paper.card_id == "01059")
+    assert allie.max_health - allie.health == 1, ("degats", allie.max_health - allie.health)
+    complot = Worlds.GetAllMainSchemes(monde)[0]
+    assert complot.threat == 4, complot.threat
+    return "ok"
 
 
 CAS = {n[4:]: f for n, f in sorted(globals().items()) if n.startswith("cas_")}
