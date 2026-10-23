@@ -1656,3 +1656,56 @@ EPREUVES += [
         "carnet_attendu": {"gagnee": True, "scenario": "kingsfall"},
     },
 ]
+
+
+# ============================================================ Shadowland (shadowland), livret FR
+#
+# Carnet : « Dark Protege Removed » (liste, ecrit par le moteur), « Player N Overpowering Scenario 1|2 » (ecrit par le moteur : la Corruption est
+# retournee en face B), « Player N Recorded Card 1|2 » (SAISI par le joueur : `choix`), « Campaign Completed ». Voir docs/packs/shadowland/CAMPAGNE.md.
+EPREUVES += [
+    {
+        "nom": "shadowland — victoire au scenario 1 avec une Corruption INSOUTENABLE : le scenario 2 la recoit avec 1 jeton Corruption",
+        "scenario": "shadows_in_the_night",
+        "heros": "spider_man",
+        "avant": ["Puzzle.Counter('sl072a', 'corruption', 5)"],
+        "carnet_attendu": {"gagnee": True, "scenario": "shadows_in_the_night",
+                           "cles": {"Player 1 Overpowering Scenario 1": "1"}, "cles_presentes": ["Dark Protege Removed"]},
+        "suivant": "shadow_labyrinth",
+        "attendu": {"en_jeu": ["sl072a"], "compteurs": [["sl072a", "corruption", 1]]},
+    },
+    {
+        "nom": "shadowland — victoire au scenario 1 avec une Corruption ordinaire : le scenario 2 la recoit SANS jeton",
+        "scenario": "shadows_in_the_night",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True, "cles_absentes": ["Player 1 Overpowering Scenario 1"]},
+        "suivant": "shadow_labyrinth",
+        "attendu": {"en_jeu": ["sl072a"], "compteurs": [["sl072a", "corruption", 0]]},
+    },
+    {
+        "nom": "shadowland — la carte inscrite par le joueur apres le scenario 1 (Aunt May) entre en jeu au scenario 2, contre 1 jeton Corruption",
+        "scenario": "shadows_in_the_night",
+        "heros": "spider_man",
+        "choix": {"Player 1 Recorded Card 1": "01006"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "shadow_labyrinth",
+        "attendu": {"en_jeu": ["01006", "sl072a"], "compteurs": [["sl072a", "corruption", 1]]},
+    },
+    {
+        "nom": "shadowland — scenario 2 gagne avec une Corruption insoutenable, deux cartes inscrites : le scenario 3 pose 1 + 2 jetons Corruption et met les deux cartes en jeu",
+        "scenario": "shadow_labyrinth",
+        "heros": "spider_man",
+        "carnet": {"Player 1 Overpowering Scenario 1": "1", "Player 1 Recorded Card 1": "01006"},
+        "avant": ["Puzzle.Counter('sl072a', 'corruption', 5)"],
+        "choix": {"Player 1 Recorded Card 2": "01008"},
+        "carnet_attendu": {"gagnee": True, "scenario": "shadow_labyrinth",
+                           "cles": {"Player 1 Overpowering Scenario 1": "1", "Player 1 Overpowering Scenario 2": "1", "Player 1 Recorded Card 1": "01006"}},
+        "suivant": "heart_of_shadow",
+        "attendu": {"en_jeu": ["01006", "01008"], "compteurs": [["sl072a", "corruption", 4]]},
+    },
+    {
+        "nom": "shadowland — victoire au scenario 3 : la campagne est gagnee",
+        "scenario": "heart_of_shadow",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True, "scenario": "heart_of_shadow", "cles": {"Campaign Completed": "1"}},
+    },
+]
