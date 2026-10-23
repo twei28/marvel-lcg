@@ -16,7 +16,7 @@ import { kindLabel, type ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { representantNemesis, scanUrl, toPileCard, toScanCard, type ContexteCarte } from './card-model'
 import { t } from './langue'
-import { trouverPaire, type CotePanorama } from './panorama-jumelles'
+import { CARTES_A_COTE, trouverPaire, type CotePanorama } from './panorama-jumelles'
 import type { CleBrique } from './table-briques'
 import { collectionPourJoueur, lireArtsRessources } from './variantes'
 import { environnementVisible, vilainDUnAutreTerritoire } from './ville-etat'
@@ -354,7 +354,20 @@ function enUnites(
       }))
     : []
   return unitesDeLaPaire.concat(racines.flatMap((carte): UniteAffichee[] => {
-    const pendantes = sousArbre(carte.id)
+    const toutes = sousArbre(carte.id)
+    // Cartes qui se posent A COTE du porteur (CARTES_A_COTE) : elles sortent de la cascade, entieres ; ce qui pendait sous elles les suit.
+    const aCote = options.dansLaMain ? [] : toutes.filter((a) => CARTES_A_COTE.includes(a.card_id) && a.bind_object_id === carte.id)
+    const sortantesACote = new Set<number>()
+    for (const a of aCote) {
+      sortantesACote.add(a.id)
+      for (const fille of descendants(a.id)) sortantesACote.add(fille.id)
+    }
+    const pendantes = toutes.filter((a) => !sortantesACote.has(a.id))
+    const unitesACote: UniteAffichee[] = aCote.map((a) => ({
+      cle: `carte-${a.id}`,
+      carte: toScanCard(a, ctxCarte),
+      attachees: descendants(a.id).map((fille) => toScanCard(fille, ctxCarte)),
+    }))
     const paire = options.dansLaMain ? undefined : trouverPaire(pendantes)
     if (!paire) {
       return [
@@ -363,6 +376,7 @@ function enUnites(
           carte: toScanCard(carte, ctxCarte),
           attachees: pendantes.map((attachee) => toScanCard(attachee, ctxCarte)),
         },
+        ...unitesACote,
       ]
     }
     // Paire jumelle : les deux cartes sortent de la cascade et se posent A COTE
@@ -389,6 +403,7 @@ function enUnites(
       },
       unite(paire.gauche, 'gauche'),
       unite(paire.droite, 'droite'),
+      ...unitesACote,
     ]
   }))
 }
@@ -890,6 +905,15 @@ export function construirePlateau(world: World, options: Options): Plateau {
             regardable: true,
             titre: t('Défausse Rencontre'),
           },
+        ],
+        rendu
+      ),
+      // Shadowland (Shadow Labyrinth) : le paquet de pieges et sa defausse, a cote du deck de rencontre. Rien hors de ce scenario.
+      piles(
+        'pieges',
+        [
+          { cle: 'trap-deck', cartes: world.trap_deck },
+          { cle: 'trap-discard', cartes: world.trap_discard_pile, regardable: true, titre: t('Défausse de pièges') },
         ],
         rendu
       ),

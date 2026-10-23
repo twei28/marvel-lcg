@@ -365,6 +365,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- board/zones.ts : titres de zones ----
   'Deck Rencontre': 'Encounter deck',
   'Défausse Rencontre': 'Encounter discard',
+  'Défausse de pièges': 'Trap discard',
+  'Paquet de pièges': 'Trap deck',
   'Méchant': 'Villain',
   'Manigance principale': 'Main scheme',
   'Manigances annexes': 'Side schemes',

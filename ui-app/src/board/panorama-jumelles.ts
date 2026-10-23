@@ -87,3 +87,10 @@ export function jumellesPourApercu(
   }
   return undefined
 }
+
+/**
+ * Cartes attachées qui se posent À CÔTÉ de leur porteur, en entier, au lieu de se glisser dessous (23/10/2026, demande de l'utilisateur :
+ * une carte dont le compteur décide de la partie ne doit jamais être à moitié cachée). Même principe que les paires jumelles, pour UNE carte.
+ * Creeping Corruption (Shadowland, sl072a/b) : ses compteurs « corruption » font perdre le joueur à 5.
+ */
+export const CARTES_A_COTE: readonly string[] = ['sl072a', 'sl072b']

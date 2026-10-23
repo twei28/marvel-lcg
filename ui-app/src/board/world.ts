@@ -336,6 +336,8 @@ export type FaitMenace = FaitMechantCommun & {
    */
   escalade?: number
   acceleration?: number
+  /** Les cartes en jeu qui portent une icône d'accélération (rapport n°104). Absent des moteurs plus anciens. */
+  sources_acceleration?: string[]
   joueurs?: number
   /** 13/10/2026 : les cartes qui ont réduit cette pose, et de combien. */
   reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
@@ -804,6 +806,9 @@ export type World = {
   villain_deck: WorldCard[]
   encounter_deck: WorldCard[]
   encounter_discard_pile: WorldCard[]
+  /** Shadowland, Shadow Labyrinth : le paquet de pieges (`TrapDeck`) et sa defausse. Absents (ou vides) hors de ce scenario. */
+  trap_deck?: WorldCard[]
+  trap_discard_pile?: WorldCard[]
   area_boost: WorldCard[]
   area_environment: WorldCard[]
   area_evidence: WorldCard[]
