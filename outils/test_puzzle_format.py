@@ -110,5 +110,28 @@ defaut(lambda q: setattr(q, "puzzle_command", ["import os"]), "commande 1")
 defaut(lambda q: setattr(q, "puzzle_command", ["Puzzle.End()"] * 3000), "commandes")
 defaut(lambda q: setattr(q, "format", 7), "format")
 
+# 9. Le serveur de puzzles (site/puzzles_publies.py) recopie les défauts de PuzzleData et la liste
+# des commandes permises : ni l'un ni l'autre ne doit dériver du moteur.
+import dataclasses  # noqa: E402
+sys.path.insert(0, os.path.join(RACINE, "site"))
+import puzzles_publies as pp  # noqa: E402
+
+def valeur_defaut(champ):
+    if champ.default is not dataclasses.MISSING:
+        return champ.default
+    if champ.default_factory is not dataclasses.MISSING:
+        return champ.default_factory()
+    return None
+
+for classe, defauts, nom in ((PuzzleData, pp.DEFAUTS, "PuzzleData"),
+                             (PuzzleData.PlayerData, pp.DEFAUTS_JOUEUR, "PlayerData"),
+                             (PuzzleObjective, pp.DEFAUTS_OBJECTIF, "PuzzleObjective")):
+    champs = {c.name: valeur_defaut(c) for c in dataclasses.fields(classe)}
+    verifie(set(champs) == set(defauts), f"{nom} : champs du serveur différents ({set(champs) ^ set(defauts)})")
+    for cle, valeur in defauts.items():
+        if cle in champs and champs[cle] is not None:
+            verifie(champs[cle] == valeur, f"{nom}.{cle} : défaut {valeur!r} au serveur, {champs[cle]!r} au moteur")
+verifie(pp.COMMANDES_PERMISES <= METHODES, f"commandes permises inconnues du moteur : {sorted(pp.COMMANDES_PERMISES - METHODES)}")
+
 print("OK" if not echecs else f"{len(echecs)} échec(s)")
 sys.exit(1 if echecs else 0)
