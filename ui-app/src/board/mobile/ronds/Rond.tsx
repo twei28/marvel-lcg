@@ -15,10 +15,10 @@ import { versVignette } from '../../../components/ScanCard'
 import { avecInteraction } from '../../Board'
 import type { EtatInteractif } from '../../interaction'
 import { t } from '../../langue'
-import type { GroupeDePile, UniteAffichee } from '../../zones'
+import type { GroupeDePile } from '../../zones'
 import { SEUIL_INITIALES, etatsDe } from './etats-ronds'
 import { useEtatGlisse } from './glisser-ronds'
-import type { CleZone } from './repartir-ronds'
+import type { CleZone, GroupeRond, UniteRond } from './repartir-ronds'
 
 export type DecorRonds = {
   interactifs: Map<number, EtatInteractif>
@@ -26,6 +26,8 @@ export type DecorRonds = {
   heroActifId?: number
   ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
   ouvrirCarte: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
+  /** Le toucher d'un rond de groupe (« La ville », « Environnements ») : fourni par TableRonds. */
+  ouvrirGroupe?: (groupe: GroupeRond) => void
   agir: (carte: ScanCardProps) => void
   /** Mode manuel au doigt (Q52) : un toucher CHOISIT le rond, la barre d'outils agit dessus. */
   manuel?: { choisieId: number | undefined; choisir: (carte: ScanCardProps) => void }
@@ -114,7 +116,7 @@ export function Rond({
   decor,
   vaincu = false,
 }: {
-  unite: UniteAffichee
+  unite: UniteRond
   zone: CleZone
   decor: DecorRonds
   /** Le rond d'une carte qui vient de partir : grise, « VAINCU », sans geste. */
@@ -140,6 +142,7 @@ export function Rond({
     // Le clic qui suit un glisser ne doit pas ouvrir la feuille.
     if (clicAvale()) return
     if (decor.manuel) return decor.manuel.choisir(carte)
+    if (unite.groupe && decor.ouvrirGroupe) return decor.ouvrirGroupe(unite.groupe)
     if (choisit || (role === 'cible' && carte.onSelect)) decor.agir(carte)
     else apercu()
   }
@@ -164,6 +167,7 @@ export function Rond({
     retourne ? 'se-retourne' : '',
     vaincu ? 'rond-vaincu' : '',
     `rond-${zone}`,
+    unite.groupe ? `rond-groupe rond-groupe-${unite.groupe.genre}` : '',
     carte.exhausted ? 'est-epuise' : '',
     !carte.exhausted && !carte.facedown && KINDS_QUI_S_EPUISENT.has(carte.kind) ? 'est-prete' : '',
     cible ? 'est-cible' : '',
@@ -192,7 +196,7 @@ export function Rond({
       <button
         type="button"
         className="rond-bouton"
-        aria-label={`${carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}`}
+        aria-label={`${unite.groupe ? unite.groupe.titre : carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}`}
         onClick={surToucher}
         disabled={vaincu}
       >
@@ -230,6 +234,7 @@ export function Rond({
           </em>
         ) : null}
         {carte.orderNumber !== undefined ? <b className="rond-ordre">{carte.orderNumber}</b> : null}
+        {unite.groupe && unite.groupe.cartes.length > 1 ? <b className="rond-compte">{unite.groupe.cartes.length}</b> : null}
       </button>
       {etats.length > 0 ? (
         <span className="rond-etats">
@@ -262,7 +267,7 @@ export function Rond({
         </span>
       ) : null}
       {vaincu ? <span className="rond-vaincu-etiquette">{t('VAINCU')}</span> : null}
-      <span className="rond-nom">{carte.name}</span>
+      <span className="rond-nom">{unite.groupe ? unite.groupe.titre : carte.name}</span>
       {stats.length > 0 ? (
         <span className="rond-stats">
           {stats.map((stat) => (

@@ -1073,6 +1073,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Ouvrir la ville': 'Open the city',
   Ville: 'City',
   'La ville': 'The city',
+  'Environnements': 'Environments',
   'Vous regardez la rangée de': 'You are looking at the row of',
   'Cliquez votre pion pour revenir à la vôtre.': 'Click your pawn to go back to yours.',
   'Cliquez une case verte pour vous y déplacer.': 'Click a green space to move there.',

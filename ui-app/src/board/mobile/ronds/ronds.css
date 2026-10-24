@@ -21,7 +21,17 @@
   flex-direction: column;
   gap: 4px;
 }
-.rangee-vilain > .ronds-zone-vilain,
+/* La rangee du mechant : la largeur des deux zones suit leur nombre de ronds (--n-g, --n-d, poses par TableRonds), pour que trois
+   ronds de chaque cote se partagent la rangee en deux colonnes egales (The Big Apple : 3 CAPO + 3 manigances). */
+.ronds-rangee.rangee-vilain > .ronds-zone-vilain {
+  flex: var(--n-g, 1) 1 0;
+  min-width: 34%;
+  max-width: 62%;
+}
+.ronds-rangee.rangee-vilain > .ronds-zone-manigances {
+  flex: var(--n-d, 1) 1 0;
+  min-width: 34%;
+}
 .rangee-allies > .ronds-zone-allies,
 .rangee-heros > .ronds-zone-heros {
   /* au moins 34 % ; plus large quand les ameliorations decalees sur le cote en demandent (elles ne passent jamais sur la zone voisine) */
@@ -1113,4 +1123,25 @@ html[data-epure] body.a-marque-heros .ronds-zone-heros::after {
   bottom: -8px;
   transform-origin: 100% 100%;
   background: var(--marque-heros);
+}
+
+/* Un rond de groupe (« La ville », « Environnements ») : en pile, avec le nombre de cartes qu'il garde. */
+.rond-groupe .rond-bouton {
+  box-shadow: 4px 4px 0 -1px #2a2540, 8px 8px 0 -2px #221e36;
+  border-radius: 50%;
+}
+.rond .rond-compte {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  background: #f3c623;
+  color: #14161a;
+  font-size: 0.75rem;
+  font-weight: 800;
 }

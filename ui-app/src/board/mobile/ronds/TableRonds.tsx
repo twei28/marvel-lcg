@@ -4,14 +4,13 @@ import { useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode
 import { t } from '../../langue'
 import type { BandesPortrait } from '../bandes-portrait'
 import { Rond, type DecorRonds } from './Rond'
-import type { UniteAffichee } from '../../zones'
-import { repartirEnRonds, type TitresRonds, type ZoneRonds } from './repartir-ronds'
+import { repartirEnRonds, type GroupeRond, type TitresRonds, type UniteRond, type ZoneRonds } from './repartir-ronds'
 import './ronds.css'
 
 /** Les ronds qui viennent de quitter une zone de combat (sbire vaincu, allie vaincu) : fantomes grises « VAINCU » un instant (Q44). */
-function useVaincus(zone: ZoneRonds): UniteAffichee[] {
-  const avant = useRef<UniteAffichee[]>(zone.unites)
-  const [fantomes, setFantomes] = useState<UniteAffichee[]>([])
+function useVaincus(zone: ZoneRonds): UniteRond[] {
+  const avant = useRef<UniteRond[]>(zone.unites)
+  const [fantomes, setFantomes] = useState<UniteRond[]>([])
   useEffect(() => {
     const encore = new Set(zone.unites.map((u) => u.cle))
     const partis = avant.current.filter((u) => !encore.has(u.cle))
@@ -66,14 +65,32 @@ export function TableRonds({
     heros: t('Héros'),
     enJeu: t('Cartes en jeu'),
   }
-  const rangees = useMemo(() => repartirEnRonds(bandes, titres), [bandes]) // eslint-disable-line react-hooks/exhaustive-deps
+  const libelles = { ville: t('La ville'), environnements: t('Environnements') }
+  const rangees = useMemo(() => repartirEnRonds(bandes, titres, libelles), [bandes]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Le toucher d'un rond de groupe : « La ville » ouvre l'onglet Ville (le meme geste que sa languette), « Environnements »
+  // etale ses cartes dans la visionneuse de pile.
+  const decorGroupes: DecorRonds = {
+    ...decor,
+    ouvrirGroupe:
+      decor.ouvrirGroupe ??
+      ((groupe: GroupeRond) => {
+        if (groupe.genre === 'ville') (document.querySelector('.volet-ville-languette') as HTMLElement | null)?.click()
+        else decor.ouvrirPile(groupe.titre, groupe.cartes)
+      }),
+  }
   return (
     <div className="table-ronds">
       {rangees.map((rangee) => (
-        <div key={rangee.cle} className={`ronds-rangee ${rangee.cle}`}>
-          <Zone zone={rangee.gauche} decor={decor} onglets={rangee.cle === 'rangee-heros' ? onglets : undefined} />
+        // La largeur des deux zones suit leur nombre de ronds (24/10/2026) : trois ronds de chaque cote = moitie-moitie,
+        // au lieu d'une colonne unique pour les manigances.
+        <div
+          key={rangee.cle}
+          className={`ronds-rangee ${rangee.cle}`}
+          style={{ ['--n-g' as string]: Math.max(1, rangee.gauche.unites.length), ['--n-d' as string]: Math.max(1, rangee.droite.unites.length) }}
+        >
+          <Zone zone={rangee.gauche} decor={decorGroupes} onglets={rangee.cle === 'rangee-heros' ? onglets : undefined} />
           <span className="ronds-separateur" aria-hidden="true" />
-          <Zone zone={rangee.droite} decor={decor} />
+          <Zone zone={rangee.droite} decor={decorGroupes} />
         </div>
       ))}
     </div>

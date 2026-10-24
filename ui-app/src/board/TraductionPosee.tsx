@@ -157,7 +157,11 @@ export function TraductionPosee({
       // cache monte sur l'illustration plutôt que de couper le texte.
       const hauteurCarte = parent?.clientHeight ?? 0
       if (hauteurCarte && element.scrollHeight > element.clientHeight + 1) {
-        const voulue = Math.min(element.scrollHeight, zone.y1 * hauteurCarte)
+        // Plafond (24/10/2026) : sur un telephone, la boite montait jusqu'au bord haut de la carte (une grande boite blanche
+        // sur l'illustration, le texte minuscule en haut) alors que la zone detectee etait bonne. Elle ne grandit plus que d'un
+        // tiers de sa hauteur ; au-dela, elle garde sa zone.
+        const plafond = (zone.y1 - zone.y0) * hauteurCarte * 1.35
+        const voulue = Math.min(element.scrollHeight, zone.y1 * hauteurCarte, plafond)
         element.style.top = `${zone.y1 * hauteurCarte - voulue}px`
         element.style.height = `${voulue}px`
       }
