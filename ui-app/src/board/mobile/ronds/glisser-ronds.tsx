@@ -9,7 +9,7 @@
 //   - au lacher, `glisser.onDepot` decide. Une raison de refus (lacher a vide, mauvaise cible) est dite en bulle et la
 //     carte retourne la ou elle etait (rien n'est joue).
 // Un toucher simple n'est pas touche : le clic qui suit un glisser est avale, jamais l'inverse.
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactElement } from 'react'
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactElement } from 'react'
 import type { ReglagesGlisser } from '../../Board'
 import { BulleRefus } from '../../glisser/CoucheGlisser'
 import type { CibleSurvolee } from '../../glisser/useGlisser'
@@ -86,6 +86,25 @@ function fondDe(element: HTMLElement): { fond: string; cadrage?: { taille: strin
   return { fond: image ? `url(${sansFiligrane})` : 'none', cadrage: { taille: '190% auto', position: '48% 24%' } }
 }
 
+/** Texte de l'etiquette et teinte de refus, poses directement sur les deux elements du fantome. */
+function majApparence(fantome: HTMLElement | null, etiquette: HTMLElement | null, libelle: string | undefined, refuse: boolean): void {
+  fantome?.classList.toggle('est-refuse', refuse)
+  if (etiquette) {
+    etiquette.textContent = libelle ?? ''
+    etiquette.classList.toggle('est-refuse', refuse)
+  }
+}
+
+/** Pose le fantome et son etiquette sous le doigt, par transform (pas de mise en page, pas de rendu React). */
+function poserFantome(fantome: HTMLElement | null, libelle: HTMLElement | null, x: number, y: number): void {
+  if (fantome) fantome.style.transform = `translate3d(${x}px, ${y}px, 0) scale(1.12)`
+  if (libelle) {
+    const largeur = typeof window === 'undefined' ? 390 : window.innerWidth
+    const xl = Math.min(Math.max(x, 96), largeur - 96)
+    libelle.style.transform = `translate3d(${xl}px, ${Math.max(y - 56, 8)}px, 0) translateX(-50%)`
+  }
+}
+
 /**
  * Le geste. `racine` est l'element qui recoit les evenements (la table et la main) ; chaque source est un descendant
  * portant `data-card-id` (un `.rond`, ou la carte d'une `.main-portrait-carte`).
@@ -94,11 +113,22 @@ export function useGlisserAuDoigt(glisser: ReglagesGlisser | undefined) {
   const actif = glisser !== undefined && glisser.auDoigt !== true
   const [glisse, setGlisse] = useState<GlisseRond | null>(null)
   const [refus, setRefus] = useState<{ x: number; y: number; texte: string } | null>(null)
-  const depart = useRef<{ id: number; x: number; y: number; deLaMain: boolean; pointerId: number; racine: HTMLElement; fond: string; cadrage?: { taille: string; position: string } } | null>(null)
+  const depart = useRef<{ id: number; x: number; y: number; deLaMain: boolean; pointerId: number; racine: HTMLElement; legales?: Set<number>; fond: string; cadrage?: { taille: string; position: string } } | null>(null)
   const commence = useRef(false)
+  // Le fantome suit le doigt SANS repasser par React (fluidite, 24/10/2026) : la position vit ici et part dans le style par image.
+  const position = useRef({ x: 0, y: 0 })
+  const trame = useRef<number | undefined>(undefined)
+  const dernier = useRef('')
+  const fantomeRef = useRef<HTMLSpanElement | null>(null)
+  const libelleRef = useRef<HTMLSpanElement | null>(null)
   const avaleClic = useRef(false)
   const minuteurRefus = useRef<number | undefined>(undefined)
   const cibles = useMemo(() => (glisse && glisser ? glisser.ciblesLegales(glisse.sourceId) : new Set<number>()), [glisse?.sourceId, glisser]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Le fantome vient d'etre monte (ou son texte a change) : on le remet tout de suite sous le doigt.
+  useLayoutEffect(() => {
+    if (glisse) poserFantome(fantomeRef.current, libelleRef.current, position.current.x, position.current.y)
+  }, [glisse])
 
   const oublier = useCallback(() => {
     const debut = depart.current
@@ -111,6 +141,9 @@ export function useGlisserAuDoigt(glisser: ReglagesGlisser | undefined) {
     }
     depart.current = null
     commence.current = false
+    if (trame.current !== undefined) window.cancelAnimationFrame(trame.current)
+    trame.current = undefined
+    dernier.current = ''
     setGlisse(null)
   }, [])
   useEffect(() => () => window.clearTimeout(minuteurRefus.current), [])
@@ -156,16 +189,30 @@ export function useGlisserAuDoigt(glisser: ReglagesGlisser | undefined) {
           /* pas de capture : on suit quand meme le pointeur */
         }
       }
-      const cible = cibleSousLeRond(evenement.clientX, evenement.clientY)
-      setGlisse({
-        sourceId: debut.id,
-        x: evenement.clientX,
-        y: evenement.clientY,
-        fond: debut.fond,
-        cadrage: debut.cadrage,
-        libelle: glisser.libelle(debut.id, cible),
-        refuse: cible.carteId !== undefined && !glisser.ciblesLegales(debut.id).has(cible.carteId),
-      })
+      position.current = { x: evenement.clientX, y: evenement.clientY }
+      const appliquer = () => {
+        trame.current = undefined
+        const en_cours = depart.current
+        if (!en_cours || !commence.current) return
+        const { x, y } = position.current
+        const cible = cibleSousLeRond(x, y)
+        const libelle = glisser.libelle(en_cours.id, cible)
+        const refuse = cible.carteId !== undefined && !(en_cours.legales ??= glisser.ciblesLegales(en_cours.id)).has(cible.carteId)
+        // React ne voit que ce qui change l'APPARENCE (texte, refus) : pas chaque pixel du trajet.
+        const cle = `${en_cours.id}|${libelle ?? ''}|${refuse}`
+        if (cle !== dernier.current) {
+          const premiere = dernier.current === ''
+          dernier.current = cle
+          // Au premier mouvement le fantome se monte (un rendu) ; ensuite, un changement de cible ne touche QUE ces deux elements,
+          // sans repasser par React : redessiner tout le plateau a chaque rond survole faisait saccader le glisser.
+          if (premiere) setGlisse({ sourceId: en_cours.id, x, y, fond: en_cours.fond, cadrage: en_cours.cadrage, libelle, refuse })
+          else majApparence(fantomeRef.current, libelleRef.current, libelle, refuse)
+        }
+        poserFantome(fantomeRef.current, libelleRef.current, x, y)
+      }
+      // Le premier mouvement lève le rond tout de suite ; les suivants : une mise a jour par image (pas par evenement du doigt).
+      if (dernier.current === '') appliquer()
+      else if (trame.current === undefined) trame.current = window.requestAnimationFrame(appliquer)
     },
     [glisser]
   )
@@ -202,34 +249,43 @@ export function useGlisserAuDoigt(glisser: ReglagesGlisser | undefined) {
     cibles,
     refus,
     clicAvale,
+    fantomeRef,
+    libelleRef,
     gestes: { onPointerDown: surAppui, onPointerMove: surMouvement, onPointerUp: surRelache, onPointerCancel: oublier },
     valeur: { glisse, cibles, estSource: (id: number) => actif && glisser !== undefined && glisser.estSource(id), clicAvale } as Contexte,
   }
 }
 
 /** Le rond fantome qui suit le doigt, son etiquette, et la bulle d'un refus. Ne capte jamais le pointeur. */
-export function CoucheGlisseRonds({ glisse, refus }: { glisse: GlisseRond | null; refus: { x: number; y: number; texte: string } | null }): ReactElement {
+export function CoucheGlisseRonds({
+  glisse,
+  refus,
+  fantomeRef,
+  libelleRef,
+}: {
+  glisse: GlisseRond | null
+  refus: { x: number; y: number; texte: string } | null
+  fantomeRef?: React.RefObject<HTMLSpanElement | null>
+  libelleRef?: React.RefObject<HTMLSpanElement | null>
+}): ReactElement {
   return (
     <>
       {glisse ? (
         <div className="glisse-rond-couche" aria-hidden="true">
           <span
+            ref={fantomeRef}
             className={`glisse-rond-fantome${glisse.refuse ? ' est-refuse' : ''}`}
             style={
               {
-                left: glisse.x,
-                top: glisse.y,
                 backgroundImage: glisse.fond,
                 backgroundSize: glisse.cadrage?.taille,
                 backgroundPosition: glisse.cadrage?.position,
               } as CSSProperties
             }
           />
-          {glisse.libelle ? (
-            <span className={`glisse-rond-libelle${glisse.refuse ? ' est-refuse' : ''}`} style={{ left: Math.min(Math.max(glisse.x, 96), (typeof window === 'undefined' ? 390 : window.innerWidth) - 96), top: Math.max(glisse.y - 56, 8) }}>
-              {glisse.libelle}
-            </span>
-          ) : null}
+          <span ref={libelleRef} className={`glisse-rond-libelle${glisse.refuse ? ' est-refuse' : ''}`}>
+            {glisse.libelle}
+          </span>
         </div>
       ) : null}
       {refus ? <BulleRefus x={refus.x} y={refus.y} texte={refus.texte} /> : null}

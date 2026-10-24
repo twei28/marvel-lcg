@@ -428,7 +428,7 @@ export function PlateauPortrait(props: BoardProps) {
           nom={props.world?.players?.[props.playerId]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
         />
       ) : null}
-      {formeDeTable === 'ronds' ? <CoucheGlisseRonds glisse={glisserRonds.glisse} refus={glisserRonds.refus} /> : null}
+      {formeDeTable === 'ronds' ? <CoucheGlisseRonds glisse={glisserRonds.glisse} refus={glisserRonds.refus} fantomeRef={glisserRonds.fantomeRef} libelleRef={glisserRonds.libelleRef} /> : null}
     </main>
     </ContexteGlisse.Provider>
     </ImagesParesseuses.Provider>

@@ -498,21 +498,25 @@
 }
 .glisse-rond-fantome {
   position: fixed;
+  left: 0;
+  top: 0;
+  will-change: transform;
   width: 78px;
   height: 78px;
   margin: -39px 0 0 -39px;
   border-radius: 50%;
   background-size: cover;
   background-position: 50% 25%;
-  box-shadow: 0 0 0 4px #f3c623, 0 12px 28px rgba(0, 0, 0, 0.7);
-  transform: scale(1.12);
+  box-shadow: 0 0 0 4px #f3c623, 0 6px 12px rgba(0, 0, 0, 0.6);
 }
 .glisse-rond-fantome.est-refuse {
-  box-shadow: 0 0 0 4px #e0524a, 0 12px 28px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 0 4px #e0524a, 0 6px 12px rgba(0, 0, 0, 0.6);
 }
 .glisse-rond-libelle {
   position: fixed;
-  transform: translateX(-50%);
+  left: 0;
+  top: 0;
+  will-change: transform;
   max-width: 80vw;
   padding: 4px 10px;
   border-radius: 999px;
@@ -521,6 +525,9 @@
   color: #f2f3f5;
   font: 700 0.78rem var(--ep-police, Inter, system-ui, sans-serif);
   white-space: nowrap;
+}
+.glisse-rond-libelle:empty {
+  display: none;
 }
 .glisse-rond-libelle.est-refuse {
   border-color: #e0524a;
