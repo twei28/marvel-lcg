@@ -149,4 +149,4 @@ Deploye en ligne : jusqu'a 7316e706 (V2 garde le mode telephone, dessin des mani
 - Visite guidee : une seule fois (Passer ou Terminer), Reglages la remet. Languettes : glisser haut / bas = deplacer tout de suite.
 - Interruptions simultanees (variante B) : `DemandeCentrale` au telephone, cartes cote a cote avec leur texte, « Ignorer les deux ».
 - Menu de l'accueil en admin (simule) : 11 outils accessibles a 320 px ; le bouton d'affichage a maintenant son nom.
-A faire : libelles anglais « Change To AVENGER GIANT / TINY » dans le menu d'actions du heros (Ant-Man) ; deploiement sur demande.
+Corrige ensuite : « Passer en forme Géant / Minuscule » (Ant-Man). A faire : deploiement sur demande, puis confirmer « Retour au menu » sur vrai telephone.
