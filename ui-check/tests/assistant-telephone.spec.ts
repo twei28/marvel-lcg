@@ -128,7 +128,7 @@ for (const { w, h } of FORMATS) {
 
       await tuile.tap();
       await expect(page.locator('.ts-titre b')).toContainText(/storm/i);
-      await expect(tuile, 'un toucher n’en choisit pas : il présente').not.toHaveClass(/\bchosen\b/);
+      await expect(tuile, 'un toucher choisit le héros (24/10/2026)').toHaveClass(/\bchosen\b/);
       await expect(page.locator('.fiche-heros')).toHaveCount(0);
       const choisir = page.locator('.ts-btn.jaune');
       await expect(choisir).toBeVisible();
@@ -172,8 +172,8 @@ for (const { w, h } of FORMATS) {
       await page.mouse.up();
       await expect(fiche, 'glisser la poignée ferme la feuille').toHaveCount(0);
 
-      // Choisir : l'équipe est complète, on file aux decks sans « Options ».
-      await page.locator('.ts-btn.jaune').tap();
+      // Le héros est déjà choisi : « Continuer » en bas mène aux decks, sans « Options ».
+      await page.getByRole('button', { name: /^continuer/i }).tap();
       await expect(page.locator('.pstep.active')).toContainText(/decks/i, { timeout: 8_000 });
       await expect(page.locator('.vh-panel'), 'plus de fenêtre « Options de ce héros »').toHaveCount(0);
 
@@ -238,7 +238,7 @@ for (const { w, h } of FORMATS) {
       await solo(page);
       await page.locator('.tb-port[data-hero="storm"]').waitFor({ timeout: 30_000 });
       await page.locator('.tb-port[data-hero="storm"]').tap();
-      await page.locator('.ts-btn.jaune').tap();
+      await page.getByRole('button', { name: /^continuer/i }).tap();
       await expect(page.locator('.pstep.active')).toContainText(/decks/i, { timeout: 8_000 });
       // Revenir par la barre d'étapes rejoue le recul de l'historique : la pile
       // reste propre (pas d'aller-retour Héros, Decks, Héros à défaire).

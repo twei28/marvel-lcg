@@ -3373,9 +3373,7 @@ function recruterVraiment(h, portraitEl) {
     // Ce héros a des variantes ? La modale s'ouvre tout de suite, pré-remplie
     // de la mémoire. Sans variante, rien : jamais de modale vide.
     if (avecVariantes) ouvrirModaleVariantes(siege, h);
-    // Téléphone : l'équipe est au complet, on file aux decks (le temps de voir
-    // « Choisi »). Le retour du système ramène ici.
-    if (tel && canContinue()) setTimeout(() => { if (!state.accueil && state.step === 0 && canContinue()) goto(1); }, 260);
+    // Plus d'avance automatique (24/10/2026) : le joueur change d'avis en touchant un autre héros, puis touche « Continuer ».
 }
 
 /** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une.
@@ -3523,7 +3521,8 @@ async function refreshHeroGrid(pre) {
             "aria-disabled": ferme && !verrou.achetable ? "true" : null,
             title: ferme ? verrou.condition : nomAffiche(h),
             onclick: (e) => {
-                if (!ferme && estTel()) return apercevoirHerosTel(h, e.currentTarget);
+                // Téléphone : un toucher CHOISIT le héros (24/10/2026) ; on en touche un autre pour changer, puis « Continuer » en bas.
+                if (!ferme && estTel()) return recruterVraiment(h, e.currentTarget);
                 if (!ferme) return recruter(h, e.currentTarget);
                 if (verrou.achetable) return void acheterHerosLegacy(h, e.currentTarget);
             },
