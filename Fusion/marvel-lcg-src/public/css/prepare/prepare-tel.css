@@ -68,7 +68,7 @@
     display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 2;
     flex-direction: column; gap: 4px; padding: 8px 12px 12px;
     background: #0b0d12; border-bottom: 1px solid rgba(255,255,255,.14);
-    max-height: 70dvh; overflow-y: auto;
+    max-height: calc(100dvh - 130px); overflow-y: auto;
   }
   html.tel .tel-entete.menu-ouvert .tel-menu { display: flex; animation: tel-fondu .15s ease-out; }
   html.tel .tel-menu .tel-lien {
@@ -86,6 +86,22 @@
     min-height: 44px; min-width: 44px; padding: 0 12px; font-size: 14px;
   }
   html.tel .tel-menu .reprise-boutons .rb-libelle { display: inline; font-size: 14px; }
+  /* Les outils (Reprendre, Revoir, Stats, Puzzles, Player, Administration...) : UNE LIGNE PAR OUTIL, icone + nom (24/10/2026,
+     demande de l'utilisateur : « je vois pas tous les icones en haut »). Les icones seules ne disaient pas leur nom, et la
+     rangee en grille se coupait. Meme habillage que le menu des autres pages (tel-pages.css, `.tp-menu`). */
+  html.tel .tel-menu .reprise-boutons { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 2px !important; margin: 4px 0 0; }
+  html.tel .tel-menu .reprise-boutons > button,
+  html.tel .tel-menu .reprise-boutons > a {
+    width: 100% !important; height: 46px !important; min-height: 46px !important; padding: 0 8px !important;
+    display: flex !important; justify-content: flex-start; align-items: center; gap: 12px;
+    background: transparent; box-shadow: none; border: 0; clip-path: none !important; color: #fff; text-decoration: none;
+    font: 700 16px "Segoe UI", system-ui, sans-serif !important;
+  }
+  html.tel .tel-menu .reprise-boutons > button i.fa,
+  html.tel .tel-menu .reprise-boutons > a i.fa { width: 24px; text-align: center; font-size: 17px; }
+  html.tel .tel-menu .reprise-boutons .rb-libelle {
+    position: static !important; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; font-size: 16px;
+  }
 
   /* ---- Le bandeau : l'affiche en haut, qui rétrécit au défilement --------- */
   html.tel .team-b {
