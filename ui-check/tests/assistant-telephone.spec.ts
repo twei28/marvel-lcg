@@ -111,7 +111,7 @@ for (const { w, h } of FORMATS) {
       await capturer(page, w, '0-accueil');
       await solo(page);
 
-      // --- Étape Héros : toucher = aperçu, « Choisir » = valide -------------
+      // --- Étape Héros : un toucher choisit, « Continuer » en bas ------------
       const tuile = page.locator('.tb-port[data-hero="storm"]');
       await tuile.waitFor({ timeout: 30_000 });
       await expect(page.locator('html')).toHaveClass(/\btel\b/);
@@ -204,7 +204,7 @@ for (const { w, h } of FORMATS) {
       await verifier(page, 'méchant');
       await scn.tap();
       await capturer(page, w, '8-mechant-apercu');
-      await page.locator('.ts-btn.jaune').tap();
+      // Un toucher choisit le méchant (24/10/2026) : « Continuer » s'allume sans passer par « Choisir ».
       await expect(page.getByRole('button', { name: /^continuer/i })).toBeEnabled({ timeout: 8_000 });
       // L'en-tête de l'étape nomme le méchant choisi (il restait « inconnu »).
       for (const mode of await page.locator('.tb-mode').all()) {

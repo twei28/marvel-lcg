@@ -5773,11 +5773,13 @@ async function loadScnGrid() {
             onclick: (e) => {
                 if (ferme) return;
                 if (estTel()) {
-                    // Toucher = aperçu dans le bandeau ; « Choisir » valide.
+                    // Toucher = CHOISIR le méchant (24/10/2026, comme les héros) : on en touche un autre pour changer,
+                    // puis « Continuer » en bas. Plus besoin de remonter au « Choisir » du bandeau.
                     mechantApercuTel = { sc, concret };
                     document.querySelectorAll(".tb-port.apercu").forEach((b) => b.classList.remove("apercu"));
                     e.currentTarget.classList.add("apercu");
-                    return rendreSceneMechantTel(concret);
+                    rendreSceneMechantTel(concret);
+                    return choisirMechantTel({ sc, concret });
                 }
                 if (plusieurs) ouvrirModaleUnderling(sc); else verrouillerCible(concret);
             },
