@@ -80,6 +80,11 @@ export function CarteOuverte({
   const autresFaces = carte.autresFaces ?? []
   const [face, setFace] = useState(0)
   const faceMontree = face > 0 ? autresFaces[face - 1] : undefined
+  // Plusieurs faces en detail (ronds, 24/10/2026) : 2 = l'une sous l'autre, 3 = deux puis une, 4 et plus = une grande
+  // et les autres en miniatures a toucher (Conan en a cinq).
+  const nbFaces = 1 + autresFaces.length
+  const enFocus = !!detail && nbFaces >= 4
+  const classeFaces = detail && nbFaces >= 2 ? (nbFaces === 2 ? ' a-faces-2' : nbFaces === 3 ? ' a-faces-3' : ' a-faces-plus') : ''
   // Statuts (Tough, Stunned...) d'abord, en petit, puis les ameliorations.
   const statuts = attachees.filter((a) => a.kind === 'status')
   const ameliorations = attachees.filter((a) => a.kind !== 'status')
@@ -124,7 +129,7 @@ export function CarteOuverte({
         }}
       >
         <div
-          className={`carte-ouverte-scan${faceMontree ? ' est-autre-face' : ''}${detail && autresFaces.length > 0 ? ' a-deux-faces' : ''}`}
+          className={`carte-ouverte-scan${faceMontree ? ' est-autre-face' : ''}${detail && autresFaces.length > 0 ? ' a-deux-faces' : ''}${classeFaces}`}
           {...appui.gestes}
         >
           {/* Sans onSelect, ScanCard ne rend pas de bouton : la carte est ici
@@ -154,7 +159,7 @@ export function CarteOuverte({
             />
           )}
           {/* Q72 : l'autre face a COTE de la premiere, comme sur le PC (un peu plus petites). */}
-          {detail && !faceMontree
+          {detail && !faceMontree && !enFocus
             ? autresFaces.map((autre) => (
                 <ScanCard
                   key={autre.url}
@@ -173,6 +178,41 @@ export function CarteOuverte({
               ))
             : null}
         </div>
+
+        {enFocus ? (
+          <div className="carte-ouverte-miniatures">
+            {Array.from({ length: nbFaces }, (_, i) => i)
+              .filter((i) => i !== face)
+              .map((i) => {
+                const autre = i > 0 ? autresFaces[i - 1] : undefined
+                return (
+                  <button
+                    type="button"
+                    className="carte-ouverte-miniature"
+                    key={autre?.url ?? 'en-jeu'}
+                    aria-label={i === 0 ? t('Face en jeu') : t('Autre face')}
+                    onClick={() => setFace(i)}
+                  >
+                    <ScanCard
+                      {...carte}
+                      imageUrl={autre ? autre.url : carte.imageUrl}
+                      isLandscape={autre ? autre.isLandscape ?? carte.isLandscape : carte.isLandscape}
+                      stats={undefined}
+                      allyHp={undefined}
+                      schemeThreat={undefined}
+                      exhausted={false}
+                      onSelect={undefined}
+                      highlight={false}
+                      jauge={undefined}
+                      jetonMenace={undefined}
+                      jetonDegats={undefined}
+                      counters={undefined}
+                    />
+                  </button>
+                )
+              })}
+          </div>
+        ) : null}
 
         {detail && !faceMontree ? <FeuilleDetail carte={carte} /> : null}
 

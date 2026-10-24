@@ -854,14 +854,64 @@
   text-align: left;
 }
 
-/* Deux faces cote a cote. */
+/* Plusieurs faces (24/10/2026, « les mettre l'une sous l'autre, sans defiler, en laissant la place des boutons »).
+   --h-faces : la hauteur que prennent les faces = l'ecran moins 190 px (le libelle, les boutons, ce qui se lit dessous).
+   2 faces : l'une sous l'autre ; 3 faces : deux puis une ; 4 et plus : une grande, les autres en miniatures a toucher. */
 .carte-ouverte-scan.a-deux-faces {
+  --h-faces: calc(100dvh - 190px);
+  --l-ecran: calc(100vw - 32px);
   display: flex;
   gap: 8px;
   justify-content: center;
 }
-.carte-ouverte-scan.a-deux-faces .scan-card {
-  --card-w: min(168px, 44vw, calc((100dvh - 250px) * 127 / 176));
+.carte-ouverte-scan.a-faces-2 {
+  flex-direction: column;
+  align-items: center;
+}
+.carte-ouverte-scan.a-faces-2 .scan-card {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 8px) / 2 * 127 / 176));
+}
+.carte-ouverte-scan.a-faces-2 .scan-card.is-landscape {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 8px) / 2 * 176 / 127));
+}
+.carte-ouverte-scan.a-faces-3 {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  justify-items: center;
+}
+.carte-ouverte-scan.a-faces-3 .scan-card {
+  --card-w: min(calc((var(--l-ecran) - 8px) / 2), calc((var(--h-faces) - 8px) / 2 * 127 / 176));
+}
+.carte-ouverte-scan.a-faces-3 .scan-card:nth-child(3) {
+  grid-column: 1 / -1;
+}
+.carte-ouverte-scan.a-faces-plus .scan-card {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 100px) * 127 / 176));
+}
+.carte-ouverte-scan.a-faces-plus .scan-card.is-landscape {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 100px) * 176 / 127));
+}
+.carte-ouverte-miniatures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.carte-ouverte-miniature {
+  padding: 2px;
+  background: transparent;
+  border: 2px solid #3f86e0;
+  border-radius: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.carte-ouverte-miniature .scan-card {
+  --card-w: 72px;
+}
+.carte-ouverte-miniature .scan-card.is-landscape {
+  --card-w: 104px;
 }
 
 /* ---- PAYSAGE (Q48) : les memes zones en largeur, la main dans un panneau a droite ---- */
@@ -1027,16 +1077,21 @@
 }
 
 /* ---- Couleurs du heros et du mechant (24/10/2026, variante B) : les MEMES bandes nettes en biais que le PC en Epure
-   (--marque-mechant / --marque-heros, poses par board.tsx), en plus petit, dans le coin de la zone Mechant (haut gauche)
-   et dans le coin de la bande du heros (bas droit de « Cartes en jeu »). Jamais de couleur diffuse. ---- */
+   (--marque-mechant / --marque-heros, poses par board.tsx), en plus petit. Le mechant : COLLE au coin haut gauche de sa zone ;
+   le heros : COLLE au coin bas droit de SA zone (celle de son rond « Heros »), plus dans « Cartes en jeu ». Jamais de couleur
+   diffuse.
+   « Colle » = jusqu'aux traits qui bornent la case : la zone s'etire sur toute la hauteur de la rangee, le triangle sort de ses
+   marges d'autant que le remplissage de la rangee (10 px a gauche, 6 px en haut, 8 px en bas) et que l'ecart au separateur
+   (8 px), et la zone rogne le tout a cette case. ---- */
 html[data-epure] body.a-marque-mechant .ronds-zone-vilain,
-html[data-epure] body.a-marque-heros .ronds-zone-enJeu {
+html[data-epure] body.a-marque-heros .ronds-zone-heros {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  align-self: stretch;
+  clip-path: inset(-6px -8px -8px -10px);
 }
 html[data-epure] body.a-marque-mechant .ronds-zone-vilain::before,
-html[data-epure] body.a-marque-heros .ronds-zone-enJeu::after {
+html[data-epure] body.a-marque-heros .ronds-zone-heros::after {
   content: '';
   position: absolute;
   /* Les bandes du PC font 224 px le long de la diagonale : une boite de 224 x sqrt(2) = 317 px les arrete pile au
@@ -1048,14 +1103,14 @@ html[data-epure] body.a-marque-heros .ronds-zone-enJeu::after {
   z-index: -1;
 }
 html[data-epure] body.a-marque-mechant .ronds-zone-vilain::before {
-  left: 0;
-  top: 0;
+  left: -10px;
+  top: -6px;
   transform-origin: 0 0;
   background: var(--marque-mechant);
 }
-html[data-epure] body.a-marque-heros .ronds-zone-enJeu::after {
-  right: 0;
-  bottom: 0;
+html[data-epure] body.a-marque-heros .ronds-zone-heros::after {
+  right: -8px;
+  bottom: -8px;
   transform-origin: 100% 100%;
   background: var(--marque-heros);
 }
