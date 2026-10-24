@@ -4507,7 +4507,9 @@ PAGE_ADMIN = """<!doctype html>
     td[colspan] {{ justify-content:flex-start; text-align:left; }}
   }}
   @media (max-width:767px) {{
-    .onglets {{ top:52px; }}
+    /* Telephone : tous les onglets se voient (ils passent a la ligne) au lieu de defiler de cote sans rien dire. */
+    .onglets {{ top:52px; flex-wrap:wrap; overflow-x:visible; }}
+    .onglet {{ flex:1 1 auto; justify-content:center; }}
     .onglet, .sous-onglet, .annonce-toggle, button {{ min-height:44px; }}
     .sous-onglets {{ overflow-x:auto; scrollbar-width:none; gap:1rem; }}
     .sous-onglet {{ flex:none; min-width:44px; }}
@@ -6171,8 +6173,12 @@ class Handler(BaseHTTPRequestHandler):
             lignes.append('<li><a href="/admin/sauvegarde-code?n=%d">%s</a> (%.0f Mo)%s</li>'
                           % (rang, html.escape(nom), taille, " &larr; la plus récente" if rang == 0 else ""))
         corps = "".join(lignes) or "<li>Aucune sauvegarde pour l'instant : elle se crée au prochain déploiement.</li>"
-        return ("<!doctype html><meta charset=utf-8><title>Sauvegardes du code</title>"
-                "<body style='font-family:system-ui;background:#0d1116;color:#e8edf2;padding:2rem'>"
+        return ("<!doctype html><meta charset=utf-8>"
+                "<meta name=viewport content='width=device-width,initial-scale=1'>"
+                "<title>Sauvegardes du code</title>"
+                "<body style='font-family:system-ui;background:#0d1116;color:#e8edf2;padding:clamp(1rem,4vw,2rem);"
+                "overflow-wrap:anywhere'>"
+                "<p><a href='/admin'>&larr; Administration</a></p>"
                 "<h1>Sauvegardes du code</h1>"
                 "<p>Tout le projet sans les images, historique compris. Un zip par déploiement, les 5 derniers. "
                 "La notice de restauration est dans le zip (LISEZ-MOI.txt).</p>"
