@@ -1,0 +1,34 @@
+/* tablette-pages.css : les pages hors plateau au doigt (24/10/2026, decision 11).
+   Pose par js/tablette.js, ne vise que <html data-tablette> : le PC et le
+   telephone (html.tel, moins de 768 px) ne changent pas. Tout ce qui se touche
+   fait 44 px au moins. */
+/* !important : les habillages (Epure, telephone) figent deja ces boutons a 34 px, en !important pour certains. */
+html[data-tablette] .btn-icone,
+html[data-tablette] .bouton-icone {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+}
+html[data-tablette] .btn,
+html[data-tablette] .cmp-marque {
+  min-height: 44px;
+}
+html[data-tablette] .acc-nombre {
+  min-width: 44px;
+  min-height: 44px;
+}
+html[data-tablette] .cmp-carte-suppr {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+}
+html[data-tablette] .deck-modal button,
+html[data-tablette] .af-choix {
+  min-height: 44px;
+}
+/* Les liens de texte (pied de page, aide) : la zone touchable grandit, pas le texte. */
+html[data-tablette] footer a,
+html[data-tablette] .mention-legale a {
+  display: inline-block;
+  padding: 12px 4px;
+}

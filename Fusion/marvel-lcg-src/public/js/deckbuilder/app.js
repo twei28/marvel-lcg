@@ -36,6 +36,7 @@ import { artsDe, origine, codeAffiche, STANDARD, exclusiveRefusee } from "/publi
 import { ecrireChoixCartes, lireChoixCartes, picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
+import { estTablette, marquerTablette } from "/public/js/tablette.js";
 import {
     filtresVides, passeFiltres, aspectsParDefaut, comparateur, grouperDeck, courbeDesCouts,
     nombreFiltresActifs, COUTS, PALIERS_STAT, STATS, cleStat,
@@ -806,6 +807,14 @@ function installerGrille() {
         const id = tuile.getAttribute("data-carte");
         const bouton = e.target.closest("button[data-action]");
         if (bouton) { if (bouton.dataset.action === "moins") retirer(id); else ajouter(id); return; }
+        // Tablette (24/10/2026, decision 11) : pas de survol ni de clic droit. Toucher la carte
+        // la montre en grand ; ses boutons − / + changent le deck.
+        if (estTablette()) {
+            etat.apercu = id;
+            rendreApercu();
+            if (etat.onglet === "pioche") rendreDeck();
+            return;
+        }
         ajouter(id);
     });
     grille.addEventListener("contextmenu", (e) => {
@@ -967,7 +976,7 @@ function rendreListe(v) {
         [["type", "type"], ["cout", "coût"], ["aspect", "aspect"], ["nom", "nom"], ["pack", "pack"]].map(([cle, lib]) =>
             el("option", { value: cle, selected: etat.triDeck === cle }, t(lib))));
     return [
-        el("div", { class: "db-liste-barre" }, el("label", {}, `${t("Tri :")} `, tri), el("span", {}, t("survol = aperçu"))),
+        el("div", { class: "db-liste-barre" }, el("label", {}, `${t("Tri :")} `, tri), el("span", {}, estTablette() ? t("toucher = aperçu") : t("survol = aperçu"))),
         totalKit ? el("button", { type: "button", class: "db-kit", "aria-expanded": etat.kitOuvert ? "true" : "false",
             onclick: () => { etat.kitOuvert = !etat.kitOuvert; rendreDeck(); } },
             el("span", {}, `+${totalKit} ${t("cartes du héros")}`), el("span", {}, etat.kitOuvert ? `▾ ${t("masquer")}` : `▸ ${t("voir")}`)) : null,
@@ -1288,7 +1297,7 @@ function traduirePageStatique() {
     $("#db-tri-libelle").textContent = t("Tri :");
     remplacer($("#db-tri-grille"), [["aspect", "aspect puis coût"], ["nom", "nom"], ["cout", "coût"], ["type", "type"], ["pack", "pack"]]
         .map(([cle, lib]) => el("option", { value: cle, selected: etat.triGrille === cle }, t(lib))));
-    $("#db-astuce").textContent = t("Clic gauche +1 · clic droit −1");
+    $("#db-astuce").textContent = estTablette() ? t("Toucher = aperçu · − / + sur la carte") : t("Clic gauche +1 · clic droit −1");
     $("#db-nom").placeholder = t("Nom du deck…");
     $("#db-partir-libelle").textContent = t("Partir de :");
     const titre = (sel, texte) => { $(sel).title = texte; $(sel).setAttribute("aria-label", texte); };
@@ -1320,6 +1329,7 @@ function installerCommandes() {
 
 async function demarrer() {
     synchroniserLangueServeur();
+    marquerTablette();
     traduirePageStatique();
     installerCommandes();
     installerGrille();

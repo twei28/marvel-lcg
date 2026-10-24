@@ -114,4 +114,6 @@ export const DICO_EN_DECKBUILDER = {
     "masquer": "hide",
     "voir": "show",
     "survol = aperçu": "hover = preview",
+    "toucher = aperçu": "tap = preview",
+    "Toucher = aperçu · − / + sur la carte": "Tap = preview · − / + on the card",
 };

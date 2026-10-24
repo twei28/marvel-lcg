@@ -358,3 +358,14 @@ html[data-affichage="sobre"] .db-valide.est-ok { background: var(--vert-terni); 
 html[data-affichage="sobre"] .db-valide.est-ko { background: var(--rouge-terni); border-color: var(--rouge-terni-clair); }
 html[data-affichage="sobre"] .db-histo i { background: var(--rouge-terni-clair); }
 html[data-affichage="sobre"] .db-carte:hover > img { outline-color: #b3a588; }
+
+/* --- Tablette (24/10/2026, decision 11) : html[data-tablette], js/tablette.js --
+   Les boutons − / + toujours visibles et assez gros pour le doigt ; le survol
+   ne fait plus rien (toucher la carte la montre en grand). */
+html[data-tablette] .db-carte-boutons { display: flex; gap: 8px; bottom: 6px; }
+html[data-tablette] .db-carte-boutons button { width: 44px; height: 44px; font-size: 22px; }
+html[data-tablette] .db-entete button,
+html[data-tablette] .db-chip,
+html[data-tablette] .db-basmob button,
+html[data-tablette] .db-filtres-col button { min-height: 44px; }
+html[data-tablette] .db-pm { min-width: 40px; min-height: 40px; font-size: 18px; }

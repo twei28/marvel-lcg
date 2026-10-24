@@ -57,6 +57,10 @@ import * as LP from "/public/js/campagne/livre-pages.js";
 import { scenarioDuCatalogueDeLEtape } from "/public/js/campagne/catalogue-carnet.js";
 import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
 import { installerHistorique, noterEcran, reculerVers } from "/public/js/prepare/tel.js";
+import { marquerTablette } from "/public/js/tablette.js";
+
+// Tablette (24/10/2026, decision 11) : <html data-tablette> et ses cibles de 44 px (css/tablette-pages.css).
+marquerTablette();
 
 const root = document.getElementById("app");
 
