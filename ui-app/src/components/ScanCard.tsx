@@ -320,6 +320,11 @@ export type ScanCardProps = {
    * MODIFIEES par les ameliorations en jeu.
    */
   stats?: Array<{ label: string; value: number }>
+  /**
+   * TOUTES les stats d'un personnage (pas seulement les modifiees) avec leur valeur imprimee, pour le plateau en ronds
+   * (24/10/2026) : il ecrit « ATQ 3 » sous le rond, en vert si la valeur est augmentee, en rouge si elle est reduite.
+   */
+  statsComplets?: Array<{ label: string; value: number; base?: number }>
   /** La carte montre son dos : aucun compteur, aucun type ne doit fuiter. */
   facedown?: boolean
   /** Posee face cachee sur la table, mais nous avons le droit de la voir. */

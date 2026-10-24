@@ -308,6 +308,20 @@ function statsAffichees(
   return badges
 }
 
+/** Toutes les stats du personnage, avec leur valeur imprimee (le plateau en ronds les ecrit sous le rond). */
+function statsToutes(card: WorldCard, catalogue: Catalogue): Array<{ label: string; value: number; base?: number }> {
+  if (!isUnit(card)) return []
+  if (['player', 'encounter', 'villain', 'no_image'].includes(card.pic_id)) return []
+  const info = card.info
+  const stats: Array<{ label: string; value: number; base?: number }> = []
+  for (const [cle, code] of STATS_BASE) {
+    const courante = info[cle]
+    if (typeof courante !== 'number') continue
+    stats.push({ label: code, value: courante, base: catalogue.statImprimee(card.card_id, code) })
+  }
+  return stats
+}
+
 export type ContexteCarte = {
   /** Numero du joueur dont on regarde le plateau. */
   playerId: number
@@ -559,6 +573,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     proprietaire: contexte.proprietaire,
     camp: campDe(card),
     stats: statsAffichees(card, contexte.catalogue),
+    statsComplets: statsToutes(card, contexte.catalogue),
     peeking,
     // Mots-cles (Guard, Piercing...) pour les tooltips de l'apercu.
     keywords: contexte.catalogue.motsCles(card.card_id),

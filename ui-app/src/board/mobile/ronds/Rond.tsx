@@ -1,0 +1,214 @@
+// UN ROND : une carte de la table dessinee comme un rond (decisions du 24/10/2026).
+//
+// - le cadre : l'illustration de la carte, rognee en rond ; l'anneau dit les PV (vert), la menace (orange)
+//   ou les degats d'un sbire (rouge) ; la pastille donne la valeur ;
+// - dessous : le nom, puis l'attaque et la menace (valeurs du moteur, deja modifiees par les cartes en jeu) ;
+// - dessus : les etats en etiquettes (initiales colorees des qu'il y en a plus de deux), les jetons par type,
+//   les ameliorations attachees en petits ronds poses a moitie sous la carte hote ;
+// - une carte epuisee est grisee.
+//
+// Le geste : un toucher agit quand le moteur demande de CHOISIR cette carte (cible, ressource), sinon il ouvre
+// la feuille de la carte ; l'appui long ouvre l'apercu (meme composant `CarteOuverte` pour l'instant).
+import type { MouseEvent as ReactMouseEvent, ReactElement } from 'react'
+import type { CardEffectDelta, ScanCardProps } from '../../../components/ScanCard'
+import { versVignette } from '../../../components/ScanCard'
+import { avecInteraction } from '../../Board'
+import type { EtatInteractif } from '../../interaction'
+import { t } from '../../langue'
+import type { GroupeDePile, UniteAffichee } from '../../zones'
+import { useAppuiLong } from '../useAppuiLong'
+import { SEUIL_INITIALES, etatsDe } from './etats-ronds'
+import type { CleZone } from './repartir-ronds'
+
+export type DecorRonds = {
+  interactifs: Map<number, EtatInteractif>
+  effets: Map<number, CardEffectDelta>
+  heroActifId?: number
+  ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
+  ouvrirCarte: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
+  agir: (carte: ScanCardProps) => void
+}
+
+const ETIQUETTE_STAT: Record<string, string> = { ATK: 'ATQ', THW: 'CTR', DEF: 'DÉF', REC: 'REC', SCH: 'MNG' }
+const STATS_PAR_TYPE: Partial<Record<ScanCardProps['kind'], string[]>> = {
+  villain: ['ATK', 'SCH'],
+  minion: ['ATK', 'SCH'],
+  ally: ['ATK', 'THW'],
+  hero: ['ATK', 'THW', 'DEF'],
+  'alter-ego': ['REC'],
+}
+
+/** Les roles pour lesquels un toucher CHOISIT la carte au lieu de l'ouvrir. */
+const ROLES_QUI_CHOISISSENT = new Set(['cible', 'ressource'])
+
+export type ApparenceRond = {
+  /** « 3/4 » ou « 1/7 » : la pastille. Vide = pas de pastille. */
+  texte?: string
+  /** 0 -> 1 : la part d'anneau peinte. */
+  part: number
+  couleur: string
+}
+
+const VERT = '#3d9b57'
+const ROUGE = '#c4453c'
+const ORANGE = '#d9822b'
+const GRIS = '#6a7280'
+const VIOLET = '#8a6bd1'
+
+/** Ce que l'anneau et la pastille disent d'une carte. Pure : testee. */
+export function apparenceDe(carte: ScanCardProps): ApparenceRond {
+  const jauge = carte.jauge
+  const texte = jauge?.texte ?? carte.allyHp ?? carte.schemeThreat
+  if (carte.kind === 'environment') return { texte, part: 1, couleur: VIOLET }
+  if (jauge?.genre === 'menace' || carte.schemeThreat !== undefined) {
+    return { texte, part: jauge?.remplissage ?? 1, couleur: ORANGE }
+  }
+  if (jauge || carte.allyHp !== undefined) {
+    // Le mechant a l'anneau vert comme un heros (ses PV) ; seuls ses sbires sont rouges.
+    return { texte, part: jauge?.remplissage ?? 1, couleur: carte.camp === 'encounter' && carte.kind !== 'villain' ? ROUGE : VERT }
+  }
+  return { texte, part: 1, couleur: carte.camp === 'encounter' ? ROUGE : GRIS }
+}
+
+/** L'illustration : la carte est rognee sur son dessin (les manigances se posent en paysage, leur dessin est a droite). */
+function positionDe(carte: ScanCardProps): { taille: string; position: string } {
+  if (carte.kind === 'main-scheme' || carte.kind === 'side-scheme') return { taille: '230% auto', position: '88% 55%' }
+  if (carte.kind === 'hero' || carte.kind === 'alter-ego') return { taille: '175% auto', position: '44% 22%' }
+  if (carte.kind === 'villain') return { taille: '200% auto', position: '38% 20%' }
+  return { taille: '190% auto', position: '48% 24%' }
+}
+
+export function Rond({
+  unite,
+  zone,
+  decor,
+}: {
+  unite: UniteAffichee
+  zone: CleZone
+  decor: DecorRonds
+}): ReactElement {
+  const carte = avecInteraction(unite.carte, decor.interactifs, decor.effets)
+  const role = decor.interactifs.get(Number(unite.carte.id))?.role
+  const choisit = role !== undefined && ROLES_QUI_CHOISISSENT.has(role)
+  const attachees = unite.attachees.map((a) => avecInteraction(a, decor.interactifs, decor.effets))
+  const apercu = () => decor.ouvrirCarte(carte, attachees.filter((a) => a.kind !== 'status'))
+  const appui = useAppuiLong(apercu)
+  const apparence = apparenceDe(carte)
+  const { taille, position } = positionDe(carte)
+  const paysageTourne = carte.isLandscape === true && carte.scanIsPortrait === true && !carte.facedown
+  const etats = etatsDe(attachees)
+  const ameliorations = attachees.filter((a) => a.kind !== 'status')
+  const initiales = etats.length > SEUIL_INITIALES
+  const statsVoulues = STATS_PAR_TYPE[carte.kind] ?? []
+  const stats = (carte.statsComplets ?? []).filter((s) => statsVoulues.includes(s.label))
+  const cible = carte.targetPulse === true || carte.state === 'targetable' || role === 'cible'
+  const surToucher = (evenement: ReactMouseEvent<HTMLButtonElement>) => {
+    evenement.stopPropagation()
+    if (appui.vientDeDeclencher()) return
+    if (choisit || (role === 'cible' && carte.onSelect)) decor.agir(carte)
+    else apercu()
+  }
+  const classes = [
+    'rond',
+    `rond-${zone}`,
+    carte.exhausted ? 'est-epuise' : '',
+    cible ? 'est-cible' : '',
+    carte.state === 'selected' ? 'est-choisi' : '',
+    carte.crise ? 'est-bloquee' : '',
+    carte.facedown ? 'est-cachee' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+  const rayon = 46
+  const circonference = 2 * Math.PI * rayon
+  return (
+    <div className={classes} data-tactile="carte" data-card-id={unite.carte.id} data-kind={carte.kind}>
+      <button
+        type="button"
+        className="rond-bouton"
+        aria-label={`${carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}`}
+        onClick={surToucher}
+        {...appui.gestes}
+      >
+        {paysageTourne ? (
+          // Une manigance se pose en paysage mais son scan est servi en portrait : on le tourne d'un quart de tour
+          // (comme ScanCard) puis on cadre son dessin, a droite de la carte.
+          <span className="rond-art rond-art-tourne">
+            <img src={versVignette(carte.imageUrl)} alt="" draggable={false} loading="lazy" />
+          </span>
+        ) : (
+          <span
+            className="rond-art"
+            style={{
+              backgroundImage: carte.facedown ? undefined : `url(${versVignette(carte.imageUrl)})`,
+              backgroundSize: taille,
+              backgroundPosition: position,
+            }}
+          />
+        )}
+        <svg className="rond-anneau" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r={rayon} className="rond-fond-anneau" />
+          <circle
+            cx="50"
+            cy="50"
+            r={rayon}
+            className="rond-part-anneau"
+            style={{ stroke: apparence.couleur }}
+            strokeDasharray={`${Math.max(0, Math.min(1, apparence.part)) * circonference} ${circonference}`}
+            transform="rotate(-90 50 50)"
+          />
+        </svg>
+        {apparence.texte ? (
+          <em className="rond-pastille" style={{ background: apparence.couleur }}>
+            {apparence.texte}
+          </em>
+        ) : null}
+        {carte.orderNumber !== undefined ? <b className="rond-ordre">{carte.orderNumber}</b> : null}
+      </button>
+      {etats.length > 0 ? (
+        <span className="rond-etats">
+          {etats.map((etat) => (
+            <i key={etat.cle} style={{ background: etat.fond, color: etat.encre }} title={etat.texte}>
+              {initiales ? etat.initiales : etat.texte}
+            </i>
+          ))}
+        </span>
+      ) : null}
+      {carte.counters && carte.counters.length > 0 ? (
+        <span className="rond-jetons">
+          {carte.counters.map((jeton) => (
+            <i key={jeton.cle ?? jeton.label}>
+              {jeton.label} {jeton.value}
+            </i>
+          ))}
+        </span>
+      ) : null}
+      {ameliorations.length > 0 ? (
+        <span className="rond-attachees">
+          {ameliorations.map((amelioration) => (
+            <span
+              key={amelioration.id}
+              className="rond-mini"
+              title={amelioration.name}
+              style={{ backgroundImage: `url(${versVignette(amelioration.imageUrl)})` }}
+            />
+          ))}
+        </span>
+      ) : null}
+      <span className="rond-nom">{carte.name}</span>
+      {stats.length > 0 ? (
+        <span className="rond-stats">
+          {stats.map((stat) => (
+            <span
+              key={stat.label}
+              className={`stat-${stat.label}${stat.base !== undefined && stat.value > stat.base ? ' est-augmentee' : ''}${stat.base !== undefined && stat.value < stat.base ? ' est-reduite' : ''}`}
+            >
+              {t(ETIQUETTE_STAT[stat.label] ?? stat.label)} {stat.value}
+            </span>
+          ))}
+        </span>
+      ) : null}
+      {carte.crise ? <span className="rond-etiquette">⚠ {t('Crise')}</span> : null}
+    </div>
+  )
+}

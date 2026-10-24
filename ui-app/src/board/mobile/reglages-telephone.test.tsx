@@ -25,9 +25,16 @@ describe('les reglages du telephone (zone 3)', () => {
     ecrireReglageTelephone('tailleTexte', 'tres-grand')
     ecrireReglageTelephone('vibrations', false)
     ecrireReglageTelephone('verrouPortrait', true)
-    expect(lireReglagesTelephone()).toEqual({ tailleTexte: 'tres-grand', vibrations: false, verrouPortrait: true })
+    expect(lireReglagesTelephone()).toEqual({ plateau: 'cartes', plateauMemorise: false, tailleTexte: 'tres-grand', vibrations: false, verrouPortrait: true })
     window.localStorage.setItem(CLES_TELEPHONE.tailleTexte, 'enorme')
     expect(lireReglagesTelephone().tailleTexte).toBe('normal')
+  })
+
+  it('le plateau (cartes ou ronds) se relit, et une valeur inconnue retombe sur les cartes', () => {
+    ecrireReglageTelephone('plateau', 'ronds')
+    expect(lireReglagesTelephone().plateau).toBe('ronds')
+    window.localStorage.setItem(CLES_TELEPHONE.plateau, 'triangles')
+    expect(lireReglagesTelephone().plateau).toBe('cartes')
   })
 
   it('le crochet suit un changement fait ailleurs, sans rechargement', () => {

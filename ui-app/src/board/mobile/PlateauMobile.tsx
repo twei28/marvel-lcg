@@ -19,6 +19,7 @@ import { preparerInstallation } from './installation'
 import { demanderPleinEcran } from './plein-ecran'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useRetourAndroid } from './retour-android'
+import { ChoixPlateau, useChoixPlateau } from './ronds/ChoixPlateau'
 import './menus-mobile.css'
 import './v2-mobile.css'
 
@@ -43,5 +44,12 @@ export function PlateauMobile(props: BoardProps) {
     else racine.setAttribute('data-taille-texte', tailleTexte)
     return () => racine.removeAttribute('data-taille-texte')
   }, [tailleTexte])
-  return <PlateauPortrait {...props} />
+  // Le choix du plateau (cartes ou ronds), repose a chaque debut de partie (24/10/2026) ; pas en vue d'etat.
+  const { demander, repondre } = useChoixPlateau(props.world?.round_id, new URLSearchParams(window.location.search).has('etat'))
+  return (
+    <>
+      <PlateauPortrait {...props} />
+      {demander ? <ChoixPlateau repondre={repondre} /> : null}
+    </>
+  )
 }

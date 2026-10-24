@@ -29,6 +29,8 @@ import { OngletsJoueurs } from './OngletsJoueurs'
 import { TiroirPiles } from './TiroirPiles'
 import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
+import { TableRonds } from './ronds/TableRonds'
+import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
 import './portrait.css'
 import './telephone.css'
@@ -80,6 +82,8 @@ function trouverCarte(
 
 export function PlateauPortrait(props: BoardProps) {
   const bandes = useMemo(() => repartirEnBandes(props.plateau), [props.plateau])
+  // La forme de la table : les cartes en bandes, ou les ronds (essai du 24/10/2026, choisi au debut de la partie).
+  const { plateau: formeDeTable } = useReglagesTelephone()
   const interactifs = props.interactifs ?? AUCUNE_INTERACTION
   const effets = props.effets ?? AUCUN_EFFET
   // Les bandes decorent leurs cartes via `Unite` ; la main, rendue a part,
@@ -252,6 +256,10 @@ export function PlateauPortrait(props: BoardProps) {
         actionPrincipale={props.actionPrincipale}
       />
       <div className="portrait-table" onScroll={surDefilement}>
+        {formeDeTable === 'ronds' ? (
+          <TableRonds bandes={bandes} decor={decor} onglets={onglets} />
+        ) : (
+          <>
         <Bande cle="vilain" titre={t('Méchant')} texteVide={t('Aucun méchant')} decor={decor} {...bandes.vilain} />
         <Bande
           cle="manigances"
@@ -277,6 +285,8 @@ export function PlateauPortrait(props: BoardProps) {
         {bandes.ameliorations.unites.length > 0 ? (
           <Bande cle="ameliorations" titre={t('Améliorations')} texteVide="" decor={decor} {...bandes.ameliorations} />
         ) : null}
+          </>
+        )}
       </div>
 
       <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} />

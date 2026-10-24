@@ -44,7 +44,7 @@ import {
   MODE_SUR_TABLE_OUVERT,
 } from './moteur'
 import type { ReglageMode } from './mobile/useModeMobile'
-import { ecrireReglageTelephone, useReglagesTelephone, type TailleTexte } from './mobile/reglages-telephone'
+import { ecrireReglageTelephone, useReglagesTelephone, type PlateauTelephone, type TailleTexte } from './mobile/reglages-telephone'
 import { epurePermis, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
 import {
@@ -419,6 +419,34 @@ function LigneCoteAmeliorations() {
 // ils lisent et ecrivent eux-memes leur valeur (mobile/reglages-telephone.ts),
 // et le plateau ouvert suit sans rechargement.
 
+function LignePlateauTelephone() {
+  const { plateau } = useReglagesTelephone()
+  return (
+    <LigneChoix
+      libelle={t('Plateau')}
+      valeur={plateau}
+      choix={[
+        { valeur: 'cartes' as PlateauTelephone, libelle: t('Cartes') },
+        { valeur: 'ronds' as PlateauTelephone, libelle: t('Ronds') },
+      ]}
+      onChoisir={(valeur) => ecrireReglageTelephone('plateau', valeur)}
+      detail={t('La forme de la table au téléphone (essai : les ronds)')}
+    />
+  )
+}
+
+function LigneDemanderLePlateau() {
+  const { plateauMemorise } = useReglagesTelephone()
+  return (
+    <LigneBascule
+      libelle={t('Demander le plateau à chaque partie')}
+      detail={t('Cartes ou ronds, au début de chaque partie sur téléphone')}
+      actif={!plateauMemorise}
+      onBascule={() => ecrireReglageTelephone('plateauMemorise', !plateauMemorise)}
+    />
+  )
+}
+
 function LigneTailleTexte() {
   const { tailleTexte } = useReglagesTelephone()
   return (
@@ -596,6 +624,8 @@ export function ContenuOnglet({
         <LigneBarreAvantage />
         {p.telephone ? (
           <>
+            <LignePlateauTelephone />
+            <LigneDemanderLePlateau />
             <LigneTailleTexte />
             <LigneVerrouPortrait />
           </>

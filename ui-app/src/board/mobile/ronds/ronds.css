@@ -1,0 +1,389 @@
+/* La table en RONDS (24/10/2026). Trois rangees de deux zones ; chaque zone passe a la ligne quand elle est pleine.
+   Le diametre s'adapte a la largeur de l'ecran (decision : taille automatique, 320 a 430 px). Les couleurs viennent des
+   jetons de l'Epure (--ep-*) avec une valeur de secours. Hors couche : memes raisons que portrait.css. */
+.table-ronds {
+  --d: clamp(52px, calc((100vw - 56px) / 5.4), 74px);
+  --ronds-ligne: var(--ep-bord, #383e49);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 32px;
+}
+.ronds-rangee {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 10px 8px;
+  border-bottom: 1px solid var(--ronds-ligne);
+}
+.ronds-zone {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rangee-vilain > .ronds-zone-vilain,
+.rangee-allies > .ronds-zone-allies,
+.rangee-heros > .ronds-zone-heros {
+  flex: 0 0 34%;
+}
+.ronds-zone-manigances,
+.ronds-zone-sbires,
+.ronds-zone-enJeu {
+  flex: 1 1 0;
+}
+.ronds-separateur {
+  align-self: stretch;
+  width: 1px;
+  background: var(--ronds-ligne);
+  margin: 0 2px;
+}
+.ronds-titre {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fbcf5;
+}
+.ronds-liste {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px 6px;
+}
+.ronds-zone.est-vide .ronds-liste::after {
+  content: '';
+  width: var(--d);
+  height: var(--d);
+  border-radius: 50%;
+  border: 2px dashed var(--ronds-ligne);
+}
+
+/* ---- un rond ---- */
+.rond {
+  position: relative;
+  width: calc(var(--d) + 6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.rond-vilain,
+.rond-heros {
+  width: calc(var(--d) * 1.22 + 6px);
+}
+.rond-bouton {
+  position: relative;
+  width: var(--d);
+  height: var(--d);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  color: inherit;
+}
+.rond-vilain .rond-bouton,
+.rond-heros .rond-bouton {
+  width: calc(var(--d) * 1.22);
+  height: calc(var(--d) * 1.22);
+}
+.rond-art {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-color: #1c2028;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.rond-art-tourne {
+  overflow: hidden;
+}
+.rond-art-tourne img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Scan portrait d'une carte paysage : largeur = hauteur de la carte tournee. Le dessin est a droite de la carte
+     redressee (60 % de sa largeur environ) ; on le ramene au centre du rond. */
+  width: calc(var(--d) * 1.57);
+  height: auto;
+  max-width: none;
+  margin-left: calc(var(--d) * -0.785);
+  margin-top: calc(var(--d) * -1.1);
+  transform: translate(calc(var(--d) * -0.4), calc(var(--d) * -0.03)) rotate(90deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+.rond-anneau {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.rond-fond-anneau,
+.rond-part-anneau {
+  fill: none;
+  stroke-width: 7;
+}
+.rond-fond-anneau {
+  stroke: #0c0e12;
+}
+.rond-part-anneau {
+  stroke-linecap: round;
+}
+.rond-pastille {
+  position: absolute;
+  right: -8%;
+  bottom: -6%;
+  z-index: 2;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1.5px solid #0c0e12;
+  font: 800 0.72rem/1.3 var(--ep-police, Inter, system-ui, sans-serif);
+  font-style: normal;
+  color: #fff;
+  white-space: nowrap;
+}
+.rond-ordre {
+  position: absolute;
+  left: -4%;
+  top: -4%;
+  z-index: 3;
+  min-width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #3f86e0;
+  color: #fff;
+  font: 800 0.8rem var(--ep-police, Inter, system-ui, sans-serif);
+  border: 2px solid #0c0e12;
+}
+.rond-nom {
+  max-width: 100%;
+  font-size: 0.66rem;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--ep-doux, #9da5b3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rond-stats {
+  display: flex;
+  gap: 4px;
+  font: 800 0.62rem var(--ep-police, Inter, system-ui, sans-serif);
+  white-space: nowrap;
+}
+.rond-stats .stat-ATK {
+  color: #ff8a80;
+}
+.rond-stats .stat-THW,
+.rond-stats .stat-SCH {
+  color: #8fbcf5;
+}
+.rond-stats .est-augmentee {
+  color: #7be08b !important;
+}
+.rond-stats .est-reduite {
+  color: #ff5a4d !important;
+}
+.rond-stats .stat-DEF,
+.rond-stats .stat-REC {
+  color: #cbd5e1;
+}
+
+/* etats : etiquettes au-dessus du rond ; jetons : pastilles par type, a gauche */
+.rond-etats {
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  z-index: 3;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  pointer-events: none;
+}
+.rond-etats i {
+  padding: 0 4px;
+  border-radius: 5px;
+  border: 1.5px solid #fae514;
+  font: 800 0.58rem/1.35 var(--ep-police, Inter, system-ui, sans-serif);
+  font-style: normal;
+  white-space: nowrap;
+}
+.rond-jetons {
+  position: absolute;
+  left: -2px;
+  bottom: 22px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+.rond-jetons i {
+  padding: 0 5px;
+  border-radius: 999px;
+  border: 1.5px solid #0c0e12;
+  background: #2c63b0;
+  color: #fff;
+  font: 800 0.6rem/1.35 var(--ep-police, Inter, system-ui, sans-serif);
+  font-style: normal;
+}
+/* ameliorations attachees : de petits ronds poses a moitie sous la carte hote, un quart visible */
+.rond-attachees {
+  position: absolute;
+  right: -4px;
+  top: 8px;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+.rond-mini {
+  width: calc(var(--d) * 0.42);
+  height: calc(var(--d) * 0.42);
+  margin-left: calc(var(--d) * -0.1);
+  border-radius: 50%;
+  background-size: 190% auto;
+  background-position: 50% 40%;
+  box-shadow: 0 0 0 2px #6a7280;
+}
+.rond-etiquette {
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%);
+  z-index: 4;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #b3261e;
+  color: #fff;
+  font: 800 0.58rem var(--ep-police, Inter, system-ui, sans-serif);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* epuisee : grisee ; cible : halo jaune ; bloquee (Crise) : assombrie */
+.rond.est-epuise .rond-art {
+  filter: grayscale(1) brightness(0.65);
+}
+.rond.est-epuise .rond-part-anneau {
+  stroke: #6a7280 !important;
+}
+.rond.est-cible .rond-bouton {
+  box-shadow: 0 0 0 3px #f3c623, 0 0 16px 4px rgba(243, 198, 35, 0.7);
+}
+.rond.est-choisi .rond-bouton {
+  box-shadow: 0 0 0 3px #3f86e0, 0 0 16px 4px rgba(63, 134, 224, 0.7);
+}
+.rond.est-bloquee .rond-art {
+  filter: brightness(0.5);
+}
+.rond.est-cachee .rond-art {
+  background: linear-gradient(160deg, #a8321c, #5a1209);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rond-part-anneau {
+    transition: stroke-dasharray 0.4s ease;
+  }
+}
+
+/* ---- le choix du plateau, au debut de la partie ---- */
+.choix-plateau-voile {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(3, 4, 7, 0.78);
+}
+.choix-plateau {
+  width: min(380px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #3f86e0;
+  background: linear-gradient(180deg, #1f2a44, #141a29);
+  color: #f2f3f5;
+}
+.choix-plateau h2 {
+  margin: 0;
+  font: 400 1.7rem var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.04em;
+  color: #8fbcf5;
+}
+.choix-plateau p {
+  margin: 0;
+  color: #9da5b3;
+  font-size: 0.9rem;
+}
+.choix-plateau-boutons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.choix-plateau-boutons button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 64px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #383e49;
+  background: #292e38;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.choix-plateau-boutons button.est-propose {
+  border-color: #3f86e0;
+  box-shadow: 0 0 0 2px rgba(63, 134, 224, 0.5);
+}
+.choix-plateau-boutons b {
+  font: 400 1.35rem var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.04em;
+}
+.choix-plateau-boutons b small {
+  font: 800 0.6rem var(--ep-police, Inter, system-ui, sans-serif);
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #e8730c;
+  color: #fff;
+  vertical-align: middle;
+  letter-spacing: 0;
+}
+.choix-plateau-boutons span {
+  font-size: 0.8rem;
+  color: #9da5b3;
+}
+
+.choix-plateau-garder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+.choix-plateau-garder input {
+  width: 22px;
+  height: 22px;
+  accent-color: #3f86e0;
+}
