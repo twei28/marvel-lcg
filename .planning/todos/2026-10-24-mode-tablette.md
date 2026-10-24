@@ -34,3 +34,14 @@ Règles : questions une à une, capture ou maquette avant chaque question ; rien
 5. Retouches : « Fin du tour » flottant retiré, mentions « Espace » retirées, languettes 46 px, cibles 44 px (Réglages…), « Plateau animé » par défaut.
 6. Pages : éditeur de deck, accueil, campagnes.
 Captures en 1180×820 et 1024×768 (toucher simulé, Playwright `hasTouch`) ; scripts dans le scratchpad de la session 0e46d407.
+
+## CODE (24/10/2026, soir) : les 6 etapes sont codees et commitees, RIEN n'est deploye ni pousse
+1. `ui-app/src/board/tablette/tablette.ts` (+ `tablette.css`, tests) : `useEstTablette` (tactile sans souris, >= 768 x 501, ou reglage « Jeu au doigt » `marvel-jeu-au-doigt` Auto/Oui/Non, `?tablette` pour forcer), `<html data-tablette>`, zoom bloque, `EcranTourne tablette` en portrait. « Plateau anime » par defaut pour une tablette neuve (`migrerReglagesPhase`, et l'accueil `phase-mode-choix.js` le preselectionne). Commit 7ff5e7ce.
+2. Toucher = apercu du PC tenu (`CarteApercu tenu`, classe `est-tenu`, en haut a droite) + boutons d'action dessous (`MenuActionsCarte dansApercu`, portail dans `.apercu-actions-tablette`) ; carte touchee en jaune ; toucher a cote ferme ; une carte a choisir (role `cible` / `ressource`) se choisit sans apercu ; en tablette les actions sont en presentation simple, sans action unique jouee d'un toucher. Main coupee (plus de `:hover` colle), plus de « Fin du tour » flottant. Commit b571905f.
+3. Mode manuel : un toucher ouvre `MenuTriche dansApercu` (grille de gros boutons, nombres en − / +, `data-garde-apercu` sur les boutons qui ouvrent une sous-vue). Commit 37255aae.
+4. Glisser au doigt : `touch-action: none` sur les cartes du plateau ; le glisser du PC (attaquer, contrer, jouer) marche tel quel. Verifie : Spider-Man glisse sur Rhino = « Rhino subit 2 degats » ; Lance-toile glisse sur Spider-Man = paiement. Commit 68beea18.
+5. Languettes 46 px, plus de `<kbd>` sur les boutons, 44 px dans Reglages et fenetres de choix. Commit c5237a4f.
+6. Pages : `public/js/tablette.js` + `public/css/tablette-pages.css` (pose par `marquerTablette()`) ; editeur de deck : toucher = apercu, − / + 44 px sur la carte ; accueil et campagnes : icones et boutons 44 px. Commit 909cf396.
+Captures (toucher simule, 1180x820) : scratchpad de la session 0e46d407 (e2-*, e3-*, e4-*, e6-*). Scripts : commun.mjs, glisse.mjs (glisser par CDP).
+**A faire** : essai sur une vraie tablette (iPad Safari : `gesturestart`, appui long, glisser) ; deploiement SEULEMENT sur demande.
+⚠ Les commits b571905f, 37255aae et 68beea18 contiennent aussi des retouches du TELEPHONE faites en parallele par une autre session (DemandeCentrale.tsx « auTelephone », mobile/portrait.css et cartouche-essai-tel.css « voir la carte en entier pendant la phase du mechant »).
