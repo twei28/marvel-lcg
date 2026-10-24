@@ -2,8 +2,7 @@
 //
 // Un puzzle est une position de départ scriptée (fichier puzzle/*.json) : le
 // moteur la met en place via /load_puzzle puis on joue normalement sur le
-// plateau. Ce module ajoute un bouton « 🧩 Puzzles » à côté des boutons
-// Reprendre/Stats (reprise.js) et un panneau listant les puzzles disponibles.
+// plateau. Le panneau « Puzzles » s ouvre depuis la tuile « Puzzle » de l écran de départ (plus de bouton dans la barre).
 //
 // Côté serveur (routes existantes du moteur) : /list_puzzle_files,
 // /get_puzzle_json?<chemin>, /load_puzzle?<chemin>.
@@ -119,7 +118,7 @@ async function ouvrirPanneau() {
     document.querySelector(".puzzles-panneau")?.remove();
     const panneau = el("div", { class: "puzzles-panneau", onclick: (e) => { if (e.target === panneau) panneau.remove(); } },
         el("div", { class: "puzzles-boite" },
-            el("h2", {}, "🧩 Puzzles ", el("span", { class: "puzzle-beta" }, t("BÊTA"))),
+            el("h2", {}, "Puzzles ", el("span", { class: "puzzle-beta" }, t("BÊTA"))),
             el("p", { class: "puzzles-note" },
                 t("Une position de départ imposée : à toi de trouver la meilleure suite de coups.")),
             blocParCode(),

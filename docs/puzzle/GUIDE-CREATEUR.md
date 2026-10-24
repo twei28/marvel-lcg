@@ -28,7 +28,7 @@ visible *après la partie*, *toujours* ou *jamais*) et ton pseudo. La fenêtre l
 (par exemple les ressources en réserve) : rien n'est tu.
 
 ## Tester
-Résous ton puzzle toi-même avec son code (panneau « 🧩 Puzzles » → **Résoudre par code**), tel que le verra le joueur. Si tu
+Résous ton puzzle toi-même avec son code (panneau « Puzzles » → **Résoudre par code**), tel que le verra le joueur. Si tu
 n'y arrives pas, il n'est pas prêt. **Recommencer** (panneau « Énoncé », en haut à droite) relance le même départ à l'identique.
 
 ## Publier
