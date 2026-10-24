@@ -94,7 +94,7 @@
 /* Les manigances se posent en paysage : le scan servi en portrait tourne dans
    son cadre (même règle que `.revelation.est-paysage`). */
 .mep-cadre.est-paysage {
-  width: min(460px, 90vw);
+  width: min(460px, 90vw, calc((100vh - 190px) * 176 / 127));
   aspect-ratio: 176 / 127;
 }
 
@@ -196,5 +196,64 @@ html[data-affichage='sobre'] .mep-detail {
 
   .mep-continuer {
     width: min(100%, 320px);
+  }
+}
+
+/* Telephone couche (hauteur < 500 px) : la carte a gauche, titre, legende et
+   bouton Continuer a droite, pour que le bouton reste toujours a l'ecran. */
+@media (max-height: 500px) {
+  .mep-couche {
+    padding: 8px;
+  }
+
+  .mep-contenu {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-auto-flow: row;
+    align-items: center;
+    justify-items: center;
+    column-gap: 18px;
+    row-gap: 6px;
+    width: 100%;
+    max-width: 760px;
+  }
+
+  .mep-contenu > .mep-titre {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .mep-contenu > .mep-cadre,
+  .mep-contenu > .mep-paire {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+  }
+
+  .mep-contenu > .mep-legende {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .mep-contenu > .mep-detail {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 0;
+  }
+
+  .mep-contenu > .mep-continuer {
+    grid-column: 2;
+    grid-row: 4;
+  }
+
+  .mep-cadre {
+    width: min(300px, 40vw, calc((100vh - 24px) * 176 / 246));
+  }
+
+  .mep-cadre.est-paysage {
+    width: min(420px, 55vw, calc((100vh - 24px) * 176 / 127));
+  }
+
+  .mep-paire .mep-cadre {
+    width: min(300px, 22vw, calc((100vh - 24px) * 176 / 246));
   }
 }
