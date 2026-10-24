@@ -6021,7 +6021,9 @@ function stepSummary() {
                 el("div", { class: "fo-reglages" },
                     ...reglages.map((x) => el("span", { class: "tampon" }, x))),
             ),
-            el("img", { class: "fo-vs", src: "/public/img/prepare/vs.png", alt: "VS", draggable: "false" }),
+            document.documentElement.classList.contains("tel")
+                ? el("div", { class: "fo-vs fo-vs-texte", "aria-label": "VS" }, "VS")   // téléphone : un VS blanc en Bangers, plus d'éclair (23/10/2026)
+                : el("img", { class: "fo-vs", src: "/public/img/prepare/vs.png", alt: "VS", draggable: "false" }),
             el("div", { class: "fo-side villain-side" },
                 vilain,
                 sc ? el("div", { class: "fo-nomg" }, sc.name) : el("div", { class: "fo-nomg" }, t("Méchant non défini")),

@@ -2164,3 +2164,31 @@ html[data-epure] .plateau-barre {
     min-width: 44px;
   }
 }
+
+/* =============================================================================
+   18. LE PLATEAU DU TELEPHONE EN EPURE (23/10/2026)
+   Le plateau portrait (board/mobile/portrait.css) a son propre bandeau (`.portrait-bandeau`) et ses bandes : les sections
+   ci-dessus ne visent que la barre du PC (`.plateau-barre`). On y pose la meme peau : table sombre et sa trame, barre du haut
+   bleue au filet bleu, titres de bandes en bleu clair, filets de la palette.
+   ============================================================================= */
+html[data-epure] .plateau-portrait {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.4px) 0 0 / 6px 6px,
+    var(--ep-fond);
+  color: var(--ep-texte);
+}
+html[data-epure] .portrait-bandeau {
+  background: linear-gradient(180deg, #2a3a5a 0%, #1b2436 100%);
+  border-bottom: 2px solid #3f86e0;
+  box-shadow: inset 0 1px 0 rgba(140, 180, 240, 0.35);
+}
+html[data-epure] .portrait-bandeau-etat strong { color: #8fbcf5; font-family: var(--ep-titres); font-weight: 400; letter-spacing: 0.05em; font-size: 1rem; }
+html[data-epure] .portrait-bandeau-etat span { color: var(--ep-texte); }
+html[data-epure] .portrait-bandeau-etat em { color: var(--ep-doux); }
+html[data-epure] .bande { border-bottom-color: var(--ep-bord); }
+html[data-epure] .bande-titre { color: #8fbcf5; font-family: var(--ep-titres); font-weight: 400; letter-spacing: 0.08em; font-size: 0.9rem; }
+html[data-epure] .bande-vide, html[data-epure] .portrait-vide { color: var(--ep-doux); }
+html[data-epure] .bande-carte.est-epinglee { background: var(--ep-fond); }
+html[data-epure] .portrait-onglet { color: var(--ep-doux); border-color: var(--ep-bord); }
+html[data-epure] .portrait-onglet.est-actif { color: #fff; background: #2c63b0; border-color: #3f86e0; }
+html[data-epure] .encoche-corps { background: var(--ep-surface); border-color: #3f86e0; color: var(--ep-texte); }

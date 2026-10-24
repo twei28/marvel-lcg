@@ -162,7 +162,8 @@
   }
   html.tel .tb-filtres { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   html.tel .tb-filtres .tb-search { flex: 1 1 100%; }
-  html.tel .tb-filtres .tampon { flex: 1 1 auto; justify-content: center; min-width: 0; max-width: 100%; }
+  /* Favoris, vagues et Fan-made tiennent sur UNE rangée : la grille de héros monte d'autant. */
+  html.tel .tb-filtres .tampon { flex: 1 1 0; justify-content: center; min-width: 0; max-width: 100%; padding-left: 6px; padding-right: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   html.tel input.search, html.tel select, html.tel .tb-search, html.tel .tb-filtres .tampon,
   html.tel .tel-outils .tampon, html.tel .deck-aspects-bascule, html.tel .ext-tab {
     min-height: 44px; font-size: 16px;
@@ -344,4 +345,82 @@
 @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
   html.tel .deck-modal-panel, html.tel .tel-menu, html.tel .tel-voile, html.tel .tb-art,
   html.tel .reprise-panneau, html.tel .reprise-voile { animation: none !important; }
+}
+
+/* ---- Épuré au téléphone (23/10/2026) : la même peau que le PC ---------------------------------------------------
+   Les règles ci-dessus gardent l'ancien habillage (rouge, gros traits, ombres dures) ; l'Épuré est le défaut du jeu
+   (affichage-epure-pages.css, jetons --ep-*) : on y ramène les pièces propres au téléphone. Aucune mesure ne change
+   (44 px, trois colonnes), seules les couleurs, bords et typographies. */
+@media (max-width: 767px) {
+  html[data-epure].tel body { background: var(--ep-fond); }
+  html[data-epure].tel .tel-entete, html[data-epure].tel .nav { background: var(--ep-surface); border-bottom: 1px solid var(--ep-bord); }
+  html[data-epure].tel .tel-menu { background: var(--ep-surface); border-bottom: 1px solid var(--ep-bord); }
+  html[data-epure].tel .tel-menu .tel-lien { font-family: var(--ep-police); font-weight: 600; }
+  html[data-epure].tel .tel-langue, html[data-epure].tel .tel-burger { color: var(--ep-texte); font-family: var(--ep-police); }
+  html[data-epure].tel .tel-etapes .pstep { background: transparent; box-shadow: none; border-radius: 0; color: var(--ep-doux); }
+  html[data-epure].tel .tel-etapes .pstep.active { color: var(--ep-texte); border-bottom-color: var(--ep-jaune); }
+  html[data-epure].tel .tel-etapes .pstep .pnum { background: var(--ep-champ); color: var(--ep-texte); border-radius: 6px; }
+  html[data-epure].tel .tel-etapes .pstep.active .pnum { background: var(--ep-jaune); color: #fff; }
+
+  /* Accueil */
+  html[data-epure].tel .acc-tel-jouer {
+    background: var(--ep-jaune); color: #fff; border: 0; border-radius: 10px; box-shadow: 0 0 0 1px #1d4a8a;
+    clip-path: none; font-family: var(--ep-police);
+  }
+  html[data-epure].tel .acc-tel-jouer b { font-family: var(--ep-titres); font-weight: 400; letter-spacing: .02em; }
+  html[data-epure].tel .acc-tel-vignette, html[data-epure].tel .acc-tel-mode-nom {
+    background: var(--ep-champ); border: 0; border-radius: 10px; box-shadow: var(--ep-relief); clip-path: none;
+    font-family: var(--ep-police);
+  }
+  html[data-epure].tel .acc-tel-vignette { border-left: 4px solid var(--ep-jaune); border-radius: 4px 10px 10px 4px; }
+  html[data-epure].tel .acc-tel-vignette i.fa { color: var(--ep-jaune-vif); }
+  html[data-epure].tel .acc-tel-vignette b, html[data-epure].tel .acc-tel-mode-nom b,
+  html[data-epure].tel .acc-tel-feuille-titre { font-family: var(--ep-titres); font-weight: 400; letter-spacing: .03em; }
+  html[data-epure].tel .acc-tel-vignette small, html[data-epure].tel .acc-tel-mode-nom small { color: var(--ep-doux); }
+  html[data-epure].tel .acc-tel-mode { border-top-color: var(--ep-bord); }
+
+  /* Étape Héros / Méchant : bandeau, boutons du bandeau, filtres */
+  html[data-epure].tel .tb-scene { background: var(--ep-fond); border-bottom: 1px solid var(--ep-bord); }
+  html[data-epure].tel .ts-btn { background: var(--ep-champ); color: var(--ep-texte); border: 0; border-radius: 8px; box-shadow: var(--ep-relief); clip-path: none; font-family: var(--ep-police); font-weight: 600; transform: none; }
+  html[data-epure].tel .ts-btn.jaune { background: var(--ep-jaune); color: #fff; box-shadow: 0 0 0 1px #1d4a8a; font-weight: 700; }
+  html[data-epure].tel .tb-port.apercu::after { box-shadow: inset 0 0 0 3px var(--ep-texte); border-radius: 8px; }
+  html[data-epure].tel .tb-port.chosen.apercu::after { box-shadow: inset 0 0 0 3px var(--ep-jaune); }
+  html[data-epure].tel .tb-droite { background: var(--ep-fond); }
+  html[data-epure].tel .tb-entete b, html[data-epure].tel .tb-roster-deck .do-name { font-family: var(--ep-titres); font-weight: 400; letter-spacing: .03em; }
+
+  /* Decks */
+  html[data-epure].tel .tb-deck { background: var(--ep-champ); border: 0; border-radius: 10px; box-shadow: var(--ep-relief); clip-path: none; }
+  html[data-epure].tel .tb-deck.chosen { box-shadow: 0 0 0 2px var(--ep-jaune); }
+
+  /* Feuilles basses */
+  html[data-epure].tel .deck-modal-panel, html[data-epure].tel .reprise-panneau { background: var(--ep-surface); border-color: var(--ep-bord); color: var(--ep-texte); }
+  html[data-epure].tel .reprise-panneau > .tel-poignee { background: var(--ep-surface); }
+  html[data-epure].tel .stats-table tr { background: var(--ep-champ); border: 0; box-shadow: var(--ep-relief); border-radius: 10px; }
+  html[data-epure].tel .tel-poignee span { background: var(--ep-bord-fort); }
+
+  /* L'Épuré du PC pose des hauteurs, des biseaux de 34 px et des onglets à 17 px en !important : on les ramène à l'échelle du doigt. */
+  html[data-epure].tel header.progress.tel-entete { height: auto !important; min-height: 0 !important; padding: 0 !important; margin: 0; position: relative; background: var(--ep-surface); border-bottom: 2px solid var(--ep-jaune); box-shadow: none; }
+  html[data-epure].tel header.progress.tel-entete .tel-rang { padding: 2px 6px 2px 12px; }
+  html[data-epure].tel header.progress .tel-etapes { width: 100%; justify-content: stretch; gap: 0; padding: 0; }
+  html[data-epure].tel header.progress .tel-etapes .pstep {
+    flex: 1 1 0; min-width: 0; margin: 0 !important; padding: 2px 2px 0 !important; min-height: 44px; clip-path: none;
+    border: 0 !important; border-bottom: 3px solid transparent !important; border-radius: 0 !important;
+    background: transparent !important; box-shadow: none !important; color: var(--ep-doux);
+  }
+  html[data-epure].tel header.progress .tel-etapes .pstep.active { background: var(--ep-champ) !important; border-bottom-color: var(--ep-jaune) !important; color: #fff; }
+  html[data-epure].tel header.progress .tel-etapes .pstep .plabel { font-size: 13px !important; letter-spacing: .04em; }
+  html[data-epure].tel header.progress .tel-etapes .pstep .pnum { border-radius: 6px !important; border: 0 !important; box-shadow: none !important; background: var(--ep-champ) !important; color: var(--ep-jaune-vif) !important; }
+  html[data-epure].tel header.progress .tel-etapes .pstep.active .pnum { background: var(--ep-jaune) !important; color: #fff !important; }
+  html[data-epure].tel .tampon, html[data-epure].tel .tb-mode { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)) !important; }
+  html[data-epure].tel footer.nav { background: var(--ep-surface); border-top: 2px solid var(--ep-jaune); box-shadow: none !important; }
+
+  /* Écran Final : l'éclair du PC écrase les cartes d'un écran de 430 px. Au téléphone, un « VS » blanc en Bangers
+     (div.fo-vs-texte posé par app.js) entre les deux blocs empilés. */
+  html.tel .face-a-face .fo-vs-texte {
+    content: none; width: auto !important; height: auto !important; max-width: none; filter: none; transform: translate(-50%, -50%) !important;
+    top: 50% !important; left: 50% !important; z-index: 5; pointer-events: none;
+    font: 400 64px/1 var(--ep-titres, "Bangers", Impact, sans-serif); letter-spacing: .04em; color: #fff;
+    text-shadow: 3px 3px 0 #000, 0 0 14px rgba(0, 0, 0, .7);
+  }
+  html[data-epure].tel .face-a-face .fo-side.heroes-side { width: 100% !important; padding-right: 22px !important; clip-path: none !important; }
 }

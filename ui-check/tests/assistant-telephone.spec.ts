@@ -99,6 +99,10 @@ async function capturer(page: Page, w: number, nom: string) {
 for (const { w, h } of FORMATS) {
   test.describe(`assistant au téléphone, ${w} px`, () => {
     test.use({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
+    // Le filet force l'affichage « Coloré » (global-setup) : pour les captures on montre l'Épuré, le défaut du jeu.
+    test.beforeEach(async ({ page }) => {
+      if (CAPTURER) await page.addInitScript(() => { try { localStorage.setItem('mc_affichage_v1', 'epure'); } catch (e) { /* stockage indisponible */ } });
+    });
 
     test('le parcours complet : sans débordement, zones de 44 px', async ({ page }) => {
       test.setTimeout(120_000);
