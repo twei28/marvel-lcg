@@ -5662,4 +5662,36 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'pu284b': "<b>Réponse forcée</b> : après qu'une carte d'état a été placée sur le chef ennemi, placez 1 menace ici.\n<b>Si ce stade est complété, les joueurs perdent la partie.</b>",
   // punisher_mcdc_2026 — Superhero Jailbreak (MainScheme)
   'pu285b': "[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, chaque joueur défausse la première carte du deck Rencontre. Chaque joueur qui défausse ainsi un sbire le met en jeu engagé avec lui.\n<b>Si ce stade est complété, les joueurs perdent la partie.</b>",
+  // silver_surfer — Silver Surfer (Hero) [set 211, DESIGNHACKER]
+  'sv001a': "<i>Compunction</i> — <b>Réponse forcée</b> : après que Silver Surfer a effectué une attaque de base, changez de forme.",
+  // silver_surfer — Norrin Radd (AlterEgo) [set 211, DESIGNHACKER]
+  'sv001b': "<i>Toomie !</i> — <b>Action</b> : inclinez Norrin Radd → cherchez dans votre deck et votre défausse l'amélioration The Silver Surfboard et ajoutez-la à votre main. Mélangez votre deck.",
+  // silver_surfer — Dawn Greenwood (Ally) [set 211, DESIGNHACKER]
+  'sv002': "<b>Interruption</b> : quand Dawn Greenwood est vaincue, infligez 2 dégâts à votre identité → remettez Dawn Greenwood dans votre main.",
+  // silver_surfer — The Silver Surfboard (Upgrade) [set 211, DESIGNHACKER]
+  'sv003': "<b>Action de héros</b> : inclinez The Silver Surfboard → redressez Silver Surfer.\n<b>Interruption</b> : quand vous défaussez The Silver Surfboard, infligez 1 dégât à Silver Surfer → piochez 1 carte.",
+  // silver_surfer — Energy Manipulation (Upgrade) [set 211, DESIGNHACKER]
+  'sv004': "<b>Action</b> : dépensez X ressources [energy] → placez X compteurs d'énergie ici.\n<b>Action de héros</b> : défaussez Energy Manipulation → piochez 1 carte (maximum 5) par compteur d'énergie ici.",
+  // silver_surfer — Rage of Retribution (Upgrade) [set 211, DESIGNHACKER]
+  'sv005': "Silver Surfer gagne Riposte 1.\n<b>Interruption</b> : quand Silver Surfer devrait changer de forme, défaussez Rage of Retribution → redressez Silver Surfer À LA PLACE.",
+  // silver_surfer — Cosmic Speed (Event) [set 211, DESIGNHACKER]
+  'sv006': "<b>Action de héros</b> <i>(contre)</i> : choisissez une option :\n• Retirez 4 menaces d'une manigance.\n• Défaussez The Silver Surfboard → retirez jusqu'à 3 menaces de chaque manigance en jeu.",
+  // silver_surfer — Cosmic Strength (Event) [set 211, DESIGNHACKER]
+  'sv007': "<b>Interruption de héros</b> : quand vous effectuez une attaque de base, choisissez une option :\n• Vous avez +7 ATQ pour cette attaque.\n• Défaussez The Silver Surfboard → vous avez +9 ATQ pour cette attaque et elle gagne Déferlement.",
+  // silver_surfer — Cosmic Energy (Event) [set 211, DESIGNHACKER]
+  'sv008': "<b>Action de héros</b> <i>(attaque)</i> : retirez X menaces réparties entre les manigances de votre choix et infligez X dégâts à un ennemi, où X est le nombre de ressources [energy] payées pour le coût de Cosmic Energy.",
+  // silver_surfer — Silver Up (Event) [set 211, DESIGNHACKER]
+  'sv009': "Quand vous jouez cette carte, vous pouvez défausser The Silver Surfboard, puis choisir deux options À LA PLACE.\n<b>Action d'alter ego</b> : passez en Silver Surfer, puis choisissez une option : piochez 2 cartes, infligez 4 dégâts à un ennemi, ou redressez Silver Surfer.",
+  // silver_surfer — The Power Cosmic (Resource) [set 211, DESIGNHACKER]
+  'sv010': "<b>Réponse</b> : après avoir dépensé cette carte pour jouer un événement [[COSMIC]], infligez 2 dégâts à un ennemi.",
+  // silver_surfer — Silver Down (Obligation) [set 211, DESIGNHACKER]
+  'sv011': "<b><i>Donnez-la au joueur Norrin Radd.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Norrin Radd → retirez Silver Down de la partie.\n• Convoquez Dawn Greenwood et retirez-la de la partie → retirez Silver Down de la partie.\n<i>(« Convoquer » = fouiller le deck, la défausse, la main ou toute zone hors jeu pour la carte nommée, puis mélanger le deck.)</i>",
+  // silver_surfer — Galactus (Minion) [set 211, DESIGNHACKER]
+  'sv012': "Vilain.\n<b>Une fois révélé</b> : révélez The World Eater et mettez-le en jeu engagé avec vous.\n<b>Une fois vaincu</b> : retirez Galactus de la partie.\n<i>(Sbire némésis de Silver Surfer.)</i>",
+  // silver_surfer — The World Eater (Minion) [set 211, DESIGNHACKER]
+  'sv013': "Galactus ne peut subir aucun dégât et ses attaques gagnent Déferlement.\n<b>Une fois vaincu</b> : retirez The World Eater de la partie.",
+  // silver_surfer — The Life Stealer (SideScheme) [set 211, DESIGNHACKER]
+  'sv014': "Tous les personnages amis ont -1 ATQ.\n<b>Une fois révélée</b> : placez 1 menace supplémentaire ici par personnage ami en jeu.",
+  // silver_surfer — Cosmic Power (Attachment) [set 211, DESIGNHACKER]
+  'sv015': "Attachez-le à Galactus. Si vous ne le pouvez pas, attachez-le au méchant.\n[star] Les attaques de l'ennemi attaché gagnent Déferlement.\n<b>Action de héros</b> : subissez 3 dégâts → retirez Cosmic Power de la partie.",
 }

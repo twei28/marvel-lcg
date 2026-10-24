@@ -1409,6 +1409,19 @@ export const HEROS_INFO = {
         apparition: "Guardians of the Galaxy #1 (1969)",
     },
 
+    "sv001a": {
+        bio: "Norrin Radd, un habitant pacifique de la planète Zenn-La, a sacrifié sa liberté pour sauver son monde de Galactus : le dévoreur de mondes l'a fait Héraut, lui offrant la Puissance Cosmique et une planche d'argent capable de traverser les étoiles. Libéré de son maître, il s'est exilé sur Terre, et traîne depuis le poids de ses actes passés : il se bat avec une force presque sans limite, mais déteste frapper.",
+        bioEn: "Norrin Radd, a peaceful citizen of the planet Zenn-La, gave up his freedom to save his world from Galactus: the devourer of worlds made him his Herald, granting him the Power Cosmic and a silver board able to cross the stars. Freed from his master, he was cast out on Earth and still carries the weight of his past deeds: he fights with almost limitless strength, yet hates to strike.",
+        civil: "Norrin Radd",
+        base: "Zenn-La, puis la Terre",
+        baseEn: "Zenn-La, then Earth",
+        equipes: "Héraut de Galactus, Défenseurs",
+        equipesEn: "Herald of Galactus, Defenders",
+        ennemis: "Galactus, Mephisto, Thanos",
+        ennemisEn: "Galactus, Mephisto, Thanos",
+        apparition: "Fantastic Four #48 (1966)",
+    },
+
     "nt001a": {
         bio: "Dwayne Taylor a vu ses parents abattus sous ses yeux quand il etait enfant, et il a hérité d'un empire industriel avant d'avoir l'âge de le comprendre. Il a mis cette fortune au service d'une obsession : traquer le meurtrier. Sans super-pouvoirs, il compense par un entraînement d'arts martiaux, une armure de sa propre conception et une planche de combat blindée qui lui sert tour à tour de véhicule et d'arme. Fondateur et chef des New Warriors, il porte mal la responsabilité d'une équipe d'adolescents : dur avec eux, plus dur encore avec lui-même.",
         bioEn: "Dwayne Taylor watched his parents gunned down in front of him as a child, and inherited an industrial empire before he was old enough to understand it. He turned that fortune toward one obsession: hunting the killer. With no superpowers, he compensates with martial arts training, a suit of his own design and an armoured battle board that serves in turn as vehicle and weapon. Founder and leader of the New Warriors, he wears the responsibility for a team of teenagers badly: hard on them, harder still on himself.",
