@@ -104,3 +104,8 @@ Fait, non deploye : `ui-app/src/board/mobile/ronds/` (repartir-ronds.ts, etats-r
 - Essai local : `npx vite --config <config avec proxy complet> --port 5199` (le proxy d'origine de vite.config.ts ne relaie pas toutes les routes du jeu).
 
 73. **Main repliable** : posee SOUS les zones, ouverte par defaut, une fleche ▼ la replie, la languette « Main » la rouvre ; hauteur 31 vh (118 a 210 px) ; ne se range pas toute seule en ronds (seul le joueur la replie). **Code** : `ronds/MainSousLaTable.tsx`, grille a 3 rangees dans `.plateau-portrait.avec-main-dock`.
+
+## A faire (demandes de l'utilisateur, 24/10/2026)
+- **Améliorations attachées** (Q74) : l'utilisateur a refusé A/B/C et va montrer lui-même ce qu'il veut. En attendant, le code garde la décision Q4 (petits ronds à moitié sous la carte hôte, un quart visible).
+- **Admin au téléphone** : revoir les pages de la version admin pour le téléphone ; surtout, **sur la page d'accueil l'admin voit beaucoup d'icônes en haut mais pas toutes** : trouver où elles sont coupées (en-tête de `prepare.html`, `lien-admin.js`, `tel-pages.js`, menu burger) et les rendre toutes accessibles. À lancer avec captures en 320 à 430 px, compte admin.
+- **Phase du méchant en ronds** : barre de phase haute avec 5 onglets, la suite de la liste (voir plus haut). Captures des étapes réelles dans le scratchpad de la session (`reel/ph-*.png`).
