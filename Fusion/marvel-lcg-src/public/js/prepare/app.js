@@ -174,8 +174,10 @@ const MODES = [
     // Puzzle (24/10/2026, demande de l'utilisateur) : on cree un puzzle comme on lance une partie classique (heros, deck, mechant,
     // scenario), puis le plateau s'ouvre en EDITEUR : bac a sable + table manuelle, et un bouton « Enregistrer le puzzle ».
     // Resoudre un puzzle (par code, mes puzzles) reste dans le panneau « Puzzles » (puzzles.js).
-    { id: "puzzle", label: t("Puzzle"), desc: t("Créer un puzzle"), players: 1, min: 1, max: 4, mark: "P",
-      aide: t("Prépare une partie comme d'habitude, puis arrange le plateau à ta main pour en faire un puzzle.") },
+    // `fixed` : pas de boutons de nombre sur la tuile ; le clic ouvre le panneau « Puzzles » (creer avec 1 a 4 heros, resoudre par code,
+    // mes puzzles). Le panneau relance `partir` avec le nombre de heros (`window.creerPuzzle`).
+    { id: "puzzle", label: t("Puzzle"), desc: t("Créer ou résoudre"), players: 1, min: 1, max: 4, fixed: true, mark: "P",
+      aide: t("Crée un puzzle en arrangeant le plateau à ta main, ou résous celui d'un autre avec son code.") },
     // Bataille : le mode competitif de Civil War et Synthezoid Smackdown. Deux
     // equipes s'affrontent, chacune face au leader prepare par l'autre. Le
     // livret (mc56 p.14) n'en connait que deux formats, 1v1 et 2v2 : d'ou 2 ou
@@ -1511,7 +1513,7 @@ function modeStrip() {
                 state.mode = m;
                 // Le catalogue de scénarios diffère en campagne : on repart d'une cible vierge.
                 if ((m.id === "campaign") !== wasCampaign) state.scenario = null;
-                state.playerCount = m.fixed ? 1 : Math.max(m.min || 1, Math.min(m.max || 4, state.playerCount));
+                state.playerCount = (m.fixed && m.id !== "puzzle") ? 1 : Math.max(m.min || 1, Math.min(m.max || 4, state.playerCount));
                 if (state.activeSlot >= state.playerCount) state.activeSlot = state.playerCount - 1;
                 if (m.id === "decouverte") { preparerDecouverte(); return; }
                 render();
@@ -2409,6 +2411,12 @@ function accueilView() {
         // de nombre y aboutissent, d'où un seul appel au son.
         jouerSon(SON.mode);
         if (tuile.cle === "hasard") { void ouvrirRoue(nombre || 1); return; }
+        // Puzzle : sans nombre de heros, le clic ouvre le panneau (puzzles.js) ; avec un nombre, c'est la creation qui demarre.
+        if (m.id === "puzzle") window.creerPuzzle = (n) => partir(tuile, n);
+        if (m.id === "puzzle" && !nombre) {
+            if (typeof window.ouvrirPanneauPuzzles === "function") { window.ouvrirPanneauPuzzles(); return; }
+            nombre = 1;
+        }
         if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
         if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
         // On quitte Legacy dès qu'on choisit autre chose : le jeu libre n'est
@@ -2418,7 +2426,7 @@ function accueilView() {
         const wasCampaign = isCampaignMode();
         state.mode = m;
         if ((m.id === "campaign") !== wasCampaign) state.scenario = null;
-        state.playerCount = m.fixed ? 1
+        state.playerCount = (m.fixed && m.id !== "puzzle") ? 1
             : Math.max(m.min || 1, Math.min(m.max || 4, nombre || state.playerCount));
         if (state.activeSlot >= state.playerCount) state.activeSlot = state.playerCount - 1;
         goto(0);

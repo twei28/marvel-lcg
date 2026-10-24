@@ -50,7 +50,7 @@ style.textContent = `
   .puzzles-panneau { position: fixed; inset: 0; z-index: 950; display: flex;
     align-items: center; justify-content: center; background: rgba(0,0,0,.72); }
   .puzzles-boite { width: min(680px, 92vw); max-height: 84vh; overflow: auto;
-    background: #1c1c1e; border: 1px solid #555; border-radius: 12px;
+    background: linear-gradient(180deg, #301a06, #1c0f03); border: 2px solid #f08a24; border-radius: 12px;
     padding: 18px 20px; color: #ddd; }
   .puzzles-boite h2 { margin: 0 0 4px; font-size: 1.15rem; color: #fff; }
   .puzzles-note { font-size: .8rem; color: #999; margin: 0 0 14px; }
@@ -66,9 +66,9 @@ style.textContent = `
   .puzzle-comment { font-size: .78rem; color: #888; margin-top: 3px;
     overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
     -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .puzzle-jouer { padding: 8px 16px; border-radius: 8px; border: 1px solid #7a5;
-    background: #2c4a2c; color: #dfd; font-weight: 700; cursor: pointer; flex: none; }
-  .puzzle-jouer:hover { background: #3a5f3a; }
+  .puzzle-jouer { padding: 8px 16px; border-radius: 8px; border: 1px solid #f08a24;
+    background: rgba(240, 138, 36, .18); color: #ffd9aa; font-weight: 700; cursor: pointer; flex: none; }
+  .puzzle-jouer:hover { background: rgba(240, 138, 36, .38); }
   .puzzles-fermer { margin-top: 6px; padding: 7px 14px; border-radius: 8px;
     border: 1px solid #666; background: #2e2e2e; color: #ddd; cursor: pointer; }
 `;
@@ -124,7 +124,13 @@ async function ouvrirPanneau() {
                 t("Une position de départ imposée : à toi de trouver la meilleure suite de coups.")),
             blocParCode(),
             blocMesPuzzles(),
-            el("p", { class: "puzzles-note" }, t("Pour créer un puzzle : choisis « Puzzle » sur l'écran de départ, prépare la partie, puis « Enregistrer le puzzle » sur le plateau.")),
+            el("h2", { style: "font-size:1rem" }, t("Créer un puzzle")),
+            el("p", { class: "puzzles-note" }, t("Prépare une partie comme d'habitude (héros, deck, méchant), puis arrange le plateau et « Enregistrer le puzzle ».")),
+            el("div", { style: "display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px" },
+                ...[1, 2, 3, 4].map((n) => el("button", {
+                    class: "puzzle-jouer",
+                    onclick: () => { panneau.remove(); if (typeof window.creerPuzzle === "function") window.creerPuzzle(n); },
+                }, n + " " + (n > 1 ? t("héros") : t("héros"))))),
             el("button", { class: "puzzles-fermer", onclick: () => panneau.remove() }, t("Fermer")),
         ),
     );
@@ -132,22 +138,7 @@ async function ouvrirPanneau() {
 
 }
 
-// ---------------------------------------------------------------- bouton --
-function installerBouton() {
-    // Rejoint la rangée de boutons de reprise.js si elle existe déjà,
-    // sinon crée la même rangée (reprise.js s'y greffera pareil).
-    let rangee = document.querySelector(".reprise-boutons");
-    if (!rangee) {
-        rangee = el("div", { class: "reprise-boutons" });
-        const etapes = document.querySelector("header.progress .steps");
-        if (etapes) etapes.parentElement.insertBefore(rangee, etapes);
-        else { rangee.classList.add("est-flottante"); document.body.append(rangee); }
-    }
-    rangee.append(el("button", { onclick: ouvrirPanneau, title: t("Jouer un puzzle : position imposée à résoudre") }, "🧩 Puzzles ", el("span", { class: "puzzle-beta" }, t("BÊTA"))));
-}
-
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", installerBouton);
-} else {
-    installerBouton();
-}
+// ---------------------------------------------------------------- ouverture --
+// Plus de bouton dans la barre du haut (24/10/2026, demande de l'utilisateur) : le panneau s'ouvre depuis la tuile « Puzzle » de
+// l'ecran de depart (app.js appelle `window.ouvrirPanneauPuzzles`).
+window.ouvrirPanneauPuzzles = ouvrirPanneau;
