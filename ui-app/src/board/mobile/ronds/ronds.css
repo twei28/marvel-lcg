@@ -827,3 +827,40 @@
 .carte-ouverte-scan.a-deux-faces .scan-card {
   --card-w: min(168px, 44vw, calc((100dvh - 250px) * 127 / 176));
 }
+
+/* ---- PAYSAGE (Q48) : les memes zones en largeur, la main dans un panneau a droite ---- */
+@media (orientation: landscape) and (max-width: 767px) {
+  .plateau-portrait.avec-main-dock {
+    grid-template-columns: minmax(0, 1fr) clamp(150px, 34vw, 240px);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .plateau-portrait.avec-main-dock > .portrait-bandeau {
+    grid-column: 1 / -1;
+  }
+  .plateau-portrait.avec-main-dock .main-dock {
+    grid-column: 2;
+    grid-row: 2;
+    height: auto;
+    border-top: 0;
+    border-left: 2px solid #3f86e0;
+  }
+  .plateau-portrait.avec-main-dock .main-dock-entete {
+    padding-left: 0;
+  }
+  .plateau-portrait.avec-main-dock .main-dock-rangee {
+    --card-w: calc((34vw - 36px) / 2);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 6px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    touch-action: pan-y;
+  }
+  .plateau-portrait.avec-main-dock .main-dock-rangee .scan-card {
+    --card-w: calc((clamp(150px, 34vw, 240px) - 56px) / 2);
+  }
+  .table-ronds {
+    --d: clamp(44px, calc((66vw - 40px) / 5.4), 64px);
+  }
+}
