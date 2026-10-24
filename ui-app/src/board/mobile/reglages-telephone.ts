@@ -17,6 +17,8 @@ export type ReglagesTelephone = {
   plateau: PlateauTelephone
   /** Le joueur a coche « garder ce choix » : on ne lui repose plus la question au debut de chaque partie. */
   plateauMemorise: boolean
+  /** La visite guidee des ronds s'ouvre au debut de chaque partie, tant que le joueur n'a pas coche « ne plus afficher ». */
+  aideDebut: boolean
   tailleTexte: TailleTexte
   vibrations: boolean
   verrouPortrait: boolean
@@ -25,6 +27,7 @@ export type ReglagesTelephone = {
 export const CLES_TELEPHONE = {
   plateau: 'marvel-tel-plateau',
   plateauMemorise: 'marvel-tel-plateau-memorise',
+  aideDebut: 'marvel-tel-aide-debut',
   tailleTexte: 'marvel-tel-taille-texte',
   vibrations: 'marvel-tel-vibrations',
   verrouPortrait: 'marvel-tel-verrou-portrait',
@@ -35,6 +38,7 @@ export const EVENEMENT_REGLAGES_TELEPHONE = 'marvel:reglages-telephone'
 export const DEFAUTS_TELEPHONE: ReglagesTelephone = {
   plateau: 'cartes',
   plateauMemorise: false,
+  aideDebut: true,
   tailleTexte: 'normal',
   vibrations: true,
   verrouPortrait: false,
@@ -53,6 +57,7 @@ export function lireReglagesTelephone(): ReglagesTelephone {
   return {
     plateau: lire(CLES_TELEPHONE.plateau) === 'ronds' ? 'ronds' : 'cartes',
     plateauMemorise: lire(CLES_TELEPHONE.plateauMemorise) === 'oui',
+    aideDebut: lire(CLES_TELEPHONE.aideDebut) !== 'non',
     tailleTexte: taille === 'grand' || taille === 'tres-grand' ? taille : 'normal',
     vibrations: lire(CLES_TELEPHONE.vibrations) !== 'non',
     verrouPortrait: lire(CLES_TELEPHONE.verrouPortrait) === 'oui',

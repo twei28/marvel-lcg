@@ -1,9 +1,9 @@
 // VISITE GUIDEE en 5 etapes (decision Q57, 24/10/2026), a la premiere partie en ronds : chaque etape eclaire un morceau de
-// l'ecran et dit ce qu'on peut y faire. « Passer » la ferme pour de bon ; elle ne revient plus (localStorage).
+// l'ecran et dit ce qu'on peut y faire. Elle revient au debut de chaque partie tant que le joueur n'a pas coche, a la derniere
+// etape, « Ne plus afficher l'aide au debut d'une partie » (reglage `aideDebut`, aussi dans Reglages). « Passer » ne la ferme que pour cette partie.
 import { useEffect, useLayoutEffect, useMemo, useState, type ReactElement } from 'react'
 import { t } from '../../langue'
-
-export const CLE_VISITE_RONDS = 'marvel-tel-visite-ronds'
+import { ecrireReglageTelephone, lireReglagesTelephone } from '../reglages-telephone'
 
 export type EtapeVisite = { cible: string; titre: string; texte: string }
 
@@ -18,29 +18,14 @@ export function etapesDeLaVisite(): EtapeVisite[] {
   ]
 }
 
-export function visiteDejaVue(): boolean {
-  try {
-    return window.localStorage.getItem(CLE_VISITE_RONDS) === 'oui'
-  } catch {
-    return false
-  }
-}
-
-function marquerVue(): void {
-  try {
-    window.localStorage.setItem(CLE_VISITE_RONDS, 'oui')
-  } catch {
-    // Navigation privee : la visite reviendra, sans gravite.
-  }
-}
-
 export function VisiteGuidee({ actif, onFin }: { actif: boolean; onFin?: () => void }): ReactElement | null {
   const [ouverte, setOuverte] = useState(false)
   const [rang, setRang] = useState(0)
+  const [plusAfficher, setPlusAfficher] = useState(false)
   const [cadre, setCadre] = useState<{ x: number; y: number; w: number; h: number } | undefined>()
   // Elle s'ouvre une seule fois, quand le jeu est pret (`actif`) et que le joueur ne l'a jamais vue.
   useEffect(() => {
-    if (actif && !visiteDejaVue()) setOuverte(true)
+    if (actif && lireReglagesTelephone().aideDebut) setOuverte(true)
   }, [actif])
   const etapes = useMemo(() => etapesDeLaVisite(), [])
   const etape = etapes[rang]
@@ -51,8 +36,8 @@ export function VisiteGuidee({ actif, onFin }: { actif: boolean; onFin?: () => v
     setCadre(r && r.width > 0 ? { x: r.left, y: r.top, w: r.width, h: Math.min(r.height, window.innerHeight - r.top) } : undefined)
   }, [ouverte, etape])  // `etapes` est memorisee : `etape` ne change qu'avec `rang`
   if (!ouverte || !etape) return null
-  const fermer = () => {
-    marquerVue()
+  const fermer = (definitif = false) => {
+    if (definitif) ecrireReglageTelephone('aideDebut', false)
     setOuverte(false)
     onFin?.()
   }
@@ -66,11 +51,17 @@ export function VisiteGuidee({ actif, onFin }: { actif: boolean; onFin?: () => v
         </p>
         <h2>{etape.titre}</h2>
         <p>{etape.texte}</p>
+        {rang + 1 === etapes.length ? (
+          <label className="visite-plus">
+            <input type="checkbox" checked={plusAfficher} onChange={(e) => setPlusAfficher(e.target.checked)} />
+            {t('Ne plus afficher l’aide au début d’une partie')}
+          </label>
+        ) : null}
         <div className="visite-boutons">
-          <button type="button" className="visite-passer" onClick={fermer}>
+          <button type="button" className="visite-passer" onClick={() => fermer()}>
             {t('Passer')}
           </button>
-          <button type="button" className="visite-suivant" onClick={() => (rang + 1 < etapes.length ? setRang(rang + 1) : fermer())}>
+          <button type="button" className="visite-suivant" onClick={() => (rang + 1 < etapes.length ? setRang(rang + 1) : fermer(plusAfficher))}>
             {rang + 1 < etapes.length ? t('Suivant') : t('Terminer')}
           </button>
         </div>

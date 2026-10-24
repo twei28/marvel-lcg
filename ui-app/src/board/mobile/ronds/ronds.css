@@ -951,6 +951,19 @@
   font-size: 0.75rem;
   opacity: 0.7;
 }
+.visite-plus {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+}
+.visite-plus input {
+  width: 22px;
+  height: 22px;
+  accent-color: #f3c623;
+}
 .visite-boutons {
   display: flex;
   justify-content: space-between;

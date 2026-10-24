@@ -447,6 +447,18 @@ function LigneDemanderLePlateau() {
   )
 }
 
+function LigneAideDebut() {
+  const { aideDebut } = useReglagesTelephone()
+  return (
+    <LigneBascule
+      libelle={t('Aide au début de la partie')}
+      detail={t('La visite guidée des ronds, au début de chaque partie sur téléphone')}
+      actif={aideDebut}
+      onBascule={() => ecrireReglageTelephone('aideDebut', !aideDebut)}
+    />
+  )
+}
+
 function LigneTailleTexte() {
   const { tailleTexte } = useReglagesTelephone()
   return (
@@ -626,6 +638,7 @@ export function ContenuOnglet({
           <>
             <LignePlateauTelephone />
             <LigneDemanderLePlateau />
+            <LigneAideDebut />
             <LigneTailleTexte />
             <LigneVerrouPortrait />
           </>
