@@ -89,7 +89,9 @@ export function apparenceDe(carte: ScanCardProps): ApparenceRond {
 
 /** L'illustration : la carte est rognee sur son dessin (les manigances se posent en paysage, leur dessin est a droite). */
 function positionDe(carte: ScanCardProps): { taille: string; position: string } {
-  if (carte.kind === 'main-scheme' || carte.kind === 'side-scheme') return { taille: '230% auto', position: '88% 55%' }
+  // Manigance principale : texte a gauche, dessin a droite ; manigance annexe : l'inverse (coteDuTexte).
+  if (carte.kind === 'main-scheme') return { taille: '230% auto', position: '88% 55%' }
+  if (carte.kind === 'side-scheme') return { taille: '230% auto', position: '12% 55%' }
   if (carte.kind === 'hero' || carte.kind === 'alter-ego') return { taille: '175% auto', position: '44% 22%' }
   if (carte.kind === 'villain') return { taille: '200% auto', position: '38% 20%' }
   return { taille: '190% auto', position: '48% 24%' }
@@ -190,7 +192,7 @@ export function Rond({
         {paysageTourne ? (
           // Une manigance se pose en paysage mais son scan est servi en portrait : on le tourne d'un quart de tour
           // (comme ScanCard) puis on cadre son dessin, a droite de la carte.
-          <span className="rond-art rond-art-tourne">
+          <span className={`rond-art rond-art-tourne${carte.kind === 'side-scheme' ? ' est-dessin-gauche' : ''}`}>
             <img src={urlDuJeton(carte.imageUrl)} alt="" draggable={false} loading="lazy" />
           </span>
         ) : (

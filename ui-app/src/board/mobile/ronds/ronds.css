@@ -121,6 +121,10 @@
   transform-origin: center;
   pointer-events: none;
 }
+.rond-art-tourne.est-dessin-gauche img {
+  /* Manigance annexe : le dessin est a GAUCHE de la carte redressee (texte a droite), symetrique de la principale. */
+  transform: translate(calc(var(--d) * 0.55), calc(var(--d) * -0.1)) rotate(90deg);
+}
 .rond-anneau {
   position: absolute;
   inset: 0;
