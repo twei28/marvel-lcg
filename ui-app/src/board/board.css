@@ -7228,6 +7228,22 @@
   .panneau-enonce-corps button.danger { background: #8a2a14; border-color: #ff7a5a; color: #fff; }
   .panneau-enonce-solution { border-top: 1px dashed rgba(240, 138, 36, .5); padding-top: 8px; display: grid; gap: 6px; }
   .panneau-enonce-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  /* PUZZLE (createur, 24/10/2026) : le panneau « Creation de puzzle » en haut a gauche, et sa fenetre de details, en ORANGE comme le reste. */
+  .createur-puzzle { position: fixed; top: 56px; left: 12px; z-index: 650; display: grid; gap: 6px; padding: 8px 12px; max-width: min(320px, 70vw); border: 2px solid var(--puzzle-orange, #f08a24); border-radius: 10px; background: linear-gradient(180deg, rgba(48, 26, 6, .97), rgba(28, 15, 3, .97)); color: #fbe3c4; font: 14px/1.35 system-ui, sans-serif; box-shadow: 0 8px 30px rgba(0, 0, 0, .55); }
+  .createur-puzzle button { padding: 6px 12px; border: 1px solid var(--puzzle-orange, #f08a24); border-radius: 7px; background: rgba(240, 138, 36, .18); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+  .createur-puzzle button:hover:not(:disabled) { background: rgba(240, 138, 36, .35); }
+  .createur-puzzle-boite { display: grid; gap: 8px; }
+  .createur-puzzle-boite h3 { margin: 10px 0 0; }
+  .createur-puzzle-champ { display: grid; gap: 3px; font-size: .9rem; color: #ffd9aa; }
+  .createur-puzzle-boite input, .createur-puzzle-boite textarea, .createur-puzzle-boite select { padding: 6px 8px; border: 1px solid #6b4a26; border-radius: 7px; background: #120a03; color: #f3e3d0; font: inherit; }
+  .createur-puzzle-boite button { padding: 5px 10px; border: 1px solid var(--puzzle-orange, #f08a24); border-radius: 7px; background: rgba(240, 138, 36, .14); color: #ffd9aa; cursor: pointer; font: inherit; }
+  .createur-puzzle-boite button.enonce-commencer { margin-top: 0; background: var(--puzzle-orange, #f08a24); color: #1d1208; }
+  .createur-puzzle-ligne { display: flex; gap: 6px; align-items: center; }
+  .createur-puzzle-ligne input { flex: 1; min-width: 0; }
+  .createur-puzzle-code { margin: 0; padding: 8px 12px; border-radius: 8px; background: #120a03; color: #fff; font: 700 1.2rem/1.2 ui-monospace, monospace; letter-spacing: .08em; user-select: all; }
+  .createur-puzzle-erreur { margin: 0; padding-left: 18px; color: #ff9a8a; font-size: .85rem; }
+  .createur-puzzle-avertissements { padding: 8px 10px; border: 1px dashed rgba(240, 138, 36, .6); border-radius: 8px; font-size: .85rem; }
+  .createur-puzzle-avertissements ul { margin: 4px 0 0; padding-left: 18px; }
   .panneau-objectifs-titre {
     display: flex;
     width: 100%;

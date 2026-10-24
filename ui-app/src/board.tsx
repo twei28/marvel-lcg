@@ -141,6 +141,7 @@ import { BandeauAnnonce } from './board/BandeauAnnonce'
 import { BandeauMiseAJour } from './board/BandeauMiseAJour'
 import { BilanObjectifs, PanneauObjectifs } from './board/PanneauObjectifs'
 import { PanneauEnonce } from './board/PanneauEnonce'
+import { CreateurPuzzle } from './board/CreateurPuzzle'
 import { BoutonVoirLaTable } from './board/BoutonVoirLaTable'
 import { useMiseAJour } from './board/maj'
 import { cheminEmplacement, dossierSauvegardes } from './board/sauvegardes'
@@ -4757,6 +4758,10 @@ export function PagePartie({
           l'annonce previent d'une coupure a venir, celle-ci constate qu'on
           tourne sur du vieux code. Les deux peuvent se produire ensemble. */}
       <BandeauMiseAJour visible={majDisponible} />
+      <CreateurPuzzle
+        actif={etat.monde?.mode_createur_puzzle === true}
+        nomsDesJoueurs={(etat.monde?.players ?? []).map((j, i) => j?.area_hero?.[0]?.name?.replace(/^\W*/, '') || `${t('Joueur')} ${i + 1}`)}
+      />
       <PanneauObjectifs objectifs={etat.monde?.puzzle_objectives} />
       <PanneauEnonce info={etat.monde?.puzzle_info} objectifs={etat.monde?.puzzle_objectives} termine={Boolean(etat.monde?.game_over)} />
       {etat.joueurDemande !== undefined &&

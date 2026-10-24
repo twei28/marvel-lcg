@@ -659,6 +659,8 @@ export type World = {
    * saura toujours si une victoire comptait.
    */
   mode_sandbox?: boolean
+  /** Mode « Puzzle » de la préparation : le plateau est un éditeur (bouton « Enregistrer le puzzle »). */
+  mode_createur_puzzle?: boolean
   /**
    * La RÈGLE : cette partie a été lancée comme un scénario de campagne
    * (`mode_campaign`). Seul critère fiable pour ouvrir le panneau de
