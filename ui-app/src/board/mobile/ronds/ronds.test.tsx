@@ -93,6 +93,13 @@ describe('ce que dit un rond', () => {
     expect(sbire.texte).toBe('2/3')
   })
 
+  it('manigance annexe d\'un joueur : anneau vert ; celle du mechant : orange', () => {
+    const joueur = apparenceDe(carte('p', 'side-scheme', { camp: 'player', schemeThreat: '2' }))
+    expect(joueur.couleur).toBe('#3d9b57')
+    const mechant = apparenceDe(carte('m', 'side-scheme', { camp: 'encounter', schemeThreat: '2' }))
+    expect(mechant.couleur).toBe('#d9822b')
+  })
+
   it('le mechant a l\'anneau vert (ses PV), ses sbires l\'ont rouge', () => {
     const mechant = apparenceDe(carte('v', 'villain', { camp: 'encounter', jauge: { remplissage: 1, genre: 'pv', alarme: false, texte: '14 / 14' } }))
     expect(mechant.couleur).toBe('#3d9b57')

@@ -52,7 +52,7 @@ const STATS_PAR_TYPE: Partial<Record<ScanCardProps['kind'], string[]>> = {
   'alter-ego': ['REC'],
 }
 
-/** Les cartes qui s'epuisent en servant : prete = anneau vert, utilisee = grisee. */
+/** Les cartes qui s'epuisent en servant : prete = anneau dore, utilisee = grisee. */
 const KINDS_QUI_S_EPUISENT = new Set(['support', 'upgrade', 'ally', 'hero', 'alter-ego'])
 
 /** Les roles pour lesquels un toucher CHOISIT la carte au lieu de l'ouvrir. */
@@ -78,7 +78,10 @@ export function apparenceDe(carte: ScanCardProps): ApparenceRond {
   const texte = jauge?.texte ?? carte.allyHp ?? carte.schemeThreat
   if (carte.kind === 'environment') return { texte, part: 1, couleur: VIOLET }
   if (jauge?.genre === 'menace' || carte.schemeThreat !== undefined) {
-    return { texte, part: jauge?.remplissage ?? 1, couleur: ORANGE }
+    // Manigance annexe d'un JOUEUR : anneau vert (le vert n'est plus l'anneau « carte prete », devenu dore), pour la
+    // distinguer d'un coup d'oeil des manigances du mechant (24/10/2026).
+    const duJoueur = carte.kind === 'side-scheme' && carte.camp === 'player'
+    return { texte, part: jauge?.remplissage ?? 1, couleur: duJoueur ? VERT : ORANGE }
   }
   if (jauge || carte.allyHp !== undefined) {
     // Le mechant a l'anneau vert comme un heros (ses PV) ; seuls ses sbires sont rouges.

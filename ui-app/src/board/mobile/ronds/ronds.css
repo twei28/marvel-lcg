@@ -476,13 +476,13 @@
   display: none;
 }
 
-/* carte PRETE (pas encore utilisee) : un anneau vert fin autour du rond ; utilisee (epuisee) : le rond est grise (decisions du 24/10/2026) */
+/* carte PRETE (pas encore utilisee) : un anneau dore fin autour du rond ; utilisee (epuisee) : le rond est grise (decisions du 24/10/2026) */
 .rond.est-prete .rond-bouton::after {
   content: '';
   position: absolute;
   inset: -2px;
   border-radius: 50%;
-  border: 1px solid #5ee07b;
+  border: 1px solid #e8b83a;
   pointer-events: none;
 }
 .rond.est-epuise .rond-bouton::after {
