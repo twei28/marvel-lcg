@@ -662,3 +662,50 @@
 .portrait-annuler:disabled {
   opacity: 0.35;
 }
+
+/* Le panneau de phase en ronds (decisions 17, 18, 23, 24, 39, 24/10/2026) : quand il montre une carte (boost, carte
+   rencontre revelee, nouveau stade), il monte et la carte passe en GRANDE, au lieu d'une vignette de 60 px. */
+@media (max-width: 767px) {
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai:has(.tris-boost, .deroule-revelee, .deroule-stade),
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai.est-tris:has(.tris-boost, .deroule-revelee, .deroule-stade) {
+    --grande-h: min(34dvh, 300px);
+    --essai-carte-h: min(34dvh, 300px);
+    --vignette-h: min(34dvh, 300px);
+    height: 78dvh;
+    max-height: 78dvh;
+  }
+  /* Deux boosts (Klaw) : cote a cote, un peu plus petits. */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boosts:has(.tris-boost + .tris-boost) {
+    --essai-carte-h: min(26dvh, 220px);
+    --vignette-h: min(26dvh, 220px);
+  }
+  /* La carte revelee au centre, son texte dessous (au lieu d'une colonne de 60 px a cote). */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .deroule-revelee {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .deroule-revelee-texte {
+    max-width: 100%;
+  }
+  /* Un boost : la grande carte au centre, son nom et son apport dessous. */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boost {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boost-detail {
+    align-items: center;
+    width: 100%;
+  }
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boost-detail strong {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  /* Deux boosts (Klaw) : cote a cote. */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boosts:has(.tris-boost + .tris-boost) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

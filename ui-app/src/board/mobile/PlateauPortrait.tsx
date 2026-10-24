@@ -87,6 +87,14 @@ export function PlateauPortrait(props: BoardProps) {
   const bandes = useMemo(() => repartirEnBandes(props.plateau), [props.plateau])
   // La forme de la table : les cartes en bandes, ou les ronds (essai du 24/10/2026, choisi au debut de la partie).
   const { plateau: formeDeTable } = useReglagesTelephone()
+  // Le panneau de phase (hors de ce composant, colle au bas de l'ecran) se met en grandes cartes quand la table est en ronds.
+  useEffect(() => {
+    if (formeDeTable !== 'ronds') return
+    document.body.dataset.plateau = 'ronds'
+    return () => {
+      delete document.body.dataset.plateau
+    }
+  }, [formeDeTable])
   // Le glisser au doigt (ronds seulement) : memes regles que le plateau PC (`props.glisser`), geste adapte aux ronds.
   const glisserRonds = useGlisserAuDoigt(formeDeTable === 'ronds' ? props.glisser : undefined)
   const interactifs = props.interactifs ?? AUCUNE_INTERACTION
