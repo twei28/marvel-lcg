@@ -742,7 +742,7 @@ export function DemandeCentrale({
 
       {/* Le TEXTE de l'effet, sous le titre (Épuré, 17/10/2026 : « Réponse : après que Squirrel Girl entre
           en jeu… »). Masqué hors Épuré (board.css) : les autres affichages gardent leur fenêtre. */}
-      {reaction && !enScene
+      {(reaction || auTelephone) && !enScene
         ? (() => {
             // La demande a un autre joueur n'a pas de texte : celui de son porteur serait une autre capacite.
             const textes = [...new Set(options.filter((option) => !estDemandeAUnAutre(option)).map((option) => texteCapacite?.(option)).filter((x): x is string => Boolean(x)))]
@@ -787,7 +787,9 @@ export function DemandeCentrale({
           // La vignette : la carte nommee, sinon, sur une fenetre de reaction,
           // la carte PORTEUSE (elle n'apparaissait qu'au survol). Reconnaitre
           // la carte est la moitie de la comprehension.
-          const carteBrute = carteDeLOption?.(option) ?? (reaction ? carteAuSurvol?.(option) : undefined)
+          // Au telephone, pas de survol : la carte porteuse se montre toujours (24/10/2026, « Reflexes innes » :
+          // « comment je suis cense savoir ce que ca fait ? »).
+          const carteBrute = carteDeLOption?.(option) ?? (reaction || auTelephone ? carteAuSurvol?.(option) : undefined)
           const dejaMontree = carteBrute !== undefined && vignettesPosees.has(carteBrute.id)
           if (carteBrute) vignettesPosees.add(carteBrute.id)
           const carte = dejaMontree ? undefined : carteBrute

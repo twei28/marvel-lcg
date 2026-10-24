@@ -10,3 +10,95 @@ html[data-tablette] body {
   touch-action: pan-x pan-y;
   -webkit-text-size-adjust: 100%;
 }
+
+/* ---- Decision 5 : la main reste coupee -------------------------------------
+   Au doigt, `:hover` colle apres un toucher : la main remontait et restait
+   levee. Elle ne monte plus que quand le jeu le demande (mulligan, defausse :
+   `.main-visible-forcee`). On lit ses cartes par l'apercu. */
+html[data-tablette] .plateau:not(.main-visible-forcee) .zone-main:hover .plateau-cartes,
+html[data-tablette] .plateau:not(.main-visible-forcee) .zone-main:focus-within .plateau-cartes {
+  transform: translateY(50%);
+}
+
+/* Le leger zoom de survol des cartes colle lui aussi au doigt. */
+html[data-tablette] .plateau-scene .scan-card:hover .scan-visuel {
+  transform: none;
+}
+html[data-tablette] .scan-card:hover .scan-frame {
+  translate: none;
+}
+
+/* ---- Decisions 3 et 4 : l'apercu de la carte touchee ------------------------
+   Le meme apercu que le survol du PC, toujours a la meme place (en haut a
+   droite, a cote des languettes), et qui RESTE : on peut le lire, le faire
+   defiler, toucher ses boutons. */
+html[data-tablette] .carte-apercu.est-tenu {
+  left: auto;
+  right: 58px;
+  top: 60px;
+  transform: none;
+  max-height: calc(100dvh - 68px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+  animation: none;
+  padding-bottom: 4px;
+  /* La carte doit laisser la place des boutons dessous. */
+  --largeur-face: min(345px, calc((100dvh - 200px) * 127 / 176));
+  --largeur-face-paysage: min(506px, 46vw);
+}
+/* Plusieurs faces (ou une paire jumelle) : cote a cote, les boutons sur la rangee
+   du dessous. Une grille et non un flex qui passe a la ligne : celui-ci prenait
+   toute la largeur de l'ecran et rejetait les cartes a gauche. */
+html[data-tablette] .carte-apercu.est-tenu:is(.a-plusieurs-faces, .a-jumelles):not(.a-faces-4, .a-faces-5) {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: end;
+  align-items: start;
+}
+html[data-tablette] .carte-apercu.est-tenu.a-faces-4,
+html[data-tablette] .carte-apercu.est-tenu.a-faces-5 {
+  flex-wrap: wrap;
+}
+html[data-tablette] .carte-apercu.est-tenu.a-faces-2 {
+  --largeur-face: min(315px, 30vw, calc((100dvh - 200px) * 127 / 176));
+}
+
+/* La place des boutons : sous la ou les faces, toujours visible en bas de l'apercu. */
+html[data-tablette] .apercu-actions-tablette {
+  flex-basis: 100%;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  /* Largeur nulle : les boutons ne doivent pas elargir l'apercu, ils passent a la ligne. */
+  width: 0;
+  min-width: 100%;
+  position: sticky;
+  bottom: 0;
+  margin-top: 10px;
+}
+html[data-tablette] .apercu-actions-tablette:empty {
+  display: none;
+}
+html[data-tablette] .actions-flottantes.est-dans-apercu {
+  position: static;
+  transform: none;
+  width: auto;
+  justify-items: start;
+  pointer-events: auto;
+}
+html[data-tablette] .actions-flottantes.est-dans-apercu .af-boutons {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+html[data-tablette] .actions-flottantes.est-dans-apercu .af-action {
+  min-height: 48px;
+  font-size: 1.15rem;
+  padding: 0 20px;
+}
+
+/* Le « Fin du tour » flottant se posait sur la main, en double avec celui de
+   la barre du haut : comme au telephone couche, il s'efface. */
+html[data-tablette] .bouton-fin-tour {
+  display: none;
+}

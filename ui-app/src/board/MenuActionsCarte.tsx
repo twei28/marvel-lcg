@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { ScanCard, kindLabel, type ScanCardProps } from '../components/ScanCard'
 import { nombreDeRessources, paiementCourant, type Option } from './ask'
 import { classeTonaliteAction } from './action-style'
@@ -13,6 +14,12 @@ import { codeMarvelcdb, urlMarvelcdb } from './marvelcdb'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 
 type MenuActionsCarteProps = {
+  /**
+   * TABLETTE (24/10/2026, decision 3) : les boutons se rangent SOUS l'apercu de la
+   * carte touchee (`.apercu-actions-tablette`, pose par `CarteApercu`), sans nom ni
+   * croix : l'apercu montre deja la carte, un toucher a cote ferme les deux.
+   */
+  dansApercu?: boolean
   carte: ScanCardProps
   carteMonde?: WorldCard
   options: Option[]
@@ -433,8 +440,14 @@ export function MenuActionsCarte({
   ciblePreselectionnee,
   affichage = 'detailed',
   texteDeCarte,
+  dansApercu = false,
 }: MenuActionsCarteProps) {
   const ref = useRef<HTMLElement>(null)
+  // La place sous l'apercu : posee par le plateau dans le meme rendu, lue juste apres.
+  const [place, setPlace] = useState<HTMLElement | null>(null)
+  useLayoutEffect(() => {
+    setPlace(dansApercu ? document.querySelector<HTMLElement>('.carte-apercu.est-tenu .apercu-actions-tablette') : null)
+  }, [dansApercu, carte.id])
   const [raisonVisible, setRaisonVisible] = useState<number | undefined>(undefined)
   const [optionActive, setOptionActive] = useState<number | undefined>(undefined)
 
@@ -522,7 +535,7 @@ export function MenuActionsCarte({
       const cible = evenement.target
       if (!(cible instanceof HTMLElement)) return
       if (ref.current?.contains(cible)) return
-      if (cible.closest('.scan-card')) return
+      if (cible.closest('.scan-card, .carte-apercu.est-tenu')) return
       if (cible.closest('.plateau-action')) return
       fermer()
     }
@@ -603,10 +616,10 @@ export function MenuActionsCarte({
   )
 
   if (affichage === 'simple') {
-    return (
+    const section = (
       <section
-        className="actions-flottantes"
-        style={styleDeplace}
+        className={`actions-flottantes${dansApercu ? ' est-dans-apercu' : ''}`}
+        style={dansApercu ? undefined : styleDeplace}
         ref={ref}
         role="dialog"
         aria-label={`${t('Actions de')} ${carte.name}`}
@@ -614,11 +627,13 @@ export function MenuActionsCarte({
         {/* Telephone (12/09/2026) : la carte en grand AU-DESSUS de ce qu'elle
             peut faire. Sur PC la carte est deja sous la souris, on ne la
             repete pas. */}
-        {enModeFeuille() ? (
+        {enModeFeuille() && !dansApercu ? (
           <div className="ma-carte">
             <ScanCard {...carte} onSelect={undefined} highlight={false} />
           </div>
         ) : null}
+        {dansApercu ? null : (
+          <>
         {/* Poignee de deplacement : ce mode n'a pas de bandeau de titre comme
             `.ma-entete`, juste la carte (mobile) et les boutons -- un petit
             libelle sert de zone dediee, sans bouton dedans. */}
@@ -634,6 +649,8 @@ export function MenuActionsCarte({
         <button type="button" className="af-fermer" aria-label={t('Fermer')} onClick={fermer}>
           X
         </button>
+          </>
+        )}
         <div className="af-boutons">
           {actions.length === 0 && !boutonAnnulationSimple ? (
             <span className="af-vide">{t('Aucune action')}</span>
@@ -668,6 +685,8 @@ export function MenuActionsCarte({
         </div>
       </section>
     )
+    if (!dansApercu) return section
+    return place ? createPortal(section, place) : null
   }
 
   const codeCdb = carte.facedown ? undefined : codeMarvelcdb(carte.codeCarte)

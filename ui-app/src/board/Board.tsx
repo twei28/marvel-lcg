@@ -818,7 +818,15 @@ export function CarteApercu({
   classe,
   borneDroite,
   jumelles,
+  tenu,
 }: {
+  /**
+   * TABLETTE : l'apercu de la carte TOUCHEE, qui reste ouvert. Il se pose toujours au
+   * meme endroit (en haut a droite) et porte, sous la carte, la place des boutons
+   * d'action (`.apercu-actions-tablette`, que `MenuActionsCarte` remplit). Un bouton
+   * touche le referme (`fermer`).
+   */
+  tenu?: { fermer: () => void }
   carte: ScanCardProps
   /**
    * Paire jumelle EN JEU sur la table (`APERCU_JUMELLES_DOUBLE`) : les deux moities, dans l'ordre de l'illustration
@@ -886,6 +894,24 @@ export function CarteApercu({
     signature: `${carte.id}|${nbFaces}|${jumelles ? 'j' : ''}`,
   })
 
+  // Un bouton d'action touche referme l'apercu, APRES son propre clic. Ecoute du DOM et
+  // non de React : les boutons y arrivent par un portail de la page, dont l'arbre React
+  // ne passe pas par ici.
+  const actions = useRef<HTMLDivElement | null>(null)
+  const fermerTenu = tenu?.fermer
+  useEffect(() => {
+    const zone = actions.current
+    if (!zone || !fermerTenu) return
+    const surClic = (evenement: MouseEvent) => {
+      const bouton = (evenement.target as HTMLElement | null)?.closest('button')
+      if (!bouton || bouton.getAttribute('aria-disabled') === 'true') return
+      window.setTimeout(fermerTenu, 0)
+    }
+    // En CAPTURE : le clic du bouton redessine la page avant la fin de sa propre propagation.
+    zone.addEventListener('click', surClic, true)
+    return () => zone.removeEventListener('click', surClic, true)
+  }, [fermerTenu])
+
   // L'agrandissement est monte DANS <body>, pas dans la table, et c'est ce qui
   // le fait passer DEVANT les boutons de decision.
   //
@@ -897,9 +923,9 @@ export function CarteApercu({
   return createPortal(
     <div
       ref={apercu}
-      className={`carte-apercu${jumelles ? ' a-jumelles' : nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}`}
-      style={stylePlacement}
-      aria-hidden="true"
+      className={`carte-apercu${jumelles ? ' a-jumelles' : nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}${tenu ? ' est-tenu' : ''}`}
+      style={tenu ? undefined : stylePlacement}
+      aria-hidden={tenu ? undefined : 'true'}
     >
       {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,
           pastilles), juste beaucoup plus grand. Jamais agissant.
@@ -921,6 +947,7 @@ export function CarteApercu({
       {autresFaces.map((face) => (
         <ApercuAutreFace key={face.url} carte={carte} face={face} paysageVisible={carte.kind === 'main-scheme' || carte.kind === 'side-scheme' ? true : !!carte.isLandscape} />
       ))}
+      {tenu ? <div className="apercu-actions-tablette" ref={actions} /> : null}
     </div>,
     document.body
   )
@@ -1014,6 +1041,12 @@ export type BoardProps = {
    * declenche). Elle seule connait les options du moteur.
    */
   glisser?: ReglagesGlisser
+  /**
+   * LA TABLETTE (24/10/2026, board/tablette/) : pas de survol. Un toucher sur une
+   * carte ouvre son apercu, qui reste ouvert, avec les boutons d'action de la carte
+   * dessous (`MenuActionsCarte`, qui s'y range) ; un toucher a cote le ferme.
+   */
+  tablette?: boolean
   /**
    * La BANDE DES MANIGANCES (plateau PC) : le mechant colle au deck rencontre,
    * puis la manigance principale et les annexes sur toute la largeur du haut.
@@ -1148,6 +1181,7 @@ export function Board({
   disposition = DISPOSITION_ORIGINE,
   superposition,
   identitePartie,
+  tablette = false,
 }: BoardProps) {
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
@@ -1195,7 +1229,8 @@ export function Board({
   const enGlisserRef = useRef(false)
 
   const survol = useCallback((evenement: ReactMouseEvent) => {
-    if (enGlisserRef.current) return
+    // Au doigt, le navigateur imite la souris au toucher : ce survol-la n'en est pas un.
+    if (enGlisserRef.current || tablette) return
     const carte = (evenement.target as HTMLElement).closest<HTMLElement>('.scan-card')
     const id = carte?.dataset.cardId ?? null
     if (id === pointee.current) return
@@ -1206,7 +1241,7 @@ export function Board({
       return
     }
     minuteur.current = window.setTimeout(() => setApercuId(id), 200)
-  }, [])
+  }, [tablette])
 
   const quitter = useCallback(() => {
     pointee.current = null
@@ -1231,6 +1266,47 @@ export function Board({
   )
 
   useEffect(() => () => window.clearTimeout(minuteur.current), [])
+
+  // LA TABLETTE (decisions 3 a 5) : la carte touchee reste en apercu, avec ses
+  // actions dessous. Une carte que le moteur demande de CHOISIR (cible, ressource,
+  // carte a defausser) ne s'ouvre pas : le toucher la choisit, comme au telephone.
+  const [tenuId, setTenuId] = useState<string | null>(null)
+  const tenuStable = useMemo(() => ({ fermer: () => setTenuId(null) }), [])
+  const toucherTablette = useCallback(
+    (evenement: ReactPointerEvent<HTMLDivElement>) => {
+      if (!tablette) return
+      const cible = evenement.target
+      if (!(cible instanceof HTMLElement) || cible.closest('button, a, input, select, textarea')) return
+      const element = cible.closest<HTMLElement>('.scan-card')
+      const id = element?.dataset.cardId
+      if (!element || !id || element.closest('.plateau-unite[data-pile]')) {
+        setTenuId(null)
+        return
+      }
+      const role = interactifs.get(Number(id))?.role
+      if (role === 'cible' || role === 'ressource') {
+        setTenuId(null)
+        return
+      }
+      setTenuId(id)
+    },
+    [tablette, interactifs]
+  )
+  // Un toucher hors de l'apercu et hors des cartes le ferme (les cartes, elles, en changent).
+  useEffect(() => {
+    if (tenuId === null) return
+    const fermer = (evenement: PointerEvent) => {
+      const cible = evenement.target
+      if (!(cible instanceof HTMLElement)) return
+      if (cible.closest('.carte-apercu.est-tenu, .scan-card')) return
+      setTenuId(null)
+    }
+    document.addEventListener('pointerdown', fermer)
+    return () => document.removeEventListener('pointerdown', fermer)
+  }, [tenuId])
+  useEffect(() => {
+    if (!tablette) setTenuId(null)
+  }, [tablette])
 
   // Alt : l'aperçu tout de suite, sans le délai du survol. Convention
   // Tabletop Simulator, et le seul raccourci qui ne change pas l'état de la
@@ -1314,6 +1390,7 @@ export function Board({
     window.clearTimeout(minuteur.current)
     pointee.current = null
     setApercuId(null)
+    setTenuId(null)
   }, [enGlisser])
 
   const ciblesDuGlisser = useMemo(
@@ -1390,18 +1467,20 @@ export function Board({
   // fiche Ctrl+I), agrandie chez le spectateur et en relecture au meme moment.
   const loupeDuJoueur = useVuDuJoueur<{ a: string | null; f: string | null } | null>('loupe', regarde ? playerId : undefined)
   useEffect(() => {
-    if (!regarde) publierVu(playerId, 'loupe', { a: apercuIdLocal, f: ficheIdLocal })
-  }, [regarde, playerId, apercuIdLocal, ficheIdLocal])
+    if (!regarde) publierVu(playerId, 'loupe', { a: tablette ? tenuId : apercuIdLocal, f: ficheIdLocal })
+  }, [regarde, playerId, apercuIdLocal, ficheIdLocal, tablette, tenuId])
   const apercuId = regarde ? (loupeDuJoueur?.a ?? null) : apercuIdLocal
   const ficheId = regarde ? (loupeDuJoueur?.f ?? null) : ficheIdLocal
   const carteFiche = ficheId ? cartesParId.get(ficheId) : undefined
 
-  const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
-  const statutsApercu = apercuId ? statutsParId.get(apercuId) : undefined
+  // En tablette, l'apercu est celui de la carte TOUCHEE (`tenuId`), jamais celui du survol.
+  const idApercu = tablette && !regarde ? tenuId : apercuId
+  const carteApercu = idApercu ? cartesParId.get(idApercu) : undefined
+  const statutsApercu = idApercu ? statutsParId.get(idApercu) : undefined
   // Paire jumelle dont les DEUX moities sont sur la table : l'apercu les montre ensemble.
   const jumellesApercu = useMemo(() => {
-    if (!APERCU_JUMELLES_DOUBLE || !apercuId) return undefined
-    const paire = jumellesPourApercu(plateau.emplacements, apercuId)
+    if (!APERCU_JUMELLES_DOUBLE || !idApercu) return undefined
+    const paire = jumellesPourApercu(plateau.emplacements, idApercu)
     if (!paire) return undefined
     return paire.map(({ carte, panorama }): ApercuJumelle => ({
       carte,
@@ -1409,7 +1488,7 @@ export function Board({
       statuts: statutsParId.get(carte.id),
       raisons: raisonsRefus?.get(Number(carte.id)),
     }))
-  }, [apercuId, plateau, statutsParId, raisonsRefus])
+  }, [idApercu, plateau, statutsParId, raisonsRefus])
 
   // Pile publique ouverte pour etre regardee (defausse, victoire, retirees...).
   const [pileOuverte, setPileRegardee] = useState<PileRegardee | null>(null)
@@ -1530,6 +1609,7 @@ export function Board({
               return
             }
           }
+          toucherTablette(evenement)
           cliquerCarte(evenement)
         }}
         onPointerCancel={() => {
@@ -1596,6 +1676,10 @@ export function Board({
         </div>
       </div>
 
+      {/* La carte touchee, entouree de jaune tant que son apercu est ouvert (tablette). */}
+      {tablette && tenuId !== null ? (
+        <style>{`.plateau-cadre .scan-card[data-card-id="${CSS.escape(tenuId)}"] .scan-frame { box-shadow: 0 0 0 3px #f3c623, 0 0 16px rgba(243, 198, 35, 0.7); }`}</style>
+      ) : null}
       {carteFiche ? (
         <>
           <div
@@ -1614,8 +1698,10 @@ export function Board({
           // `apercuId` vient de `data-card-id`, donc une CHAINE ; les cartes
           // sont indexees par leur identifiant d'objet NUMERIQUE partout
           // ailleurs (`interactifs`, `effets`). On convertit ici, une fois.
-          raisons={apercuId === null ? undefined : raisonsRefus?.get(Number(apercuId))}
+          raisons={idApercu === null ? undefined : raisonsRefus?.get(Number(idApercu))}
           jumelles={jumellesApercu}
+          tenu={tablette && !regarde ? tenuStable : undefined}
+          key={tablette ? (idApercu ?? undefined) : undefined}
         />
       ) : null}
 

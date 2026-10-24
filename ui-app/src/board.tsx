@@ -1892,7 +1892,7 @@ const DELAI_SUIVI_VUE = 800
 export function PagePartie({
   playerId,
   catalogue,
-  modeActions,
+  modeActions: modeActionsChoisi,
   changerModeActions,
 }: {
   playerId: number
@@ -1915,6 +1915,9 @@ export function PagePartie({
   const tablette = useEstTablette() && !telephone
   useMarqueTablette(tablette)
   const tabletteDebout = useTabletteDebout(tablette)
+  // Au doigt, les actions d'une carte sont des boutons sous son apercu (decision 3) :
+  // la presentation simple, sans action unique jouee d'un toucher.
+  const modeActions: ModeActions = tablette ? 'simple' : modeActionsChoisi
   // ⚠ LUE UNE FOIS, AU MONTAGE, ET JAMAIS AU CLIC. L'adresse du site ne change
   // pas de la vie d'une page, et la lire au moment où l'on quitte la mettait
   // dans le chemin d'un clic : fenêtre qui ne s'ouvre pas si le moteur traîne,
@@ -4718,6 +4721,7 @@ export function PagePartie({
           mode={modeMenu}
           ciblePreselectionnee={interaction.cibleFocus}
           affichage={modeActions}
+          dansApercu={tablette && modePlateau !== 'mobile'}
         />
       ) : null}
 
@@ -5155,6 +5159,7 @@ export function PagePartie({
         // Le bandeau « Annuler » du telephone (zone 3) appelle la MEME
         // annulation que le bouton « ↶ Annuler » de la barre.
         annulerCoup={spectateur ? undefined : annulerCoup}
+        tablette={tablette && modePlateau !== 'mobile'}
         bandeManigances={modePlateau !== 'mobile'}
         disposition={editionTable?.d ?? dispositionTable}
         identitePartie={etat.partieId}
@@ -5452,7 +5457,7 @@ export function PagePartie({
                   demandeOrdinaire?.options ?? [],
                   id
                 )
-                if (actionsVersCible.length === 1) {
+                if (actionsVersCible.length === 1 && !tablette) {
                   choisirOptionDepuisMenu(actionsVersCible[0]!, [id])
                   return
                 }
@@ -5560,7 +5565,7 @@ export function PagePartie({
         cyclerReponseAmbiance={cyclerReponseAmbiance}
         designEssai={designEssai}
         basculerDesignEssai={basculerDesignEssai}
-        modeActions={modeActions}
+        modeActions={modeActionsChoisi}
         changerModeActions={changerModeActions}
         curseurs={curseurs}
         basculerCurseurs={basculerCurseurs}
