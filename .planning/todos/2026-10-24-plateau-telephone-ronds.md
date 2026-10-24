@@ -112,3 +112,11 @@ Fait, non deploye : `ui-app/src/board/mobile/ronds/` (repartir-ronds.ts, etats-r
 
 74-76. **Ameliorations attachees** (l'utilisateur a refuse mes variantes et dessine : « comme les cartes qui se mettent l'une a cote de l'autre un peu en dessous, mais sur le cote ») : un rond de la **MEME TAILLE que la carte hote**, pose DERRIERE elle et **decale sur le cote** (a droite), **les deux tiers** du rond depassant ; plusieurs se suivent. La zone s'elargit pour les contenir (jamais par-dessus la voisine). **Pastille de PV sous le rond** (sur le nom). Code : `--nb-amelio`, `--rang`, `.rond-mini`.
 77. **Carte prete / utilisee** : une carte de la table pas encore utilisee (soutien, allie, amelioration, heros) a un **anneau vert tres fin, colle au rond** (1 px, a 2 px) ; utilisee (epuisee) elle est **grisee**, sans anneau. Les sbires et le mechant n'ont pas d'anneau pret.
+
+## Glisser au doigt (questions 78 a 82, demande de l'utilisateur)
+78. **Ce qu'on glisse** : le heros sur un mechant ou un sbire = attaquer ; le heros sur une manigance = dejouer ; une carte de la main sur sa cible = la jouer ; un allie ou un soutien pret sur une cible = l'utiliser.
+79. **Demarrage** : des que le doigt bouge, le rond suit ; les cibles s'allument en jaune, les autres s'assombrissent (pas d'attente, un toucher ouvre toujours la feuille).
+80. **Lacher** : l'action part tout de suite ; bandeau + fleche ↶ pour annuler.
+81. **Main** : glisser vers le HAUT = jouer la carte ; de cote = la main defile.
+82. **Mauvais lacher** (a vide, mauvaise cible) : la carte retourne dans la main, message « ce n'est pas une cible valide ».
+Faisabilite a verifier au codage : le glissement doit declencher les memes questions du moteur que le toucher (action puis cible) ; voir `interaction.ts` (`EtatInteractif`) et `board.tsx` (`onCardClick`, `glisser`).
