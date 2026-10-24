@@ -176,10 +176,6 @@ export function CarteOuverte({
 
         {detail && !faceMontree ? <FeuilleDetail carte={carte} /> : null}
 
-        {carte.onSelect && !faceMontree && !apercuSeul ? (
-          <span className="carte-ouverte-aide">{t('Maintenir pour utiliser')}</span>
-        ) : null}
-
         {voisines && voisines.total > 1 && !apercuSeul ? (
           <div className="carte-ouverte-voisines">
             <button

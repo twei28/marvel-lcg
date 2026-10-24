@@ -337,17 +337,16 @@ describe('la main sous les zones', () => {
     expect(replier).toHaveBeenCalledTimes(1)
   })
 
-  it('une carte jouable se choisit au toucher, puis « Jouer » la joue', async () => {
+  it('un toucher ouvre la carte en grand (24/10/2026) : plus de petits boutons « Lire » / « Jouer » sur la main', async () => {
     const { MainSousLaTable } = await import('./MainSousLaTable')
-    const jouer = vi.fn()
+    const ouvrir = vi.fn()
     const u = unite('1', 'event', { name: 'Pour la Justice' })
     const { container } = render(
-      <MainSousLaTable unites={[u]} onOuvrir={vi.fn()} onJouer={jouer} jouable={() => true} onReplier={vi.fn()} />
+      <MainSousLaTable unites={[u]} onOuvrir={ouvrir} onJouer={vi.fn()} jouable={() => true} onReplier={vi.fn()} />
     )
-    expect(screen.queryByText('Jouer')).toBeNull()
     fireEvent.click(container.querySelector('.main-portrait-carte .scan-card') as HTMLElement)
-    fireEvent.click(screen.getByText('Jouer'))
-    expect(jouer).toHaveBeenCalledTimes(1)
+    expect(ouvrir).toHaveBeenCalledTimes(1)
+    expect(screen.queryByText('Jouer')).toBeNull()
   })
 })
 

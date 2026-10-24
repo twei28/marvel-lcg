@@ -1,8 +1,9 @@
 // LA MAIN, posee SOUS les zones (decision du 24/10/2026, questions 32, 33 et 73) : une rangee de cartes qui defile de cote,
 // jamais par-dessus la table. Quand les zones grandissent, la table defile au-dessus et la main rapetisse (hauteur en vh).
 // Repliable par la languette « Main » (l'encoche de droite) ; elle se rouvre toute seule quand le moteur demande une carte
-// de la main (PlateauPortrait). Meme geste que la feuille de la main : toucher une carte jouable la choisit, « Jouer » la joue.
-import { useEffect, useState, type ReactElement } from 'react'
+// de la main (PlateauPortrait). Toucher une carte l'OUVRE en grand avec « Jouer » / « Fermer » (24/10/2026 : les petits
+// boutons « Lire » / « Jouer » au-dessus de la main etaient trop durs a viser) ; glisser vers le haut la joue toujours.
+import type { ReactElement } from 'react'
 import { t } from '../../langue'
 import type { UniteAffichee } from '../../zones'
 import { CarteMainPortrait } from '../MainPortrait'
@@ -27,12 +28,6 @@ export function MainSousLaTable({
   /** Les cartes DE LA TABLE qui peuvent payer (soutiens producteurs de ressources) : dans la rangee, apres « EN JEU ». */
   enJeuPayants?: UniteAffichee[]
 }): ReactElement {
-  const [cleChoisie, setCleChoisie] = useState<string | undefined>()
-  const choisie = cleChoisie === undefined ? undefined : unites.find((u) => u.cle === cleChoisie)
-  const choisieValide = choisie && jouable(choisie) ? choisie : undefined
-  useEffect(() => {
-    if (cleChoisie !== undefined && !choisieValide) setCleChoisie(undefined)
-  }, [cleChoisie, choisieValide])
   return (
     <section className="main-dock" aria-label={t('Ta main')}>
       <header className="main-dock-entete">
@@ -40,24 +35,6 @@ export function MainSousLaTable({
           {t('Main')} · {unites.length}
         </h2>
         <span className="main-dock-boutons">
-          {choisieValide ? (
-            <>
-              <button type="button" className="main-dock-lire" onClick={() => onOuvrir(choisieValide)}>
-                {t('Lire')}
-              </button>
-              <button
-                type="button"
-                className="main-dock-jouer"
-                data-tactile="jouer"
-                onClick={() => {
-                  setCleChoisie(undefined)
-                  onJouer(choisieValide)
-                }}
-              >
-                {t('Jouer')}
-              </button>
-            </>
-          ) : null}
           <button type="button" className="main-dock-replier" onClick={onReplier} aria-label={t('Replier la main')}>
             ▼
           </button>
@@ -71,18 +48,10 @@ export function MainSousLaTable({
             <CarteMainPortrait
               key={unite.cle}
               unite={unite}
-              choisie={choisieValide?.cle === unite.cle}
-              onChoisir={jouable(unite) ? (u) => setCleChoisie((avant) => (avant === u.cle ? undefined : u.cle)) : undefined}
+              choisie={false}
               onOuvrir={onOuvrir}
               paiement={enPaiement}
-              onAgir={
-                jouable(unite)
-                  ? (u) => {
-                      setCleChoisie(undefined)
-                      onJouer(u)
-                    }
-                  : undefined
-              }
+              onAgir={jouable(unite) ? onJouer : undefined}
             />
           ))}
           {enJeuPayants.length > 0 ? (
