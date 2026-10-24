@@ -57,6 +57,8 @@ style.textContent = `
   .puzzles-note { font-size: .8rem; color: #999; margin: 0 0 14px; }
   .puzzle-ligne { display: flex; gap: 12px; align-items: center;
     border: 1px solid #444; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .puzzle-beta { font-size: .6rem; font-weight: 800; letter-spacing: .06em; padding: 1px 5px; margin-left: 4px;
+    border-radius: 4px; background: #e8730c; color: #fff; vertical-align: middle; }
   .puzzle-art { width: 52px; height: 72px; border-radius: 6px; object-fit: cover;
     background: #333; flex: none; }
   .puzzle-infos { flex: 1; min-width: 0; }
@@ -119,7 +121,7 @@ async function ouvrirPanneau() {
     document.querySelector(".puzzles-panneau")?.remove();
     const panneau = el("div", { class: "puzzles-panneau", onclick: (e) => { if (e.target === panneau) panneau.remove(); } },
         el("div", { class: "puzzles-boite" },
-            el("h2", {}, "🧩 Puzzles"),
+            el("h2", {}, "🧩 Puzzles ", el("span", { class: "puzzle-beta" }, t("BÊTA"))),
             el("p", { class: "puzzles-note" },
                 t("Une position de départ imposée : à toi de trouver la meilleure suite de coups.")),
             blocParCode(),
@@ -143,7 +145,7 @@ function installerBouton() {
         if (etapes) etapes.parentElement.insertBefore(rangee, etapes);
         else { rangee.classList.add("est-flottante"); document.body.append(rangee); }
     }
-    rangee.append(el("button", { onclick: ouvrirPanneau, title: t("Jouer un puzzle : position imposée à résoudre") }, "🧩 Puzzles"));
+    rangee.append(el("button", { onclick: ouvrirPanneau, title: t("Jouer un puzzle : position imposée à résoudre") }, "🧩 Puzzles ", el("span", { class: "puzzle-beta" }, t("BÊTA"))));
 }
 
 if (document.readyState === "loading") {

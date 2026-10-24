@@ -30,6 +30,7 @@ export const DICO_EN_BASE = {
     "Copier la clé": "Copy the key",
     "Copier le code": "Copy the code",
     "Créer un puzzle": "Create a puzzle",
+    "BÊTA": "BETA",
     "Déplacer vers": "Move to",
     "Descendre": "Move down",
     "Elle permet de modifier ou de supprimer le puzzle. Elle est gardée dans « Mes puzzles » sur ce navigateur ; note-la si tu changes d'appareil.": "It lets you edit or delete the puzzle. It is kept in “My puzzles” on this browser; write it down if you switch devices.",

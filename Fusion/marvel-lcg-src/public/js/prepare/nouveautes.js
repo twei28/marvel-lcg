@@ -47,10 +47,16 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-24",
+        genre: "jeu",
+        fr: "Puzzles (bêta) : crée ta propre position de départ en huit étapes depuis le bouton Puzzles, publie-la pour obtenir un code, et résous celui d'un autre en tapant son code. Un panneau rappelle l'énoncé, donne les indices un par un et peut montrer la solution écrite.",
+        en: "Puzzles (beta): build your own starting position in eight steps from the Puzzles button, publish it to get a code, and solve someone else's by typing their code. A panel recalls the brief, gives hints one by one and can show the written solution.",
+    },
+    {
         date: "2026-10-23",
         genre: "jeu",
-        fr: "Shadowland (paquet officiel MC65) : trois nouveaux scénarios, Shadows in the Night, Shadow Labyrinth et Heart of Shadow, en standard et en expert, avec Ninja Swarm en module recommandé. Le livret officiel n'étant pas encore disponible, quelques règles (le paquet de pièges notamment) sont déduites des cartes et pourront être ajustées.",
-        en: "Shadowland (official pack MC65): three new scenarios, Shadows in the Night, Shadow Labyrinth and Heart of Shadow, in standard and expert, with Ninja Swarm as the recommended modular set. The official rulebook is not out yet, so a few rules (the trap deck in particular) are inferred from the cards and may be adjusted.",
+        fr: "Shadowland (paquet officiel MC65) : trois nouveaux scénarios, Shadows in the Night, Shadow Labyrinth et Heart of Shadow, en standard et en expert, avec Ninja Swarm en module recommandé. La mini-campagne en trois scénarios est jouable, d'après le livret officiel en français (Corruption Insidieuse, Sombres Protégés retirés, cartes inscrites au registre), et le paquet de pièges suit le livret.",
+        en: "Shadowland (official pack MC65): three new scenarios, Shadows in the Night, Shadow Labyrinth and Heart of Shadow, in standard and expert, with Ninja Swarm as the recommended modular set. The three-scenario mini-campaign is playable, following the official French booklet (Creeping Corruption, removed Dark Protégés, cards recorded in the log), and the trap deck follows the booklet.",
     },
     {
         date: "2026-10-23",

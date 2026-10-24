@@ -8,7 +8,7 @@
     <!-- Pictos de l'en-tete (refonte du 7 septembre) : un emoji est dessine par
          le systeme, donc different sur chaque machine et jamais dans nos couleurs. -->
     <link rel="stylesheet" href="/public/css/font-awesome.css">
-    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=bdabfb85">
+    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=0fb80c08">
     <link rel="stylesheet" href="/public/css/prepare/prepare-v2.css?v=1">
     <link rel="stylesheet" href="/public/css/prepare/selection-mechant.css?v=a8f57d4a">
     <link rel="stylesheet" href="/public/css/prepare/roue.css?v=1">
@@ -24,7 +24,7 @@
     <div id="app">
         <div class="loading" style="padding:60px;text-align:center">Loading…</div>
     </div>
-    <script type="module" src="/public/js/prepare/app.js?v=16a04c15"></script>
+    <script type="module" src="/public/js/prepare/app.js?v=37732148"></script>
     <script src="/public/js/prepare/reprise.js?v=4" defer></script>
     <!-- Preavis du site (mise a jour imminente, coupure) : module autonome,
          il se pose tout seul en haut de l'ecran. Voir annonce.js. -->
@@ -50,10 +50,8 @@
          l'ecran de jeu est servi depuis pN.<domaine>. Voir lien-signalements.js. -->
     <script src="/public/js/prepare/lien-signalements.js?v=1" defer></script>
     <script type="module" src="/public/js/prepare/panneau-bug.js"></script>
-    <!-- Bouton et panneau « 🧩 Puzzles » : DEBRANCHES a la demande de
-         l'utilisateur. puzzles.js reste dans js/prepare/, les routes du moteur
-         (/list_puzzle_files, /load_puzzle) aussi : decommenter cette ligne
-         suffit a les rallumer. -->
+    <!-- Bouton et panneau « 🧩 Puzzles » (bêta) : resoudre par code, creer, publier. -->
+    <script type="module" src="/public/js/prepare/puzzles.js"></script>
     <!-- Mention legale (10/10/2026) : ligne courte en pied de page, texte
          complet dans [data-mention-legale] s'il y en a un. Voir mention-legale.js. -->
     <script type="module" src="/public/js/mention-legale.js?v=1"></script>
