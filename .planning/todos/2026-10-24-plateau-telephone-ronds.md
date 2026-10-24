@@ -84,3 +84,8 @@ Cartes de statut françaises : Sonné, Désorienté, Tenace. Mots-clés : Renfor
 64. **Embuscade** : pastille « EMBUSCADE » sur la grande carte (comme Renfort) **puis** la flèche rouge de l'attaque sur le rond. « Péril » : à traiter avec le texte de la carte.
 65. **Héros K.O. (0 PV)** : le héros est **éliminé de la partie**, il ne repasse PAS en alter ego (erreur de ma première maquette, corrigée par l'utilisateur). Écran rouge plein « K.O. ! » à valider ; en solo il mène à la défaite.
 66. **Main trop grande** : feuille avec toute la main en grille, on touche la carte à défausser. 67. **Carte jouée** : événement = grande carte + feuille de résolution puis défausse ; soutien = rond posé avec un halo.
+
+## Questions 68 à 70
+68. **Péril (multijoueur)** : bandeau « Péril : seul J1 peut réagir » + onglet de l'autre joueur verrouillé 🔒 pendant la carte.
+69. **Plusieurs états sur une carte** : étiquettes complètes jusqu'à 2 états, **initiales colorées** (So, Dé, Te, Hé…) dès qu'il y en a plus de 2. Cinq états : Sonné (vert), Désorienté (violet), Tenace (orange), Hébété (rouge, carte TMNT Dazed), Intensifié (rose, carte TMNT).
+70. **Valeur modifiée** (attaque, menace) : la valeur change de couleur (vert = augmentée, rouge = réduite).
