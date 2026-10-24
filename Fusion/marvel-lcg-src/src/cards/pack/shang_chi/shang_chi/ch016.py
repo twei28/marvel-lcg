@@ -1,13 +1,13 @@
 from . import *
 
-# Metal Bracers — AMELIORATION, cout 3, [physical]. ARMOR. (card_id shc016, 14/15)
+# Metal Bracers — AMELIORATION, cout 3, [physical]. ARMOR. (card_id ch016, 14/15)
 # Shang-Chi gets +1 DEF. Enters play with 2 reflection counters on it.
 # Hero Action: Exhaust Metal Bracers and remove 2 reflection counters from it → give Shang-Chi a tough status card.
 # (Le fichier du zip s'appelle « Golden Bracers » : la carte imprimee est Metal Bracers.)
 #
 # Cartes de reference :
 #  - `60038` : `*AbilityFactory.GiveKeywordToAttached(Hero, defense=1)` (+1 DEF au heros porteur).
-#  - `dz002` : `ThisEnterPlayWithCounters` ; `shc015` (meme pack) : cout double incline + compteurs.
+#  - `dz002` : `ThisEnterPlayWithCounters` ; `ch015` (meme pack) : cout double incline + compteurs.
 #  - `ra006` / `90123` : `Faces.GiveStatus([identite], "Tough", effect)`.
 #
 # ⚠ Mots-pieges :

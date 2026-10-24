@@ -336,7 +336,14 @@ export function quotaHorsAspect(hero, t = brut) {
     const decl = reglesDeclarees(hero);
     const q = decl && decl.hors_aspect;
     if (!q) return null;
-    const max = Number(q.max);
+    // Quota PAR ASPECT (Shang-Chi, Multiple Forms, 24/10/2026) : au plus `max_titres_par_aspect` titre(s) admissible(s)
+    // dans CHAQUE autre aspect de la liste `aspects` ; `max` n'est alors qu'un total d'affichage.
+    const parAspect = q.par_aspect === true;
+    const maxTitresParAspect = Number(q.max_titres_par_aspect) > 0 ? Number(q.max_titres_par_aspect) : 1;
+    const aspects = Array.isArray(q.aspects) ? q.aspects.map(String) : null;
+    const max = parAspect && !(Number(q.max) > 0) && aspects
+        ? Math.max(1, aspects.length - 1) * maxTitresParAspect
+        : Number(q.max);
     if (!Number.isFinite(max) || max <= 0) return null;
     // Le catalogue ecrit « S.H.I.E.L.D » comme « S.H.I.E.L.D. » : le point final
     // ne doit pas decider de la legalite.
@@ -350,7 +357,10 @@ export function quotaHorsAspect(hero, t = brut) {
         max,
         // Maria Hill (50001b) : « the maximum number of copies of 3 S.H.I.E.L.D.
         // supports » compte des titres ; les exemplaires restent bornes par titre.
-        parTitre: q.compte === "titres",
+        parTitre: q.compte === "titres" || parAspect,
+        parAspect,
+        maxTitresParAspect,
+        aspects,
         // Sans liste de traits ni de types, le quota porte sur N cartes hors
         // aspect QUELLES QU'ELLES SOIENT : c'est le cas degenere, pas une erreur.
         test: (c) => (!traits.length || (c.traits || []).some((tr) => traits.includes(norme(tr))))
@@ -580,14 +590,25 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     if (quota && parAspect.size > 1) {
         const principal = [...parAspect.entries()].sort((a, b) => b[1] - a[1])[0][0];
         const sortis = [];
+        const trop = [];   // quota par aspect : « classe nombre-de-titres »
         for (const [classe, n] of parAspect) {
             if (classe === principal) continue;
+            // Quota par aspect : seules les classes LISTEES comptent comme des aspects (Shang-Chi) ; les autres
+            // (voies TMNT...) ne sortent jamais du decompte.
+            if (quota.aspects && !quota.aspects.includes(classe)) continue;
             if ((admissibles.get(classe) || 0) === n) {
-                horsAspect += quota.parTitre ? titresAdmissibles.get(classe).size : n;
+                const nbTitres = titresAdmissibles.get(classe).size;
+                // Trop de titres dans CET aspect : la classe reste comptee (la limite d'aspects parle) et on le dit.
+                if (quota.parAspect && nbTitres > quota.maxTitresParAspect) {
+                    trop.push(`${classe} ${nbTitres}`);
+                    continue;
+                }
+                horsAspect += quota.parTitre ? nbTitres : n;
                 sortis.push(classe);
             }
         }
         for (const classe of sortis) parAspect.delete(classe);
+        if (trop.length) problemes.push(`${t("Au plus")} ${quota.maxTitresParAspect} ${t("titre(s) par autre aspect")} — ${trop.join(", ")}`);
     }
     const aspects = new Set(parAspect.keys());
     // Multiverse (glossaire MC4DB, 29/09/2026) : une carte Multiverse REMPLACE

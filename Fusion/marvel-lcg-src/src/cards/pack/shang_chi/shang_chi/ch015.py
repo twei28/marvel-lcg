@@ -1,6 +1,6 @@
 from . import *
 
-# Stark Nunchaku — AMELIORATION, cout 3, [energy]. WEAPON. (card_id shc015, 13/15)
+# Stark Nunchaku — AMELIORATION, cout 3, [energy]. WEAPON. (card_id ch015, 13/15)
 # Restricted. Enters play with 3 charge counters on it.
 # Hero Action: Exhaust Stark Nunchaku and remove 2 charge counters from it → stun an enemy.
 #

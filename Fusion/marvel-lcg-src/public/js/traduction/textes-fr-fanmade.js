@@ -5658,4 +5658,315 @@ export const TEXTES_FR_FANMADE = {
     'sv014': "Tous les personnages amis ont -1 ATQ.\n<b>Une fois révélée</b> : placez 1 menace supplémentaire ici par personnage ami en jeu.",
     // silver_surfer — Cosmic Power (Attachment) [set 211, DESIGNHACKER]
     'sv015': "Attachez-le à Galactus. Si vous ne le pouvez pas, attachez-le au méchant.\n[star] Les attaques de l'ennemi attaché gagnent Déferlement.\n<b>Action de héros</b> : subissez 3 dégâts → retirez Cosmic Power de la partie.",
-};
+    // shang_chi — Shang-Chi (DesignHacker, SEALED) [set 212]
+    // shang_chi — Shang-Chi (Hero)
+    'ch001a': "<i>Chi Mastery</i> — <b>Réponse</b> : après que vous avez résolu une capacité « <b>Flow</b> », redressez Shang-Chi.",
+    // shang_chi — Shang-Chi (AlterEgo)
+    'ch001b': "<i>Multiple Forms</i> — Vous pouvez inclure jusqu'à 3 exemplaires d'1 événement [[ATTACK]] de chaque aspect autre que votre aspect choisi.
+        < i > Meditate < /i> — <b>Réponse</b > , après, que, vous, êtes, passé, sous, cette, forme, mélangez, dans, votre, deck, une, carte, de, State, of, Flow, : ., ",: 
+    // shang_chi — State of Flow (Support)
+    'ch002',
+    Réponse
+} / b > , après, que, vous, avez, joué, un, événement, [[ATTACK]], placez;
+-le;
+face;
+visible;
+sur;
+le;
+dessus;
+ici, formant;
+une;
+pile.Après;
+que;
+le;
+deck;
+joueur;
+est;
+épuisé, mélangez;
+chaque;
+carte;
+placée;
+ici;
+dans;
+le;
+deck;
+joueur.
+    < i > Mot - clé < /i> - <b>Flow</b > ;
+regardez;
+la;
+carte;
+du;
+dessus;
+ici.Si;
+une;
+ressource;
+imprimée;
+sur;
+cette;
+carte;
+correspond;
+à;
+la;
+ressource;
+requise;
+par;
+la;
+capacité;
+Flow < /b> », vous pouvez aussi en résoudre les effets.",;
+// shang_chi — Throat Punch (Event)
+'ch003';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât au méchant. Piochez 1 carte.
+    < b > Flow < (/b> : [wild] → piochez 2 cartes supplémentaires.);
+De;
+Yuan;
+Jing, je;
+tire;
+l;
+'audace. »</i>",;
+// shang_chi — Throat Punch (Event)
+'ch004';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât au méchant. Piochez 1 carte.
+    < b > Flow < (/b> : [wild] → piochez 2 cartes supplémentaires.);
+De;
+Yuan;
+Jing, je;
+tire;
+l;
+'audace. »</i>",;
+// shang_chi — Roundhouse Kick (Event)
+'ch005';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi.
+    < b > Flow < /b> <i>(attaque)</i > ;
+[physical];
+infligez;
+2;
+dégâts;
+à;
+un;
+ennemi.
+;
+De;
+Tang;
+Minzhe, je;
+tire;
+la;
+puissance.;
+/i>",;
+// shang_chi — Roundhouse Kick (Event)
+'ch006';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi.
+    < b > Flow < /b> <i>(attaque)</i > ;
+[physical];
+infligez;
+2;
+dégâts;
+à;
+un;
+ennemi.
+;
+De;
+Tang;
+Minzhe, je;
+tire;
+la;
+puissance.;
+/i>",;
+// shang_chi — Special Delivery (Event)
+'ch007';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si c'est le premier événement que vous jouez cette phase, désorientez un ennemi.
+    < b > Flow < /b> : [mental] → si cette attaque vainc un ennemi, jouez gratuitement le prochain événement [[ATTACK]] de votre main.",;
+// shang_chi — Special Delivery (Event)
+'ch008';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si c'est le premier événement que vous jouez cette phase, désorientez un ennemi.
+    < b > Flow < /b> : [mental] → si cette attaque vainc un ennemi, jouez gratuitement le prochain événement [[ATTACK]] de votre main.",;
+// shang_chi — Dragon Strike (Event)
+'ch009';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi.
+    < b > Flow < (/b> : [energy] → cette attaque gagne Perçant, À Distance et Déferlement.);
+Une;
+autre;
+arme.Avec;
+elle, je;
+lui;
+prendrai;
+les;
+yeux.;
+/i>",;
+// shang_chi — Dragon Strike (Event)
+'ch010';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi.
+    < b > Flow < (/b> : [energy] → cette attaque gagne Perçant, À Distance et Déferlement.);
+Une;
+autre;
+arme.Avec;
+elle, je;
+lui;
+prendrai;
+les;
+yeux.;
+/i>",;
+// shang_chi — Chi Jabs (Event)
+'ch011';
+"<b>Action de héros</b> <i>(attaque)</i> : choisissez jusqu'à 3 ennemis différents. Infligez 1 dégât à chacun d'eux.
+    < b > Flow < /b> <i>(attaque)</i > ;
+[physical];
+infligez;
+2;
+dégâts;
+au;
+méchant.
+;
+De;
+Kho;
+Danghai, je;
+tire;
+la;
+résistance.;
+/i>",;
+// shang_chi — Chi Jabs (Event)
+'ch012';
+"<b>Action de héros</b> <i>(attaque)</i> : choisissez jusqu'à 3 ennemis différents. Infligez 1 dégât à chacun d'eux.
+    < b > Flow < /b> <i>(attaque)</i > ;
+[physical];
+infligez;
+2;
+dégâts;
+au;
+méchant.
+;
+De;
+Kho;
+Danghai, je;
+tire;
+la;
+résistance.;
+/i>",;
+// shang_chi — Augmented Blow (Event)
+'ch013';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un sbire. Placez 1 compteur supplémentaire sur une amélioration qui porte des compteurs de n'importe quel type.
+    < b > Flow < /b> : [energy] → choisissez jusqu'à 2 améliorations qui portent des compteurs de n'importe quel type. Placez 2 compteurs supplémentaires sur chacune d'elles.",;
+// shang_chi — Augmented Blow (Event)
+'ch014';
+"<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un sbire. Placez 1 compteur supplémentaire sur une amélioration qui porte des compteurs de n'importe quel type.
+    < b > Flow < /b> : [energy] → choisissez jusqu'à 2 améliorations qui portent des compteurs de n'importe quel type. Placez 2 compteurs supplémentaires sur chacune d'elles.",;
+// shang_chi — Stark Nunchaku (Upgrade)
+'ch015';
+"Restreint. Entre en jeu avec 3 compteurs de charge.
+    < b > Action;
+de;
+héros < /b> : inclinez Stark Nunchaku et retirez 2 compteurs de charge → sonnez un ennemi.
+    < i > Bzzt. < /i>",;
+// shang_chi — Metal Bracers (Upgrade)
+'ch016';
+"Shang-Chi a +1 DEF. Entre en jeu avec 2 compteurs de reflet.
+    < b > Action;
+de;
+héros < /b> : inclinez Metal Bracers et retirez 2 compteurs de reflet → donnez une carte d'état Tenace à Shang-Chi.",;
+// shang_chi — Martial Mastery (Upgrade)
+'ch017';
+"Utilisations (3 compteurs de chi).
+    < b > Interruption;
+de;
+héros < /b> : quand vous utilisez un des pouvoirs de base de votre héros <i>(CTR, ATQ ou DEF)</i > , inclinez;
+Martial;
+Mastery;
+et;
+retirez;
+1;
+compteur;
+de;
+chi;
+de;
+cette;
+carte;
+votre;
+héros;
+a + 1;
+à;
+ce;
+pouvoir;
+pour;
+cet;
+usage.;
+",;
+// shang_chi — Family Ties (Obligation)
+'ch018';
+"<b><i>Donnez-la au joueur Shang-Chi.</i></b>;
+Vous;
+pouvez;
+passer;
+sous;
+forme;
+d;
+'alter ego. Choisissez :;
+Infligez;
+2;
+dégâts;
+à;
+Shang - Chi;
+retirez;
+Family;
+Ties;
+de;
+la;
+partie.
+;
+Infligez;
+2;
+dégâts;
+à;
+chaque;
+allié.Défaussez;
+cette;
+obligation.;
+",;
+// shang_chi — Zheng Zu (Minion)
+'ch019';
+"<b>Réponse forcée</b> : après que Zheng Zu a manigancé, placez 1 compteur mystique ici.[star];
+Zheng;
+Zu;
+a + 1;
+ATQ;
+par;
+compteur;
+mystique;
+ici.
+(Sbire, némésis, de, Shang - Chi.) < (/i>);
+Gardez;
+votre;
+pitié;
+pour;
+vous - même;
+vous;
+n;
+'en recevrez aucune de moi. »</i>",;
+// shang_chi — The Life Stealer (SideScheme)
+'ch020';
+"Victoire 1.
+    < b > Réponse;
+forcée < /b> : après la résolution de l'étape 1 de la phase du Méchant, placez 1 compteur mystique ici. Après qu'un troisième compteur mystique a été placé ici, infligez 3 dégâts à chaque héros et allié en jeu et retirez The Life Stealer de la partie.
+    < i > Zheng;
+Zu;
+accomplit;
+un;
+rituel;
+pour;
+retrouver;
+toute;
+sa;
+puissance.Ne;
+le;
+laissez;
+pas;
+faire < /i>",;
+// shang_chi — Downtown Attack (Treachery)
+'ch021';
+"<b>Une fois révélée</b> : retirez de la partie un allié ou une carte [[PERSONA]] en jeu. Si aucune carte n'a été retirée de la partie ainsi, subissez 3 dégâts indirects ou défaussez 3 cartes de votre main. Puis retirez cette carte de la partie.;
+Mon;
+père;
+a;
+toujours;
+été;
+un;
+terroriste.;
+Shang - Chi < /i>",;

@@ -517,6 +517,8 @@ export const DICO_EN_BASE = {
     "+ au plus": "+ at most",
     "Hors aspect : au plus": "Off-aspect: at most",
     "hors aspect": "off-aspect",
+    "Au plus": "At most",
+    "titre(s) par autre aspect": "title(s) per other aspect",
     "Cartes qui n’appartiennent pas à un deck de joueur :": "Cards that do not belong in a player deck:",
     "Ce héros refuse ce type de carte :": "This hero does not allow this card type:",
     "d’autres aspects": "from other aspects",

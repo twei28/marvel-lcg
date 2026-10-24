@@ -719,12 +719,12 @@
    "depuis": "2026-10-24",
    "note": "Cree le 24/10/2026. Auteur DesignHacker, format « MC4 SEALED » (2020). sv001a/b identite (Silver Surfer / Norrin Radd), sv002-sv010 signature (9 cartes distinctes, 15 exemplaires), sv011 obligation Silver Down, sv012-sv015 set nemesis Galactus (5 cartes, Cosmic Power x2). Mot-cle maison `summon` (fiche mots-cles/summon.md, deja employe par yondu). Pas de decklist d'aspect fournie : player_deck vide (PROCESSUS-HEROS etape 3)."
   },
-  "shc": {
+  "ch": {
    "pack": "shang_chi",
    "libelle": "212. Custom (Shang-Chi)",
    "cartes": 22,
    "depuis": "2026-10-24",
-   "note": "Cree le 24/10/2026. Auteur DesignHacker, format « SEALED ». shc001a/b identite (Shang-Chi), shc002 State of Flow (support Permanent + Setup, pile Flow), shc003-shc014 six evenements ATTACK en DEUX impressions chacun (icone de ressource imprimee differente : Flow la lit, donc card_id distincts), shc015-shc017 ameliorations, shc018 obligation Family Ties, shc019-shc021 set nemesis (Zheng Zu, The Life Stealer, Downtown Attack x3). Prefixe `shc` : `sc` est pris par tmnt_shinobi_dual et 63015 est l'allie Shang-Chi d'Iron Fist. Mot-cle maison Flow (fiche mots-cles/flow.md). Pas de decklist d'aspect fournie : player_deck vide."
+   "note": "Cree le 24/10/2026. Auteur DesignHacker, format « SEALED ». ch001a/b identite (Shang-Chi), ch002 State of Flow (support Permanent + Setup, pile Flow), ch003-ch014 six evenements ATTACK en DEUX impressions chacun (icone de ressource imprimee differente : Flow la lit, donc card_id distincts), ch015-ch017 ameliorations, ch018 obligation Family Ties, ch019-ch021 set nemesis (Zheng Zu, The Life Stealer, Downtown Attack x3). Prefixe `ch` : `sc` est pris par tmnt_shinobi_dual et 63015 est l'allie Shang-Chi d'Iron Fist. Mot-cle maison Flow (fiche mots-cles/flow.md). Pas de decklist d'aspect fournie : player_deck vide."
   }
  }
 }

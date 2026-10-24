@@ -1,11 +1,11 @@
 from . import *
 
-# Augmented Blow — EVENEMENT, cout 1, impression 12/15 : ressource(s) imprimee(s) physique. ATTACK. (card_id shc014)
+# Augmented Blow — EVENEMENT, cout 1, impression 11/15 : ressource(s) imprimee(s) energie + mental. ATTACK. (card_id ch013)
 # Hero Action (attack): Deal 1 damage to a minion. Place 1 additional counter on an upgrade with any type of counters on it.
 # Flow: [energy] → choose up to 2 upgrades with any type of counter on them. Place 2 additional counters on each of them.
 #
-# ⚠ IMPRESSIONS : Augmented Blow existe en DEUX cartes (shc013) qui ne different que par l'ICONE DE RESSOURCE du coin ;
-#   `shc` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
+# ⚠ IMPRESSIONS : Augmented Blow existe en DEUX cartes (ch014) qui ne different que par l'ICONE DE RESSOURCE du coin ;
+#   `ch` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
 #
 # Cartes de reference :
 #  - `64004`/`10005` pour le Hero Action (attack) ; cible sbire : `bw002` (`SetTarget(Minion)`).

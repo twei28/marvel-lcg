@@ -1,6 +1,6 @@
 from . import *
 
-# Martial Mastery — AMELIORATION, cout 2, [wild]. SKILL. (card_id shc017, 15/15)
+# Martial Mastery — AMELIORATION, cout 2, [wild]. SKILL. (card_id ch017, 15/15)
 # Uses (3 chi counters).
 # Hero Interrupt: When you use one of your hero's basic powers (THW, ATK, or DEF), exhaust Martial Mastery and remove
 #   1 chi counter from it → your hero gets +1 to that power for this use.

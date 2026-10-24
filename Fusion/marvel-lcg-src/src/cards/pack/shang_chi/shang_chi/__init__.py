@@ -6,7 +6,7 @@ from cards.pack import *
 # NameError avale par le moteur (lecon hk005). Tout ce que les cartes appellent vit donc ICI.
 
 NOM_PILE = "State of Flow"
-ID_PILE = "shc002"
+ID_PILE = "ch002"
 RESSOURCES_ASPECT = ["Aggression", "Justice", "Leadership", "Protection"]
 
 
@@ -81,6 +81,6 @@ def AccepterFlow(effect: 'Effect', joueur: 'Player|None', ressource: str) -> boo
 
 
 def FlowResolu(joueur: 'Player|None', carte: 'CardFace') -> None:
-    """« After you resolve a Flow ability » : previent Chi Mastery (shc001a)."""
+    """« After you resolve a Flow ability » : previent Chi Mastery (ch001a)."""
     if joueur is not None:
         Message.AfterPlayerResolveFlow(joueur, carte).Send()

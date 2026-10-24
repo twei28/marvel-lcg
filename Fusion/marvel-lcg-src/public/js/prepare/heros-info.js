@@ -1792,4 +1792,17 @@ export const HEROS_INFO = {
         ennemis: "Maelstrom, Annihilus",
         apparition: "Captain America #217 (1978)",
     },
+    "ch001a": {
+        bio: "Élevé dès l'enfance par son père Zheng Zu pour devenir un assassin sans pareil, Shang-Chi a rompu avec lui en découvrant sa vraie nature. Maître incontesté du kung-fu, il puise sa force dans les styles de ses maîtres et dans le chi, qu'il enchaîne d'un coup à l'autre jusqu'à ne plus faire qu'un avec le combat. Il lutte depuis pour racheter les crimes de sa famille.",
+        bioEn: "Raised from childhood by his father Zheng Zu to become an unmatched assassin, Shang-Chi broke with him on discovering his true nature. An undisputed master of kung-fu, he draws his strength from the styles of his teachers and from chi, chaining one blow into the next until he becomes one with the fight. He has fought ever since to atone for the crimes of his family.",
+        civil: "Shang-Chi",
+        base: "Hong Kong, puis New York",
+        baseEn: "Hong Kong, then New York",
+        equipes: "Avengers, Heroes for Hire",
+        equipesEn: "Avengers, Heroes for Hire",
+        ennemis: "Zheng Zu",
+        ennemisEn: "Zheng Zu",
+        apparition: "Special Marvel Edition #15 (1973)",
+    },
+
 };

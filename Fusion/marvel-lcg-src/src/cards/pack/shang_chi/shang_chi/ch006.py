@@ -1,11 +1,11 @@
 from . import *
 
-# Roundhouse Kick — EVENEMENT, cout 0, impression 4/15 : ressource(s) imprimee(s) physique + energie. ATTACK. (card_id shc006)
+# Roundhouse Kick — EVENEMENT, cout 0, impression 4/15 : ressource(s) imprimee(s) physique + energie. ATTACK. (card_id ch006)
 # Hero Action (attack): Deal 1 damage to an enemy.
 # Flow (attack): [physical] → deal 2 damage to an enemy.
 #
-# ⚠ IMPRESSIONS : Roundhouse Kick existe en DEUX cartes (shc005) qui ne different que par l'ICONE DE RESSOURCE du coin ;
-#   `shc` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
+# ⚠ IMPRESSIONS : Roundhouse Kick existe en DEUX cartes (ch005) qui ne different que par l'ICONE DE RESSOURCE du coin ;
+#   `ch` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
 #
 # Cartes de reference :
 #  - `64004` Fists of Fury : deux phrases « Deal N damage to an enemy » = deux choix de cible INDEPENDANTS

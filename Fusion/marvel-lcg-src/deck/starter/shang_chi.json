@@ -4,13 +4,12 @@
     "metadata": {
         "url": "",
         "author": "DesignHacker",
-        "note": "Pack « SHANG-CHI (SEALED) » (DesignHacker). L'auteur ne fournit AUCUNE decklist d'aspect : player_deck reste vide, le joueur choisit son aspect (PROCESSUS-HEROS etape 3). Les 12 evenements ATTACK sont 6 titres en DEUX impressions (icone de ressource differente, lue par le mot-cle Flow). State of Flow (shc002, Permanent. Setup.) n'est pas dans les 15 cartes : mise de cote (set_aside) et mise en jeu par shc001b. Regle de construction « Multiple Forms » declaree dans metadata.deckbuilding.",
+        "note": "Pack « SHANG-CHI (SEALED) » (DesignHacker). L'auteur ne fournit AUCUNE decklist d'aspect : player_deck reste vide, le joueur choisit son aspect (PROCESSUS-HEROS etape 3). Les 12 evenements ATTACK sont 6 titres en DEUX impressions (icone de ressource differente, lue par le mot-cle Flow). State of Flow (ch002, Permanent. Setup.) n'est pas dans les 15 cartes : mise de cote (set_aside) et mise en jeu par ch001b. Regle de construction « Multiple Forms » declaree dans metadata.deckbuilding.",
         "collision_note": "HOMONYMES : « * Shang-Chi » existe deja comme ALLIE (63015 Iron Fist/Elektra, 04098 Taskmaster, dt025, 56113) ; aucun module du pack ne cherche par ce nom. « Special Delivery » (16148) et « The Life Stealer » (sv014) existent aussi : meme remarque.",
         "deckbuilding": {
             "hors_aspect": {
                 "par_aspect": true,
                 "max_titres_par_aspect": 1,
-                "max": 3,
                 "traits": [
                     "ATTACK"
                 ],
@@ -28,40 +27,41 @@
                 ],
                 "label": "Multiple Forms : jusqu'à 3 exemplaires d'1 événement ATTACK de chaque autre aspect"
             }
-        }
+        },
+        "deckbuilding_note": "Multiple Forms (ch001b) : « You may include up to 3 copies of 1 ATTACK event from each aspect other than your chosen aspect. » Declare ici (GUIDE-CREATION-CONTENU §5.4). Cle NEUVE `par_aspect` (24/10/2026) : le quota vaut PAR AUTRE ASPECT (1 titre, 3 exemplaires), `aspects` liste les classes qui comptent (decision utilisateur : les 4 aspects officiels + Determination, Venomized, 'Pool ; pas les voies TMNT)."
     },
     "hero": [
-        "shc001a,shc001b"
+        "ch001a,ch001b"
     ],
     "hero_deck": [
-        "shc003",
-        "shc004",
-        "shc005",
-        "shc006",
-        "shc007",
-        "shc008",
-        "shc009",
-        "shc010",
-        "shc011",
-        "shc012",
-        "shc013",
-        "shc014",
-        "shc015",
-        "shc016",
-        "shc017"
+        "ch003",
+        "ch004",
+        "ch005",
+        "ch006",
+        "ch007",
+        "ch008",
+        "ch009",
+        "ch010",
+        "ch011",
+        "ch012",
+        "ch013",
+        "ch014",
+        "ch015",
+        "ch016",
+        "ch017"
     ],
     "set_aside": [
-        "shc002"
+        "ch002"
     ],
     "obligations": [
-        "shc018"
+        "ch018"
     ],
     "nemesis_set": [
-        "shc019",
-        "shc020",
-        "shc021",
-        "shc021",
-        "shc021"
+        "ch019",
+        "ch020",
+        "ch021",
+        "ch021",
+        "ch021"
     ],
     "player_deck": []
 }

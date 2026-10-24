@@ -335,3 +335,4 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - **`luke_cage`** : `__init__.py` du pack entièrement vide, aucun
   mécanisme maison d'aucune sorte.
 - [x] controlled.md (take control / allié CONTROLLED, gabarit d allié à N dégâts consécutifs)
+- [x] flow.md (mot-clé maison Shang-Chi : pile State of Flow, correspondance stricte des icônes imprimées, message `AfterPlayerResolveFlow`)

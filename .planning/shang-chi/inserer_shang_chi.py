@@ -15,7 +15,7 @@ PYTHON = os.environ.get("PYTHON_DU_DEPOT", sys.executable)
 PACK = "shang_chi"
 LIBELLE = "212. Custom (Shang-Chi)"
 
-spec = importlib.util.spec_from_file_location("shc_cards", os.path.join(ICI, "shc_cards.py"))
+spec = importlib.util.spec_from_file_location("ch_cards", os.path.join(ICI, "ch_cards.py"))
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 

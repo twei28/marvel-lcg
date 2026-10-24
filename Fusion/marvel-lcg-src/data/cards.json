@@ -126312,7 +126312,7 @@
  ],
  "shang_chi": [
   {
-   "card_id": "shc001a",
+   "card_id": "ch001a",
    "type": "Hero",
    "name": "* Shang-Chi",
    "subtitle": "",
@@ -126332,7 +126332,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc001b",
+   "card_id": "ch001b",
    "type": "AlterEgo",
    "name": "* Shang-Chi",
    "subtitle": "",
@@ -126349,7 +126349,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc002",
+   "card_id": "ch002",
    "type": "Support",
    "name": "State of Flow",
    "subtitle": "",
@@ -126364,7 +126364,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc003",
+   "card_id": "ch003",
    "type": "Event",
    "name": "Throat Punch",
    "subtitle": "",
@@ -126381,7 +126381,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc004",
+   "card_id": "ch004",
    "type": "Event",
    "name": "Throat Punch",
    "subtitle": "",
@@ -126398,7 +126398,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc005",
+   "card_id": "ch005",
    "type": "Event",
    "name": "Roundhouse Kick",
    "subtitle": "",
@@ -126415,7 +126415,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc006",
+   "card_id": "ch006",
    "type": "Event",
    "name": "Roundhouse Kick",
    "subtitle": "",
@@ -126432,7 +126432,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc007",
+   "card_id": "ch007",
    "type": "Event",
    "name": "Special Delivery",
    "subtitle": "",
@@ -126449,7 +126449,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc008",
+   "card_id": "ch008",
    "type": "Event",
    "name": "Special Delivery",
    "subtitle": "",
@@ -126466,7 +126466,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc009",
+   "card_id": "ch009",
    "type": "Event",
    "name": "Dragon Strike",
    "subtitle": "",
@@ -126483,7 +126483,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc010",
+   "card_id": "ch010",
    "type": "Event",
    "name": "Dragon Strike",
    "subtitle": "",
@@ -126500,7 +126500,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc011",
+   "card_id": "ch011",
    "type": "Event",
    "name": "Chi Jabs",
    "subtitle": "",
@@ -126517,7 +126517,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc012",
+   "card_id": "ch012",
    "type": "Event",
    "name": "Chi Jabs",
    "subtitle": "",
@@ -126534,7 +126534,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc013",
+   "card_id": "ch013",
    "type": "Event",
    "name": "Augmented Blow",
    "subtitle": "",
@@ -126551,7 +126551,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc014",
+   "card_id": "ch014",
    "type": "Event",
    "name": "Augmented Blow",
    "subtitle": "",
@@ -126568,7 +126568,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc015",
+   "card_id": "ch015",
    "type": "Upgrade",
    "name": "Stark Nunchaku",
    "subtitle": "",
@@ -126586,7 +126586,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc016",
+   "card_id": "ch016",
    "type": "Upgrade",
    "name": "Metal Bracers",
    "subtitle": "",
@@ -126603,7 +126603,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc017",
+   "card_id": "ch017",
    "type": "Upgrade",
    "name": "Martial Mastery",
    "subtitle": "",
@@ -126621,7 +126621,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc018",
+   "card_id": "ch018",
    "type": "Obligation",
    "name": "Family Ties",
    "subtitle": "",
@@ -126635,7 +126635,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc019",
+   "card_id": "ch019",
    "type": "Minion",
    "name": "* Zheng Zu",
    "subtitle": "",
@@ -126655,7 +126655,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc020",
+   "card_id": "ch020",
    "type": "SideScheme",
    "name": "The Life Stealer",
    "subtitle": "",
@@ -126669,7 +126669,7 @@
    "custom": "DesignHacker"
   },
   {
-   "card_id": "shc021",
+   "card_id": "ch021",
    "type": "Treachery",
    "name": "Downtown Attack",
    "subtitle": "",
@@ -126682,5 +126682,5 @@
    "custom": "DesignHacker"
   }
  ],
- "checksum": "b085c1fb2b3bac4d6c41976d6d35c4bc0e18a0af6b2a69628900eedb70a08e3c"
+ "checksum": "43428d7269438971ef36f8aff31e70dd209cb092813ba3579a87e0ef4926d1ba"
 }

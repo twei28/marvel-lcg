@@ -14,7 +14,7 @@ from . import *
 #  - « After Zheng Zu SCHEMES » : sa propre activation de manigance (ATTAQUE exclue) ; le compteur se pose APRES (Forced Response).
 #  - « +1 ATK FOR EACH mystic counter here » : ATK de base 1 + N compteurs ; la valeur imprimee « 1★ » vaut 1 de base.
 #    Sans compteur : ATK 1.
-#  - les compteurs restent sur LUI (« here »), pas sur la manigance annexe (shc020 compte les siens a part).
+#  - les compteurs restent sur LUI (« here »), pas sur la manigance annexe (ch020 compte les siens a part).
 #  - « Shang-Chi's nemesis minion » : `desc.Nemesis`, rien a coder.
 
 

@@ -1,11 +1,11 @@
 from . import *
 
-# Throat Punch — EVENEMENT, cout 0, impression 1/15 : ressource(s) imprimee(s) physique + mental. ATTACK. (card_id shc003)
+# Throat Punch — EVENEMENT, cout 0, impression 2/15 : ressource(s) imprimee(s) mental. ATTACK. (card_id ch004)
 # Hero Action (attack): Deal 1 damage to the villain. Draw a card.
 # Flow: [wild] → draw 2 additional cards.
 #
-# ⚠ IMPRESSIONS : Throat Punch existe en DEUX cartes (shc004) qui ne different que par l'ICONE DE RESSOURCE du coin ;
-#   `shc` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
+# ⚠ IMPRESSIONS : Throat Punch existe en DEUX cartes (ch003) qui ne different que par l'ICONE DE RESSOURCE du coin ;
+#   `ch` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
 #
 # Cartes de reference :
 #  - `01087` Haymaker (`SetPlay().SetLabel('attack').SetTarget(...)`) ; cible VILAIN : `27015` / `sm/27017` (`SetTarget(Villain)`).

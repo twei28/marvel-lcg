@@ -1,11 +1,11 @@
 from . import *
 
-# Chi Jabs — EVENEMENT, cout 1, impression 10/15 : ressource(s) imprimee(s) physique. ATTACK. (card_id shc012)
+# Chi Jabs — EVENEMENT, cout 1, impression 9/15 : ressource(s) imprimee(s) wild. ATTACK. (card_id ch011)
 # Hero Action (attack): Choose up to 3 different enemies. Deal 1 damage to each of them.
 # Flow (attack): [physical] → deal 2 damage to the villain.
 #
-# ⚠ IMPRESSIONS : Chi Jabs existe en DEUX cartes (shc011) qui ne different que par l'ICONE DE RESSOURCE du coin ;
-#   `shc` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
+# ⚠ IMPRESSIONS : Chi Jabs existe en DEUX cartes (ch012) qui ne different que par l'ICONE DE RESSOURCE du coin ;
+#   `ch` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
 #
 # Cartes de reference :
 #  - `10005` Thunderclap : « Choose up to 3 different enemies. Deal N damage to each » = `SetTarget(Enemy, range=(1, 3))`.

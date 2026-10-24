@@ -1,6 +1,6 @@
 from . import *
 
-# The Life Stealer — MANIGANCE ANNEXE NEMESIS (4 par heros, Victory 1). (card_id shc020, 2/5)
+# The Life Stealer — MANIGANCE ANNEXE NEMESIS (4 par heros, Victory 1). (card_id ch020, 2/5)
 # Victory 1.
 # Forced Response: After resolving step one of the villain phase, place 1 mystic counter here. After a third mystic counter is
 #   placed here, deal 3 indirect damage to each hero and ally in play and remove The Life Stealer from the game.

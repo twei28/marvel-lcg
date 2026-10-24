@@ -1,11 +1,11 @@
 from . import *
 
-# Special Delivery — EVENEMENT, cout 2, impression 6/15 : ressource(s) imprimee(s) mental. ATTACK. (card_id shc008)
+# Special Delivery — EVENEMENT, cout 2, impression 5/15 : ressource(s) imprimee(s) wild. ATTACK. (card_id ch007)
 # Hero Action (attack): Deal 3 damage to an enemy. If this is the first event you have played this phase, confuse an enemy.
 # Flow: [mental] → if this attack defeats an enemy, play the next ATTACK event from your hand at no cost.
 #
-# ⚠ IMPRESSIONS : Special Delivery existe en DEUX cartes (shc007) qui ne different que par l'ICONE DE RESSOURCE du coin ;
-#   `shc` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
+# ⚠ IMPRESSIONS : Special Delivery existe en DEUX cartes (ch008) qui ne different que par l'ICONE DE RESSOURCE du coin ;
+#   `ch` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
 #
 # Cartes de reference :
 #  - `nt005` Kickflip : « la carte jouee est DEJA dans `stat.this_*_played_cards` quand son effet se resout » (a exclure).

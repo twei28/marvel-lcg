@@ -1,11 +1,11 @@
 from . import *
 
-# Dragon Strike — EVENEMENT, cout 2, impression 8/15 : ressource(s) imprimee(s) energie. ATTACK. (card_id shc010)
+# Dragon Strike — EVENEMENT, cout 2, impression 8/15 : ressource(s) imprimee(s) energie. ATTACK. (card_id ch010)
 # Hero Action (attack): Deal 5 damage to an enemy.
 # Flow: [energy] → this attack gains piercing, ranged, and overkill.
 #
-# ⚠ IMPRESSIONS : Dragon Strike existe en DEUX cartes (shc009) qui ne different que par l'ICONE DE RESSOURCE du coin ;
-#   `shc` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
+# ⚠ IMPRESSIONS : Dragon Strike existe en DEUX cartes (ch009) qui ne different que par l'ICONE DE RESSOURCE du coin ;
+#   `ch` les separe parce que le Flow de la carte SUIVANTE lit cette icone (correspondance stricte, decision du 24/10).
 #
 # Cartes de reference :
 #  - `nt006` Melon Grab : `DealDamage(cibles, N, effect, property=AttackProperty(piercing=True, overkill=True))` ;

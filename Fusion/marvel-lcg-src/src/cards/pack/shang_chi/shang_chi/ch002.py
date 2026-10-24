@@ -1,6 +1,6 @@
 from . import *
 
-# State of Flow — SOUTIEN. Permanent. Setup. (card_id shc002, pas dans les 15 cartes du deck de heros)
+# State of Flow — SOUTIEN. Permanent. Setup. (card_id ch002, pas dans les 15 cartes du deck de heros)
 # Forced Response: After you play an ATTACK event, place it faceup on top here, forming a pile. After the player deck
 #   runs out, shuffle each card placed here back into the player deck.
 # Keyword - Flow: Look at the top card here. If a printed resource on that card matches the resource required by the
@@ -15,7 +15,7 @@ from . import *
 #
 # ⚠ Mots-pieges :
 #  - « Permanent » et « Setup » : bases automatiques du moteur (`desc.Permanent`/`desc.Setup`) ; l'entree en jeu se fait par
-#    shc001b (mise de cote, comme Storm) : aucun code ici.
+#    ch001b (mise de cote, comme Storm) : aucun code ici.
 #  - « After YOU play an ATTACK event » : un evenement ATTACK du joueur seulement (trait ATTACK, type Event), jamais un
 #    evenement d'un autre joueur ni une carte sans ce trait.
 #  - le Forced Response passe APRES la defausse de l'evenement (Event.OnAfterPlay defausse avant d'envoyer
