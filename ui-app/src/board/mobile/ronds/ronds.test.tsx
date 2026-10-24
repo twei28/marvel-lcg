@@ -377,6 +377,12 @@ describe('les etiquettes d\'un rond', () => {
     expect(container.querySelector('.rond-etiquette-ressource')?.textContent).toBe('+1')
   })
 
+  it('Riposte 1 reste ecrite en permanence sur le sbire (Q60)', () => {
+    const sbire = unite('r', 'minion', { keywords: [{ nom: 'Retaliate 1', definition: '' }] })
+    const { container } = render(<Rond unite={sbire} zone="sbires" decor={decor()} />)
+    expect(container.querySelector('.rond-etiquette-riposte')?.textContent).toBe('Riposte 1')
+  })
+
   it('un degat ou une menace en cours s\'ecrit au-dessus du rond', () => {
     const u = unite('d', 'ally', { effectDelta: { kind: 'damage', value: 3 } })
     const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)

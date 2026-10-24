@@ -569,6 +569,13 @@
 .rond-etiquette-garde {
   background: #4b5361;
 }
+.rond-etiquette-riposte {
+  left: auto;
+  right: -6px;
+  top: 16px;
+  transform: none;
+  background: #7a2a1d;
+}
 .rond-etiquette-ressource {
   background: #2c63b0;
 }

@@ -141,6 +141,9 @@ export function Rond({
   }, [carte.imageUrl])
   // Un changement de PV ou de menace s'ecrit un instant au-dessus du rond (« -3 », « +2 »).
   const delta = carte.effectDelta
+  // Riposte N (Q60) : une etiquette permanente sur le sbire, avec sa valeur (« Retaliate 1 » en anglais).
+  const motRiposte = (carte.keywords ?? []).find((mot) => /^(retaliate|riposte)\b/i.test(mot.nom.trim()))
+  const valeurRiposte = motRiposte ? /(\d+)/.exec(motRiposte.nom)?.[1] : undefined
   const gardien = (carte.keywords ?? []).some((mot) => /^(guard|garde)$/i.test(mot.nom.trim()))
   const estRessource = role === 'ressource'
   const classes = [
@@ -269,6 +272,12 @@ export function Rond({
         </span>
       ) : null}
       {estRessource ? <span className="rond-etiquette rond-etiquette-ressource">+1</span> : null}
+      {motRiposte ? (
+        <span className="rond-etiquette rond-etiquette-riposte">
+          {t('Riposte')}
+          {valeurRiposte ? ` ${valeurRiposte}` : ''}
+        </span>
+      ) : null}
       {gardien ? <span className="rond-etiquette rond-etiquette-garde">🛡 {t('Garde')}</span> : carte.crise ? <span className="rond-etiquette">⚠ {t('Crise')}</span> : null}
     </div>
   )
