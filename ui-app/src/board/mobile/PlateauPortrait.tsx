@@ -32,6 +32,7 @@ import { useHauteurDeQuestion } from './hauteur-de-question'
 import { TableRonds } from './ronds/TableRonds'
 import { MainSousLaTable } from './ronds/MainSousLaTable'
 import { RoundEnGrand } from './ronds/RoundEnGrand'
+import { EcranKO } from './ronds/EcranKO'
 import { ContexteGlisse, CoucheGlisseRonds, useGlisserAuDoigt } from './ronds/glisser-ronds'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
@@ -378,6 +379,12 @@ export function PlateauPortrait(props: BoardProps) {
       {/* En ronds, l'annulation est la fleche ↶ permanente du bandeau (Q45) : plus de bandeau de 5 secondes. */}
       {formeDeTable === 'ronds' ? null : <BandeauAnnuler annuler={props.annulerCoup} />}
       {formeDeTable === 'ronds' ? <RoundEnGrand round={props.world?.round_id} /> : null}
+      {formeDeTable === 'ronds' ? (
+        <EcranKO
+          elimine={props.world?.players?.[props.playerId]?.is_eliminated === true}
+          nom={props.world?.players?.[props.playerId]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
+        />
+      ) : null}
       {formeDeTable === 'ronds' ? <CoucheGlisseRonds glisse={glisserRonds.glisse} refus={glisserRonds.refus} /> : null}
     </main>
     </ContexteGlisse.Provider>
