@@ -1025,3 +1025,37 @@
 .portrait-onglet.est-verrouille {
   opacity: 0.55;
 }
+
+/* ---- Couleurs du heros et du mechant (24/10/2026, variante B) : les MEMES bandes nettes en biais que le PC en Epure
+   (--marque-mechant / --marque-heros, poses par board.tsx), en plus petit, dans le coin de la zone Mechant (haut gauche)
+   et dans le coin de la bande du heros (bas droit de « Cartes en jeu »). Jamais de couleur diffuse. ---- */
+html[data-epure] body.a-marque-mechant .ronds-zone-vilain,
+html[data-epure] body.a-marque-heros .ronds-zone-enJeu {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+html[data-epure] body.a-marque-mechant .ronds-zone-vilain::before,
+html[data-epure] body.a-marque-heros .ronds-zone-enJeu::after {
+  content: '';
+  position: absolute;
+  /* Les bandes du PC font 224 px le long de la diagonale : une boite de 224 x sqrt(2) = 317 px les arrete pile au
+     milieu, ce qui dessine un TRIANGLE de coin (comme le PC) ; reduite pour le telephone. */
+  width: 317px;
+  height: 317px;
+  transform: scale(0.36);
+  pointer-events: none;
+  z-index: -1;
+}
+html[data-epure] body.a-marque-mechant .ronds-zone-vilain::before {
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  background: var(--marque-mechant);
+}
+html[data-epure] body.a-marque-heros .ronds-zone-enJeu::after {
+  right: 0;
+  bottom: 0;
+  transform-origin: 100% 100%;
+  background: var(--marque-heros);
+}
