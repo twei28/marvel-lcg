@@ -16,7 +16,6 @@ import { avecInteraction } from '../../Board'
 import type { EtatInteractif } from '../../interaction'
 import { t } from '../../langue'
 import type { GroupeDePile, UniteAffichee } from '../../zones'
-import { useAppuiLong } from '../useAppuiLong'
 import { SEUIL_INITIALES, etatsDe } from './etats-ronds'
 import { useEtatGlisse } from './glisser-ronds'
 import type { CleZone } from './repartir-ronds'
@@ -27,8 +26,6 @@ export type DecorRonds = {
   heroActifId?: number
   ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
   ouvrirCarte: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
-  /** Appui long : l'apercu tenu au doigt, sans boutons (Q51). */
-  apercuTenu?: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
   agir: (carte: ScanCardProps) => void
   /** Mode manuel au doigt (Q52) : un toucher CHOISIT le rond, la barre d'outils agit dessus. */
   manuel?: { choisieId: number | undefined; choisir: (carte: ScanCardProps) => void }
@@ -117,7 +114,6 @@ export function Rond({
   const choisit = role !== undefined && ROLES_QUI_CHOISISSENT.has(role)
   const attachees = unite.attachees.map((a) => avecInteraction(a, decor.interactifs, decor.effets))
   const apercu = () => decor.ouvrirCarte(carte, attachees.filter((a) => a.kind !== 'status'))
-  const appui = useAppuiLong(() => (decor.apercuTenu ?? decor.ouvrirCarte)(carte, attachees.filter((a) => a.kind !== 'status')))
   const apparence = apparenceDe(carte)
   const { taille, position } = positionDe(carte)
   const paysageTourne = carte.isLandscape === true && carte.scanIsPortrait === true && !carte.facedown
@@ -132,7 +128,6 @@ export function Rond({
     evenement.stopPropagation()
     // Le clic qui suit un glisser ne doit pas ouvrir la feuille.
     if (clicAvale()) return
-    if (appui.vientDeDeclencher()) return
     if (decor.manuel) return decor.manuel.choisir(carte)
     if (choisit || (role === 'cible' && carte.onSelect)) decor.agir(carte)
     else apercu()
@@ -190,7 +185,6 @@ export function Rond({
         aria-label={`${carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}`}
         onClick={surToucher}
         disabled={vaincu}
-        {...appui.gestes}
       >
         {paysageTourne ? (
           // Une manigance se pose en paysage mais son scan est servi en portrait : on le tourne d'un quart de tour

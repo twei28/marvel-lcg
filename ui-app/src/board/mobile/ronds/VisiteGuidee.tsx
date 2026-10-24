@@ -10,7 +10,7 @@ export type EtapeVisite = { cible: string; titre: string; texte: string }
 /** Les 5 etapes : les ronds, la main, la phase, le glisser, le menu. */
 export function etapesDeLaVisite(): EtapeVisite[] {
   return [
-    { cible: '.table-ronds', titre: t('Les ronds'), texte: t('Chaque carte en jeu est un rond. Touche-le pour voir la carte en grand et agir. Maintiens le doigt pour un simple aperçu.') },
+    { cible: '.table-ronds', titre: t('Les ronds'), texte: t('Chaque carte en jeu est un rond. Touche-le pour voir la carte en grand et agir.') },
     { cible: '.main-dock', titre: t('Ta main'), texte: t('Tes cartes sont sous la table. Fais-les défiler de côté ; glisse une carte vers le haut, sur sa cible, pour la jouer.') },
     { cible: '.portrait-bandeau', titre: t('La phase'), texte: t('Le bandeau du haut dit où en est le tour. « Fin du tour » le termine ; la flèche ↶ annule ton dernier geste.') },
     { cible: '.rond[data-kind="hero"], .rond[data-kind="alter-ego"]', titre: t('Glisser'), texte: t('Glisse ton héros (en forme héros) sur un ennemi pour attaquer, sur une manigance pour la déjouer. Les cibles s’allument en jaune.') },
