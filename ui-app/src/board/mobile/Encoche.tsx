@@ -7,13 +7,16 @@
 // clic qui suit un swipe est avale, sinon le geste ouvrirait deux fois.
 //
 // DEPLACABLE EN HAUTEUR (02/10/2026, signalement Yarro #40 : « sur telephone le
-// bouton Piles cache le REC du perso »). Un APPUI LONG saisit la languette, le
-// doigt la monte ou la descend, et sa place est retenue par cote. Le tap et le
+// bouton Piles cache le REC du perso »). Le doigt qui glisse vers le HAUT ou le
+// BAS la saisit tout de suite (24/10/2026 : l'appui long d'avant manquait de
+// fluidite ; il marche encore), et sa place est retenue par cote. Le tap et le
 // swipe vers l'interieur restent ce qu'ils etaient.
 import { useEffect, useRef, useState, type CSSProperties, type ReactElement } from 'react'
 
 export const SEUIL_SWIPE = 24
 export const APPUI_LONG_DEPLACER_MS = 450
+/** Un glisser vertical de cette longueur (et plus vertical qu'horizontal) saisit la languette. */
+export const SEUIL_VERTICAL = 10
 
 /** Hauteur minimale de la languette (portrait.css : min-height 72 px). */
 const DEMI_HAUTEUR = 36
@@ -61,6 +64,7 @@ export function Encoche({
   onOuvrir: () => void
 }): ReactElement {
   const depart = useRef<number | undefined>(undefined)
+  const departY = useRef<number | undefined>(undefined)
   const vientDeSwiper = useRef(false)
   const sens = cote === 'droite' ? -1 : 1
 
@@ -98,6 +102,7 @@ export function Encoche({
       onContextMenu={(evenement) => evenement.preventDefault()}
       onPointerDown={(evenement) => {
         depart.current = evenement.clientX
+        departY.current = evenement.clientY
         setTouchee(true)
         vientDeSwiper.current = false
         deplace.current = false
@@ -119,6 +124,22 @@ export function Encoche({
         }, APPUI_LONG_DEPLACER_MS)
       }}
       onPointerMove={(evenement) => {
+        // Glisser vertical : la languette se saisit tout de suite, sans attendre l'appui long.
+        if (!deplace.current && depart.current !== undefined && departY.current !== undefined) {
+          const dy = evenement.clientY - departY.current
+          const dx = evenement.clientX - depart.current
+          if (Math.abs(dy) >= SEUIL_VERTICAL && Math.abs(dy) > Math.abs(dx)) {
+            armerFin()
+            deplace.current = true
+            depart.current = undefined
+            setEnDeplacement(true)
+            try {
+              evenement.currentTarget.setPointerCapture(evenement.pointerId)
+            } catch {
+              // Capture refusee : le doigt tactile est deja capture par la languette.
+            }
+          }
+        }
         if (deplace.current) {
           const hauteur = window.innerHeight
           if (hauteur > 0) setRatio(bornerRatio(evenement.clientY / hauteur))
