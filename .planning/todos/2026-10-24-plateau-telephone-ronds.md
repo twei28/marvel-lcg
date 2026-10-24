@@ -137,3 +137,16 @@ Fait : degats / menace flottants (« -3 », « +2 »), etiquette Garde, etiquett
 Fait et commite (non deploye) : (1) grandes cartes boost / rencontre revelee / stade dans le panneau de phase (`ronds.css`, `body[data-plateau='ronds']`) ; les fleches de phase visent les ronds (`carteDeLaTable`, `FlechesPhase.tsx`) ; Overkill / Riposte passent par la meme chaine que le PC, etiquette « Riposte N » permanente sur le sbire ; (3) `EcranKO.tsx` ; (4) feuille « avec tout » : `FeuilleDetail.tsx` (valeurs ajustees, jetons `JetonsCarte`, mots-cles `apercu-mots-cles` : memes composants et memes mots que l'apercu du PC, a la demande de l'utilisateur), deux faces cote a cote (`CarteOuverte` prop `detail`) ; (5) appui long = apercu tenu au doigt sans boutons (`apercuSeul`, ferme au relacher) ; (6) paysage < 768 px : main en panneau a droite (2 colonnes) ; (7) mode manuel : `BarreManuelle.tsx` (PV, menace, jeton, epuiser, defausser sur le rond choisi) ; (8) `VisiteGuidee.tsx`, 5 etapes (les ronds, la main, la phase, glisser, le menu), une seule fois ; (9) Peril multijoueur : `data-peril-joueur` sur <html> (DeroulePhase) -> bandeau + onglets verrouilles ; (10) pages admin : onglets de l'admin a la ligne, page Sauvegardes (meta viewport), Releve sans debordement ; **et les pages admin / suivi / page du site passent a l'habillage Epure (bleu)**, remarque de l'utilisateur.
 Reste : essai sur un vrai telephone (320 a 430 px) ; texte de la visite guidee a valider par l'utilisateur .
 Corrige : mise en place en telephone couche (hauteur < 500 px) = carte a gauche, legende + bouton Continuer a droite (`mise-en-place.css`), verifie a 667x375.
+
+## Suite 4 (24/10/2026, apres essai sur vrai telephone) : fait et commite, PAS deploye (« pas aujourd'hui »)
+Deploye en ligne : jusqu'a 7316e706 (V2 garde le mode telephone, dessin des manigances annexes). Commite ensuite, en attente de deploiement :
+- Heros : un toucher le choisit, « Continuer » en bas (plus de « Choisir » en haut ni d'avance auto).
+- Glisser fluide (fantome par transform, une maj par image, plus de rendu du plateau a chaque cible) ; plus d'appui long sur les ronds.
+- Anneaux : carte prete = dore ; carte de la rencontre chez le joueur = contour rouge ; carte du joueur chez le mechant = contour vert.
+- Etiquette Crise / Garde devant le rond ; moteur : base_health comptait le max de PV en double (Drone d'Ultron 1 / 2).
+- « Retour au menu » : `signalerDepart()` (retour-android.ts) avant la navigation, sinon history.back() l'annulait (a confirmer sur vrai telephone).
+- Paiement : toucher une carte de la main = payer ; cartes de la table qui paient dans la rangee de la main apres « EN JEU » ; plus de bleu.
+- Visite guidee : une seule fois (Passer ou Terminer), Reglages la remet. Languettes : glisser haut / bas = deplacer tout de suite.
+- Interruptions simultanees (variante B) : `DemandeCentrale` au telephone, cartes cote a cote avec leur texte, « Ignorer les deux ».
+- Menu de l'accueil en admin (simule) : 11 outils accessibles a 320 px ; le bouton d'affichage a maintenant son nom.
+A faire : libelles anglais « Change To AVENGER GIANT / TINY » dans le menu d'actions du heros (Ant-Man) ; deploiement sur demande.
