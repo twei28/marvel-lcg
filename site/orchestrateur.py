@@ -5491,6 +5491,31 @@ PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace(
 if EPURE_FORMULAIRE:
     PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("family=Anton&display", "family=Bangers&display")
 
+# L'ADMINISTRATION, LE SUIVI ET LA PAGE DU SITE AU MEME HABILLAGE (24/10/2026, remarque de l'utilisateur : « les pages d'admin
+# ne sont pas aux bonnes couleurs, meme sur PC, ca ne va pas avec le reste du style du site »). Ces trois gabarits gardaient
+# l'ancien rouge alors que les formulaires sont passes a l'Epure : meme bascule (`EPURE_FORMULAIRE`), memes valeurs.
+_ROUGE_VERS_EPURE = (
+    ("--bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;", "--bg:#111318; --panel:#1c2028; --panel-2:#292e38; --border:#383e49;"),
+    ("--text:#eef1f5; --muted:#8b95a3;", "--text:#f2f3f5; --muted:#9da5b3;"),
+    ("--accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14);", "--accent:#3f86e0; --accent-hover:#5a9bf0; --accent-soft:rgba(63,134,224,.16);"),
+    ("--accent:#e62429; --accent-hover:#ff3b40;", "--accent:#3f86e0; --accent-hover:#5a9bf0;"),
+    ("rgba(230,36,41,.4)", "rgba(63,134,224,.4)"),
+    ('--affiche: "Anton", "Arial Narrow", sans-serif;', '--affiche: "Bangers", "Anton", Impact, "Arial Black", sans-serif;'),
+    ("family=Anton&display", "family=Bangers&display"),
+)
+
+
+def _en_epure(gabarit: str) -> str:
+    for ancien, nouveau in _ROUGE_VERS_EPURE:
+        gabarit = gabarit.replace(ancien, nouveau)
+    return gabarit
+
+
+if EPURE_FORMULAIRE:
+    PAGE = _en_epure(PAGE)
+    PAGE_ADMIN = _en_epure(PAGE_ADMIN)
+    PAGE_SUIVI = _en_epure(PAGE_SUIVI)
+
 # L'heure locale, ajoutee aux deux pages qui montrent des dates ABSOLUES.
 #
 # ⚠ MEME PIEGE QUE CI-DESSUS, ET LA MEME PARADE : le script est plein
@@ -6176,7 +6201,7 @@ class Handler(BaseHTTPRequestHandler):
         return ("<!doctype html><meta charset=utf-8>"
                 "<meta name=viewport content='width=device-width,initial-scale=1'>"
                 "<title>Sauvegardes du code</title>"
-                "<body style='font-family:system-ui;background:#0d1116;color:#e8edf2;padding:clamp(1rem,4vw,2rem);"
+                "<body style='font-family:system-ui;background:#111318;color:#f2f3f5;padding:clamp(1rem,4vw,2rem);"
                 "overflow-wrap:anywhere'>"
                 "<p><a href='/admin'>&larr; Administration</a></p>"
                 "<h1>Sauvegardes du code</h1>"
@@ -6187,7 +6212,7 @@ class Handler(BaseHTTPRequestHandler):
                 "<p><a href='/admin/images'>Toutes les images (scans, vignettes, HD, sons, documents), environ 2,5 Go</a>"
                 " : un fichier .tar fabriqué à l'instant depuis le serveur. Après une restauration, l'extraire dans "
                 "<code>Fusion/marvel-lcg-src/</code> (il contient le dossier <code>assets/</code>).</p>"
-                "<style>a{color:#f0b95f}</style></body>" % corps).encode("utf-8")
+                "<style>a{color:#5a9bf0}</style></body>" % corps).encode("utf-8")
 
     def _servir_images(self) -> None:
         import tarfile
