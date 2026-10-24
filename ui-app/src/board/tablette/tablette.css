@@ -174,3 +174,36 @@ html[data-tablette] .plateau-cadre .scan-card {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* ---- Etape 5 : les petites zones ----------------------------------------------
+   Languettes AIDE / JOURNAL (decision 9) : a leur place, larges de 46 px. */
+html[data-tablette] .volet-aide-languette,
+html[data-tablette] .volet-journal-languette,
+html[data-tablette] .volet-assemblee-languette,
+html[data-tablette] .volet-ville-languette {
+  min-width: 46px;
+  padding: 18px 12px;
+  font-size: 0.9rem;
+}
+
+/* Pas de clavier : les touches (« Espace », « C ») ne se lisent plus sur les boutons. */
+html[data-tablette] button kbd,
+html[data-tablette] .tsm-touche {
+  display: none;
+}
+
+/* Tout ce qui se touche fait 44 px au moins : la fenetre des reglages
+   (ses choix faisaient 24 px), les menus de la barre et les fenetres de choix. */
+html[data-tablette] .reglages-fenetre button,
+html[data-tablette] .reglages-fenetre select,
+html[data-tablette] .reglages-fenetre input[type='range'],
+html[data-tablette] .demande-centrale button,
+html[data-tablette] .assistant-action button,
+html[data-tablette] .plateau-regardees button {
+  min-height: 44px;
+}
+html[data-tablette] .reglages-fenetre .mode-actions button {
+  min-width: 56px;
+  padding: 0 14px;
+  font-size: 0.95rem;
+}
