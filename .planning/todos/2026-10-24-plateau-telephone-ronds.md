@@ -50,3 +50,9 @@ Noms français des états lus sur les cartes : Sonné, Désorienté, Tenace.
 36. **Changement de forme** : le rond se retourne comme une pièce. 37. **Multijoueur** : onglets de joueurs en haut (J1, J2), une zone Héros à la fois.
 38. **Sbire engagé** : pastille J1 / J2 sur chaque sbire. 39. **Nouveau stade du méchant** : le rond se retourne **et** la carte du nouveau stade s'affiche au centre (bouton Continuer).
 Cartes de statut françaises : Sonné, Désorienté, Tenace. Mots-clés : Renfort (Surge), Garde (Guard), Crise (Crisis).
+
+## Questions 40 à 48
+40. **Fin de partie** : bannière explosive (celle de l'utilisateur, « Defeat ! » / équivalent victoire) + feuille de statistiques avec Rejouer / Menu. 41. **Journal** : liste chronologique, pastille de round.
+42. **Piles** : quatre dos de cartes avec compteurs (deck, défausse, deck et défausse rencontre), un toucher ouvre la pile. 43. **Environnement** : rond à contour violet dans la zone Manigances, étiquette « ENV. ».
+44. **Sbire ou allié vaincu** : rond grisé + étiquette rouge « VAINCU » une seconde, puis il quitte la table. 45. **Annuler** : flèche ↶ permanente dans la barre du haut (sans limite de 5 s).
+46. **Mise en place** : une carte par écran, grande, **les manigances en paysage**. 47. **Menu « … »** : liste d'actions avec pictogrammes. 48. **Paysage** : verrou portrait avec un message (et un choix de continuer quand même).
