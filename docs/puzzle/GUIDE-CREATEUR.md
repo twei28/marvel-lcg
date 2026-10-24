@@ -4,39 +4,38 @@ Un puzzle est une **situation de départ** imposée (héros, méchant, cartes en
 **objectif** à atteindre. Le joueur cherche la bonne suite de coups, autant d'essais qu'il veut.
 
 ## Où se trouve le créateur
-Panneau **« 🧩 Puzzles »** → **« Créer un puzzle »**. (Le bouton est débranché du site tant que la fonction n'est pas
-livrée : voir `PLAN.md`.) L'assistant s'ouvre en plein écran, en orange. Chaque étape est **facultative** ; tout a une
-valeur par défaut. **Retour**, **Passer** et **Suivant** se trouvent en bas, et **Tester ce puzzle** à tout moment.
-Ton brouillon est gardé dans ton navigateur à chaque étape : si tu fermes, on te propose de le reprendre.
+Sur l'écran de départ (là où on choisit le mode), la tuile **« Puzzle »**. Elle lance l'assistant de partie **habituel** :
+héros, deck, méchant, scénario. Puis le **vrai plateau** s'ouvre en **mode éditeur** (bac à sable + table manuelle : le moteur
+se tait, rien ne se déclenche quand tu déplaces une carte). Le panneau orange **« Création de puzzle »**, en haut à gauche,
+porte le bouton **« Enregistrer le puzzle »**.
 
-## Les 8 étapes
-1. **Qui joue ?** 1 à 4 héros. Leur deck de départ est proposé (signature + moitié d'aspect) ; la main de départ est
-   tirée du début de la liste.
-2. **L'ennemi.** Le scénario (donc le méchant, les complots, les cartes de rencontre) ; standard ou expert.
-3. **L'état de la menace.** Stade du méchant et de son complot principal, points de vie du méchant, menace posée.
-4. **Les cartes des héros.** Main, deck (dessus en premier) et défausse de chaque héros. Ajoute par recherche, change
-   l'ordre avec ▲ ▼, déplace d'une pile à l'autre avec la liste « → », bouton **Mélanger** pour le deck.
-5. **Ce qui est en jeu.** Alliés, soutiens, sbires (engagés avec un héros), complots annexes, environnement, et
-   améliorations posées sur un porteur de ton choix.
-6. **Les états.** Pour chaque carte : points de vie, épuisée, cartes d'état (Sonné, Coriace, Désorienté, Exposé,
-   Camouflé, Étourdi, Intensifié), compteurs nommés, menace d'un complot annexe.
-7. **L'objectif.** Vaincre le méchant, survivre jusqu'à la fin du round, terminer un complot, ou un **objectif libre** que
-   le joueur coche lui-même. Plusieurs objectifs : « tous requis » ou « un seul suffit ». Aucun objectif = fin de partie
-   normale du moteur.
-8. **Présentation et test.** Titre (obligatoire pour publier), histoire, difficulté (étoiles), indices (jusqu'à 10,
-   dévoilés un par un au joueur), premier joueur, moment de départ (début de phase joueur, phase du méchant, fin de
-   round), ton pseudo, et la **solution de référence** : un texte (4000 caractères au plus) que tu écris, montré au joueur
-   derrière un clic « Voir la solution » : *après la partie* (finie, gagnée ou perdue), *toujours*, ou *jamais*.
+## Arranger le plateau
+Tout se fait comme à la table manuelle (clic droit sur une carte, glisser-déposer, clavier) :
+- **état des cartes** : incliner / redresser, retourner, dégâts, menace, statuts (Sonné, Coriace, Désorienté…), compteurs,
+  attacher ;
+- **déplacer entre zones** : main, deck, défausse, en jeu, pile de victoire, mises de côté, pour les héros **et** le méchant ;
+- **voir ce qui est caché** : un clic droit sur une pile (deck du héros, défausse, deck rencontre, défausse rencontre) ouvre
+  sa liste, dans l'ordre réel, face visible ;
+- **ajouter ou retirer des cartes** : le catalogue complet du jeu ;
+- **PV, menace, stade du méchant et du complot** : même menu.
+
+## Enregistrer
+**Enregistrer le puzzle** capture le plateau tel qu'il est (le moteur le relit : zones, ordre des decks, états), puis ouvre la
+fenêtre des détails : titre (obligatoire), histoire, difficulté (étoiles), **objectifs** (vaincre le méchant, survivre jusqu'à la
+fin du round, terminer une manigance, ou un objectif libre que le joueur coche ; « tous requis » ou « un seul suffit »), indices
+(jusqu'à 10, dévoilés un par un), phase de départ, premier joueur, **solution de référence** (texte, 4000 caractères au plus,
+visible *après la partie*, *toujours* ou *jamais*) et ton pseudo. La fenêtre liste aussi **ce que la capture n'a pas pu garder**
+(par exemple les ressources en réserve) : rien n'est tu.
 
 ## Tester
-**Tester ce puzzle** monte la table avec ton puzzle, tel que le verra le joueur. Joue-le : si tu n'y arrives pas toi-même,
-le puzzle n'est pas prêt. **Recommencer** (panneau « Énoncé », en haut à droite) relance le même départ à l'identique.
+Résous ton puzzle toi-même avec son code (panneau « 🧩 Puzzles » → **Résoudre par code**), tel que le verra le joueur. Si tu
+n'y arrives pas, il n'est pas prêt. **Recommencer** (panneau « Énoncé », en haut à droite) relance le même départ à l'identique.
 
 ## Publier
-**Publier** envoie le puzzle au site et te donne :
+**Publier le puzzle** (dans la fenêtre des détails) envoie le puzzle au site et te donne :
 - un **code** court (`PZ-XXXX`) à donner à qui veut le résoudre ;
 - une **clé d'édition** secrète, affichée **une fois** et gardée dans « Mes puzzles » sur ce navigateur. Elle permet de
-  **Modifier** (même code) ou **Supprimer**. Note-la si tu changes d'appareil : le site n'en garde que l'empreinte et ne
+  **Supprimer** le puzzle (la modification d'un puzzle déjà publié par l'interface n'existe plus : republie une nouvelle version). Note-la si tu changes d'appareil : le site n'en garde que l'empreinte et ne
   peut pas la retrouver.
 
 Règles du serveur :
@@ -45,12 +44,13 @@ Règles du serveur :
 - **Aucune donnée personnelle** : un pseudo libre, rien d'autre.
 - Taille limitée (300 Ko, 4 héros, 200 cartes par pile, 10 indices, 6 objectifs) et **10 publications par heure**.
 - Seules des commandes de **mise en place** sont acceptées ; toute carte inconnue du jeu est refusée.
-- Hors ligne (jeu local), tester marche, publier et lire par code demandent le site.
+- Hors ligne (jeu local), arranger le plateau marche ; publier et lire par code demandent le site.
 
 ## Résoudre par code
 Panneau Puzzles → saisis le code → **Résoudre par code**. Une introduction (titre, histoire, difficulté, objectifs) s'affiche
 une seule fois ; le panneau **Énoncé** garde l'histoire, les indices (un par un) et **Recommencer**.
 
 ## Ce qui n'est pas encore là
-- **Solution de référence en replay** (rejouer tes coups à l'écran) : non faite ; la solution est un **texte** (voir étape 8).
-- Glisser-déposer (l'ordre se règle avec les flèches), ressources en réserve, aperçu en direct, « Affiner sur le plateau ».
+- **Solution de référence en replay** (rejouer tes coups à l'écran) : non faite ; la solution est un **texte**.
+- **Modifier un puzzle déjà publié** depuis l'interface : l'ancien assistant (8 étapes) a été retiré le 24/10/2026 ; on republie.
+- Ressources en réserve, aperçu en direct, mobile (l'éditeur est pensé pour l'ordinateur).

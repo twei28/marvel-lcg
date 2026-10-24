@@ -11,7 +11,6 @@
 import { cardImageUrl } from "/public/js/prepare/api.js?v=dfcc19da";
 import { cards } from "/public/js/prepare/cards.js";
 import { t } from "/public/js/prepare/langue.js";
-import { ouvrirAssistant } from "/public/js/prepare/puzzle-assistant.js";
 import { jouerParCode, mesPuzzles, oublierPuzzle, supprimerPuzzle, urlSite } from "/public/js/prepare/puzzle-client.js";
 
 function el(tag, attrs, ...enfants) {
@@ -103,7 +102,6 @@ function blocMesPuzzles() {
         el("div", { class: "puzzle-infos" },
             el("div", { class: "puzzle-titre" }, p.titre || p.code),
             el("div", { class: "puzzle-sous" }, p.code)),
-        p.brouillon && el("button", { class: "puzzles-fermer", style: "margin:0", onclick: () => { document.querySelector(".puzzles-panneau")?.remove(); ouvrirAssistant({ code: p.code, cle: p.cle, brouillon: p.brouillon }); } }, t("Modifier")),
         el("button", { class: "puzzles-fermer", style: "margin:0", onclick: () => { try { navigator.clipboard.writeText(p.cle); } catch (e) { /* rien */ } } }, t("Copier la clé")),
         el("button", { class: "puzzles-fermer", style: "margin:0", onclick: async (e) => {
             const bouton = e.currentTarget;
@@ -126,7 +124,7 @@ async function ouvrirPanneau() {
                 t("Une position de départ imposée : à toi de trouver la meilleure suite de coups.")),
             blocParCode(),
             blocMesPuzzles(),
-            el("button", { class: "puzzle-jouer", style: "margin-right:8px", onclick: () => { panneau.remove(); ouvrirAssistant(); } }, "🧩 " + t("Créer un puzzle")),
+            el("p", { class: "puzzles-note" }, t("Pour créer un puzzle : choisis « Puzzle » sur l'écran de départ, prépare la partie, puis « Enregistrer le puzzle » sur le plateau.")),
             el("button", { class: "puzzles-fermer", onclick: () => panneau.remove() }, t("Fermer")),
         ),
     );

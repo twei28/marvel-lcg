@@ -92,6 +92,7 @@ auteur/pseudo. Migration des anciens fichiers. Validation de taille et de schém
   d'un mode (ville Punisher).
 
 ### E5. Création : assistant guidé, puis plateau libre
+**REMPLACÉ le 24/10/2026** (demande de l'utilisateur) : l'assistant 8 étapes est retiré. Création = tuile « Puzzle » du menu de départ → assistant de partie habituel → plateau en mode éditeur (règles `mode_sandbox` + `mode_manuel` + `mode_createur_puzzle`) → « Enregistrer le puzzle » (`GET /puzzle_capture`, `CreateurPuzzle.tsx`, `createur-puzzle.ts`). Voir `GUIDE-CREATEUR.md`. Ce qui suit est l'historique.
 **Avancement E5 (23/10)** : couche de données faite, interface pas commencée. Le brouillon de
 l'assistant et sa traduction en puzzle v2 vivent dans `public/js/prepare/puzzle-brouillon.js`
 (module pur, tourne sous Node ; mêmes commandes `Restore*` que la capture). Cas

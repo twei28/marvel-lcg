@@ -6,7 +6,6 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 const racine = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const client = await import(pathToFileURL(path.join(racine, "Fusion/marvel-lcg-src/public/js/prepare/puzzle-client.js")).href);
-const brouillon = await import(pathToFileURL(path.join(racine, "Fusion/marvel-lcg-src/public/js/prepare/puzzle-brouillon.js")).href);
 
 let echecs = 0;
 const cas = (nom, obtenu, attendu) => {
@@ -43,11 +42,15 @@ const port = await new Promise((ok) => serveur.stdout.once("data", (d) => ok(Num
 const site = `http://127.0.0.1:${port}`;
 
 try {
-  const b = brouillon.brouillonVide();
-  Object.assign(b, { title: "Essai client", villain: ["01094"], schemes: ["01097a,01097b"], encounterDeck: ["01110"] });
-  Object.assign(b.players[0], { identity: "01001b", hand: ["01071"], deck: ["01072"] });
-  b.enJeu.push({ kind: "ally", card: "01059", siege: 0, state: { health: 2 } });
-  const puzzle = brouillon.brouillonVersPuzzle(b, { auteur: "t" });
+  // Un puzzle v2 minimal, ecrit a la main (le createur du plateau en fabrique de semblables via /puzzle_capture).
+  const puzzle = {
+    version: "0.5.8", author: "t", cover: "01094", comment: "Essai client", seed: 1,
+    villain: ["01094"], schemes: ["01097a,01097b"], encounter_deck: ["01110"], encounter_discard_pile: [], set_aside: [], expert: false,
+    players: [{ identities: ["01001b"], hand_cards: ["01071"], player_deck: ["01072"], player_discard_pile: [], set_aside: [], deck_name: "" }],
+    puzzle_command: ["Puzzle.RestoreCard('e1', '01059', 'ally', siege=0)"],
+    format: 2, title: "Essai client", description: "", difficulty: 0, hints: [], objectives: [], objectives_mode: "all",
+    start_phase: "", start_step: "", first_player: 0, solution_visibility: "after", solution_text: "", has_solution: false,
+  };
 
   const pub = await client.publierPuzzle(puzzle, "Arnaud", { site });
   cas("publié : un code PZ-", /^PZ-[A-Z0-9]{4}$/.test(pub.code), true);
