@@ -55,4 +55,23 @@ Cartes de statut françaises : Sonné, Désorienté, Tenace. Mots-clés : Renfor
 40. **Fin de partie** : bannière explosive (celle de l'utilisateur, « Defeat ! » / équivalent victoire) + feuille de statistiques avec Rejouer / Menu. 41. **Journal** : liste chronologique, pastille de round.
 42. **Piles** : quatre dos de cartes avec compteurs (deck, défausse, deck et défausse rencontre), un toucher ouvre la pile. 43. **Environnement** : rond à contour violet dans la zone Manigances, étiquette « ENV. ».
 44. **Sbire ou allié vaincu** : rond grisé + étiquette rouge « VAINCU » une seconde, puis il quitte la table. 45. **Annuler** : flèche ↶ permanente dans la barre du haut (sans limite de 5 s).
-46. **Mise en place** : une carte par écran, grande, **les manigances en paysage**. 47. **Menu « … »** : liste d'actions avec pictogrammes. 48. **Paysage** : verrou portrait avec un message (et un choix de continuer quand même).
+46. **Mise en place** : une carte par écran, grande, **les manigances en paysage**. 47. **Menu « … »** : liste d'actions avec pictogrammes. 48. **Paysage** : les mêmes zones en largeur, la main dans un panneau à droite (réponse à la 2e demande ; la 1re avait dit « verrou portrait »).
+
+## Questions 49 à 58
+49. **Fin du tour** avec des cartes prêtes : une confirmation qui dit ce qu'il reste (cartes prêtes, ressources) ; sinon le tour se termine directement.
+50. **Tour d'un autre joueur** : bandeau « En attente de J2 » ; **toucher Storm montre sa table** (ses zones).
+51. **Appui long sur un rond** : aperçu de la carte en grand tant qu'on appuie, sans boutons (réponse à la 2e demande ; un simple toucher ouvre la feuille).
+52. **Mode manuel** : barre d'outils en bas (PV, jeton, épuiser, défausser) qui agit sur le rond choisi.
+53. **Danger (menace proche du maximum)** : aucune alerte, seule la pastille orange donne la valeur.
+54. **Cartes rencontre face cachée du héros** : petit dos rouge avec le nombre à côté du rond du héros.
+55. **Jetons** : une pastille par type de jeton, avec son icône.
+56. **Connexion perdue** : bandeau rouge, la partie reste visible et conservée.
+57. **Aide** : visite guidée de 5 étapes à la première partie.
+58. **Taille des ronds** : automatique selon la largeur de l'écran (pas de réglage), 320 à 430 px.
+
+## Synthèse pour le codage
+- Toute la table est en ronds ; la main est une rangée posée sous les zones (elle rapetisse si les zones grandissent) ; piles, journal et aide restent dans les onglets sur le côté.
+- Feuille en bas = carte en grand + boutons d'action (toucher), aperçu seul (appui long).
+- Phase du méchant : barre de phase en bas, plus haute, 5 petits onglets, mode « Étape par étape » par défaut, interruption = la main s'allume, réponse = fenêtre avec la carte, effet obligatoire = bouton Appliquer.
+- Sélection de cibles : ronds jaunes + bandeau, bouton « Ne pas défendre » ; flèche + halos pour « qui attaque qui » ; Garde et Crise : assombri + étiquette + bandeau.
+- À tester sur un vrai téléphone avant tout remplacement : réglage « Cartes / Ronds ».
