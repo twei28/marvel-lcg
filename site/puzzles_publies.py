@@ -78,14 +78,23 @@ class ErreurPuzzle(ValueError):
 
 
 def cartes_du_catalogue() -> frozenset:
-    """Les identifiants de carte connus du jeu (data/cards.json)."""
-    with open(os.path.join(MOTEUR, "data", "cards.json"), encoding="utf-8") as f:
-        donnees = json.load(f)
+    """Les identifiants de carte connus du jeu : le catalogue officiel (data/cards.json) ET les sets maison (data/cards_custom.json).
+
+    ⚠ Les deux (24/10/2026) : le createur de puzzle du plateau capture n'importe quelle partie, fan-made comprise (Shadowland, MC×DC,
+    heros maison...). Sans le second fichier, un puzzle avec un seul heros maison etait refuse a la publication (« carte inconnue »).
+    """
+    donnees = []
+    for nom in ("cards.json", "cards_custom.json"):
+        chemin = os.path.join(MOTEUR, "data", nom)
+        if os.path.exists(chemin):
+            with open(chemin, encoding="utf-8") as f:
+                donnees.append(json.load(f))
     ids = set()
 
     def parcourir(x: Any) -> None:
         if isinstance(x, dict):
-            if "card_id" in x and "type" in x:
+            # `full_link` : une carte-ALIAS d'un autre identifiant (ex. 49023 -> 16024, copies d'un set maison) ; elle n'a pas de `type`.
+            if "card_id" in x and ("type" in x or "full_link" in x):
                 ids.add(str(x["card_id"]))
             else:
                 for v in x.values():

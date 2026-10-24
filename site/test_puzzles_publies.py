@@ -134,4 +134,10 @@ with tempfile.TemporaryDirectory() as dossier:
     codes = {s.publier(PUZZLE, "Z")["code"] for _ in range(60)}
     cas("60 codes distincts", len(codes), 60)
 
+    # --- cartes de sets maison : un alias (`full_link`, 49023 -> 16024) et un set de cards_custom.json sont connus (24/10/2026)
+    catalogue = pp.cartes_du_catalogue()
+    cas("carte-alias d'un set maison connue", "49023" in catalogue, True)
+    cas("carte officielle connue", "01001a" in catalogue, True)
+    cas("carte inventee refusee", "99999zz" in catalogue, False)
+
 sys.exit(1 if echecs else 0)
