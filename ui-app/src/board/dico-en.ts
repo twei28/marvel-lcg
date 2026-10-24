@@ -2132,7 +2132,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'K.O. !': 'K.O.!',
   'Ton héros est éliminé de la partie.': 'Your hero is eliminated from the game.',
   'Les ronds': 'The circles',
-  'Chaque carte en jeu est un rond. Touche-le pour voir la carte en grand et agir.': 'Every card in play is a circle. Tap it to see the card enlarged and act. Hold your finger down for a quick preview.',
+  'Chaque carte en jeu est un rond. Touche-le pour voir la carte en grand et agir.': 'Every card in play is a circle. Tap it to see the card enlarged and act.',
   'Tes cartes sont sous la table. Fais-les défiler de côté ; glisse une carte vers le haut, sur sa cible, pour la jouer.': 'Your cards are under the table. Scroll them sideways; drag a card up onto its target to play it.',
   'La phase': 'The phase',
   'Le bandeau du haut dit où en est le tour. « Fin du tour » le termine ; la flèche ↶ annule ton dernier geste.': 'The top bar tells you where the turn stands. “End turn” ends it; the ↶ arrow undoes your last move.',

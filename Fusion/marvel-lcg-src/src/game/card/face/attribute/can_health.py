@@ -527,7 +527,8 @@ class CanHealth(HasHealth):
         if self.base_health != value:
             diff = value - self.base_health
             self.base_health = value
-            self.UpdateMaxHealth(diff, by_effect)
+            # GainOnlyMaxHealth passe deja par UpdateMaxHealth : l'appeler aussi ici comptait le maximum en double
+            # (Drone d'Ultron : 1 PV de base affiche « 1 / 2 », 24/10/2026).
             self.GainOnlyMaxHealth(diff, by_effect)
             self.GainOnlyHealth(diff, by_effect)
 
