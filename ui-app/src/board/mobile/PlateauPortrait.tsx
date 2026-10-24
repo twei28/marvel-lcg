@@ -110,6 +110,20 @@ export function PlateauPortrait(props: BoardProps) {
     [bandes.main, interactifs, effets]
   )
 
+  // Le moteur demande de PAYER ? Les cartes de la table qui peuvent payer rejoignent alors la rangee de la main (apres
+  // « EN JEU »), au lieu de s'allumer en bleu sur la table (decision du 24/10/2026).
+  const enPaiement = useMemo(() => [...interactifs.values()].some((e) => e.role === 'ressource'), [interactifs])
+  const enJeuPayants = useMemo(
+    () =>
+      enPaiement
+        ? (props.plateau?.emplacements ?? [])
+            .flatMap((emplacement) => emplacement.groupes.flat())
+            .filter((unite) => interactifs.get(Number(unite.carte.id))?.role === 'ressource')
+            .map((unite) => ({ ...unite, cle: `en-jeu-${unite.cle}`, carte: avecInteraction(unite.carte, interactifs, effets) }))
+        : [],
+    [enPaiement, props.plateau, interactifs, effets]
+  )
+
   // La carte lue EN GRAND, au milieu de l'ecran. `props.onCardClick` ne sert
   // pas a lire une carte : il ouvre les ACTIONS du moteur. Lire est un etat
   // local, comme sur le portrait du 11/09.
@@ -357,6 +371,8 @@ export function PlateauPortrait(props: BoardProps) {
             onOuvrir={ouvrirDeLaMain}
             onJouer={(unite) => agir(unite.carte)}
             jouable={jouable}
+            enPaiement={enPaiement}
+            enJeuPayants={enJeuPayants}
             onReplier={() => {
               ouvertePourLaQuestion.current = false
               refuseeParLeJoueur.current = true

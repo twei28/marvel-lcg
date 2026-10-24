@@ -2020,6 +2020,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Ne plus afficher l’aide au début d’une partie': 'Do not show the help at the start of a game',
   'Aide au début de la partie': 'Help at the start of the game',
   'La visite guidée des ronds, au début de chaque partie sur téléphone': 'The guided tour of the rounds, at the start of every game on phone',
+  'EN JEU': 'IN PLAY',
   'Demander le plateau à chaque partie': 'Ask for the board at every game',
   'Garder ce choix pour les prochaines parties': 'Keep this choice for future games',
   'REC': 'REC',

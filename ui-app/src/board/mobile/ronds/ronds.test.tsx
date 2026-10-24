@@ -381,7 +381,8 @@ describe('les etiquettes d\'un rond', () => {
     rerender(
       <Rond unite={unite('5', 'support')} zone="enJeu" decor={decor({ interactifs: new Map([[5, { role: 'ressource', choisie: false }]]) })} />
     )
-    expect(container.querySelector('.rond-etiquette-ressource')?.textContent).toBe('+1')
+    // Plus de bleu ni de « +1 » sur la table : la carte payeuse passe dans la rangee de la main (24/10/2026).
+    expect(container.querySelector('.rond-etiquette-ressource')).toBeNull()
   })
 
   it('Riposte 1 reste ecrite en permanence sur le sbire (Q60)', () => {

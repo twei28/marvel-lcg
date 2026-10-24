@@ -601,8 +601,22 @@
 .rond-etiquette-ressource {
   background: #2c63b0;
 }
-.rond.est-ressource .rond-bouton {
-  box-shadow: 0 0 0 3px #3f86e0, 0 0 16px 4px rgba(63, 134, 224, 0.7);
+/* separation « EN JEU » dans la rangee de la main, quand on paie avec des cartes de la table */
+.main-dock-separation {
+  flex: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  margin: 0 6px;
+  padding-left: 8px;
+  border-left: 3px solid #3f86e0;
+}
+.main-dock-separation b {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 800 0.7rem var(--ep-police, Inter, system-ui, sans-serif);
+  letter-spacing: 0.12em;
+  color: #6fa8f0;
 }
 /* retournement d'un rond (Q36, Q39) */
 .rond.se-retourne .rond-bouton {

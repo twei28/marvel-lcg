@@ -159,12 +159,10 @@ export function Rond({
   const motRiposte = (carte.keywords ?? []).find((mot) => /^(retaliate|riposte)\b/i.test(mot.nom.trim()))
   const valeurRiposte = motRiposte ? /(\d+)/.exec(motRiposte.nom)?.[1] : undefined
   const gardien = (carte.keywords ?? []).some((mot) => /^(guard|garde)$/i.test(mot.nom.trim()))
-  const estRessource = role === 'ressource'
   const classes = [
     'rond',
     retourne ? 'se-retourne' : '',
     vaincu ? 'rond-vaincu' : '',
-    estRessource ? 'est-ressource' : '',
     `rond-${zone}`,
     carte.exhausted ? 'est-epuise' : '',
     !carte.exhausted && !carte.facedown && KINDS_QUI_S_EPUISENT.has(carte.kind) ? 'est-prete' : '',
@@ -286,7 +284,6 @@ export function Rond({
           {delta.kind === 'damage' ? `-${Math.abs(delta.value)}` : `+${Math.abs(delta.value)}`}
         </span>
       ) : null}
-      {estRessource ? <span className="rond-etiquette rond-etiquette-ressource">+1</span> : null}
       {motRiposte ? (
         <span className="rond-etiquette rond-etiquette-riposte">
           {t('Riposte')}

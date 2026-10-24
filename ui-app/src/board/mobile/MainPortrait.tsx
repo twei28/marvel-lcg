@@ -38,6 +38,7 @@ export function CarteMainPortrait({
   onChoisir,
   onOuvrir,
   onAgir,
+  paiement = false,
 }: {
   unite: UniteAffichee
   choisie: boolean
@@ -46,6 +47,8 @@ export function CarteMainPortrait({
   onOuvrir: (unite: UniteAffichee) => void
   /** L'appui long : joue la carte. Absent (pas jouable) : il la lit. */
   onAgir?: (unite: UniteAffichee) => void
+  /** Le moteur demande de PAYER : un toucher sur une carte qui peut payer la choisit tout de suite (24/10/2026). */
+  paiement?: boolean
 }): ReactElement {
   const appui = useAppuiLong(() => (onAgir ? onAgir(unite) : onOuvrir(unite)))
   return (
@@ -64,7 +67,8 @@ export function CarteMainPortrait({
           // Une CIBLE de la question en cours (défausse de fin de tour, carte
           // à choisir en main) se coche d'un toucher, sans passer par sa fiche.
           const cible = unite.carte.state === 'targetable' || unite.carte.state === 'selected'
-          if (cible && unite.carte.onSelect) unite.carte.onSelect()
+          const paie = paiement && (unite.carte.state === 'playable' || unite.carte.state === 'selected')
+          if ((cible || paie) && unite.carte.onSelect) unite.carte.onSelect()
           else if (onChoisir) onChoisir(unite)
           else onOuvrir(unite)
         }}
