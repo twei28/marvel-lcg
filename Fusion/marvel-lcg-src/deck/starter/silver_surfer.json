@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Silver Surfer",
+    "metadata": {
+        "url": "",
+        "author": "DesignHacker",
+        "note": "Pack « SILVER SURFER (MC4 SEALED) » (2020). L'auteur ne fournit AUCUNE decklist d'aspect (la notice conseille Justice et Protection, Agression convient aussi, avec beaucoup de ressources energie) : player_deck reste vide, le joueur choisit son aspect (PROCESSUS-HEROS etape 3)."
+    },
+    "hero": [
+        "sv001a,sv001b"
+    ],
+    "hero_deck": [
+        "sv002",
+        "sv003",
+        "sv004",
+        "sv005",
+        "sv006",
+        "sv006",
+        "sv007",
+        "sv007",
+        "sv008",
+        "sv008",
+        "sv008",
+        "sv009",
+        "sv009",
+        "sv010",
+        "sv010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "sv011"
+    ],
+    "nemesis_set": [
+        "sv012",
+        "sv013",
+        "sv014",
+        "sv015",
+        "sv015"
+    ],
+    "player_deck": []
+}

@@ -104,6 +104,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "EARTH-6160",
         # CORRECTIF : trait du pack custom agatha_harkness (Ripper3).
         "COSMIC ENTITY",
+        # CORRECTIF (24/10/2026) : trait COSMIC du pack custom silver_surfer (DesignHacker) ; il existait deja
+        # sur des cartes de cards.json sans figurer dans l'enum.
+        "COSMIC",
         # CORRECTIF : traits du pack custom iron_patriot (Neptune).
         # `REGISTERED` est le coeur du pack : le trait que Norman Osborn donne
         # aux sbires qu'il recrute depuis son deck secondaire, et que sept

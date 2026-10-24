@@ -711,6 +711,13 @@
    "cartes": 78,
    "depuis": "2026-10-22",
    "note": "EN COURS (cadrage 22/10/2026, dossier .planning/shadowland/). Pack scenario OFFICIEL FFG MC65 (sortie 16/10/2026, Michael Boggs, aucun heros, 3 scenarios : Shadows in the Night, Shadow Labyrinth, Heart of Shadow). Prefixe en LETTRES et non en 65xxx : la tranche 65001-65019 est deja occupee par le pack fan-made Wave (decision utilisateur 22/10/2026 : on ne renumerote pas Wave, des decks et sauvegardes en ligne le citent). Correspondance : numero officiel 65NNN -> sl0NN (65013B -> sl013b), le numero officiel reste a noter dans l'entree JSON. Scans : play.marvelsimulator.com/images/cards/65NNN[A|B].webp (93 images, 78 numeros), copies de travail dans .planning/shadowland/scans-marvelsimulator/ (hors git)."
+  },
+  "sv": {
+   "pack": "silver_surfer",
+   "libelle": "211. Custom (Silver Surfer)",
+   "cartes": 16,
+   "depuis": "2026-10-24",
+   "note": "Cree le 24/10/2026. Auteur DesignHacker, format « MC4 SEALED » (2020). sv001a/b identite (Silver Surfer / Norrin Radd), sv002-sv010 signature (9 cartes distinctes, 15 exemplaires), sv011 obligation Silver Down, sv012-sv015 set nemesis Galactus (5 cartes, Cosmic Power x2). Mot-cle maison `summon` (fiche mots-cles/summon.md, deja employe par yondu). Pas de decklist d'aspect fournie : player_deck vide (PROCESSUS-HEROS etape 3)."
   }
  }
 }
