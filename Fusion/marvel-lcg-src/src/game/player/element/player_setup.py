@@ -114,7 +114,12 @@ class PlayerSetup:
                     name = ""
                     if len(faces) > 1:
                         if face.name in [x.name for x in identities if x != face]:
-                            name = face.traits_str
+                            # Deux formes du meme nom (Ant-Man Geant / Minuscule) : seuls les traits qui DISTINGUENT
+                            # cette forme des autres du meme nom (24/10/2026 : « Change To AVENGER GIANT » au lieu de
+                            # « Change To GIANT ») ; aucun trait propre -> tous, comme avant.
+                            communs = [x.traits_str.split() for x in identities if x != face and x.name == face.name]
+                            propres = [mot for mot in face.traits_str.split() if not all(mot in autres for autres in communs)]
+                            name = " ".join(propres) if propres else face.traits_str
                             name = "Change To " + name.strip()
                         else:
                             name = "Change To " + face.name

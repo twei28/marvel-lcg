@@ -197,3 +197,12 @@ describe('Build Support (rapport BL-Stark du 23/10/2026)', () => {
     )
   })
 })
+
+describe('changer vers une forme nommee', () => {
+  it('Ant-Man : le trait distinctif devient « forme Géant / Minuscule » ; un nom de forme reste tel quel', () => {
+    expect(traduireMoteur('Change To GIANT')).toBe('Passer en forme Géant')
+    expect(traduireMoteur('Change To TINY')).toBe('Passer en forme Minuscule')
+    expect(traduireMoteur('Change To Spider-Man')).toBe('Passer en Spider-Man')
+  })
+})
+

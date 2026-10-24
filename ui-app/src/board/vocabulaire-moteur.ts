@@ -26,6 +26,7 @@
 // Riposte, Renfort, Ténacité, Collaboration, Incitation).
 
 import { langueActuelle } from './langue'
+import { TRAITS_FR } from './traits-fr'
 
 /**
  * Anglais du moteur → français officiel.
@@ -432,6 +433,9 @@ const TYPES_ZONE_FR: Record<string, string> = {
 }
 
 const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  // Changer de forme vers une forme NOMMEE (player_setup.py) : « Change To Spider-Man », ou, pour deux formes du meme
+  // nom, le trait qui les distingue (« Change To GIANT » -> « Passer en forme Géant », Ant-Man, 24/10/2026).
+  [/^Change To (.+)$/, (m) => `Passer en ${formeNommee(m[1]!)}`],
   // Bebop & Rocksteady (`tk006a`, enemies.py OrdreDesVilainsActives) : le premier
   // joueur choisit, pour chaque joueur, le vilain qui s'active d'abord (Q8, 16/10/2026).
   [/^Choose which villain activates first against (.+)$/,
@@ -501,6 +505,17 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
  * rendue INCHANGÉE : c'est le cas des noms de capacités imprimés sur les
  * cartes, qui doivent rester alignés sur le scan affiché.
  */
+/** « GIANT » -> « forme Géant » (traits connus, en majuscules) ; un nom de carte reste tel quel. */
+function formeNommee(brut: string): string {
+  const mots = brut.trim().split(/\s+/)
+  const traits = mots.map((mot) => TRAITS_FR[mot.replace(/\.$/, '').toUpperCase()])
+  if (mots.every((mot) => mot === mot.toUpperCase()) && traits.every(Boolean)) {
+    const fr = traits.map((trait) => trait!.charAt(0) + trait!.slice(1).toLowerCase()).join(' ')
+    return `forme ${fr}`
+  }
+  return brut
+}
+
 export function traduireMoteur(libelle: string): string {
   if (langueActuelle() !== 'fr') return libelle
 
