@@ -476,22 +476,31 @@ export const catalog = {
             // sortait deux fois, et le serveur rendait chaque fois le meme.
             const savedIds = [...new Set((await api.listSavedDecks()).map(fileName))];
             const dejaVus = new Set();
-            for (const id of savedIds) {
-                try {
-                    const d = await api.deck(id);
-                    if (d && d.hero && d.hero[0] && d.hero[0].split(",")[0] === hero.heroCardId) {
-                        // Les decks par heros du tableur « Universal Prebuilt Decks »
-                        // (deck/custom/prebuilt_*) ne sont PAS des decks sauvegardes
-                        // par le joueur : ils portent leur propre origine.
-                        const duTableur = String((d.metadata || {}).source || "").startsWith("Universal Prebuilt Decks");
-                        // Deux fichiers au meme nom ET au meme contenu = le meme deck.
-                        const signature = (d.name || "") + "|" + [...(d.player_deck || [])].sort().join(",");
-                        if (dejaVus.has(signature)) continue;
-                        dejaVus.add(signature);
-                        out.push({ id, name: d.name || id, source: duTableur ? "tableur" : "saved", deck: d, aspects: aspectsOfDeck(d) });
-                    }
-                } catch (e) {}
-            }
+            // EN PARALLELE (24/10/2026, « pourquoi les decks mettent du temps a s'afficher ? ») : un fichier apres l'autre,
+            // c'etait des centaines d'allers-retours a la file. Par groupes de 12 ; l'ordre de la liste est conserve.
+            const lus = new Array(savedIds.length).fill(null);
+            let suivant = 0;
+            const travailleur = async () => {
+                while (suivant < savedIds.length) {
+                    const k = suivant++;
+                    try { lus[k] = await api.deck(savedIds[k]); } catch (e) { lus[k] = null; }
+                }
+            };
+            await Promise.all(Array.from({ length: Math.min(12, savedIds.length) }, travailleur));
+            savedIds.forEach((id, k) => {
+                const d = lus[k];
+                if (d && d.hero && d.hero[0] && d.hero[0].split(",")[0] === hero.heroCardId) {
+                    // Les decks par heros du tableur « Universal Prebuilt Decks »
+                    // (deck/custom/prebuilt_*) ne sont PAS des decks sauvegardes
+                    // par le joueur : ils portent leur propre origine.
+                    const duTableur = String((d.metadata || {}).source || "").startsWith("Universal Prebuilt Decks");
+                    // Deux fichiers au meme nom ET au meme contenu = le meme deck.
+                    const signature = (d.name || "") + "|" + [...(d.player_deck || [])].sort().join(",");
+                    if (dejaVus.has(signature)) return;
+                    dejaVus.add(signature);
+                    out.push({ id, name: d.name || id, source: duTableur ? "tableur" : "saved", deck: d, aspects: aspectsOfDeck(d) });
+                }
+            });
         } catch (e) {}
         out.push(...await this.packagesAspect(hero));
         return out;

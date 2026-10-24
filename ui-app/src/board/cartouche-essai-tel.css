@@ -128,3 +128,57 @@
     white-space: normal;
   }
 }
+
+/* 24/10/2026 : « on doit toujours pouvoir voir la carte en entier pendant la phase du méchant ». L'activation d'un ennemi
+   (le méchant + les boosts + la résolution) etait une colonne de ~170 px, collee a gauche, de 870 px de haut dans une feuille
+   de 330 px visibles : les cartes etaient coupees. Sur telephone, le méchant et ses boosts se mettent COTE A COTE, la
+   resolution dessous sur toute la largeur, et les cartes de boost rapetissent avec l'ecran. */
+@media (max-width: 767px) {
+  /* Le corps range l'activation ET la ligne « mentions » en RANGEE : elles se partageaient la largeur (170 px chacune sur 358). */
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris .deroule-corps {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris .deroule-corps > * {
+    flex: none;
+  }
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris .tris-activation:not(.est-lecture-boost):not(.est-synthese) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px 16px;
+  }
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris .tris-activation:not(.est-lecture-boost):not(.est-synthese) .tris-socle {
+    flex: none;
+  }
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris .tris-activation:not(.est-lecture-boost):not(.est-synthese) .tris-boosts {
+    flex: 1 1 150px;
+    min-width: 0;
+    gap: 8px;
+  }
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris .tris-activation:not(.est-lecture-boost):not(.est-synthese) .tris-boost {
+    flex-wrap: wrap;
+    padding: 4px 0;
+    --essai-carte-h: min(200px, 24dvh);
+    --vignette-h: min(200px, 24dvh);
+  }
+  .deroule-phase.est-scene.est-essai.est-tris.est-tris .tris-activation:not(.est-lecture-boost):not(.est-synthese) .tris-resolution {
+    flex: 1 1 100%;
+  }
+}
+
+/* Deux cartes qui s'enchainent (« Effet ★ de Boom Sonique → Trafic Clandestin ») : cote a cote, assez petites pour tenir en
+   largeur ; avant, la seconde passait dessous et sortait de la feuille (24/10/2026, « voir la carte en entier »). */
+@media (max-width: 767px) {
+  .deroule-phase.est-scene.est-essai .deroule-rangee-cartes:has(.deroule-vers) {
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    --grande-h: min(17dvh, 128px);
+    --essai-carte-h: min(17dvh, 128px);
+    --vignette-h: min(17dvh, 128px);
+  }
+}
