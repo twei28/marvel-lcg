@@ -89,3 +89,8 @@ Cartes de statut françaises : Sonné, Désorienté, Tenace. Mots-clés : Renfor
 68. **Péril (multijoueur)** : bandeau « Péril : seul J1 peut réagir » + onglet de l'autre joueur verrouillé 🔒 pendant la carte.
 69. **Plusieurs états sur une carte** : étiquettes complètes jusqu'à 2 états, **initiales colorées** (So, Dé, Te, Hé…) dès qu'il y en a plus de 2. Cinq états : Sonné (vert), Désorienté (violet), Tenace (orange), Hébété (rouge, carte TMNT Dazed), Intensifié (rose, carte TMNT).
 70. **Valeur modifiée** (attaque, menace) : la valeur change de couleur (vert = augmentée, rouge = réduite).
+
+## Feuille d'une carte (71 et 72)
+71. **Contenu de la feuille** (demande : « tout voir, comme sur le PC ») : tout empilé sous la carte : étiquette de type, carte en grand, barre de PV (ou menace), **valeurs ajustées** avec leur origine (ex. « ATQ 3 (2 +1 Lance-toile) », DEF, MNG), les **vraies cartes de statut** et l'amélioration attachée en mini-cartes, les jetons, puis les boutons d'action.
+72. **Autre face** (héros / alter ego, méchant à deux stades) : **les deux faces côte à côte**, comme sur le PC (cartes un peu plus petites). Les manigances restent en **paysage**.
+Référence PC : l'aperçu au survol montre la carte grande, une étiquette de type au-dessus (« MÉCHANT », « ALTER EGO »), la barre de PV dessous et « AUTRE FACE » à côté.
