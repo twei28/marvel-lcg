@@ -36,5 +36,17 @@ comme un rond (illustration + anneau de PV). Maquettes : page « Plateau télép
 15. **Réponse** d'une carte en jeu : **fenêtre avec la carte**, boutons Utiliser / Non merci. 16. **Effet obligatoire** : annonce dans la barre de phase avec un bouton **Appliquer**.
 17. **Boost** : **grande carte au centre** 1 à 2 s, avec le total. 18. **Deux boosts (Klaw)** : **côte à côte**, un seul total.
 19. **Dégâts** : **« -3 » flottant + flash rouge** du rond, l'anneau baisse. 20. **Menace ajoutée** : **« +2 » jaune sur la manigance + le détail du calcul** (base, joueurs, accélération).
-21. **Qui attaque qui** : **flèche du méchant à sa cible + halos** (jaune acteur, rouge cible). 22. **Ordre des sbires** : **ordre automatique** (ordre d'arrivée) avec un bouton **Changer**.
+21. **Qui attaque qui** : **flèche du méchant à sa cible + halos** (jaune acteur, rouge cible). 22. **Ordre des sbires** : **on touche les sbires dans l'ordre voulu**, des numéros apparaissent (réponse donnée à la 2e demande ; la 1re avait dit « ordre auto + Changer »).
 Noms français des états lus sur les cartes : Sonné, Désorienté, Tenace.
+
+## Questions 23 à 39 (suite de la même séance)
+23. **Carte rencontre révélée** : grande carte + feuille de résolution (texte + « Résoudre »). 24. **Traîtrise** résolue : la carte **reste au centre jusqu'à « Fermer »**.
+25. **Renfort** (mot officiel français de Surge, pas « Surcroît ») : pastille rouge « RENFORT » sur la carte **+** le compteur « 1/2 » dans le titre de la feuille.
+26. **Bilan** : trois lignes de résumé (menace, PV du héros, cartes arrivées) puis Terminer. 27. **Nouveau round** : écran « ROUND 3 » en grand, 1 seconde.
+28. **Actions du héros** (Attaquer, Déjouer, Récupérer, Changer de forme) : dans la **feuille de la carte du héros**. 29. **Cible d'une attaque** : cibles en jaune, un toucher.
+30. **Garde** : méchant assombri + étiquette « Garde » sur le sbire + bandeau. 31. **Crise** : même traitement que la Garde.
+32. **Main** : une rangée qui défile de côté (grandes cartes), **posée SOUS les zones** (jamais par-dessus). 33. Si les zones grandissent, **la main rapetisse**.
+34. **Ressources** : montrées **seulement au moment de payer**. 35. Au paiement, les **cartes de la table qui génèrent des ressources** s'allument en bleu avec « +1 ».
+36. **Changement de forme** : le rond se retourne comme une pièce. 37. **Multijoueur** : onglets de joueurs en haut (J1, J2), une zone Héros à la fois.
+38. **Sbire engagé** : pastille J1 / J2 sur chaque sbire. 39. **Nouveau stade du méchant** : le rond se retourne **et** la carte du nouveau stade s'affiche au centre (bouton Continuer).
+Cartes de statut françaises : Sonné, Désorienté, Tenace. Mots-clés : Renfort (Surge), Garde (Guard), Crise (Crisis).
