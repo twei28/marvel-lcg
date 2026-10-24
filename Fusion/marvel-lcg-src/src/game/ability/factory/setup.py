@@ -202,6 +202,30 @@ class AbilityFactorySetup:
         )
 
     @staticmethod
+    def AfterPlayerResolveFlow(ability_type: 'AbilityType',
+                               operation: OperationType[Message.AfterPlayerResolveFlow],
+                               *,
+                               conditions: ConditionsType[Message.AfterPlayerResolveFlow]=[],
+                               ) -> 'Ability':
+        """AJOUT (pack custom shang_chi, 24/10/2026) : « After you resolve a "Flow" ability ».
+
+        Filtre sur le joueur de CETTE carte : le Flow d'un autre joueur ne declenche rien.
+        Message envoye par `ResoudreFlow` (set Shang-Chi), fiche mots-cles/flow.md.
+        """
+        def check_is_your_flow(effect: 'Effect', message: 'Message.AfterPlayerResolveFlow') -> bool:
+            return effect.GetInitiator() == message.GetToPlayer()
+
+        return Ability(
+            ability_type,
+            Message.AfterPlayerResolveFlow,
+            [
+                check_is_your_flow,
+                *conditions
+            ],
+            operation,
+        )
+
+    @staticmethod
     def WhenCardSetup(which_card: 'Literal["This"]|CardFace',
                       operation: OperationType[Message.WhenCardSetup]) -> 'Ability':
 

@@ -2036,5 +2036,14 @@
   "encounters": [],
   "max_id": "sv001b"
  },
- "checksum": "4630ab58a9c4a3d0af23018592cafd983df80c9ac99b0f4fd27b04ac4d9791a1"
+ "212. Custom (Shang-Chi)": {
+  "name": "shang_chi",
+  "scenarios": [],
+  "heroes": [
+   "shang_chi"
+  ],
+  "encounters": [],
+  "max_id": "shc001b"
+ },
+ "checksum": "66a21aa39d4fa320fc5a704dd3480846ea22771138cec76d2353c519f1261860"
 }

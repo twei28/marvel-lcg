@@ -1,0 +1,67 @@
+{
+    "version": "0.5.8",
+    "name": "Shang-Chi",
+    "metadata": {
+        "url": "",
+        "author": "DesignHacker",
+        "note": "Pack « SHANG-CHI (SEALED) » (DesignHacker). L'auteur ne fournit AUCUNE decklist d'aspect : player_deck reste vide, le joueur choisit son aspect (PROCESSUS-HEROS etape 3). Les 12 evenements ATTACK sont 6 titres en DEUX impressions (icone de ressource differente, lue par le mot-cle Flow). State of Flow (shc002, Permanent. Setup.) n'est pas dans les 15 cartes : mise de cote (set_aside) et mise en jeu par shc001b. Regle de construction « Multiple Forms » declaree dans metadata.deckbuilding.",
+        "collision_note": "HOMONYMES : « * Shang-Chi » existe deja comme ALLIE (63015 Iron Fist/Elektra, 04098 Taskmaster, dt025, 56113) ; aucun module du pack ne cherche par ce nom. « Special Delivery » (16148) et « The Life Stealer » (sv014) existent aussi : meme remarque.",
+        "deckbuilding": {
+            "hors_aspect": {
+                "par_aspect": true,
+                "max_titres_par_aspect": 1,
+                "max": 3,
+                "traits": [
+                    "ATTACK"
+                ],
+                "types": [
+                    "Event"
+                ],
+                "aspects": [
+                    "Aggression",
+                    "Justice",
+                    "Leadership",
+                    "Protection",
+                    "Determination",
+                    "Venomized",
+                    "'Pool"
+                ],
+                "label": "Multiple Forms : jusqu'à 3 exemplaires d'1 événement ATTACK de chaque autre aspect"
+            }
+        }
+    },
+    "hero": [
+        "shc001a,shc001b"
+    ],
+    "hero_deck": [
+        "shc003",
+        "shc004",
+        "shc005",
+        "shc006",
+        "shc007",
+        "shc008",
+        "shc009",
+        "shc010",
+        "shc011",
+        "shc012",
+        "shc013",
+        "shc014",
+        "shc015",
+        "shc016",
+        "shc017"
+    ],
+    "set_aside": [
+        "shc002"
+    ],
+    "obligations": [
+        "shc018"
+    ],
+    "nemesis_set": [
+        "shc019",
+        "shc020",
+        "shc021",
+        "shc021",
+        "shc021"
+    ],
+    "player_deck": []
+}

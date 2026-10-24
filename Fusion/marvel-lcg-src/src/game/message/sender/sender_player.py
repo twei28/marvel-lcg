@@ -71,6 +71,21 @@ class SenderPlayer:
             self.discarded_faces: Final = discarded_faces
             super().__init__(player=player)
 
+    class AfterPlayerResolveFlow(TriggerPlayerMessage):
+        """MOT-CLE MAISON Flow (pack custom shang_chi, DesignHacker, 24/10/2026).
+
+        Le joueur vient de RESOUDRE une capacite « Flow » : la carte du dessus de State of Flow
+        portait une ressource imprimee egale a celle que la capacite exige, et il a accepte d'en
+        resoudre les effets. `flow_face` est la carte (evenement) dont le Flow a ete resolu.
+        Envoye par le helper `ResoudreFlow` du set Shang-Chi ; Chi Mastery (shc001a) y reagit
+        (« After you resolve a "Flow" ability, ready Shang-Chi »). Fiche mots-cles/flow.md.
+        """
+        def __init__(self, player: 'Player', flow_face: 'CardFace') -> None:
+            self.flow_face: Final = flow_face
+            super().__init__(player=player)
+            text = TransText("{player} resolves the Flow of {card}", player=player, card=flow_face)
+            self.Present(text, "", flow_face)
+
     class WhenPlayerWouldDrawCard(TriggerPlayerMessage, TriggerFaceMessage, CanBeInstead):
         def __init__(self, player: 'Player', face: 'CardFace', by_effect: 'Effect') -> None:
             self.by_effect: Final = by_effect
