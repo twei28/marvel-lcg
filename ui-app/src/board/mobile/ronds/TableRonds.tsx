@@ -1,16 +1,34 @@
 // La TABLE en ronds : trois rangees de deux zones (voir repartir-ronds.ts), a la place des quatre bandes de cartes.
 // Elle ne porte aucune logique de jeu : les ronds appellent `ouvrirCarte` / `agir` comme les bandes (PlateauPortrait).
-import { useMemo, type ReactElement, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import { t } from '../../langue'
 import type { BandesPortrait } from '../bandes-portrait'
 import { Rond, type DecorRonds } from './Rond'
+import type { UniteAffichee } from '../../zones'
 import { repartirEnRonds, type TitresRonds, type ZoneRonds } from './repartir-ronds'
 import './ronds.css'
 
+/** Les ronds qui viennent de quitter une zone de combat (sbire vaincu, allie vaincu) : fantomes grises « VAINCU » un instant (Q44). */
+function useVaincus(zone: ZoneRonds): UniteAffichee[] {
+  const avant = useRef<UniteAffichee[]>(zone.unites)
+  const [fantomes, setFantomes] = useState<UniteAffichee[]>([])
+  useEffect(() => {
+    const encore = new Set(zone.unites.map((u) => u.cle))
+    const partis = avant.current.filter((u) => !encore.has(u.cle))
+    avant.current = zone.unites
+    if (partis.length === 0 || (zone.cle !== 'sbires' && zone.cle !== 'allies')) return
+    setFantomes((f) => [...f, ...partis])
+    const fin = window.setTimeout(() => setFantomes((f) => f.filter((x) => !partis.includes(x))), 1100)
+    return () => window.clearTimeout(fin)
+  }, [zone.unites, zone.cle])
+  return fantomes
+}
+
 function Zone({ zone, decor, onglets }: { zone: ZoneRonds; decor: DecorRonds; onglets?: ReactNode }): ReactElement {
+  const vaincus = useVaincus(zone)
   return (
     <section
-      className={`ronds-zone ronds-zone-${zone.cle}${zone.unites.length === 0 ? ' est-vide' : ''}`}
+      className={`ronds-zone ronds-zone-${zone.cle}${zone.unites.length === 0 && vaincus.length === 0 ? ' est-vide' : ''}`}
       data-zone={zone.cle}
       aria-label={zone.titre}
     >
@@ -21,6 +39,9 @@ function Zone({ zone, decor, onglets }: { zone: ZoneRonds; decor: DecorRonds; on
       <div className="ronds-liste">
         {zone.unites.map((unite) => (
           <Rond key={unite.cle} unite={unite} zone={zone.cle} decor={decor} />
+        ))}
+        {vaincus.map((unite) => (
+          <Rond key={`vaincu-${unite.cle}`} unite={unite} zone={zone.cle} decor={decor} vaincu />
         ))}
       </div>
     </section>

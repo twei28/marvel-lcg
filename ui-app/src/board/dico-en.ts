@@ -2013,6 +2013,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Lire': 'Read',
   'Installer l’application': 'Install the app',
   'Taille du texte': 'Text size',
+  'À TOI DE JOUER': 'YOUR TURN',
+  'ROUND': 'ROUND',
   'Replier la main': 'Fold the hand',
   'Cartes ou ronds, au début de chaque partie sur téléphone': 'Cards or rounds, at the start of every game on a phone',
   'Demander le plateau à chaque partie': 'Ask for the board at every game',

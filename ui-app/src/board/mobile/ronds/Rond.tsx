@@ -9,7 +9,7 @@
 //
 // Le geste : un toucher agit quand le moteur demande de CHOISIR cette carte (cible, ressource), sinon il ouvre
 // la feuille de la carte ; l'appui long ouvre l'apercu (meme composant `CarteOuverte` pour l'instant).
-import type { MouseEvent as ReactMouseEvent, ReactElement } from 'react'
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactElement } from 'react'
 import type { CardEffectDelta, ScanCardProps } from '../../../components/ScanCard'
 import { versVignette } from '../../../components/ScanCard'
 import { avecInteraction } from '../../Board'
@@ -95,10 +95,13 @@ export function Rond({
   unite,
   zone,
   decor,
+  vaincu = false,
 }: {
   unite: UniteAffichee
   zone: CleZone
   decor: DecorRonds
+  /** Le rond d'une carte qui vient de partir : grise, « VAINCU », sans geste. */
+  vaincu?: boolean
 }): ReactElement {
   const carte = avecInteraction(unite.carte, decor.interactifs, decor.effets)
   const role = decor.interactifs.get(Number(unite.carte.id))?.role
@@ -124,8 +127,25 @@ export function Rond({
     if (choisit || (role === 'cible' && carte.onSelect)) decor.agir(carte)
     else apercu()
   }
+  // Le retournement (changement de forme, nouveau stade du mechant) : quand la carte d'un meme rond change d'illustration.
+  const imageAvant = useRef(carte.imageUrl)
+  const [retourne, setRetourne] = useState(false)
+  useEffect(() => {
+    if (imageAvant.current === carte.imageUrl) return
+    imageAvant.current = carte.imageUrl
+    setRetourne(true)
+    const fin = window.setTimeout(() => setRetourne(false), 600)
+    return () => window.clearTimeout(fin)
+  }, [carte.imageUrl])
+  // Un changement de PV ou de menace s'ecrit un instant au-dessus du rond (« -3 », « +2 »).
+  const delta = carte.effectDelta
+  const gardien = (carte.keywords ?? []).some((mot) => /^(guard|garde)$/i.test(mot.nom.trim()))
+  const estRessource = role === 'ressource'
   const classes = [
     'rond',
+    retourne ? 'se-retourne' : '',
+    vaincu ? 'rond-vaincu' : '',
+    estRessource ? 'est-ressource' : '',
     `rond-${zone}`,
     carte.exhausted ? 'est-epuise' : '',
     !carte.exhausted && !carte.facedown && KINDS_QUI_S_EPUISENT.has(carte.kind) ? 'est-prete' : '',
@@ -155,6 +175,7 @@ export function Rond({
         className="rond-bouton"
         aria-label={`${carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}`}
         onClick={surToucher}
+        disabled={vaincu}
         {...appui.gestes}
       >
         {paysageTourne ? (
@@ -222,6 +243,7 @@ export function Rond({
           ))}
         </span>
       ) : null}
+      {vaincu ? <span className="rond-vaincu-etiquette">{t('VAINCU')}</span> : null}
       <span className="rond-nom">{carte.name}</span>
       {stats.length > 0 ? (
         <span className="rond-stats">
@@ -235,7 +257,17 @@ export function Rond({
           ))}
         </span>
       ) : null}
-      {carte.crise ? <span className="rond-etiquette">⚠ {t('Crise')}</span> : null}
+      {delta && delta.kind !== 'status' && delta.kind !== 'token' ? (
+        <span
+          key={`${delta.kind}-${delta.value}-${carte.id}`}
+          className={`rond-delta rond-delta-${delta.kind}`}
+          aria-hidden="true"
+        >
+          {delta.kind === 'damage' ? `-${Math.abs(delta.value)}` : `+${Math.abs(delta.value)}`}
+        </span>
+      ) : null}
+      {estRessource ? <span className="rond-etiquette rond-etiquette-ressource">+1</span> : null}
+      {gardien ? <span className="rond-etiquette rond-etiquette-garde">🛡 {t('Garde')}</span> : carte.crise ? <span className="rond-etiquette">⚠ {t('Crise')}</span> : null}
     </div>
   )
 }

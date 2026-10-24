@@ -26,11 +26,14 @@ export function BandeauPortrait({
   quiAgit,
   menu,
   actionPrincipale,
+  annuler,
 }: {
   monde: World | undefined
   quiAgit?: string
   menu?: ReactNode
   actionPrincipale?: ActionPrincipale
+  /** La fleche ↶ permanente (plateau en ronds, Q45) : annule la derniere action. */
+  annuler?: () => void
 }): ReactElement {
   const [menuOuvert, setMenuOuvert] = useState(false)
   const installable = useInstallable()
@@ -41,6 +44,11 @@ export function BandeauPortrait({
         <span>{libellePhase(monde)}</span>
         {quiAgit ? <em>{quiAgit}</em> : null}
       </div>
+      {annuler ? (
+        <button type="button" className="portrait-annuler" data-tactile="annuler" aria-label={t('Annuler')} onClick={annuler}>
+          ↶
+        </button>
+      ) : null}
       {menu ? (
         <button
           type="button"

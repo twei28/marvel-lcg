@@ -343,3 +343,43 @@ describe('la main sous les zones', () => {
     expect(jouer).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('ROUND en grand', () => {
+  it('ne s\'allume qu\'au passage a un round 2 ou plus, jamais au chargement ni au round 1', async () => {
+    const { RoundEnGrand } = await import('./RoundEnGrand')
+    const { container, rerender } = render(<RoundEnGrand round={undefined} />)
+    rerender(<RoundEnGrand round={1} />)
+    expect(container.querySelector('.round-en-grand')).toBeNull()
+    rerender(<RoundEnGrand round={2} />)
+    expect(container.querySelector('.round-en-grand')?.textContent).toContain('2')
+  })
+})
+
+describe('un rond vaincu', () => {
+  it('est grise, ecrit « VAINCU » et ne se touche plus', () => {
+    const { container } = render(<Rond unite={unite('s', 'minion', { name: 'Shocker' })} zone="sbires" decor={decor()} vaincu />)
+    expect(container.querySelector('.rond')?.classList.contains('rond-vaincu')).toBe(true)
+    expect(container.querySelector('.rond-vaincu-etiquette')?.textContent).toBe('VAINCU')
+    expect((container.querySelector('.rond-bouton') as HTMLButtonElement).disabled).toBe(true)
+  })
+})
+
+describe('les etiquettes d\'un rond', () => {
+  it('Garde sur un sbire gardien, Crise sur une manigance bloquante, +1 sur une ressource a depenser', () => {
+    const garde = unite('g', 'minion', { keywords: [{ nom: 'Guard', definition: '' }] })
+    const { container, rerender } = render(<Rond unite={garde} zone="sbires" decor={decor()} />)
+    expect(container.querySelector('.rond-etiquette-garde')).toBeTruthy()
+    rerender(<Rond unite={unite('c', 'main-scheme', { crise: 'Annexe' })} zone="manigances" decor={decor()} />)
+    expect(container.querySelector('.rond-etiquette')?.textContent).toContain('Crise')
+    rerender(
+      <Rond unite={unite('5', 'support')} zone="enJeu" decor={decor({ interactifs: new Map([[5, { role: 'ressource', choisie: false }]]) })} />
+    )
+    expect(container.querySelector('.rond-etiquette-ressource')?.textContent).toBe('+1')
+  })
+
+  it('un degat ou une menace en cours s\'ecrit au-dessus du rond', () => {
+    const u = unite('d', 'ally', { effectDelta: { kind: 'damage', value: 3 } })
+    const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)
+    expect(container.querySelector('.rond-delta')?.textContent).toBe('-3')
+  })
+})

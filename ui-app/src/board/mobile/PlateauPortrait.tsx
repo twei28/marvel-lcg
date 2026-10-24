@@ -31,6 +31,7 @@ import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
 import { TableRonds } from './ronds/TableRonds'
 import { MainSousLaTable } from './ronds/MainSousLaTable'
+import { RoundEnGrand } from './ronds/RoundEnGrand'
 import { ContexteGlisse, CoucheGlisseRonds, useGlisserAuDoigt } from './ronds/glisser-ronds'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
@@ -265,6 +266,7 @@ export function PlateauPortrait(props: BoardProps) {
         quiAgit={props.quiAgit}
         menu={props.actionsPartie}
         actionPrincipale={props.actionPrincipale}
+        annuler={formeDeTable === 'ronds' ? props.annulerCoup : undefined}
       />
       <div className="portrait-table" onScroll={surDefilement}>
         {formeDeTable === 'ronds' ? (
@@ -365,7 +367,9 @@ export function PlateauPortrait(props: BoardProps) {
           fermer={() => setPileRegardee(undefined)}
         />
       ) : null}
-      <BandeauAnnuler annuler={props.annulerCoup} />
+      {/* En ronds, l'annulation est la fleche ↶ permanente du bandeau (Q45) : plus de bandeau de 5 secondes. */}
+      {formeDeTable === 'ronds' ? null : <BandeauAnnuler annuler={props.annulerCoup} />}
+      {formeDeTable === 'ronds' ? <RoundEnGrand round={props.world?.round_id} /> : null}
       {formeDeTable === 'ronds' ? <CoucheGlisseRonds glisse={glisserRonds.glisse} refus={glisserRonds.refus} /> : null}
     </main>
     </ContexteGlisse.Provider>
