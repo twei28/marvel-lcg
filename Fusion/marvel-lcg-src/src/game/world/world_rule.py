@@ -85,6 +85,9 @@ class WorldRule:
         # conservee dans la sauvegarde — on saura toujours si une
         # victoire comptait.
         self.mode_sandbox                   = VariableBool(self, False, "mode_sandbox")
+        # Createur de puzzle (24/10/2026) : le plateau s'ouvre en mode editeur (bac a sable + table manuelle), et le bouton
+        # « Enregistrer le puzzle » capture l'etat (`/puzzle_capture`). Pose par les regles du mode « Puzzle » de la preparation.
+        self.mode_createur_puzzle           = VariableBool(self, False, "mode_createur_puzzle")
         # Mode manuel : apres la mise en place, le moteur ne conduit plus et ne
         # declenche plus rien, il tient l'etat (spec du 18/09/2026). Pose par
         # la liste `rules` du descripteur, donc conserve dans la sauvegarde :

@@ -17,6 +17,8 @@ class WorldDescriptor:
     # clic droit. Transmis a chaque rendu : il survit donc au
     # rechargement de page et au chargement d'une sauvegarde.
     mode_sandbox: bool = field(default=False)
+    # Mode « Puzzle » de la preparation : le plateau est un EDITEUR (bouton « Enregistrer le puzzle »).
+    mode_createur_puzzle: bool = field(default=False)
     # La REGLE : cette partie a ete lancee comme un scenario de CAMPAGNE
     # (`mode_campaign` de la liste `rules` de /new). C'est le seul critere
     # fiable pour savoir si une victoire doit s'ouvrir sur les recompenses

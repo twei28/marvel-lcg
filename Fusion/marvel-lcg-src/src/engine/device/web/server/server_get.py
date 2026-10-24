@@ -1344,6 +1344,24 @@ class GameServerGet(GameServerBase):
         passwords = SEAT_PASSWORDS.value
         return not (passwords and any(passwords) and not self.tient_le_siege(request, 0))
 
+    async def puzzle_capture(self, request: web.Request) -> web.Response:
+        """Le plateau courant sous forme de puzzle v2 (mode « Puzzle » de la preparation, 24/10/2026).
+
+        Reservee a la table du createur : la partie doit porter la regle `mode_createur_puzzle`, et le client doit tenir un siege
+        (la capture lit tout le plateau, mains et decks compris). Ne modifie rien. Rend `{"puzzle": ..., "avertissements": [...]}`
+        (`game.puzzle.puzzle_capture.CapturePuzzle`) : ce que la capture ne sait pas rendre est dit, jamais tu.
+        """
+        from game.puzzle.puzzle_capture import CapturePuzzle
+
+        world = self.game.world
+        if world is None:
+            return web.json_response({'error': 'no game in progress'}, status=409)
+        if not world.rule.mode_createur_puzzle:
+            return web.json_response({'error': 'not a puzzle creation table'}, status=409)
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+        return web.json_response(CapturePuzzle(world))
+
     async def get_mes_parties(self, request: web.Request) -> web.Response:
         """Les dernieres parties terminees de l'hote (08/10/2026), pour « Revoir une partie »."""
         from engine.enregistrement import Enregistrement
@@ -2433,6 +2451,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_marques', self.get_marques)
         self.AddAwaitGetSecurity('/get_enregistrement', self.get_enregistrement)
         self.AddAwaitGetSecurity('/get_mes_parties', self.get_mes_parties)
+        self.AddAwaitGetSecurity('/puzzle_capture', self.puzzle_capture)
         self.AddAwaitGetSecurity('/get_ma_partie', self.get_ma_partie)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)

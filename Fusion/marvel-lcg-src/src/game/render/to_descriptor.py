@@ -201,6 +201,7 @@ class ToDescriptor:
         world_descriptor.max_card_object_id = len(world.object_manager.card_dict)
         world_descriptor.sound_name = sound_name
         world_descriptor.mode_sandbox = bool(world.rule.mode_sandbox)
+        world_descriptor.mode_createur_puzzle = bool(world.rule.mode_createur_puzzle)
         world_descriptor.mode_campaign = bool(world.rule.mode_campaign)
         # Une partie repartie en automatique (`scene.reprise_auto`) n'est plus
         # DECLAREE manuelle : le plateau la traite comme une partie ordinaire.

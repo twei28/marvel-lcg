@@ -6,7 +6,7 @@ import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, nomSetRencontre, titreDeVague } from "/public/js/prepare/catalog.js";
 import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=bf96a7f8";
+import { launch } from "/public/js/prepare/launcher.js?v=99722e8b";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
 // Arts alternatifs des cartes de deck (TMNT) : la fenêtre « arts alternatifs ? » à la sélection d'un deck.
@@ -171,6 +171,11 @@ const MODES = [
     // démarre garni côté vilain et le panneau de triche s'ouvre à côté.
     { id: "sandbox", label: t("Bac à sable"), desc: t("Test des cartes"), players: 1, fixed: true, mark: "T",
       aide: t("Mêmes règles, mais tu poses et retires ce que tu veux.") },
+    // Puzzle (24/10/2026, demande de l'utilisateur) : on cree un puzzle comme on lance une partie classique (heros, deck, mechant,
+    // scenario), puis le plateau s'ouvre en EDITEUR : bac a sable + table manuelle, et un bouton « Enregistrer le puzzle ».
+    // Resoudre un puzzle (par code, mes puzzles) reste dans le panneau « Puzzles » (puzzles.js).
+    { id: "puzzle", label: t("Puzzle"), desc: t("Créer un puzzle"), players: 1, min: 1, max: 4, mark: "P",
+      aide: t("Prépare une partie comme d'habitude, puis arrange le plateau à ta main pour en faire un puzzle.") },
     // Bataille : le mode competitif de Civil War et Synthezoid Smackdown. Deux
     // equipes s'affrontent, chacune face au leader prepare par l'autre. Le
     // livret (mc56 p.14) n'en connait que deux formats, 1v1 et 2v2 : d'ou 2 ou
@@ -2481,19 +2486,6 @@ function accueilView() {
         ),
         el("span", { class: "acc-aide", id: "acc-aide-editeur", role: "tooltip" },
            t("Construire ou modifier un deck, puis l'utiliser en partie.")),
-    ));
-
-    // PUZZLE (17/10/2026) : la tuile est posée, le mode viendra plus tard. Grisée,
-    // elle ne mène nulle part pour l'instant.
-    grille.append(el("div", { class: "acc-tuile", "data-cle": "puzzle" },
-        el("button", { class: "acc-mode cut acc-puzzle-tuile", disabled: true, "aria-disabled": "true", "aria-describedby": "acc-aide-puzzle" },
-            el("span", { class: "acc-copy" },
-                el("b", { class: "mvl" }, t("Puzzle")),
-                el("small", {}, t("Bientôt")),
-            ),
-        ),
-        el("span", { class: "acc-aide", id: "acc-aide-puzzle", role: "tooltip" },
-           t("Pas encore disponible : des situations de jeu à résoudre en quelques tours.")),
     ));
 
     // ⚠ LES NOUVEAUTES SONT UNE TUILE, PLUS UNE LISTE SOUS LA GRILLE

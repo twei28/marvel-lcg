@@ -47,6 +47,9 @@ function buildRules(state) {
     // `rules`, donc il est inscrit dans la scene et survit au chargement
     // d'une sauvegarde — on saura toujours si une victoire comptait.
     if (state.mode && state.mode.id === "sandbox") rules.push("mode_sandbox");
+    // Le mode « Puzzle » : un plateau d'EDITEUR. Bac a sable (commandes `Puzzle.*`, catalogue) + table manuelle (le moteur se tait, rien ne
+    // se declenche quand on deplace une carte) + `mode_createur_puzzle` (le bouton « Enregistrer le puzzle » du plateau).
+    if (state.mode && state.mode.id === "puzzle") rules.push("mode_sandbox", "mode_manuel", "mode_createur_puzzle");
     // Partie manuelle : apres la mise en place, le moteur ne conduit plus et ne
     // declenche plus rien. Comme les autres modes, le drapeau passe par `rules`
     // et survit donc au chargement d'une sauvegarde.

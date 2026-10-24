@@ -1068,6 +1068,7 @@ export const DICO_EN_BASE = {
   'Les trois dernières de chaque famille. Touche une famille pour tout voir.': 'The three latest of each family. Tap a family to see everything.',
   'Familles': 'Families',
   'Bientôt': 'Coming soon',
+  "Prépare une partie comme d'habitude, puis arrange le plateau à ta main pour en faire un puzzle.": 'Set up a game as usual, then arrange the board by hand to turn it into a puzzle.',
   "Changer l'affichage du site et ses couleurs.": 'Change how the site looks and its colours.',
   "Construire ou modifier un deck, puis l'utiliser en partie.": 'Build or edit a deck, then use it in a game.',
   'Pas encore disponible : des situations de jeu à résoudre en quelques tours.': 'Not available yet: game situations to solve in a few turns.',
