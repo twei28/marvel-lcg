@@ -227,7 +227,8 @@
   html.tel .tb-deck:hover { transform: none; }
   html.tel .tb-deck .do-name { font-size: 16px; }
   html.tel .tel-deck-actions { display: flex; gap: 8px; margin-top: 10px; }
-  html.tel .tel-deck-actions .ts-btn { flex: 1 1 0; }
+  /* Trois boutons (Voir les cartes, Supprimer, Choisir) tiennent sur la largeur : le texte passe a la ligne au lieu de deborder. */
+  html.tel .tel-deck-actions .ts-btn { flex: 1 1 0; min-width: 0; white-space: normal; text-align: center; line-height: 1.15; padding: 6px 8px; overflow-wrap: anywhere; }
   html.tel .tel-outils { display: flex; flex-wrap: wrap; gap: 8px; }
   html.tel .tel-outils .tampon { flex: 1 1 auto; justify-content: center; }
   html.tel .deck-aspects-bascule { width: 100%; }

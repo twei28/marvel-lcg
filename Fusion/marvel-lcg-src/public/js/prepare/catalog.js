@@ -470,7 +470,12 @@ export const catalog = {
             ? [{ id: hero.baseDeckId, name: hero.deck.name || hero.name, source: "base", deck: hero.deck, aspects: hero.aspects }]
             : [];
         try {
-            const savedIds = (await api.listSavedDecks()).map(fileName);
+            // UN DECK NE SE LISTE QU'UNE FOIS. `list_deck` rend les chemins de
+            // tous les dossiers ; `fileName` en retire le dossier, donc un meme
+            // fichier present dans deux dossiers (commun + place du joueur)
+            // sortait deux fois, et le serveur rendait chaque fois le meme.
+            const savedIds = [...new Set((await api.listSavedDecks()).map(fileName))];
+            const dejaVus = new Set();
             for (const id of savedIds) {
                 try {
                     const d = await api.deck(id);
@@ -479,6 +484,10 @@ export const catalog = {
                         // (deck/custom/prebuilt_*) ne sont PAS des decks sauvegardes
                         // par le joueur : ils portent leur propre origine.
                         const duTableur = String((d.metadata || {}).source || "").startsWith("Universal Prebuilt Decks");
+                        // Deux fichiers au meme nom ET au meme contenu = le meme deck.
+                        const signature = (d.name || "") + "|" + [...(d.player_deck || [])].sort().join(",");
+                        if (dejaVus.has(signature)) continue;
+                        dejaVus.add(signature);
                         out.push({ id, name: d.name || id, source: duTableur ? "tableur" : "saved", deck: d, aspects: aspectsOfDeck(d) });
                     }
                 } catch (e) {}
