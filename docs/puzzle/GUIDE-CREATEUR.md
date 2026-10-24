@@ -4,7 +4,7 @@ Un puzzle est une **situation de départ** imposée (héros, méchant, cartes en
 **objectif** à atteindre. Le joueur cherche la bonne suite de coups, autant d'essais qu'il veut.
 
 ## Où se trouve le créateur
-Sur l'écran de départ (là où on choisit le mode), la tuile **« Puzzle »**. Elle lance l'assistant de partie **habituel** :
+Sur l'écran de départ (là où on choisit le mode), la tuile **« Puzzle »** ouvre un panneau : **Créer un puzzle** (1 à 4 héros), **Résoudre par code**, **Mes puzzles**. « Créer » lance l'assistant de partie **habituel** :
 héros, deck, méchant, scénario. Puis le **vrai plateau** s'ouvre en **mode éditeur** (bac à sable + table manuelle : le moteur
 se tait, rien ne se déclenche quand tu déplaces une carte). Le panneau orange **« Création de puzzle »**, en haut à gauche,
 porte le bouton **« Enregistrer le puzzle »**.
