@@ -75,3 +75,12 @@ Cartes de statut françaises : Sonné, Désorienté, Tenace. Mots-clés : Renfor
 - Phase du méchant : barre de phase en bas, plus haute, 5 petits onglets, mode « Étape par étape » par défaut, interruption = la main s'allume, réponse = fenêtre avec la carte, effet obligatoire = bouton Appliquer.
 - Sélection de cibles : ronds jaunes + bandeau, bouton « Ne pas défendre » ; flèche + halos pour « qui attaque qui » ; Garde et Crise : assombri + étiquette + bandeau.
 - À tester sur un vrai téléphone avant tout remplacement : réglage « Cartes / Ronds ».
+
+## Cas particuliers demandés ensuite (59 à 67)
+59. **Overkill** : flèche jaune du sbire vers le méchant + « -2 » jaune sur le méchant + bandeau « Overkill : 2 dégâts en trop passent au méchant ».
+60. **Riposte** : étiquette « Riposte 1 » en permanence sur le sbire ; après l'attaque, flèche rouge vers le héros + « -1 » + bandeau.
+61. **Attacher une amélioration** : les cartes possibles s'allument en jaune + bandeau, on touche l'hôte. 62. **Choisir un défenseur** : seulement les halos jaunes (pas d'aperçu des PV), plus « Ne pas défendre ».
+63. **Némésis / Obligation** : grande carte à résoudre à l'arrivée (comme les autres cartes rencontre), puis un rond.
+64. **Embuscade** : pastille « EMBUSCADE » sur la grande carte (comme Renfort) **puis** la flèche rouge de l'attaque sur le rond. « Péril » : à traiter avec le texte de la carte.
+65. **Héros K.O. (0 PV)** : le héros est **éliminé de la partie**, il ne repasse PAS en alter ego (erreur de ma première maquette, corrigée par l'utilisateur). Écran rouge plein « K.O. ! » à valider ; en solo il mène à la défaite.
+66. **Main trop grande** : feuille avec toute la main en grille, on touche la carte à défausser. 67. **Carte jouée** : événement = grande carte + feuille de résolution puis défausse ; soutien = rond posé avec un halo.
