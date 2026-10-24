@@ -46,6 +46,11 @@ describe('CreateurPuzzle', () => {
     expect(JSON.parse(window.localStorage.getItem('mc-puzzles-crees') ?? '[]')[0].code).toBe('PZ-ABCD')
   })
 
+  it('le bouton est grise tant que la mise en place n\'est pas finie', () => {
+    render(<CreateurPuzzle actif pret={false} />)
+    expect((screen.getByRole('button', { name: 'Enregistrer le puzzle' }) as HTMLButtonElement).disabled).toBe(true)
+  })
+
   it('le choix du premier joueur n\'apparait qu\'avec plusieurs heros', async () => {
     const un = render(<CreateurPuzzle actif nomsDesJoueurs={['Spider-Man']} capturer={vi.fn().mockResolvedValue(CAPTURE)} />)
     fireEvent.click(screen.getByRole('button', { name: 'Enregistrer le puzzle' }))

@@ -2120,6 +2120,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Ton pseudo (affiché avec le puzzle)': 'Your name (shown with the puzzle)',
   'Tous les objectifs': 'All objectives',
   'Un seul objectif': 'Any one objective',
+  'Termine d’abord la mise en place (mulligans, choix), puis enregistre.': 'Finish the setup (mulligans, choices) first, then save.',
   'Une fois la partie finie': 'Once the game is over',
   'Visible pour le joueur': 'Visible to the player',
 }

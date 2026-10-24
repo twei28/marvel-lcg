@@ -1358,6 +1358,10 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'no game in progress'}, status=409)
         if not world.rule.mode_createur_puzzle:
             return web.json_response({'error': 'not a puzzle creation table'}, status=409)
+        # Pendant la mise en place (mulligans, choix de heros) les mains et le deck rencontre ne sont pas encore poses : une capture
+        # d'alors est fausse (essai reel du 24/10/2026, deck rencontre vide). `manuel_actif` = le moteur s'est tu, la table est prete.
+        if not world.manuel_actif:
+            return web.json_response({'error': 'setup not finished'}, status=409)
         if not self.prouve_un_siege(request):
             return web.json_response({'error': 'aucun siege'}, status=403)
         return web.json_response(CapturePuzzle(world))

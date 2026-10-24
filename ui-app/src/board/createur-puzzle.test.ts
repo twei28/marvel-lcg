@@ -87,6 +87,10 @@ describe('capturerLePlateau / publierSurLeSite', () => {
     const f = vi.fn().mockResolvedValue(reponse({}, false, 409))
     await expect(capturerLePlateau(f as unknown as typeof fetch)).rejects.toThrow('table de création')
   })
+  it('dit de finir la mise en place quand le moteur la juge inachevee', async () => {
+    const f = vi.fn().mockResolvedValue(reponse({ error: 'setup not finished' }, false, 409))
+    await expect(capturerLePlateau(f as unknown as typeof fetch)).rejects.toThrow('mise en place')
+  })
   it('publie sur le site avec le pseudo, sans cookie', async () => {
     const f = vi.fn().mockResolvedValue(reponse({ code: 'PZ-ABCD', cle: 'k', expire_le: 5 }, true, 201))
     const pub = await publierSurLeSite({ format: 2 }, 'Moi', { site: 'https://s.test', f: f as unknown as typeof fetch })

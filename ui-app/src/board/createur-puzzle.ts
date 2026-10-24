@@ -117,7 +117,16 @@ export async function capturerLePlateau(f: typeof fetch = globalThis.fetch): Pro
   } catch {
     throw new Error('Le moteur ne répond pas.')
   }
-  if (!reponse.ok) throw new Error(reponse.status === 409 ? 'Cette table n’est pas une table de création de puzzle.' : 'Le moteur a refusé la capture du plateau.')
+  if (!reponse.ok) {
+    let raison = ''
+    try {
+      raison = String(((await reponse.json()) as { error?: string }).error ?? '')
+    } catch {
+      /* corps vide */
+    }
+    if (raison === 'setup not finished') throw new Error('Termine d’abord la mise en place (mulligans, choix), puis enregistre.')
+    throw new Error(reponse.status === 409 ? 'Cette table n’est pas une table de création de puzzle.' : 'Le moteur a refusé la capture du plateau.')
+  }
   const donnees = (await reponse.json()) as Partial<Capture>
   if (!donnees.puzzle) throw new Error('Le moteur n’a rien renvoyé.')
   return { puzzle: donnees.puzzle, avertissements: donnees.avertissements ?? [] }

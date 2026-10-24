@@ -35,6 +35,8 @@ function pseudoMemorise(): string {
 
 export type CreateurPuzzleProps = {
   actif: boolean
+  /** La mise en place est finie (le moteur s'est tu) : avant, le plateau n'est pas celui du puzzle. */
+  pret?: boolean
   /** Les heros de la table (pour choisir le premier joueur). */
   nomsDesJoueurs?: readonly string[]
   capturer?: () => Promise<Capture>
@@ -43,6 +45,7 @@ export type CreateurPuzzleProps = {
 
 export function CreateurPuzzle({
   actif,
+  pret = true,
   nomsDesJoueurs = [],
   capturer = () => capturerLePlateau(),
   publier = (puzzle, pseudo) => publierSurLeSite(puzzle, pseudo),
@@ -109,7 +112,12 @@ export function CreateurPuzzle({
     <>
       <aside className="createur-puzzle" aria-label={t('Création de puzzle')}>
         <strong>{t('Création de puzzle')}</strong>
-        <button type="button" onClick={enregistrer} disabled={occupe}>
+        <button
+          type="button"
+          onClick={enregistrer}
+          disabled={occupe || !pret}
+          title={pret ? undefined : t('Termine d’abord la mise en place (mulligans, choix), puis enregistre.')}
+        >
           {t('Enregistrer le puzzle')}
         </button>
         {message && !capture ? (
@@ -119,7 +127,7 @@ export function CreateurPuzzle({
         ) : null}
       </aside>
       {capture ? (
-        <div className="enonce-fond" role="dialog" aria-modal="true" aria-label={t('Enregistrer le puzzle')}>
+        <div className="enonce-fond createur-puzzle-fond" role="dialog" aria-modal="true" aria-label={t('Enregistrer le puzzle')}>
           <div className="enonce-boite createur-puzzle-boite">
             {resultat ? (
               <>

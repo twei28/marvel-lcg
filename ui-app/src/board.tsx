@@ -4760,6 +4760,7 @@ export function PagePartie({
       <BandeauMiseAJour visible={majDisponible} />
       <CreateurPuzzle
         actif={etat.monde?.mode_createur_puzzle === true}
+        pret={etat.monde?.manuel_actif === true}
         nomsDesJoueurs={(etat.monde?.players ?? []).map((j, i) => j?.area_hero?.[0]?.name?.replace(/^\W*/, '') || `${t('Joueur')} ${i + 1}`)}
       />
       <PanneauObjectifs objectifs={etat.monde?.puzzle_objectives} />
