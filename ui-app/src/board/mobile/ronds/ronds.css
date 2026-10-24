@@ -24,7 +24,10 @@
 .rangee-vilain > .ronds-zone-vilain,
 .rangee-allies > .ronds-zone-allies,
 .rangee-heros > .ronds-zone-heros {
-  flex: 0 0 34%;
+  /* au moins 34 % ; plus large quand les ameliorations decalees sur le cote en demandent (elles ne passent jamais sur la zone voisine) */
+  flex: 0 0 auto;
+  min-width: 34%;
+  max-width: 62%;
 }
 .ronds-zone-manigances,
 .ronds-zone-sbires,
@@ -74,10 +77,6 @@
   gap: 2px;
   -webkit-touch-callout: none;
   user-select: none;
-}
-.rond-vilain,
-.rond-heros {
-  width: calc(var(--d) * 1.22 + 6px);
 }
 .rond-bouton {
   position: relative;
@@ -204,9 +203,9 @@
 /* etats : etiquettes au-dessus du rond ; jetons : pastilles par type, a gauche */
 .rond-etats {
   position: absolute;
-  left: 50%;
+  left: calc(var(--dh) / 2);
   top: -10px;
-  z-index: 3;
+  z-index: 6;
   transform: translateX(-50%);
   display: flex;
   flex-wrap: nowrap;
@@ -240,25 +239,54 @@
   font: 800 0.6rem/1.35 var(--ep-police, Inter, system-ui, sans-serif);
   font-style: normal;
 }
-/* ameliorations attachees : de petits ronds poses a moitie sous la carte hote, un quart visible */
+/* ameliorations attachees (decisions Q4 / Q74 / Q75 / Q76, 24/10/2026) : un rond de la MEME taille que sa carte hote, pose
+   derriere elle et decale sur le COTE, les deux tiers du rond depassant ; plusieurs se suivent a droite. La carte garde
+   la place de ses ameliorations (largeur du .rond), la pastille de PV descend sous le rond. */
+.rond {
+  --dh: var(--d);
+  --nb-amelio: 0;
+  width: calc(var(--dh) + 6px + var(--nb-amelio) * var(--dh) * 0.7);
+  align-items: flex-start;
+}
+.rond-vilain,
+.rond-heros {
+  --dh: calc(var(--d) * 1.22);
+}
+.rond > .rond-bouton {
+  z-index: 5;
+}
 .rond-attachees {
   position: absolute;
-  right: -4px;
-  top: 8px;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  left: 0;
+  top: 0;
+  z-index: 1;
   pointer-events: none;
 }
 .rond-mini {
-  width: calc(var(--d) * 0.42);
-  height: calc(var(--d) * 0.42);
-  margin-left: calc(var(--d) * -0.1);
+  position: absolute;
+  top: 0;
+  left: calc(var(--dh) * 0.7 * (var(--rang) + 1));
+  z-index: calc(4 - var(--rang));
+  width: var(--dh);
+  height: var(--dh);
   border-radius: 50%;
   background-size: 190% auto;
   background-position: 50% 40%;
-  box-shadow: 0 0 0 2px #6a7280;
+  box-shadow: 0 0 0 3px #6a7280;
+}
+.rond-nom,
+.rond-stats {
+  align-self: flex-start;
+  width: calc(var(--dh) + 6px);
+}
+.rond-nom {
+  margin-top: 8px;
+}
+.rond-pastille {
+  right: auto;
+  left: calc(var(--dh) / 2);
+  transform: translateX(-50%);
+  bottom: -2px;
 }
 .rond-etiquette {
   position: absolute;
@@ -440,5 +468,18 @@
    que la rangee tienne dans la hauteur reservee */
 .main-dock .main-portrait-carte .kind-pill,
 .main-dock .main-portrait-carte .top-strip {
+  display: none;
+}
+
+/* carte PRETE (pas encore utilisee) : un anneau vert fin autour du rond ; utilisee (epuisee) : le rond est grise (decisions du 24/10/2026) */
+.rond.est-prete .rond-bouton::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid #5ee07b;
+  pointer-events: none;
+}
+.rond.est-epuise .rond-bouton::after {
   display: none;
 }

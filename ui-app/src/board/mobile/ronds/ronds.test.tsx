@@ -194,10 +194,23 @@ describe('le rond', () => {
     expect((container.querySelector('.rond-art') as HTMLElement).style.backgroundImage).toBe('')
   })
 
-  it('les ameliorations attachees sont de petits ronds sous la carte hote', () => {
-    const u = unite('h', 'ally', {}, [carte('t', 'upgrade', { name: 'Lance-toile' })])
+  it('les ameliorations attachees sont des ronds de la meme taille, decales sur le cote (le compte reserve la place)', () => {
+    const u = unite('h', 'ally', {}, [carte('t', 'upgrade', { name: 'Lance-toile' }), carte('t2', 'upgrade', { name: 'Autre' })])
     const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)
-    expect(container.querySelectorAll('.rond-mini')).toHaveLength(1)
+    expect(container.querySelectorAll('.rond-mini')).toHaveLength(2)
+    expect((container.querySelector('.rond') as HTMLElement).style.getPropertyValue('--nb-amelio')).toBe('2')
+    expect((container.querySelectorAll('.rond-mini')[1] as HTMLElement).style.getPropertyValue('--rang')).toBe('1')
+  })
+
+  it('une carte prete (soutien, allie, amelioration, heros) a un anneau vert ; utilisee elle est grisee, sans anneau', () => {
+    const { container, rerender } = render(<Rond unite={unite('s', 'support')} zone="enJeu" decor={decor()} />)
+    expect(container.querySelector('.rond')?.classList.contains('est-prete')).toBe(true)
+    rerender(<Rond unite={unite('s', 'support', { exhausted: true })} zone="enJeu" decor={decor()} />)
+    expect(container.querySelector('.rond')?.classList.contains('est-prete')).toBe(false)
+    expect(container.querySelector('.rond')?.classList.contains('est-epuise')).toBe(true)
+    // Un sbire n'a pas d'anneau « pret » : il s'attaque, il ne s'utilise pas.
+    rerender(<Rond unite={unite('m', 'minion')} zone="sbires" decor={decor()} />)
+    expect(container.querySelector('.rond')?.classList.contains('est-prete')).toBe(false)
   })
 })
 

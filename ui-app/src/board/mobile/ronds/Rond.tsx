@@ -38,6 +38,9 @@ const STATS_PAR_TYPE: Partial<Record<ScanCardProps['kind'], string[]>> = {
   'alter-ego': ['REC'],
 }
 
+/** Les cartes qui s'epuisent en servant : prete = anneau vert, utilisee = grisee. */
+const KINDS_QUI_S_EPUISENT = new Set(['support', 'upgrade', 'ally', 'hero', 'alter-ego'])
+
 /** Les roles pour lesquels un toucher CHOISIT la carte au lieu de l'ouvrir. */
 const ROLES_QUI_CHOISISSENT = new Set(['cible', 'ressource'])
 
@@ -112,6 +115,7 @@ export function Rond({
     'rond',
     `rond-${zone}`,
     carte.exhausted ? 'est-epuise' : '',
+    !carte.exhausted && !carte.facedown && KINDS_QUI_S_EPUISENT.has(carte.kind) ? 'est-prete' : '',
     cible ? 'est-cible' : '',
     carte.state === 'selected' ? 'est-choisi' : '',
     carte.crise ? 'est-bloquee' : '',
@@ -122,7 +126,13 @@ export function Rond({
   const rayon = 46
   const circonference = 2 * Math.PI * rayon
   return (
-    <div className={classes} data-tactile="carte" data-card-id={unite.carte.id} data-kind={carte.kind}>
+    <div
+      className={classes}
+      data-tactile="carte"
+      data-card-id={unite.carte.id}
+      data-kind={carte.kind}
+      style={{ ['--nb-amelio' as string]: ameliorations.length }}
+    >
       <button
         type="button"
         className="rond-bouton"
@@ -184,13 +194,13 @@ export function Rond({
         </span>
       ) : null}
       {ameliorations.length > 0 ? (
-        <span className="rond-attachees">
-          {ameliorations.map((amelioration) => (
+        <span className="rond-attachees" aria-hidden="true">
+          {ameliorations.map((amelioration, i) => (
             <span
               key={amelioration.id}
               className="rond-mini"
               title={amelioration.name}
-              style={{ backgroundImage: `url(${versVignette(amelioration.imageUrl)})` }}
+              style={{ ['--rang' as string]: i, backgroundImage: `url(${versVignette(amelioration.imageUrl)})` }}
             />
           ))}
         </span>
