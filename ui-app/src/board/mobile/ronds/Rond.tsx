@@ -30,6 +30,8 @@ export type DecorRonds = {
   /** Appui long : l'apercu tenu au doigt, sans boutons (Q51). */
   apercuTenu?: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
   agir: (carte: ScanCardProps) => void
+  /** Mode manuel au doigt (Q52) : un toucher CHOISIT le rond, la barre d'outils agit dessus. */
+  manuel?: { choisieId: number | undefined; choisir: (carte: ScanCardProps) => void }
 }
 
 /**
@@ -126,6 +128,7 @@ export function Rond({
     // Le clic qui suit un glisser ne doit pas ouvrir la feuille.
     if (clicAvale()) return
     if (appui.vientDeDeclencher()) return
+    if (decor.manuel) return decor.manuel.choisir(carte)
     if (choisit || (role === 'cible' && carte.onSelect)) decor.agir(carte)
     else apercu()
   }
@@ -155,6 +158,7 @@ export function Rond({
     carte.exhausted ? 'est-epuise' : '',
     !carte.exhausted && !carte.facedown && KINDS_QUI_S_EPUISENT.has(carte.kind) ? 'est-prete' : '',
     cible ? 'est-cible' : '',
+    decor.manuel?.choisieId === Number(unite.carte.id) ? 'est-choisi-manuel' : '',
     carte.state === 'selected' ? 'est-choisi' : '',
     carte.crise ? 'est-bloquee' : '',
     glissable ? 'est-glissable' : '',

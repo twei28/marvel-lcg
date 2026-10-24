@@ -33,6 +33,7 @@ import { TableRonds } from './ronds/TableRonds'
 import { MainSousLaTable } from './ronds/MainSousLaTable'
 import { RoundEnGrand } from './ronds/RoundEnGrand'
 import { EcranKO } from './ronds/EcranKO'
+import { BarreManuelle } from './ronds/BarreManuelle'
 import { ContexteGlisse, CoucheGlisseRonds, useGlisserAuDoigt } from './ronds/glisser-ronds'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
@@ -243,6 +244,16 @@ export function PlateauPortrait(props: BoardProps) {
           precedente: rangDansLaMain > 0 ? () => ouvrirDeLaMain(main[rangDansLaMain - 1]) : undefined,
           suivante: rangDansLaMain < main.length - 1 ? () => ouvrirDeLaMain(main[rangDansLaMain + 1]) : undefined,
         }
+  // Mode manuel au doigt (Q52) : le rond choisi, sur lequel agit la barre d'outils.
+  const [choisiManuel, setChoisiManuel] = useState<ScanCardProps | undefined>()
+  const manuelRonds = formeDeTable === 'ronds' && manuelAuDoigt
+  useEffect(() => {
+    if (!manuelRonds) setChoisiManuel(undefined)
+  }, [manuelRonds])
+  const manuel = useMemo(
+    () => (manuelRonds ? { choisieId: choisiManuel ? Number(choisiManuel.id) : undefined, choisir: setChoisiManuel } : undefined),
+    [manuelRonds, choisiManuel]
+  )
   const decor = useMemo(
     () => ({
       interactifs,
@@ -252,8 +263,9 @@ export function PlateauPortrait(props: BoardProps) {
       ouvrirCarte,
       apercuTenu,
       agir,
+      manuel,
     }),
-    [interactifs, effets, props.heroActifId, ouvrirPile, ouvrirCarte, apercuTenu, agir]
+    [interactifs, effets, props.heroActifId, ouvrirPile, ouvrirCarte, apercuTenu, agir, manuel]
   )
 
   // Les onglets ne trient PAS des cartes deja recues : ils rappellent
@@ -386,6 +398,13 @@ export function PlateauPortrait(props: BoardProps) {
       ) : null}
       {/* En ronds, l'annulation est la fleche ↶ permanente du bandeau (Q45) : plus de bandeau de 5 secondes. */}
       {formeDeTable === 'ronds' ? null : <BandeauAnnuler annuler={props.annulerCoup} />}
+      {manuelRonds ? (
+        <BarreManuelle
+          carte={choisiManuel}
+          onLire={() => choisiManuel && ouvrirCarte(choisiManuel)}
+          onFermer={() => setChoisiManuel(undefined)}
+        />
+      ) : null}
       {formeDeTable === 'ronds' ? <RoundEnGrand round={props.world?.round_id} /> : null}
       {formeDeTable === 'ronds' ? (
         <EcranKO
