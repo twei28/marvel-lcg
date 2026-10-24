@@ -18,6 +18,7 @@ import { t } from '../../langue'
 import type { GroupeDePile, UniteAffichee } from '../../zones'
 import { useAppuiLong } from '../useAppuiLong'
 import { SEUIL_INITIALES, etatsDe } from './etats-ronds'
+import { useEtatGlisse } from './glisser-ronds'
 import type { CleZone } from './repartir-ronds'
 
 export type DecorRonds = {
@@ -27,6 +28,15 @@ export type DecorRonds = {
   ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
   ouvrirCarte: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
   agir: (carte: ScanCardProps) => void
+}
+
+/**
+ * Les JETONS (ronds) montrent l'illustration ANGLAISE : les scans francais portent un filigrane en losange qui se voit dans
+ * un petit rond (demande du 24/10/2026). La feuille de la carte, elle, garde le scan francais. Le serveur rend toujours
+ * quelque chose pour une vignette anglaise (repli sur la francaise quand il n'y en a pas).
+ */
+export function urlDuJeton(url: string): string {
+  return versVignette(url.replace(/(\/(?:scan|vignette)\/)fr_/, '$1'))
 }
 
 const ETIQUETTE_STAT: Record<string, string> = { ATK: 'ATQ', THW: 'CTR', DEF: 'DÉF', REC: 'REC', SCH: 'MNG' }
@@ -105,8 +115,11 @@ export function Rond({
   const statsVoulues = STATS_PAR_TYPE[carte.kind] ?? []
   const stats = (carte.statsComplets ?? []).filter((s) => statsVoulues.includes(s.label))
   const cible = carte.targetPulse === true || carte.state === 'targetable' || role === 'cible'
+  const { etat: etatGlisse, glissable, clicAvale } = useEtatGlisse(Number(unite.carte.id))
   const surToucher = (evenement: ReactMouseEvent<HTMLButtonElement>) => {
     evenement.stopPropagation()
+    // Le clic qui suit un glisser ne doit pas ouvrir la feuille.
+    if (clicAvale()) return
     if (appui.vientDeDeclencher()) return
     if (choisit || (role === 'cible' && carte.onSelect)) decor.agir(carte)
     else apercu()
@@ -119,6 +132,10 @@ export function Rond({
     cible ? 'est-cible' : '',
     carte.state === 'selected' ? 'est-choisi' : '',
     carte.crise ? 'est-bloquee' : '',
+    glissable ? 'est-glissable' : '',
+    etatGlisse === 'cible' ? 'est-cible-glisse' : '',
+    etatGlisse === 'assombri' ? 'est-assombri' : '',
+    etatGlisse === 'source' ? 'est-source-glisse' : '',
     carte.facedown ? 'est-cachee' : '',
   ]
     .filter(Boolean)
@@ -144,13 +161,13 @@ export function Rond({
           // Une manigance se pose en paysage mais son scan est servi en portrait : on le tourne d'un quart de tour
           // (comme ScanCard) puis on cadre son dessin, a droite de la carte.
           <span className="rond-art rond-art-tourne">
-            <img src={versVignette(carte.imageUrl)} alt="" draggable={false} loading="lazy" />
+            <img src={urlDuJeton(carte.imageUrl)} alt="" draggable={false} loading="lazy" />
           </span>
         ) : (
           <span
             className="rond-art"
             style={{
-              backgroundImage: carte.facedown ? undefined : `url(${versVignette(carte.imageUrl)})`,
+              backgroundImage: carte.facedown ? undefined : `url(${urlDuJeton(carte.imageUrl)})`,
               backgroundSize: taille,
               backgroundPosition: position,
             }}
@@ -200,7 +217,7 @@ export function Rond({
               key={amelioration.id}
               className="rond-mini"
               title={amelioration.name}
-              style={{ ['--rang' as string]: i, backgroundImage: `url(${versVignette(amelioration.imageUrl)})` }}
+              style={{ ['--rang' as string]: i, backgroundImage: `url(${urlDuJeton(amelioration.imageUrl)})` }}
             />
           ))}
         </span>

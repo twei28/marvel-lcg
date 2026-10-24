@@ -6,7 +6,7 @@ import type { ScanCardProps } from '../../../components/ScanCard'
 import type { UniteAffichee } from '../../zones'
 import type { BandesPortrait } from '../bandes-portrait'
 import { ChoixPlateau, CLE_CHOIX_PLATEAU, useChoixPlateau } from './ChoixPlateau'
-import { Rond, apparenceDe, type DecorRonds } from './Rond'
+import { Rond, apparenceDe, urlDuJeton, type DecorRonds } from './Rond'
 import { TableRonds } from './TableRonds'
 import { SEUIL_INITIALES, etatsDe, initialesDe } from './etats-ronds'
 import { repartirEnRonds, type TitresRonds } from './repartir-ronds'
@@ -109,6 +109,22 @@ describe('ce que dit un rond', () => {
 
   it('un soutien sans PV a un anneau gris et pas de pastille', () => {
     expect(apparenceDe(carte('s', 'support'))).toMatchObject({ texte: undefined, couleur: '#6a7280' })
+  })
+})
+
+describe('les jetons montrent l\'illustration anglaise (sans filigrane)', () => {
+  it('retire le prefixe fr_ du scan, laisse le reste tel quel', () => {
+    expect(urlDuJeton('/scan/fr_01095.jpg')).toBe('/vignette/01095.jpg')
+    expect(urlDuJeton('/vignette/fr_01095')).toBe('/vignette/01095')
+    expect(urlDuJeton('/scan/01095.jpg')).toBe('/vignette/01095.jpg')
+    expect(urlDuJeton('data:image/png;base64,AAA')).toBe('data:image/png;base64,AAA')
+  })
+
+  it('le rond s\'habille de l\'anglais, ses ameliorations aussi', () => {
+    const u = unite('x', 'ally', { imageUrl: '/scan/fr_01058.jpg' }, [carte('t', 'upgrade', { imageUrl: '/scan/fr_01008.jpg' })])
+    const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)
+    expect((container.querySelector('.rond-art') as HTMLElement).style.backgroundImage).toContain('/vignette/01058')
+    expect((container.querySelector('.rond-mini') as HTMLElement).style.backgroundImage).toContain('/vignette/01008')
   })
 })
 

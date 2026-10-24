@@ -31,6 +31,7 @@ import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
 import { TableRonds } from './ronds/TableRonds'
 import { MainSousLaTable } from './ronds/MainSousLaTable'
+import { ContexteGlisse, CoucheGlisseRonds, useGlisserAuDoigt } from './ronds/glisser-ronds'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
 import './portrait.css'
@@ -85,6 +86,8 @@ export function PlateauPortrait(props: BoardProps) {
   const bandes = useMemo(() => repartirEnBandes(props.plateau), [props.plateau])
   // La forme de la table : les cartes en bandes, ou les ronds (essai du 24/10/2026, choisi au debut de la partie).
   const { plateau: formeDeTable } = useReglagesTelephone()
+  // Le glisser au doigt (ronds seulement) : memes regles que le plateau PC (`props.glisser`), geste adapte aux ronds.
+  const glisserRonds = useGlisserAuDoigt(formeDeTable === 'ronds' ? props.glisser : undefined)
   const interactifs = props.interactifs ?? AUCUNE_INTERACTION
   const effets = props.effets ?? AUCUN_EFFET
   // Les bandes decorent leurs cartes via `Unite` ; la main, rendue a part,
@@ -251,7 +254,9 @@ export function PlateauPortrait(props: BoardProps) {
 
   return (
     <ImagesParesseuses.Provider value={true}>
+    <ContexteGlisse.Provider value={glisserRonds.valeur}>
     <main
+      {...(formeDeTable === 'ronds' ? glisserRonds.gestes : {})}
       className={`plateau-portrait${enDefilement ? ' est-en-defilement' : ''}${formeDeTable === 'ronds' && mainOuverte ? ' avec-main-dock' : ''}`}
       style={{ '--question-h': `${hauteurDeQuestion}px` } as CSSProperties}
     >
@@ -361,7 +366,9 @@ export function PlateauPortrait(props: BoardProps) {
         />
       ) : null}
       <BandeauAnnuler annuler={props.annulerCoup} />
+      {formeDeTable === 'ronds' ? <CoucheGlisseRonds glisse={glisserRonds.glisse} refus={glisserRonds.refus} /> : null}
     </main>
+    </ContexteGlisse.Provider>
     </ImagesParesseuses.Provider>
   )
 }

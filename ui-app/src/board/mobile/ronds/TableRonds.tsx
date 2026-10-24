@@ -9,7 +9,11 @@ import './ronds.css'
 
 function Zone({ zone, decor, onglets }: { zone: ZoneRonds; decor: DecorRonds; onglets?: ReactNode }): ReactElement {
   return (
-    <section className={`ronds-zone ronds-zone-${zone.cle}${zone.unites.length === 0 ? ' est-vide' : ''}`} aria-label={zone.titre}>
+    <section
+      className={`ronds-zone ronds-zone-${zone.cle}${zone.unites.length === 0 ? ' est-vide' : ''}`}
+      data-zone={zone.cle}
+      aria-label={zone.titre}
+    >
       <h2 className="ronds-titre">
         {zone.titre}
         {onglets}

@@ -483,3 +483,57 @@
 .rond.est-epuise .rond-bouton::after {
   display: none;
 }
+
+/* ---- le glisser au doigt ---- */
+.glisse-rond-couche {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+}
+.glisse-rond-fantome {
+  position: fixed;
+  width: 78px;
+  height: 78px;
+  margin: -39px 0 0 -39px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 25%;
+  box-shadow: 0 0 0 4px #f3c623, 0 12px 28px rgba(0, 0, 0, 0.7);
+  transform: scale(1.12);
+}
+.glisse-rond-fantome.est-refuse {
+  box-shadow: 0 0 0 4px #e0524a, 0 12px 28px rgba(0, 0, 0, 0.7);
+}
+.glisse-rond-libelle {
+  position: fixed;
+  transform: translateX(-50%);
+  max-width: 80vw;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #1c2028;
+  border: 1px solid #f3c623;
+  color: #f2f3f5;
+  font: 700 0.78rem var(--ep-police, Inter, system-ui, sans-serif);
+  white-space: nowrap;
+}
+.glisse-rond-libelle.est-refuse {
+  border-color: #e0524a;
+  color: #ffb4ab;
+}
+.rond.est-cible-glisse .rond-bouton {
+  box-shadow: 0 0 0 3px #f3c623, 0 0 16px 4px rgba(243, 198, 35, 0.7);
+}
+.rond.est-assombri {
+  opacity: 0.4;
+}
+.rond.est-source-glisse {
+  opacity: 0.5;
+}
+/* un rond qu'on peut glisser n'est pas defile par la page ; la main ne defile que de cote */
+.rond.est-glissable .rond-bouton {
+  touch-action: none;
+}
+.main-dock .main-dock-rangee {
+  touch-action: pan-x;
+}

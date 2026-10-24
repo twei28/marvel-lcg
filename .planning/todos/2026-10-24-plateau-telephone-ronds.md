@@ -120,3 +120,7 @@ Fait, non deploye : `ui-app/src/board/mobile/ronds/` (repartir-ronds.ts, etats-r
 81. **Main** : glisser vers le HAUT = jouer la carte ; de cote = la main defile.
 82. **Mauvais lacher** (a vide, mauvaise cible) : la carte retourne dans la main, message « ce n'est pas une cible valide ».
 Faisabilite a verifier au codage : le glissement doit declencher les memes questions du moteur que le toucher (action puis cible) ; voir `interaction.ts` (`EtatInteractif`) et `board.tsx` (`onCardClick`, `glisser`).
+
+## CODE (suite) : glisser au doigt + jetons anglais
+- **Glisser** (decisions 78 a 82) : `ronds/glisser-ronds.tsx` reutilise les regles du plateau PC (`props.glisser` : `estSource`, `ciblesLegales`, `libelle`, `onDepot`) ; geste adapte : un rond se leve des 8 px, une carte de la main seulement vers le HAUT (de cote la main defile, `touch-action: pan-x`) ; fantome + etiquette (« Jouer · Peter Parker »), cibles jaunes, autres assombries, bulle de refus (« Pas ici ») ; le clic qui suit un glisser est avale. Verifie sur la vraie partie : glisser Peter Parker sur Rhino = « Pas ici » (l'alter ego n'attaque pas) ; glisser Lance-toile de la main sur le heros = le jeu ouvre « Payer 1 pour jouer ». Pas encore verifie : attaquer avec Spider-Man (forme heros), les menus a plusieurs actions au lacher.
+- **Jetons anglais** : les ronds, leurs ameliorations et le fantome du glisser utilisent l'illustration ANGLAISE (retrait de `fr_` dans l'adresse), pour ne pas voir le filigrane ; la feuille de la carte en grand reste le scan FRANCAIS.
