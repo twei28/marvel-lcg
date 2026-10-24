@@ -30,6 +30,7 @@ import { TiroirPiles } from './TiroirPiles'
 import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
 import { TableRonds } from './ronds/TableRonds'
+import { MainSousLaTable } from './ronds/MainSousLaTable'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
 import './portrait.css'
@@ -137,7 +138,11 @@ export function PlateauPortrait(props: BoardProps) {
     { titre: string; cartes: ScanCardProps[]; groupes?: GroupeDePile[] } | undefined
   >()
   const [tiroirOuvert, setTiroirOuvert] = useState(false)
-  const [mainOuverte, setMainOuverte] = useState(false)
+  // En ronds, la main est posee SOUS les zones et ouverte d'office (24/10/2026) ; en bandes, elle reste cachee derriere son encoche.
+  const [mainOuverte, setMainOuverte] = useState(formeDeTable === 'ronds')
+  useEffect(() => {
+    setMainOuverte(formeDeTable === 'ronds')
+  }, [formeDeTable])
   // La feuille de question du bas (« x / Jouer », la question du moteur) :
   // la main ouverte se pose au-dessus d'elle, jamais dessous.
   const hauteurDeQuestion = useHauteurDeQuestion()
@@ -176,9 +181,10 @@ export function PlateauPortrait(props: BoardProps) {
       })
     } else if (ouvertePourLaQuestion.current) {
       ouvertePourLaQuestion.current = false
-      setMainOuverte(false)
+      // En ronds, la main est posee sous les zones : elle ne se range pas toute seule (seul le joueur la replie).
+      if (formeDeTable !== 'ronds') setMainOuverte(false)
     }
-  }, [laQuestion])
+  }, [laQuestion, formeDeTable])
 
   const ouvrirPile = useCallback(
     (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => setPileRegardee({ titre, cartes, groupes }),
@@ -246,7 +252,7 @@ export function PlateauPortrait(props: BoardProps) {
   return (
     <ImagesParesseuses.Provider value={true}>
     <main
-      className={`plateau-portrait${enDefilement ? ' est-en-defilement' : ''}`}
+      className={`plateau-portrait${enDefilement ? ' est-en-defilement' : ''}${formeDeTable === 'ronds' && mainOuverte ? ' avec-main-dock' : ''}`}
       style={{ '--question-h': `${hauteurDeQuestion}px` } as CSSProperties}
     >
       <BandeauPortrait
@@ -290,21 +296,40 @@ export function PlateauPortrait(props: BoardProps) {
       </div>
 
       <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} />
-      <Encoche
-        cote="droite"
-        libelle={t('Main')}
-        nombre={bandes.main.length}
-        onOuvrir={() => {
-          refuseeParLeJoueur.current = false
-          setMainOuverte(true)
-        }}
-      />
+      {/* En ronds, la main ouverte est posee sous les zones : la languette ne sert qu'a la rouvrir une fois repliee. */}
+      {formeDeTable === 'ronds' && mainOuverte ? null : (
+        <Encoche
+          cote="droite"
+          libelle={t('Main')}
+          nombre={bandes.main.length}
+          onOuvrir={() => {
+            refuseeParLeJoueur.current = false
+            setMainOuverte(true)
+          }}
+        />
+
+      )}
 
       <TiroirPiles piles={bandes.piles} ouvert={tiroirOuvert} onFermer={() => setTiroirOuvert(false)} onOuvrirPile={ouvrirPile} />
       {/* Toucher une carte jouable = la choisir, puis « Jouer » ; toucher
           long = la jouer (MainPortrait.tsx). */}
-      <MainPortrait
-        unites={main}
+      {formeDeTable === 'ronds' ? (
+        mainOuverte ? (
+          <MainSousLaTable
+            unites={main}
+            onOuvrir={ouvrirDeLaMain}
+            onJouer={(unite) => agir(unite.carte)}
+            jouable={jouable}
+            onReplier={() => {
+              ouvertePourLaQuestion.current = false
+              refuseeParLeJoueur.current = true
+              setMainOuverte(false)
+            }}
+          />
+        ) : null
+      ) : (
+        <MainPortrait
+          unites={main}
         ouverte={mainOuverte}
         onFermer={() => {
           ouvertePourLaQuestion.current = false
@@ -315,6 +340,7 @@ export function PlateauPortrait(props: BoardProps) {
         onJouer={(unite) => agir(unite.carte)}
         jouable={jouable}
       />
+      )}
       {carteLue && !actionPerdue ? (
         <CarteOuverte
           key={carteLue.carte.id}

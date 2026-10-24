@@ -281,3 +281,36 @@ describe('le choix du plateau a chaque debut de partie', () => {
     expect(repondre).toHaveBeenLastCalledWith('ronds', true)
   })
 })
+
+describe('la main sous les zones', () => {
+  it('affiche les cartes en rangee, le compte, et se replie par la fleche', async () => {
+    const { MainSousLaTable } = await import('./MainSousLaTable')
+    const replier = vi.fn()
+    const { container } = render(
+      <MainSousLaTable
+        unites={[unite('1', 'event', { name: 'Pour la Justice' }), unite('2', 'support', { name: 'Héliporteur' })]}
+        onOuvrir={vi.fn()}
+        onJouer={vi.fn()}
+        jouable={() => false}
+        onReplier={replier}
+      />
+    )
+    expect(container.querySelector('.main-dock')).toBeTruthy()
+    expect(container.querySelector('.ronds-titre')?.textContent).toContain('2')
+    fireEvent.click(screen.getByRole('button', { name: /Replier la main/ }))
+    expect(replier).toHaveBeenCalledTimes(1)
+  })
+
+  it('une carte jouable se choisit au toucher, puis « Jouer » la joue', async () => {
+    const { MainSousLaTable } = await import('./MainSousLaTable')
+    const jouer = vi.fn()
+    const u = unite('1', 'event', { name: 'Pour la Justice' })
+    const { container } = render(
+      <MainSousLaTable unites={[u]} onOuvrir={vi.fn()} onJouer={jouer} jouable={() => true} onReplier={vi.fn()} />
+    )
+    expect(screen.queryByText('Jouer')).toBeNull()
+    fireEvent.click(container.querySelector('.main-portrait-carte .scan-card') as HTMLElement)
+    fireEvent.click(screen.getByText('Jouer'))
+    expect(jouer).toHaveBeenCalledTimes(1)
+  })
+})

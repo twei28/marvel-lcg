@@ -32,7 +32,7 @@ export const SEUIL_FERMETURE = 40
  * (nombre de crochets variable d'un rendu a l'autre) — d'ou ce composant,
  * un par carte, qui l'appelle une seule fois.
  */
-function CarteMainPortrait({
+export function CarteMainPortrait({
   unite,
   choisie,
   onChoisir,
