@@ -47,7 +47,10 @@
 .ville-capo, .ville-case { position: relative; min-width: 0; }
 .ville-capo .scan-card { --card-w: 100%; --inspect-scale: 1; width: 100%; pointer-events: none; }
 .ville-case { display: flex; justify-content: center; }
-.ville-case .scan-card { --card-w: 112px; --inspect-scale: 1; pointer-events: none; }
+/* La carte ne depasse plus sa case (24/10/2026, « les carres de couleur ne sont pas bien centres ») : a 112 px fixes, sur un
+   telephone la case n'en faisait que 101 et la carte debordait des deux cotes, donc le cadre vert / bleu (le contour de la
+   case) etait plus etroit que l'image. Elle prend la largeur de sa case, 112 px au plus. */
+.ville-case .scan-card { --card-w: min(112px, 100%); --inspect-scale: 1; pointer-events: none; }
 .ville-case { border-radius: 6px; outline: 2px solid transparent; }
 .ville-case .scan-card { opacity: 0.55; transition: opacity 120ms; }
 .ville-case.est-ici .scan-card { opacity: 1; }
