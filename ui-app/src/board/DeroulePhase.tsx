@@ -913,6 +913,23 @@ export function DeroulePhase({
     document.documentElement.classList.toggle('essai-peril-autre', perilDUnAutre)
     return () => document.documentElement.classList.remove('essai-peril-autre')
   }, [perilDUnAutre])
+  // Plateau du telephone en ronds (Q68, 24/10/2026) : QUEL joueur resout la carte a Peril, pour dire « seul J1 peut reagir »
+  // et verrouiller les onglets des autres. Pose sur <html>, comme `essai-peril-autre`, que lit le plateau portrait.
+  const perilJoueur =
+    essai &&
+    etape?.titre === 'revelation' &&
+    etape.joueur !== undefined &&
+    etape.carteId !== undefined &&
+    (infoRevelee?.(etape.carteId)?.texteImprime ?? []).some((ligne) => /\bp[ée]ril\b/i.test(ligne))
+      ? etape.joueur
+      : undefined
+  useEffect(() => {
+    if (perilJoueur === undefined) return
+    document.documentElement.dataset.perilJoueur = String(perilJoueur)
+    return () => {
+      delete document.documentElement.dataset.perilJoueur
+    }
+  }, [perilJoueur])
   /**
    * LE COUP FATAL SE VOIT SUR LA TABLE AVANT SON PANNEAU.
    *

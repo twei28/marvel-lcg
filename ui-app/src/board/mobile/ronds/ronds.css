@@ -970,3 +970,23 @@
   color: #14161a;
   border-color: #b88f00;
 }
+
+/* ---- Peril en multijoueur (Q68) ---- */
+.bandeau-peril {
+  position: fixed;
+  left: 8px;
+  right: 8px;
+  top: 52px;
+  z-index: 60;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #7a2a1d;
+  border: 1px solid #ff9a85;
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
+  pointer-events: none;
+}
+.portrait-onglet.est-verrouille {
+  opacity: 0.55;
+}

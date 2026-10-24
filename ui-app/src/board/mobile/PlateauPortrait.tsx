@@ -35,6 +35,7 @@ import { RoundEnGrand } from './ronds/RoundEnGrand'
 import { EcranKO } from './ronds/EcranKO'
 import { BarreManuelle } from './ronds/BarreManuelle'
 import { VisiteGuidee } from './ronds/VisiteGuidee'
+import { usePerilJoueur } from './ronds/useDroitDeReponse'
 import { ContexteGlisse, CoucheGlisseRonds, useGlisserAuDoigt } from './ronds/glisser-ronds'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
@@ -272,9 +273,16 @@ export function PlateauPortrait(props: BoardProps) {
   // Les onglets ne trient PAS des cartes deja recues : ils rappellent
   // board.tsx (`choisirJoueurRegarde` = `setVueForcee`) pour qu'il
   // RECONSTRUISE `props.plateau` sur un autre joueur (`seulCeJoueur`).
+  // Peril (Q68) : pendant la carte, seul le joueur qui la resout peut reagir ; les onglets des autres sont verrouilles.
+  const perilJoueur = usePerilJoueur()
+  const joueurPeril = formeDeTable === 'ronds' && (props.joueursAffichables?.length ?? 0) > 1 ? perilJoueur : undefined
+  const verrouilles =
+    joueurPeril === undefined ? [] : (props.joueursAffichables ?? []).map((j) => j.id).filter((id) => id !== joueurPeril)
+  const nomDuPeril = props.joueursAffichables?.find((j) => j.id === joueurPeril)?.nom
   const onglets =
     props.joueursAffichables && props.choisirJoueurRegarde ? (
       <OngletsJoueurs
+        verrouilles={verrouilles}
         joueurs={props.joueursAffichables}
         actif={props.joueurRegarde ?? props.playerId}
         choisir={props.choisirJoueurRegarde}
@@ -408,6 +416,11 @@ export function PlateauPortrait(props: BoardProps) {
       ) : null}
       {/* La visite de 5 etapes (Q57) : une fois, quand le tour du joueur commence (la mise en place est finie). */}
       {formeDeTable === 'ronds' ? <VisiteGuidee actif={/turn/i.test(props.world?.phase ?? '')} /> : null}
+      {joueurPeril !== undefined ? (
+        <div className="bandeau-peril" role="status">
+          {t('Péril : seul %1 peut réagir').replace('%1', nomDuPeril ?? `J${joueurPeril + 1}`)}
+        </div>
+      ) : null}
       {formeDeTable === 'ronds' ? <RoundEnGrand round={props.world?.round_id} /> : null}
       {formeDeTable === 'ronds' ? (
         <EcranKO
