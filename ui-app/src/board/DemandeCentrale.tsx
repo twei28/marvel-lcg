@@ -642,6 +642,52 @@ export function DemandeCentrale({
     )
   }
 
+  // TELEPHONE, PLUSIEURS CARTES PEUVENT REAGIR (variante B, 24/10/2026 : Ant-Man + Cran au changement de forme) :
+  // les cartes cote a cote, chacune avec SON texte ; un toucher joue celle-la en premier, l'autre revient ensuite.
+  // Les copies identiques (trois Cran en main) ne font qu'une carte. « Ignorer les deux » passe tout d'un geste.
+  const auTelephone = typeof document !== 'undefined' && document.body.classList.contains('mode-plateau-portrait')
+  const cartesQuiReagissent = (() => {
+    if (!reaction || enScene || !auTelephone) return []
+    const vues = new Map<string, { option: Option; carte?: ScanCardProps; nom: string; texte?: string }>()
+    for (const option of options) {
+      if (estDemandeAUnAutre(option) || option.failure_reason !== '') continue
+      const carte = carteDeLOption?.(option) ?? carteAuSurvol?.(option)
+      const texte = texteCapacite?.(option)
+      const nom = carte?.name ?? nomDeCapacite(option, texte)
+      const cle = `${nom}|${texte ?? ''}`
+      if (!vues.has(cle)) vues.set(cle, { option, carte, nom, texte })
+    }
+    return [...vues.values()]
+  })()
+  if (cartesQuiReagissent.length >= 2) {
+    return (
+      <section className="demande-centrale dc-cote-a-cote" role="dialog" aria-label="Game decision" aria-live="polite">
+        <div className="dc-texte">
+          <span className="plateau-eyebrow">{libelleTypeDemande(demande)}</span>
+          <strong>{t('Touche la carte à jouer en premier')}</strong>
+        </div>
+        <div className="dc-cartes-reaction">
+          {cartesQuiReagissent.map(({ option, carte, nom, texte }) => (
+            <button type="button" key={option.id} className="dc-carte-reaction" data-option-id={option.id} onClick={() => choisirOption(option)}>
+              {carte ? (
+                <span className="dc-carte-reaction-scan">
+                  <ScanCard {...carte} state="targetable" highlight={false} />
+                </span>
+              ) : null}
+              <b>{nom}</b>
+              {texte ? <span className="dc-carte-reaction-texte">{avecIcones(marquerRessources(texte))}</span> : null}
+            </button>
+          ))}
+        </div>
+        {demande.show_cancel ? (
+          <button type="button" className="af-action tonalite-general dc-pass dc-ignorer-tout" onClick={annuler}>
+            {cartesQuiReagissent.length === 2 ? t('Ignorer les deux') : t('Tout ignorer')}
+          </button>
+        ) : null}
+      </section>
+    )
+  }
+
   return (
     <section
       ref={panneau}
