@@ -1834,3 +1834,30 @@ Harnais (`tools/cas/kree_sentry.py`, `tools/cas/imperial_guard.py`) :
 - Dans un montage à un joueur, Rick Jones reçoit toute attaque de Kree Sentry contre le héros (mesure sur Rick). La main de départ de Spider-Man contient Great Responsibility (`01061`) qui change une pose de menace (Hinder) en dégâts sur l'identité : `EmptyHand()` AVANT la mise en jeu.
 - Black Widow (01075) annule la révélation d'une carte (Interruption) et Mockingbird (01083) étourdit le méchant à son entrée : alliés de test à éviter pour mesurer une attaque ou une révélation (Giant-Man 12012 sert de cible d'attaque).
 - `CreateEncounterDeck(a, b, c)` : la DERNIÈRE carte de la liste est la carte du dessus ; un deck vidé par la défausse est remélangé avec la défausse (ajouter une carte de réserve en dessous).
+
+## 17. Silver Surfer (DesignHacker, `sv`, 24/10/2026) : recettes et pièges payés
+
+| Texte imprimé / besoin | API | Modèle | Piège |
+|---|---|---|---|
+| « Attach to X. If you cannot, attach to the villain » | `AttachToFaceWhenPutIntoPlay(CardFinder(name=X, card_type=Minion), if_cannot_attach_to=Villain)` | `sv015`, `22030`, `53039`, `ar013` | ⚠ `"EnemyLeader"` vise le chef de l'ÉQUIPE ADVERSE du mode compétitif, PAS le méchant : en coopératif l'attachement ne se posait nulle part (carte perdue, aucune erreur) |
+| « X cannot take damage » posé par une AUTRE carte (« Galactus cannot take damage ») | `*AbilityFactory.UnitCannotTakeDamage(CardFinder(name=X))` sur la carte qui l'imprime | `sv013` The World Eater | rend une LISTE ; l'immunité tombe quand la carte qui la porte quitte le jeu |
+| « Choose one » d'un événement, sans liste blanche | UN module `Play` qui fait `joueur.ChooseAbilities(effect, ForChoiceAbility(nom, op, condition=...).SetTarget(...)/.SetHasNoTargetEffect())` | `sv006`, `sv007`, `sv009`, `14004` | deux capacités `Play` exigent une entrée dans la liste blanche de `game/card/factory.py` (leçon ls005) ; une option qui coûte « discard X → » : la condition (`condition=`) teste que X est en jeu, la défausse passe par `Faces.DiscardAll` pour que ses Interruptions partent |
+| « choose two » | `ChooseAbilities(..., choose_x_different_options=2)` | `sv009` | deux options DIFFÉRENTES |
+| « you may discard X, then … instead » | `MayChooseOneAbility` (propose une option « Cancel ») | `sv009` | dans le harnais le pilote accepte la première option : `choisir_option="Cancel"` pour refuser |
+| « X cannot activate » (sbire sans ATK/SCH imprimés) | `AbilityFactory.EnemyCannotActivate(AbilityType.NonKeyword, "This")` | `sv013`, `51038` | `desc` doit quand même porter `ATK`/`SCH` (« 0 ») pour le moteur |
+| « Spend X [energy] → put X counters here » | `SetCost(Cost("Y"))` + `effect.GetPaidResources().GetColor("Y")` + `Faces.PlaceCountersOn` | `sv004`, `01018` | `GetColor` convertit les [wild] en énergie |
+| X = ressources d'une couleur PAYÉES pour le coût X | `effect.GetPaidResources().GetColor("Y")` | `sv008` | le harnais ne paie qu'UNE carte à la fois pour un coût X : tester X ≤ la valeur d'une carte |
+| « Remove X threat divided among schemes » | boucle `joueur.AskChooseFace(schemes avec menace)` + `RemoveThreatFromSchemes([choisie], 1, effect)` | `sv008` | `SetTarget(range=, repeat_rules="Threat")` ne marche que pour un X FIXE (13003) |
+| Retirer de la partie une carte ennemie / d'obligation | `Faces.RemoveAllFromGame([carte], effect)` | `sv011`, `sv012`, `sv015` | une obligation n'est jamais retirée toute seule |
+
+- ⚠⚠ **`Player.GetControlHero()` N'EXISTE PAS** (`AttributeError`, AVALÉE par le moteur : l'option « ready Silver Surfer » de Silver Up ne
+  faisait rien et le cas était rouge pour une autre raison apparente). Pour l'identité : `joueur.GetIdentity()` puis `Hero.IsType(...)`.
+- ⚠ **Banc de test : `Puzzle.Attack('<héros>')` est l'attaque de BASE du héros** ; `against=` désigne le JOUEUR visé par un ennemi
+  (jeu à plusieurs), pas la cible du héros → pour viser un sbire, passer `cibles=['<id>']` au cas. Un allié défend avec
+  `Puzzle.Defend('<allié>', '<attaquant>')`.
+- ⚠ **Banc de test : le deck de héros (les 15 cartes signature) est rangé dans la zone « retiré de la partie »** par `main_exclusive`.
+  Un test de « carte retirée » doit compter les exemplaires (`retirees_n`), pas leur présence.
+- ⚠ **Banc de test : l'Interruption à coût d'un allié (Dawn Greenwood) est toujours ACCEPTÉE** : ses dégâts d'identité s'ajoutent
+  aux mesures (`degats_identite` = coût + éventuel excédent).
+- ⚠ **`tools/test_cards.py` veut un chemin ABSOLU** (`"$PWD/.game-src"`), sinon `launch.json` introuvable après le `chdir`.
+- ⚠ **Python de test sur cette machine : `~/.marvel-venv/bin/python`** (pas `~/marvel-work/python/bin/python3.10`, absent).
