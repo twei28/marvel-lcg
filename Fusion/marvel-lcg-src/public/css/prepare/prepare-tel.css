@@ -182,6 +182,17 @@
   html.tel .tb-entete { display: flex; align-items: center; gap: 8px; min-height: 44px; }
   html.tel .tb-entete b { font-size: 22px; }
   html.tel .tb-compte { font-size: 11px; letter-spacing: .1em; }
+  /* Le filtre « Fan-made (n) » du choix du méchant (24/10/2026) : cache partout hors de la mise en page PC a trois colonnes,
+     donc introuvable au telephone. Un bouton de 44 px, a cote du compte, qui s'allume quand les fan-made sont affichees. */
+  html.tel .ext-fanmade {
+    display: inline-flex; align-items: center; flex: none; min-height: 44px; padding: 0 12px;
+    border: 2px solid #1e1e1e; background: #2d3746; color: #fff;
+    font: 800 13px "Segoe UI", system-ui, sans-serif; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap;
+  }
+  html.tel .ext-fanmade.on { background: var(--affiche-jaune); color: #1e1e1e; }
+  html[data-epure].tel .ext-fanmade { background: var(--ep-champ); color: var(--ep-texte); border: 0; border-radius: 8px; box-shadow: var(--ep-relief); clip-path: none; font-family: var(--ep-police); font-weight: 600; text-transform: none; }
+  /* !important : le degrade que l'Epure pose sur tous ses boutons (« html[data-epure] … button ») cachait la couleur de l'etat allume. */
+  html[data-epure].tel .ext-fanmade.on { background: var(--ep-jaune, #3f86e0) !important; color: #fff; box-shadow: 0 0 0 1px #1d4a8a; font-weight: 700; }
   html.tel .tb-mode {
     margin-left: auto; min-height: 44px; max-width: 62%; padding: 0 2px;
     font-size: 11px; letter-spacing: .06em; text-align: right;
