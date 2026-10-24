@@ -47,6 +47,7 @@ import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
 import { publierVu, useVuDuJoueur } from './vu-partage'
 import type { World, WorldCard } from './world'
+import { estTablette, useEstTablette } from './tablette/tablette'
 
 /** Une pile ouverte à la consultation. */
 export type PileTriche = {
@@ -629,6 +630,21 @@ export function useTriche(
     const surDeplacementAppui = (evenement: PointerEvent) => {
       if (appui && issueAppui(appui, Date.now(), evenement.clientX, evenement.clientY) === 'glisser') oublierAppui()
     }
+    // TABLETTE (decision 6) : un simple toucher sur une carte de la table ou de la main ouvre
+    // ses gestes, sous son apercu (le plateau ouvre l'apercu au meme toucher). Pas les piles :
+    // elles gardent leur geste d'ordinateur.
+    const surLeverAppui = (evenement: PointerEvent) => {
+      const court = appui !== undefined && minuteurAppui !== undefined
+      const tenu = appui
+      oublierAppui()
+      if (!court || !tenu || !appuiCompte(evenement.pointerType) || !estTablette()) return
+      const cible = tenu.cible
+      if (!cible?.closest?.('.plateau-cadre') || cible.closest('.plateau-unite[data-pile], button')) return
+      const noeud = cible.closest<HTMLElement>('.scan-card[data-card-id]')
+      const id = Number(noeud?.dataset.cardId)
+      if (!noeud || !Number.isFinite(id)) return
+      ouvrirMenuCarte(id, tenu.x, tenu.y)
+    }
 
     const surFinDuToucher = (evenement: TouchEvent) => {
       if (leverAAvaler) evenement.preventDefault()
@@ -645,7 +661,7 @@ export function useTriche(
     document.addEventListener('click', surClicApresAppui, true)
     document.addEventListener('pointerdown', surAppui)
     document.addEventListener('pointermove', surDeplacementAppui)
-    document.addEventListener('pointerup', oublierAppui)
+    document.addEventListener('pointerup', surLeverAppui)
     document.addEventListener('pointercancel', oublierAppui)
     return () => {
       oublierAppui()
@@ -654,7 +670,7 @@ export function useTriche(
       document.removeEventListener('click', surClicApresAppui, true)
       document.removeEventListener('pointerdown', surAppui)
       document.removeEventListener('pointermove', surDeplacementAppui)
-      document.removeEventListener('pointerup', oublierAppui)
+      document.removeEventListener('pointerup', surLeverAppui)
       document.removeEventListener('pointercancel', oublierAppui)
     }
   }, [actif, manuel, ouvrirMenuCarte])
@@ -1324,6 +1340,8 @@ type ManuelVu = {
 }
 
 export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = catalogueVide, siege, cartesParId }: CoucheTricheProps) {
+  // Tablette (decision 6) : le menu d'une carte se range sous son apercu.
+  const tablette = useEstTablette()
   const confirmerPile = useConfirmation()
   const regardeManuel = estSpectateur()
   const vuManuel = useVuDuJoueur<ManuelVu | null>('manu', regardeManuel ? siege : undefined)
@@ -1581,6 +1599,7 @@ export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = c
           poserEnJeu={manuel && estEnMain(menu.cible.id) ? () => poserDepuisLaMain(menu.cible.id) : undefined}
           echangerAvecLeDessus={manuel && estEnMain(menu.cible.id) ? () => echangerAvecLeDessus(menu.cible.id) : undefined}
           ids={manuel ? cartesDuGeste(menu.cible.id) : undefined}
+          dansApercu={tablette}
         />
       ) : null}
 

@@ -28,6 +28,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- Plateau portrait (mobile/, depuis le 11/09/2026) ----
   'Remets ton téléphone droit': 'Turn your phone upright',
   'Tourne ta tablette': 'Turn your tablet sideways',
+  'Moins': 'Less',
+  'Plus': 'More',
   'Jeu au doigt': 'Touch play',
   'Tablette : aperçu au toucher, gros boutons, glisser les cartes': 'Tablet: tap to preview, big buttons, drag cards',
   'Le plateau se joue debout.': 'The board is played upright.',

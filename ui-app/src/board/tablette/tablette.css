@@ -52,9 +52,12 @@ html[data-tablette] .carte-apercu.est-tenu {
    toute la largeur de l'ecran et rejetait les cartes a gauche. */
 html[data-tablette] .carte-apercu.est-tenu:is(.a-plusieurs-faces, .a-jumelles):not(.a-faces-4, .a-faces-5) {
   display: grid;
-  grid-auto-flow: column;
+  grid-template-columns: auto auto;
   justify-content: end;
   align-items: start;
+}
+html[data-tablette] .carte-apercu.est-tenu.a-faces-3 {
+  grid-template-columns: auto auto auto;
 }
 html[data-tablette] .carte-apercu.est-tenu.a-faces-4,
 html[data-tablette] .carte-apercu.est-tenu.a-faces-5 {
@@ -68,12 +71,9 @@ html[data-tablette] .carte-apercu.est-tenu.a-faces-2 {
 html[data-tablette] .apercu-actions-tablette {
   flex-basis: 100%;
   grid-column: 1 / -1;
-  grid-row: 2;
   /* Largeur nulle : les boutons ne doivent pas elargir l'apercu, ils passent a la ligne. */
   width: 0;
   min-width: 100%;
-  position: sticky;
-  bottom: 0;
   margin-top: 10px;
 }
 html[data-tablette] .apercu-actions-tablette:empty {
@@ -101,4 +101,64 @@ html[data-tablette] .actions-flottantes.est-dans-apercu .af-action {
    la barre du haut : comme au telephone couche, il s'efface. */
 html[data-tablette] .bouton-fin-tour {
   display: none;
+}
+
+/* ---- Decision 6 : les gestes du mode manuel sous l'apercu --------------------
+   Les memes entrees que le clic droit, en gros boutons sur trois colonnes. */
+html[data-tablette] .menu-triche.est-dans-apercu {
+  position: static;
+  min-width: 0;
+  max-height: none;
+  overflow: visible;
+  padding: 8px;
+}
+html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-liste {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-liste button {
+  min-height: 46px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid #383e49;
+  background: #292e38;
+  font-size: 15px;
+  font-weight: 700;
+}
+html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-liste button.est-danger {
+  border-color: rgba(220, 60, 60, 0.6);
+}
+html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-saisie label {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-saisie input {
+  width: 64px;
+  min-height: 46px;
+  text-align: center;
+  font-size: 20px;
+}
+html[data-tablette] .menu-triche-pas,
+html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-boutons button {
+  min-width: 46px;
+  min-height: 46px;
+  font-size: 18px;
+  font-weight: 700;
+}
+html[data-tablette] .menu-triche-pas {
+  border-radius: 6px;
+  border: 1px solid #383e49;
+  background: #292e38;
+  color: #fff;
+  font-size: 24px;
+}
+html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-deplacer-ligne {
+  display: flex;
+  gap: 8px;
 }

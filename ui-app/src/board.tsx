@@ -4699,7 +4699,8 @@ export function PagePartie({
           toutes refusees par le moteur : l'ouvrir serait promettre ce qu'on ne
           peut pas tenir. L'agrandissement au survol, lui, reste : c'est
           precisement ce qu'on vient faire. */}
-      {carteMenu && !interaction.option ? (
+      {/* Tablette en manuel : les gestes manuels prennent seuls la place sous l'apercu. */}
+      {carteMenu && !interaction.option && !(tablette && manuel) ? (
         <MenuActionsCarte
           texteDeCarte={texteImprimeDeLaCarte}
           carte={carteMenu}

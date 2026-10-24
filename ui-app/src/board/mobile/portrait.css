@@ -810,7 +810,10 @@
     box-sizing: border-box;
     max-width: none;
     transform: none;
-    max-height: 50dvh;
+    /* 24/10/2026 : « on doit toujours pouvoir voir la carte en entier pendant la phase du méchant ». A 50dvh, la zone de la carte
+       n'avait que ~55 px sur un telephone avec barre du navigateur (412x745) : la carte etait coupee. Le panneau monte jusqu'a
+       sous l'entete de la table ; la table, assombrie derriere, n'a rien a montrer pendant la scene. */
+    max-height: calc(100dvh - 56px);
     overflow-y: auto;
     border-radius: 0;
     padding-left: 14px;

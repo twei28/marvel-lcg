@@ -904,7 +904,7 @@ export function CarteApercu({
     if (!zone || !fermerTenu) return
     const surClic = (evenement: MouseEvent) => {
       const bouton = (evenement.target as HTMLElement | null)?.closest('button')
-      if (!bouton || bouton.getAttribute('aria-disabled') === 'true') return
+      if (!bouton || bouton.getAttribute('aria-disabled') === 'true' || bouton.hasAttribute('data-garde-apercu')) return
       window.setTimeout(fermerTenu, 0)
     }
     // En CAPTURE : le clic du bouton redessine la page avant la fin de sa propre propagation.
