@@ -34,6 +34,7 @@ import { MainSousLaTable } from './ronds/MainSousLaTable'
 import { RoundEnGrand } from './ronds/RoundEnGrand'
 import { EcranKO } from './ronds/EcranKO'
 import { BarreManuelle } from './ronds/BarreManuelle'
+import { VisiteGuidee } from './ronds/VisiteGuidee'
 import { ContexteGlisse, CoucheGlisseRonds, useGlisserAuDoigt } from './ronds/glisser-ronds'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
@@ -405,6 +406,8 @@ export function PlateauPortrait(props: BoardProps) {
           onFermer={() => setChoisiManuel(undefined)}
         />
       ) : null}
+      {/* La visite de 5 etapes (Q57) : une fois, quand le tour du joueur commence (la mise en place est finie). */}
+      {formeDeTable === 'ronds' ? <VisiteGuidee actif={/turn/i.test(props.world?.phase ?? '')} /> : null}
       {formeDeTable === 'ronds' ? <RoundEnGrand round={props.world?.round_id} /> : null}
       {formeDeTable === 'ronds' ? (
         <EcranKO

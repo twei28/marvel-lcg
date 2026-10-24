@@ -907,3 +907,66 @@
 .rond.est-choisi-manuel .rond-bouton {
   box-shadow: 0 0 0 3px #f3c623, 0 0 14px 3px rgba(243, 198, 35, 0.65);
 }
+
+/* ---- la visite guidee (Q57) ---- */
+.visite {
+  position: fixed;
+  inset: 0;
+  z-index: 880;
+  pointer-events: auto;
+  background: transparent;
+}
+.visite-halo {
+  position: fixed;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(8, 10, 16, 0.78), 0 0 0 3px #f3c623;
+  pointer-events: none;
+}
+.visite-bulle {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #1c2330;
+  border: 2px solid #f3c623;
+  color: #f2f3f5;
+}
+.visite-bulle.est-en-haut {
+  top: 60px;
+  bottom: auto;
+}
+.visite-bulle h2 {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+  color: #f3c623;
+}
+.visite-bulle p {
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+.visite-bulle .visite-compte {
+  margin: 0;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+.visite-boutons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.visite-boutons button {
+  min-height: 46px;
+  min-width: 110px;
+  border-radius: 8px;
+  border: 1px solid #4a5366;
+  background: #292e38;
+  color: #f2f3f5;
+  font-weight: 700;
+}
+.visite-boutons .visite-suivant {
+  background: #f3c623;
+  color: #14161a;
+  border-color: #b88f00;
+}
