@@ -15,9 +15,11 @@
     margin: 0;
     width: 100%;
     min-height: 0;
-    /* ~40 % de la hauteur, la table visible au-dessus (decision 30 du 12/10/2026). */
-    height: 40dvh;
-    max-height: 40dvh;
+    /* 24/10/2026 : « on doit toujours pouvoir voir la carte en entier pendant la phase du méchant ». Avant : 40 % de la hauteur
+       fixes (decision 30 du 12/10/2026), et sur un telephone avec barre du navigateur (412x745) il restait ~55 px a la carte,
+       coupee. Maintenant la feuille prend la hauteur de son contenu, jusqu'a sous l'entete de la table ; au-dela, le corps defile. */
+    height: auto;
+    max-height: calc(100dvh - 56px);
     translate: none !important;
     transform: none !important;
     box-sizing: border-box;
@@ -32,8 +34,8 @@
      mesure du lot 2) : la feuille monte a 70 % le temps de la question
      seulement, puis redescend a 40 % (finition du 12/10/2026). */
   .deroule-phase.est-scene.est-essai.a-question:not(.est-reduit) {
-    height: 70dvh;
-    max-height: 70dvh;
+    height: auto;
+    max-height: calc(100dvh - 56px);
   }
 
   /* Reduit : il ne reste que la ligne du haut, collee au bas de l'ecran. */

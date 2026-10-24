@@ -162,3 +162,15 @@ html[data-tablette] .menu-triche.est-dans-apercu .menu-triche-deplacer-ligne {
   display: flex;
   gap: 8px;
 }
+
+/* ---- Glisser au doigt (demande de l'utilisateur) ------------------------------
+   Le glisser du PC (pointer events, glisser/useGlisser.ts) marche au doigt des
+   que le navigateur laisse le geste a la page : sur une carte, le doigt la
+   glisse au lieu de defiler ou de zoomer. Pas de bulle « enregistrer l'image »
+   d'iPad a l'appui long. */
+html[data-tablette] .plateau-cadre .scan-card {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
