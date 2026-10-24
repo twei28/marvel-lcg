@@ -476,6 +476,16 @@
   display: none;
 }
 
+/* carte d'un camp dans la zone de l'autre : anneau rouge (rencontre chez le joueur) ou vert (joueur chez le mechant) */
+.rond.est-etranger-rouge .rond-bouton {
+  outline: 2px solid #e0524a;
+  outline-offset: 3px;
+}
+.rond.est-etranger-vert .rond-bouton {
+  outline: 2px solid #4cc46a;
+  outline-offset: 3px;
+}
+
 /* carte PRETE (pas encore utilisee) : un anneau dore fin autour du rond ; utilisee (epuisee) : le rond est grise (decisions du 24/10/2026) */
 .rond.est-prete .rond-bouton::after {
   content: '';

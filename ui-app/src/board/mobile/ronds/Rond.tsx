@@ -75,10 +75,7 @@ export function apparenceDe(carte: ScanCardProps): ApparenceRond {
   const texte = jauge?.texte ?? carte.allyHp ?? carte.schemeThreat
   if (carte.kind === 'environment') return { texte, part: 1, couleur: VIOLET }
   if (jauge?.genre === 'menace' || carte.schemeThreat !== undefined) {
-    // Manigance annexe d'un JOUEUR : anneau vert (le vert n'est plus l'anneau « carte prete », devenu dore), pour la
-    // distinguer d'un coup d'oeil des manigances du mechant (24/10/2026).
-    const duJoueur = carte.kind === 'side-scheme' && carte.camp === 'player'
-    return { texte, part: jauge?.remplissage ?? 1, couleur: duJoueur ? VERT : ORANGE }
+    return { texte, part: jauge?.remplissage ?? 1, couleur: ORANGE }
   }
   if (jauge || carte.allyHp !== undefined) {
     // Le mechant a l'anneau vert comme un heros (ses PV) ; seuls ses sbires sont rouges.
@@ -95,6 +92,20 @@ function positionDe(carte: ScanCardProps): { taille: string; position: string } 
   if (carte.kind === 'hero' || carte.kind === 'alter-ego') return { taille: '175% auto', position: '44% 22%' }
   if (carte.kind === 'villain') return { taille: '200% auto', position: '38% 20%' }
   return { taille: '190% auto', position: '48% 24%' }
+}
+
+const ZONES_DU_MECHANT: ReadonlySet<CleZone> = new Set<CleZone>(['vilain', 'manigances', 'sbires'])
+
+/**
+ * Une carte posee dans la zone de l'AUTRE camp (24/10/2026) : une carte de la rencontre chez le joueur (obligation,
+ * nemesis...) est entouree de ROUGE ; une carte du joueur chez le mechant (manigance annexe de joueur) de VERT.
+ */
+export function etrangerA(carte: ScanCardProps, zone: CleZone): string {
+  if (carte.camp === undefined) return ''
+  const chezLeMechant = ZONES_DU_MECHANT.has(zone)
+  if (carte.camp === 'encounter' && !chezLeMechant) return 'est-etranger-rouge'
+  if (carte.camp === 'player' && chezLeMechant) return 'est-etranger-vert'
+  return ''
 }
 
 export function Rond({
@@ -166,6 +177,7 @@ export function Rond({
     etatGlisse === 'assombri' ? 'est-assombri' : '',
     etatGlisse === 'source' ? 'est-source-glisse' : '',
     carte.facedown ? 'est-cachee' : '',
+    etrangerA(carte, zone),
   ]
     .filter(Boolean)
     .join(' ')

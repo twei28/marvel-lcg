@@ -6,7 +6,7 @@ import type { ScanCardProps } from '../../../components/ScanCard'
 import type { UniteAffichee } from '../../zones'
 import type { BandesPortrait } from '../bandes-portrait'
 import { ChoixPlateau, CLE_CHOIX_PLATEAU, useChoixPlateau } from './ChoixPlateau'
-import { Rond, apparenceDe, urlDuJeton, type DecorRonds } from './Rond'
+import { Rond, apparenceDe, etrangerA, urlDuJeton, type DecorRonds } from './Rond'
 import { TableRonds } from './TableRonds'
 import { SEUIL_INITIALES, etatsDe, initialesDe } from './etats-ronds'
 import { repartirEnRonds, type TitresRonds } from './repartir-ronds'
@@ -93,11 +93,11 @@ describe('ce que dit un rond', () => {
     expect(sbire.texte).toBe('2/3')
   })
 
-  it('manigance annexe d\'un joueur : anneau vert ; celle du mechant : orange', () => {
-    const joueur = apparenceDe(carte('p', 'side-scheme', { camp: 'player', schemeThreat: '2' }))
-    expect(joueur.couleur).toBe('#3d9b57')
-    const mechant = apparenceDe(carte('m', 'side-scheme', { camp: 'encounter', schemeThreat: '2' }))
-    expect(mechant.couleur).toBe('#d9822b')
+  it('une carte de l\'autre camp est entouree : rouge chez le joueur, vert chez le mechant', () => {
+    expect(etrangerA(carte('o', 'obligation', { camp: 'encounter' }), 'enJeu')).toBe('est-etranger-rouge')
+    expect(etrangerA(carte('p', 'side-scheme', { camp: 'player' }), 'manigances')).toBe('est-etranger-vert')
+    expect(etrangerA(carte('m', 'side-scheme', { camp: 'encounter' }), 'manigances')).toBe('')
+    expect(etrangerA(carte('a', 'ally', { camp: 'player' }), 'allies')).toBe('')
   })
 
   it('le mechant a l\'anneau vert (ses PV), ses sbires l\'ont rouge', () => {
