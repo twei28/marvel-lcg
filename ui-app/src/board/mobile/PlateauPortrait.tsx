@@ -111,11 +111,16 @@ export function PlateauPortrait(props: BoardProps) {
   // pas a lire une carte : il ouvre les ACTIONS du moteur. Lire est un etat
   // local, comme sur le portrait du 11/09.
   const [carteLue, setCarteLue] = useState<
-    { carte: ScanCardProps; attachees: ScanCardProps[]; libelleAction?: string; deLaMain?: boolean } | undefined
+    { carte: ScanCardProps; attachees: ScanCardProps[]; libelleAction?: string; deLaMain?: boolean; apercuSeul?: boolean } | undefined
   >()
   const ouvrirCarte = useCallback(
     (carte: ScanCardProps, attachees: ScanCardProps[] = [], libelleAction?: string, deLaMain?: boolean) =>
       setCarteLue({ carte, attachees, libelleAction, deLaMain }),
+    []
+  )
+  // Appui long sur un rond (Q51) : la carte en grand tant que le doigt reste, sans boutons.
+  const apercuTenu = useCallback(
+    (carte: ScanCardProps, attachees: ScanCardProps[] = []) => setCarteLue({ carte, attachees, apercuSeul: true }),
     []
   )
   // La carte ouverte SUIT la question en cours (06/10/2026) : son action est
@@ -245,9 +250,10 @@ export function PlateauPortrait(props: BoardProps) {
       heroActifId: props.heroActifId,
       ouvrirPile,
       ouvrirCarte,
+      apercuTenu,
       agir,
     }),
-    [interactifs, effets, props.heroActifId, ouvrirPile, ouvrirCarte, agir]
+    [interactifs, effets, props.heroActifId, ouvrirPile, ouvrirCarte, apercuTenu, agir]
   )
 
   // Les onglets ne trient PAS des cartes deja recues : ils rappellent
@@ -366,6 +372,8 @@ export function PlateauPortrait(props: BoardProps) {
           onOuvrirAttachee={(carte) => ouvrirCarte(carte)}
           onFermer={() => setCarteLue(undefined)}
           libelleAction={carteLue.libelleAction}
+          detail={formeDeTable === 'ronds'}
+          apercuSeul={carteLue.apercuSeul}
         />
       ) : null}
       {pileRegardee ? (

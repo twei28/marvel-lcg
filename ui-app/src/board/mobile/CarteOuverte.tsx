@@ -16,11 +16,12 @@
 //   <body>. Dans `.plateau-portrait` (position fixed, donc son propre
 //   contexte d'empilement), son z-index de 650 ne valait qu'a l'interieur du
 //   plateau, et l'assistant (541, dans <body>) la recouvrait.
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../../components/ScanCard'
 import { t } from '../langue'
 import { useAppuiLong } from './useAppuiLong'
+import { FeuilleDetail } from './ronds/FeuilleDetail'
 import './portrait.css'
 
 /** Distance horizontale d'un glisser qui change de carte. */
@@ -36,6 +37,8 @@ export function CarteOuverte({
   onFermer,
   libelleAction,
   voisines,
+  detail = false,
+  apercuSeul = false,
 }: {
   carte: ScanCardProps
   attachees?: ScanCardProps[]
@@ -43,6 +46,10 @@ export function CarteOuverte({
   onFermer: () => void
   /** Le libelle du bouton d'action : « Jouer » pour une carte de la main. */
   libelleAction?: string
+  /** Plateau en ronds (Q71, Q72) : PV, valeurs ajustees, jetons sous la carte, et les deux faces COTE A COTE. */
+  detail?: boolean
+  /** Appui long sur un rond (Q51) : la carte en grand tant que le doigt reste, sans boutons ; elle part au relacher. */
+  apercuSeul?: boolean
   /** Les cartes voisines (la main) : un glisser horizontal passe de l'une a l'autre. */
   voisines?: {
     position: number
@@ -59,6 +66,16 @@ export function CarteOuverte({
         }
       : undefined
   )
+  // Un apercu tenu au doigt se ferme des que le doigt se leve.
+  useEffect(() => {
+    if (!apercuSeul) return
+    window.addEventListener('pointerup', onFermer)
+    window.addEventListener('pointercancel', onFermer)
+    return () => {
+      window.removeEventListener('pointerup', onFermer)
+      window.removeEventListener('pointercancel', onFermer)
+    }
+  }, [apercuSeul, onFermer])
   // L'autre face : 0 = la face en jeu, 1.. = les autres (Ant-Man en a deux).
   const autresFaces = carte.autresFaces ?? []
   const [face, setFace] = useState(0)
@@ -106,7 +123,10 @@ export function CarteOuverte({
           depart.current = undefined
         }}
       >
-        <div className={`carte-ouverte-scan${faceMontree ? ' est-autre-face' : ''}`} {...appui.gestes}>
+        <div
+          className={`carte-ouverte-scan${faceMontree ? ' est-autre-face' : ''}${detail && autresFaces.length > 0 ? ' a-deux-faces' : ''}`}
+          {...appui.gestes}
+        >
           {/* Sans onSelect, ScanCard ne rend pas de bouton : la carte est ici
               une image à lire, l'action vit dans le maintien et dans le
               bandeau du dessous. */}
@@ -126,15 +146,41 @@ export function CarteOuverte({
               taille="grande"
             />
           ) : (
-            <ScanCard {...carte} onSelect={undefined} taille="grande" />
+            <ScanCard
+              {...carte}
+              onSelect={undefined}
+              taille="grande"
+              {...(detail ? { jetonMenace: undefined, jetonDegats: undefined, counters: undefined } : {})}
+            />
           )}
+          {/* Q72 : l'autre face a COTE de la premiere, comme sur le PC (un peu plus petites). */}
+          {detail && !faceMontree
+            ? autresFaces.map((autre) => (
+                <ScanCard
+                  key={autre.url}
+                  {...carte}
+                  imageUrl={autre.url}
+                  isLandscape={autre.isLandscape ?? carte.isLandscape}
+                  stats={undefined}
+                  allyHp={undefined}
+                  schemeThreat={undefined}
+                  exhausted={false}
+                  onSelect={undefined}
+                  highlight={false}
+                  jauge={undefined}
+                  taille="grande"
+                />
+              ))
+            : null}
         </div>
 
-        {carte.onSelect && !faceMontree ? (
+        {detail && !faceMontree ? <FeuilleDetail carte={carte} /> : null}
+
+        {carte.onSelect && !faceMontree && !apercuSeul ? (
           <span className="carte-ouverte-aide">{t('Maintenir pour utiliser')}</span>
         ) : null}
 
-        {voisines && voisines.total > 1 ? (
+        {voisines && voisines.total > 1 && !apercuSeul ? (
           <div className="carte-ouverte-voisines">
             <button
               type="button"
@@ -177,8 +223,8 @@ export function CarteOuverte({
           </div>
         ) : null}
 
-        <div className="carte-ouverte-actions">
-          {autresFaces.length > 0 ? (
+        {apercuSeul ? null : <div className="carte-ouverte-actions">
+          {autresFaces.length > 0 && !detail ? (
             <button
               type="button"
               className="carte-ouverte-face"
@@ -202,7 +248,7 @@ export function CarteOuverte({
           <button type="button" className="carte-ouverte-fermer" onClick={onFermer}>
             {t('Fermer')}
           </button>
-        </div>
+        </div>}
       </section>
     </div>,
     document.body

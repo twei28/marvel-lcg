@@ -27,6 +27,8 @@ export type DecorRonds = {
   heroActifId?: number
   ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
   ouvrirCarte: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
+  /** Appui long : l'apercu tenu au doigt, sans boutons (Q51). */
+  apercuTenu?: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
   agir: (carte: ScanCardProps) => void
 }
 
@@ -108,7 +110,7 @@ export function Rond({
   const choisit = role !== undefined && ROLES_QUI_CHOISISSENT.has(role)
   const attachees = unite.attachees.map((a) => avecInteraction(a, decor.interactifs, decor.effets))
   const apercu = () => decor.ouvrirCarte(carte, attachees.filter((a) => a.kind !== 'status'))
-  const appui = useAppuiLong(apercu)
+  const appui = useAppuiLong(() => (decor.apercuTenu ?? decor.ouvrirCarte)(carte, attachees.filter((a) => a.kind !== 'status')))
   const apparence = apparenceDe(carte)
   const { taille, position } = positionDe(carte)
   const paysageTourne = carte.isLandscape === true && carte.scanIsPortrait === true && !carte.facedown
