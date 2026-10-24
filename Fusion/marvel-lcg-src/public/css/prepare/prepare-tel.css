@@ -103,6 +103,17 @@
     position: static !important; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; font-size: 16px;
   }
 
+  /* Le bouton d'affichage (l'oeil) du menu : une ligne avec son nom, comme les outils (24/10/2026 : il etait seul, sans nom). */
+  html.tel .tel-menu .btn-affichage {
+    width: 100% !important; height: 46px !important; min-height: 46px !important; padding: 0 8px !important;
+    display: flex !important; justify-content: flex-start; align-items: center; gap: 12px; align-self: stretch;
+    font: 700 16px "Segoe UI", system-ui, sans-serif !important;
+  }
+  html.tel .tel-menu .btn-affichage i.fa { width: 24px; text-align: center; font-size: 17px; }
+  html.tel .tel-menu .btn-affichage .rb-libelle {
+    display: inline !important; position: static !important; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; font-size: 16px;
+  }
+
   /* ---- Le bandeau : l'affiche en haut, qui rétrécit au défilement --------- */
   html.tel .team-b {
     position: relative; height: 100%; min-height: 0; overflow: hidden;
