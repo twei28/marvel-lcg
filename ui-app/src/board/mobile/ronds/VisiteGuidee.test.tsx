@@ -12,30 +12,19 @@ describe('VisiteGuidee (Q57)', () => {
     const { container } = render(<VisiteGuidee actif={false} />)
     expect(container.firstChild).toBeNull()
   })
-  it('revient a la partie suivante tant que la case n\'est pas cochee', () => {
+  it('ne revient plus apres Terminer', () => {
     const { unmount } = render(<VisiteGuidee actif />)
     for (let i = 0; i < 4; i++) fireEvent.click(screen.getByRole('button', { name: 'Suivant' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Terminer' }))
-    expect(screen.queryByRole('dialog')).toBeNull()
-    unmount()
-    render(<VisiteGuidee actif />)
-    expect(screen.getByRole('dialog')).toBeTruthy()
-  })
-  it('la case de la derniere etape coupe l\'aide pour les prochaines parties', () => {
-    const { unmount } = render(<VisiteGuidee actif />)
-    expect(screen.queryByRole('checkbox')).toBeNull()
-    for (let i = 0; i < 4; i++) fireEvent.click(screen.getByRole('button', { name: 'Suivant' }))
-    fireEvent.click(screen.getByRole('checkbox'))
     fireEvent.click(screen.getByRole('button', { name: 'Terminer' }))
     expect(window.localStorage.getItem(CLES_TELEPHONE.aideDebut)).toBe('non')
     unmount()
     const { container } = render(<VisiteGuidee actif />)
     expect(container.firstChild).toBeNull()
   })
-  it('Passer ne la ferme que pour cette partie', () => {
+  it('Passer la ferme pour de bon aussi', () => {
     render(<VisiteGuidee actif />)
     fireEvent.click(screen.getByRole('button', { name: 'Passer' }))
     expect(screen.queryByRole('dialog')).toBeNull()
-    expect(window.localStorage.getItem(CLES_TELEPHONE.aideDebut)).toBeNull()
+    expect(window.localStorage.getItem(CLES_TELEPHONE.aideDebut)).toBe('non')
   })
 })

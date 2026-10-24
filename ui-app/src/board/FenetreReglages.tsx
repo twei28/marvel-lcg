@@ -452,7 +452,7 @@ function LigneAideDebut() {
   return (
     <LigneBascule
       libelle={t('Aide au début de la partie')}
-      detail={t('La visite guidée des ronds, au début de chaque partie sur téléphone')}
+      detail={t('La visite guidée des ronds, à la prochaine partie sur téléphone')}
       actif={aideDebut}
       onBascule={() => ecrireReglageTelephone('aideDebut', !aideDebut)}
     />

@@ -17,7 +17,7 @@ export type ReglagesTelephone = {
   plateau: PlateauTelephone
   /** Le joueur a coche « garder ce choix » : on ne lui repose plus la question au debut de chaque partie. */
   plateauMemorise: boolean
-  /** La visite guidee des ronds s'ouvre au debut de chaque partie, tant que le joueur n'a pas coche « ne plus afficher ». */
+  /** La visite guidee des ronds s'ouvre a la prochaine partie (une seule fois : elle se coupe en se fermant). */
   aideDebut: boolean
   tailleTexte: TailleTexte
   vibrations: boolean
