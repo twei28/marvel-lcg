@@ -44,6 +44,7 @@ import {
   MODE_SUR_TABLE_OUVERT,
 } from './moteur'
 import type { ReglageMode } from './mobile/useModeMobile'
+import { ecrireReglageDoigt, lireReglageDoigt, type ReglageDoigt } from './tablette/tablette'
 import { ecrireReglageTelephone, useReglagesTelephone, type PlateauTelephone, type TailleTexte } from './mobile/reglages-telephone'
 import { epurePermis, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
@@ -435,6 +436,28 @@ function LignePlateauTelephone() {
   )
 }
 
+// LA TABLETTE (24/10/2026, decision 10) : Auto suit l'appareil (tactile sans
+// souris), Oui / Non le forcent (PC a ecran tactile, iPad avec une souris).
+function LigneJeuAuDoigt() {
+  const [reglage, setReglage] = useState<ReglageDoigt>(lireReglageDoigt)
+  return (
+    <LigneChoix<ReglageDoigt>
+      libelle={t('Jeu au doigt')}
+      valeur={reglage}
+      choix={[
+        { valeur: 'auto', libelle: t('Auto') },
+        { valeur: 'oui', libelle: t('Oui') },
+        { valeur: 'non', libelle: t('Non') },
+      ]}
+      onChoisir={(valeur) => {
+        ecrireReglageDoigt(valeur)
+        setReglage(valeur)
+      }}
+      detail={t('Tablette : aperçu au toucher, gros boutons, glisser les cartes')}
+    />
+  )
+}
+
 function LigneDemanderLePlateau() {
   const { plateauMemorise } = useReglagesTelephone()
   return (
@@ -565,6 +588,8 @@ export type ProprietesReglages = {
   cyclerReglageMode: () => void
   /** Sur telephone : taille du texte, verrou portrait, vibrations (zone 3). */
   telephone?: boolean
+  /** Le plateau PC joue au doigt (board/tablette/tablette.ts). Le reglage s'affiche hors telephone. */
+  tablette?: boolean
 }
 
 export function ContenuOnglet({
@@ -634,6 +659,7 @@ export function ContenuOnglet({
         ) : null}
         <LigneEtiquettesTable />
         <LigneBarreAvantage />
+        {p.telephone ? null : <LigneJeuAuDoigt />}
         {p.telephone ? (
           <>
             <LignePlateauTelephone />

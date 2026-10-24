@@ -81,7 +81,26 @@ export function doitProposerLeChoix(vu) {
  * porte une valeur du nouveau schéma. Écrire « detaille » pour quelqu'un qui n'a
  * rien touché lui ferait perdre cette migration.
  */
-export function modeAEcrire(brutAvant, choisi) {
+export function modeAEcrire(brutAvant, choisi, tablette = false) {
+    // Tablette sans reglage : le plateau demarrerait sur « Plateau anime » (moteur.ts), le choix s'ecrit donc toujours.
+    if (tablette && brutAvant === null) return MODES.includes(choisi) ? choisi : null;
     if (choisi === normaliser(brutAvant)) return null;
     return MODES.includes(choisi) ? choisi : null;
+}
+
+/**
+ * LA TABLETTE (24/10/2026, decisions 8 et 11) : un joueur qui n'a encore rien choisi part de « Plateau anime »
+ * (la table reste entiere au doigt). Meme regle que ui-app/src/board/tablette/tablette.ts : tactile sans souris,
+ * 768 px de large et plus de 500 px de haut, ou le reglage « Jeu au doigt ».
+ */
+export const CLE_JEU_AU_DOIGT = "marvel-jeu-au-doigt";
+export const REQUETE_TABLETTE = "(pointer: coarse) and (hover: none) and (min-width: 768px) and (min-height: 501px)";
+export function estTablette(reglage, appareil) {
+    if (reglage === "oui") return true;
+    if (reglage === "non") return false;
+    return appareil === true;
+}
+export function choixInitial(brutAvant, tablette) {
+    if (tablette && brutAvant === null) return SUR_TABLE;
+    return normaliser(brutAvant);
 }

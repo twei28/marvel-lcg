@@ -69,6 +69,7 @@ import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { useEcranAllume, useEstTelephone, useVerrouPortrait, useVibrationsDePartie } from './board/mobile/telephone'
 import { useReglagesTelephone } from './board/mobile/reglages-telephone'
 import { EcranTourne } from './board/mobile/EcranTourne'
+import { useEstTablette, useMarqueTablette, useTabletteDebout } from './board/tablette/tablette'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
@@ -1910,6 +1911,10 @@ export function PagePartie({
   const reglagesTelephone = useReglagesTelephone()
   useEcranAllume(telephone)
   const { tourner: tournerLeTelephone } = useVerrouPortrait(telephone, reglagesTelephone.verrouPortrait)
+  // LA TABLETTE (24/10/2026, board/tablette/) : le plateau PC au doigt, en paysage.
+  const tablette = useEstTablette() && !telephone
+  useMarqueTablette(tablette)
+  const tabletteDebout = useTabletteDebout(tablette)
   // ⚠ LUE UNE FOIS, AU MONTAGE, ET JAMAIS AU CLIC. L'adresse du site ne change
   // pas de la vie d'une page, et la lire au moment où l'on quitte la mettait
   // dans le chemin d'un clic : fenêtre qui ne s'ouvre pas si le moteur traîne,
@@ -5130,6 +5135,7 @@ export function PagePartie({
       />
 
       {tournerLeTelephone ? <EcranTourne /> : null}
+      {tabletteDebout ? <EcranTourne tablette /> : null}
 
       {/* 13/10/2026 (encadré ⑧) : ton héros est éliminé, les autres jouent encore.
           Tu regardes la suite ; tu gagnes ou tu perds avec ton équipe (Rules
@@ -5562,6 +5568,7 @@ export function PagePartie({
         reglageMode={reglageMode}
         cyclerReglageMode={cyclerReglageMode}
         telephone={telephone}
+        tablette={tablette}
       />
       {/* Les trois modales de la refonte du header (24/09/2026), HORS DE LA
           BARRE pour la meme raison que `FenetreReglages` juste au-dessus :

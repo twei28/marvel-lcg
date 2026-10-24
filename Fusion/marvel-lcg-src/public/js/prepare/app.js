@@ -44,6 +44,7 @@ import { ouvrirFeuille } from "/public/js/tel-pages.js";
 import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire,
+         CLE_JEU_AU_DOIGT, REQUETE_TABLETTE as REQUETE_TABLETTE_PHASE, estTablette as estTablettePhase, choixInitial as choixInitialPhase,
          migrerPhaseTroisChoix, PHASE_IMAGES_VISIBLES } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
 import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
@@ -1986,7 +1987,10 @@ function demanderLaPhaseDuMechant() {
         try { migrerPhaseTroisChoix(localStorage); } catch (e) { /* stockage indisponible */ }
         let brutAvant = null;
         try { brutAvant = localStorage.getItem(CLE_MODE_PHASE); } catch (e) { /* stockage indisponible */ }
-        let choix = normaliserModePhase(brutAvant);
+        let reglageDoigt = null;
+        try { reglageDoigt = localStorage.getItem(CLE_JEU_AU_DOIGT); } catch (e) { /* stockage indisponible */ }
+        const surTablette = estTablettePhase(reglageDoigt, window.matchMedia?.(REQUETE_TABLETTE_PHASE).matches);
+        let choix = choixInitialPhase(brutAvant, surTablette);
         const cartes = [];
         const dossiers = { "detaille": "etape", "sur-table": "sur-table", "instantane": "d-un-coup" };
         const NOMBRE = 4;
@@ -2049,7 +2053,7 @@ function demanderLaPhaseDuMechant() {
             return bouton;
         };
         const valider = () => {
-            const aEcrire = modePhaseAEcrire(brutAvant, choix);
+            const aEcrire = modePhaseAEcrire(brutAvant, choix, surTablette);
             try {
                 if (aEcrire) localStorage.setItem(CLE_MODE_PHASE, aEcrire);
                 localStorage.setItem(CLE_PHASE_MODE_VU, "1");

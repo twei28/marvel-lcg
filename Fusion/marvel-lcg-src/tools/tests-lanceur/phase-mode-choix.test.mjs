@@ -65,3 +65,17 @@ test("réaffichage unique du 20/10/2026 : fenêtre posée, choix conservé, aucu
     assert.equal(doitProposerLeChoix(stockage.getItem(CLE_PHASE_CHOIX_VU)), false);
     assert.equal(modeAEcrire(stockage.getItem(CLE_MODE_PHASE), "instantane"), null);
 });
+
+test("tablette (24/10/2026) : Plateau animé présélectionné pour un joueur neuf, et son choix toujours écrit", async () => {
+    const { estTablette, choixInitial, REQUETE_TABLETTE } = await import("../../public/js/prepare/phase-mode-choix.js");
+    assert.equal(REQUETE_TABLETTE, "(pointer: coarse) and (hover: none) and (min-width: 768px) and (min-height: 501px)");
+    assert.equal(estTablette(null, true), true);
+    assert.equal(estTablette("non", true), false);
+    assert.equal(estTablette("oui", false), true);
+    assert.equal(choixInitial(null, true), "sur-table");
+    assert.equal(choixInitial("detaille", true), "detaille", "un choix déjà fait est gardé");
+    assert.equal(choixInitial(null, false), "detaille", "le PC ne change pas");
+    // garder « Guidée » sur tablette neuve doit s'écrire, sinon le plateau partirait en « Plateau animé »
+    assert.equal(modeAEcrire(null, "detaille", true), "detaille");
+    assert.equal(modeAEcrire(null, "detaille", false), null);
+});

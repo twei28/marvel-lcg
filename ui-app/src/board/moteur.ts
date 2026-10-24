@@ -19,6 +19,7 @@ import { lireDemande, type Demande, type Reponse } from './ask'
 import { chargerPartieEnCours } from './sources'
 import type { World } from './world'
 import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-seat'
+import { estTablette } from './tablette/tablette'
 
 /**
  * Le rythme de la phase du mechant, en TROIS positions.
@@ -143,7 +144,9 @@ export function migrerReglagesPhase(): void {
     // valeur inconnue : il cliquait, ou il n'a jamais rien demande.
     const avanceAuto = brut === 'pas-a-pas'
 
-    window.localStorage.setItem(CLE_MODE_PHASE, 'detaille')
+    // LA TABLETTE (24/10/2026, decision 8) : une installation NEUVE y demarre sur
+    // « Plateau anime », la table reste entiere. Le PC et les anciens reglages ne changent pas.
+    window.localStorage.setItem(CLE_MODE_PHASE, brut === null && estTablette() ? 'sur-table' : 'detaille')
     window.localStorage.setItem(CLE_AVANCE_AUTO, avanceAuto ? 'on' : 'off')
   } catch {
     /* stockage refuse : les lecteurs retomberont sur leurs defauts, tant pis */

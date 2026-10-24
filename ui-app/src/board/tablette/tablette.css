@@ -1,0 +1,12 @@
+/* LA TABLETTE (24/10/2026, .planning/todos/2026-10-24-mode-tablette.md).
+   Tout ce fichier ne vise que <html data-tablette> (pose par `useMarqueTablette`) :
+   le PC et le telephone ne changent pas. */
+
+/* Decision 7 : pas de zoom. La table reste entiere, on lit les cartes par
+   l'apercu. `pan-x pan-y` coupe le pincement et le double-toucher qui zoome,
+   les panneaux (journal, aide) defilent toujours. */
+html[data-tablette],
+html[data-tablette] body {
+  touch-action: pan-x pan-y;
+  -webkit-text-size-adjust: 100%;
+}
