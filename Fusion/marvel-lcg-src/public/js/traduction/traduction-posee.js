@@ -775,6 +775,9 @@ export function texteEnParagraphes(texte) {
         .split('\n')
         .map((ligne) => {
         const brute = ligne.trim();
+        // Le filet imprimé avant le Boost (effacé du scan avec le texte) : redessiné.
+        if (/^<hr\s*\/?>$/i.test(brute))
+            return '<div class="tp-filet"></div>';
         const centre = /^<center>([\s\S]*)<\/center>$/.exec(brute);
         const contenu = centre ? centre[1] : brute;
         const citation = /^<i>[\s\S]*<\/i>(\s*[—–-][^<]*)?$/.test(contenu) && !/<\/i>[\s\S]*<i>/.test(contenu);
@@ -810,7 +813,9 @@ export function formeDuCache(zone) {
     const mediane = (valeurs) => [...valeurs].sort((a, b) => a - b)[Math.floor(valeurs.length / 2)];
     const tolerance = 0.02;
     const encoche = (cote) => {
-        const reference = mediane(zone.bords.map((b) => b[cote]));
+        // Référence : le bas de la zone, toujours à pleine largeur (une encoche relevée à la main peut couvrir plus de la
+        // moitié de la hauteur, la médiane la prenait alors pour la largeur normale).
+        const reference = mediane(zone.bords.slice(Math.floor(n * 0.7)).map((b) => b[cote]));
         let lignes = 0;
         let pire = reference;
         for (const bord of zone.bords) {

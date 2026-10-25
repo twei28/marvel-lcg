@@ -59,9 +59,9 @@ export const ZONES_MANUELLES: Readonly<Record<string, ZoneManuelle>> = {
   wd156: { x0: 0.04, y0: 0.69, x1: 0.955, y1: 0.91, fond: [242, 243, 243] },
   // Illustration qui mord sur le cadre (audit du 25/10/2026, planche de l'utilisateur) : le menton de Rhino sur tk010, une main sur
   // tk001a/tk002a, le badge « 2 » de Ms. Lion, le bouclier de Nendo, le bâton d'Onmitsu (cadre rétréci sur toute la hauteur : le décor ne gère que l'encoche du haut).
-  tk010: { x0: 0.035, y0: 0.515, x1: 0.845, y1: 0.915, fond: [254, 253, 248], paliers: [{ jusqua: 0.175, x0: 0.44 }] },
-  tk001a: { x0: 0.04, y0: 0.575, x1: 0.88, y1: 0.915, fond: [254, 253, 248], paliers: [{ jusqua: 0.66, x1: 0.76 }] },
-  tk002a: { x0: 0.04, y0: 0.575, x1: 0.88, y1: 0.915, fond: [254, 253, 248], paliers: [{ jusqua: 0.66, x1: 0.76 }] },
+  tk010: { x0: 0.035, y0: 0.47, x1: 0.845, y1: 0.915, fond: [254, 253, 248], paliers: [{ jusqua: 0.2, x0: 0.44 }] },
+  tk001a: { x0: 0.04, y0: 0.575, x1: 0.88, y1: 0.915, fond: [254, 253, 248], paliers: [{ jusqua: 0.66, x1: 0.745 }] },
+  tk002a: { x0: 0.04, y0: 0.575, x1: 0.88, y1: 0.915, fond: [254, 253, 248], paliers: [{ jusqua: 0.66, x1: 0.745 }] },
   sk170b: { x0: 0.03, y0: 0.575, x1: 0.955, y1: 0.925, fond: [238, 249, 231] },
   sk171b: { x0: 0.03, y0: 0.575, x1: 0.955, y1: 0.925, fond: [238, 249, 231] },
   sk172b: { x0: 0.04, y0: 0.575, x1: 0.955, y1: 0.925, fond: [238, 249, 231] },
@@ -80,13 +80,21 @@ export const ZONES_MANUELLES: Readonly<Record<string, ZoneManuelle>> = {
   pu015: { x0: 0.1, y0: 0.575, x1: 0.88, y1: 0.895, fond: [251, 247, 246], coin: { hauteur: 0.16, x1: 0.72 } },
   pu140: { x0: 0.105, y0: 0.18, x1: 0.93, y1: 0.925, fond: [251, 246, 243] },
   pu144: { x0: 0.105, y0: 0.18, x1: 0.93, y1: 0.925, fond: [251, 246, 243] },
+  pu142: { x0: 0.105, y0: 0.18, x1: 0.93, y1: 0.925, fond: [251, 246, 243] },
   pu147: { x0: 0.1, y0: 0.19, x1: 0.93, y1: 0.91, fond: [251, 246, 243] },
   wc021: { x0: 0.04, y0: 0.57, x1: 0.96, y1: 0.915, fond: [255, 254, 249] },
   wc022: { x0: 0.04, y0: 0.57, x1: 0.96, y1: 0.915, fond: [255, 254, 249] },
   60020: { x0: 0.04, y0: 0.59, x1: 0.945, y1: 0.915, fond: [253, 251, 238], coin: { hauteur: 0.18, x1: 0.75 } },
+  sn001b: { x0: 0.035, y0: 0.635, x1: 0.955, y1: 0.915, fond: [250, 250, 250] },
   // Manigance annexe paysage : le flavor anglais dépassait au-dessus du voile.
   hs021: { x0: 0.455, y0: 0.215, x1: 0.975, y1: 0.65, fond: [241, 234, 226] },
 }
+
+/**
+ * Cartes où l'effacement des lettres échoue (texte clair sur cadre sombre à reflets, tableau imprimé dans le cadre) : on y
+ * garde le voile UNI d'avant, qui couvre tout le cadre.
+ */
+export const VOILE_UNI: ReadonlySet<string> = new Set(['cd015', 'pu142'])
 
 function zoneManuelle(m: ZoneManuelle): ZoneTexte {
   const lignes = 100

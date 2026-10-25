@@ -71,6 +71,16 @@
 .traduction-posee .tp-encoche-droite {
   float: right;
 }
+/* Le filet qui sépare le Boost du reste du texte, comme sur la carte. */
+.traduction-posee .tp-filet {
+  border-top: 0.12em solid currentColor;
+  margin: 0.4em 0 0.3em;
+}
+/* Contour d'une illustration qui entre dans le cadre par la droite (forme posée par TraductionPosee). */
+.traduction-posee .tp-contour-droit {
+  display: none;
+  float: right;
+}
 
 /* La ligne des traits, comme sur la carte : centrée, en Komika. */
 .traduction-posee .tp-traits {

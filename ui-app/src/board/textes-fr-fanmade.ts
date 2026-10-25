@@ -5084,7 +5084,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // web_of_deceit — Power Outage (MainScheme)
   'wd038b': "[star] <b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, soignez 1 dégât du méchant pour chaque jeton d'accélération et icône d'accélération ([acceleration]) en jeu.",
   // web_of_deceit — Power Surge (MainScheme)
-  'wd039a': "<b>Une fois révélée</b> : inclinez chaque soutien et amélioration TECH allié. Chaque joueur défausse des cartes du deck Rencontre jusqu'à ce qu'il défausse un sbire A.I.M., puis révèle ce sbire. Chaque joueur cherche dans son deck et sa pile de défausse une carte ayant une ressource [energy] imprimée et l'ajoute à sa main. <i>(Mélangez.)</i>",
+  'wd039a': "<i>Les Electros sont au seuil d'un pouvoir illimité, grâce à la science de l'A.I.M. et au soutien du Caïd...</i>\n<b>Une fois révélée</b> : inclinez chaque soutien et amélioration TECH allié. Chaque joueur défausse des cartes du deck Rencontre jusqu'à ce qu'il défausse un sbire A.I.M., puis révèle ce sbire. Chaque joueur cherche dans son deck et sa pile de défausse une carte ayant une ressource [energy] imprimée et l'ajoute à sa main. <i>(Mélangez.)</i>",
   // web_of_deceit — Power Surge (MainScheme)
   'wd039b': "[star] <b>Réponse forcée</b> : après avoir résolu une traîtrise Electro, retirez cette traîtrise de la partie.\nSi ce stade est complété, les joueurs perdent la partie.",
   // web_of_deceit — Electricity Clones (Environment)

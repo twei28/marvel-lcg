@@ -2,7 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { GLYPHES, detecterZoneSurFondTeinte, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, prolongerLaZone, texteEnParagraphes, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
 import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
-import { corrigerZone } from './zones-corrections'
+import { VOILE_UNI, corrigerZone } from './zones-corrections'
+import { BANDES_DROITE, effacerTexte, type CadreDuTexte, type OptionsEffacement } from './effacer-texte'
 import './traduction-posee.css'
 
 const LARGEUR = 300
@@ -85,6 +86,113 @@ function fondSombre([r, g, b]: [number, number, number]): boolean {
   return 0.299 * r + 0.587 * g + 0.114 * b < 128
 }
 
+/** Marge autour de la zone détectée : le fond nettoyé est identique au scan hors des lettres, une zone un peu large ne se
+    voit pas, une zone trop juste laissait de l'anglais au bord. */
+const MARGE = 0.012
+/** Hauteur (fraction de la carte) de la bande des icônes de manigance imprimées en bas de la boîte de texte. */
+const RESERVE_ICONES = 0.06
+
+export function elargirZone(zone: ZoneTexte, marge = MARGE): ZoneTexte {
+  const borne = (v: number) => Math.min(1, Math.max(0, v))
+  return {
+    ...zone,
+    x0: borne(zone.x0 - marge),
+    y0: borne(zone.y0 - marge),
+    x1: borne(zone.x1 + marge),
+    y1: borne(zone.y1 + marge),
+    bords: zone.bords.map(([g, d]) => [borne(g - marge), borne(d + marge)]),
+  }
+}
+
+export type FondNettoye = { image: string; texte: CadreDuTexte | null }
+
+let travailleur: Worker | null | undefined
+let numero = 0
+const enAttente = new Map<number, (r: { donnees: Uint8ClampedArray; cadre: CadreDuTexte | null }) => void>()
+
+/** effacerTexte dans un Worker (un seul, partagé) ; sur place si le navigateur n'en a pas. */
+function effacerAilleurs(donnees: Uint8ClampedArray, largeur: number, hauteur: number, options: OptionsEffacement) {
+  if (travailleur === undefined) {
+    try {
+      travailleur = new Worker(new URL('./effacer-texte.worker.ts', import.meta.url), { type: 'module' })
+      travailleur.onmessage = (e: MessageEvent<{ id: number; donnees: Uint8ClampedArray; cadre: CadreDuTexte | null }>) => {
+        enAttente.get(e.data.id)?.(e.data)
+        enAttente.delete(e.data.id)
+      }
+    } catch {
+      travailleur = null
+    }
+  }
+  if (!travailleur) return Promise.resolve({ donnees, cadre: effacerTexte(donnees, largeur, hauteur, options) })
+  const id = (numero += 1)
+  const promesse = new Promise<{ donnees: Uint8ClampedArray; cadre: CadreDuTexte | null }>((resoudre) => enAttente.set(id, resoudre))
+  travailleur.postMessage({ id, donnees, largeur, hauteur, options }, [donnees.buffer])
+  return promesse
+}
+const fondsNettoyes = new Map<string, Promise<FondNettoye | null>>()
+
+/**
+ * La zone du scan SANS ses lettres anglaises (effacer-texte.ts), en image (adresse de données) : c'est le fond du voile.
+ * Coordonnées de la zone : celles de l'image (portrait) ou de la carte couchée (paysage), comme `zoneDuScan`.
+ */
+export function fondNettoye(url: string, zone: ZoneTexte, paysage?: CotePaysage, reserveBas = 0): Promise<FondNettoye | null> {
+  const cle = `${url}|${paysage ?? ''}|${reserveBas}|${zone.x0},${zone.y0},${zone.x1},${zone.y1}`
+  const connu = fondsNettoyes.get(cle)
+  if (connu) return connu
+  const promesse = new Promise<FondNettoye | null>((resoudre) => {
+    const image = new Image()
+    image.onload = () => {
+      try {
+        const imagePaysage = image.naturalWidth > image.naturalHeight
+        const tourner = paysage !== undefined && !imagePaysage
+        // Résolution d'origine, plafonnée : au-delà, le calcul coûte sans rien montrer de plus.
+        const reduction = Math.min(1, 850 / Math.max(image.naturalWidth, image.naturalHeight))
+        const [largeurImage, hauteurImage] = [Math.round(image.naturalWidth * reduction), Math.round(image.naturalHeight * reduction)]
+        const [largeur, hauteur] = tourner ? [hauteurImage, largeurImage] : [largeurImage, hauteurImage]
+        const toile = document.createElement('canvas')
+        toile.width = largeur
+        toile.height = hauteur
+        const contexte = toile.getContext('2d', { willReadFrequently: true })
+        if (!contexte) return resoudre(null)
+        if (tourner) {
+          contexte.translate(largeur, 0)
+          contexte.rotate(Math.PI / 2)
+          contexte.drawImage(image, 0, 0, hauteur, largeur)
+        } else {
+          contexte.drawImage(image, 0, 0, largeur, hauteur)
+        }
+        const x = Math.floor(zone.x0 * largeur)
+        const y = Math.floor(zone.y0 * hauteur)
+        const l = Math.max(1, Math.ceil(zone.x1 * largeur) - x)
+        const h = Math.max(1, Math.ceil(zone.y1 * hauteur) - y)
+        const region = contexte.getImageData(x, y, l, h)
+        void effacerAilleurs(region.data, l, h, {
+          largeurCarte: Math.min(largeur, hauteur),
+          hauteurCarte: Math.max(largeur, hauteur),
+          sombre: fondSombre(zone.fond),
+          reserveBas,
+          margeHaut: Math.round(MARGE * hauteur),
+          margeBas: Math.round(MARGE * hauteur),
+        })
+          .then(({ donnees, cadre }) => {
+            const sortie = document.createElement('canvas')
+            sortie.width = l
+            sortie.height = h
+            sortie.getContext('2d')?.putImageData(new ImageData(new Uint8ClampedArray(donnees), l, h), 0, 0)
+            resoudre({ image: sortie.toDataURL('image/webp', 0.92), texte: cadre })
+          })
+          .catch(() => resoudre(null))
+      } catch {
+        resoudre(null)
+      }
+    }
+    image.onerror = () => resoudre(null)
+    image.src = url
+  })
+  fondsNettoyes.set(cle, promesse)
+  return promesse
+}
+
 /**
  * Le français posé sur la zone de texte du scan anglais. `onPose(true)` dès que
  * la pose a réussi : l'appelant retire alors l'encadré de traduction.
@@ -109,6 +217,7 @@ export function TraductionPosee({
   const [zoneCadre, setZoneCadre] = useState<ZoneTexte | null>(null)
   const zone = zoneImage && !paysage ? (zoneCadre ?? zoneImage) : zoneImage
   const boite = useRef<HTMLDivElement | null>(null)
+  const contour = useRef<HTMLSpanElement | null>(null)
   // Les icônes imprimées sous le cache (Accélération, Crise...) : on les redessine.
   const [icones, setIcones] = useState<readonly string[]>([])
   const code = codeImage(url)
@@ -121,6 +230,19 @@ export function TraductionPosee({
       vivant = false
     }
   }, [code])
+  const [fond, setFond] = useState<FondNettoye | null>(null)
+  useEffect(() => {
+    setFond(null)
+    if (!zoneImage || VOILE_UNI.has(codeImage(url))) return
+    let vivant = true
+    // Icônes imprimées sous le texte : leur bande n'est pas effacée (elles restent celles du scan).
+    void fondNettoye(url, zoneImage, paysage, icones.length > 0 ? RESERVE_ICONES + MARGE : 0).then((image) => {
+      if (vivant) setFond(image)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [zoneImage, url, paysage, icones])
 
   useEffect(() => {
     let vivant = true
@@ -128,7 +250,7 @@ export function TraductionPosee({
     onPose?.(false)
     void zoneDuScan(url, paysage).then((trouvee) => {
       if (!vivant) return
-      setZone(trouvee)
+      setZone(trouvee ? elargirZone(trouvee) : null)
       onPose?.(trouvee !== null)
     })
     return () => {
@@ -175,7 +297,13 @@ export function TraductionPosee({
       const parent = element.parentElement
       const largeurParent = parent?.clientWidth ?? LARGEUR
       const hauteurParent = parent?.clientHeight ?? HAUTEUR
-      const carte = parent ? Math.min(largeurParent, (hauteurParent * LARGEUR) / HAUTEUR) : LARGEUR
+      // Paysage : une carte portrait de même taille a pour LARGEUR la hauteur de la carte couchée (le texte imprimé a la
+      // même taille absolue) ; la formule portrait la prenait 1,4 fois trop étroite et le français sortait 30 % trop petit.
+      const carte = parent
+        ? largeurParent > hauteurParent
+          ? hauteurParent
+          : Math.min(largeurParent, (hauteurParent * LARGEUR) / HAUTEUR)
+        : LARGEUR
       const echelle = carte > 0 ? carte / LARGEUR : 1
       // Dimensions de la boîte À LA TAILLE DE RÉFÉRENCE (avant réduction).
       const largeurRef = ((zone.x1 - zone.x0) * largeurParent) / echelle
@@ -185,36 +313,64 @@ export function TraductionPosee({
       element.style.width = `${largeurRef}px`
       // Départ à la taille du texte IMPRIMÉ (≈ 4,3 % de la largeur de la carte, mesuré sur les scans) : le français ne
       // doit pas paraître plus gros que l'anglais qu'il recouvre ; il ne fait ensuite que rétrécir pour tenir.
-      let taille = LARGEUR * 0.043
-      const plancher = LARGEUR * 0.026
+      // Départ : la taille de l'anglais imprimé, lue à son interligne quand on l'a mesuré (le corps fait ≈ 1/1,18 de
+      // l'interligne, celui de la boîte), sinon 4,3 % de la largeur de la carte.
+      const interligne = fond?.texte?.interligne ?? 0
+      let taille = interligne > 0 ? Math.min(LARGEUR * 0.06, Math.max(LARGEUR * 0.03, (interligne * HAUTEUR) / 1.18)) : LARGEUR * 0.043
+      // Le fond est le scan nettoyé de SA zone : la boîte ne peut plus déborder sur l'illustration. Un texte long
+      // rétrécit donc davantage (le plancher reste lisible une fois la carte agrandie).
+      const plancher = LARGEUR * 0.017
       element.style.fontSize = `${taille}px`
       element.style.top = `${zone.y0 * 100}%`
       element.style.height = `${hauteurRef}px`
-      while (element.scrollHeight > element.clientHeight + 1 && taille > plancher) {
-        taille -= LARGEUR * 0.0015
-        element.style.fontSize = `${taille}px`
-      }
-      // Toujours trop long au plancher (petits encadrés de certains arts) : le
-      // cache monte sur l'illustration plutôt que de couper le texte.
-      const hauteurCarte = hauteurParent / echelle
-      if (hauteurCarte && element.scrollHeight > element.clientHeight + 1) {
-        // Plafond (24/10/2026) : sur un telephone, la boite montait jusqu'au bord haut de la carte (une grande boite blanche
-        // sur l'illustration, le texte minuscule en haut) alors que la zone detectee etait bonne. Elle ne grandit plus que d'un
-        // tiers de sa hauteur ; au-dela, elle garde sa zone.
-        const plafond = hauteurRef * (icones.length > 0 ? 1.6 : 1.35)
-        const voulue = Math.min(element.scrollHeight, zone.y1 * hauteurCarte, plafond)
-        element.style.top = `${(zone.y1 * hauteurCarte - voulue) * echelle}px`
-        element.style.height = `${voulue}px`
-        // La boîte a grandi : la police, qui avait trop baissé pour la hauteur d'origine, remonte tant que le texte tient.
-        const depart = LARGEUR * 0.043
-        while (taille < depart) {
-          element.style.fontSize = `${taille + LARGEUR * 0.0015}px`
-          if (element.scrollHeight > element.clientHeight + 1) {
-            element.style.fontSize = `${taille}px`
-            break
+      // Le français se pose là où était l'anglais : mêmes marges gauche, droite et haut que les lettres effacées ; il
+      // peut descendre jusqu'au bas de la zone (il est souvent plus long).
+      const cadreTexte = fond?.texte
+      if (cadreTexte) {
+        element.style.paddingLeft = `${cadreTexte.x0 * largeurRef}px`
+        // À droite, la fin des lignes anglaises : le français ne s'étend pas plus loin (le cadre peut avoir un dessin pâle à
+        // droite, sur lequel l'anglais ne mord qu'à peine). Une seule ligne anglaise courte (« Max 1 per deck. ») ne dit
+        // rien de la colonne : marge symétrique de la gauche.
+        element.style.paddingRight = `${(cadreTexte.lignes > 1 ? 1 - cadreTexte.x1 : Math.min(1 - cadreTexte.x1, cadreTexte.x0)) * largeurRef}px`
+        element.style.paddingTop = `${Math.max(0, cadreTexte.y0 * hauteurRef - 1)}px`
+        // En bas, le français s'arrête là où le fond du texte s'arrête (bandeau, icônes, liseré du cadre), et jamais
+        // au-delà du bas de la zone détectée.
+        const basDetecte = 1 - (MARGE + 0.006) * ((hauteurParent / echelle) / hauteurRef)
+        element.style.paddingBottom = `${(1 - Math.min(cadreTexte.bas, basDetecte)) * hauteurRef + 1}px`
+        // Une illustration qui entre dans le cadre par la droite (une main, un dessin pâle) : le français la contourne,
+        // bande par bande, par un flottant dont la forme suit le bord du fond libre.
+        const contourDroit = contour.current
+        if (contourDroit) {
+          const haut = Math.max(0, cadreTexte.y0 * hauteurRef - 1)
+          const hauteurContenu = Math.max(0, element.clientHeight - haut - parseFloat(element.style.paddingBottom))
+          const finDesLignes = (cadreTexte.lignes > 1 ? cadreTexte.x1 : Math.max(cadreTexte.x1, 1 - cadreTexte.x0)) * largeurRef
+          const ecart = largeurRef * 0.012
+          const encoches = cadreTexte.droite.map((x) => Math.max(0, finDesLignes - x * largeurRef + ecart))
+          const largeurContour = Math.max(...encoches, 0)
+          if (largeurContour > ecart * 1.5 && hauteurContenu > 0) {
+            const points = [`${largeurContour}px 0px`]
+            encoches.forEach((w, b) => {
+              const ya = (b * hauteurRef) / BANDES_DROITE - haut
+              const yb = ((b + 1) * hauteurRef) / BANDES_DROITE - haut
+              if (yb <= 0 || ya >= hauteurContenu) return
+              points.push(`${largeurContour - w}px ${Math.max(0, ya)}px`, `${largeurContour - w}px ${Math.min(hauteurContenu, yb)}px`)
+            })
+            points.push(`${largeurContour}px ${hauteurContenu}px`)
+            contourDroit.style.display = 'block'
+            contourDroit.style.width = `${largeurContour}px`
+            contourDroit.style.height = `${hauteurContenu}px`
+            contourDroit.style.shapeOutside = `polygon(${points.join(', ')})`
+          } else {
+            contourDroit.style.display = 'none'
           }
-          taille += LARGEUR * 0.0015
         }
+      } else {
+        element.style.padding = ''
+        if (contour.current) contour.current.style.display = 'none'
+      }
+      while (element.scrollHeight > element.clientHeight + 1 && taille > plancher) {
+        taille -= LARGEUR * 0.001
+        element.style.fontSize = `${taille}px`
       }
     }
     ajuster()
@@ -225,7 +381,7 @@ export function TraductionPosee({
     return () => {
       vivant = false
     }
-  }, [zone, texte, icones])
+  }, [zone, texte, fond, icones])
 
   if (!zone) return null
   const forme = formeDuCache(zone)
@@ -233,28 +389,31 @@ export function TraductionPosee({
   return (
     <div
       ref={boite}
-      className={`traduction-posee${icones.length > 0 ? ' tp-avec-icones' : ''}`}
+      className={`traduction-posee${icones.length > 0 && !fond ? ' tp-avec-icones' : ''}`}
       lang="fr"
       style={{
         left: `${zone.x0 * 100}%`,
         top: `${zone.y0 * 100}%`,
         width: `${(zone.x1 - zone.x0) * 100}%`,
         height: `${(zone.y1 - zone.y0) * 100}%`,
-        background: `rgb(${zone.fond.join(',')})`,
+        // Le scan sans ses lettres anglaises ; la couleur unie le temps du calcul.
+        background: fond ? `url(${fond.image}) 0 0 / 100% 100% no-repeat` : `rgb(${zone.fond.join(',')})`,
         // Fond sombre (certains arts alternatifs) : le texte passe en clair.
         color: fondSombre(zone.fond) ? '#f4f4f4' : undefined,
-        clipPath: forme.clipPath,
+        // Fond = le scan nettoyé : hors des lettres, ses pixels sont ceux de l'image ; ni découpe ni encoche à dessiner.
+        clipPath: fond ? undefined : forme.clipPath,
       }}
     >
-      {forme.gauche ? (
+      <span ref={contour} className="tp-contour-droit" />
+      {forme.gauche && !fond ? (
         <span className="tp-encoche tp-encoche-gauche" style={{ height: `${forme.gauche.hauteur}%`, width: `${forme.gauche.largeur}%` }} />
       ) : null}
-      {forme.droite ? (
+      {forme.droite && !fond ? (
         <span className="tp-encoche tp-encoche-droite" style={{ height: `${forme.droite.hauteur}%`, width: `${forme.droite.largeur}%` }} />
       ) : null}
       {ligneTraits ? <div className="tp-traits">{ligneTraits}</div> : null}
       <div dangerouslySetInnerHTML={{ __html: texteEnParagraphes(texte) }} />
-      {icones.length > 0 ? (
+      {icones.length > 0 && !fond ? (
         <div className="tp-icones-manigance">
           {icones.map((jeton) => (
             <span key={jeton} className={`tp-icone tp-icone-${jeton}`}>
