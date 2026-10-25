@@ -519,6 +519,26 @@ export function texteEnHtml(texte) {
         .replace(/\n/g, '<br />');
 }
 /**
+ * Le texte POSÉ sur la carte, mis en page comme le texte imprimé (25/10/2026, demande de l'utilisateur : « respecte la
+ * typo, la taille et l'emplacement ») : un paragraphe par ligne du texte, espacés comme sur la carte ; une ligne
+ * entièrement en italique (citation, avec son attribution « —Nom » éventuelle) en plus petit ; une ligne entre
+ * `<center>…</center>` centrée (« Ordre d'activation N » des méchants de The Vault, comme « Activation Order N »).
+ * L'encadré sous la carte (Board.tsx) garde `texteEnHtml`.
+ */
+export function texteEnParagraphes(texte) {
+    return texte
+        .split('\n')
+        .map((ligne) => {
+        const brute = ligne.trim();
+        const centre = /^<center>([\s\S]*)<\/center>$/.exec(brute);
+        const contenu = centre ? centre[1] : brute;
+        const citation = /^<i>[\s\S]*<\/i>(\s*[—–-][^<]*)?$/.test(contenu) && !/<\/i>[\s\S]*<i>/.test(contenu);
+        const classes = ['tp-par', centre ? 'tp-centre' : '', citation ? 'tp-citation' : ''].filter(Boolean).join(' ');
+        return `<div class="${classes}">${texteEnHtml(contenu)}</div>`;
+    })
+        .join('');
+}
+/**
  * La forme du cache en CSS : un `clip-path: polygon(...)` qui suit les bords de
  * chaque ligne, et les encoches du HAUT, que le texte doit contourner (deux
  * flottants les réservent). Pourcentages relatifs au rectangle du cache.

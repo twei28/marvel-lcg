@@ -21,7 +21,7 @@ T = {}
 for i, (nom, (ordre, a, wr, cit)) in enumerate(VILAINS.items()):
     for stade in (1, 2):
         n = 2 * i + stade
-        txt = f"<b>Ordre d'activation {ordre}</b>\n"
+        txt = f"<center>Ordre d'activation {ordre}</center>\n"
         if nom == "Venom" and stade == 2:
             txt += "Robuste. Tenacité.\n"
         if stade == 2 and wr:
@@ -44,7 +44,7 @@ T["vt018"] = ("The Vault", "Environment",
     "<b>Si aucun méchant n'est sous The Vault, les joueurs perdent la partie.</b>\n"
     "<b>Si tous les méchants sont soit sous The Vault, soit vaincus, les joueurs gagnent la partie.</b>")
 T["vt019"] = ("Inspection of the Vault", "Obligation",
-    "<b><i>À donner au premier joueur.</i></b>\n<b>Action d'alter ego</b> : inclinez votre identité et dépensez une ressource [mental] → mettez cette carte de côté, hors jeu.\n"
+    "<center><i>À donner au premier joueur.</i></center>\n<b>Action d'alter ego</b> : inclinez votre identité et dépensez une ressource [mental] → mettez cette carte de côté, hors jeu.\n"
     "<i>« Il y a ici des mesures de sécurité pour lesquelles on m'a donné une pile de livres afin de m'aider à comprendre. »</i> —Warden")
 T["vt020"] = ("Craven Escape", "Attachment",
     "Attachez-la au méchant qui a le moins de points de vie restants et qui n'a pas déjà une autre Craven Escape. Si vous ne pouvez pas, cette carte gagne Renfort.\n"

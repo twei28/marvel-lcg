@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { GLYPHES, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
+import { GLYPHES, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, texteEnParagraphes, type ZoneTexte } from './traduction-posee'
 import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
 import { corrigerZone } from './zones-corrections'
@@ -160,7 +160,9 @@ export function TraductionPosee({
       element.style.transformOrigin = '0 0'
       element.style.transform = `scale(${echelle})`
       element.style.width = `${largeurRef}px`
-      let taille = LARGEUR * 0.05
+      // Départ à la taille du texte IMPRIMÉ (≈ 4,3 % de la largeur de la carte, mesuré sur les scans) : le français ne
+      // doit pas paraître plus gros que l'anglais qu'il recouvre ; il ne fait ensuite que rétrécir pour tenir.
+      let taille = LARGEUR * 0.043
       const plancher = LARGEUR * 0.026
       element.style.fontSize = `${taille}px`
       element.style.top = `${zone.y0 * 100}%`
@@ -218,7 +220,7 @@ export function TraductionPosee({
         <span className="tp-encoche tp-encoche-droite" style={{ height: `${forme.droite.hauteur}%`, width: `${forme.droite.largeur}%` }} />
       ) : null}
       {ligneTraits ? <div className="tp-traits">{ligneTraits}</div> : null}
-      <div dangerouslySetInnerHTML={{ __html: texteEnHtml(texte) }} />
+      <div dangerouslySetInnerHTML={{ __html: texteEnParagraphes(texte) }} />
       {icones.length > 0 ? (
         <div className="tp-icones-manigance">
           {icones.map((jeton) => (

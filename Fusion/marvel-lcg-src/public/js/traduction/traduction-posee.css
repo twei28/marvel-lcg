@@ -109,3 +109,17 @@
   gap: 0.6em;
   font-size: 3.6em;
 }
+
+/* Paragraphes du texte posé (texteEnParagraphes) : espacés comme sur la carte imprimée. */
+.traduction-posee .tp-par + .tp-par {
+  margin-top: 0.3em;
+}
+.traduction-posee .tp-centre {
+  text-align: center;
+  font-weight: 700;
+}
+/* Citation (ligne entièrement en italique) : plus petite, comme sur la carte, et un peu détachée de la capacité. */
+.traduction-posee .tp-citation {
+  font-size: 0.82em;
+  margin-top: 0.55em;
+}
