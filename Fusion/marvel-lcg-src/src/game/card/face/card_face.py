@@ -334,6 +334,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (25/10/2026, pack custom Predator, RyCoRan) : les « skull counters » de Yautja Trophy Room (pd010) et les « glyph counters »
         # de Self Destruct (pd011).
         'skull', 'glyph',
+        # AJOUT (25/10/2026, scenario custom Alien vs. Predator, RyCoRan) : les « plasma counters » de Plasmacaster (ap011).
+        'plasma',
         'drain',         # CORRECTIF : Fear No Evil, Drained of Power (60080), Uses (3 drain counters), 18/09/2026
         'civilian', 'stamina', 'grip', 'spot', 'stilt', 'support',  # CORRECTIF : Fear No Evil blocs 3-4 (Disasters, Daily Bugle, Bear Hug, Spot, Stilt-Man, Public Support), 18/09/2026
         'threat',        # CORRECTIF : compteur du pack custom superior_spider_man

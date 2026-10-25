@@ -54,6 +54,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   bleed: 'saignement',
   skull: 'crâne', // pd010 Yautja Trophy Room (Predator, RyCoRan)
   glyph: 'glyphe', // pd011 Self Destruct (Predator, RyCoRan)
+  plasma: 'plasma', // ap011 Plasmacaster (Alien vs. Predator, RyCoRan)
   flame: 'flamme',
   flare: 'fusée',
   calm: 'calme',

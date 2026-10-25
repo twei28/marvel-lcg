@@ -128707,7 +128707,8 @@
    "traits": [],
    "set_name": "Apex Standard",
    "text": "<b>When Revealed</b>: Place 4 threat on each side scheme. If there are no side schemes in play, discard cards from the top of the encounter deck until a side scheme is discarded. Reveal that side scheme.",
-   "custom": "RyCoRan"
+   "custom": "RyCoRan",
+   "ability_link": "01192"
   },
   {
    "card_id": "ap207",
@@ -128830,5 +128831,5 @@
    "custom": "RyCoRan"
   }
  ],
- "checksum": "7da0f5e2ba9d0130a5096e811fb785d719269f2da2137c2c839983bdaaee059e"
+ "checksum": "446af1ed04ef6f996c2d0589dc426cb1ab2f8872db15cd0179deba0ca78d0f09"
 }

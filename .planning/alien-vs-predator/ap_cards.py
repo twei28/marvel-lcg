@@ -172,7 +172,7 @@ CARDS = (
              "<b>Boost</b>: Give the villain 1 additional boost card for this activation.", "custom": K},
     {"card_id": "ap206", "type": "Treachery", "name": "Masterplan", "subtitle": "", "desc": {"Boost": "2"}, "traits": [], "set_name": STD,
      "text": "<b>When Revealed</b>: Place 4 threat on each side scheme. If there are no side schemes in play, discard cards from the top of the encounter deck "
-             "until a side scheme is discarded. Reveal that side scheme.", "custom": K},
+             "until a side scheme is discarded. Reveal that side scheme.", "custom": K, "ability_link": "01192"},
     {"card_id": "ap207", "type": "Treachery", "name": "Shadow of the Past", "subtitle": "", "desc": {"Boost": "2"}, "traits": [], "set_name": STD,
      "text": "<b>When Revealed</b>: Reveal your set-aside nemesis minion and put it into play engaged with you. Reveal your set-aside nemesis side scheme and put "
              "it into play. Shuffle the rest of your set-aside nemesis encounter set into the encounter deck. If your nemesis minion does not enter the game this "
