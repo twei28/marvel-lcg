@@ -47,15 +47,15 @@ T["vt019"] = ("Inspection of the Vault", "Obligation",
     "<b><i>À donner au premier joueur.</i></b>\n<b>Action d'alter ego</b> : inclinez votre identité et dépensez une ressource [mental] → mettez cette carte de côté, hors jeu.\n"
     "<i>« Il y a ici des mesures de sécurité pour lesquelles on m'a donné une pile de livres afin de m'aider à comprendre. »</i> —Warden")
 T["vt020"] = ("Craven Escape", "Attachment",
-    "Attachez-la au méchant qui a le moins de points de vie restants et qui n'a pas déjà une autre Craven Escape. Si vous ne pouvez pas, cette carte gagne Déferlement.\n"
+    "Attachez-la au méchant qui a le moins de points de vie restants et qui n'a pas déjà une autre Craven Escape. Si vous ne pouvez pas, cette carte gagne Renfort.\n"
     "<b>Réponse forcée</b> : après la fin de la phase des joueurs, mélangez le méchant attaché dans le deck de méchants.\n"
     "<i>« Comment tu as survécu n'a pas d'importance ! Ce qui compte, c'est que tu aies survécu ! »</i> —Venom")
 T["vt022"] = ("Corrupted Guardsman", "Minion",
-    "Incitation 1.\n<b>Une fois révélée</b> : si Inspection of the Vault est en jeu, révélez 1 sbire au hasard sous The Vault. Si vous ne pouvez pas, cette carte gagne Déferlement.\n"
+    "Incitation 1.\n<b>Une fois révélée</b> : si Inspection of the Vault est en jeu, révélez 1 sbire au hasard sous The Vault. Si vous ne pouvez pas, cette carte gagne Renfort.\n"
     "[star] <b>Boost</b> : mélangez dans le deck de rencontre 1 sbire de sous The Vault.")
 T["vt026"] = ("Burglary", "SideScheme",
     "<b>Une fois révélée</b> : si Inspection of the Vault est en jeu, placez ici 1[per_hero] menace supplémentaire.\n"
-    "<b>Une fois vaincue</b> : révélez la première carte du deck de méchants.")
+    "<b>Une fois déjouée</b> : révélez la première carte du deck de méchants.")
 T["vt028"] = ("Contingency Measures", "SideScheme",
     "<i>« Puisque je ne peux te plier à ma volonté... je crains de devoir te briser ! »</i> —Senso\n"
     "<b>Interruption forcée</b> : quand un méchant serait vaincu, mélangez-le à la place dans le deck de méchants.\n"
@@ -64,10 +64,10 @@ T["vt029"] = ("Scheming from Within", "SideScheme",
     "<b>Une fois révélée</b> : placez ici 1 menace supplémentaire pour chaque méchant sous The Vault.\n"
     "[star] <b>Boost</b> : si Inspection of the Vault est en jeu, cette carte gagne +1 icône de boost ([boost]) pour chaque méchant sous The Vault.")
 T["vt030"] = ("Rampage in Public", "Treachery",
-    "<b>Une fois révélée</b> : si le nombre de méchants en jeu est inférieur au nombre de joueurs, cette carte gagne Déferlement. Révélez la première carte du deck de méchants. "
+    "<b>Une fois révélée</b> : si le nombre de méchants en jeu est inférieur au nombre de joueurs, cette carte gagne Renfort. Révélez la première carte du deck de méchants. "
     "Si vous ne pouvez pas, le méchant dont l'ordre d'activation est le plus élevé s'active contre vous.")
 T["vt034"] = ("Riot in the Vault", "Treachery",
-    "Déferlement.\n<b>Une fois révélée</b> : si Inspection of the Vault n'est pas en jeu, révélez-la. Sinon, placez 1 menace sur la manigance principale pour chaque méchant sous The Vault.\n"
+    "Renfort.\n<b>Une fois révélée</b> : si Inspection of the Vault n'est pas en jeu, révélez-la. Sinon, placez 1 menace sur la manigance principale pour chaque méchant sous The Vault.\n"
     "<i>« Aucune prison ne peut retenir un esprit tel que le mien. »</i> —Mad Thinker")
 
 
