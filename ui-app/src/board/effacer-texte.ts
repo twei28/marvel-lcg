@@ -119,6 +119,12 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
   }
   const encre = new Uint8Array(n)
   for (let i = 0; i < n; i += 1) encre[i] = ecart[i] > 45 ? 1 : 0
+  // Aplats sombres : ce qui reste sombre APRÈS la fermeture est plus large qu'un trait de lettre (intérieur d'une icône,
+  // illustration, bandeau). Une tache d'encre qui en touche un en fait partie : elle n'est jamais une lettre.
+  const aplat = new Uint8Array(n)
+  if (!sombre) for (let i = 0; i < n; i += 1) aplat[i] = (canaux[0][i] + canaux[1][i] + canaux[2][i]) / 3 < 110 ? 1 : 0
+  const presAplat = dilater(dilater(aplat, largeur, hauteur), largeur, hauteur)
+  const toucheUnAplat = (pixels: readonly number[]) => pixels.some((i) => presAplat[i])
 
   // Taches d'encre : seules les petites (une lettre, un signe) sont du texte.
   const hauteurMax = options.hauteurCarte * 0.06
@@ -128,6 +134,7 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
   // Lettres retenues pour situer le texte (pas les points de trame ni les éclats du cadre : trop petits).
   const hauteurMin = options.hauteurCarte * 0.008
   const lettres: Lettre[] = []
+  const candidates: { pixels: number[]; xMin: number; xMax: number; yMin: number; yMax: number }[] = []
   // Taches trop grandes pour une lettre : souvent l'illustration, parfois une lettre collée à un trait du dessin.
   const rejetees: { pixels: number[]; xMin: number; xMax: number; yMin: number; yMax: number }[] = []
   const texte = new Uint8Array(n)
@@ -195,7 +202,7 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     (t) =>
       t.yMax - t.yMin > options.hauteurCarte * (t.yMax >= limiteBas ? 0.026 : 0.034) &&
       // Hors de la bande du bas, une icône est pleine ; un mot imprimé de biais (lettres collées : « HELMET. »), non.
-      (t.yMax >= limiteBas || t.pixels.length >= 0.4 * (t.xMax - t.xMin + 1) * (t.yMax - t.yMin + 1)) &&
+      (t.yMax >= limiteBas || t.pixels.length >= 0.4 * (t.xMax - t.xMin + 1) * (t.yMax - t.yMin + 1) || toucheUnAplat(t.pixels)) &&
       t.yMax - t.yMin < options.hauteurCarte * 0.08 &&
       t.xMax - t.xMin < options.largeurCarte * 0.15 &&
       // Une icône est trapue ; un liseré ou un trait du cadre est fin et long.
@@ -225,7 +232,7 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     // Une tache coupée par le bord de la région est un morceau d'illustration ou de cadre, pas une lettre (la région
     // déborde un peu de la zone de texte) : on n'y touche pas.
     const auBord = xMin === 0 || yMin === 0 || xMax === largeur - 1 || yMax === hauteur - 1
-    const icone = dansUneIcone(t)
+    const icone = dansUneIcone(t) || toucheUnAplat(t.pixels)
     if (yMax < (options.margeHaut ?? 0) || yMin >= hauteur - (options.margeBas ?? 0)) continue
     if (xMax < (options.margeCote ?? 0) || xMin >= largeur - (options.margeCote ?? 0)) continue
     // Au-dessus et au-dessous d'une lettre (une hauteur de lettre), le fond clair domine. Les creux sombres entre les
@@ -258,11 +265,22 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
       if (!icone) rejetees.push(t)
       continue
     }
-    for (const i of t.pixels) texte[i] = 1
+    // Filet et mot imprimé de biais (une seule tache, hors de toute ligne) : effacés tels quels.
+    if (filet || (motDeBiais && yMax - yMin >= hauteurMax)) for (const i of t.pixels) texte[i] = 1
+    else candidates.push(t)
     if (lettre && yMax - yMin >= hauteurMin) lettres.push({ x0: xMin, x1: xMax + 1, y0: yMin, y1: yMax + 1 })
   }
+  // Une lettre n'est effacée que dans une LIGNE de texte (au moins trois lettres côte à côte) : les lettres d'un titre
+  // imprimé à la verticale, une par rangée, restent.
   // Le texte s'arrête au-dessus des icônes.
   const cadre = cadreDesLettres(lettres, options.largeurCarte, options.hauteurCarte)
+  // ... et jamais à gauche de la colonne du texte (un titre vertical collé au cadre n'en fait pas partie).
+  const boites = boitesDesLignes(lettres, options.hauteurCarte)
+  const marge = options.hauteurCarte * 0.012
+  for (const t of candidates) {
+    if (cadre && t.xMax < cadre.x0 - marge) continue
+    if (boites.some((b) => t.xMin >= b.x0 && t.xMax <= b.x1 && t.yMin >= b.y0 && t.yMax <= b.y1)) for (const i of t.pixels) texte[i] = 1
+  }
   effacerLettresCollees(lettres, rejetees, encre, texte, largeur, options.hauteurCarte, options.margeCote ?? 0)
 
   // Hystérésis : le halo plus pâle des lettres rejoint le masque ; puis une marge d'un pixel.
@@ -399,6 +417,42 @@ function effacerLettresCollees(
       if (bouts.some((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1)) texte[i] = 1
     }
   }
+}
+
+/** Les rectangles des lignes de texte (au moins trois lettres à la même hauteur, sans trou de plus de deux hauteurs de
+    lettre), élargis d'une demi-hauteur de ligne en haut et en bas (accents, cédilles) et d'une hauteur sur les côtés. */
+export function boitesDesLignes(lettres: readonly Lettre[], hauteurCarte: number): Lettre[] {
+  const lignes: Lettre[][] = []
+  for (const l of [...lettres].sort((a, b) => a.y0 + a.y1 - b.y0 - b.y1)) {
+    const milieu = (l.y0 + l.y1) / 2
+    const ligne = lignes.find((g) => Math.abs((g[0].y0 + g[0].y1) / 2 - milieu) <= hauteurCarte * 0.008)
+    if (ligne) ligne.push(l)
+    else lignes.push([l])
+  }
+  const boites: Lettre[] = []
+  for (const ligne of lignes) {
+    const parX = [...ligne].sort((a, b) => a.x0 - b.x0)
+    const h = Math.max(...ligne.map((l) => l.y1 - l.y0))
+    // Morceaux de lettres voisines (écart < deux hauteurs).
+    let morceau: Lettre[] = []
+    const fermer = () => {
+      if (morceau.length >= 3) {
+        boites.push({
+          x0: morceau[0].x0 - h,
+          x1: Math.max(...morceau.map((l) => l.x1)) + h,
+          y0: Math.min(...morceau.map((l) => l.y0)) - h * 0.6,
+          y1: Math.max(...morceau.map((l) => l.y1)) + h * 0.6,
+        })
+      }
+      morceau = []
+    }
+    for (const l of parX) {
+      if (morceau.length && l.x0 - Math.max(...morceau.map((m) => m.x1)) > h * 2) fermer()
+      morceau.push(l)
+    }
+    fermer()
+  }
+  return boites
 }
 
 /** Pour chaque rangée de la région : est-elle presque entièrement sombre (bord du cadre de texte, bandeau) ? */

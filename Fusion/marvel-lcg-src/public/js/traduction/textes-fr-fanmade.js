@@ -5050,7 +5050,7 @@ export const TEXTES_FR_FANMADE = {
     // web_of_deceit — Power Surge (MainScheme)
     'wd039a': "<i>Les Electros sont au seuil d'un pouvoir illimité, grâce à la science de l'A.I.M. et au soutien du Caïd...</i>\n<b>Une fois révélée</b> : inclinez chaque soutien et amélioration TECH allié. Chaque joueur défausse des cartes du deck Rencontre jusqu'à ce qu'il défausse un sbire A.I.M., puis révèle ce sbire. Chaque joueur cherche dans son deck et sa pile de défausse une carte ayant une ressource [energy] imprimée et l'ajoute à sa main. <i>(Mélangez.)</i>",
     // web_of_deceit — Power Surge (MainScheme)
-    'wd039b': "[star] <b>Réponse forcée</b> : après avoir résolu une traîtrise Electro, retirez cette traîtrise de la partie.\nSi ce stade est complété, les joueurs perdent la partie.",
+    'wd039b': "<i>Electro surcharge le réseau !</i>\n[star] <b>Réponse forcée</b> : après avoir résolu une traîtrise Electro, retirez cette traîtrise de la partie.\nSi ce stade est complété, les joueurs perdent la partie.",
     // web_of_deceit — Electricity Clones (Environment)
     'wd040': "Permanent.\nElectro ignore la règle d'unicité. <i>(Plusieurs exemplaires d'Electro peuvent être en jeu, mais les capacités \"Réponse forcée\" d'un exemplaire d'Electro ne peuvent toujours être déclenchées que par cet exemplaire précis.)</i>",
     // web_of_deceit — Grounded (Environment)
