@@ -474,6 +474,13 @@
    "cartes": 16,
    "depuis": "2026-08-12"
   },
+  "vt": {
+   "pack": "the_vault",
+   "libelle": "215. Custom (The Vault)",
+   "cartes": 27,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur Kajislav, scenario « The Vault » (MC Custom Content By: Kajislav), zip « The Vault (Sealed) » (51 images dont 13 doublons de rencontre ; plateau et compteurs de PV = accessoires de table, non codes). vt001-vt016 les 8 vilains (I = stade 1, II = expert), tous « Activation Order X » ; vt017a/b complot principal The Vault Breakout ; vt018 environnement The Vault (cartes dessous) ; vt019 obligation Inspection of the Vault ; vt020-vt034 le set de rencontre (7 cartes distinctes, 17 exemplaires). Plusieurs vilains en jeu : brique `Villains` du 20/10/2026 + ordre d'activation propre au scenario. Trait TRAITOR ajoute a l'enum. Modulaire par defaut : Sinister Syndicate (existant)."
+  },
   "vv": {
    "pack": "viv_vision",
    "libelle": "147. Custom (Viv Vision)",

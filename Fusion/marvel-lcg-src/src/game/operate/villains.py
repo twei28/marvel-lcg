@@ -44,15 +44,20 @@ class Villains:
 
     class Rule:
         def __init__(self, *,
-                     the_villain: Literal["Active", "Leftmost"]="Active",
-                     player_cards: Literal["TheVillain", "PlayerChooses"]="TheVillain") -> None:
-            assert the_villain in ("Active", "Leftmost"), f"{the_villain=}"
+                     the_villain: Literal["Active", "Leftmost", "LowestActivationOrder"]="Active",
+                     player_cards: Literal["TheVillain", "PlayerChooses"]="TheVillain",
+                     activation_order: bool=False) -> None:
+            assert the_villain in ("Active", "Leftmost", "LowestActivationOrder"), f"{the_villain=}"
             assert player_cards in ("TheVillain", "PlayerChooses"), f"{player_cards=}"
             self.the_villain = the_villain
             self.player_cards = player_cards
+            # AJOUT (25/10/2026, The Vault) : la phase du mechant, etape 2, distribue les activations par
+            # « Activation Order » (`Enemies.ActivationVillainsParOrdre`) au lieu d'un mechant par joueur.
+            self.activation_order = activation_order
 
         def __repr__(self) -> str:
-            return f"Villains.Rule(the_villain={self.the_villain!r}, player_cards={self.player_cards!r})"
+            return (f"Villains.Rule(the_villain={self.the_villain!r}, player_cards={self.player_cards!r}, "
+                    f"activation_order={self.activation_order!r})")
 
     ############################################################################
     # La regle
@@ -89,6 +94,18 @@ class Villains:
     def Rightmost(effect: 'Effect') -> 'Villain|None':
         mechants = Villains.All(effect)
         return mechants[-1] if mechants else None
+
+    @staticmethod
+    def ActivationOrder(villain: 'Villain') -> int:
+        """« Activation Order X » imprime sur le mechant (0 si absent : classe en dernier, voir `Triees`)."""
+        return getattr(villain, 'activation_order', 0)
+
+    @staticmethod
+    def ParOrdreDActivation(villains: Sequence['Villain']) -> List['Villain']:
+        """Les mechants tries par Activation Order croissant (un mechant sans ordre passe apres les autres ; a
+        egalite, l'ordre d'arrivee en jeu)."""
+        indexes = {id(v): i for i, v in enumerate(villains)}
+        return sorted(villains, key=lambda v: (Villains.ActivationOrder(v) or 10**6, indexes[id(v)]))
 
     @staticmethod
     def Active(effect: 'Effect') -> 'Villain|None':
@@ -137,7 +154,7 @@ class Villains:
         return deck
 
     @staticmethod
-    def RevealNextVillain(player: 'Player', effect: 'Effect') -> 'Villain|None':
+    def RevealNextVillain(player: 'Player', effect: 'Effect', *, reveal: bool=False) -> 'Villain|None':
         """Revele le dessus du deck de mechants et le met en jeu le plus a
         DROITE (« place the newly revealed villain as the rightmost villain,
         so that the villain that has been in play the longest is always the
@@ -146,8 +163,36 @@ class Villains:
         haut = deck.GetTop()
         if haut is None:
             return None
-        haut.PutIntoPlay(player, effect)
+        if reveal:
+            # AJOUT (25/10/2026, The Vault) : une VRAIE revelation (« When Revealed » du stade II : Batroc II,
+            # Mentallo II...), la mise en jeu nue ne declenchant rien.
+            haut.Reveal(player, effect)
+        else:
+            haut.PutIntoPlay(player, effect)
         return haut.card.face
+
+    @staticmethod
+    def TopOfVillainDeck(effect: 'Effect', size: int) -> List['CardFace']:
+        """Les `size` cartes du dessus du deck de mechants (sans les retirer). AJOUT (25/10/2026, The Vault :
+        « place the top 4 villain cards beneath The Vault »)."""
+        deck = getattr(Villains._Scenario(effect), 'deck_de_mechants', None)
+        return deck.GetTops(size) if deck is not None else []
+
+    @staticmethod
+    def ShuffleIntoVillainDeck(villain: 'Villain', effect: 'Effect') -> None:
+        """« Shuffle <the villain> into the villain deck. » Comme `Remove`, rien ne l'accompagne : attachements et
+        cartes d'etat sont defausses, ses jetons repartent avec la carte (degats compris). AJOUT (25/10/2026, The
+        Vault : Craven Escape, Contingency Measures)."""
+        from game.operate.faces import Faces
+        from game.card.face.attribute.can_status import CanStatus
+        attaches = list(villain.GetInventoryDeck().GetAll())
+        if attaches:
+            Faces.DiscardAll(attaches, effect)
+        if CanStatus.IsType(villain):
+            statut = villain.components.status
+            with statut.SansRemplacement():
+                villain.DiscardEachStatus(effect)
+        Faces.ShuffleAllTo([villain], Villains._VillainDeck(effect), effect)
 
     @staticmethod
     def VillainDeckSize(effect: 'Effect') -> int:
@@ -212,4 +257,8 @@ class Villains:
             for mechant in villains:
                 if mechant.IsActive():
                     return mechant
+        if rule.the_villain == "LowestActivationOrder":
+            # The Vault (insert p.1) : « Encounter cards that refer to "the villain" only refer to the villain
+            # with the lowest activation order value. »
+            return Villains.ParOrdreDActivation(villains)[0]
         return villains[0]

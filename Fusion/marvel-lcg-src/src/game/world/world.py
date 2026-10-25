@@ -791,6 +791,16 @@ class World(WorldAction, WorldFind):
             end_message.Send()
 
         def enemy_activation() -> None:
+            # AJOUT (25/10/2026, The Vault) : plusieurs vilains a « Activation Order » ; regle posee par le
+            # complot principal (`Villains.Rule(activation_order=True)`). Sans regle : boucle historique.
+            from game.operate.villains import Villains
+            regle = Villains.GetRule(self)
+            if regle is not None and regle.activation_order:
+                joueurs = [p for p in phase_players if not p.is_eliminated]
+                if joueurs:
+                    self.current_player = joueurs[0]
+                    Worlds.Enemies.ActivationVillainsParOrdre(GameRule(joueurs[0].GetIdentity()), phase_players)
+                return
             for player in phase_players:
                 # RR 1.8 p.34 : un joueur elimine ne participe plus. `phase_players`
                 # vient de `const_players`, qui garde les elimines.

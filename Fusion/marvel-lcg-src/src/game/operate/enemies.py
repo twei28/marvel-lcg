@@ -23,9 +23,10 @@ class Enemies:
                                     *,
                                     activate: Literal["Attack", "Scheme", "Activate"],
                                     finder: 'CardFinder|None'=None,
-                                    include_minion: Literal["All", "Engaged"],
+                                    include_minion: Literal["All", "Engaged", "None"],
                                     include_villain: bool,
                                     if_no_activate: Callable[[], Any]|None=None,
+                                    villains: 'List[Villain]|None'=None,
                                     ) -> 'ActivatedResult':
         from game.operate.worlds import Worlds
         # from game.ability.rule import Activate
@@ -50,6 +51,10 @@ class Enemies:
                     villains_to_activate = list(multi_message.return_value)
                     villains_to_activate = Enemies.OrdreDesVilainsActives(
                         effect, activate_against_player, villains_to_activate)
+                # AJOUT (25/10/2026, The Vault) : l'appelant impose LE vilain de cette activation
+                # (`ActivationVillainsParOrdre`) ; il l'emporte sur les deux lectures ci-dessus.
+                if villains is not None:
+                    villains_to_activate = list(villains)
                 for active_villain in villains_to_activate:
                     if not active_villain.IsInPlay():
                         continue
@@ -178,6 +183,68 @@ class Enemies:
             ordre.append(choisi)
             restants.remove(choisi)
         return ordre + restants
+
+    @staticmethod
+    def ActivationVillainsParOrdre(effect: 'Effect', joueurs: List['Player']) -> 'Enemies.ActivatedResult':
+        """L'etape 2 de la phase du mechant quand PLUSIEURS vilains portent un « Activation Order X »
+        (The Vault, insert p.2). Soit V vilains en jeu et P joueurs, N = max(V, P) activations : la k-ieme
+        (a partir de 0) est le vilain de rang k % V (ordre croissant) CONTRE le joueur de rang k % P.
+        V < P : les vilains tournent jusqu'a ce que chaque joueur ait subi une activation ; V >= P : une
+        passe, un vilain par activation, jusqu'a ce que tous aient active une fois. Les sbires d'un
+        joueur activent avec la PREMIERE activation dirigee contre lui. Un vilain qui ENTRE en jeu pendant
+        l'etape (Interruption forcee du complot) n'active que si son ordre depasse celui du vilain qui
+        vient d'activer. Un vilain etourdi consomme son tour : la carte d'etat remplace l'activation."""
+        from game.operate.villains import Villains
+        resultat = Enemies.ActivatedResult()
+        joueurs = [j for j in joueurs if not j.is_eliminated]
+        if not joueurs:
+            return resultat
+
+        def en_jeu() -> List['Villain']:
+            from game.operate.worlds import Worlds
+            return Villains.ParOrdreDActivation([v for v in Worlds.GetVillains(effect) if v.IsInPlay()])
+
+        deja: List['Villain'] = []
+        minions_faits: List['Player'] = []
+        dernier_ordre: int|None = None
+        k = 0
+        while not effect.world.is_game_over:
+            vivants = [j for j in joueurs if not j.is_eliminated]
+            if not vivants:
+                break
+            presents = en_jeu()
+            restants = [v for v in presents if v not in deja
+                        and (dernier_ordre is None or Villains.ActivationOrder(v) > dernier_ordre)]
+            if restants:
+                vilain = restants[0]
+            elif k < len(vivants) and presents:
+                vilain = presents[k % len(presents)]
+            else:
+                break
+            joueur = vivants[k % len(vivants)]
+            premiere = joueur not in minions_faits
+            minions_faits.append(joueur)
+            effect.world.current_player = joueur
+            obtenu = Enemies.DoActivateAgainstYouInternal(
+                effect, joueur, activate="Activate",
+                include_minion="Engaged" if premiere else "None",
+                include_villain=True, villains=[vilain])
+            if obtenu is not None:
+                resultat += obtenu
+            if vilain not in deja:
+                deja.append(vilain)
+                dernier_ordre = Villains.ActivationOrder(vilain)
+            k += 1
+        # Un joueur que plus aucun vilain n'a vise (vilains vaincus en cours de route) active quand meme ses sbires.
+        for joueur in [j for j in joueurs if not j.is_eliminated and j not in minions_faits]:
+            if effect.world.is_game_over:
+                break
+            effect.world.current_player = joueur
+            obtenu = Enemies.DoActivateAgainstYouInternal(
+                effect, joueur, activate="Activate", include_minion="Engaged", include_villain=False)
+            if obtenu is not None:
+                resultat += obtenu
+        return resultat
 
     @staticmethod
     def OrdreDesJoueursActives(effect: 'Effect', finder: 'CardFinder|None',

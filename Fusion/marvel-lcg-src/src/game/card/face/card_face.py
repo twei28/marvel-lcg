@@ -213,6 +213,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (25/10/2026) : traits du pack custom predator (RyCoRan). XENOMORPH est lu par `desc.Teamwork` (assert `IsTrait` a la
         # construction : un trait absent de cette liste fait PLANTER le setup du deck, constate par verifier_tous_les_decks).
         "XENOMORPH", "YAUTJA",
+        # AJOUT (25/10/2026) : trait du scenario custom The Vault (Kajislav) : Corrupted Guardsman est « TRAITOR. ».
+        "TRAITOR",
         # (15/10/2026) Cartes de campagne de Skrull Menace (Kajislav, sk263-sk288) : traits imprimes sur les allies
         # et soutiens (Crusader « INITIATIVE », Paibok « S.W.O.R.D. », Skymax « SQUADRON SUPREME », Xavin
         # « RUNAWAYS », Skrull Kill Krew « CREW »). Purement declaratif, comme les autres.

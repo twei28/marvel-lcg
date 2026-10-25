@@ -898,11 +898,14 @@ class RunPuzzle:
         return source
 
     # Brique commune du 20/10/2026 : plusieurs mechants (game/operate/villains.py).
-    def SetVillainRule(self, the_villain: str="Active", player_cards: str="TheVillain") -> None:
-        """Pose `Villains.Rule` sur le scenario (« le mechant » = actif ou le
-        plus a gauche ; cartes joueur = le meme, ou au choix du joueur)."""
+    def SetVillainRule(self, the_villain: str="Active", player_cards: str="TheVillain", activation_order: bool=False) -> None:
+        """Pose `Villains.Rule` sur le scenario (« le mechant » = actif, le
+        plus a gauche ou le plus petit Activation Order ; cartes joueur = le meme,
+        ou au choix du joueur ; `activation_order` : etape 2 de la phase du mechant
+        distribuee par Activation Order, The Vault, 25/10/2026)."""
         from game.operate.villains import Villains
-        Villains.SetRule(self.world, Villains.Rule(the_villain=the_villain, player_cards=player_cards))  # type: ignore
+        Villains.SetRule(self.world, Villains.Rule(the_villain=the_villain, player_cards=player_cards,  # type: ignore
+                                                   activation_order=activation_order))
 
     def SetActiveVillain(self, card: CardName) -> 'CardFace':
         """Pose le compteur « active » sur ce mechant (et l'ote aux autres)."""
@@ -951,10 +954,11 @@ class RunPuzzle:
         from game.operate.villains import Villains
         Villains.BuildVillainDeck([self.FindOrCreateFace(c) for c in cards], self.debug_rule)  # type: ignore
 
-    def RevealNextVillain(self) -> 'CardFace|None':
-        """Revele le dessus du deck de mechants, en jeu le plus a droite."""
+    def RevealNextVillain(self, reveal: bool=False) -> 'CardFace|None':
+        """Revele le dessus du deck de mechants, en jeu le plus a droite. `reveal=True` : vraie revelation (le « When Revealed »
+        part ; The Vault, 25/10/2026)."""
         from game.operate.villains import Villains
-        return Villains.RevealNextVillain(self.world.GetCurrentPlayer(), self.debug_rule)
+        return Villains.RevealNextVillain(self.world.GetCurrentPlayer(), self.debug_rule, reveal=reveal)
 
     def _DeclareDefender(self, card: CardName) -> 'CardFace':
         """Arme un defenseur pour la PROCHAINE attaque, puis se retire.

@@ -2067,5 +2067,16 @@
   "encounters": [],
   "max_id": "pd001b"
  },
- "checksum": "7b1bf2505b316e9b06d23e171e701043f771a2b588e8dea961beb51e9b577bfe"
+ "215. Custom (The Vault)": {
+  "name": "the_vault",
+  "scenarios": [
+   "the_vault"
+  ],
+  "heroes": [],
+  "encounters": [
+   "the_vault"
+  ],
+  "max_id": "vt017b"
+ },
+ "checksum": "df27dd7cd07f92c123ce5dc719c9fed12c004a5bf505706bdc85ca691a518d6d"
 }

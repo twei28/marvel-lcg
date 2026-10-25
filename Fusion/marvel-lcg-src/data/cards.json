@@ -127520,5 +127520,439 @@
    "custom": "RyCoRan"
   }
  ],
- "checksum": "b8aea0987821687eb7c1652d9a659b8f6b37de9ab600a04bbf6a4400ce2b4f67"
+ "the_vault": [
+  {
+   "card_id": "vt001",
+   "type": "Villain",
+   "name": "* Batroc",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "1",
+    "ActivationOrder": "1"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 1</b>\n<b>Forced Response</b>: After you attack Batroc with a card you control, choose to either discard the top 3 cards of the encounter deck or place 1 threat on the main scheme.\n<i>\"Sacre Bleu! You are fastaire than ever Avengaire.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt002",
+   "type": "Villain",
+   "name": "* Batroc",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "3",
+    "SCH": "1",
+    "Stage": "2",
+    "ActivationOrder": "1"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 1</b>\n<b>When Revealed</b>: Each player discards the top 5 cards of their deck.\n<b>Forced Response</b>: After you attack Batroc with a card you control, choose to either discard the top 3 cards of the encounter deck or place 1 threat on the main scheme.\n<i>\"Sacre Bleu! You are fastaire than ever Avengaire.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt003",
+   "type": "Villain",
+   "name": "* Mentallo",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "1",
+    "SCH": "2",
+    "Stage": "1",
+    "ActivationOrder": "2"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 2</b>\n<b>Forced Response</b>: After you attack Mentallo with a card you control, choose to either exhaust your identity or place 1 threat on the main scheme.\n<i>\"Funny how hallucinations can sometimes seem so real.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt004",
+   "type": "Villain",
+   "name": "* Mentallo",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "2",
+    "ActivationOrder": "2"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 2</b>\n<b>When Revealed</b>: Each player exhausts a character they control.\n<b>Forced Response</b>: After you attack Mentallo with a card you control, choose to either exhaust your identity or place 1 threat on the main scheme.\n<i>\"Funny how hallucinations can sometimes seem so real.\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt005",
+   "type": "Villain",
+   "name": "* Grey Gargoyle",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "1",
+    "ActivationOrder": "3"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 3</b>\n<b>Forced Response</b>: After you attack Grey Gargoyle with a card you control, choose to either stun the attacker or place 1 threat on the main scheme.\n<i>\"Forgive me for not shaking hands, sir...\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt006",
+   "type": "Villain",
+   "name": "* Grey Gargoyle",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "3",
+    "SCH": "1",
+    "Stage": "2",
+    "ActivationOrder": "3"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 3</b>\n<b>When Revealed</b>: Each player stuns a character they control.\n<b>Forced Response</b>: After you attack Grey Gargoyle with a card you control, choose to either stun the attacker or place 1 threat on the main scheme.\n<i>\"Forgive me for not shaking hands, sir...\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt007",
+   "type": "Villain",
+   "name": "* Hydro-Man",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "1",
+    "ActivationOrder": "4"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 4</b>\n<b>Forced Response</b>: After you attack Hydro-Man with a card you control, choose to either deal 1 damage to each character you control or place 1 threat on the main scheme.\n<i>\"...all I gotta do is 'tsunami' that stupid wallcrawler...\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt008",
+   "type": "Villain",
+   "name": "* Hydro-Man",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "2",
+    "ActivationOrder": "4"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 4</b>\n<b>When Revealed</b>: Deal 1 damage to each friendly character.\n<b>Forced Response</b>: After you attack Hydro-Man with a card you control, choose to either deal 1 damage to each character you control or place 1 threat on the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt009",
+   "type": "Villain",
+   "name": "* Mad Thinker",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "0",
+    "SCH": "3",
+    "Stage": "1",
+    "ActivationOrder": "5"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 5</b>\n<b>Forced Response</b>: After you attack Mad Thinker with a card you control, choose to either place 1 threat on each side scheme or place 1 threat on the main scheme.\n<i>\"I plan for every eventuality!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt010",
+   "type": "Villain",
+   "name": "* Mad Thinker",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "1",
+    "SCH": "3",
+    "Stage": "2",
+    "ActivationOrder": "5"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 5</b>\n<b>When Revealed</b>: Place 1 threat on the main scheme for each enemy in play.\n<b>Forced Response</b>: After you attack Mad Thinker with a card you control, choose to either place 1 threat on each side scheme or place 1 threat on the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt011",
+   "type": "Villain",
+   "name": "* Nekra",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "1",
+    "ActivationOrder": "6"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 6</b>\n<b>Forced Response</b>: After you attack Nekra with a card you control, choose to either give Nekra 1 facedown boost card or place 1 threat on the main scheme.\n<i>\"Nekra needs no one's help!!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt012",
+   "type": "Villain",
+   "name": "* Nekra",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "3",
+    "SCH": "1",
+    "Stage": "2",
+    "ActivationOrder": "6"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 6</b>\n<b>When Revealed</b>: Give each villain 1 facedown boost card.\n<b>Forced Response</b>: After you attack Nekra with a card you control, choose to either give Nekra 1 facedown boost card or place 1 threat on the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt013",
+   "type": "Villain",
+   "name": "* Vapor",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "1",
+    "SCH": "2",
+    "Stage": "1",
+    "ActivationOrder": "7"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 7</b>\n<b>Forced Response</b>: After you attack Vapor with a card you control, choose to either confuse the attacker or place 1 threat on the main scheme.\n<i>\"...you cannot strike one whose form you cannot touch!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt014",
+   "type": "Villain",
+   "name": "* Vapor",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "2",
+    "ActivationOrder": "7"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 7</b>\n<b>When Revealed</b>: Each player confuses a character they control.\n<b>Forced Response</b>: After you attack Vapor with a card you control, choose to either confuse the attacker or place 1 threat on the main scheme.\n<i>\"...you cannot strike one whose form you cannot touch!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt015",
+   "type": "Villain",
+   "name": "* Venom",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "1",
+    "ActivationOrder": "8"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 8</b>\n<b>Forced Response</b>: After you attack Venom with a card you control, choose to either heal 1 damage from him or place 1 threat on the main scheme.\n<i>\"The Vault can't hold us, punk! We've broken out of here twice already!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt016",
+   "type": "Villain",
+   "name": "* Venom",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "2",
+    "ActivationOrder": "8",
+    "Stalwart": "1",
+    "Toughness": "1"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Activation Order 8</b>\nStalwart. Toughness.\n<b>Forced Response</b>: After you attack Venom with a card you control, choose to either heal 1 damage from him or place 1 threat on the main scheme.\n<i>\"The Vault can't hold us, punk! We've broken out of here twice already!\"</i>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt017a",
+   "type": "MainScheme",
+   "name": "The Vault Breakout",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>Contents</b>: All villains (I) <i>(stages (II) instead for expert mode)</i>. The Vault and Standard encounter sets. One modular encounter set <i>(Sinister Syndicate)</i>.\n<b>Setup</b>: Create the Villain deck <i>(see insert)</i>. Put The Vault environment into play. Then, place the top 4 villain cards and each player's nemesis ([unique]) minion beneath it facedown. Set the Inspection of the Vault obligation aside, out of play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt017b",
+   "type": "MainScheme",
+   "name": "The Vault Breakout",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "6*",
+    "EscalationThreat": "1*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>When Revealed</b>: Reveal the top card of the villain deck.\n[star] <b>Forced Interrupt</b>: When this scheme would be completed, instead do each of the following:\n1. Remove all but 1[per_hero] threat from here.\n2. Reveal 1 random villain beneath The Vault.\n3. Reveal Inspection of the Vault.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt018",
+   "type": "Environment",
+   "name": "* The Vault",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "The Vault",
+   "text": "<b>Forced Response</b>: After a unique minion ([unique]) is defeated, place it beneath The Vault facedown.\n<b>If no villain is beneath The Vault, the players lose the game.</b>\n<b>If all the villains are either beneath The Vault or defeated, the players win the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt019",
+   "type": "Obligation",
+   "name": "Inspection of the Vault",
+   "subtitle": "",
+   "desc": {
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b><i>Give to the first player.</i></b>\n<b>Alter-Ego Action</b>: Exhaust your identity and spend a [mental] resource → set this card aside, out of play.\n<i>\"You've got security measures in here that they've given me a stack of books to help me understand.\"</i> —Warden",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt020",
+   "type": "Attachment",
+   "name": "Craven Escape",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "Attach to the villain with the fewest remaining hit points and without another Craven Escape attached. If you cannot, this card gains surge.\n<b>Forced Response</b>: After the player phase ends, shuffle attached villain into the villain deck.\n<i>\"How you survived isn't important! That you survived is!\"</i> —Venom",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt022",
+   "type": "Minion",
+   "name": "Corrupted Guardsman",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "1",
+    "Incite": "1"
+   },
+   "traits": [
+    "TRAITOR"
+   ],
+   "set_name": "The Vault",
+   "text": "Incite 1.\n<b>When Revealed</b>: If Inspection of the Vault is in play, reveal 1 random minion beneath The Vault. If you cannot, this card gains surge.\n[star] <b>Boost</b>: Shuffle 1 minion beneath The Vault into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt026",
+   "type": "SideScheme",
+   "name": "Burglary",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Crisis": "1",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>When Revealed</b>: If Inspection of the Vault is in play, place 1[per_hero] additional threat here.\n<b>When Defeated</b>: Reveal the top card of the villain deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt028",
+   "type": "SideScheme",
+   "name": "Contingency Measures",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<i>\"Since I can't bend you to my will... I'm afraid I will have to break you!\"</i> —Senso\n<b>Forced Interrupt</b>: When a villain would be defeated, shuffle it into the villain deck instead.\nWhile Inspection of the Vault is in play, this card gains a hazard icon ([hazard]).",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt029",
+   "type": "SideScheme",
+   "name": "Scheming from Within",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Hazard": "1",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>When Revealed</b>: Place 1 additional threat here for each villain beneath The Vault.\n[star] <b>Boost</b>: If Inspection of the Vault is in play, this card gets +1 boost icon ([boost]) for each villain beneath The Vault.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt030",
+   "type": "Treachery",
+   "name": "Rampage in Public",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "<b>When Revealed</b>: If the number of villains in play is less than the number of players, this card gains surge. Reveal the top card of the villain deck. If you cannot, the villain with the highest activation order value activates against you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "vt034",
+   "type": "Treachery",
+   "name": "Riot in the Vault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "The Vault",
+   "text": "Surge.\n<b>When Revealed</b>: If Inspection of the Vault is not in play, reveal it. Otherwise, place 1 threat on the main scheme for each villain beneath The Vault.\n<i>\"No prison can hold a mind such as mine.\"</i> —Mad Thinker",
+   "custom": "Kajislav"
+  }
+ ],
+ "checksum": "e791ccf9e899b0b7cc2cb0c36a7558a599f04c488d8bcb3662a571fa494e8733"
 }
