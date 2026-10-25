@@ -65938,7 +65938,7 @@ def executer_un_cas(game_dir, port, index):
                         effet = gestionnaire.paying_effect_dict.get(int(x)) \
                             or gestionnaire.effect_dict.get(int(x))
                         source = getattr(getattr(effet, "this", None), "paper", None)
-                        if getattr(source, "card_id", None) == card_id and x not in priorite:
+                        if getattr(source, "card_id", None) == card_id and priorite.count(x) < candidates.count(x):
                             trouve = x
                             break
                 if trouve is None:
@@ -65954,7 +65954,10 @@ def executer_un_cas(game_dir, port, index):
                             if res and len(disponibles) == 1:
                                 trouve = disponibles[0]
                             break
-                if trouve is not None and trouve not in priorite:
+                # CORRECTIF (25/10/2026, pack predator, pd010 Trophy Room « remove X counters -> generate X resources ») : une
+                # ressource a usages multiples (`SetToAvailableTimesFn`) est offerte N FOIS sous le MEME id ('12', '12', '12') ;
+                # `payer_avec: ["pd010", "pd010"]` doit alors la compter deux fois. Sans doublon dans `candidates`, rien ne change.
+                if trouve is not None and (trouve not in priorite or priorite.count(trouve) < candidates.count(trouve)):
                     priorite.append(trouve)
             ordonnees = priorite + [x for x in candidates if x not in priorite]
             choisies, couvert = [], 0
