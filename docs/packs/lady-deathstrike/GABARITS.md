@@ -26,7 +26,7 @@ ensembles `data/encounter_sets/lady_deathstrike.json` et `reaver_resources.json`
 - [x] Plateau : `ui-app/src/board/lady-deathstrike-plateau.test.ts` 3/3 (calibré ROUGE), rendu générique suffisant.
 - [x] Autoplay : 40 parties, 0 traceback.
 - [ ] **Partie réelle jouée par un humain : NON FAITE** (tension du saignement, deck qui se vide, choix du modulaire Military Grade / Reaver Resources dans le wizard non vérifié dans le navigateur, enchaînement des stades).
-- Limite assumée : le cas « Permanent » repose sur l'AssertionError du harnais à la tentative de défausse de Bleeding Out (la carte reste attachée).
+- Cas « Permanent » calibré ROUGE le 25/10 : sans `Permanent` dans `desc` de ld005, le cas échoue (« ld005 n'est pas en jeu (accroche_a) »). Il ne repose donc pas que sur l'AssertionError du harnais : la vérification `accroche_a` après la tentative de défausse prouve que la carte reste attachée.
 
 
 
