@@ -117,6 +117,8 @@ export function PlateauPortrait(props: BoardProps) {
     () =>
       enPaiement
         ? (props.plateau?.emplacements ?? [])
+            // La main n'est pas « en jeu » : ses cartes sont deja dans la rangee, on ne les repete pas apres le separateur.
+            .filter((emplacement) => emplacement.cle !== 'main')
             .flatMap((emplacement) => emplacement.groupes.flat())
             .filter((unite) => interactifs.get(Number(unite.carte.id))?.role === 'ressource')
             .map((unite) => ({ ...unite, cle: `en-jeu-${unite.cle}`, carte: avecInteraction(unite.carte, interactifs, effets) }))
