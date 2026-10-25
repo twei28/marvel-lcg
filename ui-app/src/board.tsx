@@ -1778,6 +1778,11 @@ function EcranFinPartie({
   const rounds = monde?.round_id
   const mechants = (monde?.area_villain ?? []).map((carte) => nomAffiche(carte)).filter(Boolean)
   const [onglet, setOnglet] = useState<'resultat' | 'stats'>('resultat')
+  // Le lien Buy Me a Coffee (25/10/2026, choix de l'utilisateur) : discret, une
+  // victoire sur deux au hasard, jamais en defaite ni en relecture. Tire une
+  // seule fois a l'ouverture de l'ecran, pour ne pas clignoter d'un rendu a l'autre.
+  const [cafeTire] = useState(() => Math.random() < 0.5)
+  const avecCafe = gagne && cafeTire && !estRelecture()
   return (
     <div
       className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}${langueActuelle() === 'en' ? ' avec-image-en' : ''}`}
@@ -1871,6 +1876,22 @@ function EcranFinPartie({
             </button>
           </div>
         )}
+        {avecCafe ? (
+          <p className="fin-partie-cafe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" />
+              <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17" />
+              <path d="M8 2.5v2.5M12 2.5v2.5" />
+            </svg>
+            <span>
+              {t('Si vous voulez aider à garder le site en vie (serveurs, outils…),')}{' '}
+              <a href="https://buymeacoffee.com/narwhalchampions" target="_blank" rel="noopener noreferrer">
+                {t('c’est par ici')}
+              </a>
+              . {t('Aucune obligation, évidemment.')}
+            </span>
+          </p>
+        ) : null}
         </div>
       </div>
     </div>

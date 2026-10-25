@@ -133,6 +133,42 @@
   clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 }
 
+/* Le lien Buy Me a Coffee (25/10/2026) : une ligne grise sous les boutons,
+   separee par un filet. Discrete expres : on la lit en dernier. */
+.fin-partie-cafe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin: 6px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #7f8c9b;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.fin-partie-cafe svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.fin-partie-cafe a {
+  color: #b9c4d0;
+  text-decoration: underline;
+  text-decoration-color: rgba(185, 196, 208, 0.35);
+  text-underline-offset: 3px;
+}
+
+.fin-partie-cafe a:hover,
+.fin-partie-cafe a:focus-visible {
+  color: var(--menace);
+  text-decoration-color: currentColor;
+}
+
 @keyframes fin-partie-choc {
   0% {
     transform: rotate(-4deg) scale(0.2);
