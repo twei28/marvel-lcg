@@ -5870,4 +5870,116 @@ export const TEXTES_FR_FANMADE = {
     '59001b': "Hercule commence la partie avec un deck [[Travail]] et un deck [[Don]]. <i>(Voir l'encart.)</i>\n<i>Nouveaux Travaux d'Hercule</i> — <b>Action</b> : s'il n'y a aucune carte [[Travail]] en jeu, révélez la carte du dessus du deck [[Travail]].",
     '61001b': "<i>Mode incognito</i> — <b>Action</b> : passez sous forme de héros. Vous ne pouvez pas repasser sous forme d'alter ego pendant cette phase.\n<b>Mise en place</b> : mettez le soutien Alias Investigations en jeu.",
     '62001b': "<i>Peau incassable</i> — Luke Cage peut avoir n'importe quel nombre de cartes d'état Tenace. Les attaques contre Luke Cage perdent Perçant.\n<b>Action</b> : cherchez dans votre deck et votre pile de défausse l'amélioration Burstein Process et ajoutez-la à votre main. (Limite d'une fois par phase.)",
+    // alien vs. predator — debut du bloc (genere par .planning/alien-vs-predator/textes_fr.py)
+    // alien vs. predator — Alien Queen (A) (Villain)
+    'ap001a': "[star] Quand Alien Queen manigance, placez cette menace sur sa manigance annexe au lieu de la manigance principale, si possible.\n[star] <b>Réponse forcée</b> : après qu'Alien Queen a attaqué et infligé des dégâts à un personnage que vous contrôlez, mélangez une carte Xenomorph dans votre deck.\n<b>Une fois vaincue</b> : retournez cette carte.",
+    // alien vs. predator — Alien Queen « Defeated » (A) (Villain)
+    'ap001b': "<b>Une fois révélée</b> : soignez 4[per_hero] dégâts de Predator Warlord et donnez-lui une carte d'état Tenace. Passez au stade 3A. Retirez de la partie chaque manigance annexe permanente et cette carte.",
+    // alien vs. predator — Predator Warlord (A) (Villain)
+    'ap002a': "[star] Quand Predator Warlord manigance, placez cette menace sur sa manigance annexe au lieu de la manigance principale, si possible.\n[star] <b>Interruption forcée</b> : quand Predator Warlord attaque, placez 2 menaces sur la manigance principale ou il gagne +1 ATQ pour cette attaque.\n<b>Une fois vaincu</b> : retournez cette carte.",
+    // alien vs. predator — Predator Warlord « Defeated » (A) (Villain)
+    'ap002b': "<b>Une fois révélée</b> : soignez 4[per_hero] dégâts de Alien Queen et donnez-lui une carte d'état Tenace. Passez au stade 4A. Retirez de la partie chaque manigance annexe permanente et cette carte.",
+    // alien vs. predator — Alien Queen (B) (Villain)
+    'ap003a': "[star] Quand Alien Queen manigance, placez cette menace sur sa manigance annexe au lieu de la manigance principale, si possible.\n[star] <b>Réponse forcée</b> : après qu'Alien Queen a attaqué et infligé des dégâts à un personnage que vous contrôlez, mélangez une carte Xenomorph dans votre deck.\n<b>Une fois vaincue</b> : retournez cette carte.",
+    // alien vs. predator — Alien Queen « Defeated » (B) (Villain)
+    'ap003b': "<b>Une fois révélée</b> : soignez 6[per_hero] dégâts de Predator Warlord et donnez-lui une carte d'état Tenace. Passez au stade 3A. Retirez de la partie chaque manigance annexe permanente et cette carte.",
+    // alien vs. predator — Predator Warlord (B) (Villain)
+    'ap004a': "[star] Quand Predator Warlord manigance, placez cette menace sur sa manigance annexe au lieu de la manigance principale, si possible.\n[star] <b>Interruption forcée</b> : quand Predator Warlord attaque, placez 2 menaces sur la manigance principale ou il gagne +1 ATQ pour cette attaque.\n<b>Une fois vaincu</b> : retournez cette carte.",
+    // alien vs. predator — Predator Warlord « Defeated » (B) (Villain)
+    'ap004b': "<b>Une fois révélée</b> : soignez 6[per_hero] dégâts de Alien Queen et donnez-lui une carte d'état Tenace. Passez au stade 4A. Retirez de la partie chaque manigance annexe permanente et cette carte.",
+    // alien vs. predator — The Ultimate Hunt (1A) (MainScheme)
+    'ap005a': "<b>Contenu</b> : Alien Queen et Predator Warlord, face A <i>(B en mode expert)</i>. Alien vs. Predator, deck Xenomorph, Apex Standard et un set modulaire <i>(Clan Yautja)</i>.\n<b>Mise en place</b> : mettez en jeu Skulls for the Taking et Expanding Hive. Placez le deck Xenomorph à côté d'Alien Queen et placez le jeton Actif sur elle.",
+    // alien vs. predator — The Ultimate Hunt (1B) (MainScheme)
+    'ap005b': "<i>Deux superprédateurs s'affrontent. Une chasse Predator. Une ruche Alien. La Terre devient leur champ de bataille.</i>\n[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, s'il n'y a aucune menace sur la manigance annexe de chaque méchant, infligez 2 dégâts à chaque méchant.\n<b>Réponse forcée</b> : après qu'un méchant s'est activé, déplacez le jeton Actif vers le méchant suivant.",
+    // alien vs. predator — Battleground Earth (2A) (MainScheme)
+    'ap006a': "<i>Les tirs de plasma et les xénomorphes qui surgissent font des rues de la ville une zone de guerre. Les héros se démènent pour contenir les deux menaces avant que la destruction ne devienne incontrôlable.</i>\n<b>Une fois révélée</b> : chaque joueur cherche dans le deck Rencontre et la pile de défausse Rencontre un sbire [[YAUTJA]] et un sbire [[XENOMORPH]] et les met en jeu engagés avec lui. Mélangez le deck Rencontre.",
+    // alien vs. predator — Battleground Earth (2B) (MainScheme)
+    'ap006b': "<b>Réponse forcée</b> : après qu'un méchant a attaqué, donnez-lui une carte de boost face cachée, puis déplacez le jeton Actif vers le méchant suivant.\n<b>Réponse forcée</b> : après que de la menace a été placée ici, s'il y a au moins 4[per_hero] menaces ici, distribuez à chaque joueur une carte Rencontre face cachée. Puis retirez 2[per_hero] menaces de cette manigance.",
+    // alien vs. predator — Predator's Pursuit (3A) (MainScheme)
+    'ap007a': "<i>La menace Alien éliminée, le Predator tourne toute son attention vers de nouvelles proies. Pièges mortels et frappes camouflées marquent la dernière phase de la chasse, avec les héros pour trophées ultimes !</i>\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un attachement [[WEAPON]] soit défaussé. Révélez cette carte.",
+    // alien vs. predator — Predator's Pursuit (3B) (MainScheme)
+    'ap007b': "Predator Warlord est le méchant actif.\n<b>Une fois révélée</b> : chaque joueur cherche dans le deck Rencontre et la pile de défausse Rencontre un sbire [[YAUTJA]] et le révèle.\n<b>Si ce stade est accompli, les joueurs perdent la partie.</b>",
+    // alien vs. predator — Queen's Dominion (4A) (MainScheme)
+    'ap008a': "<i>Le chasseur abattu, des créatures surgissent de l'ombre et infestent la ville en ruine. Les héros luttent désespérément pour contenir la ruche qui s'étend. Si la Reine n'est pas vite arrêtée, la Terre elle-même pourrait rejoindre sa couvée extraterrestre.</i>\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un attachement [[XENOMORPH]] soit défaussé. Révélez cette carte.",
+    // alien vs. predator — Queen's Dominion (4B) (MainScheme)
+    'ap008b': "Alien Queen est le méchant actif.\n<b>Une fois révélée</b> : chaque joueur cherche dans le deck Rencontre et la pile de défausse Rencontre un sbire [[XENOMORPH]] et le révèle.\n<b>Si ce stade est accompli, les joueurs perdent la partie.</b>",
+    // alien vs. predator — Expanding Hive (SideScheme)
+    'ap009': "<b>Manigance d'Alien Queen.</b>\nPermanent.\nTant qu'il n'y a aucune menace ici, cette manigance perd l'icône [acceleration].\n<b>Interruption forcée</b> : quand un sbire ayant 3 points de vie imprimés ou plus est vaincu, donnez-le au méchant actif en tant que carte de boost face cachée.",
+    // alien vs. predator — Skulls for the Taking (SideScheme)
+    'ap010': "<b>Manigance de Predator Warlord.</b>\nPermanent.\nTant qu'il n'y a aucune menace ici, cette manigance perd l'icône [acceleration].\n<b>Réponse forcée</b> : après qu'un allié a été vaincu par une attaque ennemie, glissez-le sous cette carte.",
+    // alien vs. predator — Plasmacaster (Attachment)
+    'ap011': "Attachez à Predator Warlord. Sinon, cette carte gagne Renfort.\nUtilisations (3 compteurs plasma).\n[star] <b>Interruption forcée</b> : quand Predator Warlord vous attaque, retirez 1 compteur plasma d'ici et défaussez la carte du dessus de votre deck → subissez des dégâts indirects égaux au coût imprimé de cette carte.",
+    // alien vs. predator — Yautja Wrist Blades (Attachment)
+    'ap012': "Attachez à Predator Warlord. Si vous ne pouvez pas, attachez à un sbire [[YAUTJA]]. Sinon, cette carte gagne Renfort.\n[star] Les attaques de l'ennemi attaché gagnent Perçant.\n<b>Action de héros</b> : dépensez des ressources [energy][physical] → défaussez cette carte.",
+    // alien vs. predator — Thermal Target (Attachment)
+    'ap013': "Attachez à votre identité.\n<b>Réponse forcée</b> : après la fin de votre tour, subissez 2 dégâts et placez 2 menaces sur la manigance principale.\n<b>Action d'alter ego</b> : trouvez un sbire [[YAUTJA]] et révélez-le → défaussez cette carte.\n[star] <b>Boost</b> : révélez cette carte.",
+    // alien vs. predator — Piercing Pharynx (Attachment)
+    'ap015': "Attachez à Alien Queen et donnez-lui une carte d'état Tenace. Sinon, cette carte gagne Renfort.\nAlien Queen gagne Riposte 1.\n<b>Action de héros</b> : si Predator Warlord est en jeu, dépensez des ressources [energy][mental] → défaussez cette carte.\n[star] <b>Boost</b> : révélez cette carte.",
+    // alien vs. predator — Facehugger (Attachment)
+    'ap016': "Attachez à votre identité.\n<b>Réponse forcée</b> : après la fin de votre tour, subissez 2 dégâts et placez 2 menaces sur la manigance principale.\n<b>Action d'alter ego</b> : cherchez dans le deck Rencontre et la pile de défausse Rencontre un sbire [[XENOMORPH]] et révélez-le → défaussez cette carte.",
+    // alien vs. predator — Xenomorph Drone (Minion)
+    'ap018': "Garde. Incitation 2 (3 à la place si Alien Queen est le méchant actif).\n<b>Une fois vaincu</b> : retirez 2 menaces d'Expanding Hive. Si vous ne pouvez pas, mélangez Xenomorph Drone dans le deck Rencontre.",
+    // alien vs. predator — Xenomorph Warrior (Minion)
+    'ap020': "Coup Rapide.\n<b>Une fois vaincu</b> : défaussez la carte du dessus du deck Rencontre et infligez des dégâts à un ennemi [[YAUTJA]] pour chaque icône <i>([star] et [boost])</i> de la zone de boost de la carte défaussée.",
+    // alien vs. predator — Alien Praetorian (Minion)
+    'ap021': "Vilenie.\n<b>Réponse forcée</b> : après le début de la phase du Méchant, Alien Praetorian s'engage avec le premier joueur.",
+    // alien vs. predator — Chestburster (Attachment)
+    'ap022': "Attachez à un sbire [[XENOMORPH]]. Sinon, attachez au méchant actif.\n[star] <b>Interruption forcée</b> : quand l'ennemi attaché attaque, cette attaque gagne Perçant. À la fin de cette attaque, sonnez votre identité et défaussez cette carte.",
+    // alien vs. predator — Hive Incursion (Treachery)
+    'ap023': "<b>Une fois révélée</b> : défaussez votre main. Piochez jusqu'à atteindre votre taille de main.\n[star] <b>Boost</b> : résolvez la capacité « <b>Une fois révélée</b> » de cette carte.",
+    // alien vs. predator — Predator's Prize (Treachery)
+    'ap024': "<b>Une fois révélée</b> : choisissez : donnez cette carte au méchant actif en tant que carte de boost face cachée, ou trouvez votre allié spécifique à l'identité et retirez-le de la partie.",
+    // alien vs. predator — Brood Breakout (SideScheme)
+    'ap025': "<b>Réponse forcée</b> : après qu'un sbire [[XENOMORPH]] est entré en jeu, donnez-lui une carte d'état Tenace.\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire [[XENOMORPH]] soit défaussé. Révélez ce sbire.",
+    // alien vs. predator — Alien Assault (Treachery)
+    'ap026': "<b>Une fois révélée</b> : si Predator Warlord est le méchant actif, sonnez votre identité. Si Alien Queen est le méchant actif, désorientez votre identité.\n[star] <b>Boost</b> : après la fin de cette activation, ne déplacez pas le jeton Actif vers le méchant suivant.",
+    // alien vs. predator — Killing Ground (Treachery)
+    'ap027': "<b>Une fois révélée</b> : déplacez toute la menace de la manigance annexe de méchant qui a le plus de menace vers la manigance principale. Si aucune menace n'a été déplacée ainsi, inclinez votre identité. Si vous ne pouvez pas, sonnez ou désorientez votre identité.",
+    // alien vs. predator — Predator's Prey (Treachery)
+    'ap028': "<b>Une fois révélée</b> : défaussez des cartes du dessus de votre deck jusqu'à ce que vous défaussiez un allié, puis mettez cet allié en jeu sous votre contrôle. Le méchant actif attaque cet allié. Cette attaque gagne Déferlement.",
+    // alien vs. predator — Predation (Treachery)
+    'ap029': "<b>Une fois révélée</b> : soignez 3 dégâts du méchant actif et donnez-lui une carte d'état Tenace. Infligez 3 dégâts à un ennemi dont le trait ne correspond pas à celui du méchant actif.\n[star] <b>Boost</b> : placez 2 menaces sur chaque manigance.",
+    // alien vs. predator — Trophy Taken (Treachery)
+    'ap030': "<b>Une fois révélée</b> : le méchant actif attaque le personnage ami qui a le moins de points de vie restants. Si cette attaque vainc un allié, retirez cet allié de la partie.",
+    // alien vs. predator — Lethal Ambush (Treachery)
+    'ap031': "<b>Une fois révélée</b> : défaussez les 7 cartes du dessus du deck Rencontre. Mettez en jeu, engagé avec vous, le premier sbire défaussé ainsi. Puis le méchant et chaque sbire engagé avec vous vous attaquent.",
+    // alien vs. predator — Swarm Breaker (SideScheme)
+    'ap032': "<i>Des silhouettes sombres déferlent sur le champ de bataille, implacables et innombrables. Un tourbillon de tonnerre et d'acier fend le ciel. Leur assaut vacille, ne serait-ce qu'un instant...</i>\nEntrave 1[per_hero]. Victoire 0.\n<b>Une fois déjouée</b> : infligez 2[per_hero] dégâts à chaque ennemi.",
+    // alien vs. predator — Alien Onslaught (SideScheme)
+    'ap033': "Entrave 2[per_hero].\n<b>Une fois révélée</b> : chaque joueur défausse les 2[per_hero] cartes du dessus de son deck. Placez ici 1 pion Accélération pour chaque sbire [[XENOMORPH]] défaussé ainsi.\n<b>Réponse forcée</b> : après que vous avez contré cette manigance, défaussez les 2[per_hero] cartes du dessus de votre deck.",
+    // alien vs. predator — Alien Scout (01-04) (Minion)
+    'ap101': "Renfort.\n<b>Interruption forcée</b> : quand vous piocheriez ou défausseriez cette carte de votre deck, piochez 1 carte. Distribuez-vous cette carte en tant que carte Rencontre face cachée.\n<b>Une fois vaincu</b> : placez Alien Scout dans votre pile de défausse.",
+    // alien vs. predator — Alien Scout (05-08) (Minion)
+    'ap102': "Garde.\n<b>Interruption forcée</b> : quand vous piocheriez ou défausseriez cette carte de votre deck, distribuez-vous cette carte en tant que carte Rencontre face cachée.\n<b>Une fois vaincu</b> : placez Alien Scout dans votre pile de défausse.",
+    // alien vs. predator — Alien Scout (09-12) (Minion)
+    'ap103': "Incitation 1. Renfort.\n<b>Interruption forcée</b> : quand vous piocheriez ou défausseriez cette carte de votre deck, piochez 1 carte. Distribuez-vous cette carte en tant que carte Rencontre face cachée.\n<b>Une fois vaincu</b> : placez Alien Scout dans votre pile de défausse.",
+    // alien vs. predator — Alien Scout (13-16) (Minion)
+    'ap104': "Collaboration ([[XENOMORPH]]).\n<b>Interruption forcée</b> : quand vous piocheriez ou défausseriez cette carte de votre deck, piochez 1 carte. Distribuez-vous cette carte en tant que carte Rencontre face cachée.\n<b>Une fois vaincu</b> : placez Alien Scout dans votre pile de défausse.",
+    // alien vs. predator — Advance (Treachery)
+    'ap201': "<b>Une fois révélée</b> : le méchant manigance. Placez cette menace sur la manigance principale.",
+    // alien vs. predator — Advance Again (Treachery)
+    'ap202': "<b>Une fois révélée</b> : le méchant manigance. Ne déplacez pas le jeton Actif.",
+    // alien vs. predator — Assault (Treachery)
+    'ap203': "<b>Une fois révélée (alter ego)</b> : cette carte gagne Renfort.\n<b>Une fois révélée (héros)</b> : le méchant vous attaque. Ne déplacez pas le jeton Actif.",
+    // alien vs. predator — Cruel Intentions (Treachery)
+    'ap204': "Incitation 1.\n<b>Une fois révélée</b> : distribuez à chaque joueur 1 carte Rencontre face cachée. Donnez au méchant 1 carte de boost face cachée.\n[star] <b>Boost</b> : distribuez-vous 1 carte Rencontre face cachée.",
+    // alien vs. predator — Overwhelming Force (Treachery)
+    'ap205': "<b>Une fois révélée</b> : défaussez l'amélioration ou le soutien au coût le plus élevé que vous contrôlez. Si aucune carte n'a été défaussée ainsi, cette carte gagne Renfort.\n[star] <b>Boost</b> : donnez au méchant 1 carte de boost supplémentaire pour cette activation.",
+    // alien vs. predator — Masterplan (Treachery)
+    'ap206': "<b>Une fois révélée</b> : placez 4 menaces sur chaque manigance annexe. S'il n'y a pas de manigance annexe en jeu, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'une manigance annexe soit défaussée. Révélez cette manigance annexe.",
+    // alien vs. predator — Shadow of the Past (Treachery)
+    'ap207': "<b>Une fois révélée</b> : révélez votre sbire Némésis mis de côté et mettez-le en jeu engagé avec vous. Révélez votre manigance annexe Némésis mise de côté et mettez-la en jeu. Mélangez dans le deck Rencontre les cartes restantes de votre set de rencontre Némésis mis de côté. Si votre sbire Némésis n'entre pas en jeu à cause de cet effet, cette carte gagne Renfort.",
+    // alien vs. predator — Yautja Young Blood (Minion)
+    'ap301': "Patrouille. Incitation 2 (3 à la place si Predator Warlord est le méchant actif).\n<b>Une fois vaincu</b> : placez 2 menaces sur The Ultimate Hunt ; si vous ne pouvez pas, mélangez Yautja Young Blood dans le deck Rencontre.",
+    // alien vs. predator — Blooded Predator (Minion)
+    'ap302': "<b>Une fois révélée</b> : sonnez votre identité. Si vous êtes déjà sonné, subissez 3 dégâts.\n<b>Une fois vaincu</b> : donnez une carte d'état Tenace à Predator Warlord. Si vous ne pouvez pas, donnez cette carte au méchant actif en tant que carte de boost face cachée.",
+    // alien vs. predator — Predator Elite (Minion)
+    'ap303': "<b>Une fois révélée</b> : défaussez une amélioration ou un soutien que vous contrôlez.\n<b>Une fois vaincu</b> : défaussez la carte du dessus de votre deck et infligez à un ennemi [[XENOMORPH]] des dégâts égaux au coût imprimé de cette carte.",
+    // alien vs. predator — Apex Predator (Minion)
+    'ap304': "Ténacité.\n[star] Les attaques d'Apex Predator gagnent Perçant.\n<b>Réponse forcée</b> : après qu'un personnage a attaqué Apex Predator, défaussez la carte du dessus du deck Rencontre. Si c'est une traîtrise, sonnez l'attaquant.",
+    // alien vs. predator — The Hunt Begins (SideScheme)
+    'ap305': "Les alliés ne peuvent pas défendre contre les attaques ennemies.\n<b>Réponse forcée</b> : après qu'un ennemi [[YAUTJA]] a attaqué, donnez-lui une carte d'état Tenace.\n<b>Une fois déjouée</b> : sonnez ou désorientez un ennemi.",
+    // alien vs. predator — Cloaking Device (Attachment)
+    'ap306': "Attachez à Predator Warlord. Si vous ne pouvez pas, attachez à un sbire [[YAUTJA]]. Sinon, cette carte gagne Renfort.\nRéduisez de 2 les dégâts que l'ennemi attaché subit de chaque attaque.\n<b>Action de héros</b> : après qu'un héros a fait une attaque de base contre cet ennemi, dépensez des ressources [energy][physical] → défaussez cette carte.",
+    // alien vs. predator — fin du bloc
 };

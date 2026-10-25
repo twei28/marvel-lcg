@@ -34,6 +34,12 @@ CAS = [
        [], ["Puzzle.Reveal('ap203')"],
        {"defausse_rencontre": ["01105"], "actif": "ap001a", "degats_identite": 0}),
 
+    # ============================================================ ap005b accompli : stade 2 (le moteur ne fait PAS perdre ici)
+    _c("ap005b 1B accompli (8[per_hero] menaces) : passage au stade 2 (Battleground Earth), la partie continue",
+       "seuil de 1B : le complot avance normalement (seuls 3B et 4B font perdre)",
+       [], ["Puzzle.SetThreat('ap005b', 8)"],
+       {"complot": "ap006b", "fin": None}),
+
     # ============================================================ ap006a / ap006b : Battleground Earth
     _c("ap006a 2A : chaque joueur met en jeu, engages avec lui, un sbire YAUTJA et un sbire XENOMORPH du deck de rencontre",
        "« Each player searches the encounter deck and discard pile for a [[YAUTJA]] minion and a [[XENOMORPH]] minion and puts them into play "
@@ -71,6 +77,10 @@ CAS = [
        "4A « until a [[XENOMORPH]] attachment is discarded. Reveal it » ; 4B « searches ... for a [[XENOMORPH]] minion and reveals it »",
        deck_avec("ap018", "ap015"), ["Puzzle.Damage('ap002a', 99)"],
        {"complot": "ap008b", "attaches": [["ap001a", "ap015"]], "en_jeu": ["ap018"], "actif": "ap001a"}),
+    _c("ap001b la Reine vaincue AU STADE 2 : saut au stade 3 (Predator's Pursuit 3B)",
+       "« Advance to stage 3A » depuis 2B",
+       ["Puzzle.AdvanceMainScheme()"], ["Puzzle.Damage('ap001a', 99)"],
+       {"complot": "ap007b", "mechants": ["ap002a"], "fin": None}),
     _c("ap007b 3B accompli (8[per_hero] menaces) : les joueurs PERDENT (pas de passage au complot suivant)",
        "« If this stage is completed, the players lose the game. »",
        ["Puzzle.Damage('ap001a', 99)"], ["Puzzle.SetThreat('ap007b', 8)"],

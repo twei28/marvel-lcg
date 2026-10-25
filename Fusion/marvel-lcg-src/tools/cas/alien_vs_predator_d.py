@@ -67,6 +67,15 @@ CAS = [
        [], ["Puzzle.Boost('ap205')"],
        {"defausse_rencontre": ["ap205", "01105"]}),
 
+    _c("ap206 Masterplan (ability_link 01192) : 4 menaces sur CHAQUE manigance annexe (Expanding Hive et Skulls for the Taking)",
+       "« Place 4 threat on each side scheme » (texte identique au Masterplan du core, script relie par `ability_link`)",
+       [], ["Puzzle.Reveal('ap206')"],
+       {"menace": [["ap009", 6], ["ap010", 6]]}),
+    _c("ap207 Shadow of the Past (ability_link 01190) : le sbire nemesis (Vulture) et la manigance nemesis (Highway Robbery) entrent en jeu",
+       "« Reveal your set-aside nemesis minion and put it into play engaged with you » (texte identique au core, `ability_link`)",
+       [], ["Puzzle.Reveal('ap207')"],
+       {"en_jeu": ["01167", "01166"]}),
+
     # ============================================================ Clan Yautja
     _c("ap301 Yautja Young Blood : Incite 3 quand le Warlord est le mechant actif",
        "« Incite 2 (3 instead if Predator Warlord is the active villain) »",
@@ -150,6 +159,6 @@ CAS = [
     _c("ap306 Reponse de heros apres une attaque de base contre le porteur : depenser [energy][physical] -> Cloaking Device defaussee",
        "« Hero Action: After a hero makes a basic attack against this enemy, spend [energy][physical] → discard this card » (arbitrage 3 : Reponse)",
        [HEROS, "Puzzle.Reveal('ap306')"], ["Puzzle.Attack('01001a')"],
-       {"defausse_rencontre": ["ap306"]}, cibles=["ap002a"], accepter_choix=True,
+       {"defausse_rencontre": ["ap306"], "degats": [["ap002a", 0]]}, cibles=["ap002a"], accepter_choix=True,
        main_exclusive=["01002", "01058"], payer_avec=["01002", "01058"]),
 ]

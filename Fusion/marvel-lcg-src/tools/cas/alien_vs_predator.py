@@ -116,13 +116,13 @@ CAS = [
        {"fin": "gagne"}),
 
     # ============================================================ ap001a/ap001b : la Reine vaincue se retourne
-    _c("ap001a vaincue (Warlord en jeu) -> face Defeated : Warlord soigne de 4, Tenace, stade 3A puis 3B, manigances permanentes et la Reine retirees",
+    _c("ap001b face Defeated de la Reine (ap001a vaincue, Warlord en jeu) : Warlord soigne de 4, Tenace, stade 3A puis 3B, manigances permanentes et la Reine retirees",
        "« When Defeated: Flip this card » + ap001b « Heal 4[per_hero] damage from Predator Warlord and give him a tough status card. Advance to stage 3A. "
        "Remove each permanent side scheme and this card from the game »",
        ["Puzzle.Damage('ap002a', 6)"], ["Puzzle.Damage('ap001a', 99)"],
        {"mechants": ["ap002a"], "degats": [["ap002a", 2]], "statuts": [["ap002a", "Tough"]], "complot": "ap007b",
         "hors_jeu": ["ap009", "ap010"], "actif": "ap002a", "fin": None}),
-    _c("ap002a vaincu (Reine en jeu) -> face Defeated : Reine soignee de 4, Tenace, stade 4B ; ap002b",
+    _c("ap002b face Defeated du Warlord (ap002a vaincu, Reine en jeu) : Reine soignee de 4, Tenace, stade 4B",
        "ap002b « Heal 4[per_hero] damage from Alien Queen ... Advance to stage 4A »",
        ["Puzzle.Damage('ap001a', 5)"], ["Puzzle.Damage('ap002a', 99)"],
        {"mechants": ["ap001a"], "degats": [["ap001a", 1]], "statuts": [["ap001a", "Tough"]], "complot": "ap008b",

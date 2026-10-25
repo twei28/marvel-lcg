@@ -173,3 +173,16 @@ Les deux « Advance » sont DEUX cartes différentes (Advance / Advance Again).
 2. **Second méchant vaincu** (stade 3/4, un seul méchant restant) : les joueurs GAGNENT ; sa face « Defeated » ne se joue pas.
 3. **Cloaking Device** : « Hero Action: After a hero makes a basic attack... » = Réponse de héros, juste après l'attaque de base contre l'ennemi équipé.
 4. **Alien Onslaught × Alien Scout** : un Scout atteint par la défausse compte pour un pion Accélération ET est distribué face cachée (pas défaussé).
+5. **The Ultimate Hunt 1B, méchant SONNÉ** (sa carte d'état remplace l'activation) : le compteur actif passe quand même à l'autre méchant (« l'alternance ne se casse jamais »).
+6. **Battleground Earth 2B, méchant SONNÉ au moment d'attaquer** : le compteur passe, mais PAS de carte boost (il n'y a pas eu d'attaque).
+7. **Expanding Hive × « When Defeated » d'un sbire à 3 PV ou plus** (Drone, Young Blood, Blooded Predator) : la Hive passe d'abord et le donne en boost ; son « When Defeated » se résout ensuite (retirer la menace, Tenace au Warlord...) mais ne reprend pas la carte, qui reste en boost.
+
+## Relecture du 25/10/2026 (2e passe, scans revus un à un pour les textes français)
+
+- Faces A des complots 2A, 3A et 4A : texte d'ambiance en italique, oublié à la saisie (ajouté, anglais et français).
+- Formulations exactes reprises du scan : 1A (« on side A (B for expert mode) », « one modular set », « Set the Xenomorph deck »), 3A/4A « Reveal that card »,
+  Xenomorph Warrior (« deal damage ... for each icon ... in the discarded card's boost area »), Hive Incursion (« Resolve this card's "When Revealed" ability »),
+  Brood Breakout (« Reveal that minion »), Killing Ground (« the villain's side scheme that has the most threat »).
+- Boost de Thermal Target et de Piercing Pharynx : l'ÉTOILE SEULE (aucune icône de boost, coin découpé et comparé) : `0**` au lieu de `1**`.
+- Masterplan (Apex Standard 6/7) : texte identique mot pour mot au Masterplan du core : `ability_link` 01192 (comme Shadow of the Past → 01190).
+- Predator's Prize, Advance, Advance Again, Assault : une citation en écriture yautja (glyphes), non transcrite.

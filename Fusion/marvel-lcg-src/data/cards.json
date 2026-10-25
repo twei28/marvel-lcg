@@ -128113,7 +128113,7 @@
    },
    "traits": [],
    "set_name": "Alien vs. Predator",
-   "text": "<b>Contents</b>: Alien Queen (A) and Predator Warlord (A) <i>(B instead in expert mode)</i>. Alien vs. Predator, Xenomorph deck, Apex Standard and one modular encounter set <i>(Clan Yautja)</i>.\n<b>Setup</b>: Put Skulls for the Taking and Expanding Hive into play. Place the Xenomorph deck next to Alien Queen and place the active counter on her.",
+   "text": "<b>Contents</b>: Alien Queen and Predator Warlord on side A <i>(B for expert mode)</i>. Alien vs. Predator, Xenomorph deck, Apex Standard and one modular set <i>(Clan Yautja)</i>.\n<b>Setup</b>: Put Skulls for the Taking and Expanding Hive into play. Set the Xenomorph deck next to Alien Queen and place the active counter on her.",
    "custom": "RyCoRan"
   },
   {
@@ -128142,7 +128142,7 @@
    },
    "traits": [],
    "set_name": "Alien vs. Predator",
-   "text": "<b>When Revealed</b>: Each player searches the encounter deck and discard pile for a [[YAUTJA]] minion and a [[XENOMORPH]] minion and puts them into play engaged with them. Shuffle the encounter deck.",
+   "text": "<i>Plasma fire and emerging xenomorphs turn the city streets into a war zone. The heroes scramble to contain both threats before the destruction spirals out of control.</i>\n<b>When Revealed</b>: Each player searches the encounter deck and discard pile for a [[YAUTJA]] and [[XENOMORPH]] minion and puts them into play engaged with them. Shuffle the encounter deck.",
    "custom": "RyCoRan"
   },
   {
@@ -128170,7 +128170,7 @@
    },
    "traits": [],
    "set_name": "Alien vs. Predator",
-   "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[WEAPON]] attachment is discarded. Reveal it.",
+   "text": "<i>With the Alien threat eliminated, the Predator turns its full attention to new prey. Deadly traps and cloaked strikes mark the hunt's final phase - with the heroes as the ultimate trophies!</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[WEAPON]] attachment is discarded. Reveal that card.",
    "custom": "RyCoRan"
   },
   {
@@ -128200,7 +128200,7 @@
    },
    "traits": [],
    "set_name": "Alien vs. Predator",
-   "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[XENOMORPH]] attachment is discarded. Reveal it.",
+   "text": "<i>With the hunter slain, creatures emerge from the shadows infesting the shattered city. The heroes fight desperately to contain the spreading hive. If the Queen is not stopped soon, Earth itself may become part of her alien brood.</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[XENOMORPH]] attachment is discarded. Reveal that card.",
    "custom": "RyCoRan"
   },
   {
@@ -128288,7 +128288,7 @@
    "name": "Thermal Target",
    "subtitle": "",
    "desc": {
-    "Boost": "1**"
+    "Boost": "0**"
    },
    "traits": [
     "CONDITION",
@@ -128304,7 +128304,7 @@
    "name": "* Piercing Pharynx",
    "subtitle": "",
    "desc": {
-    "Boost": "1**",
+    "Boost": "0**",
     "ATK+": "1"
    },
    "traits": [
@@ -128367,7 +128367,7 @@
     "XENOMORPH"
    ],
    "set_name": "Alien vs. Predator",
-   "text": "Quickstrike.\n<b>When Defeated</b>: Discard the top card of the encounter deck and deal 1 damage to a [[YAUTJA]] enemy for each icon ([star] and [boost]) in that card's boost area.",
+   "text": "Quickstrike.\n<b>When Defeated</b>: Discard the top card of the encounter deck and deal damage to a [[YAUTJA]] enemy for each icon <i>([star] and [boost])</i> in the discarded card's boost area.",
    "custom": "RyCoRan"
   },
   {
@@ -128416,7 +128416,7 @@
    },
    "traits": [],
    "set_name": "Alien vs. Predator",
-   "text": "<b>When Revealed</b>: Discard your hand. Draw up to your hand size.\n[star] <b>Boost</b>: Resolve the \"<b>When Revealed</b>\" ability on this card.",
+   "text": "<b>When Revealed</b>: Discard your hand. Draw up to your hand size.\n[star] <b>Boost</b>: Resolve this card's \"<b>When Revealed</b>\" ability.",
    "custom": "RyCoRan"
   },
   {
@@ -128443,7 +128443,7 @@
    },
    "traits": [],
    "set_name": "Alien vs. Predator",
-   "text": "<b>Forced Response</b>: After a [[XENOMORPH]] minion enters play, give it a tough status card.\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[XENOMORPH]] minion is discarded. Reveal it.",
+   "text": "<b>Forced Response</b>: After a [[XENOMORPH]] minion enters play, give it a tough status card.\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[XENOMORPH]] minion is discarded. Reveal that minion.",
    "custom": "RyCoRan"
   },
   {
@@ -128469,7 +128469,7 @@
    },
    "traits": [],
    "set_name": "Alien vs. Predator",
-   "text": "<b>When Revealed</b>: Move all threat from the villain's side scheme with the most threat to the main scheme. If no threat was moved this way, exhaust your identity. If you cannot, stun or confuse your identity.",
+   "text": "<b>When Revealed</b>: Move all threat from the villain's side scheme that has the most threat to the main scheme. If no threat was moved this way, exhaust your identity. If you cannot, stun or confuse your identity.",
    "custom": "RyCoRan"
   },
   {
@@ -128831,5 +128831,5 @@
    "custom": "RyCoRan"
   }
  ],
- "checksum": "446af1ed04ef6f996c2d0589dc426cb1ab2f8872db15cd0179deba0ca78d0f09"
+ "checksum": "286cfda87f5aa8be57f01a4feb73d443555ef252dc3a721c8c3904f4e67e7454"
 }

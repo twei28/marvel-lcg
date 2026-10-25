@@ -20,7 +20,7 @@ scénario, avant l'ordre d'avant). Sans règle, rien ne change. API : `TheVillai
 `Active`, `SetActive`, `Remove`, `BuildVillainDeck`, `RevealNextVillain`, `VillainDeckSize`. Recette :
 `RECETTES-MOTEUR.md` §16.3.
 
-**Carte exemple** : aucune carte de campagne portée. Modèles existants pour le compteur actif : Sinister Six
+**Carte exemple** : Alien vs. Predator (`ap005a`, 25/10/2026) : règle `Active`, deux méchants, compteur déplacé après chaque activation (`ap005b`) ou chaque attaque (`ap006b`), y compris quand une carte Sonné/Désorienté remplace l'activation (`AfterStatusDiscardFrom`) ; recettes §25. Avant lui : aucune carte de campagne portée. Modèles existants pour le compteur actif : Sinister Six
 (`sm/sinister_six/27100a.py`, crochet `GetVillain`), Wrecking Crew (`twc/07001a.py`), Four Horsemen
 (`aoa/four_horsemen/45085a.py`) ; pour le choix du joueur : Bebop & Rocksteady (`bebop_rocksteady/tk006a.py`).
 Cas : `tools/cas/briques_communes.py`, filtre `[briques][mechants]` (7 cas).

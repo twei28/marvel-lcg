@@ -1,5 +1,7 @@
 # Definitions des cartes ALIEN VS PREDATOR (RyCoRan, « Custom Content By: RyCoRan », 06-26), 25/10/2026.
 # Relues une a une contre les scans (zip « Alien vs Predator (06-26) », 60 images). Transcriptions : docs/packs/alien-vs-predator/TRANSCRIPTIONS.md.
+# 25/10/2026 (2e passe, scans relus) : textes d'ambiance des faces A (2A, 3A, 4A), formulations exactes (1A, Warrior, Hive Incursion, Brood
+# Breakout, Killing Ground), boost de Thermal Target et Piercing Pharynx = etoile SEULE (0**, pas 1**).
 # Icones identifiees par COMPARAISON AVEC LES GLYPHES de public/fonts/ChampionsIcons.ttf (mots-cles/hazard.md) : Expanding Hive, Skulls for the
 # Taking = Acceleration (A) ; 3B, 4B = Hazard (H) ; Swarm Breaker = Acceleration + Hazard.
 # Doublons du zip (verifies au pixel pres hors pied) : Thermal Target 13-14, Facehugger 16-17, Xenomorph Drone 18-19. Les deux « Advance » sont
@@ -52,8 +54,8 @@ CARDS = (
     + vilain("ap004", "Predator Warlord", "YAUTJA", 1, 3, 16, WARLORD, "B", 6, "Alien Queen", "her", "4A")
     + [
     {"card_id": "ap005a", "type": "MainScheme", "name": "The Ultimate Hunt", "subtitle": "", "desc": {"Stage": "1"}, "traits": [], "set_name": SET,
-     "text": "<b>Contents</b>: Alien Queen (A) and Predator Warlord (A) <i>(B instead in expert mode)</i>. Alien vs. Predator, Xenomorph deck, Apex Standard "
-             "and one modular encounter set <i>(Clan Yautja)</i>.\n<b>Setup</b>: Put Skulls for the Taking and Expanding Hive into play. Place the Xenomorph "
+     "text": "<b>Contents</b>: Alien Queen and Predator Warlord on side A <i>(B for expert mode)</i>. Alien vs. Predator, Xenomorph deck, Apex Standard "
+             "and one modular set <i>(Clan Yautja)</i>.\n<b>Setup</b>: Put Skulls for the Taking and Expanding Hive into play. Set the Xenomorph "
              "deck next to Alien Queen and place the active counter on her.", "custom": K},
     {"card_id": "ap005b", "type": "MainScheme", "name": "The Ultimate Hunt", "subtitle": "",
      "desc": {"StartingThreat": "0", "TargetThreat": "8*", "EscalationThreat": "1*", "Stage": "1"}, "traits": [], "set_name": SET,
@@ -61,21 +63,26 @@ CARDS = (
              "[star] <b>Forced Response</b>: After resolving step one of the villain phase, if there is no threat on each villain's side scheme, deal 2 damage "
              "to each villain.\n<b>Forced Response</b>: After a villain activates, move the active counter to the next villain.", "custom": K},
     {"card_id": "ap006a", "type": "MainScheme", "name": "Battleground Earth", "subtitle": "", "desc": {"Stage": "2"}, "traits": [], "set_name": SET,
-     "text": "<b>When Revealed</b>: Each player searches the encounter deck and discard pile for a [[YAUTJA]] minion and a [[XENOMORPH]] minion and puts them "
-             "into play engaged with them. Shuffle the encounter deck.", "custom": K},
+     "text": "<i>Plasma fire and emerging xenomorphs turn the city streets into a war zone. The heroes scramble to contain both threats before the "
+             "destruction spirals out of control.</i>\n<b>When Revealed</b>: Each player searches the encounter deck and discard pile for a [[YAUTJA]] and "
+             "[[XENOMORPH]] minion and puts them into play engaged with them. Shuffle the encounter deck.", "custom": K},
     {"card_id": "ap006b", "type": "MainScheme", "name": "Battleground Earth", "subtitle": "",
      "desc": {"StartingThreat": "2*", "EscalationThreat": "1*", "Stage": "2"}, "traits": [], "set_name": SET,
      "text": "<b>Forced Response</b>: After a villain attacks, give them a facedown boost card, then move the active counter to the next villain.\n"
              "<b>Forced Response</b>: After threat is placed here, if there is at least 4[per_hero] threat here, deal each player a facedown encounter card. "
              "Then, remove 2[per_hero] threat from this scheme.", "custom": K},
     {"card_id": "ap007a", "type": "MainScheme", "name": "Predator's Pursuit", "subtitle": "", "desc": {"Stage": "3"}, "traits": [], "set_name": SET,
-     "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[WEAPON]] attachment is discarded. Reveal it.", "custom": K},
+     "text": "<i>With the Alien threat eliminated, the Predator turns its full attention to new prey. Deadly traps and cloaked strikes mark the hunt's "
+             "final phase - with the heroes as the ultimate trophies!</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until a "
+             "[[WEAPON]] attachment is discarded. Reveal that card.", "custom": K},
     {"card_id": "ap007b", "type": "MainScheme", "name": "Predator's Pursuit", "subtitle": "",
      "desc": {"StartingThreat": "1*", "TargetThreat": "8*", "EscalationThreat": "1*", "Stage": "3", "Hazard": "1"}, "traits": [], "set_name": SET,
      "text": "Predator Warlord is the active villain.\n<b>When Revealed</b>: Each player searches the encounter deck and discard pile for a [[YAUTJA]] minion "
              "and reveals it.\n<b>If this stage is completed, the players lose the game.</b>", "custom": K},
     {"card_id": "ap008a", "type": "MainScheme", "name": "Queen's Dominion", "subtitle": "", "desc": {"Stage": "4"}, "traits": [], "set_name": SET,
-     "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a [[XENOMORPH]] attachment is discarded. Reveal it.", "custom": K},
+     "text": "<i>With the hunter slain, creatures emerge from the shadows infesting the shattered city. The heroes fight desperately to contain the "
+             "spreading hive. If the Queen is not stopped soon, Earth itself may become part of her alien brood.</i>\n<b>When Revealed</b>: Discard cards "
+             "from the top of the encounter deck until a [[XENOMORPH]] attachment is discarded. Reveal that card.", "custom": K},
     {"card_id": "ap008b", "type": "MainScheme", "name": "Queen's Dominion", "subtitle": "",
      "desc": {"StartingThreat": "1*", "TargetThreat": "8*", "EscalationThreat": "1*", "Stage": "4", "Hazard": "1"}, "traits": [], "set_name": SET,
      "text": "Alien Queen is the active villain.\n<b>When Revealed</b>: Each player searches the encounter deck and discard pile for a [[XENOMORPH]] minion "
@@ -94,10 +101,10 @@ CARDS = (
     {"card_id": "ap012", "type": "Attachment", "name": "* Yautja Wrist Blades", "subtitle": "", "desc": {"Boost": "2", "ATK+": "2"}, "traits": ["WEAPON"], "set_name": SET,
      "text": "Attach to Predator Warlord. If you cannot, attach to a [[YAUTJA]] minion. Otherwise, this card gains surge.\n[star] Attached enemy's attacks gain "
              "piercing.\n<b>Hero Action</b>: Spend [energy][physical] resources → discard this card.", "custom": K},
-    {"card_id": "ap013", "type": "Attachment", "name": "Thermal Target", "subtitle": "", "desc": {"Boost": "1**"}, "traits": ["CONDITION", "YAUTJA"], "set_name": SET,
+    {"card_id": "ap013", "type": "Attachment", "name": "Thermal Target", "subtitle": "", "desc": {"Boost": "0**"}, "traits": ["CONDITION", "YAUTJA"], "set_name": SET,
      "text": "Attach to your identity.\n<b>Forced Response</b>: After your turn ends, take 2 damage and place 2 threat on the main scheme.\n"
              "<b>Alter-Ego Action</b>: Find a [[YAUTJA]] minion and reveal it → discard this card.\n[star] <b>Boost</b>: Reveal this card.", "custom": K},
-    {"card_id": "ap015", "type": "Attachment", "name": "* Piercing Pharynx", "subtitle": "", "desc": {"Boost": "1**", "ATK+": "1"}, "traits": ["CONDITION", "XENOMORPH"],
+    {"card_id": "ap015", "type": "Attachment", "name": "* Piercing Pharynx", "subtitle": "", "desc": {"Boost": "0**", "ATK+": "1"}, "traits": ["CONDITION", "XENOMORPH"],
      "set_name": SET,
      "text": "Attach to Alien Queen and give her a tough status card. Otherwise, this card gains surge.\nAlien Queen gains retaliate 1.\n<b>Hero Action</b>: If "
              "Predator Warlord is in play, spend [energy][mental] resources → discard this card.\n[star] <b>Boost</b>: Reveal this card.", "custom": K},
@@ -110,8 +117,8 @@ CARDS = (
              "Xenomorph Drone into the encounter deck.", "custom": K},
     {"card_id": "ap020", "type": "Minion", "name": "Xenomorph Warrior", "subtitle": "", "desc": {"HP": "6", "ATK": "2", "SCH": "1", "Boost": "1", "Quickstrike": "1"},
      "traits": ["XENOMORPH"], "set_name": SET,
-     "text": "Quickstrike.\n<b>When Defeated</b>: Discard the top card of the encounter deck and deal 1 damage to a [[YAUTJA]] enemy for each icon ([star] and "
-             "[boost]) in that card's boost area.", "custom": K},
+     "text": "Quickstrike.\n<b>When Defeated</b>: Discard the top card of the encounter deck and deal damage to a [[YAUTJA]] enemy for each icon <i>([star] "
+             "and [boost])</i> in the discarded card's boost area.", "custom": K},
     {"card_id": "ap021", "type": "Minion", "name": "* Alien Praetorian", "subtitle": "", "desc": {"HP": "8", "ATK": "2", "SCH": "2", "Boost": "3", "Villainous": "1"},
      "traits": ["ELITE", "XENOMORPH"], "set_name": SET,
      "text": "Villainous.\n<b>Forced Response</b>: After the villain phase begins, Alien Praetorian engages the first player.", "custom": K},
@@ -119,18 +126,18 @@ CARDS = (
      "text": "Attach to a [[XENOMORPH]] minion. Otherwise attach to the active villain.\n[star] <b>Forced Interrupt</b>: When attached enemy attacks, this attack "
              "gains piercing. At the end of this attack, stun your identity and discard this card.", "custom": K},
     {"card_id": "ap023", "type": "Treachery", "name": "Hive Incursion", "subtitle": "", "desc": {"Boost": "0**"}, "traits": [], "set_name": SET,
-     "text": "<b>When Revealed</b>: Discard your hand. Draw up to your hand size.\n[star] <b>Boost</b>: Resolve the \"<b>When Revealed</b>\" ability on this card.", "custom": K},
+     "text": "<b>When Revealed</b>: Discard your hand. Draw up to your hand size.\n[star] <b>Boost</b>: Resolve this card's \"<b>When Revealed</b>\" ability.", "custom": K},
     {"card_id": "ap024", "type": "Treachery", "name": "Predator's Prize", "subtitle": "", "desc": {"Boost": "3"}, "traits": [], "set_name": SET,
      "text": "<b>When Revealed</b>: Choose to either give this card to the active villain as a facedown boost card, or find your identity-specific ally and "
              "remove it from the game.", "custom": K},
     {"card_id": "ap025", "type": "SideScheme", "name": "Brood Breakout", "subtitle": "", "desc": {"StartingThreat": "4", "Boost": "3"}, "traits": [], "set_name": SET,
      "text": "<b>Forced Response</b>: After a [[XENOMORPH]] minion enters play, give it a tough status card.\n<b>When Revealed</b>: Discard cards from the top of "
-             "the encounter deck until a [[XENOMORPH]] minion is discarded. Reveal it.", "custom": K},
+             "the encounter deck until a [[XENOMORPH]] minion is discarded. Reveal that minion.", "custom": K},
     {"card_id": "ap026", "type": "Treachery", "name": "Alien Assault", "subtitle": "", "desc": {"Boost": "1**"}, "traits": [], "set_name": SET,
      "text": "<b>When Revealed</b>: If Predator Warlord is the active villain, stun your identity. If Alien Queen is the active villain, confuse your identity.\n"
              "[star] <b>Boost</b>: After this activation ends, do not move the active counter to the next villain.", "custom": K},
     {"card_id": "ap027", "type": "Treachery", "name": "Killing Ground", "subtitle": "", "desc": {"Boost": "2"}, "traits": [], "set_name": SET,
-     "text": "<b>When Revealed</b>: Move all threat from the villain's side scheme with the most threat to the main scheme. If no threat was moved this way, "
+     "text": "<b>When Revealed</b>: Move all threat from the villain's side scheme that has the most threat to the main scheme. If no threat was moved this way, "
              "exhaust your identity. If you cannot, stun or confuse your identity.", "custom": K},
     {"card_id": "ap028", "type": "Treachery", "name": "Predator's Prey", "subtitle": "", "desc": {"Boost": "1"}, "traits": [], "set_name": SET,
      "text": "<b>When Revealed</b>: Discard cards from the top of your deck until you discard an ally, then put that ally into play under your control. The active "

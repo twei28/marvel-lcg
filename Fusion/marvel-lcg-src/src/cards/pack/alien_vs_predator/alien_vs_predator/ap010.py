@@ -10,7 +10,9 @@ from . import *
 #  - « loses the [acceleration] icon » : `ThisGainKeyword(acceleration_icon=-1)` (pd026) ;
 #  - « After an ally is defeated by an enemy attack » : `AfterUnitDefeatedUnit(ForcedResponse, Enemy, Ally, is_from_attack=True)` ;
 #    « tuck it under here » : `TuckCardUnderHere` (fiche tuck.md) ;
-#  - « leaves play » : `WhenCardWouldLeavePlay(NonKeyword, "This")` (pd002) -> `Faces.DiscardAll` (defausse du PROPRIETAIRE).
+#  - « leaves play » (insert : allies glisses -> defausse de leur proprietaire) : NATIF, les cartes glissees sous une carte qui quitte le
+#    jeu partent a la defausse de leur proprietaire (mesure du 25/10/2026 : le cas « Skulls quitte le jeu » reste vert sans aucun code ;
+#    une capacite `WhenCardWouldLeavePlay` ecrite d'abord a ete retiree, elle faisait double emploi).
 #
 # ⚠ Mots-pieges :
 #  - « by an ENEMY attack » : pas une traitrise ni un degat indirect ; l'allie doit etre arrive a la defausse (Trophy Taken l'a retire
@@ -27,14 +29,7 @@ def GetAbilities() -> Sequence['Ability']:
             return
         this.TuckCardUnderHere([allie], effect)
 
-    def liberer(effect: 'Effect', message: 'Message.WhenCardWouldLeavePlay') -> None:
-        Unused(message)
-        dessous = [f for f in effect.this.GetPlacedCardArea().GetAll() if Ally.IsType(f)]
-        if dessous:
-            Faces.DiscardAll(dessous, effect)
-
     return [
         ManiganceSansMenacePerdLIcone(),
         AbilityFactory.AfterUnitDefeatedUnit(AbilityType.ForcedResponse, Enemy, Ally, glisser, is_from_attack=True),
-        AbilityFactory.WhenCardWouldLeavePlay(AbilityType.NonKeyword, "This", liberer),
     ]
