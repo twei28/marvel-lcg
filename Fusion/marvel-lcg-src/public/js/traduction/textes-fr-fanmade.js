@@ -1579,7 +1579,7 @@ export const TEXTES_FR_FANMADE = {
     // beast — Primal Rage (Event, x2)
     'bt008': "<b>Interruption de héros</b> : quand vous effectuez une attaque de base, défaussez une carte de votre main → vous gagnez +5 ATQ pour cette attaque.",
     // beast — Alien Materials (Resource double [energy][mental], x2)
-    'bt009': "",
+    'bt009': "<i>« Qu'est-ce que cela peut bien être ? Je dois retourner à mon labo ! »</i> — Le Fauve",
     // beast — Beast's Lab (Support, signature)
     'bt010': "<b>Action de héros</b> : inclinez Beast's Lab → choisissez un joueur. Ce joueur cherche une amélioration dans son deck et sa pile de défausse et l'ajoute à sa main.",
     // beast — Hank's Kimono (Support, signature)
@@ -1623,7 +1623,7 @@ export const TEXTES_FR_FANMADE = {
     // doctor_doom — "Pain Is For Lesser Men!" (Event, x2)
     'dd006': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, empêchez tous ces dégâts. Si vous avez payé cette carte uniquement avec des ressources [mental], sonnez et désorientez l'ennemi.",
     // doctor_doom — Unparalleled Genius (Resource [mental]x3, x2)
-    'dd007': "",
+    'dd007': "<i>« J'étais un dieu, Valeria, et j'ai trouvé cela indigne de moi. »</i>",
     // doctor_doom — Doomstadt (Support, signature)
     'dd008': "Les événements glissés sous Doomstadt peuvent être joués comme s'ils étaient dans votre main.\n<b>Action</b> : inclinez Doomstadt → glissez un événement [[SPELL]] de votre main sous cette carte (maximum 3).",
     // doctor_doom — Doom's Time Platform (Upgrade, signature)
@@ -5238,9 +5238,9 @@ export const TEXTES_FR_FANMADE = {
     // web_of_deceit — Doppelganger (Ally)
     'wd127': "<b>Réponse</b> : après que Doppelganger a quitté le jeu, cherchez dans votre deck et votre pile de défausse une carte SUPERPOWER et ajoutez-la à votre main.\n<i>(Cette carte est à la fois une carte Récompense de campagne Web of Deceit et une carte Commandement.)</i>",
     // web_of_deceit — Radioactive Power (Resource)
-    'wd128': "",
+    'wd128': " ",
     // web_of_deceit — Radioactive Power (Resource)
-    'wd129': "",
+    'wd129': " ",
     // web_of_deceit — Dynamo (Upgrade)
     'wd130': "Utilisations <i>(3 jetons Énergie)</i>.\n<b>Réponse</b> : après avoir joué une carte SUPERPOWER, retirez 1 jeton Énergie de Dynamo → sonnez un ennemi et infligez-lui 2 dégâts.",
     // web_of_deceit — Camouflage (Upgrade)
@@ -5294,7 +5294,7 @@ export const TEXTES_FR_FANMADE = {
     // web_of_deceit — Bag Head (Upgrade)
     'wd155': "Victoire 1.\n<b>Action</b> : ajoutez Bag Head à la pile de victoire → passez sous forme de héros. Piochez jusqu'à atteindre votre taille de main.",
     // web_of_deceit — The Power of Web (Resource)
-    'wd156': "",
+    'wd156': "<i>« Je suis un symbole d'espoir… À tout le moins, je peux avoir la classe en le faisant. »</i> — Spider-Man, Inde",
     // web_of_deceit — Spider-Mobile (Support)
     'wd157': "Réduisez de 1 le coût pour jouer cette carte pour chaque carte WEB-WARRIOR que vous contrôlez.\n<b>Réponse de héros</b> : après avoir défendu contre une attaque, inclinez Spider-Mobile → redressez votre identité.",
     // web_of_deceit — Spider-Boy (Ally)
@@ -5595,21 +5595,21 @@ export const TEXTES_FR_FANMADE = {
     // punisher_mcdc_2026 — Capo of the Past (Attachment)
     'pu139': "Permanent. Victoire 0.\nConsidérez le personnage attaché comme un sbire ELITE. Il gagne Solide, Vilenie et victoire 0.\n<b>Une fois révélée</b> : cherchez dans votre collection un méchant CAPO au hasard. Mettez-le en jeu engagé avec vous et attachez-lui cette carte.\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
     // punisher_mcdc_2026 — Big Apple Gang War! (Environment)
-    'pu140': "<b>Mise en place du combat</b> :\n• Scénario : The Big Apple\n• N'incluez pas l'extension Uptown\n• Chaque joueur a besoin d'un jeton de joueur\n• Utilisez les sets Policiers et Mafia des Survêtes (FNE)\nMise en place. Permanent.\n<b>Victoire</b> : retournez cette carte et mettez Seized Tech Crates en jeu pour les combats 2 et 3.",
+    'pu140': "<i>Des caisses d'armes de qualité militaire se sont glissées à travers les docks abandonnés à la faveur de la nuit, armant des gangs qui, au lever du soleil, avaient taillé la ville en petits royaumes sanglants. En suivant les douilles, les manifestes soudoyés et les noms chuchotés, [POI-1016] a découvert un réseau de contrebandiers et de fonctionnaires corrompus qui alimentaient le chaos. Cargaison après cargaison, ses rues étaient inondées. À l'aube, les docks seraient en cendres, les trafiquants seraient des fantômes, et les armes ne trouveraient jamais leurs cibles.</i>\n<b>Mise en place du combat</b> :\n• Scénario : The Big Apple\n• N'incluez pas l'extension Uptown\n• Chaque joueur a besoin d'un jeton de joueur\n• Utilisez les sets Policiers et Mafia des Survêtes (FNE)\nMise en place. Permanent.\n<b>Victoire</b> : retournez cette carte et mettez Seized Tech Crates en jeu pour les combats 2 et 3.",
     // punisher_mcdc_2026 — Seized Tech Crates (Upgrade)
     'pu141': "Permanent.\n<b>Mise en place</b> : placez 1 compteur ici, plus 1 compteur par joueur qui n'a pas joué la partie précédente avec vous.\n<b>Action</b> : retirez 1 compteur → choisissez <i>(n'importe quel joueur peut déclencher cette capacité, limite une fois par joueur et par round)</i> :\n• Réduisez de 1 le coût de la prochaine carte que vous jouez pendant cette phase.\n• Cherchez un soutien ou une amélioration de coût 2 ou moins et ajoutez-le à votre main.",
     // punisher_mcdc_2026 — Tracking the Buyer (Environment)
-    'pu142': "<b>Mise en place du combat</b> :\n• Méchant : Hobgoblin <i>(si Gunrunner était Count Nefaria, Ringmaster, Mr. Negative ou Nightshade)</i>, ou Jigsaw <i>(les 4 autres CAPO)</i>\n• Utilisez les sets Punisher's Hit List, The Syndicate, Capo of the Past\n• Manigance principale selon la dernière piste : Art Museum Heist (Theater District, Financial District), The Getaway (Hell's Kitchen, Lower East Side), The Raft Breakout (Upper East Side, Midtown), Protection Racket (Chinatown), Stop the Presses! (West Village, Soho)\nMise en place. Permanent.\n<b>Victoire</b> : retournez cette carte et mettez Punisher's Ordnance Cache en jeu pour le combat 3.",
+    'pu142': "<i>Des pistes chuchotées ont mené le Punisher à l'entrepôt du trafiquant d'armes. À l'intérieur, une autre cargaison de mort était en route. Les gardes ont ouvert le feu, mais Frank les a traversés comme une tempête à travers la fumée. D'une façon ou d'une autre, tout finirait ce soir.</i>\n<b>Mise en place du combat</b> :\n• Méchant : Hobgoblin <i>(si Gunrunner était Count Nefaria, Ringmaster, Mr. Negative ou Nightshade)</i>, ou Jigsaw <i>(les 4 autres CAPO)</i>\n• Utilisez les sets Punisher's Hit List, The Syndicate, Capo of the Past\n• Manigance principale selon la dernière piste : Art Museum Heist (Theater District, Financial District), The Getaway (Hell's Kitchen, Lower East Side), The Raft Breakout (Upper East Side, Midtown), Protection Racket (Chinatown), Stop the Presses! (West Village, Soho)\nMise en place. Permanent.\n<b>Victoire</b> : retournez cette carte et mettez Punisher's Ordnance Cache en jeu pour le combat 3.",
     // punisher_mcdc_2026 — Punisher's Ordnance Cache (Upgrade)
     'pu143': "Permanent.\n<b>Mise en place</b> : placez 1 compteur ici, plus 1 compteur par joueur qui n'a pas joué la partie précédente avec vous.\n<b>Action</b> : retirez 1 compteur d'ici et placez 3 menaces sur la manigance principale → cherchez dans votre deck, votre pile de défausse et votre collection une carte WEAPON d'aspect ou de base et ajoutez-la à votre main. N'importe quel joueur peut déclencher cette capacité.",
     // punisher_mcdc_2026 — Punishment (Environment)
-    'pu144': "<b>Mise en place du combat</b> :\n• Scénario : Châtiment\n• UNDERLING : l'UNDERLING MC×DC (Hobgoblin ou Jigsaw) que vous n'avez <b>pas</b> utilisé au combat 2 de la campagne\n• Utilisez le set Punisher's Armory\nMise en place. Permanent.\n<b>Réponse forcée</b> : après que le premier stade de Punisher est vaincu ou que la manigance principale passe au stade 2A, retournez cette carte.",
+    'pu144': "<i>La pluie ruisselait sur le toit d'un entrepôt abandonné tandis que le Punisher acculait enfin sa cible. Celui qui inondait les rues d'armes achetées, souillant la ville de peur. Un cadavre de plus, songeait-il, équilibrerait la balance de sa justice tordue. Son arme se leva, ferme et sûre. La ville retint son souffle. « Là où il y a du crime, » dit-il d'une voix froide comme l'orage, « il y a un châtiment. »</i>\n<b>Mise en place du combat</b> :\n• Scénario : Châtiment\n• UNDERLING : l'UNDERLING MC×DC (Hobgoblin ou Jigsaw) que vous n'avez <b>pas</b> utilisé au combat 2 de la campagne\n• Utilisez le set Punisher's Armory\nMise en place. Permanent.\n<b>Réponse forcée</b> : après que le premier stade de Punisher est vaincu ou que la manigance principale passe au stade 2A, retournez cette carte.",
     // punisher_mcdc_2026 — S.H.I.E.L.D. Support Team (Upgrade)
     'pu145': "Permanent.\n<b>Réponse forcée</b> : après que cette carte est entrée en jeu, placez 1 compteur de renseignement ici, plus 1 compteur par joueur qui n'a pas joué la partie précédente avec vous.\n<b>Réponse</b> : après qu'un joueur a vaincu un sbire, retirez 1 compteur d'ici → chaque joueur pioche 1 carte. Attribuez une carte Rencontre à 1 joueur.",
     // punisher_mcdc_2026 — Punisher (Ally)
     'pu146': "[star] Les attaques de Punisher gagnent perçant et à distance.\n<b>Réponse</b> : après que Punisher a attaqué et vaincu un sbire, infligez 2 dégâts à un ennemi.",
     // punisher_mcdc_2026 — Long Live the King? (Environment)
-    'pu147': "<b>Mise en place du combat</b> :\n• Scénario : Le Caïd\n• Utilisez les sets SWAT Team et Mafia des Survêtes\n• Répartissez les joueurs en assemblées de 2 à 4 groupes.\n• Désignez une personne par assemblée comme organisateur de l'assemblée. Cette personne met en jeu les environnements Long Live et The King dans sa zone de jeu, et est chargée de suivre et de transmettre les résultats aux organisateurs de l'événement.\n<b>Mise en place</b> : mettez l'allié Punisher en jeu sous le contrôle d'un joueur. Retournez cette carte et placez-y 1 compteur.",
+    'pu147': "<i>Pendant des années, le Caïd a régné depuis l'ombre, achetant le silence et enterrant la vérité. Puis la ville s'est rebiffée. Les gens ont trouvé leur courage et ont refusé de détourner le regard. Tandis que son empire se fissurait et que ses alliés fuyaient, l'homme qui avait possédé la ville l'a vue lui filer entre les doigts. À l'aube, le Roi tombera-t-il ?</i>\n<b>Mise en place du combat</b> :\n• Scénario : Le Caïd\n• Utilisez les sets SWAT Team et Mafia des Survêtes\n• Répartissez les joueurs en assemblées de 2 à 4 groupes.\n• Désignez une personne par assemblée comme organisateur de l'assemblée. Cette personne met en jeu les environnements Long Live et The King dans sa zone de jeu, et est chargée de suivre et de transmettre les résultats aux organisateurs de l'événement.\n<b>Mise en place</b> : mettez l'allié Punisher en jeu sous le contrôle d'un joueur. Retournez cette carte et placez-y 1 compteur.",
     // punisher_mcdc_2026 — Power to the People (Upgrade)
     'pu148': "Permanent.\n<b>Action</b> : retirez 1 compteur d'ici → choisissez <i>(n'importe quel joueur peut déclencher cette capacité, chaque choix ne peut être choisi qu'une fois par groupe et par round)</i> :\n• Retirez 2 menaces d'une manigance.\n• Jouez une carte de votre main, en réduisant son coût de 1.",
     // punisher_mcdc_2026 — Long Live (Environment)
@@ -5858,4 +5858,16 @@ export const TEXTES_FR_FANMADE = {
     'vt030': "<b>Une fois révélée</b> : si le nombre de méchants en jeu est inférieur au nombre de joueurs, cette carte gagne Renfort. Révélez la première carte du deck de méchants. Si vous ne pouvez pas, le méchant dont l'ordre d'activation est le plus élevé s'active contre vous.",
     // the vault — Riot in the Vault (Treachery)
     'vt034': "Renfort.\n<b>Une fois révélée</b> : si Inspection of the Vault n'est pas en jeu, révélez-la. Sinon, placez 1 menace sur la manigance principale pour chaque méchant sous The Vault.\n<i>« Aucune prison ne peut retenir un esprit tel que le mien. »</i> —Mad Thinker",
+    // alter egos officiels sans traduction (arts alternatifs cb) — textes ajoutes le 25/10/2026
+    '49001b': "<i>Survivant</i> — <b>Réponse</b> : après être passé sous cette forme, mélangez dans votre deck les 3 cartes du dessus de votre pile de défausse.",
+    '51001b': "<i>Inventrice</i> — <b>Action</b> : inclinez Shuri → cherchez dans votre deck une amélioration [[Black Panther]] ou [[Tech]] et jouez-la, en réduisant son coût en ressources de 2. (Limite d'une fois par round.)",
+    '52001b': "S'il y a plus de 4 cartes glissées ici, défaussez toutes ces cartes sauf 4.\n<b>Action</b> : défaussez une carte glissée ici → piochez 2 cartes. (Limite d'une fois par round.)",
+    '53001b': "<i>Oiseaux de même plumage</i> — <b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre pile de défausse une carte [[Oiseau]] et ajoutez-la à votre main. (Limite d'une fois par round.)",
+    '54001b': "<i>Amélioration cybernétique</i> — <b>Action</b> : dépensez 1 ressource de n'importe quel type → cherchez dans votre deck et votre pile de défausse Cybernetic Arm et mettez-le en jeu. <i>(Mélangez.)</i>",
+    '56001b': "<i>Travail d'infiltration</i> — <b>Action</b> : cherchez dans votre deck et votre pile de défausse un exemplaire de Hunted et ajoutez-le à votre main. (Limite d'une fois par round.)",
+    '56029b': "Vous ne pouvez pas avoir plus d'1 amélioration [[Métamorphose]] en jeu.\n<i>Changeforme</i> — <b>Action</b> : cherchez dans votre deck et votre pile de défausse une amélioration [[Métamorphose]] et ajoutez-la à votre main. (Limite d'une fois par round.)",
+    '58001b': "<i>Être d'énergie ionique</i> — Vous pouvez inclure dans votre deck des événements ayant une icône de ressource [energy] imprimée, de n'importe quel aspect.\n<b>Mise en place</b> : mettez Ionic Physiology en jeu.",
+    '59001b': "Hercule commence la partie avec un deck [[Travail]] et un deck [[Don]]. <i>(Voir l'encart.)</i>\n<i>Nouveaux Travaux d'Hercule</i> — <b>Action</b> : s'il n'y a aucune carte [[Travail]] en jeu, révélez la carte du dessus du deck [[Travail]].",
+    '61001b': "<i>Mode incognito</i> — <b>Action</b> : passez sous forme de héros. Vous ne pouvez pas repasser sous forme d'alter ego pendant cette phase.\n<b>Mise en place</b> : mettez le soutien Alias Investigations en jeu.",
+    '62001b': "<i>Peau incassable</i> — Luke Cage peut avoir n'importe quel nombre de cartes d'état Tenace. Les attaques contre Luke Cage perdent Perçant.\n<b>Action</b> : cherchez dans votre deck et votre pile de défausse l'amélioration Burstein Process et ajoutez-la à votre main. (Limite d'une fois par phase.)",
 };

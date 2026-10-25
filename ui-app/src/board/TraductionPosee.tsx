@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { GLYPHES, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, texteEnParagraphes, type ZoneTexte } from './traduction-posee'
+import { GLYPHES, detecterZoneSurFondTeinte, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, prolongerLaZone, texteEnParagraphes, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
 import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
 import { corrigerZone } from './zones-corrections'
@@ -66,9 +66,9 @@ export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneText
           paysage
             ? (() => {
                 const zone = detecterZoneTextePaysage(pixels, largeur, hauteur, paysage)
-                return zone ? elargirPaysage(zone, paysage, { pixels, largeur, hauteur }) : null
+                return zone ? prolongerLaZone(elargirPaysage(zone, paysage, { pixels, largeur, hauteur }), pixels, largeur, hauteur) : null
               })()
-            : corrigerZone(code, detecterZoneTexte(pixels, largeur, hauteur))
+            : corrigerZone(code, detecterZoneTexte(pixels, largeur, hauteur) ?? detecterZoneSurFondTeinte(pixels, largeur, hauteur))
         )
       } catch {
         resoudre(null)
@@ -104,7 +104,10 @@ export function TraductionPosee({
   traits?: readonly string[]
   onPose?: (pose: boolean) => void
 }) {
-  const [zone, setZone] = useState<ZoneTexte | null>(null)
+  const [zoneImage, setZone] = useState<ZoneTexte | null>(null)
+  // La même zone, ramenée au CADRE : le scan y est posé en `object-fit: cover`, donc rogné (voir `zoneDansLeCadre`).
+  const [zoneCadre, setZoneCadre] = useState<ZoneTexte | null>(null)
+  const zone = zoneImage && !paysage ? (zoneCadre ?? zoneImage) : zoneImage
   const boite = useRef<HTMLDivElement | null>(null)
   // Les icônes imprimées sous le cache (Accélération, Crise...) : on les redessine.
   const [icones, setIcones] = useState<readonly string[]>([])
@@ -134,6 +137,26 @@ export function TraductionPosee({
     // onPose est un rappel de l'appelant : seule l'image compte.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url, paysage])
+
+  useLayoutEffect(() => {
+    setZoneCadre(null)
+    const cadre = boite.current?.parentElement
+    const image = cadre?.querySelector('img')
+    if (!zoneImage || paysage || !cadre || !image) return
+    const poser = () => {
+      if (!image.naturalWidth || !cadre.clientWidth || !cadre.clientHeight) return
+      setZoneCadre(
+        zoneDansLeCadre(
+          zoneImage,
+          { largeur: image.naturalWidth, hauteur: image.naturalHeight },
+          { largeur: cadre.clientWidth, hauteur: cadre.clientHeight }
+        )
+      )
+    }
+    poser()
+    image.addEventListener('load', poser)
+    return () => image.removeEventListener('load', poser)
+  }, [zoneImage, paysage, url])
 
   // Le français est plus long que l'anglais : la police baisse jusqu'à ce que
   // le texte tienne, sans descendre sous un plancher lisible.

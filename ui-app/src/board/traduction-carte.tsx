@@ -55,7 +55,9 @@ export function useTraductionFr(codeCarte?: string, artAlternatif = false): stri
 /** Côté de la boîte de texte d'une carte paysage, selon son type. */
 export function coteDuTexte(type: string | undefined): CotePaysage | undefined {
   if (type === 'MainScheme') return 'gauche'
-  if (type === 'SideScheme') return 'droite'
+  // La manigance annexe de JOUEUR est imprimée comme celle des méchants : boîte de texte à droite (audit du 25/10/2026 : sans cela,
+  // ses 21 cartes fan-made gardaient leur anglais).
+  if (type === 'SideScheme' || type === 'PlayerSideScheme') return 'droite'
   return undefined
 }
 

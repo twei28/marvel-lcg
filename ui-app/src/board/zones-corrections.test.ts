@@ -1,0 +1,25 @@
+import { describe, expect, it } from 'vitest'
+import { ZONES_MANUELLES, corrigerZone } from './zones-corrections'
+import type { ZoneTexte } from './traduction-posee'
+
+const detectee: ZoneTexte = { x0: 0.1, y0: 0.6, x1: 0.9, y1: 0.8, fond: [250, 250, 250], bords: [[0.1, 0.9]] }
+
+describe('corrigerZone : zones relevées à la main', () => {
+  it('une zone manuelle remplace la détection, et existe même quand la détection ne trouve rien', () => {
+    const m = ZONES_MANUELLES.sk196
+    const sansDetection = corrigerZone('sk196', null)!
+    expect(sansDetection).not.toBeNull()
+    expect([sansDetection.x0, sansDetection.y0, sansDetection.x1, sansDetection.y1]).toEqual([m.x0, m.y0, m.x1, m.y1])
+    expect(corrigerZone('sk196', detectee)!.y0).toBe(m.y0)
+  })
+
+  it('le coin d\'un badge raccourcit le haut de la zone seulement', () => {
+    const zone = corrigerZone('pu013', null)!
+    expect(zone.bords[0][1]).toBeLessThan(zone.bords[zone.bords.length - 1][1])
+  })
+
+  it('une carte sans correction garde sa détection, ou son absence', () => {
+    expect(corrigerZone('zz999', detectee)).toBe(detectee)
+    expect(corrigerZone('zz999', null)).toBeNull()
+  })
+})

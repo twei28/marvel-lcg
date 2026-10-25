@@ -53,10 +53,196 @@ function morpho(source, largeur, hauteur, r, dilater) {
     }
     return sortie;
 }
+/** Les bords d'une rangée AJOUTÉE : la médiane des bords des `n` rangées voisines, qu'un badge ou une ombre ne peut pas creuser d'une seule rangée. */
+function bordsMedians(voisines) {
+    const g = voisines.map((b) => b[0]).sort((a, b) => a - b);
+    const d = voisines.map((b) => b[1]).sort((a, b) => a - b);
+    return [g[Math.floor(g.length / 2)], d[Math.floor(d.length / 2)]];
+}
+/**
+ * Prolonge le bas de la zone sous un TRAIT DE SÉPARATION (la ligne « Boost » est souvent écrite sous un filet) : le
+ * remplissage ne le franchit pas, et la dernière ligne anglaise restait visible sous le voile (audit du 25/10/2026,
+ * une trentaine de cartes). On descend tant que des rangées claires portent de l'encre ÉTALÉE (du texte, pas un
+ * pictogramme), en acceptant un filet de quelques pixels entre deux ; la bordure épaisse du cadre arrête la descente.
+ * Rend la dernière rangée de texte trouvée (+ 2 px), ou `y1` si rien n'y est écrit.
+ */
+function prolongerVersLeBas(pixels, clair, largeur, hauteur, x0, x1, y1) {
+    // Le milieu de la zone seulement : un badge (ATQ, icône) ou une bordure de coin ne doit pas faire passer la rangée pour « sombre ».
+    const marge = Math.round((x1 - x0) * 0.2);
+    const a = x0 + marge;
+    const b = x1 - marge;
+    const total = b - a + 1;
+    if (total < 20)
+        return y1;
+    const limite = Math.min(hauteur - 1, y1 + Math.round(hauteur * 0.2));
+    const lignes = [];
+    let filet = 0;
+    // La dernière rangée qui porte de l'encre DANS la zone : le grand blanc du bas du cadre ne compte pas comme « proche du texte ».
+    let dernierTexte = y1;
+    for (let y = y1; y > y1 - 80 && y >= 0; y -= 1) {
+        let encre = 0;
+        for (let x = a; x <= b; x += 1) {
+            const k = y * largeur + x;
+            if (!clair[k] && 0.299 * pixels[k * 4] + 0.587 * pixels[k * 4 + 1] + 0.114 * pixels[k * 4 + 2] < 125)
+                encre += 1;
+        }
+        if (encre / total >= 0.02) {
+            dernierTexte = y;
+            break;
+        }
+    }
+    for (let y = y1 + 1; y <= limite; y += 1) {
+        let claires = 0;
+        let encre = 0;
+        let premiere = -1;
+        let derniere = -1;
+        let paquets = 0;
+        let avant = false;
+        for (let x = a; x <= b; x += 1) {
+            const k = y * largeur + x;
+            const sombre = !clair[k] && 0.299 * pixels[k * 4] + 0.587 * pixels[k * 4 + 1] + 0.114 * pixels[k * 4 + 2] < 125;
+            if (clair[k])
+                claires += 1;
+            if (sombre) {
+                encre += 1;
+                if (premiere < 0)
+                    premiere = x;
+                derniere = x;
+                if (!avant)
+                    paquets += 1;
+            }
+            avant = sombre;
+        }
+        // Une bande noire à lettres blanches (le bandeau du bas : « DONATELLO NEMESIS ») a assez de pixels clairs pour passer pour du texte : le noir dominant la trahit.
+        const estClaire = claires / total >= 0.3 && encre / total <= 0.5;
+        if (!estClaire) {
+            filet += 1;
+            if (filet > 2)
+                break;
+            lignes.push({ y, claire: false, encre, paquets, texte: false });
+            continue;
+        }
+        filet = 0;
+        const part = encre / total;
+        const texte = part >= 0.02 && part <= 0.5 && (derniere - premiere) / total >= 0.3 && paquets >= 5;
+        lignes.push({ y, claire: true, encre, paquets, texte });
+        // Un grand blanc, puis du « texte » : c'est le bandeau du bas, pas la suite du cadre.
+        if (texte)
+            dernierTexte = y;
+        else if (y - dernierTexte > 28)
+            break;
+    }
+    const textes = lignes.filter((l) => l.texte);
+    if (textes.length < 3)
+        return y1;
+    // Jusqu'au bout du texte : les hampes et les jambages portent moins d'encre que le corps des lettres, et une DERNIÈRE LIGNE COURTE
+    // (« first player. », « Shredder. ») n'a ni l'étendue ni les paquets d'une ligne pleine. Un pictogramme plein (beaucoup d'encre d'un coup) ne compte pas.
+    let fin = textes[textes.length - 1].y;
+    let vides = 0;
+    for (const l of lignes.filter((r) => r.y > fin)) {
+        if (!l.claire)
+            break;
+        if (l.paquets >= 1 && l.encre / total >= 0.015 && l.encre / total <= 0.2) {
+            fin = l.y;
+            vides = 0;
+        }
+        else {
+            vides += 1;
+            if (vides > 12)
+                break;
+        }
+    }
+    return Math.min(limite, fin + 3);
+}
+/**
+ * Prolonge le HAUT de la zone sur la ligne de TRAITS imprimée (« TECH. WEAPON. ») : sur un cadre à décor, elle est écrite sur
+ * un bandeau teinté qui n'est pas du « clair » de la zone, la détection commence sous elle, et l'anglais restait visible
+ * au-dessus du voile, au-dessus des traits français réécrits (audit du 25/10/2026). On monte à travers des rangées
+ * claires ou portant du texte, mais SEULEMENT si la montée butte sur une frontière (bordure sombre, barre du titre,
+ * illustration) avant la limite : sans frontière, on est dans l'illustration et on ne touche à rien.
+ */
+export function prolongerVersLeHaut(pixels, clair, largeur, hauteur, x0, x1, y0) {
+    const marge = Math.round((x1 - x0) * 0.2);
+    const a = x0 + marge;
+    const b = x1 - marge;
+    const total = b - a + 1;
+    if (total < 20)
+        return y0;
+    const limite = Math.max(0, y0 - Math.round(hauteur * 0.06));
+    let haut = y0;
+    let vides = 0;
+    let frontiere = false;
+    for (let y = y0 - 1; y >= limite; y -= 1) {
+        let lumineuses = 0;
+        let encre = 0;
+        for (let x = a; x <= b; x += 1) {
+            const k = y * largeur + x;
+            const lum = 0.299 * pixels[k * 4] + 0.587 * pixels[k * 4 + 1] + 0.114 * pixels[k * 4 + 2];
+            if (clair[k] || lum > 150)
+                lumineuses += 1;
+            if (lum < 125)
+                encre += 1;
+        }
+        if (lumineuses / total < 0.45 || encre / total > 0.6) {
+            frontiere = true;
+            break;
+        }
+        if (encre / total >= 0.01) {
+            haut = y;
+            vides = 0;
+        }
+        else {
+            vides += 1;
+            if (vides > 8) {
+                frontiere = true;
+                break;
+            }
+        }
+    }
+    if (!frontiere || haut >= y0)
+        return y0;
+    // Un rang de marge au-dessus du texte, sauf si la frontière le touche : elle reste visible.
+    return Math.max(limite, haut - 1);
+}
+/**
+ * Prolonge une zone DÉJÀ détectée (manigance paysage) vers le haut et vers le bas, comme la détection portrait le fait
+ * d'elle-même : la citation en italique au-dessus du texte et la ligne « Boost » sous le filet restaient en anglais.
+ * Les lignes de `bords` ajoutées prolongent la première et la dernière.
+ */
+export function prolongerLaZone(zone, pixels, largeur, hauteur) {
+    const clair = new Uint8Array(largeur * hauteur);
+    for (let k = 0; k < clair.length; k += 1) {
+        const r = pixels[k * 4];
+        const g = pixels[k * 4 + 1];
+        const b = pixels[k * 4 + 2];
+        const proche = Math.abs(r - zone.fond[0]) + Math.abs(g - zone.fond[1]) + Math.abs(b - zone.fond[2]) <= ECART_FOND;
+        clair[k] = proche || estClair(r, g, b) ? 1 : 0;
+    }
+    const x0 = Math.round(zone.x0 * largeur);
+    const x1 = Math.round(zone.x1 * largeur) - 1;
+    const y0 = Math.round(zone.y0 * hauteur);
+    const y1 = Math.round(zone.y1 * hauteur) - 1;
+    const yBas = prolongerVersLeBas(pixels, clair, largeur, hauteur, x0, x1, y1);
+    const yHaut = prolongerVersLeHaut(pixels, clair, largeur, hauteur, x0, x1, y0);
+    if (yBas === y1 && yHaut === y0)
+        return zone;
+    const n = zone.bords.length;
+    const parLigne = n / Math.max(1, y1 - y0 + 1);
+    const ajoutBas = Math.round((yBas - y1) * parLigne);
+    const ajoutHaut = Math.round((y0 - yHaut) * parLigne);
+    const bords = zone.bords.slice();
+    const bordsBas = bordsMedians(zone.bords.slice(-20));
+    const bordsHaut = bordsMedians(zone.bords.slice(0, 20));
+    for (let i = 0; i < ajoutBas; i += 1)
+        bords.push(bordsBas);
+    for (let i = 0; i < ajoutHaut; i += 1)
+        bords.unshift(bordsHaut);
+    return { ...zone, y0: yHaut / hauteur, y1: (yBas + 1) / hauteur, bords };
+}
 /** Écart toléré, somme des trois canaux, entre un pixel et le fond donné. */
 const ECART_FOND = 66;
 export function detecterZoneTexte(pixels, largeur, hauteur, options = {}) {
-    const { debutBande = 0.3, plafond = 0.25, fond } = options;
+    const { debutBande = 0.3, plafond = 0.25, fond, relache = false } = options;
     const n = largeur * hauteur;
     const L = new Uint8Array(n);
     const F0 = new Uint8Array(n);
@@ -79,8 +265,8 @@ export function detecterZoneTexte(pixels, largeur, hauteur, options = {}) {
             c += L[y * largeur + x];
         lignes.push(c / largeur);
     }
-    const bande = plusLongueSuite(lignes, 0.42, Math.floor(hauteur * debutBande));
-    if (!bande || bande[1] - bande[0] + 1 < hauteur * 0.12)
+    const bande = plusLongueSuite(lignes, relache ? 0.3 : 0.42, Math.floor(hauteur * debutBande));
+    if (!bande || bande[1] - bande[0] + 1 < hauteur * (relache ? 0.06 : 0.12))
         return null;
     const colonnes = [];
     for (let x = 0; x < largeur; x += 1) {
@@ -89,8 +275,8 @@ export function detecterZoneTexte(pixels, largeur, hauteur, options = {}) {
             c += L[y * largeur + x];
         colonnes.push(c / (bande[1] - bande[0] + 1));
     }
-    const etendue = plusLongueSuite(colonnes, 0.5);
-    if (!etendue || etendue[1] - etendue[0] + 1 < largeur * 0.4)
+    const etendue = plusLongueSuite(colonnes, relache ? 0.4 : 0.5);
+    if (!etendue || etendue[1] - etendue[0] + 1 < largeur * (relache ? 0.3 : 0.4))
         return null;
     const [cx0, cx1] = etendue;
     const ya = Math.max(Math.floor(hauteur * plafond), bande[0] - Math.floor(hauteur * 0.2));
@@ -237,13 +423,50 @@ export function detecterZoneTexte(pixels, largeur, hauteur, options = {}) {
         return null;
     const x0 = Math.min(...bordsPx.map((b) => b[0]));
     const x1 = Math.max(...bordsPx.map((b) => b[1]));
+    const yBas = prolongerVersLeBas(pixels, L, largeur, hauteur, x0, x1, y1);
+    const bordsBas = bordsMedians(bordsPx.slice(-20));
+    for (let y = y1 + 1; y <= yBas; y += 1)
+        bordsPx.push(bordsBas);
+    const yHaut = prolongerVersLeHaut(pixels, L, largeur, hauteur, x0, x1, y0);
+    const bordsHaut = bordsMedians(bordsPx.slice(0, 20));
+    for (let y = y0 - 1; y >= yHaut; y -= 1)
+        bordsPx.unshift(bordsHaut);
     return {
         x0: x0 / largeur,
-        y0: y0 / hauteur,
+        y0: yHaut / hauteur,
         x1: (x1 + 1) / largeur,
-        y1: (y1 + 1) / hauteur,
+        y1: (yBas + 1) / hauteur,
         fond: [0, 1, 2].map((k) => Math.round(somme[k] / compte)),
         bords: bordsPx.map(([g, d]) => [g / largeur, (d + 1) / largeur]),
+    };
+}
+/**
+ * La zone, de l'IMAGE vers le CADRE de la carte.
+ *
+ * Le scan est posé dans le cadre en `object-fit: cover` (ScanCard.css) : quand son rapport hauteur/largeur n'est pas celui
+ * du cadre (176/127), il est agrandi puis ROGNÉ, de moitié en haut et en bas (ou à gauche et à droite). Les fractions
+ * lues sur l'image entière n'étaient plus celles du cadre : au bas d'un scan de 615 x 882, le voile tombait 6 px trop
+ * haut et laissait dépasser la dernière ligne anglaise (audit du 25/10/2026, la cause de la plupart des cas « anglais
+ * sous le voile »).
+ */
+export function zoneDansLeCadre(zone, image, cadre) {
+    if (!(image.largeur > 0 && image.hauteur > 0 && cadre.largeur > 0 && cadre.hauteur > 0))
+        return zone;
+    const echelle = Math.max(cadre.largeur / image.largeur, cadre.hauteur / image.hauteur);
+    const dessinee = { largeur: image.largeur * echelle, hauteur: image.hauteur * echelle };
+    if (Math.abs(dessinee.largeur - cadre.largeur) < 0.5 && Math.abs(dessinee.hauteur - cadre.hauteur) < 0.5)
+        return zone;
+    const dx = (cadre.largeur - dessinee.largeur) / 2;
+    const dy = (cadre.hauteur - dessinee.hauteur) / 2;
+    const fx = (v) => Math.min(1, Math.max(0, (v * dessinee.largeur + dx) / cadre.largeur));
+    const fy = (v) => Math.min(1, Math.max(0, (v * dessinee.hauteur + dy) / cadre.hauteur));
+    return {
+        ...zone,
+        x0: fx(zone.x0),
+        x1: fx(zone.x1),
+        y0: fy(zone.y0),
+        y1: fy(zone.y1),
+        bords: zone.bords.map(([g, d]) => [fx(g), fx(d)]),
     };
 }
 /**
@@ -268,6 +491,28 @@ export function couleurDuFond(pixels, largeur, hauteur, [fx0, fy0, fx1, fy1]) {
     if (!total || canaux[0].length < total * 0.45)
         return null;
     return canaux.map((c) => c.sort((a, b) => a - b)[Math.floor(c.length / 2)]);
+}
+/**
+ * La zone de texte d'une carte dont le cadre n'est PAS gris clair (Skrulls verts, cadres teintés de crème ou de bleu) : la
+ * détection ordinaire n'y trouve rien et le texte anglais restait en clair (audit du 25/10/2026, une cinquantaine de
+ * cartes). On lit la couleur du fond dans la bande où ces cadres écrivent, puis on relance la détection sur CETTE couleur.
+ */
+export function detecterZoneSurFondTeinte(pixels, largeur, hauteur) {
+    const sondes = [
+        [0.35, 0.66, 0.65, 0.74],
+        [0.3, 0.72, 0.7, 0.8],
+        [0.35, 0.6, 0.65, 0.68],
+        [0.35, 0.78, 0.65, 0.86],
+    ];
+    for (const sonde of sondes) {
+        const fond = couleurDuFond(pixels, largeur, hauteur, sonde);
+        if (!fond)
+            continue;
+        const zone = detecterZoneTexte(pixels, largeur, hauteur, { fond }) ?? detecterZoneTexte(pixels, largeur, hauteur, { fond, relache: true });
+        if (zone)
+            return zone;
+    }
+    return detecterZoneTexte(pixels, largeur, hauteur, { relache: true });
 }
 /** Boîtes englobantes des taches sombres connexes d'un masque : [x0, y0, x1, y1, pixels]. */
 function taches(masque, largeur, hauteur) {
