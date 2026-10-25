@@ -225,6 +225,25 @@ describe('le rond', () => {
     expect((container.querySelectorAll('.rond-mini')[1] as HTMLElement).style.getPropertyValue('--rang')).toBe('1')
   })
 
+  it('un toucher sur une amelioration du mechant ouvre SA feuille, pas celle du mechant (25/10/2026, Klaw)', () => {
+    const condition = carte('31', 'upgrade', { name: 'Condition' })
+    const arme = carte('32', 'upgrade', { name: 'Arme' })
+    const d = decor()
+    render(<Rond unite={unite('klaw', 'villain', { name: 'Klaw' }, [condition, arme])} zone="vilain" decor={d} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Arme' }))
+    expect(d.ouvrirCarte).toHaveBeenCalledTimes(1)
+    expect(vi.mocked(d.ouvrirCarte).mock.calls[0]?.[0]).toMatchObject({ id: '32', name: 'Arme' })
+    expect(d.agir).not.toHaveBeenCalled()
+  })
+
+  it('une amelioration que le moteur demande de choisir (cible) est choisie au toucher, pas ouverte', () => {
+    const d = decor({ interactifs: new Map([[31, { role: 'cible' } as never]]) })
+    render(<Rond unite={unite('klaw', 'villain', { name: 'Klaw' }, [carte('31', 'upgrade', { name: 'Condition' })])} zone="vilain" decor={d} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Condition' }))
+    expect(d.agir).toHaveBeenCalledTimes(1)
+    expect(d.ouvrirCarte).not.toHaveBeenCalled()
+  })
+
   it('une carte prete (soutien, allie, amelioration, heros) a un anneau vert ; utilisee elle est grisee, sans anneau', () => {
     const { container, rerender } = render(<Rond unite={unite('s', 'support')} zone="enJeu" decor={decor()} />)
     expect(container.querySelector('.rond')?.classList.contains('est-prete')).toBe(true)

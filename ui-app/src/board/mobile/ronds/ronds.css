@@ -283,10 +283,16 @@
   z-index: calc(4 - var(--rang));
   width: var(--dh);
   height: var(--dh);
+  padding: 0;
+  border: 0;
   border-radius: 50%;
+  background-color: transparent;
   background-size: 190% auto;
   background-position: 50% 40%;
   box-shadow: 0 0 0 3px #6a7280;
+  /* Touchable (25/10/2026) : le conteneur laisse passer le doigt, chaque rond le prend. */
+  pointer-events: auto;
+  cursor: pointer;
 }
 .rond-nom,
 .rond-stats {

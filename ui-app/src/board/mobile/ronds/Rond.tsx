@@ -254,16 +254,32 @@ export function Rond({
           ))}
         </span>
       ) : null}
+      {/* Un toucher sur une amelioration l'ouvre, elle (25/10/2026, Klaw et ses deux attachements : « quand je clique
+          dessus, je ne peux pas les voir ») : les ronds etaient inertes, le doigt tombait sur le vide a cote de l'hote.
+          Meme geste qu'un rond : choisir si le moteur la demande, sinon ouvrir sa feuille. */}
       {ameliorations.length > 0 ? (
-        <span className="rond-attachees" aria-hidden="true">
-          {ameliorations.map((amelioration, i) => (
-            <span
-              key={amelioration.id}
-              className="rond-mini"
-              title={amelioration.name}
-              style={{ ['--rang' as string]: i, backgroundImage: `url(${urlDuJeton(amelioration.imageUrl)})` }}
-            />
-          ))}
+        <span className="rond-attachees">
+          {ameliorations.map((amelioration, i) => {
+            const roleAmelio = decor.interactifs.get(Number(amelioration.id))?.role
+            return (
+              <button
+                type="button"
+                key={amelioration.id}
+                className="rond-mini"
+                aria-label={amelioration.name}
+                title={amelioration.name}
+                disabled={vaincu}
+                style={{ ['--rang' as string]: i, backgroundImage: `url(${urlDuJeton(amelioration.imageUrl)})` }}
+                onClick={(evenement) => {
+                  evenement.stopPropagation()
+                  if (clicAvale()) return
+                  if (decor.manuel) return decor.manuel.choisir(amelioration)
+                  if (roleAmelio !== undefined && ROLES_QUI_CHOISISSENT.has(roleAmelio)) decor.agir(amelioration)
+                  else decor.ouvrirCarte(amelioration)
+                }}
+              />
+            )
+          })}
         </span>
       ) : null}
       {vaincu ? <span className="rond-vaincu-etiquette">{t('VAINCU')}</span> : null}
