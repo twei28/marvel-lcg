@@ -2057,5 +2057,15 @@
   ],
   "max_id": "ld004b"
  },
- "checksum": "60fe701933a2c7268c2f4b94cc7658d0ec49578f699afe6f2822b04b08177480"
+ "214. Custom (Predator)": {
+  "name": "predator",
+  "scenarios": [],
+  "heroes": [
+   "predator",
+   "predator_dutch"
+  ],
+  "encounters": [],
+  "max_id": "pd001b"
+ },
+ "checksum": "7b1bf2505b316e9b06d23e171e701043f771a2b588e8dea961beb51e9b577bfe"
 }

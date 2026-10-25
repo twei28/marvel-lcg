@@ -126982,5 +126982,543 @@
    "custom": "Mysteltainn"
   }
  ],
- "checksum": "d3111141b65a4146ad2775dd6cb62d52876d9d1e282f369926954285ada7f030"
+ "predator": [
+  {
+   "card_id": "pd001a",
+   "type": "Hero",
+   "name": "* Predator",
+   "subtitle": "",
+   "desc": {
+    "HP": "13",
+    "ATK": "3",
+    "THW": "0",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "SOLDIER",
+    "YAUTJA"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Response</b>: After a minion enters play, attach Infralocked to it.\n<i>Camouflaged Hunter</i> — <b>Response</b>: After you defeat a minion, give Predator a cloaked status card.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd001b",
+   "type": "AlterEgo",
+   "name": "* Yd'Nar",
+   "subtitle": "",
+   "desc": {
+    "HP": "13",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "SOLDIER",
+    "YAUTJA"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Setup</b>: Put Infralocked into play.\n<i>Future Trophy</i> — <b>Action</b>: Discard cards from the top of your deck until you discard an upgrade, then add that card to your hand. <i>(Limit once per round.)</i>",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd002",
+   "type": "Upgrade",
+   "name": "* Infralocked",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Predator",
+   "text": "Permanent.\n<b>Hero Interrupt</b>: When Predator defeats attached minion, remove 2 threat from a scheme (3 threat instead from a side scheme). Then, return this card to your play area.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd003",
+   "type": "PlayerMinion",
+   "name": "Xenomorph",
+   "subtitle": "Warrior",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "HP": "4",
+    "SCH": "0",
+    "ATK": "2",
+    "Teamwork": "XENOMORPH",
+    "Class": "Hero"
+   },
+   "traits": [
+    "XENOMORPH"
+   ],
+   "set_name": "Predator",
+   "text": "Teamwork ([[XENOMORPH]]).\n<b>When Defeated</b>: Ready Predator.\n<b>Interrupt</b>: When Xenomorph is defeated, shuffle it into your deck.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd004",
+   "type": "Event",
+   "name": "Ghost Protocol",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme (4 threat instead if you are cloaked).",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd005",
+   "type": "Event",
+   "name": "Spine Rip",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. If that enemy has Infralocked attached, this attack gains overkill.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd006",
+   "type": "Event",
+   "name": "Shadow Counter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent 3 of that damage. Then, give Predator a cloaked status card.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd007",
+   "type": "Event",
+   "name": "Savage Skewer",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "TACTIC"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. You may discard a cloaked status card to either stun and confuse that enemy or discard an attachment on that enemy with the text \"<b>Hero Action</b>\" or \"<b>Hero Response</b>\".",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd008",
+   "type": "Event",
+   "name": "Jungle Stalk",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Action</b>: Find a minion and put it into play engaged with you → heal damage from your hero for each icon ([star] and [boost]) in that card's boost area and give Predator a cloaked status card.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd009",
+   "type": "PlayerSideScheme",
+   "name": "* Honor Hunt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "StartingThreat": "5",
+    "Assault": "1",
+    "Victory": "0",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Predator",
+   "text": "Victory 0. Assault. <i>(Basic thwarts against this scheme use ATK instead of THW.)</i>\nWhile Honor Hunt is in the victory display, it gains \"<b>Action</b>: Find a minion and put it into play engaged with you. Any player may trigger this ability. <i>(Limit once per round)</i>.\"",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd010",
+   "type": "Support",
+   "name": "* Yautja Trophy Room",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Response</b>: After you defeat a minion, place 1 skull counter here.\n<b>Resource</b>: Exhaust Yautja Trophy Room and remove X skull counters from it → generate X [wild] resources.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd011",
+   "type": "Upgrade",
+   "name": "* Self Destruct",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "YY",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Action</b>: Exhaust this card → place 2 glyph counters here.\n<b>Hero Action</b>: Remove this card from the game → deal 1 damage to the villain and each minion engaged with you (to a maximum of 10) for each glyph counter here.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd012",
+   "type": "Upgrade",
+   "name": "Yautja Wrist Blades",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Predator",
+   "text": "Predator gains retaliate 1 and his basic attacks gain piercing.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd013",
+   "type": "Upgrade",
+   "name": "* Plasmacaster",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Plasmacaster → deal 2 damage to an enemy (3 damage instead if that enemy has an upgrade attached). This attack gains ranged.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd014",
+   "type": "Upgrade",
+   "name": "* Bio-Helmet",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Predator",
+   "text": "<b>Hero Action</b>: Exhaust Bio-Helmet → look at the top card of the encounter deck. For each icon ([star] and [boost]) in that card's boost area, remove 1 threat from a scheme.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd015",
+   "type": "Obligation",
+   "name": "Exposed Target",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Yd'Nar"
+   },
+   "traits": [],
+   "set_name": "Predator",
+   "text": "<b><i>Give to the Yd'Nar player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Yd'Nar → remove Exposed Target from the game.\n• Discard each cloaked status card from your identity and 1 [[TECH]] upgrade you control. If no cards were discarded this way, this card gains surge. Discard this obligation.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd016",
+   "type": "SideScheme",
+   "name": "Xenomorph's Prey",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Predator Nemesis",
+   "text": "<i>Once the hunter, now the hunted. The Xenomorph's Queen has marked her prey.</i>\nWhile this card is in play, Predator cannot gain cloaked status cards.\n<b>When Revealed</b>: Place 1 additional threat here for each status card in play.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd017",
+   "type": "Minion",
+   "name": "* Xenomorph Queen",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "SCH": "1",
+    "ATK": "3*",
+    "Boost": "2",
+    "Toughness": "1",
+    "Nemesis": "Predator"
+   },
+   "traits": [
+    "ELITE",
+    "XENOMORPH"
+   ],
+   "set_name": "Predator Nemesis",
+   "text": "Toughness.\n[star] Xenomorph Queen's attacks gain piercing and overkill.\n<i>(Predator's nemesis minion.)</i>",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd018",
+   "type": "Minion",
+   "name": "* Xenomorph Drone",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1**",
+    "Guard": "1",
+    "Teamwork": "XENOMORPH"
+   },
+   "traits": [
+    "XENOMORPH"
+   ],
+   "set_name": "Predator Nemesis",
+   "text": "Guard. Teamwork ([[XENOMORPH]]).\n<b>Forced Response</b>: After Xenomorph Drone engages you, if there are no other minions engaged with you, deal yourself 1 facedown encounter card.\n<hr />\n[star] <b>Boost</b>: Put Xenomorph Drone into play engaged with you.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd019",
+   "type": "Treachery",
+   "name": "Hunted By the Hive",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Predator Nemesis",
+   "text": "<b>When Revealed</b>: Xenomorph Queen attacks you. If it's not in play, find Xenomorph Queen and put it into play engaged with you.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd020",
+   "type": "Attachment",
+   "name": "Acid Blood",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Predator Nemesis",
+   "text": "Attached minion gets +1 ATK and gains retaliate 1.\n<b>When Revealed</b>: Find the Xenomorph Queen and put it into play engaged with you and attach this card to it.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd021",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Predator",
+   "text": "Max 1 per deck.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd022",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Predator",
+   "text": "Max 1 per deck.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd023",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Predator",
+   "text": "Max 1 per deck.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd024",
+   "type": "Event",
+   "name": "Razor Hunt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "TeamUp": "Wolverine;Predator",
+    "Class": "Basic"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "Team-Up (Wolverine and Predator). Max 1 per deck.\n<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage each to Wolverine and Predator. Deal 3 damage to an enemy. Deal 3 damage to an enemy.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd025",
+   "type": "Event",
+   "name": "Infrared Web",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "TeamUp": "Spider-Man;Predator",
+    "Class": "Basic"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "set_name": "",
+   "text": "Team-Up (Spider-Man and Predator). Max 1 per deck.\n<b>Hero Interrupt</b> <i>(attack/defense)</i>: When an enemy attack would deal damage to you, prevent 3 of that damage. Deal 3 damage to an enemy.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd026",
+   "type": "SideScheme",
+   "name": "Chopper",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Boost": "2",
+    "Hazard": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Predator Alt Nemesis",
+   "text": "Permanent.\nWhile there is no threat here, this scheme loses the [hazard] icon.\n<b>Forced Response</b>: After threat is placed here, if there is at least 8 threat here, the players lose the game.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd027",
+   "type": "Minion",
+   "name": "* Dutch Schaefer",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "2*",
+    "ATK": "2*",
+    "Boost": "2",
+    "Toughness": "1",
+    "Nemesis": "Predator"
+   },
+   "traits": [
+    "ELITE",
+    "SOLDIER"
+   ],
+   "set_name": "Predator Alt Nemesis",
+   "text": "Toughness.\n[star] <b>Forced Response</b>: After Dutch Schaefer activates, place 1 threat on each scheme.\n<i>(Predator's nemesis minion.)</i>\n<i>\"You're one ugly mother—.\"</i>",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd028",
+   "type": "Minion",
+   "name": "* Colonel Dillon",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2*",
+    "Boost": "2",
+    "Patrol": "1",
+    "Teamwork": "SOLDIER"
+   },
+   "traits": [
+    "SOLDIER"
+   ],
+   "set_name": "Predator Alt Nemesis",
+   "text": "Patrol. Teamwork ([[SOLDIER]]).\n[star] <b>Forced Response</b>: After Colonel Dillon attacks you, place 1 threat on each scheme.\n<i>\"Cause some damn fool accused you of being the best!\" —Dillon</i>",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd029",
+   "type": "Attachment",
+   "name": "M134 Minigun",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Predator Alt Nemesis",
+   "text": "Attached minion gets +1 ATK.\nAttach to Dutch Schaefer. If he is not in play, search the encounter deck and discard pile for him, reveal him and attach this card to him.\n[star] <b>Forced Response</b>: After Dutch Schaefer attacks you, place 1 threat on the Chopper side scheme.",
+   "custom": "RyCoRan"
+  },
+  {
+   "card_id": "pd030",
+   "type": "Treachery",
+   "name": "Get To The...",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Predator Alt Nemesis",
+   "text": "<b>When Revealed</b>: The villain schemes. Place 2 threat on The Chopper side scheme.\n<i>\"If it bleeds, we can kill it.\" —Dutch</i>",
+   "custom": "RyCoRan"
+  }
+ ],
+ "checksum": "424682aa57266e158ca6b2b591ed492ed71f56c9fabc4af63348f10fe5e9934e"
 }

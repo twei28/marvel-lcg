@@ -270,7 +270,7 @@
   "ma": {
    "pack": "ms_america",
    "libelle": "137. Custom (Ms. America)",
-   "cartes": 30,
+   "cartes": 31,
    "depuis": "2026-08-29",
    "note": "LIVRE (commit cd74477, 30 card_id). America Chavez, hero+nemesis (Catalina Chavez). Point neuf resolu au portage : le minion nemesis copie les modificateurs de stat du joueur en substituant l'icone THW->SCH. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
   },
@@ -596,7 +596,7 @@
   "ts": {
    "pack": "shredder",
    "libelle": "190. Custom (Shredder)",
-   "cartes": 30,
+   "cartes": 31,
    "depuis": "2026-10-16",
    "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), zip « TMNT Enemies / Shredder v3 ». Scenario Shredder (3 stades ts001-ts003, complots ts004a/b et ts005a/b, set Shredder ts006-ts022 en 17 cartes distinctes), modulaires Chunin (ts101-ts104), Foot Goon Squad (ts201-ts206, dont Bebop ts201 et Rocksteady ts205 en SBIRES : homonymes des vilains du pack tk, jamais cherches par le nom seul) et Shadow of the Foot (ts301-ts305). L'encart Shredder n'est pas une carte : regles codees dans les scripts. Carte d'etat Cloaked et mot-cle Cloak : deja au moteur (fiches cloak.md, cloaked.md). Traits MOLE, YOUKAI, WARTHOG, RHINOCEROS, SHARK, FALCON, RELIC ajoutes a l'enum."
   },
@@ -732,6 +732,13 @@
    "cartes": 19,
    "depuis": "2026-10-25",
    "note": "Cree le 25/10/2026. Auteur Mysteltainn, scenario « Lady Deathstrike » (MC Custom Content By: Mysteltainn), 31 scans dont 13 doublons au pixel pres. ld001-ld003 Lady Deathstrike I-III, ld004a/b complot principal Mutant Hunting Season, ld005 Bleeding Out (x4 mis de cote, un par joueur), ld006-ld014 le set de rencontre (15 cartes), ld015-ld018 le modulaire maison Reaver Resources (5 cartes). Compteur `bleed` ajoute a l'enum. Capacite nommee « Special » de Bleeding Out appelee PAR REFERENCE par 9 cartes (helper du set). Les sets Reavers et Military Grade existent deja (officiels) : le scenario referme reavers + standard, modulaire par defaut military_grade, alternative reaver_resources. Homonymes : * Lady Deathstrike (35034, 43029 minions), Titanium Exoskeleton / Inhibitor Collar (40091/40092 Military Grade), Stalking Prey (hs123) : aucun module du pack ne cherche par nom."
+  },
+  "pd": {
+   "pack": "predator",
+   "libelle": "214. Custom (Predator)",
+   "cartes": 31,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur RyCoRan, zip « Predator (5-25 Final) ». pd001a/b identite (Predator / Yd'Nar), pd002 Infralocked (Permanent, mis en jeu au Setup par l'alter-ego), pd003 Xenomorph (SBIRE DE JOUEUR), pd004-pd014 cartes signature, pd015 obligation Exposed Target, pd016-pd020 set nemesis Xenomorph, pd021-pd023 ressources de base a l'art du heros, pd024-pd025 evenements Team-Up de base (Razor Hunt, Infrared Web), pd026-pd030 set nemesis ALTERNATIF (Dutch, Dillon, Chopper). Decklist d'aspect fournie par l'auteur (image « Predator starter deck »). Statut Cloaked : deja au depot (pack TMNT, fiche mots-cles/cloaked.md). Prefixe `pd` libre."
   }
  }
 }
