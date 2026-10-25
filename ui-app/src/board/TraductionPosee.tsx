@@ -66,7 +66,7 @@ export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneText
           paysage
             ? (() => {
                 const zone = detecterZoneTextePaysage(pixels, largeur, hauteur, paysage)
-                return zone ? prolongerLaZone(elargirPaysage(zone, paysage, { pixels, largeur, hauteur }), pixels, largeur, hauteur) : null
+                return corrigerZone(code, zone ? prolongerLaZone(elargirPaysage(zone, paysage, { pixels, largeur, hauteur }), pixels, largeur, hauteur) : null)
               })()
             : corrigerZone(code, detecterZoneTexte(pixels, largeur, hauteur) ?? detecterZoneSurFondTeinte(pixels, largeur, hauteur))
         )
@@ -201,10 +201,20 @@ export function TraductionPosee({
         // Plafond (24/10/2026) : sur un telephone, la boite montait jusqu'au bord haut de la carte (une grande boite blanche
         // sur l'illustration, le texte minuscule en haut) alors que la zone detectee etait bonne. Elle ne grandit plus que d'un
         // tiers de sa hauteur ; au-dela, elle garde sa zone.
-        const plafond = hauteurRef * 1.35
+        const plafond = hauteurRef * (icones.length > 0 ? 1.6 : 1.35)
         const voulue = Math.min(element.scrollHeight, zone.y1 * hauteurCarte, plafond)
         element.style.top = `${(zone.y1 * hauteurCarte - voulue) * echelle}px`
         element.style.height = `${voulue}px`
+        // La boîte a grandi : la police, qui avait trop baissé pour la hauteur d'origine, remonte tant que le texte tient.
+        const depart = LARGEUR * 0.043
+        while (taille < depart) {
+          element.style.fontSize = `${taille + LARGEUR * 0.0015}px`
+          if (element.scrollHeight > element.clientHeight + 1) {
+            element.style.fontSize = `${taille}px`
+            break
+          }
+          taille += LARGEUR * 0.0015
+        }
       }
     }
     ajuster()
@@ -215,7 +225,7 @@ export function TraductionPosee({
     return () => {
       vivant = false
     }
-  }, [zone, texte])
+  }, [zone, texte, icones])
 
   if (!zone) return null
   const forme = formeDuCache(zone)

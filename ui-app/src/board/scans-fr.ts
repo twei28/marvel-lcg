@@ -28,6 +28,12 @@ export function scansFrActifs(): boolean {
     generee ne les connait pas, elle ne lit que les codes des archives. */
 export const SCANS_FR_MAISON: ReadonlySet<string> = new Set(['tough', 'stunned', 'confused'])
 
+/** Les cartes fan-made dont le scan est DEJA imprime en francais par son auteur (pack Superior Iron Man de Merlin, `si001a`...`si017`,
+    audit des voiles du 25/10/2026) : poser une traduction dessus ferait doublon avec l'image. Aucun fichier `fr_` n'existe pour elles. */
+export function scanDejaFrancais(code: string): boolean {
+  return /^si\d{3}[ab]?$/.test(code)
+}
+
 /** La liste generee fait foi : elle ne contient que des fichiers reellement
     extraits, donc jamais un art alternatif ni un dos generique. */
 export function aScanFr(picId: string): boolean {

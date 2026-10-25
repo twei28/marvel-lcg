@@ -2883,7 +2883,7 @@ export const TEXTES_FR_FANMADE = {
     // hunting_season — Vermin Cloning (SideScheme)
     'hs020': "<b>Une fois révélée</b> : cherchez un exemplaire de Vermin Clone dans le deck Rencontre et la pile de défausse, et mettez-le en jeu engagé avec le premier joueur.",
     // hunting_season — Bringer of Plague (SideScheme)
-    'hs021': "<b>Une fois révélée</b> : placez ici autant de menaces qu'il y en a sur les sbires [[RAT]] en jeu.",
+    'hs021': "<i>Les rats qui suivent Vermin sont vicieux et apportent la maladie avec eux partout où il va.</i>\n<b>Une fois révélée</b> : placez ici autant de menaces qu'il y en a sur les sbires [[RAT]] en jeu.",
     // hunting_season — A Mischief of Rats (Treachery)
     'hs022': "<b>Une fois révélée</b> : défaussez X cartes du deck Rencontre, X étant égal au double du niveau du méchant. Pour chaque sbire [[RAT]] défaussé de cette façon, choisissez soit de placer 2 menaces sur la manigance principale, soit de mettre ce sbire en jeu engagé avec vous.",
     // hunting_season — A Mischief of Rats (Treachery)

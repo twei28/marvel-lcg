@@ -3,7 +3,7 @@
 // centre (révélations, mise en place, scène de la phase du méchant).
 import { useEffect, useState, type ReactNode } from 'react'
 import { codeCarteConnu } from './marvelcdb'
-import { aScanFr, scansFrActifs } from './scans-fr'
+import { aScanFr, scanDejaFrancais, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
 import { TraductionPosee, type CotePaysage } from './TraductionPosee'
@@ -30,7 +30,7 @@ export function useTraductionFr(codeCarte?: string, artAlternatif = false): stri
   // Un ART ALTERNATIF est un scan anglais, meme sur une carte qui a son scan
   // francais : il faut alors le texte francais de TOUTES les cartes
   // (textes-fr-complets.ts, 700 Ko), charge une fois a la demande.
-  const scanAnglais = code !== undefined && scansFrActifs() && (artAlternatif || !aScanFr(code))
+  const scanAnglais = code !== undefined && scansFrActifs() && (artAlternatif || (!aScanFr(code) && !scanDejaFrancais(code)))
   const [textesComplets, setTextesComplets] = useState<Readonly<Record<string, string | undefined>>>()
   useEffect(() => {
     if (!scanAnglais || !artAlternatif || textesComplets) return

@@ -6,7 +6,7 @@
 //  - les arts alternatifs (01088_dh_drax) n'existent pas en francais, et c'est
 //    l'absence de la liste qui les protege, sans regle dediee.
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { CLE_SCANS_FR, picIdFr, scansFrActifs } from './scans-fr'
+import { CLE_SCANS_FR, picIdFr, scanDejaFrancais, scansFrActifs } from './scans-fr'
 import { CODES_SCAN_FR } from './scans-fr-liste'
 
 /** La liste reelle est generee ; les tests travaillent sur un echantillon. */
@@ -113,5 +113,14 @@ describe('alignerScansSurLangue', () => {
     } finally {
       spy.mockRestore()
     }
+  })
+})
+
+describe('scanDejaFrancais', () => {
+  it('le pack Superior Iron Man (scans imprimés en francais) n\'a pas besoin de voile, les autres oui', () => {
+    expect(scanDejaFrancais('si005')).toBe(true)
+    expect(scanDejaFrancais('si001a')).toBe(true)
+    expect(scanDejaFrancais('sk170b')).toBe(false)
+    expect(scanDejaFrancais('si005_cb')).toBe(false)
   })
 })

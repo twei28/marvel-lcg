@@ -18,6 +18,13 @@ describe('corrigerZone : zones relevées à la main', () => {
     expect(zone.bords[0][1]).toBeLessThan(zone.bords[zone.bords.length - 1][1])
   })
 
+  it('un palier change le bord gauche ou droit sur une partie de la hauteur (illustration qui mord sur le cadre)', () => {
+    const tk010 = corrigerZone('tk010', null)!
+    expect(tk010.bords[0][0]).toBeGreaterThan(tk010.bords[tk010.bords.length - 1][0])
+    const tk001a = corrigerZone('tk001a', null)!
+    expect(tk001a.bords[0][1]).toBeLessThan(tk001a.bords[tk001a.bords.length - 1][1])
+  })
+
   it('une carte sans correction garde sa détection, ou son absence', () => {
     expect(corrigerZone('zz999', detectee)).toBe(detectee)
     expect(corrigerZone('zz999', null)).toBeNull()
