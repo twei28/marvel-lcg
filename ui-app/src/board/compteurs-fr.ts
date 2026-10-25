@@ -51,6 +51,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   evasion: 'évasion',
   fury: 'furie',
   sand: 'sable',
+  bleed: 'saignement',
   flame: 'flamme',
   flare: 'fusée',
   calm: 'calme',

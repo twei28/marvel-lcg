@@ -2045,5 +2045,17 @@
   "encounters": [],
   "max_id": "ch001b"
  },
- "checksum": "a88a4c7f53bb5524fe0a0a638ac82deca8767e189213fe0fa054e124452a7ccc"
+ "213. Custom (Lady Deathstrike)": {
+  "name": "lady_deathstrike",
+  "scenarios": [
+   "lady_deathstrike"
+  ],
+  "heroes": [],
+  "encounters": [
+   "lady_deathstrike",
+   "reaver_resources"
+  ],
+  "max_id": "ld004b"
+ },
+ "checksum": "60fe701933a2c7268c2f4b94cc7658d0ec49578f699afe6f2822b04b08177480"
 }

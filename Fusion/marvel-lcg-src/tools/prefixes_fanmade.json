@@ -725,6 +725,13 @@
    "cartes": 22,
    "depuis": "2026-10-24",
    "note": "Cree le 24/10/2026. Auteur DesignHacker, format « SEALED ». ch001a/b identite (Shang-Chi), ch002 State of Flow (support Permanent + Setup, pile Flow), ch003-ch014 six evenements ATTACK en DEUX impressions chacun (icone de ressource imprimee differente : Flow la lit, donc card_id distincts), ch015-ch017 ameliorations, ch018 obligation Family Ties, ch019-ch021 set nemesis (Zheng Zu, The Life Stealer, Downtown Attack x3). Prefixe `ch` : `sc` est pris par tmnt_shinobi_dual et 63015 est l'allie Shang-Chi d'Iron Fist. Mot-cle maison Flow (fiche mots-cles/flow.md). Pas de decklist d'aspect fournie : player_deck vide."
+  },
+  "ld": {
+   "pack": "lady_deathstrike",
+   "libelle": "213. Custom (Lady Deathstrike)",
+   "cartes": 19,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur Mysteltainn, scenario « Lady Deathstrike » (MC Custom Content By: Mysteltainn), 31 scans dont 13 doublons au pixel pres. ld001-ld003 Lady Deathstrike I-III, ld004a/b complot principal Mutant Hunting Season, ld005 Bleeding Out (x4 mis de cote, un par joueur), ld006-ld014 le set de rencontre (15 cartes), ld015-ld018 le modulaire maison Reaver Resources (5 cartes). Compteur `bleed` ajoute a l'enum. Capacite nommee « Special » de Bleeding Out appelee PAR REFERENCE par 9 cartes (helper du set). Les sets Reavers et Military Grade existent deja (officiels) : le scenario referme reavers + standard, modulaire par defaut military_grade, alternative reaver_resources. Homonymes : * Lady Deathstrike (35034, 43029 minions), Titanium Exoskeleton / Inhibitor Collar (40091/40092 Military Grade), Stalking Prey (hs123) : aucun module du pack ne cherche par nom."
   }
  }
 }
