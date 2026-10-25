@@ -117,4 +117,11 @@ def ChoixApresAttaque(libelle: str, action: 'Callable[[Effect, Message.AfterUnit
             AbilityFactory.ForChoiceAbility("Place 1 threat on the main scheme",
                                             lambda targets: this.PlaceThreatOnSchemes("MainScheme", 1, effect)),
         )
-    return [AbilityFactory.AfterUnitAttackUnit(AbilityType.ForcedResponse, "You", "This", apres)]
+    def par_une_carte_du_joueur(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> bool:
+        Unused(effect)
+        return Player.IsType(message.attacker.GetControlByOrOwner())
+
+    # « You » ne couvre que l'IDENTITE du joueur ; « with a card you control » couvre aussi ses allies : l'attaquant est donc
+    # n'importe quelle unite que le joueur controle (jamais un sbire ou un vilain, controles par le scenario).
+    return [AbilityFactory.AfterUnitAttackUnit(AbilityType.ForcedResponse, Unit2, "This", apres,
+                                                conditions=[par_une_carte_du_joueur])]

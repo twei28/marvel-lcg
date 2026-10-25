@@ -21,7 +21,7 @@ def GetAbilities() -> Sequence['Ability']:
     def option(effect: 'Effect', message: 'Message.AfterUnitAttackUnit', joueur: 'Player') -> None:
         this = effect.this.CastTo(Villain)
         Unused(this)
-        this.PlaceThreatOnSchemes(Worlds.GetAllSideSchemes(effect), 1, effect)
+        this.PlaceThreatOnSchemes([s for s in Worlds.GetAllSideSchemes(effect) if not MainScheme.IsType(s)], 1, effect)
 
     return [
         *ChoixApresAttaque("Place 1 threat on each side scheme", option),

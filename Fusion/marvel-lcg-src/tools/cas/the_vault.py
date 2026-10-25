@@ -21,7 +21,9 @@ DECK_BASIQUE = "Puzzle.CreatePlayerDeck('01089', '01089', '01089', '01089', '010
 # Position deterministe : le Vault et le complot 1B en jeu, la regle des vilains posee, aucun vilain (on les ajoute).
 SOCLE = [
     "Puzzle.RemoveVillain('01094')",
+    "Puzzle.Remove('01097b')",            # le complot du Rhino : « the main scheme » doit etre vt017b, le SEUL complot principal
     "Puzzle.PutIntoPlay('vt017b')",
+    "Puzzle.SetThreat('vt017b', 0)",      # PutIntoPlay lui laisse sa menace de depart (1) : on mesure des DIFFERENCES
     "Puzzle.PutIntoPlay('vt018')",
     "Puzzle.SetVillainRule('LowestActivationOrder', 'PlayerChooses', True)",
 ]
@@ -118,7 +120,8 @@ CAS = [
 VERIFICATIONS = r'''
 def vt_etat(monde, aides):
     """Cles propres : `vault_en_jeu` (bool), `sous_vault_mechants` / `sous_vault_sbires` (nombres), `sous_vault` (liste de card_id, ordre libre),
-    `tous` (nombre de vilains en jeu), `deck_de_mechants`, `inspection_en_jeu` (bool), `fin` (None | "gagne" | "perdu") ; le reste va a etat_attendu."""
+    `tous` (nombre de vilains en jeu), `deck_de_mechants`, `inspection_en_jeu` (bool), `fin` (None | "gagne" | "perdu"),
+    `degats_joueurs` ([degats du joueur 1, du joueur 2...]), `le_mechant` (card_id de « the villain ») ; le reste va a etat_attendu."""
     from game.effect.rule import GameRule
     from game.operate.worlds import Worlds
     from game.operate.villains import Villains
@@ -139,11 +142,21 @@ def vt_etat(monde, aides):
         "deck_de_mechants": Villains.VillainDeckSize(effet),
         "inspection_en_jeu": bool(Worlds.FindCardsOnField(effet, name="Inspection of the Vault", card_type=Obligation)),
         "fin": (None if not monde.is_game_over else ("gagne" if monde.game_over.players_won else "perdu")),
+        # degats subis par l'identite de chaque joueur (ordre des sieges) ; `le_mechant` : « the villain » d'une carte de rencontre.
+        "degats_joueurs": [p.GetIdentity().max_health - p.GetIdentity().health for p in monde.const_seat_order_players],
+        "le_mechant": cid(Worlds.FindVillain(effet)),
     }
+    # `hazard_de` : [[card_id, n]] -> nombre d'icones Hazard de la carte en jeu.
+    for card_id, n in attendu.get("hazard_de") or []:
+        f = aides["par_id"](monde, card_id)
+        mesures_h = getattr(f, "hazard", None) if f is not None else None
+        if mesures_h != n:
+            soucis_h = f"hazard de {card_id} = {mesures_h} (attendu {n})"
+            return False, soucis_h
     soucis = []
-    propres = set(mesures)
+    propres = set(mesures) | {"hazard_de"}
     for cle in propres:
-        if cle in attendu:
+        if cle in attendu and cle in mesures:
             voulu = sorted(attendu[cle]) if cle == "sous_vault" else attendu[cle]
             if mesures[cle] != voulu:
                 soucis.append(f"{cle} = {mesures[cle]} (attendu {voulu})")
