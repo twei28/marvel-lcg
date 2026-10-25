@@ -5698,152 +5698,84 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // shang_chi — Shang-Chi (Hero)
   'ch001a': "<i>Chi Mastery</i> — <b>Réponse</b> : après que vous avez résolu une capacité « <b>Flow</b> », redressez Shang-Chi.",
   // shang_chi — Shang-Chi (AlterEgo)
-  'ch001b': "<i>Multiple Forms</i> — Vous pouvez inclure jusqu'à 3 exemplaires d'1 événement [[ATTACK]] de chaque aspect autre que votre aspect choisi.
-<i>Meditate</i> — <b>Réponse</b> : après que vous êtes passé sous cette forme, mélangez dans votre deck une carte de State of Flow.",
+  'ch001b': "<i>Multiple Forms</i> — Vous pouvez inclure jusqu'à 3 exemplaires d'1 événement [[ATTACK]] de chaque aspect autre que votre aspect choisi.\n<i>Meditate</i> — <b>Réponse</b> : après que vous êtes passé sous cette forme, mélangez dans votre deck une carte de State of Flow.",
   // shang_chi — State of Flow (Support)
-  'ch002': "Permanent. Mise en place.
-<b>Réponse forcée</b> : après que vous avez joué un événement [[ATTACK]], placez-le face visible sur le dessus ici, formant une pile. Après que le deck joueur est épuisé, mélangez chaque carte placée ici dans le deck joueur.
-<i>Mot-clé</i> - <b>Flow</b> : regardez la carte du dessus ici. Si une ressource imprimée sur cette carte correspond à la ressource requise par la capacité « <b>Flow</b> », vous pouvez aussi en résoudre les effets.",
+  'ch002': "Permanent. Mise en place.\n<b>Réponse forcée</b> : après que vous avez joué un événement [[ATTACK]], placez-le face visible sur le dessus ici, formant une pile. Après que le deck joueur est épuisé, mélangez chaque carte placée ici dans le deck joueur.\n<i>Mot-clé</i> - <b>Flow</b> : regardez la carte du dessus ici. Si une ressource imprimée sur cette carte correspond à la ressource requise par la capacité « <b>Flow</b> », vous pouvez aussi en résoudre les effets.",
   // shang_chi — Throat Punch (Event)
-  'ch003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât au méchant. Piochez 1 carte.
-<b>Flow</b> : [wild] → piochez 2 cartes supplémentaires.
-<i>« De Yuan Jing, je tire l'audace. »</i>",
+  'ch003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât au méchant. Piochez 1 carte.\n<b>Flow</b> : [wild] → piochez 2 cartes supplémentaires.\n<i>« De Yuan Jing, je tire l'audace. »</i>",
   // shang_chi — Throat Punch (Event)
-  'ch004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât au méchant. Piochez 1 carte.
-<b>Flow</b> : [wild] → piochez 2 cartes supplémentaires.
-<i>« De Yuan Jing, je tire l'audace. »</i>",
+  'ch004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât au méchant. Piochez 1 carte.\n<b>Flow</b> : [wild] → piochez 2 cartes supplémentaires.\n<i>« De Yuan Jing, je tire l'audace. »</i>",
   // shang_chi — Roundhouse Kick (Event)
-  'ch005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi.
-<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts à un ennemi.
-<i>« De Tang Minzhe, je tire la puissance. »</i>",
+  'ch005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi.\n<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts à un ennemi.\n<i>« De Tang Minzhe, je tire la puissance. »</i>",
   // shang_chi — Roundhouse Kick (Event)
-  'ch006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi.
-<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts à un ennemi.
-<i>« De Tang Minzhe, je tire la puissance. »</i>",
+  'ch006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi.\n<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts à un ennemi.\n<i>« De Tang Minzhe, je tire la puissance. »</i>",
   // shang_chi — Special Delivery (Event)
-  'ch007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si c'est le premier événement que vous jouez cette phase, désorientez un ennemi.
-<b>Flow</b> : [mental] → si cette attaque vainc un ennemi, jouez gratuitement le prochain événement [[ATTACK]] de votre main.",
+  'ch007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si c'est le premier événement que vous jouez cette phase, désorientez un ennemi.\n<b>Flow</b> : [mental] → si cette attaque vainc un ennemi, jouez gratuitement le prochain événement [[ATTACK]] de votre main.",
   // shang_chi — Special Delivery (Event)
-  'ch008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si c'est le premier événement que vous jouez cette phase, désorientez un ennemi.
-<b>Flow</b> : [mental] → si cette attaque vainc un ennemi, jouez gratuitement le prochain événement [[ATTACK]] de votre main.",
+  'ch008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si c'est le premier événement que vous jouez cette phase, désorientez un ennemi.\n<b>Flow</b> : [mental] → si cette attaque vainc un ennemi, jouez gratuitement le prochain événement [[ATTACK]] de votre main.",
   // shang_chi — Dragon Strike (Event)
-  'ch009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi.
-<b>Flow</b> : [energy] → cette attaque gagne Perçant, À Distance et Déferlement.
-<i>« Une autre arme. Avec elle, je lui prendrai les yeux. »</i>",
+  'ch009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi.\n<b>Flow</b> : [energy] → cette attaque gagne Perçant, À Distance et Déferlement.\n<i>« Une autre arme. Avec elle, je lui prendrai les yeux. »</i>",
   // shang_chi — Dragon Strike (Event)
-  'ch010': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi.
-<b>Flow</b> : [energy] → cette attaque gagne Perçant, À Distance et Déferlement.
-<i>« Une autre arme. Avec elle, je lui prendrai les yeux. »</i>",
+  'ch010': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi.\n<b>Flow</b> : [energy] → cette attaque gagne Perçant, À Distance et Déferlement.\n<i>« Une autre arme. Avec elle, je lui prendrai les yeux. »</i>",
   // shang_chi — Chi Jabs (Event)
-  'ch011': "<b>Action de héros</b> <i>(attaque)</i> : choisissez jusqu'à 3 ennemis différents. Infligez 1 dégât à chacun d'eux.
-<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts au méchant.
-<i>« De Kho Danghai, je tire la résistance. »</i>",
+  'ch011': "<b>Action de héros</b> <i>(attaque)</i> : choisissez jusqu'à 3 ennemis différents. Infligez 1 dégât à chacun d'eux.\n<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts au méchant.\n<i>« De Kho Danghai, je tire la résistance. »</i>",
   // shang_chi — Chi Jabs (Event)
-  'ch012': "<b>Action de héros</b> <i>(attaque)</i> : choisissez jusqu'à 3 ennemis différents. Infligez 1 dégât à chacun d'eux.
-<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts au méchant.
-<i>« De Kho Danghai, je tire la résistance. »</i>",
+  'ch012': "<b>Action de héros</b> <i>(attaque)</i> : choisissez jusqu'à 3 ennemis différents. Infligez 1 dégât à chacun d'eux.\n<b>Flow</b> <i>(attaque)</i> : [physical] → infligez 2 dégâts au méchant.\n<i>« De Kho Danghai, je tire la résistance. »</i>",
   // shang_chi — Augmented Blow (Event)
-  'ch013': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un sbire. Placez 1 compteur supplémentaire sur une amélioration qui porte des compteurs de n'importe quel type.
-<b>Flow</b> : [energy] → choisissez jusqu'à 2 améliorations qui portent des compteurs de n'importe quel type. Placez 2 compteurs supplémentaires sur chacune d'elles.",
+  'ch013': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un sbire. Placez 1 compteur supplémentaire sur une amélioration qui porte des compteurs de n'importe quel type.\n<b>Flow</b> : [energy] → choisissez jusqu'à 2 améliorations qui portent des compteurs de n'importe quel type. Placez 2 compteurs supplémentaires sur chacune d'elles.",
   // shang_chi — Augmented Blow (Event)
-  'ch014': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un sbire. Placez 1 compteur supplémentaire sur une amélioration qui porte des compteurs de n'importe quel type.
-<b>Flow</b> : [energy] → choisissez jusqu'à 2 améliorations qui portent des compteurs de n'importe quel type. Placez 2 compteurs supplémentaires sur chacune d'elles.",
+  'ch014': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un sbire. Placez 1 compteur supplémentaire sur une amélioration qui porte des compteurs de n'importe quel type.\n<b>Flow</b> : [energy] → choisissez jusqu'à 2 améliorations qui portent des compteurs de n'importe quel type. Placez 2 compteurs supplémentaires sur chacune d'elles.",
   // shang_chi — Stark Nunchaku (Upgrade)
-  'ch015': "Restreint. Entre en jeu avec 3 compteurs de charge.
-<b>Action de héros</b> : inclinez Stark Nunchaku et retirez 2 compteurs de charge → sonnez un ennemi.
-<i>Bzzt.</i>",
+  'ch015': "Restreint. Entre en jeu avec 3 compteurs de charge.\n<b>Action de héros</b> : inclinez Stark Nunchaku et retirez 2 compteurs de charge → sonnez un ennemi.\n<i>Bzzt.</i>",
   // shang_chi — Metal Bracers (Upgrade)
-  'ch016': "Shang-Chi a +1 DEF. Entre en jeu avec 2 compteurs de reflet.
-<b>Action de héros</b> : inclinez Metal Bracers et retirez 2 compteurs de reflet → donnez une carte d'état Tenace à Shang-Chi.",
+  'ch016': "Shang-Chi a +1 DEF. Entre en jeu avec 2 compteurs de reflet.\n<b>Action de héros</b> : inclinez Metal Bracers et retirez 2 compteurs de reflet → donnez une carte d'état Tenace à Shang-Chi.",
   // shang_chi — Martial Mastery (Upgrade)
-  'ch017': "Utilisations (3 compteurs de chi).
-<b>Interruption de héros</b> : quand vous utilisez un des pouvoirs de base de votre héros <i>(CTR, ATQ ou DEF)</i>, inclinez Martial Mastery et retirez 1 compteur de chi de cette carte → votre héros a +1 à ce pouvoir pour cet usage.",
+  'ch017': "Utilisations (3 compteurs de chi).\n<b>Interruption de héros</b> : quand vous utilisez un des pouvoirs de base de votre héros <i>(CTR, ATQ ou DEF)</i>, inclinez Martial Mastery et retirez 1 compteur de chi de cette carte → votre héros a +1 à ce pouvoir pour cet usage.",
   // shang_chi — Family Ties (Obligation)
-  'ch018': "<b><i>Donnez-la au joueur Shang-Chi.</i></b>
-Vous pouvez passer sous forme d'alter ego. Choisissez :
-• Infligez 2 dégâts à Shang-Chi → retirez Family Ties de la partie.
-• Infligez 2 dégâts à chaque allié. Défaussez cette obligation.",
+  'ch018': "<b><i>Donnez-la au joueur Shang-Chi.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Infligez 2 dégâts à Shang-Chi → retirez Family Ties de la partie.\n• Infligez 2 dégâts à chaque allié. Défaussez cette obligation.",
   // shang_chi — Zheng Zu (Minion)
-  'ch019': "<b>Réponse forcée</b> : après que Zheng Zu a manigancé, placez 1 compteur mystique ici.
-[star] Zheng Zu a +1 ATQ par compteur mystique ici.
-<i>(Sbire némésis de Shang-Chi.)</i>
-<i>« Gardez votre pitié pour vous-même... vous n'en recevrez aucune de moi. »</i>",
+  'ch019': "<b>Réponse forcée</b> : après que Zheng Zu a manigancé, placez 1 compteur mystique ici.\n[star] Zheng Zu a +1 ATQ par compteur mystique ici.\n<i>(Sbire némésis de Shang-Chi.)</i>\n<i>« Gardez votre pitié pour vous-même... vous n'en recevrez aucune de moi. »</i>",
   // shang_chi — The Life Stealer (SideScheme)
-  'ch020': "Victoire 1.
-<b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, placez 1 compteur mystique ici. Après qu'un troisième compteur mystique a été placé ici, infligez 3 dégâts à chaque héros et allié en jeu et retirez The Life Stealer de la partie.
-<i>Zheng Zu accomplit un rituel pour retrouver toute sa puissance. Ne le laissez pas faire !</i>",
+  'ch020': "Victoire 1.\n<b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du Méchant, placez 1 compteur mystique ici. Après qu'un troisième compteur mystique a été placé ici, infligez 3 dégâts à chaque héros et allié en jeu et retirez The Life Stealer de la partie.\n<i>Zheng Zu accomplit un rituel pour retrouver toute sa puissance. Ne le laissez pas faire !</i>",
   // shang_chi — Downtown Attack (Treachery)
-  'ch021': "<b>Une fois révélée</b> : retirez de la partie un allié ou une carte [[PERSONA]] en jeu. Si aucune carte n'a été retirée de la partie ainsi, subissez 3 dégâts indirects ou défaussez 3 cartes de votre main. Puis retirez cette carte de la partie.
-<i>« Mon père a toujours été un terroriste. » —Shang-Chi</i>",
+  'ch021': "<b>Une fois révélée</b> : retirez de la partie un allié ou une carte [[PERSONA]] en jeu. Si aucune carte n'a été retirée de la partie ainsi, subissez 3 dégâts indirects ou défaussez 3 cartes de votre main. Puis retirez cette carte de la partie.\n<i>« Mon père a toujours été un terroriste. » —Shang-Chi</i>",
   // lady_deathstrike — Lady Deathstrike (Mysteltainn) [set 213]
   // lady_deathstrike — Lady Deathstrike I (Villain)
-  'ld001': "<b>Réponse forcée</b> : après que Lady Deathstrike vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.
-<i>« Votre arrogance vous coûtera la vie ! »</i>",
+  'ld001': "<b>Réponse forcée</b> : après que Lady Deathstrike vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.\n<i>« Votre arrogance vous coûtera la vie ! »</i>",
   // lady_deathstrike — Lady Deathstrike II (Villain)
-  'ld002': "<b>Une fois révélé</b> : trouvez Reinforced Adamantium Claws et révélez-les. Si vous ne le pouvez pas, résolvez la capacité « <b>Special</b> » de chaque copie de Bleeding Out en jeu.
-<b>Réponse forcée</b> : après que Lady Deathstrike vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.",
+  'ld002': "<b>Une fois révélé</b> : trouvez Reinforced Adamantium Claws et révélez-les. Si vous ne le pouvez pas, résolvez la capacité « <b>Special</b> » de chaque copie de Bleeding Out en jeu.\n<b>Réponse forcée</b> : après que Lady Deathstrike vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.",
   // lady_deathstrike — Lady Deathstrike III (Villain)
-  'ld003': "<b>Une fois révélé</b> : résolvez la capacité « <b>Special</b> » de chaque copie de Bleeding Out en jeu. Trouvez Reaver Commander et révélez-le.
-<b>Réponse forcée</b> : après qu'un [[REAVER]] vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.",
+  'ld003': "<b>Une fois révélé</b> : résolvez la capacité « <b>Special</b> » de chaque copie de Bleeding Out en jeu. Trouvez Reaver Commander et révélez-le.\n<b>Réponse forcée</b> : après qu'un [[REAVER]] vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.",
   // lady_deathstrike — Mutant Hunting Season (MainScheme)
-  'ld004a': "<b>Contenu</b> : Lady Deathstrike (I) et Lady Deathstrike (II) <i>(Lady Deathstrike (II) et (III) en mode expert)</i>. Ensembles de rencontre Lady Deathstrike, Reavers et Standard. Un ensemble modulaire <i>(Military Grade ou Reaver Resources)</i>.
-<b>Mise en place</b> : attachez une copie de Bleeding Out à chaque joueur, puis mettez de côté chaque copie restante. Placez 3 compteurs de saignement sur chaque copie de Bleeding Out.",
+  'ld004a': "<b>Contenu</b> : Lady Deathstrike (I) et Lady Deathstrike (II) <i>(Lady Deathstrike (II) et (III) en mode expert)</i>. Ensembles de rencontre Lady Deathstrike, Reavers et Standard. Un ensemble modulaire <i>(Military Grade ou Reaver Resources)</i>.\n<b>Mise en place</b> : attachez une copie de Bleeding Out à chaque joueur, puis mettez de côté chaque copie restante. Placez 3 compteurs de saignement sur chaque copie de Bleeding Out.",
   // lady_deathstrike — Mutant Hunting Season (MainScheme)
-  'ld004b': "<i>Le décor est planté : Lady Deathstrike déclare la chasse ouverte contre les héros blessés !</i>
-<b>Réponse forcée</b> : après qu'un deck de joueur est épuisé, placez un jeton d'accélération ici.
-<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
+  'ld004b': "<i>Le décor est planté : Lady Deathstrike déclare la chasse ouverte contre les héros blessés !</i>\n<b>Réponse forcée</b> : après qu'un deck de joueur est épuisé, placez un jeton d'accélération ici.\n<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
   // lady_deathstrike — Bleeding Out (Attachment)
-  'ld005': "Permanent. Attachez-la à votre identité.
-<b>Spécial</b> : placez 1 compteur de saignement ici. Défaussez du dessus de votre deck un nombre de cartes égal au nombre de compteurs de saignement ici. Si vous défaussez ainsi une carte spécifique à une identité, subissez 1 dégât.
-<b>Action d'alter ego</b> : défaussez une carte de votre main → retirez 2 compteurs de saignement d'ici.",
+  'ld005': "Permanent. Attachez-la à votre identité.\n<b>Spécial</b> : placez 1 compteur de saignement ici. Défaussez du dessus de votre deck un nombre de cartes égal au nombre de compteurs de saignement ici. Si vous défaussez ainsi une carte spécifique à une identité, subissez 1 dégât.\n<b>Action d'alter ego</b> : défaussez une carte de votre main → retirez 2 compteurs de saignement d'ici.",
   // lady_deathstrike — Adamantium Nanoskeleton (Attachment)
-  'ld006': "Attachez-le à Lady Deathstrike.
-<b>Interruption forcée</b> : quand un joueur attaque Lady Deathstrike, empêchez tous les dégâts qui lui seraient infligés et résolvez À LA PLACE la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à l'identité de ce joueur. Puis défaussez cette carte. <i>(Au plus une fois par attaque.)</i>",
+  'ld006': "Attachez-le à Lady Deathstrike.\n<b>Interruption forcée</b> : quand un joueur attaque Lady Deathstrike, empêchez tous les dégâts qui lui seraient infligés et résolvez À LA PLACE la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à l'identité de ce joueur. Puis défaussez cette carte. <i>(Au plus une fois par attaque.)</i>",
   // lady_deathstrike — Reaver Commander (Attachment)
-  'ld007': "Attachez-le à Lady Deathstrike.
-Lady Deathstrike gagne Solide.
-<b>Réponse forcée</b> : après qu'un allié est vaincu par un [[REAVER]], placez 1 menace sur le complot principal.
-<b>Action de héros</b> : dépensez [mental][mental] → défaussez cette carte.
-[star] <b>Boost</b> : révélez cette carte.",
+  'ld007': "Attachez-le à Lady Deathstrike.\nLady Deathstrike gagne Solide.\n<b>Réponse forcée</b> : après qu'un allié est vaincu par un [[REAVER]], placez 1 menace sur le complot principal.\n<b>Action de héros</b> : dépensez [mental][mental] → défaussez cette carte.\n[star] <b>Boost</b> : révélez cette carte.",
   // lady_deathstrike — Reinforced Adamantium Claws (Attachment)
-  'ld008': "Attachez-les à Lady Deathstrike.
-[star] Les attaques de Lady Deathstrike gagnent Perçant.
-<b>Réponse de héros</b> : après que vous avez attaqué Lady Deathstrike, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité → défaussez cette carte.
-[star] <b>Boost</b> : révélez cette carte.",
+  'ld008': "Attachez-les à Lady Deathstrike.\n[star] Les attaques de Lady Deathstrike gagnent Perçant.\n<b>Réponse de héros</b> : après que vous avez attaqué Lady Deathstrike, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité → défaussez cette carte.\n[star] <b>Boost</b> : révélez cette carte.",
   // lady_deathstrike — Reaver Tracker (Minion)
-  'ld009': "<b>Une fois révélé</b> : résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité. Si vous n'avez pas défaussé de carte spécifique à une identité ainsi, placez 1 menace sur le complot principal.
-<i>« Là, on a un problème. Si on ne voit pas le mutant, vous êtes morts. »</i>",
+  'ld009': "<b>Une fois révélé</b> : résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité. Si vous n'avez pas défaussé de carte spécifique à une identité ainsi, placez 1 menace sur le complot principal.\n<i>« Là, on a un problème. Si on ne voit pas le mutant, vous êtes morts. »</i>",
   // lady_deathstrike — Deep Wound (Obligation)
-  'ld010': "Votre héros a -1 ATQ, -1 CTR et -1 DEF.
-<b>Réponse</b> : après que vous avez résolu l'« <b>Action d'alter ego</b> » de la copie de Bleeding Out attachée à votre identité, défaussez une carte de votre main → défaussez cette carte.
-<i>« Croyez-moi, c'est pire que ça en a l'air. »</i>",
+  'ld010': "Votre héros a -1 ATQ, -1 CTR et -1 DEF.\n<b>Réponse</b> : après que vous avez résolu l'« <b>Action d'alter ego</b> » de la copie de Bleeding Out attachée à votre identité, défaussez une carte de votre main → défaussez cette carte.\n<i>« Croyez-moi, c'est pire que ça en a l'air. »</i>",
   // lady_deathstrike — Bide Time (SideScheme)
-  'ld011': "<i>Parfois, mieux vaut conserver son énergie et poursuivre une fois la proie épuisée...</i>
-<b>Une fois vaincue</b> : le joueur qui a vaincu cette manigance résout la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à son identité.",
+  'ld011': "<i>Parfois, mieux vaut conserver son énergie et poursuivre une fois la proie épuisée...</i>\n<b>Une fois vaincue</b> : le joueur qui a vaincu cette manigance résout la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à son identité.",
   // lady_deathstrike — Stalking Prey (SideScheme)
-  'ld012': "<i>Un bref répit n'est pas ce qu'il paraît : Lady Deathstrike attend simplement le moment idéal pour frapper !</i>
-<b>Une fois révélée</b> : placez ici une menace supplémentaire égale au nombre de compteurs de saignement de la copie de Bleeding Out attachée à votre identité.",
+  'ld012': "<i>Un bref répit n'est pas ce qu'il paraît : Lady Deathstrike attend simplement le moment idéal pour frapper !</i>\n<b>Une fois révélée</b> : placez ici une menace supplémentaire égale au nombre de compteurs de saignement de la copie de Bleeding Out attachée à votre identité.",
   // lady_deathstrike — Lash Out (Treachery)
-  'ld013': "<b>Une fois révélée</b> : Lady Deathstrike vous attaque <i>(même si vous êtes en alter ego)</i>. Ne lui donnez pas de carte boost pour cette attaque. Si cette attaque inflige des dégâts, donnez une carte d'état Tenace à Lady Deathstrike.
-[star] <b>Boost</b> : donnez une carte d'état Tenace à Lady Deathstrike.",
+  'ld013': "<b>Une fois révélée</b> : Lady Deathstrike vous attaque <i>(même si vous êtes en alter ego)</i>. Ne lui donnez pas de carte boost pour cette attaque. Si cette attaque inflige des dégâts, donnez une carte d'état Tenace à Lady Deathstrike.\n[star] <b>Boost</b> : donnez une carte d'état Tenace à Lady Deathstrike.",
   // lady_deathstrike — Mutant Hunter (Treachery)
-  'ld014': "<b>Une fois révélée (Alter ego)</b> : résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité. Cette carte gagne Renfort.
-<b>Une fois révélée (Héros)</b> : placez 1 compteur de saignement sur la copie de Bleeding Out attachée à votre identité. Lady Deathstrike vous attaque.",
+  'ld014': "<b>Une fois révélée (Alter ego)</b> : résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité. Cette carte gagne Renfort.\n<b>Une fois révélée (Héros)</b> : placez 1 compteur de saignement sur la copie de Bleeding Out attachée à votre identité. Lady Deathstrike vous attaque.",
   // lady_deathstrike — Integrated Augmentations (Attachment)
-  'ld015': "Attachez-les à l'ennemi qui a l'ATQ imprimée la plus haute.
-L'ennemi attaché gagne Riposte 1.
-[star] Les attaques de l'ennemi attaché gagnent À Distance.
-<b>Réponse de héros</b> : après que vous avez attaqué l'ennemi attaché, dépensez [energy][mental] → défaussez cette carte.",
+  'ld015': "Attachez-les à l'ennemi qui a l'ATQ imprimée la plus haute.\nL'ennemi attaché gagne Riposte 1.\n[star] Les attaques de l'ennemi attaché gagnent À Distance.\n<b>Réponse de héros</b> : après que vous avez attaqué l'ennemi attaché, dépensez [energy][mental] → défaussez cette carte.",
   // lady_deathstrike — Titanium Exoskeleton (Attachment)
-  'ld016': "Attachez-le à l'ennemi qui a le moins de points de vie restants.
-L'ennemi attaché ne peut pas subir plus de 2 dégâts d'une seule attaque.
-<b>Action de héros</b> : choisissez de dépenser 3 ressources de n'importe quel type ou de retirer une carte d'état Désorienté ou Sonné de l'ennemi attaché → défaussez cette carte.",
+  'ld016': "Attachez-le à l'ennemi qui a le moins de points de vie restants.\nL'ennemi attaché ne peut pas subir plus de 2 dégâts d'une seule attaque.\n<b>Action de héros</b> : choisissez de dépenser 3 ressources de n'importe quel type ou de retirer une carte d'état Désorienté ou Sonné de l'ennemi attaché → défaussez cette carte.",
   // lady_deathstrike — Inhibitor Collar (Attachment)
-  'ld017': "Attachez-le à votre identité.
-Considérez la boîte de texte imprimée de votre identité comme vierge <i>(sauf les traits)</i>.
-<b>Action</b> : choisissez d'incliner un personnage que vous contrôlez ou de subir 3 dégâts → défaussez cette carte. <i>(N'importe quel joueur peut le faire.)</i>",
+  'ld017': "Attachez-le à votre identité.\nConsidérez la boîte de texte imprimée de votre identité comme vierge <i>(sauf les traits)</i>.\n<b>Action</b> : choisissez d'incliner un personnage que vous contrôlez ou de subir 3 dégâts → défaussez cette carte. <i>(N'importe quel joueur peut le faire.)</i>",
   // lady_deathstrike — Chop-Shop Cybernetics (SideScheme)
-  'ld018': "<i>Les cybernétiques du marché noir ne sont pas jolies, mais elles tiennent même dans de mauvaises conditions.</i>
-Entrave 1[per_hero].
-<b>Réponse forcée</b> : après qu'un attachement [[TECH]] entre en jeu, donnez une carte d'état Tenace au méchant et à l'ennemi attaché.",
+  'ld018': "<i>Les cybernétiques du marché noir ne sont pas jolies, mais elles tiennent même dans de mauvaises conditions.</i>\nEntrave 1[per_hero].\n<b>Réponse forcée</b> : après qu'un attachement [[TECH]] entre en jeu, donnez une carte d'état Tenace au méchant et à l'ennemi attaché.",
 }
