@@ -5804,7 +5804,7 @@ export const TEXTES_FR_FANMADE = {
     // predator — M134 Minigun (Attachment)
     'pd029': "Le sbire attaché gagne +1 ATQ.\nAttachez-la à Dutch Schaefer. S'il n'est pas en jeu, cherchez-le dans le deck de rencontre et la pile de défausse, révélez-le et attachez-lui cette carte.\n[star] <b>Réponse forcée</b> : après que Dutch Schaefer vous attaque, placez 1 menace sur la manigance annexe Chopper.",
     // predator — Get To The... (Treachery)
-    'pd030': "<b>Une fois révélée</b> : le vilain manigance. Placez 2 menaces sur la manigance annexe Chopper.\n<i>« If it bleeds, we can kill it. » —Dutch</i>",    // the vault — Batroc (I) (Villain)
+    'pd030': "<b>Une fois révélée</b> : le vilain manigance. Placez 2 menaces sur la manigance annexe Chopper.\n<i>« If it bleeds, we can kill it. » —Dutch</i>", // the vault — Batroc (I) (Villain)
     'vt001': "<b>Ordre d'activation 1</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Batroc avec une carte que vous contrôlez, choisissez : défaussez les 3 premières cartes du deck de rencontre ou placez 1 menace sur la manigance principale.\n<i>« Sacre Bleu! You are fastaire than ever Avengaire. »</i>",
     // the vault — Batroc (II) (Villain)
     'vt002': "<b>Ordre d'activation 1</b>\n<b>Une fois révélée</b> : chaque joueur défausse les 5 premières cartes de son deck.\n<b>Réponse forcée</b> : après que vous avez attaqué Batroc avec une carte que vous contrôlez, choisissez : défaussez les 3 premières cartes du deck de rencontre ou placez 1 menace sur la manigance principale.\n<i>« Sacre Bleu! You are fastaire than ever Avengaire. »</i>",

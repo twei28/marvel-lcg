@@ -305,6 +305,7 @@ const MOTEUR_FR: Record<string, string> = {
   'Player Choose Ability': 'Choix d’une capacité',
   'Player Deal Encounter Card': 'Carte rencontre distribuée',
   'Player Drew Cards': 'Cartes piochées',
+  'Player Resolve Flow': 'Flow résolu',
   'Player Eliminated': 'Joueur éliminé',
   'Player End Phase': 'Fin de la phase du joueur',
   'Player Moved In City': 'Déplacement en ville',

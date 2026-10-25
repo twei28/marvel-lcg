@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { GLYPHES, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
 import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
+import { corrigerZone } from './zones-corrections'
 import './traduction-posee.css'
 
 const LARGEUR = 300
@@ -67,7 +68,7 @@ export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneText
                 const zone = detecterZoneTextePaysage(pixels, largeur, hauteur, paysage)
                 return zone ? elargirPaysage(zone, paysage, { pixels, largeur, hauteur }) : null
               })()
-            : detecterZoneTexte(pixels, largeur, hauteur)
+            : corrigerZone(code, detecterZoneTexte(pixels, largeur, hauteur))
         )
       } catch {
         resoudre(null)
@@ -136,6 +137,12 @@ export function TraductionPosee({
 
   // Le français est plus long que l'anglais : la police baisse jusqu'à ce que
   // le texte tienne, sans descendre sous un plancher lisible.
+  //
+  // ⚠ CALCUL À TAILLE DE RÉFÉRENCE (25/10/2026, signalé sur téléphone) : la boîte est mise en page pour une carte de
+  // 300 px de large puis RÉDUITE par `transform: scale()`. Sur une petite carte (téléphone), la police voulue tombait
+  // sous la taille minimale du navigateur (et le zoom de texte de l'appli) : le texte ne rétrécissait plus, ne tenait
+  // pas, et la boîte montait sur l'illustration, hors du cadre de la carte. Une réduction par transformation, elle, n'est
+  // bornée par rien.
   useLayoutEffect(() => {
     const element = boite.current
     if (!zone || !element) return
@@ -143,26 +150,35 @@ export function TraductionPosee({
       // La largeur d'une carte PORTRAIT de même taille : en paysage, la carte
       // est plus large que haute, mais ses lettres gardent la même taille.
       const parent = element.parentElement
-      const carte = parent ? Math.min(parent.clientWidth, (parent.clientHeight * LARGEUR) / HAUTEUR) : 300
-      let taille = carte * 0.05
-      const plancher = carte * 0.026
+      const largeurParent = parent?.clientWidth ?? LARGEUR
+      const hauteurParent = parent?.clientHeight ?? HAUTEUR
+      const carte = parent ? Math.min(largeurParent, (hauteurParent * LARGEUR) / HAUTEUR) : LARGEUR
+      const echelle = carte > 0 ? carte / LARGEUR : 1
+      // Dimensions de la boîte À LA TAILLE DE RÉFÉRENCE (avant réduction).
+      const largeurRef = ((zone.x1 - zone.x0) * largeurParent) / echelle
+      const hauteurRef = ((zone.y1 - zone.y0) * hauteurParent) / echelle
+      element.style.transformOrigin = '0 0'
+      element.style.transform = `scale(${echelle})`
+      element.style.width = `${largeurRef}px`
+      let taille = LARGEUR * 0.05
+      const plancher = LARGEUR * 0.026
       element.style.fontSize = `${taille}px`
       element.style.top = `${zone.y0 * 100}%`
-      element.style.height = `${(zone.y1 - zone.y0) * 100}%`
+      element.style.height = `${hauteurRef}px`
       while (element.scrollHeight > element.clientHeight + 1 && taille > plancher) {
-        taille -= carte * 0.0015
+        taille -= LARGEUR * 0.0015
         element.style.fontSize = `${taille}px`
       }
       // Toujours trop long au plancher (petits encadrés de certains arts) : le
       // cache monte sur l'illustration plutôt que de couper le texte.
-      const hauteurCarte = parent?.clientHeight ?? 0
+      const hauteurCarte = hauteurParent / echelle
       if (hauteurCarte && element.scrollHeight > element.clientHeight + 1) {
         // Plafond (24/10/2026) : sur un telephone, la boite montait jusqu'au bord haut de la carte (une grande boite blanche
         // sur l'illustration, le texte minuscule en haut) alors que la zone detectee etait bonne. Elle ne grandit plus que d'un
         // tiers de sa hauteur ; au-dela, elle garde sa zone.
-        const plafond = (zone.y1 - zone.y0) * hauteurCarte * 1.35
+        const plafond = hauteurRef * 1.35
         const voulue = Math.min(element.scrollHeight, zone.y1 * hauteurCarte, plafond)
-        element.style.top = `${zone.y1 * hauteurCarte - voulue}px`
+        element.style.top = `${(zone.y1 * hauteurCarte - voulue) * echelle}px`
         element.style.height = `${voulue}px`
       }
     }
