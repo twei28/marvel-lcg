@@ -32,7 +32,7 @@ Transcriptions : `docs/packs/vault/TRANSCRIPTIONS.md`. Recettes : `docs/referenc
       `Puzzle.SetVillainRule(..., activation_order)`, `Puzzle.RevealNextVillain(reveal)`. Fiche `mots-cles/activation-order.md`, recettes §24.
 - [x] `test_cards.py` 7402 OK / 0 erreur ; `verifier_prefixes.py` OK ; `verifier_appels_modules.py the_vault` OK ; `audit_cartes.py` : 1 suspicion `vt029`
       « Boost » (faux positif : l'effet ★ passe par `WhenBoostIconsWouldBeCount`, prouvé par cas et substitution).
-- [x] Cas : **83 cas `[vt]` verts** (socle 11, activation 9, vilains 39, rencontre 24) ; substitution : **27/27 cartes** avec au moins un cas rouge sans leur module ;
+- [x] Cas : **84 cas `[vt]` verts** (dont l'égalité de Craven Escape, 25/10/2026 ; règles d'une vraie partie `v16_all` + `v18_all`, remplissage neutre 01098, 0 exception avalée) (socle 11, activation 9, vilains 39, rencontre 24) ; substitution : **27/27 cartes** avec au moins un cas rouge sans leur module ;
       les conditions de fin de partie (`VerifierFinDePartie`) calibrées ROUGE à part (3 cas tombent sans elles).
 - [x] Plateau : `ui-app/src/board/the-vault-plateau.test.ts` 6/6, rendu générique suffisant.
 - [x] Autoplay : 60 parties, 0 traceback.

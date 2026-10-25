@@ -14,7 +14,7 @@ HEROS, SC, SCX, _c = _h.HEROS, _h.SC, _h.SCX, _h._c
 def deck_avec(*ids):
     """Deck de rencontre sans boost + ces cartes au DESSUS (la derniere citee est la carte du dessus)."""
     return ["Puzzle.EmptyEncounterDeck()",
-            "Puzzle.CreateEncounterDeck(" + ", ".join(repr(i) for i in ["01105"] * 6 + list(ids)) + ")"]
+            "Puzzle.CreateEncounterDeck(" + ", ".join(repr(i) for i in ["01098"] * 6 + list(ids)) + ")"]
 
 
 def scout_pioche(cid, version, pioche):
@@ -58,14 +58,14 @@ CAS = [
        "« Discard the highest cost upgrade or support you control »",
        ["Puzzle.PutIntoPlay('01064', under_control=True)", "Puzzle.PutIntoPlay('01091', under_control=True)"], ["Puzzle.Reveal('ap205')"],
        {"defausse": ["01091"], "en_jeu": ["01064"]}),
-    _c("ap205 rien a defausser : la carte gagne surge (la carte suivante, 01105, est revelee)",
+    _c("ap205 rien a defausser : la carte gagne surge (regle v18 : une carte distribuee face cachee)",
        "« If no card was discarded this way, this card gains surge »",
        [], ["Puzzle.Reveal('ap205')"],
-       {"defausse_rencontre": ["01105"]}),
-    _c("ap205 Boost : le mechant recoit 1 carte boost supplementaire pour cette activation (01105 retournee puis defaussee)",
+       {"distribuees": 1}),
+    _c("ap205 Boost : le mechant recoit 1 carte boost supplementaire pour cette activation (01098 retournee puis defaussee)",
        "« [star] Boost: Give the villain 1 additional boost card for this activation »",
        [], ["Puzzle.Boost('ap205')"],
-       {"defausse_rencontre": ["ap205", "01105"]}),
+       {"defausse_rencontre": ["ap205", "01098"]}),
 
     _c("ap206 Masterplan (ability_link 01192) : 4 menaces sur CHAQUE manigance annexe (Expanding Hive et Skulls for the Taking)",
        "« Place 4 threat on each side scheme » (texte identique au Masterplan du core, script relie par `ability_link`)",
@@ -124,8 +124,8 @@ CAS = [
        passer_sur_option="Defense"),
     _c("ap304 attaque par le heros, la carte du dessus du deck de rencontre est une traitrise : l'attaquant est sonne",
        "« After a character attacks Apex Predator, discard the top card of the encounter deck. If that card is a treachery, stun the attacker »",
-       [HEROS, "Puzzle.PutIntoPlay('ap304')"], ["Puzzle.Attack('01001a')"],
-       {"statuts": [["01001a", "Stunned"]], "defausse_rencontre": ["01105"]}, cibles=["ap304"]),
+       [HEROS, "Puzzle.PutIntoPlay('ap304')"] + deck_avec("ap023"), ["Puzzle.Attack('01001a')"],
+       {"statuts": [["01001a", "Stunned"]], "defausse_rencontre": ["ap023"]}, cibles=["ap304"]),
     _c("ap304 contre-cas : la carte defaussee est un sbire -> pas d'etourdissement",
        "« If that card is a treachery »",
        [HEROS, "Puzzle.PutIntoPlay('ap304')"] + deck_avec("ap018"), ["Puzzle.Attack('01001a')"],

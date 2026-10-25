@@ -6,7 +6,8 @@
 #    (ap005a) : Reine puis Warlord en jeu, Skulls for the Taking et Expanding Hive en jeu (2 menaces chacune en solo), 16 Alien Scout
 #    glisses sous la Reine, compteur actif sur la Reine, complot 1B (ap005b) a 0 menace ;
 #  - heros `spider_man` (01001a/b) ; la partie commence en ALTER-EGO ; `HEROS` passe en forme heros ;
-#  - `SANS_BOOST` remplace le deck de rencontre par des cartes sans icone boost (01105) : une attaque ou une manigance n'est pas
+#  - `SANS_BOOST` remplace le deck de rencontre par des cartes sans icone boost (01098 Armored Rhino Suit : sans Rhino en jeu, elle ne fait
+#    rien ; surtout PAS 01105 « I'm Tough », qui gagne surge des que le mechant est Tenace et boucle sans fin avec la regle v18) : une attaque ou une manigance n'est pas
 #    modifiee par un boost tire au hasard ;
 #  - en forme heros, Spider-Sense (01001a) fait piocher a chaque attaque du mechant : ne JAMAIS vider le deck du joueur dans un cas
 #    d'attaque (la pioche dans un deck vide bloque l'attaque, dommages jamais infliges) ;
@@ -18,7 +19,7 @@ SC = "alien_vs_predator"
 SCX = "alien_vs_predator_expert"
 HEROS = "Puzzle.ChangeForm('01001a')"
 SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
-              "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')"]
+              "Puzzle.CreateEncounterDeck('01098', '01098', '01098', '01098', '01098', '01098', '01098', '01098')"]
 SANS_DECK = "Puzzle.EmptyPlayerDeck()"
 
 
@@ -28,6 +29,12 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
     cas = {"nom": "[ap] " + nom, "pourquoi": pourquoi, "scenario": cle.pop("scenario", SC),
            "heros": cle.pop("heros", "spider_man"), "mise_en_place": mise, "declencher": declencher,
            "verifier": cle.pop("verifier", "ap_etat"), "attendu": attendu}
+    # Les REGLES D'UNE VRAIE PARTIE (25/10/2026) : le lanceur (public/js/prepare/launcher.js) pose `v16_all` et `v18_all` sur toute partie
+    # neuve. Sans elles le harnais jouait l'ANCIEN surge (revelation immediate), que le jeu n'utilise plus : avec le deck de remplissage
+    # 01105 (« I'm Tough » gagne surge si le mechant est deja Tenace) les surges s'enchainaient, vidaient le deck et le moteur repiochait
+    # une carte encore en cours de revelation (AssertionError avalee, `face_on_event.py` Reveal). Avec v18, un surge DISTRIBUE face cachee
+    # (et 01105 bouclerait sans fin : d'ou le remplissage 01098).
+    cas.setdefault("regles", ["v16_all", "v18_all"])
     cas.update(cle)
     return cas
 

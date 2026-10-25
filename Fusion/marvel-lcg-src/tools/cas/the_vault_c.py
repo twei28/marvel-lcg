@@ -53,7 +53,7 @@ def _wr(num, nom, texte, *, attendu, mise=(), extra=()):
 CAS = []
 for _n in (1, 2):
     CAS += _fr(_n, "Batroc", "discard the top 3 cards of the encounter deck",
-               a={"defausse_rencontre": ["01105"] * 3}, b={"defausse_rencontre": []})
+               a={"defausse_rencontre": ["01098"] * 3}, b={"defausse_rencontre": []})
 for _n in (3, 4):
     CAS += _fr(_n, "Mentallo", "exhaust your identity",
                a={"exhausted": [H]}, b={"pret": [H]}, allie=True)

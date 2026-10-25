@@ -36,8 +36,9 @@ Transcriptions : `docs/packs/alien-vs-predator/TRANSCRIPTIONS.md`. Recettes : `d
 - [x] `test_cards.py` 7455 OK / 0 erreur ; `verifier_prefixes.py` OK ; `verifier_appels_modules.py alien_vs_predator` OK ; `audit_cartes.py` : 4 marqueurs
       (ap001a/ap003a « Response » : fabrique `AfterUnitAttackAndDamageUnit` ; ap022 « Interrupt » : perçant en bonus d'attaque + fin d'attaque ;
       ap306 « Action » : Réponse de héros par l'arbitrage 3), tous prouvés par cas et substitution.
-- [x] Cas : **122 cas `[ap]` verts**, passe tracée par `MCLCG_TRACE_CRASH` : 5 exceptions avalées, toutes la même assertion de `Reveal` dans l'ANCIEN surge
-      du harnais (`fix_surge` sans `v18_surge` ; une vraie partie distribue face cachée), aussi présente sur un cas The Vault d'avant ce pack.
+- [x] Cas : **122 cas `[ap]` verts**, joués avec les règles d'une vraie partie (`v16_all` + `v18_all`) et le remplissage neutre 01098 ; passe tracée par
+      `MCLCG_TRACE_CRASH` : **0 exception avalée** (une assertion de l'ancien surge, propre au harnais, venait du remplissage 01105 qui s'enchaînait ;
+      corrigé le 25/10/2026, The Vault compris : 84/84 cas `[vt]` verts, 0 exception).
 - [x] Substitution : voir chaque carte ; les verts restants sont expliqués carte par carte.
 - [x] Plateau : `alien-vs-predator-plateau.test.ts` 6/6, calibré ROUGE sur un compteur faux.
 - [x] Autoplay : 45 parties (spider_man : alien_vs_predator 15, alien_vs_predator_expert 15, rhino témoin 15 ; profils prudent / équilibré / agressif) :

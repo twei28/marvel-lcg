@@ -11,7 +11,7 @@ HEROS, SC, SCX, _c = _h.HEROS, _h.SC, _h.SCX, _h._c
 # Deck de rencontre sans boost + les cartes que la fouille doit trouver (la DERNIERE citee est le dessus).
 def deck_avec(*ids):
     return ["Puzzle.EmptyEncounterDeck()",
-            "Puzzle.CreateEncounterDeck(" + ", ".join(repr(i) for i in list(ids) + ["01105"] * 6) + ")"]
+            "Puzzle.CreateEncounterDeck(" + ", ".join(repr(i) for i in list(ids) + ["01098"] * 6) + ")"]
 
 
 CAS = [
@@ -30,9 +30,9 @@ CAS = [
        {"degats_identite": 1, "actif": "ap001a", "garde": False},
        passer_sur_option="Defense"),
     _c("ap203 Assault (alter-ego) : la carte gagne surge -> une carte de rencontre distribuee, aucune attaque",
-       "« When Revealed (Alter-Ego): This card gains surge. » (le harnais joue l'ancien surge : la carte suivante, 01105, est revelee)",
+       "« When Revealed (Alter-Ego): This card gains surge. » (regle v18 : surge = une carte distribuee face cachee)",
        [], ["Puzzle.Reveal('ap203')"],
-       {"defausse_rencontre": ["01105"], "actif": "ap001a", "degats_identite": 0}),
+       {"distribuees": 1, "actif": "ap001a", "degats_identite": 0}),
 
     # ============================================================ ap005b accompli : stade 2 (le moteur ne fait PAS perdre ici)
     _c("ap005b 1B accompli (8[per_hero] menaces) : passage au stade 2 (Battleground Earth), la partie continue",

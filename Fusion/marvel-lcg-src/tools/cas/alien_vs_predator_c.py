@@ -3,7 +3,7 @@
 #
 # Valeurs utiles : Alien Queen A SCH 2 / ATK 1 ; Predator Warlord A SCH 1 / ATK 2 ; Spider-Man ATK 2, DEF 3, main 5 (Peter Parker : 6) ;
 # Black Cat (01002, allie propre a Spider-Man) cout 2, PV 2, ressource Y ; Daredevil (01058) ressource R ; Great Responsibility (01061)
-# ressource B (le pilote compte les ressources en NOMBRE : payer [energy][physical] avec Energy YY s'arrete a 2 Y et echoue) ; Surveillance Team (01064) soutien cout 2 ; 01105 « I'm Tough » = traitrise.
+# ressource B (le pilote compte les ressources en NOMBRE : payer [energy][physical] avec Energy YY s'arrete a 2 Y et echoue) ; Surveillance Team (01064) soutien cout 2 ; remplissage du deck de rencontre : 01098 (neutre sans Rhino).
 import importlib.util as _imp
 import os as _os
 
@@ -16,7 +16,7 @@ HEROS, SC, SCX, _c = _h.HEROS, _h.SC, _h.SCX, _h._c
 def deck_avec(*ids):
     """Deck de rencontre sans boost + ces cartes au DESSUS (la derniere citee est la carte du dessus)."""
     return ["Puzzle.EmptyEncounterDeck()",
-            "Puzzle.CreateEncounterDeck(" + ", ".join(repr(i) for i in ["01105"] * 6 + list(ids)) + ")"]
+            "Puzzle.CreateEncounterDeck(" + ", ".join(repr(i) for i in ["01098"] * 6 + list(ids)) + ")"]
 
 
 CAS = [
@@ -26,9 +26,9 @@ CAS = [
        [], ["Puzzle.Reveal('ap011')"],
        {"attaches": [["ap002a", "ap011"]], "compteurs": [["ap011", "plasma", 3]]}),
     _c("ap011 sans Predator Warlord, Plasmacaster gagne surge (une carte distribuee)",
-       "« Otherwise, this card gains surge » (le harnais joue l'ancien surge : la carte suivante, 01105, est revelee)",
+       "« Otherwise, this card gains surge » (regle v18 : une carte distribuee face cachee)",
        ["Puzzle.RemoveVillain('ap002a')"], ["Puzzle.Reveal('ap011')"],
-       {"defausse_rencontre": ["01105"]}),
+       {"distribuees": 1}),
     _c("ap011 le Warlord attaque : 1 compteur plasma retire, carte du dessus du deck defaussee (Black Cat, cout 2) -> 2 degats indirects",
        "« remove 1 plasma counter from here and discard the top card of your deck → take indirect damage equal to that card's printed cost »",
        [HEROS, "Puzzle.EmptyHand()", "Puzzle.SetActiveVillain('ap002a')", "Puzzle.Reveal('ap011')",
@@ -163,7 +163,7 @@ CAS = [
     _c("ap025 Brood Breakout : la fouille revele un sbire XENOMORPH, qui recoit une carte Tenace en entrant en jeu",
        "« When Revealed: Discard ... until a [[XENOMORPH]] minion is discarded. Reveal it » + « After a [[XENOMORPH]] minion enters play, give it a "
        "tough status card »",
-       deck_avec("ap018", "01105"), ["Puzzle.Reveal('ap025')"],
+       deck_avec("ap018", "01098"), ["Puzzle.Reveal('ap025')"],
        {"en_jeu": ["ap018"], "statuts": [["ap018", "Tough"]]}),
 
     # ============================================================ ap026 Alien Assault
@@ -225,7 +225,7 @@ CAS = [
     # ============================================================ ap031 Lethal Ambush
     _c("ap031 Lethal Ambush : le 1er sbire des 7 cartes defaussees entre en jeu engage ; puis le mechant ET ce sbire attaquent (1 + 2 = 3 degats)",
        "« Put the first minion discarded this way into play engaged with you. Then, the villain and each minion engaged with you attacks you »",
-       [HEROS, "Puzzle.EmptyHand()"] + deck_avec("ap018", "01105"), ["Puzzle.Reveal('ap031')"],
+       [HEROS, "Puzzle.EmptyHand()"] + deck_avec("ap018", "01098"), ["Puzzle.Reveal('ap031')"],
        {"en_jeu": ["ap018"], "degats_identite": 3},
        passer_sur_option="Defense"),
 

@@ -15,7 +15,7 @@ SCX = "the_vault_expert"
 HEROS = "Puzzle.ChangeToFace('01001b', '01001a')"
 SANS_DECK = "Puzzle.EmptyPlayerDeck()"
 SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
-              "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')"]
+              "Puzzle.CreateEncounterDeck('01098', '01098', '01098', '01098', '01098', '01098', '01098', '01098')"]
 DECK_BASIQUE = "Puzzle.CreatePlayerDeck('01089', '01089', '01089', '01089', '01089', '01089')"
 
 # Position deterministe : le Vault et le complot 1B en jeu, la regle des vilains posee, aucun vilain (on les ajoute).
@@ -54,6 +54,12 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
     cas = {"nom": "[vt] " + nom, "pourquoi": pourquoi, "scenario": scenario,
            "heros": cle.pop("heros", "spider_man"), "mise_en_place": mise, "declencher": declencher,
            "verifier": cle.pop("verifier", "vt_etat"), "attendu": attendu}
+    # Les REGLES D'UNE VRAIE PARTIE (25/10/2026) : le lanceur (public/js/prepare/launcher.js) pose `v16_all` et `v18_all` sur toute partie
+    # neuve. Sans elles le harnais jouait l'ANCIEN surge (revelation immediate), que le jeu n'utilise plus : avec le deck de remplissage
+    # 01105 (« I'm Tough » gagne surge si le mechant est deja Tenace) les surges s'enchainaient, vidaient le deck et le moteur repiochait
+    # une carte encore en cours de revelation (AssertionError avalee, `face_on_event.py` Reveal). Avec v18, un surge DISTRIBUE face cachee
+    # (et 01105 bouclerait sans fin : remplissage 01098 Armored Rhino Suit, neutre sans Rhino).
+    cas.setdefault("regles", ["v16_all", "v18_all"])
     cas.update(cle)
     return cas
 
