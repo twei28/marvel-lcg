@@ -36,6 +36,7 @@ Transcriptions : `docs/packs/vault/TRANSCRIPTIONS.md`. Recettes : `docs/referenc
       les conditions de fin de partie (`VerifierFinDePartie`) calibrées ROUGE à part (3 cas tombent sans elles).
 - [x] Plateau : `ui-app/src/board/the-vault-plateau.test.ts` 6/6, rendu générique suffisant.
 - [x] Autoplay : 60 parties, 0 traceback.
+- [x] `verifier_tous_les_decks.py` : **157/157 decks montent une partie** (fichiers partagés du moteur touchés : `enemies.py`, `world.py`, `villains.py`, `villain.py`).
 - [ ] **Partie réelle jouée par un humain : NON FAITE** (lecture à l'écran de plusieurs vilains et des cartes sous The Vault, choix du vilain visé par une carte
       joueur, rythme du deck de vilains, équilibre du scénario : le pilote perd aussi contre Rhino, le taux de victoire de l'autoplay ne dit rien).
 - Non couvert par un cas : un vilain qui ENTRE en jeu pendant l'étape 2 (règle « ordre supérieur au vilain qui vient d'activer », codée dans
