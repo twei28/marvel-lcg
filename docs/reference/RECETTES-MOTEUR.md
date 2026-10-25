@@ -1888,3 +1888,23 @@ Harnais (`tools/cas/kree_sentry.py`, `tools/cas/imperial_guard.py`) :
 - ⚠ **Banc de test, minions** : Hydra Mercenary (`01101`) a GUARD (le vilain n'est plus ciblable), Sandman (`01102`) entre en jeu avec Tough, Vulture (`01167`) attaque à l'engagement (déclenche les Interruptions du héros), Hydra Bomber `01110` a un When Revealed. Neutres : Shocker `01103` (3 PV), Weapons Runner `01121` (2 PV), Hydra Soldier `01182` (4 PV, Guard : cible d'un « minion » seulement), M.O.D.O.K. `01184` (8 PV, Riposte 2).
 - ⚠ **Banc de test, `cibles`** : le pilote choisit les cibles listées dans l'ordre ; le MÊME `card_id` listé deux fois est visé deux fois (`shc015` listé deux fois = +4 compteurs au lieu de +2).
 - ⚠ **`Puzzle.PlaceUnder('<attaque>', '<soutien>', face_up=True)`** garnit une pile ; `pose_sous: [[hote, card_id]]` la lit ; `pile_flow` (cas `shang_chi.py`) lit `dessus_pile`, `pile`, `pile_vide`, `attaque` et `etape_un`.
+
+## 22. Lady Deathstrike (Mysteltainn, `ld`, 25/10/2026) : recettes et pièges payés
+
+| Texte imprimé / besoin | API | Modèle | Piège |
+|---|---|---|---|
+| « Resolve the "Special" ability on <carte> » appelée PAR 9 cartes, avec retour (« if you did not discard... ») | helper du set `ResoudreSaignement` : `carte.ld_defausse_heros = False` ; `carte.ResolveSpecialAbility(joueur, effect)` ; la Special (`WhenResolveSpecialAbility("This", op)`) écrit le résultat sur la carte | `ld005`, `ld009` | `ResolveSpecialAbility` ne rend pas le résultat de l'op : un attribut posé sur la face le porte |
+| « Attach a copy to each player » depuis le `set_aside` du scénario | `Worlds.GetSetAsideAreaCards(effect, CardFinder(card_ids=[..]))` + `face.PutIntoPlay(joueur, effect)` dans `WhenCardSetup("This")` du 1A | `ld004a` | `"set_aside": ["ld005"] * 4` dans le JSON du scénario |
+| « Find X and reveal it » / « If you cannot » | `Find.FindAndReveal(effect, joueur, name=.., card_type=..)` rend la carte ou None | `ld002`, `ld003` | stade II à l'ouverture : en expert au Setup, en standard quand le stade I est vaincu (`Puzzle.Damage('ld001', 99)`) ; `RevealNextVillain` ne sert qu'aux scénarios multi-vilains |
+| Les attachements d'un vilain à l'étape suivante | natif : ils SUIVENT le stade | `ld008` | les Griffes de II restent sur III |
+| « After X attacks and damages you » | `AfterUnitAttackAndDamageUnit(type, attaquant, "You", op)` ; joueur = `message.GetToPlayer()` | `ld001`-`ld003` | attaquant par `CardFinder(trait="REAVER", card_type=Enemy)` |
+| « Prevent all damage ... instead » sur une attaque de n'importe quel personnage | `WhenUnitWouldTakeDamage(ForcedInterrupt, "AttachedEnemy", op, is_from_attack=True)` + `message.PreventDamage("All", effect)` ; joueur = `message.source.GetControlByOrOwner()` | `ld006` | « Max once per attack » vient gratuitement : la 2e armure ne voit plus de dégâts à empêcher |
+| « Lady Deathstrike attacks you, no boost card, if it deals damage » | `vilain.DoAttackYou(joueur, effect, property=AttackProperty(do_not_give_boost=True), if_this_attack_deals_damage=fn)` | `ld013` | |
+| Menace « N par joueur » du complot / HP par joueur | `desc` `"1*"`, `"9*"`, `"16*"` | `ld001`, `ld004b` | |
+| « After a player deck empties » (n'importe quel joueur) | `Ability(ForcedResponse, Message.AfterDeckRunOut, [lambda e, m: m.deck.flags.is_player_deck], op)` + `scheme.PlaceAccelerationToken(1, effect)` | `ld004b` | `EmptyPlayerDeck` du banc de test pose déjà 1 jeton : mesurer en delta |
+| Icônes Crisis / Hazard / Amplify non identifiées | glyphes `C`, `H`, `F` de `public/fonts/ChampionsIcons.ttf` rendus avec Pillow à côté du scan | `ld011`, `ld012`, `ld018` | clés de test `icones: [["Crisis", 1]]` en MAJUSCULE initiale |
+| Compteur maison | ajouter à `CardFace.COUNTER` et `compteurs-fr.ts` | `bleed` | |
+| Banc de test : un ennemi qui attaque en forme héros peut être défendu par le pilote | rester en ALTER-EGO pour mesurer les dégâts | `ld005` | |
+
+- ⚠ **Extraction d'un zip : jamais `| head`** (SIGPIPE : l'extraction s'arrête, des cartes manquent sans erreur).
+- ⚠ `tools/cas/<bloc>_b.py` peut recharger le premier fichier de cas par `importlib` pour en réutiliser aides et vérificateur.

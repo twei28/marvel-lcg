@@ -5775,4 +5775,75 @@ Vous pouvez passer sous forme d'alter ego. Choisissez :
   // shang_chi — Downtown Attack (Treachery)
   'ch021': "<b>Une fois révélée</b> : retirez de la partie un allié ou une carte [[PERSONA]] en jeu. Si aucune carte n'a été retirée de la partie ainsi, subissez 3 dégâts indirects ou défaussez 3 cartes de votre main. Puis retirez cette carte de la partie.
 <i>« Mon père a toujours été un terroriste. » —Shang-Chi</i>",
+  // lady_deathstrike — Lady Deathstrike (Mysteltainn) [set 213]
+  // lady_deathstrike — Lady Deathstrike I (Villain)
+  'ld001': "<b>Réponse forcée</b> : après que Lady Deathstrike vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.
+<i>« Votre arrogance vous coûtera la vie ! »</i>",
+  // lady_deathstrike — Lady Deathstrike II (Villain)
+  'ld002': "<b>Une fois révélé</b> : trouvez Reinforced Adamantium Claws et révélez-les. Si vous ne le pouvez pas, résolvez la capacité « <b>Special</b> » de chaque copie de Bleeding Out en jeu.
+<b>Réponse forcée</b> : après que Lady Deathstrike vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.",
+  // lady_deathstrike — Lady Deathstrike III (Villain)
+  'ld003': "<b>Une fois révélé</b> : résolvez la capacité « <b>Special</b> » de chaque copie de Bleeding Out en jeu. Trouvez Reaver Commander et révélez-le.
+<b>Réponse forcée</b> : après qu'un [[REAVER]] vous a attaqué et blessé, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité.",
+  // lady_deathstrike — Mutant Hunting Season (MainScheme)
+  'ld004a': "<b>Contenu</b> : Lady Deathstrike (I) et Lady Deathstrike (II) <i>(Lady Deathstrike (II) et (III) en mode expert)</i>. Ensembles de rencontre Lady Deathstrike, Reavers et Standard. Un ensemble modulaire <i>(Military Grade ou Reaver Resources)</i>.
+<b>Mise en place</b> : attachez une copie de Bleeding Out à chaque joueur, puis mettez de côté chaque copie restante. Placez 3 compteurs de saignement sur chaque copie de Bleeding Out.",
+  // lady_deathstrike — Mutant Hunting Season (MainScheme)
+  'ld004b': "<i>Le décor est planté : Lady Deathstrike déclare la chasse ouverte contre les héros blessés !</i>
+<b>Réponse forcée</b> : après qu'un deck de joueur est épuisé, placez un jeton d'accélération ici.
+<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
+  // lady_deathstrike — Bleeding Out (Attachment)
+  'ld005': "Permanent. Attachez-la à votre identité.
+<b>Spécial</b> : placez 1 compteur de saignement ici. Défaussez du dessus de votre deck un nombre de cartes égal au nombre de compteurs de saignement ici. Si vous défaussez ainsi une carte spécifique à une identité, subissez 1 dégât.
+<b>Action d'alter ego</b> : défaussez une carte de votre main → retirez 2 compteurs de saignement d'ici.",
+  // lady_deathstrike — Adamantium Nanoskeleton (Attachment)
+  'ld006': "Attachez-le à Lady Deathstrike.
+<b>Interruption forcée</b> : quand un joueur attaque Lady Deathstrike, empêchez tous les dégâts qui lui seraient infligés et résolvez À LA PLACE la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à l'identité de ce joueur. Puis défaussez cette carte. <i>(Au plus une fois par attaque.)</i>",
+  // lady_deathstrike — Reaver Commander (Attachment)
+  'ld007': "Attachez-le à Lady Deathstrike.
+Lady Deathstrike gagne Solide.
+<b>Réponse forcée</b> : après qu'un allié est vaincu par un [[REAVER]], placez 1 menace sur le complot principal.
+<b>Action de héros</b> : dépensez [mental][mental] → défaussez cette carte.
+[star] <b>Boost</b> : révélez cette carte.",
+  // lady_deathstrike — Reinforced Adamantium Claws (Attachment)
+  'ld008': "Attachez-les à Lady Deathstrike.
+[star] Les attaques de Lady Deathstrike gagnent Perçant.
+<b>Réponse de héros</b> : après que vous avez attaqué Lady Deathstrike, résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité → défaussez cette carte.
+[star] <b>Boost</b> : révélez cette carte.",
+  // lady_deathstrike — Reaver Tracker (Minion)
+  'ld009': "<b>Une fois révélé</b> : résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité. Si vous n'avez pas défaussé de carte spécifique à une identité ainsi, placez 1 menace sur le complot principal.
+<i>« Là, on a un problème. Si on ne voit pas le mutant, vous êtes morts. »</i>",
+  // lady_deathstrike — Deep Wound (Obligation)
+  'ld010': "Votre héros a -1 ATQ, -1 CTR et -1 DEF.
+<b>Réponse</b> : après que vous avez résolu l'« <b>Action d'alter ego</b> » de la copie de Bleeding Out attachée à votre identité, défaussez une carte de votre main → défaussez cette carte.
+<i>« Croyez-moi, c'est pire que ça en a l'air. »</i>",
+  // lady_deathstrike — Bide Time (SideScheme)
+  'ld011': "<i>Parfois, mieux vaut conserver son énergie et poursuivre une fois la proie épuisée...</i>
+<b>Une fois vaincue</b> : le joueur qui a vaincu cette manigance résout la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à son identité.",
+  // lady_deathstrike — Stalking Prey (SideScheme)
+  'ld012': "<i>Un bref répit n'est pas ce qu'il paraît : Lady Deathstrike attend simplement le moment idéal pour frapper !</i>
+<b>Une fois révélée</b> : placez ici une menace supplémentaire égale au nombre de compteurs de saignement de la copie de Bleeding Out attachée à votre identité.",
+  // lady_deathstrike — Lash Out (Treachery)
+  'ld013': "<b>Une fois révélée</b> : Lady Deathstrike vous attaque <i>(même si vous êtes en alter ego)</i>. Ne lui donnez pas de carte boost pour cette attaque. Si cette attaque inflige des dégâts, donnez une carte d'état Tenace à Lady Deathstrike.
+[star] <b>Boost</b> : donnez une carte d'état Tenace à Lady Deathstrike.",
+  // lady_deathstrike — Mutant Hunter (Treachery)
+  'ld014': "<b>Une fois révélée (Alter ego)</b> : résolvez la capacité « <b>Special</b> » de la copie de Bleeding Out attachée à votre identité. Cette carte gagne Renfort.
+<b>Une fois révélée (Héros)</b> : placez 1 compteur de saignement sur la copie de Bleeding Out attachée à votre identité. Lady Deathstrike vous attaque.",
+  // lady_deathstrike — Integrated Augmentations (Attachment)
+  'ld015': "Attachez-les à l'ennemi qui a l'ATQ imprimée la plus haute.
+L'ennemi attaché gagne Riposte 1.
+[star] Les attaques de l'ennemi attaché gagnent À Distance.
+<b>Réponse de héros</b> : après que vous avez attaqué l'ennemi attaché, dépensez [energy][mental] → défaussez cette carte.",
+  // lady_deathstrike — Titanium Exoskeleton (Attachment)
+  'ld016': "Attachez-le à l'ennemi qui a le moins de points de vie restants.
+L'ennemi attaché ne peut pas subir plus de 2 dégâts d'une seule attaque.
+<b>Action de héros</b> : choisissez de dépenser 3 ressources de n'importe quel type ou de retirer une carte d'état Désorienté ou Sonné de l'ennemi attaché → défaussez cette carte.",
+  // lady_deathstrike — Inhibitor Collar (Attachment)
+  'ld017': "Attachez-le à votre identité.
+Considérez la boîte de texte imprimée de votre identité comme vierge <i>(sauf les traits)</i>.
+<b>Action</b> : choisissez d'incliner un personnage que vous contrôlez ou de subir 3 dégâts → défaussez cette carte. <i>(N'importe quel joueur peut le faire.)</i>",
+  // lady_deathstrike — Chop-Shop Cybernetics (SideScheme)
+  'ld018': "<i>Les cybernétiques du marché noir ne sont pas jolies, mais elles tiennent même dans de mauvaises conditions.</i>
+Entrave 1[per_hero].
+<b>Réponse forcée</b> : après qu'un attachement [[TECH]] entre en jeu, donnez une carte d'état Tenace au méchant et à l'ennemi attaché.",
 }
