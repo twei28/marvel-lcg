@@ -12,7 +12,7 @@
 // board.tsx de choisir sans rien adapter. Il ne decore rien lui-meme : les
 // bandes passent par `Unite` (Board.tsx), qui appelle `avecInteraction`, la
 // seule copie autorisee de cette logique.
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { ImagesParesseuses, type CardEffectDelta, type ScanCardProps } from '../../components/ScanCard'
 import { PileRegardee, avecInteraction } from '../Board'
 import type { BoardProps } from '../Board'
@@ -92,7 +92,7 @@ export function PlateauPortrait(props: BoardProps) {
   // La forme de la table : les cartes en bandes, ou les ronds (essai du 24/10/2026, choisi au debut de la partie).
   const { plateau: formeDeTable } = useReglagesTelephone()
   // Le panneau de phase (hors de ce composant, colle au bas de l'ecran) se met en grandes cartes quand la table est en ronds.
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (formeDeTable !== 'ronds') return
     document.body.dataset.plateau = 'ronds'
     return () => {
