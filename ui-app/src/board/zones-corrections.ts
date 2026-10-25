@@ -87,6 +87,8 @@ export const ZONES_MANUELLES: Readonly<Record<string, ZoneManuelle>> = {
   60020: { x0: 0.04, y0: 0.59, x1: 0.945, y1: 0.915, fond: [253, 251, 238], coin: { hauteur: 0.18, x1: 0.75 } },
   sn001b: { x0: 0.035, y0: 0.635, x1: 0.955, y1: 0.915, fond: [250, 250, 250] },
   // Manigance annexe paysage : le flavor anglais dépassait au-dessus du voile.
+  // Power Surge 2B : la main d'Electro entre dans le cadre de texte, juste après les lignes ; la zone s'arrête avant elle.
+  wd039b: { x0: 0.022, y0: 0.19, x1: 0.53, y1: 0.91, fond: [226, 246, 250] },
   hs021: { x0: 0.455, y0: 0.215, x1: 0.975, y1: 0.65, fond: [241, 234, 226] },
 }
 
