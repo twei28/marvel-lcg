@@ -13,7 +13,7 @@ from . import *
 #
 # ⚠ Mots-pieges :
 #  - « Predator CANNOT gain cloaked status cards » : NOM PROPRE, la face HEROS ; tant que la manigance est en jeu ; une carte Cloaked
-#    deja posee RESTE (« cannot gain », pas « loses »). Regle continue (`AbilityType.Rule`).
+#    deja posee RESTE (« cannot gain », pas « loses »). Regle continue (`AbilityType.NonKeyword` : une `Rule` resterait active apres le retrait de la carte).
 #  - « for EACH status card IN PLAY » : toutes les cartes d'etat en jeu, de n'importe quel personnage (Sonne, Desoriente, Coriace,
 #    Camoufle...), ennemis compris ; comptees a la revelation.
 #  - « 1 ADDITIONAL threat » en plus de la menace imprimee (3 par joueur).
@@ -34,7 +34,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.WhenUnitWouldBeStatus(
-            AbilityType.Rule,
+            AbilityType.NonKeyword,
             CardFinder(name=NOM_HEROS, card_type=Hero),
             ["Cloaked"],
             pas_de_camouflage,

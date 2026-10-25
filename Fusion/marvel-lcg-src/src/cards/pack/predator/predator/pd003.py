@@ -17,22 +17,23 @@ from . import *
 #  - « Teamwork (XENOMORPH) » : natif, relu dans `desc` ; la Reine et les Drones du set nemesis portent le meme trait.
 #  - « When Defeated: Ready PREDATOR » : le HEROS Predator, sans condition « you defeated » (n'importe quel joueur ou carte
 #    peut vaincre le sbire).
-#  - « Interrupt: When Xenomorph is defeated, shuffle it into YOUR deck » : une Interruption (avant la defaite), au deck du
-#    joueur proprietaire ; une carte rangee au deck ne declenche plus son propre « When Defeated ».
+#  - « Interrupt: When Xenomorph is defeated, shuffle it into YOUR deck » : au deck du joueur PROPRIETAIRE, apres « Ready Predator » ;
+#    ecrit DANS le When Defeated (une vraie Interruption sortait la carte avant la defaite et muselait le Ready).
 
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def pret(effect: 'Effect', message: 'Message.WhenUnitBeDefeated') -> None:
-        Unused(message)
-        heros = HerosDuJoueur(JoueurDeCetteCarte(effect) or effect.this.card.GetOwner())
-        if heros is not None:
-            Faces.ReadyAll([heros], effect)
-
-    def remelanger(effect: 'Effect', message: 'Message.WhenUnitWouldBeDefeated') -> None:
+    def vaincu(effect: 'Effect', message: 'Message.WhenUnitBeDefeated') -> None:
+        # « When Defeated: Ready Predator » PUIS l'Interruption « shuffle it into your deck » : l'ordre compte. Une Interruption
+        # qui sortirait la carte AVANT la defaite l'empecherait de declencher son propre « When Defeated » (constate au harnais,
+        # 25/10/2026) ; on resout donc les deux dans la capacite « When Defeated », comme `al002` Throg (« Shuffle Throg into
+        # the player's deck » y est ecrit dans le When Defeated).
         this = effect.this.CastTo(Minion)
         Unused(message)
         proprietaire = this.card.GetOwner() or JoueurDeCetteCarte(effect)
+        heros = HerosDuJoueur(proprietaire)
+        if heros is not None:
+            Faces.ReadyAll([heros], effect)
         if proprietaire is not None:
             Faces.ShuffleAllTo([this], proprietaire.player_deck, effect)
 
@@ -40,11 +41,6 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactory.WhenUnitBeDefeated(
             AbilityType.WhenDefeated,
             "This",
-            pret,
-        ),
-        AbilityFactory.WhenUnitWouldBeDefeated(
-            AbilityType.Interrupt,
-            "This",
-            remelanger,
+            vaincu,
         ),
     ]

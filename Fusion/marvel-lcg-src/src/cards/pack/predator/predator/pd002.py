@@ -56,7 +56,7 @@ def GetAbilities() -> Sequence['Ability']:
     return [
         AbilityFactory.AttachToFaceWhenPutIntoPlay("YourIdentity"),
         AbilityFactory.WhenCardWouldLeavePlay(
-            AbilityType.Rule,
+            AbilityType.NonKeyword,
             "AttachedCharacter",
             hote_quitte_le_jeu,
         ),
