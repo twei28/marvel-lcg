@@ -2078,5 +2078,18 @@
   ],
   "max_id": "vt017b"
  },
- "checksum": "df27dd7cd07f92c123ce5dc719c9fed12c004a5bf505706bdc85ca691a518d6d"
+ "216. Custom (Alien vs. Predator)": {
+  "name": "alien_vs_predator",
+  "scenarios": [
+   "alien_vs_predator"
+  ],
+  "heroes": [],
+  "encounters": [
+   "alien_vs_predator",
+   "standard_apex",
+   "clan_yautja"
+  ],
+  "max_id": "ap008b"
+ },
+ "checksum": "8a6351f6f4b7d5aabe5ff09b35229bcdcaf97d3972cd2616aa79fc74e28ea3af"
 }

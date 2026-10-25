@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Clan Yautja",
+  "encounters": [
+    "ap301",
+    "ap302",
+    "ap303",
+    "ap304",
+    "ap305",
+    "ap306"
+  ]
+}

@@ -215,6 +215,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "XENOMORPH", "YAUTJA",
         # AJOUT (25/10/2026) : trait du scenario custom The Vault (Kajislav) : Corrupted Guardsman est « TRAITOR. ».
         "TRAITOR",
+        # AJOUT (25/10/2026) : face « vaincue » des deux mechants d'Alien vs Predator (RyCoRan) : « DEFEATED. XENOMORPH. ».
+        "DEFEATED",
         # (15/10/2026) Cartes de campagne de Skrull Menace (Kajislav, sk263-sk288) : traits imprimes sur les allies
         # et soutiens (Crusader « INITIATIVE », Paibok « S.W.O.R.D. », Skymax « SQUADRON SUPREME », Xavin
         # « RUNAWAYS », Skrull Kill Krew « CREW »). Purement declaratif, comme les autres.

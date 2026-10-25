@@ -166,3 +166,10 @@ cartes, utilisé en standard comme en expert : à confirmer.)
 
 Thermal Target 13-14, Facehugger 16-17, Xenomorph Drone 18-19 : une carte, deux exemplaires. Alien Scout : 4 versions × 4 exemplaires (16).
 Les deux « Advance » sont DEUX cartes différentes (Advance / Advance Again).
+
+## Arbitrages utilisateur du 25/10/2026 (carte montrée, question une à une)
+
+1. **The Ultimate Hunt 1B, compteur actif** : seul le méchant ACTIF s'active à chaque activation, puis le compteur passe à l'autre (solo : un méchant par round, en alternance ; 2 joueurs : Reine contre J1 puis Warlord contre J2).
+2. **Second méchant vaincu** (stade 3/4, un seul méchant restant) : les joueurs GAGNENT ; sa face « Defeated » ne se joue pas.
+3. **Cloaking Device** : « Hero Action: After a hero makes a basic attack... » = Réponse de héros, juste après l'attaque de base contre l'ennemi équipé.
+4. **Alien Onslaught × Alien Scout** : un Scout atteint par la défausse compte pour un pion Accélération ET est distribué face cachée (pas défaussé).
