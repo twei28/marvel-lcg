@@ -2091,5 +2091,14 @@
   ],
   "max_id": "ap008b"
  },
- "checksum": "8a6351f6f4b7d5aabe5ff09b35229bcdcaf97d3972cd2616aa79fc74e28ea3af"
+ "217. Custom (She-Hulk Why Not)": {
+  "name": "she_hulk_why_not",
+  "scenarios": [],
+  "heroes": [
+   "she_hulk_why_not"
+  ],
+  "encounters": [],
+  "max_id": "wn011"
+ },
+ "checksum": "ed5ef827389847fdd004407d624eff6f89f0be8308759347592e8ddbcd5f73dc"
 }

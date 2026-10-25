@@ -1,0 +1,69 @@
+{
+    "version": "0.5.8",
+    "name": "She-Hulk (Why Not)",
+    "metadata": {
+        "url": "",
+        "auteur": "Merlin",
+        "note": "Variante « She-Hulk - Why Not » de Merlin : 9 cartes officielles retouchees au scotch (wn001a-wn008), cartes inchangees reprises du core (01020 Hellcat, 01024 One-Two Punch x3, 01160, 01161-01164). player_deck : celui du deck officiel she_hulk.json (re-skin d'un heros officiel qui garde son deck, precedent wolverine_x23 ; l'auteur ne fournit pas de decklist). Les trois Team-Up Basic wn009-wn011 ne sont pas dans le deck : a ajouter au deckbuilder (Max 1 par deck).",
+        "variante_de": "she_hulk",
+        "variante_nom": "Why Not (Merlin)"
+    },
+    "hero": [
+        "wn001a,wn001b"
+    ],
+    "hero_deck": [
+        "01020",
+        "wn002",
+        "wn003",
+        "wn003",
+        "wn004",
+        "wn004",
+        "01024",
+        "01024",
+        "01024",
+        "wn005",
+        "wn006",
+        "wn007",
+        "wn007",
+        "wn008",
+        "wn008"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "01160"
+    ],
+    "nemesis_set": [
+        "01161",
+        "01162",
+        "01163",
+        "01164",
+        "01164"
+    ],
+    "player_deck": [
+        "01050",
+        "01051",
+        "01052",
+        "01052",
+        "01053",
+        "01053",
+        "01054",
+        "01054",
+        "01055",
+        "01055",
+        "01056",
+        "01056",
+        "01057",
+        "01057",
+        "01083",
+        "01084",
+        "01085",
+        "01086",
+        "01087",
+        "01088",
+        "01089",
+        "01090",
+        "01091",
+        "01092",
+        "01093"
+    ]
+}

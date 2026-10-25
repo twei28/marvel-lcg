@@ -65,3 +65,12 @@
   (« Cloak Leonardo, tough sur Usagi »), les distinguer par `perso.IsName(...)`.
 - Cas : `[ub] ub019` (jouable avec les deux, injouable avec un seul, des deux cotes), `tools/cas/tmnt_aspect_basic.py`.
 
+
+
+## Second selecteur lu une seule fois (25/10/2026, wn009 Hey you!)
+
+- `effect.targets2` (l'ennemi choisi apres les deux personnages du Team-Up) ne se lit qu'UNE fois :
+  une seconde lecture leve `AssertionError` (`initialized_targets`), AVALEE par le moteur. « Stun and
+  confuse an enemy » posait le Sonne puis s'arretait. Garder `ennemis = list(effect.targets2)`.
+- Team-Up dont un nom est porte par PLUSIEURS cartes (« Spider-Man », « Hulk ») : `desc.TeamUp` compare
+  les noms, toute identite ou alliee de ce nom ouvre la carte (wn011 : allie 13019 Spider-Man).

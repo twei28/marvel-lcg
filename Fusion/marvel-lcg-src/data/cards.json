@@ -128831,5 +128831,224 @@
    "custom": "RyCoRan"
   }
  ],
- "checksum": "286cfda87f5aa8be57f01a4feb73d443555ef252dc3a721c8c3904f4e67e7454"
+ "she_hulk_why_not": [
+  {
+   "card_id": "wn001a",
+   "type": "Hero",
+   "name": "* She-Hulk",
+   "subtitle": "",
+   "desc": {
+    "HP": "15",
+    "ATK": "3",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "AVENGER",
+    "GAMMA"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "\"Do You Even Lift?\" — <b>Response</b>: After you change to this form, deal 1 damage to an enemy for each [acceleration] icon in play.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn001b",
+   "type": "AlterEgo",
+   "name": "* Jennifer Walters",
+   "subtitle": "",
+   "desc": {
+    "HP": "15",
+    "REC": "5",
+    "HS": "6"
+   },
+   "traits": [
+    "ATTORNEY",
+    "GAMMA"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "\"I Object!\" — <b>Interrupt</b>: When threat would be placed on a scheme, prevent 1 of that threat. (Limit once per phase.)",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn002",
+   "type": "Event",
+   "name": "Gamma Slam",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER",
+    "GAMMA"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal X damage to an enemy (to a maximum of 15). X is the amount of damage you have sustained.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn003",
+   "type": "Event",
+   "name": "Ground Stomp",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "GAMMA",
+    "SUPERPOWER"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "<b>Hero Action</b>: Deal 2 damage to each enemy.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn004",
+   "type": "Event",
+   "name": "Legal Practice",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "<b>Alter-Ego Action</b>: Choose and discard up to 5 cards from your hand → remove 2 threat from a scheme for each card discarded this way.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn005",
+   "type": "Event",
+   "name": "Split Personality",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "<b>Action</b>: Change your form <i>(flip your identity card)</i>. Then, draw up to your printed hand size. Ready your identity.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn006",
+   "type": "Support",
+   "name": "Superhuman Law Division",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Superhuman Law Division and spend a [mental] resource → remove 3 threat from a scheme.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn007",
+   "type": "Upgrade",
+   "name": "Focused Rage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "<b>Hero Action</b>: Exhaust Focused Rage and take 1 damage → draw 1 card.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn008",
+   "type": "Upgrade",
+   "name": "Superhuman Strength",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "GAMMA",
+    "SUPERPOWER"
+   ],
+   "set_name": "She-Hulk (Why Not)",
+   "text": "She-Hulk gets +2 ATK.\n<b>Forced Response</b>: After She-Hulk attacks, discard Superhuman Strength → stun the attacked enemy.\n<i>(If there is no one to stun, you cannot discard this card.)</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn009",
+   "type": "Event",
+   "name": "Hey you!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "TeamUp": "Deadpool;She-Hulk",
+    "Class": "Basic"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "Team-Up (Deadpool and She-Hulk). Max 1 per deck.\n<b>Action</b>: Stun and confuse an enemy. Remove Hey you! from the game.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn010",
+   "type": "Event",
+   "name": "Gamma Power",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "TeamUp": "Hulk;She-Hulk",
+    "Class": "Basic"
+   },
+   "traits": [
+    "GAMMA",
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "Team-Up (Hulk and She-Hulk). Max 1 per deck.\n<b>Action</b>: Place a total of 2 stun status cards on up to 2 enemies. Remove Gamma Power from the game.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "wn011",
+   "type": "Event",
+   "name": "A Spider on the Wall",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "TeamUp": "She-Hulk;Spider-Man",
+    "Class": "Basic"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "Team-Up (She-Hulk and Spider-Man). Max 1 per deck.\n<b>Action</b>: Ready She-Hulk and draw 3 cards. Remove A Spider on the Wall from the game.",
+   "custom": "Merlin"
+  }
+ ],
+ "checksum": "e648bfaad78b3444eda68ae9410ab6b18d68f49216f3b8b878ab9ce742f6625d"
 }

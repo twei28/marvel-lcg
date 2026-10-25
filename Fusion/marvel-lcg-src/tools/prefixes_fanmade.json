@@ -753,6 +753,13 @@
    "cartes": 31,
    "depuis": "2026-10-25",
    "note": "Cree le 25/10/2026. Auteur RyCoRan, zip « Predator (5-25 Final) ». pd001a/b identite (Predator / Yd'Nar), pd002 Infralocked (Permanent, mis en jeu au Setup par l'alter-ego), pd003 Xenomorph (SBIRE DE JOUEUR), pd004-pd014 cartes signature, pd015 obligation Exposed Target, pd016-pd020 set nemesis Xenomorph, pd021-pd023 ressources de base a l'art du heros, pd024-pd025 evenements Team-Up de base (Razor Hunt, Infrared Web), pd026-pd030 set nemesis ALTERNATIF (Dutch, Dillon, Chopper). Decklist d'aspect fournie par l'auteur (image « Predator starter deck »). Statut Cloaked : deja au depot (pack TMNT, fiche mots-cles/cloaked.md). Prefixe `pd` libre."
+  },
+  "wn": {
+   "pack": "she_hulk_why_not",
+   "libelle": "217. Custom (She-Hulk Why Not)",
+   "cartes": 12,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur Merlin (« She-Hulk - Why Not »). Variante de la She-Hulk officielle (core 01019) : 9 cartes officielles retouchees au scotch par l'auteur. wn001a/b identite, wn002-wn008 cartes signature retouchees, wn009-wn011 trois Team-Up Basic (Deadpool, Hulk, Spider-Man). Cartes inchangees reprises du core : 01020 Hellcat, 01024 One-Two Punch, obligation 01160, nemesis 01161-01164. Deck deck/starter/she_hulk_why_not.json (variante_de she_hulk)."
   }
  }
 }

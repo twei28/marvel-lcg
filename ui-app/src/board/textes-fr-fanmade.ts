@@ -6018,4 +6018,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // alien vs. predator — Cloaking Device (Attachment)
   'ap306': "Attachez à Predator Warlord. Si vous ne pouvez pas, attachez à un sbire [[YAUTJA]]. Sinon, cette carte gagne Renfort.\nRéduisez de 2 les dégâts que l'ennemi attaché subit de chaque attaque.\n<b>Action de héros</b> : après qu'un héros a fait une attaque de base contre cet ennemi, dépensez des ressources [energy][physical] → défaussez cette carte.",
   // alien vs. predator — fin du bloc
+  // she_hulk_why_not — variante « Why Not » de Merlin (set 217) : texte FR officiel de Miss Hulk, adapte aux retouches
+  'wn001a': "\"Tu fais de la muscu ?\" — <b>Réponse</b> : après être passé sous cette forme, infligez 1 dégât à un ennemi pour chaque icône [acceleration] en jeu.",
+  'wn001b': "\"Objection !\" — <b>Interruption</b> : quand de la menace est censée être placée sur une manigance, prévenez 1 de ces menaces. <i>(Limite d'une fois par phase.)</i>",
+  'wn002': "<b>Action de héros</b> <i>(attaque)</i> : infligez X dégâts à un ennemi (jusqu'à un maximum de 15). X est la quantité de dégâts que vous avez subis.",
+  'wn003': "<b>Action de héros</b> : infligez 2 dégâts à chaque ennemi.",
+  'wn004': "<b>Action d'alter ego</b> : choisissez et défaussez jusqu'à 5 cartes de votre main → retirez 2 menaces d'une manigance pour chaque carte ainsi défaussée.",
+  'wn005': "<b>Action</b> : changez de forme <i>(retournez votre carte Identité)</i>. Ensuite, piochez jusqu'à atteindre votre taille de main imprimée. Redressez votre identité.",
+  'wn006': "<b>Action d'alter ego</b> : inclinez Superhuman Law Division et dépensez une ressource [mental] → retirez 3 menaces d'une manigance.",
+  'wn007': "<b>Action de héros</b> : inclinez Focused Rage et subissez 1 dégât → piochez 1 carte.",
+  'wn008': "She-Hulk gagne +2 ATQ.\n<b>Réponse forcée</b> : après que She-Hulk a attaqué, défaussez Superhuman Strength → sonnez l'ennemi attaqué.\n<i>(S'il n'y a personne à sonner, vous ne pouvez pas défausser cette carte.)</i>",
+  'wn009': "En Équipe (Deadpool et She-Hulk). 1 max par deck.\n<b>Action</b> : sonnez et désorientez un ennemi. Retirez Hey you! de la partie.",
+  'wn010': "En Équipe (Hulk et She-Hulk). 1 max par deck.\n<b>Action</b> : placez un total de 2 cartes d'état Sonné sur jusqu'à 2 ennemis. Retirez Gamma Power de la partie.",
+  'wn011': "En Équipe (She-Hulk et Spider-Man). 1 max par deck.\n<b>Action</b> : redressez She-Hulk et piochez 3 cartes. Retirez A Spider on the Wall de la partie.",
 }

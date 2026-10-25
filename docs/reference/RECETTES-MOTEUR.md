@@ -1982,3 +1982,17 @@ Harnais (`tools/cas/kree_sentry.py`, `tools/cas/imperial_guard.py`) :
 - ⚠ Harnais : sans clé `regles`, un cas joue l'ANCIEN surge (révélation immédiate), que le jeu n'utilise plus (le lanceur pose `v16_all` + `v18_all`). Les cas `[ap]` et `[vt]` posent désormais ces règles par défaut (`cas.setdefault("regles", ["v16_all", "v18_all"])`) : un surge y DISTRIBUE face cachée (clé `distribuees` / `carte_du_surge`).
 - ⚠ Harnais : le remplissage 01105 « I'm Tough » est un PIÈGE : il gagne surge dès que le méchant est Tenace. Avec l'ancien surge, la chaîne vidait le deck et le moteur repiochait une carte encore en cours de révélation (`AssertionError` avalée dans `face_on_event.py`, `Reveal`) ; avec la règle v18, elle boucle sans fin (cas tué au bout de 300 s). Remplissage neutre : **01098** Armored Rhino Suit (aucun boost, aucun surge, sans effet sans Rhino).
 - ⚠ Exceptions avalées : `MCLCG_TRACE_CRASH=<fichier>` (log.py) les écrit ; à mettre sur chaque passe de cas et d'autoplay d'un pack neuf.
+
+## 26. She-Hulk « Why Not » (Merlin, `wn`, 25/10/2026) : variante d'un héros officiel, recettes et pièges payés
+
+| Texte imprimé / besoin | API | Modèle | Piège |
+|---|---|---|---|
+| Variante fan-made d'un héros OFFICIEL (cartes retouchées) | nouvelles cartes `wnXXX` pour les seules cartes changées ; le deck `she_hulk_why_not.json` (`variante_de: "she_hulk"`) reprend TELLES QUELLES les cartes officielles inchangées (01020, 01024, 01160-01164) | `she_hulk_why_not` | le contrôle de légalité (PROCESSUS-HEROS §10) ne lit que `player_deck` : des signatures du core dans `hero_deck` passent, et c'est voulu |
+| « for each [acceleration] icon in play » (icônes imprimées ET pions) | `Worlds.GetIconsNum(effect, ["Acceleration"])` + somme des `acceleration_token` de `Worlds.GetAccelerationTokenFaces(effect)` | `wn001a` (modèles 44017, bw020) | `GetIconsNum` ne compte PAS les pions : sans la seconde somme, Legal Work (01160) ne nourrit rien |
+| Limite « once per phase » | `.LimitOncePerPhase()` | `wn001b` | — |
+| Team-Up avec un second sélecteur lu deux fois | `ennemis = list(effect.targets2)` UNE fois, puis s'en servir | `wn009` | relire `effect.targets2` lève `AssertionError initialized_targets` (avalée : le premier statut part, pas le second ; vue avec `MCLCG_TRACE_CRASH`) |
+| « If there is no one to stun, you cannot discard it » | NATIF : `CostFunc.Discard("This")` + `.SetTarget("Targets", canbe_stunned=True)` (01028) ne paie pas le coût quand l'ennemi attaqué a été vaincu | `wn008` | mesuré par mutation : retirer la condition explicite laisse le cas vert ; elle est gardée pour la lisibilité |
+
+- ⚠ Harnais : en ALTER EGO, « I Object! » (01019b / wn001b) prévient 1 des menaces que pose la MISE EN PLACE (`Puzzle.SetThreat`) et consomme sa limite : deux cas passaient au vert pour une mauvaise raison. Poser la menace en forme héros (`ChangeToFace` vers la face héros, `SetThreat`, `ChangeToFace` retour : aucune capacité ne part).
+- ⚠ Harnais : un ÉVÉNEMENT n'est jamais « en jeu » (`PutIntoPlay` échoue) : lire ses traits EN MAIN.
+- ⚠ Vocabulaire FR (gate `textes-fr-fanmade.test.ts`) : « Team-Up (A and B) » s'écrit « En Équipe (A et B) ».
