@@ -24,6 +24,8 @@ export type OptionsEffacement = {
       entière n'appartient pas au texte (ligne du type « RESOURCE » au-dessus du cadre, bandeau du bas) et reste. */
   margeHaut?: number
   margeBas?: number
+  /** Idem à gauche et à droite (pointillés et liserés du cadre). */
+  margeCote?: number
 }
 
 /** Maximum (ou minimum) glissant d'un canal, ligne par ligne puis colonne par colonne. */
@@ -89,6 +91,9 @@ export type CadreDuTexte = {
   /** Bord droit du fond libre, par bandes horizontales égales de la région (BANDES_DROITE, fractions de sa largeur) : là
       où une illustration entre dans le cadre de texte. Le français s'y arrête, comme l'anglais. */
   droite: number[]
+  /** Bandes (fractions de la hauteur de la région) des icônes imprimées entre deux paragraphes, et la part des lignes
+      de texte qui les précèdent. */
+  entre: { y0: number; y1: number; avant: number }[]
 }
 
 /**
@@ -193,6 +198,8 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
       (t.yMax >= limiteBas || t.pixels.length >= 0.4 * (t.xMax - t.xMin + 1) * (t.yMax - t.yMin + 1)) &&
       t.yMax - t.yMin < options.hauteurCarte * 0.08 &&
       t.xMax - t.xMin < options.largeurCarte * 0.15 &&
+      // Une icône est trapue ; un liseré ou un trait du cadre est fin et long.
+      t.xMax - t.xMin + 1 >= 0.45 * (t.yMax - t.yMin + 1) &&
       t.xMin > 0 &&
       t.xMax < largeur - 1 &&
       t.yMax < hauteur - 1 &&
@@ -220,6 +227,7 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     const auBord = xMin === 0 || yMin === 0 || xMax === largeur - 1 || yMax === hauteur - 1
     const icone = dansUneIcone(t)
     if (yMax < (options.margeHaut ?? 0) || yMin >= hauteur - (options.margeBas ?? 0)) continue
+    if (xMax < (options.margeCote ?? 0) || xMin >= largeur - (options.margeCote ?? 0)) continue
     // Au-dessus et au-dessous d'une lettre (une hauteur de lettre), le fond clair domine. Les creux sombres entre les
     // lettres blanches d'un bandeau (« RESOURCE ») ont le bandeau sombre autour : ce n'est pas du texte.
     {
@@ -239,7 +247,8 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
       }
       if (partClaire(yMin - marge, yMax + marge, xMin, xMax) < 0.45) continue
       // De part et d'autre aussi : un morceau de bandeau noir (avec ses lettres blanches en creux) n'a que du sombre à côté.
-      if (partClaire(yMin, yMax, xMin - marge, xMax + marge) < 0.2) continue
+      const plat = yMax - yMin <= epaisseurFilet && xMax - xMin > options.largeurCarte * 0.3
+      if (!plat && partClaire(yMin, yMax, xMin - marge, xMax + marge) < 0.2) continue
     }
     // Un mot imprimé de biais (« HELMET. », lettres collées) forme une seule tache, plus haute qu'une lettre mais creuse.
     const motDeBiais = yMax - yMin < options.hauteurCarte * 0.075 && t.pixels.length < 0.35 * (xMax - xMin + 1) * (yMax - yMin + 1)
@@ -254,7 +263,7 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
   }
   // Le texte s'arrête au-dessus des icônes.
   const cadre = cadreDesLettres(lettres, options.largeurCarte, options.hauteurCarte)
-  effacerLettresCollees(lettres, rejetees, encre, texte, largeur, options.hauteurCarte)
+  effacerLettresCollees(lettres, rejetees, encre, texte, largeur, options.hauteurCarte, options.margeCote ?? 0)
 
   // Hystérésis : le halo plus pâle des lettres rejoint le masque ; puis une marge d'un pixel.
   const faible = new Uint8Array(n)
@@ -318,6 +327,29 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     lignes: cadre.lignes,
     interligne: cadre.interligne / options.hauteurCarte,
     droite: bordDroitLibre(rgba, largeur, hauteur, cadre, options.hauteurCarte),
+    // Icônes imprimées AU MILIEU du texte (entre la capacité et la citation) : le français saute leur hauteur.
+    entre: zonesIcones
+      .map((z) => {
+        // L'icône entière : tous les morceaux dans sa zone (la croix, la carte...).
+        const morceaux = taches.filter((t) => t.xMin >= z.x0 && t.xMax <= z.x1 && t.yMin >= z.y0 && t.yMax <= z.y1)
+        return { y0: Math.min(...morceaux.map((t) => t.yMin)), y1: Math.max(...morceaux.map((t) => t.yMax)) }
+      })
+      .filter((i) => i.y0 > cadre.y0 && i.y1 < cadre.y1)
+      .map((i) => ({
+        y0: (i.y0 - 3) / hauteur,
+        y1: (i.y1 + 3) / hauteur,
+        // Part des lignes anglaises imprimées AU-DESSUS de l'icône : le français place la bande à la frontière de
+        // paragraphes la plus proche de cette part.
+        avant: cadre.basDesLignes.filter((y) => y <= i.y0).length / Math.max(1, cadre.basDesLignes.length),
+      }))
+      // Deux icônes côte à côte (ou deux morceaux d'une même icône) : une seule bande.
+      .sort((a, b) => a.y0 - b.y0)
+      .reduce<{ y0: number; y1: number; avant: number }[]>((bandes, b) => {
+        const derniere = bandes[bandes.length - 1]
+        if (derniere && b.y0 <= derniere.y1) derniere.y1 = Math.max(derniere.y1, b.y1)
+        else bandes.push({ ...b })
+        return bandes
+      }, []),
   }
 }
 
@@ -333,7 +365,8 @@ function effacerLettresCollees(
   encre: Uint8Array,
   texte: Uint8Array,
   largeur: number,
-  hauteurCarte: number
+  hauteurCarte: number,
+  cote: number
 ): void {
   if (!rejetees.length || !lettres.length) return
   const lignes: Lettre[][] = []
@@ -351,7 +384,11 @@ function effacerLettresCollees(
     const portee = (y1 - y0) * 3
     const debut = Math.min(...ligne.map((l) => l.x0))
     const fin = Math.max(...ligne.map((l) => l.x1))
-    bouts.push({ x0: fin, x1: fin + portee, y0, y1 }, { x0: debut - portee, x1: debut, y0, y1 })
+    // Jamais dans les bandes de côté (liserés, pointillés du cadre) ; avant la ligne, une hauteur de lettre seulement.
+    bouts.push(
+      { x0: fin, x1: Math.min(fin + portee, largeur - 1 - cote), y0, y1 },
+      { x0: Math.max(debut - (y1 - y0), cote), x1: debut, y0, y1 }
+    )
   }
   for (const t of rejetees) {
     if (!bouts.some((b) => t.xMax >= b.x0 && t.xMin <= b.x1 && t.yMax >= b.y0 && t.yMin <= b.y1)) continue
@@ -388,7 +425,7 @@ type Lettre = { x0: number; x1: number; y0: number; y1: number }
  * de l'illustration à la même hauteur qu'une ligne reste donc hors de la ligne. Seules les lignes d'au moins trois
  * lettres comptent.
  */
-export function cadreDesLettres(lettres: readonly Lettre[], largeurCarte: number, hauteurCarte: number): (Lettre & { lignes: number; interligne: number }) | null {
+export function cadreDesLettres(lettres: readonly Lettre[], largeurCarte: number, hauteurCarte: number): (Lettre & { lignes: number; interligne: number; basDesLignes: number[] }) | null {
   const triees = [...lettres].sort((a, b) => (a.y0 + a.y1) / 2 - (b.y0 + b.y1) / 2)
   const lignes: Lettre[][] = []
   for (const l of triees) {
@@ -435,7 +472,7 @@ export function cadreDesLettres(lettres: readonly Lettre[], largeurCarte: number
   hautsDeLigne.sort((a, b) => a - b)
   const ecarts = hautsDeLigne.slice(1).map((v, i) => v - hautsDeLigne[i]).filter((e) => e > 0).sort((a, b) => a - b)
   const interligne = ecarts.length ? ecarts[Math.floor(ecarts.length / 2)] : 0
-  return cadre ? { ...cadre, lignes: retenues, interligne } : null
+  return cadre ? { ...cadre, lignes: retenues, interligne, basDesLignes: hautsDeLigne } : null
 }
 
 export const BANDES_DROITE = 60

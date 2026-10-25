@@ -129,6 +129,33 @@ function effacerAilleurs(donnees: Uint8ClampedArray, largeur: number, hauteur: n
   travailleur.postMessage({ id, donnees, largeur, hauteur, options }, [donnees.buffer])
   return promesse
 }
+/**
+ * Insère, entre les paragraphes, un bloc vide par icône imprimée au milieu du texte : à la frontière dont la part de
+ * texte qui précède est la plus proche de celle de l'anglais au-dessus de l'icône.
+ */
+export function avecBandes(html: string, bandes: readonly { avant: number }[]): string {
+  if (!bandes.length) return html
+  const paragraphes = html.split(/(?=<div class="tp-)/)
+  if (paragraphes.length < 2) return html
+  const longueurs = paragraphes.map((p) => p.replace(/<[^>]*>/g, '').length || 1)
+  const total = longueurs.reduce((a, b) => a + b, 0)
+  const parts: number[] = []
+  let cumul = 0
+  for (let i = 0; i < paragraphes.length - 1; i += 1) {
+    cumul += longueurs[i]
+    parts.push(cumul / total)
+  }
+  const apres = new Map<number, number>()
+  for (const b of bandes) {
+    let meilleur = 0
+    parts.forEach((p, i) => {
+      if (Math.abs(p - b.avant) < Math.abs(parts[meilleur] - b.avant)) meilleur = i
+    })
+    apres.set(meilleur, (apres.get(meilleur) ?? 0) + 1)
+  }
+  return paragraphes.map((p, i) => p + '<div class="tp-bande"></div>'.repeat(apres.get(i) ?? 0)).join('')
+}
+
 const fondsNettoyes = new Map<string, Promise<FondNettoye | null>>()
 
 /**
@@ -173,6 +200,7 @@ export function fondNettoye(url: string, zone: ZoneTexte, paysage?: CotePaysage,
           reserveBas,
           margeHaut: Math.round(MARGE * hauteur),
           margeBas: Math.round(MARGE * hauteur),
+          margeCote: Math.round((MARGE + 0.012) * Math.min(largeur, hauteur)),
         })
           .then(({ donnees, cadre }) => {
             const sortie = document.createElement('canvas')
@@ -339,6 +367,8 @@ export function TraductionPosee({
         element.style.paddingBottom = `${(1 - Math.min(cadreTexte.bas, basDetecte)) * hauteurRef + 1}px`
         // Une illustration qui entre dans le cadre par la droite (une main, un dessin pâle) : le français la contourne,
         // bande par bande, par un flottant dont la forme suit le bord du fond libre.
+        // Icône imprimée entre deux paragraphes : un bloc vide de sa hauteur, posé entre les paragraphes français (voir
+        // le rendu), le texte reprend dessous.
         const contourDroit = contour.current
         if (contourDroit) {
           const haut = Math.max(0, cadreTexte.y0 * hauteurRef - 1)
@@ -347,7 +377,8 @@ export function TraductionPosee({
           const ecart = largeurRef * 0.012
           const encoches = cadreTexte.droite.map((x) => Math.max(0, finDesLignes - x * largeurRef + ecart))
           const largeurContour = Math.max(...encoches, 0)
-          if (largeurContour > ecart * 1.5 && hauteurContenu > 0) {
+          // (Pas de contour avec une bande d'icône : la forme du contour suit les lignes anglaises, plus en face des françaises.)
+          if (largeurContour > ecart * 1.5 && hauteurContenu > 0 && !cadreTexte.entre.length) {
             const points = [`${largeurContour}px 0px`]
             encoches.forEach((w, b) => {
               const ya = (b * hauteurRef) / BANDES_DROITE - haut
@@ -368,7 +399,33 @@ export function TraductionPosee({
         element.style.padding = ''
         if (contour.current) contour.current.style.display = 'none'
       }
-      while (element.scrollHeight > element.clientHeight + 1 && taille > plancher) {
+      // Icônes imprimées au milieu du texte : chaque bloc vide est posé après le dernier paragraphe qui tient au-dessus
+      // de l'icône, et s'allonge jusqu'à elle ; le texte reprend dessous. Si le français déborde sur l'icône, la police
+      // baisse comme pour un débordement.
+      const bandes = cadreTexte ? cadreTexte.entre : []
+      const blocs = [...element.querySelectorAll<HTMLElement>('.tp-bande')]
+      const placerLesBandes = (): boolean => {
+        let chevauche = false
+        blocs.forEach((bloc, i) => {
+          const bande = bandes[i]
+          if (!bande) return
+          bloc.style.height = '0'
+          const parent = bloc.parentElement
+          if (!parent) return
+          const haut = bande.y0 * hauteurRef
+          const paragraphes = [...parent.querySelectorAll<HTMLElement>(':scope > .tp-par')]
+          const tiennent = paragraphes.filter((p) => p.offsetTop + p.offsetHeight <= haut + 2)
+          const apres = tiennent[tiennent.length - 1] ?? null
+          if (apres && apres.nextSibling !== bloc) apres.after(bloc)
+          if (!apres && parent.firstChild !== bloc) parent.prepend(bloc)
+          const debut = bloc.offsetTop
+          bloc.style.height = `${Math.max(0, haut - debut) + (bande.y1 - bande.y0) * hauteurRef}px`
+          if (debut > haut + 2) chevauche = true
+        })
+        return chevauche
+      }
+      const deborde = () => placerLesBandes() || element.scrollHeight > element.clientHeight + 1
+      while (deborde() && taille > plancher) {
         taille -= LARGEUR * 0.001
         element.style.fontSize = `${taille}px`
       }
@@ -412,7 +469,7 @@ export function TraductionPosee({
         <span className="tp-encoche tp-encoche-droite" style={{ height: `${forme.droite.hauteur}%`, width: `${forme.droite.largeur}%` }} />
       ) : null}
       {ligneTraits ? <div className="tp-traits">{ligneTraits}</div> : null}
-      <div dangerouslySetInnerHTML={{ __html: texteEnParagraphes(texte) }} />
+      <div dangerouslySetInnerHTML={{ __html: avecBandes(texteEnParagraphes(texte), fond?.texte?.entre ?? []) }} />
       {icones.length > 0 && !fond ? (
         <div className="tp-icones-manigance">
           {icones.map((jeton) => (

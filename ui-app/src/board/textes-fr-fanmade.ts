@@ -1520,7 +1520,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // harry_osborn — Bullseye (Minion nemesis, x2)
   'ho016': "Robuste. Vilenie.\n[star] L'attaque de Bullseye gagne <b><i>Perçant</i></b> et <b><i>Déferlement</i></b>.",
   // harry_osborn — Refrain From Argument (SideScheme nemesis)
-  'ho017': "Entrave 1[per_hero].\n<i>(Icône de crise : la menace ne peut pas être retirée de la manigance principale.)</i>\n<hr />\n[star] <b>Boost</b> : révélez cette carte s'il n'y a aucune manigance annexe en jeu.",
+  'ho017': "<i>Fisk a participé à une réunion du conseil d'administration dans les bureaux du Daily Bugle et a ordonné à la rédaction de cesser de couvrir l'attentat survenu en ville quelques mois plus tôt.</i>\nEntrave 1[per_hero].\n<hr />\n[star] <b>Boost</b> : révélez cette carte s'il n'y a aucune manigance annexe en jeu.",
 
   // agatha_harkness — Agatha Harkness (Hero)
   'aa001a': "<i>Power Absorption</i> — <b>Réponse</b> : après qu'Agatha Harkness a subi des dégâts d'une attaque, défaussez autant de cartes du dessus de votre deck. Ajoutez à votre main 1 carte [[SPELL]] défaussée de cette façon. <i>(Limite une fois par phase.)</i>",
@@ -2326,7 +2326,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // spider_man_2099 — Web Cape (Upgrade)
   'sm012': "Votre héros gagne le trait [[AERIAL]].\n<b>Réponse de héros</b> : après avoir résolu la capacité <i>Accélération</i> de votre héros, inclinez Web Cape → redressez votre héros.",
   // spider_man_2099 — Future in Crisis (Obligation)
-  'sm013': "<b><i>Donnez-la au joueur de Miguel O'Hara.</i></b>\n<b>Action</b> : inclinez votre identité → retirez Future in Crisis de la partie.",
+  'sm013': "<b><i>Donnez-la au joueur de Miguel O'Hara.</i></b>\n<b>Action</b> : inclinez votre identité → retirez Future in Crisis de la partie.\n<i>« Elle a disparu. Nueva York a tout simplement… disparu. Comment est-ce possible ? »</i>",
   // spider_man_2099 — Containment Breach (SideScheme, némésis)
   'sm014': "<i>Electro s'est échappé de son centre de confinement, et compte se venger de ses geôliers une fois rechargé !</i>\n<b>Une fois révélée</b> : chaque joueur défausse les 4 cartes du dessus de son deck et place ici autant de menaces qu'il y avait de ressources [energy] défaussées ainsi.",
   // spider_man_2099 — * Electro (Minion, némésis)
@@ -5144,7 +5144,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // web_of_deceit — Princess Python (Minion)
   'wd064': "<b>Une fois révélée</b> : cherchez un exemplaire d'Experimental Injection dans le deck Rencontre et la pile de défausse et attachez-le à Princess Python.\n<b>Réponse forcée</b> : après que Princess Python vous a attaqué, subissez 2 dégâts indirects.",
   // web_of_deceit — Regenerative Research (SideScheme)
-  'wd065': "Entrave 1[per_hero].\n<b>Interruption forcée</b> : quand la phase du méchant commence, soignez 1 dégât de chaque ennemi.",
+  'wd065': "Entrave 1[per_hero].\n<b>Interruption forcée</b> : quand la phase du méchant commence, soignez 1 dégât de chaque ennemi.\n<i>« Que les faibles à sang chaud, qui ont hérité de la Terre par le hasard cosmique d'une chute de météorite, prennent garde ! »</i>",
   // web_of_deceit — Scaly Setback (SideScheme)
   'wd066': "The Lizard gagne +10 points de vie.\n<hr />\n[star] <b>Boost</b> : si le méchant attaque, cette attaque gagne Déferlement.",
   // web_of_deceit — Martha and Billy (Treachery)
@@ -5629,7 +5629,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // punisher_mcdc_2026 — The Syndicate (SideScheme)
   'pu131': "<b>Une fois révélée</b> : dans l'ordre du tour, chaque joueur cherche un sbire SYNDICATE qui n'est pas en jeu et le révèle.\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
   // punisher_mcdc_2026 — Capo of the Past (Attachment)
-  'pu139': "Permanent. Victoire 0.\nConsidérez le personnage attaché comme un sbire ELITE. Il gagne Solide, Vilenie et victoire 0.\n<b>Une fois révélée</b> : cherchez dans votre collection un méchant CAPO au hasard. Mettez-le en jeu engagé avec vous et attachez-lui cette carte.\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
+  'pu139': "Permanent. Victoire 0.\nConsidérez le personnage attaché comme un sbire ELITE. Il gagne Solide, Vilenie et victoire 0.\n<b>Une fois révélée</b> : cherchez dans votre collection un méchant CAPO au hasard. Mettez-le en jeu engagé avec vous et attachez-lui cette carte.\n<hr />\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
   // punisher_mcdc_2026 — Big Apple Gang War! (Environment)
   'pu140': "<i>Des caisses d'armes de qualité militaire se sont glissées à travers les docks abandonnés à la faveur de la nuit, armant des gangs qui, au lever du soleil, avaient taillé la ville en petits royaumes sanglants. En suivant les douilles, les manifestes soudoyés et les noms chuchotés, [POI-1016] a découvert un réseau de contrebandiers et de fonctionnaires corrompus qui alimentaient le chaos. Cargaison après cargaison, ses rues étaient inondées. À l'aube, les docks seraient en cendres, les trafiquants seraient des fantômes, et les armes ne trouveraient jamais leurs cibles.</i>\n<b>Mise en place du combat</b> :\n• Scénario : The Big Apple\n• N'incluez pas l'extension Uptown\n• Chaque joueur a besoin d'un jeton de joueur\n• Utilisez les sets Policiers et Mafia des Survêtes (FNE)\nMise en place. Permanent.\n<b>Victoire</b> : retournez cette carte et mettez Seized Tech Crates en jeu pour les combats 2 et 3.",
   // punisher_mcdc_2026 — Seized Tech Crates (Upgrade)

@@ -76,6 +76,10 @@
   border-top: 0.12em solid currentColor;
   margin: 0.4em 0 0.3em;
 }
+/* Place gardée aux icônes imprimées entre deux paragraphes (hauteur posée par TraductionPosee). */
+.traduction-posee .tp-bande {
+  clear: both;
+}
 /* Contour d'une illustration qui entre dans le cadre par la droite (forme posée par TraductionPosee). */
 .traduction-posee .tp-contour-droit {
   display: none;
