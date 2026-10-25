@@ -324,6 +324,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'fury', 'sand',
         # AJOUT (25/10/2026, scenario custom Lady Deathstrike, Mysteltainn) : les « bleed counters » de Bleeding Out (ld005).
         'bleed',
+        # AJOUT (25/10/2026, pack custom Predator, RyCoRan) : les « skull counters » de Yautja Trophy Room (pd010) et les « glyph counters »
+        # de Self Destruct (pd011).
+        'skull', 'glyph',
         'drain',         # CORRECTIF : Fear No Evil, Drained of Power (60080), Uses (3 drain counters), 18/09/2026
         'civilian', 'stamina', 'grip', 'spot', 'stilt', 'support',  # CORRECTIF : Fear No Evil blocs 3-4 (Disasters, Daily Bugle, Bear Hug, Spot, Stilt-Man, Public Support), 18/09/2026
         'threat',        # CORRECTIF : compteur du pack custom superior_spider_man

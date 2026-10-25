@@ -96,3 +96,36 @@ def RetirerMenaceDUneManigance(effect: 'Effect', joueur: 'Player|None', valeur: 
         return
     cible = joueur.AskChooseFace(manigances, effect, prompt="Remove threat from")
     Faces.RemoveTokensOn([cible or manigances[0]], valeur, 'threat', effect)
+
+
+ID_HONOR_HUNT = "pd009"
+
+
+def HonorHuntEstEnVitrine(effect: 'Effect') -> bool:
+    """pd009 Honor Hunt est-elle dans la vitrine de victoire ? (voir RECETTES §3bis : une capacite posee sur la carte
+    elle-meme ne se declenche JAMAIS depuis la vitrine ; elle vit sur l'IDENTITE, qui reste toujours en jeu.)"""
+    return any(
+        getattr(f.paper, "card_id", None) == ID_HONOR_HUNT
+        for f in Worlds.VictoryDisplay(effect).GetAll()
+    )
+
+
+def ActionHonorHuntEnVitrine() -> 'Ability':
+    """« While Honor Hunt is in the victory display, it gains "Action: Find a minion and put it into play engaged with you.
+    Any player may trigger this ability. (Limit once per round)." » Postee IDENTIQUEMENT sur les DEUX faces de l'identite
+    (pd001a ET pd001b) : `CardFace.GetAbilities()` est par face. N'importe quel joueur peut la declencher
+    (`AnyPlayerCanDoThis`) et le sbire s'engage avec CELUI qui la declenche."""
+    def vitrine(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
+        Unused(message)
+        return HonorHuntEstEnVitrine(effect)
+
+    def chasser(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
+        Unused(message)
+        TrouverUnSbire(effect, effect.GetInitiator())
+
+    return (
+        AbilityFactory.WhenInYourPlayTurn(AbilityType.Action, chasser, conditions=[vitrine])
+        .SetName("Honor Hunt (victory display)")
+        .AnyPlayerCanDoThis()
+        .LimitOncePerRound()
+    )

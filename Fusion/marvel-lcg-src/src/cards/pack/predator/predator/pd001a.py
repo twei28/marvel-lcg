@@ -51,4 +51,5 @@ def GetAbilities() -> Sequence['Ability']:
             Minion,
             chasseur_camoufle,
         ).SetName("Camouflaged Hunter"),
+        ActionHonorHuntEnVitrine(),
     ]

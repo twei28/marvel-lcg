@@ -57,4 +57,5 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.AlterEgoAction,
             trophee_futur,
         ).SetName("Future Trophy").LimitOncePerRound(),
+        ActionHonorHuntEnVitrine(),
     ]
