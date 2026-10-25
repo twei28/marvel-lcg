@@ -2377,6 +2377,20 @@ describe("l'annonce d'une activation", () => {
     expect(screen.getByText('4 dégâts subis')).toBeInTheDocument()
   })
 
+  // 25/10/2026, telephone : le boost ★ de Weapons Runner inscrit son ENTREE avant que l'attaque ne se complete. Le correctif
+  // du 19/10 (« suiteDifferee ») ne valait que sur la table : au telephone, « Étape suivante » sautait l'attaque et ses boosts.
+  it.each([
+    ['telephone', { telephone: true }],
+    ['PC, cartouche', {}],
+  ])("une entree issue d'un boost ★ attend que l'attaque soit resolue (%s)", (_nom, mode) => {
+    const entree: EtapeDeroule = { cle: 'entree:70', temps: 'mechant', titre: 'entree', regle: '', carteId: 70, cibleNom: 'Weapons Runner', boosts: [] }
+    const { rerender } = render(<DeroulePhase etapes={[annonce, entree]} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} {...mode} />)
+    fireEvent.click(screen.getAllByRole('button', { name: /Suivant/i })[0])
+    expect(etapeLue()).toBe('Klaw va attaquer Colossus')
+    rerender(<DeroulePhase etapes={[resolue, entree]} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} {...mode} />)
+    expect(etapeLue()).toBe('Klaw attaque Colossus')
+  })
+
   // Le test que la decision 7 reclame mot pour mot : UN accuse, pas deux.
   it("acquitte l'intention tout de suite quand aucune question n'est posee", () => {
     const onSuivant = vi.fn()

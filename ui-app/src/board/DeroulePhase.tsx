@@ -1019,8 +1019,9 @@ export function DeroulePhase({
         // Le moteur journalise parfois DEUX entrees pour la meme carte : des la premiere, elle est a l'ecran.
         .filter((id) => !etapesAffichees.slice(0, index + 1).some((e) => e.titre === 'entree' && e.carteId === id))
     : []
+  // 25/10/2026 : plus seulement sur la table. Au telephone (et dans le cartouche du PC), « Étape suivante » sautait de meme
+  // l'attaque de Klaw et son boost Weapons Runner pour aller droit a l'entree du sbire.
   const suiteDifferee =
-    surTable &&
     phaseRaconteeEnCours &&
     etape !== undefined &&
     (etape.titre === 'attaque' || etape.titre === 'manigance') &&
