@@ -5804,5 +5804,58 @@ export const TEXTES_FR_FANMADE = {
     // predator — M134 Minigun (Attachment)
     'pd029': "Le sbire attaché gagne +1 ATQ.\nAttachez-la à Dutch Schaefer. S'il n'est pas en jeu, cherchez-le dans le deck de rencontre et la pile de défausse, révélez-le et attachez-lui cette carte.\n[star] <b>Réponse forcée</b> : après que Dutch Schaefer vous attaque, placez 1 menace sur la manigance annexe Chopper.",
     // predator — Get To The... (Treachery)
-    'pd030': "<b>Une fois révélée</b> : le vilain manigance. Placez 2 menaces sur la manigance annexe Chopper.\n<i>« If it bleeds, we can kill it. » —Dutch</i>",
+    'pd030': "<b>Une fois révélée</b> : le vilain manigance. Placez 2 menaces sur la manigance annexe Chopper.\n<i>« If it bleeds, we can kill it. » —Dutch</i>",    // the vault — Batroc (I) (Villain)
+    'vt001': "<b>Ordre d'activation 1</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Batroc avec une carte que vous contrôlez, choisissez : défaussez les 3 premières cartes du deck de rencontre ou placez 1 menace sur la manigance principale.\n<i>« Sacre Bleu! You are fastaire than ever Avengaire. »</i>",
+    // the vault — Batroc (II) (Villain)
+    'vt002': "<b>Ordre d'activation 1</b>\n<b>Une fois révélée</b> : chaque joueur défausse les 5 premières cartes de son deck.\n<b>Réponse forcée</b> : après que vous avez attaqué Batroc avec une carte que vous contrôlez, choisissez : défaussez les 3 premières cartes du deck de rencontre ou placez 1 menace sur la manigance principale.\n<i>« Sacre Bleu! You are fastaire than ever Avengaire. »</i>",
+    // the vault — Mentallo (I) (Villain)
+    'vt003': "<b>Ordre d'activation 2</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Mentallo avec une carte que vous contrôlez, choisissez : inclinez votre identité ou placez 1 menace sur la manigance principale.\n<i>« Drôle comme les hallucinations peuvent parfois sembler si réelles. »</i>",
+    // the vault — Mentallo (II) (Villain)
+    'vt004': "<b>Ordre d'activation 2</b>\n<b>Une fois révélée</b> : chaque joueur incline un personnage qu'il contrôle.\n<b>Réponse forcée</b> : après que vous avez attaqué Mentallo avec une carte que vous contrôlez, choisissez : inclinez votre identité ou placez 1 menace sur la manigance principale.\n<i>« Drôle comme les hallucinations peuvent parfois sembler si réelles. »</i>",
+    // the vault — Grey Gargoyle (I) (Villain)
+    'vt005': "<b>Ordre d'activation 3</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Grey Gargoyle avec une carte que vous contrôlez, choisissez : sonnez l'attaquant ou placez 1 menace sur la manigance principale.\n<i>« Pardonnez-moi de ne pas vous serrer la main, monsieur... »</i>",
+    // the vault — Grey Gargoyle (II) (Villain)
+    'vt006': "<b>Ordre d'activation 3</b>\n<b>Une fois révélée</b> : chaque joueur sonne un personnage qu'il contrôle.\n<b>Réponse forcée</b> : après que vous avez attaqué Grey Gargoyle avec une carte que vous contrôlez, choisissez : sonnez l'attaquant ou placez 1 menace sur la manigance principale.\n<i>« Pardonnez-moi de ne pas vous serrer la main, monsieur... »</i>",
+    // the vault — Hydro-Man (I) (Villain)
+    'vt007': "<b>Ordre d'activation 4</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Hydro-Man avec une carte que vous contrôlez, choisissez : infligez 1 dégât à chaque personnage que vous contrôlez ou placez 1 menace sur la manigance principale.\n<i>« ...il suffit que je « tsunamise » cet idiot de grimpe-murs... »</i>",
+    // the vault — Hydro-Man (II) (Villain)
+    'vt008': "<b>Ordre d'activation 4</b>\n<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage allié.\n<b>Réponse forcée</b> : après que vous avez attaqué Hydro-Man avec une carte que vous contrôlez, choisissez : infligez 1 dégât à chaque personnage que vous contrôlez ou placez 1 menace sur la manigance principale.",
+    // the vault — Mad Thinker (I) (Villain)
+    'vt009': "<b>Ordre d'activation 5</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Mad Thinker avec une carte que vous contrôlez, choisissez : placez 1 menace sur chaque manigance annexe ou placez 1 menace sur la manigance principale.\n<i>« Je prévois toutes les éventualités ! »</i>",
+    // the vault — Mad Thinker (II) (Villain)
+    'vt010': "<b>Ordre d'activation 5</b>\n<b>Une fois révélée</b> : placez 1 menace sur la manigance principale pour chaque ennemi en jeu.\n<b>Réponse forcée</b> : après que vous avez attaqué Mad Thinker avec une carte que vous contrôlez, choisissez : placez 1 menace sur chaque manigance annexe ou placez 1 menace sur la manigance principale.\n<i>« Je prévois toutes les éventualités ! »</i>",
+    // the vault — Nekra (I) (Villain)
+    'vt011': "<b>Ordre d'activation 6</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Nekra avec une carte que vous contrôlez, choisissez : donnez à Nekra 1 carte de boost face cachée ou placez 1 menace sur la manigance principale.\n<i>« Nekra n'a besoin de l'aide de personne !! »</i>",
+    // the vault — Nekra (II) (Villain)
+    'vt012': "<b>Ordre d'activation 6</b>\n<b>Une fois révélée</b> : donnez à chaque méchant 1 carte de boost face cachée.\n<b>Réponse forcée</b> : après que vous avez attaqué Nekra avec une carte que vous contrôlez, choisissez : donnez à Nekra 1 carte de boost face cachée ou placez 1 menace sur la manigance principale.\n<i>« Nekra n'a besoin de l'aide de personne !! »</i>",
+    // the vault — Vapor (I) (Villain)
+    'vt013': "<b>Ordre d'activation 7</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Vapor avec une carte que vous contrôlez, choisissez : désorientez l'attaquant ou placez 1 menace sur la manigance principale.\n<i>« ...on ne frappe pas ce dont on ne peut toucher la forme ! »</i>",
+    // the vault — Vapor (II) (Villain)
+    'vt014': "<b>Ordre d'activation 7</b>\n<b>Une fois révélée</b> : chaque joueur désoriente un personnage qu'il contrôle.\n<b>Réponse forcée</b> : après que vous avez attaqué Vapor avec une carte que vous contrôlez, choisissez : désorientez l'attaquant ou placez 1 menace sur la manigance principale.\n<i>« ...on ne frappe pas ce dont on ne peut toucher la forme ! »</i>",
+    // the vault — Venom (I) (Villain)
+    'vt015': "<b>Ordre d'activation 8</b>\n<b>Réponse forcée</b> : après que vous avez attaqué Venom avec une carte que vous contrôlez, choisissez : soignez-le de 1 dégât ou placez 1 menace sur la manigance principale.\n<i>« The Vault ne peut pas nous retenir, minable ! On s'en est déjà évadés deux fois ! »</i>",
+    // the vault — Venom (II) (Villain)
+    'vt016': "<b>Ordre d'activation 8</b>\nRobuste. Tenacité.\n<b>Réponse forcée</b> : après que vous avez attaqué Venom avec une carte que vous contrôlez, choisissez : soignez-le de 1 dégât ou placez 1 menace sur la manigance principale.\n<i>« The Vault ne peut pas nous retenir, minable ! On s'en est déjà évadés deux fois ! »</i>",
+    // the vault — The Vault Breakout (1A) (MainScheme)
+    'vt017a': "<b>Contenu</b> : tous les méchants (I) <i>(les stades (II) à la place en mode expert)</i>. Ensembles de rencontre The Vault et Standard. Un ensemble modulaire de rencontre <i>(Sinister Syndicate)</i>.\n<b>Mise en place</b> : créez le deck de méchants <i>(voir l'encart)</i>. Mettez en jeu l'environnement The Vault. Puis glissez dessous, face cachée, les 4 premières cartes méchant et le sbire némésis ([unique]) de chaque joueur. Mettez de côté, hors jeu, l'obligation Inspection of the Vault.",
+    // the vault — The Vault Breakout (1B) (MainScheme)
+    'vt017b': "<b>Une fois révélée</b> : révélez la première carte du deck de méchants.\n[star] <b>Interruption forcée</b> : quand cette manigance serait accomplie, faites à la place chacune des actions suivantes :\n1. Retirez d'ici toute la menace sauf 1[per_hero].\n2. Révélez 1 méchant au hasard sous The Vault.\n3. Révélez Inspection of the Vault.",
+    // the vault — The Vault (Environment)
+    'vt018': "<b>Réponse forcée</b> : après qu'un sbire unique ([unique]) est vaincu, glissez-le sous The Vault, face cachée.\n<b>Si aucun méchant n'est sous The Vault, les joueurs perdent la partie.</b>\n<b>Si tous les méchants sont soit sous The Vault, soit vaincus, les joueurs gagnent la partie.</b>",
+    // the vault — Inspection of the Vault (Obligation)
+    'vt019': "<b><i>À donner au premier joueur.</i></b>\n<b>Action d'alter ego</b> : inclinez votre identité et dépensez une ressource [mental] → mettez cette carte de côté, hors jeu.\n<i>« Il y a ici des mesures de sécurité pour lesquelles on m'a donné une pile de livres afin de m'aider à comprendre. »</i> —Warden",
+    // the vault — Craven Escape (Attachment)
+    'vt020': "Attachez-la au méchant qui a le moins de points de vie restants et qui n'a pas déjà une autre Craven Escape. Si vous ne pouvez pas, cette carte gagne Déferlement.\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, mélangez le méchant attaché dans le deck de méchants.\n<i>« Comment tu as survécu n'a pas d'importance ! Ce qui compte, c'est que tu aies survécu ! »</i> —Venom",
+    // the vault — Corrupted Guardsman (Minion)
+    'vt022': "Incitation 1.\n<b>Une fois révélée</b> : si Inspection of the Vault est en jeu, révélez 1 sbire au hasard sous The Vault. Si vous ne pouvez pas, cette carte gagne Déferlement.\n[star] <b>Boost</b> : mélangez dans le deck de rencontre 1 sbire de sous The Vault.",
+    // the vault — Burglary (SideScheme)
+    'vt026': "<b>Une fois révélée</b> : si Inspection of the Vault est en jeu, placez ici 1[per_hero] menace supplémentaire.\n<b>Une fois vaincue</b> : révélez la première carte du deck de méchants.",
+    // the vault — Contingency Measures (SideScheme)
+    'vt028': "<i>« Puisque je ne peux te plier à ma volonté... je crains de devoir te briser ! »</i> —Senso\n<b>Interruption forcée</b> : quand un méchant serait vaincu, mélangez-le à la place dans le deck de méchants.\nTant qu'Inspection of the Vault est en jeu, cette carte gagne une icône d'aléas ([hazard]).",
+    // the vault — Scheming from Within (SideScheme)
+    'vt029': "<b>Une fois révélée</b> : placez ici 1 menace supplémentaire pour chaque méchant sous The Vault.\n[star] <b>Boost</b> : si Inspection of the Vault est en jeu, cette carte gagne +1 icône de boost ([boost]) pour chaque méchant sous The Vault.",
+    // the vault — Rampage in Public (Treachery)
+    'vt030': "<b>Une fois révélée</b> : si le nombre de méchants en jeu est inférieur au nombre de joueurs, cette carte gagne Déferlement. Révélez la première carte du deck de méchants. Si vous ne pouvez pas, le méchant dont l'ordre d'activation est le plus élevé s'active contre vous.",
+    // the vault — Riot in the Vault (Treachery)
+    'vt034': "Déferlement.\n<b>Une fois révélée</b> : si Inspection of the Vault n'est pas en jeu, révélez-la. Sinon, placez 1 menace sur la manigance principale pour chaque méchant sous The Vault.\n<i>« Aucune prison ne peut retenir un esprit tel que le mien. »</i> —Mad Thinker",
 };

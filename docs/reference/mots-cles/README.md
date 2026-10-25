@@ -78,6 +78,7 @@ la plus fréquente sur un pack vilain.
 
 ## Maison
 
+- [x] activation-order.md (scénario `the_vault` : « Activation Order X » sur chaque vilain, distribution des activations par ordre entre vilains et joueurs, 25/10/2026)
 - [x] eclair.md (pack `zeus` : une RESSOURCE maison, cinquième couleur du
       moteur `L`, ajoutée le 11/09/2026. ⚠ Distincte de l'énergie, que le set
       némésis vise, lui)

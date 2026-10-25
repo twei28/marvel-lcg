@@ -1934,3 +1934,26 @@ Harnais (`tools/cas/kree_sentry.py`, `tools/cas/imperial_guard.py`) :
 - ⚠ Harnais : `CreateEncounterDeck` / `CreatePlayerDeck` listent les cartes du DESSOUS vers le DESSUS (la dernière citée est la carte du dessus). `main_exclusive: []` ne vide pas la main : `Puzzle.EmptyHand()`. `cibles` prend la première cible légale à chaque question : pour répartir deux choix, laisser UNE seule cible légale à la seconde (menace 1 sur la première manigance).
 - ⚠ Harnais : `Puzzle.EnemyAttacks(ennemi, allié)` laisse le heros DEFENDRE l'allié ; pour mesurer l'outrepassement, viser un sbire ennemi (`overkill_to=`).
 - ⚠ Une ressource à usages multiples (`SetToAvailableTimesFn`) est offerte N fois sous le même id d'effet ; chaque usage paie son coût.
+
+## 24. The Vault (Kajislav, `vt`, 25/10/2026) : recettes et pièges payés
+
+| Texte imprimé / besoin | API | Modèle | Piège |
+|---|---|---|---|
+| Plusieurs vilains qui s'activent par « Activation Order X » | `desc.ActivationOrder` + `Villains.Rule(the_villain="LowestActivationOrder", activation_order=True)` ; `Enemies.ActivationVillainsParOrdre` | `vt017a`, fiche `activation-order.md` | un vilain mis en jeu par `Puzzle.PutIntoPlay` n'est PAS dans la zone des vilains : `BuildVillainDeck` + `RevealNextVillain()` |
+| « Reveal the top card of the villain deck » avec « When Revealed » du vilain (stade II) | `Villains.RevealNextVillain(joueur, effect, reveal=True)` (`Card.Reveal`) | `vt017b`, `vt030` | sans `reveal=True` la mise en jeu est NUE : aucun « When Revealed » |
+| Cartes « sous » une carte (face cachée), tirage au hasard, révélation | `vault.TuckCardUnderHere(faces, effect)`, `GetPlacedCardArea().GetAll()`, `Rand.RandomChoice(liste, effect)`, `face.Reveal(joueur, effect)` | `vt017a`, `vt018`, helpers du set | ⚠ `Random` n'est PAS dans l'espace de noms des cartes : `Rand.RandomChoice(liste, effect)` (qui respecte aussi le mode sans mélange) |
+| Obligation « Give to the first player » | `desc.GiveTo = ""` ; la révéler SOUS le premier joueur (`SetupCards.Reveal(effect, Worlds.GetFirstPlayer(effect), ..., only_set_aside=True)`) | `vt019`, `vt017b`, `vt034` | ⚠ `GiveTo = "first player"` est cherché comme un NOM de joueur (`Worlds.FindPlayerByName`) : rien trouvé, l'obligation est RETIRÉE de la partie |
+| « After you attack X with a card you control » (identité OU allié) | `AfterUnitAttackUnit(ForcedResponse, Unit2, "This", op, conditions=[attaquant contrôlé par un joueur])` | helper `ChoixApresAttaque` | ⚠ `"You"` ne couvre que l'IDENTITÉ : un allié qui attaque ne déclenchait rien |
+| « choose to either A or place 1 threat on the main scheme » | `joueur.ChooseAbilities(effect, ForChoiceAbility(A), ForChoiceAbility(B))`, `choisir_option="Place_1_threat_on_the_main_scheme"` pour forcer la branche B | `ChoixApresAttaque` | le pilote du harnais prend la 1re option |
+| « When this scheme would be completed, instead ... » (menace revenue à 1[per_hero]) | `WhenMainSchemeStageWouldBeCompleted` + `SetBeInstead` + `RemoveThreatFromSchemes(.., ignore_crisis=True)` | `vt017b` (modèle gs118b) | `Puzzle.SetThreat(card, seuil)` déclenche l'accomplissement |
+| « the players win / lose the game » vrais ensemble | `Worlds.SetGameOver(True/False, effect)` après chaque changement d'état (`VerifierFinDePartie`) | `vt018` | victoire d'abord (arbitrage de l'utilisateur, 25/10/2026) |
+| Mélanger un vilain dans le deck de vilains (rien ne le suit) | `Villains.ShuffleIntoVillainDeck(villain, effect)` | `vt020`, `vt028` | attachements et statuts défaussés, dégâts effacés (la carte repart à PV pleins) |
+| « While X is in play, this card gains a hazard icon » | `ThisGainKeywordWhileFaceIsInPlay(CardFinder(name=...), hazard=1)` | `vt028` | |
+| « this card gets +1 boost icon for each ... » (Boost ★) | `WhenBoostIconsWouldBeCount(NonKeyword, op, conditions=[message.trigger is effect.this])` + `message.UpdateBoostIcon(n, effect)` | `vt029` | |
+| Trait imprimé nouveau (TRAITOR) | l'ajouter à `CardFace.TRAITS` | `vt022` | |
+
+- ⚠ Harnais : `Puzzle.Remove('01097b')` retire le complot du Rhino ; sans cela « the main scheme » est le sien et les menaces lui arrivent (des cas passaient au vert sur la menace de DÉPART de `vt017b`, qui vaut 1 : poser `Puzzle.SetThreat('vt017b', 0)`).
+- ⚠ Harnais : `Puzzle.Reveal('X')` deux fois relève la MÊME carte (déjà en jeu) ; pour une 2e copie : `Puzzle.CreateEncounterDeck('X')` puis `Puzzle.Reveal('X')`.
+- ⚠ Harnais : `Puzzle.CreateEncounterDeck` exige un vilain en jeu (`Worlds.GetAllVillains(..)[0]`).
+- ⚠ Harnais : une action refusée faute de coût payable lève l'assertion « n'offre aucune action disponible » à la mise en place du cas : pas de contre-cas « coût impayable ».
+- ⚠ Plateau : `The Vault` et ses cartes glissées (`bind_object_id`) sont dessinées par le rendu générique (aucun correctif de plateau nécessaire).
