@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-25",
+        genre: "jeu",
+        fr: "Sur téléphone, les cartes à plusieurs faces s'affichent l'une sous l'autre sans défilement, et dans le plateau en ronds, les lieux et les environnements d'un scénario comme La ville ne dort jamais sont regroupés en deux ronds. La phase du méchant montre toujours la carte en entier.",
+        en: "On phone, multi-face cards now stack without scrolling, and in the round-token board the locations and environments of a scenario like The City Never Sleeps are grouped into two tokens. The villain phase always shows the whole card.",
+    },
+    {
+        date: "2026-10-25",
+        genre: "correction",
+        fr: "Un deck sauvegardé n'apparaît plus en double, les decks s'affichent plus vite, la roue du choix au hasard tourne de nouveau sur téléphone, et le filtre Fan-made du choix du méchant est disponible sur téléphone.",
+        en: "A saved deck no longer shows up twice, decks load faster, the random-pick wheel spins again on phone, and the Fan-made filter of the villain choice is available on phone.",
+    },
+    {
         date: "2026-10-24",
         genre: "jeu",
         fr: "Puzzles (bêta) : crée ta propre position de départ en huit étapes depuis le bouton Puzzles, publie-la pour obtenir un code, et résous celui d'un autre en tapant son code. Un panneau rappelle l'énoncé, donne les indices un par un et peut montrer la solution écrite.",
