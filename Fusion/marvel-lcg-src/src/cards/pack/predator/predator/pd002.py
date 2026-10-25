@@ -54,7 +54,6 @@ def GetAbilities() -> Sequence['Ability']:
             this.AttachTo2(identite, effect)
 
     return [
-        AbilityFactory.AttachToFaceWhenPutIntoPlay("YourIdentity"),
         AbilityFactory.WhenCardWouldLeavePlay(
             AbilityType.NonKeyword,
             "AttachedCharacter",

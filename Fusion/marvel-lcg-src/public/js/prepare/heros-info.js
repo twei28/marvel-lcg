@@ -1805,4 +1805,11 @@ export const HEROS_INFO = {
         apparition: "Special Marvel Edition #15 (1973)",
     },
 
+    "pd001a": {
+        bio: "Guerrier yautja, un Predator traque les proies les plus dangereuses de la galaxie pour l'honneur et les trophées : crânes et dépouilles ornent sa salle de chasse. Équipé d'un camouflage actif, de lames de poignet, d'un plasmacaster et d'une vision infrarouge, il marque sa victime, la suit dans l'ombre et frappe au moment précis où elle se croit seule. Pour lui, même le xénomorphe n'est qu'un trophée de plus.",
+        bioEn: "A Yautja warrior, a Predator stalks the most dangerous prey in the galaxy for honor and trophies: skulls and pelts line his trophy room. Armed with active camouflage, wrist blades, a plasmacaster and infrared vision, he marks his victim, follows it in the shadows and strikes the moment it believes itself alone. Even the xenomorph is, to him, only one more trophy.",
+        civil: "Yd'Nar",
+        ennemis: "Xénomorphes",
+        ennemisEn: "Xenomorphs",
+    },
 };

@@ -1,28 +1,27 @@
-# Questions pour RyCoRan (auteur du pack Predator) — a envoyer en anglais
+# Questions pour RyCoRan (auteur du pack Predator) — à envoyer en anglais
 
-Hi RyCoRan, thank you for the Predator pack. We are porting it to a digital Marvel Champions engine and a few card texts leave
-room for more than one reading. Could you tell us which one you intended?
+Hi RyCoRan,
 
-1. **Self Destruct** — "Deal 1 damage to the villain and each minion engaged with you (to a maximum of 10) for each glyph counter
-   here." What does the "maximum of 10" cap: (a) the damage each target takes, (b) the number of glyph counters counted, or (c) the
-   total damage dealt across all targets? (For 1 damage per glyph, (a) and (b) give the same result.)
+I'm a big fan of your Predator pack. I'm adding it to a digital version of Marvel Champions, and I'd like to make sure each card works
+exactly the way you meant it. A few texts could be read in more than one way, so could you help me with these?
 
-2. **Hunted By the Hive** — "Xenomorph Queen attacks you. If it's not in play, find Xenomorph Queen and put it into play engaged with
-   you." When the Queen is NOT in play, does she also attack after she arrives, or does she only enter play (since the first
-   sentence could not be resolved without her)?
+**1. Self Destruct.** "Deal 1 damage to the villain and each minion engaged with you (to a maximum of 10) for each glyph counter here."
+What is the maximum of 10 limiting: the damage each target takes, the number of glyph counters that count, or the total damage across
+all targets?
 
-3. **Starter deck image** — it lists "2 Targeted!" and "15 Infralocked x3", but the pack has no "Targeted!" card and only one
-   Infralocked (1/16, put into play by Yd'Nar's Setup). Are those leftovers from an earlier version? We built the deck from the
-   card scans: 15 hero cards (cards 2/16 to 16/16) plus Infralocked set aside.
+**2. Hunted By the Hive.** When the Xenomorph Queen isn't in play, she gets found and put into play engaged with the player. Does she
+then attack as well, or does she only show up?
 
-4. **Razor Hunt** — "Deal 3 damage to an enemy. Deal 3 damage to an enemy." Is that intentionally two separate 3-damage instances
-   (the same enemy or two different ones), or should it read "Deal 3 damage to an enemy" once for each of Wolverine and Predator?
+**3. The starter deck image.** It lists "Targeted!" and 3 copies of Infralocked, but I can only find one Infralocked (1/16) and no
+"Targeted!" in the files. Is that an older version of the list? I built the deck from the card images.
 
-5. **Infralocked** — "Then, return this card to your play area." Our engine has no unattached upgrade, so Infralocked sits attached
-   to your identity while it is not on a minion. If its minion leaves play for any other reason, we also return it there. Is that
-   how you intended it?
+**4. Razor Hunt.** The text says "Deal 3 damage to an enemy" twice. Did you mean two separate hits (on the same enemy or on two different
+ones), or is one of them a typo?
 
-6. **"Find a minion"** (Jungle Stalk, Honor Hunt) — by the Rules Reference, "find" searches every area, including your own deck. That
-   means the player-minion Xenomorph (a MINION card in your deck) can be found. Is that intended?
+**5. Infralocked.** "Return this card to your play area": my engine can't keep an upgrade unattached, so Infralocked sits on the player's
+identity when it isn't on a minion. Does that match what you had in mind?
 
-Thank you!
+**6. "Find a minion"** (Jungle Stalk, Honor Hunt). Under the official "find" rule, the search covers every area, including the player's
+own deck. So Jungle Stalk could pick the player-minion Xenomorph from the deck. Is that intended?
+
+Thanks a lot, and congratulations on the pack!

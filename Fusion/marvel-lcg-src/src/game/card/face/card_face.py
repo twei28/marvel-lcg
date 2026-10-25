@@ -210,6 +210,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # THIEF, KING et TITLE existaient deja. Lus par cn002 Belit, cn009 et la
         # remise « Discount 1 (KING) ».
         "ADVENTURER", "CIMMERIA", "PIRATE", "BARBARIAN",
+        # AJOUT (25/10/2026) : traits du pack custom predator (RyCoRan). XENOMORPH est lu par `desc.Teamwork` (assert `IsTrait` a la
+        # construction : un trait absent de cette liste fait PLANTER le setup du deck, constate par verifier_tous_les_decks).
+        "XENOMORPH", "YAUTJA",
         # (15/10/2026) Cartes de campagne de Skrull Menace (Kajislav, sk263-sk288) : traits imprimes sur les allies
         # et soutiens (Crusader « INITIATIVE », Paibok « S.W.O.R.D. », Skymax « SQUADRON SUPREME », Xavin
         # « RUNAWAYS », Skrull Kill Krew « CREW »). Purement declaratif, comme les autres.

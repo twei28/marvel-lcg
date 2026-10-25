@@ -5778,4 +5778,67 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ld017': "Attachez-le à votre identité.\nConsidérez la boîte de texte imprimée de votre identité comme vierge <i>(sauf les traits)</i>.\n<b>Action</b> : choisissez d'incliner un personnage que vous contrôlez ou de subir 3 dégâts → défaussez cette carte. <i>(N'importe quel joueur peut le faire.)</i>",
   // lady_deathstrike — Chop-Shop Cybernetics (SideScheme)
   'ld018': "<i>Les cybernétiques du marché noir ne sont pas jolies, mais elles tiennent même dans de mauvaises conditions.</i>\nEntrave 1[per_hero].\n<b>Réponse forcée</b> : après qu'un attachement [[TECH]] entre en jeu, donnez une carte d'état Tenace au méchant et à l'ennemi attaché.",
+  // predator — Predator (RyCoRan) [set 214]
+  // predator — Predator (Hero)
+  'pd001a': "<b>Réponse</b> : après qu'un sbire entre en jeu, attachez-lui Infralocked.\n<i>Camouflaged Hunter</i> — <b>Réponse</b> : après que vous avez vaincu un sbire, donnez à Predator une carte d'état Camouflé.",
+  // predator — Yd'Nar (AlterEgo)
+  'pd001b': "<b>Mise en place</b> : mettez Infralocked en jeu.\n<i>Future Trophy</i> — <b>Action</b> : défaussez des cartes du dessus de votre deck jusqu'à ce que vous défaussiez une amélioration, puis ajoutez cette carte à votre main. <i>(Limite d'une fois par round.)</i>",
+  // predator — Infralocked (Upgrade)
+  'pd002': "Permanent.\n<b>Interruption de héros</b> : quand Predator vainc le sbire attaché, retirez 2 menaces d'une manigance (3 menaces à la place d'une manigance annexe). Puis, remettez cette carte dans votre zone de jeu.",
+  // predator — Xenomorph (PlayerMinion)
+  'pd003': "<b><i>Travail d'équipe</i></b> ([[XENOMORPH]]).\n<b>Une fois vaincu</b> : redressez Predator.\n<b>Interruption</b> : quand Xenomorph est vaincu, mélangez-le dans votre deck.",
+  // predator — Ghost Protocol (Event)
+  'pd004': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance (4 menaces à la place si vous êtes camouflé).",
+  // predator — Spine Rip (Event)
+  'pd005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si Infralocked est attachée à cet ennemi, cette attaque gagne Déferlement.",
+  // predator — Shadow Counter (Event)
+  'pd006': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, évitez-en 3. Puis, donnez à Predator une carte d'état Camouflé.",
+  // predator — Savage Skewer (Event)
+  'pd007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Vous pouvez défausser une carte d'état Camouflé pour soit sonner et désorienter cet ennemi, soit défausser un attachement de cet ennemi portant le texte « <b>Action de héros</b> » ou « <b>Réponse de héros</b> ».",
+  // predator — Jungle Stalk (Event)
+  'pd008': "<b>Action de héros</b> : trouvez un sbire et mettez-le en jeu engagé avec vous → soignez votre héros d'1 dégât pour chaque icône ([star] et [boost]) dans la zone de boost de cette carte et donnez à Predator une carte d'état Camouflé.",
+  // predator — Honor Hunt (PlayerSideScheme)
+  'pd009': "Victoire 0. Assaut. <i>(Les contres de base contre cette manigance utilisent l'ATQ au lieu de la CTR.)</i>\nTant que Honor Hunt est dans la vitrine de victoire, elle gagne « <b>Action</b> : trouvez un sbire et mettez-le en jeu engagé avec vous. N'importe quel joueur peut déclencher cette capacité. <i>(Limite d'une fois par round.)</i> ».",
+  // predator — Yautja Trophy Room (Support)
+  'pd010': "<b>Réponse</b> : après que vous avez vaincu un sbire, placez 1 compteur de crâne ici.\n<b>Ressource</b> : inclinez Yautja Trophy Room et retirez X compteurs de crâne → produisez X ressources [wild].",
+  // predator — Self Destruct (Upgrade)
+  'pd011': "<b>Action de héros</b> : inclinez cette carte → placez 2 compteurs de glyphe ici.\n<b>Action de héros</b> : retirez cette carte de la partie → infligez 1 dégât au vilain et à chaque sbire engagé avec vous (jusqu'à un maximum de 10) pour chaque compteur de glyphe ici.",
+  // predator — Yautja Wrist Blades (Upgrade)
+  'pd012': "Predator gagne Riposte 1 et ses attaques de base gagnent Perçant.",
+  // predator — Plasmacaster (Upgrade)
+  'pd013': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Plasmacaster → infligez 2 dégâts à un ennemi (3 dégâts à la place si une amélioration est attachée à cet ennemi). Cette attaque gagne À distance.",
+  // predator — Bio-Helmet (Upgrade)
+  'pd014': "<b>Action de héros</b> : inclinez Bio-Helmet → regardez la carte du dessus du deck de rencontre. Pour chaque icône ([star] et [boost]) dans la zone de boost de cette carte, retirez 1 menace d'une manigance.",
+  // predator — Exposed Target (Obligation)
+  'pd015': "<b><i>Donnez-la au joueur Yd'Nar.</i></b>\nVous pouvez passer en forme alter ego. Choisissez :\n• Inclinez Yd'Nar → retirez Exposed Target de la partie.\n• Défaussez chaque carte d'état Camouflé de votre identité et 1 amélioration [[TECH]] que vous contrôlez. Si aucune carte n'a été défaussée ainsi, cette carte gagne Renfort. Défaussez cette obligation.",
+  // predator — Xenomorph's Prey (SideScheme)
+  'pd016': "<i>Autrefois chasseur, désormais chassé. La Reine xénomorphe a marqué sa proie.</i>\nTant que cette carte est en jeu, Predator ne peut pas recevoir de cartes d'état Camouflé.\n<b>Une fois révélée</b> : placez ici 1 menace supplémentaire pour chaque carte d'état en jeu.",
+  // predator — Xenomorph Queen (Minion)
+  'pd017': "Ténacité.\n[star] Les attaques de Xenomorph Queen gagnent Perçant et Déferlement.\n<i>(Sbire némésis de Predator.)</i>",
+  // predator — Xenomorph Drone (Minion)
+  'pd018': "Garde. <b><i>Travail d'équipe</i></b> ([[XENOMORPH]]).\n<b>Réponse forcée</b> : après que Xenomorph Drone s'engage avec vous, s'il n'y a aucun autre sbire engagé avec vous, distribuez-vous 1 carte de rencontre face cachée.\n<hr />[star] <b>Boost</b> : mettez Xenomorph Drone en jeu engagé avec vous.",
+  // predator — Hunted By the Hive (Treachery)
+  'pd019': "<b>Une fois révélée</b> : Xenomorph Queen vous attaque. Si elle n'est pas en jeu, trouvez Xenomorph Queen et mettez-la en jeu engagée avec vous.",
+  // predator — Acid Blood (Attachment)
+  'pd020': "Le sbire attaché gagne +1 ATQ et Riposte 1.\n<b>Une fois révélé</b> : trouvez Xenomorph Queen, mettez-la en jeu engagée avec vous et attachez-lui cette carte.",
+  // predator — Energy (Resource)
+  'pd021': "1 max par deck.",
+  // predator — Genius (Resource)
+  'pd022': "1 max par deck.",
+  // predator — Strength (Resource)
+  'pd023': "1 max par deck.",
+  // predator — Razor Hunt (Event)
+  'pd024': "En Équipe (Wolverine et Predator). 1 max par deck.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à chacun de Wolverine et de Predator. Infligez 3 dégâts à un ennemi. Infligez 3 dégâts à un ennemi.",
+  // predator — Infrared Web (Event)
+  'pd025': "En Équipe (Spider-Man et Predator). 1 max par deck.\n<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand une attaque ennemie devrait vous infliger des dégâts, évitez-en 3. Infligez 3 dégâts à un ennemi.",
+  // predator — Chopper (SideScheme)
+  'pd026': "Permanent.\nTant qu'il n'y a aucune menace ici, cette manigance perd l'icône [hazard].\n<b>Réponse forcée</b> : après que de la menace a été placée ici, s'il y a au moins 8 menaces ici, les joueurs perdent la partie.",
+  // predator — Dutch Schaefer (Minion)
+  'pd027': "Ténacité.\n[star] <b>Réponse forcée</b> : après que Dutch Schaefer s'active, placez 1 menace sur chaque manigance.\n<i>(Sbire némésis de Predator.)</i>\n<i>« You're one ugly mother—. »</i>",
+  // predator — Colonel Dillon (Minion)
+  'pd028': "Patrouille. <b><i>Travail d'équipe</i></b> ([[SOLDIER]]).\n[star] <b>Réponse forcée</b> : après que Colonel Dillon vous attaque, placez 1 menace sur chaque manigance.\n<i>« Cause some damn fool accused you of being the best! » —Dillon</i>",
+  // predator — M134 Minigun (Attachment)
+  'pd029': "Le sbire attaché gagne +1 ATQ.\nAttachez-la à Dutch Schaefer. S'il n'est pas en jeu, cherchez-le dans le deck de rencontre et la pile de défausse, révélez-le et attachez-lui cette carte.\n[star] <b>Réponse forcée</b> : après que Dutch Schaefer vous attaque, placez 1 menace sur la manigance annexe Chopper.",
+  // predator — Get To The... (Treachery)
+  'pd030': "<b>Une fois révélée</b> : le vilain manigance. Placez 2 menaces sur la manigance annexe Chopper.\n<i>« If it bleeds, we can kill it. » —Dutch</i>",
 }

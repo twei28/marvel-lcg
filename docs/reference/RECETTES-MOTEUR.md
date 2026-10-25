@@ -1908,3 +1908,29 @@ Harnais (`tools/cas/kree_sentry.py`, `tools/cas/imperial_guard.py`) :
 
 - ⚠ **Extraction d'un zip : jamais `| head`** (SIGPIPE : l'extraction s'arrête, des cartes manquent sans erreur).
 - ⚠ `tools/cas/<bloc>_b.py` peut recharger le premier fichier de cas par `importlib` pour en réutiliser aides et vérificateur.
+
+## 23. Predator (RyCoRan, `pd`, 25/10/2026) : recettes et pièges payés
+
+| Texte imprimé / besoin | API | Modèle | Piège |
+|---|---|---|---|
+| UNE amélioration qui change d'hôte (sbire, identité) | `AttachTo2(hôte, effect)` ; « return this card to your play area » = `AttachTo2(identité)` | `pd002` (modèle `yd012` Yaka Arrow) | le moteur n'a PAS d'amélioration libre : l'identité tient lieu de « zone de jeu » |
+| Une amélioration `Permanent` dont l'hôte quitte le jeu | `WhenCardWouldLeavePlay(NonKeyword, "AttachedCharacter", op)` : `AttachTo2(identité)` | `pd002` | sans cela `HasPermanent` retient la carte DANS la défausse du sbire : introuvable pour le reste de la partie (cas rouge du 25/10) |
+| « Setup: Put X into play » d'une AMÉLIORATION mise de côté | `BeginGameWithSetAside([id])` + `WhenCardSetup` : `PutIntoPlay` PUIS `AttachTo2(identité)` | `pd001b` | ⚠ `AttachToFaceWhenPutIntoPlay("YourIdentity")` est réservé aux ATTACHEMENTS (`CastTo(Attachment)`, assert de développement) : invisible au harnais (`RELEASE=1`), il fait planter le setup de `verifier_tous_les_decks` |
+| Une capacité CONTINUE tant que la carte est en jeu | `AbilityType.NonKeyword` | `pd016` | ⚠ `AbilityType.Rule` reste ACTIVE hors jeu (mise de côté, retirée) : la carte nemesis interdisait le Camouflé dès la mise en place |
+| Un trait imprimé qui sert de VALEUR (`desc.Teamwork`, `desc.Nemesis`) | l'ajouter à `CardFace.TRAITS` (`card_face.py`) | `XENOMORPH`, `YAUTJA` | l'assert `IsTrait` ne s'exécute qu'à la construction d'une VRAIE partie : seul `verifier_tous_les_decks` l'attrape |
+| Une carte dont le `set_name` est vide | — | `pd024`, `pd025` | ⚠ le script est cherché par `set_name` : « effets de jeu = [] », `jouable = False`, sans erreur. Donner le set du héros (`Predator`), comme `br011` |
+| « Find a minion and put it into play engaged with you » | `Find.Find(effect, who_perform=joueur, finder=CardFinder(card_type=Minion, check_face_fn=lambda f: not f.IsInPlay()))` puis `PutIntoPlay` + `EngagePlayer` | `pd008`, `pd009` | `Find` balaie TOUT (deck du joueur compris) : un sbire de joueur (`pd003`) est un candidat valide |
+| « each icon (★ and Y) in that card's boost area » | `FacesCounter.CountTotalBoostIcons([f]) + FacesCounter.CountTotalBoostStar([f])` | `pd008`, `pd014` | l'étoile (`desc.Boost "1**"`) ne compte pas dans `CountTotalBoostIcons` |
+| « Remove X counters → generate X resources » avec une inclinaison | `CanGenerateResources(.., conditions=[dispo]).SetCostFunc(CostFunc.Custom(None, payer)).SetToAvailableTimesFn(n_compteurs)` ; `payer` incline la carte à la 1re utilisation seulement et retire 1 compteur ; `ex_operation` marque `_pd_paiement` sur l'effet payé | `pd010` | l'équivalent de `sm011` + « Exhaust once » : la condition accepte « inclinée PAR CE paiement ». Le harnais ne savait pas payer deux fois avec la même carte : `payer_avec` accepte désormais un id répété quand le moyen est offert plusieurs fois |
+| Une capacité « en vitrine de victoire » donnée à une carte `Victory 0` | posée sur les DEUX faces de l'identité (`ActionHonorHuntEnVitrine`) : `WhenInYourPlayTurn(Action, op, conditions=[vitrine]).AnyPlayerCanDoThis().LimitOncePerRound()` | `pd009` (modèle `rs009`, `pu141`) | le script de la carte elle-même est VIDE (RECETTES §3bis) ; la preuve par substitution se fait sur `pd001a` |
+| « When Defeated: X » + « Interrupt: shuffle it into your deck » sur la même carte | tout dans `WhenUnitBeDefeated(WhenDefeated, "This")` : X puis `Faces.ShuffleAllTo` | `pd003` | une VRAIE Interruption sortait la carte avant la défaite et muselait le When Defeated (modèle `al002` Throg) |
+| Un sbire de joueur (`PlayerMinion`) avec `Teamwork` | `desc.Teamwork` natif | `pd003` | il s'active contre son PROPRE joueur dès qu'un autre sbire du trait est en jeu |
+| « While there is no threat here, loses the [hazard] icon » | `ThisGainKeyword(fn, hazard=-1, change_on_event=OnEvent.Threat("This"))` | `pd026` | l'icône REVIENT avec la menace (bonus dynamique) |
+| « the players lose the game » | `Worlds.SetGameOver(False, effect)` | `pd026` | |
+| Compteurs maison | `CardFace.COUNTER` + `compteurs-fr.ts` | `skull`, `glyph` | |
+| Deck de départ d'une variante (autre set nemesis) | second `deck/starter/<id>.json` avec `metadata.variante_de` | `predator_dutch` | les deux sont dans `sets_info.heroes` |
+
+- ⚠ **La manigance nemesis n'est PAS en jeu au départ** : tout le set nemesis est mis de côté (`set_aside_nemesis_sets`). Un cas qui la teste la met en jeu (`Puzzle.PutIntoPlay` / `Reveal`).
+- ⚠ Harnais : `CreateEncounterDeck` / `CreatePlayerDeck` listent les cartes du DESSOUS vers le DESSUS (la dernière citée est la carte du dessus). `main_exclusive: []` ne vide pas la main : `Puzzle.EmptyHand()`. `cibles` prend la première cible légale à chaque question : pour répartir deux choix, laisser UNE seule cible légale à la seconde (menace 1 sur la première manigance).
+- ⚠ Harnais : `Puzzle.EnemyAttacks(ennemi, allié)` laisse le heros DEFENDRE l'allié ; pour mesurer l'outrepassement, viser un sbire ennemi (`overkill_to=`).
+- ⚠ Une ressource à usages multiples (`SetToAvailableTimesFn`) est offerte N fois sous le même id d'effet ; chaque usage paie son coût.

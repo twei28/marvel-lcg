@@ -33,7 +33,13 @@ def GetAbilities() -> Sequence['Ability']:
         candidates = list(joueur.set_aside_deck.Get()) + list(joueur.additional_discard_pile.Get())
         for face in candidates:
             if face.paper.card_id == ID_INFRALOCKED:
-                face.CastTo(Upgrade).PutIntoPlay(joueur, effect)
+                infra = face.CastTo(Upgrade)
+                infra.PutIntoPlay(joueur, effect)
+                # « Put Infralocked into play » : l'amelioration n'a pas de cible a choisir, elle va sur l'identite (une
+                # amelioration libre n'existe pas dans le moteur, voir pd002).
+                identite = joueur.GetIdentity()
+                if identite is not None and infra.GetBindFace() is None:
+                    infra.AttachTo2(identite, effect)
                 return
 
     def trophee_futur(effect: 'Effect', message: 'Message.WhenInYourPlayTurn') -> None:
