@@ -43,3 +43,14 @@ def AmenerLaReine(effect: 'Effect', joueur: 'Player|None') -> 'CardFace|None':
         return None
     reine.CastTo(Minion).EngagePlayer(joueur, effect)
     return reine
+
+
+def NombreDeCartesDEtat(effect: 'Effect') -> int:
+    """« each status card in play » : toutes les cartes d'etat posees sur un personnage en jeu (Sonne, Desoriente, Coriace, Expose,
+    Camoufle, Hebete, Intensifie), ennemis compris."""
+    total = 0
+    for face in Worlds.GetOnFieldCards(effect):
+        if isinstance(face, CanStatus):
+            total += (face.stunned + face.confused + face.tough + face.exposed
+                      + face.cloaked + face.dazed + face.intensified)
+    return total

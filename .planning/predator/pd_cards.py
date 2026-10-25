@@ -127,12 +127,12 @@ CARDS = [
     carte("pd024", "Event", "Razor Hunt",
           {"Cost": "1", "RES": "R", "MaxPerDeck": "1", "TeamUp": "Wolverine;Predator", "Class": "Basic"}, ["ATTACK"],
           "Team-Up (Wolverine and Predator). Max 1 per deck.\n<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage each to "
-          "Wolverine and Predator. Deal 3 damage to an enemy. Deal 3 damage to an enemy.", ""),
+          "Wolverine and Predator. Deal 3 damage to an enemy. Deal 3 damage to an enemy."),
     carte("pd025", "Event", "Infrared Web",
           {"Cost": "1", "RES": "Y", "MaxPerDeck": "1", "TeamUp": "Spider-Man;Predator", "Class": "Basic"},
           ["ATTACK", "DEFENSE"],
           "Team-Up (Spider-Man and Predator). Max 1 per deck.\n<b>Hero Interrupt</b> <i>(attack/defense)</i>: When an "
-          "enemy attack would deal damage to you, prevent 3 of that damage. Deal 3 damage to an enemy.", ""),
+          "enemy attack would deal damage to you, prevent 3 of that damage. Deal 3 damage to an enemy."),
 
     # ---- set nemesis ALTERNATIF (Dutch et son equipe, 5 cartes) ----
     carte("pd026", "SideScheme", "Chopper",

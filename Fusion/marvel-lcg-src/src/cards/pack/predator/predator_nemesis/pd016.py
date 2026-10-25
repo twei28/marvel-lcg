@@ -28,9 +28,9 @@ def GetAbilities() -> Sequence['Ability']:
     def proie(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
         this = effect.this.CastTo(EncounterSideScheme)
         Unused(message)
-        etats = Worlds.FindCardsOnField(effect, card_type=StatusCard)
+        etats = NombreDeCartesDEtat(effect)
         if etats:
-            this.PlaceThreatOnSchemes([this], len(etats), effect)
+            this.PlaceThreatOnSchemes([this], etats, effect)
 
     return [
         AbilityFactory.WhenUnitWouldBeStatus(

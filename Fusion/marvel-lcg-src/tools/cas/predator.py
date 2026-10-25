@@ -13,9 +13,6 @@
 #    pd008 B, pd009 G, pd010 B, pd011 YY, pd012 R, pd013 Y, pd014 B.
 SC = "rhino"
 HEROS = "Puzzle.ChangeToFace('pd001b', 'pd001a')"
-# Xenomorph's Prey (pd016, set nemesis) est EN JEU des le depart (manigance nemesis) et interdit les cartes Cloaked a Predator :
-# tout cas qui pose ou mesure un Cloaked commence par la retirer.
-SANS_PREY = "Puzzle.Remove('pd016')"
 CIVIL = "Puzzle.ChangeToFace('pd001a', 'pd001b')"
 SANS_DECK = "Puzzle.EmptyPlayerDeck()"
 SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
@@ -58,11 +55,11 @@ CAS = [
        {"accroche_a": [[INFRA, RUNNER]]}, main_exclusive=["01090"]),
     _c("pd001a Camouflaged Hunter : apres avoir vaincu un sbire, Predator recoit une carte Cloaked",
        "« Response: After you defeat a minion, give Predator a cloaked status card »",
-       [HEROS, SANS_PREY, f"Puzzle.PutIntoPlay('{RUNNER}')"], ["Puzzle.Attack('pd001a')"],
+       [HEROS, f"Puzzle.PutIntoPlay('{RUNNER}')"], ["Puzzle.Attack('pd001a')"],
        {"statuts": [["pd001a", "Cloaked"]], "hors_jeu": [RUNNER]}, main_exclusive=["01090"], cibles=[RUNNER]),
     _c("pd001a Camouflaged Hunter : le sbire SURVIT (3 PV, ATK 3 = mort) -> choisir un sbire a 4 PV : pas de Cloaked",
        "contre-cas : « after you DEFEAT » exige la defaite",
-       [HEROS, SANS_PREY, "Puzzle.PutIntoPlay('01182')"], ["Puzzle.Attack('pd001a')"],
+       [HEROS, "Puzzle.PutIntoPlay('01182')"], ["Puzzle.Attack('pd001a')"],
        {"statuts_absents": [["pd001a", "Cloaked"]], "degats": [["01182", 3]]}, main_exclusive=["01090"], cibles=["01182"]),
     _c("pd001a Predator : valeurs imprimees PV 13, THW 0, ATK 3, DEF 2, SOLDIER YAUTJA",
        "nombres texte <-> code (scan HERO) : HAND SIZE 5 / HIT POINTS 13",
