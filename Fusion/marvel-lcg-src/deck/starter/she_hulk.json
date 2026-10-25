@@ -2,8 +2,7 @@
     "version": "0.5.8",
     "name": "She-Hulk",
     "metadata": {
-        "url": "https://hallofheroeslcg.com/core-set-2/",
-        "variante_nom": "Officielle"
+        "url": "https://hallofheroeslcg.com/core-set-2/"
     },
     "hero": [
         "01019a,01019b"
