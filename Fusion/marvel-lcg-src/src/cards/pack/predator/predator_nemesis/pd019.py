@@ -10,8 +10,8 @@ from . import *
 #
 # ⚠ Mots-pieges :
 #  - « If it's not in play » : la Reine ABSENTE est trouvee (deck de rencontre, defausse, cartes mises de cote) ; deja en jeu elle attaque.
-#  - ARBITRAGE PROVISOIRE (25/10/2026, question posee a l'auteur, QUESTIONS-AUTEUR.md) : la Reine qui vient d'arriver ATTAQUE aussi
-#    (la 1re phrase est resolue apres son arrivee). Si l'auteur dit le contraire : retirer l'appel a `DoAttackYou` apres `AmenerLaReine`.
+#  - DECISION UTILISATEUR (25/10/2026, question 2/6) : Reine ABSENTE -> elle est trouvee et entre engagee, SANS attaquer (la 1re phrase
+#    n'a pas pu se resoudre faute de Reine) ; Reine DEJA en jeu -> elle attaque.
 #  - Reine introuvable (vaincue puis retiree, deja engagee ailleurs...) : rien ne se passe.
 
 
@@ -24,9 +24,10 @@ def GetAbilities() -> Sequence['Ability']:
             return
         reine = LaReineEnJeu(effect)
         if reine is None:
-            reine = AmenerLaReine(effect, joueur)
-        if reine is not None and reine.card.IsOnField():
-            reine.CastTo(Enemy).DoAttackYou(joueur, effect)
+            # DECISION UTILISATEUR (25/10/2026) : Reine absente -> elle arrive engagee, SANS attaquer.
+            AmenerLaReine(effect, joueur)
+            return
+        reine.CastTo(Enemy).DoAttackYou(joueur, effect)
 
     return [
         AbilityFactory.WhenThisRevealed(

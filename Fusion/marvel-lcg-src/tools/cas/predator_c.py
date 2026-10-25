@@ -118,9 +118,9 @@ CAS = [
        "« [star] Boost: Put Xenomorph Drone into play engaged with you »",
        [HEROS], ["Puzzle.Boost('pd018')"], {"en_jeu": ["pd018"]}, main_exclusive=["01090"]),
     # ============================================================ pd019 Hunted By the Hive
-    _c("pd019 Hunted By the Hive : Reine ABSENTE (mise de cote) -> trouvee et mise en jeu engagee, puis elle attaque (Predator se defend : incline)",
-       "« Xenomorph Queen attacks you. If it's not in play, find Xenomorph Queen and put it into play engaged with you » (ARBITRAGE PROVISOIRE : elle attaque aussi apres son arrivee)",
-       [HEROS], ["Puzzle.Reveal('pd019')"], {"en_jeu": [REINE], "exhausted": ["pd001a"]}, main_exclusive=["01090"]),
+    _c("pd019 Hunted By the Hive : Reine ABSENTE (mise de cote) -> trouvee et mise en jeu engagee, SANS attaquer (Predator reste pret)",
+       "« Xenomorph Queen attacks you. If it's not in play, find Xenomorph Queen and put it into play engaged with you » (DECISION UTILISATEUR 25/10 : elle n'attaque pas apres son arrivee)",
+       [HEROS], ["Puzzle.Reveal('pd019')"], {"en_jeu": [REINE], "pret": ["pd001a"]}, main_exclusive=["01090"]),
     _c("pd019 Hunted By the Hive : Reine DEJA en jeu -> elle attaque (elle ne revient pas)",
        "« Xenomorph Queen attacks you »",
        [HEROS, f"Puzzle.PutIntoPlay('{REINE}')"], ["Puzzle.Reveal('pd019')"], {"en_jeu": [REINE], "exhausted": ["pd001a"]},

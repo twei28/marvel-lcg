@@ -9,17 +9,20 @@ pd021-pd025), `Predator Nemesis` (pd016-pd020), `Predator Alt Nemesis` (pd026-pd
 
 1. **Savage Skewer (`pd007`)** : « discard a cloaked status card » = la carte Cloaked de **Predator seulement** (pas celle d'un ennemi ni d'un allié).
 2. **Bio-Helmet (`pd014`)** : « for each icon, remove 1 threat from a scheme » = **une manigance au choix PAR icône** (répartition libre).
-3. **Self Destruct (`pd011`)** : « (to a maximum of 10) » : l'utilisateur pose la question à l'auteur ; **provisoire** = plafond de 10 glyphes comptés, soit 10 dégâts au plus par cible.
-4. **Hunted By the Hive (`pd019`)** : l'utilisateur pose la question à l'auteur ; **provisoire** = la Reine qui vient d'être trouvée attaque aussi.
+3. **Self Destruct (`pd011`)** : « (to a maximum of 10) » = plafond **par cible** (1 dégât par glyphe, 10 au plus sur le vilain et sur chaque sbire engagé).
+4. **Hunted By the Hive (`pd019`)** : Reine **absente** = elle est trouvée et entre engagée **sans attaquer** ; Reine déjà en jeu = elle attaque.
+5. **Razor Hunt (`pd024`)** : « Deal 3 damage to an enemy » écrit deux fois = **deux coups de 3**, cible au choix pour chacun (la même ou deux différentes).
+6. **Infralocked (`pd002`)** : « return this card to your play area » = sur l'**identité** de Predator ; l'attache à un sbire qui entre en jeu est **facultative**
+   (Réponse optionnelle, jamais automatique : cas « le joueur REFUSE »).
+7. **« Find a minion » (`pd008`, `pd009`)** : règle « Find » **complète**, y compris le deck du joueur (le Xenomorph de joueur peut être trouvé).
 
 ## Décisions prises seules (règle de la Rules Reference ou texte sans ambiguïté), à signaler
 
-- **Infralocked n'a pas d'état « libre »** : « return this card to your play area » = revenir sur l'**identité** du joueur (le moteur n'a pas d'amélioration libre).
-  Si son sbire disparaît par une autre cause que Predator, la carte (Permanent) revient aussi sur l'identité (règle `NonKeyword` du script).
-- **Find** (`pd008`, `pd009`, `pd019`, `pd020`, `pd029`) : règle « Find » du moteur, toutes les zones. Conséquence : le **Xenomorph de joueur** (`pd003`, un sbire) peut être trouvé par Jungle Stalk.
+- **Infralocked n'a pas d'état « libre »** : le moteur n'a pas d'amélioration libre ; l'identité en tient lieu. Si son sbire disparaît par une autre cause que Predator,
+  la carte (Permanent) revient aussi sur l'identité (règle `NonKeyword` du script).
 - **Xenomorph's Prey n'est PAS en jeu au départ** : tout le set némésis est mis de côté (comportement du moteur pour tous les héros).
 - **Acid Blood / M134 Minigun** : l'icône imprimée « +1 ATQ » est écrite dans le texte (« gets +1 ATK »).
-- **Decklist de l'auteur** : l'image « Predator starter deck » cite « 2 Targeted! » et « 15 Infralocked x3 » qui n'existent pas dans le zip (une seule Infralocked, 1/16, aucune « Targeted! ») ; les scans font foi.
+- **Decklist de l'auteur** (question en attente, `QUESTIONS-AUTEUR.md`) : l'image « Predator starter deck » cite « 2 Targeted! » et « 15 Infralocked x3 » qui n'existent pas dans le zip (une seule Infralocked, 1/16, aucune « Targeted! ») ; les scans font foi.
   Les 22 cartes d'aspect (Aggression) et les 3 ressources + Razor Hunt sont recopiées dans `player_deck`.
 - **Set némésis alternatif** : second deck de départ `predator_dutch` (`metadata.variante_de`).
 
@@ -45,7 +48,7 @@ pd021-pd025), `Predator Nemesis` (pd016-pd020), `Predator Alt Nemesis` (pd026-pd
 - [x] `tools/audit_cartes.py` : deux signalements, assumés. `pd003` « Interrupt » : écrit DANS le When Defeated (une vraie Interruption sortait la carte avant la
       défaite et muselait « Ready Predator », constaté au harnais ; `al002` Throg fait de même). `pd010` « exhaust sans coût » : l'inclinaison est payée dans
       un `CostFunc.Custom` (une seule inclinaison pour X compteurs retirés).
-- [x] Cas : **108 cas `[pd]` verts sur 108** ; preuve par substitution : **27/28 modules** avec au moins un cas rouge sans eux, le 28e étant `pd009` dont le script est
+- [x] Cas : **110 cas `[pd]` verts sur 110** ; preuve par substitution : **27/28 modules** avec au moins un cas rouge sans eux, le 28e étant `pd009` dont le script est
       VIDE par construction (sa capacité « en vitrine » vit sur `pd001a`/`pd001b` : cas rouges mesurés en remplaçant `pd001a`). Les cas qui restent verts sans module sont des
       contre-cas d'absence d'effet, des valeurs imprimées ou des mots-clés natifs du moteur.
 - [x] Plateau : `ui-app/src/board/predator-plateau.test.ts` 9/9 (calibré ROUGE en mutant deux assertions) ; `compteurs-fr.test.ts` et `textes-fr-fanmade.test.ts` verts.
@@ -54,7 +57,7 @@ pd021-pd025), `Predator Nemesis` (pd016-pd020), `Predator Alt Nemesis` (pd026-pd
 - [ ] **Partie complète jouée par un humain** avec Predator (puis avec la variante Dutch) : NON FAIT, aucun outil du projet ne remplace le navigateur. À vérifier en jeu :
       la remise d'Infralocked sur l'identité, le paiement par Yautja Trophy Room (X usages), l'Action de Honor Hunt en vitrine pour un 2e joueur,
       l'affichage au survol de la biographie dans le wizard.
-- [ ] **Questions en attente de l'auteur** : `QUESTIONS-AUTEUR.md` (Self Destruct, Hunted By the Hive, decklist, Razor Hunt, Infralocked, Find).
+- [ ] **Question en attente de l'auteur** : `QUESTIONS-AUTEUR.md` (decklist : « Targeted! » et « Infralocked x3 » de l'image). Les cinq autres sont tranchées.
 
 ### pd001a : Predator (Hero)
 
@@ -82,12 +85,13 @@ Cartes de reference :
 - [x] Étape 2 : cartes de référence : voir l'en-tête du script ci-dessus (lignes « Cartes de reference »).
 - [x] Étape 5 : texte-contre-code, mots-pièges vérifiés : voir « Mots-pieges » ci-dessus. Résultat : chaque mot du texte a sa contrepartie dans le script.
 - [x] Étape 6 : nombres texte ↔ code : valeurs relues sur le scan et contrôlées par `desc` de `cards.json` (coût, PV, stats, boost, ressource imprimée) et les cas de valeurs imprimées. Résultat : conformes.
-- [x] Étape 7 : cas test_capacites par capacité (5 cas sujets) :
+- [x] Étape 7 : cas test_capacites par capacité (6 cas sujets) :
       - pd001a Response : apres l'entree d'un sbire, Infralocked s'attache a lui
       - pd001a Response : un SECOND sbire reprend Infralocked (une seule carte, elle change d'hote)
       - pd001a Camouflaged Hunter : apres avoir vaincu un sbire, Predator recoit une carte Cloaked
       - pd001a Camouflaged Hunter : le sbire SURVIT (3 PV, ATK 3 = mort) -> choisir un sbire a 4 PV : pas de Cloaked
       - pd001a Predator : valeurs imprimees PV 13, THW 0, ATK 3, DEF 2, SOLDIER YAUTJA
+      - pd001a Response : le joueur REFUSE (« Response » est optionnelle) -> Infralocked reste sur l'identite, pas sur le sbire
       Preuve par substitution : **rouges 3/5** sans le module (les cas verts restants sont des contre-cas d'absence d'effet, des valeurs imprimées ou des mots-clés NATIFS du moteur, assumés). Résultat : OK.
 - [x] Étape 7 bis : limite imprimée ? NON. Résultat : sans objet.
 - [x] Étape 8 : autoplay ciblé : 16 parties (predator × rhino × équilibré/agressif × 8 graines), 16 parties de la variante predator_dutch, témoin spider_man (16 parties, mêmes réglages) : 0 victoire pour les trois (le pilote ne gagne pas contre Rhino, y compris avec le témoin), 5,5 à 6,1 rounds pour predator contre 6,1 à 6,9 pour le témoin, 0 incident ; grep tracebacks : 0 sur les 48 journaux. Journal lu : Infralocked suit les sbires et retire de la menace (3 sur une annexe), Jungle Stalk pose Cloaked, Honor Hunt est contrée à l'ATQ (Assault). Résultat : aucun incident.
@@ -165,10 +169,11 @@ Cartes de reference :
 - [x] Étape 2 : cartes de référence : voir l'en-tête du script ci-dessus (lignes « Cartes de reference »).
 - [x] Étape 5 : texte-contre-code, mots-pièges vérifiés : voir « Mots-pieges » ci-dessus. Résultat : chaque mot du texte a sa contrepartie dans le script.
 - [x] Étape 6 : nombres texte ↔ code : valeurs relues sur le scan et contrôlées par `desc` de `cards.json` (coût, PV, stats, boost, ressource imprimée) et les cas de valeurs imprimées. Résultat : conformes.
-- [x] Étape 7 : cas test_capacites par capacité (3 cas sujets) :
+- [x] Étape 7 : cas test_capacites par capacité (4 cas sujets) :
       - pd002 Infralocked : Predator vainc le sbire porteur -> 2 menaces retirees du complot principal, retour sur l'identite
       - pd002 Infralocked : sur une manigance ANNEXE, 3 menaces et non 2 (« 3 threat instead from a side scheme »)
       - pd002 Infralocked : le sbire porteur tombe par une AUTRE cause que Predator -> Infralocked ne disparait pas
+      - pd002 Infralocked : le joueur REFUSE l'Interruption (« Hero Interrupt » optionnelle) -> aucune menace retiree, la carte revient quand meme sur l'identite
       Preuve par substitution : **rouges 3/3** sans le module. Résultat : OK.
 - [x] Étape 7 bis : limite imprimée ? NON. Résultat : sans objet.
 - [x] Étape 8 : autoplay ciblé : 16 parties (predator × rhino × équilibré/agressif × 8 graines), 16 parties de la variante predator_dutch, témoin spider_man (16 parties, mêmes réglages) : 0 victoire pour les trois (le pilote ne gagne pas contre Rhino, y compris avec le témoin), 5,5 à 6,1 rounds pour predator contre 6,1 à 6,9 pour le témoin, 0 incident ; grep tracebacks : 0 sur les 48 journaux. Journal lu : Infralocked suit les sbires et retire de la menace (3 sur une annexe), Jungle Stalk pose Cloaked, Honor Hunt est contrée à l'ATQ (Assault). Résultat : aucun incident.
@@ -759,8 +764,8 @@ Cartes de reference :
 
 ⚠ Mots-pieges :
  - « If it's not in play » : la Reine ABSENTE est trouvee (deck de rencontre, defausse, cartes mises de cote) ; deja en jeu elle attaque.
- - ARBITRAGE PROVISOIRE (25/10/2026, question posee a l'auteur, QUESTIONS-AUTEUR.md) : la Reine qui vient d'arriver ATTAQUE aussi
-   (la 1re phrase est resolue apres son arrivee). Si l'auteur dit le contraire : retirer l'appel a `DoAttackYou` apres `AmenerLaReine`.
+ - DECISION UTILISATEUR (25/10/2026, question 2/6) : Reine ABSENTE -> elle est trouvee et entre engagee, SANS attaquer (la 1re phrase
+   n'a pas pu se resoudre faute de Reine) ; Reine DEJA en jeu -> elle attaque.
  - Reine introuvable (vaincue puis retiree, deja engagee ailleurs...) : rien ne se passe.
 ```
 
@@ -768,7 +773,7 @@ Cartes de reference :
 - [x] Étape 5 : texte-contre-code, mots-pièges vérifiés : voir « Mots-pieges » ci-dessus. Résultat : chaque mot du texte a sa contrepartie dans le script.
 - [x] Étape 6 : nombres texte ↔ code : valeurs relues sur le scan et contrôlées par `desc` de `cards.json` (coût, PV, stats, boost, ressource imprimée) et les cas de valeurs imprimées. Résultat : conformes.
 - [x] Étape 7 : cas test_capacites par capacité (3 cas sujets) :
-      - pd019 Hunted By the Hive : Reine ABSENTE (mise de cote) -> trouvee et mise en jeu engagee, puis elle attaque (Predator se defend : incline)
+      - pd019 Hunted By the Hive : Reine ABSENTE (mise de cote) -> trouvee et mise en jeu engagee, SANS attaquer (Predator reste pret)
       - pd019 Hunted By the Hive : Reine DEJA en jeu -> elle attaque (elle ne revient pas)
       - pd019 Hunted By the Hive : Reine INTROUVABLE -> rien ne se passe (Predator reste pret)
       Preuve par substitution : **rouges 2/3** sans le module (les cas verts restants sont des contre-cas d'absence d'effet, des valeurs imprimées ou des mots-clés NATIFS du moteur, assumés). Résultat : OK.

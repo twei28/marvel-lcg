@@ -83,4 +83,13 @@ CAS = [
        "Permanent : la carte ne quitte jamais le jeu ; elle ne doit pas rester accrochee a un sbire disparu",
        [HEROS, f"Puzzle.PutIntoPlay('{RUNNER}')"], [f"Puzzle.Damage('{RUNNER}', 9)"],
        {"accroche_a": [[INFRA, "pd001a"]], "hors_jeu": [RUNNER]}, main_exclusive=["01090"]),
+    _c("pd001a Response : le joueur REFUSE (« Response » est optionnelle) -> Infralocked reste sur l'identite, pas sur le sbire",
+       "DECISION UTILISATEUR (25/10, question 5/6) : « on peut choisir de la mettre sur le sbire ou pas, ce n'est pas automatique »",
+       [HEROS], [f"Puzzle.PutIntoPlay('{SHOCKER}')"], {"accroche_a": [[INFRA, "pd001a"]]},
+       main_exclusive=["01090"], passer_sur_option="Response"),
+    _c("pd002 Infralocked : le joueur REFUSE l'Interruption (« Hero Interrupt » optionnelle) -> aucune menace retiree, la carte revient quand meme sur l'identite",
+       "contre-cas : l'Interruption est facultative ; le sbire porteur disparait, Permanent ramene la carte",
+       [HEROS, f"Puzzle.SetThreat('{COMPLOT}', 5)", f"Puzzle.PutIntoPlay('{RUNNER}')"], ["Puzzle.Attack('pd001a')"],
+       {"menace": [[COMPLOT, 5]], "accroche_a": [[INFRA, "pd001a"]], "hors_jeu": [RUNNER]},
+       main_exclusive=["01090"], cibles=[RUNNER, COMPLOT], passer_sur_option="Hero_Interrupt"),
 ]

@@ -91,17 +91,20 @@ pd021-pd025), `Predator Nemesis` (pd016-pd020), `Predator Alt Nemesis` (pd026-pd
 
 1. **Savage Skewer (`pd007`)** : « discard a cloaked status card » = la carte Cloaked de **Predator seulement** (pas celle d'un ennemi ni d'un allié).
 2. **Bio-Helmet (`pd014`)** : « for each icon, remove 1 threat from a scheme » = **une manigance au choix PAR icône** (répartition libre).
-3. **Self Destruct (`pd011`)** : « (to a maximum of 10) » : l'utilisateur pose la question à l'auteur ; **provisoire** = plafond de 10 glyphes comptés, soit 10 dégâts au plus par cible.
-4. **Hunted By the Hive (`pd019`)** : l'utilisateur pose la question à l'auteur ; **provisoire** = la Reine qui vient d'être trouvée attaque aussi.
+3. **Self Destruct (`pd011`)** : « (to a maximum of 10) » = plafond **par cible** (1 dégât par glyphe, 10 au plus sur le vilain et sur chaque sbire engagé).
+4. **Hunted By the Hive (`pd019`)** : Reine **absente** = elle est trouvée et entre engagée **sans attaquer** ; Reine déjà en jeu = elle attaque.
+5. **Razor Hunt (`pd024`)** : « Deal 3 damage to an enemy » écrit deux fois = **deux coups de 3**, cible au choix pour chacun (la même ou deux différentes).
+6. **Infralocked (`pd002`)** : « return this card to your play area » = sur l'**identité** de Predator ; l'attache à un sbire qui entre en jeu est **facultative**
+   (Réponse optionnelle, jamais automatique : cas « le joueur REFUSE »).
+7. **« Find a minion » (`pd008`, `pd009`)** : règle « Find » **complète**, y compris le deck du joueur (le Xenomorph de joueur peut être trouvé).
 
 ## Décisions prises seules (règle de la Rules Reference ou texte sans ambiguïté), à signaler
 
-- **Infralocked n'a pas d'état « libre »** : « return this card to your play area » = revenir sur l'**identité** du joueur (le moteur n'a pas d'amélioration libre).
-  Si son sbire disparaît par une autre cause que Predator, la carte (Permanent) revient aussi sur l'identité (règle `NonKeyword` du script).
-- **Find** (`pd008`, `pd009`, `pd019`, `pd020`, `pd029`) : règle « Find » du moteur, toutes les zones. Conséquence : le **Xenomorph de joueur** (`pd003`, un sbire) peut être trouvé par Jungle Stalk.
+- **Infralocked n'a pas d'état « libre »** : le moteur n'a pas d'amélioration libre ; l'identité en tient lieu. Si son sbire disparaît par une autre cause que Predator,
+  la carte (Permanent) revient aussi sur l'identité (règle `NonKeyword` du script).
 - **Xenomorph's Prey n'est PAS en jeu au départ** : tout le set némésis est mis de côté (comportement du moteur pour tous les héros).
 - **Acid Blood / M134 Minigun** : l'icône imprimée « +1 ATQ » est écrite dans le texte (« gets +1 ATK »).
-- **Decklist de l'auteur** : l'image « Predator starter deck » cite « 2 Targeted! » et « 15 Infralocked x3 » qui n'existent pas dans le zip (une seule Infralocked, 1/16, aucune « Targeted! ») ; les scans font foi.
+- **Decklist de l'auteur** (question en attente, `QUESTIONS-AUTEUR.md`) : l'image « Predator starter deck » cite « 2 Targeted! » et « 15 Infralocked x3 » qui n'existent pas dans le zip (une seule Infralocked, 1/16, aucune « Targeted! ») ; les scans font foi.
   Les 22 cartes d'aspect (Aggression) et les 3 ressources + Razor Hunt sont recopiées dans `player_deck`.
 - **Set némésis alternatif** : second deck de départ `predator_dutch` (`metadata.variante_de`).
 
