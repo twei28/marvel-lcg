@@ -17,6 +17,8 @@ export const DUREE_BULLE_CHOIX_UNIQUE = 6000
 /** « Dents-de-Sabre Frappe : une seule option possible, appliquée d'office : Infliger 1 dégât à Robert Kelly ». */
 export function phraseChoixUnique(choix: ChoixUnique, nomCarte?: string): string {
   const carte = nomCarte ?? choix.carte
+  // Un avis libre du moteur (« aucun sbire : pas de pioche ») se dit tel quel, traduit, sans « une seule option possible ».
+  if (choix.texte) return `${carte} : ${traduireMoteur(choix.texte)}`
   return t('{carte} : une seule option possible, appliquée d’office : {option}')
     .replace('{carte}', carte)
     .replace('{option}', traduireMoteur(choix.option))

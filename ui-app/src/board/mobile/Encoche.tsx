@@ -56,12 +56,15 @@ export function Encoche({
   libelle,
   nombre,
   onOuvrir,
+  attend,
 }: {
   cote: 'droite' | 'gauche'
   libelle: string
   /** Le nombre affiche dans la languette (la main). */
   nombre?: number
   onOuvrir: () => void
+  /** Un choix attend derriere cette languette (fenetre fermee sans annuler) : elle clignote. */
+  attend?: boolean
 }): ReactElement {
   const depart = useRef<number | undefined>(undefined)
   const departY = useRef<number | undefined>(undefined)
@@ -95,7 +98,7 @@ export function Encoche({
   return (
     <button
       type="button"
-      className={`encoche encoche-${cote === 'droite' ? 'main' : 'piles'}${enDeplacement ? ' est-deplacee' : ''}${touchee ? ' est-touchee' : ''}`}
+      className={`encoche encoche-${cote === 'droite' ? 'main' : 'piles'}${enDeplacement ? ' est-deplacee' : ''}${touchee ? ' est-touchee' : ''}${attend ? ' attend-un-choix' : ''}`}
       data-tactile={cote === 'droite' ? 'main' : 'tiroir'}
       aria-label={libelle}
       style={style}

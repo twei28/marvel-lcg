@@ -27,6 +27,7 @@ import { Encoche } from './Encoche'
 import { MainPortrait } from './MainPortrait'
 import { OngletsJoueurs } from './OngletsJoueurs'
 import { TiroirPiles } from './TiroirPiles'
+import { BandeauChoixEnAttente } from '../BandeauChoixEnAttente'
 import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
 import { TableRonds } from './ronds/TableRonds'
@@ -170,6 +171,17 @@ export function PlateauPortrait(props: BoardProps) {
     { titre: string; cartes: ScanCardProps[]; groupes?: GroupeDePile[] } | undefined
   >()
   const [tiroirOuvert, setTiroirOuvert] = useState(false)
+  // Un choix attend : pile (cle) -> nombre de cartes choisissables, d'apres le representant de pile que `board.tsx` a compte.
+  const choixEnAttente = props.choixEnAttente
+  const choisissables = useMemo(() => {
+    if (!choixEnAttente) return undefined
+    const comptes = new Map<string, number>()
+    for (const pile of bandes.piles) {
+      const n = choixEnAttente.piles.get(Number(pile.unite.carte.id))
+      if (n !== undefined && n > 0) comptes.set(pile.cle, n)
+    }
+    return comptes
+  }, [choixEnAttente, bandes.piles])
   // En ronds, la main est posee SOUS les zones et ouverte d'office (24/10/2026) ; en bandes, elle reste cachee derriere son encoche.
   const [mainOuverte, setMainOuverte] = useState(formeDeTable === 'ronds')
   useEffect(() => {
@@ -348,7 +360,7 @@ export function PlateauPortrait(props: BoardProps) {
         )}
       </div>
 
-      <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} />
+      <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} attend={props.choixEnAttente !== undefined} />
       {/* En ronds, la main ouverte est posee sous les zones : la languette ne sert qu'a la rouvrir une fois repliee. */}
       {formeDeTable === 'ronds' && mainOuverte ? null : (
         <Encoche
@@ -363,7 +375,18 @@ export function PlateauPortrait(props: BoardProps) {
 
       )}
 
-      <TiroirPiles piles={bandes.piles} ouvert={tiroirOuvert} onFermer={() => setTiroirOuvert(false)} onOuvrirPile={ouvrirPile} />
+      {/* Le choix attend : un bandeau discret, tant que le tiroir est ferme (il se superposerait a la liste des piles). */}
+      {props.choixEnAttente && !tiroirOuvert ? (
+        <BandeauChoixEnAttente titre={props.choixEnAttente.titre} onRouvrir={props.choixEnAttente.rouvrir} />
+      ) : null}
+      <TiroirPiles
+        piles={bandes.piles}
+        ouvert={tiroirOuvert}
+        onFermer={() => setTiroirOuvert(false)}
+        onOuvrirPile={ouvrirPile}
+        choisissables={choisissables}
+        onChoisir={props.choixEnAttente?.rouvrir}
+      />
       {/* Toucher une carte jouable = la choisir, puis « Jouer » ; toucher
           long = la jouer (MainPortrait.tsx). */}
       {formeDeTable === 'ronds' ? (

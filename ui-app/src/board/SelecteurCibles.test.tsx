@@ -166,3 +166,112 @@ describe('SelecteurCibles avec le bandeau collé', () => {
     expect(document.querySelector('.plateau-selecteur-bandeau')).toBeNull()
   })
 })
+
+// Rapport du 26/10/2026 (Suit Up, telephone) : quand la recherche porte sur DEUX piles (deck + defausse), le selecteur montre les
+// cartes des deux, et dit d'ou vient chacune : un intitule par groupe.
+describe('SelecteurCibles : cartes rangees par pile', () => {
+  const carte = (id: string, name: string): CibleHorsTable => ({
+    props: { id, name, kind: 'ally', imageUrl: '/scan.jpg' },
+    choisie: false,
+    agir: vi.fn(),
+  })
+
+  it('met un intitule devant chaque groupe, dans l’ordre donne', () => {
+    render(
+      <SelecteurCibles
+        cibles={[carte('1', 'Hulk'), carte('2', 'Vision'), carte('3', 'Hawkeye')]}
+        titre="Jouer En Costume"
+        groupes={new Map([[1, 'Deck'], [2, 'Deck'], [3, 'Défausse']])}
+      />
+    )
+    const intitules = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+    expect(intitules).toEqual(['Deck', 'Défausse'])
+  })
+
+  it('sans groupes, aucun intitule (le comportement d’avant)', () => {
+    render(<SelecteurCibles cibles={[carte('1', 'Hulk')]} titre="Jouer" />)
+    expect(screen.queryAllByRole('heading', { level: 3 })).toHaveLength(0)
+  })
+})
+
+// 26/10/2026, demande de l'utilisateur : UNE fenetre, DEUX colonnes (Deck a gauche, Defausse a droite), chacune avec son en-tete
+// et son nombre de cartes ; fermer la fenetre sans annuler (croix, Echap, toucher le voile) la REDUIT : l'action reste en attente.
+describe('SelecteurCibles : deux colonnes et fermeture sans annuler', () => {
+  const carte = (id: string, name: string): CibleHorsTable => ({
+    props: { id, name, kind: 'ally', imageUrl: '/scan.jpg' },
+    choisie: false,
+    agir: vi.fn(),
+  })
+  const fenetre = (reduire?: () => void) => ({
+    choisies: 0,
+    minimum: 1,
+    maximum: 2,
+    valider: vi.fn(),
+    annuler: vi.fn(),
+    reduire,
+  })
+  const deuxPiles = (reduire?: () => void) => (
+    <SelecteurCibles
+      cibles={[carte('1', 'Hulk'), carte('2', 'Vision'), carte('3', 'Hawkeye')]}
+      titre="Jouer En Costume"
+      groupes={new Map([[1, 'Deck'], [2, 'Deck'], [3, 'Défausse']])}
+      fenetre={fenetre(reduire)}
+    />
+  )
+
+  it('range chaque pile dans sa colonne, avec en-tete et nombre de cartes', () => {
+    render(deuxPiles())
+    const colonnes = document.querySelectorAll('.plateau-selecteur-colonne')
+    expect(colonnes).toHaveLength(2)
+    expect(colonnes[0].querySelector('h3')?.textContent).toBe('Deck')
+    expect(colonnes[0].querySelector('.plateau-selecteur-colonne-entete')?.textContent).toContain('2')
+    expect(colonnes[1].querySelector('h3')?.textContent).toBe('Défausse')
+    expect(colonnes[1].querySelector('.plateau-selecteur-colonne-entete')?.textContent).toContain('1')
+    expect(colonnes[1].querySelectorAll('.plateau-selecteur-carte')).toHaveLength(1)
+    expect(colonnes[0].querySelectorAll('.plateau-selecteur-carte')).toHaveLength(2)
+    // un seul compteur et un seul couple Annuler / Valider pour les deux colonnes
+    expect(screen.getAllByRole('button', { name: 'Valider' })).toHaveLength(1)
+    expect(screen.getAllByRole('button', { name: 'Annuler' })).toHaveLength(1)
+  })
+
+  it('une seule pile : pas de colonnes ni d’en-tete', () => {
+    render(
+      <SelecteurCibles cibles={[carte('1', 'Hulk')]} titre="Chercher" fenetre={fenetre()} />
+    )
+    expect(document.querySelectorAll('.plateau-selecteur-colonne')).toHaveLength(0)
+  })
+
+  it('la croix reduit la fenetre sans annuler', () => {
+    const reduire = vi.fn()
+    const f = fenetre(reduire)
+    render(
+      <SelecteurCibles cibles={[carte('1', 'Hulk')]} titre="Chercher" fenetre={f} />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Fermer/ }))
+    expect(reduire).toHaveBeenCalledOnce()
+    expect(f.annuler).not.toHaveBeenCalled()
+  })
+
+  it('Echap reduit la fenetre, sans annuler', () => {
+    const reduire = vi.fn()
+    render(deuxPiles(reduire))
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(reduire).toHaveBeenCalledOnce()
+  })
+
+  it('toucher le voile (hors de la fenetre) reduit, toucher la fenetre ne fait rien', () => {
+    const reduire = vi.fn()
+    render(deuxPiles(reduire))
+    fireEvent.pointerDown(document.querySelector('.plateau-selecteur')!)
+    expect(reduire).not.toHaveBeenCalled()
+    fireEvent.pointerDown(document.querySelector('.plateau-selecteur-voile')!)
+    expect(reduire).toHaveBeenCalledOnce()
+  })
+
+  it('sans `reduire`, aucune croix (le comportement d’avant)', () => {
+    render(
+      <SelecteurCibles cibles={[carte('1', 'Hulk')]} titre="Chercher" fenetre={fenetre()} />
+    )
+    expect(screen.queryByRole('button', { name: /Fermer/ })).toBeNull()
+  })
+})

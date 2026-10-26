@@ -20,6 +20,41 @@ describe('phraseChoixUnique', () => {
   })
 })
 
+describe('phraseChoixUnique, avis libre (Safe House #30, 26/10/2026)', () => {
+  const sansSbire: ChoixUnique = {
+    id: 2,
+    carte_id: 70,
+    carte_code: '54007',
+    carte: 'Safe House #30',
+    option: '',
+    joueur: 0,
+    texte: 'No minion in the encounter deck: no card is drawn.',
+  }
+
+  it('dit l avis du moteur, traduit, a la place de « une seule option possible »', () => {
+    expect(phraseChoixUnique(sansSbire)).toBe('Safe House #30 : Aucun sbire dans le deck de rencontre : aucune carte n’est piochée.')
+    expect(phraseChoixUnique(sansSbire)).not.toContain('une seule option possible')
+  })
+
+  it('garde l avis anglais du moteur quand le plateau est en anglais', () => {
+    localStorage.setItem('marvel-langue', 'en')
+    try {
+      expect(phraseChoixUnique(sansSbire)).toBe('Safe House #30 : No minion in the encounter deck: no card is drawn.')
+    } finally {
+      localStorage.removeItem('marvel-langue')
+    }
+  })
+
+  it('une bulle est annoncee pour un avis libre', () => {
+    vi.useFakeTimers()
+    const { rerender } = render(<CoucheChoixUniques choix={[]} />)
+    rerender(<CoucheChoixUniques choix={[sansSbire]} />)
+    expect(document.querySelector('.bulle-choix-unique')?.textContent).toContain('aucune carte')
+    cleanup()
+    vi.useRealTimers()
+  })
+})
+
 describe('CoucheChoixUniques', () => {
   beforeEach(() => vi.useFakeTimers())
   afterEach(() => {

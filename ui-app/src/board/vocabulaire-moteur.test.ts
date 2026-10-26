@@ -206,3 +206,18 @@ describe('changer vers une forme nommee', () => {
   })
 })
 
+describe('New Ultimate Winter Soldier (uw, 25/10/2026) : les choix des cartes de defausse au hasard', () => {
+  it('traduit les boutons de Wild Slash, Berserker Fury, Mission Objective, Live with the Burden, Desperate Regenerate, Phoenix Specimen', () => {
+    enFrancais()
+    expect(traduireMoteur('Take 1 damage → deal 3 damage to an enemy')).toBe('Subir 1 dégât → infliger 3 dégâts à un ennemi')
+    expect(traduireMoteur('Take 2 damage → repeat this ability')).toBe('Subir 2 dégâts → répéter cette capacité')
+    expect(traduireMoteur('Take 1 damage → attach this card to another minion')).toBe('Subir 1 dégât → attacher cette carte à un autre sbire')
+    expect(traduireMoteur('Exhaust your identity → prevent 2 of that damage')).toBe('Incliner ton identité → prévenir 2 de ces dégâts')
+    expect(traduireMoteur('Discard each stunned and confused status card from your identity')).toBe(
+      'Défausser chaque carte d’état Sonné et Désorienté de ton identité'
+    )
+    expect(traduireMoteur('Place 3 threat on a scheme')).toBe('Placer 3 menaces sur une manigance')
+    enAnglais()
+    expect(traduireMoteur('Place 3 threat on a scheme')).toBe('Place 3 threat on a scheme')
+  })
+})

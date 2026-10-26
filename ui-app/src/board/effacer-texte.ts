@@ -91,6 +91,10 @@ export type CadreDuTexte = {
   /** Bord droit du fond libre, par bandes horizontales égales de la région (BANDES_DROITE, fractions de sa largeur) : là
       où une illustration entre dans le cadre de texte. Le français s'y arrête, comme l'anglais. */
   droite: number[]
+  /** Où COMMENCENT les lignes de l'anglais, par les mêmes bandes (fractions de la largeur de la région) : un cadre qui penche
+      (le bord noir à gauche s'écarte vers le bas) fait commencer les lignes du haut plus à droite. Le français les suit, sans
+      quoi ses premières lettres se perdent sur le bord noir. Jamais en deçà de `x0`. */
+  gauche: number[]
   /** Bandes (fractions de la hauteur de la région) des icônes imprimées entre deux paragraphes, et la part des lignes
       de texte qui les précèdent. */
   entre: { y0: number; y1: number; avant: number }[]
@@ -134,7 +138,7 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
   // Lettres retenues pour situer le texte (pas les points de trame ni les éclats du cadre : trop petits).
   const hauteurMin = options.hauteurCarte * 0.008
   const lettres: Lettre[] = []
-  const candidates: { pixels: number[]; xMin: number; xMax: number; yMin: number; yMax: number; collee: boolean }[] = []
+  const candidates: { pixels: number[]; xMin: number; xMax: number; yMin: number; yMax: number; collee: boolean; bande: boolean }[] = []
   // Taches trop grandes pour une lettre : souvent l'illustration, parfois une lettre collée à un trait du dessin.
   const rejetees: { pixels: number[]; xMin: number; xMax: number; yMin: number; yMax: number }[] = []
   const texte = new Uint8Array(n)
@@ -237,7 +241,10 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     // seulement s'il tombe dans une ligne formée par d'autres lettres.
     const collee = toucheUnAplat(t.pixels)
     if (yMax < (options.margeHaut ?? 0) || yMin >= hauteur - (options.margeBas ?? 0)) continue
-    if (xMax < (options.margeCote ?? 0) || xMin >= largeur - (options.margeCote ?? 0)) continue
+    // Les bandes de côté (liserés, pointillés du cadre) ne sont jamais du texte... sauf la dernière lettre d'une ligne qui y
+    // déborde : elle est retenue à part (`bande`) et n'est effacée que si elle est au bout d'une ligne reconnue (26/10/2026).
+    const bande = xMax < (options.margeCote ?? 0) || xMin >= largeur - (options.margeCote ?? 0)
+    if (bande && (collee || yMax - yMin < hauteurMin)) continue
     // Au-dessus et au-dessous d'une lettre (une hauteur de lettre), le fond clair domine. Les creux sombres entre les
     // lettres blanches d'un bandeau (« RESOURCE ») ont le bandeau sombre autour : ce n'est pas du texte.
     {
@@ -255,10 +262,18 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
         }
         return tous ? clairs / tous : 1
       }
-      if (partClaire(yMin - marge, yMax + marge, xMin, xMax) < 0.45) continue
+      // Au-dessus ET au-dessous, séparément (26/10/2026) : une lettre de la première ou de la dernière ligne, collée au bord
+      // sombre du cadre (le trait d'un « l », d'un « I »), n'a du sombre que d'un côté ; un creux de bandeau en a des deux.
+      const ecartVertical = Math.max(2, marge)
+      const enHaut = partClaire(yMin - ecartVertical, yMin - 1, xMin, xMax)
+      const enBas = partClaire(yMax + 1, yMax + ecartVertical, xMin, xMax)
+      if (enHaut < 0.45 && enBas < 0.45) continue
       // De part et d'autre aussi : un morceau de bandeau noir (avec ses lettres blanches en creux) n'a que du sombre à côté.
+      // La marge latérale ne descend pas sous une hauteur de lettre : celle d'un tiret « — » (2 px de haut, 26 de large) le
+      // ferait passer pour un morceau de bandeau, et le tiret anglais restait sous le français.
       const plat = yMax - yMin <= epaisseurFilet && xMax - xMin > options.largeurCarte * 0.3
-      if (!plat && partClaire(yMin, yMax, xMin - marge, xMax + marge) < 0.2) continue
+      const margeLaterale = Math.max(marge, Math.round(options.hauteurCarte * 0.012))
+      if (!plat && partClaire(yMin, yMax, xMin - margeLaterale, xMax + margeLaterale) < 0.2) continue
     }
     // Un mot imprimé de biais (« HELMET. », lettres collées) forme une seule tache, plus haute qu'une lettre mais creuse.
     const motDeBiais = yMax - yMin < options.hauteurCarte * 0.075 && t.pixels.length < 0.35 * (xMax - xMin + 1) * (yMax - yMin + 1)
@@ -270,8 +285,8 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     }
     // Filet et mot imprimé de biais (une seule tache, hors de toute ligne) : effacés tels quels.
     if (filet || (motDeBiais && yMax - yMin >= hauteurMax)) for (const i of t.pixels) texte[i] = 1
-    else candidates.push({ ...t, collee })
-    if (lettre && !collee && yMax - yMin >= hauteurMin) lettres.push({ x0: xMin, x1: xMax + 1, y0: yMin, y1: yMax + 1 })
+    else candidates.push({ ...t, collee, bande })
+    if (lettre && !collee && !bande && yMax - yMin >= hauteurMin) lettres.push({ x0: xMin, x1: xMax + 1, y0: yMin, y1: yMax + 1 })
   }
   // Une lettre n'est effacée que dans une LIGNE de texte (au moins trois lettres côte à côte) : les lettres d'un titre
   // imprimé à la verticale, une par rangée, restent.
@@ -299,16 +314,26 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     return n === 0 || somme / n < tolerance
   }
   // ... et jamais à gauche de la colonne du texte (un titre vertical collé au cadre n'en fait pas partie).
-  const boites = boitesDesLignes(lettres, options.hauteurCarte)
+  const boites = [...boitesDesLignes(lettres, options.hauteurCarte), ...boitesDesMotsCollés(lettres, cadre, options.hauteurCarte)]
+  const fins = finsDesLignes(lettres, options.hauteurCarte)
   const marge = options.hauteurCarte * 0.012
   for (const t of candidates) {
     if (cadre && t.xMax < cadre.x0 - marge) continue
+    // Une petite marque (guillemet fermant, point) juste après la dernière lettre d'une ligne est de cette ligne (26/10/2026).
+    const boutDeLigne = fins.some(
+      (f) => t.xMin >= f.x0 && t.xMax <= f.x1 && t.yMin >= f.y0 && t.yMax <= f.y1 && t.xMax - t.xMin <= f.h * 0.9 && t.yMax - t.yMin <= f.h * 1.1
+    )
     // À droite de la colonne du texte, seulement sur le fond du texte (pas sur une illustration colorée qui entre dans le
-    // cadre : ses traits fins passeraient pour des lettres).
-    if (cadre && t.xMin > cadre.x1 + marge && !surLeFond(t.xMin, t.yMin, t.xMax, t.yMax)) continue
+    // cadre : ses traits fins passeraient pour des lettres). Le bout d'une ligne tolère un fond plus sombre : près du bord
+    // droit, les rayons du cadre assombrissent le fond autour du guillemet fermant.
+    if (cadre && t.xMin > cadre.x1 + marge && !surLeFond(t.xMin, t.yMin, t.xMax, t.yMax) && !(boutDeLigne && surLeFond(t.xMin, t.yMin, t.xMax, t.yMax, 120))) continue
     // Une tache collée à un aplat (doigt, trait d'illustration) hors de la colonne du texte reste.
     if (t.collee && cadre && (t.xMin < cadre.x0 || t.xMax > cadre.x1)) continue
-    if (boites.some((b) => t.xMin >= b.x0 && t.xMax <= b.x1 && t.yMin >= b.y0 && t.yMax <= b.y1)) for (const i of t.pixels) texte[i] = 1
+    // Une tache de la bande de côté n'est effacée que juste après la fin d'une ligne reconnue, ou juste avant son début.
+    const dansUneLigne = t.bande
+      ? boutDeLigne || boites.some((b) => t.xMin >= b.x0 && t.xMax <= b.x1 && t.yMin >= b.y0 && t.yMax <= b.y1)
+      : boutDeLigne || boites.some((b) => t.xMin >= b.x0 && t.xMax <= b.x1 && t.yMin >= b.y0 && t.yMax <= b.y1)
+    if (dansUneLigne) for (const i of t.pixels) texte[i] = 1
   }
   effacerLettresCollees(lettres, rejetees, encre, texte, largeur, options.hauteurCarte, options.margeCote ?? 0, surLeFond)
 
@@ -374,6 +399,7 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     lignes: cadre.lignes,
     interligne: cadre.interligne / options.hauteurCarte,
     droite: bordDroitLibre(rgba, largeur, hauteur, cadre, options.hauteurCarte),
+    gauche: bordGaucheDesLignes(lettres, cadre.x0, largeur, hauteur, options.hauteurCarte),
     // Icônes imprimées AU MILIEU du texte (entre la capacité et la citation) : le français saute leur hauteur.
     entre: zonesIcones
       .map((z) => {
@@ -450,6 +476,62 @@ function effacerLettresCollees(
       if (bouts.some((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1)) texte[i] = 1
     }
   }
+}
+
+/**
+ * Une ligne d'un seul mot en italique n'a parfois que une ou deux taches (les lettres collées) : elle n'atteint pas les trois
+ * lettres d'une ligne et restait en anglais (« bestowed. » sous une citation). On la reconnaît si elle est large (au moins quatre
+ * hauteurs de lettre en tout) ET dans le voisinage du bloc de texte déjà reconnu (à moins de trois hauteurs de lettre au-dessus ou
+ * au-dessous, et dans ses colonnes) : une tache isolée plus loin, ou sur le dessin, n'est pas du texte.
+ */
+export function boitesDesMotsCollés(
+  lettres: readonly Lettre[],
+  cadre: Lettre | null,
+  hauteurCarte: number
+): Lettre[] {
+  if (!cadre) return []
+  const lignes: Lettre[][] = []
+  for (const l of [...lettres].sort((a, b) => a.y0 + a.y1 - b.y0 - b.y1)) {
+    const milieu = (l.y0 + l.y1) / 2
+    const ligne = lignes.find((g) => Math.abs((g[0].y0 + g[0].y1) / 2 - milieu) <= hauteurCarte * 0.008)
+    if (ligne) ligne.push(l)
+    else lignes.push([l])
+  }
+  const boites: Lettre[] = []
+  for (const ligne of lignes) {
+    if (ligne.length >= 3) continue
+    const x0 = Math.min(...ligne.map((l) => l.x0))
+    const x1 = Math.max(...ligne.map((l) => l.x1))
+    const y0 = Math.min(...ligne.map((l) => l.y0))
+    const y1 = Math.max(...ligne.map((l) => l.y1))
+    const h = y1 - y0
+    if (x1 - x0 < 4 * h) continue
+    if (ligne.length === 2 && Math.max(ligne[0].x0, ligne[1].x0) - Math.min(ligne[0].x1, ligne[1].x1) > 1.5 * h) continue
+    if (x0 < cadre.x0 - h || x1 > cadre.x1 + h || y0 < cadre.y0 - 3 * h || y1 > cadre.y1 + 3 * h) continue
+    boites.push({ x0: x0 - h, x1: x1 + h, y0: y0 - h * 0.6, y1: y1 + h * 0.6 })
+  }
+  return boites
+}
+
+/** Pour chaque ligne de texte (au moins trois lettres à la même hauteur), la place juste après sa dernière lettre : une et demie
+    hauteurs de lettre, sur la hauteur de la ligne (plus un tiers). `h` : hauteur de la ligne. */
+export function finsDesLignes(lettres: readonly Lettre[], hauteurCarte: number): { x0: number; x1: number; y0: number; y1: number; h: number }[] {
+  const lignes: Lettre[][] = []
+  for (const l of [...lettres].sort((a, b) => a.y0 + a.y1 - b.y0 - b.y1)) {
+    const milieu = (l.y0 + l.y1) / 2
+    const ligne = lignes.find((g) => Math.abs((g[0].y0 + g[0].y1) / 2 - milieu) <= hauteurCarte * 0.008)
+    if (ligne) ligne.push(l)
+    else lignes.push([l])
+  }
+  return lignes
+    .filter((ligne) => ligne.length >= 3)
+    .map((ligne) => {
+      const y0 = Math.min(...ligne.map((l) => l.y0))
+      const y1 = Math.max(...ligne.map((l) => l.y1))
+      const h = y1 - y0
+      const fin = Math.max(...ligne.map((l) => l.x1))
+      return { x0: fin, x1: fin + 1.5 * h, y0: y0 - h / 3, y1: y1 + h / 3, h }
+    })
 }
 
 /** Les rectangles des lignes de texte (au moins trois lettres à la même hauteur, sans trou de plus de quatre hauteurs de
@@ -563,6 +645,50 @@ export function cadreDesLettres(lettres: readonly Lettre[], largeurCarte: number
 }
 
 export const BANDES_DROITE = 60
+
+/**
+ * Où doit commencer le français, bande par bande, quand le bord gauche du cadre PENCHE : les départs des lignes d'anglais suivent
+ * alors une droite (le bord noir s'écarte vers le bas). On ajuste cette droite sur le milieu et le départ de chaque ligne de la
+ * colonne du texte, puis on la décale pour qu'aucune ligne ne commence à sa gauche (le bord lui-même). Ce n'est une pente que si
+ * elle descend d'au moins 1,5 % de la largeur sur le texte, avec au moins quatre lignes, et si les départs restent à moins de 1,2 %
+ * de la droite : un retrait de première ligne, une ligne en gras ou la ligne des traits (centrée) ne sont PAS une pente, et le
+ * résultat est alors le même bord partout (`x0`), donc aucun décalage. Les lignes qui commencent bien plus à droite que la colonne
+ * n'en font pas partie.
+ */
+function bordGaucheDesLignes(lettres: readonly Lettre[], x0: number, largeur: number, hauteur: number, hauteurCarte: number): number[] {
+  const plat = () => Array.from({ length: BANDES_DROITE }, () => x0 / largeur)
+  const groupes: Lettre[][] = []
+  for (const l of [...lettres].sort((a, b) => a.y0 + a.y1 - b.y0 - b.y1)) {
+    const milieu = (l.y0 + l.y1) / 2
+    const groupe = groupes.find((g) => Math.abs((g[0].y0 + g[0].y1) / 2 - milieu) <= hauteurCarte * 0.008)
+    if (groupe) groupe.push(l)
+    else groupes.push([l])
+  }
+  const lignes = groupes
+    .filter((g) => g.length >= 3)
+    .map((g) => ({ milieu: (Math.min(...g.map((l) => l.y0)) + Math.max(...g.map((l) => l.y1))) / 2, debut: Math.min(...g.map((l) => l.x0)) }))
+    .filter((l) => l.debut - x0 <= largeur * 0.08)
+  if (lignes.length < 4) return plat()
+  const n = lignes.length
+  const moyY = lignes.reduce((t, l) => t + l.milieu, 0) / n
+  const moyX = lignes.reduce((t, l) => t + l.debut, 0) / n
+  const variance = lignes.reduce((t, l) => t + (l.milieu - moyY) ** 2, 0)
+  if (variance === 0) return plat()
+  const pente = lignes.reduce((t, l) => t + (l.milieu - moyY) * (l.debut - moyX), 0) / variance
+  const ordonnee = moyX - pente * moyY
+  const residus = lignes.map((l) => l.debut - (ordonnee + pente * l.milieu))
+  const decalage = Math.min(...residus) // la droite passe par la ligne la plus à gauche : aucune ligne ne commence en deçà
+  const haut = Math.min(...lignes.map((l) => l.milieu))
+  const bas = Math.max(...lignes.map((l) => l.milieu))
+  const chute = Math.abs(pente) * (bas - haut)
+  if (chute < largeur * 0.015 || Math.max(...residus.map((r) => Math.abs(r - decalage))) > largeur * 0.012 + Math.abs(decalage) * 0) return plat()
+  const sortie: number[] = []
+  for (let b = 0; b < BANDES_DROITE; b += 1) {
+    const centre = Math.min(bas, Math.max(haut, ((b + 0.5) * hauteur) / BANDES_DROITE))
+    sortie.push(Math.max(x0, ordonnee + decalage + pente * centre) / largeur)
+  }
+  return sortie
+}
 
 /**
  * Sur la région NETTOYÉE (lettres effacées), bande par bande : depuis le milieu du texte vers la droite, la première

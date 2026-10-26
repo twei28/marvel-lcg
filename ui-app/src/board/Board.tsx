@@ -1088,6 +1088,12 @@ export type BoardProps = {
   joueurRegarde?: number
   /** Force la vue sur cet id (memes id que `joueursAffichables`). */
   choisirJoueurRegarde?: (id: number) => void
+  /**
+   * Un CHOIX ATTEND (telephone, 26/10/2026) : la fenetre de choix a ete fermee SANS annuler l'action. L'onglet « Piles »
+   * clignote, le tiroir met en evidence les piles ou l'on peut choisir (representant de pile -> nombre de cartes), et un tap
+   * dessus rouvre le choix.
+   */
+  choixEnAttente?: { titre: string; piles: ReadonlyMap<number, number>; rouvrir: () => void }
 }
 
 export type ReglagesGlisser = {

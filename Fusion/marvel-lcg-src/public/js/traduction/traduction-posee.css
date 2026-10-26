@@ -86,12 +86,25 @@
   float: right;
 }
 
+/* Contour d'un cadre qui penche à gauche : le français commence là où commencent les lignes anglaises (forme posée par TraductionPosee). */
+.traduction-posee .tp-contour-gauche {
+  display: none;
+  float: left;
+}
+
 /* La ligne des traits, comme sur la carte : centrée, en Komika. */
 .traduction-posee .tp-traits {
   font-family: 'Komika Title Carte', var(--police-traduction);
   font-size: 0.82em;
   text-align: center;
   margin-bottom: 0.25em;
+}
+
+/* Le texte des traits : un bloc en ligne qui ne se coupe pas, centré par `.tp-traits` ; TraductionPosee réduit sa taille au besoin
+   pour qu'il tienne sur UNE ligne (sans cela, « SUPER-POUVOIR. » se coupait au tiret, la seconde ligne décalée). */
+.traduction-posee .tp-traits-texte {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .traduction-posee .tp-trait,

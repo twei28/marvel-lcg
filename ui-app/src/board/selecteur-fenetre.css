@@ -118,3 +118,125 @@
 .plateau-selecteur.avec-bandeau .plateau-selecteur-cartes {
   padding: 8px 14px 12px;
 }
+
+/* Une recherche sur plusieurs piles (deck + defausse, 26/10/2026) : un intitule par groupe de cartes, pleine largeur. */
+.plateau-selecteur-groupe {
+  flex: 0 0 100%;
+  margin: 6px 0 0;
+  padding: 0 2px 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f0b95f;
+  border-bottom: 1px solid rgba(240, 185, 95, 0.45);
+}
+
+.plateau-selecteur-groupe:first-child {
+  margin-top: 0;
+}
+
+/* La croix : ferme la fenetre SANS annuler l'action (demande du 26/10/2026). Cible tactile de 44 px. */
+.plateau-selecteur.est-fenetre .plateau-selecteur-entete {
+  position: relative;
+}
+
+.plateau-selecteur-fermer-colle {
+  position: sticky;
+  top: 6px;
+  z-index: 6;
+  height: 0;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.plateau-selecteur-fermer {
+  pointer-events: auto;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #e6ebf2;
+  background: rgba(40, 46, 58, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* UNE fenetre, DEUX colonnes (Suit Up : deck + defausse) : Deck a gauche, Defausse a droite, un trait net entre elles
+   (demande du 26/10/2026). Chaque colonne a son en-tete et son nombre de cartes ; un seul compteur, un seul Annuler / Valider. */
+.plateau-selecteur-colonnes {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+  width: 100%;
+}
+
+.plateau-selecteur-colonne {
+  min-width: 0;
+  padding: 0 14px;
+}
+
+.plateau-selecteur-colonne + .plateau-selecteur-colonne {
+  border-left: 2px solid rgba(240, 185, 95, 0.75);
+}
+
+.plateau-selecteur-colonne-entete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(240, 185, 95, 0.45);
+}
+
+.plateau-selecteur-colonne-entete .plateau-selecteur-groupe {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+
+.plateau-selecteur-colonne-compte {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.plateau-selecteur-colonne .plateau-selecteur-cartes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+/* TELEPHONE : les colonnes s'empilent en deux sections, chaque en-tete reste collant en haut pendant le defilement. */
+@media (max-width: 700px) {
+  .plateau-selecteur-colonnes {
+    grid-auto-flow: row;
+  }
+
+  .plateau-selecteur-colonne {
+    padding: 0 6px 10px;
+  }
+
+  .plateau-selecteur-colonne + .plateau-selecteur-colonne {
+    border-left: 0;
+    border-top: 2px solid rgba(240, 185, 95, 0.75);
+    padding-top: 8px;
+  }
+
+  .plateau-selecteur-colonne-entete {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding-top: 4px;
+    background: rgba(24, 28, 38, 0.98);
+  }
+}

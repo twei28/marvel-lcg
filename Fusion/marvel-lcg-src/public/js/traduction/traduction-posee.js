@@ -878,3 +878,23 @@ export function elargirPaysage(zone, cote, image) {
         bords.push([derniere[0], derniere[1]]);
     return { ...zone, x0, x1, y1, bords };
 }
+/**
+ * De combien le français doit être repoussé vers la droite, bande par bande, pour ne pas commencer sur un bord de cadre qui
+ * penche : la différence entre le départ des lignes anglaises de la bande et le bord le plus à gauche de toutes (`x0`), en pixels
+ * de la boîte (`largeurRef`). Rend null quand le bord ne bouge presque pas (moins de 1,5 % de la largeur) : les cartes ordinaires
+ * ne changent pas.
+ */
+export function encochesGauche(gauche, x0, largeurRef) {
+    const encoches = gauche.map((x) => Math.max(0, x - x0) * largeurRef);
+    return Math.max(0, ...encoches) > largeurRef * 0.015 ? encoches : null;
+}
+/**
+ * La taille (en em) de la ligne des traits pour qu'elle tienne sur UNE ligne : le français est plus long que l'anglais
+ * (« AÉRIEN. EXOSPEX. SUPER-POUVOIR. ») et se coupait au tiret, la seconde ligne décalée. `disponible` : la place, `naturelle` : la
+ * largeur du texte à la taille de base.
+ */
+export function emDesTraits(disponible, naturelle, base = 0.82, plancher = 0.55) {
+    if (naturelle <= 0 || naturelle <= disponible)
+        return base;
+    return Math.max(plancher, (base * disponible) / naturelle);
+}

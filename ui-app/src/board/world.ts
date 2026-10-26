@@ -586,6 +586,11 @@ export type ChoixUnique = {
   /** Le libelle moteur de l'option appliquee (« Deal 1 damage to Robert Kelly »). */
   option: string
   joueur: number
+  /**
+   * Un AVIS libre du moteur (phrase anglaise), a montrer a la place de « une seule option possible » : une recherche sans resultat
+   * dont la suite n'est pas resolue (Safe House #30, 26/10/2026). Absent des moteurs non mis a jour.
+   */
+  texte?: string
 }
 
 export type RefusEffet = {

@@ -35,6 +35,9 @@ import { TRAITS_FR } from './traits-fr'
  * soulignés quand la recherche a lieu.
  */
 const MOTEUR_FR: Record<string, string> = {
+  // — Avis du moteur (`choix_uniques.texte`) —
+  'No minion in the encounter deck: no card is drawn.': 'Aucun sbire dans le deck de rencontre : aucune carte n’est piochée.',
+  'No event in your deck: no card is placed on top of your deck.': 'Aucun événement dans votre deck : aucune carte n’est placée sur le dessus de votre deck.',
   // — Pouvoirs de base et gestes de tour —
   Attack: 'Attaquer',
   Defense: 'Défendre',
@@ -188,6 +191,8 @@ const MOTEUR_FR: Record<string, string> = {
   'Cards Paid Order_Text': 'Ordre de paiement',
   'Card Apply_Text': 'Carte appliquée',
   'Card Attach To': 'Carte attachée',
+  // AJOUT (26/10/2026, pack hp Wasp Hank Pym, hp010 Huge Surprise) : une carte d'état est posée sur une carte.
+  'Card Place Status On': "Carte d'état posée",
   'Card Be Created': 'Carte créée',
   'Card Be Spend As Resource': 'Carte dépensée comme ressource',
   'Card Become Boost': 'Carte devenue boost',
@@ -302,6 +307,7 @@ const MOTEUR_FR: Record<string, string> = {
   'Phase Begin': 'Début de phase',
   'Phase End': 'Fin de phase',
   'Choose Ability Only Option_Text': 'Seul choix possible',
+  'No Result Notice_Text': 'Recherche sans résultat',
   'Player Choose Ability': 'Choix d’une capacité',
   'Player Deal Encounter Card': 'Carte rencontre distribuée',
   'Player Drew Cards': 'Cartes piochées',
@@ -496,6 +502,14 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   // Action d'assemblée : « <heros> (<table>) - this table » -> le groupe de cette table.
   [/^(.+) - this table$/, (m) => `${m[1]} (cette table)`],
   [/^Exhaust each character you control$/, () => 'Incliner chacun de tes personnages'],
+  // Pack new_ultimate_winter_soldier (`uw`, 25/10/2026) : les choix de Wild Slash (uw005), Berserker Fury (uw006),
+  // Mission Objective (uw011), Live with the Burden (uw013), Desperate Regenerate (uw008), Phoenix Specimen Brainwashing (uw016).
+  [/^Take (\d+) damage → deal (\d+) damage to an enemy$/, (m) => `Subir ${degats(m[1]!)} → infliger ${degats(m[2]!)} à un ennemi`],
+  [/^Take (\d+) damage → repeat this ability$/, (m) => `Subir ${degats(m[1]!)} → répéter cette capacité`],
+  [/^Take (\d+) damage → attach this card to another minion$/, (m) => `Subir ${degats(m[1]!)} → attacher cette carte à un autre sbire`],
+  [/^Exhaust your identity → prevent (\d+) of that damage$/, (m) => `Incliner ton identité → prévenir ${m[1]} de ces dégâts`],
+  [/^Discard each stunned and confused status card from your identity$/, () => 'Défausser chaque carte d’état Sonné et Désorienté de ton identité'],
+  [/^Place (\d+) threat on a scheme$/, (m) => `Placer ${menaces(m[1]!)} sur une manigance`],
   // « Combien de fois ce choix ? » (player_action.py, `ChooseAbilities(repeat=...)`).
   [/^(\d+) times?$/, (m) => `${m[1]} fois`],
   [/^No repeat$/, () => 'Aucun'],

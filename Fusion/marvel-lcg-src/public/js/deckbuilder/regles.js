@@ -127,6 +127,8 @@ export function estCarteJoueur(c) {
     if (!c || !c.class) return false;
     if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return false;
     if (c.class === "Hero") return false;
+    // « Linked » : la carte est mise de côté par sa carte liée, jamais dans le deck d'un joueur (RR « Linked »).
+    if (c.desc && c.desc.Linked) return false;
     // TMNT Shinobi (17/10/2026) : une carte Shinobi (classe Bushido / Ninjutsu / Kuji-Kiri / Taijutsu, Dual
     // comprise) ou un PATH est une carte de joueur ; `validerDeck` exige alors un Path et applique ses regles.
     if (estPath(c)) return true;
@@ -164,7 +166,8 @@ export function maxParDeck(carte) {
  *          // + "types": ["Upgrade"] pour ne compter que certains types (Ares, 07/09/2026)
  *          // + "compte": "titres" : `max` compte des TITRES, pas des cartes (Maria Hill)
  *          "types_interdits": ["Ally"],
- *          "types_interdits_aspect": ["Ally"]   // seulement les cartes D'ASPECT (Iron Patriot)
+ *          "types_interdits_aspect": ["Ally"],  // seulement les cartes D'ASPECT (Iron Patriot)
+ *          "classes_interdites": ["Basic"]      // des CLASSES entieres (U.S. Agent, `us001b` : « cannot include basic cards »)
  *      }
  *
  *  La table cablee plus bas reste la pour les 112 heros officiels, qu'on ne va
@@ -214,6 +217,14 @@ export function reglesAspect(hero, t = brut) {
 export function typesInterditsAspect(hero) {
     const decl = reglesDeclarees(hero);
     const liste = decl && decl.types_interdits_aspect;
+    return Array.isArray(liste) ? liste.map(String) : [];
+}
+
+/** Classes de cartes que le heros s'interdit (U.S. Agent, us001b John Walker : « You cannot include allies or basic
+ *  cards » -> `types_interdits: ["Ally"]` + `classes_interdites: ["Basic"]`). */
+export function classesInterdites(hero) {
+    const decl = reglesDeclarees(hero);
+    const liste = decl && decl.classes_interdites;
     return Array.isArray(liste) ? liste.map(String) : [];
 }
 
@@ -313,6 +324,9 @@ export function exemptDeLaLimiteAspect(hero, carte) {
      * soit ecrite. Toutes ancrees sur `hero.id`, comme Cable. */
     // Scott Summers (33001b) : « You may include X-MEN allies from any aspect ».
     if (id === "cyclops") return carte.type === "Ally" && aTrait(carte, "X-MEN");
+    // Christopher Summers (cr001b) : « You may include STARJAMMER allies from any aspect in your deck ». Les deux decks du heros
+    // (obligation par defaut et alternative) portent la meme regle.
+    if (id === "corsair" || id === "corsair_making_amends") return carte.type === "Ally" && aTrait(carte, "STARJAMMER");
     // Kate Bishop (kb001b) : « you may include SKILL cards from any aspect ».
     if (id === "kate_bishop") return aTrait(carte, "SKILL");
     // Simon Williams (58001b) : « events with a printed [energy] resource icon
@@ -501,6 +515,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     const quota = quotaHorsAspect(hero, t);
     const interdits = typesInterdits(hero);
     const interditsAspect = typesInterditsAspect(hero);
+    const classesRefusees = classesInterdites(hero);
     const idHeros = hero.id || "";
     const horsDeckJoueur = [];   // cartes de rencontre, ou signatures d'un autre heros
     const typesRefuses = [];     // « no additional allies » et consorts
@@ -545,6 +560,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
         if (!estCarteJoueur(c) && !(marvelous && estCarteSignature(c))) horsDeckJoueur.push(c.name);
         else if (interdits.includes(String(c.type))) typesRefuses.push(c.name);
         else if (interditsAspect.includes(String(c.type)) && ASPECTS.includes(c.class)) typesRefuses.push(c.name);
+        else if (classesRefusees.includes(String(c.class))) typesRefuses.push(c.name);
         if (estSignature(c)) empruntees += n;
         else if (estShinobi(brute) || estPath(brute)) {
             // Ni aspect ni Basic (livret p.8) : rien a compter ici, les regles du Path sont jugees plus bas.

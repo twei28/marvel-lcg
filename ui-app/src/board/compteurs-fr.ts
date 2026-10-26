@@ -23,6 +23,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   pym: 'Pym',
   size: 'taille',
   mystic: 'mystique',
+  agent: 'agent',
+  solar: 'solaire',
   psionic: 'psionique',
   warrior: 'guerrier',
   time: 'temps',

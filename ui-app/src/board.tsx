@@ -159,6 +159,10 @@ import { CoupHorsPhase, CoupHorsPhaseSurTable, DansLeCadre, EspaceDeLaQuestion }
 import { CartoucheHorsPhase, RelectureJournal } from './board/CartouchePhase'
 import type { QuestionDuMoteur } from './board/sous-cadre'
 import './board/fin-partie-bd.css'
+import './board/action-annulee.css'
+import { useActionAnnulee } from './board/action-annulee'
+import { choixEnAttente as choixAttend, groupeDeLaPile, ouvertureDePile, pileAOuvrirSeule, pilesToutesALaFois, type SorteDePile } from './board/pile-auto'
+import './board/choix-en-attente.css'
 import { RevuePhase } from './board/RevuePhase'
 import { EditeurTable } from './board/EditeurTable'
 import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, type Disposition } from './board/table-briques'
@@ -613,6 +617,18 @@ function libelleDeLaPile(id: number, monde: World | undefined): string {
   return t('Ouvrir la pile')
 }
 
+/** La nature de la pile qui tient cette carte (deck, defausse, paquet ou defausse rencontre), pour l'intitule d'un groupe. */
+function sorteDePile(id: number, monde: World | undefined): SorteDePile {
+  const dans = (cartes: readonly WorldCard[] | undefined) => cartes?.some((c) => c.id === id) ?? false
+  if (dans(monde?.encounter_discard_pile)) return 'defausse-rencontre'
+  if (dans(monde?.encounter_deck)) return 'rencontre'
+  for (const joueur of monde?.players ?? []) {
+    if (dans(joueur.player_discard_pile) || dans(joueur.additional_discard_pile)) return 'defausse'
+    if (dans(joueur.player_deck) || dans(joueur.additional_deck)) return 'deck'
+  }
+  return 'autre'
+}
+
 function ciblesHorsTablePourOption(
   option: Option,
   cartesParId: Map<number, WorldCard>,
@@ -946,6 +962,11 @@ function ModaleCiblesMenu({
             {t('Fermer')}
           </button>
         </header>
+        {/* Cette fenetre MONTRE les cartes que l'action pourrait viser ; elle n'en choisit aucune (rapport du 26/10/2026 :
+            on y cliquait un sbire en croyant le choisir). */}
+        <p className="plateau-cibles-menu-note">
+          {t('Aperçu seulement : pour choisir une carte, lance l’action puis clique sur la pile.')}
+        </p>
         <div className="plateau-regardees-corps">
           <div className="plateau-regardees-cartes">
             {cartes.map((carte) => (
@@ -2122,10 +2143,19 @@ export function PagePartie({
   // sélection que le spectateur et la relecture montrent (vu-partage.ts).
   const siegeQuiCompose = etat.joueurDemande ?? joueurActif
   const selectionDuJoueur = useVuDuJoueur<SelectionPartagee | null>('sel', spectateur ? siegeQuiCompose : undefined)
+  // Une reponse partie au moteur n'est PAS une action abandonnee : `useActionAnnulee` (plus bas) le sait par ce suivi.
+  const noterReponseRef = useRef<() => void>(() => {})
+  const repondreSuivi = useCallback(
+    (reponse: Reponse | null, bindPlayerId: number) => {
+      noterReponseRef.current()
+      return repondre(reponse, bindPlayerId)
+    },
+    [repondre]
+  )
   const interaction = useInteraction(
     etat.monde,
     demandeOrdinaire,
-    repondre,
+    repondreSuivi,
     plateau?.idsAffiches ?? AUCUN_ID,
     joueurActif,
     catalogue,
@@ -2231,6 +2261,14 @@ export function PagePartie({
     },
     [cartesMondeParId, texteImprimeDeLaCarte]
   )
+  // Fermer ou abandonner une action avant de la valider ne disait rien (26/10/2026) : le message le dit, quelques secondes.
+  const { message: actionAnnulee, noterReponse } = useActionAnnulee(
+    interaction.option ? nomActionDe(interaction.option) : undefined,
+    etat.demande
+  )
+  useEffect(() => {
+    noterReponseRef.current = noterReponse
+  }, [noterReponse])
   // L'onglet « Ville » (campagne MC×DC 2026) : l'etat exporte par le moteur, ouvert ou non, et le nom de chaque joueur (son heros).
   const [villeOuverte, setVilleOuverte] = useState(false)
   // L'onglet « Assemblée » (Kingsfall multi-tables) : l'etat commun relu par le moteur a chaque rendu.
@@ -4311,7 +4349,16 @@ export function PagePartie({
   // qu'on y fait (« Chercher dans le deck »), et c'est le clic sur la pile qui ouvre la fenêtre, avec
   // les seules cartes de cette pile. Changer d'action referme la pile.
   const [pileFouillee, setPileFouillee] = useState<number | undefined>()
-  useEffect(() => setPileFouillee(undefined), [interaction.option])
+  // TELEPHONE, recherche sur PLUSIEURS piles (Suit Up : deck + defausse, 26/10/2026) : toutes les cartes s'ouvrent d'un coup.
+  const [toutesLesPiles, setToutesLesPiles] = useState(false)
+  // FENETRE REDUITE SANS ANNULER (26/10/2026) : croix, Echap ou tap sur le voile. L'action reste en attente ; sur telephone
+  // l'onglet « Piles » clignote et un bandeau propose de rouvrir ; sur PC la porte de la pile se rallume.
+  const [selecteurReduit, setSelecteurReduit] = useState(false)
+  useEffect(() => {
+    setPileFouillee(undefined)
+    setToutesLesPiles(false)
+    setSelecteurReduit(false)
+  }, [interaction.option])
   const pilesARechercher = useMemo(() => {
     const piles = new Map<number, string>()
     if (!(ciblageSurTable || rechercheEnCours) || !plateau) return piles
@@ -4323,12 +4370,68 @@ export function PagePartie({
     }
     return piles
   }, [ciblageSurTable, rechercheEnCours, plateau, interaction.ciblesHorsTable, etat.monde])
-  const porteDePileFermee = pilesARechercher.size > 0 && (pileFouillee === undefined || !pilesARechercher.has(pileFouillee))
-  const ciblesHorsTableVisibles = porteDePileFermee
+  // Sur TELEPHONE le deck n'est pas a l'ecran, donc sa porte non plus : la pile seule s'ouvre d'office (pile-auto.ts).
+  const pileOuverteDOffice = pileAOuvrirSeule({
+    telephone: modePlateau === 'mobile',
+    rechercheEnCours: rechercheEnCours && !selecteurReduit,
+    piles: pilesARechercher,
+    pileOuverte: pileFouillee,
+  })
+  useEffect(() => {
+    if (pileOuverteDOffice !== undefined) setPileFouillee(pileOuverteDOffice)
+  }, [pileOuverteDOffice])
+  const toutesLesPilesDOffice = pilesToutesALaFois({
+    telephone: modePlateau === 'mobile',
+    rechercheEnCours: rechercheEnCours && !selecteurReduit,
+    piles: pilesARechercher,
+    pileOuverte: pileFouillee,
+  })
+  useEffect(() => {
+    if (toutesLesPilesDOffice) setToutesLesPiles(true)
+  }, [toutesLesPilesDOffice])
+  const toutesOuvertes = toutesLesPiles && pilesARechercher.size > 1
+  const porteDePileFermee =
+    pilesARechercher.size > 0 && !toutesOuvertes && (pileFouillee === undefined || !pilesARechercher.has(pileFouillee))
+  const ciblesHorsTableVisibles = selecteurReduit || porteDePileFermee
     ? []
-    : pilesARechercher.size > 1
+    : pilesARechercher.size > 1 && !toutesOuvertes
       ? interaction.ciblesHorsTable.filter((c) => plateau?.representantsDePile.get(Number(c.props.id)) === pileFouillee)
       : interaction.ciblesHorsTable
+  // Cliquer une pile (sa porte sur la table, ou sa ligne du tiroir) : avec PLUSIEURS piles a chercher, la MEME fenetre s'ouvre,
+  // deck et defausse cote a cote ; avec une seule, c'est cette pile (demande de l'utilisateur, 26/10/2026).
+  const ouvrirPile = (clic: number) => {
+    const ouverture = ouvertureDePile(pilesARechercher, clic)
+    setSelecteurReduit(false)
+    if (ouverture.toutes) setToutesLesPiles(true)
+    else setPileFouillee(ouverture.pile)
+  }
+  const reduireLeSelecteur = () => {
+    setPileFouillee(undefined)
+    setToutesLesPiles(false)
+    setSelecteurReduit(true)
+  }
+  // Le choix attend : recherche en cours et fenetre fermee sans annuler.
+  const choixAttend_ = choixAttend({ rechercheEnCours, reduit: selecteurReduit })
+  const pilesAChoisir = useMemo(() => {
+    const comptes = new Map<number, number>()
+    if (!plateau) return comptes
+    for (const cible of interaction.ciblesHorsTable) {
+      const representant = plateau.representantsDePile.get(Number(cible.props.id))
+      if (representant !== undefined) comptes.set(representant, (comptes.get(representant) ?? 0) + 1)
+    }
+    return comptes
+  }, [plateau, interaction.ciblesHorsTable])
+  // L'intitule de chaque groupe, quand les cartes de plusieurs piles sont montrees ensemble : d'abord le deck, puis la defausse.
+  const ciblesParPile = useMemo(() => {
+    if (!toutesOuvertes) return { cibles: ciblesHorsTableVisibles, groupes: undefined }
+    const rang: Record<SorteDePile, number> = { deck: 0, defausse: 1, rencontre: 2, 'defausse-rencontre': 3, autre: 4 }
+    const sorte = (c: (typeof ciblesHorsTableVisibles)[number]) => sorteDePile(Number(c.props.id), etat.monde)
+    const triees = [...ciblesHorsTableVisibles].sort((a, b) => rang[sorte(a)] - rang[sorte(b)])
+    return {
+      cibles: triees,
+      groupes: new Map(triees.map((c) => [Number(c.props.id), groupeDeLaPile(sorte(c))] as const)),
+    }
+  }, [toutesOuvertes, ciblesHorsTableVisibles, etat.monde])
 
   if (!etat.monde || !plateau || voile) {
     return (
@@ -4588,6 +4691,12 @@ export function PagePartie({
           {etat.erreur}
         </p>
       ) : null}
+      {actionAnnulee ? (
+        <p className="plateau-annulation" role="status">
+          {actionAnnulee}
+        </p>
+      ) : null}
+
 
       {/* En mode detaille, BandeauPhase (plus bas) annonce deja la phase du
           mechant, plus fort : ce splash-ci ne doit pas la doubler. */}
@@ -4600,7 +4709,8 @@ export function PagePartie({
           hors du cartouche (piege 29). */}
       {ciblageEnScene && nouvelleScenePC ? null : (
         <SelecteurCibles
-          cibles={ciblesHorsTableVisibles}
+          cibles={ciblesParPile.cibles}
+          groupes={ciblesParPile.groupes}
           titre={interaction.option ? nomActionDe(interaction.option) : ''}
           survoler={setApercuSelecteur}
           bandeau={bandeauColle}
@@ -4612,6 +4722,9 @@ export function PagePartie({
                   maximum: interaction.assistant.cibleMaximum,
                   valider: interaction.valider,
                   annuler: interaction.annuler,
+                  // Fermer sans annuler : TELEPHONE seulement (bandeau « Rouvrir », onglet « Piles » qui clignote, tiroir). Sur PC, la
+                  // reouverture par la porte de la pile apres Echap n'est pas verifiee (26/10/2026) : la fenetre garde son Annuler.
+                  reduire: modePlateau === 'mobile' ? reduireLeSelecteur : undefined,
                 }
               : undefined
           }
@@ -4629,7 +4742,7 @@ export function PagePartie({
               id,
               choisie: false,
               etiquette: libelle,
-              agir: () => setPileFouillee(id),
+              agir: () => ouvrirPile(id),
             }))}
             prete={interaction.prete}
             raison={interaction.raison}
@@ -5025,7 +5138,7 @@ export function PagePartie({
                           id,
                           choisie: false,
                           etiquette: libelle,
-                          agir: () => setPileFouillee(id),
+                          agir: () => ouvrirPile(id),
                         }))
                       : []),
                   ]}
@@ -5219,6 +5332,12 @@ export function PagePartie({
         joueursAffichables={joueursAffichables}
         joueurRegarde={joueurActif}
         choisirJoueurRegarde={setVueForcee}
+        // Fenetre de choix fermee sans annuler : l'onglet « Piles » clignote (PlateauPortrait).
+        choixEnAttente={
+          choixAttend_
+            ? { titre: interaction.option ? nomActionDe(interaction.option) : '', piles: pilesAChoisir, rouvrir: () => setSelecteurReduit(false) }
+            : undefined
+        }
         // Meme condition que le rendu de MenuActionsCarte ci-dessus : le rendu
         // mobile empile une couche tant que ce menu est affiche, pour que le
         // Retour d'Android le ferme au lieu de sortir de la partie.

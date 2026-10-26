@@ -8,7 +8,7 @@
 // C'est le seul panneau qui se pose par-dessus la table, et seulement le temps
 // d'un choix. L'ancien plateau fait la meme chose en « ouvrant » le deck.
 
-import { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { useApercuSurvol } from './apercu-survol'
 import type { CibleHorsTable } from './interaction'
@@ -30,6 +30,11 @@ export type FenetreChoix = {
   maximum: number
   valider: () => void
   annuler: () => void
+  /**
+   * Present : la fenetre peut etre FERMEE SANS ANNULER l'action (croix, Echap, toucher le voile). L'action reste en attente ;
+   * `board.tsx` fait clignoter l'onglet « Piles » et propose de rouvrir (demande du 26/10/2026, telephone).
+   */
+  reduire?: () => void
 }
 
 /**
@@ -58,9 +63,14 @@ export type SelecteurCiblesProps = {
   fenetre?: FenetreChoix
   /** Present (et pas de fenetre) : le panneau d'action est colle au-dessus du selecteur, les deux ne font qu'un. */
   bandeau?: BandeauColle
+  /**
+   * Present : l'intitule de la pile d'ou vient chaque carte (id -> « Deck », « Défausse »...). Un intitule s'insere devant
+   * chaque groupe de cartes qui se suivent (rapport du 26/10/2026, Suit Up : une recherche dans le deck ET la defausse).
+   */
+  groupes?: ReadonlyMap<number, string>
 }
 
-export function SelecteurCibles({ cibles, titre, survoler, fenetre, bandeau }: SelecteurCiblesProps) {
+export function SelecteurCibles({ cibles, titre, survoler, fenetre, bandeau, groupes }: SelecteurCiblesProps) {
   // Survol ecoute sur le CONTENEUR, agrandissement DERIVE de `cibles` : la
   // regle commune, expliquee dans `apercu-survol.ts`. Ici l'agrandissement
   // n'est pas monte par ce panneau mais remonte a la table (`survoler`), d'ou
@@ -81,7 +91,55 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre, bandeau }: S
   // Les hooks se declarent AVANT le retour anticipe ci-dessous.
   const { decalage, gestes: gestesGlisser } = useGlisserPanneau(`${titre}|${cibles.length}`)
 
+  // Echap ferme la fenetre SANS annuler (et seulement quand elle sait se reduire).
+  const reduire = fenetre?.reduire
+  useEffect(() => {
+    if (!reduire) return
+    const surTouche = (evenement: KeyboardEvent) => {
+      if (evenement.key === 'Escape') reduire()
+    }
+    document.addEventListener('keydown', surTouche)
+    return () => document.removeEventListener('keydown', surTouche)
+  }, [reduire])
+
   if (cibles.length === 0) return null
+
+  const carteDe = (cible: CibleHorsTable) => (
+    <span
+      key={cible.props.id}
+      {...glisserOrdre(cible.props.id, cible.permuterAvec, 'plateau-selecteur-carte')}
+      // Le clavier n'a pas de pointeur : il vise explicitement.
+      onFocus={() => viser(cible.props.id)}
+      onBlur={() => viser(undefined)}
+    >
+      <ScanCard
+        {...cible.props}
+        state={cible.choisie ? 'selected' : 'targetable'}
+        onSelect={cible.agir}
+        spentCount={cible.fois}
+        orderNumber={cible.ordre}
+        onOrdreReculer={cible.ordreReculer}
+        onOrdreAvancer={cible.ordreAvancer}
+        onAssignerReste={cible.assignerReste}
+        assignerResteQuantite={cible.assignerResteQuantite}
+      />
+    </span>
+  )
+
+  // DEUX PILES OU PLUS (Suit Up : deck + defausse) : UNE fenetre, une COLONNE par pile (Deck a gauche, Defausse a droite),
+  // chacune avec son en-tete et son nombre de cartes. Un seul compteur, un seul Annuler / Valider (demande du 26/10/2026).
+  // Sur telephone, les colonnes s'empilent en sections a en-tete collant (selecteur-fenetre.css).
+  const colonnes: { libelle: string; cartes: CibleHorsTable[] }[] = []
+  if (groupes) {
+    for (const cible of cibles) {
+      const libelle = groupes.get(Number(cible.props.id))
+      if (libelle === undefined) continue
+      const existante = colonnes.find((colonne) => colonne.libelle === libelle)
+      if (existante) existante.cartes.push(cible)
+      else colonnes.push({ libelle, cartes: [cible] })
+    }
+  }
+  const enColonnes = colonnes.length > 1 && colonnes.reduce((n, colonne) => n + colonne.cartes.length, 0) === cibles.length
 
   const pret = fenetre ? fenetre.choisies >= Math.max(1, fenetre.minimum) : false
   const panneau = (
@@ -103,6 +161,22 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre, bandeau }: S
       onMouseOver={survol}
       onMouseLeave={quitter}
     >
+      {fenetre?.reduire ? (
+        // La croix FLOTTE en haut a droite et reste visible quand on defile la liste (demande du 26/10/2026).
+        <div className="plateau-selecteur-fermer-colle">
+          <button
+            type="button"
+            className="plateau-selecteur-fermer"
+            aria-label={t('Fermer (le choix reste en attente)')}
+            title={t('Fermer (le choix reste en attente)')}
+            // Un bouton de la poignee : ne pas amorcer un deplacement de la fenetre.
+            onPointerDown={(evenement) => evenement.stopPropagation()}
+            onClick={fenetre.reduire}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
       {bandeau && !fenetre ? (
         <div className="plateau-selecteur-bandeau">
           <div
@@ -158,29 +232,36 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre, bandeau }: S
           </>
         )}
       </div>
-      <div className="plateau-selecteur-cartes">
-        {cibles.map((cible) => (
-          <span
-            key={cible.props.id}
-            {...glisserOrdre(cible.props.id, cible.permuterAvec, 'plateau-selecteur-carte')}
-            // Le clavier n'a pas de pointeur : il vise explicitement.
-            onFocus={() => viser(cible.props.id)}
-            onBlur={() => viser(undefined)}
-          >
-            <ScanCard
-              {...cible.props}
-              state={cible.choisie ? 'selected' : 'targetable'}
-              onSelect={cible.agir}
-              spentCount={cible.fois}
-              orderNumber={cible.ordre}
-              onOrdreReculer={cible.ordreReculer}
-              onOrdreAvancer={cible.ordreAvancer}
-              onAssignerReste={cible.assignerReste}
-              assignerResteQuantite={cible.assignerResteQuantite}
-            />
-          </span>
-        ))}
-      </div>
+      {enColonnes ? (
+        <div className="plateau-selecteur-colonnes">
+          {colonnes.map((colonne) => (
+            <section key={colonne.libelle} className="plateau-selecteur-colonne" aria-label={colonne.libelle}>
+              <header className="plateau-selecteur-colonne-entete">
+                <h3 className="plateau-selecteur-groupe">{colonne.libelle}</h3>
+                <span className="plateau-selecteur-colonne-compte">
+                  {colonne.cartes.length} {colonne.cartes.length > 1 ? t('cartes') : t('carte')}
+                </span>
+              </header>
+              <div className="plateau-selecteur-cartes">{colonne.cartes.map(carteDe)}</div>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <div className="plateau-selecteur-cartes">
+          {cibles.map((cible, rang) => {
+            const groupe = groupes?.get(Number(cible.props.id))
+            const groupeAvant = rang > 0 ? groupes?.get(Number(cibles[rang - 1].props.id)) : undefined
+            return (
+              <Fragment key={cible.props.id}>
+                {groupe !== undefined && (rang === 0 || groupe !== groupeAvant) ? (
+                  <h3 className="plateau-selecteur-groupe">{groupe}</h3>
+                ) : null}
+                {carteDe(cible)}
+              </Fragment>
+            )
+          })}
+        </div>
+      )}
       {fenetre ? (
         <div className="plateau-selecteur-boutons">
           <button type="button" className="plateau-selecteur-annuler" onClick={fenetre.annuler}>
@@ -200,5 +281,17 @@ export function SelecteurCibles({ cibles, titre, survoler, fenetre, bandeau }: S
       ) : null}
     </div>
   )
-  return fenetre ? <div className="plateau-selecteur-voile">{panneau}</div> : panneau
+  return fenetre ? (
+    <div
+      className="plateau-selecteur-voile"
+      // Toucher le VOILE (hors de la fenetre) la reduit sans annuler : on ne perd plus l'action par un tap maladroit.
+      onPointerDown={(evenement) => {
+        if (evenement.target === evenement.currentTarget) fenetre.reduire?.()
+      }}
+    >
+      {panneau}
+    </div>
+  ) : (
+    panneau
+  )
 }

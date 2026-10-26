@@ -32,6 +32,8 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 // session et par le tirage aleatoire, et un son s'y jouerait tout seul au
 // chargement de la page.
 import { jouerSon, jouerReplique, jouerClicRoue, SON, couperSurvolPendant } from "/public/js/prepare/sons.js";
+// L'intention du survol des héros : la scène garde le héros regardé le temps d'atteindre son bouton « Voir ses cartes ».
+import { creerSurvolHeros } from "/public/js/prepare/survol-heros.js";
 import { herosTirables, scenariosTirables, tirer, tirerPlusieurs, creerBandeau, caseHeros, caseScenario,
          lireRoue, publierRoue } from "/public/js/prepare/roue.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
@@ -2899,6 +2901,13 @@ function replique(hero) {
 /** Le héros en scène : celui du siège actif, sauf pendant un survol. */
 let herosSurvole = null;
 
+/** Qui est en scène, et quand : voir `survol-heros.js` (le bouton « Voir ses cartes » est dans la scène, pas sur la tuile : la scène ne
+ *  doit donc pas changer sous la souris qui va vers lui). Bug du Discord, 26/10/2026. */
+const survolHeros = creerSurvolHeros({
+    afficher: (h) => { herosSurvole = h; rendreScene(h); },
+    revenir: () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
+});
+
 function herosDuSiegeActif() {
     const p = state.players[state.activeSlot];
     return (p && p.hero) || null;
@@ -2906,7 +2915,11 @@ function herosDuSiegeActif() {
 
 function stepTeam() {
     const wrap = el("section", { class: "step team-b" },
-        el("div", { class: "tb-scene", id: "tb-scene" }),
+        el("div", {
+            class: "tb-scene", id: "tb-scene",
+            onmouseenter: estTel() ? undefined : () => survolHeros.entrerDansLaScene(),
+            onmouseleave: estTel() ? undefined : () => survolHeros.sortirDeLaScene(),
+        }),
     );
     const f = state.heroFilters;
     const droite = el("div", { class: "tb-droite" },
@@ -2961,6 +2974,7 @@ function stepTeam() {
     );
     wrap.append(droite);
     herosSurvole = null;
+    survolHeros.remettreAZero();
     herosApercuTel = null;
     loadHeroes();
     // La scène et l'équipe se dessinent une fois la section DANS la page :
@@ -3351,6 +3365,7 @@ function recruterVraiment(h, portraitEl) {
     assignHero(siege, h);
     autoAdvanceSlot();
     herosSurvole = null;
+    survolHeros.remettreAZero();
     // La scène d'abord (elle se reconstruit), la carte qui surgit ensuite,
     // par-dessus : dans l'autre ordre, la reconstruction l'emportait.
     if (tel) { herosApercuTel = h; rendreSceneTel(h); }
@@ -3536,9 +3551,9 @@ async function refreshHeroGrid(pre) {
             },
             // Téléphone : pas de survol (un doigt ne « quitte » jamais la tuile,
             // et mouseleave re-dessinerait le bandeau en plein toucher).
-            onmouseenter: estTel() ? undefined : () => { herosSurvole = h; rendreScene(h); },
-            onmouseleave: estTel() ? undefined : () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
-            onfocus: estTel() ? undefined : () => { herosSurvole = h; rendreScene(h); },
+            onmouseenter: estTel() ? undefined : () => survolHeros.entrer(h),
+            onmouseleave: estTel() ? undefined : () => survolHeros.sortir(),
+            onfocus: estTel() ? undefined : () => survolHeros.entrerAuClavier(h),
         },
             portraitHeros(h),
             el("span", { class: "tb-port-nom" }, nomAffiche(h)),
@@ -3758,6 +3773,18 @@ const COLLECTIONS_RESSOURCES = [
     { code: "magneto", nom: "Magneto", apercu: "49044" },
     { code: "the_thing", nom: "The Thing", apercu: "th017" },
     { code: "wave", nom: "Wave", apercu: "65018" },
+    // Neuf packs fan-made de fin octobre 2026 (26/10/2026) : arts alternatifs des ressources doubles, par defaut pour leur
+    // heros (collectionDuHeros : meme nom que le heros). Aligne avec COLLECTIONS (ui-app/src/board/variantes.ts).
+    { code: "batgirl", nom: "Batgirl", apercu: "bg021" },
+    { code: "batman", nom: "Batman", apercu: "bm024" },
+    { code: "chod", nom: "Ch'od", apercu: "co018" },
+    { code: "corsair", nom: "Corsair", apercu: "cr018" },
+    { code: "hepzibah", nom: "Hepzibah", apercu: "hz017" },
+    { code: "raza", nom: "Raza Longknife", apercu: "rl019" },
+    { code: "roz", nom: "Roz", apercu: "rz014" },
+    { code: "smasher", nom: "Smasher", apercu: "sz017" },
+    { code: "warriors_three", nom: "The Warriors Three", apercu: "wt023" },
+    { code: "predator", nom: "Predator", apercu: "pd022" },
 ];
 
 /* ---- Arts alternatifs des CARTES DE HEROS ------------------------------

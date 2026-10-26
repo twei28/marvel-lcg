@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { GLYPHES, detecterZoneSurFondTeinte, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, prolongerLaZone, texteEnParagraphes, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
+import { GLYPHES, detecterZoneSurFondTeinte, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, emDesTraits, encochesGauche, formeDuCache, ligneDeTraits, prolongerLaZone, texteEnParagraphes, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
 import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
-import { VOILE_UNI, corrigerZone } from './zones-corrections'
+import { CADRES_PENCHES, VOILE_UNI, corrigerZone } from './zones-corrections'
 import { BANDES_DROITE, effacerTexte, type CadreDuTexte, type OptionsEffacement } from './effacer-texte'
 import './traduction-posee.css'
 
@@ -246,6 +246,7 @@ export function TraductionPosee({
   const zone = zoneImage && !paysage ? (zoneCadre ?? zoneImage) : zoneImage
   const boite = useRef<HTMLDivElement | null>(null)
   const contour = useRef<HTMLSpanElement | null>(null)
+  const contourGauche = useRef<HTMLSpanElement | null>(null)
   // Les icônes imprimées sous le cache (Accélération, Crise...) : on les redessine.
   const [icones, setIcones] = useState<readonly string[]>([])
   const code = codeImage(url)
@@ -395,9 +396,36 @@ export function TraductionPosee({
             contourDroit.style.display = 'none'
           }
         }
+        // Un cadre qui penche à gauche (le bord noir s'écarte vers le bas) : les lignes anglaises du haut commencent plus à droite
+        // que celles du bas, et le français commençait sur le bord noir (premières lettres perdues). Même procédé qu'à droite :
+        // un flottant dont la forme suit le départ des lignes anglaises, bande par bande.
+        const flottantGauche = contourGauche.current
+        if (flottantGauche) {
+          const encochesG = CADRES_PENCHES.has(codeImage(url)) ? encochesGauche(cadreTexte.gauche ?? [], cadreTexte.x0, largeurRef) : null
+          const haut = Math.max(0, cadreTexte.y0 * hauteurRef - 1)
+          const hauteurContenu = Math.max(0, element.clientHeight - haut - parseFloat(element.style.paddingBottom))
+          if (encochesG && hauteurContenu > 0 && !cadreTexte.entre.length) {
+            const largeurMax = Math.max(...encochesG)
+            const points = ['0px 0px']
+            encochesG.forEach((w, b) => {
+              const ya = (b * hauteurRef) / BANDES_DROITE - haut
+              const yb = ((b + 1) * hauteurRef) / BANDES_DROITE - haut
+              if (yb <= 0 || ya >= hauteurContenu) return
+              points.push(`${w}px ${Math.max(0, ya)}px`, `${w}px ${Math.min(hauteurContenu, yb)}px`)
+            })
+            points.push(`0px ${hauteurContenu}px`)
+            flottantGauche.style.display = 'block'
+            flottantGauche.style.width = `${largeurMax}px`
+            flottantGauche.style.height = `${hauteurContenu}px`
+            flottantGauche.style.shapeOutside = `polygon(${points.join(', ')})`
+          } else {
+            flottantGauche.style.display = 'none'
+          }
+        }
       } else {
         element.style.padding = ''
         if (contour.current) contour.current.style.display = 'none'
+        if (contourGauche.current) contourGauche.current.style.display = 'none'
       }
       // Icônes imprimées au milieu du texte : chaque bloc vide est posé après le dernier paragraphe qui tient au-dessus
       // de l'icône, et s'allonge jusqu'à elle ; le texte reprend dessous. Si le français déborde sur l'icône, la police
@@ -428,6 +456,20 @@ export function TraductionPosee({
       while (deborde() && taille > plancher) {
         taille -= LARGEUR * 0.001
         element.style.fontSize = `${taille}px`
+      }
+      // La ligne des traits tient sur UNE ligne : elle déborde un peu dans les marges (symétriquement : elle reste centrée sur
+      // la colonne) et rétrécit si elle est encore trop longue, au lieu de se couper au tiret (« SUPER- / POUVOIR. »).
+      const traitsEl = element.querySelector<HTMLElement>('.tp-traits')
+      const traitsTexte = traitsEl?.querySelector<HTMLElement>('.tp-traits-texte')
+      if (traitsEl && traitsTexte) {
+        // Une illustration qui entre par la droite (flottant) réduit la ligne : elle reste centrée dans ce qui reste, sans déborder.
+        const flottantDroit = contour.current && contour.current.style.display === 'block' ? contour.current.offsetWidth : 0
+        const marge = flottantDroit > 0 ? 0 : Math.min(parseFloat(element.style.paddingLeft) || 0, parseFloat(element.style.paddingRight) || 0) * 0.9
+        traitsEl.style.marginLeft = `${-marge}px`
+        traitsEl.style.marginRight = `${-marge}px`
+        traitsEl.style.fontSize = ''
+        const base = parseFloat(getComputedStyle(traitsEl).fontSize) / (taille || 1)
+        traitsEl.style.fontSize = `${emDesTraits(traitsEl.clientWidth - flottantDroit, traitsTexte.offsetWidth, base)}em`
       }
     }
     ajuster()
@@ -462,13 +504,18 @@ export function TraductionPosee({
       }}
     >
       <span ref={contour} className="tp-contour-droit" />
+      <span ref={contourGauche} className="tp-contour-gauche" />
       {forme.gauche && !fond ? (
         <span className="tp-encoche tp-encoche-gauche" style={{ height: `${forme.gauche.hauteur}%`, width: `${forme.gauche.largeur}%` }} />
       ) : null}
       {forme.droite && !fond ? (
         <span className="tp-encoche tp-encoche-droite" style={{ height: `${forme.droite.hauteur}%`, width: `${forme.droite.largeur}%` }} />
       ) : null}
-      {ligneTraits ? <div className="tp-traits">{ligneTraits}</div> : null}
+      {ligneTraits ? (
+        <div className="tp-traits">
+          <span className="tp-traits-texte">{ligneTraits}</span>
+        </div>
+      ) : null}
       <div dangerouslySetInnerHTML={{ __html: avecBandes(texteEnParagraphes(texte), fond?.texte?.entre ?? []) }} />
       {icones.length > 0 && !fond ? (
         <div className="tp-icones-manigance">

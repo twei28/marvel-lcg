@@ -82,6 +82,20 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   // Galactic Storm (Kajislav, 20/10/2026) : Energy / Genius / Strength redessinees du deck de
   // depart de Quasar (« Starter deck's reskins »), art seul, memes regles.
   quasar: ['01088_quasar', '01089_quasar', '01090_quasar'],
+  // Neuf packs fan-made de fin octobre 2026 : Energy / Genius / Strength redessinees, « Max 1 per deck. », memes regles
+  // que 01088/89/90 (arbitrage du 26/10/2026 : arts alternatifs, §12 bis). Ordre = Energy, Genius, Strength ; chez
+  // Warriors Three wt023 est le Genius et wt024 l'Energy. Aligne avec COLLECTIONS_RESSOURCES (public/js/prepare/app.js).
+  roz: ['rz013', 'rz014', 'rz015'],
+  batgirl: ['bg020', 'bg021', 'bg022'],
+  batman: ['bm023', 'bm024', 'bm025'],
+  corsair: ['cr017', 'cr018', 'cr019'],
+  hepzibah: ['hz016', 'hz017', 'hz018'],
+  raza: ['rl018', 'rl019', 'rl020'],
+  chod: ['co017', 'co018', 'co019'],
+  smasher: ['sz016', 'sz017', 'sz018'],
+  warriors_three: ['wt024', 'wt023', 'wt025'],
+  // Predator (RyCoRan) : meme traitement, oublie de la premiere passe du 26/10/2026.
+  predator: ['pd021', 'pd022', 'pd023'],
 }
 
 /**

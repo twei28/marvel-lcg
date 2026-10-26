@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { detecterZoneTexte, detecterZoneTextePaysage, prolongerVersLeHaut, texteEnHtml, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
+import { detecterZoneTexte, detecterZoneTextePaysage, emDesTraits, encochesGauche, prolongerVersLeHaut, texteEnHtml, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
 
 /**
  * Une carte 300 x 420 sombre, avec une zone claire (240,236,228) de x 30..269,
@@ -197,5 +197,35 @@ describe('detecterZoneTextePaysage', () => {
     const px = manigance(false)
     for (let k = 0; k < px.length; k += 4) px.set([60, 30, 90, 255], k)
     expect(detecterZoneTextePaysage(px, 420, 300, 'gauche')).toBeNull()
+  })
+})
+
+describe('encochesGauche : le français suit le bord gauche des lignes anglaises (cadre en pente)', () => {
+  it('rend, par bande, de combien le texte est repoussé vers la droite', () => {
+    // 60 bandes : le haut commence à 0,25 de la largeur de la région, le bas à 0,17 (= x0), pente régulière.
+    const gauche = Array.from({ length: 60 }, (_, b) => 0.25 - (0.08 * b) / 59)
+    const e = encochesGauche(gauche, 0.17, 400)
+    expect(e).not.toBeNull()
+    expect(e![0]).toBeCloseTo(0.08 * 400, 0)
+    expect(e![59]).toBeCloseTo(0, 0)
+  })
+
+  it('un bord qui ne bouge presque pas ne donne aucune encoche (cartes ordinaires inchangées)', () => {
+    const gauche = Array.from({ length: 60 }, (_, b) => 0.17 + (b % 3) * 0.002)
+    expect(encochesGauche(gauche, 0.17, 400)).toBeNull()
+  })
+})
+
+describe('emDesTraits : la ligne des traits tient sur UNE ligne', () => {
+  it('garde la taille de base quand elle tient', () => {
+    expect(emDesTraits(300, 250)).toBe(0.82)
+  })
+
+  it('réduit la taille en proportion quand le français est plus long que la place', () => {
+    expect(emDesTraits(300, 400)).toBeCloseTo(0.82 * 0.75, 3)
+  })
+
+  it('ne descend jamais sous le plancher lisible', () => {
+    expect(emDesTraits(100, 900)).toBe(0.55)
   })
 })
