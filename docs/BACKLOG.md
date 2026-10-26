@@ -284,3 +284,26 @@ Aucune capture HD disponible ne contient ces cartes. Les arts alternatifs TMNT d
 
 Un mois après : regarder si des **scans HD** d'Iron Fist et d'Elektra existent (n°5) et si le **français officiel** de ces deux paquets est sorti (n°6). Si oui, remplacer ; sinon, reporter d'un mois.
 
+
+---
+
+## 7. ~~Cartes manquantes de Wasp (Hank Pym) : Shadow of the Past et Pursued by the Past~~ (RÉSOLU le 26/10/2026)
+
+> **Résolu le 26/10/2026 : cette entrée reposait sur une erreur.** Ces deux cartes ne manquaient pas : ce sont des cartes officielles
+> déjà présentes dans le moteur, Shadow of the Past `01190` (set Standard) et Pursued by the Past `45075a/b` (Standard III).
+> `hp013` est maintenant branché dessus (5 compteurs : recherche de `01190` dans le deck rencontre et sa défausse, sinon 7 compteurs
+> `pursuit` sur `45075a` s'il est en jeu), avec 8 cas verts : voir `docs/packs/wasp-hank-pym/GABARITS.md` (« Corrections du 26/10/2026 »)
+> et `docs/reference/mots-cles/find.md`. **Rien à faire ici.** Le texte ci-dessous est conservé pour mémoire seulement.
+
+**Décision de l'utilisateur (26/10/2026) : coder pour l'instant sans ces deux cartes, et noter ici qu'il faut les trouver pour finir.**
+L'obligation `hp013` Identity Crisis (pack `wasp_hank_pym`, préfixe `hp`, auteur JackHKP) dit : à 5 compteurs crise,
+« find Shadow of the Past and reveal it. If you cannot, place 7 pursuit counters on Pursued by the Past ». Ces deux cartes ne sont
+pas dans le zip `Wasp-20261025T195548Z-1-001.zip`. Aujourd'hui : on compte les compteurs crise et rien ne se révèle à 5 ;
+l'obligation reste jouable. À faire : retrouver les deux cartes auprès de l'auteur (scans ou texte), les ajouter au pack
+(`docs/reference/PROCESSUS-CARTE.md`) et brancher `hp013` dessus (gabarit `docs/packs/wasp-hank-pym/GABARITS.md`).
+
+---
+
+## 8. Problèmes trouvés le 26/10/2026
+
+Liste vivante, à cocher au fur et à mesure : `docs/rapports/2026-10-26-problemes-a-corriger.md`.

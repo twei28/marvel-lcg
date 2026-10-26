@@ -1099,3 +1099,10 @@ Cartes de reference :
 - [x] Étape 8 bis : la carte change-t-elle ce qu'on VOIT (attache, glisse, compteur, statut, mise de côté, changement de zone) ? NON en propre : elle chiffre ou agit sur des cartes déjà couvertes. Résultat : sans objet.
 
 Carte terminée : **OUI** (hors la partie réelle jouée par un humain, gate du héros, voir « Gates du héros »).
+
+## Arbitrage du 26/10/2026 : pd021-pd023 = arts alternatifs (Energy / Genius / Strength)
+
+Même traitement que Roz, Batgirl, Batman, Corsair, Hepzibah, Raza, Ch'od, Smasher et The Warriors Three (oublié lors de la première passe, qui ne couvrait pas Predator) :
+`pd021` Energy, `pd022` Genius, `pd023` Strength sont des arts alternatifs de 01088 / 01089 / 01090 (« Max 1 per deck » compté par titre, GUIDE §12 bis), proposés comme collection « Predator », par défaut pour le héros du même nom.
+Code : `ui-app/src/board/variantes.ts` (`COLLECTIONS.predator`) et `COLLECTIONS_RESSOURCES` de `public/js/prepare/app.js`. Preuve : `resources-art-packs-fanmade-2026-10.test.ts`, 3 cas (+ l'alignement wizard) rouges avant le câblage, 50/50 verts après ; `generer_arts_cartes.py --verifier` : « tables alignees ».
+Carte terminée : NON (provisoire) : partie humaine non faite (voir la modale du héros pour la collection de ressources).

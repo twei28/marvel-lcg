@@ -56,3 +56,9 @@ paiement).
 **Variantes maison** : `ho016` (* Bullseye, pack `harry_osborn`) : « [star]
 Bullseye's attack gains piercing and overkill » — capacité étoile (Expert),
 pas un boost.
+
+## Pièges vus au portage de Raza Longknife (26/10/2026)
+
+- **Mesurer un « this attack gains overkill » porté par une carte de boost** (`rl017` Devour, comme `an013`) : faire attaquer le vilain CONTRE UN ALLIÉ, `Puzzle.EnemyAttacks('01094', '01002')`, avec `Puzzle.GiveFacedownBoost('01094', 'rl017')` et la clé de cas **`passer_sur_option="Defense"`**. Avec `accepter_choix=True` le HÉROS défend à la place de l'allié et l'excès n'apparaît jamais ; `Puzzle.Attack('01094', '<allié>')` (défenseur armé) n'a pas donné d'excès non plus.
+- ⚠ Mockingbird (`01083`) SONNE un ennemi en entrant en jeu : Rhino sonné n'attaquait plus (0 dégât partout, cas rouge pour rien). Alliés neutres : `01002` Black Cat, `rl002`.
+- Témoin obligatoire : même montage avec une carte de boost de même nombre d'icônes SANS overkill (`rl016` New Host) : 0 dégât d'excès au héros.

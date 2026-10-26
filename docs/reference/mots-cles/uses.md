@@ -77,3 +77,11 @@ de `Uses` : une capacité **When Revealed** « Discard each other ARMAMENT card 
 fois, filtrée par le TRAIT, pas par le nom), à coder séparément de `has_uses.py` au moment du portage (lot PU-4 du
 cadrage `docs/rapports/cadrage-14-15-19-2026-10-20.md`). `Uses (1+1👤 ammo counters)` (ex. p181) est une NOTATION
 COMPOSÉE encore à clarifier au portage (1 fixe + 1 par joueur, ou somme), pas un format `Uses` déjà vu dans le dépôt.
+
+
+## Uses + « tuck it » au dernier compteur (Pulse Blaster `cr004`, 26/10/2026)
+
+La clé `desc.Uses` (`has_uses.py`) DÉFAUSSE la carte dès que son dernier compteur est retiré. Quand le texte dit « if you removed the
+last counter, tuck it under X » (ou toute autre sortie que la défausse), ne PAS poser `Uses` : poser les compteurs avec
+`AbilityFactory.ThisEnterPlayWithCounters(n, 'charge')`, les retirer par `CostFunc.Counter("This", 1, 'charge')` et sortir la carte à
+la main quand `GetAllCounters() <= 0` (modèle `16036`).

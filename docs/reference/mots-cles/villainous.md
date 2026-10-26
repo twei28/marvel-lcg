@@ -63,3 +63,7 @@ l'effet Boost et soigne 1). Deux façons de l'accorder :
 dans leurs gabarits. Les effets [star] Boost des cartes de rencontre ne se
 déclenchent que sur une activation d'ENNEMI : pour un héros, seule l'icône
 compte.
+
+## Pièges vus au portage de Raza Longknife (26/10/2026)
+
+- **« gains Villainous FOR THAT ACTIVATION »** (`rl013` Zzzxx, un sbire sans Vilenie imprimée) : une carte de boost de plus pour CETTE attaque, `WhenUnitWouldAttack(ForcedInterrupt, "This", op, conditions=[...])` + `message.GiveAdditionalBoostCardForThisActivation(1, effect)`. Mesure : le deck rencontre diminue de 1 (8 → 7) à 5 dégâts subis, reste à 8 sous le seuil (cas `[rl] rl013`).

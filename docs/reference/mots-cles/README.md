@@ -40,6 +40,8 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] vulnerable.md
 - [x] teamup.md
 - [x] alliance.md
+- [x] limit-max.md (« Limit X per [période] » et « Max X » : `Ability` partagée par les copies et par les joueurs ; AUCUN « once per turn » natif, `WorldStat.turn_serial`)
+- [x] find.md (RR FIND : fouiller toutes les zones ; `Search.EncounterCard` + `Reveal` ; pas « seek »)
 - [x] temporary.md
 - [x] piercing.md
 - [x] overkill.md
@@ -71,6 +73,9 @@ Gabarit à copier pour chaque nouvelle fiche :
       sur la CARTE d'identité, partagé par les deux faces, gardé au retournement ;
       riposte dynamique d'Embody the Dragon `64009`)
 
+- [x] indirect-damage.md (« attacks deal indirect damage » : le joueur répartit les dégâts, la défense
+      s'applique avant ; le piège du harnais à un seul personnage)
+
 ⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
 Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),
 jamais dans `desc`, et le moteur ne lui associe aucune mécanique. Confusion
@@ -78,6 +83,7 @@ la plus fréquente sur un pack vilain.
 
 ## Maison
 
+- [x] wild-resource.md (règle officielle « Wild Resource », arbitrée le 26/10/2026 : un wild dépensé = UN type déclaré par le joueur, un wild imprimé = « wild » seulement ; `GetPaidResources(True)`, helper `Types` de Ch'od)
 - [x] activation-order.md (scénario `the_vault` : « Activation Order X » sur chaque vilain, distribution des activations par ordre entre vilains et joueurs, 25/10/2026)
 - [x] eclair.md (pack `zeus` : une RESSOURCE maison, cinquième couleur du
       moteur `L`, ajoutée le 11/09/2026. ⚠ Distincte de l'énergie, que le set
@@ -337,3 +343,6 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
   mécanisme maison d'aucune sorte.
 - [x] controlled.md (take control / allié CONTROLLED, gabarit d allié à N dégâts consécutifs)
 - [x] flow.md (mot-clé maison Shang-Chi : pile State of Flow, correspondance stricte des icônes imprimées, message `AfterPlayerResolveFlow`)
+- [x] defausse-au-hasard.md (pack `new_ultimate_winter_soldier` : « discard 1 card from your hand at random » payé ou lu par neuf cartes ; marque `world.defausses_au_hasard` et compteur du round dans `world.stat`, CORRECTIF de `DiscardRandomHandCards`, 25/10/2026)
+- [x] deterrence.md (maison, pack batman)
+- [x] tour-supplementaire.md (maison, pack `rachel_summers` : « take an additional turn » et « end this turn », drapeaux `RM_TOUR_SUPPLEMENTAIRE` / `RM_FIN_DE_TOUR`, CORRECTIFS `world.py` / `player_phase.py` / `event/manager.py`, 26/10/2026)

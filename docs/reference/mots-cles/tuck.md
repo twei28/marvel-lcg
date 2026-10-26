@@ -76,3 +76,21 @@ Response: After Maelstrom leaves play, put Quantum Bands into play under the Qua
 carte EN JEU (amelioration permanente) : `TuckCardUnderHere` la retourne face cachee ; la reference de la carte est
 gardee sur l'objet carte de Maelstrom (`card.bandes_glissees_par_maelstrom`) pour la remettre en jeu (retournee face
 visible) dans `AfterCardLeavePlay(ForcedResponse, "This", ...)`. Voir aussi permanent.md.
+
+
+## Corsair (`cr001a`, pack `corsair`, 26/10/2026) : un HÉROS dont toute la mécanique est de ranger des cartes sous lui
+
+- « You may play cards tucked under here as if they were in your hand » sur l'IDENTITÉ : `*AbilityFactory.AttachedCardCanPlayLikeInHand()`
+  sur la face héros (zone `identite.GetPlacedCardArea()`, partagée par les deux faces), SANS `also_spend` ni `also_discard`
+  (FAQ : « cards tucked under Corsair can only be played, not spent »). Même recette que `tc013` Casey's Bag.
+- Ranger une carte qui vient d'être DÉPENSÉE en ressource (`AfterCardsBeSpendAsResource`, modèle `65001a` Wave) : on range la
+  carte depuis la zone de ressources, avant `DiscardResourcesArea` ; elle n'est donc jamais « défaussée » pour les autres
+  réactions. Depuis une défausse, `TuckCardUnderHere(face, effect)` (modèle `60037a`) accepte une carte déjà en défausse.
+- Ranger UNE CARTE EN JEU (Pulse Blaster, amélioration) : `identite.TuckCardUnderHere(this, effect)` depuis son propre script, sans
+  clé `Uses` (voir uses.md).
+- Cas : `tools/cas/corsair.py` ([cr]).
+
+**Corsair, Pocket Universe Gems (26/10/2026)** : « after a card in your hand is discarded to pay for a cost, tuck that card » : au paiement en RESSOURCES la carte est
+d'abord DÉFAUSSÉE (zone de ressources -> défausse), puis glissée depuis la défausse (`AfterCardDiscard`, pas `AfterCardsBeSpendAsResource`). Une autre Réponse « after you discard »
+(Corsair's Rapier) voit donc la même défausse ; déclenchées ENSEMBLE, la seconde doit vérifier que la carte attend encore dans la défausse avant de la glisser
+(`ToujoursEnDefausse`, sinon elle était glissée DEUX fois).

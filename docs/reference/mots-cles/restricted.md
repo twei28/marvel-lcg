@@ -38,3 +38,8 @@ la même façon (via `find`) si un script présent code autre chose que la
 restriction.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+## Pièges vus au portage de Raza Longknife (26/10/2026)
+
+- **« You can control 1 additional upgrade that has the restricted keyword »** (`rl008`, comme `hz004`, `20001a` Venom) : `GiveKeywordToAttached("You", control_additional_restricted=CardFinder(card_type=Upgrade))`.
+- Mesure (`[rl] rl008`) : Blaster et Sabre (Restricted) en jeu, jouer le Bouclier de Captain America (`03009`, Restricted) : AVEC le Bras les trois restent en jeu ; SANS le Bras seules DEUX des trois restent (clé de cas `rl_en_jeu_parmi`). Le moteur ne laisse donc pas trois Restricted en jeu.

@@ -18,3 +18,9 @@ générique `counter`, sans effet : toute carte dont les valeurs suivent un comp
 le sien.
 
 **Variantes maison** : aucune.
+
+**Pack Hepzibah (26/10/2026)** : `hz010` Armed to the Teeth (Special : « Place 1 all-purpose counter on a WEAPON you control ») sur Energy Blaster
+(`Uses (3 charge counters)`) : le compteur devient un compteur `charge` (`GetCounters('charge')` ET `GetCounters('all-purpose')` rendent 4 ;
+sans le Special, 3). Sur une arme SANS compteur nommé (Pulse Blaster de Corsair a `charge`, mais d'autres armes n'en ont aucun), le compteur
+devient le compteur générique sans effet : écart assumé, noté dans les questions du gabarit.
+
