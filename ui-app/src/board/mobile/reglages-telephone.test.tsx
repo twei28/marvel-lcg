@@ -5,6 +5,7 @@ import {
   DEFAUTS_TELEPHONE,
   ecrireColonnesZone,
   ecrireReglageTelephone,
+  plateauDejaChoisi,
   lireReglagesTelephone,
   useReglagesTelephone,
 } from './reglages-telephone'
@@ -36,6 +37,9 @@ describe('les reglages du telephone (zone 3)', () => {
     expect(lireReglagesTelephone().plateau).toBe('ronds')
     window.localStorage.setItem(CLES_TELEPHONE.plateau, 'triangles')
     expect(lireReglagesTelephone().plateau).toBe('cartes')
+    expect(plateauDejaChoisi()).toBe(false)
+    ecrireReglageTelephone('plateau', 'cartes')
+    expect(plateauDejaChoisi()).toBe(true)
   })
 
   it('les colonnes des zones (26/10/2026) : Manigances 3, Allies 3, Sbires 3, Cartes en jeu 4 par defaut, et se relisent apres ecriture', () => {

@@ -435,11 +435,11 @@ function LignePlateauTelephone() {
       libelle={t('Plateau')}
       valeur={plateau}
       choix={[
-        { valeur: 'cartes' as PlateauTelephone, libelle: t('Cartes') },
         { valeur: 'ronds' as PlateauTelephone, libelle: t('Ronds') },
+        { valeur: 'cartes' as PlateauTelephone, libelle: t('Cartes') },
       ]}
       onChoisir={(valeur) => ecrireReglageTelephone('plateau', valeur)}
-      detail={t('La forme de la table au téléphone (essai : les ronds)')}
+      detail={t('La forme de la table au téléphone (les ronds sont plus adaptés au téléphone)')}
     />
   )
 }
@@ -781,7 +781,13 @@ export function ContenuOnglet({
     return (
       <>
         <TitreSection>{t('Phase du méchant')}</TitreSection>
-        <LignePhaseMechant p={p} />
+        {/* SUR TELEPHONE la presentation est d'office « Guidee » (26/10/2026, demande de l'utilisateur : pas d'autres
+            choix) : pas de ligne « Presentation ». Le delai automatique ci-dessous reste : il vaut pour la Guidee. */}
+        {p.telephone ? (
+          <p className="ligne-option-note">{t('Guidée sur téléphone : « Lire la suite » puis « Étape suivante » à chaque étape de la phase')}</p>
+        ) : (
+          <LignePhaseMechant p={p} />
+        )}
         {p.modePhase !== 'instantane' ? <LigneDelaiAutoPhase /> : null}
         {p.avancePhaseHote ? <LigneAvancePhase /> : null}
         {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par

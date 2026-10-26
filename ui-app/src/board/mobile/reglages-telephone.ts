@@ -87,6 +87,12 @@ export function ecrireColonnesZone(zone: ZoneAColonnes, valeur: NbColonnes): voi
   window.dispatchEvent(new CustomEvent(EVENEMENT_REGLAGES_TELEPHONE))
 }
 
+/** Le joueur a-t-il deja choisi la forme de la table ? Sinon on lui propose les ronds en premier (plus adaptes au telephone, 26/10/2026). */
+export function plateauDejaChoisi(): boolean {
+  const v = lire(CLES_TELEPHONE.plateau)
+  return v === 'ronds' || v === 'cartes'
+}
+
 export function lireReglagesTelephone(): ReglagesTelephone {
   const taille = lire(CLES_TELEPHONE.tailleTexte)
   return {

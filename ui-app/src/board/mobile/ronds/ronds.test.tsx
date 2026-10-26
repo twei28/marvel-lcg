@@ -340,23 +340,36 @@ describe('le choix du plateau a chaque debut de partie', () => {
     expect(suivante.result.current.demander).toBe(true)
   })
 
+  it('tant que le joueur n\'a rien choisi, les ronds sont pre-selectionnes (et les cartes si c\'est son dernier choix)', () => {
+    window.localStorage.removeItem('marvel-tel-plateau')
+    const premier = render(<ChoixPlateau repondre={vi.fn()} />)
+    expect(screen.getAllByRole('button')[0].className).toContain('est-propose')
+    expect(screen.getAllByRole('button')[1].className).not.toContain('est-propose')
+    premier.unmount()
+    window.localStorage.setItem('marvel-tel-plateau', 'cartes')
+    render(<ChoixPlateau repondre={vi.fn()} />)
+    expect(screen.getAllByRole('button')[1].className).toContain('est-propose')
+  })
+
   it('on ne demande jamais en vue d\'etat, ni sans partie, ni apres le round 1', () => {
     expect(renderHook(() => useChoixPlateau(1, true)).result.current.demander).toBe(false)
     expect(renderHook(() => useChoixPlateau(undefined, false)).result.current.demander).toBe(false)
     expect(renderHook(() => useChoixPlateau(3, false)).result.current.demander).toBe(false)
   })
 
-  it('la fenetre propose les deux plateaux et pre-selectionne le dernier choix', () => {
+  it('la fenetre propose les ronds EN PREMIER (plus adaptes au telephone), puis les cartes, et pre-selectionne le dernier choix', () => {
     window.localStorage.setItem('marvel-tel-plateau', 'ronds')
     const repondre = vi.fn()
     render(<ChoixPlateau repondre={repondre} />)
     const boutons = screen.getAllByRole('button')
     expect(boutons).toHaveLength(2)
-    expect(boutons[1].className).toContain('est-propose')
-    fireEvent.click(boutons[0])
+    expect(boutons[0].textContent).toContain('Ronds')
+    expect(boutons[0].textContent).toContain('adapt')
+    expect(boutons[0].className).toContain('est-propose')
+    fireEvent.click(boutons[1])
     expect(repondre).toHaveBeenCalledWith('cartes', false)
     fireEvent.click(screen.getByRole('checkbox'))
-    fireEvent.click(boutons[1])
+    fireEvent.click(boutons[0])
     expect(repondre).toHaveBeenLastCalledWith('ronds', true)
   })
 })

@@ -9,7 +9,7 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import { createPortal } from 'react-dom'
 import { t } from '../../langue'
-import { ecrireReglageTelephone, useReglagesTelephone, type PlateauTelephone } from '../reglages-telephone'
+import { ecrireReglageTelephone, plateauDejaChoisi, useReglagesTelephone, type PlateauTelephone } from '../reglages-telephone'
 import './ronds.css'
 
 export const CLE_CHOIX_PLATEAU = 'marvel-tel-plateau-choisi'
@@ -58,6 +58,8 @@ export function useChoixPlateau(
 
 export function ChoixPlateau({ repondre }: { repondre: (choix: PlateauTelephone, garder?: boolean) => void }): ReactElement {
   const { plateau } = useReglagesTelephone()
+  // Les ronds d'abord, et presélectionnés tant que le joueur n'a rien choisi : plus adaptés au téléphone (26/10/2026).
+  const ronds = plateau === 'ronds' || !plateauDejaChoisi()
   const [garder, setGarder] = useState(false)
   return createPortal(
     <div className="choix-plateau-voile" role="dialog" aria-modal="true" aria-label={t('Quel plateau ?')}>
@@ -65,13 +67,13 @@ export function ChoixPlateau({ repondre }: { repondre: (choix: PlateauTelephone,
         <h2>{t('Quel plateau ?')}</h2>
         <p>{t('Choisis comment afficher la table pour cette partie. Tu pourras changer dans les réglages.')}</p>
         <div className="choix-plateau-boutons">
-          <button type="button" className={plateau === 'cartes' ? 'est-propose' : ''} onClick={() => repondre('cartes', garder)}>
+          <button type="button" className={ronds ? 'est-propose' : ''} onClick={() => repondre('ronds', garder)}>
+            <b>{t('Ronds')} <small>{t('conseillé')}</small></b>
+            <span>{t('Plus adapté au téléphone : chaque carte en rond, tout tient sur l’écran')}</span>
+          </button>
+          <button type="button" className={!ronds ? 'est-propose' : ''} onClick={() => repondre('cartes', garder)}>
             <b>{t('Cartes')}</b>
             <span>{t('Les cartes en bandes, comme avant')}</span>
-          </button>
-          <button type="button" className={plateau === 'ronds' ? 'est-propose' : ''} onClick={() => repondre('ronds', garder)}>
-            <b>{t('Ronds')} <small>{t('essai')}</small></b>
-            <span>{t('Chaque carte en rond : tout tient sur l’écran')}</span>
           </button>
         </div>
         <label className="choix-plateau-garder">
