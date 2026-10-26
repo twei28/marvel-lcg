@@ -77,6 +77,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (20/10/2026, heros Quasar de Galactic Storm, Kajislav, prefixe `gs`) : trait imprime
         # sur gs099q Maelstrom (« DEVIANT. INHUMAN. »).
         "DEVIANT",
+        # AJOUT (26/10/2026, campagne Hellfire Hunt, scenario White Queen, prefixe `hf`) : forme DIAMOND de White Queen
+        # (hf101b, hf301...), LUE par les scripts du pack (« if White Queen is in DIAMOND form »).
+        "DIAMOND",
         "WARTHOG", "RHINOCEROS", "ALERT", "K.O.", "HOG", "RHINO", "ROWDY",
         "TEMPER", "ENRAGED", "BESTIES", "BERSERK", "FERAL", "SUNGLASSES",
         "HELMET", "STREETS", "VELOCIRAPTOR",

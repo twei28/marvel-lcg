@@ -94,6 +94,9 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   chod: ['co017', 'co018', 'co019'],
   smasher: ['sz016', 'sz017', 'sz018'],
   warriors_three: ['wt024', 'wt023', 'wt025'],
+  // Hellfire Hunt (Dipsome, 26/10/2026) : Energy / Genius / Strength de la campagne (hf010-hf012), proposees par defaut a ses deux heros.
+  sunspot_hellfire: ['hf010', 'hf011', 'hf012'],
+  rachel_summers: ['hf010', 'hf011', 'hf012'],
   // Predator (RyCoRan) : meme traitement, oublie de la premiere passe du 26/10/2026.
   predator: ['pd021', 'pd022', 'pd023'],
 }

@@ -2244,5 +2244,26 @@
   "heroes": [],
   "encounters": [],
   "max_id": "sy050"
+ },
+ "240. Custom (Hellfire Hunt - White Queen)": {
+  "name": "hellfire_hunt_white_queen",
+  "scenarios": [
+   "hellfire_white_queen"
+  ],
+  "heroes": [],
+  "encounters": [
+   "hf_white_queen",
+   "hf_perfection",
+   "hf_hellfire_conclave",
+   "hf_psionic_delusion"
+  ],
+  "max_id": "hf325"
+ },
+ "234. Custom (Hellfire Hunt)": {
+  "name": "hellfire_hunt",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "hf048"
  }
 }

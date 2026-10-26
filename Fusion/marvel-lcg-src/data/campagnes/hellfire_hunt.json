@@ -1,0 +1,171 @@
+{
+ "version": "1.0",
+ "code": "hellfire_hunt",
+ "cle_extension": "234. Custom (Hellfire Hunt)",
+ "nom": "Hellfire Hunt",
+ "nom_en": "Hellfire Hunt",
+ "resume": "Cinq scénarios à gagner dans l'ordre, avec la même identité : les mutants du Hellfire Club traquent les derniers survivants. Chaque manigance annexe POTENTIAL ALLY que vous vainquez recrute un allié mutant, qui rejoint le deck Recruited Mutants de la campagne.",
+ "resume_en": "Five scenarios, won in order with the same identity: the Hellfire Club hunts the last surviving mutants. Every POTENTIAL ALLY side scheme you defeat recruits a mutant ally, who joins the campaign's Recruited Mutants deck.",
+ "expert": {
+  "pv_persistants": true
+ },
+ "pages_regles": [],
+ "scenarios": [
+  {
+   "id": "hellfire_white_queen",
+   "numero": 1,
+   "nom": "White Queen",
+   "nom_fr": "White Queen",
+   "resume": "Emma Frost, la Reine Blanche, mène l'offensive psychique du Hellfire Club contre le Manoir X.",
+   "enjeu": "Le vilain a deux formes (PSIONIC et DIAMOND) et garde ses PV en changeant de forme. Vous gagnez vos premiers alliés Recruited.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "hellfire_black_king",
+   "numero": 2,
+   "nom": "Black King",
+   "nom_fr": "Black King",
+   "resume": "Sebastian Shaw absorbe l'énergie de chaque coup qu'il reçoit.",
+   "enjeu": "Les alliés captifs libérés deviennent des alliés Recruited.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "hellfire_black_queen",
+   "numero": 3,
+   "nom": "Black Queen",
+   "nom_fr": "Black Queen",
+   "resume": "Selene règne sur la nuit et le soleil, et se soigne de la vie qu'elle vole.",
+   "enjeu": "Le Darkhold entre en jeu ; Emma Frost ou le message crypté selon votre carnet.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "hellfire_torn",
+   "numero": 4,
+   "nom": "Torn",
+   "nom_fr": "Torn",
+   "resume": "Emma Frost, déchirée, est devenue le jouet de Cassandra Nova.",
+   "enjeu": "Le deck Hellfire regroupe les sbires ELITE HELLFIRE avec sa propre défausse.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "hellfire_cassandra_nova",
+   "numero": 5,
+   "nom": "Cassandra Nova",
+   "nom_fr": "Cassandra Nova",
+   "resume": "Cassandra Nova veut éliminer tous les mutants.",
+   "enjeu": "Dernier scénario : en expert, une défaite fait perdre toute la campagne. Xavier's Institute quitte le jeu ; les survivants se rallient autour de Rally the Survivors.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   },
+   "final": true,
+   "defaite": {"quand": "partie_perdue", "expert_seulement": true, "texte": "Cassandra Nova élimine tous les mutants : la campagne est perdue."}
+  }
+ ],
+ "victoire_commune": [
+  {
+   "cle": "Recruited Allies",
+   "type": "auto",
+   "format": "liste",
+   "options": [
+    "hf013",
+    "hf014",
+    "hf015",
+    "hf016",
+    "hf017",
+    "hf018",
+    "hf019",
+    "hf020",
+    "hf021",
+    "hf022",
+    "hf023",
+    "hf024",
+    "hf025",
+    "hf026",
+    "hf027",
+    "hf028"
+   ],
+   "libelle": "Alliés Recruited",
+   "aide": "Les alliés de campagne gagnés (jusqu'à 16). À chaque scénario, ils forment le deck Recruited Mutants posé à côté de Xavier's Institute (scénarios 1 à 4) ou de Rally the Survivors (scénario 5) ; les autres attendent mis de côté, que les manigances POTENTIAL ALLY viennent chercher. Cochez ou décochez pour corriger."
+  },
+  {
+   "cle": "Removed Potential Allies",
+   "type": "auto",
+   "format": "liste",
+   "options": [
+    "hf029",
+    "hf030",
+    "hf031",
+    "hf032",
+    "hf033",
+    "hf034",
+    "hf035",
+    "hf036",
+    "hf037",
+    "hf038",
+    "hf039",
+    "hf040"
+   ],
+   "libelle": "Manigances POTENTIAL ALLY retirées",
+   "aide": "Celles que vous avez vaincues : elles quittent la campagne. Au début de chaque scénario, une manigance POTENTIAL ALLY par joueur, tirée au hasard parmi les autres, est mélangée au deck de rencontre."
+  },
+  {
+   "cle": "Removed Campaign Cards",
+   "type": "auto",
+   "format": "liste",
+   "options": [
+    "hf046",
+    "hf047"
+   ],
+   "libelle": "Cartes retirées de la campagne",
+   "aide": "Tactical Help et Enemy Of Enemy : « Remove this card from the campaign » quand le joueur les défait."
+  },
+  {
+   "cle": "Emma Frost's Redemption: Defeated",
+   "type": "auto",
+   "format": "int",
+   "libelle": "Emma Frost's Redemption : vaincue",
+   "aide": "Notée à la victoire des scénarios 2 et 3 si la manigance annexe a été défaite. Au scénario 3 : non cochée, on la révèle ; cochée, Emma Frost rejoint le deck Recruited Mutants et on révèle Cryptic Threatening Message."
+  },
+  {
+   "cle": "Cryptic Threatening Message: Defeated",
+   "type": "auto",
+   "format": "int",
+   "libelle": "Cryptic Threatening Message : vaincue",
+   "aide": "Notée à la victoire du scénario 3 si la manigance annexe a été défaite."
+  }
+ ],
+ "victoire_commune_expert": [
+  {
+   "cle": "Remaining hit points",
+   "type": "auto",
+   "format": "int",
+   "parJoueur": true,
+   "detection": "pv_restants",
+   "libelle": "PV restants",
+   "aide": "Ils deviennent les PV de départ du scénario suivant, plafonnés aux PV de base de l'identité ; chaque joueur peut les soigner au complet avec un pion Accélération sur la manigance principale."
+  }
+ ]
+}

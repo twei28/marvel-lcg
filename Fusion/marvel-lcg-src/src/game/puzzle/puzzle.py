@@ -1098,6 +1098,58 @@ class RunPuzzle:
         (tour de plus de rm007) sans jouer la boucle d'actions. Additif."""
         self.world.GetCurrentPlayer().stat.OnEndTurn()
 
+    def PutIntoRecruitedMutants(self, *cards: str, discard: bool=False) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt, pack `hf`) : fabrique ces cartes DANS le deck de table « Recruited Mutants » (en
+        defausse si `discard=True`), comme la mise en place de campagne le fait des allies gagnes. Cree le deck a la demande
+        (`cards.pack.hellfire_hunt.RecruitedMutants`). Les cartes y gardent `bind_discard_pile` : defaussees, elles reviennent dans la
+        defausse Recruited. Additif."""
+        from game.card.factory import CardFactory
+        from cards.pack.hellfire_hunt import RecruitedMutants
+        deck, defausse = RecruitedMutants(self.debug_rule)
+        cible = defausse if discard else deck
+        for carte in cards:
+            fabriquee = CardFactory.GenerateCard(carte, cible, self.world)
+            fabriquee.bind_discard_pile = defausse
+
+    def PlayFromRecruitedDiscard(self, card: str) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt, hf014 Blink : « play Blink from Recruited Mutant discard pile during their own turn ») :
+        joue la carte designee DEPUIS la defausse Recruited Mutants par le VRAI chemin (comme `jouer_carte_glissee` du harnais) : on demande
+        les effets « Play » de la carte, on les passe au filtre du gestionnaire d'evenements (qui interroge `IsLikeInHand`), puis on resout en
+        PAYANT le cout. Si le moteur n'offre pas la carte, l'echec est le resultat. Additif."""
+        from game.message import Message
+        from game.effect.rule import GameRule
+        from game.event.manager import EventManager
+        from cards.pack.hellfire_hunt import RecruitedMutants
+        _, defausse = RecruitedMutants(self.debug_rule)
+        joueur = self.world.GetCurrentPlayer()
+        for face in defausse.Get(True):
+            if getattr(face.paper, "card_id", None) == card:
+                effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+                message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+                message.Send()
+                disponibles = EventManager.FilterAvailableEffects(message, effets, joueur, self.world, None)
+                assert disponibles, f"le moteur n'offre PAS de jouer {card} depuis la defausse Recruited Mutants"
+                joueur.ChooseEffects([disponibles[0]], message, forced=False)
+                return
+        raise AssertionError(f"{card} n'est pas dans la defausse Recruited Mutants")
+
+    def HellfireCampagne(self, level: int, carnet: 'dict|None'=None) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt) : joue la MISE EN PLACE de campagne du scenario `level` (`cards.pack.hellfire_hunt.campaign.Executer`)
+        avec un carnet donne (cles -> chaines, ecrites au store du monde). Banc de test : aucune campagne reelle n'est lancee. Additif."""
+        from cards.pack.hellfire_hunt import campaign as hc
+        for cle, valeur in (carnet or {}).items():
+            self.world.store.SetStr(cle, valeur)
+        hc.Executer(self.debug_rule, level)
+
+    def HellfireReleve(self, level: int, gagne: bool=True) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt) : calcule le RELEVE de carnet de fin de partie du scenario `level` (`campaign.Releve`) et le garde
+        dans `world.hf_releve` (lu par le verificateur `hf_etat`). Additif."""
+        from cards.pack.hellfire_hunt import campaign as hc
+
+        class _Fin:
+            players_won = gagne
+        self.world.hf_releve = hc.Releve(level, self.debug_rule, _Fin())
+
     def NewTurnWorldStat(self) -> None:
         """AJOUT (26/10/2026, pack `hp` Wasp (Hank Pym), hp009 / hp012 : « X = formes changees CE tour » avec X = 0). Remet a zero les
         compteurs « ce tour » du MONDE (`WorldStat.OnTurnEnd` : attaques, contres, formes changees), que `EndPlayerTurn` n'appelle pas.

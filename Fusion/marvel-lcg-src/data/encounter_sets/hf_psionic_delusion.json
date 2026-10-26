@@ -1,0 +1,11 @@
+{
+  "version": "0.5.8",
+  "name": "Psionic Delusion",
+  "encounters": [
+    "hf321",
+    "hf322",
+    "hf322",
+    "hf324",
+    "hf325"
+  ]
+}
