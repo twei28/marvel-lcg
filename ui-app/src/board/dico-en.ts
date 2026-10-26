@@ -589,6 +589,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'à défausser puis repiocher · tu peux n’en choisir aucune': 'to discard then redraw · you may pick none',
   'Choisir la seule cible': 'Choose the only target',
   'Choisir la cible': 'Choose the target',
+  'Déplacer la fenêtre (flèches haut et bas)': 'Move the window (up and down arrows)',
   'Payer le coût': 'Pay the cost',
   'Prêt à valider': 'Ready to confirm',
   'sélectionnée(s) · nombre au choix': 'selected · any number',
@@ -1280,6 +1281,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Aperçu d’ambiance': 'Ambience preview',
   'Force ces effets à l écran pour les voir, sans partie ni carte': 'Forces these effects on screen so you can see them, with no game and no card',
   'Auto': 'Auto',
+  // Reglage des colonnes de chaque zone de la table en ronds (26/10/2026) : « Colonnes : Sbires » / « Columns: Minions ».
+  'Colonnes': 'Columns',
   'Aucun': 'None',
   // Le libelle de l'apercu se construit par concatenation (« 3 effets ») :
   // chaque compte possible a donc besoin de son entree. Il y a quinze

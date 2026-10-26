@@ -45,7 +45,15 @@ import {
 } from './moteur'
 import type { ReglageMode } from './mobile/useModeMobile'
 import { ecrireReglageDoigt, lireReglageDoigt, type ReglageDoigt } from './tablette/tablette'
-import { ecrireReglageTelephone, useReglagesTelephone, type PlateauTelephone, type TailleTexte } from './mobile/reglages-telephone'
+import {
+  ecrireColonnesZone,
+  ecrireReglageTelephone,
+  useReglagesTelephone,
+  type PlateauTelephone,
+  type TailleTexte,
+  type ZoneAColonnes,
+} from './mobile/reglages-telephone'
+import type { NbColonnes } from './mobile/ronds/disposition-ronds'
 import { epurePermis, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
 import {
@@ -499,6 +507,36 @@ function LigneTailleTexte() {
   )
 }
 
+/** Le nombre de colonnes d'une zone de la table en ronds (26/10/2026) : 1, 2, 3, 4 ou Auto. */
+function LigneColonnesZone({ zone, titre }: { zone: ZoneAColonnes; titre: string }) {
+  const { colonnesZones } = useReglagesTelephone()
+  return (
+    <LigneChoix
+      libelle={`${t('Colonnes')} : ${titre}`}
+      valeur={colonnesZones[zone] as number}
+      choix={[
+        { valeur: 1, libelle: '1' },
+        { valeur: 2, libelle: '2' },
+        { valeur: 3, libelle: '3' },
+        { valeur: 4, libelle: '4' },
+        { valeur: 0, libelle: t('Auto') },
+      ]}
+      onChoisir={(valeur) => ecrireColonnesZone(zone, valeur as NbColonnes)}
+    />
+  )
+}
+
+function LignesColonnesZones() {
+  return (
+    <>
+      <LigneColonnesZone zone="manigances" titre={t('Manigances')} />
+      <LigneColonnesZone zone="allies" titre={t('Alliés')} />
+      <LigneColonnesZone zone="sbires" titre={t('Sbires')} />
+      <LigneColonnesZone zone="enJeu" titre={t('Cartes en jeu')} />
+    </>
+  )
+}
+
 function LigneVerrouPortrait() {
   const { verrouPortrait } = useReglagesTelephone()
   return (
@@ -666,6 +704,7 @@ export function ContenuOnglet({
             <LigneDemanderLePlateau />
             <LigneAideDebut />
             <LigneTailleTexte />
+            <LignesColonnesZones />
             <LigneVerrouPortrait />
           </>
         ) : null}

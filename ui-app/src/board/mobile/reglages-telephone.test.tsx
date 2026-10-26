@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import {
   CLES_TELEPHONE,
   DEFAUTS_TELEPHONE,
+  ecrireColonnesZone,
   ecrireReglageTelephone,
   lireReglagesTelephone,
   useReglagesTelephone,
@@ -25,7 +26,7 @@ describe('les reglages du telephone (zone 3)', () => {
     ecrireReglageTelephone('tailleTexte', 'tres-grand')
     ecrireReglageTelephone('vibrations', false)
     ecrireReglageTelephone('verrouPortrait', true)
-    expect(lireReglagesTelephone()).toEqual({ plateau: 'cartes', plateauMemorise: false, aideDebut: true, visitePiles: true, tailleTexte: 'tres-grand', vibrations: false, verrouPortrait: true })
+    expect(lireReglagesTelephone()).toEqual({ plateau: 'cartes', plateauMemorise: false, aideDebut: true, visitePiles: true, colonnesZones: { manigances: 3, allies: 3, sbires: 3, enJeu: 4 }, tailleTexte: 'tres-grand', vibrations: false, verrouPortrait: true })
     window.localStorage.setItem(CLES_TELEPHONE.tailleTexte, 'enorme')
     expect(lireReglagesTelephone().tailleTexte).toBe('normal')
   })
@@ -37,6 +38,20 @@ describe('les reglages du telephone (zone 3)', () => {
     expect(lireReglagesTelephone().plateau).toBe('cartes')
   })
 
+  it('les colonnes des zones (26/10/2026) : Manigances 3, Allies 3, Sbires 3, Cartes en jeu 4 par defaut, et se relisent apres ecriture', () => {
+    expect(lireReglagesTelephone().colonnesZones).toEqual({ manigances: 3, allies: 3, sbires: 3, enJeu: 4 })
+    ecrireColonnesZone('allies', 2)
+    ecrireColonnesZone('enJeu', 0)
+    expect(lireReglagesTelephone().colonnesZones).toEqual({ manigances: 3, allies: 2, sbires: 3, enJeu: 0 })
+  })
+
+  it('une valeur de colonnes inconnue (5, texte, vide) retombe au defaut de la zone', () => {
+    window.localStorage.setItem(CLES_TELEPHONE.colonnesZones, 'x,9,-1,')
+    expect(lireReglagesTelephone().colonnesZones).toEqual({ manigances: 3, allies: 3, sbires: 3, enJeu: 4 })
+    window.localStorage.setItem(CLES_TELEPHONE.colonnesZones, '1,2')
+    expect(lireReglagesTelephone().colonnesZones).toEqual({ manigances: 1, allies: 2, sbires: 3, enJeu: 4 })
+  })
+
   it('le crochet suit un changement fait ailleurs, sans rechargement', () => {
     const { result } = renderHook(() => useReglagesTelephone())
     act(() => ecrireReglageTelephone('tailleTexte', 'grand'))
@@ -45,6 +60,24 @@ describe('les reglages du telephone (zone 3)', () => {
 })
 
 const props = {} as unknown as ProprietesReglages
+
+describe('les colonnes des zones dans la fenetre des reglages', () => {
+  it('sur telephone : un choix 1 / 2 / 3 / 4 / Auto par zone (Manigances, Alliés, Sbires, Cartes en jeu), qui s\'enregistre', () => {
+    render(<ContenuOnglet onglet="apparence" p={{ ...props, affichage: 'normal', telephone: true }} />)
+    for (const zone of ['Manigances', 'Alliés', 'Sbires', 'Cartes en jeu']) {
+      const groupe = screen.getByRole('group', { name: `Colonnes : ${zone}` })
+      expect(Array.from(groupe.querySelectorAll('button')).map((b) => b.textContent)).toEqual(['1', '2', '3', '4', 'Auto'])
+    }
+    fireEvent.click(screen.getByRole('group', { name: 'Colonnes : Sbires' }).querySelectorAll('button')[1]!)
+    fireEvent.click(screen.getByRole('group', { name: 'Colonnes : Cartes en jeu' }).querySelectorAll('button')[4]!)
+    expect(lireReglagesTelephone().colonnesZones).toEqual({ manigances: 3, allies: 3, sbires: 2, enJeu: 0 })
+  })
+
+  it('pas sur ordinateur : le choix des colonnes ne concerne que le plateau du telephone', () => {
+    render(<ContenuOnglet onglet="apparence" p={{ ...props, affichage: 'normal', telephone: false }} />)
+    expect(screen.queryByRole('group', { name: 'Colonnes : Sbires' })).toBeNull()
+  })
+})
 
 describe('dans la fenetre des reglages', () => {
   it('sur telephone : taille du texte (3 niveaux) et verrou portrait en Apparence, vibrations en Son', () => {

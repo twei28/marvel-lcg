@@ -77,6 +77,51 @@
   border: 2px dashed var(--ronds-ligne);
 }
 
+/* ---- Zones ADAPTATIVES (26/10/2026) ----------------------------------------------------------------------------------------
+   TableRonds mesure son conteneur et pose en ligne : `--d` (diametre) sur la table, `width`, `--cols` et `--col-w` sur chaque zone
+   (disposition-ronds.ts). Tant qu'on ne mesure rien (premier rendu, jsdom), `.est-adaptative` est absente et les regles d'origine
+   ci-dessus s'appliquent. Memes raisons que le reste du fichier : hors couche. */
+.table-ronds.est-adaptative .ronds-rangee > .ronds-zone {
+  flex: none;
+  min-width: 0;
+  max-width: none;
+  overflow: hidden; /* jamais de debordement horizontal : la largeur de chaque zone est calculee pour contenir ses colonnes */
+}
+.table-ronds.est-adaptative {
+  padding-bottom: 14px;
+}
+.table-ronds.est-adaptative .ronds-rangee {
+  padding: 4px 10px 6px;
+}
+.table-ronds.est-adaptative .ronds-liste {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 1), var(--col-w, auto));
+  justify-content: start;
+  gap: 6px 6px;
+}
+/* Une zone vide n'est plus un rond en pointilles : un bandeau (titre + « — »), et la zone voisine prend sa place. */
+.table-ronds.est-adaptative .ronds-zone.est-vide .ronds-liste {
+  display: none;
+}
+.table-ronds.est-adaptative .ronds-zone.est-vide .ronds-titre::after {
+  content: '—';
+  opacity: 0.6;
+  font-family: system-ui, sans-serif;
+}
+/* Les textes s'allegent quand les ronds rapetissent : le nom reste (tronque), ATK / SCH disparaissent sous 54 px. */
+.table-ronds.ronds-petits .rond-stats {
+  display: none;
+}
+.table-ronds.est-adaptative .rond-nom {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(0.62rem, calc(var(--d) * 0.0135), 0.78rem);
+}
+.table-ronds.est-adaptative .rond-pastille {
+  font-size: clamp(0.58rem, calc(var(--d) * 0.0125), 0.72rem);
+}
+
 /* ---- un rond ---- */
 .rond {
   position: relative;
