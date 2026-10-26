@@ -37,6 +37,16 @@ if (typeof window !== 'undefined') {
   window.confirm = () => false
 }
 
+// jsdom annonce un navigateur en « en-US ». Or la langue du jeu suit, depuis le 26/10/2026, le choix fait dans le jeu, puis le cookie
+// du site, puis la LANGUE DU NAVIGATEUR : tous les tests qui supposent le francais par defaut (scans francais, textes) se
+// retrouveraient en anglais. On simule donc un navigateur francais ; un test qui veut l'anglais pose son propre bouchon
+// (vi.spyOn(window.navigator, 'language', 'get')), d'ou une propriete ACCESSEUR et non une valeur.
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window.navigator, 'language', { get: () => 'fr-FR', configurable: true })
+  Object.defineProperty(window.navigator, 'languages', { get: () => ['fr-FR', 'fr'], configurable: true })
+}
+
+
 // Node 25 expose un localStorage NATIF global dont clear() est absent, et vitest
 // ne le remplace pas par celui de jsdom (localStorage n'est pas dans sa liste de
 // globales figee). Mesure : node -e "typeof globalThis.localStorage.clear" donne
