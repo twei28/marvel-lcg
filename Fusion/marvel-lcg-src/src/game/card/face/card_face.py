@@ -102,6 +102,18 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "EXTREMIS", "INDIVIDUAL",
         # CORRECTIF : trait du pack custom harry_osborn (Dipsome).
         "EARTH-6160",
+        # CORRECTIF (25/10/2026) : traits du pack custom new_ultimate_winter_soldier (Dipsome, prefixe `uw`).
+        "OPPOSITION", "DIRECTORATE X",
+        # CORRECTIF (26/10/2026) : traits du pack custom batgirl (ES, prefixe `bg`).
+        "BAT FAMILY", "BIRD OF PREY",
+        # CORRECTIF (25/10/2026) : trait du pack custom roz (jakxin, prefixe `rz`), Dario Agger.
+        "ROXXON",
+        # CORRECTIF (25/10/2026) : traits du pack custom spider_punisher (T-Wrecks, prefixe `sq`).
+        "EARTH-71928", "WEB-SHOOTER",
+        # CORRECTIF (26/10/2026) : trait du pack custom smasher (Phenexian, prefixe `sz`), les ameliorations Exospex.
+        "EXOSPEX",
+        # CORRECTIF (26/10/2026) : trait du pack custom rachel_summers (Dipsome, prefixe `rm`), Ahab et ses Hounds.
+        "HOUNDS",
         # CORRECTIF : trait du pack custom agatha_harkness (Ripper3).
         "COSMIC ENTITY",
         # CORRECTIF (24/10/2026) : trait COSMIC du pack custom silver_surfer (DesignHacker) ; il existait deja
@@ -289,6 +301,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
 
     COUNTER = Literal[
         'counter',
+        # AJOUT (25/10/2026, pack hp Wasp Hank Pym) : compteurs imprimes « crisis counter » (hp013 Identity Crisis)
+        # et « seize counter » (hp014 Return of the Prodigal Son). Sans ces entrees `IsCounter` refuse le nom.
+        'crisis', 'seize',
         # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : compteur imprime
         # « knucklehead counter » des attachements Temper.
         'knucklehead',
@@ -358,6 +373,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
+        'agent',  # CORRECTIF (25/10/2026) : compteur du pack custom roz (jakxin), rz007 Agent of Wakanda
+        'solar',  # CORRECTIF (26/10/2026) : compteurs solaires du pack custom sunspot_hellfire (Dipsome), so001a/b, stock de l'identite
         'hunter',  # CORRECTIF (16/10/2026) : compteur du pack custom alopex (TMNT, Inkwire), ta008 Kitsune Kabuki
         'ring', 'shuriken',  # AJOUT (22/10/2026, pack Elektra Natchios) : Shang-Chi (10 ring counters), Shuriken (Uses 3 shuriken counters)
         'dagger', 'pistol',  # AJOUT (16/10/2026) : aspect TMNT Aggression (Inkwire), ua040 Ujigami (10 dagger), ua033 Pete (Uses 3 pistol)

@@ -56443,8 +56443,8 @@ def brawn_shockwave_a_agi(monde, aides):
     # 2 degats a chaque ennemi par [physical], 2 menaces par [mental].
     from game.operate.faces_counter import FacesCounter
     icones = FacesCounter.GetPrintedResources(defausse)
-    physiques = icones.r + icones.g
-    mentales = icones.b + icones.g
+    physiques = icones.r      # un wild imprime n'est ni [physical] ni [mental] (arbitrage du 26/10/2026)
+    mentales = icones.b
 
     if physiques == 0 and mentales == 0:
         return False, ("aucune icone [physical] ni [mental] parmi les cartes defaussees : "
@@ -66163,7 +66163,11 @@ def executer_un_cas(game_dir, port, index):
             # proposees. On bascule alors en mode « cas », puis on joue le cas
             # depuis la reponse suivante : declencher depuis l'interieur de
             # DoGetInput garde le monde dans un etat coherent.
+            # AJOUT (26/10/2026, pack hp Wasp Hank Pym) : `noms_tour` = noms d'options qui prouvent AUSSI que le tour est atteint.
+            # Un heros « only by card abilities » n'offre aucun « Change Form » en alter ego, et sans degats aucune
+            # « Recover » : le pilote ne quittait jamais l'attente et jouait sa capacite en boucle. Additif : sans la cle, rien ne change.
             if {"Attack", "Thwart", "Change_Form", "Change Form", "Recover"} & noms \
+                    or set(cas.get("noms_tour") or []) & noms \
                     or any(str(n).startswith("Change_To_") for n in noms if n):
                 # « Change Form » (avec espace) : nom réel affiché par le moteur.
                 # Indispensable aux identités multi-faces (Moon Knight) dont le

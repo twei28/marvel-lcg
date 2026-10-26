@@ -86,6 +86,13 @@
    "depuis": "2026-09-05",
    "note": "Cree le 05/09/2026. Auteur Rainy, zip « Black Cat ». bc001a Black Cat (HEROS) / bc001b Felicia Hardy (ALTER-EGO), bc002-bc011 signature (10 card_id pour 15 exemplaires numerotes, plus la version alternative de la carte 1/15), bc012 obligation Luck's Ran Out (bandeau BLACK CAT, donc module dans black_cat/black_cat/). Aspect PROTECTION (arbitrage utilisateur, aucune decklist dans le zip). ⚠ AUCUN SET NEMESIS DANS LE ZIP : 13 fichiers, pas une carte de rencontre. Le deck de depart a donc un `nemesis_set` VIDE, cas unique sur les 124 decks — et il monte une partie, verifie. ⚠ bc002 ET bc003 SONT DEUX VERSIONS DU MEME NUMERO DE SET (« BLACK CAT 1/15 »), toutes deux nommees « * Spider-Man » : PV 4 SYMBIOTE/WEB-WARRIOR contre PV 3 AVENGER, capacites sans rapport, donc DEUX card_id. bc003 porte le mot-cle maison Multiverse, fiche mots-cles/multiverse.md CREEE pour ce pack (employe par trois auteurs, defini par aucun ; zero ligne de code, l'unicite fait tout). ⚠ HOMONYMES MAJEURS : « * Black Cat » est deja 01002 (allie du set Spider-Man), wd045 (SBIRE du set Electro) et vp002 (allie de Venompool) ; « * Spider-Man » existe QUINZE fois ; « Grappling Hook » est deja 08008 et 50069. Aucune carte du pack ne cherche par le NOM. « Felicia Hardy » n'a en revanche aucun homonyme. ⚠ LE PLAFOND DE 3 N'EST PAS UN PLAFOND DE POSE, contrairement au pack spider_man_noir : « if there are MORE THAN 3 tucked cards here, discard all but 3 » laisse la carte entrer et nettoie apres. ⚠ Le compteur `web` existait deja dans l'enum COUNTER : aucun correctif moteur. AUCUN FICHIER MOTEUR PARTAGE TOUCHE. Un defaut d'ERGONOMIE trouve par l'autoplay et corrige : la Response de bc010 etait offerte a CHAQUE defausse de la partie (250 questions sur 8 parties), faute d'avoir mis ses trois tests dans `conditions`."
   },
+  "bg": {
+   "pack": "batgirl",
+   "libelle": "223. Custom (Batgirl)",
+   "cartes": 24,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteur ES (DC Custom Content by ES), version « Sealed 11.26.2025 » : Batgirl / Barbara Gordon, bg001a (Birds of Prey, defaut) / bg001c (Bat Family, hero_alts) / bg001b alter ego, bg002 Black Canary et bg003 Nightwing (Multiverse de bg002), bg004-bg012 signature, bg013 obligation, bg014-bg018 nemesis, bg019-bg022 Basic."
+  },
   "bk": {
    "pack": "blink",
    "libelle": "156. Custom (Blink)",
@@ -99,6 +106,13 @@
    "cartes": 17,
    "depuis": "2026-09-07",
    "note": "Cree le 07/09/2026. Auteur Rainy, zip « Blade » (dossier A creer). bl001a Blade (HEROS, THW 2 ATK 2 DEF 2, main 5, 12 PV, AVENGER VAMPIRE) / bl001b Eric Brooks (ALTER-EGO, REC 4, main 6, VAMPIRE). bl002-bl010 signature (9 card_id pour 15 exemplaires : Gear Up x2, Go for the Heart x3, On the Hunt x2, Vampire Bite x2, Vampiric Reflexes x2, Bandolier of Stakes, Blade's Sword, Daywalker, Predatory Instincts), bl011 obligation The Thirst (Uses 3 thirst), bl012-bl017 set nemesis Dracula en 8 cartes (Blood Hunt, Dracula, Vampire x2, Bandolier of Stakes ATTACHEMENT, Embraced x2, Turned). Compteurs 'blood' (sur l'identite) et 'thirst' AJOUTES a l'enum COUNTER ; 'stake' existait (Mojo 39048). Le set nemesis REPREND deux cartes du set Horror de Mojo : Vampire (39051) et Bandolier of Stakes (39048), modeles exacts. Eric Brooks porte un Setup qui melange le set nemesis SAUF Dracula dans le deck rencontre. Mecanique du pack : « Attacks with piercing deal double damage » (UpdateAttacksDealDamage 'Double'), arbitrage utilisateur du 07/09 : BONUS PUIS DOUBLEMENT. Deck de depart SANS cartes d'aspect (consigne du 06/09). Homonymes : Bandolier of Stakes (39048 attachement Horror ET bl007 amelioration ET bl015 attachement), Vampire (39051), Gear Up (mk009, 40192a), On the Hunt (16184 traitrise), Blade (21019/dt052 allies)."
+  },
+  "bm": {
+   "pack": "batman",
+   "libelle": "229. Custom (Batman)",
+   "cartes": 28,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteur ES (DC Custom Content by ES), version « Sealed 6.12.2022 » : Batman / Bruce Wayne, bm001a (defaut) / bm001c (Lantern, hero_alts), bm001b/bm001d alters ego, bm002-bm012 signature, bm013 obligation, bm014-bm017 nemesis, bm018-bm022 deck de dissuasion (3 exemplaires chacun, 5 cartes distinctes), bm023-bm025 Basic ressources."
   },
   "br": {
    "pack": "beta_ray_bill",
@@ -132,6 +146,34 @@
    "libelle": "108. Custom (Cloak & Dagger)",
    "cartes": 20,
    "depuis": "2026-08-12"
+  },
+  "ch": {
+   "pack": "shang_chi",
+   "libelle": "212. Custom (Shang-Chi)",
+   "cartes": 22,
+   "depuis": "2026-10-24",
+   "note": "Cree le 24/10/2026. Auteur DesignHacker, format « SEALED ». ch001a/b identite (Shang-Chi), ch002 State of Flow (support Permanent + Setup, pile Flow), ch003-ch014 six evenements ATTACK en DEUX impressions chacun (icone de ressource imprimee differente : Flow la lit, donc card_id distincts), ch015-ch017 ameliorations, ch018 obligation Family Ties, ch019-ch021 set nemesis (Zheng Zu, The Life Stealer, Downtown Attack x3). Prefixe `ch` : `sc` est pris par tmnt_shinobi_dual et 63015 est l'allie Shang-Chi d'Iron Fist. Mot-cle maison Flow (fiche mots-cles/flow.md). Pas de decklist d'aspect fournie : player_deck vide."
+  },
+  "cn": {
+   "pack": "conan",
+   "libelle": "177. Custom (Conan)",
+   "cartes": 22,
+   "depuis": "2026-09-25",
+   "note": "Auteur RyCoRan (meme gabarit que Red Sonja). cn001a-e identite a CINQ faces (Thief et Barbarian heros + alter-ego Conan, King Conan heros + alter-ego roi mis de cote au Setup, drapeau moteur `hors_pile_identite`), cn002-cn012a/b set heros (11 cartes distinctes, 16 exemplaires dont The Cimmerian recto/verso mise en jeu au Setup), cn013 obligation, cn014-cn017 set nemesis (deux sbires nemesis Hrothgar et Hymdul). Compteurs MAISON `crom` et `serpent`. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-25-portage-conan.md."
+  },
+  "co": {
+   "pack": "chod",
+   "libelle": "227. Custom (Starjammers - Ch'od)",
+   "cartes": 19,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteurs Phenexian et Mysteltainn (pack Starjammers, un heros par agent). Ch'od (le Saurien) : co001a/b identite, co002-co010 deck de heros (Cr'reee allie, Raw Physicality x3, Raw Intellect x3, Polymath x3, Saurian Physique, Philosopher Scientist, Engineer, Teacher, Warrior), co011 obligation Cr'reee Captured, co012-co016 nemesis (Mentor, Duel of Wits, Plutonia, Strike and Phase, Utter Contempt), co017-co019 ressources Basic (reskins d'art). Pas de decklist imprimee."
+  },
+  "cr": {
+   "pack": "corsair",
+   "libelle": "224. Custom (Starjammers - Corsair)",
+   "cartes": 19,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteurs Phenexian et Mysteltainn (pack Starjammers, un heros par agent). Corsair (Christopher Summers) : cr001a/b identite, cr002-cr010 deck de heros (Hepzibah, Rapier, Pulse Blaster x2, Gloves, Ace Pilot, Parry x2, Riposte x2, Remise x2, Trick up my Sleeve x3), cr011-cr012 obligations (Irresponsible Cad + alternative Making Amends), cr013-cr016 nemesis (D'Ken, Slave Pits of Chandilar, Shi'ar Bodyguard x2, Shi'ar Battle Cruiser), cr017-cr019 ressources Basic (reskins Energy/Genius/Strength, decision Hellcat)."
   },
   "dd": {
    "pack": "doctor_doom",
@@ -209,11 +251,32 @@
    "depuis": "2026-08-31",
    "note": "Cree le 31/08/2026. Auteur Dipsome. Harry Osborn (Earth-6160) en HEROS Green Goblin : ho001a/b identite, ho002-ho012 signature (11 cartes distinctes, 15 exemplaires), ho013 obligation, ho014-ho017 set nemesis (Kingpin/Bullseye). Trait EARTH-6160 ajoute a l'enum TRAITS. Ne pas confondre avec le pack VILAIN officiel 'gob' (Green Goblin classique), totalement distinct malgre un nom d'Obligation identique ('Risky Business') dans les deux."
   },
+  "hp": {
+   "pack": "wasp_hank_pym",
+   "libelle": "222. Custom (Wasp Hank Pym)",
+   "cartes": 20,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur JackHKP (« Wasp », version Hank Pym a trois formes). hp001a Wasp minuscule / hp001b Hank Pym (alter ego) / hp001c Wasp geant, hp002-hp012 les onze cartes signature (15 exemplaires), hp013 obligation Identity Crisis, hp014-hp018 set nemesis (Return of the Prodigal Son, Ultron, Seized Control mis de cote, Take Over Signal, Submit or Perish). Deck deck/starter/wasp_hank_pym.json."
+  },
+  "hs": {
+   "pack": "hunting_season",
+   "libelle": "178. Custom (Hunting Season)",
+   "cartes": 239,
+   "depuis": "2026-10-08",
+   "note": "Auteur Nugget. Campagne en cinq scenarios (Vermin, Scorpion, The Lizard, Vulture, Kraven), 239 entrees JSON pour 226 cartes physiques, Lodge, mode expert et Hunter. Portage du 08/10/2026, dossier source .planning/hunting-season/."
+  },
   "ht": {
    "pack": "human_torch",
    "libelle": "102. Custom (Human Torch)",
    "cartes": 15,
    "depuis": "2026-08-12"
+  },
+  "hz": {
+   "pack": "hepzibah",
+   "libelle": "225. Custom (Starjammers - Hepzibah)",
+   "cartes": 19,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteurs Phenexian et Mysteltainn (pack Starjammers, un heros par agent). Hepzibah : hz001a/b identite, hz002-hz010 deck de heros (Corsair allie, Targeting Goggles, Spacesuit, Energy Blaster, Heavy Machine Gun, Feral Rage x3, Keen Senses x3, Feline Grace x2, Armed to the Teeth x2), hz011 obligation Vendetta, hz012-hz015 nemesis (T'Cahr, Kill Order, Vengeful Wing, Shi'ar Infantry x2), hz016-hz018 reskins de ressources."
   },
   "ih": {
    "pack": "intergalactic_hazards",
@@ -260,6 +323,13 @@
    "libelle": "124. Custom (Hawkeye - Kate Bishop)",
    "cartes": 21,
    "depuis": "2026-08-29"
+  },
+  "ld": {
+   "pack": "lady_deathstrike",
+   "libelle": "213. Custom (Lady Deathstrike)",
+   "cartes": 19,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur Mysteltainn, scenario « Lady Deathstrike » (MC Custom Content By: Mysteltainn), 31 scans dont 13 doublons au pixel pres. ld001-ld003 Lady Deathstrike I-III, ld004a/b complot principal Mutant Hunting Season, ld005 Bleeding Out (x4 mis de cote, un par joueur), ld006-ld014 le set de rencontre (15 cartes), ld015-ld018 le modulaire maison Reaver Resources (5 cartes). Compteur `bleed` ajoute a l'enum. Capacite nommee « Special » de Bleeding Out appelee PAR REFERENCE par 9 cartes (helper du set). Les sets Reavers et Military Grade existent deja (officiels) : le scenario referme reavers + standard, modulaire par defaut military_grade, alternative reaver_resources. Homonymes : * Lady Deathstrike (35034, 43029 minions), Titanium Exoskeleton / Inhibitor Collar (40091/40092 Military Grade), Stalking Prey (hs123) : aucun module du pack ne cherche par nom."
   },
   "lj": {
    "pack": "lockjaw",
@@ -326,12 +396,26 @@
    "cartes": 25,
    "depuis": "2026-08-29"
   },
+  "pd": {
+   "pack": "predator",
+   "libelle": "214. Custom (Predator)",
+   "cartes": 31,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur RyCoRan, zip « Predator (5-25 Final) ». pd001a/b identite (Predator / Yd'Nar), pd002 Infralocked (Permanent, mis en jeu au Setup par l'alter-ego), pd003 Xenomorph (SBIRE DE JOUEUR), pd004-pd014 cartes signature, pd015 obligation Exposed Target, pd016-pd020 set nemesis Xenomorph, pd021-pd023 ressources de base a l'art du heros, pd024-pd025 evenements Team-Up de base (Razor Hunt, Infrared Web), pd026-pd030 set nemesis ALTERNATIF (Dutch, Dillon, Chopper). Decklist d'aspect fournie par l'auteur (image « Predator starter deck »). Statut Cloaked : deja au depot (pack TMNT, fiche mots-cles/cloaked.md). Prefixe `pd` libre."
+  },
   "pt": {
    "pack": "patriot",
    "libelle": "138. Custom (Patriot)",
    "cartes": 23,
    "depuis": "2026-08-30",
    "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider, wiccan et speed. Elijah Bradley, Young Avengers. 2 faces heros + 15 signature + 1 obligation + 5 nemesis (Mr. Hyde). Le kit ne parle que d'ALLIES. L'alter-ego imprime une REGLE DE DECK-BUILDING (mot-cle maison 'Leader' : allies YOUNG AVENGER de n'importe quel aspect), aujourd'hui sans cible legale dans le catalogue. Collision de noms assumee : deux allies OFFICIELS s'appellent deja Patriot, 29016 (Rayshaun Lucas, Leadership) et 56041 (Elijah Bradley lui-meme, Protection)."
+  },
+  "pu": {
+   "pack": "punisher_mcdc_2026",
+   "libelle": "208. Custom (La ville ne dort jamais)",
+   "cartes": 13,
+   "depuis": "2026-10-20",
+   "note": "EN COURS (lot PU-0, cadrage 20/10/2026, docs/rapports/cadrage-14-15-19-2026-10-20.md section 1). Campagne fan-made MC/DC (evenement Huzzah Hobbies, Ashburn VA, 16-18/10/2026) sur un trafic d'armes a New York, Punisher. Source : PDF « 2026_scenario_print_300dpi.pdf » (286 p., 291 Mo, Google Drive team@mcdc.fun), livret FR « la-ville-ne-dort-jamais-regles-fr-v1.pdf » (bubblepack.org), scans paquets-cartes/MC x DC 2026 - campagne Punisher/scans/pNNN.jpg (hors depot git). Releve complet dans docs/packs/mcdc-2026-punisher/cartes.md : ~143 cartes dans 15 sets (The Big Apple, Uptown Expansion, Locations, Leads, CAPOS, Jigsaw, Hobgoblin, Punishment, Punisher's Hit List, Punisher's Armory, SWAT Team, The Syndicate, cartes de campagne, Capo of the Past, 4 defis, Hawkeye MC×DC). PU-0 (20/10/2026, SANS SCRIPT, SANS INSERTION dans cards.json) : prefixe reserve ici ; marques [?] du releve levees par comparaison aux scans (preuve dans cartes.md, fin de fichier) ; fiches mots-cles lieu/territoire, piste (LEAD), CIBLE/mechant actif et jeton recherche (SWAT) creees dans docs/reference/mots-cles/ ; plan ou fichier de donnees brutes (sans logique de capacite) pour le contenu simple (Jigsaw, Hobgoblin, Syndicate, Armory, Capo of the Past) dans .planning/mcdc-punisher/ ; 8 decisions a poser a l'utilisateur consolidees dans .planning/todos/2026-10-20-punisher-questions.md. RESTE A FAIRE avant tout script : briques moteur communes M6 (attaque d'un ennemi sur un ennemi/allie) et M7 (mechant actif/CIBLE, a mutualiser avec Galactic Storm, voir section 0.3 du cadrage), brique M1/M2 (lieux en grille 3x3, territoires cloisonnes avec CreateGameArea/AddPlayer), M3 (pistes LEAD), M5 (sbires attaches a un lieu), interface « La Ville » (ui-app). Decoupage complet en lots PU-0 a PU-13 : section 1.7 du cadrage. card_id propose : `pu` + numero de page imprime sur le scan (pNNN), suffixe a/b pour les faces, voir .planning/mcdc-punisher/PLAN-PU-0.md pour le detail et les cas particuliers (sous-fifres, Hawkeye MC×DC, fiches vierges)."
   },
   "ra": {
    "pack": "rainy",
@@ -345,12 +429,68 @@
    "cartes": 18,
    "depuis": "2026-08-29"
   },
+  "rl": {
+   "pack": "raza",
+   "libelle": "226. Custom (Starjammers - Raza)",
+   "cartes": 21,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteurs Phenexian et Mysteltainn (pack Starjammers, un heros par agent). Raza Longknife : rl001a/b identite, rl002-rl011 deck de heros (Tolo Hawk allie, Breach Their Defenses x3, Boarding Action x3, Warrior Apotheosis x2, Implanted Tools, Warrior Pride, Raza's Cybernetic Arm, Raza's Cybernetic Eye, Raza's Blaster, Raza's Sabre), rl012 obligation Honour-Bound Warrior, rl013-rl017 nemesis (Zzzxx, Symbiote Possession, Shi'ar Host, New Host, Devour), rl018-rl020 reskins de ressources."
+  },
+  "rm": {
+   "pack": "rachel_summers",
+   "libelle": "232. Custom (Hellfire Hunt - Rachel Summers)",
+   "cartes": 17,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteur Dipsome (campagne Hellfire Hunt). Rachel Summers / Marvel Girl : rm001a/b identite, rm002-rm012 deck de heros (Captain Britain, Askani's Prophecies, Black Hole, Psionic Blasts x2, Telekinetic Counterblast x2, Temporal Reversal x2, Askani, Psionic Shield, Temporal Retrieval x2, Telekinetic Axe, Telekinetic Sword), rm013 obligation Memory From The Future, rm014-rm016 nemesis (Hound Program, Ahab, Hound Clothes x3)."
+  },
+  "rs": {
+   "pack": "red_sonja",
+   "libelle": "176. Custom (Red Sonja)",
+   "cartes": 19,
+   "depuis": "2026-09-25",
+   "note": "Declare a posteriori le 16/10/2026 : le pack (auteur RyCoRan, meme gabarit que Conan) etait livre sans entree ici, et tools/verifier_prefixes.py refusait ses 19 cartes."
+  },
+  "rz": {
+   "pack": "roz",
+   "libelle": "220. Custom (Roz)",
+   "cartes": 21,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur jakxin. Roz (Rosalind Solomon, agent S.H.I.E.L.D. / Wakanda ; ennemi juré Dario Agger). rz001a/b identite, rz002-rz003 deux allies Thor (Jane Foster, Odinson), rz004-rz007 quatre ameliorations WAKANDA a capacite Special, rz008 soutien A.T.M.C.P., rz009-rz012 quatre evenements (Trained Shots, Negotiator, Nimble, Hand-to-Hand, 2 exemplaires chacun sauf mention), rz013-rz015 trois ressources Basic (reskins d'Energy/Genius/Strength officiels, decision Hellcat), rz016 obligation Weighed Down, rz017-rz020 set nemesis (Dario Agger, Legal Council, Minotaur, Lawyers x2). Prefixe `rz` : `ro` etait libre mais `rz` evite toute confusion avec `rs`/`ra`."
+  },
+  "sa": {
+   "pack": "tmnt_shinobi_ninjutsu",
+   "libelle": "204. Custom (TMNT Shinobi – Ninjutsu)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier N1 a N20 (Ninjutsu, violet ; Cloaked)."
+  },
+  "sb": {
+   "pack": "tmnt_shinobi_bushido",
+   "libelle": "202. Custom (TMNT Shinobi – Bushido)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier B1 a B20 (Bushido, liseré turquoise ; ameliorations OATH, jeton samurai)."
+  },
+  "sc": {
+   "pack": "tmnt_shinobi_dual",
+   "libelle": "206. Custom (TMNT Shinobi – Dual Shinobi)",
+   "cartes": 12,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier 12 cartes Dual Shinobi BK1 BK2 BN1 BN2 BT1 BT2 KN KN2 KT1 KT2 NT1 NT2 (comptent comme LES DEUX types)."
+  },
   "sd": {
    "pack": "speed",
    "libelle": "141. Custom (Speed)",
    "cartes": 23,
    "depuis": "2026-08-30",
    "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider et wiccan. Tommy Shepherd, Young Avengers. 2 faces heros + 15 cartes signature + 1 obligation + 4 nemesis, plus une SECONDE obligation (Conflicted Feelings) qui appartient au set nemesis (numerotee SPEED NEMESIS 5/5 sur le scan). Mecanique neuve : les compteurs explosifs (compteur moteur `explosive`), poses par la capacite du heros et retires en fin de phase des joueurs."
+  },
+  "se": {
+   "pack": "tmnt_shinobi_paths",
+   "libelle": "207. Custom (TMNT Shinobi – Paths)",
+   "cartes": 11,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier 4 Paths standard (se001-se004 : Kagemusha, Onmyodo, Samurai, Shihan) + 7 Paths hybrides (se005-se011 : The Last Ronin, Yoshimitsu, Yamabushi, Onigari, Ashigaru, Onmitsu, Yojimbo) ; les 11 DOS (regles de construction) sont des inserts hors cards.json, data/shinobi_paths.json."
   },
   "sf": {
    "pack": "sunfire",
@@ -365,6 +505,13 @@
    "cartes": 23,
    "depuis": "2026-08-12"
   },
+  "sh": {
+   "pack": "tmnt_shinobi_taijutsu",
+   "libelle": "205. Custom (TMNT Shinobi – Taijutsu)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier T1 a T20 (Taijutsu, orange ; Dazed)."
+  },
   "si": {
    "pack": "superior_iron_man",
    "libelle": "126. Custom (Superior Iron Man)",
@@ -372,12 +519,26 @@
    "depuis": "2026-08-29",
    "note": "Re-skin complet d'Iron Man/Tony Stark (comme Wolverine l'a ete pour X-23), set_name distinct de \"Iron Man\"/\"Iron Man Nemesis\" (officiels). Armure Endo-Sym permanente posee au Setup (BeginGameWithSetAside). Deux arbitrages utilisateur : Sauvetage theatral (013/014) code en 2 copies identiques d'Interruption de heros (la version francaise de la carte 014 disait a tort \"Reponse\", l'anglais original confirme Interrupt) ; Get My Body Back inflige 2 degats au joueur Tony Stark (le second \"take 1 damage\" n'a pas de cible imprimee). Mot-cle maison \"Armored 2\" (absent de tout le jeu et du materiel fourni) code carte par carte (Interrupt qui previent 2 degats a CHAQUE instance, pas juste au combat), documente dans mots-cles/armored.md. Aspect du deck : Protection (aucun aspect fourni par l'auteur)."
   },
+  "sj": {
+   "pack": "tmnt_shinobi_kuji_kiri",
+   "libelle": "203. Custom (TMNT Shinobi – Kuji-Kiri)",
+   "cartes": 20,
+   "depuis": "2026-10-17",
+   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier K1 a K20 (Kuji-Kiri, rose ; sorts)."
+  },
   "sk": {
    "pack": "skrull_menace",
    "libelle": "143. Custom (Skrull Menace)",
    "cartes": 323,
    "depuis": "2026-08-29",
    "note": "TERMINE (LIVRE le 16/10/2026, nouveautes joueur du meme jour). Auteur Kajislav, archive « MC custom content by Kajislav » (Drive, 4 zip) : le materiel COMPLET (heros, scenarios, sets modulaires, cartes de campagne) est scripte en entier. CAMPAGNE de 5 scenarios (Skrull Empire, Super-Skrull, Paibok, Skrull Pantheon, Secret Invasion), 2 heros (Hulkling, Lyja), les sets modulaires et elites (Skymax, Xavin, Crusader, War Skrull, Jazinda), 26 cartes de campagne, Cooperation Area. card_id = `sk` + numero IMPRIME sur 3 chiffres (+a/b). Trait HYBRID et compteur 'individual' ajoutes aux enums. Plan, decisions et transcriptions : .planning/skrull-menace/."
+  },
+  "sl": {
+   "pack": "shadowland",
+   "libelle": "209. Shadowland (pack scenario officiel MC65)",
+   "cartes": 78,
+   "depuis": "2026-10-22",
+   "note": "EN COURS (cadrage 22/10/2026, dossier .planning/shadowland/). Pack scenario OFFICIEL FFG MC65 (sortie 16/10/2026, Michael Boggs, aucun heros, 3 scenarios : Shadows in the Night, Shadow Labyrinth, Heart of Shadow). Prefixe en LETTRES et non en 65xxx : la tranche 65001-65019 est deja occupee par le pack fan-made Wave (decision utilisateur 22/10/2026 : on ne renumerote pas Wave, des decks et sauvegardes en ligne le citent). Correspondance : numero officiel 65NNN -> sl0NN (65013B -> sl013b), le numero officiel reste a noter dans l'entree JSON. Scans : play.marvelsimulator.com/images/cards/65NNN[A|B].webp (93 images, 78 numeros), copies de travail dans .planning/shadowland/scans-marvelsimulator/ (hors git)."
   },
   "sm": {
    "pack": "spider_man_2099",
@@ -393,6 +554,13 @@
    "depuis": "2026-09-05",
    "note": "Cree le 05/09/2026. Auteur Rainy, zip « Spider-Man Noir ». sn001a Spider-Man Noir (HEROS) / sn001b Peter Parker (ALTER-EGO), sn002-sn010 signature (9 cartes distinctes, 15 exemplaires : Guns Blazing x3, Web Swinging x3, Webs Within Webs x2, Web Shot x2, The Black Cat Club, Dual Pistols, Enhanced Spider-Sense, Fancy Fedora, Organic Webbing), sn011 obligation In Walks Trouble (bandeau SPIDER-MAN NOIR, donc module dans spider_man_noir/spider_man_noir/), sn012-sn015 set nemesis Electro Noir (4 cartes distinctes, 5 exemplaires). Aspect JUSTICE (arbitrage utilisateur, aucune decklist dans le zip : le zip n'a pas de dossier Extras). ⚠ TOUT LE PACK REPOSE SUR LA ZONE GLISSEE SOUS L'IDENTITE : le heros a ATQ 0 et CTR 0 imprimes et gagne +X aux deux, X = nombre de cartes glissees sous lui (max 3). La zone est portee par la CARTE et non par la face (card_face.py:1017), les deux faces la partagent donc, ce que le texte imprime suppose en ecrivant tantot « under him », tantot « here », tantot « under your hero », tantot « under your identity ». ⚠ HOMONYME MAJEUR : « Spider-Man Noir » est DEJA le nom de deux ALLIES du depot (31015 pack spdr, wd118 pack web_of_deceit) : aucune carte du pack ne cherche le heros par son NOM, toutes passent par le TYPE ou par « YourHero ». Et « Peter Parker » est pris quatre fois (01001b, sr001b, as001b, allie bt014) : sn011 ecrit malgre tout GiveTo = « Peter Parker », comme les trois obligations deja livrees qui font pareil (01165, sr013, as014). Trois autres homonymes sans consequence : Enhanced Spider-Sense (01004), Organic Webbing (30011, 52009), Thunderstorm (36004). ⚠ Electro Noir (sn013) n'a rien de commun avec l'Electro de web_of_deceit (wd042). ⚠ ELITE est un TRAIT, pas un mot-cle. AUCUN FICHIER MOTEUR PARTAGE TOUCHE par ce pack. Deux defauts trouves par les cas et corriges dans le pack : sn014 comptait les icones avec CountTotalBoostIcons, qui IGNORE l'etoile (il faut CountTotalBoostStarAndBoost) ; et les cinq capacites dont le cout est « discard a card tucked » faisaient JOUER ET DEFAUSSER la carte pile vide, le moteur n'annulant pas la mise en jeu sur un cout impaye (conditions=[PileNonVide], modele 58008)."
   },
+  "so": {
+   "pack": "sunspot_hellfire",
+   "libelle": "231. Custom (Hellfire Hunt - Sunspot)",
+   "cartes": 17,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteur Dipsome (zip Hellfire Hunt Campaign, dossier Hero/Sunspot). Sunspot (Roberto Da Costa), heros de la campagne Hellfire Hunt : so001a/b identite (compteurs solaires), so002-so011 deck de heros (Cannonball allie, Blazing Strike x2, Blessings of the Sun x2, Radiant Disruption x2, Soak Up the Sun x2, Solar Flare, Solar Surge x2, Da Costa International, Radiant Avenger, Solar Soar), so012 obligation M-Pox Sickness, so013-so016 nemesis (Superhuman Mutants Murdering, Donald Pierce, Cybernetic Assault x2, Political Persecution). La campagne elle-meme n'est PAS portee ici."
+  },
   "sp": {
    "pack": "spot",
    "libelle": "119. Custom (The Spot)",
@@ -400,12 +568,12 @@
    "depuis": "2026-08-13",
    "note": "Le scenario fan-made The Spot (DesignHacker), 25 cartes physiques et 19 distinctes ; il apporte le mot-cle ThreatLevel."
   },
-  "tk": {
-   "pack": "bebop_rocksteady",
-   "libelle": "192. Custom (Bebop & Rocksteady)",
-   "cartes": 0,
-   "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026 (phase A en cours). Auteur Inkwire / Kajislav (TMNT Villains, zip « TMNT Enemies / Bebop & Rocksteady v3 »). SCENARIO A DEUX VILAINS (Bebop et Rocksteady, chacun a deux faces ALERT / K.O.). card_id = `tk` + (100 x module + numero imprime) : tk001-tk028 le set « Bebop & Rocksteady » (villains tk001-tk004 a/b, complot tk005a/b, tk006a/b Destructive Dunderheads / Gone Berserk, tk007a/b Hog Wild / Headfirst, tk008a/b Rhino Rage / Headstrong, tk009-tk028 deck de rencontre), tk101-tk109 Concrete Jungle, tk201-tk205 Rock the Block. Les copies identiques (meme scan) partagent un card_id ; Bumbling Buffoons (3 illustrations) a 3 card_id."
+  "sq": {
+   "pack": "spider_punisher",
+   "libelle": "221. Custom (Spider-Punisher)",
+   "cartes": 17,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur T-Wrecks (zip « Spider-Punisher », Terre-71928). sq001a/b identite (Spider-Punisher / Peter Parker), sq002-sq012 cartes signature (11 distinctes, 15 exemplaires), sq013 obligation Punisher No More, sq014-sq017 set nemesis (Green Goblin, The Goblin's Ultimatum, Reorganized Crime x2, Revealed Identity)."
   },
   "sr": {
    "pack": "spider_man_rainy",
@@ -434,12 +602,61 @@
    "depuis": "2026-09-08",
    "note": "Cree le 08/09/2026. Auteur Rainy. Otto Octavius dans le corps de Peter Parker. STRUCTURE INHABITUELLE : une face heros (su001a) mais DEUX alter-egos au choix, su001b Peter Parker et su001c Elliot Tolliver, chacun avec SA propre obligation (su013 Ghost of a Conscience / su014 Crisis of Conscience). Arbitrage utilisateur du 08/09/2026 : DEUX decks de depart, `superior_spider_man` et `superior_spider_man_tolliver`, ce que le moteur sait faire sans modification. su002-su012 signature (11 cartes distinctes, 16 exemplaires dont la 16e, Contingency Plan, est Permanent+Setup), su015-su019 set nemesis Hobgoblin. Mot-cle maison `track` (deplacer 1 menace d'une manigance vers un SBIRE) : fiche mots-cles/track.md, compteurs `threat` et `surveillance` ajoutes a l'enum COUNTER, trait HENCHMAN ajoute a TRAITS. Arbitrage : su019 Pumpkin Bombs affiche une ETOILE en ATK et non un chiffre — AUCUN bonus d'ATK, l'etoile pointe la capacite etoile de la carte (convention typographique de Rainy)."
   },
+  "sv": {
+   "pack": "silver_surfer",
+   "libelle": "211. Custom (Silver Surfer)",
+   "cartes": 16,
+   "depuis": "2026-10-24",
+   "note": "Cree le 24/10/2026. Auteur DesignHacker, format « MC4 SEALED » (2020). sv001a/b identite (Silver Surfer / Norrin Radd), sv002-sv010 signature (9 cartes distinctes, 15 exemplaires), sv011 obligation Silver Down, sv012-sv015 set nemesis Galactus (5 cartes, Cosmic Power x2). Mot-cle maison `summon` (fiche mots-cles/summon.md, deja employe par yondu). Pas de decklist d'aspect fournie : player_deck vide (PROCESSUS-HEROS etape 3)."
+  },
   "sw": {
    "pack": "spider_woman",
    "libelle": "169. Custom (Spider-Woman)",
    "cartes": 29,
    "depuis": "2026-09-10",
    "note": "Auteur Kajislav. Julia Carpenter. Le coeur du pack est le compteur `psionic web` porte par l'IDENTITE, de 0 a 10 : 12 des 29 cartes le lisent, le posent ou le depensent. ⚠ LE ZIP LIVRE DEUX SETS NEMESIS ALTERNATIFS, tous deux numerotes 1/5 a 5/5 : A « Man-Bull » (dont l'obligation, Separation from the Child, est rangee avec le set HEROS) et B « verze 2 » (Ms. Marvel), qui a la sienne. Les deux sont portes : A monte le deck de depart, B est livre en set de rencontre modulaire. Voir .planning/todos/2026-09-10-spider-woman-releve-des-cartes.md."
+  },
+  "sy": {
+   "pack": "starjammers_aspects",
+   "libelle": "233. Custom (Starjammers - Aspects)",
+   "cartes": 50,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteurs Phenexian et Mysteltainn (zip Starjammers, dossier « Aspect and Basic Cards »). Les 50 cartes d'aspect et Basic communes aux heros Starjammers (15 Basic, 9 Agression, 8 Justice, 9 Commandement, 9 Protection) : sy001-sy050 = numero imprime (77-126) moins 76 ; Lilandra n'a pas de numero imprime, 111 par deduction. Un seul pack et un seul set « Starjammers Aspects ». Transcription : docs/packs/starjammers-aspects/TRANSCRIPTIONS.md ; table des cartes : tools/importer_cartes_starjammers_aspects.py ; images : tools/importer_images_starjammers_aspects.py."
+  },
+  "sz": {
+   "pack": "smasher",
+   "libelle": "228. Custom (Starjammers - Smasher)",
+   "cartes": 19,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteur Phenexian (pack Starjammers, un heros par agent). Smasher (Izzy Kane) : sz001a/b identite, sz002-sz009 deck de heros (Cannonball allie, Home on Chandilar, Accessing x3, Penta-Vision x2, Hyper-Strength x2, Hyper-Speed x2, Super-Resistance x2, Exo-Flight x2), sz010 obligation Family Matters, sz011-sz014 nemesis (Scientist Supreme, Entropic Subversion, Biosynthetic Sting x2, Corrupting Revelation), sz015 Power Couple (Team-Up Basic), sz016-sz018 ressources Basic (reskins d'art). Pas de decklist imprimee."
+  },
+  "ta": {
+   "pack": "alopex",
+   "libelle": "185. Custom (Alopex)",
+   "cartes": 16,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Alopex v3 ». ta001a Alopex (HEROS) / ta001b Alopex (ALTER-EGO), ta002-ta010 signature (9 card_id pour 15 exemplaires), ta011 Prey (16e carte du deck, creee et mise de cote au Setup par ta001b), ta012 obligation Manipulated (GiveTo « Alopex », Acceleration 2), ta013-ta015 set nemesis « Alopex Nemesis » (You Belong To Me, Kitsune, Curse of Nine Tales x3). Mot-cle maison : Daze (carte d'etat Dazed, scan Baxter Stockman v3) ; Cloak deja defini. Compteur maison `hunter`."
+  },
+  "tc": {
+   "pack": "casey_jones",
+   "libelle": "184. Custom (Casey Jones)",
+   "cartes": 18,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Casey Jones v3 ». tc001a Casey Jones (HEROS) / tc001b Casey Jones (ALTER-EGO), tc002-tc013 signature (12 card_id pour 16 exemplaires), tc014 obligation Daddy Issues (bandeau CASEY JONES, donc module dans casey_jones/casey_jones/), tc015-tc017 set nemesis Hun / The Purple Dragons (set Casey Jones Nemesis, 5 cartes : Purple Dragon Goons x3). HOMONYME : l'allie « Casey Jones » de Raphael (tr002) porte le meme nom que le heros : aucune carte du pack ne cherche par le nom, tout passe par card_id, type ou ensemble. Mot-cle maison : aucun (Overswing est un NOM de capacite, pas un mot-cle). Voir .planning/tmnt/casey-questions.md."
+  },
+  "td": {
+   "pack": "donatello",
+   "libelle": "180. Custom (Donatello)",
+   "cartes": 18,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026, PHASE A (construction), NON VALIDE. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Donatello v3 ». td001a Donatello (HEROS) / td001b Donnie (ALTER-EGO), td002-td012 signature (11 card_id pour 15 exemplaires), td013 obligation Broken Shell (set Donatello), td014-td017 set nemesis Baxter Stockman (set Donatello Nemesis, 5 cartes). Quatre heros TMNT portes en parallele : td Donatello, tl Leonardo, tm Michelangelo, tr Raphael. Voir .planning/tmnt/donatello-phase-a.md."
+  },
+  "te": {
+   "pack": "tmnt_standard_expert",
+   "libelle": "191. Custom (TMNT Standard-Expert)",
+   "cartes": 17,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), dossiers « TMNT Standard-Expert (Status Card Standard-Expert) » et « Normal Standard-Expert Reskins ». Partages par TOUS les vilains TMNT : ensembles tmnt_standard (te001-te006), tmnt_expert (te101-te103), tmnt_standard_reskin (te021-te027) et tmnt_expert_reskin (te121-te123, memes capacites que le core 01186-01193 par ability_link). te201 Intense Combatants (ensemble optionnel tmnt_intense) : scriptee le 16/10/2026, « intensify » = carte d'etat Intensified (fiche intensified.md)."
   },
   "tg": {
    "pack": "throg",
@@ -454,6 +671,48 @@
    "cartes": 18,
    "depuis": "2026-08-12"
   },
+  "tj": {
+   "pack": "jennika",
+   "libelle": "186. Custom (Jennika)",
+   "cartes": 16,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes v3), zip « TMNT Heroes / Jennika v3 ». tj001a Jennika (HEROS) / tj001b Jenny (ALTER-EGO), tj002-tj010 signature (9 card_id pour 15 exemplaires, + tj011 Sosaiken, la Voie, carte permanente MISE DE COTE comme Ionic Physiology de Wonder Man), tj012 obligation Personality Adjustment (GiveTo « Jenny »), tj013-tj015 set 'Jennika Nemesis' (Dun Import Exports, Phantasm, Street Phantoms x3). Mecanique Shinobi : classes Bushido / Ninjutsu / Kuji-Kiri / Taijutsu ajoutees a ClassCard.CARD_CLASS (desc.Class = 'Hero;Taijutsu'), compteur 'samurai' ajoute a CardFace.COUNTER. Voir .planning/tmnt/jennika-questions.md. Prefixes freres : tl, td, tm, tr."
+  },
+  "tk": {
+   "pack": "bebop_rocksteady",
+   "libelle": "192. Custom (Bebop & Rocksteady)",
+   "cartes": 0,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026 (phase A en cours). Auteur Inkwire / Kajislav (TMNT Villains, zip « TMNT Enemies / Bebop & Rocksteady v3 »). SCENARIO A DEUX VILAINS (Bebop et Rocksteady, chacun a deux faces ALERT / K.O.). card_id = `tk` + (100 x module + numero imprime) : tk001-tk028 le set « Bebop & Rocksteady » (villains tk001-tk004 a/b, complot tk005a/b, tk006a/b Destructive Dunderheads / Gone Berserk, tk007a/b Hog Wild / Headfirst, tk008a/b Rhino Rage / Headstrong, tk009-tk028 deck de rencontre), tk101-tk109 Concrete Jungle, tk201-tk205 Rock the Block. Les copies identiques (meme scan) partagent un card_id ; Bumbling Buffoons (3 illustrations) a 3 card_id."
+  },
+  "tl": {
+   "pack": "leonardo",
+   "libelle": "179. Custom (Leonardo)",
+   "cartes": 17,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Leonardo v3 ». tl001a Leonardo (HEROS) / tl001b Leo (ALTER-EGO), tl002-tl012 signature (11 card_id pour 15 exemplaires), tl013 obligation Brainwashed Betrayal, tl014-tl016 set nemesis 'Leonardo Nemesis' (Foot Patrol, Karai, Foot Soldiers x3). Mot-cle maison NON DEFINI : Cloak (tl015, tl016). Armes KATANA : insert de regles non transcrit en carte."
+  },
+  "tm": {
+   "pack": "michelangelo",
+   "libelle": "181. Custom (Michelangelo)",
+   "cartes": 17,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026. Auteur Inkwire, zip « TMNT Heroes / Michelangelo v3 ». tm001a Michelangelo (HEROS) / tm001b Mikey (ALTER-EGO), tm002-tm012 signature (11 card_id pour 15 exemplaires), tm013 obligation All Alone (GiveTo « Mikey »), tm014-tm016 set nemesis (Sewer Problems, Wyrm, Smash! x3). tm009 I'm Here to Help est une manigance-joueur du deck, mise en jeu par le Setup de tm001b. tm011/tm012 : « each NUNCHUCK upgrade you control gains » via GiveAbilityToInPlayWhenApplyThis. Traits NUNCHUCK, NINJA, TURTLE, MUTANIMAL, TEENAGER, NYC, SEWERS, WORMS : AUCUN fichier moteur partage touche. Les trois autres tortues TMNT ont leurs prefixes tl, td, tr. PHASE A seulement : aucun cas de test, aucune gate lancee."
+  },
+  "tr": {
+   "pack": "raphael",
+   "libelle": "182. Custom (Raphael)",
+   "cartes": 18,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
+  },
+  "ts": {
+   "pack": "shredder",
+   "libelle": "190. Custom (Shredder)",
+   "cartes": 31,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), zip « TMNT Enemies / Shredder v3 ». Scenario Shredder (3 stades ts001-ts003, complots ts004a/b et ts005a/b, set Shredder ts006-ts022 en 17 cartes distinctes), modulaires Chunin (ts101-ts104), Foot Goon Squad (ts201-ts206, dont Bebop ts201 et Rocksteady ts205 en SBIRES : homonymes des vilains du pack tk, jamais cherches par le nom seul) et Shadow of the Foot (ts301-ts305). L'encart Shredder n'est pas une carte : regles codees dans les scripts. Carte d'etat Cloaked et mot-cle Cloak : deja au moteur (fiches cloak.md, cloaked.md). Traits MOLE, YOUKAI, WARTHOG, RHINOCEROS, SHARK, FALCON, RELIC ajoutes a l'enum."
+  },
   "tt": {
    "pack": "texas_twister",
    "libelle": "157. Custom (Texas Twister)",
@@ -461,12 +720,75 @@
    "depuis": "2026-09-04",
    "note": "Cree le 04/09/2026. Auteur Kajislav. Texas Twister, heros Meneur qui rejoue ses pouvoirs de base : chaque usage de CTR/ATQ/DEF le renforce, le redresse ou fait piocher. ⚠ Ne pas confondre avec le DOSSIER `src/cards/pack/tt/`, qui est le pack officiel Thor et n'a aucun card_id en lettres : le prefixe `tt` etait libre."
   },
+  "tv": {
+   "pack": "venus",
+   "libelle": "183. Custom (Venus)",
+   "cartes": 20,
+   "depuis": "2026-10-16",
+   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes, filigrane « TMNT Heroes By: Inkwire »), zip « TMNT Heroes / Venus v3 » (Kajislav). tv001a Venus (HEROS) / tv001b Bonnie (ALTER-EGO), tv002-tv014 signature (13 card_id pour 15 exemplaires), tv015 obligation Faulty Creation (GiveTo Bonnie, icone Hazard imprimee), tv016-tv019 set nemesis 'Venus Nemesis' (Jasper Barlow's Lab, Jasper Barlow, Groundchuck-Dirtbag, Salvaged Scales x2). Compteur MAISON `dredge` (compteurs de dragage poses sur l'IDENTITE, partages par les deux faces) ; traits SHARK, ELEMENT, QUANTA, SONG, CONSTRUCT, BULL, MOLE ajoutes a card_face.py. Prefixes freres TMNT : tl, td, tm, tr. Numero de set 183 PROVISOIRE : l'agent Venus travaillait en parallele des six autres heros, le coordinateur renumerote a la fusion."
+  },
   "tx": {
    "pack": "baxter_stockman",
    "libelle": "195. Custom (Baxter Stockman)",
    "cartes": 19,
    "depuis": "2026-10-16",
    "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Villains / TMNT Modulars), zip « TMNT Enemies / Baxter Stockman v3 ». SCENARIO COMPLET : tx001-tx003 Baxter Stockman I a III (vilain, 3 stades), tx004a/b manigance principale Baxter's Laboratory (la 1B porte la capacite SPECIAL « Replicate »), tx005-tx011 set de rencontre Baxter's Lab (22 exemplaires), tx012-tx014 set modulaire Cyber Swarm, tx015-tx016 High Speed, tx017-tx018 Security Protocol. Sixieme carte d'etat du moteur : Dazed (card_id `dazed`, pack status, fiche mots-cles/dazed.md). Compteurs maison cable, shield, ooze ; traits FLYBORG (singulier, imprime) et FLY. HOMONYMES : td015 « * Baxter Stockman » est le SBIRE nemesis de Donatello, et « * Baxter Stockman » (tx001-tx003) est le VILAIN : toujours chercher par card_id ou par type. Numero de set 195 provisoire (a renumeroter a la fusion si collision)."
+  },
+  "ua": {
+   "pack": "tmnt_aspect_aggression",
+   "libelle": "196. Custom (TMNT Aspects – Aggression)",
+   "cartes": 41,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Aggression »."
+  },
+  "ub": {
+   "pack": "tmnt_aspect_basic",
+   "libelle": "197. Custom (TMNT Aspects – Basic)",
+   "cartes": 59,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Basic » (dont 4 ressources)."
+  },
+  "ud": {
+   "pack": "tmnt_aspect_dual",
+   "libelle": "201. Custom (TMNT Aspects – Dual-Aspect)",
+   "cartes": 6,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Dual-Aspect » : six allies a DEUX aspects (AJ, AL, AP, JL, JP, LP dans le nom de fichier)."
+  },
+  "uj": {
+   "pack": "tmnt_aspect_justice",
+   "libelle": "198. Custom (TMNT Aspects – Justice)",
+   "cartes": 40,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Justice »."
+  },
+  "ul": {
+   "pack": "tmnt_aspect_leadership",
+   "libelle": "199. Custom (TMNT Aspects – Leadership)",
+   "cartes": 46,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Leadership » : comprend la manigance joueur Weasel In et ses trois allies WEASEL Linked (dos de rencontre)."
+  },
+  "up": {
+   "pack": "tmnt_aspect_protection",
+   "libelle": "200. Custom (TMNT Aspects – Protection)",
+   "cartes": 43,
+   "depuis": "2026-10-16",
+   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Protection »."
+  },
+  "us": {
+   "pack": "us_agent",
+   "libelle": "218. Custom (U.S. Agent)",
+   "cartes": 17,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur DesignHacker, format « SEALED » (zip « U.S. AGENT (SEALED) »). us001a U.S. Agent (hero) / us001b John Walker (alter-ego, « Master of None » : tous les aspects, ni allies ni cartes Basic), us002-us011 les dix cartes signature (Bouncing Bulwark x3, Deflection x2, Reckless x2, Roundhouse x2, Walker's Chopper, Convincer, Obstinance, Solid Gear, U.S. Agent's Machine Gun, U.S. Agent's Shield), us012 obligation Forced Leave, us013-us016 set nemesis (Nuke, Battle of the Patriots, Seeing Red x2, Spear of Odin). Decklist d'aspect FOURNIE par l'auteur (« US Agent Starter Deck.png », 25 cartes officielles). Prefixe `ua` deja pris par TMNT Aspect Aggression : `us`."
+  },
+  "uw": {
+   "pack": "new_ultimate_winter_soldier",
+   "libelle": "219. Custom (New Ultimate Winter Soldier)",
+   "cartes": 19,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur Dipsome (zip « New Ultimate Winter Soldier », Earth-6160, meme auteur que harry_osborn). uw001a/b identite (Winter Soldier / Logan), uw002 Wolverine's Claws (Permanent, mis de cote et mis en jeu au Setup par l'alter-ego, comme le Wolverine officiel 35002), uw003-uw012 cartes signature (10 cartes distinctes, 15 exemplaires), uw013 obligation Live with the Burden, uw014-uw018 set nemesis (Directorate X, Alonya Prostovich, Phoenix Specimen Brainwashing, X-S Sentinel I et II). Pas de decklist d'aspect fournie. Prefixe `uw` libre."
   },
   "vp": {
    "pack": "venompool",
@@ -516,6 +838,20 @@
    "depuis": "2026-08-14",
    "note": "La campagne fan-made Web of Deceit (Ripper3), 5 scenarios. Lot 1 : le scenario Shocker, les modulaires Crime Wave, Power Drain II et Bodyguard, et les cartes de mise en place de la campagne."
   },
+  "wn": {
+   "pack": "she_hulk_why_not",
+   "libelle": "217. Custom (She-Hulk Why Not)",
+   "cartes": 12,
+   "depuis": "2026-10-25",
+   "note": "Cree le 25/10/2026. Auteur Merlin (« She-Hulk - Why Not »). Variante de la She-Hulk officielle (core 01019) : 9 cartes officielles retouchees au scotch par l'auteur. wn001a/b identite, wn002-wn008 cartes signature retouchees, wn009-wn011 trois Team-Up Basic (Deadpool, Hulk, Spider-Man). Cartes inchangees reprises du core : 01020 Hellcat, 01024 One-Two Punch, obligation 01160, nemesis 01161-01164. Deck deck/starter/she_hulk_why_not.json (variante_de she_hulk)."
+  },
+  "wt": {
+   "pack": "warriors_three",
+   "libelle": "230. Custom (The Warriors Three)",
+   "cartes": 28,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteurs Phenexian et Mysteltainn. The Warriors Three (Fandral, Hogun, Volstagg) : wt001a/c/d heros (faces actives), wt001b alter ego, wt002 amelioration-titre (Permanent, Setup), wt003-wt005 heros inactifs (soutiens PERSONA, Setup), wt006-wt015 deck de heros (Hildegarde, 3 armes, Hildegund and Kin, Mighty Endurance x2, Artful Bladework x2, Hold the Line x2, Rally x2, Leap into Action x2), wt016 obligation A Questing We Shall Go!, wt017-wt021 nemesis (Fenris, Countdown to Ragnarok, Gleipnir, Skadihr, Fated Clash), wt022 Revelry in Asgard (Team-Up Basic), wt023-wt025 reskins de ressources, Gabarit d'allie de Skadihr : `tah_hellbender_ally` (pack totally_awesome_hulk), reutilise."
+  },
   "wx": {
    "pack": "wolverine_x23",
    "libelle": "122. Custom (Wolverine X-23)",
@@ -536,230 +872,6 @@
    "cartes": 17,
    "depuis": "2026-09-11",
    "note": "Auteur Mozilla (Drive « Zeus (Released) »). ze001a/b identite, ze002-ze011 set heros (10 cartes distinctes, 15 exemplaires), ze012 obligation, ze013-ze016 set nemesis Nyx (4 cartes distinctes, 5 exemplaires). ⚠ CE PACK INVENTE UNE RESSOURCE : l'ECLAIR, cinquieme couleur du moteur `L` ajoutee le 11/09/2026 (fiche docs/reference/mots-cles/eclair.md), imprimee sur les 4 Thunder Strike et fabriquee par Mount Olympus. Skyfather's Tempest exige une ENERGIE officielle ET un ECLAIR sur le paiement d'un meme evenement ; le set nemesis vise l'energie, pas l'eclair. Sept cartes portent une capacite « Special » resolue depuis la main ou au paiement. Homonymes : 40004 Precognition (next_evol), 50131b Thunderbolt Backup, 57021 The Thunderbolts, 59010 Son of Zeus. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-11-zeus-releve-des-cartes.md."
-  },
-  "cn": {
-   "pack": "conan",
-   "libelle": "177. Custom (Conan)",
-   "cartes": 22,
-   "depuis": "2026-09-25",
-   "note": "Auteur RyCoRan (meme gabarit que Red Sonja). cn001a-e identite a CINQ faces (Thief et Barbarian heros + alter-ego Conan, King Conan heros + alter-ego roi mis de cote au Setup, drapeau moteur `hors_pile_identite`), cn002-cn012a/b set heros (11 cartes distinctes, 16 exemplaires dont The Cimmerian recto/verso mise en jeu au Setup), cn013 obligation, cn014-cn017 set nemesis (deux sbires nemesis Hrothgar et Hymdul). Compteurs MAISON `crom` et `serpent`. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-25-portage-conan.md."
-  },
-  "hs": {
-   "pack": "hunting_season",
-   "libelle": "178. Custom (Hunting Season)",
-   "cartes": 239,
-   "depuis": "2026-10-08",
-   "note": "Auteur Nugget. Campagne en cinq scenarios (Vermin, Scorpion, The Lizard, Vulture, Kraven), 239 entrees JSON pour 226 cartes physiques, Lodge, mode expert et Hunter. Portage du 08/10/2026, dossier source .planning/hunting-season/."
-  },
-  "tl": {
-   "pack": "leonardo",
-   "libelle": "179. Custom (Leonardo)",
-   "cartes": 17,
-   "depuis": "2026-10-15",
-   "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Leonardo v3 ». tl001a Leonardo (HEROS) / tl001b Leo (ALTER-EGO), tl002-tl012 signature (11 card_id pour 15 exemplaires), tl013 obligation Brainwashed Betrayal, tl014-tl016 set nemesis 'Leonardo Nemesis' (Foot Patrol, Karai, Foot Soldiers x3). Mot-cle maison NON DEFINI : Cloak (tl015, tl016). Armes KATANA : insert de regles non transcrit en carte."
-  },
-  "td": {
-   "pack": "donatello",
-   "libelle": "180. Custom (Donatello)",
-   "cartes": 18,
-   "depuis": "2026-10-15",
-   "note": "Cree le 15/10/2026, PHASE A (construction), NON VALIDE. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Donatello v3 ». td001a Donatello (HEROS) / td001b Donnie (ALTER-EGO), td002-td012 signature (11 card_id pour 15 exemplaires), td013 obligation Broken Shell (set Donatello), td014-td017 set nemesis Baxter Stockman (set Donatello Nemesis, 5 cartes). Quatre heros TMNT portes en parallele : td Donatello, tl Leonardo, tm Michelangelo, tr Raphael. Voir .planning/tmnt/donatello-phase-a.md."
-  },
-  "tm": {
-   "pack": "michelangelo",
-   "libelle": "181. Custom (Michelangelo)",
-   "cartes": 17,
-   "depuis": "2026-10-15",
-   "note": "Cree le 15/10/2026. Auteur Inkwire, zip « TMNT Heroes / Michelangelo v3 ». tm001a Michelangelo (HEROS) / tm001b Mikey (ALTER-EGO), tm002-tm012 signature (11 card_id pour 15 exemplaires), tm013 obligation All Alone (GiveTo « Mikey »), tm014-tm016 set nemesis (Sewer Problems, Wyrm, Smash! x3). tm009 I'm Here to Help est une manigance-joueur du deck, mise en jeu par le Setup de tm001b. tm011/tm012 : « each NUNCHUCK upgrade you control gains » via GiveAbilityToInPlayWhenApplyThis. Traits NUNCHUCK, NINJA, TURTLE, MUTANIMAL, TEENAGER, NYC, SEWERS, WORMS : AUCUN fichier moteur partage touche. Les trois autres tortues TMNT ont leurs prefixes tl, td, tr. PHASE A seulement : aucun cas de test, aucune gate lancee."
-  },
-  "tr": {
-   "pack": "raphael",
-   "libelle": "182. Custom (Raphael)",
-   "cartes": 18,
-   "depuis": "2026-10-15",
-   "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
-  },
-  "tv": {
-   "pack": "venus",
-   "libelle": "183. Custom (Venus)",
-   "cartes": 20,
-   "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes, filigrane « TMNT Heroes By: Inkwire »), zip « TMNT Heroes / Venus v3 » (Kajislav). tv001a Venus (HEROS) / tv001b Bonnie (ALTER-EGO), tv002-tv014 signature (13 card_id pour 15 exemplaires), tv015 obligation Faulty Creation (GiveTo Bonnie, icone Hazard imprimee), tv016-tv019 set nemesis 'Venus Nemesis' (Jasper Barlow's Lab, Jasper Barlow, Groundchuck-Dirtbag, Salvaged Scales x2). Compteur MAISON `dredge` (compteurs de dragage poses sur l'IDENTITE, partages par les deux faces) ; traits SHARK, ELEMENT, QUANTA, SONG, CONSTRUCT, BULL, MOLE ajoutes a card_face.py. Prefixes freres TMNT : tl, td, tm, tr. Numero de set 183 PROVISOIRE : l'agent Venus travaillait en parallele des six autres heros, le coordinateur renumerote a la fusion."
-  },
-  "tc": {
-   "pack": "casey_jones",
-   "libelle": "184. Custom (Casey Jones)",
-   "cartes": 18,
-   "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Casey Jones v3 ». tc001a Casey Jones (HEROS) / tc001b Casey Jones (ALTER-EGO), tc002-tc013 signature (12 card_id pour 16 exemplaires), tc014 obligation Daddy Issues (bandeau CASEY JONES, donc module dans casey_jones/casey_jones/), tc015-tc017 set nemesis Hun / The Purple Dragons (set Casey Jones Nemesis, 5 cartes : Purple Dragon Goons x3). HOMONYME : l'allie « Casey Jones » de Raphael (tr002) porte le meme nom que le heros : aucune carte du pack ne cherche par le nom, tout passe par card_id, type ou ensemble. Mot-cle maison : aucun (Overswing est un NOM de capacite, pas un mot-cle). Voir .planning/tmnt/casey-questions.md."
-  },
-  "ta": {
-   "pack": "alopex",
-   "libelle": "185. Custom (Alopex)",
-   "cartes": 16,
-   "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Alopex v3 ». ta001a Alopex (HEROS) / ta001b Alopex (ALTER-EGO), ta002-ta010 signature (9 card_id pour 15 exemplaires), ta011 Prey (16e carte du deck, creee et mise de cote au Setup par ta001b), ta012 obligation Manipulated (GiveTo « Alopex », Acceleration 2), ta013-ta015 set nemesis « Alopex Nemesis » (You Belong To Me, Kitsune, Curse of Nine Tales x3). Mot-cle maison : Daze (carte d'etat Dazed, scan Baxter Stockman v3) ; Cloak deja defini. Compteur maison `hunter`."
-  },
-  "tj": {
-   "pack": "jennika",
-   "libelle": "186. Custom (Jennika)",
-   "cartes": 16,
-   "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Heroes v3), zip « TMNT Heroes / Jennika v3 ». tj001a Jennika (HEROS) / tj001b Jenny (ALTER-EGO), tj002-tj010 signature (9 card_id pour 15 exemplaires, + tj011 Sosaiken, la Voie, carte permanente MISE DE COTE comme Ionic Physiology de Wonder Man), tj012 obligation Personality Adjustment (GiveTo « Jenny »), tj013-tj015 set 'Jennika Nemesis' (Dun Import Exports, Phantasm, Street Phantoms x3). Mecanique Shinobi : classes Bushido / Ninjutsu / Kuji-Kiri / Taijutsu ajoutees a ClassCard.CARD_CLASS (desc.Class = 'Hero;Taijutsu'), compteur 'samurai' ajoute a CardFace.COUNTER. Voir .planning/tmnt/jennika-questions.md. Prefixes freres : tl, td, tm, tr."
-  },
-  "ts": {
-   "pack": "shredder",
-   "libelle": "190. Custom (Shredder)",
-   "cartes": 31,
-   "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), zip « TMNT Enemies / Shredder v3 ». Scenario Shredder (3 stades ts001-ts003, complots ts004a/b et ts005a/b, set Shredder ts006-ts022 en 17 cartes distinctes), modulaires Chunin (ts101-ts104), Foot Goon Squad (ts201-ts206, dont Bebop ts201 et Rocksteady ts205 en SBIRES : homonymes des vilains du pack tk, jamais cherches par le nom seul) et Shadow of the Foot (ts301-ts305). L'encart Shredder n'est pas une carte : regles codees dans les scripts. Carte d'etat Cloaked et mot-cle Cloak : deja au moteur (fiches cloak.md, cloaked.md). Traits MOLE, YOUKAI, WARTHOG, RHINOCEROS, SHARK, FALCON, RELIC ajoutes a l'enum."
-  },
-  "te": {
-   "pack": "tmnt_standard_expert",
-   "libelle": "191. Custom (TMNT Standard-Expert)",
-   "cartes": 17,
-   "depuis": "2026-10-16",
-   "note": "Cree le 16/10/2026. Auteur Inkwire (TMNT Enemies), dossiers « TMNT Standard-Expert (Status Card Standard-Expert) » et « Normal Standard-Expert Reskins ». Partages par TOUS les vilains TMNT : ensembles tmnt_standard (te001-te006), tmnt_expert (te101-te103), tmnt_standard_reskin (te021-te027) et tmnt_expert_reskin (te121-te123, memes capacites que le core 01186-01193 par ability_link). te201 Intense Combatants (ensemble optionnel tmnt_intense) : scriptee le 16/10/2026, « intensify » = carte d'etat Intensified (fiche intensified.md)."
-  },
-  "ua": {
-   "pack": "tmnt_aspect_aggression",
-   "libelle": "196. Custom (TMNT Aspects – Aggression)",
-   "cartes": 41,
-   "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Aggression »."
-  },
-  "ub": {
-   "pack": "tmnt_aspect_basic",
-   "libelle": "197. Custom (TMNT Aspects – Basic)",
-   "cartes": 59,
-   "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Basic » (dont 4 ressources)."
-  },
-  "uj": {
-   "pack": "tmnt_aspect_justice",
-   "libelle": "198. Custom (TMNT Aspects – Justice)",
-   "cartes": 40,
-   "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Justice »."
-  },
-  "ul": {
-   "pack": "tmnt_aspect_leadership",
-   "libelle": "199. Custom (TMNT Aspects – Leadership)",
-   "cartes": 46,
-   "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Leadership » : comprend la manigance joueur Weasel In et ses trois allies WEASEL Linked (dos de rencontre)."
-  },
-  "up": {
-   "pack": "tmnt_aspect_protection",
-   "libelle": "200. Custom (TMNT Aspects – Protection)",
-   "cartes": 43,
-   "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Protection »."
-  },
-  "ud": {
-   "pack": "tmnt_aspect_dual",
-   "libelle": "201. Custom (TMNT Aspects – Dual-Aspect)",
-   "cartes": 6,
-   "depuis": "2026-10-16",
-   "note": "Auteur Inkwire, zip « TMNT Aspect ». Socle pose le 16/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par cinq agents en parallele, un par aspect. Chaque scan devient une VRAIE carte TMNT (nom, traits, image propres), meme un reskin IDENTIQUE, qui reutilise le script de l'officielle par `ability_link` (recette : docs/reference/RECETTES-MOTEUR.md, « Reskin d'une carte joueur »). Numerotation FIGEE par tools/tmnt_aspects_numerotation.tsv (ordre alphabetique sans casse des noms de FICHIER, 001 a N par dossier) ; images : tools/importer_images_tmnt_aspects.py. Mot-cle maison Rampage X : fiche docs/reference/mots-cles/rampage.md. Dossier « Dual-Aspect » : six allies a DEUX aspects (AJ, AL, AP, JL, JP, LP dans le nom de fichier)."
-  },
-  "rs": {
-   "pack": "red_sonja",
-   "libelle": "176. Custom (Red Sonja)",
-   "cartes": 19,
-   "depuis": "2026-09-25",
-   "note": "Declare a posteriori le 16/10/2026 : le pack (auteur RyCoRan, meme gabarit que Conan) etait livre sans entree ici, et tools/verifier_prefixes.py refusait ses 19 cartes."
-  },
-  "sb": {
-   "pack": "tmnt_shinobi_bushido",
-   "libelle": "202. Custom (TMNT Shinobi – Bushido)",
-   "cartes": 20,
-   "depuis": "2026-10-17",
-   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier B1 a B20 (Bushido, liseré turquoise ; ameliorations OATH, jeton samurai)."
-  },
-  "sj": {
-   "pack": "tmnt_shinobi_kuji_kiri",
-   "libelle": "203. Custom (TMNT Shinobi – Kuji-Kiri)",
-   "cartes": 20,
-   "depuis": "2026-10-17",
-   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier K1 a K20 (Kuji-Kiri, rose ; sorts)."
-  },
-  "sa": {
-   "pack": "tmnt_shinobi_ninjutsu",
-   "libelle": "204. Custom (TMNT Shinobi – Ninjutsu)",
-   "cartes": 20,
-   "depuis": "2026-10-17",
-   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier N1 a N20 (Ninjutsu, violet ; Cloaked)."
-  },
-  "sh": {
-   "pack": "tmnt_shinobi_taijutsu",
-   "libelle": "205. Custom (TMNT Shinobi – Taijutsu)",
-   "cartes": 20,
-   "depuis": "2026-10-17",
-   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier T1 a T20 (Taijutsu, orange ; Dazed)."
-  },
-  "sc": {
-   "pack": "tmnt_shinobi_dual",
-   "libelle": "206. Custom (TMNT Shinobi – Dual Shinobi)",
-   "cartes": 12,
-   "depuis": "2026-10-17",
-   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier 12 cartes Dual Shinobi BK1 BK2 BN1 BN2 BT1 BT2 KN KN2 KT1 KT2 NT1 NT2 (comptent comme LES DEUX types)."
-  },
-  "se": {
-   "pack": "tmnt_shinobi_paths",
-   "libelle": "207. Custom (TMNT Shinobi – Paths)",
-   "cartes": 11,
-   "depuis": "2026-10-17",
-   "note": "Auteur Inkwire, zip « TMNT Shinobi » (livret « Shinobi Path Rulebook »). Socle pose le 17/10/2026 (pack VIDE, set declare, max_id = nombre de scans) avant le portage par des agents de cartes. Numerotation FIGEE par tools/tmnt_shinobi_numerotation.tsv ; images : tools/importer_images_tmnt_shinobi.py. Mecanique Shinobi : docs/reference/mots-cles/shinobi.md (classes, Dual, Path, tuck, jeton samurai). Dossier 4 Paths standard (se001-se004 : Kagemusha, Onmyodo, Samurai, Shihan) + 7 Paths hybrides (se005-se011 : The Last Ronin, Yoshimitsu, Yamabushi, Onigari, Ashigaru, Onmitsu, Yojimbo) ; les 11 DOS (regles de construction) sont des inserts hors cards.json, data/shinobi_paths.json."
-  },
-  "pu": {
-   "pack": "punisher_mcdc_2026",
-   "libelle": "208. Custom (La ville ne dort jamais)",
-   "cartes": 13,
-   "depuis": "2026-10-20",
-   "note": "EN COURS (lot PU-0, cadrage 20/10/2026, docs/rapports/cadrage-14-15-19-2026-10-20.md section 1). Campagne fan-made MC/DC (evenement Huzzah Hobbies, Ashburn VA, 16-18/10/2026) sur un trafic d'armes a New York, Punisher. Source : PDF « 2026_scenario_print_300dpi.pdf » (286 p., 291 Mo, Google Drive team@mcdc.fun), livret FR « la-ville-ne-dort-jamais-regles-fr-v1.pdf » (bubblepack.org), scans paquets-cartes/MC x DC 2026 - campagne Punisher/scans/pNNN.jpg (hors depot git). Releve complet dans docs/packs/mcdc-2026-punisher/cartes.md : ~143 cartes dans 15 sets (The Big Apple, Uptown Expansion, Locations, Leads, CAPOS, Jigsaw, Hobgoblin, Punishment, Punisher's Hit List, Punisher's Armory, SWAT Team, The Syndicate, cartes de campagne, Capo of the Past, 4 defis, Hawkeye MC×DC). PU-0 (20/10/2026, SANS SCRIPT, SANS INSERTION dans cards.json) : prefixe reserve ici ; marques [?] du releve levees par comparaison aux scans (preuve dans cartes.md, fin de fichier) ; fiches mots-cles lieu/territoire, piste (LEAD), CIBLE/mechant actif et jeton recherche (SWAT) creees dans docs/reference/mots-cles/ ; plan ou fichier de donnees brutes (sans logique de capacite) pour le contenu simple (Jigsaw, Hobgoblin, Syndicate, Armory, Capo of the Past) dans .planning/mcdc-punisher/ ; 8 decisions a poser a l'utilisateur consolidees dans .planning/todos/2026-10-20-punisher-questions.md. RESTE A FAIRE avant tout script : briques moteur communes M6 (attaque d'un ennemi sur un ennemi/allie) et M7 (mechant actif/CIBLE, a mutualiser avec Galactic Storm, voir section 0.3 du cadrage), brique M1/M2 (lieux en grille 3x3, territoires cloisonnes avec CreateGameArea/AddPlayer), M3 (pistes LEAD), M5 (sbires attaches a un lieu), interface « La Ville » (ui-app). Decoupage complet en lots PU-0 a PU-13 : section 1.7 du cadrage. card_id propose : `pu` + numero de page imprime sur le scan (pNNN), suffixe a/b pour les faces, voir .planning/mcdc-punisher/PLAN-PU-0.md pour le detail et les cas particuliers (sous-fifres, Hawkeye MC×DC, fiches vierges)."
-  },
-  "sl": {
-   "pack": "shadowland",
-   "libelle": "209. Shadowland (pack scenario officiel MC65)",
-   "cartes": 78,
-   "depuis": "2026-10-22",
-   "note": "EN COURS (cadrage 22/10/2026, dossier .planning/shadowland/). Pack scenario OFFICIEL FFG MC65 (sortie 16/10/2026, Michael Boggs, aucun heros, 3 scenarios : Shadows in the Night, Shadow Labyrinth, Heart of Shadow). Prefixe en LETTRES et non en 65xxx : la tranche 65001-65019 est deja occupee par le pack fan-made Wave (decision utilisateur 22/10/2026 : on ne renumerote pas Wave, des decks et sauvegardes en ligne le citent). Correspondance : numero officiel 65NNN -> sl0NN (65013B -> sl013b), le numero officiel reste a noter dans l'entree JSON. Scans : play.marvelsimulator.com/images/cards/65NNN[A|B].webp (93 images, 78 numeros), copies de travail dans .planning/shadowland/scans-marvelsimulator/ (hors git)."
-  },
-  "sv": {
-   "pack": "silver_surfer",
-   "libelle": "211. Custom (Silver Surfer)",
-   "cartes": 16,
-   "depuis": "2026-10-24",
-   "note": "Cree le 24/10/2026. Auteur DesignHacker, format « MC4 SEALED » (2020). sv001a/b identite (Silver Surfer / Norrin Radd), sv002-sv010 signature (9 cartes distinctes, 15 exemplaires), sv011 obligation Silver Down, sv012-sv015 set nemesis Galactus (5 cartes, Cosmic Power x2). Mot-cle maison `summon` (fiche mots-cles/summon.md, deja employe par yondu). Pas de decklist d'aspect fournie : player_deck vide (PROCESSUS-HEROS etape 3)."
-  },
-  "ch": {
-   "pack": "shang_chi",
-   "libelle": "212. Custom (Shang-Chi)",
-   "cartes": 22,
-   "depuis": "2026-10-24",
-   "note": "Cree le 24/10/2026. Auteur DesignHacker, format « SEALED ». ch001a/b identite (Shang-Chi), ch002 State of Flow (support Permanent + Setup, pile Flow), ch003-ch014 six evenements ATTACK en DEUX impressions chacun (icone de ressource imprimee differente : Flow la lit, donc card_id distincts), ch015-ch017 ameliorations, ch018 obligation Family Ties, ch019-ch021 set nemesis (Zheng Zu, The Life Stealer, Downtown Attack x3). Prefixe `ch` : `sc` est pris par tmnt_shinobi_dual et 63015 est l'allie Shang-Chi d'Iron Fist. Mot-cle maison Flow (fiche mots-cles/flow.md). Pas de decklist d'aspect fournie : player_deck vide."
-  },
-  "ld": {
-   "pack": "lady_deathstrike",
-   "libelle": "213. Custom (Lady Deathstrike)",
-   "cartes": 19,
-   "depuis": "2026-10-25",
-   "note": "Cree le 25/10/2026. Auteur Mysteltainn, scenario « Lady Deathstrike » (MC Custom Content By: Mysteltainn), 31 scans dont 13 doublons au pixel pres. ld001-ld003 Lady Deathstrike I-III, ld004a/b complot principal Mutant Hunting Season, ld005 Bleeding Out (x4 mis de cote, un par joueur), ld006-ld014 le set de rencontre (15 cartes), ld015-ld018 le modulaire maison Reaver Resources (5 cartes). Compteur `bleed` ajoute a l'enum. Capacite nommee « Special » de Bleeding Out appelee PAR REFERENCE par 9 cartes (helper du set). Les sets Reavers et Military Grade existent deja (officiels) : le scenario referme reavers + standard, modulaire par defaut military_grade, alternative reaver_resources. Homonymes : * Lady Deathstrike (35034, 43029 minions), Titanium Exoskeleton / Inhibitor Collar (40091/40092 Military Grade), Stalking Prey (hs123) : aucun module du pack ne cherche par nom."
-  },
-  "pd": {
-   "pack": "predator",
-   "libelle": "214. Custom (Predator)",
-   "cartes": 31,
-   "depuis": "2026-10-25",
-   "note": "Cree le 25/10/2026. Auteur RyCoRan, zip « Predator (5-25 Final) ». pd001a/b identite (Predator / Yd'Nar), pd002 Infralocked (Permanent, mis en jeu au Setup par l'alter-ego), pd003 Xenomorph (SBIRE DE JOUEUR), pd004-pd014 cartes signature, pd015 obligation Exposed Target, pd016-pd020 set nemesis Xenomorph, pd021-pd023 ressources de base a l'art du heros, pd024-pd025 evenements Team-Up de base (Razor Hunt, Infrared Web), pd026-pd030 set nemesis ALTERNATIF (Dutch, Dillon, Chopper). Decklist d'aspect fournie par l'auteur (image « Predator starter deck »). Statut Cloaked : deja au depot (pack TMNT, fiche mots-cles/cloaked.md). Prefixe `pd` libre."
-  },
-  "wn": {
-   "pack": "she_hulk_why_not",
-   "libelle": "217. Custom (She-Hulk Why Not)",
-   "cartes": 12,
-   "depuis": "2026-10-25",
-   "note": "Cree le 25/10/2026. Auteur Merlin (« She-Hulk - Why Not »). Variante de la She-Hulk officielle (core 01019) : 9 cartes officielles retouchees au scotch par l'auteur. wn001a/b identite, wn002-wn008 cartes signature retouchees, wn009-wn011 trois Team-Up Basic (Deadpool, Hulk, Spider-Man). Cartes inchangees reprises du core : 01020 Hellcat, 01024 One-Two Punch, obligation 01160, nemesis 01161-01164. Deck deck/starter/she_hulk_why_not.json (variante_de she_hulk)."
   }
  }
 }

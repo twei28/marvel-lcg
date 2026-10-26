@@ -132,9 +132,28 @@ class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, CanCrisis, H
         # rendait cette branche inatteignable.
         return self.printed_give_to
 
+    # CORRECTIF (26/10/2026, pack custom warriors_three, wt016 « attach this card to it ») : une obligation peut etre ATTACHEE a un
+    # sbire (inventaire de l'hote). Tant qu'elle est dans la zone d'obligations du joueur, `bind_face` reste l'identite de ce
+    # joueur (46024, 49027 s'y fient) ; des qu'elle est dans l'inventaire d'une carte, `bind_face` est cette carte. Pendant
+    # `AttachTo2`, l'ancienne attache a l'identite n'est PAS un attachement a detacher (sinon messages parasites).
+    _en_attache = False
+
+    @override
+    def AttachTo2(self, face: 'CardFace', by_effect: 'Effect') -> bool:
+        self._en_attache = True
+        try:
+            return super().AttachTo2(face, by_effect)
+        finally:
+            self._en_attache = False
+
     @property
     @override
-    def bind_face(self) -> 'Hero|AlterEgo|None':
+    def bind_face(self) -> 'CardFace|None':
+        hote = self.card.area.bind_card
+        if hote is not None:
+            return hote.face
+        if self._en_attache:
+            return None
         player = self.card.area.play_area
         if player == None:
             return None
@@ -145,5 +164,7 @@ class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, CanCrisis, H
         from game.card.face.card_type import Hero
         from game.card.face.card_type import AlterEgo
         face = super().GetBindFace()
+        if self.card.area.bind_card is not None:
+            return face
         return face.CastTo(Hero|AlterEgo)
 

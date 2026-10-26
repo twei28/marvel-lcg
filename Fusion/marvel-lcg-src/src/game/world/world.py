@@ -718,6 +718,27 @@ class World(WorldAction, WorldFind):
             player.has_finished_turn_this_round = True
             turn_end()
 
+            # CORRECTIF (26/10/2026, pack Rachel Summers `rm`, rm007 Temporal Reversal) : « Take an additional turn after
+            # this one. At the end of this turn, perform each of the following in order : [...] ». Le moteur ne joue
+            # qu'UN tour par joueur et par phase : la carte pose le drapeau `RM_TOUR_SUPPLEMENTAIRE` (nombre de tours
+            # en plus), et c'est ICI qu'on les joue, juste apres le tour qui vient de finir (donc avant le joueur suivant).
+            # Rien ne change tant que le drapeau est a zero (tous les autres heros).
+            while player.flag.Get("RM_TOUR_SUPPLEMENTAIRE") > 0 and not player.is_eliminated and not self.is_game_over:
+                player.flag.Update("RM_TOUR_SUPPLEMENTAIRE", -1)
+                player.phase.FinDeTourSupplementaire()
+                if self.is_game_over:
+                    return
+                Message.TextRender("\n--- Additional turn ---", self)
+                player.has_finished_turn_this_round = False
+                turn_begin()
+                player.phase.BeginTurn()
+                player.phase.PlayerTurn()
+                if self.is_game_over:
+                    return
+                player.phase.EndTurn()
+                player.has_finished_turn_this_round = True
+                turn_end()
+
         self.phase.SetState(Phase.State.PlayerTurnEnd)
 
     def PlayersEndPhase(self, team: 'int|None'=None) -> None:

@@ -22,6 +22,13 @@ class SenderPlayer:
             text = TransText("{card}: only one option is possible, {option}", card=card, option=option)
             self.Present(text, "")
 
+    class NoResultNotice_Text(TextMessage):
+        """Une recherche sans resultat dont la suite (« Then ») n'est pas resolue : le DIRE au journal (Safe House #30, 26/10/2026)."""
+        def __init__(self, player: 'Player', card: str, notice: str) -> None:
+            super().__init__(world=player.world)
+            text = TransText("{card}: {notice}", card=card, notice=TransText(notice).text_symbol)
+            self.Present(text, "")
+
     class WhenPlayerSearchingDeckCards_Text(TextMessage):
         def __init__(self, player: 'Player', deck: 'Deck', size: int|None, faces: Sequence['CardFace']) -> None:
             if len(faces) > 0 and player.world.is_game_started:

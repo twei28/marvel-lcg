@@ -348,6 +348,41 @@ class RunPuzzle:
         for card in cards:
             CardFactory.GenerateCard(card, first_player.additional_discard_pile, self.world)
 
+    def SetDeterrenceDeck(self, *cards: str, siege: int|None=None):
+        """CORRECTIF (26/10/2026, pack custom batman, `bm`) : remplace le DECK DE DISSUASION du joueur par exactement ces cartes, dans cet ordre
+        (la premiere est au dessus), et vide sa defausse. Chaque carte est preparee comme au Setup (`PreparerDissuasion` : defausse liee, crochet
+        de defausse non resolue, proprietaire). Un cas ne peut pas choisir lesquelles des 15 cartes le pilote retient au Setup."""
+        from game.card.factory import CardFactory
+        from game.operate.faces import Faces
+        from cards.pack.batman import PreparerDissuasion
+        joueur = self._JoueurDeMiseEnPlace(siege)
+        for pile in (joueur.additional_deck, joueur.additional_discard_pile):
+            for _ in range(50):
+                faces = [f for f in pile.GetAll() if f is not None]
+                if not faces:
+                    break
+                Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
+        for card in reversed(cards):
+            carte = CardFactory.GenerateCard(card, joueur.additional_deck, self.world)
+            PreparerDissuasion(joueur, carte.face)
+            carte.visible.Set(joueur)
+
+    def ShuffleDeterrence(self, *cards: str, siege: int|None=None):
+        """CORRECTIF (26/10/2026, pack custom batman) : melange dans le deck de rencontre les cartes de dissuasion NOMMEES, prises dans le deck de
+        dissuasion du joueur, comme le fait `MelangerUneDissuasion` (sans limite par round ni choix). `Puzzle.Reveal` ne cherche pas dans le
+        deck de dissuasion : il faut que la vraie carte, deja preparee, soit dans le deck de rencontre."""
+        from game.operate.faces import Faces
+        from game.operate.worlds import Worlds
+        from cards.pack.batman import EtatBm
+        joueur = self._JoueurDeMiseEnPlace(siege)
+        for card_id in cards:
+            for face in list(joueur.additional_deck.Get()):
+                if getattr(face.paper, "card_id", None) == card_id:
+                    etat = EtatBm(face)
+                    etat["resolu"], etat["sans_surge"], etat["sans_boost_sup"] = False, False, False
+                    Faces.MoveAllToDeck([face], Worlds.GetEncounterDeck(self.debug_rule), "Top", self.debug_rule)
+                    break
+
     ################################################################################
     #
     def _JoueurDeJeu(self, siege: int|None=None) -> 'Player':
@@ -370,6 +405,12 @@ class RunPuzzle:
         player = self._JoueurDeJeu(siege)
         effect = DebugRule(player.GetIdentity())
         player.DrawUp(num, effect)
+
+    def DiscardAtRandom(self, num: int=1, siege: int|None=None):
+        """(25/10/2026, pack uw) Defausse `num` cartes de la main AU HASARD, par la voie des cartes
+        (`DiscardRandomHandCards` : marque `defausses_au_hasard` + compteur du round, lus par Wolverine's Claws)."""
+        player = self._JoueurDeJeu(siege)
+        player.DiscardRandomHandCards(num, DebugRule(player.GetIdentity()))
 
     ################################################################################
     # Card
@@ -1051,6 +1092,50 @@ class RunPuzzle:
         turn_end_message.Send()
         Message.AfterPlayerTurnEnd(player, turn_end_message).Send()
 
+    def NewPlayerTurnStat(self) -> None:
+        """AJOUT (26/10/2026, pack smasher, sz001b « Limit once per TURN »). Remet a zero les compteurs « ce tour » du joueur courant
+        (`PlayerStat.OnEndTurn`, que `EndPlayerTurn` n'appelle pas) : monte un SECOND tour du meme joueur dans le meme round
+        (tour de plus de rm007) sans jouer la boucle d'actions. Additif."""
+        self.world.GetCurrentPlayer().stat.OnEndTurn()
+
+    def NewTurnWorldStat(self) -> None:
+        """AJOUT (26/10/2026, pack `hp` Wasp (Hank Pym), hp009 / hp012 : « X = formes changees CE tour » avec X = 0). Remet a zero les
+        compteurs « ce tour » du MONDE (`WorldStat.OnTurnEnd` : attaques, contres, formes changees), que `EndPlayerTurn` n'appelle pas.
+        Monte un tour SUIVANT sans jouer la boucle d'actions. Additif."""
+        self.world.stat.OnTurnEnd()
+
+    def BeginPlayerTurn(self) -> None:
+        """OUVRE le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnBegin puis AfterPlayerTurnBegin).
+
+        AJOUT (26/10/2026, pack Rachel Summers `rm`, Chronoskimming rm001a et Hound Program rm014 : « After your turn
+        begins »). La mise en place d'un cas se joue DANS le tour deja ouvert : une Reponse « apres le debut du tour » d'une
+        carte posee par le cas ne partait jamais. Additif ; ne remet aucun compteur de tour a zero.
+        """
+        from game.message import Message
+        player = self.world.GetCurrentPlayer()
+        turn_begin_message = Message.WhenPlayerTurnBegin(player)
+        turn_begin_message.Send()
+        Message.AfterPlayerTurnBegin(player, turn_begin_message).Send()
+
+    def FinDeTourSupplementaire(self) -> None:
+        """Joue les trois etapes de fin de tour de rm007 Temporal Reversal (`PlayerPhase.FinDeTourSupplementaire`) pour le joueur
+        courant, sans jouer le tour en plus. AJOUT (26/10/2026, pack `rm`), pour la mesure des etapes seules."""
+        self.world.GetCurrentPlayer().phase.FinDeTourSupplementaire()
+
+    def ReadyAtEndOfPlayerPhase(self, siege: int|None=None) -> None:
+        """(25/10/2026, pack sq) Rejoue l'etape « redresser toutes ses cartes » de la FIN DE PHASE JOUEUR
+        (`player_phase.py`, `EndPhase`) : meme effet `EndPhase(joueur)` et meme perimetre, pour la Response de
+        Web-Sling (`AfterCardReady` dont le `by_effect` est cette regle). `EndPlayerPhase` ne l'envoie pas."""
+        from game.effect.rule import EndPhase
+        from game.operate.faces import Faces
+        player = self._JoueurDeJeu(siege)
+        faces: List['CardFace'] = []
+        for face in player.GetControlCards():
+            faces.append(face)
+            for upgrade in face.GetInventoryDeck().Get():
+                faces.append(upgrade)
+        Faces.ReadyAll(faces, EndPhase(player))
+
     def EndPlayerPhase(self) -> None:
         """FERME la phase des joueurs, comme `phase_end("Player")` du moteur.
 
@@ -1075,6 +1160,12 @@ class RunPuzzle:
         world.stat.OnPhaseEnd()
 
         Message.AfterPhaseEnd(world.phase_id, "Player", phase_message).Send()
+
+    def PlayersEndPhaseDraw(self) -> None:
+        """CORRECTIF (26/10/2026, pack bg Batgirl, bg012 Utility Belt) : rejoue l'etape « fin de phase de chaque joueur » du moteur
+        (`World.PlayersEndPhase` : `WhenPlayerEndPhase`, redresser, defausser, PIOCHER jusqu'a la taille de main). `EndPlayerPhase`
+        n'envoie que `WhenPhaseEnd`, APRES la pioche : une capacite « quand la phase se termine, +1 taille de main » n'y est pas mesurable."""
+        self.world.PlayersEndPhase()
 
     def EndVillainPhase(self) -> None:
         """FERME la phase du mechant, comme `phase_end("Villain")` du moteur (Hunting Season : « quand la phase du mechant se termine »)."""
@@ -1150,6 +1241,31 @@ class RunPuzzle:
                 player, self.debug_rule,
                 property=SchemeProperty(against_player=player,
                                         would_act_message=would_act))
+        return face
+
+    def Activate(self, card: CardName) -> 'CardFace':
+        """AJOUT (25/10/2026, pack uw) : ACTIVE un ennemi contre le joueur courant comme la phase du mechant (`Enemy.DoActivate` :
+        `WhenEnemyWouldActivate` d'abord, puis manigance en alter ego ou attaque en forme heros). `Scheme` et `EnemyAttacks` n'envoient
+        pas le meme message : « When X activates, ... instead » (Alonya Prostovich) ne se mesure qu'ici."""
+        from game.card.face.base import Enemy
+        face = self.FindFaceInPlay(card)
+        assert Enemy.IsType(face), f"{card=} n'est pas un ennemi"
+        face.CastTo(Enemy).DoActivate(self.world.GetCurrentPlayer(), self.debug_rule)
+        return face
+
+    def ResolveSpecial(self, card: CardName, siege: int|None=None) -> 'CardFace':
+        """Resout le « Special » imprime d'une carte EN JEU, pour le joueur courant (ou `siege`).
+
+        CORRECTIF (25/10/2026, pack custom roz, jakxin) : le banc de test n'avait aucune commande pour
+        « resolve the "Special" ability on X ». C'est exactement ce que font Driven, Hand-to-Hand ou Trained
+        Shots (`player.ResolveSpecialAbility(faces, effect)`) : cette commande isole le Special d'une carte,
+        cibles et couts compris (le pilote repond aux questions, comme pour `Action`).
+        """
+        from game.effect.rule import GameRule
+
+        face = self.FindFaceInPlay(card)
+        player = self.world.GetCurrentPlayer() if siege is None else self.world.const_players[siege]
+        face.ResolveSpecialAbility(player, GameRule(face))
         return face
 
     def Action(self, card: CardName, type: str|None=None, index: int=0, siege: int|None=None) -> 'CardFace':
@@ -1470,6 +1586,28 @@ class RunPuzzle:
         `WhenRoundEnd`, que `EndRound` (mode manuel) ne partait jamais, pour tester un effet « a la fin de la manche »."""
         from game.message import Message
         Message.WhenRoundEnd(self.world).Send()
+
+    def ResetRoundStats(self) -> None:
+        """AJOUT (25/10/2026, pack uw, Wolverine's Claws « THIS round ») : ce que `World.RoundLoop` fait juste apres `WhenRoundEnd`, la remise a
+        zero du registre du round (`stat.OnRoundEnd`) ; `EndRound` / `SendRoundEnd` ne le font pas."""
+        self.world.stat.OnRoundEnd()
+
+    def NewPlayerTurn(self) -> None:
+        """AJOUT (26/10/2026, pack `rz`, rz003 « limit once per turn ») : clot le tour du joueur courant et en ouvre un AUTRE, comme `World.PlayerPhase`
+        (`world.stat.OnTurnEnd` / `OnTurnBegin`) et `PlayerPhase.EndTurn` / `BeginTurn` (registres du tour du joueur). Le joueur courant ne change pas."""
+        joueur = self.world.GetCurrentPlayer()
+        joueur.phase.EndTurn()
+        self.world.stat.OnTurnEnd()
+        self.world.stat.OnTurnBegin()
+        joueur.phase.BeginTurn()
+
+    def PlayersNewRound(self) -> None:
+        """AJOUT (26/10/2026, pack `cr`, cr007-cr009 « the last card you played ») : fin de round puis debut du round suivant POUR LES JOUEURS
+        (`PlayerPhase.EndRound` / `BeginRound` : remise a zero des registres `this_round_played_cards`, compteur du round des sbires vaincus).
+        `EndRound` (mode manuel) ne touche pas aux joueurs. Additif : le numero du round (`world.round_id`) n'avance pas."""
+        for joueur in self.world.const_players:
+            joueur.phase.EndRound()
+            joueur.phase.BeginRound()
 
     def SendAfterRoundEnd(self) -> None:
         """AJOUT (22/10/2026, PU-7 M5, Overdrive « After the round ends ») : `WhenRoundEnd` PUIS `AfterRoundEnd`, comme `World.RoundLoop`."""

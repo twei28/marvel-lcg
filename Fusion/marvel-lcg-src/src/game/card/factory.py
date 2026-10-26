@@ -212,7 +212,25 @@ class CardFactory:
                                                     #    REGISTERED) ET une Reponse de heros
                                                     #    (recruter le sbire attaque).
                                                     "ip010",   # Deceptive Guard (iron_patriot)
-                                                    "ip011"]:  # Foreboding Influence (iron_patriot)
+                                                    "ip011",   # Foreboding Influence (iron_patriot)
+                                                    # CORRECTIF (26/10/2026) : pack custom wasp_hank_pym (JackHKP).
+                                                    #  hp003 Gigantification : une Hero Action (attack) ET une Hero Interrupt
+                                                    #    (defense), toutes deux `.SetPlay()`.
+                                                    #  hp005 Self-Shrinking : une Hero Action (thwart) ET une Hero Interrupt
+                                                    #    (defense), toutes deux `.SetPlay()`.
+                                                    # ⚠ Le deck wasp_hank_pym ne montait AUCUNE partie sans cette declaration
+                                                    # (AssertionError au setup) : 43 cas verts, invisible pour `test_cards`,
+                                                    # `test_capacites` et `substituer_pack`. Seul `verifier_tous_les_decks`
+                                                    # (et un vrai lancement) le voit : lecon ls005 relue trop tard.
+                                                    "hp003",   # Gigantification (wasp_hank_pym)
+                                                    "hp005",   # Self-Shrinking (wasp_hank_pym)
+                                                    # CORRECTIF (26/10/2026) : pack custom batman (ES).
+                                                    #  bm005 Intimidate : une Hero Interrupt a la REVELATION d'une carte de dissuasion
+                                                    #    ET une Hero Interrupt a son retournement en BOOST, toutes deux `.SetPlay()`.
+                                                    "bm005",   # Intimidate (batman)
+                                                    # CORRECTIF (26/10/2026) : pack custom sunspot_hellfire (Dipsome).
+                                                    #  so006 Soak Up the Sun : une Alter-Ego Action ET une Hero Action, toutes deux `.SetPlay()`.
+                                                    "so006"]:  # Soak Up the Sun (sunspot_hellfire)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

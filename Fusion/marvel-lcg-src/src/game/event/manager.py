@@ -246,6 +246,13 @@ class EventManager:
                     self.new_effect_created = False
                 if self.world.is_game_over:
                     break
+                # CORRECTIF (26/10/2026, pack Rachel Summers `rm`, rm013 Memory From The Future) : « ... and end this
+                # turn ». Une carte ne peut pas « passer » a la place du joueur : elle pose ce drapeau, et la boucle
+                # d'actions du tour s'arrete ici, comme si le joueur avait choisi de finir son tour. Remis a zero a
+                # chaque `BeginTurn`. Jamais pose par un autre heros.
+                if is_play_turn and player.flag.Get("RM_FIN_DE_TOUR"):
+                    player.flag.Set("RM_FIN_DE_TOUR", 0)
+                    break
 
                 # Clean all resource effect
                 # ObjectManager.EmptyPayingEffect()

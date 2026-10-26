@@ -1195,6 +1195,18 @@ class PlayerAction:
         return count_faces
 
     ################################################################################
+    # Avis au joueur
+    def NotifyNoResult(self, source: 'CardFace', notice: str) -> None:
+        """DIT au joueur qu'une partie de l'effet n'a pas ete resolue faute de resultat (« Then » apres une recherche vide) : une ligne
+        au journal et une bulle sur la carte (`choix_uniques`, champ `texte`). `notice` est une phrase ANGLAISE, traduite au plateau.
+        Signalement du 26/10/2026 : Safe House #30 ne piochait pas et personne ne savait pourquoi."""
+        from game.message import Message
+        player = self.GetPlayer()
+        Message.NoResultNotice_Text(player, source.GetDisplayName(), notice)
+        player.world.stat.RecordChoixUnique(
+            source.card.object_id, str(source.paper.card_id), source.paper.name, "", player.player_id, texte=notice)
+
+    ################################################################################
     # Hand Cards
     def DrawUp(self, size: int|Literal["Max"], by_effect: 'Effect') -> List['CardFace']:
         from game.message import Message
@@ -1304,13 +1316,25 @@ class PlayerAction:
             return []
         return player.AskDiscardFaces(player.reserve.Get(), (excess, excess), by_effect)
 
-    def DiscardRandomHandCards(self, size: int, by_effect: 'Effect', rule: Literal["", "IdentitySpecific"]="") -> List['CardFace']:
+    def DiscardRandomHandCards(self, size: int, by_effect: 'Effect', rule: Literal["", "IdentitySpecific"]="", exclude: 'Sequence[CardFace]'=()) -> List['CardFace']:
         from game.operate.faces import Faces
-        faces = self.GetRandomHandCards(size, rule)
-        Faces.DiscardAll(faces, by_effect)
+        faces = self.GetRandomHandCards(size, rule, exclude)
+        # CORRECTIF (25/10/2026, pack custom new_ultimate_winter_soldier, `uw`) : « discard a card from your
+        # hand AT RANDOM » devient un fait que les cartes peuvent lire. (1) `world.defausses_au_hasard` liste les
+        # faces tirees pendant le temps de la defausse : c'est ce qui distingue, dans `WhenCardWouldDiscard` /
+        # `AfterCardDiscard`, une defausse au hasard d'une autre (Phoenix, Winter Mask) ; (2) `world.stat` compte
+        # ces defausses par joueur et par round (Wolverine's Claws). Rien ne change pour les cartes existantes.
+        world = self.GetPlayer().world
+        precedentes = list(getattr(world, "defausses_au_hasard", []))
+        world.defausses_au_hasard = precedentes + list(faces)
+        try:
+            defaussees = Faces.DiscardAll(faces, by_effect)
+        finally:
+            world.defausses_au_hasard = precedentes
+        world.stat.RecordRandomDiscard(self.GetPlayer(), defaussees)
         return faces
 
-    def GetRandomHandCards(self, size: int, rule: Literal["", "IdentitySpecific"]="") -> List['CardFace']:
+    def GetRandomHandCards(self, size: int, rule: Literal["", "IdentitySpecific"]="", exclude: 'Sequence[CardFace]'=()) -> List['CardFace']:
         from game.card.face.base import ClassCard
         player = self.GetPlayer()
 
@@ -1321,10 +1345,14 @@ class PlayerAction:
                 if not ClassCard.IsType(face) or not face.IsClass("IdentitySpecific"):
                     faces.remove(face)
 
+        # CORRECTIF (25/10/2026, pack uw) : `exclude` ecarte des cartes du tirage (la carte qu'on est EN TRAIN de
+        # jouer, quand sa capacite se paie en defaussant au hasard : on ne peut pas se defausser soi-meme).
+        if exclude:
+            faces = [face for face in faces if face not in exclude]
         if len(faces) > size:
             from game.operate.rand import Rand
             return Rand.RandomChoice2(faces, size, player.world)
-        return player.hand_cards.Get()
+        return faces if exclude else player.hand_cards.Get()
 
     def DiscardAllHands(self, by_effect: 'Effect', finder: 'CardFinder|None'=None) -> int:
         from game.operate.faces import Faces

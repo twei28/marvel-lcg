@@ -39,6 +39,8 @@ class PlayerPhase:
 
     def BeginTurn(self) -> None:
         player = self.player
+        # CORRECTIF (26/10/2026, pack `rm`) : « end this turn » (rm013) ne vaut que pour le tour en cours.
+        player.flag.Set("RM_FIN_DE_TOUR", 0)
         player.controller.manager.OnBeginTurn()
         player.stat.OnBeginTurn()
         return
@@ -75,6 +77,30 @@ class PlayerPhase:
     def EndTurn(self):
         player = self.player
         player.stat.OnEndTurn()
+
+    # CORRECTIF (26/10/2026, pack Rachel Summers `rm`, rm007 Temporal Reversal) : les trois etapes de « At the end of this
+    # turn, perform each of the following in order » : defausser autant de cartes qu'on veut (et au moins jusqu'a la
+    # taille de main), piocher jusqu'a la taille de main, redresser toutes ses cartes. Les deux premieres sont celles de la
+    # fin de phase (`MayDiscardHandCardsAndDrawUpToMax`), la troisieme le meme perimetre que `EndPhase`. Appelee par
+    # `World.PlayerPhase` entre le tour qui finit et le tour supplementaire ; jamais pour un autre heros.
+    def FinDeTourSupplementaire(self) -> None:
+        from game.message import Message
+        from game.effect.rule import EndPhase
+        from game.operate.faces import Faces
+
+        player = self.player
+        message = Message.WhenPlayerTurnEnd(player, player.world.round_id)
+        self.MayDiscardHandCardsAndDrawUpToMax("Temporal Reversal", message)
+        if player.is_eliminated:
+            return
+
+        faces: List['CardFace'] = []
+        effect = EndPhase(player)
+        for face in player.GetControlCards():
+            faces.append(face)
+            for upgrade in face.GetInventoryDeck().Get():
+                faces.append(upgrade)
+        Faces.ReadyAll(faces, effect)
 
     # TODO: use trigger to rewrite?
     def EndPhase(self) -> None:

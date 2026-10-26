@@ -89,7 +89,10 @@ def executer_un_deck(game_dir, port, nom_deck):
         except Exception:
             options = []
         noms = {o.get("name") for o in options if isinstance(o, dict)}
+        # AJOUT (26/10/2026, pack wasp_hank_pym) : un heros « only by card abilities » n'offre ni « Change Form » ni, sans degats,
+        # « Recover » : on reconnait aussi le tour a une option « Play » hors mulligan. Additif.
         if {"Attack", "Thwart", "Change_Form", "Change Form", "Recover"} & noms \
+                or ("Play" in noms and "Resolve Mulligans" not in noms) \
                 or any(str(n).startswith("Change_To_") for n in noms if n):
             # CORRECTIF (31/08/2026) : on releve la main ICI, au moment precis
             # ou le tour du joueur s'ouvre, et une seule fois.

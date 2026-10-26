@@ -107,6 +107,20 @@ class PlayerSetup:
                                     # AJOUT PUR : aucune face existante ne porte ce drapeau.
                                     lambda effect, message:
                                         not getattr(face, 'hors_pile_identite', False),
+                                    # CORRECTIF (25/10/2026, pack hp Wasp Hank Pym) : « You can only change form by card
+                                    # abilities » (phrase IMPRIMEE sur la face) : le changement de forme LIBRE, une fois par
+                                    # tour, n'est plus offert. On lit le texte imprime, sans cle de `desc` ni card_id en
+                                    # dur. Les capacites de cartes passent par `ChangeToForm` et ne sont pas touchees.
+                                    lambda effect, message:
+                                        "can only change form by card abilities" not in (identity.paper.text or ""),
+                                    # CORRECTIF (26/10/2026, pack wt The Warriors Three) : « You can only change active hero when a
+                                    # card allows you to do so » : une face HEROS qui imprime « Active hero. » ne propose PAS le
+                                    # changement libre vers une AUTRE face heros (Fandral -> Hogun) ; seul le retour a l'alter ego
+                                    # reste libre (une fois par tour), et l'alter ego, lui, propose les trois heros. Lecture du
+                                    # texte imprime : aucune face existante ne porte « Active hero. ».
+                                    lambda effect, message:
+                                        not (Hero.IsType(identity) and Hero.IsType(face)
+                                             and "Active hero." in (identity.paper.text or "")),
                                 ],
                             ).SetFuncName("Change Form").SetName(name).NoOutOfPlayLimit()
                         )
