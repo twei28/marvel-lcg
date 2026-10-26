@@ -19,9 +19,6 @@ def GetAbilities() -> Sequence['Ability']:
     def compter(effect: 'Effect', message: 'Message2') -> None:
         CompteurPuisFin(effect, Joueur(effect), 'dojo', 3)
 
-    def ennemi_pile(effect: 'Effect', message: 'Message.AfterUnitDefeatedUnit') -> bool:
-        return message.excess_damage == 0
-
     def annexe_pile(effect: 'Effect', message: 'Message.AfterUnitDefeatedScheme') -> bool:
         return message.excess_thwart == 0
 

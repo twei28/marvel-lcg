@@ -2100,5 +2100,149 @@
   "encounters": [],
   "max_id": "wn011"
  },
- "checksum": "ed5ef827389847fdd004407d624eff6f89f0be8308759347592e8ddbcd5f73dc"
+ "218. Custom (U.S. Agent)": {
+  "name": "us_agent",
+  "scenarios": [],
+  "heroes": [
+   "us_agent"
+  ],
+  "encounters": [],
+  "max_id": "us016"
+ },
+ "219. Custom (New Ultimate Winter Soldier)": {
+  "name": "new_ultimate_winter_soldier",
+  "scenarios": [],
+  "heroes": [
+   "new_ultimate_winter_soldier"
+  ],
+  "encounters": [],
+  "max_id": "uw018"
+ },
+ "220. Custom (Roz)": {
+  "name": "roz",
+  "scenarios": [],
+  "heroes": [
+   "roz"
+  ],
+  "encounters": [],
+  "max_id": "rz020"
+ },
+ "221. Custom (Spider-Punisher)": {
+  "name": "spider_punisher",
+  "scenarios": [],
+  "heroes": [
+   "spider_punisher"
+  ],
+  "encounters": [],
+  "max_id": "sq017"
+ },
+ "222. Custom (Wasp Hank Pym)": {
+  "name": "wasp_hank_pym",
+  "scenarios": [],
+  "heroes": [
+   "wasp_hank_pym"
+  ],
+  "encounters": [],
+  "max_id": "hp018"
+ },
+ "223. Custom (Batgirl)": {
+  "name": "batgirl",
+  "scenarios": [],
+  "heroes": [
+   "batgirl"
+  ],
+  "encounters": [],
+  "max_id": "bg022"
+ },
+ "224. Custom (Starjammers - Corsair)": {
+  "name": "corsair",
+  "scenarios": [],
+  "heroes": [
+   "corsair",
+   "corsair_making_amends"
+  ],
+  "encounters": [],
+  "max_id": "cr019"
+ },
+ "checksum": "fc436144286e2d92201304c4414b267d30b43620f4ccf21129ed79f980619f06",
+ "225. Custom (Starjammers - Hepzibah)": {
+  "name": "hepzibah",
+  "scenarios": [],
+  "heroes": [
+   "hepzibah"
+  ],
+  "encounters": [],
+  "max_id": "hz018"
+ },
+ "226. Custom (Starjammers - Raza)": {
+  "name": "raza",
+  "scenarios": [],
+  "heroes": [
+   "raza"
+  ],
+  "encounters": [],
+  "max_id": "rl020"
+ },
+ "227. Custom (Starjammers - Ch'od)": {
+  "name": "chod",
+  "scenarios": [],
+  "heroes": [
+   "chod"
+  ],
+  "encounters": [],
+  "max_id": "co019"
+ },
+ "228. Custom (Starjammers - Smasher)": {
+  "name": "smasher",
+  "scenarios": [],
+  "heroes": [
+   "smasher"
+  ],
+  "encounters": [],
+  "max_id": "sz018"
+ },
+ "229. Custom (Batman)": {
+  "name": "batman",
+  "scenarios": [],
+  "heroes": [
+   "batman"
+  ],
+  "encounters": [],
+  "max_id": "bm025"
+ },
+ "230. Custom (The Warriors Three)": {
+  "name": "warriors_three",
+  "scenarios": [],
+  "heroes": [
+   "warriors_three",
+   "warriors_three_aggression"
+  ],
+  "encounters": [],
+  "max_id": "wt025"
+ },
+ "231. Custom (Hellfire Hunt - Sunspot)": {
+  "name": "sunspot_hellfire",
+  "scenarios": [],
+  "heroes": [
+   "sunspot_hellfire"
+  ],
+  "encounters": [],
+  "max_id": "so016"
+ },
+ "232. Custom (Hellfire Hunt - Rachel Summers)": {
+  "name": "rachel_summers",
+  "scenarios": [],
+  "heroes": [
+   "rachel_summers"
+  ],
+  "encounters": [],
+  "max_id": "rm016"
+ },
+ "233. Custom (Starjammers - Aspects)": {
+  "name": "starjammers_aspects",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "sy050"
+ }
 }

@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Roz",
+    "metadata": {
+        "url": "",
+        "author": "jakxin",
+        "note": "Pack « Roz » (jakxin). L'auteur FOURNIT une decklist imprimee (Roz Decklist.png, 25/10/2026) : player_deck la recopie telle quelle (PROCESSUS-HEROS etape 3) = aspect Leadership (13 cartes) + cartes Basic (12). Resolution des noms vers les card_id officiels : Maria Hill 01067, Make the Call 01071 x2, Side-By-Side 45016 x2, Command Team 23016, Team Training 04016, The Triskelion 01073, Inspired 01074 x2, Reinforced Suit 12018 x2, Sidekick 45015 ; Aneka 51022, Ayo 51023, Mockingbird 01083, Nick Fury 01084, Okoye 51024, The Power in All of Us 13024, Dora Milaje 51030, Helicarrier 01092, Sky-Destroyer 27055. Energy/Genius/Strength = rz013-rz015 (reskins d'art de la main de l'auteur, comme hc023-hc026 de Hellcat).",
+        "collision_note": "HOMONYMES : « * Roz Solomon » existe deja comme ALLIE (ra003, pack rainy, Thor Jane Foster) ; « * Thor » existe comme allie et comme heros ; aucun module du pack ne cherche par ces noms."
+    },
+    "hero": [
+        "rz001a,rz001b"
+    ],
+    "hero_deck": [
+        "rz002",
+        "rz003",
+        "rz004",
+        "rz005",
+        "rz006",
+        "rz007",
+        "rz008",
+        "rz009",
+        "rz009",
+        "rz010",
+        "rz010",
+        "rz011",
+        "rz011",
+        "rz012",
+        "rz012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "rz016"
+    ],
+    "nemesis_set": [
+        "rz017",
+        "rz018",
+        "rz019",
+        "rz020",
+        "rz020"
+    ],
+    "player_deck": [
+        "01067",
+        "01071",
+        "01071",
+        "45016",
+        "45016",
+        "23016",
+        "04016",
+        "01073",
+        "01074",
+        "01074",
+        "12018",
+        "12018",
+        "45015",
+        "51022",
+        "51023",
+        "01083",
+        "01084",
+        "51024",
+        "rz013",
+        "rz014",
+        "rz015",
+        "13024",
+        "51030",
+        "01092",
+        "27055"
+    ]
+}

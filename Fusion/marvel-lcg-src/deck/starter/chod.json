@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Ch'od",
+    "metadata": {
+        "url": "",
+        "author": "Phenexian and Mysteltainn",
+        "note": "Pack « Ch'od » (Starjammers, Phenexian et Mysteltainn). Pas de decklist imprimee : player_deck vide (PROCESSUS-HEROS etape 3)."
+    },
+    "hero": [
+        "co001a,co001b"
+    ],
+    "hero_deck": [
+        "co002",
+        "co003",
+        "co003",
+        "co003",
+        "co004",
+        "co004",
+        "co004",
+        "co005",
+        "co005",
+        "co005",
+        "co006",
+        "co007",
+        "co008",
+        "co009",
+        "co010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "co011"
+    ],
+    "nemesis_set": [
+        "co012",
+        "co013",
+        "co014",
+        "co015",
+        "co016"
+    ],
+    "player_deck": []
+}

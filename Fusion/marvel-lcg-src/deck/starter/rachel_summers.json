@@ -1,0 +1,41 @@
+{
+ "version": "0.5.8",
+ "name": "Marvel Girl",
+ "metadata": {
+  "url": "",
+  "author": "Dipsome",
+  "note": "Pack « Rachel Summers / Marvel Girl » (Dipsome, campagne Hellfire Hunt). Le dossier du zip ne contient pas de decklist : player_deck vide (PROCESSUS-HEROS etape 3)."
+ },
+ "hero": [
+  "rm001a,rm001b"
+ ],
+ "hero_deck": [
+  "rm002",
+  "rm003",
+  "rm004",
+  "rm005",
+  "rm005",
+  "rm006",
+  "rm006",
+  "rm007",
+  "rm007",
+  "rm008",
+  "rm009",
+  "rm010",
+  "rm010",
+  "rm011",
+  "rm012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "rm013"
+ ],
+ "nemesis_set": [
+  "rm014",
+  "rm015",
+  "rm016",
+  "rm016",
+  "rm016"
+ ],
+ "player_deck": []
+}

@@ -22,8 +22,11 @@ def GetAbilities() -> Sequence['Ability']:
             Villains.BuildVillainDeck(mis_de_cote[:1], effect)
             sous_fifre = Villains.RevealNextVillain(premier, effect)
             if sous_fifre is not None:
-                imprime = sous_fifre.printed_health if hasattr(sous_fifre, 'printed_health') else sous_fifre.max_health
-                sous_fifre.ResetHealth(effect, imprime)
+                # « the NUMERAL (ignoring the per-player icon) in their printed hit point value » : `printed_health_numeral` (14), pas
+                # `printed_health` (14 x joueurs : 28 a deux heros, puis +5 par heros de In the Crosshairs = 38 au lieu de 24).
+                # `ResetHealth(effect, n)` ne fixait que les PV COURANTS : le MAXIMUM restait a `printed_health` (28). `SetBaseHealth` deplace
+                # la base, le maximum et les PV courants du meme ecart (rien a faire a un heros : 14 - 14 = 0).
+                sous_fifre.SetBaseHealth(sous_fifre.printed_health_numeral, effect)
                 Find.FindAndPutIntoPlay(effect, premier, name="In the Crosshairs", card_type=Attachment)
         Villains.SetRule(effect, Villains.Rule(the_villain="Active"))
         if punisher is not None:

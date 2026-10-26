@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Sunspot (Hellfire Hunt)",
+    "metadata": {
+        "url": "",
+        "auteur": "Dipsome",
+        "note": "Deck de depart reconstruit depuis le zip de l'auteur (dossier Hero/Sunspot de la campagne Hellfire Hunt : 23 images, aucune decklist d'aspect fournie : player_deck VIDE, decision utilisateur du 06/09/2026). Le deck est celui du heros seul ; la campagne Hellfire Hunt n'est pas portee."
+    },
+    "hero": [
+        "so001a,so001b"
+    ],
+    "hero_deck": [
+        "so002",
+        "so003",
+        "so003",
+        "so004",
+        "so004",
+        "so005",
+        "so005",
+        "so006",
+        "so006",
+        "so007",
+        "so008",
+        "so008",
+        "so009",
+        "so010",
+        "so011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "so012"
+    ],
+    "nemesis_set": [
+        "so013",
+        "so014",
+        "so015",
+        "so015",
+        "so016"
+    ],
+    "player_deck": []
+}

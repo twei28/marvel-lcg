@@ -125,7 +125,7 @@ def EnregistrerLeReleve(effect: 'Effect', collecteur: 'Callable[[Effect, Message
     donc pas poser un second `WriteCampaignLogAtGameOver` (le dernier a ecrire gagnerait) : il declare un collecteur et l'estampille sur le
     monde, que chaque ecriture rejoue (voir `mts/campaign.py`)."""
     world = effect.world
-    if not hasattr(world, 'campagne_collecteurs'):
+    if getattr(world, 'campagne_collecteurs', None) is None:
         world.campagne_collecteurs = []
     world.campagne_collecteurs.append(collecteur)
     world.campagne_estampille = estampille

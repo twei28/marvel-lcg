@@ -129050,5 +129050,6321 @@
    "custom": "Merlin"
   }
  ],
- "checksum": "e648bfaad78b3444eda68ae9410ab6b18d68f49216f3b8b878ab9ce742f6625d"
+ "us_agent": [
+  {
+   "card_id": "us001a",
+   "type": "Hero",
+   "name": "* U.S. Agent",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "6"
+   },
+   "traits": [
+    "AVENGER",
+    "SOLDIER"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<i>Bolster</i> — <b>Response</b>: After you defend, ready an upgrade you control.\n<i>\"...tell 'em I'm busy.\"</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us001b",
+   "type": "AlterEgo",
+   "name": "* John Walker",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "SOLDIER"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<i>Master of None</i> — You may include cards in your deck from any aspect. You cannot include allies or basic cards.\n<b>Action</b>: Exhaust John Walker → search your deck and discard pile for the U.S. Agent's Shield upgrade and add it to your hand.",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us002",
+   "type": "Event",
+   "name": "Bouncing Bulwark",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "TACTIC"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard U.S. Agent's Shield → deal 4 damage to an enemy. Then, if this attack deals 2 or more excess damage, put U.S. Agent's Shield into play from your discard pile.",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us003",
+   "type": "Event",
+   "name": "Deflection",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<b>Hero Response</b>: After an enemy deals 2 or more damage to you, if U.S. Agent's Shield is in play, stun up to 2 minions.\n<i>\"Dammit, not another shield!\" —U.S. Agent</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us004",
+   "type": "Event",
+   "name": "Reckless",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "TACTIC",
+    "THWART"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Take X damage → remove X threat from a scheme and deal X damage to an enemy (to a maximum of 4.)\n<i>\"Maybe this wasn't such a good idea.\" —U.S. Agent</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us005",
+   "type": "Event",
+   "name": "Roundhouse",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If you paid for this card using a Protection <i>(green)</i> or Justice <i>(yellow)</i> card, confuse that enemy.\n<i>\"Come get some, loser.\" —U.S. Agent</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us006",
+   "type": "Support",
+   "name": "* Walker's Chopper",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "VEHICLE"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<b>Alter-Ego Response</b>: After you exhaust John Walker to recover or search for U.S. Agent's Shield, exhaust Walker's Chopper → change to hero form, then ready U.S. Agent.",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us007",
+   "type": "Upgrade",
+   "name": "* Convincer",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero",
+    "Restricted": "1",
+    "Uses": "3,charge"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "Restricted. U.S. Agent gets +1 ATK.\nUses (3 charge counters.)\n<b>Hero Response</b>: After you damage a minion with base hit points of 5 or less, exhaust Convincer and remove 1 charge counter from here → stun that minion.",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us008",
+   "type": "Upgrade",
+   "name": "Obstinance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<b>Hero Interrupt</b>: When you exhaust to use a basic power but before resolving its effects, exhaust Obstinance and spend 1 [mental] or [physical] resource → ready U.S. Agent.\n<i>\"Party time!\" —U.S. Agent</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us009",
+   "type": "Upgrade",
+   "name": "* Solid Gear",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "<b>Hero Interrupt</b>: When an enemy initiates an attack, exhaust Solid Gear → reduce the resource cost of the next Protection <i>(green)</i> card you play this phase by 2.\n<i>\"...it itches.\" —U.S. Agent</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us010",
+   "type": "Upgrade",
+   "name": "* U.S. Agent's Machine Gun",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero",
+    "Restricted": "1",
+    "Uses": "3,ammo"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "Restricted. U.S. Agent gets +1 ATK.\nUses (3 ammo counters.)\n<b>Hero Response</b>: After you damage an enemy, remove 1 ammo counter from here → deal 2 damage to each minion engaged with you.",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us011",
+   "type": "Upgrade",
+   "name": "* U.S. Agent's Shield",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "ITEM",
+    "WEAPON"
+   ],
+   "set_name": "U.S. Agent",
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When you are attacked by an enemy, exhaust U.S. Agent's Shield → deal 2 damage to the attacker or prevent 1 damage from this attack.",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us012",
+   "type": "Obligation",
+   "name": "Forced Leave",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "GiveTo": "John Walker"
+   },
+   "traits": [],
+   "set_name": "U.S. Agent",
+   "text": "<b><i>Give to the John Walker player.</i></b>\nFlip to alter-ego form. Choose:\n• Exhaust John Walker and discard U.S. Agent's Shield → remove this obligation from the game.\n• Discard 1 card from your hand at random → discard this obligation.\n<i>\"Don't touch the remote.\" —John Walker</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us013",
+   "type": "Minion",
+   "name": "* Nuke",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1",
+    "Nemesis": "U.S. Agent"
+   },
+   "traits": [
+    "CYBORG",
+    "SOLDIER"
+   ],
+   "set_name": "U.S. Agent Nemesis",
+   "text": "<b>Forced Interrupt</b>: When Nuke makes an attack against you, discard the top card from your deck. If an Aggression <i>(red)</i> card, or a card with a printed [physical] resource was discarded this way, that attack deals 1 additional damage.\n<i>\"I am the defender of the American dream!\"</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us014",
+   "type": "SideScheme",
+   "name": "Battle of the Patriots",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Boost": "2",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "U.S. Agent Nemesis",
+   "text": "Aggression <i>(red)</i>, Basic <i>(gray)</i>, and Leadership <i>(blue)</i> cards cost 1 additional resource.\n<i>The insidious Scourge is none other than Nuke, the cybernetically enhanced, pill-popping patriot!</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us015",
+   "type": "Treachery",
+   "name": "Seeing Red",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "U.S. Agent Nemesis",
+   "text": "Discard the top 2 cards from your deck. If a card with a printed [physical] resource was discarded this way, take 2 indirect damage.\n<i>\"Give me a red. A RED.\" —Nuke</i>",
+   "custom": "DesignHacker"
+  },
+  {
+   "card_id": "us016",
+   "type": "Attachment",
+   "name": "Spear of Odin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "U.S. Agent Nemesis",
+   "text": "Attach to the enemy with the most remaining hit points.\n<b>Forced Interrupt</b>: When attached enemy deals damage to your hero, discard an upgrade you control, then discard Spear of Odin.\n<i>\"This weapon is property of H.A.M.M.E.R. and Director of Security Osborn.\" —Nuke</i>",
+   "custom": "DesignHacker"
+  }
+ ],
+ "new_ultimate_winter_soldier": [
+  {
+   "card_id": "uw001a",
+   "type": "Hero",
+   "name": "* Winter Soldier",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "EARTH-6160",
+    "OPPOSITION",
+    "SOLDIER"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<i>Healing Factor</i> — <b>Response</b>: After the villain phase begins, heal 2 damage.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw001b",
+   "type": "AlterEgo",
+   "name": "* Logan",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "6",
+    "HS": "6"
+   },
+   "traits": [
+    "EARTH-6160",
+    "MUTANT",
+    "SOLDIER"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<i>Shuck!</i> — <b>Setup</b>: Search your deck and discard pile for the Wolverine's Claws upgrade and put it into play.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw002",
+   "type": "Upgrade",
+   "name": "* Wolverine's Claws",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Class": "Hero",
+    "Permanent": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "Permanent.\n<b>Resource</b>: Exhaust Wolverine's Claws → generate a [wild] resource for an [[Attack]] event. That event deals 1 additional damage (to a maximum of 3) for each card you discarded from your hand at random this round.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw003",
+   "type": "Ally",
+   "name": "* Phoenix",
+   "subtitle": "Jean Grey",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "EARTH-6160"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b>Hero Interrupt</b>: When Phoenix is discarded from your hand at random, put her into play under your control.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw004",
+   "type": "Event",
+   "name": "Deranged Burst",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard 1 card from your hand at random → deal 6 damage to an enemy, this attack deals X additional damage, where X is equal to the numeral in the printed resource cost of that card. If you exhausted Wolverine's Claws to play this card, this attack gains piercing.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw005",
+   "type": "Event",
+   "name": "Wild Slash",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b>Hero Action</b>: Discard 1 card from your hand at random → make the following attack up to X times, where X is equal to the numeral in the printed resource cost of that card:\n• Take 1 damage → deal 3 damage to an enemy.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw006",
+   "type": "Event",
+   "name": "Berserker Fury",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard 1 card from your hand at random → deal 2 damage to an enemy. This attack deals X additional damage, where X is equal to the numeral in the printed resource cost of that card. If this attack defeated an enemy, you may take 2 damage to repeat this ability.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw007",
+   "type": "Event",
+   "name": "Last Resort",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Discard 1 card from your hand at random → remove 1 threat from a scheme. Remove X additional threat from that scheme, where X is equal to the numeral in the printed resource cost of that card. If this removes the last threat from that scheme, draw 2 cards.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw008",
+   "type": "Event",
+   "name": "Desperate Regenerate",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b>Action</b>: Draw 2 cards. Discard 1 card from your hand at random. Choose:\n• Heal 3 damage from your identity.\n• Discard each stunned and confused status card from your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw009",
+   "type": "Upgrade",
+   "name": "* Winter Mask",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "EARTH-6160",
+    "ITEM"
+   ],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b>Hero Response</b>: After you discard a card from your hand at random, take 1 damage → draw 1 card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw010",
+   "type": "Upgrade",
+   "name": "Adamantium Skeleton",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "You get +4 hit points.\nWinter Soldier gets +1 ATK and his basic attacks gain piercing.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw011",
+   "type": "Upgrade",
+   "name": "Mission Objective",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "Hero form only. Attach to a minion.\n<b>Hero Response</b>: After the attached minion is defeated by Winter Soldier, remove 3 threat from a scheme. Winter Soldier may take 1 damage to attach this card to another minion.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw012",
+   "type": "Upgrade",
+   "name": "\"This is Your Enemy\"",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "Hero form only. Attach to a minion.\n<b>Hero Response</b>: After the attached minion is defeated by Winter Soldier, Winter Soldier draws 3 cards and discards 1 card from his hand at random.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw013",
+   "type": "Obligation",
+   "name": "Live with the Burden",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "GiveTo": "Logan"
+   },
+   "traits": [],
+   "set_name": "New Ultimate Winter Soldier",
+   "text": "<b><i>Give to the Logan player.</i></b>\n<b>When Revealed</b>: Discard 1 card from your hand at random. Take X damage, where X is equal to the numeral in the printed resource cost of that card. You may exhaust your identity to prevent 2 of that damage. Discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw014",
+   "type": "SideScheme",
+   "name": "Directorate X",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "New Ultimate Winter Soldier Nemesis",
+   "text": "<b>Forced Response</b>: After the villain phase ends, if [[Earth-6160]] Alonya Prostovich is in play, the engaged player discards cards from the encounter deck until a minion is discarded and reveal it. If it is not in play, the first player finds it and reveals it.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw015",
+   "type": "Minion",
+   "name": "* Alonya Prostovich",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "0",
+    "SCH": "0",
+    "Nemesis": "Winter Soldier"
+   },
+   "traits": [
+    "EARTH-6160",
+    "DIRECTORATE X"
+   ],
+   "set_name": "New Ultimate Winter Soldier Nemesis",
+   "text": "[star] <b>Forced Interrupt</b>: When Alonya Prostovich activates, place 2 threat on each scheme instead.\n<i>(Winter Soldier's nemesis minion.)</i>\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw016",
+   "type": "Attachment",
+   "name": "Phoenix Specimen Brainwashing",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "New Ultimate Winter Soldier Nemesis",
+   "text": "Attach to your identity.\n[star] <b>Forced Response</b>: After the end of the villain phase, discard 1 card from your hand at random, place X threat on a scheme, where X is equal to the numeral in the printed resource cost of that card.\n<b>Hero Action</b>: Spend a [mental] resource → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw017",
+   "type": "Minion",
+   "name": "* X-S Sentinel I",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "EARTH-6160",
+    "SENTINEL"
+   ],
+   "set_name": "New Ultimate Winter Soldier Nemesis",
+   "text": "[star] X-S Sentinel I's attack gains ranged, overkill and piercing.\n[star] <b>Boost</b>: This attack gains ranged, overkill and piercing.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "uw018",
+   "type": "Minion",
+   "name": "* X-S Sentinel II",
+   "subtitle": "",
+   "desc": {
+    "HP": "7",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "3",
+    "Quickstrike": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "EARTH-6160",
+    "SENTINEL"
+   ],
+   "set_name": "New Ultimate Winter Soldier Nemesis",
+   "text": "Quickstrike. Villainous.\n[star] <b>Forced Response</b>: After X-S Sentinel II activates, heal 3 damage from X-S Sentinel II.",
+   "custom": "Dipsome"
+  }
+ ],
+ "roz": [
+  {
+   "card_id": "rz001a",
+   "type": "Hero",
+   "name": "* Roz",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "1",
+    "HS": "5"
+   },
+   "traits": [
+    "S.H.I.E.L.D",
+    "SPY",
+    "WAKANDA"
+   ],
+   "set_name": "Roz",
+   "text": "<i>Driven</i> — <b>Response</b>: After you use a basic power, resolve the \"<b>Special</b>\" ability on another [[Wakanda]] card you control.\n<b>Special</b>: Ready another friendly character (limit once per round).\n<i>\"I dated Thor and lived. When do I start?\"</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz001b",
+   "type": "AlterEgo",
+   "name": "* Rosalind Solomon",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3*",
+    "HS": "6"
+   },
+   "traits": [
+    "S.H.I.E.L.D",
+    "SPY",
+    "WAKANDA"
+   ],
+   "set_name": "Roz",
+   "text": "<b>Setup</b>: Find a [[Wakanda]] upgrade and add it to your hand.\n[star] <i>Agent E-23</i> — <b>Response</b>: After you make a basic recovery, search your deck for a [[S.H.I.E.L.D]] or [[Wakanda]] card and add it to your hand.",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz002",
+   "type": "Ally",
+   "name": "* Thor",
+   "subtitle": "Jane Foster",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD"
+   ],
+   "set_name": "Roz",
+   "text": "Reduce the cost of this card by 1 for each \"<b>Special</b>\" ability resolved this turn.\nEach Thor ally gains \"<b>Response</b>: After this card uses a basic power, resolve the \"<b>Special</b>\" on a [[Wakanda]] card you control.\"\n<i>\"To Hel with your questions.\"</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz003",
+   "type": "Ally",
+   "name": "* Thor",
+   "subtitle": "Odinson",
+   "desc": {
+    "Cost": "4",
+    "HP": "4",
+    "ATK": "3*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD"
+   ],
+   "set_name": "Roz",
+   "text": "Reduce the cost to play this card by 2 if you resolved a \"<b>Special</b>\" ability this turn.\nEach Thor ally gains \"<b>Response</b>: After you resolve a \"<b>Special</b>\" ability on a card you control, deal 1 damage to an enemy (limit once per turn).\"",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz004",
+   "type": "Upgrade",
+   "name": "Vibranium Gun",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON",
+    "WAKANDA"
+   ],
+   "set_name": "Roz",
+   "text": "Restricted.\nRoz's basic attacks gain ranged.\n<b>Special</b> <i>(attack)</i>: Deal 2 damage to an enemy. This attack gains piercing.\n<i>\"I assume you've been handling one of these since grammar school.\" —Okoye</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz005",
+   "type": "Upgrade",
+   "name": "Wakandan Jumpsuit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH",
+    "WAKANDA"
+   ],
+   "set_name": "Roz",
+   "text": "You get +3 hit points.\n<b>Special</b> <i>(thwart)</i>: Remove 2 threat from a scheme.\n<i>\"I'm not cocky, sir. Just ready to finally earn my pay.\" —Roz</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz006",
+   "type": "Upgrade",
+   "name": "Wakandan Stealth Tech",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WAKANDA"
+   ],
+   "set_name": "Roz",
+   "text": "Roz gets +1 DEF.\n<b>Special</b>: Draw 1 card (limit once per round).\n<b>Special</b>: Reduce the cost of the next card you play this turn by 1 (limit once per round).",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz007",
+   "type": "Upgrade",
+   "name": "Agent of Wakanda",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE",
+    "WAKANDA"
+   ],
+   "set_name": "Roz",
+   "text": "Roz gets +1 THW.\n<b>Response</b>: After you resolve a \"<b>Special</b>\" ability on another card, place 1 agent counter here.\n<b>Special</b>: Exhaust Agent of Wakanda and remove 6 agent counters → stun or confuse an enemy.",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz008",
+   "type": "Support",
+   "name": "* A.T.M.C.P.",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "VEHICLE",
+    "WAKANDA"
+   ],
+   "set_name": "Roz",
+   "text": "You gain the [[Aerial]] trait.\n<b>Special</b>: Exhaust A.T.M.C.P. → choose 1:\n• Ready your identity.\n• Change form.\n<i>\"Please tell me it flies.\" —Roz</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz009",
+   "type": "Event",
+   "name": "Trained Shots",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Roz",
+   "text": "<b>Hero Action</b>: Deal 2 damage to an enemy. Resolve the \"<b>Special</b>\" ability on a [[Wakanda]] upgrade. Resolve the \"<b>Special</b>\" ability on a [[Wakanda]] upgrade.\n<i>\"What's one more dead troll in my dreams?\"</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz010",
+   "type": "Event",
+   "name": "Negotiator",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Roz",
+   "text": "<b>Hero Action</b>: Remove 2 threat from a scheme. Resolve the \"<b>Special</b>\" ability on a [[Wakanda]] upgrade. Resolve the \"<b>Special</b>\" ability on a [[Wakanda]] upgrade.\n<i>\"Start talking while you still can.\" —Roz</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz011",
+   "type": "Event",
+   "name": "Nimble",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "set_name": "Roz",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent 3 of that damage. Resolve the \"<b>Special</b>\" ability of a [[Wakanda]] card you control.\n<i>\"Are all ice giants this tough?\"</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz012",
+   "type": "Event",
+   "name": "Hand-to-Hand",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Roz",
+   "text": "<b>Response</b>: After a minion or side scheme enters play, resolve the \"<b>Special</b>\" ability on 1 [[Wakanda]] card you control.\n<i>\"T'Challa, things just got messy!\"</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz013",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz014",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz015",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz016",
+   "type": "Obligation",
+   "name": "Weighed Down",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Rosalind Solomon"
+   },
+   "traits": [],
+   "set_name": "Roz",
+   "text": "<b><i>Give to the Rosalind Solomon player.</i></b>\n<b>Forced Response</b>: After you resolve the \"<b>Special</b>\" ability on a card you control, take 1 damage.\n<b>Alter-Ego Action</b>: Take 1 damage for each card you control with a \"<b>Special</b>\" ability (to a maximum of 5 damage). If you take:\n• 2 or fewer damage → discard this card.\n• 3 or more damage → remove this card from the game.",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz017",
+   "type": "Minion",
+   "name": "* Dario Agger",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "3",
+    "Boost": "2",
+    "Nemesis": "Roz"
+   },
+   "traits": [
+    "ROXXON"
+   ],
+   "set_name": "Roz Nemesis",
+   "text": "<b>Forced Interrupt</b>: When a player would attack Dario Agger, that player must discard an upgrade or support from their hand or play area. If no card is discarded this way, Dario Agger cannot be defeated by this attack.\n<i>(Roz's nemesis minion.)</i>\n<i>\"I will sue you into oblivion for this assault.\"</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz018",
+   "type": "SideScheme",
+   "name": "Legal Council",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Roz Nemesis",
+   "text": "<b>Forced Interrupt</b>: When you would exhaust or use a \"<b>Special</b>\" ability on an upgrade you control, spend 1 resource of any type or cancel its effects.\n<i>Oh great, that's what we need: Dario Agger, who can turn into a literal minotaur, is suing us. We have to tread carefully.</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz019",
+   "type": "Attachment",
+   "name": "* Minotaur",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "CREATURE"
+   ],
+   "set_name": "Roz Nemesis",
+   "text": "Attach to Dario Agger. If you cannot, this card gains incite 1 and surge.\nDario Agger gets +3 hit points and gains retaliate 1.\n[star] Dario Agger attacks gain overkill.\n<i>\"Pillage and destroy. Murder at will. Burn everything to the ground.\"</i>",
+   "custom": "jakxin"
+  },
+  {
+   "card_id": "rz020",
+   "type": "Attachment",
+   "name": "Lawyers",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "PERSONA"
+   ],
+   "set_name": "Roz Nemesis",
+   "text": "Attach to Dario Agger. Otherwise, attach to the villain.\nAttached character gains villainous. If the attached character is the villain, it gets an additional boost card when it schemes.\n<b>Action</b>: Spend 2 resources of any type → discard this card.\n<i>\"You've just been served.\"</i>",
+   "custom": "jakxin"
+  }
+ ],
+ "spider_punisher": [
+  {
+   "card_id": "sq001a",
+   "type": "Hero",
+   "name": "* Spider-Punisher",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "EARTH-71928",
+    "WEB-WARRIOR"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "[star] Spider-Punisher's attacks from [[Web-Shooter]] upgrades gain ranged.\n<i>Web-Sling</i> — <b>Response</b>: After you ready your cards at the end of the player phase, for each 2 upgrades you readied this way, deal 1 damage to an enemy or remove 1 threat from a scheme. (Limit 3 times per round.)",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq001b",
+   "type": "AlterEgo",
+   "name": "* Peter Parker",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "GENIUS"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<i>Vengeance</i> — <b>Action</b>: Search your deck and discard pile for a [[Web-Shooter]] upgrade and add it to your hand. (Limit once per phase.)",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq002",
+   "type": "Event",
+   "name": "Enhanced Combat Sense",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Spider-Punisher",
+   "text": "[star] You can exhaust any number of [[Weapon]] or [[Tech]] upgrades you control to generate that many [wild] resources while paying for this card.\n<b>Hero Interrupt</b>: When an encounter card is revealed from the encounter deck, discard it. For each upgrade you exhausted to pay for this card, deal 1 damage to an enemy or remove 1 threat from a scheme.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq003",
+   "type": "Event",
+   "name": "Point Blank",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. You may exhaust up to 2 [[Weapon]] upgrades you control. For each exhausted this way, deal 3 damage to that enemy.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq004",
+   "type": "Event",
+   "name": "Web Snatch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b>: Stun an enemy → search your deck and discard pile for an upgrade and add it to your hand. You may choose to discard an attachment from the villain's play area instead.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq005",
+   "type": "Upgrade",
+   "name": "Neighborhood Watch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "You gain the [[Aerial]] trait when 2 or more upgrades you control are exhausted.\n<b>Hero Action</b>: If you have the [[Aerial]] trait, exhaust this card → ready Spider-Punisher.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq006",
+   "type": "Upgrade",
+   "name": "With Great Firepower",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Resource</b>: Exhaust this card → generate a [wild] resource for an upgrade ability.\n<b>Alter-Ego Action</b>: Exhaust this card → play a [[Weapon]] or [[Tech]] upgrade from your hand, reducing its cost by 2.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq007",
+   "type": "Support",
+   "name": "Concrete Perch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b>: Exhaust Concrete Perch and X [[Weapon]] or [[Tech]] upgrades you control (to a maximum of 4 upgrades) → look at the top X cards of the encounter deck, and return them to the top of the encounter deck in any order.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq008",
+   "type": "Upgrade",
+   "name": "Armor-Piercing Rounds",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON",
+    "WEB-SHOOTER"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Spend a [mental] resource and exhaust this card → deal 2 damage to an enemy. If that enemy has a tough status card, deal 5 damage instead. This attack gains piercing.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq009",
+   "type": "Upgrade",
+   "name": "EMP Rounds",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON",
+    "WEB-SHOOTER"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b>: Spend a [energy] resource and exhaust this card → stun or confuse a minion. You may shuffle this card into your deck to stun or confuse the villain instead.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq010",
+   "type": "Upgrade",
+   "name": "High Explosive Rounds",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON",
+    "WEB-SHOOTER"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Spend a [physical] resource and exhaust this card → deal 3 damage to an enemy. This attack gains overkill. If this attack defeats an enemy, draw 1 card.\n<i>\"The hunt ends loud.\" - Spider-Punisher</i>",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq011",
+   "type": "Upgrade",
+   "name": "Incendiary Rounds",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON",
+    "WEB-SHOOTER"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Spend 1 resource of any type and exhaust this card → deal 3 damage to an enemy. Reduce this damage by 1 for each other enemy in play, to a maximum of 2. Then deal 1 damage to that many other enemies.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq012",
+   "type": "Upgrade",
+   "name": "Swing and Reload",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Spider-Punisher",
+   "text": "<b>Hero Action</b>: If you have the [[Aerial]] trait, exhaust this card → ready another upgrade you control.\n<b>Hero Interrupt</b>: When you would take any amount of damage, discard this card → prevent that damage.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq013",
+   "type": "Obligation",
+   "name": "Punisher No More",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Peter Parker"
+   },
+   "traits": [],
+   "set_name": "Spider-Punisher",
+   "text": "<b><i>Give to the Peter Parker player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Discard 2 [[Web-Shooter]] upgrades from play. Remove Punisher No More from the game.\n• Exhaust Peter Parker → discard this obligation.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq014",
+   "type": "Minion",
+   "name": "* Green Goblin",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "3",
+    "Nemesis": "Spider-Punisher",
+    "Toughness": "1"
+   },
+   "traits": [
+    "ELITE",
+    "GOBLIN"
+   ],
+   "set_name": "Spider-Punisher Nemesis",
+   "text": "Toughness.\n<b>Forced Interrupt</b>: When Green Goblin attacks you, he attacks an ally you control instead (if able).\n<i>(Spider-Punisher's nemesis minion.)</i>",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq015",
+   "type": "SideScheme",
+   "name": "The Goblin's Ultimatum",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "2"
+   },
+   "traits": [],
+   "set_name": "Spider-Punisher Nemesis",
+   "text": "<i>Goblin forces Peter to choose between his own life and Stacy's.</i>\nThreat cannot be removed from this scheme except from its own abilities.\n<b>Hero Action</b>: Exhaust your hero, discard 1 upgrade you control, or take 2 damage → remove 1 threat from this scheme.\n<b>Forced Interrupt</b>: At the end of the next player phase, if this card is still in play, find the Spider-Punisher obligation and reveal it. Discard this card.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq016",
+   "type": "Treachery",
+   "name": "Reorganized Crime",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Spider-Punisher Nemesis",
+   "text": "<b>When Revealed</b>: Search the encounter discard pile for a non-[[Elite]] minion and put it into play engaged with you. Give that minion a tough status card. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "T-Wrecks"
+  },
+  {
+   "card_id": "sq017",
+   "type": "Obligation",
+   "name": "Revealed Identity",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Spider-Punisher Nemesis",
+   "text": "<b>Forced Interrupt</b>: When the villain would scheme against you, it attacks you instead. Place 2 threat on the main scheme after that attack.\n<b>Hero Action</b>: Spend 2 resources of any type → discard this card.",
+   "custom": "T-Wrecks"
+  }
+ ],
+ "wasp_hank_pym": [
+  {
+   "card_id": "hp001a",
+   "type": "Hero",
+   "name": "* Wasp",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER",
+    "TINY"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "You can only change form by card abilities.\n<i>Bumble Bee</i> — <b>Response</b>: After you change to this form, confuse a minion. You may spend [mental][mental] resource to confuse the villain instead.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp001b",
+   "type": "AlterEgo",
+   "name": "* Hank Pym",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "GENIUS"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "You can only change form by card abilities.\n<i>Scientist Supreme</i> — <b>Action</b>: Spend 1 [mental] resource → place 1 pym counter on a Size Manipulation upgrade. If you cannot, search your deck for a copy of Size Manipulation and put it into play.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp001c",
+   "type": "Hero",
+   "name": "* Wasp",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "3",
+    "THW": "1",
+    "DEF": "3",
+    "HS": "4"
+   },
+   "traits": [
+    "AVENGER",
+    "GIANT"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "You can only change form by card abilities.\n<i>Man-Mountain</i> — <b>Response</b>: After you change to this form, stun a minion. You may spend [physical][physical] resource to stun the villain instead.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp002",
+   "type": "Ally",
+   "name": "* Ant-Man",
+   "subtitle": "Eric O'Grady",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AVENGER"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "[star] Ant-Man gets +1 THW and +1 ATK for each pym counter on him (to a maximum of +3 THW and +3 ATK).\n<b>Action</b>: Exhaust a Size Manipulation upgrade → move 1 pym counter from it to here.\n<b>Action</b>: Discard this card → change form.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp003",
+   "type": "Event",
+   "name": "Gigantification",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE",
+    "SUPERPOWER"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "Play only if you are in [[Tiny]] hero form.\n<b>Hero Action</b> <i>(attack)</i>: Change to [[Giant]] hero form. Deal 4 damage to an enemy, ignoring any guard keyword.\n<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attacks, change to [[Giant]] hero form. Give your hero a tough status card.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp004",
+   "type": "Event",
+   "name": "Resize at Will",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "<b>Action</b>: Change form. Then, if you are in:\n• [[Giant]] hero form, make a basic attack without exhausting.\n• [[Tiny]] hero form, make a basic thwart without exhausting.\n• Alter-ego form, draw 2 cards.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp005",
+   "type": "Event",
+   "name": "Self-Shrinking",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "Play only if you are in [[Giant]] hero form.\n<b>Hero Action</b> <i>(thwart)</i>: Change to [[Tiny]] hero form. Remove 3 threat from a scheme, ignoring any patrol keyword.\n<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy initiates an attack against you, change to [[Tiny]] hero form and cancel that attack.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp006",
+   "type": "Resource",
+   "name": "Pym Particles",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "<b>Response</b>: After you spend this card, ready each Size Manipulation upgrade you control and place a total of 2 pym counters on them. If none were placed this way, you may change form.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp007",
+   "type": "Support",
+   "name": "* Infinite Avengers Mansion",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AVENGER",
+    "LOCATION"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "<b>Alter-Ego Action</b>: Exhaust this card → place 1 pym counter on a card you control and shuffle 1 identity-specific card from your discard pile into your deck.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp008",
+   "type": "Support",
+   "name": "* Jocasta",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ANDROID",
+    "PERSONA"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "Wasp gets +1 THW.\n<b>Alter-Ego Response</b>: After you change to alter-ego form, exhaust this card → ready your identity.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp009",
+   "type": "Upgrade",
+   "name": "* Bio-Synthetic Wings",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "While Wasp is in [[Tiny]] hero form, he gains the [[Aerial]] trait.\n<b>Hero Action</b> <i>(thwart)</i>: Exhaust this card → remove X threat from among schemes, where X is equal to the number of times you have changed form this turn.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp010",
+   "type": "Upgrade",
+   "name": "Huge Surprise",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PREPARATION",
+    "TACTIC"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "<b>Hero Action</b>: Attach this card to an enemy → Until the end of the round, that enemy loses steady and stalwart, and takes 4 damage after it is stunned or confused. This card gains temporary.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp011",
+   "type": "Upgrade",
+   "name": "Size Manipulation",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "SUPERPOWER"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "Enters play with 2 pym counters on it.\n<b>Resource</b>: Exhaust this card and remove 1 pym counter from here → generate a [wild] resource.\n<b>Action</b>: Exhaust this card and remove 1 pym counter from here → change form.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp012",
+   "type": "Upgrade",
+   "name": "* The Stinger",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust this card → deal X damage divided among enemies you choose, where X is equal to the number of times you have changed form this turn.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp013",
+   "type": "Obligation",
+   "name": "Identity Crisis",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Hank Pym"
+   },
+   "traits": [],
+   "set_name": "Wasp (Hank Pym)",
+   "text": "<b><i>Give to the Hank Pym player.</i></b>\n<b>Forced Response</b>: After you change form, place 1 crisis counter here. Then, if there are 5 or more crisis counters here, find Shadow of the Past and reveal it. If you cannot, place 7 pursuit counters on Pursued by the Past.\n<b>Alter-Ego Action</b>: Choose to take 1 damage or place 1 threat on the main scheme for each crisis counter here. Then, exhaust Hank Pym → discard this obligation.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp014",
+   "type": "SideScheme",
+   "name": "Return of the Prodigal Son",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0",
+    "StartingThreat": "2*"
+   },
+   "traits": [
+    "HACKED"
+   ],
+   "set_name": "Wasp (Hank Pym) Nemesis",
+   "text": "<b>Forced Response</b>: After the player phase ends, place 1 seize counter here. Then, if there are 2 or more seize counters here, remove all seize counters from here and place the upgrade or support in play with the highest cost facedown under here.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp015",
+   "type": "Minion",
+   "name": "* Ultron",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Stalwart": "1",
+    "Villainous": "1",
+    "Nemesis": "Wasp"
+   },
+   "traits": [
+    "ANDROID",
+    "ELITE"
+   ],
+   "set_name": "Wasp (Hank Pym) Nemesis",
+   "text": "Stalwart. Villainous.\n<b>When Revealed</b>: Find the set-aside Seized Control attachment and reveal it. If you cannot, seek a [[Hacked]] card from the encounter deck and reveal it.\n<i>(Wasp's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: Exhaust an upgrade you control.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp016",
+   "type": "Attachment",
+   "name": "Seized Control",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "HACKED"
+   ],
+   "set_name": "Wasp (Hank Pym) Nemesis",
+   "text": "Attach to Ultron. Otherwise, attach to the villain.\n<b>When Revealed</b>: Tuck the card you control with the lowest cost under here. If you cannot, this card gains surge and discard this card.\n<b>Forced Interrupt</b>: When the attached character would take any amount of damage, place it here instead. Then, if there is at least X damage here, discard this card. X is equal to the resource cost of the card tucked under here.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp017",
+   "type": "Attachment",
+   "name": "Take Over Signal",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "HACKED"
+   ],
+   "set_name": "Wasp (Hank Pym) Nemesis",
+   "text": "Treat attached ally as a [[Hacked]] minion with a blank text box. Attached minion's SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: Attach to the ally you control with the highest cost. Otherwise, seek an ally from your deck. Put that ally into play engaged with you with Take Over Signal attached to it.",
+   "custom": "JackHKP"
+  },
+  {
+   "card_id": "hp018",
+   "type": "Treachery",
+   "name": "Submit or Perish",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "HACKED"
+   ],
+   "set_name": "Wasp (Hank Pym) Nemesis",
+   "text": "<b>When Revealed</b>: Exhaust each upgrade you control. If fewer than 2 upgrades were exhausted this way, search the encounter deck and discard pile for the Ultron minion and put it into play engaged with you. Otherwise, this card gains surge.",
+   "custom": "JackHKP"
+  }
+ ],
+ "batgirl": [
+  {
+   "card_id": "bg001a",
+   "type": "Hero",
+   "name": "* Batgirl",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "BIRD OF PREY"
+   ],
+   "set_name": "Batgirl",
+   "text": "<i>The Oracle</i> — <b>Interrupt</b>: When you resolve the effect of a card, change a resource icon in the text of that card to a resource icon of your choice. <i>(Limit once per round.)</i>\n<i>\"Wait for a hero? Barbara Joan Gordon -- Be your own damn hero.\"</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg001b",
+   "type": "AlterEgo",
+   "name": "* Barbara Gordon",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "GENIUS"
+   ],
+   "set_name": "Batgirl",
+   "text": "<i>Eidetic Memory</i> — <b>Action</b>: Choose a resource type. Put the bottommost card with a printed resource of that type from your discard pile on top of your deck. If you defeated an enemy or removed the last threat from a scheme this round, draw 1 card. <i>(Limit once per round.)</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg001c",
+   "type": "Hero",
+   "name": "* Batgirl",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "BAT FAMILY"
+   ],
+   "set_name": "Batgirl",
+   "text": "<i>The Oracle</i> — <b>Interrupt</b>: When you resolve the effect of a card, change a resource icon in the text of that card to a resource icon of your choice. <i>(Limit once per round.)</i>\n<i>\"Wait for a hero? Barbara Joan Gordon -- Be your own damn hero.\"</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg002",
+   "type": "Ally",
+   "name": "* Black Canary",
+   "subtitle": "Dinah Lance",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2**",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BIRD OF PREY"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Hero Interrupt</b>: When Black Canary enters play, stun 1 enemy for each [mental] resource used to pay for Black Canary's cost.\n<i>\"Hope you're ready to do a lot of talking. Or a lot of bleeding.\" - Black Canary</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg003",
+   "type": "Ally",
+   "name": "* Nightwing",
+   "subtitle": "Dick Grayson",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "BAT FAMILY"
+   ],
+   "set_name": "Batgirl",
+   "text": "<i>Multiverse.</i>\n[star] <b>Hero Response</b>: After Nightwing uses a basic power, the next resource you generate is considered a [wild] resource rather than its printed type.\n<i>\"One thing Batman taught me. Don't fight when a nice 'Later, dork' will do.\"</i>",
+   "custom": "ES",
+   "multiverse_of": "bg002"
+  },
+  {
+   "card_id": "bg004",
+   "type": "Event",
+   "name": "Applying Pressure",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL",
+    "THWART"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Remove 4 threat from a scheme. If you paid for this event using only [physical] resources, deal 2 damage to an enemy. If this attack defeats an enemy, draw 1 card.\n<i>\"That was your kidney. And this. You know what this is? It's your damn spine.\" - Batgirl</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg005",
+   "type": "Event",
+   "name": "Batarangs",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "WEAPON"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. This attack gains ranged. For each resource you used to pay for this event, if that resource is:\n• [energy] - Stun an enemy.\n• [physical] - Deal 2 damage to an enemy.\n• [mental] - Confuse an enemy.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg006",
+   "type": "Event",
+   "name": "Master Plan",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Action</b>: Choose one:\n• Choose a character. That character gets +2 to a basic power for its next use.\n• Until the end of the round, when you would generate resources, those resources are considered [wild] resources instead. Draw a card.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg007",
+   "type": "Event",
+   "name": "Calculated Counter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Hero Interrupt</b>: When you reveal a card from the encounter deck, cancel the effects of that card and discard it. If you paid for this card using only [energy] resources, remove X threat from a scheme or deal X damage to an enemy, where X is the number of boost ([boost]) icons discarded this way.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg008",
+   "type": "Support",
+   "name": "* The Clocktower",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BAT FAMILY",
+    "LOCATION"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Alter-Ego Action</b>: Exhaust this card → draw 1 card and remove 1 threat from a scheme.\n<b>Hero Interrupt</b>: When you pay for a card using only [mental] resources, exhaust this card → remove up to 2 threat from a scheme.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg009",
+   "type": "Support",
+   "name": "* James Gordon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BAT FAMILY",
+    "PERSONA"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Interrupt</b>: When you pay for a card using only [physical] resources, exhaust James Gordon → deal 2 damage to an enemy.\n<b>Interrupt</b>: When you pay for a card using only [energy] resources, exhaust James Gordon → draw a card.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg010",
+   "type": "Upgrade",
+   "name": "Armored Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Batgirl",
+   "text": "You get +3 hit points.\n<b>Hero Interrupt</b>: When you would take any amount of damage, exhaust Armored Suit → prevent 1 of that damage.\n<i>\"I'm glad these gloves put a layer between your face and my fists.\" – Batgirl</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg011",
+   "type": "Upgrade",
+   "name": "Grapple Line",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Interrupt</b>: If you paid for this card using a [physical] resource, place a recon counter on Grapple Line.\n<b>Action</b>: Discard Grapple Line → ready a friendly character. If there is a recon counter on Grapple Line, draw a card.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg012",
+   "type": "Upgrade",
+   "name": "Utility Belt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Batgirl",
+   "text": "<b>Hero Action</b>: When you would play an event, exhaust this card → reduce the cost of that event by 1.\n<b>Hero Interrupt</b>: When the hero phase ends, if this card is ready, Batgirl gets +1 hand size.\n<i>\"Functional and fashionable, what's not to love?\" – Batgirl</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg013",
+   "type": "Obligation",
+   "name": "Recalled Trauma",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Barbara Gordon"
+   },
+   "traits": [],
+   "set_name": "Batgirl",
+   "text": "<b><i>Give to the Barbara Gordon player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Barbara Gordon → remove Recalled Trauma from the game.\n• Until the end of the next round, all cards you spend as resources are considered to have no resource type for the purpose of resolving card abilities. Discard this obligation.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg014",
+   "type": "SideScheme",
+   "name": "Return of the Mask",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "3"
+   },
+   "traits": [],
+   "set_name": "Batgirl Nemesis",
+   "text": "<i>Black Mask is rebuilding his criminal empire. The first item on his list? Eliminating the Birds of Prey.</i>\n<b>When Revealed</b>: Find the Black Mask minion. Reveal him and put him into play with the first player. Then, each player takes 1 indirect damage.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg015",
+   "type": "Minion",
+   "name": "* Black Mask",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "0",
+    "ATK": "2",
+    "Boost": "1",
+    "Nemesis": "Batgirl",
+    "Incite": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE"
+   ],
+   "set_name": "Batgirl Nemesis",
+   "text": "<i>Incite 1.</i>\n[star] Black Mask's SCH is equal to the number of cards with a printed [mental] resource in the engaged player's hand. If his SCH is 0, the engaged player is dealt a facedown encounter card when Black Mask schemes.\n<i>(Batgirl's Nemesis Minion)</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg016",
+   "type": "Minion",
+   "name": "* The Reaper",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "CRIMINAL"
+   ],
+   "set_name": "Batgirl Nemesis",
+   "text": "[star] The Reaper's attacks gain piercing.\n<b>Forced Response</b>: After the villain phase ends, the player engaged with The Reaper must discard a card from their hand with a printed [energy] resource. If no card was discarded this way, place 1 threat on the main scheme.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg017",
+   "type": "Minion",
+   "name": "* Mr. Zsasz",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "Batgirl Nemesis",
+   "text": "[star] Mr. Zsasz's attacks gain overkill.\n<b>Forced Interrupt</b>: When the villain phase begins, the player engaged with Mr. Zsasz must discard a card from their hand with a [physical] printed resource. If no card was discarded this way, that player takes 2 indirect damage.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg018",
+   "type": "Treachery",
+   "name": "Psychological Torture",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Batgirl Nemesis",
+   "text": "<b>When Revealed</b>: Discard cards from the top of your deck until you have discarded 3 cards with the same printed resource type. If you run out of cards in your deck this way, the villain schemes.\n<i>\"I am the darkness that fills the heart of every living soul in this sordid little town...\" - Black Mask</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg019",
+   "type": "Event",
+   "name": "Birds of a Feather",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Team-Up (any combination of Batgirl, Black Canary, or Huntress). Max 1 per deck.\n<b>Hero Action</b>: Choose X options below (you may choose the same option multiple times), where X is the number of [[BIRD OF PREY]] characters in play:\n• deal 3 damage to an enemy.\n• remove 3 threat from a scheme.\n• stun an enemy.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg020",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg021",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bg022",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "ES"
+  }
+ ],
+ "corsair": [
+  {
+   "card_id": "cr001a",
+   "type": "Hero",
+   "name": "* Corsair",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Corsair",
+   "text": "You may play cards tucked under here as if they were in your hand.\n<i>Pocket Universe Gems</i> — <b>Response</b>: After a card in your hand is discarded to pay for a cost, tuck that card under Corsair. (Limit once per round.)\n<i>\"We Starjammers have a bit of a reputation.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr001b",
+   "type": "AlterEgo",
+   "name": "* Christopher Summers",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "OUTLAW"
+   ],
+   "set_name": "Corsair",
+   "text": "You may include [[STARJAMMER]] allies from any aspect in your deck.\n<b>Setup</b>: Find Corsair's Rapier and add it to your hand.\n<i>\"We Starjammers have a bit of a reputation.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr002",
+   "type": "Ally",
+   "name": "* Hepzibah",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "0*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Corsair",
+   "text": "[star] <b>Interrupt</b>: When Hepzibah uses a basic power, discard a card tucked under Corsair → Hepzibah gets +3 to that power for this use.\n<i>\"Blood-bond between us C'ris. Comrades 'til death.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr003",
+   "type": "Upgrade",
+   "name": "* Corsair's Rapier",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "MaxPerUnit": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Corsair",
+   "text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\nCorsair gets +1 ATK.\n<b>Hero Response</b>: After you discard a [[SKILL]] card from your hand, exhaust Corsair's Rapier → tuck that card under Corsair.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr004",
+   "type": "Upgrade",
+   "name": "Pulse Blaster",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "MaxPerUnit": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Corsair",
+   "text": "Restricted. Uses (3 charge counters).\n<b>Hero Response</b>: After you attack an enemy, remove 1 charge counter from Pulse Blaster → deal 1 damage to an enemy. If you removed the last charge counter from Pulse Blaster this way, tuck it under Corsair.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr005",
+   "type": "Upgrade",
+   "name": "* Corsair's Gloves",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Corsair",
+   "text": "<b>Hero Resource</b>: Exhaust Corsair's Gloves → generate a [wild] resource for a card tucked under Corsair.\n<i>\"Errol Flynn never had the luxury of carrying his weapons in an other-dimensional pocket.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr006",
+   "type": "Upgrade",
+   "name": "Ace Pilot",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Corsair",
+   "text": "<b>Hero Response</b>: After you play an [[ATTACK]] or [[THWART]] event, exhaust Ace Pilot → ready your identity and a [[VEHICLE]] you control.\n<i>\"Relax, I've crashed lots of times.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr007",
+   "type": "Event",
+   "name": "Parry",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "set_name": "Corsair",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When Corsair defends against an attack, he gets +3 DEF for that attack. Draw 1 card. (If the last card you played was Remise, draw 3 cards instead.)\n<i>\"All right, take your best shot.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr008",
+   "type": "Event",
+   "name": "Riposte",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "set_name": "Corsair",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After an enemy attacks you, deal 4 damage to that enemy. If the last card you played was Parry, stun that enemy.\n<i>\"Excellent lunge... but you're overextended.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr009",
+   "type": "Event",
+   "name": "Remise",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "set_name": "Corsair",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. If the last card you played was Riposte, ready Corsair.\n<i>\"You don't go down easy, do ya?\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr010",
+   "type": "Event",
+   "name": "Trick up my Sleeve",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC",
+    "THWART"
+   ],
+   "set_name": "Corsair",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme. You may discard a card tucked under Corsair to confuse an enemy.\n<i>\"Never do what they expect you do to!\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr011",
+   "type": "Obligation",
+   "name": "Irresponsible Cad",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Christopher Summers"
+   },
+   "traits": [],
+   "set_name": "Corsair",
+   "text": "<b><i>Give to the Christopher Summers player.</i></b>\nDiscard a card you control. If the discarded card was Cyclops or Havok, remove this card from the game. Otherwise, this card gains surge, then discard this obligation.\n<i>\"My father? He's a pirate. He lies and cheats to get what he wants. I don't think he's capable of remorse.\"</i> —Scott Summers",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr012",
+   "type": "Obligation",
+   "name": "Making Amends",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Christopher Summers"
+   },
+   "traits": [],
+   "set_name": "Corsair",
+   "text": "<b><i>Give to the Christopher Summers player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Christopher Summers and tell someone you love them → remove Making Amends from the game.\n• Discard a card you control. This card gains surge. Discard this obligation.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr013",
+   "type": "Minion",
+   "name": "* D'Ken",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "2",
+    "Villainous": "1",
+    "Nemesis": "Corsair"
+   },
+   "traits": [
+    "ELITE",
+    "KING",
+    "SHI'AR"
+   ],
+   "set_name": "Corsair Nemesis",
+   "text": "Villainous.\nAs an additional cost to attack D'Ken, you must discard a card from your hand.\n<i>(Corsair's nemesis minion.)</i>\n<i>\"I am the Great D'Ken, and everything you are today, you owe to me.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr014",
+   "type": "SideScheme",
+   "name": "Slave Pits of Chandilar",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "StartingThreat": "2*",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Corsair Nemesis",
+   "text": "<b>When Revealed</b>: Each player places an ally or [[PERSONA]] support they control facedown under here. Each player who cannot discards 1 card from their hand.\n<b>When Defeated</b>: Return each facedown card here to play under its owner's control.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr015",
+   "type": "Minion",
+   "name": "Shi'ar Bodyguard",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "0",
+    "Guard": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Corsair Nemesis",
+   "text": "Guard. <i>(While this minion is engaged with you, you cannot attack the villain.)</i> Toughness. <i>(This character enters play with a tough status card.)</i>\nPlayers cannot attack [[ELITE]] minions.\n<hr />\n[star] <b>Boost</b>: Give the villain and all [[ELITE]] minions a tough status card.\n<i>\"HMPH.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr016",
+   "type": "Environment",
+   "name": "Shi'ar Battle Cruiser",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SHI'AR",
+    "VEHICLE"
+   ],
+   "set_name": "Corsair Nemesis",
+   "text": "Alliance.\n<b>Forced Interrupt</b>: When the villain phase ends, deal 1 indirect damage to each player.\n<b>Hero Action</b>: Exhaust your identity and spend [energy][energy] resources → discard this card.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr017",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr018",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "cr019",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  }
+ ],
+ "checksum": "0ef07bfe602b1bf5cd7a8935f9877d53dedec22a91f136df994c064e07fc76b7",
+ "hepzibah": [
+  {
+   "card_id": "hz001a",
+   "type": "Hero",
+   "name": "* Hepzibah",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Hepzibah",
+   "text": "<b>Response</b>: After you play an event, resolve the \"<b>Special</b>\" ability on a card in your hand.\n<i>\"While we live, we fight.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz001b",
+   "type": "AlterEgo",
+   "name": "* Hepzibah",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "OUTLAW"
+   ],
+   "set_name": "Hepzibah",
+   "text": "<i>Weapons Officer</i> — You may include up to 3 [[WEAPON]]s in your deck from aspects other than your chosen aspect.\n<b>Response</b>: After you flip to alter-ego, place 2 events in your discard pile on the bottom of your deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz002",
+   "type": "Ally",
+   "name": "* Corsair",
+   "subtitle": "Christopher Summers",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Hepzibah",
+   "text": "[star] <b>Hero Response</b>: After Corsair uses a basic power, resolve the \"<b>Special</b>\" ability on a card in your hand.\n<i>\"You really live for this, don't you, zee?\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz003",
+   "type": "Upgrade",
+   "name": "Targeting Goggles",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Hepzibah",
+   "text": "<b>Hero Action</b>: Exhaust Targeting Goggles → search your deck for an event and add it to your hand. Then place 1 card from your hand on the top of your deck.\n<i>\"Fight systems on standby. Guns heat up!\"</i> —Hepzibah",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz004",
+   "type": "Upgrade",
+   "name": "Hepzibah's Spacesuit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Hepzibah",
+   "text": "You can control 1 additional upgrade that has the restricted keyword.\n<b>Hero Resource</b>: Exhaust Hepzibah's Spacesuit → generate a [wild] resource for an event.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz005",
+   "type": "Upgrade",
+   "name": "Energy Blaster",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Uses": "3,charge",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Hepzibah",
+   "text": "Restricted. Uses (3 charge counters).\n<b>Hero Action</b>: Exhaust Energy Blaster and remove 1 charge counter from it → deal 1 damage to an enemy. If this action defeats that enemy, resolve the \"<b>Special</b>\" ability on a card in your hand.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz006",
+   "type": "Upgrade",
+   "name": "Heavy Machine Gun",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Restricted": "1",
+    "Uses": "2,ammo",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Hepzibah",
+   "text": "Restricted. Uses (2 ammo counters).\n<b>Hero Action</b>: Exhaust Heavy Machine Gun and remove 1 ammo counter from it → deal 1 damage to each enemy.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz007",
+   "type": "Event",
+   "name": "Feral Rage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "set_name": "Hepzibah",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal damage to an enemy equal to your ATK.\n<b>Special</b>: Hepzibah gets +1 ATK until the end of the player phase.\n<i>\"Die first who shall?\"</i> —Hepzibah",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz008",
+   "type": "Event",
+   "name": "Keen Senses",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "THWART"
+   ],
+   "set_name": "Hepzibah",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. If this removes the last threat on that scheme, ready Hepzibah.\n<b>Special</b>: Remove 1 threat from a scheme.\n<i>\"Here, Hepzibah feels pulse.\"</i> —Hepzibah",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz009",
+   "type": "Event",
+   "name": "Feline Grace",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "set_name": "Hepzibah",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent 4 of that damage.\n<b>Special</b>: Ready Hepzibah. (Limit once per phase.)\n<i>\"You're fast, Hepzibah. Faster than most.\"</i> —Warpath",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz010",
+   "type": "Event",
+   "name": "Armed to the Teeth",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Hepzibah",
+   "text": "<b>Hero Action</b>: Choose one:\n• Ready each [[WEAPON]] you control.\n• Search your deck and discard pile for a [[WEAPON]] and add it to your hand.\n<b>Special</b>: Place 1 all-purpose counter on a [[WEAPON]] you control.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz011",
+   "type": "Obligation",
+   "name": "Vendetta",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Hepzibah"
+   },
+   "traits": [],
+   "set_name": "Hepzibah",
+   "text": "<b><i>Give to the Hepzibah player.</i></b>\nYou cannot flip to alter-ego while a minion is engaged with you.\n<b>Forced Interrupt</b>: When a minion enters play, engage it and flip to hero form.\n<b>Action</b>: Discard an ally you control → remove this card from the game.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz012",
+   "type": "Minion",
+   "name": "* Minister T'Cahr",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "1*",
+    "SCH": "2*",
+    "Boost": "2",
+    "Nemesis": "Hepzibah"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Hepzibah Nemesis",
+   "text": "[star] <b>Forced Response</b>: After T'Cahr activates against you, search the encounter deck and discard pile for a [[SHI'AR]] card and reveal it.\n<i>(Hepzibah's nemesis minion.)</i>\n<i>\"As Minister of Peace, I too, am joining the strikeforce.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz013",
+   "type": "SideScheme",
+   "name": "Kill Order",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Acceleration": "1",
+    "StartingThreat": "3*"
+   },
+   "traits": [],
+   "set_name": "Hepzibah Nemesis",
+   "text": "Each minion gains quickstrike. <i>(After this minion engages your hero, it attacks.)</i>\n<i>\"The Starjammers are dissidents. They must be exterminated.\"</i> —Peace Minister T'Cahr",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz014",
+   "type": "Minion",
+   "name": "* The Vengeful Wing",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "3*",
+    "SCH": "2*",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "SHI'AR",
+    "VEHICLE"
+   ],
+   "set_name": "Hepzibah Nemesis",
+   "text": "[star] The Vengeful Wing's attacks deal indirect damage.\n<i>\"We've got them now.\"</i> —Captain D'Rehn",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz015",
+   "type": "Minion",
+   "name": "Shi'ar Infantry",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2",
+    "SCH": "1"
+   },
+   "traits": [
+    "SHI'AR",
+    "SOLDIER"
+   ],
+   "set_name": "Hepzibah Nemesis",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for another copy of Shi'ar Infantry and put it into play <i>(it is not revealed)</i>.\n<hr />\n[star] <b>Boost</b>: Put this card into play <i>(it is not revealed)</i>.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz016",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz017",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "hz018",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  }
+ ],
+ "raza": [
+  {
+   "card_id": "rl001a",
+   "type": "Hero",
+   "name": "* Raza Longknife",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "CYBORG",
+    "STARJAMMER"
+   ],
+   "set_name": "Raza",
+   "text": "<i>Alien Augmentations</i> — Raza Longknife has +1 hit point for each unattached [[TECH]] or [[WEAPON]] upgrade you control.\n<i>\"But then they filled me with their machines... I am now too difficult to kill.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl001b",
+   "type": "AlterEgo",
+   "name": "* Raza Longknife",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "CYBORG",
+    "OUTLAW"
+   ],
+   "set_name": "Raza",
+   "text": "<i>Alien Augmentations</i> — Raza Longknife has +1 hit point for each unattached [[TECH]] or [[WEAPON]] upgrade you control.\n<i>\"We each perished, in loving combat, as our religion dictates.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl002",
+   "type": "Ally",
+   "name": "* Tolo Hawk",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Raza",
+   "text": "<b>Interrupt</b>: When Tolo Hawk would be defeated by consequential damage, instead deal 1 damage to Raza Longknife and remove all damage from Tolo Hawk.\n<i>\"I was going to be a member of the Corps... a soldier just like them...\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl003",
+   "type": "Event",
+   "name": "Breach Their Defenses!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Raza",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Deal 1 additional damage to that enemy for each [[WEAPON]] you control.\n<i>\"Give no quarter! No less than they deserve!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl004",
+   "type": "Event",
+   "name": "Boarding Action",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Raza",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Remove 1 additional threat for each [[TECH]] you control.\n<i>\"To the cargo! Let's take back what's ours!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl005",
+   "type": "Event",
+   "name": "Warrior Apotheosis",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Raza",
+   "text": "<b>Hero Action</b>: Engage any number of minions in play. The villain and each minion engaged with you attacks you. Do not deal the villain a boost card for this attack. Then, deal damage equal to Raza's ATK to each enemy that attacked you this way.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl006",
+   "type": "Upgrade",
+   "name": "Implanted Tools",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "TECH"
+   ],
+   "set_name": "Raza",
+   "text": "<b>Resource</b>: Exhaust Implanted Tools and another [[TECH]] upgrade you control → generate a [wild] resource.\n<i>\"Yon coffee machine is misbehaving again, shipmaster\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl007",
+   "type": "Upgrade",
+   "name": "Warrior Pride",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Raza",
+   "text": "<b>Hero Interrupt</b>: When the villain attacks you, draw 1 card. If you have sustained 5 or more damage, heal 1 damage from your identity.\n<i>\"Our wounds are naught as long as victory sings in our veins!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl008",
+   "type": "Upgrade",
+   "name": "* Raza's Cybernetic Arm",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Raza",
+   "text": "You can control 1 additional upgrade that has the restricted keyword.\nWhile your identity has sustained 5 or more damage, you gain Retaliate 1 <i>(Retaliate will trigger for attacks that cause Raza to gain Retaliate)</i>.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl009",
+   "type": "Upgrade",
+   "name": "* Raza's Cybernetic Eye",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH"
+   ],
+   "set_name": "Raza",
+   "text": "<b>Hero Response</b>: After the villain attacks you, remove 1 threat from a scheme (2 threat if you have sustained 5 or more damage).\n<i>\"methinks I have grabbeth a clue...\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl010",
+   "type": "Upgrade",
+   "name": "* Raza's Blaster",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "MaxPerUnit": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Raza",
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust Raza's Blaster → deal 1 damage to an enemy (or 2 damage if you have sustained 5 or more damage).\n<i>\"The bounty said dead or alive! Your choice, boy!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl011",
+   "type": "Upgrade",
+   "name": "* Raza's Sabre",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "MaxPerUnit": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Raza",
+   "text": "Restricted.\nRaza gets +1 ATK (+2 ATK instead if you have sustained 5 or more damage).\n<i>\"After you've seen enough of your comrades die, you learn to appreciate being alive.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl012",
+   "type": "Obligation",
+   "name": "Honour-Bound Warrior",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Raza Longknife"
+   },
+   "traits": [],
+   "set_name": "Raza",
+   "text": "<b><i>Give to the Raza Longknife player.</i></b>\nTreat the textbox on each of your upgrades as blank <i>(except for [[TRAITS]])</i>.\n<b>Alter-Ego Action</b>: Exhaust Raza Longknife → remove this card from the game.\n<i>\"I am obligated to perform the bloody rites... even if it means I tear out what little heart I have left.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl013",
+   "type": "Minion",
+   "name": "* Zzzxx",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "0",
+    "Nemesis": "Raza Longknife"
+   },
+   "traits": [
+    "ELITE",
+    "SYMBIOTE"
+   ],
+   "set_name": "Raza Nemesis",
+   "text": "<b>Forced Interrupt</b>: When Zzzxx activates against a character who has sustained 5 or more damage, it gains Villainous for that activation.\n<i>(Raza Longknife's Nemesis Minion)</i>\n[star] <b>Boost</b>: This card gains boost icons ([boost]) equal to the villain's stage number.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl014",
+   "type": "SideScheme",
+   "name": "Symbiote Possession",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "StartingThreat": "2*",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Raza Nemesis",
+   "text": "<i>The vicious Klyntari Killer Zzzxx is on the hunt for their newest host!</i>\nPlayers engaged with Zzzxx cannot attack Zzzxx or thwart schemes other than this one.\n<b>When Revealed</b>: Find Zzzxx and put him into play engaged with you.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl015",
+   "type": "Minion",
+   "name": "Shi'ar Host",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "SHI'AR"
+   ],
+   "set_name": "Raza Nemesis",
+   "text": "<b>When Revealed</b>: Search the discard pile for an attachment that can be attached to Shi'Ar Host and attach it to them. If no attachment was revealed this way, this card gains surge.\n<i>\"Please... kill me...\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl016",
+   "type": "Attachment",
+   "name": "New Host",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "ATK+": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SYMBIOTE"
+   ],
+   "set_name": "Raza Nemesis",
+   "text": "Attach to a minion.\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until you discard a minion. Attach New Host to it.\n<b>Forced Response</b>: When attached minion is defeated, search the encounter deck and discard pile for Zzzxx and put it into play engaged with you.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl017",
+   "type": "Treachery",
+   "name": "Devour",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "set_name": "Raza Nemesis",
+   "text": "<b>When Revealed</b>: Discard an ally you control. If you cannot, discard cards from the top of the encounter deck until you discard a minion and put it into play engaged with you.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, this attack gains overkill.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl018",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl019",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "rl020",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  }
+ ],
+ "chod": [
+  {
+   "card_id": "co001a",
+   "type": "Hero",
+   "name": "* Ch'od",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "ATK": "3",
+    "THW": "2",
+    "DEF": "3",
+    "HS": "4"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Ch'od",
+   "text": "<i>Master of All Trades</i> — <b>Interrupt</b>: When you play a card with the requirement keyword, Ch'od gets +1 hand size until the end of the player phase. (Limit once per phase.)\n<i>\"The odds are only a million to one against us!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co001b",
+   "type": "AlterEgo",
+   "name": "* Ch'od",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "REC": "4",
+    "HS": "5"
+   },
+   "traits": [
+    "GENIUS",
+    "OUTLAW"
+   ],
+   "set_name": "Ch'od",
+   "text": "<i>Forever Friends</i> — <b>Action</b>: Discard a card from your hand → search your deck and discard pile for Cr'reee and add it to your hand. (Limit once per phase.)\n<i>\"Peace, small mammal. I mean no harm.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co002",
+   "type": "Ally",
+   "name": "* Cr'reee",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "BY",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CREATURE",
+    "STARJAMMER"
+   ],
+   "set_name": "Ch'od",
+   "text": "While Cr'reee is exhausted, Ch'od gets +1 hand size.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co003",
+   "type": "Event",
+   "name": "Raw Physicality",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Requirement": "RR",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Ch'od",
+   "text": "Requirement ([physical][physical]). <i>(While paying for this card, spend the listed resources.)</i>\n<b>Hero Action</b>: Deal damage to an enemy equal to your hand size.\n<i>\"I feel certain you'd much prefer dealing with someone more your own size.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co004",
+   "type": "Event",
+   "name": "Raw Intellect",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Requirement": "BB",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Ch'od",
+   "text": "Requirement ([mental][mental]). <i>(While paying for this card, spend the listed resources.)</i>\n<b>Hero Action</b>: Remove threat from a scheme equal to your hand size.\n<i>\"Hrrrmmmmm...\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co005",
+   "type": "Event",
+   "name": "Polymath",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Ch'od",
+   "text": "<b>Hero Action</b>: If you paid for this card with a:\n[physical] - Give Ch'od a tough status card.\n[energy] - Ready Ch'od.\n[mental] - Draw a card. Ch'od gets +1 hand size until the end of the phase.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co006",
+   "type": "Upgrade",
+   "name": "Saurian Physique",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Requirement": "RR",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Ch'od",
+   "text": "Requirement ([physical][physical]). <i>(While paying for this card, spend the listed resources.)</i>\nCh'od's attacks gain overkill.\n<b>Hero Response</b>: After you defeat a minion, exhaust Saurian Physique → Ch'od gets +1 hand size until the end of the phase.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co007",
+   "type": "Upgrade",
+   "name": "Philosopher Scientist",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Requirement": "BB",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Ch'od",
+   "text": "Requirement ([mental][mental]). <i>(While paying for this card, spend the listed resources.)</i>\nCh'od gets +1 hand size.\n<i>\"Mine is a race of scientist-philosophers. That and the attributes of our physical forms make us very effective killers.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co008",
+   "type": "Upgrade",
+   "name": "Engineer",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Ch'od",
+   "text": "While you have a card with a printed [energy] resource in your hand, Ch'od gets +1 hand size.\n<i>\"Who the flark do you think you are? You don't come in here and fiddle with my settings!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co009",
+   "type": "Upgrade",
+   "name": "Teacher",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Ch'od",
+   "text": "While you have a card with a printed [mental] resource in your hand, Ch'od gets +1 hand size.\n<i>\"You served with us, you saved one of us. As far as I'm concerned, that makes you one of us.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co010",
+   "type": "Upgrade",
+   "name": "Warrior",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Ch'od",
+   "text": "While you have a card with a printed [physical] resource in your hand, Ch'od gets +1 hand size.\n<i>\"We have contact! Combat ready!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co011",
+   "type": "Obligation",
+   "name": "Cr'reee Captured",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Ch'od"
+   },
+   "traits": [],
+   "set_name": "Ch'od",
+   "text": "<b><i>Give to the Ch'od player.</i></b>\n<b>When Revealed</b>: Find Cr'reee and tuck them under this card, then place 2 search counters here.\n<b>Alter-Ego Action</b>: Exhaust Ch'od → remove a search counter from here. Then, if there are no search counters here, remove this obligation from the game.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co012",
+   "type": "Minion",
+   "name": "* Mentor",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "1",
+    "SCH": "3",
+    "Boost": "2",
+    "Nemesis": "Ch'od"
+   },
+   "traits": [
+    "ELITE",
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Ch'od Nemesis",
+   "text": "While Mentor is engaged with you, your hand size is reduced by 1.\n<b>When Defeated</b>: Discard the top 2 cards of your deck. Place threat on the main scheme equal to the number of different printed resources discarded this way.\n<i>(Ch'od's nemesis minion.)</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co013",
+   "type": "SideScheme",
+   "name": "Duel of Wits",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "StartingThreat": "3*"
+   },
+   "traits": [],
+   "set_name": "Ch'od Nemesis",
+   "text": "<i>Ch'od and Mentor have matched minds more than seventy times.</i>\nThreat cannot be removed from here by cards with a printed resource that matches the printed resource on the card tucked under here.\n<b>When Revealed</b>: Tuck a card from your hand under here.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co014",
+   "type": "Minion",
+   "name": "* Plutonia",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "1",
+    "Boost": "2",
+    "Teamwork": "IMPERIAL GUARD"
+   },
+   "traits": [
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Ch'od Nemesis",
+   "text": "Teamwork ([[IMPERIAL GUARD]]).\n[star] Plutonia's attacks gain piercing.\n<b>When Revealed</b>: Discard an upgrade you control. If you cannot, discard 1 random card from your hand.\n<i>\"His mind is his weakness... you know what to do, N'Zyr\"</i> —Mentor",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co015",
+   "type": "Treachery",
+   "name": "Strike and Phase",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Ch'od Nemesis",
+   "text": "<b>When Revealed</b>: Discard the top card of your deck, then discard each card from your hand with a resource symbol that matches that card.\n<i>\"Although I have not shown it in deeds or words, I can think of no one I would rather be with than you, N'Zyr.\"</i> —Mentor",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co016",
+   "type": "Treachery",
+   "name": "Utter Contempt",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Ch'od Nemesis",
+   "text": "<b>When Revealed</b>: Choose:\n• Discard the top 2 cards of the encounter deck. Take indirect damage equal to the number of boost icons discarded this way.\n• Discard the top 2 cards of your deck. Place threat on the main scheme equal to the number of printed resources discarded this way.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co017",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co018",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "co019",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  }
+ ],
+ "smasher": [
+  {
+   "card_id": "sz001a",
+   "type": "Hero",
+   "name": "* Smasher",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "1",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER",
+    "IMPERIAL GUARD"
+   ],
+   "set_name": "Smasher",
+   "text": "<b>Forced Response</b>: After you play an [[EXOSPEX]] upgrade, discard all other [[EXOSPEX]] upgrades you control.\n<i>\"My Exospex picked up your intergalactic alert.\"</i>",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz001b",
+   "type": "AlterEgo",
+   "name": "* Izzy Kane",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "SOLDIER"
+   ],
+   "set_name": "Smasher",
+   "text": "You cannot have more than 1 [[EXOSPEX]] upgrade in play.\n<i>Battle Ready</i> — <b>Action</b>: Search your deck and discard pile for an [[EXOSPEX]] upgrade and add it to your hand. <i>(Limit once per turn.)</i>\n<i>\"Tell the babysitter we're going to be running late.\"</i>",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz002",
+   "type": "Ally",
+   "name": "* Cannonball",
+   "subtitle": "Sam Guthrie",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2**",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "X-MEN"
+   ],
+   "set_name": "Smasher",
+   "text": "Cannonball has toughness if your identity has the [[AERIAL]] trait.\n<b>Response</b>: After you play an [[AERIAL]] card, give Cannonball a tough status card.\n<i>\"Nothing in the universe is gonna keep us apart.\"</i>",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz003",
+   "type": "Support",
+   "name": "* Home on Chandilar",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "SHI'AR"
+   ],
+   "set_name": "Smasher",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Home on Chandilar → draw 2 cards.\n<i>\"We won't forget Earth. But this is our homeplanet too.\"</i> —Izzy Kane",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz004",
+   "type": "Event",
+   "name": "Accessing",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Smasher",
+   "text": "<b>Hero Action</b>: Resolve the \"<b>Hero Response</b>\" ability on an [[EXOSPEX]] upgrade you control. Then discard that [[EXOSPEX]] upgrade.\n<i>\"Guardsman, do you wish to upgrade?\"</i> —Exospex",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz005",
+   "type": "Upgrade",
+   "name": "Penta-Vision",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "EXOSPEX",
+    "SUPERPOWER"
+   ],
+   "set_name": "Smasher",
+   "text": "Smasher gets +1 ATK and +1 THW.\nSmasher's attacks gain ranged.\n<b>Hero Response</b> <i>(attack)</i>: After you play Penta-Vision, deal 3 damage to an enemy.\n<i>\"Spectra form super-heated.\"</i> —Exospex",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz006",
+   "type": "Upgrade",
+   "name": "Hyper-Strength",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "EXOSPEX",
+    "SUPERPOWER"
+   ],
+   "set_name": "Smasher",
+   "text": "Smasher gets +2 ATK.\nSmasher's attacks gain overkill.\n<b>Hero Response</b>: After you play Hyper-Strength, stun an enemy.\n<i>\"Upgrading gauntlet grading.\"</i> —Exospex",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz007",
+   "type": "Upgrade",
+   "name": "Hyper-Speed",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "EXOSPEX",
+    "SUPERPOWER"
+   ],
+   "set_name": "Smasher",
+   "text": "Smasher gets +1 ATK, +1 THW and +1 DEF.\n<b>Hero Response</b>: After you play Hyper-Speed, ready Smasher.\n<i>\"I came as quickly as I could.\"</i> —Smasher",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz008",
+   "type": "Upgrade",
+   "name": "Super-Resistance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "EXOSPEX",
+    "SUPERPOWER"
+   ],
+   "set_name": "Smasher",
+   "text": "Smasher gets +2 DEF and gains Stalwart.\n<b>Hero Response</b>: After you play Super-Resistance, give Smasher a tough status card.\n<i>\"Congratulations guardian. You have held the line.\"</i> —Gladiator",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz009",
+   "type": "Upgrade",
+   "name": "Exo-Flight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "EXOSPEX",
+    "SUPERPOWER"
+   ],
+   "set_name": "Smasher",
+   "text": "Smasher gets +1 THW, +1 DEF and gains the [[AERIAL]] trait.\n<b>Hero Response</b> <i>(thwart)</i>: After you play Exo-Flight, remove 3 threat from a scheme.\n<i>\"Wwhooaaaaaa!\"</i> —Smasher",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz010",
+   "type": "Obligation",
+   "name": "Family Matters",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Izzy Kane"
+   },
+   "traits": [],
+   "set_name": "Smasher",
+   "text": "<b><i>Give to the Izzy Kane player.</i></b>\nYour hand size is reduced by 3.\n<b>Alter-Ego Action</b>: Exhaust Izzy Kane or Cannonball → discard Family Matters.\n<i>\"This journey can be crazy, yet... it's the little things that make it worth it.\"</i> —Izzy Kane",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz011",
+   "type": "Minion",
+   "name": "* Scientist Supreme",
+   "subtitle": "Andrew Forson",
+   "desc": {
+    "HP": "4",
+    "ATK": "1",
+    "SCH": "2",
+    "Boost": "3",
+    "Villainous": "1",
+    "Nemesis": "Smasher"
+   },
+   "traits": [
+    "A.I.M",
+    "ELITE",
+    "GENIUS"
+   ],
+   "set_name": "Smasher Nemesis",
+   "text": "Villainous.\n[star] Scientist Supreme's attacks gain piercing and ranged.\n<b>When Revealed</b>: You are stunned and confused.\n<i>(Smasher's nemesis minion.)</i>",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz012",
+   "type": "SideScheme",
+   "name": "Entropic Subversion",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "3"
+   },
+   "traits": [],
+   "set_name": "Smasher Nemesis",
+   "text": "<i>\"The outcome is inevitable. Change, becoming something else.\"</i> —Scientist Supreme\n<b>Forced Response</b>: After a status card is discarded from a friendly character, if that status was:\n<i>Stunned</i> - Deal 2 damage to a friendly character.\n<i>Confused</i> - Place 2 threat on the main scheme.",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz013",
+   "type": "Treachery",
+   "name": "Biosynthetic Sting",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Smasher Nemesis",
+   "text": "<b>When Revealed</b>: Take 1 damage. You are stunned.\n<hr />\n[star] <b>Boost</b>: Reveal this card.\n<i>\"What wonders we have created here.\"</i> —Scientist Supreme",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz014",
+   "type": "Treachery",
+   "name": "Corrupting Revelation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Smasher Nemesis",
+   "text": "<b>When Revealed</b>: You are confused. Find Entropic Subversion and reveal it. If Entropic Subversion is already in play, place 3 threat on it.\n<i>\"You will tell them the secret of the universe. Do you want to know what it is?\"</i> —Scientist Supreme",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz015",
+   "type": "Event",
+   "name": "Power Couple",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "TeamUp": "Cannonball;Smasher",
+    "Class": "Basic"
+   },
+   "traits": [
+    "AERIAL"
+   ],
+   "set_name": "",
+   "text": "Team-Up (Cannonball and Smasher). Max 1 per deck.\n<b>Hero Action</b>: Ready Smasher and Cannonball. They cannot take damage until the end of the round.",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz016",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz017",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian"
+  },
+  {
+   "card_id": "sz018",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian"
+  }
+ ],
+ "batman": [
+  {
+   "card_id": "bm001a",
+   "type": "Hero",
+   "name": "* Batman",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "BAT FAMILY",
+    "JUSTICE LEAGUE"
+   ],
+   "set_name": "Batman",
+   "text": "You are allowed to shuffle a maximum of 3 deterrence cards into the encounter deck in a round.\n<i>The Dark Knight</i> — <b>Hero Response</b>: After Batman attacks or thwarts, choose a deterrence card and shuffle it into the encounter deck.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm001b",
+   "type": "AlterEgo",
+   "name": "* Bruce Wayne",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "BILLIONAIRE",
+    "GENIUS"
+   ],
+   "set_name": "Batman",
+   "text": "Bruce Wayne begins the game with a Deterrence deck. (See insert.)\n<i>Actually... a Trillionaire</i> — <b>Action</b>: Reduce the cost of the next [[ARMOR]], [[ITEM]], [[LOCATION]], [[TECH]], [[VEHICLE]], or [[WEAPON]] card played this round by 1. <i>(Limit once per round.)</i>\n<i>\"My superpower? I'm rich.\"</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm001c",
+   "type": "Hero",
+   "name": "* Batman",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "LANTERN"
+   ],
+   "set_name": "Batman",
+   "text": "You are allowed to shuffle a maximum of 3 deterrence cards into the encounter deck in a round.\n<i>FEAR ME!!!</i> — <b>Hero Response</b>: After Batman attacks or thwarts, choose a deterrence card and shuffle it into the encounter deck.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm001d",
+   "type": "AlterEgo",
+   "name": "* Bruce Wayne",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "CHOSEN",
+    "GENIUS"
+   ],
+   "set_name": "Batman",
+   "text": "Bruce Wayne begins the game with a Deterrence deck. (See insert.)\n<i>Actually... a Trillionaire</i> — <b>Action</b>: Reduce the cost of the next [[ARMOR]], [[ITEM]], [[LOCATION]], [[TECH]], [[VEHICLE]], or [[WEAPON]] card played this round by 1. <i>(Limit once per round.)</i>\n<i>\"My superpower? I'm rich.\"</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm002",
+   "type": "Ally",
+   "name": "* Robin",
+   "subtitle": "Damian Wayne",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BAT FAMILY"
+   ],
+   "set_name": "Batman",
+   "text": "<b>Response</b>: After Robin defeats an enemy or removes the last threat from a scheme, look at the top 3 cards of the encounter deck. You may discard one of those cards and place the remaining cards on top of the deck in any order.\n<i>\"No matter, you can be broken.\"</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm003",
+   "type": "Event",
+   "name": "Violent Means",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "set_name": "Batman",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Deal 2 damage to an enemy.\n<i>\"The beatings stop when you start talking.\"</i> — Batman",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm004",
+   "type": "Event",
+   "name": "I Am the Night",
+   "subtitle": "",
+   "desc": {
+    "Cost": "X",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "THWART"
+   ],
+   "set_name": "Batman",
+   "text": "Resolve this action X times (to a maximum of 3).\n<b>Hero Action</b> <i>(thwart)</i>: Remove up to 2 threat from a scheme. If this removes the last threat on that scheme, deal 1 damage to a minion.\n<i>\"I am vengeance...\"</i> — Batman",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm005",
+   "type": "Event",
+   "name": "Intimidate",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Batman",
+   "text": "<b>Hero Interrupt</b>: When a deterrence card is revealed or flipped as a boost card, cancel its surge effect and its additional boost card effect. You may pay 1 resource of any type to shuffle this card back into your deck.\n<i>\"If I ever see you in this city again. God help you.\"</i> — Batman",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm006",
+   "type": "Support",
+   "name": "* The Batcave",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BAT FAMILY",
+    "LOCATION"
+   ],
+   "set_name": "Batman",
+   "text": "Bruce Wayne gets +2 REC.\n<b>Alter-Ego Action</b>: Exhaust The Batcave → look at the top 5 cards of your deck. Choose one and add it to your hand. Shuffle the remaining cards into your deck.\n<i>\"Woah! Is that a dinosaur?\"</i> — Wally West",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm007",
+   "type": "Support",
+   "name": "* Oracle",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BAT FAMILY",
+    "PERSONA"
+   ],
+   "set_name": "Batman",
+   "text": "<b>Action</b>: Exhaust Oracle → search the encounter deck for a deterrence card. Then, reveal the chosen deterrence card and shuffle the encounter deck.\n<i>\"I'm Oracle, I know everybody.\"</i> — Barbara Gordon",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm008",
+   "type": "Upgrade",
+   "name": "Contingency Plan",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "PREPARATION"
+   ],
+   "set_name": "Batman",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Discard Contingency Plan → remove up to 2 threat from a scheme, ignoring any crisis icons in play. Choose a basic power, Batman gets +2 for his next use of the chosen basic power this round.\n<i>\"I have to be at least five moves ahead of my enemies.\"</i> — Batman",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm009",
+   "type": "Upgrade",
+   "name": "Batsuit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Batman",
+   "text": "You get +3 hit points. Batman gets +1 DEF.\n<i>\"Yes, father. I shall become a bat.\"</i> — Batman",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm010",
+   "type": "Upgrade",
+   "name": "Grapple Gun",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Batman",
+   "text": "Batman ignores the guard keyword and the patrol keyword.\n<b>Interrupt</b>: When an enemy activates, exhaust Grapple Gun → change your form.\n<i>\"This is my city. At night, it belongs to me.\"</i> — Batman",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm011",
+   "type": "Upgrade",
+   "name": "Batarangs",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Batman",
+   "text": "<b>Hero Response</b>: After resolving the \"<b>When Revealed</b>\" effect or boost ability of a deterrence card, deal 1 damage to an enemy.\n<i>\"Tell everyone... tell them they're finished. Tell them the streets belong to the Batman.\"</i> — Batman",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm012",
+   "type": "Upgrade",
+   "name": "Utility Belt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Batman",
+   "text": "<b>Hero Response</b>: After resolving the \"<b>When Revealed</b>\" effect or boost ability of a deterrence card, exhaust Utility Belt → resolve that card's \"<b>When Revealed</b>\" effect 1 additional time and cancel its surge effect.\n<i>\"Where does he get those wonderful toys?!?!\"</i> — The Joker",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm013",
+   "type": "Obligation",
+   "name": "Ghosts of the Past",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Bruce Wayne"
+   },
+   "traits": [],
+   "set_name": "Batman",
+   "text": "<b><i>Give to the Bruce Wayne player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Bruce Wayne → remove Ghosts of the Past from the game.\n• Search and remove all of the deterrence cards from the encounter deck. Add these cards to your deterrence deck. Shuffle the encounter deck. Discard this card.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm014",
+   "type": "SideScheme",
+   "name": "Split Decision",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Hazard": "1",
+    "StartingThreat": "4"
+   },
+   "traits": [],
+   "set_name": "Batman Nemesis",
+   "text": "<i>Two-Face knows the Bat well. Will they help or harm Batman this day?</i>\n<b>Forced Interrupt</b>: When a Deterrence card is revealed, discard the top card of the encounter deck. If that discarded card has an odd number of boost icons, add 2 threat to the main scheme.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm015",
+   "type": "Minion",
+   "name": "* Two-Face",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "0",
+    "ATK": "0",
+    "Boost": "2",
+    "Nemesis": "Batman",
+    "Steady": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE"
+   ],
+   "set_name": "Batman Nemesis",
+   "text": "Steady. Villainous.\n<b>Forced Response</b>: After a deterrence card is shuffled into the encounter deck, Two-Face gets +1 SCH and +1 ATK until the end of the round. <i>(Max twice per round.)</i>\n<i>(Batman's Nemesis Minion)</i>",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm016",
+   "type": "Treachery",
+   "name": "Heads I Win",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Batman Nemesis",
+   "text": "<b>When Revealed</b>: Discard the top 2 cards of the encounter deck. The player with the most remaining hit points takes indirect damage equal to the number of boost icons discarded this way. If a deterrence card was discarded this way, this card gains surge.\n<i>\"Fate has chosen... and cannot be denied.\"</i> — Two-Face",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm017",
+   "type": "Treachery",
+   "name": "Tails You Lose",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Batman Nemesis",
+   "text": "<b>When Revealed</b>: Discard the top 2 cards of the encounter deck. If an odd number of boost icons were discarded this way, the first player discards 2 cards at random from their hand. If a deterrence card was discarded this way, this card gains surge.\n<i>\"I wish you luck, but I can't unflip the coin.\"</i> — Two-Face",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm018",
+   "type": "Treachery",
+   "name": "Sudden Strike",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "DETERRENCE"
+   ],
+   "set_name": "Batman Deterrence",
+   "text": "<b>When Revealed</b>: If Batman is in play, Batman deals 3 damage to an enemy of your choice. This card gains surge.\n<hr />\n[star] <b>Boost</b>: Give the enemy 1 additional boost card for this activation. If Batman is in play, Batman deals the activating enemy 2 damage.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm019",
+   "type": "Treachery",
+   "name": "Smoke Cloud",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "DETERRENCE"
+   ],
+   "set_name": "Batman Deterrence",
+   "text": "<b>When Revealed</b>: Confuse an enemy. This card gains surge.\n<hr />\n[star] <b>Boost</b>: Give the enemy 1 additional boost card for this activation. If the enemy is attacking, reduce the damage dealt by this activation by 2. If the enemy is scheming, reduce the threat placed by this activation by 2.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm020",
+   "type": "Treachery",
+   "name": "Detective Work",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "DETERRENCE"
+   ],
+   "set_name": "Batman Deterrence",
+   "text": "<b>When Revealed</b>: Choose a player. That player chooses two cards in their discard pile and either puts them on the bottom of their deck or shuffles them into their deck. This card gains surge.\n<hr />\n[star] <b>Boost</b>: Investigate. Give the enemy 1 additional boost card for this activation.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm021",
+   "type": "Treachery",
+   "name": "Vigilantism",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "DETERRENCE"
+   ],
+   "set_name": "Batman Deterrence",
+   "text": "<b>When Revealed</b>: If Batman is in play, Batman removes 2 threat among schemes, divided as you choose. This card gains surge.\n<hr />\n[star] <b>Boost</b>: Give the enemy 1 additional boost card for this activation. If Batman is in play, Batman removes up to 2 threat from the main scheme.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm022",
+   "type": "Treachery",
+   "name": "Shadow of the Bat",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "DETERRENCE"
+   ],
+   "set_name": "Batman Deterrence",
+   "text": "<b>When Revealed</b>: If Batman is in play, choose one: draw a card or ready a card. This card gains surge.\n<hr />\n[star] <b>Boost</b>: If Batman is in play, prevent all threat and damage from this activation.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm023",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm024",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "ES"
+  },
+  {
+   "card_id": "bm025",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "ES"
+  }
+ ],
+ "warriors_three": [
+  {
+   "card_id": "wt001a",
+   "type": "Hero",
+   "name": "* Fandral",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "1",
+    "HS": "4"
+   },
+   "traits": [
+    "ASGARD",
+    "WARRIORS THREE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Active hero.\nTo change to alter-ego, flip The Warriors Three.\n<b>Hero Resource</b>: Exhaust Fandral → generate a [energy] resource.\n<i>\"Though I hold life most dear... let my broadsword strike!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt001b",
+   "type": "AlterEgo",
+   "name": "* The Warriors Three",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "ASGARD"
+   ],
+   "set_name": "Warriors Three",
+   "text": "You can control 1 additional upgrade that has the restricted keyword.\n<b>Forced Response</b>: After you flip to alter-ego, flip all your heroes to their inactive sides.\n<b>Forced Interrupt</b>: When you flip this card, flip one of your inactive heroes.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt001c",
+   "type": "Hero",
+   "name": "* Hogun",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "ASGARD",
+    "WARRIORS THREE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Active hero.\nTo change to alter-ego, flip The Warriors Three.\n<b>Hero Resource</b>: Exhaust Hogun → generate a [mental] resource.\n<i>\"Let the blackguards taste my mace!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt001d",
+   "type": "Hero",
+   "name": "* Volstagg",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "1",
+    "HS": "4"
+   },
+   "traits": [
+    "ASGARD",
+    "WARRIORS THREE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Active hero.\nTo change to alter-ego, flip The Warriors Three.\n<b>Hero Resource</b>: Exhaust Volstagg → generate a [physical] resource.\n<i>\"Volstagg stands ready! Let lesser men tremble!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt002",
+   "type": "Upgrade",
+   "name": "The Warriors Three",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Permanent. Treat counters, status cards and attachments on this card as if they were on your active hero.\nYou can control 1 additional upgrade that has the restricted keyword.\n<b>Hero Action</b>: Exhaust this card → change your active hero.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt003",
+   "type": "Support",
+   "name": "* Fandral",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "PERSONA",
+    "WARRIORS THREE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Inactive hero. Permanent. Setup.\n<b>Hero Resource</b>: Exhaust Fandral → generate a [energy] resource.\n<i>\"Though a thousand knaves oppose me, the blade of Fandral the Dashing shall sing!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt004",
+   "type": "Support",
+   "name": "* Hogun",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "PERSONA",
+    "WARRIORS THREE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Inactive hero. Permanent. Setup.\n<b>Hero Resource</b>: Exhaust Hogun → generate a [mental] resource.\n<i>\"Hogun the Grim doth not attack an unarmed foe. Seize thou yon weapon and let the combat begin!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt005",
+   "type": "Support",
+   "name": "* Volstagg",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "PERSONA",
+    "WARRIORS THREE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Inactive hero. Permanent. Setup.\n<b>Hero Resource</b>: Exhaust Volstagg → generate a [physical] resource.\n<i>\"Always has Volstagg the Tremendous been in the fore of every battle for Asgard!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt006",
+   "type": "Ally",
+   "name": "* Hildegarde",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "WARRIORS THREE"
+   ],
+   "set_name": "Warriors Three",
+   "text": "<b>Response</b>: After Hildegarde enters play, all [[WARRIORS THREE]] get +1 ATK and +1 THW until the end of the phase.\n<i>\"Verily I, the heroic Hildegarde, would be best suited for another task -- one of import far greater!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt007",
+   "type": "Upgrade",
+   "name": "* Brandrheid Undrsigr",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "WEAPON"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Restricted.\nVolstagg gets +1 ATK and gains retaliate 1.\n<b>Hero Response</b>: After Volstagg becomes the active hero, heal 1 damage from him.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt008",
+   "type": "Upgrade",
+   "name": "* Fimbuldraugr",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "WEAPON"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Restricted.\nFandral gets +1 THW and while he is your active hero ignore all crisis icons ([crisis]) in play.\n<b>Hero Response</b>: After Fandral becomes the active hero, remove 1 threat from a scheme.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt009",
+   "type": "Upgrade",
+   "name": "* Hridgandr",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "WEAPON"
+   ],
+   "set_name": "Warriors Three",
+   "text": "Restricted.\nHogun gets +1 ATK, +1 THW and his basic attacks gain piercing.\n<b>Hero Response</b>: After Hogun becomes the active hero, deal 1 damage to an enemy.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt010",
+   "type": "Support",
+   "name": "* Hildegund and Kin",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ASGARD",
+    "PERSONA"
+   ],
+   "set_name": "Warriors Three",
+   "text": "<b>Response</b>: After you flip to alter-ego, heal 2 damage from a friendly character.\n<i>\"They are innocents, and innocents I wish them to remain. At least a little while longer. I wish all children could remain so.\"</i> — Volstagg",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt011",
+   "type": "Event",
+   "name": "Mighty Endurance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Warriors Three",
+   "text": "<b>Hero Action</b>: If you used Volstagg to pay for this card, give a friendly character a tough status card. Otherwise, give Volstagg a tough status card.\n<i>\"No numbers are great enough to overthrow me!\"</i> —Volstagg the Tremendous",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt012",
+   "type": "Event",
+   "name": "Artful Bladework",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "set_name": "Warriors Three",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Then, if you paid for this card with Fandral, deal 2 damage to an enemy.\n<i>\"To parry - to Lunge - with perfect grace - how like a sonnet - how like an ode!\"</i> —Fandral the Dashing",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt013",
+   "type": "Event",
+   "name": "Hold the Line",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC",
+    "SUPERPOWER"
+   ],
+   "set_name": "Warriors Three",
+   "text": "<b>Hero Interrupt</b>: When threat would be placed on a scheme, prevent that threat. Then, if you paid for this card with Hogun, stun an enemy.\n<i>\"You wont advance another step!\"</i> —Hogun the Grim",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt014",
+   "type": "Event",
+   "name": "Rally!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Warriors Three",
+   "text": "<b>Action</b>: Ready all [[PERSONA]] supports you control.\n<i>\"And now, invigorated by my cunning... inspired by my daring... thou mayst join thy hero... for the final battle!\"</i> —Volstagg the Tremendous",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt015",
+   "type": "Event",
+   "name": "Leap into Action!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Warriors Three",
+   "text": "<b>Hero Action</b>: Change your active hero.\n<i>\"'Tis now or never friends!\"</i> —Fandral the Dashing",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt016",
+   "type": "Obligation",
+   "name": "A Questing We Shall Go!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "The Warriors Three"
+   },
+   "traits": [],
+   "set_name": "Warriors Three Nemesis",
+   "text": "<b><i>Give to the Warriors Three player.</i></b>\nSearch the encounter deck for the bottommost minion. Reveal it, then attach this card to it. If you can't, this card gains surge. Shuffle the encounter deck.\nThe attached minion gets +5 hit points and gains steady and the [[ELITE]] trait.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt017",
+   "type": "Minion",
+   "name": "* Fenris",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "3",
+    "SCH": "1*",
+    "Boost": "4",
+    "Nemesis": "The Warriors Three"
+   },
+   "traits": [
+    "CREATURE",
+    "ELITE"
+   ],
+   "set_name": "Warriors Three Nemesis",
+   "text": "Fenris can not take damage or be defeated.\n[star] <b>Forced Interrupt</b>: When Fenris schemes, place 1 threat on Countdown to Ragnarok.\n<i>(The Warriors Three nemesis minion.)</i>\n<i>\"One day, I'll break all nine worlds and feast on everything in them\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt018",
+   "type": "SideScheme",
+   "name": "Countdown to Ragnarok",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0",
+    "StartingThreat": "0",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Warriors Three Nemesis",
+   "text": "Permanent.\nThreat can not be removed from this scheme. Threat can only be placed on this scheme by Fenris.\n<b>Forced Response</b>: After threat is placed here, if there is at least 5 threat here, the players lose the game.\n<i>Fenris seeks a godkiller bomb. Should he reach it, he will bring about the end times.</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt019",
+   "type": "Obligation",
+   "name": "* Gleipnir",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0",
+    "GiveTo": "The Warriors Three"
+   },
+   "traits": [
+    "ARTIFACT"
+   ],
+   "set_name": "Warriors Three Nemesis",
+   "text": "Deal yourself a facedown encounter card.\n<b>Hero Action</b>: Spend 3 resources and discard Gleipnir → discard Fenris.\n[star] <b>Boost</b>: Reveal this card.\n<i>This invisible, unbreakable fetter once imprisoned Fenris, and it might yet bind the beast again.</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt020",
+   "type": "Minion",
+   "name": "* Skadihr",
+   "subtitle": "Helen Gable",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "A.I.M.",
+    "ASGARD"
+   ],
+   "set_name": "Warriors Three Nemesis",
+   "text": "Quickstrike.\n<b>Forced Interrupt</b>: When you would defeat Skadihr, heal all damage from her and put her under your control as a [[WARRIORS THREE]] ally. Her THW is equal to her printed SCH and she takes 2 consequential damage when she thwarts or attacks.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt021",
+   "type": "Treachery",
+   "name": "Fated Clash",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Warriors Three Nemesis",
+   "text": "<b>When Revealed</b>: Choose one:\n• Exhaust two [[PERSONA]] supports you control.\n• Fenris schemes.\nIf neither option is possible, search the encounter deck and discard pile for Fenris and reveal him.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt022",
+   "type": "Event",
+   "name": "Revelry in Asgard",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Basic",
+    "TeamUp": "Odinson;The Warriors Three"
+   },
+   "traits": [],
+   "set_name": "Warriors Three",
+   "text": "Team-Up (Odinson and The Warriors Three). Max 1 per deck.\n<b>Alter-Ego Action</b>: You get +2 hand size until the end of the round. If a minion was defeated this turn, you get +3 hand size instead.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt023",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt024",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "wt025",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Phenexian and Mysteltainn"
+  }
+ ],
+ "sunspot_hellfire": [
+  {
+   "card_id": "so001a",
+   "type": "Hero",
+   "name": "* Sunspot",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "0",
+    "THW": "0",
+    "DEF": "0",
+    "HS": "5"
+   },
+   "traits": [
+    "X-FORCE"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<i>Solar Rechanneling</i> — <b>Interrupt</b>: When you use one of Sunspot's basic powers (THW, ATK, or DEF), remove X solar counters from Sunspot → Sunspot gets +X to that chosen power for this use. If you removed at least half of the counters, ready Sunspot.\n<b>Forced Response</b>: At the end of each phase, if Sunspot has no solar counters, exhaust Sunspot and flip him into his alter-ego form.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so001b",
+   "type": "AlterEgo",
+   "name": "* Roberto Da Costa",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "MUTANT"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Setup</b>: Place 5 solar counters here.\n<i>Energy Absorption</i> — <b>Action</b>: Discard up to 3 cards from your hand. For each resource icon discarded from these cards, place 1 solar counter here.\n<i>\"Madre de Dios.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so002",
+   "type": "Ally",
+   "name": "* Cannonball",
+   "subtitle": "Sam Guthrie",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2**",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "X-FORCE"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Response</b>: After Cannonball attacks, reduce the cost of the next card you play this phase by 1.\n<i>\"Critters' hungry. Maybe even starvin'.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so003",
+   "type": "Event",
+   "name": "Blazing Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Remove 1 solar counter from Sunspot → deal 6 damage to an enemy. If Sunspot has the [[AERIAL]] trait, stun that enemy.\n<i>\"Whoops.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so004",
+   "type": "Event",
+   "name": "Blessings of the Sun",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you defend against an attack, place 1 solar counter on Sunspot → for each solar counter on Sunspot, you get +1 DEF for that attack.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so005",
+   "type": "Event",
+   "name": "Radiant Disruption",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove X solar counters from Sunspot. Remove X threat from a scheme. If Sunspot has the [[AERIAL]] trait, remove X threat from another scheme.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so006",
+   "type": "Event",
+   "name": "Soak Up the Sun",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Alter-Ego Action</b>: Place 5 solar counters on your identity card.\n<b>Hero Action</b>: If you have the [[AERIAL]] trait, place 3 solar counters on Sunspot.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so007",
+   "type": "Event",
+   "name": "Solar Flare",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Confuse an enemy. Remove any number of solar counters from Sunspot → deal 2 damage to that enemy and each minion engaged with you for each solar counter removed.\n<i>\"I guess it's time to give you your severance package.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so008",
+   "type": "Resource",
+   "name": "Solar Surge",
+   "subtitle": "",
+   "desc": {
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Resource</b>: Double the number of resources this card generates if Sunspot has more than 2 solar counters (triple the resources instead if Sunspot has more than 4 solar counters).",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so009",
+   "type": "Support",
+   "name": "* Da Costa International",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b>Alter-Ego Response</b>: After you resolve your <i>\"Energy Absorption\"</i> ability, place 1 solar counter on your identity.\n<i>\"Good evening, ladies and gentlemen of Da Costa International. It's my pleasure to stand before you today in what have proven to be...\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so010",
+   "type": "Upgrade",
+   "name": "* Radiant Avenger",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "Sunspot gains the [[AVENGER]] trait.\n<b>Hero Action</b>: Exhaust this card and remove 1 solar counter from Sunspot → Sunspot gains +1 ATK until the end of the round.\n<b>Action</b>: Exhaust this card → place 1 solar counter on Sunspot.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so011",
+   "type": "Upgrade",
+   "name": "Solar Soar",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "Sunspot gains the [[AERIAL]] trait.\n<b>Hero Response</b>: At the end of your turn, place 1 solar counter on Sunspot.\n<i>\"Hah! I'm back!\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so012",
+   "type": "Obligation",
+   "name": "M-Pox Sickness",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Roberto Da Costa"
+   },
+   "traits": [],
+   "set_name": "Sunspot (Hellfire Hunt)",
+   "text": "<b><i>Give to the Roberto Da Costa player.</i></b>\nIncrease the resource cost of the first card you play each round by 1.\n<b>Alter-Ego Action</b>: Remove 3 solar counters from your identity → remove M-Pox Sickness from the game.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so013",
+   "type": "SideScheme",
+   "name": "Superhuman Mutants Murdering",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "6",
+    "Boost": "3",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Sunspot (Hellfire Hunt) Nemesis",
+   "text": "<i>\"They say we are being replaced on the evolutionary ladder by mutants. Mutants. I say they are wrong.\"</i>\n<b>Forced Response</b>: After Donald Pierce activates against you, it activates against you again.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so014",
+   "type": "Minion",
+   "name": "* Donald Pierce",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "3",
+    "Toughness": "1",
+    "Quickstrike": "1",
+    "Villainous": "1",
+    "Nemesis": "Sunspot"
+   },
+   "traits": [
+    "CYBORG",
+    "ELITE",
+    "HELLFIRE"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt) Nemesis",
+   "text": "Toughness. Quickstrike. Villainous.\n<i>(Sunspot's nemesis minion.)</i>\n<i>\"You're the last generation of mutants.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so015",
+   "type": "Treachery",
+   "name": "Cybernetic Assault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Sunspot (Hellfire Hunt) Nemesis",
+   "text": "<b>When Revealed</b>: Donald Pierce attacks you. If he is not in play, search the encounter deck and discard pile for Donald Pierce and put him into play engaged with you.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "so016",
+   "type": "Treachery",
+   "name": "Political Persecution",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Sunspot (Hellfire Hunt) Nemesis",
+   "text": "<b>When Revealed</b>: If the Superhuman Mutants Murdering scheme is in play, place 2 threats to that scheme. If it is not in play, place 2 threats to the main scheme.",
+   "custom": "Dipsome"
+  }
+ ],
+ "rachel_summers": [
+  {
+   "card_id": "rm001a",
+   "type": "Hero",
+   "name": "* Marvel Girl",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "3",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "PSIONIC",
+    "X-FORCE"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<i>Chronoskimming</i> — <b>Response</b>: After your turn begins, shuffle your hand into your deck → draw a new hand. Reduce the cost of the next card you play this turn by 1.\n<i>\"I'm not my mother. I'm not Phoenix. I'm my own woman...\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm001b",
+   "type": "AlterEgo",
+   "name": "* Rachel Summers",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "4",
+    "HS": "5"
+   },
+   "traits": [
+    "MUTANT",
+    "PSIONIC"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<i>Telepathic Trickery</i> — <b>Action</b>: Exhaust Rachel Summers → Search your deck for a copy of Temporal Reversal and add it to your hand.\n<i>\"We should all live for the moment. It could be our last.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm002",
+   "type": "Ally",
+   "name": "* Captain Britain",
+   "subtitle": "Betsy Braddock",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "X-FORCE"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<b>Response</b>: After your turn begins, Captain Britain gets +1 ATK and +1 THW until the end of the phase.\n<i>\"That's right. Because pain goes away. Just like this hurt will. So just remember - all pain is only temporary, okay? No hurt lasts forever.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm003",
+   "type": "Event",
+   "name": "Askani's Prophecies",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TEMPORAL"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<b>Alter-Ego Action</b>: Ready Rachel Summers. Heal 1 damage from Rachel Summers. Change your form.\n<i>\"Thanks for today. Please for tomorrow.\"</i> - Askani prayer",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm004",
+   "type": "Event",
+   "name": "Black Hole",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<b>Hero Action</b>: Stun and confuse a minion and a villain. Deal 1 damage to the villain and each minion engaged with you.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm005",
+   "type": "Event",
+   "name": "Psionic Blasts",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "PSIONIC",
+    "THWART"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 3 damage to the enemy. If this attack defeats an enemy, draw 1 card. Remove 3 threat from a scheme. If this removes the last threat on that scheme, draw 1 card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm006",
+   "type": "Event",
+   "name": "Telekinetic Counterblast",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE",
+    "PSIONIC"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After an enemy attacks you, make a basic attack against that enemy without exhausting. Your hero gets +3 ATK for this attack.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm007",
+   "type": "Event",
+   "name": "Temporal Reversal",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER",
+    "TEMPORAL"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "Max 1 per round.\n<b>Action</b>: Take an additional turn after this one. At the end of this turn, perform each of the following in order:\n• Discard any number of cards, and discard down to your hand size.\n• Draw up to your hand size.\n• Ready all of your cards.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm008",
+   "type": "Upgrade",
+   "name": "* Askani",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Askani → shuffle the top three cards from your discard pile into your deck.\n<b>Interrupt</b>: When you would be defeated, set your hit point dial to 1 instead. Then, discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm009",
+   "type": "Upgrade",
+   "name": "Psionic Shield",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "Marvel Girl gets +2 DEF.\n<b>Hero Response</b>: After Marvel Girl defends against an enemy attack, and take no damage, exhaust Psionic Shield → confuse that enemy.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm010",
+   "type": "Upgrade",
+   "name": "Temporal Retrieval",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "TEMPORAL"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "<b>Action</b>: Exhaust Temporal Retrieval → attach 1 card from your hand facedown here (to a maximum of 3).\n<b>Response</b>: After you use your \"Chronoskimming\" ability or play a [[TEMPORAL]] card, discard this card → put each card attached to this card into your hand.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm011",
+   "type": "Upgrade",
+   "name": "Telekinetic Axe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Restricted": "1",
+    "MaxPerUnit": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "WEAPON"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\nMarvel Girl gets +1 ATK.\n<b>Hero Interrupt</b>: When Marvel Girl makes a basic attack, exhaust this card → that attack gains overkill and stun the attacked enemy.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm012",
+   "type": "Upgrade",
+   "name": "Telekinetic Sword",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Restricted": "1",
+    "MaxPerUnit": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "WEAPON"
+   ],
+   "set_name": "Marvel Girl",
+   "text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\nYou get +3 hit points.\nMarvel Girl attacks gain piercing.\n<b>Hero Response</b>: After you attack, exhaust Telekinetic Sword → draw 1 card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm013",
+   "type": "Obligation",
+   "name": "Memory From The Future",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Rachel Summers"
+   },
+   "traits": [],
+   "set_name": "Marvel Girl",
+   "text": "<b><i>Give to the Rachel Summers player.</i></b>\nYou get -1 hand size.\n<b>Alter-Ego Action</b>: Exhaust Rachel Summers → discard this obligation and end this turn.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm014",
+   "type": "SideScheme",
+   "name": "Hound Program",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "StartingThreat": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Marvel Girl Nemesis",
+   "text": "Permanent.\n<b>Hero Response</b>: After Marvel Girl's turn begins, place 1 threat here. If there is at least 5 threat here, the players lose the game.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm015",
+   "type": "Minion",
+   "name": "* Ahab",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "3",
+    "SCH": "2",
+    "Boost": "2",
+    "Toughness": "1",
+    "Villainous": "1",
+    "Nemesis": "Marvel Girl"
+   },
+   "traits": [
+    "ELITE",
+    "CYBORG",
+    "HOUNDS"
+   ],
+   "set_name": "Marvel Girl Nemesis",
+   "text": "Toughness. Villainous.\n<i>(Marvel Girl's nemesis minion.)</i>\n<i>\"Whatever you do to me now...you'll still meet me in the days to come.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "rm016",
+   "type": "Attachment",
+   "name": "Hound Clothes",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Marvel Girl Nemesis",
+   "text": "Max 1 per identity.\nAttach to your identity. Otherwise, this card gains surge.\nYou get -1 hand size.\n<b>Hero Action</b>: Exhaust your identity → discard this card.\n<hr />\n[star] <b>Boost</b>: Discard 1 card at random from your hand.",
+   "custom": "Dipsome"
+  }
+ ],
+ "starjammers_aspects": [
+  {
+   "card_id": "sy001",
+   "type": "Ally",
+   "name": "* Ch'od",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "5",
+    "ATK": "3**",
+    "THW": "2**",
+    "RES": "R",
+    "Class": "Basic"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Response</b>: After Ch'od enters play, search your deck and discard pile for a [[VEHICLE]] or [[TECH]] card and add it to your hand.\n<i>\"I will not have someone going nutso when they are elbow-deep in the nervous system of my ship!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy002",
+   "type": "Ally",
+   "name": "* Corsair",
+   "subtitle": "Christopher Summers",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Basic"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Interrupt</b>: After you play Corsair from your hand, tuck each card you used to pay for him under here.\n[star] <b>Response</b>: After you attack or thwart with Corsair, add a card tucked under him to your hand.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy003",
+   "type": "Ally",
+   "name": "* Hepzibah",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Basic"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Interrupt</b>: When Hepzibah attacks an enemy, exhaust a [[WEAPON]] you control → Hepzibah gets +2 ATK for that attack. That attack gains overkill.\n<i>\"Killer instinct, Hepzibah lacks not\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy004",
+   "type": "Ally",
+   "name": "* Sikorsky",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "AERIAL",
+    "PSIONIC",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Response</b>: After Sikorsky enters play, heal 1 damage from a character.\n<i>\"Physician, I am. Best for patient, I know what. Asking am not. Telling!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy005",
+   "type": "Ally",
+   "name": "* Waldo",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "ANDROID",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "[star] <b>Response</b>: After Waldo uses a basic power, ready a [[VEHICLE]] you control.\n<i>\"I copy. How are things dirt side?\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy006",
+   "type": "Ally",
+   "name": "* Raza Longknife",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CYBORG",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Raza Longknife gets +1 hit point for each upgrade attached to him.\n<i>\"Starjammers don't know how to lose.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy007",
+   "type": "Event",
+   "name": "Life-Bonded Crewmates",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "TeamUp": "Corsair;Hepzibah",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Starjammers Aspects",
+   "text": "Team-Up (Corsair and Hepzibah). Max 1 per deck.\n<b>Action</b>: Heal 2 damage from Corsair and Hepzibah. Search your discard for an event and add it to your hand.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy008",
+   "type": "Event",
+   "name": "Steadfast Companions",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "MaxPerDeck": "1",
+    "TeamUp": "Ch'od;Raza Longknife",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Starjammers Aspects",
+   "text": "Team Up (Ch'od and Raza Longknife). Max 1 per deck.\n<b>Action:</b> Give Ch'od and Raza Longknife each a tough status card. Search your deck for an upgrade and add it to your hand.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy009",
+   "type": "PlayerSideScheme",
+   "name": "* Skillful Execution",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "StartingThreat": "2*",
+    "Victory": "0",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Starjammers Aspects",
+   "text": "Victory 0.\n<b>When Defeated</b>: Each player may search their deck and discard pile for a [[SKILL]] card and add it to their hand. Reduce the cost of each [[SKILL]] played this phase by 1.\n<i>\"Okay, here's how we do the deed.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy010",
+   "type": "Support",
+   "name": "* Center Section Garden",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "LOCATION",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Alter-Ego Response</b>: After you make a basic recovery, exhaust Centre Section Garden → heal 2 damage from your identity or a [[STARJAMMER]] character.\n<i>\"I just wanted to carry something good with me.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy011",
+   "type": "Support",
+   "name": "* Standing Still",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "LOCATION",
+    "PLANET"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Resource</b>: Exhaust Standing Still → generate a [wild] resource for a player whose identity has the [[OUTLAW]] or [[STARJAMMER]] trait.\n<i>An anarchist planet within the independent net of worlds called the clench, and the free base from which the Starjammers operate.</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy012",
+   "type": "Support",
+   "name": "* The Starjammer",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Basic"
+   },
+   "traits": [
+    "STARJAMMER",
+    "VEHICLE"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "If each of your allies has the [[STARJAMMER]] trait, increase your ally limit by 1.\n<b>Hero Interrupt</b>: When a [[STARJAMMER]] character uses a basic power, exhaust The Starjammer → that character gets +1 to that power for this use.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy013",
+   "type": "Upgrade",
+   "name": "Honorary Starjammer",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Play only if your identity has the [[STARJAMMER]] trait.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[STARJAMMER]] trait.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy014",
+   "type": "Upgrade",
+   "name": "Pirate's Rapier",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Attach to a [[STARJAMMER]] ally. Max 1 per ally.\nAttached ally gets +1 ATK and its attacks gain piercing.\n<i>\"Most armor, spacesuits, they're blaster-proof. A good blade can slice one open.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy015",
+   "type": "Upgrade",
+   "name": "Stolen Goods",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Basic"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Max 2 per deck.\n<b>Resource</b>: Discard this card → generate [wild][wild]. Trigger this ability only if you have the [[OUTLAW]] trait.\n<i>\"No sense letting all this stuff go to waste...\"</i> —Raza Longknife",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy016",
+   "type": "Ally",
+   "name": "* Binary",
+   "subtitle": "Carol Danvers",
+   "desc": {
+    "Cost": "5",
+    "HP": "4",
+    "ATK": "3*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "AERIAL",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Response</b>: After Binary enters play, discard the top 4 cards of your deck. If you discard a printed [physical] resource, deal 3 damage to an enemy. If you discard a printed [energy] resource, stun an enemy.\n<i>\"Now I can really cut loose!\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy017",
+   "type": "Ally",
+   "name": "* Korvus Rook'shir",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "PSIONIC",
+    "SHI'AR",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Response</b>: After Korvus Rook'shir enters play, find Blade of the Phoenix and attach it to him.\n<i>\"Listen to me. You can't beat this blade.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy018",
+   "type": "Upgrade",
+   "name": "* Blade of the Phoenix",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "YB",
+    "Class": "Aggression",
+    "Linked": "Korvus Rook'shir"
+   },
+   "traits": [
+    "ARTIFACT",
+    "WEAPON"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Linked (Korvus Rook'shir)\nAttach to an ally.\nAttached ally gets +2 ATK. If the attached ally doesn't have the [[PSIONIC]] trait, it takes +1 consequential damage after it attacks.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy019",
+   "type": "Ally",
+   "name": "* Marvel Girl",
+   "subtitle": "Rachel Summers",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2**",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "PSIONIC",
+    "STARJAMMER",
+    "X-MEN"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Interrupt</b>: When Marvel Girl attacks, choose one:\n• That attack gains piercing.\n• That attack gains ranged.\n• That attack gains overkill.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy020",
+   "type": "Event",
+   "name": "Critical Blow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Requirement": "YBR",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Requirement ([energy][mental][physical]).\n<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 4 damage to an enemy. Remove threat from a scheme equal to the damage dealt this way. This attack gains piercing.\n<i>\"You would be wise to surrender now.\"</i> —Ch'od",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy021",
+   "type": "Event",
+   "name": "Outlaw Justice",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Aggression",
+    "Alliance": "1"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Alliance.\n<b>Hero Action</b> <i>(attack/thwart)</i>: Exhaust a [[STARJAMMER]] character and a [[GUARDIAN]] character → deal X damage among enemies in play and remove X threat from among schemes in play, where X is the combined ATK of the two exhausted characters.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy022",
+   "type": "Event",
+   "name": "Reckless Attack",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard the top card of the encounter deck. Deal 1 damage to your identity for each icon ([star] and [boost]) in that card's boost area → deal 4 damage to an enemy.\n<i>\"This is gonna hurt.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy023",
+   "type": "Upgrade",
+   "name": "Energy Cannon",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Restricted.\n<b>Action</b>: Exhaust Energy Cannon → place 1 charge counter on it.\n<b>Hero Action</b>: Discard Energy Cannon → deal X damage divided among enemies as you choose, where X is equal to the number of charge counters on Energy Cannon.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy024",
+   "type": "Upgrade",
+   "name": "Longarm Blaster",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Attach to a [[STARJAMMER]] ally. Max 1 per ally.\n<b>Response</b>: After you defend against an attack, exhaust the attached ally → deal X damage to an enemy, where X is the attached ally's printed attack.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy025",
+   "type": "Ally",
+   "name": "* Havok",
+   "subtitle": "Alex Summers",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "STARJAMMER",
+    "X-MEN"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Forced Response</b>: After Havok enters play, tuck the top 3 cards of the encounter deck under him.\n[star] <b>Forced Interrupt</b>: When Havok uses a basic power, discard a card tucked under him. He gets +1 to that basic power for each icon ([star] and [boost]) in that card's boost area.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy026",
+   "type": "Ally",
+   "name": "* Polaris",
+   "subtitle": "Lorna Dane",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "STARJAMMER",
+    "X-MEN"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "[star] <b>Response</b>: After Polaris takes consequential damage from thwarting, if that thwart removed the last threat from a scheme, give a her a tough status card.\n<i>\"We'll hold out as long as it takes. We have to.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy027",
+   "type": "Event",
+   "name": "Freedom Fighters",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Justice",
+    "Alliance": "1"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Alliance.\n<b>Response</b> <i>(thwart)</i>: When the villain activates against a player, exhaust a [[STARJAMMER]] character and an [[X-MEN]] character → cancel that activation. Remove X threat from a scheme, where X is the combined THW of the two exhausted characters.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy028",
+   "type": "Event",
+   "name": "Masterstroke",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Requirement": "YBR",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Requirement ([energy][mental][physical]).\n<b>Hero Action</b> <i>(thwart)</i>: Discard the top 4 cards of the encounter deck, then for each card discarded this way choose one:\n• Remove threat from a scheme equal to the number of boost icons ([boost]) on that card.\n• Place that card on top of the encounter deck and draw 1 card.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy029",
+   "type": "Event",
+   "name": "Reckless Maneuver",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Discard the top card of the encounter deck. Deal 1 damage to your identity for each icon ([star] and [boost]) in that card's boost area → remove 4 threat from a scheme.\n<i>\"If anyone here has a god, start flattering it.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy030",
+   "type": "Support",
+   "name": "* Helek",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "KREE",
+    "PERSONA"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Reduce the cost to play Helek by 2 if your identity has the [[STARJAMMER]] trait.\n<b>Response</b>: After a player reveals a treachery card, exhaust Helek → that player draws a card.\n<i>\"Anarchy is no good without freedom of information.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy031",
+   "type": "Upgrade",
+   "name": "Disruptor Ray",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Restricted": "1",
+    "Uses": "2,charge",
+    "Class": "Justice"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Restricted. Uses (2 charge counters).\n<b>Action</b>: Exhaust disruptor ray and remove 1 charge counter from it → choose an attachment, non-[[ELITE]] minion, or side scheme. Until the end of the round, treat that card's printed text box as if it were blank <i>(except for [[TRAITS]])</i>.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy032",
+   "type": "Upgrade",
+   "name": "Tactical Teleporter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "TECH"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Attach to a [[STARJAMMER]] ally. Max 1 per ally.\nAttached ally gets +1 THW and ignores the guard keyword, the patrol keyword, and the crisis icon ([crisis]).",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy033",
+   "type": "Ally",
+   "name": "* Cyclops",
+   "subtitle": "Scott \"Slim\" Summers",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "CHAMPION",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "[star] <b>Response</b>: After Cyclops uses a basic power, choose another character. That character gets +1 to that basic power until the end of the phase.\n<i>\"I've seen the man I become. I don't like him very much.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy034",
+   "type": "Ally",
+   "name": "* Keeyah",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "KREE",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "[star] <b>Response</b>: After Keeyah uses a basic power, choose another ally → that ally uses the same basic power without exhausting. <i>(They take consequential damage as normal.)</i>\n<i>\"System drive is ticking over. Ready when you are.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy035",
+   "type": "Ally",
+   "name": "* Lilandra",
+   "subtitle": "Lilandra Neramani",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "PSIONIC",
+    "SHI'AR",
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Action</b>: Exhaust Lilandra and deal 1 damage to her → choose another ally. Until the end of the phase the chosen ally does not take consequential damage.\n<i>\"War is coming, and we can no longer fight it alone.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy036",
+   "type": "Event",
+   "name": "Decisive Action",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Requirement": "YBR",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Requirement ([energy][mental][physical]).\n<b>Hero Action</b>: Your hero gets +1 ATK and +1 THW until the end of the phase. Make a basic attack without exhausting. Make a basic thwart without exhausting.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy037",
+   "type": "Event",
+   "name": "Far-Flung Family",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "B",
+    "Class": "Leadership",
+    "Alliance": "1"
+   },
+   "traits": [],
+   "set_name": "Starjammers Aspects",
+   "text": "Alliance.\n<b>Action</b>: Exhaust a [[STARJAMMER]] character and an [[X-MEN]] character → as a group, the players search their decks for a total of 1 [[STARJAMMER]] ally and 1 [[X-MEN]] ally and put them into play exhausted.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy038",
+   "type": "Event",
+   "name": "Reckless Charge",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Hero Action</b>: Discard the top card of the encounter deck. Deal 1 damage to your identity for each icon ([star] and [boost]) in that card's boost area → ready up to 3 characters.\n<i>\"Their defenses are strong, so we hit them fast.\"</i> —Corsair",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy039",
+   "type": "Support",
+   "name": "Targeting Station",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Uses": "3,ammo",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "LOCATION",
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Uses (3 ammo counters).\n<b>Action</b>: Exhaust a character you control and remove 1 ammo counter from this card → deal 3 damage to an enemy.\n<i>\"Main guns cycled. Secondaries and deliveries standing by.\"</i> —Hepzibah",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy040",
+   "type": "Upgrade",
+   "name": "* Captain of the Starjammer",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Your identity gains the [[STARJAMMER]] trait.\n<b>Hero Response</b>: After you use a basic power, each [[STARJAMMER]] ally you control gets +1 to that basic power until the end of the phase.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy041",
+   "type": "Upgrade",
+   "name": "Jet Bike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "VEHICLE"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Attach to a [[STARJAMMER]] ally. Max 1 per ally.\nAttached ally gets +1 THW and +1 ATK.\n<b>Response</b>: After you attach Jet Bike to an ally, ready that ally.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy042",
+   "type": "Ally",
+   "name": "* Kalyx",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Forced Response</b>: After Kalyx enters play, find Thorn Crew and put it into play.\n[star] <b>Response</b>: After Kalyx uses a basic power, put the top card of your deck into play facedown as a [[THORN]] ally.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy043",
+   "type": "Support",
+   "name": "Thorn Crew",
+   "subtitle": "",
+   "desc": {
+    "RES": "R",
+    "Permanent": "1",
+    "Class": "Protection",
+    "Linked": "Kalyx"
+   },
+   "traits": [],
+   "set_name": "Starjammers Aspects",
+   "text": "Permanent. Linked (Kalyx).\nEach facedown [[THORN]] ally has a base THW of 1, a base ATK of 1 and base hit points of 1.\n<b>Forced Response</b>: After a [[THORN]] ally is defeated, place that card in its owner's discard pile.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy044",
+   "type": "Ally",
+   "name": "* K-Zzat",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Protection"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Response</b>: After K-Zzat attacks an enemy, deal 1 damage to a friendly character → stun the attacked enemy.\n<i>\"Injustice is a constant in the universe. Beings are different, but the concept is the same.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy045",
+   "type": "Ally",
+   "name": "* Tolo Hawk",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "STARJAMMER"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Response</b>: After Tolo Hawk enters play, ready a friendly [[STARJAMMER]] character.\n<i>\"I worked so hard for this uniform. Thowing it away is like shedding my old life.\"</i>",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy046",
+   "type": "Event",
+   "name": "Ready for Anything",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Requirement": "YBR",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Requirement ([energy][mental][physical]).\n<b>Hero Action</b>: Stun and confuse an enemy. Give your identity a tough status card.\n<i>\"Bring it you snot nosed punk!\"</i> —Polaris",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy047",
+   "type": "Event",
+   "name": "Reckless Defense",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a character would take damage from an attack, discard the top card of the encounter deck. Deal 1 damage to your identity for each icon ([star] and [boost]) in that card's boost area → prevent all damage from that attack.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy048",
+   "type": "Event",
+   "name": "Rogue Heroics",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Protection",
+    "Alliance": "1"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Alliance.\n<b>Hero Action</b> <i>(attack)</i>: Exhaust a [[STARJAMMER]] character and a [[GUARDIAN]] character → deal X damage among enemies in play, where X is the combined ATK of the two exhausted characters. Stun each character damaged this way.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy049",
+   "type": "Upgrade",
+   "name": "Armored Space Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Attach to a [[STARJAMMER]] ally. Max 1 per ally.\nAttached ally gains the [[AERIAL]] trait.\n<b>Response</b>: After this card enters play, give the attached ally a tough status card.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy050",
+   "type": "Upgrade",
+   "name": "Plasnet Launcher",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "B",
+    "Restricted": "1",
+    "Uses": "3,charge",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Starjammers Aspects",
+   "text": "Restricted. Uses (3 charge counters).\n<b>Action</b>: Exhaust Plasnet Launcher and remove 1 charge counter from it → the villain gets -1 ATK until the end of the round.",
+   "custom": "Phenexian and Mysteltainn"
+  },
+  {
+   "card_id": "sy_thorn_ally",
+   "pic_id": "player",
+   "type": "Ally",
+   "name": "Thorn Ally",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "ATK": "1",
+    "THW": "1"
+   },
+   "traits": [
+    "THORN"
+   ],
+   "set_name": ""
+  }
+ ]
 }

@@ -1,0 +1,43 @@
+{
+    "version": "0.5.8",
+    "name": "Corsair (Making Amends)",
+    "metadata": {
+        "url": "",
+        "author": "Phenexian and Mysteltainn",
+        "note": "Obligation ALTERNATIVE de l'auteur (cr012 Making Amends, « you may choose to use instead of his default one »). Meme deck de heros, nemesis et cartes que `corsair`.",
+        "variante_nom": "Making Amends",
+        "variante_de": "corsair"
+    },
+    "hero": [
+        "cr001a,cr001b"
+    ],
+    "hero_deck": [
+        "cr002",
+        "cr003",
+        "cr004",
+        "cr004",
+        "cr005",
+        "cr006",
+        "cr007",
+        "cr007",
+        "cr008",
+        "cr008",
+        "cr009",
+        "cr009",
+        "cr010",
+        "cr010",
+        "cr010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "cr012"
+    ],
+    "nemesis_set": [
+        "cr013",
+        "cr014",
+        "cr015",
+        "cr015",
+        "cr016"
+    ],
+    "player_deck": []
+}

@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Smasher",
+    "metadata": {
+        "url": "",
+        "author": "Phenexian",
+        "note": "Pack « Smasher » (Starjammers, Phenexian). Pas de decklist imprimee (le zip ne contient que le visuel de boite « Hero Pack », un compteur de PV, trois reskins de ressources et la carte Team-Up Power Couple) : player_deck vide (PROCESSUS-HEROS etape 3). Power Couple (sz015, Basic, Max 1 par deck) n'est PAS dans le deck de heros : elle s'ajoute depuis le deckbuilder. Aucune regle de deck particuliere imprimee sur l'identite : aucune entree dans regles.js."
+    },
+    "hero": [
+        "sz001a,sz001b"
+    ],
+    "hero_deck": [
+        "sz002",
+        "sz003",
+        "sz004",
+        "sz004",
+        "sz004",
+        "sz005",
+        "sz005",
+        "sz006",
+        "sz006",
+        "sz007",
+        "sz007",
+        "sz008",
+        "sz008",
+        "sz009",
+        "sz009"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "sz010"
+    ],
+    "nemesis_set": [
+        "sz011",
+        "sz012",
+        "sz013",
+        "sz013",
+        "sz014"
+    ],
+    "player_deck": []
+}
