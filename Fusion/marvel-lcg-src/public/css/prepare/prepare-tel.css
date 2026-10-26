@@ -242,7 +242,10 @@
   html.tel .tel-deck-actions .ts-btn { flex: 1 1 0; min-width: 0; white-space: normal; text-align: center; line-height: 1.15; padding: 6px 8px; overflow-wrap: anywhere; }
   html.tel .tel-outils { display: flex; flex-wrap: wrap; gap: 8px; }
   html.tel .tel-outils .tampon { flex: 1 1 auto; justify-content: center; }
-  html.tel .deck-aspects-bascule { width: 100%; }
+  /* `flex: none` (26/10/2026) : prepare.css donne à la bascule `flex: 0 0 100%`, pensé pour une rangée qui passe à la ligne.
+     Ici la liste est une COLONNE : 100 % devient 100 % de la HAUTEUR de la liste, et chaque bouton « Paquets d'aspect / Decks du
+     tableur » faisait un quart d'écran de cadre vide avant le premier deck. */
+  html.tel .deck-aspects-bascule { width: 100%; flex: none; }
   html.tel .deck-aspects.est-deplie { display: flex; flex-direction: column; gap: 10px; }
 
   /* ---- Barre du bas : équipe, puis Retour / Aléatoire / Continuer --------- */
@@ -352,6 +355,17 @@
   html.tel .dm-edit { min-height: 44px; }
   html.tel .dm-head { flex-wrap: wrap; gap: 8px; }
   html.tel .dm-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  /* Le volet d'une feuille basse défile au doigt (26/10/2026). `html[data-epure] .deck-modal-panel { overflow: hidden }`
+     (affichage-epure-pages.css) écrasait le `overflow: auto` du panneau : on ne voyait que les trois premières rangées d'un
+     deck de 47 cartes, sans moyen d'aller plus bas. Le panneau redéfile (et ne passe pas le geste à la page derrière) ; pour
+     la grille des cartes d'un deck, c'est la GRILLE qui défile, sous une poignée et un titre qui restent en place : fermer
+     reste toujours à portée du pouce. */
+  html.tel .deck-modal .deck-modal-panel { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+  html.tel .deck-modal .deck-modal-panel:has(> .dm-grid) { overflow: hidden; }
+  html.tel .deck-modal .deck-modal-panel > .dm-grid {
+    flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    align-content: start; padding-bottom: 8px; -webkit-overflow-scrolling: touch;
+  }
   html.tel .tb-cartes-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   html.tel .vh-panel .vh-actions { flex-wrap: wrap; }
   html.tel .vh-panel .vh-actions .tampon { min-height: 44px; flex: 1 1 auto; justify-content: center; }

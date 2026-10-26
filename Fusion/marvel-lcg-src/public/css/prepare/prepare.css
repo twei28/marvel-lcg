@@ -1196,6 +1196,14 @@ button{cursor:pointer}
 .dm-card{position:relative}
 .dm-card img{width:100%;border-radius:8px;border:1px solid var(--line);display:block;transition:transform .15s}
 .dm-card:hover img{transform:translateY(-3px);border-color:var(--nous)}
+/* Le volet d'un deck : c'est la GRILLE qui défile, sous un titre qui reste en place (26/10/2026). Le style épuré donne
+   `overflow: hidden` à tout `.deck-modal-panel` (affichage-epure-pages.css) : sur un portable en 1366×768 la dernière rangée du
+   deck était coupée, sans molette pour l'atteindre ; sur téléphone on ne voyait que les trois premières rangées (voir
+   prepare-tel.css, même règle). Ne touche que les panneaux dont l'enfant direct est la grille des cartes d'un deck. */
+.deck-modal .deck-modal-panel:has(> .dm-grid){display:flex;flex-direction:column;overflow:hidden}
+.deck-modal .deck-modal-panel:has(> .dm-grid) > .dm-head{flex:none}
+.deck-modal .deck-modal-panel > .dm-grid{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-gutter:stable;align-content:start;padding:4px 4px 8px 0}
 .dm-count{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.78);color:#fff;font-weight:800;font-size:12px;padding:2px 7px;border-radius:6px}
 
 
