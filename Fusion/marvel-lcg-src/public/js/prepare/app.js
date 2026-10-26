@@ -46,7 +46,7 @@ import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
 import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES as MODES_PHASE, normaliser as normaliserModePhase,
-         doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire,
+         doitProposerLeChoix as doitProposerLaPhase, doitProposerLeChoixSurAppareil as doitProposerLaPhaseSurAppareil, modeAEcrire as modePhaseAEcrire,
          CLE_JEU_AU_DOIGT, REQUETE_TABLETTE as REQUETE_TABLETTE_PHASE, estTablette as estTablettePhase, choixInitial as choixInitialPhase,
          migrerPhaseTroisChoix, PHASE_IMAGES_VISIBLES } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
@@ -6252,7 +6252,8 @@ installerHistorique(appliquerCleTel);
     try { migrerPhaseTroisChoix(localStorage); } catch (e) { /* stockage indisponible */ }
     let phaseVue = null;
     try { phaseVue = localStorage.getItem(CLE_PHASE_CHOIX_VU); } catch (e) { /* stockage indisponible */ }
-    if (!creationCampagne() && doitProposerLaPhase(phaseVue)) {
+    // Sur telephone la phase du mechant est d'office « Guidee » : pas de fenetre (26/10/2026).
+    if (!creationCampagne() && doitProposerLaPhaseSurAppareil(phaseVue, estTel())) {
         await demanderLaPhaseDuMechant();
     }
     // L'EQUIPE RESTE ENSEMBLE (13/10/2026) : l'hote qui rouvre la preparation

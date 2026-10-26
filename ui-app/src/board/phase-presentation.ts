@@ -18,6 +18,8 @@
 // 16/10/2026), toujours lu s'il n'y a pas encore de choix : `non` donne `etape`,
 // tout le reste donne `bis`, le défaut d'alors. Aucun réglage n'est perdu.
 
+import { estTelephoneMaintenant } from './mobile/useModeMobile'
+
 export type PresentationPhase = 'etape' | 'bis' | 'tris' | 'dynamique'
 
 export const PRESENTATIONS: readonly PresentationPhase[] = ['etape', 'bis', 'tris', 'dynamique']
@@ -90,7 +92,19 @@ try {
   /* stockage indisponible */
 }
 
+/**
+ * SUR TELEPHONE, « GUIDEE » D'OFFICE (26/10/2026) : la presentation `tris` quoi que le joueur ait range. Si la Guidee n'etait
+ * pas utilisable ici (`phaseTrisUtilisable()` faux : drapeau retire, hote non local), on garde la presentation rangee.
+ */
+export function presentationEffective(rangee: PresentationPhase, telephone: boolean): PresentationPhase {
+  return telephone && phaseTrisUtilisable() ? 'tris' : rangee
+}
+
 export function lirePresentationPhase(): PresentationPhase {
+  return presentationEffective(lirePresentationPhaseRangee(), estTelephoneMaintenant())
+}
+
+function lirePresentationPhaseRangee(): PresentationPhase {
   try {
     const stocke = globalThis.localStorage?.getItem(CLE_PRESENTATION_PHASE)
     if (stocke && (PRESENTATIONS as readonly string[]).includes(stocke)) {
