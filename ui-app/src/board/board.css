@@ -8937,6 +8937,33 @@
     position: relative;
   }
 
+  /* Cartes POSÉES SOUS une autre (State of Flow, cartes glissées) : une pile, pas des améliorations en jeu (26/10/2026). Contour
+     en pointillés sur chaque carte empilée, et une pastille « Pile : N » sur le porteur. */
+  .est-attachee.est-empilee .scan-card {
+    outline: 3px dashed rgba(242, 201, 76, 0.9);
+    outline-offset: -2px;
+    border-radius: inherit;
+  }
+  .pile-sous-carte {
+    position: absolute;
+    /* centree sous la carte PORTEUSE (~70 px : la moitie de sa largeur), pas sous toute l'unite */
+    left: 70px;
+    transform: translateX(-50%);
+    bottom: 6px;
+    z-index: 70; /* au-dessus du porteur (toujours devant ses attachements) */
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    line-height: 1.35;
+    white-space: nowrap;
+    color: #0e1116;
+    background: var(--gold, #f2c94c);
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+  }
+
   .statut-nombre {
     position: absolute;
     right: -4px;

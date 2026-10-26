@@ -40,6 +40,7 @@ import { useCoteAmeliorations } from './cote-ameliorations'
 import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } from './glisser/useGlisser'
 import { TraductionPosee } from './TraductionPosee'
+import { compterEmpilees, estEmpilee, libelleEmpilees } from './empilees'
 import { coteDuTexte, useTraductionFr } from './traduction-carte'
 import { texteEnHtml } from './traduction-posee'
 import { APERCU_JUMELLES_DOUBLE, jumellesPourApercu, type ApercuJumelle } from './panorama-jumelles'
@@ -419,12 +420,23 @@ export function Unite({
       ) : null}
 
       <ScanCard {...cartePorteur} />
+      {compterEmpilees(upgrades) > 0 ? (
+        // Des événements ou des ressources posés SOUS cette carte (State of Flow, cartes glissées) : une pile, pas des
+        // améliorations en jeu. La pastille le dit et compte les cartes.
+        <span
+          className="pile-sous-carte"
+          aria-label={libelleEmpilees(compterEmpilees(upgrades))}
+          title={libelleEmpilees(compterEmpilees(upgrades))}
+        >
+          {libelleEmpilees(compterEmpilees(upgrades))}
+        </span>
+      ) : null}
       {upgrades.map((attachee) => {
         const cote = coteDe(Number(attachee.id), Number(unite.carte.id), ordres, coteParDefaut)
         const i = (cote === 'gauche' ? aGauche : aDroite).indexOf(attachee)
         return (
           <span
-            className={`est-attachee${cote === 'gauche' ? ' est-a-gauche' : ''}`}
+            className={`est-attachee${cote === 'gauche' ? ' est-a-gauche' : ''}${estEmpilee(attachee) ? ' est-empilee' : ''}`}
             key={attachee.id}
             style={{ '--i': i } as CSSProperties}
           >
