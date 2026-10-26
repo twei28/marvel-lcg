@@ -43,6 +43,8 @@ Chaque ligne vient d'un rapport d'agent de la journée. Cocher `[x]` quand c'est
 - [x] **Relecture des 6 cartes du balayage (ze014, sb018, dt075, 56072, 56059, 56096b)** : ze014, sb018, 56072, 56096b correctes ; 56059 correcte à la lecture mais non testable (Leader).
 - [ ] **Cartes Civil War (56072, 56059, 56096b)** : aucun cas du dépôt ne monte le mode compétitif (deux équipes) ; cas rejoués en coopératif seulement ; 56059 (Leader, Setup) non testée.
 - [ ] **Message de journal « mélangé avec défausse »** : affiché à chaque mélange simple même sans fusion (`AfterDeckShuffle` reçoit toujours la défausse liée) : trompeur à la lecture, cosmétique ; à corriger dans `sender_deck.py` si souhaité.
+- [x] **Événements « restés en jeu » sur téléphone (26/10/2026)** : cas de Shang-Chi expliqué par State of Flow (les attaques jouées se posent dessous : voulu) et corrigé en AFFICHAGE (contour pointillé doré + pastille « Pile de cartes : N », commit c29cd44a) ; 9 événements officiels de 7 héros vont bien en défausse (cas `tools/cas/evenements_resolution.py`). L'utilisateur a conclu que « c'est bon pour les autres événements ».
+- [x] **Téléphone : récap de fin de phase illisible** (commit c29cd44a) ; **écran de préparation : volet de deck qui ne défile pas et grand blanc avant les decks** (commit 1f1a421e).
 
 ## B. Preuves qui manquent (cartes qui restent « provisoires »)
 
