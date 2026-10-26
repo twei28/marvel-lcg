@@ -47,4 +47,34 @@ describe('l’aide du mode auto', () => {
     const manquants = textes.filter((texte) => !DICO_EN_BASE[texte])
     expect(manquants).toEqual([])
   })
+
+  it('sur PC et sur téléphone : le groupe « Cartes empilées » explique les piles (State of Flow, cartes glissées)', () => {
+    for (const telephone of [false, true]) {
+      const { unmount } = render(<VoletAideAuto ouvert ouvrir={rien} fermer={rien} telephone={telephone} />)
+      const aide = screen.getByRole('dialog', { name: 'Aide' })
+      for (const texte of [
+        'Cartes empilées',
+        'Contour en pointillés dorés',
+        'State of Flow',
+        'Pastille « Pile de cartes : N »',
+        'Événement dans une pile',
+        'pas resté en jeu par erreur',
+      ]) {
+        expect(aide.textContent).toContain(texte)
+      }
+      unmount()
+    }
+  })
+
+  it('le groupe « Cartes empilées » a sa traduction anglaise, sur PC comme sur téléphone', () => {
+    for (const telephone of [false, true]) {
+      const { container, unmount } = render(<VoletAideAuto ouvert ouvrir={rien} fermer={rien} telephone={telephone} />)
+      const groupe = [...container.querySelectorAll('section.aide-manuel-groupe')].find((g) => g.querySelector('h3')?.textContent === 'Cartes empilées')
+      expect(groupe).toBeDefined()
+      const textes = [...(groupe as Element).querySelectorAll('h3, kbd, dd')].map((n) => n.textContent ?? '')
+      expect(textes.length).toBeGreaterThanOrEqual(7)
+      expect(textes.filter((texte) => !DICO_EN_BASE[texte])).toEqual([])
+      unmount()
+    }
+  })
 })

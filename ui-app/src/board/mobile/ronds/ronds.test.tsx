@@ -225,6 +225,30 @@ describe('le rond', () => {
     expect((container.querySelectorAll('.rond-mini')[1] as HTMLElement).style.getPropertyValue('--rang')).toBe('1')
   })
 
+  it('un evenement ou une ressource empile sous une carte (State of Flow) est dessine comme une pile, pas comme une amelioration', () => {
+    const u = unite('sof', 'support', { name: 'State of Flow' }, [
+      carte('e1', 'event', { name: 'Augmented Blow' }),
+      carte('e2', 'event', { name: 'Special Delivery' }),
+      carte('u1', 'upgrade', { name: 'Endurance' }),
+    ])
+    const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)
+    const minis = [...container.querySelectorAll('.rond-mini')]
+    expect(minis).toHaveLength(3)
+    expect(minis[0].classList.contains('est-empilee')).toBe(true)
+    expect(minis[1].classList.contains('est-empilee')).toBe(true)
+    expect(minis[2].classList.contains('est-empilee')).toBe(false)
+    const pastille = container.querySelector('.rond-pile') as HTMLElement
+    expect(pastille.textContent).toBe('Pile de cartes : 2')
+    expect(pastille.getAttribute('aria-label')).toBe('Pile de cartes : 2')
+  })
+
+  it('sans carte empilee, aucune pastille de pile', () => {
+    const u = unite('h', 'ally', {}, [carte('t', 'upgrade', { name: 'Lance-toile' })])
+    const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)
+    expect(container.querySelector('.rond-pile')).toBeNull()
+    expect(container.querySelector('.rond-mini.est-empilee')).toBeNull()
+  })
+
   it('un toucher sur une amelioration du mechant ouvre SA feuille, pas celle du mechant (25/10/2026, Klaw)', () => {
     const condition = carte('31', 'upgrade', { name: 'Condition' })
     const arme = carte('32', 'upgrade', { name: 'Arme' })

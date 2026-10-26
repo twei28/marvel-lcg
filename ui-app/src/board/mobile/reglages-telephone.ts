@@ -19,6 +19,8 @@ export type ReglagesTelephone = {
   plateauMemorise: boolean
   /** La visite guidee des ronds s'ouvre a la prochaine partie (une seule fois : elle se coupe en se fermant). */
   aideDebut: boolean
+  /** La nouveaute « cartes empilees » de la visite (26/10/2026) n'a pas encore ete vue : un joueur qui a deja fait la visite ne la voit qu'elle, une seule fois. */
+  visitePiles: boolean
   tailleTexte: TailleTexte
   vibrations: boolean
   verrouPortrait: boolean
@@ -28,6 +30,7 @@ export const CLES_TELEPHONE = {
   plateau: 'marvel-tel-plateau',
   plateauMemorise: 'marvel-tel-plateau-memorise',
   aideDebut: 'marvel-tel-aide-debut',
+  visitePiles: 'marvel-tel-visite-piles',
   tailleTexte: 'marvel-tel-taille-texte',
   vibrations: 'marvel-tel-vibrations',
   verrouPortrait: 'marvel-tel-verrou-portrait',
@@ -39,6 +42,7 @@ export const DEFAUTS_TELEPHONE: ReglagesTelephone = {
   plateau: 'cartes',
   plateauMemorise: false,
   aideDebut: true,
+  visitePiles: true,
   tailleTexte: 'normal',
   vibrations: true,
   verrouPortrait: false,
@@ -58,6 +62,7 @@ export function lireReglagesTelephone(): ReglagesTelephone {
     plateau: lire(CLES_TELEPHONE.plateau) === 'ronds' ? 'ronds' : 'cartes',
     plateauMemorise: lire(CLES_TELEPHONE.plateauMemorise) === 'oui',
     aideDebut: lire(CLES_TELEPHONE.aideDebut) !== 'non',
+    visitePiles: lire(CLES_TELEPHONE.visitePiles) !== 'non',
     tailleTexte: taille === 'grand' || taille === 'tres-grand' ? taille : 'normal',
     vibrations: lire(CLES_TELEPHONE.vibrations) !== 'non',
     verrouPortrait: lire(CLES_TELEPHONE.verrouPortrait) === 'oui',

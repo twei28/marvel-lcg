@@ -16,6 +16,7 @@ import { avecInteraction } from '../../Board'
 import type { EtatInteractif } from '../../interaction'
 import { t } from '../../langue'
 import type { GroupeDePile } from '../../zones'
+import { compterEmpilees, estEmpilee, libelleEmpilees } from '../../empilees'
 import { SEUIL_INITIALES, etatsDe } from './etats-ronds'
 import { useEtatGlisse } from './glisser-ronds'
 import type { CleZone, GroupeRond, UniteRond } from './repartir-ronds'
@@ -265,7 +266,7 @@ export function Rond({
               <button
                 type="button"
                 key={amelioration.id}
-                className="rond-mini"
+                className={`rond-mini${estEmpilee(amelioration) ? ' est-empilee' : ''}`}
                 aria-label={amelioration.name}
                 title={amelioration.name}
                 disabled={vaincu}
@@ -280,6 +281,14 @@ export function Rond({
               />
             )
           })}
+        </span>
+      ) : null}
+      {/* Des evenements ou des ressources POSES SOUS cette carte (State of Flow, cartes glissees sous Corsair ou Havok) : une pile,
+          pas des ameliorations en jeu (26/10/2026). Contour pointille dore sur chaque rond empile (`.rond-mini.est-empilee`) et cette
+          pastille compte les cartes. */}
+      {compterEmpilees(ameliorations) > 0 ? (
+        <span className="rond-pile" aria-label={libelleEmpilees(compterEmpilees(ameliorations))}>
+          {libelleEmpilees(compterEmpilees(ameliorations))}
         </span>
       ) : null}
       {vaincu ? <span className="rond-vaincu-etiquette">{t('VAINCU')}</span> : null}

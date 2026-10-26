@@ -20,6 +20,23 @@ const RANGER_SES_CARTES: Raccourci[] = [
   { touches: 'Alt + glisser une amélioration', effet: 'Changer l’ordre des améliorations d’une même carte' },
 ]
 
+// LES CARTES EMPILEES (26/10/2026) : State of Flow (Shang-Chi), les cartes glissees sous Corsair ou Havok. Pour le moteur elles sont
+// rattachees a leur porteuse, comme une amelioration ; le plateau les dessine donc d'un contour en pointilles dores et la porteuse
+// porte la pastille « Pile de cartes : N » (empilees.ts). Un joueur croyait que son evenement « restait en jeu ».
+const CARTES_EMPILEES: Raccourci[] = [
+  { touches: 'Contour en pointillés dorés', effet: 'Une carte posée SOUS une autre (State of Flow, cartes glissées sous Corsair ou Havok) : c’est une pile, pas une amélioration en jeu.' },
+  { touches: 'Pastille « Pile de cartes : N »', effet: 'Sur la carte qui porte la pile : N cartes sont dessous.' },
+  { touches: 'Événement dans une pile', effet: 'Il n’est pas resté en jeu par erreur : la carte qui l’a posé le garde dessous.' },
+]
+const CARTES_EMPILEES_PC: Raccourci[] = [
+  ...CARTES_EMPILEES,
+  { touches: 'Survoler une carte de la pile', effet: 'La lire en grand sur le côté' },
+]
+const CARTES_EMPILEES_TEL: Raccourci[] = [
+  ...CARTES_EMPILEES,
+  { touches: 'Toucher une carte de la pile', effet: 'L’ouvrir en grand pour la lire' },
+]
+
 const LA_TABLE: Raccourci[] = [
   { touches: 'Réglages › Apparence', effet: '« Modifier la table » : glisse une zone pour la déplacer, ses poignées règlent sa place et la taille de ses cartes' },
   { touches: 'Double-clic sur le titre', effet: 'Dans « Modifier la table » : renommer la zone (laisse vide pour reprendre le titre d’origine)' },
@@ -120,12 +137,14 @@ export function VoletAideAuto({
                 <Tableau titre="Le plateau" lignes={TEL_LE_PLATEAU} />
                 <Tableau titre="Ta main" lignes={TEL_TA_MAIN} />
                 <Tableau titre="Les piles" lignes={TEL_PILES} />
+                <Tableau titre="Cartes empilées" lignes={CARTES_EMPILEES_TEL} />
                 <Tableau titre="Pendant la partie" lignes={TEL_PENDANT_LA_PARTIE} />
                 <Tableau titre="Réglages du téléphone" lignes={TEL_REGLAGES} />
               </>
             ) : (
               <>
                 <Tableau titre="Pendant la partie" lignes={PENDANT_LA_PARTIE} />
+                <Tableau titre="Cartes empilées" lignes={CARTES_EMPILEES_PC} />
                 <Tableau titre="Ranger tes cartes" lignes={RANGER_SES_CARTES} />
                 <Tableau titre="La table" lignes={LA_TABLE} />
               </>

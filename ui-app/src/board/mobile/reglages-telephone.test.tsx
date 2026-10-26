@@ -25,7 +25,7 @@ describe('les reglages du telephone (zone 3)', () => {
     ecrireReglageTelephone('tailleTexte', 'tres-grand')
     ecrireReglageTelephone('vibrations', false)
     ecrireReglageTelephone('verrouPortrait', true)
-    expect(lireReglagesTelephone()).toEqual({ plateau: 'cartes', plateauMemorise: false, aideDebut: true, tailleTexte: 'tres-grand', vibrations: false, verrouPortrait: true })
+    expect(lireReglagesTelephone()).toEqual({ plateau: 'cartes', plateauMemorise: false, aideDebut: true, visitePiles: true, tailleTexte: 'tres-grand', vibrations: false, verrouPortrait: true })
     window.localStorage.setItem(CLES_TELEPHONE.tailleTexte, 'enorme')
     expect(lireReglagesTelephone().tailleTexte).toBe('normal')
   })
