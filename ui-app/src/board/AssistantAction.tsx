@@ -13,7 +13,9 @@ import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import type { UniteAffichee } from './zones'
 import { FeuilleCibles } from './mobile/FeuilleCibles'
+import { CarteMainPortrait } from './mobile/MainPortrait'
 import type { DecorRonds } from './mobile/ronds/Rond'
+import { resumePaiement } from './mobile/paiement-feuille'
 import './boutons-bd.css'
 
 type AssistantActionProps = {
@@ -53,6 +55,12 @@ type AssistantActionProps = {
    * Sans cibles a montrer (elles sont dans une pile : le selecteur a deux colonnes s'en charge), l'assistant garde sa forme d'avant.
    */
   feuilleCibles?: { unites: UniteAffichee[]; decor: DecorRonds }
+  /**
+   * TELEPHONE (26/10/2026) : « PAY 2 TO PLAY » cachait la main, on ne pouvait plus toucher les cartes a depenser. La question du
+   * paiement devient la MEME feuille qu'on glisse, avec DEDANS les emplacements du cout et les cartes qui peuvent payer (main, puis
+   * table) : un toucher paie, un second retire. Fourni par board.tsx sur telephone seulement, a l'etape du paiement.
+   */
+  feuillePaiement?: { cartes: UniteAffichee[] }
 }
 
 function nomCarte(id: number, cartesParId: Map<number, WorldCard>): string {
@@ -119,6 +127,15 @@ function classeType(type: string | undefined): string {
   return ['r', 'b', 'y', 'g'].includes(t) ? `est-${t}` : ''
 }
 
+// La feuille de paiement n'affiche aucun rond : le decor est vide (la feuille de cibles en exige un).
+const DECOR_VIDE: DecorRonds = {
+  interactifs: new Map(),
+  effets: new Map(),
+  ouvrirPile: () => undefined,
+  ouvrirCarte: () => undefined,
+  agir: () => undefined,
+}
+
 export function AssistantAction({
   demande,
   interaction,
@@ -132,6 +149,7 @@ export function AssistantAction({
   choixDansLaScene = false,
   sousCadre = false,
   feuilleCibles,
+  feuillePaiement,
 }: AssistantActionProps) {
   const utile = Boolean(
     connecte &&
@@ -154,10 +172,11 @@ export function AssistantAction({
       feuilleCibles.unites.length > 0 &&
       (interaction.assistant.etape === 'target' || (interaction.assistant.etape === 'confirm' && interaction.cibles.length > 0))
   )
+  const enFeuillePaiement = Boolean(feuillePaiement && feuillePaiement.cartes.length > 0 && interaction.assistant.etape === 'payment')
   const { style } = usePlacement(panneau, {
     candidats: ['centre'],
     signature,
-    actif: utile && !enFeuille,
+    actif: utile && !enFeuille && !enFeuillePaiement,
   })
   // Deplacement volontaire, a la poignee (le bandeau `.assistant-eyebrow`),
   // par-dessus le placement automatique -- meme mecanisme que
@@ -288,6 +307,56 @@ export function AssistantAction({
         indice={assistant.indice}
         unites={feuilleCibles.unites}
         decor={feuilleCibles.decor}
+        prete={interaction.prete}
+        libelleValider={libelleValider}
+        libelleAnnuler={t('Annuler')}
+        annuler={interaction.annuler}
+        valider={interaction.valider}
+        tonalite={classeTonaliteAction(nomAction)}
+      />
+    )
+  }
+
+  // Telephone : le paiement se fait dans la feuille, avec les cartes a depenser DEDANS (la boite du centre cachait la main).
+  if (enFeuillePaiement && feuillePaiement) {
+    const resume = resumePaiement({ coutRequis: assistant.coutRequis, coutPaye: assistant.coutPaye })
+    const cles = `${feuillePaiement.cartes.map((c) => `${c.carte.id}${c.carte.state ?? ''}`).join(',')}|${assistant.coutSlots.map((slot) => (slot.rempli ? 1 : 0)).join('')}`
+    return (
+      <FeuilleCibles
+        signature={signature}
+        source={nomDuPorteur ?? nomAction}
+        consigne={consigne(assistant, nomAction)}
+        compte={phraseEtat(assistant, interaction.prete)}
+        indice={assistant.indice ?? (resume.couvert ? undefined : t('Touche une carte pour la payer, une seconde fois pour la retirer.'))}
+        unites={[]}
+        decor={DECOR_VIDE}
+        cleContenu={cles}
+        classeFeuille="est-feuille-paiement"
+        contenu={
+          <>
+            {assistant.coutSlots.length > 0 ? (
+              <span className="feuille-paiement-slots" aria-label={t('Coût à payer')}>
+                {assistant.coutSlots.map((slot) => (
+                  <span className={`assistant-slot${slot.rempli ? ' est-rempli' : ''} ${classeType(slot.type)}`} key={slot.index}>
+                    {slot.rempli && slot.type ? avecIcones(coutEnIcones(slot.type)) : ''}
+                  </span>
+                ))}
+              </span>
+            ) : null}
+            <div className="feuille-paiement-main">
+              {feuillePaiement.cartes.map((unite) => (
+                // Le type de la carte (« Événement », « Amélioration ») n'aide pas a payer : la pastille de type se tait, la carte gagne en hauteur.
+                <CarteMainPortrait
+                  key={unite.cle}
+                  unite={{ ...unite, carte: { ...unite.carte, masquerType: true } }}
+                  choisie={false}
+                  onOuvrir={() => undefined}
+                  paiement
+                />
+              ))}
+            </div>
+          </>
+        }
         prete={interaction.prete}
         libelleValider={libelleValider}
         libelleAnnuler={t('Annuler')}

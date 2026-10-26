@@ -10,7 +10,7 @@
 //
 // ⚠ LE GESTE EST SUIVI SUR LA FENETRE, PAS SEULEMENT SUR LA POIGNEE (meme lecon que `useGlisserPanneau`, 01/10/2026) : une poignee
 // mince est quittee par le doigt avant le seuil, et la feuille ne bougerait plus.
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
 import { t } from '../langue'
 import type { UniteAffichee } from '../zones'
 import { borner, caler, positionsFeuille, type PositionFeuille, type PositionsFeuille } from './calage-feuille'
@@ -40,6 +40,14 @@ export type FeuilleCiblesProps = {
   indice?: string
   unites: UniteAffichee[]
   decor: DecorRonds
+  /**
+   * Un autre contenu que les ronds des cibles (la feuille de PAIEMENT : emplacements du cout et cartes a depenser). Quand il est
+   * fourni, il prend la place de la rangee de ronds ; `cleContenu` change quand il change de hauteur (la feuille se remesure).
+   */
+  contenu?: ReactNode
+  cleContenu?: string
+  /** Classe de la feuille (`est-feuille-paiement`), pour le style propre a ce contenu. */
+  classeFeuille?: string
   prete: boolean
   libelleValider: string
   libelleAnnuler: string
@@ -83,6 +91,9 @@ export function FeuilleCibles({
   indice,
   unites,
   decor,
+  contenu,
+  cleContenu,
+  classeFeuille,
   prete,
   libelleValider,
   libelleAnnuler,
@@ -110,7 +121,7 @@ export function FeuilleCibles({
       return avant && avant.haute === mesure.haute && avant.basse === mesure.basse && avant.reduite === mesure.reduite ? avant : mesure
     })
   }, [fournies])
-  useLayoutEffect(mesurer, [mesurer, unites.length, compte, consigne, indice, position === 'haute'])
+  useLayoutEffect(mesurer, [mesurer, unites.length, cleContenu, compte, consigne, indice, position === 'haute'])
   useEffect(() => {
     window.addEventListener('resize', mesurer)
     window.addEventListener('orientationchange', mesurer)
@@ -218,7 +229,7 @@ export function FeuilleCibles({
       aria-label={consigne}
       aria-live="polite"
       data-position={position}
-      className={`assistant-action est-feuille-cible${tonalite ? ` ${tonalite}` : ''}${glissee ? ' est-glissee' : ''}`}
+      className={`assistant-action est-feuille-cible${classeFeuille ? ` ${classeFeuille}` : ''}${tonalite ? ` ${tonalite}` : ''}${glissee ? ' est-glissee' : ''}`}
       style={hauteurAuRepos && !glissee ? ({ ['--feuille-h' as string]: hauteurAuRepos } as React.CSSProperties) : undefined}
     >
       <div
@@ -237,11 +248,17 @@ export function FeuilleCibles({
         <h2>{consigne}</h2>
       </div>
       <div className="feuille-compte">{compte}</div>
-      <div className="feuille-cibles" data-defile={position === 'haute' ? 'vertical' : 'horizontal'}>
-        {unites.map((unite) => (
-          <Rond key={unite.cle} unite={unite as UniteRond} zone={zoneDuRond(unite)} decor={decorFeuille} />
-        ))}
-      </div>
+      {contenu !== undefined ? (
+        <div className="feuille-contenu" data-defile={position === 'haute' ? 'vertical' : 'horizontal'}>
+          {contenu}
+        </div>
+      ) : (
+        <div className="feuille-cibles" data-defile={position === 'haute' ? 'vertical' : 'horizontal'}>
+          {unites.map((unite) => (
+            <Rond key={unite.cle} unite={unite as UniteRond} zone={zoneDuRond(unite)} decor={decorFeuille} />
+          ))}
+        </div>
+      )}
       {indice ? <p className="feuille-indice">{indice}</p> : null}
       <div className="feuille-actions">
         <button type="button" className="assistant-annuler" onClick={annuler}>

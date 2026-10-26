@@ -71,6 +71,7 @@ import { useReglagesTelephone } from './board/mobile/reglages-telephone'
 import { EcranTourne } from './board/mobile/EcranTourne'
 import { ciblesDeLaFeuille } from './board/mobile/cibles-feuille'
 import { cibleAEchanger } from './board/mobile/echange-cible'
+import { cartesPayantes } from './board/mobile/paiement-feuille'
 import { useEstTablette, useMarqueTablette, useTabletteDebout } from './board/tablette/tablette'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
@@ -4480,6 +4481,14 @@ export function PagePartie({
       },
     }
   }, [modePlateau, interaction.assistant.etape, interaction.cibles.length, interaction.cartes, interaction.option, plateau])
+  // TELEPHONE (26/10/2026) : « PAY 2 TO PLAY » cachait la main, on ne pouvait plus toucher les cartes a depenser. A l'etape du
+  // paiement, la feuille porte la rangee des cartes qui peuvent payer (main, puis table). Meme regle que ci-dessus : AVANT le retour
+  // anticipe, jamais apres (erreur React 310).
+  const feuillePaiement = useMemo(() => {
+    if (!plateau || modePlateau !== 'mobile' || interaction.assistant.etape !== 'payment') return undefined
+    const cartes = cartesPayantes(plateau, interaction.cartes, effets)
+    return cartes.length > 0 ? { cartes } : undefined
+  }, [modePlateau, interaction.assistant.etape, interaction.cartes, plateau, effets])
 
   if (!etat.monde || !plateau || voile) {
     return (
@@ -4923,6 +4932,7 @@ export function PagePartie({
           // Le sous-cadre du cartouche du bas porte tout, paiement compris (D6).
           sousCadre={(nouvelleScenePC && phaseMechantEnCours && interaction.option !== undefined) || ciblageSurTable}
           feuilleCibles={feuilleCibles}
+          feuillePaiement={feuillePaiement}
         />
       )}
 

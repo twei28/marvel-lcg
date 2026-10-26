@@ -143,3 +143,99 @@
   min-height: 48px;
   pointer-events: auto;
 }
+
+/* ---- La feuille de PAIEMENT (26/10/2026) : « PAY 2 TO PLAY » ne cache plus la main. Les emplacements du cout, puis les cartes qui
+   peuvent payer, a l'horizontale (a la ligne en position haute), comme les ronds des cibles. */
+.est-feuille-cible .feuille-contenu {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 10px 0 12px;
+  min-height: 0;
+}
+.est-feuille-cible .feuille-contenu[data-defile='vertical'] {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+.est-feuille-paiement .feuille-paiement-slots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+}
+.est-feuille-paiement .assistant-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 2px dashed #5b7bbf;
+  border-radius: 8px;
+  background: rgba(40, 60, 110, 0.35);
+  color: #e8edf5;
+  font-weight: 800;
+}
+.est-feuille-paiement .assistant-slot.est-rempli {
+  border-style: solid;
+  background: rgba(46, 111, 224, 0.4);
+}
+.est-feuille-paiement .assistant-slot.est-r {
+  border-color: #e0584e;
+}
+.est-feuille-paiement .assistant-slot.est-b {
+  border-color: #8a6ee0;
+}
+.est-feuille-paiement .assistant-slot.est-y {
+  border-color: #f2c94c;
+}
+.est-feuille-paiement .assistant-slot.est-g {
+  border-color: #6fe39a;
+}
+.est-feuille-paiement .feuille-paiement-main {
+  --card-w: clamp(92px, 26vw, 120px);
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 16px 6px;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 16px;
+}
+.est-feuille-paiement .feuille-paiement-main::-webkit-scrollbar {
+  display: none;
+}
+.est-feuille-paiement .feuille-paiement-main > .main-portrait-carte {
+  display: flex;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.est-feuille-paiement .feuille-paiement-main .scan-card {
+  --card-w: clamp(92px, 26vw, 120px);
+}
+.est-feuille-paiement .feuille-contenu[data-defile='vertical'] .feuille-paiement-main {
+  flex-wrap: wrap;
+  justify-content: center;
+  overflow-x: hidden;
+  touch-action: pan-y;
+  scroll-snap-type: none;
+}
+/* Pas de loupe au doigt : ScanCard.css agrandit `.scan-visuel` de 2,5x sur `:hover` et `:focus-visible` (la consultation a la souris du PC),
+   et le tap POSE le focus : la carte payee grossissait au point de cacher ses voisines. La feuille vit hors de `.plateau-portrait` (elle est
+   fixe, en bas de l'ecran) : la regle de portrait.css ne l'atteint pas, on la repete ici. */
+.est-feuille-paiement .scan-card:hover .scan-visuel,
+.est-feuille-paiement .scan-card:focus-visible .scan-visuel,
+.est-feuille-paiement .scan-card:focus-within .scan-visuel {
+  transform: none !important;
+}
+.est-feuille-paiement .feuille-paiement-main > .main-portrait-carte:hover {
+  z-index: auto;
+}
