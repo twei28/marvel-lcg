@@ -20,6 +20,10 @@ def GetAbilities() -> Sequence['Ability']:
         if face:
             face.PutIntoPlay(player, effect)
             Faces.DiscardAll([this], effect)
+        else:
+            # RR « Then » : sans The Kraken a mettre en jeu, « Then, discard Cultist » ne se resout pas ; le joueur doit le savoir
+            # (decision de l'utilisateur du 26/10/2026, meme avis que Safe House #30).
+            player.NotifyNoResult(this, "The Kraken was not found: Cultist is not discarded.")
 
 
     return [

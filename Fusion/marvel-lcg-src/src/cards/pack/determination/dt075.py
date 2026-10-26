@@ -14,10 +14,15 @@ def GetAbilities() -> Sequence['Ability']:
         player = this.GetControlByPlayer()
         if player is None:
             return
+        # « 3 DIFFERENT » (relecture du 26/10/2026) : sans exclusion, le meme titre pouvait etre choisi trois fois (le pilote prend toujours la
+        # premiere option : trois « Hulk »). Les titres deja choisis sortent de la liste proposee.
+        deja_choisis: List[str] = []
         for _ in range(3):
-            face = Search.Collection(effect, player, card_classes="Any")
+            face = Search.Collection(effect, player, card_classes="Any",
+                                     check_fn=lambda paper: paper.name not in deja_choisis)
             if face is None:
                 break
+            deja_choisis.append(face.paper.name)
             this.TuckCardUnderHere(face, effect)
 
     def multiverse_shenanigans(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:

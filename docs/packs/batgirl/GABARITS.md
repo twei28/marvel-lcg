@@ -359,3 +359,7 @@ réduire le coût), donc l'activation se fait AVANT de jouer l'événement (comm
 1 bloquée. ⚠ Le pilote ne prend JAMAIS la nouvelle Hero Action de Utility Belt (il ne s'en sert que comme ressource) : l'autoplay ne prouve donc que l'absence de plantage ;
 l'Action n'est prouvée que par les cas `[bg] bg012`. Deck `batgirl` seul (`verifier_tous_les_decks`, DECK_NOM) : OK « identité bg001a, main 6, deck 9 ».
 Hors périmètre de ce passage : le wild de bg005 (agent transversal).
+
+## Mesure de l'ordre de bg012 Utility Belt (26/10/2026)
+
+`declencher` tourne AVANT `jouer` dans le banc : les cas existants prouvent « Action de la ceinture, PUIS événement payé 1 ressource ». Cas ajouté `ORDRE` (`declencher_apres`) : l'Action jouée APRÈS l'événement ne le réduit pas (menace 5, événement non joué avec une seule ressource, ceinture inclinée). L'Action « arme » donc le PROCHAIN événement, comme Solid Gear. À regarder en partie réelle : que l'Action se lise bien dans le menu avant de jouer l'événement.

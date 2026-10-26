@@ -228,6 +228,13 @@ CAS = [
     _c("bg012 Utility Belt : TEMOIN, sans Utility Belt la meme carte coute 2 et n'est pas payable avec UNE ressource",
        "cout plein", [HEROS, "Puzzle.SetThreat('01097b', 5)"], [], {"menace": [[COMPLOT, 5]]},
        main_exclusive=["bg004", "01020"], jouer=["bg004"], payer_avec=["01020"], cibles=[COMPLOT]),
+    _c("bg012 Utility Belt : ORDRE, l'Action jouee APRES l'evenement ne le reduit pas (cout plein 2, une seule ressource : l'evenement n'est pas joue)",
+       "mesure de l'ordre reel (26/10/2026) : `declencher` tourne AVANT `jouer` (cas precedent : reduction), `declencher_apres` APRES : l'Action de la "
+       "ceinture arme le PROCHAIN evenement, elle ne rembourse pas celui qui vient d'etre joue",
+       [HEROS, "Puzzle.SetThreat('01097b', 5)"] + en_jeu("bg012"), [],
+       {"exhausted": ["bg012"], "menace": [[COMPLOT, 5]]},
+       main_exclusive=["bg004", "01020"], jouer=["bg004"], payer_avec=["01020"], cibles=[COMPLOT],
+       declencher_apres=["Puzzle.Action('bg012', 'HeroAction')"]),
     # ============================================================ cas ajoutes le 26/10/2026 (consigne du coordinateur)
     _c("bg001a The Oracle : limite UNE fois par round (temoin d'epuisement) : Applying Pressure change, Batarangs NON (4 degats, pas 8)",
        "« Limit once per round » : la 1re carte jouee voit son icone changee ; la 2e, meme proposition, n'est plus offerte (sans limite : 2 + 2 + 4 = 8)",

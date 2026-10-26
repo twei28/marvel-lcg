@@ -1077,7 +1077,7 @@ class RunPuzzle:
         controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
         return face
 
-    def EndPlayerTurn(self) -> None:
+    def EndPlayerTurn(self, siege: int|None=None) -> None:
         """FERME le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnEnd
         puis AfterPlayerTurnEnd).
 
@@ -1087,7 +1087,8 @@ class RunPuzzle:
         un cas sur sa duree etait vert avec la mauvaise duree. Additif.
         """
         from game.message import Message
-        player = self.world.GetCurrentPlayer()
+        # `siege` (26/10/2026, mesure de wt022 Revelry) : le tour d'un AUTRE joueur (WhenPlayerTurnEnd / AfterPlayerTurnEnd de ce joueur).
+        player = self._JoueurDeJeu(siege)
         turn_end_message = Message.WhenPlayerTurnEnd(player, self.world.round_id)
         turn_end_message.Send()
         Message.AfterPlayerTurnEnd(player, turn_end_message).Send()
@@ -1104,7 +1105,7 @@ class RunPuzzle:
         Monte un tour SUIVANT sans jouer la boucle d'actions. Additif."""
         self.world.stat.OnTurnEnd()
 
-    def BeginPlayerTurn(self) -> None:
+    def BeginPlayerTurn(self, siege: int|None=None) -> None:
         """OUVRE le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnBegin puis AfterPlayerTurnBegin).
 
         AJOUT (26/10/2026, pack Rachel Summers `rm`, Chronoskimming rm001a et Hound Program rm014 : « After your turn
@@ -1112,7 +1113,8 @@ class RunPuzzle:
         carte posee par le cas ne partait jamais. Additif ; ne remet aucun compteur de tour a zero.
         """
         from game.message import Message
-        player = self.world.GetCurrentPlayer()
+        # `siege` (26/10/2026, mesure de wt022 Revelry) : le tour d'un AUTRE joueur (rang dans `const_seat_order_players`).
+        player = self._JoueurDeJeu(siege)
         turn_begin_message = Message.WhenPlayerTurnBegin(player)
         turn_begin_message.Send()
         Message.AfterPlayerTurnBegin(player, turn_begin_message).Send()
@@ -1621,6 +1623,13 @@ class RunPuzzle:
         et que le harnais manquait toujours (le message part une fois, a la FIN de la mise en place, avant le montage d'un cas)."""
         from game.message import Message
         Message.WhenGameWouldBegin(self.world).Send()
+
+    def SendGameBeginSetup(self) -> None:
+        """AJOUT (26/10/2026, relecture de dt075 Multiverse Shenanigans) : envoie `WhenGameBeginSetup` (les capacites `AbilityFactory.WhenGameBeginSetup`,
+        type Setup : « When the game begins, ... »). Le message part une fois pendant la mise en place du monde, AVANT le montage d'un cas : on le
+        renvoie a la main, avec le descripteur de campagne de la scene."""
+        from game.message import Message
+        Message.WhenGameBeginSetup(self.world.scene.campaign, self.world).Send()
 
     def SwapWithDeckTop(self, card: CardName, player: int=0, siege: int|None=None):
         """« Switch Card with top Deck Card » d'OCTGN (menu de la main).

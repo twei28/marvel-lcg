@@ -56805,6 +56805,8 @@ CLES_ETAT_ATTENDU = {
     'menace_min', 'mis_de_cote', 'pose_sous', 'pret', 'statuts', 'statuts_absents',
     'taille_deck_joueur', 'taille_deck_registered', 'taille_main', 'taille_mis_de_cote',
     'mis_de_cote_scenario', 'taille_attaches', 'taille_pose_sous', 'taille_reserve', 'traits', 'traits_absents',
+    # ajoutee le 26/10/2026 (relecture dt075 : « 3 cartes DIFFERENTES »)
+    'pose_sous_titres_distincts',
     # absorbees le 11/09/2026
     'pv_max', 'carte_du_surge', 'accroche_a', 'hotes', 'traits_de',
     # ajoutee le 21/09/2026 (signalement Aghenatak, cartes coincees en
@@ -58127,6 +58129,17 @@ def etat_attendu(monde, aides):
         n = len(list(face.GetPlacedCardArea().Get(True)))
         if n != valeur:
             soucis.append(f"{n} carte(s) posee(s) sous {hote} (attendu {valeur})")
+
+    # AJOUT 26/10/2026 (relecture ligne a ligne de dt075 Multiverse Shenanigans : « choose any 3 DIFFERENT ... cards »). Nombre de TITRES
+    # distincts parmi les cartes posees sous une carte : un cas qui ne mesure que `taille_pose_sous` laisse passer trois exemplaires de la meme carte.
+    for hote, valeur in attendu.get("pose_sous_titres_distincts") or []:
+        face = aides["par_id"](monde, hote)
+        if face is None:
+            soucis.append(f"{hote} introuvable en jeu (pose_sous_titres_distincts)")
+            continue
+        titres = {getattr(f.paper, "name", None) for f in face.GetPlacedCardArea().Get(True)}
+        if len(titres) != valeur:
+            soucis.append(f"{len(titres)} titre(s) distinct(s) sous {hote} (attendu {valeur}) : {sorted(map(str, titres))}")
 
     if "defausse_joueur" in attendu:
         n = len(list(monde.players[0].discard_pile.Get()))

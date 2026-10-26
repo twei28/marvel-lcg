@@ -38,6 +38,8 @@ const MOTEUR_FR: Record<string, string> = {
   // — Avis du moteur (`choix_uniques.texte`) —
   'No minion in the encounter deck: no card is drawn.': 'Aucun sbire dans le deck de rencontre : aucune carte n’est piochée.',
   'No event in your deck: no card is placed on top of your deck.': 'Aucun événement dans votre deck : aucune carte n’est placée sur le dessus de votre deck.',
+  'The Kraken was not found: Cultist is not discarded.': 'Le Kraken est introuvable : Cultist n’est pas défaussé.',
+  'No Web-Warrior ally in your discard pile: no player is chosen.': 'Aucun allié Web-Warrior dans votre défausse : aucun joueur n’est choisi.',
   // — Pouvoirs de base et gestes de tour —
   Attack: 'Attaquer',
   Defense: 'Défendre',
