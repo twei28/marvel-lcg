@@ -5,11 +5,15 @@ import { nomLisible } from './BarreAction'
 import type { Interaction } from './interaction'
 import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
 import { t } from './langue'
+import { libellesCible } from './libelles-cible'
 import { consigne, phraseEtat } from './phrase-etat'
 import { usePlacement } from './placement/usePlacement'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
+import type { UniteAffichee } from './zones'
+import { FeuilleCibles } from './mobile/FeuilleCibles'
+import type { DecorRonds } from './mobile/ronds/Rond'
 import './boutons-bd.css'
 
 type AssistantActionProps = {
@@ -43,6 +47,12 @@ type AssistantActionProps = {
    * fait. « Plus aucun panneau hors du cartouche pendant la phase. »
    */
   sousCadre?: boolean
+  /**
+   * TELEPHONE (26/10/2026, maquette approuvee) : la question « choisis la cible » devient une FEUILLE qu'on glisse au doigt, avec les
+   * ronds des cibles possibles DEDANS (PV, statuts). Fourni par board.tsx sur telephone seulement, avec les cibles posees sur la table.
+   * Sans cibles a montrer (elles sont dans une pile : le selecteur a deux colonnes s'en charge), l'assistant garde sa forme d'avant.
+   */
+  feuilleCibles?: { unites: UniteAffichee[]; decor: DecorRonds }
 }
 
 function nomCarte(id: number, cartesParId: Map<number, WorldCard>): string {
@@ -121,6 +131,7 @@ export function AssistantAction({
   tailleMain,
   choixDansLaScene = false,
   sousCadre = false,
+  feuilleCibles,
 }: AssistantActionProps) {
   const utile = Boolean(
     connecte &&
@@ -136,10 +147,17 @@ export function AssistantAction({
   // cibles déjà désignées — c'est sur elles que porte la consigne affichée.
   const panneau = useRef<HTMLElement | null>(null)
   const signature = `${interaction.option?.id ?? ''}|${interaction.assistant.etape}`
+  // La feuille du telephone se pose en bas de l'ecran, jamais au centre : pas de placement automatique pour elle.
+  // Elle reste a l'etape « confirmer » tant que des cibles sont choisies : le joueur voit son choix, peut le retirer, puis valide.
+  const enFeuille = Boolean(
+    feuilleCibles &&
+      feuilleCibles.unites.length > 0 &&
+      (interaction.assistant.etape === 'target' || (interaction.assistant.etape === 'confirm' && interaction.cibles.length > 0))
+  )
   const { style } = usePlacement(panneau, {
     candidats: ['centre'],
     signature,
-    actif: utile,
+    actif: utile && !enFeuille,
   })
   // Deplacement volontaire, a la poignee (le bandeau `.assistant-eyebrow`),
   // par-dessus le placement automatique -- meme mecanisme que
@@ -248,6 +266,35 @@ export function AssistantAction({
           </button>
         </div>
       </aside>
+    )
+  }
+
+  // Telephone : la feuille qu'on glisse, avec les ronds des cibles dedans (apres le mulligan, qui n'a pas de rond a montrer).
+  if (enFeuille && feuilleCibles) {
+    // Les memes mots a l'etape « choisir » et a l'etape « confirmer » : « 1/1 requise(s) · 2 possible(s) » reste sous les yeux.
+    const libellesFeuille = libellesCible({
+      choisies: assistant.cibleNombre,
+      minimum: assistant.cibleMinimum,
+      maximum: assistant.cibleMaximum,
+      cartesCiblables: assistant.ciblePossibles,
+      repetable: assistant.cibleRepetable,
+    })
+    return (
+      <FeuilleCibles
+        signature={signature}
+        source={nomDuPorteur ?? nomAction}
+        consigne={libellesFeuille.titre}
+        compte={libellesFeuille.detail}
+        indice={assistant.indice}
+        unites={feuilleCibles.unites}
+        decor={feuilleCibles.decor}
+        prete={interaction.prete}
+        libelleValider={libelleValider}
+        libelleAnnuler={t('Annuler')}
+        annuler={interaction.annuler}
+        valider={interaction.valider}
+        tonalite={classeTonaliteAction(nomAction)}
+      />
     )
   }
 

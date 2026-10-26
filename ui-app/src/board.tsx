@@ -69,6 +69,8 @@ import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { useEcranAllume, useEstTelephone, useVerrouPortrait, useVibrationsDePartie } from './board/mobile/telephone'
 import { useReglagesTelephone } from './board/mobile/reglages-telephone'
 import { EcranTourne } from './board/mobile/EcranTourne'
+import { ciblesDeLaFeuille } from './board/mobile/cibles-feuille'
+import { cibleAEchanger } from './board/mobile/echange-cible'
 import { useEstTablette, useMarqueTablette, useTabletteDebout } from './board/tablette/tablette'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
@@ -4433,6 +4435,52 @@ export function PagePartie({
     }
   }, [toutesOuvertes, ciblesHorsTableVisibles, etat.monde])
 
+  // ⚠ AVANT le retour anticipe ci-dessous : un hook place apres lui change le nombre de hooks quand la partie apparait (erreur React 310).
+  // TELEPHONE (26/10/2026, maquette approuvee) : la question « choisis la cible » se pose dans une FEUILLE qu'on glisse au doigt, avec
+  // DEDANS les ronds des cibles de la table (PV, statuts) ; un toucher choisit, comme sur la table. Cibles dans une pile : le selecteur
+  // a deux colonnes s'en charge, la feuille n'en montre pas (liste vide : l'assistant garde sa forme d'avant).
+  // Toucher une AUTRE cible legale quand le moteur n'en veut qu'une l'echange : la choisie est retiree, puis la nouvelle prise des que
+  // l'interaction l'a rendue choisissable (un cycle de rendu plus tard).
+  const echangeEnAttente = useRef<number | undefined>(undefined)
+  useEffect(() => {
+    const id = echangeEnAttente.current
+    if (id === undefined) return
+    const etatCarte = interaction.cartes.get(id)
+    if (etatCarte?.role === 'cible' && !etatCarte.choisie && etatCarte.agir) {
+      echangeEnAttente.current = undefined
+      etatCarte.agir()
+    }
+  }, [interaction.cartes])
+  const feuilleCibles = useMemo(() => {
+    const etapeCible =
+      interaction.assistant.etape === 'target' || (interaction.assistant.etape === 'confirm' && interaction.cibles.length > 0)
+    if (!plateau || modePlateau !== 'mobile' || !etapeCible) return undefined
+    const unites = ciblesDeLaFeuille(plateau, interaction.cartes, interaction.option?.all_legal_targets)
+    if (unites.length === 0) return undefined
+    return {
+      unites,
+      decor: {
+        interactifs: interaction.cartes,
+        effets: new Map<number, CardEffectDelta>(),
+        ouvrirPile: () => undefined,
+        // Une cible legale qu'on ne peut plus ajouter (maximum atteint) : la toucher ECHANGE (voir `cibleAEchanger`).
+        ouvrirCarte: (carte: ScanCardProps) => {
+          const id = Number(carte.id)
+          const retirer = cibleAEchanger({
+            id,
+            maximum: interaction.option?.target_num_range[1] ?? 0,
+            legales: interaction.option?.all_legal_targets ?? [],
+            interactifs: interaction.cartes,
+          })
+          if (retirer === undefined) return
+          echangeEnAttente.current = id
+          interaction.cartes.get(retirer)?.agir?.()
+        },
+        agir: (carte: ScanCardProps) => carte.onSelect?.(),
+      },
+    }
+  }, [modePlateau, interaction.assistant.etape, interaction.cibles.length, interaction.cartes, interaction.option, plateau])
+
   if (!etat.monde || !plateau || voile) {
     return (
       <p className="plateau-message" role={etat.erreur ? 'alert' : undefined}>
@@ -4874,6 +4922,7 @@ export function PagePartie({
           choixDansLaScene={ciblageEnScene}
           // Le sous-cadre du cartouche du bas porte tout, paiement compris (D6).
           sousCadre={(nouvelleScenePC && phaseMechantEnCours && interaction.option !== undefined) || ciblageSurTable}
+          feuilleCibles={feuilleCibles}
         />
       )}
 

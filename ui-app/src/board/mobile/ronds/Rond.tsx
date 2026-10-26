@@ -197,7 +197,7 @@ export function Rond({
       <button
         type="button"
         className="rond-bouton"
-        aria-label={`${unite.groupe ? unite.groupe.titre : carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}`}
+        aria-label={`${unite.groupe ? unite.groupe.titre : carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}${etats.length > 0 ? `, ${etats.map((etat) => etat.texte).join(', ')}` : ''}`}
         onClick={surToucher}
         disabled={vaincu}
       >
