@@ -34,6 +34,7 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 import { jouerSon, jouerReplique, jouerClicRoue, SON, couperSurvolPendant } from "/public/js/prepare/sons.js";
 // L'intention du survol des héros : la scène garde le héros regardé le temps d'atteindre son bouton « Voir ses cartes ».
 import { creerSurvolHeros } from "/public/js/prepare/survol-heros.js";
+import { voletCreateurs } from "/public/js/prepare/section-createurs.js";
 import { herosTirables, scenariosTirables, tirer, tirerPlusieurs, creerBandeau, caseHeros, caseScenario,
          lireRoue, publierRoue } from "/public/js/prepare/roue.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
@@ -2376,6 +2377,7 @@ function blocRemerciements() {
             el("a", { href: "https://hallofheroeslcg.com/", target: "_blank", rel: "noopener" }, "Hall of Heroes"), " · ",
             el("a", { href: "https://mc4db.merlindumesnil.net/", target: "_blank", rel: "noopener" }, "MC4DB"), ". ",
             t("Et à tous les créateurs de fan-made, ainsi qu'à ma maman.")),
+        voletCreateurs({ t, el }),
         el("p", {},
             t("Si j'ai oublié de te créditer pour une image, une carte ou un contenu, j'en suis désolé : dis-le-moi via"), " ",
             el("a", { href: "https://narwhalchampions.com/contact-createurs", target: "_blank", rel: "noopener" }, t("ce formulaire")), " ",

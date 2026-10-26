@@ -1202,6 +1202,12 @@ export const DICO_EN_BASE = {
     "Si j'ai oublié de te créditer pour une image, une carte ou un contenu, j'en suis désolé : dis-le-moi via":
         "If I forgot to credit you for an image, a card or any content, I'm sorry: let me know through",
     "ce formulaire": "this form",
+    /* ---- Créateurs de contenu fan-made (section-createurs.js, 26/10/2026) ---- */
+    "Créateurs de contenu fan-made": "Fan-made content creators",
+    "Chargement…": "Loading…",
+    "Aucun créateur fan-made trouvé.": "No fan-made creator found.",
+    "La liste des créateurs est indisponible pour le moment.": "The list of creators is unavailable right now.",
+    "Les héros, campagnes et cartes fan-made de ce jeu sont l'œuvre de ces créateurs. Merci à eux !": "The fan-made heroes, campaigns and cards in this game are the work of these creators. Thank you!",
     "et je corrige au plus vite. Tu peux aussi me demander de retirer tes créations du site par le même formulaire.":
         "and I'll fix it as soon as possible. You can also ask me to remove your creations from the site through the same form.",
     /* ---- Echange Team-Up a la mise en place (RR 1.8, 11/10/2026) ---- */

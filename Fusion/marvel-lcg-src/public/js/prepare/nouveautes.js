@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-26",
+        genre: "heros",
+        fr: "Cinquante cartes d'aspect Starjammers (Agressivité, Justice, Leadership, Protection et Basic) de Phenexian et Mysteltainn arrivent dans le deck-builder : Cyclops, Havok, Polaris, Lilandra, Korvus Rook'shir, Kalyx et leur équipement. Elles sont encore en rodage : dis-nous ce qui cloche.",
+        en: "Fifty Starjammers aspect cards (Aggression, Justice, Leadership, Protection and Basic) by Phenexian and Mysteltainn arrive in the deck-builder: Cyclops, Havok, Polaris, Lilandra, Korvus Rook'shir, Kalyx and their gear. They are still being tested: tell us what looks off.",
+    },
+    {
+        date: "2026-10-26",
+        genre: "heros",
+        fr: "Quinze héros fan-made rejoignent le roster : Batman et Batgirl (ES), Wasp / Hank Pym (JackHKP), Corsair, Hepzibah, Raza, Ch'od et les Warriors Three (Phenexian et Mysteltainn), Smasher (Phenexian), Marvel Girl (Rachel Summers), Sunspot et le nouveau Winter Soldier (Dipsome), Roz Solomon (jakxin), U.S. Agent (DesignHacker) et Spider-Punisher (T-Wrecks). Ils sont encore en rodage : dis-nous ce qui cloche.",
+        en: "Fifteen fan-made heroes join the roster: Batman and Batgirl (ES), Wasp / Hank Pym (JackHKP), Corsair, Hepzibah, Raza, Ch'od and the Warriors Three (Phenexian and Mysteltainn), Smasher (Phenexian), Marvel Girl (Rachel Summers), Sunspot and the new Winter Soldier (Dipsome), Roz Solomon (jakxin), U.S. Agent (DesignHacker) and Spider-Punisher (T-Wrecks). They are still being tested: tell us what looks off.",
+    },
+    {
         date: "2026-10-25",
         genre: "jeu",
         fr: "Sur téléphone, les cartes à plusieurs faces s'affichent l'une sous l'autre sans défilement, et dans le plateau en ronds, les lieux et les environnements d'un scénario comme La ville ne dort jamais sont regroupés en deux ronds. La phase du méchant montre toujours la carte en entier.",

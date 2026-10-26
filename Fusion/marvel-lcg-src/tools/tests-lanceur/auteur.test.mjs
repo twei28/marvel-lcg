@@ -93,3 +93,40 @@ test("createursDeTout : héros et extensions fan-made réunis, chacun une fois, 
     assert.deepEqual(createursDeTout([], []), []);
     assert.deepEqual(createursDeTout(null, null), []);
 });
+
+// ---- 26/10/2026 : « Phenexian and Mysteltainn » sont DEUX personnes ----
+import { separerCreateurs } from "../../public/js/prepare/auteur.js";
+
+test("« X and Y », « X et Y », « X + Y », « X & Y » : deux créateurs distincts", () => {
+    assert.deepEqual(separerCreateurs("Phenexian and Mysteltainn"), ["Phenexian", "Mysteltainn"]);
+    assert.deepEqual(separerCreateurs("Phenexian et Mysteltainn"), ["Phenexian", "Mysteltainn"]);
+    assert.deepEqual(separerCreateurs("BlueHG + DesignHacker"), ["BlueHG", "DesignHacker"]);
+    assert.deepEqual(separerCreateurs("A & B"), ["A", "B"]);
+});
+
+test("un nom seul reste un nom, les espaces et les vides sont ignorés", () => {
+    assert.deepEqual(separerCreateurs("  Dipsome "), ["Dipsome"]);
+    assert.deepEqual(separerCreateurs(""), []);
+    assert.deepEqual(separerCreateurs(undefined), []);
+    assert.deepEqual(separerCreateurs("Grawlix Ipsum"), ["Grawlix Ipsum"]);
+});
+
+test("« and » dans un nom plus long n'est pas un séparateur", () => {
+    assert.deepEqual(separerCreateurs("Sandra Anderson"), ["Sandra Anderson"]);
+    assert.deepEqual(separerCreateurs("Brandon"), ["Brandon"]);
+});
+
+test("la ligne de remerciement compte Phenexian et Mysteltainn une fois chacun", () => {
+    const heroes = [
+        { homebrew: true, auteur: "Phenexian and Mysteltainn" },
+        { homebrew: true, auteur: "Phenexian" },
+        { homebrew: true, auteur: "Mysteltainn" },
+        { homebrew: true, auteur: "phenexian and mysteltainn" },
+    ];
+    assert.deepEqual(createursDe(heroes), ["Mysteltainn", "Phenexian"]);
+    assert.deepEqual(createursDeTout([], ["Phenexian and Mysteltainn", "Mysteltainn"]), ["Mysteltainn", "Phenexian"]);
+});
+
+test("l'affichage derrière le nom du héros reste le libellé imprimé sur les cartes", () => {
+    assert.equal(nomAvecAuteur("Corsair", "Phenexian and Mysteltainn", true), "Corsair (Phenexian and Mysteltainn)");
+});
