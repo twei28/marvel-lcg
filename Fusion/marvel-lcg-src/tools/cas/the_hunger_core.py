@@ -10,6 +10,11 @@
 
 FORME_HEROS = "Puzzle.ChangeForm('01001b')"
 RIEN_A_BOOSTER = ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"]
+# Zombie Iron Man (hg008) attache a son entree en jeu une amelioration TIREE AU HASARD de son deck signature
+# (hg019-hg022). `IRON_MAN_NU` (a placer juste apres `Puzzle.PutIntoPlay('hg008')`) la retire du jeu pour que
+# chaque cas hg019-hg023 parte d'un Iron Man sans aucune amelioration, puis attache EXPLICITEMENT celles qu'il veut.
+# Les copies non trouvees en jeu sont creees hors jeu puis retirees aussitot (sans effet).
+IRON_MAN_NU = "Puzzle.Remove('hg019', 'hg020', 'hg021', 'hg022')"
 
 CAS = [
     # ============================================================ Shielded by the Horde
@@ -728,6 +733,457 @@ CAS = [
         "declencher": ["Puzzle.SetThreat('hg005b', 11)"],
         "verifier": "hg_manigance_etat",
         "attendu": {"fin": "perdu"},
+    },
+
+    # ============================================================ hg018 : Dented Vibranium Shield
+    {
+        "nom": "[hg] hg018 Dented Vibranium Shield : posee avec Zombie Captain America en jeu -> s'attache a lui et lui donne Retaliate 2",
+        "pourquoi": "« Attach to Zombie Captain America. Zombie Captain America gains Retaliate 2 » : AttachToFaceWhenPutIntoPlay + "
+                    "GiveKeywordToAttached, verifie par le mot-cle lu sur la carte hote une fois attachee",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hg007')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.PutIntoPlay('hg018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["hg018", "hg007"]], "attributs_carte": [["hg007", "retaliate", 2]]},
+    },
+    {
+        "nom": "[hg] hg018 TEMOIN : Zombie Captain America SANS le bouclier n'a aucune Riposte",
+        "pourquoi": "contre-cas de securite : prouve que Retaliate 2 vient bien de l'attachement, pas d'une valeur imprimee sur hg007",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hg007')"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hg007", "retaliate", 0]]},
+    },
+    {
+        "nom": "[hg] hg018 Retaliate 2 EN JEU : le heros attaque Zombie Captain America equipe du bouclier -> 2 degats en retour sur son identite",
+        "pourquoi": "preuve bout-en-bout que le mot-cle donne par GiveKeywordToAttached est bien lu par le moteur au moment de "
+                    "l'attaque (fiche retaliate.md)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg007')", "Puzzle.PutIntoPlay('hg018')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "cibles": ["hg007"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "[hg] hg018 CONTRE-CAS : posee SANS Zombie Captain America en jeu -> aucune cible d'attache, defaussee, aucun plantage",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay sans cible legale ne doit pas faire planter la pose ; le moteur defausse "
+                    "l'attachement faute d'hote (meme comportement que le temoin hg026). Attendu initial « reste en jeu » "
+                    "corrige le 27/10/2026 : un attachement sans hote ne reste pas en jeu",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.PutIntoPlay('hg018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hg018"]},
+    },
+    {
+        "nom": "[hg] hg018 Hero Action : depenser 2 ressources (n'importe quel type) -> le bouclier est defausse et Zombie Captain America reperd Retaliate",
+        "pourquoi": "« Hero Action: Spend 2 resources -> discard this card » ; la perte de Retaliate confirme que GiveKeywordToAttached "
+                    "ne vaut QUE tant que la carte est attachee",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg007')", "Puzzle.PutIntoPlay('hg018')"],
+        "main_exclusive": ["01089", "01090"],
+        "declencher": ["Puzzle.Action('hg018', 'HeroAction')"],
+        "payer_avec": ["01089", "01090"],
+        "payer_tout": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hg018"], "attributs_carte": [["hg007", "retaliate", 0]]},
+    },
+
+    # ============================================================ hg019 : Necrotic Repulsors
+    # ⚠ Tous les cas hg019-hg023 commencent par `IRON_MAN_NU` : l'entree en jeu de hg008 attache une amelioration
+    # TIREE AU HASARD de son deck signature (hg019-hg022), ce qui rendait chaque cas (et surtout chaque TEMOIN)
+    # dependant du melange (ex. temoin hg019 : 1 chance sur 4 que hg019 soit deja la, Piercing actif).
+    {
+        "nom": "[hg] hg019 Necrotic Repulsors : attache a Zombie Iron Man (ATK 1 + 1 amelioration = 2), son attaque PERCE un heros "
+               "Tenace -> 2 degats ET la carte Tenace est defaussee",
+        "pourquoi": "« His attacks gain Piercing » : modele `27078` Venom 'Now We're Angry!' "
+                    "(UnitAttackGainKeyword(CardFinder(name=...), piercing=True)) -- la carte Tenace doit etre "
+                    "defaussee ET les degats doivent passer (contrairement a une Tenace qui bloque simplement)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.AttachReel('hg019', 'hg008')", "Puzzle.Tough('01001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg008', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "statuts_absents": [["01001a", "Tough"]]},
+    },
+    {
+        "nom": "[hg] hg019 TEMOIN (sans Necrotic Repulsors attache) : la MEME attaque de Zombie Iron Man contre "
+               "un heros Tenace est BLOQUEE (0 degat), la carte Tenace est quand meme defaussee",
+        "pourquoi": "contre-cas de substitution : prouve que c'est bien hg019 qui fait passer les degats au cas "
+                    "precedent, pas une autre capacite de hg008",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU, "Puzzle.Tough('01001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg008', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "statuts_absents": [["01001a", "Tough"]]},
+    },
+    {
+        "nom": "[hg] hg019 Hero Action : depenser 2 ressources (n'importe quel type) -> Necrotic Repulsors "
+               "defaussee de Zombie Iron Man",
+        "pourquoi": "« Hero Action: Spend 2 resources -> discard this card » : modele `sq017` Revealed Identity "
+                    "(meme texte officiel), PlayerActionToDiscardThis + SetCost(Cost(\"2\"))",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU, "Puzzle.AttachReel('hg019', 'hg008')"],
+        "main_exclusive": ["01088", "01089"],
+        "declencher": ["Puzzle.Action('hg019', 'HeroAction')"],
+        "payer_avec": ["01088", "01089"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["hg019"]},
+    },
+
+    # ============================================================ hg020 : Patched Armor
+    {
+        "nom": "[hg] hg020 Patched Armor : attachee a Zombie Iron Man, +2* PV (scale par nombre de heros)",
+        "pourquoi": "« Zombie Iron Man gets +2* hit points » : GiveKeywordToAttached(health=\"2*\"), scale comme le PV de base "
+                    "(solo : +2). `attributs_carte` mesure l'ECART de PV max a l'imprime (cle `health` -> max_health).",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.AttachReel('hg020', 'hg008')"],
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["hg020", "hg008"]], "attributs_carte": [["hg008", "health", 2]]},
+    },
+    {
+        "nom": "[hg] hg020 Hero Action : depenser 3 ressources -> defaussee, le bonus de PV disparait",
+        "pourquoi": "« Hero Action: Spend 3 resources -> discard this card » ; GiveKeywordToAttached retire le bonus a la sortie de jeu",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU, "Puzzle.AttachReel('hg020', 'hg008')"],
+        "main_exclusive": ["01088", "01089"],
+        "declencher": ["Puzzle.Action('hg020', 'HeroAction')"],
+        "payer_avec": ["01088", "01089"],
+        "payer_tout": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hg020"], "attributs_carte": [["hg008", "health", 0]]},
+    },
+
+    # ============================================================ hg021 : Rotten Thrusters
+    {
+        "nom": "[hg] hg021 Rotten Thrusters : attachee a Zombie Iron Man, +1 SCH",
+        "pourquoi": "« Zombie Iron Man gets +1 SCH » : GiveKeywordToAttached(Villain, scheme=1), mesure par "
+                    "attributs_carte (un ECART de +1 SCH, pas une valeur absolue)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.AttachReel('hg021', 'hg008')"],
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["hg021", "hg008"]], "attributs_carte": [["hg008", "scheme", 1]]},
+    },
+    {
+        "nom": "[hg] hg021 cannot be attacked by allies : une alliee (Black Cat 01002) ne peut pas attaquer "
+               "Zombie Iron Man attache de Rotten Thrusters (0 degat)",
+        "pourquoi": "« cannot be attacked by allies » : UnitCannotBeAttacked('AttachedVillain', "
+                    "conditions=[Ally.IsType(attacker)]). ⚠ PAS Hulk 01050 : sa Forced Response apres attaque (defausse "
+                    "du dessus du deck -> 2 degats a un ennemi) blessait hg008 PAR CAPACITE, pas par attaque (faux echec "
+                    "du 27/10/2026, 2 degats mesures)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.AttachReel('hg021', 'hg008')", "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01002')"],
+        "cibles": ["hg008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["hg008", 0]]},
+    },
+    {
+        "nom": "[hg] hg021 TEMOIN du precedent : sans Rotten Thrusters, la meme alliee (Black Cat) attaque bien "
+               "Zombie Iron Man",
+        "pourquoi": "ligne de base : sans ce temoin, le cas precedent pourrait passer au vert simplement parce "
+                    "qu'aucun allie ne peut jamais attaquer un Villain par defaut",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01002')"],
+        "cibles": ["hg008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["hg008", 1]]},
+    },
+    {
+        "nom": "[hg] hg021 Hero Action : depenser 2 ressources (any type) -> defausser Rotten Thrusters",
+        "pourquoi": "PlayerActionToDiscardThis(HeroAction).SetCost(Cost(\"2\")) (cout generique au lieu de colore)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU, "Puzzle.AttachReel('hg021', 'hg008')"],
+        "declencher": ["Puzzle.Action('hg021', 'HeroAction')"],
+        "main_exclusive": ["01090"],
+        "payer_avec": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hg021"]},
+    },
+
+    # ============================================================ hg022 : Necrotic Unibeam
+    {
+        "nom": "[hg] hg022 Necrotic Unibeam, Overkill : hg008 (ATK1 +1 par attache = ATK2) attaque l'identite, "
+               "01002 Black Cat (2 PV, deja a 1 degat donc 1 PV restant) defend -> elle meurt, 1 degat d'exces "
+               "a l'identite (Overkill, ennemi abat un allie -> l'exces va au controleur)",
+        "pourquoi": "« His attacks gain Overkill » + mots-cles/overkill.md",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.PutIntoPlay('01002', under_control=True)",
+                          "Puzzle.Damage('01002', 1)", "Puzzle.AttachReel('hg022', 'hg008')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg008', '01001b', defender='01002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 1},
+    },
+    {
+        "nom": "[hg] hg022 TEMOIN (preuve par substitution) : MEME montage mais SANS hg022 attachee -> hg008 reste a "
+               "ATK1 (0 attache), 1 PV restant pile suffisant, AUCUN exces (pas d'Overkill)",
+        "pourquoi": "contre-cas de securite",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.PutIntoPlay('01002', under_control=True)", "Puzzle.Damage('01002', 1)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg008', '01001b', defender='01002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 0},
+    },
+    {
+        "nom": "[hg] hg022 Necrotic Unibeam, degat aux allies : hg008 (ATK2 avec hg022 attachee) attaque l'identite "
+               "SANS defenseur -> l'identite encaisse 2 ATQ, ET chacune des 2 alliees en jeu subit SEPAREMENT 1 degat",
+        "pourquoi": "« deal 1 damage to each ally controlled by the attacked player »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.PutIntoPlay('01050', under_control=True)",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)", "Puzzle.AttachReel('hg022', 'hg008')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg008', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["01050", 1], ["01002", 1]], "en_jeu": ["01050", "01002"]},
+    },
+    {
+        "nom": "[hg] hg022 TEMOIN (preuve par substitution) : MEME montage mais SANS hg022 attachee -> hg008 reste "
+               "ATK1, l'identite encaisse 1, AUCUN degat aux allies",
+        "pourquoi": "contre-cas de securite",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.PutIntoPlay('01050', under_control=True)",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg008', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "degats": [["01050", 0], ["01002", 0]], "en_jeu": ["01050", "01002"]},
+    },
+    {
+        "nom": "[hg] hg022 Hero Action : depenser [mental][mental][mental] (2 cartes Genius) -> hg022 defaussee, "
+               "hg008 retombe a 0 attache (et ATK 1)",
+        "pourquoi": "« Hero Action: Spend 3 [mental] resources -> discard this card. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.AttachReel('hg022', 'hg008')"],
+        "main_exclusive": ["01089", "01089"],
+        "declencher": ["Puzzle.Action('hg022', 'HeroAction')"],
+        "payer_avec": ["01089", "01089"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["hg022"], "taille_attaches": [["hg008", 0]], "attributs_carte": [["hg008", "attack", 0]]},
+    },
+    {
+        "nom": "[hg] hg022 Hero Action REFUSEE : une seule carte Genius (2 [mental] < 3) -> hg022 reste attachee",
+        "pourquoi": "contre-cas du cout colore « 3 [mental] » : deux ressources ne suffisent pas (declencher_tolerant : "
+                    "l'echec de la commande EST le resultat attendu)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.AttachReel('hg022', 'hg008')"],
+        "main_exclusive": ["01089"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('hg022', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["hg022", "hg008"]], "taille_attaches": [["hg008", 1]]},
+    },
+
+    # ============================================================ hg023 : Hunger Protocol
+    {
+        "nom": "[hg] hg023 Hunger Protocol : Zombie Iron Man porte 2 ameliorations (hg020 + hg021, ATK 1+2 = 3) -> il "
+               "ACTIVE contre le joueur en forme heros -> 3 degats, aucune amelioration de plus",
+        "pourquoi": "« If Zombie Iron Man has 2 or more attachments, he activates against you. » (DoActivate, attaque "
+                    "reelle -> passer_sur_option Defense). hg020/hg021 choisies car sans effet sur l'attaque.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')", IRON_MAN_NU,
+                          "Puzzle.AttachReel('hg020', 'hg008')", "Puzzle.AttachReel('hg021', 'hg008')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg023')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "taille_attaches": [["hg008", 2]]},
+    },
+    {
+        "nom": "[hg] hg023 Hunger Protocol : Zombie Iron Man n'a qu'UNE amelioration (celle de son entree en jeu) -> PAS "
+               "d'activation, une 2e amelioration est tiree de son deck signature et attachee",
+        "pourquoi": "« Otherwise, discard cards from his signature deck until an attachment is discarded and attach it to "
+                    "him; then shuffle » : meme fouille partagee que hg008 (DefausserJusquaUneAmeliorationDuDeckSignature). "
+                    "Aucun degat : la branche « activates » ne doit pas partir aussi.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg008')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "taille_attaches": [["hg008", 2]]},
+    },
+    {
+        "nom": "[hg] hg023 Hunger Protocol « If you cannot » : Zombie Iron Man absent -> la carte gagne Surge, la carte "
+               "semee au sommet (01126) est revelee",
+        "pourquoi": "« If you cannot, this card gains Surge. » ; deck truque [01105, 01126] (01126 au sommet), modele hc015",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01126')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg023')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"carte_du_surge": "01126", "dans_deck_rencontre": ["01105"]},
+    },
+
+    # ============================================================ hg024 : Hulk Hungry!
+    {
+        "nom": "[hg] hg024 Hulk Hungry! : joueur en ALTER-EGO -> il passe en forme heros, puis Zombie Hulk (ATK 4) l'attaque -> 4 degats",
+        "pourquoi": "« When Revealed: If you are in alter-ego form, change to hero form. Zombie Hulk activates against you. » "
+                    "Pas de FORME_HEROS : le joueur demarre en alter-ego ; l'activation doit etre une ATTAQUE (forme heros) "
+                    "et non une manigance, preuve que le changement de forme precede l'activation",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg024')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "degats_identite": 4},
+    },
+    {
+        "nom": "[hg] hg024 TEMOIN : joueur DEJA en forme heros -> pas de changement de forme, Zombie Hulk active quand meme -> 4 degats",
+        "pourquoi": "la seconde phrase (« Zombie Hulk activates against you ») n'est pas conditionnee a la premiere",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg024')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "degats_identite": 4},
+    },
+    {
+        "nom": "[hg] hg024 CONTRE-CAS : Zombie Hulk absent -> le joueur passe en forme heros, aucune activation, aucun plantage",
+        "pourquoi": "Worlds.FindVillain(name='Zombie Hulk') rend None : la carte doit seulement changer la forme",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg024')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "degats_identite": 0},
+    },
+
+    # ============================================================ hg025 : Smash
+    {
+        "nom": "[hg] hg025 Smash : choix Support, DEUX supports controles -> les DEUX sont defausses, aucun degat a l'identite",
+        "pourquoi": "« Choose support or upgrade and discard EACH card of that type you control »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS,
+                          "Puzzle.PutIntoPlay('01026', under_control=True)", "Puzzle.PutIntoPlay('01034', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg025')"],
+        "choisir_option": "Support",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "hors_jeu": ["01026", "01034"]},
+    },
+    {
+        "nom": "[hg] hg025 Smash contre-cas « THAT type » : choix Support alors qu'un Upgrade (01018) est controle mais AUCUN support -> "
+               "l'Upgrade n'est PAS touche, le heros subit 3 degats",
+        "pourquoi": "« discard each card of THAT type » : le type NON choisi reste intact",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('01018', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg025')"],
+        "choisir_option": "Support",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "en_jeu": ["01018"]},
+    },
+    {
+        "nom": "[hg] hg025 Smash : choix Upgrade, DEUX upgrades controles -> les deux defausses, aucun degat",
+        "pourquoi": "Symetrique du cas Support",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS,
+                          "Puzzle.PutIntoPlay('01018', under_control=True)", "Puzzle.PutIntoPlay('01008', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg025')"],
+        "choisir_option": "Upgrade",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "hors_jeu": ["01018", "01008"]},
+    },
+    {
+        "nom": "[hg] hg025 Smash : choix Upgrade, AUCUN upgrade controle -> le heros subit 3 degats",
+        "pourquoi": "« If you control none, your hero takes 3 damage » cote Upgrade aussi",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg025')"],
+        "choisir_option": "Upgrade",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+
+    # ============================================================ hg026 : Endless Rage
+    {
+        "nom": "[hg] hg026 Endless Rage : attachee a Zombie Hulk, qui gagne STEADY et +1 ATK (4 -> 5)",
+        "pourquoi": "« Attach to Zombie Hulk. Zombie Hulk gains Steady and gets +1 ATK »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg009')"],
+        "declencher": ["Puzzle.Reveal('hg026')"],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": ["hg026"],
+            "accroche_a": [["hg026", "hg009"]],
+            "attributs_carte": [["hg009", "attack", 1], ["hg009", "steady", 1]],
+        },
+    },
+    {
+        "nom": "[hg] hg026 TEMOIN : Zombie Hulk absent de la table -> la carte ne peut pas s'attacher, "
+               "defaussee automatiquement, aucun plantage",
+        "pourquoi": "preuve que le CardFinder ne trouve rien a vide",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS],
+        "declencher": ["Puzzle.Reveal('hg026')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hg026"]},
+    },
+    {
+        "nom": "[hg] hg026 Hero Action : depenser 3 ressources (n'importe quel type) defausse la carte",
+        "pourquoi": "« Hero Action: Spend 3 resources -> discard this card » (2 cartes de base = 4 ressources >= 3)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg009')", "Puzzle.PutIntoPlay('hg026')"],
+        "main_exclusive": ["01088", "01089"],
+        "declencher": ["Puzzle.Action('hg026', 'HeroAction')"],
+        "payer_avec": ["01088", "01089"],
+        "payer_tout": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hg026"], "attributs_carte": [["hg009", "attack", 0], ["hg009", "steady", 0]]},
+    },
+
+    # ============================================================ hg027 : Rotten Web
+    {
+        "nom": "[hg] hg027 Rotten Web : attache au heros -> -1 ATK et -1 THW, DEF inchangee",
+        "pourquoi": "« Attach to your hero. Your hero gets -1 ATK and -1 THW. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg027')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01001a", "attack", -1], ["01001a", "thwart", -1], ["01001a", "defense", 0]]},
+    },
+    {
+        "nom": "[hg] hg027 Hero Action : 3 ressources de TYPES DIFFERENTS (Energy+Genius+Strength) -> hg027 defaussee, malus disparait",
+        "pourquoi": "« Hero Action (any player): Spend 3 resources of different types -> discard this card. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg027')"],
+        "declencher": ["Puzzle.Action('hg027', 'HeroAction')"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "payer_tout": True,
+        "payer_avec": ["01088", "01089", "01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hg027"], "attributs_carte": [["01001a", "attack", 0], ["01001a", "thwart", 0]]},
     },
 ]
 
