@@ -13,10 +13,9 @@ if (typeof document !== "undefined" && !document.getElementById("style-createurs
     const style = document.createElement("style");
     style.id = "style-createurs-fanmade";
     style.textContent = `
-      .createurs-volet { margin: 8px auto; max-width: 46rem; text-align: left; }
-      .createurs-volet > summary { cursor: pointer; text-align: center; font-weight: 600; }
-      .createurs-volet ul.createurs-fanmade { margin: 8px 0 0; padding-left: 1.2em; font-size: 12px; line-height: 1.5; }
-      .createurs-volet li { margin: 2px 0; overflow-wrap: anywhere; }
+      .createurs-bouton { display: block; margin: 8px auto 0; cursor: pointer; }
+      .createurs-fanmade { margin: 0; padding-left: 1.2em; font-size: 12px; line-height: 1.5; max-height: 60vh; overflow-y: auto; }
+      .createurs-fanmade li { margin: 2px 0; overflow-wrap: anywhere; }
     `;
     document.head.appendChild(style);
 }
@@ -45,24 +44,31 @@ export function remplirListeCreateurs(conteneur, credits, { t, el }) {
     );
 }
 
-/** Le volet repliable de l'accueil. Chargement à la première ouverture. */
-export function voletCreateurs({ t, el }) {
-    const corps = el("div", { class: "createurs-corps" });
-    const volet = el("details", { class: "createurs-volet" },
-        el("summary", {}, t("Créateurs de contenu fan-made")),
-        corps,
+/** Le bouton de l'accueil qui ouvre la liste dans une modale (27/10/2026,
+ *  remplace l'ancien `<details>` repliable : son contenu dépliait EN PLACE,
+ *  par-dessus le reste de l'accueil (logo compris) — moche, signalé par
+ *  l'utilisateur. Même modale que le reste du site (`.deck-modal`,
+ *  `ouvrirModale`/`fermerModale` de prepare/app.js), fermable par la croix,
+ *  un clic dehors, ou la poignée sur téléphone. Chargement à la première
+ *  ouverture seulement (chargerCartesBrutes est déjà mémoïsée). */
+export function voletCreateurs({ t, el, ouvrirModale, fermerModale }) {
+    return el("button", { class: "tampon createurs-bouton", onclick: () => ouvrirModaleCreateurs({ t, el, ouvrirModale, fermerModale }) },
+        t("Créateurs de contenu fan-made"));
+}
+
+export function ouvrirModaleCreateurs({ t, el, ouvrirModale, fermerModale }) {
+    const corps = el("div", {}, el("p", {}, t("Chargement…")));
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) fermerModale(overlay); } },
+        el("div", { class: "deck-modal-panel" },
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, t("Créateurs de contenu fan-made")),
+                el("button", { class: "dm-close", onclick: () => fermerModale(overlay) }, "✕"),
+            ),
+            corps,
+        ),
     );
-    let demande = false;
-    volet.addEventListener("toggle", () => {
-        if (!volet.open || demande) return;
-        demande = true;
-        corps.replaceChildren(el("p", {}, t("Chargement…")));
-        chargerCartesBrutes()
-            .then((brut) => remplirListeCreateurs(corps, creditsParCreateur(brut), { t, el }))
-            .catch(() => {
-                demande = false;
-                corps.replaceChildren(el("p", {}, t("La liste des créateurs est indisponible pour le moment.")));
-            });
-    });
-    return volet;
+    ouvrirModale(overlay);
+    chargerCartesBrutes()
+        .then((brut) => remplirListeCreateurs(corps, creditsParCreateur(brut), { t, el }))
+        .catch(() => corps.replaceChildren(el("p", {}, t("La liste des créateurs est indisponible pour le moment."))));
 }

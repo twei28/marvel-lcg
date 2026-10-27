@@ -2377,7 +2377,7 @@ function blocRemerciements() {
             el("a", { href: "https://hallofheroeslcg.com/", target: "_blank", rel: "noopener" }, "Hall of Heroes"), " · ",
             el("a", { href: "https://mc4db.merlindumesnil.net/", target: "_blank", rel: "noopener" }, "MC4DB"), ". ",
             t("Et à tous les créateurs de fan-made, ainsi qu'à ma maman.")),
-        voletCreateurs({ t, el }),
+        voletCreateurs({ t, el, ouvrirModale, fermerModale }),
         el("p", {},
             t("Si j'ai oublié de te créditer pour une image, une carte ou un contenu, j'en suis désolé : dis-le-moi via"), " ",
             el("a", { href: "https://narwhalchampions.com/contact-createurs", target: "_blank", rel: "noopener" }, t("ce formulaire")), " ",
