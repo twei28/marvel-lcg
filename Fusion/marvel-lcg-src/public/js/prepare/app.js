@@ -2981,7 +2981,20 @@ function stepTeam() {
     loadHeroes();
     // La scène et l'équipe se dessinent une fois la section DANS la page :
     // elles se retrouvent par identifiant.
-    Promise.resolve().then(() => { rendreEquipe(); rendreScene(herosDuSiegeActif()); });
+    //
+    // ⚠ Si le siège actif a déjà un héros (étape reconstruite par `render()`,
+    // ex. après « Valider » dans la fenêtre des variantes), on la FIGE dessus
+    // (`geler`, pas `rendreScene`) : sans ça, `remettreAZero()` plus haut
+    // dégèlerait une scène que l'utilisateur venait tout juste de figer d'un
+    // clic, et le survol suivant l'écraserait aussitôt (signalé le 27/10/2026).
+    // Siège encore vide (premier passage sur l'écran) : on laisse le survol
+    // libre pour le tout premier choix.
+    Promise.resolve().then(() => {
+        rendreEquipe();
+        const actif = herosDuSiegeActif();
+        if (actif) survolHeros.geler(actif);
+        else rendreScene(null);
+    });
     return wrap;
 }
 
@@ -3281,7 +3294,14 @@ function rendreEquipe() {
                 // Chaque étape a sa scène : les héros la remplissent avec le
                 // héros du siège, l'arsenal avec son deck.
                 if (state.step === 1) { rendreSceneDeck(); rendreOutilsDeck(); loadDecks(i); }
-                else rendreScene(herosDuSiegeActif());
+                else {
+                    // Même logique de gel qu'un clic sur un héros (27/10/2026) :
+                    // changer de siège est aussi un choix délibéré, le survol
+                    // des tuiles ne doit pas effacer ce qu'on vient d'afficher.
+                    const actif = herosDuSiegeActif();
+                    if (actif) survolHeros.geler(actif);
+                    else { survolHeros.remettreAZero(); rendreScene(null); }
+                }
             },
         },
             pl.hero ? portraitHeros(pl.hero) : el("span", { class: "plus" }, "+"),
@@ -3370,10 +3390,16 @@ function recruterVraiment(h, portraitEl) {
     // La scène d'abord (elle se reconstruit), la carte qui surgit ensuite,
     // par-dessus : dans l'autre ordre, la reconstruction l'emportait.
     if (tel) { herosApercuTel = h; rendreSceneTel(h); }
-    // Desktop : la scène se FIGE sur le héros du siège actif (celui qu'on vient de
-    // choisir, ou le prochain à choisir en multi) — geler() l'affiche lui-même, le
-    // survol des autres tuiles ne la bougera plus jusqu'au prochain clic.
-    else survolHeros.geler(herosDuSiegeActif());
+    else {
+        const actif = herosDuSiegeActif();
+        // Desktop : la scène se FIGE sur le héros tout juste choisi — geler()
+        // l'affiche lui-même, le survol des autres tuiles ne la bougera plus
+        // jusqu'au prochain clic. Siège suivant encore vide (multijoueur,
+        // tous les héros ne sont pas choisis) : on NE fige PAS sur du vide,
+        // sinon plus aucun survol ne marcherait pour choisir le héros suivant.
+        if (actif) survolHeros.geler(actif);
+        else { survolHeros.remettreAZero(); rendreScene(null); }
+    }
     rendreEquipe();
     const jouerEclair = () => {
         const scene = document.getElementById("tb-scene");
