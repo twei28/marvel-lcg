@@ -2264,8 +2264,7 @@
  "234. Custom (The Hunger Core)": {
   "name": "the_hunger_core",
   "scenarios": [
-   "the_hunger_core",
-   "the_hunger_core_expert"
+   "the_hunger_core"
   ],
   "heroes": [],
   "encounters": [
@@ -2274,5 +2273,5 @@
   ],
   "max_id": "hg076"
  },
- "checksum": "68a79cd5f6d349a02137917231c3bd162275805521f22b1c82fe9d96fa091296"
+ "checksum": "468fd7c2690721f39b90eec7daa92c81093b3226026500a9e9138ab7bea8b1ba"
 }

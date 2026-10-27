@@ -6384,4 +6384,165 @@ export const TEXTES_FR_FANMADE = {
     'sy049': "Attachez-la à un allié [[STARJAMMER]]. 1 max par allié.\nL'allié attaché gagne le trait [[AERIAL]].\n<b>Réponse</b> : après que cette carte est entrée en jeu, donnez une carte d'état Tenace à l'allié attaché.",
     'sy050': "Restreint. Utilisations (3 compteurs de charge).\n<b>Action</b> : inclinez Plasnet Launcher et retirez 1 compteur de charge dessus → le Méchant gagne -1 ATQ jusqu'à la fin du round.",
     // starjammers_aspects — fin du bloc
+    // ======================================================================
+    // the hunger core — scénario fan-made (hg001-hg076, 78 cartes)
+    // Noms maison : Métazombie, deck de la Horde, jeton Infection, deck des
+    // Survivants, « Protégé par la Horde », « Rupture », « Simple Cœur ».
+    // ======================================================================
+    // the hunger core — The Hunger Core (Villain)
+    'hg001': "Protégé par la Horde. Rupture 1 [per_hero].\nSimple Cœur 1. Au lieu de vous attaquer, attribuez-vous 1 carte Rencontre face cachée.",
+    // the hunger core — The Hunger Core (Villain)
+    'hg002': "Protégé par la Horde. Rupture 1 [per_hero].\nSimple Cœur 1. Au lieu de vous attaquer, attribuez-vous 1 carte Rencontre face cachée.\n<b>Une fois révélée</b> : chaque joueur place 1 jeton Infection.",
+    // the hunger core — The Hunger Core (Villain)
+    'hg003': "Protégé par la Horde. Rupture 1 [per_hero]. Solide.\nSimple Cœur 2. Au lieu de vous attaquer, attribuez-vous 2 cartes Rencontre face cachée.\n<b>Une fois révélée</b> : chaque joueur place 1 jeton Infection.",
+    // the hunger core — The Devourer's Skin (MainScheme)
+    'hg004a': "« C'est si grand qu'on dirait un continent. Et ça sent le cimetière. »\n<b>Mise en place</b> : mettez The Hunger Core (I) en jeu (Expert : II). Mettez de côté la version zombie de chaque héros choisi et son Trapped Survivor.\nMélangez les autres Métazombies : c'est le deck de la Horde. Mettez-en 2 en jeu.\nDeck Rencontre : les sets The Hunger Core, Hungry Horde, Fallen Heroes (sans les versions zombies mises de côté) et Standard.\nMettez de côté « Inside Galactus », « The Innards » et le deck des Survivants.",
+    // the hunger core — The Devourer's Skin (MainScheme)
+    'hg004b': "<b>Interruption forcée</b> : quand The Hunger Core devrait être vaincu, avancez plutôt au stade 2 de la manigance principale et mettez le stade suivant de The Hunger Core en jeu.\nSi cette manigance est achevée, les joueurs perdent.",
+    // the hunger core — The Innards (MainScheme)
+    'hg005a': "« Il n'y a pas d'obscurité à l'intérieur de Galactus. Il y a un battement de cœur. Et chaque battement appelle les morts. »",
+    // the hunger core — The Innards (MainScheme)
+    'hg005b': "<b>Une fois révélée</b> : mettez « Inside Galactus » et 2 Métazombies en jeu (max. 3 en jeu).\nSi cette manigance est achevée, les joueurs perdent.",
+    // the hunger core — Inside Galactus (Environment)
+    'hg006': "Pouvoir cosmique résiduel. Le méchant gagne +1 ATQ.\n<b>Sucs digestifs</b> — <b>Réponse forcée</b> : à la fin de la phase du Méchant, infligez 2 dégâts indirects à chaque joueur.",
+    // the hunger core — Zombie Captain America (Villain)
+    'hg007': "Meneur de la Horde. Chaque autre Métazombie gagne +1 ATQ.\n<b>Bouclier</b> — <b>Interruption forcée</b> : la première fois à chaque phase que Zombie Captain America devrait subir des dégâts, réduisez ces dégâts de 2.",
+    // the hunger core — Zombie Iron Man (Villain)
+    'hg008': "<b>Réponse forcée</b> : après que Zombie Iron Man est entré en jeu, défaussez des cartes de son deck signature jusqu'à ce qu'un attachement soit défaussé, puis attachez-le-lui. Ensuite, mélangez les cartes défaussées dans son deck signature.\n<b>Améliorations</b>. Zombie Iron Man gagne +1 ATQ pour chaque attachement sur lui.",
+    // the hunger core — Zombie Hulk (Villain)
+    'hg009': "Déferlement.\n<b>Dévoration</b> — <b>Réponse forcée</b> : après que Zombie Hulk a vaincu un allié, il soigne un montant de dégâts égal aux points de vie maximum de cet allié.",
+    // the hunger core — Zombie Spider-Man (Villain)
+    'hg010': "<b>Toile</b> — <b>Réponse forcée</b> : après que Zombie Spider-Man a infligé des dégâts à un héros, ce héros est sonné.",
+    // the hunger core — Zombie Captain Marvel (Villain)
+    'hg011': "<b>Absorption</b> — <b>Réponse forcée</b> : après qu'elle a été attaquée, placez 1 jeton d'énergie sur cette carte (max. 5). Elle gagne +1 ATQ pour chaque jeton d'énergie.\n<b>Réponse forcée</b> : après qu'elle a attaqué, retirez 1 jeton d'énergie de cette carte.",
+    // the hunger core — Zombie Thor (Villain)
+    'hg012': "<b>Tempête</b> — <b>Réponse forcée</b> : après que Zombie Thor s'est activé contre un joueur, infligez 1 dégât à chaque allié que ce joueur contrôle.",
+    // the hunger core — Zombie Black Widow (Villain)
+    'hg013': "Robuste.\nEmbuscade. Les alliés ne peuvent pas défendre contre les attaques de Zombie Black Widow.",
+    // the hunger core — Zombie Doctor Strange (Villain)
+    'hg014': "<b>Maléfice</b> — <b>Réponse forcée</b> : après que Zombie Doctor Strange s'est activé contre vous, attribuez-vous 1 carte Rencontre face cachée.",
+    // the hunger core — Zombie Magik (Villain)
+    'hg015': "<b>Portail vers Limbo</b> — <b>Réponse forcée</b> : après que Zombie Magik s'est activée contre vous, si vous n'êtes engagé avec aucun sbire, défaussez des cartes du deck Rencontre jusqu'à ce qu'un sbire soit défaussé, puis mettez-le en jeu, engagé avec vous. Ensuite, mélangez la pile de défausse de rencontre dans le deck Rencontre. Si aucun sbire n'est défaussé et qu'il y a moins de 3 Métazombies en jeu, mettez un Métazombie en jeu.",
+    // the hunger core — Thrown Shield (Treachery)
+    'hg016': "<b>Une fois révélée</b> : infligez 2 dégâts à chaque héros et à chaque allié en jeu.",
+    // the hunger core — Avengers, Feast! (Treachery)
+    'hg017': "<b>Une fois révélée</b> : chaque Métazombie en jeu s'active contre chaque joueur. N'attribuez pas de cartes de boost pour ces activations.",
+    // the hunger core — Dented Vibranium Shield (Attachment)
+    'hg018': "Attachez-la à Zombie Captain America.\nZombie Captain America gagne Riposte 2.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Necrotic Repulsors (Attachment)
+    'hg019': "Attachez-la à Zombie Iron Man.\nSes attaques gagnent Perçant.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Patched Armor (Attachment)
+    'hg020': "Attachez-la à Zombie Iron Man.\nZombie Iron Man gagne +2* points de vie.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Rotten Thrusters (Attachment)
+    'hg021': "Attachez-la à Zombie Iron Man.\nZombie Iron Man gagne +1 MNG et ne peut pas être attaqué par les alliés.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Necrotic Unibeam (Attachment)
+    'hg022': "Attachez-la à Zombie Iron Man.\nSes attaques gagnent Déferlement et infligent 1 dégât à chaque allié contrôlé par le joueur attaqué.\n<b>Action de héros</b> : dépensez 3 ressources [mental] → défaussez cette carte.",
+    // the hunger core — Hunger Protocol (Treachery)
+    'hg023': "<b>Une fois révélée</b> : si Zombie Iron Man a 2 attachements ou plus, il s'active contre vous. Sinon, défaussez des cartes de son deck signature jusqu'à ce qu'un attachement soit défaussé, puis attachez-le-lui ; ensuite, mélangez les cartes défaussées dans son deck signature. Si vous ne pouvez pas, cette carte gagne Renfort.",
+    // the hunger core — Hulk Hungry! (Treachery)
+    'hg024': "<b>Une fois révélée</b> : si vous êtes sous forme d'alter ego, passez sous forme de héros. Zombie Hulk s'active contre vous.",
+    // the hunger core — Smash (Treachery)
+    'hg025': "<b>Une fois révélée</b> : choisissez soutien ou amélioration, et défaussez chaque carte de ce type que vous contrôlez. Si vous n'en contrôlez aucune, votre héros subit 3 dégâts.",
+    // the hunger core — Endless Rage (Attachment)
+    'hg026': "Attachez-la à Zombie Hulk.\nZombie Hulk gagne Solide et +1 ATQ.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Rotten Web (Attachment)
+    'hg027': "Attachez-la à votre héros.\nVotre héros gagne −1 ATQ et −1 CTR.\n<b>Action de héros (n'importe quel joueur)</b> : dépensez 3 ressources de types différents → défaussez cette carte.",
+    // the hunger core — Dead Spider-Sense (Treachery)
+    'hg028': "<b>Une fois révélée</b> : Zombie Spider-Man s'active contre le joueur qui a le plus de cartes en main. En cas d'égalité, il s'active contre vous.",
+    // the hunger core — Rooftop to Rooftop (SideScheme)
+    'hg029': "Tant que cette manigance est en jeu, Zombie Spider-Man gagne +1 MNG et ne peut pas être attaqué par les alliés.",
+    // the hunger core — Rotten Binary (Treachery)
+    'hg030': "<b>Une fois révélée</b> : infligez 1 dégât à chaque héros et à chaque allié en jeu.",
+    // the hunger core — Photon Fist (Attachment)
+    'hg031': "Attachez-la à Zombie Captain Marvel.\nSes attaques gagnent Déferlement.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Discharge (Treachery)
+    'hg032': "<b>Une fois révélée</b> : si Zombie Captain Marvel a moins de 5 jetons d'énergie, placez-en 1 sur elle. Puis retirez tous ses jetons d'énergie ; elle est sonnée. Infligez à chaque joueur un montant de dégâts indirects égal au nombre de jetons retirés.",
+    // the hunger core — Energy Hunger (Treachery)
+    'hg033': "<b>Une fois révélée</b> : placez 2 jetons d'énergie sur Zombie Captain Marvel (max. 5).",
+    // the hunger core — Bloodied Mjolnir (Attachment)
+    'hg034': "Attachez-la à Zombie Thor.\nZombie Thor gagne +1 ATQ. Ses attaques gagnent Déferlement et Perçant.\nTempête inflige 1 dégât supplémentaire à chaque allié.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Rotten Lightning (Treachery)
+    'hg035': "<b>Une fois révélée</b> : infligez 2 dégâts à chaque personnage ami.",
+    // the hunger core — Fallen God of Thunder (Treachery)
+    'hg036': "<b>Une fois révélée</b> : Zombie Thor soigne 4* dégâts. S'il n'avait aucun dégât, il s'active contre vous.",
+    // the hunger core — Widow's Bite (Treachery)
+    'hg037': "<b>Une fois révélée (alter ego)</b> : placez 1 jeton Infection. Cette carte gagne Renfort.\n<b>Une fois révélée (héros)</b> : votre héros est sonné. Placez 1 jeton Infection.",
+    // the hunger core — Infiltrator (SideScheme)
+    'hg038': "Tant que cette manigance est en jeu, Zombie Black Widow gagne +1 MNG.",
+    // the hunger core — Sleeper Agent (Treachery)
+    'hg039': "<b>Une fois révélée</b> : si vous êtes sous forme d'alter ego, passez sous forme de héros. Zombie Black Widow s'active contre vous.",
+    // the hunger core — Rotten Eye of Agamotto (Attachment)
+    'hg040': "Attachez-la à Zombie Doctor Strange.\nChaque fois que Zombie Doctor Strange devrait subir des dégâts, réduisez ces dégâts de 1.\n<b>Action de héros</b> : dépensez 2 ressources [mental] → défaussez cette carte.",
+    // the hunger core — Crimson Bands of Cyttorak (Attachment)
+    'hg041': "Attachez-la à votre héros.\nVotre héros ne peut pas attaquer.\n<b>Action de héros</b> : dépensez 2 ressources de types différents et inclinez votre héros → défaussez cette carte.",
+    // the hunger core — Hunger Hex (SideScheme)
+    'hg042': "Tant que cette manigance est en jeu, la taille de main de chaque joueur est réduite de 2.",
+    // the hunger core — Soulsword (Attachment)
+    'hg043': "Attachez-la à Zombie Magik.\nZombie Magik gagne +1 ATQ. Ses attaques gagnent Perçant.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Teleportation Disc (Treachery)
+    'hg044': "<b>Une fois révélée</b> : Zombie Magik s'active contre chaque joueur. N'attribuez pas de cartes de boost pour ces activations.",
+    // the hunger core — Demons of Limbo (Treachery)
+    'hg045': "Renfort.\n<b>Une fois révélée</b> : mettez en jeu, engagé avec vous, le sbire ayant le plus de points de vie dans la pile de défausse de rencontre.",
+    // the hunger core — Metazombie Power! (Treachery)
+    'hg046': "<b>Une fois révélée</b> : révélez la carte du dessus du deck signature du Métazombie actif. S'il n'y a aucun Métazombie en jeu, cette carte gagne Renfort.",
+    // the hunger core — Rise of the Horde! (Treachery)
+    'hg047': "<b>Une fois révélée</b> : s'il y a moins de 3 Métazombies en jeu, mettez-en un en jeu. Sinon, cette carte gagne Renfort.",
+    // the hunger core — Half-Eaten (Treachery)
+    'hg048': "<b>Une fois révélée</b> : s'il y a moins de 3 Métazombies en jeu, mettez-en un en jeu avec un montant de dégâts égal à la moitié de ses points de vie. Sinon, cette carte gagne Renfort.",
+    // the hunger core — Hunger Pulse (Treachery)
+    'hg049': "<b>Une fois révélée</b> : placez 1* menace sur la manigance principale (2* si le Cœur est exposé).\n<hr />\n[star] <b>Boost</b> : placez 1 jeton Infection.",
+    // the hunger core — The Hive Calls (SideScheme)
+    'hg050': "",
+    // the hunger core — Trapped Survivor: Franklin Richards (SideScheme)
+    'hg051': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Franklin Richards de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Franklin Richards à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Chewie (SideScheme)
+    'hg052': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Chewie de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Chewie à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Valeria Richards (SideScheme)
+    'hg053': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Valeria Richards de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Valeria Richards à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Blade (SideScheme)
+    'hg054': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Blade de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Blade à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Wolverine (SideScheme)
+    'hg055': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Wolverine de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Wolverine à sa main depuis le deck des Survivants.",
+    // the hunger core — Hungry Zombie (Minion)
+    'hg056': "Garde.",
+    // the hunger core — Bloated Zombie (Minion)
+    'hg057': "Garde.\n<b>Réponse forcée</b> : après que ce sbire a été vaincu, chaque joueur place 1 jeton Infection.",
+    // the hunger core — Bite (Treachery)
+    'hg058': "<b>Une fois révélée</b> : placez 1 jeton Infection (2 si votre héros a des dégâts sur lui).",
+    // the hunger core — Zombie Luke Cage (Minion)
+    'hg059': "Garde. Ténacité.",
+    // the hunger core — Zombie Hawkeye (Minion)
+    'hg060': "Garde.\n<b>Une fois révélée</b> : infligez 2 dégâts à chaque allié que vous contrôlez.",
+    // the hunger core — Zombie Giant-Man (Minion)
+    'hg061': "Garde. Déferlement.",
+    // the hunger core — Zombie Wasp (Minion)
+    'hg062': "Garde. Coup Rapide. Riposte 2.",
+    // the hunger core — Zombie Nova Prime (Minion)
+    'hg063': "Garde. Coup Rapide. Vilenie.",
+    // the hunger core — Zombie Mister Fantastic (Minion)
+    'hg064': "Garde.\n<b>Une fois révélée</b> : révélez la carte du dessus du deck signature du Métazombie ayant le moins de points de vie restants.",
+    // the hunger core — Zombie Invisible Woman (Minion)
+    'hg065': "Garde.\nCe sbire ne peut pas subir de dégâts d'attaques d'alliés.\n<b>Une fois révélée</b> : votre identité et chaque allié que vous contrôlez sont désorientés.",
+    // the hunger core — Zombie Thing (Minion)
+    'hg066': "Garde.\n<b>Une fois révélée</b> : ce sbire reçoit 2 cartes d'état Tenace. Il peut avoir 2 cartes d'état Tenace en même temps.",
+    // the hunger core — Zombie Human Torch (Minion)
+    'hg067': "Garde. Vilenie.\n<b>Réponse forcée</b> : après que ce sbire a infligé des dégâts avec une attaque, infligez 1 dégât à chaque allié contrôlé par le joueur attaqué.",
+    // the hunger core — Zombie Rhino (Minion)
+    'hg068': "Garde.\nCharge. Les attaques de ce sbire ont Perçant.",
+    // the hunger core — Zombie Colossus (Minion)
+    'hg069': "Garde. Ténacité.",
+    // the hunger core — Zombie Falcon (Minion)
+    'hg070': "Garde. Vilenie.\nCe sbire ne peut pas être attaqué par les alliés.\n<b>Une fois révélée</b> : inclinez votre identité ; elle est sonnée.",
+    // the hunger core — Zombie Quicksilver (Minion)
+    'hg071': "Garde.\nSuper Vitesse. Ce sbire s'active deux fois. Tant que le joueur engagé contrôle un allié, ses attaques ciblent l'un de ces alliés (au choix de ce joueur) au lieu de son identité.",
+    // the hunger core — Franklin Richards (Ally)
+    'hg072': "<b>Action</b> : inclinez Franklin Richards → choisissez :\n• Retirez 2 jetons Infection d'un héros.\n• Soignez 2 dégâts à un personnage ami.",
+    // the hunger core — Chewie (Ally)
+    'hg073': "<b>Action</b> : inclinez Chewie → défaussez un sbire Zombie ou Métazombie. Chewie subit 1 dégât.",
+    // the hunger core — Valeria Richards (Ally)
+    'hg074': "<b>Action</b> : inclinez Valeria Richards → choisissez :\n• Changez de forme.\n• Infligez 3* dégâts à The Hunger Core.",
+    // the hunger core — Blade (Ally)
+    'hg075': "<b>Chasseur de morts-vivants</b>. Tant que Blade attaque un ennemi Zombie ou Métazombie, il gagne +2 ATQ. S'il le vainc, Blade ne subit pas de dégâts consécutifs.",
+    // the hunger core — Wolverine (Ally)
+    'hg076': "",
 };
