@@ -1284,6 +1284,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Auto': 'Auto',
   // Reglage des colonnes de chaque zone de la table en ronds (26/10/2026) : « Colonnes : Sbires » / « Columns: Minions ».
   'Colonnes': 'Columns',
+  // Fleches de defilement d'une zone de la table en ronds quand elle deborde sa grille (27/10/2026).
+  'Colonnes précédentes': 'Previous columns',
+  'Colonnes suivantes': 'Next columns',
   'Aucun': 'None',
   // Le libelle de l'apercu se construit par concatenation (« 3 effets ») :
   // chaque compte possible a donc besoin de son entree. Il y a quinze

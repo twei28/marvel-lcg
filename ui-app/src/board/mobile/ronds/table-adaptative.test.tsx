@@ -1,12 +1,13 @@
-// La table en ronds ADAPTATIVE (26/10/2026) : TableRonds mesure son conteneur (`.portrait-table`), demande la disposition a
-// `calculerDisposition` et la pose en style (diametre, largeur et colonnes de chaque zone). jsdom n'a pas de mise en page : on
-// simule la taille du conteneur et on observe ce que le composant en fait. Le rendu reel est prouve dans Chromium (garde ui-check).
-import { render } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+// La table en ronds en « grilles par zone » (27/10/2026, maquette dispo-ronds.html) : chaque zone rend ses ronds en
+// colonnes, masque les zones vides, et pagine le surplus par ses fleches ◂ ▸. jsdom n'a pas de mise en page : on verifie
+// la STRUCTURE rendue (zones, colonnes, fleches) et le comportement des fleches, pas les pixels. Avant, cette table etait
+// « adaptative » (TableRonds mesurait son conteneur pour calculer un diametre et un nombre de colonnes variables) ; ce
+// modele est abandonne, donc ces tests sont reecrits pour la nouvelle disposition.
+import { fireEvent, render } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import type { ScanCardProps } from '../../../components/ScanCard'
 import type { UniteAffichee } from '../../zones'
 import type { BandesPortrait } from '../bandes-portrait'
-import { CLES_TELEPHONE } from '../reglages-telephone'
 import type { DecorRonds } from './Rond'
 import { TableRonds } from './TableRonds'
 
@@ -17,12 +18,12 @@ const carte = (id: string, kind: ScanCardProps['kind'], reste: Partial<ScanCardP
   imageUrl: `/scan/${id}.jpg`,
   ...reste,
 })
-const unite = (id: string, kind: ScanCardProps['kind'], attachees: ScanCardProps[] = []): UniteAffichee => ({ cle: `u-${id}`, carte: carte(id, kind), attachees })
+const unite = (id: string, kind: ScanCardProps['kind']): UniteAffichee => ({ cle: `u-${id}`, carte: carte(id, kind), attachees: [] })
 const plusieurs = (prefixe: string, kind: ScanCardProps['kind'], n: number): UniteAffichee[] =>
   Array.from({ length: n }, (_, i) => unite(`${prefixe}${i}`, kind))
 const bandes = (reste: Partial<BandesPortrait> = {}): BandesPortrait => ({
   vilain: { epinglee: unite('rhino', 'villain'), unites: [] },
-  manigances: { epinglee: unite('effraction', 'main-scheme'), unites: [unite('annexe', 'side-scheme')] },
+  manigances: { epinglee: unite('effraction', 'main-scheme'), unites: [] },
   engages: { unites: [] },
   heros: { epinglee: unite('spidey', 'hero'), unites: [] },
   soutiens: { unites: [] },
@@ -33,116 +34,93 @@ const bandes = (reste: Partial<BandesPortrait> = {}): BandesPortrait => ({
 })
 const decor = (): DecorRonds => ({ interactifs: new Map(), effets: new Map(), ouvrirPile: vi.fn(), ouvrirCarte: vi.fn(), agir: vi.fn() })
 
-/** La capture de l'utilisateur : 1 allie, 2 sbires, 5 cartes en jeu. */
-const plateauCapture = () =>
-  bandes({
-    heros: { epinglee: unite('spidey', 'hero'), unites: plusieurs('allie', 'ally', 1) },
-    engages: { unites: plusieurs('sbire', 'minion', 2) },
-    soutiens: { unites: plusieurs('soutien', 'support', 2) },
-    ameliorations: { unites: plusieurs('amelio', 'upgrade', 3) },
-  })
-
-let largeur = 412
-let hauteur = 560
-let contenu = 400 // scrollHeight du conteneur
-
-class ObservateurFactice {
-  constructor(private cb: () => void) {}
-  observe() {
-    this.cb()
-  }
-  disconnect() {}
-  unobserve() {}
-}
-
-beforeEach(() => {
-  largeur = 412
-  hauteur = 560
-  contenu = 400
-  window.localStorage.clear()
-  vi.stubGlobal('ResizeObserver', ObservateurFactice)
-  vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => largeur)
-  vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => hauteur)
-  vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockImplementation(() => contenu)
-})
-afterEach(() => {
-  vi.restoreAllMocks()
-  vi.unstubAllGlobals()
-})
-
 function table(b: BandesPortrait) {
   const { container } = render(
     <div className="portrait-table">
       <TableRonds bandes={b} decor={decor()} />
     </div>,
   )
-  const racine = container.querySelector<HTMLElement>('.table-ronds')!
-  const zone = (cle: string) => container.querySelector<HTMLElement>(`[data-zone="${cle}"]`)!
-  return { racine, zone, container }
+  const zone = (cle: string) => container.querySelector<HTMLElement>(`[data-zone="${cle}"]`)
+  return { container, zone }
 }
 
-describe('la table en ronds mesure son conteneur', () => {
-  it('capture de l\'utilisateur (1 allie, 2 sbires, 5 cartes en jeu) a 412 px : ronds de 62 px, colonnes 1 / 2 / 4', () => {
-    hauteur = 900 // la largeur seule decide
-    const { racine, zone } = table(plateauCapture())
-    expect(racine.classList.contains('est-adaptative')).toBe(true)
-    expect(racine.style.getPropertyValue('--d')).toBe('62px')
-    expect(zone('allies').dataset.colonnes).toBe('1')
-    expect(zone('sbires').dataset.colonnes).toBe('2')
-    expect(zone('enJeu').dataset.colonnes).toBe('4')
-    expect(zone('manigances').dataset.colonnes).toBe('2')
-    expect(zone('vilain').dataset.colonnes).toBe('1')
+describe('grilles par zone', () => {
+  it('The Hunger Core : 4 mechants en 2x2 (2 colonnes), 1 manigance (1 colonne), heros, 3 cartes en jeu (3 colonnes)', () => {
+    const { zone } = table(
+      bandes({
+        vilain: { epinglee: unite('core', 'villain'), unites: plusieurs('meta', 'villain', 3) },
+        manigances: { epinglee: unite('infection', 'main-scheme'), unites: [] },
+        soutiens: { unites: plusieurs('soutien', 'support', 3) },
+      }),
+    )
+    expect(zone('vilain')!.querySelectorAll('.ronds-colonne')).toHaveLength(2)
+    expect(zone('vilain')!.querySelectorAll('.rond')).toHaveLength(4)
+    expect(zone('manigances')!.querySelectorAll('.ronds-colonne')).toHaveLength(1)
+    expect(zone('heros')!.querySelectorAll('.rond')).toHaveLength(1)
+    expect(zone('enJeu')!.querySelectorAll('.ronds-colonne')).toHaveLength(3)
+    expect(zone('enJeu')!.querySelectorAll('.rond')).toHaveLength(3)
   })
 
-  it('la largeur de chaque zone est posee en px et les deux zones d\'une rangee remplissent la rangee', () => {
-    const { container } = table(plateauCapture())
-    for (const rangee of Array.from(container.querySelectorAll<HTMLElement>('.ronds-rangee'))) {
-      const zones = Array.from(rangee.querySelectorAll<HTMLElement>(':scope > .ronds-zone'))
-      expect(zones).toHaveLength(2)
-      const somme = zones.reduce((s, z) => s + parseFloat(z.style.width), 0)
-      expect(somme + 17).toBeCloseTo(412 - 20, 0)
-    }
+  it('une zone a 4 ronds ou moins (grille 2x2 ou 3x2 pleine) n\'a pas de fleches', () => {
+    const { zone } = table(bandes({ engages: { unites: plusieurs('sbire', 'minion', 4) } }))
+    expect(zone('sbires')!.querySelector('.ronds-fleches')).toBeNull()
+  })
+})
+
+describe('fleches de surplus (pagination par colonne, par zone)', () => {
+  it('5 sbires : une paire de fleches apparait, ◂ est desactivee au depart ; ▸ fait defiler d\'une colonne', () => {
+    const { zone } = table(bandes({ engages: { unites: plusieurs('sbire', 'minion', 5) } }))
+    const fleches = zone('sbires')!.querySelector('.ronds-fleches')!
+    expect(fleches).not.toBeNull()
+    const [reculer, avancer] = Array.from(fleches.querySelectorAll('button')) as [HTMLButtonElement, HTMLButtonElement]
+    expect(reculer.disabled).toBe(true) // page 0 : rien a gauche
+    expect(avancer.disabled).toBe(false)
+    // 5 sbires en 2x2 = 3 colonnes ; la grille en montre 2.
+    expect(zone('sbires')!.querySelectorAll('.ronds-colonne')).toHaveLength(2)
+    fireEvent.click(avancer)
+    // On a avance d'une colonne : ◂ s'active, ▸ se desactive (derniere colonne atteinte).
+    const [reculer2, avancer2] = Array.from(zone('sbires')!.querySelectorAll('.ronds-fleches button')) as [HTMLButtonElement, HTMLButtonElement]
+    expect(reculer2.disabled).toBe(false)
+    expect(avancer2.disabled).toBe(true)
+    expect(zone('sbires')!.querySelectorAll('.ronds-colonne')).toHaveLength(2)
   })
 
-  it('a 360 px les ronds rapetissent (52 px) et rien ne deborde', () => {
-    largeur = 360
-    hauteur = 900
-    const { racine } = table(plateauCapture())
-    expect(racine.style.getPropertyValue('--d')).toBe('52px')
+  it('la pagination est INDEPENDANTE par zone : avancer les sbires ne touche pas les cartes en jeu', () => {
+    const { zone } = table(
+      bandes({ engages: { unites: plusieurs('sbire', 'minion', 5) }, soutiens: { unites: plusieurs('soutien', 'support', 7) } }),
+    )
+    const avancerSbires = zone('sbires')!.querySelectorAll('.ronds-fleches button')[1] as HTMLButtonElement
+    const avancerEnJeu = zone('enJeu')!.querySelector('.ronds-fleches button')!
+    expect(avancerEnJeu).not.toBeNull()
+    fireEvent.click(avancerSbires)
+    // Les cartes en jeu n'ont pas bouge : leur ◂ reste desactivee.
+    const reculerEnJeu = zone('enJeu')!.querySelectorAll('.ronds-fleches button')[0] as HTMLButtonElement
+    expect(reculerEnJeu.disabled).toBe(true)
+  })
+})
+
+describe('zones et rangees vides', () => {
+  it('une zone vide est masquee et sa voisine occupe la rangee seule (sans separateur)', () => {
+    const { container, zone } = table(bandes({ engages: { unites: plusieurs('sbire', 'minion', 3) } }))
+    expect(zone('allies')).toBeNull() // pas d'allie : la zone n'est pas rendue
+    expect(zone('sbires')).not.toBeNull()
+    const rangeeAllies = container.querySelector('.ronds-rangee.rangee-allies')!
+    expect(rangeeAllies.querySelectorAll('.ronds-zone')).toHaveLength(1)
+    expect(rangeeAllies.querySelector('.ronds-separateur')).toBeNull()
   })
 
-  it('une zone vide se reduit a un bandeau et la voisine prend sa place', () => {
-    const { zone } = table(bandes({ engages: { unites: plusieurs('sbire', 'minion', 3) } }))
-    expect(zone('allies').classList.contains('est-vide')).toBe(true)
-    expect(zone('allies').dataset.colonnes).toBe('0')
-    expect(parseFloat(zone('allies').style.width)).toBeLessThanOrEqual(80)
-    expect(parseFloat(zone('sbires').style.width)).toBeGreaterThan(250)
+  it('une rangee dont les deux zones sont vides disparait entierement', () => {
+    const { container } = table(bandes()) // ni allie ni sbire
+    expect(container.querySelector('.ronds-rangee.rangee-allies')).toBeNull()
+    // Les rangees du mechant (mechant + manigance epingles) et du heros restent.
+    expect(container.querySelector('.ronds-rangee.rangee-vilain')).not.toBeNull()
+    expect(container.querySelector('.ronds-rangee.rangee-heros')).not.toBeNull()
   })
 
-  it('le reglage des colonnes (Sbires 1) est respecte', () => {
-    window.localStorage.setItem(CLES_TELEPHONE.colonnesZones, '3,3,1,4')
-    const { zone } = table(bandes({ engages: { unites: plusieurs('sbire', 'minion', 3) } }))
-    expect(zone('sbires').dataset.colonnes).toBe('1')
-  })
-
-  it('les ronds rapetissent encore tant que le contenu depasse la hauteur du conteneur, jusqu\'a 44 px', () => {
-    contenu = 2000 // le conteneur ne peut jamais contenir : l'ecran defile
-    const { racine } = table(plateauCapture())
-    expect(racine.style.getPropertyValue('--d')).toBe('44px')
-  })
-
-  it('sans mesure (conteneur de largeur nulle) : on retombe sur le CSS d\'origine, sans style en ligne', () => {
-    largeur = 0
-    const { racine, zone } = table(plateauCapture())
-    expect(racine.classList.contains('est-adaptative')).toBe(false)
-    expect(racine.style.getPropertyValue('--d')).toBe('')
-    expect(zone('sbires').style.width).toBe('')
-  })
-
-  it('en dessous de 54 px, les stats des ronds sont masquees (classe ronds-petits)', () => {
-    largeur = 340
-    contenu = 2000
-    const { racine } = table(plateauCapture())
-    expect(racine.classList.contains('ronds-petits')).toBe(true)
+  it('les deux zones pleines d\'une rangee sont separees par un fin separateur', () => {
+    const { container } = table(bandes({ heros: { epinglee: unite('spidey', 'hero'), unites: plusieurs('allie', 'ally', 2) }, engages: { unites: plusieurs('sbire', 'minion', 2) } }))
+    const rangeeAllies = container.querySelector('.ronds-rangee.rangee-allies')!
+    expect(rangeeAllies.querySelectorAll('.ronds-zone')).toHaveLength(2)
+    expect(rangeeAllies.querySelector('.ronds-separateur')).not.toBeNull()
   })
 })

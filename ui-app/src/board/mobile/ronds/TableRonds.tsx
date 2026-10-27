@@ -1,12 +1,15 @@
 // La TABLE en ronds : trois rangees de deux zones (voir repartir-ronds.ts), a la place des quatre bandes de cartes.
 // Elle ne porte aucune logique de jeu : les ronds appellent `ouvrirCarte` / `agir` comme les bandes (PlateauPortrait).
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement, type ReactNode } from 'react'
+//
+// Disposition en GRILLES par zone (27/10/2026, maquette dispo-ronds.html) : chaque zone a sa grille (2x2, 1x1 ou 3x2),
+// des ronds de taille fixe, et une pagination par colonne (fleches ◂ ▸) quand elle deborde sa grille. Une zone vide est
+// masquee ; une rangee dont les deux zones sont vides disparait ; sinon la zone pleine occupe la rangee seule.
+import { useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import { t } from '../../langue'
 import type { BandesPortrait } from '../bandes-portrait'
-import { useReglagesTelephone } from '../reglages-telephone'
-import { calculerDisposition, D_AVEC_STATS, D_MIN, type Comptes, type Disposition, type ZoneDisposee } from './disposition-ronds'
+import { disposerZone } from './disposition-ronds'
 import { Rond, type DecorRonds } from './Rond'
-import { repartirEnRonds, type GroupeRond, type TitresRonds, type UniteRond, type ZoneRonds } from './repartir-ronds'
+import { repartirEnRonds, type CleZone, type GroupeRond, type RangeeRonds, type TitresRonds, type UniteRond, type ZoneRonds } from './repartir-ronds'
 import './ronds.css'
 
 /** Les ronds qui viennent de quitter une zone de combat (sbire vaincu, allie vaincu) : fantomes grises « VAINCU » un instant (Q44). */
@@ -25,100 +28,91 @@ function useVaincus(zone: ZoneRonds): UniteRond[] {
   return fantomes
 }
 
-function Zone({ zone, decor, onglets, disposee }: { zone: ZoneRonds; decor: DecorRonds; onglets?: ReactNode; disposee?: ZoneDisposee }): ReactElement {
-  const vaincus = useVaincus(zone)
-  // Disposition adaptative (26/10/2026) : largeur, nombre de colonnes et largeur de colonne viennent de `calculerDisposition`.
-  const style: CSSProperties | undefined = disposee
-    ? ({
-        width: `${disposee.largeur}px`,
-        ['--cols' as string]: Math.max(1, disposee.colonnes),
-        ['--col-w' as string]: `${disposee.largeurColonne}px`,
-      } as CSSProperties)
-    : undefined
+type RondAffiche = { unite: UniteRond; vaincu: boolean }
+
+function Zone({
+  zone,
+  vaincus,
+  decor,
+  onglets,
+  page,
+  setPage,
+}: {
+  zone: ZoneRonds
+  vaincus: UniteRond[]
+  decor: DecorRonds
+  onglets?: ReactNode
+  page: number
+  setPage: (f: (p: number) => number) => void
+}): ReactElement {
+  // Les fantomes « vaincu » suivent les ronds ordinaires, a la fin de la zone.
+  const items: RondAffiche[] = [
+    ...zone.unites.map((unite) => ({ unite, vaincu: false })),
+    ...vaincus.map((unite) => ({ unite, vaincu: true })),
+  ]
+  const dispo = disposerZone(zone.cle, items, page)
+  // Les fleches defilent d'une colonne a la fois ; la pagination est bornee par `disposerZone`.
+  const fleches = dispo.fleches ? (
+    <span className="ronds-fleches">
+      <button type="button" aria-label={t('Colonnes précédentes')} disabled={!dispo.peutReculer} onClick={() => setPage((p) => p - 1)}>
+        ◂
+      </button>
+      <button type="button" aria-label={t('Colonnes suivantes')} disabled={!dispo.peutAvancer} onClick={() => setPage((p) => p + 1)}>
+        ▸
+      </button>
+    </span>
+  ) : null
   return (
-    <section
-      className={`ronds-zone ronds-zone-${zone.cle}${zone.unites.length === 0 && vaincus.length === 0 ? ' est-vide' : ''}`}
-      data-zone={zone.cle}
-      data-colonnes={disposee ? disposee.colonnes : undefined}
-      style={style}
-      aria-label={zone.titre}
-    >
+    <section className={`ronds-zone ronds-zone-${zone.cle}`} data-zone={zone.cle} data-colonnes={dispo.colonnes.length} aria-label={zone.titre}>
       <h2 className="ronds-titre">
         {zone.titre}
+        {fleches}
         {onglets}
       </h2>
-      <div className="ronds-liste">
-        {zone.unites.map((unite) => (
-          <Rond key={unite.cle} unite={unite} zone={zone.cle} decor={decor} />
-        ))}
-        {vaincus.map((unite) => (
-          <Rond key={`vaincu-${unite.cle}`} unite={unite} zone={zone.cle} decor={decor} vaincu />
+      <div className="ronds-colonnes">
+        {dispo.colonnes.map((colonne, c) => (
+          <div className="ronds-colonne" key={dispo.page + c}>
+            {colonne.map(({ unite, vaincu }) => (
+              <Rond key={vaincu ? `vaincu-${unite.cle}` : unite.cle} unite={unite} zone={zone.cle} decor={decor} vaincu={vaincu} />
+            ))}
+          </div>
         ))}
       </div>
     </section>
   )
 }
 
-/** Les comptes de ronds par zone, et le plus grand nombre d'ameliorations decalees sur le cote d'un rond (elles elargissent sa colonne). */
-function comptesDes(rangees: ReturnType<typeof repartirEnRonds>): Comptes {
-  const entree = (zone: ZoneRonds) => ({
-    n: zone.unites.length,
-    amelios: zone.unites.reduce((max, u) => Math.max(max, u.attachees.filter((a) => a.kind !== 'status').length), 0),
-  })
-  const [vilain, allies, heros] = rangees
-  return {
-    vilain: entree(vilain!.gauche),
-    manigances: entree(vilain!.droite),
-    allies: entree(allies!.gauche),
-    sbires: entree(allies!.droite),
-    heros: entree(heros!.gauche),
-    enJeu: entree(heros!.droite),
-  }
-}
-
 /**
- * Mesure le conteneur de la table (`.portrait-table`, la zone qui defile) et rend la disposition adaptative : le diametre des ronds, les
- * colonnes et la largeur de chaque zone. `null` tant qu'on ne mesure rien (jsdom, premier rendu) : le CSS d'origine s'applique alors.
- * Le calcul de hauteur de `calculerDisposition` est une ESTIMATION : apres chaque rendu, si le contenu depasse encore le conteneur, on
- * retire un pixel au diametre (jusqu'a 44 px) ; l'ecran defile alors verticalement, jamais horizontalement.
+ * Une rangee : ses deux zones cote a cote, un fin separateur entre elles. Une zone vide (aucun rond ET aucun fantome
+ * « vaincu ») est masquee ; si les deux le sont, la rangee entiere disparait ; sinon la zone pleine l'occupe seule.
  */
-function useDispositionRonds(racine: React.RefObject<HTMLDivElement | null>, comptes: Comptes): { disposition: Disposition; d: number } | null {
-  const { colonnesZones } = useReglagesTelephone()
-  const [taille, setTaille] = useState<{ largeur: number; hauteur: number } | null>(null)
-  const [reduit, setReduit] = useState<{ cle: string; n: number }>({ cle: '', n: 0 })
-
-  useLayoutEffect(() => {
-    const conteneur = racine.current?.parentElement
-    if (!conteneur) return
-    const mesurer = () => {
-      const largeur = conteneur.clientWidth
-      const hauteur = conteneur.clientHeight
-      setTaille((avant) => (largeur > 0 && (avant?.largeur !== largeur || avant?.hauteur !== hauteur) ? { largeur, hauteur } : largeur > 0 ? avant : null))
-    }
-    mesurer()
-    if (typeof ResizeObserver === 'undefined') return
-    const observateur = new ResizeObserver(mesurer)
-    observateur.observe(conteneur)
-    return () => observateur.disconnect()
-  }, [racine])
-
-  const disposition = useMemo(
-    () => (taille ? calculerDisposition({ largeur: taille.largeur, hauteur: taille.hauteur, comptes, colonnes: colonnesZones }) : null),
-    [taille, comptes, colonnesZones],
+function RangeeZones({
+  rangee,
+  decor,
+  onglets,
+  pageDe,
+  bougerPage,
+}: {
+  rangee: RangeeRonds
+  decor: DecorRonds
+  onglets?: ReactNode
+  pageDe: (cle: CleZone) => number
+  bougerPage: (cle: CleZone) => (f: (p: number) => number) => void
+}): ReactElement | null {
+  const gVaincus = useVaincus(rangee.gauche)
+  const dVaincus = useVaincus(rangee.droite)
+  const gVide = rangee.gauche.unites.length === 0 && gVaincus.length === 0
+  const dVide = rangee.droite.unites.length === 0 && dVaincus.length === 0
+  if (gVide && dVide) return null
+  return (
+    <div className={`ronds-rangee ${rangee.cle}`}>
+      {!gVide && (
+        <Zone zone={rangee.gauche} vaincus={gVaincus} decor={decor} onglets={onglets} page={pageDe(rangee.gauche.cle)} setPage={bougerPage(rangee.gauche.cle)} />
+      )}
+      {!gVide && !dVide && <span className="ronds-separateur" aria-hidden="true" />}
+      {!dVide && <Zone zone={rangee.droite} vaincus={dVaincus} decor={decor} page={pageDe(rangee.droite.cle)} setPage={bougerPage(rangee.droite.cle)} />}
+    </div>
   )
-  // Le retrait appartient a UNE disposition : quand les comptes, les colonnes ou la taille changent, on repart de l'estimation.
-  const cleDeCalcul = disposition ? `${disposition.d}|${JSON.stringify(comptes)}|${JSON.stringify(colonnesZones)}|${taille?.largeur}x${taille?.hauteur}` : ''
-  const retrait = reduit.cle === cleDeCalcul ? reduit.n : 0
-
-  const d = disposition ? Math.max(D_MIN, disposition.d - retrait) : 0
-  // Affinage par la mesure reelle : tant que ca depasse en hauteur, un pixel de moins.
-  useLayoutEffect(() => {
-    const conteneur = racine.current?.parentElement
-    if (!disposition || !conteneur || d <= D_MIN) return
-    if (conteneur.scrollHeight > conteneur.clientHeight + 1) setReduit((r) => ({ cle: cleDeCalcul, n: (r.cle === cleDeCalcul ? r.n : 0) + 1 }))
-  }, [disposition, d, racine, cleDeCalcul])
-
-  return disposition ? { disposition, d } : null
 }
 
 export function TableRonds({
@@ -152,25 +146,14 @@ export function TableRonds({
         else decor.ouvrirPile(groupe.titre, groupe.cartes)
       }),
   }
-  const racine = useRef<HTMLDivElement>(null)
-  const comptes = useMemo(() => comptesDes(rangees), [rangees])
-  const adaptee = useDispositionRonds(racine, comptes)
-  const styleTable = adaptee ? ({ ['--d' as string]: `${adaptee.d}px` } as CSSProperties) : undefined
-  const classeTable = `table-ronds${adaptee ? ' est-adaptative' : ''}${adaptee && adaptee.d < D_AVEC_STATS ? ' ronds-petits' : ''}`
+  // La page (defilement en colonnes) de chaque zone. Independante par zone ; `disposerZone` la borne au rendu.
+  const [pages, setPages] = useState<Partial<Record<CleZone, number>>>({})
+  const pageDe = (cle: CleZone) => pages[cle] ?? 0
+  const bougerPage = (cle: CleZone) => (f: (p: number) => number) => setPages((etat) => ({ ...etat, [cle]: Math.max(0, f(etat[cle] ?? 0)) }))
   return (
-    <div ref={racine} className={classeTable} style={styleTable}>
-      {rangees.map((rangee, i) => (
-        // La largeur des deux zones suit leur nombre de ronds (24/10/2026) : trois ronds de chaque cote = moitie-moitie,
-        // au lieu d'une colonne unique pour les manigances.
-        <div
-          key={rangee.cle}
-          className={`ronds-rangee ${rangee.cle}`}
-          style={{ ['--n-g' as string]: Math.max(1, rangee.gauche.unites.length), ['--n-d' as string]: Math.max(1, rangee.droite.unites.length) }}
-        >
-          <Zone zone={rangee.gauche} decor={decorGroupes} onglets={rangee.cle === 'rangee-heros' ? onglets : undefined} disposee={adaptee?.disposition.rangees[i]?.gauche} />
-          <span className="ronds-separateur" aria-hidden="true" />
-          <Zone zone={rangee.droite} decor={decorGroupes} disposee={adaptee?.disposition.rangees[i]?.droite} />
-        </div>
+    <div className="table-ronds">
+      {rangees.map((rangee) => (
+        <RangeeZones key={rangee.cle} rangee={rangee} decor={decorGroupes} onglets={rangee.cle === 'rangee-heros' ? onglets : undefined} pageDe={pageDe} bougerPage={bougerPage} />
       ))}
     </div>
   )

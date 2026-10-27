@@ -1,48 +1,37 @@
-/* La table en RONDS (24/10/2026). Trois rangees de deux zones ; chaque zone passe a la ligne quand elle est pleine.
-   Le diametre s'adapte a la largeur de l'ecran (decision : taille automatique, 320 a 430 px). Les couleurs viennent des
-   jetons de l'Epure (--ep-*) avec une valeur de secours. Hors couche : memes raisons que portrait.css. */
+/* La table en RONDS (24/10/2026 ; disposition « grilles par zone » 27/10/2026, maquette dispo-ronds.html).
+   Trois rangees de deux zones cote a cote (Mechant | Manigances, Allies | Sbires, Heros | Cartes en jeu). Chaque zone a sa
+   grille (TableRonds / disposition-ronds.ts) : ses ronds se rangent en COLONNES (`.ronds-colonne`), remplies de haut en bas,
+   posees cote a cote. Les ronds sont de taille FIXE (`--d` depend de la largeur de l'ecran, jamais du nombre de ronds) ;
+   le surplus defile par les fleches ◂ ▸ du titre. Une zone vide est masquee (TableRonds ne la rend pas) ; une rangee sans
+   aucune zone pleine disparait ; sinon la zone pleine occupe la rangee seule, centree. Les couleurs viennent des jetons de
+   l'Epure (--ep-*) avec une valeur de secours. Hors couche : memes raisons que portrait.css. */
 .table-ronds {
-  --d: clamp(52px, calc((100vw - 56px) / 5.4), 74px);
+  /* Diametre fixe par rapport au contenu : il ne suit QUE la largeur de l'ecran, jamais le nombre de ronds. La rangee la
+     plus large (Mechant 2 col a 1,22x | Manigances 2 col) occupe ~ 73 + 4,44 x d px ; le diviseur (4,6) et la reserve
+     (84 px) laissent une marge pour que rien ne defile horizontalement, meme si un parent ajoute un peu de rembourrage. */
+  --d: clamp(44px, calc((100vw - 84px) / 4.6), 64px);
   --ronds-ligne: var(--ep-bord, #383e49);
   display: flex;
   flex-direction: column;
-  padding-bottom: 32px;
+  padding-bottom: 14px;
 }
 .ronds-rangee {
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   gap: 6px;
   padding: 6px 10px 8px;
   border-bottom: 1px solid var(--ronds-ligne);
 }
+/* Chaque zone se dimensionne a son contenu (pas en 50/50) : Heros (1 rond) est etroite, Cartes en jeu (jusqu'a 3 de large)
+   est plus large. Pas de `min-width: 0` : la zone ne se reduit jamais sous la largeur de son titre (sinon « MANIGANCES »
+   deborderait d'une zone a un seul rond). Jamais de debordement de rangee : au plus 4 colonnes de ronds (grilles choisies
+   pour cela), et le diametre `--d` laisse la marge necessaire. */
 .ronds-zone {
-  min-width: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 4px;
-}
-/* La rangee du mechant : la largeur des deux zones suit leur nombre de ronds (--n-g, --n-d, poses par TableRonds), pour que trois
-   ronds de chaque cote se partagent la rangee en deux colonnes egales (The Big Apple : 3 CAPO + 3 manigances). */
-.ronds-rangee.rangee-vilain > .ronds-zone-vilain {
-  flex: var(--n-g, 1) 1 0;
-  min-width: 34%;
-  max-width: 62%;
-}
-.ronds-rangee.rangee-vilain > .ronds-zone-manigances {
-  flex: var(--n-d, 1) 1 0;
-  min-width: 34%;
-}
-.rangee-allies > .ronds-zone-allies,
-.rangee-heros > .ronds-zone-heros {
-  /* au moins 34 % ; plus large quand les ameliorations decalees sur le cote en demandent (elles ne passent jamais sur la zone voisine) */
-  flex: 0 0 auto;
-  min-width: 34%;
-  max-width: 62%;
-}
-.ronds-zone-manigances,
-.ronds-zone-sbires,
-.ronds-zone-enJeu {
-  flex: 1 1 0;
 }
 .ronds-separateur {
   align-self: stretch;
@@ -62,63 +51,57 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #8fbcf5;
+  white-space: nowrap;
 }
-.ronds-liste {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 8px 6px;
+/* Les fleches de surplus, a droite du titre : font defiler la zone d'UNE colonne a la fois (pagination par zone). */
+.ronds-fleches {
+  display: inline-flex;
+  gap: 4px;
 }
-.ronds-zone.est-vide .ronds-liste::after {
-  content: '';
-  width: var(--d);
-  height: var(--d);
-  border-radius: 50%;
-  border: 2px dashed var(--ronds-ligne);
-}
-
-/* ---- Zones ADAPTATIVES (26/10/2026) ----------------------------------------------------------------------------------------
-   TableRonds mesure son conteneur et pose en ligne : `--d` (diametre) sur la table, `width`, `--cols` et `--col-w` sur chaque zone
-   (disposition-ronds.ts). Tant qu'on ne mesure rien (premier rendu, jsdom), `.est-adaptative` est absente et les regles d'origine
-   ci-dessus s'appliquent. Memes raisons que le reste du fichier : hors couche. */
-.table-ronds.est-adaptative .ronds-rangee > .ronds-zone {
-  flex: none;
-  min-width: 0;
-  max-width: none;
-  overflow: hidden; /* jamais de debordement horizontal : la largeur de chaque zone est calculee pour contenir ses colonnes */
-}
-.table-ronds.est-adaptative {
-  padding-bottom: 14px;
-}
-.table-ronds.est-adaptative .ronds-rangee {
-  padding: 4px 10px 6px;
-}
-.table-ronds.est-adaptative .ronds-liste {
+.ronds-fleches button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(var(--cols, 1), var(--col-w, auto));
-  justify-content: start;
-  gap: 6px 6px;
+  place-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--ronds-ligne);
+  background: #1b2942;
+  color: #cdd9ee;
+  font-size: 0.78rem;
+  line-height: 1;
+  cursor: pointer;
 }
-/* Une zone vide n'est plus un rond en pointilles : un bandeau (titre + « — »), et la zone voisine prend sa place. */
-.table-ronds.est-adaptative .ronds-zone.est-vide .ronds-liste {
-  display: none;
+.ronds-fleches button:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
-.table-ronds.est-adaptative .ronds-zone.est-vide .ronds-titre::after {
-  content: '—';
-  opacity: 0.6;
-  font-family: system-ui, sans-serif;
+/* Les colonnes de ronds d'une zone, cote a cote et centrees ; chaque colonne empile ses ronds de haut en bas. */
+.ronds-colonnes {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
 }
-/* Les textes s'allegent quand les ronds rapetissent : le nom reste (tronque), ATK / SCH disparaissent sous 54 px. */
-.table-ronds.ronds-petits .rond-stats {
-  display: none;
+.ronds-colonne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
-.table-ronds.est-adaptative .rond-nom {
+/* Les stats des ronds disparaissent quand le diametre descend sous 54 px (ecran etroit). */
+@media (max-width: 360px) {
+  .table-ronds .rond-stats {
+    display: none;
+  }
+}
+.table-ronds .rond-nom {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: clamp(0.62rem, calc(var(--d) * 0.0135), 0.78rem);
 }
-.table-ronds.est-adaptative .rond-pastille {
+.table-ronds .rond-pastille {
   font-size: clamp(0.58rem, calc(var(--d) * 0.0125), 0.72rem);
 }
 

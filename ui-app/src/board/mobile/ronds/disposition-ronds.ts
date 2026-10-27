@@ -1,205 +1,105 @@
-// Disposition ADAPTATIVE des zones de la table en ronds (26/10/2026, demande de l'utilisateur sur telephone : « on perd beaucoup de
-// place sur les sbires et allies ; les zones devraient changer de taille en fonction du nombre de ronds » ; maquettes approuvees
-// maquette-zones-adaptatives-telephone.html et maquette-colonnes-par-zone-telephone.html).
+// Disposition de la table en RONDS, version « grilles par zone » (27/10/2026, maquette approuvee dispo-ronds.html).
 //
-// Fonction PURE : elle part des comptes de ronds par zone, de la largeur et de la hauteur MESUREES du conteneur et du nombre de
-// colonnes choisi pour chaque zone, et rend le diametre des ronds, les colonnes effectives et la largeur de chaque zone.
-// Aucune mesure du DOM ici (TableRonds mesure et affine, voir `useDispositionRonds`).
+// Chaque zone a une GRILLE propre (un nombre fixe de colonnes et de lignes de ronds visibles) :
+//   - Mechant, Manigances, Allies, Sbires : 2 colonnes x 2 lignes (4 ronds visibles au plus) ;
+//   - Heros : 1 x 1 (un seul rond) ;
+//   - Cartes en jeu : 3 colonnes x 2 lignes (6 ronds visibles au plus).
 //
-// Geometrie reprise du CSS (ronds.css) :
-//   - une rangee a 10 px de marge de chaque cote ; entre ses deux zones : 6 px de gouttiere, 1 px de separateur, 6 px de gouttiere
-//     et 2 × 2 px de marge du separateur = 17 px ;
-//   - une COLONNE a la largeur d'un rond : `d + 6` (`1,22 × d + 6` pour le mechant et le heros, plus 0,7 rond par amelioration
-//     decalee sur le cote) ; 6 px entre deux colonnes ;
-//   - donc une zone de `c` colonnes de coefficient `k` occupe `c × k × d + 12 × c − 6` px.
+// Les ronds sont de taille FIXE (le CSS pose `--d` d'apres la largeur de l'ecran, jamais d'apres le nombre de ronds).
+// Les ronds se remplissent LIGNE par ligne (cote a cote), puis, au-dela de la grille visible, en colonnes ajoutees a
+// droite (remplies de haut en bas) : voir `enColonnes`. Si une zone a plus de colonnes que sa grille n'en montre, une
+// paire de fleches ◂ ▸ la fait defiler d'UNE colonne a la fois (pagination independante par zone). Une zone vide est
+// masquee ; si les deux zones d'une rangee sont vides, la rangee disparait.
+//
+// Fonction PURE et sans DOM : elle part des ronds d'une zone et de sa page courante, et rend les colonnes visibles et
+// l'etat des fleches. `TableRonds` garde la page de chaque zone et appelle `disposerZone` au rendu.
 import type { CleZone } from './repartir-ronds'
 
-/** 0 = Auto : jusqu'a 3 colonnes tant que les ronds restent a `D_AUTO_MIN` px ou plus. */
-export type NbColonnes = 0 | 1 | 2 | 3 | 4
+/** La grille visible d'une zone : `cols` colonnes de `rows` ronds. */
+export type GrilleZone = { cols: number; rows: number }
 
-export type ColonnesZones = { manigances: NbColonnes; allies: NbColonnes; sbires: NbColonnes; enJeu: NbColonnes }
-
-/** Retenu par l'utilisateur (26/10/2026) : Manigances 3, Allies 3, Sbires 3, Cartes en jeu 4 ; le mechant et le heros ont une seule colonne. */
-export const COLONNES_PAR_DEFAUT: ColonnesZones = { manigances: 3, allies: 3, sbires: 3, enJeu: 4 }
-
-/** Plus grand diametre, plus petit diametre (sous lequel l'ecran defile) et seuil de l'Auto. */
-export const D_MAX = 76
-export const D_MIN = 44
-export const D_AUTO_MIN = 54
-/** Ni stats ni pastilles lourdes sous ce diametre (le CSS masque ATK / SCH). */
-export const D_AVEC_STATS = 54
-
-export type EntreeZone = {
-  /** Nombre de ronds de la zone. */
-  n: number
-  /** Le plus grand nombre d'ameliorations decalees sur le cote d'un rond de la zone (elles elargissent sa colonne). */
-  amelios: number
-}
-export type Comptes = Record<CleZone, EntreeZone>
-
-export type ZoneDisposee = {
-  /** Colonnes reellement utilisees (0 pour une zone vide : elle se reduit a un bandeau). */
-  colonnes: number
-  /** Largeur de la zone en px. */
-  largeur: number
-  /** Largeur d'une colonne en px (un rond et ses ameliorations decalees). */
-  largeurColonne: number
-  vide: boolean
-}
-export type RangeeDisposee = { gauche: ZoneDisposee; droite: ZoneDisposee }
-
-export type Disposition = {
-  /** Diametre d'un rond ordinaire, en px (entier). */
-  d: number
-  rangees: [RangeeDisposee, RangeeDisposee, RangeeDisposee]
-  /** Hauteur estimee de la table pour ce diametre. */
-  hauteurEstimee: number
-  /** Tout tient dans la hauteur donnee (sinon l'ecran defile verticalement : jamais horizontalement). */
-  tient: boolean
+/** Les grilles approuvees (maquette dispo-ronds.html). */
+export const GRILLES: Record<CleZone, GrilleZone> = {
+  vilain: { cols: 2, rows: 2 },
+  manigances: { cols: 2, rows: 2 },
+  allies: { cols: 2, rows: 2 },
+  sbires: { cols: 2, rows: 2 },
+  heros: { cols: 1, rows: 1 },
+  enJeu: { cols: 3, rows: 2 },
 }
 
-type Entree = { largeur: number; hauteur: number; comptes: Comptes; colonnes: ColonnesZones }
-
-const MARGE_RANGEE = 10
-const SEPARATEUR = 17
-const ECART_COLONNES = 6
-const BANDEAU_VIDE = 78
-const COEF_HEROS = 1.22
-const DECALAGE_AMELIO = 0.7
-/** Marges verticales du mode adaptatif (ronds.css `.est-adaptative`) : bas de table 14 px, rangee 4 + 6 px, 6 px entre deux lignes. */
-const BAS_DE_TABLE = 14
-const MARGES_RANGEE = 4 + 6
-const ECART_LIGNES = 6
-
-/** Le coefficient d'une zone : le mechant et le heros sont plus gros (1,22), et chaque amelioration decalee ajoute 0,7 rond. */
-function coef(cle: CleZone, amelios: number): number {
-  const base = cle === 'vilain' || cle === 'heros' ? COEF_HEROS : 1
-  return base * (1 + DECALAGE_AMELIO * amelios)
-}
-
-const largeurZone = (colonnes: number, k: number, d: number): number =>
-  colonnes === 0 ? BANDEAU_VIDE : colonnes * (k * d + 6) + (colonnes - 1) * ECART_COLONNES
-
-/** Hauteur d'une zone de `n` ronds sur `colonnes` colonnes : titre, lignes de ronds (rond + nom + stats) et espacement. */
-function hauteurZone(cle: CleZone, n: number, colonnes: number, d: number): number {
-  const titre = 22 + 4
-  if (n === 0 || colonnes === 0) return titre
-  const dh = d * (cle === 'vilain' || cle === 'heros' ? COEF_HEROS : 1)
-  const lignes = Math.ceil(n / colonnes)
-  const ligne = dh + 2 + 20 + (d >= D_AVEC_STATS ? 14 : 0)
-  return titre + lignes * ligne + (lignes - 1) * ECART_LIGNES
-}
-
-type Cles = ['vilain' | 'allies' | 'heros', 'manigances' | 'sbires' | 'enJeu']
-const RANGEES: Cles[] = [
+/** Les rangees : deux zones cote a cote. Mechant | Manigances, Allies | Sbires, Heros | Cartes en jeu. */
+export const RANGEES: ReadonlyArray<readonly [CleZone, CleZone]> = [
   ['vilain', 'manigances'],
   ['allies', 'sbires'],
   ['heros', 'enJeu'],
 ]
 
-/** Les colonnes choisies pour une zone ; le mechant et le heros n'en ont qu'une. */
-function colonnesChoisies(cle: CleZone, colonnes: ColonnesZones): NbColonnes {
-  if (cle === 'vilain' || cle === 'heros') return 1
-  return colonnes[cle]
-}
-
-/** Le diametre maximal pour que la rangee tienne en largeur, avec ces colonnes effectives. */
-function dPourRangee(largeur: number, g: { cle: CleZone; n: number; amelios: number; colonnes: number }, dr: typeof g): number {
-  const place = largeur - 2 * MARGE_RANGEE - SEPARATEUR
-  let coefficients = 0
-  let fixe = 0
-  for (const z of [g, dr]) {
-    if (z.colonnes === 0) {
-      fixe += BANDEAU_VIDE
-      continue
+/**
+ * Range `items` en COLONNES, exactement comme la maquette (`enColonnes`) :
+ *  - les `cols × rows` premiers ronds remplissent la grille LIGNE par ligne (ligne 0 de gauche a droite, puis ligne 1...) ;
+ *  - les ronds en surplus ajoutent des colonnes a DROITE, remplies de haut en bas (`rows` par colonne).
+ * Les colonnes vides (il n'y a pas assez de ronds pour elles) sont ensuite retirees par `disposerZone`.
+ */
+export function enColonnes<T>(items: readonly T[], cols: number, rows: number): T[][] {
+  const colonnes: T[][] = Array.from({ length: cols }, () => [])
+  const premier = cols * rows
+  for (let i = 0; i < items.length; i++) {
+    if (i < premier) {
+      const r = Math.floor(i / cols)
+      const c = i % cols
+      colonnes[c]![r] = items[i]!
+    } else {
+      const o = i - premier
+      const cc = cols + Math.floor(o / rows)
+      const rr = o % rows
+      ;(colonnes[cc] ??= [])[rr] = items[i]!
     }
-    coefficients += z.colonnes * coef(z.cle, z.amelios)
-    fixe += 12 * z.colonnes - 6
   }
-  if (coefficients === 0) return D_MAX
-  return (place - fixe) / coefficients
+  return colonnes
 }
 
-type ZoneEtat = { cle: CleZone; n: number; amelios: number; colonnes: number; auto: boolean; max: number }
-
-function zoneEtat(cle: CleZone, e: Entree): ZoneEtat {
-  const { n, amelios } = e.comptes[cle]
-  const choix = colonnesChoisies(cle, e.colonnes)
-  const auto = choix === 0
-  const max = n === 0 ? 0 : Math.min(n, auto ? 3 : choix)
-  return { cle, n, amelios, colonnes: max, auto, max }
+export type ZoneDisposee<T> = {
+  /** Les colonnes VISIBLES (celles de la fenetre courante), chacune une pile de ronds (taille <= `rows`). */
+  colonnes: T[][]
+  /** Le nombre total de colonnes NON VIDES de la zone (sert aux fleches). */
+  total: number
+  /** La page (decalage en colonnes) effectivement appliquee, bornee a `[0, total - cols]`. */
+  page: number
+  /** La grille de la zone. */
+  grille: GrilleZone
+  /** Une paire de fleches est necessaire : il y a plus de colonnes que la grille n'en montre. */
+  fleches: boolean
+  /** Il reste des colonnes a gauche / a droite de la fenetre. */
+  peutReculer: boolean
+  peutAvancer: boolean
 }
 
 /**
- * Resout les colonnes d'une rangee : en Auto, on garde le plus de colonnes (3 au plus) qui laissent des ronds >= 54 px ; et, dans tous
- * les cas, on retire des colonnes tant que la rangee ne tient pas a 44 px (JAMAIS de debordement horizontal).
+ * La disposition d'UNE zone : ses colonnes visibles et l'etat des fleches, pour une page donnee.
+ * `items` : les ronds de la zone (y compris d'eventuels fantomes « vaincu », places a la fin comme des ronds ordinaires).
  */
-function resoudreRangee(largeur: number, a: ZoneEtat, b: ZoneEtat): [ZoneEtat, ZoneEtat] {
-  const largeurOk = (seuil: number) => dPourRangee(largeur, a, b) >= seuil
-  const reduire = (seuil: number, queAuto: boolean): boolean => {
-    // retire une colonne a la zone qui en a le plus (a egalite : la seconde), parmi celles autorisees
-    const candidates = [a, b].filter((z) => z.colonnes > 1 && (!queAuto || z.auto))
-    if (candidates.length === 0) return false
-    candidates.sort((x, y) => y.colonnes - x.colonnes)
-    candidates[0]!.colonnes -= 1
-    void seuil
-    return true
+export function disposerZone<T>(cle: CleZone, items: readonly T[], page: number): ZoneDisposee<T> {
+  const grille = GRILLES[cle]
+  const colonnes = enColonnes(items, grille.cols, grille.rows).filter((c) => c.length > 0)
+  const total = colonnes.length
+  const maxPage = Math.max(0, total - grille.cols)
+  const pageBornee = Math.min(Math.max(0, page), maxPage)
+  return {
+    colonnes: colonnes.slice(pageBornee, pageBornee + grille.cols),
+    total,
+    page: pageBornee,
+    grille,
+    fleches: total > grille.cols,
+    peutReculer: pageBornee > 0,
+    peutAvancer: pageBornee < maxPage,
   }
-  while (!largeurOk(D_AUTO_MIN) && reduire(D_AUTO_MIN, true)) {
-    /* l'Auto cede d'abord */
-  }
-  while (!largeurOk(D_MIN) && reduire(D_MIN, false)) {
-    /* puis, si meme a 44 px la rangee deborde, on retire des colonnes choisies */
-  }
-  return [a, b]
 }
 
-export function calculerDisposition(entree: Entree): Disposition {
-  const { largeur, hauteur } = entree
-  const etats = RANGEES.map(([gc, dc]) => resoudreRangee(largeur, zoneEtat(gc, entree), zoneEtat(dc, entree)))
-
-  // 1. le diametre permis par la largeur (le plus petit des trois rangees), plafonne a D_MAX
-  const dLargeur = Math.max(D_MIN, Math.min(D_MAX, Math.floor(Math.min(...etats.map(([g, dr]) => dPourRangee(largeur, g, dr))))))
-
-  // 2. le plus grand diametre <= dLargeur qui tient en hauteur ; sinon D_MIN (et l'ecran defile)
-  const hauteurPour = (d: number): number =>
-    BAS_DE_TABLE +
-    etats.reduce((somme, [g, dr]) => {
-      const hg = hauteurZone(g.cle, g.n, g.colonnes, d)
-      const hd = hauteurZone(dr.cle, dr.n, dr.colonnes, d)
-      return somme + MARGES_RANGEE + Math.max(hg, hd) + 1
-    }, 0)
-  let d = dLargeur
-  while (d > D_MIN && hauteurPour(d) > hauteur) d -= 1
-  const hauteurEstimee = hauteurPour(d)
-
-  // 3. les largeurs : chaque zone prend ce dont elle a besoin, le reste est partage (une zone vide reste un bandeau)
-  const rangees = etats.map(([g, dr]) => {
-    const place = largeur - 2 * MARGE_RANGEE - SEPARATEUR
-    const wg = largeurZone(g.colonnes, coef(g.cle, g.amelios), d)
-    const wd = largeurZone(dr.colonnes, coef(dr.cle, dr.amelios), d)
-    const reste = Math.max(0, place - wg - wd)
-    let lg = wg
-    let ld = wd
-    if (g.colonnes === 0 && dr.colonnes === 0) {
-      lg = place / 2
-      ld = place / 2
-    } else if (g.colonnes === 0) {
-      ld = place - lg
-    } else if (dr.colonnes === 0) {
-      lg = place - ld
-    } else {
-      lg += reste / 2
-      ld += reste / 2
-    }
-    const zone = (z: ZoneEtat, w: number): ZoneDisposee => ({
-      colonnes: z.colonnes,
-      largeur: w,
-      largeurColonne: coef(z.cle, z.amelios) * d + 6,
-      vide: z.colonnes === 0,
-    })
-    return { gauche: zone(g, lg), droite: zone(dr, ld) }
-  }) as Disposition['rangees']
-
-  return { d, rangees, hauteurEstimee, tient: hauteurEstimee <= hauteur }
-}
+// -------------------------------------------------------------------------------------------------------------------
+// Compatibilite : le reglage « Colonnes par zone » (FenetreReglages, reglages-telephone) existe encore comme preference
+// de l'appareil, mais la disposition en grilles fixes ci-dessus ne s'en sert plus. On garde ses types et son defaut pour
+// que ces fichiers continuent de compiler (ils seront nettoyes a part, hors du perimetre « ronds »).
+export type NbColonnes = 0 | 1 | 2 | 3 | 4
+export type ColonnesZones = { manigances: NbColonnes; allies: NbColonnes; sbires: NbColonnes; enJeu: NbColonnes }
+export const COLONNES_PAR_DEFAUT: ColonnesZones = { manigances: 3, allies: 3, sbires: 3, enJeu: 4 }

@@ -281,7 +281,10 @@ describe('le rond', () => {
 })
 
 describe('la table en ronds', () => {
-  it('dessine un rond par carte, dans les six zones', () => {
+  it('dessine un rond par carte ; une zone vide est masquee (27/10/2026, disposition en grilles par zone)', () => {
+    // Mechant, manigance, 2 sbires, heros : les zones ALLIES et CARTES EN JEU sont vides. Avant, six zones etaient toujours
+    // rendues (un rond en pointilles pour les vides) ; desormais une zone vide n'est pas affichee, mais sa rangee reste tant
+    // que l'autre zone est pleine. Donc 4 zones visibles sur 3 rangees.
     const { container } = render(
       <TableRonds
         decor={decor()}
@@ -294,7 +297,8 @@ describe('la table en ronds', () => {
       />
     )
     expect(container.querySelectorAll('.rond')).toHaveLength(5)
-    expect(container.querySelectorAll('.ronds-zone')).toHaveLength(6)
+    expect(container.querySelectorAll('.ronds-zone')).toHaveLength(4)
+    expect([...container.querySelectorAll('.ronds-zone')].map((z) => (z as HTMLElement).dataset.zone)).toEqual(['vilain', 'manigances', 'sbires', 'heros'])
     expect(container.querySelectorAll('.ronds-rangee')).toHaveLength(3)
   })
 })
