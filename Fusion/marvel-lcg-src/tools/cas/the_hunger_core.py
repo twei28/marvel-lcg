@@ -376,6 +376,250 @@ CAS = [
         "attendu": {"peut_defendre": [["01002", "hg007", True]]},
     },
 
+    # ============================================================ hg014 : Zombie Doctor Strange
+    {
+        "nom": "[hg] hg014 Hex : apres que Zombie Doctor Strange active CONTRE LE JOUEUR en ATTAQUANT (forme heros), "
+               "l'identite subit l'attaque normale (1 ATQ) ET recoit en plus 1 carte de rencontre face cachee",
+        "pourquoi": "« Hex — Forced Response: After Zombie Doctor Strange activates against you, deal yourself 1 "
+                    "facedown encounter card. » Pas de clause « instead of » (a la difference de Just a Core, "
+                    "hg001-hg003) : l'attaque se resout normalement EN PLUS de la carte distribuee.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg014')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg014')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg014_etat",
+        "attendu": {"degats_identite": 1, "cartes_distribuees": 1},
+    },
+    {
+        "nom": "[hg] hg014 Hex, TEMOIN « ACTIVATES couvre aussi la MANIGANCE » : forme alter-ego (pas d'attaque "
+               "possible), Zombie Doctor Strange active quand meme -> la carte de rencontre est distribuee quand meme",
+        "pourquoi": "« ACTIVATES against you », pas « attacks » : la capacite doit partir aussi quand l'activation "
+                    "est une manigance (forme alter-ego). Contre-preuve du mot-piege ACTIVATES vs ATTACKS deja "
+                    "documente sur hg012/nt013/27158 : un filtre reduit a AfterUnitAttackUnit laisserait ce cas a "
+                    "0 carte distribuee.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg014')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg014')"],
+        "verifier": "hg014_etat",
+        "attendu": {"degats_identite": 0, "cartes_distribuees": 1},
+    },
+    {
+        "nom": "[hg] hg014 contre-cas « ZOMBIE DOCTOR STRANGE active » : l'activation d'un AUTRE Metazombie "
+               "(hg007) pendant que hg014 est en jeu ne distribue AUCUNE carte -- Hex ne vise que SA PROPRE "
+               "activation",
+        "pourquoi": "preuve que `AfterEnemyActivatesAgainstYou(..., \"This\", ...)` mord bien sur hg014 "
+                    "specifiquement, pas sur « n'importe quel ennemi actif » -- contre-cas de securite comme "
+                    "hg013 (« ZOMBIE BLACK WIDOW's attacks », pas « enemy attacks »).",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg014')", "Puzzle.PutIntoPlay('hg007')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg007')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg014_etat",
+        "attendu": {"cartes_distribuees": 0},
+    },
+
+    # ============================================================ hg015 : Zombie Magik
+    {
+        "nom": "[hg] hg015 Portal to Limbo : pas engage avec un sbire -> fouille le deck de rencontre, trouve "
+               "le sbire, le met en jeu engage avec le joueur, PUIS remelange la defausse de rencontre",
+        "pourquoi": "« After Zombie Magik activates against you, if you are not engaged with any minions, discard "
+                    "cards from the encounter deck until a minion is discarded and put it into play engaged with "
+                    "you. Then shuffle the encounter discard pile into the encounter deck. » Deck truque "
+                    "[01105, 01105, 01110] : le premier 01105 part en boost (sans effet, desc vide), la fouille "
+                    "defausse le second 01105 puis trouve 01110 (Minion) -> mis en jeu engage. Le remelange qui "
+                    "suit doit remettre les 01105 defausses dans le deck (dans_deck_rencontre), preuve que "
+                    "« Then shuffle » part vraiment et pas seulement la fouille.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg015')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01110')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg015')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"], "dans_deck_rencontre": ["01105"]},
+    },
+    {
+        "nom": "[hg] hg015 TEMOIN « ACTIVATES couvre aussi la MANIGANCE » : forme alter-ego (pas d'attaque "
+               "possible), Zombie Magik active quand meme -> le sbire entre en jeu",
+        "pourquoi": "« ACTIVATES against you », pas « attacks » : la capacite doit partir aussi quand l'activation "
+                    "est une manigance (forme alter-ego). Contre-preuve du mot-piege ACTIVATES vs ATTACKS deja "
+                    "documente sur hg012/nt013/27158 : un filtre reduit a AfterUnitAttackUnit laisserait ce cas "
+                    "sans aucun sbire en jeu.",
+        "scenario": "rhino", "heros": "spider_man",
+        # ⚠ Deck a 2 cartes, pas 1 : en forme alter-ego, l'activation de hg015 est une MANIGANCE, qui tire
+        # DEJA sa propre carte de boost dans le deck de rencontre avant que la capacite "Portal to Limbo" ne
+        # cherche a son tour. Avec un deck a une seule carte, cette carte partait en boost de la manigance et
+        # n'atteignait jamais la fouille (ECHEC constate le 27/10/2026, passe de verification groupee : "01110
+        # n'est pas en jeu"). 01105 ("I'm Tough", desc vide) absorbe ce premier tirage, 01110 (Minion) reste
+        # disponible pour la fouille de hg015.
+        "mise_en_place": ["Puzzle.PutIntoPlay('hg015')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01110')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"]},
+    },
+    {
+        "nom": "[hg] hg015 contre-cas « engage avec un sbire » : la garde bloque TOUTE la capacite, le sbire visible "
+               "au sommet du deck de rencontre reste dans le deck, jamais fouille",
+        "pourquoi": "« if you are NOT engaged with any minions » : deja engage (01101 Hydra Mercenary mis en jeu "
+                    "avant, auto-engage comme tout Minion.PutIntoPlay) -> rien ne doit se passer, ni fouille ni "
+                    "remelange ni spawn de Metazombie. Modele Kingpin (60159b/60160b) : la condition gate "
+                    "l'ability ENTIERE, pas seulement sa premiere phrase.",
+        "scenario": "rhino", "heros": "spider_man",
+        # ⚠ Pas de Minion dans ce deck du tout (contrairement aux cas precedents) : la manigance de hg015 tire
+        # de toute facon sa PROPRE carte de boost avant que la garde "pas engage" ne soit evaluee, et l'ordre
+        # de tirage d'un deck cree par CreateEncounterDeck n'est pas fiable d'un cas a l'autre (constate le
+        # 27/10/2026 : le MEME appel CreateEncounterDeck('01105', '01110') a vu tantot 01105 tire en premier,
+        # tantot 01110 -- verifier "01110 reste dans le deck" est donc fragile). La preuve que la garde bloque
+        # TOUTE la capacite (pas seulement la fouille) tient deja a elle seule dans l'absence de tout second
+        # Minion en jeu : seul 01101, deja en jeu avant l'activation, y reste.
+        "mise_en_place": ["Puzzle.PutIntoPlay('01101', under_control=True)", "Puzzle.PutIntoPlay('hg015')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01101"]},
+    },
+
+    # ============================================================ hg016 Thrown Shield
+    {
+        "nom": "[hg] hg016 Thrown Shield : revelee, heros en forme HEROS + 1 allie en jeu -> 2 degats a chacun",
+        "pourquoi": "« When Revealed: Deal 2 damage to each hero and each ally in play »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('01050', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hg016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["01050", 2]]},
+    },
+    {
+        "nom": "[hg] hg016 Thrown Shield, TEMOIN forme ALTER-EGO : le heros reste en Alter-Ego n'encaisse rien, "
+               "l'allie encaisse quand meme 2",
+        "pourquoi": "« each HERO » : une identite en forme Alter-Ego n'est pas comptee par Worlds.GetOnFieldHeroes "
+                    "-- prouve que le filtre de forme mord vraiment (sans lui, la carte punirait aussi un joueur "
+                    "reste prudemment en Alter-Ego)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01050', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hg016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "degats": [["01050", 2]]},
+    },
+    {
+        "nom": "[hg] hg016 Thrown Shield, partie a DEUX heros : les DEUX heros encaissent 2 degats chacun",
+        "pourquoi": "« each hero » sans « that player »/« you » : aucun filtre par joueur, contrairement a "
+                    "hg012 Zombie Thor (« each ally THAT PLAYER controls »)",
+        "scenario": "rhino", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.ChangeForm('04001b')"],
+        "declencher": ["Puzzle.Reveal('hg016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["04001a", 2]]},
+    },
+    {
+        "nom": "[hg] hg016 Thrown Shield, TEMOIN aucun allie en jeu : seul le heros encaisse, aucun plantage "
+               "sur une liste d'allies vide",
+        "pourquoi": "« each ally in play » doit tolerer AUCUN allie present (Worlds.GetOnFieldAllies peut "
+                    "renvoyer une liste vide) sans lever d'exception",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS],
+        "declencher": ["Puzzle.Reveal('hg016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+
+    # ============================================================ hg017 : Avengers, Feast!
+    {
+        "nom": "[hg] hg017 contre-cas : AUCUN Metazombie en jeu (seul Rhino, sans trait METAZOMBIE) -> rien ne se declenche, aucun crash",
+        "pourquoi": "« Each Metazombie in play » : prouve que le filtre `Metazombies(effect)` exclut bien un Villain SANS le trait "
+                    "(Rhino), et que la carte ne plante pas quand la liste est vide",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "[hg] hg017 un seul Metazombie (hg013, ATK 1) en jeu, joueur en forme Heros : il active en ATTAQUE contre le joueur -> 1 degat sur l'identite",
+        "pourquoi": "« Each Metazombie in play activates against each player » : un seul Metazombie -> une seule activation, "
+                    "egale a son ATK imprime (hg013 : ATK 1, pas d'autre capacite qui modifie sa propre attaque)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg013')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg017')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01001a", 1]]},
+    },
+    {
+        "nom": "[hg] hg017 DEUX Metazombies en jeu (hg009 ATK 4 + hg013 ATK 1) : chacun active -> degats CUMULES (5) sur l'identite du seul joueur",
+        "pourquoi": "« EACH Metazombie » : preuve que la carte boucle sur TOUS les Metazombies en jeu, pas seulement celui qui porte "
+                    "le jeton actif de la phase mechant normale (aucune regle de jeton posee dans ce montage, scenario rhino)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg009')", "Puzzle.PutIntoPlay('hg013')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg017')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01001a", 5]]},
+    },
+    {
+        "nom": "[hg] hg017 TEMOIN « ACTIVATES couvre aussi la MANIGANCE » : joueur en forme Alter-Ego, hg013 (SCH 1) active en "
+               "MANIGANCE contre le complot principal -> menace +1, AUCUN degat sur l'identite",
+        "pourquoi": "meme piege que hg012 (« ACTIVATES couvre l'attaque ET la manigance ») : DoActivate doit basculer sur DoSchemes "
+                    "quand le joueur vise est en Alter-Ego, pas rester bloque sur une attaque",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.SetThreat('01097b', 0)", "Puzzle.PutIntoPlay('hg013')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "degats_identite": 0},
+    },
+    {
+        "nom": "[hg] hg017 A DEUX JOUEURS (spider_man + hawkeye, tous deux en forme Heros), UN Metazombie (hg013, ATK 1) en jeu : "
+               "il active CONTRE CHAQUE JOUEUR -> 1 degat sur CHAQUE identite",
+        "pourquoi": "« against EACH PLAYER » : preuve que la boucle vise tous les joueurs de la partie, pas seulement le joueur courant "
+                    "ou celui qui revele la carte",
+        "scenario": "rhino", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.ChangeForm('04001b')", "Puzzle.PutIntoPlay('hg013')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg017')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01001a", 1], ["04001a", 1]]},
+    },
+    {
+        "nom": "[hg] hg017 « Do not deal boost cards » : deck de rencontre reduit a des Charge (01099, Boost 2 / ATK+3), hg013 (ATK "
+               "1) active via la carte -> degats = ATK NU (1), aucune carte piochee (01099 reste dans le deck)",
+        "pourquoi": "« Do not deal boost cards for these activations » = `do_not_give_boost=True` ; Charge, s'il etait pioche, "
+                    "ajouterait un ATK+3 (modele de la fiche mots-cles/boost.md) -- sa seule presence prouve l'ABSENCE de pioche "
+                    "si les degats restent a 1",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01099', '01099', '01099')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg017')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01001a", 1]], "dans_deck_rencontre": ["01099"]},
+    },
+    {
+        "nom": "[hg] hg017 TEMOIN du precedent : MEME montage mais activation DIRECTE (Puzzle.Activate, sans do_not_give_boost) -> "
+               "le boost EST pioche, degats = 1 (ATK) + 2 (icones Boost de Charge) = 3",
+        "pourquoi": "contre-cas de securite : prouve que Charge AURAIT bien ajoute du degat si la suppression de hg017 etait absente -- "
+                    "sans ce temoin, le cas precedent pourrait passer au vert simplement parce que Charge n'ajoute jamais rien",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01099', '01099', '01099')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg013')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01001a", 3]]},
+    },
+
     # ============================================================ hg006 : Inside Galactus
     {
         "nom": "[hg] hg006 Residual Cosmic Power : +1 ATK sur le mechant ACTIF (Rhino, jeton par defaut)",
@@ -639,4 +883,25 @@ def hg008_deck_signature_etat(monde, aides):
     if "taille_deck_signature" in attendu and taille != attendu["taille_deck_signature"]:
         return False, f"deck signature de hg008 = {taille} carte(s) (attendu {attendu['taille_deck_signature']})"
     return True, f"deck signature de hg008 = {taille} carte(s)"
+'''
+
+VERIFICATIONS += r'''
+def hg014_etat(monde, aides):
+    """Verificateur dedie a hg014 Zombie Doctor Strange (Hex) : cumule degats_identite et cartes_distribuees
+    (joueur 0), modele hg_distribuees_et_pas_de_degats adapte au fait que CETTE carte NE remplace PAS
+    l'attaque (contrairement a Just a Core) : l'activation inflige les degats normaux ET distribue en plus
+    la carte de rencontre."""
+    identite = aides["identite"](monde)
+    joueur = monde.players[0]
+    attendu = aides["cas"].get("attendu") or {}
+    soucis = []
+    degats = identite.max_health - identite.health
+    if "degats_identite" in attendu and degats != attendu["degats_identite"]:
+        soucis.append(f"degats identite = {degats} (attendu {attendu['degats_identite']})")
+    distribuees = joueur.dealt_encounter_cards.Get(True)
+    if "cartes_distribuees" in attendu and len(distribuees) != attendu["cartes_distribuees"]:
+        soucis.append(f"cartes de rencontre distribuees = {len(distribuees)} (attendu {attendu['cartes_distribuees']})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"degats identite={degats}, cartes distribuees={len(distribuees)}"
 '''
