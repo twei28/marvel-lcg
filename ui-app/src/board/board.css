@@ -2750,21 +2750,49 @@
      le premier heros a depasser 3 faces. Un premier essai les avait retrecies
      (meme taper que .a-faces-2/.a-faces-3) : illisibles, revenu en arriere
      a la demande de l'utilisateur (26/09/2026). A la place : la taille de
-     depart (345px/506px, heritee de `.carte-apercu` de base, aucune des deux
-     classes ne la redefinit ici) et un RETOUR A LA LIGNE sur plusieurs
-     rangees.
-     ⚠ `width`, PAS SEULEMENT `max-width`. `.carte-apercu` est en position
-     fixed, largeur automatique : un conteneur flex qui enveloppe (wrap) sans
-     largeur EXPLICITE se dimensionne sur son plus PETIT contenu possible
-     (une carte par rangee, mesure a 345px de large et 2806px de haut pour 5
-     faces) au lieu de profiter de la place disponible. `max-width` seul ne
-     change rien a ce calcul ; il faut forcer la largeur pour que plusieurs
-     cartes tiennent sur une meme rangee avant de passer a la suivante. */
+     depart (345px/506px) et un RETOUR A LA LIGNE sur plusieurs rangees.
+
+     ⚠⚠ MAIS CE RETOUR A LA LIGNE SORTAIT PAR LE BAS (signale sur The Warriors
+     Three ET Conan, 27/10/2026, capture a l'appui : la rangee du BAS etait
+     coupee par le bord bas de l'ecran). La cause, mesuree : a 345px, DEUX
+     rangees font ~1024px de haut pour une fenetre de 900px ; l'apercu, plus
+     haut que la fenetre, est colle en haut par usePlacement (placer.ts : « on
+     prefere perdre le bas »), et sa rangee basse passe sous l'ecran.
+
+     LE CORRECTIF : une GRILLE a nombre de colonnes FIXE (4 faces -> 2 colonnes,
+     5 faces -> 3 colonnes), donc TOUJOURS DEUX rangees au plus, dont la taille
+     est BORNEE PAR LA HAUTEUR de la fenetre pour que ces deux rangees tiennent
+     entieres. On garde la plus grande taille lisible qui rentre : 345px sur un
+     ecran haut (>=1080px), moins sur un ecran bas — jamais coupe.
+     La grille a un nombre de colonnes figE (et pas un flex-wrap) : le nombre de
+     rangees ne doit PAS dependre de la largeur des cartes, sinon la borne de
+     hauteur, calculee pour deux rangees, serait fausse des qu'une troisieme
+     apparait. */
   .carte-apercu.a-faces-4,
   .carte-apercu.a-faces-5 {
-    flex-wrap: wrap;
+    display: grid;
     justify-content: center;
+    justify-items: center;
+    align-items: start;
+    gap: 14px;
     width: min(980px, 92vw);
+    /* 2.772 = 2 rangees x (hauteur de cadre = largeur x 176/127). 96px = marge
+       haut+bas de l'apercu (usePlacement) + etiquettes/espaces des deux rangees.
+       Paysage : hauteur de cadre = largeur x 127/176, soit 2 x 0.7216 = 1.443. */
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772));
+    --largeur-face-paysage: min(506px, calc((100vh - 96px) / 1.443));
+  }
+
+  /* La largeur est en plus bornee par la LARGEUR de la fenetre, selon le nombre
+     de colonnes, pour qu'une rangee ne deborde jamais sur le cote. */
+  .carte-apercu.a-faces-4 {
+    grid-template-columns: repeat(2, auto);
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772), calc((92vw - 14px) / 2));
+  }
+
+  .carte-apercu.a-faces-5 {
+    grid-template-columns: repeat(3, auto);
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772), calc((92vw - 28px) / 3));
   }
 
   /* L'autre face n'est qu'une image de reference : on masque les pastilles/stats
