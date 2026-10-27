@@ -1580,6 +1580,7 @@
     "ATK": "1",
     "HP": "4",
     "Guard": "1",
+    "Quickstrike": "1",
     "Retaliate": "2"
    },
    "traits": [
@@ -1600,6 +1601,7 @@
     "ATK": "2",
     "HP": "6",
     "Guard": "1",
+    "Quickstrike": "1",
     "Villainous": "1",
     "Boost": "2"
    },
