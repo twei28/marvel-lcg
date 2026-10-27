@@ -2661,6 +2661,172 @@ for _sch, _allie, _nom in (("hg052", "hg073", "Chewie"), ("hg053", "hg074", "Val
         "attendu": {"retires": [_sch, _allie], "compteurs_identite": [["infection", 1]]},
     })
 
+
+# ============================================================ Infection : limite et recuperation (livret p. 5, 8)
+# `commun.ReglesDuScenario` (limite -> `MortParInfection`, recuperation -> `ChoixDeRecuperation`). Fiche
+# mots-cles/infection.md. ⚠ `Puzzle.Counter` passe par `Faces.PlaceCountersOn` : il DECLENCHE la limite comme une vraie
+# pose ; on part donc d'un stock sous le seuil, et le dernier compteur vient d'une vraie morsure (cas solo) ou d'un
+# `Puzzle.Counter(..., 1)` (cas a deux, ou une attaque viserait un joueur au hasard).
+CAS += [
+    {
+        "nom": "[hg] regle Infection LIMITE (standard) : 6 -> 7 par une morsure -> heros vaincu ; solo = partie perdue",
+        "pourquoi": "« The limit is 7 in Standard » + « When you reach the limit, your hero is defeated » + FAQ p. 8 « My hero "
+                    "dies from Infection in a solo game. You lose: there are no heroes left. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.Counter('01001a', 'infection', 6)",
+                          "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg009', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [True], "partie_perdue": True},
+    },
+    {
+        "nom": "[hg] regle Infection LIMITE TEMOIN (standard) : 5 -> 6 -> le heros survit (6 n'est la limite qu'en expert)",
+        "pourquoi": "temoin juste sous le seuil standard (7) ; distingue aussi la limite standard de la limite expert",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.Counter('01001a', 'infection', 5)",
+                          "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg009', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [False], "partie_perdue": False, "infection_siege": [[0, 6]]},
+    },
+    {
+        "nom": "[hg] regle Infection LIMITE (expert) : 5 -> 6 par une morsure -> heros vaincu ; solo = partie perdue",
+        "pourquoi": "« The limit is 7 in Standard and 6 in Expert » + p. 8 « the Infection limit drops to 6 » (Rhino expert : "
+                    "`campaign.expert`, lu par `Worlds.IsExpert`)",
+        "scenario": "rhino_expert", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.Counter('01001a', 'infection', 5)",
+                          "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg009', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [True], "partie_perdue": True},
+    },
+    {
+        "nom": "[hg] regle Infection LIMITE TEMOIN (expert) : 4 -> 5 -> le heros survit",
+        "pourquoi": "temoin juste sous le seuil expert (6)",
+        "scenario": "rhino_expert", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.Counter('01001a', 'infection', 4)",
+                          "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg009', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [False], "partie_perdue": False, "infection_siege": [[0, 5]]},
+    },
+    {
+        "nom": "[hg] regle Infection LIMITE TEMOIN sans le Coeur : 6 -> 7 -> rien (la limite vient de `ReglesDuScenario`)",
+        "pourquoi": "preuve par substitution : sans le Coeur en jeu (regles non enregistrees), 7 compteurs n'ont aucun effet",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.Counter('01001a', 'infection', 6)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Counter('01001a', 'infection', 1)"],
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [False], "partie_perdue": False, "infection_siege": [[0, 7]]},
+    },
+    # ------------------------------------------------------------ version zombie (vraie mise en place, A DEUX)
+    {
+        "nom": "[hg] regle Infection LIMITE a deux : Spider-Man meurt -> Zombie Spider-Man (hg010, mis de cote) entre au bout de la rangee",
+        "pourquoi": "« its zombie version enters play: if it is a Metazombie, at the right end of the row (unless there are "
+                    "already 3) » ; la partie continue (« only enters play if players remain »). Mise en place : 2 Metazombies.",
+        "scenario": "the_hunger_core", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.Counter('01001b', 'infection', 6)"],
+        "declencher": ["Puzzle.Counter('01001b', 'infection', 1)"],
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [True, False], "partie_perdue": False, "en_jeu": ["hg010"], "n_metazombies": 3,
+                    "dernier_de_la_rangee": "hg010"},
+    },
+    {
+        "nom": "[hg] regle Infection LIMITE a deux : Hawkeye meurt -> Zombie Hawkeye (hg060, Fallen Heroes) entre ENGAGE avec le joueur suivant",
+        "pourquoi": "« if it is a Fallen Heroes minion, engaged with the next player »",
+        "scenario": "the_hunger_core", "heros": "hawkeye", "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.Counter('04001b', 'infection', 6)"],
+        "declencher": ["Puzzle.Counter('04001b', 'infection', 1)"],
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [True, False], "partie_perdue": False, "engage_avec": [["hg060", 1]], "n_metazombies": 2},
+    },
+    {
+        "nom": "[hg] regle Infection LIMITE a deux : heros SANS version zombie (Black Panther) -> un Metazombie du Horde deck entre",
+        "pourquoi": "« if your hero has no zombie version, put a Metazombie from the Horde deck into play »",
+        "scenario": "the_hunger_core", "heros": "black_panther", "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.Counter('01040b', 'infection', 6)"],
+        "declencher": ["Puzzle.Counter('01040b', 'infection', 1)"],
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [True, False], "partie_perdue": False, "n_metazombies": 3},
+    },
+    {
+        "nom": "[hg] regle Infection LIMITE a deux TEMOIN du plafond : deja 3 Metazombies -> Zombie Spider-Man n'entre PAS",
+        "pourquoi": "« at the right end of the row (unless there are already 3) » ; Rise of the Horde! (hg047) amene le 3e",
+        "scenario": "the_hunger_core", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.Reveal('hg047')", "Puzzle.Counter('01001b', 'infection', 6)"],
+        "declencher": ["Puzzle.Counter('01001b', 'infection', 1)"],
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [True, False], "partie_perdue": False, "hors_jeu": ["hg010"], "n_metazombies": 3},
+    },
+    {
+        "nom": "[hg] regle Infection a deux TEMOIN : 5 -> 6 en standard -> personne ne meurt, aucune version zombie",
+        "pourquoi": "temoin juste sous le seuil, dans la vraie mise en place a deux",
+        "scenario": "the_hunger_core", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.Counter('01001b', 'infection', 5)"],
+        "declencher": ["Puzzle.Counter('01001b', 'infection', 1)"],
+        "verifier": "hg_infection_etat",
+        "attendu": {"elimines": [False, False], "partie_perdue": False, "hors_jeu": ["hg010"], "n_metazombies": 2,
+                    "infection_siege": [[0, 6]]},
+    },
+    # ------------------------------------------------------------ recuperation de base (alter-ego)
+    {
+        "nom": "[hg] regle Infection RECUPERATION, branche soin : Peter Parker (REC 3) soigne 3, l'Infection reste",
+        "pourquoi": "« Basic recovery: choose between healing your REC in damage, as usual, or removing 3 Infection counters. "
+                    "You cannot do both. » Le pilote prend la premiere option (soigner).",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.Damage('01001b', 5)",
+                          "Puzzle.Counter('01001b', 'infection', 4)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('01001b', 'BasicPower')"],
+        "verifier": "hg_infection_etat",
+        "attendu": {"degats_siege": [[0, 2]], "infection_siege": [[0, 4]]},
+    },
+    {
+        "nom": "[hg] regle Infection RECUPERATION, branche Infection : 3 compteurs retires (4 -> 1), AUCUN soin",
+        "pourquoi": "« or removing 3 Infection counters. You cannot do both. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.Damage('01001b', 5)",
+                          "Puzzle.Counter('01001b', 'infection', 4)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('01001b', 'BasicPower')"],
+        "choisir_option": "Remove_3_infection_counters_instead",
+        "verifier": "hg_infection_etat",
+        "attendu": {"degats_siege": [[0, 5]], "infection_siege": [[0, 1]]},
+    },
+    {
+        "nom": "[hg] regle Infection RECUPERATION, branche Infection avec 2 compteurs seulement : 2 -> 0, aucun soin",
+        "pourquoi": "« removing 3 Infection counters » : on ne retire que ce qui existe (borne a 0)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.Damage('01001b', 5)",
+                          "Puzzle.Counter('01001b', 'infection', 2)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('01001b', 'BasicPower')"],
+        "choisir_option": "Remove_3_infection_counters_instead",
+        "verifier": "hg_infection_etat",
+        "attendu": {"degats_siege": [[0, 5]], "infection_siege": [[0, 0]]},
+    },
+    {
+        "nom": "[hg] regle Infection RECUPERATION TEMOIN sans le Coeur : meme demande de retrait -> aucun choix, soin normal",
+        "pourquoi": "preuve par substitution : le choix vient de `ReglesDuScenario` (porte par le Coeur), pas du moteur",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.Damage('01001b', 5)", "Puzzle.Counter('01001b', 'infection', 4)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('01001b', 'BasicPower')"],
+        "choisir_option": "Remove_3_infection_counters_instead",
+        "verifier": "hg_infection_etat",
+        "attendu": {"degats_siege": [[0, 2]], "infection_siege": [[0, 4]]},
+    },
+]
+
 VERIFICATIONS = r'''
 def hg_setup_etat(monde, aides):
     """Verificateur dedie a la mise en place (hg004a) : contenu du Horde deck (deck + defausse + en jeu, un
@@ -2977,3 +3143,66 @@ def hg_jeton_etat(monde, aides):
                   f"Horde deck {ids_pioche}, defausse Horde {ids_defausse})")
 '''
 
+
+VERIFICATIONS += r'''
+def hg_infection_etat(monde, aides):
+    """Verificateur de la limite d'Infection et de la recuperation (27/10/2026, `commun.MortParInfection` et
+    `commun.ChoixDeRecuperation`), joueurs lus par SIEGE (`const_seat_order_players`, stable meme apres une
+    elimination), puis delegation a `hg_jeton_etat` pour les autres cles (n_metazombies, en_jeu, hors_jeu...) :
+    - `elimines` : [bool par siege] ; `partie_perdue` : bool (partie terminee ET perdue) ;
+    - `infection_siege` / `degats_siege` : [[siege, n]] sur l'identite du joueur de ce siege ;
+    - `engage_avec` : [[card_id, siege]] -> ce sbire en jeu est engage avec ce joueur ;
+    - `dernier_de_la_rangee` : card_id du Metazombie au bout droit de la rangee."""
+    from game.operate.worlds import Worlds
+    from game.effect.rule import GameRule
+    attendu = aides["cas"].get("attendu") or {}
+    soucis = []
+    cid = lambda f: getattr(getattr(f, "paper", None), "card_id", None)
+    sieges = list(monde.const_seat_order_players)
+
+    if "elimines" in attendu:
+        reels = [bool(j.is_eliminated) for j in sieges]
+        if reels != attendu["elimines"]:
+            soucis.append(f"elimines = {reels} (attendu {attendu['elimines']})")
+    if "partie_perdue" in attendu:
+        fini = bool(getattr(monde, "is_game_over", False))
+        perdue = fini and not monde.game_over.players_won
+        if perdue != attendu["partie_perdue"]:
+            raison = getattr(monde.game_over, "reason", None) if fini else None
+            soucis.append(f"partie perdue = {perdue} (attendu {attendu['partie_perdue']}, fin={fini}, raison={raison})")
+    for siege, n in attendu.get("infection_siege") or []:
+        reel = sieges[siege].GetIdentity().GetCounters('infection')
+        if reel != n:
+            soucis.append(f"Infection du siege {siege} = {reel} (attendu {n})")
+    for siege, n in attendu.get("degats_siege") or []:
+        ident = sieges[siege].GetIdentity()
+        reel = ident.max_health - ident.health
+        if reel != n:
+            soucis.append(f"degats du siege {siege} = {reel} (attendu {n})")
+    for card_id, siege in attendu.get("engage_avec") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (engage_avec)")
+        elif getattr(face, "engaged_player", None) is not sieges[siege]:
+            soucis.append(f"{card_id} engage avec {getattr(face, 'engaged_player', None)} (attendu siege {siege})")
+    if "dernier_de_la_rangee" in attendu:
+        vivants = [j for j in sieges if not j.is_eliminated]
+        rangee = [v for v in Worlds.GetVillains(GameRule(vivants[0].GetIdentity()))
+                  if v.HasTrait("METAZOMBIE") and v.IsInPlay()] if vivants else []
+        if not rangee or cid(rangee[-1]) != attendu["dernier_de_la_rangee"]:
+            soucis.append(f"rangee = {[cid(v) for v in rangee]} (attendu {attendu['dernier_de_la_rangee']} au bout droit)")
+
+    propres = ("elimines", "partie_perdue", "infection_siege", "degats_siege", "engage_avec", "dernier_de_la_rangee")
+    reste = {k: v for k, v in attendu.items() if k not in propres}
+    if reste:
+        aides["cas"]["attendu"] = reste
+        try:
+            ok, message = hg_jeton_etat(monde, aides)
+        finally:
+            aides["cas"]["attendu"] = attendu
+        if not ok:
+            soucis.append(message)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "etat conforme"
+'''

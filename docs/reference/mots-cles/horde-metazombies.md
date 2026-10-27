@@ -59,6 +59,6 @@ mini-deck privé par Metazombie en jeu (son deck signature, 3 à 6 cartes).
 - **Infection (livret p. 5)** : la pose « 1 compteur par attaque d'un ennemi ZOMBIE/METAZOMBIE qui blesse le
   héros » est dans `ReglesDuScenario` (`AfterUnitAttackAndDamageUnit(..., Hero, ...)`). La LIMITE (7, 6 en
   expert : héros vaincu, sa version zombie entre en jeu) et le choix de la récupération de base (soigner OU
-  retirer 3 Infection) ne sont PAS codés au 27/10/2026.
+  retirer 3 Infection) sont codés depuis le 27/10/2026 : fiche [[infection]].
 
 **Variantes maison** : aucune à ce jour.

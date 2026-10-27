@@ -201,6 +201,13 @@ def MettreUnMetazombieEnJeu(effect: 'Effect', joueur: 'Player') -> 'Villain|None
     carte = deck.GetTop()
     if carte is None:
         return None
+    return _EntrerDansLaRangee(effect, carte, joueur)
+
+
+def _EntrerDansLaRangee(effect: 'Effect', carte: 'CardFace', joueur: 'Player') -> 'Villain|None':
+    """Met un Metazombie en jeu au bout DROIT de la rangee (ordre d'entree) et gere le jeton. Partage par
+    `MettreUnMetazombieEnJeu` (Horde deck) et `MettreLaVersionZombieEnJeu` (heros mort d'Infection). Le plafond
+    de 3 est verifie par l'appelant."""
     # « If no Metazombie is left, the token moves to The Hunger Core. When a Metazombie enters play again, the
     # token moves to it. » (livret p. 4) + mise en place p. 7, etape 7 : « Place the active Metazombie token on
     # the first one in the row » (hg004a pose d'abord le jeton sur le Coeur, le 1er Metazombie le reprend ici).
@@ -247,7 +254,10 @@ def ReglesDuScenario() -> List['Ability']:
     - « Infection. When an attack from a Zombie or Metazombie enemy deals damage to your hero, place 1
       Infection counter. » (livret p. 5) : `AfterUnitAttackAndDamageUnit(..., Hero, ...)` avec
       `target_took_damage=True` (« If an ally defends, or if your DEF or a tough status card prevents all the
-      damage, there is no Infection ») ; 1 compteur par attaque, quels que soient les degats."""
+      damage, there is no Infection ») ; 1 compteur par attaque, quels que soient les degats ;
+    - limite d'Infection (7, 6 en expert) atteinte sur une identite : `MortParInfection` (heros vaincu, version
+      zombie en jeu) ;
+    - recuperation de base d'un alter-ego infecte : `ChoixDeRecuperation` (soigner REC OU retirer 3 Infection)."""
     from game.card.face.base import Enemy
 
     # ⚠ Une capacite `AbilityType.Scenario` reste active HORS JEU : en standard, hg002 (stade II, encore dans le deck
@@ -274,13 +284,126 @@ def ReglesDuScenario() -> List['Ability']:
         if Player.IsType(joueur):
             PoserInfection(effect, joueur, 1)
 
+    def est_une_identite(face: 'CardFace') -> bool:
+        return Identity.IsType(face)
+
+    def limite_atteinte(effect: 'Effect', message: 'Message.AfterCardPlacedCounter') -> None:
+        joueur = message.trigger.GetControlByOrOwner()
+        if Player.IsType(joueur):
+            MortParInfection(effect, joueur)
+
+    def est_un_alter_ego(face: 'CardFace') -> bool:
+        return AlterEgo.IsType(face)
+
+    def a_de_l_infection(effect: 'Effect', message: 'Message.WhenUnitWouldRecovery') -> bool:
+        return message.trigger.GetCounters('infection') > 0
+
+    def recuperation(effect: 'Effect', message: 'Message.WhenUnitWouldRecovery') -> None:
+        ChoixDeRecuperation(effect, message)
+
     return [
         AbilityFactory.WhenVillainPhaseEnd(AbilityType.Scenario, fin_de_phase, conditions=[coeur_en_jeu]),
         AbilityFactory.WhenUnitBeDefeated(AbilityType.Scenario, CardFinder(traits=[TRAIT_METAZOMBIE], card_type=Villain),
                                           metazombie_vaincu, conditions=[coeur_en_jeu]),
         AbilityFactory.AfterUnitAttackAndDamageUnit(AbilityType.Scenario, CardFinder(check_face_fn=est_un_zombie),
                                                     Hero, morsure, conditions=[coeur_en_jeu]),
+        AbilityFactory.AfterCounterPlacedOn(AbilityType.Scenario, CardFinder(check_face_fn=est_une_identite),
+                                            'infection', limite_atteinte, conditions=[coeur_en_jeu],
+                                            at_least=LimiteInfection),
+        AbilityFactory.WhenUnitMakeRecovery(AbilityType.Scenario, CardFinder(check_face_fn=est_un_alter_ego),
+                                            recuperation, conditions=[coeur_en_jeu, a_de_l_infection],
+                                            is_basic_recovery=True),
     ]
+
+
+################################################################################
+# Infection : limite et recuperation (livret p. 5 ; p. 8 Expert et FAQ). Fiche mots-cles/infection.md.
+LIMITE_INFECTION_STANDARD = 7
+LIMITE_INFECTION_EXPERT = 6
+INFECTION_RETIREE_PAR_RECUPERATION = 3
+
+
+def LimiteInfection(effect: 'Effect') -> int:
+    """« The limit is 7 in Standard and 6 in Expert. » (p. 5) + « the Infection limit drops to 6 » (p. 8)."""
+    return LIMITE_INFECTION_EXPERT if Worlds.IsExpert(effect) else LIMITE_INFECTION_STANDARD
+
+
+def MortParInfection(effect: 'Effect', joueur: 'Player') -> None:
+    """« When you reach the limit, your hero is defeated and its zombie version enters play » + FAQ p. 8 : « The
+    zombie version only enters play if players remain ». Le joueur suivant est calcule AVANT la defaite
+    (`Player.Eliminate` reordonne les joueurs). La defaite passe par `Faces.DefeatUnits` sur l'identite (modele
+    `sl072b` Creeping Corruption) : `Identity.OnBeDefeated` elimine le joueur, et en solo la partie est perdue."""
+    if joueur.is_eliminated:
+        return
+    nom = NomHerosDe(joueur)
+    suivant = Worlds.GetNextPlayer(joueur, effect)
+    Faces.DefeatUnits([joueur.GetIdentity()], effect.this, effect)
+    if not joueur.is_eliminated:
+        return  # defaite empechee par une autre carte : pas de version zombie
+    if getattr(effect.world, 'is_game_over', False) or suivant is None or suivant.is_eliminated:
+        return
+    MettreLaVersionZombieEnJeu(effect, nom, suivant)
+
+
+def _VersionZombieMiseDeCote(effect: 'Effect', card_id: str) -> 'CardFace':
+    """La version zombie mise de cote a la mise en place (p. 7, etape 3). Les Metazombies homonymes ne sont jamais
+    generes par `ConstruireLeHordeDeck` et les cas montes sur Rhino n'ont pas de mise en place : la carte est alors
+    creee a cet instant (meme carte, meme effet que « set aside »)."""
+    from game.card.factory import CardFactory
+    for face in Worlds.GetSetAsideAreaCards(effect):
+        if face.paper.card_id == card_id:
+            return face
+    return CardFactory.GenerateCard(card_id, effect.world.aside_deck, effect.world).face
+
+
+def MettreLaVersionZombieEnJeu(effect: 'Effect', nom_heros: str, joueur_suivant: 'Player') -> 'CardFace|None':
+    """« its zombie version enters play: if it is a Metazombie, at the right end of the row (unless there are
+    already 3); if it is a Fallen Heroes minion, engaged with the next player; if your hero has no zombie version,
+    put a Metazombie from the Horde deck into play. » « Enters play » : mise en jeu, PAS revelation (aucun When
+    Revealed). Les PV par joueur lisent `started_player_num` (natif) : « its hit points use the starting number of
+    players » (FAQ p. 8)."""
+    card_id = CARD_ID_HORDE_PAR_HEROS.get(nom_heros)
+    if card_id is not None:
+        if NbMetazombiesEnJeu(effect) >= MAX_METAZOMBIES_EN_JEU:
+            return None
+        if any(m.paper.card_id == card_id for m in Metazombies(effect)):
+            return None
+        carte = _VersionZombieMiseDeCote(effect, card_id)
+        return _EntrerDansLaRangee(effect, carte, joueur_suivant)
+    card_id = CARD_ID_FALLEN_PAR_HEROS.get(nom_heros)
+    if card_id is not None:
+        carte = _VersionZombieMiseDeCote(effect, card_id)
+        carte.PutIntoPlay(joueur_suivant, effect)
+        return carte
+    return MettreUnMetazombieEnJeu(effect, joueur_suivant)
+
+
+def ChoixDeRecuperation(effect: 'Effect', message: 'Message.WhenUnitWouldRecovery') -> None:
+    """« Basic recovery: choose between healing your REC in damage, as usual, or removing 3 Infection counters.
+    You cannot do both. » (p. 5). Branche Infection = la recuperation est REMPLACEE (`SetBeInstead`, modele
+    `35030` Death Factor) : aucun soin. Le moteur n'a qu'une recuperation, la recuperation de base
+    (`CanRecover.BasicRecover`, seul appelant de `RecoverInternal`) : `WhenUnitWouldRecovery` ne vise donc
+    qu'elle. Propose seulement si l'identite porte au moins 1 compteur (condition de la capacite)."""
+    identite = message.trigger
+    joueur = identite.GetControlByOrOwner()
+    if not Player.IsType(joueur):
+        return
+
+    def soigner(targets: Sequence['CardFace']) -> None:
+        Unused(targets)  # la recuperation se poursuit normalement
+
+    def retirer(targets: Sequence['CardFace']) -> None:
+        Unused(targets)
+        message.SetBeInstead(effect)
+        n = min(INFECTION_RETIREE_PAR_RECUPERATION, joueur.GetIdentity().GetCounters('infection'))
+        if n > 0:
+            Faces.RemoveCountersOn([joueur.GetIdentity()], n, 'infection', effect)
+
+    joueur.ChooseAbilities(
+        effect,
+        AbilityFactory.ForChoiceAbility("Heal REC damage (basic recovery)", soigner),
+        AbilityFactory.ForChoiceAbility("Remove 3 infection counters instead", retirer),
+    )
 
 
 ################################################################################

@@ -351,4 +351,6 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - [x] just-a-core-x.md (idem : moitié « attaque » du vilain, modèle HIDDEN de Galactic Storm)
 - [x] horde-metazombies.md (idem : jeton actif à rotation ronde, Horde deck séparé du deck de rencontre modèle
       `player.additional_deck`, decks signature par Metazombie créés à la demande)
+- [x] infection.md (idem : compteur sur l'identité, morsure, limite 7/6 -> héros vaincu et version zombie en jeu,
+      récupération de base « soigner REC OU retirer 3 Infection »)
 - [x] tour-supplementaire.md (maison, pack `rachel_summers` : « take an additional turn » et « end this turn », drapeaux `RM_TOUR_SUPPLEMENTAIRE` / `RM_FIN_DE_TOUR`, CORRECTIFS `world.py` / `player_phase.py` / `event/manager.py`, 26/10/2026)
