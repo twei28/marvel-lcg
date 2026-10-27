@@ -231,6 +231,68 @@ CAS = [
                     "statuts_absents": [["01001a", "Stunned"], ["01050", "Stunned"]]},
     },
 
+    # ============================================================ hg011 : Zombie Captain Marvel
+    {
+        "nom": "[hg] hg011 Absorption : apres avoir ete attaquee, elle pose 1 compteur energy et gagne +1 ATK",
+        "pourquoi": "« Absorption — Forced Response: After she is attacked, place 1 energy counter on this card "
+                    "(max. 5). She gets +1 ATK for each energy counter. » Attaque non defendue (pas d'allie) : "
+                    "le compteur se pose meme si c'est elle qui blesse le heros, puisque la capacite n'exige ni "
+                    "degats ni defense, seulement « apres etre attaquee ».",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg011')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "cibles": ["hg011"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hg011", "energy", 1]], "attributs_carte": [["hg011", "attack", 1]]},
+    },
+    {
+        "nom": "[hg] hg011 Absorption, TEMOIN D'EPUISEMENT DU PLAFOND : deja a 4 compteurs, DEUX attaques "
+               "supplementaires posent la 5e (max.) mais jamais de 6e -> +5 ATK, pas +6",
+        "pourquoi": "« (max. 5) » : le plafond est porte par `PlaceCountersOn(..., maximum=5)`. Montage a 4 "
+                    "compteurs via `Puzzle.Counter('hg011', 'energy', 4)` (equivalent d'une mise en place "
+                    "atteinte par 4 attaques successives, sans risquer que hg011 meure en cours de route), puis "
+                    "DEUX attaques de suite declenchent Absorption deux fois : la premiere doit encore porter "
+                    "le compteur de 4 a 5 (preuve que la capacite part bel et bien a ce palier), la seconde doit "
+                    "le laisser bloque a 5 (preuve du plafond) -- contrairement a un montage direct a 5, ce cas "
+                    "ne peut pas passer si Absorption ne se declenche plus du tout.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg011')", "Puzzle.Counter('hg011', 'energy', 4)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('01001a')", "Puzzle.Attack('01001a')"],
+        "cibles": ["hg011"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hg011", "energy", 5]], "attributs_carte": [["hg011", "attack", 5]]},
+    },
+    {
+        "nom": "[hg] hg011, second Forced Response : apres QU'ELLE attaque, elle retire 1 compteur energy (3 -> 2, "
+               "+3 ATK -> +2 ATK)",
+        "pourquoi": "« Forced Response: After she attacks, remove 1 energy counter from this card. » Montage a 3 "
+                    "compteurs (`Puzzle.Counter`), puis elle attaque l'identite (`Puzzle.EnemyAttacks`, aucune "
+                    "alliee ne defend) : un seul compteur part, pas tous.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg011')", "Puzzle.Counter('hg011', 'energy', 3)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg011', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hg011", "energy", 2]], "attributs_carte": [["hg011", "attack", 2]]},
+    },
+    {
+        "nom": "[hg] hg011, TEMOIN A VIDE : sans aucun compteur, elle attaque quand meme (0 ATK bonus) -> le "
+               "retrait ne casse rien et reste a 0, pas de compteur negatif",
+        "pourquoi": "« remove 1 energy counter » sans minimum imprime : contre-cas de securite, aucune garde "
+                    "manuelle n'est codee (RemoveCountersInternal est sans danger a vide) -- ce cas le prouve "
+                    "en jeu plutot qu'en lecture de code seule.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg011')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg011', '01001a')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hg011", "energy", 0]], "attributs_carte": [["hg011", "attack", 0]]},
+    },
+
     # ============================================================ hg006 : Inside Galactus
     {
         "nom": "[hg] hg006 Residual Cosmic Power : +1 ATK sur le mechant ACTIF (Rhino, jeton par defaut)",
