@@ -3,7 +3,8 @@
    grille (TableRonds / disposition-ronds.ts) : ses ronds se rangent en COLONNES (`.ronds-colonne`), remplies de haut en bas,
    posees cote a cote. Les ronds sont de taille FIXE (`--d` depend de la largeur de l'ecran, jamais du nombre de ronds) ;
    le surplus defile par les fleches ◂ ▸ du titre. Une zone vide est masquee (TableRonds ne la rend pas) ; une rangee sans
-   aucune zone pleine disparait ; sinon la zone pleine occupe la rangee seule, centree. Les couleurs viennent des jetons de
+   aucune zone pleine disparait ; sinon les zones sont collees a gauche (space-between) : le vilain et le heros restent a
+   gauche meme quand leur zone voisine est vide. Les couleurs viennent des jetons de
    l'Epure (--ep-*) avec une valeur de secours. Hors couche : memes raisons que portrait.css. */
 .table-ronds {
   /* Diametre fixe par rapport au contenu : il ne suit QUE la largeur de l'ecran, jamais le nombre de ronds. La rangee la
@@ -18,7 +19,7 @@
 .ronds-rangee {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: space-between;
   gap: 6px;
   padding: 6px 10px 8px;
   border-bottom: 1px solid var(--ronds-ligne);
