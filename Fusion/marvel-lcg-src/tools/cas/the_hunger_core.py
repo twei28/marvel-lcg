@@ -293,6 +293,52 @@ CAS = [
         "attendu": {"compteurs": [["hg011", "energy", 0]], "attributs_carte": [["hg011", "attack", 0]]},
     },
 
+    # ============================================================ hg012 : Zombie Thor
+    {
+        "nom": "[hg] hg012 Storm : apres que Zombie Thor active CONTRE LE JOUEUR en ATTAQUANT (forme heros), "
+               "chaque allie qu'il controle subit 1 degat -- l'identite n'est touchee QUE par l'attaque elle-meme",
+        "pourquoi": "« Storm — Forced Response: After Zombie Thor activates against a player, deal 1 damage to "
+                    "each ally that player controls. » Forme heros -> Puzzle.Activate declenche une ATTAQUE "
+                    "(non defendue, pas de defenseur designe) : l'identite encaisse les 3 ATQ imprimes de Thor, "
+                    "ET separement chacune des 2 allies en jeu subit le degat propre de Storm (1 chacune, pas "
+                    "partage). 01050 Hulk (5 PV) et 01002 Black Cat (2 PV) survivent toutes les deux a 1 degat.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg012')",
+                          "Puzzle.PutIntoPlay('01050', under_control=True)", "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg012')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "degats": [["01050", 1], ["01002", 1]], "en_jeu": ["01050", "01002"]},
+    },
+    {
+        "nom": "[hg] hg012 Storm, TEMOIN « ACTIVATES couvre aussi la MANIGANCE » : forme alter-ego (pas d'attaque "
+               "possible), Zombie Thor active quand meme -> l'allie subit quand meme 1 degat",
+        "pourquoi": "« ACTIVATES against a player », pas « attacks » : la capacite doit partir aussi quand "
+                    "l'activation est une manigance (forme alter-ego). Contre-preuve du mot-piege ACTIVATES "
+                    "vs ATTACKS deja documente sur nt013/27158 : un filtre reduit a AfterUnitAttackUnit "
+                    "laisserait ce cas a 0 degat.",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg012')", "Puzzle.PutIntoPlay('01050', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01050", 1]]},
+    },
+    {
+        "nom": "[hg] hg012 TEMOIN SANS ALLIE : Zombie Thor active, aucun allie en jeu -> rien a cibler, aucun crash, "
+               "degats d'attaque normaux sur l'identite seulement",
+        "pourquoi": "contre-cas de securite : `DealDamage` sur une liste vide (joueur sans allie) ne doit rien "
+                    "casser et ne doit rien infliger a l'identite -- Storm ne vise jamais « each character »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg012')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg012')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+
     # ============================================================ hg006 : Inside Galactus
     {
         "nom": "[hg] hg006 Residual Cosmic Power : +1 ATK sur le mechant ACTIF (Rhino, jeton par defaut)",
