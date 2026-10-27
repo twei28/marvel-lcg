@@ -1917,20 +1917,10 @@
  "208. Custom (La ville ne dort jamais)": {
   "name": "punisher_mcdc_2026",
   "scenarios": [
-   "art_museum_heist_jigsaw",
-   "the_getaway_jigsaw",
-   "protection_racket_jigsaw",
-   "the_raft_breakout_jigsaw",
-   "stop_the_presses_jigsaw",
-   "art_museum_heist_hobgoblin",
-   "the_getaway_hobgoblin",
-   "protection_racket_hobgoblin",
-   "the_raft_breakout_hobgoblin",
-   "stop_the_presses_hobgoblin",
-   "one_last_kill_jigsaw",
-   "one_last_kill_hobgoblin",
    "the_big_apple",
    "the_big_apple_uptown",
+   "one_last_kill_jigsaw",
+   "one_last_kill_hobgoblin",
    "kingsfall",
    "punishment_hobgoblin",
    "punishment_jigsaw",
@@ -1965,11 +1955,7 @@
   ],
   "max_id": "pu283b",
   "manigances": [
-   "art_museum_heist",
-   "the_getaway",
-   "protection_racket",
-   "the_raft_breakout",
-   "stop_the_presses"
+   "one_last_kill"
   ],
   "underlings": [
    "jigsaw",
@@ -1998,6 +1984,37 @@
    "one_last_kill_jigsaw": "pu056a",
    "one_last_kill_hobgoblin": "pu071a"
   }
+ },
+ "235. Custom (Super Bouffon / Jigsaw)": {
+  "name": "punisher_mcdc_2026",
+  "scenarios": [
+   "art_museum_heist_jigsaw",
+   "art_museum_heist_hobgoblin",
+   "the_getaway_jigsaw",
+   "the_getaway_hobgoblin",
+   "protection_racket_jigsaw",
+   "protection_racket_hobgoblin",
+   "the_raft_breakout_jigsaw",
+   "the_raft_breakout_hobgoblin",
+   "stop_the_presses_jigsaw",
+   "stop_the_presses_hobgoblin"
+  ],
+  "heroes": [],
+  "encounters": [
+   "jigsaw",
+   "hobgoblin"
+  ],
+  "manigances": [
+   "art_museum_heist",
+   "the_getaway",
+   "protection_racket",
+   "the_raft_breakout",
+   "stop_the_presses"
+  ],
+  "underlings": [
+   "jigsaw",
+   "hobgoblin"
+  ]
  },
  "210. Custom (Challenges)": {
   "name": "punisher_mcdc_2026",
@@ -2164,7 +2181,6 @@
   "encounters": [],
   "max_id": "cr019"
  },
- "checksum": "fc436144286e2d92201304c4414b267d30b43620f4ccf21129ed79f980619f06",
  "225. Custom (Starjammers - Hepzibah)": {
   "name": "hepzibah",
   "scenarios": [],
@@ -2244,5 +2260,19 @@
   "heroes": [],
   "encounters": [],
   "max_id": "sy050"
- }
+ },
+ "234. Custom (The Hunger Core)": {
+  "name": "the_hunger_core",
+  "scenarios": [
+   "the_hunger_core",
+   "the_hunger_core_expert"
+  ],
+  "heroes": [],
+  "encounters": [
+   "the_hunger_core_hungry_horde",
+   "the_hunger_core_fallen_heroes"
+  ],
+  "max_id": "hg076"
+ },
+ "checksum": "68a79cd5f6d349a02137917231c3bd162275805521f22b1c82fe9d96fa091296"
 }

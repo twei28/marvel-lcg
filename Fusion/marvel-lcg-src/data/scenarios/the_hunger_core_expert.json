@@ -1,0 +1,83 @@
+{
+    "version": "0.5.8",
+    "name": "The Hunger Core",
+    "villain": [
+        "hg002",
+        "hg003"
+    ],
+    "expert": true,
+    "schemes": [
+        "hg004a,hg004b",
+        "hg005a,hg005b"
+    ],
+    "set_aside": [
+        "hg006",
+        "hg007",
+        "hg008",
+        "hg009",
+        "hg010",
+        "hg011",
+        "hg012",
+        "hg013",
+        "hg014",
+        "hg015",
+        "hg016",
+        "hg017",
+        "hg018",
+        "hg019",
+        "hg020",
+        "hg021",
+        "hg022",
+        "hg023",
+        "hg024",
+        "hg025",
+        "hg026",
+        "hg027",
+        "hg028",
+        "hg029",
+        "hg030",
+        "hg031",
+        "hg032",
+        "hg033",
+        "hg034",
+        "hg035",
+        "hg036",
+        "hg037",
+        "hg038",
+        "hg039",
+        "hg040",
+        "hg041",
+        "hg042",
+        "hg043",
+        "hg044",
+        "hg045",
+        "hg051",
+        "hg052",
+        "hg053",
+        "hg054",
+        "hg055",
+        "hg072",
+        "hg073",
+        "hg074",
+        "hg075",
+        "hg076"
+    ],
+    "encounters": [
+        "hg046",
+        "hg046",
+        "hg046",
+        "hg047",
+        "hg048",
+        "hg049",
+        "hg049",
+        "hg050"
+    ],
+    "encounter_sets": [
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "the_hunger_core_hungry_horde",
+        "the_hunger_core_fallen_heroes"
+    ]
+}

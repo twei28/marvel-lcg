@@ -345,4 +345,10 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - [x] flow.md (mot-clé maison Shang-Chi : pile State of Flow, correspondance stricte des icônes imprimées, message `AfterPlayerResolveFlow`)
 - [x] defausse-au-hasard.md (pack `new_ultimate_winter_soldier` : « discard 1 card from your hand at random » payé ou lu par neuf cartes ; marque `world.defausses_au_hasard` et compteur du round dans `world.stat`, CORRECTIF de `DiscardRandomHandCards`, 25/10/2026)
 - [x] deterrence.md (maison, pack batman)
+- [x] shielded-by-the-horde.md (scénario custom `the_hunger_core`, préfixe `hg` : vilain Hunger Core, réutilise
+      `CannotBeAffectedByPlayerCards` avec `while_fn` dynamique sur « au moins 1 Metazombie en jeu »)
+- [x] rupture-x.md (idem : Forced Response du vilain, `WhenUnitBeDefeated` filtré par `CardFinder(traits=["METAZOMBIE"])`)
+- [x] just-a-core-x.md (idem : moitié « attaque » du vilain, modèle HIDDEN de Galactic Storm)
+- [x] horde-metazombies.md (idem : jeton actif à rotation ronde, Horde deck séparé du deck de rencontre modèle
+      `player.additional_deck`, decks signature par Metazombie créés à la demande)
 - [x] tour-supplementaire.md (maison, pack `rachel_summers` : « take an additional turn » et « end this turn », drapeaux `RM_TOUR_SUPPLEMENTAIRE` / `RM_FIN_DE_TOUR`, CORRECTIFS `world.py` / `player_phase.py` / `event/manager.py`, 26/10/2026)

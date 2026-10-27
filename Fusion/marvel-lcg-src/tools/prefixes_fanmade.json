@@ -13,6 +13,13 @@
   "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
  ],
  "prefixes": {
+  "hg": {
+   "pack": "the_hunger_core",
+   "libelle": "234. Custom (The Hunger Core)",
+   "cartes": 76,
+   "depuis": "2026-10-27",
+   "note": "Scenario fan-made 'The Hunger Core' (theme Marvel Zombies), porte depuis un mod TTS. hg001-003 vilain Hunger Core (3 stages) ; hg004a/b-hg005a/b manigance principale 2 etapes ; hg006 environnement Inside Galactus ; hg007-015 les 9 Metazombies du Horde deck (versions zombies des heros, avec leur set de rencontre signature chacun, hg016-045) ; hg046-050 set partage The Hunger Core (Metazombie Power!, Rise of the Horde!, Half-Eaten, Hunger Pulse, The Hive Calls) ; hg051-055 les 5 Trapped Survivor (manigances-joueur cote rencontre) ; hg056-058 modulaire Hungry Horde ; hg059-071 modulaire Fallen Heroes (13 autres Metazombies) ; hg072-076 le deck Survivor (allies). VIT DANS data/cards_custom.json, pas data/cards.json (decision utilisateur du 27/10/2026) : tools/verifier_prefixes.py ne scanne donc pas ce pack, cette entree est documentaire. Scripts non encore ecrits (etape suivante, carte par carte)."
+  },
   "aa": {
    "pack": "agatha_harkness",
    "libelle": "132. Custom (Agatha Harkness)",

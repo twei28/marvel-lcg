@@ -616,5 +616,1262 @@
    "text": "Attach to your identity.\nYou get -1 hand size.\n<b>Hero Action</b>: Exhaust your hero → discard this card and remove 1 threat from a scheme.\n[star] <b>Boost</b>: Place 2 threat on the main scheme.",
    "custom": "Rainy"
   }
+ ],
+ "the_hunger_core": [
+  {
+   "card_id": "hg001",
+   "type": "Villain",
+   "name": "* The Hunger Core",
+   "subtitle": "Heartbeat",
+   "desc": {
+    "SCH": "1",
+    "HP": "12*",
+    "Stage": "1"
+   },
+   "traits": [
+    "HIVE",
+    "COSMIC"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Shielded by the Horde. Rupture 1 [per_hero].\nJust a Core 1. Instead of attacking you, deal yourself 1 facedown encounter card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg002",
+   "type": "Villain",
+   "name": "* The Hunger Core",
+   "subtitle": "Hunger",
+   "desc": {
+    "SCH": "2",
+    "HP": "15*",
+    "Stage": "2"
+   },
+   "traits": [
+    "HIVE",
+    "COSMIC"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Shielded by the Horde. Rupture 1 [per_hero].\nJust a Core 1. Instead of attacking you, deal yourself 1 facedown encounter card.\n<b>When Revealed</b>: Each player places 1 infection counter.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg003",
+   "type": "Villain",
+   "name": "* The Hunger Core",
+   "subtitle": "Hive",
+   "desc": {
+    "SCH": "3",
+    "HP": "18*",
+    "Stage": "3",
+    "Steady": "1"
+   },
+   "traits": [
+    "HIVE",
+    "COSMIC"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Shielded by the Horde. Rupture 1 [per_hero]. Steady.\nJust a Core 2. Instead of attacking you, deal yourself 2 facedown encounter cards.\n<b>When Revealed</b>: Each player places 1 infection counter.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg004a",
+   "type": "MainScheme",
+   "name": "The Devourer's Skin",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "The Hunger Core",
+   "text": "“It's so big it looks like a continent. And it smells like a graveyard.”\n<b>Setup</b>: Put The Hunger Core (I) into play (Expert: II). Set aside the zombie version of each chosen hero and its Trapped Survivor.\nShuffle the other Metazombies: this is the Horde deck. Put 2 into play.\nEncounter deck: The Hunger Core set, Hungry Horde, Fallen Heroes (without the zombie versions set aside) and the Standard set.\nSet aside “Inside Galactus”, “The Innards” and the Survivor deck.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg004b",
+   "type": "MainScheme",
+   "name": "The Devourer's Skin",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "EscalationThreat": "1*",
+    "TargetThreat": "9*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "The Hunger Core",
+   "text": "<b>Forced Interrupt</b>: When The Hunger Core would be defeated, instead advance to stage 2 of the main scheme and put the next stage of The Hunger Core into play.\nIf this scheme is completed, the players lose.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg005a",
+   "type": "MainScheme",
+   "name": "The Innards",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "The Hunger Core",
+   "text": "“There is no darkness inside Galactus. There is a heartbeat. And every beat calls the dead.”",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg005b",
+   "type": "MainScheme",
+   "name": "The Innards",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "EscalationThreat": "1*",
+    "TargetThreat": "11*",
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "The Hunger Core",
+   "text": "<b>When Revealed</b>: Put “Inside Galactus” and 2 Metazombies into play (max. 3 in play).\nIf this scheme is completed, the players lose.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg006",
+   "type": "Environment",
+   "name": "Inside Galactus",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "COSMIC",
+    "LOCATION"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Residual Cosmic Power. The villain gets +1 ATK.\n<b>Digestive Juices</b> — <b>Forced Response</b>: At the end of the villain phase, deal 2 indirect damage to each player.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg007",
+   "type": "Villain",
+   "name": "Zombie Captain America",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "12*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER",
+    "SOLDIER"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "Leader of the Horde. Each other Metazombie gets +1 ATK.\n<b>Shield</b> — <b>Forced Interrupt</b>: The first time each phase Zombie Captain America would take damage, reduce that damage by 2.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg008",
+   "type": "Villain",
+   "name": "Zombie Iron Man",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "11*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER",
+    "TECH"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "<b>Forced Response</b>: After Zombie Iron Man enters play, discard cards from his signature deck until an attachment is discarded and attach it to him. Then shuffle the discarded cards into his signature deck.\n<b>Upgrades</b>. Zombie Iron Man gets +1 ATK for each attachment on him.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg009",
+   "type": "Villain",
+   "name": "Zombie Hulk",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "4",
+    "HP": "15*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "GAMMA"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "Overkill.\n<b>Devour</b> — <b>Forced Response</b>: After Zombie Hulk defeats an ally, he heals damage equal to that ally's maximum hit points.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg010",
+   "type": "Villain",
+   "name": "Zombie Spider-Man",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "9*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "WEB-SLINGER"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "<b>Web</b> — <b>Forced Response</b>: After Zombie Spider-Man deals damage to a hero, that hero is stunned.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg011",
+   "type": "Villain",
+   "name": "Zombie Captain Marvel",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "10*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER",
+    "KREE"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "<b>Absorption</b> — <b>Forced Response</b>: After she is attacked, place 1 energy counter on this card (max. 5). She gets +1 ATK for each energy counter.\n<b>Forced Response</b>: After she attacks, remove 1 energy counter from this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg012",
+   "type": "Villain",
+   "name": "Zombie Thor",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "3",
+    "HP": "13*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER",
+    "ASGARD"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "<b>Storm</b> — <b>Forced Response</b>: After Zombie Thor activates against a player, deal 1 damage to each ally that player controls.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg013",
+   "type": "Villain",
+   "name": "Zombie Black Widow",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "9*",
+    "Stalwart": "1"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER",
+    "SPY"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "Stalwart.\nAmbush. Allies cannot defend against Zombie Black Widow's attacks.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg014",
+   "type": "Villain",
+   "name": "Zombie Doctor Strange",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "10*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "MYSTIC"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "<b>Hex</b> — <b>Forced Response</b>: After Zombie Doctor Strange activates against you, deal yourself 1 facedown encounter card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg015",
+   "type": "Villain",
+   "name": "Zombie Magik",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "10*"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "MUTANT",
+    "MYSTIC"
+   ],
+   "set_name": "Horde deck (Metazombies)",
+   "text": "<b>Portal to Limbo</b> — <b>Forced Response</b>: After Zombie Magik activates against you, if you are not engaged with any minions, discard cards from the encounter deck until a minion is discarded and put it into play engaged with you. Then shuffle the encounter discard pile into the encounter deck. If no minion is discarded and there are fewer than 3 Metazombies in play, put a Metazombie into play.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg016",
+   "type": "Treachery",
+   "name": "Thrown Shield",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Captain America (Signature)",
+   "text": "<b>When Revealed</b>: Deal 2 damage to each hero and each ally in play.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg017",
+   "type": "Treachery",
+   "name": "Avengers, Feast!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Captain America (Signature)",
+   "text": "<b>When Revealed</b>: Each Metazombie in play activates against each player. Do not deal boost cards for these activations.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg018",
+   "type": "Attachment",
+   "name": "Dented Vibranium Shield",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Zombie Captain America (Signature)",
+   "text": "Attach to Zombie Captain America.\nZombie Captain America gains Retaliate 2.\n<b>Hero Action</b>: Spend 2 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg019",
+   "type": "Attachment",
+   "name": "Necrotic Repulsors",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TECH",
+    "UPGRADE"
+   ],
+   "set_name": "Zombie Iron Man (Signature)",
+   "text": "Attach to Zombie Iron Man.\nHis attacks gain Piercing.\n<b>Hero Action</b>: Spend 2 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg020",
+   "type": "Attachment",
+   "name": "Patched Armor",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TECH",
+    "UPGRADE"
+   ],
+   "set_name": "Zombie Iron Man (Signature)",
+   "text": "Attach to Zombie Iron Man.\nZombie Iron Man gets +2* hit points.\n<b>Hero Action</b>: Spend 3 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg021",
+   "type": "Attachment",
+   "name": "Rotten Thrusters",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TECH",
+    "UPGRADE"
+   ],
+   "set_name": "Zombie Iron Man (Signature)",
+   "text": "Attach to Zombie Iron Man.\nZombie Iron Man gets +1 SCH and cannot be attacked by allies.\n<b>Hero Action</b>: Spend 2 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg022",
+   "type": "Attachment",
+   "name": "Necrotic Unibeam",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TECH",
+    "UPGRADE"
+   ],
+   "set_name": "Zombie Iron Man (Signature)",
+   "text": "Attach to Zombie Iron Man.\nHis attacks gain Overkill and deal 1 damage to each ally controlled by the attacked player.\n<b>Hero Action</b>: Spend 3 [mental] resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg023",
+   "type": "Treachery",
+   "name": "Hunger Protocol",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TECH"
+   ],
+   "set_name": "Zombie Iron Man (Signature)",
+   "text": "<b>When Revealed</b>: If Zombie Iron Man has 2 or more attachments, he activates against you. Otherwise, discard cards from his signature deck until an attachment is discarded and attach it to him; then shuffle the discarded cards into his signature deck. If you cannot, this card gains Surge.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg024",
+   "type": "Treachery",
+   "name": "Hulk Hungry!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Hulk (Signature)",
+   "text": "<b>When Revealed</b>: If you are in alter-ego form, change to hero form. Zombie Hulk activates against you.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg025",
+   "type": "Treachery",
+   "name": "Smash",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Zombie Hulk (Signature)",
+   "text": "<b>When Revealed</b>: Choose support or upgrade and discard each card of that type you control. If you control none, your hero takes 3 damage.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg026",
+   "type": "Attachment",
+   "name": "Endless Rage",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Zombie Hulk (Signature)",
+   "text": "Attach to Zombie Hulk.\nZombie Hulk gains Steady and gets +1 ATK.\n<b>Hero Action</b>: Spend 3 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg027",
+   "type": "Attachment",
+   "name": "Rotten Web",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Zombie Spider-Man (Signature)",
+   "text": "Attach to your hero.\nYour hero gets −1 ATK and −1 THW.\n<b>Hero Action (any player)</b>: Spend 3 resources of different types → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg028",
+   "type": "Treachery",
+   "name": "Dead Spider-Sense",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Spider-Man (Signature)",
+   "text": "<b>When Revealed</b>: Zombie Spider-Man activates against the player with the most cards in hand. If tied, he activates against you.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg029",
+   "type": "SideScheme",
+   "name": "Rooftop to Rooftop",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Zombie Spider-Man (Signature)",
+   "text": "While this scheme is in play, Zombie Spider-Man gets +1 SCH and cannot be attacked by allies.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg030",
+   "type": "Treachery",
+   "name": "Rotten Binary",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "COSMIC"
+   ],
+   "set_name": "Zombie Captain Marvel (Signature)",
+   "text": "<b>When Revealed</b>: Deal 1 damage to each hero and each ally in play.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg031",
+   "type": "Attachment",
+   "name": "Photon Fist",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "COSMIC"
+   ],
+   "set_name": "Zombie Captain Marvel (Signature)",
+   "text": "Attach to Zombie Captain Marvel.\nHer attacks gain Overkill.\n<b>Hero Action</b>: Spend 2 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg032",
+   "type": "Treachery",
+   "name": "Discharge",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Captain Marvel (Signature)",
+   "text": "<b>When Revealed</b>: If Zombie Captain Marvel has fewer than 5 energy counters, place 1 on her. Then remove all her energy counters; she is stunned. Deal indirect damage equal to the removed counters to each player.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg033",
+   "type": "Treachery",
+   "name": "Energy Hunger",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "COSMIC"
+   ],
+   "set_name": "Zombie Captain Marvel (Signature)",
+   "text": "<b>When Revealed</b>: Place 2 energy counters on Zombie Captain Marvel (max. 5).",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg034",
+   "type": "Attachment",
+   "name": "Bloodied Mjolnir",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "WEAPON",
+    "ASGARD"
+   ],
+   "set_name": "Zombie Thor (Signature)",
+   "text": "Attach to Zombie Thor.\nZombie Thor gets +1 ATK. His attacks gain Overkill and Piercing.\nStorm deals 1 additional damage to each ally.\n<b>Hero Action</b>: Spend 3 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg035",
+   "type": "Treachery",
+   "name": "Rotten Lightning",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Thor (Signature)",
+   "text": "<b>When Revealed</b>: Deal 2 damage to each friendly character.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg036",
+   "type": "Treachery",
+   "name": "Fallen God of Thunder",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Zombie Thor (Signature)",
+   "text": "<b>When Revealed</b>: Zombie Thor heals 4* damage. If he had no damage, he activates against you.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg037",
+   "type": "Treachery",
+   "name": "Widow's Bite",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Zombie Black Widow (Signature)",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Place 1 infection counter. This card gains Surge.\n<b>When Revealed (Hero)</b>: Your hero is stunned. Place 1 infection counter.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg038",
+   "type": "SideScheme",
+   "name": "Infiltrator",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Zombie Black Widow (Signature)",
+   "text": "While this scheme is in play, Zombie Black Widow gets +1 SCH.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg039",
+   "type": "Treachery",
+   "name": "Sleeper Agent",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Black Widow (Signature)",
+   "text": "<b>When Revealed</b>: If you are in alter-ego form, change to hero form. Zombie Black Widow activates against you.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg040",
+   "type": "Attachment",
+   "name": "Rotten Eye of Agamotto",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ARTIFACT",
+    "MYSTIC"
+   ],
+   "set_name": "Zombie Doctor Strange (Signature)",
+   "text": "Attach to Zombie Doctor Strange.\nEach time Zombie Doctor Strange would take damage, reduce that damage by 1.\n<b>Hero Action</b>: Spend 2 [mental] resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg041",
+   "type": "Attachment",
+   "name": "Crimson Bands of Cyttorak",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "SPELL",
+    "MYSTIC"
+   ],
+   "set_name": "Zombie Doctor Strange (Signature)",
+   "text": "Attach to your hero.\nYour hero cannot attack.\n<b>Hero Action</b>: Spend 2 resources of different types and exhaust your hero → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg042",
+   "type": "SideScheme",
+   "name": "Hunger Hex",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*"
+   },
+   "traits": [],
+   "set_name": "Zombie Doctor Strange (Signature)",
+   "text": "While this scheme is in play, each player's hand size is reduced by 2.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg043",
+   "type": "Attachment",
+   "name": "Soulsword",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "WEAPON",
+    "MYSTIC"
+   ],
+   "set_name": "Zombie Magik (Signature)",
+   "text": "Attach to Zombie Magik.\nZombie Magik gets +1 ATK. Her attacks gain Piercing.\n<b>Hero Action</b>: Spend 3 resources → discard this card.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg044",
+   "type": "Treachery",
+   "name": "Teleportation Disc",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Zombie Magik (Signature)",
+   "text": "<b>When Revealed</b>: Zombie Magik activates against each player. Do not deal boost cards for these activations.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg045",
+   "type": "Treachery",
+   "name": "Demons of Limbo",
+   "subtitle": "",
+   "desc": {
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "Zombie Magik (Signature)",
+   "text": "Surge.\n<b>When Revealed</b>: Put the minion with the most hit points in the encounter discard pile into play engaged with you.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg046",
+   "type": "Treachery",
+   "name": "Metazombie Power!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "The Hunger Core",
+   "text": "<b>When Revealed</b>: Reveal the top card of the active Metazombie's signature deck. If there are no Metazombies in play, this card gains Surge.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg047",
+   "type": "Treachery",
+   "name": "Rise of the Horde!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "The Hunger Core",
+   "text": "<b>When Revealed</b>: If there are fewer than 3 Metazombies in play, put one into play. Otherwise, this card gains Surge.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg048",
+   "type": "Treachery",
+   "name": "Half-Eaten",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "The Hunger Core",
+   "text": "<b>When Revealed</b>: If there are fewer than 3 Metazombies in play, put one into play with damage equal to half its hit points. Otherwise, this card gains Surge.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg049",
+   "type": "Treachery",
+   "name": "Hunger Pulse",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "HIVE"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "<b>When Revealed</b>: Place 1* threat on the main scheme (2* if the Core is exposed).\n<hr />\n[star] <b>Boost</b>: Place 1 infection counter.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg050",
+   "type": "SideScheme",
+   "name": "The Hive Calls",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4*",
+    "Acceleration": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "HIVE"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg051",
+   "type": "SideScheme",
+   "name": "Trapped Survivor: Franklin Richards",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "2*"
+   },
+   "traits": [
+    "SURVIVOR"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Hinder 2.\n<b>Forced Response</b>: After step 1 of the villain phase, place 1 counter and 2* threat here. At 3 counters, remove this card and Franklin Richards from the game; each player places 1 infection counter.\n<b>When Defeated</b>: Remove this card from the game. The player who defeated it adds Franklin Richards to their hand from the Survivor deck.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg052",
+   "type": "SideScheme",
+   "name": "Trapped Survivor: Chewie",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "2*"
+   },
+   "traits": [
+    "SURVIVOR"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Hinder 2.\n<b>Forced Response</b>: After step 1 of the villain phase, place 1 counter and 2* threat here. At 3 counters, remove this card and Chewie from the game; each player places 1 infection counter.\n<b>When Defeated</b>: Remove this card from the game. The player who defeated it adds Chewie to their hand from the Survivor deck.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg053",
+   "type": "SideScheme",
+   "name": "Trapped Survivor: Valeria Richards",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "2*"
+   },
+   "traits": [
+    "SURVIVOR"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Hinder 2.\n<b>Forced Response</b>: After step 1 of the villain phase, place 1 counter and 2* threat here. At 3 counters, remove this card and Valeria Richards from the game; each player places 1 infection counter.\n<b>When Defeated</b>: Remove this card from the game. The player who defeated it adds Valeria Richards to their hand from the Survivor deck.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg054",
+   "type": "SideScheme",
+   "name": "Trapped Survivor: Blade",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "2*"
+   },
+   "traits": [
+    "SURVIVOR"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Hinder 2.\n<b>Forced Response</b>: After step 1 of the villain phase, place 1 counter and 2* threat here. At 3 counters, remove this card and Blade from the game; each player places 1 infection counter.\n<b>When Defeated</b>: Remove this card from the game. The player who defeated it adds Blade to their hand from the Survivor deck.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg055",
+   "type": "SideScheme",
+   "name": "Trapped Survivor: Wolverine",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "2*"
+   },
+   "traits": [
+    "SURVIVOR"
+   ],
+   "set_name": "The Hunger Core",
+   "text": "Hinder 2.\n<b>Forced Response</b>: After step 1 of the villain phase, place 1 counter and 2* threat here. At 3 counters, remove this card and Wolverine from the game; each player places 1 infection counter.\n<b>When Defeated</b>: Remove this card from the game. The player who defeated it adds Wolverine to their hand from the Survivor deck.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg056",
+   "type": "Minion",
+   "name": "Hungry Zombie",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "1",
+    "HP": "3",
+    "Guard": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "ZOMBIE"
+   ],
+   "set_name": "Hungry Horde",
+   "text": "Guard.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg057",
+   "type": "Minion",
+   "name": "Bloated Zombie",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "1",
+    "HP": "5",
+    "Guard": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "ZOMBIE"
+   ],
+   "set_name": "Hungry Horde",
+   "text": "Guard.\n<b>Forced Response</b>: After this minion is defeated, each player places 1 infection counter.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg058",
+   "type": "Treachery",
+   "name": "Bite",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Hungry Horde",
+   "text": "<b>When Revealed</b>: Place 1 infection counter (2 if your hero has damage on it).",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg059",
+   "type": "Minion",
+   "name": "Zombie Luke Cage",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "6",
+    "Guard": "1",
+    "Toughness": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "DEFENDER"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard. Toughness.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg060",
+   "type": "Minion",
+   "name": "Zombie Hawkeye",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "5",
+    "Guard": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard.\n<b>When Revealed</b>: Deal 2 damage to each ally you control.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg061",
+   "type": "Minion",
+   "name": "Zombie Giant-Man",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "3",
+    "HP": "8",
+    "Guard": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard. Overkill.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg062",
+   "type": "Minion",
+   "name": "Zombie Wasp",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "4",
+    "Guard": "1",
+    "Retaliate": "2"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard. Quickstrike. Retaliate 2.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg063",
+   "type": "Minion",
+   "name": "Zombie Nova Prime",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "6",
+    "Guard": "1",
+    "Villainous": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "COSMIC"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard. Quickstrike. Villainous.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg064",
+   "type": "Minion",
+   "name": "Zombie Mister Fantastic",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "1",
+    "HP": "6",
+    "Guard": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "FANTASTIC"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard.\n<b>When Revealed</b>: Reveal the top card of the signature deck of the Metazombie with the fewest remaining hit points.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg065",
+   "type": "Minion",
+   "name": "Zombie Invisible Woman",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "4",
+    "Guard": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "FANTASTIC"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard.\nThis minion cannot be dealt damage by attacks from allies.\n<b>When Revealed</b>: Your identity and each ally you control are confused.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg066",
+   "type": "Minion",
+   "name": "Zombie Thing",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "2",
+    "HP": "7",
+    "Guard": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "FANTASTIC"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard.\n<b>When Revealed</b>: This minion gets 2 tough status cards. It can have 2 tough status cards at the same time.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg067",
+   "type": "Minion",
+   "name": "Zombie Human Torch",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "5",
+    "Guard": "1",
+    "Villainous": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "FANTASTIC"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard. Villainous.\n<b>Forced Response</b>: After this minion deals damage with an attack, deal 1 damage to each ally controlled by the attacked player.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg068",
+   "type": "Minion",
+   "name": "Zombie Rhino",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "3",
+    "HP": "7",
+    "Guard": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "CRIMINAL"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard.\nCharge. This minion's attacks have Piercing.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg069",
+   "type": "Minion",
+   "name": "Zombie Colossus",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "3",
+    "HP": "7",
+    "Guard": "1",
+    "Toughness": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "X-MEN"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard. Toughness.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg070",
+   "type": "Minion",
+   "name": "Zombie Falcon",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "1",
+    "HP": "4",
+    "Guard": "1",
+    "Villainous": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard. Villainous.\nThis minion cannot be attacked by allies.\n<b>When Revealed</b>: Exhaust your identity; it is stunned.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg071",
+   "type": "Minion",
+   "name": "Zombie Quicksilver",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "3",
+    "Guard": "1"
+   },
+   "traits": [
+    "METAZOMBIE",
+    "AVENGER"
+   ],
+   "set_name": "Fallen Heroes",
+   "text": "Guard.\nSuper Speed. This minion activates twice. While the engaged player controls an ally, its attacks target one of those allies (that player's choice) instead of their identity.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg072",
+   "type": "Ally",
+   "name": "* Franklin Richards",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "THW": "1*",
+    "ATK": "0",
+    "HP": "2",
+    "RES": "G"
+   },
+   "traits": [
+    "SURVIVOR",
+    "FANTASTIC"
+   ],
+   "set_name": "Survivor deck",
+   "text": "<b>Action</b>: Exhaust Franklin Richards → choose one:\n• Remove 2 infection counters from a hero.\n• Heal 2 damage from a friendly character.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg073",
+   "type": "Ally",
+   "name": "* Chewie",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "THW": "0",
+    "ATK": "1*",
+    "HP": "2",
+    "RES": "G"
+   },
+   "traits": [
+    "SURVIVOR",
+    "FLERKEN"
+   ],
+   "set_name": "Survivor deck",
+   "text": "<b>Action</b>: Exhaust Chewie → discard a Zombie or Metazombie minion. Chewie takes 1 damage.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg074",
+   "type": "Ally",
+   "name": "* Valeria Richards",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "THW": "3*",
+    "ATK": "0",
+    "HP": "2",
+    "RES": "G"
+   },
+   "traits": [
+    "SURVIVOR",
+    "FANTASTIC"
+   ],
+   "set_name": "Survivor deck",
+   "text": "<b>Action</b>: Exhaust Valeria Richards → choose one:\n• Change form.\n• Deal 3* damage to The Hunger Core.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg075",
+   "type": "Ally",
+   "name": "* Blade",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "THW": "1*",
+    "ATK": "2*",
+    "HP": "3",
+    "RES": "G"
+   },
+   "traits": [
+    "SURVIVOR",
+    "HUNTER"
+   ],
+   "set_name": "Survivor deck",
+   "text": "<b>Undead Hunter</b>. While Blade attacks a Zombie or Metazombie enemy, he gets +2 ATK. If he defeats it, Blade takes no consequential damage.",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  },
+  {
+   "card_id": "hg076",
+   "type": "Ally",
+   "name": "* Wolverine",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "THW": "1*",
+    "ATK": "3*",
+    "HP": "3",
+    "RES": "G"
+   },
+   "traits": [
+    "SURVIVOR",
+    "X-MEN"
+   ],
+   "set_name": "Survivor deck",
+   "text": "",
+   "custom": "The Hunger Core (porte depuis TTS, 27/10/2026)"
+  }
  ]
 }

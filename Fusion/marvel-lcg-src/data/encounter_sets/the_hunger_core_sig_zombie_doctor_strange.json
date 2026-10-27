@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Signature — Zombie Doctor Strange",
+    "encounters": [
+        "hg040",
+        "hg041",
+        "hg042"
+    ]
+}

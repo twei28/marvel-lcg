@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Signature — Zombie Magik",
+    "encounters": [
+        "hg043",
+        "hg044",
+        "hg045"
+    ]
+}

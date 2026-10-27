@@ -288,6 +288,13 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (while_fn=lambda face: face.HasTrait("HIDDEN"), deja en place, voir mots-cles/immunite-cartes-joueur.md)
         # et par la moitie « attaque » codee dans ce lot (mots-cles/hidden.md).
         "HIDDEN", "TARGETED",
+        # AJOUT (27/10/2026, scenario custom The Hunger Core, prefixe `hg`) : « Metazombie »
+        # (les versions zombifiees des heros, hg007-hg071), « Hive » (le vilain Hunger Core
+        # et quelques cartes de rencontre), « Survivor », « Flerken » (Chewie), « Hunter »
+        # (Blade), « Fantastic » au singulier (distinct de FANTASTIC FOUR, deja pris) et
+        # « Web-Slinger » au singulier (distinct de WEB-WARRIOR, deja pris). Purement
+        # declaratif, comme les autres.
+        "METAZOMBIE", "HIVE", "SURVIVOR", "FLERKEN", "HUNTER", "FANTASTIC", "WEB-SLINGER",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -353,6 +360,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'plasma',
         'drain',         # CORRECTIF : Fear No Evil, Drained of Power (60080), Uses (3 drain counters), 18/09/2026
         'civilian', 'stamina', 'grip', 'spot', 'stilt', 'support',  # CORRECTIF : Fear No Evil blocs 3-4 (Disasters, Daily Bugle, Bear Hug, Spot, Stilt-Man, Public Support), 18/09/2026
+        'infection',     # AJOUT (27/10/2026, scenario custom The Hunger Core, prefixe `hg`) : les « Infection counters » places par le vilain et plusieurs cartes de rencontre.
         'threat',        # CORRECTIF : compteur du pack custom superior_spider_man
                          # (Rainy). Le mot-cle maison `track` DEPLACE de la menace
                          # d'une manigance vers un SBIRE ; la menace posee sur un
