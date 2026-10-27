@@ -47,6 +47,30 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-27",
+        genre: "jeu",
+        fr: "Une campagne en ligne peut maintenant inviter des amis : un écran de liens apparaît après le lancement d'un scénario, chaque invité atterrit directement sur le héros que la campagne lui a fixé.",
+        en: "An online campaign can now invite friends: a link screen appears after launching a scenario, and each guest lands straight on the hero the campaign assigned them.",
+    },
+    {
+        date: "2026-10-27",
+        genre: "jeu",
+        fr: "Dans le choix des héros, cliquer sur l'un d'eux fige sa fiche à gauche : survoler les autres ne la fait plus changer avant d'avoir lu ses cartes ou sa biographie.",
+        en: "In hero selection, clicking a hero now locks its card in place on the left: hovering over others no longer swaps it out before you've read its cards or bio.",
+    },
+    {
+        date: "2026-10-27",
+        genre: "correction",
+        fr: "She-Hulk (variante Why Not) inflige bien ses 2 dégâts fixes en plus du bonus par icône d'Accélération, et non l'un ou l'autre.",
+        en: "She-Hulk (Why Not variant) now deals her 2 fixed damage on top of the Acceleration-icon bonus, instead of only one or the other.",
+    },
+    {
+        date: "2026-10-27",
+        genre: "heros",
+        fr: "Le scénario fan-made « The Hunger Core » (thème Marvel Zombies) commence son arrivée : le vilain, sa manigance, et les premiers héros zombifiés du Horde deck sont en place.",
+        en: "The fan-made scenario \"The Hunger Core\" (Marvel Zombies theme) starts rolling out: the villain, its scheme, and the first zombified heroes of the Horde deck are in place.",
+    },
+    {
         date: "2026-10-26",
         genre: "heros",
         fr: "Cinquante cartes d'aspect Starjammers (Agressivité, Justice, Leadership, Protection et Basic) de Phenexian et Mysteltainn arrivent dans le deck-builder : Cyclops, Havok, Polaris, Lilandra, Korvus Rook'shir, Kalyx et leur équipement. Elles sont encore en rodage : dis-nous ce qui cloche.",
