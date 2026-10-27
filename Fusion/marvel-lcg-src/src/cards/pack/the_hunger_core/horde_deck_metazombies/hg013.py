@@ -17,8 +17,8 @@ from . import *
 #
 # ⚠ Mots-pieges :
 #  - « Ambush » est un NOM D'AMBIANCE propre a cette carte, pas un mot-cle officiel ni une mecanique a coder
-#    (arbitrage utilisateur, 27/10/2026) : meme statut que « Storm » (hg012), « Devour » (hg010), « Web »
-#    (hg011), « Absorption » (hg009) -- aucune fiche `mots-cles/ambush.md` a creer, rien a ouvrir avant de
+#    (arbitrage utilisateur, 27/10/2026) : meme statut que « Storm » (hg012), « Devour » (hg009), « Web »
+#    (hg010), « Absorption » (hg011) -- aucune fiche `mots-cles/ambush.md` a creer, rien a ouvrir avant de
 #    coder, seule la phrase qui suit (« Allies cannot defend... ») porte une regle.
 #  - « ALLIES cannot defend » : Ally SEULEMENT (pas Unit2, pas Character) -- le heros/l'identite attaquee
 #    PEUT toujours defendre normalement (il n'y a d'ailleurs personne d'autre a defendre pour lui). Si ce

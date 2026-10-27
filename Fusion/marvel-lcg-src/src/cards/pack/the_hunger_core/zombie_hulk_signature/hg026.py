@@ -25,7 +25,7 @@ from . import *
 # - [[horde-metazombies]] (mots-cles/horde-metazombies.md) : cette carte est elle-meme une carte du deck
 #   signature de Zombie Hulk (`commun.DECKS_SIGNATURE["Zombie Hulk"]` contient `hg026`, en derniere position),
 #   revelee seulement quand son propre deck signature est consulte (`commun.RevelerLeDessusDuDeckSignature`,
-#   appelee sur `LeMetazombieActif(effect)` -- cf. `hg046` Metazombie Power!, pas encore ecrite). Zombie Hulk
+#   appelee sur `LeMetazombieActif(effect)` par `hg046` Metazombie Power!). Zombie Hulk
 #   est donc EN JEU au moment ou cette carte se revele (son deck signature n'existe que lie a sa propre
 #   `Card`, `commun._DeckSignatureAttr`), ce qui rend la cible de l'attache quasi garantie en pratique -- voir
 #   piege plus bas sur le filet natif en cas d'echec malgre tout.

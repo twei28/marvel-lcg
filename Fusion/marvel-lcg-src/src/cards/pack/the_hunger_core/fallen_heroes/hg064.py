@@ -16,7 +16,7 @@ from . import *
 #  - « the signature deck of [ce Metazombie] » : `commun.RevelerLeDessusDuDeckSignature(effect, metazombie,
 #    joueur)` (helper deja ecrit pour ce scenario, reutilise tel quel : revele le dessus du deck signature
 #    du Metazombie trouve, ou ne fait rien si ce deck est vide/absent) -- meme helper que `hg046` Metazombie
-#    Power! (non encore scriptee a la date de cette tache) l'aurait appele sur `LeMetazombieActif(effect)`.
+#    Power! appelle sur `LeMetazombieActif(effect)`.
 #  - L'ensemble des candidats « Metazombie » : `commun.Metazombies(effect)` (liste deja filtree sur le trait
 #    METAZOMBIE **et** `card_type=Villain`, cf. le commentaire d'entete de `commun.py` : « Le Coeur et les
 #    Metazombies, tous des VILLAIN (page 3 : "A Metazombie is a villain for all purposes") »). Voir

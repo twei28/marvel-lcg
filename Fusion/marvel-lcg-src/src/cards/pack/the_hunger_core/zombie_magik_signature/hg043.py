@@ -1,7 +1,7 @@
 from . import *
 
-# CORRECTIF (27/10/2026, passe de fusion hg028-hg076) : la lecture « Attach to Zombie Magik -> AUCUN code »
-# ci-dessous etait FAUSSE. `commun.DefausserJusquaUneAmeliorationDuDeckSignature` n'est appelee QUE par hg008
+# CORRECTIF (27/10/2026, passe de fusion hg028-hg076) : l'ancienne lecture « Attach to Zombie Magik -> AUCUN code »
+# etait FAUSSE (bloc CARTES DE REFERENCE reecrit en consequence). `commun.DefausserJusquaUneAmeliorationDuDeckSignature` n'est appelee QUE par hg008
 # Zombie Iron Man et hg023 (son propre deck) ; Zombie Magik (hg015) n'imprime aucun mecanisme d'attache. Ses
 # cartes signature sortent par la voie GENERIQUE (`commun.RevelerLeDessusDuDeckSignature`, appelee par hg046
 # Metazombie Power! / hg064 Zombie Mister Fantastic) : `Reveal` -> `PutIntoPlay`, exactement comme hg018/hg026/
@@ -45,14 +45,10 @@ from . import *
 # ---------------------------------------------------------------------------
 # CARTES DE REFERENCE
 #
-# - « Attach to Zombie Magik » : AUCUN code necessaire. Comme `hg019`-`hg022` (deck signature de Zombie Iron
-#   Man), cette carte n'est jamais jouee depuis une main ni mise en jeu seule : elle est piochee et attachee
-#   DIRECTEMENT par `commun.DefausserJusquaUneAmeliorationDuDeckSignature` (cf. commentaire natif de cette
-#   fonction, deja partagee par `hg008` Zombie Iron Man a son entree en jeu ET par `hg023` Hunger Protocol),
-#   appelee pour Zombie Magik par sa PROPRE entree en jeu / une carte de son set qui reutilise le meme helper —
-#   `metazombie` est TOUJOURS Zombie Magik pour ce deck signature (`DECKS_SIGNATURE["Zombie Magik"]` ne
-#   contient que hg043-hg045, commun.py). Pas d'`AbilityFactory.AttachToFaceWhenPutIntoPlay` ici : elle
-#   n'ecouterait jamais rien, cette carte ne passe jamais par `PutIntoPlay`.
+# - « Attach to Zombie Magik » : `AbilityFactory.AttachToFaceWhenPutIntoPlay(CardFinder(name="Zombie Magik",
+#   card_type=Villain))`, modele hg031/hg034 (voir le CORRECTIF en tete : la carte sort par la voie generique
+#   `RevelerLeDessusDuDeckSignature` -> `Reveal` -> `PutIntoPlay`, jamais par
+#   `DefausserJusquaUneAmeliorationDuDeckSignature`, reservee a Zombie Iron Man).
 # - « Zombie Magik gets +1 ATK » : `01074` Inspired (pack `core`) : `AbilityFactory.GiveKeywordToAttached(
 #   Ally, thwart=1, attack=1)` — MEME fabrique pour le bonus de statistique statique tant que l'attachement
 #   est en jeu. Difference avec `01074` : la cible n'est pas generique (« an ally »/« your hero »), le texte
@@ -76,8 +72,8 @@ from . import *
 # ---------------------------------------------------------------------------
 # TEXTE CONTRE CODE
 #
-# « Attach to Zombie Magik » -> aucun module (attache geree par
-#   `commun.DefausserJusquaUneAmeliorationDuDeckSignature`, voir CARTES DE REFERENCE).
+# « Attach to Zombie Magik » -> `AbilityFactory.AttachToFaceWhenPutIntoPlay(CardFinder(name="Zombie Magik",
+#   card_type=Villain))` (voir CARTES DE REFERENCE).
 # « Zombie Magik gets +1 ATK » -> `AbilityFactory.GiveKeywordToAttached(CardFinder(name="Zombie Magik"),
 #   attack=1)`. Bonus permanent tant que la carte reste attachee (retire automatiquement si Soulsword quitte
 #   le jeu, nature de `GiveKeywordToAttached`/`WhileValid` -- pas de nettoyage manuel a coder).

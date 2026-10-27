@@ -43,6 +43,9 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(message)
 
         Villains.SetRule(effect, Villains.Rule(the_villain="Active", player_cards="TheVillain"))
+        # Le jeton est d'abord pose sur le Coeur (repli si le Horde deck etait vide) ; le PREMIER Metazombie mis en
+        # jeu juste apres le reprend (`MettreUnMetazombieEnJeu`), conformement au livret p. 7, etape 7 : « Place
+        # the active Metazombie token on the first one in the row. »
         coeur = LeCoeur(effect)
         if coeur is not None:
             Villains.SetActive(coeur, effect)

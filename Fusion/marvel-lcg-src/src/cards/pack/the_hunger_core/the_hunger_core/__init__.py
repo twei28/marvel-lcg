@@ -30,4 +30,7 @@ def CapacitesDuCoeur(*, just_a_core: int, rupture_x: int = 1) -> List['Ability']
         AbilityFactory.CannotBeAffectedByPlayerCards("This", while_fn=lambda face: bouclier(face)),
         AbilityFactory.WhenUnitWouldAttack(AbilityType.ForcedInterrupt, "This", juste_un_coeur),
         AbilityFactory.WhenUnitBeDefeated(AbilityType.ForcedResponse, CardFinder(traits=["METAZOMBIE"], card_type=Villain), rupture),
+        # Regles du livret sans carte (jeton actif, Metazombie vaincu, Infection) : voir `commun.ReglesDuScenario`.
+        # Portees par le Coeur parce qu'il est le SEUL a rester en jeu du Setup a la victoire (ses 3 stades).
+        *ReglesDuScenario(),
     ]

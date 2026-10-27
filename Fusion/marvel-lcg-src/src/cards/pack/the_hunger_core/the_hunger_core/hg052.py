@@ -4,8 +4,8 @@ from . import *
 #
 # Hinder 2.
 # Forced Response: After step 1 of the villain phase, place 1 counter and 2[per_hero] threat here. At 3
-# counters, remove this card and Franklin Richards from the game; each player places 1 infection counter.
-# When Defeated: Remove this card from the game. The player who defeated it adds Franklin Richards to their
+# counters, remove this card and Chewie from the game; each player places 1 infection counter.
+# When Defeated: Remove this card from the game. The player who defeated it adds Chewie to their
 # hand from the Survivor deck.
 #
 # ---------------------------------------------------------------------------
@@ -18,12 +18,13 @@ from . import *
 # l'autre (`commun.CARD_ID_SURVIVOR_ALLY_PAR_HEROS`, deja pose par un autre travail : Franklin Richards ->
 # hg072, Chewie -> hg073, Valeria Richards -> hg074, Blade -> hg075, Wolverine -> hg076).
 #
-# Contexte scenario (lu dans `data/scenarios/the_hunger_core.json` et `the_hunger_core/hg004a.py`) : les 5
-# manigances ET les 5 allies sont `set_aside` a la mise en place (ni en jeu, ni dans un deck). AUCUNE carte
-# scriptee a ce jour (hg001-hg028) ne les met en jeu : ce doit etre le fait d'une carte non encore scriptee de
-# ce lot (la manigance principale 2A/2B « Deeper Inside » hg005a/hg005b, ou le Coeur stade II/III) — hors
-# perimetre de cette tache, qui ne scripte QUE hg051-hg055 eux-memes. Rien ici ne suppose COMMENT la carte
-# entre en jeu : le code lit l'etat du jeu au moment du declenchement, pas la mise en place.
+# Contexte scenario (CORRIGE le 27/10/2026, lecture du livret p. 6-7) : les 5 manigances sont MELANGEES AU
+# DECK DE RENCONTRE (« The Hunger Core set (13 cards, with the remaining Trapped Survivors) », etape 6 de la
+# mise en place ; `data/scenarios/the_hunger_core*.json`, champ `encounters`) et entrent en jeu quand on les
+# revele, comme toute manigance annexe ; seuls les 5 allies restent mis de cote (« the Survivor deck »). Le
+# Trapped Survivor d'un heros joue (Wolverine, Blade) est retire du jeu au Setup
+# (`commun.RetirerZombiesEtSurvivorsHomonymes`). Rien ici ne suppose COMMENT la carte entre en jeu : le code
+# lit l'etat du jeu au moment du declenchement.
 #
 # « the Survivor deck » (texte de hg051-055 ET de hg004a) : d'apres `data/scenarios/.../set_aside` et
 # `commun.py` (commentaire de `CARD_ID_SURVIVOR_ALLY_PAR_HEROS`), ce n'est PAS un Deck2 construit par le code

@@ -129,14 +129,21 @@ def PasserLeJeton(effect: 'Effect') -> None:
     Villains.SetActive(suivant, effect)
 
 
-def JetonApresDefaite(effect: 'Effect') -> None:
+def JetonApresDefaite(effect: 'Effect', vaincu: 'Villain') -> None:
     """« If the active Metazombie is defeated, the token moves IMMEDIATELY to the next one in the row, which
     resolves any remaining activations. If no Metazombie is left, the token moves to The Hunger Core. » Distinct
-    de `PasserLeJeton` (fin de ronde normale) : ici on ne fait qu'UN pas depuis la position qui vient de tomber,
-    sans dependre de l'index du vaincu (deja hors de `Metazombies(effect)`)."""
-    vivants = Metazombies(effect)
-    if vivants:
-        Villains.SetActive(vivants[0], effect)
+    de `PasserLeJeton` (fin de ronde normale). Appele depuis `QuandMetazombieVaincu`, au moment du
+    `WhenUnitBeDefeated` : le vaincu est ENCORE dans la rangee (meme timing que Sinister Six,
+    `MoveTheActiveCounterToTheNextVillain`), d'ou le calcul « le suivant A DROITE du vaincu, en bouclant »,
+    vaincu exclu. (Avant le 27/10/2026, on prenait `vivants[0]` : faux des que le vaincu n'etait pas le premier.)"""
+    rangee = Metazombies(effect)
+    if vaincu in rangee:
+        i = rangee.index(vaincu)
+        candidats = rangee[i + 1:] + rangee[:i]
+    else:
+        candidats = rangee
+    if candidats:
+        Villains.SetActive(candidats[0], effect)
         return
     coeur = LeCoeur(effect)
     if coeur is not None:
@@ -194,15 +201,86 @@ def MettreUnMetazombieEnJeu(effect: 'Effect', joueur: 'Player') -> 'Villain|None
     carte = deck.GetTop()
     if carte is None:
         return None
+    # « If no Metazombie is left, the token moves to The Hunger Core. When a Metazombie enters play again, the
+    # token moves to it. » (livret p. 4) + mise en place p. 7, etape 7 : « Place the active Metazombie token on
+    # the first one in the row » (hg004a pose d'abord le jeton sur le Coeur, le 1er Metazombie le reprend ici).
+    # Garde `coeur is not None` : hors scenario (cas montes sur Rhino), on ne touche jamais au jeton.
+    coeur = LeCoeur(effect)
+    actif_avant = Villains.Active(effect)
     carte.PutIntoPlay(joueur, effect)
-    return carte.CastTo(Villain)
+    metazombie = carte.CastTo(Villain)
+    if coeur is not None and (actif_avant is None or actif_avant is coeur) and metazombie.IsInPlay():
+        Villains.SetActive(metazombie, effect)
+    return metazombie
 
 
 def QuandMetazombieVaincu(effect: 'Effect', metazombie: 'Villain') -> None:
     """« When a Metazombie is defeated: discard the cards attached to it, put it in the Horde discard pile and set
-    its signature deck aside next to it. » Les attachements tombent nativement (WhenUnitBeDefeated standard) ; ici
-    seul le deplacement vers la defausse du Horde deck est a coder (sinon `RemoveAllFromGame` l'emporterait)."""
-    Faces.ShuffleAllTo([metazombie], HordeDiscard(effect), effect)
+    its signature deck aside next to it. » (livret p. 3) + FAQ p. 8 : « A Metazombie with attachments is
+    defeated. What happens to them? They go to the bottom of its signature deck. If that Metazombie comes back,
+    it can use them again. » + p. 4 : jeton qui passe IMMEDIATEMENT au suivant si c'etait l'actif.
+
+    Branche par `ReglesDuScenario` sur `WhenUnitBeDefeated` (AbilityType.Scenario), timing ou le vaincu est
+    ENCORE en jeu (attachements compris). Le sortir ici vers la defausse du Horde deck fait que
+    `Villain.OnBeDefeated` ne l'« avance » plus (`if self.IsInPlay()` faux) : sans ce crochet,
+    `Scenario.AdvanceVillainStage` le RETIRAIT DE LA PARTIE (aucun stade suivant du meme nom), et il ne
+    pouvait jamais revenir par le Horde deck."""
+    from game.card.face.card_type import Attachment
+    noms_signature = set(DECKS_SIGNATURE.get(metazombie.name, []))
+    for attache in list(metazombie.GetInventoryDeck().GetAll()):
+        if attache.paper.card_id in noms_signature:
+            DefausserAuFondDuDeckSignature(effect, metazombie, attache)
+        elif Attachment.IsType(attache):
+            Faces.DiscardAll([attache], effect)
+    if metazombie.IsActive():
+        JetonApresDefaite(effect, metazombie)
+    Faces.MoveAllTo([metazombie], HordeDiscard(effect), effect)
+
+
+def ReglesDuScenario() -> List['Ability']:
+    """Regles de scenario du livret qu'aucune carte n'imprime, posees UNE fois sur le Coeur (present du Setup a
+    la victoire, ses trois stades appellent `CapacitesDuCoeur`, qui inclut cette liste). Type
+    `AbilityType.Scenario`, modele Sinister Six (`sm/sinister_six/27100a.py`, compteur actif deplace sur
+    `WhenUnitBeDefeated`).
+    - fin de phase du mechant : le jeton tourne (`PasserLeJeton`) ;
+    - Metazombie vaincu : `QuandMetazombieVaincu` (attachements, jeton, defausse du Horde deck) ;
+    - « Infection. When an attack from a Zombie or Metazombie enemy deals damage to your hero, place 1
+      Infection counter. » (livret p. 5) : `AfterUnitAttackAndDamageUnit(..., Hero, ...)` avec
+      `target_took_damage=True` (« If an ally defends, or if your DEF or a tough status card prevents all the
+      damage, there is no Infection ») ; 1 compteur par attaque, quels que soient les degats."""
+    from game.card.face.base import Enemy
+
+    # ⚠ Une capacite `AbilityType.Scenario` reste active HORS JEU : en standard, hg002 (stade II, encore dans le deck
+    # des stades) declenchait chaque regle une 2e fois (jeton avance de DEUX crans, 2 Infections par morsure ; mesure
+    # en autoplay le 27/10/2026, 3 fois en expert avec hg003). Seul le stade EN JEU applique les regles.
+    def coeur_en_jeu(effect: 'Effect', message: 'Message2') -> bool:
+        Unused(message)
+        return effect.this.IsInPlay()
+
+    def fin_de_phase(effect: 'Effect', message: 'Message.WhenPhaseEnd') -> None:
+        Unused(message)
+        PasserLeJeton(effect)
+
+    def metazombie_vaincu(effect: 'Effect', message: 'Message.WhenUnitBeDefeated') -> None:
+        metazombie = message.trigger.CastTo(Villain)
+        if metazombie.IsInPlay():
+            QuandMetazombieVaincu(effect, metazombie)
+
+    def est_un_zombie(face: 'CardFace') -> bool:
+        return Enemy.IsType(face) and (face.HasTrait("ZOMBIE") or face.HasTrait(TRAIT_METAZOMBIE))
+
+    def morsure(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> None:
+        joueur = message.attacked.GetControlByOrOwner()
+        if Player.IsType(joueur):
+            PoserInfection(effect, joueur, 1)
+
+    return [
+        AbilityFactory.WhenVillainPhaseEnd(AbilityType.Scenario, fin_de_phase, conditions=[coeur_en_jeu]),
+        AbilityFactory.WhenUnitBeDefeated(AbilityType.Scenario, CardFinder(traits=[TRAIT_METAZOMBIE], card_type=Villain),
+                                          metazombie_vaincu, conditions=[coeur_en_jeu]),
+        AbilityFactory.AfterUnitAttackAndDamageUnit(AbilityType.Scenario, CardFinder(check_face_fn=est_un_zombie),
+                                                    Hero, morsure, conditions=[coeur_en_jeu]),
+    ]
 
 
 ################################################################################
@@ -349,8 +427,12 @@ def RetirerZombiesEtSurvivorsHomonymes(effect: 'Effect') -> List[str]:
         id_scheme = CARD_ID_SURVIVOR_SCHEME_PAR_HEROS.get(nom)
         if id_allie is None or id_scheme is None:
             continue
+        # L'allie est mis de cote (Survivor deck) ; son Trapped Survivor, lui, est MELANGE AU DECK DE RENCONTRE
+        # (livret p. 7, etape 6 : « The Hunger Core set (13 cards, with the remaining Trapped Survivors) ») avant
+        # que ce Setup ne s'execute : on le cherche donc aux deux endroits.
         a_retirer = [f for f in Worlds.GetSetAsideAreaCards(effect)
                      if f.paper.card_id in (id_allie, id_scheme)]
+        a_retirer += Worlds.GetEncounterDeck(effect).FindCards(card_ids=[id_scheme])
         if a_retirer:
             Faces.RemoveAllFromGame(a_retirer, effect)
 

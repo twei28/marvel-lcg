@@ -2311,6 +2311,356 @@ CAS += [
     },
 ]
 
+
+# ============================================================ Corrections du 27/10/2026 (audit GABARITS.md)
+# Regles du livret sans carte, branchees par `commun.ReglesDuScenario` sur le Coeur (hg001-hg003) :
+# jeton actif (p. 4), Metazombie vaincu (p. 3 + FAQ p. 8), Infection (p. 5). Les cas « rhino » posent hg001
+# pour que ces regles soient enregistrees ; les cas « the_hunger_core » jouent la vraie mise en place (graine 42).
+# Vaincre TOUS les Metazombies d'une vraie partie (tires au hasard : on ne peut pas les nommer) sans toucher au
+# Coeur : `DamageAllVillains` passe par une regle de debug que Shielded by the Horde ne bloque pas (mesure le
+# 27/10/2026 : le Coeur prenait les 99 degats et Deeper Inside partait). Une carte Tenace sur le Coeur absorbe ce
+# coup-la ; il ne prend ensuite que Rupture (1 par Metazombie vaincu, solo).
+TUER_LES_METAZOMBIES = ["Puzzle.AddTough('hg001')", "Puzzle.DamageAllVillains(99)"]
+
+CAS += [
+    # ------------------------------------------------------------ jeton actif
+    {
+        "nom": "[hg] regle jeton : apres la mise en place, le jeton est sur le PREMIER Metazombie de la rangee (pas sur le Coeur)",
+        "pourquoi": "livret p. 7, etape 7 : « Put 2 Metazombies from the Horde deck into play ... Place the active Metazombie "
+                    "token on the first one in the row. » Avant le correctif, hg004a laissait le jeton sur le Coeur : "
+                    "aucun Metazombie ne s'activait jamais en phase du mechant.",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif_rang": 0, "n_metazombies": 2},
+    },
+    {
+        "nom": "[hg] regle jeton : fin de phase du mechant -> le jeton passe au Metazombie SUIVANT a droite",
+        "pourquoi": "« At the end of each villain phase, the token moves to the next Metazombie in the row, to the right. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.PutIntoPlay('hg014')", "Puzzle.PutIntoPlay('hg009')", "Puzzle.SetActiveVillain('hg013')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif": "hg014"},
+    },
+    {
+        "nom": "[hg] regle jeton : fin de phase du mechant depuis le DERNIER Metazombie -> retour au premier",
+        "pourquoi": "« From the last one it goes back to the first. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.PutIntoPlay('hg014')", "Puzzle.PutIntoPlay('hg009')", "Puzzle.SetActiveVillain('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif": "hg013"},
+    },
+    {
+        "nom": "[hg] regle jeton TEMOIN : sans le Coeur en jeu (regles non enregistrees), la fin de phase ne deplace rien",
+        "pourquoi": "preuve par substitution : la rotation vient bien de `ReglesDuScenario` (portee par le Coeur), pas du moteur",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.PutIntoPlay('hg014')", "Puzzle.PutIntoPlay('hg009')", "Puzzle.SetActiveVillain('hg013')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif": "hg013"},
+    },
+    {
+        "nom": "[hg] regle Metazombie vaincu : le Metazombie ACTIF du milieu tombe -> jeton au suivant A DROITE, vaincu dans la defausse du Horde deck",
+        "pourquoi": "« If the active Metazombie is defeated, the token moves immediately to the next one in the row » + « When a "
+                    "Metazombie is defeated: ... put it in the Horde discard pile ». Rangee hg013, hg014, hg009 : hg014 actif "
+                    "tombe -> hg009 (l'ancien code prenait le premier, hg013).",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.PutIntoPlay('hg014')", "Puzzle.PutIntoPlay('hg009')", "Puzzle.SetActiveVillain('hg014')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Damage('hg014', 99)"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif": "hg009", "horde_defausse": ["hg014"], "hors_jeu": ["hg014"]},
+    },
+    {
+        "nom": "[hg] regle Metazombie vaincu : le DERNIER (actif) tombe -> jeton au premier de la rangee",
+        "pourquoi": "« moves immediately to the next one in the row » + rotation circulaire (« From the last one it goes back to the first »)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.PutIntoPlay('hg014')", "Puzzle.PutIntoPlay('hg009')", "Puzzle.SetActiveVillain('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Damage('hg009', 99)"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif": "hg013", "horde_defausse": ["hg009"]},
+    },
+    {
+        "nom": "[hg] regle Metazombie vaincu : un Metazombie NON actif tombe -> le jeton ne bouge pas",
+        "pourquoi": "contre-cas : seul « the ACTIVE Metazombie is defeated » deplace le jeton",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg013')",
+                          "Puzzle.PutIntoPlay('hg014')", "Puzzle.PutIntoPlay('hg009')", "Puzzle.SetActiveVillain('hg013')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Damage('hg014', 99)"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif": "hg013", "horde_defausse": ["hg014"]},
+    },
+    {
+        "nom": "[hg] regle Metazombie vaincu : ses attachements de signature vont au FOND de son deck signature (pas a la defausse)",
+        "pourquoi": "FAQ p. 8 : « A Metazombie with attachments is defeated. What happens to them? They go to the bottom of its "
+                    "signature deck. » Zombie Thor + Bloodied Mjolnir (hg034) : apres la defaite, hg034 est au fond du deck "
+                    "signature de hg012 (3 cartes + celle-ci = 4).",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg012')", "Puzzle.Reveal('hg034')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Damage('hg012', 99)"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"horde_defausse": ["hg012"], "fond_deck_signature": [["hg012", "hg034", 4]], "hors_jeu": ["hg034"]},
+    },
+    {
+        "nom": "[hg] regle jeton (vraie partie) : les deux Metazombies tombent -> jeton sur le Coeur, les deux dans la defausse du Horde deck",
+        "pourquoi": "« If no Metazombie is left, the token moves to The Hunger Core. » DamageAllVillains : le Coeur (blinde) "
+                    "ne prend rien directement, chaque Metazombie tombe (Rupture 1 chacun).",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [*TUER_LES_METAZOMBIES],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif": "hg001", "n_horde_defausse": 2, "n_metazombies": 0, "degats": [["hg001", 2]]},
+    },
+    {
+        "nom": "[hg] regle jeton (vraie partie) : jeton sur le Coeur, un Metazombie RENTRE (Rise of the Horde!) -> le jeton passe sur lui",
+        "pourquoi": "« When a Metazombie enters play again, the token moves to it. »",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [*TUER_LES_METAZOMBIES],
+        "declencher": ["Puzzle.Reveal('hg047')"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif_rang": 0, "n_metazombies": 1},
+    },
+
+    {
+        "nom": "[hg] regle Metazombie vaincu (vraie partie) : Horde deck epuise -> sa defausse (les vaincus) est remelangee, des vaincus REVIENNENT indemnes",
+        "pourquoi": "« If the Horde deck is empty, shuffle its discard pile to make a new one » + FAQ « If that Metazombie comes "
+                    "back » : prouve que les vaincus vont bien dans la defausse du Horde deck (avant le correctif, ils etaient "
+                    "retires de la partie et ne revenaient jamais). Graine 42, mesure etape par etape le 27/10/2026 : en jeu "
+                    "hg011+hg015 ; 1re vague tuee (defausse 2) ; 3 entrees (hg014, hg012, hg007 : Horde deck a 3) ; 2e vague "
+                    "tuee (defausse 5) ; 3 entrees qui VIDENT le Horde deck -> le Deck2 (BindDiscardPile) remelange "
+                    "aussitot sa defausse (5 revenants) ; 3e vague tuee (defausse = hg008, hg009, hg013) ; les 2 Rise of the "
+                    "Horde! suivants tirent donc forcement 2 des 5 REVENANTS, sans degats.",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [*TUER_LES_METAZOMBIES,
+                          "Puzzle.Reveal('hg047')", "Puzzle.Reveal('hg047')", "Puzzle.Reveal('hg047')", *TUER_LES_METAZOMBIES,
+                          "Puzzle.Reveal('hg047')", "Puzzle.Reveal('hg047')", "Puzzle.Reveal('hg047')", *TUER_LES_METAZOMBIES,
+                          "Puzzle.Reveal('hg047')"],
+        "declencher": ["Puzzle.Reveal('hg047')"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"n_metazombies": 2, "n_horde_defausse": 3, "horde_defausse": ["hg008", "hg009", "hg013"],
+                    "metazombies_indemnes": True, "actif_rang": 0},
+    },
+
+    {
+        "nom": "[hg] regle jeton (vraie partie) : fin de phase du mechant -> le jeton avance d'UN SEUL cran (rang 0 -> rang 1)",
+        "pourquoi": "« the token moves to the next Metazombie » : un seul pas. Garde-fou mesure en autoplay le 27/10/2026 : en "
+                    "standard, hg002 (stade II, hors jeu dans le deck des stades) declenchait aussi la regle (type Scenario actif "
+                    "hors jeu) et le jeton avancait de DEUX crans, retombant sur le premier avec 2 Metazombies.",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"actif_rang": 1},
+    },
+    {
+        "nom": "[hg] regle Infection (vraie partie) : une morsure de Metazombie -> UN SEUL compteur Infection (pas un par stade du Coeur)",
+        "pourquoi": "« place 1 Infection counter » : meme garde-fou que le cas precedent (hg002 hors jeu doublait la pose). "
+                    "Graine 42 : hg011 Zombie Captain Marvel (ATK 1) en jeu des la mise en place.",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [FORME_HEROS],
+        "declencher": ["Puzzle.EnemyAttacks('hg011', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg_jeton_etat",
+        "attendu": {"compteurs_identite": [["infection", 1]]},
+    },
+
+    # ------------------------------------------------------------ Infection (regle de base, livret p. 5)
+    {
+        "nom": "[hg] regle Infection : l'attaque d'un METAZOMBIE blesse le heros -> 1 compteur Infection",
+        "pourquoi": "« Infection. When an attack from a Zombie or Metazombie enemy deals damage to your hero, place 1 Infection counter. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg009', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4, "compteurs_identite": [["infection", 1]]},
+    },
+    {
+        "nom": "[hg] regle Infection : l'attaque d'un sbire ZOMBIE (hg056) blesse le heros -> 1 compteur Infection",
+        "pourquoi": "« a Zombie or Metazombie enemy » : le trait ZOMBIE des sbires Hungry Horde compte aussi",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg056')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg056', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "compteurs_identite": [["infection", 1]]},
+    },
+    {
+        "nom": "[hg] regle Infection contre-cas : le heros Tenace absorbe tout -> 0 degat, AUCUNE Infection",
+        "pourquoi": "« if your DEF or a tough status card prevents all the damage, there is no Infection »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg001')", "Puzzle.PutIntoPlay('hg009')",
+                          "Puzzle.Tough('01001b')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg009', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "compteurs_identite": [["infection", 0]]},
+    },
+    {
+        "nom": "[hg] regle Infection contre-cas : Rhino (ni Zombie ni Metazombie) blesse le heros -> AUCUNE Infection",
+        "pourquoi": "« from a Zombie or Metazombie enemy » seulement",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg001')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('01094', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "compteurs_identite": [["infection", 0]]},
+    },
+    {
+        "nom": "[hg] regle Infection TEMOIN : meme attaque de Metazombie SANS le Coeur en jeu -> aucune Infection",
+        "pourquoi": "preuve par substitution : l'Infection vient bien de `ReglesDuScenario`, portee par le Coeur",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg009')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg009', '01001b')"],
+        "passer_sur_option": "Defense",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4, "compteurs_identite": [["infection", 0]]},
+    },
+
+    # ------------------------------------------------------------ Trapped Survivors dans le deck de rencontre
+    {
+        "nom": "[hg] hg051-hg055 mise en place : les 5 Trapped Survivor sont MELANGES au deck de rencontre (pas mis de cote)",
+        "pourquoi": "livret p. 7, etape 6 : « The Hunger Core set (13 cards, with the remaining Trapped Survivors) »",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["hg051", "hg052", "hg053", "hg054", "hg055"],
+                    "mis_de_cote_scenario": ["hg072", "hg073", "hg074", "hg075", "hg076"]},
+    },
+
+    # ------------------------------------------------------------ hg003 (aucun cas jusqu'ici)
+    {
+        "nom": "[hg] hg003 When Revealed : chaque joueur pose 1 compteur Infection",
+        "pourquoi": "« When Revealed: Each player places 1 infection counter. » (stade III)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hg003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs_identite": [["infection", 1]]},
+    },
+    {
+        "nom": "[hg] hg003 Just a Core 2 : le Coeur III expose active contre un heros -> 2 cartes face cachee, 0 degat",
+        "pourquoi": "« Just a Core 2. Instead of attacking you, deal yourself 2 facedown encounter cards. » (valeur propre au stade III)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg003')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Activate('hg003')"],
+        "verifier": "hg014_etat",
+        "attendu": {"degats_identite": 0, "cartes_distribuees": 2},
+    },
+
+    # ------------------------------------------------------------ hg015 : branche « aucun sbire -> un Metazombie »
+    {
+        "nom": "[hg] hg015 Portal to Limbo : aucun sbire dans le deck de rencontre et moins de 3 Metazombies -> un Metazombie entre en jeu",
+        "pourquoi": "« If no minion is discarded and there are fewer than 3 Metazombies in play, put a Metazombie into play. » "
+                    "Vraie partie (Horde deck construit) : les 2 Metazombies de depart tombent d'abord, puis hg015 seul "
+                    "active ; deck de rencontre sans sbire -> le Horde deck fournit le 2e.",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [*TUER_LES_METAZOMBIES, FORME_HEROS, "Puzzle.PutIntoPlay('hg015')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"],
+        "declencher": ["Puzzle.Activate('hg015')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg_jeton_etat",
+        "attendu": {"n_metazombies": 2},
+    },
+    {
+        "nom": "[hg] hg015 TEMOIN : meme montage mais hg015 n'active pas -> un seul Metazombie en jeu",
+        "pourquoi": "contre-cas : le 2e Metazombie du cas precedent vient bien de Portal to Limbo",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": [*TUER_LES_METAZOMBIES, FORME_HEROS, "Puzzle.PutIntoPlay('hg015')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"],
+        "declencher": [],
+        "verifier": "hg_jeton_etat",
+        "attendu": {"n_metazombies": 1},
+    },
+
+    {
+        "nom": "[hg] hg015 Portal to Limbo PLAFOND : deja 3 Metazombies, aucun sbire -> aucun 4e Metazombie",
+        "pourquoi": "« ... and there are FEWER THAN 3 Metazombies in play, put a Metazombie into play » : temoin de la limite. "
+                    "Graine 42 : hg011 et hg015 en jeu apres la mise en place, Rise of the Horde! en ajoute un 3e.",
+        "scenario": "the_hunger_core", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Reveal('hg047')", FORME_HEROS,
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"],
+        "declencher": ["Puzzle.Activate('hg015')"],
+        "passer_sur_option": "Defense",
+        "verifier": "hg_jeton_etat",
+        "attendu": {"n_metazombies": 3},
+    },
+
+    # ------------------------------------------------------------ hg034 : Overkill
+    {
+        "nom": "[hg] hg034 Overkill : Zombie Thor (ATK 3+1) abat Black Cat (2 PV) qui defend -> 2 degats d'exces a l'identite",
+        "pourquoi": "« His attacks gain Overkill and Piercing. » + mots-cles/overkill.md (ennemi abat un allie -> exces au controleur)",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg012')", "Puzzle.Reveal('hg034')",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg012', '01001b', defender='01002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 2},
+    },
+    {
+        "nom": "[hg] hg034 Overkill TEMOIN : MEME montage SANS Mjolnir (ATK 3) -> Black Cat meurt, AUCUN exces",
+        "pourquoi": "preuve par substitution : l'Overkill vient de hg034, pas de Zombie Thor",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, FORME_HEROS, "Puzzle.PutIntoPlay('hg012')",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EnemyAttacks('hg012', '01001b', defender='01002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 0},
+    },
+
+    # ------------------------------------------------------------ hg066 : plafond de 2 Tenaces
+    {
+        "nom": "[hg] hg066 plafond : revele (2 Tenaces), une 3e Tenace est REFUSEE -> toujours 2",
+        "pourquoi": "« It can have 2 tough status cards at the same time » : 2, pas plus (ThisCanHaveAdditionalTough(1))",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.Reveal('hg066')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.AddTough('hg066')"],
+        "verifier": "hg_etat_plus",
+        "attendu": {"tenaces": [["hg066", 2]]},
+    },
+]
+
+# Trapped Survivor « At 3 counters » : un cas PAR carte (hg051 a deja le sien plus haut), preuve que chaque fichier
+# retire le BON allie au seuil.
+for _sch, _allie, _nom in (("hg052", "hg073", "Chewie"), ("hg053", "hg074", "Valeria Richards"),
+                           ("hg054", "hg075", "Blade"), ("hg055", "hg076", "Wolverine")):
+    CAS.append({
+        "nom": f"[hg] {_sch} A 3 COMPTEURS : la manigance ET {_nom} ({_allie}, mis de cote) sont retires du jeu, 1 infection par joueur",
+        "pourquoi": f"« At 3 counters, remove this card and {_nom} from the game; each player places 1 infection counter. »",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, f"Puzzle.PutIntoPlay('{_sch}')", f"Puzzle.Counter('{_sch}', 'counter', 2)",
+                          f"Puzzle.MoveTo('{_allie}', 'AsideScenario')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.RunVillainPhase()"],
+        "verifier": "hg_etat_plus",
+        "attendu": {"retires": [_sch, _allie], "compteurs_identite": [["infection", 1]]},
+    })
+
 VERIFICATIONS = r'''
 def hg_setup_etat(monde, aides):
     """Verificateur dedie a la mise en place (hg004a) : contenu du Horde deck (deck + defausse + en jeu, un
@@ -2537,3 +2887,93 @@ def hg_etat_plus(monde, aides):
         return False, " ; ".join(soucis)
     return True, "etat conforme"
 '''
+
+VERIFICATIONS += r'''
+def hg_jeton_etat(monde, aides):
+    """Verificateur des regles de scenario (27/10/2026, `commun.ReglesDuScenario`), puis delegation a `etat_attendu` :
+    - `actif` : card_id du mechant qui porte le compteur 'active' (None = personne) ;
+    - `actif_rang` : le porteur est le Metazombie de ce rang dans la rangee (0 = le premier) ;
+    - `n_metazombies` : Metazombies (vilains METAZOMBIE) vivants en jeu ;
+    - `horde_defausse` : [card_id] presents dans la defausse du Horde deck ; `n_horde_defausse` : sa taille ;
+    - `fond_deck_signature` : [[metazombie_id, card_id, taille]] -> la carte est AU FOND du deck signature du
+      Metazombie (cherche partout, il peut etre hors jeu) et ce deck a cette taille."""
+    from game.card.face.base import Villain
+    attendu = aides["cas"].get("attendu") or {}
+    soucis = []
+    cid = lambda f: getattr(getattr(f, "paper", None), "card_id", None)
+
+    mechants = [o.face for o in monde.object_manager.card_dict.values()
+                if o.face is not None and isinstance(o.face, Villain) and o.face.IsInPlay()]
+    from game.operate.worlds import Worlds
+    from game.effect.rule import GameRule
+    rangee_ordonnee = [v for v in Worlds.GetVillains(GameRule(monde.const_seat_order_players[0].GetIdentity()))
+                       if v.HasTrait("METAZOMBIE") and v.IsInPlay()]
+    actifs = [m for m in mechants if m.GetCounters('active') > 0]
+    actif = actifs[0] if actifs else None
+    if len(actifs) > 1:
+        soucis.append(f"plusieurs porteurs du jeton : {[cid(a) for a in actifs]}")
+    if "actif" in attendu and cid(actif) != attendu["actif"]:
+        soucis.append(f"jeton actif sur {cid(actif)} (attendu {attendu['actif']})")
+    if "actif_rang" in attendu:
+        r = attendu["actif_rang"]
+        voulu = rangee_ordonnee[r] if r < len(rangee_ordonnee) else None
+        if voulu is None or actif is not voulu:
+            soucis.append(f"jeton actif sur {cid(actif)}, rangee = {[cid(v) for v in rangee_ordonnee]} (attendu rang {r})")
+    if "n_metazombies" in attendu and len(rangee_ordonnee) != attendu["n_metazombies"]:
+        soucis.append(f"Metazombies en jeu = {[cid(v) for v in rangee_ordonnee]} (attendu {attendu['n_metazombies']})")
+
+    defausse = getattr(monde.GetScenario(), "hgc_horde_discard", None)
+    ids_defausse = [cid(f) for f in defausse.Get(True)] if defausse is not None else []
+    for card_id in attendu.get("horde_defausse") or []:
+        if card_id not in ids_defausse:
+            soucis.append(f"{card_id} absent de la defausse du Horde deck ({ids_defausse})")
+    if "n_horde_defausse" in attendu and len(ids_defausse) != attendu["n_horde_defausse"]:
+        soucis.append(f"defausse du Horde deck = {ids_defausse} (attendu {attendu['n_horde_defausse']} cartes)")
+
+    for mz_id, card_id, taille in attendu.get("fond_deck_signature") or []:
+        mz = next((o for o in monde.object_manager.card_dict.values()
+                   if o.face is not None and cid(o.face) == mz_id
+                   and any(k.startswith("_hgc_sig_") for k in vars(o))), None)
+        if mz is None:
+            soucis.append(f"{mz_id} : aucun deck signature trouve")
+            continue
+        deck = next(v for k, v in vars(mz).items() if k.startswith("_hgc_sig_"))
+        cartes = list(deck.Get(True))
+        if deck.GetSize() != taille:
+            soucis.append(f"deck signature de {mz_id} = {deck.GetSize()} (attendu {taille})")
+        ids = [cid(f) for f in cartes]
+        if card_id not in ids:
+            soucis.append(f"{card_id} absent du deck signature de {mz_id} ({ids})")
+        else:
+            # fond = la carte qui sortirait en DERNIER : `GetTop` lit l'autre extremite.
+            dessus = deck.GetTop()
+            fond = cartes[0] if cartes and cartes[-1] is dessus else cartes[-1]
+            if cid(fond) != card_id:
+                soucis.append(f"fond du deck signature de {mz_id} = {cid(fond)}, dessus = {cid(dessus)} (attendu {card_id} au fond), ordre {ids}")
+
+    if attendu.get("metazombies_indemnes"):
+        blesses = [(cid(v), v.max_health - v.health, v.max_health) for v in rangee_ordonnee
+                   if v.max_health - v.health != 0 or v.max_health <= 0]
+        if blesses:
+            soucis.append(f"Metazombies blesses ou sans PV (id, degats, PV max) = {blesses} (attendu tous indemnes)")
+
+    cles_generiques = {k: v for k, v in attendu.items()
+                       if k not in ("actif", "actif_rang", "n_metazombies", "horde_defausse", "n_horde_defausse",
+                                    "fond_deck_signature", "metazombies_indemnes")}
+    if cles_generiques:
+        aides["cas"]["attendu"] = cles_generiques
+        try:
+            ok, message = etat_attendu(monde, aides)
+        finally:
+            aides["cas"]["attendu"] = attendu
+        if not ok:
+            soucis.append(message)
+    pioche = getattr(monde.GetScenario(), "hgc_horde_deck", None)
+    ids_pioche = [cid(f) for f in pioche.Get(True)] if pioche is not None else []
+    if soucis:
+        soucis.append(f"(Horde deck = {ids_pioche}, rangee = {[cid(v) for v in rangee_ordonnee]})")
+        return False, " ; ".join(soucis)
+    return True, (f"etat conforme (jeton sur {cid(actif)}, rangee {[cid(v) for v in rangee_ordonnee]}, "
+                  f"Horde deck {ids_pioche}, defausse Horde {ids_defausse})")
+'''
+

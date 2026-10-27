@@ -14,7 +14,7 @@ from . import *
 # - [[horde-metazombies]] (mots-cles/horde-metazombies.md) : cette carte est elle-meme UNE carte du deck
 #   signature de Zombie Iron Man (`commun.DECKS_SIGNATURE["Zombie Iron Man"]` contient `hg023`) ; elle n'est
 #   revelee QUE lorsque son propre deck signature est consulte (`commun.RevelerLeDessusDuDeckSignature`,
-#   appelee sur `LeMetazombieActif(effect)` -- cf. `hg046` Metazombie Power!, pas encore ecrite), ce qui
+#   appelee sur `LeMetazombieActif(effect)` par `hg046` Metazombie Power!), ce qui
 #   implique que Zombie Iron Man EST en jeu au moment ou cette carte se revele (son deck signature n'existe
 #   que lie a sa propre `Card`, `commun._DeckSignatureAttr`). Garde defensive conservee malgre tout (branche
 #   « introuvable -> Surge ») : aucune regle du livret ne garantit formellement ce lien pour une revelation

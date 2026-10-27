@@ -78,11 +78,9 @@ from . import *
 # - « Hazard: "1" » (une icone Hazard) : lue NATIVEMENT par le moteur depuis `desc` (`HasHazard`), comme
 #   `01107`/`27191`/`vz031` -- AUCUN script necessaire (voir bloc mots-cles ci-dessus).
 #
-# A CONFIRMER EN JEU REEL : comme pour `hg037`/`hg039` (meme deck signature) et `hg029` (deck signature
-# voisin), aucun outil de ce lot ne verifie l'ENTREE EN JEU de cette manigance depuis le deck signature de
-# Zombie Black Widow (le mecanisme qui revele le dessus de ce deck n'est pas encore ecrit -- note deja posee
-# par `hg026`/`hg029`). La capacite codee ci-dessous ne peut donc etre prouvee qu'une fois la carte placee en
-# jeu par l'API Puzzle directement (`Puzzle.PutIntoPlay`/equivalent), pas par un scenario complet.
+# Entree en jeu : par la voie generique du deck signature (`hg046` Metazombie Power! / `hg064` Zombie Mister
+# Fantastic -> `commun.RevelerLeDessusDuDeckSignature` -> `Reveal`), comme hg029. Les cas de test posent la carte
+# par l'API Puzzle.
 
 
 def GetAbilities() -> Sequence['Ability']:

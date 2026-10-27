@@ -81,11 +81,9 @@ from . import *
 #   `01108`/`01150` (autres manigances annexes « 2* » officielles) -- AUCUN script necessaire, base
 #   automatique au meme titre que Toughness/Restricted (PROCESSUS-CARTE.md etape 6).
 #
-# A CONFIRMER EN JEU REEL : comme pour tout le deck signature (hg027/hg028 deja notes ainsi), aucun outil de
-# ce lot ne verifie l'ENTREE EN JEU de cette manigance depuis le deck signature de Zombie Spider-Man (le
-# mecanisme qui revele le dessus de ce deck, `hg046 Metazombie Power!`, n'est pas encore ecrit -- note deja
-# posee par `hg026`). Les deux capacites codees ci-dessous ne peuvent donc etre prouvees qu'une fois la carte
-# placee en jeu par l'API Puzzle directement (`Puzzle.PutIntoPlay`/equivalent), pas par un scenario complet.
+# Entree en jeu : par la voie generique du deck signature (`hg046` Metazombie Power! / `hg064` Zombie Mister
+# Fantastic -> `commun.RevelerLeDessusDuDeckSignature` -> `Reveal`). Les cas de test posent la carte par l'API
+# Puzzle ; jamais vue en autoplay tant que le heros choisi est Spider-Man (Zombie Spider-Man exclu du Horde deck).
 
 
 def GetAbilities() -> Sequence['Ability']:

@@ -1,10 +1,10 @@
 from . import *
 
 # VERIFIE (27/10/2026, passe de fusion hg028-hg076) : `commun.DECKS_SIGNATURE["Zombie Captain Marvel"]` =
-# [hg030, hg031, hg032, hg033, hg033, hg033] N'EST PAS une erreur de recopie, contrairement a ce que disent les
-# notes ci-dessous. Le livret (repris en tete de `DECKS_SIGNATURE` dans commun.py) dit « 3 cards; 5 for Zombie Iron
-# Man and 6 for Zombie Captain Marvel », et `data/encounter_sets/the_hunger_core_sig_zombie_captain_marvel.json`
-# liste hg033 en TROIS exemplaires : 4 cartes distinctes, 6 cartes au total. Liste laissee telle quelle.
+# [hg030, hg031, hg032, hg033, hg033, hg033] N'EST PAS une erreur de recopie. Le livret (p. 4, repris en tete
+# de `DECKS_SIGNATURE` dans commun.py) dit « 3 cards; 5 for Zombie Iron Man and 6 for Zombie Captain Marvel »,
+# et `data/encounter_sets/the_hunger_core_sig_zombie_captain_marvel.json` liste hg033 en TROIS exemplaires :
+# 4 cartes distinctes, 6 cartes au total. Liste laissee telle quelle.
 #
 # Energy Hunger — TRAITRISE (deck signature de Zombie Captain Marvel, carte 4/4, derniere du set). Trait
 # COSMIC.
@@ -21,8 +21,8 @@ from . import *
 #   signature, pas une attaque subie) -- aucune fiche a ouvrir, aucun ajout a `card_face.py`.
 # - [[horde-metazombies]] (mots-cles/horde-metazombies.md) : cette carte est elle-meme une carte du deck
 #   signature de Zombie Captain Marvel (`commun.DECKS_SIGNATURE["Zombie Captain Marvel"]` contient `hg033`,
-#   derniere des 4 cartes propres [hg030-hg033] -- la liste du livret comptait `hg033` trois fois dans
-#   `commun.py`, erreur de recopie TTS deja signalee hors scope de cette carte, pas touchee ici) ; elle n'est
+#   TROIS fois, comme le veut le livret « 6 for Zombie Captain Marvel » : 4 cartes distinctes, 6 au total) ;
+#   elle n'est
 #   revelee QUE lorsque son propre deck signature est consulte (`commun.RevelerLeDessusDuDeckSignature`,
 #   appelee sur `LeMetazombieActif(effect)`), ce qui implique que Zombie Captain Marvel EST en jeu au moment
 #   ou cette carte se revele (son deck signature n'existe que lie a sa propre `Card`,
@@ -73,10 +73,7 @@ from . import *
 #
 # Aucun point laisse en suspens sur le TEXTE de cette carte (pas de mot-cle maison, pas de limite imprimee,
 # pas de choix pour le joueur, pas de plateau a dessiner au-dela de la jauge de compteurs deja existante sur
-# le Metazombie). Seul point hors-carte, deja signale ci-dessus en commentaire : la liste
-# `commun.DECKS_SIGNATURE["Zombie Captain Marvel"]` repete `hg033` trois fois au lieu de lister `hg030`,
-# `hg031`, `hg032`, `hg033` une fois chacune -- ne concerne pas le script de cette carte, a corriger par qui
-# touche `commun.py` (fichier partage, non modifie ici par consigne).
+# le Metazombie). Les trois exemplaires de cette carte dans le deck signature sont voulus (voir l'en-tete).
 
 
 def GetAbilities() -> Sequence['Ability']:

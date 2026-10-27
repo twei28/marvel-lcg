@@ -1,6 +1,6 @@
 from . import *
 
-# Hunger Hex — TRAITRISE (deck signature de Zombie Doctor Strange, carte 3/3, SideScheme). Sans trait imprime.
+# Hunger Hex — MANIGANCE ANNEXE (SideScheme, deck signature de Zombie Doctor Strange, carte 3/3). Sans trait imprime.
 # StartingThreat 3* (3 x nombre de joueurs, lu NATIVEMENT par le moteur depuis `desc.StartingThreat` via
 # `HasAttribute.FormatPlayerNumValue` : aucun script requis pour cette valeur, comme pour toute menace de
 # depart imprimee avec une etoile).

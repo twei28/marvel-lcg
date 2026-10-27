@@ -1,10 +1,10 @@
 from . import *
 
 # VERIFIE (27/10/2026, passe de fusion hg028-hg076) : `commun.DECKS_SIGNATURE["Zombie Captain Marvel"]` =
-# [hg030, hg031, hg032, hg033, hg033, hg033] N'EST PAS une erreur de recopie, contrairement a ce que disent les
-# notes ci-dessous. Le livret (repris en tete de `DECKS_SIGNATURE` dans commun.py) dit « 3 cards; 5 for Zombie Iron
-# Man and 6 for Zombie Captain Marvel », et `data/encounter_sets/the_hunger_core_sig_zombie_captain_marvel.json`
-# liste hg033 en TROIS exemplaires : 4 cartes distinctes, 6 cartes au total. Liste laissee telle quelle.
+# [hg030, hg031, hg032, hg033, hg033, hg033] N'EST PAS une erreur de recopie. Le livret (p. 4, repris en tete
+# de `DECKS_SIGNATURE` dans commun.py) dit « 3 cards; 5 for Zombie Iron Man and 6 for Zombie Captain Marvel »,
+# et `data/encounter_sets/the_hunger_core_sig_zombie_captain_marvel.json` liste hg033 en TROIS exemplaires :
+# 4 cartes distinctes, 6 cartes au total. Liste laissee telle quelle.
 #
 # Photon Fist — ATTACHEMENT (set signature Zombie Captain Marvel, carte 2/4). Trait COSMIC (saveur, pas de
 # mot-cle moteur).
@@ -103,9 +103,8 @@ from . import *
 #
 # Aucun point ambigu identifie sur le TEXTE de cette carte : trois phrases courtes, chacune avec un modele
 # deja present dans le moteur sur ce meme scenario (`hg018`/`hg026` pour l'attache + le cout de defausse,
-# `hg019`/`hg022` pour le gain dynamique d'Overkill). Seul point hors-carte, deja signale par `hg033` (meme
-# set) et non retouche ici par consigne (fichier partage) : `commun.DECKS_SIGNATURE["Zombie Captain Marvel"]`
-# repete `hg033` trois fois au lieu de lister une seule occurrence de chacune des 4 cartes propres du set.
+# `hg019`/`hg022` pour le gain dynamique d'Overkill). (Le triple `hg033` de `commun.DECKS_SIGNATURE["Zombie
+# Captain Marvel"]` est voulu : livret « 6 for Zombie Captain Marvel », voir l'en-tete de ce fichier.)
 
 
 def GetAbilities() -> Sequence['Ability']:

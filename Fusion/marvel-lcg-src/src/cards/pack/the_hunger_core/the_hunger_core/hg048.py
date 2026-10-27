@@ -23,9 +23,8 @@ from . import *
 #   besoin, rend `None` si les deux sont vides) et replafonne lui-meme a `MAX_METAZOMBIES_EN_JEU` en interne.
 #   Rend le `Villain` pose (ou `None`), ce qui permet d'enchainer les degats sur la MEME instance.
 # - « with damage equal to half its hit points » : AUCUNE fiche mots-cles/ dediee -- ce n'est pas un mot-cle
-#   nomme en gras dans le texte imprime (contrairement a « Surge »), seulement une clause de degats directs
-#   accolee a une mise en jeu, deja couverte par le gabarit generique des degats directs (hg016/hg025/hg030 :
-#   `cible.DealDamage([cible], N, effect)` sur une Unit2 deja en jeu). Rien a ouvrir.
+#   nomme en gras dans le texte imprime (contrairement a « Surge »), seulement l'ETAT de PV dans lequel le
+#   Metazombie entre en jeu (`SetHealth`, voir le CORRECTIF en tete). Rien a ouvrir.
 #
 # ---------------------------------------------------------------------------
 # CARTES DE REFERENCE
@@ -34,9 +33,9 @@ from . import *
 #   meme branche Surge en « otherwise ») : seule la branche « put one into play » gagne une clause
 #   supplementaire ici (les degats).
 # - « ... with damage equal to half its hit points » (du Metazombie qu'on vient de poser, pas d'un autre) :
-#   modele de degats directs sur une Unit2 juste entree en jeu, `villain.DealDamage([villain], degats,
-#   effect)`, meme appel que `coeur.DealDamage([coeur], ..., effect)` dans `the_hunger_core/__init__.py`
-#   (Rupture X). « ITS hit points » = les PV MAXIMUM du Metazombie qu'on vient de poser (`villain.max_health`,
+#   ETAT de PV pose directement, `metazombie.SetHealth(max_health - degats, effect)` (modele `03008`/`62014`,
+#   voir le CORRECTIF en tete : l'ancien `DealDamage` passait par Shield/Tenace). « ITS hit points » = les PV
+#   MAXIMUM du Metazombie qu'on vient de poser (`villain.max_health`,
 #   proprete deja fiable des la sortie de `MettreUnMetazombieEnJeu` : `Unit2.__init__` appelle `ResetHealth`
 #   a la CONSTRUCTION de la face via `CardFactory.GenerateCard`, donc `max_health` est deja correctement
 #   positionne -- y compris une eventuelle mise a l'echelle `[per_hero]` -- avant meme que la carte ne soit
