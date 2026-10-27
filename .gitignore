@@ -46,6 +46,9 @@ Fusion/marvel-lcg-src/assets/cache/
 Fusion/marvel-lcg-src/assets/vignettes/
 # Les scans HD telecharges (tools/telecharger_scans_hd.py) : derives, jamais versionnes.
 Fusion/marvel-lcg-src/assets/pics-hd/
+# L'export ZIP des images de cartes (tools/exporter_images_cartes.py) : le ZIP,
+# le cache des rendus du voile FR et l'etat de la generation. Derives, lourds.
+Fusion/marvel-lcg-src/assets/export-cartes/
 
 # Livrets de regles et carnets de campagne : 169 Mo de PDF officiels, meme
 # nature que les scans ci-dessus. Ils montent au serveur par l'etape

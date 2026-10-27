@@ -1590,6 +1590,182 @@ class GameServerGet(GameServerBase):
         PalettesHeros.Recharger()
         return web.json_response({'ok': True, 'corrigees': len(donnees['palettes'])})
 
+    # ------------------------------------------------------------------ #
+    # Export ZIP de toutes les images de cartes (27/10/2026). Reserve a
+    # l'administrateur, comme le releve et les palettes : bouton
+    # « 📦 Export ZIP cartes » de public/js/prepare/lien-admin.js.
+    #
+    # ⚠ LA CONSTRUCTION NE TOURNE PAS DANS CE PROCESSUS. Elle dure de longues
+    # minutes (telechargements espaces, rendu du voile, ecriture du ZIP) : un
+    # processus DETACHE (`tools/exporter_images_cartes.py`, nouvelle session,
+    # priorite abaissee) la fait, et survit a la fermeture de cette table. Le
+    # moteur ne fait que le lancer, lire son etat et servir le fichier pret.
+    #
+    # ⚠ UNE SEULE GENERATION A LA FOIS, POUR TOUTES LES TABLES : le verrou est
+    # un FICHIER (assets/export-cartes/generation.lock, pid dedans), pas une
+    # variable, puisque chaque table est un processus a part.
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _export_cartes_dossiers():
+        """(racine du moteur, dossier de l'export), ou (None, None) si l'outil manque.
+
+        Le moteur tourne depuis `.game/`, ou `assets` est un lien vers le vrai
+        dossier : sa cible donne la racine, ou vit `tools/`.
+        """
+        import os
+        candidats = [os.path.dirname(os.path.realpath('./assets')), os.path.realpath('..'), os.path.realpath('.')]
+        for racine in candidats:
+            if os.path.isfile(os.path.join(racine, 'tools', 'exporter_images_cartes.py')):
+                return racine, os.path.join(racine, 'assets', 'export-cartes')
+        return None, None
+
+    @staticmethod
+    def _export_cartes_verrou(dossier: str):
+        """Le contenu du verrou s'il est tenu par un processus vivant, sinon None."""
+        import json as json_lib
+        import os
+        try:
+            with open(os.path.join(dossier, 'generation.lock'), encoding='utf-8') as f:
+                info = json_lib.load(f)
+            pid = int(info.get('pid') or 0)
+        except Exception:
+            return None
+        if pid <= 0:
+            return None
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return None
+        except PermissionError:
+            pass
+        return info
+
+    async def get_export_cartes(self, request: web.Request) -> web.Response:
+        """Ou en est l'export : ZIP pret (taille, date), generation en cours (depuis quand, progression)."""
+        import json as json_lib
+        import os
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        racine, dossier = self._export_cartes_dossiers()
+        if not dossier:
+            return web.json_response({'disponible': False, 'en_cours': False, 'zip': None, 'etat': None})
+        etat = None
+        try:
+            with open(os.path.join(dossier, 'etat.json'), encoding='utf-8') as f:
+                etat = json_lib.load(f)
+        except Exception:
+            etat = None
+        verrou = self._export_cartes_verrou(dossier)
+        zip_info = None
+        chemin = os.path.join(dossier, 'cartes-images.zip')
+        if os.path.isfile(chemin):
+            st = os.stat(chemin)
+            zip_info = {'taille': st.st_size, 'date': st.st_mtime}
+        return web.json_response({
+            'disponible': True,
+            'en_cours': verrou is not None,
+            'depuis': (verrou or {}).get('debut'),
+            'maintenant': time.time(),
+            'etat': etat,
+            'zip': zip_info,
+        })
+
+    async def post_export_cartes_regenerer(self, request: web.Request) -> web.Response:
+        """Lance la construction du ZIP en tache de fond. 409 si une generation tourne deja.
+
+        Corps facultatif : {"packs": "the_hunger_core,winter"} pour un sous-ensemble
+        (essais) ; sans lui, tout le catalogue.
+        """
+        import json as json_lib
+        import os
+        import subprocess
+        import sys
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        racine, dossier = self._export_cartes_dossiers()
+        if not racine:
+            return web.json_response({'error': 'outil d export absent (tools/exporter_images_cartes.py)'}, status=500)
+        try:
+            data = await request.json()
+        except Exception:
+            data = {}
+        packs = str((data or {}).get('packs') or '').strip()
+        if packs and not all(p.replace('_', '').replace('-', '').isalnum() for p in packs.split(',') if p):
+            return web.json_response({'error': 'packs mal formes'}, status=400)
+
+        os.makedirs(dossier, exist_ok=True)
+        chemin_verrou = os.path.join(dossier, 'generation.lock')
+        # Prise ATOMIQUE du verrou (O_EXCL) ; un verrou orphelin (processus mort) est repris.
+        for _ in range(2):
+            try:
+                fd = os.open(chemin_verrou, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+                break
+            except FileExistsError:
+                if self._export_cartes_verrou(dossier) is not None:
+                    return web.json_response({'error': 'generation deja en cours'}, status=409)
+                try:
+                    os.unlink(chemin_verrou)
+                except FileNotFoundError:
+                    pass
+        else:
+            return web.json_response({'error': 'generation deja en cours'}, status=409)
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            json_lib.dump({'pid': os.getpid(), 'debut': time.time(), 'packs': packs or None}, f)
+
+        # La configuration de CE moteur : ses catalogues et ses serveurs d'images.
+        from cards.database import CardsDB
+        from engine.file.cache import IMAGE_SERVERS
+        commande = [sys.executable, os.path.join(racine, 'tools', 'exporter_images_cartes.py'), '--verrou-pris']
+        for catalogue in [CardsDB.cards_json_file] + list(CardsDB.cards_custom_files):
+            if catalogue:
+                commande += ['--catalogue', os.path.realpath(catalogue)]
+        serveurs = list(IMAGE_SERVERS.value or [])
+        if serveurs:
+            for serveur in serveurs:
+                commande += ['--serveur-images', serveur]
+        else:
+            commande.append('--sans-telechargement')
+        if packs:
+            commande += ['--packs', packs]
+        try:
+            journal = open(os.path.join(dossier, 'processus.log'), 'w', encoding='utf-8')
+            processus = subprocess.Popen(commande, cwd=racine, stdin=subprocess.DEVNULL, stdout=journal,
+                                         stderr=subprocess.STDOUT, start_new_session=True, close_fds=True)
+            journal.close()
+        except Exception as e:
+            try:
+                os.unlink(chemin_verrou)
+            except FileNotFoundError:
+                pass
+            return web.json_response({'error': f'lancement impossible : {e}'}, status=500)
+        # Le verrou porte desormais le pid du processus qui travaille (il le reecrit aussi en demarrant).
+        with open(chemin_verrou, 'w', encoding='utf-8') as f:
+            json_lib.dump({'pid': processus.pid, 'debut': time.time(), 'packs': packs or None}, f)
+        # Un processus fini est ramasse sans bloquer, pour ne pas laisser de zombie (qui passerait pour vivant).
+        import threading
+        threading.Thread(target=processus.wait, daemon=True).start()
+        return web.json_response({'ok': True, 'pid': processus.pid, 'packs': packs or None})
+
+    async def telecharger_export_cartes(self, request: web.Request) -> web.StreamResponse:
+        """Le ZIP deja construit, tel quel : aucun calcul ici."""
+        import os
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        _, dossier = self._export_cartes_dossiers()
+        chemin = os.path.join(dossier, 'cartes-images.zip') if dossier else ''
+        if not chemin or not os.path.isfile(chemin):
+            return web.json_response({'error': 'aucun ZIP genere'}, status=404)
+        date = time.strftime('%Y%m%d-%H%M', time.localtime(os.path.getmtime(chemin)))
+        return web.FileResponse(chemin, headers={
+            'Content-Type': 'application/zip',
+            'Content-Disposition': f'attachment; filename="narwhal-cartes-images-{date}.zip"',
+            'Cache-Control': 'no-store',
+        })
+
     async def save_images_cartes(self, request: web.Request) -> web.Response:
         """Ecrit le releve d'UNE carte. Reserve a l'administrateur.
 
@@ -2518,6 +2694,9 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_palettes_heros', self.get_palettes_heros)
         self.AddPostSecurity('/save_palette_heros', self.save_palette_heros)
         self.AddPostSecurity('/save_images_cartes', self.save_images_cartes)
+        self.AddAwaitGetSecurity('/get_export_cartes', self.get_export_cartes)
+        self.AddPostSecurity('/post_export_cartes_regenerer', self.post_export_cartes_regenerer)
+        self.AddAwaitGetSecurity('/telecharger_export_cartes', self.telecharger_export_cartes)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)
         self.AddAwaitGetSecurity('/get_arts_heros', self.get_arts_heros)
