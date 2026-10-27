@@ -129,3 +129,43 @@ test("remettreAZero annule tout ce qui était en attente (changement d'étape)",
     avancer(5000);
     assert.deepEqual(journal, [["afficher", "A"]], "plus de retour tardif sur une scène qui n'existe plus");
 });
+
+// Bug signalé le 27/10/2026 : après un CLIC sur un héros (choix réel, pas un survol), la souris reste sur la
+// grille et le survol suivant écrasait aussitôt la scène avec un autre héros — impossible de lire la fiche de
+// celui qu'on venait de choisir. `geler()` fige la scène sur le choix ; seul un nouveau `geler()` la change.
+test("geler fige la scène : le survol d'autres tuiles ne la bouge plus", () => {
+    const { survol, journal, avancer } = banc();
+    survol.geler("A"); // clic : A choisi (la souris est encore sur sa tuile)
+    survol.sortir(); // la souris quitte la tuile de A...
+    survol.entrer("B"); // ...et traîne sur B, C, etc.
+    avancer(5000);
+    survol.sortir();
+    avancer(5000);
+    assert.deepEqual(journal, [["afficher", "A"]], "A reste en scène : aucun survol ni retour au siège ne doit la bouger");
+});
+
+test("geler redessine toujours, même sur le héros déjà en scène (y compris null)", () => {
+    const { survol, journal } = banc();
+    survol.entrer("A");
+    survol.geler("A"); // déjà en scène par survol : doit quand même repasser par afficher()
+    survol.geler(null); // plus personne à ce siège (multijoueur, slot suivant vide)
+    assert.deepEqual(journal, [["afficher", "A"], ["afficher", "A"], ["afficher", null]]);
+});
+
+test("un nouveau clic dégèle l'ancien choix et regèle sur le nouveau", () => {
+    const { survol, journal, avancer } = banc();
+    survol.geler("A");
+    survol.geler("B"); // un deuxième héros choisi
+    survol.sortir();
+    survol.entrer("C"); // survol après le deuxième choix : ne doit plus bouger non plus
+    avancer(5000);
+    assert.deepEqual(journal, [["afficher", "A"], ["afficher", "B"]]);
+});
+
+test("remettreAZero dégèle : le survol fonctionne de nouveau dans une nouvelle étape", () => {
+    const { survol, journal } = banc();
+    survol.geler("A");
+    survol.remettreAZero();
+    survol.entrer("B");
+    assert.deepEqual(journal, [["afficher", "A"], ["afficher", "B"]]);
+});

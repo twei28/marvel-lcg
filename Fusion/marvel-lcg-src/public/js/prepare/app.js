@@ -3367,11 +3367,13 @@ function recruterVraiment(h, portraitEl) {
     assignHero(siege, h);
     autoAdvanceSlot();
     herosSurvole = null;
-    survolHeros.remettreAZero();
     // La scène d'abord (elle se reconstruit), la carte qui surgit ensuite,
     // par-dessus : dans l'autre ordre, la reconstruction l'emportait.
     if (tel) { herosApercuTel = h; rendreSceneTel(h); }
-    else rendreScene(herosDuSiegeActif());
+    // Desktop : la scène se FIGE sur le héros du siège actif (celui qu'on vient de
+    // choisir, ou le prochain à choisir en multi) — geler() l'affiche lui-même, le
+    // survol des autres tuiles ne la bougera plus jusqu'au prochain clic.
+    else survolHeros.geler(herosDuSiegeActif());
     rendreEquipe();
     const jouerEclair = () => {
         const scene = document.getElementById("tb-scene");
@@ -5729,8 +5731,8 @@ async function loadExtTabs() {
         "aria-label": e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key)),
         onclick: () => { hideHover(); state.extensionTab = e.key; loadExtTabs(); loadScnGrid(); },
     },
-        e.key === "defis" || e.key === "210. Custom (Challenges)"
-            ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
+        e.key === "defis" || e.key === "210. Custom (Challenges)" || e.key === "235. Custom (Super Bouffon / Jigsaw)"
+            ? el("div", { class: "box box-defis" }, picto(e.key === "235. Custom (Super Bouffon / Jigsaw)" ? "fa-mask" : "fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${pochetteBoite(e.key)}")` } }),
         el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
     )));

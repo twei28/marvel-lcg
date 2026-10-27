@@ -10,6 +10,11 @@
 //  - une tuile croisée sans s'y arrêter (moins de `delaiIntention`) ne change rien ;
 //  - quitter la tuile ne ramène la scène au héros du siège qu'après `delaiRetour`, et seulement si la souris n'est pas allée dans la scène ;
 //  - dans la scène, le héros regardé reste jusqu'à ce qu'on en sorte (puis `delaiRetour`).
+//
+// Après un CLIC (choix réel d'un héros), la scène se GÈLE sur ce choix : survoler les autres tuiles ne la fait
+// plus bouger. Seul un nouveau clic (un autre héros choisi) la dégèle et la regèle sur le nouveau choix. Sans
+// ça, le survol qui suit immédiatement le clic (la souris est toujours sur la grille) écrasait le héros tout
+// juste choisi avant même que le joueur ait pu lire sa fiche. Signalé le 27/10/2026.
 // Le module est pur : le minuteur est injecté (les tests le font avancer à la main).
 
 export const DELAI_INTENTION = 200;
@@ -26,6 +31,7 @@ export function creerSurvolHeros({
     let attente = null; // l'intention en cours : { heros, id }
     let retour = null; // le minuteur du retour au héros du siège
     let dansLaScene = false;
+    let gele = false; // un clic a figé la scène : le survol n'y touche plus jusqu'au prochain clic
 
     const annulerAttente = () => {
         if (attente) { minuteur.clear(attente.id); attente = null; }
@@ -53,6 +59,7 @@ export function creerSurvolHeros({
     return {
         /** La souris entre sur la tuile d'un héros. */
         entrer(h) {
+            if (gele) return;
             annulerRetour();
             annulerAttente();
             if (courant === null || courant === h) {
@@ -64,11 +71,13 @@ export function creerSurvolHeros({
         },
         /** La souris quitte la tuile : la scène garde son héros le temps de rejoindre le bouton. */
         sortir() {
+            if (gele) return;
             annulerAttente();
             if (!dansLaScene) programmerRetour();
         },
         /** Clavier : le focus montre le héros tout de suite. */
         entrerAuClavier(h) {
+            if (gele) return;
             annulerRetour();
             annulerAttente();
             montrer(h);
@@ -80,7 +89,16 @@ export function creerSurvolHeros({
         },
         sortirDeLaScene() {
             dansLaScene = false;
-            programmerRetour();
+            if (!gele) programmerRetour();
+        },
+        /** Un héros vient d'être CHOISI (clic) : la scène se fige dessus, le survol n'y touche plus
+         *  tant qu'un autre choix ne la refige pas. */
+        geler(h) {
+            annulerAttente();
+            annulerRetour();
+            gele = true;
+            courant = h;
+            afficher(h); // toujours redessiné (même héros ou null) : `montrer` ignorerait un héros déjà en scène par survol
         },
         /** Changement d'étape : plus rien ne doit revenir sur une scène qui n'existe plus. */
         remettreAZero() {
@@ -88,6 +106,7 @@ export function creerSurvolHeros({
             annulerRetour();
             courant = null;
             dansLaScene = false;
+            gele = false;
         },
     };
 }
