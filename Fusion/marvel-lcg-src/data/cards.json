@@ -128849,7 +128849,7 @@
     "GAMMA"
    ],
    "set_name": "She-Hulk (Why Not)",
-   "text": "\"Do You Even Lift?\" — <b>Response</b>: After you change to this form, deal 1 damage to an enemy for each [acceleration] icon in play.",
+   "text": "\"Do You Even Lift?\" — <b>Response</b>: After you change to this form, deal 2 damage to an enemy. Deal 1 damage to an enemy for each [acceleration] icon in play.",
    "custom": "Merlin"
   },
   {
@@ -131464,7 +131464,7 @@
    "custom": "Phenexian and Mysteltainn"
   }
  ],
- "checksum": "0ef07bfe602b1bf5cd7a8935f9877d53dedec22a91f136df994c064e07fc76b7",
+ "checksum": "1a56245a4fb2ae4fb427095593da3226fa4bf2041de73942c978502a5271b65f",
  "hepzibah": [
   {
    "card_id": "hz001a",
