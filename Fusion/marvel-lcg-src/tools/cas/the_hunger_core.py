@@ -339,6 +339,43 @@ CAS = [
         "attendu": {"degats_identite": 3},
     },
 
+    # ============================================================ hg013 : Zombie Black Widow
+    {
+        "nom": "[hg] hg013 : une alliee (01002 Black Cat) ne peut pas defendre contre Zombie Black Widow",
+        "pourquoi": "« Allies cannot defend against Zombie Black Widow's attacks. » Mesure la legalite `IsCanDefense` que "
+                    "le moteur consulte avant d'offrir la defense (modele `ap305`), pas le resultat d'une attaque deja "
+                    "resolue (le defenseur impose par le harnais contournerait la question).",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg013')", "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "hg_peut_defendre_etat",
+        "attendu": {"peut_defendre": [["01002", "hg013", False]]},
+    },
+    {
+        "nom": "[hg] hg013 contre-cas « ZOMBIE BLACK WIDOW's attacks » : la MEME alliee peut defendre contre un AUTRE ennemi (hg007) "
+               "pendant que hg013 est en jeu -- l'interdiction ne vise QUE les attaques de hg013",
+        "pourquoi": "« against ZOMBIE BLACK WIDOW's attacks », pas « against enemy attacks » (modele ap305, generique) : "
+                    "preuve que `who_attacker=\"This\"` mord vraiment, pas un filtre Enemy generique qui bloquerait aussi hg007",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg013')", "Puzzle.PutIntoPlay('hg007')",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "hg_peut_defendre_etat",
+        "attendu": {"peut_defendre": [["01002", "hg007", True], ["01002", "hg013", False]]},
+    },
+    {
+        "nom": "[hg] hg013 ligne de base : SANS hg013 en jeu, la meme alliee peut defendre contre hg007",
+        "pourquoi": "contre-cas de securite : prouve que l'interdiction ne fuit pas vers un AUTRE Metazombie en l'absence de hg013",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [*RIEN_A_BOOSTER, "Puzzle.PutIntoPlay('hg007')", "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "hg_peut_defendre_etat",
+        "attendu": {"peut_defendre": [["01002", "hg007", True]]},
+    },
+
     # ============================================================ hg006 : Inside Galactus
     {
         "nom": "[hg] hg006 Residual Cosmic Power : +1 ATK sur le mechant ACTIF (Rhino, jeton par defaut)",
@@ -561,6 +598,23 @@ def hg_manigance_etat(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, f"etat conforme : {mesures}"
+'''
+
+VERIFICATIONS += r'''
+def hg_peut_defendre_etat(monde, aides):
+    """Verificateur dedie a hg013 Zombie Black Widow : `peut_defendre` ([[defenseur, attaquant, bool]], modele
+    `ap_etat`/alien_vs_predator.py) mesure `IsCanDefense`, la legalite que le moteur consulte AVANT d'offrir la
+    defense -- pas le resultat d'une attaque deja resolue par le defenseur impose par le harnais."""
+    attendu = aides["cas"].get("attendu") or {}
+    soucis = []
+    for defenseur, attaquant, voulu in attendu.get("peut_defendre") or []:
+        d, a = aides["par_id"](monde, defenseur), aides["par_id"](monde, attaquant)
+        peut = d.IsCanDefense(a) if d is not None and a is not None else None
+        if peut != voulu:
+            soucis.append(f"{defenseur} peut defendre contre {attaquant} = {peut} (attendu {voulu})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "etat conforme"
 '''
 
 VERIFICATIONS += r'''
