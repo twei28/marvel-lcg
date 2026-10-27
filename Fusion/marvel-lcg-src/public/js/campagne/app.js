@@ -50,7 +50,8 @@ function couvertureCampagne(code, cleExtension) {
     };
 }
 import { t, langueActuelle, synchroniserLangueServeur, boutonLangue } from "/public/js/prepare/langue.js";
-import { launch } from "/public/js/prepare/launcher.js";
+import { launch, URL_PLATEAU } from "/public/js/prepare/launcher.js";
+import { validate } from "/public/js/prepare/validation.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
 import * as OL from "/public/js/campagne/ordre-libre.js";
 import * as LP from "/public/js/campagne/livre-pages.js";
@@ -92,6 +93,7 @@ const etat = {
     creation: null,      // brouillon en cours de saisie
     erreur: "",
     occupe: false,
+    invitation: null,    // {joueurs, cles, erreur, copie} : ecran d'invitation en ligne apres lancement multi-heros
 };
 
 /* ----------------------------------------------------------------- outils -- */
@@ -1700,6 +1702,18 @@ async function lancerScenario(scenario, options = {}) {
         identity: m.identite ? { hero: m.identite } : null,
     }));
 
+    // Meme verification qu'au lancement normal (prepare/app.js) : un deck
+    // invalide ne doit jamais partir en silence, meme depuis une campagne.
+    const verif = validate({
+        playerCount: joueurs.length,
+        players: joueurs,
+        scenario: duCatalogue,
+        difficulty: { selectedModularSets: duCatalogue.rawJson.modular_sets || [] },
+    });
+    if (!verif.ok) {
+        throw new Error(verif.errors.map((e) => e.message).join(" — "));
+    }
+
     // La partie est rattachee a la campagne AVANT de partir : si le joueur
     // ferme l'onglet en plein scenario, on saura le lui proposer en reprise.
     campagne.partieEnCours = { scenario: scenario.id, depuis: new Date().toISOString(), ...(options.vilain ? { vilain: options.vilain } : {}) };
@@ -1716,6 +1730,10 @@ async function lancerScenario(scenario, options = {}) {
             JSON.stringify({ id: etat.campagne.id, scenario: scenario.id }));
     } catch (e) { /* stockage indisponible : le scenario se joue, sans report */ }
 
+    // Plusieurs heros : l'hote ne part PAS directement sur le plateau, il passe
+    // d'abord par l'ecran d'invitation (vueInvitation) pour donner les liens de
+    // siege a son equipe. Seul (1 heros), rien a inviter : comportement inchange.
+    const enLigne = joueurs.length > 1;
     await launch({
         mode: { id: "campaign" },
         scenario: duCatalogue,
@@ -1735,7 +1753,85 @@ async function lancerScenario(scenario, options = {}) {
         campaignLog: campagne.carnet || {},
         // Kingsfall multi-tables : « creer » une assemblee ou en « rejoindre » une avec son code (jamais pour les autres scenarios).
         assemblee: scenario.assemblee && etat.assembleeChoix && etat.assembleeChoix.mode !== "seule" ? { ...etat.assembleeChoix } : null,
-    });
+    }, { redirect: !enLigne });
+
+    if (enLigne) {
+        etat.invitation = { joueurs, cles: null, erreur: "", copie: -1 };
+        etat.vue = "invitation";
+        chargerLiensInvitationCampagne();
+    }
+}
+
+/* ------------------------------------------------------- invitation en ligne -- */
+
+/** Les cles de siege pour CETTE partie de campagne, juste lancee (`/new` deja
+ *  envoye par `lancerScenario` ci-dessus) : jamais `get_liens_sieges` (voir son
+ *  avertissement, 07/10/2026), toujours la jumelle `get_liens_sieges_campagne`,
+ *  qui ne marque pas la table comme « ordinaire ». */
+async function chargerLiensInvitationCampagne() {
+    const inv = etat.invitation;
+    if (!inv) return;
+    try {
+        const res = await fetch("get_liens_sieges_campagne?");
+        const brut = await res.json();
+        if (!res.ok || !brut.multi || !Array.isArray(brut.cles)) {
+            throw new Error(brut.error || "indisponible");
+        }
+        inv.cles = brut.cles;
+    } catch (e) {
+        inv.erreur = t("Impossible de récupérer les liens d'invitation.");
+    }
+    rendre();
+}
+
+/** Meme forme de lien que l'assistant de partie ordinaire (`lienDuSiege`,
+ *  public/js/prepare/app.js) : `to=salon` envoie l'invite choisir... rien, en
+ *  campagne — juste confirmer son siege, l'equipe est deja fixee. */
+function lienDeSiegeCampagne(p, cle) {
+    return location.origin + "/claim_seat?p=" + p + "&key=" + encodeURIComponent(cle || "") + "&to=salon";
+}
+
+function ligneInvitationSiege(p, joueur, cle) {
+    const inv = etat.invitation;
+    const url = lienDeSiegeCampagne(p, cle);
+    return el("div", { class: "liens-ligne" },
+        el("span", { class: "liens-qui" }, (joueur.hero && joueur.hero.name) || (t("Joueur") + " " + (p + 1))),
+        el("button", {
+            class: "liens-copier" + (inv.copie === p ? " ok" : ""),
+            title: url,
+            onclick: async () => {
+                try { await navigator.clipboard.writeText(url); inv.copie = p; }
+                catch (e) { inv.copie = -1; window.prompt(t("Copie ce lien :"), url); }
+                rendre();
+            },
+        }, inv.copie === p ? t("Copié") : t("Copier le lien")),
+    );
+}
+
+function vueInvitation() {
+    const inv = etat.invitation;
+    const [hote, ...equipe] = inv.joueurs;
+    return el("div", { class: "cmp-page-invitation" },
+        entete(t("Inviter l'équipe")),
+        el("main", { class: "cmp-corps" },
+            el("div", { class: "cmp-titre-rangee" },
+                el("h1", { class: "cmp-titre mvl" }, t("Inviter l'équipe")),
+            ),
+            el("p", { class: "cmp-note" },
+                t("La partie est lancée. Envoie un lien à chaque coéquipier : son héros est déjà celui fixé par la campagne, il n'a rien à choisir.")),
+            inv.erreur ? el("p", { class: "cmp-erreur" }, inv.erreur) : null,
+            !inv.erreur && !inv.cles ? el("p", {}, t("Préparation des liens…")) : null,
+            inv.cles ? el("div", { class: "liens-invites" },
+                ...equipe.map((joueur, i) => ligneInvitationSiege(i + 1, joueur, inv.cles[i + 1])),
+            ) : null,
+            el("div", { class: "cmp-actions" },
+                el("button", {
+                    class: "btn launch",
+                    onclick: () => { window.location.href = URL_PLATEAU; },
+                }, t("Rejoindre le plateau")),
+            ),
+        ),
+    );
 }
 
 /**
@@ -1832,7 +1928,8 @@ installerHistorique((cle) => {
 suivreTel(() => rendre());
 
 function rendre() {
-    if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
+    if (etat.vue === "invitation" && etat.invitation) root.replaceChildren(vueInvitation());
+    else if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
         root.replaceChildren(vueMarche(etat.campagne, etat.definition));
     else if (etat.vue === "zone" && etat.campagne && etat.definition && zoneChoisissable(etat.campagne, etat.definition, false))
         root.replaceChildren(vueChoixDeLaZone(etat.campagne, etat.definition));
