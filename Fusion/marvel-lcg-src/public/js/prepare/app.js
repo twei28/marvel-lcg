@@ -1566,7 +1566,9 @@ function choixCoop() {
     // campagne passent par la route de lobby dediee (voir genererLiens), qui ne
     // marque pas la table « ordinaire ».
     if (state.mode.id !== "hotseat" && !creationCampagne()) return null;
-    return el("div", { class: "coop-zone" }, blocLiens());
+    // Pas de zone vide quand il n'y a personne a inviter (un seul heros).
+    const liens = blocLiens();
+    return liens ? el("div", { class: "coop-zone" }, liens) : null;
 }
 
 /* ---------------- Liens d'invitation ---------------- */
@@ -1759,7 +1761,7 @@ function ligneDuSiege(p) {
             etat ? el("span", { class: "invit-etat " + etat.classe }, etat.texte) : null,
             ...inviter),
         montrerLien ? el("div", { class: "liens-url-ligne" },
-            el("span", { class: "liens-url-etiq" }, t("Lien à envoyer :")),
+            el("span", { class: "liens-url-etiq" }, t("Lien :")),
             champLien, boutonCopier) : null,
         invitationsHote.erreur[p] ? el("small", { class: "liens-erreur" }, invitationsHote.erreur[p]) : null,
     );
@@ -1784,21 +1786,19 @@ function blocLiens() {
     // Un siege par INVITE, et le nombre suit celui des heros choisis : le
     // siege 0 est celui de l'hote, deja devant son ecran.
     for (let p = 1; p < state.playerCount; p += 1) bloc.append(ligneDuSiege(p));
-    bloc.append(el("small", { class: "liens-aide" },
-        invitationsHote.actif
-            ? t("Invite un joueur connecté, ou envoie un lien à un ami sans compte. Chacun choisit son héros et son deck de son côté.")
-            : t("Un lien par personne, à envoyer. Chacun choisit son héros et son deck depuis le sien.")));
+    // La ligne d'aide (« Invite un joueur connecté, ou envoie un lien… ») est
+    // retiree : elle redisait l'infobulle de la pastille « Partie en ligne », et
+    // prenait une ligne entiere sur la rangee « Ton equipe ».
     if (liensInvites.erreur) bloc.append(el("small", { class: "liens-erreur" }, liensInvites.erreur));
     return bloc;
 }
 
-function bandeauEnLigne() {
-    // A un seul joueur il n'y a pas d'« autres joueurs » : le bandeau mentirait.
-    if (!enLigne() || state.playerCount < 2) return null;
-
-    // Qui a choisi, et QUOI. Sans cette liste, l'hote ne savait que le nombre
-    // de manquants — d'ou le « on peut lancer ? » sur Discord a chaque partie.
-    // Sieges invites uniquement : le 0 est le sien, il le voit dans son wizard.
+/** Qui a choisi, et QUOI, une ligne par siege d'invite.
+ *
+ *  Sans cette liste, l'hote ne savait que le nombre de manquants — d'ou le
+ *  « on peut lancer ? » sur Discord a chaque partie. Sieges invites
+ *  uniquement : le 0 est le sien, il le voit dans son wizard. */
+function lignesDesSieges() {
     const lignes = [];
     for (let p = 1; p < state.playerCount; p += 1) {
         const choix = state.salon.choixParSiege.get(p);
@@ -1812,11 +1812,53 @@ function bandeauEnLigne() {
                 pret ? joueur.hero.name : t("en attente de son choix")),
         ));
     }
+    return lignes;
+}
+
+/** Bureau : l'etat de la partie en ligne, en PASTILLE dans l'en-tete des heros
+ *  (28/10/2026, variante D choisie sur maquette). Le bandeau pleine largeur,
+ *  la bande de campagne et l'invitation prenaient 340 px a eux trois : la
+ *  grille des heros tombait a une ligne. La phrase d'explication passe en
+ *  infobulle. Le telephone garde son bandeau (voir `bandeauEnLigne`). */
+function pastilleEnLigne() {
+    if (estTel() || !enLigne() || state.playerCount < 2) return null;
+    return el("span", {
+        class: "tb-pastille est-en-ligne",
+        title: t("Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs de leur côté, par ton lien ou ton invitation."),
+    },
+        el("span", { class: "tb-pastille-pt" }),
+        el("b", {}, t("Partie en ligne")),
+        el("ul", { class: "salon-sieges" }, ...lignesDesSieges()));
+}
+
+/** Bureau : la campagne en cours de creation, en pastille. Meme texte que la
+ *  tuile de `modeStrip` ; le detail passe en infobulle. */
+function pastilleCampagne() {
+    if (estTel() || !creationCampagne()) return null;
+    const difficulte = BROUILLON_CAMPAGNE.difficulte === "expert" ? t("Campagne experte") : t("Standard");
+    const detail = BROUILLON_CAMPAGNE.modifie
+        ? t("Équipe déjà en place. Change ce que tu veux au deck, jamais l'identité :")
+            + " " + (BROUILLON_CAMPAGNE.identites || []).join(", ")
+        : BROUILLON_CAMPAGNE.nbJoueurs + " " + t("héros") + " · " + difficulte
+            + " · " + t("identités figées pour toute la campagne");
+    return el("span", { class: "tb-pastille est-campagne", title: detail },
+        el("span", { class: "tb-pastille-c" }, "C"),
+        el("b", {}, (BROUILLON_CAMPAGNE.modifie ? t("Modifier les decks") : t("Campagne"))
+            + " — " + BROUILLON_CAMPAGNE.nom),
+        BROUILLON_CAMPAGNE.modifie ? null
+            : el("small", {}, BROUILLON_CAMPAGNE.nbJoueurs + " " + t("héros") + " · " + difficulte));
+}
+
+function bandeauEnLigne() {
+    // A un seul joueur il n'y a pas d'« autres joueurs » : le bandeau mentirait.
+    if (!enLigne() || state.playerCount < 2) return null;
+    // Bureau : l'etat vit dans la pastille de l'en-tete (`pastilleEnLigne`).
+    if (!estTel()) return null;
 
     return el("div", { class: "salon-bandeau" },
         el("b", { class: "mvl" }, t("Partie en ligne")),
         el("span", {}, t("Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs de leur côté, par ton lien ou ton invitation.")),
-        el("ul", { class: "salon-sieges" }, ...lignes),
+        el("ul", { class: "salon-sieges" }, ...lignesDesSieges()),
     );
 }
 
@@ -2945,16 +2987,22 @@ function stepTeam() {
     );
     const f = state.heroFilters;
     const droite = el("div", { class: "tb-droite" },
+        // Bureau (variante D, 28/10/2026) : l'etat en ligne et la campagne sont
+        // des pastilles de l'en-tete, l'invitation vit sur la rangee « Ton
+        // equipe » (voir rendreEquipe). Le telephone garde ses blocs d'origine.
         bandeauEnLigne(),
-        creationCampagne() ? el("div", { class: "command-band" }, modeStrip()) : null,
+        creationCampagne() && estTel() ? el("div", { class: "command-band" }, modeStrip()) : null,
         bandeLegacy(),
-        choixCoop(),
+        estTel() ? choixCoop() : null,
         // La vue « cartes du héros » prend la place du roster (voir
         // ouvrirCartesHeros) ; les deux vivent côte à côte, une seule visible.
         el("div", { class: "tb-vue-cartes", id: "tb-vue-cartes", hidden: true }),
         el("div", { class: "tb-entete" },
             el("b", { class: "mvl" }, t("Héros")),
             el("span", { class: "tb-compte", id: "tb-compte" }, ""),
+            (pastilleEnLigne() || pastilleCampagne())
+                ? el("div", { class: "tb-pastilles" }, pastilleEnLigne(), pastilleCampagne())
+                : null,
             creationCampagne() ? null : el("button", {
                 class: "tb-mode",
                 title: t("Changer de mode de jeu"),
@@ -3330,9 +3378,15 @@ function rendreEquipe() {
                 : (pl.hero ? nomAffiche(pl.hero) : t("Joueur") + " " + (i + 1))),
         ));
     }
+    // L'invitation vit ICI, a cote de la place qu'elle remplit (variante D,
+    // 28/10/2026) : sur le bureau, la zone a droite des places etait vide
+    // pendant que trois blocs empiles au-dessus ecrasaient la grille des heros.
+    // Telephone : la rangee est dans la barre du bas, l'invitation reste en haut.
+    const invitation = estTel() ? null : choixCoop();
     poser(zone,
         el("span", { class: "tb-equipe-k" }, t("Ton équipe")),
         ...sieges,
+        invitation ? el("div", { class: "tb-inv-bas" }, invitation) : null,
     );
 }
 

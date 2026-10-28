@@ -2185,6 +2185,52 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     cursor: text;
 }
 .liens-url:focus { outline: 0; border-color: var(--affiche-jaune, #f0b95f); }
+
+/* Bureau, etape Equipe (variante D, 28/10/2026) : l'etat de la partie en ligne
+   et la campagne sont des PASTILLES de l'en-tete des heros... */
+.tb-pastilles { margin-left: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 8px; min-width: 0; }
+.tb-pastilles + .tb-mode { margin-left: 12px; }
+.tb-pastille {
+    display: inline-flex; align-items: center; gap: 8px;
+    min-height: 30px; padding: 3px 12px; max-width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 15px;
+    background: rgba(16, 18, 25, 0.72);
+    font-size: 12px; color: inherit; white-space: nowrap;
+}
+/* ⚠ L'EN-TETE A DEUX REGLES QUI VISENT TOUT <b> / TOUT ENFANT : `.tb-entete b`
+   (le titre « HEROS », 36 px en capitales) et, en affichage epure,
+   `html[data-epure] .tb-entete b|*` (22 px, police des titres, texte sombre sur
+   barre jaune). Les pastilles sont des pieces rapportees : on fixe leur
+   typographie ici, avec une specificite qui passe devant les deux. */
+.tb-entete .tb-pastille,
+html[data-epure] .tb-entete .tb-pastille { color: #dfe6f2; font: 12px/1.2 "Segoe UI", system-ui, sans-serif; letter-spacing: 0; }
+html[data-epure] .tb-entete .tb-pastille * { color: inherit; font-family: "Segoe UI", system-ui, sans-serif; font-weight: 400; letter-spacing: 0; }
+.tb-entete .tb-pastille b,
+html[data-epure] .tb-entete .tb-pastille b { font-size: 12px; font-weight: 700; line-height: 1.2; text-transform: none; color: #fff; }
+.tb-entete .tb-pastille small,
+html[data-epure] .tb-entete .tb-pastille small { color: var(--mute); font-size: 11px; }
+.tb-entete .tb-pastille .salon-siege b,
+html[data-epure] .tb-entete .tb-pastille .salon-siege b { color: var(--mute); font-weight: 700; }
+.tb-entete .tb-pastille .tb-pastille-c,
+html[data-epure] .tb-entete .tb-pastille .tb-pastille-c { font-family: Bangers, Anton, Impact, sans-serif; font-size: 15px; font-weight: 400; color: var(--agir-encre); }
+.tb-pastille-pt { width: 8px; height: 8px; border-radius: 50%; background: var(--affiche-jaune, #f0b95f); flex: none; }
+.tb-pastille-c { width: 20px; height: 20px; display: grid; place-items: center; background: var(--agir); color: var(--agir-encre); font-size: 15px; flex: none; }
+.tb-pastille .salon-sieges { display: inline-flex; flex-wrap: nowrap; gap: 4px 12px; margin: 0; padding: 0; list-style: none; }
+/* ... et l'invitation vit sur la rangee « Ton equipe », a cote de la place
+   qu'elle remplit. Un siege d'invite par ligne, le lien toujours visible. */
+.tb-inv-bas {
+    align-self: center; flex: 1 1 0; min-width: 0;
+    margin-left: 14px; padding-left: 18px;
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+.tb-inv-bas .coop-zone { margin: 0; }
+.tb-inv-bas .liens-invites { margin-top: 0; }
+.tb-inv-bas .liens-invites.ouvert { padding: 0; background: none; border: 0; gap: 4px; }
+.tb-inv-bas .invit-ligne { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px 16px; }
+.tb-inv-bas .invit-rangee { flex: 1 1 360px; min-width: 0; }
+.tb-inv-bas .liens-url-ligne { flex: 1.3 1 400px; min-width: 0; flex-wrap: nowrap; }
+.tb-inv-bas .liens-url { flex: 1 1 0; }
+.tb-inv-bas .invit-liste { flex: 1 1 0; }
 .invit-liste {
     flex: 1 1 200px;
     min-width: 0;
