@@ -1350,6 +1350,34 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'no campaign game running'}, status=409)
         return web.json_response({'multi': True, 'cles': list(passwords)})
 
+    async def get_liens_sieges_campagne_salon(self, request: web.Request) -> web.Response:
+        """Cles de siege pour inviter l'equipe AVANT le lancement, en campagne.
+
+        L'ecran de preparation d'equipe de campagne (prepare.html?campagne)
+        invite les joueurs pendant qu'ils composent l'equipe, pour que CHACUN
+        choisisse son heros et son deck (comme le mode en ligne classique),
+        avant que l'hote ne fige le roster. A ce moment aucune partie n'est
+        encore lancee : ni `get_liens_sieges` ni `get_liens_sieges_campagne` ne
+        conviennent.
+
+        - PAS `get_liens_sieges` : il pose `table_ordinaire = True`, ce qui
+          ferait taire `get_campagne_en_cours` aupres des invites (table
+          declaree ordinaire). On le laisse donc a `False` ici.
+        - PAS `get_liens_sieges_campagne` : il exige une partie de campagne
+          DEJA lancee (409 avant /new). On retire cette garde : en lobby de
+          campagne, le monde n'existe pas encore, et c'est normal.
+
+        Memes cles que les deux autres (`SEAT_PASSWORDS`, independantes de toute
+        partie) et meme garde stricte « reserve au siege 0 ».
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return web.json_response({'multi': False, 'cles': []})
+        if not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        return web.json_response({'multi': True, 'cles': list(passwords)})
+
     async def get_site_admin(self, request: web.Request) -> web.Response:
         """L'adresse d'administration du site, s'il y en a une et si c'est l'hote.
 
@@ -2677,6 +2705,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)
         self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
         self.AddAwaitGetSecurity('/get_liens_sieges_campagne', self.get_liens_sieges_campagne)
+        self.AddAwaitGetSecurity('/get_liens_sieges_campagne_salon', self.get_liens_sieges_campagne_salon)
         self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)
         self.AddAwaitGetSecurity('/get_salon_joueurs', self.get_salon_joueurs)
         self.AddAwaitGetSecurity('/get_documents', self.get_documents)

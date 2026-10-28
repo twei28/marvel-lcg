@@ -47,10 +47,22 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
-        date: "2026-10-27",
+        date: "2026-10-28",
         genre: "jeu",
-        fr: "Une campagne en ligne peut maintenant inviter des amis : un écran de liens apparaît après le lancement d'un scénario, chaque invité atterrit directement sur le héros que la campagne lui a fixé.",
-        en: "An online campaign can now invite friends: a link screen appears after launching a scenario, and each guest lands straight on the hero the campaign assigned them.",
+        fr: "Campagne en ligne : tu peux désormais inviter tes amis pendant la composition de l'équipe, chacun choisit son propre héros et son propre deck depuis son écran avant que la partie se lance.",
+        en: "Online campaign: you can now invite your friends while building the team, and each of them picks their own hero and deck from their screen before the game starts.",
+    },
+    {
+        date: "2026-10-28",
+        genre: "correction",
+        fr: "Quand le jeu te propose plusieurs choix (un rôle, une manigance à mettre en jeu), survoler une option montre enfin la bonne carte, et non la manigance principale.",
+        en: "When the game offers you several choices (a role, a scheme to put into play), hovering an option now shows the right card instead of the main scheme.",
+    },
+    {
+        date: "2026-10-28",
+        genre: "correction",
+        fr: "À la victoire d'un scénario de campagne, le bouton « Valider » n'est plus coupé sous l'écran : la carte des récompenses tient entièrement à l'écran.",
+        en: "On a campaign scenario victory, the “Validate” button is no longer cut off below the screen: the rewards card now fits fully on screen.",
     },
     {
         date: "2026-10-27",

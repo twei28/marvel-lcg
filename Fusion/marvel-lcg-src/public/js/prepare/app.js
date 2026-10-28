@@ -942,7 +942,7 @@ function boutonPrincipalNav() {
         : creationCampagne()
             ? el("button", {
                 class: "btn launch",
-                disabled: !stepComplete(1) || undefined,
+                disabled: (!stepComplete(1) || (enLigne() && !state.salon.prete)) || undefined,
                 onclick: validerEquipeCampagne,
             }, BROUILLON_CAMPAGNE.modifie ? t("Valider les decks") : t("Valider l'équipe"))
             : el("button", {
@@ -1336,7 +1336,7 @@ function navBar() {
             : creationCampagne()
                 ? el("button", {
                     class: "btn launch",
-                    disabled: !stepComplete(1) || undefined,
+                    disabled: (!stepComplete(1) || (enLigne() && !state.salon.prete)) || undefined,
                     onclick: validerEquipeCampagne,
                 }, BROUILLON_CAMPAGNE.modifie ? t("Valider les decks") : t("Valider l'équipe"))
                 : el("button", {
@@ -1559,8 +1559,13 @@ function modeStrip() {
  * l'autre bout : les proposer en coop locale serait faux.
  */
 function choixCoop() {
-    if (!state.salon.multi || state.mode.id !== "hotseat") return null;
-    if (state.coopEnLigne === false) return null;
+    if (!state.salon.multi || state.coopEnLigne === false) return null;
+    // Coop en ligne ordinaire (hotseat) : l'hote distribue des liens. CAMPAGNE :
+    // l'ecran de prepa invite AUSSI, pour que chaque joueur rejoigne et choisisse
+    // SON heros et SON deck avant que l'hote ne fige le roster. Les liens de
+    // campagne passent par la route de lobby dediee (voir genererLiens), qui ne
+    // marque pas la table « ordinaire ».
+    if (state.mode.id !== "hotseat" && !creationCampagne()) return null;
     return el("div", { class: "coop-zone" }, blocLiens());
 }
 
@@ -1587,7 +1592,11 @@ function lienDuSiege(p) {
 async function genererLiens() {
     liensInvites.erreur = "";
     try {
-        const res = await fetch("get_liens_sieges?");
+        // En campagne, route de LOBBY dediee : memes cles, mais sans marquer la
+        // table « ordinaire » et sans exiger une partie deja lancee (voir
+        // get_liens_sieges_campagne_salon, server_get.py).
+        const route = creationCampagne() ? "get_liens_sieges_campagne_salon?" : "get_liens_sieges?";
+        const res = await fetch(route);
         const brut = await res.json();
         // ⚠ `res.ok` NE SUFFIT PAS : le moteur repond 403 avec un corps JSON
         // quand le client ne tient pas le siege 0. Sans ce test, `cles` serait

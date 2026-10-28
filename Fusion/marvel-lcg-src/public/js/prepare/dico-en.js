@@ -1213,4 +1213,11 @@ export const DICO_EN_BASE = {
     /* ---- Echange Team-Up a la mise en place (RR 1.8, 11/10/2026) ---- */
     "{qui} : « {retirer} » correspond au héros d’un autre joueur. Règle Team-Up (Rules Reference 1.8) : la remplacer par « {ajouter} » pour cette partie ?":
         "{qui}: “{retirer}” matches another player’s hero. Team-Up rule (Rules Reference 1.8): replace it with “{ajouter}” for this game?",
+    /* ---- Ecran « Inviter l'equipe » d'une campagne en ligne (campagne/app.js) ---- */
+    "Inviter l'équipe": "Invite the team",
+    "La partie est lancée. Envoie un lien à chaque coéquipier : son héros est déjà celui fixé par la campagne, il n'a rien à choisir.":
+        "The game has started. Send each teammate a link: their hero is already the one set by the campaign, they have nothing to choose.",
+    "Préparation des liens…": "Preparing links…",
+    "Rejoindre le plateau": "Join the board",
+    "Impossible de récupérer les liens d'invitation.": "Could not load the invitation links.",
 };
