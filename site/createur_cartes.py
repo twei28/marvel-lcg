@@ -93,7 +93,9 @@ def _ecrire_atomique(chemin: str, octets: bytes) -> None:
 
 
 def _iso(epoque: float) -> str:
-    return time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(epoque))
+    # UTC avec « Z » : la page compare ces dates à celles de son navigateur
+    # (fusion « le plus récent gagne »), sans dépendre du fuseau du serveur.
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(epoque))
 
 
 def usage_octets(racine: str, compte: str) -> int:

@@ -6,8 +6,9 @@ import { ajouterVersion, listerVersions } from './stockage.js'
 // ---------------------------------------------------------------- versions
 const dateFr = (t) => new Date(t).toLocaleString('fr-BE', { dateStyle: 'short', timeStyle: 'medium' })
 
-/** La liste des versions gardees ; `restaurer(projet)` remplace le projet (apres avoir garde l'actuel). */
-export async function ouvrirVersions(restaurer) {
+/** La liste des versions gardees ; `restaurer(projet)` remplace le projet (apres avoir garde l'actuel).
+ *  `serveur` (ou null) : { dossier, versions(), restaurer(n) } pour les versions gardees sur le serveur du site, pour le dossier de la carte. */
+export async function ouvrirVersions(restaurer, serveur = null) {
   const versions = await listerVersions()
   const liste = el('div', { class: 'liste', style: 'max-height:50vh' })
   if (!versions.length) liste.append(el('div', { class: 'aide' }, 'Aucune version gardée pour le moment. Une version est gardée toutes les 5 minutes de travail, et quand tu fermes la page.'))
@@ -22,7 +23,30 @@ export async function ouvrirVersions(restaurer) {
         },
       }, 'Restaurer')))
   }
-  dialogue('Versions gardées', el('div', {}, el('div', { class: 'aide' }, 'Restaurer remplace le projet actuel (qui est gardé comme version avant de le faire). Les 10 dernières versions sont conservées.'), liste))
+  const contenu = el('div', {}, el('div', { class: 'aide' }, 'Restaurer remplace le projet actuel (qui est gardé comme version avant de le faire). Les 10 dernières versions sont conservées.'), liste)
+  if (serveur) {
+    const listeServeur = el('div', { class: 'liste', style: 'max-height:30vh' }, el('div', { class: 'aide' }, 'Chargement…'))
+    contenu.append(
+      el('h2', {}, 'Versions sur le serveur'),
+      el('div', { class: 'aide' }, serveur.dossier ? `Pour le dossier « ${serveur.dossier} ». Restaurer remplace les cartes de ce dossier.` : 'Pour les cartes sans dossier. Restaurer remplace ces cartes.'),
+      listeServeur)
+    serveur.versions().then((vs) => {
+      listeServeur.replaceChildren()
+      if (!vs.length) listeServeur.append(el('div', { class: 'aide' }, 'Aucune version sur le serveur pour ce dossier. Une ancienne version y est gardée à chaque enregistrement (les 30 dernières).'))
+      for (const v of vs) {
+        listeServeur.append(el('div', { class: 'rang', style: 'align-items:center' },
+          el('span', { style: 'flex:2' }, `${dateFr(Date.parse(v.modifie))} · ${Math.max(1, Math.round(v.taille / 1024))} Ko`),
+          el('button', {
+            class: 'btn petit fixe', type: 'button', onclick: async (e) => {
+              const bouton = e.target
+              bouton.disabled = true
+              try { await serveur.restaurer(v.n); bouton.closest('dialog').close() } catch (err) { bouton.disabled = false; S.message('Restauration impossible : ' + err.message) }
+            },
+          }, 'Restaurer')))
+      }
+    }).catch((err) => { listeServeur.replaceChildren(el('div', { class: 'aide' }, 'Versions du serveur indisponibles : ' + err.message)) })
+  }
+  dialogue('Versions gardées', contenu)
 }
 
 // ---------------------------------------------------------------- chercher / remplacer

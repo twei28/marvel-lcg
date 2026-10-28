@@ -13,6 +13,7 @@ import { ouvrirExportPack } from './export-pack.js'
 import { brancherStyles, chargerStyles, enveloppePerso } from './styles-texte.js'
 import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
+import { creerSynchro } from './serveur.js'
 import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
 
 const BASE = '/createur-cartes/'
@@ -55,12 +56,23 @@ const imagesPretes = new WeakMap() // Blob -> image deja chargee (pour les calcu
 
 // ---------------------------------------------------------------- stockage
 let minuteurSauvegarde = 0
+// La sauvegarde sur le serveur du site (comptes createur) : voir serveur.js. Hors du site, elle reste en « local » et ne fait rien.
+const synchro = creerSynchro({
+  projet: () => projet,
+  serialiser: (c) => serialiser(c),
+  deserialiser: (j) => deserialiser(j),
+  message: (t) => message(t),
+  sauver: () => sauvegarderPlusTard(),
+  apres: () => apresRapatriement(),
+})
 function sauvegarderPlusTard() {
   clearTimeout(minuteurSauvegarde)
   minuteurSauvegarde = setTimeout(async () => {
     try {
+      synchro.avantSauvegarde()
       await ecrireProjet(projet)
       versionsModifie = true
+      synchro.planifier()
     } catch (e) {
       message('Sauvegarde dans le navigateur impossible : ' + e.message)
     }
@@ -74,7 +86,42 @@ async function garderVersion(raison = 'auto') {
   try { await ajouterVersion(projet, raison) } catch {}
 }
 setInterval(() => garderVersion('auto'), 5 * 60 * 1000)
-addEventListener('pagehide', () => { clearTimeout(minuteurSauvegarde); ecrireProjet(projet).catch(() => {}); garderVersion('fermeture') })
+addEventListener('pagehide', () => { clearTimeout(minuteurSauvegarde); synchro.avantSauvegarde(); ecrireProjet(projet).catch(() => {}); garderVersion('fermeture') })
+
+/** Apres que des dossiers (ou les reglages) viennent du serveur : la page repart de ce que contient le projet. */
+function apresRapatriement() {
+  projet.cartes = projet.cartes.filter((c) => TYPES[c.type])
+  if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'en')]
+  historiques.clear()
+  majModeles()
+  choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id)
+}
+
+/** L'indicateur de l'en-tete : ou est enregistre le travail. Cache hors du site (mode local). */
+function majIndicateurServeur() {
+  const z = $('#etat-serveur')
+  if (!z) return
+  z.hidden = synchro.etat === 'local'
+  z.className = 'etat-serveur'
+  z.title = ''
+  if (synchro.etat === 'deconnecte') {
+    z.classList.add('doux')
+    z.replaceChildren('☁ Non connecté : enregistré dans ce navigateur seulement. ', el('a', { href: '/connexion' }, 'Se connecter'))
+    return
+  }
+  if (synchro.etat !== 'connecte') return
+  const q = synchro.quota
+  if (q) z.title = `Espace utilisé : ${Math.round(q.utilise / 1048576)} Mo sur ${Math.round(q.quota / 1048576)} Mo`
+  const textes = { repos: '☁ Enregistré sur le serveur', attente: '☁ Enregistrement dans 5 secondes…', envoi: '☁ Enregistrement…' }
+  if (synchro.activite === 'erreur') {
+    z.classList.add('mauvais')
+    z.textContent = synchro.detail === 'trop' ? '☁ Un dossier ne tient pas sur le serveur : il reste dans ce navigateur' : '☁ Serveur injoignable : nouvel essai bientôt'
+  } else {
+    z.classList.add(synchro.activite === 'repos' ? 'bon' : 'doux')
+    z.textContent = textes[synchro.activite]
+  }
+}
+synchro.onEtat = majIndicateurServeur
 
 // ---------------------------------------------------------------- images
 function imageDe(blob) {
@@ -1238,6 +1285,7 @@ async function demarrer() {
   if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'en')]
   for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } }
   if (!projet.cartes.some((c) => c.id === projet.courante)) projet.courante = projet.cartes[0].id
+  synchro.baseline()
 
   $('#lang-fr').addEventListener('click', () => changerLangue('fr'))
   $('#lang-en').addEventListener('click', () => changerLangue('en'))
@@ -1255,7 +1303,12 @@ async function demarrer() {
     choisir(projet.cartes[0].id)
   })
   $('#recherche').addEventListener('input', (e) => { filtreListe = e.target.value; majListe() })
-  $('#p-versions').addEventListener('click', () => ouvrirVersions((p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }))
+  $('#p-versions').addEventListener('click', () => ouvrirVersions(restaurerLocal, synchro.etat !== 'connecte' ? null : {
+    dossier: carte().dossier || '',
+    versions: () => synchro.versions(carte().dossier),
+    restaurer: async (n) => { await ajouterVersion(projet, 'avant restauration'); await synchro.restaurerVersion(carte().dossier, n); apresRapatriement(); message('Version restaurée.') },
+  }))
+  const restaurerLocal = (p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }
   $('#p-remplacer').addEventListener('click', ouvrirRemplacer)
   $('#p-appliquer').addEventListener('click', () => ouvrirAppliquer(rolesDe))
   $('#m-enregistrer').addEventListener('click', () => { const n = prompt(tr('Nom du modèle'), carte().contenu.titre); if (n === null) return; enregistrerModele(n); majModeles(); sauvegarderPlusTard(); message('Modèle enregistré.') })
@@ -1289,5 +1342,6 @@ async function demarrer() {
   })
   brancherToile()
   choisir(projet.courante)
+  synchro.demarrer() // sans attendre : la page marche tout de suite avec ce qu'elle a, la fusion arrive ensuite
 }
 demarrer().catch((e) => message('Démarrage impossible : ' + e.message))

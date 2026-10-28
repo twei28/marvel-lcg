@@ -29,6 +29,10 @@
   .btn.principal { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
   .btn[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn.petit { padding: 3px 7px; font-size: 12px; }
+  .etat-serveur { font-size: 12px; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--bord); color: var(--doux); }
+  .etat-serveur.bon { color: #7fd48c; border-color: #2f5e3a; }
+  .etat-serveur.mauvais { color: #ff9b8f; border-color: #6b2f2a; }
+  .etat-serveur a { color: inherit; }
   .rang { display: flex; gap: 6px; align-items: flex-end; flex-wrap: wrap; }
   .rang > * { flex: 1; min-width: 70px; }
   .rang > .fixe { flex: none; min-width: 0; }
@@ -102,6 +106,7 @@
   <button class="btn" id="b-print" title="Planche à imprimer (63 × 88 mm) ou à enregistrer en PDF">🖨 Imprimer / PDF</button>
   <button class="btn" id="b-tts" title="Planche de cartes pour Tabletop Simulator (10 colonnes)">🎲 Planche TTS</button>
   <span id="message"></span>
+  <span id="etat-serveur" class="etat-serveur" role="status" hidden></span>
   <span class="groupe-langue ui" role="group" aria-label="Language of this page" style="margin-left:auto">
     <button class="btn" id="ui-en" aria-pressed="true" title="This page in English">English</button>
     <button class="btn" id="ui-fr" aria-pressed="false" title="Cette page en français">Français</button>
