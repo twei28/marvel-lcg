@@ -9,12 +9,12 @@ const TYPES_TXT = { ally: 'ALLY', event: 'EVENT', upgrade: 'UPGRADE', support: '
 window.rendre = async (id, extra = {}, opts = {}) => {
   const spec = types[id]
   const c = document.createElement('canvas')
-  const art = { image: await chargerImage(spec.paysage ? 'kamala-photo-paysage.png' : 'kamala-photo.png') }
-  const contenu = { ...CHAMPS_VIDES, titre: 'Kamala Khan', unique: true, typeTexte: '', traits: 'inhuman.',
-    regles: '<i>Teen Spirit</i> &mdash; <b>Action</b>: Discard cards from the top of your deck until you discard a Ms. Marvel card, then add that card to your hand. (Limit once per round.)',
-    citation: '"I want to be beautiful and awesome and butt-kicking and less complicated"', ligneEnsemble: 'hand size 6 / hit points 10', createur: 'Marvel Champions custom content by:', pv: '10', rec: '5', ...extra }
-  const tete = opts.tete ? { image: await chargerImage('kamala-head.png'), ...opts.tete } : null
-  await dessinerCarte(c, spec, contenu, { couleurs: {}, art, artDevant: null, tete, fissures: opts.fissures }, '../img/')
+  const art = { image: await chargerImage(spec.paysage ? 'valkyrie-photo-paysage.png' : 'valkyrie-photo.png') }
+  const contenu = { ...CHAMPS_VIDES, titre: 'Valkyrie', unique: true, typeTexte: '', traits: 'Asgard. Avenger.',
+    regles: '<i>Death Perception</i> &mdash; <b>Hero Action</b>: Play the set-aside Death-Glow upgrade as if it were in your hand.',
+    citation: '"I am the chooser of the slain."', ligneEnsemble: 'hand size 5 / hit points 12', createur: 'Marvel Champions custom content by:', pv: '10', rec: '5', ...extra }
+  const tete = opts.tete ? { image: await chargerImage('valkyrie-head.png'), ...opts.tete } : null
+  await dessinerCarte(c, spec, contenu, { couleurs: opts.couleurs ?? {}, art, artDevant: null, tete, fissures: opts.fissures }, '../img/')
   return c.toDataURL('image/png')
 }
 window.prete = true

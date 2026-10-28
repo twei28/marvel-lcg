@@ -85,8 +85,6 @@ def arbre_de(t):
             e["trn"] = trn
         if m:
             e["m"] = m
-        if r.get("text"):
-            e["texte"] = r["text"]
         elements.append(e)
     return elements
 

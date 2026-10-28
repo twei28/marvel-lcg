@@ -552,7 +552,7 @@ function construireFormulaire() {
   $('#type').value = c.type
   const f = []
   {
-    const dossier = el('input', { type: 'text', list: 'dossiers-connus', placeholder: 'ex. Ms. Marvel', value: c.dossier ?? '' })
+    const dossier = el('input', { type: 'text', list: 'dossiers-connus', placeholder: 'ex. Valkyrie', value: c.dossier ?? '' })
     dossier.addEventListener('input', () => { c.dossier = dossier.value.trim(); changement() })
     f.push(el('label', {}, 'Dossier (un héros, un set…)', dossier))
   }

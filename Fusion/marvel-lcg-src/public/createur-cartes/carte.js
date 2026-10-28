@@ -263,6 +263,9 @@ function dessinerLigne(ctx, el, source, { prefixeIcone = '' } = {}) {
  * Rend, pour chaque bloc, { el, jetons, base, y, page, facteur } (y relatif au haut du panneau).
  */
 /** Les coins coupes (`pinchleft`, `pinchright`) : une forme que le texte contourne. Rend la bordure a la hauteur y (px de carte). */
+/** Rapport entre la taille des regles d'une carte imprimee (70 px a 1500 px de large) et le reglage par defaut du Card Maker de reference (59 px). */
+const TAILLE_REGLES_IMPRIMEE = 70 / 59
+
 const FORMES = {
   'polygon(0px 0px, 50% 0px, 100% 100%, 0px 100%)': [[0, 0], [0.5, 0], [1, 1], [0, 1]],
   'polygon(50% 0px, 0px 100%, 100% 100%, 100% 0px)': [[0.5, 0], [0, 1], [1, 1], [1, 0]],
@@ -320,7 +323,10 @@ function fluxTexte(ctx, spec, contenu) {
       const brut = c === 'traits' && el.style.textTransform === 'uppercase' ? (source[c] || '').toUpperCase() : source[c]
       const jetons = source[c] ? analyser(c === 'traits' ? `<em>${brut}</em>` : brut) : []
       if (!jetons.length) continue
+      // les cartes imprimees ont un texte de regles ~19 % plus grand que le reglage par defaut du Card Maker de reference
+      // (mesure sur une vraie carte : 70 px contre 59 px) ; la citation, elle, est a la meme taille.
       const base = baseDe(el, c === 'traits' ? { ecartParagraphe: 0 } : c === 'rules' ? { ecartParagraphe: 8, poidsGras: '500' } : { ecartParagraphe: 8 })
+      if (c === 'rules') { base.taille *= TAILLE_REGLES_IMPRIMEE; base.interligne *= TAILLE_REGLES_IMPRIMEE }
       if (c === 'traits') base.interligne = el.boite[3]
       base.alignement = el.style.textAlign === 'center' ? 'center' : 'left'
       const largeur = el.boite[2]
