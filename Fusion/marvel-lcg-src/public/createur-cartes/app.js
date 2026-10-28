@@ -184,15 +184,21 @@ function majBoutonsLangue() {
 // ---------------------------------------------------------------- rendu
 async function etatDe(c) {
   const [art, artDevant, tete] = await Promise.all([imageDe(c.art.blob), imageDe(c.artDevant.blob), imageDe(c.tete.blob)])
-  const couleurs = { ...c.couleurs }
+  const couleurs = c.cadre === 'sombre' ? { ...couleursSombres(TYPES[c.type]), ...c.couleurs } : { ...c.couleurs }
   return {
     couleurs,
     art: art && { image: art, x: c.art.x, y: c.art.y, zoom: c.art.zoom, rotation: c.art.rotation },
     artDevant: artDevant && { image: artDevant, x: c.artDevant.x, y: c.artDevant.y, zoom: c.artDevant.zoom, rotation: c.artDevant.rotation },
     tete: tete && { image: tete, afficher: c.tete.afficher, etoile: c.tete.etoile, zoom: c.tete.zoom, x: c.tete.x, y: c.tete.y, rotation: c.tete.rotation },
     fissures: c.fissures,
+    cadre: c.cadre ?? 'officiel',
     libres: await Promise.all((c.libres ?? []).map(async (L) => ({ ...L, image: await imageDe(L.blob) }))),
   }
+}
+/** Le cadre « sombre » : tous les roles teintes passent a des gris-bleus tres fonces, les accents a un or discret. */
+function couleursSombres(spec) {
+  const accents = new Set(['left_accent', 'right_accent', 'divider', 'accent', 'splash_color'])
+  return Object.fromEntries(rolesDe(spec).map((r) => [r, accents.has(r) ? '#a98f4e' : r === 'light_boxes' ? '#000000' : r.includes('upper') ? '#2b2d38' : '#1b1c24']))
 }
 /** Dessine une carte sur un canvas neuf (la langue peut etre forcee). */
 async function rendreCarte(c, langue = null) {
@@ -649,8 +655,11 @@ function construireFormulaire() {
       c.tete.blob ? el('button', { class: 'btn petit', type: 'button', onclick: () => { ciblePointeur = 'tete'; majAide() } }, 'Déplacer à la souris') : null))
   }
 
-  // options
-  if (TYPES_SANS_FISSURES.has(c.type)) f.push(section('Options', false, coche('Fissures dans le cadre', (x) => x, 'fissures')))
+  // style de cadre et options
+  f.push(section('Style du cadre', false,
+    liste('Style', (x) => x, 'cadre', [['officiel', 'Officiel (gabarit du jeu)'], ['sombre', 'Cadre sombre'], ['illustration', 'Pleine illustration (sans cadre)']], (v) => v),
+    el('div', { class: 'aide' }, '« Cadre sombre » remplace les couleurs par un gris-bleu foncé avec des accents dorés (tu peux encore les modifier dans Couleurs). « Pleine illustration » enlève le cadre : l’image remplit la carte et le texte repose sur des panneaux translucides.'),
+    TYPES_SANS_FISSURES.has(c.type) ? coche('Fissures dans le cadre', (x) => x, 'fissures') : null))
 
   racine.append(...f)
   majAide()

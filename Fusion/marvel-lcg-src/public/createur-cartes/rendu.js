@@ -92,7 +92,7 @@ const ECLAT = [
 
 /** La tete d'angle est-elle visible ? `etat.tete` = { image, afficher, etoile, zoom, x, y, rotation } (afficher vaut vrai par defaut). */
 export function teteVisible(spec, etat) {
-  return !!(spec.tete && etat.tete?.image && etat.tete.afficher !== false)
+  return !!(spec.tete && etat.tete?.image && etat.tete.afficher !== false && etat.cadre !== 'illustration')
 }
 
 /**
@@ -100,6 +100,8 @@ export function teteVisible(spec, etat) {
  * prennent leur variante `-nocracks` quand `etat.fissures === false`.
  */
 export function pileDeCalques(spec, etat) {
+  // « pleine illustration » : plus de cadre, l'image seule (les panneaux de texte sont poses par carte.js)
+  if (etat.cadre === 'illustration') return spec.calques.filter((c) => c.role === 'photo' || c.role === 'photofront')
   let pile = spec.calques.filter((c) => !c.role.startsWith('splash'))
   // la promo generique prend un autre fond des qu'une valeur THW apparait (encarts de stats)
   if (spec.id === 'generic-promo' && etat.avecStats) pile = pile.map((c) => (c.role === 'base' ? { ...c, src: 'generic-promo/base-ally.webp' } : c))

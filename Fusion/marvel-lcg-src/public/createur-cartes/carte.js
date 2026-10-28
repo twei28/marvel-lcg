@@ -505,13 +505,36 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   }
 
   // Lignes : titre, type, ligne d'ensemble, createur
+  const pleine = etat.cadre === 'illustration'
+  if (pleine) {
+    // pas de cadre : des panneaux translucides donnent un fond aux textes
+    const panneauTranslucide = (cls, couleur, rayon) => {
+      const e = E[cls]
+      if (!e) return
+      dans(e, () => {
+        ctx.fillStyle = couleur
+        ctx.beginPath()
+        ctx.roundRect(-14, -6, e.boite[2] + 28, e.boite[3] + 12, rayon)
+        ctx.fill()
+      })
+    }
+    panneauTranslucide('cardtext', 'rgba(255,255,255,0.86)', 36)
+    panneauTranslucide('header', 'rgba(255,255,255,0.86)', 30)
+    panneauTranslucide('set-line', 'rgba(0,0,0,0.62)', 20)
+    panneauTranslucide('c-line', 'rgba(0,0,0,0.5)', 14)
+    panneauTranslucide('typestr', 'rgba(0,0,0,0.62)', 14)
+  }
   const titre = E.title
   if (titre) dans(titre, () => dessinerLigne(ctx, titre, contenu.titre, { prefixeIcone: contenu.unique ? 'u' : '' }))
   // Libelle du type : recouvre le libelle anglais cuit puis ecrit le libelle de la langue (ou le libelle libre)
   const ty = E.typestr
   const libre = contenu.typeTexte
   const voulu = libre || (contenu.langue === 'fr' ? LIBELLES.fr[spec.id] : '')
-  if (ty && voulu && LIBELLES.en[spec.id]) {
+  if (pleine && ty) {
+    // sans cadre le libelle n'est pas cuit dans l'image : on l'ecrit toujours
+    const mot = libre || LIBELLES[contenu.langue === 'fr' ? 'fr' : 'en'][spec.id]
+    if (mot) dans(ty, () => dessinerLigne(ctx, ty, mot))
+  } else if (ty && voulu && LIBELLES.en[spec.id]) {
     dans(ty, () => {
       const base = baseDe(ty)
       const [, , w, h] = ty.boite
