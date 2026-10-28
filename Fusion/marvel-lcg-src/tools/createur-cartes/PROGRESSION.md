@@ -58,3 +58,8 @@ Page `public/createur-cartes.html` + `public/createur-cartes/app.js` (liste de c
 5. **Sauvegarde / reprise** : sauvegarde auto + historique des versions, dossiers par héros, cartes gardées SUR LE SERVEUR du jeu.
 6. **Comptes « créateur »** : invitation par l'admin (lien « créateur »), accès limité au seul créateur de cartes (ni le jeu ni l'admin), chaque créateur ne voit que SES cartes, l'admin voit tout. A faire côté serveur ; rien ne se déploie sans le mot « déploie ».
 Non retenues : import depuis le jeu, traduction assistée, mots-clés prêts à insérer.
+
+## Ajouts demandes ensuite (29/10)
+- **Import des fichiers du Card Maker de reference** (fait) : leur « Save card » = un .json par carte (UTF-8 + BOM, cles a plat : selectType, title, rules, paycost..., images en data URL), leur « Save .zip » = un .json par carte dans un zip. `app.js` lit les deux (`carteDepuisReference`, `lireZip`). Leur derniere mise a jour : aout 2026 (version 2026.2) ; avant : mai, avril, mars... 2026.
+- **Editeur de texte sans balises** : selectionner puis cliquer (gras, italique, souligne, taille, couleur, icones en un clic) ; pour les regles et la citation. Le texte garde le mini-HTML en interne.
+- **Autres retenues** : clic direct sur la carte pour editer ; ajustement auto + reglage manuel de la taille d'un bloc ; styles reutilisables ; chercher / remplacer sur une carte, tout un heros ou tout le set (FR et EN).
