@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><body>
+<script type="module">
+import { chargerImage } from '../rendu.js'
+import { chargerPolices } from '../polices.js'
+import { dessinerCarte, CHAMPS_VIDES } from '../carte.js'
+const types = await (await fetch('../donnees/types.json')).json()
+await chargerPolices('../polices/')
+const TYPES_TXT = { ally: 'ALLY', event: 'EVENT', upgrade: 'UPGRADE', support: 'SUPPORT', resource: 'RESOURCE', villain: 'VILLAIN', minion: 'MINION', treachery: 'TREACHERY', environment: 'ENVIRONMENT', attachment: 'ATTACHMENT', sidescheme: 'SIDE SCHEME', main_scheme_a: 'MAIN SCHEME', main_scheme_b: 'MAIN SCHEME', 'alter-ego': 'ALTER-EGO', identity: 'HERO', obligation: 'OBLIGATION' }
+window.rendre = async (id) => {
+  const spec = types[id]
+  const c = document.createElement('canvas')
+  const art = { image: await chargerImage(spec.paysage ? 'kamala-photo-paysage.png' : 'kamala-photo.png') }
+  const contenu = { ...CHAMPS_VIDES, titre: 'Kamala Khan', unique: true, typeTexte: '', traits: 'inhuman.',
+    regles: '<i>Teen Spirit</i> &mdash; <b>Action</b>: Discard cards from the top of your deck until you discard a Ms. Marvel card, then add that card to your hand. (Limit once per round.)',
+    citation: '"I want to be beautiful and awesome and butt-kicking and less complicated"', ligneEnsemble: 'hand size 6 / hit points 10', createur: 'Marvel Champions custom content by:', pv: '10', rec: '5' }
+  await dessinerCarte(c, spec, contenu, { couleurs: {}, art, artDevant: null }, '../img/')
+  return c.toDataURL('image/png')
+}
+window.prete = true
+</script>
