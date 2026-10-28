@@ -63,3 +63,8 @@ Non retenues : import depuis le jeu, traduction assistée, mots-clés prêts à 
 - **Import des fichiers du Card Maker de reference** (fait) : leur « Save card » = un .json par carte (UTF-8 + BOM, cles a plat : selectType, title, rules, paycost..., images en data URL), leur « Save .zip » = un .json par carte dans un zip. `app.js` lit les deux (`carteDepuisReference`, `lireZip`). Leur derniere mise a jour : aout 2026 (version 2026.2) ; avant : mai, avril, mars... 2026.
 - **Editeur de texte sans balises** : selectionner puis cliquer (gras, italique, souligne, taille, couleur, icones en un clic) ; pour les regles et la citation. Le texte garde le mini-HTML en interne.
 - **Autres retenues** : clic direct sur la carte pour editer ; ajustement auto + reglage manuel de la taille d'un bloc ; styles reutilisables ; chercher / remplacer sur une carte, tout un heros ou tout le set (FR et EN).
+
+## Styles de texte en un clic (decide avec l'utilisateur le 29/10)
+Familles voulues : declencheurs d'action (Action, Reaction forcee... en gras + « : »), phrase d'ambiance (italique), mots-cles du jeu, limites et rappels, conditions et prerequis, lignes d'effet de heros, mots des cartes de rencontre (avec icones), styles perso reutilisables.
+Choix dans l'editeur : menu « Styles » avec apercu ET saisie rapide « / » (liste cherchable). Les mots suivent la langue de la carte ; un mot-cle insere sa phrase de rappel officielle (FR et EN).
+**ATTENTION vocabulaire FR** : ne JAMAIS le deviner. Exemple d'erreur corrigee par l'utilisateur : Surge = **Renfort** en FR (pas « Surtension »). Source des mots FR : `public/js/traduction/textes-fr*.js`, les scans FR et `docs/reference/mots-cles/` ; liste a faire valider par l'utilisateur pour tout mot sans source.
