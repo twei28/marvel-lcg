@@ -26,6 +26,15 @@ export type OptionsEffacement = {
   margeBas?: number
   /** Idem à gauche et à droite (pointillés et liserés du cadre). */
   margeCote?: number
+  /** Le filet du Boost de ce scan va d'un bord à l'autre de la région (Shadowland, 28/10/2026) : il touche alors les bords
+      gauche ET droit, et passait pour un morceau de cadre (`auBord`) : il restait sur le scan et barrait le français,
+      redessiné ailleurs par `<hr />`. Réservé aux cartes listées (FILETS_PLEINE_LARGEUR) : sur les autres, un trait fin qui
+      touche les bords EST un liseré du cadre. */
+  filetPleineLargeur?: boolean
+  /** Rectangles (pixels de la RÉGION) où toute encre restante est effacée, en plus de la détection : des lettres anglaises
+      que l'algorithme garde (dernière ligne collée au bandeau du bas, bout de ligne contre un badge) et que `GOMMES`
+      (zones-corrections.ts) désigne carte par carte, mesurées sur le fond nettoyé. */
+  gommes?: ReadonlyArray<{ x0: number; y0: number; x1: number; y1: number }>
 }
 
 /** Maximum (ou minimum) glissant d'un canal, ligne par ligne puis colonne par colonne. */
@@ -278,7 +287,10 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     // Un mot imprimé de biais (« HELMET. », lettres collées) forme une seule tache, plus haute qu'une lettre mais creuse.
     const motDeBiais = yMax - yMin < options.hauteurCarte * 0.075 && t.pixels.length < 0.35 * (xMax - xMin + 1) * (yMax - yMin + 1)
     const lettre = !auBord && !icone && (yMax - yMin < hauteurMax || motDeBiais) && xMax - xMin < largeurMax
-    const filet = !auBord && !icone && yMax - yMin <= epaisseurFilet && xMax - xMin > options.largeurCarte * 0.3 && xMax - xMin < largeur * 0.95
+    const filetPleinCadre = !!options.filetPleineLargeur && !icone && yMin > 0 && yMax < hauteur - 1
+      && yMax - yMin <= epaisseurFilet && xMax - xMin > options.largeurCarte * 0.3
+    const filet = filetPleinCadre
+      || (!auBord && !icone && yMax - yMin <= epaisseurFilet && xMax - xMin > options.largeurCarte * 0.3 && xMax - xMin < largeur * 0.95)
     if (!lettre && !filet) {
       if (!icone) rejetees.push(t)
       continue
@@ -336,6 +348,73 @@ export function effacerTexte(rgba: Uint8ClampedArray, largeur: number, hauteur: 
     if (dansUneLigne) for (const i of t.pixels) texte[i] = 1
   }
   effacerLettresCollees(lettres, rejetees, encre, texte, largeur, options.hauteurCarte, options.margeCote ?? 0, surLeFond)
+
+  // Filet qui va d'un bord à l'autre du cadre (option `filetPleineLargeur`, Shadowland, 28/10/2026). Il est SOUDÉ au cadre
+  // noir (ce n'est plus une tache isolée) et INCLINÉ : le scan penche d'un demi-degré, le trait descend de 6 px sur 700. Ni une
+  // rangée entièrement sombre ni une tache mince ne le voient. On cherche donc la DROITE (pente faible) qui porte de l'encre sur
+  // presque toute la largeur, avec du clair de part et d'autre : un texte, même dense, a de l'encre au-dessus et en dessous ;
+  // le liseré épais du cadre aussi. Le halo est rattrapé par l'hystérésis plus bas.
+  if (options.filetPleineLargeur) {
+    const gauche = Math.max(2, Math.round(largeur * 0.015))
+    const droite = largeur - gauche
+    const haut = Math.max(options.margeHaut ?? 0, Math.round(hauteur * 0.08))
+    const bas = hauteur - Math.max(options.margeBas ?? 0, Math.round(hauteur * 0.04))
+    const portee = droite - gauche
+    const yDe = (y0: number, pente: number, x: number) => Math.round(y0 + pente * (x - gauche))
+    /** Part des colonnes dont l'encre touche la droite (à un pixel près en hauteur), décalée de `decalage` pixels. */
+    const couverture = (y0: number, pente: number, decalage: number, tolerance: number) => {
+      let c = 0
+      for (let x = gauche; x < droite; x += 1) {
+        const y = yDe(y0, pente, x) + decalage
+        let touche = false
+        for (let d = -tolerance; d <= tolerance && !touche; d += 1) {
+          const yy = y + d
+          if (yy >= 0 && yy < hauteur && encre[yy * largeur + x]) touche = true
+        }
+        if (touche) c += 1
+      }
+      return c / portee
+    }
+    const trouves: Array<{ y0: number; pente: number }> = []
+    const retenu = (y0: number) => trouves.some((t) => Math.abs(t.y0 - y0) < 8)
+    for (let y0 = haut; y0 < bas; y0 += 1) {
+      if (retenu(y0)) continue
+      let meilleur = 0
+      let pente = 0
+      for (let k = -10; k <= 10; k += 1) {
+        const b = k * 0.002
+        const c = couverture(y0, b, 0, 1)
+        if (c > meilleur) {
+          meilleur = c
+          pente = b
+        }
+      }
+      if (meilleur < 0.75) continue
+      // Du clair au-dessus ET en dessous (4 à 5 px) : un texte ou un liseré épais en a de l'encre d'un côté au moins.
+      const dessus = Math.max(couverture(y0, pente, -4, 0), couverture(y0, pente, -5, 0))
+      const dessous = Math.max(couverture(y0, pente, 4, 0), couverture(y0, pente, 5, 0))
+      if (dessus > 0.35 || dessous > 0.35) continue
+      trouves.push({ y0, pente })
+    }
+    for (const t of trouves) {
+      for (let x = gauche; x < droite; x += 1) {
+        const y = yDe(t.y0, t.pente, x)
+        for (let d = -2; d <= 2; d += 1) {
+          const yy = y + d
+          if (yy >= 0 && yy < hauteur && encre[yy * largeur + x]) texte[yy * largeur + x] = 1
+        }
+      }
+    }
+  }
+
+  // Gommes désignées à la main (option `gommes`) : toute encre, même pâle, dans le rectangle.
+  for (const g of options.gommes ?? []) {
+    for (let y = Math.max(0, Math.floor(g.y0)); y <= Math.min(hauteur - 1, Math.ceil(g.y1)); y += 1) {
+      for (let x = Math.max(0, Math.floor(g.x0)); x <= Math.min(largeur - 1, Math.ceil(g.x1)); x += 1) {
+        if (ecart[y * largeur + x] > 12) texte[y * largeur + x] = 1
+      }
+    }
+  }
 
   // Hystérésis : le halo plus pâle des lettres rejoint le masque ; puis une marge d'un pixel.
   const faible = new Uint8Array(n)

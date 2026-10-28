@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { GLYPHES, detecterZoneSurFondTeinte, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, emDesTraits, encochesGauche, formeDuCache, ligneDeTraits, prolongerLaZone, texteEnParagraphes, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
 import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
-import { CADRES_PENCHES, VOILE_UNI, corrigerZone } from './zones-corrections'
+import { CADRES_PENCHES, FILETS_PLEINE_LARGEUR, GOMMES, VOILE_UNI, corrigerZone, type Gomme } from './zones-corrections'
 import { BANDES_DROITE, effacerTexte, type CadreDuTexte, type OptionsEffacement } from './effacer-texte'
 import './traduction-posee.css'
 
@@ -162,8 +162,8 @@ const fondsNettoyes = new Map<string, Promise<FondNettoye | null>>()
  * La zone du scan SANS ses lettres anglaises (effacer-texte.ts), en image (adresse de données) : c'est le fond du voile.
  * Coordonnées de la zone : celles de l'image (portrait) ou de la carte couchée (paysage), comme `zoneDuScan`.
  */
-export function fondNettoye(url: string, zone: ZoneTexte, paysage?: CotePaysage, reserveBas = 0): Promise<FondNettoye | null> {
-  const cle = `${url}|${paysage ?? ''}|${reserveBas}|${zone.x0},${zone.y0},${zone.x1},${zone.y1}`
+export function fondNettoye(url: string, zone: ZoneTexte, paysage?: CotePaysage, reserveBas = 0, filetPleineLargeur = false, gommes: readonly Gomme[] = []): Promise<FondNettoye | null> {
+  const cle = `${url}|${paysage ?? ''}|${reserveBas}|${filetPleineLargeur ? 'F' : ''}|${gommes.map((g) => `${g.x0},${g.y0},${g.x1},${g.y1}`).join(';')}|${zone.x0},${zone.y0},${zone.x1},${zone.y1}`
   const connu = fondsNettoyes.get(cle)
   if (connu) return connu
   const promesse = new Promise<FondNettoye | null>((resoudre) => {
@@ -198,6 +198,8 @@ export function fondNettoye(url: string, zone: ZoneTexte, paysage?: CotePaysage,
           hauteurCarte: Math.max(largeur, hauteur),
           sombre: fondSombre(zone.fond),
           reserveBas,
+          filetPleineLargeur,
+          gommes: gommes.map((g) => ({ x0: g.x0 * largeur - x, y0: g.y0 * hauteur - y, x1: g.x1 * largeur - x, y1: g.y1 * hauteur - y })),
           margeHaut: Math.round(MARGE * hauteur),
           margeBas: Math.round(MARGE * hauteur),
           margeCote: Math.round((MARGE + 0.012) * Math.min(largeur, hauteur)),
@@ -265,7 +267,7 @@ export function TraductionPosee({
     if (!zoneImage || VOILE_UNI.has(codeImage(url))) return
     let vivant = true
     // Icônes imprimées sous le texte : leur bande n'est pas effacée (elles restent celles du scan).
-    void fondNettoye(url, zoneImage, paysage, icones.length > 0 ? RESERVE_ICONES + MARGE : 0).then((image) => {
+    void fondNettoye(url, zoneImage, paysage, icones.length > 0 ? RESERVE_ICONES + MARGE : 0, FILETS_PLEINE_LARGEUR.has(codeImage(url)), GOMMES[codeImage(url)] ?? []).then((image) => {
       if (vivant) setFond(image)
     })
     return () => {

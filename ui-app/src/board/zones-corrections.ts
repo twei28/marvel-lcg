@@ -49,6 +49,8 @@ export const ZONES_CORRECTIONS: Readonly<Record<string, CorrectionZone>> = {
   rl016: { y0: 0.52 },
   // Rachel Summers : Hound Program (annexe paysage), le voile mordait l'ornement du haut et rayait « MARVEL GIRL NEMESIS (1/5) » en bas.
   rm014: { y1: 0.9 },
+  // Shadowland, Dark Invitation 1B : la fin du texte anglais (« to stage 2A. ») descendait sous le bas de la zone détectée.
+  sl060b: { y1: 0.93 },
 }
 
 /**
@@ -58,6 +60,33 @@ export const ZONES_CORRECTIONS: Readonly<Record<string, CorrectionZone>> = {
  * des cartes ordinaires (Ch'od, 26/10/2026).
  */
 export const CADRES_PENCHES: ReadonlySet<string> = new Set(['sq015'])
+
+/**
+ * Cartes dont le FILET du Boost (trait fin entre le texte et la ligne « Boost ») va d'un bord à l'autre de la zone de texte :
+ * il touche alors les deux bords, l'effaceur le prenait pour un liseré du cadre et le laissait sur le scan, où il barrait le
+ * français (« contre ▬▬ vous », Shadowland, 28/10/2026). Ces cartes l'effacent ; le français le redessine à sa place par la
+ * ligne `<hr />` de son texte. Les 19 cartes de Shadowland qui ont une ligne Boost sous un autre paragraphe.
+ */
+/**
+ * Lettres anglaises que l'effaceur garde malgré tout, à gommer À LA MAIN : rectangles en fractions de l'IMAGE, mesurés sur le fond
+ * nettoyé réellement produit (EXPORT_VOILE_FONDS=1, ui-app/outils/export-voile). Cause : une ligne collée au bandeau noir du bas
+ * de la carte (« he ga » de « the game. ») ou un bout de ligne contre un badge (« ide », « k », « e ») forme avec lui une grande
+ * tache, gardée comme illustration ; `effacerLettresCollees` ne traite que le bout des lignes déjà reconnues (Shadowland, 28/10/2026).
+ */
+export type Gomme = { x0: number; y0: number; x1: number; y1: number }
+export const GOMMES: Readonly<Record<string, readonly Gomme[]>> = {
+  sl001a: [{ x0: 0.052, y0: 0.398, x1: 0.073, y1: 0.428 }, { x0: 0.142, y0: 0.852, x1: 0.163, y1: 0.882 }],
+  sl001b: [{ x0: 0.43, y0: 0.705, x1: 0.483, y1: 0.752 }],
+  sl002b: [{ x0: 0.228, y0: 0.852, x1: 0.314, y1: 0.892 }, { x0: 0.438, y0: 0.81, x1: 0.458, y1: 0.835 }, { x0: 0.44, y0: 0.703, x1: 0.475, y1: 0.718 }, { x0: 0.498, y0: 0.706, x1: 0.512, y1: 0.722 }],
+  sl060b: [{ x0: 0.455, y0: 0.725, x1: 0.48, y1: 0.765 }, { x0: 0.458, y0: 0.78, x1: 0.482, y1: 0.812 }, { x0: 0.05, y0: 0.792, x1: 0.085, y1: 0.825 }],
+  sl063: [{ x0: 0.175, y0: 0.866, x1: 0.418, y1: 0.912 }],
+  sl064: [{ x0: 0.325, y0: 0.858, x1: 0.397, y1: 0.893 }],
+}
+
+export const FILETS_PLEINE_LARGEUR: ReadonlySet<string> = new Set([
+  'sl006', 'sl010', 'sl026', 'sl027', 'sl028', 'sl029', 'sl035', 'sl036', 'sl041', 'sl043',
+  'sl044', 'sl045', 'sl048', 'sl049', 'sl071', 'sl073', 'sl074', 'sl076', 'sl078',
+])
 
 /**
  * Zones relevées À LA MAIN, pour les cartes dont le cadre de texte n'est pas du gris clair et que la détection ne trouve pas, ou
@@ -77,6 +106,9 @@ export type ZoneManuelle = {
 
 export const ZONES_MANUELLES: Readonly<Record<string, ZoneManuelle>> = {
   // Batman, Energy : la détection prenait un aplat gris hors du cadre (l'étiquette RESOURCE disparaissait sous le voile).
+  // Shadowland, Invasive Thoughts (28/10/2026) : la détection posait le voile SUR L'ILLUSTRATION (y 0,33 à 0,57), en petit, et
+  // laissait tout l'anglais visible dans la vraie boîte de texte.
+  sl078: { x0: 0.035, y0: 0.58, x1: 0.95, y1: 0.915, fond: [235, 241, 241] },
   bm023: { x0: 0.05, y0: 0.7, x1: 0.945, y1: 0.915, fond: [248, 248, 248] },
   ah007: { x0: 0.06, y0: 0.67, x1: 0.92, y1: 0.905, fond: [254, 254, 236] },
   ah012b: { x0: 0.05, y0: 0.575, x1: 0.93, y1: 0.885, fond: [254, 254, 238] },

@@ -129,6 +129,8 @@ function sauverIndex() {
 
 async function nouvellePage() {
   const page = await contexte.newPage()
+  // Mesure : EXPORT_VOILE_FONDS=1 écrit aussi, pour chaque carte, le fond nettoyé SANS le français (fond-<code>.webp), pour voir ce qui reste d'anglais.
+  if (process.env.EXPORT_VOILE_FONDS) await page.addInitScript(() => { window.exportVoileFonds = true })
   page.on('pageerror', (e) => process.stderr.write(`[page] ${e}\n`))
   await page.goto(new URL('outils/export-voile/index.html', adresse).href)
   await page.waitForFunction(() => window.exportVoile?.pret === true, null, { timeout: 120000 })
@@ -163,8 +165,10 @@ async function traiter(page, carte) {
     return
   }
   const fichier = `${carte.code}.jpg`
+  const urlFond = resultat.fond && /url\("?(data:[^")]+)"?\)/.exec(resultat.fond)
+  if (urlFond) writeFileSync(join(CACHE, `fond-${carte.code}.webp`), Buffer.from(urlFond[1].split(',')[1], 'base64'))
   await page.locator('#scene .cadre').screenshot({ path: join(CACHE, fichier), type: 'jpeg', quality: 92 })
-  index[carte.code] = { cle, fichier, image_sha: shaImage, fond_nettoye: resultat.fondNettoye }
+  index[carte.code] = { cle, fichier, image_sha: shaImage, fond_nettoye: resultat.fondNettoye, zone: resultat.zone }
   resume.rendues += 1
 }
 

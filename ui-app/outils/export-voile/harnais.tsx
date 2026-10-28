@@ -47,7 +47,7 @@ async function texte(codeCarte: string): Promise<{ texte: string; traits: string
 }
 
 type Carte = { code: string; url: string; largeur: number; hauteur: number; type?: string; texte: string; traits: string[] }
-type Resultat = { pose: boolean; fondNettoye: boolean; raison?: string }
+type Resultat = { pose: boolean; fondNettoye: boolean; raison?: string; zone?: { x0: number; y0: number; x1: number; y1: number }; fond?: string }
 
 const attendre = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const image = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
@@ -92,7 +92,18 @@ async function poser(carte: Carte): Promise<Resultat> {
   await image()
   await attendre(120)
   await image()
-  return { pose: scene.querySelector('.traduction-posee') !== null, fondNettoye }
+  // Où le voile est posé, en fractions du scan : sert à régler `zones-corrections.ts` sans deviner (index.json, champ `zone`).
+  const boite = scene.querySelector<HTMLElement>('.traduction-posee')
+  const cadreScan = scene.querySelector<HTMLElement>('.cadre')
+  let zonePosee: Resultat['zone']
+  if (boite && cadreScan) {
+    const b = boite.getBoundingClientRect()
+    const c = cadreScan.getBoundingClientRect()
+    zonePosee = { x0: (b.left - c.left) / c.width, y0: (b.top - c.top) / c.height, x1: (b.right - c.left) / c.width, y1: (b.bottom - c.top) / c.height }
+  }
+  // Le fond nettoyé (sans le français), pour mesurer ce qui reste d'anglais : seulement si EXPORT_VOILE_FONDS est posé.
+  const fond = (window as unknown as { exportVoileFonds?: boolean }).exportVoileFonds ? boite?.style.background : undefined
+  return { pose: boite !== null, fondNettoye, zone: zonePosee, fond }
 }
 
 declare global {

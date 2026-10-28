@@ -6545,4 +6545,190 @@ export const TEXTES_FR_FANMADE = {
     'hg075': "<b>Chasseur de morts-vivants</b>. Tant que Blade attaque un ennemi Zombie ou Métazombie, il gagne +2 ATQ. S'il le vainc, Blade ne subit pas de dégâts consécutifs.",
     // the hunger core — Wolverine (Ally)
     'hg076': "",
+    // shadowland — A Barricade of Blades (MainScheme)
+    'sl001a': "<b>Contenu</b> : sets de rencontre Shadows in the Night, Dark Protégé et Standard. Un set de rencontre modulaire <i>(Ninja Swarm)</i>.\n<b>Mise en place</b> : mettez en jeu chaque environnement The Streets Below. Mettez de côté le set de rencontre Dark Protégé. Choisissez 1 méchant au hasard dans ce set et révélez sa face A, puis mélangez dans le deck Rencontre chaque carte liée à ce méchant.",
+    // shadowland — A Barricade of Blades (MainScheme)
+    'sl001b': "En mode expert, le méchant gagne +1 MNG et +3[per_hero] points de vie.\n<b>Interruption forcée</b> : quand le méchant est censé être vaincu côté A, retournez-le plutôt côté B, réinitialisez ses points de vie et changez la position du méchant. Attribuez à chaque joueur 1 carte Rencontre face cachée.\n<b>Si le méchant est vaincu côté B, les joueurs gagnent la partie.</b>",
+    // shadowland — Fortress Lockdown (MainScheme)
+    'sl002a': "<i>Pendant que les forces extérieures tiennent les héros en échec, les ninjas de l'intérieur verrouillent chaque porte et chaque fenêtre.</i>\nEn mode expert, le méchant gagne +3[per_hero] points de vie.\n<b>Une fois révélée</b> : changez la position du méchant. Chaque joueur cherche un sbire dans le deck Rencontre et la pile de défausse et le révèle. <i>(Mélangez.)</i>",
+    // shadowland — Fortress Lockdown (MainScheme)
+    'sl002b': "En mode expert, le méchant gagne +1 MNG et +3[per_hero] points de vie.\n<b>Interruption forcée</b> : quand le méchant est censé être vaincu côté A, retournez-le plutôt côté B, réinitialisez ses points de vie et changez la position du méchant. Attribuez à chaque joueur 1 carte Rencontre face cachée.\n<b>Si le méchant est vaincu côté B, les joueurs gagnent la partie.</b>\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // shadowland — The Streets Below (Environment)
+    'sl003a': "<b><i>POSITION DU MÉCHANT.</i></b>\nSi les deux positions sont identiques :\n• Chaque personnage gagne +1 ATQ.\nSi les positions sont différentes :\n• Réduisez de 1 les dégâts que chaque personnage subit de chaque attaque.\n• Aucune menace ne peut être retirée de la manigance principale.",
+    // shadowland — Atop the Tenshu (Environment)
+    'sl003b': "<b><i>POSITION DU MÉCHANT.</i></b>\nSi les deux positions sont identiques :\n• Chaque personnage gagne +1 ATQ.\nSi les positions sont différentes :\n• Réduisez de 1 les dégâts que chaque personnage subit de chaque attaque.\n• Aucune menace ne peut être retirée de la manigance principale.",
+    // shadowland — The Streets Below (Environment)
+    'sl004a': "<b><i>POSITION DU HÉROS.</i></b>\n<b>Action de premier joueur</b> : résolvez l'un des effets ci-dessous, puis retournez cette carte :\n• Placez 3 menaces sur la manigance principale et sonnez votre identité.\n• Dépensez [physical] [physical].\n• Dépensez 1 ressource de n'importe quel type et inclinez un personnage <b><i>AERIAL</i></b> que vous contrôlez.",
+    // shadowland — Atop the Tenshu (Environment)
+    'sl004b': "<b><i>POSITION DU HÉROS.</i></b>\n<b>Action de premier joueur</b> : résolvez l'un des effets ci-dessous, puis retournez cette carte :\n• Infligez 3 dégâts à votre identité.\n• Dépensez [energy] [energy].\n• Défaussez un allié ou une amélioration que vous contrôlez.",
+    // shadowland — * Black Tarantula (Minion)
+    'sl005': "Garde.\n<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, Black Tarantula vous attaque ; sinon, donnez une carte d'état Tenace au méchant et à Black Tarantula.",
+    // shadowland — * Ghost Maker (Minion)
+    'sl006': "<b>Une fois vaincu</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, défaussez 1 carte que vous contrôlez ; sinon, subissez 2 dégâts indirects.\n<hr />\n[star] <b>Boost</b> : si un allié se défend contre cette attaque, révélez ce sbire.",
+    // shadowland — Sealed Entrances (SideScheme)
+    'sl007': "Assaut. <i>(Les contres de base contre cette manigance utilisent l'ATQ à la place de la CTR.)</i>\n<b>Une fois déjouée</b> : changez la position du méchant si elle n'a pas changé durant cette phase.",
+    // shadowland — Strategic Positioning (SideScheme)
+    'sl008': "<i>Sous Shadowland, la Hand règne sur les rues.</i>\nTant que la position du méchant est The Streets Below, cette manigance gagne 1 icône d'accélération ([acceleration]).\nTant que la position du méchant est Atop the Tenshu, cette manigance gagne 1 icône d'aléa ([hazard]).",
+    // shadowland — Surround the Fortress (SideScheme)
+    'sl009': "<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, placez 1[per_hero] menace sur la manigance principale ; sinon, placez 1[per_hero] menace ici.",
+    // shadowland — Chaos in Hell's Kitchen (Treachery)
+    'sl010': "<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, placez 2 menaces sur la manigance principale ; sinon, subissez 2 dégâts.\n<hr />\n[star] <b>Boost</b> : résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
+    // shadowland — Moonlit Silhouette (Treachery)
+    'sl011': "<b>Une fois révélée (alter ego)</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Vous êtes désorienté.\n<b>Une fois révélée (héros)</b> : si la position du méchant est Atop the Tenshu, le méchant manigance ; sinon, le méchant vous attaque.",
+    // shadowland — * Archpriestess (Villain)
+    'sl012a': "[star] <b>Réponse forcée</b> : après qu'Archpriestess vous a attaqué, donnez une carte d'état Tenace à un sbire. Si aucune carte d'état Tenace n'a été placée de cette façon, défaussez les 3 cartes du dessus du deck Rencontre, puis attribuez-vous 1 sbire défaussé de cette façon en tant que carte Rencontre face cachée.",
+    // shadowland — * Archpriestess (Villain)
+    'sl012b': "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après qu'Archpriestess vous a attaqué, donnez une carte d'état Tenace à un sbire. Si aucune carte d'état Tenace n'a été placée de cette façon, défaussez les 3 cartes du dessus du deck Rencontre, puis attribuez-vous 1 sbire défaussé de cette façon en tant que carte Rencontre face cachée.",
+    // shadowland — * Daredevil (Villain)
+    'sl013a': "<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez avez attaqué Daredevil, choisissez : soit défaussez 1 carte prise au hasard dans votre main, soit Daredevil vous attaque. (Limite d'une fois par round et par joueur.)",
+    // shadowland — * Daredevil (Villain)
+    'sl013b': "Solide. Ténacité.\n<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez avez attaqué Daredevil, choisissez : soit défaussez 1 carte prise au hasard dans votre main, soit Daredevil vous attaque. (Limite d'une fois par round et par joueur.)",
+    // shadowland — * Elektra (Villain)
+    'sl014a': "[star] <b>Interruption forcée</b> : quand Elektra vous attaque, défaussez la carte du dessus de votre deck. Si le coût imprimé de cette carte est un nombre impair, Elektra gagne +1 ATQ pour cette attaque ; sinon, cette attaque gagne Déferlement et Perçant.",
+    // shadowland — * Elektra (Villain)
+    'sl014b': "Solide. Ténacité.\n[star] <b>Interruption forcée</b> : quand Elektra vous attaque, défaussez la carte du dessus de votre deck. Si le coût imprimé de cette carte est un nombre impair, Elektra gagne +1 ATQ pour cette attaque ; sinon, cette attaque gagne Déferlement et Perçant.",
+    // shadowland — * Gorgon (Villain)
+    'sl015a': "[star] <b>Interruption forcée</b> : quand Gorgon vous attaque, choisissez :\n• Dépensez une ressource [physical].\n• Sonnez votre identité.\n• Subissez 2 dégâts indirects.",
+    // shadowland — * Gorgon (Villain)
+    'sl015b': "Solide. Ténacité.\n[star] <b>Interruption forcée</b> : quand Gorgon vous attaque, choisissez :\n• Dépensez une ressource [physical].\n• Sonnez votre identité.\n• Subissez 2 dégâts indirects.",
+    // shadowland — * Lady Bullseye (Villain)
+    'sl016a': "[star] <b>Réponse forcée</b> : après que Lady Bullseye vous a attaqué, si cette attaque n'a pas été défendue, subissez 1 dégât indirect ; sinon, placez 1 menace sur la manigance principale.",
+    // shadowland — * Lady Bullseye (Villain)
+    'sl016b': "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après que Lady Bullseye vous a attaqué, si cette attaque n'a pas été défendue, subissez 1 dégât indirect ; sinon, placez 1 menace sur la manigance principale.",
+    // shadowland — * White Tiger (Villain)
+    'sl017a': "[star] <b>Réponse forcée</b> : après que White Tiger vous a attaqué, elle vous attaque à nouveau avec +1 ATQ. (Limite d'une fois par round et par joueur.)",
+    // shadowland — * White Tiger (Villain)
+    'sl017b': "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après que White Tiger vous a attaqué, elle vous attaque à nouveau. (Limite d'une fois par round et par joueur.)",
+    // shadowland — Art of the Kill (Attachment)
+    'sl018': "Liée (Elektra, Lady Bullseye ou White Tiger).\nAttachez cette carte à votre identité.\n<b>Interruption forcée</b> : quand un ennemi vous attaque, il gagne +1 ATQ pour cette attaque. Si cette attaque vainc un personnage, placez 1 menace sur la manigance principale.\n<b>Action d'alter ego</b> : dépensez les ressources suivantes : [energy] [mental] [physical] → défaussez cette carte.",
+    // shadowland — Krahllak's Blessing (Attachment)
+    'sl019': "Liée (Archpriestess, Daredevil ou Gorgon).\nAttachez cette carte au méchant.\n<b>Interruption forcée</b> : quand le méchant attaché est censé subir des dégâts d'un personnage, réduisez de 3 la quantité de dégâts. Le méchant attaché attaque ce personnage. Défaussez cette carte.",
+    // shadowland — * Archpriestess (Minion)
+    'sl020': "Liée (Gorgon, Lady Bullseye ou White Tiger).\nVilenie.\n<b>Une fois révélée</b> : chaque autre sbire engagé avec vous vous attaque. Si aucune attaque n'a été faite de cette façon, défaussez les 3 cartes du dessus du deck Rencontre.",
+    // shadowland — * Gorgon (Minion)
+    'sl021': "Liée (Daredevil, Elektra ou Lady Bullseye).\nGarde. Vilenie.\n<b>Réponse forcée</b> : après qu'un personnage a attaqué et infligé des dégâts à Gorgon, sonnez ce personnage.",
+    // shadowland — * Lady Bullseye (Minion)
+    'sl022': "Liée (Archpriestess, Gorgon ou White Tiger).\nVilenie.\n[star] <b>Interruption forcée</b> : quand Lady Bullseye vous attaque, cette attaque gagne À Distance et elle attaque l'allié au coût imprimé le plus élevé que vous contrôlez, si possible.",
+    // shadowland — * White Tiger (Minion)
+    'sl023': "Liée (Archpriestess, Daredevil ou Elektra).\nVilenie.\n<b>Une fois révélée</b> : subissez 2 dégâts indirects.",
+    // shadowland — Rite of Offering (SideScheme)
+    'sl024': "Liée (Archpriestess, Elektra ou White Tiger).\n<b>Une fois déjouée</b> : le joueur qui l'a déjouée retire du jeu un allié qu'il contrôle. Si aucun allié n'a été retiré de cette façon, ce joueur subit 3 dégâts.",
+    // shadowland — Shadowy Plot (SideScheme)
+    'sl025': "Liée (Daredevil, Gorgon ou Lady Bullseye).\n<b>Une fois déjouée</b> : le joueur qui l'a déjouée regarde les 3 cartes du dessus du deck Rencontre, en révèle 1 et défausse les autres.",
+    // shadowland — Darkness Within (Treachery)
+    'sl026': "Liée (Archpriestess, Gorgon ou Lady Bullseye).\n<b>Une fois révélée</b> : passez sous forme de héros. Le méchant vous attaque.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Déferlement.",
+    // shadowland — Embraced by Darkness (Treachery)
+    'sl027': "Liée (Daredevil, Elektra ou White Tiger).\n<b>Une fois révélée</b> : le méchant manigance. Si 2 menaces ou moins ont été placées sur la manigance principale de cette façon, défaussez les 3 cartes du dessus du deck Rencontre.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, placez 2 menaces sur la manigance principale.",
+    // shadowland — * Black Mountain (Minion)
+    'sl028': "Garde.\nTant que Black Mountain est engagé avec vous, chaque autre sbire <b>NINJA</b> engagé avec vous ne peut pas être attaqué.\n<hr />\n★ <b>Boost</b> : si un allié se défend contre cette attaque, révélez ce sbire.",
+    // shadowland — * Kirigi (Minion)
+    'sl029': "Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu doit soit dépenser 2 ressources de n'importe quel type, soit mélanger Kirigi dans le deck Rencontre.\n<hr />\n★ <b>Boost</b> : si un allié se défend contre cette attaque, cette carte gagne [boost][boost] et cette attaque gagne Déferlement.",
+    // shadowland — Bo Staff Ninja (Minion)
+    'sl030': "Collaboration (<b>NINJA</b>). Ténacité.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Fukiya Ninja (Minion)
+    'sl031': "Collaboration (<b>NINJA</b>).\n★ Les attaques de ce sbire gagnent À Distance.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Katana Ninja (Minion)
+    'sl032': "Garde. Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Kusarigama Ninja (Minion)
+    'sl033': "Patrouille. Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Shuriken Ninja (Minion)
+    'sl034': "Collaboration (<b>NINJA</b>).\n★ Les attaques de ce sbire gagnent Perçant.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Dancing Shadows (SideScheme)
+    'sl035': "Chaque sbire <b>NINJA</b> gagne +1 point de vie.\nLa menace ne peut pas être retirée de cette manigance tant qu'au moins 1 sbire <b>NINJA</b> est en jeu.\n<hr />\n★ <b>Boost</b> : révélez cette carte.",
+    // shadowland — Countless Numbers (Treachery)
+    'sl036': "Renfort.\n<b>Une fois révélée</b> : mélangez chaque sbire <b>NINJA</b> de la pile de défausse Rencontre dans le deck Rencontre.\n<hr />\n★ <b>Boost</b> : résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
+    // shadowland — Shifting Corridors (Villain)
+    'sl037': "Robuste.\n<b>★ Interruption forcée</b> : quand Shifting Corridors est censé s'activer contre vous, retirez plutôt 1 jeton Passage d'ici et révélez la carte du dessus du deck Piège.\n<b>Si le dernier jeton Passage est retiré d'ici, les joueurs perdent la partie.</b>",
+    // shadowland — Into the Labyrinth (MainScheme)
+    'sl038a': "<b>Contenu</b> : Shifting Corridors (A). Sets de rencontre Shadow Labyrinth, Dark Protégé, Deadly Contraptions et Standard. Un set de rencontre modulaire <i>(Ninja Swarm)</i>.\n<b>Mise en place</b> : créez le deck Piège <i>(voir le livret de règles, p. 12)</i>. Mettez de côté le set de rencontre Dark Protégé. Choisissez 1 méchant au hasard dans ce set, puis mélangez chaque carte liée à ce méchant dans le deck Rencontre <i>(gardez le méchant choisi de côté)</i>.",
+    // shadowland — Into the Labyrinth (MainScheme)
+    'sl038b': "<b>Une fois révélée :</b> placez 10[per_hero] jetons Passage sur Shifting Corridors (7[per_hero] à la place en mode expert).\n<b>Interruption forcée</b> : quand Shifting Corridors est censé subir n'importe quelle quantité de dégâts, retirez plutôt autant de menaces d'ici.\n<b>Interruption forcée</b> : quand la dernière menace est retirée de cette manigance, avancez au stade 2A <i>(les joueurs gagnent en avançant)</i>.",
+    // shadowland — Chamber of Vile Secrets (MainScheme)
+    'sl039a': "<b>Une fois révélée</b> : effectuez chacune des actions suivantes :\n1. Mettez Shifting Corridors de côté.\n2. Trouvez le méchant Dark Protégé choisi. Défaussez-en chaque carte d'état, jeton et carte attachée.\n3. Révélez la face A du méchant choisi (face B à la place en mode expert).",
+    // shadowland — Chamber of Vile Secrets (MainScheme)
+    'sl039b': "<b>Une fois révélée</b> : en mode expert, le méchant s'active contre chaque joueur.\n<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez avez déjoué cette manigance, révélez la carte du dessus du deck Piège. (Limite d'une fois par round et par joueur.)\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // shadowland — Whisper in the Dark (Attachment)
+    'sl040': "Considérez le méchant attaché comme un sbire <b>ELITE</b> ayant 6 points de vie imprimés. Il gagne : \"Garde. Vilenie. <b>Une fois vaincu</b> : mettez ce sbire de côté.\"\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, mettez en jeu le méchant choisi mis de côté, engagé avec vous, face A visible, avec cette carte attachée ; sinon, mettez cette carte de côté et le méchant manigance.",
+    // shadowland — * Lord Deathstrike (Minion)
+    'sl041': "Patrouille.\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, mélangez les 2 cartes du dessus du deck Rencontre dans le deck Piège ; sinon, révélez la carte du dessus du deck Piège.\n<hr />\n★ <b>Boost</b> : mettez ce sbire en jeu engagé avec vous.",
+    // shadowland — Dead End (SideScheme)
+    'sl042': "Assaut. <i>(Les contres de base contre cette manigance utilisent l'ATQ à la place de la CTR.)</i>\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, retirez-en 1 jeton Passage ; sinon, placez ici 1[per_hero] menace.",
+    // shadowland — Hall of Hidden Doors (SideScheme)
+    'sl043': "<b>Une fois déjouée</b> : le joueur qui l'a déjouée retire 5 menaces de la manigance principale. Il défausse des cartes du deck Rencontre jusqu'à ce qu'un sbire ou une manigance annexe soit défaussé, puis le révèle.\n<hr />\n★ <b>Boost</b> : placez 3 menaces sur la manigance principale.",
+    // shadowland — No Time to Think! (Treachery)
+    'sl044': "Péril. <i>(Tant que vous résolvez cette carte, les autres joueurs ne peuvent pas vous aider.)</i>\n<b>Une fois révélée</b> : le méchant s'active contre vous.\n<hr />\n★ <b>Boost</b> : si cette activation est une attaque, cette carte gagne [boost][boost] et cette attaque gagne Déferlement.",
+    // shadowland — Sudden Shift (Treachery)
+    'sl045': "<b>Une fois révélée</b> : mélangez la pile de défausse Piège et les 3 cartes du dessus du deck Rencontre dans le deck Piège. Révélez la carte du dessus du deck Piège.\n<hr />\n★ <b>Boost</b> : mélangez la pile de défausse Piège et les 2 cartes du dessus du deck Rencontre dans le deck Piège.",
+    // shadowland — Nervous Jitters (Attachment)
+    'sl046': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Esquiver</i>\" ou l'effet \"<i>Désarmer</i>\" d'une carte <b>TRAP!</b>, nommez un type de carte Rencontre, puis défaussez la carte du dessus du deck Rencontre. Si la carte défaussée de cette façon n'était pas du type nommé, subissez 4 dégâts indirects et défaussez cet attachement.",
+    // shadowland — * Iron Monk (Minion)
+    'sl047': "Patrouille. Ténacité.\nTant qu'Iron Monk est engagé avec vous, vous ne pouvez pas choisir l'effet \"<i>Esquiver</i>\" des cartes <b>TRAP!</b>.",
+    // shadowland — Hall of Punishment (SideScheme)
+    'sl048': "<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Trébucher</i>\" d'une carte <b>TRAP!</b>, défaussez les 3 cartes du dessus de votre deck.\n<hr />\n★ <b>Boost</b> : placez 1 menace sur la manigance principale pour chaque personnage que vous contrôlez.",
+    // shadowland — Path of a Thousand Cuts (SideScheme)
+    'sl049': "<i>Chaque pas est une épreuve d'endurance.</i>\n<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Esquiver</i>\" ou l'effet \"<i>Trébucher</i>\" d'une carte <b>TRAP!</b>, subissez 2 dégâts indirects.\n<hr />\n★ <b>Boost</b> : infligez 1 dégât à chaque personnage que vous contrôlez.",
+    // shadowland — Blinding Powder (Treachery)
+    'sl050': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un événement <b>Contre</b> de votre main.\n• <i>Désarmer</i> — Défaussez 2 cartes au hasard de votre main, puis donnez une carte d'état Tenace à un personnage que vous contrôlez.\n• <i>Trébucher</i> — Infligez 2 dégâts à votre identité et désorientez-la.",
+    // shadowland — Caltrops (Treachery)
+    'sl051': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un événement <b>Défense</b> de votre main.\n• <i>Désarmer</i> — Défaussez 1 carte spécifique à votre identité de votre main, puis infligez 2 dégâts à un ennemi.\n• <i>Trébucher</i> — Infligez 2 dégâts à votre identité et sonnez-la.",
+    // shadowland — Flame Spout (Treachery)
+    'sl052': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un allié de votre main.\n• <i>Désarmer</i> — Défaussez un allié que vous contrôlez, puis piochez 2 cartes.\n• <i>Trébucher</i> — Infligez 3 dégâts à votre identité. Défaussez les 3 cartes du dessus de votre deck.",
+    // shadowland — Oil Slick (Treachery)
+    'sl053': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez une amélioration de votre main.\n• <i>Désarmer</i> — Défaussez une amélioration que vous contrôlez, puis retirez 4 menaces de la manigance principale.\n• <i>Trébucher</i> — Défaussez 1 carte de votre main et 8 cartes de votre deck.",
+    // shadowland — Poison Darts (Treachery)
+    'sl054': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Dépensez les ressources suivantes : [energy] [energy].\n• <i>Désarmer</i> — Dépensez les ressources suivantes : [mental] [mental] [physical], puis infligez 3 dégâts au méchant.\n• <i>Trébucher</i> — Infligez 3 dégâts à votre identité et inclinez-la.",
+    // shadowland — Pressure Plate (Treachery)
+    'sl055': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Dépensez les ressources suivantes : [mental] [mental].\n• <i>Désarmer</i> — Dépensez les ressources suivantes : [energy] [physical] [physical], puis cherchez une carte parmi les 4 cartes du dessus de votre deck et ajoutez-la à votre main. <i>(Mélangez.)</i>\n• <i>Trébucher</i> — Défaussez des cartes du deck Rencontre jusqu'à ce qu'un sbire soit défaussé, puis révélez-le.",
+    // shadowland — Tripwire (Treachery)
+    'sl056': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un événement <b>Attaque</b> de votre main.\n• <i>Désarmer</i> — Défaussez un soutien que vous contrôlez, puis retirez 3 menaces d'une manigance.\n• <i>Trébucher</i> — Défaussez des cartes du deck Rencontre jusqu'à ce qu'une manigance annexe soit défaussée, puis révélez-la.",
+    // shadowland — * Krahllak (Villain)
+    'sl057': "Solide.\n★ <b>Interruption</b> : quand Krahllak vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Krahllak gagne –3 ATQ pour cette attaque.",
+    // shadowland — * Krahllak (Villain)
+    'sl058': "Solide. Ténacité.\n★ Les attaques de Krahllak gagnent Déferlement.\n★ <b>Interruption</b> : quand Krahllak vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Krahllak gagne –3 ATQ pour cette attaque.",
+    // shadowland — * Krahllak (Villain)
+    'sl059': "Riposte 1. Solide. Ténacité.\n★ Les attaques de Krahllak gagnent Déferlement et Perçant.\n★ <b>Interruption</b> : quand Krahllak vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Krahllak gagne –3 ATQ pour cette attaque.",
+    // shadowland — Dark Invitation (MainScheme)
+    'sl060a': "<b>Contenu</b> : Krahllak (I) et Krahllak (II). <i>(Krahllak (II) et Krahllak (III) à la place en mode expert.)</i> Sets de rencontre Heart of Shadow, Black Flower et Standard. Un set de rencontre modulaire <i>(Ninja Swarm)</i>.\n<b>Mise en place</b> : chaque joueur met en jeu une amélioration Creeping Corruption. Mettez le reste de côté.",
+    // shadowland — Dark Invitation (MainScheme)
+    'sl060b': "<b>Interruption forcée</b> : quand ce stade est censé être achevé, retirez plutôt toute la menace d'ici et chaque joueur choisit :\n• Placer 2 jetons Corruption sur sa Creeping Corruption.\n• Subir 3 dégâts et s'attribuer 1 carte Rencontre face cachée.\n<b>Réponse forcée</b> : après que Krahllak a été vaincu, avancez cette manigance au stade 2A.",
+    // shadowland — Beast Be Praised (MainScheme)
+    'sl061a': "<i>Un brasier éclate dans la salle du trône, châtiant ceux qui n'ont pas encore cédé à la volonté sombre de Krahllak.</i>\n<b>Une fois révélée</b> : chaque joueur dont la Creeping Corruption a le trait <b>OVERPOWERING</b> défausse 1 carte prise au hasard dans sa main. Chaque autre joueur défausse de la partie une carte qu'il contrôle. En mode expert, attribuez 1 carte Rencontre face cachée à chaque joueur.",
+    // shadowland — Beast Be Praised (MainScheme)
+    'sl061b': "[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, chaque joueur choisit :\n• Placer 1 jeton Corruption sur sa Creeping Corruption.\n• Placer 3 menaces ici.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // shadowland — Dark Shroud (Attachment)
+    'sl062': "Attachez cette carte à Krahllak.\n<b>Interruption</b> : quand vous ou un allié que vous contrôlez êtes censés infliger 4 dégâts ou plus à Krahllak avec une attaque, empêchez plutôt tous ces dégâts, placez 1 jeton Corruption sur votre Creeping Corruption et défaussez cette carte.",
+    // shadowland — Fear Projection (Attachment)
+    'sl063': "Attachez cette carte à Krahllak.\nKrahllak gagne Riposte 1.\n<b>Action de héros</b> : placez 2 jetons Corruption sur votre Creeping Corruption → défaussez cette carte.\n<b>Action d'alter ego</b> : dépensez les ressources suivantes : [mental] [mental] [mental] → défaussez cette carte. Retirez 1 jeton Corruption de votre Creeping Corruption.",
+    // shadowland — Mark of the Wicked (Attachment)
+    'sl064': "<b>Une fois révélée</b> : vous pouvez attacher cette carte à votre identité. Si vous ne le faites pas, subissez 4 dégâts, sonnez votre identité, retirez 1 jeton Corruption de votre Creeping Corruption et défaussez cette carte.\n[star] <b>Réponse forcée</b> : après que le héros attaché a effectué une attaque de base, placez 1 jeton Corruption sur votre Creeping Corruption.",
+    // shadowland — Pull of Power (Attachment)
+    'sl065': "<b>Une fois révélée</b> : vous pouvez attacher cette carte à votre identité. Si vous ne le faites pas, subissez 4 dégâts, désorientez votre identité, retirez 1 jeton Corruption de votre Creeping Corruption et défaussez cette carte.\n[star] <b>Réponse forcée</b> : après que le héros attaché a effectué un contre de base, placez 1 jeton Corruption sur votre Creeping Corruption.",
+    // shadowland — * Fist (Minion)
+    'sl066': "Patrouille. Riposte 2.\n<b>Action de héros</b> : placez 1 jeton Corruption sur votre Creeping Corruption → infligez 4 dégâts à Fist.",
+    // shadowland — * Hellbride (Minion)
+    'sl067': "<b>Une fois vaincu</b> : le joueur qui l'a vaincu place 2 jetons Corruption sur sa Creeping Corruption, puis soigne 6 dégâts de son identité.\n<b>Action de héros</b> : si Hellbride a 2 points de vie restants ou moins, inclinez votre héros → défaussez Hellbride. Retirez 1 jeton Corruption de votre Creeping Corruption.",
+    // shadowland — * Retainer (Minion)
+    'sl068': "[star] Les attaques de Retainer gagnent Déferlement.\n[star] <b>Interruption</b> : quand Retainer vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Retainer gagne –3 ATQ pour cette attaque.",
+    // shadowland — * Snakeroot Elders (Minion)
+    'sl069': "Tant qu'il y a au moins 1 jeton Corruption ici, Snakeroot Elders gagne Garde et Patrouille.\n<b>Une fois révélée</b> : vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous ne le faites pas, placez 1 jeton Corruption ici.",
+    // shadowland — Veil of Nightmares (SideScheme)
+    'sl070': "<i>La magie noire de Krahllak peut puiser dans les peurs les plus profondes d'une personne.</i>\n<b>Action de héros</b> : placez 1 jeton Corruption sur votre Creeping Corruption → retirez 5 menaces de cette manigance.",
+    // shadowland — Submit or Suffer (Treachery)
+    'sl071': "<b>Une fois révélée</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous retirez 1 jeton Corruption de votre Creeping Corruption et Krahllak vous attaque.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous sonnez votre identité.",
+    // shadowland — Creeping Corruption (Upgrade)
+    'sl072a': "Permanent. Mise en place. 1 max par joueur.\nS'il y a au moins 5 jetons Corruption ici, retirez-les tous d'ici et retournez cette carte.\n<b>Action</b> : inclinez Creeping Corruption et placez 1 jeton Corruption ici → piochez 1 carte.",
+    // shadowland — Creeping Corruption (Upgrade)
+    'sl072b': "Permanent. 1 max par joueur.\n<b>S'il y a au moins 5 jetons Corruption ici, vous êtes vaincu.</b>\n<b>Action</b> : inclinez Creeping Corruption et placez 1 jeton Corruption ici → piochez 2 cartes, puis défaussez 1 carte de votre main.",
+    // shadowland — * Aka (Minion)
+    'sl073': "Coup Rapide. Vilenie.\n[star] <b>Interruption</b> : quand Aka est censé vous attaquer, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, annulez cette attaque.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous défaussez 1 carte prise au hasard dans votre main.",
+    // shadowland — * Tongue of the Beast (Minion)
+    'sl074': "<b>Une fois vaincu</b> : le joueur qui l'a vaincu place 2 jetons Corruption sur sa Creeping Corruption.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit cette carte gagne [boost][boost][boost].",
+    // shadowland — Binding Ritual (SideScheme)
+    'sl075': "<i>\"Celui que nous servons régnera en maître !\"</i>\n<i>—Takashi</i>\n<b>Une fois révélée</b> : chaque joueur choisit :\n• Placer 1 jeton Corruption sur sa Creeping Corruption.\n• Placer 3 menaces ici.",
+    // shadowland — Roots of a Black Flower (SideScheme)
+    'sl076': "<b>Une fois déjouée</b> : le joueur vainqueur place 2 jetons Corruption sur sa Creeping Corruption.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous placez 4 menaces sur la manigance principale.",
+    // shadowland — Malediction (Treachery)
+    'sl077': "<b>Une fois révélée (alter ego)</b> : vous pouvez placer 2 jetons Corruption sur votre Creeping Corruption. Si vous ne le faites pas, le méchant manigance avec +2 MNG.\n<b>Une fois révélée (héros)</b> : si votre Creeping Corruption a le trait <b><i>OVERPOWERING</i></b>, le méchant manigance avec +1 MNG ; sinon, le méchant vous attaque.",
+    // shadowland — Invasive Thoughts (Treachery)
+    'sl078': "<b>Une fois révélée</b> : placez 1 jeton Corruption sur votre Creeping Corruption. S'il a le trait <b><i>OVERPOWERING</i></b>, placez 1 menace sur la manigance principale ; sinon, subissez 1 dégât.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous subissez 4 dégâts indirects.",
 };
