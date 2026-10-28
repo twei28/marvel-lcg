@@ -234,6 +234,13 @@ export const DICO = {
   'Aucune carte portrait à mettre sur la planche.': 'No portrait card to put on the sheet.',
   'Préparation de la planche…': 'Preparing the sheet…', 'Préparation de la planche TTS…': 'Preparing the TTS sheet…',
   'Le navigateur a bloqué la fenêtre d’impression.': 'The browser blocked the print window.',
+  // styles de texte
+  'Styles': 'Styles', 'Déclencheurs': 'Triggers', 'Capacité nommée': 'Named ability', 'Mots-clés': 'Keywords', 'Limites': 'Limits', 'Mise en forme': 'Formatting', 'Mes styles': 'My styles',
+  'Texte d’ambiance ou rappel (italique)': 'Flavor or reminder text (italic)', 'Trait (police des traits)': 'Trait (traits font)', 'Mot en gras': 'Bold word',
+  'Ligne « Boost » avec étoile': '“Boost” line with star', 'Mots-clés avec leur rappel': 'Keywords with their reminder text', 'Aucun résultat.': 'No match.',
+  'Créer un style…': 'Create a style…', 'Gérer mes styles…': 'Manage my styles…', 'Aucun style pour le moment.': 'No style yet.', 'Nouveau style': 'New style',
+  'Nom du style': 'Style name', 'Créer': 'Create', 'ex. Mot-clé maison': 'e.g. House keyword', 'Souligné': 'Underlined', 'Police des traits': 'Traits font',
+  'Couleur': 'Colour', 'Styles de texte : menu, ou tape « / » dans le texte': 'Text styles: menu, or type “/” in the text',
   // lisibilite
   'Le titre est vide.': 'The title is empty.',
   'Le texte déborde du cadre, même réduit : raccourcis les règles ou la citation.': 'The text overflows the frame even when shrunk: shorten the rules or the flavor text.',

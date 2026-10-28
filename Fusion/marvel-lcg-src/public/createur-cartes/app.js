@@ -7,6 +7,7 @@ import { TEXTES, chargerTraits, traduireTraits } from './langues.js'
 import { $, el, S, nouvelId, blobVersDataUrl, dataUrlVersBlob } from './commun.js'
 import { ajouterFichiers, brancherSurcouche, calqueChoisi, choisirCalque, commencerGlisser, dessinerSurcouche, molette, sectionLibres, touche } from './panneau-libres.js'
 import { clicSurCarte } from './clic-carte.js'
+import { brancherStyles, chargerStyles, enveloppePerso } from './styles-texte.js'
 import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
 import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
@@ -447,6 +448,17 @@ function depuisEditeur(racine) {
   return sortie.join('').replace(/<(\w+)([^>]*)><\/\1>/g, '')
 }
 
+/** Une espace si le curseur suit du texte sans espace (on n'accole pas « card. » et « Toughness. »). */
+function espaceAvant(zone) {
+  const s = getSelection()
+  if (!s.rangeCount || !zone.contains(s.anchorNode)) return ''
+  const n = s.anchorNode
+  const avant = n.nodeType === 3 ? n.textContent.slice(0, s.anchorOffset) : ''
+  const c = avant.slice(-1)
+  // Chrome avale l'espace qui precede une insertion : on la remet sous forme d'espace insecable (relue comme une espace normale)
+  return !c || c === '\u200b' || s.anchorOffset === 0 ? '' : '\u00a0'
+}
+
 /** Le champ de texte riche : on selectionne, on clique (gras, italique, souligne, taille, couleur, icones). Un bouton « </> » montre le code. */
 function editeurRiche(label, cle, lignes = 5) {
   const c = carte()
@@ -490,7 +502,9 @@ function editeurRiche(label, cle, lignes = 5) {
   const selTaille = el('select', { class: 'petit', title: 'Taille de la sélection', onmousedown: () => {}, onchange: (e) => { if (e.target.value) taille(Number(e.target.value)); e.target.value = '' } },
     el('option', { value: '' }, 'Taille'), ...[[0.7, '70 %'], [0.85, '85 %'], [1, '100 % (normale)'], [1.25, '125 %'], [1.5, '150 %'], [2, '200 %']].map(([v, n]) => el('option', { value: v }, n)))
   const couleur = el('input', { type: 'color', value: '#cc0000', title: 'Couleur de la sélection', onchange: (e) => cmd('foreColor', e.target.value) })
+  const boutonStyles = el('button', { class: 'btn petit bouton-styles', type: 'button', title: 'Styles de texte : menu, ou tape « / » dans le texte', onmousedown: (e) => e.preventDefault(), onclick: () => (api.menuOuvert ? (api.fermerMenu(), (api.menuOuvert = false)) : (api.ouvrirMenu(), (api.menuOuvert = true))) }, 'Styles ▾')
   const barre = el('div', { class: 'outils' },
+    boutonStyles,
     bouton(el('b', {}, 'G'), 'Gras (Ctrl+B)', () => cmd('bold')),
     bouton(el('i', {}, 'I'), 'Italique (Ctrl+I)', () => cmd('italic')),
     bouton(el('u', {}, 'S'), 'Souligné (Ctrl+U)', () => cmd('underline')),
@@ -500,7 +514,20 @@ function editeurRiche(label, cle, lignes = 5) {
     bouton('</>', 'Voir / modifier le code (balises)', () => { code.hidden = !code.hidden; zone.hidden = !code.hidden; if (!code.hidden) code.value = c.contenu[cle] ?? '' }))
   const icones = el('div', { class: 'outils' })
   for (const [nom, titre] of ICONES_BARRE) icones.append(bouton(ICONES[nom], titre, () => icone(nom), { style: 'font-family:ChampionsIcons' }))
-  return el('div', { class: 'champ-riche' }, el('label', {}, label), barre, icones, zone, code)
+  const conteneur = el('div', { class: 'champ-riche' }, el('label', {}, label), barre, icones, zone, code)
+  const api = {
+    zone, langue: () => c.langue, perso: () => projet.styles ?? [], menuOuvert: false,
+    ajouterPerso: (p) => { (projet.styles ??= []).push(p); sauvegarderPlusTard(); message('Style créé.') },
+    supprimerPerso: (id) => { projet.styles = (projet.styles ?? []).filter((x) => x.id !== id); sauvegarderPlusTard() },
+    // une insertion garde un espace avec ce qui precede, et le curseur ressort des balises (l'italique ne « fuit » pas sur la suite)
+    inserer: (h) => { zone.focus(); document.execCommand('insertHTML', false, espaceAvant(zone) + versEditeur(h) + '\u200b') },
+    nommee: (fn) => { zone.focus(); document.execCommand('insertHTML', false, espaceAvant(zone) + versEditeur(fn(getSelection().toString())) + '\u200b') },
+    format: (nom) => { if (nom === 'em') trait(); else cmd(nom === 'i' ? 'italic' : 'bold') },
+    enveloppe: (p) => { zone.focus(); document.execCommand('insertHTML', false, versEditeur(enveloppePerso(p, echapper(getSelection().toString() || p.nom))) + '\u200b') },
+    pousse,
+  }
+  brancherStyles(conteneur, api)
+  return conteneur
 }
 
 function boiteImage(titre, obj, avecBascule) {
@@ -865,7 +892,7 @@ async function exporterProjet() {
   for (const c of projet.cartes) cartes.push(await serialiser(c))
   const modeles = []
   for (const m of projet.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, carte: await serialiser(m.carte) })
-  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles })], { type: 'application/json' }), 'cartes.json')
+  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles, styles: projet.styles ?? [] })], { type: 'application/json' }), 'cartes.json')
 }
 
 // ---------------------------------------------------------------- import des fichiers du Card Maker de reference
@@ -964,6 +991,7 @@ async function importerFichiers(fichiers) {
   const traiter = async (j) => {
     if (Array.isArray(j)) { for (const x of j) await traiter(x); return }
     if (j?.format === 'createur-cartes') {
+      for (const st of j.styles ?? []) { projet.styles ??= []; if (!projet.styles.some((x) => x.id === st.id)) projet.styles.push(st) }
       for (const m of j.modeles ?? []) { projet.modeles ??= []; projet.modeles.push({ id: nouvelId(), nom: m.nom, carte: await deserialiser(m.carte) }) }
       for (const x of j.cartes) {
         if (!TYPES[x.type]) continue
@@ -1092,6 +1120,7 @@ async function demarrer() {
     fetch(BASE + 'donnees/palettes.json').then((r) => r.json()),
     chargerPolices(BASE + 'polices/'),
     chargerTraits(BASE + 'donnees/'),
+    chargerStyles(BASE + 'donnees/'),
   ]).then((r) => [r[0], r[1]])
   TYPES = types
   PALETTES = palettes

@@ -68,6 +68,14 @@
   .alerte.alerte { border-color: #c9892b; color: #f2c26b; }
   dialog.dlg { background: transparent; border: 0; padding: 0; color: var(--texte); }
   dialog.dlg::backdrop { background: rgba(0,0,0,.6); }
+  .popup-styles { position: absolute; z-index: 20; left: 0; right: 0; top: 100%; max-height: 300px; overflow: auto; background: #1b1e25; border: 1px solid var(--doux); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.5); padding: 4px; }
+  .popup-styles[hidden] { display: none; }
+  .groupe-styles { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--doux); padding: 6px 6px 2px; }
+  .item-style { display: flex; flex-direction: column; gap: 1px; padding: 4px 8px; border-radius: 5px; cursor: pointer; font-size: 13px; }
+  .item-style.actif, .item-style:hover { background: #2a2f3a; }
+  .item-style .apercu-style { color: var(--doux); font-size: 12px; font-family: Georgia, serif; }
+  .item-style.perso { color: #8fd0ff; }
+  .rappel-option { padding: 4px 8px; font-size: 12px; }
   #message { color: var(--doux); font-size: 12px; min-height: 16px; }
   .groupe-langue { display: inline-flex; border: 1px solid var(--bord); border-radius: 6px; overflow: hidden; }
   .groupe-langue button { border: 0; border-radius: 0; }
