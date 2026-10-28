@@ -10262,3 +10262,63 @@
   --card-w: min(200px, 15vw);
   --inspect-scale: 1;
 }
+
+
+/* Pastilles de traits du heros (28/10/2026). Sur le plateau : posees en bas du scan, comme `.pile-sous-carte`. */
+.pastilles-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  pointer-events: none;
+}
+.pastilles-traits.est-posee {
+  position: absolute;
+  left: calc(var(--nb-g, 0) * var(--attach-step-x));
+  width: 140px;
+  bottom: 3px;
+  z-index: 70;
+  padding: 0 4px;
+}
+.apercu-face > .pastilles-traits {
+  margin-top: 8px;
+  pointer-events: auto;
+}
+.pastille-trait {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  padding: 1px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: #f1f2f4;
+  background: #4a4f5c;
+  border: 1.5px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.pastille-trait.est-gagne {
+  background: #1f8a4c;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+.pastille-trait.est-perdu {
+  background: rgba(20, 20, 24, 0.8);
+  border: 1.5px dashed #e5574d;
+  text-decoration: line-through;
+}
+
+/* Grande carte ouverte au telephone (cartes) : les pastilles se posent sur le bas de la carte, au-dessus de la barre de PV. */
+.carte-ouverte-scan { position: relative; }
+.pastilles-traits.est-sur-grande {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 34px;
+  z-index: 5;
+  padding: 0 8px;
+}
+.pastilles-traits.est-sur-grande .pastille-trait {
+  font-size: 0.8rem;
+  padding: 2px 10px;
+}

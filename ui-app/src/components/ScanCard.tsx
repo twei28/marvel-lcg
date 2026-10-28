@@ -265,6 +265,8 @@ export type ScanCardProps = {
   taille?: 'table' | 'grande'
   /** Traits imprimés, réécrits par la traduction posée de l'aperçu agrandi. */
   traits?: string[]
+  /** Les traits qu'elle a EN CE MOMENT (cles `t_AERIAL` du descripteur) ; `undefined` si le moteur ne les donne pas. */
+  traitsActuels?: string[]
   /** Posé SUR le scan, dans son cadre (la traduction de l'aperçu agrandi). */
   surcouche?: ReactNode
   /**

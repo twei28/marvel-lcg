@@ -49,6 +49,18 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-28",
         genre: "jeu",
+        fr: "Les traits de ton héros se lisent sur sa carte : une pastille verte pour un trait gagné (Aérien avec des Jet Boots), barrée pour un trait perdu, et sous la carte agrandie. Tu peux afficher tous les traits, seulement les changements (par défaut) ou rien, dans les réglages. Idée de Lilipulse.",
+        en: "Your hero's traits can now be read on its card: a green badge for a trait gained (Aerial from Jet Boots), crossed out for a trait lost, and under the enlarged card. In the settings you can show all traits, only the changes (default) or nothing. Idea from Lilipulse.",
+    },
+    {
+        date: "2026-10-28",
+        genre: "jeu",
+        fr: "Nouveau réglage « Chevauchement » : choisis la part des améliorations qui reste cachée derrière la carte qui les porte (moitié, quart, collées ou espacées).",
+        en: "New “Overlap” setting: choose how much of the upgrades stays hidden behind the card that holds them (half, quarter, flush or spaced).",
+    },
+    {
+        date: "2026-10-28",
+        genre: "jeu",
         fr: "Nouvelle campagne : MojoMania se joue maintenant en trois scénarios à la suite (MaGog, Spiral, Mojo), avec son carnet : une carte gardée par héros, Longshot qui vous suit, les genres déjà passés à l'antenne et, en campagne experte, les points de vie.",
         en: "New campaign: MojoMania can now be played as three scenarios in a row (MaGog, Spiral, Mojo), with its campaign log: one card kept per hero, Longshot following you, the genres already aired and, in expert campaign, your hit points.",
     },

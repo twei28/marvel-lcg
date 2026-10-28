@@ -25,6 +25,8 @@
 // fonction qu'avant.
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireBarreAvantage, lireBarreAvantage } from './barre-avantage-reglage'
+import { ecrireChevauchement, ecrireModeTraits, lireChevauchement, lireModeTraits, type ChevauchementAmeliorations } from './reglages-affichage-cartes'
+import type { ModeTraits } from './traits-heros'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { filtrerReglages } from './recherche-reglages'
@@ -418,6 +420,47 @@ function LigneCoteAmeliorations() {
         setCote(valeur)
       }}
       detail={t('De quel côté de la carte qui les porte (héros, alliés, méchant, sbires)')}
+    />
+  )
+}
+
+function LigneChevauchementAmeliorations() {
+  const [valeur, setValeur] = useState<ChevauchementAmeliorations>(lireChevauchement)
+  return (
+    <LigneChoix
+      libelle={t('Chevauchement')}
+      valeur={valeur}
+      choix={[
+        { valeur: 'moitie' as ChevauchementAmeliorations, libelle: t('Moitié cachée') },
+        { valeur: 'quart' as ChevauchementAmeliorations, libelle: t('Quart caché') },
+        { valeur: 'collees' as ChevauchementAmeliorations, libelle: t('Collées') },
+        { valeur: 'espacees' as ChevauchementAmeliorations, libelle: t('Espacées') },
+      ]}
+      onChoisir={(v) => {
+        ecrireChevauchement(v)
+        setValeur(v)
+      }}
+      detail={t('Quelle part d’une amélioration reste cachée derrière la carte qui la porte')}
+    />
+  )
+}
+
+function LigneTraitsHeros() {
+  const [mode, setMode] = useState<ModeTraits>(lireModeTraits)
+  return (
+    <LigneChoix
+      libelle={t('Traits du héros')}
+      valeur={mode}
+      choix={[
+        { valeur: 'changements' as ModeTraits, libelle: t('Changements') },
+        { valeur: 'tous' as ModeTraits, libelle: t('Tous') },
+        { valeur: 'aucun' as ModeTraits, libelle: t('Aucun') },
+      ]}
+      onChoisir={(v) => {
+        ecrireModeTraits(v)
+        setMode(v)
+      }}
+      detail={t('Pastilles sur la carte du héros : les traits gagnés ou perdus seulement, tous ses traits, ou rien')}
     />
   )
 }
@@ -824,6 +867,8 @@ export function ContenuOnglet({
         <TitreSection>{t('Mon tour')}</TitreSection>
         <LigneFaconDeJouer />
         <LigneCoteAmeliorations />
+        <LigneChevauchementAmeliorations />
+        <LigneTraitsHeros />
         <TitreSection>{t('Le jeu agit pour moi quand il n’y a qu’un choix')}</TitreSection>
         <LigneBascule
           libelle={t('Choisir la seule cible possible')}
