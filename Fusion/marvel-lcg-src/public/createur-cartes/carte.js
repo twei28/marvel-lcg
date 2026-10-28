@@ -65,7 +65,7 @@ function baseDe(el, extra = {}) {
 const ROLES_NOMBRES = {
   'paycost cost': 'cout', 'thw sch cost': 'thw', 'atk cost': 'atk', 'def cost': 'def', 'rec cost': 'rec', 'hp cost': 'pv',
   'targetthreat cost': 'menaceCible', startingthreatwrap: 'menaceDepart', acceleration: 'acceleration',
-  'attachmentatknums cost': 'atkAttache', 'attachmentschnums cost': 'schAttache',
+  'attachmentatknums cost': 'atkAttache', 'attachmentschnums cost': 'schAttache', handsize: 'tailleMain',
 }
 
 /**
@@ -114,6 +114,17 @@ function baselineCentree(taille, famille, centre) {
 function dessinerNombre(ctx, el, texte, etoile) {
   if (!texte && !etoile) return
   const base = baseDe(el)
+  if (/HorribleJefe/.test(base.famille)) {
+    // promos : taille de main et PV en texte simple, centre dans la boite (pas de contour)
+    ctx.save()
+    ctx.font = `${el.style.fontWeight >= 600 ? 'bold ' : ''}${base.taille}px ${base.famille}`
+    ctx.fillStyle = el.style.color || '#000'
+    ctx.textBaseline = 'alphabetic'
+    const m = ctx.measureText(texte)
+    ctx.fillText(texte, el.style.textAlign === 'center' ? (el.boite[2] - m.width) / 2 : 0, el.boite[3] / 2 + (m.fontBoundingBoxAscent - m.fontBoundingBoxDescent) / 2 + base.taille * 0.04)
+    ctx.restore()
+    return
+  }
   if (el.fsNombre) base.taille = el.fsNombre
   const [, , w, h] = el.boite
   const police = `${base.style === 'italic' ? 'italic ' : ''}${el.style.fontWeight >= 600 ? 'bold ' : ''}${base.taille}px ${base.famille}`
@@ -256,7 +267,9 @@ function fluxTexte(ctx, spec, contenu) {
   const droite = spec.elements.filter((e) => e.cls === 'pinchright')
   const disposer = (facteur) => {
     const sortie = []
-    let y = 0
+    // le premier bloc du flux part de sa propre place (promos : le panneau a 20 px de marge)
+    const premier = E[blocs.find((c) => E[c].boite[1] >= panneau.boite[1])]
+    let y = premier ? Math.max(0, premier.boite[1] - panneau.boite[1]) : 0
     for (const c of blocs) {
       const el = E[c]
       const libre = el.boite[1] < panneau.boite[1] || el.boite[1] > panneau.boite[1] + panneau.boite[3]
@@ -362,6 +375,15 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
     if (!bg || /rgba\(0, 0, 0, 0\)|transparent/.test(bg) || !['cardtext', 'set-line', 'traits'].includes(e.cls)) continue
     if (e.cls === 'traits' && !contenu.traits) continue
     dans(e, () => {
+      if (e.cls === 'cardtext') {
+        // panneau des promos : ombre pleine decalee de 28 px + bordure noire de 5 px
+        ctx.fillStyle = '#000'
+        ctx.fillRect(28, 28, e.boite[2], e.boite[3])
+        ctx.fillRect(0, 0, e.boite[2], e.boite[3])
+        ctx.fillStyle = bg
+        ctx.fillRect(5, 5, e.boite[2] - 10, e.boite[3] - 10)
+        return
+      }
       ctx.fillStyle = bg
       ctx.fillRect(0, 0, e.boite[2], e.boite[3])
     })

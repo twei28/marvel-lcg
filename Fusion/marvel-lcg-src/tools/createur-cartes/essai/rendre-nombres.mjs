@@ -15,6 +15,7 @@ function contenuDe(rows) {
     c[champ + 'Etoile'] = fils.some((x) => x.tag === 'CODE')
   }
   const vis = (cls) => rows.find((x) => x.cls === cls && x.y > -5000)
+  c.tailleMain = rows.find((x) => x.cls === 'handsize' && x.y > -5000)?.text ?? ''
   c.etape = vis('villainstagenew')?.text ?? ''
   c.acceleration = vis('acceleration')?.text ?? ''
   c.phaseNumero = vis('mainschemephasenumber')?.text ?? ''
