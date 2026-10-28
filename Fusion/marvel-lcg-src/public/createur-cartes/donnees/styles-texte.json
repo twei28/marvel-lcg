@@ -264,6 +264,33 @@
    "rappelEn": "<i>(When defeated, add this card to the victory display.)</i>",
    "rappelFr": "<i>(Une fois déjouée, ajoutez cette carte à la pile de victoire.)</i>",
    "nb": 96
+  },
+  {
+   "en": "Overkill",
+   "motEn": "Overkill.",
+   "motFr": "Déferlement.",
+   "rappelEn": "<i>(Excess damage from this attack is dealt to the villain.)</i>",
+   "rappelFr": "<i>(Les dégâts excédentaires de cette attaque sont infligés au méchant.)</i>",
+   "nb": 0,
+   "source": "fr.marvelcdb.com/card/01053"
+  },
+  {
+   "en": "Piercing",
+   "motEn": "Piercing.",
+   "motFr": "Perçant.",
+   "rappelEn": "<i>(Discard any tough status cards from the target before dealing damage.)</i>",
+   "rappelFr": "<i>(Défaussez toute carte d'état Tenace de la cible avant d'infliger les dégâts.)</i>",
+   "nb": 0,
+   "source": "fr.marvelcdb.com/card/04058"
+  },
+  {
+   "en": "Ranged",
+   "motEn": "Ranged.",
+   "motFr": "À Distance.",
+   "rappelEn": "<i>(Ranged attacks ignore retaliate.)</i>",
+   "rappelFr": "<i>(Les attaques À Distance ignorent Riposte.)</i>",
+   "nb": 0,
+   "source": "fr.marvelcdb.com/card/04020"
   }
  ]
 }

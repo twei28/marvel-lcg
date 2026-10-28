@@ -44,7 +44,7 @@ const ASPECTS = {
   Protection: uni('#46991b'), Justice: uni('#dbcb36'), Pool: uni('#d074ac', '#000000'),
 }
 const GENRES_RESSOURCE = [['', 'Aucune'], ['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker']]
-const ICONES_BARRE = [['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker'], ['star', 'Étoile'], ['acceleration', 'Accélération'], ['crisis', 'Crise'], ['hazard', 'Aléas'], ['boost', 'Boost'], ['per_hero', 'Par joueur'], ['consequential', 'Dégâts conséquents'], ['unique', 'Unique']]
+const ICONES_BARRE = [['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker'], ['star', 'Étoile'], ['acceleration', 'Accélération'], ['crisis', 'Crise'], ['hazard', 'Aléas'], ['boost', 'Boost'], ['per_hero', 'Par joueur'], ['consequential', 'Dégâts consécutifs'], ['unique', 'Unique']]
 const TYPES_SANS_FISSURES = new Set(['attachment', 'environment', 'minion', 'obligation-villain', 'sidescheme', 'treachery'])
 
 let TYPES = null
@@ -689,9 +689,9 @@ function construireFormulaire() {
   const A = (cls, label, cle, etoile = true) => aElement(spec, cls) && N.push(nombre(label, cle, etoile))
   A('paycost cost', 'Coût', 'cout')
   A('thw sch cost', 'Contrer / manigance (THW / SCH)', 'thw')
-  aElement(spec, 'thwconsequential') && N.push(liste('Dégâts conséquents (contrer)', (x) => x.contenu, 'thwConseq', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number))
+  aElement(spec, 'thwconsequential') && N.push(liste('Dégâts consécutifs (contrer)', (x) => x.contenu, 'thwConseq', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number))
   A('atk cost', 'Attaque (ATK)', 'atk')
-  aElement(spec, 'atkconsequential') && N.push(liste('Dégâts conséquents (attaque)', (x) => x.contenu, 'atkConseq', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number))
+  aElement(spec, 'atkconsequential') && N.push(liste('Dégâts consécutifs (attaque)', (x) => x.contenu, 'atkConseq', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number))
   A('def cost', 'Défense (DEF)', 'def')
   A('rec cost', 'Récupération (REC)', 'rec')
   A('hp cost', 'Points de vie', 'pv')
@@ -707,7 +707,7 @@ function construireFormulaire() {
   // renforts et ressources
   if (spec.renforts || spec.ressources) {
     const R = []
-    if (spec.renforts) R.push(el('div', { class: 'nombre' }, liste('Icônes de renfort', (x) => x.contenu, 'renforts', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number), coche('★', (x) => x.contenu, 'renfortEtoile')))
+    if (spec.renforts) R.push(el('div', { class: 'nombre' }, liste('Icônes de boost', (x) => x.contenu, 'renforts', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number), coche('★', (x) => x.contenu, 'renfortEtoile')))
     if (spec.ressources) {
       for (let k = 0; k < 3; k++) {
         const ressources = () => (c.contenu.ressources = c.contenu.ressources?.length ? c.contenu.ressources : ['', '', ''])
@@ -717,7 +717,7 @@ function construireFormulaire() {
         R.push(el('label', {}, `Ressource ${k + 1}`, s))
       }
     }
-    f.push(section('Renforts et ressources', true, ...R))
+    f.push(section('Boost et ressources', true, ...R))
   }
 
   // couleurs

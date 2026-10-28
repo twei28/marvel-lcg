@@ -78,6 +78,21 @@ for mot in MOTS:
     rap = collections.Counter({(ra, rb): n for (aa, bb, ra, rb), n in paires[mot].items() if aa == a and bb == b and ra})
     ra, rb = rap.most_common(1)[0][0] if rap else ("", "")
     mots.append({"en": mot, "motEn": a, "motFr": b, "rappelEn": ra, "rappelFr": rb, "nb": sum(total.values())})
+# ---- mots-cles absents de nos textes FR du catalogue : releves (28/10/2026) sur les cartes officielles FR de fr.marvelcdb.com, qui reproduit
+# le texte FR des cartes. Un seul exemplaire par mot, donc pas de « paire retenue plusieurs fois » : `nb` 0 et `source` le disent.
+#   Overkill  : 01053 Assaut Implacable (« cette attaque gagne Déferlement. » + rappel)
+#   Piercing  : 04058 Crossbones (« ses attaques gagnent Perçant. » + rappel)
+#   Ranged    : 04020 War Machine (« gagne À Distance. (Les attaques À Distance ignorent Riposte.) »)
+MOTS_WEB = [
+    {"en": "Overkill", "motEn": "Overkill.", "motFr": "Déferlement.", "rappelEn": "<i>(Excess damage from this attack is dealt to the villain.)</i>",
+     "rappelFr": "<i>(Les dégâts excédentaires de cette attaque sont infligés au méchant.)</i>", "nb": 0, "source": "fr.marvelcdb.com/card/01053"},
+    {"en": "Piercing", "motEn": "Piercing.", "motFr": "Perçant.", "rappelEn": "<i>(Discard any tough status cards from the target before dealing damage.)</i>",
+     "rappelFr": "<i>(Défaussez toute carte d'état Tenace de la cible avant d'infliger les dégâts.)</i>", "nb": 0, "source": "fr.marvelcdb.com/card/04058"},
+    {"en": "Ranged", "motEn": "Ranged.", "motFr": "À Distance.", "rappelEn": "<i>(Ranged attacks ignore retaliate.)</i>",
+     "rappelFr": "<i>(Les attaques À Distance ignorent Riposte.)</i>", "nb": 0, "source": "fr.marvelcdb.com/card/04020"},
+]
+deja = {m["en"] for m in mots}
+mots += [m for m in MOTS_WEB if m["en"] not in deja]
 sortie = RACINE / "public/createur-cartes/donnees/styles-texte.json"
 sortie.write_text(json.dumps({"declencheurs": declencheurs, "motsCles": mots}, ensure_ascii=False, indent=1), encoding="utf-8")
 print(len(declencheurs), "declencheurs,", len(mots), "mots-cles ->", sortie)

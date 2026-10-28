@@ -75,11 +75,11 @@ export const DICO = {
   'Attachement : bonus de manigance': 'Attachment: scheme bonus',
   'Phase : numéro': 'Phase: number',
   'Phase : lettre': 'Phase: letter',
-  'Dégâts conséquents (contrer)': 'Consequential damage (thwart)',
-  'Dégâts conséquents (attaque)': 'Consequential damage (attack)',
-  'Dégâts conséquents': 'Consequential damage',
-  'Renforts et ressources': 'Boost and resources',
-  'Icônes de renfort': 'Boost icons',
+  'Dégâts consécutifs (contrer)': 'Consequential damage (thwart)',
+  'Dégâts consécutifs (attaque)': 'Consequential damage (attack)',
+  'Dégâts consécutifs': 'Consequential damage',
+  'Boost et ressources': 'Boost and resources',
+  'Icônes de boost': 'Boost icons',
   'Ressource 1': 'Resource 1',
   'Ressource 2': 'Resource 2',
   'Ressource 3': 'Resource 3',
@@ -95,8 +95,8 @@ export const DICO = {
   'Renfort': 'Surge', // le mot-clé (Surge = Renfort) ; l'icône boost, elle, s'appelle « boost » dans le guide de référence FR
   'Par joueur': 'Per hero',
   'Unique': 'Unique',
-  'Amplification': 'Amplify',
-  'Infini': 'Infinity',
+  'Amplify': 'Amplify', // pas de mot FR officiel : fr.marvelcdb.com garde « [Amplify] » dans le texte FR des cartes
+  'Infinité': 'Infinity',
   // barre de mise en forme
   'Gras (Ctrl+B)': 'Bold (Ctrl+B)',
   'Italique (Ctrl+I)': 'Italic (Ctrl+I)',
