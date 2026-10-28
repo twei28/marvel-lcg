@@ -62,6 +62,18 @@ function el(tag, attrs = {}, ...enfants) {
     for (const [cle, valeur] of Object.entries(attrs)) {
         if (cle === "class") n.className = valeur;
         else if (cle.startsWith("on")) n[cle] = valeur;
+        // ⚠ UN `style` OBJET S'APPLIQUE PROPRIETE PAR PROPRIETE. Sans cette
+        // branche, `setAttribute("style", {...})` ecrivait « [object Object] »,
+        // que le navigateur ignore : AUCUNE image de heros, aucune scene, aucune
+        // bande de couleur d'aspect ne s'est jamais affichee dans le salon,
+        // quelle que soit l'URL (constate le 28/10/2026 en rejouant le vrai
+        // el() dans Chromium). L'assistant (prepare/app.js) avait cette branche.
+        else if (cle === "style" && valeur && typeof valeur === "object") Object.assign(n.style, valeur);
+        // ⚠ UN BOOLEEN SE LIT PAR SA PRESENCE, PAS PAR SA VALEUR : `selected="false"`
+        // est un attribut PRESENT, donc vrai. Sans cette branche, le menu des vagues
+        // marquait TOUTES ses options « selected » et affichait la derniere (« Vague
+        // 11 ») au lieu de « Toutes les vagues ».
+        else if (typeof valeur === "boolean") { if (valeur) n.setAttribute(cle, ""); }
         else if (valeur != null) n.setAttribute(cle, valeur);
     }
     for (const enfant of enfants.flat()) {
