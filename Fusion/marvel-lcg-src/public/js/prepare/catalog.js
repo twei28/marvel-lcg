@@ -177,8 +177,13 @@ const BORNES_VAGUES = [
     { depuis: 45, vague: 8 },    // Age of Apocalypse
     { depuis: 50, vague: 9 },    // Agents of S.H.I.E.L.D.
     { depuis: 56, vague: 10 },   // Civil War
-    { depuis: 60, vague: 11 },   // Fear No Evil
-    { depuis: 61, vague: null }, // au-dela : hors vague (modulaires, defis)
+    { depuis: 60, vague: 11 },   // Fear No Evil, et ses hero packs Defenders
+                                 // (61 Jessica Jones, 62 Luke Cage, 63 Elektra,
+                                 // 64 Iron Fist) : ils sortent AVEC cette boite.
+                                 // Sans eux ici, officiels mais « hors vague »,
+                                 // le mode Legacy les prenait pour du fan-made
+                                 // achetable au jeton (signale le 28/10/2026).
+    { depuis: 65, vague: null }, // au-dela : hors vague (modulaires, defis)
 ];
 
 /* Le NOM d'une vague est celui de la grande boite qui l'ouvre — c'est la meme

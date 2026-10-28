@@ -274,16 +274,24 @@ const ASPECTS = {
 
 const idBase = (heroCardId) => String(heroCardId || "").split(",")[0];
 
-/* ---------------- Images du siege invite (28/10/2026) ----------------
- * L'invite joue sur un MOTEUR PAR SIEGE (pN.<domaine>, voir deploiement/
- * Caddyfile), qui NE SERT PAS les scans : seul play.<domaine> les sert. On
- * prefixe donc les URLs d'images par cet hote, derive du domaine courant
- * (p1.narwhalchampions.com -> play.narwhalchampions.com). Hors siege (dev en
- * localhost, ou tout hote non `pN`), on garde l'URL relative : le serveur
- * local sert les images lui-meme. */
+/* ---------------- Images du salon invite (28/10/2026) ----------------
+ * Le salon de l'invite n'est PAS servi par un hote qui tient les scans : ni le
+ * moteur par siege (pN.<domaine>, deploiement/Caddyfile), ni le domaine
+ * principal (<domaine>) ne repondent une image sur /<cardId> -- claim_seat
+ * redirige en RELATIF, donc l'invite reste sur l'hote du lien, quel qu'il
+ * soit. SEUL play.<domaine> sert les scans. On prefixe donc TOUTES les URLs
+ * d'images par play.<domaine>, derive du domaine courant en retirant un
+ * eventuel prefixe de siege / www / play deja present.
+ *
+ * ⚠ Premiere version (regex `^p\d+\.`) ne couvrait que le cas « invite sur un
+ * siege pN » : quand l'hote joue sur le domaine principal, l'invite y reste
+ * aussi, et les tuiles restaient noires (signale le 28/10/2026). En dev
+ * (localhost, IP), on garde le relatif : le serveur local sert les images. */
 function hoteImages() {
-    const m = /^p\d+\.(.+)$/.exec(location.hostname);
-    return m ? `${location.protocol}//play.${m[1]}` : "";
+    const h = location.hostname;
+    if (h === "localhost" || /^\d+(\.\d+){3}$/.test(h) || !h.includes(".")) return "";
+    const base = h.replace(/^(p\d+|www|play)\./, "");
+    return `${location.protocol}//play.${base}`;
 }
 const imgEn = (cardId) => { const u = cardImageUrlEn(cardId); return u ? hoteImages() + u : u; };
 const imgHd = (cardId) => { const u = cardImageUrlHd(cardId); return u ? hoteImages() + u : u; };
