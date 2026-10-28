@@ -2,7 +2,7 @@
 //
 // Le gabarit (`types.json`) donne, pour chaque element, sa boite SANS rotation, sa propre transformation et son origine ; on
 // recompose la chaine de transformations de ses parents (comme CSS) puis on dessine dans la boite locale.
-import { PORTRAIT, dessinerCalques } from './rendu.js'
+import { PORTRAIT, chargerImage, dessinerCalques } from './rendu.js'
 import { analyser, dessinerPage, mettreEnPage } from './texte.js'
 
 /** Les champs de contenu d'une carte (tout est facultatif). */
@@ -12,7 +12,7 @@ export const CHAMPS_VIDES = {
   cout: '', coutEtoile: false, thw: '', thwEtoile: false, thwConseq: 0, atk: '', atkEtoile: false, atkConseq: 0,
   def: '', defEtoile: false, rec: '', recEtoile: false, pv: '', pvEtoile: false, tailleMain: '', menaceDepart: '',
   menaceDepartEtoile: false, menaceCible: '', acceleration: '', phaseNumero: '', phaseLettre: '', etape: '',
-  renforts: 0, renfortEtoile: false, ressources: [], atkAttache: '', schAttache: '',
+  renforts: 0, renfortEtoile: false, ressources: [], atkAttache: '', atkAttacheEtoile: false, schAttache: '', schAttacheEtoile: false,
 }
 
 const px = (v, defaut = 0) => {
@@ -64,7 +64,8 @@ function baseDe(el, extra = {}) {
 
 const ROLES_NOMBRES = {
   'paycost cost': 'cout', 'thw sch cost': 'thw', 'atk cost': 'atk', 'def cost': 'def', 'rec cost': 'rec', 'hp cost': 'pv',
-  'targetthreat cost': 'menaceCible',
+  'targetthreat cost': 'menaceCible', startingthreatwrap: 'menaceDepart', acceleration: 'acceleration',
+  'attachmentatknums cost': 'atkAttache', 'attachmentschnums cost': 'schAttache',
 }
 
 /**
@@ -113,6 +114,7 @@ function baselineCentree(taille, famille, centre) {
 function dessinerNombre(ctx, el, texte, etoile) {
   if (!texte && !etoile) return
   const base = baseDe(el)
+  if (el.fsNombre) base.taille = el.fsNombre
   const [, , w, h] = el.boite
   const police = `${base.style === 'italic' ? 'italic ' : ''}${el.style.fontWeight >= 600 ? 'bold ' : ''}${base.taille}px ${base.famille}`
   const couleur = el.style.color || '#fff'
@@ -139,6 +141,41 @@ function dessinerNombre(ctx, el, texte, etoile) {
       c.textBaseline = 'alphabetic'
       if (mode === 'contour') c.strokeText(p.s, p.x, p.y)
       c.fillText(p.s, p.x, p.y)
+    }
+  })
+  ctx.restore()
+}
+
+/** Numero + lettre de la phase : deux blocs centres verticalement, un ecart mesure entre eux, groupe centre dans la boite. */
+function dessinerPhase(ctx, el, contenu) {
+  const base = baseDe(el)
+  const [, , w, h] = el.boite
+  const P = el.phase
+  const police = (fs) => `${base.style === 'italic' ? 'italic ' : ''}bold ${fs}px ${base.famille}`
+  const pieces = []
+  ctx.save()
+  if (contenu.phaseNumero) {
+    ctx.font = police(P.fsNum)
+    pieces.push({ s: String(contenu.phaseNumero), fs: P.fsNum, w: ctx.measureText(String(contenu.phaseNumero)).width })
+  }
+  if (contenu.phaseLettre) {
+    ctx.font = police(P.fsLettre)
+    { const l = String(contenu.phaseLettre).toUpperCase(); pieces.push({ s: l, fs: P.fsLettre, w: ctx.measureText(l).width }) }
+  }
+  const total = pieces.reduce((a, p) => a + p.w, 0) + P.ecart * (pieces.length - 1)
+  let x = (w - total) / 2
+  for (const p of pieces) {
+    p.x = x
+    x += p.w + P.ecart
+  }
+  avecContour(ctx, w, h, el.style.color || '#fff', (c, mode) => {
+    for (const p of pieces) {
+      c.font = police(p.fs)
+      c.textAlign = 'left'
+      c.textBaseline = 'alphabetic'
+      const y = baselineCentree(p.fs, base.famille, h / 2)
+      if (mode === 'contour') c.strokeText(p.s, p.x, y)
+      c.fillText(p.s, p.x, y)
     }
   })
   ctx.restore()
@@ -261,14 +298,40 @@ function fluxTexte(ctx, spec, contenu) {
 }
 
 /**
+ * L'attachement : la colonne de gauche empile le titre et, selon les valeurs presentes, les boites ATK / SCH ; le titre monte quand
+ * une boite apparait (mesure : 1865 sans boite, 1560 avec une, 1310 avec deux). Rend le gabarit adapte et la place de chaque boite.
+ */
+function adapterAttachement(spec, contenu) {
+  const a = !!(contenu.atkAttache || contenu.atkAttacheEtoile)
+  const s = !!(contenu.schAttache || contenu.schAttacheEtoile)
+  const yAtk = s ? 1710 : 1695
+  const ySch = a ? 1460 : 1695
+  const decal = [1865, 1560, 1310][(a ? 1 : 0) + (s ? 1 : 0)] - 1865
+  const elements = spec.elements.map((e) => {
+    if (e.cls === 'attachmentatknums cost') return { ...e, boite: [e.boite[0], yAtk - 11, e.boite[2], e.boite[3]] }
+    if (e.cls === 'attachmentschnums cost') return { ...e, boite: [e.boite[0], ySch - 11, e.boite[2], e.boite[3]] }
+    if (['header', 'title'].includes(e.cls) || e.parent === spec.elements.find((x) => x.cls === 'title')?.i) return { ...e, boite: [e.boite[0], e.boite[1] + decal, e.boite[2], e.boite[3]] }
+    return e
+  })
+  return { spec: { ...spec, elements }, a, s, yAtk, ySch }
+}
+
+/**
  * Dessine toute la carte sur `canvas` (taille du type). `etat` : { couleurs, art, artDevant, tete }.
  */
 export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages = 'img/') {
+  const attache = spec.id === 'attachment' ? adapterAttachement(spec, contenu) : null
+  if (attache) spec = attache.spec
   canvas.width = spec.largeur
   canvas.height = spec.hauteur
   const ctx = canvas.getContext('2d')
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   await dessinerCalques(ctx, spec, etat, dossierImages)
+  if (attache) {
+    for (const [actif, nom, y] of [[attache.s, 'sch', attache.ySch], [attache.a, 'atk', attache.yAtk]]) {
+      if (actif) ctx.drawImage(await chargerImage(`${dossierImages}attachment/${nom}_box.png`), 0, y)
+    }
+  }
 
   ctx.save()
   if (spec.paysage) ctx.transform(0, 1, -1, 0, spec.largeur, 0)
@@ -287,6 +350,40 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
     const el = E[cls]
     if (!el) continue
     dans(el, () => dessinerNombre(ctx, el, contenu[champ], contenu[champ + 'Etoile']))
+  }
+
+  // Phase de la manigance principale : numero + lettre, groupe centre dans la boite
+  const phase = E['mainschemephase cost']
+  if (phase?.phase && (contenu.phaseNumero || contenu.phaseLettre)) dans(phase, () => dessinerPhase(ctx, phase, contenu))
+
+  // Ressources (3 emplacements fixes) et icones de renfort (ancrees a droite), images posees dans le repere de la carte
+  const IMG = {}
+  const img = async (nom) => (IMG[nom] ??= await chargerImage(`${dossierImages}general/${nom}.png`))
+  for (const [k, genre] of (contenu.ressources ?? []).entries()) {
+    if (!genre || !spec.ressources?.[k]) continue
+    ctx.drawImage(await img(`resource-${genre}`), ...spec.ressources[k])
+  }
+  const R = spec.renforts
+  const n = contenu.renforts | 0
+  if (R && (n || contenu.renfortEtoile)) {
+    if (R.fond) ctx.drawImage(await img(`../${R.fond}/boostbox${n + (contenu.renfortEtoile ? 1 : 0)}`), 0, 0)
+    for (let i = 1; i <= n; i++) ctx.drawImage(await img('boost_icon'), R.x - 95 * (i - 1), R.y)
+    if (contenu.renfortEtoile) ctx.drawImage(await img('boost_star'), n ? R.x - 95 * (n - 1) - 90 : R.x + 5, R.y)
+  }
+
+  // Degats consequents : n icones « d » blanches, centrees dans la boite (ligne de base a 0,9125 x taille du haut)
+  for (const [cls, champ] of [['thwconsequential', 'thwConseq'], ['atkconsequential', 'atkConseq']]) {
+    const el = E[cls]
+    const n = contenu[champ] | 0
+    if (!el || !n) continue
+    dans(el, () => {
+      const fs = px(el.style.fontSize, 80)
+      ctx.font = `${fs}px ChampionsIcons`
+      ctx.fillStyle = el.style.color || '#fff'
+      ctx.textBaseline = 'alphabetic'
+      const t = 'd'.repeat(n)
+      ctx.fillText(t, (el.boite[2] - ctx.measureText(t).width) / 2, fs * 0.9125)
+    })
   }
 
   // Lignes : titre, type, ligne d'ensemble, createur

@@ -10,11 +10,12 @@ const SUF = process.env.SUFFIXE ?? ''
 const types = ids.length ? ids : JSON.parse(fs.readFileSync(S + '/types-options.json', 'utf8')).map((x) => x[0])
 const VAL = [[/^Cost$/, '3'], [/THW\/SCH value/, '2'], [/ATK value/, '3'], [/DEF value/, '2'], [/REC value/, '4'], [/HP value/, '12'], [/Starting threat\s*$/, '5'], [/Target threat/, '7'], [/Acceleration/, '2'], [/phase number/, '1'], [/Hand size/, '5'], [/Attachment ATK/, '2'], [/Attachment SCH/, '3'], [/Overwrite card type/, ''], [/^Subtitle/, '']]
 const b = await chromium.launch()
-const p = await (await b.newContext({ viewport: { width: 1700, height: 1100 }, deviceScaleFactor: 1500 / 676 })).newPage()
-await p.goto('https://champions-card-maker.pages.dev/', { waitUntil: 'networkidle' }); await p.waitForTimeout(3000)
 fs.mkdirSync(`${S}/ref-nombres${SUF}`, { recursive: true })
 for (const type of types) {
-  await p.selectOption('#card1selectTypeValue', type); await p.waitForTimeout(900)
+  // une page neuve par type : la rotation des cartes paysage ne se remet pas bien d'un type a l'autre
+  const p = await (await b.newContext({ viewport: { width: 1700, height: 1100 }, deviceScaleFactor: 1500 / 676 })).newPage()
+  await p.goto('https://champions-card-maker.pages.dev/', { waitUntil: 'networkidle' }); await p.waitForTimeout(2500)
+  await p.selectOption('#card1selectTypeValue', type); await p.waitForTimeout(1600)
   // libelle d'un champ = dernier texte non vide qui le precede
   const champs = await p.evaluate(() => [...document.querySelectorAll('input:not([type=checkbox]):not([type=range]):not([type=file]):not([type=number]),select')].map((e, i) => {
     if (!e.offsetWidth) return null
@@ -59,5 +60,6 @@ for (const type of types) {
   })
   fs.writeFileSync(`${S}/ref-nombres${SUF}/${type}.json`, JSON.stringify(rows))
   console.log(type, rows.length, 'noeuds')
+  await p.close()
 }
 await b.close()

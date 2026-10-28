@@ -4,15 +4,26 @@ import { chromium } from 'file:///home/oem/Desktop/Marvel%20LCG/ui-check/node_mo
 import fs from 'node:fs'
 const S = process.argv[2]; const ids = process.argv.slice(3)
 const types = JSON.parse(fs.readFileSync(S + '/types-options.json', 'utf8')).map((x) => x[0])
-const CHAMP = { 'paycost cost': 'cout', 'thw sch cost': 'thw', 'atk cost': 'atk', 'def cost': 'def', 'rec cost': 'rec', 'hp cost': 'pv', 'targetthreat cost': 'menaceCible' }
+const CHAMP = { 'attachmentatknums cost': 'atkAttache', 'attachmentschnums cost': 'schAttache', startingthreatwrap: 'menaceDepart', 'paycost cost': 'cout', 'thw sch cost': 'thw', 'atk cost': 'atk', 'def cost': 'def', 'rec cost': 'rec', 'hp cost': 'pv', 'targetthreat cost': 'menaceCible' }
 function contenuDe(rows) {
   const c = {}
   for (const r of rows) {
     const champ = CHAMP[r.cls]; if (!champ || r.y < -5000) continue
     const fils = rows.filter((x) => x.parent === r.i)
-    const num = fils.find((x) => x.tag === 'SPAN')
+    const num = fils.find((x) => x.tag === 'SPAN' || x.cls === 'startingthreat')
     c[champ] = (num?.text ?? r.text ?? '')
     c[champ + 'Etoile'] = fils.some((x) => x.tag === 'CODE')
+  }
+  const vis = (cls) => rows.find((x) => x.cls === cls && x.y > -5000)
+  c.acceleration = vis('acceleration')?.text ?? ''
+  c.phaseNumero = vis('mainschemephasenumber')?.text ?? ''
+  c.phaseLettre = vis('mainschemephaseletter')?.text ?? ''
+  c.renforts = rows.filter((x) => /^boost\d boosticon/.test(x.cls) && x.y > -5000).length
+  c.renfortEtoile = !!vis('booststar on')
+  c.ressources = [1, 2, 3].map((k) => (vis('resource' + k)?.style.backgroundImage.match(/resource-(\w+)\.png/) ?? [])[1] ?? '')
+  for (const [cls, champ] of [['thwconsequential', 'thwConseq'], ['atkconsequential', 'atkConseq']]) {
+    const r = rows.find((x) => x.cls === cls && x.y > -5000)
+    c[champ] = r ? (rows.find((x) => x.parent === r.i && x.tag === 'CODE')?.text ?? '').length : 0
   }
   return c
 }

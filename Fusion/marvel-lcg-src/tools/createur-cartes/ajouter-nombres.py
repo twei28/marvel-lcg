@@ -9,6 +9,7 @@ est centre dans la boite, ou la boite est deplacee par la page : on mesure le re
 `ecart` = espace entre le nombre et l'etoile. Les autres elements (menace, boosts, ressources...) sont copies tels quels dans `nombres`.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -28,18 +29,23 @@ for tid, spec in types.items():
         continue
     rows = json.loads(f.read_text(encoding="utf-8"))
     for el in spec["elements"]:
-        if not el["cls"].endswith(" cost"):
+        if not (el["cls"].endswith(" cost") or el["cls"] == "startingthreatwrap"):
             continue
         r = next((x for x in rows if x["cls"] == el["cls"] and x["y"] > -5000), None)
         if not r:
             continue
         enfants = [x for x in rows if x["parent"] == r["i"]]
-        sp = next((x for x in enfants if x["tag"] == "SPAN"), None)
+        sp = next((x for x in enfants if x["tag"] == "SPAN" or x["cls"] == "startingthreat"), None)
         co = next((x for x in enfants if x["tag"] == "CODE"), None)
         el.pop("etoile", None)
+        if sp:
+            el["fsNombre"] = px(sp["style"]["fontSize"])
         if not co:
             continue
         r0 = next((x for x in json.loads((SANS / f"{tid}.json").read_text(encoding="utf-8")) if x["cls"] == el["cls"] and x["y"] > -5000), None)
+        if r0:  # la boite et l'origine de rotation de l'etat REMPLI font foi (a vide, certaines boites mesurent 0 de haut)
+            el["boite"] = [r0["x"], r0["y"], r0["w"], r0["h"]]
+            el["origine"] = [px(v) for v in r0["org"].split()]
         cx0 = (r0 or r)["x"] + (r0 or r)["w"] / 2  # centre de la boite SANS etoile
         cy = r["y"] + r["h"] / 2
         if sp and sp.get("text"):
@@ -48,5 +54,28 @@ for tid, spec in types.items():
         else:  # etoile seule (pas de valeur) : elle remplace le nombre
             el["etoileSeule"] = {"fs": px(co["style"]["fontSize"]), "dx": round(co["x"] + co["w"] / 2 - cx0, 1),
                                  "dy": round(co["y"] + co["h"] / 2 - cy, 1)}
+    # phase de la manigance principale : numero + lettre, groupe centre dans la boite
+    for el in spec["elements"]:
+        if el["cls"] != "mainschemephase cost":
+            continue
+        r = next((x for x in rows if x["cls"] == el["cls"] and x["y"] > -5000), None)
+        num = next((x for x in rows if r and x["cls"] == "mainschemephasenumber" and x["y"] > -5000), None)
+        let = next((x for x in rows if r and x["cls"] == "mainschemephaseletter" and x["y"] > -5000), None)
+        if num and let:
+            el["phase"] = {"fsNum": px(num["style"]["fontSize"]), "fsLettre": px(let["style"]["fontSize"]), "ecart": round(let["x"] - (num["x"] + num["w"]), 1)}
+    # icones de renfort : ancre = la derniere icone (boost1), pas de 95 px, etoile 90 px a gauche ; ressources : 3 emplacements fixes
+    b1 = next((x for x in rows if x["cls"].startswith("boost1") and x["y"] > -5000), None)
+    if b1:
+        spec["renforts"] = {"x": b1["x"], "y": b1["y"], "taille": b1["w"]}
+        fond = next((re.search(r"/(\w+)/boostbox\d\.png", x["style"]["backgroundImage"]) for x in rows if x["cls"] == "boostbox" and "boostbox" in x["style"]["backgroundImage"]), None)
+        if fond:  # fond noir en pilule derriere les icones (une image pleine carte par nombre d'emplacements)
+            spec["renforts"]["fond"] = fond.group(1)
+    else:
+        spec.pop("renforts", None)
+    res = [next((x for x in rows if x["cls"] == f"resource{k}" and x["y"] > -5000), None) for k in (1, 2, 3)]
+    if all(res):
+        spec["ressources"] = [[x["x"], x["y"]] for x in res]
+    else:
+        spec.pop("ressources", None)
 TYPES.write_text(json.dumps(types, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 print("types.json mis a jour")
