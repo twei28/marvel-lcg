@@ -25,12 +25,11 @@ const ROLES_COULEURS = {
   light_boxes: 'Cases claires', splash_color: 'Éclat de la tête', background_upper: 'Fond (haut)', background_lower: 'Fond (bas)',
   shading: 'Ombrage', middle: 'Milieu', outer: 'Contour', accent: 'Accent', cracks: 'Fissures',
 }
-// Les aspects ne sont pas dans palettes.json (sauf Agression, Justice, Basic) : trois sont approchés a la main.
+// Les aspects : une couleur unie pour tous les roles, relevee sur les boutons d'aspect du Card Maker de reference.
+const uni = (c, boites = c) => ({ left_color: c, left_accent: c, right_color: c, right_accent: c, divider: c, light_boxes: boites })
 const ASPECTS = {
-  'Basic (gris)': 'basic-grey_hero', Agression: 'aggression_hero', Justice: 'justice_hero',
-  Direction: { left_color: '#1d5da6', right_color: '#1f63ad', left_accent: '#a6c4e6', right_accent: '#4f95d6', divider: '#1d5da6', light_boxes: '#b5c4d6', splash: '#174a86' },
-  Protection: { left_color: '#2f7d3a', right_color: '#2e8a3d', left_accent: '#a8d3a9', right_accent: '#5fb56a', divider: '#2f7d3a', light_boxes: '#b8d0b4', splash: '#226b2d' },
-  Pool: { left_color: '#c9741c', right_color: '#cf7a1a', left_accent: '#f0c28f', right_accent: '#f2a24b', divider: '#c9741c', light_boxes: '#e4cdb2', splash: '#9c5714' },
+  'Basic (gris)': uni('#87868f', '#000000'), Agression: uni('#b12020'), Direction: uni('#2ea7b8'),
+  Protection: uni('#46991b'), Justice: uni('#dbcb36'), Pool: uni('#d074ac', '#000000'),
 }
 const GENRES_RESSOURCE = [['', 'Aucune'], ['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker']]
 const ICONES_BARRE = [['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker'], ['star', 'Étoile'], ['acceleration', 'Accélération'], ['crisis', 'Crise'], ['hazard', 'Danger'], ['boost', 'Renfort'], ['per_hero', 'Par héros'], ['consequential', 'Dégâts conséquents'], ['unique', 'Unique']]
@@ -645,6 +644,125 @@ async function importerProjet(fichier) {
   if (projet.cartes.length) choisir(projet.cartes[projet.cartes.length - 1].id)
 }
 
+// ---------------------------------------------------------------- import des fichiers du Card Maker de reference
+// Leur fichier : un .json par carte (UTF-8 avec BOM, cles a plat, images en data URL) ; leur « Save .zip » = un .json par carte dans un zip.
+const vrai = (v) => v != null && v !== '' && v !== '0' && v !== 'none' && v !== false && v !== 'false'
+const texteJson = (buf) => new TextDecoder('utf-8').decode(buf).replace(/^\uFEFF/, '')
+
+/** Les fichiers d'un .zip (methodes 0 et 8) : [{ nom, octets }]. */
+async function lireZip(buf) {
+  const v = new DataView(buf)
+  let fin = buf.byteLength - 22
+  while (fin >= 0 && v.getUint32(fin, true) !== 0x06054b50) fin--
+  if (fin < 0) throw new Error('zip illisible')
+  const n = v.getUint16(fin + 10, true)
+  let p = v.getUint32(fin + 16, true)
+  const sortie = []
+  for (let i = 0; i < n; i++) {
+    const methode = v.getUint16(p + 10, true)
+    const taille = v.getUint32(p + 20, true)
+    const ln = v.getUint16(p + 28, true)
+    const lx = v.getUint16(p + 30, true)
+    const lc = v.getUint16(p + 32, true)
+    const debut = v.getUint32(p + 42, true)
+    const nom = new TextDecoder().decode(new Uint8Array(buf, p + 46, ln))
+    p += 46 + ln + lx + lc
+    if (nom.endsWith('/')) continue
+    const dn = v.getUint16(debut + 26, true)
+    const dx = v.getUint16(debut + 28, true)
+    const brut = new Uint8Array(buf, debut + 30 + dn + dx, taille)
+    let octets = brut
+    if (methode === 8) octets = new Uint8Array(await new Response(new Blob([brut]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer())
+    else if (methode !== 0) continue
+    sortie.push({ nom, octets })
+  }
+  return sortie
+}
+
+/** Une carte de la reference -> une carte a nous. */
+async function carteDepuisReference(j) {
+  const type = TYPES[j.selectType] ? j.selectType : 'ally'
+  const spec = TYPES[type]
+  const langue = /^\s*(taille de main|hand size)/i.test(j.setline ?? '') && /taille/i.test(j.setline) ? 'fr' : 'en'
+  const c = nouvelleCarte(type, langue)
+  const titre = String(j.title ?? '')
+  const ct = c.contenu
+  ct.unique = /<code>\s*u\s*<\/code>/i.test(titre)
+  ct.titre = titre.replace(/<code>\s*u\s*<\/code>/gi, '')
+  ct.typeTexte = j.typestr ?? ''
+  ct.regles = j.rules ?? ''
+  ct.citation = j.quote ?? ''
+  ct.traits = j.traits ?? ''
+  ct.ligneEnsemble = j.setline ?? ''
+  ct.createur = j.copyright ?? ''
+  ct.etape = j.villainstagenew ?? ''
+  const num = (cle, ref) => { ct[cle] = j[ref] == null ? '' : String(j[ref]) }
+  num('cout', 'paycost'); num('thw', 'thw'); num('atk', 'atk'); num('def', 'def'); num('rec', 'rec'); num('pv', 'hp'); num('tailleMain', 'handsize')
+  num('menaceDepart', 'startingthreat'); num('menaceCible', 'targetthreat'); num('acceleration', 'acceleration')
+  num('atkAttache', 'attatk'); num('schAttache', 'attsch')
+  ct.coutEtoile = vrai(j.paycostStar); ct.thwEtoile = vrai(j.thwStar); ct.atkEtoile = vrai(j.atkStar); ct.defEtoile = vrai(j.defStar)
+  ct.recEtoile = vrai(j.recStar); ct.pvEtoile = vrai(j.hpStar); ct.menaceDepartEtoile = vrai(j.startingthreatStar)
+  ct.atkAttacheEtoile = vrai(j.attatkStar); ct.schAttacheEtoile = vrai(j.attschStar)
+  ct.thwConseq = Number(j.thwCon) || 0
+  ct.atkConseq = Number(j.atkCon) || 0
+  const m = /^\s*(\d*)\s*([a-z]?)\s*$/i.exec(String(j.mainschemenumber ?? ''))
+  ct.phaseNumero = m?.[1] ?? ''
+  ct.phaseLettre = (m?.[2] || (type === 'main_scheme_b' ? 'B' : type === 'main_scheme_a' ? 'A' : '')).toUpperCase()
+  ct.renforts = Number(j.boosticons) || 0
+  ct.renfortEtoile = vrai(j.booststar)
+  ct.ressources = [1, 2, 3].map((k) => (vrai(j['resource' + k]) ? j['resource' + k] : ''))
+  c.fissures = j.togglecracks !== false
+  for (const [cle, dest] of [['photo', 'art'], ['photofront', 'artDevant']]) {
+    if (typeof j[cle] === 'string' && j[cle].startsWith('data:')) c[dest].blob = await dataUrlVersBlob(j[cle])
+    c[dest].zoom = Number(j[cle + 'zoom']) || 1
+    c[dest].x = Number(j[cle + 'x']) || 0
+    c[dest].y = Number(j[cle + 'y']) || 0
+    c[dest].rotation = Number(j[cle + 'rotate']) || 0
+  }
+  if (typeof j.headshot === 'string' && j.headshot.startsWith('data:')) c.tete.blob = await dataUrlVersBlob(j.headshot)
+  c.tete.afficher = j.showsplash !== false
+  c.tete.etoile = vrai(j.starsplash)
+  c.tete.zoom = Number(j.headshotzoom) || 0.8
+  c.tete.x = Number(j.splashx ?? -19)
+  c.tete.y = Number(j.splashy ?? 232)
+  c.tete.rotation = Number(j.splashrotate) || 0
+  for (const r of rolesDe(spec)) {
+    const v = j[r === 'splash_color' ? 'splash' : r]
+    if (/^#[0-9a-f]{6}$/i.test(v ?? '')) c.couleurs[r] = v
+  }
+  return c
+}
+
+/** Importe des fichiers : les notres (.json), ceux du Card Maker de reference (.json d'une carte, .zip de cartes). */
+async function importerFichiers(fichiers) {
+  let n = 0
+  const ajoutees = []
+  const traiter = async (j) => {
+    if (Array.isArray(j)) { for (const x of j) await traiter(x); return }
+    if (j?.format === 'createur-cartes') {
+      for (const c of j.cartes) {
+        for (const k of ['art', 'artDevant', 'tete']) { c[k].blob = c[k].image ? await dataUrlVersBlob(c[k].image) : null; delete c[k].image }
+        if (!TYPES[c.type]) continue
+        c.id = nouvelId()
+        ajoutees.push(c)
+      }
+    } else if (j?.selectType) ajoutees.push(await carteDepuisReference(j))
+  }
+  for (const f of fichiers) {
+    const buf = await f.arrayBuffer()
+    if (/\.zip$/i.test(f.name)) {
+      for (const e of await lireZip(buf)) if (/\.json$/i.test(e.nom)) { try { await traiter(JSON.parse(texteJson(e.octets))); n++ } catch {} }
+    } else {
+      await traiter(JSON.parse(texteJson(buf)))
+      n++
+    }
+  }
+  if (!ajoutees.length) throw new Error('aucune carte reconnue dans ces fichiers')
+  projet.cartes.push(...ajoutees)
+  choisir(ajoutees[ajoutees.length - 1].id)
+  message(`${ajoutees.length} carte(s) importée(s).`)
+}
+
 // ---------------------------------------------------------------- souris sur l'apercu
 function brancherToile() {
   const toile = $('#toile')
@@ -757,7 +875,7 @@ async function demarrer() {
   $('#p-exporter').addEventListener('click', exporterProjet)
   $('#p-importer').addEventListener('click', () => $('#p-fichier').click())
   $('#p-fichier').addEventListener('change', async (e) => {
-    try { await importerProjet(e.target.files[0]) } catch (err) { message('Ouverture impossible : ' + err.message) }
+    try { await importerFichiers([...e.target.files]) } catch (err) { message('Ouverture impossible : ' + err.message) }
     e.target.value = ''
   })
   brancherToile()
