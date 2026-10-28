@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Créateur de cartes</title>
+<title>Card Maker</title>
 <style>
   :root {
     --fond: #16181d; --panneau: #1f2229; --bord: #343944; --texte: #e8eaee; --doux: #9aa1ad; --accent: #e23636;
@@ -71,14 +71,15 @@
   #message { color: var(--doux); font-size: 12px; min-height: 16px; }
   .groupe-langue { display: inline-flex; border: 1px solid var(--bord); border-radius: 6px; overflow: hidden; }
   .groupe-langue button { border: 0; border-radius: 0; }
+  .groupe-langue.ui button { padding: 3px 8px; font-size: 12px; }
 </style>
 </head>
 <body>
 <header>
   <h1>Créateur de cartes</h1>
   <span class="groupe-langue" role="group" aria-label="Langue de la carte">
-    <button class="btn" id="lang-fr" aria-pressed="true" title="Texte, libellé du type et traits en français">FR</button>
-    <button class="btn" id="lang-en" aria-pressed="false" title="Texte, libellé du type et traits en anglais">EN</button>
+    <button class="btn" id="lang-fr" aria-pressed="false" title="Texte, libellé du type et traits en français">FR</button>
+    <button class="btn" id="lang-en" aria-pressed="true" title="Texte, libellé du type et traits en anglais">EN</button>
   </span>
   <button class="btn" id="b-annuler" title="Annuler (Ctrl+Z)" disabled>↶</button>
   <button class="btn" id="b-retablir" title="Rétablir (Ctrl+Y)" disabled>↷</button>
@@ -87,6 +88,10 @@
   <button class="btn" id="b-print" title="Planche à imprimer (63 × 88 mm) ou à enregistrer en PDF">🖨 Imprimer / PDF</button>
   <button class="btn" id="b-tts" title="Planche de cartes pour Tabletop Simulator (10 colonnes)">🎲 Planche TTS</button>
   <span id="message"></span>
+  <span class="groupe-langue ui" role="group" aria-label="Language of this page" style="margin-left:auto">
+    <button class="btn" id="ui-en" aria-pressed="true" title="This page in English">English</button>
+    <button class="btn" id="ui-fr" aria-pressed="false" title="Cette page en français">Français</button>
+  </span>
 </header>
 <div class="page">
   <aside class="panneau" id="colonne-cartes">

@@ -7,6 +7,7 @@ import { TEXTES, chargerTraits, traduireTraits } from './langues.js'
 import { $, el, S, nouvelId, blobVersDataUrl, dataUrlVersBlob } from './commun.js'
 import { ajouterFichiers, brancherSurcouche, calqueChoisi, choisirCalque, commencerGlisser, dessinerSurcouche, molette, sectionLibres, touche } from './panneau-libres.js'
 import { clicSurCarte } from './clic-carte.js'
+import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
 import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
 
@@ -1076,7 +1077,16 @@ function brancherEtat() {
   })
 }
 
+function majBoutonsLangueUI() {
+  $('#ui-en').setAttribute('aria-pressed', String(langueUI() === 'en'))
+  $('#ui-fr').setAttribute('aria-pressed', String(langueUI() === 'fr'))
+}
+
 async function demarrer() {
+  demarrerI18n(langueMemorisee())
+  $('#ui-en').addEventListener('click', () => { changerLangueUI('en'); majBoutonsLangueUI() })
+  $('#ui-fr').addEventListener('click', () => { changerLangueUI('fr'); majBoutonsLangueUI() })
+  majBoutonsLangueUI()
   const [types, palettes] = await Promise.all([
     fetch(BASE + 'donnees/types.json').then((r) => r.json()),
     fetch(BASE + 'donnees/palettes.json').then((r) => r.json()),
@@ -1103,15 +1113,15 @@ async function demarrer() {
   })
   const sauve = await lireProjet()
   if (sauve?.cartes?.length) projet = sauve
-  else projet = { cartes: [nouvelleCarte('ally', 'fr')], courante: null }
+  else projet = { cartes: [nouvelleCarte('ally', 'en')], courante: null }
   projet.cartes = projet.cartes.filter((c) => TYPES[c.type])
-  if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'fr')]
+  if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'en')]
   for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= '' }
   if (!projet.cartes.some((c) => c.id === projet.courante)) projet.courante = projet.cartes[0].id
 
   $('#lang-fr').addEventListener('click', () => changerLangue('fr'))
   $('#lang-en').addEventListener('click', () => changerLangue('en'))
-  $('#c-nouvelle').addEventListener('click', () => ajouter(nouvelleCarte(carte()?.type ?? 'ally', carte()?.langue ?? 'fr')))
+  $('#c-nouvelle').addEventListener('click', () => ajouter(nouvelleCarte(carte()?.type ?? 'ally', carte()?.langue ?? 'en')))
   $('#c-dupliquer').addEventListener('click', () => {
     const copie = { ...cloner(carte()), id: nouvelId() }
     copie.contenu.titre += ' (copie)'
@@ -1119,16 +1129,16 @@ async function demarrer() {
   })
   $('#c-supprimer').addEventListener('click', () => {
     const c = carte()
-    if (!c || !confirm(`Supprimer « ${c.contenu.titre || 'cette carte'} » ?`)) return
+    if (!c || !confirm(tr(`Supprimer « ${c.contenu.titre || 'cette carte'} » ?`))) return
     projet.cartes = projet.cartes.filter((x) => x.id !== c.id)
-    if (!projet.cartes.length) projet.cartes.push(nouvelleCarte('ally', c.langue))
+    if (!projet.cartes.length) projet.cartes.push(nouvelleCarte('ally', c.langue ?? 'en'))
     choisir(projet.cartes[0].id)
   })
   $('#recherche').addEventListener('input', (e) => { filtreListe = e.target.value; majListe() })
   $('#p-versions').addEventListener('click', () => ouvrirVersions((p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= '' } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }))
   $('#p-remplacer').addEventListener('click', ouvrirRemplacer)
   $('#p-appliquer').addEventListener('click', () => ouvrirAppliquer(rolesDe))
-  $('#m-enregistrer').addEventListener('click', () => { const n = prompt('Nom du modèle', carte().contenu.titre); if (n === null) return; enregistrerModele(n); majModeles(); sauvegarderPlusTard(); message('Modèle enregistré.') })
+  $('#m-enregistrer').addEventListener('click', () => { const n = prompt(tr('Nom du modèle'), carte().contenu.titre); if (n === null) return; enregistrerModele(n); majModeles(); sauvegarderPlusTard(); message('Modèle enregistré.') })
   $('#m-utiliser').addEventListener('click', async () => {
     const m = (projet.modeles ?? []).find((x) => x.id === $('#modeles').value)
     if (!m) return message('Choisis d’abord un modèle.')
