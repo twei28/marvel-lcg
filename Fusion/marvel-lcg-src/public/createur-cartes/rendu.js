@@ -100,10 +100,10 @@ export function teteVisible(spec, etat) {
 export function pileDeCalques(spec, etat) {
   let pile = spec.calques.filter((c) => !c.role.startsWith('splash'))
   // la promo generique prend un autre fond des qu'une valeur THW apparait (encarts de stats)
-  if (spec.id === 'generic-promo' && etat.avecStats) pile = pile.map((c) => (c.role === 'base' ? { ...c, src: 'generic-promo/base-ally.png' } : c))
+  if (spec.id === 'generic-promo' && etat.avecStats) pile = pile.map((c) => (c.role === 'base' ? { ...c, src: 'generic-promo/base-ally.webp' } : c))
   if (teteVisible(spec, etat) && spec.tete.splash) {
     const i = pile.findIndex((c) => c.role === 'photofront')
-    const eclat = ECLAT.map((c) => ({ ...c, src: `${c.src}${etat.tete.etoile ? '-star' : ''}.png` }))
+    const eclat = ECLAT.map((c) => ({ ...c, src: `${c.src}${etat.tete.etoile ? '-star' : ''}.webp` }))
     pile = [...pile.slice(0, i < 0 ? pile.length : i), ...eclat, ...pile.slice(i < 0 ? pile.length : i)]
   }
   return pile
@@ -125,7 +125,7 @@ export async function dessinerCalques(ctx, spec, etat, dossierImages = 'img/') {
     }
     let image
     if (etat.fissures === false && ROLES_FISSURES.has(calque.role)) {
-      image = await chargerImage(dossierImages + calque.src.replace(/\.png$/, '-nocracks.png')).catch(() => null)
+      image = await chargerImage(dossierImages + calque.src.replace(/\.webp$/, '-nocracks.webp')).catch(() => null)
     }
     image ??= await chargerImage(dossierImages + calque.src)
     ctx.save()

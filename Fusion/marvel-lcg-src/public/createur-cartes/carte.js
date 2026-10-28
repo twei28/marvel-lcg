@@ -395,7 +395,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   await dessinerCalques(ctx, spec, etat, dossierImages)
   if (attache) {
     for (const [actif, nom, y] of [[attache.s, 'sch', attache.ySch], [attache.a, 'atk', attache.yAtk]]) {
-      if (actif) ctx.drawImage(await chargerImage(`${dossierImages}attachment/${nom}_box.png`), 0, y)
+      if (actif) ctx.drawImage(await chargerImage(`${dossierImages}attachment/${nom}_box.webp`), 0, y)
     }
   }
 
@@ -466,7 +466,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
 
   // Ressources (3 emplacements fixes) et icones de renfort (ancrees a droite), images posees dans le repere de la carte
   const IMG = {}
-  const img = async (nom) => (IMG[nom] ??= await chargerImage(`${dossierImages}general/${nom}.png`))
+  const img = async (nom) => (IMG[nom] ??= await chargerImage(`${dossierImages}general/${nom}.webp`))
   for (const [k, genre] of (contenu.ressources ?? []).entries()) {
     if (!genre || !spec.ressources?.[k]) continue
     ctx.drawImage(await img(`resource-${genre}`), ...spec.ressources[k])

@@ -131,5 +131,6 @@ for t, v in mesures.items():
         "paysage": bool(v.get("tournee")), "largeur": 2150 if v.get("tournee") else 1500, "hauteur": 1500 if v.get("tournee") else 2150,
         "calques": calques, "couleursParDefaut": couleurs, "elements": elements,
     }
-SORTIE.write_text(json.dumps(types, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+# les calques sont servis en WebP sans perte (voir optimiser-images.py)
+SORTIE.write_text(re.sub(r'("src":\s*"[^"]+)\.png"', r'\1.webp"', json.dumps(types, ensure_ascii=False, separators=(",", ":"))), encoding="utf-8")
 print(len(types), "types ->", SORTIE, SORTIE.stat().st_size // 1024, "Ko")

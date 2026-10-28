@@ -46,3 +46,15 @@ l'utilisateur), copies dans `public/createur-cartes/img/` et `polices/`.
 3. **Bilingue** : libelle du type baked en anglais -> pour le FR, recouvrir la bande (echantillonner la couleur du calque) et redessiner le libelle FR (ALLIE, EVENEMENT, AMELIORATION, SOUTIEN, RESSOURCE, HEROS, ALTER-EGO, MECHANT, SBIRE, TRAHISON, ENVIRONNEMENT, ATTACHEMENT, MANIGANCE PRINCIPALE/ANNEXE, OBLIGATION) ; textes FR/EN par carte, traits via `ui-app/src/board/traits-fr.ts`, ligne d'ensemble FR (« TAILLE DE MAIN 6 / POINTS DE VIE 10 »).
 4. **Interface** (page `public/createur-cartes.html` ou `index.html`) : liste de cartes, choix du type, formulaire guide par type avec valeurs par defaut, apercu en direct, palettes (aspects Basic/Agression/Direction/Protection/Justice/Pool + presets heros et vilains), illustration (zoom/position/rotation, avant/arriere, glisser), sauvegarde JSON + navigateur, export PNG/JPG/WebP (taille reglable, fond perdu), export des deux langues, impression PDF, tables (TTS/OCTGN/DragnCards si utile).
 5. Bouton dans l'en-tete (`public/js/prepare/lien-admin.js`, a cote de « Atelier de couvertures »), cle EN, `nouveautes.js`, page credits, tests Chromium de chaque type, optimisation des PNG (18 Mo -> webp sans perte).
+
+## Fait ensuite (29/10)
+Page `public/createur-cartes.html` + `public/createur-cartes/app.js` (liste de cartes, formulaire par type, aperçu, couleurs/aspects, illustration, tête d'angle, FR/EN, exports PNG/JPG/WebP + FR+EN + fond perdu, planche à imprimer, planche TTS, sauvegarde IndexedDB + .json), bouton admin (`lien-admin.js`), crédits, nouveautés, calques en WebP sans perte (16 -> 7,6 Mo, `optimiser-images.py`). Testé dans Chromium (23 types, langues, exports, import/export du projet, impression, TTS). Non fait : OCTGN / DragnCards.
+
+## Idées retenues par l'utilisateur (29/10) : « pas une copie de Landstander, des trucs en plus »
+1. **Calques PNG libres** : plusieurs PNG posés sur la carte, déplaçables, zoom, rotation, ordre, opacité, miroir, couleur (teinte), contour/ombre, + bibliothèque d'icônes prêtes.
+2. **Confort** : annuler / rétablir (Ctrl+Z / Ctrl+Y), contrôle de lisibilité (texte trop réduit, débordement, nombre illisible), modèles de cartes.
+3. **Contenu** : verso de carte et recto-verso, pack complet d'un héros (vue qui regroupe ses cartes, export en un clic), export pour le jeu (carte custom jouable).
+4. **Création** : recadrage d'image assisté (détourage, tête d'angle), styles de cadre alternatifs (pleine illustration, sans cadre, cadre sombre).
+5. **Sauvegarde / reprise** : sauvegarde auto + historique des versions, dossiers par héros, cartes gardées SUR LE SERVEUR du jeu.
+6. **Comptes « créateur »** : invitation par l'admin (lien « créateur »), accès limité au seul créateur de cartes (ni le jeu ni l'admin), chaque créateur ne voit que SES cartes, l'admin voit tout. A faire côté serveur ; rien ne se déploie sans le mot « déploie ».
+Non retenues : import depuis le jeu, traduction assistée, mots-clés prêts à insérer.

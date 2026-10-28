@@ -3,7 +3,8 @@
 // administrateur qui joue : « ⚙ Administration » (le site), « 🖼 Relevé des
 // illustrations » (la page qui dit qui est dessiné sur chaque carte) et
 // « 🎨 Palettes des héros » (la couleur du fond de plateau, corrigée à la main) et
-// « 🖌 Atelier de couvertures » (l'affiche d'un pack héros / scénario / modulaire).
+// « 🖌 Atelier de couvertures » (l'affiche d'un pack héros / scénario / modulaire),
+// « 🃏 Créateur de cartes » (fabriquer une carte, 23 types, FR / EN).
 //
 // Même pattern que lien-galerie.js : script CLASSIQUE (defer + IIFE), donc pas
 // d'import de js/prepare/langue.js ; on duplique la lecture de
@@ -30,6 +31,8 @@
     'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
     'Palettes des héros': 'Hero palettes',
     'Atelier de couvertures': 'Cover workshop',
+    'Créateur de cartes': 'Card maker',
+    'Fabriquer une carte Marvel Champions (23 types, français et anglais) et l’exporter en image ou en planche à imprimer': 'Make a Marvel Champions card (23 types, French and English) and export it as an image or a print sheet',
     'Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit': 'Make a pack cover (hero, scenario, modular) from the template',
     'Corriger la couleur du fond de plateau': 'Fix the board background colour',
     'Sauvegarde du code': 'Code backup',
@@ -346,6 +349,17 @@
       window.open('/atelier-couvertures.html', '_blank', 'noopener');
     });
     rangee.append(atelier);
+
+    // Le createur de cartes (29/10/2026) : page statique aussi, les cartes restent
+    // dans le navigateur de celui qui les fabrique.
+    var createur = document.createElement('button');
+    createur.type = 'button';
+    createur.textContent = '🃏 ' + t('Créateur de cartes');
+    createur.title = t('Fabriquer une carte Marvel Champions (23 types, français et anglais) et l’exporter en image ou en planche à imprimer');
+    createur.addEventListener('click', function () {
+      window.open('/createur-cartes.html', '_blank', 'noopener');
+    });
+    rangee.append(createur);
 
     // La sauvegarde du code (08/10/2026) : la page du SITE qui liste les 5
     // derniers zips, reservee a l'administrateur par le site lui-meme.

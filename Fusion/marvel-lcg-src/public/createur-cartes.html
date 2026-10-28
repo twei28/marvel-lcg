@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Créateur de cartes</title>
+<style>
+  :root {
+    --fond: #16181d; --panneau: #1f2229; --bord: #343944; --texte: #e8eaee; --doux: #9aa1ad; --accent: #e23636;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fond); color: var(--texte); font: 14px/1.4 system-ui, sans-serif; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--bord); background: var(--panneau); position: sticky; top: 0; z-index: 5; }
+  header h1 { font-size: 17px; margin: 0 12px 0 0; }
+  .page { display: grid; grid-template-columns: 210px minmax(310px, 400px) 1fr; gap: 14px; padding: 14px 16px; align-items: start; }
+  @media (max-width: 1000px) { .page { grid-template-columns: 1fr; } }
+  .panneau { background: var(--panneau); border: 1px solid var(--bord); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  h2 { font-size: 12px; margin: 8px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--doux); }
+  h2:first-child { margin-top: 0; }
+  label { display: flex; flex-direction: column; gap: 3px; color: var(--doux); font-size: 12px; }
+  label.ligne { flex-direction: row; align-items: center; gap: 8px; }
+  input[type=text], input[type=number], textarea, select { width: 100%; background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  textarea { resize: vertical; min-height: 64px; }
+  input[type=range] { width: 100%; }
+  input[type=color] { width: 36px; height: 26px; padding: 0; border: 1px solid var(--bord); border-radius: 6px; background: none; flex: none; }
+  .btn { background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 6px 10px; cursor: pointer; font: inherit; }
+  .btn:hover { border-color: var(--doux); }
+  .btn.principal { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .btn[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.petit { padding: 3px 7px; font-size: 12px; }
+  .rang { display: flex; gap: 6px; align-items: flex-end; flex-wrap: wrap; }
+  .rang > * { flex: 1; min-width: 70px; }
+  .rang > .fixe { flex: none; min-width: 0; }
+  .aide { color: var(--doux); font-size: 12px; }
+  .liste { display: flex; flex-direction: column; gap: 4px; max-height: 60vh; overflow: auto; }
+  .liste button { text-align: left; background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 6px 8px; cursor: pointer; font: inherit; display: flex; flex-direction: column; }
+  .liste button small { color: var(--doux); }
+  .liste button[aria-current=true] { border-color: var(--accent); }
+  .scene { display: flex; flex-direction: column; align-items: center; gap: 8px; position: sticky; top: 62px; }
+  .toile { max-width: 100%; max-height: calc(100vh - 150px); background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--bord); cursor: grab; touch-action: none; }
+  .toile.glisse { cursor: grabbing; }
+  .outils { display: flex; gap: 4px; flex-wrap: wrap; }
+  .couleurs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+  .couleurs label { flex-direction: row; align-items: center; justify-content: space-between; gap: 6px; }
+  details { border: 1px solid var(--bord); border-radius: 8px; padding: 6px 10px; }
+  details > summary { cursor: pointer; font-weight: 600; font-size: 13px; }
+  details[open] > summary { margin-bottom: 8px; }
+  details > .contenu { display: flex; flex-direction: column; gap: 8px; }
+  .nombre { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: end; }
+  #message { color: var(--doux); font-size: 12px; min-height: 16px; }
+  .groupe-langue { display: inline-flex; border: 1px solid var(--bord); border-radius: 6px; overflow: hidden; }
+  .groupe-langue button { border: 0; border-radius: 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Créateur de cartes</h1>
+  <span class="groupe-langue" role="group" aria-label="Langue de la carte">
+    <button class="btn" id="lang-fr" aria-pressed="true" title="Texte, libellé du type et traits en français">FR</button>
+    <button class="btn" id="lang-en" aria-pressed="false" title="Texte, libellé du type et traits en anglais">EN</button>
+  </span>
+  <button class="btn" id="b-export">⬇ Exporter l'image</button>
+  <button class="btn" id="b-export-2" title="Une image dans chaque langue (traits traduits)">⬇ FR + EN</button>
+  <button class="btn" id="b-print" title="Planche à imprimer (63 × 88 mm) ou à enregistrer en PDF">🖨 Imprimer / PDF</button>
+  <button class="btn" id="b-tts" title="Planche de cartes pour Tabletop Simulator (10 colonnes)">🎲 Planche TTS</button>
+  <span id="message"></span>
+</header>
+<div class="page">
+  <aside class="panneau" id="colonne-cartes">
+    <h2>Cartes</h2>
+    <div class="outils">
+      <button class="btn petit" id="c-nouvelle">+ Nouvelle</button>
+      <button class="btn petit" id="c-dupliquer">Dupliquer</button>
+      <button class="btn petit" id="c-supprimer">Supprimer</button>
+    </div>
+    <div class="liste" id="liste"></div>
+    <h2>Projet</h2>
+    <div class="outils">
+      <button class="btn petit" id="p-exporter">Enregistrer (.json)</button>
+      <button class="btn petit" id="p-importer">Ouvrir…</button>
+      <input type="file" id="p-fichier" accept=".json,application/json" hidden>
+    </div>
+    <div class="aide">Les cartes sont gardées dans ce navigateur. Enregistre un fichier pour les sauvegarder ou les passer à un autre appareil.</div>
+  </aside>
+
+  <section class="panneau" id="formulaire">
+    <label>Type de carte
+      <select id="type"></select>
+    </label>
+    <div id="champs"></div>
+  </section>
+
+  <section class="scene">
+    <canvas id="toile" class="toile"></canvas>
+    <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration, molette pour zoomer.</div>
+  </section>
+</div>
+<script type="module" src="/createur-cartes/app.js"></script>
+</body>
+</html>

@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-29",
+        genre: "coulisses",
+        fr: "Un créateur de cartes Marvel Champions, en français et en anglais, est disponible pour fabriquer ses propres cartes (23 types) et les exporter en image, en planche à imprimer ou pour Tabletop Simulator.",
+        en: "A Marvel Champions card maker, in French and English, is now available to make your own cards (23 types) and export them as images, a print sheet or for Tabletop Simulator.",
+    },
+    {
         date: "2026-10-28",
         genre: "jeu",
         fr: "Les traits de ton héros se lisent sur sa carte : une pastille verte pour un trait gagné (Aérien avec des Jet Boots), barrée pour un trait perdu, et sous la carte agrandie. Tu peux afficher tous les traits, seulement les changements (par défaut) ou rien, dans les réglages. Idée de Lilipulse.",
