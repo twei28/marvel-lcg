@@ -14,6 +14,7 @@ import { brancherStyles, chargerStyles, enveloppePerso } from './styles-texte.js
 import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
 import { creerSynchro } from './serveur.js'
+import { ouvrirComparable } from './comparable.js'
 import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
 
 const BASE = '/createur-cartes/'
@@ -1334,6 +1335,7 @@ async function demarrer() {
   $('#b-print').addEventListener('click', dialoguePlanche)
   $('#b-pack').addEventListener('click', () => ouvrirExportPack({ cartes: () => projet.cartes, carte, rendre: rendreCarte, rendreVerso, serialiser }))
   $('#b-tts').addEventListener('click', plancheTTS)
+  $('#b-comparer').addEventListener('click', () => ouvrirComparable(rendreCarte))
   $('#p-exporter').addEventListener('click', exporterProjet)
   $('#p-importer').addEventListener('click', () => $('#p-fichier').click())
   $('#p-fichier').addEventListener('change', async (e) => {

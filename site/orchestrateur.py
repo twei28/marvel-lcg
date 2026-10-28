@@ -7301,6 +7301,12 @@ class Handler(BaseHTTPRequestHandler):
         par `?compte=<pseudo>`, sans jamais les ecrire."""
         ecriture = methode in ("PUT", "DELETE")
         try:
+            morceaux_scan = self.chemin[len("/api/createur/"):].split("/")
+            if len(morceaux_scan) == 2 and morceaux_scan[0] == "scan":
+                if methode != "GET":
+                    raise createur_cartes.ErreurCreateur(405, "Lecture seule.")
+                self._scan_createur(urllib.parse.unquote(morceaux_scan[1]))
+                return
             demande = (self.parametres.get("compte") or [""])[0].strip().lower()
             if demande and demande != pseudo:
                 if pseudo != ADMIN or ecriture:
@@ -7361,6 +7367,28 @@ class Handler(BaseHTTPRequestHandler):
             if ecriture:
                 self._raccrocher()      # corps eventuellement non lu
             self._json(e.code, {"erreur": e.message})
+
+    _RE_CODE_SCAN = re.compile(r"^[0-9A-Za-z_-]{2,24}$")
+
+    def _scan_createur(self, code: str) -> None:
+        """Le scan officiel d'une carte (lecture seule), pour « voir une vraie carte
+        comparable ». Liste blanche sur le code, jamais de chemin : `<code>.jpg` dans
+        assets/pics-hd (HD, si elle existe) ou assets/pics, sous le dossier des
+        images du jeu, et nulle part ailleurs. Session obligatoire (deja verifiee
+        par `_route_createur`)."""
+        if not self._RE_CODE_SCAN.match(code):
+            raise createur_cartes.ErreurCreateur(400, "Code de carte invalide.")
+        racine = os.path.realpath(os.path.join(RACINE_JEU, "assets"))
+        for sous in ("pics-hd", "pics"):
+            chemin = os.path.realpath(os.path.join(racine, sous, code + ".jpg"))
+            if chemin.startswith(racine + os.sep) and os.path.isfile(chemin):
+                with open(chemin, "rb") as f:
+                    corps = f.read()
+                self._repondre(200, corps, "image/jpeg",
+                               [("Cache-Control", "private, max-age=86400"),
+                                ("X-Content-Type-Options", "nosniff")])
+                return
+        raise createur_cartes.ErreurCreateur(404, "Scan introuvable.")
 
     def _corps_projet(self) -> bytes:
         """Le corps d'un PUT de projet, plafonne sur l'ANNONCE avant lecture."""

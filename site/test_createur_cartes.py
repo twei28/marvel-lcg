@@ -221,6 +221,21 @@ for mauvais in ("/createur-cartes/../secret.html", "/createur-cartes/%2e%2e/secr
     verifier("statique : traversee %s" % mauvais, code in (400, 403, 404) and b"SECRET" not in corps and b'"secret"' not in corps, code)
 
 # ----------------------------------------------------------------- API
+print("Scans officiels (carte comparable)")
+code, corps, tetes = appel("GET", "/api/createur/scan/01001a", cookie=cook_alice)
+verifier("scan : 200 image/jpeg", code == 200 and tetes.get("content-type") == "image/jpeg" and corps[:2] == b"\xff\xd8", (code, tetes.get("content-type")))
+code, corps, _ = appel("GET", "/api/createur/scan/01001a", cookie=cook_joueur)
+verifier("scan : ouvert aux joueurs connectes", code == 200, code)
+code, _c, _t = appel("GET", "/api/createur/scan/01001a")
+verifier("scan : sans session = 401", code == 401, code)
+for mauvais in ("..%2f..%2fsite%2fnarwhal", "..", "a%2fb", "01001a.jpg", "x"):
+    code, _c, _t = appel("GET", "/api/createur/scan/" + mauvais, cookie=cook_alice)
+    verifier("scan : code refuse (%s)" % mauvais, code in (400, 404), code)
+code, _c, _t = appel("GET", "/api/createur/scan/zzzzzz9", cookie=cook_alice)
+verifier("scan : inconnu = 404", code == 404, code)
+code, _c, _t = appel("PUT", "/api/createur/scan/01001a", cookie=cook_alice, json_corps={"x": 1})
+verifier("scan : lecture seule", code == 405, code)
+
 print("API de stockage")
 code, corps, tetes = appel("GET", "/api/createur/projets")
 verifier("API sans session : 401", code == 401, code)

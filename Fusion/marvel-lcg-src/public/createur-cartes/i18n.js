@@ -270,6 +270,14 @@ export const DICO = {
   'Chargement…': 'Loading…',
   'Pour les cartes sans dossier. Restaurer remplace ces cartes.': 'For the cards without a folder. Restoring replaces those cards.',
   'Aucune version sur le serveur pour ce dossier. Une ancienne version y est gardée à chaque enregistrement (les 30 dernières).': 'No version on the server for this folder. An older version is kept there at every save (the last 30).',
+  // carte comparable
+  'Voir une vraie carte comparable': 'See a real comparable card',
+  'Cherche une carte officielle anglaise du même type, au texte de longueur proche, et la montre à côté de la tienne': 'Finds an official English card of the same type with a similar amount of text, and shows it next to yours',
+  'Ta carte': 'Your card', 'Carte officielle': 'Official card',
+  '← Précédente': '← Previous', 'Suivante →': 'Next →',
+  'Scan indisponible (il faut être connecté au site).': 'Scan unavailable (you must be signed in to the site).',
+  'Index des cartes officielles introuvable.': 'Official card index not found.',
+  'Aucune carte officielle de ce type à comparer.': 'No official card of this type to compare with.',
   // lisibilite
   'Le titre est vide.': 'The title is empty.',
   'Le texte déborde du cadre, même réduit : raccourcis les règles ou la citation.': 'The text overflows the frame even when shrunk: shorten the rules or the flavor text.',
@@ -293,6 +301,8 @@ const MOTIFS = [
   [/^Taille du texte réglée à (\d+) % : très petit\.$/, 'Text size set to $1 %: very small.'],
   [/^(Le titre|Une ligne) est réduit à (\d+) % : plus court, ce sera plus lisible\.$/, (m, qui, n) => `${qui === 'Le titre' ? 'The title' : 'A line'} is shrunk to ${n} %: shorter text will be easier to read.`],
   [/^(L’illustration|Le premier plan) est petite \((\d+) × (\d+)\) : elle sera floue à l’impression \(carte : (\d+) × (\d+)\)\.$/, (m, qui, w, h, cw, ch) => `${qui === 'L’illustration' ? 'The artwork' : 'The foreground'} is small (${w} × ${h}): it will look blurry in print (card: ${cw} × ${ch}).`],
+  [/^Ta carte : (\d+) mots, (\d+) déclencheur\(s\)\. À droite, une carte officielle anglaise du même type, au texte de longueur proche, à la même taille\.$/, 'Your card: $1 words, $2 trigger(s). On the right, an official English card of the same type with a similar amount of text, at the same size.'],
+  [/^(.+) \((\w+)\) · (\d+) mots, (\d+) déclencheur\(s\) · (\d+)\/(\d+)$/, '$1 ($2) · $3 words, $4 trigger(s) · $5/$6'],
   [/^Espace utilisé : (\d+) Mo sur (\d+) Mo$/, 'Space used: $1 MB of $2 MB'],
   [/^Pour le dossier « (.*) ». Restaurer remplace les cartes de ce dossier\.$/, 'For the folder “$1”. Restoring replaces the cards of that folder.'],
   [/^(.+) · (\d+) Ko$/, '$1 · $2 KB'],

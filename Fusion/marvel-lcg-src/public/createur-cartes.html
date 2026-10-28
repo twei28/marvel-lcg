@@ -29,6 +29,9 @@
   .btn.principal { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
   .btn[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn.petit { padding: 3px 7px; font-size: 12px; }
+  .comp-paire { display: flex; gap: 12px; justify-content: center; margin: 10px 0; }
+  .comp-paire figure { margin: 0; flex: 1; max-width: 340px; text-align: center; color: var(--doux); font-size: 12px; }
+  .comp-carte { width: 100%; height: auto; display: block; border-radius: 6px; background: #000; }
   .etat-serveur { font-size: 12px; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--bord); color: var(--doux); }
   .etat-serveur.bon { color: #7fd48c; border-color: #2f5e3a; }
   .etat-serveur.mauvais { color: #ff9b8f; border-color: #6b2f2a; }
@@ -152,6 +155,7 @@
   <section class="scene">
     <div class="zone-toile"><canvas id="toile" class="toile"></canvas><canvas id="surcouche" class="surcouche"></canvas></div>
     <div id="alertes" class="alertes" aria-live="polite"></div>
+    <button class="btn petit" id="b-comparer" title="Cherche une carte officielle anglaise du même type, au texte de longueur proche, et la montre à côté de la tienne">Voir une vraie carte comparable</button>
     <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration ou un calque, molette pour zoomer. Glisse-y des images pour les ajouter.</div>
   </section>
 </div>
