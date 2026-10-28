@@ -5,9 +5,29 @@
 import { PORTRAIT, chargerImage, dessinerCalques, teteVisible } from './rendu.js'
 import { analyser, dessinerPage, mettreEnPage } from './texte.js'
 
-/** Les champs de contenu d'une carte (tout est facultatif). */
+/**
+ * Le libelle du type est CUIT dans l'image du calque (en anglais) : pour une autre langue (ou un libelle libre) on le recouvre avec la
+ * couleur du fond puis on redessine le texte. Les libelles anglais servent a mesurer la zone a recouvrir.
+ */
+export const LIBELLES = {
+  en: {
+    ally: 'ALLY', event: 'EVENT', upgrade: 'UPGRADE', support: 'SUPPORT', resource: 'RESOURCE', villain: 'VILLAIN', minion: 'MINION',
+    treachery: 'TREACHERY', environment: 'ENVIRONMENT', attachment: 'ATTACHMENT', sidescheme: 'SIDE SCHEME', playersidescheme: 'PLAYER SIDE SCHEME',
+    main_scheme_a: 'MAIN SCHEME', main_scheme_b: 'MAIN SCHEME', 'alter-ego': 'ALTER-EGO', 'alter-ego-promo': 'ALTER-EGO', identity: 'HERO',
+    'identity-promo': 'HERO', obligation: 'OBLIGATION', 'obligation-villain': 'OBLIGATION', 'generic-promo': 'ALLY', 'generic-promo-vert': 'ALLY',
+  },
+  fr: {
+    ally: 'ALLIÉ', event: 'ÉVÉNEMENT', upgrade: 'AMÉLIORATION', support: 'SOUTIEN', resource: 'RESSOURCE', villain: 'MÉCHANT', minion: 'SBIRE',
+    treachery: 'TRAHISON', environment: 'ENVIRONNEMENT', attachment: 'ATTACHEMENT', sidescheme: 'MANIGANCE ANNEXE', playersidescheme: 'MANIGANCE ANNEXE',
+    main_scheme_a: 'MANIGANCE PRINCIPALE', main_scheme_b: 'MANIGANCE PRINCIPALE', 'alter-ego': 'ALTER-EGO', 'alter-ego-promo': 'ALTER-EGO',
+    identity: 'HÉROS', 'identity-promo': 'HÉROS', obligation: 'OBLIGATION', 'obligation-villain': 'OBLIGATION', 'generic-promo': 'ALLIÉ',
+    'generic-promo-vert': 'ALLIÉ',
+  },
+}
+
+/** Les champs de contenu d'une carte (tout est facultatif). `langue` : 'en' (defaut) ou 'fr'. */
 export const CHAMPS_VIDES = {
-  titre: '', unique: false, typeTexte: '', traits: '', regles: '', citation: '', ligneEnsemble: '', createur: '',
+  langue: 'en', titre: '', unique: false, typeTexte: '', traits: '', regles: '', citation: '', ligneEnsemble: '', createur: '',
   // nombres : texte affiche (« 3 », « X », « — »), avec leur etoile (« * ») eventuelle
   cout: '', coutEtoile: false, thw: '', thwEtoile: false, thwConseq: 0, atk: '', atkEtoile: false, atkConseq: 0,
   def: '', defEtoile: false, rec: '', recEtoile: false, pv: '', pvEtoile: false, tailleMain: '', menaceDepart: '',
@@ -191,6 +211,28 @@ function dessinerPhase(ctx, el, contenu) {
     }
   })
   ctx.restore()
+}
+
+/** La couleur dominante d'un rectangle local (repere courant) : celle du fond sous le libelle cuit. */
+function couleurDominante(ctx, x, y, w, h) {
+  const m = ctx.getTransform()
+  const pts = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map(([px, py]) => [m.a * px + m.c * py + m.e, m.b * px + m.d * py + m.f])
+  const x0 = Math.max(0, Math.floor(Math.min(...pts.map((p) => p[0]))))
+  const y0 = Math.max(0, Math.floor(Math.min(...pts.map((p) => p[1]))))
+  const x1 = Math.min(ctx.canvas.width, Math.ceil(Math.max(...pts.map((p) => p[0]))))
+  const y1 = Math.min(ctx.canvas.height, Math.ceil(Math.max(...pts.map((p) => p[1]))))
+  if (x1 <= x0 || y1 <= y0) return '#000'
+  const d = ctx.getImageData(x0, y0, x1 - x0, y1 - y0).data
+  const nb = new Map()
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] < 250) continue
+    const k = ((d[i] >> 3) << 10) | ((d[i + 1] >> 3) << 5) | (d[i + 2] >> 3)
+    nb.set(k, (nb.get(k) ?? 0) + 1)
+  }
+  let best = -1
+  let n = 0
+  for (const [k, c] of nb) if (c > n) { best = k; n = c }
+  return best < 0 ? '#000' : `rgb(${((best >> 10) & 31) << 3},${((best >> 5) & 31) << 3},${(best & 31) << 3})`
 }
 
 /** Une ligne de texte (titre, type, ligne d'ensemble, createur) dans sa boite : alignement du style, centree en hauteur, reduite si trop large. */
@@ -455,7 +497,22 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   // Lignes : titre, type, ligne d'ensemble, createur
   const titre = E.title
   if (titre) dans(titre, () => dessinerLigne(ctx, titre, contenu.titre, { prefixeIcone: contenu.unique ? 'u' : '' }))
-  for (const [cls, champ] of [['typestr', 'typeTexte'], ['villainstagenew', 'etape'], ['set-line', 'ligneEnsemble'], ['c-line', 'createur']]) {
+  // Libelle du type : recouvre le libelle anglais cuit puis ecrit le libelle de la langue (ou le libelle libre)
+  const ty = E.typestr
+  const libre = contenu.typeTexte
+  const voulu = libre || (contenu.langue === 'fr' ? LIBELLES.fr[spec.id] : '')
+  if (ty && voulu && LIBELLES.en[spec.id]) {
+    dans(ty, () => {
+      const base = baseDe(ty)
+      const [, , w, h] = ty.boite
+      // le libelle cuit est plus grand que notre police : on recouvre toute la boite, un peu plus haut et plus bas
+      ctx.fillStyle = couleurDominante(ctx, 0, -8, w, h + 16)
+      ctx.fillRect(0, -10, w, h + 20)
+      ctx.letterSpacing = '0px'
+      dessinerLigne(ctx, ty, voulu)
+    })
+  }
+  for (const [cls, champ] of [['villainstagenew', 'etape'], ['set-line', 'ligneEnsemble'], ['c-line', 'createur']]) {
     if (E[cls]) dans(E[cls], () => dessinerLigne(ctx, E[cls], contenu[champ]))
   }
 
