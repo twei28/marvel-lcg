@@ -61,6 +61,13 @@
   .champ-riche { display: flex; flex-direction: column; gap: 5px; }
   .champ-riche select.petit { width: auto; padding: 3px 4px; font-size: 12px; }
   .champ-riche input[type=color] { width: 30px; height: 26px; }
+  input[type=search] { width: 100%; background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  .liste button.dossier { background: transparent; border-color: transparent; font-weight: 600; flex-direction: row; gap: 4px; padding: 4px 2px; color: var(--doux); }
+  .alertes { display: flex; flex-direction: column; gap: 4px; max-width: 560px; width: 100%; }
+  .alerte { font-size: 12px; padding: 5px 8px; border-radius: 6px; border: 1px solid var(--bord); background: #12141a; color: var(--doux); }
+  .alerte.alerte { border-color: #c9892b; color: #f2c26b; }
+  dialog.dlg { background: transparent; border: 0; padding: 0; color: var(--texte); }
+  dialog.dlg::backdrop { background: rgba(0,0,0,.6); }
   #message { color: var(--doux); font-size: 12px; min-height: 16px; }
   .groupe-langue { display: inline-flex; border: 1px solid var(--bord); border-radius: 6px; overflow: hidden; }
   .groupe-langue button { border: 0; border-radius: 0; }
@@ -89,10 +96,22 @@
       <button class="btn petit" id="c-dupliquer">Dupliquer</button>
       <button class="btn petit" id="c-supprimer">Supprimer</button>
     </div>
+    <input type="search" id="recherche" placeholder="Chercher une carte…" aria-label="Chercher une carte">
     <div class="liste" id="liste"></div>
+    <datalist id="dossiers-connus"></datalist>
+    <h2>Modèles</h2>
+    <select id="modeles" aria-label="Modèles"></select>
+    <div class="outils">
+      <button class="btn petit" id="m-enregistrer" title="Garder la carte actuelle (couleurs, nombres, mise en page) comme modèle">Enregistrer</button>
+      <button class="btn petit" id="m-utiliser" title="Nouvelle carte à partir du modèle choisi">Utiliser</button>
+      <button class="btn petit" id="m-supprimer">Supprimer</button>
+    </div>
     <h2>Projet</h2>
     <div class="outils">
       <button class="btn petit" id="p-exporter">Enregistrer (.json)</button>
+      <button class="btn petit" id="p-versions" title="Les versions gardées automatiquement">Versions…</button>
+      <button class="btn petit" id="p-remplacer" title="Chercher et remplacer un mot sur une carte, un dossier ou tout le projet">Chercher / remplacer…</button>
+      <button class="btn petit" id="p-appliquer" title="Recopier couleurs, cadre, mention… sur les autres cartes du dossier">Appliquer au dossier…</button>
       <button class="btn petit" id="p-importer" title="Nos fichiers .json, ou ceux du Card Maker de Landstander (carte .json ou « Save .zip »)">Importer…</button>
       <input type="file" id="p-fichier" accept=".json,.zip,application/json,application/zip" multiple hidden>
     </div>
@@ -108,6 +127,7 @@
 
   <section class="scene">
     <div class="zone-toile"><canvas id="toile" class="toile"></canvas><canvas id="surcouche" class="surcouche"></canvas></div>
+    <div id="alertes" class="alertes" aria-live="polite"></div>
     <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration ou un calque, molette pour zoomer. Glisse-y des images pour les ajouter.</div>
   </section>
 </div>

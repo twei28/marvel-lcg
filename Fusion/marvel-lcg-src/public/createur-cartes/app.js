@@ -7,6 +7,8 @@ import { TEXTES, chargerTraits, traduireTraits } from './langues.js'
 import { $, el, S, nouvelId, blobVersDataUrl, dataUrlVersBlob } from './commun.js'
 import { ajouterFichiers, brancherSurcouche, calqueChoisi, choisirCalque, commencerGlisser, dessinerSurcouche, molette, sectionLibres, touche } from './panneau-libres.js'
 import { clicSurCarte } from './clic-carte.js'
+import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
+import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
 
 const BASE = '/createur-cartes/'
 const IMAGES = BASE + 'img/'
@@ -47,38 +49,27 @@ const imagesBlob = new WeakMap()
 const imagesPretes = new WeakMap() // Blob -> image deja chargee (pour les calculs synchrones de l'apercu)
 
 // ---------------------------------------------------------------- stockage
-function ouvrirBase() {
-  return new Promise((ok, ko) => {
-    const r = indexedDB.open('createur-cartes', 1)
-    r.onupgradeneeded = () => r.result.createObjectStore('kv')
-    r.onsuccess = () => ok(r.result)
-    r.onerror = () => ko(r.error)
-  })
-}
-async function lireProjet() {
-  try {
-    const db = await ouvrirBase()
-    return await new Promise((ok) => {
-      const q = db.transaction('kv').objectStore('kv').get('projet')
-      q.onsuccess = () => ok(q.result ?? null)
-      q.onerror = () => ok(null)
-    })
-  } catch {
-    return null
-  }
-}
 let minuteurSauvegarde = 0
 function sauvegarderPlusTard() {
   clearTimeout(minuteurSauvegarde)
   minuteurSauvegarde = setTimeout(async () => {
     try {
-      const db = await ouvrirBase()
-      db.transaction('kv', 'readwrite').objectStore('kv').put(projet, 'projet')
+      await ecrireProjet(projet)
+      versionsModifie = true
     } catch (e) {
       message('Sauvegarde dans le navigateur impossible : ' + e.message)
     }
   }, 500)
 }
+// Une version est gardee toutes les 5 minutes (si quelque chose a change) et quand on quitte la page.
+let versionsModifie = false
+async function garderVersion(raison = 'auto') {
+  if (!versionsModifie) return
+  versionsModifie = false
+  try { await ajouterVersion(projet, raison) } catch {}
+}
+setInterval(() => garderVersion('auto'), 5 * 60 * 1000)
+addEventListener('pagehide', () => { clearTimeout(minuteurSauvegarde); ecrireProjet(projet).catch(() => {}); garderVersion('fermeture') })
 
 // ---------------------------------------------------------------- images
 function imageDe(blob) {
@@ -223,10 +214,18 @@ async function dessiner() {
     vis.height = t.height
     vis.getContext('2d').drawImage(t, 0, 0)
     dessinerSurcouche()
+    afficherAlertes(c, t)
   } catch (e) {
     message('Rendu impossible : ' + e.message)
   }
 }
+async function afficherAlertes(c, t) {
+  const images = { art: await imageDe(c.art.blob), artDevant: await imageDe(c.artDevant.blob) }
+  const al = alertesLisibilite(c, TYPES[c.type], t.infos, images)
+  const zone = $('#alertes')
+  zone.replaceChildren(...al.map((x) => el('div', { class: 'alerte ' + x.niveau }, (x.niveau === 'alerte' ? '⚠ ' : 'ℹ ') + x.texte)))
+}
+
 let minuteurRendu = 0
 function changement() {
   clearTimeout(minuteurRendu)
@@ -545,6 +544,11 @@ function construireFormulaire() {
   const spec = TYPES[c.type]
   $('#type').value = c.type
   const f = []
+  {
+    const dossier = el('input', { type: 'text', list: 'dossiers-connus', placeholder: 'ex. Ms. Marvel', value: c.dossier ?? '' })
+    dossier.addEventListener('input', () => { c.dossier = dossier.value.trim(); changement() })
+    f.push(el('label', {}, 'Dossier (un héros, un set…)', dossier))
+  }
 
   // texte
   const texte = [t('Titre', 'titre'), coche('Carte unique (✦)', (x) => x.contenu, 'unique')]
@@ -554,6 +558,14 @@ function construireFormulaire() {
     texte.push(editeurRiche('Règles', 'regles', 6))
   }
   if (aElement(spec, 'quote')) texte.push(editeurRiche('Citation', 'citation', 3))
+  if (aElement(spec, 'rules')) {
+    const auto = !(Number(c.contenu.echelleTexte) > 0)
+    const r = el('input', { type: 'range', min: 40, max: 130, step: 1, value: auto ? 100 : Math.round(c.contenu.echelleTexte * 100) })
+    const val = el('span', { class: 'aide' }, auto ? 'automatique' : r.value + ' %')
+    r.addEventListener('input', () => { c.contenu.echelleTexte = Number(r.value) / 100; val.textContent = r.value + ' %'; changement() })
+    texte.push(el('label', {}, el('span', { class: 'rang' }, 'Taille des règles et de la citation', val), r,
+      el('button', { class: 'btn petit', type: 'button', onclick: () => { c.contenu.echelleTexte = 0; changement(); construireFormulaire() } }, 'Automatique (réduit pour tenir)')))
+  }
   if (aElement(spec, 'villainstagenew')) texte.push(t('Étape du méchant (I, II, A, B…)', 'etape'))
   if (aElement(spec, 'set-line')) texte.push(t('Ligne d’ensemble', 'ligneEnsemble'))
   if (aElement(spec, 'c-line')) texte.push(t('Créateur / mention', 'createur'))
@@ -649,13 +661,49 @@ function majAide() {
 }
 
 // ---------------------------------------------------------------- liste
+let filtreListe = ''
+const ouverts = new Set() // dossiers replies : on garde ceux qui sont fermes
+const fermes = new Set()
 function majListe() {
   const l = $('#liste')
-  l.replaceChildren(...projet.cartes.map((c) => {
-    const b = el('button', { type: 'button', 'aria-current': String(c.id === projet.courante), onclick: () => choisir(c.id) },
-      el('span', {}, c.contenu.titre || '(sans titre)'), el('small', {}, `${NOMS[c.type] ?? c.type} · ${c.langue.toUpperCase()}`))
-    return b
-  }))
+  const q = filtreListe.trim().toLowerCase()
+  const visible = (c) => !q || [c.contenu.titre, c.contenu.regles, c.contenu.traits, c.dossier, NOMS[c.type]].some((t) => String(t ?? '').toLowerCase().includes(q))
+  const groupes = new Map()
+  for (const c of projet.cartes) {
+    if (!visible(c)) continue
+    const d = c.dossier || ''
+    if (!groupes.has(d)) groupes.set(d, [])
+    groupes.get(d).push(c)
+  }
+  const noms = [...groupes.keys()].sort((x, y) => (x === '' ? 1 : y === '' ? -1 : x.localeCompare(y)))
+  const avecDossiers = noms.length > 1 || (noms.length === 1 && noms[0] !== '')
+  const noeuds = []
+  for (const d of noms) {
+    const cartes = groupes.get(d)
+    if (avecDossiers) {
+      const ferme = fermes.has(d) && !q
+      noeuds.push(el('button', { class: 'dossier', type: 'button', onclick: () => { fermes.has(d) ? fermes.delete(d) : fermes.add(d); majListe() } },
+        `${ferme ? '▸' : '▾'} ${d || 'Sans dossier'}`, el('small', {}, ` (${cartes.length})`)))
+      if (ferme) continue
+    }
+    for (const c of cartes) {
+      noeuds.push(el('button', { type: 'button', 'aria-current': String(c.id === projet.courante), onclick: () => choisir(c.id) },
+        el('span', {}, c.contenu.titre || '(sans titre)'), el('small', {}, `${NOMS[c.type] ?? c.type} · ${c.langue.toUpperCase()}`)))
+    }
+  }
+  if (!noeuds.length) noeuds.push(el('div', { class: 'aide' }, 'Aucune carte ne correspond.'))
+  l.replaceChildren(...noeuds)
+  // dossiers deja utilises : propositions du champ « Dossier »
+  const dl = $('#dossiers-connus')
+  if (dl) dl.replaceChildren(...[...new Set(projet.cartes.map((c) => c.dossier).filter(Boolean))].sort().map((d) => el('option', { value: d })))
+  majModeles()
+}
+function majModeles() {
+  const s = $('#modeles')
+  if (!s) return
+  const v = s.value
+  s.replaceChildren(el('option', { value: '' }, `— modèles (${(projet.modeles ?? []).length}) —`), ...(projet.modeles ?? []).map((m) => el('option', { value: m.id }, m.nom)))
+  s.value = v
 }
 function choisir(id) {
   validerHistorique()
@@ -805,7 +853,9 @@ async function plancheTTS() {
 async function exporterProjet() {
   const cartes = []
   for (const c of projet.cartes) cartes.push(await serialiser(c))
-  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes })], { type: 'application/json' }), 'cartes.json')
+  const modeles = []
+  for (const m of projet.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, carte: await serialiser(m.carte) })
+  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles })], { type: 'application/json' }), 'cartes.json')
 }
 
 // ---------------------------------------------------------------- import des fichiers du Card Maker de reference
@@ -904,6 +954,7 @@ async function importerFichiers(fichiers) {
   const traiter = async (j) => {
     if (Array.isArray(j)) { for (const x of j) await traiter(x); return }
     if (j?.format === 'createur-cartes') {
+      for (const m of j.modeles ?? []) { projet.modeles ??= []; projet.modeles.push({ id: nouvelId(), nom: m.nom, carte: await deserialiser(m.carte) }) }
       for (const x of j.cartes) {
         if (!TYPES[x.type]) continue
         const c = await deserialiser(x)
@@ -1012,6 +1063,7 @@ function brancherEtat() {
   Object.assign(S, {
     carte, projet: () => projet, types: TYPES, changement, reconstruire: () => construireFormulaire(), message, imageDe,
     imageSync: (b) => (b ? imagesPretes.get(b) ?? null : null), rendre: rendreCarte, choisir: (id) => choisir(id),
+    changerLangueDe: async (c, l) => { c.contenu = contenuDansLangue(c, l); c.langue = l },
   })
 }
 
@@ -1063,6 +1115,19 @@ async function demarrer() {
     if (!projet.cartes.length) projet.cartes.push(nouvelleCarte('ally', c.langue))
     choisir(projet.cartes[0].id)
   })
+  $('#recherche').addEventListener('input', (e) => { filtreListe = e.target.value; majListe() })
+  $('#p-versions').addEventListener('click', () => ouvrirVersions((p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= '' } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }))
+  $('#p-remplacer').addEventListener('click', ouvrirRemplacer)
+  $('#p-appliquer').addEventListener('click', () => ouvrirAppliquer(rolesDe))
+  $('#m-enregistrer').addEventListener('click', () => { const n = prompt('Nom du modèle', carte().contenu.titre); if (n === null) return; enregistrerModele(n); majModeles(); sauvegarderPlusTard(); message('Modèle enregistré.') })
+  $('#m-utiliser').addEventListener('click', async () => {
+    const m = (projet.modeles ?? []).find((x) => x.id === $('#modeles').value)
+    if (!m) return message('Choisis d’abord un modèle.')
+    const c = { ...cloner(m.carte), id: nouvelId(), dossier: carte().dossier ?? '' }
+    c.contenu.titre = TEXTES[c.langue]?.nouvelleCarte ?? c.contenu.titre
+    ajouter(c)
+  })
+  $('#m-supprimer').addEventListener('click', () => { projet.modeles = (projet.modeles ?? []).filter((x) => x.id !== $('#modeles').value); majModeles(); sauvegarderPlusTard() })
   $('#b-annuler').addEventListener('click', annuler)
   $('#b-retablir').addEventListener('click', retablir)
   document.addEventListener('keydown', (e) => {

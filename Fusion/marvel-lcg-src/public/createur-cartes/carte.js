@@ -28,7 +28,7 @@ export const LIBELLES = {
 
 /** Les champs de contenu d'une carte (tout est facultatif). `langue` : 'en' (defaut) ou 'fr'. */
 export const CHAMPS_VIDES = {
-  langue: 'en', titre: '', unique: false, typeTexte: '', traits: '', regles: '', citation: '', ligneEnsemble: '', createur: '',
+  langue: 'en', echelleTexte: 0, titre: '', unique: false, typeTexte: '', traits: '', regles: '', citation: '', ligneEnsemble: '', createur: '',
   // nombres : texte affiche (« 3 », « X », « — »), avec leur etoile (« * ») eventuelle
   cout: '', coutEtoile: false, thw: '', thwEtoile: false, thwConseq: 0, atk: '', atkEtoile: false, atkConseq: 0,
   def: '', defEtoile: false, rec: '', recEtoile: false, pv: '', pvEtoile: false, tailleMain: '', menaceDepart: '',
@@ -247,6 +247,7 @@ function dessinerLigne(ctx, el, source, { prefixeIcone = '' } = {}) {
   let page = mettreEnPage(ctx, jetons.filter((j) => j.t !== 'saut'), { ...base, interligne: h }, 1e6, facteur)
   const largeurTexte = Math.max(...page.lignes.map((l) => l.largeur), 0)
   if (largeurTexte > w) facteur = w / largeurTexte
+  if (facteur < 1) infos.lignesReduites.push({ cls: el.cls, facteur })
   page = mettreEnPage(ctx, jetons, { ...base, interligne: h }, 1e6, facteur)
   const l0 = page.lignes[0]?.largeur ?? 0
   const align = el.style.textAlign
@@ -354,12 +355,16 @@ function fluxTexte(ctx, spec, contenu) {
   }
   // le paquet de depart est une liste qui s'allonge : pas de reduction
   const maxi = spec.id === 'starter-deck' ? 1e6 : panneau.boite[3] - 40
-  let facteur = 1
+  // reglage manuel de la taille des regles et de la citation : plus de reduction automatique
+  const manuel = Number(contenu.echelleTexte) > 0 ? Number(contenu.echelleTexte) : null
+  let facteur = manuel ?? 1
   let r = disposer(facteur)
-  while (r.hauteur > maxi && facteur > 0.4) {
+  while (!manuel && r.hauteur > maxi && facteur > 0.4) {
     facteur *= 0.97
     r = disposer(facteur)
   }
+  infos.facteurTexte = facteur
+  infos.deborde = r.hauteur > maxi
   return r.sortie
 }
 
@@ -385,7 +390,11 @@ function adapterAttachement(spec, contenu) {
 /**
  * Dessine toute la carte sur `canvas` (taille du type). `etat` : { couleurs, art, artDevant, tete }.
  */
+/** Ce que le dernier rendu a du faire pour que tout tienne (lu par le controle de lisibilite de la page). */
+let infos = { facteurTexte: 1, deborde: false, lignesReduites: [] }
+
 export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages = 'img/') {
+  infos = { facteurTexte: 1, deborde: false, lignesReduites: [] }
   const attache = spec.id === 'attachment' ? adapterAttachement(spec, contenu) : null
   if (attache) spec = attache.spec
   canvas.width = spec.largeur
@@ -529,6 +538,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   }
   ctx.restore()
   dessinerNiveau(ctx, spec, etat, 'dessus')
+  canvas.infos = infos
   return canvas
 }
 

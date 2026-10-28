@@ -29,3 +29,17 @@ export const S = {
 export const nouvelId = () => Math.random().toString(36).slice(2, 10)
 export const blobVersDataUrl = (blob) => new Promise((ok) => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(blob) })
 export const dataUrlVersBlob = async (url) => (await fetch(url)).blob()
+
+/** Une fenetre de dialogue : titre, contenu (un element), boutons [{ texte, principal, action }]. Rend la fenetre. */
+export function dialogue(titre, contenu, boutons = [{ texte: 'Fermer' }]) {
+  const d = el('dialog', { class: 'dlg' })
+  const rang = el('div', { class: 'rang', style: 'justify-content:flex-end;margin-top:8px' })
+  for (const b of boutons) {
+    rang.append(el('button', { class: 'btn' + (b.principal ? ' principal' : ''), type: 'button', onclick: async () => { if (!b.action || (await b.action(d)) !== false) d.close() } }, b.texte))
+  }
+  d.append(el('div', { class: 'panneau', style: 'min-width:min(560px,92vw);max-height:80vh;overflow:auto' }, el('h2', {}, titre), contenu, rang))
+  document.body.append(d)
+  d.addEventListener('close', () => d.remove())
+  d.showModal()
+  return d
+}
