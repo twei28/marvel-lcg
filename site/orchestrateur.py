@@ -148,6 +148,17 @@ DOSSIER_ASSETS = os.environ.get(
     "DOSSIER_ASSETS", os.path.join(os.path.dirname(RACINE_SITE), "Fusion", "marvel-lcg-src", "assets"))
 
 
+# Les PROJETS DU CREATEUR DE CARTES (fichiers JSON, un dossier par compte).
+# HORS de site/ : le deploiement vide ce dossier (sauf base et rapports).
+DOSSIER_CREATEUR = os.environ.get(
+    "DOSSIER_CREATEUR", os.path.join(os.path.dirname(RACINE_SITE), "donnees-createur"))
+# Un projet porte des images en data URL : 25 Mo au plus, par PUT.
+MAX_PROJET_OCTETS = int(os.environ.get("MAX_PROJET_OCTETS", str(25 * 1024 * 1024)))
+# Quota par compte (projets + historique des versions).
+QUOTA_CREATEUR_OCTETS = int(os.environ.get("QUOTA_CREATEUR_OCTETS", str(500 * 1024 * 1024)))
+# La page et ses fichiers statiques sont ceux du jeu (public/).
+DOSSIER_PUBLIC_JEU = os.environ.get("DOSSIER_PUBLIC_JEU", os.path.join(RACINE_JEU, "public"))
+
 DOSSIER_PARTIES_JOUEURS = os.environ.get(
     "DOSSIER_PARTIES_JOUEURS", os.path.join(os.path.dirname(RACINE_SITE), "parties-joueurs"))
 
@@ -232,6 +243,7 @@ FENETRE_CONNEXION = int(os.environ.get("FENETRE_CONNEXION", "900"))
 sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
 import config_serveur
 import langue as lang
+import createur_cartes
 import narval as narval_du_moment  # noqa: E402  (dependant de sys.path ci-dessus)
 
 
@@ -1441,6 +1453,15 @@ def initialiser_base() -> None:
         # depuis /admin : 1 = la table de ce compte montre le nouveau panneau.
         if "essai_phase" not in colonnes:
             cx.execute("ALTER TABLE comptes ADD COLUMN essai_phase INTEGER NOT NULL DEFAULT 0")
+        # Le ROLE du compte : 'joueur' (defaut, tout l'existant) ou 'createur'
+        # (acces au seul createur de cartes, voir `Handler._refuser_createur`).
+        # Migration douce : les comptes deja en base deviennent 'joueur'.
+        if "role" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN role TEXT NOT NULL DEFAULT 'joueur'")
+        # Le role que l'invitation DONNE au compte qui l'utilise.
+        colonnes_inv = {r["name"] for r in cx.execute("PRAGMA table_info(invitations)")}
+        if "role" not in colonnes_inv:
+            cx.execute("ALTER TABLE invitations ADD COLUMN role TEXT NOT NULL DEFAULT 'joueur'")
         # Meme precaution pour les bases creees avant la purge des rapports.
         colonnes_rap = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
         if "traite_le" not in colonnes_rap:
@@ -1516,7 +1537,8 @@ def _attribuer_emplacements_manquants() -> None:
         # meme table : parcourir un curseur ouvert dessus reviendrait a se lire
         # en train de s'ecrire.
         sans_place = [r["pseudo"] for r in cx.execute(
-            "SELECT pseudo FROM comptes WHERE emplacement IS NULL ORDER BY cree")]
+            "SELECT pseudo FROM comptes WHERE emplacement IS NULL"
+            " AND role != 'createur' ORDER BY cree")]
         for pseudo in sans_place:
             libre = _prendre_un_emplacement(cx, pseudo)
             if libre < 0:
@@ -1730,6 +1752,21 @@ def statut_de(pseudo: str) -> str:
     return ligne["statut"] if ligne else ""
 
 
+ROLES = ("joueur", "createur")
+
+
+def role_de(pseudo: str) -> str:
+    """Le role d'un compte ('joueur' si inconnu ou si la colonne manque)."""
+    ligne = compte(pseudo)
+    if ligne is None or "role" not in ligne.keys():
+        return "joueur"
+    return ligne["role"] or "joueur"
+
+
+def est_createur(pseudo: str) -> bool:
+    return bool(pseudo) and pseudo != ADMIN and role_de(pseudo) == "createur"
+
+
 def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str:
     pseudo = (pseudo or "").strip().lower()
     email = (email or "").strip().lower()
@@ -1751,8 +1788,17 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
         # ⚠ LE PLAFOND NE COMPTE QUE LES COMPTES VALIDES. Sinon une vague
         # d'inscriptions en attente suffirait a bloquer les vraies demandes.
         valides = cx.execute(
-            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
-        if valides >= MAX_COMPTES and pseudo != ADMIN:
+            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'"
+            " AND role != 'createur'").fetchone()[0]
+        role_invitation = "joueur"
+        if jeton:
+            ligne_role = cx.execute(
+                "SELECT role, utilise_par FROM invitations WHERE jeton = ?", (jeton,)).fetchone()
+            if ligne_role is not None and ligne_role["utilise_par"] is None:
+                role_invitation = ligne_role["role"] or "joueur"
+        # Un compte createur n'occupe ni place de jeu ni rang dans le plafond.
+        if (valides >= MAX_COMPTES and pseudo != ADMIN
+                and role_invitation != "createur"):
             raise ValueError(lang.t("Le site est complet ({n} comptes).").replace("{n}", str(MAX_COMPTES)))
         # ⚠ LE JETON EST RELU ET CONSOMME DANS LA MEME TRANSACTION que la
         # creation du compte. Le verifier avant puis le consommer apres
@@ -1770,15 +1816,20 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
         sel = secrets.token_bytes(16).hex()
         # Quitte a reprendre la place d'un compte expire : c'est tout l'objet
         # de l'expiration. Voir `_prendre_un_emplacement`.
-        libre = _prendre_un_emplacement(cx, pseudo)
-        if libre < 0:
-            raise ValueError(lang.t("Plus aucun espace de jeu disponible."))
+        role = "createur" if (invite and role_invitation == "createur"
+                              and pseudo != ADMIN) else "joueur"
+        if role == "createur":
+            libre = None       # aucune table de jeu pour un createur
+        else:
+            libre = _prendre_un_emplacement(cx, pseudo)
+            if libre < 0:
+                raise ValueError(lang.t("Plus aucun espace de jeu disponible."))
         cx.execute(
             "INSERT INTO comptes"
-            " (pseudo, email, sel, empreinte, statut, cree, emplacement)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?)",
+            " (pseudo, email, sel, empreinte, statut, cree, emplacement, role)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             (pseudo, email, sel, _empreinte(mot_de_passe, sel), statut,
-             _maintenant(), libre))
+             _maintenant(), libre, role))
         if invite:
             cx.execute(
                 "UPDATE invitations SET utilise_par = ?, utilise_le = ? WHERE jeton = ?",
@@ -1903,7 +1954,8 @@ def changer_statut(pseudo: str, statut: str) -> None:
         return
     # Remettre en service un compte expire dont la place a ete recyclee : il
     # lui en faut une nouvelle, sinon il se connecte dans le vide.
-    rendre_une_place = (statut == "valide" and emplacement_de(pseudo) is None)
+    rendre_une_place = (statut == "valide" and emplacement_de(pseudo) is None
+                        and role_de(pseudo) != "createur")
     with VERROU_COMPTES, _cx() as cx:
         cx.execute("UPDATE comptes SET statut = ? WHERE pseudo = ?", (statut, pseudo))
     if statut != "valide":
@@ -1958,6 +2010,8 @@ def expirer_comptes_inactifs() -> list:
     for c in liste_comptes():
         if c["statut"] != "valide" or c["pseudo"] == ADMIN:
             continue
+        if c["role"] == "createur":
+            continue     # pas de place de jeu a rendre
         ecart = _secondes_depuis(derniere_activite(c))
         if ecart is None or ecart < seuil:
             continue
@@ -1973,17 +2027,27 @@ def expirer_comptes_inactifs() -> list:
 
 
 def liste_comptes():
+    """Les comptes de JOUEURS. Les createurs de cartes ont leur propre liste
+    (`liste_createurs`) : ils n'ont ni table, ni deck, ni presence."""
     with _cx() as cx:
         return cx.execute(
-            "SELECT * FROM comptes ORDER BY"
+            "SELECT * FROM comptes WHERE role != 'createur' ORDER BY"
             " CASE statut WHEN 'attente' THEN 0 WHEN 'valide' THEN 1 ELSE 2 END,"
             " pseudo").fetchall()
 
 
 def nb_valides() -> int:
+    """Les comptes valides QUI JOUENT (les createurs ne comptent pas)."""
     with _cx() as cx:
         return cx.execute(
-            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
+            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'"
+            " AND role != 'createur'").fetchone()[0]
+
+
+def liste_createurs():
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT * FROM comptes WHERE role = 'createur' ORDER BY pseudo").fetchall()
 
 
 def journal_partie_ouverte(partie, hote: str) -> None:
@@ -2024,17 +2088,19 @@ def dernieres_parties(combien: int = 25):
             (combien,)).fetchall()
 
 
-def creer_invitation() -> str:
+def creer_invitation(role: str = "joueur") -> str:
     """Un jeton a USAGE UNIQUE qui vaut validation.
 
     C'est le chemin normal : celui qui recoit le lien entre directement, sans
     passer par la file d'attente. L'inscription libre reste possible, mais
     elle, elle attend une validation a la main.
     """
+    if role not in ROLES:
+        raise ValueError("role inconnu")
     jeton = secrets.token_urlsafe(16)
     with _cx() as cx:
-        cx.execute("INSERT INTO invitations (jeton, cree_le) VALUES (?, ?)",
-                   (jeton, _maintenant()))
+        cx.execute("INSERT INTO invitations (jeton, cree_le, role) VALUES (?, ?, ?)",
+                   (jeton, _maintenant(), role))
     return jeton
 
 
@@ -4606,6 +4672,7 @@ PAGE_ADMIN = """<!doctype html>
     <nav class="sous-onglets">
       <button type="button" class="sous-onglet" data-sous="comptes-liste" role="tab">Comptes</button>
       <button type="button" class="sous-onglet" data-sous="comptes-invitations" role="tab">Invitations <span class="compte">{nb_invitations}</span></button>
+      <button type="button" class="sous-onglet" data-sous="comptes-createurs" role="tab">Créateurs de cartes <span class="compte">{nb_createurs}</span></button>
       <button type="button" class="sous-onglet" data-sous="comptes-mdp" role="tab">Mots de passe <span class="compte">{nb_reinit}</span></button>
     </nav>
     <div class="sous-panneau" data-sous-panneau="comptes-liste">
@@ -4624,6 +4691,19 @@ PAGE_ADMIN = """<!doctype html>
       </form>
       <div class="comptes">
         {invitations}
+      </div>
+    </div>
+    <div class="sous-panneau" data-sous-panneau="comptes-createurs" hidden>
+      <p class="sous">Un compte « créateur de cartes » n'a accès qu'au créateur de
+      cartes : ni le jeu, ni cette administration. Il se crée par un lien
+      d'invitation à usage unique, à copier et à transmettre. Désactiver un
+      compte coupe sa session ; ses projets restent.</p>
+      <form method="post" action="/admin" style="margin-bottom:1rem">
+        <input type="hidden" name="action" value="inviter_createur">
+        <button class="oui" type="submit">Inviter un créateur de cartes</button>
+      </form>
+      <div class="comptes">
+        {createurs}
       </div>
     </div>
     <div class="sous-panneau" data-sous-panneau="comptes-mdp" hidden>
@@ -6367,6 +6447,41 @@ class Handler(BaseHTTPRequestHandler):
                    html.escape(c["email"] or "—"), html.escape(c["cree"] or "?"),
                    html.escape(_visite_lisible(c)), actions))
         n_comptes = sum(1 for c in comptes_liste if c["statut"] not in ("valide", "refuse"))
+        # Les comptes createur de cartes : leur propre liste, avec activer /
+        # desactiver (statut valide <-> refuse, ce qui coupe leurs sessions).
+        createurs = []
+        for c in liste_createurs():
+            actif = c["statut"] == "valide"
+            cible = "refuse" if actif else "valide"
+            libelle = "Désactiver" if actif else "Réactiver"
+            createurs.append(
+                '<div class="compte-ligne">'
+                '<div class="compte-avatar">%s</div>'
+                '<div class="compte-info">'
+                '<div class="compte-nom">%s <span class="etat-pastille %s">%s</span></div>'
+                '<div class="compte-meta">%s &middot; créé le %s &middot; %s</div>'
+                '</div>'
+                '<div class="compte-actions">'
+                '<form method="post" action="/admin">'
+                '<input type="hidden" name="pseudo" value="%s">'
+                '<input type="hidden" name="statut" value="%s">'
+                '<button class="%s" type="submit" title="%s" aria-label="%s le compte">%s</button>'
+                '</form>'
+                '<form method="post" action="/admin">'
+                '<input type="hidden" name="action" value="reinitialiser">'
+                '<input type="hidden" name="pseudo" value="%s">'
+                '<button type="submit" title="Mot de passe"'
+                ' aria-label="Créer un lien pour choisir un nouveau mot de passe">%s</button>'
+                '</form></div></div>'
+                % (html.escape((c["pseudo"] or "?")[:1].upper()), html.escape(c["pseudo"]),
+                   "oui" if actif else "non", "actif" if actif else html.escape(c["statut"]),
+                   html.escape(c["email"] or "—"), html.escape(c["cree"] or "?"),
+                   html.escape(_visite_lisible(c)),
+                   html.escape(c["pseudo"]), cible, "non" if actif else "oui", libelle, libelle,
+                   icone_svg % (ICONE_CROIX if actif else ICONE_CHECK),
+                   html.escape(c["pseudo"]), icone_svg % ICONE_CLE))
+        if not createurs:
+            createurs.append('<p class="sous">Aucun créateur de cartes. Invite-en un ci-dessus.</p>')
         base = ("https://%s" % DOMAINE) if DOMAINE else "http://127.0.0.1:%d" % PORT_SITE
         # Invitations et mots de passe oublies, en fiches (23/09/2026) : avant,
         # deux tableaux a part -- desormais la meme carte que Comptes.
@@ -6377,7 +6492,7 @@ class Handler(BaseHTTPRequestHandler):
                 '<div class="compte-ligne">'
                 '<div class="compte-avatar">?</div>'
                 '<div class="compte-info">'
-                '<div class="compte-nom">Lien d\'invitation <span class="etat-pastille attente">libre</span></div>'
+                '<div class="compte-nom">Lien d\'invitation%s <span class="etat-pastille attente">libre</span></div>'
                 '<div class="compte-meta"><code>%s</code> &middot; créé le %s</div>'
                 '</div>'
                 '<div class="compte-actions"><form method="post" action="/admin">'
@@ -6385,7 +6500,8 @@ class Handler(BaseHTTPRequestHandler):
                 '<input type="hidden" name="jeton" value="%s">'
                 '<button class="non" type="submit" title="Annuler" aria-label="Annuler cette invitation">%s</button>'
                 '</form></div></div>'
-                % (html.escape(lien), _horodate(i["cree_le"]), html.escape(i["jeton"]),
+                % (' créateur de cartes' if i["role"] == "createur" else "",
+                   html.escape(lien), _horodate(i["cree_le"]), html.escape(i["jeton"]),
                    icone_svg % ICONE_CROIX))
         for i in invitations_utilisees():
             initiale = (i["utilise_par"] or "?")[:1].upper()
@@ -6527,6 +6643,7 @@ class Handler(BaseHTTPRequestHandler):
                                  valides=nb_valides(), max=MAX_COMPTES,
                                  lignes="".join(lignes),
                                  invitations="".join(inv),
+                                 createurs="".join(createurs), nb_createurs=len(liste_createurs()),
                                  reinitialisations="".join(reinit),
                                  rapports=rapports,
                                  salon=salon,
@@ -6687,6 +6804,10 @@ class Handler(BaseHTTPRequestHandler):
             return
         self._poser_langue()
         pseudo = self._session()
+        if self._refuser_createur(pseudo, "GET"):
+            return
+        if self._route_createur("GET", pseudo):
+            return
         if self.chemin in ("/", "/index.html"):
             # ⚠ C'EST ICI, ET PAS SUR `/activite`, QUE DISCORD CHARGE SON
             # CADRE. Le « Root Mapping » du panneau developpeur pointe
@@ -7063,6 +7184,227 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
 
+    # ------------------------------------------------------------------
+    # Createur de cartes : isolement, pages statiques, API de stockage
+    # ------------------------------------------------------------------
+    # ⚠ ISOLEMENT PAR LISTE BLANCHE, A L'ENTREE DE CHAQUE do_*. Un compte
+    # `createur` ne passe que par ces chemins ; tout le reste (jeu, admin,
+    # decks, parties, API du moteur...) est refuse AVANT d'atteindre la moindre
+    # route, y compris celles qu'on ajoutera plus tard : un oubli ne peut donc
+    # pas ouvrir une porte, il ferme une page de trop. Public = sans session
+    # de toute facon (connexion, inscription, mot de passe oublie, deconnexion).
+    _CREATEUR_EXACT = frozenset({
+        "/createur-cartes.html", "/connexion", "/deconnexion", "/inscription",
+        "/reinitialisation", "/favicon.ico", "/favicon.png"})
+    _CREATEUR_PREFIXES = ("/createur-cartes/", "/api/createur/")
+
+    def _chemin_createur_permis(self) -> bool:
+        chemin = self.chemin
+        return chemin in self._CREATEUR_EXACT or chemin.startswith(self._CREATEUR_PREFIXES)
+
+    def _refuser_createur(self, pseudo, methode: str) -> bool:
+        """True si la requete vient d'un createur ET sort de son perimetre
+        (la reponse est alors deja envoyee)."""
+        if not pseudo or not est_createur(pseudo) or self._chemin_createur_permis():
+            return False
+        if methode != "GET":
+            self._raccrocher()      # le corps n'est pas lu
+        if methode == "GET" and self.chemin in ("/", "/index.html", "/entrer"):
+            self._rediriger("/createur-cartes.html")
+        else:
+            self._repondre(403, "Réservé aux joueurs : ton compte ne donne accès"
+                                " qu'au créateur de cartes.".encode("utf-8"),
+                           "text/plain; charset=utf-8", [("Cache-Control", "no-store")])
+        return True
+
+    _MIME_CREATEUR = {
+        ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+        ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+        ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml",
+        ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+        ".webp": "image/webp", ".gif": "image/gif", ".ico": "image/x-icon",
+        ".woff": "font/woff", ".woff2": "font/woff2", ".ttf": "font/ttf",
+        ".otf": "font/otf", ".txt": "text/plain; charset=utf-8",
+    }
+
+    def _json(self, code: int, objet) -> None:
+        self._repondre(code, json.dumps(objet, ensure_ascii=False).encode("utf-8"),
+                       "application/json; charset=utf-8",
+                       [("Cache-Control", "no-store"), ("X-Content-Type-Options", "nosniff")])
+
+    def _chemin_statique_createur(self) -> str | None:
+        """Le fichier du jeu que ce chemin designe, ou None. Aucune sortie du
+        dossier public du jeu : segments filtres, puis realpath verifie."""
+        racine = os.path.realpath(DOSSIER_PUBLIC_JEU)
+        if self.chemin == "/createur-cartes.html":
+            relatif = ["createur-cartes.html"]
+        else:
+            brut = urllib.parse.unquote(self.chemin[len("/createur-cartes/"):])
+            if "\x00" in brut or "\\" in brut:
+                return None
+            segments = brut.split("/")
+            if any(seg in ("", ".", "..") or seg.startswith(".") for seg in segments):
+                return None
+            relatif = ["createur-cartes"] + segments
+        chemin = os.path.realpath(os.path.join(racine, *relatif))
+        if not chemin.startswith(racine + os.sep) or not os.path.isfile(chemin):
+            return None
+        if os.path.splitext(chemin)[1].lower() not in self._MIME_CREATEUR:
+            return None
+        return chemin
+
+    def _route_createur(self, methode: str, pseudo) -> bool:
+        """Traite les routes du createur de cartes. True si la requete est la
+        sienne (reponse envoyee), False pour laisser le reste du site faire."""
+        chemin = self.chemin
+        statique = (chemin == "/createur-cartes.html"
+                    or chemin.startswith("/createur-cartes/"))
+        api = chemin.startswith("/api/createur/")
+        if not (statique or api):
+            return False
+        if methode != "GET":
+            if api:
+                pass     # le corps est lu (ou refuse) par `_api_createur`
+            else:
+                self._raccrocher()
+        if not pseudo:
+            if api:
+                self._raccrocher()
+                self._json(401, {"erreur": "Connexion requise."})
+            elif methode == "GET":
+                self._rediriger("/")
+            else:
+                self._repondre(405, b"", "text/plain; charset=utf-8")
+            return True
+        if pseudo != ADMIN and not est_createur(pseudo):
+            self._raccrocher()
+            if api:
+                self._json(403, {"erreur": "Réservé aux créateurs de cartes."})
+            else:
+                self._repondre(403, "Réservé aux créateurs de cartes.".encode("utf-8"),
+                               "text/plain; charset=utf-8")
+            return True
+        if statique:
+            if methode != "GET":
+                self._repondre(405, b"", "text/plain; charset=utf-8")
+                return True
+            fichier = self._chemin_statique_createur()
+            if fichier is None:
+                self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+                return True
+            with open(fichier, "rb") as f:
+                corps = f.read()
+            self._repondre(200, corps, self._MIME_CREATEUR[os.path.splitext(fichier)[1].lower()],
+                           [("Cache-Control", "no-cache"), ("X-Content-Type-Options", "nosniff")])
+            return True
+        self._api_createur(methode, pseudo)
+        return True
+
+    def _api_createur(self, methode: str, pseudo: str) -> None:
+        """/api/createur/projets, /projet/<id>, /projet/<id>/versions[/<n>].
+
+        Chacun ne voit que SES projets ; l'administrateur LIT ceux des autres
+        par `?compte=<pseudo>`, sans jamais les ecrire."""
+        ecriture = methode in ("PUT", "DELETE")
+        try:
+            demande = (self.parametres.get("compte") or [""])[0].strip().lower()
+            if demande and demande != pseudo:
+                if pseudo != ADMIN or ecriture:
+                    raise createur_cartes.ErreurCreateur(
+                        403, "Les projets d'un autre compte ne sont pas accessibles.")
+                cible = createur_cartes.compte_valide(demande)
+                ligne = compte(cible)
+                if ligne is None or ligne["role"] != "createur":
+                    raise createur_cartes.ErreurCreateur(404, "Compte créateur introuvable.")
+            else:
+                cible = createur_cartes.compte_valide(pseudo)
+            if ecriture:
+                # Meme origine obligatoire : le cookie est SameSite=Lax, ceci
+                # double la protection contre une requete venue d'ailleurs.
+                origine = self.headers.get("Origin")
+                if origine and (urllib.parse.urlparse(origine).netloc
+                                != (self.headers.get("Host") or "")):
+                    raise createur_cartes.ErreurCreateur(403, "Origine refusée.")
+            morceaux = self.chemin[len("/api/createur/"):].split("/")
+            racine = DOSSIER_CREATEUR
+            if morceaux == ["projets"] and methode == "GET":
+                self._json(200, {"projets": createur_cartes.lister(racine, cible),
+                                 "utilise": createur_cartes.usage_octets(racine, cible),
+                                 "quota": QUOTA_CREATEUR_OCTETS})
+                return
+            if len(morceaux) >= 2 and morceaux[0] == "projet":
+                identifiant = createur_cartes.id_valide(morceaux[1])
+                reste = morceaux[2:]
+                if not reste and methode == "GET":
+                    self._repondre(200, createur_cartes.lire(racine, cible, identifiant),
+                                   "application/json; charset=utf-8",
+                                   [("Cache-Control", "no-store"),
+                                    ("X-Content-Type-Options", "nosniff")])
+                    return
+                if not reste and methode == "PUT":
+                    octets = self._corps_projet()
+                    meta = createur_cartes.ecrire(racine, cible, identifiant, octets,
+                                                  QUOTA_CREATEUR_OCTETS, MAX_PROJET_OCTETS)
+                    self._json(200, meta)
+                    return
+                if not reste and methode == "DELETE":
+                    createur_cartes.supprimer(racine, cible, identifiant)
+                    self._json(200, {"supprime": identifiant})
+                    return
+                if reste == ["versions"] and methode == "GET":
+                    self._json(200, {"versions": createur_cartes.versions(racine, cible, identifiant)})
+                    return
+                if len(reste) == 2 and reste[0] == "versions" and methode == "GET":
+                    self._repondre(200, createur_cartes.lire_version(racine, cible, identifiant, reste[1]),
+                                   "application/json; charset=utf-8",
+                                   [("Cache-Control", "no-store"),
+                                    ("X-Content-Type-Options", "nosniff")])
+                    return
+            if ecriture:
+                self._raccrocher()
+            raise createur_cartes.ErreurCreateur(404, "Route inconnue.")
+        except createur_cartes.ErreurCreateur as e:
+            if ecriture:
+                self._raccrocher()      # corps eventuellement non lu
+            self._json(e.code, {"erreur": e.message})
+
+    def _corps_projet(self) -> bytes:
+        """Le corps d'un PUT de projet, plafonne sur l'ANNONCE avant lecture."""
+        if "application/json" not in (self.headers.get("Content-Type") or "").lower():
+            raise createur_cartes.ErreurCreateur(415, "Content-Type : application/json attendu.")
+        brut = self.headers.get("Content-Length")
+        try:
+            taille = int(brut)
+        except (TypeError, ValueError):
+            raise createur_cartes.ErreurCreateur(411, "Content-Length obligatoire.")
+        if taille < 0:
+            raise createur_cartes.ErreurCreateur(400, "Content-Length invalide.")
+        if taille > MAX_PROJET_OCTETS:
+            raise createur_cartes.ErreurCreateur(
+                413, "Projet trop volumineux : %d Mo au maximum." % (MAX_PROJET_OCTETS // (1024 * 1024)))
+        corps = self.rfile.read(taille)
+        if len(corps) != taille:
+            raise createur_cartes.ErreurCreateur(400, "Corps incomplet.")
+        return corps
+
+    def do_PUT(self):
+        self._poser_langue()
+        pseudo = self._session()
+        if self._refuser_createur(pseudo, "PUT"):
+            return
+        if not self._route_createur("PUT", pseudo):
+            self._raccrocher()
+            self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+
+    def do_DELETE(self):
+        self._poser_langue()
+        pseudo = self._session()
+        if self._refuser_createur(pseudo, "DELETE"):
+            return
+        if not self._route_createur("DELETE", pseudo):
+            self._raccrocher()
+            self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+
     def _poser_langue(self) -> None:
         """La langue de CE visiteur, pour toute la duree de CETTE requete.
 
@@ -7086,6 +7428,8 @@ class Handler(BaseHTTPRequestHandler):
         # apres avoir verifie ce qu'elle pouvait verifier.
         if self._taille_corps() < 0:
             self._corps_refuse()
+            return
+        if self._refuser_createur(self._session(), "POST"):
             return
 
         if self.chemin == "/compteur_play":
@@ -7230,12 +7574,14 @@ class Handler(BaseHTTPRequestHandler):
             # Reussite : on relache le frein, pour que ses propres fautes de
             # frappe ne poursuivent pas quelqu'un qui a fini par entrer.
             oublier_tentatives(cle)
+            createur = est_createur(qui)
             jeton = ouvrir_session(qui)
             # Sans ceci, « en ligne » n'apparaitrait presque jamais : la
             # presence n'etait rafraichie que par le MOTEUR, donc uniquement
             # pendant qu'une partie tourne. On la touche des l'entree sur le
             # site, ce qui couvre le moment ou le moteur demarre encore.
-            toucher_presence(qui)
+            if not createur:
+                toucher_presence(qui)
             # HttpOnly : le cookie n'est pas lisible en JavaScript.
             # SameSite=Lax : il ne part pas sur une requete venue d'un autre site.
             # Secure : il ne part pas en clair. Sans lui, une premiere visite
@@ -7256,6 +7602,11 @@ class Handler(BaseHTTPRequestHandler):
                 f"nc_session={jeton}; HttpOnly; Path=/;"
                 f" Max-Age={DUREE_SESSION_JOURS * 86400}"
                 + self._attributs_cookie(domaine_parent=True))
+
+            if createur:
+                # Ni table, ni activite Discord : le seul endroit permis.
+                self._rediriger("/createur-cartes.html", [("Set-Cookie", cookie_session)])
+                return
 
             if instance_en_attente:
                 # ⚠ RESOLU ICI, PAS PAR UNE REDIRECTION VERS `/activite_discord`.
@@ -7339,6 +7690,8 @@ class Handler(BaseHTTPRequestHandler):
                 marquer_messages_lus(ADMIN)
             elif action == "inviter":
                 creer_invitation()
+            elif action == "inviter_createur":
+                creer_invitation("createur")
             elif action == "annuler":
                 supprimer_invitation(champs.get("jeton", ""))
             elif action == "reinitialiser":
