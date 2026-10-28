@@ -72394,7 +72394,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<i>Squirrel Aid</i> — <b>Resource</b>: Spend 1 Squirrel → generate a [wild] resource. (Limit 1 Squirrel per card played.)\n<i>Unbeatable Army</i> — <b>Hero Response</b>: After you spend a Squirrel to pay for a Squirrel Girl card, deal 1 damage to an enemy or remove 1 threat from a scheme. (Limit once per round.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg001b",
@@ -72412,7 +72412,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Setup</b>: Doreen Green begins the game with the Squirrel deck. <i>(See the Squirrel Deck reference card.)</i>\n<i>Squirrel Speech</i> — <b>Alter-Ego Action</b>: Exhaust Doreen Green → call 1 Squirrel. (Limit once per round.)\n<i>Squirrel Aid</i> — <b>Resource</b>: Spend 1 Squirrel → generate a [wild] resource. (Limit 1 Squirrel per card played.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg002",
@@ -72430,7 +72430,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Response</b>: After Tippy-Toe enters play, look at the top 2 cards of the Squirrel deck. Return those cards to the top of the Squirrel deck in any order.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg003",
@@ -72447,7 +72447,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Response</b>: After Monkey Joe defeats a minion, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg004",
@@ -72464,7 +72464,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Response</b>: After The Lookout enters play, look at the top card of the encounter deck.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg005",
@@ -72480,7 +72480,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Interrupt</b>: When another [[SQUIRREL]] ally you control would take consequential damage, exhaust The Bruiser → prevent 1 of that damage. Deal 1 damage to The Bruiser.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg006",
@@ -72496,7 +72496,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Interrupt</b>: When you spend The Forager to pay for a Squirrel Girl card, look at the top 2 cards of your deck. You may discard 1 of those cards. Return the remaining cards to the top of your deck in any order.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg007",
@@ -72512,7 +72512,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Interrupt</b>: When you spend The Gatherer to pay for a Squirrel Girl card, heal 1 damage from your identity.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg008",
@@ -72532,7 +72532,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Response</b>: After Nancy Whitehead enters play, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg009",
@@ -72550,7 +72550,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "Squirrel Girl gets +1 ATK.\n<b>Hero Response</b>: After a minion engaged with you is defeated, call 1 Squirrel. (Limit once per round.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg010",
@@ -72567,7 +72567,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Resource</b>: Exhaust Prehensile Tail → generate a [wild] resource for a Squirrel Girl card.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg011",
@@ -72584,7 +72584,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Action</b>: Exhaust Central Park → if you control fewer than 3 [[SQUIRREL]] allies, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg012",
@@ -72601,7 +72601,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Interrupt</b>: When you would call a Squirrel, exhaust Network of Trees → look at the top 2 cards of the Squirrel deck. Choose 1 of those cards to call and place the other on the bottom of the Squirrel deck.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg013",
@@ -72618,7 +72618,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Action</b>: Call 1 Squirrel. Then, call 1 Squirrel that enters play ready.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg014",
@@ -72635,7 +72635,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Hero Action (attack)</b>: Deal 3 damage to an enemy. If you spent a Squirrel to play this card, deal 3 additional damage to that enemy.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg015",
@@ -72652,7 +72652,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Hero Action (thwart)</b>: Remove 3 threat from a scheme. If you spent a Squirrel to play this card, remove 1 threat from a scheme.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg016",
@@ -72669,7 +72669,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Hero Interrupt (defense)</b>: When Squirrel Girl defends against an attack, she gets +2 DEF for that attack. If you spent a Squirrel to play this card, she gets +3 DEF for that attack instead. After that attack resolves, if no damage was dealt to Squirrel Girl by that attack, ready Squirrel Girl.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg017",
@@ -72683,7 +72683,7 @@
    "traits": [],
    "set_name": "Squirrel Girl",
    "text": "<b>Response</b>: After you spend this card to pay the cost of a Squirrel Girl card, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg018",
@@ -72697,7 +72697,7 @@
    "traits": [],
    "set_name": "Squirrel Girl",
    "text": "<b><i>Give to the Doreen Green player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Doreen Green and discard a card with a printed [mental] resource from your hand → remove Surprise Exam from the game.\n• Discard 2 [[SQUIRREL]] allies you control. If you cannot, discard 1 random card from your hand. Discard this obligation.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg019",
@@ -72717,7 +72717,7 @@
    ],
    "set_name": "Squirrel Girl Nemesis",
    "text": "<b>Forced Interrupt</b>: When Ratatoskr activates against you, discard 1 [[SQUIRREL]] ally you control. If you cannot, give Ratatoskr 1 additional boost card for this activation.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg020",
@@ -72732,7 +72732,7 @@
    "traits": [],
    "set_name": "Squirrel Girl Nemesis",
    "text": "<i>(Crisis Icon: While this scheme is in play, you cannot remove threat from the main scheme.)</i>\nWhile this scheme is in play, the printed abilities of [[SQUIRREL]] allies are treated as blank. Their THW, ATK and hit points are unaffected.\n<b>Forced Response</b>: After a [[SQUIRREL]] ally enters play, place 1 threat here. (Limit once per round.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg021",
@@ -72745,7 +72745,7 @@
    "traits": [],
    "set_name": "Squirrel Girl Nemesis",
    "text": "<b>When Revealed</b>: Discard up to 2 [[SQUIRREL]] allies you control. If fewer than 2 [[SQUIRREL]] allies were discarded this way, place 2 threat on Discord in the Branches. If that scheme is not in play, place that threat on the main scheme instead.\n[star] <b>Boost</b>: After this activation, exhaust 1 [[SQUIRREL]] ally you control.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg022",
@@ -72760,7 +72760,7 @@
    ],
    "set_name": "Squirrel Girl Nemesis",
    "text": "Attach to your identity card.\nYou cannot spend [[SQUIRREL]] allies.\n<b>Alter-Ego Action</b>: Exhaust Doreen Green and discard a card with a printed [mental] resource from your hand → discard Ratatoskr's Whispers.\n[star] <b>Boost</b>: Discard 1 [[SQUIRREL]] ally you control. If you cannot, the villain gets +1 ATK and +1 SCH for this activation.",
-   "custom": "Arnaud"
+   "custom": ""
   }
  ],
  "brawn": [
@@ -131464,7 +131464,7 @@
    "custom": "Phenexian and Mysteltainn"
   }
  ],
- "checksum": "1a56245a4fb2ae4fb427095593da3226fa4bf2041de73942c978502a5271b65f",
+ "checksum": "4211da7d7740f07a401226a66c771536c4280e1831fe1d592f42288b293868d8",
  "hepzibah": [
   {
    "card_id": "hz001a",
