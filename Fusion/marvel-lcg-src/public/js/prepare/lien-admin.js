@@ -2,7 +2,8 @@
 // préparation, quand la partie a été lancée par le site ET que c'est le compte
 // administrateur qui joue : « ⚙ Administration » (le site), « 🖼 Relevé des
 // illustrations » (la page qui dit qui est dessiné sur chaque carte) et
-// « 🎨 Palettes des héros » (la couleur du fond de plateau, corrigée à la main).
+// « 🎨 Palettes des héros » (la couleur du fond de plateau, corrigée à la main) et
+// « 🖌 Atelier de couvertures » (l'affiche d'un pack héros / scénario / modulaire).
 //
 // Même pattern que lien-galerie.js : script CLASSIQUE (defer + IIFE), donc pas
 // d'import de js/prepare/langue.js ; on duplique la lecture de
@@ -28,6 +29,8 @@
     'Relevé des illustrations': 'Artwork survey',
     'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
     'Palettes des héros': 'Hero palettes',
+    'Atelier de couvertures': 'Cover workshop',
+    'Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit': 'Make a pack cover (hero, scenario, modular) from the template',
     'Corriger la couleur du fond de plateau': 'Fix the board background colour',
     'Sauvegarde du code': 'Code backup',
     'Télécharger tout le projet sans les images (5 dernières sauvegardes)': 'Download the whole project without images (last 5 backups)',
@@ -332,6 +335,17 @@
       window.open('/palettes-heros.html', '_blank', 'noopener');
     });
     rangee.append(palettes);
+
+    // L'atelier de couvertures (28/10/2026) : la page est statique et n'ecrit
+    // rien sur le serveur ; elle est rangee avec les outils de creation.
+    var atelier = document.createElement('button');
+    atelier.type = 'button';
+    atelier.textContent = '🖌️ ' + t('Atelier de couvertures');
+    atelier.title = t('Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit');
+    atelier.addEventListener('click', function () {
+      window.open('/atelier-couvertures.html', '_blank', 'noopener');
+    });
+    rangee.append(atelier);
 
     // La sauvegarde du code (08/10/2026) : la page du SITE qui liste les 5
     // derniers zips, reservee a l'administrateur par le site lui-meme.
