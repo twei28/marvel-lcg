@@ -43,7 +43,7 @@ const ASPECTS = {
   Protection: uni('#46991b'), Justice: uni('#dbcb36'), Pool: uni('#d074ac', '#000000'),
 }
 const GENRES_RESSOURCE = [['', 'Aucune'], ['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker']]
-const ICONES_BARRE = [['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker'], ['star', 'Étoile'], ['acceleration', 'Accélération'], ['crisis', 'Crise'], ['hazard', 'Danger'], ['boost', 'Renfort'], ['per_hero', 'Par héros'], ['consequential', 'Dégâts conséquents'], ['unique', 'Unique']]
+const ICONES_BARRE = [['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker'], ['star', 'Étoile'], ['acceleration', 'Accélération'], ['crisis', 'Crise'], ['hazard', 'Aléas'], ['boost', 'Boost'], ['per_hero', 'Par joueur'], ['consequential', 'Dégâts conséquents'], ['unique', 'Unique']]
 const TYPES_SANS_FISSURES = new Set(['attachment', 'environment', 'minion', 'obligation-villain', 'sidescheme', 'treachery'])
 
 let TYPES = null

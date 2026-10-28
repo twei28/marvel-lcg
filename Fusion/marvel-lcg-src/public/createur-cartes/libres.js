@@ -138,11 +138,11 @@ function forme(nom, taille = 400) {
 }
 
 const NOMS_ICONES = {
-  energy: 'Énergie', mental: 'Mental', physical: 'Physique', wild: 'Joker', star: 'Étoile', acceleration: 'Accélération', crisis: 'Crise', hazard: 'Danger',
-  boost: 'Renfort', per_hero: 'Par héros', consequential: 'Dégâts conséquents', unique: 'Unique', amplify: 'Amplification', infinity: 'Infini',
+  energy: 'Énergie', mental: 'Mental', physical: 'Physique', wild: 'Joker', star: 'Étoile', acceleration: 'Accélération', crisis: 'Crise', hazard: 'Aléas',
+  boost: 'Boost', per_hero: 'Par joueur', consequential: 'Dégâts conséquents', unique: 'Unique', amplify: 'Amplification', infinity: 'Infini',
 }
 const FORMES = [['rond', 'Rond'], ['carre', 'Carré arrondi'], ['bandeau', 'Bandeau'], ['losange', 'Losange'], ['bulle', 'Bulle'], ['explosion', 'Explosion']]
-const IMAGES_JEU = [['general/resource-energy', 'Ressource énergie'], ['general/resource-mental', 'Ressource mental'], ['general/resource-physical', 'Ressource physique'], ['general/resource-wild', 'Ressource joker'], ['general/boost_icon', 'Icône de renfort'], ['general/boost_star', 'Étoile de renfort']]
+const IMAGES_JEU = [['general/resource-energy', 'Ressource énergie'], ['general/resource-mental', 'Ressource mental'], ['general/resource-physical', 'Ressource physique'], ['general/resource-wild', 'Ressource joker'], ['general/boost_icon', 'Icône de boost'], ['general/boost_star', 'Icône d’étoile']]
 
 /** Le catalogue : [{ groupe, id, nom, fabriquer: async () => Blob, teintable }]. */
 export function bibliotheque(dossierImages = 'img/') {
