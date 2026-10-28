@@ -67,26 +67,80 @@ const ROLES_NOMBRES = {
   'targetthreat cost': 'menaceCible',
 }
 
-/** Dessine un nombre centre dans sa boite, avec son etoile / ses degats consequents a droite. */
+/**
+ * Le filtre `codeshadow` de la page de reference : contour noir de 4 px (dilatation), puis quatre ombres noires en cascade
+ * (chaque ombre porte sur le resultat precedent) : les copies noires se trouvent donc a toutes les sommes de decalages.
+ */
+const OMBRES = [[-3, 3.5], [-2.5, 3], [-1.5, 2], [-0.5, 1]]
+const DECALAGES = OMBRES.reduce((acc, [dx, dy]) => [...acc, ...acc.map(([x, y]) => [x + dx, y + dy])], [[0, 0]]).slice(1)
+const MARGE_FILTRE = 40
+
+/** Dessine `trace(ctx)` (formes pleines) avec le filtre : contour + ombres derriere, forme blanche devant. */
+function avecContour(ctx, w, h, couleur, trace) {
+  const toile = new OffscreenCanvas(w + 2 * MARGE_FILTRE, h + 2 * MARGE_FILTRE)
+  const c = toile.getContext('2d')
+  c.translate(MARGE_FILTRE, MARGE_FILTRE)
+  c.lineJoin = 'round'
+  c.lineWidth = 8
+  c.strokeStyle = '#000'
+  c.fillStyle = '#000'
+  trace(c, 'contour')
+  c.fillStyle = couleur
+  trace(c, 'remplir')
+  // silhouette noire de (contour + forme) pour les ombres
+  const noir = new OffscreenCanvas(toile.width, toile.height)
+  const n = noir.getContext('2d')
+  n.drawImage(toile, 0, 0)
+  n.globalCompositeOperation = 'source-in'
+  n.fillStyle = '#000'
+  n.fillRect(0, 0, noir.width, noir.height)
+  for (const [dx, dy] of DECALAGES) ctx.drawImage(noir, -MARGE_FILTRE + dx, -MARGE_FILTRE + dy)
+  ctx.drawImage(toile, -MARGE_FILTRE, -MARGE_FILTRE)
+}
+
+/**
+ * Ligne de base d'un texte centre verticalement sur `centre`. Chrome centre la zone de glyphes de la police du DOM : pour ElektraMed
+ * (chiffres) la mesure donne centre + 0,36 x taille, pour ChampionsIcons centre + 0,3 x taille (a 0,8 / d 0,2 de la taille).
+ */
+function baselineCentree(taille, famille, centre) {
+  return centre + taille * (/ElektraMed/.test(famille) ? 0.36 : 0.3)
+}
+
+/**
+ * Un nombre dans sa boite « ... cost » : centre dans la boite ; si une etoile le suit, la mesure donne le decalage du nombre
+ * (`etoile.dx`), la taille de l'etoile, son ecart et son decalage vertical. Etoile sans valeur : l'etoile seule, plus grande.
+ */
 function dessinerNombre(ctx, el, texte, etoile) {
   if (!texte && !etoile) return
   const base = baseDe(el)
   const [, , w, h] = el.boite
+  const police = `${base.style === 'italic' ? 'italic ' : ''}${el.style.fontWeight >= 600 ? 'bold ' : ''}${base.taille}px ${base.famille}`
+  const couleur = el.style.color || '#fff'
   ctx.save()
-  ctx.font = `${base.style === 'italic' ? 'italic ' : ''}${el.style.fontWeight === '700' ? 'bold ' : ''}${base.taille}px ${base.famille}`
-  ctx.fillStyle = el.style.color || '#fff'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'alphabetic'
-  const mt = ctx.measureText(texte || '')
-  const star = etoile ? Math.round(base.taille * 0.55) : 0
-  let x = (w - mt.width - star) / 2
-  const asc = mt.actualBoundingBoxAscent
-  const y = h / 2 + asc / 2
-  ctx.fillText(texte || '', x, y)
-  if (etoile) {
-    ctx.font = `${star}px ChampionsIcons`
-    ctx.fillText('s', x + mt.width + 2, y - asc * 0.55)
+  const E = el.etoile ?? { fs: base.taille * 0.36, dy: -base.taille * 0.15, ecart: 0, dx: -base.taille * 0.18 }
+  const ES = el.etoileSeule ?? { fs: 120, dx: 0, dy: 0 }
+  ctx.font = police
+  const largeur = texte ? ctx.measureText(texte).width : 0
+  const pieces = []
+  if (texte) {
+    const cx = w / 2 + (etoile ? E.dx : 0)
+    pieces.push({ s: texte, police, x: cx - largeur / 2, centre: h / 2, fs: base.taille, famille: base.famille })
+    if (etoile) pieces.push({ s: 's', police: `${E.fs}px ChampionsIcons`, x: cx + largeur / 2 + E.ecart, centre: h / 2 + E.dy, fs: E.fs, famille: 'ChampionsIcons' })
+  } else {
+    pieces.push({ s: 's', police: `${ES.fs}px ChampionsIcons`, x: w / 2 + ES.dx - ES.fs / 2, centre: h / 2 + ES.dy, fs: ES.fs, famille: 'ChampionsIcons' })
   }
+  for (const p of pieces) p.y = baselineCentree(p.fs, p.famille, p.centre)
+  avecContour(ctx, w, h, couleur, (c, mode) => {
+    for (const p of pieces) {
+      c.font = p.police
+      c.textAlign = 'left'
+      c.textBaseline = 'alphabetic'
+      if (mode === 'contour') c.strokeText(p.s, p.x, p.y)
+      c.fillText(p.s, p.x, p.y)
+    }
+  })
   ctx.restore()
 }
 
