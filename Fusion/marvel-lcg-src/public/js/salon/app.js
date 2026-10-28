@@ -427,21 +427,35 @@ function construireBarre() {
 }
 
 /* ---------------- Les decks du compte de l'invité (13/10/2026) ----------------
-   Décision 3 : l'invité venu par une invitation (il a un compte) retrouve SES
-   decks. Le moteur ne les rend qu'à celui qui tient ce siège, et le site
-   seulement si ce siège a été pris par une invitation acceptée : un invité
-   arrivé par un simple lien n'en a pas, et rien ne change pour lui. */
+   DEUX chemins vers le MEME compte, fusionnés :
+   - par INVITATION acceptée (décision 3) : le site résout siège→compte
+     (`get_decks_invite`). Marche même si l'invité n'est pas connecté ici.
+   - par SESSION du site (28/10/2026) : si l'invité est déjà CONNECTÉ à son
+     compte dans ce navigateur, son cookie `nc_session` (Domain=.<domaine>)
+     arrive jusqu'au moteur par siège, qui le relaie (`get_mes_decks`). Un
+     invité venu par un simple lien copié retrouve ainsi ses decks, à condition
+     d'être connecté. Jamais connecté et sans invitation : rien, comme avant. */
 
 let decksDuCompte = null;     // {invite, decks:[{id, deck}]}, lu une fois
 
 async function lireDecksDuCompte() {
     if (decksDuCompte) return decksDuCompte;
     try {
-        const reponse = await fetch(`get_decks_invite?p=${siege}`, { cache: "no-store" });
-        const brut = reponse.ok ? await reponse.json() : null;
+        const [parSiege, parCompte] = await Promise.all([
+            fetch(`get_decks_invite?p=${siege}`, { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null),
+            fetch("get_mes_decks", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null),
+        ]);
+        // Fusion dédupliquée par identifiant : les deux sources désignent le
+        // même dossier de decks quand c'est le même compte.
+        const parId = new Map();
+        for (const source of [parSiege, parCompte]) {
+            for (const d of (Array.isArray(source && source.decks) ? source.decks : [])) {
+                if (d && d.id != null && !parId.has(String(d.id))) parId.set(String(d.id), d);
+            }
+        }
         decksDuCompte = {
-            invite: String((brut && brut.invite) || ""),
-            decks: Array.isArray(brut && brut.decks) ? brut.decks : [],
+            invite: String((parSiege && parSiege.invite) || (parCompte && parCompte.pseudo) || ""),
+            decks: [...parId.values()],
         };
     } catch (e) {
         // Table muette : on réessaiera au prochain passage sur les decks.
@@ -477,6 +491,65 @@ async function choisirDeckDuCompte(dk) {
     }
     oublierDecksSauvegardes();
     await envoyerChoix({ id: nom, name: dk.name, source: "saved", deck: dk.deck });
+}
+
+/* ---------------- Connexion de l'invité (cas B, 28/10/2026) ----------------
+ * Un invité venu par un simple lien, PAS déjà connecté, n'a aucun deck perso.
+ * On lui offre de se connecter à SON compte depuis le salon : le moteur relaie
+ * au site (post_connexion_invite → /api/connexion) et pose le cookie de
+ * session ; on relit alors ses decks (get_mes_decks). Le mot de passe ne sert
+ * qu'à cet envoi, il n'est ni gardé ni journalisé côté client. */
+let connexionEnCours = false;
+let erreurConnexion = "";
+
+async function soumettreConnexion(pseudo, mdp) {
+    if (!pseudo || !mdp || connexionEnCours) return;
+    connexionEnCours = true;
+    erreurConnexion = "";
+    rendreDecks();
+    let ok = false, msg = "";
+    try {
+        const rep = await fetch("/post_connexion_invite", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pseudo, mdp }),
+        });
+        const brut = await rep.json().catch(() => ({}));
+        ok = !!brut.ok;
+        msg = brut.erreur || "";
+    } catch (e) {
+        msg = t("Service de connexion indisponible.");
+    }
+    connexionEnCours = false;
+    if (ok) {
+        decksDuCompte = null;          // relire la liste avec la nouvelle session
+        oublierDecksSauvegardes();
+    } else {
+        erreurConnexion = msg || t("Identifiant ou mot de passe incorrect.");
+    }
+    rendreDecks();
+}
+
+function blocConnexion() {
+    const champPseudo = el("input", {
+        class: "salon-connexion-champ", type: "text",
+        placeholder: t("Identifiant"), autocomplete: "username",
+    });
+    const champMdp = el("input", {
+        class: "salon-connexion-champ", type: "password",
+        placeholder: t("Mot de passe"), autocomplete: "current-password",
+    });
+    return el("form", {
+        class: "salon-connexion",
+        onsubmit: (e) => { e.preventDefault(); soumettreConnexion(champPseudo.value.trim(), champMdp.value); },
+    },
+        el("p", { class: "salon-connexion-intro" }, t("Connecte-toi pour retrouver tes decks sauvegardés.")),
+        el("div", { class: "salon-connexion-ligne" },
+            champPseudo, champMdp,
+            el("button", { class: "salon-pret", type: "submit", disabled: connexionEnCours || undefined },
+                connexionEnCours ? t("Connexion…") : t("Se connecter"))),
+        erreurConnexion ? el("p", { class: "salon-connexion-erreur" }, erreurConnexion) : null,
+    );
 }
 
 /* ---------------- Rendu ---------------- */
@@ -517,6 +590,9 @@ async function rendreDecks() {
     };
     // La manche d'avant, pré-cochée : un seul clic pour rejouer pareil.
     const propose = !etat.deckChoisi && etat.propose ? etat.propose : null;
+    // Invité pas encore identifié (ni invitation acceptée, ni session) : on lui
+    // propose de se connecter pour retrouver ses decks sauvegardés.
+    const identifie = !!(decksDuCompte && decksDuCompte.invite);
     // ⚠ `replaceChildren` ECRIT « null » en toutes lettres (vu en essai le
     // 13/10/2026) : le bandeau absent est filtre, pas passe tel quel.
     $("#salon-choix").replaceChildren(...[
@@ -524,6 +600,7 @@ async function rendreDecks() {
         propose ? el("div", { class: "salon-rejouer" },
             el("p", {}, `${t("Comme la partie d’avant")} : ${nomHeros(etat.hero)} — ${propose.name}`),
             el("button", { class: "salon-pret", onclick: () => envoyerChoix(propose) }, t("Je suis prêt"))) : null,
+        identifie ? null : blocConnexion(),
         el("div", { class: "hero-grid tb-roster tb-roster-deck" }, ...decks.map(option)),
         champImport(),
     ].filter(Boolean));

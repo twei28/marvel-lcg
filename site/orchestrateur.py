@@ -2507,6 +2507,43 @@ def decks_de_l_invite(hote: str, siege: int) -> dict:
     return {"invite": invite, "decks": decks}
 
 
+def decks_du_compte(pseudo: str) -> dict:
+    """Les decks du COMPTE identifie par sa SESSION de site (28/10/2026).
+
+    Jumelle de `decks_de_l_invite`, mais l'identite ne vient pas d'une
+    invitation acceptee : elle vient du cookie de session (`nc_session`, resolu
+    par `pseudo_de_session` cote appelant). Un invite deja CONNECTE a son compte
+    dans ce navigateur retrouve ainsi SES decks dans le salon, meme venu par un
+    simple lien copie. Lecture seule, comme `decks_de_l_invite` : le salon
+    enregistre une copie du deck choisi chez l'hote.
+
+    ⚠ Le pseudo ARRIVE DEJA RESOLU et verifie (session valide) : on ne lit donc
+    que les decks du compte qui a prouve sa session, jamais « ceux de n'importe
+    qui ». `_dossier_decks_de` borne la lecture a `deck/` (pas de lien
+    symbolique qui sortirait du dossier).
+    """
+    if not pseudo:
+        return {"pseudo": "", "decks": []}
+    place = emplacement_de(pseudo)
+    dossier = _dossier_decks_de(place) if place is not None else None
+    if not dossier:
+        return {"pseudo": pseudo, "decks": []}
+    decks = []
+    try:
+        noms = sorted(n for n in os.listdir(dossier) if n.endswith(".json"))
+    except OSError:
+        noms = []
+    for nom in noms[:MAX_DECKS_INVITE]:
+        try:
+            with open(os.path.join(dossier, nom), encoding="utf-8") as f:
+                deck = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if isinstance(deck, dict) and deck.get("hero"):
+            decks.append({"id": nom[:-5], "deck": deck})
+    return {"pseudo": pseudo, "decks": decks}
+
+
 # --------------------------------------------------------------------------
 # Decks des joueurs, consultes et importes par l'administrateur (19/10/2026)
 # --------------------------------------------------------------------------
@@ -7344,7 +7381,7 @@ class Handler(BaseHTTPRequestHandler):
                            "/api/prives", "/api/prives_lus", "/api/eteindre",
                            "/api/connectes", "/api/inviter", "/api/invitations",
                            "/api/invitation_reponse", "/api/invitations_envoyees",
-                           "/api/decks_invite"):
+                           "/api/decks_invite", "/api/decks_compte", "/api/connexion"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
             # partie plutot que par le cookie de session : le navigateur est sur
@@ -7509,6 +7546,49 @@ class Handler(BaseHTTPRequestHandler):
                 except ValueError:
                     siege = 0
                 self._repondre(200, json.dumps(decks_de_l_invite(qui, siege),
+                                               ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/connexion":
+                # L'invite se CONNECTE a son compte depuis le salon (cas B,
+                # 28/10/2026). `qui` (jeton de partie) prouve seulement que
+                # l'appel vient d'un moteur legitime ; l'identite verifiee est
+                # celle du couple pseudo/mdp. L'anti-flood porte sur l'ADRESSE
+                # reelle du navigateur, relayee par le moteur (la connexion ici
+                # vient de 127.0.0.1, inexploitable comme cle). Reussite : on
+                # rend le jeton de session, que le MOTEUR posera en cookie
+                # nc_session (Domain=.<domaine>) sur sa reponse au navigateur.
+                adresse = str(champs.get("adresse", "") or "") or "?"
+                cle = cle_frein(adresse)
+                reste = attente_connexion(cle)
+                if reste:
+                    self._repondre(200, json.dumps(
+                        {"ok": False, "erreur": "Trop de tentatives. Réessaie dans %s." % delai_lisible(reste)},
+                        ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+                    return
+                compter_tentative(cle)
+                try:
+                    pseudo = verifier(str(champs.get("pseudo", "") or ""), str(champs.get("mdp", "") or ""))
+                except ValueError as erreur:
+                    self._repondre(200, json.dumps({"ok": False, "erreur": str(erreur)},
+                        ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+                    return
+                oublier_tentatives(cle)
+                jeton = ouvrir_session(pseudo)
+                toucher_presence(pseudo)
+                self._repondre(200, json.dumps({"ok": True, "jeton": jeton, "pseudo": pseudo},
+                    ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/decks_compte":
+                # Les decks du compte DEJA CONNECTE dans le navigateur de
+                # l'invite : son cookie de session, relaye par le moteur, dit
+                # qui il est (seul le site sait lire une session). `qui` (le
+                # jeton de partie) prouve seulement que l'appel vient d'un
+                # moteur legitime ; l'identite qui COMPTE est celle de la
+                # session. Session absente/invalide (invite jamais connecte) :
+                # liste vide, comme `get_decks_invite` sans invitation.
+                pseudo = pseudo_de_session(str(champs.get("nc_session") or ""))
+                self._repondre(200, json.dumps(decks_du_compte(pseudo or ""),
                                                ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return

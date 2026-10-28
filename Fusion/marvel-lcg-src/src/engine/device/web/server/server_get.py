@@ -2040,6 +2040,76 @@ class GameServerGet(GameServerBase):
         donnees = await self._appeler_site('/api/decks_invite', {'siege': p}, secondes=5)
         return web.json_response(donnees or {'invite': '', 'decks': []})
 
+    async def get_mes_decks(self, request: web.Request) -> web.Response:
+        """Les decks du COMPTE de l'invite DEJA CONNECTE au site (28/10/2026).
+
+        `get_decks_invite` ci-dessus ne rend des decks que si le siege a ete
+        pris par une invitation acceptee : un invite venu par un simple lien
+        copie n'a aucun deck. Mais s'il est connecte a SON compte dans ce
+        navigateur, son cookie de session du site (`nc_session`, pose sur
+        `Domain=.<domaine>`, donc envoye jusqu'a ce moteur par siege) arrive
+        ici. On le relaie au site, seul a savoir lire une session, qui rend les
+        decks de ce compte. Meme patron que `post_rapport_bug` (nc_session
+        relaye tel quel). Sans cookie (invite jamais connecte) : liste vide.
+
+        ⚠ Le navigateur ne peut envoyer que SON PROPRE cookie de session : on
+        ne rend donc jamais que les decks du compte qui tient cette session.
+        """
+        nc = request.cookies.get('nc_session', '')
+        if not nc:
+            return web.json_response({'pseudo': '', 'decks': []})
+        donnees = await self._appeler_site('/api/decks_compte', {'nc_session': nc}, secondes=5)
+        return web.json_response(donnees or {'pseudo': '', 'decks': []})
+
+    async def post_connexion_invite(self, request: web.Request) -> web.Response:
+        """L'invite se CONNECTE a son compte depuis le salon (cas B, 28/10/2026).
+
+        Un invite venu par un simple lien, PAS deja connecte, tape son
+        identifiant et son mot de passe dans le salon pour retrouver ses decks
+        (voir get_mes_decks). On relaie au site, seul a verifier un mot de passe
+        et a ouvrir une session ; en cas de succes le site rend un jeton, qu'on
+        POSE ICI en cookie `nc_session` (Domain=.<domaine parent>), exactement
+        comme /connexion du site. Les requetes suivantes (get_mes_decks) le
+        porteront alors.
+
+        ⚠ Le mot de passe transite par CE moteur (celui du siege de l'invite)
+        le temps du relais vers le site, en 127.0.0.1 : HTTPS de bout en bout
+        (Caddy), jamais journalise ici. L'anti-flood vit cote site, sur
+        l'adresse reelle du navigateur, relayee ci-dessous.
+        """
+        import re
+        try:
+            data = await request.json()
+        except Exception:
+            data = {}
+        pseudo = str(data.get('pseudo', '') or '').strip()
+        mdp = str(data.get('mdp', '') or '')
+        if not pseudo or not mdp:
+            return web.json_response({'ok': False, 'erreur': 'identifiants requis'}, status=400)
+        adresse = (request.headers.get('X-Forwarded-For', '').split(',')[0].strip()
+                   or (request.remote or ''))
+        _, donnees = await self._appeler_site(
+            '/api/connexion', {'pseudo': pseudo, 'mdp': mdp, 'adresse': adresse},
+            secondes=8, avec_statut=True)
+        if not donnees:
+            return web.json_response({'ok': False, 'erreur': 'Service de connexion indisponible.'})
+        if not donnees.get('ok'):
+            return web.json_response({'ok': False,
+                                      'erreur': str(donnees.get('erreur') or 'Identifiant ou mot de passe incorrect.')})
+        jeton = str(donnees.get('jeton', '') or '')
+        reponse = web.json_response({'ok': True, 'pseudo': donnees.get('pseudo', '')})
+        # Domaine PARENT, derive de l'hote pN.<domaine> : le cookie doit couvrir
+        # le site ET ce moteur, comme celui pose par /connexion du site.
+        hote = (request.headers.get('Host', '') or '').split(':')[0]
+        m = re.match(r'^p\d+\.(.+)$', hote)
+        parent = m.group(1) if m else hote
+        secure = "; Secure" if (request.headers.get('X-Forwarded-Proto', '') == 'https'
+                                or getattr(request, 'secure', False)) else ""
+        cookie = ("nc_session=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=Lax%s%s"
+                  % (jeton, 90 * 86400, (("; Domain=.%s" % parent) if parent else ""), secure))
+        reponse.headers['Set-Cookie'] = cookie
+        return reponse
+
     async def post_quitter_la_table(self, request: web.Request) -> web.Response:
         """L'HOTE a fini : la table doit cesser d'exister.
 
@@ -2699,6 +2769,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/post_invitation_reponse', self.post_invitation_reponse)
         self.AddAwaitGetSecurity('/get_invitations_envoyees', self.get_invitations_envoyees)
         self.AddAwaitGetSecurity('/get_decks_invite', self.get_decks_invite)
+        self.AddAwaitGetSecurity('/get_mes_decks', self.get_mes_decks)
         self.AddAwaitGetSecurity('/get_preparation', self.get_preparation)
         self.AddPostSecurity('/set_roue', self.set_roue)
         self.AddAwaitGetSecurity('/get_roue', self.get_roue)
@@ -2738,6 +2809,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/sauver_pour_le_site', self.sauver_pour_le_site,
                                  need_auth=False, need_check_version=False)
         self.AddPostSecurity('/post_rapport_bug', self.post_rapport_bug)
+        self.AddPostSecurity('/post_connexion_invite', self.post_connexion_invite)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)
         self.AddAwaitGetSecurity('/get_gamers', self.get_gamers)

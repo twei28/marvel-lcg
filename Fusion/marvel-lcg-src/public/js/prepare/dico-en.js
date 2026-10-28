@@ -1214,6 +1214,14 @@ export const DICO_EN_BASE = {
     "{qui} : « {retirer} » correspond au héros d’un autre joueur. Règle Team-Up (Rules Reference 1.8) : la remplacer par « {ajouter} » pour cette partie ?":
         "{qui}: “{retirer}” matches another player’s hero. Team-Up rule (Rules Reference 1.8): replace it with “{ajouter}” for this game?",
     /* ---- Ecran « Inviter l'equipe » d'une campagne en ligne (campagne/app.js) ---- */
+    /* ---- Connexion de l'invite dans le salon (cas B, 28/10/2026) ---- */
+    "Connecte-toi pour retrouver tes decks sauvegardés.": "Log in to get your saved decks back.",
+    "Connexion…": "Logging in…",
+    "Identifiant ou mot de passe incorrect.": "Wrong username or password.",
+    "Identifiant": "Username",
+    "Mot de passe": "Password",
+    "Se connecter": "Log in",
+    "Service de connexion indisponible.": "Login service unavailable.",
     "Inviter l'équipe": "Invite the team",
     "La partie est lancée. Envoie un lien à chaque coéquipier : son héros est déjà celui fixé par la campagne, il n'a rien à choisir.":
         "The game has started. Send each teammate a link: their hero is already the one set by the campaign, they have nothing to choose.",

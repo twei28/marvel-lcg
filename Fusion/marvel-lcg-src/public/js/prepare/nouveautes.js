@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-28",
         genre: "jeu",
+        fr: "En rejoignant par un lien d'invitation, tu peux maintenant te connecter à ton compte depuis l'écran de choix pour retrouver tes decks sauvegardés (s'ils ne s'affichent pas déjà parce que tu es connecté).",
+        en: "When joining from an invitation link, you can now log into your account from the pick screen to get your saved decks back (if they aren't already shown because you're logged in).",
+    },
+    {
+        date: "2026-10-28",
+        genre: "jeu",
         fr: "Quand tu rejoins une partie par un lien d'invitation, l'écran de choix de héros montre maintenant les images des cartes et les mêmes filtres que l'assistant (recherche, vagues, fan-made séparé de l'officiel).",
         en: "When you join a game from an invitation link, the hero-picking screen now shows the card images and the same filters as the main wizard (search, waves, fan-made kept apart from official).",
     },
