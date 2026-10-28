@@ -222,6 +222,7 @@ async function dessiner() {
     vis.height = t.height
     vis.getContext('2d').drawImage(t, 0, 0)
     dessinerSurcouche()
+    S.infosRendu = t.infos
     afficherAlertes(c, t)
   } catch (e) {
     message('Rendu impossible : ' + e.message)
@@ -322,7 +323,7 @@ function aElement(spec, cls) {
 function champTexte(label, chemin, opts = {}) {
   const c = carte()
   const [obj, cle] = chemin
-  const champ = opts.long ? el('textarea', { rows: opts.lignes ?? 3 }) : el('input', { type: 'text' })
+  const champ = opts.long ? el('textarea', { rows: opts.lignes ?? 3 }) : el('input', { type: 'text', 'data-champ': cle })
   champ.value = obj(c)[cle] ?? ''
   champ.addEventListener('input', () => {
     obj(c)[cle] = champ.value
@@ -370,7 +371,7 @@ function curseur(label, obj, cle, min, max, pas, defaut) {
 }
 function nombre(label, cle, avecEtoile = true) {
   const c = carte()
-  const i = el('input', { type: 'text' })
+  const i = el('input', { type: 'text', 'data-champ': cle })
   i.value = c.contenu[cle] ?? ''
   i.addEventListener('input', () => {
     c.contenu[cle] = i.value
@@ -462,7 +463,7 @@ function espaceAvant(zone) {
 /** Le champ de texte riche : on selectionne, on clique (gras, italique, souligne, taille, couleur, icones). Un bouton « </> » montre le code. */
 function editeurRiche(label, cle, lignes = 5) {
   const c = carte()
-  const zone = el('div', { class: 'editeur', contenteditable: 'true', spellcheck: 'true', role: 'textbox', 'aria-multiline': 'true', style: `min-height:${lignes * 1.5}em` })
+  const zone = el('div', { class: 'editeur', 'data-champ': cle, contenteditable: 'true', spellcheck: 'true', role: 'textbox', 'aria-multiline': 'true', style: `min-height:${lignes * 1.5}em` })
   zone.innerHTML = versEditeur(c.contenu[cle])
   const code = el('textarea', { rows: lignes, hidden: true, style: 'font-family:monospace' })
   code.value = c.contenu[cle] ?? ''
@@ -1062,8 +1063,8 @@ function brancherToile() {
     if (etaitClic && !libre && e.type === 'pointerup') {
       // clic sans glisser sur la carte : on choisit rien, ou on edite l'element touche
       choisirCalque(null)
-      clicSurCarte(e, toile)
       construireFormulaire()
+      clicSurCarte(e, toile)
     }
     depart = null
     libre = null

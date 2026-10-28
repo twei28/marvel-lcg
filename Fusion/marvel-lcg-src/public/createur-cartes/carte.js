@@ -397,10 +397,10 @@ function adapterAttachement(spec, contenu) {
  * Dessine toute la carte sur `canvas` (taille du type). `etat` : { couleurs, art, artDevant, tete }.
  */
 /** Ce que le dernier rendu a du faire pour que tout tienne (lu par le controle de lisibilite de la page). */
-let infos = { facteurTexte: 1, deborde: false, lignesReduites: [] }
+let infos = { facteurTexte: 1, deborde: false, lignesReduites: [], blocs: [] }
 
 export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages = 'img/') {
-  infos = { facteurTexte: 1, deborde: false, lignesReduites: [] }
+  infos = { facteurTexte: 1, deborde: false, lignesReduites: [], blocs: [] }
   const attache = spec.id === 'attachment' ? adapterAttachement(spec, contenu) : null
   if (attache) spec = attache.spec
   canvas.width = spec.largeur
@@ -558,7 +558,9 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   // Panneau de texte : traits / regles / citation
   const panneau = E.cardtext
   if (panneau) {
+    infos.blocs = []
     for (const b of fluxTexte(ctx, spec, contenu)) {
+      infos.blocs.push({ c: b.c, y0: b.y, y1: b.y + b.page.hauteur })
       dans(panneau, () => {
         ctx.translate(b.el.boite[0] - panneau.boite[0] + b.retrait, b.y)
         dessinerPage(ctx, b.page, b.base, b.largeur, b.facteur, spec.id === 'identity-promo' && b.c === 'traits' ? 'rgba(255,255,255,0.6)' : b.el.style.color || '#000', b.base.alignement)
@@ -572,3 +574,42 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
 }
 
 export { PORTRAIT }
+
+// ---------------------------------------------------------------- clic sur la carte
+const produit = (a, b) => [
+  a[0] * b[0] + a[2] * b[1], a[1] * b[0] + a[3] * b[1], a[0] * b[2] + a[2] * b[3], a[1] * b[2] + a[3] * b[3],
+  a[0] * b[4] + a[2] * b[5] + a[4], a[1] * b[4] + a[3] * b[5] + a[5],
+]
+const inverse = ([a, b, c, d, e, f]) => {
+  const det = a * d - b * c
+  return det ? [d / det, -b / det, -c / det, a / det, (c * f - d * e) / det, (b * e - a * f) / det] : null
+}
+
+/**
+ * L'element du gabarit sous un point de la carte (pixels du canvas). Rend { cls, local: [x, y] } (le point dans le repere de
+ * l'element) ou null. Les chaines de transformations (cartes paysage, libelles tournes) sont prises en compte.
+ */
+export function elementSousPoint(spec, x, y) {
+  // canvas -> repere du gabarit portrait
+  let gx = x
+  let gy = y
+  if (spec.paysage) { gx = y; gy = spec.largeur - x }
+  const parId = new Map(spec.elements.map((e) => [e.i, e]))
+  let meilleur = null
+  for (const e of spec.elements) {
+    if (!e.cls || !e.boite[2] || !e.boite[3]) continue
+    let m = [1, 0, 0, 1, 0, 0]
+    const chaine = []
+    for (let p = e; p; p = parId.get(p.parent)) chaine.unshift(p)
+    for (const c of chaine) if (c.rot || c.trn || c.scl || c.m) m = produit(m, matricePropre(c))
+    const inv = inverse(m)
+    if (!inv) continue
+    const lx = inv[0] * gx + inv[2] * gy + inv[4]
+    const ly = inv[1] * gx + inv[3] * gy + inv[5]
+    const [bx, by, bw, bh] = e.boite
+    if (lx < bx || lx > bx + bw || ly < by || ly > by + bh) continue
+    const surface = bw * bh
+    if (!meilleur || surface < meilleur.surface) meilleur = { cls: e.cls, local: [lx, ly], surface, panneau: e.boite }
+  }
+  return meilleur
+}
