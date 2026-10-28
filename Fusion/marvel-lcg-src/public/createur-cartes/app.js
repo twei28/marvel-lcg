@@ -4,6 +4,9 @@ import { dessinerCarte, CHAMPS_VIDES, LIBELLES } from './carte.js'
 import { chargerPolices } from './polices.js'
 import { ICONES } from './polices.js'
 import { TEXTES, chargerTraits, traduireTraits } from './langues.js'
+import { $, el, S, nouvelId, blobVersDataUrl, dataUrlVersBlob } from './commun.js'
+import { ajouterFichiers, brancherSurcouche, calqueChoisi, choisirCalque, commencerGlisser, dessinerSurcouche, molette, sectionLibres, touche } from './panneau-libres.js'
+import { clicSurCarte } from './clic-carte.js'
 
 const BASE = '/createur-cartes/'
 const IMAGES = BASE + 'img/'
@@ -35,25 +38,13 @@ const GENRES_RESSOURCE = [['', 'Aucune'], ['energy', 'Énergie'], ['mental', 'Me
 const ICONES_BARRE = [['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker'], ['star', 'Étoile'], ['acceleration', 'Accélération'], ['crisis', 'Crise'], ['hazard', 'Danger'], ['boost', 'Renfort'], ['per_hero', 'Par héros'], ['consequential', 'Dégâts conséquents'], ['unique', 'Unique']]
 const TYPES_SANS_FISSURES = new Set(['attachment', 'environment', 'minion', 'obligation-villain', 'sidescheme', 'treachery'])
 
-const $ = (s, r = document) => r.querySelector(s)
-const el = (tag, attrs = {}, ...enfants) => {
-  const e = document.createElement(tag)
-  for (const [k, v] of Object.entries(attrs)) {
-    if (k === 'class') e.className = v
-    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v)
-    else if (v === true) e.setAttribute(k, '')
-    else if (v !== false && v != null) e.setAttribute(k, v)
-  }
-  for (const c of enfants.flat()) if (c != null) e.append(c.nodeType ? c : document.createTextNode(c))
-  return e
-}
-
 let TYPES = null
 let PALETTES = null
 let projet = { cartes: [], courante: null }
 let seq = 0
 let ciblePointeur = 'art'
 const imagesBlob = new WeakMap()
+const imagesPretes = new WeakMap() // Blob -> image deja chargee (pour les calculs synchrones de l'apercu)
 
 // ---------------------------------------------------------------- stockage
 function ouvrirBase() {
@@ -97,7 +88,7 @@ function imageDe(blob) {
       blob,
       new Promise((ok, ko) => {
         const im = new Image()
-        im.onload = () => ok(im)
+        im.onload = () => { imagesPretes.set(blob, im); ok(im) }
         im.onerror = () => ko(new Error('image illisible'))
         im.src = URL.createObjectURL(blob)
       })
@@ -105,11 +96,8 @@ function imageDe(blob) {
   }
   return imagesBlob.get(blob)
 }
-const blobVersDataUrl = (blob) => new Promise((ok) => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(blob) })
-const dataUrlVersBlob = async (url) => (await fetch(url)).blob()
 
 // ---------------------------------------------------------------- cartes
-const nouvelId = () => Math.random().toString(36).slice(2, 10)
 
 function valeursParDefaut(type, langue) {
   const l = langue
@@ -127,12 +115,33 @@ function valeursParDefaut(type, langue) {
 
 function nouvelleCarte(type = 'ally', langue = 'fr') {
   return {
-    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: {}, fissures: true,
+    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: {}, fissures: true, libres: [], cadre: 'officiel', dossier: '',
     art: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 }, artDevant: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 },
     tete: { blob: null, afficher: true, etoile: false, zoom: 0.8, x: -19, y: 232, rotation: 0 },
   }
 }
 const carte = () => projet.cartes.find((c) => c.id === projet.courante)
+
+/** Une copie profonde d'une carte (les images, des Blob, sont partagees : elles ne changent jamais). */
+const cloner = (c) => structuredClone(c)
+
+/** Une carte -> du JSON (images en data URL). Sert aux fichiers, aux versions envoyees au serveur, aux modeles exportes. */
+async function serialiser(c) {
+  const copie = structuredClone({ ...c, art: { ...c.art, blob: null }, artDevant: { ...c.artDevant, blob: null }, tete: { ...c.tete, blob: null }, libres: [] })
+  for (const k of ['art', 'artDevant', 'tete']) copie[k].image = c[k].blob ? await blobVersDataUrl(c[k].blob) : null
+  copie.libres = []
+  for (const L of c.libres ?? []) copie.libres.push({ ...structuredClone({ ...L, blob: null }), image: L.blob ? await blobVersDataUrl(L.blob) : null })
+  return copie
+}
+/** L'inverse de `serialiser` : rend une carte utilisable (images en Blob), avec les champs ajoutes depuis. */
+async function deserialiser(j) {
+  const base = nouvelleCarte(TYPES[j.type] ? j.type : 'ally', j.langue ?? 'fr')
+  const c = { ...base, ...j, contenu: { ...base.contenu, ...j.contenu }, art: { ...base.art, ...j.art }, artDevant: { ...base.artDevant, ...j.artDevant }, tete: { ...base.tete, ...j.tete } }
+  for (const k of ['art', 'artDevant', 'tete']) { c[k].blob = c[k].image ? await dataUrlVersBlob(c[k].image) : null; delete c[k].image }
+  c.libres = []
+  for (const L of j.libres ?? []) { const x = { ...L, blob: L.image ? await dataUrlVersBlob(L.image) : null }; delete x.image; c.libres.push(x) }
+  return c
+}
 
 /** Les couleurs a afficher : celles du gabarit, par-dessus celles de la carte. */
 function rolesDe(spec) {
@@ -191,6 +200,7 @@ async function etatDe(c) {
     artDevant: artDevant && { image: artDevant, x: c.artDevant.x, y: c.artDevant.y, zoom: c.artDevant.zoom, rotation: c.artDevant.rotation },
     tete: tete && { image: tete, afficher: c.tete.afficher, etoile: c.tete.etoile, zoom: c.tete.zoom, x: c.tete.x, y: c.tete.y, rotation: c.tete.rotation },
     fissures: c.fissures,
+    libres: await Promise.all((c.libres ?? []).map(async (L) => ({ ...L, image: await imageDe(L.blob) }))),
   }
 }
 /** Dessine une carte sur un canvas neuf (la langue peut etre forcee). */
@@ -212,6 +222,7 @@ async function dessiner() {
     vis.width = t.width
     vis.height = t.height
     vis.getContext('2d').drawImage(t, 0, 0)
+    dessinerSurcouche()
   } catch (e) {
     message('Rendu impossible : ' + e.message)
   }
@@ -222,6 +233,76 @@ function changement() {
   minuteurRendu = setTimeout(dessiner, 40)
   sauvegarderPlusTard()
   majListe()
+  planifierHistorique()
+}
+
+// ---------------------------------------------------------------- annuler / retablir
+// Par carte : une pile « avant » et une pile « apres ». Une modification n'entre dans l'historique qu'apres 400 ms de calme (taper
+// une phrase = un seul pas). `ref` est la photo de la carte au dernier point de reprise.
+const historiques = new Map()
+let minuteurHistorique = 0
+let modifie = false // la carte a change depuis le dernier point de reprise
+const histoDe = (id) => {
+  if (!historiques.has(id)) historiques.set(id, { avant: [], apres: [], ref: null })
+  return historiques.get(id)
+}
+function validerHistorique() {
+  clearTimeout(minuteurHistorique)
+  const c = carte()
+  if (!c) return
+  const h = histoDe(c.id)
+  if (!h.ref) { h.ref = cloner(c); modifie = false; return }
+  if (!modifie) return
+  modifie = false
+  h.avant.push(h.ref)
+  if (h.avant.length > 100) h.avant.shift()
+  h.apres = []
+  h.ref = cloner(c)
+  majBoutonsHistorique()
+}
+function planifierHistorique() {
+  modifie = true
+  clearTimeout(minuteurHistorique)
+  minuteurHistorique = setTimeout(validerHistorique, 400)
+}
+function remplacerCarte(c, photo) {
+  modifie = false
+  const i = projet.cartes.findIndex((x) => x.id === c.id)
+  projet.cartes[i] = cloner(photo)
+  majBoutonsLangue()
+  construireFormulaire()
+  dessiner()
+  sauvegarderPlusTard()
+  majListe()
+  majBoutonsHistorique()
+}
+function annuler() {
+  validerHistorique()
+  const c = carte()
+  const h = histoDe(c.id)
+  if (!h.avant.length) return message('Rien à annuler.')
+  h.apres.push(cloner(c))
+  const photo = h.avant.pop()
+  h.ref = cloner(photo)
+  remplacerCarte(c, photo)
+  message('Annulé.')
+}
+function retablir() {
+  validerHistorique()
+  const c = carte()
+  const h = histoDe(c.id)
+  if (!h.apres.length) return message('Rien à rétablir.')
+  h.avant.push(cloner(c))
+  const photo = h.apres.pop()
+  h.ref = cloner(photo)
+  remplacerCarte(c, photo)
+  message('Rétabli.')
+}
+function majBoutonsHistorique() {
+  const c = carte()
+  const h = c && historiques.get(c.id)
+  $('#b-annuler').disabled = !h?.avant.length
+  $('#b-retablir').disabled = !h?.apres.length
 }
 function message(t) {
   $('#message').textContent = t
@@ -542,6 +623,8 @@ function construireFormulaire() {
   // illustration
   f.push(section('Illustration', false, ...boiteImage('Image derrière la carte', (x) => x.art, 'art'), el('hr'), ...boiteImage('Premier plan (devant le cadre)', (x) => x.artDevant, 'artDevant')))
 
+  f.push(sectionLibres())
+
   // tete d'angle
   if (spec.tete) {
     f.push(section('Tête d’angle', false,
@@ -575,12 +658,15 @@ function majListe() {
   }))
 }
 function choisir(id) {
+  validerHistorique()
   projet.courante = id
+  { const h = histoDe(id); h.ref ??= cloner(carte()) }
   majListe()
   majBoutonsLangue()
   construireFormulaire()
   dessiner()
   sauvegarderPlusTard()
+  majBoutonsHistorique()
 }
 function ajouter(c) {
   projet.cartes.push(c)
@@ -718,28 +804,8 @@ async function plancheTTS() {
 // ---------------------------------------------------------------- projet (fichier)
 async function exporterProjet() {
   const cartes = []
-  for (const c of projet.cartes) {
-    const copie = JSON.parse(JSON.stringify({ ...c, art: { ...c.art, blob: null }, artDevant: { ...c.artDevant, blob: null }, tete: { ...c.tete, blob: null } }))
-    copie.art.image = c.art.blob ? await blobVersDataUrl(c.art.blob) : null
-    copie.artDevant.image = c.artDevant.blob ? await blobVersDataUrl(c.artDevant.blob) : null
-    copie.tete.image = c.tete.blob ? await blobVersDataUrl(c.tete.blob) : null
-    cartes.push(copie)
-  }
-  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 1, cartes })], { type: 'application/json' }), 'cartes.json')
-}
-async function importerProjet(fichier) {
-  const j = JSON.parse(await fichier.text())
-  if (j.format !== 'createur-cartes') throw new Error('fichier inconnu')
-  for (const c of j.cartes) {
-    for (const k of ['art', 'artDevant', 'tete']) {
-      c[k].blob = c[k].image ? await dataUrlVersBlob(c[k].image) : null
-      delete c[k].image
-    }
-    if (!TYPES[c.type]) continue
-    c.id = nouvelId()
-    projet.cartes.push(c)
-  }
-  if (projet.cartes.length) choisir(projet.cartes[projet.cartes.length - 1].id)
+  for (const c of projet.cartes) cartes.push(await serialiser(c))
+  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes })], { type: 'application/json' }), 'cartes.json')
 }
 
 // ---------------------------------------------------------------- import des fichiers du Card Maker de reference
@@ -838,9 +904,9 @@ async function importerFichiers(fichiers) {
   const traiter = async (j) => {
     if (Array.isArray(j)) { for (const x of j) await traiter(x); return }
     if (j?.format === 'createur-cartes') {
-      for (const c of j.cartes) {
-        for (const k of ['art', 'artDevant', 'tete']) { c[k].blob = c[k].image ? await dataUrlVersBlob(c[k].image) : null; delete c[k].image }
-        if (!TYPES[c.type]) continue
+      for (const x of j.cartes) {
+        if (!TYPES[x.type]) continue
+        const c = await deserialiser(x)
         c.id = nouvelId()
         ajoutees.push(c)
       }
@@ -864,20 +930,35 @@ async function importerFichiers(fichiers) {
 // ---------------------------------------------------------------- souris sur l'apercu
 function brancherToile() {
   const toile = $('#toile')
+  const sur = $('#surcouche')
+  brancherSurcouche(sur, toile)
   let depart = null
+  let libre = null
+  let bouge = false
   const cible = () => {
     const c = carte()
     return ciblePointeur === 'tete' ? c.tete : ciblePointeur === 'artDevant' ? c.artDevant : c.art
   }
-  toile.addEventListener('pointerdown', (e) => {
+  sur.addEventListener('pointerdown', (e) => {
     const c = carte()
-    if (!c || !cible().blob && ciblePointeur !== 'tete') return
+    if (!c) return
+    bouge = false
+    libre = commencerGlisser(e)
+    if (libre) {
+      sur.setPointerCapture(e.pointerId)
+      sur.classList.add('glisse')
+      return
+    }
+    // un clic dans le vide : plus de calque choisi ; un glisser deplace l'illustration (ou la tete)
+    if (!cible().blob && ciblePointeur !== 'tete') { depart = { x: e.clientX, y: e.clientY, clic: true }; sur.setPointerCapture(e.pointerId); return }
     depart = { x: e.clientX, y: e.clientY, ox: cible().x, oy: cible().y }
-    toile.setPointerCapture(e.pointerId)
-    toile.classList.add('glisse')
+    sur.setPointerCapture(e.pointerId)
+    sur.classList.add('glisse')
   })
-  toile.addEventListener('pointermove', (e) => {
-    if (!depart) return
+  sur.addEventListener('pointermove', (e) => {
+    if (libre) { bouge = true; libre.deplacer(e); return }
+    if (!depart || depart.clic) return
+    bouge = true
     const k = toile.width / toile.getBoundingClientRect().width
     const o = cible()
     // une carte paysage est dessinee dans son repere : le glisser suit l'ecran
@@ -885,16 +966,27 @@ function brancherToile() {
     o.y = Math.round(depart.oy + (e.clientY - depart.y) * k)
     changement()
   })
-  const fin = () => {
-    if (depart) construireFormulaire()
+  const fin = (e) => {
+    const etaitClic = !bouge
+    if (libre) libre.fin()
+    else if (depart && bouge) construireFormulaire()
+    if (etaitClic && !libre && e.type === 'pointerup') {
+      // clic sans glisser sur la carte : on choisit rien, ou on edite l'element touche
+      choisirCalque(null)
+      clicSurCarte(e, toile)
+      construireFormulaire()
+    }
     depart = null
-    toile.classList.remove('glisse')
+    libre = null
+    sur.classList.remove('glisse')
   }
-  toile.addEventListener('pointerup', fin)
-  toile.addEventListener('pointercancel', fin)
-  toile.addEventListener('wheel', (e) => {
+  sur.addEventListener('pointerup', fin)
+  sur.addEventListener('pointercancel', fin)
+  sur.addEventListener('wheel', (e) => {
     const c = carte()
-    if (!c || (!cible().blob && ciblePointeur !== 'tete')) return
+    if (!c) return
+    if (molette(e)) { e.preventDefault(); clearTimeout(brancherToile.t); brancherToile.t = setTimeout(construireFormulaire, 300); return }
+    if (!cible().blob && ciblePointeur !== 'tete') return
     e.preventDefault()
     const o = cible()
     o.zoom = Math.max(0.2, Math.min(4, o.zoom * (e.deltaY < 0 ? 1.05 : 1 / 1.05)))
@@ -902,20 +994,27 @@ function brancherToile() {
     clearTimeout(brancherToile.t)
     brancherToile.t = setTimeout(construireFormulaire, 300)
   }, { passive: false })
-  // glisser-deposer d'une image sur l'apercu
-  toile.addEventListener('dragover', (e) => e.preventDefault())
-  toile.addEventListener('drop', (e) => {
+  // glisser-deposer d'images sur l'apercu : chacune devient un calque PNG libre
+  sur.addEventListener('dragover', (e) => e.preventDefault())
+  sur.addEventListener('drop', (e) => {
     e.preventDefault()
-    const f = [...e.dataTransfer.files].find((x) => x.type.startsWith('image/'))
-    const c = carte()
-    if (!f || !c) return
-    cible().blob = f
-    changement()
-    construireFormulaire()
+    const fs = [...e.dataTransfer.files].filter((x) => x.type.startsWith('image/'))
+    if (fs.length && carte()) ajouterFichiers(fs)
+  })
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && !e.target.isContentEditable && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return
+    if (touche(e)) e.preventDefault()
   })
 }
 
 // ---------------------------------------------------------------- demarrage
+function brancherEtat() {
+  Object.assign(S, {
+    carte, projet: () => projet, types: TYPES, changement, reconstruire: () => construireFormulaire(), message, imageDe,
+    imageSync: (b) => (b ? imagesPretes.get(b) ?? null : null), rendre: rendreCarte, choisir: (id) => choisir(id),
+  })
+}
+
 async function demarrer() {
   const [types, palettes] = await Promise.all([
     fetch(BASE + 'donnees/types.json').then((r) => r.json()),
@@ -925,6 +1024,7 @@ async function demarrer() {
   ]).then((r) => [r[0], r[1]])
   TYPES = types
   PALETTES = palettes
+  brancherEtat()
   const sel = $('#type')
   for (const [titre, ids] of GROUPES) {
     sel.append(el('optgroup', { label: titre }, ids.filter((i) => TYPES[i]).map((i) => el('option', { value: i }, NOMS[i] ?? TYPES[i].etiquette))))
@@ -945,17 +1045,14 @@ async function demarrer() {
   else projet = { cartes: [nouvelleCarte('ally', 'fr')], courante: null }
   projet.cartes = projet.cartes.filter((c) => TYPES[c.type])
   if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'fr')]
+  for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= '' }
   if (!projet.cartes.some((c) => c.id === projet.courante)) projet.courante = projet.cartes[0].id
 
   $('#lang-fr').addEventListener('click', () => changerLangue('fr'))
   $('#lang-en').addEventListener('click', () => changerLangue('en'))
   $('#c-nouvelle').addEventListener('click', () => ajouter(nouvelleCarte(carte()?.type ?? 'ally', carte()?.langue ?? 'fr')))
   $('#c-dupliquer').addEventListener('click', () => {
-    const c = carte()
-    const copie = { ...JSON.parse(JSON.stringify({ ...c, art: { ...c.art, blob: null }, artDevant: { ...c.artDevant, blob: null }, tete: { ...c.tete, blob: null } })), id: nouvelId() }
-    copie.art.blob = c.art.blob
-    copie.artDevant.blob = c.artDevant.blob
-    copie.tete.blob = c.tete.blob
+    const copie = { ...cloner(carte()), id: nouvelId() }
     copie.contenu.titre += ' (copie)'
     ajouter(copie)
   })
@@ -965,6 +1062,15 @@ async function demarrer() {
     projet.cartes = projet.cartes.filter((x) => x.id !== c.id)
     if (!projet.cartes.length) projet.cartes.push(nouvelleCarte('ally', c.langue))
     choisir(projet.cartes[0].id)
+  })
+  $('#b-annuler').addEventListener('click', annuler)
+  $('#b-retablir').addEventListener('click', retablir)
+  document.addEventListener('keydown', (e) => {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey) return
+    const natif = e.target.isContentEditable || /^(INPUT|TEXTAREA)$/.test(e.target.tagName) && e.target.type !== 'range'
+    if (natif) return
+    const k = e.key.toLowerCase()
+    if (k === 'z' && !e.shiftKey) { e.preventDefault(); annuler() } else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); retablir() }
   })
   $('#b-export').addEventListener('click', () => exporter(false))
   $('#b-export-2').addEventListener('click', () => exporter(true))

@@ -3,6 +3,7 @@
 // Le gabarit (`types.json`) donne, pour chaque element, sa boite SANS rotation, sa propre transformation et son origine ; on
 // recompose la chaine de transformations de ses parents (comme CSS) puis on dessine dans la boite locale.
 import { PORTRAIT, chargerImage, dessinerCalques, teteVisible } from './rendu.js'
+import { dessinerNiveau } from './libres.js'
 import { analyser, dessinerPage, mettreEnPage } from './texte.js'
 
 /**
@@ -527,6 +528,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
     }
   }
   ctx.restore()
+  dessinerNiveau(ctx, spec, etat, 'dessus')
   return canvas
 }
 

@@ -39,7 +39,13 @@
   .liste button[aria-current=true] { border-color: var(--accent); }
   .scene { display: flex; flex-direction: column; align-items: center; gap: 8px; position: sticky; top: 62px; }
   .toile { max-width: 100%; max-height: calc(100vh - 150px); background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--bord); cursor: grab; touch-action: none; }
-  .toile.glisse { cursor: grabbing; }
+  .zone-toile { position: relative; display: inline-block; line-height: 0; max-width: 100%; }
+  .surcouche { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  .surcouche.glisse { cursor: grabbing; }
+  .liste-libres { display: flex; flex-direction: column; gap: 4px; }
+  .ligne-libre { display: flex; gap: 3px; align-items: center; }
+  .ligne-libre .nom-libre { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ligne-libre.choisie .nom-libre { border-color: var(--accent); }
   .outils { display: flex; gap: 4px; flex-wrap: wrap; }
   .couleurs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
   .couleurs label { flex-direction: row; align-items: center; justify-content: space-between; gap: 6px; }
@@ -67,6 +73,8 @@
     <button class="btn" id="lang-fr" aria-pressed="true" title="Texte, libellé du type et traits en français">FR</button>
     <button class="btn" id="lang-en" aria-pressed="false" title="Texte, libellé du type et traits en anglais">EN</button>
   </span>
+  <button class="btn" id="b-annuler" title="Annuler (Ctrl+Z)" disabled>↶</button>
+  <button class="btn" id="b-retablir" title="Rétablir (Ctrl+Y)" disabled>↷</button>
   <button class="btn" id="b-export">⬇ Exporter l'image</button>
   <button class="btn" id="b-export-2" title="Une image dans chaque langue (traits traduits)">⬇ FR + EN</button>
   <button class="btn" id="b-print" title="Planche à imprimer (63 × 88 mm) ou à enregistrer en PDF">🖨 Imprimer / PDF</button>
@@ -99,8 +107,8 @@
   </section>
 
   <section class="scene">
-    <canvas id="toile" class="toile"></canvas>
-    <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration, molette pour zoomer.</div>
+    <div class="zone-toile"><canvas id="toile" class="toile"></canvas><canvas id="surcouche" class="surcouche"></canvas></div>
+    <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration ou un calque, molette pour zoomer. Glisse-y des images pour les ajouter.</div>
   </section>
 </div>
 <script type="module" src="/createur-cartes/app.js"></script>

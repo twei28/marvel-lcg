@@ -7,6 +7,8 @@
 // Un calque teinte est une forme pleine : seul son ALPHA compte, il est rempli d'une couleur unie (role = nom du calque :
 // `left_color`, `middle`...). Le calque `gradient` est un degrade bas -> haut decoupe par son masque.
 
+import { dessinerNiveau } from './libres.js'
+
 const cacheImages = new Map()
 
 export function chargerImage(url) {
@@ -117,10 +119,12 @@ export async function dessinerCalques(ctx, spec, etat, dossierImages = 'img/') {
   for (const calque of pileDeCalques(spec, etat)) {
     if (calque.role === 'photo') {
       dessinerArt(ctx, spec, etat.art)
+      dessinerNiveau(ctx, spec, etat, 'derriere')
       continue
     }
     if (calque.role === 'photofront') {
       dessinerArt(ctx, spec, etat.artDevant)
+      dessinerNiveau(ctx, spec, etat, 'devant')
       continue
     }
     let image
