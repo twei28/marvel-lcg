@@ -3708,6 +3708,18 @@ CAS = [
         "attendu": {},
     },
     {
+        "nom": "01188 Caught Off Guard — Rocket Raccoon : on peut defausser son amelioration (Rocket's Pistol)",
+        "pourquoi": "rapport du 28/10/2026 (partie Rocket Raccoon contre Rhino) : « impossible de defausser sur Pris par surprise ». Rocket's Pistol (amelioration Restricted attachee a l'identite) et le Triskelion sont en jeu",
+        "scenario": "rhino",
+        "heros": "rocket_raccoon",
+        "mise_en_place": ["Puzzle.ChangeForm('16029a')", "Puzzle.PutIntoPlay('16038', under_control=True)",
+                          "Puzzle.Attach('16038', '16029a')", "Puzzle.PutIntoPlay('01073', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('01188')"],
+        "cibles": ["16038"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["16038"]},
+    },
+    {
         "nom": "01094 Rhino — Puzzle.Attack : le vilain frappe et le heros encaisse",
         "pourquoi": "premier cas passant par Puzzle.Attack ; sans lui aucune capacite « apres avoir attaque » n'est atteignable",
         "scenario": "rhino",
