@@ -34,6 +34,11 @@
   .toile.glisse { cursor: grabbing; }
   .aide { color: var(--doux); font-size: 12px; }
   .reinit { background: none; border: 0; color: var(--doux); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
+  .texte-libre { border: 1px solid var(--bord); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px; background: #12141a; }
+  .texte-libre.choisi { border-color: var(--accent); }
+  .texte-libre .rang { align-items: center; }
+  .texte-libre input[type=number] { width: 64px; background: #1b1e25; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 4px 6px; font: inherit; }
+  .texte-libre .btn { padding: 4px 8px; flex: none; }
   #message { min-height: 18px; color: var(--doux); font-size: 12px; }
 </style>
 </head>
@@ -88,6 +93,11 @@
     <label class="ligne">Étiquette (« Hero Pack ») <input type="color" id="couleur-etiquette"></label>
     <button class="reinit" id="couleurs-origine" type="button">Revenir aux couleurs d'origine</button>
 
+    <h2>Textes libres</h2>
+    <div id="liste-textes"></div>
+    <button class="btn" id="ajouter-texte" type="button">+ Ajouter un texte</button>
+    <div class="aide">Nom du créateur, mention, ce que tu veux. Glisse un texte dans l'aperçu pour le placer.</div>
+
     <h2>Export</h2>
     <button class="btn principal" id="export-png" disabled>Télécharger en PNG</button>
     <button class="btn" id="export-webp" disabled>Télécharger en webp (600 px de haut)</button>
@@ -114,6 +124,7 @@
     titreImg: null,
     couleurBoite: null, couleurEtiquette: null,
     policePerso: null,
+    textes: [], choisi: -1, // textes libres ; `choisi` = celui qu'on deplace / regle
   }
   // Defauts par mode : ou tombe le titre, et sa taille.
   const TITRE = {
@@ -252,7 +263,34 @@
     })
     ctx.restore()
   }
-  function dessiner() {
+  const POLICES = () => [...$('police').options].filter((o) => o.value !== '__perso').map((o) => [o.value, o.textContent])
+  function policeDe(valeur) { return valeur === '__perso' ? (etat.policePerso || 'sans-serif') : valeur }
+  function dessinerTextesLibres(exportation) {
+    etat.textes.forEach((t, i) => {
+      const lignes = (t.texte || '').split('\n')
+      if (!lignes.join('').trim()) { t.boite = null; return }
+      ctx.save()
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'
+      ctx.font = `${t.gras ? 'bold ' : ''}${t.taille}px ${policeDe(t.police)}`
+      const inter = t.taille * 1.15, haut = inter * lignes.length
+      const large = Math.max(...lignes.map((l) => ctx.measureText(l).width))
+      const y0 = t.y - haut / 2 + inter / 2
+      lignes.forEach((ligne, k) => {
+        const y = y0 + k * inter
+        if (t.ombre) { ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = t.taille * .08; ctx.shadowOffsetY = t.taille * .04 }
+        if (t.epaisseur > 0) { ctx.strokeStyle = t.contour; ctx.lineWidth = t.epaisseur; ctx.strokeText(ligne, t.x, y) }
+        ctx.fillStyle = t.couleur; ctx.fillText(ligne, t.x, y)
+        ctx.shadowColor = 'transparent'
+      })
+      t.boite = { x: t.x - large / 2 - 8, y: t.y - haut / 2 - 8, l: large + 16, h: haut + 16 }
+      if (!exportation && i === etat.choisi) {
+        ctx.setLineDash([10, 8]); ctx.lineWidth = 3; ctx.strokeStyle = '#e23636'
+        ctx.strokeRect(t.boite.x, t.boite.y, t.boite.l, t.boite.h)
+      }
+      ctx.restore()
+    })
+  }
+  function dessiner(exportation = false) {
     if (!images['heros-boite']) return
     const c = COUCHES[etat.mode], cfg = TITRE[etat.mode]
     dessinerArt()
@@ -261,6 +299,7 @@
     if (cfg.apresBoite) dessinerTitre()
     ctx.drawImage(images[c.logos], 0, 0)
     ctx.drawImage(couche(c.etiquette, etat.couleurEtiquette, origines[c.etiquette]), 0, 0)
+    dessinerTextesLibres(exportation)
     const pret = !!etat.art
     $('export-png').disabled = $('export-webp').disabled = !pret
   }
@@ -305,18 +344,39 @@
     $('zoom').value = Math.round(etat.artZoom * 100); dessiner()
   }, { passive: false })
   let prise = null
-  toile.addEventListener('pointerdown', (e) => { prise = { x: e.clientX, y: e.clientY, ax: etat.artX, ay: etat.artY }; toile.setPointerCapture(e.pointerId); toile.classList.add('glisse') })
+  function textePointe(e) {
+    const r = toile.getBoundingClientRect(), k = L / r.width
+    const px = (e.clientX - r.left) * k, py = (e.clientY - r.top) * k
+    for (let i = etat.textes.length - 1; i >= 0; i--) {
+      const b = etat.textes[i].boite
+      if (b && px >= b.x && px <= b.x + b.l && py >= b.y && py <= b.y + b.h) return i
+    }
+    return -1
+  }
+  toile.addEventListener('pointerdown', (e) => {
+    const i = textePointe(e)
+    if (i >= 0) {
+      if (etat.choisi !== i) { etat.choisi = i; afficherListeTextes(); dessiner() }
+      const t = etat.textes[i]
+      prise = { texte: t, x: e.clientX, y: e.clientY, tx: t.x, ty: t.y }
+    } else {
+      if (etat.choisi !== -1) { etat.choisi = -1; afficherListeTextes(); dessiner() }
+      prise = { x: e.clientX, y: e.clientY, ax: etat.artX, ay: etat.artY }
+    }
+    toile.setPointerCapture(e.pointerId); toile.classList.add('glisse')
+  })
   toile.addEventListener('pointermove', (e) => {
     if (!prise) return
     const k = L / toile.getBoundingClientRect().width
-    etat.artX = prise.ax + (e.clientX - prise.x) * k; etat.artY = prise.ay + (e.clientY - prise.y) * k
+    if (prise.texte) { prise.texte.x = prise.tx + (e.clientX - prise.x) * k; prise.texte.y = prise.ty + (e.clientY - prise.y) * k }
+    else { etat.artX = prise.ax + (e.clientX - prise.x) * k; etat.artY = prise.ay + (e.clientY - prise.y) * k }
     dessiner()
   })
   const fin = () => { prise = null; toile.classList.remove('glisse') }
   toile.addEventListener('pointerup', fin); toile.addEventListener('pointercancel', fin)
 
   for (const id of ['titre', 'police', 'titre-haut', 'titre-bas', 'titre-contour', 'titre-epaisseur', 'titre-taille', 'titre-x', 'titre-y', 'titre-ombre'])
-    $(id).addEventListener('input', dessiner)
+    $(id).addEventListener('input', () => dessiner())
   $('police').addEventListener('change', () => { if ($('police').value === '__perso') $('fichier-police').click() })
   $('fichier-police').addEventListener('change', async (e) => {
     const f = e.target.files[0]; if (!f) return
@@ -329,6 +389,41 @@
     etat.couleurBoite = etat.couleurEtiquette = null; appliquerMode(etat.mode)
   })
 
+  // ---- Textes libres
+  function nouveauTexte() {
+    return { texte: 'Créé par …', police: POLICES()[0][0], taille: 44, couleur: '#ffffff', contour: '#000000', epaisseur: 6, x: L / 2, y: H - 40, ombre: true, gras: true }
+  }
+  function champ(libelle, node) { const l = document.createElement('label'); l.textContent = libelle; l.append(node); return l }
+  function entree(type, valeur, surChange, attrs = {}) {
+    const i = document.createElement('input'); i.type = type; Object.assign(i, attrs)
+    if (type === 'checkbox') i.checked = !!valeur; else i.value = valeur
+    i.addEventListener('input', () => { surChange(type === 'checkbox' ? i.checked : type === 'number' || type === 'range' ? +i.value : i.value); dessiner() })
+    return i
+  }
+  function afficherListeTextes() {
+    const liste = $('liste-textes'); liste.replaceChildren()
+    etat.textes.forEach((t, i) => {
+      const bloc = document.createElement('div'); bloc.className = 'texte-libre' + (i === etat.choisi ? ' choisi' : '')
+      bloc.addEventListener('pointerdown', () => { if (etat.choisi !== i) { etat.choisi = i; afficherListeTextes(); dessiner() } })
+      const zone = document.createElement('textarea'); zone.value = t.texte; zone.placeholder = 'Ton texte'
+      zone.addEventListener('input', () => { t.texte = zone.value; dessiner() })
+      const police = document.createElement('select')
+      for (const [v, nom] of POLICES()) police.add(new Option(nom, v, false, v === t.police))
+      if (etat.policePerso) police.add(new Option('Ma police', '__perso', false, t.police === '__perso'))
+      police.addEventListener('change', () => { t.police = police.value; dessiner() })
+      const suppr = document.createElement('button'); suppr.type = 'button'; suppr.className = 'btn'; suppr.textContent = 'Supprimer'
+      suppr.addEventListener('click', () => { etat.textes.splice(i, 1); etat.choisi = -1; afficherListeTextes(); dessiner() })
+      const r1 = document.createElement('div'); r1.className = 'rang'
+      r1.append(champ('Couleur', entree('color', t.couleur, (v) => (t.couleur = v))), champ('Contour', entree('color', t.contour, (v) => (t.contour = v))), champ('Épaisseur', entree('number', t.epaisseur, (v) => (t.epaisseur = v), { min: 0, max: 40 })))
+      const r2 = document.createElement('div'); r2.className = 'rang'
+      r2.append(champ('Taille', entree('number', t.taille, (v) => (t.taille = Math.max(8, v)), { min: 8, max: 300 })), champ('Gras', entree('checkbox', t.gras, (v) => (t.gras = v))), champ('Ombre', entree('checkbox', t.ombre, (v) => (t.ombre = v))), suppr)
+      bloc.append(zone, police, r1, r2); liste.append(bloc)
+    })
+  }
+  $('ajouter-texte').addEventListener('click', () => { etat.textes.push(nouveauTexte()); etat.choisi = etat.textes.length - 1; afficherListeTextes(); dessiner() })
+  // La police importee devient disponible dans les textes libres.
+  $('fichier-police').addEventListener('change', () => setTimeout(afficherListeTextes, 400))
+
   // ---- Export
   function telecharger(blob, nom) {
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nom
@@ -338,10 +433,12 @@
     const t = ($('titre').value.trim().split('\n')[0] || 'couverture').toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
     return `${t || 'couverture'}-${etat.mode}`
   }
-  $('export-png').addEventListener('click', () => toile.toBlob((b) => { telecharger(b, nomFichier() + '.png'); $('message').textContent = 'PNG exporté (938 × 1538).' }, 'image/png'))
+  $('export-png').addEventListener('click', () => { dessiner(true); toile.toBlob((b) => { telecharger(b, nomFichier() + '.png'); $('message').textContent = 'PNG exporté (938 × 1538).' }, 'image/png'); dessiner() })
   $('export-webp').addEventListener('click', () => {
+    dessiner(true)
     const petit = document.createElement('canvas'); petit.height = 600; petit.width = Math.round(L * 600 / H)
     const x = petit.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(toile, 0, 0, petit.width, petit.height)
+    dessiner()
     petit.toBlob((b) => { telecharger(b, nomFichier() + '.webp'); $('message').textContent = `webp exporté (${petit.width} × 600).` }, 'image/webp', 0.86)
   })
 
