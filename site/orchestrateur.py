@@ -7276,14 +7276,8 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 self._repondre(405, b"", "text/plain; charset=utf-8")
             return True
-        if pseudo != ADMIN and not est_createur(pseudo):
-            self._raccrocher()
-            if api:
-                self._json(403, {"erreur": "Réservé aux créateurs de cartes."})
-            else:
-                self._repondre(403, "Réservé aux créateurs de cartes.".encode("utf-8"),
-                               "text/plain; charset=utf-8")
-            return True
+        # 28/10/2026 : ouvert a TOUT compte connecte (joueurs, createurs, admin),
+        # sur decision de l'admin. Chacun reste isole : ses projets seulement.
         if statique:
             if methode != "GET":
                 self._repondre(405, b"", "text/plain; charset=utf-8")
@@ -7314,8 +7308,8 @@ class Handler(BaseHTTPRequestHandler):
                         403, "Les projets d'un autre compte ne sont pas accessibles.")
                 cible = createur_cartes.compte_valide(demande)
                 ligne = compte(cible)
-                if ligne is None or ligne["role"] != "createur":
-                    raise createur_cartes.ErreurCreateur(404, "Compte créateur introuvable.")
+                if ligne is None:
+                    raise createur_cartes.ErreurCreateur(404, "Compte introuvable.")
             else:
                 cible = createur_cartes.compte_valide(pseudo)
             if ecriture:
