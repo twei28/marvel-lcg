@@ -2166,7 +2166,25 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 /* Inviter un connecte (13/10/2026) : les deux entrees, puis par siege l'etat
    en direct, la liste des connectes et le lien a copier. */
 .invit-entrees { display: flex; flex-wrap: wrap; gap: 8px; }
-.invit-ligne { min-height: 34px; }
+/* La rangee d'un siege empile sa ligne d'invitation et, dessous, le lien. */
+.invit-ligne { min-height: 34px; flex-direction: column; align-items: stretch; gap: 6px; }
+.invit-rangee { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* Le lien a envoyer, visible et selectionnable, sous la rangee d'invitation. */
+.liens-url-ligne { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.liens-url-etiq { font-size: 12px; color: var(--mute, #9aa0aa); white-space: nowrap; }
+.liens-url {
+    flex: 1 1 260px;
+    min-width: 0;
+    font: inherit;
+    font-size: 12px;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(240, 185, 95, 0.35);
+    border-radius: 4px;
+    padding: 6px 8px;
+    cursor: text;
+}
+.liens-url:focus { outline: 0; border-color: var(--affiche-jaune, #f0b95f); }
 .invit-liste {
     flex: 1 1 200px;
     min-width: 0;

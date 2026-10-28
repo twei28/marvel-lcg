@@ -1262,8 +1262,12 @@ async function demarrer() {
 
     statut(t("Choisis ton héros, puis ton deck. L’hôte lancera quand tout le monde aura choisi."));
 
+    // RESET AU LOBBY (28/10/2026, demande utilisateur) : on ne REPROPOSE PLUS
+    // le heros+deck de la manche d'avant. Revenir au lobby doit toujours
+    // repartir d'un choix VIERGE (grille de heros), jamais recoller l'ancien
+    // perso. On garde seulement `reprendreChoixExistant`, qui ne reprend que le
+    // choix DEJA ENVOYE pour la partie EN COURS (il se vide a chaque /new).
     await reprendreChoixExistant();
-    if (!etat.deckChoisi) await reprendreDernierChoix();
     if (!etat.deckChoisi) bandeauAttente(false);
     if (etat.hero) await rendreDecks();
     else await rendreHeros();

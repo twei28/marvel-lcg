@@ -1744,12 +1744,23 @@ function ligneDuSiege(p) {
             onclick: () => inviterAuSiege(p, invitationsHote.choisi[p] || choisi),
         }, etat && etat.relancer ? t("Réinviter") : t("Inviter")));
     }
+    // Le lien, VISIBLE et selectionnable : sans ca, « Copier le lien » copiait
+    // une URL qu'on ne voyait nulle part, a cote de la barre « inviter un
+    // connecte » — personne ne comprenait ce qui etait copie (28/10/2026).
+    const champLien = el("input", {
+        class: "liens-url", type: "text", readOnly: true, value: url, title: url,
+        onclick: (e) => e.currentTarget.select(),
+    });
+    // Siege libre (ou a relancer) : on donne son lien. Siege deja pris : inutile.
+    const montrerLien = !etat || etat.relancer;
     return el("div", { class: "liens-ligne invit-ligne" },
-        el("span", { class: "liens-qui" }, t("Joueur") + " " + (p + 1)),
-        etat ? el("span", { class: "invit-etat " + etat.classe }, etat.texte) : null,
-        ...inviter,
-        // Un siege deja pris n'a plus besoin de son lien.
-        etat && !etat.relancer ? null : boutonCopier,
+        el("div", { class: "invit-rangee" },
+            el("span", { class: "liens-qui" }, t("Joueur") + " " + (p + 1)),
+            etat ? el("span", { class: "invit-etat " + etat.classe }, etat.texte) : null,
+            ...inviter),
+        montrerLien ? el("div", { class: "liens-url-ligne" },
+            el("span", { class: "liens-url-etiq" }, t("Lien à envoyer :")),
+            champLien, boutonCopier) : null,
         invitationsHote.erreur[p] ? el("small", { class: "liens-erreur" }, invitationsHote.erreur[p]) : null,
     );
 }

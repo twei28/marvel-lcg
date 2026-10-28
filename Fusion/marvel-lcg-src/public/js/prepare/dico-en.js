@@ -156,6 +156,7 @@ export const DICO_EN_BASE = {
     "Créer des liens": "Create links",
     "Inviter quelqu’un de connecté": "Invite someone online",
     "Copier le lien": "Copy link",
+    "Lien à envoyer :": "Link to send:",
     "Copie ce lien :": "Copy this link:",
     "Choisir un joueur connecté": "Pick an online player",
     "Personne n’est connecté": "Nobody is online",
