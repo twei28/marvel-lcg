@@ -49,8 +49,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-29",
         genre: "coulisses",
-        fr: "Un créateur de cartes Marvel Champions, en français et en anglais, est disponible pour fabriquer ses propres cartes (23 types) et les exporter en image, en planche à imprimer ou pour Tabletop Simulator.",
-        en: "A Marvel Champions card maker, in French and English, is now available to make your own cards (23 types) and export them as images, a print sheet or for Tabletop Simulator.",
+        fr: "Le créateur de cartes est ouvert à tous les comptes (lien en haut de page) : 23 types de cartes, dos, packs .zip, impression, et un travail enregistré sur le serveur avec ses versions. Un bouton montre aussi une vraie carte officielle comparable pour juger la longueur du texte.",
+        en: "The card maker is now open to every account (link at the top of the page): 23 card types, card backs, .zip packs, printing, and your work saved on the server with its versions. A button also shows a real comparable official card, to judge the length of your text.",
     },
     {
         date: "2026-10-28",
