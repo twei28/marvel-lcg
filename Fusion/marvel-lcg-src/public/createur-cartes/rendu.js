@@ -81,12 +81,40 @@ export function dessinerArt(ctx, spec, art) {
   ctx.restore()
 }
 
+const ROLES_FISSURES = new Set(['base', 'shading', 'light_boxes', 'cracks'])
+const ECLAT = [
+  { role: 'splash', src: 'general/splash' },
+  { role: 'splash_color', src: 'general/splash_color', teinte: 'splash_color' },
+  { role: 'splash_dots', src: 'general/splash_dots' },
+]
+
+/** La tete d'angle est-elle visible ? `etat.tete` = { image, afficher, etoile, zoom, x, y, rotation } (afficher vaut vrai par defaut). */
+export function teteVisible(spec, etat) {
+  return !!(spec.tete && etat.tete?.image && etat.tete.afficher !== false)
+}
+
+/**
+ * La pile effective : l'eclat de la tete (3 calques, variante etoile) n'y est que si la tete est visible, les calques a fissures
+ * prennent leur variante `-nocracks` quand `etat.fissures === false`.
+ */
+export function pileDeCalques(spec, etat) {
+  let pile = spec.calques.filter((c) => !c.role.startsWith('splash'))
+  // la promo generique prend un autre fond des qu'une valeur THW apparait (encarts de stats)
+  if (spec.id === 'generic-promo' && etat.avecStats) pile = pile.map((c) => (c.role === 'base' ? { ...c, src: 'generic-promo/base-ally.png' } : c))
+  if (teteVisible(spec, etat) && spec.tete.splash) {
+    const i = pile.findIndex((c) => c.role === 'photofront')
+    const eclat = ECLAT.map((c) => ({ ...c, src: `${c.src}${etat.tete.etoile ? '-star' : ''}.png` }))
+    pile = [...pile.slice(0, i < 0 ? pile.length : i), ...eclat, ...pile.slice(i < 0 ? pile.length : i)]
+  }
+  return pile
+}
+
 /**
  * La pile de calques d'une carte, dans l'ordre du gabarit. `etat.couleurs` donne la couleur de chaque role teinte ;
  * `etat.art` / `etat.artDevant` : l'illustration derriere le gabarit et le premier plan par-dessus.
  */
 export async function dessinerCalques(ctx, spec, etat, dossierImages = 'img/') {
-  for (const calque of spec.calques) {
+  for (const calque of pileDeCalques(spec, etat)) {
     if (calque.role === 'photo') {
       dessinerArt(ctx, spec, etat.art)
       continue
@@ -95,7 +123,11 @@ export async function dessinerCalques(ctx, spec, etat, dossierImages = 'img/') {
       dessinerArt(ctx, spec, etat.artDevant)
       continue
     }
-    const image = await chargerImage(dossierImages + calque.src)
+    let image
+    if (etat.fissures === false && ROLES_FISSURES.has(calque.role)) {
+      image = await chargerImage(dossierImages + calque.src.replace(/\.png$/, '-nocracks.png')).catch(() => null)
+    }
+    image ??= await chargerImage(dossierImages + calque.src)
     ctx.save()
     repereGabarit(ctx, spec)
     if (calque.melange) ctx.globalCompositeOperation = calque.melange
@@ -111,10 +143,10 @@ export async function dessinerCalques(ctx, spec, etat, dossierImages = 'img/') {
       x.drawImage(image, 0, 0)
       ctx.drawImage(c, 0, 0)
     } else if (calque.teinte) {
-      const couleur = etat.couleurs[calque.teinte] ?? spec.couleursParDefaut[calque.teinte] ?? '#888888'
+      const couleur = etat.couleurs[calque.teinte] ?? spec.couleursParDefaut[calque.teinte] ?? (calque.teinte === 'splash_color' ? '#e0ca22' : '#888888')
       ctx.drawImage(teinter(image, couleur), 0, 0)
     } else {
-      ctx.drawImage(image, 0, 0)
+      ctx.drawImage(image, ...(calque.pos ?? [0, 0]))
     }
     ctx.restore()
   }

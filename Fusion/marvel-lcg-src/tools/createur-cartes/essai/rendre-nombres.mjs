@@ -15,6 +15,7 @@ function contenuDe(rows) {
     c[champ + 'Etoile'] = fils.some((x) => x.tag === 'CODE')
   }
   const vis = (cls) => rows.find((x) => x.cls === cls && x.y > -5000)
+  c.etape = vis('villainstagenew')?.text ?? ''
   c.acceleration = vis('acceleration')?.text ?? ''
   c.phaseNumero = vis('mainschemephasenumber')?.text ?? ''
   c.phaseLettre = vis('mainschemephaseletter')?.text ?? ''
@@ -33,7 +34,8 @@ const err = []; p.on('pageerror', (e) => err.push(String(e))); p.on('console', (
 await p.goto('http://127.0.0.1:8765/_essai/essai.html'); await p.waitForFunction(() => window.prete, null, { timeout: 20000 })
 for (const t of (ids.length ? ids : types)) {
   const rows = JSON.parse(fs.readFileSync(`${S}/ref-nombres/${t}.json`, 'utf8'))
-  const url = await p.evaluate(([id, extra]) => window.rendre(id, extra), [t, contenuDe(rows)])
+  const TETE = ['ally', 'alter-ego', 'event', 'identity', 'alter-ego-promo', 'identity-promo', 'generic-promo-vert'] // tete visible par defaut sur la reference
+  const url = await p.evaluate(([id, extra, opts]) => window.rendre(id, extra, opts), [t, contenuDe(rows), { tete: TETE.includes(t) ? {} : null }])
   fs.writeFileSync(`${S}/mine-nombres/${t}.png`, Buffer.from(url.split(',')[1], 'base64'))
 }
 console.log('rendus', ids.length || types.length, '| erreurs:', err.join(' | ') || 'aucune')

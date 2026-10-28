@@ -8,7 +8,7 @@ const [S, ...ids] = process.argv.slice(2)
 const ETOILE = process.env.ETOILE !== '0'
 const SUF = process.env.SUFFIXE ?? ''
 const types = ids.length ? ids : JSON.parse(fs.readFileSync(S + '/types-options.json', 'utf8')).map((x) => x[0])
-const VAL = [[/^Cost$/, '3'], [/THW\/SCH value/, '2'], [/ATK value/, '3'], [/DEF value/, '2'], [/REC value/, '4'], [/HP value/, '12'], [/Starting threat\s*$/, '5'], [/Target threat/, '7'], [/Acceleration/, '2'], [/phase number/, '1'], [/Hand size/, '5'], [/Attachment ATK/, '2'], [/Attachment SCH/, '3'], [/Overwrite card type/, ''], [/^Subtitle/, '']]
+const VAL = [[/^Cost$/, '3'], [/THW\/SCH value/, '2'], [/ATK value/, '3'], [/DEF value/, '2'], [/REC value/, '4'], [/HP value/, '12'], [/Starting threat\s*$/, '5'], [/Target threat/, '7'], [/Acceleration/, '2'], [/phase number/, '1'], [/Hand size/, '5'], [/Attachment ATK/, '2'], [/Attachment SCH/, '3'], [/Villain stage/, 'II'], [/Overwrite card type/, ''], [/^Subtitle/, '']]
 const b = await chromium.launch()
 fs.mkdirSync(`${S}/ref-nombres${SUF}`, { recursive: true })
 for (const type of types) {

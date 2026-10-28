@@ -63,6 +63,13 @@ for tid, spec in types.items():
         let = next((x for x in rows if r and x["cls"] == "mainschemephaseletter" and x["y"] > -5000), None)
         if num and let:
             el["phase"] = {"fsNum": px(num["style"]["fontSize"]), "fsLettre": px(let["style"]["fontSize"]), "ecart": round(let["x"] - (num["x"] + num["w"]), 1)}
+    # bulle de PV (promos) : image 256 x 256 posee a l'endroit de la bulle, pas pleine carte
+    hb = next((x for x in rows if x["cls"] == "background hp_bubble" and (x["x"], x["y"]) != (0, 0)), None)
+    for c in spec["calques"]:
+        if c.get("role") == "hp_bubble":
+            c.pop("pos", None)
+            if hb and hb["w"] > 400 and "promo" in tid:
+                c["pos"] = [hb["x"], hb["y"]]
     # icones de renfort : ancre = la derniere icone (boost1), pas de 95 px, etoile 90 px a gauche ; ressources : 3 emplacements fixes
     b1 = next((x for x in rows if x["cls"].startswith("boost1") and x["y"] > -5000), None)
     if b1:
@@ -77,5 +84,12 @@ for tid, spec in types.items():
         spec["ressources"] = [[x["x"], x["y"]] for x in res]
     else:
         spec.pop("ressources", None)
+# tete (headshot) : les types qui ont la case « Show corner headshot? » ; l'eclat (splash) accompagne la tete sauf sur les promos
+AVEC_TETE = json.loads((Path(__file__).parent / "mesures/types-avec-tete.json").read_text(encoding="utf-8"))
+for tid, spec in types.items():
+    if tid in AVEC_TETE:
+        spec["tete"] = {"splash": "promo" not in tid}
+    else:
+        spec.pop("tete", None)
 TYPES.write_text(json.dumps(types, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 print("types.json mis a jour")

@@ -2,7 +2,7 @@
 //
 // Le gabarit (`types.json`) donne, pour chaque element, sa boite SANS rotation, sa propre transformation et son origine ; on
 // recompose la chaine de transformations de ses parents (comme CSS) puis on dessine dans la boite locale.
-import { PORTRAIT, chargerImage, dessinerCalques } from './rendu.js'
+import { PORTRAIT, chargerImage, dessinerCalques, teteVisible } from './rendu.js'
 import { analyser, dessinerPage, mettreEnPage } from './texte.js'
 
 /** Les champs de contenu d'une carte (tout est facultatif). */
@@ -121,7 +121,8 @@ function dessinerNombre(ctx, el, texte, etoile) {
   ctx.save()
   ctx.textAlign = 'left'
   ctx.textBaseline = 'alphabetic'
-  const E = el.etoile ?? { fs: base.taille * 0.36, dy: -base.taille * 0.15, ecart: 0, dx: -base.taille * 0.18 }
+  // PV : l'etoile est un pseudo-element mesure (68 px, marge 20 px, 38 px au-dessus du centre)
+  const E = el.etoile ?? (el.cls === 'hp cost' ? { fs: 68, dy: -38, ecart: 20, dx: -39 } : { fs: base.taille * 0.36, dy: -base.taille * 0.15, ecart: 0, dx: -base.taille * 0.18 })
   const ES = el.etoileSeule ?? { fs: 120, dx: 0, dy: 0 }
   ctx.font = police
   const largeur = texte ? ctx.measureText(texte).width : 0
@@ -258,6 +259,7 @@ function fluxTexte(ctx, spec, contenu) {
     let y = 0
     for (const c of blocs) {
       const el = E[c]
+      const libre = el.boite[1] < panneau.boite[1] || el.boite[1] > panneau.boite[1] + panneau.boite[3]
       const brut = c === 'traits' && el.style.textTransform === 'uppercase' ? (source[c] || '').toUpperCase() : source[c]
       const jetons = source[c] ? analyser(c === 'traits' ? `<em>${brut}</em>` : brut) : []
       if (!jetons.length) continue
@@ -282,6 +284,10 @@ function fluxTexte(ctx, spec, contenu) {
       }
       const f = c === 'traits' ? 1 : facteur
       const page = mettreEnPage(ctx, jetons, base, largeur, f, contrainte)
+      if (libre) {
+        sortie.push({ c, el, jetons, base, y: el.boite[1] - panneau.boite[1], page, facteur: f, largeur, retrait: 0 })
+        continue
+      }
       sortie.push({ c, el, jetons, base, y, page, facteur: f, largeur, retrait: 0 })
       // ecart au bloc suivant : celui du gabarit (mesure avec un contenu d'une ligne), sinon 20 / 30
       const suivant = E[blocs[blocs.indexOf(c) + 1]]
@@ -290,7 +296,8 @@ function fluxTexte(ctx, spec, contenu) {
     }
     return { sortie, hauteur: y - 30 }
   }
-  const maxi = panneau.boite[3] - 40
+  // le paquet de depart est une liste qui s'allonge : pas de reduction
+  const maxi = spec.id === 'starter-deck' ? 1e6 : panneau.boite[3] - 40
   let facteur = 1
   let r = disposer(facteur)
   while (r.hauteur > maxi && facteur > 0.4) {
@@ -329,6 +336,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   canvas.height = spec.hauteur
   const ctx = canvas.getContext('2d')
   ctx.clearRect(0, 0, canvas.width, canvas.height)
+  etat = { ...etat, avecStats: !!(contenu.thw || contenu.thwEtoile) }
   await dessinerCalques(ctx, spec, etat, dossierImages)
   if (attache) {
     for (const [actif, nom, y] of [[attache.s, 'sch', attache.ySch], [attache.a, 'atk', attache.yAtk]]) {
@@ -348,11 +356,44 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
     ctx.restore()
   }
 
+  // Fonds pleins du gabarit (promos : panneau de texte blanc, ligne d'ensemble noire, traits noirs), sous les textes
+  for (const e of spec.elements) {
+    const bg = e.style.backgroundColor
+    if (!bg || /rgba\(0, 0, 0, 0\)|transparent/.test(bg) || !['cardtext', 'set-line', 'traits'].includes(e.cls)) continue
+    if (e.cls === 'traits' && !contenu.traits) continue
+    dans(e, () => {
+      ctx.fillStyle = bg
+      ctx.fillRect(0, 0, e.boite[2], e.boite[3])
+    })
+  }
+
+  // la bulle de PV des promos se pose par-dessus le panneau blanc
+  const bulle = spec.calques.find((c) => c.role === 'hp_bubble' && c.pos)
+  if (bulle) ctx.drawImage(await chargerImage(dossierImages + bulle.src), ...bulle.pos)
+
   // Nombres (cout, stats, PV, menace)
   for (const [cls, champ] of Object.entries(ROLES_NOMBRES)) {
     const el = E[cls]
     if (!el) continue
     dans(el, () => dessinerNombre(ctx, el, contenu[champ], contenu[champ + 'Etoile']))
+  }
+
+  // Tete d'angle (au-dessus des nombres, comme la reference) : l'image (300 x 300 « cover ») centree sur (boite + 150 + decalage), zoomee et tournee comme la reference
+  if (teteVisible(spec, etat)) {
+    const T = etat.tete
+    const E0 = spec.elements.find((e) => e.cls === 'photoimg headshot')
+    const [bx, by] = E0 ? [E0.boite[0], E0.boite[1]] : [1, 0]
+    const im = T.image
+    const k = Math.max(300 / im.naturalWidth, 300 / im.naturalHeight)
+    ctx.save()
+    ctx.translate(bx + 150 + (T.x ?? -19), by + 150 + (T.y ?? 232))
+    ctx.rotate((((spec.paysage ? -90 : 0) + (T.rotation ?? 0)) * Math.PI) / 180)
+    ctx.scale(T.zoom ?? 0.8, T.zoom ?? 0.8)
+    ctx.beginPath()
+    ctx.rect(-150, -150, 300, 300)
+    ctx.clip()
+    ctx.drawImage(im, -(im.naturalWidth * k) / 2, -(im.naturalHeight * k) / 2, im.naturalWidth * k, im.naturalHeight * k)
+    ctx.restore()
   }
 
   // Phase de la manigance principale : numero + lettre, groupe centre dans la boite
@@ -392,7 +433,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   // Lignes : titre, type, ligne d'ensemble, createur
   const titre = E.title
   if (titre) dans(titre, () => dessinerLigne(ctx, titre, contenu.titre, { prefixeIcone: contenu.unique ? 'u' : '' }))
-  for (const [cls, champ] of [['typestr', 'typeTexte'], ['set-line', 'ligneEnsemble'], ['c-line', 'createur']]) {
+  for (const [cls, champ] of [['typestr', 'typeTexte'], ['villainstagenew', 'etape'], ['set-line', 'ligneEnsemble'], ['c-line', 'createur']]) {
     if (E[cls]) dans(E[cls], () => dessinerLigne(ctx, E[cls], contenu[champ]))
   }
 
@@ -402,7 +443,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
     for (const b of fluxTexte(ctx, spec, contenu)) {
       dans(panneau, () => {
         ctx.translate(b.el.boite[0] - panneau.boite[0] + b.retrait, b.y)
-        dessinerPage(ctx, b.page, b.base, b.largeur, b.facteur, b.el.style.color || '#000', b.base.alignement)
+        dessinerPage(ctx, b.page, b.base, b.largeur, b.facteur, spec.id === 'identity-promo' && b.c === 'traits' ? 'rgba(255,255,255,0.6)' : b.el.style.color || '#000', b.base.alignement)
       })
     }
   }
