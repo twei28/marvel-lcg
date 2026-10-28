@@ -2,6 +2,7 @@
 //
 // Balises : <b> gras, <i> italique, <em> style « traits », <u> souligne, <code>e</code> ou [energy] icone, <br> retour a la ligne,
 // <hr class="br"/> saut de paragraphe, <hr/> filet horizontal. Une ligne vide = un saut de paragraphe, un retour simple = une ligne.
+// <span style="font-size:1.3em; color:#c00"> : taille relative (em ou %) et couleur d'un morceau de texte (ce que fait l'editeur de la page).
 import { ICONES } from './polices.js'
 
 const ENTITES = { '&mdash;': '—', '&ndash;': '–', '&amp;': '&', '&nbsp;': ' ', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&rsquo;': '’', '&hellip;': '…' }
@@ -10,8 +11,9 @@ const ENTITES = { '&mdash;': '—', '&ndash;': '–', '&amp;': '&', '&nbsp;': '�
 export function analyser(source) {
   const jetons = []
   const pile = { b: 0, i: 0, em: 0, u: 0, code: 0 }
+  const spans = [{ ech: 1, col: null }] // taille relative et couleur courantes (pile des <span style>)
   let tampon = ''
-  const style = () => ({ b: pile.b > 0, i: pile.i > 0, em: pile.em > 0, u: pile.u > 0 })
+  const style = () => ({ b: pile.b > 0, i: pile.i > 0, em: pile.em > 0, u: pile.u > 0, ech: spans[spans.length - 1].ech, col: spans[spans.length - 1].col })
   const vider = () => {
     if (!tampon) return
     const t = tampon.replace(/&[a-z]+;/g, (e) => ENTITES[e] ?? e)
@@ -39,7 +41,15 @@ export function analyser(source) {
         vider()
         const nom = balise.replace(/^\//, '').split(/[\s/]/)[0]
         const ferme = balise.startsWith('/')
-        if (nom in pile) pile[nom] = Math.max(0, pile[nom] + (ferme ? -1 : 1))
+        if (nom === 'span') {
+          if (ferme) { if (spans.length > 1) spans.pop() } else {
+            const cur = spans[spans.length - 1]
+            const css = /style\s*=\s*["']([^"']*)["']/i.exec(balise)?.[1] ?? ''
+            const tailleCss = /font-size\s*:\s*([\d.]+)\s*(em|%)/i.exec(css)
+            const coul = /(?:^|;|\s)color\s*:\s*([^;]+)/i.exec(css)?.[1]?.trim()
+            spans.push({ ech: tailleCss ? cur.ech * (tailleCss[2] === '%' ? tailleCss[1] / 100 : Number(tailleCss[1])) : cur.ech, col: coul ?? cur.col })
+          }
+        } else if (nom in pile) pile[nom] = Math.max(0, pile[nom] + (ferme ? -1 : 1))
         else if (nom === 'br') jetons.push({ t: 'saut' })
         else if (nom === 'hr') jetons.push(/class=["']?br/.test(balise) ? { t: 'para' } : { t: 'filet' })
         k = fin + 1
@@ -65,7 +75,7 @@ export function analyser(source) {
 
 /** La police CSS d'un jeton, a partir de la police de base du champ. */
 export function policeDe(base, jeton, facteur = 1) {
-  const taille = base.taille * facteur
+  const taille = base.taille * facteur * (jeton.ech ?? 1)
   if (jeton.t === 'icone') return `${taille}px ChampionsIcons`
   if (jeton.em) return `${taille}px ${base.familleTraits ?? 'KomikaTitle'}`
   const gras = jeton.b ? (base.familleGras ?? base.poidsGras ?? 'bold') : base.poids ?? 'normal'
@@ -164,16 +174,21 @@ export function dessinerPage(ctx, page, base, largeur, facteur = 1, couleur = '#
     let x = (l.g ?? 0) + (alignement === 'center' ? (zone - l.largeur) / 2 : alignement === 'right' ? zone - l.largeur : 0)
     const lettre = (base.espacement ?? 0) * facteur
     ctx.letterSpacing = lettre ? lettre + 'px' : '0px'
+    // une seule ligne de base par ligne : le plus grand morceau la fixe, les autres s'y alignent
+    let baseline = 0
+    for (const it of l.items) {
+      if (it.t === 'espace') continue
+      ctx.font = policeDe(base, it, facteur)
+      const m = ctx.measureText(it.s)
+      baseline = Math.max(baseline, l.y + (page.interligne - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2 + m.fontBoundingBoxAscent)
+    }
     for (const it of l.items) {
       if (it.t !== 'espace') {
         ctx.font = policeDe(base, it, facteur)
         ctx.fontVariantCaps = base.capsPetites && it.t !== 'icone' ? 'small-caps' : 'normal'
-        const m = ctx.measureText(it.s)
-        const contenu = m.fontBoundingBoxAscent + m.fontBoundingBoxDescent
-        // Meme regle que CSS : la zone de glyphes est centree dans la hauteur de ligne.
-        const baseline = l.y + (page.interligne - contenu) / 2 + m.fontBoundingBoxAscent
+        ctx.fillStyle = it.col ?? couleur
         ctx.fillText(it.s, x, baseline)
-        if (it.u) ctx.fillRect(x, baseline + 4 * facteur, it.w, Math.max(2, 3 * facteur))
+        if (it.u) ctx.fillRect(x, baseline + 4 * facteur * (it.ech ?? 1), it.w, Math.max(2, 3 * facteur * (it.ech ?? 1)))
       }
       x += it.w
     }

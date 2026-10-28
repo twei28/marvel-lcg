@@ -295,26 +295,125 @@ function nombre(label, cle, avecEtoile = true) {
 function section(titre, ouvert, ...contenu) {
   return el('details', { open: ouvert }, el('summary', {}, titre), el('div', { class: 'contenu' }, contenu))
 }
-function barreRegles(zone) {
-  const insere = (avant, apres = '') => {
-    const a = zone.selectionStart
-    const b = zone.selectionEnd
-    zone.setRangeText(avant + zone.value.slice(a, b) + apres, a, b, 'end')
-    zone.dispatchEvent(new Event('input'))
+// ---------------------------------------------------------------- editeur de texte sans balises
+const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;' }
+const echapper = (t) => t.replace(/[&<>]/g, (c) => ESC[c])
+const ENTITES_SRC = { '&mdash;': '—', '&ndash;': '–', '&nbsp;': ' ', '&rsquo;': '’', '&hellip;': '…', '&quot;': '"' }
+const hexDe = (css) => {
+  const m = /rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)/i.exec(css)
+  return m ? '#' + [m[1], m[2], m[3]].map((n) => Number(n).toString(16).padStart(2, '0')).join('') : css
+}
+
+/** Le mini-HTML de la carte -> le HTML de la zone d'edition (gras, italique... visibles, icones en vrai). */
+function versEditeur(src) {
+  const iconeDe = (nom) => (ICONES[nom] ? `<span class="ico" contenteditable="false" data-i="${nom}">${ICONES[nom]}</span>` : null)
+  return String(src ?? '')
+    .replace(/&[a-z]+;/g, (e) => ENTITES_SRC[e] ?? e)
+    .split(/(<\/?(?:b|i|u|em|span)\b[^>]*>|<br\s*\/?>|<hr[^>]*>|\[[a-z_]+\]|\n)/i)
+    .map((p, k) => {
+      if (k % 2 === 0) return echapper(p).replace(/&amp;(lt|gt|amp);/g, '&$1;')
+      const t = p.toLowerCase()
+      if (t === '\n' || /^<br/.test(t)) return '<br>'
+      if (/^<hr/.test(t)) return /class=["']?br/.test(t) ? '<br><br>' : '<span class="ico" contenteditable="false" data-hr="1">―――</span>'
+      if (p[0] === '[') return iconeDe(p.slice(1, -1).toLowerCase()) ?? echapper(p)
+      if (/^<em\b/.test(t)) return '<span class="trait">'
+      if (/^<\/em/.test(t)) return '</span>'
+      if (/^<span/.test(t)) {
+        const css = /style\s*=\s*["']([^"']*)["']/i.exec(p)?.[1] ?? ''
+        return `<span style="${echapper(css)}">`
+      }
+      return p.replace(/\s[^>]*/, '')
+    })
+    .join('')
+}
+
+/** La zone d'edition -> le mini-HTML de la carte. */
+function depuisEditeur(racine) {
+  const sortie = []
+  const marche = (n, premier) => {
+    if (n.nodeType === 3) return sortie.push(echapper(n.textContent.replace(/​/g, '')))
+    if (n.nodeType !== 1) return
+    const tag = n.tagName
+    if (tag === 'BR') return sortie.push('\n')
+    if (n.dataset?.hr) return sortie.push('<hr/>')
+    if (n.dataset?.i) return sortie.push(`[${n.dataset.i}]`)
+    let ouvre = ''
+    let ferme = ''
+    if (tag === 'DIV' || tag === 'P') { if (!premier) sortie.push('\n') }
+    if (tag === 'B' || tag === 'STRONG' || /^(bold|[6-9]00)$/.test(n.style?.fontWeight)) { ouvre += '<b>'; ferme = '</b>' + ferme }
+    if (tag === 'I' || tag === 'EM' || n.style?.fontStyle === 'italic') { ouvre += '<i>'; ferme = '</i>' + ferme }
+    if (tag === 'U' || /underline/.test(n.style?.textDecorationLine ?? n.style?.textDecoration ?? '')) { ouvre += '<u>'; ferme = '</u>' + ferme }
+    if (n.classList?.contains('trait')) { ouvre += '<em>'; ferme = '</em>' + ferme }
+    const css = []
+    const fs = /([\d.]+)(em|%)/.exec(n.style?.fontSize ?? '')
+    if (fs) css.push(`font-size:${fs[2] === '%' ? (fs[1] / 100).toFixed(2) : fs[1]}em`)
+    const coul = n.style?.color || (tag === 'FONT' ? n.getAttribute('color') : '')
+    if (coul) css.push(`color:${hexDe(coul)}`)
+    if (css.length) { ouvre += `<span style="${css.join(';')}">`; ferme = '</span>' + ferme }
+    sortie.push(ouvre)
+    let k = 0
+    for (const c of n.childNodes) marche(c, k++ === 0 && premier)
+    sortie.push(ferme)
+  }
+  let k = 0
+  for (const c of racine.childNodes) marche(c, k++ === 0)
+  return sortie.join('').replace(/<(\w+)([^>]*)><\/\1>/g, '')
+}
+
+/** Le champ de texte riche : on selectionne, on clique (gras, italique, souligne, taille, couleur, icones). Un bouton « </> » montre le code. */
+function editeurRiche(label, cle, lignes = 5) {
+  const c = carte()
+  const zone = el('div', { class: 'editeur', contenteditable: 'true', spellcheck: 'true', role: 'textbox', 'aria-multiline': 'true', style: `min-height:${lignes * 1.5}em` })
+  zone.innerHTML = versEditeur(c.contenu[cle])
+  const code = el('textarea', { rows: lignes, hidden: true, style: 'font-family:monospace' })
+  code.value = c.contenu[cle] ?? ''
+  const pousse = () => { c.contenu[cle] = depuisEditeur(zone); changement() }
+  zone.addEventListener('input', pousse)
+  zone.addEventListener('paste', (e) => {
+    e.preventDefault()
+    document.execCommand('insertText', false, e.clipboardData.getData('text/plain'))
+  })
+  code.addEventListener('input', () => { c.contenu[cle] = code.value; zone.innerHTML = versEditeur(code.value); changement() })
+  const cmd = (nom, val) => { zone.focus(); document.execCommand('styleWithCSS', false, nom === 'foreColor'); document.execCommand(nom, false, val); pousse() }
+  const taille = (f) => {
     zone.focus()
+    document.execCommand('styleWithCSS', false, false)
+    document.execCommand('fontSize', false, '7')
+    for (const fo of zone.querySelectorAll('font[size="7"]')) {
+      const sp = el('span', { style: `font-size:${f}em` })
+      for (const x of fo.querySelectorAll('[style*="font-size"]')) x.style.fontSize = ''
+      sp.append(...fo.childNodes)
+      fo.replaceWith(sp)
+    }
+    pousse()
   }
-  const barre = el('div', { class: 'outils' })
-  barre.append(
-    el('button', { class: 'btn petit', type: 'button', title: 'Gras', onclick: () => insere('<b>', '</b>') }, el('b', {}, 'G')),
-    el('button', { class: 'btn petit', type: 'button', title: 'Italique', onclick: () => insere('<i>', '</i>') }, el('i', {}, 'I')),
-    el('button', { class: 'btn petit', type: 'button', title: 'Trait (police des traits)', onclick: () => insere('<em>', '</em>') }, 'Trait'),
-    el('button', { class: 'btn petit', type: 'button', title: 'Saut de paragraphe', onclick: () => insere('\n\n') }, '¶'),
-    el('button', { class: 'btn petit', type: 'button', title: 'Filet horizontal', onclick: () => insere('<hr/>') }, '―')
-  )
-  for (const [nom, titre] of ICONES_BARRE) {
-    barre.append(el('button', { class: 'btn petit', type: 'button', title: titre, style: 'font-family:ChampionsIcons', onclick: () => insere(`[${nom}]`) }, ICONES[nom]))
+  const trait = () => {
+    zone.focus()
+    const s = getSelection()
+    if (s.isCollapsed) return
+    document.execCommand('insertHTML', false, `<span class="trait">${echapper(s.toString())}</span>`)
+    pousse()
   }
-  return barre
+  const icone = (nom) => {
+    zone.focus()
+    document.execCommand('insertHTML', false, `<span class="ico" contenteditable="false" data-i="${nom}">${ICONES[nom]}</span>&#8203;`)
+    pousse()
+  }
+  const bouton = (txt, titre, fn, extra = {}) => el('button', { class: 'btn petit', type: 'button', title: titre, onmousedown: (e) => e.preventDefault(), onclick: fn, ...extra }, txt)
+  const selTaille = el('select', { class: 'petit', title: 'Taille de la sélection', onmousedown: () => {}, onchange: (e) => { if (e.target.value) taille(Number(e.target.value)); e.target.value = '' } },
+    el('option', { value: '' }, 'Taille'), ...[[0.7, '70 %'], [0.85, '85 %'], [1, '100 % (normale)'], [1.25, '125 %'], [1.5, '150 %'], [2, '200 %']].map(([v, n]) => el('option', { value: v }, n)))
+  const couleur = el('input', { type: 'color', value: '#cc0000', title: 'Couleur de la sélection', onchange: (e) => cmd('foreColor', e.target.value) })
+  const barre = el('div', { class: 'outils' },
+    bouton(el('b', {}, 'G'), 'Gras (Ctrl+B)', () => cmd('bold')),
+    bouton(el('i', {}, 'I'), 'Italique (Ctrl+I)', () => cmd('italic')),
+    bouton(el('u', {}, 'S'), 'Souligné (Ctrl+U)', () => cmd('underline')),
+    selTaille, couleur,
+    bouton('Trait', 'Police des traits', trait),
+    bouton('✕', 'Retirer la mise en forme de la sélection', () => cmd('removeFormat')),
+    bouton('</>', 'Voir / modifier le code (balises)', () => { code.hidden = !code.hidden; zone.hidden = !code.hidden; if (!code.hidden) code.value = c.contenu[cle] ?? '' }))
+  const icones = el('div', { class: 'outils' })
+  for (const [nom, titre] of ICONES_BARRE) icones.append(bouton(ICONES[nom], titre, () => icone(nom), { style: 'font-family:ChampionsIcons' }))
+  return el('div', { class: 'champ-riche' }, el('label', {}, label), barre, icones, zone, code)
 }
 
 function boiteImage(titre, obj, avecBascule) {
@@ -371,10 +470,9 @@ function construireFormulaire() {
   if (aElement(spec, 'typestr')) texte.push(t('Libellé du type (vide = automatique)', 'typeTexte'))
   if (aElement(spec, 'traits')) texte.push(t('Traits (séparés par des points)', 'traits'))
   if (aElement(spec, 'rules')) {
-    const regles = t('Règles', 'regles', { long: true, lignes: 5 })
-    texte.push(barreRegles(regles.querySelector('textarea')), regles)
+    texte.push(editeurRiche('Règles', 'regles', 6))
   }
-  if (aElement(spec, 'quote')) texte.push(t('Citation', 'citation', { long: true, lignes: 2 }))
+  if (aElement(spec, 'quote')) texte.push(editeurRiche('Citation', 'citation', 3))
   if (aElement(spec, 'villainstagenew')) texte.push(t('Étape du méchant (I, II, A, B…)', 'etape'))
   if (aElement(spec, 'set-line')) texte.push(t('Ligne d’ensemble', 'ligneEnsemble'))
   if (aElement(spec, 'c-line')) texte.push(t('Créateur / mention', 'createur'))
