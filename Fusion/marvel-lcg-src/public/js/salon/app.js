@@ -9,9 +9,10 @@
 // cookie seat_token_<N>. C'est le cookie qui fait foi côté serveur : l'URL
 // seule ne donne aucun droit.
 "use strict";
-import { catalog } from "/public/js/prepare/catalog.js";
+import { catalog, titreDeVague } from "/public/js/prepare/catalog.js";
 import { cardImageUrlEn, cardImageUrlHd, oublierDecksSauvegardes } from "/public/js/prepare/api.js";
-import { t, boutonLangue } from "/public/js/prepare/langue.js";
+import { titreDeBoite } from "/public/js/prepare/titres-extensions.js";
+import { t, boutonLangue, langueActuelle } from "/public/js/prepare/langue.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { boutonAffichage } from "/public/js/prepare/affichage.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
@@ -273,10 +274,24 @@ const ASPECTS = {
 
 const idBase = (heroCardId) => String(heroCardId || "").split(",")[0];
 
+/* ---------------- Images du siege invite (28/10/2026) ----------------
+ * L'invite joue sur un MOTEUR PAR SIEGE (pN.<domaine>, voir deploiement/
+ * Caddyfile), qui NE SERT PAS les scans : seul play.<domaine> les sert. On
+ * prefixe donc les URLs d'images par cet hote, derive du domaine courant
+ * (p1.narwhalchampions.com -> play.narwhalchampions.com). Hors siege (dev en
+ * localhost, ou tout hote non `pN`), on garde l'URL relative : le serveur
+ * local sert les images lui-meme. */
+function hoteImages() {
+    const m = /^p\d+\.(.+)$/.exec(location.hostname);
+    return m ? `${location.protocol}//play.${m[1]}` : "";
+}
+const imgEn = (cardId) => { const u = cardImageUrlEn(cardId); return u ? hoteImages() + u : u; };
+const imgHd = (cardId) => { const u = cardImageUrlHd(cardId); return u ? hoteImages() + u : u; };
+
 function portrait(cardId, cls) {
     return el("div", {
         class: "portrait " + (cls || ""),
-        style: cardId ? { backgroundImage: `url(${cardImageUrlEn(cardId)})` } : {},
+        style: cardId ? { backgroundImage: `url(${imgEn(cardId)})` } : {},
     });
 }
 
@@ -302,11 +317,11 @@ function nomHeros(hero) {
 function portraitScenario(sc) {
     const ids = (sc && sc.villainCards) || [];
     if (ids.length < 2) {
-        return el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrlEn(sc.tileImage)}")` } });
+        return el("div", { class: "portrait", style: { backgroundImage: `url("${imgEn(sc.tileImage)}")` } });
     }
     const n = Math.min(ids.length, 4);
     return el("div", { class: `portrait portrait-multi n${n}` },
-        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } })));
+        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${imgEn(id)}")` } })));
 }
 
 function barreAspects(deck) {
@@ -361,7 +376,7 @@ function rendreScene(hero, libre = null) {
         // visible à cette taille (même choix que l'assistant).
         hero.lie
             ? el("div", { class: "tb-art" }, portraitHeros(hero))
-            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(idBase(hero.heroCardId))}")` } }),
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${imgHd(idBase(hero.heroCardId))}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" }, el("small", {}, traits || petit), nomHeros(hero)),
     );
@@ -514,28 +529,104 @@ async function rendreDecks() {
     ].filter(Boolean));
 }
 
+/* ---------------- Filtres de héros (parité avec l'assistant, 28/10/2026) ----
+ * Mêmes filtres que prepare/app.js (recherche nom+traits, vagues, fan-made) :
+ * sans eux, officiels et fan-made sortaient mélangés, sans recherche. Le modèle
+ * héros (catalog.js) porte déjà `recherche`, `vague`, `homebrew` : on ne fait
+ * que les exploiter. Le fan-made est MASQUÉ par défaut et ne s'affiche que seul,
+ * exactement comme dans l'assistant. */
+const filtresHeros = { q: "", vague: "", homebrew: false };
+let _herosSalon = null;
+
+/** Même libellé de vague que l'assistant (nomDeVague, prepare/app.js). */
+function nomDeVagueSalon(vague) {
+    if (vague === 0) return t("Set de base");
+    const titre = vague === 1 ? t("Les premiers paquets") : titreDeBoite(titreDeVague(vague), langueActuelle());
+    return t("Vague") + " " + vague + (titre ? " · " + titre : "");
+}
+
+function herosFiltres() {
+    const q = filtresHeros.q.toLowerCase();
+    return (_herosSalon || []).filter((h) =>
+        (!q || h.recherche.includes(q)) &&
+        (!filtresHeros.vague || String(h.vague) === filtresHeros.vague) &&
+        (!!h.homebrew === filtresHeros.homebrew));
+}
+
+/** Remplit le menu des vagues avec celles qui EXISTENT dans la liste courante
+ *  (et du bon côté officiel/fan-made), comme majMenuVagues de l'assistant. */
+function majVaguesSalon() {
+    const sel = document.querySelector("#salon-filtres .vague-select");
+    if (!sel) return;
+    const vagues = [...new Set((_herosSalon || [])
+        .filter((h) => !!h.homebrew === filtresHeros.homebrew && h.vague != null)
+        .map((h) => h.vague))].sort((a, b) => a - b);
+    sel.replaceChildren(el("option", { value: "" }, t("Toutes les vagues")));
+    vagues.forEach((v) => sel.append(
+        el("option", { value: String(v), selected: filtresHeros.vague === String(v) }, nomDeVagueSalon(v))));
+    sel.hidden = vagues.length === 0;
+}
+
+function tuileHeros(h) {
+    return el("button", {
+        class: "tb-port salon-hero",
+        title: nomHeros(h),
+        "data-hero": h.id,
+        onclick: () => { etat.hero = h; rendreDecks(); },
+        onmouseenter: () => rendreScene(h),
+        onfocus: () => rendreScene(h),
+        onmouseleave: () => rendreScene(etat.hero),
+    },
+        portraitHeros(h),
+        el("span", { class: "tb-port-nom" }, nomHeros(h)),
+    );
+}
+
+function majGrilleHeros() {
+    const grille = document.getElementById("salon-grille");
+    if (!grille) return;
+    const list = herosFiltres();
+    const compte = $("#tb-compte");
+    if (compte) compte.textContent = list.length + " " + t("héros");
+    grille.replaceChildren(...(list.length
+        ? list.map(tuileHeros)
+        : [el("div", { class: "empty-state" }, t("Aucun héros trouvé"))]));
+}
+
 async function rendreHeros() {
     etapeActuelle = 1;
     majEtapes();
     rendreScene(etat.hero);
-    const heroes = await catalog.heroes();
+    _herosSalon = await catalog.heroes();
     if (etapeActuelle !== 1) return;
-    $("#tb-compte").textContent = heroes.length + " " + t("héros");
     $("#salon-choix").replaceChildren(
-        el("div", { class: "hero-grid tb-roster", id: "salon-grille" },
-            ...heroes.map((h) => el("button", {
-                class: "tb-port salon-hero",
-                title: nomHeros(h),
-                "data-hero": h.id,
-                onclick: () => { etat.hero = h; rendreDecks(); },
-                onmouseenter: () => rendreScene(h),
-                onfocus: () => rendreScene(h),
-                onmouseleave: () => rendreScene(etat.hero),
-            },
-                portraitHeros(h),
-                el("span", { class: "tb-port-nom" }, nomHeros(h)),
-            ))),
+        el("div", { class: "tb-filtres", id: "salon-filtres" },
+            el("input", {
+                class: "search tb-search",
+                placeholder: t("Rechercher un héros ou un trait"),
+                value: filtresHeros.q,
+                oninput: (e) => { filtresHeros.q = e.target.value; majGrilleHeros(); },
+            }),
+            el("select", {
+                class: "sel vague-select tampon",
+                onchange: (e) => { filtresHeros.vague = e.target.value; majGrilleHeros(); },
+            }, el("option", { value: "" }, t("Toutes les vagues"))),
+            el("button", {
+                class: "tampon" + (filtresHeros.homebrew ? " on" : ""),
+                title: t("Héros fan-made, hors de toute extension officielle"),
+                onclick: (e) => {
+                    filtresHeros.homebrew = !filtresHeros.homebrew;
+                    e.currentTarget.classList.toggle("on", filtresHeros.homebrew);
+                    filtresHeros.vague = "";
+                    majVaguesSalon();
+                    majGrilleHeros();
+                },
+            }, "Fan-made"),
+        ),
+        el("div", { class: "hero-grid tb-roster", id: "salon-grille" }),
     );
+    majVaguesSalon();
+    majGrilleHeros();
 }
 
 /* ---------------- L'équipe en formation (09/10/2026) ----------------

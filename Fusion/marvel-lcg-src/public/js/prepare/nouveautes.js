@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-28",
         genre: "jeu",
+        fr: "Quand tu rejoins une partie par un lien d'invitation, l'écran de choix de héros montre maintenant les images des cartes et les mêmes filtres que l'assistant (recherche, vagues, fan-made séparé de l'officiel).",
+        en: "When you join a game from an invitation link, the hero-picking screen now shows the card images and the same filters as the main wizard (search, waves, fan-made kept apart from official).",
+    },
+    {
+        date: "2026-10-28",
+        genre: "jeu",
         fr: "Campagne en ligne : tu peux désormais inviter tes amis pendant la composition de l'équipe, chacun choisit son propre héros et son propre deck depuis son écran avant que la partie se lance.",
         en: "Online campaign: you can now invite your friends while building the team, and each of them picks their own hero and deck from their screen before the game starts.",
     },
