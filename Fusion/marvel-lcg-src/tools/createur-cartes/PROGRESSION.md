@@ -27,12 +27,20 @@ l'utilisateur), copies dans `public/createur-cartes/img/` et `polices/`.
 - Texte : titre (petites capitales, icone « unique »), traits (KomikaTitle majuscules), regles (gras/italique/icones), citation, ligne d'ensemble, createur, **flux** traits->regles->citation (ecarts 20/30 px), ajustement automatique, **coins coupes** (`pinchleft/pinchright`, polygones dans `FORMES`).
 - Constat : le libelle du type (ALLY, VILLAIN, MAIN SCHEME...) est **dans l'image du calque** ; `typestr` n'est que l'option « Overwrite card type ».
 
+- **Coins coupes** (fait) : formes `shape-outside` mesurees (`clipPath` garde dans types.json), la ligne evite la forme sur toute sa hauteur, regles + citation se reduisent d'un meme facteur pour tenir dans le panneau (en dessous de leur propre rendu, qui deborde).
+- **Nombres** (fait, compare au modele avec les MEMES valeurs) : filtre `codeshadow` (contour noir 4 px + 4 ombres en cascade), etoile (taille, ecart, decalage mesures par element), etoile seule, degats consequents, menace de depart, accélération, cible, phase (numero + lettre), PV, renforts (ancre a droite, pas 95, fond noir `sidescheme/boostbox<N>.png`), 3 ressources, attachement (boites ATK/SCH + titre qui monte : 1865/1560/1310).
+- Piege : la boite d'un element mesuree a vide peut faire 0 de haut -> `ajouter-nombres.py` reprend boite et origine de l'etat REMPLI.
+
+## Banc d'essai « nombres »
+1. `node tools/createur-cartes/mesures/mesurer-nombres.mjs <dossier> [types]` (+ `ETOILE=0 SUFFIXE=-sans`) : remplit tous les champs sur le site de reference (une page neuve par type : la rotation paysage se casse sinon), ecrit `ref-nombres/<type>.png|json`. ~25 s par type.
+2. `python3 tools/createur-cartes/ajouter-nombres.py <dossier>/ref-nombres <dossier>/ref-nombres-sans` : met a jour types.json (etoile, phase, renforts, ressources, boites).
+3. `node tools/createur-cartes/essai/rendre-nombres.mjs <dossier> [types]` : rend nos cartes avec les valeurs relues dans les json -> `mine-nombres/`. Comparer cote a cote.
+
 ## Reste a faire (dans cet ordre)
-1. **Corriger le texte des cartes a coin coupe** : sur `event/identity/resource`, des lignes debordent encore (a gauche et en bas : verifier `bordureForme`, y de la ligne = bas, hauteur max du panneau) ; `playersidescheme` : retrait a gauche trop fort.
-2. **Nombres** : valeurs de cout, THW/SCH, ATK, DEF, REC, PV (polices ElektraMed, boites mesurees, `scl 0.95`), etoiles (`CODE s`), degats consequents (`CODE dd`), menace de depart/cible, acceleration, numero/lettre de phase, etape du vilain (`villainstagenew`, police `ancbi`), attachement (ATK/SCH), taille de main, icones de renfort (3 + etoile, `general/boost_*.png`), 3 ressources (`general/resource-*.png`, positions a mesurer : le tool les place a gauche en bas).
-3. **Variantes -star** des calques `splash*` (`general/splash-star.png`...), `hp_bubble`, cracks on/off, light_boxes, dots.
-4. **Tete (headshot)** `img/headshot.png` + son cadre, etoile de splash.
-5. **Types restants a verifier un par un** contre `reference/` : alter-ego, starter-deck, obligation, support, upgrade, promos (4), attachment, environment, main_scheme_a/b, minion, obligation-villain, sidescheme, treachery.
+1. **Ecarts fins** : texte des regles ~5 px plus haut que le modele ; largeur des regles sur `attachment` (le modele tient « Discard cards » sur une ligne) ; etoile des nombres un peu plus petite que celle du modele ; x des nombres -2 px ; type `starter-deck` (champs X, haut du paquet) ; `villainstagenew` (etape, police `ancbi`, liste « Villain stage » a remplir dans la sonde) ; taille de main.
+2. **Variantes -star** des calques `splash*`, `hp_bubble`, cracks on/off, light_boxes, dots.
+3. **Tete (headshot)** `img/headshot.png` + son cadre, etoile de splash.
+4. **Types restants a verifier un par un** : promos (4), obligation-villain, treachery, environment, support, upgrade... (comparer avec le banc « nombres »).
 6. **Bilingue** : libelle du type baked en anglais -> pour le FR, recouvrir la bande (echantillonner la couleur du calque) et redessiner le libelle FR (ALLIE, EVENEMENT, AMELIORATION, SOUTIEN, RESSOURCE, HEROS, ALTER-EGO, MECHANT, SBIRE, TRAHISON, ENVIRONNEMENT, ATTACHEMENT, MANIGANCE PRINCIPALE/ANNEXE, OBLIGATION) ; textes FR/EN par carte, traits via `ui-app/src/board/traits-fr.ts`, ligne d'ensemble FR (« TAILLE DE MAIN 6 / POINTS DE VIE 10 »).
 7. **Interface** (page `public/createur-cartes.html` ou `index.html`) : liste de cartes, choix du type, formulaire guide par type avec valeurs par defaut, apercu en direct, palettes (aspects Basic/Agression/Direction/Protection/Justice/Pool + presets heros et vilains), illustration (zoom/position/rotation, avant/arriere, glisser), sauvegarde JSON + navigateur, export PNG/JPG/WebP (taille reglable, fond perdu), export des deux langues, impression PDF, tables (TTS/OCTGN/DragnCards si utile).
 8. Bouton dans l'en-tete (`public/js/prepare/lien-admin.js`, a cote de « Atelier de couvertures »), cle EN, `nouveautes.js`, page credits, tests Chromium de chaque type, optimisation des PNG (18 Mo -> webp sans perte).
