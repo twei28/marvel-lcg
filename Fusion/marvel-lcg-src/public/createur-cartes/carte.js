@@ -129,9 +129,9 @@ function dessinerNombre(ctx, el, texte, etoile) {
   if (texte) {
     const cx = w / 2 + (etoile ? E.dx : 0)
     pieces.push({ s: texte, police, x: cx - largeur / 2, centre: h / 2, fs: base.taille, famille: base.famille })
-    if (etoile) pieces.push({ s: 's', police: `${E.fs}px ChampionsIcons`, x: cx + largeur / 2 + E.ecart, centre: h / 2 + E.dy, fs: E.fs, famille: 'ChampionsIcons' })
+    if (etoile) pieces.push({ s: 's', police: `italic bold ${E.fs}px ChampionsIcons`, x: cx + largeur / 2 + E.ecart, centre: h / 2 + E.dy, fs: E.fs, famille: 'ChampionsIcons' })
   } else {
-    pieces.push({ s: 's', police: `${ES.fs}px ChampionsIcons`, x: w / 2 + ES.dx - ES.fs / 2, centre: h / 2 + ES.dy, fs: ES.fs, famille: 'ChampionsIcons' })
+    pieces.push({ s: 's', police: `italic bold ${ES.fs}px ChampionsIcons`, x: w / 2 + ES.dx - ES.fs / 2, centre: h / 2 + ES.dy, fs: ES.fs, famille: 'ChampionsIcons' })
   }
   for (const p of pieces) p.y = baselineCentree(p.fs, p.famille, p.centre)
   avecContour(ctx, w, h, couleur, (c, mode) => {
@@ -261,8 +261,8 @@ function fluxTexte(ctx, spec, contenu) {
       const brut = c === 'traits' && el.style.textTransform === 'uppercase' ? (source[c] || '').toUpperCase() : source[c]
       const jetons = source[c] ? analyser(c === 'traits' ? `<em>${brut}</em>` : brut) : []
       if (!jetons.length) continue
-      const base = baseDe(el, c === 'traits' ? { ecartParagraphe: 0 } : { ecartParagraphe: 8 })
-      if (c === 'traits') base.interligne = base.taille * 1.3
+      const base = baseDe(el, c === 'traits' ? { ecartParagraphe: 0 } : c === 'rules' ? { ecartParagraphe: 8, poidsGras: '500' } : { ecartParagraphe: 8 })
+      if (c === 'traits') base.interligne = el.boite[3]
       base.alignement = el.style.textAlign === 'center' ? 'center' : 'left'
       const largeur = el.boite[2]
       const bloc0 = panneau.boite[1] + y
@@ -283,7 +283,10 @@ function fluxTexte(ctx, spec, contenu) {
       const f = c === 'traits' ? 1 : facteur
       const page = mettreEnPage(ctx, jetons, base, largeur, f, contrainte)
       sortie.push({ c, el, jetons, base, y, page, facteur: f, largeur, retrait: 0 })
-      y += page.hauteur + (c === 'traits' ? (villain ? 30 : 20) : 30)
+      // ecart au bloc suivant : celui du gabarit (mesure avec un contenu d'une ligne), sinon 20 / 30
+      const suivant = E[blocs[blocs.indexOf(c) + 1]]
+      const mesure = suivant ? suivant.boite[1] - el.boite[1] - el.boite[3] : -1
+      y += page.hauteur + (mesure >= 0 && mesure <= 60 ? mesure : c === 'traits' ? (villain ? 30 : 20) : 30)
     }
     return { sortie, hauteur: y - 30 }
   }
