@@ -7,6 +7,7 @@ import { TEXTES, chargerTraits, traduireTraits } from './langues.js'
 import { $, el, S, nouvelId, blobVersDataUrl, dataUrlVersBlob } from './commun.js'
 import { ajouterFichiers, brancherSurcouche, calqueChoisi, choisirCalque, commencerGlisser, dessinerSurcouche, molette, sectionLibres, touche } from './panneau-libres.js'
 import { clicSurCarte } from './clic-carte.js'
+import { ouvrirRecadrage } from './recadrage.js'
 import { brancherStyles, chargerStyles, enveloppePerso } from './styles-texte.js'
 import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
@@ -551,6 +552,7 @@ function boiteImage(titre, obj, avecBascule) {
   if (obj(c).blob) {
     parts.push(el('div', { class: 'rang' },
       el('button', { class: 'btn petit', type: 'button', onclick: () => { ciblePointeur = avecBascule; majAide() } }, 'Déplacer à la souris'),
+      el('button', { class: 'btn petit', type: 'button', onclick: () => ouvrirRecadrage(obj(c).blob, (nb) => { obj(c).blob = nb; changement(); construireFormulaire() }) }, 'Détourer / recadrer…'),
       el('button', { class: 'btn petit', type: 'button', onclick: () => { obj(c).blob = null; changement(); construireFormulaire() } }, 'Retirer')))
   }
   return parts
@@ -681,7 +683,8 @@ function construireFormulaire() {
       curseur('Zoom', (x) => x.tete, 'zoom', 0.2, 2.5, 0.01, 0.8),
       el('div', { class: 'rang' }, curseur('Décalage X', (x) => x.tete, 'x', -400, 1500, 1, -19), curseur('Décalage Y', (x) => x.tete, 'y', -400, 2150, 1, 232)),
       curseur('Rotation (°)', (x) => x.tete, 'rotation', -180, 180, 1, 0),
-      c.tete.blob ? el('button', { class: 'btn petit', type: 'button', onclick: () => { ciblePointeur = 'tete'; majAide() } }, 'Déplacer à la souris') : null))
+      c.tete.blob ? el('button', { class: 'btn petit', type: 'button', onclick: () => { ciblePointeur = 'tete'; majAide() } }, 'Déplacer à la souris') : null,
+      c.tete.blob ? el('button', { class: 'btn petit', type: 'button', onclick: () => ouvrirRecadrage(c.tete.blob, (nb) => { c.tete.blob = nb; changement(); construireFormulaire() }, { carre: true }) }, 'Détourer / recadrer…') : null))
   }
 
   // style de cadre et options

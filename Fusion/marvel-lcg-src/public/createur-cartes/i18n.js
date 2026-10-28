@@ -241,6 +241,10 @@ export const DICO = {
   'Créer un style…': 'Create a style…', 'Gérer mes styles…': 'Manage my styles…', 'Aucun style pour le moment.': 'No style yet.', 'Nouveau style': 'New style',
   'Nom du style': 'Style name', 'Créer': 'Create', 'ex. Mot-clé maison': 'e.g. House keyword', 'Souligné': 'Underlined', 'Police des traits': 'Traits font',
   'Couleur': 'Colour', 'Styles de texte : menu, ou tape « / » dans le texte': 'Text styles: menu, or type “/” in the text',
+  // recadrage
+  'Détourer / recadrer…': 'Cut out / crop…', 'Détourer et recadrer': 'Cut out and crop', 'Original (clique sur le fond pour le choisir)': 'Original (click the background to pick it)',
+  'Résultat': 'Result', 'Retirer le fond': 'Remove the background', 'Tolérance': 'Tolerance', 'Rogner sur le sujet': 'Crop to the subject',
+  'Cadrer en carré (tête d’angle)': 'Make it square (corner headshot)', 'Clique pour choisir la couleur du fond à retirer': 'Click to pick the background colour to remove',
   // lisibilite
   'Le titre est vide.': 'The title is empty.',
   'Le texte déborde du cadre, même réduit : raccourcis les règles ou la citation.': 'The text overflows the frame even when shrunk: shorten the rules or the flavor text.',

@@ -1,5 +1,6 @@
 // Le panneau et la poignee des calques PNG libres : liste, reglages, bibliotheque, et deplacement / zoom / rotation sur l'apercu.
 import { el, S } from './commun.js'
+import { ouvrirRecadrage } from './recadrage.js'
 import { NIVEAUX, bibliotheque, boiteLibre, calqueSous, nouveauLibre } from './libres.js'
 
 let selectionnee = null // id du calque choisi
@@ -76,6 +77,7 @@ function reglages(L) {
     L.ombre ? curseurLibre('Flou de l’ombre', L.ombre, 'flou', 0, 60, 1, 12, (v) => v + ' px') : null,
     el('div', { class: 'rang' },
       el('button', { class: 'btn petit', type: 'button', onclick: () => { L.fx = 0.5; L.fy = 0.5; maj() } }, 'Centrer'),
+      el('button', { class: 'btn petit', type: 'button', onclick: () => ouvrirRecadrage(L.blob, (nb) => { L.blob = nb; S.changement(); S.reconstruire() }) }, 'Détourer / recadrer…'),
       el('button', { class: 'btn petit', type: 'button', onclick: () => { L.rot = 0; L.miroirH = false; L.miroirV = false; maj(); S.reconstruire() } }, 'Remettre droit')))
 }
 
