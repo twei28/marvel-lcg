@@ -13,9 +13,9 @@ const CHAMP = {
 export function champSousPoint(spec, x, y, infos) {
   const hit = elementSousPoint(spec, x, y)
   if (!hit) return null
-  if (hit.cls === 'cardtext') {
-    // le panneau de texte : on regarde quel bloc (traits, regles, citation) occupe cette hauteur
-    const yRel = hit.local[1] - hit.panneau[1]
+  if (['cardtext', 'rules', 'quote', 'traits'].includes(hit.cls)) {
+    // le panneau de texte : on regarde quel bloc (traits, regles, citation) occupe cette hauteur (les boites du gabarit se recouvrent)
+    const yRel = hit.local[1] - (spec.elements.find((e) => e.cls === 'cardtext')?.boite[1] ?? hit.panneau[1])
     const blocs = infos?.blocs ?? []
     const pris = blocs.find((b) => yRel >= b.y0 - 10 && yRel <= b.y1 + 14) ?? blocs.filter((b) => b.c !== 'traits').pop()
     return { traits: 'traits', rules: 'regles', quote: 'citation' }[pris?.c] ?? 'regles'
