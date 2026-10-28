@@ -19,7 +19,7 @@ await p.waitForURL('**/createur-cartes.html')
 await p.waitForSelector('#liste button')
 await p.waitForFunction(() => /Saved on the server/.test(document.querySelector('#etat-serveur').textContent), null, { timeout: 15000 })
 ok('1 connecte : indicateur « Saved on the server » (EN)', true)
-console.log('   liste serveur au départ:', await liste(p))
+ok('1b carte vierge : rien d\'envoye au serveur', (await liste(p)).length === 0, await liste(p))
 // dossier + titre
 await p.fill('input[list=dossiers-connus]', 'Valkyrie')
 await p.waitForFunction(() => /5 seconds|Saving/.test(document.querySelector('#etat-serveur').textContent), null, { timeout: 4000 }).catch(() => {})

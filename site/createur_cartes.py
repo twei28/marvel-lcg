@@ -10,6 +10,7 @@ Arborescence (RACINE = `dossier_racine`) :
     RACINE/<compte>/<id>/courant.json      la version en cours
     RACINE/<compte>/<id>/meta.json         nom, dossier, date : pour la liste
     RACINE/<compte>/<id>/versions/<n>.json les anciennes versions (30 dernières)
+    RACINE/<compte>/.corbeille/<id>-<époque>/  un projet SUPPRIMÉ (les 20 derniers)
 
 ⚠ AUCUN CHEMIN N'EST CONSTRUIT DEPUIS L'ENTRÉE BRUTE. `<compte>` et `<id>` ne
 passent qu'après validation par une liste blanche stricte (lettres, chiffres,
@@ -30,6 +31,7 @@ import threading
 import time
 
 VERSIONS_GARDEES = 30
+CORBEILLE_GARDEE = 20
 RE_COMPTE = re.compile(r"^[a-z0-9_-]{3,24}$")
 RE_ID = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 
@@ -99,10 +101,13 @@ def _iso(epoque: float) -> str:
 
 
 def usage_octets(racine: str, compte: str) -> int:
-    """Octets occupés par un compte (courant + versions + méta)."""
+    """Octets occupés par un compte (courant + versions + méta ; pas la corbeille)."""
     total = 0
     base = _chemin_sur(racine, compte_valide(compte))
-    for dossier, _sous, fichiers in os.walk(base):
+    for dossier, sous, fichiers in os.walk(base):
+        # la corbeille ne compte pas : supprimer doit LIBERER de la place
+        if os.path.dirname(dossier) == base:
+            sous[:] = [d for d in sous if d != ".corbeille"]
         for nom in fichiers:
             try:
                 total += os.path.getsize(os.path.join(dossier, nom))
@@ -209,17 +214,29 @@ def ecrire(racine: str, compte: str, identifiant: str, octets: bytes,
 
 
 def supprimer(racine: str, compte: str, identifiant: str) -> None:
+    """Met le projet à la CORBEILLE (avec ses versions) au lieu de l'effacer :
+    renommer un dossier ou en vider un par erreur ne détruit plus l'historique.
+    `.corbeille` ne passe pas `RE_ID` (le point est refusé) : `lister` l'ignore
+    et aucune route ne peut le désigner. On en garde les 20 derniers."""
     compte = compte_valide(compte)
     dossier_projet = _chemin_sur(racine, compte, id_valide(identifiant))
     with _verrou(compte):
         if not os.path.isdir(dossier_projet):
             raise ErreurCreateur(404, "Projet introuvable.")
-        for dossier, sous, fichiers in os.walk(dossier_projet, topdown=False):
-            for nom in fichiers:
-                os.remove(os.path.join(dossier, nom))
-            for nom in sous:
-                os.rmdir(os.path.join(dossier, nom))
-        os.rmdir(dossier_projet)
+        corbeille = _chemin_sur(racine, compte, ".corbeille")
+        os.makedirs(corbeille, exist_ok=True)
+        destination = os.path.join(corbeille, "%s-%d" % (identifiant, int(time.time() * 1000)))
+        os.replace(dossier_projet, destination)
+        anciens = sorted(os.listdir(corbeille),
+                         key=lambda n: os.path.getmtime(os.path.join(corbeille, n)))
+        for nom in anciens[:-CORBEILLE_GARDEE]:
+            vieux = os.path.join(corbeille, nom)
+            for dossier, sous, fichiers in os.walk(vieux, topdown=False):
+                for f in fichiers:
+                    os.remove(os.path.join(dossier, f))
+                for d in sous:
+                    os.rmdir(os.path.join(dossier, d))
+            os.rmdir(vieux)
 
 
 def versions(racine: str, compte: str, identifiant: str) -> list[dict]:

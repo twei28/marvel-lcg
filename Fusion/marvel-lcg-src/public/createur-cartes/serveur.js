@@ -27,6 +27,18 @@ export function idDossier(nom) {
   return `d-${slug || 'x'}-${empreinteTexte(nom)}`
 }
 
+// ---------------------------------------------------------------- cartes vierges
+const TITRES_PAR_DEFAUT = new Set(['Card name', 'Nom de la carte', ''])
+/** Une carte jamais touchee (titre par defaut, aucun texte, aucune image) : un navigateur neuf en a une, et elle ne vaut pas d'etre envoyee. */
+export function estVierge(c) {
+  if (c.dossier) return false // rangee dans un dossier : elle a une intention
+  const ct = c.contenu ?? {}
+  if (!TITRES_PAR_DEFAUT.has(String(ct.titre ?? '').trim())) return false
+  if (['regles', 'citation', 'traits', 'typeTexte'].some((k) => String(ct[k] ?? '').replace(/<[^>]*>/g, '').trim())) return false
+  if (c.art?.blob || c.artDevant?.blob || c.tete?.blob || c.verso?.blob || (c.libres?.length ?? 0)) return false
+  return true
+}
+
 // ---------------------------------------------------------------- empreintes (pour savoir si quelque chose a change)
 const idsBlob = new WeakMap()
 let compteurBlob = 0
@@ -74,6 +86,7 @@ export function creerSynchro(h) {
   function dossiersLocaux() {
     const m = new Map()
     for (const c of h.projet().cartes) {
+      if (estVierge(c)) continue // jamais envoyee (et si elle est modifiee, elle ne l'est plus)
       const nom = c.dossier || ''
       const id = idDossier(nom)
       if (!m.has(id)) m.set(id, { id, nom, cartes: [] })

@@ -404,6 +404,20 @@ verifier("supprime : 404", code == 404, code)
 code, _c, _t = appel("DELETE", "/api/createur/projet/limite", cookie=cook_bob)
 verifier("DELETE deux fois : 404", code == 404, code)
 verifier("DELETE emporte aussi l'historique", not os.path.exists(os.path.join(racine_donnees, "bob", "limite")))
+corbeille = os.path.join(racine_donnees, "bob", ".corbeille")
+gardes = [n for n in os.listdir(corbeille) if n.startswith("limite-")] if os.path.isdir(corbeille) else []
+verifier("DELETE : le projet va a la corbeille (courant.json gardé)",
+         len(gardes) == 1 and os.path.exists(os.path.join(corbeille, gardes[0], "courant.json")), gardes)
+code, corps, _ = appel("GET", "/api/createur/projets", cookie=cook_bob)
+verifier("la corbeille n'est ni listée ni comptée",
+         all(not p["id"].startswith(".") for p in json_de(corps)["projets"])
+         and json_de(corps)["utilise"] < 400000, corps[:200])
+for i in range(25):
+    appel("PUT", "/api/createur/projet/jetable", cookie=cook_bob, json_corps={"nom": "x"})
+    appel("DELETE", "/api/createur/projet/jetable", cookie=cook_bob)
+verifier("corbeille : les 20 derniers seulement", len(os.listdir(corbeille)) == 20, len(os.listdir(corbeille)))
+code, _c, _t = appel("GET", "/api/createur/projet/.corbeille", cookie=cook_bob)
+verifier("la corbeille n'est pas atteignable par une route", code in (400, 404), code)
 code, _c, _t = appel("PATCH", "/api/createur/projets", cookie=cook_bob)
 verifier("methode inconnue : pas de succes", code in (404, 405, 501), code)
 code, _c, _t = appel("PUT", "/api/createur/projets", cookie=cook_bob, json_corps={})
