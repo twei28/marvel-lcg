@@ -16,6 +16,7 @@ import { avecInteraction } from '../../Board'
 import type { EtatInteractif } from '../../interaction'
 import { t } from '../../langue'
 import type { GroupeDePile } from '../../zones'
+import { PastillesTraits } from '../../PastillesTraits'
 import { compterEmpilees, estEmpilee, libelleEmpilees } from '../../empilees'
 import { SEUIL_INITIALES, etatsDe } from './etats-ronds'
 import { useEtatGlisse } from './glisser-ronds'
@@ -291,6 +292,8 @@ export function Rond({
           {libelleEmpilees(compterEmpilees(ameliorations))}
         </span>
       ) : null}
+      {/* Les traits du heros en ce moment (reglage « Traits du heros »), sur le bas du rond : pas de place dessous. */}
+      <PastillesTraits carte={carte} surRond />
       {vaincu ? <span className="rond-vaincu-etiquette">{t('VAINCU')}</span> : null}
       <span className="rond-nom">{unite.groupe ? unite.groupe.titre : carte.name}</span>
       {stats.length > 0 ? (

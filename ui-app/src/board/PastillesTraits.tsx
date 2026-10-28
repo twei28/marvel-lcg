@@ -21,15 +21,15 @@ function titreDe(p: PastilleTrait): string {
 }
 
 /**
- * `posee` : en bas du scan, sur le plateau. `surGrande` : en bas de la grande carte ouverte (telephone). Sinon : une rangee sous la carte (apercu agrandi).
+ * `posee` : en bas du scan, sur le plateau. `surGrande` : en bas de la grande carte ouverte (telephone). `surRond` : sur le bas du rond du heros (plateau en ronds). Sinon : une rangee sous la carte (apercu agrandi).
  * Ne rend rien quand le reglage est sur « Aucun » ou qu'il n'y a rien a montrer.
  */
-export function PastillesTraits({ carte, posee = false, surGrande = false }: { carte: ScanCardProps; posee?: boolean; surGrande?: boolean }) {
+export function PastillesTraits({ carte, posee = false, surGrande = false, surRond = false }: { carte: ScanCardProps; posee?: boolean; surGrande?: boolean; surRond?: boolean }) {
   const mode = useModeTraits()
   const pastilles = pastillesDeLaCarte(carte, mode)
   if (pastilles.length === 0) return null
   return (
-    <div className={`pastilles-traits${posee ? ' est-posee' : ''}${surGrande ? ' est-sur-grande' : ''}`} aria-label={t('Traits')}>
+    <div className={`pastilles-traits${posee ? ' est-posee' : ''}${surGrande ? ' est-sur-grande' : ''}${surRond ? ' est-sur-rond' : ''}`} aria-label={t('Traits')}>
       {pastilles.map((p) => (
         <span key={p.cle} className={`pastille-trait est-${p.etat}`} title={titreDe(p)}>
           {p.etat === 'gagne' ? '+ ' : ''}

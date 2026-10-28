@@ -1250,3 +1250,20 @@ html[data-epure] body.a-marque-heros .ronds-zone-heros::after {
   font-size: 0.75rem;
   font-weight: 800;
 }
+
+
+/* Traits du heros (28/10/2026) : sur le bas du rond, au-dessus de la pastille de PV. Le dessous (nom, valeurs) n'a pas de place. */
+.rond .pastilles-traits.est-sur-rond {
+  position: absolute;
+  left: calc(var(--dh) / 2);
+  top: calc(var(--dh) * 0.62);
+  transform: translateX(-50%);
+  width: calc(var(--dh) * 0.96);
+  z-index: 6;
+  gap: 2px;
+}
+.rond .pastilles-traits.est-sur-rond .pastille-trait {
+  font-size: 0.5rem;
+  padding: 0 4px;
+  border-width: 1px;
+}
