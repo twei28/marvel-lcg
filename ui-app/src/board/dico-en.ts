@@ -1078,6 +1078,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Lâche-la sur la carte qu’elle accompagne': 'Drop it on the card it goes with',
   'Cette carte ne se pose pas sur la table : glisse-la sur une pile ou fais Déplacer vers': 'This card is not put on the table: drag it onto a pile or use Move to',
   'Aucune carte en jeu ne peut recevoir cette amélioration': 'No card in play can receive this upgrade',
+  'Aucune carte éligible : rien à garder.': 'No eligible card: nothing to keep.',
   'Sur quelle carte ?': 'On which card?',
   'À côté de ton héros': 'Next to your hero',
   'carte face cachée': 'face-down card',

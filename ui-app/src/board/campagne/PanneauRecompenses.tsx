@@ -24,6 +24,7 @@ import {
   deListe,
   enListe,
   joueurElimine,
+  optionsProposees,
   type ChampVictoire,
 } from './detecteurs'
 import {
@@ -280,6 +281,9 @@ export function PanneauRecompenses({
   }
 
   const { campagne, definition, scenario, champs } = etat
+  // Les propositions du moteur (`optionsSuggerees`) ne valent que pour la partie qui vient de finir : même garde
+  // d'estampille que `preRemplir`.
+  const suggestionsDuMoteur = etat.scenarioSuggestions === scenario.id ? etat.suggestions : undefined
   const total = nbJoueurs(campagne, monde as World)
   const nomJoueur = (i: number) =>
     campagne.equipe?.[i]?.nomHeros ?? `${t('Joueur')} ${i + 1}`
@@ -500,6 +504,7 @@ export function PanneauRecompenses({
               poser={poser}
               nomJoueur={nomJoueur}
               siege={siege}
+              suggestions={suggestionsDuMoteur}
             />
           ))}
         </div>
@@ -573,6 +578,7 @@ function ChampRecompense({
   poser,
   nomJoueur,
   siege,
+  suggestions,
 }: {
   champ: ChampVictoire
   total: number
@@ -581,6 +587,7 @@ function ChampRecompense({
   poser: (cle: string, valeur: string) => void
   nomJoueur: (i: number) => string
   siege: number
+  suggestions?: Readonly<Record<string, string>>
 }) {
   const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
   const auto = champ.type === 'auto'
@@ -609,7 +616,7 @@ function ChampRecompense({
                 {t('Héros vaincu : il ne participe pas aux récompenses de ce scénario.')}
               </span>
             ) : (
-              <Controle champ={champ} cle={cle} valeurs={valeurs} poser={poser} droit={droit} />
+              <Controle champ={champ} cle={cle} valeurs={valeurs} poser={poser} droit={droit} propositions={optionsProposees(champ, joueurId, suggestions)} />
             )}
             {droit === 'lecture' && !elimine && champ.parJoueur ? (
               <small className="camp-champ-proprietaire">
@@ -694,6 +701,7 @@ function Controle({
   valeurs,
   poser,
   droit,
+  propositions,
 }: {
   champ: ChampVictoire
   cle: string
@@ -701,9 +709,27 @@ function Controle({
   poser: (cle: string, valeur: string) => void
   /** `lecture` rend le contrôle inerte : la case est à quelqu'un d'autre. */
   droit: DroitCarnet
+  /** Les cartes proposées par le moteur (champ à `optionsSuggerees`). */
+  propositions?: readonly string[]
 }) {
   const valeur = valeurs[cle] ?? ''
   const inerte = droit === 'lecture'
+
+  // Un CHOIX dont la liste vient du moteur (MojoMania : un soutien ou une amélioration éligible). Aucune carte éligible :
+  // le livret dit « peut », on le dit au joueur plutôt que de laisser un trou.
+  if (champ.type === 'choix' && champ.optionsSuggerees) {
+    if (!propositions?.length) {
+      return <small className="camp-champ-aide">{t('Aucune carte éligible : rien à garder.')}</small>
+    }
+    return (
+      <ListeCartes
+        ids={propositions}
+        choisie={(id) => valeur === id}
+        inerte={inerte}
+        basculer={(id) => poser(cle, valeur === id ? '' : id)}
+      />
+    )
+  }
 
   // Un CHOIX du livret : on montre les cartes, pas une liste déroulante. C'est
   // une décision de jeu, elle mérite qu'on voie ce qu'on prend.

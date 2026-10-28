@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-28",
         genre: "jeu",
+        fr: "Nouvelle campagne : MojoMania se joue maintenant en trois scénarios à la suite (MaGog, Spiral, Mojo), avec son carnet : une carte gardée par héros, Longshot qui vous suit, les genres déjà passés à l'antenne et, en campagne experte, les points de vie.",
+        en: "New campaign: MojoMania can now be played as three scenarios in a row (MaGog, Spiral, Mojo), with its campaign log: one card kept per hero, Longshot following you, the genres already aired and, in expert campaign, your hit points.",
+    },
+    {
+        date: "2026-10-28",
+        genre: "jeu",
         fr: "En partie en ligne, l'écran de préparation range l'état de la partie en haut à droite et l'invitation sur la ligne « Ton équipe » : la grille des héros retrouve sa place, avec le lien d'invitation toujours visible.",
         en: "In online games, the setup screen now puts the game status at the top right and the invitation on the “Your team” row, so the hero grid gets its room back and the invitation link stays visible.",
     },

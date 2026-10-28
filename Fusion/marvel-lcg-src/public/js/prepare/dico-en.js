@@ -1223,6 +1223,16 @@ export const DICO_EN_BASE = {
     "Mot de passe": "Password",
     "Se connecter": "Log in",
     "Service de connexion indisponible.": "Login service unavailable.",
+    /* ---- Choix des sets modulaires d'une campagne (MojoMania, 28/10/2026) ---- */
+    "Choisis les sets modulaires de ce scénario. Ceux déjà passés à l'antenne ne sont plus proposés.": "Choose this scenario's modular sets. The ones already aired are no longer offered.",
+    "Choix des sets modulaires annulé.": "Modular set choice cancelled.",
+    "Complète avec des sets déjà passés à l'antenne.": "Fill in with sets that have already aired.",
+    "1 set modulaire tiré au sort": "1 modular set drawn at random",
+    "sets modulaires tirés au sort": "modular sets drawn at random",
+    "1 set modulaire à choisir": "1 modular set to choose",
+    "sets modulaires à choisir": "modular sets to choose",
+    "déjà passés à l'antenne :": "already aired:",
+    "Il ne reste pas assez de sets neufs. Ils partent d'office :": "There aren't enough new sets left. These are used automatically:",
     "Inviter l'équipe": "Invite the team",
     "La partie est lancée. Envoie un lien à chaque coéquipier : son héros est déjà celui fixé par la campagne, il n'a rien à choisir.":
         "The game has started. Send each teammate a link: their hero is already the one set by the campaign, they have nothing to choose.",

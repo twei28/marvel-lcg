@@ -55,6 +55,13 @@ export type ChampVictoire = {
   aide?: string
   options?: string[]
   /**
+   * Un choix de cartes dont la LISTE vient du moteur, à chaque partie (MojoMania : « un soutien ou une amélioration
+   * que vous contrôlez, de coût 2 ou moins »). Valeur : la clé de travail (sans « Player N ») que le collecteur de
+   * fin de partie écrit au carnet sortant (« Eligible Support / Upgrade »), lue par joueur. Elle n'est JAMAIS
+   * enregistrée au carnet de la campagne : ce n'est qu'une liste de propositions.
+   */
+  optionsSuggerees?: string
+  /**
    * Un tableau de cases à cocher (« Cooperation Progress » de Skrull Menace) : une ligne par carte,
    * une case par exigence. Le carnet garde « Titre: exigence » pour chaque case cochée.
    */
@@ -484,6 +491,19 @@ export function conditionRemplie(champ: ChampVictoire, monde: World): boolean {
       // une récompense sur une règle qu'on ne sait pas évaluer.
       return false
   }
+}
+
+/**
+ * Les cartes que le moteur propose à CE joueur pour un champ à `optionsSuggerees`, ou [] (aucune suggestion utilisable :
+ * carnet d'un autre scénario, partie sans relevé).
+ */
+export function optionsProposees(
+  champ: ChampVictoire,
+  joueurId: number,
+  suggestions: Readonly<Record<string, string>> | undefined
+): string[] {
+  if (!champ.optionsSuggerees || !suggestions) return []
+  return deListe(suggestions[`Player ${joueurId + 1} ${champ.optionsSuggerees}`])
 }
 
 /** Clé du carnet pour ce champ et ce joueur (« Player 2 Tech Upgrade »). */

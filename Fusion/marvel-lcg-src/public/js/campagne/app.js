@@ -14,7 +14,8 @@
 
 import { apiCampagne, pageLivretUrl } from "/public/js/campagne/api-campagne.js";
 import { lireBrouillon, ecrireBrouillon, effacerBrouillon } from "/public/js/campagne/brouillon.js";
-import { catalog } from "/public/js/prepare/catalog.js";
+import { catalog, nomSetRencontre } from "/public/js/prepare/catalog.js";
+import { nombreDeModules, listeDuCarnet, proposerModules } from "/public/js/campagne/modulaires.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { api, cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js";
 
@@ -1116,8 +1117,11 @@ function vueCampagne() {
     if (finie) return el("div", { class: "cmp-page-campagne" }, entete(t("Campagne")), barre,
         el("main", { class: "cmp-corps" }, bandeauErreur(), vueConclusion(campagne, definition, perdue)));
 
+    // Une boite qui regle ses sets modulaires elle-meme (MojoMania) : le fichier de scenario en liste d'office, ce qui serait FAUX
+    // ici (le livret en fait tirer ou choisir quelques-uns, que l'ecran decrit plus bas).
+    const reglesModulaires = regleModulaires(definition, scenario);
     const sets = duCatalogue
-        ? [...(duCatalogue.rawJson.encounter_sets || []), ...(duCatalogue.rawJson.modular_sets || [])]
+        ? [...(duCatalogue.rawJson.encounter_sets || []), ...(reglesModulaires ? [] : (duCatalogue.rawJson.modular_sets || []))]
         : [];
 
     // Le livret en double page : debut de campagne, ou epilogue du scenario
@@ -1135,7 +1139,9 @@ function vueCampagne() {
         el("div", { class: "cmp-bloc" },
             el("h2", { class: "cmp-bloc-t" }, t("Mise en place")),
             el("p", { class: "cmp-bloc-aide" }, t("Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.")),
-            sets.length ? el("ul", { class: "cmp-sets" }, sets.map(ligneSet)) : null,
+            sets.length || reglesModulaires
+                ? el("ul", { class: "cmp-sets" }, sets.map(ligneSet), reglesModulaires ? ligneModulaires(definition, campagne, reglesModulaires) : null)
+                : null,
             blocEliteDuScenario(campagne, definition, scenario.numero, enCours),
         ),
         blocOptionsCampagne(campagne, definition, enCours),
@@ -1641,6 +1647,24 @@ function titreSet(nom) {
  *  brut mis en forme a la place, « Hs Feral Instincts »). Le cookie est pose
  *  bien avant 400 ms dans tous les cas observes : un seul reessai suffit. */
 const _nomsSets = new Map();
+/** La regle de sets modulaires de ce scenario (definition.modulaires.par_scenario), ou null. */
+function regleModulaires(definition, scenario) {
+    const cfg = definition.modulaires;
+    return cfg && cfg.par_scenario && cfg.par_scenario[scenario.id] ? cfg.par_scenario[scenario.id] : null;
+}
+
+/** « 1 set modulaire tiré au sort », « 3 sets modulaires à choisir »... et ceux déjà passés à l'antenne. */
+function ligneModulaires(definition, campagne, regle) {
+    const cfg = definition.modulaires;
+    const n = nombreDeModules(regle.nombre, (campagne.equipe || []).length || 1);
+    const quoi = regle.hasard
+        ? (n === 1 ? t("1 set modulaire tiré au sort") : n + " " + t("sets modulaires tirés au sort"))
+        : (n === 1 ? t("1 set modulaire à choisir") : n + " " + t("sets modulaires à choisir"));
+    const utilises = listeDuCarnet((campagne.carnet || {})[cfg.cle_utilises]);
+    const dejaPasses = utilises.length ? " · " + t("déjà passés à l'antenne :") + " " + utilises.map(nomSetRencontre).join(", ") : "";
+    return el("li", { class: "cmp-sets-modulaires" }, quoi + dejaPasses);
+}
+
 function ligneSet(id) {
     const li = el("li", {}, _nomsSets.get(id) || titreSet(id));
     if (!_nomsSets.has(id)) {
@@ -1681,6 +1705,71 @@ async function ouvrirCampagne(id) {
  * exister qu'UNE facon de demarrer une partie. Les sets modulaires viennent du
  * fichier de scenario, jamais d'un choix : c'est tout l'interet du mode.
  */
+/* ----------------------------------------------- sets modulaires d'une campagne -- */
+
+/** Le joueur choisit `choix.nombre` sets parmi `choix.parmi` (MojoMania, livret p.13 et p.17). Rend la liste choisie ;
+ *  « Annuler » rejette, et le scenario ne part pas. */
+function demanderModules(choix, scenario) {
+    return new Promise((resoudre, rejeter) => {
+        const selection = new Set();
+        const compte = el("span", { class: "cmp-modules-compte" });
+        const valider = el("button", { class: "btn launch", disabled: true }, t("Valider"));
+        const fermer = () => fond.remove();
+        const maj = () => {
+            compte.textContent = `${selection.size} / ${choix.nombre}`;
+            valider.disabled = selection.size !== choix.nombre;
+            for (const b of puces) b.classList.toggle("on", selection.has(b.dataset.module));
+        };
+        const puces = choix.parmi.map((m) => el("button", {
+            class: "cmp-module-puce", type: "button", "data-module": m,
+            onclick: () => {
+                if (selection.has(m)) selection.delete(m);
+                else if (selection.size < choix.nombre) selection.add(m);
+                maj();
+            },
+        }, nomSetRencontre(m)));
+        valider.onclick = () => { fermer(); resoudre([...selection]); };
+        const fond = el("div", { class: "cmp-modules", role: "dialog", "aria-modal": "true" },
+            el("div", { class: "cmp-modules-panneau" },
+                el("h2", { class: "cmp-titre mvl" }, t("Sets modulaires")),
+                el("p", { class: "cmp-note" },
+                    choix.imposes.length
+                        ? t("Il ne reste pas assez de sets neufs. Ils partent d'office :") + " " + choix.imposes.map(nomSetRencontre).join(", ")
+                          + ". " + t("Complète avec des sets déjà passés à l'antenne.")
+                        : t("Choisis les sets modulaires de ce scénario. Ceux déjà passés à l'antenne ne sont plus proposés.")),
+                el("div", { class: "cmp-modules-puces" }, ...puces),
+                el("div", { class: "cmp-modules-pied" },
+                    compte,
+                    el("button", { class: "btn ghost", type: "button", onclick: () => { fermer(); rejeter(new Error(t("Choix des sets modulaires annulé."))); } }, t("Annuler")),
+                    valider)));
+        document.body.append(fond);
+        maj();
+    });
+}
+
+/**
+ * Les sets modulaires de ce scenario de campagne : la regle du livret quand la definition en porte une
+ * (`modulaires`, voir modulaires.js), sinon ceux du fichier de scenario comme avant.
+ * Rend `{ modules, cle }` : `cle` est la cle de carnet ou l'ecran pose la liste, pour que le moteur la releve.
+ */
+async function modulesDeCampagne(scenario, nbJoueurs, parDefaut) {
+    const cfg = etat.definition && etat.definition.modulaires;
+    const regle = cfg && cfg.par_scenario && cfg.par_scenario[scenario.id];
+    if (!regle) return { modules: parDefaut, cle: null };
+    const proposition = proposerModules({
+        reserve: cfg.reserve,
+        utilises: listeDuCarnet((etat.campagne.carnet || {})[cfg.cle_utilises]),
+        nombre: nombreDeModules(regle.nombre, nbJoueurs),
+        hasard: !!regle.hasard,
+    });
+    let modules = proposition.modules;
+    if (proposition.choix) {
+        const choisis = await demanderModules(proposition.choix, scenario);
+        modules = [...proposition.choix.imposes, ...choisis];
+    }
+    return { modules, cle: cfg.cle_injectee || null };
+}
+
 async function lancerScenario(scenario, options = {}) {
     const campagne = etat.campagne;
     const choixAssemblee = scenario.assemblee ? etat.assembleeChoix : null;
@@ -1702,13 +1791,16 @@ async function lancerScenario(scenario, options = {}) {
         identity: m.identite ? { hero: m.identite } : null,
     }));
 
+    // Les sets modulaires : la regle du livret si la boite en a une (MojoMania), sinon ceux du fichier de scenario.
+    const { modules, cle: cleModules } = await modulesDeCampagne(scenario, joueurs.length, duCatalogue.rawJson.modular_sets || []);
+
     // Meme verification qu'au lancement normal (prepare/app.js) : un deck
     // invalide ne doit jamais partir en silence, meme depuis une campagne.
     const verif = validate({
         playerCount: joueurs.length,
         players: joueurs,
         scenario: duCatalogue,
-        difficulty: { selectedModularSets: duCatalogue.rawJson.modular_sets || [] },
+        difficulty: { selectedModularSets: modules },
     });
     if (!verif.ok) {
         throw new Error(verif.errors.map((e) => e.message).join(" — "));
@@ -1748,9 +1840,10 @@ async function lancerScenario(scenario, options = {}) {
             skirmish: false,
             heroic: 0,
             // Imposes par le livret : exactement ceux du fichier de scenario.
-            selectedModularSets: duCatalogue.rawJson.modular_sets || [],
+            selectedModularSets: modules,
         },
-        campaignLog: campagne.carnet || {},
+        // Les sets de CE scenario sont poses au carnet entrant : le moteur les releve (et les cumule) en fin de partie.
+        campaignLog: cleModules ? { ...(campagne.carnet || {}), [cleModules]: modules.join(";") } : (campagne.carnet || {}),
         // Kingsfall multi-tables : « creer » une assemblee ou en « rejoindre » une avec son code (jamais pour les autres scenarios).
         assemblee: scenario.assemblee && etat.assembleeChoix && etat.assembleeChoix.mode !== "seule" ? { ...etat.assembleeChoix } : null,
     }, { redirect: !enLigne });

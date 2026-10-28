@@ -1,0 +1,116 @@
+{
+  "version": "1.0",
+  "code": "mojo",
+  "cle_extension": "39. Mojo Mania",
+  "nom": "MojoMania",
+  "nom_en": "MojoMania",
+  "resume": "Mojo vous a embarqués dans son Mojoverse pour le plus grand spectacle de son histoire. Trois scénarios à gagner dans l'ordre : le combat contre MaGog, la chasse à Spiral, puis Mojo en personne. Ce que vous gardez d'un épisode à l'autre tient en une carte par héros, un allié qui vous suit, et les genres déjà passés à l'antenne.",
+  "resume_en": "Mojo has dragged you into his Mojoverse for the greatest show of his career. Win three scenarios in order: the fight against MaGog, the hunt for Spiral, then Mojo himself. What you keep from one episode to the next is one card per hero, an ally who follows you, and the genres already aired.",
+  "pages_regles": [],
+  "expert": {
+    "pv_persistants": true,
+    "note": "En campagne experte, les points de vie restants de chaque identité sont reportés au carnet et deviennent ses points de vie de départ au scénario suivant. À la mise en place, chaque joueur peut se distribuer 1 carte Rencontre face cachée pour se soigner complètement. Un héros vaincu qui rejoint son équipe au scénario suivant fait de même."
+  },
+  "modulaires": {
+    "reserve": ["crime", "fantasy", "horror", "sci_fi", "sitcom", "western"],
+    "cle_utilises": "Modular Sets Used",
+    "cle_injectee": "Modular Sets This Scenario",
+    "par_scenario": {
+      "magog": { "nombre": 1, "hasard": true },
+      "spiral": { "nombre": 3 },
+      "mojo": { "nombre": "joueurs+1" }
+    }
+  },
+  "scenarios": [
+    {
+      "id": "magog",
+      "numero": 1,
+      "nom": "MaGog",
+      "nom_fr": "MaGog",
+      "resume": "Vous vous réveillez au centre d'une arène géante, sous le regard d'écrans qui diffusent des visages venus de toute la galaxie. Mojo présente « le plus grand combat de l'histoire du Mojoverse » : une poignée de challengers venus de la Terre contre MaGog, son champion, invaincu depuis quatre-vingt-dix-neuf combats. La foule décidera du vainqueur.",
+      "enjeu": "Gagnez la foule avant lui. Chaque héros pourra garder un soutien ou une amélioration pour la suite, et Longshot, s'il est encore en jeu à la fin, vous suivra au scénario suivant. Un module de rencontre est tiré au sort et ne reviendra pas.",
+      "pages": { "intro": [], "regles": [], "epilogue": [] },
+      "victoire": [
+        {
+          "cle": "Longshot In Play: Scenario 1",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Longshot en jeu à la fin",
+          "aide": "Si Longshot est encore en jeu, un joueur pourra le révéler au début du scénario suivant. Sinon il retournera dans le deck Rencontre."
+        },
+        {
+          "cle": "Support / Upgrade #1",
+          "parJoueur": true,
+          "type": "choix",
+          "obligatoire": false,
+          "optionsSuggerees": "Eligible Support / Upgrade",
+          "libelle": "Soutien ou amélioration à garder",
+          "aide": "Chaque héros PEUT garder un soutien ou une amélioration qu'il contrôle, de coût 2 ou moins (3 ou moins si The Champion est du côté Booing Crowd). Une carte sans coût ne peut pas être choisie. Elle entrera en jeu au début des scénarios suivants, au prix de menace supplémentaire sur la manigance principale."
+        },
+        {
+          "cle": "Modular Sets Used",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Modules déjà passés à l'antenne",
+          "aide": "Les modules utilisés dans ce scénario ne pourront pas être choisis aux scénarios suivants (sauf s'il n'en reste pas assez)."
+        }
+      ]
+    },
+    {
+      "id": "spiral",
+      "numero": 2,
+      "nom": "Spiral",
+      "nom_fr": "Spiral",
+      "resume": "« Formidable ! Les audiences explosent. Spiral, envoie nos stars à l'émission suivante ! » Un éclair d'énergie verte, et vous voilà dans un monde où des caméras tournent autour de vous. Pour rentrer chez vous, il faudra retrouver Spiral, la téléporteuse à six bras, d'émission en émission.",
+      "enjeu": "Fouillez les émissions pour la trouver, puis forcez-la à se rendre. Chaque héros pourra de nouveau garder un soutien ou une amélioration, et trois autres modules passeront à l'antenne.",
+      "pages": { "intro": [], "regles": [], "epilogue": [] },
+      "victoire": [
+        {
+          "cle": "Longshot In Play: Scenario 2",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Longshot en jeu à la fin",
+          "aide": "Si Longshot est encore en jeu, un joueur pourra le révéler au début du dernier scénario."
+        },
+        {
+          "cle": "Support / Upgrade #2",
+          "parJoueur": true,
+          "type": "choix",
+          "obligatoire": false,
+          "optionsSuggerees": "Eligible Support / Upgrade",
+          "libelle": "Soutien ou amélioration à garder",
+          "aide": "Chaque héros PEUT garder un soutien ou une amélioration qu'il contrôle, de coût 2 ou moins (3 ou moins s'il y a moins de dix menaces par joueur sur la manigance principale). Une carte sans coût ne peut pas être choisie."
+        },
+        {
+          "cle": "Modular Sets Used",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Modules déjà passés à l'antenne",
+          "aide": "Les modules utilisés dans ce scénario ne pourront pas être choisis au dernier scénario (sauf s'il n'en reste pas assez)."
+        }
+      ]
+    },
+    {
+      "id": "mojo",
+      "numero": 3,
+      "nom": "Mojo",
+      "nom_fr": "Mojo",
+      "final": true,
+      "resume": "Spiral, vaincue, vous le dit sans détour : si elle vous aide à partir, Mojo la ramènera de force. Mais si vous venez à bout de lui, elle vous renverra chez vous. Il se nourrit de l'attention, et chaque minute d'antenne le rend plus fort. Vous voilà face à face avec le producteur du Mojoverse, qui trouve que ce serait une excellente finale.",
+      "enjeu": "La dernière émission. Tout ce que vous avez gardé, cartes, allié, points de vie en campagne experte, est en jeu. Gagnez, et la campagne est à vous.",
+      "pages": { "intro": [], "regles": [], "epilogue": [] },
+      "victoire": []
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "parJoueur": true,
+      "type": "auto",
+      "format": "int",
+      "detection": "pv_restants",
+      "libelle": "PV restants",
+      "aide": "Ils deviennent les PV de départ du scénario suivant. Plafonnés aux PV imprimés de l'identité."
+    }
+  ]
+}
