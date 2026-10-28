@@ -13,9 +13,14 @@ async function carte(type, titre, dossier = 'Valkyrie') {
   await p.fill('input[list=dossiers-connus]', dossier); await att(400)
 }
 await carte('identity', 'Valkyrie')
-for (const [t, n] of [['alter-ego', 'Brunnhilde'], ['ally', 'Skurge'], ['event', 'Death Glow'], ['sidescheme', 'Realm Under Siege'], ['main_scheme_a', 'Descent'], ['main_scheme_b', 'Descent B'], ['minion', 'Draugr']]) {
+for (const [t, n] of [['alter-ego', 'Brunnhilde'], ['ally', 'Skurge'], ['event', 'Death Glow'], ['sidescheme', 'Realm Under Siege'], ['main_scheme_a', 'Descent'], ['main_scheme_b', 'Descent B'], ['minion', 'Draugr'], ['villain', 'Fenrir'], ['environment', 'Bifrost'], ['resource', 'Valor'], ['upgrade', 'Sword'], ['support', 'Throne'], ['treachery', 'Ragnarok'], ['attachment', 'Curse'], ['obligation', 'Duty'], ['playersidescheme', 'Quest']]) {
   await p.click('#c-nouvelle'); await att(400); await carte(t, n)
 }
+// du texte, de la citation et « unique » sur une carte : Text / Quote / Unique dans le set OCTGN
+await p.click('#liste button:has-text("Skurge")'); await att(500)
+await p.locator('#champs .editeur').first().click(); await p.keyboard.type('Response: After Skurge attacks, draw 1 card & smile.'); await att(300)
+await p.locator('#champs .editeur').nth(1).click(); await p.keyboard.type('Quote of the day'); await att(300)
+await p.locator('#champs label:has-text("Unique") input[type=checkbox]').first().check(); await att(500)
 await p.click('#b-pack'); await p.waitForSelector('dialog')
 const cases = p.locator('dialog label.ligne')
 for (const nom of ['OCTGN', 'DragnCards']) await p.locator('dialog label.ligne', { hasText: nom }).locator('input').check()
