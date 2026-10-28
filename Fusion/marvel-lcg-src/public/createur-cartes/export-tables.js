@@ -20,6 +20,11 @@ import { S } from './commun.js'
 const JEU_OCTGN = '055c536f-adba-4bc2-acbf-9aefb9756046' // Marvel Champions dans OCTGN (id du jeu relevé dans le set d'exemple)
 
 /** La carte montre-t-elle ce nombre ? (les autres champs gardent des valeurs par defaut sans effet : on ne les exporte pas) */
+/** PV d'un méchant : dans sa ligne d'ensemble (« … / HIT POINTS 14 » + icone « par joueur »), pas dans une case de nombre. */
+function pvDeLigne(ct) {
+  const m = /(?:hit points|points de vie)\s*(\d+)\s*(\[per_hero\])?/i.exec(ct.ligneEnsemble ?? '')
+  return m ? { n: m[1], parJoueur: !!m[2] } : null
+}
 const IDENTITES = new Set(['identity', 'identity-promo', 'alter-ego', 'alter-ego-promo']) // leur taille de main et leurs PV sont dans la ligne « Hand size / Hit points »
 const montre = (c, cls) => !!S.types[c.type]?.elements?.some((e) => e.cls === cls) || (IDENTITES.has(c.type) && ['handsize', 'hp cost'].includes(cls))
 const slug = (t) => String(t || 'cartes').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '').toLowerCase().slice(0, 40) || 'cartes'
@@ -90,7 +95,7 @@ export async function genererOctgn(cartes, { nomSet, rendre }) {
   const xml = []
   let position = 0
   const heros = entrees.find((e) => e.faces[0].type === 'identity' || e.faces[0].type === 'identity-promo')
-  const entier = (v) => (/^\d+$/.test(String(v ?? '').trim()) ? String(parseInt(v, 10)) : null)
+  const entier = (v) => (/^\+?\d+$/.test(String(v ?? '').trim()) ? String(parseInt(v, 10)) : null)
   const proprietes = (c, numero, pos, suffixe = '') => {
     const ct = c.contenu
     const p = [['CardNumber', numero + suffixe], ['Position', pos], ['Quantity', 1], ['Type', TYPE_TABLE[c.type]], ['Owner', proprietaire]]
@@ -103,17 +108,18 @@ export async function genererOctgn(cartes, { nomSet, rendre }) {
     nombre('Recovery', 'rec cost', ct.rec)
     nombre('HandSize', 'handsize', ct.tailleMain)
     nombre('HP', 'hp cost', ct.pv)
+    if (!montre(c, 'hp cost') && c.type === 'villain') { const pv = pvDeLigne(ct); if (pv) { p.push(['HP', pv.n]); if (pv.parJoueur) p.push(['HP_Per_Hero', 'True']) } }
     if (c.type === 'ally') { if (ct.atkConseq > 0) p.push(['AttackCost', ct.atkConseq]); if (ct.thwConseq > 0) p.push(['ThwartCost', ct.thwConseq]) }
     const ress = { Resource_Physical: 'physical', Resource_Mental: 'mental', Resource_Energy: 'energy', Resource_Wild: 'wild' }
     for (const [cle, genre] of Object.entries(ress)) { const n = (ct.ressources || []).filter((r) => r === genre).length; if (n) p.push([cle, n]) }
     if (ct.renforts > 0) p.push(['Boost', ct.renforts])
-    // manigances : un nombre imprime tel quel (sans icone « par joueur ») est FIXE
+    // manigances : un nombre suivi de l'icone « par joueur » est multiplie par le nombre de joueurs (Fixed = False), sinon il est FIXE
     if (['sidescheme', 'playersidescheme'].includes(c.type) || c.type.startsWith('main_scheme')) {
       nombre('Threat', 'targetthreat cost', ct.menaceCible)
       const base = entier(ct.menaceDepart)
-      if (base !== null && montre(c, 'startingthreatwrap')) { p.push(['BaseThreat', base]); p.push(['BaseThreatFixed', 'True']) }
+      if (base !== null && montre(c, 'startingthreatwrap')) { p.push(['BaseThreat', base]); p.push(['BaseThreatFixed', ct.menaceDepartParJoueur ? 'False' : 'True']) }
       const esc = entier(ct.acceleration)
-      if (esc !== null && montre(c, 'acceleration')) { p.push(['EscalationThreat', esc]); p.push(['EscalationThreatFixed', 'True']) }
+      if (esc !== null && montre(c, 'acceleration')) { p.push(['EscalationThreat', esc]); p.push(['EscalationThreatFixed', ct.accelerationParJoueur ? 'False' : 'True']) }
     }
     const texte = texteBrut(ct.regles), citation = texteBrut(ct.citation)
     if (texte) p.push(['Text', texte])
@@ -159,7 +165,7 @@ puis relance OCTGN. Le jeu est Marvel Champions (id ${JEU_OCTGN}).
 Structure reprise d'un set de la communaute (She-Hulk par Merlin) et recoupee avec le code de MCdeck (outil qui lit et ecrit les sets OCTGN
 de Marvel Champions) : types, proprietes, tailles (SchemeCard / EncounterCard / VillainCard). A savoir :
   - OCTGN n'a pas de type « manigance annexe de joueur » : elle est exportee en side_scheme ;
-  - seuls les nombres entiers sont exportes (pas les X ni les etoiles) ; la menace de depart et l'acceleration sont marquees « fixes » ;
+  - seuls les nombres entiers sont exportes (pas les X ni les etoiles) ; un nombre suivi de l'icone « par joueur » (menace de depart, acceleration, PV d'un mechant) est marque non fixe (BaseThreatFixed / EscalationThreatFixed = False, HP_Per_Hero = True) ;
   - Owner : "fm_<set>" pour toutes les cartes (le suffixe _nemesis, qui range des cartes rencontre dans le nemesis d'un heros, n'est pas pose) ;
   - la carte "fm_hero_setup" (point d'entree du constructeur de deck) n'est creee que s'il y a un heros ;
   - Quantity vaut 1 partout : change-la dans set.xml pour les cartes en plusieurs exemplaires.
@@ -170,7 +176,7 @@ de Marvel Champions) : types, proprietes, tailles (SchemeCard / EncounterCard / 
 // json/cardBacks.json, json/faceProperties.json) : databaseId, name, subname, type, classification, imageUrl, cardBack, traits, handSize,
 // hitPointsFixed, set, stage, startingThreatFixed, accelerationFixed. Les valeurs de `type` y portent des majuscules et des espaces
 // (« Alter-Ego », « Main Scheme », « Side Scheme »...) et `cardBack` vaut encounter / player / villain (ou multi_sided pour les deux faces).
-const COLONNES = ['databaseId', 'name', 'subname', 'type', 'classification', 'imageUrl', 'cardBack', 'traits', 'handSize', 'hitPointsFixed', 'set', 'stage', 'startingThreatFixed', 'accelerationFixed']
+const COLONNES = ['databaseId', 'name', 'subname', 'type', 'classification', 'imageUrl', 'cardBack', 'traits', 'handSize', 'hitPointsFixed', 'hitPointsScaling', 'set', 'stage', 'startingThreatFixed', 'startingThreatScaling', 'accelerationFixed', 'accelerationScaling']
 const TYPE_DRAGN = {
   identity: 'Hero', 'identity-promo': 'Hero', 'alter-ego': 'Alter-Ego', 'alter-ego-promo': 'Alter-Ego', ally: 'Ally', 'generic-promo': 'Ally', 'generic-promo-vert': 'Ally',
   event: 'Event', upgrade: 'Upgrade', support: 'Support', resource: 'Resource', 'starter-deck': 'Resource', obligation: 'Obligation', 'obligation-villain': 'Obligation',
@@ -189,7 +195,16 @@ export async function genererDragncards(cartes, { nomSet, rendre, prefixe = '' }
   const fichiers = []
   const pris = new Set()
   const unique = (base) => { let n = base; let k = 2; while (pris.has(n)) n = `${base}_${k++}`; pris.add(n); return n }
-  const entier = (v) => (/^\d+$/.test(String(v ?? '').trim()) ? String(parseInt(v, 10)) : '')
+  const entier = (v) => (/^\+?\d+$/.test(String(v ?? '').trim()) ? String(parseInt(v, 10)) : '')
+  // un nombre suivi de l'icone « par joueur » va dans la colonne ...Scaling (multiplie par le nombre de joueurs), sinon dans ...Fixed
+  const fixeOuParJoueur = (nom, c, cls, v, parJoueur) => { const n = montre(c, cls) ? entier(v) : ''; return parJoueur ? { [nom + 'Fixed']: '', [nom + 'Scaling']: n } : { [nom + 'Fixed']: n, [nom + 'Scaling']: '' } }
+  const pvDragn = (c) => {
+    let n = ''
+    let pj = false
+    if (montre(c, 'hp cost')) n = entier(c.contenu.pv)
+    else if (c.type === 'villain') { const pv = pvDeLigne(c.contenu); if (pv) { n = pv.n; pj = pv.parJoueur } }
+    return { hitPointsFixed: pj ? '' : n, hitPointsScaling: pj ? n : '' }
+  }
   for (const e of regrouper(cartes)) {
     const multi = e.faces.length > 1
     const base = unique(slug(e.faces[0].contenu.titre))
@@ -205,8 +220,8 @@ export async function genererDragncards(cartes, { nomSet, rendre, prefixe = '' }
         classification: CLASSIFICATION_RENCONTRE.has(type) ? 'Encounter' : (type === 'Resource' || type === 'Event' || type === 'Support' || type === 'Upgrade' || type === 'Ally' ? '' : 'Hero'),
         imageUrl: prefixe + fichier,
         cardBack: multi ? 'multi_sided' : (type === 'Villain' ? 'villain' : (DOS_ENCOUNTER.has(type) ? 'encounter' : 'player')),
-        traits: traitsDragn(ct.traits), handSize: montre(c, 'handsize') ? entier(ct.tailleMain) : '', hitPointsFixed: montre(c, 'hp cost') ? entier(ct.pv) : '',
-        set: nomSet, stage, startingThreatFixed: montre(c, 'startingthreatwrap') ? entier(ct.menaceDepart) : '', accelerationFixed: montre(c, 'acceleration') ? entier(ct.acceleration) : '',
+        traits: traitsDragn(ct.traits), handSize: montre(c, 'handsize') ? entier(ct.tailleMain) : '', ...pvDragn(c),
+        set: nomSet, stage, ...fixeOuParJoueur('startingThreat', c, 'startingthreatwrap', ct.menaceDepart, ct.menaceDepartParJoueur), ...fixeOuParJoueur('acceleration', c, 'acceleration', ct.acceleration, ct.accelerationParJoueur),
       }
       lignes.push(COLONNES.map((k) => tsv(valeurs[k])).join('\t'))
     }
@@ -228,11 +243,11 @@ Utiliser (wiki officiel de DragnCards, page « Custom Content ») :
   3. Menu « Upload Public Cards » : choisis cards.tsv. Chaque ligne doit montrer une petite image.
 
 Colonnes obligatoires de DragnCards : databaseId, name, imageUrl, cardBack, type. Les autres colonnes (celles du plugin Marvel Champions :
-subname, classification, traits, handSize, hitPointsFixed, set, stage, startingThreatFixed, accelerationFixed) deviennent des proprietes.
+subname, classification, traits, handSize, hitPointsFixed / hitPointsScaling, set, stage, startingThreatFixed / startingThreatScaling, accelerationFixed / accelerationScaling) deviennent des proprietes.
 Une carte a deux faces (heros + alter-ego, manigance A + B) = deux lignes de meme databaseId avec cardBack = multi_sided.
 
 Valeurs reprises du plugin (github.com/hone/dragncards-mc-plugin) : type = Hero, Alter-Ego, Ally, Event, Upgrade, Support, Resource, Obligation,
 Villain, Minion, Treachery, Environment, Attachment, Side Scheme, Player Side Scheme, Main Scheme ; cardBack = player, encounter, villain.
-A savoir : les nombres ne sont exportes que s'ils sont entiers (pas les X ni les etoiles) ; un nombre de PV ou de menace est exporte comme
-« fixe » (le createur ne dessine pas l'icone « par joueur »), a corriger a la main dans le tableur si besoin.
+A savoir : les nombres ne sont exportes que s'ils sont entiers (pas les X ni les etoiles). Un nombre suivi de l'icone « par joueur » (PV d'un
+mechant, menace de depart, acceleration) va dans la colonne ...Scaling ; sinon dans la colonne ...Fixed.
 `

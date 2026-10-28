@@ -456,6 +456,7 @@ function nombre(label, cle, avecEtoile = true) {
   })
   const ligne = el('div', { class: 'nombre' }, el('label', {}, label, i))
   if (avecEtoile) ligne.append(coche('★', (x) => x.contenu, cle + 'Etoile'))
+  if (['menaceDepart', 'menaceCible', 'acceleration'].includes(cle)) ligne.append(coche('Par joueur', (x) => x.contenu, cle + 'ParJoueur'))
   return ligne
 }
 function section(titre, ouvert, ...contenu) {
@@ -681,6 +682,18 @@ function construireFormulaire() {
   }
   if (aElement(spec, 'villainstagenew')) texte.push(t('Étape du méchant (I, II, A, B…)', 'etape'))
   if (aElement(spec, 'set-line')) texte.push(t('Ligne d’ensemble', 'ligneEnsemble'))
+  // les PV d'un méchant sont dans la ligne d'ensemble (« … / HIT POINTS 14 » + icône « par joueur ») : une case pose ou retire l'icône
+  if (aElement(spec, 'set-line') && c.type === 'villain') {
+    const ICONE = /\s*\[per_hero\]\s*$/
+    const i = el('input', { type: 'checkbox' })
+    i.checked = ICONE.test(c.contenu.ligneEnsemble ?? '')
+    i.addEventListener('change', () => {
+      c.contenu.ligneEnsemble = (c.contenu.ligneEnsemble ?? '').replace(ICONE, '') + (i.checked ? '[per_hero]' : '')
+      changement()
+      construireFormulaire()
+    })
+    texte.push(el('label', { class: 'ligne' }, i, 'Points de vie par joueur (icône en fin de ligne)'))
+  }
   if (aElement(spec, 'c-line')) texte.push(t('Créateur / mention', 'createur'))
   f.push(section('Texte', true, ...texte))
 

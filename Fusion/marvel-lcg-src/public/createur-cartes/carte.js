@@ -32,7 +32,7 @@ export const CHAMPS_VIDES = {
   // nombres : texte affiche (« 3 », « X », « — »), avec leur etoile (« * ») eventuelle
   cout: '', coutEtoile: false, thw: '', thwEtoile: false, thwConseq: 0, atk: '', atkEtoile: false, atkConseq: 0,
   def: '', defEtoile: false, rec: '', recEtoile: false, pv: '', pvEtoile: false, tailleMain: '', menaceDepart: '',
-  menaceDepartEtoile: false, menaceCible: '', acceleration: '', phaseNumero: '', phaseLettre: '', etape: '',
+  menaceDepartEtoile: false, menaceDepartParJoueur: false, menaceCible: '', menaceCibleParJoueur: false, acceleration: '', accelerationParJoueur: false, phaseNumero: '', phaseLettre: '', etape: '',
   renforts: 0, renfortEtoile: false, ressources: [], atkAttache: '', atkAttacheEtoile: false, schAttache: '', schAttacheEtoile: false,
 }
 
@@ -83,6 +83,10 @@ function baseDe(el, extra = {}) {
   }
 }
 
+// L'icone « par joueur » apres un nombre (taille, decalage vertical, ecart : en fraction de la taille du nombre), mesuree sur une vraie carte.
+const PAR_JOUEUR = { fs: 0.56, dy: 0.14, ecart: 0 }
+const PAR_JOUEUR_PAR_ROLE = { acceleration: { fs: 0.72, dy: 0.1, ecart: 0 } } // « +1 » de la manigance principale : une petite boite, une icone proportionnellement plus grande
+
 const ROLES_NOMBRES = {
   'paycost cost': 'cout', 'thw sch cost': 'thw', 'atk cost': 'atk', 'def cost': 'def', 'rec cost': 'rec', 'hp cost': 'pv',
   'targetthreat cost': 'menaceCible', startingthreatwrap: 'menaceDepart', acceleration: 'acceleration',
@@ -132,7 +136,7 @@ function baselineCentree(taille, famille, centre) {
  * Un nombre dans sa boite « ... cost » : centre dans la boite ; si une etoile le suit, la mesure donne le decalage du nombre
  * (`etoile.dx`), la taille de l'etoile, son ecart et son decalage vertical. Etoile sans valeur : l'etoile seule, plus grande.
  */
-function dessinerNombre(ctx, el, texte, etoile) {
+function dessinerNombre(ctx, el, texte, etoile, parJoueur = false) {
   if (!texte && !etoile) return
   const base = baseDe(el)
   if (/HorribleJefe/.test(base.famille)) {
@@ -159,6 +163,7 @@ function dessinerNombre(ctx, el, texte, etoile) {
   ctx.font = police
   const largeur = texte ? ctx.measureText(texte).width : 0
   const pieces = []
+  let elargir = 0
   if (texte) {
     const cx = w / 2 + (etoile ? E.dx : 0)
     pieces.push({ s: texte, police, x: cx - largeur / 2, centre: h / 2, fs: base.taille, famille: base.famille })
@@ -166,14 +171,29 @@ function dessinerNombre(ctx, el, texte, etoile) {
   } else {
     pieces.push({ s: 's', police: `italic bold ${ES.fs}px ChampionsIcons`, x: w / 2 + ES.dx - ES.fs / 2, centre: h / 2 + ES.dy, fs: ES.fs, famille: 'ChampionsIcons' })
   }
+  // l'icone « par joueur » (le glyphe `g` de la police) suit le nombre : le groupe nombre + icone est recentre dans la boite
+  if (parJoueur && texte) {
+    const K = PAR_JOUEUR_PAR_ROLE[el.cls] ?? PAR_JOUEUR
+    const PJ = el.parJoueur ?? { fs: base.taille * K.fs, dy: base.taille * K.dy, ecart: base.taille * K.ecart }
+    const policeIcone = `${PJ.fs}px ChampionsIcons`
+    ctx.font = policeIcone
+    const largeurIcone = ctx.measureText('g').width
+    const total = largeur + PJ.ecart + largeurIcone
+    const debut = (w - total) / 2
+    pieces[0].x = debut
+    pieces.push({ s: 'g', police: policeIcone, x: debut + largeur + PJ.ecart, centre: h / 2 + PJ.dy, fs: PJ.fs, famille: 'ChampionsIcons' })
+    // boites tres etroites (menace cible : 5 px) : on elargit la zone de dessin (et son filtre de contour) pour que le groupe y tienne
+    elargir = Math.max(0, Math.ceil((total - w) / 2 + 30))
+  }
   for (const p of pieces) p.y = baselineCentree(p.fs, p.famille, p.centre)
-  avecContour(ctx, w, h, couleur, (c, mode) => {
+  ctx.translate(-elargir, 0)
+  avecContour(ctx, w + 2 * elargir, h, couleur, (c, mode) => {
     for (const p of pieces) {
       c.font = p.police
       c.textAlign = 'left'
       c.textBaseline = 'alphabetic'
-      if (mode === 'contour') c.strokeText(p.s, p.x, p.y)
-      c.fillText(p.s, p.x, p.y)
+      if (mode === 'contour') c.strokeText(p.s, p.x + elargir, p.y)
+      c.fillText(p.s, p.x + elargir, p.y)
     }
   })
   ctx.restore()
@@ -455,7 +475,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   for (const [cls, champ] of Object.entries(ROLES_NOMBRES)) {
     const el = E[cls]
     if (!el) continue
-    dans(el, () => dessinerNombre(ctx, el, contenu[champ], contenu[champ + 'Etoile']))
+    dans(el, () => dessinerNombre(ctx, el, contenu[champ], contenu[champ + 'Etoile'], contenu[champ + 'ParJoueur']))
   }
 
   // Tete d'angle (au-dessus des nombres, comme la reference) : l'image (300 x 300 « cover ») centree sur (boite + 150 + decalage), zoomee et tournee comme la reference

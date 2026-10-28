@@ -274,6 +274,7 @@ export const DICO = {
   'Un set pour OCTGN (GameDatabase + ImageDataBase)': 'A set for OCTGN (GameDatabase + ImageDataBase)',
   'Des cartes pour DragnCards (.tsv + images)': 'Cards for DragnCards (.tsv + images)',
   'DragnCards : adresse où seront hébergées les images (facultatif, finie par « / »)': 'DragnCards: address where the images will be hosted (optional, ending with “/”)',
+  'Points de vie par joueur (icône en fin de ligne)': 'Hit points per hero (icon at the end of the line)',
   // carte comparable
   'Voir une vraie carte comparable': 'See a real comparable card',
   'Cherche une carte officielle anglaise du même type, au texte de longueur proche, et la montre à côté de la tienne': 'Finds an official English card of the same type with a similar amount of text, and shows it next to yours',
