@@ -3823,6 +3823,8 @@ def _barre(pseudo: str) -> str:
     signalements = ('<a href="/signalements">%s%s</a>'
                     % (lang.t("Mes signalements"),
                        ' <span class="pastille">%d</span>' % attente if attente else ""))
+    # Le createur de cartes est ouvert a tout compte connecte (28/10/2026).
+    createur = '<a href="/createur-cartes.html">%s</a>' % lang.t("Créateur de cartes")
     # ⚠ LE RETOUR N'EST PAS UN CONFORT, C'EST LA SEULE SORTIE. Le site
     # s'installe en application (`MANIFESTE_APPLI`, `display: standalone`), donc
     # dans une fenetre SANS bouton Precedent. Signale par un joueur le
@@ -3846,11 +3848,11 @@ def _barre(pseudo: str) -> str:
             'onclick="var b=this.parentNode;b.classList.toggle(\'ouvert\');'
             'this.setAttribute(\'aria-expanded\',b.classList.contains(\'ouvert\'))">&#9776;</button>'
             '<div class="barre-qui">%s <strong>%s</strong></div>'
-            '<nav class="barre-nav">%s%s%s'
+            '<nav class="barre-nav">%s%s%s%s'
             '<a href="/deconnexion" class="sortie">%s</a>'
             '</nav></header>'
             % (lang.t("Menu"), lang.t("Connecté"), html.escape(pseudo),
-               signalements, admin, _bouton_langue(),
+               createur, signalements, admin, _bouton_langue(),
                lang.t("Se déconnecter")))
 
 

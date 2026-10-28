@@ -128,6 +128,7 @@ DICO_EN: dict[str, str] = {
     "Menu": "Menu",
     "Se déconnecter": "Sign out",
     "Mes signalements": "My reports",
+    "Créateur de cartes": "Card Maker",
     "Accueil": "Home",
     "siège": "seat",
     "Envoyé depuis un autre siège de ta table : la réponse part à la personne qui l'a écrit.": "Sent from another seat at your table: the reply goes to whoever wrote it.",
