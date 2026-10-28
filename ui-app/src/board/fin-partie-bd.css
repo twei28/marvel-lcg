@@ -108,7 +108,14 @@
   margin-bottom: -14px;
 }
 
-.fin-partie.est-victoire .fin-partie-carte:has(.camp-recomp) {
+/* Victoire AVEC IMAGE ANGLAISE (victory.webp, ratio 3:1) : l'eclat fait
+   largeur/3 de haut, la carte se borne a ce qui reste. ⚠ Doit exiger
+   `.avec-image-en` : sans ca, elle rattrapait AUSSI la victoire FRANCAISE
+   (eclat dessine 16/9, bien plus haut) et lui imposait cette soustraction
+   trop faible — la carte devenait trop haute et le bouton « Valider » passait
+   sous l'ecran, sans barre de defilement (signale le 28/10/2026). La victoire
+   francaise retombe desormais sur la formule 9/16 ci-dessous. */
+.fin-partie.avec-image-en.est-victoire .fin-partie-carte:has(.camp-recomp) {
   max-height: calc(100dvh - 48px - min(360px, 70vw) / 3 + 14px);
 }
 
