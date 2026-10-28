@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { catalogueVide } from './catalogue'
-import { carteNommeeParOption, cartesDuLotParOption, cleNomCarte, indexerCartesMondeParNom } from './option-carte'
+import { carteDuSchemaCampagneParOption, carteNommeeParOption, cartesDuLotParOption, cleNomCarte, indexerCartesMondeParNom } from './option-carte'
 import type { Option } from './ask'
 import type { WorldCard } from './world'
 
@@ -96,6 +96,15 @@ describe('carteNommeeParOption', () => {
 
 describe('cartesDuLotParOption : le lot d\'un role (Mutant Genesis, 22/10/2026)', () => {
   it('montre les cinq ameliorations du role choisi, sans les chercher dans le monde', () => {
+    // ⚠ Le moteur emet le nom avec un souligne a la place de l'espace
+    // (GetDisplayName(remove_space=True)) : c'est « Role:_Brawler » qui arrive,
+    // pas « Role: Brawler ». Le test doit refleter l'entree REELLE, sinon il
+    // verdit sur un libelle que la production ne produit jamais.
+    const lot = cartesDuLotParOption(option('Role:_Brawler', 99), 0, catalogueVide)
+    expect(lot?.map((c) => c.codeCarte)).toEqual(['32176', '32177', '32178', '32179', '32180'])
+  })
+
+  it('tolere aussi le libelle avec espace (Role: Brawler)', () => {
     const lot = cartesDuLotParOption(option('Role: Brawler', 99), 0, catalogueVide)
     expect(lot?.map((c) => c.codeCarte)).toEqual(['32176', '32177', '32178', '32179', '32180'])
   })
@@ -103,5 +112,23 @@ describe('cartesDuLotParOption : le lot d\'un role (Mutant Genesis, 22/10/2026)'
   it('ne dit rien d\'une option qui n\'est pas un role', () => {
     expect(cartesDuLotParOption(option('Role: Inconnu'), 0, catalogueVide)).toBeUndefined()
     expect(cartesDuLotParOption(option('Defense'), 0, catalogueVide)).toBeUndefined()
+  })
+})
+
+describe('carteDuSchemaCampagneParOption : « Put "X" into play » (NeXt Evolution)', () => {
+  it('montre la manigance nommee, meme recue avec des soulignes et des guillemets', () => {
+    // Forme REELLE emise par le moteur (GetDisplayName(remove_space=True)).
+    const carte = carteDuSchemaCampagneParOption(option('Put_"Assemble_the_Team"_into_play', 99), 0, catalogueVide)
+    expect(carte?.codeCarte).toBe('40190a')
+  })
+
+  it('tolere aussi la forme avec espaces', () => {
+    const carte = carteDuSchemaCampagneParOption(option('Put "Mission Prep" into play'), 0, catalogueVide)
+    expect(carte?.codeCarte).toBe('40193a')
+  })
+
+  it('ne dit rien d\'une option qui ne nomme pas une manigance de campagne connue', () => {
+    expect(carteDuSchemaCampagneParOption(option('Put "Autre chose" into play'), 0, catalogueVide)).toBeUndefined()
+    expect(carteDuSchemaCampagneParOption(option('Role: Brawler'), 0, catalogueVide)).toBeUndefined()
   })
 })

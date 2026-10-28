@@ -110,7 +110,7 @@ import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
 import { autresFacesDe, kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
-import { cartesDuLotParOption, carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
+import { cartesDuLotParOption, carteDuSchemaCampagneParOption, carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
   EvenementCentrale,
@@ -2181,8 +2181,13 @@ export function PagePartie({
     [cartesMondeParId]
   )
   // Un choix textuel (« quelle chanson ? ») montre le SCAN de la carte nommee.
+  // A defaut, une option « Put "X" into play » (mise en place de campagne) nomme
+  // une manigance pas encore posee : on la construit depuis son identifiant,
+  // sinon le survol retomberait sur la manigance principale porteuse.
   const carteDeLOption = useCallback(
-    (option: Option) => carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue),
+    (option: Option) =>
+      carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue)
+      ?? carteDuSchemaCampagneParOption(option, joueurActif, catalogue),
     [cartesMondeParNom, joueurActif, catalogue]
   )
   // Un choix de LOT (« Role: Brawler ») montre les cartes du lot, pas la carte porteuse.
