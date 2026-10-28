@@ -2,6 +2,7 @@
 // projet, et un « kit pour le jeu » (les cartes au format de data/cards_custom.json, avec leurs images).
 import { dialogue, el, S } from './commun.js'
 import { creerZip } from './zip.js'
+import { genererDragncards, genererOctgn, LISEZ_MOI_DRAGNCARDS, LISEZ_MOI_OCTGN } from './export-tables.js'
 
 const aBlob = (toile, type = 'image/png', q = 0.95) => new Promise((ok) => toile.toBlob(ok, type, q))
 const octets = async (blob) => new Uint8Array(await blob.arrayBuffer())
@@ -112,6 +113,9 @@ export function ouvrirExportPack(api) {
   const contact = opt('Une planche-contact de toutes les cartes', true)
   const projet = opt('Le fichier de projet (.json)', true)
   const kit = opt('Un kit pour le jeu (cartes au format du jeu + images)')
+  const octgn = opt('Un set pour OCTGN (GameDatabase + ImageDataBase)')
+  const dragn = opt('Des cartes pour DragnCards (.tsv + images)')
+  const adresse = el('input', { type: 'text', placeholder: 'https://mon-site.example/images/' })
   const bilan = el('div', { class: 'aide', 'aria-live': 'polite' })
   const visees = () => (portee.value === 'tout' ? api.cartes() : api.cartes().filter((c) => (c.dossier || '') === (c0?.dossier || '')))
   const maj = () => { bilan.textContent = `${visees().length} carte(s).` }
@@ -119,7 +123,8 @@ export function ouvrirExportPack(api) {
   maj()
   dialogue('Exporter un pack (.zip)', el('div', { class: 'contenu', style: 'display:flex;flex-direction:column;gap:8px' },
     el('label', {}, 'Cartes', portee), el('label', {}, 'Format des images', format), el('label', {}, 'Langues', langue),
-    ...[dos, contact, projet, kit].map((o) => el('label', { class: 'ligne' }, o.i, o.n)), bilan),
+    ...[dos, contact, projet, kit, octgn, dragn].map((o) => el('label', { class: 'ligne' }, o.i, o.n)),
+    el('label', {}, 'DragnCards : adresse où seront hébergées les images (facultatif, finie par « / »)', adresse), bilan),
   [{ texte: 'Annuler' }, {
     texte: 'Exporter', principal: true, action: async () => {
       const cartes = visees()
@@ -162,6 +167,15 @@ export function ouvrirExportPack(api) {
         }
         fichiers.push({ nom: 'kit-jeu/cards_custom.json', octets: new TextEncoder().encode(JSON.stringify({ '': jeu }, null, 1)) })
         fichiers.push({ nom: 'kit-jeu/LISEZ-MOI.txt', octets: new TextEncoder().encode(LISEZ_MOI) })
+      }
+      const nomSet = c0?.dossier || 'Cartes'
+      if (octgn.i.checked) {
+        for (const f of await genererOctgn(cartes, { nomSet, rendre: api.rendre })) fichiers.push({ nom: 'octgn/' + f.nom, octets: f.octets })
+        fichiers.push({ nom: 'octgn/LISEZ-MOI.txt', octets: new TextEncoder().encode(LISEZ_MOI_OCTGN) })
+      }
+      if (dragn.i.checked) {
+        for (const f of await genererDragncards(cartes, { nomSet, rendre: api.rendre, prefixe: adresse.value.trim() })) fichiers.push({ nom: 'dragncards/' + f.nom, octets: f.octets })
+        fichiers.push({ nom: 'dragncards/LISEZ-MOI.txt', octets: new TextEncoder().encode(LISEZ_MOI_DRAGNCARDS) })
       }
       const zip = creerZip(fichiers)
       const a = el('a', { href: URL.createObjectURL(zip), download: slug(c0?.dossier || 'cartes') + '.zip' })

@@ -270,6 +270,10 @@ export const DICO = {
   'Chargement…': 'Loading…',
   'Pour les cartes sans dossier. Restaurer remplace ces cartes.': 'For the cards without a folder. Restoring replaces those cards.',
   'Aucune version sur le serveur pour ce dossier. Une ancienne version y est gardée à chaque enregistrement (les 30 dernières).': 'No version on the server for this folder. An older version is kept there at every save (the last 30).',
+  // tables en ligne
+  'Un set pour OCTGN (GameDatabase + ImageDataBase)': 'A set for OCTGN (GameDatabase + ImageDataBase)',
+  'Des cartes pour DragnCards (.tsv + images)': 'Cards for DragnCards (.tsv + images)',
+  'DragnCards : adresse où seront hébergées les images (facultatif, finie par « / »)': 'DragnCards: address where the images will be hosted (optional, ending with “/”)',
   // carte comparable
   'Voir une vraie carte comparable': 'See a real comparable card',
   'Cherche une carte officielle anglaise du même type, au texte de longueur proche, et la montre à côté de la tienne': 'Finds an official English card of the same type with a similar amount of text, and shows it next to yours',
