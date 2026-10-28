@@ -1709,3 +1709,97 @@ EPREUVES += [
         "carnet_attendu": {"gagnee": True, "scenario": "heart_of_shadow", "cles": {"Campaign Completed": "1"}},
     },
 ]
+
+
+# ================================================ MojoMania (mojo) — 3 scenarios
+#
+# Livret officiel (pack 39) : pages 9 (MaGog), 13-14 (Spiral), 17 (Mojo).
+# Moteur : `cards/pack/mojo/campaign.py`. Cles du carnet :
+#   « Player N Support / Upgrade #1 » (scenario 1) et « #2 » (scenario 2) ;
+#   « Longshot In Play: Scenario 1 / 2 » ; « Modular Sets Used » (cumulee, ecrite
+#   par le moteur a partir de « Modular Sets This Scenario » que l'ecran injecte).
+# Cartes choisies : Stark Tower (01034, soutien, cout 2) et Powered Gauntlets
+# (01038, amelioration, cout 2), toutes deux dans le deck de depart d'Iron Man.
+EPREUVES += [
+    {
+        "nom": "mojo — MaGog gagne AVEC Longshot en jeu : le carnet le note et porte l'estampille « magog »",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "avant": ["Puzzle.PutIntoPlay('39071', under_control=True)"],
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "magog",
+            "cles": {"Longshot In Play: Scenario 1": "1"},
+        },
+    },
+    {
+        "nom": "mojo — MaGog : l'ecran se voit proposer les soutiens a cout 3 ou moins (The Champion est cote BOOING CROWD), jamais le cout 4",
+        "scenario": "magog",
+        "heros": "iron_man",
+        # Helicarrier (01092, cout 3) et Tac Team (01056, cout 3) sont eligibles ; Avengers Mansion (01091, cout 4) ne l'est pas.
+        "avant": ["Puzzle.PutIntoPlay('01092')", "Puzzle.PutIntoPlay('01056')", "Puzzle.PutIntoPlay('01091')"],
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "magog",
+            "cles": {"Player 1 Eligible Support / Upgrade": "01056;01092"},
+        },
+    },
+    {
+        "nom": "mojo — MaGog gagne SANS Longshot en jeu : la cle est absente du carnet",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "magog",
+            "cles_absentes": ["Longshot In Play: Scenario 1"],
+        },
+    },
+    {
+        "nom": "mojo — Spiral : la carte enregistree au scenario 1 entre en jeu sous controle, et la menace de la manigance monte de son cout",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "choix": {"Player 1 Support / Upgrade #1": "01034"},
+        "suivant": "spiral",
+        # 39015b : 1 de menace par heros au depart (1 joueur) + cout 2 de Stark Tower.
+        "attendu": {"en_jeu": ["01034"], "menace": [["39015b", 3]]},
+    },
+    {
+        "nom": "mojo — Spiral : Longshot note en jeu au carnet est REVELE (en jeu, pas dans le deck rencontre)",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "avant": ["Puzzle.PutIntoPlay('39071', under_control=True)"],
+        "suivant": "spiral",
+        "attendu": {"en_jeu": ["39071"], "pas_deck_rencontre": ["39071"]},
+    },
+    {
+        "nom": "mojo — Spiral : Longshot NON note au carnet est melange au deck rencontre",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "suivant": "spiral",
+        "attendu": {"pas_en_jeu": ["39071"], "deck_rencontre": ["39071"]},
+    },
+    {
+        "nom": "mojo — Mojo : les DEUX cartes enregistrees (#1 et #2) entrent en jeu, menace = cout total",
+        "scenario": "spiral",
+        "heros": "iron_man",
+        "carnet": {"Player 1 Support / Upgrade #1": "01034"},
+        "choix": {"Player 1 Support / Upgrade #2": "01038"},
+        "suivant": "mojo",
+        # 39025b : 10 de menace au depart + 2 (Stark Tower) + 2 (Powered Gauntlets).
+        "attendu": {"en_jeu": ["01034", "01038"], "menace": [["39025b", 14]]},
+    },
+    {
+        "nom": "mojo — Modules utilises : apres MaGog avec « Modular Sets This Scenario » = crime, la cle vaut « crime »",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "carnet": {"Modular Sets This Scenario": "crime"},
+        "carnet_attendu": {"cles": {"Modular Sets Used": "crime"}},
+    },
+    {
+        "nom": "mojo — Modules utilises : la liste est CUMULEE d'un scenario a l'autre, sans doublon",
+        "scenario": "spiral",
+        "heros": "iron_man",
+        "carnet": {"Modular Sets Used": "crime", "Modular Sets This Scenario": "fantasy;horror;sci_fi"},
+        "carnet_attendu": {"scenario": "spiral", "cles": {"Modular Sets Used": "crime;fantasy;horror;sci_fi"}},
+    },
+]
