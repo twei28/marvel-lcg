@@ -6,19 +6,37 @@
   "nom_en": "MojoMania",
   "resume": "Mojo vous a embarqués dans son Mojoverse pour le plus grand spectacle de son histoire. Trois scénarios à gagner dans l'ordre : le combat contre MaGog, la chasse à Spiral, puis Mojo en personne. Ce que vous gardez d'un épisode à l'autre tient en une carte par héros, un allié qui vous suit, et les genres déjà passés à l'antenne.",
   "resume_en": "Mojo has dragged you into his Mojoverse for the greatest show of his career. Win three scenarios in order: the fight against MaGog, the hunt for Spiral, then Mojo himself. What you keep from one episode to the next is one card per hero, an ally who follows you, and the genres already aired.",
-  "pages_regles": [],
+  "pages_regles": [
+    "00-campagne-regles-1.jpg",
+    "00-campagne-regles-2.jpg",
+    "00-campagne-regles-3.jpg"
+  ],
   "expert": {
     "pv_persistants": true,
     "note": "En campagne experte, les points de vie restants de chaque identité sont reportés au carnet et deviennent ses points de vie de départ au scénario suivant. À la mise en place, chaque joueur peut se distribuer 1 carte Rencontre face cachée pour se soigner complètement. Un héros vaincu qui rejoint son équipe au scénario suivant fait de même."
   },
   "modulaires": {
-    "reserve": ["crime", "fantasy", "horror", "sci_fi", "sitcom", "western"],
+    "reserve": [
+      "crime",
+      "fantasy",
+      "horror",
+      "sci_fi",
+      "sitcom",
+      "western"
+    ],
     "cle_utilises": "Modular Sets Used",
     "cle_injectee": "Modular Sets This Scenario",
     "par_scenario": {
-      "magog": { "nombre": 1, "hasard": true },
-      "spiral": { "nombre": 3 },
-      "mojo": { "nombre": "joueurs+1" }
+      "magog": {
+        "nombre": 1,
+        "hasard": true
+      },
+      "spiral": {
+        "nombre": 3
+      },
+      "mojo": {
+        "nombre": "joueurs+1"
+      }
     }
   },
   "scenarios": [
@@ -29,7 +47,16 @@
       "nom_fr": "MaGog",
       "resume": "Vous vous réveillez au centre d'une arène géante, sous le regard d'écrans qui diffusent des visages venus de toute la galaxie. Mojo présente « le plus grand combat de l'histoire du Mojoverse » : une poignée de challengers venus de la Terre contre MaGog, son champion, invaincu depuis quatre-vingt-dix-neuf combats. La foule décidera du vainqueur.",
       "enjeu": "Gagnez la foule avant lui. Chaque héros pourra garder un soutien ou une amélioration pour la suite, et Longshot, s'il est encore en jeu à la fin, vous suivra au scénario suivant. Un module de rencontre est tiré au sort et ne reviendra pas.",
-      "pages": { "intro": [], "regles": [], "epilogue": [] },
+      "pages": {
+        "intro": [
+          "01-magog-intro-1.jpg"
+        ],
+        "regles": [
+          "01-magog-regles-1.jpg",
+          "01-magog-regles-2.jpg",
+          "01-magog-regles-3.jpg"
+        ]
+      },
       "victoire": [
         {
           "cle": "Longshot In Play: Scenario 1",
@@ -63,7 +90,17 @@
       "nom_fr": "Spiral",
       "resume": "« Formidable ! Les audiences explosent. Spiral, envoie nos stars à l'émission suivante ! » Un éclair d'énergie verte, et vous voilà dans un monde où des caméras tournent autour de vous. Pour rentrer chez vous, il faudra retrouver Spiral, la téléporteuse à six bras, d'émission en émission.",
       "enjeu": "Fouillez les émissions pour la trouver, puis forcez-la à se rendre. Chaque héros pourra de nouveau garder un soutien ou une amélioration, et trois autres modules passeront à l'antenne.",
-      "pages": { "intro": [], "regles": [], "epilogue": [] },
+      "pages": {
+        "intro": [
+          "02-spiral-intro-1.jpg"
+        ],
+        "regles": [
+          "02-spiral-regles-1.jpg",
+          "02-spiral-regles-2.jpg",
+          "02-spiral-regles-3.jpg",
+          "02-spiral-regles-4.jpg"
+        ]
+      },
       "victoire": [
         {
           "cle": "Longshot In Play: Scenario 2",
@@ -98,7 +135,15 @@
       "final": true,
       "resume": "Spiral, vaincue, vous le dit sans détour : si elle vous aide à partir, Mojo la ramènera de force. Mais si vous venez à bout de lui, elle vous renverra chez vous. Il se nourrit de l'attention, et chaque minute d'antenne le rend plus fort. Vous voilà face à face avec le producteur du Mojoverse, qui trouve que ce serait une excellente finale.",
       "enjeu": "La dernière émission. Tout ce que vous avez gardé, cartes, allié, points de vie en campagne experte, est en jeu. Gagnez, et la campagne est à vous.",
-      "pages": { "intro": [], "regles": [], "epilogue": [] },
+      "pages": {
+        "intro": [
+          "03-mojo-intro-1.jpg"
+        ],
+        "regles": [
+          "03-mojo-regles-1.jpg",
+          "03-mojo-regles-2.jpg"
+        ]
+      },
       "victoire": []
     }
   ],
@@ -112,5 +157,8 @@
       "libelle": "PV restants",
       "aide": "Ils deviennent les PV de départ du scénario suivant. Plafonnés aux PV imprimés de l'identité."
     }
+  ],
+  "pages_expert": [
+    "00-campagne-expert-1.jpg"
   ]
 }
