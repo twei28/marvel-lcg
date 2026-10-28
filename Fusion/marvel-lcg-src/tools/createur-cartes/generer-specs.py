@@ -45,7 +45,7 @@ def dernier_segment(url):
 
 ARBRE = json.loads((ENTREE.parent / "arbre.json").read_text(encoding="utf-8"))
 PX = re.compile(r"(-?[0-9.]+)px")
-STYLE_GARDE = ["fontFamily", "fontSize", "fontWeight", "fontStyle", "color", "textAlign", "lineHeight", "letterSpacing", "textShadow",
+STYLE_GARDE = ["clipPath", "fontFamily", "fontSize", "fontWeight", "fontStyle", "color", "textAlign", "lineHeight", "letterSpacing", "textShadow",
                "webkitTextStroke", "textTransform", "fontVariant", "opacity", "mixBlendMode", "whiteSpace", "justifyContent",
                "alignItems", "flexDirection", "display", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft", "zIndex", "textIndent", "wordSpacing"]
 

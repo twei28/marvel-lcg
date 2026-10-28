@@ -3,7 +3,7 @@
 // Le gabarit (`types.json`) donne, pour chaque element, sa boite SANS rotation, sa propre transformation et son origine ; on
 // recompose la chaine de transformations de ses parents (comme CSS) puis on dessine dans la boite locale.
 import { PORTRAIT, dessinerCalques } from './rendu.js'
-import { ajuster, analyser, dessinerPage, mettreEnPage } from './texte.js'
+import { analyser, dessinerPage, mettreEnPage } from './texte.js'
 
 /** Les champs de contenu d'une carte (tout est facultatif). */
 export const CHAMPS_VIDES = {
@@ -122,23 +122,37 @@ const FORMES = {
   'polygon(0px 0px, 100% 0px, 75% 100%)': [[0, 0], [1, 0], [0.75, 1]],
 }
 
-function bordureForme(el, y, cote) {
-  const poly = FORMES[el.style.clipPath] ?? (cote === 'g' ? FORMES['polygon(0px 0px, 50% 0px, 100% 100%, 0px 100%)'] : FORMES['polygon(50% 0px, 0px 100%, 100% 100%, 100% 0px)'])
-  const [x0, y0, w, h] = el.boite
-  if (y < y0 || y > y0 + h) return null
+/** Les abscisses (px de carte) ou le bord de la forme coupe la hauteur y. */
+function coupures(poly, boite, y) {
+  const [x0, y0, w, h] = boite
   const t = (y - y0) / h
   const xs = []
   for (let k = 0; k < poly.length; k++) {
     const [ax, ay] = poly[k]
     const [bx, by] = poly[(k + 1) % poly.length]
-    if ((ay <= t && by >= t) || (by <= t && ay >= t)) {
-      xs.push(ay === by ? Math.max(ax, bx) : ax + ((bx - ax) * (t - ay)) / (by - ay))
-    }
+    if ((ay <= t && by >= t) || (by <= t && ay >= t)) xs.push(x0 + w * (ay === by ? Math.max(ax, bx) : ax + ((bx - ax) * (t - ay)) / (by - ay)))
   }
-  if (!xs.length) return null
-  return x0 + w * (cote === 'g' ? Math.max(...xs) : Math.min(...xs))
+  return xs
 }
 
+/**
+ * Ce qu'une forme flottante retire a la ligne qui occupe [ya, yb] (px de carte), comme `shape-outside` : le bord le plus avance
+ * sur toute la hauteur de la ligne. Rend l'abscisse du bord, ou null si la ligne est hors de la forme.
+ */
+function bordureForme(el, ya, yb, cote) {
+  const poly = FORMES[el.style.clipPath]
+  if (!poly) return null
+  const [, y0, , h] = el.boite
+  const a = Math.max(ya, y0)
+  const b = Math.min(yb, y0 + h)
+  if (a > b) return null
+  const ys = [a, b, ...poly.map(([, py]) => y0 + py * h).filter((y) => y > a && y < b)]
+  const bords = ys.flatMap((y) => coupures(poly, el.boite, y))
+  if (!bords.length) return null
+  return cote === 'g' ? Math.max(...bords) : Math.min(...bords)
+}
+
+/** Traits, regles et citation empiles dans l'ordre mesure ; si tout depasse le panneau, regles et citation se reduisent d'un meme facteur. */
 function fluxTexte(ctx, spec, contenu) {
   const E = Object.fromEntries(spec.elements.map((e) => [e.cls, e]))
   const blocs = ['traits', 'rules', 'quote'].filter((c) => E[c]).sort((a, b) => E[a].boite[1] - E[b].boite[1])
@@ -146,42 +160,50 @@ function fluxTexte(ctx, spec, contenu) {
   if (!panneau) return []
   const source = { traits: contenu.traits, rules: contenu.regles, quote: contenu.citation }
   const villain = spec.famille === 'villain'
-  let reste = panneau.boite[3] - (villain ? 0 : 0)
-  const sortie = []
-  let y = 0
-  for (const c of blocs) {
-    const el = E[c]
-    const brut = c === 'traits' && el.style.textTransform === 'uppercase' ? (source[c] || '').toUpperCase() : source[c]
-    const jetons = source[c] ? analyser(c === 'traits' ? `<em>${brut}</em>` : brut) : []
-    if (!jetons.length) continue
-    const base = baseDe(el, c === 'traits' ? { ecartParagraphe: 0 } : { ecartParagraphe: 8 })
-    if (c === 'traits') base.interligne = base.taille * 1.3
-    base.alignement = el.style.textAlign === 'center' ? 'center' : 'left'
-    const retrait = 0
-    const largeur = el.boite[2] - retrait
-    // Les coins coupes du panneau : une ligne qui occupe [y0, y1] doit eviter la forme a son bord le plus avance.
-    const gauche = spec.elements.filter((e) => e.cls === 'pinchleft')
-    const droite = spec.elements.filter((e) => e.cls === 'pinchright')
-    const bloc0 = panneau.boite[1] + y
-    const contrainte = (a, b) => {
-      let g = 0
-      let d = 0
-      for (const f of gauche) {
-        const bord = bordureForme(f, bloc0 + b, 'g')
-        if (bord != null) g = Math.max(g, bord - el.boite[0])
+  const gauche = spec.elements.filter((e) => e.cls === 'pinchleft')
+  const droite = spec.elements.filter((e) => e.cls === 'pinchright')
+  const disposer = (facteur) => {
+    const sortie = []
+    let y = 0
+    for (const c of blocs) {
+      const el = E[c]
+      const brut = c === 'traits' && el.style.textTransform === 'uppercase' ? (source[c] || '').toUpperCase() : source[c]
+      const jetons = source[c] ? analyser(c === 'traits' ? `<em>${brut}</em>` : brut) : []
+      if (!jetons.length) continue
+      const base = baseDe(el, c === 'traits' ? { ecartParagraphe: 0 } : { ecartParagraphe: 8 })
+      if (c === 'traits') base.interligne = base.taille * 1.3
+      base.alignement = el.style.textAlign === 'center' ? 'center' : 'left'
+      const largeur = el.boite[2]
+      const bloc0 = panneau.boite[1] + y
+      // une ligne qui occupe [a, b] du bloc evite les formes voisines sur toute sa hauteur
+      const contrainte = (a, b) => {
+        let g = 0
+        let d = 0
+        for (const f of gauche) {
+          const bord = bordureForme(f, bloc0 + a, bloc0 + b, 'g')
+          if (bord != null) g = Math.max(g, bord - el.boite[0])
+        }
+        for (const f of droite) {
+          const bord = bordureForme(f, bloc0 + a, bloc0 + b, 'd')
+          if (bord != null) d = Math.max(d, el.boite[0] + largeur - bord)
+        }
+        return { g: Math.max(0, g), d: Math.max(0, d) }
       }
-      for (const f of droite) {
-        const bord = bordureForme(f, bloc0 + b, 'd')
-        if (bord != null) d = Math.max(d, el.boite[0] + largeur - bord)
-      }
-      return { g: Math.max(0, g), d: Math.max(0, d) }
+      const f = c === 'traits' ? 1 : facteur
+      const page = mettreEnPage(ctx, jetons, base, largeur, f, contrainte)
+      sortie.push({ c, el, jetons, base, y, page, facteur: f, largeur, retrait: 0 })
+      y += page.hauteur + (c === 'traits' ? (villain ? 30 : 20) : 30)
     }
-    // Les traits restent d'un bloc ; regles et citation se reduisent si tout ne tient pas dans le panneau.
-    const { facteur, page } = c === 'traits' ? { facteur: 1, page: mettreEnPage(ctx, jetons, base, largeur, 1) } : ajuster(ctx, jetons, base, largeur, Math.max(80, reste - y - 60), 0.55, contrainte)
-    sortie.push({ c, el, jetons, base, y, page, facteur, largeur, retrait })
-    y += page.hauteur + (c === 'traits' ? (villain ? 30 : 20) : 30)
+    return { sortie, hauteur: y - 30 }
   }
-  return sortie
+  const maxi = panneau.boite[3] - 40
+  let facteur = 1
+  let r = disposer(facteur)
+  while (r.hauteur > maxi && facteur > 0.4) {
+    facteur *= 0.97
+    r = disposer(facteur)
+  }
+  return r.sortie
 }
 
 /**
