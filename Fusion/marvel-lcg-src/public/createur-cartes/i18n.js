@@ -241,6 +241,18 @@ export const DICO = {
   'Créer un style…': 'Create a style…', 'Gérer mes styles…': 'Manage my styles…', 'Aucun style pour le moment.': 'No style yet.', 'Nouveau style': 'New style',
   'Nom du style': 'Style name', 'Créer': 'Create', 'ex. Mot-clé maison': 'e.g. House keyword', 'Souligné': 'Underlined', 'Police des traits': 'Traits font',
   'Couleur': 'Colour', 'Styles de texte : menu, ou tape « / » dans le texte': 'Text styles: menu, or type “/” in the text',
+  // dos de la carte, impression
+  'Dos': 'Back', 'Dos de la carte': 'Card back', 'Aucun': 'None', 'Dos des cartes joueur': 'Player card back', 'Dos des cartes rencontre': 'Encounter card back',
+  'Une autre carte (autre face)': 'Another card (other side)', 'Mon image': 'My image', 'Carte au dos': 'Card on the back', 'Image du dos': 'Back image',
+  'Le dos du jeu est de petite taille (300 px) : correct pour l’écran, flou à l’impression. Pour imprimer, choisis « Mon image ».': 'The game’s card back is small (300 px): fine on screen, blurry in print. To print, choose “My image”.',
+  'Exporter aussi le dos (s’il y en a un)': 'Also export the back (if there is one)', 'Imprimer': 'Print', 'Cartes': 'Cards', 'Le dossier de la carte choisie': 'The folder of the chosen card',
+  'Ajouter les dos sur des pages à part (recto-verso : les dos sont dans l’ordre inverse de chaque rangée)': 'Add the backs on separate pages (double-sided: backs are in reverse order within each row)',
+  'Cartes à 63 × 88 mm, 9 par feuille A4, sans marge entre elles : découpe sur les bords. Les cartes paysage sont tournées.': 'Cards at 63 × 88 mm, 9 per A4 sheet, no gap between them: cut along the edges. Landscape cards are rotated.',
+  // pack
+  '⬇ Pack (.zip)': '⬇ Pack (.zip)', 'Toutes les cartes d\'un dossier dans un .zip (images, dos, planche-contact, projet, kit pour le jeu)': 'All the cards of a folder in one .zip (images, backs, contact sheet, project, game kit)',
+  'Exporter un pack (.zip)': 'Export a pack (.zip)', 'Format des images': 'Image format', 'Langues': 'Languages', 'Dans la langue de chaque carte': 'In each card’s own language',
+  'Dans les deux langues (EN et FR)': 'In both languages (EN and FR)', 'Les dos (quand une carte en a un)': 'Backs (when a card has one)', 'Une planche-contact de toutes les cartes': 'A contact sheet of all the cards',
+  'Le fichier de projet (.json)': 'The project file (.json)', 'Un kit pour le jeu (cartes au format du jeu + images)': 'A game kit (cards in the game’s format + images)',
   // recadrage
   'Détourer / recadrer…': 'Cut out / crop…', 'Détourer et recadrer': 'Cut out and crop', 'Original (clique sur le fond pour le choisir)': 'Original (click the background to pick it)',
   'Résultat': 'Result', 'Retirer le fond': 'Remove the background', 'Tolérance': 'Tolerance', 'Rogner sur le sujet': 'Crop to the subject',

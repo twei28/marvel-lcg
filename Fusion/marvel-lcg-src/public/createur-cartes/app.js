@@ -1,13 +1,15 @@
 // La page du créateur de cartes : liste de cartes, formulaire guidé par type, aperçu en direct, couleurs, illustration, tête d'angle,
 // sauvegarde (IndexedDB + fichier .json), exports (PNG / JPG / WebP, FR + EN, planche à imprimer, planche TTS).
 import { dessinerCarte, CHAMPS_VIDES, LIBELLES } from './carte.js'
+import { chargerImage } from './rendu.js'
 import { chargerPolices } from './polices.js'
 import { ICONES } from './polices.js'
 import { TEXTES, chargerTraits, traduireTraits } from './langues.js'
-import { $, el, S, nouvelId, blobVersDataUrl, dataUrlVersBlob } from './commun.js'
+import { $, dialogue, el, S, nouvelId, blobVersDataUrl, dataUrlVersBlob } from './commun.js'
 import { ajouterFichiers, brancherSurcouche, calqueChoisi, choisirCalque, commencerGlisser, dessinerSurcouche, molette, sectionLibres, touche } from './panneau-libres.js'
 import { clicSurCarte } from './clic-carte.js'
 import { ouvrirRecadrage } from './recadrage.js'
+import { ouvrirExportPack } from './export-pack.js'
 import { brancherStyles, chargerStyles, enveloppePerso } from './styles-texte.js'
 import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
@@ -109,7 +111,7 @@ function valeursParDefaut(type, langue) {
 
 function nouvelleCarte(type = 'ally', langue = 'fr') {
   return {
-    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: {}, fissures: true, libres: [], cadre: 'officiel', dossier: '',
+    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: {}, fissures: true, libres: [], cadre: 'officiel', dossier: '', verso: { mode: 'aucun', carteId: null, blob: null },
     art: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 }, artDevant: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 },
     tete: { blob: null, afficher: true, etoile: false, zoom: 0.8, x: -19, y: 232, rotation: 0 },
   }
@@ -121,7 +123,8 @@ const cloner = (c) => structuredClone(c)
 
 /** Une carte -> du JSON (images en data URL). Sert aux fichiers, aux versions envoyees au serveur, aux modeles exportes. */
 async function serialiser(c) {
-  const copie = structuredClone({ ...c, art: { ...c.art, blob: null }, artDevant: { ...c.artDevant, blob: null }, tete: { ...c.tete, blob: null }, libres: [] })
+  const copie = structuredClone({ ...c, art: { ...c.art, blob: null }, artDevant: { ...c.artDevant, blob: null }, tete: { ...c.tete, blob: null }, verso: { ...(c.verso ?? {}), blob: null }, libres: [] })
+  copie.verso.image = c.verso?.blob ? await blobVersDataUrl(c.verso.blob) : null
   for (const k of ['art', 'artDevant', 'tete']) copie[k].image = c[k].blob ? await blobVersDataUrl(c[k].blob) : null
   copie.libres = []
   for (const L of c.libres ?? []) copie.libres.push({ ...structuredClone({ ...L, blob: null }), image: L.blob ? await blobVersDataUrl(L.blob) : null })
@@ -132,6 +135,8 @@ async function deserialiser(j) {
   const base = nouvelleCarte(TYPES[j.type] ? j.type : 'ally', j.langue ?? 'fr')
   const c = { ...base, ...j, contenu: { ...base.contenu, ...j.contenu }, art: { ...base.art, ...j.art }, artDevant: { ...base.artDevant, ...j.artDevant }, tete: { ...base.tete, ...j.tete } }
   for (const k of ['art', 'artDevant', 'tete']) { c[k].blob = c[k].image ? await dataUrlVersBlob(c[k].image) : null; delete c[k].image }
+  c.verso = { mode: 'aucun', carteId: null, ...(j.verso ?? {}), blob: j.verso?.image ? await dataUrlVersBlob(j.verso.image) : null }
+  delete c.verso.image
   c.libres = []
   for (const L of j.libres ?? []) { const x = { ...L, blob: L.image ? await dataUrlVersBlob(L.image) : null }; delete x.image; c.libres.push(x) }
   return c
@@ -211,6 +216,29 @@ async function rendreCarte(c, langue = null) {
   await dessinerCarte(toile, spec, contenu, await etatDe(c), IMAGES)
   return toile
 }
+/** Le dos de la carte (canvas a la taille du recto) selon son mode : dos du jeu, autre carte, ou image ; null s'il n'y en a pas. */
+async function rendreVerso(c, langue = null) {
+  const v = c.verso ?? { mode: 'aucun' }
+  if (v.mode === 'aucun') return null
+  if (v.mode === 'carte') {
+    const o = projet.cartes.find((x) => x.id === v.carteId)
+    return o ? rendreCarte(o, langue) : null
+  }
+  const spec = TYPES[c.type]
+  let im = null
+  if (v.mode === 'image') im = await imageDe(v.blob)
+  else im = await chargerImage(`${IMAGES}general/dos-${v.mode === 'joueur' ? 'joueur' : 'rencontre'}.webp`)
+  if (!im) return null
+  const t = document.createElement('canvas')
+  t.width = spec.largeur
+  t.height = spec.hauteur
+  const x = t.getContext('2d')
+  const k = Math.max(t.width / im.naturalWidth, t.height / im.naturalHeight)
+  x.imageSmoothingQuality = 'high'
+  x.drawImage(im, (t.width - im.naturalWidth * k) / 2, (t.height - im.naturalHeight * k) / 2, im.naturalWidth * k, im.naturalHeight * k)
+  return t
+}
+
 async function dessiner() {
   const n = ++seq
   const c = carte()
@@ -674,6 +702,28 @@ function construireFormulaire() {
 
   f.push(sectionLibres())
 
+  // dos de la carte
+  {
+    const v = (c.verso ??= { mode: 'aucun', carteId: null, blob: null })
+    const autres = projet.cartes.filter((x) => x.id !== c.id)
+    const mode = liste('Dos', (x) => x.verso, 'mode', [['aucun', 'Aucun'], ['joueur', 'Dos des cartes joueur'], ['rencontre', 'Dos des cartes rencontre'], ['carte', 'Une autre carte (autre face)'], ['image', 'Mon image']], (m) => m)
+    mode.querySelector('select').addEventListener('change', construireFormulaire)
+    const parts = [mode]
+    if (v.mode === 'carte') {
+      const s = el('select', {}, el('option', { value: '' }, '—'), ...autres.map((x) => el('option', { value: x.id }, `${x.contenu.titre || '(sans titre)'} · ${NOMS[x.type] ?? x.type}`)))
+      s.value = v.carteId ?? ''
+      s.addEventListener('change', () => { v.carteId = s.value || null; changement() })
+      parts.push(el('label', {}, 'Carte au dos', s))
+    }
+    if (v.mode === 'image') {
+      const fichier = el('input', { type: 'file', accept: 'image/*' })
+      fichier.addEventListener('change', () => { if (fichier.files[0]) { v.blob = fichier.files[0]; changement() } })
+      parts.push(el('label', {}, 'Image du dos', fichier))
+    }
+    if (v.mode === 'joueur' || v.mode === 'rencontre') parts.push(el('div', { class: 'aide' }, 'Le dos du jeu est de petite taille (300 px) : correct pour l’écran, flou à l’impression. Pour imprimer, choisis « Mon image ».'))
+    f.push(section('Dos de la carte', false, ...parts))
+  }
+
   // tete d'angle
   if (spec.tete) {
     f.push(section('Tête d’angle', false,
@@ -798,14 +848,16 @@ function dialogueExport() {
     const format = el('select', {}, ['png', 'jpeg', 'webp'].map((v) => el('option', { value: v }, v.toUpperCase())))
     const largeur = el('input', { type: 'number', min: 200, max: 6000, value: TYPES[c.type].largeur })
     const perdu = el('input', { type: 'checkbox' })
+    const dos = el('input', { type: 'checkbox', checked: !!(c.verso && c.verso.mode !== 'aucun') })
     const boite = el('dialog', {}, el('div', { class: 'panneau', style: 'min-width:280px' },
       el('h2', {}, 'Exporter'),
       el('label', {}, 'Format', format),
       el('label', {}, `Largeur (px) — taille d’origine ${TYPES[c.type].largeur}`, largeur),
       el('label', { class: 'ligne' }, perdu, 'Fond perdu de 3 mm (bords étirés)'),
+      el('label', { class: 'ligne' }, dos, 'Exporter aussi le dos (s’il y en a un)'),
       el('div', { class: 'rang' },
         el('button', { class: 'btn', type: 'button', onclick: () => { boite.close(); ok(null) } }, 'Annuler'),
-        el('button', { class: 'btn principal', type: 'button', onclick: () => { boite.close(); ok({ format: format.value, largeur: Number(largeur.value), perdu: perdu.checked }) } }, 'Exporter'))))
+        el('button', { class: 'btn principal', type: 'button', onclick: () => { boite.close(); ok({ format: format.value, largeur: Number(largeur.value), perdu: perdu.checked, dos: dos.checked }) } }, 'Exporter'))))
     document.body.append(boite)
     boite.addEventListener('close', () => boite.remove())
     boite.showModal()
@@ -834,41 +886,73 @@ async function exporter(deuxLangues) {
   const langues = deuxLangues ? ['fr', 'en'] : [c.langue]
   for (const l of langues) {
     const blob = await sortie(await rendreCarte(c, l), o)
-    telecharger(blob, nomFichier(c, deuxLangues ? '_' + l : '') + '.' + (o.format === 'jpeg' ? 'jpg' : o.format))
+    const ext = '.' + (o.format === 'jpeg' ? 'jpg' : o.format)
+    telecharger(blob, nomFichier(c, deuxLangues ? '_' + l : '') + ext)
+    if (o.dos) {
+      const dosToile = await rendreVerso(c, l)
+      if (dosToile) telecharger(await sortie(dosToile, o), nomFichier(c, (deuxLangues ? '_' + l : '') + '_back') + ext)
+    }
   }
   message('Export terminé.')
 }
-async function planchePourImprimer() {
+function dialoguePlanche() {
+  const dos = el('input', { type: 'checkbox', checked: projet.cartes.some((c) => c.verso?.mode && c.verso.mode !== 'aucun') })
+  const dossier = el('select', {}, el('option', { value: 'tout' }, 'Toutes les cartes'), el('option', { value: 'dossier' }, 'Le dossier de la carte choisie'))
+  dialogue('Imprimer', el('div', { class: 'contenu', style: 'display:flex;flex-direction:column;gap:8px' },
+    el('label', {}, 'Cartes', dossier),
+    el('label', { class: 'ligne' }, dos, 'Ajouter les dos sur des pages à part (recto-verso : les dos sont dans l’ordre inverse de chaque rangée)'),
+    el('div', { class: 'aide' }, 'Cartes à 63 × 88 mm, 9 par feuille A4, sans marge entre elles : découpe sur les bords. Les cartes paysage sont tournées.')),
+  [{ texte: 'Annuler' }, { texte: 'Imprimer', principal: true, action: () => planchePourImprimer({ dos: dos.checked, dossier: dossier.value }) }])
+}
+async function planchePourImprimer(opts = { dos: false, dossier: 'tout' }) {
   message('Préparation de la planche…')
   const images = []
-  for (const c of projet.cartes) {
-    const toile = await rendreCarte(c)
+  const dosImages = []
+  const pourPlanche = async (toile) => {
+    if (!toile) return null
     const k = 750 / toile.width
     const r = document.createElement('canvas')
     r.width = 750
     r.height = Math.round(toile.height * k)
     r.getContext('2d').drawImage(toile, 0, 0, r.width, r.height)
-    // les cartes paysage sont tournees pour tenir sur la planche
-    let sortieToile = r
-    if (r.width > r.height) {
-      sortieToile = document.createElement('canvas')
-      sortieToile.width = r.height
-      sortieToile.height = r.width
-      const x = sortieToile.getContext('2d')
-      x.translate(r.height, 0)
-      x.rotate(Math.PI / 2)
-      x.drawImage(r, 0, 0)
+    if (r.width <= r.height) return r.toDataURL('image/jpeg', 0.92)
+    const t = document.createElement('canvas')
+    t.width = r.height
+    t.height = r.width
+    const x = t.getContext('2d')
+    x.translate(r.height, 0)
+    x.rotate(Math.PI / 2)
+    x.drawImage(r, 0, 0)
+    return t.toDataURL('image/jpeg', 0.92)
+  }
+  const cartes = opts.dossier === 'dossier' ? projet.cartes.filter((x) => (x.dossier || '') === (carte().dossier || '')) : projet.cartes
+  for (const c of cartes) {
+    images.push(await pourPlanche(await rendreCarte(c)))
+    dosImages.push(await pourPlanche(await rendreVerso(c)))
+  }
+  const pages = []
+  for (let i = 0; i < images.length; i += 9) {
+    const lot = images.slice(i, i + 9)
+    pages.push(lot)
+    if (opts.dos && dosImages.slice(i, i + 9).some(Boolean)) {
+      // le dos d'une carte doit tomber derriere elle : on inverse l'ordre dans chaque rangee de trois (retournement sur le bord long)
+      const d = dosImages.slice(i, i + 9)
+      const miroir = []
+      for (let r = 0; r < d.length; r += 3) miroir.push(...d.slice(r, r + 3).reverse())
+      pages.push(miroir.map((x) => x ?? ''))
     }
-    images.push(sortieToile.toDataURL('image/jpeg', 0.92))
   }
   const w = window.open('', '_blank')
   if (!w) return message('Le navigateur a bloqué la fenêtre d’impression.')
   w.document.write(`<!doctype html><meta charset="utf-8"><title>Planche d'impression</title><style>
     @page { size: A4; margin: 10mm }
-    body { margin: 0; display: grid; grid-template-columns: repeat(3, 63mm); gap: 0; justify-content: center }
-    img { width: 63mm; height: 88mm; display: block; break-inside: avoid }
-    @media screen { body { background: #ccc; padding: 10mm } }
-  </style>${images.map((s) => `<img src="${s}">`).join('')}<script>onload=()=>setTimeout(()=>print(),400)<\/script>`)
+    body { margin: 0 }
+    .feuille { display: grid; grid-template-columns: repeat(3, 63mm); grid-auto-rows: 88mm; justify-content: center; break-after: page }
+    .feuille:last-child { break-after: auto }
+    img { width: 63mm; height: 88mm; display: block }
+    .vide { width: 63mm; height: 88mm }
+    @media screen { body { background: #ccc; padding: 10mm } .feuille { margin-bottom: 10mm; background: #fff } }
+  </style>${pages.map((p) => `<div class="feuille">${p.map((s) => (s ? `<img src="${s}">` : '<div class="vide"></div>')).join('')}</div>`).join('')}<script>onload=()=>setTimeout(()=>print(),400)<\/script>`)
   w.document.close()
   message('')
 }
@@ -887,6 +971,8 @@ async function plancheTTS() {
   x.imageSmoothingQuality = 'high'
   for (const [i, c] of cartes.entries()) x.drawImage(await rendreCarte(c), (i % colonnes) * L, Math.floor(i / colonnes) * H, L, H)
   telecharger(await aBlob(o, 'image/png'), 'planche_TTS.png')
+  const avecDos = cartes.find((c) => c.verso?.mode && c.verso.mode !== 'aucun')
+  if (avecDos) { const d = await rendreVerso(avecDos); if (d) telecharger(await aBlob(d, 'image/png'), 'dos_TTS.png') }
   message(`Planche TTS : ${cartes.length} carte(s), ${colonnes} colonnes (taille de cellule ${L} × ${H}).`)
 }
 
@@ -1105,6 +1191,7 @@ function brancherEtat() {
   Object.assign(S, {
     carte, projet: () => projet, types: TYPES, changement, reconstruire: () => construireFormulaire(), message, imageDe,
     imageSync: (b) => (b ? imagesPretes.get(b) ?? null : null), rendre: rendreCarte, choisir: (id) => choisir(id),
+    rendreVerso, serialiser,
     changerLangueDe: async (c, l) => { c.contenu = contenuDansLangue(c, l); c.langue = l },
   })
 }
@@ -1149,7 +1236,7 @@ async function demarrer() {
   else projet = { cartes: [nouvelleCarte('ally', 'en')], courante: null }
   projet.cartes = projet.cartes.filter((c) => TYPES[c.type])
   if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'en')]
-  for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= '' }
+  for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } }
   if (!projet.cartes.some((c) => c.id === projet.courante)) projet.courante = projet.cartes[0].id
 
   $('#lang-fr').addEventListener('click', () => changerLangue('fr'))
@@ -1168,7 +1255,7 @@ async function demarrer() {
     choisir(projet.cartes[0].id)
   })
   $('#recherche').addEventListener('input', (e) => { filtreListe = e.target.value; majListe() })
-  $('#p-versions').addEventListener('click', () => ouvrirVersions((p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= '' } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }))
+  $('#p-versions').addEventListener('click', () => ouvrirVersions((p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }))
   $('#p-remplacer').addEventListener('click', ouvrirRemplacer)
   $('#p-appliquer').addEventListener('click', () => ouvrirAppliquer(rolesDe))
   $('#m-enregistrer').addEventListener('click', () => { const n = prompt(tr('Nom du modèle'), carte().contenu.titre); if (n === null) return; enregistrerModele(n); majModeles(); sauvegarderPlusTard(); message('Modèle enregistré.') })
@@ -1191,7 +1278,8 @@ async function demarrer() {
   })
   $('#b-export').addEventListener('click', () => exporter(false))
   $('#b-export-2').addEventListener('click', () => exporter(true))
-  $('#b-print').addEventListener('click', planchePourImprimer)
+  $('#b-print').addEventListener('click', dialoguePlanche)
+  $('#b-pack').addEventListener('click', () => ouvrirExportPack({ cartes: () => projet.cartes, carte, rendre: rendreCarte, rendreVerso, serialiser }))
   $('#b-tts').addEventListener('click', plancheTTS)
   $('#p-exporter').addEventListener('click', exporterProjet)
   $('#p-importer').addEventListener('click', () => $('#p-fichier').click())
