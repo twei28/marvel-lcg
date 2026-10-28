@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { catalogueVide } from './catalogue'
-import { carteDuSchemaCampagneParOption, carteNommeeParOption, cartesDuLotParOption, cleNomCarte, indexerCartesMondeParNom } from './option-carte'
+import { carteDeCampagneParOption, carteDuSchemaCampagneParOption, carteNommeeParOption, cartesDuLotParOption, cleNomCarte, indexerCartesMondeParNom } from './option-carte'
 import type { Option } from './ask'
 import type { WorldCard } from './world'
 
@@ -130,5 +130,25 @@ describe('carteDuSchemaCampagneParOption : « Put "X" into play » (NeXt Evoluti
   it('ne dit rien d\'une option qui ne nomme pas une manigance de campagne connue', () => {
     expect(carteDuSchemaCampagneParOption(option('Put "Autre chose" into play'), 0, catalogueVide)).toBeUndefined()
     expect(carteDuSchemaCampagneParOption(option('Role: Brawler'), 0, catalogueVide)).toBeUndefined()
+  })
+})
+
+describe('carteDeCampagneParOption : mise en place de MojoMania (28/10/2026)', () => {
+  it('« Reveal Longshot » montre Longshot, meme recu avec des soulignes, sans qu\'il soit dans le monde', () => {
+    const carteLongshot = carteDeCampagneParOption(option('Reveal_Longshot', 99), new Map(), 0, catalogueVide)
+    expect(carteLongshot?.codeCarte).toBe('39071')
+    const melange = carteDeCampagneParOption(option('Shuffle_Longshot_into_the_encounter_deck', 99), new Map(), 0, catalogueVide)
+    expect(melange?.codeCarte).toBe('39071')
+  })
+
+  it('« Put <carte> into play under your control » retrouve la carte du deck par son nom', () => {
+    const parNom = indexerCartesMondeParNom(new Map([[1, carte(1, 'Stark Tower', '01034')]]))
+    const montree = carteDeCampagneParOption(option('Put_Stark_Tower_into_play_under_your_control', 99), parNom, 0, catalogueVide)
+    expect(montree?.codeCarte).toBe('01034')
+  })
+
+  it("ne dit rien d'une option qui n'en est pas une, ni d'une carte absente du monde", () => {
+    expect(carteDeCampagneParOption(option('Defense'), new Map(), 0, catalogueVide)).toBeUndefined()
+    expect(carteDeCampagneParOption(option('Put_Inconnue_into_play_under_your_control'), new Map(), 0, catalogueVide)).toBeUndefined()
   })
 })

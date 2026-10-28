@@ -458,6 +458,11 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
     (m) => `Retirer ${m[1]} compteurs de dragage pour piocher ${m[2]} cartes`],
   [/^Remove (\d+) dredge counters to confuse and stun an enemy$/,
     (m) => `Retirer ${m[1]} compteurs de dragage pour désorienter et sonner un ennemi`],
+  // Campagne MojoMania (`mojo/campaign.py`, 28/10/2026) : Longshot revele ou melange au scenario suivant, et la carte que le
+  // joueur avait gardee au carnet (le nom de la carte reste en anglais : le scan sous les yeux l'est).
+  [/^Reveal Longshot$/, () => 'Révéler Longshot'],
+  [/^Shuffle Longshot into the encounter deck$/, () => 'Mélanger Longshot dans le deck de rencontre'],
+  [/^Put (.+) into play under your control$/, (m) => `Mettre ${m[1]} en jeu sous ton contrôle`],
   // Campagne Skrull Menace (`skrull_menace/campaign.py`) : la règle de coopération, la zone, la campagne experte.
   [/^Discard the top card of your deck to place (.+) in the victory display$/,
     (m) => `Défausser le dessus de ton deck pour placer ${m[1]} dans la pile de victoire`],

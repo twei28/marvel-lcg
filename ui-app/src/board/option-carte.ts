@@ -197,3 +197,34 @@ export function carteDuSchemaCampagneParOption(
   if (!cardId) return undefined
   return carteConstruiteDepuisId(cardId, playerId, catalogue, 'SideScheme')
 }
+
+/**
+ * Les cartes que les options de MISE EN PLACE DE CAMPAGNE (`cards/pack/mojo/campaign.py`) designent, 28/10/2026.
+ *
+ * - « Reveal Longshot » / « Shuffle Longshot into the encounter deck » : Longshot est genere par le moteur et n'est dans
+ *   AUCUNE zone du monde au moment de la question ; on le construit depuis son identifiant (table figee, copie du moteur).
+ * - « Put <carte> into play under your control » : la carte enregistree au carnet est dans un deck, donc dans le
+ *   descripteur ; on la retrouve par son nom, comme pour un choix textuel.
+ *
+ * Sans cela le survol retombait sur la carte PORTEUSE (la manigance principale), comme pour les roles.
+ */
+export const CARTES_DE_CAMPAGNE_PAR_NOM: Readonly<Record<string, string>> = {
+  Longshot: '39071',
+}
+
+export function carteDeCampagneParOption(
+  option: Option,
+  cartesParNom: Map<string, WorldCard>,
+  playerId: number,
+  catalogue: Catalogue
+): ScanCardProps | undefined {
+  const nom = option.name.replaceAll('_', ' ').trim()
+  const longshot = /^(?:Reveal|Shuffle) (Longshot)\b/.exec(nom)
+  if (longshot) {
+    const id = CARTES_DE_CAMPAGNE_PAR_NOM[longshot[1]!]
+    return id ? carteConstruiteDepuisId(id, playerId, catalogue, 'Ally') : undefined
+  }
+  const remise = /^Put (.+) into play under your control$/.exec(nom)
+  if (remise) return carteNommeeParOption({ ...option, name: remise[1]! }, cartesParNom, playerId, catalogue)
+  return undefined
+}
