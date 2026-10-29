@@ -5841,8 +5841,12 @@ async function loadExtTabs() {
 }
 
 /** Les boîtes dont on a une pochette recadrée au format commun (outils/pochettes-boites.py, 18/10/2026) :
- *  l'illustration de face, sans liseré de pack ni perspective. Les autres gardent leur image d'origine. */
-const POCHETTES_RECADREES = new Set([1, 2, 4, 7, 11, 16, 21, 24, 27, 32, 39, 40, 45, 50, 55, 56, 57, 60, 119, 120, 136, 143, 178, 190, 192, 195]);
+ *  l'illustration de face, sans liseré de pack ni perspective. Les autres gardent leur image d'origine.
+ *  ⚠ 1, 56, 57, 119, 120, 143, 178 et 192 RETIRÉS le 29/10/2026 : nouvelles images d'origine (Core Set,
+ *  Civil War, Synthezoid Smackdown, The Spot, Web of Deceit, Skrull Menace, Hunting Season, Bebop &
+ *  Rocksteady) posées directement dans assets/textures/sets/, affichées entières (pochette carrée en
+ *  « contain », voir prepare.css) : plus besoin d'un recadrage manuel pour elles. */
+const POCHETTES_RECADREES = new Set([2, 4, 7, 11, 16, 21, 24, 27, 32, 39, 40, 45, 50, 55, 60, 136, 190, 195]);
 function pochetteBoite(cle) {
     const numero = parseInt(String(cle).split(".")[0], 10);
     return POCHETTES_RECADREES.has(numero) && /^\d+\. /.test(cle)
@@ -5863,7 +5867,9 @@ function ajusterPochettes() {
     const L = tabs.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const H = tabs.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     if (L <= 0 || H <= 0) return;
-    const ECART_X = 6, ECART_Y = 4, RATIO = 0.56;
+    // RATIO : largeur / hauteur totale d'une pochette, etiquette comprise (pas celui de la
+    // seule image). Pochette carree (29/10/2026, --boite-w/--boite-h) + ~25px d'etiquette.
+    const ECART_X = 6, ECART_Y = 4, RATIO = 0.75;
     let meilleur = 3;
     for (let c = 3; c <= 10; c++) {
         const w = (L - ECART_X * (c - 1)) / c;

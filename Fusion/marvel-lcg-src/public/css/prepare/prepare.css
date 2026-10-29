@@ -103,8 +103,12 @@
   --tuile-mechant-h:280px;
   /* Les boîtes d'extension (92 x 122 avant) : plus petites, la place va aux
      méchants ; la bannière « cible actuelle » se réduit à une ligne. */
-  --boite-w:72px;
-  --boite-h:96px;
+  /* Carrees (29/10/2026, demande de l'utilisateur) : la plupart des pochettes sont des
+     illustrations plates deja carrees (300x300) ; en 72x96 (0,75) elles etaient etirees
+     ou recadrees a la main pour rien. Les vraies pochettes de boite (plus hautes que
+     larges) restent visibles en entier : voir « .ext-tab .box » plus bas, en « contain ». */
+  --boite-w:84px;
+  --boite-h:84px;
   /* Le Face à face : hauteur de la scène, largeur d'un héros, fond clair de
      notre camp, fond sombre du leur, et la pente de la diagonale. */
   --fo-h:340px;
@@ -851,7 +855,7 @@ button{cursor:pointer}
 }
 .ext-tab:hover{transform:translateY(-2px);border-color:var(--nous)}
 .ext-tab.on{border-color:var(--agir);box-shadow:0 0 0 2px var(--agir-halo)}
-.ext-tab .box{position:absolute;inset:0;background:center/cover no-repeat;transition:transform var(--dur)}
+.ext-tab .box{position:absolute;inset:0;background:#000 center/contain no-repeat;transition:transform var(--dur)}
 .ext-tab:hover .box{transform:scale(1.06)}
 .exname{
   position:absolute;
