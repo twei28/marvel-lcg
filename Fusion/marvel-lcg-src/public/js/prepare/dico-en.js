@@ -405,6 +405,7 @@ export const DICO_EN_BASE = {
     "Set de base": "Core Set",
     "Core Set + Extensions": "Core Set + Expansions",
     "Packs scénario": "Scenario Packs",
+    "Défis et autres": "Challenges & more",
     "Héros fan-made, hors de toute extension officielle": "Fan-made heroes, outside any official expansion",
     "Un grand merci à": "A big thank you to",
     "pour leur travail : ces héros et ces méchants sont les leurs.": "for their work: these heroes and villains are theirs.",

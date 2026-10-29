@@ -5805,6 +5805,19 @@ const GROUPES_EXTENSIONS = [
 ];
 const NUMEROS_CORE_ET_EXTENSIONS = new Set([1, 4, 16, 21, 27, 32, 40, 45, 50, 56, 60]);
 const CLE_GROUPE_EXTENSIONS = "mc_ext_groupe_v1";
+const SECTIONS_FANMADE = [
+    { id: "camp", libelle: "Campagnes" },
+    { id: "scn", libelle: "Scénarios" },
+    { id: "defis", libelle: "Défis et autres" },
+];
+// Campagnes : couverture « Expansion » / « Extension » / « Rulebook » ; défis : Challenges et Super Bouffon ; le reste : « Scenario Pack ».
+const NUMEROS_FANMADE_CAMPAGNES = new Set([120, 143, 144, 178, 208]);
+const NUMEROS_FANMADE_DEFIS = new Set([210, 235]);
+function sectionDeLExtensionFanmade(cle) {
+    const numero = parseInt(String(cle).split(".")[0], 10);
+    if (NUMEROS_FANMADE_CAMPAGNES.has(numero)) return "camp";
+    return NUMEROS_FANMADE_DEFIS.has(numero) ? "defis" : "scn";
+}
 function groupeDeLExtension(cle) {
     if (/custom/i.test(cle)) return "fan";
     return NUMEROS_CORE_ET_EXTENSIONS.has(parseInt(String(cle).split(".")[0], 10)) ? "ext" : "scn";
@@ -5854,7 +5867,7 @@ async function loadExtTabs() {
     const auteurs = new Map();
     for (const e of exts) if (/custom/i.test(e.key)) auteurs.set(e.key, await auteurDeExtension(e));
     majMerciVilains();
-    tabs.replaceChildren(...exts.map((e) => el("button", {
+    const tuileExtension = (e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
         // Plus de fenetre au survol d'une extension (23/10/2026, demande de l'utilisateur) : ni l'apercu en grand (`showExtHover`) ni
         // l'infobulle du navigateur (« 56. Civil War »).
@@ -5865,7 +5878,23 @@ async function loadExtTabs() {
             ? el("div", { class: "box box-defis" }, picto(e.key === "235. Custom (Super Bouffon / Jigsaw)" ? "fa-mask" : "fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${pochetteBoite(e.key)}")` } }),
         el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
-    )));
+    );
+    // Fan-made : trois sections avec un titre (29/10/2026, demande de l'utilisateur), le reste en une seule grille.
+    if (groupe === "fan") {
+        const enfants = [];
+        const effectifs = [];
+        for (const section of SECTIONS_FANMADE) {
+            const boites = exts.filter((e) => sectionDeLExtensionFanmade(e.key) === section.id);
+            if (!boites.length) continue;
+            enfants.push(el("div", { class: "ext-section" }, t(section.libelle)), ...boites.map(tuileExtension));
+            effectifs.push(boites.length);
+        }
+        tabs.dataset.sections = effectifs.join(",");
+        tabs.replaceChildren(...enfants);
+    } else {
+        delete tabs.dataset.sections;
+        tabs.replaceChildren(...exts.map(tuileExtension));
+    }
     ajusterPochettes();
     loadScnGrid();
 }
@@ -5899,13 +5928,16 @@ function ajusterPochettes() {
     if (L <= 0 || H <= 0) return;
     // RATIO : largeur / hauteur totale d'une pochette, etiquette comprise (pas celui de la
     // seule image). Pochette carree (29/10/2026, --boite-w/--boite-h) + ~25px d'etiquette.
-    const ECART_X = 6, ECART_Y = 4, RATIO = 0.75;
+    const ECART_X = 6, ECART_Y = 4, RATIO = 0.75, TITRE_SECTION = 48;
+    // Fan-made : chaque section recommence une rangée et porte un titre (voir loadExtTabs).
+    const effectifs = tabs.dataset.sections ? tabs.dataset.sections.split(",").map(Number) : [n];
     let meilleur = 3;
     for (let c = 3; c <= 10; c++) {
         const w = (L - ECART_X * (c - 1)) / c;
-        const lignes = Math.ceil(n / c);
+        const lignes = effectifs.reduce((somme, k) => somme + Math.ceil(k / c), 0);
         const h = w / RATIO;
-        if (lignes * h + ECART_Y * (lignes - 1) <= H) { meilleur = c; break; }
+        const titres = tabs.dataset.sections ? effectifs.length * TITRE_SECTION : 0;
+        if (lignes * h + ECART_Y * (lignes - 1) + titres <= H) { meilleur = c; break; }
         meilleur = c;
     }
     tabs.style.setProperty("grid-template-columns", `repeat(${meilleur}, minmax(0, 1fr))`, "important");
