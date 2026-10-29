@@ -17,6 +17,7 @@
   inset: 0;
   z-index: 603;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 46px minmax(0, 1fr) 70px;
   background: #0e1219;
   color: #f2f3f5;
@@ -41,11 +42,18 @@
   color: var(--pf-bleu-clair);
 }
 .pf-sous-haut {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   color: var(--pf-doux);
   font-size: 14px;
 }
 .pf-etapes {
+  flex: none;
   margin-left: auto;
+  white-space: nowrap;
   font: 600 12px Inter, sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -81,6 +89,9 @@
   padding: 0 24px;
   background: linear-gradient(#141c2f, #0d1320);
   border-top: 2px solid var(--pf-ligne);
+}
+.pf-info:empty {
+  display: none;
 }
 .pf-info {
   flex: 1;
@@ -715,24 +726,77 @@
 }
 
 @media (max-width: 760px) {
+  .parcours-fin {
+    grid-template-rows: 46px minmax(0, 1fr) auto;
+  }
+  .pf-haut {
+    padding: 0 12px;
+    gap: 10px;
+  }
+  .pf-titre-haut {
+    font-size: 18px;
+  }
+  .pf-sous-haut {
+    font-size: 12px;
+  }
+  .pf-etapes b {
+    display: none;
+  }
+  .pf-etapes i {
+    width: 16px;
+    margin: 0 2px;
+  }
+  .pf-bas {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .pf-info {
+    order: 3;
+    flex: 1 1 100%;
+    font-size: 12px;
+  }
+  .pf-btn {
+    font-size: 18px;
+    padding: 8px 16px;
+  }
+  .pf-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .pf-bilan,
+  .pf-carnet {
+    padding: 12px;
+  }
+  .pf-panneau {
+    padding: 16px;
+  }
+  .pf-onglets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .pf-onglets button {
+    font-size: 17px;
+    padding: 6px 8px;
+  }
   .pf-bilan-colonnes,
   .pf-futurs {
     grid-template-columns: minmax(0, 1fr);
   }
   .pf-suite-texte {
-    left: 18px;
-    right: 18px;
+    left: 16px;
+    right: 16px;
     width: auto;
+  }
+  .pf-suite-titre {
+    font-size: 44px;
   }
   .pf-suite-carte {
     display: none;
   }
-  .pf-btn {
-    font-size: 20px;
-    padding: 8px 22px;
-  }
-  .pf-onglets button {
-    font-size: 18px;
-    padding: 6px 12px;
+  .pf-hero {
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 12px;
   }
 }
