@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,6 +41,95 @@
   .texte-libre .btn { padding: 4px 8px; flex: none; }
   #message { min-height: 18px; color: var(--doux); font-size: 12px; }
 </style>
+<script>
+// Langue de la page : l'anglais par defaut, le francais avec le petit bouton
+// (meme reglage que le createur de cartes : localStorage 'createur-langue-ui').
+(() => {
+  const D = {
+  "Atelier de couvertures": "Cover workshop",
+  "Héros": "Hero",
+  "Scénario": "Scenario",
+  "Modulaire": "Modular",
+  "Illustration": "Artwork",
+  "Image (ou glisse-la sur l'aperçu)": "Image (or drop it on the preview)",
+  "Zoom": "Zoom",
+  "Glisse l'image dans l'aperçu pour la déplacer, molette pour zoomer.": "Drag the image in the preview to move it, mouse wheel to zoom.",
+  "Titre": "Title",
+  "Texte (une ligne par retour)": "Text (one line per line break)",
+  "Nom du pack": "Pack name",
+  "Ou une image de titre déjà dessinée": "Or a ready-made title image",
+  "Police": "Font",
+  "Georgia Gras": "Georgia Bold",
+  "Trebuchet Gras": "Trebuchet Bold",
+  "Courier Gras": "Courier Bold",
+  "Ma police (.ttf / .otf)…": "My font (.ttf / .otf)…",
+  "Ma police": "My font",
+  "Remplissage haut": "Top fill",
+  "Remplissage bas": "Bottom fill",
+  "Contour": "Outline",
+  "Épaisseur du contour": "Outline thickness",
+  "Taille": "Size",
+  "Position horizontale": "Horizontal position",
+  "Position verticale": "Vertical position",
+  "Ombre portée": "Drop shadow",
+  "Couleurs du gabarit": "Template colours",
+  "Boîte du bas": "Bottom box",
+  "Revenir aux couleurs d'origine": "Back to the original colours",
+  "Textes libres": "Free texts",
+  "+ Ajouter un texte": "+ Add a text",
+  "Nom du créateur, mention, ce que tu veux. Glisse un texte dans l'aperçu pour le placer.": "Creator name, credit, anything you like. Drag a text in the preview to place it.",
+  "Export": "Export",
+  "Télécharger en PNG": "Download as PNG",
+  "Télécharger en webp (600 px de haut)": "Download as webp (600 px tall)",
+  "Ton texte": "Your text",
+  "Supprimer": "Delete",
+  "Couleur": "Colour",
+  "Épaisseur": "Thickness",
+  "Gras": "Bold",
+  "Ombre": "Shadow",
+  "Dépose l'illustration ici": "Drop the artwork here",
+  "Créé par …": "Made by …"
+}
+  let en = true
+  try { en = localStorage.getItem('createur-langue-ui') !== 'fr' } catch {}
+  window.T = (fr) => (en && Object.prototype.hasOwnProperty.call(D, fr) ? D[fr] : fr)
+  document.documentElement.lang = en ? 'en' : 'fr'
+  if (!en) return
+  const MOTIFS = [
+    [/^Étiquette \(« (.+) »\)$/, '“$1” label'],
+    [/^PNG exporté \((.+)\)\.$/, 'PNG exported ($1).'],
+    [/^webp exporté \((.+)\)\.$/, 'webp exported ($1).'],
+  ]
+  function traduire(fr) {
+    const coeur = fr.trim()
+    if (!coeur) return fr
+    let en2 = D[coeur]
+    if (en2 === undefined) for (const [re, rempl] of MOTIFS) if (re.test(coeur)) { en2 = coeur.replace(re, rempl); break }
+    return en2 === undefined ? fr : fr.replace(coeur, en2)
+  }
+  function parcourir(noeud) {
+    if (noeud.nodeType === 3) { const v = traduire(noeud.nodeValue); if (v !== noeud.nodeValue) noeud.nodeValue = v; return }
+    if (noeud.nodeType !== 1 || noeud.tagName === 'SCRIPT' || noeud.tagName === 'STYLE') return
+    for (const a of ['placeholder', 'title']) if (noeud.hasAttribute(a)) { const v = traduire(noeud.getAttribute(a)); if (v !== noeud.getAttribute(a)) noeud.setAttribute(a, v) }
+    noeud.childNodes.forEach(parcourir)
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.title = traduire(document.title)
+    parcourir(document.body)
+    new MutationObserver((lots) => lots.forEach((l) => (l.type === 'characterData' ? parcourir(l.target) : l.addedNodes.forEach(parcourir)))).observe(document.body, { childList: true, subtree: true, characterData: true })
+  })
+})()
+document.addEventListener('DOMContentLoaded', () => {
+  const b = document.createElement('button')
+  b.type = 'button'; b.id = 'bouton-langue'
+  const fr = document.documentElement.lang === 'fr'
+  b.textContent = fr ? 'EN' : 'FR'
+  b.title = fr ? 'English' : 'Français'
+  b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:10;padding:4px 9px;border-radius:6px;border:1px solid #343944;background:#1f2229;color:#e8eaee;font:700 12px system-ui,sans-serif;cursor:pointer'
+  b.addEventListener('click', () => { try { localStorage.setItem('createur-langue-ui', fr ? 'en' : 'fr') } catch {} location.reload() })
+  document.body.append(b)
+})
+</script>
 </head>
 <body>
 <div class="page">
@@ -221,7 +310,7 @@ const CALQUES = {"heros-boite": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA
     if (!im) {
       ctx.fillStyle = '#2a2d36'; ctx.fillRect(0, 0, L, H)
       ctx.fillStyle = '#9aa1ad'; ctx.font = '600 44px system-ui, sans-serif'; ctx.textAlign = 'center'
-      ctx.fillText("Dépose l'illustration ici", L / 2, H / 2 - 600)
+      ctx.fillText(T("Dépose l'illustration ici"), L / 2, H / 2 - 600)
       return
     }
     const base = Math.max(L / im.width, H / im.height) * etat.artZoom
@@ -391,7 +480,7 @@ const CALQUES = {"heros-boite": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA
 
   // ---- Textes libres
   function nouveauTexte() {
-    return { texte: 'Créé par …', police: POLICES()[0][0], taille: 44, couleur: '#ffffff', contour: '#000000', epaisseur: 6, x: L / 2, y: H - 40, ombre: true, gras: true }
+    return { texte: T('Créé par …'), police: POLICES()[0][0], taille: 44, couleur: '#ffffff', contour: '#000000', epaisseur: 6, x: L / 2, y: H - 40, ombre: true, gras: true }
   }
   function champ(libelle, node) { const l = document.createElement('label'); l.textContent = libelle; l.append(node); return l }
   function entree(type, valeur, surChange, attrs = {}) {

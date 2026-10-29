@@ -3,8 +3,7 @@
 // administrateur qui joue : « ⚙ Administration » (le site), « 🖼 Relevé des
 // illustrations » (la page qui dit qui est dessiné sur chaque carte) et
 // « 🎨 Palettes des héros » (la couleur du fond de plateau, corrigée à la main) et
-// « 🖌 Atelier de couvertures » (l'affiche d'un pack héros / scénario / modulaire),
-// « 🃏 Créateur de cartes » (fabriquer une carte, 23 types, FR / EN).
+// « ✨ Créer » (un menu : le créateur de cartes, ou l'atelier d'images de pack).
 //
 // Même pattern que lien-galerie.js : script CLASSIQUE (defer + IIFE), donc pas
 // d'import de js/prepare/langue.js ; on duplique la lecture de
@@ -30,9 +29,12 @@
     'Relevé des illustrations': 'Artwork survey',
     'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
     'Palettes des héros': 'Hero palettes',
-    'Atelier de couvertures': 'Cover workshop',
-    'Créateur de cartes': 'Card maker',
-    'Fabriquer une carte Marvel Champions (23 types, français et anglais) et l’exporter en image ou en planche à imprimer': 'Make a Marvel Champions card (23 types, French and English) and export it as an image or a print sheet',
+    'Créer': 'Create',
+    'Fabriquer des cartes ou des images de pack': 'Make cards or pack images',
+    'Que veux-tu fabriquer ?': 'What do you want to make?',
+    'Cartes': 'Cards',
+    'Images de pack': 'Pack images',
+    'Fabriquer une carte Marvel Champions (23 types) et l’exporter en image ou en planche à imprimer': 'Make a Marvel Champions card (23 types) and export it as an image or a print sheet',
     'Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit': 'Make a pack cover (hero, scenario, modular) from the template',
     'Corriger la couleur du fond de plateau': 'Fix the board background colour',
     'Sauvegarde du code': 'Code backup',
@@ -339,27 +341,61 @@
     });
     rangee.append(palettes);
 
-    // L'atelier de couvertures (28/10/2026) : la page est statique et n'ecrit
-    // rien sur le serveur ; elle est rangee avec les outils de creation.
-    var atelier = document.createElement('button');
-    atelier.type = 'button';
-    atelier.textContent = '🖌️ ' + t('Atelier de couvertures');
-    atelier.title = t('Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit');
-    atelier.addEventListener('click', function () {
-      window.open('/atelier-couvertures.html', '_blank', 'noopener');
+    // Un seul bouton « Create » pour les deux outils de fabrication (29/10/2026) :
+    // le créateur de cartes et l'atelier d'images de pack. Les pages sont
+    // statiques et n'écrivent rien sur le serveur ; le menu demande laquelle ouvrir.
+    var creer = document.createElement('button');
+    creer.type = 'button';
+    creer.textContent = '✨ ' + t('Créer');
+    creer.title = t('Fabriquer des cartes ou des images de pack');
+    var menuCreer = null;
+    function fermerMenuCreer() {
+      if (menuCreer) { menuCreer.remove(); menuCreer = null; }
+      document.removeEventListener('mousedown', clicDehorsCreer, true);
+    }
+    function clicDehorsCreer(e) {
+      if (menuCreer && !menuCreer.contains(e.target) && !creer.contains(e.target)) fermerMenuCreer();
+    }
+    creer.addEventListener('click', function () {
+      if (menuCreer) { fermerMenuCreer(); return; }
+      menuCreer = document.createElement('div');
+      menuCreer.setAttribute('role', 'menu');
+      menuCreer.style.cssText = 'position:fixed;z-index:950;width:280px;max-width:calc(100vw - 32px);' +
+        'background:#1f2328;color:#ddd;border:1px solid #666;border-radius:10px;padding:10px;' +
+        'box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:.85rem;line-height:1.4;';
+      var rect = creer.getBoundingClientRect();
+      menuCreer.style.top = Math.round(rect.bottom + 6) + 'px';
+      menuCreer.style.left = Math.max(16, Math.min(Math.round(rect.left), window.innerWidth - 296)) + 'px';
+      var titre = document.createElement('div');
+      titre.textContent = t('Que veux-tu fabriquer ?');
+      titre.style.cssText = 'font-weight:700;margin:0 0 8px;';
+      menuCreer.append(titre);
+      [
+        ['🃏 ' + t('Cartes'), t('Fabriquer une carte Marvel Champions (23 types) et l’exporter en image ou en planche à imprimer'), '/createur-cartes.html'],
+        ['🖼️ ' + t('Images de pack'), t('Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit'), '/atelier-couvertures.html'],
+      ].forEach(function (choix) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('role', 'menuitem');
+        b.style.cssText = 'display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;' +
+          'border-radius:8px;border:1px solid #666;background:#2e2e2e;color:#ddd;cursor:pointer;';
+        var nom = document.createElement('div');
+        nom.textContent = choix[0];
+        nom.style.fontWeight = '700';
+        var detail = document.createElement('div');
+        detail.textContent = choix[1];
+        detail.style.cssText = 'font-size:.75rem;opacity:.75;margin-top:2px;';
+        b.append(nom, detail);
+        b.addEventListener('click', function () {
+          fermerMenuCreer();
+          window.open(choix[2], '_blank', 'noopener');
+        });
+        menuCreer.append(b);
+      });
+      document.body.append(menuCreer);
+      document.addEventListener('mousedown', clicDehorsCreer, true);
     });
-    rangee.append(atelier);
-
-    // Le createur de cartes (29/10/2026) : page statique aussi, les cartes restent
-    // dans le navigateur de celui qui les fabrique.
-    var createur = document.createElement('button');
-    createur.type = 'button';
-    createur.textContent = '🃏 ' + t('Créateur de cartes');
-    createur.title = t('Fabriquer une carte Marvel Champions (23 types, français et anglais) et l’exporter en image ou en planche à imprimer');
-    createur.addEventListener('click', function () {
-      window.open('/createur-cartes.html', '_blank', 'noopener');
-    });
-    rangee.append(createur);
+    rangee.append(creer);
 
     // La sauvegarde du code (08/10/2026) : la page du SITE qui liste les 5
     // derniers zips, reservee a l'administrateur par le site lui-meme.

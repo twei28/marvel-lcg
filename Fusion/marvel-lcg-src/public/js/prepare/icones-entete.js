@@ -10,6 +10,7 @@
 
 /** Pictogramme d'un bouton posé avec un émoji en tête de libellé. */
 const ICONE_DE_L_EMOJI = [
+    ["✨", "fa-magic"],
     ["🃏", "fa-clone"],
     ["⚙", "fa-cog"],
     ["🖼", "fa-picture-o"],
