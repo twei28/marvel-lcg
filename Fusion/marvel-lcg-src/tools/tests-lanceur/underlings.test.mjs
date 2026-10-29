@@ -64,6 +64,23 @@ test("la memoire choisit le vilain montre par la tuile ; une memoire perimee ret
     assert.equal(amh2.courant.id, "hammerhead");
 });
 
+test("tuile_sbire_scenarios : la modale montre la carte du SOUS-FIFRE, pas celle du vilain commun aux deux scenarios", () => {
+    // One Last Kill (Jigsaw) et (Hobgoblin) partagent le meme vilain actif (Punisher, dans `villain`/`villainCards`
+    // des deux fichiers de scenario) : sans le repli sur `tuile_sbire_scenarios`, les deux options de la modale
+    // montraient la meme carte Punisher (signale par l'utilisateur le 29/10/2026 : « il ne montre pas la bonne
+    // carte »). `villainCards: ["x"]` ci-dessous simule ce partage : les deux scenarios y pointent vers le meme id.
+    const scPunisher = (id, name) => ({ id, name, villainCards: ["punisher-commun"], tileImage: "punisher-commun" });
+    const unique = { manigances: ["one_last_kill"], underlings: ["jigsaw", "hobgoblin"], tuileSbireScenarios: { one_last_kill_jigsaw: "pu056a", one_last_kill_hobgoblin: "pu071a" } };
+    const cat = [scPunisher("one_last_kill_jigsaw", "One Last Kill (Jigsaw)"), scPunisher("one_last_kill_hobgoblin", "One Last Kill (Hobgoblin)")];
+    const [tuile] = regrouperUnderlings(cat, unique, {});
+    assert.deepEqual(tuile.underlings.map((u) => [u.id, u.villainCardId]), [["jigsaw", "pu056a"], ["hobgoblin", "pu071a"]]);
+});
+
+test("sans tuile_sbire_scenarios, repli sur villainCards comme avant (compat)", () => {
+    const [amh] = regrouperUnderlings(catalogue, ext, {});
+    assert.equal(amh.underlings[0].villainCardId, "60086");
+});
+
 test("une manigance a un seul vilain porte a sa tuile, sans modale (un seul choix)", () => {
     const getaway = regrouperUnderlings(catalogue, ext, {})[2];
     assert.equal(getaway.underlings.length, 1);
