@@ -1012,6 +1012,21 @@
     pointer-events: auto;
   }
 
+  /* Le bouton de refus (« Ne pas défendre », « Passer »...) reste TOUJOURS visible : avec plusieurs défenseurs possibles
+     la liste des boutons dépasse le panneau de la phase, et le refus, dernier de la liste, sortait de l'écran sans le
+     moindre indice (29/10/2026, signalé par l'utilisateur sur téléphone : « il faut toujours pouvoir voir tous les
+     boutons »). Collé en bas du défilement, sur un dégradé qui masque les boutons qui passent dessous. */
+  .demande-centrale.est-en-scene .dc-boutons > .dc-refus {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    width: 100%;
+    padding: 14px 0 4px;
+    background: linear-gradient(to top, rgba(14, 18, 25, 0.98) 68%, rgba(14, 18, 25, 0));
+    /* Recouvre l'espace sous le bouton, où une ligne de la liste dépassait encore. */
+    box-shadow: 0 28px 0 0 rgba(14, 18, 25, 0.98);
+  }
+
   /* La croix du coin : remet la partie avant le choix de la carte (Echap). */
   .dc-texte:has(> .dc-croix) {
     position: relative;
