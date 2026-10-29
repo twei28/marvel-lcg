@@ -5388,6 +5388,7 @@ function stepScenario() {
             el("span", { class: "tb-compte", id: "tb-compte" }, ""),
             el("span", { class: "tb-mode" }, navStatus()),
         ),
+        el("div", { class: "ext-groupes", id: "ext-groupes", role: "tablist" }),
         el("div", { class: "ext-tabs", id: "ext-tabs" }, el("div", { class: "loading" }, "...")),
         el("div", { class: "tb-merci", id: "tb-merci-vilains", hidden: true }),
         el("div", { class: "hero-grid tb-roster tb-roster-scn", id: "scn-grid" }),
@@ -5761,8 +5762,8 @@ async function preselectionDernierScenario() {
     const scs = await catalog.scenariosForExtension(ext.key);
     const sc = scs.find((s) => s.id === dernier);
     if (!sc) return false;
-    // Le dernier scénario joué est fan-made : le filtre s'allume pour qu'il reste visible.
-    state.extFanmade = /custom/i.test(ext.key);
+    // Le dernier scénario joué décide de l'onglet : sa boîte reste visible.
+    poserGroupeExtensions(groupeDeLExtension(ext.key));
     state.extensionTab = ext.key;
     selectScenario(sc);
     return true;
@@ -5792,16 +5793,57 @@ function libelleExtension(e, auteur) {
     return interne ? nomAvecAuteur(interne[1], auteur, true) : nom;
 }
 
+/** Les trois onglets de l'étape Vilain (29/10/2026, demande de l'utilisateur) : le type est celui que FFG imprime sur la
+ *  couverture (« Scenario Pack » / « Expansion » / « Rulebook » des grandes boîtes). Core Set + Extensions : Core Set,
+ *  Rise of Red Skull, Galaxy's Most Wanted, Mad Titan's Shadow, Sinister Motives, Mutant Genesis, NeXt Evolution,
+ *  Age of Apocalypse, S.H.I.E.L.D., Civil War, Fear No Evil. Tout autre officiel (même Mojo Mania, imprimé « Scenario Pack ») :
+ *  Packs scénario. Les « Custom » : Fan-made. */
+const GROUPES_EXTENSIONS = [
+    { id: "ext", libelle: "Core Set + Extensions" },
+    { id: "scn", libelle: "Packs scénario" },
+    { id: "fan", libelle: "Fan-made" },
+];
+const NUMEROS_CORE_ET_EXTENSIONS = new Set([1, 4, 16, 21, 27, 32, 40, 45, 50, 56, 60]);
+const CLE_GROUPE_EXTENSIONS = "mc_ext_groupe_v1";
+function groupeDeLExtension(cle) {
+    if (/custom/i.test(cle)) return "fan";
+    return NUMEROS_CORE_ET_EXTENSIONS.has(parseInt(String(cle).split(".")[0], 10)) ? "ext" : "scn";
+}
+function poserGroupeExtensions(id) {
+    state.extGroupe = id;
+    state.extFanmade = id === "fan";
+    try { window.localStorage.setItem(CLE_GROUPE_EXTENSIONS, id); } catch { /* navigation privée */ }
+}
+function lireGroupeExtensions() {
+    if (state.extGroupe) return state.extGroupe;
+    let id = "";
+    try { id = window.localStorage.getItem(CLE_GROUPE_EXTENSIONS) || ""; } catch { /* navigation privée */ }
+    state.extGroupe = GROUPES_EXTENSIONS.some((g) => g.id === id) ? id : "ext";
+    state.extFanmade = state.extGroupe === "fan";
+    return state.extGroupe;
+}
+
 async function loadExtTabs() {
     await preselectionDernierScenario();
     // « Weekly Challenges » et « Défis » ne se choisissent plus ici (17/10/2026, demande de l'utilisateur).
     const toutes = (await catalog.extensions()).filter((e) => e.scenarios.length
         && e.key !== "defis" && !/weekly/i.test(e.key));
-    const nbFanmade = toutes.filter((e) => /custom/i.test(e.key)).length;
-    // Le filtre « Fan-made » (16/10/2026, selection du mechant en trois colonnes) :
-    // decoche = les officielles seules, coche = les fan-made seules, comme sur l'ecran des heros.
-    // Décoché (19/10/2026) : seulement les boîtes officielles ; coché : seulement les fan-made, comme pour les héros.
-    const exts = toutes.filter((e) => /custom/i.test(e.key) === !!state.extFanmade);
+    const groupe = lireGroupeExtensions();
+    const exts = toutes.filter((e) => groupeDeLExtension(e.key) === groupe);
+    const barre = document.getElementById("ext-groupes");
+    if (barre) {
+        barre.replaceChildren(...GROUPES_EXTENSIONS.map((g) => el("button", {
+            class: "ext-groupe" + (g.id === groupe ? " on" : ""),
+            role: "tab",
+            "aria-selected": g.id === groupe ? "true" : "false",
+            onclick: () => {
+                if (g.id === state.extGroupe) return;
+                poserGroupeExtensions(g.id);
+                state.extensionTab = null;
+                loadExtTabs();
+            },
+        }, t(g.libelle))));
+    }
     // Si l'onglet courant n'existe plus dans la liste, on le recale.
     const validKeys = new Set(exts.map((e) => e.key));
     if (!state.extensionTab || !validKeys.has(state.extensionTab)) {
@@ -5811,18 +5853,6 @@ async function loadExtTabs() {
     if (!tabs) return;
     const auteurs = new Map();
     for (const e of exts) if (/custom/i.test(e.key)) auteurs.set(e.key, await auteurDeExtension(e));
-    const filtre = el("button", {
-        class: "ext-fanmade" + (state.extFanmade ? " on" : ""),
-        "aria-pressed": state.extFanmade ? "true" : "false",
-        onclick: () => { state.extFanmade = !state.extFanmade; loadExtTabs(); },
-    }, `${t("Fan-made")} (${nbFanmade})`);
-    // Le bouton vit dans l'en-tete du panneau (pas dans la grille des boites : il lui
-    // volerait une rangee), a cote du compte de scenarios.
-    const entete = tabs.parentElement && tabs.parentElement.querySelector(".tb-entete");
-    if (entete) {
-        entete.querySelectorAll(".ext-fanmade").forEach((x) => x.remove());
-        entete.insertBefore(filtre, entete.querySelector(".tb-mode"));
-    }
     majMerciVilains();
     tabs.replaceChildren(...exts.map((e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
@@ -5846,7 +5876,7 @@ async function loadExtTabs() {
  *  Civil War, Synthezoid Smackdown, The Spot, Web of Deceit, Skrull Menace, Hunting Season, Bebop &
  *  Rocksteady) posées directement dans assets/textures/sets/, affichées entières (pochette carrée en
  *  « contain », voir prepare.css) : plus besoin d'un recadrage manuel pour elles. */
-const POCHETTES_RECADREES = new Set([2, 4, 7, 11, 16, 21, 24, 27, 32, 39, 40, 45, 50, 55, 60, 136, 190, 195]);
+const POCHETTES_RECADREES = new Set([2, 7, 11, 24, 39, 136]);
 function pochetteBoite(cle) {
     const numero = parseInt(String(cle).split(".")[0], 10);
     return POCHETTES_RECADREES.has(numero) && /^\d+\. /.test(cle)

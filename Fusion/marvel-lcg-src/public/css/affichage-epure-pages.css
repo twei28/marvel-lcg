@@ -2013,9 +2013,8 @@ html[data-epure] .team-b.arsenal .tb-scene .tb-nomg { flex-direction: column; }
 @media (min-width: 900px) {
   html[data-epure] .team-b.eux .tb-roster-scn { gap: 16px; align-content: start; }
   html[data-epure] .team-b.eux .tb-roster-scn .tb-port { aspect-ratio: auto; width: 100%; height: 100%; }
-  html[data-epure] .team-b.eux .ext-tab { aspect-ratio: 0.56; }
+  html[data-epure] .team-b.eux .ext-tab { aspect-ratio: auto; }
   html[data-epure] .team-b.eux .ext-tab .exname { font-size: 11px; max-height: 36px; line-height: 1.12; }
-  html[data-epure] .team-b.eux .ext-tab .box { inset: 3px 3px 36px 3px; }
 }
 /* Les pochettes gardent le format commun (18/10/2026) : plus d'étirement des rangées pour remplir le
    panneau, qui déformait le cadre de chaque image (voir app.js, ajusterPochettes, RATIO). */
