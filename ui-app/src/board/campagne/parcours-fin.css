@@ -1,0 +1,738 @@
+/* Le parcours de fin de scénario de campagne (Victoire, Bilan, Carnet, Suite).
+   Plein écran, au-dessus de l'écran de fin (600) et sous l'aperçu des cartes (605). */
+.parcours-fin {
+  --pf-panneau1: #2b3a58;
+  --pf-panneau2: #171e2e;
+  --pf-ligne: #3d5a8c;
+  --pf-ligne-haut: #7fa9e6;
+  --pf-bleu: #2f78e0;
+  --pf-bleu-clair: #9fd0ff;
+  --pf-doux: #a9b4c8;
+  --pf-or: #f0b95f;
+  --pf-vert: #7ee0a0;
+  --pf-rouge: #e62429;
+  --pf-titre: 'Bangers', Impact, 'Arial Black', sans-serif;
+  --pf-entete: Anton, Impact, 'Arial Narrow', sans-serif;
+  position: fixed;
+  inset: 0;
+  z-index: 603;
+  display: grid;
+  grid-template-rows: 46px minmax(0, 1fr) 70px;
+  background: #0e1219;
+  color: #f2f3f5;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+.parcours-fin * {
+  box-sizing: border-box;
+}
+
+.pf-haut {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 22px;
+  background: linear-gradient(#1a2338, #111826);
+  border-bottom: 2px solid var(--pf-ligne);
+}
+.pf-titre-haut {
+  font: 400 22px var(--pf-entete);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--pf-bleu-clair);
+}
+.pf-sous-haut {
+  color: var(--pf-doux);
+  font-size: 14px;
+}
+.pf-etapes {
+  margin-left: auto;
+  font: 600 12px Inter, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pf-doux);
+}
+.pf-etapes b {
+  color: var(--pf-bleu-clair);
+  margin-right: 6px;
+}
+.pf-etapes i {
+  display: inline-block;
+  width: 26px;
+  height: 4px;
+  margin: 0 3px;
+  background: #2a3858;
+  vertical-align: middle;
+}
+.pf-etapes i.on {
+  background: var(--pf-bleu);
+}
+
+.pf-corps {
+  position: relative;
+  min-height: 0;
+  overflow: auto;
+}
+
+.pf-bas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 24px;
+  background: linear-gradient(#141c2f, #0d1320);
+  border-top: 2px solid var(--pf-ligne);
+}
+.pf-info {
+  flex: 1;
+  text-align: center;
+  color: var(--pf-doux);
+  font-size: 14px;
+}
+.pf-btn {
+  font: 400 24px var(--pf-entete);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--pf-bleu);
+  border: 1px solid var(--pf-bleu-clair);
+  padding: 8px 34px;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  box-shadow: inset 0 -4px 0 #9fd0ff55;
+}
+.pf-btn-sec {
+  background: #18233c;
+  color: var(--pf-doux);
+  border-color: #33466e;
+  box-shadow: none;
+}
+.pf-btn-or {
+  background: var(--pf-or);
+  color: #1a1405;
+  border-color: #ffe3a6;
+}
+.pf-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pf-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.pf-attente {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--pf-doux);
+  font-size: 15px;
+}
+.pf-point {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--pf-or);
+  animation: pf-pulse 1.2s infinite;
+}
+@keyframes pf-pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.pf-etiquette {
+  display: block;
+  font: 800 12px Inter, sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pf-bleu-clair);
+}
+.pf-puces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.pf-puce {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: #0f1626cc;
+  border: 1px solid #33466e;
+  font-weight: 600;
+  font-size: 15px;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+}
+.pf-puce b {
+  color: var(--pf-or);
+}
+.pf-pastille {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #1b2340 center 18% / 340% auto no-repeat;
+}
+
+.pf-panneau {
+  padding: 22px 28px;
+  background: linear-gradient(160deg, var(--pf-panneau1), var(--pf-panneau2) 60%, #10151f);
+  border: 2px solid var(--pf-ligne);
+  border-top-color: var(--pf-ligne-haut);
+  border-left-color: #6a95d6;
+  border-bottom-color: #0f1522;
+  border-right-color: #131a29;
+  clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+}
+.pf-h {
+  margin: 2px 0 14px;
+  font: 400 30px var(--pf-entete);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pf-sous-h {
+  margin: 20px 0 6px;
+  font: 800 12px Inter, sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pf-bleu-clair);
+}
+.pf-vide {
+  color: var(--pf-doux);
+}
+.pf-alerte {
+  margin: 0 0 14px;
+  padding: 10px 16px;
+  border-left: 4px solid var(--pf-or);
+  background: #101726;
+  color: #d8deea;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ---- page 1 */
+.pf-victoire {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+.pf-victoire-fond {
+  position: absolute;
+  inset: 0;
+  background: #0e1219 50% 27% / 320% auto no-repeat;
+  filter: grayscale(0.5) brightness(0.45) blur(2px);
+  transform: scale(1.12);
+}
+.pf-victoire-fond::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, transparent 0, #05070bd0 85%);
+}
+.pf-rayures {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  height: 340px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.pf-rayures::before,
+.pf-rayures::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  width: 110px;
+  height: 700px;
+  transform: rotate(38deg);
+  transform-origin: bottom right;
+}
+.pf-rayures::before {
+  background: var(--pf-rouge);
+  right: -20px;
+}
+.pf-rayures::after {
+  background: #243f86;
+  right: 110px;
+  box-shadow: -26px 0 0 #fff;
+}
+.pf-victoire-centre {
+  position: relative;
+  z-index: 2;
+  padding: 0 24px;
+}
+.pf-victoire-titre {
+  margin: 0;
+  font: 400 clamp(72px, 12vw, 150px) / 1 var(--pf-titre);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 6px 0 #1d3a73, 0 0 40px #2f78e0aa;
+}
+.pf-victoire.est-defaite .pf-victoire-titre {
+  text-shadow: 0 6px 0 #6b1015, 0 0 40px #e62429aa;
+}
+.pf-victoire-sous {
+  margin: 6px 0 26px;
+  font: 600 20px Inter, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pf-bleu-clair);
+}
+.pf-victoire .pf-puces {
+  justify-content: center;
+}
+
+/* ---- page 2 */
+.pf-bilan {
+  padding: 18px 26px;
+}
+.pf-bilan-colonnes {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.pf-bilan-colonnes.une-seule {
+  grid-template-columns: minmax(0, 1fr);
+}
+.pf-constat {
+  padding: 11px 0;
+  border-bottom: 1px solid #2a3c60;
+}
+.pf-constat:last-of-type {
+  border-bottom: 0;
+}
+.pf-constat-tete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.pf-auto {
+  font: 800 10px Inter, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pf-vert);
+  border: 1px solid #2e7a4a;
+  padding: 2px 7px;
+}
+.pf-constat-ligne {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+}
+.pf-qui {
+  font: 400 20px var(--pf-entete);
+  letter-spacing: 0.04em;
+  min-width: 110px;
+}
+.pf-grosse-valeur {
+  font: 400 30px var(--pf-entete);
+  color: var(--pf-or);
+}
+.pf-texte-valeur {
+  color: var(--pf-or);
+  font-weight: 700;
+}
+.pf-aide {
+  margin: 6px 0 0;
+  color: var(--pf-doux);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.pf-miniatures {
+  display: inline-flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.pf-miniatures img {
+  width: 84px;
+  border-radius: 5px;
+}
+.pf-lien {
+  margin-top: 8px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--pf-doux);
+  text-decoration: underline;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* les contrôles réutilisés du panneau de récompenses, dans le thème du parcours */
+.parcours-fin .camp-champ {
+  margin: 0 0 18px;
+}
+.parcours-fin .camp-champ-tete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.parcours-fin .camp-champ-marque {
+  font: 800 10px Inter, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pf-vert);
+  border: 1px solid #2e7a4a;
+  padding: 2px 7px;
+}
+.parcours-fin .camp-champ-aide {
+  margin: 4px 0 8px;
+  color: var(--pf-doux);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.parcours-fin .camp-champ-ligne {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 8px 0;
+}
+.parcours-fin .camp-champ-joueur {
+  font: 400 20px var(--pf-entete);
+  letter-spacing: 0.04em;
+  min-width: 130px;
+}
+.parcours-fin .camp-cartes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.parcours-fin .camp-carte {
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.parcours-fin .camp-carte:hover:not(:disabled) {
+  transform: translateY(-4px);
+}
+.parcours-fin .camp-carte img {
+  display: block;
+  width: 104px;
+  border-radius: 7px;
+  border: 2px solid #0006;
+}
+.parcours-fin .camp-carte.sel img {
+  border-color: var(--pf-or);
+  box-shadow: 0 0 0 3px #f0b95f55, 0 0 22px #f0b95f55;
+}
+.parcours-fin .camp-champ-int,
+.parcours-fin .camp-champ-texte {
+  background: #0c1220;
+  border: 1px solid var(--pf-ligne);
+  color: #fff;
+  font: 600 16px Inter, sans-serif;
+  padding: 6px 10px;
+}
+.parcours-fin .camp-champ-int {
+  width: 80px;
+  text-align: center;
+}
+
+/* ---- page 3 */
+.pf-carnet {
+  padding: 14px 26px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  height: 100%;
+}
+.pf-onglets {
+  display: flex;
+  gap: 8px;
+}
+.pf-onglets button {
+  font: 400 24px var(--pf-entete);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pf-doux);
+  background: #141c30;
+  border: 1px solid #2c3d5f;
+  padding: 8px 26px;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.pf-onglets button.on {
+  background: var(--pf-bleu);
+  color: #fff;
+  border-color: var(--pf-bleu-clair);
+  box-shadow: inset 0 -4px 0 #9fd0ff;
+}
+.pf-carnet-corps {
+  overflow: auto;
+  min-height: 0;
+}
+.pf-futurs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 40px;
+}
+.pf-futurs li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #2a3c60;
+  opacity: 0.5;
+  font-size: 14px;
+}
+.pf-quand {
+  font: 800 10px Inter, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pf-doux);
+  border: 1px solid #33466e;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+.pf-journal {
+  list-style: none;
+  margin: 0 0 0 16px;
+  padding: 0 0 0 28px;
+  border-left: 3px solid var(--pf-ligne);
+}
+.pf-journal li {
+  position: relative;
+  padding: 4px 0 20px;
+}
+.pf-journal li::before {
+  content: '';
+  position: absolute;
+  left: -40px;
+  top: 8px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2a3858;
+  border: 3px solid #0e1219;
+}
+.pf-journal li.est-fini::before {
+  background: #46b86a;
+}
+.pf-journal li.est-prochain::before {
+  background: var(--pf-or);
+  box-shadow: 0 0 0 4px #f0b95f44;
+}
+.pf-journal strong {
+  font: 400 24px var(--pf-entete);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pf-journal p {
+  margin: 2px 0 0;
+  color: var(--pf-doux);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.pf-tag {
+  margin-left: 10px;
+  padding: 2px 8px;
+  border: 1px solid;
+  font: 800 11px Inter, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.pf-tag.fini {
+  color: var(--pf-vert);
+  border-color: #2e7a4a;
+}
+.pf-tag.prochain {
+  color: var(--pf-or);
+  border-color: #8a6a2c;
+}
+.pf-tag.futur {
+  color: var(--pf-doux);
+  border-color: #33466e;
+}
+.pf-heros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+.pf-hero {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 18px;
+}
+.pf-hero > img {
+  width: 100%;
+  border-radius: 7px;
+}
+.pf-hero h4 {
+  margin: 0 0 8px;
+  font: 400 28px var(--pf-entete);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pf-hero ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.pf-hero li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #2a3c60;
+  font-size: 15px;
+}
+.pf-hero li > span:first-child {
+  color: var(--pf-doux);
+}
+.pf-histoire {
+  display: flex;
+  gap: 34px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.pf-bd img {
+  display: block;
+  max-height: 52vh;
+  max-width: 100%;
+  border: 3px solid #0008;
+  box-shadow: 0 12px 40px #000a;
+}
+.pf-histoire-texte {
+  flex: 1;
+  min-width: 260px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #d6deee;
+}
+
+/* ---- page 4 */
+.pf-suite {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.pf-suite-fond {
+  position: absolute;
+  inset: 0;
+  background: #0e1219 50% 27% / 320% auto no-repeat;
+  filter: brightness(0.55) saturate(1.15) blur(1.5px);
+  transform: scale(1.1);
+}
+.pf-suite-fond::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #05070be6 0, #05070b99 45%, #05070b33 100%);
+}
+.pf-suite-texte {
+  position: absolute;
+  left: 60px;
+  top: 40px;
+  bottom: 24px;
+  width: min(640px, 55vw);
+  overflow: auto;
+  z-index: 2;
+}
+.pf-suite-titre {
+  margin: 4px 0 10px;
+  font: 400 clamp(52px, 7vw, 92px) / 1 var(--pf-titre);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 5px 0 #1d3a73;
+}
+.pf-suite-resume,
+.pf-suite-enjeu {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #d6deee;
+}
+.pf-bloc {
+  margin-top: 18px;
+}
+.pf-bloc .pf-puces {
+  margin-top: 8px;
+}
+.pf-suite-carte {
+  position: absolute;
+  right: 70px;
+  top: 40px;
+  width: min(260px, 22vw);
+  z-index: 2;
+  transform: rotate(4deg);
+  border-radius: 8px;
+  box-shadow: 0 20px 50px #000a;
+}
+.pf-fin {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+}
+.pf-fin.est-gagnee {
+  background: radial-gradient(circle at 50% 35%, #27406f, #0a0e17 72%);
+}
+.pf-fin.est-perdue {
+  background: radial-gradient(circle at 50% 35%, #5a1a1e, #0a0a0e 72%);
+}
+.pf-fin-titre {
+  margin: 6px 0 12px;
+  font: 400 clamp(56px, 9vw, 120px) / 1 var(--pf-titre);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 6px 0 #1d3a73, 0 0 40px #2f78e0aa;
+}
+.pf-fin.est-perdue .pf-fin-titre {
+  color: #ffd9d9;
+  text-shadow: 0 6px 0 #6b1015, 0 0 40px #e62429aa;
+}
+.pf-fin-texte {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--pf-doux);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .pf-bilan-colonnes,
+  .pf-futurs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pf-suite-texte {
+    left: 18px;
+    right: 18px;
+    width: auto;
+  }
+  .pf-suite-carte {
+    display: none;
+  }
+  .pf-btn {
+    font-size: 20px;
+    padding: 8px 22px;
+  }
+  .pf-onglets button {
+    font-size: 18px;
+    padding: 6px 12px;
+  }
+}

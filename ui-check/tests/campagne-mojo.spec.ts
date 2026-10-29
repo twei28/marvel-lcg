@@ -14,6 +14,7 @@
 //
 // ATTENTION : ce test lance de VRAIES parties. Toute partie en cours sur le serveur vise est perdue.
 import { test, expect } from '@playwright/test'
+import { allerA, validerParcours } from './aide-parcours-fin'
 import {
   acheverLaPartie,
   lancer,
@@ -78,7 +79,7 @@ test.describe.serial('Campagne MojoMania', () => {
     const m = await acheverLaPartie(page, request, 'Win()', 40)
     expect(m.players_won, 'La partie devait etre gagnee (Win()).').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
+    await allerA(page, 'bilan')
     const champ = page.locator('.camp-champ', { hasText: /Soutien ou amélioration/i })
     await expect(champ, 'Le choix de la carte a garder doit etre affiche.').toBeVisible()
 
@@ -87,8 +88,8 @@ test.describe.serial('Campagne MojoMania', () => {
     await expect(champ.locator(`[data-card-id="${COUT_4}"]`), 'Une carte a cout 4 ne doit jamais etre proposee.').toHaveCount(0)
 
     await champ.locator(`[data-card-id="${COUT_3[0]}"] button`).click()
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     expect(apres.carnet?.['Player 1 Support / Upgrade #1'], 'La carte cochee n est pas au carnet.').toBe(COUT_3[0])

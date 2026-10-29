@@ -10,6 +10,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { PanneauRecompenses } from './PanneauRecompenses'
 import { CLE_CAMPAGNE } from './contexte'
 import { mondeDeTest } from './world-de-test'
+import { auBilan, auCarnet, continuerVers } from './parcours-test'
 
 const CAMPAGNE = {
   id: 'hs-1',
@@ -78,6 +79,7 @@ describe('defaite_continue : une défaite qui fait avancer la campagne', () => {
     serveur(true)
     const monde = mondeDeTest({ mode_campaign: true })
     render(<PanneauRecompenses monde={monde} gagne={false} siege={0} onTermine={() => {}} />)
+    await auBilan()
     await waitFor(() => expect(screen.getByText('Expérience disponible')).toBeInTheDocument())
     expect(screen.getByText('Vermin en fuite')).toBeInTheDocument()
     expect(screen.getByText(/la campagne continue/)).toBeInTheDocument()
@@ -87,10 +89,11 @@ describe('defaite_continue : une défaite qui fait avancer la campagne', () => {
     serveur(true)
     const monde = mondeDeTest({ mode_campaign: true })
     render(<PanneauRecompenses monde={monde} gagne={false} siege={0} onTermine={() => {}} />)
-    const bouton = await screen.findByText('Valider et continuer la campagne')
+    await auCarnet()
     // Le pré-remplissage arrive dans un effet : attendre la valeur du moteur.
     await screen.findByDisplayValue('4')
-    fireEvent.click(bouton)
+    await continuerVers('suite')
+    fireEvent.click(await screen.findByRole('button', { name: /Commencer|Choisir la suite/ }))
     await waitFor(() => expect(enregistree).not.toBeNull())
     expect(enregistree?.termines).toEqual(['hs_vermin'])
     expect(enregistree?.carnet?.['Player 1 Experience']).toBe('4')

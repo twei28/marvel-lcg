@@ -16,6 +16,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { PanneauRecompenses } from './PanneauRecompenses'
 import { CLE_CAMPAGNE } from './contexte'
 import { mondeDeTest } from './world-de-test'
+import { auBilan } from './parcours-test'
 
 const CAMPAGNE = {
   id: 'trors-1',
@@ -120,6 +121,7 @@ describe('le témoin : une vraie partie de campagne ouvre toujours le panneau', 
   it('siège distant, aucune clé locale, règle mode_campaign vraie : le panneau s’ouvre par le serveur', async () => {
     const monde = mondeDeTest({ mode_campaign: true })
     render(<PanneauRecompenses monde={monde} gagne siege={1} onTermine={() => {}} />)
+    await auBilan()
     await waitFor(() => expect(screen.getByText('Pions retard')).toBeInTheDocument())
   })
 
@@ -127,6 +129,7 @@ describe('le témoin : une vraie partie de campagne ouvre toujours le panneau', 
     window.localStorage.setItem(CLE_CAMPAGNE, JSON.stringify({ id: 'trors-1', scenario: 'crossbones' }))
     const monde = mondeDeTest({ mode_campaign: true })
     render(<PanneauRecompenses monde={monde} gagne siege={0} onTermine={() => {}} />)
+    await auBilan()
     await waitFor(() => expect(screen.getByText('Pions retard')).toBeInTheDocument())
   })
 })

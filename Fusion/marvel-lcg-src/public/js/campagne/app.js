@@ -2111,5 +2111,33 @@ function rendre() {
         effacerBrouillon();
     }
 
+    // Retour du parcours de fin de scenario (plateau) : « Commencer » ouvre direct la campagne
+    // (`?campagne=<id>`) et, quand le scenario suivant se lance tel quel (`&lancer=<id>`), le demarre
+    // sans repasser par la liste ni par le bouton « Lancer le scenario ». Rien d'automatique si la
+    // campagne est perdue, si ce scenario est deja termine, ou s'il demande un choix d'assemblee
+    // (le joueur retombe alors sur l'ecran de la campagne, comme avant).
+    const demande = new URLSearchParams(window.location.search);
+    const campagneVoulue = demande.get("campagne");
+    if (campagneVoulue && !etat.campagne) {
+        history.replaceState(null, "", window.location.pathname);
+        try {
+            await ouvrirCampagne(campagneVoulue);
+            const scenarioVoulu = demande.get("lancer");
+            const scenario = scenarioVoulu
+                ? etat.definition.scenarios.find((x) => x.id === scenarioVoulu)
+                : null;
+            const faisable = scenario && !scenario.assemblee && !etat.campagne.perdue
+                && !(etat.campagne.termines || []).includes(scenario.id)
+                && !(etat.campagne.partieEnCours && etat.campagne.partieEnCours.scenario === scenario.id);
+            if (faisable) {
+                rendre();
+                await proteger(() => lancerScenario(scenario));
+                return;
+            }
+        } catch (e) {
+            etat.erreur = t("La campagne n'a pas pu être ouverte :") + " " + e.message;
+        }
+    }
+
     rendre();
 })();

@@ -1875,9 +1875,26 @@ function EcranFinPartie({
           monde={monde}
           gagne={gagne}
           siege={siege}
-          onTermine={(retourCampagne) => {
-            if (retourCampagne) window.location.href = '/campagne.html'
-            else onMenu()
+          resume={{
+            heros: (monde?.players ?? [])
+              .map((joueur) => ({
+                nom: joueur.area_hero?.[0]?.name?.replace(/^\W*/, '') ?? '',
+                pic: joueur.area_hero?.[0]?.pic_id,
+              }))
+              .filter((h) => h.nom),
+            vilains: (monde?.area_villain ?? [])
+              .map((carte) => ({ nom: nomAffiche(carte), pic: carte.pic_id }))
+              .filter((v) => v.nom),
+            rounds,
+          }}
+          onTermine={(retourCampagne, suite) => {
+            if (retourCampagne) {
+              const demande = new URLSearchParams()
+              if (suite?.campagne) demande.set('campagne', suite.campagne)
+              if (suite?.lancer) demande.set('lancer', suite.lancer)
+              const requete = demande.toString()
+              window.location.href = requete ? `/campagne.html?${requete}` : '/campagne.html'
+            } else onMenu()
           }}
         />
         {/* Dans le cadre, l'ecran de fin est celui que le joueur a vu (ses boutons, inertes). */}

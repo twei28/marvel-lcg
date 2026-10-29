@@ -23,6 +23,7 @@
 //
 //   npx playwright test tests/campagne-panneau.spec.ts --project=pc
 import { test, expect, type APIRequestContext, type Page } from '@playwright/test'
+import { allerA, parcoursOuvert, validerParcours } from './aide-parcours-fin'
 
 const NOM = 'Essai automatique - panneau'
 const REGLES = [
@@ -188,15 +189,15 @@ test.describe.serial('Le panneau de récompenses', () => {
 
     // Le panneau ne s'ouvre que si le contexte de campagne existe ET que le
     // monde dit la partie finie : c'est ce câblage-là qui n'était pas prouvé.
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await expect(page.locator('.camp-recomp-tete')).toContainText('Scénario 1')
+    await parcoursOuvert(page)
+    await expect(page.locator('.pf-sous-haut')).toContainText(/Sc[ée]nario 1/)
 
-    await page.locator('.camp-recomp-valider').click()
+    await validerParcours(page)
     // Valider ramène à l'écran des campagnes : c'est le signe observable que
     // le panneau est allé au bout, contexte effacé compris. On ne peut pas
     // vérifier l'effacement lui-même — `addInitScript` repose la clé à chaque
     // navigation, y compris celle-ci.
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relire(request)
     expect(apres.termines, 'Le scénario gagné n’est pas marqué terminé.').toContain('black_widow')
@@ -236,8 +237,8 @@ test.describe.serial('Le panneau de récompenses', () => {
     await expect(page.locator('.fin-partie')).toBeVisible({ timeout: 20000 })
     await page.waitForTimeout(3000)
     await expect(
-      page.locator('.camp-recomp'),
-      'Le panneau s’ouvre sur une défaite qui se rejoue sans pénalité.'
+      page.locator('.parcours-fin'),
+      'Le parcours s’ouvre sur une défaite qui se rejoue sans pénalité.'
     ).toHaveCount(0)
 
     const apres = await relire(request)
@@ -281,12 +282,13 @@ test.describe.serial('Le panneau de récompenses', () => {
 
     // En standard, perdre le dernier scénario ne perd pas la campagne : le
     // panneau s'ouvre quand même, pour re-préparer les preuves.
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await expect(page.locator('.camp-recomp-reprise')).toBeVisible()
-    await expect(page.locator('.camp-recomp-reprise-compte')).toContainText('2')
+    await parcoursOuvert(page)
+    await allerA(page, 'bilan')
+    await expect(page.locator('.pf-alerte').filter({ hasText: /preuve|evidence/i })).toBeVisible()
+    await expect(page.locator('.pf-alerte').filter({ hasText: /preuve|evidence/i })).toContainText('2')
 
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relire(request)
     expect(apres.termines ?? [], 'Le dernier scénario perdu a été marqué terminé.').not.toContain(

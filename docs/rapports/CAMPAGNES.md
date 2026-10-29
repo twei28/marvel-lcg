@@ -142,6 +142,8 @@ une erreur.
 | `ui-app/src/board/campagne/contexte.ts` | Le plateau apprend qu'il joue une campagne |
 | `ui-app/src/board/campagne/preremplissage.ts` | D'où vient chaque valeur pré-remplie |
 | `ui-app/src/board/campagne/PanneauRecompenses.tsx` | Le panneau de fin de scénario |
+| `ui-app/src/board/campagne/ParcoursFinScenario.tsx` | Le parcours de fin de scénario en quatre pages (Victoire, Bilan, Carnet, Suite) : `PanneauRecompenses` garde l'état et les droits, ce composant ne fait que présenter, page par page, en plein écran (portail dans `document.body`). Maquette validée le 29/10/2026. |
+| `ui-app/src/board/campagne/ChampRecompense.tsx` | Les contrôles de saisie du carnet (une ligne par champ du livret), partagés par le bilan et l'onglet « Valeurs » |
 | `ui-app/src/board/board.css` | Style du panneau, en fin de fichier |
 
 ---
@@ -2226,3 +2228,16 @@ fin dès le tour du joueur. Une épreuve mesure donc une MISE EN PLACE, pas une
 partie complète. Les trois boîtes sans `WriteCampaignLogAtGameOver` (trors, sm,
 web_of_deceit) n'ont pas de carnet sortant : leurs épreuves ne mesurent que ce
 que le carnet CHANGE, la détection restant au panneau du plateau.
+
+## Fin de scénario : le parcours en quatre pages (29/10/2026)
+
+Demande de l'utilisateur : tout était empilé sur le splash de fin, illisible. Désormais, « Continuer » mène de page en page :
+
+1. **Victoire** : le grand mot, l'art du vilain vaincu, les rounds et les héros.
+2. **Bilan** : à gauche ce que le jeu a relevé (champs `auto`, lecture seule, « Corriger dans le carnet »), à droite les vrais choix du livret. « Continuer » reste grisé pour l'hôte tant qu'un choix obligatoire manque (celui des autres sièges compris).
+3. **Carnet** : quatre onglets (Valeurs corrigeables et champs des scénarios suivants grisés, Journal des scénarios, Les héros, Histoire du livret avec la page de BD d'épilogue).
+4. **Suite** : le scénario suivant (art, résumé, sets, enjeu). « Commencer » enregistre le carnet puis ouvre `/campagne.html?campagne=<id>&lancer=<scénario>` : l'écran des campagnes ouvre la campagne et lance d'office le scénario (`lancerScenario`), sans repasser par la liste. « Options du scénario » ouvre l'écran de la campagne sans lancer (decks, sets modulaires, assemblée). Le lancement d'office est refusé pour un scénario en assemblée, déjà terminé ou déjà en cours, et pour une campagne perdue ou à ordre libre. Au dernier scénario : page « Campagne terminée » ou « Campagne perdue » à la place.
+
+Multijoueur : chacun avance à son rythme ; « Continuer » du bilan envoie les champs du siège distant ; seul l'hôte a le bouton de la dernière page, le distant voit « En attente de l'hôte pour commencer » (le rechargement quand l'hôte lance reste celui de `attente-scenario.ts`).
+
+Tests : `ParcoursFinScenario.test.tsx` (unitaires) et, côté `ui-check`, `tests/aide-parcours-fin.ts` (`parcoursOuvert`, `allerA`, `validerParcours`) pour les cas e2e `campagne-*`. Ces cas cherchent des libellés français : les lancer avec un navigateur en `fr-FR`.

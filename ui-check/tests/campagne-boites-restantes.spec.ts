@@ -27,6 +27,7 @@
 // ATTENTION : ce test lance de VRAIES parties. Toute partie en cours sur le
 // serveur visé est perdue.
 import { test, expect } from '@playwright/test'
+import { parcoursOuvert, validerParcours } from './aide-parcours-fin'
 import {
   acheverLaPartie,
   lancer,
@@ -106,9 +107,9 @@ test.describe.serial('Campagne : les trois boîtes jamais jouées par un test', 
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait être gagnée.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await parcoursOuvert(page)
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     expect(
@@ -182,9 +183,9 @@ test.describe.serial('Campagne : les trois boîtes jamais jouées par un test', 
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait être gagnée.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await parcoursOuvert(page)
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     // LE CAS QUI COMPTE : le rôle est demandé au joueur pendant la mise en place et
@@ -230,9 +231,9 @@ test.describe.serial('Campagne : les trois boîtes jamais jouées par un test', 
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait être gagnée.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await parcoursOuvert(page)
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     const unites = Number(apres.carnet?.['Player 1 Unspent Units'])

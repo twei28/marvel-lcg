@@ -12,19 +12,11 @@
 // qu'on préfère une case modifiable à une campagne faussée.
 import { useEffect, useMemo, useState } from 'react'
 import { t } from '../langue'
-import { paysageSelonTypePapier, scanUrl } from '../card-model'
-import { CarteApercu } from '../Board'
-import { useApercuSurvol } from '../apercu-survol'
-import { catalogueVide, chargerCatalogue, type Catalogue } from '../catalogue'
-import type { ScanCardProps } from '../../components/ScanCard'
 import type { World } from '../world'
 import {
   cleCarnet,
   conditionRemplie,
-  deListe,
-  enListe,
   joueurElimine,
-  optionsProposees,
   type ChampVictoire,
 } from './detecteurs'
 import {
@@ -46,12 +38,12 @@ import {
   cleDUnAutreSiege,
   droitSurChamp,
   peutValider,
-  type DroitCarnet,
 } from './droits-carnet'
 import { assainirCarnet, preRemplir } from './preremplissage'
 import { verdictDeCampagne, type Verdict } from './defaite-campagne'
 import { repriseDeCampagne, type Reprise } from './reprise-campagne'
 import { estModeManuel } from '../manuel/mode'
+import { ParcoursFinScenario, type ResumeFinScenario, type SuiteDemandee } from './ParcoursFinScenario'
 
 type Etat =
   | { phase: 'chargement' }
@@ -97,10 +89,13 @@ function melangerLesTirages(champs: ChampVictoire[]): Record<string, readonly st
 const nbJoueurs = (campagne: Campagne, monde: World) =>
   Math.max(campagne.equipe?.length ?? 0, monde.players?.length ?? 0, 1)
 
+const RESUME_VIDE: ResumeFinScenario = { heros: [], vilains: [] }
+
 export function PanneauRecompenses({
   monde,
   gagne,
   siege,
+  resume = RESUME_VIDE,
   onTermine,
 }: {
   monde: World | undefined
@@ -110,8 +105,10 @@ export function PanneauRecompenses({
    * Il décide qui saisit quoi : voir `droits-carnet.ts`.
    */
   siege: number
+  /** Héros, vilain et rounds de la partie qui vient de finir (page « Victoire » du parcours). */
+  resume?: ResumeFinScenario
   /** Appelé quand le joueur a validé : le plateau peut proposer la suite. */
-  onTermine: (retourCampagne: boolean) => void
+  onTermine: (retourCampagne: boolean, suite?: SuiteDemandee) => void
 }) {
   const [etat, setEtat] = useState<Etat>({ phase: 'chargement' })
   const [valeurs, setValeurs] = useState<Record<string, string>>({})
@@ -372,7 +369,7 @@ export function PanneauRecompenses({
     }
   }
 
-  async function valider() {
+  async function valider(suite?: SuiteDemandee) {
     if (manquants.length || enregistrement) return
     setEnregistrement(true)
     setEchec('')
@@ -383,7 +380,7 @@ export function PanneauRecompenses({
       if (reprise.applicable) {
         await reinitialiserEnquete(campagne.id)
         effacerContexte()
-        onTermine(true)
+        onTermine(true, { campagne: campagne.id })
         return
       }
       const suivante: Campagne = {
@@ -409,422 +406,40 @@ export function PanneauRecompenses({
       }
       await enregistrerCampagne(suivante)
       effacerContexte()
-      onTermine(true)
+      onTermine(true, { campagne: campagne.id, lancer: suite?.lancer })
     } catch (e) {
       setEchec((e as Error).message)
       setEnregistrement(false)
     }
   }
 
-  const estFinal = Boolean(scenario.final)
-  const epilogue = scenario.pages?.epilogue ?? []
-
   return (
-    <section className="camp-recomp" aria-label={t('Récompenses de campagne')}>
-      <header className="camp-recomp-tete">
-        <span className="camp-recomp-eyebrow">
-          {campagne.nom} · {t('Scénario')} {scenario.numero} / {definition.scenarios.length}
-        </span>
-        <strong className="camp-recomp-titre">
-          {verdict.perdue
-            ? t('La campagne est perdue')
-            : reprise.applicable
-              ? reprise.titre || t('Ce scénario est à re-préparer')
-              : estFinal
-                ? t('La campagne est gagnée !')
-                : t('Ce que tu gagnes')}
-        </strong>
-      </header>
-
-      {verdict.perdue ? (
-        <p className="camp-recomp-defaite">
-          {verdict.texte}{' '}
-          {gagne
-            ? t('Le scénario est gagné, mais la campagne s’arrête ici.')
-            : t('Ce scénario ne se rejoue pas : la campagne s’arrête ici.')}
-        </p>
-      ) : null}
-
-      {reprise.applicable ? (
-        <div className="camp-recomp-reprise">
-          <p>{reprise.texte}</p>
-          <p className="camp-recomp-reprise-compte">
-            {preuvesRendues > 0
-              ? `${preuvesRendues} ${
-                  preuvesRendues > 1 ? t('preuves te seront rendues') : t('preuve te sera rendue')
-                }`
-              : t('Aucune preuve ne te sera rendue : le Conseil n’a jamais fini vidé de ses secrets.')}
-          </p>
-        </div>
-      ) : null}
-
-      {epilogue.length && gagne ? (
-        <div className="camp-recomp-bd">
-          {epilogue.map((fichier) => (
-            <img
-              key={fichier}
-              src={`/public/stories/${definition.code}/${fichier}`}
-              alt=""
-              loading="lazy"
-            />
-          ))}
-        </div>
-      ) : null}
-
-      {/* Tâche 7 : en mode manuel, le moteur ne surveille plus la table — les
-          cases marquées « relevé par le jeu » (voir `ChampRecompense`
-          ci-dessous) ne se rempliront donc plus toutes seules. Elles restent
-          déjà CORRIGEABLES dans tous les modes (décision antérieure : un
-          détecteur peut se tromper, voir l'en-tête du fichier) ; ce qui
-          manquait, c'est de le DIRE — sans cette ligne, un joueur qui trouve
-          ces cases vides croirait à un bug plutôt qu'au mode qu'il a choisi. */}
-      {continueSurDefaite ? (
-        <p className="camp-recomp-defaite">
-          {t('Scénario perdu : la campagne continue avec les gains de la défaite.')}
-        </p>
-      ) : null}
-
-      {champsVisibles && estModeManuel(monde) && visibles.some((c) => c.type === 'auto') ? (
-        <p className="camp-recomp-aide-manuel">
-          {t(
-            'Mode manuel : le moteur ne surveille plus la table, les cases « relevé par le jeu » restent à remplir à la main.'
-          )}
-        </p>
-      ) : null}
-
-      {visibles.length && champsVisibles ? (
-        <div className="camp-recomp-champs">
-          {visibles.map((champ) => (
-            <ChampRecompense
-              key={champ.cle + (champ.condition ?? '')}
-              champ={champ}
-              total={total}
-              monde={monde as World}
-              valeurs={valeurs}
-              poser={poser}
-              nomJoueur={nomJoueur}
-              siege={siege}
-              suggestions={suggestionsDuMoteur}
-            />
-          ))}
-        </div>
-      ) : champsVisibles ? (
-        <p className="camp-recomp-rien">
-          {estFinal
-            ? t('Hydra est vaincue. Rien de plus à reporter : tournez la page.')
-            : t('Ce scénario ne rapporte rien à reporter dans le carnet.')}
-        </p>
-      ) : null}
-
-      {echec ? <p className="camp-recomp-echec">{echec}</p> : null}
-
-      <div className="camp-recomp-actions">
-        {peutValider(siege) ? (
-          <button
-            type="button"
-            className="camp-recomp-valider"
-            disabled={Boolean(manquants.length) || enregistrement}
-            onClick={valider}
-          >
-            {enregistrement
-              ? t('Enregistrement…')
-              : verdict.perdue
-                ? t('Consigner la fin de la campagne')
-                : reprise.applicable
-                  ? t('Re-préparer les preuves')
-                  : estFinal
-                    ? t('Voir la conclusion')
-                    : t('Valider et continuer la campagne')}
-          </button>
-        ) : (
-          <>
-            <button
-              type="button"
-              className="camp-recomp-valider"
-              disabled={enregistrement}
-              onClick={envoyerMesChamps}
-            >
-              {enregistrement
-                ? t('Envoi…')
-                : envoye
-                  ? t('Renvoyer mes champs')
-                  : t('Envoyer mes champs')}
-            </button>
-            <span className="camp-recomp-attente-hote">
-              {envoye
-                ? t("Envoyé. L'hôte valide les récompenses pour la table.")
-                : t("L'hôte valide les récompenses pour la table.")}
-            </span>
-          </>
-        )}
-        {/* Réservé à qui valide. Chez un siège distant, cette liste nommait des
-            cases appartenant à d'AUTRES joueurs : elle lui demandait de remplir
-            ce qu'il n'a pas le droit d'écrire. Relevé par campagne-multi. */}
-        {peutValider(siege) && manquants.length ? (
-          <span className="camp-recomp-bloque">
-            {t('À choisir avant de continuer :')} {manquants.map((c) => t(c.libelle)).join(', ')}
-          </span>
-        ) : null}
-      </div>
-    </section>
-  )
-}
-
-function ChampRecompense({
-  champ,
-  total,
-  monde,
-  valeurs,
-  poser,
-  nomJoueur,
-  siege,
-  suggestions,
-}: {
-  champ: ChampVictoire
-  total: number
-  monde: World
-  valeurs: Record<string, string>
-  poser: (cle: string, valeur: string) => void
-  nomJoueur: (i: number) => string
-  siege: number
-  suggestions?: Readonly<Record<string, string>>
-}) {
-  const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
-  const auto = champ.type === 'auto'
-
-  return (
-    <div className={`camp-champ ${auto ? 'est-auto' : 'est-choix'}`}>
-      <div className="camp-champ-tete">
-        <span className="camp-champ-libelle">{t(champ.libelle)}</span>
-        {auto ? <span className="camp-champ-marque">{t('relevé par le jeu')}</span> : null}
-      </div>
-      {champ.aide ? <p className="camp-champ-aide">{t(champ.aide)}</p> : null}
-      {joueurs.map((joueurId) => {
-        const elimine = champ.parJoueur && joueurElimine(monde, joueurId)
-        const cle = cleCarnet(champ, joueurId)
-        // À plusieurs, une case n'appartient qu'à un siège. Les autres la
-        // voient, pour suivre le carnet se remplir, mais ne peuvent pas
-        // l'écrire : sinon le dernier à cliquer gagne, en silence.
-        const droit = droitSurChamp(champ, joueurId, siege, peutValider(siege))
-        return (
-          <div className={`camp-champ-ligne${droit === 'lecture' ? ' est-lecture' : ''}`} key={cle}>
-            {champ.parJoueur ? (
-              <span className="camp-champ-joueur">{nomJoueur(joueurId)}</span>
-            ) : null}
-            {elimine ? (
-              <span className="camp-champ-elimine">
-                {t('Héros vaincu : il ne participe pas aux récompenses de ce scénario.')}
-              </span>
-            ) : (
-              <Controle champ={champ} cle={cle} valeurs={valeurs} poser={poser} droit={droit} propositions={optionsProposees(champ, joueurId, suggestions)} />
-            )}
-            {droit === 'lecture' && !elimine && champ.parJoueur ? (
-              <small className="camp-champ-proprietaire">
-                {t('à remplir par')} {nomJoueur(joueurId)}
-              </small>
-            ) : null}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-/**
- * Des cartes cliquables, avec l'agrandissement au survol de la table (même
- * `CarteApercu`, même règle `useApercuSurvol` : un seul écouteur sur le
- * conteneur). L'écran de fin de partie est à 600 : l'aperçu passe au-dessus.
- */
-function ListeCartes({
-  ids,
-  choisie,
-  inerte,
-  basculer,
-}: {
-  ids: readonly string[]
-  choisie: (id: string) => boolean
-  inerte: boolean
-  basculer: (id: string) => void
-}) {
-  const [catalogue, setCatalogue] = useState<Catalogue>(catalogueVide)
-  useEffect(() => {
-    let annule = false
-    void chargerCatalogue().then((c) => {
-      if (!annule) setCatalogue(c)
-    })
-    return () => {
-      annule = true
-    }
-  }, [])
-
-  const cartes = useMemo<ScanCardProps[]>(
-    () =>
-      ids.map((id) => ({
-        id,
-        name: id,
-        kind: 'unknown',
-        imageUrl: scanUrl(id),
-        isLandscape: paysageSelonTypePapier(catalogue.type(id)),
-        keywords: catalogue.motsCles(id),
-        codeCarte: id,
-      })),
-    [ids, catalogue]
-  )
-  const { regardee, survol, quitter } = useApercuSurvol(cartes)
-
-  return (
-    <div className="camp-cartes" onMouseOver={survol} onMouseLeave={quitter}>
-      {ids.map((id) => (
-        // Le survol se lit sur l'enveloppe : un bouton désactivé (carnet d'un
-        // autre siège) n'émet plus d'évènement souris, et l'aperçu doit
-        // pourtant s'ouvrir pour lire la carte.
-        <span key={id} data-card-id={id} className="camp-carte-enveloppe">
-          <button
-            type="button"
-            className={`camp-carte${choisie(id) ? ' sel' : ''}`}
-            aria-pressed={choisie(id)}
-            disabled={inerte}
-            onClick={() => basculer(id)}
-          >
-            <img src={scanUrl(id)} alt={id} loading="lazy" />
-          </button>
-        </span>
-      ))}
-      {regardee ? <CarteApercu carte={regardee} classe="au-dessus-de-la-fin" /> : null}
-    </div>
-  )
-}
-
-function Controle({
-  champ,
-  cle,
-  valeurs,
-  poser,
-  droit,
-  propositions,
-}: {
-  champ: ChampVictoire
-  cle: string
-  valeurs: Record<string, string>
-  poser: (cle: string, valeur: string) => void
-  /** `lecture` rend le contrôle inerte : la case est à quelqu'un d'autre. */
-  droit: DroitCarnet
-  /** Les cartes proposées par le moteur (champ à `optionsSuggerees`). */
-  propositions?: readonly string[]
-}) {
-  const valeur = valeurs[cle] ?? ''
-  const inerte = droit === 'lecture'
-
-  // Un CHOIX dont la liste vient du moteur (MojoMania : un soutien ou une amélioration éligible). Aucune carte éligible :
-  // le livret dit « peut », on le dit au joueur plutôt que de laisser un trou.
-  if (champ.type === 'choix' && champ.optionsSuggerees) {
-    if (!propositions?.length) {
-      return <small className="camp-champ-aide">{t('Aucune carte éligible : rien à garder.')}</small>
-    }
-    return (
-      <ListeCartes
-        ids={propositions}
-        choisie={(id) => valeur === id}
-        inerte={inerte}
-        basculer={(id) => poser(cle, valeur === id ? '' : id)}
-      />
-    )
-  }
-
-  // Un CHOIX du livret : on montre les cartes, pas une liste déroulante. C'est
-  // une décision de jeu, elle mérite qu'on voie ce qu'on prend.
-  if (champ.type === 'choix' && champ.options?.length) {
-    return (
-      <ListeCartes
-        ids={champ.options}
-        choisie={(id) => valeur === id}
-        inerte={inerte}
-        basculer={(id) => poser(cle, valeur === id ? '' : id)}
-      />
-    )
-  }
-
-  // Un tableau de cases (Cooperation Progress) : le jeu propose, le joueur corrige case par case.
-  if (champ.cases?.length) {
-    const cochees = new Set(deListe(valeur))
-    const toutes = champ.cases.flatMap((l) => l.exigences.map((e) => `${l.titre}: ${e}`))
-    return (
-      <table className="camp-cases" data-cle={cle}>
-        <tbody>
-          {champ.cases.map((ligne) => {
-            const faites = ligne.exigences.map((e) => cochees.has(`${ligne.titre}: ${e}`))
-            return (
-              <tr key={ligne.titre} className={faites.every(Boolean) ? 'complete' : ''}>
-                <th scope="row">{ligne.titre}</th>
-                {ligne.exigences.map((e, i) => (
-                  <td key={e}>
-                    <button
-                      type="button"
-                      className={'camp-case' + (faites[i] ? ' cochee' : '')}
-                      aria-pressed={faites[i]}
-                      disabled={inerte}
-                      onClick={() => {
-                        const suite = new Set(cochees)
-                        const k = `${ligne.titre}: ${e}`
-                        if (suite.has(k)) suite.delete(k)
-                        else suite.add(k)
-                        poser(cle, enListe(toutes.filter((x) => suite.has(x))))
-                      }}
-                    >
-                      {faites[i] ? '✔ ' : ''}
-                      {e}
-                    </button>
-                  </td>
-                ))}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    )
-  }
-
-  if (champ.format === 'int') {
-    return (
-      <input
-        className="camp-champ-int"
-        type="number"
-        min={0}
-        disabled={inerte}
-        value={valeur}
-        onChange={(e) => poser(cle, e.target.value)}
-      />
-    )
-  }
-
-  // Liste avec options connues : des cases à cocher sur les cartes concernées.
-  if (champ.options?.length) {
-    const choisies = new Set(deListe(valeur))
-    return (
-      <ListeCartes
-        ids={champ.options}
-        choisie={(id) => choisies.has(id)}
-        inerte={inerte}
-        basculer={(id) => {
-          const suite = new Set(choisies)
-          if (suite.has(id)) suite.delete(id)
-          else suite.add(id)
-          poser(cle, enListe(champ.options!.filter((x) => suite.has(x))))
-        }}
-      />
-    )
-  }
-
-  // Liste sans options connues (les héros engagés, par exemple) : le relevé du
-  // moteur en clair, corrigeable à la main.
-  return (
-    <input
-      className="camp-champ-texte"
-      type="text"
-      disabled={inerte}
-      value={valeur}
-      placeholder={t('rien')}
-      onChange={(e) => poser(cle, e.target.value.trim())}
+    <ParcoursFinScenario
+      monde={monde as World}
+      gagne={gagne}
+      siege={siege}
+      campagne={campagne}
+      definition={definition}
+      scenario={scenario}
+      visibles={visibles}
+      champsVisibles={champsVisibles}
+      continueSurDefaite={continueSurDefaite}
+      verdict={verdict}
+      reprise={reprise}
+      preuvesRendues={preuvesRendues}
+      valeurs={valeurs}
+      poser={poser}
+      total={total}
+      nomJoueur={nomJoueur}
+      suggestions={suggestionsDuMoteur}
+      manquants={manquants}
+      enregistrement={enregistrement}
+      echec={echec}
+      envoye={envoye}
+      modeManuel={estModeManuel(monde)}
+      resume={resume}
+      onValider={(suite) => void valider(suite)}
+      onEnvoyer={envoyerMesChamps}
     />
   )
 }
