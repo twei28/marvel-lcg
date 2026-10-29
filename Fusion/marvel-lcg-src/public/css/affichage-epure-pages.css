@@ -2154,3 +2154,43 @@ html[data-epure] .roue-repere {
   border-color: #3f86e0;
   border-radius: 0;
 }
+
+/* --- Étape Decks : blocs, bouton « Proposition de deck », pastilles d'arts (29/10/2026) --- */
+html[data-epure] .deck-section {
+  color: var(--ep-doux);
+  font-family: var(--ep-police);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+html[data-epure] .tb-deck.deck-depart {
+  border-color: #3f86e0;
+}
+html[data-epure] .deck-vide {
+  color: var(--ep-doux);
+  border: 1px dashed var(--ep-bord);
+  border-radius: 8px;
+}
+html[data-epure] .art-vignette {
+  color: var(--ep-doux);
+  font-family: var(--ep-police);
+}
+html[data-epure] .art-vignette img {
+  border: 1px solid var(--ep-bord);
+  border-radius: 8px;
+}
+html[data-epure] .art-vignette:hover img,
+html[data-epure] .art-vignette:focus-visible img {
+  border-color: #3f86e0;
+}
+html[data-epure] .pastille-art {
+  background: #3f86e0;
+  color: #fff;
+  font-family: var(--ep-police);
+  font-weight: 600;
+}
+html[data-epure] .arts-aide {
+  color: var(--ep-doux);
+}
+html[data-epure] .prop-panneau .deck-section {
+  color: var(--ep-doux);
+}

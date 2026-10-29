@@ -12,7 +12,7 @@ import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts
 // Arts alternatifs des cartes de deck (TMNT) : la fenêtre « arts alternatifs ? » à la sélection d'un deck.
 import { proposerArtsCartes } from "/public/js/prepare/arts-cartes-fenetre.js";
 import { picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
-import { serieDuHeros } from "/public/js/prepare/arts-cartes-choix.js";
+import { serieDuHeros, cartesAvecArt, artsDe } from "/public/js/prepare/arts-cartes-choix.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, faceB, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
@@ -4845,6 +4845,7 @@ function stepDecks() {
         el("div", { class: "hero-grid tb-roster tb-roster-deck", id: "deck-liste" },
             el("div", { class: "loading" }, t("Chargement des decks..."))),
         el("div", { class: "tb-arsenal-outils", id: "deck-outils" }),
+        el("div", { class: "tb-arsenal-arts", id: "deck-arts" }),
         estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
     wrap.append(droite);
@@ -4899,6 +4900,7 @@ function rendreSceneDeck() {
 
 /** Sous la liste : importer, parcourir, construire, et les cosmétiques. */
 function rendreOutilsDeck() {
+    rendreZoneArts();
     const zone = document.getElementById("deck-outils");
     if (!zone) return;
     const i = state.activeSlot;
@@ -4915,7 +4917,6 @@ function rendreOutilsDeck() {
                     onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id)
                                                  + (state.legacy ? "&legacy=1" : ""), "_blank"); },
                 }, picto("fa-pencil"), " ", t("Éditeur de deck")),
-                el("button", { class: "tampon", onclick: () => ouvrirModaleRessources(i, p.hero) }, picto("fa-th"), " ", t("Ressources")),
             ),
             rappelVariantes(p, i),
         );
@@ -4948,17 +4949,64 @@ function rendreOutilsDeck() {
                 onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id)
                                              + (state.legacy ? "&legacy=1" : ""), "_blank"); },
             }, t("Éditeur de deck")),
-            el("button", {
-                class: "tampon tb-ressources",
-                title: t("Choisir le dessin des cartes Energy, Genius et Strength de ce deck"),
-                onclick: () => ouvrirModaleRessources(i, p.hero),
-            }, t("Ressources : art alternatif")),
             el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
         ),
         // Version, identité, art de la carte de héros : dans la modale du
         // héros (11/09/2026), ici un rappel et « Modifier ». Les ressources,
-        // elles, ont leur bouton juste au-dessus (12/09/2026).
+        // elles, ont leur panneau juste en dessous (29/10/2026).
         rappelVariantes(p, i),
+    );
+}
+
+/** La zone des arts, APRÈS la liste (sur téléphone `#deck-outils` passe avant
+ *  elle : le panneau y aurait repoussé le deck de départ hors de l'écran).
+ *  Redessinée à chaque choix de deck et de vignette. */
+function rendreZoneArts() {
+    const zone = document.getElementById("deck-arts");
+    if (!zone) return;
+    const i = state.activeSlot;
+    const p = state.players[i];
+    poser(zone, (!p || !p.hero || enRecap()) ? null : panneauArts(p, i));
+}
+
+/** Le panneau « Arts alternatifs » de l'étape Decks (29/10/2026) : jusque-là
+ *  on ne découvrait les arts qu'en choisissant un deck, dans une fenêtre qui ne
+ *  revient jamais. Ici ils sont toujours visibles : une pastille « 🖼 n » sur
+ *  chaque carte qui en a (n = arts disponibles, l'officielle comprise), un clic
+ *  ouvre le choix de CETTE carte. Les ressources doubles ont leur rangée. */
+function panneauArts(p, i) {
+    if (!p || !p.hero || !deckAffiche(p)) return null;
+    const heros = p.hero.heroCardId;
+    const ids = cartesAvecArt(p.deck.player_deck || []);
+    const pastille = (n) => el("span", { class: "pastille-art", "aria-hidden": "true" }, picto("fa-image"), " " + n);
+    const vignette = (src, nom, n, ouvrir, titre) => el("button", {
+        type: "button", class: "art-vignette", title: titre, "aria-label": `${nom} — ${titre}`, onclick: ouvrir,
+    },
+        el("img", { src, alt: "", loading: "lazy" }),
+        pastille(n),
+        el("span", { class: "art-nom" }, nom));
+    const cartes = ids.map((id) => {
+        const c = cards.get(id);
+        const nom = c ? c.name : id;
+        return vignette(cardImageUrl(picIdDeCarte(id, heros)), nom, artsDe(id).length + 1, () => {
+            proposerArtsCartes({
+                deck: p.deck, heros, el, t, ouvrirModale, fermerModale, seulement: id,
+                imageUrl: (pic) => cardImageUrl(pic),
+                nomCarte: (cid) => { const k = cards.get(cid); return k ? k.name : cid; },
+                apresChoix: () => rendreOutilsDeck(),
+            });
+        }, t("Choisir un art alternatif"));
+    });
+    const code = prefs.resourceArt(heros, collectionDuHeros(p.hero.name, heros));
+    const col = COLLECTIONS_RESSOURCES.find((c) => c.code === code);
+    const apercuRes = (col && col.apercu) || "01089";
+    const ressources = vignette(cardImageUrl(apercuRes), t("Ressources"), COLLECTIONS_RESSOURCES.length,
+        () => ouvrirModaleRessources(i, p.hero), t("Ressources : art alternatif"));
+    return el("div", { class: "arts-panneau" },
+        el("div", { class: "deck-section" }, t("Arts alternatifs")),
+        el("div", { class: "arts-rangee" }, ressources, ...cartes),
+        cartes.length ? null : el("div", { class: "deck-vide" }, t("Aucune carte de ce deck n'a d'art alternatif.")),
+        el("div", { class: "arts-aide" }, t("Pastille avec image : d'autres illustrations existent. Touche-la pour choisir.")),
     );
 }
 
@@ -4996,11 +5044,6 @@ async function doImport(i, fichier) {
         return false;
     }
 }
-
-/** Joueurs dont les paquets d'aspect sont dépliés. Voir loadDecks(). */
-const aspectsDeplies = new Set();
-/** Meme chose pour la section des decks du tableur. */
-const tableurDeplies = new Set();
 
 /** D'ou vient le tableur, en une phrase (info-bulle de la section : ca ne prend
  *  aucune place a l'ecran). Voir aussi credits.html. */
@@ -5180,63 +5223,68 @@ async function loadDecks(i) {
         );
     };
 
-    // Les paquets d'aspect conseillés sont repliés. Ils sont utiles, mais à
-    // quatre ils enterraient le deck de base et les decks sauvegardés — ceux
-    // qu'on vient chercher neuf fois sur dix.
-    //
-    // Le pli est mémorisé PAR JOUEUR dans un état de module : loadDecks() est
-    // rappelé à chaque render(), donc à chaque clic sur un deck. Un simple
-    // booléen local se refermerait sous les doigts.
-    const principaux = decks.filter((dk) => dk.source !== "aspect" && dk.source !== "tableur");
-    const aspects = decks.filter((dk) => dk.source === "aspect");
-    const duTableur = decks.filter((dk) => dk.source === "tableur");
-    const enfants = principaux.map(option);
+    // Trois blocs (29/10/2026) : le deck de départ en tête, puis les decks que
+    // les joueurs ont enregistrés, puis un petit bouton « Proposition de deck »
+    // qui ouvre les suggestions (decks du tableur, paquets d'aspect). Les
+    // suggestions ne sont plus dans la liste : elles enterraient les deux
+    // premiers blocs, ceux qu'on vient chercher neuf fois sur dix.
+    const depart = decks.filter((dk) => dk.source === "base" || dk.source === "campagne");
+    const communaute = decks.filter((dk) => dk.source === "saved");
+    const propositions = decks.filter((dk) => dk.source === "aspect" || dk.source === "tableur");
+    // Sans deck de base, les paquets d'aspect SONT le choix : on les montre d'office.
+    const sansBase = !aDeckDeBase(p.hero);
+    const enListe = sansBase ? propositions.filter((dk) => dk.source === "aspect") : [];
+    const aProposer = propositions.filter((dk) => !enListe.includes(dk));
+    // Une proposition déjà choisie reste visible dans la liste, sinon le deck
+    // actif n'apparaîtrait plus nulle part.
+    const choisieParmiPropositions = aProposer.filter((dk) => deckAffiche(p) && p.deckSource === dk.source && p.deck.name === dk.deck.name);
 
-    // Les decks par heros du tableur : leur propre section repliee, avec
-    // l'origine (et l'auteur) dans l'info-bulle, sans rien ajouter a l'ecran.
-    if (duTableur.length) {
-        const deplieT = tableurDeplies.has(i);
-        const listeT = el("div", { class: "deck-aspects" + (deplieT ? " est-deplie" : "") },
-            ...duTableur.map(option));
-        const bascule = el("button", {
-            type: "button",
-            class: "deck-aspects-bascule" + (deplieT ? " est-deplie" : ""),
-            "aria-expanded": deplieT ? "true" : "false",
-            title: t(CREDIT_TABLEUR),
-        }, `${t("Decks du tableur")} (${duTableur.length}) ⓘ`);
-        bascule.addEventListener("click", () => {
-            const ouvert = !tableurDeplies.has(i);
-            if (ouvert) tableurDeplies.add(i); else tableurDeplies.delete(i);
-            listeT.classList.toggle("est-deplie", ouvert);
-            bascule.classList.toggle("est-deplie", ouvert);
-            bascule.setAttribute("aria-expanded", ouvert ? "true" : "false");
-        });
-        enfants.push(bascule, listeT);
-    }
-
-    if (aspects.length) {
-        // Sans deck de base, les paquets SONT le choix : ils s'ouvrent d'office.
-        if (!aDeckDeBase(p.hero)) aspectsDeplies.add(i);
-        const deplie = aspectsDeplies.has(i);
-        const liste = el("div", { class: "deck-aspects" + (deplie ? " est-deplie" : "") },
-            ...aspects.map(option));
-        const bascule = el("button", {
-            type: "button",
-            class: "deck-aspects-bascule" + (deplie ? " est-deplie" : ""),
-            "aria-expanded": deplie ? "true" : "false",
-        }, `${t("Paquets d’aspect")} (${aspects.length})`);
-        bascule.addEventListener("click", () => {
-            const ouvert = !aspectsDeplies.has(i);
-            if (ouvert) aspectsDeplies.add(i); else aspectsDeplies.delete(i);
-            liste.classList.toggle("est-deplie", ouvert);
-            bascule.classList.toggle("est-deplie", ouvert);
-            bascule.setAttribute("aria-expanded", ouvert ? "true" : "false");
-        });
-        enfants.push(bascule, liste);
+    // Le compteur ne compte que ce qui est listé : les propositions sont derrière le bouton.
+    if (compte) compte.textContent = (depart.length + communaute.length + enListe.length) + " " + t("decks");
+    const titre = (texte) => el("div", { class: "deck-section" }, texte);
+    const enfants = [];
+    if (depart.length) enfants.push(titre(t("Deck de départ")), ...depart.map((dk) => { const o = option(dk); o.classList.add("deck-depart"); return o; }));
+    if (enListe.length) enfants.push(titre(t("Paquets d’aspect")), ...enListe.map(option));
+    if (choisieParmiPropositions.length) enfants.push(titre(t("Proposition choisie")), ...choisieParmiPropositions.map(option));
+    enfants.push(titre(`${t("Decks de la communauté")} (${communaute.length})`));
+    if (communaute.length) enfants.push(...communaute.map(option));
+    else enfants.push(el("div", { class: "deck-vide" }, t("Aucun deck partagé pour l'instant. Importe-en un depuis marvelcdb.")));
+    if (aProposer.length) {
+        enfants.push(el("button", {
+            type: "button", class: "tampon deck-proposition", title: t(CREDIT_TABLEUR),
+            onclick: () => ouvrirPropositionsDeck(aProposer, option, p),
+        }, picto("fa-magic"), " " + t("Proposition de deck") + "…"));
     }
 
     box.replaceChildren(...enfants);
+    rendreZoneArts();
 }
+/** La fenêtre du bouton « Proposition de deck » : decks du tableur, puis paquets
+ *  d'aspect. Choisir un deck ferme la fenêtre (le clic relance loadDecks). */
+function ouvrirPropositionsDeck(propositions, option, p) {
+    const tableur = propositions.filter((dk) => dk.source === "tableur");
+    const aspects = propositions.filter((dk) => dk.source === "aspect");
+    const fermer = () => fermerModale(overlay);
+    const groupe = (titre, liste) => liste.length
+        ? [el("div", { class: "deck-section" }, `${titre} (${liste.length})`),
+           ...liste.map((dk) => { const o = option(dk); o.addEventListener("click", (e) => {
+               // « Voir les cartes » / « Supprimer » laissent la fenêtre ouverte ; seul un choix la ferme.
+               if (!e.target.closest(".do-view, .ts-btn:not(.jaune)")) setTimeout(fermer, 0);
+           }); return o; })]
+        : [];
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) fermer(); } },
+        el("div", { class: "deck-modal-panel prop-panneau" },
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, t("Proposition de deck")),
+                el("span", { class: "dm-sub" }, nomAffiche(p.hero))),
+            el("div", { class: "prop-liste" },
+                ...groupe(t("Decks du tableur"), tableur),
+                ...groupe(t("Paquets d’aspect"), aspects)),
+            el("div", { class: "vh-actions" },
+                el("button", { type: "button", class: "tampon", onclick: fermer }, t("Fermer")))));
+    ouvrirModale(overlay);
+}
+
 /* ---- Contrôle de construction (Rules Reference 1.8, Appendice I) ---------
    L'écran ne vérifiait rien, d'où les 37 cartes de Spider-Woman passées
    inaperçues. On avertit sans jamais bloquer : un deck hors clous reste

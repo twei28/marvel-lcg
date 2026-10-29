@@ -1671,6 +1671,12 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   grid-auto-rows:min-content;
   align-content:start;
 }
+/* 29/10/2026 : avec le panneau d'arts sous la liste, la colonne ne tient plus
+   dans l'ecran : c'est elle qui defile, et la liste garde sa hauteur naturelle
+   (sinon elle s'ecrasait et le bouton « Proposition de deck » disparaissait). */
+.arsenal .tb-droite{overflow-y:auto;overflow-x:hidden}
+.arsenal .tb-roster-deck{flex:0 0 auto;overflow:visible}
+.arsenal .tb-droite > *{flex-shrink:0}
 .tb-deck{
   padding:12px 14px;
   color:var(--txt);text-align:left;
@@ -2066,38 +2072,43 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .av-seed{width:170px;min-width:0}
 .av-btn{min-height:34px;padding:6px 11px;cursor:pointer}
 
-/* --- Paquets d'aspect repliés (voir loadDecks dans js/prepare/app.js) -------
-   .db-list est un flex-wrap. Le conteneur passe en display:contents une fois
-   déplié : ses options redeviennent alors des éléments flex de la liste et
-   gardent exactement la mise en page des autres decks. Replié, il disparaît.
-   La bascule occupe une ligne entière pour séparer nettement les deux groupes. */
-.deck-aspects-bascule{
-  flex:0 0 100%;
-  grid-column:1/-1;          /* la liste des decks est une grille */
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:9px 12px;
-  color:var(--mute);
-  background:transparent;
+/* --- Étape Decks, liste en blocs (29/10/2026) ------------------------------
+   Deck de départ, decks de la communauté, bouton « Proposition de deck » (voir
+   loadDecks dans js/prepare/app.js). La liste des decks est une grille : les
+   titres, le message vide et le bouton occupent une ligne entière. */
+.deck-section{
+  grid-column:1/-1;
+  margin-top:10px;color:var(--mute);
+  font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+}
+.deck-section:first-child{margin-top:0}
+.tb-deck.deck-depart{border-color:var(--affiche-jaune);padding-top:16px;padding-bottom:16px}
+.deck-vide{
+  grid-column:1/-1;
+  padding:10px 12px;color:var(--mute);font-style:italic;
   border:1px dashed var(--line);
-  font-weight:800;
-  font-size:12px;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  text-align:left;
-  cursor:pointer;
-  transition:color var(--dur),border-color var(--dur);
 }
-.deck-aspects-bascule::before{
-  content:"\25B8";              /* chevron fermé */
-  display:inline-block;
-  transition:transform var(--dur);
+.deck-proposition{grid-column:1/-1;justify-self:start;margin:6px 8px 0 0}
+.prop-panneau{max-width:560px;width:calc(100vw - 32px);max-height:calc(100vh - 48px);display:flex;flex-direction:column}
+.prop-liste{overflow:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px}
+.prop-liste .deck-section{margin-top:10px}
+
+/* --- Panneau « Arts alternatifs » : pastille 🖼 n sur chaque carte à variantes */
+.arts-panneau{margin-top:14px}
+.arts-rangee{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;padding-top:6px}
+.art-vignette{
+  position:relative;width:84px;padding:0;cursor:pointer;
+  background:transparent;border:0;color:var(--mute);font-size:11px;text-align:center;
 }
-.deck-aspects-bascule.est-deplie::before{transform:rotate(90deg)}
-.deck-aspects-bascule:hover{color:var(--txt);border-color:var(--nous)}
-.deck-aspects{display:none}
-.deck-aspects.est-deplie{display:contents}
+.art-vignette img{display:block;width:100%;aspect-ratio:5/7;object-fit:cover;border:1px solid var(--line);border-radius:6px;background:#222}
+.art-vignette:hover img,.art-vignette:focus-visible img{border-color:var(--affiche-jaune)}
+.art-vignette .art-nom{display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pastille-art{
+  position:absolute;top:-7px;right:-7px;padding:2px 7px;
+  background:var(--affiche-jaune);color:#111;border-radius:999px;
+  font-weight:800;font-size:11px;box-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+.arts-aide{margin-top:8px;font-size:11px;color:var(--mute)}
 
 /* ---- Salon multijoueur : sièges pilotés par les invités ------------------
    Le siège d'un invité n'est pas modifiable par l'hôte : il montre le choix

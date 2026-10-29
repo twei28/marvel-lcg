@@ -3,7 +3,7 @@
 //  1. « Voir les cartes » d'un deck : le volet n'affichait que les trois ou quatre premières rangées de cartes,
 //     IMPOSSIBLE de défiler au doigt jusqu'à la dernière. Cause : `html[data-epure] .deck-modal-panel { overflow: hidden }`
 //     (affichage-epure-pages.css) écrase le `overflow: auto` du panneau, et rien d'autre ne défilait.
-//  2. Onglet Decks : un grand cadre vide en pointillés avant les decks. Cause : `.deck-aspects-bascule { flex: 0 0 100% }`
+//  2. Onglet Decks (29/10/2026 : la bascule est devenue le bouton « Proposition de deck », même piège) : un grand cadre vide en pointillés avant les decks. Cause : `.deck-aspects-bascule { flex: 0 0 100% }`
 //     (prepare.css), pensé pour une rangée qui passe à la ligne ; sur téléphone la liste est une COLONNE, et 100 %
 //     devient 100 % de la HAUTEUR de la liste : chaque bouton « Paquets d'aspect / Decks du tableur » faisait ~273 px.
 //
@@ -55,13 +55,13 @@ for (const { w, h } of FORMATS) for (const affichage of AFFICHAGES) {
           const r = c.getBoundingClientRect();
           return { cls: String(c.className).slice(0, 30), top: Math.round(r.top), bottom: Math.round(r.bottom), h: Math.round(r.height) };
         });
-        const bascules = Array.from(document.querySelectorAll('.deck-aspects-bascule')).map((b) => Math.round(b.getBoundingClientRect().height));
+        const bascules = Array.from(document.querySelectorAll('.deck-proposition')).map((b) => Math.round(b.getBoundingClientRect().height));
         const dernier = enfants.filter((e) => e.h > 0).reduce((a, e) => Math.max(a, e.bottom), 0);
         return { listeH: Math.round(rl.height), listeTop: Math.round(rl.top), outilsBottom: Math.round(ro.bottom), bascules, dernierBas: dernier, nb: enfants.length };
       });
-      expect(m.bascules.length, 'au moins une bascule « paquets d’aspect »').toBeGreaterThan(0);
+      expect(m.bascules.length, 'au moins un bouton « Proposition de deck »').toBeGreaterThan(0);
       for (const hb of m.bascules) {
-        expect(hb, 'un bouton de bascule fait une ligne, pas un quart d’écran').toBeLessThan(90);
+        expect(hb, 'le bouton « Proposition de deck » fait une ligne, pas un quart d’écran').toBeLessThan(90);
       }
       expect(m.listeH, 'la liste englobe ses enfants (rien ne déborde de sa boîte)').toBeGreaterThanOrEqual(m.dernierBas - m.listeTop - 2);
       expect(m.listeTop - m.outilsBottom, 'pas de blanc entre les boutons et les decks').toBeLessThan(120);
