@@ -1,46 +1,149 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Atelier de couvertures</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <style>
+  /* Habillage aligne sur le reste du site (29/10/2026) : voir la meme note dans createur-cartes.html. */
   :root {
-    --fond: #16181d; --panneau: #1f2229; --bord: #343944; --texte: #e8eaee; --doux: #9aa1ad; --accent: #e23636;
     color-scheme: dark;
+    --bg: #07080c; --panel: #12151b; --panel-2: #181d26; --border: #262b35;
+    --text: #eef1f5; --muted: #8b95a3;
+    --accent: #e62429; --accent-hover: #ff3b40; --accent-soft: rgba(230, 36, 41, .14); --accent-ink: #fff;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--fond); color: var(--texte); font: 14px/1.4 system-ui, sans-serif; }
+  body {
+    margin: 0; color: var(--text); font: 14px/1.4 system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(rgba(230, 36, 41, .4) 1px, transparent 1.6px);
+    background-size: 15px 15px;
+  }
   .page { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 20px; padding: 16px; min-height: 100vh; }
   @media (max-width: 800px) { .page { grid-template-columns: 1fr; } }
-  .panneau { background: var(--panneau); border: 1px solid var(--bord); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 12px; align-self: start; }
-  h1 { font-size: 17px; margin: 0; }
-  h2 { font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--doux); }
-  label { display: flex; flex-direction: column; gap: 4px; color: var(--doux); font-size: 12px; }
+  .panneau { background: var(--panel); border: 1px solid var(--border); padding: 14px; display: flex; flex-direction: column; gap: 12px; align-self: start; }
+  h1 { font: 18px/1 var(--affiche); text-transform: uppercase; letter-spacing: .01em; font-weight: 400; margin: 0; }
+  h2 { font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  label { display: flex; flex-direction: column; gap: 4px; color: var(--muted); font-size: 12px; }
   label.ligne { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; }
-  input[type=text], textarea, select { width: 100%; background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 7px 9px; font: inherit; }
+  input[type=text], textarea, select { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 7px 9px; font: inherit; }
   textarea { resize: vertical; min-height: 56px; }
-  input[type=color] { width: 46px; height: 28px; padding: 0; border: 1px solid var(--bord); border-radius: 6px; background: none; }
+  input[type=color] { width: 46px; height: 28px; padding: 0; border: 1px solid var(--border); background: none; }
   input[type=range] { width: 100%; }
-  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .modes button, .btn { background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 8px; cursor: pointer; font: inherit; }
-  .modes button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn.principal { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .modes button, .btn { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px; cursor: pointer; font: inherit; }
+  .modes button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.principal { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .btn.principal:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
   .btn:disabled { opacity: .5; cursor: default; }
   .rang { display: flex; gap: 8px; }
   .rang > * { flex: 1; }
   .scene { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .toile { max-height: calc(100vh - 80px); max-width: 100%; aspect-ratio: 938 / 1538; background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--bord); cursor: grab; touch-action: none; }
+  .toile { max-height: calc(100vh - 80px); max-width: 100%; aspect-ratio: 938 / 1538; background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--border); cursor: grab; touch-action: none; }
   .toile.glisse { cursor: grabbing; }
-  .aide { color: var(--doux); font-size: 12px; }
-  .reinit { background: none; border: 0; color: var(--doux); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
-  .texte-libre { border: 1px solid var(--bord); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px; background: #12141a; }
+  .aide { color: var(--muted); font-size: 12px; }
+  .reinit { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
+  .texte-libre { border: 1px solid var(--border); padding: 8px; display: flex; flex-direction: column; gap: 6px; background: var(--panel-2); }
   .texte-libre.choisi { border-color: var(--accent); }
   .texte-libre .rang { align-items: center; }
-  .texte-libre input[type=number] { width: 64px; background: #1b1e25; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 4px 6px; font: inherit; }
+  .texte-libre input[type=number] { width: 64px; background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 4px 6px; font: inherit; }
   .texte-libre .btn { padding: 4px 8px; flex: none; }
-  #message { min-height: 18px; color: var(--doux); font-size: 12px; }
+  #message { min-height: 18px; color: var(--muted); font-size: 12px; }
 </style>
+<script>
+// Langue de la page : l'anglais par defaut, le francais avec le petit bouton
+// (meme reglage que le createur de cartes : localStorage 'createur-langue-ui').
+(() => {
+  const D = {
+  "Atelier de couvertures": "Cover workshop",
+  "Héros": "Hero",
+  "Scénario": "Scenario",
+  "Modulaire": "Modular",
+  "Boîte": "Box",
+  "Expansion": "Expansion",
+  "Illustration": "Artwork",
+  "Image (ou glisse-la sur l'aperçu)": "Image (or drop it on the preview)",
+  "Zoom": "Zoom",
+  "Glisse l'image dans l'aperçu pour la déplacer, molette pour zoomer.": "Drag the image in the preview to move it, mouse wheel to zoom.",
+  "Titre": "Title",
+  "Texte (une ligne par retour)": "Text (one line per line break)",
+  "Nom du pack": "Pack name",
+  "Ou une image de titre déjà dessinée": "Or a ready-made title image",
+  "Police": "Font",
+  "Georgia Gras": "Georgia Bold",
+  "Trebuchet Gras": "Trebuchet Bold",
+  "Courier Gras": "Courier Bold",
+  "Ma police (.ttf / .otf)…": "My font (.ttf / .otf)…",
+  "Ma police": "My font",
+  "Remplissage haut": "Top fill",
+  "Remplissage bas": "Bottom fill",
+  "Contour": "Outline",
+  "Épaisseur du contour": "Outline thickness",
+  "Taille": "Size",
+  "Position horizontale": "Horizontal position",
+  "Position verticale": "Vertical position",
+  "Ombre portée": "Drop shadow",
+  "Couleurs du gabarit": "Template colours",
+  "Boîte du bas": "Bottom box",
+  "Revenir aux couleurs d'origine": "Back to the original colours",
+  "Textes libres": "Free texts",
+  "+ Ajouter un texte": "+ Add a text",
+  "Nom du créateur, mention, ce que tu veux. Glisse un texte dans l'aperçu pour le placer.": "Creator name, credit, anything you like. Drag a text in the preview to place it.",
+  "Export": "Export",
+  "Télécharger en PNG": "Download as PNG",
+  "Télécharger en webp (600 px de haut)": "Download as webp (600 px tall)",
+  "Ton texte": "Your text",
+  "Supprimer": "Delete",
+  "Couleur": "Colour",
+  "Épaisseur": "Thickness",
+  "Gras": "Bold",
+  "Ombre": "Shadow",
+  "Dépose l'illustration ici": "Drop the artwork here",
+  "Créé par …": "Made by …"
+}
+  let en = true
+  try { en = localStorage.getItem('createur-langue-ui') !== 'fr' } catch {}
+  window.T = (fr) => (en && Object.prototype.hasOwnProperty.call(D, fr) ? D[fr] : fr)
+  document.documentElement.lang = en ? 'en' : 'fr'
+  if (!en) return
+  const MOTIFS = [
+    [/^Étiquette \(« (.+) »\)$/, '“$1” label'],
+    [/^PNG exporté \((.+)\)\.$/, 'PNG exported ($1).'],
+    [/^webp exporté \((.+)\)\.$/, 'webp exported ($1).'],
+  ]
+  function traduire(fr) {
+    const coeur = fr.trim()
+    if (!coeur) return fr
+    let en2 = D[coeur]
+    if (en2 === undefined) for (const [re, rempl] of MOTIFS) if (re.test(coeur)) { en2 = coeur.replace(re, rempl); break }
+    return en2 === undefined ? fr : fr.replace(coeur, en2)
+  }
+  function parcourir(noeud) {
+    if (noeud.nodeType === 3) { const v = traduire(noeud.nodeValue); if (v !== noeud.nodeValue) noeud.nodeValue = v; return }
+    if (noeud.nodeType !== 1 || noeud.tagName === 'SCRIPT' || noeud.tagName === 'STYLE') return
+    for (const a of ['placeholder', 'title']) if (noeud.hasAttribute(a)) { const v = traduire(noeud.getAttribute(a)); if (v !== noeud.getAttribute(a)) noeud.setAttribute(a, v) }
+    noeud.childNodes.forEach(parcourir)
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.title = traduire(document.title)
+    parcourir(document.body)
+    new MutationObserver((lots) => lots.forEach((l) => (l.type === 'characterData' ? parcourir(l.target) : l.addedNodes.forEach(parcourir)))).observe(document.body, { childList: true, subtree: true, characterData: true })
+  })
+})()
+document.addEventListener('DOMContentLoaded', () => {
+  const b = document.createElement('button')
+  b.type = 'button'; b.id = 'bouton-langue'
+  const fr = document.documentElement.lang === 'fr'
+  b.textContent = fr ? 'EN' : 'FR'
+  b.title = fr ? 'English' : 'Français'
+  b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:10;padding:4px 9px;border:1px solid #262b35;background:#12151b;color:#eef1f5;font:700 12px system-ui,sans-serif;cursor:pointer'
+  b.addEventListener('click', () => { try { localStorage.setItem('createur-langue-ui', fr ? 'en' : 'fr') } catch {} location.reload() })
+  document.body.append(b)
+})
+</script>
 </head>
 <body>
 <div class="page">
@@ -50,6 +153,7 @@
       <button data-mode="heros" aria-pressed="true">Héros</button>
       <button data-mode="scenario" aria-pressed="false">Scénario</button>
       <button data-mode="modulaire" aria-pressed="false">Modulaire</button>
+      <button data-mode="boite" aria-pressed="false">Boîte</button>
     </div>
 
     <h2>Illustration</h2>
@@ -113,7 +217,12 @@
 /*CALQUES*/
 
 (() => {
-  const L = 938, H = 1538
+  // L, H changent avec le mode (29/10/2026) : « Boîte » (l'avant d'une grosse boîte d'extension,
+  // gabarit absent du Drive qui a servi aux autres calques, voir generer.py) est carre, les trois
+  // autres gabarits restent au format carte du jeu (reference : l'arriere de boite donne par
+  // l'utilisateur). `appliquerMode` les met a jour avant tout calcul qui en depend.
+  const DIMENSIONS = { heros: [938, 1538], scenario: [938, 1538], modulaire: [938, 1538], boite: [1000, 1000] }
+  let L = 938, H = 1538
   const toile = document.getElementById('toile')
   const ctx = toile.getContext('2d')
   const $ = (id) => document.getElementById(id)
@@ -131,13 +240,15 @@
     heros: { cx: L / 2, cy: 200, taille: 230, largeur: 860, apresBoite: false },
     scenario: { cx: L / 2, cy: 1330, taille: 120, largeur: 760, apresBoite: true },
     modulaire: { cx: L / 2, cy: 1330, taille: 120, largeur: 760, apresBoite: true },
+    boite: { cx: 500, cy: 858, taille: 72, largeur: 760, apresBoite: true },
   }
   const COUCHES = {
     heros: { boite: 'heros-boite', logos: 'heros-logos', etiquette: 'heros-etiquette' },
     scenario: { boite: 'scenario-boite', logos: 'scenario-logos', etiquette: 'scenario-etiquette' },
     modulaire: { boite: 'scenario-boite', logos: 'scenario-logos', etiquette: 'modulaire-etiquette' },
+    boite: { boite: 'boite-boite', logos: 'boite-logos', etiquette: 'boite-etiquette' },
   }
-  const NOMS_ETIQUETTE = { heros: 'Hero Pack', scenario: 'Scenario Pack', modulaire: 'Modular Set' }
+  const NOMS_ETIQUETTE = { heros: 'Hero Pack', scenario: 'Scenario Pack', modulaire: 'Modular Set', boite: 'Expansion' }
 
   // ---- Chargement des calques (data: URI, donc le canvas reste exportable)
   const images = {}
@@ -221,7 +332,7 @@
     if (!im) {
       ctx.fillStyle = '#2a2d36'; ctx.fillRect(0, 0, L, H)
       ctx.fillStyle = '#9aa1ad'; ctx.font = '600 44px system-ui, sans-serif'; ctx.textAlign = 'center'
-      ctx.fillText("Dépose l'illustration ici", L / 2, H / 2 - 600)
+      ctx.fillText(T("Dépose l'illustration ici"), L / 2, H / 2 - 600)
       return
     }
     const base = Math.max(L / im.width, H / im.height) * etat.artZoom
@@ -308,6 +419,12 @@
   function appliquerMode(mode) {
     etat.mode = mode
     document.querySelectorAll('#modes button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)))
+    // La toile change de format avec le mode (29/10/2026) : carree pour « Boîte », au format carte
+    // pour les trois autres. referenceDe/recolorer lisent L, H au moment de l'appel : il faut les
+    // mettre a jour AVANT, sans quoi le calque est mesure a la mauvaise taille de canevas.
+    ;[L, H] = DIMENSIONS[mode]
+    toile.width = L; toile.height = H
+    toile.style.aspectRatio = `${L} / ${H}`
     const cfg = TITRE[mode]
     $('titre-taille').value = cfg.taille; $('titre-x').value = 0; $('titre-y').value = 0
     const c = COUCHES[mode]
@@ -391,7 +508,7 @@
 
   // ---- Textes libres
   function nouveauTexte() {
-    return { texte: 'Créé par …', police: POLICES()[0][0], taille: 44, couleur: '#ffffff', contour: '#000000', epaisseur: 6, x: L / 2, y: H - 40, ombre: true, gras: true }
+    return { texte: T('Créé par …'), police: POLICES()[0][0], taille: 44, couleur: '#ffffff', contour: '#000000', epaisseur: 6, x: L / 2, y: H - 40, ombre: true, gras: true }
   }
   function champ(libelle, node) { const l = document.createElement('label'); l.textContent = libelle; l.append(node); return l }
   function entree(type, valeur, surChange, attrs = {}) {
@@ -433,7 +550,7 @@
     const t = ($('titre').value.trim().split('\n')[0] || 'couverture').toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
     return `${t || 'couverture'}-${etat.mode}`
   }
-  $('export-png').addEventListener('click', () => { dessiner(true); toile.toBlob((b) => { telecharger(b, nomFichier() + '.png'); $('message').textContent = 'PNG exporté (938 × 1538).' }, 'image/png'); dessiner() })
+  $('export-png').addEventListener('click', () => { dessiner(true); toile.toBlob((b) => { telecharger(b, nomFichier() + '.png'); $('message').textContent = `PNG exporté (${L} × ${H}).` }, 'image/png'); dessiner() })
   $('export-webp').addEventListener('click', () => {
     dessiner(true)
     const petit = document.createElement('canvas'); petit.height = 600; petit.width = Math.round(L * 600 / H)
