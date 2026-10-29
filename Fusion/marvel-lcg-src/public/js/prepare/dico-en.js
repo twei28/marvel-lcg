@@ -1242,4 +1242,12 @@ export const DICO_EN_BASE = {
     "Préparation des liens…": "Preparing links…",
     "Rejoindre le plateau": "Join the board",
     "Impossible de récupérer les liens d'invitation.": "Could not load the invitation links.",
+    /* ---- Étape Decks : blocs, propositions, panneau d'arts (29/10/2026) ---- */
+    "Decks de la communauté": "Community decks",
+    "Aucun deck partagé pour l'instant. Importe-en un depuis marvelcdb.": "No shared deck yet. Import one from marvelcdb.",
+    "Proposition de deck": "Deck suggestions",
+    "Proposition choisie": "Chosen suggestion",
+    "Choisir un art alternatif": "Choose an alternate art",
+    "Aucune carte de ce deck n'a d'art alternatif.": "No card in this deck has an alternate art.",
+    "Pastille avec image : d'autres illustrations existent. Touche-la pour choisir.": "Badge with an image: other illustrations exist. Tap it to choose.",
 };

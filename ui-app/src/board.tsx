@@ -294,6 +294,7 @@ import type { Demande, Option, Reponse } from './board/ask'
 import {
   chargerEtat,
 } from './board/sources'
+import { avecVues, idsRegardes, lotDejaVu } from './board/lots-regardes'
 import { estRegardeePar, isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
 
 /** Ce qui, ouvert par-dessus le plateau, garde Echap pour se fermer. */
@@ -776,9 +777,17 @@ function signatureCartesRegardees(groupes: GroupeCartesRegardees[]): string {
     .join('|')
 }
 
-function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }) {
+function ModaleCartesRegardees({
+  groupes,
+  vues,
+  onFermee,
+}: {
+  groupes: GroupeCartesRegardees[]
+  /** Les cartes deja fermees : la memoire vit chez le parent, qui reste monte (voir lots-regardes.ts). */
+  vues: ReadonlySet<string>
+  onFermee: (ids: readonly string[]) => void
+}) {
   const signature = useMemo(() => signatureCartesRegardees(groupes), [groupes])
-  const [signatureFermee, setSignatureFermee] = useState<string | undefined>(undefined)
   const [apercuId, setApercuId] = useState<string | null>(null)
 
   const cartesParId = useMemo(() => {
@@ -814,17 +823,13 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
     setApercuId(null)
   }, [])
 
-  useEffect(() => {
-    if (!signature) setSignatureFermee(undefined)
-  }, [signature])
-
   // Deplacement volontaire, a la poignee -- meme mecanisme que
   // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
   // « toutes les fenetres, tous les panneaux »). Les hooks se declarent AVANT
   // le retour anticipe ci-dessous.
   const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
 
-  if (!signature || signatureFermee === signature) return null
+  if (!signature || lotDejaVu(idsRegardes(groupes), vues)) return null
 
   const total = groupes.reduce((somme, groupe) => somme + groupe.cartes.length, 0)
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
@@ -854,7 +859,7 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
               {total} card{total > 1 ? 's' : ''}
             </strong>
           </div>
-          <button type="button" onClick={() => setSignatureFermee(signature)}>
+          <button type="button" onClick={() => onFermee(idsRegardes(groupes))}>
             {t('Fermer')}
           </button>
         </header>
@@ -2191,6 +2196,16 @@ export function PagePartie({
     () => (etat.monde ? cartesRegardees(etat.monde, joueurActif, catalogue) : []),
     [etat.monde, joueurActif, catalogue]
   )
+  // La memoire de la fenetre « Cartes regardees » vit ICI et non dans la fenetre : celle-ci est demontee a chaque fenetre
+  // de choix, et perdait ce qu'on venait de fermer (Gambit, 29/10/2026). Remise a zero quand plus rien n'est regarde.
+  const [cartesRegardeesVues, setCartesRegardeesVues] = useState<ReadonlySet<string>>(() => new Set())
+  const fermerCartesRegardees = useCallback(
+    (ids: readonly string[]) => setCartesRegardeesVues((vues) => avecVues(vues, ids)),
+    []
+  )
+  useEffect(() => {
+    if (groupesRegardes.length === 0) setCartesRegardeesVues((vues) => (vues.size === 0 ? vues : new Set()))
+  }, [groupesRegardes])
   const cartesMondeParId = useMemo(() => indexerCartesMonde(etat.monde), [etat.monde])
   const cartesAfficheesParId = useMemo(() => indexerCartesAffichees(plateau), [plateau])
   const cartesMondeParNom = useMemo(
@@ -4835,7 +4850,7 @@ export function PagePartie({
         <CarteApercu carte={apercuSelecteur} classe={fenetreChoix ? 'au-dessus-de-la-fenetre' : undefined} />
       ) : null}
       {interaction.ciblesHorsTable.length === 0 && !interaction.option ? (
-        <ModaleCartesRegardees groupes={groupesRegardes} />
+        <ModaleCartesRegardees groupes={groupesRegardes} vues={cartesRegardeesVues} onFermee={fermerCartesRegardees} />
       ) : null}
 
       {ciblesMenu ? (
