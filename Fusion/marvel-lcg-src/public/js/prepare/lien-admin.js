@@ -247,6 +247,13 @@
   }).then(function (data) {
     var url = data && data.url;
     if (!url) return;   // pas de site devant, ou pas l'administrateur
+    // ⚠ CHEMIN ABSOLU, PAS RACINE-RELATIF (29/10/2026, signale par l'utilisateur en jeu : le Card Maker
+    // ne demarrait pas, erreur "is not valid JSON"). Ce script tourne aussi bien servi par le SITE que
+    // par une instance de Play (p1.narwhalchampions.com, un serveur DIFFERENT, sans ces pages statiques
+    // ni ces routes) : un lien "/createur-cartes.html" s'ouvrait alors sur Play, pas sur le site. `url`
+    // (reponse de /get_site_admin, toujours une adresse absolue du site) donne l'origine correcte, deja
+    // utilisee ainsi par le bouton Sauvegarde juste en dessous.
+    var origineSite = url.replace(/\/admin\/?$/, '')
 
     // « Voir comme un compte classique » (08/10/2026). Le choix est gardé dans
     // ce navigateur jusqu'au prochain clic ; il est lu par le plateau
@@ -325,7 +332,7 @@
     releve.textContent = '🖼️ ' + t('Relevé des illustrations');
     releve.title = t('Dire qui est dessiné sur chaque carte');
     releve.addEventListener('click', function () {
-      window.open('/releve-images.html', '_blank', 'noopener');
+      window.open(origineSite + '/releve-images.html', '_blank', 'noopener');
     });
     rangee.append(releve);
 
@@ -337,7 +344,7 @@
     palettes.textContent = '🎨 ' + t('Palettes des héros');
     palettes.title = t('Corriger la couleur du fond de plateau');
     palettes.addEventListener('click', function () {
-      window.open('/palettes-heros.html', '_blank', 'noopener');
+      window.open(origineSite + '/palettes-heros.html', '_blank', 'noopener');
     });
     rangee.append(palettes);
 
@@ -371,8 +378,8 @@
       titre.style.cssText = 'font-weight:700;margin:0 0 8px;';
       menuCreer.append(titre);
       [
-        ['🃏 ' + t('Cartes'), t('Fabriquer une carte Marvel Champions (23 types) et l’exporter en image ou en planche à imprimer'), '/createur-cartes.html'],
-        ['🖼️ ' + t('Images de pack'), t('Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit'), '/atelier-couvertures.html'],
+        ['🃏 ' + t('Cartes'), t('Fabriquer une carte Marvel Champions (23 types) et l’exporter en image ou en planche à imprimer'), origineSite + '/createur-cartes.html'],
+        ['🖼️ ' + t('Images de pack'), t('Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit'), origineSite + '/atelier-couvertures.html'],
       ].forEach(function (choix) {
         var b = document.createElement('button');
         b.type = 'button';
