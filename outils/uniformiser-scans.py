@@ -31,8 +31,15 @@ import sys
 
 from PIL import Image
 
-PICS = "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src/assets/pics"
-SAUVEGARDE = "/mnt/c/Users/arnau/Desktop/Marvel LCG/sauvegardes-serveur/scans-originaux"
+# ⚠ CHEMINS RELATIFS AU DEPOT (29/10/2026) : avant, un chemin Windows/WSL en dur
+# (/mnt/c/Users/arnau/...) propre a UNE machine. Sur toute autre machine (ce Linux
+# compris), `glob` sur un dossier inexistant ne leve rien : --etat/--appliquer
+# tournaient en silence sans jamais rien trouver ni rien faire, comme si tout etait
+# deja a jour. Repere par l'utilisateur ("j'ai l'impression qu'on a fait une
+# regression") en recherchant des scans manquants : voir git log de ce fichier.
+RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PICS = os.path.join(RACINE, "Fusion", "marvel-lcg-src", "assets", "pics")
+SAUVEGARDE = os.path.join(RACINE, "sauvegardes-serveur", "scans-originaux")
 PETIT_COTE = 615
 QUALITE = 88
 
