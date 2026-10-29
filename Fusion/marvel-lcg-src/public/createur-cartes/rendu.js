@@ -90,9 +90,13 @@ const ECLAT = [
   { role: 'splash_dots', src: 'general/splash_dots' },
 ]
 
-/** La tete d'angle est-elle visible ? `etat.tete` = { image, afficher, etoile, zoom, x, y, rotation } (afficher vaut vrai par defaut). */
-export function teteVisible(spec, etat) {
-  return !!(spec.tete && etat.tete?.image && etat.tete.afficher !== false && etat.cadre !== 'illustration')
+/**
+ * La tete d'angle : retiree du createur le 29/10/2026 (reglage casse, jamais corrige). La fonction reste
+ * pour ne pas toucher au modele de donnees (projets/versions deja enregistres avec un `tete.blob`) ; elle
+ * ne rend plus jamais rien, et le formulaire n'offre plus aucun moyen d'en poser une nouvelle.
+ */
+export function teteVisible() {
+  return false
 }
 
 /**

@@ -59,6 +59,7 @@ export const DICO = {
   'Créateur / mention': 'Creator / credit line',
   'Taille des règles et de la citation': 'Size of rules and flavor text',
   'Automatique (réduit pour tenir)': 'Automatic (shrinks to fit)',
+  'Centrer le texte verticalement (comme les cartes officielles à texte court)': 'Centre text vertically (like official cards with short text)',
   'automatique': 'automatic',
   'Nombres': 'Numbers',
   'Coût': 'Cost',
@@ -106,6 +107,7 @@ export const DICO = {
   '100 % (normale)': '100 % (normal)',
   'Couleur de la sélection': 'Colour of the selection',
   'Police des traits': 'Traits font',
+  'Choisir une couleur n’importe où à l’écran': 'Pick a colour anywhere on screen',
   'Retirer la mise en forme de la sélection': 'Clear formatting of the selection',
   'Voir / modifier le code (balises)': 'View / edit the code (tags)',
   'Saut de paragraphe': 'Paragraph break',
@@ -287,10 +289,92 @@ export const DICO = {
   'Le titre est vide.': 'The title is empty.',
   'Le texte déborde du cadre, même réduit : raccourcis les règles ou la citation.': 'The text overflows the frame even when shrunk: shorten the rules or the flavor text.',
   'Pas de texte de règles.': 'No rules text.',
+
+  // assistants (gabarit de pack, nouvelle carte guidee) - 29/10/2026
+  '+ Assistant…': '+ Wizard…',
+  'Créer une carte pas à pas, avec une explication à chaque étape': 'Create a card step by step, with an explanation at each step',
+  'Gabarit du pack…': 'Pack template…',
+  'Régler, une fois pour tout le dossier, les couleurs, le cadre et la mention du créateur': 'Set the colours, frame and creator mention once for the whole folder',
+  'Nouvelle carte': 'New card',
+  'Gabarit du pack': 'Pack template',
+  'Gabarit du pack enregistré.': 'Pack template saved.',
+  'Crée ou choisis d’abord une carte.': 'Create or choose a card first.',
+  '◀ Précédent': '◀ Back',
+  'Annuler': 'Cancel',
+  'Suivant ▶': 'Next ▶',
+  'Terminer': 'Finish',
+  'Plus tard': 'Later',
+  'Régler le gabarit': 'Set the template',
+  // etape : type
+  'Quel type de carte ?': 'What kind of card?',
+  'Le type fixe le gabarit (stats, emplacements) et les champs qui suivent. Tu pourras le changer plus tard dans la carte elle-même.':
+    'The type sets the layout (stats, slots) and the fields that follow. You can still change it later on the card itself.',
+  'Combat ou contre le plan à tes côtés.': 'Fights or thwarts alongside you.',
+  'Un effet ponctuel, défaussé après usage.': 'A one-time effect, discarded after use.',
+  'Reste attachée à ton héros, effet continu ou déclenché.': 'Stays attached to your hero, with an ongoing or triggered effect.',
+  'Reste en jeu devant toi, effet continu ou déclenché.': 'Stays in play in front of you, with an ongoing or triggered effect.',
+  'Attachée pour produire une ressource (ou un effet ponctuel) chaque tour.': 'Attached to produce a resource (or a one-time effect) each turn.',
+  'Le côté civil du héros : récupération, actions d’alter-ego.': 'The hero’s civilian side: recovery, alter-ego actions.',
+  'La carte d’identité du héros : stats Contrer / Attaquer / Défendre, capacité de héros.': 'The hero’s identity card: Thwart / Attack / Defense stats, hero ability.',
+  'Une obligation mêlée au paquet de rencontre du joueur.': 'An obligation shuffled into the player’s encounter deck.',
+  'Une manigance annexe qui appartient à un joueur, pas au paquet de rencontre.': 'A side scheme that belongs to a player, not the encounter deck.',
+  'La carte de stats du méchant (une face).': 'The villain’s stat card (one side).',
+  'Un sbire de rencontre, qui attaque ou défend.': 'An encounter minion, which attacks or defends.',
+  'Un effet de rencontre ponctuel, défaussé après usage.': 'A one-time encounter effect, discarded after use.',
+  'Une carte de rencontre permanente (un lieu, par exemple).': 'A permanent encounter card (a location, for example).',
+  'S’attache à un héros ou un sbire, côté rencontre.': 'Attaches to a hero or a minion, on the encounter side.',
+  'Une manigance supplémentaire à résoudre en plus de la principale.': 'An extra scheme resolved alongside the main scheme.',
+  'La manigance principale, première face (menace de départ).': 'The main scheme, first side (starting threat).',
+  'La manigance principale, deuxième face (après son avancée).': 'The main scheme, second side (after it advances).',
+  'Une obligation pour le paquet du méchant.': 'An obligation for the villain’s deck.',
+  'Un gabarit promo générique, horizontal.': 'A generic promo layout, horizontal.',
+  'Un gabarit promo générique, vertical.': 'A generic promo layout, vertical.',
+  'Une carte alter-ego en promo.': 'A promo alter-ego card.',
+  'Une carte d’identité de héros en promo.': 'A promo hero identity card.',
+  'La liste d’un paquet de départ (texte seul, pas de stats).': 'A starter deck’s card list (text only, no stats).',
+  // etape : titre/dossier
+  'Nom et dossier': 'Name and folder',
+  'Le titre tel qu’il sera écrit sur la carte. Le dossier range les cartes d’un même pack ensemble, dans la colonne « Cartes » ; une carte unique affiche le symbole ✦.':
+    'The title as it will be written on the card. The folder groups the cards of the same pack together, in the “Cards” column; a unique card shows the ✦ symbol.',
+  'Carte unique (✦)': 'Unique card (✦)',
+  'Donne un titre à la carte.': 'Give the card a title.',
+  // etape : confirmation
+  'C’est prêt': 'All set',
+  'La carte va s’ouvrir dans le formulaire habituel pour les règles, les stats et l’illustration. Si le dossier est nouveau, je te proposerai ensuite de régler son gabarit, une fois pour tout le pack.':
+    'The card will open in the usual form for the rules, stats and artwork. If the folder is new, I’ll then offer to set its template, once for the whole pack.',
+  // gabarit du pack : etapes
+  'Le gabarit d’un pack': 'A pack’s template',
+  'Un gabarit regroupe les réglages qui doivent rester identiques sur toutes les cartes d’un même pack : couleurs, cadre et mention du créateur. Indique le dossier concerné (celui de ta carte actuelle, par défaut).':
+    'A template groups the settings that should stay the same across every card in a pack: colours, frame and creator mention. Give the folder it applies to (your current card’s, by default).',
+  'Dossier concerné': 'Folder',
+  'Indique le nom du dossier (pack).': 'Give the folder (pack) a name.',
+  'Choisis un aspect (Agression, Justice…) ou la palette d’un héros ou méchant déjà dans le jeu : toutes les couleurs du cadre en découlent d’un coup. Laisse vide pour garder les couleurs par défaut du gabarit.':
+    'Pick an aspect (Aggression, Justice…) or an existing hero’s or villain’s palette: every frame colour follows from it at once. Leave blank to keep the template’s default colours.',
+  '— couleurs par défaut —': '— default colours —',
+  'Mise en page du texte': 'Text layout',
+  'Une carte à texte court peut être centrée verticalement dans son cadre, comme beaucoup de cartes officielles.':
+    'A card with short text can be centred vertically in its frame, like many official cards.',
+  'Centrer le texte des règles verticalement': 'Centre the rules text vertically',
+  'Mention du créateur': 'Creator mention',
+  'Le petit texte en bas de carte (ton nom, ton pseudo…), commun à tout le pack.': 'The small text at the bottom of the card (your name, your handle…), shared by the whole pack.',
+  'Appliquer': 'Apply',
+  'Ces réglages vont être gardés pour les prochaines cartes de ce dossier, et appliqués tout de suite à la carte actuelle. Veux-tu aussi les recopier sur les autres cartes déjà présentes dans ce dossier ?':
+    'These settings will be kept for the next cards in this folder, and applied to the current card right away. Do you also want to copy them onto the other cards already in this folder?',
+  'Appliquer aussi aux autres cartes déjà dans ce dossier': 'Also apply to the other cards already in this folder',
+  'Veux-tu régler son gabarit maintenant (couleurs, mise en page, mention du créateur) ? Il s’appliquera à cette carte, et à toutes celles que tu ajouteras ensuite dans ce dossier. Tu pourras le refaire à tout moment avec le bouton « Gabarit du pack… ».':
+    'Do you want to set its template now (colours, layout, creator mention)? It will apply to this card, and to every one you add to this folder afterwards. You can redo it at any time with the “Pack template…” button.',
+  '(aucun)': '(none)',
+  'Vilains et rencontres': 'Villains and encounters',
+  'Promos et paquet de départ': 'Promos and starter deck',
 }
 
 // Les messages qui portent un nombre ou un nom : [expression, remplacement].
 const MOTIFS = [
+  [/^Nouveau pack « (.*) »$/, 'New pack “$1”'],
+  [/^(\d+\/\d+) · (.+)$/, (m, n, titre) => `${n} · ${t(titre)}`],
+  [/^Type : (.+)$/, 'Type: $1'],
+  [/^Titre : (.+)$/, 'Title: $1'],
+  [/^Dossier : (.+)$/, 'Folder: $1'],
   [/^(\d+) carte\(s\) importée\(s\)\.$/, '$1 card(s) imported.'],
   [/^(\d+) carte\(s\) mise\(s\) à jour\.$/, '$1 card(s) updated.'],
   [/^(\d+) remplacement\(s\) dans (\d+) carte\(s\)\.$/, '$1 replacement(s) in $2 card(s).'],

@@ -70,7 +70,9 @@ await essai('cartes : nouvelle, dupliquer, supprimer, recherche, dossiers', asyn
   const n0 = await nbCartes()
   await p.click('#c-nouvelle'); await att(400); await p.click('#c-dupliquer'); await att(400)
   ok('nouvelle + dupliquer', (await nbCartes()) === n0 + 2, `${n0} -> ${await nbCartes()}`)
-  await p.fill('input[list=dossiers-connus]', 'Valkyrie'); await att(500)
+  await p.fill('input[list=dossiers-connus]', 'Valkyrie'); await p.locator('input[list=dossiers-connus]').blur(); await att(500)
+  // nouveau dossier : l'assistant propose de regler son gabarit (29/10/2026, se declenche au blur) - on decline pour ce test.
+  if (await p.locator('dialog button:has-text("Later")').isVisible().catch(() => false)) { await p.click('dialog button:has-text("Later")'); await att(300) }
   ok('dossier : un en-tete', (await p.locator('#liste .dossier').allTextContents()).some((t) => /Valkyrie/.test(t)))
   await p.fill('#recherche', 'Valkyrie X'); await att(400)
   ok('recherche filtre', (await nbCartes()) < n0 + 2, await nbCartes())

@@ -13,7 +13,7 @@
   body { margin: 0; background: var(--fond); color: var(--texte); font: 14px/1.4 system-ui, sans-serif; }
   header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--bord); background: var(--panneau); position: sticky; top: 0; z-index: 5; }
   header h1 { font-size: 17px; margin: 0 12px 0 0; }
-  .page { display: grid; grid-template-columns: 210px minmax(310px, 400px) 1fr; gap: 14px; padding: 14px 16px; align-items: start; }
+  .page { display: grid; grid-template-columns: 1fr minmax(310px, 400px) 210px; gap: 14px; padding: 14px 16px; align-items: start; }
   @media (max-width: 1000px) { .page { grid-template-columns: 1fr; } }
   .panneau { background: var(--panneau); border: 1px solid var(--bord); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
   h2 { font-size: 12px; margin: 8px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--doux); }
@@ -55,6 +55,8 @@
   .ligne-libre.choisie .nom-libre { border-color: var(--accent); }
   .outils { display: flex; gap: 4px; flex-wrap: wrap; }
   .couleurs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+  .rang-couleur { display: flex; gap: 4px; align-items: center; }
+  .btn-pipette { padding: 3px 6px; font-size: 13px; line-height: 1; }
   .couleurs label { flex-direction: row; align-items: center; justify-content: space-between; gap: 6px; }
   details { border: 1px solid var(--bord); border-radius: 8px; padding: 6px 10px; }
   details > summary { cursor: pointer; font-weight: 600; font-size: 13px; }
@@ -116,10 +118,25 @@
   </span>
 </header>
 <div class="page">
+  <section class="scene">
+    <div class="zone-toile"><canvas id="toile" class="toile"></canvas><canvas id="surcouche" class="surcouche"></canvas></div>
+    <div id="alertes" class="alertes" aria-live="polite"></div>
+    <button class="btn petit" id="b-comparer" title="Cherche une carte officielle anglaise du même type, au texte de longueur proche, et la montre à côté de la tienne">Voir une vraie carte comparable</button>
+    <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration ou un calque, molette pour zoomer. Glisse-y des images pour les ajouter.</div>
+  </section>
+
+  <section class="panneau" id="formulaire">
+    <label>Type de carte
+      <select id="type"></select>
+    </label>
+    <div id="champs"></div>
+  </section>
+
   <aside class="panneau" id="colonne-cartes">
     <h2>Cartes</h2>
     <div class="outils">
       <button class="btn petit" id="c-nouvelle">+ Nouvelle</button>
+      <button class="btn petit" id="c-assistant" title="Créer une carte pas à pas, avec une explication à chaque étape">+ Assistant…</button>
       <button class="btn petit" id="c-dupliquer">Dupliquer</button>
       <button class="btn petit" id="c-supprimer">Supprimer</button>
     </div>
@@ -139,25 +156,12 @@
       <button class="btn petit" id="p-versions" title="Les versions gardées automatiquement">Versions…</button>
       <button class="btn petit" id="p-remplacer" title="Chercher et remplacer un mot sur une carte, un dossier ou tout le projet">Chercher / remplacer…</button>
       <button class="btn petit" id="p-appliquer" title="Recopier couleurs, cadre, mention… sur les autres cartes du dossier">Appliquer au dossier…</button>
+      <button class="btn petit" id="p-gabarit" title="Régler, une fois pour tout le dossier, les couleurs, le cadre et la mention du créateur">Gabarit du pack…</button>
       <button class="btn petit" id="p-importer" title="Nos fichiers .json, ou ceux du Card Maker de Landstander (carte .json ou « Save .zip »)">Importer…</button>
       <input type="file" id="p-fichier" accept=".json,.zip,application/json,application/zip" multiple hidden>
     </div>
     <div class="aide">Les cartes sont gardées dans ce navigateur. Enregistre un fichier pour les sauvegarder ou les passer à un autre appareil. « Importer » lit aussi les fichiers (.json ou .zip) du Card Maker de Landstander.</div>
   </aside>
-
-  <section class="panneau" id="formulaire">
-    <label>Type de carte
-      <select id="type"></select>
-    </label>
-    <div id="champs"></div>
-  </section>
-
-  <section class="scene">
-    <div class="zone-toile"><canvas id="toile" class="toile"></canvas><canvas id="surcouche" class="surcouche"></canvas></div>
-    <div id="alertes" class="alertes" aria-live="polite"></div>
-    <button class="btn petit" id="b-comparer" title="Cherche une carte officielle anglaise du même type, au texte de longueur proche, et la montre à côté de la tienne">Voir une vraie carte comparable</button>
-    <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration ou un calque, molette pour zoomer. Glisse-y des images pour les ajouter.</div>
-  </section>
 </div>
 <script type="module" src="/createur-cartes/app.js"></script>
 </body>

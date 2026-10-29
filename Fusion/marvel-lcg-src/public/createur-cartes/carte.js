@@ -34,6 +34,7 @@ export const CHAMPS_VIDES = {
   def: '', defEtoile: false, rec: '', recEtoile: false, pv: '', pvEtoile: false, tailleMain: '', menaceDepart: '',
   menaceDepartEtoile: false, menaceDepartParJoueur: false, menaceCible: '', menaceCibleParJoueur: false, acceleration: '', accelerationParJoueur: false, phaseNumero: '', phaseLettre: '', etape: '',
   renforts: 0, renfortEtoile: false, ressources: [], atkAttache: '', atkAttacheEtoile: false, schAttache: '', schAttacheEtoile: false,
+  centrerTexte: false,
 }
 
 const px = (v, defaut = 0) => {
@@ -368,7 +369,7 @@ function fluxTexte(ctx, spec, contenu) {
       const f = c === 'traits' ? 1 : facteur
       const page = mettreEnPage(ctx, jetons, base, largeur, f, contrainte)
       if (libre) {
-        sortie.push({ c, el, jetons, base, y: el.boite[1] - panneau.boite[1], page, facteur: f, largeur, retrait: 0 })
+        sortie.push({ c, el, jetons, base, y: el.boite[1] - panneau.boite[1], page, facteur: f, largeur, retrait: 0, libre: true })
         continue
       }
       sortie.push({ c, el, jetons, base, y, page, facteur: f, largeur, retrait: 0 })
@@ -391,6 +392,12 @@ function fluxTexte(ctx, spec, contenu) {
   }
   infos.facteurTexte = facteur
   infos.deborde = r.hauteur > maxi
+  // Centrage vertical optionnel (demande du 29/10/2026) : texte court, bouton « Centrer le texte » coche.
+  // Les blocs places librement dans le gabarit (hors du flux normal) ne bougent pas.
+  if (contenu.centrerTexte) {
+    const decalage = Math.max(0, (maxi - r.hauteur) / 2)
+    if (decalage > 0) for (const bloc of r.sortie) if (!bloc.libre) bloc.y += decalage
+  }
   return r.sortie
 }
 

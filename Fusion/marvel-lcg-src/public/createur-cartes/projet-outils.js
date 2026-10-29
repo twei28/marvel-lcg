@@ -124,7 +124,7 @@ export function ouvrirAppliquer(rolesDe) {
   const portee = el('select', {}, el('option', { value: 'dossier' }, 'Tout le dossier de cette carte'), el('option', { value: 'tout' }, 'Toutes les cartes'))
   const choix = [
     ['couleurs', 'Les couleurs (et le préréglage)'], ['cadre', 'Le style de cadre'], ['fissures', 'Fissures du cadre'], ['createur', 'La mention du créateur'],
-    ['langue', 'La langue (traits et textes par défaut traduits)'], ['echelle', 'La taille des règles (réglage manuel)'], ['tete', 'Réglages de la tête d’angle (zoom, position, étoile)'],
+    ['langue', 'La langue (traits et textes par défaut traduits)'], ['echelle', 'La taille des règles (réglage manuel)'], ['centrerTexte', 'Centrer le texte verticalement'],
   ].map(([k, n]) => ({ k, n, i: el('input', { type: 'checkbox' }) }))
   dialogue('Appliquer à tout le dossier',
     el('div', { class: 'contenu', style: 'display:flex;flex-direction:column;gap:8px' },
@@ -146,7 +146,7 @@ export function ouvrirAppliquer(rolesDe) {
           if (actifs.has('createur')) x.contenu.createur = src.contenu.createur
           if (actifs.has('langue') && x.langue !== src.langue) await S.changerLangueDe(x, src.langue)
           if (actifs.has('echelle')) x.contenu.echelleTexte = src.contenu.echelleTexte
-          if (actifs.has('tete')) x.tete = { ...x.tete, zoom: src.tete.zoom, x: src.tete.x, y: src.tete.y, etoile: src.tete.etoile, rotation: src.tete.rotation, afficher: src.tete.afficher }
+          if (actifs.has('centrerTexte')) x.contenu.centrerTexte = src.contenu.centrerTexte
         }
         S.message(`${cibles.length} carte(s) mise(s) à jour.`)
         S.changement()

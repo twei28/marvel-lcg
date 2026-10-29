@@ -10,7 +10,9 @@ const att = (ms = 500) => p.waitForTimeout(ms)
 async function carte(type, titre, dossier = 'Valkyrie') {
   await p.selectOption('#type', type); await att(300)
   await p.locator('label:has-text("Title") input').first().fill(titre)
-  await p.fill('input[list=dossiers-connus]', dossier); await att(400)
+  await p.fill('input[list=dossiers-connus]', dossier); await p.locator('input[list=dossiers-connus]').blur(); await att(400)
+  // nouveau dossier : l'assistant propose de regler son gabarit (29/10/2026) - on decline pour ce script.
+  if (await p.locator('dialog button:has-text("Later")').isVisible().catch(() => false)) { await p.click('dialog button:has-text("Later")'); await att(300) }
 }
 await carte('identity', 'Valkyrie')
 for (const [t, n] of [['alter-ego', 'Brunnhilde'], ['ally', 'Skurge'], ['event', 'Death Glow'], ['sidescheme', 'Realm Under Siege'], ['main_scheme_a', 'Descent'], ['main_scheme_b', 'Descent B'], ['minion', 'Draugr'], ['villain', 'Fenrir'], ['environment', 'Bifrost'], ['resource', 'Valor'], ['upgrade', 'Sword'], ['support', 'Throne'], ['treachery', 'Ragnarok'], ['attachment', 'Curse'], ['obligation', 'Duty'], ['playersidescheme', 'Quest']]) {

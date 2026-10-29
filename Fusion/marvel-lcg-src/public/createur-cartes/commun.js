@@ -26,6 +26,25 @@ export const S = {
   choisir: () => {},
 }
 
+/**
+ * Un petit bouton pipette (EyeDropper natif du navigateur) qui pose la couleur choisie dans
+ * `inputCouleur` et declenche son evenement « input ». Invisible si le navigateur ne connait
+ * pas l'API (Firefox, Safari a ce jour) : pas de bouton casse.
+ */
+export function pipette(inputCouleur) {
+  if (!('EyeDropper' in window)) return null
+  return el('button', {
+    class: 'btn petit btn-pipette', type: 'button', title: 'Choisir une couleur n’importe où à l’écran',
+    onclick: async () => {
+      try {
+        const r = await new EyeDropper().open()
+        inputCouleur.value = r.sRGBHex
+        inputCouleur.dispatchEvent(new Event('input', { bubbles: true }))
+      } catch { /* annule par l'utilisateur (Echap) : rien a faire */ }
+    },
+  }, '🖋️')
+}
+
 export const nouvelId = () => Math.random().toString(36).slice(2, 10)
 export const blobVersDataUrl = (blob) => new Promise((ok) => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(blob) })
 export const dataUrlVersBlob = async (url) => (await fetch(url)).blob()
