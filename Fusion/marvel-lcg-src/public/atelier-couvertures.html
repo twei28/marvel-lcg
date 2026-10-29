@@ -4,42 +4,54 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Atelier de couvertures</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <style>
+  /* Habillage aligne sur le reste du site (29/10/2026) : voir la meme note dans createur-cartes.html. */
   :root {
-    --fond: #16181d; --panneau: #1f2229; --bord: #343944; --texte: #e8eaee; --doux: #9aa1ad; --accent: #e23636;
     color-scheme: dark;
+    --bg: #07080c; --panel: #12151b; --panel-2: #181d26; --border: #262b35;
+    --text: #eef1f5; --muted: #8b95a3;
+    --accent: #e62429; --accent-hover: #ff3b40; --accent-soft: rgba(230, 36, 41, .14); --accent-ink: #fff;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--fond); color: var(--texte); font: 14px/1.4 system-ui, sans-serif; }
+  body {
+    margin: 0; color: var(--text); font: 14px/1.4 system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(rgba(230, 36, 41, .4) 1px, transparent 1.6px);
+    background-size: 15px 15px;
+  }
   .page { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 20px; padding: 16px; min-height: 100vh; }
   @media (max-width: 800px) { .page { grid-template-columns: 1fr; } }
-  .panneau { background: var(--panneau); border: 1px solid var(--bord); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 12px; align-self: start; }
-  h1 { font-size: 17px; margin: 0; }
-  h2 { font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--doux); }
-  label { display: flex; flex-direction: column; gap: 4px; color: var(--doux); font-size: 12px; }
+  .panneau { background: var(--panel); border: 1px solid var(--border); padding: 14px; display: flex; flex-direction: column; gap: 12px; align-self: start; }
+  h1 { font: 18px/1 var(--affiche); text-transform: uppercase; letter-spacing: .01em; font-weight: 400; margin: 0; }
+  h2 { font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  label { display: flex; flex-direction: column; gap: 4px; color: var(--muted); font-size: 12px; }
   label.ligne { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; }
-  input[type=text], textarea, select { width: 100%; background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 7px 9px; font: inherit; }
+  input[type=text], textarea, select { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 7px 9px; font: inherit; }
   textarea { resize: vertical; min-height: 56px; }
-  input[type=color] { width: 46px; height: 28px; padding: 0; border: 1px solid var(--bord); border-radius: 6px; background: none; }
+  input[type=color] { width: 46px; height: 28px; padding: 0; border: 1px solid var(--border); background: none; }
   input[type=range] { width: 100%; }
   .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .modes button, .btn { background: #12141a; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 8px; cursor: pointer; font: inherit; }
-  .modes button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn.principal { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .modes button, .btn { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px; cursor: pointer; font: inherit; }
+  .modes button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.principal { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .btn.principal:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
   .btn:disabled { opacity: .5; cursor: default; }
   .rang { display: flex; gap: 8px; }
   .rang > * { flex: 1; }
   .scene { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .toile { max-height: calc(100vh - 80px); max-width: 100%; aspect-ratio: 938 / 1538; background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--bord); cursor: grab; touch-action: none; }
+  .toile { max-height: calc(100vh - 80px); max-width: 100%; aspect-ratio: 938 / 1538; background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--border); cursor: grab; touch-action: none; }
   .toile.glisse { cursor: grabbing; }
-  .aide { color: var(--doux); font-size: 12px; }
-  .reinit { background: none; border: 0; color: var(--doux); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
-  .texte-libre { border: 1px solid var(--bord); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px; background: #12141a; }
+  .aide { color: var(--muted); font-size: 12px; }
+  .reinit { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
+  .texte-libre { border: 1px solid var(--border); padding: 8px; display: flex; flex-direction: column; gap: 6px; background: var(--panel-2); }
   .texte-libre.choisi { border-color: var(--accent); }
   .texte-libre .rang { align-items: center; }
-  .texte-libre input[type=number] { width: 64px; background: #1b1e25; color: var(--texte); border: 1px solid var(--bord); border-radius: 6px; padding: 4px 6px; font: inherit; }
+  .texte-libre input[type=number] { width: 64px; background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 4px 6px; font: inherit; }
   .texte-libre .btn { padding: 4px 8px; flex: none; }
-  #message { min-height: 18px; color: var(--doux); font-size: 12px; }
+  #message { min-height: 18px; color: var(--muted); font-size: 12px; }
 </style>
 <script>
 // Langue de la page : l'anglais par defaut, le francais avec le petit bouton
@@ -125,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const fr = document.documentElement.lang === 'fr'
   b.textContent = fr ? 'EN' : 'FR'
   b.title = fr ? 'English' : 'Français'
-  b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:10;padding:4px 9px;border-radius:6px;border:1px solid #343944;background:#1f2229;color:#e8eaee;font:700 12px system-ui,sans-serif;cursor:pointer'
+  b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:10;padding:4px 9px;border:1px solid #262b35;background:#12151b;color:#eef1f5;font:700 12px system-ui,sans-serif;cursor:pointer'
   b.addEventListener('click', () => { try { localStorage.setItem('createur-langue-ui', fr ? 'en' : 'fr') } catch {} location.reload() })
   document.body.append(b)
 })

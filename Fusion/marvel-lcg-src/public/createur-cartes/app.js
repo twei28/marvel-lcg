@@ -919,7 +919,7 @@ function lancerAssistant(titreAssistant, etapes, fin) {
       etape.aide ? el('p', { class: 'aide' }, etape.aide) : null,
       etape.construire(valeurs, rendre))
     puces.replaceChildren(...etapes.map((e, k) => el('span', {
-      style: `width:8px;height:8px;border-radius:50%;background:${k === i ? '#e23636' : k < i ? '#777' : '#3a3d45'}`,
+      style: `width:8px;height:8px;border-radius:50%;background:${k === i ? '#e62429' : k < i ? '#777' : '#3a3d45'}`,
     })))
     gauche.replaceChildren(
       i > 0 ? el('button', { class: 'btn petit', type: 'button', onclick: () => { i--; rendre() } }, '◀ Précédent') : null,
