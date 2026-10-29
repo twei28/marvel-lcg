@@ -44,6 +44,24 @@ PETIT_COTE = 615
 QUALITE = 88
 
 
+def _verifier_chemins():
+    """Refuse de tourner en silence sur un dossier absent ou vide (29/10/2026).
+
+    C'est exactement le bug de la regression precedente : un chemin casse ne
+    levait rien, `glob` rendait une liste vide, et l'outil se comportait comme
+    si tout etait deja a jour. Mieux vaut un arret net ici qu'un "rien a
+    faire" qui ment.
+    """
+    if not os.path.isdir(PICS):
+        print(f"ARRET : {PICS!r} n'existe pas. Chemin casse ? Depot deplace ?", file=sys.stderr)
+        raise SystemExit(1)
+    compte = len(os.listdir(PICS))
+    if compte < 1000:  # le depot en a plusieurs milliers ; un dossier presque vide est suspect
+        print(f"ARRET : {PICS!r} ne contient que {compte} fichier(s), c'est trop peu pour etre "
+              "le vrai dossier des scans. Verifie le chemin avant de continuer.", file=sys.stderr)
+        raise SystemExit(1)
+
+
 def source(chemin):
     """Le fichier a LIRE pour produire `chemin`.
 
@@ -154,6 +172,8 @@ def appliquer():
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "--etat"
+    if mode in ("--etat", "--sauvegarde", "--appliquer"):
+        _verifier_chemins()
     if mode == "--etat":
         etat()
     elif mode == "--sauvegarde":
