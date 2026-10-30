@@ -879,6 +879,13 @@
    "cartes": 17,
    "depuis": "2026-09-11",
    "note": "Auteur Mozilla (Drive « Zeus (Released) »). ze001a/b identite, ze002-ze011 set heros (10 cartes distinctes, 15 exemplaires), ze012 obligation, ze013-ze016 set nemesis Nyx (4 cartes distinctes, 5 exemplaires). ⚠ CE PACK INVENTE UNE RESSOURCE : l'ECLAIR, cinquieme couleur du moteur `L` ajoutee le 11/09/2026 (fiche docs/reference/mots-cles/eclair.md), imprimee sur les 4 Thunder Strike et fabriquee par Mount Olympus. Skyfather's Tempest exige une ENERGIE officielle ET un ECLAIR sur le paiement d'un meme evenement ; le set nemesis vise l'energie, pas l'eclair. Sept cartes portent une capacite « Special » resolue depuis la main ou au paiement. Homonymes : 40004 Precognition (next_evol), 50131b Thunderbolt Backup, 57021 The Thunderbolts, 59010 Son of Zeus. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-11-zeus-releve-des-cartes.md."
+  },
+  "mv": {
+   "pack": "major_victory",
+   "libelle": "236. Custom (Major Victory)",
+   "cartes": 16,
+   "depuis": "2026-10-30",
+   "note": "Cree le 30/10/2026 depuis un Drive partage (dossier « Major Victory »). mv001a/b identite (Major Victory / Vance Astro), mv002-mv011 deck de heros (Captain America's Shield, Founder of the Guardians, Containment Suit, Shield Block x2, Psychokinetic Blast x3, Telekinetic Throw, Psychic Link x2, Victory's Command x2, The Captain America, Nikki), mv012 RESERVE pour l'obligation (absente du Drive), mv013-mv016 nemesis (Michael Korvac, Korvac's Future, Judgment of Korvac x2, Accept Perfection). Pas de decklist imprimee. Aucun script de capacite pour l'instant."
   }
  }
 }

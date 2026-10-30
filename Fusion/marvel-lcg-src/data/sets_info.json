@@ -2273,5 +2273,14 @@
   ],
   "max_id": "hg076"
  },
- "checksum": "468fd7c2690721f39b90eec7daa92c81093b3226026500a9e9138ab7bea8b1ba"
+ "236. Custom (Major Victory)": {
+  "name": "major_victory",
+  "scenarios": [],
+  "heroes": [
+   "major_victory"
+  ],
+  "encounters": [],
+  "max_id": "mv016"
+ },
+ "checksum": "2c814f638988bbe9bfaccf973bb910ead45a5e8a32a5df08acfae017fefc59b9"
 }

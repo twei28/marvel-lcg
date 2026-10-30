@@ -1,0 +1,38 @@
+{
+    "version": "0.5.8",
+    "name": "Major Victory",
+    "metadata": {
+        "url": "",
+        "note": "Pack « Major Victory » (Drive partage). Pas de decklist imprimee : player_deck vide (PROCESSUS-HEROS etape 3). Obligation absente du Drive : obligations vide pour l'instant (mv012 reserve)."
+    },
+    "hero": [
+        "mv001a,mv001b"
+    ],
+    "hero_deck": [
+        "mv002",
+        "mv003",
+        "mv004",
+        "mv005",
+        "mv005",
+        "mv006",
+        "mv006",
+        "mv006",
+        "mv007",
+        "mv008",
+        "mv008",
+        "mv009",
+        "mv009",
+        "mv010",
+        "mv011"
+    ],
+    "set_aside": [],
+    "obligations": [],
+    "nemesis_set": [
+        "mv013",
+        "mv014",
+        "mv015",
+        "mv015",
+        "mv016"
+    ],
+    "player_deck": []
+}

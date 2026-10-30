@@ -28,9 +28,11 @@ const IMAGES = BASE + 'img/'
 const GROUPES = [
   ['Héros', ['ally', 'event', 'upgrade', 'support', 'resource', 'alter-ego', 'identity', 'obligation', 'playersidescheme']],
   ['Vilains et rencontres', ['villain', 'minion', 'treachery', 'environment', 'attachment', 'sidescheme', 'main_scheme_a', 'main_scheme_b', 'obligation-villain']],
+  ['Inserts (feuillets de campagne et de règles)', ['insert', 'insert-page']],
   ['Promos et paquet de départ', ['generic-promo', 'generic-promo-vert', 'alter-ego-promo', 'identity-promo', 'starter-deck']],
 ]
 const NOMS = {
+  insert: 'Insert (format carte)', 'insert-page': 'Insert (page A4)',
   ally: 'Allié', event: 'Événement', upgrade: 'Amélioration', support: 'Soutien', resource: 'Ressource', 'alter-ego': 'Alter-ego', identity: 'Identité de héros',
   obligation: 'Obligation (héros)', playersidescheme: 'Manigance annexe de joueur', villain: 'Méchant', minion: 'Sbire', treachery: 'Trahison',
   environment: 'Environnement', attachment: 'Attachement', sidescheme: 'Manigance annexe', main_scheme_a: 'Manigance principale (face A)',
@@ -50,7 +52,7 @@ const ASPECTS = {
 }
 const GENRES_RESSOURCE = [['', 'Aucune'], ['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker']]
 const ICONES_BARRE = [['energy', 'Énergie'], ['mental', 'Mental'], ['physical', 'Physique'], ['wild', 'Joker'], ['star', 'Étoile'], ['acceleration', 'Accélération'], ['crisis', 'Crise'], ['hazard', 'Aléas'], ['boost', 'Boost'], ['per_hero', 'Par joueur'], ['consequential', 'Dégâts consécutifs'], ['unique', 'Unique']]
-const TYPES_SANS_FISSURES = new Set(['attachment', 'environment', 'minion', 'obligation-villain', 'sidescheme', 'treachery'])
+const TYPES_SANS_FISSURES = new Set(['insert', 'insert-page', 'attachment', 'environment', 'minion', 'obligation-villain', 'sidescheme', 'treachery'])
 
 let TYPES = null
 let PALETTES = null
@@ -170,6 +172,7 @@ function valeursParDefaut(type, langue) {
 
 /** Le cadre neutre d'une carte vide : des gris, plus clairs pour les accents, cases claires noires (comme l'aspect Basique). */
 function couleursNeutres(spec) {
+  if (spec.id?.startsWith('insert')) return { ...spec.couleursParDefaut } // un insert a sa couleur de bandeau, pas le gris des cartes vides
   const accents = new Set(['left_accent', 'right_accent', 'divider', 'accent', 'splash_color'])
   const sombres = { light_boxes: '#000000', background_lower: '#4a4d55', shading: '#2b2d33', outer: '#25272c', cracks: '#3a3c42' }
   return Object.fromEntries(rolesDe(spec).map((r) => [r, sombres[r] ?? (accents.has(r) ? '#a3a5ab' : '#6e7179')]))
@@ -177,7 +180,7 @@ function couleursNeutres(spec) {
 
 function nouvelleCarte(type = 'ally', langue = 'fr') {
   return {
-    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: couleursNeutres(TYPES[type]), fissures: true, libres: [], cadre: 'officiel', dossier: '', verso: { mode: 'aucun', carteId: null, blob: null },
+    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: type.startsWith('insert') ? { ...TYPES[type].couleursParDefaut } : couleursNeutres(TYPES[type]), fissures: true, libres: [], cadre: 'officiel', dossier: '', verso: { mode: 'aucun', carteId: null, blob: null },
     art: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 }, artDevant: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 },
     tete: { blob: null, afficher: true, etoile: false, zoom: 0.8, x: -19, y: 232, rotation: 0 },
   }
@@ -860,7 +863,7 @@ function blocCouleurs(c, spec, { repli = true, apres = null, quand = changement,
   }
   const principaux = ROLES_PRINCIPAUX.filter((r) => roles.includes(r)).slice(0, 3)
   const autres = roles.filter((r) => !principaux.includes(r))
-  const champ = (r) => el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, ROLES_COULEURS[r]),
+  const champ = (r) => el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, spec.id.startsWith('insert') && r === 'right_color' ? 'Bandeau du titre' : ROLES_COULEURS[r]),
     pickerCouleur(couleurDe(c, spec, r), (v) => { c.couleurs[r] = v; c.preset = ''; changeeParLeJoueur() }, proposees))
   const bloc = [
     el('div', { class: 'rang', style: 'align-items:center' }, origineVisible ? origine : null,
@@ -949,15 +952,16 @@ function majAide() {
 // de ce dossier. Toute carte a un dossier (celles qui n'en avaient pas sont rangees dans « Divers »). Les dossiers vides
 // existent (`projet.dossiers[nom] = { genre, ordre }`), comme leur template (`projet.gabarits[nom]`).
 const DIVERS = 'Divers'
-const GENRES_DOSSIER = { heros: 'Héros', scenario: 'Scénario', modulaire: 'Modulaire', divers: 'Divers' }
+const GENRES_DOSSIER = { heros: 'Héros', scenario: 'Scénario', modulaire: 'Modulaire', insert: 'Insert', divers: 'Divers' }
 const TYPES_HEROS = new Set(['identity', 'alter-ego', 'ally', 'event', 'upgrade', 'support', 'resource', 'obligation', 'playersidescheme', 'identity-promo', 'alter-ego-promo'])
-const ORDRE_TYPES = ['identity', 'alter-ego', 'ally', 'event', 'upgrade', 'support', 'resource', 'obligation', 'playersidescheme', 'villain', 'main_scheme_a', 'main_scheme_b', 'minion', 'treachery', 'sidescheme', 'attachment', 'environment', 'obligation-villain', 'identity-promo', 'alter-ego-promo', 'generic-promo', 'generic-promo-vert', 'starter-deck']
+const ORDRE_TYPES = ['identity', 'alter-ego', 'ally', 'event', 'upgrade', 'support', 'resource', 'obligation', 'playersidescheme', 'villain', 'main_scheme_a', 'main_scheme_b', 'minion', 'treachery', 'sidescheme', 'attachment', 'environment', 'obligation-villain', 'identity-promo', 'alter-ego-promo', 'generic-promo', 'generic-promo-vert', 'starter-deck', 'insert', 'insert-page']
 const vraiesCartes = () => projet.cartes.filter((c) => !c.brouillon)
 const cartesDuDossier = (nom) => vraiesCartes().filter((c) => (c.dossier || '') === nom)
 
 function genreInfere(nom) {
   const types = new Set(cartesDuDossier(nom).map((c) => c.type))
   if (nom === DIVERS) return 'divers'
+  if (types.size && [...types].every((t) => t.startsWith('insert'))) return 'insert'
   if (types.has('identity') || types.has('alter-ego')) return 'heros'
   if (types.has('villain') || types.has('main_scheme_a') || types.has('main_scheme_b')) return 'scenario'
   if ([...types].some((t) => TYPES[t]?.famille === 'villain')) return 'modulaire'
@@ -1138,6 +1142,7 @@ const CREER = [
   ['heros', 'cartes', 'Héros', 'Un pack de héros : identité, alter-ego et ses 15 cartes.'],
   ['scenario', 'cartes', 'Scénario', 'Le méchant, ses manigances et ses cartes de rencontre.'],
   ['modulaire', 'cartes', 'Modulaire', 'Un set de cartes de rencontre, sans méchant.'],
+  ['insert', 'cartes', 'Insert', 'Un feuillet de campagne ou de règles : format carte ou page A4.'],
   ['heros', 'pochette', 'Pochette héros', 'La couverture d’un pack de héros.'],
   ['scenario', 'pochette', 'Pochette scénario', 'La couverture d’un scénario (ou d’un modulaire).'],
   ['boite', 'pochette', 'Pochette extension', 'L’avant d’une boîte d’extension.'],
@@ -1203,6 +1208,7 @@ function rendreGrilles() {
   const noeuds = [
     rangee('Héros', ['heros'], []),
     rangee('Scénarios et modulaires', ['scenario', 'modulaire'], []),
+    rangee('Inserts', ['insert'], []),
     rangee('Divers', ['divers'], []),
   ].filter(Boolean)
   // les pochettes independantes (celles d'un dossier vivent dans ce dossier) ; une recherche les trouve toutes
@@ -1371,8 +1377,8 @@ function dialogueSupprimerDossier(d) {
 }
 /** Le « + » d'une rangee : un dossier vide, ou le wizard qui passe sur tout. */
 function dialogueNouveauDossier(genre) {
-  const libelles = { heros: 'héros', scenario: 'scénario', modulaire: 'set modulaire' }
-  const champ = el('input', { type: 'text', placeholder: genre === 'heros' ? 'ex. Valkyrie' : genre === 'scenario' ? 'ex. Rhino' : 'ex. Bomb Scare' })
+  const libelles = { heros: 'héros', scenario: 'scénario', modulaire: 'set modulaire', insert: 'insert' }
+  const champ = el('input', { type: 'text', placeholder: genre === 'heros' ? 'ex. Valkyrie' : genre === 'scenario' ? 'ex. Rhino' : genre === 'insert' ? 'ex. Skrull Menace' : 'ex. Bomb Scare' })
   const erreur = el('div', { class: 'aide', style: 'color:#ff9b8f' })
   const nom = () => champ.value.trim()
   dialogue(`Nouveau dossier ${tr(libelles[genre])}`, el('div', { class: 'assistant-pile' },
@@ -1384,10 +1390,20 @@ function dialogueNouveauDossier(genre) {
       if (listeDossiers().some((d) => d.nom === nom())) { erreur.textContent = tr('Un dossier porte déjà ce nom.'); return false }
       creerDossier(nom(), genre); sauvegarderPlusTard(); ouvrirDossier(nom())
     } },
-    { texte: 'Avec le wizard', principal: true, action: () => {
+    ...(genre === 'insert' ? [{ texte: 'Créer un insert', principal: true, action: () => {
+      if (!nom()) { erreur.textContent = tr('Donne un nom au dossier.'); return false }
+      if (listeDossiers().some((d) => d.nom === nom())) { erreur.textContent = tr('Un dossier porte déjà ce nom.'); return false }
+      creerDossier(nom(), 'insert')
+      const c = nouvelleCarte('insert', carte()?.langue ?? 'en')
+      c.dossier = nom()
+      c.contenu.titre = nom()
+      projet.cartes.push(c)
+      sauvegarderPlusTard(); ouvrirDossier(nom(), c.id)
+    } }] : [{ texte: 'Avec le wizard', principal: true, action: () => {
       if (nom() && listeDossiers().some((d) => d.nom === nom())) { erreur.textContent = tr('Un dossier porte déjà ce nom.'); return false }
       setTimeout(() => (genre === 'heros' ? ouvrirWizardHeros(nom()) : ouvrirWizardRencontre(genre, nom())), 0)
-    } }])
+    } }]),
+  ])
   champ.focus()
 }
 
@@ -2692,7 +2708,8 @@ async function construirePages(opts, format = 'jpeg') {
     return t.toDataURL('image/jpeg', 0.92)
   }
   const cartes = opts.dossier === 'dossier' ? projet.cartes.filter((x) => (x.dossier || '') === (carte().dossier || '')) : projet.cartes
-  for (const c of cartes) {
+  // (les inserts en page A4 n'ont pas leur place sur une planche de cartes 63 x 88 mm)
+  for (const c of cartes.filter((x) => x.type !== 'insert-page')) {
     images.push(await pourPlanche(await rendreCarte(c)))
     dosImages.push(await pourPlanche(await rendreVerso(c)))
   }

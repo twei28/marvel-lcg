@@ -131464,7 +131464,6 @@
    "custom": "Phenexian and Mysteltainn"
   }
  ],
- "checksum": "4211da7d7740f07a401226a66c771536c4280e1831fe1d592f42288b293868d8",
  "hepzibah": [
   {
    "card_id": "hz001a",
@@ -135366,5 +135365,272 @@
    ],
    "set_name": ""
   }
- ]
+ ],
+ "major_victory": [
+  {
+   "card_id": "mv001a",
+   "type": "Hero",
+   "name": "* Major Victory",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "GUARDIAN",
+    "PSIONIC",
+    "SOLDIER"
+   ],
+   "set_name": "Major Victory",
+   "text": "<i>Shield Toss</i> — <b>Action</b>: Spend 1 resource of any type → find Captain America's Shield and add it to your hand. If it leaves play this way, deal 4 damage to an enemy. <i>(Limit once per round.)</i>"
+  },
+  {
+   "card_id": "mv001b",
+   "type": "AlterEgo",
+   "name": "* Vance Astro",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "MUTANT",
+    "PSIONIC",
+    "SOLDIER"
+   ],
+   "set_name": "Major Victory",
+   "text": "<i>Tactical Foresight</i> — <b>Action</b>: Choose a player. That player draws 2 cards, then places 1 card from their hand on top of their deck. <i>(Limit once per round.)</i>\n<i>\"I didn't join the interstellar program so there'd be a statue of me in a park one day. I joined because I wanted to make a better tomorrow.\"</i>"
+  },
+  {
+   "card_id": "mv002",
+   "type": "Upgrade",
+   "name": "Captain America's Shield",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Major Victory",
+   "text": "Restricted.\nMajor Victory gets +1 DEF and gains retaliate 1.\n<i>\"A good man once owned this shield. He personified those beliefs for me, and for millions of people like me.\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv003",
+   "type": "Upgrade",
+   "name": "* Founder of the Guardians",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Major Victory",
+   "text": "Each identity gains the [[GUARDIAN]] trait.\nEach friendly [[GUARDIAN]] character gets +1 hit point.\n<i>\"Peter, why did we never elect him leader?\"</i> —Gamora"
+  },
+  {
+   "card_id": "mv004",
+   "type": "Upgrade",
+   "name": "Containment Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "set_name": "Major Victory",
+   "text": "You get +2 hit points and your identity gains steady.\n<i>A bio-armor originally designed to preserve his body and prevent rapid aging during a 1,000-year interstellar space jump.</i>"
+  },
+  {
+   "card_id": "mv005",
+   "type": "Event",
+   "name": "Shield Block",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an identity would take any amount of damage, exhaust Captain America's Shield → prevent all of that damage.\n<i>\"Quick, behind me!\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv006",
+   "type": "Event",
+   "name": "Psychokinetic Blast",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "PSIONIC"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. Confuse that enemy.\n<i>\"Vance Astro, a.k.a Major Victory. Leader of the 3000 wing. War hero, veteran champion. The best martial arts fighter of his era plus psionics, plus that shield ain't Collector's replica.\"</i> —Rocket Raccoon"
+  },
+  {
+   "card_id": "mv007",
+   "type": "Event",
+   "name": "Telekinetic Throw",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Interrupt</b>: When you deal damage from your \"<i>Shield Toss</i>\" ability, exhaust Major Victory → deal 4 damage to an enemy and deal 4 damage to an enemy."
+  },
+  {
+   "card_id": "mv008",
+   "type": "Event",
+   "name": "Psychic Link",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "THWART"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. Each player who controls a [[GUARDIAN]] character draws 1 card.\n<i>\"I'm extending my psionics to form a t-net.\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv009",
+   "type": "Event",
+   "name": "Victory's Command",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Interrupt</b>: When a friendly character makes a basic thwart or attack, exhaust Captain America's Shield → they get +2 to that basic power for this use. Ready that character.\n<i>\"This era is now under the protection of the Guardians of the Galaxy!\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv010",
+   "type": "Support",
+   "name": "* The Captain America",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "VEHICLE"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Resource</b>: Exhaust this card → generate a [wild] resource for a player who controls a [[GUARDIAN]] character.\n<i>Major Victory named the Guardian's flagship after a hero who stood against the Badoon's tyranny, hoping to inspire others to do the same.</i>"
+  },
+  {
+   "card_id": "mv011",
+   "type": "Ally",
+   "name": "* Nikki",
+   "subtitle": "Nicholette Gold",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2**",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "GUARDIAN"
+   ],
+   "set_name": "Major Victory",
+   "text": "[star] Nikki's attacks gain ranged and damage from her attacks can be divided among enemies as you choose.\n<i>\"Just like old times, eh, Astrovik?\"</i>"
+  },
+  {
+   "card_id": "mv013",
+   "type": "Minion",
+   "name": "* Michael Korvac",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "4",
+    "Villainous": "1",
+    "Retaliate": "1",
+    "Nemesis": "Major Victory"
+   },
+   "traits": [
+    "COSMIC ENTITY",
+    "ELITE"
+   ],
+   "set_name": "Major Victory Nemesis",
+   "text": "Villainous. Retaliate 1.\nThreat cannot be removed from Korvac's Future.\n<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for Korvac's Future and reveal it."
+  },
+  {
+   "card_id": "mv014",
+   "type": "SideScheme",
+   "name": "Korvac's Future",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "StartingThreat": "4",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Major Victory Nemesis",
+   "text": "Permanent.\nWhile there is 4 or more threat here, each hero identity gets -1 hand size.\n<b>Forced Response</b>: After threat is placed here, if there is at least 14 threat here, the players lose the game."
+  },
+  {
+   "card_id": "mv015",
+   "type": "Treachery",
+   "name": "Judgment of Korvac",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Major Victory Nemesis",
+   "text": "<b>When Revealed</b>: Take 3 indirect damage or place 2 threat on Korvac's Future and this card gains surge.\n<hr />\n[star] <b>Boost</b>: Choose to place 2 threat on Korvac's Future or this card gets +2 boost icons ([boost][boost]).\n<i>\"I am a god! And I was going to be your savior!\"</i> —Michael Korvac"
+  },
+  {
+   "card_id": "mv016",
+   "type": "Treachery",
+   "name": "Accept Perfection",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Peril": "1"
+   },
+   "traits": [],
+   "set_name": "Major Victory Nemesis",
+   "text": "Peril.\n<b>When Revealed</b>: Choose:\n• Find Michael Korvac and reveal him. Place 4 threat on Korvac's Future.\n• Discard the highest cost card you control."
+  }
+ ],
+ "checksum": "c7352f69fbc871bfa8ab4d99b8595683826ca4dc7d4c5c856dee2b634aef7bdd"
 }

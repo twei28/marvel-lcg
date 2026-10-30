@@ -100,6 +100,9 @@ async function planche(toiles, colonnes = 5, largeur = 360) {
   return o
 }
 
+// Les inserts (feuillets) ne sont pas des cartes de jeu : ni OCTGN, ni DragnCards, ni CardTable.
+const sansInsert = (c) => !c.type.startsWith('insert')
+
 /** Ouvre la fenetre d'export d'un pack. `api` : { cartes, carte, rendre(c, langue), rendreVerso(c, langue), serialiser(c), nomDossier }. */
 export function ouvrirExportPack(api) {
   const c0 = api.carte()
@@ -173,17 +176,17 @@ export function ouvrirExportPack(api) {
       }
       const nomSet = c0?.dossier || 'Cartes'
       if (octgn.i.checked) {
-        for (const f of await genererOctgn(cartes, { nomSet, rendre: api.rendre })) fichiers.push({ nom: 'octgn/' + f.nom, octets: f.octets })
+        for (const f of await genererOctgn(cartes.filter(sansInsert), { nomSet, rendre: api.rendre })) fichiers.push({ nom: 'octgn/' + f.nom, octets: f.octets })
         fichiers.push({ nom: 'octgn/LISEZ-MOI.txt', octets: new TextEncoder().encode(LISEZ_MOI_OCTGN) })
       }
       if (dragn.i.checked) {
-        for (const f of await genererDragncards(cartes, { nomSet, rendre: api.rendre, prefixe: adresse.value.trim() })) fichiers.push({ nom: 'dragncards/' + f.nom, octets: f.octets })
+        for (const f of await genererDragncards(cartes.filter(sansInsert), { nomSet, rendre: api.rendre, prefixe: adresse.value.trim() })) fichiers.push({ nom: 'dragncards/' + f.nom, octets: f.octets })
         fichiers.push({ nom: 'dragncards/LISEZ-MOI.txt', octets: new TextEncoder().encode(LISEZ_MOI_DRAGNCARDS) })
       }
       if (cardtable.i.checked) {
         const url = async (n) => { const b = await (await fetch(new URL(`img/general/${n}.webp`, import.meta.url))).blob(); return new Promise((ok) => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(b) }) }
         const dos = { joueur: await url('dos-joueur'), rencontre: await url('dos-rencontre') }
-        for (const f of await genererCardtable(cartes, { nomSet, rendre: api.rendre, dos })) fichiers.push({ nom: 'cardtable/' + f.nom, octets: f.octets })
+        for (const f of await genererCardtable(cartes.filter(sansInsert), { nomSet, rendre: api.rendre, dos })) fichiers.push({ nom: 'cardtable/' + f.nom, octets: f.octets })
         fichiers.push({ nom: 'cardtable/LISEZ-MOI.txt', octets: new TextEncoder().encode(LISEZ_MOI_CARDTABLE) })
       }
       const zip = creerZip(fichiers)

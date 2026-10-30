@@ -40,7 +40,7 @@ await p.goto(U + '/createur-cartes.html'); await attendreAccueil(p)
 ok('page en anglais par defaut', (await p.locator('#ui-en').getAttribute('aria-pressed')) === 'true')
 ok('carte en anglais par defaut', (await p.locator('#lang-en').getAttribute('aria-pressed')) === 'true')
 ok('indicateur : « enregistré dans ce navigateur » affiché en mode local', await p.locator('#etat-serveur').isVisible())
-ok('accueil : six tuiles de creation (heros, scenario, modulaire + 3 pochettes)', (await p.locator('.tuile-creer').count()) === 6 && (await p.locator('.tuile-creer.pochette').count()) === 3)
+ok('accueil : sept tuiles de creation (heros, scenario, modulaire, insert + 3 pochettes)', (await p.locator('.tuile-creer').count()) === 7 && (await p.locator('.tuile-creer.pochette').count()) === 3)
 ok('accueil : aucun dossier au depart', (await p.locator('.tuile').count()) === 0)
 ok('accueil : l\'editeur est cache', await p.locator('#vue-editeur').isHidden())
 
@@ -81,9 +81,9 @@ await essai('dossier vide + wizard de carte (passer partout)', async () => {
   ok('wizard de carte : la carte est dans le dossier', /LOKI/i.test(await p.locator('#fil').innerText()) && (await nbVisibles()) === 1, await p.locator('#fil').innerText())
 })
 
-await essai('23 types', async () => {
+await essai('25 types', async () => {
   const types = await p.evaluate(() => [...document.querySelectorAll('#type option')].map((o) => o.value))
-  ok('23 types proposes', types.length === 23, types.length)
+  ok('25 types proposes (dont 2 inserts)', types.length === 25, types.length)
   let vides = []
   for (const t of types) { await p.selectOption('#type', t); await att(350); if (await toileVide()) vides.push(t) }
   ok('chaque type se dessine', vides.length === 0, vides.join(','))
@@ -263,6 +263,16 @@ await essai('persistance (IndexedDB)', async () => {
   await att(1200); await p.reload(); await attendreAccueil(p)
   ok('rechargement : on revient a la page des dossiers', await p.locator('#vue-accueil').isVisible())
   ok('rechargement : les dossiers sont toujours la', (await p.locator('.tuile').count()) >= 3, await p.locator('.tuile').count())
+})
+
+await essai('insert : dossier, carte, rendu', async () => {
+  await p.locator('.tuile-creer[data-creer="insert"]').click()
+  await p.fill('dialog input', 'Essai insert')
+  await p.getByRole('button', { name: /create an insert|créer un insert/i }).click()
+  await att(900)
+  ok('insert : la carte est ouverte, de type insert', await p.evaluate(() => document.querySelector('select')?.value) === 'insert')
+  await versAccueil(p)
+  ok('insert : le dossier est dans la rangee Inserts', (await p.locator('.rangee-dossiers h3', { hasText: /^inserts$/i }).count()) === 1)
 })
 
 console.log(erreurs.length ? 'ERREURS PAGE :\n' + erreurs.join('\n') : 'Aucune erreur dans la page.')
