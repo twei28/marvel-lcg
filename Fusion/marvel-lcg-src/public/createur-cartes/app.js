@@ -17,7 +17,7 @@ import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } fro
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
 import { creerSynchro } from './serveur.js'
 import { construirePdf, cellulesPlanche } from './pdf.js'
-import { construirePsd } from './psd.js'
+import { construirePsd, construirePsdCalques } from './psd.js'
 import { codesDepuisTexte, chargerCartesMarvelCDB, champsDepuisMarvelCDB } from './marvelcdb.js'
 import { ouvrirComparable } from './comparable.js'
 import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
@@ -2584,7 +2584,7 @@ function avecFondPerdu(toile, marge) {
 function dialogueExport() {
   return new Promise((ok) => {
     const c = carte()
-    const format = el('select', {}, ['png', 'jpeg', 'webp', 'psd'].map((v) => el('option', { value: v }, v.toUpperCase())))
+    const format = el('select', {}, ['png', 'jpeg', 'webp', 'psd-calques', 'psd'].map((v) => el('option', { value: v }, v === 'psd-calques' ? 'PSD (calques)' : v === 'psd' ? 'PSD (à plat)' : v.toUpperCase())))
     const largeur = el('input', { type: 'number', min: 200, max: 6000, value: TYPES[c.type].largeur })
     const perdu = el('input', { type: 'checkbox' })
     const dos = el('input', { type: 'checkbox', checked: !!(c.verso && c.verso.mode !== 'aucun') })
@@ -2618,6 +2618,33 @@ async function sortie(toile, o) {
   if (o.format === 'psd') return new Blob([construirePsd(t)], { type: 'image/vnd.adobe.photoshop' })
   return aBlob(t, 'image/' + o.format, 0.95)
 }
+/** Une carte en PSD a calques : illustration, cadre (gabarit teinte), puis textes et icones (ce qui change quand on ajoute les textes). */
+async function psdCalques(c, langue) {
+  const spec = TYPES[c.type]
+  const contenu = langue && langue !== c.langue ? contenuDansLangue(c, langue) : c.contenu
+  const morceau = async (coupe) => {
+    const toile = document.createElement('canvas')
+    await dessinerCarte(toile, spec, contenu, { ...(await etatDe(c)), coupe }, IMAGES)
+    return toile
+  }
+  const art = await morceau('art')
+  const cadre = await morceau('cadre')
+  const sansTexte = await morceau('tout')
+  const complete = await rendreCarte(c, langue)
+  // les textes : les pixels de la carte complete qui different de « tout sauf les textes »
+  const texte = document.createElement('canvas')
+  texte.width = complete.width; texte.height = complete.height
+  const A = complete.getContext('2d').getImageData(0, 0, complete.width, complete.height)
+  const B = sansTexte.getContext('2d').getImageData(0, 0, complete.width, complete.height).data
+  const T = new ImageData(complete.width, complete.height)
+  for (let i = 0; i < A.data.length; i += 4) {
+    if (A.data[i] !== B[i] || A.data[i + 1] !== B[i + 1] || A.data[i + 2] !== B[i + 2] || A.data[i + 3] !== B[i + 3]) T.data.set(A.data.subarray(i, i + 4), i)
+  }
+  texte.getContext('2d').putImageData(T, 0, 0)
+  return new Blob([construirePsdCalques([
+    { nom: 'Illustration', toile: art }, { nom: 'Cadre', toile: cadre }, { nom: 'Textes et icones', toile: texte },
+  ], complete)], { type: 'image/vnd.adobe.photoshop' })
+}
 async function exporter(deuxLangues) {
   const c = carte()
   const o = await dialogueExport()
@@ -2625,8 +2652,8 @@ async function exporter(deuxLangues) {
   message('Export…')
   const langues = deuxLangues ? ['fr', 'en'] : [c.langue]
   for (const l of langues) {
-    const blob = await sortie(await rendreCarte(c, l), o)
-    const ext = '.' + (o.format === 'jpeg' ? 'jpg' : o.format)
+    const blob = o.format === 'psd-calques' ? await psdCalques(c, l) : await sortie(await rendreCarte(c, l), o)
+    const ext = '.' + (o.format === 'jpeg' ? 'jpg' : o.format.startsWith('psd') ? 'psd' : o.format)
     telecharger(blob, nomFichier(c, deuxLangues ? '_' + l : '') + ext)
     if (o.dos) {
       const dosToile = await rendreVerso(c, l)

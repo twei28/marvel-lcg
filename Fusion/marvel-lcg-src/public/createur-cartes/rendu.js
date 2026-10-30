@@ -122,7 +122,11 @@ export function pileDeCalques(spec, etat) {
  * `etat.art` / `etat.artDevant` : l'illustration derriere le gabarit et le premier plan par-dessus.
  */
 export async function dessinerCalques(ctx, spec, etat, dossierImages = 'img/') {
+  // etat.coupe (export PSD a calques) : 'art' = seulement l'illustration, 'cadre' = seulement le gabarit, sinon tout
   for (const calque of pileDeCalques(spec, etat)) {
+    const estArt = calque.role === 'photo' || calque.role === 'photofront'
+    if (etat.coupe === 'art' && !estArt) continue
+    if (etat.coupe === 'cadre' && estArt) continue
     if (calque.role === 'photo') {
       dessinerArt(ctx, spec, etat.art)
       dessinerNiveau(ctx, spec, etat, 'derriere')

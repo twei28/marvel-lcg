@@ -436,11 +436,12 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   etat = { ...etat, avecStats: !!(contenu.thw || contenu.thwEtoile) }
   await dessinerCalques(ctx, spec, etat, dossierImages)
-  if (attache) {
+  if (attache && etat.coupe !== 'art') {
     for (const [actif, nom, y] of [[attache.s, 'sch', attache.ySch], [attache.a, 'atk', attache.yAtk]]) {
       if (actif) ctx.drawImage(await chargerImage(`${dossierImages}attachment/${nom}_box.webp`), 0, y)
     }
   }
+  if (etat.coupe) return canvas // export PSD : un seul morceau (illustration, cadre ou « tout sauf les textes »), sans les textes
 
   ctx.save()
   if (spec.paysage) ctx.transform(0, 1, -1, 0, spec.largeur, 0)
