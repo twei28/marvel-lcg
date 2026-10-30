@@ -150,6 +150,8 @@ export function ouvrirExportPack(api) {
           }
         }
       }
+      // les pochettes du pack (30/10/2026) : en PNG, dans « pochettes/ »
+      if (api.pochettes) for (const f of await api.pochettes(c0?.dossier || '', portee.value)) fichiers.push(f)
       if (contact.i.checked) fichiers.push({ nom: 'planche-contact.jpg', octets: await octets(await aBlob(await planche(toilesContact), 'image/jpeg', 0.9)) })
       if (projet.i.checked) {
         const j = { format: 'createur-cartes', version: 2, cartes: [] }

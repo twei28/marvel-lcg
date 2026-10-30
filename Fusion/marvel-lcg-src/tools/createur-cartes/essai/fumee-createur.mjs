@@ -40,12 +40,12 @@ await p.goto(U + '/createur-cartes.html'); await attendreAccueil(p)
 ok('page en anglais par defaut', (await p.locator('#ui-en').getAttribute('aria-pressed')) === 'true')
 ok('carte en anglais par defaut', (await p.locator('#lang-en').getAttribute('aria-pressed')) === 'true')
 ok('indicateur serveur cache en mode local', await p.locator('#etat-serveur').isHidden())
-ok('accueil : trois « + » pour creer un dossier (heros, scenario, modulaire)', (await p.locator('.tuile-plus').count()) === 3)
+ok('accueil : six tuiles de creation (heros, scenario, modulaire + 3 pochettes)', (await p.locator('.tuile-creer').count()) === 6 && (await p.locator('.tuile-creer.pochette').count()) === 3)
 ok('accueil : aucun dossier au depart', (await p.locator('.tuile').count()) === 0)
 ok('accueil : l\'editeur est cache', await p.locator('#vue-editeur').isHidden())
 
 await essai('wizard de heros : dossier, template, 20 cartes, tuile avec l\'alter-ego', async () => {
-  await p.click('.tuile-plus:has-text("Heroes")'); await att(300)
+  await p.click('.tuile-creer.cartes[data-creer="heros"]'); await att(300)
   await p.fill('dialog[open] input', 'Thor'); await p.click('dialog[open] button:has-text("With the wizard")'); await att(800)
   await p.locator('dialog[open] label:has-text("Alter-ego name") input').fill('Jane Foster')
   await suivant()
@@ -189,6 +189,42 @@ await essai('illustration, calques, recadrage', async () => {
   const bt = p.locator('#champs button:visible:has-text("Cut out")'); if (await bt.count()) { await bt.first().click(); await p.waitForSelector('dialog'); ok('recadrage : fenetre', true); const restes = await p.locator('dialog[open]').count(); await p.evaluate(() => document.querySelectorAll('dialog[open]').forEach((x) => x.close())); ok('recadrage : fenetre fermable', restes <= 1); await att(300) } else ok('bouton recadrage', false, 'absent')
 })
 
+await essai('pochettes : wizard, editeur, export PNG, rattachement a un dossier, pack .zip', async () => {
+  const photo = path.join(ICI, '../../../public/createur-cartes/_essai/valkyrie-photo.png')
+  await versAccueil(p)
+  await p.click('.tuile-creer.pochette[data-creer="scenario"]'); await att(900)
+  let etapes = 0
+  for (let k = 0; k < 12; k++) {
+    const titre = await p.locator('dialog[open] .assistant-titre').innerText()
+    etapes++
+    if (/THE NAME AND THE TITLE/i.test(titre)) await p.locator('dialog[open] textarea').first().fill('Rhino')
+    if (/THE ARTWORK/i.test(titre)) { await p.locator('dialog[open] input[type=file]').first().setInputFiles(photo); await att(1200) }
+    if (!(await p.locator('dialog[open] button:has-text("Next ▶")').count())) break
+    await suivant()
+  }
+  ok('wizard de pochette : passe sur tout (>= 8 etapes)', etapes >= 8, etapes)
+  await p.click('dialog[open] button:has-text("Finish")'); await att(1500)
+  ok('pochette : l\'editeur s\'ouvre (fil d\'Ariane)', (await p.locator('#vue-pochette').isVisible()) && /RHINO/i.test(await p.locator('#fil').innerText()), await p.locator('#fil').innerText())
+  ok('pochette : l\'apercu est dessine', await p.evaluate(() => { const c = document.querySelector('#toile-pochette'); return c.width === 938 && c.height === 1538 }))
+  await p.evaluate(() => document.querySelectorAll('#form-pochette details').forEach((d) => { d.open = true }))
+  const png = await telechargement(() => p.click('#form-pochette button:has-text("Download as PNG")'), /\.png$/); ok('pochette : export PNG', png.taille > 20000, png.nom + ' ' + png.taille)
+  await versAccueil(p)
+  ok('pochette independante : rangee « Pochettes » a l\'accueil', (await p.locator('.rangee-pochettes .tuile').count()) === 1)
+  // rattachee a un dossier : depuis la colonne des cartes
+  await ouvrirTuile(p, 'Thor')
+  await p.click('#colonne-cartes .groupe-pochette button:has-text("New cover")'); await att(900)
+  await p.click('dialog[open] .assistant-types button >> nth=0'); await suivant()
+  ok('wizard de pochette dans un dossier : le dossier est preselectionne', /Thor/.test(await p.locator('dialog[open] .tuile-dossier.choisie').innerText()))
+  for (let k = 0; k < 10 && (await p.locator('dialog[open] button:has-text("Next ▶")').count()); k++) await suivant()
+  await p.click('dialog[open] button:has-text("Finish")'); await att(1500)
+  await p.click('#fil button:has-text("Thor")'); await att(1200)
+  ok('colonne des cartes : section « Pochette (1) »', /Cover \(1\)/i.test(await p.locator('#colonne-cartes .groupe-pochette summary').innerText()), await p.locator('#colonne-cartes .groupe-pochette summary').innerText())
+  // le pack .zip du dossier contient la pochette
+  await exporterVia(p, '#b-pack'); await p.waitForSelector('dialog')
+  const zip = await telechargement(() => p.click('dialog button:has-text("Export")'))
+  ok('pack .zip : contient « pochettes/ »', fs.readFileSync(zip.f).includes('pochettes/'), zip.nom)
+})
+
 await essai('exports', async () => {
   await exporterVia(p, '#b-export'); await p.waitForSelector('dialog')
   const png = await telechargement(() => p.click('dialog button:has-text("Export")')); ok('export PNG', /\.png$/.test(png.nom) && png.taille > 20000, png.nom + ' ' + png.taille)
@@ -196,9 +232,11 @@ await essai('exports', async () => {
   const zip = await telechargement(() => p.click('dialog button:has-text("Export")')); ok('pack .zip', /\.zip$/.test(zip.nom) && zip.taille > 20000, zip.nom + ' ' + zip.taille)
   const tts = await telechargement(() => exporterVia(p, '#b-tts')); ok('planche TTS', tts.taille > 10000, tts.nom + ' ' + tts.taille)
   await att(1500)
-  const proj = await telechargement(() => p.click('#p-exporter'), /\.json$/); ok('projet .json', /\.json$/.test(proj.nom) && proj.taille > 1000, proj.nom)
-  const n = await nbCartes(); await p.setInputFiles('#p-fichier', proj.f); await att(1800)
-  ok('reimport du projet : cartes ajoutees', (await nbCartes()) > n, `${n} -> ${await nbCartes()}`)
+  const proj = await telechargement(() => p.click('#p-exporter'), /\.zip$/); ok('tout enregistrer (.zip)', /\.zip$/.test(proj.nom) && proj.taille > 1000, proj.nom)
+  const n = await nbCartes(); await p.setInputFiles('#p-fichier', proj.f); await att(1200)
+  await p.click('dialog[open] button:has-text("Add")'); await att(1800)
+  await p.click('#vue-accueil .tuile >> nth=0'); await att(900)
+  ok('reimport de la sauvegarde complete (ajouter) : cartes ajoutees', (await nbCartes()) > n, `${n} -> ${await nbCartes()}`)
 })
 
 await essai('comparable (hors site : message de scan)', async () => {

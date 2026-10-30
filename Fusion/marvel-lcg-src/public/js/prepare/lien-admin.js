@@ -33,7 +33,7 @@
     'Fabriquer des cartes ou des images de pack': 'Make cards or pack images',
     'Que veux-tu fabriquer ?': 'What do you want to make?',
     'Cartes': 'Cards',
-    'Images de pack': 'Pack images',
+    'Créer des cartes, des héros, des scénarios et des pochettes de pack': 'Create cards, heroes, scenarios and pack covers',
     'Fabriquer une carte Marvel Champions (23 types) et l’exporter en image ou en planche à imprimer': 'Make a Marvel Champions card (23 types) and export it as an image or a print sheet',
     'Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit': 'Make a pack cover (hero, scenario, modular) from the template',
     'Corriger la couleur du fond de plateau': 'Fix the board background colour',
@@ -378,8 +378,7 @@
       titre.style.cssText = 'font-weight:700;margin:0 0 8px;';
       menuCreer.append(titre);
       [
-        ['🃏 ' + t('Cartes'), t('Fabriquer une carte Marvel Champions (23 types) et l’exporter en image ou en planche à imprimer'), origineSite + '/createur-cartes.html'],
-        ['🖼️ ' + t('Images de pack'), t('Fabriquer l’affiche d’un pack (héros, scénario, modulaire) à partir du gabarit'), origineSite + '/atelier-couvertures.html'],
+        ['🃏 MC Creator', t('Créer des cartes, des héros, des scénarios et des pochettes de pack'), origineSite + '/mc-creator'],
       ].forEach(function (choix) {
         var b = document.createElement('button');
         b.type = 'button';

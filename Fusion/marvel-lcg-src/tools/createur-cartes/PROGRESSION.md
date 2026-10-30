@@ -101,3 +101,9 @@ Decisions : voir la memoire « createur-de-cartes-chantier » (53 questions pose
 - **Couleurs** : `pickerCouleur` (pastille, hexa, pipette, recentes), pastilles de raccourci, 3 principaux + « Plus de couleurs », etiquette template / perso + « Revenir au template ». Le cadre sombre l'emporte sauf couleurs perso.
 - **Style** : `public/createur-cartes/style.css` (bleu, coins coupes, Bangers, fond a trame, 16 px).
 Tests : `essai/fumee-createur.mjs` (51 controles), `essai/tables-export.mjs` + `valider-tables.py`, `essai/sync-serveur/` (copie de base, test-sync.mjs), tous migres vers la nouvelle interface via `essai/aide-ui.mjs`.
+
+## REFONTE N°3 DU 30/10 (nuit) : MC Creator, sauvegarde complete, pochettes
+- **MC Creator** : page `/mc-creator` (l'ancienne `/createur-cartes.html` redirige, `site/orchestrateur.py`), titre « MC Creator », menu du jeu a une seule entree.
+- **Tout enregistrer (.zip)** : `projet.json` complet (version 3 : dossiers, genre, ordre, templates, cartes de depart, styles, pochettes, cartes avec images) + LISEZ-MOI ; « Importer » demande Ajouter / Remplacer tout (ids et liens recto-verso conserves). Test : `essai/aller-retour-complet.mjs`.
+- **Ecran de depart** : six tuiles (heros, scenario, modulaire + 3 pochettes), puis « Mes dossiers ».
+- **Pochettes** (couvertures de pack : heros, scenario, modulaire, boite d'extension) : moteur `pochettes.js` repris de `tools/atelier-couvertures/` (memes calques du PSD, meme recoloration) ; `projet.pochettes[]` (blobs, `dossier` ou ''), editeur dedie, wizard court, export PNG, dans le pack .zip du dossier. `atelier-couvertures.html` reste servie mais n'est plus liee.

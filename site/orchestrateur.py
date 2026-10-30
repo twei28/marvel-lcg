@@ -3824,7 +3824,7 @@ def _barre(pseudo: str) -> str:
                     % (lang.t("Mes signalements"),
                        ' <span class="pastille">%d</span>' % attente if attente else ""))
     # Le createur de cartes est ouvert a tout compte connecte (28/10/2026).
-    createur = '<a href="/createur-cartes.html">%s</a>' % lang.t("Créateur de cartes")
+    createur = '<a href="/mc-creator">%s</a>' % "MC Creator"
     # ⚠ LE RETOUR N'EST PAS UN CONFORT, C'EST LA SEULE SORTIE. Le site
     # s'installe en application (`MANIFESTE_APPLI`, `display: standalone`), donc
     # dans une fenetre SANS bouton Precedent. Signale par un joueur le
@@ -7196,7 +7196,7 @@ class Handler(BaseHTTPRequestHandler):
     # pas ouvrir une porte, il ferme une page de trop. Public = sans session
     # de toute facon (connexion, inscription, mot de passe oublie, deconnexion).
     _CREATEUR_EXACT = frozenset({
-        "/createur-cartes.html", "/atelier-couvertures.html", "/connexion", "/deconnexion",
+        "/mc-creator", "/createur-cartes.html", "/atelier-couvertures.html", "/connexion", "/deconnexion",
         "/inscription", "/reinitialisation", "/favicon.ico", "/favicon.png"})
     _CREATEUR_PREFIXES = ("/createur-cartes/", "/api/createur/")
 
@@ -7212,7 +7212,7 @@ class Handler(BaseHTTPRequestHandler):
         if methode != "GET":
             self._raccrocher()      # le corps n'est pas lu
         if methode == "GET" and self.chemin in ("/", "/index.html", "/entrer"):
-            self._rediriger("/createur-cartes.html")
+            self._rediriger("/mc-creator")
         else:
             self._repondre(403, "Réservé aux joueurs : ton compte ne donne accès"
                                 " qu'au créateur de cartes.".encode("utf-8"),
@@ -7241,7 +7241,10 @@ class Handler(BaseHTTPRequestHandler):
         # « Images de pack » (atelier-couvertures.html) : une page seule, sans API, qui se
         # rend dans le navigateur ; servie comme le createur, au meme titre (30/10/2026 :
         # le menu « Que veux-tu fabriquer ? » y renvoyait et le site repondait « Introuvable »).
-        if self.chemin in ("/createur-cartes.html", "/atelier-couvertures.html"):
+        # « MC Creator » : l'adresse courte (30/10/2026) ; le fichier garde son nom. L'ancienne adresse redirige.
+        if self.chemin == "/mc-creator":
+            relatif = ["createur-cartes.html"]
+        elif self.chemin in ("/createur-cartes.html", "/atelier-couvertures.html"):
             relatif = [self.chemin[1:]]
         else:
             brut = urllib.parse.unquote(self.chemin[len("/createur-cartes/"):])
@@ -7262,7 +7265,10 @@ class Handler(BaseHTTPRequestHandler):
         """Traite les routes du createur de cartes. True si la requete est la
         sienne (reponse envoyee), False pour laisser le reste du site faire."""
         chemin = self.chemin
-        statique = (chemin in ("/createur-cartes.html", "/atelier-couvertures.html")
+        if chemin == "/createur-cartes.html" and methode == "GET":
+            self._rediriger("/mc-creator")     # l'ancienne adresse (favoris, liens deja envoyes)
+            return True
+        statique = (chemin in ("/mc-creator", "/createur-cartes.html", "/atelier-couvertures.html")
                     or chemin.startswith("/createur-cartes/"))
         api = chemin.startswith("/api/createur/")
         if not (statique or api):
@@ -7632,7 +7638,7 @@ class Handler(BaseHTTPRequestHandler):
 
             if createur:
                 # Ni table, ni activite Discord : le seul endroit permis.
-                self._rediriger("/createur-cartes.html", [("Set-Cookie", cookie_session)])
+                self._rediriger("/mc-creator", [("Set-Cookie", cookie_session)])
                 return
 
             if instance_en_attente:

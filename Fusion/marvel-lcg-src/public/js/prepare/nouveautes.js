@@ -49,8 +49,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-30",
         genre: "coulisses",
-        fr: "Le créateur de cartes change de look (bleu, coins coupés) et s'ouvre sur une page de dossiers : un par héros avec son alter-ego, par scénario ou par modulaire. Le wizard passe sur tout, crée un héros avec ses 15 cartes, et chaque dossier a son template de couleurs. Les colonnes se redimensionnent à la souris.",
-        en: "The card maker gets the new look (blue, cut corners) and opens on a page of folders: one per hero with its alter-ego, per scenario or per modular set. The wizard goes through everything, creates a hero with its 15 cards, and each folder has its own colour template. The columns can be resized with the mouse.",
+        fr: "Le créateur de cartes devient « MC Creator » (adresse narwhalchampions.com/mc-creator), change de look (bleu, coins coupés) et s'ouvre sur une page de dossiers : un par héros avec son alter-ego, par scénario ou par modulaire. Le wizard passe sur tout et crée un héros avec ses 15 cartes ; chaque dossier a son template de couleurs ; les pochettes de pack (héros, scénario, extension) se fabriquent au même endroit. « Tout enregistrer » garde tout dans un seul .zip qu'on réimporte sur un autre ordinateur.",
+        en: "The card maker becomes \"MC Creator\" (narwhalchampions.com/mc-creator), gets the new look (blue, cut corners) and opens on a page of folders: one per hero with its alter-ego, per scenario or per modular set. The wizard goes through everything and creates a hero with its 15 cards; each folder has its own colour template; pack covers (hero, scenario, expansion) are made in the same place. \"Save everything\" keeps it all in a single .zip you can re-import on another computer.",
     },
     {
         date: "2026-10-30",

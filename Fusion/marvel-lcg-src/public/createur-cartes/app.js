@@ -10,6 +10,8 @@ import { ajouterFichiers, brancherSurcouche, calqueChoisi, choisirCalque, commen
 import { clicSurCarte } from './clic-carte.js'
 import { ouvrirRecadrage } from './recadrage.js'
 import { ouvrirExportPack } from './export-pack.js'
+import { creerZip } from './zip.js'
+import { MODES, NOMS_ETIQUETTE, POLICES, POLICE_PERSO, DIMENSIONS, chargerCalques, couleurOrigine, nouvellePochette, texteLibre, titreDefaut, changerMode, rendrePochette, nomFichierPochette } from './pochettes.js'
 import { brancherStyles, chargerStyles, enveloppePerso } from './styles-texte.js'
 import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
@@ -983,6 +985,7 @@ function renommerDossier(ancien, nouveau) {
   if (projet.dossiers?.[ancien]) { projet.dossiers[nouveau] = projet.dossiers[ancien]; delete projet.dossiers[ancien] }
   if (projet.gabarits?.[ancien]) { projet.gabarits[nouveau] = projet.gabarits[ancien]; delete projet.gabarits[ancien] }
   for (const m of projet.modeles ?? []) if (m.dossier === ancien) m.dossier = nouveau
+  for (const p of vraiesPochettes()) if (p.dossier === ancien) p.dossier = nouveau
   if (dossierOuvert === ancien) dossierOuvert = nouveau
   return null
 }
@@ -997,6 +1000,7 @@ function dupliquerDossier(nom) {
   }
   projet.dossiers[copie] = { genre: projet.dossiers[nom]?.genre ?? genreInfere(nom), ordre: (projet.dossiers[nom]?.ordre ?? 0) + 0.5 }
   if (projet.gabarits?.[nom]) projet.gabarits[copie] = structuredClone(projet.gabarits[nom])
+  for (const p of pochettesDuDossier(nom)) vraiesPochettes().push({ ...p, id: nouvelId(), dossier: copie, art: { ...p.art }, titre: { ...p.titre }, textes: p.textes.map((t) => ({ ...t })) })
   return copie
 }
 function supprimerDossier(nom) {
@@ -1004,6 +1008,7 @@ function supprimerDossier(nom) {
   delete projet.dossiers?.[nom]
   delete projet.gabarits?.[nom]
   projet.modeles = (projet.modeles ?? []).filter((m) => m.dossier !== nom)
+  projet.pochettes = vraiesPochettes().filter((p) => p.dossier !== nom)
   historiques.clear()
   if (!projet.cartes.some((c) => c.id === projet.courante)) projet.courante = null
 }
@@ -1017,6 +1022,7 @@ function montrerVue(v) {
   document.body.dataset.vue = v
   $('#vue-accueil').hidden = v !== 'accueil'
   $('#vue-editeur').hidden = v !== 'editeur'
+  $('#vue-pochette').hidden = v !== 'pochette'
   fermerMenus()
   majFil()
 }
@@ -1025,6 +1031,13 @@ function majFil() {
   if (!fil) return
   const sep = () => el('span', { class: 'sep' }, '›')
   if (vue === 'accueil') { fil.replaceChildren(el('span', { class: 'ici' }, 'Dossiers')); return }
+  if (vue === 'pochette') {
+    const p = pochetteParId(pochetteOuverte)
+    fil.replaceChildren(el('button', { type: 'button', onclick: () => afficherAccueil() }, 'Dossiers'), sep(),
+      ...(p?.dossier ? [el('button', { type: 'button', onclick: () => ouvrirDossier(p.dossier) }, p.dossier), sep()] : []),
+      el('span', { class: 'ici' }, (p && (nomPochette(p) || libellePochette(p.mode))) || 'Pochette'))
+    return
+  }
   const c = carte()
   fil.replaceChildren(
     el('button', { type: 'button', onclick: () => afficherAccueil() }, 'Dossiers'), sep(),
@@ -1111,12 +1124,25 @@ function fermerMenus() {
   const mx = $('#menu-export')
   if (mx) { mx.hidden = true; $('#b-exporter')?.setAttribute('aria-expanded', 'false') }
 }
+const CREER = [
+  ['heros', 'cartes', 'Héros', 'Un pack de héros : identité, alter-ego et ses 15 cartes.'],
+  ['scenario', 'cartes', 'Scénario', 'Le méchant, ses manigances et ses cartes de rencontre.'],
+  ['modulaire', 'cartes', 'Modulaire', 'Un set de cartes de rencontre, sans méchant.'],
+  ['heros', 'pochette', 'Pochette héros', 'La couverture d’un pack de héros.'],
+  ['scenario', 'pochette', 'Pochette scénario', 'La couverture d’un scénario (ou d’un modulaire).'],
+  ['boite', 'pochette', 'Pochette extension', 'L’avant d’une boîte d’extension.'],
+]
 function construireAccueil() {
   const racine = $('#vue-accueil')
   const recherche = el('input', { type: 'search', placeholder: 'Chercher un dossier ou une carte…', 'aria-label': 'Chercher un dossier ou une carte', value: filtreAccueil })
   recherche.addEventListener('input', () => { filtreAccueil = recherche.value; rendreGrilles() })
+  const creer = el('div', { class: 'grille-creer' }, ...CREER.map(([genre, famille, libelle, aide]) => el('button', {
+    class: `tuile-plus tuile-creer ${famille}`, type: 'button', 'data-creer': genre, 'data-famille': famille,
+    onclick: () => (famille === 'cartes' ? dialogueNouveauDossier(genre) : ouvrirWizardPochette(genre)),
+  }, el('span', { class: 'plus' }, '+'), el('span', { class: 'libelle' }, libelle), el('small', {}, aide))))
   racine.replaceChildren(
-    el('div', { class: 'accueil-tete' }, el('h2', {}, 'Dossiers'), recherche),
+    el('section', { class: 'zone-creer' }, el('h2', { class: 'grand-titre' }, 'Que veux-tu créer ?'), creer),
+    el('div', { class: 'accueil-tete' }, el('h2', {}, 'Mes dossiers'), recherche),
     el('div', { class: 'aide' }, 'Un dossier par héros (avec son alter-ego), par scénario ou par set modulaire. Clique sur un dossier pour travailler sur ses cartes.'),
     el('div', { id: 'grilles' }))
 }
@@ -1151,10 +1177,6 @@ function tuileDossier(d, grille) {
   })
   return t
 }
-function tuilePlus(libelle, genre) {
-  return el('button', { class: 'tuile-plus', type: 'button', onclick: () => dialogueNouveauDossier(genre) },
-    el('span', { class: 'plus' }, '+'), el('span', { class: 'libelle' }, libelle))
-}
 function rendreGrilles() {
   const zone = $('#grilles')
   if (!zone) return
@@ -1169,10 +1191,14 @@ function rendreGrilles() {
     return el('section', { class: 'rangee-dossiers' }, el('h3', {}, titre), grille)
   }
   const noeuds = [
-    rangee('Héros', ['heros'], [tuilePlus('Héros', 'heros')]),
-    rangee('Scénarios et modulaires', ['scenario', 'modulaire'], [tuilePlus('Scénario', 'scenario'), tuilePlus('Modulaire', 'modulaire')]),
+    rangee('Héros', ['heros'], []),
+    rangee('Scénarios et modulaires', ['scenario', 'modulaire'], []),
     rangee('Divers', ['divers'], []),
   ].filter(Boolean)
+  // les pochettes independantes (celles d'un dossier vivent dans ce dossier) ; une recherche les trouve toutes
+  const pochettes = vraiesPochettes().filter((p) => (q ? [nomPochette(p), p.dossier, libellePochette(p.mode)].some((x) => String(x ?? '').toLowerCase().includes(q)) : !p.dossier))
+  if (pochettes.length) noeuds.push(el('section', { class: 'rangee-dossiers rangee-pochettes' }, el('h3', {}, 'Pochettes'), el('div', { class: 'grille-dossiers' }, ...pochettes.map(tuilePochette))))
+  if (!noeuds.length && !q) noeuds.push(el('div', { class: 'aide' }, 'Tu n’as encore rien créé : choisis une tuile ci-dessus pour commencer.'))
   if (q) {
     const trouvees = vraiesCartes().filter((c) => [c.contenu.titre, c.contenu.regles, c.contenu.traits, c.dossier].some((x) => String(x ?? '').toLowerCase().includes(q)))
     if (trouvees.length) noeuds.push(el('section', { class: 'trouvees' }, el('h3', { style: 'margin:0 0 6px;font:400 26px var(--affiche);color:#fff' }, 'Cartes trouvées'),
@@ -1195,7 +1221,7 @@ function menuDossier(ancre, d) {
     ['Dupliquer', () => { dupliquerDossier(d.nom); sauvegarderPlusTard(); rendreGrilles(); message('Dossier dupliqué.') }],
     ['Exporter le pack…', () => {
       if (!d.cartes.length) return message('Ce dossier est vide : rien à exporter.')
-      ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte: () => d.cartes[0], rendre: rendreCarte, rendreVerso, serialiser })
+      ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte: () => d.cartes[0], rendre: rendreCarte, rendreVerso, serialiser, pochettes: pochettesPourPack })
     }],
     ['Supprimer…', () => dialogueSupprimerDossier(d), true],
   ])
@@ -1276,6 +1302,22 @@ function majListe() {
     return d
   })
   if (!noeuds.length) noeuds.push(el('div', { class: 'aide' }, q ? 'Aucune carte ne correspond.' : 'Aucune carte.'))
+  if (!q) {
+    const genre = projet.dossiers?.[dossierOuvert]?.genre ?? genreInfere(dossierOuvert)
+    const modeDefaut = genre === 'scenario' ? 'scenario' : genre === 'modulaire' ? 'modulaire' : 'heros'
+    const poch = pochettesDuDossier(dossierOuvert)
+    const d = el('details', { class: 'groupe-type groupe-pochette', open: !groupesFermes.has('_pochette') },
+      el('summary', {}, `Pochette (${poch.length})`),
+      el('div', { class: 'liste-cartes' },
+        ...poch.map((p) => {
+          const m = el('div', { class: 'mini mini-pochette' }); miniaturePochetteDans(m, p)
+          return el('button', { type: 'button', class: 'carte-liste', style: '--teinte:#965cc4', onclick: () => ouvrirPochette(p.id) }, m,
+            el('span', { class: 'titre' }, nomPochette(p) || '(sans titre)', el('small', {}, libellePochette(p.mode))), el('span'))
+        }),
+        el('button', { class: 'btn petit', type: 'button', onclick: () => ouvrirWizardPochette(modeDefaut, dossierOuvert) }, '+ Nouvelle pochette')))
+    d.addEventListener('toggle', () => { d.open ? groupesFermes.delete('_pochette') : groupesFermes.add('_pochette') })
+    noeuds.unshift(d)
+  }
   l.replaceChildren(...noeuds)
   l.dataset.total = String(vraiesCartes().length) // toutes les cartes du projet, quel que soit le dossier ouvert (tests)
   l.style.cssText = 'display:flex;flex-direction:column;gap:8px'
@@ -1447,12 +1489,12 @@ function lancerAssistant(titreAssistant, etapes, fin, opts = {}) {
   let minuteur = 0
   let n = 0
   async function redessiner() {
-    if (!opts.apercu || opts.scene) return
+    if ((!opts.apercu && !opts.rendreCanvas) || opts.scene) return
     const k = ++n
-    const c = opts.apercu(valeurs)
+    const c = opts.rendreCanvas ? true : opts.apercu(valeurs)
     if (!c) return
     try {
-      const t = await rendreCarte(c)
+      const t = opts.rendreCanvas ? await opts.rendreCanvas(valeurs) : await rendreCarte(c)
       if (k !== n) return
       toile.width = t.width
       toile.height = t.height
@@ -1496,7 +1538,7 @@ function lancerAssistant(titreAssistant, etapes, fin, opts = {}) {
   reconstruireEtape = () => rendre()
   const figure = opts.scene
     ? el('figure', { class: 'assistant-figure' })
-    : opts.apercu ? el('figure', { class: 'assistant-figure' }, toile, el('figcaption', { class: 'aide' }, 'Aperçu')) : null
+    : (opts.apercu || opts.rendreCanvas) ? el('figure', { class: 'assistant-figure' }, toile, el('figcaption', { class: 'aide' }, 'Aperçu')) : null
   const colonne = el('div', { class: 'assistant-colonne' }, corps, alerte,
     el('div', { class: 'rang assistant-boutons' }, gauche, droite),
     opts.pied ? el('div', { class: 'assistant-pied' }, opts.pied(() => { termine = true; d.close() })) : null)
@@ -2028,6 +2070,366 @@ function brancherMenuExport() {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fermerMenus() })
 }
 
+// ---------------------------------------------------------------- les pochettes (couvertures de pack)
+// 30/10/2026 : « Images de pack » est integre a MC Creator (moteur dans pochettes.js). Une pochette est rattachee a un dossier OU
+// independante (rangee « Pochettes » en bas de l'accueil). Elle s'enregistre avec le projet (navigateur + « Tout enregistrer »)
+// et part dans le pack .zip du dossier. Pas d'envoi au serveur pour l'instant.
+let pochetteOuverte = null // l'id de la pochette ouverte dans l'editeur de pochette
+const vraiesPochettes = () => (projet.pochettes ??= [])
+const pochetteParId = (id) => vraiesPochettes().find((p) => p.id === id)
+const pochettesDuDossier = (nom) => vraiesPochettes().filter((p) => (p.dossier || '') === nom)
+const libellePochette = (mode) => tr(MODES.find(([m]) => m === mode)?.[1] ?? 'Pochette')
+const nomPochette = (p) => p.nom || p.titre?.texte?.split('\n')[0] || ''
+
+// -- miniatures
+const miniaturesPochettes = new Map()
+let minPochettesEnCours = false
+const filePochettes = []
+const clePochette = (p) => JSON.stringify([p.mode, p.titre, p.art?.x, p.art?.y, p.art?.zoom, p.art?.blob?.size, p.titre?.blob?.size, p.couleurBoite, p.couleurEtiquette, p.textes])
+function miniaturePochetteDans(noeud, p) {
+  const cle = clePochette(p)
+  const prete = miniaturesPochettes.get(cle) ?? miniaturesPochettes.get('id:' + p.id)
+  if (prete) noeud.style.backgroundImage = `url(${prete})`
+  if (miniaturesPochettes.has(cle)) return
+  filePochettes.push({ noeud, p: { ...p, titre: { ...p.titre }, art: { ...p.art }, textes: p.textes.map((t) => ({ ...t })) }, cle })
+  setTimeout(pomperPochettes, 250)
+}
+async function pomperPochettes() {
+  if (minPochettesEnCours) return
+  minPochettesEnCours = true
+  while (filePochettes.length) {
+    const j = filePochettes.shift()
+    if (miniaturesPochettes.has(j.cle)) { j.noeud.style.backgroundImage = `url(${miniaturesPochettes.get(j.cle)})`; continue }
+    if (!j.noeud.isConnected) continue
+    try {
+      const t = await rendrePochette(j.p, { apercu: false })
+      const m = document.createElement('canvas')
+      m.width = 160; m.height = Math.round(t.height * (160 / t.width))
+      m.getContext('2d').drawImage(t, 0, 0, m.width, m.height)
+      const url = m.toDataURL('image/jpeg', 0.72)
+      if (miniaturesPochettes.size > 200) miniaturesPochettes.clear()
+      miniaturesPochettes.set(j.cle, url); miniaturesPochettes.set('id:' + j.p.id, url)
+      j.noeud.style.backgroundImage = `url(${url})`
+    } catch {}
+    await new Promise((r) => setTimeout(r, 25))
+  }
+  minPochettesEnCours = false
+}
+
+// -- l'accueil : la rangee « Pochettes » et le menu d'une pochette
+function tuilePochette(p) {
+  const mini = el('div', { class: 'mini mini-pochette' })
+  miniaturePochetteDans(mini, p)
+  const t = el('div', { class: 'tuile tuile-pochette', role: 'button', tabindex: '0', style: '--teinte:#965cc4', 'data-nom': nomPochette(p) },
+    mini,
+    el('div', {}, el('div', { class: 'nom' }, nomPochette(p) || '(sans titre)'), el('div', { class: 'alter' }, libellePochette(p.mode)),
+      p.dossier ? el('div', { class: 'compte' }, '📁 ' + p.dossier) : null),
+    el('button', { class: 'menu-pt', type: 'button', title: 'Actions de la pochette', 'aria-label': 'Actions de la pochette', onclick: (e) => { e.stopPropagation(); menuPochette(e.currentTarget, p) } }, '⋯'))
+  t.addEventListener('click', () => ouvrirPochette(p.id))
+  t.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ouvrirPochette(p.id) } })
+  return t
+}
+function menuPochette(ancre, p) {
+  menuFlottant(ancre, [
+    ['Ouvrir', () => ouvrirPochette(p.id)],
+    ['Renommer…', () => {
+      const champ = el('input', { type: 'text', value: nomPochette(p) })
+      dialogue('Renommer la pochette', el('div', { class: 'assistant-pile' }, el('label', {}, 'Nouveau nom', champ)),
+        [{ texte: 'Annuler' }, { texte: 'Renommer', principal: true, action: () => { p.nom = champ.value.trim(); sauvegarderPlusTard(); vue === 'accueil' ? rendreGrilles() : majListe() } }])
+      champ.select()
+    }],
+    ['Dupliquer', () => { const c = structuredClone({ ...p, art: { ...p.art, blob: null }, titre: { ...p.titre, blob: null }, policeBlob: null }); Object.assign(c, { id: nouvelId(), nom: nomPochette(p) ? `${nomPochette(p)} (${langueUI() === 'fr' ? 'copie' : 'copy'})` : '' }); c.art.blob = p.art.blob; c.titre.blob = p.titre.blob; c.policeBlob = p.policeBlob; vraiesPochettes().push(c); sauvegarderPlusTard(); vue === 'accueil' ? rendreGrilles() : majListe(); message('Pochette dupliquée.') }],
+    ['Exporter en PNG', () => exporterPochette(p)],
+    ['Supprimer…', () => { if (!confirm(tr(`Supprimer « ${nomPochette(p) || libellePochette(p.mode)} » ?`))) return; projet.pochettes = vraiesPochettes().filter((x) => x.id !== p.id); sauvegarderPlusTard(); if (vue === 'pochette') afficherAccueil(); else (vue === 'accueil' ? rendreGrilles() : majListe()) }, true],
+  ])
+}
+
+// -- la vue « editeur de pochette »
+let minuteurPochette = 0
+let textePochetteChoisi = -1
+async function dessinerPochette() {
+  const p = pochetteParId(pochetteOuverte)
+  if (!p) return
+  const n = ++seqPochette
+  const t = await rendrePochette(p, { choisi: textePochetteChoisi })
+  if (n !== seqPochette) return
+  const vis = $('#toile-pochette')
+  vis.width = t.width; vis.height = t.height
+  vis.getContext('2d').drawImage(t, 0, 0)
+  vis.boites = t.boites
+}
+let seqPochette = 0
+function changementPochette() {
+  clearTimeout(minuteurPochette)
+  minuteurPochette = setTimeout(dessinerPochette, 40)
+  sauvegarderPlusTard()
+  majFil()
+}
+function ouvrirPochette(id) {
+  const p = pochetteParId(id)
+  if (!p) return
+  validerHistorique()
+  pochetteOuverte = id
+  textePochetteChoisi = -1
+  document.body.removeAttribute('data-vide')
+  montrerVue('pochette')
+  construireFormulairePochette()
+  dessinerPochette()
+}
+const curseurP = (label, obj, cle, min, max, pas, defaut) => {
+  const r = el('input', { type: 'range', min, max, step: pas })
+  r.value = obj()[cle] ?? defaut
+  r.addEventListener('input', () => { obj()[cle] = Number(r.value); changementPochette() })
+  r.addEventListener('dblclick', () => { r.value = defaut; obj()[cle] = defaut; changementPochette() })
+  return el('label', {}, label, r)
+}
+const coulP = (label, obj, cle, defaut) => el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, label),
+  pickerCouleur(obj()[cle] ?? defaut, (v) => { obj()[cle] = v; changementPochette() }))
+const cochP = (label, obj, cle) => {
+  const i = el('input', { type: 'checkbox' }); i.checked = !!obj()[cle]
+  i.addEventListener('change', () => { obj()[cle] = i.checked; changementPochette() })
+  return el('label', { class: 'ligne' }, i, label)
+}
+/** Les reglages de l'illustration d'une pochette : image, zoom, decalages. */
+function blocIllustrationPochette(p, apres = null) {
+  const f = el('input', { type: 'file', accept: 'image/*' })
+  f.addEventListener('change', () => { if (f.files[0]) { p.art.blob = f.files[0]; p.art.x = p.art.y = 0; p.art.zoom = 1; changementPochette(); apres?.() } })
+  return [
+    el('label', {}, 'Image (ou glisse-la sur l’aperçu)', f),
+    curseurP('Zoom', () => p.art, 'zoom', 0.5, 4, 0.01, 1),
+    el('div', { class: 'rang' }, curseurP('Décalage X', () => p.art, 'x', -1000, 1000, 1, 0), curseurP('Décalage Y', () => p.art, 'y', -1500, 1500, 1, 0)),
+    p.art.blob ? el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { p.art.blob = null; changementPochette(); apres?.() } }, 'Retirer l’image') : null,
+    el('div', { class: 'aide' }, 'Glisse sur l’aperçu pour déplacer l’image, molette pour zoomer.'),
+  ]
+}
+function blocTitrePochette(p, apres = null) {
+  const t = () => p.titre
+  const zone = el('textarea', { rows: 2, placeholder: 'Nom du pack' }); zone.value = p.titre.texte
+  zone.addEventListener('input', () => { p.titre.texte = zone.value; changementPochette() })
+  const fichier = el('input', { type: 'file', accept: 'image/*' })
+  fichier.addEventListener('change', () => { p.titre.blob = fichier.files[0] ?? null; changementPochette(); apres?.() })
+  const police = el('select', {}, ...POLICES.map(([v, n]) => el('option', { value: v }, n)), p.policeBlob ? el('option', { value: POLICE_PERSO }, 'Ma police') : null, el('option', { value: '__ajouter' }, 'Ma police (.ttf / .otf)…'))
+  police.value = p.titre.police
+  const fp = el('input', { type: 'file', accept: '.ttf,.otf,.woff,.woff2', hidden: true })
+  fp.addEventListener('change', () => { if (fp.files[0]) { p.policeBlob = fp.files[0]; p.titre.police = POLICE_PERSO; changementPochette(); apres?.() } })
+  police.addEventListener('change', () => { if (police.value === '__ajouter') { police.value = p.titre.police; fp.click(); return } p.titre.police = police.value; changementPochette() })
+  return [
+    el('label', {}, 'Texte (une ligne par retour)', zone),
+    el('label', {}, 'Ou une image de titre déjà dessinée', fichier),
+    p.titre.blob ? el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { p.titre.blob = null; changementPochette(); apres?.() } }, 'Retirer l’image de titre') : null,
+    el('label', {}, 'Police', police), fp,
+    coulP('Remplissage haut', t, 'haut', '#e23a6a'), coulP('Remplissage bas', t, 'bas', '#a3123a'), coulP('Contour', t, 'contour', '#ffffff'),
+    curseurP('Épaisseur du contour', t, 'epaisseur', 0, 40, 1, 0), curseurP('Taille', t, 'taille', 20, 400, 1, TITRE_DEFAUT(p.mode)),
+    el('div', { class: 'rang' }, curseurP('Position horizontale', t, 'x', -400, 400, 1, 0), curseurP('Position verticale', t, 'y', -600, 600, 1, 0)),
+    cochP('Ombre portée', t, 'ombre'),
+  ]
+}
+const TITRE_DEFAUT = (mode) => titreDefaut(mode).taille
+function blocCouleursPochette(p, apres = null) {
+  const boite = couleurOrigine(p.mode, 'boite'), etiquette = couleurOrigine(p.mode, 'etiquette')
+  return [
+    el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Boîte du bas'),
+      pickerCouleur(p.couleurBoite ?? boite, (v) => { p.couleurBoite = v; changementPochette() })),
+    el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, `Étiquette (« ${NOMS_ETIQUETTE[p.mode]} »)`),
+      pickerCouleur(p.couleurEtiquette ?? etiquette, (v) => { p.couleurEtiquette = v; changementPochette() })),
+    el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { p.couleurBoite = p.couleurEtiquette = null; changementPochette(); apres ? apres() : construireFormulairePochette() } }, 'Revenir aux couleurs d’origine'),
+  ]
+}
+function blocMentionsPochette(p, apres = null) {
+  const liste = el('div', { class: 'liste-textes' })
+  const relancer = () => (apres ? apres() : construireFormulairePochette())
+  p.textes.forEach((t, i) => {
+    const zone = el('textarea', { rows: 2, placeholder: 'Ton texte' }); zone.value = t.texte
+    zone.addEventListener('input', () => { t.texte = zone.value; changementPochette() })
+    const police = el('select', {}, ...POLICES.map(([v, n]) => el('option', { value: v }, n)))
+    police.value = t.police
+    police.addEventListener('change', () => { t.police = police.value; changementPochette() })
+    liste.append(el('div', { class: 'texte-libre' + (i === textePochetteChoisi ? ' choisi' : ''), onpointerdown: () => { if (textePochetteChoisi !== i) { textePochetteChoisi = i; dessinerPochette() } } },
+      zone, police,
+      el('div', { class: 'rang' }, el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Couleur'), pickerCouleur(t.couleur, (v) => { t.couleur = v; changementPochette() })),
+        el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Contour'), pickerCouleur(t.contour, (v) => { t.contour = v; changementPochette() }))),
+      el('div', { class: 'rang' }, curseurP('Taille', () => t, 'taille', 12, 200, 1, 44), curseurP('Épaisseur du contour', () => t, 'epaisseur', 0, 40, 1, 6)),
+      el('div', { class: 'rang' }, cochP('Gras', () => t, 'gras'), cochP('Ombre', () => t, 'ombre'),
+        el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { p.textes.splice(i, 1); textePochetteChoisi = -1; changementPochette(); relancer() } }, 'Supprimer'))))
+  })
+  return [
+    el('div', { class: 'aide' }, 'Les logos de la gamme sont intégrés au gabarit. Ajoute ici le nom du créateur, une mention, ce que tu veux ; glisse un texte sur l’aperçu pour le placer.'),
+    liste,
+    el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { p.textes.push(texteLibre(p.mode, carte()?.langue ?? (langueUI() === 'fr' ? 'fr' : 'en'))); textePochetteChoisi = p.textes.length - 1; changementPochette(); relancer() } }, '+ Ajouter un texte'),
+  ]
+}
+function construireFormulairePochette() {
+  const racine = $('#form-pochette')
+  racine.replaceChildren()
+  const p = pochetteParId(pochetteOuverte)
+  if (!p) return
+  const nom = el('input', { type: 'text', value: p.nom ?? '', placeholder: 'ex. Valkyrie' })
+  nom.addEventListener('input', () => { p.nom = nom.value; changementPochette() })
+  const mode = el('select', {}, MODES.map(([m, n]) => el('option', { value: m }, n)))
+  mode.value = p.mode
+  mode.addEventListener('change', () => { changerMode(p, mode.value); changementPochette(); construireFormulairePochette() })
+  const dossier = el('select', {}, el('option', { value: '' }, 'Indépendante (sans dossier)'), ...listeDossiers().map((d) => el('option', { value: d.nom }, d.nom)))
+  dossier.value = p.dossier || ''
+  dossier.addEventListener('change', () => { p.dossier = dossier.value; changementPochette() })
+  const f = [
+    section('Général', true, el('label', {}, 'Nom de la pochette', nom), el('label', {}, 'Type de pochette', mode), el('label', {}, 'Rattachée au dossier', dossier)),
+    section('Illustration', false, ...blocIllustrationPochette(p, construireFormulairePochette)),
+    section('Titre', false, ...blocTitrePochette(p, construireFormulairePochette)),
+    section('Couleurs', false, ...blocCouleursPochette(p)),
+    section('Logos et mentions', false, ...blocMentionsPochette(p)),
+    section('Exporter', false, el('button', { class: 'btn principal', type: 'button', onclick: () => exporterPochette(p) }, 'Télécharger en PNG'), el('div', { class: 'aide' }, `PNG ${DIMENSIONS[p.mode][0]} × ${DIMENSIONS[p.mode][1]}. Elle part aussi dans le pack .zip de son dossier.`)),
+  ]
+  replierSections(f, 'pochette:' + p.id)
+  racine.append(...f)
+}
+/** Les pochettes d'un pack (dossier ou tout le projet), en PNG, pour le .zip : [{ nom, octets }]. */
+async function pochettesPourPack(dossier, portee) {
+  const liste = portee === 'tout' ? vraiesPochettes() : pochettesDuDossier(dossier || '')
+  const sortie = []
+  let k = 0
+  for (const p of liste) {
+    const t = await rendrePochette(p, { apercu: false })
+    const blob = await new Promise((ok) => t.toBlob(ok, 'image/png'))
+    sortie.push({ nom: `pochettes/${nomFichierPochette(p)}${liste.length > 1 ? '-' + ++k : ''}.png`, octets: new Uint8Array(await blob.arrayBuffer()) })
+  }
+  return sortie
+}
+async function exporterPochette(p) {
+  const t = await rendrePochette(p, { apercu: false })
+  const blob = await new Promise((ok) => t.toBlob(ok, 'image/png'))
+  telecharger(blob, nomFichierPochette(p) + '.png')
+  message(`PNG exporté (${t.width} × ${t.height}).`)
+}
+/** Souris sur l'apercu de la pochette : glisser un texte ou l'image, molette pour zoomer l'image. */
+function brancherPochette() {
+  const toile = $('#toile-pochette')
+  let prise = null
+  const pointe = (e) => {
+    const r = toile.getBoundingClientRect(), k = toile.width / r.width
+    const px = (e.clientX - r.left) * k, py = (e.clientY - r.top) * k
+    const boites = toile.boites ?? []
+    for (let i = boites.length - 1; i >= 0; i--) { const b = boites[i]; if (b && px >= b.x && px <= b.x + b.l && py >= b.y && py <= b.y + b.h) return i }
+    return -1
+  }
+  toile.addEventListener('pointerdown', (e) => {
+    const p = pochetteParId(pochetteOuverte); if (!p) return
+    const i = pointe(e)
+    if (i >= 0) { textePochetteChoisi = i; const t = p.textes[i]; prise = { t, x: e.clientX, y: e.clientY, tx: t.x, ty: t.y } }
+    else { textePochetteChoisi = -1; prise = { x: e.clientX, y: e.clientY, ax: p.art.x, ay: p.art.y } }
+    toile.setPointerCapture(e.pointerId)
+  })
+  toile.addEventListener('pointermove', (e) => {
+    if (!prise) return
+    const p = pochetteParId(pochetteOuverte); if (!p) return
+    const k = toile.width / toile.getBoundingClientRect().width
+    if (prise.t) { prise.t.x = prise.tx + (e.clientX - prise.x) * k; prise.t.y = prise.ty + (e.clientY - prise.y) * k }
+    else { p.art.x = prise.ax + (e.clientX - prise.x) * k; p.art.y = prise.ay + (e.clientY - prise.y) * k }
+    changementPochette()
+  })
+  const fin = () => { if (prise) { prise = null; construireFormulairePochette() } }
+  toile.addEventListener('pointerup', fin); toile.addEventListener('pointercancel', fin)
+  toile.addEventListener('wheel', (e) => {
+    const p = pochetteParId(pochetteOuverte); if (!p || !p.art.blob) return
+    e.preventDefault()
+    p.art.zoom = Math.max(0.5, Math.min(4, p.art.zoom * (e.deltaY < 0 ? 1.05 : 1 / 1.05)))
+    changementPochette()
+    clearTimeout(brancherPochette.t); brancherPochette.t = setTimeout(construireFormulairePochette, 300)
+  }, { passive: false })
+  toile.addEventListener('dragover', (e) => e.preventDefault())
+  toile.addEventListener('drop', (e) => {
+    e.preventDefault()
+    const p = pochetteParId(pochetteOuverte); const f = [...e.dataTransfer.files].find((x) => x.type.startsWith('image/'))
+    if (p && f) { p.art.blob = f; p.art.x = p.art.y = 0; p.art.zoom = 1; changementPochette(); construireFormulairePochette() }
+  })
+}
+
+// -- le wizard de pochette (court, passe sur tout)
+function ouvrirWizardPochette(modeDepart = 'heros', dossierDepart = '') {
+  const p = nouvellePochette(modeDepart, dossierDepart)
+  const pile = (...n) => el('div', { class: 'assistant-pile' }, ...n.flat().filter(Boolean))
+  const aide = {
+    heros: 'La couverture d’un pack de héros (format carte, titre en haut).',
+    scenario: 'La couverture d’un scénario (format carte, titre en bas).',
+    modulaire: 'La couverture d’un set modulaire (comme le scénario, étiquette « Modular Set »).',
+    boite: 'L’avant d’une grosse boîte d’extension (format carré).',
+  }
+  const etapes = [
+    {
+      titre: 'Quelle pochette ?', court: 'Type',
+      aide: 'Le type fixe le format, les logos et l’étiquette.',
+      plus: 'Héros, scénario et modulaire ont le format carte du jeu (938 × 1538) avec leurs propres logos ; l’extension est carrée (1000 × 1000), pour l’avant d’une boîte.',
+      construire: (v, rafraichir) => el('div', { class: 'assistant-types' }, ...MODES.map(([m, nom]) => el('button', {
+        class: 'btn petit' + (p.mode === m ? ' principal' : ''), type: 'button', onclick: () => { changerMode(p, m); rafraichir() },
+      }, el('b', {}, tr(nom)), el('span', {}, tr(aide[m]))))),
+    },
+    {
+      titre: 'Rattachement', court: 'Dossier', passable: true,
+      aide: 'À un dossier existant, ou indépendante.',
+      plus: 'Rattachée à un dossier, la pochette apparaît dans sa colonne des cartes et part dans son pack .zip. Indépendante, elle est rangée dans la rangée « Pochettes » de l’accueil.',
+      construire: (v, rafraichir) => {
+        const tuiles = el('div', { class: 'assistant-tuiles' },
+          el('button', { type: 'button', class: 'tuile-dossier' + (!p.dossier ? ' choisie' : ''), style: '--teinte:#965cc4', onclick: () => { p.dossier = ''; rafraichir() } },
+            el('span', { class: 'tuile-nom' }, 'Indépendante'), el('small', {}, 'Sans dossier')),
+          ...listeDossiers().map((d) => el('button', { type: 'button', class: 'tuile-dossier' + (p.dossier === d.nom ? ' choisie' : ''), onclick: () => { p.dossier = d.nom; rafraichir() } },
+            el('span', { class: 'tuile-nom' }, '📁 ' + d.nom), el('small', {}, `${d.cartes.length} carte(s)`))))
+        return pile(tuiles)
+      },
+    },
+    {
+      titre: 'Le nom et le titre', court: 'Titre', passable: true,
+      aide: 'Le titre écrit sur la pochette, et son nom dans ta liste.',
+      plus: 'Le titre peut être un texte (avec la police et les couleurs de ton choix, à l’étape suivante) ou une image déjà dessinée. Le nom sert seulement à retrouver la pochette dans tes listes ; sans nom, c’est le titre qui sert.',
+      construire: () => {
+        const nom = el('input', { type: 'text', value: p.nom, placeholder: 'ex. Valkyrie' })
+        nom.addEventListener('input', () => { p.nom = nom.value })
+        const zone = el('textarea', { rows: 2, placeholder: 'Nom du pack' }); zone.value = p.titre.texte
+        zone.addEventListener('input', () => { p.titre.texte = zone.value })
+        const fichier = el('input', { type: 'file', accept: 'image/*' })
+        fichier.addEventListener('change', () => { p.titre.blob = fichier.files[0] ?? null })
+        return pile(el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Nom de la pochette'), nom),
+          el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Titre (une ligne par retour)'), zone),
+          el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Ou une image de titre déjà dessinée'), fichier))
+      },
+    },
+    {
+      titre: 'L’illustration', court: 'Image', passable: true,
+      aide: 'L’image de fond, avec son zoom et sa position.',
+      plus: 'Prends une image assez grande pour couvrir la pochette. Zoom et décalages règlent le cadrage ; dans l’éditeur de pochette, tu pourras aussi la déplacer à la souris sur l’aperçu.',
+      construire: (v, rafraichir) => pile(blocIllustrationPochette(p, rafraichir)),
+    },
+    {
+      titre: 'Le style du titre', court: 'Style', passable: true,
+      aide: 'Police, couleurs, contour, taille et position du titre.',
+      plus: 'Le titre est dessiné avec un dégradé (haut / bas), un contour et une ombre facultatifs. Tu peux charger ta propre police (.ttf, .otf). Si tu as chargé une image de titre, seuls la taille et la position comptent.',
+      construire: (v, rafraichir) => pile(blocTitrePochette(p, rafraichir)),
+    },
+    {
+      titre: 'Les couleurs', court: 'Couleurs', passable: true,
+      aide: 'La boîte du bas et l’étiquette : un picker chacune.',
+      plus: 'Les couleurs sont appliquées en gardant les ombres et les blancs du gabarit. « Revenir aux couleurs d’origine » remet celles du PSD.',
+      construire: (v, rafraichir) => pile(blocCouleursPochette(p, rafraichir)),
+    },
+    {
+      titre: 'Logos et mentions', court: 'Mentions', passable: true,
+      aide: 'Le nom du créateur et tes textes libres.',
+      plus: 'Les logos de la gamme sont déjà dans le gabarit. Ajoute un texte pour le nom du créateur ou une mention : tu le places ensuite à la souris dans l’éditeur de pochette.',
+      construire: (v, rafraichir) => pile(blocMentionsPochette(p, rafraichir)),
+    },
+    {
+      titre: 'C’est prête', court: 'Fin',
+      aide: 'La pochette s’ouvre dans son éditeur, pour les finitions.',
+      construire: () => el('ul', { style: 'margin:0;padding-left:18px' },
+        el('li', {}, `Type : ${libellePochette(p.mode)}`), el('li', {}, `Titre : ${(p.titre.texte || '').split('\n')[0] || '—'}`), el('li', {}, `Dossier : ${p.dossier || tr('Indépendante')}`)),
+    },
+  ]
+  lancerAssistant('Nouvelle pochette', etapes, () => {
+    vraiesPochettes().push(p)
+    sauvegarderPlusTard()
+    ouvrirPochette(p.id)
+  }, { rendreCanvas: () => rendrePochette(p) })
+}
+
+
 // ---------------------------------------------------------------- exports
 function telecharger(blob, nom) {
   const a = el('a', { href: URL.createObjectURL(blob), download: nom })
@@ -2193,12 +2595,37 @@ async function plancheTTS() {
 }
 
 // ---------------------------------------------------------------- projet (fichier)
-async function exporterProjet() {
+/** Le projet entier en un fichier : dossiers (genre, ordre), templates, cartes de depart, styles, cartes avec leurs images.
+ * Reouvert par « Importer » (ajouter, ou remplacer tout) il remet la page comme elle etait. */
+async function serialiserPochette(p) {
+  const c = structuredClone({ ...p, art: { ...p.art, blob: null }, titre: { ...p.titre, blob: null }, policeBlob: null })
+  c.art.image = p.art.blob ? await blobVersDataUrl(p.art.blob) : null
+  c.titre.image = p.titre.blob ? await blobVersDataUrl(p.titre.blob) : null
+  c.policeImage = p.policeBlob ? await blobVersDataUrl(p.policeBlob) : null
+  return c
+}
+async function deserialiserPochette(j) {
+  const base = nouvellePochette(MODES.some(([m]) => m === j.mode) ? j.mode : 'heros')
+  const p = { ...base, ...j, art: { ...base.art, ...j.art }, titre: { ...base.titre, ...j.titre }, textes: j.textes ?? [] }
+  p.art.blob = p.art.image ? await dataUrlVersBlob(p.art.image) : null; delete p.art.image
+  p.titre.blob = p.titre.image ? await dataUrlVersBlob(p.titre.image) : null; delete p.titre.image
+  p.policeBlob = j.policeImage ? await dataUrlVersBlob(j.policeImage) : null; delete p.policeImage
+  return p
+}
+async function documentProjetComplet() {
   const cartes = []
-  for (const c of projet.cartes) cartes.push(await serialiser(c))
+  for (const c of vraiesCartes()) cartes.push(await serialiser(c))
   const modeles = []
   for (const m of projet.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await serialiser(m.carte) })
-  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles, styles: projet.styles ?? [], gabarits: projet.gabarits ?? {}, dossiers: projet.dossiers ?? {} })], { type: 'application/json' }), 'cartes.json')
+  const pochettes = []
+  for (const p of vraiesPochettes()) pochettes.push(await serialiserPochette(p))
+  return { format: 'createur-cartes', version: 3, complet: true, cartes, modeles, pochettes, styles: projet.styles ?? [], gabarits: projet.gabarits ?? {}, dossiers: projet.dossiers ?? {} }
+}
+async function exporterProjet() {
+  const doc = await documentProjetComplet()
+  const lisezmoi = `MC Creator : sauvegarde complete (${doc.cartes.length} carte(s), ${doc.pochettes.length} pochette(s), ${Object.keys(doc.dossiers).length} dossier(s)).\n\nPour tout retrouver sur un autre ordinateur : ouvre MC Creator, clique sur « Importer… » (colonne de droite) et choisis ce fichier .zip.\nTu pourras alors AJOUTER son contenu a ton projet, ou le REMPLACER entierement : dossiers, couleurs des templates, cartes, images.\n\nGarde ce fichier en lieu sur : tes cartes ne sont conservees que dans ton navigateur.\n`
+  const zip = creerZip([{ nom: 'projet.json', octets: new TextEncoder().encode(JSON.stringify(doc)) }, { nom: 'LISEZ-MOI.txt', octets: new TextEncoder().encode(lisezmoi) }])
+  telecharger(zip, `mc-creator-${new Date().toISOString().slice(0, 10)}.zip`)
 }
 
 // ---------------------------------------------------------------- import des fichiers du Card Maker de reference
@@ -2292,38 +2719,79 @@ async function carteDepuisReference(j) {
 
 /** Importe des fichiers : les notres (.json), ceux du Card Maker de reference (.json d'une carte, .zip de cartes). */
 async function importerFichiers(fichiers) {
-  let n = 0
-  const ajoutees = []
+  // 1) on LIT tout dans une zone de preparation (rien n'est change tant qu'on n'a pas choisi)
+  const prep = { cartes: [], modeles: [], pochettes: [], styles: [], gabarits: {}, dossiers: {}, complet: false }
   const traiter = async (j) => {
     if (Array.isArray(j)) { for (const x of j) await traiter(x); return }
     if (j?.format === 'createur-cartes') {
-      for (const st of j.styles ?? []) { projet.styles ??= []; if (!projet.styles.some((x) => x.id === st.id)) projet.styles.push(st) }
-      for (const m of j.modeles ?? []) { projet.modeles ??= []; projet.modeles.push({ id: nouvelId(), nom: m.nom, dossier: m.dossier, carte: await deserialiser(m.carte) }) }
-      for (const [d, g] of Object.entries(j.gabarits ?? {})) (projet.gabarits ??= {})[d] ??= g
-      for (const [d, m] of Object.entries(j.dossiers ?? {})) (projet.dossiers ??= {})[d] ??= m
+      if (j.complet) prep.complet = true
+      prep.styles.push(...(j.styles ?? []))
+      for (const m of j.modeles ?? []) prep.modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await deserialiser(m.carte) })
+      for (const x of j.pochettes ?? []) prep.pochettes.push(await deserialiserPochette(x))
+      Object.assign(prep.gabarits, j.gabarits ?? {})
+      Object.assign(prep.dossiers, j.dossiers ?? {})
       for (const x of j.cartes) {
         if (!TYPES[x.type]) continue
-        const c = await deserialiser(x)
-        c.id = nouvelId()
-        ajoutees.push(c)
+        prep.cartes.push(await deserialiser(x))
       }
-    } else if (j?.selectType) ajoutees.push(await carteDepuisReference(j))
+    } else if (j?.selectType) prep.cartes.push(await carteDepuisReference(j))
   }
   for (const f of fichiers) {
     const buf = await f.arrayBuffer()
     if (/\.zip$/i.test(f.name)) {
-      for (const e of await lireZip(buf)) if (/\.json$/i.test(e.nom)) { try { await traiter(JSON.parse(texteJson(e.octets))); n++ } catch {} }
+      for (const e of await lireZip(buf)) if (/\.json$/i.test(e.nom)) { try { await traiter(JSON.parse(texteJson(e.octets))) } catch {} }
     } else {
       await traiter(JSON.parse(texteJson(buf)))
-      n++
     }
   }
-  if (!ajoutees.length) throw new Error('aucune carte reconnue dans ces fichiers')
-  projet.cartes.push(...ajoutees)
+  if (!prep.cartes.length && !prep.pochettes.length && !Object.keys(prep.dossiers).length) throw new Error('aucune carte reconnue dans ces fichiers')
+  // 2) une sauvegarde complete sur un projet qui contient deja des cartes : on demande « ajouter » ou « remplacer »
+  const deja = vraiesCartes().length > 0 || vraiesPochettes().length > 0
+  const choix = prep.complet && deja ? await demanderModeImport(prep) : (prep.complet ? 'remplacer' : 'ajouter')
+  if (!choix) return
+  appliquerImport(prep, choix)
+}
+function demanderModeImport(prep) {
+  return new Promise((fini) => {
+    let rendu = false
+    const repondre = (v) => { if (!rendu) { rendu = true; fini(v) } }
+    const d = dialogue('Importer une sauvegarde complète',
+      el('div', { class: 'assistant-pile' },
+        el('p', { class: 'assistant-aide' }, `Ce fichier contient ${prep.cartes.length} carte(s) dans ${Object.keys(prep.dossiers).length} dossier(s). Ton projet actuel contient déjà ${vraiesCartes().length} carte(s).`),
+        el('p', { class: 'aide' }, '« Ajouter » garde ton projet et y met le contenu du fichier (les dossiers du même nom sont fusionnés). « Remplacer » efface ton projet actuel et remet exactement celui du fichier.')),
+      [{ texte: 'Annuler', action: () => repondre(null) }, { texte: 'Ajouter', action: () => repondre('ajouter') }, { texte: 'Remplacer tout', principal: true, action: () => repondre('remplacer') }])
+    d.addEventListener('close', () => repondre(null))
+  })
+}
+function appliquerImport(prep, mode) {
+  historiques.clear()
+  if (mode === 'remplacer') {
+    projet.cartes = []
+    projet.dossiers = {}
+    projet.gabarits = {}
+    projet.modeles = []
+    projet.styles = []
+    projet.pochettes = []
+    projet.courante = null
+  }
+  // en « ajouter », chaque carte recoit un identifiant neuf (et les liens recto-verso suivent) ; en « remplacer », elles gardent les leurs
+  const ids = new Map(prep.cartes.map((c) => [c.id, mode === 'remplacer' ? c.id : nouvelId()]))
+  for (const c of prep.cartes) {
+    if (c.verso?.mode === 'carte' && ids.has(c.verso.carteId)) c.verso.carteId = ids.get(c.verso.carteId)
+    c.id = ids.get(c.id)
+    projet.cartes.push(c)
+  }
+  for (const p of prep.pochettes) { p.id = mode === 'remplacer' ? p.id : nouvelId(); vraiesPochettes().push(p) }
+  for (const st of prep.styles) { projet.styles ??= []; if (!projet.styles.some((x) => x.id === st.id)) projet.styles.push(st) }
+  for (const m of prep.modeles) { projet.modeles ??= []; if (mode === 'ajouter' || !projet.modeles.some((x) => x.id === m.id)) projet.modeles.push({ ...m, id: mode === 'remplacer' ? m.id : nouvelId() }) }
+  for (const [d, g] of Object.entries(prep.gabarits)) (projet.gabarits ??= {})[d] ??= g
+  for (const [d, m] of Object.entries(prep.dossiers)) (projet.dossiers ??= {})[d] ??= m
   ranger()
-  const derniere = ajoutees[ajoutees.length - 1]
+  sauvegarderPlusTard()
+  message(`${prep.cartes.length} carte(s) importée(s).`)
+  if (prep.complet || !prep.cartes.length) return afficherAccueil()
+  const derniere = prep.cartes[prep.cartes.length - 1]
   ouvrirDossier(derniere.dossier || DIVERS, derniere.id)
-  message(`${ajoutees.length} carte(s) importée(s).`)
 }
 
 // ---------------------------------------------------------------- souris sur l'apercu
@@ -2507,10 +2975,10 @@ async function demarrer() {
     const k = e.key.toLowerCase()
     if (k === 'z' && !e.shiftKey) { e.preventDefault(); annuler() } else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); retablir() }
   })
-  $('#b-export').addEventListener('click', () => exporter(false))
+  $('#b-export').addEventListener('click', () => (vue === 'pochette' ? exporterPochette(pochetteParId(pochetteOuverte)) : exporter(false)))
   $('#b-export-2').addEventListener('click', () => exporter(true))
   $('#b-print').addEventListener('click', dialoguePlanche)
-  $('#b-pack').addEventListener('click', () => ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte, rendre: rendreCarte, rendreVerso, serialiser }))
+  $('#b-pack').addEventListener('click', () => ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte, rendre: rendreCarte, rendreVerso, serialiser, pochettes: pochettesPourPack }))
   $('#b-tts').addEventListener('click', plancheTTS)
   $('#b-comparer').addEventListener('click', () => ouvrirComparable(rendreCarte))
   $('#p-exporter').addEventListener('click', exporterProjet)
@@ -2520,6 +2988,8 @@ async function demarrer() {
     e.target.value = ''
   })
   brancherToile()
+  brancherPochette()
+  chargerCalques('/createur-cartes/img/pochettes/')
   brancherPoignees()
   brancherMenuExport()
   afficherAccueil()
@@ -2531,6 +3001,7 @@ function preparerProjet(p) {
   for (const c of p.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } }
   p.dossiers ??= {}
   p.gabarits ??= {}
+  p.pochettes = (p.pochettes ?? []).filter((x) => MODES.some(([m]) => m === x.mode))
   ranger()
   if (!p.cartes.some((c) => c.id === p.courante)) p.courante = null
 }

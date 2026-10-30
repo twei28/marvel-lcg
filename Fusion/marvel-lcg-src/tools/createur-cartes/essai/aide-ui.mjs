@@ -4,9 +4,10 @@ export const att = (p, ms = 500) => p.waitForTimeout(ms)
 
 /** Attend que la page soit prete (l'accueil des dossiers est affiche). */
 export async function attendreAccueil(p) { await p.waitForSelector('#vue-accueil:not([hidden]) #grilles'); await att(p, 800) }
-/** Depuis l'accueil : cree un dossier VIDE et l'ouvre. genre : « Heroes » | « Scenario » | « Modular ». */
+/** Depuis l'accueil : cree un dossier VIDE et l'ouvre. genre : « Heroes » | « Scenario » | « Modular » (les trois tuiles de cartes). */
 export async function dossierVide(p, nom, genre = 'Heroes') {
-  await p.click(`.tuile-plus:has-text("${genre}")`); await att(p, 300)
+  const cle = { Heroes: 'heros', Scenario: 'scenario', Modular: 'modulaire' }[genre] ?? genre
+  await p.click(`.tuile-creer.cartes[data-creer="${cle}"]`); await att(p, 300)
   await p.fill('dialog[open] input', nom)
   await p.click('dialog[open] button:has-text("Empty folder")'); await att(p, 700)
 }

@@ -295,7 +295,29 @@ dialog.dlg::backdrop { background: rgba(4, 7, 14, .72); }
 .page.est-vide > .scene, .page.est-vide > #formulaire, .page.est-vide > #poignee-1 { display: none; }
 @media (max-width: 1000px) { .page > * { grid-column: 1 !important; grid-row: auto !important; } }
 body[data-vue=accueil] .seulement-editeur { display: none !important; }
-body[data-vide] .seulement-carte { display: none !important; }
+body[data-vide] .seulement-carte, body[data-vide] #menu-exporter, body[data-vue=pochette] .seulement-carte { display: none !important; }
+body[data-vue=pochette] #menu-export button:not(#b-export) { display: none; }
 .assistant-figure .zone-toile { display: block; width: 100%; }
 .assistant-figure .surcouche { cursor: grab; }
 .avec-aide { display: flex; flex-direction: column; gap: 6px; }
+
+/* ---- l'ecran de depart : les six tuiles de creation ---- */
+.zone-creer { margin-bottom: 8px; }
+.grand-titre { font: 400 46px var(--affiche); letter-spacing: .04em; text-transform: uppercase; color: #fff; text-shadow: 3px 3px 0 var(--bleu); margin: 0 0 12px; }
+.grille-creer { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.tuile-creer { min-height: 168px; padding: 14px; text-align: center; border-style: solid; border-width: 2px; border-color: #3d5a8c; border-top-color: var(--bord-haut); border-bottom-color: var(--bord-bas); background: linear-gradient(160deg, #2b3a58 0%, #1f2a40 55%, #171e2e 100%); color: #fff; }
+.tuile-creer.pochette { background: linear-gradient(160deg, #3d2b58 0%, #2a1f40 55%, #1e1730 100%); border-top-color: #b99be6; }
+.tuile-creer .plus { font-size: 60px; color: var(--bleu-clair); }
+.tuile-creer.pochette .plus { color: #c9a6f0; }
+.tuile-creer .libelle { font-size: 26px; color: #fff; }
+.tuile-creer small { color: #b6c0d3; font-size: 13px; max-width: 200px; }
+.tuile-creer:hover { border-top-color: #b5d2fa; background: linear-gradient(160deg, #345089 0%, #24365a 55%, #1a2438 100%); }
+.mini-pochette { aspect-ratio: auto; height: 118px; width: 84px; background-size: contain; background-repeat: no-repeat; background-color: #0b1020; }
+.carte-liste .mini-pochette { height: 53px; width: 38px; }
+.tuile-pochette .mini-pochette { height: 118px; }
+.page.page-pochette { grid-template-columns: minmax(300px, 1fr) minmax(400px, 600px); gap: 18px; }
+.page-pochette > .panneau { grid-column: 2; grid-row: 1; }
+.page-pochette .toile { max-height: calc(100vh - 160px); }
+.texte-libre { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(15, 21, 34, .55); border: 1px solid #3a4a6b; }
+.texte-libre.choisi { border-color: var(--bleu); }
+.avec-aide .btn-bulle { flex: none; }

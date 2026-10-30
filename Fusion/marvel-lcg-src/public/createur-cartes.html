@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Card Maker</title>
+<title>MC Creator</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <link rel="stylesheet" href="/createur-cartes/style.css">
 </head>
 <body>
 <header class="bandeau">
-  <h1>Card Maker</h1>
+  <h1>MC Creator</h1>
   <nav id="fil" class="fil" aria-label="Fil d’Ariane"></nav>
   <span class="groupe-langue seulement-editeur seulement-carte" id="groupe-langue-carte" role="group" aria-label="Langue de la carte">Langue de la carte
     <span class="boutons">
@@ -20,7 +20,7 @@
   </span>
   <button class="btn petit seulement-editeur seulement-carte" id="b-annuler" title="Annuler (Ctrl+Z)" disabled>↶</button>
   <button class="btn petit seulement-editeur seulement-carte" id="b-retablir" title="Rétablir (Ctrl+Y)" disabled>↷</button>
-  <span class="menu-exporter seulement-editeur seulement-carte" id="menu-exporter">
+  <span class="menu-exporter seulement-editeur" id="menu-exporter">
     <button class="btn principal petit" id="b-exporter" aria-haspopup="true" aria-expanded="false">Exporter ▾</button>
     <div class="menu-export" id="menu-export" hidden>
       <button class="btn petit" id="b-export">Exporter l'image<small>La carte choisie, en PNG, JPG ou WebP.</small></button>
@@ -73,7 +73,7 @@
     <div id="panneau-template"></div>
     <h2>Projet</h2>
     <div class="outils">
-      <button class="btn petit" id="p-exporter">Enregistrer (.json)</button>
+      <button class="btn petit" id="p-exporter" title="Tout le projet dans un seul fichier .zip : dossiers, templates, cartes, images. « Importer » le remet comme avant, sur n'importe quel ordinateur.">Tout enregistrer (.zip)</button>
       <button class="btn petit" id="p-versions" title="Les versions gardées automatiquement">Versions…</button>
       <button class="btn petit" id="p-remplacer" title="Chercher et remplacer un mot sur une carte, un dossier ou tout le projet">Chercher / remplacer…</button>
       <button class="btn petit" id="p-appliquer" title="Recopier couleurs, cadre, mention… sur les autres cartes du dossier">Appliquer au dossier…</button>
@@ -82,6 +82,13 @@
     </div>
     <div class="aide">Les cartes sont gardées dans ce navigateur. Enregistre un fichier pour les sauvegarder ou les passer à un autre appareil. « Importer » lit aussi les fichiers (.json ou .zip) du Card Maker de Landstander.</div>
   </aside>
+</div>
+<div class="page page-pochette" id="vue-pochette" hidden>
+  <section class="scene">
+    <div class="zone-toile"><canvas id="toile-pochette" class="toile"></canvas></div>
+    <div class="aide">Glisse sur l'aperçu pour déplacer l'image ou un texte, molette pour zoomer l'image. Glisse-y une image pour la poser.</div>
+  </section>
+  <section class="panneau" id="form-pochette"></section>
 </div>
 <script type="module" src="/createur-cartes/app.js"></script>
 </body>

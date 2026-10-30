@@ -136,7 +136,7 @@ except ValueError:
 
 code, cook_alice, tetes = connecter("alice")
 verifier("connexion createur : redirige vers le createur",
-         code == 303 and tetes.get("location") == "/createur-cartes.html", (code, tetes.get("location")))
+         code == 303 and tetes.get("location") == "/mc-creator", (code, tetes.get("location")))
 _, cook_bob, _ = connecter("bob")
 _, cook_adm, tetes_adm = connecter("arnaud")
 verifier("connexion admin : /entrer comme avant", tetes_adm.get("location") == "/entrer", tetes_adm.get("location"))
@@ -154,7 +154,7 @@ corps_handler = source[source.index("class Handler"):source.index("def main()")]
 routes = set()
 for m in re.finditer(r'self\.chemin\s*(?:==|in|\.startswith\()\s*\(?((?:"[^"]*"\s*,?\s*)+)', corps_handler):
     routes.update(re.findall(r'"(/[^"]*)"', m.group(1)))
-routes -= {"/createur-cartes.html", "/atelier-couvertures.html"}
+routes -= {"/mc-creator", "/createur-cartes.html", "/atelier-couvertures.html"}
 verifier("routes extraites du serveur (au moins 30)", len(routes) >= 30, len(routes))
 PERMISES = {"/connexion", "/deconnexion", "/inscription", "/reinitialisation",
             "/favicon.ico", "/favicon.png"}
@@ -167,7 +167,7 @@ for route in sorted(routes):
     for methode in ("GET", "POST", "PUT", "DELETE"):
         code, corps, tetes = appel(methode, concret, cookie=cook_alice,
                                    corps=(b"a=b" if methode != "GET" else None))
-        ok = code == 403 or (code == 303 and tetes.get("location") == "/createur-cartes.html"
+        ok = code == 403 or (code == 303 and tetes.get("location") == "/mc-creator"
                              and methode == "GET" and route in ("/", "/index.html", "/entrer"))
         if not ok:
             refusees_ok = False
@@ -176,7 +176,7 @@ verifier("TOUTE route du site hors createur refusee (GET/POST/PUT/DELETE)", refu
 for chemin in ("/", "/entrer", "/index.html"):
     code, _c, tetes = appel("GET", chemin, cookie=cook_alice)
     verifier("GET %s redirige le createur chez lui" % chemin,
-             code == 303 and tetes.get("location") == "/createur-cartes.html", (code, tetes))
+             code == 303 and tetes.get("location") == "/mc-creator", (code, tetes))
 for chemin in ("/admin", "/suivi", "/entrer", "/api/suivi", "/admin/images", "/etat", "/regarder?joueur=arnaud",
                "/signalements", "/nouvelle-partie", "/reprendre", "/pret", "/vilains/x.jpg"):
     code, _c, _t = appel("GET", chemin, cookie=cook_alice)
@@ -197,7 +197,7 @@ code, _c, tetes = appel("GET", "/", cookie=cook_joueur)
 verifier("joueur : / -> /entrer comme avant", code == 303 and tetes.get("location") == "/entrer", (code, tetes))
 code, _c, _t = appel("GET", "/signalements", cookie=cook_joueur)
 verifier("joueur : /signalements passe", code == 200, code)
-code, _c, _t = appel("GET", "/createur-cartes.html", cookie=cook_joueur)
+code, _c, _t = appel("GET", "/mc-creator", cookie=cook_joueur)
 verifier("joueur : page du createur ouverte (decision du 28/10)", code == 200, code)
 code, _c, _t = appel("GET", "/api/createur/projets", cookie=cook_joueur)
 verifier("joueur : API du createur ouverte", code == 200, code)
@@ -205,15 +205,17 @@ code, _c, _t = appel("GET", "/api/createur/projets?compte=alice", cookie=cook_jo
 verifier("joueur : ne lit pas les projets d'alice", code == 403, code)
 
 print("Pages statiques du createur")
-code, corps, tetes = appel("GET", "/createur-cartes.html", cookie=cook_alice)
+code, corps, tetes = appel("GET", "/mc-creator", cookie=cook_alice)
 verifier("page du createur servie", code == 200 and b"createur" in corps and "text/html" in tetes["content-type"], code)
 code, corps, tetes = appel("GET", "/createur-cartes/app.js", cookie=cook_alice)
 verifier("fichier statique servi", code == 200 and corps == b"console.log(1)" and "javascript" in tetes["content-type"], code)
-code, _c, _t = appel("GET", "/createur-cartes.html")
+code, _c, _t = appel("GET", "/mc-creator")
 verifier("sans session : redirection vers la connexion", code == 303, code)
+code, _c, tetes = appel("GET", "/createur-cartes.html", cookie=cook_joueur)
+verifier("ancienne adresse : redirige vers /mc-creator", code == 303 and tetes.get("location") == "/mc-creator", (code, tetes.get("location")))
 code, _c, _t = appel("GET", "/createur-cartes/app.js")
 verifier("sans session : statique refuse", code == 303, code)
-code, _c, _t = appel("GET", "/createur-cartes.html", cookie=cook_adm)
+code, _c, _t = appel("GET", "/mc-creator", cookie=cook_adm)
 verifier("admin : page du createur", code == 200, code)
 code, corps, tetes = appel("GET", "/atelier-couvertures.html", cookie=cook_alice)
 verifier("« Images de pack » servie (compte connecte)", code == 200 and b"atelier" in corps and "text/html" in tetes["content-type"], code)
