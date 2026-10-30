@@ -1332,6 +1332,33 @@ function majRappelSauvegarde() {
     el('button', { class: 'btn petit', type: 'button', onclick: async () => { await exporterProjet(); majRappelSauvegarde() } }, 'Tout enregistrer (.zip)'))
 }
 
+/** « Couleurs » : toutes les palettes du jeu (héros, méchants, aspects). Clic sur une couleur = code copié ; « Utiliser » = la palette passe sur la carte ouverte. */
+function dialogueNavigateurCouleurs() {
+  const c = vue === 'editeur' ? carte() : null
+  const champ = el('input', { type: 'search', placeholder: 'Chercher un héros, un méchant, un aspect…', 'aria-label': 'Chercher une palette' })
+  const liste = el('div', { class: 'assistant-pile', style: 'max-height:55vh;overflow:auto' })
+  const toutes = [...Object.keys(ASPECTS).map((n) => [n, n]), ...Object.keys(PALETTES).sort().map((n) => [n, joliNom(n) + (/_nemesis$/.test(n) ? ' (nemesis)' : /_hero$/.test(n) ? ' (hero)' : PALETTES[n].background_upper ? ' (villain / encounter)' : '')])]
+  const copier = async (hex) => {
+    try { await navigator.clipboard.writeText(hex); message(`${hex} copié.`) } catch { message(hex) }
+  }
+  const dessiner = () => {
+    const q = champ.value.trim().toLowerCase()
+    liste.replaceChildren(...toutes.filter(([, nom]) => !q || nom.toLowerCase().includes(q)).slice(0, 80).map(([cle, nom]) => {
+      const choix = ASPECTS[cle]
+      const pal = typeof choix === 'string' ? PALETTES[choix] : choix ?? PALETTES[cle]
+      const couleurs = Object.entries(pal ?? {}).filter(([, v]) => /^#[0-9a-f]{6}$/i.test(v))
+      return el('div', { class: 'rang', style: 'align-items:center;gap:8px;flex-wrap:wrap' },
+        el('strong', { style: 'min-width:150px' }, nom),
+        el('span', { class: 'pastilles' }, ...couleurs.map(([role, v]) => el('button', { type: 'button', class: 'pastille', style: `background:${v}`, title: `${ROLES_COULEURS[role] ? tr(ROLES_COULEURS[role]) : role} ${v}`, onclick: () => copier(v) }))),
+        c && couleurs.length ? el('button', { class: 'btn petit', type: 'button', onclick: () => { const spec = TYPES[c.type]; c.preset = cle; appliquerPalette(c, spec, cle); c.couleursPerso = true; changement(); construireFormulaire(); message('Palette appliquée à la carte.') } }, 'Utiliser sur la carte') : null)
+    }))
+  }
+  champ.addEventListener('input', dessiner)
+  dessiner()
+  dialogue('Navigateur de couleurs', el('div', { class: 'assistant-pile' }, el('div', { class: 'aide' }, 'Clique une pastille pour copier son code couleur.'), champ, liste), [{ texte: 'Fermer' }])
+  champ.focus()
+}
+
 function menuDossier(ancre, d) {
   menuFlottant(ancre, [
     ['Ouvrir', () => ouvrirDossier(d.nom)],
@@ -3205,6 +3232,7 @@ async function demarrer() {
   $('#p-exporter').addEventListener('click', exporterProjet)
   $('#p-importer').addEventListener('click', () => $('#p-fichier').click())
   $('#p-marvelcdb').addEventListener('click', dialogueMarvelCDB)
+  $('#b-couleurs').addEventListener('click', dialogueNavigateurCouleurs)
   $('#p-fichier').addEventListener('change', async (e) => {
     try { await importerFichiers([...e.target.files]) } catch (err) { message('Ouverture impossible : ' + err.message) }
     e.target.value = ''
