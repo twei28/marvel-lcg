@@ -19,6 +19,7 @@ import {
   paiementFacultatif,
   paiementNulDUneAutreCarte,
   nombreDeRessources,
+  ressourcesApresToucher,
   typesManquants,
   valeurMoyen,
   valeurPayee,
@@ -873,25 +874,11 @@ export function useInteraction(
 
   const basculerRessource = useCallback(
     (carte: WorldCard) => {
-      setRessources((actuelles) => {
-        const disponibles = carte.resources.filter(
-          (effectId) => foisDisponible(paiement, effectId) > 0
-        )
-        // On retire d'abord si cette carte a deja paye : un second clic rend la
-        // ressource au lieu d'en depenser une de plus.
-        const dejaPosee = disponibles.find((effectId) => actuelles.includes(effectId))
-        if (dejaPosee !== undefined) {
-          const position = actuelles.indexOf(dejaPosee)
-          return [...actuelles.slice(0, position), ...actuelles.slice(position + 1)]
-        }
-        for (const effectId of disponibles) {
-          const posees = actuelles.filter((x) => x === effectId).length
-          if (posees < foisDisponible(paiement, effectId)) return [...actuelles, effectId]
-        }
-        return actuelles
-      })
+      setRessources((actuelles) =>
+        ressourcesApresToucher(carte.resources, actuelles, paiement, requis ?? 0, surpaiementRecompense)
+      )
     },
-    [paiement]
+    [paiement, requis, surpaiementRecompense]
   )
 
   /**

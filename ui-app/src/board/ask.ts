@@ -383,6 +383,53 @@ export function foisDisponible(paiement: Paiement | undefined, effectId: number)
 }
 
 /**
+ * Ce que devient la liste des ressources choisies quand on touche UNE carte.
+ *
+ * - Une carte qui ne paie qu'une fois (la grande majorite) : un toucher paie, un second retire.
+ * - Une carte qui peut payer PLUSIEURS fois (les jetons Rage de Raphael, les jetons de Spider-Ham : le moteur
+ *   repete le meme effet autant de fois qu'il y a de jetons) : chaque toucher en ajoute un, tant qu'il en reste ET
+ *   qu'il manque de quoi payer ; le toucher suivant les rend tous. Avant, le second toucher rendait le premier et
+ *   on ne pouvait jamais en depenser deux (30/10/2026).
+ *
+ * `surpayable` : le cout accepte plus que son montant (Ant-Man...), donc seul le nombre de jetons borne.
+ */
+export function ressourcesApresToucher(
+  effets: number[],
+  actuelles: number[],
+  paiement: Paiement | undefined,
+  requis: number,
+  surpayable: boolean
+): number[] {
+  const disponibles = effets.filter((effectId) => foisDisponible(paiement, effectId) > 0)
+  const total = disponibles.reduce((somme, effectId) => somme + foisDisponible(paiement, effectId), 0)
+  const posees = disponibles.reduce((somme, effectId) => somme + actuelles.filter((x) => x === effectId).length, 0)
+
+  if (total <= 1) {
+    // Un second toucher rend la ressource au lieu d'en depenser une de plus.
+    const dejaPosee = disponibles.find((effectId) => actuelles.includes(effectId))
+    if (dejaPosee !== undefined) {
+      const position = actuelles.indexOf(dejaPosee)
+      return [...actuelles.slice(0, position), ...actuelles.slice(position + 1)]
+    }
+    return disponibles.length > 0 ? [...actuelles, disponibles[0]] : actuelles
+  }
+
+  const exige = paiement && coutParType(paiement.cost)
+  const manque = exige
+    ? Object.keys(typesManquants(paiement, actuelles)).length > 0
+    : valeurPayee(paiement, actuelles) < requis
+  if (posees < total && (surpayable || manque)) {
+    for (const effectId of disponibles) {
+      if (actuelles.filter((x) => x === effectId).length < foisDisponible(paiement, effectId)) {
+        return [...actuelles, effectId]
+      }
+    }
+  }
+  // Rien de plus a ajouter : on rend ce que cette carte avait paye.
+  return actuelles.filter((x) => !disponibles.includes(x))
+}
+
+/**
  * Combien de ressources fournit UN moyen de paiement.
  *
  * Le moteur encode une carte a double (ou triple) ressource comme un seul effet
