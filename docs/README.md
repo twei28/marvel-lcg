@@ -16,6 +16,8 @@
 - Comprendre un mot-clé (officiel ou maison) : `reference/mots-cles/`
 - Comprendre ou modifier « Annuler » (instantané du tour, pourquoi pas `deepcopy`, les pièges) :
   `reference/ANNULER-INSTANTANE.md`
+- Comprendre ou modifier l'étape « Difficulté » de la préparation (sets modulaires par boîte, propositions
+  VillainTheory, noms français, refaire l'import) : `reference/PAGE-DIFFICULTE.md`
 - Où vit chaque type de fichier, les deux copies du moteur, le format de
   `cards.json`, l'API de scripting : `reference/GUIDE-CREATION-CONTENU.md`
 

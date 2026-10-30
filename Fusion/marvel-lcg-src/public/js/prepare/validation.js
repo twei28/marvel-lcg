@@ -1,6 +1,7 @@
 // validation.js — règles de validation avant lancement.
 "use strict";
 import { t } from "/public/js/prepare/langue.js";
+import { nombreMaxDeSets } from "/public/js/prepare/difficulte-logique.js";
 
 export function validate(state) {
     const errors = [];
@@ -23,10 +24,12 @@ export function validate(state) {
         const selected = new Set(state.difficulty.selectedModularSets || []);
         // Les sets obligatoires sont toujours inclus au lancement (via encounter_sets),
         // on vérifie surtout le nombre de modulaires vs emplacements du scénario.
-        const slots = state.scenario.modularSlots || { min: 0, max: 99 };
         const modularSelected = [...selected].filter((s) => !mandatory.includes(s));
-        if (modularSelected.length > slots.max) {
-            errors.push({ code: "TOO_MANY_MODULAR", message: `${t("Trop de sets modulaires")} (${modularSelected.length}/${slots.max})`, step: 2 });
+        // Les règles permettent plus de sets que la boîte n'en recommande (Règles de référence 1.7) et les
+        // propositions VillainTheory en prennent jusqu'à 7 : le plafond suit `nombreMaxDeSets`.
+        const maximum = nombreMaxDeSets(state.scenario);
+        if (modularSelected.length > maximum) {
+            errors.push({ code: "TOO_MANY_MODULAR", message: `${t("Trop de sets modulaires")} (${modularSelected.length}/${maximum})`, step: 3 });
         }
     }
 

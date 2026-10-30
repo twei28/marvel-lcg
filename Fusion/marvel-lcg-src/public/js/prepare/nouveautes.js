@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-30",
+        genre: "jeu",
+        fr: "Une étape « Difficulté » s'ouvre après le choix du méchant : le niveau, tous les sets modulaires rangés par boîte (avec recherche) et les combinaisons proposées par VillainTheory, avec leur note de difficulté. Un set absent du jeu grise sa proposition.",
+        en: "A \"Difficulty\" step now follows the villain choice: the level, every modular set grouped by box (with search) and the combinations suggested by VillainTheory, with their difficulty rating. A set missing from the game greys out its suggestion.",
+    },
+    {
         date: "2026-10-29",
         genre: "jeu",
         fr: "« Annuler » est instantané pendant ton tour : la partie revient exactement comme avant ta dernière action, sans être rejouée depuis le début. Une fenêtre l'explique (tu peux cocher « Ne plus me montrer ça »), et une info-bulle s'ouvre au survol du bouton.",

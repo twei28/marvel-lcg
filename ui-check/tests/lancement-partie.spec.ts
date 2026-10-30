@@ -243,12 +243,12 @@ test.describe("Lancement d'une partie", () => {
     await page.getByRole('button', { name: /^Rhino\b/ }).first().click();
     await continuer(page);
 
-    //   ⚠ L'etape « Menace » a disparu : l'assistant compte quatre etapes
-    //   (Equipe, Decks, Mechant, Final), et le « Continuer » qui la franchissait
-    //   restait sans cible. Retire le 09/09/2026, en meme temps que le clic
-    //   « Solo » de l'accueil.
+    //   Etape 4 - Difficulte ... depuis le 30/10/2026 (niveau et sets modulaires). Les sets recommandes sont deja
+    //   retenus : on continue sans rien toucher. (L'ancienne etape « Menace », retiree le 09/09/2026, n'a rien
+    //   a voir : celle-ci a une page et un Continuer.)
+    await continuer(page);
 
-    //   Etape 4 - Final ........ le bouton de lancement doit etre actif.
+    //   Etape 5 - Final ........ le bouton de lancement doit etre actif.
     const lancer = page.getByRole('button', { name: /lancer la partie/i });
     await expect(
       lancer,

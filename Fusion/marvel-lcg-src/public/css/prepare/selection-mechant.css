@@ -1,8 +1,8 @@
 /* LA SÉLECTION DU MÉCHANT EN TROIS COLONNES (16/10/2026, maquette C validée),
    POUR TOUS LES AFFICHAGES (Normal, Sobre, Épuré).
    Gauche : les boîtes (pochettes). Milieu : les méchants de la boîte, la menace,
-   les sets modulaires et le face à face. Droite : la grande image du méchant, ou
-   le choix des sets modulaires (`.pm-droite`). Aucune modification du DOM de la
+   et le face à face. Droite : la grande image du méchant. Le niveau et les sets
+   modulaires ont leur étape (page-difficulte.css). Aucune modification du DOM de la
    page : la grille CSS réordonne `.tb-scene` (image), `.ext-tabs` (boîtes),
    `.tb-roster-scn` (méchants), `.tb-menace` et `.tb-equipe` (face à face).
    Réservé au PC (>= 900 px) ; le téléphone garde sa mise en page.
@@ -219,50 +219,6 @@
     background-size: 106% auto !important;
     background-position: 50% 12% !important;
   }
-
-  /* Le choix des sets modulaires : un panneau à la place de l'image du méchant. */
-  .team-b.eux .pm-droite {
-    grid-column: 3;
-    grid-row: 1 / -1;
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    background: var(--m-surface);
-    border: 1px solid var(--m-bord);
-    border-radius: 12px;
-    overflow: hidden;
-    min-height: 0;
-  }
-  .team-b.eux .pm-tete {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--m-bord);
-    padding-bottom: 10px;
-  }
-  .team-b.eux .pm-tete b { font: 700 20px var(--m-police); color: var(--m-texte); }
-  .team-b.eux .pm-fermer {
-    width: 32px;
-    height: 32px;
-    border: 0;
-    border-radius: 8px;
-    background: var(--m-champ);
-    color: var(--m-texte);
-    font-size: 20px;
-    cursor: pointer;
-  }
-  .team-b.eux .pm-liste {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 8px;
-  }
-  .team-b.eux .pm-pied { display: flex; justify-content: flex-end; }
 
   /* Le nom de l'extension, au-dessus du nom du méchant : lisible sur l'illustration. */
   .team-b.eux .tb-nomg small {

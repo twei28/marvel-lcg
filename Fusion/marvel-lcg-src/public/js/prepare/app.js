@@ -4,7 +4,8 @@ import { cardImageUrl, cardImageUrlEn, cardImageUrlHd, extensionImageUrl, oublie
 import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, nomSetRencontre, titreDeVague } from "/public/js/prepare/catalog.js";
-import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
+import { nomExtension, numeroDExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
+import { construirePageDifficulte } from "/public/js/prepare/page-difficulte.js";
 import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=b0ca940a";
 import { prefs } from "/public/js/prepare/prefs.js";
@@ -203,10 +204,10 @@ const MODES = [
     // coach qui donne une mission a la fois. Les lecons NOMMENT des cartes
     // precises, d'ou le seed impose : voir tools/test_seed_tutoriel.py.
 ];
-// QUATRE étapes, plus cinq : le niveau de menace et les sets modulaires se
-// choisissent sur l'écran de la cible, sous la grille des scénarios. C'est là
-// qu'on décide de la difficulté, en voyant le méchant.
-const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Méchant", "Final"])
+// CINQ étapes (30/10/2026) : le niveau de menace et les sets modulaires ont leur
+// page, « Difficulté », entre le méchant et le face à face. Ils se réglaient
+// avant sous la grille des scénarios, où on ne les voyait pas.
+const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Méchant", "Difficulté", "Final"])
     .map((s) => t(s));
 const LAST_STEP = STEPS.length - 1;
 const rnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -431,7 +432,8 @@ function stepComplete(step) {
             if (decksSequentiels()) return active.every(deckValide);
             return enLigne() ? !!active[0] && !!active[0].deck : active.every((p) => p.deck);
         case 2: return !!state.scenario && (!estBataille() || !!state.scenario2);
-        case 3: return validate(state).ok;
+        case 3: return !!state.scenario && validate(state).ok;
+        case 4: return validate(state).ok;
         default: return false;
     }
 }
@@ -1437,7 +1439,8 @@ function stepView() {
         case 0: return stepTeam();
         case 1: return stepDecks();
         case 2: return stepScenario();
-        case 3: return stepSummary();
+        case 3: return stepDifficulte();
+        case 4: return stepSummary();
     }
 }
 
@@ -5440,8 +5443,8 @@ function stepScenario() {
         el("div", { class: "ext-tabs", id: "ext-tabs" }, el("div", { class: "loading" }, "...")),
         el("div", { class: "tb-merci", id: "tb-merci-vilains", hidden: true }),
         el("div", { class: "hero-grid tb-roster tb-roster-scn", id: "scn-grid" }),
-        // Le niveau de menace, ici même : c'est en voyant le méchant qu'on
-        // décide de la difficulté, pas un écran plus loin.
+        // Seulement la seconde table du mode Bataille : sans elle l'étape n'est pas complète. Le niveau et les
+        // sets modulaires sont à l'étape suivante (stepDifficulte).
         el("div", { class: "tb-menace", id: "tb-menace" }),
         estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
@@ -5583,19 +5586,21 @@ function verrouillerCible(sc) {
     majNav();
 }
 
-/** Le niveau de menace, sous la grille : règles en tampons, sets en chips. */
+/** Sous la grille des scénarios : seulement la seconde table du mode Bataille (le reste est à l'étape Difficulté). */
 function rendreMenace() {
     const zone = document.getElementById("tb-menace");
     if (!zone) return;
+    poser(zone, state.scenario && estBataille() ? blocSecondeTable() : null);
+}
+
+/** Le niveau de menace, dans la page Difficulté : règles en tampons, héroïque, environnement optionnel. */
+function rendreNiveau(zone, surChangement) {
     const sc = state.scenario;
-    if (!sc) {
-        poser(zone,el("div", { class: "tb-menace-vide" }, t("Choisis un méchant pour régler la menace.")));
-        return;
-    }
+    if (!sc) return;
     const d = state.difficulty;
     const regle = (libelle, actif, action) => el("button", {
         class: "tampon" + (actif ? " on" : ""),
-        onclick: () => { action(); rendreMenace(); rendreTable(); },
+        onclick: () => { action(); rendreNiveau(zone, surChangement); if (surChangement) surChangement(); },
     }, libelle);
 
     const heroique = el("div", { class: "tb-heroique" },
@@ -5631,21 +5636,8 @@ function rendreMenace() {
             regle("Skirmish", d.skirmish, () => { d.skirmish = !d.skirmish; }),
             heroique,
         ),
-        el("div", { class: "tb-menace-ligne" },
-            el("span", { class: "tb-menace-k" }, t("Sets modulaires")),
-            regle(t("Recommandés"), d.modularConfig === "recommended", () => { d.modularConfig = "recommended"; applyModularConfig(); }),
-            regle(t("Personnalisés"), d.modularConfig === "custom", () => {
-                d.modularConfig = "custom";
-                // Le choix des sets s'ouvre a DROITE, a la place du mechant (16/10/2026), sur PC.
-                if (!estTel()) setTimeout(ouvrirPanneauModulaires, 0);
-            }),
-            regle(t("Aléatoire"), d.modularConfig === "random", () => { d.modularConfig = "random"; applyModularConfig(); }),
-        ),
-        el("div", { class: "mod-chips", id: "modular-box" }),
         caseIntenseCombatants(sc),
-        estBataille() ? blocSecondeTable() : null,
     );
-    renderModular();
 }
 
 /**
@@ -5659,7 +5651,7 @@ function caseIntenseCombatants(sc) {
     if (!sc || !proposerIntense(sc.mandatoryEncounterSets)) return null;
     if (texteIntense === null) {
         texteIntense = "";
-        texteIntenseFr().then((txt) => { texteIntense = txt; if (txt) rendreMenace(); });
+        texteIntenseFr().then((txt) => { texteIntense = txt; if (txt) { const z = document.getElementById("tb-niveau"); if (z) rendreNiveau(z); } });
     }
     const d = state.difficulty;
     // En anglais, le texte imprime de la carte ; en francais, sa traduction.
@@ -6141,69 +6133,7 @@ function nomDuSetModulaire(nomFichier) {
     return nomAvecAuteur(nomSetRencontre(nomFichier), auteur, true);
 }
 
-/** PC : le choix des sets modulaires dans un panneau qui prend la place de l'image du mechant (colonne de droite). */
-async function ouvrirPanneauModulaires() {
-    const ecran = document.querySelector(".team-b.eux");
-    if (!ecran) return;
-    ecran.querySelectorAll(".pm-droite").forEach((x) => x.remove());
-    const d = state.difficulty;
-    const sel = new Set(d.selectedModularSets);
-    const liste = el("div", { class: "mod-chips pm-liste" }, el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
-    const fermer = () => { panneau.remove(); renderModular(); };
-    const panneau = el("aside", { class: "pm-droite", role: "dialog", "aria-label": t("Sets modulaires") },
-        el("div", { class: "pm-tete" },
-            el("b", { class: "mvl" }, t("Sets modulaires")),
-            el("button", { class: "pm-fermer", "aria-label": t("Fermer"), onclick: fermer }, "×")),
-        liste,
-        el("div", { class: "pm-pied" }, el("button", { class: "btn primary", onclick: fermer }, t("Valider"))));
-    ecran.append(panneau);
-    const tous = (await catalog.encounterSets()).filter((x) => x.kind === "modular");
-    liste.replaceChildren(...tous.map((x) => el("span", {
-        class: "mod-chip" + (sel.has(x.name) ? " on" : ""),
-        onclick: (e) => {
-            sel.has(x.name) ? sel.delete(x.name) : sel.add(x.name);
-            d.selectedModularSets = [...sel];
-            e.currentTarget.classList.toggle("on");
-        },
-    }, nomAvecAuteur(x.displayName, x.auteur, true))));
-}
-
-async function renderModular() {
-    await Promise.resolve();
-    const box = document.getElementById("modular-box");
-    if (!box) return;
-    const d = state.difficulty;
-    if (d.modularConfig === "recommended") {
-        box.replaceChildren(el("div", { class: "mod-chips" },
-            ...state.scenario.recommendedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s))),
-            state.scenario.recommendedModularSets.length === 0 ? el("span", { class: "muted" }, t("Aucun set modulaire recommandé.")) : null,
-        ));
-    } else if (d.modularConfig === "random") {
-        box.replaceChildren(el("div", { class: "mod-chips" }, ...d.selectedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s)))));
-    } else if (!estTel() && document.querySelector(".team-b.eux")) {
-        // PC : un resume des sets choisis et un bouton, pas la liste entiere (elle
-        // ne tient pas dans la colonne du milieu) ; la liste est dans le panneau de droite.
-        box.replaceChildren(el("div", { class: "mod-chips" },
-            ...d.selectedModularSets.map((n) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(n))),
-            el("button", { class: "tampon", onclick: () => ouvrirPanneauModulaires() },
-                d.selectedModularSets.length ? t("Modifier les sets") : t("Choisir les sets modulaires"))));
-    } else {
-        box.replaceChildren(el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
-        const all = (await catalog.encounterSets()).filter((s) => s.kind === "modular");
-        const sel = new Set(d.selectedModularSets);
-        box.replaceChildren(el("div", { class: "mod-chips" }, ...all.map((s) =>
-            el("span", {
-                class: "mod-chip" + (sel.has(s.name) ? " on" : ""),
-                onclick: (e) => {
-                    sel.has(s.name) ? sel.delete(s.name) : sel.add(s.name);
-                    d.selectedModularSets = [...sel];
-                    e.target.classList.toggle("on");
-                },
-            }, nomAvecAuteur(s.displayName, s.auteur, true)))));
-    }
-}
-
-/* ---- Étape 4, le face à face : la splash page -------------------------------
+/* ---- Étape 5, le face à face : la splash page -------------------------------
    L'écran est coupé en diagonale, notre camp à gauche sur fond clair, le
    méchant à droite sur fond sombre, chacun en art plein cadre. L'étoile VS est
    posée sur la coupe. Les réglages de la partie sont en tampons sous les noms,
@@ -6212,6 +6142,16 @@ async function renderModular() {
 function sousTitre(texte, titre) {
     const propre = String(texte || "").trim();
     return propre && propre.toLowerCase() !== String(titre || "").trim().toLowerCase() ? propre : "";
+}
+
+/** Étape 4 : niveau de menace, sets modulaires, propositions VillainTheory (page-difficulte.js). */
+function stepDifficulte() {
+    return construirePageDifficulte({
+        state, el, poser, t, catalog, estTel, langueActuelle,
+        rendreNiveau, nomExtension, numeroDExtension, nomDuSetModulaire,
+        auteurDuSet: (id) => catalog.auteurSetRencontre(id),
+        appliquerSetsModulaires: applyModularConfig,
+    });
 }
 
 function stepSummary() {
