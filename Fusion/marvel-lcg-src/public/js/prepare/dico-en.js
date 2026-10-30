@@ -1277,4 +1277,5 @@ export const DICO_EN_BASE = {
     "Propositions": "Suggestions",
     "Autres": "Other",
     "ta sélection": "your selection",
+    "Ce héros n'a pas de deck de départ : choisis un deck de la communauté ou une proposition.": "This hero has no starter deck: pick a community deck or a suggestion.",
 };

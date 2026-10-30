@@ -406,7 +406,13 @@ function deckValide(p) { return !!(p && p.deck && p.deckValide); }
 /** Le deck est-il montre comme choisi ? Hors parcours sequentiel, le deck pose
  *  par defaut compte ; en parcours sequentiel, seul un deck CLIQUE compte. */
 function deckAffiche(p) {
-    return !!(p && p.deck && (!decksSequentiels() || p.deckChoisi));
+    return !!(p && p.deck && (!decksSequentiels() || p.deckChoisi) && (!sansDeckDeDepart(p) || p.deckChoisi));
+}
+
+/** Un héros sans deck de départ (fan-made, le plus souvent) : son deck de 15 cartes ne se joue pas, et aucun deck n'est
+ *  choisi à sa place (30/10/2026). Le joueur en prend un de la communauté ou une proposition. */
+function sansDeckDeDepart(p) {
+    return !!(p && p.hero && !aDeckDeBase(p.hero));
 }
 
 /** Le recapitulatif des decks est-il a l'ecran ? Tous les decks sont valides et
@@ -430,7 +436,9 @@ function stepComplete(step) {
         case 0: return !!state.mode && (enLigne() ? !!active[0] && !!active[0].hero : active.every((p) => p.hero));
         case 1:
             if (decksSequentiels()) return active.every(deckValide);
-            return enLigne() ? !!active[0] && !!active[0].deck : active.every((p) => p.deck);
+            // Un héros sans deck de départ n'en a un qu'une fois choisi (sinon il lancerait avec ses 15 cartes).
+            const aUnDeck = (p) => !!p.deck && (!sansDeckDeDepart(p) || !!p.deckChoisi);
+            return enLigne() ? !!active[0] && aUnDeck(active[0]) : active.every(aUnDeck);
         case 2: return !!state.scenario && (!estBataille() || !!state.scenario2);
         case 3: return !!state.scenario && validate(state).ok;
         case 4: return validate(state).ok;
@@ -5128,17 +5136,16 @@ async function loadDecks(i) {
         p.deckAuto = false;
         const dernierId = prefs.lastDeckFor(p.hero.heroCardId);
         let dk = dernierId != null ? decks.find((d) => d.id === dernierId) : null;
-        // Sans deck de base (player_deck vide : PROCESSUS-HEROS etape 3), le
-        // deck pose a l'assignation ne fait que 15 cartes et ne se joue pas :
-        // le premier paquet d'aspect (conseille en tete) prend sa place.
-        if (!dk && !aDeckDeBase(p.hero)) {
-            dk = decks.find((d) => d.source === "aspect" && verifierDeck(d.deck).length === 0)
-                || decks.find((d) => d.source === "aspect") || null;
-        }
+        // Sans deck de base (player_deck vide : PROCESSUS-HEROS etape 3), le deck pose a l'assignation ne fait que
+        // 15 cartes et ne se joue pas. Depuis le 30/10/2026 rien n'est choisi a sa place : le joueur prend un deck de la
+        // communaute ou une proposition. Le deck qu'il avait retenu la derniere fois, lui, compte comme choisi.
         if (dk && dk.deck !== p.deck) {
             p.deck = dk.deck;
             p.deckSource = dk.source;
+            if (sansDeckDeDepart(p)) p.deckChoisi = true;
             rendreSceneDeck();
+        } else if (dk && sansDeckDeDepart(p)) {
+            p.deckChoisi = true;
         }
     }
     const box = document.getElementById("deck-liste");
@@ -5234,20 +5241,22 @@ async function loadDecks(i) {
     const depart = decks.filter((dk) => dk.source === "base" || dk.source === "campagne");
     const communaute = decks.filter((dk) => dk.source === "saved");
     const propositions = decks.filter((dk) => dk.source === "aspect" || dk.source === "tableur");
-    // Sans deck de base, les paquets d'aspect SONT le choix : on les montre d'office.
+    // Un héros sans deck de départ (fan-made) se présente comme les autres (30/10/2026) : les paquets d'aspect ne
+    // couvrent plus la liste (29 lignes avant la communauté, où se trouvent les decks importés), ils sont derrière
+    // « Proposition de deck ».
     const sansBase = !aDeckDeBase(p.hero);
-    const enListe = sansBase ? propositions.filter((dk) => dk.source === "aspect") : [];
-    const aProposer = propositions.filter((dk) => !enListe.includes(dk));
+    const aProposer = propositions;
     // Une proposition déjà choisie reste visible dans la liste, sinon le deck
     // actif n'apparaîtrait plus nulle part.
     const choisieParmiPropositions = aProposer.filter((dk) => deckAffiche(p) && p.deckSource === dk.source && p.deck.name === dk.deck.name);
 
     // Le compteur ne compte que ce qui est listé : les propositions sont derrière le bouton.
-    if (compte) compte.textContent = (depart.length + communaute.length + enListe.length) + " " + t("decks");
+    if (compte) compte.textContent = (depart.length + communaute.length) + " " + t("decks");
     const titre = (texte) => el("div", { class: "deck-section" }, texte);
     const enfants = [];
     if (depart.length) enfants.push(titre(t("Deck de départ")), ...depart.map((dk) => { const o = option(dk); o.classList.add("deck-depart"); return o; }));
-    if (enListe.length) enfants.push(titre(t("Paquets d’aspect")), ...enListe.map(option));
+    else if (sansBase) enfants.push(titre(t("Deck de départ")), el("div", { class: "deck-vide" },
+        t("Ce héros n'a pas de deck de départ : choisis un deck de la communauté ou une proposition.")));
     if (choisieParmiPropositions.length) enfants.push(titre(t("Proposition choisie")), ...choisieParmiPropositions.map(option));
     enfants.push(titre(`${t("Decks de la communauté")} (${communaute.length})`));
     if (communaute.length) enfants.push(...communaute.map(option));

@@ -24,8 +24,17 @@ async function jusquaLaDifficulte(page: Page) {
     await page.locator('.acc-mode').first().waitFor({ timeout: 30_000 });
     await page.getByRole('button', { name: /^Solo/ }).first().click();
   }
-  await page.locator('#hero-grid .tb-port').first().waitFor({ timeout: 30_000 });
-  await page.getByRole('button', { name: /^Aléatoire/i }).first().click();
+  // Spider-Man a un deck de départ : « Continuer » est allumé aux Decks (un héros fan-made attend qu'on choisisse).
+  const spider = page.locator('#hero-grid .tb-port[data-hero="spider_man"]').first();
+  await spider.waitFor({ timeout: 30_000 });
+  if (tel) {
+    await spider.tap();
+    await page.locator('.ts-btn.jaune').tap();
+  } else {
+    await spider.click();
+    const valider = page.locator('.vh-panel, .deck-modal').getByRole('button', { name: /valider/i });
+    if (await valider.isVisible({ timeout: 3_000 }).catch(() => false)) await valider.click();
+  }
   for (let i = 0; i < 2; i++) {
     await page.getByRole('button', { name: /^Continuer/i }).click({ timeout: 10_000 });
     await page.waitForTimeout(1200);
