@@ -28,7 +28,11 @@ async function essai(nom, fn) {
   }
 }
 const att = (ms = 700) => p.waitForTimeout(ms)
-const nbCartes = () => p.locator('#liste .carte, #liste button:not(.dossier)').count()
+// toutes les cartes du projet (la liste ne montre que le dossier ouvert, ou les tuiles des dossiers)
+const nbCartes = async () => Number(await p.locator('#liste').getAttribute('data-total'))
+const nbVisibles = () => p.locator('#liste .carte-liste').count()
+// les sections du formulaire sont repliees a l'ouverture d'une carte (30/10/2026)
+const ouvrirSections = () => p.evaluate(() => document.querySelectorAll('#champs details').forEach((d) => { d.open = true }))
 const toileVide = () => p.evaluate(() => { const c = document.querySelector('#toile'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 400) if (d[i]) n++; return n === 0 })
 const telechargement = async (clic) => { const [d] = await Promise.all([p.waitForEvent('download', { timeout: 120000 }), clic()]); const f = path.join(TMP, d.suggestedFilename()); await d.saveAs(f); return { nom: d.suggestedFilename(), taille: fs.statSync(f).size, f } }
 
@@ -47,6 +51,8 @@ await essai('23 types', async () => {
 })
 
 await essai('langue de la carte', async () => {
+  // une carte neuve est vide (30/10/2026) : on pose la ligne du bas avant de changer de langue
+  await ouvrirSections(); await p.locator('label:has-text("Set line") input').fill('hand size 6 / hit points 10'); await att(400)
   await p.click('#lang-fr'); await att(400)
   const ligne = () => p.evaluate(() => [...document.querySelectorAll('#champs input, #champs textarea')].map((i) => i.value).find((v) => /hand size|taille de main/i.test(v)) ?? '')
   const f = await ligne()
@@ -56,6 +62,7 @@ await essai('langue de la carte', async () => {
 })
 
 await essai('titre, annuler / retablir', async () => {
+  await ouvrirSections()
   const champ = p.locator('label:has-text("Title") input').first()
   await champ.fill('Valkyrie'); await att(900)
   await champ.fill('Valkyrie X'); await att(900)
@@ -68,26 +75,38 @@ await essai('titre, annuler / retablir', async () => {
 
 await essai('cartes : nouvelle, dupliquer, supprimer, recherche, dossiers', async () => {
   const n0 = await nbCartes()
-  await p.click('#c-nouvelle'); await att(400); await p.click('#c-dupliquer'); await att(400)
+  // « + New » ouvre l'assistant (30/10/2026) ; son lien du bas cree une carte vide directement
+  await p.click('#c-nouvelle'); await att(400)
+  ok('+ New ouvre l\'assistant', /What kind of card/.test(await p.locator('dialog[open]').textContent()))
+  await p.click('dialog[open] button.lien'); await att(400); await p.click('#c-dupliquer'); await att(400)
   ok('nouvelle + dupliquer', (await nbCartes()) === n0 + 2, `${n0} -> ${await nbCartes()}`)
   await p.fill('input[list=dossiers-connus]', 'Valkyrie'); await p.locator('input[list=dossiers-connus]').blur(); await att(500)
   // nouveau dossier : l'assistant propose de regler son gabarit (29/10/2026, se declenche au blur) - on decline pour ce test.
   if (await p.locator('dialog button:has-text("Later")').isVisible().catch(() => false)) { await p.click('dialog button:has-text("Later")'); await att(300) }
   ok('dossier : un en-tete', (await p.locator('#liste .dossier').allTextContents()).some((t) => /Valkyrie/.test(t)))
+  ok('dossier : en tuile', (await p.locator('#liste .tuile-dossier').allTextContents()).some((t) => /Valkyrie/.test(t)), (await p.locator('#liste').innerHTML()).slice(0, 400))
   await p.fill('#recherche', 'Valkyrie X'); await att(400)
-  ok('recherche filtre', (await nbCartes()) < n0 + 2, await nbCartes())
+  ok('recherche filtre', (await nbVisibles()) < n0 + 2, await nbVisibles())
   await p.fill('#recherche', ''); await att(300)
   await p.click('#c-supprimer'); await att(400)
   ok('supprimer', (await nbCartes()) === n0 + 1, await nbCartes())
 })
 
-await essai('modeles', async () => {
+await essai('templates', async () => {
+  // l'assistant « Template » : dossier de la carte actuelle, on garde aussi la carte comme carte de depart
   await p.click('#m-enregistrer'); await att(500)
-  ok('modele enregistre', (await p.locator('#modeles option').count()) === 2)
-  await p.selectOption('#modeles', { index: 1 }); const n = await nbCartes(); await p.click('#m-utiliser'); await att(500)
-  ok('modele utilise : une carte de plus', (await nbCartes()) === n + 1)
-  await p.selectOption('#modeles', { index: 1 }); await p.click('#m-supprimer'); await att(400)
-  ok('modele supprime', (await p.locator('#modeles option').count()) === 1)
+  await p.fill('dialog[open] input[placeholder="e.g. Valkyrie"]', 'Valkyrie'); await att(200)
+  for (let i = 0; i < 5; i++) { await p.click('dialog[open] button:has-text("Next ▶")'); await att(300) }
+  await p.locator('dialog[open] label:has-text("Also keep the current card") input').check(); await att(200)
+  await p.click('dialog[open] button:has-text("Next ▶")'); await att(300)
+  await p.click('dialog[open] button:has-text("Finish")'); await att(500)
+  const opts = await p.evaluate(() => [...document.querySelectorAll('#modeles option')].map((o) => o.value))
+  ok('template du dossier + carte de depart', opts.some((v) => v === 'g:Valkyrie') && opts.some((v) => v.startsWith('m:')), opts.join(','))
+  const m = opts.find((v) => v.startsWith('m:'))
+  await p.selectOption('#modeles', m); const n = await nbCartes(); await p.click('#m-utiliser'); await att(500)
+  ok('carte de depart utilisee : une carte de plus', (await nbCartes()) === n + 1)
+  await p.selectOption('#modeles', m); await p.click('#m-supprimer'); await att(400)
+  ok('carte de depart supprimee', (await p.locator('#modeles option').count()) === 2)
 })
 
 await essai('chercher / remplacer, appliquer au dossier, versions', async () => {
@@ -95,7 +114,9 @@ await essai('chercher / remplacer, appliquer au dossier, versions', async () => 
   await p.locator('dialog input[type=text]').first().fill('Valkyrie'); await p.locator('dialog input[type=text]').nth(1).fill('Brunnhilde'); await att(300)
   ok('chercher : compte les occurrences', /match/i.test(await p.locator('dialog').textContent()), (await p.locator('dialog').textContent()).slice(0, 200))
   await p.click('dialog button:has-text("Replace all")'); await att(500)
+  await p.fill('#recherche', 'Brunnhilde'); await att(300)
   ok('remplacer', (await p.locator('#liste').textContent()).includes('Brunnhilde'))
+  await p.fill('#recherche', ''); await att(300)
   await p.click('#p-appliquer'); await p.waitForSelector('dialog'); await p.click('dialog button:has-text("Cancel")'); await att(300)
   await p.click('#p-versions'); await p.waitForSelector('dialog'); ok('versions : fenetre', /Saved versions/.test(await p.locator('dialog').textContent())); await p.click('dialog button:has-text("Close")'); await att(300)
 })

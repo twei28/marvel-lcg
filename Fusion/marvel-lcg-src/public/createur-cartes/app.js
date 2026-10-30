@@ -143,25 +143,28 @@ function imageDe(blob) {
 
 // ---------------------------------------------------------------- cartes
 
+// Une carte neuve est VIDE (30/10/2026, « je veux un template vide ») : ni titre, ni stats d'exemple, cadre gris neutre.
+// Avant : « Card name », des stats d'exemple et les couleurs par defaut du gabarit (rouge / bleu / jaune), qu'on prenait
+// pour la carte de Miss Marvel. Seuls restent la lettre de face d'une manigance principale et la mention du createur.
 function valeursParDefaut(type, langue) {
-  const l = langue
   return {
     ...CHAMPS_VIDES,
-    langue: l,
-    titre: l === 'fr' ? 'Nom de la carte' : 'Card name',
-    ligneEnsemble: TEXTES[l].ligneEnsemble(6, 10),
-    createur: TEXTES[l].createur,
-    // Stats d'exemple : Spider-Man (01001a, THW/ATK/DEF) et Peter Parker (01001b, PV/Main/REC),
-    // jamais Kamala Khan (consigne du 28/10 : pas de Miss Marvel en exemple). Source : marvelcdb.com.
-    cout: '2', thw: '1', atk: '2', def: '3', rec: '3', pv: '10', tailleMain: '6',
-    menaceDepart: '3', menaceCible: '5', acceleration: '1', phaseNumero: '1',
-    phaseLettre: type === 'main_scheme_b' ? 'B' : 'A', etape: 'I',
+    langue,
+    createur: TEXTES[langue].createur,
+    phaseLettre: type === 'main_scheme_b' ? 'B' : type === 'main_scheme_a' ? 'A' : '',
   }
+}
+
+/** Le cadre neutre d'une carte vide : des gris, plus clairs pour les accents, cases claires noires (comme l'aspect Basique). */
+function couleursNeutres(spec) {
+  const accents = new Set(['left_accent', 'right_accent', 'divider', 'accent', 'splash_color'])
+  const sombres = { light_boxes: '#000000', background_lower: '#4a4d55', shading: '#2b2d33', outer: '#25272c', cracks: '#3a3c42' }
+  return Object.fromEntries(rolesDe(spec).map((r) => [r, sombres[r] ?? (accents.has(r) ? '#a3a5ab' : '#6e7179')]))
 }
 
 function nouvelleCarte(type = 'ally', langue = 'fr') {
   return {
-    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: {}, fissures: true, libres: [], cadre: 'officiel', dossier: '', verso: { mode: 'aucun', carteId: null, blob: null },
+    id: nouvelId(), type, langue, contenu: valeursParDefaut(type, langue), couleurs: couleursNeutres(TYPES[type]), fissures: true, libres: [], cadre: 'officiel', dossier: '', verso: { mode: 'aucun', carteId: null, blob: null },
     art: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 }, artDevant: { blob: null, zoom: 1, x: 0, y: 0, rotation: 0 },
     tete: { blob: null, afficher: true, etoile: false, zoom: 0.8, x: -19, y: 232, rotation: 0 },
   }
@@ -461,8 +464,42 @@ function nombre(label, cle, avecEtoile = true) {
   if (['menaceDepart', 'menaceCible', 'acceleration'].includes(cle)) ligne.append(coche('Par joueur', (x) => x.contenu, cle + 'ParJoueur'))
   return ligne
 }
+// Les nombres d'une carte, dans l'ordre du formulaire : [classe de l'element du gabarit, libelle, cle, etoile possible, explication].
+// L'explication sert a l'assistant « Nouvelle carte ».
+const NOMBRES = [
+  ['paycost cost', 'Coût', 'cout', true, 'Ce que le joueur paie (en ressources) pour jouer la carte.'],
+  ['thw sch cost', 'Contrer / manigance (THW / SCH)', 'thw', true, 'Héros et alliés : menace retirée en contrant. Méchants et sbires : menace ajoutée en manigançant.'],
+  ['thwconsequential', 'Dégâts consécutifs (contrer)', 'thwConseq', false, 'Les dégâts que l’allié subit chaque fois qu’il contre (0 si aucun).', true],
+  ['atk cost', 'Attaque (ATK)', 'atk', true, 'Les dégâts infligés en attaquant.'],
+  ['atkconsequential', 'Dégâts consécutifs (attaque)', 'atkConseq', false, 'Les dégâts que l’allié subit chaque fois qu’il attaque (0 si aucun).', true],
+  ['def cost', 'Défense (DEF)', 'def', true, 'Les dégâts évités en défendant.'],
+  ['rec cost', 'Récupération (REC)', 'rec', true, 'Les points de vie rendus quand l’alter-ego récupère.'],
+  ['hp cost', 'Points de vie', 'pv', true, 'Les dégâts que la carte encaisse avant d’être vaincue.'],
+  ['handsize', 'Taille de main', 'tailleMain', false, 'Le nombre de cartes piochées en fin de tour.'],
+  ['startingthreatwrap', 'Menace de départ', 'menaceDepart', true, 'La menace posée sur la manigance quand elle entre en jeu.'],
+  ['targetthreat cost', 'Menace cible', 'menaceCible', false, 'La menace qui fait gagner le méchant (ou avancer la manigance).'],
+  ['acceleration', 'Accélération', 'acceleration', false, 'La menace ajoutée à chaque phase du méchant.'],
+  ['attachmentatknums cost', 'Attachement : bonus d’attaque', 'atkAttache', true, 'Le bonus (ou malus) d’attaque donné à la carte qui le porte.'],
+  ['attachmentschnums cost', 'Attachement : bonus de manigance', 'schAttache', true, 'Le bonus (ou malus) de manigance donné à la carte qui le porte.'],
+]
+function nombresDuType(spec) {
+  return NOMBRES.filter(([cls]) => aElement(spec, cls)).map(([cls, label, cle, etoile, aide, conseq]) => ({ cls, label, cle, etoile, aide, conseq: !!conseq }))
+}
 function section(titre, ouvert, ...contenu) {
   return el('details', { open: ouvert }, el('summary', {}, titre), el('div', { class: 'contenu' }, contenu))
+}
+// Les sections du formulaire sont TOUTES repliees a l'ouverture d'une carte (30/10/2026, « je veux que tout soit replié ») ;
+// celles qu'on ouvre le restent tant qu'on reste sur la carte (le formulaire se reconstruit a chaque reglage).
+const sectionsOuvertes = new Set()
+let carteDesSections = null
+function replierSections(blocs, idCarte) {
+  if (carteDesSections !== idCarte) { sectionsOuvertes.clear(); carteDesSections = idCarte }
+  for (const d of blocs) {
+    if (d.tagName !== 'DETAILS') continue
+    const cle = d.querySelector(':scope > summary')?.textContent ?? ''
+    d.open = sectionsOuvertes.has(cle)
+    d.addEventListener('toggle', () => { d.open ? sectionsOuvertes.add(cle) : sectionsOuvertes.delete(cle) })
+  }
 }
 // ---------------------------------------------------------------- editeur de texte sans balises
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;' }
@@ -637,16 +674,36 @@ function boiteImage(titre, obj, avecBascule) {
   return parts
 }
 
+// Preset vide = cadre neutre (gris) ; OFFICIEL = les couleurs d'origine du gabarit du jeu. Une palette qui ne colore
+// aucun role du type (palette de heros sur une carte de rencontre) laisse aussi le cadre neutre.
+const OFFICIEL = '__officiel'
 function appliquerPalette(c, spec, cle) {
   const roles = new Set(rolesDe(spec))
   c.couleurs = {}
-  if (!cle) return
-  const choix = ASPECTS[cle]
-  const pal = typeof choix === 'string' ? PALETTES[choix] : choix ?? PALETTES[cle]
-  for (const [k, v] of Object.entries(pal)) {
+  if (cle === OFFICIEL) return
+  const choix = cle ? ASPECTS[cle] : null
+  const pal = cle ? (typeof choix === 'string' ? PALETTES[choix] : choix ?? PALETTES[cle]) : null
+  for (const [k, v] of Object.entries(pal ?? {})) {
     const role = k === 'splash' ? 'splash_color' : k
     if (roles.has(role)) c.couleurs[role] = v
   }
+  if (!Object.keys(c.couleurs).length) c.couleurs = couleursNeutres(spec)
+}
+/** Le menu des couleurs d'un type : neutre, couleurs d'origine, aspects (cartes joueur), palettes des heros ou des mechants. */
+function optionsPalette(spec) {
+  const noms = Object.keys(PALETTES)
+  const famille = spec.famille === 'villain' ? noms.filter((n) => PALETTES[n].background_upper) : noms.filter((n) => PALETTES[n].left_color)
+  const s = el('select', {}, el('option', { value: '' }, 'Neutre (gris)'), el('option', { value: OFFICIEL }, 'Couleurs d’origine du cadre du jeu'))
+  if (spec.famille !== 'villain') s.append(el('optgroup', { label: 'Aspects' }, Object.keys(ASPECTS).map((n) => el('option', { value: n }, n))))
+  s.append(el('optgroup', { label: spec.famille === 'villain' ? 'Méchants et rencontres' : 'Héros' }, famille.sort().map((n) => el('option', { value: n }, joliNom(n)))))
+  return s
+}
+/** La couleur qui represente un preset (pastille d'un dossier) ; null si neutre. */
+function couleurDuPreset(cle) {
+  if (!cle || cle === OFFICIEL) return null
+  const choix = ASPECTS[cle]
+  const pal = typeof choix === 'string' ? PALETTES[choix] : choix ?? PALETTES[cle]
+  return pal?.left_color ?? pal?.background_upper ?? pal?.middle ?? null
 }
 function joliNom(slug) {
   return slug.replace(/_(hero|nemesis|campaign_hero)$/, '').replace(/[_-]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase())
@@ -711,21 +768,10 @@ function construireFormulaire() {
 
   // nombres
   const N = []
-  const A = (cls, label, cle, etoile = true) => aElement(spec, cls) && N.push(nombre(label, cle, etoile))
-  A('paycost cost', 'Coût', 'cout')
-  A('thw sch cost', 'Contrer / manigance (THW / SCH)', 'thw')
-  aElement(spec, 'thwconsequential') && N.push(liste('Dégâts consécutifs (contrer)', (x) => x.contenu, 'thwConseq', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number))
-  A('atk cost', 'Attaque (ATK)', 'atk')
-  aElement(spec, 'atkconsequential') && N.push(liste('Dégâts consécutifs (attaque)', (x) => x.contenu, 'atkConseq', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number))
-  A('def cost', 'Défense (DEF)', 'def')
-  A('rec cost', 'Récupération (REC)', 'rec')
-  A('hp cost', 'Points de vie', 'pv')
-  A('handsize', 'Taille de main', 'tailleMain', false)
-  A('startingthreatwrap', 'Menace de départ', 'menaceDepart')
-  A('targetthreat cost', 'Menace cible', 'menaceCible', false)
-  A('acceleration', 'Accélération', 'acceleration', false)
-  A('attachmentatknums cost', 'Attachement : bonus d’attaque', 'atkAttache')
-  A('attachmentschnums cost', 'Attachement : bonus de manigance', 'schAttache')
+  for (const n of nombresDuType(spec)) {
+    if (n.conseq) N.push(liste(n.label, (x) => x.contenu, n.cle, [0, 1, 2, 3, 4, 5].map((k) => [k, k]), Number))
+    else N.push(nombre(n.label, n.cle, n.etoile))
+  }
   if (aElement(spec, 'mainschemephase cost')) N.push(el('div', { class: 'rang' }, t('Phase : numéro', 'phaseNumero'), t('Phase : lettre', 'phaseLettre')))
   if (N.length) f.push(section('Nombres', true, ...N))
 
@@ -748,11 +794,7 @@ function construireFormulaire() {
   // couleurs
   const roles = rolesDe(spec)
   if (roles.length) {
-    const noms = Object.keys(PALETTES)
-    const famille = spec.famille === 'villain' ? noms.filter((n) => PALETTES[n].background_upper) : noms.filter((n) => PALETTES[n].left_color)
-    const preset = el('select', {}, el('option', { value: '' }, '— couleurs du gabarit —'))
-    if (spec.famille !== 'villain') preset.append(el('optgroup', { label: 'Aspects' }, Object.keys(ASPECTS).map((n) => el('option', { value: n }, n))))
-    preset.append(el('optgroup', { label: spec.famille === 'villain' ? 'Méchants et rencontres' : 'Héros' }, famille.sort().map((n) => el('option', { value: n }, joliNom(n)))))
+    const preset = optionsPalette(spec)
     preset.value = c.preset ?? ''
     preset.addEventListener('change', () => {
       c.preset = preset.value
@@ -767,7 +809,7 @@ function construireFormulaire() {
       grille.append(el('label', {}, ROLES_COULEURS[r], el('span', { class: 'rang-couleur' }, i, pipette(i))))
     }
     f.push(section('Couleurs', false, el('label', {}, 'Préréglage', preset), grille,
-      el('button', { class: 'btn petit', type: 'button', onclick: () => { c.couleurs = {}; c.preset = ''; construireFormulaire(); changement() } }, 'Revenir aux couleurs du gabarit')))
+      el('button', { class: 'btn petit', type: 'button', onclick: () => { c.preset = ''; appliquerPalette(c, spec, ''); construireFormulaire(); changement() } }, 'Remettre le cadre neutre (gris)')))
   }
 
   // illustration
@@ -807,6 +849,7 @@ function construireFormulaire() {
     el('div', { class: 'aide' }, '« Cadre sombre » remplace les couleurs par un gris-bleu foncé avec des accents dorés (tu peux encore les modifier dans Couleurs). « Pleine illustration » enlève le cadre : l’image remplit la carte et le texte repose sur des panneaux translucides.'),
     TYPES_SANS_FISSURES.has(c.type) ? coche('Fissures dans le cadre', (x) => x, 'fissures') : null))
 
+  replierSections(f, c.id)
   racine.append(...f)
   majAide()
 }
@@ -817,52 +860,94 @@ function majAide() {
 
 // ---------------------------------------------------------------- liste
 let filtreListe = ''
-const ouverts = new Set() // dossiers replies : on garde ceux qui sont fermes
-const fermes = new Set()
+// La colonne « Cartes » montre les dossiers en TUILES (30/10/2026, « que le créateur voie bien les différents dossiers
+// pour chaque héros ») : la couleur du héros, son nom, le nombre de cartes ; un clic ouvre le dossier et ses cartes.
+// `dossierVu` : null = les tuiles ; un nom = ce dossier ouvert ; SANS_DOSSIER = les cartes rangees nulle part.
+// Une recherche montre toutes les cartes qui correspondent, tous dossiers confondus.
+const SANS_DOSSIER = '\u0000sans-dossier'
+let dossierVu = null
+/** La couleur d'un dossier : celle de son template, sinon celle de sa premiere carte coloree, sinon un gris. */
+function couleurDuDossier(nom) {
+  const g = projet.gabarits?.[nom]
+  const d = g && (g.couleurs?.left_color ?? g.couleurs?.background_upper ?? couleurDuPreset(g.preset))
+  if (d) return d
+  for (const c of projet.cartes) {
+    if (c.dossier !== nom) continue
+    const x = c.couleurs?.left_color ?? c.couleurs?.background_upper ?? couleurDuPreset(c.preset)
+    if (x) return x
+  }
+  return '#6e7179'
+}
+function boutonCarte(c, avecDossier = false) {
+  return el('button', { type: 'button', class: 'carte-liste', 'aria-current': String(c.id === projet.courante), onclick: () => choisir(c.id) },
+    el('span', {}, c.contenu.titre || '(sans titre)'),
+    el('small', {}, `${NOMS[c.type] ?? c.type} · ${c.langue.toUpperCase()}`), avecDossier && c.dossier ? el('small', {}, '📁 ' + c.dossier) : null)
+}
 function majListe() {
   const l = $('#liste')
   const q = filtreListe.trim().toLowerCase()
-  const visible = (c) => !q || [c.contenu.titre, c.contenu.regles, c.contenu.traits, c.dossier, NOMS[c.type]].some((t) => String(t ?? '').toLowerCase().includes(q))
-  const groupes = new Map()
-  for (const c of projet.cartes) {
-    if (!visible(c)) continue
-    const d = c.dossier || ''
-    if (!groupes.has(d)) groupes.set(d, [])
-    groupes.get(d).push(c)
-  }
-  const noms = [...groupes.keys()].sort((x, y) => (x === '' ? 1 : y === '' ? -1 : x.localeCompare(y)))
-  const avecDossiers = noms.length > 1 || (noms.length === 1 && noms[0] !== '')
   const noeuds = []
-  for (const d of noms) {
-    const cartes = groupes.get(d)
-    if (avecDossiers) {
-      const ferme = fermes.has(d) && !q
-      noeuds.push(el('button', { class: 'dossier', type: 'button', onclick: () => { fermes.has(d) ? fermes.delete(d) : fermes.add(d); majListe() } },
-        `${ferme ? '▸' : '▾'} ${d || 'Sans dossier'}`, el('small', {}, ` (${cartes.length})`)))
-      if (ferme) continue
-    }
-    for (const c of cartes) {
-      noeuds.push(el('button', { type: 'button', 'aria-current': String(c.id === projet.courante), onclick: () => choisir(c.id) },
-        el('span', {}, c.contenu.titre || '(sans titre)'), el('small', {}, `${NOMS[c.type] ?? c.type} · ${c.langue.toUpperCase()}`)))
+  const dossiers = dossiersDuProjet()
+  const sansDossier = projet.cartes.filter((c) => !c.dossier)
+  if (q) {
+    const visible = (c) => [c.contenu.titre, c.contenu.regles, c.contenu.traits, c.dossier, NOMS[c.type]].some((t) => String(t ?? '').toLowerCase().includes(q))
+    for (const c of projet.cartes) if (visible(c)) noeuds.push(boutonCarte(c, true))
+  } else if (!dossiers.length) {
+    // pas encore de dossier : la liste simple
+    dossierVu = null
+    for (const c of projet.cartes) noeuds.push(boutonCarte(c))
+  } else {
+    if (dossierVu !== null && dossierVu !== SANS_DOSSIER && !dossiers.some(([d]) => d === dossierVu)) dossierVu = null
+    if (dossierVu === SANS_DOSSIER && !sansDossier.length) dossierVu = null
+    if (dossierVu === null) {
+      const courant = carte()?.dossier ?? ''
+      for (const [nom, nb] of dossiers) {
+        noeuds.push(el('button', { type: 'button', class: 'dossier tuile-dossier' + (courant === nom ? ' choisie' : ''), style: `--teinte:${couleurDuDossier(nom)}`, onclick: () => { dossierVu = nom; majListe() } },
+          el('span', { class: 'tuile-nom' }, '📁 ' + nom), el('small', {}, `${nb} carte(s)` + (projet.gabarits?.[nom] ? ' · template ✓' : ''))))
+      }
+      if (sansDossier.length) {
+        noeuds.push(el('button', { type: 'button', class: 'dossier tuile-dossier tuile-sans' + (courant === '' ? ' choisie' : ''), style: '--teinte:#3a3d45', onclick: () => { dossierVu = SANS_DOSSIER; majListe() } },
+          el('span', { class: 'tuile-nom' }, 'Sans dossier'), el('small', {}, `${sansDossier.length} carte(s)`)))
+      }
+    } else {
+      const nom = dossierVu === SANS_DOSSIER ? '' : dossierVu
+      const cartes = projet.cartes.filter((c) => (c.dossier || '') === nom)
+      noeuds.push(el('div', { class: 'tete-dossier', style: `--teinte:${nom ? couleurDuDossier(nom) : '#3a3d45'}` },
+        el('button', { type: 'button', class: 'dossier btn petit fixe', title: 'Revenir à tous les dossiers', onclick: () => { dossierVu = null; majListe() } }, '← Dossiers'),
+        el('strong', {}, nom ? '📁 ' + nom : 'Sans dossier'), el('small', {}, `${cartes.length} carte(s)`)))
+      if (nom) {
+        noeuds.push(el('div', { class: 'outils' },
+          el('button', { type: 'button', class: 'dossier btn petit', title: 'Une nouvelle carte dans ce dossier, avec l’assistant', onclick: () => ouvrirAssistantCarte(nom) }, '+ Carte ici'),
+          el('button', { type: 'button', class: 'dossier btn petit', title: 'Les couleurs, le cadre et la mention communs à ce dossier', onclick: () => ouvrirAssistantTemplate(nom) }, projet.gabarits?.[nom] ? 'Modifier le template…' : 'Créer le template…')))
+      }
+      for (const c of cartes) noeuds.push(boutonCarte(c))
     }
   }
-  if (!noeuds.length) noeuds.push(el('div', { class: 'aide' }, 'Aucune carte ne correspond.'))
+  if (!noeuds.length) noeuds.push(el('div', { class: 'aide' }, q ? 'Aucune carte ne correspond.' : 'Aucune carte.'))
   l.replaceChildren(...noeuds)
+  l.dataset.total = String(projet.cartes.length) // toutes les cartes, quel que soit le dossier ouvert (tests)
   // dossiers deja utilises : propositions du champ « Dossier »
   const dl = $('#dossiers-connus')
-  if (dl) dl.replaceChildren(...[...new Set(projet.cartes.map((c) => c.dossier).filter(Boolean))].sort().map((d) => el('option', { value: d })))
+  if (dl) dl.replaceChildren(...dossiers.map(([d]) => el('option', { value: d })))
   majModeles()
 }
+/** La liste « Templates » : le template de chaque dossier, puis les cartes de depart gardees. */
 function majModeles() {
   const s = $('#modeles')
   if (!s) return
   const v = s.value
-  s.replaceChildren(el('option', { value: '' }, `— modèles (${(projet.modeles ?? []).length}) —`), ...(projet.modeles ?? []).map((m) => el('option', { value: m.id }, m.nom)))
+  const gabarits = Object.keys(projet.gabarits ?? {}).sort()
+  const modeles = projet.modeles ?? []
+  s.replaceChildren(...[el('option', { value: '' }, `— templates (${gabarits.length + modeles.length}) —`),
+    gabarits.length ? el('optgroup', { label: 'Dossiers (apparence)' }, gabarits.map((d) => el('option', { value: 'g:' + d }, '📁 ' + d))) : null,
+    modeles.length ? el('optgroup', { label: 'Cartes de départ' }, modeles.map((m) => el('option', { value: 'm:' + m.id }, '🃏 ' + m.nom))) : null].filter(Boolean))
   s.value = v
+  if (s.value !== v) s.value = ''
 }
 function choisir(id) {
   validerHistorique()
   projet.courante = id
+  { const d = carte()?.dossier || SANS_DOSSIER; if (dossierVu !== null && dossierVu !== d) dossierVu = d }
   { const h = histoDe(id); h.ref ??= cloner(carte()) }
   majListe()
   majBoutonsLangue()
@@ -873,6 +958,7 @@ function choisir(id) {
 }
 function ajouter(c) {
   projet.cartes.push(c)
+  if (dossierVu !== null || c.dossier) dossierVu = c.dossier || SANS_DOSSIER
   choisir(c.id)
 }
 
@@ -900,31 +986,55 @@ const DESCRIPTIONS_TYPES = {
 }
 
 /** Fait tourner une suite d'etapes dans une boite de dialogue : chacune explique ce qu'elle regle avant de le demander.
+ * `etapes` : un tableau, ou une fonction (valeurs) -> tableau (les etapes dependent alors des choix, le type de carte par exemple).
  * etapes[i] = { titre, aide?, construire(valeurs, rafraichir) -> noeud, valider?(valeurs) -> string|undefined (message d'erreur) }.
- * `fin(valeurs)` est appele apres la derniere etape validee. */
-function lancerAssistant(titreAssistant, etapes, fin) {
+ * `fin(valeurs)` est appele apres la derniere etape validee.
+ * opts.apercu(valeurs) -> carte|null : la carte telle qu'elle sortira, dessinee a droite et redessinee a chaque saisie.
+ * opts.pied(fermer) -> noeud : un lien de plus sous les boutons (« carte vide, sans assistant »...). */
+function lancerAssistant(titreAssistant, etapes, fin, opts = {}) {
   const d = el('dialog', { class: 'dlg' })
-  const corps = el('div', { class: 'contenu', style: 'display:flex;flex-direction:column;gap:10px' })
-  const puces = el('div', { class: 'rang', style: 'gap:4px' })
+  const corps = el('div', { class: 'assistant-corps' })
+  const puces = el('ol', { class: 'assistant-puces' })
   const alerte = el('div', { class: 'aide', style: 'color:#ff9b8f' })
   const gauche = el('div', { class: 'rang' })
   const droite = el('div', { class: 'rang' })
+  const toile = el('canvas', { class: 'assistant-apercu' })
   let i = 0
-  const valeurs = {}
+  const valeurs = { ...(opts.valeurs ?? {}) }
+  const liste = () => (typeof etapes === 'function' ? etapes(valeurs) : etapes)
+  let minuteur = 0
+  let n = 0
+  async function redessiner() {
+    if (!opts.apercu) return
+    const k = ++n
+    const c = opts.apercu(valeurs)
+    if (!c) return
+    try {
+      const t = await rendreCarte(c)
+      if (k !== n) return
+      toile.width = t.width
+      toile.height = t.height
+      toile.getContext('2d').drawImage(t, 0, 0)
+    } catch {}
+  }
+  const plusTard = () => { clearTimeout(minuteur); minuteur = setTimeout(redessiner, 150) }
+  d.addEventListener('input', plusTard)
+  d.addEventListener('change', plusTard)
   function rendre() {
-    const etape = etapes[i]
+    const toutes = liste()
+    i = Math.min(i, toutes.length - 1)
+    const etape = toutes[i]
     alerte.textContent = ''
-    corps.replaceChildren(
-      el('h3', {}, `${i + 1}/${etapes.length} · ${etape.titre}`),
-      etape.aide ? el('p', { class: 'aide' }, etape.aide) : null,
-      etape.construire(valeurs, rendre))
-    puces.replaceChildren(...etapes.map((e, k) => el('span', {
-      style: `width:8px;height:8px;border-radius:50%;background:${k === i ? '#e62429' : k < i ? '#777' : '#3a3d45'}`,
-    })))
-    gauche.replaceChildren(
-      i > 0 ? el('button', { class: 'btn petit', type: 'button', onclick: () => { i--; rendre() } }, '◀ Précédent') : null,
-      el('button', { class: 'btn petit', type: 'button', onclick: () => d.close() }, 'Annuler'))
-    const dernier = i === etapes.length - 1
+    corps.replaceChildren(...[
+      el('h3', { class: 'assistant-titre' }, `${i + 1}/${toutes.length} · ${etape.titre}`),
+      etape.aide ? el('p', { class: 'assistant-aide' }, etape.aide) : null,
+      etape.construire(valeurs, rendre)].filter(Boolean))
+    puces.replaceChildren(...toutes.map((e, k) => el('li', { class: k === i ? 'en-cours' : k < i ? 'fait' : '' },
+      k < i ? el('button', { type: 'button', onclick: () => { i = k; rendre() } }, e.court ?? e.titre) : el('span', {}, e.court ?? e.titre))))
+    gauche.replaceChildren(...[
+      i > 0 ? el('button', { class: 'btn', type: 'button', onclick: () => { i--; rendre() } }, '◀ Précédent') : null,
+      el('button', { class: 'btn', type: 'button', onclick: () => d.close() }, 'Annuler')].filter(Boolean))
+    const dernier = i === toutes.length - 1
     droite.replaceChildren(el('button', {
       class: 'btn principal', type: 'button',
       onclick: () => {
@@ -934,23 +1044,54 @@ function lancerAssistant(titreAssistant, etapes, fin) {
         else { i++; rendre() }
       },
     }, dernier ? 'Terminer' : 'Suivant ▶'))
+    plusTard()
   }
-  d.append(el('div', { class: 'panneau', style: 'min-width:min(600px,94vw);max-height:86vh;overflow:auto' },
-    el('h2', {}, titreAssistant), puces, corps, alerte, el('div', { class: 'rang', style: 'justify-content:space-between;margin-top:10px' }, gauche, droite)))
+  const colonne = el('div', { class: 'assistant-colonne' }, corps, alerte,
+    el('div', { class: 'rang assistant-boutons' }, gauche, droite),
+    opts.pied ? el('div', { class: 'assistant-pied' }, opts.pied(() => d.close())) : null)
+  d.append(el('div', { class: 'panneau assistant' },
+    el('h2', {}, titreAssistant), puces,
+    el('div', { class: 'assistant-grille' + (opts.apercu ? '' : ' sans-apercu') }, colonne, opts.apercu ? el('figure', { class: 'assistant-figure' }, toile, el('figcaption', { class: 'aide' }, 'Aperçu')) : null)))
   document.body.append(d)
-  d.addEventListener('close', () => d.remove())
+  d.addEventListener('close', () => { clearTimeout(minuteur); d.remove() })
   rendre()
   d.showModal()
   return d
 }
 
-/** Applique a `c` le gabarit enregistre pour son dossier, s'il y en a un (couleurs, cadre, mise en page, mention). */
+/** Un champ de l'assistant : libelle, explication en dessous, valeur gardee dans `v[cle]`. */
+function champAssistant(v, cle, label, aide, opts = {}) {
+  v[cle] ??= opts.defaut ?? ''
+  const i = opts.long ? el('textarea', { rows: opts.lignes ?? 4, placeholder: opts.exemple ?? '' }) : el('input', { type: 'text', placeholder: opts.exemple ?? '', list: opts.list ?? null })
+  i.value = v[cle]
+  i.addEventListener('input', () => { v[cle] = i.value })
+  return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, label), i, aide ? el('small', { class: 'aide' }, aide) : null)
+}
+function caseAssistant(v, cle, label, aide, defaut = false) {
+  v[cle] ??= defaut
+  const i = el('input', { type: 'checkbox' })
+  i.checked = !!v[cle]
+  i.addEventListener('change', () => { v[cle] = i.checked })
+  return el('div', { class: 'assistant-champ' }, el('label', { class: 'ligne' }, i, el('span', { class: 'assistant-libelle' }, label)), aide ? el('small', { class: 'aide' }, aide) : null)
+}
+
+/** Les dossiers du projet, avec le nombre de cartes de chacun (« » = sans dossier exclu). */
+function dossiersDuProjet() {
+  const m = new Map()
+  for (const c of projet.cartes) if (c.dossier) m.set(c.dossier, (m.get(c.dossier) ?? 0) + 1)
+  for (const d of Object.keys(projet.gabarits ?? {})) if (!m.has(d)) m.set(d, 0)
+  return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+}
+
+/** Applique a `c` le template enregistre pour son dossier, s'il y en a un (couleurs, cadre, mise en page, mention). */
 function appliquerGabaritPack(c) {
   const g = (projet.gabarits ??= {})[(c.dossier || '').trim()]
   if (!g) return
   const spec = TYPES[c.type]
   c.preset = g.preset ?? ''
   if (spec) appliquerPalette(c, spec, c.preset)
+  // couleurs reglees a la main (« comme la carte actuelle ») : par-dessus, role par role
+  if (spec && g.couleurs) { const roles = new Set(rolesDe(spec)); for (const [r, v] of Object.entries(g.couleurs)) if (roles.has(r)) c.couleurs[r] = v }
   if (g.cadre) c.cadre = g.cadre
   if (g.fissures != null) c.fissures = g.fissures
   if (g.createur) c.contenu.createur = g.createur
@@ -958,170 +1099,402 @@ function appliquerGabaritPack(c) {
   if (g.echelleTexte != null) c.contenu.echelleTexte = g.echelleTexte
 }
 
-/** Propose de regler le gabarit quand `c.dossier` est un pack tout neuf (aucune autre carte dedans, pas de gabarit deja enregistre). */
+/** Propose de creer le template quand `c.dossier` est un dossier tout neuf (aucune autre carte dedans, pas de template). */
 function proposerGabaritPack(c) {
   const dossier = (c.dossier || '').trim()
   if (!dossier) return
   if ((projet.gabarits ??= {})[dossier]) return
   if (projet.cartes.some((x) => x.id !== c.id && (x.dossier || '').trim() === dossier)) return
-  dialogue(`Nouveau pack « ${dossier} »`,
+  dialogue(`Nouveau dossier « ${dossier} »`,
     el('div', { class: 'aide' },
-      'Veux-tu régler son gabarit maintenant (couleurs, mise en page, mention du créateur) ? Il s’appliquera à cette carte, et à toutes celles que tu ajouteras ensuite dans ce dossier. Tu pourras le refaire à tout moment avec le bouton « Gabarit du pack… ».'),
-    [{ texte: 'Plus tard' }, { texte: 'Régler le gabarit', principal: true, action: () => { ouvrirAssistantGabarit(dossier); return true } }])
+      'Veux-tu lui créer un template maintenant (couleurs, style du cadre, mention du créateur) ? Il s’appliquera à cette carte, et à toutes celles que tu ajouteras ensuite dans ce dossier. Tu pourras le modifier à tout moment depuis le dossier ou la rubrique « Templates ».'),
+    [{ texte: 'Plus tard' }, { texte: 'Créer le template', principal: true, action: () => { ouvrirAssistantTemplate(dossier); return true } }])
 }
 
-/** L'assistant « Gabarit du pack » : couleurs, cadre, mise en page du texte, mention du créateur - pour tout un dossier. */
-function ouvrirAssistantGabarit(dossierDepart) {
-  const c = carte()
-  if (!c) return message('Crée ou choisis d’abord une carte.')
-  const dossierActuel = (dossierDepart ?? c.dossier ?? '').trim()
+/** Le choix du dossier dans un assistant : les dossiers existants en tuiles, ou un nom nouveau. */
+function choixDossier(v, rafraichir, { avecAucun = true } = {}) {
+  const tuiles = el('div', { class: 'assistant-tuiles' })
+  const existants = dossiersDuProjet()
+  for (const [nom, nb] of existants) {
+    const coul = couleurDuDossier(nom)
+    tuiles.append(el('button', {
+      type: 'button', class: 'tuile-dossier' + (v.dossier === nom ? ' choisie' : ''), style: `--teinte:${coul}`,
+      onclick: () => { v.dossier = nom; rafraichir() },
+    }, el('span', { class: 'tuile-nom' }, '📁 ' + nom), el('small', {}, `${nb} carte(s)` + (projet.gabarits?.[nom] ? ' · template ✓' : ''))))
+  }
+  if (avecAucun) {
+    tuiles.append(el('button', {
+      type: 'button', class: 'tuile-dossier' + (v.dossier === '' ? ' choisie' : ''), style: '--teinte:#3a3d45',
+      onclick: () => { v.dossier = ''; rafraichir() },
+    }, el('span', { class: 'tuile-nom' }, 'Sans dossier'), el('small', {}, 'La carte reste à part')))
+  }
+  const nouveau = el('input', { type: 'text', placeholder: 'ex. Valkyrie', value: existants.some(([n]) => n === v.dossier) ? '' : v.dossier })
+  nouveau.addEventListener('input', () => { v.dossier = nouveau.value.trim(); for (const b of tuiles.children) b.classList.remove('choisie') })
+  return el('div', { class: 'assistant-champ' },
+    existants.length ? el('span', { class: 'assistant-libelle' }, 'Un dossier existant') : null, tuiles,
+    el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Ou un nouveau dossier'), nouveau))
+}
+
+/** Le texte saisi dans une zone simple -> le mini-HTML de la carte (les retours a la ligne restent, les icones [energy] aussi). */
+const versCarte = (txt) => echapper(String(txt ?? '').trim())
+
+// ---------------------------------------------------------------- assistant « Nouvelle carte » (par blocs)
+// 30/10/2026 : l'assistant passe sur TOUT, bloc par bloc (type, dossier, nom et traits, nombres, texte, illustration,
+// couleurs), chaque bloc explique ses champs, et l'apercu a droite montre la carte a chaque saisie. « + Nouvelle »
+// l'ouvre directement ; un lien en bas cree une carte vide sans assistant, pour les habitues.
+
+/** La carte que donnera l'assistant (sert a l'apercu et a la fin). */
+function carteDepuisAssistant(v) {
+  const c = nouvelleCarte(v.type, v.langue)
   const spec = TYPES[c.type]
-  const noms = Object.keys(PALETTES)
-  const famille = spec.famille === 'villain' ? noms.filter((n) => PALETTES[n].background_upper) : noms.filter((n) => PALETTES[n].left_color)
+  c.dossier = (v.dossier ?? '').trim()
+  appliquerGabaritPack(c)
+  if (v.couleursPropres || !projet.gabarits?.[c.dossier]) {
+    c.preset = v.preset ?? ''
+    appliquerPalette(c, spec, c.preset)
+  }
+  const ct = c.contenu
+  ct.titre = (v.titre ?? '').trim()
+  ct.unique = !!v.unique
+  ct.traits = (v.traits ?? '').trim()
+  for (const n of nombresDuType(spec)) if (v['n:' + n.cle] !== undefined) ct[n.cle] = n.conseq ? Number(v['n:' + n.cle]) || 0 : String(v['n:' + n.cle]).trim()
+  if (aElement(spec, 'mainschemephase cost')) ct.phaseNumero = (v.phaseNumero ?? '').trim()
+  if (aElement(spec, 'villainstagenew')) ct.etape = (v.etape ?? '').trim()
+  ct.ligneEnsemble = (v.ligneEnsemble ?? '').trim()
+  ct.regles = versCarte(v.regles)
+  ct.citation = versCarte(v.citation)
+  if (v.art) c.art.blob = v.art
+  return c
+}
+
+function ouvrirAssistantCarte(dossierDepart) {
+  const depart = {
+    type: carte()?.type ?? 'ally',
+    langue: carte()?.langue ?? 'en',
+    dossier: dossierDepart ?? (dossierVu && dossierVu !== SANS_DOSSIER ? dossierVu : ''),
+  }
+  const etapes = (v) => {
+    const spec = TYPES[v.type]
+    const e = []
+    e.push({
+      titre: 'Quel type de carte ?', court: 'Type',
+      aide: 'Le type fixe le cadre et les cases de la carte (coût, stats, menace…). Les étapes suivantes ne te demanderont que ce qui existe sur ce type. Tu pourras encore le changer plus tard.',
+      construire: (v, rafraichir) => {
+        const zone = el('div', { style: 'display:flex;flex-direction:column;gap:10px' })
+        for (const [titreGroupe, ids] of GROUPES) {
+          const boutons = el('div', { class: 'assistant-types' },
+            ...ids.filter((id) => TYPES[id]).map((id) => el('button', {
+              class: 'btn petit' + (v.type === id ? ' principal' : ''), type: 'button',
+              onclick: () => { v.type = id; rafraichir() },
+            }, el('div', { style: 'font-weight:600' }, NOMS[id] ?? id), el('div', { class: 'aide' }, DESCRIPTIONS_TYPES[id] ?? ''))))
+          zone.append(el('h4', { class: 'assistant-groupe' }, titreGroupe), boutons)
+        }
+        return zone
+      },
+    })
+    e.push({
+      titre: 'Dans quel dossier ?', court: 'Dossier',
+      aide: 'Un dossier regroupe les cartes d’un même héros (ou d’un même set de rencontre). Si le dossier a un template, la carte en prend tout de suite les couleurs, le style du cadre et la mention du créateur. Pour un héros tout neuf (identité, alter-ego, némésis…), le bouton « + Nouveau héros » crée tout le dossier d’un coup.',
+      construire: (v, rafraichir) => choixDossier(v, rafraichir),
+    })
+    const nomTraits = [
+      (v) => champAssistant(v, 'titre', 'Nom de la carte', 'Écrit en haut de la carte, tel quel.', { exemple: 'ex. Bifrost' }),
+      (v) => caseAssistant(v, 'unique', 'Carte unique (✦)', 'Un seul exemplaire en jeu à la fois : le symbole ✦ s’ajoute devant le nom (personnages, lieux célèbres…).'),
+    ]
+    if (aElement(spec, 'traits')) nomTraits.push((v) => champAssistant(v, 'traits', 'Traits', 'Les mots-clés en italique sous l’illustration, séparés par des points. D’autres cartes s’y réfèrent (« chaque allié Avenger… »).', { exemple: 'ex. Asgard. Avenger.' }))
+    e.push({
+      titre: 'Nom et traits', court: 'Nom',
+      aide: 'Ce qui identifie la carte.',
+      construire: (v) => el('div', { class: 'assistant-pile' }, ...nomTraits.map((f) => f(v))),
+      valider: (v) => (String(v.titre ?? '').trim() ? undefined : 'Donne un nom à la carte.'),
+    })
+    const nombres = nombresDuType(spec)
+    const avecPhase = aElement(spec, 'mainschemephase cost')
+    const avecEtape = aElement(spec, 'villainstagenew')
+    if (nombres.length || avecPhase || avecEtape || aElement(spec, 'set-line')) {
+      e.push({
+        titre: 'Les nombres', court: 'Nombres',
+        aide: 'Chaque case explique à quoi sert le nombre. Laisse vide ce que tu ne veux pas afficher ; « X » ou « — » sont acceptés. Les options plus rares (★, par joueur, icônes de boost, ressources) sont dans le formulaire, rubriques « Nombres » et « Boost et ressources ».',
+        construire: (v) => {
+          const pile = el('div', { class: 'assistant-pile' })
+          for (const n of nombres) {
+            if (n.conseq) {
+              v['n:' + n.cle] ??= 0
+              const s = el('select', {}, [0, 1, 2, 3, 4, 5].map((k) => el('option', { value: k }, k)))
+              s.value = String(v['n:' + n.cle])
+              s.addEventListener('change', () => { v['n:' + n.cle] = Number(s.value) })
+              pile.append(el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, n.label), s, el('small', { class: 'aide' }, n.aide)))
+            } else pile.append(champAssistant(v, 'n:' + n.cle, n.label, n.aide))
+          }
+          if (avecPhase) pile.append(champAssistant(v, 'phaseNumero', 'Numéro de la manigance', 'L’ordre de la manigance dans le scénario (1, 2, 3…).', { exemple: 'ex. 1' }))
+          if (avecEtape) pile.append(champAssistant(v, 'etape', 'Étape du méchant', 'I, II, III (ou A, B…) : la carte méchant de chaque étape.', { exemple: 'ex. I' }))
+          if (aElement(spec, 'set-line')) {
+            const heros = ['identity', 'alter-ego'].includes(v.type)
+            pile.append(champAssistant(v, 'ligneEnsemble', 'Ligne du bas',
+              heros ? 'Sur une identité ou un alter-ego : la taille de main et les points de vie du héros.' : 'Le nom du set et le numéro de la carte dans le set.',
+              { exemple: heros ? TEXTES[v.langue].ligneEnsemble(6, 10) : 'ex. Valkyrie (3/15)' }))
+          }
+          return pile
+        },
+      })
+    }
+    if (aElement(spec, 'rules') || aElement(spec, 'quote')) {
+      e.push({
+        titre: 'Le texte', court: 'Texte',
+        aide: 'Le texte de règles dit ce que fait la carte ; la citation est une phrase d’ambiance en italique, sans effet. Écris simplement ici : le gras, l’italique, les icônes de ressource et les mots-clés officiels (Action, Renfort…) s’ajoutent ensuite dans le formulaire, rubrique « Texte », avec le bouton « Styles » ou en tapant « / ».',
+        construire: (v) => el('div', { class: 'assistant-pile' },
+          aElement(spec, 'rules') ? champAssistant(v, 'regles', 'Texte de règles', 'Une capacité par ligne.', { long: true, lignes: 5, exemple: 'ex. Action : inflige 2 dégâts à un ennemi.' }) : null,
+          aElement(spec, 'quote') ? champAssistant(v, 'citation', 'Citation (facultative)', 'Une réplique du personnage, ou une phrase d’ambiance.', { long: true, lignes: 2 }) : null),
+      })
+    }
+    e.push({
+      titre: 'L’illustration', court: 'Image',
+      aide: 'L’image placée derrière le cadre. Prends-la assez grande (au moins 750 × 1050 pixels) pour qu’elle reste nette à l’impression. Une fois la carte créée, tu la déplaces en la glissant sur l’aperçu et tu zoomes à la molette. Facultatif : tu peux l’ajouter plus tard.',
+      construire: (v, rafraichir) => {
+        const f = el('input', { type: 'file', accept: 'image/*' })
+        f.addEventListener('change', () => { v.art = f.files[0] ?? null; rafraichir() })
+        return el('div', { class: 'assistant-pile' }, el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Image'), f),
+          v.art ? el('div', { class: 'rang' }, el('span', { class: 'aide' }, '✓ ' + (v.art.name ?? 'image choisie')), el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { v.art = null; rafraichir() } }, 'Retirer')) : null)
+      },
+    })
+    e.push({
+      titre: 'Les couleurs', court: 'Couleurs',
+      aide: 'Les couleurs du cadre. Sans choix, le cadre reste neutre (gris).',
+      construire: (v, rafraichir) => {
+        const g = projet.gabarits?.[(v.dossier ?? '').trim()]
+        const pile = el('div', { class: 'assistant-pile' })
+        if (g) {
+          pile.append(el('p', { class: 'aide' }, `Le dossier « ${v.dossier} » a un template : la carte en prend les couleurs (${g.preset === OFFICIEL ? tr('couleurs d’origine') : g.preset ? joliNom(g.preset) : tr('neutre')}). Coche la case pour en choisir d’autres pour cette carte seulement.`))
+          const i = el('input', { type: 'checkbox' })
+          i.checked = !!v.couleursPropres
+          i.addEventListener('change', () => { v.couleursPropres = i.checked; rafraichir() })
+          pile.append(el('label', { class: 'ligne' }, i, 'D’autres couleurs pour cette carte'))
+          if (!v.couleursPropres) return pile
+        }
+        const s = optionsPalette(spec)
+        s.value = v.preset ?? ''
+        s.addEventListener('change', () => { v.preset = s.value })
+        pile.append(el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Couleurs'), s,
+          el('small', { class: 'aide' }, 'Un aspect (Justice, Protection…) colore tout le cadre d’une seule teinte ; la palette d’un héros ou d’un méchant du jeu reprend ses couleurs. Le détail, couleur par couleur, est dans le formulaire, rubrique « Couleurs ».')))
+        return pile
+      },
+    })
+    e.push({
+      titre: 'C’est prêt', court: 'Fin',
+      aide: 'La carte va s’ouvrir dans le formulaire, toutes rubriques repliées : ouvre seulement celle dont tu as besoin pour les finitions (mise en forme du texte, ★, calques PNG, dos de la carte, style du cadre).',
+      construire: (v) => el('ul', { style: 'margin:0;padding-left:18px' },
+        el('li', {}, `Type : ${tr(NOMS[v.type] ?? v.type)}`), el('li', {}, `Titre : ${String(v.titre ?? '').trim()}`), el('li', {}, `Dossier : ${String(v.dossier ?? '').trim() || tr('(aucun)')}`)),
+    })
+    return e
+  }
+  lancerAssistant('Nouvelle carte', etapes, (v) => {
+    const c = carteDepuisAssistant(v)
+    ajouter(c)
+    if (c.dossier) dossierVu = c.dossier
+    majListe()
+    proposerGabaritPack(c)
+  }, {
+    valeurs: depart,
+    apercu: (v) => carteDepuisAssistant(v),
+    pied: (fermer) => el('button', {
+      class: 'lien', type: 'button',
+      onclick: () => { const c = nouvelleCarte(depart.type, depart.langue); c.dossier = depart.dossier; appliquerGabaritPack(c); ajouter(c); fermer() },
+    }, 'Créer une carte vide, sans assistant'),
+  })
+}
+
+// ---------------------------------------------------------------- assistant « Nouveau héros »
+// 30/10/2026 : un heros = un dossier, son template, et ses cartes de base deja creees (identite, alter-ego, et sur
+// demande sa nemesis, la manigance annexe de la nemesis et son obligation), pretes a remplir.
+const CARTES_HEROS = [
+  ['nemesis', 'minion', 'Sa némésis (un sbire)', 'L’ennemi juré du héros : elle entre en jeu avec la manigance annexe de la némésis.'],
+  ['manigance', 'sidescheme', 'La manigance annexe de la némésis', 'Révélée quand la némésis arrive (« Le méchant fait sa manigance… »).'],
+  ['obligation', 'obligation', 'Son obligation', 'Le problème personnel de l’alter-ego, mêlé au paquet de rencontre.'],
+]
+function ouvrirAssistantHeros() {
+  const langue = carte()?.langue ?? 'en'
+  const cartesHeros = (v) => {
+    const cartes = []
+    const id = nouvelleCarte('identity', langue)
+    id.contenu.titre = (v.nom ?? '').trim()
+    const ae = nouvelleCarte('alter-ego', langue)
+    ae.contenu.titre = (v.alterEgo ?? '').trim()
+    cartes.push(id, ae)
+    for (const [cle, type] of CARTES_HEROS) if (v[cle]) cartes.push(nouvelleCarte(type, langue))
+    for (const c of cartes) {
+      c.dossier = (v.nom ?? '').trim()
+      c.preset = v.preset ?? ''
+      appliquerPalette(c, TYPES[c.type], c.preset)
+      if (v.createur) c.contenu.createur = v.createur
+    }
+    // l'identite et l'alter-ego sont les deux faces d'une meme carte
+    id.verso = { mode: 'carte', carteId: ae.id, blob: null }
+    ae.verso = { mode: 'carte', carteId: id.id, blob: null }
+    return cartes
+  }
   const etapes = [
     {
-      titre: 'Le gabarit d’un pack',
-      aide: 'Un gabarit regroupe les réglages qui doivent rester identiques sur toutes les cartes d’un même pack : couleurs, cadre et mention du créateur. Indique le dossier concerné (celui de ta carte actuelle, par défaut).',
-      construire: (v) => {
-        v.dossier ??= dossierActuel
-        const dossier = el('input', { type: 'text', list: 'dossiers-connus', value: v.dossier, placeholder: 'ex. Valkyrie' })
-        dossier.addEventListener('input', () => { v.dossier = dossier.value })
-        return el('label', {}, 'Dossier concerné', dossier)
-      },
-      valider: (v) => (v.dossier.trim() ? undefined : 'Indique le nom du dossier (pack).'),
-    },
-    {
-      titre: 'Couleurs',
-      aide: 'Choisis un aspect (Agression, Justice…) ou la palette d’un héros ou méchant déjà dans le jeu : toutes les couleurs du cadre en découlent d’un coup. Laisse vide pour garder les couleurs par défaut du gabarit.',
-      construire: (v) => {
-        v.preset ??= c.preset || ''
-        const preset = el('select', {}, el('option', { value: '' }, '— couleurs par défaut —'))
-        if (spec.famille !== 'villain') preset.append(el('optgroup', { label: 'Aspects' }, Object.keys(ASPECTS).map((n) => el('option', { value: n }, n))))
-        preset.append(el('optgroup', { label: spec.famille === 'villain' ? 'Méchants et rencontres' : 'Héros' }, famille.sort().map((n) => el('option', { value: n }, joliNom(n)))))
-        preset.value = v.preset
-        preset.addEventListener('change', () => { v.preset = preset.value })
-        return el('label', {}, 'Préréglage', preset)
+      titre: 'Un héros, c’est un dossier', court: 'Nom',
+      aide: 'Je vais créer un dossier au nom du héros, son template (les couleurs et la mention communes à toutes ses cartes), puis ses cartes de base, prêtes à remplir. Les autres cartes (son paquet de départ, ses alliés…) s’ajouteront ensuite dans le dossier avec « + Nouvelle ».',
+      construire: (v) => el('div', { class: 'assistant-pile' },
+        champAssistant(v, 'nom', 'Nom du héros', 'Le nom de super-héros : il sert aussi de nom au dossier et au titre de la carte d’identité.', { exemple: 'ex. Valkyrie' }),
+        champAssistant(v, 'alterEgo', 'Nom de l’alter-ego', 'Son identité civile, écrite sur l’autre face.', { exemple: 'ex. Brunnhilde' })),
+      valider: (v) => {
+        const nom = String(v.nom ?? '').trim()
+        if (!nom) return 'Donne un nom au héros.'
+        if (dossiersDuProjet().some(([d]) => d === nom)) return 'Un dossier porte déjà ce nom : choisis-en un autre, ou ajoute tes cartes dans ce dossier avec « + Nouvelle ».'
       },
     },
     {
-      titre: 'Mise en page du texte',
-      aide: 'Une carte à texte court peut être centrée verticalement dans son cadre, comme beaucoup de cartes officielles.',
+      titre: 'Ses couleurs', court: 'Couleurs',
+      aide: 'Les couleurs du cadre, communes à toutes les cartes du héros. Pars d’une palette proche de ton héros (ou du gris neutre) ; tu affineras couleur par couleur dans le formulaire, rubrique « Couleurs ».',
       construire: (v) => {
-        v.centrerTexte ??= !!c.contenu.centrerTexte
-        const i = el('input', { type: 'checkbox' })
-        i.checked = v.centrerTexte
-        i.addEventListener('change', () => { v.centrerTexte = i.checked })
-        return el('label', { class: 'ligne' }, i, 'Centrer le texte des règles verticalement')
+        const s = optionsPalette(TYPES.identity)
+        v.preset ??= ''
+        s.value = v.preset
+        s.addEventListener('change', () => { v.preset = s.value })
+        return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Couleurs'), s)
       },
     },
     {
-      titre: 'Mention du créateur',
-      aide: 'Le petit texte en bas de carte (ton nom, ton pseudo…), commun à tout le pack.',
-      construire: (v) => {
-        v.createur ??= c.contenu.createur || ''
-        const i = el('input', { type: 'text', value: v.createur, placeholder: 'ex. Créé par …' })
-        i.addEventListener('input', () => { v.createur = i.value })
-        return el('label', {}, 'Mention', i)
-      },
+      titre: 'La mention du créateur', court: 'Mention',
+      aide: 'La petite ligne en bas de chaque carte : ton nom ou ton pseudo. Elle sera la même sur toutes les cartes du héros.',
+      construire: (v) => champAssistant(v, 'createur', 'Mention', '', { defaut: TEXTES[langue].createur }),
     },
     {
-      titre: 'Appliquer',
-      aide: 'Ces réglages vont être gardés pour les prochaines cartes de ce dossier, et appliqués tout de suite à la carte actuelle. Veux-tu aussi les recopier sur les autres cartes déjà présentes dans ce dossier ?',
-      construire: (v) => {
-        v.appliquerDossier ??= true
-        const i = el('input', { type: 'checkbox' })
-        i.checked = v.appliquerDossier
-        i.addEventListener('change', () => { v.appliquerDossier = i.checked })
-        return el('label', { class: 'ligne' }, i, 'Appliquer aussi aux autres cartes déjà dans ce dossier')
-      },
+      titre: 'Les cartes à créer', court: 'Cartes',
+      aide: 'L’identité et l’alter-ego sont toujours créés : ce sont les deux faces de la carte du héros (je les relie l’une à l’autre comme recto et verso). Coche ce que tu veux en plus.',
+      construire: (v) => el('div', { class: 'assistant-pile' },
+        el('label', { class: 'ligne' }, el('input', { type: 'checkbox', checked: true, disabled: true }), el('span', { class: 'assistant-libelle' }, 'Identité de héros + alter-ego')),
+        ...CARTES_HEROS.map(([cle, , label, aide]) => caseAssistant(v, cle, label, aide, true))),
+    },
+    {
+      titre: 'C’est prêt', court: 'Fin',
+      aide: 'Le dossier s’ouvre dans la colonne « Cartes », avec la carte d’identité choisie. Remplis chaque carte dans le formulaire.',
+      construire: (v) => el('ul', { style: 'margin:0;padding-left:18px' },
+        el('li', {}, `Dossier : ${String(v.nom).trim()}`),
+        ...cartesHeros(v).map((c) => el('li', {}, `${tr(NOMS[c.type] ?? c.type)}${c.contenu.titre ? ' : ' + c.contenu.titre : ''}`))),
     },
   ]
-  lancerAssistant('Gabarit du pack', etapes, (v) => {
+  lancerAssistant('Nouveau héros', etapes, (v) => {
+    const nom = v.nom.trim()
+    ;(projet.gabarits ??= {})[nom] = { preset: v.preset ?? '', cadre: 'officiel', fissures: true, createur: v.createur ?? '', centrerTexte: false, echelleTexte: 0 }
+    const cartes = cartesHeros(v)
+    projet.cartes.push(...cartes)
+    dossierVu = nom
+    choisir(cartes[0].id)
+    message(`Héros « ${nom} » créé : ${cartes.length} carte(s).`)
+  }, {
+    apercu: (v) => {
+      const c = nouvelleCarte('identity', langue)
+      c.contenu.titre = (v.nom ?? '').trim()
+      c.preset = v.preset ?? ''
+      appliquerPalette(c, TYPES.identity, c.preset)
+      if (v.createur !== undefined) c.contenu.createur = v.createur
+      return c
+    },
+  })
+}
+
+// ---------------------------------------------------------------- assistant « Template »
+// 30/10/2026 : un seul mot, « Template ». Le template d'un dossier = son apparence commune (couleurs, style du
+// cadre, mise en page, mention), appliquee a chaque nouvelle carte du dossier ; on peut y joindre une carte de
+// depart complete (l'ancien « modele »), proposee dans la liste des templates.
+function ouvrirAssistantTemplate(dossierDepart) {
+  const c = carte()
+  const etapes = (v) => {
+    const spec = TYPES[v.type] ?? TYPES.ally
+    return [
+      {
+        titre: 'À quoi sert un template ?', court: 'Dossier',
+        aide: 'Un template garde l’apparence commune à toutes les cartes d’un dossier : couleurs, style du cadre, mise en page du texte et mention du créateur. Chaque nouvelle carte du dossier le prend automatiquement. Choisis le dossier concerné.',
+        construire: (v, rafraichir) => choixDossier(v, rafraichir, { avecAucun: false }),
+        valider: (v) => (String(v.dossier ?? '').trim() ? undefined : 'Choisis ou nomme un dossier.'),
+      },
+      {
+        titre: 'Les couleurs', court: 'Couleurs',
+        aide: 'Neutre (gris), les couleurs d’origine du cadre du jeu, un aspect, ou la palette d’un héros ou d’un méchant existant. « Comme la carte actuelle » reprend exactement ses couleurs, y compris celles réglées à la main.',
+        construire: (v) => {
+          const s = optionsPalette(spec)
+          if (c) s.prepend(el('option', { value: '__carte' }, 'Comme la carte actuelle'))
+          s.value = v.preset
+          s.addEventListener('change', () => { v.preset = s.value })
+          return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Couleurs'), s)
+        },
+      },
+      {
+        titre: 'Le style du cadre', court: 'Cadre',
+        aide: '« Officiel » : le cadre du jeu, dans les couleurs choisies. « Sombre » : gris-bleu foncé avec des accents dorés. « Pleine illustration » : pas de cadre, l’image remplit la carte et le texte repose sur des panneaux translucides.',
+        construire: (v) => {
+          const s = el('select', {}, [['officiel', 'Officiel (gabarit du jeu)'], ['sombre', 'Cadre sombre'], ['illustration', 'Pleine illustration (sans cadre)']].map(([k, n]) => el('option', { value: k }, n)))
+          s.value = v.cadre
+          s.addEventListener('change', () => { v.cadre = s.value })
+          return el('div', { class: 'assistant-pile' }, el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Style'), s),
+            caseAssistant(v, 'fissures', 'Fissures dans le cadre', 'Les craquelures des cartes de rencontre (sbires, trahisons…). Sans effet sur les autres types.'))
+        },
+      },
+      {
+        titre: 'La mise en page du texte', court: 'Texte',
+        aide: 'Une carte à texte court peut avoir son texte centré verticalement dans le cadre, comme beaucoup de cartes officielles.',
+        construire: (v) => caseAssistant(v, 'centrerTexte', 'Centrer le texte des règles verticalement', ''),
+      },
+      {
+        titre: 'La mention du créateur', court: 'Mention',
+        aide: 'La petite ligne en bas de chaque carte (ton nom, ton pseudo…).',
+        construire: (v) => champAssistant(v, 'createur', 'Mention', ''),
+      },
+      {
+        titre: 'Une carte de départ ?', court: 'Carte',
+        aide: c ? `En plus de l’apparence, le template peut garder la carte actuelle entière (« ${c.contenu.titre || tr('(sans titre)')} » : type, nombres, texte, illustration) comme point de départ. Elle apparaîtra dans la liste des templates : « Utiliser » en fait une nouvelle carte.` : 'Aucune carte choisie : rien à garder.',
+        construire: (v) => (c ? caseAssistant(v, 'garderCarte', 'Garder aussi la carte actuelle comme carte de départ', '') : el('span')),
+      },
+      {
+        titre: 'Appliquer', court: 'Fin',
+        aide: 'Le template sera appliqué à chaque nouvelle carte du dossier. Veux-tu aussi le recopier sur les cartes qui y sont déjà ?',
+        construire: (v) => caseAssistant(v, 'appliquerDossier', 'Appliquer aussi aux cartes déjà dans ce dossier', '', true),
+      },
+    ]
+  }
+  const dossier0 = (dossierDepart ?? c?.dossier ?? '').trim()
+  const g0 = projet.gabarits?.[dossier0]
+  const depart = {
+    dossier: dossier0,
+    type: c?.type ?? 'ally',
+    preset: g0 ? g0.preset ?? '' : c ? '__carte' : '',
+    cadre: g0?.cadre ?? c?.cadre ?? 'officiel',
+    fissures: g0?.fissures ?? c?.fissures ?? true,
+    centrerTexte: g0?.centrerTexte ?? !!c?.contenu.centrerTexte,
+    createur: g0?.createur ?? c?.contenu.createur ?? '',
+  }
+  // « Comme la carte actuelle » : ses couleurs exactes, gardees dans le template
+  const resoudre = (v) => (v.preset === '__carte' ? { preset: c?.preset ?? '', couleurs: structuredClone(c?.couleurs ?? {}) } : { preset: v.preset ?? '' })
+  const apercu = (v) => {
+    const x = c ? cloner(c) : nouvelleCarte('ally', 'en')
+    const r = resoudre(v)
+    x.preset = r.preset
+    if (r.couleurs) x.couleurs = r.couleurs
+    else appliquerPalette(x, TYPES[x.type], r.preset)
+    x.cadre = v.cadre
+    x.fissures = v.fissures
+    x.contenu.centrerTexte = v.centrerTexte
+    x.contenu.createur = v.createur
+    return x
+  }
+  lancerAssistant('Template', etapes, (v) => {
     const dossier = v.dossier.trim()
-    const gabarit = { preset: v.preset ?? '', cadre: c.cadre, fissures: c.fissures, createur: v.createur ?? '', centrerTexte: !!v.centrerTexte, echelleTexte: c.contenu.echelleTexte }
+    const r = resoudre(v)
+    const gabarit = { preset: r.preset, couleurs: r.couleurs, cadre: v.cadre, fissures: v.fissures, createur: v.createur ?? '', centrerTexte: !!v.centrerTexte, echelleTexte: c?.contenu.echelleTexte ?? 0 }
     ;(projet.gabarits ??= {})[dossier] = gabarit
-    c.dossier = dossier
-    c.preset = gabarit.preset
-    appliquerPalette(c, spec, c.preset)
-    c.contenu.centrerTexte = gabarit.centrerTexte
-    c.contenu.createur = gabarit.createur
-    if (v.appliquerDossier) {
-      const cibles = projet.cartes.filter((x) => x.id !== c.id && (x.dossier || '').trim() === dossier)
-      for (const x of cibles) {
-        const specX = TYPES[x.type]
-        x.preset = gabarit.preset
-        if (specX) appliquerPalette(x, specX, x.preset)
-        x.cadre = gabarit.cadre
-        x.fissures = gabarit.fissures
-        x.contenu.createur = gabarit.createur
-        x.contenu.centrerTexte = gabarit.centrerTexte
-      }
-      message(cibles.length ? `${cibles.length} carte(s) mise(s) à jour.` : 'Gabarit du pack enregistré.')
-    } else {
-      message('Gabarit du pack enregistré.')
-    }
+    if (v.garderCarte && c) { enregistrerModele(`${dossier} · ${c.contenu.titre || tr('(sans titre)')}`); projet.modeles.at(-1).dossier = dossier }
+    const cibles = projet.cartes.filter((x) => (x.dossier || '').trim() === dossier && (v.appliquerDossier || x.id === c?.id))
+    for (const x of cibles) appliquerGabaritPack(x)
+    message(cibles.length ? `${cibles.length} carte(s) mise(s) à jour.` : 'Template enregistré.')
+    dossierVu = dossier
     changement()
     construireFormulaire()
     majListe()
     sauvegarderPlusTard()
-  })
-}
-
-/** L'assistant « Nouvelle carte » : type (avec explication de chacun), titre/dossier, confirmation. Relançable à volonté. */
-function ouvrirAssistantCarte() {
-  const etapes = [
-    {
-      titre: 'Quel type de carte ?',
-      aide: 'Le type fixe le gabarit (stats, emplacements) et les champs qui suivent. Tu pourras le changer plus tard dans la carte elle-même.',
-      construire: (v, rafraichir) => {
-        v.type ??= carte()?.type ?? 'ally'
-        const zone = el('div', { style: 'display:flex;flex-direction:column;gap:10px' })
-        for (const [titreGroupe, ids] of GROUPES) {
-          const boutons = el('div', { style: 'display:grid;grid-template-columns:1fr 1fr;gap:6px' },
-            ...ids.filter((id) => TYPES[id]).map((id) => el('button', {
-              class: 'btn petit' + (v.type === id ? ' principal' : ''), type: 'button', style: 'text-align:left;height:auto;padding:6px 8px',
-              onclick: () => { v.type = id; rafraichir() },
-            }, el('div', { style: 'font-weight:600' }, NOMS[id] ?? id), el('div', { class: 'aide' }, DESCRIPTIONS_TYPES[id] ?? ''))))
-          zone.append(el('h4', { style: 'margin:4px 0 0;color:var(--doux);font-size:11px;text-transform:uppercase' }, titreGroupe), boutons)
-        }
-        return zone
-      },
-    },
-    {
-      titre: 'Nom et dossier',
-      aide: 'Le titre tel qu’il sera écrit sur la carte. Le dossier range les cartes d’un même pack ensemble, dans la colonne « Cartes » ; une carte unique affiche le symbole ✦.',
-      construire: (v) => {
-        v.titre ??= ''
-        v.dossier ??= carte()?.dossier ?? ''
-        v.unique ??= false
-        const titre = el('input', { type: 'text', value: v.titre, placeholder: 'ex. Valkyrie' })
-        titre.addEventListener('input', () => { v.titre = titre.value })
-        const dossier = el('input', { type: 'text', list: 'dossiers-connus', value: v.dossier, placeholder: 'ex. Valkyrie' })
-        dossier.addEventListener('input', () => { v.dossier = dossier.value })
-        const unique = el('input', { type: 'checkbox' })
-        unique.checked = v.unique
-        unique.addEventListener('change', () => { v.unique = unique.checked })
-        return el('div', { style: 'display:flex;flex-direction:column;gap:8px' },
-          el('label', {}, 'Titre', titre), el('label', {}, 'Dossier (un héros, un set…)', dossier), el('label', { class: 'ligne' }, unique, 'Carte unique (✦)'))
-      },
-      valider: (v) => (v.titre.trim() ? undefined : 'Donne un titre à la carte.'),
-    },
-    {
-      titre: 'C’est prêt',
-      aide: 'La carte va s’ouvrir dans le formulaire habituel pour les règles, les stats et l’illustration. Si le dossier est nouveau, je te proposerai ensuite de régler son gabarit, une fois pour tout le pack.',
-      construire: (v) => el('ul', { style: 'margin:0;padding-left:18px' },
-        el('li', {}, `Type : ${tr(NOMS[v.type] ?? v.type)}`), el('li', {}, `Titre : ${v.titre}`), el('li', {}, `Dossier : ${v.dossier.trim() || tr('(aucun)')}`)),
-    },
-  ]
-  lancerAssistant('Nouvelle carte', etapes, (v) => {
-    const c = nouvelleCarte(v.type, carte()?.langue ?? 'en')
-    c.contenu.titre = v.titre.trim()
-    c.contenu.unique = v.unique
-    c.dossier = v.dossier.trim()
-    appliquerGabaritPack(c)
-    ajouter(c)
-    proposerGabaritPack(c)
-  })
+  }, { valeurs: depart, apercu })
 }
 
 // ---------------------------------------------------------------- exports
@@ -1293,8 +1666,8 @@ async function exporterProjet() {
   const cartes = []
   for (const c of projet.cartes) cartes.push(await serialiser(c))
   const modeles = []
-  for (const m of projet.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, carte: await serialiser(m.carte) })
-  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles, styles: projet.styles ?? [] })], { type: 'application/json' }), 'cartes.json')
+  for (const m of projet.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await serialiser(m.carte) })
+  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles, styles: projet.styles ?? [], gabarits: projet.gabarits ?? {} })], { type: 'application/json' }), 'cartes.json')
 }
 
 // ---------------------------------------------------------------- import des fichiers du Card Maker de reference
@@ -1394,7 +1767,8 @@ async function importerFichiers(fichiers) {
     if (Array.isArray(j)) { for (const x of j) await traiter(x); return }
     if (j?.format === 'createur-cartes') {
       for (const st of j.styles ?? []) { projet.styles ??= []; if (!projet.styles.some((x) => x.id === st.id)) projet.styles.push(st) }
-      for (const m of j.modeles ?? []) { projet.modeles ??= []; projet.modeles.push({ id: nouvelId(), nom: m.nom, carte: await deserialiser(m.carte) }) }
+      for (const m of j.modeles ?? []) { projet.modeles ??= []; projet.modeles.push({ id: nouvelId(), nom: m.nom, dossier: m.dossier, carte: await deserialiser(m.carte) }) }
+      for (const [d, g] of Object.entries(j.gabarits ?? {})) (projet.gabarits ??= {})[d] ??= g
       for (const x of j.cartes) {
         if (!TYPES[x.type]) continue
         const c = await deserialiser(x)
@@ -1535,8 +1909,10 @@ async function demarrer() {
   sel.addEventListener('change', () => {
     const c = carte()
     c.type = sel.value
-    c.couleurs = {}
+    // les couleurs suivent le nouveau type : celles du template du dossier, sinon le cadre neutre
     c.preset = ''
+    appliquerPalette(c, TYPES[c.type], '')
+    appliquerGabaritPack(c)
     // valeurs propres au type (numero de phase...) : on garde le texte, on remet les nombres par defaut manquants
     const d = valeursParDefaut(c.type, c.langue)
     for (const k of ['phaseLettre']) c.contenu[k] = d[k]
@@ -1554,8 +1930,8 @@ async function demarrer() {
 
   $('#lang-fr').addEventListener('click', () => changerLangue('fr'))
   $('#lang-en').addEventListener('click', () => changerLangue('en'))
-  $('#c-nouvelle').addEventListener('click', () => ajouter(nouvelleCarte(carte()?.type ?? 'ally', carte()?.langue ?? 'en')))
-  $('#c-assistant').addEventListener('click', () => ouvrirAssistantCarte())
+  $('#c-nouvelle').addEventListener('click', () => ouvrirAssistantCarte())
+  $('#c-heros').addEventListener('click', () => ouvrirAssistantHeros())
   $('#c-dupliquer').addEventListener('click', () => {
     const copie = { ...cloner(carte()), id: nouvelId() }
     copie.contenu.titre += ' (copie)'
@@ -1577,16 +1953,31 @@ async function demarrer() {
   const restaurerLocal = (p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }
   $('#p-remplacer').addEventListener('click', ouvrirRemplacer)
   $('#p-appliquer').addEventListener('click', () => ouvrirAppliquer(rolesDe))
-  $('#p-gabarit').addEventListener('click', () => ouvrirAssistantGabarit())
-  $('#m-enregistrer').addEventListener('click', () => { const n = prompt(tr('Nom du modèle'), carte().contenu.titre); if (n === null) return; enregistrerModele(n); majModeles(); sauvegarderPlusTard(); message('Modèle enregistré.') })
-  $('#m-utiliser').addEventListener('click', async () => {
-    const m = (projet.modeles ?? []).find((x) => x.id === $('#modeles').value)
-    if (!m) return message('Choisis d’abord un modèle.')
-    const c = { ...cloner(m.carte), id: nouvelId(), dossier: carte().dossier ?? '' }
-    c.contenu.titre = TEXTES[c.langue]?.nouvelleCarte ?? c.contenu.titre
+  // Templates : « g:<dossier> » = le template d'un dossier, « m:<id> » = une carte de depart gardee
+  const templateChoisi = () => {
+    const v = $('#modeles').value
+    if (v.startsWith('g:')) return { dossier: v.slice(2) }
+    if (v.startsWith('m:')) return { modele: (projet.modeles ?? []).find((x) => x.id === v.slice(2)) }
+    return null
+  }
+  $('#m-enregistrer').addEventListener('click', () => ouvrirAssistantTemplate(templateChoisi()?.dossier))
+  $('#m-utiliser').addEventListener('click', () => {
+    const x = templateChoisi()
+    if (!x) return message('Choisis d’abord un template.')
+    if (x.dossier !== undefined) return ouvrirAssistantCarte(x.dossier)
+    const c = { ...cloner(x.modele.carte), id: nouvelId(), dossier: x.modele.dossier ?? carte()?.dossier ?? '' }
     ajouter(c)
   })
-  $('#m-supprimer').addEventListener('click', () => { projet.modeles = (projet.modeles ?? []).filter((x) => x.id !== $('#modeles').value); majModeles(); sauvegarderPlusTard() })
+  $('#m-supprimer').addEventListener('click', () => {
+    const x = templateChoisi()
+    if (!x) return message('Choisis d’abord un template.')
+    if (x.dossier !== undefined) {
+      if (!confirm(tr(`Supprimer le template du dossier « ${x.dossier} » ? Les cartes ne changent pas.`))) return
+      delete projet.gabarits[x.dossier]
+    } else projet.modeles = (projet.modeles ?? []).filter((m) => m !== x.modele)
+    majListe()
+    sauvegarderPlusTard()
+  })
   $('#b-annuler').addEventListener('click', annuler)
   $('#b-retablir').addEventListener('click', retablir)
   document.addEventListener('keydown', (e) => {

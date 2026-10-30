@@ -87,7 +87,47 @@
   .champ-riche select.petit { width: auto; padding: 3px 4px; font-size: 12px; }
   .champ-riche input[type=color] { width: 30px; height: 26px; }
   input[type=search] { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 6px 8px; font: inherit; }
-  .liste button.dossier { background: transparent; border-color: transparent; font-weight: 600; flex-direction: row; gap: 4px; padding: 4px 2px; color: var(--muted); }
+  /* Les dossiers en tuiles (30/10/2026) : une bande a la couleur du heros, le nom, le nombre de cartes. */
+  button.tuile-dossier { position: relative; text-align: left; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px 8px 8px 16px; cursor: pointer; font: inherit; display: flex; flex-direction: column; gap: 1px; }
+  .tuile-dossier::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--teinte, #6e7179); }
+  .tuile-dossier:hover { border-color: var(--muted); }
+  .tuile-dossier.choisie { border-color: var(--accent); }
+  .tuile-dossier .tuile-nom { font-weight: 700; overflow-wrap: anywhere; }
+  .tuile-dossier small { color: var(--muted); }
+  .liste .tuile-dossier { flex-direction: column; }
+  .tete-dossier { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 4px 0 6px 10px; border-left: 6px solid var(--teinte, #6e7179); }
+  .tete-dossier strong { overflow-wrap: anywhere; }
+  .tete-dossier small { color: var(--muted); }
+  .liste .tete-dossier button { flex-direction: row; }
+  button.lien { background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font: inherit; font-size: 12px; }
+  button.lien:hover { color: var(--text); }
+  /* Les assistants : les etapes en haut, le formulaire a gauche, l'apercu de la carte a droite. */
+  .assistant { width: min(900px, 96vw); max-height: 92vh; overflow: auto; }
+  .assistant-puces { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; counter-reset: etape; }
+  .assistant-puces li { counter-increment: etape; font-size: 11px; color: var(--muted); border: 1px solid var(--border); padding: 2px 8px; }
+  .assistant-puces li::before { content: counter(etape) '. '; }
+  .assistant-puces li.en-cours { border-color: var(--accent); color: var(--text); background: var(--accent-soft); }
+  .assistant-puces li.fait { color: var(--text); }
+  .assistant-puces button { background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; }
+  .assistant-grille { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 18px; align-items: start; }
+  .assistant-grille.sans-apercu { grid-template-columns: minmax(0, 1fr); }
+  @media (max-width: 700px) { .assistant-grille { grid-template-columns: minmax(0, 1fr); } .assistant-figure { order: -1; max-width: 160px; } }
+  .assistant-colonne { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .assistant-corps { display: flex; flex-direction: column; gap: 10px; }
+  .assistant-titre { margin: 0; font-size: 16px; }
+  .assistant-aide { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .assistant-pile { display: flex; flex-direction: column; gap: 12px; }
+  .assistant-champ { display: flex; flex-direction: column; gap: 4px; }
+  .assistant-libelle { color: var(--text); font-size: 13px; font-weight: 600; }
+  .assistant-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px; }
+  .assistant-types .btn { text-align: left; height: auto; padding: 6px 8px; }
+  .assistant-groupe { margin: 4px 0 0; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+  .assistant-tuiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+  .assistant-boutons { justify-content: space-between; margin-top: 6px; position: sticky; bottom: -12px; z-index: 1; background: var(--panel); padding: 8px 0; border-top: 1px solid var(--border); }
+  .assistant-boutons > * { flex: none; }
+  .assistant-pied { border-top: 1px solid var(--border); padding-top: 8px; }
+  .assistant-figure { margin: 0; position: sticky; top: 0; display: flex; flex-direction: column; gap: 4px; align-items: center; }
+  .assistant-apercu { width: 100%; height: auto; background: #000; border: 1px solid var(--border); }
   .alertes { display: flex; flex-direction: column; gap: 4px; max-width: 560px; width: 100%; }
   .alerte { font-size: 12px; padding: 5px 8px; border: 1px solid var(--border); background: var(--panel-2); color: var(--muted); }
   .alerte.alerte { border-color: #c9892b; color: #f2c26b; }
@@ -151,19 +191,19 @@
   <aside class="panneau" id="colonne-cartes">
     <h2>Cartes</h2>
     <div class="outils">
-      <button class="btn petit" id="c-nouvelle">+ Nouvelle</button>
-      <button class="btn petit" id="c-assistant" title="Créer une carte pas à pas, avec une explication à chaque étape">+ Assistant…</button>
+      <button class="btn petit principal" id="c-nouvelle" title="Créer une carte pas à pas, avec une explication à chaque étape">+ Nouvelle</button>
+      <button class="btn petit" id="c-heros" title="Créer le dossier d’un héros : son template et ses cartes de base (identité, alter-ego, némésis…)">+ Nouveau héros</button>
       <button class="btn petit" id="c-dupliquer">Dupliquer</button>
       <button class="btn petit" id="c-supprimer">Supprimer</button>
     </div>
     <input type="search" id="recherche" placeholder="Chercher une carte…" aria-label="Chercher une carte">
     <div class="liste" id="liste"></div>
     <datalist id="dossiers-connus"></datalist>
-    <h2>Modèles</h2>
-    <select id="modeles" aria-label="Modèles"></select>
+    <h2>Templates</h2>
+    <select id="modeles" aria-label="Templates"></select>
     <div class="outils">
-      <button class="btn petit" id="m-enregistrer" title="Garder la carte actuelle (couleurs, nombres, mise en page) comme modèle">Enregistrer</button>
-      <button class="btn petit" id="m-utiliser" title="Nouvelle carte à partir du modèle choisi">Utiliser</button>
+      <button class="btn petit" id="m-enregistrer" title="Créer ou modifier le template d’un dossier (couleurs, cadre, mention), pas à pas">Créer / modifier…</button>
+      <button class="btn petit" id="m-utiliser" title="Nouvelle carte à partir du template choisi">Utiliser</button>
       <button class="btn petit" id="m-supprimer">Supprimer</button>
     </div>
     <h2>Projet</h2>
@@ -172,7 +212,6 @@
       <button class="btn petit" id="p-versions" title="Les versions gardées automatiquement">Versions…</button>
       <button class="btn petit" id="p-remplacer" title="Chercher et remplacer un mot sur une carte, un dossier ou tout le projet">Chercher / remplacer…</button>
       <button class="btn petit" id="p-appliquer" title="Recopier couleurs, cadre, mention… sur les autres cartes du dossier">Appliquer au dossier…</button>
-      <button class="btn petit" id="p-gabarit" title="Régler, une fois pour tout le dossier, les couleurs, le cadre et la mention du créateur">Gabarit du pack…</button>
       <button class="btn petit" id="p-importer" title="Nos fichiers .json, ou ceux du Card Maker de Landstander (carte .json ou « Save .zip »)">Importer…</button>
       <input type="file" id="p-fichier" accept=".json,.zip,application/json,application/zip" multiple hidden>
     </div>

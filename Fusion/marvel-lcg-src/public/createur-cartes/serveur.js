@@ -95,7 +95,7 @@ export function creerSynchro(h) {
     return m
   }
   const empreinteDossier = (d) => empreinte(d.cartes)
-  const empreinteReglages = () => empreinte({ m: h.projet().modeles ?? [], s: h.projet().styles ?? [] })
+  const empreinteReglages = () => empreinte({ m: h.projet().modeles ?? [], s: h.projet().styles ?? [], g: h.projet().gabarits ?? {} })
 
   /** Repere les dossiers dont le contenu a change depuis le dernier accord : ils sont « sales » (a envoyer). */
   function marquerSales() {
@@ -128,8 +128,8 @@ export function creerSynchro(h) {
   async function serialiserReglages() {
     const p = h.projet()
     const modeles = []
-    for (const m of p.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, carte: await h.serialiser(m.carte) })
-    return { format: 'createur-cartes-reglages', version: 1, nom: REGLAGES, dossier: '', modifie: Date.now(), modeles, styles: p.styles ?? [] }
+    for (const m of p.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await h.serialiser(m.carte) })
+    return { format: 'createur-cartes-reglages', version: 1, nom: REGLAGES, dossier: '', modifie: Date.now(), modeles, styles: p.styles ?? [], gabarits: p.gabarits ?? {} }
   }
 
   async function envoyer(id) {
@@ -239,13 +239,15 @@ export function creerSynchro(h) {
   async function appliquerReglages(doc, fusion) {
     const p = h.projet()
     const modeles = []
-    for (const m of doc.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, carte: await h.deserialiser(m.carte) })
-    if (!fusion) { p.modeles = modeles; p.styles = doc.styles ?? []; return }
+    for (const m of doc.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await h.deserialiser(m.carte) })
+    if (!fusion) { p.modeles = modeles; p.styles = doc.styles ?? []; p.gabarits = doc.gabarits ?? p.gabarits ?? {}; return }
     // les deux cotes ont change : on garde tout (par id ; le local passe en premier)
     const idsM = new Set((p.modeles ?? []).map((x) => x.id))
     const idsS = new Set((p.styles ?? []).map((x) => x.id))
     p.modeles = [...(p.modeles ?? []), ...modeles.filter((x) => !idsM.has(x.id))]
     p.styles = [...(p.styles ?? []), ...(doc.styles ?? []).filter((x) => !idsS.has(x.id))]
+    // templates des dossiers : par nom de dossier, le local l'emporte
+    p.gabarits = { ...(doc.gabarits ?? {}), ...(p.gabarits ?? {}) }
   }
 
   /** Fusion au demarrage. Rend le nombre de dossiers rapatries. */

@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-30",
+        genre: "coulisses",
+        fr: "Le créateur de cartes te guide pas à pas : « + Nouvelle » explique chaque bloc de la carte avec un aperçu en direct, « + Nouveau héros » crée son dossier, ses couleurs et ses cartes de base d'un coup, et chaque héros a sa tuile dans la colonne des cartes. Une carte neuve part d'un cadre gris vide.",
+        en: "The card maker now guides you step by step: \"+ New\" explains each part of the card with a live preview, \"+ New hero\" creates the hero's folder, colours and base cards in one go, and every hero has its own tile in the cards column. A new card starts from an empty grey frame.",
+    },
+    {
+        date: "2026-10-30",
         genre: "jeu",
         fr: "Une étape « Difficulté » s'ouvre après le choix du méchant : le niveau, tous les sets modulaires rangés par boîte (avec recherche) et les combinaisons proposées par VillainTheory, avec leur note de difficulté. Un set absent du jeu grise sa proposition.",
         en: "A \"Difficulty\" step now follows the villain choice: the level, every modular set grouped by box (with search) and the combinations suggested by VillainTheory, with their difficulty rating. A set missing from the game greys out its suggestion.",
