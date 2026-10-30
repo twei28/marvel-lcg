@@ -358,6 +358,10 @@ CAS += [
        [HEROS, _voie("se009"), "Puzzle.Exhaust('se009')", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01073', '01074')"],
        [], {"exhausted": ["se009"], "en_jeu": ["tj006"], "taille_main": 0},
        main_exclusive=["tj006", "01090"], payer_avec=["01090"], jouer=["tj006"], accepter_choix=True),
+    _c("se009 Ashigaru : la Voie inclinee se REDRESSE en fin de phase joueur (defaut du 30/10/2026)",
+       "une Voie vit dans l'aire de soutien sans etre un Support : `GetControlCards()` l'ignorait, donc `EndPhase()` ne la "
+       "redressait pas et Light of Foot ne servait qu'une seule fois par partie",
+       [HEROS, _voie("se009"), "Puzzle.Exhaust('se009')"], [], {}, verifier="se_voie_redressee_fin_de_phase"),
     _c("se009 Ashigaru : « You gain the SOLDIER trait » (les deux formes)",
        "alter-ego : SOLDIER", [_voie("se009")], [], {"traits": ["SOLDIER"]}),
 

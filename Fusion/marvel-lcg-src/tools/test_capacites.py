@@ -59735,6 +59735,25 @@ def wave_rising_tide_purge_fin_de_phase(monde, aides):
 
     return True, f"Rising Tide area purgee en fin de phase : {card_id_pose} envoye en defausse"
 
+def se_voie_redressee_fin_de_phase(monde, aides):
+    """Une VOIE (type Path, rangee dans l'aire de soutien) incline par son cout se REDRESSE en fin de phase joueur.
+
+    Regle : en fin de phase joueur, tout joueur redresse TOUTES ses cartes inclinees. Defaut constate le 30/10/2026
+    sur Ashigaru (se009) : `GetControlCardsByType(support=True)` ne rend plus que les VRAIS soutiens (la Voie n'en
+    est pas un, voir path.py), et `PlayerPhase.EndPhase()` ne redressait donc plus la Voie : elle restait inclinee
+    pour toujours apres avoir servi une fois. On appelle directement `player.phase.EndPhase()`, le chemin que la
+    boucle de jeu emprunte a chaque phase joueur.
+    """
+    voie = aides["par_id"](monde, "se009")
+    if voie is None:
+        return False, "se009 Ashigaru introuvable en jeu"
+    if not voie.IsExhaust():
+        return False, "mise en place ratee : la Voie n'est pas inclinee avant la fin de phase"
+    monde.players[0].phase.EndPhase()
+    if voie.IsExhaust():
+        return False, "la Voie est encore inclinee apres la fin de phase joueur (attendu : redressee)"
+    return True, "la Voie inclinee est redressee en fin de phase joueur"
+
 def wave_pearls_lolo_retourne_et_soigne(monde, aides):
     """65008 Pearl's Lolo : « Flip a faceup card in your Rising Tide area
     facedown -> heal 3 damage. » Preuve de `CoutRetournerUneCarteRisingTide`
