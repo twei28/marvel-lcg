@@ -251,3 +251,45 @@ Villain, Minion, Treachery, Environment, Attachment, Side Scheme, Player Side Sc
 A savoir : les nombres ne sont exportes que s'ils sont entiers (pas les X ni les etoiles). Un nombre suivi de l'icone « par joueur » (PV d'un
 mechant, menace de depart, acceleration) va dans la colonne ...Scaling ; sinon dans la colonne ...Fixed.
 `
+
+// ---------------------------------------------------------------- CardTable
+// Le CSV que lit CardTable (card-table.app) : id,name,quantity,landscape,set,setType,frontImageUrl,backImageUrl,loadOrder.
+// Colonnes et ordre de chargement relevés sur l'export « Cardtable CSV » du Card Maker de reference (champions-card-maker.pages.dev).
+// Les images sont mises dans le CSV en data URL WebP (comme le fait la reference sans cle d'hebergement) : un seul fichier, mais lourd.
+const csvChamp = (v) => { const t = String(v ?? ''); return /[",\n\r]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t }
+async function webpDataUrl(toile, hauteur = 1050) {
+  const k = Math.min(1, hauteur / Math.max(toile.width, toile.height))
+  const o = document.createElement('canvas')
+  o.width = Math.round(toile.width * k)
+  o.height = Math.round(toile.height * k)
+  const x = o.getContext('2d')
+  x.imageSmoothingQuality = 'high'
+  x.drawImage(toile, 0, 0, o.width, o.height)
+  return o.toDataURL('image/webp', 0.8)
+}
+/** `dos` : { joueur, rencontre } = deux data URL (les dos par defaut). Rend [{ nom, octets }] (un seul fichier .csv). */
+export async function genererCardtable(cartes, { nomSet, rendre, dos }) {
+  const lignes = ['id,name,quantity,landscape,set,setType,frontImageUrl,backImageUrl,loadOrder']
+  const pris = new Set()
+  const paysage = new Set(['main_scheme_a', 'main_scheme_b', 'sidescheme', 'playersidescheme'])
+  const ENCOUNTER = new Set(['villain', 'main_scheme_a', 'main_scheme_b', 'minion', 'treachery', 'environment', 'attachment', 'sidescheme', 'obligation-villain'])
+  const entrees = regrouper(cartes)
+  for (const e of entrees) {
+    const c = e.faces[0]
+    let id = guidStable(`cardtable:${nomSet}:${slug(c.contenu.titre)}`)
+    while (pris.has(id)) id = guidStable(id + '+')
+    pris.add(id)
+    const front = await webpDataUrl(await rendre(c, c.langue))
+    const back = e.faces[1] ? await webpDataUrl(await rendre(e.faces[1], e.faces[1].langue)) : (ENCOUNTER.has(c.type) ? dos.rencontre : dos.joueur)
+    const typeJeu = c.type === 'obligation' ? 'obligation' : (ENCOUNTER.has(c.type) ? 'encounter' : 'hero')
+    const ordre = c.type === 'identity' || c.type === 'alter-ego' || c.type === 'identity-promo' || c.type === 'alter-ego-promo' ? 1
+      : c.type === 'villain' ? 2 : c.type.startsWith('main_scheme') ? 3 : typeJeu === 'obligation' ? 99 : 10
+    lignes.push([id, c.contenu.titre.trim(), 1, paysage.has(c.type) ? 'Yes' : 'No', nomSet, typeJeu, front, back, ordre].map(csvChamp).join(','))
+  }
+  return [{ nom: `${slug(nomSet)}--cardtable.csv`, octets: new TextEncoder().encode(lignes.join('\n') + '\n') }]
+}
+export const LISEZ_MOI_CARDTABLE = `CSV pour CardTable (card-table.app) — fabrique par MC Creator
+Une ligne par carte (ou par heros / manigance principale : les deux faces sur la meme ligne). Les images sont dans le fichier lui-meme (data URL WebP).
+Colonnes : id, name, quantity, landscape, set, setType, frontImageUrl, backImageUrl, loadOrder.
+A importer dans CardTable (custom content / import CSV). Format releve sur l'export CardTable du Card Maker de reference ; non essaye dans CardTable meme.
+`

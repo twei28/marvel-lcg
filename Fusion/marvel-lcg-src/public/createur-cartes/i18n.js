@@ -478,6 +478,7 @@ export const DICO = {
   'Ce dossier est trop gros pour tenir dans un lien : utilise « Exporter le pack » ou « Tout enregistrer ».': 'This folder is too big for a link: use “Export the pack” or “Save everything”.',
   'Tes cartes ne sont que dans ce navigateur. ': 'Your cards only live in this browser. ',
   'Dernière sauvegarde il y a plus de 7 jours. ': 'Last backup was more than 7 days ago. ',
+  'Un fichier CSV pour CardTable (images dedans)': 'A CSV file for CardTable (images inside)',
   'Tout enregistrer (.zip)': 'Save everything (.zip)',
   'Tout le projet dans un seul fichier .zip : dossiers, templates, cartes, images. « Importer » le remet comme avant, sur n\'importe quel ordinateur.': 'The whole project in a single .zip file: folders, templates, cards, images. “Import” puts everything back as it was, on any computer.',
   'Importer une sauvegarde complète': 'Import a full backup',

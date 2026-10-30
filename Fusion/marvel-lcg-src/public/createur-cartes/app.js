@@ -17,6 +17,7 @@ import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } fro
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
 import { creerSynchro } from './serveur.js'
 import { construirePdf, cellulesPlanche } from './pdf.js'
+import { construirePsd } from './psd.js'
 import { codesDepuisTexte, chargerCartesMarvelCDB, champsDepuisMarvelCDB } from './marvelcdb.js'
 import { ouvrirComparable } from './comparable.js'
 import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
@@ -2583,7 +2584,7 @@ function avecFondPerdu(toile, marge) {
 function dialogueExport() {
   return new Promise((ok) => {
     const c = carte()
-    const format = el('select', {}, ['png', 'jpeg', 'webp'].map((v) => el('option', { value: v }, v.toUpperCase())))
+    const format = el('select', {}, ['png', 'jpeg', 'webp', 'psd'].map((v) => el('option', { value: v }, v.toUpperCase())))
     const largeur = el('input', { type: 'number', min: 200, max: 6000, value: TYPES[c.type].largeur })
     const perdu = el('input', { type: 'checkbox' })
     const dos = el('input', { type: 'checkbox', checked: !!(c.verso && c.verso.mode !== 'aucun') })
@@ -2614,6 +2615,7 @@ async function sortie(toile, o) {
     t = r
   }
   if (o.perdu) t = avecFondPerdu(t, Math.round((t.width / (toile.width > toile.height ? 88 : 63)) * 3))
+  if (o.format === 'psd') return new Blob([construirePsd(t)], { type: 'image/vnd.adobe.photoshop' })
   return aBlob(t, 'image/' + o.format, 0.95)
 }
 async function exporter(deuxLangues) {
