@@ -84,9 +84,10 @@ export function creerSynchro(h) {
 
   // ------------------------------------------------ ce que la page contient
   function dossiersLocaux() {
+    // (une carte « brouillon » est en cours de creation dans le wizard : elle n'existe pas encore)
     const m = new Map()
     for (const c of h.projet().cartes) {
-      if (estVierge(c)) continue // jamais envoyee (et si elle est modifiee, elle ne l'est plus)
+      if (c.brouillon || estVierge(c)) continue // jamais envoyee (et si elle est modifiee, elle ne l'est plus)
       const nom = c.dossier || ''
       const id = idDossier(nom)
       if (!m.has(id)) m.set(id, { id, nom, cartes: [] })
@@ -95,7 +96,7 @@ export function creerSynchro(h) {
     return m
   }
   const empreinteDossier = (d) => empreinte(d.cartes)
-  const empreinteReglages = () => empreinte({ m: h.projet().modeles ?? [], s: h.projet().styles ?? [], g: h.projet().gabarits ?? {} })
+  const empreinteReglages = () => empreinte({ m: h.projet().modeles ?? [], s: h.projet().styles ?? [], g: h.projet().gabarits ?? {}, d: h.projet().dossiers ?? {} })
 
   /** Repere les dossiers dont le contenu a change depuis le dernier accord : ils sont « sales » (a envoyer). */
   function marquerSales() {
@@ -129,7 +130,7 @@ export function creerSynchro(h) {
     const p = h.projet()
     const modeles = []
     for (const m of p.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await h.serialiser(m.carte) })
-    return { format: 'createur-cartes-reglages', version: 1, nom: REGLAGES, dossier: '', modifie: Date.now(), modeles, styles: p.styles ?? [], gabarits: p.gabarits ?? {} }
+    return { format: 'createur-cartes-reglages', version: 1, nom: REGLAGES, dossier: '', modifie: Date.now(), modeles, styles: p.styles ?? [], gabarits: p.gabarits ?? {}, dossiers: p.dossiers ?? {} }
   }
 
   async function envoyer(id) {
@@ -240,7 +241,7 @@ export function creerSynchro(h) {
     const p = h.projet()
     const modeles = []
     for (const m of doc.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await h.deserialiser(m.carte) })
-    if (!fusion) { p.modeles = modeles; p.styles = doc.styles ?? []; p.gabarits = doc.gabarits ?? p.gabarits ?? {}; return }
+    if (!fusion) { p.modeles = modeles; p.styles = doc.styles ?? []; p.gabarits = doc.gabarits ?? p.gabarits ?? {}; p.dossiers = doc.dossiers ?? p.dossiers ?? {}; return }
     // les deux cotes ont change : on garde tout (par id ; le local passe en premier)
     const idsM = new Set((p.modeles ?? []).map((x) => x.id))
     const idsS = new Set((p.styles ?? []).map((x) => x.id))
@@ -248,6 +249,7 @@ export function creerSynchro(h) {
     p.styles = [...(p.styles ?? []), ...(doc.styles ?? []).filter((x) => !idsS.has(x.id))]
     // templates des dossiers : par nom de dossier, le local l'emporte
     p.gabarits = { ...(doc.gabarits ?? {}), ...(p.gabarits ?? {}) }
+    p.dossiers = { ...(doc.dossiers ?? {}), ...(p.dossiers ?? {}) }
   }
 
   /** Fusion au demarrage. Rend le nombre de dossiers rapatries. */

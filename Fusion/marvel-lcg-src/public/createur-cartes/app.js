@@ -71,7 +71,7 @@ function sauvegarderPlusTard() {
   minuteurSauvegarde = setTimeout(async () => {
     try {
       synchro.avantSauvegarde()
-      await ecrireProjet(projet)
+      await ecrireProjet(sansBrouillon())
       versionsModifie = true
       synchro.planifier()
     } catch (e) {
@@ -79,23 +79,25 @@ function sauvegarderPlusTard() {
     }
   }, 500)
 }
+/** Le projet tel qu'on l'ecrit : sans la carte en cours de creation dans le wizard (un brouillon n'existe pas encore). */
+const sansBrouillon = () => ({ ...projet, cartes: projet.cartes.filter((c) => !c.brouillon) })
 // Une version est gardee toutes les 5 minutes (si quelque chose a change) et quand on quitte la page.
 let versionsModifie = false
 async function garderVersion(raison = 'auto') {
   if (!versionsModifie) return
   versionsModifie = false
-  try { await ajouterVersion(projet, raison) } catch {}
+  try { await ajouterVersion(sansBrouillon(), raison) } catch {}
 }
 setInterval(() => garderVersion('auto'), 5 * 60 * 1000)
-addEventListener('pagehide', () => { clearTimeout(minuteurSauvegarde); synchro.avantSauvegarde(); ecrireProjet(projet).catch(() => {}); garderVersion('fermeture') })
+addEventListener('pagehide', () => { clearTimeout(minuteurSauvegarde); synchro.avantSauvegarde(); ecrireProjet(sansBrouillon()).catch(() => {}); garderVersion('fermeture') })
 
 /** Apres que des dossiers (ou les reglages) viennent du serveur : la page repart de ce que contient le projet. */
 function apresRapatriement() {
-  projet.cartes = projet.cartes.filter((c) => TYPES[c.type])
-  if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'en')]
+  preparerProjet(projet)
   historiques.clear()
-  majModeles()
-  choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id)
+  if (vue === 'accueil') return rendreAccueil()
+  if (!listeDossiers().some((d) => d.nom === dossierOuvert)) return afficherAccueil()
+  ouvrirDossier(dossierOuvert, projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : null)
 }
 
 /** L'indicateur de l'en-tete : ou est enregistre le travail. Cache hors du site (mode local). */
@@ -245,7 +247,8 @@ function majBoutonsLangue() {
 // ---------------------------------------------------------------- rendu
 async function etatDe(c) {
   const [art, artDevant, tete] = await Promise.all([imageDe(c.art.blob), imageDe(c.artDevant.blob), imageDe(c.tete.blob)])
-  const couleurs = c.cadre === 'sombre' ? { ...couleursSombres(TYPES[c.type]), ...c.couleurs } : { ...c.couleurs }
+  // « sombre » : les gris-bleus l'emportent, sauf sur les couleurs que le joueur a reglees lui-meme (toute carte porte des couleurs : celles du template ou le gris neutre)
+  const couleurs = c.cadre === 'sombre' ? (c.couleursPerso ? { ...couleursSombres(TYPES[c.type]), ...c.couleurs } : { ...c.couleurs, ...couleursSombres(TYPES[c.type]) }) : { ...c.couleurs }
   return {
     couleurs,
     art: art && { image: art, x: c.art.x, y: c.art.y, zoom: c.art.zoom, rotation: c.art.rotation },
@@ -305,6 +308,7 @@ async function dessiner() {
     vis.getContext('2d').drawImage(t, 0, 0)
     dessinerSurcouche()
     S.infosRendu = t.infos
+    if (t.infos?.deborde) deborde.add(c.id); else deborde.delete(c.id)
     afficherAlertes(c, t)
   } catch (e) {
     message('Rendu impossible : ' + e.message)
@@ -321,8 +325,10 @@ let minuteurRendu = 0
 function changement() {
   clearTimeout(minuteurRendu)
   minuteurRendu = setTimeout(dessiner, 40)
+  if (carte()?.brouillon) return // la carte du wizard : on la dessine, rien d'autre
   sauvegarderPlusTard()
   majListe()
+  majFil()
   planifierHistorique()
 }
 
@@ -485,8 +491,10 @@ const NOMBRES = [
 function nombresDuType(spec) {
   return NOMBRES.filter(([cls]) => aElement(spec, cls)).map(([cls, label, cle, etoile, aide, conseq]) => ({ cls, label, cle, etoile, aide, conseq: !!conseq }))
 }
+const ICONES_RUBRIQUES = { Texte: '✎', Nombres: '#', 'Boost et ressources': '⚡', Couleurs: '●', Illustration: '▣', 'Calques PNG': '❏', 'Dos de la carte': '▭', 'Style du cadre': '▢' }
 function section(titre, ouvert, ...contenu) {
-  return el('details', { open: ouvert }, el('summary', {}, titre), el('div', { class: 'contenu' }, contenu))
+  const d = el('details', { open: ouvert, 'data-titre': titre }, el('summary', {}, el('span', { class: 'ico-rub' }, ICONES_RUBRIQUES[titre] ?? '•'), titre), el('div', { class: 'contenu' }, contenu))
+  return d
 }
 // Les sections du formulaire sont TOUTES repliees a l'ouverture d'une carte (30/10/2026, « je veux que tout soit replié ») ;
 // celles qu'on ouvre le restent tant qu'on reste sur la carte (le formulaire se reconstruit a chaque reglage).
@@ -496,7 +504,7 @@ function replierSections(blocs, idCarte) {
   if (carteDesSections !== idCarte) { sectionsOuvertes.clear(); carteDesSections = idCarte }
   for (const d of blocs) {
     if (d.tagName !== 'DETAILS') continue
-    const cle = d.querySelector(':scope > summary')?.textContent ?? ''
+    const cle = d.dataset.titre ?? d.querySelector(':scope > summary')?.textContent ?? ''
     d.open = sectionsOuvertes.has(cle)
     d.addEventListener('toggle', () => { d.open ? sectionsOuvertes.add(cle) : sectionsOuvertes.delete(cle) })
   }
@@ -709,48 +717,72 @@ function joliNom(slug) {
   return slug.replace(/_(hero|nemesis|campaign_hero)$/, '').replace(/[_-]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase())
 }
 
-function construireFormulaire() {
-  const c = carte()
-  const racine = $('#champs')
-  racine.replaceChildren()
-  if (!c) return
-  const spec = TYPES[c.type]
-  $('#type').value = c.type
-  const f = []
-  {
-    const dossier = el('input', { type: 'text', list: 'dossiers-connus', placeholder: 'ex. Valkyrie', value: c.dossier ?? '' })
-    dossier.addEventListener('input', () => { c.dossier = dossier.value.trim(); changement() })
-    dossier.addEventListener('change', () => {
-      // une carte « vierge » (pas encore de couleurs a elle) qui rejoint un dossier deja gabarite en herite tout de suite.
-      if (!c.preset && !Object.keys(c.couleurs ?? {}).length) {
-        const avant = JSON.stringify(c.contenu)
-        appliquerGabaritPack(c)
-        if (JSON.stringify(c.contenu) !== avant || c.preset) { changement(); construireFormulaire() }
-      }
-      proposerGabaritPack(c)
-    })
-    f.push(el('label', {}, 'Dossier (un héros, un set…)', dossier))
+// ---------------------------------------------------------------- blocs du formulaire (partages avec le wizard)
+// Chaque bloc rend des noeuds pour la carte courante : le formulaire les range en rubriques, le wizard en etapes.
+const RECENTES = 'createur-couleurs-recentes'
+function couleursRecentes() { try { return JSON.parse(localStorage.getItem(RECENTES) ?? '[]') } catch { return [] } }
+function noterRecente(hex) {
+  try { localStorage.setItem(RECENTES, JSON.stringify([hex, ...couleursRecentes().filter((x) => x !== hex)].slice(0, 10))) } catch {}
+}
+/** Un champ couleur : pastille cliquable, code hexadecimal, pipette, puis les couleurs recentes (et celles qu'on propose, ex. le template). */
+function pickerCouleur(valeur, onChange, proposees = []) {
+  const i = el('input', { type: 'color', value: hex6(valeur), 'aria-label': 'Couleur' })
+  const hex = el('input', { type: 'text', class: 'hex', value: hex6(valeur), maxlength: 7, 'aria-label': 'Code couleur', spellcheck: 'false' })
+  const barre = el('div', { class: 'recentes' })
+  const poser = (v) => { i.value = v; hex.value = v; onChange(v); noterRecente(v); pastilles() }
+  function pastilles() {
+    const toutes = [...new Set([...proposees, ...couleursRecentes()].map((x) => String(x).toLowerCase()))].slice(0, 14)
+    barre.replaceChildren(...toutes.map((cl) => el('button', { type: 'button', class: 'pastille', style: `background:${cl}`, title: cl, onclick: () => poser(cl) })))
   }
+  i.addEventListener('input', () => { hex.value = i.value; onChange(i.value) })
+  i.addEventListener('change', () => { noterRecente(i.value); pastilles() })
+  hex.addEventListener('input', () => {
+    let v = hex.value.trim()
+    if (/^[0-9a-f]{6}$/i.test(v)) v = '#' + v
+    if (/^#[0-9a-f]{6}$/i.test(v)) { i.value = v; onChange(v) }
+  })
+  hex.addEventListener('change', () => { if (/^#[0-9a-f]{6}$/i.test(hex.value.trim())) { noterRecente(hex.value.trim().toLowerCase()); pastilles() } else hex.value = i.value })
+  pastilles()
+  return el('div', { class: 'pick-bloc' }, el('div', { class: 'pick' }, i, hex, pipette(i)), barre)
+}
 
-  // texte
-  const texte = [t('Titre', 'titre'), coche('Carte unique (✦)', (x) => x.contenu, 'unique')]
-  if (aElement(spec, 'typestr')) texte.push(t('Libellé du type (vide = automatique)', 'typeTexte'))
-  if (aElement(spec, 'traits')) texte.push(t('Traits (séparés par des points)', 'traits'))
-  if (aElement(spec, 'rules')) {
-    texte.push(editeurRiche('Règles', 'regles', 6))
-  }
-  if (aElement(spec, 'quote')) texte.push(editeurRiche('Citation', 'citation', 3))
+/** Une bulle « ? » : un bouton qui ouvre une explication longue juste dessous. Rend [bouton, bulle]. */
+function bulleAide(texte) {
+  const bulle = el('div', { class: 'bulle-aide', hidden: true }, texte)
+  const b = el('button', { class: 'btn petit btn-bulle', type: 'button', title: 'Plus d’explications', 'aria-expanded': 'false', onclick: () => { bulle.hidden = !bulle.hidden; b.setAttribute('aria-expanded', String(!bulle.hidden)) } }, '?')
+  return [b, bulle]
+}
+/** Un noeud accompagne de sa bulle « ? » (le bouton a droite, l'explication dessous). */
+function avecAide(noeud, texte) {
+  const [b, bulle] = bulleAide(texte)
+  return el('div', { class: 'avec-aide' }, el('div', { class: 'rang', style: 'align-items:flex-end;flex-wrap:nowrap' }, noeud, b), bulle)
+}
+
+function blocTitre(spec) {
+  const b = [t('Titre', 'titre'), coche('Carte unique (✦)', (x) => x.contenu, 'unique')]
+  if (aElement(spec, 'typestr')) b.push(t('Libellé du type (vide = automatique)', 'typeTexte'))
+  if (aElement(spec, 'traits')) b.push(t('Traits (séparés par des points)', 'traits'))
+  return b
+}
+function blocRegles(c, spec) {
+  const b = []
+  if (aElement(spec, 'rules')) b.push(editeurRiche('Règles', 'regles', 6))
+  if (aElement(spec, 'quote')) b.push(editeurRiche('Citation', 'citation', 3))
   if (aElement(spec, 'rules')) {
     const auto = !(Number(c.contenu.echelleTexte) > 0)
     const r = el('input', { type: 'range', min: 40, max: 130, step: 1, value: auto ? 100 : Math.round(c.contenu.echelleTexte * 100) })
     const val = el('span', { class: 'aide' }, auto ? 'automatique' : r.value + ' %')
     r.addEventListener('input', () => { c.contenu.echelleTexte = Number(r.value) / 100; val.textContent = r.value + ' %'; changement() })
-    texte.push(el('label', {}, el('span', { class: 'rang' }, 'Taille des règles et de la citation', val), r,
+    b.push(el('label', {}, el('span', { class: 'rang' }, 'Taille des règles et de la citation', val), r,
       el('button', { class: 'btn petit', type: 'button', onclick: () => { c.contenu.echelleTexte = 0; changement(); construireFormulaire() } }, 'Automatique (réduit pour tenir)')))
-    texte.push(coche('Centrer le texte verticalement (comme les cartes officielles à texte court)', (x) => x.contenu, 'centrerTexte'))
+    b.push(coche('Centrer le texte verticalement (comme les cartes officielles à texte court)', (x) => x.contenu, 'centrerTexte'))
   }
-  if (aElement(spec, 'villainstagenew')) texte.push(t('Étape du méchant (I, II, A, B…)', 'etape'))
-  if (aElement(spec, 'set-line')) texte.push(t('Ligne d’ensemble', 'ligneEnsemble'))
+  return b
+}
+function blocLigne(c, spec) {
+  const b = []
+  if (aElement(spec, 'villainstagenew')) b.push(t('Étape du méchant (I, II, A, B…)', 'etape'))
+  if (aElement(spec, 'set-line')) b.push(t('Ligne d’ensemble', 'ligneEnsemble'))
   // les PV d'un méchant sont dans la ligne d'ensemble (« … / HIT POINTS 14 » + icône « par joueur ») : une case pose ou retire l'icône
   if (aElement(spec, 'set-line') && c.type === 'villain') {
     const ICONE = /\s*\[per_hero\]\s*$/
@@ -761,94 +793,136 @@ function construireFormulaire() {
       changement()
       construireFormulaire()
     })
-    texte.push(el('label', { class: 'ligne' }, i, 'Points de vie par joueur (icône en fin de ligne)'))
+    b.push(el('label', { class: 'ligne' }, i, 'Points de vie par joueur (icône en fin de ligne)'))
   }
-  if (aElement(spec, 'c-line')) texte.push(t('Créateur / mention', 'createur'))
-  f.push(section('Texte', true, ...texte))
-
-  // nombres
+  if (aElement(spec, 'c-line')) b.push(t('Créateur / mention', 'createur'))
+  return b
+}
+/** Les nombres de la carte : [{ noeud, aide }] (l'aide sert au wizard). */
+function blocNombres(spec) {
   const N = []
   for (const n of nombresDuType(spec)) {
-    if (n.conseq) N.push(liste(n.label, (x) => x.contenu, n.cle, [0, 1, 2, 3, 4, 5].map((k) => [k, k]), Number))
-    else N.push(nombre(n.label, n.cle, n.etoile))
+    N.push({ aide: n.aide, noeud: n.conseq ? liste(n.label, (x) => x.contenu, n.cle, [0, 1, 2, 3, 4, 5].map((k) => [k, k]), Number) : nombre(n.label, n.cle, n.etoile) })
   }
-  if (aElement(spec, 'mainschemephase cost')) N.push(el('div', { class: 'rang' }, t('Phase : numéro', 'phaseNumero'), t('Phase : lettre', 'phaseLettre')))
-  if (N.length) f.push(section('Nombres', true, ...N))
-
-  // renforts et ressources
-  if (spec.renforts || spec.ressources) {
-    const R = []
-    if (spec.renforts) R.push(el('div', { class: 'nombre' }, liste('Icônes de boost', (x) => x.contenu, 'renforts', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number), coche('★', (x) => x.contenu, 'renfortEtoile')))
-    if (spec.ressources) {
-      for (let k = 0; k < 3; k++) {
-        const ressources = () => (c.contenu.ressources = c.contenu.ressources?.length ? c.contenu.ressources : ['', '', ''])
-        const s = el('select', {}, GENRES_RESSOURCE.map(([v, n]) => el('option', { value: v }, n)))
-        s.value = ressources()[k] ?? ''
-        s.addEventListener('change', () => { ressources()[k] = s.value; changement() })
-        R.push(el('label', {}, `Ressource ${k + 1}`, s))
-      }
+  if (aElement(spec, 'mainschemephase cost')) N.push({ aide: 'Le numéro de la manigance dans le scénario (1, 2, 3…) et sa face (A ou B).', noeud: el('div', { class: 'rang' }, t('Phase : numéro', 'phaseNumero'), t('Phase : lettre', 'phaseLettre')) })
+  return N
+}
+function blocBoost(c, spec) {
+  const R = []
+  if (spec.renforts) R.push(el('div', { class: 'nombre' }, liste('Icônes de boost', (x) => x.contenu, 'renforts', [0, 1, 2, 3, 4, 5].map((n) => [n, n]), Number), coche('★', (x) => x.contenu, 'renfortEtoile')))
+  if (spec.ressources) {
+    for (let k = 0; k < 3; k++) {
+      const ressources = () => (c.contenu.ressources = c.contenu.ressources?.length ? c.contenu.ressources : ['', '', ''])
+      const s = el('select', {}, GENRES_RESSOURCE.map(([v, n]) => el('option', { value: v }, n)))
+      s.value = ressources()[k] ?? ''
+      s.addEventListener('change', () => { ressources()[k] = s.value; changement() })
+      R.push(el('label', {}, `Ressource ${k + 1}`, s))
     }
-    f.push(section('Boost et ressources', true, ...R))
   }
+  return R
+}
 
-  // couleurs
+const ROLES_PRINCIPAUX = ['left_color', 'right_color', 'left_accent', 'background_upper', 'background_lower', 'accent', 'divider', 'middle', 'splash_color']
+/** Les couleurs d'une carte : pastilles de raccourci, pickers (3 principaux puis « Plus de couleurs »), d'ou elles viennent. */
+function blocCouleurs(c, spec, { repli = true, apres = null, quand = changement, origineVisible = true } = {}) {
   const roles = rolesDe(spec)
-  if (roles.length) {
-    const preset = optionsPalette(spec)
-    preset.value = c.preset ?? ''
-    preset.addEventListener('change', () => {
-      c.preset = preset.value
-      appliquerPalette(c, spec, preset.value)
-      construireFormulaire()
-      changement()
-    })
-    const grille = el('div', { class: 'couleurs' })
-    for (const r of roles) {
-      const i = el('input', { type: 'color', value: hex6(couleurDe(c, spec, r)) })
-      i.addEventListener('input', () => { c.couleurs[r] = i.value; c.preset = ''; changement() })
-      grille.append(el('label', {}, ROLES_COULEURS[r], el('span', { class: 'rang-couleur' }, i, pipette(i))))
-    }
-    f.push(section('Couleurs', false, el('label', {}, 'Préréglage', preset), grille,
-      el('button', { class: 'btn petit', type: 'button', onclick: () => { c.preset = ''; appliquerPalette(c, spec, ''); construireFormulaire(); changement() } }, 'Remettre le cadre neutre (gris)')))
+  if (!roles.length) return [el('div', { class: 'aide' }, 'Ce type de carte n’a pas de couleurs à régler.')]
+  const g = projet.gabarits?.[(c.dossier || '').trim()]
+  const proposees = [...Object.values(g?.couleurs ?? {}), ...Object.values(c.couleurs ?? {})].filter((x) => /^#[0-9a-f]{6}$/i.test(x)).slice(0, 6)
+  const origine = el('span', { class: 'origine' })
+  const revenir = g ? el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { appliquerGabaritPack(c); quand(); apres?.(true) } }, 'Revenir au template') : null
+  const majOrigine = () => {
+    if (revenir) revenir.hidden = !c.couleursPerso
+    origine.className = 'origine' + (c.couleursPerso ? ' perso' : '')
+    origine.textContent = c.couleursPerso ? 'Couleurs personnalisées' : g ? 'Couleurs du template' : 'Couleurs neutres'
   }
+  majOrigine()
+  const changeeParLeJoueur = () => { c.couleursPerso = true; majOrigine(); quand(); apres?.(false) }
+  const raccourcis = el('div', { class: 'pastilles', role: 'group', 'aria-label': 'Raccourcis de couleurs' })
+  const choix = [['', 'Neutre (gris)', '#6e7179'], ...(spec.famille === 'villain' ? [] : Object.keys(ASPECTS).filter((n) => !n.startsWith('Basic')).map((n) => [n, n, ASPECTS[n].left_color]))]
+  for (const [cle, nom, cl] of choix) {
+    raccourcis.append(el('button', {
+      type: 'button', class: 'pastille', style: `background:${cl}`, title: tr(nom),
+      onclick: () => { c.preset = cle; appliquerPalette(c, spec, cle); c.couleursPerso = true; quand(); apres?.(true) },
+    }))
+  }
+  const principaux = ROLES_PRINCIPAUX.filter((r) => roles.includes(r)).slice(0, 3)
+  const autres = roles.filter((r) => !principaux.includes(r))
+  const champ = (r) => el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, ROLES_COULEURS[r]),
+    pickerCouleur(couleurDe(c, spec, r), (v) => { c.couleurs[r] = v; c.preset = ''; changeeParLeJoueur() }, proposees))
+  const bloc = [
+    el('div', { class: 'rang', style: 'align-items:center' }, origineVisible ? origine : null,
+      revenir),
+    el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Raccourcis'), raccourcis),
+    ...principaux.map(champ),
+  ]
+  if (autres.length) {
+    const reste = el('div', { class: 'couleurs' }, ...autres.map(champ))
+    if (repli) bloc.push(el('details', {}, el('summary', {}, 'Plus de couleurs'), el('div', { class: 'contenu' }, reste)))
+    else bloc.push(reste)
+  }
+  const preset = optionsPalette(spec)
+  preset.value = c.preset ?? ''
+  preset.addEventListener('change', () => { c.preset = preset.value; appliquerPalette(c, spec, preset.value); c.couleursPerso = true; quand(); apres?.(true) })
+  bloc.push(el('label', {}, 'Partir de la palette d’un héros ou d’un méchant du jeu', preset))
+  return bloc
+}
+function blocDos(c) {
+  const v = (c.verso ??= { mode: 'aucun', carteId: null, blob: null })
+  const autres = projet.cartes.filter((x) => x.id !== c.id && !x.brouillon)
+  const mode = liste('Dos', (x) => x.verso, 'mode', [['aucun', 'Aucun'], ['joueur', 'Dos des cartes joueur'], ['rencontre', 'Dos des cartes rencontre'], ['carte', 'Une autre carte (autre face)'], ['image', 'Mon image']], (m) => m)
+  mode.querySelector('select').addEventListener('change', () => { v.choisi = true; construireFormulaire(); reconstruireEtape() })
+  const parts = [mode]
+  if (v.mode === 'carte') {
+    const s = el('select', {}, el('option', { value: '' }, '—'), ...autres.map((x) => el('option', { value: x.id }, `${x.contenu.titre || '(sans titre)'} · ${NOMS[x.type] ?? x.type}`)))
+    s.value = v.carteId ?? ''
+    s.addEventListener('change', () => { v.carteId = s.value || null; changement() })
+    parts.push(el('label', {}, 'Carte au dos', s))
+  }
+  if (v.mode === 'image') {
+    const fichier = el('input', { type: 'file', accept: 'image/*' })
+    fichier.addEventListener('change', () => { if (fichier.files[0]) { v.blob = fichier.files[0]; changement() } })
+    parts.push(el('label', {}, 'Image du dos', fichier))
+  }
+  if (v.mode === 'joueur' || v.mode === 'rencontre') parts.push(el('div', { class: 'aide' }, 'Le dos du jeu est de petite taille (300 px) : correct pour l’écran, flou à l’impression. Pour imprimer, choisis « Mon image ».'))
+  return parts
+}
+const CADRES = [['officiel', 'Officiel (gabarit du jeu)'], ['sombre', 'Cadre sombre'], ['illustration', 'Pleine illustration (sans cadre)']]
+function blocCadre(c) {
+  return [
+    liste('Style', (x) => x, 'cadre', CADRES, (v) => v),
+    el('div', { class: 'aide' }, '« Cadre sombre » remplace les couleurs par un gris-bleu foncé avec des accents dorés (tu peux encore les modifier dans Couleurs). « Pleine illustration » enlève le cadre : l’image remplit la carte et le texte repose sur des panneaux translucides.'),
+    TYPES_SANS_FISSURES.has(c.type) ? coche('Fissures dans le cadre', (x) => x, 'fissures') : null,
+  ]
+}
+/** Le dos « automatique » selon le type : les cartes joueur ont le dos joueur, celles de rencontre le dos rencontre. */
+function dosAutomatique(c) {
+  const v = (c.verso ??= { mode: 'aucun', carteId: null, blob: null })
+  if (v.mode !== 'aucun' || v.choisi) return
+  v.mode = TYPES[c.type]?.famille === 'villain' ? 'rencontre' : 'joueur'
+}
 
-  // illustration
+function construireFormulaire() {
+  const c = carte()
+  const racine = $('#champs')
+  racine.replaceChildren()
+  if (!c) return
+  const spec = TYPES[c.type]
+  $('#type').value = c.type
+  const f = []
+  f.push(section('Texte', false, ...blocTitre(spec), ...blocRegles(c, spec), ...blocLigne(c, spec)))
+  const N = blocNombres(spec).map((n) => n.noeud)
+  if (N.length) f.push(section('Nombres', false, ...N))
+  const R = blocBoost(c, spec)
+  if (R.length) f.push(section('Boost et ressources', false, ...R))
+  if (rolesDe(spec).length) f.push(section('Couleurs', false, ...blocCouleurs(c, spec, { repli: false, apres: (r) => r && construireFormulaire() })))
   f.push(section('Illustration', false, ...boiteImage('Image derrière la carte', (x) => x.art, 'art'), el('hr'), ...boiteImage('Premier plan (devant le cadre)', (x) => x.artDevant, 'artDevant')))
-
   f.push(sectionLibres())
-
-  // dos de la carte
-  {
-    const v = (c.verso ??= { mode: 'aucun', carteId: null, blob: null })
-    const autres = projet.cartes.filter((x) => x.id !== c.id)
-    const mode = liste('Dos', (x) => x.verso, 'mode', [['aucun', 'Aucun'], ['joueur', 'Dos des cartes joueur'], ['rencontre', 'Dos des cartes rencontre'], ['carte', 'Une autre carte (autre face)'], ['image', 'Mon image']], (m) => m)
-    mode.querySelector('select').addEventListener('change', construireFormulaire)
-    const parts = [mode]
-    if (v.mode === 'carte') {
-      const s = el('select', {}, el('option', { value: '' }, '—'), ...autres.map((x) => el('option', { value: x.id }, `${x.contenu.titre || '(sans titre)'} · ${NOMS[x.type] ?? x.type}`)))
-      s.value = v.carteId ?? ''
-      s.addEventListener('change', () => { v.carteId = s.value || null; changement() })
-      parts.push(el('label', {}, 'Carte au dos', s))
-    }
-    if (v.mode === 'image') {
-      const fichier = el('input', { type: 'file', accept: 'image/*' })
-      fichier.addEventListener('change', () => { if (fichier.files[0]) { v.blob = fichier.files[0]; changement() } })
-      parts.push(el('label', {}, 'Image du dos', fichier))
-    }
-    if (v.mode === 'joueur' || v.mode === 'rencontre') parts.push(el('div', { class: 'aide' }, 'Le dos du jeu est de petite taille (300 px) : correct pour l’écran, flou à l’impression. Pour imprimer, choisis « Mon image ».'))
-    f.push(section('Dos de la carte', false, ...parts))
-  }
-
+  f.push(section('Dos de la carte', false, ...blocDos(c)))
   // La « Tête d'angle » (image de coin pour certaines cartes) a ete retiree du formulaire le
   // 29/10/2026 : le reglage (zoom/decalage/rotation/detourage) ne fonctionnait pas, sur demande
   // de l'utilisateur. `rendu.js:teteVisible` ne dessine plus rien non plus.
-
-  // style de cadre et options
-  f.push(section('Style du cadre', false,
-    liste('Style', (x) => x, 'cadre', [['officiel', 'Officiel (gabarit du jeu)'], ['sombre', 'Cadre sombre'], ['illustration', 'Pleine illustration (sans cadre)']], (v) => v),
-    el('div', { class: 'aide' }, '« Cadre sombre » remplace les couleurs par un gris-bleu foncé avec des accents dorés (tu peux encore les modifier dans Couleurs). « Pleine illustration » enlève le cadre : l’image remplit la carte et le texte repose sur des panneaux translucides.'),
-    TYPES_SANS_FISSURES.has(c.type) ? coche('Fissures dans le cadre', (x) => x, 'fissures') : null))
-
+  f.push(section('Style du cadre', false, ...blocCadre(c)))
   replierSections(f, c.id)
   racine.append(...f)
   majAide()
@@ -858,96 +932,364 @@ function majAide() {
   $('#aide-toile').textContent = `Glisse sur l’aperçu pour déplacer ${cible} (molette : zoom).`
 }
 
-// ---------------------------------------------------------------- liste
-let filtreListe = ''
-// La colonne « Cartes » montre les dossiers en TUILES (30/10/2026, « que le créateur voie bien les différents dossiers
-// pour chaque héros ») : la couleur du héros, son nom, le nombre de cartes ; un clic ouvre le dossier et ses cartes.
-// `dossierVu` : null = les tuiles ; un nom = ce dossier ouvert ; SANS_DOSSIER = les cartes rangees nulle part.
-// Une recherche montre toutes les cartes qui correspondent, tous dossiers confondus.
-const SANS_DOSSIER = '\u0000sans-dossier'
-let dossierVu = null
-/** La couleur d'un dossier : celle de son template, sinon celle de sa premiere carte coloree, sinon un gris. */
-function couleurDuDossier(nom) {
-  const g = projet.gabarits?.[nom]
-  const d = g && (g.couleurs?.left_color ?? g.couleurs?.background_upper ?? couleurDuPreset(g.preset))
-  if (d) return d
-  for (const c of projet.cartes) {
-    if (c.dossier !== nom) continue
-    const x = c.couleurs?.left_color ?? c.couleurs?.background_upper ?? couleurDuPreset(c.preset)
-    if (x) return x
+// ---------------------------------------------------------------- dossiers
+// 30/10/2026 : le createur s'ouvre sur la PAGE DES DOSSIERS (un par heros, scenario ou modulaire) ; un clic ouvre l'editeur
+// de ce dossier. Toute carte a un dossier (celles qui n'en avaient pas sont rangees dans « Divers »). Les dossiers vides
+// existent (`projet.dossiers[nom] = { genre, ordre }`), comme leur template (`projet.gabarits[nom]`).
+const DIVERS = 'Divers'
+const GENRES_DOSSIER = { heros: 'Héros', scenario: 'Scénario', modulaire: 'Modulaire', divers: 'Divers' }
+const TYPES_HEROS = new Set(['identity', 'alter-ego', 'ally', 'event', 'upgrade', 'support', 'resource', 'obligation', 'playersidescheme', 'identity-promo', 'alter-ego-promo'])
+const ORDRE_TYPES = ['identity', 'alter-ego', 'ally', 'event', 'upgrade', 'support', 'resource', 'obligation', 'playersidescheme', 'villain', 'main_scheme_a', 'main_scheme_b', 'minion', 'treachery', 'sidescheme', 'attachment', 'environment', 'obligation-villain', 'identity-promo', 'alter-ego-promo', 'generic-promo', 'generic-promo-vert', 'starter-deck']
+const vraiesCartes = () => projet.cartes.filter((c) => !c.brouillon)
+const cartesDuDossier = (nom) => vraiesCartes().filter((c) => (c.dossier || '') === nom)
+
+function genreInfere(nom) {
+  const types = new Set(cartesDuDossier(nom).map((c) => c.type))
+  if (nom === DIVERS) return 'divers'
+  if (types.has('identity') || types.has('alter-ego')) return 'heros'
+  if (types.has('villain') || types.has('main_scheme_a') || types.has('main_scheme_b')) return 'scenario'
+  if ([...types].some((t) => TYPES[t]?.famille === 'villain')) return 'modulaire'
+  return types.size && [...types].every((t) => TYPES_HEROS.has(t)) ? 'heros' : 'divers'
+}
+/** Tous les dossiers : [{ nom, genre, ordre, cartes }], dans l'ordre choisi. */
+function listeDossiers() {
+  projet.dossiers ??= {}
+  const noms = new Set([...Object.keys(projet.dossiers), ...Object.keys(projet.gabarits ?? {}), ...vraiesCartes().map((c) => c.dossier).filter(Boolean)])
+  return [...noms].map((nom) => {
+    const m = (projet.dossiers[nom] ??= { genre: genreInfere(nom), ordre: Object.keys(projet.dossiers).length })
+    return { nom, genre: m.genre, ordre: m.ordre ?? 0, cartes: cartesDuDossier(nom) }
+  }).sort((a, b) => a.ordre - b.ordre || a.nom.localeCompare(b.nom))
+}
+function creerDossier(nom, genre) {
+  projet.dossiers ??= {}
+  if (!projet.dossiers[nom]) projet.dossiers[nom] = { genre, ordre: Math.max(-1, ...Object.values(projet.dossiers).map((m) => m.ordre ?? 0)) + 1 }
+  return projet.dossiers[nom]
+}
+const nomLibre = (base) => {
+  const pris = new Set(listeDossiers().map((d) => d.nom))
+  if (!pris.has(base)) return base
+  for (let k = 2; ; k++) if (!pris.has(`${base} (${k})`)) return `${base} (${k})`
+}
+/** Les cartes sans dossier (anciens projets) vont dans « Divers » ; une carte appartient toujours a un dossier. */
+function ranger() {
+  const libres = projet.cartes.filter((c) => !c.dossier && !c.brouillon)
+  if (libres.length) { creerDossier(DIVERS, 'divers'); for (const c of libres) c.dossier = DIVERS }
+}
+function renommerDossier(ancien, nouveau) {
+  nouveau = nouveau.trim()
+  if (!nouveau || nouveau === ancien) return null
+  if (listeDossiers().some((d) => d.nom === nouveau)) return 'Un dossier porte déjà ce nom.'
+  for (const c of projet.cartes) if ((c.dossier || '') === ancien) c.dossier = nouveau
+  if (projet.dossiers?.[ancien]) { projet.dossiers[nouveau] = projet.dossiers[ancien]; delete projet.dossiers[ancien] }
+  if (projet.gabarits?.[ancien]) { projet.gabarits[nouveau] = projet.gabarits[ancien]; delete projet.gabarits[ancien] }
+  for (const m of projet.modeles ?? []) if (m.dossier === ancien) m.dossier = nouveau
+  if (dossierOuvert === ancien) dossierOuvert = nouveau
+  return null
+}
+function dupliquerDossier(nom) {
+  const copie = nomLibre(`${nom} (${langueUI() === 'fr' ? 'copie' : 'copy'})`)
+  const src = cartesDuDossier(nom)
+  const ids = new Map(src.map((c) => [c.id, nouvelId()]))
+  for (const c of src) {
+    const x = { ...cloner(c), id: ids.get(c.id), dossier: copie }
+    if (x.verso?.mode === 'carte' && ids.has(x.verso.carteId)) x.verso.carteId = ids.get(x.verso.carteId)
+    projet.cartes.push(x)
   }
-  return '#6e7179'
+  projet.dossiers[copie] = { genre: projet.dossiers[nom]?.genre ?? genreInfere(nom), ordre: (projet.dossiers[nom]?.ordre ?? 0) + 0.5 }
+  if (projet.gabarits?.[nom]) projet.gabarits[copie] = structuredClone(projet.gabarits[nom])
+  return copie
 }
-function boutonCarte(c, avecDossier = false) {
-  return el('button', { type: 'button', class: 'carte-liste', 'aria-current': String(c.id === projet.courante), onclick: () => choisir(c.id) },
-    el('span', {}, c.contenu.titre || '(sans titre)'),
-    el('small', {}, `${NOMS[c.type] ?? c.type} · ${c.langue.toUpperCase()}`), avecDossier && c.dossier ? el('small', {}, '📁 ' + c.dossier) : null)
+function supprimerDossier(nom) {
+  projet.cartes = projet.cartes.filter((c) => (c.dossier || '') !== nom)
+  delete projet.dossiers?.[nom]
+  delete projet.gabarits?.[nom]
+  projet.modeles = (projet.modeles ?? []).filter((m) => m.dossier !== nom)
+  historiques.clear()
+  if (!projet.cartes.some((c) => c.id === projet.courante)) projet.courante = null
 }
-function majListe() {
-  const l = $('#liste')
-  const q = filtreListe.trim().toLowerCase()
-  const noeuds = []
-  const dossiers = dossiersDuProjet()
-  const sansDossier = projet.cartes.filter((c) => !c.dossier)
+
+// ---------------------------------------------------------------- les deux vues : accueil des dossiers / editeur d'un dossier
+let vue = 'accueil'
+let dossierOuvert = ''
+let filtreAccueil = ''
+function montrerVue(v) {
+  vue = v
+  document.body.dataset.vue = v
+  $('#vue-accueil').hidden = v !== 'accueil'
+  $('#vue-editeur').hidden = v !== 'editeur'
+  fermerMenus()
+  majFil()
+}
+function majFil() {
+  const fil = $('#fil')
+  if (!fil) return
+  const sep = () => el('span', { class: 'sep' }, '›')
+  if (vue === 'accueil') { fil.replaceChildren(el('span', { class: 'ici' }, 'Dossiers')); return }
+  const c = carte()
+  fil.replaceChildren(
+    el('button', { type: 'button', onclick: () => afficherAccueil() }, 'Dossiers'), sep(),
+    c ? el('button', { type: 'button', onclick: () => ouvrirDossier(dossierOuvert) }, dossierOuvert) : el('span', { class: 'ici' }, dossierOuvert),
+    ...(c ? [sep(), el('span', { class: 'ici' }, c.contenu.titre || '(sans titre)')] : []))
+}
+function afficherAccueil() {
+  validerHistorique()
+  montrerVue('accueil')
+  document.body.removeAttribute('data-vide')
+  rendreAccueil()
+}
+function ouvrirDossier(nom, idCarte = null) {
+  validerHistorique()
+  dossierOuvert = nom
+  const cartes = cartesDuDossier(nom)
+  montrerVue('editeur')
+  const vide = !cartes.length
+  document.body.toggleAttribute('data-vide', vide)
+  $('#vue-editeur').classList.toggle('est-vide', vide)
+  $('#vide-dossier').hidden = !vide
+  if (vide) {
+    projet.courante = null
+    $('#vide-dossier h3').textContent = nom
+    majListe(); majPanneauTemplate(); majBoutonsLangue(); majBoutonsHistorique(); majFil()
+    return
+  }
+  const cible = idCarte ?? (cartes.some((c) => c.id === projet.courante) ? projet.courante : (cartes.find((c) => c.type === 'identity') ?? cartes[0]).id)
+  majPanneauTemplate()
+  choisir(cible)
+}
+
+// ---------------------------------------------------------------- miniatures (accueil et colonne des cartes)
+const miniaturesCache = new Map()
+const derniereMini = new Map() // id de carte -> derniere miniature connue (affichee pendant qu'on refait la nouvelle)
+const fileMini = []
+let miniEnCours = false
+const cleMini = (c) => JSON.stringify([c.type, c.langue, c.contenu, c.couleurs, c.cadre, c.fissures, c.art?.blob?.size, c.art?.blob?.lastModified, c.art?.zoom, c.art?.x, c.art?.y, c.art?.rotation, c.libres?.length])
+function miniatureDans(noeud, c) {
+  if (!c) return
+  const cle = cleMini(c)
+  const prete = miniaturesCache.get(cle) ?? derniereMini.get(c.id)
+  if (prete) noeud.style.backgroundImage = `url(${prete})`
+  if (miniaturesCache.has(cle)) return
+  fileMini.push({ noeud, c: cloner(c), id: c.id, cle })
+  setTimeout(pomperMiniatures, 250)
+}
+async function pomperMiniatures() {
+  if (miniEnCours) return
+  miniEnCours = true
+  while (fileMini.length) {
+    const j = fileMini.shift()
+    if (miniaturesCache.has(j.cle)) { j.noeud.style.backgroundImage = `url(${miniaturesCache.get(j.cle)})`; continue }
+    if (!j.noeud.isConnected) continue
+    try {
+      const t = await rendreCarte(j.c)
+      const m = document.createElement('canvas')
+      m.width = 160
+      m.height = Math.round(t.height * (160 / t.width))
+      m.getContext('2d').drawImage(t, 0, 0, m.width, m.height)
+      const url = m.toDataURL('image/jpeg', 0.72)
+      if (miniaturesCache.size > 400) miniaturesCache.clear()
+      miniaturesCache.set(j.cle, url)
+      derniereMini.set(j.id, url)
+      j.noeud.style.backgroundImage = `url(${url})`
+    } catch {}
+    await new Promise((r) => setTimeout(r, 25))
+  }
+  miniEnCours = false
+}
+
+// ---------------------------------------------------------------- l'accueil
+function menuFlottant(ancre, entrees) {
+  fermerMenus()
+  const r = ancre.getBoundingClientRect()
+  const m = el('div', { class: 'menu-flottant', role: 'menu' }, ...entrees.map(([texte, action, danger]) =>
+    el('button', { class: 'btn petit' + (danger ? ' danger' : ''), type: 'button', role: 'menuitem', onclick: () => { fermerMenus(); action() } }, texte)))
+  document.body.append(m)
+  m.style.top = Math.min(r.bottom + 4, innerHeight - m.offsetHeight - 8) + 'px'
+  m.style.left = Math.max(8, Math.min(r.right - m.offsetWidth, innerWidth - m.offsetWidth - 8)) + 'px'
+}
+function fermerMenus() {
+  for (const m of document.querySelectorAll('.menu-flottant')) m.remove()
+  const mx = $('#menu-export')
+  if (mx) { mx.hidden = true; $('#b-exporter')?.setAttribute('aria-expanded', 'false') }
+}
+function construireAccueil() {
+  const racine = $('#vue-accueil')
+  const recherche = el('input', { type: 'search', placeholder: 'Chercher un dossier ou une carte…', 'aria-label': 'Chercher un dossier ou une carte', value: filtreAccueil })
+  recherche.addEventListener('input', () => { filtreAccueil = recherche.value; rendreGrilles() })
+  racine.replaceChildren(
+    el('div', { class: 'accueil-tete' }, el('h2', {}, 'Dossiers'), recherche),
+    el('div', { class: 'aide' }, 'Un dossier par héros (avec son alter-ego), par scénario ou par set modulaire. Clique sur un dossier pour travailler sur ses cartes.'),
+    el('div', { id: 'grilles' }))
+}
+function tuileDossier(d, grille) {
+  const ident = d.cartes.find((c) => c.type === 'identity') ?? d.cartes.find((c) => c.type === 'villain') ?? d.cartes[0]
+  const alter = d.cartes.find((c) => c.type === 'alter-ego')
+  const g = projet.gabarits?.[d.nom]
+  const teinte = g?.couleurs?.left_color ?? g?.couleurs?.background_upper ?? couleurDuPreset(g?.preset) ?? ident?.couleurs?.left_color ?? ident?.couleurs?.background_upper ?? '#3f86e0'
+  const mini = el('div', { class: 'mini' }, ident ? '' : 'vide')
+  miniatureDans(mini, ident)
+  const sous = d.genre === 'heros' ? (alter?.contenu.titre || '') : tr(GENRES_DOSSIER[d.genre])
+  const t = el('div', { class: 'tuile', role: 'button', tabindex: '0', draggable: 'true', style: `--teinte:${teinte}`, 'data-nom': d.nom },
+    mini,
+    el('div', {}, el('div', { class: 'nom' }, (d.genre === 'heros' && ident?.contenu.titre) || d.nom), sous ? el('div', { class: 'alter' }, sous) : null,
+      el('div', { class: 'compte' }, d.cartes.length ? `${d.cartes.length} carte(s)` : 'Dossier vide'), ident?.contenu.titre && ident.contenu.titre !== d.nom ? el('div', { class: 'compte' }, '📁 ' + d.nom) : null),
+    el('button', { class: 'menu-pt', type: 'button', title: 'Actions du dossier', 'aria-label': 'Actions du dossier', onclick: (e) => { e.stopPropagation(); menuDossier(e.currentTarget, d) } }, '⋯'))
+  const ouvrir = () => ouvrirDossier(d.nom)
+  t.addEventListener('click', ouvrir)
+  t.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ouvrir() } })
+  t.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', d.nom); t.classList.add('glisse') })
+  t.addEventListener('dragend', () => t.classList.remove('glisse'))
+  t.addEventListener('dragover', (e) => { e.preventDefault(); t.classList.add('cible') })
+  t.addEventListener('dragleave', () => t.classList.remove('cible'))
+  t.addEventListener('drop', (e) => {
+    e.preventDefault(); t.classList.remove('cible')
+    const source = e.dataTransfer.getData('text/plain')
+    if (!source || source === d.nom) return
+    const noms = [...grille.querySelectorAll('.tuile')].map((x) => x.dataset.nom).filter((x) => x !== source)
+    noms.splice(noms.indexOf(d.nom), 0, source)
+    noms.forEach((n, i) => { if (projet.dossiers[n]) projet.dossiers[n].ordre = i })
+    sauvegarderPlusTard(); rendreGrilles()
+  })
+  return t
+}
+function tuilePlus(libelle, genre) {
+  return el('button', { class: 'tuile-plus', type: 'button', onclick: () => dialogueNouveauDossier(genre) },
+    el('span', { class: 'plus' }, '+'), el('span', { class: 'libelle' }, libelle))
+}
+function rendreGrilles() {
+  const zone = $('#grilles')
+  if (!zone) return
+  const q = filtreAccueil.trim().toLowerCase()
+  const tous = listeDossiers()
+  const correspond = (d) => !q || [d.nom, ...d.cartes.flatMap((c) => [c.contenu.titre])].some((x) => String(x ?? '').toLowerCase().includes(q))
+  const rangee = (titre, genres, plus) => {
+    const liste = tous.filter((d) => genres.includes(d.genre) && correspond(d))
+    if (!liste.length && !plus.length && !q) return null
+    const grille = el('div', { class: 'grille-dossiers' })
+    grille.append(...liste.map((d) => tuileDossier(d, grille)), ...(q ? [] : plus))
+    return el('section', { class: 'rangee-dossiers' }, el('h3', {}, titre), grille)
+  }
+  const noeuds = [
+    rangee('Héros', ['heros'], [tuilePlus('Héros', 'heros')]),
+    rangee('Scénarios et modulaires', ['scenario', 'modulaire'], [tuilePlus('Scénario', 'scenario'), tuilePlus('Modulaire', 'modulaire')]),
+    rangee('Divers', ['divers'], []),
+  ].filter(Boolean)
   if (q) {
-    const visible = (c) => [c.contenu.titre, c.contenu.regles, c.contenu.traits, c.dossier, NOMS[c.type]].some((t) => String(t ?? '').toLowerCase().includes(q))
-    for (const c of projet.cartes) if (visible(c)) noeuds.push(boutonCarte(c, true))
-  } else if (!dossiers.length) {
-    // pas encore de dossier : la liste simple
-    dossierVu = null
-    for (const c of projet.cartes) noeuds.push(boutonCarte(c))
-  } else {
-    if (dossierVu !== null && dossierVu !== SANS_DOSSIER && !dossiers.some(([d]) => d === dossierVu)) dossierVu = null
-    if (dossierVu === SANS_DOSSIER && !sansDossier.length) dossierVu = null
-    if (dossierVu === null) {
-      const courant = carte()?.dossier ?? ''
-      for (const [nom, nb] of dossiers) {
-        noeuds.push(el('button', { type: 'button', class: 'dossier tuile-dossier' + (courant === nom ? ' choisie' : ''), style: `--teinte:${couleurDuDossier(nom)}`, onclick: () => { dossierVu = nom; majListe() } },
-          el('span', { class: 'tuile-nom' }, '📁 ' + nom), el('small', {}, `${nb} carte(s)` + (projet.gabarits?.[nom] ? ' · template ✓' : ''))))
-      }
-      if (sansDossier.length) {
-        noeuds.push(el('button', { type: 'button', class: 'dossier tuile-dossier tuile-sans' + (courant === '' ? ' choisie' : ''), style: '--teinte:#3a3d45', onclick: () => { dossierVu = SANS_DOSSIER; majListe() } },
-          el('span', { class: 'tuile-nom' }, 'Sans dossier'), el('small', {}, `${sansDossier.length} carte(s)`)))
-      }
-    } else {
-      const nom = dossierVu === SANS_DOSSIER ? '' : dossierVu
-      const cartes = projet.cartes.filter((c) => (c.dossier || '') === nom)
-      noeuds.push(el('div', { class: 'tete-dossier', style: `--teinte:${nom ? couleurDuDossier(nom) : '#3a3d45'}` },
-        el('button', { type: 'button', class: 'dossier btn petit fixe', title: 'Revenir à tous les dossiers', onclick: () => { dossierVu = null; majListe() } }, '← Dossiers'),
-        el('strong', {}, nom ? '📁 ' + nom : 'Sans dossier'), el('small', {}, `${cartes.length} carte(s)`)))
-      if (nom) {
-        noeuds.push(el('div', { class: 'outils' },
-          el('button', { type: 'button', class: 'dossier btn petit', title: 'Une nouvelle carte dans ce dossier, avec l’assistant', onclick: () => ouvrirAssistantCarte(nom) }, '+ Carte ici'),
-          el('button', { type: 'button', class: 'dossier btn petit', title: 'Les couleurs, le cadre et la mention communs à ce dossier', onclick: () => ouvrirAssistantTemplate(nom) }, projet.gabarits?.[nom] ? 'Modifier le template…' : 'Créer le template…')))
-      }
-      for (const c of cartes) noeuds.push(boutonCarte(c))
-    }
+    const trouvees = vraiesCartes().filter((c) => [c.contenu.titre, c.contenu.regles, c.contenu.traits, c.dossier].some((x) => String(x ?? '').toLowerCase().includes(q)))
+    if (trouvees.length) noeuds.push(el('section', { class: 'trouvees' }, el('h3', { style: 'margin:0 0 6px;font:400 26px var(--affiche);color:#fff' }, 'Cartes trouvées'),
+      ...trouvees.slice(0, 40).map((c) => el('button', { class: 'carte-liste', type: 'button', onclick: () => ouvrirDossier(c.dossier, c.id) },
+        (() => { const m = el('div', { class: 'mini' }); miniatureDans(m, c); return m })(),
+        el('span', { class: 'titre' }, c.contenu.titre || '(sans titre)', el('small', {}, `${NOMS[c.type] ?? c.type} · 📁 ${c.dossier}`)), el('span')))))
+    if (!noeuds.length) noeuds.push(el('div', { class: 'aide' }, 'Rien ne correspond.'))
   }
+  zone.replaceChildren(...noeuds)
+}
+function rendreAccueil() {
+  if (!$('#grilles')) construireAccueil()
+  rendreGrilles()
+}
+
+function menuDossier(ancre, d) {
+  menuFlottant(ancre, [
+    ['Ouvrir', () => ouvrirDossier(d.nom)],
+    ['Renommer…', () => dialogueRenommer(d)],
+    ['Dupliquer', () => { dupliquerDossier(d.nom); sauvegarderPlusTard(); rendreGrilles(); message('Dossier dupliqué.') }],
+    ['Exporter le pack…', () => {
+      if (!d.cartes.length) return message('Ce dossier est vide : rien à exporter.')
+      ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte: () => d.cartes[0], rendre: rendreCarte, rendreVerso, serialiser })
+    }],
+    ['Supprimer…', () => dialogueSupprimerDossier(d), true],
+  ])
+}
+function dialogueRenommer(d) {
+  const champ = el('input', { type: 'text', value: d.nom })
+  const erreur = el('div', { class: 'aide', style: 'color:#ff9b8f' })
+  dialogue(`Renommer « ${d.nom} »`, el('div', { class: 'assistant-pile' }, el('label', {}, 'Nouveau nom', champ), erreur),
+    [{ texte: 'Annuler' }, { texte: 'Renommer', principal: true, action: () => {
+      const e = renommerDossier(d.nom, champ.value)
+      if (e) { erreur.textContent = tr(e); return false }
+      sauvegarderPlusTard(); rendreGrilles()
+    } }])
+  champ.select()
+}
+function dialogueSupprimerDossier(d) {
+  const champ = el('input', { type: 'text', placeholder: d.nom, autocomplete: 'off' })
+  const b = dialogue(`Supprimer « ${d.nom} »`, el('div', { class: 'assistant-pile' },
+    el('p', { class: 'assistant-aide' }, `Le dossier et ses ${d.cartes.length} carte(s) seront effacés. Pour confirmer, tape son nom :`), champ),
+  [{ texte: 'Annuler' }, { texte: 'Supprimer', principal: true, action: () => {
+    if (champ.value.trim() !== d.nom) { champ.focus(); return false }
+    supprimerDossier(d.nom); sauvegarderPlusTard(); rendreGrilles(); message('Dossier supprimé.')
+  } }])
+  const bouton = [...b.querySelectorAll('button')].find((x) => x.textContent === tr('Supprimer'))
+  if (bouton) { bouton.classList.add('danger'); bouton.classList.remove('principal') }
+}
+/** Le « + » d'une rangee : un dossier vide, ou le wizard qui passe sur tout. */
+function dialogueNouveauDossier(genre) {
+  const libelles = { heros: 'héros', scenario: 'scénario', modulaire: 'set modulaire' }
+  const champ = el('input', { type: 'text', placeholder: genre === 'heros' ? 'ex. Valkyrie' : genre === 'scenario' ? 'ex. Rhino' : 'ex. Bomb Scare' })
+  const erreur = el('div', { class: 'aide', style: 'color:#ff9b8f' })
+  const nom = () => champ.value.trim()
+  dialogue(`Nouveau dossier ${tr(libelles[genre])}`, el('div', { class: 'assistant-pile' },
+    el('label', {}, 'Nom du dossier', champ),
+    el('div', { class: 'aide' }, 'Avec le wizard, je te guide pour tout créer d’un coup (couleurs, cartes de base…). Un dossier vide se remplit ensuite à la main.'), erreur),
+  [{ texte: 'Annuler' },
+    { texte: 'Dossier vide', action: () => {
+      if (!nom()) { erreur.textContent = tr('Donne un nom au dossier.'); return false }
+      if (listeDossiers().some((d) => d.nom === nom())) { erreur.textContent = tr('Un dossier porte déjà ce nom.'); return false }
+      creerDossier(nom(), genre); sauvegarderPlusTard(); ouvrirDossier(nom())
+    } },
+    { texte: 'Avec le wizard', principal: true, action: () => {
+      if (nom() && listeDossiers().some((d) => d.nom === nom())) { erreur.textContent = tr('Un dossier porte déjà ce nom.'); return false }
+      setTimeout(() => (genre === 'heros' ? ouvrirWizardHeros(nom()) : ouvrirWizardRencontre(genre, nom())), 0)
+    } }])
+  champ.focus()
+}
+
+// ---------------------------------------------------------------- la colonne des cartes (editeur)
+const groupesFermes = new Set()
+function ligneCarte(c, n, total) {
+  const spec = TYPES[c.type]
+  const teinte = c.couleurs?.left_color ?? c.couleurs?.background_upper ?? '#6e7179'
+  const mini = el('div', { class: 'mini' })
+  miniatureDans(mini, c)
+  const incomplete = !(c.contenu.titre ?? '').trim() || deborde.has(c.id)
+  return el('button', { type: 'button', class: 'carte-liste', style: `--teinte:${teinte}`, 'aria-current': String(c.id === projet.courante), title: spec ? tr(NOMS[c.type] ?? c.type) : c.type, onclick: () => choisir(c.id) },
+    mini,
+    el('span', { class: 'titre' }, c.contenu.titre || '(sans titre)', el('small', {}, `${NOMS[c.type] ?? c.type} · ${c.langue.toUpperCase()}`)),
+    el('span', { class: 'num' }, incomplete ? el('span', { class: 'alerte-c', title: (c.contenu.titre ?? '').trim() ? 'Le texte déborde du cadre.' : 'Le titre est vide.' }, '⚠ ') : null, `${n}/${total}`))
+}
+const deborde = new Set() // ids des cartes dont le texte deborde (renseigne par dessiner)
+function majListe() {
+  if (vue !== 'editeur') return
+  const l = $('#liste')
+  const q = ($('#recherche')?.value ?? '').trim().toLowerCase()
+  const toutes = cartesDuDossier(dossierOuvert)
+  const total = toutes.length
+  const visibles = toutes.filter((c) => !q || [c.contenu.titre, c.contenu.regles, c.contenu.traits, NOMS[c.type]].some((x) => String(x ?? '').toLowerCase().includes(q)))
+  const groupes = new Map()
+  for (const c of visibles) { if (!groupes.has(c.type)) groupes.set(c.type, []); groupes.get(c.type).push(c) }
+  const types = [...groupes.keys()].sort((a, b) => ORDRE_TYPES.indexOf(a) - ORDRE_TYPES.indexOf(b))
+  const noeuds = types.map((t) => {
+    const d = el('details', { class: 'groupe-type', open: !groupesFermes.has(t) || !!q, 'data-type': t },
+      el('summary', {}, `${NOMS[t] ?? t} (${groupes.get(t).length})`),
+      el('div', { class: 'liste-cartes' }, ...groupes.get(t).map((c) => ligneCarte(c, toutes.indexOf(c) + 1, total))))
+    d.addEventListener('toggle', () => { d.open ? groupesFermes.delete(t) : groupesFermes.add(t) })
+    return d
+  })
   if (!noeuds.length) noeuds.push(el('div', { class: 'aide' }, q ? 'Aucune carte ne correspond.' : 'Aucune carte.'))
   l.replaceChildren(...noeuds)
-  l.dataset.total = String(projet.cartes.length) // toutes les cartes, quel que soit le dossier ouvert (tests)
-  // dossiers deja utilises : propositions du champ « Dossier »
+  l.dataset.total = String(vraiesCartes().length) // toutes les cartes du projet, quel que soit le dossier ouvert (tests)
+  l.style.cssText = 'display:flex;flex-direction:column;gap:8px'
   const dl = $('#dossiers-connus')
-  if (dl) dl.replaceChildren(...dossiers.map(([d]) => el('option', { value: d })))
-  majModeles()
-}
-/** La liste « Templates » : le template de chaque dossier, puis les cartes de depart gardees. */
-function majModeles() {
-  const s = $('#modeles')
-  if (!s) return
-  const v = s.value
-  const gabarits = Object.keys(projet.gabarits ?? {}).sort()
-  const modeles = projet.modeles ?? []
-  s.replaceChildren(...[el('option', { value: '' }, `— templates (${gabarits.length + modeles.length}) —`),
-    gabarits.length ? el('optgroup', { label: 'Dossiers (apparence)' }, gabarits.map((d) => el('option', { value: 'g:' + d }, '📁 ' + d))) : null,
-    modeles.length ? el('optgroup', { label: 'Cartes de départ' }, modeles.map((m) => el('option', { value: 'm:' + m.id }, '🃏 ' + m.nom))) : null].filter(Boolean))
-  s.value = v
-  if (s.value !== v) s.value = ''
+  if (dl) dl.replaceChildren(...listeDossiers().map((d) => el('option', { value: d.nom })))
 }
 function choisir(id) {
   validerHistorique()
   projet.courante = id
-  { const d = carte()?.dossier || SANS_DOSSIER; if (dossierVu !== null && dossierVu !== d) dossierVu = d }
+  const c = carte()
+  if (c && vue === 'editeur' && c.dossier !== dossierOuvert) dossierOuvert = c.dossier
+  document.body.removeAttribute('data-vide')
+  $('#vue-editeur').classList.remove('est-vide')
+  const vd = $('#vide-dossier'); if (vd) vd.hidden = true
   { const h = histoDe(id); h.ref ??= cloner(carte()) }
   majListe()
   majBoutonsLangue()
@@ -955,57 +1297,157 @@ function choisir(id) {
   dessiner()
   sauvegarderPlusTard()
   majBoutonsHistorique()
+  majFil()
 }
 function ajouter(c) {
   projet.cartes.push(c)
-  if (dossierVu !== null || c.dossier) dossierVu = c.dossier || SANS_DOSSIER
+  if (c.dossier) creerDossier(c.dossier, genreInfere(c.dossier))
   choisir(c.id)
 }
 
-// ---------------------------------------------------------------- assistants (gabarit de pack, nouvelle carte guidee)
-// Deux assistants tres descriptifs (demande du 29/10/2026) : regler le gabarit d'un pack (couleurs, cadre,
-// mise en page, mention du createur - les reglages qui doivent rester identiques sur toutes les cartes d'un
-// meme dossier), et creer une nouvelle carte pas a pas. Chaque etape explique ce qu'elle regle avant de le
-// demander ; on peut relancer l'un ou l'autre autant de fois qu'on veut (boutons « Gabarit du pack… » et
-// « + Assistant… »), et le gabarit est reutilisable : « Gabarit du pack… » le rouvre pour le modifier.
-const DESCRIPTIONS_TYPES = {
-  ally: 'Combat ou contre le plan à tes côtés.', event: 'Un effet ponctuel, défaussé après usage.',
-  upgrade: 'Reste attachée à ton héros, effet continu ou déclenché.', support: 'Reste en jeu devant toi, effet continu ou déclenché.',
-  resource: 'Attachée pour produire une ressource (ou un effet ponctuel) chaque tour.',
-  'alter-ego': 'Le côté civil du héros : récupération, actions d’alter-ego.',
-  identity: 'La carte d’identité du héros : stats Contrer / Attaquer / Défendre, capacité de héros.',
-  obligation: 'Une obligation mêlée au paquet de rencontre du joueur.',
-  playersidescheme: 'Une manigance annexe qui appartient à un joueur, pas au paquet de rencontre.',
-  villain: 'La carte de stats du méchant (une face).', minion: 'Un sbire de rencontre, qui attaque ou défend.',
-  treachery: 'Un effet de rencontre ponctuel, défaussé après usage.', environment: 'Une carte de rencontre permanente (un lieu, par exemple).',
-  attachment: 'S’attache à un héros ou un sbire, côté rencontre.', sidescheme: 'Une manigance supplémentaire à résoudre en plus de la principale.',
-  main_scheme_a: 'La manigance principale, première face (menace de départ).', main_scheme_b: 'La manigance principale, deuxième face (après son avancée).',
-  'obligation-villain': 'Une obligation pour le paquet du méchant.', 'generic-promo': 'Un gabarit promo générique, horizontal.',
-  'generic-promo-vert': 'Un gabarit promo générique, vertical.', 'alter-ego-promo': 'Une carte alter-ego en promo.',
-  'identity-promo': 'Une carte d’identité de héros en promo.', 'starter-deck': 'La liste d’un paquet de départ (texte seul, pas de stats).',
+// ---------------------------------------------------------------- le template d'un dossier (panneau de la colonne de droite)
+// Le template garde l'apparence commune a toutes les cartes du dossier : couleurs, style du cadre, mise en page du texte,
+// mention du createur. On le modifie ici ; « Enregistrer » demande s'il faut aussi le recopier sur les cartes deja faites.
+const defautGabarit = () => ({ preset: '', couleurs: {}, cadre: 'officiel', fissures: true, createur: '', centrerTexte: false, echelleTexte: 0 })
+let brouillonTemplate = null
+let templateOuvert = false
+function specDuDossier(nom) {
+  return TYPES[(projet.dossiers?.[nom]?.genre ?? genreInfere(nom)) === 'heros' ? 'identity' : 'villain'] ?? TYPES.ally
+}
+/** Une « fausse carte » qui porte les couleurs d'un template, pour reutiliser les blocs de couleurs. */
+function carteDeTemplate(nom, g) {
+  const spec = specDuDossier(nom)
+  const c = { id: '_tpl', type: Object.keys(TYPES).find((k) => TYPES[k] === spec), dossier: '', couleurs: { ...(g.couleurs ?? {}) }, preset: g.preset ?? '', couleursPerso: false }
+  if (!Object.keys(c.couleurs).length) c.couleurs = couleursNeutres(spec)
+  return c
+}
+function majPanneauTemplate() {
+  const zone = $('#panneau-template')
+  if (!zone || vue !== 'editeur') return
+  const nom = dossierOuvert
+  const enregistre = projet.gabarits?.[nom]
+  if (brouillonTemplate?.dossier !== nom) brouillonTemplate = { dossier: nom, ...structuredClone(enregistre ?? defautGabarit()) }
+  const g = brouillonTemplate
+  const spec = specDuDossier(nom)
+  const pseudo = carteDeTemplate(nom, g)
+  const modifie = () => { g.couleurs = { ...pseudo.couleurs }; g.preset = pseudo.preset }
+  const bloc = blocCouleurs(pseudo, spec, { quand: modifie, origineVisible: false, apres: (r) => { modifie(); if (r) majPanneauTemplate() } })
+  const cadre = el('select', {}, CADRES.map(([v, n]) => el('option', { value: v }, n)))
+  cadre.value = g.cadre
+  cadre.addEventListener('change', () => { g.cadre = cadre.value })
+  const fissures = el('input', { type: 'checkbox' }); fissures.checked = g.fissures !== false
+  fissures.addEventListener('change', () => { g.fissures = fissures.checked })
+  const centrer = el('input', { type: 'checkbox' }); centrer.checked = !!g.centrerTexte
+  centrer.addEventListener('change', () => { g.centrerTexte = centrer.checked })
+  const mention = el('input', { type: 'text', value: g.createur ?? '', placeholder: 'ex. Créé par …' })
+  mention.addEventListener('input', () => { g.createur = mention.value })
+  const modeles = (projet.modeles ?? [])
+  const choixModele = el('select', {}, el('option', { value: '' }, `— cartes de départ (${modeles.length}) —`), ...modeles.map((m) => el('option', { value: m.id }, m.nom)))
+  const details = el('details', { class: 'panneau-template', open: templateOuvert },
+    el('summary', {}, el('span', { class: 'ico-rub' }, '◧'), 'Template du dossier'),
+    el('div', { class: 'contenu' },
+      el('div', { class: 'rang', style: 'align-items:center' }, el('span', { class: 'origine' + (enregistre ? '' : ' perso') }, enregistre ? 'Template enregistré ✓' : 'Pas encore de template')),
+      el('div', { class: 'aide' }, 'Les couleurs, le cadre et la mention communs à toutes les cartes du dossier.'),
+      ...bloc,
+      el('label', {}, 'Style du cadre', cadre),
+      TYPES_SANS_FISSURES.size ? el('label', { class: 'ligne' }, fissures, 'Fissures dans le cadre (cartes de rencontre)') : null,
+      el('label', { class: 'ligne' }, centrer, 'Centrer le texte des règles verticalement'),
+      el('label', {}, 'Mention du créateur', mention),
+      el('div', { class: 'rang' },
+        el('button', { class: 'btn principal petit', type: 'button', onclick: () => enregistrerTemplate() }, 'Enregistrer le template'),
+        el('button', { class: 'btn petit', type: 'button', onclick: () => { brouillonTemplate = null; majPanneauTemplate() } }, 'Annuler les changements')),
+      el('hr'),
+      el('div', { class: 'assistant-libelle' }, 'Cartes de départ'),
+      el('div', { class: 'aide' }, 'Une carte entière gardée comme point de départ : on peut en créer d’autres à partir d’elle.'),
+      choixModele,
+      el('div', { class: 'outils' },
+        el('button', { class: 'btn petit', type: 'button', onclick: () => {
+          const m = (projet.modeles ?? []).find((x) => x.id === choixModele.value)
+          if (!m) return message('Choisis d’abord une carte de départ.')
+          const c = { ...cloner(m.carte), id: nouvelId(), dossier: nom }
+          appliquerGabaritPack(c)
+          ajouter(c)
+        } }, 'Utiliser'),
+        el('button', { class: 'btn petit', type: 'button', onclick: () => {
+          if (!carte()) return message('Choisis d’abord une carte.')
+          const n = prompt(tr('Nom de la carte de départ'), carte()?.contenu.titre ?? '')
+          if (n === null) return
+          enregistrerModele(n); projet.modeles.at(-1).dossier = nom; sauvegarderPlusTard(); majPanneauTemplate(); message('Carte de départ enregistrée.')
+        } }, 'Enregistrer la carte actuelle'),
+        el('button', { class: 'btn petit', type: 'button', onclick: () => {
+          projet.modeles = (projet.modeles ?? []).filter((m) => m.id !== choixModele.value); sauvegarderPlusTard(); majPanneauTemplate()
+        } }, 'Supprimer'))))
+  details.addEventListener('toggle', () => { templateOuvert = details.open })
+  zone.replaceChildren(details)
+}
+function enregistrerTemplate() {
+  const nom = dossierOuvert
+  const { dossier, ...g } = brouillonTemplate
+  ;(projet.gabarits ??= {})[nom] = structuredClone(g)
+  creerDossier(nom, genreInfere(nom))
+  const cartes = cartesDuDossier(nom)
+  const appliquer = () => {
+    for (const x of cartes) appliquerGabaritPack(x)
+    historiques.clear()
+    const c = carte()
+    if (c && c.dossier === nom) { construireFormulaire(); dessiner() }
+    majListe(); sauvegarderPlusTard(); message(`${cartes.length} carte(s) mise(s) à jour.`)
+  }
+  sauvegarderPlusTard()
+  majPanneauTemplate()
+  if (!cartes.length) return message('Template enregistré.')
+  dialogue('Template enregistré',
+    el('div', { class: 'assistant-aide' }, `Appliquer ce template aux ${cartes.length} carte(s) du dossier « ${nom} » ? Les couleurs et le cadre personnalisés de ces cartes seront remplacés.`),
+    [{ texte: 'Seulement les nouvelles cartes', action: () => message('Template enregistré.') }, { texte: `Les ${cartes.length} cartes`, principal: true, action: appliquer }])
+}
+/** Applique a `c` le template de son dossier, s'il y en a un (couleurs, cadre, mise en page, mention). */
+function appliquerGabaritPack(c) {
+  const g = (projet.gabarits ??= {})[(c.dossier || '').trim()]
+  c.couleursPerso = false
+  if (!g) return
+  const spec = TYPES[c.type]
+  c.preset = g.preset ?? ''
+  if (spec) {
+    appliquerPalette(c, spec, c.preset)
+    // couleurs reglees a la main dans le template : par-dessus, role par role
+    const roles = new Set(rolesDe(spec))
+    for (const [r, v] of Object.entries(g.couleurs ?? {})) if (roles.has(r)) c.couleurs[r] = v
+  }
+  if (g.cadre) c.cadre = g.cadre
+  if (g.fissures != null) c.fissures = g.fissures
+  if (g.createur) c.contenu.createur = g.createur
+  if (g.centrerTexte != null) c.contenu.centrerTexte = g.centrerTexte
+  if (g.echelleTexte != null) c.contenu.echelleTexte = g.echelleTexte
 }
 
-/** Fait tourner une suite d'etapes dans une boite de dialogue : chacune explique ce qu'elle regle avant de le demander.
+// ---------------------------------------------------------------- le wizard : moteur d'etapes
+// 30/10/2026 : le wizard PASSE SUR TOUT (chaque utilisateur voit au moins une fois toutes les options), une etape par rubrique
+// du formulaire, avec les memes champs. L'aide tient en une ligne ; la version longue est derriere la bulle « ? ».
+let reconstruireEtape = () => {}
+const ORDRE_ETAPES_ALERTE = 'ff9b8f'
+
+/** Fait tourner une suite d'etapes dans une boite de dialogue.
  * `etapes` : un tableau, ou une fonction (valeurs) -> tableau (les etapes dependent alors des choix, le type de carte par exemple).
- * etapes[i] = { titre, aide?, construire(valeurs, rafraichir) -> noeud, valider?(valeurs) -> string|undefined (message d'erreur) }.
- * `fin(valeurs)` est appele apres la derniere etape validee.
- * opts.apercu(valeurs) -> carte|null : la carte telle qu'elle sortira, dessinee a droite et redessinee a chaque saisie.
- * opts.pied(fermer) -> noeud : un lien de plus sous les boutons (« carte vide, sans assistant »...). */
+ * etapes[i] = { titre, court?, aide, plus?, passable?, construire(valeurs, rafraichir) -> noeud, valider?(valeurs) -> string|undefined }.
+ * opts.scene : la VRAIE apercu (avec sa souris : glisser l'image, molette) vient s'installer dans la fenetre.
+ * opts.apercu(valeurs) -> carte|null : sinon, une carte dessinee a droite et redessinee a chaque saisie.
+ * opts.annuler() : appele si on ferme sans terminer. opts.pied(fermer) : un lien de plus sous les boutons. */
 function lancerAssistant(titreAssistant, etapes, fin, opts = {}) {
   const d = el('dialog', { class: 'dlg' })
   const corps = el('div', { class: 'assistant-corps' })
   const puces = el('ol', { class: 'assistant-puces' })
-  const alerte = el('div', { class: 'aide', style: 'color:#ff9b8f' })
+  const alerte = el('div', { class: 'aide', style: `color:#${ORDRE_ETAPES_ALERTE}` })
   const gauche = el('div', { class: 'rang' })
-  const droite = el('div', { class: 'rang' })
-  const toile = el('canvas', { class: 'assistant-apercu' })
+  const droite = el('div', { class: 'droite' })
+  const toile = el('canvas', { class: 'toile assistant-apercu' })
   let i = 0
+  let termine = false
   const valeurs = { ...(opts.valeurs ?? {}) }
   const liste = () => (typeof etapes === 'function' ? etapes(valeurs) : etapes)
   let minuteur = 0
   let n = 0
   async function redessiner() {
-    if (!opts.apercu) return
+    if (!opts.apercu || opts.scene) return
     const k = ++n
     const c = opts.apercu(valeurs)
     if (!c) return
@@ -1025,9 +1467,11 @@ function lancerAssistant(titreAssistant, etapes, fin, opts = {}) {
     i = Math.min(i, toutes.length - 1)
     const etape = toutes[i]
     alerte.textContent = ''
+    const [boutonAide, bulle] = etape.plus ? bulleAide(etape.plus) : [null, null]
     corps.replaceChildren(...[
       el('h3', { class: 'assistant-titre' }, `${i + 1}/${toutes.length} · ${etape.titre}`),
-      etape.aide ? el('p', { class: 'assistant-aide' }, etape.aide) : null,
+      etape.aide ? el('p', { class: 'assistant-aide' }, etape.aide, boutonAide) : null,
+      bulle,
       etape.construire(valeurs, rendre)].filter(Boolean))
     puces.replaceChildren(...toutes.map((e, k) => el('li', { class: k === i ? 'en-cours' : k < i ? 'fait' : '' },
       k < i ? el('button', { type: 'button', onclick: () => { i = k; rendre() } }, e.court ?? e.titre) : el('span', {}, e.court ?? e.titre))))
@@ -1035,466 +1479,553 @@ function lancerAssistant(titreAssistant, etapes, fin, opts = {}) {
       i > 0 ? el('button', { class: 'btn', type: 'button', onclick: () => { i--; rendre() } }, '◀ Précédent') : null,
       el('button', { class: 'btn', type: 'button', onclick: () => d.close() }, 'Annuler')].filter(Boolean))
     const dernier = i === toutes.length - 1
-    droite.replaceChildren(el('button', {
-      class: 'btn principal', type: 'button',
-      onclick: () => {
-        const erreur = etape.valider?.(valeurs)
-        if (typeof erreur === 'string') { alerte.textContent = erreur; return }
-        if (dernier) { fin(valeurs); d.close() }
-        else { i++; rendre() }
-      },
-    }, dernier ? 'Terminer' : 'Suivant ▶'))
+    const avancer = () => { if (dernier) { termine = true; fin(valeurs); d.close() } else { i++; rendre() } }
+    droite.replaceChildren(...[
+      etape.passable && !dernier ? el('button', { class: 'btn', type: 'button', onclick: () => { i++; rendre() } }, 'Passer') : null,
+      el('button', {
+        class: 'btn principal', type: 'button',
+        onclick: () => {
+          const erreur = etape.valider?.(valeurs)
+          if (typeof erreur === 'string') { alerte.textContent = erreur; return }
+          avancer()
+        },
+      }, dernier ? 'Terminer' : 'Suivant ▶')].filter(Boolean))
     plusTard()
+    if (opts.scene) dessiner()
   }
+  reconstruireEtape = () => rendre()
+  const figure = opts.scene
+    ? el('figure', { class: 'assistant-figure' })
+    : opts.apercu ? el('figure', { class: 'assistant-figure' }, toile, el('figcaption', { class: 'aide' }, 'Aperçu')) : null
   const colonne = el('div', { class: 'assistant-colonne' }, corps, alerte,
     el('div', { class: 'rang assistant-boutons' }, gauche, droite),
-    opts.pied ? el('div', { class: 'assistant-pied' }, opts.pied(() => d.close())) : null)
+    opts.pied ? el('div', { class: 'assistant-pied' }, opts.pied(() => { termine = true; d.close() })) : null)
   d.append(el('div', { class: 'panneau assistant' },
     el('h2', {}, titreAssistant), puces,
-    el('div', { class: 'assistant-grille' + (opts.apercu ? '' : ' sans-apercu') }, colonne, opts.apercu ? el('figure', { class: 'assistant-figure' }, toile, el('figcaption', { class: 'aide' }, 'Aperçu')) : null)))
+    el('div', { class: 'assistant-grille' + (figure ? '' : ' sans-apercu') }, colonne, figure)))
   document.body.append(d)
-  d.addEventListener('close', () => { clearTimeout(minuteur); d.remove() })
+  // la scene (apercu + souris) quitte l'editeur le temps du wizard, et y revient apres
+  const scene = $('#scene')
+  const placeScene = scene ? { parent: scene.parentNode, suivant: scene.nextSibling } : null
+  if (opts.scene && scene) figure.append(scene)
+  d.addEventListener('close', () => {
+    clearTimeout(minuteur)
+    reconstruireEtape = () => {}
+    if (opts.scene && scene && placeScene) placeScene.parent.insertBefore(scene, placeScene.suivant)
+    d.remove()
+    if (!termine) opts.annuler?.()
+  })
   rendre()
   d.showModal()
   return d
 }
 
-/** Un champ de l'assistant : libelle, explication en dessous, valeur gardee dans `v[cle]`. */
+/** Un champ du wizard : libelle, valeur gardee dans `v[cle]`, bulle « ? » pour l'explication. */
 function champAssistant(v, cle, label, aide, opts = {}) {
   v[cle] ??= opts.defaut ?? ''
   const i = opts.long ? el('textarea', { rows: opts.lignes ?? 4, placeholder: opts.exemple ?? '' }) : el('input', { type: 'text', placeholder: opts.exemple ?? '', list: opts.list ?? null })
   i.value = v[cle]
   i.addEventListener('input', () => { v[cle] = i.value })
-  return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, label), i, aide ? el('small', { class: 'aide' }, aide) : null)
+  const [b, bulle] = aide ? bulleAide(aide) : [null, null]
+  return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, label, b), bulle, i)
 }
 function caseAssistant(v, cle, label, aide, defaut = false) {
   v[cle] ??= defaut
   const i = el('input', { type: 'checkbox' })
   i.checked = !!v[cle]
   i.addEventListener('change', () => { v[cle] = i.checked })
-  return el('div', { class: 'assistant-champ' }, el('label', { class: 'ligne' }, i, el('span', { class: 'assistant-libelle' }, label)), aide ? el('small', { class: 'aide' }, aide) : null)
+  const [b, bulle] = aide ? bulleAide(aide) : [null, null]
+  return el('div', { class: 'assistant-champ' }, el('label', { class: 'ligne' }, i, el('span', { class: 'assistant-libelle' }, label, b)), bulle)
+}
+function compteurAssistant(v, cle, label, max = 12, defaut = 0) {
+  v[cle] ??= defaut
+  const s = el('select', {}, Array.from({ length: max + 1 }, (_, k) => el('option', { value: k }, k)))
+  s.value = String(v[cle])
+  s.addEventListener('change', () => { v[cle] = Number(s.value) })
+  return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, label), s)
 }
 
-/** Les dossiers du projet, avec le nombre de cartes de chacun (« » = sans dossier exclu). */
-function dossiersDuProjet() {
-  const m = new Map()
-  for (const c of projet.cartes) if (c.dossier) m.set(c.dossier, (m.get(c.dossier) ?? 0) + 1)
-  for (const d of Object.keys(projet.gabarits ?? {})) if (!m.has(d)) m.set(d, 0)
-  return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]))
-}
-
-/** Applique a `c` le template enregistre pour son dossier, s'il y en a un (couleurs, cadre, mise en page, mention). */
-function appliquerGabaritPack(c) {
-  const g = (projet.gabarits ??= {})[(c.dossier || '').trim()]
-  if (!g) return
-  const spec = TYPES[c.type]
-  c.preset = g.preset ?? ''
-  if (spec) appliquerPalette(c, spec, c.preset)
-  // couleurs reglees a la main (« comme la carte actuelle ») : par-dessus, role par role
-  if (spec && g.couleurs) { const roles = new Set(rolesDe(spec)); for (const [r, v] of Object.entries(g.couleurs)) if (roles.has(r)) c.couleurs[r] = v }
-  if (g.cadre) c.cadre = g.cadre
-  if (g.fissures != null) c.fissures = g.fissures
-  if (g.createur) c.contenu.createur = g.createur
-  if (g.centrerTexte != null) c.contenu.centrerTexte = g.centrerTexte
-  if (g.echelleTexte != null) c.contenu.echelleTexte = g.echelleTexte
-}
-
-/** Propose de creer le template quand `c.dossier` est un dossier tout neuf (aucune autre carte dedans, pas de template). */
-function proposerGabaritPack(c) {
-  const dossier = (c.dossier || '').trim()
-  if (!dossier) return
-  if ((projet.gabarits ??= {})[dossier]) return
-  if (projet.cartes.some((x) => x.id !== c.id && (x.dossier || '').trim() === dossier)) return
-  dialogue(`Nouveau dossier « ${dossier} »`,
-    el('div', { class: 'aide' },
-      'Veux-tu lui créer un template maintenant (couleurs, style du cadre, mention du créateur) ? Il s’appliquera à cette carte, et à toutes celles que tu ajouteras ensuite dans ce dossier. Tu pourras le modifier à tout moment depuis le dossier ou la rubrique « Templates ».'),
-    [{ texte: 'Plus tard' }, { texte: 'Créer le template', principal: true, action: () => { ouvrirAssistantTemplate(dossier); return true } }])
-}
-
-/** Le choix du dossier dans un assistant : les dossiers existants en tuiles, ou un nom nouveau. */
-function choixDossier(v, rafraichir, { avecAucun = true } = {}) {
+/** Le choix du dossier dans le wizard : les dossiers existants en tuiles, ou un nom nouveau. */
+function choixDossier(v, rafraichir, { quand = null } = {}) {
   const tuiles = el('div', { class: 'assistant-tuiles' })
-  const existants = dossiersDuProjet()
-  for (const [nom, nb] of existants) {
-    const coul = couleurDuDossier(nom)
+  const existants = listeDossiers()
+  const choisirNom = (nom) => { v.dossier = nom; quand?.(nom) }
+  for (const d of existants) {
+    const g = projet.gabarits?.[d.nom]
+    const coul = g?.couleurs?.left_color ?? g?.couleurs?.background_upper ?? couleurDuPreset(g?.preset) ?? '#3f86e0'
     tuiles.append(el('button', {
-      type: 'button', class: 'tuile-dossier' + (v.dossier === nom ? ' choisie' : ''), style: `--teinte:${coul}`,
-      onclick: () => { v.dossier = nom; rafraichir() },
-    }, el('span', { class: 'tuile-nom' }, '📁 ' + nom), el('small', {}, `${nb} carte(s)` + (projet.gabarits?.[nom] ? ' · template ✓' : ''))))
+      type: 'button', class: 'tuile-dossier' + (v.dossier === d.nom ? ' choisie' : ''), style: `--teinte:${coul}`,
+      onclick: () => { choisirNom(d.nom); rafraichir() },
+    }, el('span', { class: 'tuile-nom' }, '📁 ' + d.nom), el('small', {}, `${d.cartes.length} carte(s)` + (g ? ' · template ✓' : ''))))
   }
-  if (avecAucun) {
-    tuiles.append(el('button', {
-      type: 'button', class: 'tuile-dossier' + (v.dossier === '' ? ' choisie' : ''), style: '--teinte:#3a3d45',
-      onclick: () => { v.dossier = ''; rafraichir() },
-    }, el('span', { class: 'tuile-nom' }, 'Sans dossier'), el('small', {}, 'La carte reste à part')))
-  }
-  const nouveau = el('input', { type: 'text', placeholder: 'ex. Valkyrie', value: existants.some(([n]) => n === v.dossier) ? '' : v.dossier })
-  nouveau.addEventListener('input', () => { v.dossier = nouveau.value.trim(); for (const b of tuiles.children) b.classList.remove('choisie') })
-  return el('div', { class: 'assistant-champ' },
-    existants.length ? el('span', { class: 'assistant-libelle' }, 'Un dossier existant') : null, tuiles,
-    el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Ou un nouveau dossier'), nouveau))
+  const nouveau = el('input', { type: 'text', placeholder: 'ex. Valkyrie', value: existants.some((d) => d.nom === v.dossier) ? '' : (v.dossier ?? '') })
+  nouveau.addEventListener('input', () => { choisirNom(nouveau.value.trim()); for (const b of tuiles.children) b.classList.remove('choisie') })
+  return el('div', { class: 'assistant-pile' },
+    existants.length ? el('div', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Un dossier existant'), tuiles) : null,
+    el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, existants.length ? 'Ou un nouveau dossier' : 'Nom du dossier'), nouveau))
 }
 
-/** Le texte saisi dans une zone simple -> le mini-HTML de la carte (les retours a la ligne restent, les icones [energy] aussi). */
-const versCarte = (txt) => echapper(String(txt ?? '').trim())
-
-// ---------------------------------------------------------------- assistant « Nouvelle carte » (par blocs)
-// 30/10/2026 : l'assistant passe sur TOUT, bloc par bloc (type, dossier, nom et traits, nombres, texte, illustration,
-// couleurs), chaque bloc explique ses champs, et l'apercu a droite montre la carte a chaque saisie. « + Nouvelle »
-// l'ouvre directement ; un lien en bas cree une carte vide sans assistant, pour les habitues.
-
-/** La carte que donnera l'assistant (sert a l'apercu et a la fin). */
-function carteDepuisAssistant(v) {
-  const c = nouvelleCarte(v.type, v.langue)
-  const spec = TYPES[c.type]
-  c.dossier = (v.dossier ?? '').trim()
+const DESCRIPTIONS_TYPES = {
+  ally: 'Combat ou contre le plan à tes côtés.', event: 'Un effet ponctuel, défaussé après usage.',
+  upgrade: 'Reste attachée à ton héros, effet continu ou déclenché.', support: 'Reste en jeu devant toi, effet continu ou déclenché.',
+  resource: 'Attachée pour produire une ressource (ou un effet ponctuel) chaque tour.',
+  'alter-ego': 'Le côté civil du héros : récupération, actions d’alter-ego.',
+  identity: 'La carte d’identité du héros : stats Contrer / Attaquer / Défendre, capacité de héros.',
+  obligation: 'Une obligation mêlée au paquet de rencontre du joueur.',
+  playersidescheme: 'Une manigance annexe qui appartient à un joueur, pas au paquet de rencontre.',
+  villain: 'La carte de stats du méchant (une face).', minion: 'Un sbire de rencontre, qui attaque ou défend.',
+  treachery: 'Un effet de rencontre ponctuel, défaussé après usage.', environment: 'Une carte de rencontre permanente (un lieu, par exemple).',
+  attachment: 'S’attache à un héros ou un sbire, côté rencontre.', sidescheme: 'Une manigance supplémentaire à résoudre en plus de la principale.',
+  main_scheme_a: 'La manigance principale, première face (menace de départ).', main_scheme_b: 'La manigance principale, deuxième face (après son avancée).',
+  'obligation-villain': 'Une obligation pour le paquet du méchant.', 'generic-promo': 'Un gabarit promo générique, horizontal.',
+  'generic-promo-vert': 'Un gabarit promo générique, vertical.', 'alter-ego-promo': 'Une carte alter-ego en promo.',
+  'identity-promo': 'Une carte d’identité de héros en promo.', 'starter-deck': 'La liste d’un paquet de départ (texte seul, pas de stats).',
+}
+/** Change le type d'une carte : couleurs du template du dossier (ou neutres), valeurs propres au type. */
+function changerType(c, type) {
+  c.type = type
+  c.preset = ''
+  appliquerPalette(c, TYPES[type], '')
+  const d = valeursParDefaut(type, c.langue)
+  for (const k of ['phaseLettre']) c.contenu[k] = d[k]
   appliquerGabaritPack(c)
-  if (v.couleursPropres || !projet.gabarits?.[c.dossier]) {
-    c.preset = v.preset ?? ''
-    appliquerPalette(c, spec, c.preset)
-  }
-  const ct = c.contenu
-  ct.titre = (v.titre ?? '').trim()
-  ct.unique = !!v.unique
-  ct.traits = (v.traits ?? '').trim()
-  for (const n of nombresDuType(spec)) if (v['n:' + n.cle] !== undefined) ct[n.cle] = n.conseq ? Number(v['n:' + n.cle]) || 0 : String(v['n:' + n.cle]).trim()
-  if (aElement(spec, 'mainschemephase cost')) ct.phaseNumero = (v.phaseNumero ?? '').trim()
-  if (aElement(spec, 'villainstagenew')) ct.etape = (v.etape ?? '').trim()
-  ct.ligneEnsemble = (v.ligneEnsemble ?? '').trim()
-  ct.regles = versCarte(v.regles)
-  ct.citation = versCarte(v.citation)
-  if (v.art) c.art.blob = v.art
-  return c
 }
 
-function ouvrirAssistantCarte(dossierDepart) {
-  const depart = {
-    type: carte()?.type ?? 'ally',
-    langue: carte()?.langue ?? 'en',
-    dossier: dossierDepart ?? (dossierVu && dossierVu !== SANS_DOSSIER ? dossierVu : ''),
-  }
-  const etapes = (v) => {
-    const spec = TYPES[v.type]
+// ---------------------------------------------------------------- wizard « Nouvelle carte »
+// La carte se construit pour de bon (en brouillon, invisible des listes et jamais enregistree) : les etapes reutilisent donc
+// exactement les memes champs que le formulaire, et l'apercu est la vraie scene (on y glisse l'image, molette pour zoomer).
+function ouvrirWizardCarte(dossierDepart = null) {
+  const avant = projet.courante
+  const langue = carte()?.langue ?? 'en'
+  const dossier0 = dossierDepart ?? (vue === 'editeur' && dossierOuvert ? dossierOuvert : DIVERS)
+  const c = nouvelleCarte('ally', langue)
+  c.brouillon = true
+  c.dossier = dossier0
+  appliquerGabaritPack(c)
+  projet.cartes.push(c)
+  projet.courante = c.id
+  construireFormulaire()
+  const pile = (...n) => el('div', { class: 'assistant-pile' }, ...n.flat().filter(Boolean))
+  const etapes = () => {
+    const spec = TYPES[c.type]
     const e = []
     e.push({
       titre: 'Quel type de carte ?', court: 'Type',
-      aide: 'Le type fixe le cadre et les cases de la carte (coût, stats, menace…). Les étapes suivantes ne te demanderont que ce qui existe sur ce type. Tu pourras encore le changer plus tard.',
+      aide: 'Le type fixe le cadre et les cases de la carte.',
+      plus: 'Le type fixe le cadre et les cases de la carte (coût, stats, menace…). Les étapes suivantes ne te demanderont que ce qui existe sur ce type. Tu pourras encore le changer plus tard dans l’éditeur.',
       construire: (v, rafraichir) => {
         const zone = el('div', { style: 'display:flex;flex-direction:column;gap:10px' })
         for (const [titreGroupe, ids] of GROUPES) {
           const boutons = el('div', { class: 'assistant-types' },
             ...ids.filter((id) => TYPES[id]).map((id) => el('button', {
-              class: 'btn petit' + (v.type === id ? ' principal' : ''), type: 'button',
-              onclick: () => { v.type = id; rafraichir() },
-            }, el('div', { style: 'font-weight:600' }, NOMS[id] ?? id), el('div', { class: 'aide' }, DESCRIPTIONS_TYPES[id] ?? ''))))
+              class: 'btn petit' + (c.type === id ? ' principal' : ''), type: 'button',
+              onclick: () => { changerType(c, id); changement(); rafraichir() },
+            }, el('b', {}, NOMS[id] ?? id), el('span', {}, DESCRIPTIONS_TYPES[id] ?? ''))))
           zone.append(el('h4', { class: 'assistant-groupe' }, titreGroupe), boutons)
         }
         return zone
       },
     })
     e.push({
-      titre: 'Dans quel dossier ?', court: 'Dossier',
-      aide: 'Un dossier regroupe les cartes d’un même héros (ou d’un même set de rencontre). Si le dossier a un template, la carte en prend tout de suite les couleurs, le style du cadre et la mention du créateur. Pour un héros tout neuf (identité, alter-ego, némésis…), le bouton « + Nouveau héros » crée tout le dossier d’un coup.',
-      construire: (v, rafraichir) => choixDossier(v, rafraichir),
+      titre: 'Dans quel dossier ?', court: 'Dossier', passable: true,
+      aide: 'Une carte est toujours rangée dans un dossier.',
+      plus: 'Un dossier regroupe les cartes d’un même héros (ou d’un même scénario ou set modulaire). S’il a un template, la carte en prend tout de suite les couleurs, le style du cadre et la mention du créateur.',
+      construire: (v, rafraichir) => { v.dossier ??= c.dossier; return choixDossier(v, rafraichir, { quand: (nom) => { c.dossier = nom || DIVERS; appliquerGabaritPack(c); changement() } }) },
+      valider: () => ((c.dossier || '').trim() ? undefined : 'Choisis ou nomme un dossier.'),
     })
-    const nomTraits = [
-      (v) => champAssistant(v, 'titre', 'Nom de la carte', 'Écrit en haut de la carte, tel quel.', { exemple: 'ex. Bifrost' }),
-      (v) => caseAssistant(v, 'unique', 'Carte unique (✦)', 'Un seul exemplaire en jeu à la fois : le symbole ✦ s’ajoute devant le nom (personnages, lieux célèbres…).'),
-    ]
-    if (aElement(spec, 'traits')) nomTraits.push((v) => champAssistant(v, 'traits', 'Traits', 'Les mots-clés en italique sous l’illustration, séparés par des points. D’autres cartes s’y réfèrent (« chaque allié Avenger… »).', { exemple: 'ex. Asgard. Avenger.' }))
     e.push({
       titre: 'Nom et traits', court: 'Nom',
-      aide: 'Ce qui identifie la carte.',
-      construire: (v) => el('div', { class: 'assistant-pile' }, ...nomTraits.map((f) => f(v))),
-      valider: (v) => (String(v.titre ?? '').trim() ? undefined : 'Donne un nom à la carte.'),
+      aide: 'Ce qui identifie la carte : son nom, ses traits.',
+      plus: 'Le nom est écrit tel quel en haut de la carte. « Carte unique » ajoute le symbole ✦ (un seul exemplaire en jeu à la fois). Les traits sont les mots-clés en italique sous l’illustration, séparés par des points ; d’autres cartes s’y réfèrent (« chaque allié Avenger… »).',
+      construire: () => pile(blocTitre(spec)),
+      valider: () => ((c.contenu.titre ?? '').trim() ? undefined : 'Donne un nom à la carte.'),
     })
-    const nombres = nombresDuType(spec)
-    const avecPhase = aElement(spec, 'mainschemephase cost')
-    const avecEtape = aElement(spec, 'villainstagenew')
-    if (nombres.length || avecPhase || avecEtape || aElement(spec, 'set-line')) {
+    const N = blocNombres(spec)
+    const L = blocLigne(c, spec).filter((n) => !n.querySelector?.('[data-champ=titre]'))
+    if (N.length || L.length) {
       e.push({
-        titre: 'Les nombres', court: 'Nombres',
-        aide: 'Chaque case explique à quoi sert le nombre. Laisse vide ce que tu ne veux pas afficher ; « X » ou « — » sont acceptés. Les options plus rares (★, par joueur, icônes de boost, ressources) sont dans le formulaire, rubriques « Nombres » et « Boost et ressources ».',
-        construire: (v) => {
-          const pile = el('div', { class: 'assistant-pile' })
-          for (const n of nombres) {
-            if (n.conseq) {
-              v['n:' + n.cle] ??= 0
-              const s = el('select', {}, [0, 1, 2, 3, 4, 5].map((k) => el('option', { value: k }, k)))
-              s.value = String(v['n:' + n.cle])
-              s.addEventListener('change', () => { v['n:' + n.cle] = Number(s.value) })
-              pile.append(el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, n.label), s, el('small', { class: 'aide' }, n.aide)))
-            } else pile.append(champAssistant(v, 'n:' + n.cle, n.label, n.aide))
-          }
-          if (avecPhase) pile.append(champAssistant(v, 'phaseNumero', 'Numéro de la manigance', 'L’ordre de la manigance dans le scénario (1, 2, 3…).', { exemple: 'ex. 1' }))
-          if (avecEtape) pile.append(champAssistant(v, 'etape', 'Étape du méchant', 'I, II, III (ou A, B…) : la carte méchant de chaque étape.', { exemple: 'ex. I' }))
-          if (aElement(spec, 'set-line')) {
-            const heros = ['identity', 'alter-ego'].includes(v.type)
-            pile.append(champAssistant(v, 'ligneEnsemble', 'Ligne du bas',
-              heros ? 'Sur une identité ou un alter-ego : la taille de main et les points de vie du héros.' : 'Le nom du set et le numéro de la carte dans le set.',
-              { exemple: heros ? TEXTES[v.langue].ligneEnsemble(6, 10) : 'ex. Valkyrie (3/15)' }))
-          }
-          return pile
-        },
+        titre: 'Les nombres', court: 'Nombres', passable: true,
+        aide: 'Coût, stats, points de vie : laisse vide ce que tu ne veux pas afficher.',
+        plus: '« X » ou « — » sont acceptés. La case ★ ajoute une étoile au nombre ; « par joueur » multiplie la valeur par le nombre de joueurs. Chaque champ a sa propre bulle « ? ».',
+        construire: () => pile(N.map((n) => avecAide(n.noeud, n.aide)), L),
+      })
+    }
+    const R = blocBoost(c, spec)
+    if (R.length) {
+      e.push({
+        titre: 'Boost et ressources', court: 'Boost', passable: true,
+        aide: 'Les icônes de boost et les ressources produites par la carte.',
+        plus: 'Les icônes de boost sont celles qu’on retourne pendant l’attaque d’un ennemi ; les ressources (énergie, mental, physique, joker) sont celles que la carte produit quand on la défausse pour payer.',
+        construire: () => pile(R),
       })
     }
     if (aElement(spec, 'rules') || aElement(spec, 'quote')) {
       e.push({
-        titre: 'Le texte', court: 'Texte',
-        aide: 'Le texte de règles dit ce que fait la carte ; la citation est une phrase d’ambiance en italique, sans effet. Écris simplement ici : le gras, l’italique, les icônes de ressource et les mots-clés officiels (Action, Renfort…) s’ajoutent ensuite dans le formulaire, rubrique « Texte », avec le bouton « Styles » ou en tapant « / ».',
-        construire: (v) => el('div', { class: 'assistant-pile' },
-          aElement(spec, 'rules') ? champAssistant(v, 'regles', 'Texte de règles', 'Une capacité par ligne.', { long: true, lignes: 5, exemple: 'ex. Action : inflige 2 dégâts à un ennemi.' }) : null,
-          aElement(spec, 'quote') ? champAssistant(v, 'citation', 'Citation (facultative)', 'Une réplique du personnage, ou une phrase d’ambiance.', { long: true, lignes: 2 }) : null),
+        titre: 'Le texte', court: 'Texte', passable: true,
+        aide: 'Les règles et la citation, avec la mise en forme complète.',
+        plus: 'Sélectionne un passage pour le mettre en gras, en italique ou en couleur. « Styles » donne les mots-clés officiels (Action, Renfort…) ; taper « / » dans le texte ouvre le même menu. Les boutons d’icônes insèrent les ressources et symboles du jeu.',
+        construire: () => pile(blocRegles(c, spec)),
       })
     }
     e.push({
-      titre: 'L’illustration', court: 'Image',
-      aide: 'L’image placée derrière le cadre. Prends-la assez grande (au moins 750 × 1050 pixels) pour qu’elle reste nette à l’impression. Une fois la carte créée, tu la déplaces en la glissant sur l’aperçu et tu zoomes à la molette. Facultatif : tu peux l’ajouter plus tard.',
+      titre: 'L’illustration', court: 'Image', passable: true,
+      aide: 'L’image derrière le cadre : choisis-la, puis place-la sur l’aperçu.',
+      plus: 'Prends une image d’au moins 750 × 1050 pixels pour qu’elle reste nette à l’impression. Glisse sur l’aperçu pour la déplacer, molette pour zoomer ; « Détourer / recadrer » enlève un fond. Le premier plan est une image posée devant le cadre.',
+      construire: () => { ciblePointeur = 'art'; majAide(); return pile(boiteImage('Image derrière la carte', (x) => x.art, 'art'), el('details', {}, el('summary', {}, 'Premier plan (devant le cadre)'), el('div', { class: 'contenu' }, boiteImage('Premier plan', (x) => x.artDevant, 'artDevant')))) },
+    })
+    if (rolesDe(spec).length) {
+      e.push({
+        titre: 'Les couleurs', court: 'Couleurs', passable: true,
+        aide: 'Les couleurs du cadre : une pastille, ou un picker par couleur.',
+        plus: 'Les pastilles de raccourci colorent tout le cadre d’un coup (aspects du jeu). Les pickers règlent chaque couleur : pastille cliquable, code hexadécimal et pipette pour prendre une couleur à l’écran. « Plus de couleurs » donne les réglages fins. Sans choix, la carte prend les couleurs du template du dossier.',
+        construire: () => pile(blocCouleurs(c, spec, { apres: (r) => r && reconstruireEtape() })),
+      })
+    }
+    e.push({
+      titre: 'Le style du cadre', court: 'Cadre', passable: true,
+      aide: 'Officiel, sombre ou pleine illustration : clique sur ta carte.',
+      plus: '« Officiel » est le cadre du jeu, dans tes couleurs. « Sombre » le remplace par un gris-bleu foncé à accents dorés. « Pleine illustration » enlève le cadre : l’image remplit la carte et le texte repose sur des panneaux translucides.',
       construire: (v, rafraichir) => {
-        const f = el('input', { type: 'file', accept: 'image/*' })
-        f.addEventListener('change', () => { v.art = f.files[0] ?? null; rafraichir() })
-        return el('div', { class: 'assistant-pile' }, el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Image'), f),
-          v.art ? el('div', { class: 'rang' }, el('span', { class: 'aide' }, '✓ ' + (v.art.name ?? 'image choisie')), el('button', { class: 'btn petit fixe', type: 'button', onclick: () => { v.art = null; rafraichir() } }, 'Retirer')) : null)
+        const rangee = el('div', { class: 'vignettes-cadre' })
+        for (const [id, nom] of CADRES) {
+          const t = el('canvas')
+          rendreCarte({ ...cloner(c), cadre: id }).then((r) => { t.width = r.width; t.height = r.height; t.getContext('2d').drawImage(r, 0, 0) }).catch(() => {})
+          rangee.append(el('button', { type: 'button', class: 'vignette-cadre' + ((c.cadre ?? 'officiel') === id ? ' choisie' : ''), onclick: () => { c.cadre = id; changement(); rafraichir() } }, t, el('span', {}, nom)))
+        }
+        return pile(rangee, TYPES_SANS_FISSURES.has(c.type) ? coche('Fissures dans le cadre', (x) => x, 'fissures') : null)
       },
     })
     e.push({
-      titre: 'Les couleurs', court: 'Couleurs',
-      aide: 'Les couleurs du cadre. Sans choix, le cadre reste neutre (gris).',
+      titre: 'Les calques PNG', court: 'Calques', passable: true,
+      aide: 'Des images libres posées par-dessus la carte.',
+      plus: 'Un calque est une image PNG (logo, effet, icône) que tu poses sur la carte, déplaces à la souris, redimensionnes, tournes ou masques. Tu peux aussi glisser des images directement sur l’aperçu. Les calques se gèrent ensuite dans la rubrique « Calques PNG » du formulaire.',
       construire: (v, rafraichir) => {
-        const g = projet.gabarits?.[(v.dossier ?? '').trim()]
-        const pile = el('div', { class: 'assistant-pile' })
-        if (g) {
-          pile.append(el('p', { class: 'aide' }, `Le dossier « ${v.dossier} » a un template : la carte en prend les couleurs (${g.preset === OFFICIEL ? tr('couleurs d’origine') : g.preset ? joliNom(g.preset) : tr('neutre')}). Coche la case pour en choisir d’autres pour cette carte seulement.`))
-          const i = el('input', { type: 'checkbox' })
-          i.checked = !!v.couleursPropres
-          i.addEventListener('change', () => { v.couleursPropres = i.checked; rafraichir() })
-          pile.append(el('label', { class: 'ligne' }, i, 'D’autres couleurs pour cette carte'))
-          if (!v.couleursPropres) return pile
-        }
-        const s = optionsPalette(spec)
-        s.value = v.preset ?? ''
-        s.addEventListener('change', () => { v.preset = s.value })
-        pile.append(el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Couleurs'), s,
-          el('small', { class: 'aide' }, 'Un aspect (Justice, Protection…) colore tout le cadre d’une seule teinte ; la palette d’un héros ou d’un méchant du jeu reprend ses couleurs. Le détail, couleur par couleur, est dans le formulaire, rubrique « Couleurs ».')))
-        return pile
+        const f = el('input', { type: 'file', accept: 'image/*', multiple: true, hidden: true })
+        f.addEventListener('change', async () => { if (f.files.length) { await ajouterFichiers([...f.files]); rafraichir() } })
+        return pile(el('div', { class: 'rang', style: 'align-items:center' }, el('button', { class: 'btn', type: 'button', onclick: () => f.click() }, 'Ajouter une image'), f,
+          el('span', { class: 'aide' }, `${c.libres?.length ?? 0} calque(s) sur la carte`)))
       },
+    })
+    e.push({
+      titre: 'Le dos de la carte', court: 'Dos', passable: true,
+      aide: 'Choisi automatiquement selon le type ; change-le si besoin.',
+      plus: 'Une carte joueur a le dos des cartes joueur, une carte de rencontre le dos des cartes rencontre. Tu peux aussi choisir une autre carte comme autre face (identité et alter-ego) ou ta propre image, nette à l’impression.',
+      construire: () => { dosAutomatique(c); changement(); return pile(blocDos(c)) },
     })
     e.push({
       titre: 'C’est prêt', court: 'Fin',
-      aide: 'La carte va s’ouvrir dans le formulaire, toutes rubriques repliées : ouvre seulement celle dont tu as besoin pour les finitions (mise en forme du texte, ★, calques PNG, dos de la carte, style du cadre).',
-      construire: (v) => el('ul', { style: 'margin:0;padding-left:18px' },
-        el('li', {}, `Type : ${tr(NOMS[v.type] ?? v.type)}`), el('li', {}, `Titre : ${String(v.titre ?? '').trim()}`), el('li', {}, `Dossier : ${String(v.dossier ?? '').trim() || tr('(aucun)')}`)),
+      aide: 'La carte s’ouvre dans l’éditeur, rubriques repliées, pour les finitions.',
+      construire: () => el('ul', { style: 'margin:0;padding-left:18px' },
+        el('li', {}, `Type : ${tr(NOMS[c.type] ?? c.type)}`), el('li', {}, `Titre : ${(c.contenu.titre ?? '').trim()}`), el('li', {}, `Dossier : ${c.dossier}`)),
     })
     return e
   }
-  lancerAssistant('Nouvelle carte', etapes, (v) => {
-    const c = carteDepuisAssistant(v)
-    ajouter(c)
-    if (c.dossier) dossierVu = c.dossier
-    majListe()
-    proposerGabaritPack(c)
+  const retirer = () => { projet.cartes = projet.cartes.filter((x) => x !== c) }
+  lancerAssistant('Nouvelle carte', etapes, () => {
+    dosAutomatique(c)
+    delete c.brouillon
+    creerDossier(c.dossier, genreInfere(c.dossier))
+    ouvrirDossier(c.dossier, c.id)
+    sauvegarderPlusTard()
   }, {
-    valeurs: depart,
-    apercu: (v) => carteDepuisAssistant(v),
-    pied: (fermer) => el('button', {
-      class: 'lien', type: 'button',
-      onclick: () => { const c = nouvelleCarte(depart.type, depart.langue); c.dossier = depart.dossier; appliquerGabaritPack(c); ajouter(c); fermer() },
-    }, 'Créer une carte vide, sans assistant'),
+    scene: true,
+    annuler: () => {
+      retirer()
+      projet.courante = projet.cartes.some((x) => x.id === avant) ? avant : null
+      if (vue === 'editeur') ouvrirDossier(dossierOuvert, projet.courante && carte()?.dossier === dossierOuvert ? projet.courante : null)
+    },
+    pied: (fermer) => el('button', { class: 'lien', type: 'button', onclick: () => { c.contenu.titre ||= ''; delete c.brouillon; creerDossier(c.dossier, genreInfere(c.dossier)); const id = c.id; fermer(); ouvrirDossier(c.dossier, id); sauvegarderPlusTard() } }, 'Créer une carte vide, sans wizard'),
   })
 }
 
-// ---------------------------------------------------------------- assistant « Nouveau héros »
-// 30/10/2026 : un heros = un dossier, son template, et ses cartes de base deja creees (identite, alter-ego, et sur
-// demande sa nemesis, la manigance annexe de la nemesis et son obligation), pretes a remplir.
+// ---------------------------------------------------------------- wizards de dossier : fabrique de cartes
+/** Des cartes toutes neuves pour un dossier, avec son template. specs = [{ type, titre?, apres?(c) }]. */
+function fabriquerCartes(dossier, langue, specs) {
+  const cartes = []
+  for (const s of specs) {
+    const c = nouvelleCarte(s.type, langue)
+    c.dossier = dossier
+    appliquerGabaritPack(c)
+    if (s.titre) c.contenu.titre = s.titre
+    s.apres?.(c)
+    dosAutomatique(c)
+    cartes.push(c)
+  }
+  return cartes
+}
+const GABARIT_ETAPE = (v) => ({ preset: v.pseudo.preset ?? '', couleurs: { ...v.pseudo.couleurs }, cadre: v.cadre ?? 'officiel', fissures: true, createur: v.createur ?? '', centrerTexte: !!v.centrer, echelleTexte: 0 })
+/** Les etapes « template » communes aux wizards de dossier : couleurs, cadre et mise en page, mention. */
+function etapesTemplate(specDuTemplate, langue) {
+  return [
+    {
+      titre: 'Les couleurs du template', court: 'Couleurs', passable: true,
+      aide: 'Les couleurs communes à toutes les cartes du dossier.',
+      plus: 'Une pastille colore tout le cadre d’un coup ; les pickers règlent chaque couleur (pastille cliquable, code hexadécimal, pipette). « Plus de couleurs » donne les réglages fins. Tu pourras tout retoucher plus tard dans le panneau « Template du dossier ».',
+      construire: (v, rafraichir) => {
+        v.pseudo ??= { id: '_tpl', type: Object.keys(TYPES).find((k) => TYPES[k] === specDuTemplate), dossier: '', couleurs: couleursNeutres(specDuTemplate), preset: '', couleursPerso: false }
+        return el('div', { class: 'assistant-pile' }, ...blocCouleurs(v.pseudo, specDuTemplate, { origineVisible: false, quand: () => {}, apres: (r) => r && rafraichir() }))
+      },
+    },
+    {
+      titre: 'Le cadre et la mise en page', court: 'Cadre', passable: true,
+      aide: 'Style du cadre et centrage du texte, pour tout le dossier.',
+      plus: '« Officiel » : le cadre du jeu. « Sombre » : gris-bleu foncé à accents dorés. « Pleine illustration » : pas de cadre. Centrer le texte verticalement convient aux cartes à texte court, comme beaucoup de cartes officielles.',
+      construire: (v) => {
+        v.cadre ??= 'officiel'
+        const s = el('select', {}, CADRES.map(([k, n]) => el('option', { value: k }, n)))
+        s.value = v.cadre
+        s.addEventListener('change', () => { v.cadre = s.value })
+        return el('div', { class: 'assistant-pile' }, el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Style du cadre'), s), caseAssistant(v, 'centrer', 'Centrer le texte des règles verticalement', ''))
+      },
+    },
+    {
+      titre: 'La mention du créateur', court: 'Mention', passable: true,
+      aide: 'La petite ligne en bas de chaque carte : ton nom ou ton pseudo.',
+      construire: (v) => champAssistant(v, 'createur', 'Mention', '', { defaut: TEXTES[langue].createur }),
+    },
+  ]
+}
+/** Un template provisoire (valeurs du wizard) sur une carte, pour l'apercu. */
+function apercuTemplate(v, type, langue, titre) {
+  const c = nouvelleCarte(type, langue)
+  if (v.pseudo) { c.couleurs = { ...v.pseudo.couleurs }; c.preset = v.pseudo.preset }
+  if (v.cadre) c.cadre = v.cadre
+  if (v.createur !== undefined) c.contenu.createur = v.createur
+  c.contenu.centrerTexte = !!v.centrer
+  c.contenu.titre = titre ?? ''
+  return c
+}
+function finDossier(nom, genre, v, cartes) {
+  creerDossier(nom, genre)
+  ;(projet.gabarits ??= {})[nom] = GABARIT_ETAPE(v.pseudo ? v : { ...v, pseudo: { preset: '', couleurs: {} } })
+  const faites = cartes()
+  projet.cartes.push(...faites)
+  sauvegarderPlusTard()
+  message(`Dossier « ${nom} » créé : ${faites.length} carte(s).`)
+  ouvrirDossier(nom, (faites.find((c) => c.type === 'identity' || c.type === 'villain') ?? faites[0])?.id ?? null)
+}
+
+// ---------------------------------------------------------------- wizard « Nouveau héros »
 const CARTES_HEROS = [
   ['nemesis', 'minion', 'Sa némésis (un sbire)', 'L’ennemi juré du héros : elle entre en jeu avec la manigance annexe de la némésis.'],
-  ['manigance', 'sidescheme', 'La manigance annexe de la némésis', 'Révélée quand la némésis arrive (« Le méchant fait sa manigance… »).'],
+  ['manigance', 'sidescheme', 'La manigance annexe de la némésis', 'Révélée quand la némésis arrive.'],
   ['obligation', 'obligation', 'Son obligation', 'Le problème personnel de l’alter-ego, mêlé au paquet de rencontre.'],
 ]
-function ouvrirAssistantHeros() {
+const PAQUET_HEROS = ['ally', 'ally', 'ally', 'event', 'event', 'event', 'event', 'event', 'upgrade', 'upgrade', 'upgrade', 'support', 'support', 'resource', 'resource']
+const TYPES_PAQUET = ['ally', 'event', 'upgrade', 'support', 'resource']
+function ouvrirWizardHeros(nomDepart = '') {
   const langue = carte()?.langue ?? 'en'
   const cartesHeros = (v) => {
-    const cartes = []
-    const id = nouvelleCarte('identity', langue)
-    id.contenu.titre = (v.nom ?? '').trim()
-    const ae = nouvelleCarte('alter-ego', langue)
-    ae.contenu.titre = (v.alterEgo ?? '').trim()
-    cartes.push(id, ae)
-    for (const [cle, type] of CARTES_HEROS) if (v[cle]) cartes.push(nouvelleCarte(type, langue))
-    for (const c of cartes) {
-      c.dossier = (v.nom ?? '').trim()
-      c.preset = v.preset ?? ''
-      appliquerPalette(c, TYPES[c.type], c.preset)
-      if (v.createur) c.contenu.createur = v.createur
-    }
-    // l'identite et l'alter-ego sont les deux faces d'une meme carte
-    id.verso = { mode: 'carte', carteId: ae.id, blob: null }
-    ae.verso = { mode: 'carte', carteId: id.id, blob: null }
+    const nom = (v.nom ?? '').trim()
+    const specs = [{ type: 'identity', titre: nom }, { type: 'alter-ego', titre: (v.alterEgo ?? '').trim() }]
+    for (const [cle, type] of CARTES_HEROS) if (v[cle]) specs.push({ type })
+    ;(v.paquet ?? PAQUET_HEROS).forEach((type) => { if (type) specs.push({ type }) })
+    return specs
+  }
+  const fabriquer = (v) => {
+    const nom = (v.nom ?? '').trim()
+    const g = GABARIT_ETAPE(v.pseudo ? v : { ...v, pseudo: { preset: '', couleurs: {} } })
+    const sauve = projet.gabarits?.[nom]
+    ;(projet.gabarits ??= {})[nom] = g
+    const cartes = fabriquerCartes(nom, langue, cartesHeros(v))
+    if (sauve) projet.gabarits[nom] = sauve; else delete projet.gabarits[nom]
+    const [id, ae] = cartes
+    id.verso = { mode: 'carte', carteId: ae.id, blob: null, choisi: true }
+    ae.verso = { mode: 'carte', carteId: id.id, blob: null, choisi: true }
     return cartes
   }
   const etapes = [
     {
-      titre: 'Un héros, c’est un dossier', court: 'Nom',
-      aide: 'Je vais créer un dossier au nom du héros, son template (les couleurs et la mention communes à toutes ses cartes), puis ses cartes de base, prêtes à remplir. Les autres cartes (son paquet de départ, ses alliés…) s’ajouteront ensuite dans le dossier avec « + Nouvelle ».',
+      titre: 'Un héros, c’est un dossier', court: 'Noms',
+      aide: 'Le nom du héros et celui de son alter-ego.',
+      plus: 'Je vais créer un dossier au nom du héros, son template (les couleurs et la mention communes à toutes ses cartes), puis ses cartes de base et les 15 cartes de son paquet, prêtes à remplir. Les deux noms s’affichent sur la tuile du dossier.',
       construire: (v) => el('div', { class: 'assistant-pile' },
-        champAssistant(v, 'nom', 'Nom du héros', 'Le nom de super-héros : il sert aussi de nom au dossier et au titre de la carte d’identité.', { exemple: 'ex. Valkyrie' }),
-        champAssistant(v, 'alterEgo', 'Nom de l’alter-ego', 'Son identité civile, écrite sur l’autre face.', { exemple: 'ex. Brunnhilde' })),
+        champAssistant(v, 'nom', 'Nom du héros', 'Le nom de super-héros : il sert aussi de nom au dossier et de titre à la carte d’identité.', { exemple: 'ex. Valkyrie', defaut: nomDepart }),
+        champAssistant(v, 'alterEgo', 'Nom de l’alter-ego', 'Son identité civile, écrite sur l’autre face de la carte.', { exemple: 'ex. Brunnhilde' })),
       valider: (v) => {
-        const nom = String(v.nom ?? '').trim()
+        const nom = (v.nom ?? '').trim()
         if (!nom) return 'Donne un nom au héros.'
-        if (dossiersDuProjet().some(([d]) => d === nom)) return 'Un dossier porte déjà ce nom : choisis-en un autre, ou ajoute tes cartes dans ce dossier avec « + Nouvelle ».'
+        if (listeDossiers().some((d) => d.nom === nom)) return 'Un dossier porte déjà ce nom : choisis-en un autre.'
       },
     },
+    ...etapesTemplate(TYPES.identity, langue),
     {
-      titre: 'Ses couleurs', court: 'Couleurs',
-      aide: 'Les couleurs du cadre, communes à toutes les cartes du héros. Pars d’une palette proche de ton héros (ou du gris neutre) ; tu affineras couleur par couleur dans le formulaire, rubrique « Couleurs ».',
-      construire: (v) => {
-        const s = optionsPalette(TYPES.identity)
-        v.preset ??= ''
-        s.value = v.preset
-        s.addEventListener('change', () => { v.preset = s.value })
-        return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Couleurs'), s)
-      },
-    },
-    {
-      titre: 'La mention du créateur', court: 'Mention',
-      aide: 'La petite ligne en bas de chaque carte : ton nom ou ton pseudo. Elle sera la même sur toutes les cartes du héros.',
-      construire: (v) => champAssistant(v, 'createur', 'Mention', '', { defaut: TEXTES[langue].createur }),
-    },
-    {
-      titre: 'Les cartes à créer', court: 'Cartes',
-      aide: 'L’identité et l’alter-ego sont toujours créés : ce sont les deux faces de la carte du héros (je les relie l’une à l’autre comme recto et verso). Coche ce que tu veux en plus.',
+      titre: 'Les cartes de base', court: 'Base', passable: true,
+      aide: 'L’identité et l’alter-ego sont toujours créés ; coche le reste.',
+      plus: 'L’identité et l’alter-ego sont les deux faces de la carte du héros : je les relie l’une à l’autre comme recto et verso. La némésis, sa manigance annexe et l’obligation sont des cartes de rencontre propres au héros.',
       construire: (v) => el('div', { class: 'assistant-pile' },
         el('label', { class: 'ligne' }, el('input', { type: 'checkbox', checked: true, disabled: true }), el('span', { class: 'assistant-libelle' }, 'Identité de héros + alter-ego')),
         ...CARTES_HEROS.map(([cle, , label, aide]) => caseAssistant(v, cle, label, aide, true))),
     },
     {
+      titre: 'Les 15 cartes du paquet', court: '15 cartes', passable: true,
+      aide: 'Un type par emplacement ; elles sont créées vides.',
+      plus: 'Le paquet de départ d’un héros compte 15 cartes qui lui sont propres. Choisis le type de chacune (allié, événement, amélioration, soutien, ressource) ou « Aucune » pour ne pas la créer. Tu les rempliras une à une dans l’éditeur.',
+      construire: (v) => {
+        v.paquet ??= [...PAQUET_HEROS]
+        const grille = el('div', { class: 'quinze' })
+        v.paquet.forEach((type, k) => {
+          const s = el('select', {}, el('option', { value: '' }, 'Aucune'), ...TYPES_PAQUET.map((t) => el('option', { value: t }, NOMS[t])))
+          s.value = type
+          s.addEventListener('change', () => { v.paquet[k] = s.value })
+          grille.append(el('label', {}, el('span', {}, String(k + 1)), s))
+        })
+        return grille
+      },
+    },
+    {
       titre: 'C’est prêt', court: 'Fin',
-      aide: 'Le dossier s’ouvre dans la colonne « Cartes », avec la carte d’identité choisie. Remplis chaque carte dans le formulaire.',
-      construire: (v) => el('ul', { style: 'margin:0;padding-left:18px' },
-        el('li', {}, `Dossier : ${String(v.nom).trim()}`),
-        ...cartesHeros(v).map((c) => el('li', {}, `${tr(NOMS[c.type] ?? c.type)}${c.contenu.titre ? ' : ' + c.contenu.titre : ''}`))),
+      aide: 'Le dossier s’ouvre, avec la carte d’identité choisie.',
+      construire: (v) => {
+        const cartes = cartesHeros(v)
+        const nb = (t) => cartes.filter((c) => c.type === t).length
+        return el('ul', { style: 'margin:0;padding-left:18px' },
+          el('li', {}, `Dossier : ${(v.nom ?? '').trim()}`), el('li', {}, `${cartes.length} carte(s) : identité, alter-ego${CARTES_HEROS.some(([k]) => v[k]) ? ', cartes de base' : ''}, ${cartes.length - 2 - CARTES_HEROS.filter(([k]) => v[k]).length} cartes du paquet`),
+          ...TYPES_PAQUET.filter((t) => nb(t)).map((t) => el('li', {}, `${NOMS[t]} : ${nb(t)}`)))
+      },
     },
   ]
-  lancerAssistant('Nouveau héros', etapes, (v) => {
-    const nom = v.nom.trim()
-    ;(projet.gabarits ??= {})[nom] = { preset: v.preset ?? '', cadre: 'officiel', fissures: true, createur: v.createur ?? '', centrerTexte: false, echelleTexte: 0 }
-    const cartes = cartesHeros(v)
-    projet.cartes.push(...cartes)
-    dossierVu = nom
-    choisir(cartes[0].id)
-    message(`Héros « ${nom} » créé : ${cartes.length} carte(s).`)
-  }, {
-    apercu: (v) => {
-      const c = nouvelleCarte('identity', langue)
-      c.contenu.titre = (v.nom ?? '').trim()
-      c.preset = v.preset ?? ''
-      appliquerPalette(c, TYPES.identity, c.preset)
-      if (v.createur !== undefined) c.contenu.createur = v.createur
-      return c
-    },
-  })
+  lancerAssistant('Nouveau héros', etapes, (v) => finDossier(v.nom.trim(), 'heros', v, () => fabriquer(v)),
+    { valeurs: { nom: nomDepart }, apercu: (v) => apercuTemplate(v, 'identity', langue, (v.nom ?? '').trim()) })
 }
 
-// ---------------------------------------------------------------- assistant « Template »
-// 30/10/2026 : un seul mot, « Template ». Le template d'un dossier = son apparence commune (couleurs, style du
-// cadre, mise en page, mention), appliquee a chaque nouvelle carte du dossier ; on peut y joindre une carte de
-// depart complete (l'ancien « modele »), proposee dans la liste des templates.
-function ouvrirAssistantTemplate(dossierDepart) {
-  const c = carte()
-  const etapes = (v) => {
-    const spec = TYPES[v.type] ?? TYPES.ally
-    return [
-      {
-        titre: 'À quoi sert un template ?', court: 'Dossier',
-        aide: 'Un template garde l’apparence commune à toutes les cartes d’un dossier : couleurs, style du cadre, mise en page du texte et mention du créateur. Chaque nouvelle carte du dossier le prend automatiquement. Choisis le dossier concerné.',
-        construire: (v, rafraichir) => choixDossier(v, rafraichir, { avecAucun: false }),
-        valider: (v) => (String(v.dossier ?? '').trim() ? undefined : 'Choisis ou nomme un dossier.'),
-      },
-      {
-        titre: 'Les couleurs', court: 'Couleurs',
-        aide: 'Neutre (gris), les couleurs d’origine du cadre du jeu, un aspect, ou la palette d’un héros ou d’un méchant existant. « Comme la carte actuelle » reprend exactement ses couleurs, y compris celles réglées à la main.',
-        construire: (v) => {
-          const s = optionsPalette(spec)
-          if (c) s.prepend(el('option', { value: '__carte' }, 'Comme la carte actuelle'))
-          s.value = v.preset
-          s.addEventListener('change', () => { v.preset = s.value })
-          return el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Couleurs'), s)
-        },
-      },
-      {
-        titre: 'Le style du cadre', court: 'Cadre',
-        aide: '« Officiel » : le cadre du jeu, dans les couleurs choisies. « Sombre » : gris-bleu foncé avec des accents dorés. « Pleine illustration » : pas de cadre, l’image remplit la carte et le texte repose sur des panneaux translucides.',
-        construire: (v) => {
-          const s = el('select', {}, [['officiel', 'Officiel (gabarit du jeu)'], ['sombre', 'Cadre sombre'], ['illustration', 'Pleine illustration (sans cadre)']].map(([k, n]) => el('option', { value: k }, n)))
-          s.value = v.cadre
-          s.addEventListener('change', () => { v.cadre = s.value })
-          return el('div', { class: 'assistant-pile' }, el('label', { class: 'assistant-champ' }, el('span', { class: 'assistant-libelle' }, 'Style'), s),
-            caseAssistant(v, 'fissures', 'Fissures dans le cadre', 'Les craquelures des cartes de rencontre (sbires, trahisons…). Sans effet sur les autres types.'))
-        },
-      },
-      {
-        titre: 'La mise en page du texte', court: 'Texte',
-        aide: 'Une carte à texte court peut avoir son texte centré verticalement dans le cadre, comme beaucoup de cartes officielles.',
-        construire: (v) => caseAssistant(v, 'centrerTexte', 'Centrer le texte des règles verticalement', ''),
-      },
-      {
-        titre: 'La mention du créateur', court: 'Mention',
-        aide: 'La petite ligne en bas de chaque carte (ton nom, ton pseudo…).',
-        construire: (v) => champAssistant(v, 'createur', 'Mention', ''),
-      },
-      {
-        titre: 'Une carte de départ ?', court: 'Carte',
-        aide: c ? `En plus de l’apparence, le template peut garder la carte actuelle entière (« ${c.contenu.titre || tr('(sans titre)')} » : type, nombres, texte, illustration) comme point de départ. Elle apparaîtra dans la liste des templates : « Utiliser » en fait une nouvelle carte.` : 'Aucune carte choisie : rien à garder.',
-        construire: (v) => (c ? caseAssistant(v, 'garderCarte', 'Garder aussi la carte actuelle comme carte de départ', '') : el('span')),
-      },
-      {
-        titre: 'Appliquer', court: 'Fin',
-        aide: 'Le template sera appliqué à chaque nouvelle carte du dossier. Veux-tu aussi le recopier sur les cartes qui y sont déjà ?',
-        construire: (v) => caseAssistant(v, 'appliquerDossier', 'Appliquer aussi aux cartes déjà dans ce dossier', '', true),
-      },
-    ]
+// ---------------------------------------------------------------- wizard « Nouveau scenario / modulaire »
+const CARTES_RENCONTRE = [['minion', 'Sbires'], ['treachery', 'Trahisons'], ['sidescheme', 'Manigances annexes'], ['attachment', 'Attachements'], ['environment', 'Environnements']]
+function ouvrirWizardRencontre(genre, nomDepart = '') {
+  const langue = carte()?.langue ?? 'en'
+  const scenario = genre === 'scenario'
+  const specsDe = (v) => {
+    const specs = []
+    if (scenario) {
+      const nbEtapes = Number(v.etapes ?? 3)
+      const romains = ['I', 'II', 'III']
+      for (let k = 0; k < nbEtapes; k++) specs.push({ type: 'villain', titre: (v.mechant ?? '').trim(), apres: (c) => { c.contenu.etape = romains[k] } })
+      const nbManigances = Number(v.manigances ?? 1)
+      for (let k = 1; k <= nbManigances; k++) {
+        specs.push({ type: 'main_scheme_a', apres: (c) => { c.contenu.phaseNumero = String(k); c.contenu.phaseLettre = 'A' } })
+        specs.push({ type: 'main_scheme_b', apres: (c) => { c.contenu.phaseNumero = String(k); c.contenu.phaseLettre = 'B' } })
+      }
+    }
+    for (const [type] of CARTES_RENCONTRE) for (let k = 0; k < Number(v['n:' + type] ?? 0); k++) specs.push({ type })
+    for (let k = 0; k < Number(v.obligations ?? 0); k++) specs.push({ type: 'obligation-villain' })
+    return specs
   }
-  const dossier0 = (dossierDepart ?? c?.dossier ?? '').trim()
-  const g0 = projet.gabarits?.[dossier0]
-  const depart = {
-    dossier: dossier0,
-    type: c?.type ?? 'ally',
-    preset: g0 ? g0.preset ?? '' : c ? '__carte' : '',
-    cadre: g0?.cadre ?? c?.cadre ?? 'officiel',
-    fissures: g0?.fissures ?? c?.fissures ?? true,
-    centrerTexte: g0?.centrerTexte ?? !!c?.contenu.centrerTexte,
-    createur: g0?.createur ?? c?.contenu.createur ?? '',
+  const fabriquer = (v) => {
+    const nom = (v.nom ?? '').trim()
+    const sauve = projet.gabarits?.[nom]
+    ;(projet.gabarits ??= {})[nom] = GABARIT_ETAPE(v.pseudo ? v : { ...v, pseudo: { preset: '', couleurs: {} } })
+    const cartes = fabriquerCartes(nom, langue, specsDe(v))
+    if (sauve) projet.gabarits[nom] = sauve; else delete projet.gabarits[nom]
+    return cartes
   }
-  // « Comme la carte actuelle » : ses couleurs exactes, gardees dans le template
-  const resoudre = (v) => (v.preset === '__carte' ? { preset: c?.preset ?? '', couleurs: structuredClone(c?.couleurs ?? {}) } : { preset: v.preset ?? '' })
-  const apercu = (v) => {
-    const x = c ? cloner(c) : nouvelleCarte('ally', 'en')
-    const r = resoudre(v)
-    x.preset = r.preset
-    if (r.couleurs) x.couleurs = r.couleurs
-    else appliquerPalette(x, TYPES[x.type], r.preset)
-    x.cadre = v.cadre
-    x.fissures = v.fissures
-    x.contenu.centrerTexte = v.centrerTexte
-    x.contenu.createur = v.createur
-    return x
+  const etapes = [
+    {
+      titre: scenario ? 'Un scénario, c’est un dossier' : 'Un set modulaire, c’est un dossier', court: 'Noms',
+      aide: scenario ? 'Le nom du scénario et celui du méchant.' : 'Le nom du set modulaire.',
+      plus: scenario
+        ? 'Je vais créer un dossier au nom du scénario, son template (couleurs et mention communes), puis les cartes du méchant, ses manigances principales, ses cartes de rencontre et ses obligations.'
+        : 'Je vais créer un dossier au nom du set, son template (couleurs et mention communes), puis ses cartes de rencontre. Un modulaire n’a ni méchant ni manigance principale.',
+      construire: (v) => el('div', { class: 'assistant-pile' },
+        champAssistant(v, 'nom', scenario ? 'Nom du scénario' : 'Nom du set modulaire', 'Il sert aussi de nom au dossier.', { exemple: scenario ? 'ex. Rhino' : 'ex. Bomb Scare', defaut: nomDepart }),
+        scenario ? champAssistant(v, 'mechant', 'Nom du méchant', 'Écrit sur chacune de ses cartes (une par étape).', { exemple: 'ex. Rhino' }) : null),
+      valider: (v) => {
+        const nom = (v.nom ?? '').trim()
+        if (!nom) return 'Donne un nom au dossier.'
+        if (listeDossiers().some((d) => d.nom === nom)) return 'Un dossier porte déjà ce nom : choisis-en un autre.'
+      },
+    },
+    ...etapesTemplate(TYPES.villain, langue),
+    ...(scenario ? [
+      {
+        titre: 'Le méchant', court: 'Méchant', passable: true,
+        aide: 'Combien d’étapes a le méchant ?',
+        plus: 'Un méchant a généralement trois étapes (I, II, III) : une carte de stats par étape, qu’on retourne quand ses points de vie tombent à zéro. Je crée une carte par étape, au nom du méchant.',
+        construire: (v) => { v.etapes ??= 3; return compteurAssistant(v, 'etapes', 'Nombre d’étapes', 3, 3) },
+      },
+      {
+        titre: 'Les manigances principales', court: 'Manigances', passable: true,
+        aide: 'Combien de manigances principales (faces A et B) ?',
+        plus: 'Chaque manigance principale a deux faces : A (menace de départ) et B (après son avancée). Je crée les deux cartes de chaque manigance, avec leur numéro de phase.',
+        construire: (v) => { v.manigances ??= 1; return compteurAssistant(v, 'manigances', 'Nombre de manigances principales', 3, 1) },
+      },
+    ] : []),
+    {
+      titre: 'Les cartes de rencontre', court: 'Rencontre', passable: true,
+      aide: 'Combien de cartes de chaque sorte ? Elles sont créées vides.',
+      plus: 'Sbires, trahisons, manigances annexes, attachements et environnements : indique combien de cartes de chaque sorte tu veux. Elles sont créées vides, aux couleurs du template.',
+      construire: (v) => el('div', { class: 'compteurs' }, ...CARTES_RENCONTRE.map(([type, label]) => compteurAssistant(v, 'n:' + type, label, 20, 0))),
+    },
+    ...(scenario ? [{
+      titre: 'Les obligations du méchant', court: 'Obligations', passable: true,
+      aide: 'Combien de cartes obligation pour le paquet du méchant ?',
+      plus: 'Une obligation est une carte de rencontre mêlée au paquet du méchant. Il en existe en général une par héros possible.',
+      construire: (v) => compteurAssistant(v, 'obligations', 'Nombre d’obligations', 8, 0),
+    }] : []),
+    {
+      titre: 'C’est prêt', court: 'Fin',
+      aide: 'Le dossier s’ouvre, prêt à remplir.',
+      construire: (v) => {
+        const specs = specsDe(v)
+        const compte = new Map()
+        for (const s of specs) compte.set(s.type, (compte.get(s.type) ?? 0) + 1)
+        return el('ul', { style: 'margin:0;padding-left:18px' }, el('li', {}, `Dossier : ${(v.nom ?? '').trim()}`), el('li', {}, `${specs.length} carte(s)`),
+          ...[...compte].map(([t, k]) => el('li', {}, `${NOMS[t] ?? t} : ${k}`)))
+      },
+    },
+  ]
+  lancerAssistant(scenario ? 'Nouveau scénario' : 'Nouveau set modulaire', etapes, (v) => finDossier(v.nom.trim(), genre, v, () => fabriquer(v)),
+    { valeurs: { nom: nomDepart }, apercu: (v) => apercuTemplate(v, scenario ? 'villain' : 'minion', langue, scenario ? (v.mechant ?? '').trim() : (v.nom ?? '').trim()) })
+}
+
+// ---------------------------------------------------------------- colonnes redimensionnables, menu d'export
+function brancherPoignees() {
+  const page = $('#vue-editeur')
+  try {
+    const m = JSON.parse(localStorage.getItem('createur-largeurs') ?? '{}')
+    if (m.form) page.style.setProperty('--w-form', m.form + 'px')
+    if (m.cartes) page.style.setProperty('--w-cartes', m.cartes + 'px')
+  } catch {}
+  const lier = (idPoignee, idColonne, variable, cle) => {
+    const p = $(idPoignee)
+    p.addEventListener('pointerdown', (e) => {
+      e.preventDefault()
+      const depart = e.clientX
+      const l0 = $(idColonne).getBoundingClientRect().width
+      p.setPointerCapture(e.pointerId)
+      p.classList.add('actif')
+      const bouge = (ev) => {
+        const w = Math.max(300, Math.min(Math.round(innerWidth * 0.6), Math.round(l0 - (ev.clientX - depart))))
+        page.style.setProperty(variable, w + 'px')
+      }
+      const fini = () => {
+        p.classList.remove('actif')
+        p.removeEventListener('pointermove', bouge)
+        p.removeEventListener('pointerup', fini)
+        try {
+          const m = JSON.parse(localStorage.getItem('createur-largeurs') ?? '{}')
+          m[cle] = Math.round($(idColonne).getBoundingClientRect().width)
+          localStorage.setItem('createur-largeurs', JSON.stringify(m))
+        } catch {}
+        dessiner()
+      }
+      p.addEventListener('pointermove', bouge)
+      p.addEventListener('pointerup', fini)
+    })
+    p.addEventListener('dblclick', () => {
+      page.style.removeProperty(variable)
+      try { const m = JSON.parse(localStorage.getItem('createur-largeurs') ?? '{}'); delete m[cle]; localStorage.setItem('createur-largeurs', JSON.stringify(m)) } catch {}
+    })
   }
-  lancerAssistant('Template', etapes, (v) => {
-    const dossier = v.dossier.trim()
-    const r = resoudre(v)
-    const gabarit = { preset: r.preset, couleurs: r.couleurs, cadre: v.cadre, fissures: v.fissures, createur: v.createur ?? '', centrerTexte: !!v.centrerTexte, echelleTexte: c?.contenu.echelleTexte ?? 0 }
-    ;(projet.gabarits ??= {})[dossier] = gabarit
-    if (v.garderCarte && c) { enregistrerModele(`${dossier} · ${c.contenu.titre || tr('(sans titre)')}`); projet.modeles.at(-1).dossier = dossier }
-    const cibles = projet.cartes.filter((x) => (x.dossier || '').trim() === dossier && (v.appliquerDossier || x.id === c?.id))
-    for (const x of cibles) appliquerGabaritPack(x)
-    message(cibles.length ? `${cibles.length} carte(s) mise(s) à jour.` : 'Template enregistré.')
-    dossierVu = dossier
-    changement()
-    construireFormulaire()
-    majListe()
-    sauvegarderPlusTard()
-  }, { valeurs: depart, apercu })
+  lier('#poignee-1', '#formulaire', '--w-form', 'form')
+  lier('#poignee-2', '#colonne-cartes', '--w-cartes', 'cartes')
+}
+function brancherMenuExport() {
+  const b = $('#b-exporter')
+  const m = $('#menu-export')
+  b.addEventListener('click', (e) => { e.stopPropagation(); m.hidden = !m.hidden; b.setAttribute('aria-expanded', String(!m.hidden)) })
+  m.addEventListener('click', () => { m.hidden = true; b.setAttribute('aria-expanded', 'false') })
+  document.addEventListener('click', (e) => { if (!e.target.closest('.menu-flottant, .menu-exporter')) fermerMenus() })
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fermerMenus() })
 }
 
 // ---------------------------------------------------------------- exports
@@ -1667,7 +2198,7 @@ async function exporterProjet() {
   for (const c of projet.cartes) cartes.push(await serialiser(c))
   const modeles = []
   for (const m of projet.modeles ?? []) modeles.push({ id: m.id, nom: m.nom, dossier: m.dossier, carte: await serialiser(m.carte) })
-  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles, styles: projet.styles ?? [], gabarits: projet.gabarits ?? {} })], { type: 'application/json' }), 'cartes.json')
+  telecharger(new Blob([JSON.stringify({ format: 'createur-cartes', version: 2, cartes, modeles, styles: projet.styles ?? [], gabarits: projet.gabarits ?? {}, dossiers: projet.dossiers ?? {} })], { type: 'application/json' }), 'cartes.json')
 }
 
 // ---------------------------------------------------------------- import des fichiers du Card Maker de reference
@@ -1769,6 +2300,7 @@ async function importerFichiers(fichiers) {
       for (const st of j.styles ?? []) { projet.styles ??= []; if (!projet.styles.some((x) => x.id === st.id)) projet.styles.push(st) }
       for (const m of j.modeles ?? []) { projet.modeles ??= []; projet.modeles.push({ id: nouvelId(), nom: m.nom, dossier: m.dossier, carte: await deserialiser(m.carte) }) }
       for (const [d, g] of Object.entries(j.gabarits ?? {})) (projet.gabarits ??= {})[d] ??= g
+      for (const [d, m] of Object.entries(j.dossiers ?? {})) (projet.dossiers ??= {})[d] ??= m
       for (const x of j.cartes) {
         if (!TYPES[x.type]) continue
         const c = await deserialiser(x)
@@ -1788,7 +2320,9 @@ async function importerFichiers(fichiers) {
   }
   if (!ajoutees.length) throw new Error('aucune carte reconnue dans ces fichiers')
   projet.cartes.push(...ajoutees)
-  choisir(ajoutees[ajoutees.length - 1].id)
+  ranger()
+  const derniere = ajoutees[ajoutees.length - 1]
+  ouvrirDossier(derniere.dossier || DIVERS, derniere.id)
   message(`${ajoutees.length} carte(s) importée(s).`)
 }
 
@@ -1908,79 +2442,65 @@ async function demarrer() {
   }
   sel.addEventListener('change', () => {
     const c = carte()
-    c.type = sel.value
-    // les couleurs suivent le nouveau type : celles du template du dossier, sinon le cadre neutre
-    c.preset = ''
-    appliquerPalette(c, TYPES[c.type], '')
-    appliquerGabaritPack(c)
-    // valeurs propres au type (numero de phase...) : on garde le texte, on remet les nombres par defaut manquants
-    const d = valeursParDefaut(c.type, c.langue)
-    for (const k of ['phaseLettre']) c.contenu[k] = d[k]
+    changerType(c, sel.value)
     construireFormulaire()
     changement()
   })
   const sauve = await lireProjet()
-  if (sauve?.cartes?.length) projet = sauve
-  else projet = { cartes: [nouvelleCarte('ally', 'en')], courante: null }
-  projet.cartes = projet.cartes.filter((c) => TYPES[c.type])
-  if (!projet.cartes.length) projet.cartes = [nouvelleCarte('ally', 'en')]
-  for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } }
-  if (!projet.cartes.some((c) => c.id === projet.courante)) projet.courante = projet.cartes[0].id
+  projet = sauve?.cartes ? sauve : { cartes: [], courante: null }
+  preparerProjet(projet)
   synchro.baseline()
+
+  // le vide du dossier (un dossier sans carte)
+  $('#vue-editeur').append(el('div', { class: 'vide-dossier', id: 'vide-dossier', hidden: true },
+    el('h3', {}, ''), el('p', { class: 'aide' }, 'Ce dossier est vide.'),
+    el('div', { class: 'rang', style: 'justify-content:center' },
+      el('button', { class: 'btn principal', type: 'button', onclick: () => ouvrirWizardCarte(dossierOuvert) }, '+ Nouvelle carte'))))
 
   $('#lang-fr').addEventListener('click', () => changerLangue('fr'))
   $('#lang-en').addEventListener('click', () => changerLangue('en'))
-  $('#c-nouvelle').addEventListener('click', () => ouvrirAssistantCarte())
-  $('#c-heros').addEventListener('click', () => ouvrirAssistantHeros())
+  $('#c-nouvelle').addEventListener('click', () => ouvrirWizardCarte(dossierOuvert))
   $('#c-dupliquer').addEventListener('click', () => {
+    if (!carte()) return message('Choisis d’abord une carte.')
     const copie = { ...cloner(carte()), id: nouvelId() }
-    copie.contenu.titre += ' (copie)'
+    copie.contenu.titre += langueUI() === 'fr' ? ' (copie)' : ' (copy)'
     ajouter(copie)
+  })
+  $('#c-deplacer').addEventListener('click', () => {
+    const c = carte()
+    if (!c) return message('Choisis d’abord une carte.')
+    const autres = listeDossiers().filter((d) => d.nom !== c.dossier)
+    const choix = el('select', {}, el('option', { value: '' }, '—'), ...autres.map((d) => el('option', { value: d.nom }, d.nom)))
+    const nouveau = el('input', { type: 'text', placeholder: 'ex. Valkyrie' })
+    dialogue('Déplacer la carte', el('div', { class: 'assistant-pile' }, el('label', {}, 'Vers le dossier', choix), el('label', {}, 'Ou un nouveau dossier', nouveau)),
+      [{ texte: 'Annuler' }, { texte: 'Déplacer', principal: true, action: () => {
+        const nom = nouveau.value.trim() || choix.value
+        if (!nom) return false
+        c.dossier = nom
+        creerDossier(nom, genreInfere(nom))
+        sauvegarderPlusTard()
+        ouvrirDossier(nom, c.id)
+      } }])
   })
   $('#c-supprimer').addEventListener('click', () => {
     const c = carte()
     if (!c || !confirm(tr(`Supprimer « ${c.contenu.titre || 'cette carte'} » ?`))) return
     projet.cartes = projet.cartes.filter((x) => x.id !== c.id)
-    if (!projet.cartes.length) projet.cartes.push(nouvelleCarte('ally', c.langue ?? 'en'))
-    choisir(projet.cartes[0].id)
+    ouvrirDossier(c.dossier)
   })
-  $('#recherche').addEventListener('input', (e) => { filtreListe = e.target.value; majListe() })
+  $('#recherche').addEventListener('input', () => majListe())
   $('#p-versions').addEventListener('click', () => ouvrirVersions(restaurerLocal, synchro.etat !== 'connecte' ? null : {
-    dossier: carte().dossier || '',
-    versions: () => synchro.versions(carte().dossier),
-    restaurer: async (n) => { await ajouterVersion(projet, 'avant restauration'); await synchro.restaurerVersion(carte().dossier, n); apresRapatriement(); message('Version restaurée.') },
+    dossier: dossierOuvert || '',
+    versions: () => synchro.versions(dossierOuvert),
+    restaurer: async (n) => { await ajouterVersion(projet, 'avant restauration'); await synchro.restaurerVersion(dossierOuvert, n); apresRapatriement(); message('Version restaurée.') },
   }))
-  const restaurerLocal = (p) => { projet = p; projet.cartes = projet.cartes.filter((c) => TYPES[c.type]); for (const c of projet.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } } historiques.clear(); choisir(projet.cartes.some((c) => c.id === projet.courante) ? projet.courante : projet.cartes[0].id); message('Version restaurée.') }
+  const restaurerLocal = (p) => { projet = p; preparerProjet(projet); historiques.clear(); apresRapatriement(); message('Version restaurée.') }
   $('#p-remplacer').addEventListener('click', ouvrirRemplacer)
-  $('#p-appliquer').addEventListener('click', () => ouvrirAppliquer(rolesDe))
-  // Templates : « g:<dossier> » = le template d'un dossier, « m:<id> » = une carte de depart gardee
-  const templateChoisi = () => {
-    const v = $('#modeles').value
-    if (v.startsWith('g:')) return { dossier: v.slice(2) }
-    if (v.startsWith('m:')) return { modele: (projet.modeles ?? []).find((x) => x.id === v.slice(2)) }
-    return null
-  }
-  $('#m-enregistrer').addEventListener('click', () => ouvrirAssistantTemplate(templateChoisi()?.dossier))
-  $('#m-utiliser').addEventListener('click', () => {
-    const x = templateChoisi()
-    if (!x) return message('Choisis d’abord un template.')
-    if (x.dossier !== undefined) return ouvrirAssistantCarte(x.dossier)
-    const c = { ...cloner(x.modele.carte), id: nouvelId(), dossier: x.modele.dossier ?? carte()?.dossier ?? '' }
-    ajouter(c)
-  })
-  $('#m-supprimer').addEventListener('click', () => {
-    const x = templateChoisi()
-    if (!x) return message('Choisis d’abord un template.')
-    if (x.dossier !== undefined) {
-      if (!confirm(tr(`Supprimer le template du dossier « ${x.dossier} » ? Les cartes ne changent pas.`))) return
-      delete projet.gabarits[x.dossier]
-    } else projet.modeles = (projet.modeles ?? []).filter((m) => m !== x.modele)
-    majListe()
-    sauvegarderPlusTard()
-  })
+  $('#p-appliquer').addEventListener('click', () => { if (!carte()) return message('Choisis d’abord une carte.'); ouvrirAppliquer(rolesDe) })
   $('#b-annuler').addEventListener('click', annuler)
   $('#b-retablir').addEventListener('click', retablir)
   document.addEventListener('keydown', (e) => {
+    if (vue !== 'editeur' || !carte()) return
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return
     const natif = e.target.isContentEditable || /^(INPUT|TEXTAREA)$/.test(e.target.tagName) && e.target.type !== 'range'
     if (natif) return
@@ -1990,7 +2510,7 @@ async function demarrer() {
   $('#b-export').addEventListener('click', () => exporter(false))
   $('#b-export-2').addEventListener('click', () => exporter(true))
   $('#b-print').addEventListener('click', dialoguePlanche)
-  $('#b-pack').addEventListener('click', () => ouvrirExportPack({ cartes: () => projet.cartes, carte, rendre: rendreCarte, rendreVerso, serialiser }))
+  $('#b-pack').addEventListener('click', () => ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte, rendre: rendreCarte, rendreVerso, serialiser }))
   $('#b-tts').addEventListener('click', plancheTTS)
   $('#b-comparer').addEventListener('click', () => ouvrirComparable(rendreCarte))
   $('#p-exporter').addEventListener('click', exporterProjet)
@@ -2000,7 +2520,18 @@ async function demarrer() {
     e.target.value = ''
   })
   brancherToile()
-  choisir(projet.courante)
+  brancherPoignees()
+  brancherMenuExport()
+  afficherAccueil()
   synchro.demarrer() // sans attendre : la page marche tout de suite avec ce qu'elle a, la fusion arrive ensuite
+}
+/** Remet un projet charge (disque, serveur, version) dans l'etat que la page attend. */
+function preparerProjet(p) {
+  p.cartes = (p.cartes ?? []).filter((c) => TYPES[c.type] && !c.brouillon)
+  for (const c of p.cartes) { c.libres ??= []; c.cadre ??= 'officiel'; c.dossier ??= ''; c.verso ??= { mode: 'aucun', carteId: null, blob: null } }
+  p.dossiers ??= {}
+  p.gabarits ??= {}
+  ranger()
+  if (!p.cartes.some((c) => c.id === p.courante)) p.courante = null
 }
 demarrer().catch((e) => message('Démarrage impossible : ' + e.message))

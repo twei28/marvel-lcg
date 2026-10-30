@@ -49,8 +49,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-30",
         genre: "coulisses",
-        fr: "Le créateur de cartes te guide pas à pas : « + Nouvelle » explique chaque bloc de la carte avec un aperçu en direct, « + Nouveau héros » crée son dossier, ses couleurs et ses cartes de base d'un coup, et chaque héros a sa tuile dans la colonne des cartes. Une carte neuve part d'un cadre gris vide.",
-        en: "The card maker now guides you step by step: \"+ New\" explains each part of the card with a live preview, \"+ New hero\" creates the hero's folder, colours and base cards in one go, and every hero has its own tile in the cards column. A new card starts from an empty grey frame.",
+        fr: "Le créateur de cartes change de look (bleu, coins coupés) et s'ouvre sur une page de dossiers : un par héros avec son alter-ego, par scénario ou par modulaire. Le wizard passe sur tout, crée un héros avec ses 15 cartes, et chaque dossier a son template de couleurs. Les colonnes se redimensionnent à la souris.",
+        en: "The card maker gets the new look (blue, cut corners) and opens on a page of folders: one per hero with its alter-ego, per scenario or per modular set. The wizard goes through everything, creates a hero with its 15 cards, and each folder has its own colour template. The columns can be resized with the mouse.",
     },
     {
         date: "2026-10-30",

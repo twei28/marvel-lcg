@@ -6,180 +6,50 @@
 <title>Card Maker</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
-<style>
-  /* Habillage aligne sur le reste du site (29/10/2026, demande de l'utilisateur) : memes variables, meme
-     police d'affiche (Anton) pour le titre, meme trame de points en fond, mêmes coins carres sur les
-     boutons/champs que /admin. Avant : un habillage maison independant (variables --fond/--panneau/--bord,
-     coins arrondis), jamais recale sur la charte -- voir site/orchestrateur.py:PAGE / PAGE_ADMIN (la source,
-     aucun mecanisme d'inclusion partagee dans ce depot : la palette est dupliquee ici a la main). */
-  :root {
-    color-scheme: dark;
-    --bg: #07080c; --panel: #12151b; --panel-2: #181d26; --border: #262b35;
-    --text: #eef1f5; --muted: #8b95a3;
-    --accent: #e62429; --accent-hover: #ff3b40; --accent-soft: rgba(230, 36, 41, .14); --accent-ink: #fff;
-    --affiche: "Anton", "Arial Narrow", sans-serif;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; color: var(--text); font: 14px/1.4 system-ui, sans-serif;
-    background-color: var(--bg);
-    background-image: radial-gradient(rgba(230, 36, 41, .4) 1px, transparent 1.6px);
-    background-size: 15px 15px;
-  }
-  header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: #040508; position: sticky; top: 0; z-index: 5; }
-  header h1 { font: 20px/1 var(--affiche); text-transform: uppercase; letter-spacing: .01em; font-weight: 400; margin: 0 12px 0 0; }
-  .page { display: grid; grid-template-columns: 1fr minmax(310px, 400px) 210px; gap: 14px; padding: 14px 16px; align-items: start; }
-  @media (max-width: 1000px) { .page { grid-template-columns: 1fr; } }
-  .panneau { background: var(--panel); border: 1px solid var(--border); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-  h2 { font-size: 12px; margin: 8px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-  h2:first-child { margin-top: 0; }
-  label { display: flex; flex-direction: column; gap: 3px; color: var(--muted); font-size: 12px; }
-  label.ligne { flex-direction: row; align-items: center; gap: 8px; }
-  input[type=text], input[type=number], textarea, select { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 6px 8px; font: inherit; }
-  textarea { resize: vertical; min-height: 64px; }
-  input[type=range] { width: 100%; }
-  input[type=color] { width: 36px; height: 26px; padding: 0; border: 1px solid var(--border); background: none; flex: none; }
-  .btn { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 6px 10px; cursor: pointer; font: inherit; }
-  .btn:hover { border-color: var(--muted); }
-  .btn.principal { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
-  .btn.principal:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-  .btn[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-  .btn.petit { padding: 3px 7px; font-size: 12px; }
-  .comp-paire { display: flex; gap: 12px; justify-content: center; margin: 10px 0; }
-  .comp-paire figure { margin: 0; flex: 1; max-width: 340px; text-align: center; color: var(--muted); font-size: 12px; }
-  .comp-carte { width: 100%; height: auto; display: block; background: #000; }
-  .etat-serveur { font-size: 12px; padding: 2px 8px; border-radius: 1rem; border: 1px solid var(--border); color: var(--muted); }
-  .etat-serveur.bon { color: #7fd48c; border-color: #2f5e3a; }
-  .etat-serveur.mauvais { color: #ff9b8f; border-color: #6b2f2a; }
-  .etat-serveur a { color: inherit; }
-  .rang { display: flex; gap: 6px; align-items: flex-end; flex-wrap: wrap; }
-  .rang > * { flex: 1; min-width: 70px; }
-  .rang > .fixe { flex: none; min-width: 0; }
-  .aide { color: var(--muted); font-size: 12px; }
-  .liste { display: flex; flex-direction: column; gap: 4px; max-height: 60vh; overflow: auto; }
-  .liste button { text-align: left; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 6px 8px; cursor: pointer; font: inherit; display: flex; flex-direction: column; }
-  .liste button small { color: var(--muted); }
-  .liste button[aria-current=true] { border-color: var(--accent); }
-  .scene { display: flex; flex-direction: column; align-items: center; gap: 8px; position: sticky; top: 62px; }
-  .toile { max-width: 100%; max-height: calc(100vh - 150px); background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--border); cursor: grab; touch-action: none; }
-  .zone-toile { position: relative; display: inline-block; line-height: 0; max-width: 100%; }
-  .surcouche { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
-  .surcouche.glisse { cursor: grabbing; }
-  .liste-libres { display: flex; flex-direction: column; gap: 4px; }
-  .ligne-libre { display: flex; gap: 3px; align-items: center; }
-  .ligne-libre .nom-libre { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ligne-libre.choisie .nom-libre { border-color: var(--accent); }
-  .outils { display: flex; gap: 4px; flex-wrap: wrap; }
-  .couleurs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
-  .rang-couleur { display: flex; gap: 4px; align-items: center; }
-  .btn-pipette { padding: 3px 6px; font-size: 13px; line-height: 1; }
-  .couleurs label { flex-direction: row; align-items: center; justify-content: space-between; gap: 6px; }
-  details { border: 1px solid var(--border); padding: 6px 10px; }
-  details > summary { cursor: pointer; font-weight: 600; font-size: 13px; }
-  details[open] > summary { margin-bottom: 8px; }
-  details > .contenu { display: flex; flex-direction: column; gap: 8px; }
-  .nombre { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: end; }
-  .editeur { min-height: 90px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px 10px; font: 15px/1.5 system-ui, sans-serif; overflow-wrap: anywhere; }
-  .editeur:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-  .editeur .ico { font-family: ChampionsIcons; padding: 0 2px; user-select: all; color: #8fd0ff; }
-  .editeur .trait { font-family: KomikaTitle, system-ui; letter-spacing: .02em; }
-  .champ-riche { display: flex; flex-direction: column; gap: 5px; }
-  .champ-riche select.petit { width: auto; padding: 3px 4px; font-size: 12px; }
-  .champ-riche input[type=color] { width: 30px; height: 26px; }
-  input[type=search] { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 6px 8px; font: inherit; }
-  /* Les dossiers en tuiles (30/10/2026) : une bande a la couleur du heros, le nom, le nombre de cartes. */
-  button.tuile-dossier { position: relative; text-align: left; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px 8px 8px 16px; cursor: pointer; font: inherit; display: flex; flex-direction: column; gap: 1px; }
-  .tuile-dossier::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--teinte, #6e7179); }
-  .tuile-dossier:hover { border-color: var(--muted); }
-  .tuile-dossier.choisie { border-color: var(--accent); }
-  .tuile-dossier .tuile-nom { font-weight: 700; overflow-wrap: anywhere; }
-  .tuile-dossier small { color: var(--muted); }
-  .liste .tuile-dossier { flex-direction: column; }
-  .tete-dossier { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 4px 0 6px 10px; border-left: 6px solid var(--teinte, #6e7179); }
-  .tete-dossier strong { overflow-wrap: anywhere; }
-  .tete-dossier small { color: var(--muted); }
-  .liste .tete-dossier button { flex-direction: row; }
-  button.lien { background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font: inherit; font-size: 12px; }
-  button.lien:hover { color: var(--text); }
-  /* Les assistants : les etapes en haut, le formulaire a gauche, l'apercu de la carte a droite. */
-  .assistant { width: min(900px, 96vw); max-height: 92vh; overflow: auto; }
-  .assistant-puces { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; counter-reset: etape; }
-  .assistant-puces li { counter-increment: etape; font-size: 11px; color: var(--muted); border: 1px solid var(--border); padding: 2px 8px; }
-  .assistant-puces li::before { content: counter(etape) '. '; }
-  .assistant-puces li.en-cours { border-color: var(--accent); color: var(--text); background: var(--accent-soft); }
-  .assistant-puces li.fait { color: var(--text); }
-  .assistant-puces button { background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; }
-  .assistant-grille { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 18px; align-items: start; }
-  .assistant-grille.sans-apercu { grid-template-columns: minmax(0, 1fr); }
-  @media (max-width: 700px) { .assistant-grille { grid-template-columns: minmax(0, 1fr); } .assistant-figure { order: -1; max-width: 160px; } }
-  .assistant-colonne { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-  .assistant-corps { display: flex; flex-direction: column; gap: 10px; }
-  .assistant-titre { margin: 0; font-size: 16px; }
-  .assistant-aide { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
-  .assistant-pile { display: flex; flex-direction: column; gap: 12px; }
-  .assistant-champ { display: flex; flex-direction: column; gap: 4px; }
-  .assistant-libelle { color: var(--text); font-size: 13px; font-weight: 600; }
-  .assistant-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px; }
-  .assistant-types .btn { text-align: left; height: auto; padding: 6px 8px; }
-  .assistant-groupe { margin: 4px 0 0; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
-  .assistant-tuiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
-  .assistant-boutons { justify-content: space-between; margin-top: 6px; position: sticky; bottom: -12px; z-index: 1; background: var(--panel); padding: 8px 0; border-top: 1px solid var(--border); }
-  .assistant-boutons > * { flex: none; }
-  .assistant-pied { border-top: 1px solid var(--border); padding-top: 8px; }
-  .assistant-figure { margin: 0; position: sticky; top: 0; display: flex; flex-direction: column; gap: 4px; align-items: center; }
-  .assistant-apercu { width: 100%; height: auto; background: #000; border: 1px solid var(--border); }
-  .alertes { display: flex; flex-direction: column; gap: 4px; max-width: 560px; width: 100%; }
-  .alerte { font-size: 12px; padding: 5px 8px; border: 1px solid var(--border); background: var(--panel-2); color: var(--muted); }
-  .alerte.alerte { border-color: #c9892b; color: #f2c26b; }
-  dialog.dlg { background: transparent; border: 0; padding: 0; color: var(--text); }
-  dialog.dlg::backdrop { background: rgba(0,0,0,.6); }
-  .popup-styles { position: absolute; z-index: 20; left: 0; right: 0; top: 100%; max-height: 300px; overflow: auto; background: var(--panel-2); border: 1px solid var(--muted); box-shadow: 0 8px 24px rgba(0,0,0,.5); padding: 4px; }
-  .popup-styles[hidden] { display: none; }
-  .groupe-styles { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 6px 6px 2px; }
-  .item-style { display: flex; flex-direction: column; gap: 1px; padding: 4px 8px; cursor: pointer; font-size: 13px; }
-  .item-style.actif, .item-style:hover { background: var(--border); }
-  .item-style .apercu-style { color: var(--muted); font-size: 12px; font-family: Georgia, serif; }
-  .item-style.perso { color: #8fd0ff; }
-  .rappel-option { padding: 4px 8px; font-size: 12px; }
-  .flash-champ { outline: 2px solid var(--accent); outline-offset: 3px; transition: outline-color .6s; }
-  .apercu-recadrage { max-width: 100%; cursor: crosshair; }
-  .damier { background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect width='8' height='8' fill='%23333'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23333'/%3E%3C/svg%3E"); display: inline-block; line-height: 0; }
-  .pastille-fond { display: inline-block; width: 18px; height: 18px; border: 1px solid var(--muted); }
-  .recadrage { display: flex; flex-direction: column; gap: 8px; }
-  #message { color: var(--muted); font-size: 12px; min-height: 16px; }
-  .groupe-langue { display: inline-flex; border: 1px solid var(--border); overflow: hidden; }
-  .groupe-langue button { border: 0; }
-  .groupe-langue.ui button { padding: 3px 8px; font-size: 12px; }
-</style>
+<link rel="stylesheet" href="/createur-cartes/style.css">
 </head>
 <body>
-<header>
-  <h1>Créateur de cartes</h1>
-  <span class="groupe-langue" role="group" aria-label="Langue de la carte">
-    <button class="btn" id="lang-fr" aria-pressed="false" title="Texte, libellé du type et traits en français">FR</button>
-    <button class="btn" id="lang-en" aria-pressed="true" title="Texte, libellé du type et traits en anglais">EN</button>
+<header class="bandeau">
+  <h1>Card Maker</h1>
+  <nav id="fil" class="fil" aria-label="Fil d’Ariane"></nav>
+  <span class="groupe-langue seulement-editeur seulement-carte" id="groupe-langue-carte" role="group" aria-label="Langue de la carte">Langue de la carte
+    <span class="boutons">
+      <button class="btn petit" id="lang-fr" aria-pressed="false" title="Texte, libellé du type et traits en français">FR</button>
+      <button class="btn petit" id="lang-en" aria-pressed="true" title="Texte, libellé du type et traits en anglais">EN</button>
+    </span>
   </span>
-  <button class="btn" id="b-annuler" title="Annuler (Ctrl+Z)" disabled>↶</button>
-  <button class="btn" id="b-retablir" title="Rétablir (Ctrl+Y)" disabled>↷</button>
-  <button class="btn" id="b-export">⬇ Exporter l'image</button>
-  <button class="btn" id="b-export-2" title="Une image dans chaque langue (traits traduits)">⬇ FR + EN</button>
-  <button class="btn" id="b-pack" title="Toutes les cartes d'un dossier dans un .zip (images, dos, planche-contact, projet, kit pour le jeu)">⬇ Pack (.zip)</button>
-  <button class="btn" id="b-print" title="Planche à imprimer (63 × 88 mm) ou à enregistrer en PDF">🖨 Imprimer / PDF</button>
-  <button class="btn" id="b-tts" title="Planche de cartes pour Tabletop Simulator (10 colonnes)">🎲 Planche TTS</button>
+  <button class="btn petit seulement-editeur seulement-carte" id="b-annuler" title="Annuler (Ctrl+Z)" disabled>↶</button>
+  <button class="btn petit seulement-editeur seulement-carte" id="b-retablir" title="Rétablir (Ctrl+Y)" disabled>↷</button>
+  <span class="menu-exporter seulement-editeur seulement-carte" id="menu-exporter">
+    <button class="btn principal petit" id="b-exporter" aria-haspopup="true" aria-expanded="false">Exporter ▾</button>
+    <div class="menu-export" id="menu-export" hidden>
+      <button class="btn petit" id="b-export">Exporter l'image<small>La carte choisie, en PNG, JPG ou WebP.</small></button>
+      <button class="btn petit" id="b-export-2">FR + EN<small>Une image dans chaque langue (traits traduits).</small></button>
+      <button class="btn petit" id="b-pack">Pack (.zip)<small>Toutes les cartes d'un dossier : images, dos, planche-contact, projet, kit pour le jeu.</small></button>
+      <button class="btn petit" id="b-print">Imprimer / PDF<small>Planche à imprimer (63 × 88 mm) ou à enregistrer en PDF.</small></button>
+      <button class="btn petit" id="b-tts">Planche TTS<small>Cartes pour Tabletop Simulator (10 colonnes).</small></button>
+    </div>
+  </span>
   <span id="message"></span>
   <span id="etat-serveur" class="etat-serveur" role="status" hidden></span>
-  <span class="groupe-langue ui" role="group" aria-label="Language of this page" style="margin-left:auto">
-    <button class="btn" id="ui-en" aria-pressed="true" title="This page in English">English</button>
-    <button class="btn" id="ui-fr" aria-pressed="false" title="Cette page en français">Français</button>
+  <span class="groupe-langue ui" role="group" aria-label="Language of this page" style="margin-left:auto">Langue de la page
+    <span class="boutons">
+      <button class="btn petit" id="ui-en" aria-pressed="true" title="This page in English">English</button>
+      <button class="btn petit" id="ui-fr" aria-pressed="false" title="Cette page en français">Français</button>
+    </span>
   </span>
 </header>
-<div class="page">
-  <section class="scene">
+
+<main id="vue-accueil"></main>
+
+<div class="page" id="vue-editeur" hidden>
+  <section class="scene" id="scene">
     <div class="zone-toile"><canvas id="toile" class="toile"></canvas><canvas id="surcouche" class="surcouche"></canvas></div>
     <div id="alertes" class="alertes" aria-live="polite"></div>
     <button class="btn petit" id="b-comparer" title="Cherche une carte officielle anglaise du même type, au texte de longueur proche, et la montre à côté de la tienne">Voir une vraie carte comparable</button>
     <div class="aide" id="aide-toile">Glisse sur l'aperçu pour déplacer l'illustration ou un calque, molette pour zoomer. Glisse-y des images pour les ajouter.</div>
   </section>
+  <div class="poignee" id="poignee-1" role="separator" aria-orientation="vertical" title="Glisser pour changer la largeur"></div>
 
   <section class="panneau" id="formulaire">
     <label>Type de carte
@@ -187,25 +57,20 @@
     </label>
     <div id="champs"></div>
   </section>
+  <div class="poignee" id="poignee-2" role="separator" aria-orientation="vertical" title="Glisser pour changer la largeur"></div>
 
   <aside class="panneau" id="colonne-cartes">
     <h2>Cartes</h2>
     <div class="outils">
       <button class="btn petit principal" id="c-nouvelle" title="Créer une carte pas à pas, avec une explication à chaque étape">+ Nouvelle</button>
-      <button class="btn petit" id="c-heros" title="Créer le dossier d’un héros : son template et ses cartes de base (identité, alter-ego, némésis…)">+ Nouveau héros</button>
       <button class="btn petit" id="c-dupliquer">Dupliquer</button>
+      <button class="btn petit" id="c-deplacer" title="Ranger la carte dans un autre dossier">Déplacer vers…</button>
       <button class="btn petit" id="c-supprimer">Supprimer</button>
     </div>
     <input type="search" id="recherche" placeholder="Chercher une carte…" aria-label="Chercher une carte">
-    <div class="liste" id="liste"></div>
+    <div id="liste"></div>
     <datalist id="dossiers-connus"></datalist>
-    <h2>Templates</h2>
-    <select id="modeles" aria-label="Templates"></select>
-    <div class="outils">
-      <button class="btn petit" id="m-enregistrer" title="Créer ou modifier le template d’un dossier (couleurs, cadre, mention), pas à pas">Créer / modifier…</button>
-      <button class="btn petit" id="m-utiliser" title="Nouvelle carte à partir du template choisi">Utiliser</button>
-      <button class="btn petit" id="m-supprimer">Supprimer</button>
-    </div>
+    <div id="panneau-template"></div>
     <h2>Projet</h2>
     <div class="outils">
       <button class="btn petit" id="p-exporter">Enregistrer (.json)</button>
