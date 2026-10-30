@@ -39,7 +39,7 @@ const suivant = async () => { await p.click('dialog[open] button:has-text("Next 
 await p.goto(U + '/createur-cartes.html'); await attendreAccueil(p)
 ok('page en anglais par defaut', (await p.locator('#ui-en').getAttribute('aria-pressed')) === 'true')
 ok('carte en anglais par defaut', (await p.locator('#lang-en').getAttribute('aria-pressed')) === 'true')
-ok('indicateur serveur cache en mode local', await p.locator('#etat-serveur').isHidden())
+ok('indicateur : « enregistré dans ce navigateur » affiché en mode local', await p.locator('#etat-serveur').isVisible())
 ok('accueil : six tuiles de creation (heros, scenario, modulaire + 3 pochettes)', (await p.locator('.tuile-creer').count()) === 6 && (await p.locator('.tuile-creer.pochette').count()) === 3)
 ok('accueil : aucun dossier au depart', (await p.locator('.tuile').count()) === 0)
 ok('accueil : l\'editeur est cache', await p.locator('#vue-editeur').isHidden())
