@@ -16,6 +16,8 @@ import { brancherStyles, chargerStyles, enveloppePerso } from './styles-texte.js
 import { changerLangueUI, demarrerI18n, langueMemorisee, langueUI, t as tr } from './i18n.js'
 import { ajouterVersion, ecrireProjet, lireProjet } from './stockage.js'
 import { creerSynchro } from './serveur.js'
+import { construirePdf, cellulesPlanche } from './pdf.js'
+import { codesDepuisTexte, chargerCartesMarvelCDB, champsDepuisMarvelCDB } from './marvelcdb.js'
 import { ouvrirComparable } from './comparable.js'
 import { alertesLisibilite, enregistrerModele, ouvrirAppliquer, ouvrirRemplacer, ouvrirVersions } from './projet-outils.js'
 
@@ -804,6 +806,7 @@ function blocLigne(c, spec) {
     b.push(el('label', { class: 'ligne' }, i, 'Points de vie par joueur (icône en fin de ligne)'))
   }
   if (aElement(spec, 'c-line')) b.push(t('Créateur / mention', 'createur'))
+  if (aElement(spec, 'c-line')) b.push(t('Numéro de carte (ex. 4/15), en bas à droite', 'numero'))
   return b
 }
 /** Les nombres de la carte : [{ noeud, aide }] (l'aide sert au wizard). */
@@ -1225,6 +1228,12 @@ function menuDossier(ancre, d) {
     ['Ouvrir', () => ouvrirDossier(d.nom)],
     ['Renommer…', () => dialogueRenommer(d)],
     ['Dupliquer', () => { dupliquerDossier(d.nom); sauvegarderPlusTard(); rendreGrilles(); message('Dossier dupliqué.') }],
+    ['Numéroter les cartes (1/N)…', () => {
+      if (!d.cartes.length) return message('Ce dossier est vide : rien à numéroter.')
+      const n = d.cartes.length
+      d.cartes.forEach((c, i) => { c.contenu.numero = `${i + 1}/${n}` })
+      sauvegarderPlusTard(); rendreGrilles(); message(`${n} carte(s) numérotée(s), dans l’ordre du dossier.`)
+    }],
     ['Exporter le pack…', () => {
       if (!d.cartes.length) return message('Ce dossier est vide : rien à exporter.')
       ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte: () => d.cartes[0], rendre: rendreCarte, rendreVerso, serialiser, pochettes: pochettesPourPack })
@@ -2526,10 +2535,9 @@ function dialoguePlanche() {
     el('label', {}, 'Cartes', dossier),
     el('label', { class: 'ligne' }, dos, 'Ajouter les dos sur des pages à part (recto-verso : les dos sont dans l’ordre inverse de chaque rangée)'),
     el('div', { class: 'aide' }, 'Cartes à 63 × 88 mm, 9 par feuille A4, sans marge entre elles : découpe sur les bords. Les cartes paysage sont tournées.')),
-  [{ texte: 'Annuler' }, { texte: 'Imprimer', principal: true, action: () => planchePourImprimer({ dos: dos.checked, dossier: dossier.value }) }])
+  [{ texte: 'Annuler' }, { texte: 'Télécharger en PDF', action: () => planchePdf({ dos: dos.checked, dossier: dossier.value }) }, { texte: 'Imprimer', principal: true, action: () => planchePourImprimer({ dos: dos.checked, dossier: dossier.value }) }])
 }
-async function planchePourImprimer(opts = { dos: false, dossier: 'tout' }) {
-  message('Préparation de la planche…')
+async function construirePages(opts, format = 'jpeg') {
   const images = []
   const dosImages = []
   const pourPlanche = async (toile) => {
@@ -2566,6 +2574,11 @@ async function planchePourImprimer(opts = { dos: false, dossier: 'tout' }) {
       pages.push(miroir.map((x) => x ?? ''))
     }
   }
+  return pages
+}
+async function planchePourImprimer(opts = { dos: false, dossier: 'tout' }) {
+  message('Préparation de la planche…')
+  const pages = await construirePages(opts)
   const w = window.open('', '_blank')
   if (!w) return message('Le navigateur a bloqué la fenêtre d’impression.')
   w.document.write(`<!doctype html><meta charset="utf-8"><title>Planche d'impression</title><style>
@@ -2579,6 +2592,22 @@ async function planchePourImprimer(opts = { dos: false, dossier: 'tout' }) {
   </style>${pages.map((p) => `<div class="feuille">${p.map((s) => (s ? `<img src="${s}">` : '<div class="vide"></div>')).join('')}</div>`).join('')}<script>onload=()=>setTimeout(()=>print(),400)<\/script>`)
   w.document.close()
   message('')
+}
+/** La meme planche que « Imprimer », mais dans un fichier .pdf (A4, 9 cartes de 63 x 88 mm par feuille, dos sur des feuilles a part). */
+async function planchePdf(opts) {
+  message('Préparation du PDF…')
+  const pages = await construirePages(opts)
+  const lire = async (url) => {
+    if (!url) return null
+    const img = await chargerImage(url)
+    const octets = new Uint8Array(await (await fetch(url)).arrayBuffer())
+    return { jpeg: octets, px: [img.naturalWidth || img.width, img.naturalHeight || img.height] }
+  }
+  const feuilles = []
+  for (const p of pages) feuilles.push(cellulesPlanche(await Promise.all(p.map(lire))).filter(Boolean))
+  if (!feuilles.some((f) => f.length)) return message('Aucune carte à mettre dans le PDF.')
+  telecharger(new Blob([construirePdf(feuilles.filter((f) => f.length))], { type: 'application/pdf' }), 'planche-cartes.pdf')
+  message('PDF téléchargé.')
 }
 async function plancheTTS() {
   const cartes = projet.cartes.filter((c) => !TYPES[c.type].paysage).slice(0, 69)
@@ -2724,6 +2753,40 @@ async function carteDepuisReference(j) {
 }
 
 /** Importe des fichiers : les notres (.json), ceux du Card Maker de reference (.json d'une carte, .zip de cartes). */
+/** « Importer de MarvelCDB… » : on tape des codes (01004), des adresses ou un code de paquet (core) ; on récupère le texte et les chiffres, pas les images. */
+function dialogueMarvelCDB() {
+  const champ = el('textarea', { rows: 3, placeholder: '01004  01005a  https://marvelcdb.com/card/01010  ou un paquet : core' })
+  const etat = el('div', { class: 'aide' })
+  const d = dialogue('Importer de MarvelCDB',
+    el('div', { class: 'contenu', style: 'display:flex;flex-direction:column;gap:8px' },
+      el('div', { class: 'aide' }, 'Tape des codes de carte, des adresses marvelcdb.com ou le code d’un paquet (ex. core). Le texte et les chiffres arrivent dans le dossier ouvert ; les images ne sont pas reprises.'),
+      champ, etat),
+    [{ texte: 'Annuler' }, { texte: 'Importer', principal: true, action: async () => {
+      const demande = codesDepuisTexte(champ.value)
+      if (!demande.cartes.length && !demande.paquets.length) { etat.textContent = 'Aucun code reconnu.'; return false }
+      etat.textContent = 'Chargement…'
+      try {
+        const brutes = await chargerCartesMarvelCDB(demande)
+        let n = 0
+        let derniere = null
+        for (const j of brutes) {
+          const f = champsDepuisMarvelCDB(j)
+          if (!f) continue
+          const c = nouvelleCarte(f.type, 'en')
+          Object.assign(c.contenu, f.contenu)
+          c.dossier = dossierOuvert || 'Divers'
+          projet.cartes.push(c)
+          derniere = c
+          n++
+        }
+        if (!n) { etat.textContent = 'Aucune carte de ce type ne peut être importée.'; return false }
+        sauvegarderPlusTard()
+        ouvrirDossier(c_dossier(derniere), derniere.id)
+        message(`${n} carte(s) importée(s) de MarvelCDB.`)
+      } catch (e) { etat.textContent = 'Échec : ' + e.message; return false }
+    } }])
+}
+const c_dossier = (c) => c.dossier || 'Divers'
 async function importerFichiers(fichiers) {
   // 1) on LIT tout dans une zone de preparation (rien n'est change tant qu'on n'a pas choisi)
   const prep = { cartes: [], modeles: [], pochettes: [], styles: [], gabarits: {}, dossiers: {}, complet: false }
@@ -2989,6 +3052,7 @@ async function demarrer() {
   $('#b-comparer').addEventListener('click', () => ouvrirComparable(rendreCarte))
   $('#p-exporter').addEventListener('click', exporterProjet)
   $('#p-importer').addEventListener('click', () => $('#p-fichier').click())
+  $('#p-marvelcdb').addEventListener('click', dialogueMarvelCDB)
   $('#p-fichier').addEventListener('change', async (e) => {
     try { await importerFichiers([...e.target.files]) } catch (err) { message('Ouverture impossible : ' + err.message) }
     e.target.value = ''

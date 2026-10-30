@@ -451,6 +451,20 @@ export const DICO = {
 
 
   // sauvegarde complete (zip) et import
+  'Importer de MarvelCDB…': 'Import from MarvelCDB…',
+  'Importer de MarvelCDB': 'Import from MarvelCDB',
+  'Récupérer le texte et les chiffres de cartes de MarvelCDB (sans les images)': 'Get the text and numbers of cards from MarvelCDB (no images)',
+  'Tape des codes de carte, des adresses marvelcdb.com ou le code d’un paquet (ex. core). Le texte et les chiffres arrivent dans le dossier ouvert ; les images ne sont pas reprises.': 'Type card codes, marvelcdb.com links or a pack code (e.g. core). The text and numbers go into the open folder; images are not imported.',
+  'Aucun code reconnu.': 'No code recognised.',
+  'Chargement…': 'Loading…',
+  'Aucune carte de ce type ne peut être importée.': 'None of these card types can be imported.',
+  'Télécharger en PDF': 'Download as PDF',
+  'Préparation du PDF…': 'Preparing the PDF…',
+  'PDF téléchargé.': 'PDF downloaded.',
+  'Aucun carte à mettre dans le PDF.': 'No card to put in the PDF.',
+  'Numéro de carte (ex. 4/15), en bas à droite': 'Card number (e.g. 4/15), bottom right',
+  'Numéroter les cartes (1/N)…': 'Number the cards (1/N)…',
+  'Ce dossier est vide : rien à numéroter.': 'This folder is empty: nothing to number.',
   'Tout enregistrer (.zip)': 'Save everything (.zip)',
   'Tout le projet dans un seul fichier .zip : dossiers, templates, cartes, images. « Importer » le remet comme avant, sur n\'importe quel ordinateur.': 'The whole project in a single .zip file: folders, templates, cards, images. “Import” puts everything back as it was, on any computer.',
   'Importer une sauvegarde complète': 'Import a full backup',

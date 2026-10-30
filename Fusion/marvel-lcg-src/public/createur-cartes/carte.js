@@ -28,7 +28,7 @@ export const LIBELLES = {
 
 /** Les champs de contenu d'une carte (tout est facultatif). `langue` : 'en' (defaut) ou 'fr'. */
 export const CHAMPS_VIDES = {
-  langue: 'en', echelleTexte: 0, titre: '', unique: false, typeTexte: '', traits: '', regles: '', citation: '', ligneEnsemble: '', createur: '',
+  langue: 'en', echelleTexte: 0, titre: '', unique: false, typeTexte: '', traits: '', regles: '', citation: '', ligneEnsemble: '', createur: '', numero: '',
   // nombres : texte affiche (« 3 », « X », « — »), avec leur etoile (« * ») eventuelle
   cout: '', coutEtoile: false, thw: '', thwEtoile: false, thwConseq: 0, atk: '', atkEtoile: false, atkConseq: 0,
   def: '', defEtoile: false, rec: '', recEtoile: false, pv: '', pvEtoile: false, tailleMain: '', menaceDepart: '',
@@ -579,7 +579,7 @@ export async function dessinerCarte(canvas, spec, contenu, etat, dossierImages =
     })
   }
   for (const [cls, champ] of [['villainstagenew', 'etape'], ['set-line', 'ligneEnsemble'], ['c-line', 'createur']]) {
-    if (E[cls]) dans(E[cls], () => dessinerLigne(ctx, E[cls], contenu[champ]))
+    if (E[cls]) dans(E[cls], () => dessinerLigne(ctx, E[cls], cls === 'c-line' && contenu.numero ? `${contenu.createur ? contenu.createur + '   ' : ''}${contenu.numero}` : contenu[champ]))
   }
 
   // Panneau de texte : traits / regles / citation
