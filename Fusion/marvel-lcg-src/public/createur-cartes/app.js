@@ -106,9 +106,15 @@ function apresRapatriement() {
 function majIndicateurServeur() {
   const z = $('#etat-serveur')
   if (!z) return
-  z.hidden = synchro.etat === 'local'
-  z.className = 'etat-serveur'
+  z.className = 'etat-serveur doux'
   z.title = ''
+  if (synchro.etat === 'local') {
+    z.hidden = false
+    z.textContent = '💾 Enregistré dans ce navigateur seulement : pense à « Tout enregistrer (.zip) »'
+    z.title = 'Si tu effaces l’historique ou les données du navigateur, tes cartes disparaissent. Le fichier .zip te permet de tout retrouver.'
+    return
+  }
+  z.hidden = false
   if (synchro.etat === 'deconnecte') {
     z.classList.add('doux')
     z.replaceChildren('☁ Non connecté : enregistré dans ce navigateur seulement. ', el('a', { href: '/connexion' }, 'Se connecter'))

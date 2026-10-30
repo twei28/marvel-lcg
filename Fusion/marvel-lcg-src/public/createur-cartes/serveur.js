@@ -65,6 +65,9 @@ async function erreurDe(r) {
  *   - sauver() : demande la sauvegarde du projet dans le navigateur (les marques `sync` y sont)
  *   - apres(ids) : appele quand des cartes ont ete remplacees par celles du serveur (pour rafraichir la page)
  */
+// Sauvegarde sur le serveur desactivee pour tous (trop lourd). Remettre a true pour la reactiver (le code est intact).
+export const SYNC_ACTIVE = false
+
 export function creerSynchro(h) {
   const synchro = {
     etat: 'local', // 'local' | 'deconnecte' | 'connecte'
@@ -320,6 +323,7 @@ export function creerSynchro(h) {
   // ------------------------------------------------ demarrage
   /** Detecte l'API, puis fusionne. Ne leve jamais : au pire on reste en mode local. */
   synchro.demarrer = async () => {
+    if (!SYNC_ACTIVE) { synchro.onEtat(); return } // decision du 30/10 : rien sur le serveur, tout reste dans le navigateur + le fichier .zip
     let liste
     try {
       const r = await appeler('projets', { signal: AbortSignal.timeout(5000) })

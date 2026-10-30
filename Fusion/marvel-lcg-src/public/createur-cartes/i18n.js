@@ -266,6 +266,8 @@ export const DICO = {
   '☁ Enregistrement…': '☁ Saving…',
   '☁ Serveur injoignable : nouvel essai bientôt': '☁ Server unreachable: trying again soon',
   '☁ Un dossier ne tient pas sur le serveur : il reste dans ce navigateur': '☁ A folder does not fit on the server: it stays in this browser',
+  '💾 Enregistré dans ce navigateur seulement : pense à « Tout enregistrer (.zip) »': '💾 Saved in this browser only: remember to use “Save everything (.zip)”',
+  'Si tu effaces l’historique ou les données du navigateur, tes cartes disparaissent. Le fichier .zip te permet de tout retrouver.': 'If you clear your browsing history or site data, your cards are gone. The .zip file lets you restore everything.',
   '☁ Non connecté : enregistré dans ce navigateur seulement.': '☁ Not signed in: saved in this browser only.',
   'Se connecter': 'Sign in',
   'Versions sur le serveur': 'Versions on the server',
