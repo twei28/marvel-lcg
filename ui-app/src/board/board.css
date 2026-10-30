@@ -8534,6 +8534,52 @@
       animation: none;
     }
   }
+
+  /* INFOBULLE D'ANNULER (29/10/2026). Le `title` natif tient en une ligne, ne se
+     lit qu'apres une seconde et ne se met pas en forme : elle dit ici comment
+     « Annuler » se comporte (instantane ou rejeu). Posee sous le bouton, elle
+     apparait au survol ET au focus clavier, jamais au toucher (pas de survol). */
+  .bh-undo[data-infobulle] {
+    position: relative;
+  }
+
+  .bh-undo[data-infobulle]::after {
+    content: attr(data-infobulle);
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 580;
+    width: 260px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(24, 28, 36, 0.98);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    color: #cbd7e6;
+    font-size: 0.76rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+    white-space: normal;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: opacity 120ms ease-out 250ms, transform 120ms ease-out 250ms;
+  }
+
+  @media (hover: hover) {
+    .bh-undo[data-infobulle]:hover::after {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .bh-undo[data-infobulle]:focus-visible::after {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* --- Design essai (board/design-essai.ts) ----------------------------------

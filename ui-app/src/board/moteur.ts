@@ -375,6 +375,30 @@ export function ecrireReponseAmbiance(valeur: ReponseAmbiance): void {
 }
 
 /**
+ * « L'explication d'Annuler a ete lue » (voir ModaleAnnuler.tsx). Reglage
+ * PERSONNEL, localStorage, meme modele que la reponse d'ambiance ci-dessus.
+ * Absent -> la modale s'ouvre a chaque clic ; seule une case cochee ecrit.
+ */
+export const CLE_ANNULER_EXPLIQUE = 'marvel-board-annuler-explique'
+
+export function lireAnnulerExplique(): boolean {
+  try {
+    return window.localStorage.getItem(CLE_ANNULER_EXPLIQUE) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function ecrireAnnulerExplique(valeur: boolean): void {
+  try {
+    if (valeur) window.localStorage.setItem(CLE_ANNULER_EXPLIQUE, '1')
+    else window.localStorage.removeItem(CLE_ANNULER_EXPLIQUE)
+  } catch {
+    /* idem */
+  }
+}
+
+/**
  * Le libelle affiche dans le panneau Options pour CE mode precis.
  *
  * Une seule source pour l'affichage et pour le test : l'ancien ternaire a

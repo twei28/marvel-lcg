@@ -420,6 +420,18 @@ class Controller:
                     )
                 )
 
+                # « Annuler » demande par le fil web (`Cheat.do_undo`) : on est ici sur le fil du jeu, avec la pile
+                # d'appels de l'action, la seule que `SignalRestaurer` peut defaire. La demande a pu perimer entre
+                # le clic et ici (l'action a fini, la phase a change) : on la reverifie, sans rejeu de secours.
+                undo = controller_manager.undo
+                if undo.restauration_demandee:
+                    undo.restauration_demandee = False
+                    en_action = undo.debut_action != 0
+                    if undo.pile_instantanes is not None and undo.pile_instantanes.peut_annuler(en_action) \
+                            and not message.world.scene.manuel_commands:
+                        from game.world.instantane import SignalRestaurer
+                        raise SignalRestaurer(en_action)
+
                 if user_input == None:
                     # LES GESTES D'ABORD, LE RENDU ENSUITE (correctif du
                     # constat C1 de la revue finale, 20/09/2026). `DoGetInput`

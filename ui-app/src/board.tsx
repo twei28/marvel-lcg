@@ -230,6 +230,7 @@ import {
   ReglagesApercuAmbiance,
 } from './board/CoucheMeteo'
 import { ModaleAmbiance } from './board/ModaleAmbiance'
+import { ModaleAnnuler } from './board/ModaleAnnuler'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { publierEtape, useSuiviDuJoueur } from './board/etape-partagee'
 import { appliquerEtiquettesTable, lireEtiquettesTable } from './board/etiquettes-table'
@@ -249,6 +250,7 @@ import {
   ecrireSauvegardeAuto,
   estSpectateur,
   libelleModePhase,
+  lireAnnulerExplique,
   lireFinTourAuto,
   lireModePhaseMechant,
   lireReponseAmbiance,
@@ -298,7 +300,7 @@ import { avecVues, idsRegardes, lotDejaVu } from './board/lots-regardes'
 import { estRegardeePar, isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
 
 /** Ce qui, ouvert par-dessus le plateau, garde Echap pour se fermer. */
-const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond`
+const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond, .annuler-modale`
 
 // Migration EXPLICITE des anciens reglages de la phase du mechant (voir
 // moteur.ts, `migrerReglagesPhase`), faite UNE FOIS, ici, a l'evaluation du
@@ -4228,7 +4230,18 @@ export function PagePartie({
     // du client d'origine. L'espace est encode par fetch, le '/' est conserve.
     fetch('/debug?/undo auto').catch(() => undefined)
   }, [manuel, annulerGesteManuel])
-  annulerClavier.current = annulerCoup
+  // LE BOUTON DE LA BARRE ET LA TOUCHE U expliquent d'abord (ModaleAnnuler), tant que le joueur n'a pas coche « ne plus
+  // me montrer ça ». Le bandeau du telephone et le menu « … » gardent l'annulation directe : le bandeau est lui-meme
+  // la question, cinq secondes apres l'action. En manuel, c'est le Ctrl+Z des gestes, que la fenetre ne decrit pas.
+  const [annulerOuvert, setAnnulerOuvert] = useState(false)
+  const demanderAnnulation = useCallback(() => {
+    if (manuel || lireAnnulerExplique()) {
+      annulerCoup()
+      return
+    }
+    setAnnulerOuvert(true)
+  }, [manuel, annulerCoup])
+  annulerClavier.current = demanderAnnulation
 
   // ANNULER L'ACTION EN COURS (croix de la boite de question, touche Echap).
   // `/undo action` remonte a la question du tour ou la carte a ete choisie,
@@ -4975,6 +4988,15 @@ export function PagePartie({
       )}
 
       <CoucheMeteo world={etat.monde} active={meteo} apercu={apercuMeteo} />
+      {annulerOuvert ? (
+        <ModaleAnnuler
+          onConfirmer={() => {
+            setAnnulerOuvert(false)
+            annulerCoup()
+          }}
+          onFermer={() => setAnnulerOuvert(false)}
+        />
+      ) : null}
       {/* Explique l'ambiance qui s'allume, au lieu de la subir sans un mot.
           Reglage PERSONNEL : elle ne change rien pour les autres joueurs et
           ne retient pas le moteur, la partie continue derriere. */}
@@ -5504,8 +5526,11 @@ export function PagePartie({
             <button
               type="button"
               className="bh-bouton bh-undo"
-              onClick={annulerCoup}
-              title={t('Annuler la dernière action')}
+              onClick={demanderAnnulation}
+              aria-label={t('Annuler la dernière action')}
+              data-infobulle={t(
+                'Annule ta dernière action et remet la partie comme avant (cartes, jetons, pioche). Instantané pendant ton tour ; ailleurs, la partie est rejouée et peut prendre quelques secondes. Raccourci : U.'
+              )}
             >
               {/* « Annuler » se traduit ici « Undo » (le dictionnaire réserve
                   « Annuler » -> « Cancel » pour l'assistant d'action). */}

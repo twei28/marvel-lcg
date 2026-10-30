@@ -81,8 +81,18 @@ async function partie(page: Page) {
   // reviendrait en main sans y etre jouable. En vraie partie, la carte arrive
   // par une pioche, jamais par un geste.
   await attendreQuestion(request, (q) => q.event_name === 'WhenPlayerInTurn')
-  const attaque = (await lireDemande(request))?.options.find((o) => /^Attack$/i.test(o.name))
-  expect(attaque, 'pas d’attaque possible pour Spider-Man').toBeTruthy()
+  let demandeDuTour = await lireDemande(request)
+  // Spider-Man commence en alter ego. `ouvrirEtMettreEnPlace` repond a tout tant que la phase est celle de la mise
+  // en place : selon la course entre son sondage et le moteur, la premiere question du tour est deja repondue
+  // (« Change Form », premiere option) ou non. On ne dépend plus de cette course : on change de forme au besoin.
+  const changer = demandeDuTour?.options.find((o) => /^Change[ _]Form$/i.test(o.name))
+  if (changer && !demandeDuTour?.options.some((o) => /^Attack$/i.test(o.name))) {
+    expect(await choisir(request, changer)).toBe(true)
+    await attendreQuestion(request, (q) => q.event_name === 'WhenPlayerInTurn')
+    demandeDuTour = await lireDemande(request)
+  }
+  const attaque = demandeDuTour?.options.find((o) => /^Attack$/i.test(o.name))
+  expect(attaque, `pas d’attaque possible pour Spider-Man (${demandeDuTour?.options.map((o) => o.name).join(', ')})`).toBeTruthy()
   expect(await choisir(request, attaque!)).toBe(true)
 }
 

@@ -14,6 +14,8 @@
 - **Un puzzle** (créer, publier, résoudre) : `puzzle/GUIDE-CREATEUR.md` ; comment ça marche, où est quoi, les pièges et les
   tests : `puzzle/GUIDE-TECHNIQUE.md` ; le plan et l'avancement : `puzzle/PLAN.md`
 - Comprendre un mot-clé (officiel ou maison) : `reference/mots-cles/`
+- Comprendre ou modifier « Annuler » (instantané du tour, pourquoi pas `deepcopy`, les pièges) :
+  `reference/ANNULER-INSTANTANE.md`
 - Où vit chaque type de fichier, les deux copies du moteur, le format de
   `cards.json`, l'API de scripting : `reference/GUIDE-CREATION-CONTENU.md`
 

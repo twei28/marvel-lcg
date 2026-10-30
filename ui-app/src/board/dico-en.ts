@@ -406,6 +406,16 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Déconnexion complète (surtout multijoueur en ligne)':
     'Full disconnection (mainly online multiplayer)',
   'Annuler la dernière action': 'Undo the last action',
+  'Annuler ta dernière action ?': 'Undo your last action?',
+  'La partie revient exactement comme avant ta dernière action : cartes, jetons, pioche et hasard.':
+    'The game goes back exactly as it was before your last action: cards, tokens, deck and randomness.',
+  'Pendant ton tour, c’est instantané. Ailleurs (phase du méchant, début de tour), la partie est rejouée depuis le début et peut prendre quelques secondes.':
+    'During your turn it is instant. Elsewhere (villain phase, start of turn), the game is replayed from the start and can take a few seconds.',
+  'Tu peux annuler plusieurs actions de suite.': 'You can undo several actions in a row.',
+  'Garder mon coup': 'Keep my move',
+  'Oui, annuler': 'Yes, undo',
+  'Annule ta dernière action et remet la partie comme avant (cartes, jetons, pioche). Instantané pendant ton tour ; ailleurs, la partie est rejouée et peut prendre quelques secondes. Raccourci : U.':
+    'Undoes your last action and puts the game back as it was (cards, tokens, deck). Instant during your turn; elsewhere the game is replayed and can take a few seconds. Shortcut: U.',
   'Animations activées — cliquer pour couper': 'Animations on — click to turn them off',
   'Animations coupées — cliquer pour activer': 'Animations off — click to turn them on',
   'Sons activés — cliquer pour couper': 'Sounds on — click to turn them off',

@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-29",
+        genre: "jeu",
+        fr: "« Annuler » est instantané pendant ton tour : la partie revient exactement comme avant ta dernière action, sans être rejouée depuis le début. Une fenêtre l'explique (tu peux cocher « Ne plus me montrer ça »), et une info-bulle s'ouvre au survol du bouton.",
+        en: "Undo is instant during your turn: the game goes back exactly as it was before your last action, without being replayed from the start. A window explains it (you can tick \"Do not show me this again\"), and a tooltip opens when you hover the button.",
+    },
+    {
+        date: "2026-10-29",
         genre: "coulisses",
         fr: "Le créateur de cartes est ouvert à tous les comptes (lien en haut de page) : 23 types de cartes, dos, packs .zip, impression, et un travail enregistré sur le serveur avec ses versions. Un bouton montre aussi une vraie carte officielle comparable pour juger la longueur du texte.",
         en: "The card maker is now open to every account (link at the top of the page): 23 card types, card backs, .zip packs, printing, and your work saved on the server with its versions. A button also shows a real comparable official card, to judge the length of your text.",
