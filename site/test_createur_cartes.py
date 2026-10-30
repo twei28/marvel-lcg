@@ -33,6 +33,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.makedirs(os.path.join(_tmp, "public", "createur-cartes", "img"))
 with open(os.path.join(_tmp, "public", "createur-cartes.html"), "w") as f:
     f.write("<!doctype html><title>createur</title>")
+with open(os.path.join(_tmp, "public", "atelier-couvertures.html"), "w") as f:
+    f.write("<!doctype html><title>atelier</title>")
 with open(os.path.join(_tmp, "public", "createur-cartes", "app.js"), "w") as f:
     f.write("console.log(1)")
 with open(os.path.join(_tmp, "public", "secret.html"), "w") as f:
@@ -152,7 +154,7 @@ corps_handler = source[source.index("class Handler"):source.index("def main()")]
 routes = set()
 for m in re.finditer(r'self\.chemin\s*(?:==|in|\.startswith\()\s*\(?((?:"[^"]*"\s*,?\s*)+)', corps_handler):
     routes.update(re.findall(r'"(/[^"]*)"', m.group(1)))
-routes -= {"/createur-cartes.html"}
+routes -= {"/createur-cartes.html", "/atelier-couvertures.html"}
 verifier("routes extraites du serveur (au moins 30)", len(routes) >= 30, len(routes))
 PERMISES = {"/connexion", "/deconnexion", "/inscription", "/reinitialisation",
             "/favicon.ico", "/favicon.png"}
@@ -213,6 +215,10 @@ code, _c, _t = appel("GET", "/createur-cartes/app.js")
 verifier("sans session : statique refuse", code == 303, code)
 code, _c, _t = appel("GET", "/createur-cartes.html", cookie=cook_adm)
 verifier("admin : page du createur", code == 200, code)
+code, corps, tetes = appel("GET", "/atelier-couvertures.html", cookie=cook_alice)
+verifier("« Images de pack » servie (compte connecte)", code == 200 and b"atelier" in corps and "text/html" in tetes["content-type"], code)
+code, _c, _t = appel("GET", "/atelier-couvertures.html")
+verifier("« Images de pack » sans session : redirection vers la connexion", code == 303, code)
 for mauvais in ("/createur-cartes/../secret.html", "/createur-cartes/%2e%2e/secret.html",
                 "/createur-cartes/..%2fsecret.html", "/createur-cartes/img/../../secret.html",
                 "/createur-cartes/%2e%2e%2f%2e%2e%2fsecret.json", "/createur-cartes//etc/passwd",

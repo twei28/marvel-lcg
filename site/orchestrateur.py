@@ -7196,8 +7196,8 @@ class Handler(BaseHTTPRequestHandler):
     # pas ouvrir une porte, il ferme une page de trop. Public = sans session
     # de toute facon (connexion, inscription, mot de passe oublie, deconnexion).
     _CREATEUR_EXACT = frozenset({
-        "/createur-cartes.html", "/connexion", "/deconnexion", "/inscription",
-        "/reinitialisation", "/favicon.ico", "/favicon.png"})
+        "/createur-cartes.html", "/atelier-couvertures.html", "/connexion", "/deconnexion",
+        "/inscription", "/reinitialisation", "/favicon.ico", "/favicon.png"})
     _CREATEUR_PREFIXES = ("/createur-cartes/", "/api/createur/")
 
     def _chemin_createur_permis(self) -> bool:
@@ -7238,8 +7238,11 @@ class Handler(BaseHTTPRequestHandler):
         """Le fichier du jeu que ce chemin designe, ou None. Aucune sortie du
         dossier public du jeu : segments filtres, puis realpath verifie."""
         racine = os.path.realpath(DOSSIER_PUBLIC_JEU)
-        if self.chemin == "/createur-cartes.html":
-            relatif = ["createur-cartes.html"]
+        # « Images de pack » (atelier-couvertures.html) : une page seule, sans API, qui se
+        # rend dans le navigateur ; servie comme le createur, au meme titre (30/10/2026 :
+        # le menu « Que veux-tu fabriquer ? » y renvoyait et le site repondait « Introuvable »).
+        if self.chemin in ("/createur-cartes.html", "/atelier-couvertures.html"):
+            relatif = [self.chemin[1:]]
         else:
             brut = urllib.parse.unquote(self.chemin[len("/createur-cartes/"):])
             if "\x00" in brut or "\\" in brut:
@@ -7259,7 +7262,7 @@ class Handler(BaseHTTPRequestHandler):
         """Traite les routes du createur de cartes. True si la requete est la
         sienne (reponse envoyee), False pour laisser le reste du site faire."""
         chemin = self.chemin
-        statique = (chemin == "/createur-cartes.html"
+        statique = (chemin in ("/createur-cartes.html", "/atelier-couvertures.html")
                     or chemin.startswith("/createur-cartes/"))
         api = chemin.startswith("/api/createur/")
         if not (statique or api):
