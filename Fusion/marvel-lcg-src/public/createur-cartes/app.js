@@ -1221,6 +1221,108 @@ function rendreGrilles() {
 function rendreAccueil() {
   if (!$('#grilles')) construireAccueil()
   rendreGrilles()
+  majRappelSauvegarde()
+}
+
+/** « Vérifier le dossier » : ce qui manque ou se répète avant d'exporter (clic sur une ligne = ouvrir la carte). */
+function problemesDossier(d) {
+  const liste = []
+  const nom = (c) => c.contenu.titre || tr('(sans titre)')
+  const numeros = new Map()
+  const titres = new Map()
+  for (const c of d.cartes) {
+    if (!c.contenu.titre) liste.push({ c, texte: 'Pas de titre' })
+    if (!c.art.blob && !(c.artDevant?.blob)) liste.push({ c, texte: 'Pas d’illustration' })
+    if (c.contenu.numero) numeros.set(c.contenu.numero, [...(numeros.get(c.contenu.numero) ?? []), c])
+    if (c.contenu.titre) titres.set(c.contenu.titre.toLowerCase(), [...(titres.get(c.contenu.titre.toLowerCase()) ?? []), c])
+  }
+  for (const [n, cs] of numeros) if (cs.length > 1) for (const c of cs) liste.push({ c, texte: `Numéro ${n} en double` })
+  const avecNumero = d.cartes.filter((c) => c.contenu.numero).length
+  if (avecNumero && avecNumero < d.cartes.length) for (const c of d.cartes) if (!c.contenu.numero) liste.push({ c, texte: 'Pas de numéro (les autres en ont un)' })
+  for (const [, cs] of titres) if (cs.length > 1 && !cs.every((c) => c.type !== cs[0].type ? false : false)) for (const c of cs) liste.push({ c, texte: `Titre « ${nom(c)} » en double`, doux: true })
+  return liste
+}
+function dialogueVerification(d) {
+  const probs = problemesDossier(d)
+  const corps = probs.length
+    ? el('div', { class: 'assistant-pile' }, ...probs.map((p) => el('button', { type: 'button', class: 'carte-liste', onclick: (e) => { e.target.closest('dialog').close(); ouvrirDossier(d.nom, p.c.id) } },
+      el('span', {}, p.c.contenu.titre || tr('(sans titre)')), el('span', { class: 'compte' }, ' — ' + tr(p.texte)))))
+    : el('p', { class: 'assistant-aide' }, `✔ ${d.cartes.length} carte(s) vérifiée(s) : titre, illustration, numéros… tout est bon.`)
+  dialogue(`Vérifier « ${d.nom} »`, el('div', {}, el('p', { class: 'aide' }, probs.length ? `${probs.length} point(s) à regarder (rien n’empêche d’exporter) :` : ''), corps))
+}
+/** Toutes les cartes du dossier en vignettes, d'un coup d'œil. */
+async function dialoguePlancheApercu(d) {
+  if (!d.cartes.length) return message('Ce dossier est vide : rien à montrer.')
+  const grille = el('div', { style: 'display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px' })
+  const dlg = dialogue(`Aperçu de « ${d.nom} »`, el('div', { style: 'min-width:min(900px,90vw)' }, grille), [{ texte: 'Fermer' }])
+  for (const c of d.cartes) {
+    const toile = await rendreCarte(c)
+    const k = 300 / Math.max(toile.width, toile.height)
+    const r = document.createElement('canvas')
+    r.width = Math.round(toile.width * k); r.height = Math.round(toile.height * k)
+    r.getContext('2d').drawImage(toile, 0, 0, r.width, r.height)
+    const img = el('img', { src: r.toDataURL('image/jpeg', 0.8), alt: c.contenu.titre, style: 'width:100%;cursor:pointer;display:block', title: c.contenu.titre, onclick: () => { dlg.close(); ouvrirDossier(d.nom, c.id) } })
+    if (!dlg.isConnected) return
+    grille.append(img)
+  }
+}
+/** Un lien qui contient le dossier (texte et réglages, SANS les images), compressé dans l'adresse : aucun serveur, aucun compte. */
+const versBase64Url = (octets) => btoa(String.fromCharCode(...octets)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+const depuisBase64Url = (t) => Uint8Array.from(atob(t.replace(/-/g, '+').replace(/_/g, '/')), (ch) => ch.charCodeAt(0))
+async function compresser(texte, mode) {
+  const flux = new Blob([texte]).stream().pipeThrough(new CompressionStream(mode))
+  return new Uint8Array(await new Response(flux).arrayBuffer())
+}
+async function copierLienPartage(d) {
+  if (!d.cartes.length) return message('Ce dossier est vide : rien à partager.')
+  const cartes = []
+  for (const c of d.cartes) {
+    const j = await serialiser(c)
+    for (const k of ['art', 'artDevant', 'tete']) j[k].image = null
+    j.verso = { ...j.verso, image: null }
+    j.libres = []
+    cartes.push(j)
+  }
+  const doc = { format: 'createur-cartes', version: 3, cartes, dossiers: { [d.nom]: projet.dossiers?.[d.nom] ?? { genre: 'divers', ordre: 0 } }, gabarits: projet.gabarits?.[d.nom] ? { [d.nom]: projet.gabarits[d.nom] } : {} }
+  const octets = await compresser(JSON.stringify(doc), 'gzip')
+  const lien = `${location.origin}${location.pathname}#partage=${versBase64Url(octets)}`
+  if (lien.length > 60000) return message('Ce dossier est trop gros pour tenir dans un lien : utilise « Exporter le pack » ou « Tout enregistrer ».')
+  try { await navigator.clipboard.writeText(lien); message(`Lien copié (${Math.round(lien.length / 1000)} Ko). Il contient le texte et les réglages, pas les images.`) }
+  catch { dialogue('Lien de partage', el('textarea', { rows: 5, readonly: true, style: 'width:100%' }, lien)) }
+}
+/** À l'ouverture : si l'adresse porte un partage (#partage=…), on l'importe comme un fichier. */
+async function ouvrirPartageDansAdresse() {
+  const m = /^#partage=([\w-]+)$/.exec(location.hash)
+  if (!m) return
+  history.replaceState(null, '', location.pathname + location.search)
+  try {
+    const texte = new TextDecoder().decode(await compresser2(depuisBase64Url(m[1])))
+    await importerFichiers([new File([texte], 'partage.json', { type: 'application/json' })])
+    message('Dossier partagé importé (sans les images).')
+  } catch (e) { message('Lien de partage illisible : ' + e.message) }
+}
+async function compresser2(octets) {
+  const flux = new Blob([octets]).stream().pipeThrough(new DecompressionStream('gzip'))
+  return new Uint8Array(await new Response(flux).arrayBuffer())
+}
+
+/** Rappel : plus de 7 jours (ou jamais) sans « Tout enregistrer (.zip) » alors qu'il y a des cartes. */
+const CLE_DERNIERE_SAUVEGARDE = 'mc-creator-derniere-sauvegarde'
+const lireDerniereSauvegarde = () => { try { return Number(localStorage.getItem(CLE_DERNIERE_SAUVEGARDE)) || 0 } catch { return 0 } }
+function noterSauvegarde() { try { localStorage.setItem(CLE_DERNIERE_SAUVEGARDE, String(Date.now())) } catch {} }
+function majRappelSauvegarde() {
+  let z = $('#rappel-sauvegarde')
+  if (!z) {
+    z = el('div', { id: 'rappel-sauvegarde', class: 'aide', style: 'margin:8px 0;padding:8px 12px;border:1px solid #4d7fd0;background:#12203a' })
+    $('#vue-accueil').prepend(z)
+  }
+  const ancien = Date.now() - lireDerniereSauvegarde() > 7 * 24 * 3600 * 1000
+  const a = vraiesCartes().length > 0 || vraiesPochettes().length > 0
+  z.hidden = !(a && ancien)
+  if (z.hidden) return
+  const jamais = !lireDerniereSauvegarde()
+  z.replaceChildren(jamais ? 'Tes cartes ne sont que dans ce navigateur. ' : 'Dernière sauvegarde il y a plus de 7 jours. ',
+    el('button', { class: 'btn petit', type: 'button', onclick: async () => { await exporterProjet(); majRappelSauvegarde() } }, 'Tout enregistrer (.zip)'))
 }
 
 function menuDossier(ancre, d) {
@@ -1234,6 +1336,9 @@ function menuDossier(ancre, d) {
       d.cartes.forEach((c, i) => { c.contenu.numero = `${i + 1}/${n}` })
       sauvegarderPlusTard(); rendreGrilles(); message(`${n} carte(s) numérotée(s), dans l’ordre du dossier.`)
     }],
+    ['Vérifier le dossier…', () => dialogueVerification(d)],
+    ['Planche d’aperçu…', () => dialoguePlancheApercu(d)],
+    ['Copier un lien de partage (texte)…', () => copierLienPartage(d)],
     ['Exporter le pack…', () => {
       if (!d.cartes.length) return message('Ce dossier est vide : rien à exporter.')
       ouvrirExportPack({ cartes: () => projet.cartes.filter((c) => !c.brouillon), carte: () => d.cartes[0], rendre: rendreCarte, rendreVerso, serialiser, pochettes: pochettesPourPack })
@@ -2661,6 +2766,7 @@ async function exporterProjet() {
   const lisezmoi = `MC Creator : sauvegarde complete (${doc.cartes.length} carte(s), ${doc.pochettes.length} pochette(s), ${Object.keys(doc.dossiers).length} dossier(s)).\n\nPour tout retrouver sur un autre ordinateur : ouvre MC Creator, clique sur « Importer… » (colonne de droite) et choisis ce fichier .zip.\nTu pourras alors AJOUTER son contenu a ton projet, ou le REMPLACER entierement : dossiers, couleurs des templates, cartes, images.\n\nGarde ce fichier en lieu sur : tes cartes ne sont conservees que dans ton navigateur.\n`
   const zip = creerZip([{ nom: 'projet.json', octets: new TextEncoder().encode(JSON.stringify(doc)) }, { nom: 'LISEZ-MOI.txt', octets: new TextEncoder().encode(lisezmoi) }])
   telecharger(zip, `mc-creator-${new Date().toISOString().slice(0, 10)}.zip`)
+  noterSauvegarde()
 }
 
 // ---------------------------------------------------------------- import des fichiers du Card Maker de reference
@@ -3063,6 +3169,7 @@ async function demarrer() {
   brancherPoignees()
   brancherMenuExport()
   afficherAccueil()
+  ouvrirPartageDansAdresse()
   synchro.demarrer() // sans attendre : la page marche tout de suite avec ce qu'elle a, la fusion arrive ensuite
 }
 /** Remet un projet charge (disque, serveur, version) dans l'etat que la page attend. */
