@@ -981,6 +981,28 @@ class RunPuzzle:
         from game.operate.faces import Faces
         Faces.AddToVictoryDisplay([self.FindOrCreateFace(c) for c in cards], self.debug_rule)
 
+    def AddTraitToPaper(self, card_id: str, trait: str) -> None:
+        """AJOUT (31/10/2026, pack buffy) : donne un TRAIT a la fiche `card_id` pour la duree du processus (chaque cas de test a le
+        sien). Sert a faire jouer le role d'une carte ABSENTE du catalogue par une carte officielle de substitution (le trait
+        HELLMOUTH, qu'aucune carte livree ne porte). Les faces deja creees relisent la fiche (`ResetTrait`)."""
+        from cards.database import CardsDB
+        paper = CardsDB.FindCardPaper(card_id)
+        if trait not in paper.traits:
+            paper.traits.append(trait)
+        # Les cartes DEJA creees (le deck de rencontre du scenario l'est des la mise en place) ont calcule leurs traits a leur creation :
+        # on leur fait relire la fiche, sinon l'aide ne marche que sur une carte creee APRES elle.
+        for carte in self.world.object_manager.card_dict.values():
+            for face in carte.printed_faces:
+                if face.paper.card_id == card_id:
+                    face.ResetTrait()
+
+    def RenamePaper(self, card_id: str, name: str) -> None:
+        """AJOUT (31/10/2026, pack buffy) : renomme la fiche `card_id` pour la duree du processus. Meme usage que `AddTraitToPaper` :
+        une carte officielle de substitution joue le role d'une carte nommee par un script (Mr. Pointy, Watcher's Guidance...)
+        mais absente du catalogue. A appeler AVANT de creer la carte."""
+        from cards.database import CardsDB
+        CardsDB.FindCardPaper(card_id).name = name
+
     def CreateLeadsDeck(self, *cards: CardName) -> None:
         """AJOUT (22/10/2026, Punisher MC×DC 2026) : cree le paquet LEADS (pistes) du banc avec ces cartes (le DESSUS est choisi en
         n'en donnant qu'une). Proprietaire du paquet : le premier mechant en jeu."""
@@ -1630,6 +1652,14 @@ class RunPuzzle:
         renvoie a la main, avec le descripteur de campagne de la scene."""
         from game.message import Message
         Message.WhenGameBeginSetup(self.world.scene.campaign, self.world).Send()
+
+    def SendCardSetup(self, card: CardName) -> None:
+        """AJOUT (31/10/2026, pack buffy) : renvoie `WhenCardSetup` (les capacites `AbilityFactory.WhenCardSetup("This", ..)`, type Setup d'une
+        identite) pour la carte nommee. Le message part une fois pendant la mise en place du monde, AVANT le montage d'un cas : sans cette
+        aide, un Setup qui lit le deck de rencontre ne peut etre mesure que sur le deck du scenario, pas sur un deck monte par le cas."""
+        from game.message import Message
+        face = self.FindOrCreateFace(card)
+        Message.WhenCardSetup(face, False).Send()
 
     def SwapWithDeckTop(self, card: CardName, player: int=0, siege: int|None=None):
         """« Switch Card with top Deck Card » d'OCTGN (menu de la main).

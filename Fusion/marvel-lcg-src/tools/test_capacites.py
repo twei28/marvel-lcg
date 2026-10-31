@@ -56784,6 +56784,7 @@ IMPRIME = {
     "hazard": "printed_hazard",
     "retaliate": "printed_retaliate",
     "villainous": "printed_villainous",
+    "peril": "printed_peril",  # AJOUT 31/10/2026 (pack buffy, Hush : « each encounter card gains peril »)
     # AJOUT du 08/09/2026 (pack superior_spider_man) : `su015` Goblin Protocol
     # fait compter la menace des sbires pistes dans le seuil du complot
     # principal. Sans cette entree, `attributs_carte` levait `KeyError:

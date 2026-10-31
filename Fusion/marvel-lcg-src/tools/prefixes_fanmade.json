@@ -886,6 +886,13 @@
    "cartes": 17,
    "depuis": "2026-10-30",
    "note": "Cree le 30/10/2026 depuis un Drive partage (dossier « Major Victory »). mv001a/b identite (Major Victory / Vance Astro), mv002-mv011 deck de heros (Captain America's Shield, Founder of the Guardians, Containment Suit, Shield Block x2, Psychokinetic Blast x3, Telekinetic Throw, Psychic Link x2, Victory's Command x2, The Captain America, Nikki), mv012 obligation Damaged Containment Suit (dossier « Not so good stuff »), mv013-mv016 nemesis (Michael Korvac, Korvac's Future, Judgment of Korvac x2, Accept Perfection). Pas de decklist imprimee. Les 17 cartes sont scriptees."
+  },
+  "bf": {
+   "pack": "buffy",
+   "libelle": "237. Custom (Buffy)",
+   "cartes": 34,
+   "depuis": "2026-10-31",
+   "note": "Cree le 31/10/2026 depuis le Drive partage (dossier « Buffy (Vampire Slayer) (12-25) », RyCoRan) puis complete par les images envoyees par l'utilisateur. bf001a/b identite (Buffy / Buffy Summers) ; bf002-bf005 Giles, Slay Time x2, Bring on the Night x2, Slayer Strike x2 ; bf006 Faith (allie, Linked) ; bf007 Slayer Scythe (Linked) ; bf008-bf014 Pointy End x2, Crimson Scythe, Sunnydale Library, Watcher's Guidance, Redeemed, Stakeout, Mr. Pointy ; bf015 Kendra, bf016 Willow, bf017 Angel (Linked), bf018 Chosen One (Linked), bf019 Prophecy Girl (Linked) ; bf020-bf024 set nemesis (Welcome to Sunnydale, Spike, Drusilla, Hush, The Harvest) ; bf025 obligation Normal Again ; bf026 The Gentlemen (Linked Hush) ; bf027-bf032 paquet HELLMOUTH (Harvest, Becoming, Enemies Aligned, The Master, Faith sbire, Angelus). Fiche modele buffy_redeemed_ally (allie SLAYER vide, pour Redeemed). Traits SLAYER, WATCHER, HELLMOUTH ajoutes a l'enum."
   }
  }
 }

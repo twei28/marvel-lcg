@@ -199,6 +199,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "PSYCHIATRIST",  # CORRECTIF : trait du pack custom agent_13 (Rainy)
         "REPTILIAN", "A.I.M. SCIENTIST", "MULTIVERSE", "CORRUPT", "TRAP!", "UNDERLING",  # CORRECTIF : traits du pack custom web_of_deceit (Ripper3)
         "CLONE",  # CORRECTIF : trait du pack custom scarlet_spider (CptScorp)
+        "SLAYER", "WATCHER", "HELLMOUTH",  # CORRECTIF : traits du pack custom buffy (RyCoRan, prefixe `bf`)
         "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
@@ -412,6 +413,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "tic_tac_toe_1_3", "tic_tac_toe_2_3", "tic_tac_toe_3_3",
 
         'shift', 'pursuit', 'chi', 'ratings', 'clue', 'stake',
+        'sanity', # CORRECTIF (31/10/2026) : compteur « sanity » de l'obligation bf025 Normal Again (pack custom buffy).
         'blood', 'thirst', # CORRECTIF : compteurs du pack custom blade (Rainy), 07/09/2026. 'blood' sur l'identite, 'thirst' sur l'obligation (Uses). 'stake' existait deja (Mojo 39048).
         'invocation', 'teleport', 'sword', 'mangetic',
         'power', 'backup', 'soul', 'fatigue', 'research', 'psi', 'leadership', 'boom',

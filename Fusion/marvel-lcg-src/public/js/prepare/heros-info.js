@@ -1970,4 +1970,15 @@ export const HEROS_INFO = {
         ennemisEn: "Michael Korvac, the Badoon",
         apparition: "Marvel Super-Heroes #18 (1969)",
     },
+    "bf001a": {
+        bio: "Buffy Summers est la Tueuse : une jeune femme choisie pour affronter les vampires, les démons et les forces des ténèbres. Lycéenne à Sunnydale, ville bâtie sur une Bouche de l'Enfer, elle mène son combat épaulée par son Observateur, Rupert Giles, et par sa bande d'amis. Sa force, sa rapidité et ses pieux ne valent pourtant rien sans ceux qui l'entourent.",
+        bioEn: "Buffy Summers is the Slayer: a young woman chosen to stand against vampires, demons and the forces of darkness. A high-school student in Sunnydale, a town built on a Hellmouth, she fights alongside her Watcher, Rupert Giles, and her circle of friends. Her strength, speed and stakes count for little without the people around her.",
+        civil: "Buffy Summers",
+        base: "Sunnydale, Californie",
+        baseEn: "Sunnydale, California",
+        equipes: "Scooby-Gang",
+        equipesEn: "The Scooby Gang",
+        ennemis: "The Master, Harvest",
+        apparition: "Buffy the Vampire Slayer (1992)",
+    },
 };

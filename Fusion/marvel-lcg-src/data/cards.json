@@ -135645,5 +135645,585 @@
    "text": "Peril.\n<b>When Revealed</b>: Choose:\n• Find Michael Korvac and reveal him. Place 4 threat on Korvac's Future.\n• Discard the highest cost card you control."
   }
  ],
- "checksum": "dd95df144f3a82a920e0bb6169f2986571183f2c2da8fe1793c926f87e04f613"
+ "buffy": [
+  {
+   "card_id": "bf001a",
+   "type": "Hero",
+   "name": "* Buffy",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "1",
+    "HS": "5"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": "Buffy",
+   "text": "Buffy gets +1 to each basic power for each [[HELLMOUTH]] side scheme in the victory display.\n<i>Chosen One</i> — <b>Response</b>: After a minion enters play, draw 1 card. <i>(Limit once per round.)</i>"
+  },
+  {
+   "card_id": "bf001b",
+   "type": "AlterEgo",
+   "name": "* Buffy Summers",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "STUDENT"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Setup</b>: Set the [[HELLMOUTH]] deck aside, out of play. Find the Harvest and The Master, and reveal them.\n<i>Chosen</i> — <b>Action</b>: Search your deck and discard pile for Mr. Pointy and add it to your hand."
+  },
+  {
+   "card_id": "bf002",
+   "type": "Ally",
+   "name": "* Rupert Giles",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WATCHER"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Response</b>: After Rupert Giles enters play, remove 2 threat from a scheme (3 threat instead if Watcher's Guidance is in play).\n<i>\"Sometimes the most adult thing you can do is...ask for help when you need it.\"</i>"
+  },
+  {
+   "card_id": "bf003",
+   "type": "Event",
+   "name": "Slay Time",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. For each point of excess damage dealt to that enemy by this attack, reduce the resource cost of the next card you play this phase by 1.\n<i>\"Congrats —you're today's dust report.\"</i>"
+  },
+  {
+   "card_id": "bf004",
+   "type": "Event",
+   "name": "Bring on the Night",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Buffy",
+   "text": "<b>Hero Interrupt</b>: When an encounter card is revealed from the encounter deck, cancel all of its effects and discard it. Deal damage to an enemy or remove threat from a scheme equal to the number of [[HELLMOUTH]] side schemes in the victory display."
+  },
+  {
+   "card_id": "bf005",
+   "type": "Event",
+   "name": "Slayer Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard X cards from your hand → deal 4 damage to X enemies.\n<i>\"Guess I'll just cut to the slay.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf006",
+   "type": "Ally",
+   "name": "* Faith",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero",
+    "Linked": "bf031"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Faith minion).\n<b>Interrupt</b>: When Faith is defeated, choose a friendly [[SLAYER]] character → ready that character.\n<i>\"When I'm fighting, the whole world goes away and I only know one thing. That I'm gonna win and they're gonna lose.\"</i>"
+  },
+  {
+   "card_id": "bf007",
+   "type": "Upgrade",
+   "name": "* Slayer Scythe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero",
+    "Restricted": "1",
+    "Linked": "bf029"
+   },
+   "traits": [
+    "MYSTIC",
+    "WEAPON"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Enemies Aligned).\nRestricted.\n<b>Hero Resource</b>: Exhaust Slayer Scythe → generate a [wild] resource. Any player may trigger this ability."
+  },
+  {
+   "card_id": "bf008",
+   "type": "Event",
+   "name": "Pointy End",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Mr. Pointy → deal 8 damage to an enemy. This attack gains overkill.\n<i>\"You know the drill. Stake, dust, bye.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf009",
+   "type": "Event",
+   "name": "Crimson Scythe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Buffy",
+   "text": "Play only if you control the Slayer Scythe.\n<b>Hero Action</b> <i>(attack/thwart)</i>: Remove 1 [per_hero] threat from each scheme. Deal 1 [per_hero] damage to each enemy."
+  },
+  {
+   "card_id": "bf010",
+   "type": "Support",
+   "name": "Sunnydale Library",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Buffy",
+   "text": "Buffy Summers gets +2 REC.\n<b>Alter-Ego Action</b>: Exhaust Sunnydale Library → choose a player. That player shuffles 1 identity-specific card from their discard pile into their deck.\n<i>\"Xander, don't speak Latin in front of the books.\"</i>"
+  },
+  {
+   "card_id": "bf011",
+   "type": "Support",
+   "name": "Watcher's Guidance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Buffy",
+   "text": "<b>Action</b>: Exhaust Watcher's Guidance → choose:\n• Remove 1 threat from a scheme.\n• Deal 1 damage to an enemy.\n• Heal 1 damage from an identity.\nAny player may trigger this ability."
+  },
+  {
+   "card_id": "bf012",
+   "type": "Upgrade",
+   "name": "Redeemed",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Response</b>: After a non-[[ELITE]] minion enters play, attach Redeemed to it.\nTake control of attached minion and treat it as a [[SLAYER]] ally with a blank text box. Its THW is equal to its printed SCH and it takes 1 consequential damage after it thwarts or attacks."
+  },
+  {
+   "card_id": "bf013",
+   "type": "Upgrade",
+   "name": "Stakeout",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After a minion enters play, discard Stakeout → deal 2 damage to that minion and stun it.\n<i>\"I'm Buffy. The Vampire Slayer. And you are?\"</i>"
+  },
+  {
+   "card_id": "bf014",
+   "type": "Upgrade",
+   "name": "* Mr. Pointy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Buffy",
+   "text": "Restricted.\nBuffy gains retaliate 1 and her basic attacks gain piercing.\n<i>\"You named your stake? Remind me to get you a stuffed animal.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf015",
+   "type": "Ally",
+   "name": "* Kendra",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Hero",
+    "Victory": "0"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": "Buffy",
+   "text": "Victory 0.\nKendra enters play with 3 stake counters on her.\n<b>Response</b>: After a minion enters play, remove 1 stake counter from Kendra → deal 2 damage to that minion."
+  },
+  {
+   "card_id": "bf016",
+   "type": "Ally",
+   "name": "* Willow",
+   "subtitle": "Willow Rosenberg",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Basic"
+   },
+   "traits": [
+    "MYSTIC"
+   ],
+   "set_name": "Buffy",
+   "text": "[star] <b>Response</b>: After Willow uses a basic power, spend a:\n[mental] resource → remove 2 threat from a scheme.\n[physical] resource → deal 2 damage to an enemy.\n[energy] resource → heal 2 damage from Willow."
+  },
+  {
+   "card_id": "bf017",
+   "type": "Ally",
+   "name": "* Angel",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero",
+    "Linked": "bf032"
+   },
+   "traits": [
+    "CHAMPION",
+    "VAMPIRE"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Angelus).\n[star] Angel's attacks gain piercing.\n<b>Response</b>: After you change to alter-ego form, heal 1 damage from Angel."
+  },
+  {
+   "card_id": "bf018",
+   "type": "Upgrade",
+   "name": "Chosen One",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero",
+    "Linked": "bf028"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Becoming).\n<b>Hero Action</b>: Exhaust the Chosen One and spend 1 resource of any type → ready Buffy.\n<i>\"I'm the thing that monsters have nightmares about.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf019",
+   "type": "Upgrade",
+   "name": "Prophecy Girl",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Linked": "bf027"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Harvest).\n<b>Interrupt</b>: When Buffy's hit points are 3 or less, find Kendra and put her into play under your control and remove this card from the game."
+  },
+  {
+   "card_id": "bf020",
+   "type": "SideScheme",
+   "name": "Welcome to Sunnydale",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "StartingThreat": "3",
+    "Hinder": "1*"
+   },
+   "traits": [],
+   "set_name": "Buffy Nemesis",
+   "text": "Hinder 1[per_hero]. Each [[VAMPIRE]] minion gains 1 acceleration icon ([acceleration]).\n<hr />\n[star] <b>Boost</b>: Reveal this card."
+  },
+  {
+   "card_id": "bf021",
+   "type": "Minion",
+   "name": "* Spike",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Nemesis": "Buffy"
+   },
+   "traits": [
+    "VAMPIRE"
+   ],
+   "set_name": "Buffy Nemesis",
+   "text": "[star] <b>Forced Response</b>: After Spike attacks and damages a character, discard the top card of the encounter deck. If that card is a treachery, heal all damage from Spike.\n<i>\"If every vampire who said they were at the crucifixion was actually there, it would have been like Woodstock.\"</i>"
+  },
+  {
+   "card_id": "bf022",
+   "type": "Minion",
+   "name": "* Drusilla",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Teamwork": "VAMPIRE",
+    "Nemesis": "Buffy"
+   },
+   "traits": [
+    "VAMPIRE"
+   ],
+   "set_name": "Buffy Nemesis",
+   "text": "Teamwork ([[VAMPIRE]]).\n[star] <b>Forced Response</b>: After Drusilla attacks you, place 1 threat on each scheme.\n<i>\"I met an old man. Didn't like him. He got stuck in my teeth.\"</i>"
+  },
+  {
+   "card_id": "bf023",
+   "type": "Environment",
+   "name": "Hush",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Buffy Nemesis",
+   "text": "Each encounter card gains peril.\n<b>Hero Action</b>: Spend [energy][mental][physical] resources → discard this card and find the Gentlemen and put them into play engaged with you."
+  },
+  {
+   "card_id": "bf024",
+   "type": "Treachery",
+   "name": "The Harvest",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Buffy Nemesis",
+   "text": "<b>When Revealed</b>: Choose:\n• Discard an upgrade or support you control.\n• Take damage equal to the highest-cost upgrade or support you control."
+  },
+  {
+   "card_id": "bf025",
+   "type": "Obligation",
+   "name": "Normal Again",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Buffy Summers",
+    "Uses": "3,sanity",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "Buffy",
+   "text": "<b><i>Give to the Buffy Summers player.</i></b>\nUses (3 sanity counters). Victory 0.\n<b>Forced Response</b>: After you use a basic power, remove 1 sanity counter from here."
+  },
+  {
+   "card_id": "bf026",
+   "type": "Minion",
+   "name": "* The Gentlemen",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Linked": "bf023"
+   },
+   "traits": [
+    "MYSTIC"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Hush).\nWhile the Gentlemen are engaged with you, you cannot request \"<b>Action</b>\" abilities from other players.\n<b>When Revealed</b>: You are confused. If you were already confused, discard a support you control."
+  },
+  {
+   "card_id": "bf027",
+   "type": "SideScheme",
+   "name": "Harvest",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Victory": "0"
+   },
+   "traits": [
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Hinder 1[per_hero]. Victory 0.\n<b>When Defeated</b>: Find Becoming and reveal it. Put the set-aside Prophecy Girl upgrade into play."
+  },
+  {
+   "card_id": "bf028",
+   "type": "SideScheme",
+   "name": "Becoming",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "2*",
+    "Victory": "0"
+   },
+   "traits": [
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Hinder 2[per_hero]. Victory 0.\n<b>When Defeated</b>: Find Enemies Aligned and the Faith minion and reveal them. Put the set-aside Chosen upgrade into play."
+  },
+  {
+   "card_id": "bf029",
+   "type": "SideScheme",
+   "name": "Enemies Aligned",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "3*",
+    "Victory": "0"
+   },
+   "traits": [
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Hinder 3[per_hero]. Victory 0.\n<b>When Defeated</b>: Put the set-aside Slayer Scythe into play."
+  },
+  {
+   "card_id": "bf030",
+   "type": "Minion",
+   "name": "* The Master",
+   "subtitle": "",
+   "desc": {
+    "HP": "3*",
+    "ATK": "2",
+    "SCH": "2",
+    "Toughness": "1",
+    "Victory": "0"
+   },
+   "traits": [
+    "ELITE",
+    "VAMPIRE",
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Toughness. Victory 0.\n<b>When Defeated</b>: Find Angelus and put him into play engaged with your identity.\n<i>\"The Earth shall bleed, and I shall drink deep.\"</i>"
+  },
+  {
+   "card_id": "bf031",
+   "type": "Minion",
+   "name": "* Faith",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Patrol": "1",
+    "Villainous": "1",
+    "Victory": "0"
+   },
+   "traits": [
+    "ELITE",
+    "SLAYER",
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Patrol. Villainous. Victory 0.\n[star] Faith's attacks gain overkill.\n<b>When Defeated</b>: Find the set-aside Faith ally and put her into play under any player's control.\n<i>\"We don't need the law. We are the law.\"</i>"
+  },
+  {
+   "card_id": "bf032",
+   "type": "Minion",
+   "name": "* Angelus",
+   "subtitle": "",
+   "desc": {
+    "HP": "7",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Guard": "1",
+    "Victory": "0"
+   },
+   "traits": [
+    "ELITE",
+    "VAMPIRE",
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Guard. Victory 0.\n[star] Angelus's attacks gain piercing.\n<b>When Defeated</b>: Find Angel and put him into play under any player's control.\n<i>\"I know what you're thinking. Maybe there's some good deep down inside of me that remembers and loves you.\"</i>"
+  },
+  {
+   "card_id": "buffy_redeemed_ally",
+   "pic_id": "encounter",
+   "type": "Ally",
+   "name": "Slayer Ally",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0*",
+    "THW": "0*",
+    "Class": "Encounter"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": ""
+  }
+ ],
+ "checksum": "e648fc282a975ea1280dbbdff07d3882a6010e12038aac91ab646b84d7ed7939"
 }
