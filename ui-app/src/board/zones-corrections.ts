@@ -81,6 +81,10 @@ export const GOMMES: Readonly<Record<string, readonly Gomme[]>> = {
   sl060b: [{ x0: 0.455, y0: 0.725, x1: 0.48, y1: 0.765 }, { x0: 0.458, y0: 0.78, x1: 0.482, y1: 0.812 }, { x0: 0.05, y0: 0.792, x1: 0.085, y1: 0.825 }],
   sl063: [{ x0: 0.175, y0: 0.866, x1: 0.418, y1: 0.912 }],
   sl064: [{ x0: 0.325, y0: 0.858, x1: 0.397, y1: 0.893 }],
+  // Buffy, Enemies Aligned (31/10/2026) : le texte imprimé est plus gros que l'effaceur ne l'attend : « play. » et deux lignes en gras
+  // (« When Defeated », « set-aside Slayer Scythe into ») restaient en anglais, pâles, sous le français. Une gomme sur la boîte de texte
+  // (0.54 à 0.71), l'icône d'accélération (0.72 à 0.82) reste intacte.
+  bf029: [{ x0: 0.47, y0: 0.54, x1: 0.96, y1: 0.71 }],
 }
 
 export const FILETS_PLEINE_LARGEUR: ReadonlySet<string> = new Set([
@@ -169,6 +173,10 @@ export const ZONES_MANUELLES: Readonly<Record<string, ZoneManuelle>> = {
   wn006: { x0: 0.04, y0: 0.595, x1: 0.96, y1: 0.915, fond: [241, 244, 246] },
   wn009: { x0: 0.05, y0: 0.575, x1: 0.945, y1: 0.875, fond: [245, 245, 245] },
   an010: { x0: 0.03, y0: 0.575, x1: 0.965, y1: 0.92, fond: [255, 255, 255] },
+  // Buffy (31/10/2026), Enemies Aligned (manigance annexe couchée) : la dernière ligne du texte (« play. », 0.64 à 0.69) restait en anglais
+  // sous le français, ni la correction de y1 ni la détection ne l'atteignaient (une carte à icônes imprimées perd ≈ 0.07 en bas de zone).
+  // Cadre relevé sur le scan ; l'icône d'accélération (0.72 à 0.82) reste hors du voile.
+  bf029: { x0: 0.475, y0: 0.25, x1: 0.955, y1: 0.79, fond: [245, 231, 230] },
   pu015: { x0: 0.1, y0: 0.575, x1: 0.88, y1: 0.895, fond: [251, 247, 246], coin: { hauteur: 0.16, x1: 0.72 } },
   pu140: { x0: 0.105, y0: 0.18, x1: 0.93, y1: 0.925, fond: [251, 246, 243] },
   pu144: { x0: 0.105, y0: 0.18, x1: 0.93, y1: 0.925, fond: [251, 246, 243] },
