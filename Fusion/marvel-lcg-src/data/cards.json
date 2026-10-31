@@ -135996,7 +135996,8 @@
    "desc": {
     "Boost": "1",
     "StartingThreat": "3",
-    "Hinder": "1*"
+    "Hinder": "1*",
+    "Crisis": "1"
    },
    "traits": [],
    "set_name": "Buffy Nemesis",
@@ -136104,7 +136105,8 @@
    "desc": {
     "StartingThreat": "3",
     "Hinder": "1*",
-    "Victory": "0"
+    "Victory": "0",
+    "Hazard": "1"
    },
    "traits": [
     "HELLMOUTH"
@@ -136120,7 +136122,8 @@
    "desc": {
     "StartingThreat": "3",
     "Hinder": "2*",
-    "Victory": "0"
+    "Victory": "0",
+    "Amplify": "1"
    },
    "traits": [
     "HELLMOUTH"
@@ -136136,7 +136139,8 @@
    "desc": {
     "StartingThreat": "4",
     "Hinder": "3*",
-    "Victory": "0"
+    "Victory": "0",
+    "Amplify": "1"
    },
    "traits": [
     "HELLMOUTH"
@@ -136225,5 +136229,5 @@
    "set_name": ""
   }
  ],
- "checksum": "e648fc282a975ea1280dbbdff07d3882a6010e12038aac91ab646b84d7ed7939"
+ "checksum": "bea6447d7c72e8c90840307a28d9003e2d8260fa4be384a7037930eabfd8d148"
 }

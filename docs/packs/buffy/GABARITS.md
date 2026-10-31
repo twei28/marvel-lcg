@@ -61,6 +61,10 @@ Seuls les cas de `bf001a` (bonus) et `bf004` (Bring on the Night) utilisent enco
 - Ce qui garde chaque carte a « Carte terminee : NON » : la partie humaine complete (chaine HELLMOUTH jusqu'au bout, multijoueur) n'a pas ete jouee.
 - **Points encore non mesures** : multijoueur (Watcher's Guidance a un autre joueur, Scythe offerte, The Gentlemen, `ChoisirUnJoueur`), et le rendu plateau reel de la mise de cote.
 
+## Correctif du 01/11/2026 : icones de manigance imprimees (trouve en relisant le pack RoboCop)
+
+Les quatre manigances annexes de Buffy portent une ICONE imprimee que `desc` n'avait pas (« icone non reconnue », piege deja documente) : **bf020 Welcome to Sunnydale = Crise** (« ! »), **bf027 Harvest = Danger/Hazard** (croix dans un cadre), **bf028 Becoming** et **bf029 Enemies Aligned = Amplification** (avion + croix). Verifiees par comparaison avec les scans officiels `01108`, `01107`, `16054`. Ajoutees a `desc` (`Crisis`, `Hazard`, `Amplify` = 1), checksum recalcule, 4 cas `icones` (rouges avec l'ancien `cards.json`, verts apres) : **bf0 82/82**. Effet en jeu : Harvest (en jeu des la mise en place) fait piocher +1 carte de rencontre par phase du mechant ; Welcome to Sunnydale empeche de retirer des menaces du complot principal tant qu'elle est en jeu ; Becoming et Enemies Aligned ajoutent une icone de boost a chaque carte boost revelee. Ce n'etait donc pas cosmetique : la partie jouee en Chromium le 31/10 tournait sans ces trois effets.
+
 ## Ecarts assumes
 
 - **`desc.Linked` par card_id** (pas par nom) : « Harvest » est aussi une traitrise officielle (`05029`), « Faith » nomme l'allie ET le sbire. `FindCardPaper` accepte un card_id (`mots-cles/linked.md`).

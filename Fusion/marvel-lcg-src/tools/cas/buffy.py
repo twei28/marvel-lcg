@@ -728,4 +728,21 @@ NOUVEAUX = [
        {'degats_identite': 0, 'statuts_absents': [['bf001a', 'Tough']]}, main_exclusive=['bf002'], passer_sur_option='Defense'),
 ]
 
+# ---- Icones de manigance imprimees sur les scans (31/10/2026, trouvees en relisant le pack RoboCop : bf020/bf027/bf028/bf029 ne les portaient pas dans `desc`)
+# Verifiees contre des cartes officielles de meme icone : 01108 Crise (« ! »), 01107 Danger (croix dans un cadre), 16054 Amplification (avion + croix).
+NOUVEAUX += [
+    _c("bf020 Welcome to Sunnydale — porte une icone CRISE imprimee",
+       "icone « ! » du scan (comme 01108 Crowd Control) : `desc.Crisis` = 1, lue nativement",
+       [HEROS], ["Puzzle.PutIntoPlay('bf020')"], {'icones': [['Crisis', 1]]}),
+    _c("bf027 Harvest — porte une icone DANGER (Hazard) imprimee, en jeu des la mise en place",
+       "croix dans un cadre du scan (comme 01107 Breakin' & Takin') : `desc.Hazard` = 1",
+       [HEROS], [], {'icones': [['Hazard', 1]]}),
+    _c("bf028 Becoming — porte une icone AMPLIFICATION imprimee",
+       "avion + croix du scan (comme 16054 Vendetta) : `desc.Amplify` = 1",
+       [HEROS], ["Puzzle.PutIntoPlay('bf028')"], {'icones': [['Amplify', 1]]}),
+    _c("bf029 Enemies Aligned — porte une icone AMPLIFICATION imprimee",
+       "meme icone que Becoming : `desc.Amplify` = 1 (Becoming n'est pas en jeu : total 1)",
+       [HEROS], ["Puzzle.PutIntoPlay('bf029')"], {'icones': [['Amplify', 1]]}),
+]
+
 CAS = CAS + NOUVEAUX
