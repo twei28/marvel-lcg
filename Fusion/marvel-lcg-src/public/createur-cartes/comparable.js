@@ -53,7 +53,7 @@ export async function ouvrirComparable(rendre) {
   const montrer = () => {
     const x = candidates[i]
     erreur.textContent = ''
-    officielle.onerror = () => { erreur.textContent = 'Scan indisponible (il faut être connecté au site).' }
+    officielle.onerror = () => { erreur.textContent = 'Scan indisponible.' }
     officielle.src = `/api/createur/scan/${encodeURIComponent(x.code)}`
     legende.textContent = `${x.nom} (${x.code}) · ${x.mots} mots, ${x.declencheurs} déclencheur(s) · ${i + 1}/${candidates.length}`
   }
