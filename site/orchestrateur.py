@@ -7278,7 +7278,11 @@ class Handler(BaseHTTPRequestHandler):
                 pass     # le corps est lu (ou refuse) par `_api_createur`
             else:
                 self._raccrocher()
-        if not pseudo:
+        # 31/10/2026 : les PAGES du createur (statique, GET) sont libres, sur
+        # decision de l'admin : quiconque a le lien l'ouvre, sans compte. Les
+        # projets vivent dans son navigateur. L'API (stockage serveur, scans
+        # officiels) reste derriere une session.
+        if not pseudo and not (statique and methode == "GET"):
             if api:
                 self._raccrocher()
                 self._json(401, {"erreur": "Connexion requise."})

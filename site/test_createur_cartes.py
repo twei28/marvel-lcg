@@ -210,17 +210,17 @@ verifier("page du createur servie", code == 200 and b"createur" in corps and "te
 code, corps, tetes = appel("GET", "/createur-cartes/app.js", cookie=cook_alice)
 verifier("fichier statique servi", code == 200 and corps == b"console.log(1)" and "javascript" in tetes["content-type"], code)
 code, _c, _t = appel("GET", "/mc-creator")
-verifier("sans session : redirection vers la connexion", code == 303, code)
+verifier("sans session : page du createur libre (decision du 31/10)", code == 200, code)
 code, _c, tetes = appel("GET", "/createur-cartes.html", cookie=cook_joueur)
 verifier("ancienne adresse : redirige vers /mc-creator", code == 303 and tetes.get("location") == "/mc-creator", (code, tetes.get("location")))
 code, _c, _t = appel("GET", "/createur-cartes/app.js")
-verifier("sans session : statique refuse", code == 303, code)
+verifier("sans session : statique libre (decision du 31/10)", code == 200, code)
 code, _c, _t = appel("GET", "/mc-creator", cookie=cook_adm)
 verifier("admin : page du createur", code == 200, code)
 code, corps, tetes = appel("GET", "/atelier-couvertures.html", cookie=cook_alice)
 verifier("« Images de pack » servie (compte connecte)", code == 200 and b"atelier" in corps and "text/html" in tetes["content-type"], code)
 code, _c, _t = appel("GET", "/atelier-couvertures.html")
-verifier("« Images de pack » sans session : redirection vers la connexion", code == 303, code)
+verifier("« Images de pack » sans session : libre (decision du 31/10)", code == 200, code)
 for mauvais in ("/createur-cartes/../secret.html", "/createur-cartes/%2e%2e/secret.html",
                 "/createur-cartes/..%2fsecret.html", "/createur-cartes/img/../../secret.html",
                 "/createur-cartes/%2e%2e%2f%2e%2e%2fsecret.json", "/createur-cartes//etc/passwd",
