@@ -7282,7 +7282,10 @@ class Handler(BaseHTTPRequestHandler):
         # decision de l'admin : quiconque a le lien l'ouvre, sans compte. Les
         # projets vivent dans son navigateur. L'API (stockage serveur, scans
         # officiels) reste derriere une session.
-        if not pseudo and not (statique and methode == "GET"):
+        # Les scans de « carte comparable » (lecture seule, liste blanche sur le code)
+        # sont libres eux aussi, sur demande de l'admin (31/10/2026).
+        scan_libre = methode == "GET" and chemin.startswith("/api/createur/scan/")
+        if not pseudo and not ((statique and methode == "GET") or scan_libre):
             if api:
                 self._raccrocher()
                 self._json(401, {"erreur": "Connexion requise."})
@@ -7389,8 +7392,7 @@ class Handler(BaseHTTPRequestHandler):
         """Le scan officiel d'une carte (lecture seule), pour « voir une vraie carte
         comparable ». Liste blanche sur le code, jamais de chemin : `<code>.jpg` dans
         assets/pics-hd (HD, si elle existe) ou assets/pics, sous le dossier des
-        images du jeu, et nulle part ailleurs. Session obligatoire (deja verifiee
-        par `_route_createur`)."""
+        images du jeu, et nulle part ailleurs. Libre d'acces (31/10/2026)."""
         if not self._RE_CODE_SCAN.match(code):
             raise createur_cartes.ErreurCreateur(400, "Code de carte invalide.")
         racine = os.path.realpath(os.path.join(RACINE_JEU, "assets"))

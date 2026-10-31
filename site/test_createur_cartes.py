@@ -234,8 +234,10 @@ code, corps, tetes = appel("GET", "/api/createur/scan/01001a", cookie=cook_alice
 verifier("scan : 200 image/jpeg", code == 200 and tetes.get("content-type") == "image/jpeg" and corps[:2] == b"\xff\xd8", (code, tetes.get("content-type")))
 code, corps, _ = appel("GET", "/api/createur/scan/01001a", cookie=cook_joueur)
 verifier("scan : ouvert aux joueurs connectes", code == 200, code)
-code, _c, _t = appel("GET", "/api/createur/scan/01001a")
-verifier("scan : sans session = 401", code == 401, code)
+code, corps, _t = appel("GET", "/api/createur/scan/01001a")
+verifier("scan : libre sans session (decision du 31/10)", code == 200 and corps[:2] == b"\xff\xd8", code)
+code, _c, _t = appel("GET", "/api/createur/projets")
+verifier("API des projets : sans session = 401", code == 401, code)
 for mauvais in ("..%2f..%2fsite%2fnarwhal", "..", "a%2fb", "01001a.jpg", "x"):
     code, _c, _t = appel("GET", "/api/createur/scan/" + mauvais, cookie=cook_alice)
     verifier("scan : code refuse (%s)" % mauvais, code in (400, 404), code)
