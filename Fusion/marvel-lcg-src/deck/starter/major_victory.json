@@ -3,7 +3,7 @@
     "name": "Major Victory",
     "metadata": {
         "url": "",
-        "note": "Pack « Major Victory » (Drive partage). Pas de decklist imprimee : player_deck vide (PROCESSUS-HEROS etape 3). Obligation absente du Drive : obligations vide pour l'instant (mv012 reserve)."
+        "note": "Pack « Major Victory » (Drive partage). Pas de decklist imprimee : player_deck vide (PROCESSUS-HEROS etape 3). Obligation : Damaged Containment Suit (mv012, dossier « Not so good stuff »)."
     },
     "hero": [
         "mv001a,mv001b"
@@ -26,7 +26,9 @@
         "mv011"
     ],
     "set_aside": [],
-    "obligations": [],
+    "obligations": [
+        "mv012"
+    ],
     "nemesis_set": [
         "mv013",
         "mv014",

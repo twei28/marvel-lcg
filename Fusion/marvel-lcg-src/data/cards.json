@@ -135572,6 +135572,19 @@
    "text": "[star] Nikki's attacks gain ranged and damage from her attacks can be divided among enemies as you choose.\n<i>\"Just like old times, eh, Astrovik?\"</i>"
   },
   {
+   "card_id": "mv012",
+   "type": "Obligation",
+   "name": "Damaged Containment Suit",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Vance Astro"
+   },
+   "traits": [],
+   "set_name": "Major Victory",
+   "text": "<b><i>Give to the Vance Astro player.</i></b>\n<b>Forced Interrupt</b>: When you would take any amount of damage, take 1 additional damage.\n<b>When Revealed</b>: Find Containment Suit and tuck it here. If your remaining hit points were reduced to 0 or less this way, set your hit point dial to 1 instead.\n<b>Alter-Ego Action</b>: Exhaust Vance Astro → add Containment Suit to your hand and remove this obligation from the game."
+  },
+  {
    "card_id": "mv013",
    "type": "Minion",
    "name": "* Michael Korvac",
@@ -135632,5 +135645,5 @@
    "text": "Peril.\n<b>When Revealed</b>: Choose:\n• Find Michael Korvac and reveal him. Place 4 threat on Korvac's Future.\n• Discard the highest cost card you control."
   }
  ],
- "checksum": "c7352f69fbc871bfa8ab4d99b8595683826ca4dc7d4c5c856dee2b634aef7bdd"
+ "checksum": "dd95df144f3a82a920e0bb6169f2986571183f2c2da8fe1793c926f87e04f613"
 }

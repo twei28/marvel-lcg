@@ -883,9 +883,9 @@
   "mv": {
    "pack": "major_victory",
    "libelle": "236. Custom (Major Victory)",
-   "cartes": 16,
+   "cartes": 17,
    "depuis": "2026-10-30",
-   "note": "Cree le 30/10/2026 depuis un Drive partage (dossier « Major Victory »). mv001a/b identite (Major Victory / Vance Astro), mv002-mv011 deck de heros (Captain America's Shield, Founder of the Guardians, Containment Suit, Shield Block x2, Psychokinetic Blast x3, Telekinetic Throw, Psychic Link x2, Victory's Command x2, The Captain America, Nikki), mv012 RESERVE pour l'obligation (absente du Drive), mv013-mv016 nemesis (Michael Korvac, Korvac's Future, Judgment of Korvac x2, Accept Perfection). Pas de decklist imprimee. Aucun script de capacite pour l'instant."
+   "note": "Cree le 30/10/2026 depuis un Drive partage (dossier « Major Victory »). mv001a/b identite (Major Victory / Vance Astro), mv002-mv011 deck de heros (Captain America's Shield, Founder of the Guardians, Containment Suit, Shield Block x2, Psychokinetic Blast x3, Telekinetic Throw, Psychic Link x2, Victory's Command x2, The Captain America, Nikki), mv012 obligation Damaged Containment Suit (dossier « Not so good stuff »), mv013-mv016 nemesis (Michael Korvac, Korvac's Future, Judgment of Korvac x2, Accept Perfection). Pas de decklist imprimee. Les 17 cartes sont scriptees."
   }
  }
 }

@@ -1960,4 +1960,14 @@ export const HEROS_INFO = {
         ennemisEn: "Ahab, the Sentinels",
         apparition: "Uncanny X-Men #141 (1981)",
     },
+    "mv001a": {
+        bio: "Vance Astro, astronaute du XXe siècle, a traversé mille ans d'espace dans une armure de confinement avant de découvrir un futur qui avait vécu sans lui. Mutant aux pouvoirs psychocinétiques, il fonde les Gardiens de la Galaxie de l'an 3000 et brandit le bouclier de Captain America en souvenir de l'homme qui l'a inspiré.",
+        bioEn: "Vance Astro, a 20th-century astronaut, crossed a thousand years of space in a containment suit only to find a future that had lived on without him. A mutant with psychokinetic powers, he founds the Guardians of the Galaxy of the year 3000 and carries Captain America's shield in memory of the man who inspired him.",
+        civil: "Vance Astro",
+        equipes: "Gardiens de la Galaxie",
+        equipesEn: "Guardians of the Galaxy",
+        ennemis: "Michael Korvac, les Badoon",
+        ennemisEn: "Michael Korvac, the Badoon",
+        apparition: "Marvel Super-Heroes #18 (1969)",
+    },
 };
