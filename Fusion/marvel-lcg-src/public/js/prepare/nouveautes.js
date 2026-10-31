@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-31",
+        genre: "coulisses",
+        fr: "MC Creator s'enrichit : inserts (feuillets de campagne et de règles), export PDF, PSD à calques et CardTable, import depuis MarvelCDB, numérotation des cartes, vérification d'un dossier, planche d'aperçu, lien de partage et navigateur de couleurs. Tout reste enregistré dans ton navigateur : pense à « Tout enregistrer (.zip) ».",
+        en: "MC Creator grows: inserts (campaign and rules sheets), PDF, layered PSD and CardTable export, MarvelCDB import, card numbering, folder check, preview sheet, share link and a colour browser. Everything stays saved in your browser: remember \"Save everything (.zip)\".",
+    },
+    {
         date: "2026-10-30",
         genre: "coulisses",
         fr: "Le créateur de cartes devient « MC Creator » (adresse narwhalchampions.com/mc-creator), change de look (bleu, coins coupés) et s'ouvre sur une page de dossiers : un par héros avec son alter-ego, par scénario ou par modulaire. Le wizard passe sur tout et crée un héros avec ses 15 cartes ; chaque dossier a son template de couleurs ; les pochettes de pack (héros, scénario, extension) se fabriquent au même endroit. « Tout enregistrer » garde tout dans un seul .zip qu'on réimporte sur un autre ordinateur.",
