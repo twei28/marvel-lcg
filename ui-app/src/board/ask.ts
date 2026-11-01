@@ -415,9 +415,25 @@ export function ressourcesApresToucher(
   }
 
   const exige = paiement && coutParType(paiement.cost)
-  const manque = exige
-    ? Object.keys(typesManquants(paiement, actuelles)).length > 0
-    : valeurPayee(paiement, actuelles) < requis
+  const manquePour = (choisies: number[]) =>
+    exige ? Object.keys(typesManquants(paiement, choisies)).length > 0 : valeurPayee(paiement, choisies) < requis
+  const manque = manquePour(actuelles)
+
+  // DES MOYENS ALTERNATIFS d'une meme carte (Mantis, Empathetic Advantage : defausser une carte Desorientee d'un ENNEMI
+  // donne [wild][mental], d'un de SES personnages [mental]) : le moteur offre chaque moyen UNE fois. Le premier toucher pose
+  // le premier ; tant que le cout est deja couvert, le toucher suivant passe au moyen d'apres QUI COUVRE AUSSI le cout, puis
+  // rend tout quand il n'y en a plus. Sans cela, le second moyen n'etait atteignable qu'au moteur (01/11/2026).
+  const alternatives = disponibles.length > 1 && disponibles.every((effectId) => foisDisponible(paiement, effectId) === 1)
+  if (alternatives && posees === 1 && !manque && !surpayable) {
+    const courant = disponibles.find((effectId) => actuelles.includes(effectId))
+    if (courant !== undefined) {
+      for (const suivant of disponibles.slice(disponibles.indexOf(courant) + 1)) {
+        const essai = actuelles.map((effectId) => (effectId === courant ? suivant : effectId))
+        if (!manquePour(essai)) return essai
+      }
+    }
+  }
+
   if (posees < total && (surpayable || manque)) {
     for (const effectId of disponibles) {
       if (actuelles.filter((x) => x === effectId).length < foisDisponible(paiement, effectId)) {

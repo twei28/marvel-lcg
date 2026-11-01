@@ -85,6 +85,9 @@ export const GOMMES: Readonly<Record<string, readonly Gomme[]>> = {
   // (« When Defeated », « set-aside Slayer Scythe into ») restaient en anglais, pâles, sous le français. Une gomme sur la boîte de texte
   // (0.54 à 0.71), l'icône d'accélération (0.72 à 0.82) reste intacte.
   bf029: [{ x0: 0.47, y0: 0.54, x1: 0.96, y1: 0.71 }],
+  // Mantis, Cotati Resiliency (01/11/2026) : le premier « N » de la ligne de traits imprimée (« CONDITION. », x 0.455 à 0.64, y 0.50 à 0.52) restait lisible
+  // à droite du « CONDITION. » français.
+  mt015: [{ x0: 0.44, y0: 0.495, x1: 0.66, y1: 0.53 }],
 }
 
 export const FILETS_PLEINE_LARGEUR: ReadonlySet<string> = new Set([

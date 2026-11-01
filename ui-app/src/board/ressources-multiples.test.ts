@@ -71,3 +71,42 @@ describe('une carte qui ne paie qu’une fois (le cas ordinaire)', () => {
     expect(ressourcesApresToucher([42], [MAIN], p, 1, false)).toEqual([MAIN])
   })
 })
+
+// Mantis (01/11/2026) : Empathetic Advantage offre DEUX moyens ALTERNATIFS sur la meme carte : un ennemi desoriente donne
+// [wild][mental] (effet 1), un personnage de Mantis [mental] (effet 2). Chaque moyen est propose UNE fois.
+describe('des moyens alternatifs d’une même carte (Empathetic Advantage)', () => {
+  const ENNEMI = 1
+  const PERSO = 2
+  const p = (cout: string): Paiement => ({
+    cost: cout,
+    payment: [{ effect_id: ENNEMI, res_text: 'BG' }, { effect_id: PERSO, res_text: 'B' }],
+    rule: [],
+  })
+
+  it('cout 1 : le premier toucher pose la source ennemie, le second passe a la source personnage, le troisieme rend tout', () => {
+    const un = ressourcesApresToucher([ENNEMI, PERSO], [], p('B'), 1, false)
+    expect(un).toEqual([ENNEMI])
+    const deux = ressourcesApresToucher([ENNEMI, PERSO], un, p('B'), 1, false)
+    expect(deux).toEqual([PERSO])
+    expect(ressourcesApresToucher([ENNEMI, PERSO], deux, p('B'), 1, false)).toEqual([])
+  })
+
+  it('cout 2 : la source personnage ne couvre pas, le second toucher rend la ressource (comportement d’avant)', () => {
+    const un = ressourcesApresToucher([ENNEMI, PERSO], [], p('BB'), 2, false)
+    expect(un).toEqual([ENNEMI])
+    expect(ressourcesApresToucher([ENNEMI, PERSO], un, p('BB'), 2, false)).toEqual([])
+  })
+
+  it('ne touche pas aux ressources des autres cartes en passant d’un moyen a l’autre', () => {
+    const autre = 9
+    const avec: Paiement = { cost: 'B', payment: [...p('B').payment, { effect_id: autre, res_text: 'B' }], rule: [] }
+    expect(ressourcesApresToucher([ENNEMI, PERSO], [autre, ENNEMI], avec, 1, false)).toEqual([autre, PERSO])
+  })
+
+  it('un seul moyen offert (un seul statut a defausser) : toucher paie, retoucher rend', () => {
+    const seul: Paiement = { cost: 'B', payment: [{ effect_id: PERSO, res_text: 'B' }], rule: [] }
+    const un = ressourcesApresToucher([PERSO], [], seul, 1, false)
+    expect(un).toEqual([PERSO])
+    expect(ressourcesApresToucher([PERSO], un, seul, 1, false)).toEqual([])
+  })
+})

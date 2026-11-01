@@ -1991,4 +1991,14 @@ export const HEROS_INFO = {
         ennemis: "ED-209, Clarence Boddicker",
         apparition: "RoboCop (1987)",
     },
+    "mt001a": {
+        bio: "Élevée par les Prêtres de Pama, Mantis est l'empathe qui sait ce que ressentent tous ceux qu'elle touche. Maîtresse d'arts martiaux et de sens aiguisés, elle est la Madone Céleste, destinée à unir la vie végétale et animale. Ancienne compagne d'armes des Vengeurs, puis des Gardiens de la Galaxie aux côtés de Drax, elle manie son lien avec l'esprit des autres comme une arme.",
+        bioEn: "Raised by the Priests of Pama, Mantis is an empath who feels what everyone she touches feels. A master of martial arts and keen senses, she is the Celestial Madonna, destined to unite plant and animal life. A former Avenger and later a Guardian of the Galaxy alongside Drax, she wields her bond with other minds as a weapon.",
+        base: "Knowhere",
+        equipes: "Vengeurs, Gardiens de la Galaxie",
+        equipesEn: "Avengers, Guardians of the Galaxy",
+        ennemis: "L'Épéiste, Plantman, les Cotati",
+        ennemisEn: "The Swordsman, Plantman, the Cotati",
+        apparition: "Avengers #112 (1973)",
+    },
 };

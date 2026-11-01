@@ -201,6 +201,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "CLONE",  # CORRECTIF : trait du pack custom scarlet_spider (CptScorp)
         "SLAYER", "WATCHER", "HELLMOUTH",  # CORRECTIF : traits du pack custom buffy (RyCoRan, prefixe `bf`)
         "OFFICER", "CREEP",  # CORRECTIF : traits du pack custom robocop (MissSugarPink, prefixe `rc`)
+        "OUTLAW", "COTATI",  # CORRECTIF : traits du pack custom mantis (BlueHG, prefixe `mt`)
         "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)

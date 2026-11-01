@@ -1099,6 +1099,20 @@ class RunPuzzle:
         controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
         return face
 
+    def Recover(self, card: CardName) -> 'CardFace':
+        """Fait RECUPERER un personnage ami : son pouvoir de base REC.
+
+        AJOUT (01/11/2026, pack Mantis `mt`, mt001b Empathic Leveling : « After you use your REC »). Meme montage que `Thwart` :
+        `MakeBasicPowerLikeInTurn` avec le pouvoir "REC", par le CONTROLEUR de la carte. Additif."""
+        from game.card.face.base import Friend
+        face = self.FindFaceInPlay(card)
+        player = self.world.GetCurrentPlayer()
+
+        assert Friend.IsType(face), f"{card=} n'est pas un personnage ami"
+        controleur = face.GetControlByPlayer() or player
+        controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["REC"])
+        return face
+
     def EndPlayerTurn(self, siege: int|None=None) -> None:
         """FERME le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnEnd
         puis AfterPlayerTurnEnd).

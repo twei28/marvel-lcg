@@ -2300,5 +2300,14 @@
   "encounters": [],
   "max_id": "rc017"
  },
- "checksum": "f20de43be6d133cbbb4bdca0a7c8aef43a47c2eaa2402758b493b6b6a63b4249"
+ "239. Custom (Mantis)": {
+  "name": "mantis",
+  "scenarios": [],
+  "heroes": [
+   "mantis"
+  ],
+  "encounters": [],
+  "max_id": "mt016"
+ },
+ "checksum": "3cb8d73959b59cfec878de3e4920829fe195767944e0404e67ed7808a975b3b0"
 }

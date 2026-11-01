@@ -370,6 +370,13 @@
    "cartes": 28,
    "depuis": "2026-08-12"
   },
+  "mt": {
+   "pack": "mantis",
+   "libelle": "239. Custom (Mantis)",
+   "cartes": 17,
+   "depuis": "2026-11-01",
+   "note": "Cree le 01/11/2026 depuis la planche imprimable « Mantis Printable Sheet » (BlueHG, MC Hero Pack, PDF envoye par l'utilisateur) + deux images (FAQ/starter deck, Mindlink). mt001a/b identite (Mantis / Mantis) ; mt002-mt010 deck de heros (Drax, Precognition x2, Pressure Point Strike x2, Psychic Feat x3, Biopathy x2, Meditation Atrium, Fortified Mind x2, Psionic Mindlock, The Celestial Madonna : les numeros n/15) ; mt011 obligation Psychic Tremor ; mt012-mt015 set nemesis Mantis Nemesis (Death Blossom's Bloom, Swordsman, Plantman, Cotati Resiliency x2) ; mt016 Mindlink (evenement Basic, Team-Up Drax et Mantis). Decklist d'aspect fournie par l'auteur (Agressivite + 12 cartes Basic) recopiee dans player_deck. Traits OUTLAW et COTATI ajoutes a l'enum."
+  },
   "mu": {
    "pack": "muse",
    "libelle": "174. Custom (Muse)",

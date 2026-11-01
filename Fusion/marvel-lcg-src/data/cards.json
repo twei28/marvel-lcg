@@ -136534,5 +136534,291 @@
    "text": "Play under any player's control.\nMax 1 per player.\nYou can control 1 additional [[WEAPON]] upgrade that has the restricted keyword."
   }
  ],
- "checksum": "82521728a436fceec5589ebcad5cef99006748e27a64812a9c428fa6e76c2e71"
+ "mantis": [
+  {
+   "card_id": "mt001a",
+   "type": "Hero",
+   "name": "* Mantis",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "GUARDIAN",
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "<i>Empathetic Advantage</i> — <b>Resource</b>: Discard a confused status card from an enemy or character you control → generate a [mental] resource. <i>(Generate [wild][mental] resources instead if you discarded a confused status card from an enemy. Limit once per round.)</i>\n<i>\"Knowledge is power. And you have much to learn.\"</i>"
+  },
+  {
+   "card_id": "mt001b",
+   "type": "AlterEgo",
+   "name": "* Mantis",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3*",
+    "HS": "6"
+   },
+   "traits": [
+    "OUTLAW",
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "[star] <i>Empathic Leveling</i> — <b>Response</b>: After you use your REC, confuse a character you control.\n<i>\"This one lives to illuminate.\"</i>"
+  },
+  {
+   "card_id": "mt002",
+   "type": "Ally",
+   "name": "* Drax",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "GUARDIAN"
+   ],
+   "set_name": "Mantis",
+   "text": "Drax cannot attack minions.\nWhile Drax is confused, add his THW to his ATK.\n[star] Drax's basic attack gains piercing and ignores the guard keyword."
+  },
+  {
+   "card_id": "mt003",
+   "type": "Event",
+   "name": "Precognition",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "THWART"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Search the top 3 cards of your deck for a card and add it to your hand. If it is a Mantis card, remove 1 threat from a scheme. Shuffle your deck."
+  },
+  {
+   "card_id": "mt004",
+   "type": "Event",
+   "name": "Pressure Point Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If that enemy is confused, you may either deal 1 additional damage to that enemy, or discard a confused status card from that enemy to draw 1 card."
+  },
+  {
+   "card_id": "mt005",
+   "type": "Event",
+   "name": "Psychic Feat",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Action</b>: Confuse a character you control. Then, confuse an enemy.\n<i>\"No! Get out of my head!\"</i>\n<i>\"This one is the Celestial Madonna. I go where I wish.\"</i>"
+  },
+  {
+   "card_id": "mt006",
+   "type": "Resource",
+   "name": "Biopathy",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Mantis",
+   "text": "<b>Response</b>: After you spend this card, heal 1 damage from a friendly character. You may confuse a character you control to draw 1 card.\n<i>\"She can do that? And she tells us now?\" —Bug</i>"
+  },
+  {
+   "card_id": "mt007",
+   "type": "Support",
+   "name": "* Meditation Atrium",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Meditation Atrium → search the top 3 cards of your deck for a card and add it to your hand. If it is a Mantis card, heal 1 damage from a friendly character. Shuffle your deck."
+  },
+  {
+   "card_id": "mt008",
+   "type": "Upgrade",
+   "name": "Fortified Mind",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "Hero form only. Attach to an ally. Limit 1 per ally.\n<b>Forced Interrupt</b>: When attached ally would take consequential damage, discard Fortified Mind instead. Then, confuse that ally."
+  },
+  {
+   "card_id": "mt009",
+   "type": "Upgrade",
+   "name": "Psionic Mindlock",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "PREPARATION"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After a minion enters play, discard Psionic Mindlock → deal 2 damage to that minion and confuse it."
+  },
+  {
+   "card_id": "mt010",
+   "type": "Upgrade",
+   "name": "* The Celestial Madonna",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Interrupt</b>: When you resolve Mantis' <i>\"Empathetic Advantage\"</i> ability, exhaust The Celestial Madonna → this use does not count against that ability's limit.\n<i>\"She's trained since birth by priests from another world to represent all of humanity.\" —Thor</i>"
+  },
+  {
+   "card_id": "mt011",
+   "type": "Obligation",
+   "name": "Psychic Tremor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Mantis"
+   },
+   "traits": [],
+   "set_name": "Mantis",
+   "text": "<b><i>Give to the Mantis player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust your alter ego → remove Psychic Tremor from the game.\n• Discard 1 card from your hand for each confused character you control and each confused enemy. If no cards were discarded this way, this card gains surge. Discard this obligation."
+  },
+  {
+   "card_id": "mt012",
+   "type": "SideScheme",
+   "name": "Death Blossom's Bloom",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "3",
+    "Incite": "1",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Mantis Nemesis",
+   "text": "<i>The Swordsman is attempting to dominate the planet for the Cotati. It will empower the Cotati in their mission to eradicate all non-plant life.</i>\nIncite 1.\nEnemies cannot be confused."
+  },
+  {
+   "card_id": "mt013",
+   "type": "Minion",
+   "name": "* Swordsman",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Quickstrike": "1",
+    "Stalwart": "1",
+    "Nemesis": "Mantis"
+   },
+   "traits": [
+    "COTATI",
+    "ELITE"
+   ],
+   "set_name": "Mantis Nemesis",
+   "text": "Quickstrike. Stalwart.\n[star] Swordsman's attacks gain piercing.\n<i>(Mantis' nemesis minion.)</i>\n<i>Her heart soars at the name \"Jacques\"—the Swordsman who died throwing himself between her and a tyrant's spite, then sinks when it relives the moment the Prime Cotati re-animated his corpse to wear a face she couldn't help but love.</i>"
+  },
+  {
+   "card_id": "mt014",
+   "type": "Minion",
+   "name": "* Plantman",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "2",
+    "Stalwart": "1",
+    "Toughness": "1",
+    "Nemesis": "Mantis"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE"
+   ],
+   "set_name": "Mantis Nemesis",
+   "text": "Stalwart. Toughness.\n[star] <b>Forced Interrupt</b>: When Plantman attacks, his attacks gain overkill.\n<b>Forced Interrupt</b>: When Plantman is defeated, give the villain a tough status card."
+  },
+  {
+   "card_id": "mt015",
+   "type": "Attachment",
+   "name": "Cotati Resiliency",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Mantis Nemesis",
+   "text": "Attach to the enemy with the highest printed hit points and without stalwart. If you cannot, this card gains surge.\nAttached enemy gains stalwart.\n<b>Hero Action</b>: Spend [mental][physical] resources → discard this card."
+  },
+  {
+   "card_id": "mt016",
+   "type": "Event",
+   "name": "Mindlink",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "Class": "Basic",
+    "MaxPerDeck": "1",
+    "TeamUp": "Drax;Mantis"
+   },
+   "traits": [],
+   "set_name": "Mantis",
+   "text": "Team-Up (Drax and Mantis). Max 1 per deck.\n<b>Hero Action</b>: Spend up to 2 [mental] resources → heal 2 damage from an identity for each [mental] resource spent. You may take 1 damage to shuffle this card into your deck."
+  }
+ ],
+ "checksum": "a7a2b7ab17cb8ff3bcdbba39a5a03dd9b66d4fa54b313e702c67fe335cbe1620"
 }

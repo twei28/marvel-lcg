@@ -59,6 +59,7 @@ export const TRAITS_FR: Readonly<Record<string, string | undefined>> = {
   "CORRUPT": "CORROMPU",
   "COSMIC": "COSMIQUE",
   "COSMIC ENTITY": "ENTITÉ COSMIQUE",
+  "COTATI": "COTATI",
   "CRAB": "CRABE",
   "CREATURE": "CRÉATURE",
   "CREEP": "RACAILLE",

@@ -56801,6 +56801,8 @@ IMPRIME = {
     "guard": "printed_guard",
     "crisis": "printed_crisis",
     "amplify": "printed_amplify",
+    # AJOUT du 01/11/2026 (pack mantis) : Cotati Resiliency donne « stalwart » a l'ennemi porteur ; `attributs_carte` levait `KeyError: 'stalwart'`.
+    "stalwart": "printed_stalwart",
 }
 
 # ⚠ GARDE-FOU (11/09/2026, §9) : une cle `attendu` que `etat_attendu` ne lit pas
@@ -65971,7 +65973,10 @@ def executer_un_cas(game_dir, port, index):
             gestionnaire = monde_courant().object_manager
             for card_id in cas.get("payer_avec") or []:
                 trouve = None
-                for objet_id, objet in gestionnaire.card_dict.items():
+                # AJOUT 01/11/2026 (pack mantis) : « card_id@Nom de la capacite » designe UN des moyens de paiement d'une
+                # carte qui en porte deux (Empathetic Advantage : origine ennemie ou personnage) ; sans « @ », inchange.
+                card_id, _, nom_moyen = card_id.partition("@")
+                for objet_id, objet in ([] if nom_moyen else gestionnaire.card_dict.items()):
                     face = objet.face
                     if face is not None \
                             and getattr(face.paper, "card_id", None) == card_id \
@@ -65983,10 +65988,11 @@ def executer_un_cas(game_dir, port, index):
                         effet = gestionnaire.paying_effect_dict.get(int(x)) \
                             or gestionnaire.effect_dict.get(int(x))
                         source = getattr(getattr(effet, "this", None), "paper", None)
-                        if getattr(source, "card_id", None) == card_id and priorite.count(x) < candidates.count(x):
+                        if getattr(source, "card_id", None) == card_id and priorite.count(x) < candidates.count(x) \
+                                and (not nom_moyen or getattr(getattr(effet, "ability", None), "name", None) == nom_moyen):
                             trouve = x
                             break
-                if trouve is None:
+                if trouve is None and not nom_moyen:
                     for objet in gestionnaire.card_dict.values():
                         face = objet.face
                         if face is not None and getattr(face.paper, "card_id", None) == card_id:
