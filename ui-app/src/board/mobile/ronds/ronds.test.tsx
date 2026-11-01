@@ -225,6 +225,30 @@ describe('le rond', () => {
     expect((container.querySelectorAll('.rond-mini')[1] as HTMLElement).style.getPropertyValue('--rang')).toBe('1')
   })
 
+  it('un evenement ou une ressource empile sous une carte (State of Flow) est dessine comme une pile, pas comme une amelioration', () => {
+    const u = unite('sof', 'support', { name: 'State of Flow' }, [
+      carte('e1', 'event', { name: 'Augmented Blow' }),
+      carte('e2', 'event', { name: 'Special Delivery' }),
+      carte('u1', 'upgrade', { name: 'Endurance' }),
+    ])
+    const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)
+    const minis = [...container.querySelectorAll('.rond-mini')]
+    expect(minis).toHaveLength(3)
+    expect(minis[0].classList.contains('est-empilee')).toBe(true)
+    expect(minis[1].classList.contains('est-empilee')).toBe(true)
+    expect(minis[2].classList.contains('est-empilee')).toBe(false)
+    const pastille = container.querySelector('.rond-pile') as HTMLElement
+    expect(pastille.textContent).toBe('Pile de cartes : 2')
+    expect(pastille.getAttribute('aria-label')).toBe('Pile de cartes : 2')
+  })
+
+  it('sans carte empilee, aucune pastille de pile', () => {
+    const u = unite('h', 'ally', {}, [carte('t', 'upgrade', { name: 'Lance-toile' })])
+    const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)
+    expect(container.querySelector('.rond-pile')).toBeNull()
+    expect(container.querySelector('.rond-mini.est-empilee')).toBeNull()
+  })
+
   it('un toucher sur une amelioration du mechant ouvre SA feuille, pas celle du mechant (25/10/2026, Klaw)', () => {
     const condition = carte('31', 'upgrade', { name: 'Condition' })
     const arme = carte('32', 'upgrade', { name: 'Arme' })
@@ -257,7 +281,10 @@ describe('le rond', () => {
 })
 
 describe('la table en ronds', () => {
-  it('dessine un rond par carte, dans les six zones', () => {
+  it('dessine un rond par carte ; une zone vide est masquee (27/10/2026, disposition en grilles par zone)', () => {
+    // Mechant, manigance, 2 sbires, heros : les zones ALLIES et CARTES EN JEU sont vides. Avant, six zones etaient toujours
+    // rendues (un rond en pointilles pour les vides) ; desormais une zone vide n'est pas affichee, mais sa rangee reste tant
+    // que l'autre zone est pleine. Donc 4 zones visibles sur 3 rangees.
     const { container } = render(
       <TableRonds
         decor={decor()}
@@ -270,7 +297,8 @@ describe('la table en ronds', () => {
       />
     )
     expect(container.querySelectorAll('.rond')).toHaveLength(5)
-    expect(container.querySelectorAll('.ronds-zone')).toHaveLength(6)
+    expect(container.querySelectorAll('.ronds-zone')).toHaveLength(4)
+    expect([...container.querySelectorAll('.ronds-zone')].map((z) => (z as HTMLElement).dataset.zone)).toEqual(['vilain', 'manigances', 'sbires', 'heros'])
     expect(container.querySelectorAll('.ronds-rangee')).toHaveLength(3)
   })
 })
@@ -316,23 +344,36 @@ describe('le choix du plateau a chaque debut de partie', () => {
     expect(suivante.result.current.demander).toBe(true)
   })
 
+  it('tant que le joueur n\'a rien choisi, les ronds sont pre-selectionnes (et les cartes si c\'est son dernier choix)', () => {
+    window.localStorage.removeItem('marvel-tel-plateau')
+    const premier = render(<ChoixPlateau repondre={vi.fn()} />)
+    expect(screen.getAllByRole('button')[0].className).toContain('est-propose')
+    expect(screen.getAllByRole('button')[1].className).not.toContain('est-propose')
+    premier.unmount()
+    window.localStorage.setItem('marvel-tel-plateau', 'cartes')
+    render(<ChoixPlateau repondre={vi.fn()} />)
+    expect(screen.getAllByRole('button')[1].className).toContain('est-propose')
+  })
+
   it('on ne demande jamais en vue d\'etat, ni sans partie, ni apres le round 1', () => {
     expect(renderHook(() => useChoixPlateau(1, true)).result.current.demander).toBe(false)
     expect(renderHook(() => useChoixPlateau(undefined, false)).result.current.demander).toBe(false)
     expect(renderHook(() => useChoixPlateau(3, false)).result.current.demander).toBe(false)
   })
 
-  it('la fenetre propose les deux plateaux et pre-selectionne le dernier choix', () => {
+  it('la fenetre propose les ronds EN PREMIER (plus adaptes au telephone), puis les cartes, et pre-selectionne le dernier choix', () => {
     window.localStorage.setItem('marvel-tel-plateau', 'ronds')
     const repondre = vi.fn()
     render(<ChoixPlateau repondre={repondre} />)
     const boutons = screen.getAllByRole('button')
     expect(boutons).toHaveLength(2)
-    expect(boutons[1].className).toContain('est-propose')
-    fireEvent.click(boutons[0])
+    expect(boutons[0].textContent).toContain('Ronds')
+    expect(boutons[0].textContent).toContain('adapt')
+    expect(boutons[0].className).toContain('est-propose')
+    fireEvent.click(boutons[1])
     expect(repondre).toHaveBeenCalledWith('cartes', false)
     fireEvent.click(screen.getByRole('checkbox'))
-    fireEvent.click(boutons[1])
+    fireEvent.click(boutons[0])
     expect(repondre).toHaveBeenLastCalledWith('ronds', true)
   })
 })

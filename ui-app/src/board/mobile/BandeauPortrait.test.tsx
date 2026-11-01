@@ -35,6 +35,14 @@ describe('BandeauPortrait', () => {
     expect(document.querySelector('.portrait-menu')).toBeNull()
   })
 
+  it("la feuille du menu est rendue dans document.body : sous le panneau de phase (z 540), elle serait cachée", () => {
+    render(<BandeauPortrait monde={monde('Player 1 Turn')} menu={<button type="button" className="bh-bouton bh-options">Options</button>} />)
+    fireEvent.click(document.querySelector('.portrait-menu-bouton')!)
+    const feuille = document.querySelector('.portrait-menu')!
+    expect(feuille.parentElement).toBe(document.body)
+    expect(document.querySelector('.portrait-bandeau')!.contains(feuille)).toBe(false)
+  })
+
   it('le bouton d action principal porte son libelle, sa suggestion, et agit', () => {
     const agir = vi.fn()
     render(<BandeauPortrait monde={monde('Player 1 Turn')} actionPrincipale={{ libelle: 'Fin du tour', suggere: true, agir }} />)

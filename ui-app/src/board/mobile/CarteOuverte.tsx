@@ -20,6 +20,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../../components/ScanCard'
 import { t } from '../langue'
+import { PastillesTraits } from '../PastillesTraits'
 import { useAppuiLong } from './useAppuiLong'
 import { FeuilleDetail } from './ronds/FeuilleDetail'
 import './portrait.css'
@@ -158,6 +159,8 @@ export function CarteOuverte({
               {...(detail ? { jetonMenace: undefined, jetonDegats: undefined, counters: undefined } : {})}
             />
           )}
+          {/* Les traits du heros en ce moment (reglage « Traits du heros ») : le tap est le geste de lecture du telephone. */}
+          {!detail && !faceMontree ? <PastillesTraits carte={carte} surGrande /> : null}
           {/* Q72 : l'autre face a COTE de la premiere, comme sur le PC (un peu plus petites). */}
           {detail && !faceMontree && !enFocus
             ? autresFaces.map((autre) => (
@@ -178,6 +181,10 @@ export function CarteOuverte({
               ))
             : null}
         </div>
+
+        {/* Ronds : les deux faces sont cote a cote, les pastilles se lisent donc SOUS elles. Cartes : sur la carte (voir plus haut),
+            sinon le bandeau d'action du dessous les recouvre. */}
+        {detail && !faceMontree ? <PastillesTraits carte={carte} /> : null}
 
         {enFocus ? (
           <div className="carte-ouverte-miniatures">

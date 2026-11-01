@@ -11,11 +11,15 @@ from game.event.counter import EventCounter
 from engine.config import ConfigVariables
 from game.message.message_type import CardStateUpdatedMessage
 from engine.controller.module.undo import UndoModule
+from game.world.instantane import PileInstantanes, SignalRestaurer
 
 FastUndoHandle = UndoModule.UndoHandle|None
 
 FILE_BASED_FAST_UNDO    = ConfigVariables.Bool('file_based_fast_undo', False)
 CACHE_BASED_FAST_UNDO   = ConfigVariables.Bool('cache_based_fast_undo', False)
+# AJOUT LOCAL (29/10/2026) : « Annuler » restaure un instantane pris a chaque question du tour au lieu de rejouer
+# la partie depuis zero (voir `game/world/instantane.py`). Mettre a faux ramene l'ancien rejeu.
+ANNULER_PAR_INSTANTANE  = ConfigVariables.Bool('annuler_par_instantane', True)
 
 class EventManager:
 
@@ -228,6 +232,22 @@ class EventManager:
 
         return self.world.is_game_over
 
+    def PileDuTour(self, is_play_turn: bool) -> 'PileInstantanes|None':
+        """La pile d'instantanes d'un tour de joueur, ou rien quand l'annulation doit rejouer la partie.
+
+        Rien hors de la question du tour, en mode manuel (il a son propre « annuler ») et dans un puzzle.
+        """
+        if not is_play_turn or not ANNULER_PAR_INSTANTANE.value:
+            return None
+        if self.world.rule.mode_manuel or self.world.scene.is_puzzle:
+            return None
+        from game.test import Test
+        if Test.IsInTesting():
+            return None
+        pile = PileInstantanes()
+        self.world.controller_manager.undo.pile_instantanes = pile
+        return pile
+
     def ProcessOptionalEffect(self, message: 'Message2', optional_effects: List['Effect'], local_optional_effects: List['Effect'], priority: 'TimingPriority') -> 'GAME_OVER':
         from game.message import Message
         from game.effect.effect_failure import EffectFailure
@@ -241,7 +261,27 @@ class EventManager:
             processed_effects: List['Effect'] = []
             nonlocal optional_effects
 
+            # Les instantanes de CE tour de joueur (voir `game/world/instantane.py`). Ils meurent avec la boucle : la
+            # pile d'appels qu'ils supposent n'existe plus apres, « Annuler » retombe alors sur le rejeu.
+            pile = self.PileDuTour(is_play_turn)
+            try:
+                process_player_boucle(player, processed_effects, pile)
+            finally:
+                if pile is not None:
+                    self.world.controller_manager.undo.pile_instantanes = None
+
+        def process_player_boucle(player: 'Player', processed_effects: List['Effect'], pile: 'PileInstantanes|None'):
+            nonlocal optional_effects
+
+            # La boucle repose la MEME question quand rien n'a ete joue (un clic sur « Annuler », une pause, une
+            # commande) : un second instantane de ce meme etat ferait « annuler » revenir ou l'on est deja.
+            question_reposee = False
             while True:
+                if pile is not None and not question_reposee \
+                        and not self.world.controller_manager.skip.is_skipping:
+                    pile.prendre(
+                        [self.world, message, optional_effects, local_optional_effects, processed_effects],
+                        [self.world.render], self.world.controller_manager, (optional_effects,))
                 if is_play_turn:
                     self.new_effect_created = False
                 if self.world.is_game_over:
@@ -323,8 +363,19 @@ class EventManager:
                     filtered_effects = sorted(filtered_effects, key=lambda e: e.object_id)
 
                     forced = "Forced_Action" if any(effect.ability.flags.is_forced_action for effect in filtered_effects) else False
-                    effect, is_cheating = player.ChoiceAndSpellEffect(filtered_effects, message, priority, forced)
+                    try:
+                        effect, is_cheating = player.ChoiceAndSpellEffect(filtered_effects, message, priority, forced)
+                    except SignalRestaurer as signal:
+                        if pile is None:
+                            raise
+                        # « Annuler » : la pile d'appels de l'action est defaite, on remet le monde et on redemande.
+                        (optional_effects,) = pile.restaurer(signal.en_action)
+                        Log.Print("=== Annuler : instantane restaure ===")
+                        self.new_effect_created = False
+                        question_reposee = False
+                        continue
 
+                    question_reposee = bool(is_cheating)
                     if not is_cheating and not effect:
                         break
                     if is_cheating or self.new_effect_created:

@@ -307,3 +307,36 @@ l'obligation reste jouable. À faire : retrouver les deux cartes auprès de l'au
 ## 8. Problèmes trouvés le 26/10/2026
 
 Liste vivante, à cocher au fur et à mesure : `docs/rapports/2026-10-26-problemes-a-corriger.md`.
+
+---
+
+## 9. Campagnes fan-made EN PAUSE (mise au backlog le 26/10/2026, à la demande de l'utilisateur : « on reprendra ça une autre fois »)
+
+**Décisions prises**
+- Seules les campagnes COMPLÈTES (livret + carnet) sont faites : **Hellfire Hunt** (Dipsome) d'abord, puis **Hydra Unleashed** (Lord Havok).
+- **Schemes of the Shi'ar** (équipe Starjammers, WIP dans le zip Starjammers) : **abandonnée** (ni livret ni carnet).
+- **Mockingbird** (héros d'Hydra) : cartes absentes du zip ; à chercher si le temps le permet, **non bloquant** (Hydra se joue avec U.S. Agent seul).
+- **Dé à 6 faces d'Hydra God** (scénario 5) : un randomizer cliquable avec un petit D6 animé qui montre le résultat ; tirage enregistré côté moteur (rejouable et partagé en multijoueur).
+- **FAQ vide d'Hydra** : ignorée, les doutes se tranchent par les règles et le livret.
+- **Squirrel Girl** : homebrew de l'utilisateur, hors périmètre de test.
+
+**Où est le travail**
+- Branche git **`campagnes-fanmade`**, dans un dossier séparé (git worktree) : `/home/oem/Desktop/Marvel-LCG-campagnes`. Dernier commit : `3f4b215e` (« wip(campagne) »). ⚠ **Ne pas supprimer ce dossier** : il contient aussi 90 images `hf*.jpg` (réelles, non versionnées) et des liens vers les images, le venv et node_modules du dossier principal.
+- Le dossier principal (`gs7-earth-under-siege`) ne contient AUCUNE ligne de campagne.
+- Pour recréer le dossier : `git worktree add ../Marvel-LCG-campagnes campagnes-fanmade`, puis relier `assets/pics*` (`cp -as`), `assets/cache`, `assets/docs`, `data/marvelcdb`, `public/stories`, `.venv-linux`, `ui-app/node_modules`, `ui-check/node_modules`, et recréer `.game-src` (liens vers src, data, deck, assets, public + build.py, game_entry.py, launch.json, main.py, winsound.py). Les images `hf*` se régénèrent depuis le zip avec `tools/importer_images_hellfire_hunt.py` ; les cartes avec `tools/importer_cartes_hellfire_hunt.py`.
+- Avant de reprendre : `git -C ../Marvel-LCG-campagnes merge gs7-earth-under-siege` (la branche de campagne est en retard sur le principal).
+
+**Ce qui est fait**
+- Lecture complète du livret Hellfire Hunt : `docs/rapports/2026-10-26-hellfire-hunt-lecture-livret.md` ; audit des trois campagnes : `docs/rapports/2026-10-26-audit-campagnes-fanmade.md`.
+- **États nets** écrits par les agents au moment de la pause : `docs/rapports/campagnes-en-pause/hellfire-hunt-fondations-GABARITS.md` et `.../hellfire-hunt-white-queen-GABARITS.md` (copies des gabarits de la branche de campagne : à lire en premier pour reprendre).
+- **Fondations** (hf001-hf099) : fichier de campagne `data/campagnes/hellfire_hunt.json`, 16 alliés recrutés, 12 side schemes Potential Ally, 7 side schemes de campagne, Xavier's Institute, cartes d'aspect de Marvel Girl, reskins ; extensions moteur du deck « Recruited Mutants » ; **92 cas `[hfc]` verts** ; decks de départ Marvel Girl (22 cartes) et Sunspot (15 cartes, incomplet : Finishing Blow, Cecilia Reyes, For What's Right et X-Force Strike manquent du zip et du jeu).
+- **White Queen** (hf100-hf199) et ses modules (hf300-hf399) : scénarios `data/scenarios`, `data/encounter_sets`, cartes et scripts ; **94 cas `[hf]` verts** ; changement de forme du vilain sans remise à zéro des PV natif dans le moteur (seul ajout : trait `DIAMOND`) ; « incite 1 » au retour en PSIONIC codé dans le script de hf103a.
+- Toutes les cartes restent « Carte terminée : NON (provisoire) ».
+
+**Ce qui reste**
+- Preuves par substitution (pour toutes les cartes de campagne et de White Queen) ; cas manquants (Rally the Survivors, limite once-per-phase de hf048, hf043, retournement de White Queen) ; `test_cards`, vérificateurs de préfixes et d'API ; recalcul des checksums ; `RECETTES-MOTEUR.md` ; textes français de White Queen (42 cartes) et voiles des 48 + scans ; autoplay (8 parties Sunspot + témoin) ; `QUESTIONS.md`.
+- Perte de campagne au scénario 5 en expert et jeton d'accélération : déclarés, **non testés** (ni vitest ni jeu).
+- **Scénarios 2 à 5 non commencés** : Black King, Cassandra Nova, Black Queen, Torn (ordre recommandé : Black King, Cassandra Nova, Black Queen, Torn ; Torn en dernier, Emma Frost a quatre faces dont deux à PV infinis). Onze extensions moteur au total d'après le dossier de lecture (jour/nuit, decks de table partagés, formes de vilain…).
+- **Questions ouvertes** : X-Gene ×2 contre « Max 1 per player » ; texte de hf044 Psychic Minefield ; Rally the Survivors « reste en jeu » ; permission de jouer Blink depuis la défausse Recruited ; moment où la 1B de White Queen avance après la fin du round et report du jeton d'accélération ; hf304 en multijoueur ; incite du stade 3 à la première révélation ; **règle jour/nuit de Black Queen** (portée par ses deux cartes d'environnement, absente du livret).
+- **Hydra Unleashed** : 385 cartes, 8 scénarios, 5 mots-clés absents du moteur (Civilians X, Heroic, Sniper X, Zealot, Mercenary), au moins 4 extensions moteur (six vilains simultanés avec jeton d'activation, vilain issu du deck de rencontre, deck de Lieutenants, vilain à six cartes avec dé) ; héros Mockingbird sans cartes.
+- **Une seule passe complète des cas de test à la fin des campagnes** (décision de l'utilisateur) : en mode parallèle `PARALLELES=6` (environ une heure ; la séquentielle dépasse six heures).

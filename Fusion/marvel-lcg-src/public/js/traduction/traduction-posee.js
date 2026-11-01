@@ -745,6 +745,11 @@ export const GLYPHES = {
     unique: 'U',
     per_hero: 'G',
     per_player: 'G',
+    // La police ChampionsIcons n'a pas de glyphe distinct « par groupe » : on
+    // reprend la silhouette de per_hero/per_player (sinon « [per_group] » resterait
+    // affiché en toutes lettres, cf. 55028b et pu149a). À remplacer si la police
+    // gagne un glyphe propre.
+    per_group: 'G',
     boost: 'B',
     crisis: 'C',
     acceleration: 'A',

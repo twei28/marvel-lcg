@@ -437,3 +437,8 @@ Fichiers : `src/cards/pack/wasp_hank_pym/wasp_hank_pym/{hp007,hp009,hp012,hp013}
 - hp009 / hp012 : repartition des X menaces / X degats en plusieurs designations (UI de choix repete), avec 2 manigances / 2 ennemis ; X = 0 : l'Action ne propose-t-elle aucune cible sans bloquer ?
 - hp013 : le cout a deux temps (choix degats / menace PUIS inclinaison) ; l'Action absente quand Hank est incline ; la branche a 5 compteurs dans une vraie partie avec Standard III (Pursued by the Past en jeu) et sans.
 - hp017 : le sbire « Hacked » issu d'un allie du deck (entre en jeu engage) ; la carte defaussee quand il n'y a aucun allie.
+
+## Preuves complémentaires du 26/10/2026
+
+- **hp013** : le cas « 5e compteur, AUCUNE Shadow of the Past, Pursued by the Past (45075a) en jeu → 7 compteurs pursuit » est ROUGE quand l'ancien défaut est réintroduit (branche `Pursued by the Past` neutralisée : `hp015 n'est pas en jeu`), vert avec le script réel (fichier restauré, empreinte identique).
+- **hp007** : le test plateau « compteur pym sur l'identité » (`ui-app/src/board/wasp-hank-pym-plateau.test.ts`) est ROUGE quand `compteursAffiches` ignore les identités (mutant temporaire de `card-model.ts`, restauré à l'identique), vert sinon.

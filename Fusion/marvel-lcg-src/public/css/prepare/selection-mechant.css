@@ -1,8 +1,8 @@
 /* LA SÉLECTION DU MÉCHANT EN TROIS COLONNES (16/10/2026, maquette C validée),
    POUR TOUS LES AFFICHAGES (Normal, Sobre, Épuré).
    Gauche : les boîtes (pochettes). Milieu : les méchants de la boîte, la menace,
-   les sets modulaires et le face à face. Droite : la grande image du méchant, ou
-   le choix des sets modulaires (`.pm-droite`). Aucune modification du DOM de la
+   et le face à face. Droite : la grande image du méchant. Le niveau et les sets
+   modulaires ont leur étape (page-difficulte.css). Aucune modification du DOM de la
    page : la grille CSS réordonne `.tb-scene` (image), `.ext-tabs` (boîtes),
    `.tb-roster-scn` (méchants), `.tb-menace` et `.tb-equipe` (face à face).
    Réservé au PC (>= 900 px) ; le téléphone garde sa mise en page.
@@ -112,7 +112,10 @@
   .team-b.eux .ext-tab {
     width: auto;
     height: auto;
-    aspect-ratio: 0.58;
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    clip-path: none;
     border: 1px solid transparent;
     border-radius: 6px;
     box-shadow: none;
@@ -131,19 +134,25 @@
     box-shadow: none;
   }
 
-  /* Toutes les pochettes remplissent le même cadre (18/10/2026) : avec « contain », une boîte large
-     ou un visuel carré se retrouvait plus petit que les pochettes hautes. « cover » les met à la
-     même taille, quitte à rogner un peu les bords. */
+  /* Pochette carrée, image entière (29/10/2026, demande de l'utilisateur) : « contain » sur fond noir
+     (une boîte plus haute que large garde ses bandes noires), coins haut-droit et bas-gauche biseautés. */
   .team-b.eux .ext-tab .box {
-    inset: 2px 2px 26px 2px;
-    background-size: cover;
+    position: relative;
+    inset: auto;
+    flex: none;
+    width: calc(100% - 4px);
+    margin: 2px;
+    aspect-ratio: 1 / 1;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    background-color: var(--m-champ);
-    border-radius: 4px;
+    background-color: #000;
+    border-radius: 0;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
   }
 
   .team-b.eux .ext-tab .exname {
+    position: static;
     background: none;
     color: var(--m-doux);
     font-size: 9.5px;
@@ -176,15 +185,24 @@
   }
 
   /* Les pochettes : de la place pour un nom sur trois lignes. */
-  .team-b.eux .ext-tab { aspect-ratio: 0.58; min-height: 0; }
-  .team-b.eux .ext-tab .box { inset: 2px 2px 30px 2px; }
+  .team-b.eux .ext-tab { aspect-ratio: auto; min-height: 0; }
   .team-b.eux .ext-tab .exname {
     line-height: 1.1;
     font-size: 9px;
     max-height: 30px;
     overflow: hidden;
   }
-  .team-b.eux .ext-tabs { grid-auto-rows: min-content; gap: 4px 6px; padding-top: 12px; }
+  .team-b.eux .ext-tabs { grid-auto-rows: min-content; gap: 4px 6px; padding-top: 76px; }
+  /* Les trois onglets (Core Set + Extensions / Packs scénario / Fan-made) se posent en haut du panneau des boîtes, dans
+     la même cellule que lui ; la marge droite évite le coin coupé du panneau. */
+  .team-b.eux .ext-groupes {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    position: relative;
+    z-index: 2;
+    margin: 16px 40px 0 16px;
+  }
   .team-b.eux .tb-entete .tb-mode { margin-left: 12px; }
 
 
@@ -201,50 +219,6 @@
     background-size: 106% auto !important;
     background-position: 50% 12% !important;
   }
-
-  /* Le choix des sets modulaires : un panneau à la place de l'image du méchant. */
-  .team-b.eux .pm-droite {
-    grid-column: 3;
-    grid-row: 1 / -1;
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    background: var(--m-surface);
-    border: 1px solid var(--m-bord);
-    border-radius: 12px;
-    overflow: hidden;
-    min-height: 0;
-  }
-  .team-b.eux .pm-tete {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--m-bord);
-    padding-bottom: 10px;
-  }
-  .team-b.eux .pm-tete b { font: 700 20px var(--m-police); color: var(--m-texte); }
-  .team-b.eux .pm-fermer {
-    width: 32px;
-    height: 32px;
-    border: 0;
-    border-radius: 8px;
-    background: var(--m-champ);
-    color: var(--m-texte);
-    font-size: 20px;
-    cursor: pointer;
-  }
-  .team-b.eux .pm-liste {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 8px;
-  }
-  .team-b.eux .pm-pied { display: flex; justify-content: flex-end; }
 
   /* Le nom de l'extension, au-dessus du nom du méchant : lisible sur l'illustration. */
   .team-b.eux .tb-nomg small {

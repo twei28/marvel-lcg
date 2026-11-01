@@ -20,6 +20,7 @@ import { chargerPartieEnCours } from './sources'
 import type { World } from './world'
 import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-seat'
 import { estTablette } from './tablette/tablette'
+import { estTelephoneMaintenant } from './mobile/useModeMobile'
 
 /**
  * Le rythme de la phase du mechant, en TROIS positions.
@@ -178,8 +179,21 @@ function porteDeChantier(): boolean {
   }
 }
 
+/**
+ * SUR TELEPHONE LA PHASE DU MECHANT EST D'OFFICE « GUIDEE » (26/10/2026, demande de l'utilisateur : « pas d'autres
+ * choix »). Le mode `detaille` est celui de la presentation « Guidee » (voir `presentationEffective`). Le mode RANGE n'est
+ * jamais ecrase : il se lit seulement autrement sur un telephone, et un PC ou une tablette du meme joueur gardent le leur.
+ */
+export function modePhaseEffectif(modeRange: ModePhaseMechant, telephone: boolean): ModePhaseMechant {
+  return telephone ? 'detaille' : modeRange
+}
+
 export function lireModePhaseMechant(): ModePhaseMechant {
   if (porteDeChantier()) return 'sur-table'
+  return modePhaseEffectif(lireModePhaseMechantRange(), estTelephoneMaintenant())
+}
+
+function lireModePhaseMechantRange(): ModePhaseMechant {
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
     // 10/10/2026 : « Étape par étape Bis » EST devenu « Étape par étape ». Qui
@@ -355,6 +369,30 @@ export function ecrireReponseAmbiance(valeur: ReponseAmbiance): void {
     // cle absente se relit sans dependre d'une valeur ecrite un jour.
     if (valeur === 'demander') window.localStorage.removeItem(CLE_AMBIANCE_DEMANDE)
     else window.localStorage.setItem(CLE_AMBIANCE_DEMANDE, valeur)
+  } catch {
+    /* idem */
+  }
+}
+
+/**
+ * « L'explication d'Annuler a ete lue » (voir ModaleAnnuler.tsx). Reglage
+ * PERSONNEL, localStorage, meme modele que la reponse d'ambiance ci-dessus.
+ * Absent -> la modale s'ouvre a chaque clic ; seule une case cochee ecrit.
+ */
+export const CLE_ANNULER_EXPLIQUE = 'marvel-board-annuler-explique'
+
+export function lireAnnulerExplique(): boolean {
+  try {
+    return window.localStorage.getItem(CLE_ANNULER_EXPLIQUE) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function ecrireAnnulerExplique(valeur: boolean): void {
+  try {
+    if (valeur) window.localStorage.setItem(CLE_ANNULER_EXPLIQUE, '1')
+    else window.localStorage.removeItem(CLE_ANNULER_EXPLIQUE)
   } catch {
     /* idem */
   }

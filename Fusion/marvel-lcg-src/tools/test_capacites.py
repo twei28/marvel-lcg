@@ -3708,6 +3708,18 @@ CAS = [
         "attendu": {},
     },
     {
+        "nom": "01188 Caught Off Guard — Rocket Raccoon : on peut defausser son amelioration (Rocket's Pistol)",
+        "pourquoi": "rapport du 28/10/2026 (partie Rocket Raccoon contre Rhino) : « impossible de defausser sur Pris par surprise ». Rocket's Pistol (amelioration Restricted attachee a l'identite) et le Triskelion sont en jeu",
+        "scenario": "rhino",
+        "heros": "rocket_raccoon",
+        "mise_en_place": ["Puzzle.ChangeForm('16029a')", "Puzzle.PutIntoPlay('16038', under_control=True)",
+                          "Puzzle.Attach('16038', '16029a')", "Puzzle.PutIntoPlay('01073', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('01188')"],
+        "cibles": ["16038"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["16038"]},
+    },
+    {
         "nom": "01094 Rhino — Puzzle.Attack : le vilain frappe et le heros encaisse",
         "pourquoi": "premier cas passant par Puzzle.Attack ; sans lui aucune capacite « apres avoir attaque » n'est atteignable",
         "scenario": "rhino",
@@ -56772,6 +56784,7 @@ IMPRIME = {
     "hazard": "printed_hazard",
     "retaliate": "printed_retaliate",
     "villainous": "printed_villainous",
+    "peril": "printed_peril",  # AJOUT 31/10/2026 (pack buffy, Hush : « each encounter card gains peril »)
     # AJOUT du 08/09/2026 (pack superior_spider_man) : `su015` Goblin Protocol
     # fait compter la menace des sbires pistes dans le seuil du complot
     # principal. Sans cette entree, `attributs_carte` levait `KeyError:
@@ -56788,6 +56801,8 @@ IMPRIME = {
     "guard": "printed_guard",
     "crisis": "printed_crisis",
     "amplify": "printed_amplify",
+    # AJOUT du 01/11/2026 (pack mantis) : Cotati Resiliency donne « stalwart » a l'ennemi porteur ; `attributs_carte` levait `KeyError: 'stalwart'`.
+    "stalwart": "printed_stalwart",
 }
 
 # ⚠ GARDE-FOU (11/09/2026, §9) : une cle `attendu` que `etat_attendu` ne lit pas
@@ -56805,6 +56820,8 @@ CLES_ETAT_ATTENDU = {
     'menace_min', 'mis_de_cote', 'pose_sous', 'pret', 'statuts', 'statuts_absents',
     'taille_deck_joueur', 'taille_deck_registered', 'taille_main', 'taille_mis_de_cote',
     'mis_de_cote_scenario', 'taille_attaches', 'taille_pose_sous', 'taille_reserve', 'traits', 'traits_absents',
+    # ajoutee le 26/10/2026 (relecture dt075 : « 3 cartes DIFFERENTES »)
+    'pose_sous_titres_distincts',
     # absorbees le 11/09/2026
     'pv_max', 'carte_du_surge', 'accroche_a', 'hotes', 'traits_de',
     # ajoutee le 21/09/2026 (signalement Aghenatak, cartes coincees en
@@ -58127,6 +58144,17 @@ def etat_attendu(monde, aides):
         n = len(list(face.GetPlacedCardArea().Get(True)))
         if n != valeur:
             soucis.append(f"{n} carte(s) posee(s) sous {hote} (attendu {valeur})")
+
+    # AJOUT 26/10/2026 (relecture ligne a ligne de dt075 Multiverse Shenanigans : « choose any 3 DIFFERENT ... cards »). Nombre de TITRES
+    # distincts parmi les cartes posees sous une carte : un cas qui ne mesure que `taille_pose_sous` laisse passer trois exemplaires de la meme carte.
+    for hote, valeur in attendu.get("pose_sous_titres_distincts") or []:
+        face = aides["par_id"](monde, hote)
+        if face is None:
+            soucis.append(f"{hote} introuvable en jeu (pose_sous_titres_distincts)")
+            continue
+        titres = {getattr(f.paper, "name", None) for f in face.GetPlacedCardArea().Get(True)}
+        if len(titres) != valeur:
+            soucis.append(f"{len(titres)} titre(s) distinct(s) sous {hote} (attendu {valeur}) : {sorted(map(str, titres))}")
 
     if "defausse_joueur" in attendu:
         n = len(list(monde.players[0].discard_pile.Get()))
@@ -59709,6 +59737,25 @@ def wave_rising_tide_purge_fin_de_phase(monde, aides):
         return False, f"{card_id_pose} n'est pas dans la defausse apres la purge de fin de phase"
 
     return True, f"Rising Tide area purgee en fin de phase : {card_id_pose} envoye en defausse"
+
+def se_voie_redressee_fin_de_phase(monde, aides):
+    """Une VOIE (type Path, rangee dans l'aire de soutien) incline par son cout se REDRESSE en fin de phase joueur.
+
+    Regle : en fin de phase joueur, tout joueur redresse TOUTES ses cartes inclinees. Defaut constate le 30/10/2026
+    sur Ashigaru (se009) : `GetControlCardsByType(support=True)` ne rend plus que les VRAIS soutiens (la Voie n'en
+    est pas un, voir path.py), et `PlayerPhase.EndPhase()` ne redressait donc plus la Voie : elle restait inclinee
+    pour toujours apres avoir servi une fois. On appelle directement `player.phase.EndPhase()`, le chemin que la
+    boucle de jeu emprunte a chaque phase joueur.
+    """
+    voie = aides["par_id"](monde, "se009")
+    if voie is None:
+        return False, "se009 Ashigaru introuvable en jeu"
+    if not voie.IsExhaust():
+        return False, "mise en place ratee : la Voie n'est pas inclinee avant la fin de phase"
+    monde.players[0].phase.EndPhase()
+    if voie.IsExhaust():
+        return False, "la Voie est encore inclinee apres la fin de phase joueur (attendu : redressee)"
+    return True, "la Voie inclinee est redressee en fin de phase joueur"
 
 def wave_pearls_lolo_retourne_et_soigne(monde, aides):
     """65008 Pearl's Lolo : « Flip a faceup card in your Rising Tide area
@@ -65926,7 +65973,10 @@ def executer_un_cas(game_dir, port, index):
             gestionnaire = monde_courant().object_manager
             for card_id in cas.get("payer_avec") or []:
                 trouve = None
-                for objet_id, objet in gestionnaire.card_dict.items():
+                # AJOUT 01/11/2026 (pack mantis) : « card_id@Nom de la capacite » designe UN des moyens de paiement d'une
+                # carte qui en porte deux (Empathetic Advantage : origine ennemie ou personnage) ; sans « @ », inchange.
+                card_id, _, nom_moyen = card_id.partition("@")
+                for objet_id, objet in ([] if nom_moyen else gestionnaire.card_dict.items()):
                     face = objet.face
                     if face is not None \
                             and getattr(face.paper, "card_id", None) == card_id \
@@ -65938,10 +65988,11 @@ def executer_un_cas(game_dir, port, index):
                         effet = gestionnaire.paying_effect_dict.get(int(x)) \
                             or gestionnaire.effect_dict.get(int(x))
                         source = getattr(getattr(effet, "this", None), "paper", None)
-                        if getattr(source, "card_id", None) == card_id and priorite.count(x) < candidates.count(x):
+                        if getattr(source, "card_id", None) == card_id and priorite.count(x) < candidates.count(x) \
+                                and (not nom_moyen or getattr(getattr(effet, "ability", None), "name", None) == nom_moyen):
                             trouve = x
                             break
-                if trouve is None:
+                if trouve is None and not nom_moyen:
                     for objet in gestionnaire.card_dict.values():
                         face = objet.face
                         if face is not None and getattr(face.paper, "card_id", None) == card_id:

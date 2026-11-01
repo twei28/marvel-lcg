@@ -38,6 +38,8 @@ const MOTEUR_FR: Record<string, string> = {
   // — Avis du moteur (`choix_uniques.texte`) —
   'No minion in the encounter deck: no card is drawn.': 'Aucun sbire dans le deck de rencontre : aucune carte n’est piochée.',
   'No event in your deck: no card is placed on top of your deck.': 'Aucun événement dans votre deck : aucune carte n’est placée sur le dessus de votre deck.',
+  'The Kraken was not found: Cultist is not discarded.': 'Le Kraken est introuvable : Cultist n’est pas défaussé.',
+  'No Web-Warrior ally in your discard pile: no player is chosen.': 'Aucun allié Web-Warrior dans votre défausse : aucun joueur n’est choisi.',
   // — Pouvoirs de base et gestes de tour —
   Attack: 'Attaquer',
   Defense: 'Défendre',
@@ -456,6 +458,11 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
     (m) => `Retirer ${m[1]} compteurs de dragage pour piocher ${m[2]} cartes`],
   [/^Remove (\d+) dredge counters to confuse and stun an enemy$/,
     (m) => `Retirer ${m[1]} compteurs de dragage pour désorienter et sonner un ennemi`],
+  // Campagne MojoMania (`mojo/campaign.py`, 28/10/2026) : Longshot revele ou melange au scenario suivant, et la carte que le
+  // joueur avait gardee au carnet (le nom de la carte reste en anglais : le scan sous les yeux l'est).
+  [/^Reveal Longshot$/, () => 'Révéler Longshot'],
+  [/^Shuffle Longshot into the encounter deck$/, () => 'Mélanger Longshot dans le deck de rencontre'],
+  [/^Put (.+) into play under your control$/, (m) => `Mettre ${m[1]} en jeu sous ton contrôle`],
   // Campagne Skrull Menace (`skrull_menace/campaign.py`) : la règle de coopération, la zone, la campagne experte.
   [/^Discard the top card of your deck to place (.+) in the victory display$/,
     (m) => `Défausser le dessus de ton deck pour placer ${m[1]} dans la pile de victoire`],
@@ -491,6 +498,17 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Heal (\d+) damage from an identity$/, (m) => `Soigner ${degats(m[1]!)} d’une identité`],
   [/^Stun an enemy$/, () => 'Rendre un ennemi sonné'],
   [/^Confuse an enemy$/, () => 'Rendre un ennemi désorienté'],
+  // Pack Mantis (`mt`, 01/11/2026) : les choix de Mantis, Biopathy, Meditation Atrium, Mindlink, Pressure Point Strike, Psychic Tremor.
+  // Le NOM de capacite imprime (« Empathetic Advantage ») reste anglais comme sur le scan ; seule la consigne se traduit.
+  [/^Empathetic Advantage : discard a confused status card$/, () => 'Empathetic Advantage : défausser une carte d’état Désorienté'],
+  [/^Confuse a character you control( to draw 1 card)?$/, (m) => `Rendre désorienté un personnage que tu contrôles${m[1] ? ' pour piocher 1 carte' : ''}`],
+  [/^Heal (\d+) damage from a friendly character$/, (m) => `Soigner ${degats(m[1]!)} d’un personnage allié`],
+  [/^Take 1 damage to shuffle this card into your deck$/, () => 'Subir 1 dégât pour mélanger cette carte dans ton deck'],
+  [/^Deal 1 additional damage to that enemy$/, () => 'Infliger 1 dégât supplémentaire à cet ennemi'],
+  [/^Discard a confused status card from that enemy to draw 1 card$/, () => 'Défausser une carte d’état Désorienté de cet ennemi pour piocher 1 carte'],
+  [/^Exhaust your alter ego → remove Psychic Tremor from the game$/, () => 'Incliner ton alter ego → retirer Psychic Tremor de la partie'],
+  [/^Discard 1 card from your hand for each confused character you control and each confused enemy\. Discard this obligation$/,
+    () => 'Défausser 1 carte de ta main par personnage désorienté que tu contrôles et par ennemi désorienté. Défausser cette obligation'],
   [/^Stun a minion$/, () => 'Rendre un sbire sonné'],
   [/^Ready your hero$/, () => 'Redresser ton héros'],
   [/^Ready your identity$/, () => 'Redresser ton identité'],

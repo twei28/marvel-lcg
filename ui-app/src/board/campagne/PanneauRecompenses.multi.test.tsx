@@ -9,6 +9,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { PanneauRecompenses } from './PanneauRecompenses'
 import { CLE_CAMPAGNE } from './contexte'
 import { mondeDeTest } from './world-de-test'
+import { alaSuite, auBilan } from './parcours-test'
 
 const CAMPAGNE = {
   id: 'trors-1',
@@ -73,28 +74,29 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('le panneau à plusieurs', () => {
-  it("ne montre pas « Valider » à un siège qui n'est pas l'hôte", async () => {
+  it("ne montre pas le bouton qui lance la suite à un siège qui n'est pas l'hôte", async () => {
     render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={1} onTermine={() => {}} />)
-    await waitFor(() => expect(screen.getByText(/Envoyer mes champs/)).toBeInTheDocument())
-    expect(screen.queryByText(/Valider et continuer/)).toBeNull()
+    await alaSuite()
+    expect(screen.queryByRole('button', { name: 'Choisir la suite' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Commencer' })).toBeNull()
   })
 
-  it("montre « Valider » à l'hôte, et pas le bouton d'envoi", async () => {
+  it("montre le bouton de la suite à l'hôte", async () => {
     render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={0} onTermine={() => {}} />)
-    await waitFor(() => expect(screen.getByText(/Valider et continuer/)).toBeInTheDocument())
-    expect(screen.queryByText(/Envoyer mes champs/)).toBeNull()
+    await alaSuite()
+    expect(screen.getByRole('button', { name: 'Choisir la suite' })).toBeInTheDocument()
+    expect(screen.queryByText(/En attente de l'hôte/)).toBeNull()
   })
 
-  it("dit au distant que c'est l'hôte qui valide", async () => {
+  it("dit au distant que c'est l'hôte qui lance la suite", async () => {
     render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={1} onTermine={() => {}} />)
-    await waitFor(() =>
-      expect(screen.getByText(/L'hôte valide les récompenses pour la table/)).toBeInTheDocument()
-    )
+    await alaSuite()
+    expect(screen.getByText(/En attente de l'hôte pour commencer/)).toBeInTheDocument()
   })
 
   it('rend inertes les cases des autres sièges', async () => {
     render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={1} onTermine={() => {}} />)
-    await waitFor(() => expect(screen.getByText(/Envoyer mes champs/)).toBeInTheDocument())
+    await auBilan()
 
     // « Bombes désamorcées » est un champ COMMUN : il appartient à l'hôte, donc
     // le siège 1 ne peut pas y toucher.
@@ -111,7 +113,7 @@ describe('le panneau à plusieurs', () => {
 
   it("agrandit la carte au survol, même quand sa case est inerte, et la ferme en sortant", async () => {
     render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={1} onTermine={() => {}} />)
-    await waitFor(() => expect(screen.getByText(/Envoyer mes champs/)).toBeInTheDocument())
+    await auBilan()
     const cartes = screen.getAllByRole('button', { name: '01001' }) as HTMLButtonElement[]
     const inerte = cartes[0]!
     expect(inerte.disabled).toBe(true)

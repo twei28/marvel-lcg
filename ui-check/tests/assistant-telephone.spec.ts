@@ -101,6 +101,8 @@ for (const { w, h } of FORMATS) {
     test.use({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
     // Le filet force l'affichage « Coloré » (global-setup) : pour les captures on montre l'Épuré, le défaut du jeu.
     test.beforeEach(async ({ page }) => {
+      // Le français, quelle que soit la langue du navigateur de la machine : les assertions lisent le français.
+      await page.addInitScript(() => { try { localStorage.setItem('marvel-langue', 'fr'); localStorage.setItem('marvel-langue-choisie', '1'); } catch (e) { /* stockage indisponible */ } });
       if (CAPTURER) await page.addInitScript(() => { try { localStorage.setItem('mc_affichage_v1', 'epure'); } catch (e) { /* stockage indisponible */ } });
     });
 
@@ -212,10 +214,21 @@ for (const { w, h } of FORMATS) {
       }
       await verifier(page, 'méchant choisi');
 
+      // --- Étape Difficulté (30/10/2026) : trois onglets, un panneau à la fois ----
+      await page.getByRole('button', { name: /^continuer/i }).tap();
+      await expect(page.locator('.pstep.active')).toContainText(/difficult/i);
+      await page.locator('.dp-sets').waitFor({ timeout: 30_000 });
+      for (const [i, nom] of ['sets', 'niveau', 'propositions'].entries()) {
+        await page.locator('.dp-onglets .tampon').nth(i).tap();
+        await page.waitForTimeout(400);
+        await capturer(page, w, '9-difficulte-' + nom);
+        await verifier(page, 'difficulté, onglet ' + nom);
+      }
+
       // --- Étape Final -----------------------------------------------------------
       await page.getByRole('button', { name: /^continuer/i }).tap();
       await expect(page.locator('.pstep.active')).toContainText(/final/i);
-      await capturer(page, w, '9-final');
+      await capturer(page, w, '10-final');
       expect(await debordements(page), 'débordement : final').toEqual([]);
     });
 

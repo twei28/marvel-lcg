@@ -70,7 +70,12 @@ export function regrouperUnderlings(scenarios, ext, memoire) {
         for (const u of underlings) {
             const sc = parId.get(`${manigance}_${u}`);
             if (!sc) continue;
-            choix.push({ id: u, scenarioId: sc.id, nom: nomDuVilain(sc.name, u), villainCardId: (sc.villainCards || [])[0] || sc.tileImage, scenario: sc });
+            // Le sous-fifre affiche SA carte, pas celle du vilain commun aux deux scenarios (ex. Punisher
+            // pour One Last Kill (Jigsaw) ET (Hobgoblin)) : voir tuile_sbire_scenarios de l'extension,
+            // deja utilise pour la tuile repliee (app.js), jamais pour la modale avant ce correctif
+            // (29/10/2026, signale par l'utilisateur : « il ne montre pas la bonne carte »).
+            const sbire = ext.tuileSbireScenarios && ext.tuileSbireScenarios[sc.id]
+            choix.push({ id: u, scenarioId: sc.id, nom: nomDuVilain(sc.name, u), villainCardId: sbire || (sc.villainCards || [])[0] || sc.tileImage, scenario: sc });
         }
         if (!choix.length) continue;
         const voulu = memoire && memoire[manigance];

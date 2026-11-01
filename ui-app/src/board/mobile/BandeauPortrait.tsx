@@ -14,6 +14,7 @@
 // sont pas dans BoardProps. Le plateau PC calcule deja ce libelle ; on le lui
 // fait simplement passer.
 import { useState, type ReactElement, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { libellePhase, libelleRound } from '../etat-partie'
 import { t } from '../langue'
 import type { World } from '../world'
@@ -78,7 +79,11 @@ export function BandeauPortrait({
       {menu && menuOuvert ? (
         <>
           <div className="portrait-menu-voile" onPointerDown={() => setMenuOuvert(false)} />
-          <nav className="portrait-menu" aria-label={t('Menu')}>
+          {/* Dans `document.body` : le bandeau est dans un conteneur fixe qui reste, en bloc, sous le panneau de la phase
+              du méchant (540). Rendu ici, le menu et ses feuilles (Options...) s'ouvraient SOUS ce panneau
+              (29/10/2026, signalé par l'utilisateur sur téléphone). */}
+          {createPortal(
+            <nav className="portrait-menu" aria-label={t('Menu')}>
             <span className="portrait-menu-poignee" aria-hidden="true" />
             {menu}
             {/* Discret, au fond du menu, et seulement quand le navigateur
@@ -95,7 +100,10 @@ export function BandeauPortrait({
                 <span aria-hidden="true">⤓</span> {t('Installer l’application')}
               </button>
             ) : null}
-          </nav>
+            </nav>
+            ,
+            document.body
+          )}
         </>
       ) : null}
     </header>

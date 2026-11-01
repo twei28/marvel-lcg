@@ -74,6 +74,15 @@ export function doitProposerLeChoix(vu) {
 }
 
 /**
+ * SUR TÉLÉPHONE LA PHASE DU MÉCHANT EST D'OFFICE « GUIDÉE » (26/10/2026, demande de l'utilisateur : « pas d'autres
+ * choix ») : la fenêtre n'y est jamais montrée. Le plateau force alors le mode `detaille` + la présentation `tris`
+ * à la lecture (ui-app/src/board/moteur.ts, phase-presentation.ts), sans toucher à la préférence rangée.
+ */
+export function doitProposerLeChoixSurAppareil(vu, telephone) {
+    return !telephone && doitProposerLeChoix(vu);
+}
+
+/**
  * Que écrire dans `CLE_MODE_PHASE` à la validation ? `null` = ne rien écrire.
  *
  * ⚠ ON N'ÉCRIT QUE CE QUI CHANGE. Le plateau migre une fois les anciens

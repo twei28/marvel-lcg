@@ -847,3 +847,52 @@
     pointer-events: none;
   }
 }
+
+/* Le recap de fin de phase (« Menace », « Heros et allies », « Nouveautes sur la table ») sur un
+   telephone (26/10/2026, signale en partie : « les lettres l'une sous l'autre, c'est illisible »).
+   Le panneau est pleine largeur (412 px moins le retrait) : trois colonnes ne font alors que 40 a
+   60 px chacune, `overflow-wrap: anywhere` casse « Underground Distribution » lettre par lettre et le
+   chiffre « 10 -> 5 / 12 » se colle au nom. Sous 600 px de large, les sections S'EMPILENT, comme la
+   presentation dynamique (cartouche-dynamique.css) le fait deja ; chaque ligne passe a la ligne
+   plutot que de couper un mot. Garde : ui-check/scripts/garde-bilan-telephone.mjs.
+
+   ⚠ HORS de `@layer` : les regles du bilan (cartouche-phase.css, cartouche-essai.css) ne sont dans
+   aucune couche, et une regle sans couche l'emporte TOUJOURS sur une regle en couche, quelle que soit
+   sa specificite (premiere ecriture dans `utilitaires` : sans effet, vue au garde). */
+@media (max-width: 600px) {
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan .deroule-lignes li {
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 0;
+  }
+
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan .deroule-colonne-nom {
+    overflow-wrap: normal;
+  }
+
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan .deroule-nouveautes {
+    gap: 8px;
+  }
+
+  /* Le bilan prend toute la largeur du corps (flex) : un voisin vide ne lui en prend pas la moitie. */
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-corps > .deroule-bilan {
+    flex: 1 1 100%;
+  }
+}
+
+/* « La phase en bref » du bilan, sur telephone en portrait comme en paysage (915 px de large : deux colonnes de
+   180 px coupaient quand meme « Menace · +1 r »). Meme raison que ci-dessus : hors de `@layer`. */
+.deroule-phase.est-scene:has(~ .plateau-portrait) .essai-bilan-liste ol {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.deroule-phase.est-scene:has(~ .plateau-portrait) .essai-bilan-ligne {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}

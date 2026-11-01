@@ -210,6 +210,25 @@ button{cursor:pointer}
 }
 .cmp-loupe img{max-width:96vw;max-height:96vh;border-radius:10px;box-shadow:0 24px 80px rgba(0,0,0,.8)}
 
+/* ---------------------------------------- choix des sets modulaires (MojoMania) -- */
+.cmp-modules{
+  position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;
+  background:rgba(4,6,10,.86);padding:20px;
+}
+.cmp-modules-panneau{
+  width:min(560px,100%);display:grid;gap:14px;padding:22px 24px;
+  background:#161b26;border:1px solid #34425f;border-radius:10px;box-shadow:0 24px 80px rgba(0,0,0,.7);
+}
+.cmp-modules-puces{display:flex;flex-wrap:wrap;gap:10px}
+.cmp-module-puce{
+  min-height:44px;padding:8px 18px;font:inherit;font-weight:600;color:inherit;cursor:pointer;
+  background:#202a3d;border:2px solid #34425f;border-radius:22px;
+}
+.cmp-module-puce:hover{border-color:#6ea5ff}
+.cmp-module-puce.on{background:#2b6fe0;border-color:#8fb8ff;color:#fff}
+.cmp-modules-pied{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.cmp-modules-compte{margin-right:auto;font-variant-numeric:tabular-nums;color:#98a3b8}
+
 /* ------------------------------------------------------------- etroit -- */
 @media (max-width:1080px){
   .cmp-duo{grid-template-columns:minmax(0,1fr)}

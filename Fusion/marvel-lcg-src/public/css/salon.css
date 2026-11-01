@@ -75,6 +75,21 @@
 .salon-tag-compte{background:var(--affiche-jaune);color:#1b1405}
 .salon-b .tb-deck .do-foot{justify-content:flex-start}
 
+/* Connexion de l'invité dans le salon (cas B, 28/10/2026). */
+.salon-connexion{
+  flex:none;display:flex;flex-direction:column;gap:8px;
+  padding:10px 12px;border:1px solid var(--affiche-jaune);background:var(--steel);
+}
+.salon-connexion-intro{margin:0;font-size:13px;line-height:1.4;color:var(--mute)}
+.salon-connexion-ligne{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+.salon-connexion-champ{
+  flex:1 1 180px;min-width:0;min-height:36px;padding:7px 10px;font:inherit;font-size:13px;color:inherit;
+  border:3px solid #1e1e1e;background:#1e1e1e;
+}
+.salon-connexion-champ:focus{outline:0;border-color:var(--affiche-jaune)}
+.salon-connexion .salon-pret{flex:none}
+.salon-connexion-erreur{margin:0;font-size:12px;color:#e0484a}
+
 .salon-mcdb{flex:none;padding:10px 0 0;border-top:3px solid #1e1e1e}
 .salon-mcdb b{display:block;margin-bottom:8px;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
 .salon-mcdb-ligne{display:flex;gap:8px;flex-wrap:wrap}

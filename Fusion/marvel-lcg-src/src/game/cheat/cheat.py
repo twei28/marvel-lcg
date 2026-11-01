@@ -164,6 +164,24 @@ class Cheat:
                 game.scene.SetMetadataList('step', undo_count)
 
             step = 1
+            # AJOUT LOCAL (29/10/2026) : d'abord l'instantane (voir `game/world/instantane.py`), le rejeu ensuite.
+            #
+            # ⚠ CETTE COMMANDE S'EXECUTE SUR LE FIL WEB, PAS SUR LE FIL DU JEU (`/debug` -> `SetCommand` ->
+            # `PreDebugExec`). Lever `SignalRestaurer` ici l'enverrait dans aiohttp. On se contente de DEMANDER : un
+            # drapeau et un reveil, et c'est le fil du jeu qui leve le signal en sortant de sa question
+            # (`Controller.ChoiceOne`), la ou la pile d'appels de l'action existe.
+            #
+            # Il n'y a pas d'instantane hors de la question du tour (phase du mechant, debut de tour, mode manuel,
+            # puzzle) : on retombe alors sur le rejeu, comme avant. Les corrections a la main (pause d'une partie
+            # ordinaire) ne doivent pas partir avec l'annulation : l'instantane les defairait avec le reste, le rejeu
+            # les garde (`cas_annulation_ordinaire_garde_tout`).
+            undo = game.controller_manager.undo
+            if args in ("action", "auto") and undo.pile_instantanes is not None and not game.scene.manuel_commands:
+                en_action = undo.debut_action != 0
+                if (args == "auto" or en_action) and undo.pile_instantanes.peut_annuler(en_action):
+                    undo.restauration_demandee = True
+                    game.session.ExitWait()
+                    return
             if args == "action":
                 debut = game.controller_manager.undo.debut_action
                 if debut != 0:

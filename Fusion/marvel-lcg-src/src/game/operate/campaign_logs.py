@@ -12,6 +12,8 @@ PLAYER_STR_KEY: TypeAlias = Literal[
     "Basic Upgrade",
     "S.H.I.E.L.D. Tech: Reputation Track Reward",
     "Planning Ahead: Reputation Track Reward",
+    "Support / Upgrade #1",
+    "Support / Upgrade #2",
 ]
 
 PLAYER_INT_KEY: TypeAlias = Literal[

@@ -3,7 +3,7 @@
 //     node --test tools/tests-lanceur/phase-mode-choix.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES, normaliser, doitProposerLeChoix, modeAEcrire }
+import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES, normaliser, doitProposerLeChoix, modeAEcrire, doitProposerLeChoixSurAppareil }
     from "../../public/js/prepare/phase-mode-choix.js";
 
 test("la clé du mode est celle que lit le plateau", () => {
@@ -78,4 +78,13 @@ test("tablette (24/10/2026) : Plateau animé présélectionné pour un joueur ne
     // garder « Guidée » sur tablette neuve doit s'écrire, sinon le plateau partirait en « Plateau animé »
     assert.equal(modeAEcrire(null, "detaille", true), "detaille");
     assert.equal(modeAEcrire(null, "detaille", false), null);
+});
+
+test("sur téléphone la fenêtre « Choisis ta phase du méchant » n'est JAMAIS montrée : la phase y est d'office Guidée (26/10/2026)", () => {
+    assert.equal(doitProposerLeChoixSurAppareil(null, true), false);
+    assert.equal(doitProposerLeChoixSurAppareil("", true), false);
+    assert.equal(doitProposerLeChoixSurAppareil(VERSION_CHOIX_PHASE, true), false);
+    // ailleurs, la règle d'origine
+    assert.equal(doitProposerLeChoixSurAppareil(null, false), true);
+    assert.equal(doitProposerLeChoixSurAppareil(VERSION_CHOIX_PHASE, false), false);
 });

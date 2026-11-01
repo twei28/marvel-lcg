@@ -23,8 +23,9 @@
 
   // Mini t() local, meme contrat que reprise.js : ce fichier n'est pas un
   // module ES et ne peut pas importer langue.js.
+  // La langue passe par langue-classique.js (window.MarvelLangue : choix dans le jeu > cookie du site > navigateur > français).
   const EN = (function () {
-    try { return localStorage.getItem('marvel-langue') === 'en'; }
+    try { return window.MarvelLangue ? window.MarvelLangue.actuelle() === 'en' : localStorage.getItem('marvel-langue') === 'en'; }
     catch (e) { return false; }
   })();
   function delaiLisible(secondes) {

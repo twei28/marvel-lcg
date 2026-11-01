@@ -230,8 +230,15 @@ async function proposerEchangesTeamUp(state) {
     return { ...state, players };
 }
 
-/** Crée la scène puis rejoint la partie (hot-seat = joue tous les héros en local). */
-export async function launch(state) {
+/** Crée la scène puis rejoint la partie (hot-seat = joue tous les héros en local).
+ *
+ *  `redirect: false` (campagne en ligne, plusieurs héros, 27/10/2026) : la partie
+ *  est créée côté serveur (le moteur passe en `mode_campaign`) mais le navigateur
+ *  de l'hôte NE PART PAS tout de suite sur le plateau — `campagne/app.js` montre
+ *  d'abord un écran d'invitation (liens de siège), puis rejoint lui-même quand
+ *  l'hôte clique « Rejoindre ». Sans cette option, l'hôte atterrirait seul sur le
+ *  plateau avant d'avoir pu donner les liens à qui que ce soit. */
+export async function launch(state, { redirect = true } = {}) {
     state = await proposerEchangesTeamUp(state);
     const descriptor = await buildDescriptor(state);
     const cmd = encodeURIComponent(JSON.stringify(descriptor));
@@ -266,6 +273,9 @@ export async function launch(state) {
 
     // Rejoint la partie : la racine "/?hot_seat" sert le jeu (marvel.html),
     // pas "?hot_seat" qui resterait sur /prepare.html.
-    window.location.href = "/app/board.html";
+    if (redirect) window.location.href = "/app/board.html";
     return descriptor;
 }
+
+/** La racine vers laquelle `launch({redirect: false})` renvoie une fois l'hôte prêt. */
+export const URL_PLATEAU = "/app/board.html";

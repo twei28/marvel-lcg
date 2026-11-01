@@ -1323,6 +1323,61 @@ class GameServerGet(GameServerBase):
         self.table_ordinaire = True
         return web.json_response({'multi': True, 'cles': list(passwords)})
 
+    async def get_liens_sieges_campagne(self, request: web.Request) -> web.Response:
+        """Jumelle de `get_liens_sieges`, pour l'ecran des campagnes.
+
+        Memes cles (`SEAT_PASSWORDS`), meme garde « reserve au siege 0 » —
+        mais SANS poser `self.table_ordinaire = True` : cette marque dirait a
+        `get_campagne_en_cours` (server_campagne.py) qu'une table ORDINAIRE se
+        monte, et elle se tairait aupres des invites qui rejoignent par leur
+        lien. Ajoutee en reponse au commentaire laisse dans `get_liens_sieges`
+        le 07/10/2026 : "Si un jour l'ecran des campagnes distribue ses propres
+        liens, il ne doit PAS passer par cette route."
+
+        Reservee en plus a une partie de campagne reellement en cours
+        (`mode_campaign`) : l'ecran des campagnes ne l'appelle qu'APRES avoir
+        lance le scenario (`/new`), jamais avant — voir `lancerScenario` et
+        `vueInvitationCampagne` dans public/js/campagne/app.js.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        from engine.device.web.server.server_campagne import _partie_du_moteur_est_de_campagne
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return web.json_response({'multi': False, 'cles': []})
+        if not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        if not _partie_du_moteur_est_de_campagne(self):
+            return web.json_response({'error': 'no campaign game running'}, status=409)
+        return web.json_response({'multi': True, 'cles': list(passwords)})
+
+    async def get_liens_sieges_campagne_salon(self, request: web.Request) -> web.Response:
+        """Cles de siege pour inviter l'equipe AVANT le lancement, en campagne.
+
+        L'ecran de preparation d'equipe de campagne (prepare.html?campagne)
+        invite les joueurs pendant qu'ils composent l'equipe, pour que CHACUN
+        choisisse son heros et son deck (comme le mode en ligne classique),
+        avant que l'hote ne fige le roster. A ce moment aucune partie n'est
+        encore lancee : ni `get_liens_sieges` ni `get_liens_sieges_campagne` ne
+        conviennent.
+
+        - PAS `get_liens_sieges` : il pose `table_ordinaire = True`, ce qui
+          ferait taire `get_campagne_en_cours` aupres des invites (table
+          declaree ordinaire). On le laisse donc a `False` ici.
+        - PAS `get_liens_sieges_campagne` : il exige une partie de campagne
+          DEJA lancee (409 avant /new). On retire cette garde : en lobby de
+          campagne, le monde n'existe pas encore, et c'est normal.
+
+        Memes cles que les deux autres (`SEAT_PASSWORDS`, independantes de toute
+        partie) et meme garde stricte « reserve au siege 0 ».
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return web.json_response({'multi': False, 'cles': []})
+        if not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        return web.json_response({'multi': True, 'cles': list(passwords)})
+
     async def get_site_admin(self, request: web.Request) -> web.Response:
         """L'adresse d'administration du site, s'il y en a une et si c'est l'hote.
 
@@ -1562,6 +1617,182 @@ class GameServerGet(GameServerBase):
         os.replace(provisoire, chemin)
         PalettesHeros.Recharger()
         return web.json_response({'ok': True, 'corrigees': len(donnees['palettes'])})
+
+    # ------------------------------------------------------------------ #
+    # Export ZIP de toutes les images de cartes (27/10/2026). Reserve a
+    # l'administrateur, comme le releve et les palettes : bouton
+    # « 📦 Export ZIP cartes » de public/js/prepare/lien-admin.js.
+    #
+    # ⚠ LA CONSTRUCTION NE TOURNE PAS DANS CE PROCESSUS. Elle dure de longues
+    # minutes (telechargements espaces, rendu du voile, ecriture du ZIP) : un
+    # processus DETACHE (`tools/exporter_images_cartes.py`, nouvelle session,
+    # priorite abaissee) la fait, et survit a la fermeture de cette table. Le
+    # moteur ne fait que le lancer, lire son etat et servir le fichier pret.
+    #
+    # ⚠ UNE SEULE GENERATION A LA FOIS, POUR TOUTES LES TABLES : le verrou est
+    # un FICHIER (assets/export-cartes/generation.lock, pid dedans), pas une
+    # variable, puisque chaque table est un processus a part.
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _export_cartes_dossiers():
+        """(racine du moteur, dossier de l'export), ou (None, None) si l'outil manque.
+
+        Le moteur tourne depuis `.game/`, ou `assets` est un lien vers le vrai
+        dossier : sa cible donne la racine, ou vit `tools/`.
+        """
+        import os
+        candidats = [os.path.dirname(os.path.realpath('./assets')), os.path.realpath('..'), os.path.realpath('.')]
+        for racine in candidats:
+            if os.path.isfile(os.path.join(racine, 'tools', 'exporter_images_cartes.py')):
+                return racine, os.path.join(racine, 'assets', 'export-cartes')
+        return None, None
+
+    @staticmethod
+    def _export_cartes_verrou(dossier: str):
+        """Le contenu du verrou s'il est tenu par un processus vivant, sinon None."""
+        import json as json_lib
+        import os
+        try:
+            with open(os.path.join(dossier, 'generation.lock'), encoding='utf-8') as f:
+                info = json_lib.load(f)
+            pid = int(info.get('pid') or 0)
+        except Exception:
+            return None
+        if pid <= 0:
+            return None
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return None
+        except PermissionError:
+            pass
+        return info
+
+    async def get_export_cartes(self, request: web.Request) -> web.Response:
+        """Ou en est l'export : ZIP pret (taille, date), generation en cours (depuis quand, progression)."""
+        import json as json_lib
+        import os
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        racine, dossier = self._export_cartes_dossiers()
+        if not dossier:
+            return web.json_response({'disponible': False, 'en_cours': False, 'zip': None, 'etat': None})
+        etat = None
+        try:
+            with open(os.path.join(dossier, 'etat.json'), encoding='utf-8') as f:
+                etat = json_lib.load(f)
+        except Exception:
+            etat = None
+        verrou = self._export_cartes_verrou(dossier)
+        zip_info = None
+        chemin = os.path.join(dossier, 'cartes-images.zip')
+        if os.path.isfile(chemin):
+            st = os.stat(chemin)
+            zip_info = {'taille': st.st_size, 'date': st.st_mtime}
+        return web.json_response({
+            'disponible': True,
+            'en_cours': verrou is not None,
+            'depuis': (verrou or {}).get('debut'),
+            'maintenant': time.time(),
+            'etat': etat,
+            'zip': zip_info,
+        })
+
+    async def post_export_cartes_regenerer(self, request: web.Request) -> web.Response:
+        """Lance la construction du ZIP en tache de fond. 409 si une generation tourne deja.
+
+        Corps facultatif : {"packs": "the_hunger_core,winter"} pour un sous-ensemble
+        (essais) ; sans lui, tout le catalogue.
+        """
+        import json as json_lib
+        import os
+        import subprocess
+        import sys
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        racine, dossier = self._export_cartes_dossiers()
+        if not racine:
+            return web.json_response({'error': 'outil d export absent (tools/exporter_images_cartes.py)'}, status=500)
+        try:
+            data = await request.json()
+        except Exception:
+            data = {}
+        packs = str((data or {}).get('packs') or '').strip()
+        if packs and not all(p.replace('_', '').replace('-', '').isalnum() for p in packs.split(',') if p):
+            return web.json_response({'error': 'packs mal formes'}, status=400)
+
+        os.makedirs(dossier, exist_ok=True)
+        chemin_verrou = os.path.join(dossier, 'generation.lock')
+        # Prise ATOMIQUE du verrou (O_EXCL) ; un verrou orphelin (processus mort) est repris.
+        for _ in range(2):
+            try:
+                fd = os.open(chemin_verrou, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+                break
+            except FileExistsError:
+                if self._export_cartes_verrou(dossier) is not None:
+                    return web.json_response({'error': 'generation deja en cours'}, status=409)
+                try:
+                    os.unlink(chemin_verrou)
+                except FileNotFoundError:
+                    pass
+        else:
+            return web.json_response({'error': 'generation deja en cours'}, status=409)
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            json_lib.dump({'pid': os.getpid(), 'debut': time.time(), 'packs': packs or None}, f)
+
+        # La configuration de CE moteur : ses catalogues et ses serveurs d'images.
+        from cards.database import CardsDB
+        from engine.file.cache import IMAGE_SERVERS
+        commande = [sys.executable, os.path.join(racine, 'tools', 'exporter_images_cartes.py'), '--verrou-pris']
+        for catalogue in [CardsDB.cards_json_file] + list(CardsDB.cards_custom_files):
+            if catalogue:
+                commande += ['--catalogue', os.path.realpath(catalogue)]
+        serveurs = list(IMAGE_SERVERS.value or [])
+        if serveurs:
+            for serveur in serveurs:
+                commande += ['--serveur-images', serveur]
+        else:
+            commande.append('--sans-telechargement')
+        if packs:
+            commande += ['--packs', packs]
+        try:
+            journal = open(os.path.join(dossier, 'processus.log'), 'w', encoding='utf-8')
+            processus = subprocess.Popen(commande, cwd=racine, stdin=subprocess.DEVNULL, stdout=journal,
+                                         stderr=subprocess.STDOUT, start_new_session=True, close_fds=True)
+            journal.close()
+        except Exception as e:
+            try:
+                os.unlink(chemin_verrou)
+            except FileNotFoundError:
+                pass
+            return web.json_response({'error': f'lancement impossible : {e}'}, status=500)
+        # Le verrou porte desormais le pid du processus qui travaille (il le reecrit aussi en demarrant).
+        with open(chemin_verrou, 'w', encoding='utf-8') as f:
+            json_lib.dump({'pid': processus.pid, 'debut': time.time(), 'packs': packs or None}, f)
+        # Un processus fini est ramasse sans bloquer, pour ne pas laisser de zombie (qui passerait pour vivant).
+        import threading
+        threading.Thread(target=processus.wait, daemon=True).start()
+        return web.json_response({'ok': True, 'pid': processus.pid, 'packs': packs or None})
+
+    async def telecharger_export_cartes(self, request: web.Request) -> web.StreamResponse:
+        """Le ZIP deja construit, tel quel : aucun calcul ici."""
+        import os
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        _, dossier = self._export_cartes_dossiers()
+        chemin = os.path.join(dossier, 'cartes-images.zip') if dossier else ''
+        if not chemin or not os.path.isfile(chemin):
+            return web.json_response({'error': 'aucun ZIP genere'}, status=404)
+        date = time.strftime('%Y%m%d-%H%M', time.localtime(os.path.getmtime(chemin)))
+        return web.FileResponse(chemin, headers={
+            'Content-Type': 'application/zip',
+            'Content-Disposition': f'attachment; filename="narwhal-cartes-images-{date}.zip"',
+            'Cache-Control': 'no-store',
+        })
 
     async def save_images_cartes(self, request: web.Request) -> web.Response:
         """Ecrit le releve d'UNE carte. Reserve a l'administrateur.
@@ -1808,6 +2039,76 @@ class GameServerGet(GameServerBase):
             return web.json_response({'invite': '', 'decks': []})
         donnees = await self._appeler_site('/api/decks_invite', {'siege': p}, secondes=5)
         return web.json_response(donnees or {'invite': '', 'decks': []})
+
+    async def get_mes_decks(self, request: web.Request) -> web.Response:
+        """Les decks du COMPTE de l'invite DEJA CONNECTE au site (28/10/2026).
+
+        `get_decks_invite` ci-dessus ne rend des decks que si le siege a ete
+        pris par une invitation acceptee : un invite venu par un simple lien
+        copie n'a aucun deck. Mais s'il est connecte a SON compte dans ce
+        navigateur, son cookie de session du site (`nc_session`, pose sur
+        `Domain=.<domaine>`, donc envoye jusqu'a ce moteur par siege) arrive
+        ici. On le relaie au site, seul a savoir lire une session, qui rend les
+        decks de ce compte. Meme patron que `post_rapport_bug` (nc_session
+        relaye tel quel). Sans cookie (invite jamais connecte) : liste vide.
+
+        ⚠ Le navigateur ne peut envoyer que SON PROPRE cookie de session : on
+        ne rend donc jamais que les decks du compte qui tient cette session.
+        """
+        nc = request.cookies.get('nc_session', '')
+        if not nc:
+            return web.json_response({'pseudo': '', 'decks': []})
+        donnees = await self._appeler_site('/api/decks_compte', {'nc_session': nc}, secondes=5)
+        return web.json_response(donnees or {'pseudo': '', 'decks': []})
+
+    async def post_connexion_invite(self, request: web.Request) -> web.Response:
+        """L'invite se CONNECTE a son compte depuis le salon (cas B, 28/10/2026).
+
+        Un invite venu par un simple lien, PAS deja connecte, tape son
+        identifiant et son mot de passe dans le salon pour retrouver ses decks
+        (voir get_mes_decks). On relaie au site, seul a verifier un mot de passe
+        et a ouvrir une session ; en cas de succes le site rend un jeton, qu'on
+        POSE ICI en cookie `nc_session` (Domain=.<domaine parent>), exactement
+        comme /connexion du site. Les requetes suivantes (get_mes_decks) le
+        porteront alors.
+
+        ⚠ Le mot de passe transite par CE moteur (celui du siege de l'invite)
+        le temps du relais vers le site, en 127.0.0.1 : HTTPS de bout en bout
+        (Caddy), jamais journalise ici. L'anti-flood vit cote site, sur
+        l'adresse reelle du navigateur, relayee ci-dessous.
+        """
+        import re
+        try:
+            data = await request.json()
+        except Exception:
+            data = {}
+        pseudo = str(data.get('pseudo', '') or '').strip()
+        mdp = str(data.get('mdp', '') or '')
+        if not pseudo or not mdp:
+            return web.json_response({'ok': False, 'erreur': 'identifiants requis'}, status=400)
+        adresse = (request.headers.get('X-Forwarded-For', '').split(',')[0].strip()
+                   or (request.remote or ''))
+        _, donnees = await self._appeler_site(
+            '/api/connexion', {'pseudo': pseudo, 'mdp': mdp, 'adresse': adresse},
+            secondes=8, avec_statut=True)
+        if not donnees:
+            return web.json_response({'ok': False, 'erreur': 'Service de connexion indisponible.'})
+        if not donnees.get('ok'):
+            return web.json_response({'ok': False,
+                                      'erreur': str(donnees.get('erreur') or 'Identifiant ou mot de passe incorrect.')})
+        jeton = str(donnees.get('jeton', '') or '')
+        reponse = web.json_response({'ok': True, 'pseudo': donnees.get('pseudo', '')})
+        # Domaine PARENT, derive de l'hote pN.<domaine> : le cookie doit couvrir
+        # le site ET ce moteur, comme celui pose par /connexion du site.
+        hote = (request.headers.get('Host', '') or '').split(':')[0]
+        m = re.match(r'^p\d+\.(.+)$', hote)
+        parent = m.group(1) if m else hote
+        secure = "; Secure" if (request.headers.get('X-Forwarded-Proto', '') == 'https'
+                                or getattr(request, 'secure', False)) else ""
+        cookie = ("nc_session=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=Lax%s%s"
+                  % (jeton, 90 * 86400, (("; Domain=.%s" % parent) if parent else ""), secure))
+        reponse.headers['Set-Cookie'] = cookie
+        return reponse
 
     async def post_quitter_la_table(self, request: web.Request) -> web.Response:
         """L'HOTE a fini : la table doit cesser d'exister.
@@ -2468,11 +2769,14 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/post_invitation_reponse', self.post_invitation_reponse)
         self.AddAwaitGetSecurity('/get_invitations_envoyees', self.get_invitations_envoyees)
         self.AddAwaitGetSecurity('/get_decks_invite', self.get_decks_invite)
+        self.AddAwaitGetSecurity('/get_mes_decks', self.get_mes_decks)
         self.AddAwaitGetSecurity('/get_preparation', self.get_preparation)
         self.AddPostSecurity('/set_roue', self.set_roue)
         self.AddAwaitGetSecurity('/get_roue', self.get_roue)
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)
         self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
+        self.AddAwaitGetSecurity('/get_liens_sieges_campagne', self.get_liens_sieges_campagne)
+        self.AddAwaitGetSecurity('/get_liens_sieges_campagne_salon', self.get_liens_sieges_campagne_salon)
         self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)
         self.AddAwaitGetSecurity('/get_salon_joueurs', self.get_salon_joueurs)
         self.AddAwaitGetSecurity('/get_documents', self.get_documents)
@@ -2490,6 +2794,9 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_palettes_heros', self.get_palettes_heros)
         self.AddPostSecurity('/save_palette_heros', self.save_palette_heros)
         self.AddPostSecurity('/save_images_cartes', self.save_images_cartes)
+        self.AddAwaitGetSecurity('/get_export_cartes', self.get_export_cartes)
+        self.AddPostSecurity('/post_export_cartes_regenerer', self.post_export_cartes_regenerer)
+        self.AddAwaitGetSecurity('/telecharger_export_cartes', self.telecharger_export_cartes)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)
         self.AddAwaitGetSecurity('/get_arts_heros', self.get_arts_heros)
@@ -2502,6 +2809,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/sauver_pour_le_site', self.sauver_pour_le_site,
                                  need_auth=False, need_check_version=False)
         self.AddPostSecurity('/post_rapport_bug', self.post_rapport_bug)
+        self.AddPostSecurity('/post_connexion_invite', self.post_connexion_invite)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)
         self.AddAwaitGetSecurity('/get_gamers', self.get_gamers)

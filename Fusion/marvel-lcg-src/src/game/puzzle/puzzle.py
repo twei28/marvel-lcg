@@ -981,6 +981,28 @@ class RunPuzzle:
         from game.operate.faces import Faces
         Faces.AddToVictoryDisplay([self.FindOrCreateFace(c) for c in cards], self.debug_rule)
 
+    def AddTraitToPaper(self, card_id: str, trait: str) -> None:
+        """AJOUT (31/10/2026, pack buffy) : donne un TRAIT a la fiche `card_id` pour la duree du processus (chaque cas de test a le
+        sien). Sert a faire jouer le role d'une carte ABSENTE du catalogue par une carte officielle de substitution (le trait
+        HELLMOUTH, qu'aucune carte livree ne porte). Les faces deja creees relisent la fiche (`ResetTrait`)."""
+        from cards.database import CardsDB
+        paper = CardsDB.FindCardPaper(card_id)
+        if trait not in paper.traits:
+            paper.traits.append(trait)
+        # Les cartes DEJA creees (le deck de rencontre du scenario l'est des la mise en place) ont calcule leurs traits a leur creation :
+        # on leur fait relire la fiche, sinon l'aide ne marche que sur une carte creee APRES elle.
+        for carte in self.world.object_manager.card_dict.values():
+            for face in carte.printed_faces:
+                if face.paper.card_id == card_id:
+                    face.ResetTrait()
+
+    def RenamePaper(self, card_id: str, name: str) -> None:
+        """AJOUT (31/10/2026, pack buffy) : renomme la fiche `card_id` pour la duree du processus. Meme usage que `AddTraitToPaper` :
+        une carte officielle de substitution joue le role d'une carte nommee par un script (Mr. Pointy, Watcher's Guidance...)
+        mais absente du catalogue. A appeler AVANT de creer la carte."""
+        from cards.database import CardsDB
+        CardsDB.FindCardPaper(card_id).name = name
+
     def CreateLeadsDeck(self, *cards: CardName) -> None:
         """AJOUT (22/10/2026, Punisher MC×DC 2026) : cree le paquet LEADS (pistes) du banc avec ces cartes (le DESSUS est choisi en
         n'en donnant qu'une). Proprietaire du paquet : le premier mechant en jeu."""
@@ -1077,7 +1099,21 @@ class RunPuzzle:
         controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
         return face
 
-    def EndPlayerTurn(self) -> None:
+    def Recover(self, card: CardName) -> 'CardFace':
+        """Fait RECUPERER un personnage ami : son pouvoir de base REC.
+
+        AJOUT (01/11/2026, pack Mantis `mt`, mt001b Empathic Leveling : « After you use your REC »). Meme montage que `Thwart` :
+        `MakeBasicPowerLikeInTurn` avec le pouvoir "REC", par le CONTROLEUR de la carte. Additif."""
+        from game.card.face.base import Friend
+        face = self.FindFaceInPlay(card)
+        player = self.world.GetCurrentPlayer()
+
+        assert Friend.IsType(face), f"{card=} n'est pas un personnage ami"
+        controleur = face.GetControlByPlayer() or player
+        controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["REC"])
+        return face
+
+    def EndPlayerTurn(self, siege: int|None=None) -> None:
         """FERME le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnEnd
         puis AfterPlayerTurnEnd).
 
@@ -1087,7 +1123,8 @@ class RunPuzzle:
         un cas sur sa duree etait vert avec la mauvaise duree. Additif.
         """
         from game.message import Message
-        player = self.world.GetCurrentPlayer()
+        # `siege` (26/10/2026, mesure de wt022 Revelry) : le tour d'un AUTRE joueur (WhenPlayerTurnEnd / AfterPlayerTurnEnd de ce joueur).
+        player = self._JoueurDeJeu(siege)
         turn_end_message = Message.WhenPlayerTurnEnd(player, self.world.round_id)
         turn_end_message.Send()
         Message.AfterPlayerTurnEnd(player, turn_end_message).Send()
@@ -1156,7 +1193,7 @@ class RunPuzzle:
         Monte un tour SUIVANT sans jouer la boucle d'actions. Additif."""
         self.world.stat.OnTurnEnd()
 
-    def BeginPlayerTurn(self) -> None:
+    def BeginPlayerTurn(self, siege: int|None=None) -> None:
         """OUVRE le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnBegin puis AfterPlayerTurnBegin).
 
         AJOUT (26/10/2026, pack Rachel Summers `rm`, Chronoskimming rm001a et Hound Program rm014 : « After your turn
@@ -1164,7 +1201,8 @@ class RunPuzzle:
         carte posee par le cas ne partait jamais. Additif ; ne remet aucun compteur de tour a zero.
         """
         from game.message import Message
-        player = self.world.GetCurrentPlayer()
+        # `siege` (26/10/2026, mesure de wt022 Revelry) : le tour d'un AUTRE joueur (rang dans `const_seat_order_players`).
+        player = self._JoueurDeJeu(siege)
         turn_begin_message = Message.WhenPlayerTurnBegin(player)
         turn_begin_message.Send()
         Message.AfterPlayerTurnBegin(player, turn_begin_message).Send()
@@ -1673,6 +1711,21 @@ class RunPuzzle:
         et que le harnais manquait toujours (le message part une fois, a la FIN de la mise en place, avant le montage d'un cas)."""
         from game.message import Message
         Message.WhenGameWouldBegin(self.world).Send()
+
+    def SendGameBeginSetup(self) -> None:
+        """AJOUT (26/10/2026, relecture de dt075 Multiverse Shenanigans) : envoie `WhenGameBeginSetup` (les capacites `AbilityFactory.WhenGameBeginSetup`,
+        type Setup : « When the game begins, ... »). Le message part une fois pendant la mise en place du monde, AVANT le montage d'un cas : on le
+        renvoie a la main, avec le descripteur de campagne de la scene."""
+        from game.message import Message
+        Message.WhenGameBeginSetup(self.world.scene.campaign, self.world).Send()
+
+    def SendCardSetup(self, card: CardName) -> None:
+        """AJOUT (31/10/2026, pack buffy) : renvoie `WhenCardSetup` (les capacites `AbilityFactory.WhenCardSetup("This", ..)`, type Setup d'une
+        identite) pour la carte nommee. Le message part une fois pendant la mise en place du monde, AVANT le montage d'un cas : sans cette
+        aide, un Setup qui lit le deck de rencontre ne peut etre mesure que sur le deck du scenario, pas sur un deck monte par le cas."""
+        from game.message import Message
+        face = self.FindOrCreateFace(card)
+        Message.WhenCardSetup(face, False).Send()
 
     def SwapWithDeckTop(self, card: CardName, player: int=0, siege: int|None=None):
         """« Switch Card with top Deck Card » d'OCTGN (menu de la main).

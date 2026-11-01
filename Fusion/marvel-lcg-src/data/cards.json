@@ -72394,7 +72394,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<i>Squirrel Aid</i> — <b>Resource</b>: Spend 1 Squirrel → generate a [wild] resource. (Limit 1 Squirrel per card played.)\n<i>Unbeatable Army</i> — <b>Hero Response</b>: After you spend a Squirrel to pay for a Squirrel Girl card, deal 1 damage to an enemy or remove 1 threat from a scheme. (Limit once per round.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg001b",
@@ -72412,7 +72412,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Setup</b>: Doreen Green begins the game with the Squirrel deck. <i>(See the Squirrel Deck reference card.)</i>\n<i>Squirrel Speech</i> — <b>Alter-Ego Action</b>: Exhaust Doreen Green → call 1 Squirrel. (Limit once per round.)\n<i>Squirrel Aid</i> — <b>Resource</b>: Spend 1 Squirrel → generate a [wild] resource. (Limit 1 Squirrel per card played.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg002",
@@ -72430,7 +72430,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Response</b>: After Tippy-Toe enters play, look at the top 2 cards of the Squirrel deck. Return those cards to the top of the Squirrel deck in any order.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg003",
@@ -72447,7 +72447,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Response</b>: After Monkey Joe defeats a minion, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg004",
@@ -72464,7 +72464,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Response</b>: After The Lookout enters play, look at the top card of the encounter deck.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg005",
@@ -72480,7 +72480,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Interrupt</b>: When another [[SQUIRREL]] ally you control would take consequential damage, exhaust The Bruiser → prevent 1 of that damage. Deal 1 damage to The Bruiser.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg006",
@@ -72496,7 +72496,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Interrupt</b>: When you spend The Forager to pay for a Squirrel Girl card, look at the top 2 cards of your deck. You may discard 1 of those cards. Return the remaining cards to the top of your deck in any order.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg007",
@@ -72512,7 +72512,7 @@
    ],
    "set_name": "Squirrel Deck",
    "text": "<i>Squirrel. (Does not count against your ally limit. Cannot defend against attacks. Cannot have upgrades attached. Cannot be affected by player card abilities other than abilities on Squirrel Girl cards and [[SQUIRREL]] allies. If it would leave play, place it in the Squirrel discard pile instead.)</i>\n<b>Interrupt</b>: When you spend The Gatherer to pay for a Squirrel Girl card, heal 1 damage from your identity.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg008",
@@ -72532,7 +72532,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Response</b>: After Nancy Whitehead enters play, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg009",
@@ -72550,7 +72550,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "Squirrel Girl gets +1 ATK.\n<b>Hero Response</b>: After a minion engaged with you is defeated, call 1 Squirrel. (Limit once per round.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg010",
@@ -72567,7 +72567,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Resource</b>: Exhaust Prehensile Tail → generate a [wild] resource for a Squirrel Girl card.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg011",
@@ -72584,7 +72584,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Action</b>: Exhaust Central Park → if you control fewer than 3 [[SQUIRREL]] allies, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg012",
@@ -72601,7 +72601,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Interrupt</b>: When you would call a Squirrel, exhaust Network of Trees → look at the top 2 cards of the Squirrel deck. Choose 1 of those cards to call and place the other on the bottom of the Squirrel deck.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg013",
@@ -72618,7 +72618,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Action</b>: Call 1 Squirrel. Then, call 1 Squirrel that enters play ready.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg014",
@@ -72635,7 +72635,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Hero Action (attack)</b>: Deal 3 damage to an enemy. If you spent a Squirrel to play this card, deal 3 additional damage to that enemy.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg015",
@@ -72652,7 +72652,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Hero Action (thwart)</b>: Remove 3 threat from a scheme. If you spent a Squirrel to play this card, remove 1 threat from a scheme.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg016",
@@ -72669,7 +72669,7 @@
    ],
    "set_name": "Squirrel Girl",
    "text": "<b>Hero Interrupt (defense)</b>: When Squirrel Girl defends against an attack, she gets +2 DEF for that attack. If you spent a Squirrel to play this card, she gets +3 DEF for that attack instead. After that attack resolves, if no damage was dealt to Squirrel Girl by that attack, ready Squirrel Girl.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg017",
@@ -72683,7 +72683,7 @@
    "traits": [],
    "set_name": "Squirrel Girl",
    "text": "<b>Response</b>: After you spend this card to pay the cost of a Squirrel Girl card, call 1 Squirrel.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg018",
@@ -72697,7 +72697,7 @@
    "traits": [],
    "set_name": "Squirrel Girl",
    "text": "<b><i>Give to the Doreen Green player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Doreen Green and discard a card with a printed [mental] resource from your hand → remove Surprise Exam from the game.\n• Discard 2 [[SQUIRREL]] allies you control. If you cannot, discard 1 random card from your hand. Discard this obligation.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg019",
@@ -72717,7 +72717,7 @@
    ],
    "set_name": "Squirrel Girl Nemesis",
    "text": "<b>Forced Interrupt</b>: When Ratatoskr activates against you, discard 1 [[SQUIRREL]] ally you control. If you cannot, give Ratatoskr 1 additional boost card for this activation.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg020",
@@ -72732,7 +72732,7 @@
    "traits": [],
    "set_name": "Squirrel Girl Nemesis",
    "text": "<i>(Crisis Icon: While this scheme is in play, you cannot remove threat from the main scheme.)</i>\nWhile this scheme is in play, the printed abilities of [[SQUIRREL]] allies are treated as blank. Their THW, ATK and hit points are unaffected.\n<b>Forced Response</b>: After a [[SQUIRREL]] ally enters play, place 1 threat here. (Limit once per round.)",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg021",
@@ -72745,7 +72745,7 @@
    "traits": [],
    "set_name": "Squirrel Girl Nemesis",
    "text": "<b>When Revealed</b>: Discard up to 2 [[SQUIRREL]] allies you control. If fewer than 2 [[SQUIRREL]] allies were discarded this way, place 2 threat on Discord in the Branches. If that scheme is not in play, place that threat on the main scheme instead.\n[star] <b>Boost</b>: After this activation, exhaust 1 [[SQUIRREL]] ally you control.",
-   "custom": "Arnaud"
+   "custom": ""
   },
   {
    "card_id": "sg022",
@@ -72760,7 +72760,7 @@
    ],
    "set_name": "Squirrel Girl Nemesis",
    "text": "Attach to your identity card.\nYou cannot spend [[SQUIRREL]] allies.\n<b>Alter-Ego Action</b>: Exhaust Doreen Green and discard a card with a printed [mental] resource from your hand → discard Ratatoskr's Whispers.\n[star] <b>Boost</b>: Discard 1 [[SQUIRREL]] ally you control. If you cannot, the villain gets +1 ATK and +1 SCH for this activation.",
-   "custom": "Arnaud"
+   "custom": ""
   }
  ],
  "brawn": [
@@ -128849,7 +128849,7 @@
     "GAMMA"
    ],
    "set_name": "She-Hulk (Why Not)",
-   "text": "\"Do You Even Lift?\" — <b>Response</b>: After you change to this form, deal 1 damage to an enemy for each [acceleration] icon in play.",
+   "text": "\"Do You Even Lift?\" — <b>Response</b>: After you change to this form, deal 2 damage to an enemy. Deal 1 damage to an enemy for each [acceleration] icon in play.",
    "custom": "Merlin"
   },
   {
@@ -131464,7 +131464,6 @@
    "custom": "Phenexian and Mysteltainn"
   }
  ],
- "checksum": "0ef07bfe602b1bf5cd7a8935f9877d53dedec22a91f136df994c064e07fc76b7",
  "hepzibah": [
   {
    "card_id": "hz001a",
@@ -135367,6 +135366,1461 @@
    "set_name": ""
   }
  ],
+ "major_victory": [
+  {
+   "card_id": "mv001a",
+   "type": "Hero",
+   "name": "* Major Victory",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "GUARDIAN",
+    "PSIONIC",
+    "SOLDIER"
+   ],
+   "set_name": "Major Victory",
+   "text": "<i>Shield Toss</i> — <b>Action</b>: Spend 1 resource of any type → find Captain America's Shield and add it to your hand. If it leaves play this way, deal 4 damage to an enemy. <i>(Limit once per round.)</i>"
+  },
+  {
+   "card_id": "mv001b",
+   "type": "AlterEgo",
+   "name": "* Vance Astro",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "MUTANT",
+    "PSIONIC",
+    "SOLDIER"
+   ],
+   "set_name": "Major Victory",
+   "text": "<i>Tactical Foresight</i> — <b>Action</b>: Choose a player. That player draws 2 cards, then places 1 card from their hand on top of their deck. <i>(Limit once per round.)</i>\n<i>\"I didn't join the interstellar program so there'd be a statue of me in a park one day. I joined because I wanted to make a better tomorrow.\"</i>"
+  },
+  {
+   "card_id": "mv002",
+   "type": "Upgrade",
+   "name": "Captain America's Shield",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Major Victory",
+   "text": "Restricted.\nMajor Victory gets +1 DEF and gains retaliate 1.\n<i>\"A good man once owned this shield. He personified those beliefs for me, and for millions of people like me.\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv003",
+   "type": "Upgrade",
+   "name": "* Founder of the Guardians",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Major Victory",
+   "text": "Each identity gains the [[GUARDIAN]] trait.\nEach friendly [[GUARDIAN]] character gets +1 hit point.\n<i>\"Peter, why did we never elect him leader?\"</i> —Gamora"
+  },
+  {
+   "card_id": "mv004",
+   "type": "Upgrade",
+   "name": "Containment Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR"
+   ],
+   "set_name": "Major Victory",
+   "text": "You get +2 hit points and your identity gains steady.\n<i>A bio-armor originally designed to preserve his body and prevent rapid aging during a 1,000-year interstellar space jump.</i>"
+  },
+  {
+   "card_id": "mv005",
+   "type": "Event",
+   "name": "Shield Block",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an identity would take any amount of damage, exhaust Captain America's Shield → prevent all of that damage.\n<i>\"Quick, behind me!\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv006",
+   "type": "Event",
+   "name": "Psychokinetic Blast",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "PSIONIC"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. Confuse that enemy.\n<i>\"Vance Astro, a.k.a Major Victory. Leader of the 3000 wing. War hero, veteran champion. The best martial arts fighter of his era plus psionics, plus that shield ain't Collector's replica.\"</i> —Rocket Raccoon"
+  },
+  {
+   "card_id": "mv007",
+   "type": "Event",
+   "name": "Telekinetic Throw",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Interrupt</b>: When you deal damage from your \"<i>Shield Toss</i>\" ability, exhaust Major Victory → deal 4 damage to an enemy and deal 4 damage to an enemy."
+  },
+  {
+   "card_id": "mv008",
+   "type": "Event",
+   "name": "Psychic Link",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "THWART"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. Each player who controls a [[GUARDIAN]] character draws 1 card.\n<i>\"I'm extending my psionics to form a t-net.\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv009",
+   "type": "Event",
+   "name": "Victory's Command",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Hero Interrupt</b>: When a friendly character makes a basic thwart or attack, exhaust Captain America's Shield → they get +2 to that basic power for this use. Ready that character.\n<i>\"This era is now under the protection of the Guardians of the Galaxy!\"</i> —Major Victory"
+  },
+  {
+   "card_id": "mv010",
+   "type": "Support",
+   "name": "* The Captain America",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "VEHICLE"
+   ],
+   "set_name": "Major Victory",
+   "text": "<b>Resource</b>: Exhaust this card → generate a [wild] resource for a player who controls a [[GUARDIAN]] character.\n<i>Major Victory named the Guardian's flagship after a hero who stood against the Badoon's tyranny, hoping to inspire others to do the same.</i>"
+  },
+  {
+   "card_id": "mv011",
+   "type": "Ally",
+   "name": "* Nikki",
+   "subtitle": "Nicholette Gold",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2**",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "GUARDIAN"
+   ],
+   "set_name": "Major Victory",
+   "text": "[star] Nikki's attacks gain ranged and damage from her attacks can be divided among enemies as you choose.\n<i>\"Just like old times, eh, Astrovik?\"</i>"
+  },
+  {
+   "card_id": "mv012",
+   "type": "Obligation",
+   "name": "Damaged Containment Suit",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Vance Astro"
+   },
+   "traits": [],
+   "set_name": "Major Victory",
+   "text": "<b><i>Give to the Vance Astro player.</i></b>\n<b>Forced Interrupt</b>: When you would take any amount of damage, take 1 additional damage.\n<b>When Revealed</b>: Find Containment Suit and tuck it here. If your remaining hit points were reduced to 0 or less this way, set your hit point dial to 1 instead.\n<b>Alter-Ego Action</b>: Exhaust Vance Astro → add Containment Suit to your hand and remove this obligation from the game."
+  },
+  {
+   "card_id": "mv013",
+   "type": "Minion",
+   "name": "* Michael Korvac",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "4",
+    "Villainous": "1",
+    "Retaliate": "1",
+    "Nemesis": "Major Victory"
+   },
+   "traits": [
+    "COSMIC ENTITY",
+    "ELITE"
+   ],
+   "set_name": "Major Victory Nemesis",
+   "text": "Villainous. Retaliate 1.\nThreat cannot be removed from Korvac's Future.\n<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for Korvac's Future and reveal it."
+  },
+  {
+   "card_id": "mv014",
+   "type": "SideScheme",
+   "name": "Korvac's Future",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "StartingThreat": "4",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Major Victory Nemesis",
+   "text": "Permanent.\nWhile there is 4 or more threat here, each hero identity gets -1 hand size.\n<b>Forced Response</b>: After threat is placed here, if there is at least 14 threat here, the players lose the game."
+  },
+  {
+   "card_id": "mv015",
+   "type": "Treachery",
+   "name": "Judgment of Korvac",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Major Victory Nemesis",
+   "text": "<b>When Revealed</b>: Take 3 indirect damage or place 2 threat on Korvac's Future and this card gains surge.\n<hr />\n[star] <b>Boost</b>: Choose to place 2 threat on Korvac's Future or this card gets +2 boost icons ([boost][boost]).\n<i>\"I am a god! And I was going to be your savior!\"</i> —Michael Korvac"
+  },
+  {
+   "card_id": "mv016",
+   "type": "Treachery",
+   "name": "Accept Perfection",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Peril": "1"
+   },
+   "traits": [],
+   "set_name": "Major Victory Nemesis",
+   "text": "Peril.\n<b>When Revealed</b>: Choose:\n• Find Michael Korvac and reveal him. Place 4 threat on Korvac's Future.\n• Discard the highest cost card you control."
+  }
+ ],
+ "buffy": [
+  {
+   "card_id": "bf001a",
+   "type": "Hero",
+   "name": "* Buffy",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "1",
+    "HS": "5"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": "Buffy",
+   "text": "Buffy gets +1 to each basic power for each [[HELLMOUTH]] side scheme in the victory display.\n<i>Chosen One</i> — <b>Response</b>: After a minion enters play, draw 1 card. <i>(Limit once per round.)</i>"
+  },
+  {
+   "card_id": "bf001b",
+   "type": "AlterEgo",
+   "name": "* Buffy Summers",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "STUDENT"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Setup</b>: Set the [[HELLMOUTH]] deck aside, out of play. Find the Harvest and The Master, and reveal them.\n<i>Chosen</i> — <b>Action</b>: Search your deck and discard pile for Mr. Pointy and add it to your hand."
+  },
+  {
+   "card_id": "bf002",
+   "type": "Ally",
+   "name": "* Rupert Giles",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WATCHER"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Response</b>: After Rupert Giles enters play, remove 2 threat from a scheme (3 threat instead if Watcher's Guidance is in play).\n<i>\"Sometimes the most adult thing you can do is...ask for help when you need it.\"</i>"
+  },
+  {
+   "card_id": "bf003",
+   "type": "Event",
+   "name": "Slay Time",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. For each point of excess damage dealt to that enemy by this attack, reduce the resource cost of the next card you play this phase by 1.\n<i>\"Congrats —you're today's dust report.\"</i>"
+  },
+  {
+   "card_id": "bf004",
+   "type": "Event",
+   "name": "Bring on the Night",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Buffy",
+   "text": "<b>Hero Interrupt</b>: When an encounter card is revealed from the encounter deck, cancel all of its effects and discard it. Deal damage to an enemy or remove threat from a scheme equal to the number of [[HELLMOUTH]] side schemes in the victory display."
+  },
+  {
+   "card_id": "bf005",
+   "type": "Event",
+   "name": "Slayer Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Discard X cards from your hand → deal 4 damage to X enemies.\n<i>\"Guess I'll just cut to the slay.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf006",
+   "type": "Ally",
+   "name": "* Faith",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero",
+    "Linked": "bf031"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Faith minion).\n<b>Interrupt</b>: When Faith is defeated, choose a friendly [[SLAYER]] character → ready that character.\n<i>\"When I'm fighting, the whole world goes away and I only know one thing. That I'm gonna win and they're gonna lose.\"</i>"
+  },
+  {
+   "card_id": "bf007",
+   "type": "Upgrade",
+   "name": "* Slayer Scythe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero",
+    "Restricted": "1",
+    "Linked": "bf029"
+   },
+   "traits": [
+    "MYSTIC",
+    "WEAPON"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Enemies Aligned).\nRestricted.\n<b>Hero Resource</b>: Exhaust Slayer Scythe → generate a [wild] resource. Any player may trigger this ability."
+  },
+  {
+   "card_id": "bf008",
+   "type": "Event",
+   "name": "Pointy End",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Mr. Pointy → deal 8 damage to an enemy. This attack gains overkill.\n<i>\"You know the drill. Stake, dust, bye.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf009",
+   "type": "Event",
+   "name": "Crimson Scythe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Buffy",
+   "text": "Play only if you control the Slayer Scythe.\n<b>Hero Action</b> <i>(attack/thwart)</i>: Remove 1 [per_hero] threat from each scheme. Deal 1 [per_hero] damage to each enemy."
+  },
+  {
+   "card_id": "bf010",
+   "type": "Support",
+   "name": "Sunnydale Library",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Buffy",
+   "text": "Buffy Summers gets +2 REC.\n<b>Alter-Ego Action</b>: Exhaust Sunnydale Library → choose a player. That player shuffles 1 identity-specific card from their discard pile into their deck.\n<i>\"Xander, don't speak Latin in front of the books.\"</i>"
+  },
+  {
+   "card_id": "bf011",
+   "type": "Support",
+   "name": "Watcher's Guidance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Buffy",
+   "text": "<b>Action</b>: Exhaust Watcher's Guidance → choose:\n• Remove 1 threat from a scheme.\n• Deal 1 damage to an enemy.\n• Heal 1 damage from an identity.\nAny player may trigger this ability."
+  },
+  {
+   "card_id": "bf012",
+   "type": "Upgrade",
+   "name": "Redeemed",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Response</b>: After a non-[[ELITE]] minion enters play, attach Redeemed to it.\nTake control of attached minion and treat it as a [[SLAYER]] ally with a blank text box. Its THW is equal to its printed SCH and it takes 1 consequential damage after it thwarts or attacks."
+  },
+  {
+   "card_id": "bf013",
+   "type": "Upgrade",
+   "name": "Stakeout",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "Buffy",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After a minion enters play, discard Stakeout → deal 2 damage to that minion and stun it.\n<i>\"I'm Buffy. The Vampire Slayer. And you are?\"</i>"
+  },
+  {
+   "card_id": "bf014",
+   "type": "Upgrade",
+   "name": "* Mr. Pointy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Buffy",
+   "text": "Restricted.\nBuffy gains retaliate 1 and her basic attacks gain piercing.\n<i>\"You named your stake? Remind me to get you a stuffed animal.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf015",
+   "type": "Ally",
+   "name": "* Kendra",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Hero",
+    "Victory": "0"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": "Buffy",
+   "text": "Victory 0.\nKendra enters play with 3 stake counters on her.\n<b>Response</b>: After a minion enters play, remove 1 stake counter from Kendra → deal 2 damage to that minion."
+  },
+  {
+   "card_id": "bf016",
+   "type": "Ally",
+   "name": "* Willow",
+   "subtitle": "Willow Rosenberg",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Basic"
+   },
+   "traits": [
+    "MYSTIC"
+   ],
+   "set_name": "Buffy",
+   "text": "[star] <b>Response</b>: After Willow uses a basic power, spend a:\n[mental] resource → remove 2 threat from a scheme.\n[physical] resource → deal 2 damage to an enemy.\n[energy] resource → heal 2 damage from Willow."
+  },
+  {
+   "card_id": "bf017",
+   "type": "Ally",
+   "name": "* Angel",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero",
+    "Linked": "bf032"
+   },
+   "traits": [
+    "CHAMPION",
+    "VAMPIRE"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Angelus).\n[star] Angel's attacks gain piercing.\n<b>Response</b>: After you change to alter-ego form, heal 1 damage from Angel."
+  },
+  {
+   "card_id": "bf018",
+   "type": "Upgrade",
+   "name": "Chosen One",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero",
+    "Linked": "bf028"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Becoming).\n<b>Hero Action</b>: Exhaust the Chosen One and spend 1 resource of any type → ready Buffy.\n<i>\"I'm the thing that monsters have nightmares about.\"</i> —Buffy"
+  },
+  {
+   "card_id": "bf019",
+   "type": "Upgrade",
+   "name": "Prophecy Girl",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Linked": "bf027"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Harvest).\n<b>Interrupt</b>: When Buffy's hit points are 3 or less, find Kendra and put her into play under your control and remove this card from the game."
+  },
+  {
+   "card_id": "bf020",
+   "type": "SideScheme",
+   "name": "Welcome to Sunnydale",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "set_name": "Buffy Nemesis",
+   "text": "Hinder 1[per_hero]. Each [[VAMPIRE]] minion gains 1 acceleration icon ([acceleration]).\n<hr />\n[star] <b>Boost</b>: Reveal this card."
+  },
+  {
+   "card_id": "bf021",
+   "type": "Minion",
+   "name": "* Spike",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Nemesis": "Buffy"
+   },
+   "traits": [
+    "VAMPIRE"
+   ],
+   "set_name": "Buffy Nemesis",
+   "text": "[star] <b>Forced Response</b>: After Spike attacks and damages a character, discard the top card of the encounter deck. If that card is a treachery, heal all damage from Spike.\n<i>\"If every vampire who said they were at the crucifixion was actually there, it would have been like Woodstock.\"</i>"
+  },
+  {
+   "card_id": "bf022",
+   "type": "Minion",
+   "name": "* Drusilla",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Teamwork": "VAMPIRE",
+    "Nemesis": "Buffy"
+   },
+   "traits": [
+    "VAMPIRE"
+   ],
+   "set_name": "Buffy Nemesis",
+   "text": "Teamwork ([[VAMPIRE]]).\n[star] <b>Forced Response</b>: After Drusilla attacks you, place 1 threat on each scheme.\n<i>\"I met an old man. Didn't like him. He got stuck in my teeth.\"</i>"
+  },
+  {
+   "card_id": "bf023",
+   "type": "Environment",
+   "name": "Hush",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Buffy Nemesis",
+   "text": "Each encounter card gains peril.\n<b>Hero Action</b>: Spend [energy][mental][physical] resources → discard this card and find the Gentlemen and put them into play engaged with you."
+  },
+  {
+   "card_id": "bf024",
+   "type": "Treachery",
+   "name": "The Harvest",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Buffy Nemesis",
+   "text": "<b>When Revealed</b>: Choose:\n• Discard an upgrade or support you control.\n• Take damage equal to the highest-cost upgrade or support you control."
+  },
+  {
+   "card_id": "bf025",
+   "type": "Obligation",
+   "name": "Normal Again",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Buffy Summers",
+    "Uses": "3,sanity",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "Buffy",
+   "text": "<b><i>Give to the Buffy Summers player.</i></b>\nUses (3 sanity counters). Victory 0.\n<b>Forced Response</b>: After you use a basic power, remove 1 sanity counter from here."
+  },
+  {
+   "card_id": "bf026",
+   "type": "Minion",
+   "name": "* The Gentlemen",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Linked": "bf023"
+   },
+   "traits": [
+    "MYSTIC"
+   ],
+   "set_name": "Buffy",
+   "text": "Linked (Hush).\nWhile the Gentlemen are engaged with you, you cannot request \"<b>Action</b>\" abilities from other players.\n<b>When Revealed</b>: You are confused. If you were already confused, discard a support you control."
+  },
+  {
+   "card_id": "bf027",
+   "type": "SideScheme",
+   "name": "Harvest",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "1*",
+    "Victory": "0",
+    "Hazard": "1"
+   },
+   "traits": [
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Hinder 1[per_hero]. Victory 0.\n<b>When Defeated</b>: Find Becoming and reveal it. Put the set-aside Prophecy Girl upgrade into play."
+  },
+  {
+   "card_id": "bf028",
+   "type": "SideScheme",
+   "name": "Becoming",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hinder": "2*",
+    "Victory": "0",
+    "Amplify": "1"
+   },
+   "traits": [
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Hinder 2[per_hero]. Victory 0.\n<b>When Defeated</b>: Find Enemies Aligned and the Faith minion and reveal them. Put the set-aside Chosen upgrade into play."
+  },
+  {
+   "card_id": "bf029",
+   "type": "SideScheme",
+   "name": "Enemies Aligned",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Hinder": "3*",
+    "Victory": "0",
+    "Amplify": "1"
+   },
+   "traits": [
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Hinder 3[per_hero]. Victory 0.\n<b>When Defeated</b>: Put the set-aside Slayer Scythe into play."
+  },
+  {
+   "card_id": "bf030",
+   "type": "Minion",
+   "name": "* The Master",
+   "subtitle": "",
+   "desc": {
+    "HP": "3*",
+    "ATK": "2",
+    "SCH": "2",
+    "Toughness": "1",
+    "Victory": "0"
+   },
+   "traits": [
+    "ELITE",
+    "VAMPIRE",
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Toughness. Victory 0.\n<b>When Defeated</b>: Find Angelus and put him into play engaged with your identity.\n<i>\"The Earth shall bleed, and I shall drink deep.\"</i>"
+  },
+  {
+   "card_id": "bf031",
+   "type": "Minion",
+   "name": "* Faith",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Patrol": "1",
+    "Villainous": "1",
+    "Victory": "0"
+   },
+   "traits": [
+    "ELITE",
+    "SLAYER",
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Patrol. Villainous. Victory 0.\n[star] Faith's attacks gain overkill.\n<b>When Defeated</b>: Find the set-aside Faith ally and put her into play under any player's control.\n<i>\"We don't need the law. We are the law.\"</i>"
+  },
+  {
+   "card_id": "bf032",
+   "type": "Minion",
+   "name": "* Angelus",
+   "subtitle": "",
+   "desc": {
+    "HP": "7",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Guard": "1",
+    "Victory": "0"
+   },
+   "traits": [
+    "ELITE",
+    "VAMPIRE",
+    "HELLMOUTH"
+   ],
+   "set_name": "Buffy Hellmouth",
+   "text": "Guard. Victory 0.\n[star] Angelus's attacks gain piercing.\n<b>When Defeated</b>: Find Angel and put him into play under any player's control.\n<i>\"I know what you're thinking. Maybe there's some good deep down inside of me that remembers and loves you.\"</i>"
+  },
+  {
+   "card_id": "buffy_redeemed_ally",
+   "pic_id": "encounter",
+   "type": "Ally",
+   "name": "Slayer Ally",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0*",
+    "THW": "0*",
+    "Class": "Encounter"
+   },
+   "traits": [
+    "SLAYER"
+   ],
+   "set_name": ""
+  }
+ ],
+ "robocop": [
+  {
+   "card_id": "rc001a",
+   "type": "Hero",
+   "name": "* RoboCop",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "CYBORG",
+    "OFFICER"
+   ],
+   "set_name": "RoboCop",
+   "text": "<b>Interrupt</b>: When an enemy attacks a friendly character, resolve an \"<b>Action</b>\" ability from a [[WEAPON]] upgrade you control."
+  },
+  {
+   "card_id": "rc001b",
+   "type": "AlterEgo",
+   "name": "* Alex Murphy",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "REC": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "CYBORG",
+    "OFFICER"
+   ],
+   "set_name": "RoboCop",
+   "text": "You may include up to 6 Justice cards in your deck during deck-building.\n<b>Action</b>: Exhaust Alex Murphy → search your deck for an identity-specific upgrade and add it to your hand."
+  },
+  {
+   "card_id": "rc002",
+   "type": "Event",
+   "name": "Authorized Force",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "RoboCop",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Remove 4 threat from a scheme. If that scheme has an [acceleration], [amplify], [crisis] or [hazard] icon, deal 2 damage to an enemy.\n<i>\"Thank you for your cooperation.\" —RoboCop</i>"
+  },
+  {
+   "card_id": "rc003",
+   "type": "Event",
+   "name": "Dead or Alive",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "RoboCop",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After a [[WEAPON]] upgrade you control deals damage to an enemy, deal 5 damage to that enemy. This attack gains overkill.\n<i>\"Dead or alive, you're coming with me.\" —RoboCop</i>"
+  },
+  {
+   "card_id": "rc004",
+   "type": "Event",
+   "name": "No Collateral",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "set_name": "RoboCop",
+   "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When an enemy attacks, prevent all damage from that attack and deal 2 damage to the attacking enemy.\n<i>\"Come quietly, or there will be... trouble.\" —RoboCop</i>"
+  },
+  {
+   "card_id": "rc005",
+   "type": "Upgrade",
+   "name": "* Auto-9",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "RoboCop",
+   "text": "Restricted.\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Auto-9 and spend 1 resource of any type → deal 2 damage to an enemy. This attack gains ranged.\n<i>\"Your move, creep.\" —RoboCop</i>"
+  },
+  {
+   "card_id": "rc006",
+   "type": "Upgrade",
+   "name": "Internal Reload System",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "RoboCop",
+   "text": "<b>Hero Resource</b>: Generate a [wild] resource for Auto-9's ability. That attack gains piercing.\n<b>Interrupt</b>: When you use one of RoboCop's basic powers, ready Auto-9.\n<i>\"Look at that f@*&ing gun!\" —Starkweather</i>"
+  },
+  {
+   "card_id": "rc007",
+   "type": "Upgrade",
+   "name": "Flightpack",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "RoboCop",
+   "text": "RoboCop gains the [[AERIAL]] trait.\n<b>Hero Action</b> <i>(attack)</i>: Exhaust this card → deal 1 damage to a minion. Engage that enemy.\n<i>\"Stay out of trouble.\" —RoboCop</i>"
+  },
+  {
+   "card_id": "rc008",
+   "type": "Upgrade",
+   "name": "* Terminal Spike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "RoboCop",
+   "text": "<b>Hero Action</b>: Exhaust Terminal Spike → draw 1 card. Choose and discard 1 card from your hand. Deal damage to an enemy equal to the number of printed resources on the discarded card."
+  },
+  {
+   "card_id": "rc009",
+   "type": "Upgrade",
+   "name": "* Gunarm",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero",
+    "Restricted": "1",
+    "Uses": "3,ammo"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "RoboCop",
+   "text": "Restricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Gunarm and remove 1 ammo counter from it → deal 3 damage to an enemy and choose:\n• Stun that enemy.\n• Confuse that enemy.\n• Deal 3 damage to another enemy."
+  },
+  {
+   "card_id": "rc010",
+   "type": "Support",
+   "name": "Squad Car",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "VEHICLE"
+   ],
+   "set_name": "RoboCop",
+   "text": "You get +1 hand size.\n<b>Alter-Ego Action</b>: Exhaust Squad Car → shuffle 1 RoboCop card from your discard pile into your deck.\n<i>\"I usually drive when I'm breaking in a new partner.\" —Alex Murphy</i>"
+  },
+  {
+   "card_id": "rc011",
+   "type": "Support",
+   "name": "* Officer Lewis",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "OFFICER",
+    "PERSONA"
+   ],
+   "set_name": "RoboCop",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Officer Lewis → heal 2 damage from Alex Murphy.\n<b>Hero Response</b>: After you resolve an \"<b>Action</b>\" ability on a [[WEAPON]] upgrade you control, exhaust Officer Lewis → deal 2 additional damage to that enemy. Any player may trigger this ability."
+  },
+  {
+   "card_id": "rc012",
+   "type": "Obligation",
+   "name": "Classified",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Alex Murphy"
+   },
+   "traits": [],
+   "set_name": "RoboCop",
+   "text": "<b><i>Give to the Alex Murphy player.</i></b>\nYou cannot attack the villain.\n<b>When Revealed</b>: You are stunned. Exhaust Auto-9.\n<b>Hero Action</b>: Exhaust your identity → discard Classified. Any player may trigger this ability."
+  },
+  {
+   "card_id": "rc013",
+   "type": "Minion",
+   "name": "* ED-209",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "ATK": "4",
+    "SCH": "0",
+    "Boost": "2",
+    "Nemesis": "RoboCop"
+   },
+   "traits": [
+    "ELITE",
+    "ROBOT"
+   ],
+   "set_name": "RoboCop Nemesis",
+   "text": "<b>When Revealed</b>: ED-209 engages the RoboCop player.\n<b>Forced Response</b>: After ED-209 enters play, find the Stairs attachment and attach it to ED-209.\n<i>(RoboCop's nemesis minion.)</i>"
+  },
+  {
+   "card_id": "rc014",
+   "type": "SideScheme",
+   "name": "Corporate Demonstration",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "StartingThreat": "4",
+    "Amplify": "1"
+   },
+   "traits": [],
+   "set_name": "RoboCop Nemesis",
+   "text": "<i>\"Mr. Kinney, use your gun in a threatening manner.\"</i>\n<b>When Revealed</b>: If ED-209 is not in play, find it and put it into play engaged with the RoboCop player."
+  },
+  {
+   "card_id": "rc015",
+   "type": "Attachment",
+   "name": "Stairs",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "SCH+": "0*",
+    "ATK+": "0*"
+   },
+   "traits": [],
+   "set_name": "RoboCop Nemesis",
+   "text": "Attach to the minion with the highest remaining hit points. Otherwise, this card gains surge.\n[star] <b>Forced Interrupt</b>: When the attached minion would activate, discard Stairs instead.\n<i>\"I'd buy that for a dollar!\" —Bixby Snyder</i>"
+  },
+  {
+   "card_id": "rc016",
+   "type": "Minion",
+   "name": "Fugitives",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Patrol": "1"
+   },
+   "traits": [
+    "CREEP",
+    "CRIMINAL"
+   ],
+   "set_name": "RoboCop Nemesis",
+   "text": "Patrol.\n<b>Forced Interrupt</b>: When Fugitives activates, players cannot resolve \"<b>Interrupt</b>\" abilities on cards they control during this activation."
+  },
+  {
+   "card_id": "rc017",
+   "type": "Upgrade",
+   "name": "Leg Holster",
+   "subtitle": "Side Holster",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "RoboCop",
+   "text": "Play under any player's control.\nMax 1 per player.\nYou can control 1 additional [[WEAPON]] upgrade that has the restricted keyword."
+  }
+ ],
+ "mantis": [
+  {
+   "card_id": "mt001a",
+   "type": "Hero",
+   "name": "* Mantis",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "GUARDIAN",
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "<i>Empathetic Advantage</i> — <b>Resource</b>: Discard a confused status card from an enemy or character you control → generate a [mental] resource. <i>(Generate [wild][mental] resources instead if you discarded a confused status card from an enemy. Limit once per round.)</i>\n<i>\"Knowledge is power. And you have much to learn.\"</i>"
+  },
+  {
+   "card_id": "mt001b",
+   "type": "AlterEgo",
+   "name": "* Mantis",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3*",
+    "HS": "6"
+   },
+   "traits": [
+    "OUTLAW",
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "[star] <i>Empathic Leveling</i> — <b>Response</b>: After you use your REC, confuse a character you control.\n<i>\"This one lives to illuminate.\"</i>"
+  },
+  {
+   "card_id": "mt002",
+   "type": "Ally",
+   "name": "* Drax",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "GUARDIAN"
+   ],
+   "set_name": "Mantis",
+   "text": "Drax cannot attack minions.\nWhile Drax is confused, add his THW to his ATK.\n[star] Drax's basic attack gains piercing and ignores the guard keyword."
+  },
+  {
+   "card_id": "mt003",
+   "type": "Event",
+   "name": "Precognition",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "THWART"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Search the top 3 cards of your deck for a card and add it to your hand. If it is a Mantis card, remove 1 threat from a scheme. Shuffle your deck."
+  },
+  {
+   "card_id": "mt004",
+   "type": "Event",
+   "name": "Pressure Point Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If that enemy is confused, you may either deal 1 additional damage to that enemy, or discard a confused status card from that enemy to draw 1 card."
+  },
+  {
+   "card_id": "mt005",
+   "type": "Event",
+   "name": "Psychic Feat",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Action</b>: Confuse a character you control. Then, confuse an enemy.\n<i>\"No! Get out of my head!\"</i>\n<i>\"This one is the Celestial Madonna. I go where I wish.\"</i>"
+  },
+  {
+   "card_id": "mt006",
+   "type": "Resource",
+   "name": "Biopathy",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Mantis",
+   "text": "<b>Response</b>: After you spend this card, heal 1 damage from a friendly character. You may confuse a character you control to draw 1 card.\n<i>\"She can do that? And she tells us now?\" —Bug</i>"
+  },
+  {
+   "card_id": "mt007",
+   "type": "Support",
+   "name": "* Meditation Atrium",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Meditation Atrium → search the top 3 cards of your deck for a card and add it to your hand. If it is a Mantis card, heal 1 damage from a friendly character. Shuffle your deck."
+  },
+  {
+   "card_id": "mt008",
+   "type": "Upgrade",
+   "name": "Fortified Mind",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "PSIONIC"
+   ],
+   "set_name": "Mantis",
+   "text": "Hero form only. Attach to an ally. Limit 1 per ally.\n<b>Forced Interrupt</b>: When attached ally would take consequential damage, discard Fortified Mind instead. Then, confuse that ally."
+  },
+  {
+   "card_id": "mt009",
+   "type": "Upgrade",
+   "name": "Psionic Mindlock",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "PREPARATION"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After a minion enters play, discard Psionic Mindlock → deal 2 damage to that minion and confuse it."
+  },
+  {
+   "card_id": "mt010",
+   "type": "Upgrade",
+   "name": "* The Celestial Madonna",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Mantis",
+   "text": "<b>Hero Interrupt</b>: When you resolve Mantis' <i>\"Empathetic Advantage\"</i> ability, exhaust The Celestial Madonna → this use does not count against that ability's limit.\n<i>\"She's trained since birth by priests from another world to represent all of humanity.\" —Thor</i>"
+  },
+  {
+   "card_id": "mt011",
+   "type": "Obligation",
+   "name": "Psychic Tremor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Mantis"
+   },
+   "traits": [],
+   "set_name": "Mantis",
+   "text": "<b><i>Give to the Mantis player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust your alter ego → remove Psychic Tremor from the game.\n• Discard 1 card from your hand for each confused character you control and each confused enemy. If no cards were discarded this way, this card gains surge. Discard this obligation."
+  },
+  {
+   "card_id": "mt012",
+   "type": "SideScheme",
+   "name": "Death Blossom's Bloom",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "3",
+    "Incite": "1",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Mantis Nemesis",
+   "text": "<i>The Swordsman is attempting to dominate the planet for the Cotati. It will empower the Cotati in their mission to eradicate all non-plant life.</i>\nIncite 1.\nEnemies cannot be confused."
+  },
+  {
+   "card_id": "mt013",
+   "type": "Minion",
+   "name": "* Swordsman",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Quickstrike": "1",
+    "Stalwart": "1",
+    "Nemesis": "Mantis"
+   },
+   "traits": [
+    "COTATI",
+    "ELITE"
+   ],
+   "set_name": "Mantis Nemesis",
+   "text": "Quickstrike. Stalwart.\n[star] Swordsman's attacks gain piercing.\n<i>(Mantis' nemesis minion.)</i>\n<i>Her heart soars at the name \"Jacques\"—the Swordsman who died throwing himself between her and a tyrant's spite, then sinks when it relives the moment the Prime Cotati re-animated his corpse to wear a face she couldn't help but love.</i>"
+  },
+  {
+   "card_id": "mt014",
+   "type": "Minion",
+   "name": "* Plantman",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "2",
+    "Stalwart": "1",
+    "Toughness": "1",
+    "Nemesis": "Mantis"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE"
+   ],
+   "set_name": "Mantis Nemesis",
+   "text": "Stalwart. Toughness.\n[star] <b>Forced Interrupt</b>: When Plantman attacks, his attacks gain overkill.\n<b>Forced Interrupt</b>: When Plantman is defeated, give the villain a tough status card."
+  },
+  {
+   "card_id": "mt015",
+   "type": "Attachment",
+   "name": "Cotati Resiliency",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Mantis Nemesis",
+   "text": "Attach to the enemy with the highest printed hit points and without stalwart. If you cannot, this card gains surge.\nAttached enemy gains stalwart.\n<b>Hero Action</b>: Spend [mental][physical] resources → discard this card."
+  },
+  {
+   "card_id": "mt016",
+   "type": "Event",
+   "name": "Mindlink",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "G",
+    "Class": "Basic",
+    "MaxPerDeck": "1",
+    "TeamUp": "Drax;Mantis"
+   },
+   "traits": [],
+   "set_name": "Mantis",
+   "text": "Team-Up (Drax and Mantis). Max 1 per deck.\n<b>Hero Action</b>: Spend up to 2 [mental] resources → heal 2 damage from an identity for each [mental] resource spent. You may take 1 damage to shuffle this card into your deck."
+  }
+ ],
+ "checksum": "a7a2b7ab17cb8ff3bcdbba39a5a03dd9b66d4fa54b313e702c67fe335cbe1620",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",

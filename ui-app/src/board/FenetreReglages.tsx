@@ -25,6 +25,8 @@
 // fonction qu'avant.
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireBarreAvantage, lireBarreAvantage } from './barre-avantage-reglage'
+import { ecrireChevauchement, ecrireModeTraits, lireChevauchement, lireModeTraits, type ChevauchementAmeliorations } from './reglages-affichage-cartes'
+import type { ModeTraits } from './traits-heros'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { filtrerReglages } from './recherche-reglages'
@@ -45,7 +47,15 @@ import {
 } from './moteur'
 import type { ReglageMode } from './mobile/useModeMobile'
 import { ecrireReglageDoigt, lireReglageDoigt, type ReglageDoigt } from './tablette/tablette'
-import { ecrireReglageTelephone, useReglagesTelephone, type PlateauTelephone, type TailleTexte } from './mobile/reglages-telephone'
+import {
+  ecrireColonnesZone,
+  ecrireReglageTelephone,
+  useReglagesTelephone,
+  type PlateauTelephone,
+  type TailleTexte,
+  type ZoneAColonnes,
+} from './mobile/reglages-telephone'
+import type { NbColonnes } from './mobile/ronds/disposition-ronds'
 import { epurePermis, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
 import {
@@ -414,6 +424,47 @@ function LigneCoteAmeliorations() {
   )
 }
 
+function LigneChevauchementAmeliorations() {
+  const [valeur, setValeur] = useState<ChevauchementAmeliorations>(lireChevauchement)
+  return (
+    <LigneChoix
+      libelle={t('Chevauchement')}
+      valeur={valeur}
+      choix={[
+        { valeur: 'moitie' as ChevauchementAmeliorations, libelle: t('Moitié cachée') },
+        { valeur: 'quart' as ChevauchementAmeliorations, libelle: t('Quart caché') },
+        { valeur: 'collees' as ChevauchementAmeliorations, libelle: t('Collées') },
+        { valeur: 'espacees' as ChevauchementAmeliorations, libelle: t('Espacées') },
+      ]}
+      onChoisir={(v) => {
+        ecrireChevauchement(v)
+        setValeur(v)
+      }}
+      detail={t('Quelle part d’une amélioration reste cachée derrière la carte qui la porte')}
+    />
+  )
+}
+
+function LigneTraitsHeros() {
+  const [mode, setMode] = useState<ModeTraits>(lireModeTraits)
+  return (
+    <LigneChoix
+      libelle={t('Traits du héros')}
+      valeur={mode}
+      choix={[
+        { valeur: 'changements' as ModeTraits, libelle: t('Changements') },
+        { valeur: 'tous' as ModeTraits, libelle: t('Tous') },
+        { valeur: 'aucun' as ModeTraits, libelle: t('Aucun') },
+      ]}
+      onChoisir={(v) => {
+        ecrireModeTraits(v)
+        setMode(v)
+      }}
+      detail={t('Pastilles sur la carte du héros : les traits gagnés ou perdus seulement, tous ses traits, ou rien')}
+    />
+  )
+}
+
 /* ---------------------------------------------------------- telephone -- */
 // Zone 3 de la refonte (10/10/2026) : trois reglages du TELEPHONE, montres sur
 // telephone seulement (`telephone`). Autonomes comme `LigneEtiquettesTable` :
@@ -427,11 +478,11 @@ function LignePlateauTelephone() {
       libelle={t('Plateau')}
       valeur={plateau}
       choix={[
-        { valeur: 'cartes' as PlateauTelephone, libelle: t('Cartes') },
         { valeur: 'ronds' as PlateauTelephone, libelle: t('Ronds') },
+        { valeur: 'cartes' as PlateauTelephone, libelle: t('Cartes') },
       ]}
       onChoisir={(valeur) => ecrireReglageTelephone('plateau', valeur)}
-      detail={t('La forme de la table au téléphone (essai : les ronds)')}
+      detail={t('La forme de la table au téléphone (les ronds sont plus adaptés au téléphone)')}
     />
   )
 }
@@ -496,6 +547,36 @@ function LigneTailleTexte() {
       onChoisir={(valeur) => ecrireReglageTelephone('tailleTexte', valeur)}
       detail={t('Bandeau, titres, menus et boutons du plateau')}
     />
+  )
+}
+
+/** Le nombre de colonnes d'une zone de la table en ronds (26/10/2026) : 1, 2, 3, 4 ou Auto. */
+function LigneColonnesZone({ zone, titre }: { zone: ZoneAColonnes; titre: string }) {
+  const { colonnesZones } = useReglagesTelephone()
+  return (
+    <LigneChoix
+      libelle={`${t('Colonnes')} : ${titre}`}
+      valeur={colonnesZones[zone] as number}
+      choix={[
+        { valeur: 1, libelle: '1' },
+        { valeur: 2, libelle: '2' },
+        { valeur: 3, libelle: '3' },
+        { valeur: 4, libelle: '4' },
+        { valeur: 0, libelle: t('Auto') },
+      ]}
+      onChoisir={(valeur) => ecrireColonnesZone(zone, valeur as NbColonnes)}
+    />
+  )
+}
+
+function LignesColonnesZones() {
+  return (
+    <>
+      <LigneColonnesZone zone="manigances" titre={t('Manigances')} />
+      <LigneColonnesZone zone="allies" titre={t('Alliés')} />
+      <LigneColonnesZone zone="sbires" titre={t('Sbires')} />
+      <LigneColonnesZone zone="enJeu" titre={t('Cartes en jeu')} />
+    </>
   )
 }
 
@@ -666,6 +747,7 @@ export function ContenuOnglet({
             <LigneDemanderLePlateau />
             <LigneAideDebut />
             <LigneTailleTexte />
+            <LignesColonnesZones />
             <LigneVerrouPortrait />
           </>
         ) : null}
@@ -742,7 +824,13 @@ export function ContenuOnglet({
     return (
       <>
         <TitreSection>{t('Phase du méchant')}</TitreSection>
-        <LignePhaseMechant p={p} />
+        {/* SUR TELEPHONE la presentation est d'office « Guidee » (26/10/2026, demande de l'utilisateur : pas d'autres
+            choix) : pas de ligne « Presentation ». Le delai automatique ci-dessous reste : il vaut pour la Guidee. */}
+        {p.telephone ? (
+          <p className="ligne-option-note">{t('Guidée sur téléphone : « Lire la suite » puis « Étape suivante » à chaque étape de la phase')}</p>
+        ) : (
+          <LignePhaseMechant p={p} />
+        )}
         {p.modePhase !== 'instantane' ? <LigneDelaiAutoPhase /> : null}
         {p.avancePhaseHote ? <LigneAvancePhase /> : null}
         {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par
@@ -779,6 +867,8 @@ export function ContenuOnglet({
         <TitreSection>{t('Mon tour')}</TitreSection>
         <LigneFaconDeJouer />
         <LigneCoteAmeliorations />
+        <LigneChevauchementAmeliorations />
+        <LigneTraitsHeros />
         <TitreSection>{t('Le jeu agit pour moi quand il n’y a qu’un choix')}</TitreSection>
         <LigneBascule
           libelle={t('Choisir la seule cible possible')}

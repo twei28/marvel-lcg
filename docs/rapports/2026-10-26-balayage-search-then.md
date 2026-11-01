@@ -41,3 +41,37 @@ Origine : Safe House #30 (54007) n'a rien fait en partie réelle. La première e
 
 - L'analyse ne voit que les motifs `X = Search.…(…)` suivis d'un `if X`. Un résultat de recherche passé en rappel (`process_choose`), ou un effet décidé par un autre helper (`Find.FindAndReveal`), n'est pas couvert.
 - Les 6 cartes marquées « code non relu » n'ont pas de défaut vu dans le texte, mais leur code n'a pas été lu ligne à ligne.
+
+---
+
+# Relecture ligne à ligne des six cartes survolées (26/10/2026, suite)
+
+Texte imprimé (data/cards.json) + script lus en entier, comparés à la règle « Then » / « Search » du Rules Reference v1.8. Cas dans `tools/cas/relectures_search.py` (préfixe `[rs]`).
+
+| Carte | Verdict | Détail |
+|---|---|---|
+| **dt075** Multiverse Shenanigans | **DÉFAUT, corrigé** | « choose any 3 **different** … cards » : le script appelait 3 fois `Search.Collection` sans exclure les titres déjà choisis ; le pilote prend toujours la première option : 3 exemplaires de la MÊME carte (« Hulk ») sous la carte. Correctif : `check_fn=lambda paper: paper.name not in deja_choisis`. Cas VU ROUGE (1 titre distinct au lieu de 3), vert après, rouge sans le module. Cas Action (épuiser + carte rencontre face cachée → 1 carte de côté en main) ajouté, vert / rouge sans module. La carte n'avait AUCUN cas avant. Ajouts de banc : clé `pose_sous_titres_distincts` (test_capacites.py), `Puzzle.SendGameBeginSetup()` (puzzle.py). |
+| **ze014** The Mother of Night | correct | Pas de « Then » : « place 1 additional threat for each facedown card placed » = autant que de cartes posées ; `if faces:` juste. Deux recherches enchaînées, cas existants (test_capacites.py ~30290) les couvrent (3 menaces, cartes rendues à la défaite). |
+| **sb018** Musha Shugyō | correct | « may search … up to 2 OATH » : boucle de 2 recherches `may=True`, arrêt au premier refus/échec ; cas existants (tools/cas/tmnt_shinobi_bushido.py) couvrent 2 OATH, défausse, « up to 2 ». Lecture « characters other than the owner » = identité du propriétaire seule (précédent 40006 Technovirus Purge). |
+| **56072** Stark Tower | correct | « searches … and your team reveals it » : la révélation dépend de la trouvaille, `if face:` juste ; deck ET défausse fouillés. Cas coop ajouté (56065 en défausse de rencontre → attaché à Iron Man), vert / rouge sans module. |
+| **56096b** S.H.I.E.L.D. Recruits | correct | `Players.ForEachPlayer` ne parcourt que les joueurs de la table de l'effet (`Worlds.GetPlayers` filtre sur la zone) : « each player on your team » juste. Cas coop ajoutés (1 sbire donné face cachée puis révélé ; contre-cas sans sbire), vert / rouge sans module (le contre-cas d'absence reste vert). |
+| **56059** Iron Man (Leader) | correct à la lecture, NON testé | Même structure que 56072 (Setup, deck seul : `include_discard_pile=False` conforme). Carte de type Leader : non montable en coop dans le harnais. |
+
+⚠ **Limite commune aux trois cartes Civil War** : aucun cas du dépôt ne monte le mode COMPÉTITIF (deux équipes). Mes cas rejouent la carte en mode coopératif (`Worlds.GetEnemyTeam` = premier joueur) ; le partage entre deux tables n'est pas prouvé.
+
+## Journaux d'autoplay Warriors Three et Ch'od (8 parties chacun, relancés le 26/10/2026 après toutes les corrections)
+
+Rhino / normal / équilibré, graines 1 à 8, `python tools/autoplay.py <game_dir> --deck <deck> --vilains rhino --difficultes normal --profils equilibre --parties 8`. 0 victoire sur 16 (cause : deck de joueur de ressources neutres du pilote, voir RECETTES : le 0 % ne mesure pas le héros).
+
+- **Lu :** grep de tous les mots d'alerte (Traceback, Error, Exception, impossible, refus, échec, invalide, introuvable, <W>, <E>) : 0 ; lignes consécutives identiques : 0 ; le message « la boucle de jeu s'est arrêtée » est le résultat normal (verdict « terminee »). Lecture ligne à ligne des séquences touchant les cartes des deux packs, dans les journaux wt1, wt2, wt5, wt6, wt7 et co1, co3, co5 :
+  - changement de héros actif par wt002 : liaisons/déliaisons des bonus correctes (Fandral ↔ Hogun ↔ Volstagg) ;
+  - Artful Bladework : 4 dégâts, puis +2 SEULEMENT quand Fandral paie (wt1 lignes 81-110, wt6 lignes 392-411) ;
+  - Hildegarde : bonus +1 ATQ/+1 CTR qui suit le héros actif jusqu'à la fin de phase ;
+  - Fimbuldraugr (retire 1 menace) et Hridgandr (1 dégât) : Réponses déclenchées au changement de héros actif ;
+  - A Questing We Shall Go! : sbire révélé, carte attachée, +5 PV (wt2 lignes 967-987) ;
+  - Fenris : menace sur Countdown to Ragnarok ET sur le complot principal à chaque machination ; Fenris n'encaisse aucun dégât ; Skadihr révélée et engagée avec l'alter ego (pas d'attaque Quickstrike : règle, elle ne vise qu'un héros) ;
+  - Shadow of the Past met bien Countdown en jeu ; Duel of Wits glisse une carte de la main sous elle ; Cr'reee récupérée par « Forever Friends » (défausse, recherche, mélange) puis jouée au tour 1 dans 8 parties sur 8.
+- **Anomalies :** aucune qui soit un défaut de carte. Observations sans conséquence :
+  1. Le message « deck va être mélangé avec défausse » apparaît à CHAQUE mélange simple (`AfterDeckShuffle` reçoit toujours la défausse liée), même quand la défausse n'est PAS fusionnée (seul `ShuffleWithDiscardPile` fusionne). Trompeur à la lecture des journaux (faux soupçon sur A Questing), cosmétique.
+  2. « Hildegarde est vaincue par Hildegarde » : l'attaquante est désignée source de ses propres dégâts consécutifs (moteur, pas la carte).
+- **Non exercé par le pilote** (il joue ces cartes en RESSOURCE, jamais en carte) : Rally!, Hold the Line, Mighty Endurance, Leap into Action, Revelry in Asgard, Fated Clash, Gleipnir ; et, côté Ch'od, Mentor/Duel of Wits/Plutonia/Strike and Phase/Utter Contempt n'apparaissent que dans 1 partie sur 8. Ces cartes ne sont prouvées que par leurs cas de test.

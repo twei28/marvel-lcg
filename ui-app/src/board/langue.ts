@@ -7,17 +7,38 @@
 // langue, et la reconnexion WebSocket est déjà gérée par moteur.ts.
 
 import { DICO_EN_BASE } from './dico-en'
+import { cookieLangue, resoudreLangue } from './langue-resolution'
 import { alignerScansSurLangue } from './scans-fr'
 
 const CLE_LANGUE = 'marvel-langue'
 
 export type Langue = 'fr' | 'en'
 
+/** La langue du jeu (decision du 26/10/2026) : le choix fait DANS le jeu, sinon le cookie « nc_langue » du site (pose sur le
+ *  domaine parent : une table p<N>.<domaine> est une autre origine et ne voit pas le localStorage du site), sinon la langue du
+ *  navigateur, sinon le francais. Regle commune : langue-resolution.ts (jumeau de public/js/prepare/langue-resolution.js). */
 export function langueActuelle(): Langue {
+  let stockage = ''
   try {
-    return localStorage.getItem(CLE_LANGUE) === 'en' ? 'en' : 'fr'
+    stockage = localStorage.getItem(CLE_LANGUE) || ''
   } catch {
-    return 'fr'
+    /* stockage bloque : le cookie et le navigateur decident */
+  }
+  let cookie = ''
+  try {
+    cookie = document.cookie
+  } catch {
+    /* cookies bloques */
+  }
+  return resoudreLangue({ stockage, cookie, navigateur: typeof navigator === 'undefined' ? null : navigator })
+}
+
+/** Le jeu pose AUSSI le cookie « nc_langue » quand le joueur change de langue : le site et les autres tables suivent. */
+function poserCookieLangue(langue: Langue): void {
+  try {
+    document.cookie = cookieLangue(langue, location.host, location.protocol)
+  } catch {
+    /* cookies bloques */
   }
 }
 
@@ -45,6 +66,7 @@ export async function basculerLangue(): Promise<void> {
   } catch {
     /* stockage indisponible : la bascule serveur reste utile */
   }
+  poserCookieLangue(nouvelle)
   // Les IMAGES des cartes suivent aussi : elles ont leur propre reglage
   // (« Scans en francais », menu Options), et le laisser en arriere donnait une
   // interface anglaise sur un plateau francais. Le reglage reste modifiable a

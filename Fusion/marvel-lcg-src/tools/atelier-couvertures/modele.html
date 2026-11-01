@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier de couvertures</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
+<style>
+  /* Habillage aligne sur le reste du site (29/10/2026) : voir la meme note dans createur-cartes.html. */
+  :root {
+    color-scheme: dark;
+    --bg: #07080c; --panel: #12151b; --panel-2: #181d26; --border: #262b35;
+    --text: #eef1f5; --muted: #8b95a3;
+    --accent: #e62429; --accent-hover: #ff3b40; --accent-soft: rgba(230, 36, 41, .14); --accent-ink: #fff;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--text); font: 14px/1.4 system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(rgba(230, 36, 41, .4) 1px, transparent 1.6px);
+    background-size: 15px 15px;
+  }
+  .page { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 20px; padding: 16px; min-height: 100vh; }
+  @media (max-width: 800px) { .page { grid-template-columns: 1fr; } }
+  .panneau { background: var(--panel); border: 1px solid var(--border); padding: 14px; display: flex; flex-direction: column; gap: 12px; align-self: start; }
+  h1 { font: 18px/1 var(--affiche); text-transform: uppercase; letter-spacing: .01em; font-weight: 400; margin: 0; }
+  h2 { font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  label { display: flex; flex-direction: column; gap: 4px; color: var(--muted); font-size: 12px; }
+  label.ligne { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; }
+  input[type=text], textarea, select { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 7px 9px; font: inherit; }
+  textarea { resize: vertical; min-height: 56px; }
+  input[type=color] { width: 46px; height: 28px; padding: 0; border: 1px solid var(--border); background: none; }
+  input[type=range] { width: 100%; }
+  .modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .modes button, .btn { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px; cursor: pointer; font: inherit; }
+  .modes button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.principal { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .btn.principal:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .rang { display: flex; gap: 8px; }
+  .rang > * { flex: 1; }
+  .scene { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .toile { max-height: calc(100vh - 80px); max-width: 100%; aspect-ratio: 938 / 1538; background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23222'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222'/%3E%3C/svg%3E"); border: 1px solid var(--border); cursor: grab; touch-action: none; }
+  .toile.glisse { cursor: grabbing; }
+  .aide { color: var(--muted); font-size: 12px; }
+  .reinit { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
+  .texte-libre { border: 1px solid var(--border); padding: 8px; display: flex; flex-direction: column; gap: 6px; background: var(--panel-2); }
+  .texte-libre.choisi { border-color: var(--accent); }
+  .texte-libre .rang { align-items: center; }
+  .texte-libre input[type=number] { width: 64px; background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 4px 6px; font: inherit; }
+  .texte-libre .btn { padding: 4px 8px; flex: none; }
+  #message { min-height: 18px; color: var(--muted); font-size: 12px; }
+</style>
+<script>
+// Langue de la page : l'anglais par defaut, le francais avec le petit bouton
+// (meme reglage que le createur de cartes : localStorage 'createur-langue-ui').
+(() => {
+  const D = {
+  "Atelier de couvertures": "Cover workshop",
+  "Héros": "Hero",
+  "Scénario": "Scenario",
+  "Modulaire": "Modular",
+  "Boîte": "Box",
+  "Expansion": "Expansion",
+  "Illustration": "Artwork",
+  "Image (ou glisse-la sur l'aperçu)": "Image (or drop it on the preview)",
+  "Zoom": "Zoom",
+  "Glisse l'image dans l'aperçu pour la déplacer, molette pour zoomer.": "Drag the image in the preview to move it, mouse wheel to zoom.",
+  "Titre": "Title",
+  "Texte (une ligne par retour)": "Text (one line per line break)",
+  "Nom du pack": "Pack name",
+  "Ou une image de titre déjà dessinée": "Or a ready-made title image",
+  "Police": "Font",
+  "Georgia Gras": "Georgia Bold",
+  "Trebuchet Gras": "Trebuchet Bold",
+  "Courier Gras": "Courier Bold",
+  "Ma police (.ttf / .otf)…": "My font (.ttf / .otf)…",
+  "Ma police": "My font",
+  "Remplissage haut": "Top fill",
+  "Remplissage bas": "Bottom fill",
+  "Contour": "Outline",
+  "Épaisseur du contour": "Outline thickness",
+  "Taille": "Size",
+  "Position horizontale": "Horizontal position",
+  "Position verticale": "Vertical position",
+  "Ombre portée": "Drop shadow",
+  "Couleurs du gabarit": "Template colours",
+  "Boîte du bas": "Bottom box",
+  "Revenir aux couleurs d'origine": "Back to the original colours",
+  "Textes libres": "Free texts",
+  "+ Ajouter un texte": "+ Add a text",
+  "Nom du créateur, mention, ce que tu veux. Glisse un texte dans l'aperçu pour le placer.": "Creator name, credit, anything you like. Drag a text in the preview to place it.",
+  "Export": "Export",
+  "Télécharger en PNG": "Download as PNG",
+  "Télécharger en webp (600 px de haut)": "Download as webp (600 px tall)",
+  "Ton texte": "Your text",
+  "Supprimer": "Delete",
+  "Couleur": "Colour",
+  "Épaisseur": "Thickness",
+  "Gras": "Bold",
+  "Ombre": "Shadow",
+  "Dépose l'illustration ici": "Drop the artwork here",
+  "Créé par …": "Made by …"
+}
+  let en = true
+  try { en = localStorage.getItem('createur-langue-ui') !== 'fr' } catch {}
+  window.T = (fr) => (en && Object.prototype.hasOwnProperty.call(D, fr) ? D[fr] : fr)
+  document.documentElement.lang = en ? 'en' : 'fr'
+  if (!en) return
+  const MOTIFS = [
+    [/^Étiquette \(« (.+) »\)$/, '“$1” label'],
+    [/^PNG exporté \((.+)\)\.$/, 'PNG exported ($1).'],
+    [/^webp exporté \((.+)\)\.$/, 'webp exported ($1).'],
+  ]
+  function traduire(fr) {
+    const coeur = fr.trim()
+    if (!coeur) return fr
+    let en2 = D[coeur]
+    if (en2 === undefined) for (const [re, rempl] of MOTIFS) if (re.test(coeur)) { en2 = coeur.replace(re, rempl); break }
+    return en2 === undefined ? fr : fr.replace(coeur, en2)
+  }
+  function parcourir(noeud) {
+    if (noeud.nodeType === 3) { const v = traduire(noeud.nodeValue); if (v !== noeud.nodeValue) noeud.nodeValue = v; return }
+    if (noeud.nodeType !== 1 || noeud.tagName === 'SCRIPT' || noeud.tagName === 'STYLE') return
+    for (const a of ['placeholder', 'title']) if (noeud.hasAttribute(a)) { const v = traduire(noeud.getAttribute(a)); if (v !== noeud.getAttribute(a)) noeud.setAttribute(a, v) }
+    noeud.childNodes.forEach(parcourir)
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.title = traduire(document.title)
+    parcourir(document.body)
+    new MutationObserver((lots) => lots.forEach((l) => (l.type === 'characterData' ? parcourir(l.target) : l.addedNodes.forEach(parcourir)))).observe(document.body, { childList: true, subtree: true, characterData: true })
+  })
+})()
+document.addEventListener('DOMContentLoaded', () => {
+  const b = document.createElement('button')
+  b.type = 'button'; b.id = 'bouton-langue'
+  const fr = document.documentElement.lang === 'fr'
+  b.textContent = fr ? 'EN' : 'FR'
+  b.title = fr ? 'English' : 'Français'
+  b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:10;padding:4px 9px;border:1px solid #262b35;background:#12151b;color:#eef1f5;font:700 12px system-ui,sans-serif;cursor:pointer'
+  b.addEventListener('click', () => { try { localStorage.setItem('createur-langue-ui', fr ? 'en' : 'fr') } catch {} location.reload() })
+  document.body.append(b)
+})
+</script>
+</head>
+<body>
+<div class="page">
+  <div class="panneau">
+    <h1>Atelier de couvertures</h1>
+    <div class="modes" id="modes">
+      <button data-mode="heros" aria-pressed="true">Héros</button>
+      <button data-mode="scenario" aria-pressed="false">Scénario</button>
+      <button data-mode="modulaire" aria-pressed="false">Modulaire</button>
+      <button data-mode="boite" aria-pressed="false">Boîte</button>
+    </div>
+
+    <h2>Illustration</h2>
+    <label>Image (ou glisse-la sur l'aperçu)
+      <input type="file" id="fichier-art" accept="image/*">
+    </label>
+    <label>Zoom <input type="range" id="zoom" min="50" max="400" value="100"></label>
+    <div class="aide">Glisse l'image dans l'aperçu pour la déplacer, molette pour zoomer.</div>
+
+    <h2>Titre</h2>
+    <label>Texte (une ligne par retour)
+      <textarea id="titre" placeholder="Nom du pack"></textarea>
+    </label>
+    <label>Ou une image de titre déjà dessinée
+      <input type="file" id="fichier-titre" accept="image/*">
+    </label>
+    <label>Police
+      <select id="police">
+        <option value="Impact, 'Arial Narrow Bold', sans-serif">Impact</option>
+        <option value="'Arial Black', Arial, sans-serif">Arial Black</option>
+        <option value="Georgia, serif">Georgia Gras</option>
+        <option value="'Trebuchet MS', sans-serif">Trebuchet Gras</option>
+        <option value="'Courier New', monospace">Courier Gras</option>
+        <option value="__perso">Ma police (.ttf / .otf)…</option>
+      </select>
+    </label>
+    <input type="file" id="fichier-police" accept=".ttf,.otf,.woff,.woff2" hidden>
+    <div class="rang">
+      <label>Remplissage haut <input type="color" id="titre-haut" value="#e23a6a"></label>
+      <label>Remplissage bas <input type="color" id="titre-bas" value="#a3123a"></label>
+      <label>Contour <input type="color" id="titre-contour" value="#ffffff"></label>
+    </div>
+    <label>Épaisseur du contour <input type="range" id="titre-epaisseur" min="0" max="40" value="0"></label>
+    <label>Taille <input type="range" id="titre-taille" min="40" max="400" value="200"></label>
+    <label>Position horizontale <input type="range" id="titre-x" min="-300" max="300" value="0"></label>
+    <label>Position verticale <input type="range" id="titre-y" min="-400" max="400" value="0"></label>
+    <label class="ligne">Ombre portée <input type="checkbox" id="titre-ombre" checked></label>
+
+    <h2>Couleurs du gabarit</h2>
+    <label class="ligne">Boîte du bas <input type="color" id="couleur-boite"></label>
+    <label class="ligne">Étiquette (« Hero Pack ») <input type="color" id="couleur-etiquette"></label>
+    <button class="reinit" id="couleurs-origine" type="button">Revenir aux couleurs d'origine</button>
+
+    <h2>Textes libres</h2>
+    <div id="liste-textes"></div>
+    <button class="btn" id="ajouter-texte" type="button">+ Ajouter un texte</button>
+    <div class="aide">Nom du créateur, mention, ce que tu veux. Glisse un texte dans l'aperçu pour le placer.</div>
+
+    <h2>Export</h2>
+    <button class="btn principal" id="export-png" disabled>Télécharger en PNG</button>
+    <button class="btn" id="export-webp" disabled>Télécharger en webp (600 px de haut)</button>
+    <div id="message"></div>
+  </div>
+
+  <div class="scene">
+    <canvas class="toile" id="toile" width="938" height="1538"></canvas>
+  </div>
+</div>
+
+<script>
+/*CALQUES*/
+
+(() => {
+  // L, H changent avec le mode (29/10/2026) : « Boîte » (l'avant d'une grosse boîte d'extension,
+  // gabarit absent du Drive qui a servi aux autres calques, voir generer.py) est carre, les trois
+  // autres gabarits restent au format carte du jeu (reference : l'arriere de boite donne par
+  // l'utilisateur). `appliquerMode` les met a jour avant tout calcul qui en depend.
+  const DIMENSIONS = { heros: [938, 1538], scenario: [938, 1538], modulaire: [938, 1538], boite: [1000, 1000] }
+  let L = 938, H = 1538
+  const toile = document.getElementById('toile')
+  const ctx = toile.getContext('2d')
+  const $ = (id) => document.getElementById(id)
+
+  const etat = {
+    mode: 'heros',
+    art: null, artX: 0, artY: 0, artZoom: 1, // artZoom : 1 = l'image remplit la toile
+    titreImg: null,
+    couleurBoite: null, couleurEtiquette: null,
+    policePerso: null,
+    textes: [], choisi: -1, // textes libres ; `choisi` = celui qu'on deplace / regle
+  }
+  // Defauts par mode : ou tombe le titre, et sa taille.
+  const TITRE = {
+    heros: { cx: L / 2, cy: 200, taille: 230, largeur: 860, apresBoite: false },
+    scenario: { cx: L / 2, cy: 1330, taille: 120, largeur: 760, apresBoite: true },
+    modulaire: { cx: L / 2, cy: 1330, taille: 120, largeur: 760, apresBoite: true },
+    boite: { cx: 500, cy: 858, taille: 72, largeur: 760, apresBoite: true },
+  }
+  const COUCHES = {
+    heros: { boite: 'heros-boite', logos: 'heros-logos', etiquette: 'heros-etiquette' },
+    scenario: { boite: 'scenario-boite', logos: 'scenario-logos', etiquette: 'scenario-etiquette' },
+    modulaire: { boite: 'scenario-boite', logos: 'scenario-logos', etiquette: 'modulaire-etiquette' },
+    boite: { boite: 'boite-boite', logos: 'boite-logos', etiquette: 'boite-etiquette' },
+  }
+  const NOMS_ETIQUETTE = { heros: 'Hero Pack', scenario: 'Scenario Pack', modulaire: 'Modular Set', boite: 'Expansion' }
+
+  // ---- Chargement des calques (data: URI, donc le canvas reste exportable)
+  const images = {}
+  const chargees = Promise.all(Object.entries(CALQUES).map(([nom, src]) => new Promise((ok) => {
+    const im = new Image()
+    im.onload = () => { images[nom] = im; ok() }
+    im.src = src
+  })))
+
+  // ---- Recoloration : on garde la luminosite et les blancs, on remplace la teinte.
+  // Reference = couleur moyenne des pixels colores du calque (le rouge d'origine).
+  function rgbVersHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2
+    if (mx === mn) return [0, 0, l]
+    const d = mx - mn
+    const s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn)
+    let h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4
+    return [h / 6, s, l]
+  }
+  function hslVersRgb(h, s, l) {
+    if (s === 0) return [l * 255, l * 255, l * 255]
+    const q = l < .5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q
+    const f = (t) => { t = (t + 1) % 1; return t < 1 / 6 ? p + (q - p) * 6 * t : t < .5 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p }
+    return [f(h + 1 / 3) * 255, f(h) * 255, f(h - 1 / 3) * 255]
+  }
+  function hexVersHsl(hex) {
+    return rgbVersHsl(parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16))
+  }
+  function hslVersHex(h, s, l) {
+    return '#' + hslVersRgb(h, s, l).map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')
+  }
+  const referenceCache = {}
+  function referenceDe(nom) {
+    if (referenceCache[nom]) return referenceCache[nom]
+    const c = document.createElement('canvas'); c.width = L; c.height = H
+    const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(images[nom], 0, 0)
+    const d = x.getImageData(0, 0, L, H).data
+    let sx = 0, sy = 0, ss = 0, sl = 0, n = 0
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i + 3] < 200) continue
+      const [h, s, l] = rgbVersHsl(d[i], d[i + 1], d[i + 2])
+      if (s < .25 || l < .08 || l > .92) continue
+      sx += Math.cos(h * 2 * Math.PI); sy += Math.sin(h * 2 * Math.PI); ss += s; sl += l; n++
+    }
+    const h = n ? (Math.atan2(sy, sx) / (2 * Math.PI) + 1) % 1 : 0
+    return (referenceCache[nom] = { h, s: n ? ss / n : .7, l: n ? sl / n : .4 })
+  }
+  const recolorees = new Map()
+  function recolorer(nom, hex) {
+    const cle = nom + hex
+    if (recolorees.has(cle)) return recolorees.get(cle)
+    const ref = referenceDe(nom), [th, ts, tl] = hexVersHsl(hex)
+    const c = document.createElement('canvas'); c.width = L; c.height = H
+    const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(images[nom], 0, 0)
+    const img = x.getImageData(0, 0, L, H), d = img.data
+    for (let i = 0; i < d.length; i += 4) {
+      if (!d[i + 3]) continue
+      const [h, s, l] = rgbVersHsl(d[i], d[i + 1], d[i + 2])
+      if (s < .12) continue // blancs et gris : le trait blanc de la boite reste blanc
+      const poids = Math.min(1, s / .25) // fondu doux a la frontiere couleur / neutre
+      const ns = Math.min(1, s * (ts / Math.max(ref.s, .05)))
+      const nl = Math.min(.98, Math.max(.02, l + (tl - ref.l)))
+      const [r, g, b] = hslVersRgb(th, ns, nl)
+      d[i] = d[i] + (r - d[i]) * poids; d[i + 1] = d[i + 1] + (g - d[i + 1]) * poids; d[i + 2] = d[i + 2] + (b - d[i + 2]) * poids
+    }
+    x.putImageData(img, 0, 0)
+    if (recolorees.size > 24) recolorees.clear()
+    recolorees.set(cle, c)
+    return c
+  }
+  function couche(nom, hexChoisi, hexOrigine) {
+    return hexChoisi && hexChoisi !== hexOrigine ? recolorer(nom, hexChoisi) : images[nom]
+  }
+  const origines = {} // couleur d'origine (hex) de chaque calque
+
+  // ---- Dessin
+  function dessinerArt() {
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, L, H)
+    const im = etat.art
+    if (!im) {
+      ctx.fillStyle = '#2a2d36'; ctx.fillRect(0, 0, L, H)
+      ctx.fillStyle = '#9aa1ad'; ctx.font = '600 44px system-ui, sans-serif'; ctx.textAlign = 'center'
+      ctx.fillText(T("Dépose l'illustration ici"), L / 2, H / 2 - 600)
+      return
+    }
+    const base = Math.max(L / im.width, H / im.height) * etat.artZoom
+    const w = im.width * base, h = im.height * base
+    ctx.drawImage(im, (L - w) / 2 + etat.artX, (H - h) / 2 + etat.artY, w, h)
+  }
+  function dessinerTitre() {
+    const cfg = TITRE[etat.mode]
+    const dx = +$('titre-x').value, dy = +$('titre-y').value
+    if (etat.titreImg) {
+      const im = etat.titreImg, k = Math.min(cfg.largeur / im.width, 1.5) * (+$('titre-taille').value / cfg.taille)
+      const w = im.width * k, h = im.height * k
+      ctx.drawImage(im, cfg.cx + dx - w / 2, cfg.cy + dy - h / 2, w, h)
+      return
+    }
+    const texte = $('titre').value.replace(/\s+$/, '')
+    if (!texte) return
+    const lignes = texte.split('\n')
+    const police = $('police').value === '__perso' ? (etat.policePerso || 'sans-serif') : $('police').value
+    let taille = +$('titre-taille').value
+    ctx.save()
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'
+    const mesure = () => { ctx.font = `${taille}px ${police}`; return Math.max(...lignes.map((l) => ctx.measureText(l).width)) }
+    const large = mesure()
+    if (large > cfg.largeur) { taille *= cfg.largeur / large; mesure() }
+    const inter = taille * 0.92, hauteur = inter * lignes.length
+    const y0 = cfg.cy + dy - hauteur / 2 + inter / 2
+    const grad = ctx.createLinearGradient(0, y0 - inter / 2, 0, y0 - inter / 2 + hauteur)
+    grad.addColorStop(0, $('titre-haut').value); grad.addColorStop(1, $('titre-bas').value)
+    const ep = +$('titre-epaisseur').value
+    lignes.forEach((ligne, i) => {
+      const x = cfg.cx + dx, y = y0 + i * inter
+      if ($('titre-ombre').checked) {
+        ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = taille * .06; ctx.shadowOffsetY = taille * .04
+      }
+      if (ep > 0) { ctx.strokeStyle = $('titre-contour').value; ctx.lineWidth = ep; ctx.strokeText(ligne, x, y) }
+      ctx.fillStyle = grad; ctx.fillText(ligne, x, y)
+      ctx.shadowColor = 'transparent'
+    })
+    ctx.restore()
+  }
+  const POLICES = () => [...$('police').options].filter((o) => o.value !== '__perso').map((o) => [o.value, o.textContent])
+  function policeDe(valeur) { return valeur === '__perso' ? (etat.policePerso || 'sans-serif') : valeur }
+  function dessinerTextesLibres(exportation) {
+    etat.textes.forEach((t, i) => {
+      const lignes = (t.texte || '').split('\n')
+      if (!lignes.join('').trim()) { t.boite = null; return }
+      ctx.save()
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'
+      ctx.font = `${t.gras ? 'bold ' : ''}${t.taille}px ${policeDe(t.police)}`
+      const inter = t.taille * 1.15, haut = inter * lignes.length
+      const large = Math.max(...lignes.map((l) => ctx.measureText(l).width))
+      const y0 = t.y - haut / 2 + inter / 2
+      lignes.forEach((ligne, k) => {
+        const y = y0 + k * inter
+        if (t.ombre) { ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = t.taille * .08; ctx.shadowOffsetY = t.taille * .04 }
+        if (t.epaisseur > 0) { ctx.strokeStyle = t.contour; ctx.lineWidth = t.epaisseur; ctx.strokeText(ligne, t.x, y) }
+        ctx.fillStyle = t.couleur; ctx.fillText(ligne, t.x, y)
+        ctx.shadowColor = 'transparent'
+      })
+      t.boite = { x: t.x - large / 2 - 8, y: t.y - haut / 2 - 8, l: large + 16, h: haut + 16 }
+      if (!exportation && i === etat.choisi) {
+        ctx.setLineDash([10, 8]); ctx.lineWidth = 3; ctx.strokeStyle = '#e23636'
+        ctx.strokeRect(t.boite.x, t.boite.y, t.boite.l, t.boite.h)
+      }
+      ctx.restore()
+    })
+  }
+  function dessiner(exportation = false) {
+    if (!images['heros-boite']) return
+    const c = COUCHES[etat.mode], cfg = TITRE[etat.mode]
+    dessinerArt()
+    if (!cfg.apresBoite) dessinerTitre()
+    ctx.drawImage(couche(c.boite, etat.couleurBoite, origines[c.boite]), 0, 0)
+    if (cfg.apresBoite) dessinerTitre()
+    ctx.drawImage(images[c.logos], 0, 0)
+    ctx.drawImage(couche(c.etiquette, etat.couleurEtiquette, origines[c.etiquette]), 0, 0)
+    dessinerTextesLibres(exportation)
+    const pret = !!etat.art
+    $('export-png').disabled = $('export-webp').disabled = !pret
+  }
+
+  // ---- Interface
+  function appliquerMode(mode) {
+    etat.mode = mode
+    document.querySelectorAll('#modes button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)))
+    // La toile change de format avec le mode (29/10/2026) : carree pour « Boîte », au format carte
+    // pour les trois autres. referenceDe/recolorer lisent L, H au moment de l'appel : il faut les
+    // mettre a jour AVANT, sans quoi le calque est mesure a la mauvaise taille de canevas.
+    ;[L, H] = DIMENSIONS[mode]
+    toile.width = L; toile.height = H
+    toile.style.aspectRatio = `${L} / ${H}`
+    const cfg = TITRE[mode]
+    $('titre-taille').value = cfg.taille; $('titre-x').value = 0; $('titre-y').value = 0
+    const c = COUCHES[mode]
+    const hb = hslVersHex(...(o => [o.h, o.s, o.l])(referenceDe(c.boite)))
+    const he = hslVersHex(...(o => [o.h, o.s, o.l])(referenceDe(c.etiquette)))
+    origines[c.boite] = hb; origines[c.etiquette] = he
+    $('couleur-boite').value = etat.couleurBoite || hb
+    $('couleur-etiquette').value = etat.couleurEtiquette || he
+    document.querySelector('label.ligne:has(#couleur-etiquette)').firstChild.textContent = `Étiquette (« ${NOMS_ETIQUETTE[mode]} ») `
+    dessiner()
+  }
+  document.querySelectorAll('#modes button').forEach((b) => b.addEventListener('click', () => appliquerMode(b.dataset.mode)))
+
+  function lireImage(fichier) {
+    return new Promise((ok) => {
+      const im = new Image()
+      im.onload = () => ok(im)
+      im.src = URL.createObjectURL(fichier)
+    })
+  }
+  async function chargerArt(f) {
+    if (!f) return
+    etat.art = await lireImage(f); etat.artX = etat.artY = 0; etat.artZoom = 1; $('zoom').value = 100
+    dessiner()
+  }
+  $('fichier-art').addEventListener('change', (e) => chargerArt(e.target.files[0]))
+  toile.addEventListener('dragover', (e) => e.preventDefault())
+  toile.addEventListener('drop', (e) => { e.preventDefault(); chargerArt(e.dataTransfer.files[0]) })
+  $('fichier-titre').addEventListener('change', async (e) => { etat.titreImg = e.target.files[0] ? await lireImage(e.target.files[0]) : null; dessiner() })
+  $('zoom').addEventListener('input', (e) => { etat.artZoom = e.target.value / 100; dessiner() })
+  toile.addEventListener('wheel', (e) => {
+    e.preventDefault()
+    etat.artZoom = Math.min(4, Math.max(.5, etat.artZoom * (e.deltaY < 0 ? 1.05 : 1 / 1.05)))
+    $('zoom').value = Math.round(etat.artZoom * 100); dessiner()
+  }, { passive: false })
+  let prise = null
+  function textePointe(e) {
+    const r = toile.getBoundingClientRect(), k = L / r.width
+    const px = (e.clientX - r.left) * k, py = (e.clientY - r.top) * k
+    for (let i = etat.textes.length - 1; i >= 0; i--) {
+      const b = etat.textes[i].boite
+      if (b && px >= b.x && px <= b.x + b.l && py >= b.y && py <= b.y + b.h) return i
+    }
+    return -1
+  }
+  toile.addEventListener('pointerdown', (e) => {
+    const i = textePointe(e)
+    if (i >= 0) {
+      if (etat.choisi !== i) { etat.choisi = i; afficherListeTextes(); dessiner() }
+      const t = etat.textes[i]
+      prise = { texte: t, x: e.clientX, y: e.clientY, tx: t.x, ty: t.y }
+    } else {
+      if (etat.choisi !== -1) { etat.choisi = -1; afficherListeTextes(); dessiner() }
+      prise = { x: e.clientX, y: e.clientY, ax: etat.artX, ay: etat.artY }
+    }
+    toile.setPointerCapture(e.pointerId); toile.classList.add('glisse')
+  })
+  toile.addEventListener('pointermove', (e) => {
+    if (!prise) return
+    const k = L / toile.getBoundingClientRect().width
+    if (prise.texte) { prise.texte.x = prise.tx + (e.clientX - prise.x) * k; prise.texte.y = prise.ty + (e.clientY - prise.y) * k }
+    else { etat.artX = prise.ax + (e.clientX - prise.x) * k; etat.artY = prise.ay + (e.clientY - prise.y) * k }
+    dessiner()
+  })
+  const fin = () => { prise = null; toile.classList.remove('glisse') }
+  toile.addEventListener('pointerup', fin); toile.addEventListener('pointercancel', fin)
+
+  for (const id of ['titre', 'police', 'titre-haut', 'titre-bas', 'titre-contour', 'titre-epaisseur', 'titre-taille', 'titre-x', 'titre-y', 'titre-ombre'])
+    $(id).addEventListener('input', () => dessiner())
+  $('police').addEventListener('change', () => { if ($('police').value === '__perso') $('fichier-police').click() })
+  $('fichier-police').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return
+    const face = new FontFace('PoliceAtelier', await f.arrayBuffer()); await face.load(); document.fonts.add(face)
+    etat.policePerso = "'PoliceAtelier'"; dessiner()
+  })
+  $('couleur-boite').addEventListener('input', (e) => { etat.couleurBoite = e.target.value; dessiner() })
+  $('couleur-etiquette').addEventListener('input', (e) => { etat.couleurEtiquette = e.target.value; dessiner() })
+  $('couleurs-origine').addEventListener('click', () => {
+    etat.couleurBoite = etat.couleurEtiquette = null; appliquerMode(etat.mode)
+  })
+
+  // ---- Textes libres
+  function nouveauTexte() {
+    return { texte: T('Créé par …'), police: POLICES()[0][0], taille: 44, couleur: '#ffffff', contour: '#000000', epaisseur: 6, x: L / 2, y: H - 40, ombre: true, gras: true }
+  }
+  function champ(libelle, node) { const l = document.createElement('label'); l.textContent = libelle; l.append(node); return l }
+  function entree(type, valeur, surChange, attrs = {}) {
+    const i = document.createElement('input'); i.type = type; Object.assign(i, attrs)
+    if (type === 'checkbox') i.checked = !!valeur; else i.value = valeur
+    i.addEventListener('input', () => { surChange(type === 'checkbox' ? i.checked : type === 'number' || type === 'range' ? +i.value : i.value); dessiner() })
+    return i
+  }
+  function afficherListeTextes() {
+    const liste = $('liste-textes'); liste.replaceChildren()
+    etat.textes.forEach((t, i) => {
+      const bloc = document.createElement('div'); bloc.className = 'texte-libre' + (i === etat.choisi ? ' choisi' : '')
+      bloc.addEventListener('pointerdown', () => { if (etat.choisi !== i) { etat.choisi = i; afficherListeTextes(); dessiner() } })
+      const zone = document.createElement('textarea'); zone.value = t.texte; zone.placeholder = 'Ton texte'
+      zone.addEventListener('input', () => { t.texte = zone.value; dessiner() })
+      const police = document.createElement('select')
+      for (const [v, nom] of POLICES()) police.add(new Option(nom, v, false, v === t.police))
+      if (etat.policePerso) police.add(new Option('Ma police', '__perso', false, t.police === '__perso'))
+      police.addEventListener('change', () => { t.police = police.value; dessiner() })
+      const suppr = document.createElement('button'); suppr.type = 'button'; suppr.className = 'btn'; suppr.textContent = 'Supprimer'
+      suppr.addEventListener('click', () => { etat.textes.splice(i, 1); etat.choisi = -1; afficherListeTextes(); dessiner() })
+      const r1 = document.createElement('div'); r1.className = 'rang'
+      r1.append(champ('Couleur', entree('color', t.couleur, (v) => (t.couleur = v))), champ('Contour', entree('color', t.contour, (v) => (t.contour = v))), champ('Épaisseur', entree('number', t.epaisseur, (v) => (t.epaisseur = v), { min: 0, max: 40 })))
+      const r2 = document.createElement('div'); r2.className = 'rang'
+      r2.append(champ('Taille', entree('number', t.taille, (v) => (t.taille = Math.max(8, v)), { min: 8, max: 300 })), champ('Gras', entree('checkbox', t.gras, (v) => (t.gras = v))), champ('Ombre', entree('checkbox', t.ombre, (v) => (t.ombre = v))), suppr)
+      bloc.append(zone, police, r1, r2); liste.append(bloc)
+    })
+  }
+  $('ajouter-texte').addEventListener('click', () => { etat.textes.push(nouveauTexte()); etat.choisi = etat.textes.length - 1; afficherListeTextes(); dessiner() })
+  // La police importee devient disponible dans les textes libres.
+  $('fichier-police').addEventListener('change', () => setTimeout(afficherListeTextes, 400))
+
+  // ---- Export
+  function telecharger(blob, nom) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nom
+    document.body.appendChild(a); a.click(); a.remove()
+  }
+  function nomFichier() {
+    const t = ($('titre').value.trim().split('\n')[0] || 'couverture').toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    return `${t || 'couverture'}-${etat.mode}`
+  }
+  $('export-png').addEventListener('click', () => { dessiner(true); toile.toBlob((b) => { telecharger(b, nomFichier() + '.png'); $('message').textContent = `PNG exporté (${L} × ${H}).` }, 'image/png'); dessiner() })
+  $('export-webp').addEventListener('click', () => {
+    dessiner(true)
+    const petit = document.createElement('canvas'); petit.height = 600; petit.width = Math.round(L * 600 / H)
+    const x = petit.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(toile, 0, 0, petit.width, petit.height)
+    dessiner()
+    petit.toBlob((b) => { telecharger(b, nomFichier() + '.webp'); $('message').textContent = `webp exporté (${petit.width} × 600).` }, 'image/webp', 0.86)
+  })
+
+  chargees.then(() => appliquerMode('heros'))
+  window.__atelier = { etat, dessiner, appliquerMode } // pour les tests
+})()
+</script>
+</body>
+</html>

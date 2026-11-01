@@ -1050,4 +1050,16 @@ export const MECHANTS_INFO = {
         apparition: "Teenage Mutant Ninja Turtles #1 (1984)",
     },
 
+    // The Hunger Core (scenario custom, Penasquequeman, prefixe hg, 27/10/2026). Pas de personnage officiel :
+    // The Hunger Core est un concept propre a ce scenario fan-made, inspire de Marvel Zombies. Cle hg001 (premiere
+    // face du champ "villain" du scenario standard) ; retrouvee automatiquement pour hg002/hg003 par le repli sur
+    // le nom (meme nom sur les trois stades).
+    "hg001": {
+        bio: "Un soir, le cadavre de Galactus apparaît, flottant au-dessus de la Terre. Les héros partis l'examiner reviennent affamés, et en quelques semaines la planète entière n'est plus qu'une seule bouche. Au cœur du Dévoreur de Mondes bat un cœur qui ne devrait pas battre : The Hunger Core, celui qui relie tous les morts entre eux. Tant que la Horde de zombies qu'il a créée veille sur lui, rien ne peut l'atteindre — il faut percer ses gardiens un par un pour espérer frapper le cœur lui-même.",
+        bioEn: "One night, the corpse of Galactus appears floating above the Earth. The heroes sent to investigate come back hungry, and within weeks the whole planet has become a single mouth. At the heart of the Devourer of Worlds beats a heart that should not beat: The Hunger Core, the one that binds all the dead together. As long as the Horde of zombies it has raised stands guard, nothing can touch it — its guardians must be cut down one by one before the core itself can be struck.",
+        ennemis: "Les derniers héros survivants",
+        ennemisEn: "The last surviving heroes",
+        apparition: "The Hunger Core, scénario fan-made Marvel Champions (Penasquequeman, 2026), inspiré de Marvel Zombies",
+    },
+
 };

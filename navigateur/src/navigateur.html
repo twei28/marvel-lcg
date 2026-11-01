@@ -16,11 +16,30 @@
 <iframe id="jeu" title="Jeu"></iframe>
 <script type="module">
 const N = 4 * 1024 * 1024;
-// Meme cle que le jeu (public/js/prepare/langue.js) : l'habillage de play suit la langue choisie.
-const EN = (() => { try { return localStorage.getItem("marvel-langue") === "en"; } catch (e) { return false; } })();
+// LANGUE-PLAY-DEBUT
+// Langue de l'habillage de Play. ATTENTION : play.<domaine> et <domaine> sont deux ORIGINES : le choix fait sur le site
+// n'existe pas dans le localStorage d'ici (constat du 26/10/2026 : un joueur anglophone voyait le francais).
+// Ordre : ?langue=en|fr (puis retenu), choix deja fait ici (meme cle que le jeu, public/js/prepare/langue.js),
+// cookie nc_langue pose par le SITE sur le domaine parent (site/orchestrateur.py, route /langue : lisible ici),
+// langue du navigateur, francais. Ce bloc est identique dans shim.js (verifie par tools/tests-lanceur/langue-play.test.mjs).
+function langueDePlay(storage, nav, loc, cookie) {
+  try {
+    const q = new URLSearchParams(loc.search).get("langue");
+    if (q === "en" || q === "fr") { try { storage.setItem("marvel-langue", q); } catch (e) { /* stockage bloque */ } return q; }
+  } catch (e) { /* adresse illisible */ }
+  try { const s = storage.getItem("marvel-langue"); if (s === "en" || s === "fr") return s; } catch (e) { /* stockage bloque */ }
+  for (const morceau of String(cookie || "").split(";")) {
+    const i = morceau.indexOf("="), nom = morceau.slice(0, i).trim(), valeur = morceau.slice(i + 1).trim();
+    if (nom === "nc_langue" && (valeur === "en" || valeur === "fr")) return valeur;
+  }
+  const l = String((nav && (nav.language || (nav.languages && nav.languages[0]))) || "").toLowerCase();
+  return l.startsWith("en") ? "en" : "fr";
+}
+// LANGUE-PLAY-FIN
+const EN = (() => { let st = null, ck = ""; try { st = localStorage; } catch (e) { /* stockage bloque */ } try { ck = document.cookie; } catch (e) { /* cookies bloques */ } return langueDePlay(st, navigator, location, ck) === "en"; })();
 const tr = (fr, en) => (EN ? en : fr);
 document.documentElement.lang = EN ? "en" : "fr";
-document.getElementById("etat").textContent = tr("Preparation du moteur de jeu...", "Preparing the game engine...");
+document.getElementById("etat").textContent = tr("Préparation du moteur de jeu...", "Preparing the game engine...");
 document.getElementById("jeu").title = tr("Jeu", "Game");
 const $ = (id) => document.getElementById(id);
 const erreur = (m) => { $("bar").style.display = "none"; $("erreur").style.display = "block"; $("erreur").textContent = m; };
@@ -38,25 +57,25 @@ function panneau(titre, lignes, boutons) {
 }
 const manques = [];
 if (typeof WebAssembly === "undefined") manques.push("WebAssembly");
-if (typeof Worker === "undefined") manques.push(tr("les processus d'arriere-plan (Web Worker)", "background workers (Web Worker)"));
+if (typeof Worker === "undefined") manques.push(tr("les processus d'arrière-plan (Web Worker)", "background workers (Web Worker)"));
 if (!window.indexedDB) manques.push(tr("le stockage local (IndexedDB)", "local storage (IndexedDB)"));
 if (typeof SharedArrayBuffer === "undefined" || !crossOriginIsolated) manques.push(tr("l'isolation de la page (SharedArrayBuffer)", "page isolation (SharedArrayBuffer)"));
 const versTables = site ? [[tr("Jouer sur les tables du serveur", "Play on the server tables"), null, site]] : [];
 if (manques.length) {
   panneau(tr("Ce navigateur ne peut pas lancer le jeu ici", "This browser cannot run the game here"),
     [tr("Il lui manque : ", "It is missing: ") + manques.join(", ") + ".",
-     tr("Une version recente de Chrome, Edge ou Firefox sur ordinateur convient, ou les tables du serveur.",
+     tr("Une version récente de Chrome, Edge ou Firefox sur ordinateur convient, ou les tables du serveur.",
         "Try a recent version of Chrome, Edge or Firefox on a computer, or play on the server tables.")], versTables);
   throw new Error("capacites manquantes : " + manques.join(", "));
 }
 // Telephone ou tablette : le moteur demande ~300 Mo et plusieurs secondes de demarrage, et n'a pas ete eprouve.
 if (matchMedia("(pointer: coarse)").matches && innerWidth < 900) {
-  await new Promise((suite) => panneau(tr("Sur telephone, ce mode est experimental", "On a phone, this mode is experimental"),
-    [tr("Le jeu tourne dans le navigateur : il demande de la memoire et peut etre lent ou se fermer tout seul sur un telephone. Les parties sont gardees dans ce navigateur.",
+  await new Promise((suite) => panneau(tr("Sur téléphone, ce mode est expérimental", "On a phone, this mode is experimental"),
+    [tr("Le jeu tourne dans le navigateur : il demande de la mémoire et peut être lent ou se fermer tout seul sur un téléphone. Les parties sont gardées dans ce navigateur.",
         "The game runs in your browser: it needs memory and may be slow or close by itself on a phone. Your games are kept in this browser.")],
-    [[tr("Continuer quand meme", "Continue anyway"), () => suite()], ...versTables]));
+    [[tr("Continuer quand même", "Continue anyway"), () => suite()], ...versTables]));
   $("splash").innerHTML = '<h1>Marvel Champions</h1><div id="etat"></div><progress id="bar"></progress><div id="detail"></div><div id="erreur"></div>';
-  $("etat").textContent = tr("Preparation du moteur de jeu...", "Preparing the game engine...");
+  $("etat").textContent = tr("Préparation du moteur de jeu...", "Preparing the game engine...");
 }
 // Presence en direct (admin du site, sous-onglet Play) : un identifiant aleatoire par onglet, en memoire
 // seulement, envoye toutes les 60 s tant que la page est visible. Texte brut : pas de preflight CORS.
@@ -111,9 +130,9 @@ window.__moteur = {
     return fich.length;
   },
   async importer(fichier) {
-    if (fichier.size > 30 * 1024 * 1024) throw new Error("fichier trop gros");
-    let doc; try { doc = JSON.parse(await fichier.text()); } catch (e) { throw new Error("ce n'est pas un fichier d'export valide"); }
-    if (!doc || doc.format !== "marvel-champions-navigateur" || typeof doc.fichiers !== "object") throw new Error("ce n'est pas un export de ce jeu");
+    if (fichier.size > 30 * 1024 * 1024) throw new Error(tr("fichier trop gros", "file too large"));
+    let doc; try { doc = JSON.parse(await fichier.text()); } catch (e) { throw new Error(tr("ce n'est pas un fichier d'export valide", "not a valid export file")); }
+    if (!doc || doc.format !== "marvel-champions-navigateur" || typeof doc.fichiers !== "object") throw new Error(tr("ce n'est pas un export de ce jeu", "not an export of this game"));
     let n = 0;
     for (const [chemin, b64] of Object.entries(doc.fichiers)) {
       if (!/^\/eng\/persist\/[A-Za-z0-9_./ -]+\.json$/.test(chemin) || chemin.includes("..")) continue;
@@ -128,6 +147,12 @@ window.__moteur = {
 const _ouvrir = window.__moteur.ouvrirWS;
 window.__moteur.ouvrirWS = (ws) => { ws._q = (ws.url.split("?")[1] || ""); _ouvrir(ws); };
 
+// Messages de demarrage envoyes par le Worker (moteur-worker.js, qui n'a pas acces a la langue) : cle francaise -> anglais.
+const LOGS_EN = {
+  "Demarrage de Python...": "Starting Python...",
+  "Chargement des bibliotheques...": "Loading libraries...",
+  "Chargement du moteur...": "Loading the engine...",
+};
 const VERSION = "__VERSION__";   // remplace par construire.py ; reste tel quel en developpement
 const worker = new Worker("./moteur-worker.js?v=" + VERSION, { type: "module" });
 worker.onmessage = (e) => {
@@ -140,8 +165,8 @@ worker.onmessage = (e) => {
     const r = JSON.parse(m.json);
     if (r.del) tx("readwrite").delete(r.path);
     else tx("readwrite").put(Uint8Array.from(atob(r.b64), (c) => c.charCodeAt(0)), r.path);
-  } else if (m.type === "log") { $("detail").textContent = m.json; window.__log = (window.__log || []).concat(m.json); }
-  else if (m.type === "erreur") erreur(tr("Le moteur n'a pas pu demarrer : ", "The engine could not start: ") + m.json.slice(0, 300));
+  } else if (m.type === "log") { $("detail").textContent = LOGS_EN[m.json] && EN ? LOGS_EN[m.json] : m.json; window.__log = (window.__log || []).concat(m.json); }
+  else if (m.type === "erreur") erreur(tr("Le moteur n'a pas pu démarrer : ", "The engine could not start: ") + m.json.slice(0, 300));
   else if (m.type === "pret") {
     const p = new URLSearchParams(location.search).get("page") || "/prepare.html";
     $("jeu").src = p; $("jeu").style.display = "block"; $("splash").style.display = "none"; window.__pret = true;
@@ -157,7 +182,7 @@ function surveillerVersion() {
       if (v && v !== VERSION && !document.getElementById("maj")) {
         const b = document.createElement("div"); b.id = "maj";
         b.style.cssText = "position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99999;background:#1f2937;color:#e5e7eb;border:1px solid #4a5568;border-radius:10px;padding:10px 14px;font:14px system-ui;display:flex;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.5)";
-        b.append(tr("Une nouvelle version du jeu est disponible. La partie est sauvegardee automatiquement.",
+        b.append(tr("Une nouvelle version du jeu est disponible. La partie est sauvegardée automatiquement.",
           "A new version of the game is available. Your game is saved automatically."));
         const r = document.createElement("button"); r.textContent = tr("Recharger", "Reload"); r.style.cssText = "padding:6px 12px;border-radius:8px;border:0;background:#2563eb;color:#fff;font:inherit;cursor:pointer"; r.onclick = () => location.reload();
         const x = document.createElement("button"); x.textContent = tr("Plus tard", "Later"); x.style.cssText = "padding:6px 10px;border-radius:8px;border:1px solid #4a5568;background:transparent;color:inherit;font:inherit;cursor:pointer"; x.onclick = () => b.remove();

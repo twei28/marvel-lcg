@@ -271,6 +271,32 @@ CAS = [
     _c("wt021 Fated Clash : revelee, deux soutiens PERSONA s'inclinent (ou Fenris manigance)",
        "« Choose one: Exhaust two PERSONA supports you control / Fenris schemes »", [F] + en_jeu("wt017"), ["Puzzle.Reveal('wt021')"],
        {"wt_persona_epuises_min": 1}, main_exclusive=["01090"], accepter_choix=True),
+
+    # ============================================================ mesures MULTIJOUEUR du 26/10/2026 (consigne : « ce qui n'a pas ete mesure »)
+    # Fimbuldraugr : « ignore all crisis icons in play » = TOUTE source de Crise, y compris l'allie d'un AUTRE joueur (2 joueurs).
+    _c("wt008 Fimbuldraugr (2 joueurs) : Fandral actif, l'ALLIE DE L'AUTRE JOUEUR (Vision, siege 1) retire de la menace malgre une icone Crise",
+       "RR « Crisis Icon » : l'icone ignoree ne bloque aucune carte joueur, quel que soit son controleur",
+       [F, f"Puzzle.SetThreat('{COMPLOT}', 5)", "Puzzle.PutIntoPlay('01125')", "Puzzle.Attach('wt008', 'wt001a')",
+        "Puzzle.PutIntoPlay('01068', under_control=True, player=1)"],
+       ["Puzzle.Thwart('01068')"], {"menace": [[COMPLOT, 4]]}, main_exclusive=["01090"], cibles=[COMPLOT], accepter_choix=True,
+       heros2="spider_man"),
+    _c("wt008 Fimbuldraugr (2 joueurs) : CONTRE-CAS, Hogun actif (Fandral inactif) : la Crise bloque l'allie de l'AUTRE joueur, la menace reste a 5",
+       "« while he is your active hero » : Fimbuldraugr n'agit que pour Fandral actif",
+       [H, f"Puzzle.SetThreat('{COMPLOT}', 5)", "Puzzle.PutIntoPlay('01125')", "Puzzle.Attach('wt008', 'wt001c')",
+        "Puzzle.PutIntoPlay('01068', under_control=True, player=1)"],
+       [], {"menace": [[COMPLOT, 5]]}, main_exclusive=["01090"], declencher_tolerant=["Puzzle.Thwart('01068')"], cibles=[COMPLOT],
+       accepter_choix=True, heros2="spider_man"),
+    # Revelry : « this turn » = le tour du JOUEUR qui joue la carte ; un sbire vaincu pendant le tour d'un AUTRE joueur ne compte pas.
+    _c("wt022 Revelry in Asgard (2 joueurs) : un sbire vaincu pendant le tour de l'AUTRE joueur ne compte pas -> +2",
+       "RR « Turn » : le tour de l'autre joueur est fini ; l'indicateur est remis a faux au debut de CHAQUE tour (AnyPlayer)",
+       ["Puzzle.PutIntoPlay('ra002', under_control=True)", "Puzzle.PutIntoPlay('01101')", "Puzzle.BeginPlayerTurn(1)",
+        "Puzzle.Damage('01101', 5)", "Puzzle.EndPlayerTurn(1)", "Puzzle.BeginPlayerTurn()"],
+       [], {"attributs": {"hand_size": 2}}, main_exclusive=["wt022"], jouer=["wt022"], accepter_choix=True, heros2="spider_man"),
+    _c("wt022 Revelry in Asgard (2 joueurs) : TEMOIN, un sbire vaincu pendant MON tour (apres le tour de l'autre joueur) -> +3",
+       "« If a minion was defeated this turn » : le tour du joueur qui joue la carte",
+       ["Puzzle.PutIntoPlay('ra002', under_control=True)", "Puzzle.PutIntoPlay('01101')", "Puzzle.BeginPlayerTurn(1)",
+        "Puzzle.EndPlayerTurn(1)", "Puzzle.BeginPlayerTurn()", "Puzzle.Damage('01101', 5)"],
+       [], {"attributs": {"hand_size": 3}}, main_exclusive=["wt022"], jouer=["wt022"], accepter_choix=True, heros2="spider_man"),
 ]
 
 

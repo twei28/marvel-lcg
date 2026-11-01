@@ -69,6 +69,9 @@ import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { useEcranAllume, useEstTelephone, useVerrouPortrait, useVibrationsDePartie } from './board/mobile/telephone'
 import { useReglagesTelephone } from './board/mobile/reglages-telephone'
 import { EcranTourne } from './board/mobile/EcranTourne'
+import { ciblesDeLaFeuille } from './board/mobile/cibles-feuille'
+import { cibleAEchanger } from './board/mobile/echange-cible'
+import { cartesPayantes } from './board/mobile/paiement-feuille'
 import { useEstTablette, useMarqueTablette, useTabletteDebout } from './board/tablette/tablette'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
@@ -107,7 +110,7 @@ import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
 import { autresFacesDe, kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
-import { cartesDuLotParOption, carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
+import { cartesDuLotParOption, carteDeCampagneParOption, carteDuSchemaCampagneParOption, carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
   EvenementCentrale,
@@ -227,6 +230,7 @@ import {
   ReglagesApercuAmbiance,
 } from './board/CoucheMeteo'
 import { ModaleAmbiance } from './board/ModaleAmbiance'
+import { ModaleAnnuler } from './board/ModaleAnnuler'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { publierEtape, useSuiviDuJoueur } from './board/etape-partagee'
 import { appliquerEtiquettesTable, lireEtiquettesTable } from './board/etiquettes-table'
@@ -246,6 +250,7 @@ import {
   ecrireSauvegardeAuto,
   estSpectateur,
   libelleModePhase,
+  lireAnnulerExplique,
   lireFinTourAuto,
   lireModePhaseMechant,
   lireReponseAmbiance,
@@ -291,10 +296,11 @@ import type { Demande, Option, Reponse } from './board/ask'
 import {
   chargerEtat,
 } from './board/sources'
+import { avecVues, idsRegardes, lotDejaVu } from './board/lots-regardes'
 import { estRegardeePar, isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
 
 /** Ce qui, ouvert par-dessus le plateau, garde Echap pour se fermer. */
-const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond`
+const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond, .annuler-modale`
 
 // Migration EXPLICITE des anciens reglages de la phase du mechant (voir
 // moteur.ts, `migrerReglagesPhase`), faite UNE FOIS, ici, a l'evaluation du
@@ -773,9 +779,17 @@ function signatureCartesRegardees(groupes: GroupeCartesRegardees[]): string {
     .join('|')
 }
 
-function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }) {
+function ModaleCartesRegardees({
+  groupes,
+  vues,
+  onFermee,
+}: {
+  groupes: GroupeCartesRegardees[]
+  /** Les cartes deja fermees : la memoire vit chez le parent, qui reste monte (voir lots-regardes.ts). */
+  vues: ReadonlySet<string>
+  onFermee: (ids: readonly string[]) => void
+}) {
   const signature = useMemo(() => signatureCartesRegardees(groupes), [groupes])
-  const [signatureFermee, setSignatureFermee] = useState<string | undefined>(undefined)
   const [apercuId, setApercuId] = useState<string | null>(null)
 
   const cartesParId = useMemo(() => {
@@ -811,17 +825,13 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
     setApercuId(null)
   }, [])
 
-  useEffect(() => {
-    if (!signature) setSignatureFermee(undefined)
-  }, [signature])
-
   // Deplacement volontaire, a la poignee -- meme mecanisme que
   // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
   // « toutes les fenetres, tous les panneaux »). Les hooks se declarent AVANT
   // le retour anticipe ci-dessous.
   const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
 
-  if (!signature || signatureFermee === signature) return null
+  if (!signature || lotDejaVu(idsRegardes(groupes), vues)) return null
 
   const total = groupes.reduce((somme, groupe) => somme + groupe.cartes.length, 0)
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
@@ -851,7 +861,7 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
               {total} card{total > 1 ? 's' : ''}
             </strong>
           </div>
-          <button type="button" onClick={() => setSignatureFermee(signature)}>
+          <button type="button" onClick={() => onFermee(idsRegardes(groupes))}>
             {t('Fermer')}
           </button>
         </header>
@@ -1872,9 +1882,26 @@ function EcranFinPartie({
           monde={monde}
           gagne={gagne}
           siege={siege}
-          onTermine={(retourCampagne) => {
-            if (retourCampagne) window.location.href = '/campagne.html'
-            else onMenu()
+          resume={{
+            heros: (monde?.players ?? [])
+              .map((joueur) => ({
+                nom: joueur.area_hero?.[0]?.name?.replace(/^\W*/, '') ?? '',
+                pic: joueur.area_hero?.[0]?.pic_id,
+              }))
+              .filter((h) => h.nom),
+            vilains: (monde?.area_villain ?? [])
+              .map((carte) => ({ nom: nomAffiche(carte), pic: carte.pic_id }))
+              .filter((v) => v.nom),
+            rounds,
+          }}
+          onTermine={(retourCampagne, suite) => {
+            if (retourCampagne) {
+              const demande = new URLSearchParams()
+              if (suite?.campagne) demande.set('campagne', suite.campagne)
+              if (suite?.lancer) demande.set('lancer', suite.lancer)
+              const requete = demande.toString()
+              window.location.href = requete ? `/campagne.html?${requete}` : '/campagne.html'
+            } else onMenu()
           }}
         />
         {/* Dans le cadre, l'ecran de fin est celui que le joueur a vu (ses boutons, inertes). */}
@@ -2171,6 +2198,16 @@ export function PagePartie({
     () => (etat.monde ? cartesRegardees(etat.monde, joueurActif, catalogue) : []),
     [etat.monde, joueurActif, catalogue]
   )
+  // La memoire de la fenetre « Cartes regardees » vit ICI et non dans la fenetre : celle-ci est demontee a chaque fenetre
+  // de choix, et perdait ce qu'on venait de fermer (Gambit, 29/10/2026). Remise a zero quand plus rien n'est regarde.
+  const [cartesRegardeesVues, setCartesRegardeesVues] = useState<ReadonlySet<string>>(() => new Set())
+  const fermerCartesRegardees = useCallback(
+    (ids: readonly string[]) => setCartesRegardeesVues((vues) => avecVues(vues, ids)),
+    []
+  )
+  useEffect(() => {
+    if (groupesRegardes.length === 0) setCartesRegardeesVues((vues) => (vues.size === 0 ? vues : new Set()))
+  }, [groupesRegardes])
   const cartesMondeParId = useMemo(() => indexerCartesMonde(etat.monde), [etat.monde])
   const cartesAfficheesParId = useMemo(() => indexerCartesAffichees(plateau), [plateau])
   const cartesMondeParNom = useMemo(
@@ -2178,8 +2215,14 @@ export function PagePartie({
     [cartesMondeParId]
   )
   // Un choix textuel (« quelle chanson ? ») montre le SCAN de la carte nommee.
+  // A defaut, une option « Put "X" into play » (mise en place de campagne) nomme
+  // une manigance pas encore posee : on la construit depuis son identifiant,
+  // sinon le survol retomberait sur la manigance principale porteuse.
   const carteDeLOption = useCallback(
-    (option: Option) => carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue),
+    (option: Option) =>
+      carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue)
+      ?? carteDuSchemaCampagneParOption(option, joueurActif, catalogue)
+      ?? carteDeCampagneParOption(option, cartesMondeParNom, joueurActif, catalogue),
     [cartesMondeParNom, joueurActif, catalogue]
   )
   // Un choix de LOT (« Role: Brawler ») montre les cartes du lot, pas la carte porteuse.
@@ -4187,7 +4230,18 @@ export function PagePartie({
     // du client d'origine. L'espace est encode par fetch, le '/' est conserve.
     fetch('/debug?/undo auto').catch(() => undefined)
   }, [manuel, annulerGesteManuel])
-  annulerClavier.current = annulerCoup
+  // LE BOUTON DE LA BARRE ET LA TOUCHE U expliquent d'abord (ModaleAnnuler), tant que le joueur n'a pas coche « ne plus
+  // me montrer ça ». Le bandeau du telephone et le menu « … » gardent l'annulation directe : le bandeau est lui-meme
+  // la question, cinq secondes apres l'action. En manuel, c'est le Ctrl+Z des gestes, que la fenetre ne decrit pas.
+  const [annulerOuvert, setAnnulerOuvert] = useState(false)
+  const demanderAnnulation = useCallback(() => {
+    if (manuel || lireAnnulerExplique()) {
+      annulerCoup()
+      return
+    }
+    setAnnulerOuvert(true)
+  }, [manuel, annulerCoup])
+  annulerClavier.current = demanderAnnulation
 
   // ANNULER L'ACTION EN COURS (croix de la boite de question, touche Echap).
   // `/undo action` remonte a la question du tour ou la carte a ete choisie,
@@ -4432,6 +4486,60 @@ export function PagePartie({
       groupes: new Map(triees.map((c) => [Number(c.props.id), groupeDeLaPile(sorte(c))] as const)),
     }
   }, [toutesOuvertes, ciblesHorsTableVisibles, etat.monde])
+
+  // ⚠ AVANT le retour anticipe ci-dessous : un hook place apres lui change le nombre de hooks quand la partie apparait (erreur React 310).
+  // TELEPHONE (26/10/2026, maquette approuvee) : la question « choisis la cible » se pose dans une FEUILLE qu'on glisse au doigt, avec
+  // DEDANS les ronds des cibles de la table (PV, statuts) ; un toucher choisit, comme sur la table. Cibles dans une pile : le selecteur
+  // a deux colonnes s'en charge, la feuille n'en montre pas (liste vide : l'assistant garde sa forme d'avant).
+  // Toucher une AUTRE cible legale quand le moteur n'en veut qu'une l'echange : la choisie est retiree, puis la nouvelle prise des que
+  // l'interaction l'a rendue choisissable (un cycle de rendu plus tard).
+  const echangeEnAttente = useRef<number | undefined>(undefined)
+  useEffect(() => {
+    const id = echangeEnAttente.current
+    if (id === undefined) return
+    const etatCarte = interaction.cartes.get(id)
+    if (etatCarte?.role === 'cible' && !etatCarte.choisie && etatCarte.agir) {
+      echangeEnAttente.current = undefined
+      etatCarte.agir()
+    }
+  }, [interaction.cartes])
+  const feuilleCibles = useMemo(() => {
+    const etapeCible =
+      interaction.assistant.etape === 'target' || (interaction.assistant.etape === 'confirm' && interaction.cibles.length > 0)
+    if (!plateau || modePlateau !== 'mobile' || !etapeCible) return undefined
+    const unites = ciblesDeLaFeuille(plateau, interaction.cartes, interaction.option?.all_legal_targets)
+    if (unites.length === 0) return undefined
+    return {
+      unites,
+      decor: {
+        interactifs: interaction.cartes,
+        effets: new Map<number, CardEffectDelta>(),
+        ouvrirPile: () => undefined,
+        // Une cible legale qu'on ne peut plus ajouter (maximum atteint) : la toucher ECHANGE (voir `cibleAEchanger`).
+        ouvrirCarte: (carte: ScanCardProps) => {
+          const id = Number(carte.id)
+          const retirer = cibleAEchanger({
+            id,
+            maximum: interaction.option?.target_num_range[1] ?? 0,
+            legales: interaction.option?.all_legal_targets ?? [],
+            interactifs: interaction.cartes,
+          })
+          if (retirer === undefined) return
+          echangeEnAttente.current = id
+          interaction.cartes.get(retirer)?.agir?.()
+        },
+        agir: (carte: ScanCardProps) => carte.onSelect?.(),
+      },
+    }
+  }, [modePlateau, interaction.assistant.etape, interaction.cibles.length, interaction.cartes, interaction.option, plateau])
+  // TELEPHONE (26/10/2026) : « PAY 2 TO PLAY » cachait la main, on ne pouvait plus toucher les cartes a depenser. A l'etape du
+  // paiement, la feuille porte la rangee des cartes qui peuvent payer (main, puis table). Meme regle que ci-dessus : AVANT le retour
+  // anticipe, jamais apres (erreur React 310).
+  const feuillePaiement = useMemo(() => {
+    if (!plateau || modePlateau !== 'mobile' || interaction.assistant.etape !== 'payment') return undefined
+    const cartes = cartesPayantes(plateau, interaction.cartes, effets)
+    return cartes.length > 0 ? { cartes } : undefined
+  }, [modePlateau, interaction.assistant.etape, interaction.cartes, plateau, effets])
 
   if (!etat.monde || !plateau || voile) {
     return (
@@ -4755,7 +4863,7 @@ export function PagePartie({
         <CarteApercu carte={apercuSelecteur} classe={fenetreChoix ? 'au-dessus-de-la-fenetre' : undefined} />
       ) : null}
       {interaction.ciblesHorsTable.length === 0 && !interaction.option ? (
-        <ModaleCartesRegardees groupes={groupesRegardes} />
+        <ModaleCartesRegardees groupes={groupesRegardes} vues={cartesRegardeesVues} onFermee={fermerCartesRegardees} />
       ) : null}
 
       {ciblesMenu ? (
@@ -4874,10 +4982,21 @@ export function PagePartie({
           choixDansLaScene={ciblageEnScene}
           // Le sous-cadre du cartouche du bas porte tout, paiement compris (D6).
           sousCadre={(nouvelleScenePC && phaseMechantEnCours && interaction.option !== undefined) || ciblageSurTable}
+          feuilleCibles={feuilleCibles}
+          feuillePaiement={feuillePaiement}
         />
       )}
 
       <CoucheMeteo world={etat.monde} active={meteo} apercu={apercuMeteo} />
+      {annulerOuvert ? (
+        <ModaleAnnuler
+          onConfirmer={() => {
+            setAnnulerOuvert(false)
+            annulerCoup()
+          }}
+          onFermer={() => setAnnulerOuvert(false)}
+        />
+      ) : null}
       {/* Explique l'ambiance qui s'allume, au lieu de la subir sans un mot.
           Reglage PERSONNEL : elle ne change rien pour les autres joueurs et
           ne retient pas le moteur, la partie continue derriere. */}
@@ -5407,8 +5526,11 @@ export function PagePartie({
             <button
               type="button"
               className="bh-bouton bh-undo"
-              onClick={annulerCoup}
-              title={t('Annuler la dernière action')}
+              onClick={demanderAnnulation}
+              aria-label={t('Annuler la dernière action')}
+              data-infobulle={t(
+                'Annule ta dernière action et remet la partie comme avant (cartes, jetons, pioche). Instantané pendant ton tour ; ailleurs, la partie est rejouée et peut prendre quelques secondes. Raccourci : U.'
+              )}
             >
               {/* « Annuler » se traduit ici « Undo » (le dictionnaire réserve
                   « Annuler » -> « Cancel » pour l'assistant d'action). */}

@@ -37,9 +37,12 @@ import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
 import { CoucheOrdre } from './ordre/CoucheOrdre'
 import { cleDePile, cleDeRangee, coteDe, ranger, type Ordres } from './ordre/ordre-cartes'
 import { useCoteAmeliorations } from './cote-ameliorations'
+import { PastillesTraits } from './PastillesTraits'
+import { PAS_PAR_CHEVAUCHEMENT, useChevauchement } from './reglages-affichage-cartes'
 import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } from './glisser/useGlisser'
 import { TraductionPosee } from './TraductionPosee'
+import { compterEmpilees, estEmpilee, libelleEmpilees } from './empilees'
 import { coteDuTexte, useTraductionFr } from './traduction-carte'
 import { texteEnHtml } from './traduction-posee'
 import { APERCU_JUMELLES_DOUBLE, jumellesPourApercu, type ApercuJumelle } from './panorama-jumelles'
@@ -310,6 +313,7 @@ export function Unite({
   ordres?: Ordres
 }) {
   const coteParDefaut = useCoteAmeliorations()
+  const pasAmeliorations = PAS_PAR_CHEVAUCHEMENT[useChevauchement()]
   const pileAccueille = unite.pile !== undefined && (pilesAccueillantes?.has(unite.pile) ?? false)
   if (unite.pileVide) {
     return (
@@ -370,7 +374,7 @@ export function Unite({
     // cartes voisines. --i donne le cran de decalage de chaque upgrade.
     <div
       className="plateau-unite"
-      style={{ '--nb': aDroite.length, '--nb-g': aGauche.length } as CSSProperties}
+      style={{ '--nb': aDroite.length, '--nb-g': aGauche.length, '--attach-step-x': `${pasAmeliorations}px` } as CSSProperties}
       // ⚠ `data-pile` NE VISE QUE LES VRAIES PILES (tache 5, glisser-depose du
       // mode manuel) : `unite.pile` n'est pose par zones.ts QUE sur un deck,
       // une defausse... jamais sur une carte posee (allie, heros, sbire) ni
@@ -419,12 +423,24 @@ export function Unite({
       ) : null}
 
       <ScanCard {...cartePorteur} />
+      <PastillesTraits carte={unite.carte} posee />
+      {compterEmpilees(upgrades) > 0 ? (
+        // Des événements ou des ressources posés SOUS cette carte (State of Flow, cartes glissées) : une pile, pas des
+        // améliorations en jeu. La pastille le dit et compte les cartes.
+        <span
+          className="pile-sous-carte"
+          aria-label={libelleEmpilees(compterEmpilees(upgrades))}
+          title={libelleEmpilees(compterEmpilees(upgrades))}
+        >
+          {libelleEmpilees(compterEmpilees(upgrades))}
+        </span>
+      ) : null}
       {upgrades.map((attachee) => {
         const cote = coteDe(Number(attachee.id), Number(unite.carte.id), ordres, coteParDefaut)
         const i = (cote === 'gauche' ? aGauche : aDroite).indexOf(attachee)
         return (
           <span
-            className={`est-attachee${cote === 'gauche' ? ' est-a-gauche' : ''}`}
+            className={`est-attachee${cote === 'gauche' ? ' est-a-gauche' : ''}${estEmpilee(attachee) ? ' est-empilee' : ''}`}
             key={attachee.id}
             style={{ '--i': i } as CSSProperties}
           >
@@ -739,6 +755,8 @@ function FaceCarteApercu({
           taille="grande"
           surcouche={surcouche}
         />
+        {/* Les traits qu'a le heros EN CE MOMENT, sous la carte (reglage « Traits du heros »). */}
+        <PastillesTraits carte={carte} />
         {/* POURQUOI ON NE PEUT PAS LA JOUER, juste sous la carte : place apres
             les mots-cles, en petit, on ne le voyait pas (30/09/2026). Une ligne
             par action refusee : le joueur doit savoir LAQUELLE il peut

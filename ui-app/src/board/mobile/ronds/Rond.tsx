@@ -16,6 +16,8 @@ import { avecInteraction } from '../../Board'
 import type { EtatInteractif } from '../../interaction'
 import { t } from '../../langue'
 import type { GroupeDePile } from '../../zones'
+import { PastillesTraits } from '../../PastillesTraits'
+import { compterEmpilees, estEmpilee, libelleEmpilees } from '../../empilees'
 import { SEUIL_INITIALES, etatsDe } from './etats-ronds'
 import { useEtatGlisse } from './glisser-ronds'
 import type { CleZone, GroupeRond, UniteRond } from './repartir-ronds'
@@ -196,7 +198,7 @@ export function Rond({
       <button
         type="button"
         className="rond-bouton"
-        aria-label={`${unite.groupe ? unite.groupe.titre : carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}`}
+        aria-label={`${unite.groupe ? unite.groupe.titre : carte.name}${apparence.texte ? `, ${apparence.texte}` : ''}${etats.length > 0 ? `, ${etats.map((etat) => etat.texte).join(', ')}` : ''}`}
         onClick={surToucher}
         disabled={vaincu}
       >
@@ -265,7 +267,7 @@ export function Rond({
               <button
                 type="button"
                 key={amelioration.id}
-                className="rond-mini"
+                className={`rond-mini${estEmpilee(amelioration) ? ' est-empilee' : ''}`}
                 aria-label={amelioration.name}
                 title={amelioration.name}
                 disabled={vaincu}
@@ -282,6 +284,16 @@ export function Rond({
           })}
         </span>
       ) : null}
+      {/* Des evenements ou des ressources POSES SOUS cette carte (State of Flow, cartes glissees sous Corsair ou Havok) : une pile,
+          pas des ameliorations en jeu (26/10/2026). Contour pointille dore sur chaque rond empile (`.rond-mini.est-empilee`) et cette
+          pastille compte les cartes. */}
+      {compterEmpilees(ameliorations) > 0 ? (
+        <span className="rond-pile" aria-label={libelleEmpilees(compterEmpilees(ameliorations))}>
+          {libelleEmpilees(compterEmpilees(ameliorations))}
+        </span>
+      ) : null}
+      {/* Les traits du heros en ce moment (reglage « Traits du heros »), sur le bas du rond : pas de place dessous. */}
+      <PastillesTraits carte={carte} surRond />
       {vaincu ? <span className="rond-vaincu-etiquette">{t('VAINCU')}</span> : null}
       <span className="rond-nom">{unite.groupe ? unite.groupe.titre : carte.name}</span>
       {stats.length > 0 ? (

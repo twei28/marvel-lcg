@@ -221,3 +221,15 @@ describe('New Ultimate Winter Soldier (uw, 25/10/2026) : les choix des cartes de
     expect(traduireMoteur('Place 3 threat on a scheme')).toBe('Place 3 threat on a scheme')
   })
 })
+
+describe('traduireMoteur : choix du pack Mantis', () => {
+  it('traduit les consignes, garde le nom de capacité imprimé', () => {
+    enFrancais()
+    expect(traduireMoteur('Empathetic Advantage : discard a confused status card')).toBe('Empathetic Advantage : défausser une carte d’état Désorienté')
+    expect(traduireMoteur('Confuse a character you control to draw 1 card')).toBe('Rendre désorienté un personnage que tu contrôles pour piocher 1 carte')
+    expect(traduireMoteur('Heal 1 damage from a friendly character')).toBe('Soigner 1 dégât d’un personnage allié')
+    expect(traduireMoteur('Take 1 damage to shuffle this card into your deck')).toBe('Subir 1 dégât pour mélanger cette carte dans ton deck')
+    enAnglais()
+    expect(traduireMoteur('Heal 1 damage from a friendly character')).toBe('Heal 1 damage from a friendly character')
+  })
+})

@@ -13,6 +13,13 @@
   "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
  ],
  "prefixes": {
+  "hg": {
+   "pack": "the_hunger_core",
+   "libelle": "234. Custom (The Hunger Core)",
+   "cartes": 76,
+   "depuis": "2026-10-27",
+   "note": "Scenario fan-made 'The Hunger Core' (theme Marvel Zombies), porte depuis un mod TTS. hg001-003 vilain Hunger Core (3 stages) ; hg004a/b-hg005a/b manigance principale 2 etapes ; hg006 environnement Inside Galactus ; hg007-015 les 9 Metazombies du Horde deck (versions zombies des heros, avec leur set de rencontre signature chacun, hg016-045) ; hg046-050 set partage The Hunger Core (Metazombie Power!, Rise of the Horde!, Half-Eaten, Hunger Pulse, The Hive Calls) ; hg051-055 les 5 Trapped Survivor (manigances-joueur cote rencontre) ; hg056-058 modulaire Hungry Horde ; hg059-071 modulaire Fallen Heroes (13 autres Metazombies) ; hg072-076 le deck Survivor (allies). VIT DANS data/cards_custom.json, pas data/cards.json (decision utilisateur du 27/10/2026) : tools/verifier_prefixes.py ne scanne donc pas ce pack, cette entree est documentaire. Scripts non encore ecrits (etape suivante, carte par carte)."
+  },
   "aa": {
    "pack": "agatha_harkness",
    "libelle": "132. Custom (Agatha Harkness)",
@@ -362,6 +369,13 @@
    "libelle": "116. Custom (Moon Knight)",
    "cartes": 28,
    "depuis": "2026-08-12"
+  },
+  "mt": {
+   "pack": "mantis",
+   "libelle": "239. Custom (Mantis)",
+   "cartes": 17,
+   "depuis": "2026-11-01",
+   "note": "Cree le 01/11/2026 depuis la planche imprimable « Mantis Printable Sheet » (BlueHG, MC Hero Pack, PDF envoye par l'utilisateur) + deux images (FAQ/starter deck, Mindlink). mt001a/b identite (Mantis / Mantis) ; mt002-mt010 deck de heros (Drax, Precognition x2, Pressure Point Strike x2, Psychic Feat x3, Biopathy x2, Meditation Atrium, Fortified Mind x2, Psionic Mindlock, The Celestial Madonna : les numeros n/15) ; mt011 obligation Psychic Tremor ; mt012-mt015 set nemesis Mantis Nemesis (Death Blossom's Bloom, Swordsman, Plantman, Cotati Resiliency x2) ; mt016 Mindlink (evenement Basic, Team-Up Drax et Mantis). Decklist d'aspect fournie par l'auteur (Agressivite + 12 cartes Basic) recopiee dans player_deck. Traits OUTLAW et COTATI ajoutes a l'enum."
   },
   "mu": {
    "pack": "muse",
@@ -872,6 +886,27 @@
    "cartes": 17,
    "depuis": "2026-09-11",
    "note": "Auteur Mozilla (Drive « Zeus (Released) »). ze001a/b identite, ze002-ze011 set heros (10 cartes distinctes, 15 exemplaires), ze012 obligation, ze013-ze016 set nemesis Nyx (4 cartes distinctes, 5 exemplaires). ⚠ CE PACK INVENTE UNE RESSOURCE : l'ECLAIR, cinquieme couleur du moteur `L` ajoutee le 11/09/2026 (fiche docs/reference/mots-cles/eclair.md), imprimee sur les 4 Thunder Strike et fabriquee par Mount Olympus. Skyfather's Tempest exige une ENERGIE officielle ET un ECLAIR sur le paiement d'un meme evenement ; le set nemesis vise l'energie, pas l'eclair. Sept cartes portent une capacite « Special » resolue depuis la main ou au paiement. Homonymes : 40004 Precognition (next_evol), 50131b Thunderbolt Backup, 57021 The Thunderbolts, 59010 Son of Zeus. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-11-zeus-releve-des-cartes.md."
+  },
+  "mv": {
+   "pack": "major_victory",
+   "libelle": "236. Custom (Major Victory)",
+   "cartes": 17,
+   "depuis": "2026-10-30",
+   "note": "Cree le 30/10/2026 depuis un Drive partage (dossier « Major Victory »). mv001a/b identite (Major Victory / Vance Astro), mv002-mv011 deck de heros (Captain America's Shield, Founder of the Guardians, Containment Suit, Shield Block x2, Psychokinetic Blast x3, Telekinetic Throw, Psychic Link x2, Victory's Command x2, The Captain America, Nikki), mv012 obligation Damaged Containment Suit (dossier « Not so good stuff »), mv013-mv016 nemesis (Michael Korvac, Korvac's Future, Judgment of Korvac x2, Accept Perfection). Pas de decklist imprimee. Les 17 cartes sont scriptees."
+  },
+  "bf": {
+   "pack": "buffy",
+   "libelle": "237. Custom (Buffy)",
+   "cartes": 34,
+   "depuis": "2026-10-31",
+   "note": "Cree le 31/10/2026 depuis le Drive partage (dossier « Buffy (Vampire Slayer) (12-25) », RyCoRan) puis complete par les images envoyees par l'utilisateur. bf001a/b identite (Buffy / Buffy Summers) ; bf002-bf005 Giles, Slay Time x2, Bring on the Night x2, Slayer Strike x2 ; bf006 Faith (allie, Linked) ; bf007 Slayer Scythe (Linked) ; bf008-bf014 Pointy End x2, Crimson Scythe, Sunnydale Library, Watcher's Guidance, Redeemed, Stakeout, Mr. Pointy ; bf015 Kendra, bf016 Willow, bf017 Angel (Linked), bf018 Chosen One (Linked), bf019 Prophecy Girl (Linked) ; bf020-bf024 set nemesis (Welcome to Sunnydale, Spike, Drusilla, Hush, The Harvest) ; bf025 obligation Normal Again ; bf026 The Gentlemen (Linked Hush) ; bf027-bf032 paquet HELLMOUTH (Harvest, Becoming, Enemies Aligned, The Master, Faith sbire, Angelus). Fiche modele buffy_redeemed_ally (allie SLAYER vide, pour Redeemed). Traits SLAYER, WATCHER, HELLMOUTH ajoutes a l'enum."
+  },
+  "rc": {
+   "pack": "robocop",
+   "libelle": "238. Custom (RoboCop)",
+   "cartes": 18,
+   "depuis": "2026-11-01",
+   "note": "Cree le 01/11/2026 depuis le Drive partage (dossier « Robocop (Released) », MissSugarPink) puis complete par les images envoyees par l'utilisateur (set nemesis, obligation). rc001a/b identite (RoboCop / Alex Murphy) ; rc002-rc011 deck de heros (Authorized Force x3, Dead or Alive x3, No Collateral x2, Auto-9, Internal Reload System, Flightpack, Terminal Spike, Gunarm, Squad Car, Officer Lewis : les numeros n/15) ; rc012 obligation Classified ; rc013-rc016 set nemesis (ED-209, Corporate Demonstration, Stairs, Fugitives x2) ; rc017 Leg Holster (amelioration Basic du dossier Drip). Down Time, Endurance, Genius, Strength, Energy illustres par l'auteur : memes cartes que les officielles (art seul), NON importees. Traits OFFICER et CREEP ajoutes a l'enum."
   },
   "hf": {
    "pack": "hellfire_hunt_white_queen",

@@ -873,3 +873,21 @@ Cartes de reference :
 - [x] Étape 8 bis : la carte change-t-elle ce qu'on VOIT (attache, glisse, compteur, statut, mise de côté, changement de zone) ? NON en propre : elle chiffre ou pose un statut ; son passage sur la pile State of Flow est couvert par `ch002`. Résultat : sans objet.
 
 Carte terminée : **OUI** (hors la partie réelle jouée par un humain, gate du héros, voir « Gates du héros »).
+
+## Rapport du 26/10/2026 : « l'événement reste dans Cards in play » (Augmented Blow, ch013/ch014), partie réelle sur téléphone
+
+**Constat.** Le moteur est correct. State of Flow (ch002) dit : « Forced Response : After you play an ATTACK event, place it faceup on top
+here, forming a pile ». Une attaque jouée quitte donc la défausse et se pose SOUS State of Flow : c'est voulu (cas `[ch] ch002` verts). Un
+événement qui n'est pas une attaque va, lui, à la défausse. Le plateau, en revanche, dessinait cet événement empilé comme une amélioration
+posée en jeu (même rangée, même cadre, pastille « ÉVÉNEMENT »), d'où l'impression qu'il « reste en jeu ».
+
+**Correctif d'affichage** (`ui-app/src/board/empilees.ts`, `Board.tsx` composant `Unite`, `board.css`) : un événement ou une ressource attachés à une carte
+sont dessinés avec un contour en pointillés dorés, et la carte porteuse reçoit une pastille « Pile de cartes : N » (« Card pile : N » en anglais). Une
+vraie amélioration reste inchangée. Tests : `empilees.test.ts` (4) et `unite-pile.test.tsx` (3), vus rouges avant.
+
+**Cause générale écartée côté moteur.** `tools/cas/evenements_resolution.py` : 9 événements OFFICIELS de 7 héros (Haymaker avec Spider-Man, Captain America et
+Iron Man, First Aid, For Justice!, Ground Stomp, Repulsor Blast, Supersonic Punch, Crisis Interdiction) : chacun va à la défausse et AUCUNE carte ne reste
+en zone de traitement (`aucune_en_resolution`). Même résultat (9/9) sur le dernier commit du 25/10 (e3733c2e) : ce n'est pas une régression du 26/10.
+
+**Pas reproduit :** le même défaut pour « tous les héros » sur le site en ligne. La version déployée en ligne est inconnue ; si le défaut y persiste après le prochain déploiement,
+il faut le journal de la partie (bouton « Signaler un bug »).

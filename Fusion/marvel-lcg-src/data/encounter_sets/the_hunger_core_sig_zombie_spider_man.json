@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Signature — Zombie Spider Man",
+    "encounters": [
+        "hg027",
+        "hg028",
+        "hg029"
+    ]
+}

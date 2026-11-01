@@ -6434,4 +6434,444 @@ export const TEXTES_FR_FANMADE = {
     'hf047': "<b>Une fois déjouée</b> : le joueur qui déjoue cette manigance cherche Selene dans la zone mise de côté et la met en jeu sous son contrôle. Retirez cette carte de la campagne.\n[star] <b>Boost</b> : révélez cette carte. Vous êtes désorienté.",
     'hf048': "<b>Réponse forcée</b> : après qu'un allié [[RECRUITED]] est défaussé, placez-le plutôt dans la défausse Recruited Mutants.\n<b>Action</b> : dépensez 1 ressource de n'importe quel type → piochez 1 carte du deck Recruited Mutants. (1 fois max par phase et par joueur.)",
     // hellfire_hunt — fin du bloc
+    // ======================================================================
+    // the hunger core — scénario fan-made (hg001-hg076, 78 cartes)
+    // Noms maison : Métazombie, deck de la Horde, jeton Infection, deck des
+    // Survivants, « Protégé par la Horde », « Rupture », « Simple Cœur ».
+    // ======================================================================
+    // the hunger core — The Hunger Core (Villain)
+    'hg001': "Protégé par la Horde. Rupture 1 [per_hero].\nSimple Cœur 1. Au lieu de vous attaquer, attribuez-vous 1 carte Rencontre face cachée.",
+    // the hunger core — The Hunger Core (Villain)
+    'hg002': "Protégé par la Horde. Rupture 1 [per_hero].\nSimple Cœur 1. Au lieu de vous attaquer, attribuez-vous 1 carte Rencontre face cachée.\n<b>Une fois révélée</b> : chaque joueur place 1 jeton Infection.",
+    // the hunger core — The Hunger Core (Villain)
+    'hg003': "Protégé par la Horde. Rupture 1 [per_hero]. Solide.\nSimple Cœur 2. Au lieu de vous attaquer, attribuez-vous 2 cartes Rencontre face cachée.\n<b>Une fois révélée</b> : chaque joueur place 1 jeton Infection.",
+    // the hunger core — The Devourer's Skin (MainScheme)
+    'hg004a': "« C'est si grand qu'on dirait un continent. Et ça sent le cimetière. »\n<b>Mise en place</b> : mettez The Hunger Core (I) en jeu (Expert : II). Mettez de côté la version zombie de chaque héros choisi et son Trapped Survivor.\nMélangez les autres Métazombies : c'est le deck de la Horde. Mettez-en 2 en jeu.\nDeck Rencontre : les sets The Hunger Core, Hungry Horde, Fallen Heroes (sans les versions zombies mises de côté) et Standard.\nMettez de côté « Inside Galactus », « The Innards » et le deck des Survivants.",
+    // the hunger core — The Devourer's Skin (MainScheme)
+    'hg004b': "<b>Interruption forcée</b> : quand The Hunger Core devrait être vaincu, avancez plutôt au stade 2 de la manigance principale et mettez le stade suivant de The Hunger Core en jeu.\nSi cette manigance est achevée, les joueurs perdent.",
+    // the hunger core — The Innards (MainScheme)
+    'hg005a': "« Il n'y a pas d'obscurité à l'intérieur de Galactus. Il y a un battement de cœur. Et chaque battement appelle les morts. »",
+    // the hunger core — The Innards (MainScheme)
+    'hg005b': "<b>Une fois révélée</b> : mettez « Inside Galactus » et 2 Métazombies en jeu (max. 3 en jeu).\nSi cette manigance est achevée, les joueurs perdent.",
+    // the hunger core — Inside Galactus (Environment)
+    'hg006': "Pouvoir cosmique résiduel. Le méchant gagne +1 ATQ.\n<b>Sucs digestifs</b> — <b>Réponse forcée</b> : à la fin de la phase du Méchant, infligez 2 dégâts indirects à chaque joueur.",
+    // the hunger core — Zombie Captain America (Villain)
+    'hg007': "Meneur de la Horde. Chaque autre Métazombie gagne +1 ATQ.\n<b>Bouclier</b> — <b>Interruption forcée</b> : la première fois à chaque phase que Zombie Captain America devrait subir des dégâts, réduisez ces dégâts de 2.",
+    // the hunger core — Zombie Iron Man (Villain)
+    'hg008': "<b>Réponse forcée</b> : après que Zombie Iron Man est entré en jeu, défaussez des cartes de son deck signature jusqu'à ce qu'un attachement soit défaussé, puis attachez-le-lui. Ensuite, mélangez les cartes défaussées dans son deck signature.\n<b>Améliorations</b>. Zombie Iron Man gagne +1 ATQ pour chaque attachement sur lui.",
+    // the hunger core — Zombie Hulk (Villain)
+    'hg009': "Déferlement.\n<b>Dévoration</b> — <b>Réponse forcée</b> : après que Zombie Hulk a vaincu un allié, il soigne un montant de dégâts égal aux points de vie maximum de cet allié.",
+    // the hunger core — Zombie Spider-Man (Villain)
+    'hg010': "<b>Toile</b> — <b>Réponse forcée</b> : après que Zombie Spider-Man a infligé des dégâts à un héros, ce héros est sonné.",
+    // the hunger core — Zombie Captain Marvel (Villain)
+    'hg011': "<b>Absorption</b> — <b>Réponse forcée</b> : après qu'elle a été attaquée, placez 1 jeton d'énergie sur cette carte (max. 5). Elle gagne +1 ATQ pour chaque jeton d'énergie.\n<b>Réponse forcée</b> : après qu'elle a attaqué, retirez 1 jeton d'énergie de cette carte.",
+    // the hunger core — Zombie Thor (Villain)
+    'hg012': "<b>Tempête</b> — <b>Réponse forcée</b> : après que Zombie Thor s'est activé contre un joueur, infligez 1 dégât à chaque allié que ce joueur contrôle.",
+    // the hunger core — Zombie Black Widow (Villain)
+    'hg013': "Robuste.\nEmbuscade. Les alliés ne peuvent pas défendre contre les attaques de Zombie Black Widow.",
+    // the hunger core — Zombie Doctor Strange (Villain)
+    'hg014': "<b>Maléfice</b> — <b>Réponse forcée</b> : après que Zombie Doctor Strange s'est activé contre vous, attribuez-vous 1 carte Rencontre face cachée.",
+    // the hunger core — Zombie Magik (Villain)
+    'hg015': "<b>Portail vers Limbo</b> — <b>Réponse forcée</b> : après que Zombie Magik s'est activée contre vous, si vous n'êtes engagé avec aucun sbire, défaussez des cartes du deck Rencontre jusqu'à ce qu'un sbire soit défaussé, puis mettez-le en jeu, engagé avec vous. Ensuite, mélangez la pile de défausse de rencontre dans le deck Rencontre. Si aucun sbire n'est défaussé et qu'il y a moins de 3 Métazombies en jeu, mettez un Métazombie en jeu.",
+    // the hunger core — Thrown Shield (Treachery)
+    'hg016': "<b>Une fois révélée</b> : infligez 2 dégâts à chaque héros et à chaque allié en jeu.",
+    // the hunger core — Avengers, Feast! (Treachery)
+    'hg017': "<b>Une fois révélée</b> : chaque Métazombie en jeu s'active contre chaque joueur. N'attribuez pas de cartes de boost pour ces activations.",
+    // the hunger core — Dented Vibranium Shield (Attachment)
+    'hg018': "Attachez-la à Zombie Captain America.\nZombie Captain America gagne Riposte 2.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Necrotic Repulsors (Attachment)
+    'hg019': "Attachez-la à Zombie Iron Man.\nSes attaques gagnent Perçant.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Patched Armor (Attachment)
+    'hg020': "Attachez-la à Zombie Iron Man.\nZombie Iron Man gagne +2* points de vie.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Rotten Thrusters (Attachment)
+    'hg021': "Attachez-la à Zombie Iron Man.\nZombie Iron Man gagne +1 MNG et ne peut pas être attaqué par les alliés.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Necrotic Unibeam (Attachment)
+    'hg022': "Attachez-la à Zombie Iron Man.\nSes attaques gagnent Déferlement et infligent 1 dégât à chaque allié contrôlé par le joueur attaqué.\n<b>Action de héros</b> : dépensez 3 ressources [mental] → défaussez cette carte.",
+    // the hunger core — Hunger Protocol (Treachery)
+    'hg023': "<b>Une fois révélée</b> : si Zombie Iron Man a 2 attachements ou plus, il s'active contre vous. Sinon, défaussez des cartes de son deck signature jusqu'à ce qu'un attachement soit défaussé, puis attachez-le-lui ; ensuite, mélangez les cartes défaussées dans son deck signature. Si vous ne pouvez pas, cette carte gagne Renfort.",
+    // the hunger core — Hulk Hungry! (Treachery)
+    'hg024': "<b>Une fois révélée</b> : si vous êtes sous forme d'alter ego, passez sous forme de héros. Zombie Hulk s'active contre vous.",
+    // the hunger core — Smash (Treachery)
+    'hg025': "<b>Une fois révélée</b> : choisissez soutien ou amélioration, et défaussez chaque carte de ce type que vous contrôlez. Si vous n'en contrôlez aucune, votre héros subit 3 dégâts.",
+    // the hunger core — Endless Rage (Attachment)
+    'hg026': "Attachez-la à Zombie Hulk.\nZombie Hulk gagne Solide et +1 ATQ.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Rotten Web (Attachment)
+    'hg027': "Attachez-la à votre héros.\nVotre héros gagne −1 ATQ et −1 CTR.\n<b>Action de héros (n'importe quel joueur)</b> : dépensez 3 ressources de types différents → défaussez cette carte.",
+    // the hunger core — Dead Spider-Sense (Treachery)
+    'hg028': "<b>Une fois révélée</b> : Zombie Spider-Man s'active contre le joueur qui a le plus de cartes en main. En cas d'égalité, il s'active contre vous.",
+    // the hunger core — Rooftop to Rooftop (SideScheme)
+    'hg029': "Tant que cette manigance est en jeu, Zombie Spider-Man gagne +1 MNG et ne peut pas être attaqué par les alliés.",
+    // the hunger core — Rotten Binary (Treachery)
+    'hg030': "<b>Une fois révélée</b> : infligez 1 dégât à chaque héros et à chaque allié en jeu.",
+    // the hunger core — Photon Fist (Attachment)
+    'hg031': "Attachez-la à Zombie Captain Marvel.\nSes attaques gagnent Déferlement.\n<b>Action de héros</b> : dépensez 2 ressources → défaussez cette carte.",
+    // the hunger core — Discharge (Treachery)
+    'hg032': "<b>Une fois révélée</b> : si Zombie Captain Marvel a moins de 5 jetons d'énergie, placez-en 1 sur elle. Puis retirez tous ses jetons d'énergie ; elle est sonnée. Infligez à chaque joueur un montant de dégâts indirects égal au nombre de jetons retirés.",
+    // the hunger core — Energy Hunger (Treachery)
+    'hg033': "<b>Une fois révélée</b> : placez 2 jetons d'énergie sur Zombie Captain Marvel (max. 5).",
+    // the hunger core — Bloodied Mjolnir (Attachment)
+    'hg034': "Attachez-la à Zombie Thor.\nZombie Thor gagne +1 ATQ. Ses attaques gagnent Déferlement et Perçant.\nTempête inflige 1 dégât supplémentaire à chaque allié.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Rotten Lightning (Treachery)
+    'hg035': "<b>Une fois révélée</b> : infligez 2 dégâts à chaque personnage ami.",
+    // the hunger core — Fallen God of Thunder (Treachery)
+    'hg036': "<b>Une fois révélée</b> : Zombie Thor soigne 4* dégâts. S'il n'avait aucun dégât, il s'active contre vous.",
+    // the hunger core — Widow's Bite (Treachery)
+    'hg037': "<b>Une fois révélée (alter ego)</b> : placez 1 jeton Infection. Cette carte gagne Renfort.\n<b>Une fois révélée (héros)</b> : votre héros est sonné. Placez 1 jeton Infection.",
+    // the hunger core — Infiltrator (SideScheme)
+    'hg038': "Tant que cette manigance est en jeu, Zombie Black Widow gagne +1 MNG.",
+    // the hunger core — Sleeper Agent (Treachery)
+    'hg039': "<b>Une fois révélée</b> : si vous êtes sous forme d'alter ego, passez sous forme de héros. Zombie Black Widow s'active contre vous.",
+    // the hunger core — Rotten Eye of Agamotto (Attachment)
+    'hg040': "Attachez-la à Zombie Doctor Strange.\nChaque fois que Zombie Doctor Strange devrait subir des dégâts, réduisez ces dégâts de 1.\n<b>Action de héros</b> : dépensez 2 ressources [mental] → défaussez cette carte.",
+    // the hunger core — Crimson Bands of Cyttorak (Attachment)
+    'hg041': "Attachez-la à votre héros.\nVotre héros ne peut pas attaquer.\n<b>Action de héros</b> : dépensez 2 ressources de types différents et inclinez votre héros → défaussez cette carte.",
+    // the hunger core — Hunger Hex (SideScheme)
+    'hg042': "Tant que cette manigance est en jeu, la taille de main de chaque joueur est réduite de 2.",
+    // the hunger core — Soulsword (Attachment)
+    'hg043': "Attachez-la à Zombie Magik.\nZombie Magik gagne +1 ATQ. Ses attaques gagnent Perçant.\n<b>Action de héros</b> : dépensez 3 ressources → défaussez cette carte.",
+    // the hunger core — Teleportation Disc (Treachery)
+    'hg044': "<b>Une fois révélée</b> : Zombie Magik s'active contre chaque joueur. N'attribuez pas de cartes de boost pour ces activations.",
+    // the hunger core — Demons of Limbo (Treachery)
+    'hg045': "Renfort.\n<b>Une fois révélée</b> : mettez en jeu, engagé avec vous, le sbire ayant le plus de points de vie dans la pile de défausse de rencontre.",
+    // the hunger core — Metazombie Power! (Treachery)
+    'hg046': "<b>Une fois révélée</b> : révélez la carte du dessus du deck signature du Métazombie actif. S'il n'y a aucun Métazombie en jeu, cette carte gagne Renfort.",
+    // the hunger core — Rise of the Horde! (Treachery)
+    'hg047': "<b>Une fois révélée</b> : s'il y a moins de 3 Métazombies en jeu, mettez-en un en jeu. Sinon, cette carte gagne Renfort.",
+    // the hunger core — Half-Eaten (Treachery)
+    'hg048': "<b>Une fois révélée</b> : s'il y a moins de 3 Métazombies en jeu, mettez-en un en jeu avec un montant de dégâts égal à la moitié de ses points de vie. Sinon, cette carte gagne Renfort.",
+    // the hunger core — Hunger Pulse (Treachery)
+    'hg049': "<b>Une fois révélée</b> : placez 1* menace sur la manigance principale (2* si le Cœur est exposé).\n<hr />\n[star] <b>Boost</b> : placez 1 jeton Infection.",
+    // the hunger core — The Hive Calls (SideScheme)
+    'hg050': "",
+    // the hunger core — Trapped Survivor: Franklin Richards (SideScheme)
+    'hg051': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Franklin Richards de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Franklin Richards à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Chewie (SideScheme)
+    'hg052': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Chewie de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Chewie à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Valeria Richards (SideScheme)
+    'hg053': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Valeria Richards de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Valeria Richards à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Blade (SideScheme)
+    'hg054': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Blade de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Blade à sa main depuis le deck des Survivants.",
+    // the hunger core — Trapped Survivor: Wolverine (SideScheme)
+    'hg055': "Entrave 2.\n<b>Réponse forcée</b> : après l'étape 1 de la phase du Méchant, placez 1 jeton et 2* menace ici. À 3 jetons, retirez cette carte et Wolverine de la partie ; chaque joueur place 1 jeton Infection.\n<b>Une fois vaincue</b> : retirez cette carte de la partie. Le joueur qui l'a vaincue ajoute Wolverine à sa main depuis le deck des Survivants.",
+    // the hunger core — Hungry Zombie (Minion)
+    'hg056': "Garde.",
+    // the hunger core — Bloated Zombie (Minion)
+    'hg057': "Garde.\n<b>Réponse forcée</b> : après que ce sbire a été vaincu, chaque joueur place 1 jeton Infection.",
+    // the hunger core — Bite (Treachery)
+    'hg058': "<b>Une fois révélée</b> : placez 1 jeton Infection (2 si votre héros a des dégâts sur lui).",
+    // the hunger core — Zombie Luke Cage (Minion)
+    'hg059': "Garde. Ténacité.",
+    // the hunger core — Zombie Hawkeye (Minion)
+    'hg060': "Garde.\n<b>Une fois révélée</b> : infligez 2 dégâts à chaque allié que vous contrôlez.",
+    // the hunger core — Zombie Giant-Man (Minion)
+    'hg061': "Garde. Déferlement.",
+    // the hunger core — Zombie Wasp (Minion)
+    'hg062': "Garde. Coup Rapide. Riposte 2.",
+    // the hunger core — Zombie Nova Prime (Minion)
+    'hg063': "Garde. Coup Rapide. Vilenie.",
+    // the hunger core — Zombie Mister Fantastic (Minion)
+    'hg064': "Garde.\n<b>Une fois révélée</b> : révélez la carte du dessus du deck signature du Métazombie ayant le moins de points de vie restants.",
+    // the hunger core — Zombie Invisible Woman (Minion)
+    'hg065': "Garde.\nCe sbire ne peut pas subir de dégâts d'attaques d'alliés.\n<b>Une fois révélée</b> : votre identité et chaque allié que vous contrôlez sont désorientés.",
+    // the hunger core — Zombie Thing (Minion)
+    'hg066': "Garde.\n<b>Une fois révélée</b> : ce sbire reçoit 2 cartes d'état Tenace. Il peut avoir 2 cartes d'état Tenace en même temps.",
+    // the hunger core — Zombie Human Torch (Minion)
+    'hg067': "Garde. Vilenie.\n<b>Réponse forcée</b> : après que ce sbire a infligé des dégâts avec une attaque, infligez 1 dégât à chaque allié contrôlé par le joueur attaqué.",
+    // the hunger core — Zombie Rhino (Minion)
+    'hg068': "Garde.\nCharge. Les attaques de ce sbire ont Perçant.",
+    // the hunger core — Zombie Colossus (Minion)
+    'hg069': "Garde. Ténacité.",
+    // the hunger core — Zombie Falcon (Minion)
+    'hg070': "Garde. Vilenie.\nCe sbire ne peut pas être attaqué par les alliés.\n<b>Une fois révélée</b> : inclinez votre identité ; elle est sonnée.",
+    // the hunger core — Zombie Quicksilver (Minion)
+    'hg071': "Garde.\nSuper Vitesse. Ce sbire s'active deux fois. Tant que le joueur engagé contrôle un allié, ses attaques ciblent l'un de ces alliés (au choix de ce joueur) au lieu de son identité.",
+    // the hunger core — Franklin Richards (Ally)
+    'hg072': "<b>Action</b> : inclinez Franklin Richards → choisissez :\n• Retirez 2 jetons Infection d'un héros.\n• Soignez 2 dégâts à un personnage ami.",
+    // the hunger core — Chewie (Ally)
+    'hg073': "<b>Action</b> : inclinez Chewie → défaussez un sbire Zombie ou Métazombie. Chewie subit 1 dégât.",
+    // the hunger core — Valeria Richards (Ally)
+    'hg074': "<b>Action</b> : inclinez Valeria Richards → choisissez :\n• Changez de forme.\n• Infligez 3* dégâts à The Hunger Core.",
+    // the hunger core — Blade (Ally)
+    'hg075': "<b>Chasseur de morts-vivants</b>. Tant que Blade attaque un ennemi Zombie ou Métazombie, il gagne +2 ATQ. S'il le vainc, Blade ne subit pas de dégâts consécutifs.",
+    // the hunger core — Wolverine (Ally)
+    'hg076': "",
+    // shadowland — A Barricade of Blades (MainScheme)
+    'sl001a': "<b>Contenu</b> : sets de rencontre Shadows in the Night, Dark Protégé et Standard. Un set de rencontre modulaire <i>(Ninja Swarm)</i>.\n<b>Mise en place</b> : mettez en jeu chaque environnement The Streets Below. Mettez de côté le set de rencontre Dark Protégé. Choisissez 1 méchant au hasard dans ce set et révélez sa face A, puis mélangez dans le deck Rencontre chaque carte liée à ce méchant.",
+    // shadowland — A Barricade of Blades (MainScheme)
+    'sl001b': "En mode expert, le méchant gagne +1 MNG et +3[per_hero] points de vie.\n<b>Interruption forcée</b> : quand le méchant est censé être vaincu côté A, retournez-le plutôt côté B, réinitialisez ses points de vie et changez la position du méchant. Attribuez à chaque joueur 1 carte Rencontre face cachée.\n<b>Si le méchant est vaincu côté B, les joueurs gagnent la partie.</b>",
+    // shadowland — Fortress Lockdown (MainScheme)
+    'sl002a': "<i>Pendant que les forces extérieures tiennent les héros en échec, les ninjas de l'intérieur verrouillent chaque porte et chaque fenêtre.</i>\nEn mode expert, le méchant gagne +3[per_hero] points de vie.\n<b>Une fois révélée</b> : changez la position du méchant. Chaque joueur cherche un sbire dans le deck Rencontre et la pile de défausse et le révèle. <i>(Mélangez.)</i>",
+    // shadowland — Fortress Lockdown (MainScheme)
+    'sl002b': "En mode expert, le méchant gagne +1 MNG et +3[per_hero] points de vie.\n<b>Interruption forcée</b> : quand le méchant est censé être vaincu côté A, retournez-le plutôt côté B, réinitialisez ses points de vie et changez la position du méchant. Attribuez à chaque joueur 1 carte Rencontre face cachée.\n<b>Si le méchant est vaincu côté B, les joueurs gagnent la partie.</b>\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // shadowland — The Streets Below (Environment)
+    'sl003a': "<b><i>POSITION DU MÉCHANT.</i></b>\nSi les deux positions sont identiques :\n• Chaque personnage gagne +1 ATQ.\nSi les positions sont différentes :\n• Réduisez de 1 les dégâts que chaque personnage subit de chaque attaque.\n• Aucune menace ne peut être retirée de la manigance principale.",
+    // shadowland — Atop the Tenshu (Environment)
+    'sl003b': "<b><i>POSITION DU MÉCHANT.</i></b>\nSi les deux positions sont identiques :\n• Chaque personnage gagne +1 ATQ.\nSi les positions sont différentes :\n• Réduisez de 1 les dégâts que chaque personnage subit de chaque attaque.\n• Aucune menace ne peut être retirée de la manigance principale.",
+    // shadowland — The Streets Below (Environment)
+    'sl004a': "<b><i>POSITION DU HÉROS.</i></b>\n<b>Action de premier joueur</b> : résolvez l'un des effets ci-dessous, puis retournez cette carte :\n• Placez 3 menaces sur la manigance principale et sonnez votre identité.\n• Dépensez [physical] [physical].\n• Dépensez 1 ressource de n'importe quel type et inclinez un personnage <b><i>AERIAL</i></b> que vous contrôlez.",
+    // shadowland — Atop the Tenshu (Environment)
+    'sl004b': "<b><i>POSITION DU HÉROS.</i></b>\n<b>Action de premier joueur</b> : résolvez l'un des effets ci-dessous, puis retournez cette carte :\n• Infligez 3 dégâts à votre identité.\n• Dépensez [energy] [energy].\n• Défaussez un allié ou une amélioration que vous contrôlez.",
+    // shadowland — * Black Tarantula (Minion)
+    'sl005': "Garde.\n<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, Black Tarantula vous attaque ; sinon, donnez une carte d'état Tenace au méchant et à Black Tarantula.",
+    // shadowland — * Ghost Maker (Minion)
+    'sl006': "<b>Une fois vaincu</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, défaussez 1 carte que vous contrôlez ; sinon, subissez 2 dégâts indirects.\n<hr />\n[star] <b>Boost</b> : si un allié se défend contre cette attaque, révélez ce sbire.",
+    // shadowland — Sealed Entrances (SideScheme)
+    'sl007': "Assaut. <i>(Les contres de base contre cette manigance utilisent l'ATQ à la place de la CTR.)</i>\n<b>Une fois déjouée</b> : changez la position du méchant si elle n'a pas changé durant cette phase.",
+    // shadowland — Strategic Positioning (SideScheme)
+    'sl008': "<i>Sous Shadowland, la Hand règne sur les rues.</i>\nTant que la position du méchant est The Streets Below, cette manigance gagne 1 icône d'accélération ([acceleration]).\nTant que la position du méchant est Atop the Tenshu, cette manigance gagne 1 icône d'aléa ([hazard]).",
+    // shadowland — Surround the Fortress (SideScheme)
+    'sl009': "<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, placez 1[per_hero] menace sur la manigance principale ; sinon, placez 1[per_hero] menace ici.",
+    // shadowland — Chaos in Hell's Kitchen (Treachery)
+    'sl010': "<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, placez 2 menaces sur la manigance principale ; sinon, subissez 2 dégâts.\n<hr />\n[star] <b>Boost</b> : résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
+    // shadowland — Moonlit Silhouette (Treachery)
+    'sl011': "<b>Une fois révélée (alter ego)</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Vous êtes désorienté.\n<b>Une fois révélée (héros)</b> : si la position du méchant est Atop the Tenshu, le méchant manigance ; sinon, le méchant vous attaque.",
+    // shadowland — * Archpriestess (Villain)
+    'sl012a': "[star] <b>Réponse forcée</b> : après qu'Archpriestess vous a attaqué, donnez une carte d'état Tenace à un sbire. Si aucune carte d'état Tenace n'a été placée de cette façon, défaussez les 3 cartes du dessus du deck Rencontre, puis attribuez-vous 1 sbire défaussé de cette façon en tant que carte Rencontre face cachée.",
+    // shadowland — * Archpriestess (Villain)
+    'sl012b': "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après qu'Archpriestess vous a attaqué, donnez une carte d'état Tenace à un sbire. Si aucune carte d'état Tenace n'a été placée de cette façon, défaussez les 3 cartes du dessus du deck Rencontre, puis attribuez-vous 1 sbire défaussé de cette façon en tant que carte Rencontre face cachée.",
+    // shadowland — * Daredevil (Villain)
+    'sl013a': "<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez avez attaqué Daredevil, choisissez : soit défaussez 1 carte prise au hasard dans votre main, soit Daredevil vous attaque. (Limite d'une fois par round et par joueur.)",
+    // shadowland — * Daredevil (Villain)
+    'sl013b': "Solide. Ténacité.\n<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez avez attaqué Daredevil, choisissez : soit défaussez 1 carte prise au hasard dans votre main, soit Daredevil vous attaque. (Limite d'une fois par round et par joueur.)",
+    // shadowland — * Elektra (Villain)
+    'sl014a': "[star] <b>Interruption forcée</b> : quand Elektra vous attaque, défaussez la carte du dessus de votre deck. Si le coût imprimé de cette carte est un nombre impair, Elektra gagne +1 ATQ pour cette attaque ; sinon, cette attaque gagne Déferlement et Perçant.",
+    // shadowland — * Elektra (Villain)
+    'sl014b': "Solide. Ténacité.\n[star] <b>Interruption forcée</b> : quand Elektra vous attaque, défaussez la carte du dessus de votre deck. Si le coût imprimé de cette carte est un nombre impair, Elektra gagne +1 ATQ pour cette attaque ; sinon, cette attaque gagne Déferlement et Perçant.",
+    // shadowland — * Gorgon (Villain)
+    'sl015a': "[star] <b>Interruption forcée</b> : quand Gorgon vous attaque, choisissez :\n• Dépensez une ressource [physical].\n• Sonnez votre identité.\n• Subissez 2 dégâts indirects.",
+    // shadowland — * Gorgon (Villain)
+    'sl015b': "Solide. Ténacité.\n[star] <b>Interruption forcée</b> : quand Gorgon vous attaque, choisissez :\n• Dépensez une ressource [physical].\n• Sonnez votre identité.\n• Subissez 2 dégâts indirects.",
+    // shadowland — * Lady Bullseye (Villain)
+    'sl016a': "[star] <b>Réponse forcée</b> : après que Lady Bullseye vous a attaqué, si cette attaque n'a pas été défendue, subissez 1 dégât indirect ; sinon, placez 1 menace sur la manigance principale.",
+    // shadowland — * Lady Bullseye (Villain)
+    'sl016b': "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après que Lady Bullseye vous a attaqué, si cette attaque n'a pas été défendue, subissez 1 dégât indirect ; sinon, placez 1 menace sur la manigance principale.",
+    // shadowland — * White Tiger (Villain)
+    'sl017a': "[star] <b>Réponse forcée</b> : après que White Tiger vous a attaqué, elle vous attaque à nouveau avec +1 ATQ. (Limite d'une fois par round et par joueur.)",
+    // shadowland — * White Tiger (Villain)
+    'sl017b': "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après que White Tiger vous a attaqué, elle vous attaque à nouveau. (Limite d'une fois par round et par joueur.)",
+    // shadowland — Art of the Kill (Attachment)
+    'sl018': "Liée (Elektra, Lady Bullseye ou White Tiger).\nAttachez cette carte à votre identité.\n<b>Interruption forcée</b> : quand un ennemi vous attaque, il gagne +1 ATQ pour cette attaque. Si cette attaque vainc un personnage, placez 1 menace sur la manigance principale.\n<b>Action d'alter ego</b> : dépensez les ressources suivantes : [energy] [mental] [physical] → défaussez cette carte.",
+    // shadowland — Krahllak's Blessing (Attachment)
+    'sl019': "Liée (Archpriestess, Daredevil ou Gorgon).\nAttachez cette carte au méchant.\n<b>Interruption forcée</b> : quand le méchant attaché est censé subir des dégâts d'un personnage, réduisez de 3 la quantité de dégâts. Le méchant attaché attaque ce personnage. Défaussez cette carte.",
+    // shadowland — * Archpriestess (Minion)
+    'sl020': "Liée (Gorgon, Lady Bullseye ou White Tiger).\nVilenie.\n<b>Une fois révélée</b> : chaque autre sbire engagé avec vous vous attaque. Si aucune attaque n'a été faite de cette façon, défaussez les 3 cartes du dessus du deck Rencontre.",
+    // shadowland — * Gorgon (Minion)
+    'sl021': "Liée (Daredevil, Elektra ou Lady Bullseye).\nGarde. Vilenie.\n<b>Réponse forcée</b> : après qu'un personnage a attaqué et infligé des dégâts à Gorgon, sonnez ce personnage.",
+    // shadowland — * Lady Bullseye (Minion)
+    'sl022': "Liée (Archpriestess, Gorgon ou White Tiger).\nVilenie.\n[star] <b>Interruption forcée</b> : quand Lady Bullseye vous attaque, cette attaque gagne À Distance et elle attaque l'allié au coût imprimé le plus élevé que vous contrôlez, si possible.",
+    // shadowland — * White Tiger (Minion)
+    'sl023': "Liée (Archpriestess, Daredevil ou Elektra).\nVilenie.\n<b>Une fois révélée</b> : subissez 2 dégâts indirects.",
+    // shadowland — Rite of Offering (SideScheme)
+    'sl024': "Liée (Archpriestess, Elektra ou White Tiger).\n<b>Une fois déjouée</b> : le joueur qui l'a déjouée retire du jeu un allié qu'il contrôle. Si aucun allié n'a été retiré de cette façon, ce joueur subit 3 dégâts.",
+    // shadowland — Shadowy Plot (SideScheme)
+    'sl025': "Liée (Daredevil, Gorgon ou Lady Bullseye).\n<b>Une fois déjouée</b> : le joueur qui l'a déjouée regarde les 3 cartes du dessus du deck Rencontre, en révèle 1 et défausse les autres.",
+    // shadowland — Darkness Within (Treachery)
+    'sl026': "Liée (Archpriestess, Gorgon ou Lady Bullseye).\n<b>Une fois révélée</b> : passez sous forme de héros. Le méchant vous attaque.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Déferlement.",
+    // shadowland — Embraced by Darkness (Treachery)
+    'sl027': "Liée (Daredevil, Elektra ou White Tiger).\n<b>Une fois révélée</b> : le méchant manigance. Si 2 menaces ou moins ont été placées sur la manigance principale de cette façon, défaussez les 3 cartes du dessus du deck Rencontre.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, placez 2 menaces sur la manigance principale.",
+    // shadowland — * Black Mountain (Minion)
+    'sl028': "Garde.\nTant que Black Mountain est engagé avec vous, chaque autre sbire <b>NINJA</b> engagé avec vous ne peut pas être attaqué.\n<hr />\n★ <b>Boost</b> : si un allié se défend contre cette attaque, révélez ce sbire.",
+    // shadowland — * Kirigi (Minion)
+    'sl029': "Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu doit soit dépenser 2 ressources de n'importe quel type, soit mélanger Kirigi dans le deck Rencontre.\n<hr />\n★ <b>Boost</b> : si un allié se défend contre cette attaque, cette carte gagne [boost][boost] et cette attaque gagne Déferlement.",
+    // shadowland — Bo Staff Ninja (Minion)
+    'sl030': "Collaboration (<b>NINJA</b>). Ténacité.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Fukiya Ninja (Minion)
+    'sl031': "Collaboration (<b>NINJA</b>).\n★ Les attaques de ce sbire gagnent À Distance.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Katana Ninja (Minion)
+    'sl032': "Garde. Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Kusarigama Ninja (Minion)
+    'sl033': "Patrouille. Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Shuriken Ninja (Minion)
+    'sl034': "Collaboration (<b>NINJA</b>).\n★ Les attaques de ce sbire gagnent Perçant.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé de cette façon.",
+    // shadowland — Dancing Shadows (SideScheme)
+    'sl035': "Chaque sbire <b>NINJA</b> gagne +1 point de vie.\nLa menace ne peut pas être retirée de cette manigance tant qu'au moins 1 sbire <b>NINJA</b> est en jeu.\n<hr />\n★ <b>Boost</b> : révélez cette carte.",
+    // shadowland — Countless Numbers (Treachery)
+    'sl036': "Renfort.\n<b>Une fois révélée</b> : mélangez chaque sbire <b>NINJA</b> de la pile de défausse Rencontre dans le deck Rencontre.\n<hr />\n★ <b>Boost</b> : résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
+    // shadowland — Shifting Corridors (Villain)
+    'sl037': "Robuste.\n<b>★ Interruption forcée</b> : quand Shifting Corridors est censé s'activer contre vous, retirez plutôt 1 jeton Passage d'ici et révélez la carte du dessus du deck Piège.\n<b>Si le dernier jeton Passage est retiré d'ici, les joueurs perdent la partie.</b>",
+    // shadowland — Into the Labyrinth (MainScheme)
+    'sl038a': "<b>Contenu</b> : Shifting Corridors (A). Sets de rencontre Shadow Labyrinth, Dark Protégé, Deadly Contraptions et Standard. Un set de rencontre modulaire <i>(Ninja Swarm)</i>.\n<b>Mise en place</b> : créez le deck Piège <i>(voir le livret de règles, p. 12)</i>. Mettez de côté le set de rencontre Dark Protégé. Choisissez 1 méchant au hasard dans ce set, puis mélangez chaque carte liée à ce méchant dans le deck Rencontre <i>(gardez le méchant choisi de côté)</i>.",
+    // shadowland — Into the Labyrinth (MainScheme)
+    'sl038b': "<b>Une fois révélée :</b> placez 10[per_hero] jetons Passage sur Shifting Corridors (7[per_hero] à la place en mode expert).\n<b>Interruption forcée</b> : quand Shifting Corridors est censé subir n'importe quelle quantité de dégâts, retirez plutôt autant de menaces d'ici.\n<b>Interruption forcée</b> : quand la dernière menace est retirée de cette manigance, avancez au stade 2A <i>(les joueurs gagnent en avançant)</i>.",
+    // shadowland — Chamber of Vile Secrets (MainScheme)
+    'sl039a': "<b>Une fois révélée</b> : effectuez chacune des actions suivantes :\n1. Mettez Shifting Corridors de côté.\n2. Trouvez le méchant Dark Protégé choisi. Défaussez-en chaque carte d'état, jeton et carte attachée.\n3. Révélez la face A du méchant choisi (face B à la place en mode expert).",
+    // shadowland — Chamber of Vile Secrets (MainScheme)
+    'sl039b': "<b>Une fois révélée</b> : en mode expert, le méchant s'active contre chaque joueur.\n<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez avez déjoué cette manigance, révélez la carte du dessus du deck Piège. (Limite d'une fois par round et par joueur.)\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // shadowland — Whisper in the Dark (Attachment)
+    'sl040': "Considérez le méchant attaché comme un sbire <b>ELITE</b> ayant 6 points de vie imprimés. Il gagne : \"Garde. Vilenie. <b>Une fois vaincu</b> : mettez ce sbire de côté.\"\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, mettez en jeu le méchant choisi mis de côté, engagé avec vous, face A visible, avec cette carte attachée ; sinon, mettez cette carte de côté et le méchant manigance.",
+    // shadowland — * Lord Deathstrike (Minion)
+    'sl041': "Patrouille.\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, mélangez les 2 cartes du dessus du deck Rencontre dans le deck Piège ; sinon, révélez la carte du dessus du deck Piège.\n<hr />\n★ <b>Boost</b> : mettez ce sbire en jeu engagé avec vous.",
+    // shadowland — Dead End (SideScheme)
+    'sl042': "Assaut. <i>(Les contres de base contre cette manigance utilisent l'ATQ à la place de la CTR.)</i>\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, retirez-en 1 jeton Passage ; sinon, placez ici 1[per_hero] menace.",
+    // shadowland — Hall of Hidden Doors (SideScheme)
+    'sl043': "<b>Une fois déjouée</b> : le joueur qui l'a déjouée retire 5 menaces de la manigance principale. Il défausse des cartes du deck Rencontre jusqu'à ce qu'un sbire ou une manigance annexe soit défaussé, puis le révèle.\n<hr />\n★ <b>Boost</b> : placez 3 menaces sur la manigance principale.",
+    // shadowland — No Time to Think! (Treachery)
+    'sl044': "Péril. <i>(Tant que vous résolvez cette carte, les autres joueurs ne peuvent pas vous aider.)</i>\n<b>Une fois révélée</b> : le méchant s'active contre vous.\n<hr />\n★ <b>Boost</b> : si cette activation est une attaque, cette carte gagne [boost][boost] et cette attaque gagne Déferlement.",
+    // shadowland — Sudden Shift (Treachery)
+    'sl045': "<b>Une fois révélée</b> : mélangez la pile de défausse Piège et les 3 cartes du dessus du deck Rencontre dans le deck Piège. Révélez la carte du dessus du deck Piège.\n<hr />\n★ <b>Boost</b> : mélangez la pile de défausse Piège et les 2 cartes du dessus du deck Rencontre dans le deck Piège.",
+    // shadowland — Nervous Jitters (Attachment)
+    'sl046': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Esquiver</i>\" ou l'effet \"<i>Désarmer</i>\" d'une carte <b>TRAP!</b>, nommez un type de carte Rencontre, puis défaussez la carte du dessus du deck Rencontre. Si la carte défaussée de cette façon n'était pas du type nommé, subissez 4 dégâts indirects et défaussez cet attachement.",
+    // shadowland — * Iron Monk (Minion)
+    'sl047': "Patrouille. Ténacité.\nTant qu'Iron Monk est engagé avec vous, vous ne pouvez pas choisir l'effet \"<i>Esquiver</i>\" des cartes <b>TRAP!</b>.",
+    // shadowland — Hall of Punishment (SideScheme)
+    'sl048': "<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Trébucher</i>\" d'une carte <b>TRAP!</b>, défaussez les 3 cartes du dessus de votre deck.\n<hr />\n★ <b>Boost</b> : placez 1 menace sur la manigance principale pour chaque personnage que vous contrôlez.",
+    // shadowland — Path of a Thousand Cuts (SideScheme)
+    'sl049': "<i>Chaque pas est une épreuve d'endurance.</i>\n<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Esquiver</i>\" ou l'effet \"<i>Trébucher</i>\" d'une carte <b>TRAP!</b>, subissez 2 dégâts indirects.\n<hr />\n★ <b>Boost</b> : infligez 1 dégât à chaque personnage que vous contrôlez.",
+    // shadowland — Blinding Powder (Treachery)
+    'sl050': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un événement <b>Contre</b> de votre main.\n• <i>Désarmer</i> — Défaussez 2 cartes au hasard de votre main, puis donnez une carte d'état Tenace à un personnage que vous contrôlez.\n• <i>Trébucher</i> — Infligez 2 dégâts à votre identité et désorientez-la.",
+    // shadowland — Caltrops (Treachery)
+    'sl051': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un événement <b>Défense</b> de votre main.\n• <i>Désarmer</i> — Défaussez 1 carte spécifique à votre identité de votre main, puis infligez 2 dégâts à un ennemi.\n• <i>Trébucher</i> — Infligez 2 dégâts à votre identité et sonnez-la.",
+    // shadowland — Flame Spout (Treachery)
+    'sl052': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un allié de votre main.\n• <i>Désarmer</i> — Défaussez un allié que vous contrôlez, puis piochez 2 cartes.\n• <i>Trébucher</i> — Infligez 3 dégâts à votre identité. Défaussez les 3 cartes du dessus de votre deck.",
+    // shadowland — Oil Slick (Treachery)
+    'sl053': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez une amélioration de votre main.\n• <i>Désarmer</i> — Défaussez une amélioration que vous contrôlez, puis retirez 4 menaces de la manigance principale.\n• <i>Trébucher</i> — Défaussez 1 carte de votre main et 8 cartes de votre deck.",
+    // shadowland — Poison Darts (Treachery)
+    'sl054': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Dépensez les ressources suivantes : [energy] [energy].\n• <i>Désarmer</i> — Dépensez les ressources suivantes : [mental] [mental] [physical], puis infligez 3 dégâts au méchant.\n• <i>Trébucher</i> — Infligez 3 dégâts à votre identité et inclinez-la.",
+    // shadowland — Pressure Plate (Treachery)
+    'sl055': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Dépensez les ressources suivantes : [mental] [mental].\n• <i>Désarmer</i> — Dépensez les ressources suivantes : [energy] [physical] [physical], puis cherchez une carte parmi les 4 cartes du dessus de votre deck et ajoutez-la à votre main. <i>(Mélangez.)</i>\n• <i>Trébucher</i> — Défaussez des cartes du deck Rencontre jusqu'à ce qu'un sbire soit défaussé, puis révélez-le.",
+    // shadowland — Tripwire (Treachery)
+    'sl056': "<b>Une fois révélée</b> : choisissez :\n• <i>Esquiver</i> — Défaussez un événement <b>Attaque</b> de votre main.\n• <i>Désarmer</i> — Défaussez un soutien que vous contrôlez, puis retirez 3 menaces d'une manigance.\n• <i>Trébucher</i> — Défaussez des cartes du deck Rencontre jusqu'à ce qu'une manigance annexe soit défaussée, puis révélez-la.",
+    // shadowland — * Krahllak (Villain)
+    'sl057': "Solide.\n★ <b>Interruption</b> : quand Krahllak vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Krahllak gagne –3 ATQ pour cette attaque.",
+    // shadowland — * Krahllak (Villain)
+    'sl058': "Solide. Ténacité.\n★ Les attaques de Krahllak gagnent Déferlement.\n★ <b>Interruption</b> : quand Krahllak vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Krahllak gagne –3 ATQ pour cette attaque.",
+    // shadowland — * Krahllak (Villain)
+    'sl059': "Riposte 1. Solide. Ténacité.\n★ Les attaques de Krahllak gagnent Déferlement et Perçant.\n★ <b>Interruption</b> : quand Krahllak vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Krahllak gagne –3 ATQ pour cette attaque.",
+    // shadowland — Dark Invitation (MainScheme)
+    'sl060a': "<b>Contenu</b> : Krahllak (I) et Krahllak (II). <i>(Krahllak (II) et Krahllak (III) à la place en mode expert.)</i> Sets de rencontre Heart of Shadow, Black Flower et Standard. Un set de rencontre modulaire <i>(Ninja Swarm)</i>.\n<b>Mise en place</b> : chaque joueur met en jeu une amélioration Creeping Corruption. Mettez le reste de côté.",
+    // shadowland — Dark Invitation (MainScheme)
+    'sl060b': "<b>Interruption forcée</b> : quand ce stade est censé être achevé, retirez plutôt toute la menace d'ici et chaque joueur choisit :\n• Placer 2 jetons Corruption sur sa Creeping Corruption.\n• Subir 3 dégâts et s'attribuer 1 carte Rencontre face cachée.\n<b>Réponse forcée</b> : après que Krahllak a été vaincu, avancez cette manigance au stade 2A.",
+    // shadowland — Beast Be Praised (MainScheme)
+    'sl061a': "<i>Un brasier éclate dans la salle du trône, châtiant ceux qui n'ont pas encore cédé à la volonté sombre de Krahllak.</i>\n<b>Une fois révélée</b> : chaque joueur dont la Creeping Corruption a le trait <b>OVERPOWERING</b> défausse 1 carte prise au hasard dans sa main. Chaque autre joueur défausse de la partie une carte qu'il contrôle. En mode expert, attribuez 1 carte Rencontre face cachée à chaque joueur.",
+    // shadowland — Beast Be Praised (MainScheme)
+    'sl061b': "[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, chaque joueur choisit :\n• Placer 1 jeton Corruption sur sa Creeping Corruption.\n• Placer 3 menaces ici.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // shadowland — Dark Shroud (Attachment)
+    'sl062': "Attachez cette carte à Krahllak.\n<b>Interruption</b> : quand vous ou un allié que vous contrôlez êtes censés infliger 4 dégâts ou plus à Krahllak avec une attaque, empêchez plutôt tous ces dégâts, placez 1 jeton Corruption sur votre Creeping Corruption et défaussez cette carte.",
+    // shadowland — Fear Projection (Attachment)
+    'sl063': "Attachez cette carte à Krahllak.\nKrahllak gagne Riposte 1.\n<b>Action de héros</b> : placez 2 jetons Corruption sur votre Creeping Corruption → défaussez cette carte.\n<b>Action d'alter ego</b> : dépensez les ressources suivantes : [mental] [mental] [mental] → défaussez cette carte. Retirez 1 jeton Corruption de votre Creeping Corruption.",
+    // shadowland — Mark of the Wicked (Attachment)
+    'sl064': "<b>Une fois révélée</b> : vous pouvez attacher cette carte à votre identité. Si vous ne le faites pas, subissez 4 dégâts, sonnez votre identité, retirez 1 jeton Corruption de votre Creeping Corruption et défaussez cette carte.\n[star] <b>Réponse forcée</b> : après que le héros attaché a effectué une attaque de base, placez 1 jeton Corruption sur votre Creeping Corruption.",
+    // shadowland — Pull of Power (Attachment)
+    'sl065': "<b>Une fois révélée</b> : vous pouvez attacher cette carte à votre identité. Si vous ne le faites pas, subissez 4 dégâts, désorientez votre identité, retirez 1 jeton Corruption de votre Creeping Corruption et défaussez cette carte.\n[star] <b>Réponse forcée</b> : après que le héros attaché a effectué un contre de base, placez 1 jeton Corruption sur votre Creeping Corruption.",
+    // shadowland — * Fist (Minion)
+    'sl066': "Patrouille. Riposte 2.\n<b>Action de héros</b> : placez 1 jeton Corruption sur votre Creeping Corruption → infligez 4 dégâts à Fist.",
+    // shadowland — * Hellbride (Minion)
+    'sl067': "<b>Une fois vaincu</b> : le joueur qui l'a vaincu place 2 jetons Corruption sur sa Creeping Corruption, puis soigne 6 dégâts de son identité.\n<b>Action de héros</b> : si Hellbride a 2 points de vie restants ou moins, inclinez votre héros → défaussez Hellbride. Retirez 1 jeton Corruption de votre Creeping Corruption.",
+    // shadowland — * Retainer (Minion)
+    'sl068': "[star] Les attaques de Retainer gagnent Déferlement.\n[star] <b>Interruption</b> : quand Retainer vous attaque, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, Retainer gagne –3 ATQ pour cette attaque.",
+    // shadowland — * Snakeroot Elders (Minion)
+    'sl069': "Tant qu'il y a au moins 1 jeton Corruption ici, Snakeroot Elders gagne Garde et Patrouille.\n<b>Une fois révélée</b> : vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous ne le faites pas, placez 1 jeton Corruption ici.",
+    // shadowland — Veil of Nightmares (SideScheme)
+    'sl070': "<i>La magie noire de Krahllak peut puiser dans les peurs les plus profondes d'une personne.</i>\n<b>Action de héros</b> : placez 1 jeton Corruption sur votre Creeping Corruption → retirez 5 menaces de cette manigance.",
+    // shadowland — Submit or Suffer (Treachery)
+    'sl071': "<b>Une fois révélée</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous retirez 1 jeton Corruption de votre Creeping Corruption et Krahllak vous attaque.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous sonnez votre identité.",
+    // shadowland — Creeping Corruption (Upgrade)
+    'sl072a': "Permanent. Mise en place. 1 max par joueur.\nS'il y a au moins 5 jetons Corruption ici, retirez-les tous d'ici et retournez cette carte.\n<b>Action</b> : inclinez Creeping Corruption et placez 1 jeton Corruption ici → piochez 1 carte.",
+    // shadowland — Creeping Corruption (Upgrade)
+    'sl072b': "Permanent. 1 max par joueur.\n<b>S'il y a au moins 5 jetons Corruption ici, vous êtes vaincu.</b>\n<b>Action</b> : inclinez Creeping Corruption et placez 1 jeton Corruption ici → piochez 2 cartes, puis défaussez 1 carte de votre main.",
+    // shadowland — * Aka (Minion)
+    'sl073': "Coup Rapide. Vilenie.\n[star] <b>Interruption</b> : quand Aka est censé vous attaquer, vous pouvez placer 1 jeton Corruption sur votre Creeping Corruption. Si vous le faites, annulez cette attaque.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous défaussez 1 carte prise au hasard dans votre main.",
+    // shadowland — * Tongue of the Beast (Minion)
+    'sl074': "<b>Une fois vaincu</b> : le joueur qui l'a vaincu place 2 jetons Corruption sur sa Creeping Corruption.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit cette carte gagne [boost][boost][boost].",
+    // shadowland — Binding Ritual (SideScheme)
+    'sl075': "<i>\"Celui que nous servons régnera en maître !\"</i>\n<i>—Takashi</i>\n<b>Une fois révélée</b> : chaque joueur choisit :\n• Placer 1 jeton Corruption sur sa Creeping Corruption.\n• Placer 3 menaces ici.",
+    // shadowland — Roots of a Black Flower (SideScheme)
+    'sl076': "<b>Une fois déjouée</b> : le joueur vainqueur place 2 jetons Corruption sur sa Creeping Corruption.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous placez 4 menaces sur la manigance principale.",
+    // shadowland — Malediction (Treachery)
+    'sl077': "<b>Une fois révélée (alter ego)</b> : vous pouvez placer 2 jetons Corruption sur votre Creeping Corruption. Si vous ne le faites pas, le méchant manigance avec +2 MNG.\n<b>Une fois révélée (héros)</b> : si votre Creeping Corruption a le trait <b><i>OVERPOWERING</i></b>, le méchant manigance avec +1 MNG ; sinon, le méchant vous attaque.",
+    // shadowland — Invasive Thoughts (Treachery)
+    'sl078': "<b>Une fois révélée</b> : placez 1 jeton Corruption sur votre Creeping Corruption. S'il a le trait <b><i>OVERPOWERING</i></b>, placez 1 menace sur la manigance principale ; sinon, subissez 1 dégât.\n<hr />\n[star] <b>Boost</b> : choisissez : soit vous placez 1 jeton Corruption sur votre Creeping Corruption, soit vous subissez 4 dégâts indirects.",
+    // major_victory — début du bloc (Major Victory / Vance Astro, Gardiens de la Galaxie)
+    'mv001a': "<i>Lancer de bouclier</i> — <b>Action</b> : dépensez 1 ressource de n'importe quel type → trouvez Captain America's Shield et ajoutez-le à votre main. S'il quitte le jeu de cette façon, infligez 4 dégâts à un ennemi. <i>(Limite d'une fois par round.)</i>",
+    'mv001b': "<i>Prévoyance tactique</i> — <b>Action</b> : choisissez un joueur. Ce joueur pioche 2 cartes, puis place 1 carte de sa main sur le dessus de son deck. <i>(Limite d'une fois par round.)</i>\n<i>« Je n'ai pas rejoint le programme interstellaire pour qu'on me dresse une statue dans un parc. Je l'ai rejoint parce que je voulais bâtir un avenir meilleur. »</i>",
+    'mv002': "Restreint.\nMajor Victory gagne +1 DÉF et gagne Riposte 1.\n<i>« Un homme bien a possédé ce bouclier. Il incarnait ces croyances pour moi, et pour des millions de gens comme moi. »</i> —Major Victory",
+    'mv003': "Chaque identité gagne le trait [[GUARDIAN]].\nChaque personnage [[GUARDIAN]] allié gagne +1 point de vie.\n<i>« Peter, pourquoi ne l'avons-nous jamais élu chef ? »</i> —Gamora",
+    'mv004': "Vous gagnez +2 points de vie et votre identité gagne Solide.\n<i>Une bio-armure conçue à l'origine pour préserver son corps et empêcher un vieillissement rapide pendant un saut spatial interstellaire de 1 000 ans.</i>",
+    'mv005': "<b>Interruption de héros</b> <i>(défense)</i> : quand une identité s'apprête à subir des dégâts, quelle qu'en soit la quantité, inclinez Captain America's Shield → prévenez tous ces dégâts.\n<i>« Vite, derrière moi ! »</i> —Major Victory",
+    'mv006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Désorientez cet ennemi.\n<i>« Vance Astro, alias Major Victory. Chef de l'aile 3000. Héros de guerre, champion vétéran. Le meilleur combattant d'arts martiaux de son époque, plus des pouvoirs psioniques, et ce bouclier n'est pas une réplique du Collectionneur. »</i> —Rocket Raccoon",
+    'mv007': "<b>Interruption de héros</b> : quand vous infligez des dégâts avec votre capacité « <i>Lancer de bouclier</i> », inclinez Major Victory → infligez 4 dégâts à un ennemi et infligez 4 dégâts à un ennemi.",
+    'mv008': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Chaque joueur qui contrôle un personnage [[GUARDIAN]] pioche 1 carte.\n<i>« J'étends mes pouvoirs psioniques pour former un filet télépathique. »</i> —Major Victory",
+    'mv009': "<b>Interruption de héros</b> : quand un personnage allié effectue un contre ou une attaque de base, inclinez Captain America's Shield → il gagne +2 à ce pouvoir de base pour cette utilisation. Redressez ce personnage.\n<i>« Cette époque est désormais sous la protection des Gardiens de la Galaxie ! »</i> —Major Victory",
+    'mv010': "<b>Ressource</b> : inclinez cette carte → générez une ressource [wild] pour un joueur qui contrôle un personnage [[GUARDIAN]].\n<i>Major Victory a baptisé le vaisseau amiral des Gardiens d'après un héros qui s'est dressé contre la tyrannie des Badoon, dans l'espoir d'en inspirer d'autres.</i>",
+    'mv011': "[star] Les attaques de Nikki gagnent à distance et les dégâts de ses attaques peuvent être répartis entre les ennemis comme vous le choisissez.\n<i>« Comme au bon vieux temps, hein, Astrovik ? »</i>",
+    'mv012': "<b><i>Donnez cette carte au joueur de Vance Astro.</i></b>\n<b>Interruption forcée</b> : quand vous vous apprêtez à subir des dégâts, quelle qu'en soit la quantité, subissez 1 dégât supplémentaire.\n<b>Une fois révélée</b> : trouvez Containment Suit et glissez-la ici. Si vos points de vie restants ont été réduits à 0 ou moins de cette façon, placez plutôt votre cadran de points de vie sur 1.\n<b>Action d'alter ego</b> : inclinez Vance Astro → ajoutez Containment Suit à votre main et retirez cette obligation de la partie.",
+    'mv013': "Vilenie. Riposte 1.\nLes menaces ne peuvent pas être retirées de Korvac's Future.\n<b>Une fois révélé</b> : cherchez Korvac's Future dans le deck rencontre, la défausse et la zone mise de côté, et révélez-la.",
+    'mv014': "Permanent.\nTant qu'il y a 4 menaces ou plus ici, chaque identité de héros gagne -1 en taille de main.\n<b>Réponse forcée</b> : après qu'une menace est placée ici, s'il y a au moins 14 menaces ici, les joueurs perdent la partie.",
+    'mv015': "<b>Une fois révélée</b> : subissez 3 dégâts indirects ou placez 2 menaces sur Korvac's Future et cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : choisissez de placer 2 menaces sur Korvac's Future ou cette carte gagne +2 icônes de boost ([boost][boost]).\n<i>« Je suis un dieu ! Et j'allais être votre sauveur ! »</i> —Michael Korvac",
+    'mv016': "Péril.\n<b>Une fois révélée</b> : choisissez :\n• Trouvez Michael Korvac et révélez-le. Placez 4 menaces sur Korvac's Future.\n• Défaussez la carte de plus haut coût que vous contrôlez.",
+    // major_victory — fin du bloc
+    // buffy — début du bloc (Buffy / Buffy Summers, la Tueuse)
+    'bf001a': "Buffy gagne +1 à chaque pouvoir de base pour chaque manigance annexe [[HELLMOUTH]] dans la zone de victoire.\n<i>L'Élue</i> — <b>Réponse</b> : après qu'un sbire entre en jeu, piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
+    'bf001b': "<b>Mise en place</b> : mettez le paquet [[HELLMOUTH]] de côté, hors jeu. Trouvez le Harvest et The Master, et révélez-les.\n<i>Élue</i> — <b>Action</b> : cherchez Mr. Pointy dans votre deck et votre défausse et ajoutez-le à votre main.",
+    'bf002': "<b>Réponse</b> : après que Rupert Giles entre en jeu, retirez 2 menaces d'une manigance (3 menaces à la place si Watcher's Guidance est en jeu).\n<i>« Parfois, la chose la plus adulte à faire, c'est... demander de l'aide quand on en a besoin. »</i>",
+    'bf003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Pour chaque point de dégâts excédentaires infligés à cet ennemi par cette attaque, réduisez de 1 le coût en ressources de la prochaine carte que vous jouez durant cette phase.\n<i>« Félicitations — tu es le rapport de poussière du jour. »</i>",
+    'bf004': "<b>Interruption de héros</b> : quand une carte rencontre est révélée depuis le deck rencontre, annulez tous ses effets et défaussez-la. Infligez des dégâts à un ennemi ou retirez des menaces d'une manigance, en nombre égal au nombre de manigances annexes [[HELLMOUTH]] dans la zone de victoire.",
+    'bf005': "<b>Action de héros</b> <i>(attaque)</i> : défaussez X cartes de votre main → infligez 4 dégâts à X ennemis.\n<i>« Autant aller droit au pieu. »</i> —Buffy",
+    'bf006': "Lié (Faith minion).\n<b>Interruption</b> : quand Faith est vaincue, choisissez un personnage [[SLAYER]] allié → redressez ce personnage.\n<i>« Quand je me bats, le monde entier disparaît et je ne sais qu'une seule chose. Que je vais gagner et qu'ils vont perdre. »</i>",
+    'bf007': "Lié (Enemies Aligned).\nRestreint.\n<b>Ressource de héros</b> : inclinez Slayer Scythe → générez une ressource [wild]. N'importe quel joueur peut déclencher cette capacité.",
+    'bf008': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Mr. Pointy → infligez 8 dégâts à un ennemi. Cette attaque gagne Déferlement.\n<i>« Tu connais la chanson. Pieu, poussière, au revoir. »</i> —Buffy",
+    'bf009': "Jouable seulement si vous contrôlez la Slayer Scythe.\n<b>Action de héros</b> <i>(attaque/contre)</i> : retirez 1 [per_hero] menace de chaque manigance. Infligez 1 [per_hero] dégât à chaque ennemi.",
+    'bf010': "Buffy Summers gagne +2 REC.\n<b>Action d'alter ego</b> : inclinez Sunnydale Library → choisissez un joueur. Ce joueur mélange 1 carte d'identité de sa défausse dans son deck.\n<i>« Xander, ne parle pas latin devant les livres. »</i>",
+    'bf011': "<b>Action</b> : inclinez Watcher's Guidance → choisissez :\n• Retirez 1 menace d'une manigance.\n• Infligez 1 dégât à un ennemi.\n• Soignez 1 dégât d'une identité.\nN'importe quel joueur peut déclencher cette capacité.",
+    'bf012': "<b>Réponse</b> : après qu'un sbire non-[[ELITE]] entre en jeu, attachez Redeemed à ce sbire.\nPrenez le contrôle du sbire attaché et traitez-le comme un allié [[SLAYER]] à zone de texte vide. Son CTR est égal à son MNG imprimé et il subit 1 dégât consécutif après avoir contré ou attaqué.",
+    'bf013': "<b>Réponse de héros</b> <i>(attaque)</i> : après qu'un sbire entre en jeu, défaussez Stakeout → infligez 2 dégâts à ce sbire et rendez-le Sonné.\n<i>« Je m'appelle Buffy. La Tueuse de vampires. Et toi ? »</i>",
+    'bf014': "Restreint.\nBuffy gagne Riposte 1 et ses attaques de base gagnent Perçant.\n<i>« Tu as donné un nom à ton pieu ? Rappelle-moi de t'offrir une peluche. »</i> —Buffy",
+    'bf015': "Victoire 0.\nKendra entre en jeu avec 3 jetons stake.\n<b>Réponse</b> : après qu'un sbire entre en jeu, retirez 1 jeton stake de Kendra → infligez 2 dégâts à ce sbire.",
+    'bf016': "[star] <b>Réponse</b> : après que Willow utilise un pouvoir de base, dépensez une ressource :\n[mental] → retirez 2 menaces d'une manigance.\n[physical] → infligez 2 dégâts à un ennemi.\n[energy] → soignez 2 dégâts de Willow.",
+    'bf017': "Lié (Angelus).\n[star] Les attaques d'Angel gagnent Perçant.\n<b>Réponse</b> : après que vous passez sous forme d'alter ego, soignez 1 dégât d'Angel.",
+    'bf018': "Lié (Becoming).\n<b>Action de héros</b> : inclinez Chosen One et dépensez 1 ressource de n'importe quel type → redressez Buffy.\n<i>« Je suis ce dont les monstres font des cauchemars. »</i> —Buffy",
+    'bf019': "Lié (Harvest).\n<b>Interruption</b> : quand les points de vie de Buffy sont à 3 ou moins, trouvez Kendra et mettez-la en jeu sous votre contrôle, puis retirez cette carte de la partie.",
+    'bf020': "Entrave 1[per_hero]. Chaque sbire [[VAMPIRE]] gagne 1 icône d'accélération ([acceleration]).\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    'bf021': "[star] <b>Réponse forcée</b> : après que Spike attaque et blesse un personnage, défaussez la carte du dessus du deck rencontre. Si c'est une traîtrise, soignez tous les dégâts de Spike.\n<i>« Si tous les vampires qui disent avoir été à la crucifixion y étaient vraiment, ça aurait été comme Woodstock. »</i>",
+    'bf022': "Travail d'équipe ([[VAMPIRE]]).\n[star] <b>Réponse forcée</b> : après que Drusilla vous attaque, placez 1 menace sur chaque manigance.\n<i>« J'ai rencontré un vieux monsieur. Il m'a pas plu. Il s'est coincé dans mes dents. »</i>",
+    'bf023': "Chaque carte rencontre gagne Péril.\n<b>Action de héros</b> : dépensez des ressources [energy][mental][physical] → défaussez cette carte, trouvez les Gentlemen et mettez-les en jeu engagés avec vous.",
+    'bf024': "<b>Une fois révélée</b> : choisissez :\n• Défaussez une amélioration ou un soutien que vous contrôlez.\n• Subissez des dégâts égaux au coût le plus élevé d'une amélioration ou d'un soutien que vous contrôlez.",
+    'bf025': "<b><i>Donnez cette carte au joueur de Buffy Summers.</i></b>\nUtilisations (3 jetons sanity). Victoire 0.\n<b>Réponse forcée</b> : après que vous utilisez un pouvoir de base, retirez 1 jeton sanity d'ici.",
+    'bf026': "Lié (Hush).\nTant que les Gentlemen sont engagés avec vous, vous ne pouvez pas demander de capacités « <b>Action</b> » à d'autres joueurs.\n<b>Une fois révélé</b> : vous êtes désorienté. Si vous l'étiez déjà, défaussez un soutien que vous contrôlez.",
+    'bf027': "Entrave 1[per_hero]. Victoire 0.\n<b>Une fois déjouée</b> : trouvez Becoming et révélez-la. Mettez en jeu l'amélioration Prophecy Girl mise de côté.",
+    'bf028': "Entrave 2[per_hero]. Victoire 0.\n<b>Une fois déjouée</b> : trouvez Enemies Aligned et le sbire Faith et révélez-les. Mettez en jeu l'amélioration Chosen One mise de côté.",
+    'bf029': "Entrave 3[per_hero]. Victoire 0.\n<b>Une fois déjouée</b> : mettez en jeu la Slayer Scythe mise de côté.",
+    'bf030': "Ténacité. Victoire 0.\n<b>Une fois vaincu</b> : trouvez Angelus et mettez-le en jeu engagé avec votre identité.\n<i>« La Terre saignera, et je boirai à longs traits. »</i>",
+    'bf031': "Patrouille. Vilenie. Victoire 0.\n[star] Les attaques de Faith gagnent Déferlement.\n<b>Une fois vaincue</b> : trouvez l'allié Faith mis de côté et mettez-la en jeu sous le contrôle de n'importe quel joueur.\n<i>« On n'a pas besoin de la loi. On EST la loi. »</i>",
+    'bf032': "Garde. Victoire 0.\n[star] Les attaques d'Angelus gagnent Perçant.\n<b>Une fois vaincu</b> : trouvez Angel et mettez-le en jeu sous le contrôle de n'importe quel joueur.\n<i>« Je sais ce que tu penses. Peut-être qu'il reste du bon au fond de moi, qui se souvient de toi et t'aime. »</i>",
+    // buffy — fin du bloc
+    // robocop — début du bloc (RoboCop / Alex Murphy, MissSugarPink)
+    'rc001a': "<b>Interruption</b> : quand un ennemi attaque un personnage allié, résolvez une capacité « <b>Action</b> » d'une amélioration [[WEAPON]] que vous contrôlez.",
+    'rc001b': "Vous pouvez inclure jusqu'à 6 cartes Justice dans votre deck lors de la construction du deck.\n<b>Action</b> : inclinez Alex Murphy → cherchez dans votre deck une amélioration propre à l'identité et ajoutez-la à votre main.",
+    'rc002': "<b>Action de héros</b> <i>(attaque/contre)</i> : retirez 4 menaces d'une manigance. Si cette manigance porte une icône [acceleration], [amplify], [crisis] ou [hazard], infligez 2 dégâts à un ennemi.\n<i>« Merci de votre coopération. »</i> —RoboCop",
+    'rc003': "<b>Réponse de héros</b> <i>(attaque)</i> : après qu'une amélioration [[WEAPON]] que vous contrôlez inflige des dégâts à un ennemi, infligez 5 dégâts à cet ennemi. Cette attaque gagne Déferlement.\n<i>« Mort ou vif, vous venez avec moi. »</i> —RoboCop",
+    'rc004': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand un ennemi attaque, empêchez tous les dégâts de cette attaque et infligez 2 dégâts à l'ennemi attaquant.\n<i>« Venez sans histoire, ou il y aura... des ennuis. »</i> —RoboCop",
+    'rc005': "Restreint.\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Auto-9 et dépensez 1 ressource de n'importe quel type → infligez 2 dégâts à un ennemi. Cette attaque gagne à distance.\n<i>« À toi de jouer, ordure. »</i> —RoboCop",
+    'rc006': "<b>Ressource de héros</b> : générez une ressource [wild] pour la capacité d'Auto-9. Cette attaque gagne Perçant.\n<b>Interruption</b> : quand vous utilisez l'un des pouvoirs de base de RoboCop, redressez Auto-9.\n<i>« Regardez-moi ce f@*&ing flingue ! »</i> —Starkweather",
+    'rc007': "RoboCop gagne le trait [[AERIAL]].\n<b>Action de héros</b> <i>(attaque)</i> : inclinez cette carte → infligez 1 dégât à un sbire. Engagez cet ennemi.\n<i>« Reste en dehors des ennuis. »</i> —RoboCop",
+    'rc008': "<b>Action de héros</b> : inclinez Terminal Spike → piochez 1 carte. Choisissez et défaussez 1 carte de votre main. Infligez à un ennemi un nombre de dégâts égal au nombre de ressources imprimées sur la carte défaussée.",
+    'rc009': "Restreint. Utilisations (3 jetons munition).\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Gunarm et retirez-lui 1 jeton munition → infligez 3 dégâts à un ennemi et choisissez :\n• Sonnez cet ennemi.\n• Désorientez cet ennemi.\n• Infligez 3 dégâts à un autre ennemi.",
+    'rc010': "Vous avez +1 taille de main.\n<b>Action d'alter ego</b> : inclinez Squad Car → mélangez 1 carte RoboCop de votre défausse dans votre deck.\n<i>« En général, je conduis quand je forme un nouveau partenaire. »</i> —Alex Murphy",
+    'rc011': "<b>Action d'alter ego</b> : inclinez Officer Lewis → soignez 2 dégâts d'Alex Murphy.\n<b>Réponse de héros</b> : après que vous résolvez une capacité « <b>Action</b> » d'une amélioration [[WEAPON]] que vous contrôlez, inclinez Officer Lewis → infligez 2 dégâts supplémentaires à cet ennemi. N'importe quel joueur peut déclencher cette capacité.",
+    'rc012': "<b><i>Donnez cette carte au joueur d'Alex Murphy.</i></b>\nVous ne pouvez pas attaquer le méchant.\n<b>Une fois révélée</b> : vous êtes sonné. Inclinez Auto-9.\n<b>Action de héros</b> : inclinez votre identité → défaussez Classified. N'importe quel joueur peut déclencher cette capacité.",
+    'rc013': "<b>Une fois révélé</b> : ED-209 s'engage avec le joueur de RoboCop.\n<b>Réponse forcée</b> : après qu'ED-209 entre en jeu, trouvez l'attachement Stairs et attachez-le à ED-209.\n<i>(Sbire némésis de RoboCop.)</i>",
+    'rc014': "<i>« M. Kinney, servez-vous de votre arme de façon menaçante. »</i>\n<b>Une fois révélée</b> : si ED-209 n'est pas en jeu, trouvez-le et mettez-le en jeu engagé avec le joueur de RoboCop.",
+    'rc015': "Attachez-la au sbire qui a le plus de points de vie restants. Sinon, cette carte gagne Renfort.\n[star] <b>Interruption forcée</b> : quand le sbire attaché devrait s'activer, défaussez Stairs à la place.\n<i>« Je l'achèterais pour un dollar ! »</i> —Bixby Snyder",
+    'rc016': "Patrouille.\n<b>Interruption forcée</b> : quand Fugitives s'active, les joueurs ne peuvent pas résoudre de capacités « <b>Interruption</b> » des cartes qu'ils contrôlent pendant cette activation.",
+    'rc017': "Jouez-la sous le contrôle de n'importe quel joueur.\nMax. 1 par joueur.\nVous pouvez contrôler 1 amélioration [[WEAPON]] supplémentaire qui a le mot-clé Restreint.",
+    // robocop — fin du bloc
+    // mantis — début du bloc (Mantis, BlueHG)
+    'mt001a': "<i>Avantage empathique</i> — <b>Ressource</b> : défaussez une carte d'état Désorienté d'un ennemi ou d'un personnage que vous contrôlez → générez une ressource [mental]. <i>(Générez à la place des ressources [wild][mental] si vous avez défaussé une carte d'état Désorienté d'un ennemi. Limite d'une fois par round.)</i>\n<i>« Le savoir est un pouvoir. Et tu as beaucoup à apprendre. »</i>",
+    'mt001b': "[star] <i>Nivellement empathique</i> — <b>Réponse</b> : après que vous utilisez votre REC, désorientez un personnage que vous contrôlez.\n<i>« Celle-ci vit pour éclairer. »</i>",
+    'mt002': "Drax ne peut pas attaquer les sbires.\nTant que Drax est désorienté, ajoutez son CTR à son ATQ.\n[star] L'attaque de base de Drax gagne Perçant et ignore le mot-clé Garde.",
+    'mt003': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Cherchez parmi les 3 cartes du dessus de votre deck une carte et ajoutez-la à votre main. Si c'est une carte Mantis, retirez 1 menace d'une manigance. Mélangez votre deck.",
+    'mt004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si cet ennemi est désorienté, vous pouvez soit lui infliger 1 dégât supplémentaire, soit défausser une carte d'état Désorienté de cet ennemi pour piocher 1 carte.",
+    'mt005': "<b>Action de héros</b> : désorientez un personnage que vous contrôlez. Ensuite, désorientez un ennemi.\n<i>« Non ! Sors de ma tête ! »</i>\n<i>« Celle-ci est la Madone Céleste. Je vais où je veux. »</i>",
+    'mt006': "<b>Réponse</b> : après que vous dépensez cette carte, soignez 1 dégât d'un personnage allié. Vous pouvez désorienter un personnage que vous contrôlez pour piocher 1 carte.\n<i>« Elle peut faire ça ? Et elle nous le dit maintenant ? »</i> —Bug",
+    'mt007': "<b>Action d'alter ego</b> : inclinez Meditation Atrium → cherchez parmi les 3 cartes du dessus de votre deck une carte et ajoutez-la à votre main. Si c'est une carte Mantis, soignez 1 dégât d'un personnage allié. Mélangez votre deck.",
+    'mt008': "Forme héros uniquement. Attachez-la à un allié. Limite 1 par allié.\n<b>Interruption forcée</b> : quand l'allié attaché devrait subir des dégâts consécutifs, défaussez Fortified Mind à la place. Ensuite, désorientez cet allié.",
+    'mt009': "<b>Réponse de héros</b> <i>(attaque)</i> : après qu'un sbire entre en jeu, défaussez Psionic Mindlock → infligez 2 dégâts à ce sbire et désorientez-le.",
+    'mt010': "<b>Interruption de héros</b> : quand vous résolvez la capacité « <i>Avantage empathique</i> » de Mantis, inclinez The Celestial Madonna → cet emploi ne compte pas dans la limite de cette capacité.\n<i>« Elle a été formée dès la naissance par des prêtres d'un autre monde pour représenter toute l'humanité. »</i> —Thor",
+    'mt011': "<b><i>Donnez cette carte au joueur de Mantis.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre alter ego → retirez Psychic Tremor de la partie.\n• Défaussez 1 carte de votre main pour chaque personnage désorienté que vous contrôlez et chaque ennemi désorienté. Si aucune carte n'a été défaussée ainsi, cette carte gagne Renfort. Défaussez cette obligation.",
+    'mt012': "<i>L'Épéiste tente de dominer la planète pour les Cotati. Il renforcera les Cotati dans leur mission d'éradiquer toute vie non végétale.</i>\nIncitation 1.\nLes ennemis ne peuvent pas être désorientés.",
+    'mt013': "Coup Rapide. Robuste.\n[star] Les attaques de Swordsman gagnent Perçant.\n<i>(Sbire némésis de Mantis.)</i>\n<i>Son cœur bondit au nom de « Jacques » — l'Épéiste qui est mort en se jetant entre elle et la rancune d'un tyran, puis qui sombre en revivant le moment où le Cotati Suprême a réanimé son cadavre pour porter un visage qu'elle ne pouvait s'empêcher d'aimer.</i>",
+    'mt014': "Robuste. Ténacité.\n[star] <b>Interruption forcée</b> : quand Plantman attaque, ses attaques gagnent Déferlement.\n<b>Interruption forcée</b> : quand Plantman est vaincu, donnez au méchant une carte d'état Tenace.",
+    'mt015': "Attachez-la à l'ennemi qui a le plus de points de vie imprimés et qui n'est pas Robuste. Si vous ne pouvez pas, cette carte gagne Renfort.\nL'ennemi attaché gagne Robuste.\n<b>Action de héros</b> : dépensez des ressources [mental][physical] → défaussez cette carte.",
+    'mt016': "En Équipe (Drax et Mantis). 1 max par deck.\n<b>Action de héros</b> : dépensez jusqu'à 2 ressources [mental] → soignez 2 dégâts d'une identité pour chaque ressource [mental] dépensée. Vous pouvez subir 1 dégât pour mélanger cette carte dans votre deck.",
+    // mantis — fin du bloc
 };

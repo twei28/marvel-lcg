@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Signature — Zombie Hulk",
+    "encounters": [
+        "hg024",
+        "hg025",
+        "hg026"
+    ]
+}

@@ -10,17 +10,36 @@
 // Ce module est le SEUL endroit ou la regle est ecrite. scanUrl() l'appelle.
 import { CODES_SCAN_FR } from './scans-fr-liste'
 import { dosPicId, estDosGenerique } from './dos-cartes'
+import { resoudreLangue } from './langue-resolution'
 
 export const CLE_SCANS_FR = 'marvel-board-scans-fr'
 export const PREFIXE_FR = 'fr_'
 
-/** Actif par DEFAUT : le jeu est joue en francais. Seul « off » coupe. */
+/** Sans reglage : actif quand le jeu est en FRANCAIS (la langue se resout par langue-resolution.ts : choix dans le jeu > cookie du
+    site > navigateur > francais, 26/10/2026) ; en anglais, des cartes francaises sous une interface anglaise se liraient comme un
+    bug. Un reglage explicite (« on » / « off », pose par la bascule de langue ou le menu Options) gagne toujours. */
 export function scansFrActifs(): boolean {
+  let reglage: string | null = null
   try {
-    return window.localStorage.getItem(CLE_SCANS_FR) !== 'off'
+    reglage = window.localStorage.getItem(CLE_SCANS_FR)
   } catch {
-    return true
+    /* stockage bloque : on suit la langue */
   }
+  if (reglage === 'off') return false
+  if (reglage === 'on') return true
+  let stockage = ''
+  try {
+    stockage = window.localStorage.getItem('marvel-langue') || ''
+  } catch {
+    /* idem */
+  }
+  let cookie = ''
+  try {
+    cookie = document.cookie
+  } catch {
+    /* cookies bloques */
+  }
+  return resoudreLangue({ stockage, cookie, navigateur: typeof navigator === 'undefined' ? null : navigator }) === 'fr'
 }
 
 /** Les scans francais deposes a la main dans assets/pics-fr, hors archive

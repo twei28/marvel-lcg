@@ -60,6 +60,23 @@ LIVRETS = {
 COUVERTURE = "00-couverture.jpg"
 
 CARTES = {
+    "mojo": {
+        # Livret officiel numerique (insert de 20 pages, 252 x 360 points, PORTRAIT comme celui de hunting_season), fourni par
+        # l'utilisateur le 28/10/2026. Pas de planche d'epilogue : le recit n'existe qu'en ouverture de chaque scenario.
+        "pdf": "mc39_mojomania_rules_insert_v3-compressed.pdf",
+        # p4 : mode campagne et carnet. p2 : sets modulaires et Longshot. p3 : icone d'amplification et mots-cles.
+        "regles_campagne": [4, 2, 3],
+        # p5 : campagne experte (degats persistants).
+        "regles_expert": [5],
+        # La couverture n'est PAS la page 1 du livret (un logo sur fond uni) : c'est l'image de la boite, posee a la main.
+        "couverture_externe": True,
+        "scenarios": [
+            # (scenario, numero, intro, regles, epilogue) : p6 recit, p7-8 regles, p9 instructions de campagne.
+            ("magog", 1, 6, [7, 8, 9], None),
+            ("spiral", 2, 10, [11, 12, 13, 14], None),
+            ("mojo", 3, 15, [16, 17], None),
+        ],
+    },
     "hunting_season": {
         # Livret fan-made (Nugget), portrait, livre dans le zip du pack. Pas de
         # planches de BD : le recit et les instructions partagent la page du
@@ -198,10 +215,13 @@ def main():
     a_rendre = {}
     pages_par_scenario = {}
 
-    a_rendre[1] = COUVERTURE
+    if not carte.get("couverture_externe"):
+        a_rendre[1] = COUVERTURE
 
     for rang, page in enumerate(carte["regles_campagne"], 1):
         a_rendre[page] = nom_fichier(0, None, "regles", rang)
+    for rang, page in enumerate(carte.get("regles_expert", []), 1):
+        a_rendre[page] = nom_fichier(0, None, "expert", rang)
 
     precedent_epilogue = None
     for scenario, numero, intro, regles, epilogue in carte["scenarios"]:
@@ -255,6 +275,8 @@ def main():
     chemin_json = os.path.join(RACINE, "data", "campagnes", "%s.json" % options.code)
     definition = json.load(open(chemin_json, encoding="utf-8"))
     definition["pages_regles"] = [a_rendre[p] for p in carte["regles_campagne"]]
+    if carte.get("regles_expert"):
+        definition["pages_expert"] = [a_rendre[p] for p in carte["regles_expert"]]
     for s in definition["scenarios"]:
         if s["id"] in pages_par_scenario:
             s["pages"] = pages_par_scenario[s["id"]]

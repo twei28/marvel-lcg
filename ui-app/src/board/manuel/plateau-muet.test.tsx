@@ -12,7 +12,7 @@
 // Le montage est calque sur `PagePartie.test.tsx`, qui monte deja cette page
 // avec un moteur remplace (`MoteurFaux`) : on ne reecrit pas un second
 // montage a cote.
-import { act, render } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MoteurFaux, etatInitial } from '../moteur-faux'
 import type { EtatMoteur } from '../moteur'
@@ -283,8 +283,25 @@ describe('en manuel, Annuler et U défont le dernier geste', () => {
     await act(async () => {
       container.querySelector<HTMLButtonElement>('.bh-undo')?.click()
     })
+    // La fenetre d'explication passe d'abord (ModaleAnnuler) : rien n'est encore envoye.
+    expect(appels()).not.toContain('/debug?/undo auto')
+    await act(async () => {
+      screen.getByRole('button', { name: 'Oui, annuler' }).click()
+    })
     expect(appels()).toContain('/debug?/undo auto')
     expect(appels()).not.toContain('/manuel_undo')
+  })
+
+  it('une fois la case « ne plus me montrer ça » cochée, Annuler part tout de suite', async () => {
+    window.localStorage.setItem('marvel-board-annuler-explique', '1')
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({}) })
+    await act(async () => {
+      container.querySelector<HTMLButtonElement>('.bh-undo')?.click()
+    })
+    expect(screen.queryByRole('alertdialog')).toBeNull()
+    expect(appels()).toContain('/debug?/undo auto')
+    window.localStorage.removeItem('marvel-board-annuler-explique')
   })
 
   it('le bouton Annuler appelle /manuel_undo', async () => {

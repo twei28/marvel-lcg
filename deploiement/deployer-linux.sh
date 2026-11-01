@@ -329,7 +329,8 @@ images_custom() {
     return 0
   fi
   rsync -az --delete -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
-    "$source" "$HOTE:$cible"
+    "$source" "$HOTE:$cible" \
+    || arret "rsync des images custom (assets/pics) vers le serveur a echoue."
   dire "images custom envoyees."
   planches_livret
 }
@@ -453,6 +454,7 @@ publier_play() {
   preparer_play
   if [ "$REEL" -eq 0 ]; then
     dire "[simulation] ici : publier.py --oui --sans-construire, copie des sons, verification du board-*.js, curl play. = 200"
+    scans_play
     return 0
   fi
   lancer_publier --oui --sans-construire || arret "la publication de Play a echoue."
@@ -466,6 +468,93 @@ publier_play() {
   [ "$code" = "200" ] || arret "https://play.$DOMAINE/navigateur.html repond $code au lieu de 200."
   CODE_PLAY="$code"
   dire "play. : plateau identique ($distant), HTTP $code"
+  scans_play
+}
+
+scans_play() {
+  # ⚠ TROUVE LE 27/10/2026, APRES LA SORTIE D'IRON FIST (pack ajoute le
+  # 20/10/2026) : les images de play. passent par une route `/scan/<id>` qui
+  # lit `/opt/narwhal-play-scans/resolu/` SUR LE SERVEUR -- un dossier
+  # INDEPENDANT de celui du site normal (assets/pics du site normal est deja
+  # synchronise par `images_custom`, mais narwhal-play-scans est une toute
+  # autre arborescence). Ni `images_custom` ni le rsync de `publier_play`
+  # (qui n'envoie que navigateur/dist/) ne l'alimentaient : un heros ajoute
+  # n'apparaissait donc JAMAIS sur play. tant que personne ne relancait a la
+  # main la sequence ci-dessous. Verifie ce jour-la : `curl -I
+  # https://play.narwhalchampions.com/scan/64001a` 404 -> 200, "37707 images
+  # installees ; 0 cibles absentes du serveur". On la rejoue a chaque
+  # deploiement, pour ne plus avoir a s'en souvenir :
+  #   1. scans bruts (assets/pics, pics-fr, pics-hd, textures, cache,
+  #      vignettes) -> narwhal-play-scans/originaux/ ;
+  #   2. le moteur reel (PLAY_PY310, comme essais/equivalence.py) resout, pour
+  #      chaque nom de carte, le fichier exact que le moteur classique
+  #      servirait (navigateur/resoudre-images.py) ;
+  #   3. resolution.json + generes/ (PAS originaux/, deja fait a l'etape 1)
+  #      vers le serveur ;
+  #   4. reconstruction atomique des liens cote serveur
+  #      (installer-images.py : jamais d'etat a moitie fait en ligne).
+  etape "7b. Scans de play. (route /scan/<id>)"
+  local source="$RACINE/Fusion/marvel-lcg-src/assets"
+  local sortie="$RACINE/navigateur/.cache/scans-resolution"
+  mkdir -p "$sortie"
+  local empreinte_fichier="$sortie/empreinte-assets.txt"
+  # Empreinte sur la METADONNEE (taille + date de modification), pas le
+  # contenu : relire ~2,8 Go d'images a chaque deploiement serait aussi lent
+  # que l'etape qu'on veut eviter (resoudre-images.py fait tourner tout le
+  # moteur sur ~18500 noms). Un scan ajoute ou remplace change toujours sa
+  # taille ou sa date -- suffisant pour decider si on doit recalculer.
+  local empreinte
+  empreinte="$(cd "$source" && find pics pics-fr pics-hd textures cache vignettes -type f -printf '%s %T@ %p\n' 2>/dev/null | sort | sha1sum | cut -d' ' -f1)"
+  [ -n "$empreinte" ] || arret "empreinte des scans illisible (assets/ absent ?)."
+
+  if [ "$REEL" -eq 0 ]; then
+    dire "[simulation] rsync originaux (pics/pics-fr/pics-hd/textures/cache/vignettes) -> narwhal-play-scans/originaux/"
+    if [ -f "$empreinte_fichier" ] && [ "$(cat "$empreinte_fichier")" = "$empreinte" ]; then
+      dire "[simulation] assets inchanges depuis la derniere resolution (${empreinte:0:10}) : resoudre-images.py serait saute."
+    else
+      dire "[simulation] assets changes : $PLAY_PY310 navigateur/resoudre-images.py $sortie (peut etre long, telecharge au besoin des scans HD manquants)"
+    fi
+    dire "[simulation] envoi resolution.json + generes/ -> /tmp/narwhal-source-resolution ; installer-images.py sur le serveur"
+    return 0
+  fi
+
+  local d
+  for d in pics pics-fr pics-hd textures cache vignettes; do
+    [ -d "$source/$d" ] || continue
+    rsync -az -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
+      "$source/$d/" "$HOTE:/opt/narwhal-play-scans/originaux/$d/" \
+      || arret "rsync des scans originaux ($d) vers narwhal-play-scans a echoue : resolution non envoyee."
+  done
+  dire "scans originaux synchronises (narwhal-play-scans/originaux)."
+
+  if [ -f "$empreinte_fichier" ] && [ "$(cat "$empreinte_fichier")" = "$empreinte" ]; then
+    dire "assets inchanges depuis la derniere resolution (${empreinte:0:10}) : resoudre-images.py saute."
+  else
+    ( cd "$WT/Fusion/marvel-lcg-src" && "$PLAY_PY310" "$RACINE/navigateur/resoudre-images.py" "$sortie" ) \
+      || arret "resoudre-images.py a echoue : les scans de play. ne sont pas a jour sur le serveur."
+    printf '%s' "$empreinte" > "$empreinte_fichier"
+  fi
+
+  [ -s "$sortie/resolution.json" ] || arret "resolution.json absent ou vide apres resoudre-images.py."
+  local envois=("$sortie/resolution.json")
+  [ -d "$sortie/generes" ] && envois+=("$sortie/generes")
+  ssh_h "mkdir -p /tmp/narwhal-source-resolution" </dev/null \
+    || arret "creation de /tmp/narwhal-source-resolution sur le serveur impossible."
+  rsync -az -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
+    "${envois[@]}" "$HOTE:/tmp/narwhal-source-resolution/" \
+    || arret "envoi de resolution.json/generes a echoue : rien n'a ete installe sur le serveur."
+
+  local sortie_installation
+  if ! sortie_installation="$(ssh_h "python3 /opt/narwhal-play-scans/installer-images.py /tmp/narwhal-source-resolution /opt/narwhal-play-scans" </dev/null)"; then
+    arret "installer-images.py a echoue sur le serveur : les liens de play. ne sont pas a jour."
+  fi
+  printf '%s\n' "$sortie_installation" | sed 's/^/   /'
+  local manquants
+  manquants="$(printf '%s\n' "$sortie_installation" | grep -oE '[0-9]+ cibles absentes' | grep -oE '^[0-9]+' || true)"
+  if [ -n "$manquants" ] && [ "$manquants" -gt 0 ]; then
+    dire "AVERTISSEMENT : $manquants cible(s) absente(s) du serveur (voir le detail ci-dessus) : une carte peut manquer sur play."
+  fi
+  dire "scans de play. installes."
 }
 
 retour_arriere() {

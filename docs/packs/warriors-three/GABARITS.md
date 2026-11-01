@@ -465,3 +465,9 @@ Les deux utilisaient deja `soutiens_persona` (le soutien du heros actif n'est pa
 - Cas ajoutés à `tools/cas/warriors_three.py` : `[wt] wt020 « Quickstrike »` (forme héros, mise en jeu sous contrôle = engagée : ATQ 2 − DEF 1 de Fandral = 1 dégât à l'identité) et son témoin en ALTER EGO (0 dégât : Quickstrike ne vise qu'un héros). **Rouge sans la clé** (0 dégât au lieu de 1), **vert avec** ; substitution refaite le 26/10/2026 (clé retirée → rouge ; remise → vert, `cards.json` identique octet pour octet).
 - Pack complet `[wt]` : 61/61 verts (PARALLELES=4). Autoplay `warriors_three` contre Rhino : 8 parties, 0 victoire / 8 défaites, 0 erreur dans les 8 journaux, 0 bloquée.
 - Limite : la défense de Fandral est choisie par le pilote du harnais (le cas mesure 1 dégât, pas 2) ; l'attaque Quickstrike à l'engagement d'un sbire par un VRAI joueur n'est pas vue en partie réelle. Carte terminée : NON (provisoire) comme tout le pack.
+
+## Mesures multijoueur du 26/10/2026 (`tools/cas/warriors_three.py`, 2 joueurs, `heros2`)
+
+- **wt008 Fimbuldraugr** : Fandral actif, l'allié (Vision) de l'AUTRE joueur retire de la menace malgré une icône Crise (menace 5 → 4) ; contre-cas Hogun actif : menace 5. Rouge quand `UnitIgnoreKeywordIcons` est retirée (menace 5 au lieu de 4). Aucun changement de code.
+- **wt022 Revelry in Asgard** : un sbire vaincu pendant le tour de l'AUTRE joueur ne compte pas (+2) ; témoin : vaincu pendant MON tour, +3. Rouge quand la remise à faux de `wt_sbire_vaincu_ce_tour` est retirée (main 8 au lieu de 7). Aucun changement de code. Ajout au banc : `Puzzle.BeginPlayerTurn(siege)` / `Puzzle.EndPlayerTurn(siege)` (tour d'un autre joueur, additif).
+- Reste : « Carte terminée : NON (provisoire) », aucune partie humaine.

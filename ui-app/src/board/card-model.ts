@@ -578,6 +578,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     // Mots-cles (Guard, Piercing...) pour les tooltips de l'apercu.
     keywords: contexte.catalogue.motsCles(card.card_id),
     traits: contexte.catalogue.traits?.(card.card_id),
+    traitsActuels: card.traits ? Object.keys(card.traits) : undefined,
     codeCarte: card.card_id,
     premierJoueur: (nombre(card.info.k_first_player_token) ?? 0) > 0 ? true : undefined,
     aspect: contexte.catalogue.aspect(card.card_id),

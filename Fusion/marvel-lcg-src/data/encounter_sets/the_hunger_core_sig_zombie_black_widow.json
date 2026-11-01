@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Signature — Zombie Black Widow",
+    "encounters": [
+        "hg037",
+        "hg038",
+        "hg039"
+    ]
+}

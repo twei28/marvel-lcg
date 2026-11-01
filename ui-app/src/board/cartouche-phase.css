@@ -1334,3 +1334,30 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-chaine-annulee {
   font-weight: 700;
   color: rgba(248, 250, 252, 0.8);
 }
+
+/* Le texte du résultat ne déborde JAMAIS de l'écran : le bloc peut rétrécir et ses lignes passent à la ligne
+   (30/10/2026, « Défausse remélangée : un nouveau paquet » coupé des deux côtés sur téléphone). */
+.deroule-phase.est-scene .deroule-resultat-gros {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.deroule-phase.est-scene .deroule-resultat-texte,
+.deroule-phase.est-scene .deroule-resultat-note,
+.deroule-phase.est-essai .essai-boite .deroule-resultat-texte,
+.deroule-phase.est-essai .essai-resultat-ligne,
+.deroule-phase.est-essai .essai-raison {
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.deroule-phase.est-essai .essai-boite,
+.deroule-phase.est-essai .essai-resultat {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}

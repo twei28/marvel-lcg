@@ -1012,6 +1012,21 @@
     pointer-events: auto;
   }
 
+  /* Le bouton de refus (« Ne pas défendre », « Passer »...) reste TOUJOURS visible : avec plusieurs défenseurs possibles
+     la liste des boutons dépasse le panneau de la phase, et le refus, dernier de la liste, sortait de l'écran sans le
+     moindre indice (29/10/2026, signalé par l'utilisateur sur téléphone : « il faut toujours pouvoir voir tous les
+     boutons »). Collé en bas du défilement, sur un dégradé qui masque les boutons qui passent dessous. */
+  .demande-centrale.est-en-scene .dc-boutons > .dc-refus {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    width: 100%;
+    padding: 14px 0 4px;
+    background: linear-gradient(to top, rgba(14, 18, 25, 0.98) 68%, rgba(14, 18, 25, 0));
+    /* Recouvre l'espace sous le bouton, où une ligne de la liste dépassait encore. */
+    box-shadow: 0 28px 0 0 rgba(14, 18, 25, 0.98);
+  }
+
   /* La croix du coin : remet la partie avant le choix de la carte (Echap). */
   .dc-texte:has(> .dc-croix) {
     position: relative;
@@ -2750,21 +2765,49 @@
      le premier heros a depasser 3 faces. Un premier essai les avait retrecies
      (meme taper que .a-faces-2/.a-faces-3) : illisibles, revenu en arriere
      a la demande de l'utilisateur (26/09/2026). A la place : la taille de
-     depart (345px/506px, heritee de `.carte-apercu` de base, aucune des deux
-     classes ne la redefinit ici) et un RETOUR A LA LIGNE sur plusieurs
-     rangees.
-     ⚠ `width`, PAS SEULEMENT `max-width`. `.carte-apercu` est en position
-     fixed, largeur automatique : un conteneur flex qui enveloppe (wrap) sans
-     largeur EXPLICITE se dimensionne sur son plus PETIT contenu possible
-     (une carte par rangee, mesure a 345px de large et 2806px de haut pour 5
-     faces) au lieu de profiter de la place disponible. `max-width` seul ne
-     change rien a ce calcul ; il faut forcer la largeur pour que plusieurs
-     cartes tiennent sur une meme rangee avant de passer a la suivante. */
+     depart (345px/506px) et un RETOUR A LA LIGNE sur plusieurs rangees.
+
+     ⚠⚠ MAIS CE RETOUR A LA LIGNE SORTAIT PAR LE BAS (signale sur The Warriors
+     Three ET Conan, 27/10/2026, capture a l'appui : la rangee du BAS etait
+     coupee par le bord bas de l'ecran). La cause, mesuree : a 345px, DEUX
+     rangees font ~1024px de haut pour une fenetre de 900px ; l'apercu, plus
+     haut que la fenetre, est colle en haut par usePlacement (placer.ts : « on
+     prefere perdre le bas »), et sa rangee basse passe sous l'ecran.
+
+     LE CORRECTIF : une GRILLE a nombre de colonnes FIXE (4 faces -> 2 colonnes,
+     5 faces -> 3 colonnes), donc TOUJOURS DEUX rangees au plus, dont la taille
+     est BORNEE PAR LA HAUTEUR de la fenetre pour que ces deux rangees tiennent
+     entieres. On garde la plus grande taille lisible qui rentre : 345px sur un
+     ecran haut (>=1080px), moins sur un ecran bas — jamais coupe.
+     La grille a un nombre de colonnes figE (et pas un flex-wrap) : le nombre de
+     rangees ne doit PAS dependre de la largeur des cartes, sinon la borne de
+     hauteur, calculee pour deux rangees, serait fausse des qu'une troisieme
+     apparait. */
   .carte-apercu.a-faces-4,
   .carte-apercu.a-faces-5 {
-    flex-wrap: wrap;
+    display: grid;
     justify-content: center;
+    justify-items: center;
+    align-items: start;
+    gap: 14px;
     width: min(980px, 92vw);
+    /* 2.772 = 2 rangees x (hauteur de cadre = largeur x 176/127). 96px = marge
+       haut+bas de l'apercu (usePlacement) + etiquettes/espaces des deux rangees.
+       Paysage : hauteur de cadre = largeur x 127/176, soit 2 x 0.7216 = 1.443. */
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772));
+    --largeur-face-paysage: min(506px, calc((100vh - 96px) / 1.443));
+  }
+
+  /* La largeur est en plus bornee par la LARGEUR de la fenetre, selon le nombre
+     de colonnes, pour qu'une rangee ne deborde jamais sur le cote. */
+  .carte-apercu.a-faces-4 {
+    grid-template-columns: repeat(2, auto);
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772), calc((92vw - 14px) / 2));
+  }
+
+  .carte-apercu.a-faces-5 {
+    grid-template-columns: repeat(3, auto);
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772), calc((92vw - 28px) / 3));
   }
 
   /* L'autre face n'est qu'une image de reference : on masque les pastilles/stats
@@ -8491,6 +8534,52 @@
       animation: none;
     }
   }
+
+  /* INFOBULLE D'ANNULER (29/10/2026). Le `title` natif tient en une ligne, ne se
+     lit qu'apres une seconde et ne se met pas en forme : elle dit ici comment
+     « Annuler » se comporte (instantane ou rejeu). Posee sous le bouton, elle
+     apparait au survol ET au focus clavier, jamais au toucher (pas de survol). */
+  .bh-undo[data-infobulle] {
+    position: relative;
+  }
+
+  .bh-undo[data-infobulle]::after {
+    content: attr(data-infobulle);
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 580;
+    width: 260px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(24, 28, 36, 0.98);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    color: #cbd7e6;
+    font-size: 0.76rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+    white-space: normal;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: opacity 120ms ease-out 250ms, transform 120ms ease-out 250ms;
+  }
+
+  @media (hover: hover) {
+    .bh-undo[data-infobulle]:hover::after {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .bh-undo[data-infobulle]:focus-visible::after {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* --- Design essai (board/design-essai.ts) ----------------------------------
@@ -8935,6 +9024,33 @@
      la largeur, sans quoi on aurait déplacé le problème au lieu de le régler. */
   .est-statut {
     position: relative;
+  }
+
+  /* Cartes POSÉES SOUS une autre (State of Flow, cartes glissées) : une pile, pas des améliorations en jeu (26/10/2026). Contour
+     en pointillés sur chaque carte empilée, et une pastille « Pile : N » sur le porteur. */
+  .est-attachee.est-empilee .scan-card {
+    outline: 3px dashed rgba(242, 201, 76, 0.9);
+    outline-offset: -2px;
+    border-radius: inherit;
+  }
+  .pile-sous-carte {
+    position: absolute;
+    /* centree sous la carte PORTEUSE (~70 px : la moitie de sa largeur), pas sous toute l'unite */
+    left: 70px;
+    transform: translateX(-50%);
+    bottom: 6px;
+    z-index: 70; /* au-dessus du porteur (toujours devant ses attachements) */
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    line-height: 1.35;
+    white-space: nowrap;
+    color: #0e1116;
+    background: var(--gold, #f2c94c);
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
   }
 
   .statut-nombre {
@@ -10206,4 +10322,64 @@
 .apercu-lot .scan-card {
   --card-w: min(200px, 15vw);
   --inspect-scale: 1;
+}
+
+
+/* Pastilles de traits du heros (28/10/2026). Sur le plateau : posees en bas du scan, comme `.pile-sous-carte`. */
+.pastilles-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  pointer-events: none;
+}
+.pastilles-traits.est-posee {
+  position: absolute;
+  left: calc(var(--nb-g, 0) * var(--attach-step-x));
+  width: 140px;
+  bottom: 3px;
+  z-index: 70;
+  padding: 0 4px;
+}
+.apercu-face > .pastilles-traits {
+  margin-top: 8px;
+  pointer-events: auto;
+}
+.pastille-trait {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  padding: 1px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: #f1f2f4;
+  background: #4a4f5c;
+  border: 1.5px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.pastille-trait.est-gagne {
+  background: #1f8a4c;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+.pastille-trait.est-perdu {
+  background: rgba(20, 20, 24, 0.8);
+  border: 1.5px dashed #e5574d;
+  text-decoration: line-through;
+}
+
+/* Grande carte ouverte au telephone (cartes) : les pastilles se posent sur le bas de la carte, au-dessus de la barre de PV. */
+.carte-ouverte-scan { position: relative; }
+.pastilles-traits.est-sur-grande {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 34px;
+  z-index: 5;
+  padding: 0 8px;
+}
+.pastilles-traits.est-sur-grande .pastille-trait {
+  font-size: 0.8rem;
+  padding: 2px 10px;
 }
