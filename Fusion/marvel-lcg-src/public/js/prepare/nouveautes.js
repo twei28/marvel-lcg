@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-01",
+        genre: "heros",
+        fr: "Trois nouveaux héros fan-made rejoignent le roster : RoboCop, Buffy et Mantis, avec leurs ennemis et leurs cartes en français.",
+        en: "Three new fan-made heroes join the roster: RoboCop, Buffy and Mantis, with their nemesis cards and French text.",
+    },
+    {
+        date: "2026-11-01",
+        genre: "jeu",
+        fr: "Quand une carte offre plusieurs façons de payer, la fenêtre de paiement dit laquelle vous avez choisie, et un second clic passe à la suivante.",
+        en: "When a card offers several ways to pay, the payment window now says which one you picked, and a second click switches to the next.",
+    },
+    {
         date: "2026-10-31",
         genre: "coulisses",
         fr: "MC Creator s'enrichit : inserts (feuillets de campagne et de règles), export PDF, PSD à calques et CardTable, import depuis MarvelCDB, numérotation des cartes, vérification d'un dossier, planche d'aperçu, lien de partage et navigateur de couleurs. Tout reste enregistré dans ton navigateur : pense à « Tout enregistrer (.zip) ».",
