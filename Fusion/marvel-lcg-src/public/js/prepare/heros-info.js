@@ -1981,4 +1981,14 @@ export const HEROS_INFO = {
         ennemis: "The Master, Harvest",
         apparition: "Buffy the Vampire Slayer (1992)",
     },
+    "rc001a": {
+        bio: "Alex Murphy était un policier de Detroit, abattu en service puis ramené à la vie par la méga-corporation OCP sous la forme de RoboCop, un cyborg lourdement armé et soumis à ses Directives Primaires. Mi-homme, mi-machine, tout flic, il cherche à retrouver l'humanité qu'on lui a effacée en faisant respecter la loi dans une ville gangrenée par le crime et la corruption.",
+        bioEn: "Alex Murphy was a Detroit police officer, gunned down in the line of duty and rebuilt by the mega-corporation OCP as RoboCop, a heavily armed cyborg bound by his Prime Directives. Part man, part machine, all cop, he fights to recover the humanity he was stripped of while enforcing the law in a city rotten with crime and corruption.",
+        civil: "Alex Murphy",
+        base: "Detroit, Michigan",
+        equipes: "Police de Detroit",
+        equipesEn: "Detroit Police Department",
+        ennemis: "ED-209, Clarence Boddicker",
+        apparition: "RoboCop (1987)",
+    },
 };

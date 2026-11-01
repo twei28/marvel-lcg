@@ -2291,5 +2291,14 @@
   "encounters": [],
   "max_id": "bf032"
  },
- "checksum": "3cc860e7623c8dfd91b098777640c9c0010959e957138a2bd9087582c964fe09"
+ "238. Custom (RoboCop)": {
+  "name": "robocop",
+  "scenarios": [],
+  "heroes": [
+   "robocop"
+  ],
+  "encounters": [],
+  "max_id": "rc017"
+ },
+ "checksum": "f20de43be6d133cbbb4bdca0a7c8aef43a47c2eaa2402758b493b6b6a63b4249"
 }
