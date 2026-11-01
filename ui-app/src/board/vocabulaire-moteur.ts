@@ -498,6 +498,17 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Heal (\d+) damage from an identity$/, (m) => `Soigner ${degats(m[1]!)} d’une identité`],
   [/^Stun an enemy$/, () => 'Rendre un ennemi sonné'],
   [/^Confuse an enemy$/, () => 'Rendre un ennemi désorienté'],
+  // Pack Mantis (`mt`, 01/11/2026) : les choix de Mantis, Biopathy, Meditation Atrium, Mindlink, Pressure Point Strike, Psychic Tremor.
+  // Le NOM de capacite imprime (« Empathetic Advantage ») reste anglais comme sur le scan ; seule la consigne se traduit.
+  [/^Empathetic Advantage : discard a confused status card$/, () => 'Empathetic Advantage : défausser une carte d’état Désorienté'],
+  [/^Confuse a character you control( to draw 1 card)?$/, (m) => `Rendre désorienté un personnage que tu contrôles${m[1] ? ' pour piocher 1 carte' : ''}`],
+  [/^Heal (\d+) damage from a friendly character$/, (m) => `Soigner ${degats(m[1]!)} d’un personnage allié`],
+  [/^Take 1 damage to shuffle this card into your deck$/, () => 'Subir 1 dégât pour mélanger cette carte dans ton deck'],
+  [/^Deal 1 additional damage to that enemy$/, () => 'Infliger 1 dégât supplémentaire à cet ennemi'],
+  [/^Discard a confused status card from that enemy to draw 1 card$/, () => 'Défausser une carte d’état Désorienté de cet ennemi pour piocher 1 carte'],
+  [/^Exhaust your alter ego → remove Psychic Tremor from the game$/, () => 'Incliner ton alter ego → retirer Psychic Tremor de la partie'],
+  [/^Discard 1 card from your hand for each confused character you control and each confused enemy\. Discard this obligation$/,
+    () => 'Défausser 1 carte de ta main par personnage désorienté que tu contrôles et par ennemi désorienté. Défausser cette obligation'],
   [/^Stun a minion$/, () => 'Rendre un sbire sonné'],
   [/^Ready your hero$/, () => 'Redresser ton héros'],
   [/^Ready your identity$/, () => 'Redresser ton identité'],

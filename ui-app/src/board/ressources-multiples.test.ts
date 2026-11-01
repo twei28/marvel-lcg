@@ -5,6 +5,7 @@
 // toucher payait un jeton, le second le RENDAIT au lieu d'en payer un deuxième.
 import { describe, expect, it } from 'vitest'
 import { ressourcesApresToucher } from './ask'
+import { moyensChoisisDesAlternatives } from './interaction'
 import type { Paiement } from './ask'
 
 const RAGE = 7
@@ -108,5 +109,23 @@ describe('des moyens alternatifs d’une même carte (Empathetic Advantage)', ()
     const un = ressourcesApresToucher([PERSO], [], seul, 1, false)
     expect(un).toEqual([PERSO])
     expect(ressourcesApresToucher([PERSO], un, seul, 1, false)).toEqual([])
+  })
+})
+
+describe('moyensChoisisDesAlternatives : dire quel moyen est posé', () => {
+  const mantis = { name: 'Mantis', resources: [1, 2] } as unknown as import('./world').WorldCard
+  const autre = { name: 'Genius', resources: [9] } as unknown as import('./world').WorldCard
+  const p: Paiement = {
+    cost: 'B',
+    payment: [{ effect_id: 1, res_text: 'BG' }, { effect_id: 2, res_text: 'B' }, { effect_id: 9, res_text: 'B' }],
+    rule: [],
+  }
+  it('nomme le moyen posé quand la carte en offre plusieurs', () => {
+    expect(moyensChoisisDesAlternatives(p, [1], [mantis, autre])).toBe('Mantis : mental + joker')
+    expect(moyensChoisisDesAlternatives(p, [2], [mantis, autre])).toBe('Mantis : mental')
+  })
+  it('ne dit rien pour une carte ordinaire ni sans ressource posée', () => {
+    expect(moyensChoisisDesAlternatives(p, [9], [mantis, autre])).toBeUndefined()
+    expect(moyensChoisisDesAlternatives(p, [], [mantis, autre])).toBeUndefined()
   })
 })

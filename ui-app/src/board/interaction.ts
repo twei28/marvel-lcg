@@ -186,6 +186,8 @@ export type AssistantInteraction = {
   typesManquants?: Record<string, number>
   /** Coût « jusqu'à N » (UpTo) : rien n'est exigé, `coutRequis` est un plafond. */
   coutFacultatif?: boolean
+  /** Quand une MÊME carte offre plusieurs moyens de payer (Mantis : source ennemie ou personnage), lequel est posé. */
+  moyensChoisis?: string
 }
 
 /** Une cible que la table ne montre pas : elle passe par le selecteur. */
@@ -337,6 +339,36 @@ function ciblesParOccurrence(option: Option): Map<number, number> {
 
 function nombreDeFois(cibles: number[], id: number): number {
   return cibles.filter((cible) => cible === id).length
+}
+
+const MOT_RESSOURCE: Record<string, string> = { R: 'physique', B: 'mental', Y: 'énergie', G: 'joker' }
+
+/**
+ * « Mantis : mental + joker » : pour chaque carte qui offre PLUSIEURS moyens de payer dans ce paiement (Empathetic Advantage : défausser un
+ * Désorienté d'un ennemi donne [wild][mental], d'un de SES personnages [mental]), le moyen que le joueur a posé. Le moteur n'envoie que
+ * l'identifiant d'effet et les lettres de la ressource, d'où ce rendu par les lettres. Rien pour les cartes ordinaires.
+ */
+export function moyensChoisisDesAlternatives(
+  paiement: Paiement | undefined,
+  ressources: number[],
+  cartes: Iterable<WorldCard>
+): string | undefined {
+  if (!paiement || ressources.length === 0) return undefined
+  const texteParEffet = new Map<number, string>()
+  for (const moyen of paiement.payment) if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
+  const morceaux: string[] = []
+  for (const carte of cartes) {
+    const siens = new Set((carte.resources ?? []).filter((id) => texteParEffet.has(id)))
+    if (siens.size < 2) continue
+    const poses = ressources.filter((id) => siens.has(id))
+    if (poses.length === 0) continue
+    const mots = poses.map((id) => {
+      const lettres = libelleRessource(texteParEffet.get(id) ?? '')
+      return lettres.split('').map((l) => t(MOT_RESSOURCE[l] ?? l)).join(' + ')
+    })
+    morceaux.push(`${carte.name} : ${mots.join(' ; ')}`)
+  }
+  return morceaux.length > 0 ? morceaux.join(' · ') : undefined
 }
 
 function libelleRessource(resText: string): string {
@@ -1262,6 +1294,7 @@ export function useInteraction(
     coutRegles: reglesCout(paiement),
     typesManquants: typesManquants(paiement, ressources),
     coutFacultatif: paiementFacultatif(paiement),
+    moyensChoisis: moyensChoisisDesAlternatives(paiement, ressources, index.values()),
   }
 
   // La confirmation « ce coup ne fera rien » (11/09/2026). Le moteur accepte

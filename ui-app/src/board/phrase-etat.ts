@@ -42,12 +42,14 @@ export function phraseEtat(assistant: AssistantInteraction, prete: boolean): str
     }
     if (assistant.coutRequis !== undefined) {
       const manque = Math.max(0, assistant.coutRequis - assistant.coutPaye)
-      if (manque === 0) return t('Coût couvert')
+      if (manque === 0) return assistant.moyensChoisis ? `${t('Coût couvert')} · ${assistant.moyensChoisis}` : t('Coût couvert')
       return `${t('Il manque')} ${manque} ${manque > 1 ? t('ressources') : t('ressource')}`
     }
     return assistant.detail ?? ''
   }
-  if (assistant.etape === 'confirm' && prete) return t('Tout est prêt')
+  if (assistant.etape === 'confirm' && prete) {
+    return assistant.moyensChoisis ? `${t('Tout est prêt')} · ${assistant.moyensChoisis}` : t('Tout est prêt')
+  }
   return assistant.detail ?? ''
 }
 
