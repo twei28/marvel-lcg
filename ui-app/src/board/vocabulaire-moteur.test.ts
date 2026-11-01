@@ -233,3 +233,21 @@ describe('traduireMoteur : choix du pack Mantis', () => {
     expect(traduireMoteur('Heal 1 damage from a friendly character')).toBe('Heal 1 damage from a friendly character')
   })
 })
+
+describe('traduireMoteur : choix du scénario Cassandra Nova (Hellfire Hunt, hf)', () => {
+  it('traduit les trois branches de Cassandra Domination, les pénalités des complots et Wild Sentinel', () => {
+    enFrancais()
+    expect(traduireMoteur('Place 2 threat on each scheme')).toBe('Placer 2 menaces sur chaque manigance')
+    expect(traduireMoteur('Stun and confuse your identity')).toBe('Rendre ton identité sonnée et désorientée')
+    expect(traduireMoteur('Deal 3 indirect damage to another friendly character')).toBe('Infliger 3 dégâts indirects à un autre personnage ami')
+    expect(traduireMoteur('Place 1 threat here')).toBe('Placer 1 menace ici')
+    expect(traduireMoteur('Take 2 damage')).toBe('Subir 2 dégâts')
+    expect(traduireMoteur('Deal yourself 1 facedown encounter card')).toBe('Te distribuer 1 carte rencontre face cachée')
+    expect(traduireMoteur('Discard 1 card from your hand')).toBe('Défausser 1 carte de ta main')
+    expect(traduireMoteur('Place this card on the bottom of the encounter deck instead of the discard pile')).toBe(
+      'Placer cette carte sous le deck rencontre au lieu de la défausse'
+    )
+    enAnglais()
+    expect(traduireMoteur('Place 2 threat on each scheme')).toBe('Place 2 threat on each scheme')
+  })
+})

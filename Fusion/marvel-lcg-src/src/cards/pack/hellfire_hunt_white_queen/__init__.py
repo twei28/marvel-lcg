@@ -140,9 +140,15 @@ def RetirerUnCompteurIllusion(effect: 'Effect') -> None:
 
 def SbireWQEntreEnJeu() -> 'Ability':
     """Perfection hf301 / hf302 : « Forced Interrupt : When a White Queen minion attempts to enter play, give the engaged player a facedown
-    encounter card and discard this card. » Le sbire n'entre JAMAIS en jeu (il sert aux AUTRES scenarios, livret p. 8). Modele : 22028 Gamora
+    encounter card and discard this card. » Le sbire n'entre JAMAIS en jeu tant que le VILAIN White Queen y est (scenario 1 ; livret p. 8) ; correctif du
+    01/11/2026 : l'Interruption ne part que dans ce cas (scenario 4 Torn : le vilain est Emma Frost). Modele : 22028 Gamora
     (`WhenCardWouldEnterPlay` Forced Interrupt « This »)."""
     def entre_en_jeu(effect: 'Effect', message: 'Message.WhenCardWouldMoveToArea') -> None:
+        # CORRECTIF (01/11/2026, scenario Torn, `hellfire_hunt_torn`) : la carte est UNIQUE (« * White Queen ») ; elle ne peut pas entrer en jeu pendant que le VILAIN
+        # White Queen y est (scenario 1). Au scenario 4 (Torn) le vilain est Emma Frost : les sbires White Queen du module Perfection y entrent NORMALEMENT (hf510
+        # Hellfire Assault : « if it is White Queen, Emma Frost attacks the player »). Sans cette garde l'Interruption defaussait ces sbires partout.
+        if VilainWQ(effect) is None:
+            return
         ini = message.by_effect.initiator
         joueur = ini if Player.IsType(ini) else Worlds.GetFirstPlayer(effect)
         # La carte va a la DEFAUSSE rencontre au lieu d'entrer en jeu (`ChangeToArea`, modele 25002 / gmw collector).

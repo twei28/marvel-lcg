@@ -354,3 +354,9 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - [x] infection.md (idem : compteur sur l'identité, morsure, limite 7/6 -> héros vaincu et version zombie en jeu,
       récupération de base « soigner REC OU retirer 3 Infection »)
 - [x] tour-supplementaire.md (maison, pack `rachel_summers` : « take an additional turn » et « end this turn », drapeaux `RM_TOUR_SUPPLEMENTAIRE` / `RM_FIN_DE_TOUR`, CORRECTIFS `world.py` / `player_phase.py` / `event/manager.py`, 26/10/2026)
+
+## Maison (scénario Black King de Hellfire Hunt, 01/11/2026)
+
+- [x] absorb.md
+- [x] captive.md
+- [x] deck-hellfire.md (maison, scénario 4 « Torn » de Hellfire Hunt : deck de TABLE avec défausse propre, `DeckHellfire`, `bind_discard_pile`, remélange sans pénalité, piles de la table)

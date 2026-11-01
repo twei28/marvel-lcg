@@ -61,6 +61,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   flare: 'fusée',
   calm: 'calme',
   illusion: 'illusion',
+  cassandra_controls: 'contrôle de Cassandra', // hf601-hf621 (scénario Cassandra Nova, Hellfire Hunt) : « Cassandra Controls counter »
   menace: 'menace',
   evidence: 'preuve',
   adrenaline: 'adrénaline',

@@ -32,7 +32,10 @@ resolve the obligation.
 # imprime Acceleration ET Crisis sur une obligation.
 # Ajout PUREMENT ADDITIF : sans `desc.Crisis`, rien ne change (printed_crisis
 # vaut 0). Aucune obligation officielle n'en porte.
-class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, CanCrisis, HasUses, EncounterNonVillainCard, FinalType):
+# ⚠ AJOUT (01/11/2026, campagne Hellfire Hunt, Immensity hf357 / hf358 « Narrow Minded ») : `HasAmplify` AJOUTE, pour la meme raison que `CanCrisis`
+# ci-dessus : `desc.Amplify` sur une obligation faisait tomber la mise en place sur `KeyError: 'Amplify'` (has_attribute.py:32). Le type `Attachment`
+# la porte depuis toujours. Ajout PUREMENT ADDITIF : sans `desc.Amplify`, rien ne change (printed_amplify vaut 0). Aucune obligation officielle n'en porte.
+class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, CanCrisis, HasAmplify, HasUses, EncounterNonVillainCard, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
         self.printed_give_to: str|None = None

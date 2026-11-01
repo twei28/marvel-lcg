@@ -30,14 +30,16 @@
    "numero": 2,
    "nom": "Black King",
    "nom_fr": "Black King",
-   "resume": "Sebastian Shaw absorbe l'énergie de chaque coup qu'il reçoit.",
-   "enjeu": "Les alliés captifs libérés deviennent des alliés Recruited.",
+   "resume": "Sebastian Shaw, le Roi Noir, absorbe l'énergie de chaque coup qu'il reçoit et la retourne contre vous ou contre le monde.",
+   "enjeu": "Libérez les mutants captifs cachés sous Captured by Hellfire! (Dust, Mercury, Surge, Prodigy) : les captifs libérés sont notés « Recruited » et rejoignent le deck Recruited Mutants des scénarios suivants. Emma Frost's Redemption est révélée dès ce scénario.",
    "victoire": [],
    "pages": {
     "intro": [],
     "regles": [],
     "epilogue": []
-   }
+   },
+   "resume_en": "Sebastian Shaw, the Black King, absorbs the energy of every blow he takes and turns it against you or against the world.",
+   "enjeu_en": "Free the mutant captives hidden under Captured by Hellfire! (Dust, Mercury, Surge, Prodigy): the freed captives are recorded as Recruited and join the Recruited Mutants deck of the following scenarios. Emma Frost's Redemption is revealed from this scenario on."
   },
   {
    "id": "hellfire_black_queen",
@@ -58,8 +60,8 @@
    "numero": 4,
    "nom": "Torn",
    "nom_fr": "Torn",
-   "resume": "Emma Frost, déchirée, est devenue le jouet de Cassandra Nova.",
-   "enjeu": "Le deck Hellfire regroupe les sbires ELITE HELLFIRE avec sa propre défausse.",
+   "resume": "Emma Frost, déchirée, est devenue le jouet de Cassandra Nova : elle ne peut pas être vaincue, il faut briser l'emprise psychique qui la tient.",
+   "enjeu": "Emma Frost a quatre faces : vaincue, elle se retourne (PV infinis) jusqu'à la fin de la phase du méchant, puis revient à ses PV imprimés. On gagne en retirant toute la menace de Nova's Psychic Puppetry (face Fragment). Le deck Hellfire regroupe les sbires ÉLITE HELLFIRE, avec sa propre défausse. À la victoire, les alliés Recruited gagnés sont notés ; en expert, les PV restants aussi.",
    "victoire": [],
    "pages": {
     "intro": [],
@@ -72,8 +74,8 @@
    "numero": 5,
    "nom": "Cassandra Nova",
    "nom_fr": "Cassandra Nova",
-   "resume": "Cassandra Nova veut éliminer tous les mutants.",
-   "enjeu": "Dernier scénario : en expert, une défaite fait perdre toute la campagne. Xavier's Institute quitte le jeu ; les survivants se rallient autour de Rally the Survivors.",
+   "resume": "Cassandra Nova, la sœur jumelle maléfique de Charles Xavier, lance son plan d'extinction des mutants avec les moyens du Hellfire Club, des mutants captifs et de la technologie volée.",
+   "enjeu": "Dernier scénario : Cassandra Nova pose des compteurs de Contrôle sur votre identité ; à 3, Cassandra Domination vous force à choisir. Xavier's Institute quitte le jeu ; les survivants se rallient autour de Rally the Survivors. En expert, une défaite fait perdre toute la campagne ; la victoire la gagne.",
    "victoire": [],
    "pages": {
     "intro": [],
@@ -81,7 +83,13 @@
     "epilogue": []
    },
    "final": true,
-   "defaite": {"quand": "partie_perdue", "expert_seulement": true, "texte": "Cassandra Nova élimine tous les mutants : la campagne est perdue."}
+   "defaite": {
+    "quand": "partie_perdue",
+    "expert_seulement": true,
+    "texte": "Cassandra Nova élimine tous les mutants : la campagne est perdue."
+   },
+   "resume_en": "Cassandra Nova, Charles Xavier's evil twin sister, launches her plan for mutant extinction with the resources of the Hellfire Club, captured mutants and stolen technology.",
+   "enjeu_en": "Final scenario: Cassandra Nova places Cassandra Controls counters on your identity; at 3, Cassandra Domination forces a choice. Xavier's Institute leaves play; the survivors rally around Rally the Survivors. In expert, a defeat loses the whole campaign; victory wins it."
   }
  ],
  "victoire_commune": [
@@ -105,10 +113,14 @@
     "hf025",
     "hf026",
     "hf027",
-    "hf028"
+    "hf028",
+    "hf208",
+    "hf209",
+    "hf210",
+    "hf211"
    ],
    "libelle": "Alliés Recruited",
-   "aide": "Les alliés de campagne gagnés (jusqu'à 16). À chaque scénario, ils forment le deck Recruited Mutants posé à côté de Xavier's Institute (scénarios 1 à 4) ou de Rally the Survivors (scénario 5) ; les autres attendent mis de côté, que les manigances POTENTIAL ALLY viennent chercher. Cochez ou décochez pour corriger."
+   "aide": "Les alliés de campagne gagnés (16 alliés Recruited, plus les 4 alliés CAPTIVE libérés au scénario 2 : Dust, Mercury, Surge, Prodigy). À chaque scénario, ils forment le deck Recruited Mutants posé à côté de Xavier's Institute (scénarios 1 à 4) ou de Rally the Survivors (scénario 5) ; les autres attendent mis de côté, que les manigances POTENTIAL ALLY (ou, au scénario 2, Captured by Hellfire!) viennent les chercher. Cochez ou décochez pour corriger."
   },
   {
    "cle": "Removed Potential Allies",

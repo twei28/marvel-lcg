@@ -136820,7 +136820,7 @@
    "text": "Team-Up (Drax and Mantis). Max 1 per deck.\n<b>Hero Action</b>: Spend up to 2 [mental] resources → heal 2 damage from an identity for each [mental] resource spent. You may take 1 damage to shuffle this card into your deck."
   }
  ],
- "checksum": "a7a2b7ab17cb8ff3bcdbba39a5a03dd9b66d4fa54b313e702c67fe335cbe1620",
+ "checksum": "832089208bc357a087f4767c243d3f2d1a8e35c454ef84426f64f2537c3196f8",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -137477,8 +137477,8 @@
    "subtitle": "",
    "desc": {
     "StartingThreat": "2*",
-    "Acceleration": "1",
-    "Boost": "1"
+    "Boost": "1",
+    "Hazard": "1"
    },
    "traits": [],
    "set_name": "Hellfire Conclave",
@@ -138422,6 +138422,2273 @@
    "traits": [],
    "set_name": "Hellfire Hunt",
    "text": "<b>Forced Response</b>: After a [[RECRUITED]] ally is discarded, place it into the Recruited Mutants discard pile instead.\n<b>Action</b>: Spend 1 resource of any type → draw 1 card from the Recruited Mutants deck. (Max once per phase per player.)",
+   "custom": "Dipsome"
+  }
+ ],
+ "hellfire_hunt_black_queen": [
+  {
+   "card_id": "hf361",
+   "type": "Minion",
+   "name": "* Darkhold Dwarf",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "3",
+    "Boost": "2"
+   },
+   "traits": [
+    "DEMON",
+    "ELITE"
+   ],
+   "set_name": "Darkhold",
+   "text": "<b>When Revealed</b>: Tuck the topmost [[Spell of Darkhold]] encounter card from the encounter discard pile under here.\n<b>When Defeated</b>: Reveal the card tucked here.\n<i>\"For ease of reference, call me what most people I meet do: The Darkhold Dwarf. Insensitive, I admit, but at my age, frankly, I don't give a damn.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf362",
+   "type": "Attachment",
+   "name": "* Darkhold",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "3",
+    "Uses": "2,darkspell"
+   },
+   "traits": [
+    "MAGICAL BOOK"
+   ],
+   "set_name": "Darkhold",
+   "text": "Attach to the villain.\nUses (2 darkspell counters)\n[star] <b>Forced Interrupt</b>: When the villain attacks, remove 1 Darkspell counter from here → give the attached character 1 additional boost card for this activation.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf363",
+   "type": "Attachment",
+   "name": "Eternal Manipulation",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "SPELL",
+    "SPELL OF DARKHOLD"
+   ],
+   "set_name": "Darkhold",
+   "text": "Treat attached ally as a minion with a blank text box <i>(except for [[TRAITS]])</i>. Attach minion's SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: If Darkhold is attached to the villain, attached this to your ally with highest hit-point, Remove 1 darkspell counter from Darkhold. Otherwise, find Darkhold attachment and reveal it.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf364",
+   "type": "Treachery",
+   "name": "Hellfire Conjuration",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SPELL",
+    "SPELL OF DARKHOLD"
+   ],
+   "set_name": "Darkhold",
+   "text": "<b>When Revealed</b>: If Darkhold is attached to the villain, take 3 indirect damages, remove 1 darkspell counter from Darkhold. Otherwise, find Darkhold attachment and reveal it.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf365",
+   "type": "Treachery",
+   "name": "Soul Siphon",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "SPELL",
+    "SPELL OF DARKHOLD"
+   ],
+   "set_name": "Darkhold",
+   "text": "<b>When Revealed</b>: If Darkhold is attached to the villain, you are stunned and confused, remove 1 darkspell counter from Darkhold. Otherwise, find Darkhold and reveal it.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf366",
+   "type": "Treachery",
+   "name": "Dimensional Portal",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "SPELL",
+    "SPELL OF DARKHOLD"
+   ],
+   "set_name": "Darkhold",
+   "text": "<b>When Revealed</b>: If Darkhold is attached to the villain, discard cards from the top of the encounter deck until a minion, reveal that minion, and remove 1 darkspell counter from Darkhold. Otherwise, find Darkhold and reveal it.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf401",
+   "type": "Villain",
+   "name": "* Selene",
+   "subtitle": "",
+   "desc": {
+    "HP": "12*",
+    "ATK": "1",
+    "SCH": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "MYSTIC"
+   ],
+   "set_name": "Black Queen",
+   "text": "<b>Forced Response</b>: After Selene attacks, heal damage from her equal to the amount of non-excess damage characters the defending player controlled took from this attack.\n<i>\"Through all the centuries... I've never had anyone track me - when I didn't want them to. Unfortunately, you won't be alive long enough to share what you've learned...\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf402",
+   "type": "Villain",
+   "name": "* Selene",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "2",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "MYSTIC"
+   ],
+   "set_name": "Black Queen",
+   "text": "Toughness.\n<b>Forced Response</b>: After Selene attacks, heal damage from her equal to the amount of non-excess damage characters the defending player controlled took from this attack.\n<i>\"Countless thousands have gone to the fire in my name. Which of you two... will be the next?\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf403",
+   "type": "Villain",
+   "name": "* Selene",
+   "subtitle": "",
+   "desc": {
+    "HP": "17*",
+    "ATK": "3",
+    "SCH": "2",
+    "Stage": "3",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "MYSTIC"
+   ],
+   "set_name": "Black Queen",
+   "text": "Steady. Toughness.\n<b>Forced Response</b>: After Selene attacks, heal damage from her equal to the amount of non-excess damage characters the defending player controlled took from this attack.\n<i>\"This is where I become a god.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf404a",
+   "type": "MainScheme",
+   "name": "Throne of the Hellfire Club",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "<i>After Sebastian lost interest in the Club, Selene tried to reform the Inner Circle with demonic help, bringing Mephisto's son Blackheart in as her new Black King.</i>\n<b>Contents</b>: Selene (I) and Selene (II). <i>(Selene (II) and Selene (III) instead for expert mode.)</i> Black Queen, Darkhold and Standard encounter sets. One modular encounter set <i>(Hellfire Conclave)</i>.\n<b>Setup</b>: Put Under the Moonlight environment into the play. Set the Darkhold module aside. Shuffle the set-aside Darkhold Dwarf into the encounter deck.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf404b",
+   "type": "MainScheme",
+   "name": "Throne of the Hellfire Club",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "5*",
+    "EscalationThreat": "2*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "<i>After getting the throne, Black Queen sought some kind of helpful power to consolidate her position.</i>\n<b>Forced Interrupt</b>: When Darkhold Dwarf enters the discard pile, advance to stage 2A.\n<b>When Completed</b>: Give Selene a tough status card. If Beneath the Sun environment is in play, remove 2[per_hero] time counters from it.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf405a",
+   "type": "MainScheme",
+   "name": "The Power of the Darkhold",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "<i>Selene sought to acquire the ancient Chthon Scrolls as known as the Darkhold, a book of evil spells. By tapping into the Darkhold's forbidden knowledge, Selene could unlock powerful spells and rituals to achieve her ultimate goal of godhood.</i>\n<b>When Revealed</b>: Shuffle the set-aside Darkhold modular set into the encounter deck.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf405b",
+   "type": "MainScheme",
+   "name": "Get the Power",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "TargetThreat": "7*",
+    "EscalationThreat": "1*",
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "<b>When Completed</b>: Give Selene a tough status card. Find Darkhold and attach it to Selene.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf406a",
+   "type": "MainScheme",
+   "name": "Ascending to Godhood",
+   "subtitle": "",
+   "desc": {
+    "Stage": "3"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "<i>With the Darkhold's power under her control, Selene was able to perform a dark ritual to empowered herself for absorbing the life force of millions creatures to ascend to godhood.</i>\n<b>When Revealed</b>: Find the Immortal Moon Goddess side scheme and reveal it. Find Blackheart and put it into play engaged with the first player. <i>(Shuffle.)</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf406b",
+   "type": "MainScheme",
+   "name": "Ascending to Godhood",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "0",
+    "TargetThreat": "17*",
+    "EscalationThreat": "2*",
+    "Stage": "3"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "[star] <b>Forced Response</b>: After step one of the villain phase, place 1 threat here for each time counter on Under the Moonlight or Beneath the Sun.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf407a",
+   "type": "Environment",
+   "name": "Under the Moonlight",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "Under the Moonlight enters play with 3[per_hero] time counters. If there are no time counters here, flip this card.\n<b>Forced Interrupt</b>: When Black Queen would activate, give her 1 more boost card.\n<b>Forced Response</b>: After a character uses a basic power or an enemy activates, remove 1 time counter here.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf407b",
+   "type": "Environment",
+   "name": "Beneath the Sun",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "Beneath the Sun enters play with 3[per_hero] time counters. If there are no time counters here, flip this card.\nEach identity gets +1 to each of its basic powers.\n<b>Forced Response</b>: After a character uses a basic power or an enemy activates, remove 1 time counter here.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf408",
+   "type": "Minion",
+   "name": "* Blackheart",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "3",
+    "Guard": "1",
+    "Patrol": "1",
+    "Steady": "1"
+   },
+   "traits": [
+    "DEMON",
+    "ELITE"
+   ],
+   "set_name": "Black Queen",
+   "text": "Guard. Patrol. Steady.\n<i>\"You've brought Hell to Earth!\"</i>\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, this attack gains overkill, piercing, and ranged.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf409",
+   "type": "Minion",
+   "name": "Little Demon",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Patrol": "1",
+    "Teamwork": "DEMON"
+   },
+   "traits": [
+    "DEMON",
+    "HELL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Patrol. Teamwork ([[Demon]]).\n<b>Forced Response</b>: After Little Demon attacks and damages you, you are confused.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf410",
+   "type": "Minion",
+   "name": "Little Demon",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Patrol": "1",
+    "Teamwork": "DEMON"
+   },
+   "traits": [
+    "DEMON",
+    "HELL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Patrol. Teamwork ([[Demon]]).\n<b>Forced Response</b>: After Little Demon attacks and damages you, you are confused.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf411",
+   "type": "Minion",
+   "name": "Little Demon",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Patrol": "1",
+    "Teamwork": "DEMON"
+   },
+   "traits": [
+    "DEMON",
+    "HELL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Patrol. Teamwork ([[Demon]]).\n<b>Forced Response</b>: After Little Demon attacks and damages you, you are confused.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf412",
+   "type": "Minion",
+   "name": "Little Demon",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Patrol": "1",
+    "Teamwork": "DEMON"
+   },
+   "traits": [
+    "DEMON",
+    "HELL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Patrol. Teamwork ([[Demon]]).\n<b>Forced Response</b>: After Little Demon attacks and damages you, you are confused.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf413",
+   "type": "Attachment",
+   "name": "Hyponotic Trance",
+   "subtitle": "",
+   "desc": {
+    "THW+": "-1",
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf414",
+   "type": "Attachment",
+   "name": "Hyponotic Trance",
+   "subtitle": "",
+   "desc": {
+    "THW+": "-1",
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf415",
+   "type": "Attachment",
+   "name": "Hyponotic Trance",
+   "subtitle": "",
+   "desc": {
+    "THW+": "-1",
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf416",
+   "type": "Attachment",
+   "name": "Shining Shield",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Attach to Selene.\nSelene cannot take more than 2 damage from a single attack.\n<b>Hero Action</b>: Spend a [energy] resource and remove 1 time counter from Beneath the Sun → discard this card.\n<hr />\n[star] <b>Boost</b>: Attach this card to Selene.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf417",
+   "type": "Attachment",
+   "name": "Shining Shield",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Black Queen",
+   "text": "Attach to Selene.\nSelene cannot take more than 2 damage from a single attack.\n<b>Hero Action</b>: Spend a [energy] resource and remove 1 time counter from Beneath the Sun → discard this card.\n<hr />\n[star] <b>Boost</b>: Attach this card to Selene.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf418",
+   "type": "Attachment",
+   "name": "Relentless Pursuit",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Black Queen",
+   "text": "Attach to your identity.\n<b>Forced Interrupt</b>: When Selene would scheme against you, she attacks you instead.\n<b>Hero Action</b>: Spend a [physical] resource and remove 1 time counter from Beneath the Sun → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf419",
+   "type": "Treachery",
+   "name": "Dark Temptation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "<b>When Revealed</b>: Selene attacks you.\n<hr />\n[star] <b>Boost</b>: If this attack defeats an ally, place 2 threat on the main scheme.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf420",
+   "type": "Treachery",
+   "name": "Lunar Eclipse",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SPELL"
+   ],
+   "set_name": "Black Queen",
+   "text": "<b>When Revealed</b>: Remove 1[per_hero] time counter from Beneath the Sun. If you cannot, place 1[per_hero] time counter on Under the Moonlight.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf421",
+   "type": "SideScheme",
+   "name": "Eternal Night",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "Time counter on Under the Moonlight environment could not be removed.\n<b>When Revealed</b>: Flip Beneath the Sun.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf422",
+   "type": "SideScheme",
+   "name": "Immortal Moon Goddess",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "7",
+    "Hinder": "2*",
+    "Victory": "1",
+    "Acceleration": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Black Queen",
+   "text": "<i>\"Soon...the world will know True External High Lords for the first time. Immortal. Invulnerable...and unstoppable.\"</i>\nHinder 2[per_hero]. Victory 1.\nWhile Under the Moonlight is in play, Black Queen cannot be defeated.",
+   "custom": "Dipsome"
+  }
+ ],
+ "hellfire_hunt_black_king": [
+  {
+   "card_id": "hf201",
+   "type": "Villain",
+   "name": "* Sebastian Shaw",
+   "subtitle": "",
+   "desc": {
+    "HP": "13*",
+    "ATK": "0*",
+    "SCH": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "HELLFIRE"
+   ],
+   "set_name": "Black King",
+   "text": "[star] <b>Forced Interrupt</b>: When Sebastian Shaw attacks, remove all energy counters here to a maximum of 3. For each energy counter removed in this way, he gets +1 ATK for this activation.\n<i>Absorb</i> — <b>Forced Response</b>: After Sebastian Shaw takes damage from an attack, place energy counters on him equal to the damage taken.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf202",
+   "type": "Villain",
+   "name": "* Sebastian Shaw",
+   "subtitle": "",
+   "desc": {
+    "HP": "15*",
+    "ATK": "1*",
+    "SCH": "3",
+    "Stage": "2"
+   },
+   "traits": [
+    "HELLFIRE"
+   ],
+   "set_name": "Black King",
+   "text": "[star] <b>Forced Interrupt</b>: When Sebastian Shaw attacks, remove all energy counters here to a maximum of 3. For each energy counter removed in this way, he gets +1 ATK for this activation.\n<i>Absorb</i> — <b>Forced Response</b>: After Sebastian Shaw takes damage from an attack, place energy counters on him equal to the damage taken.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf203",
+   "type": "Villain",
+   "name": "* Sebastian Shaw",
+   "subtitle": "",
+   "desc": {
+    "HP": "17*",
+    "ATK": "1*",
+    "SCH": "3",
+    "Stage": "3"
+   },
+   "traits": [
+    "HELLFIRE"
+   ],
+   "set_name": "Black King",
+   "text": "[star] <b>Forced Interrupt</b>: When Sebastian Shaw attacks, remove all energy counters here to a maximum of 3. For each energy counter removed in this way, he gets +1 ATK for this activation.\n<i>Absorb</i> — <b>Forced Response</b>: After Sebastian Shaw takes damage from an attack, place energy counters on him equal to the damage taken. Place 1 additional energy counter here.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf204a",
+   "type": "MainScheme",
+   "name": "Jailbreak at the Hellfire Club",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Black King",
+   "text": "<i>The Hellfire Club has kidnapped a group of powerful mutants, the heroes is going to infiltrate the Hellfire Club's stronghold and stage a daring rescue mission.</i>\n<b>Contents</b>: Sebastian Shaw (I) and Sebastian Shaw (II). <i>(Sebastian Shaw (II) Sebastian Shawing (III) instead for expert mode.)</i> Black King, Sebastian Shaw and Standard encounter sets. One modular encounter set <i>(Hellfire Conclave)</i>.\n<b>Setup</b>: Remove each minion named Sebastian Shaw from the game. Set each [[Captive]] ally aside. Reveal the Captured by Hellfire! side scheme. Attach Black King to Sebastian Shaw.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf204b",
+   "type": "MainScheme",
+   "name": "Jailbreak at the Hellfire Club",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "0",
+    "TargetThreat": "5*",
+    "EscalationThreat": "1*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Black King",
+   "text": "Threat cannot be removed from this scheme.\n<b>Forced Interrupt</b>: When Sebastian Shaw would scheme against you, deal you 1 facedown encounter card instead.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf205a",
+   "type": "MainScheme",
+   "name": "Operation Hellfire Ascendant",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Black King",
+   "text": "<i>Shaw is consolidating his power and implementing his vision of a Hellfire-controlled society.</i>\n<b>When Revealed</b>: Deal each player a facedown encounter card. Flip Black King attachment.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf205b",
+   "type": "MainScheme",
+   "name": "Operation Hellfire Ascendant",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4*",
+    "TargetThreat": "13*",
+    "EscalationThreat": "1*",
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Black King",
+   "text": "<i>The mutant captives are merely bait for the heroes, and Shaw has set his sights on the rescuers. He's angry but is also waiting for the chance to fight you.</i>\n<b>Hero Action</b>: Exhaust a [[Captive]] ally you control → remove 2 energy counters from Sebastian Shaw. <i>(Limit once per round per player.)</i>\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf206",
+   "type": "SideScheme",
+   "name": "Captured by Hellfire!",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "5",
+    "Victory": "1",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Black King",
+   "text": "Permanent. Victory 1.\n<b>When Revealed</b>: Place 1[per_hero] random set-aside [[Captive]] allies facedown beneath this scheme.\n<b>When Defeated</b>: The player who defeated this scheme takes a random card from beneath here, and add it to their hand. After that, if there still has card under this scheme, place 5 threat here. Otherwise, advance to main scheme 2A and add this card to the victory display.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf207a",
+   "type": "Attachment",
+   "name": "* Black King",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Black King",
+   "text": "Permanent.\n<i>King's Tactic</i> — <b>Forced Interrupt</b>: When Sebastian Shaw's \"<i>Absorb</i>\" ability triggers while there is an energy counter on him, remove each energy counters from him, place that much threat on the main scheme.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf207b",
+   "type": "Attachment",
+   "name": "\"And What Is Theirs... Is Mine.\"",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Black King",
+   "text": "Permanent.\nSebastian Shaw gains stalwart while there is more than 5 energy counters on him.\n<i>King's Tactic</i> — <b>Forced Interrupt</b>: When Sebastian Shaw's \"<i>Absorb</i>\" ability triggers while there is an energy counter on him, remove each energy counters from him, place that much threat on the main scheme. <i>(Max 1[per_hero] times per round.)</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf208",
+   "type": "Ally",
+   "name": "* Dust",
+   "subtitle": "Sooraya Qadir",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "CAPTIVE",
+    "MUTANT"
+   ],
+   "set_name": "Black King",
+   "text": "[star] <b>Interrupt</b>: When Dust attacks, resolve this attack against the villain and each minion engaged with you.\n<i>\"Be silent! No God would condone such horror! Such hatred! You are the abomination! \"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf209",
+   "type": "Ally",
+   "name": "* Mercury",
+   "subtitle": "Cessily Kincaid",
+   "desc": {
+    "Cost": "2",
+    "HP": "5",
+    "ATK": "2***",
+    "THW": "2***",
+    "RES": "B",
+    "Toughness": "1",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "CAPTIVE",
+    "MUTANT"
+   ],
+   "set_name": "Black King",
+   "text": "Toughness.\n<i>\"Worst...field trip...ever!\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf210",
+   "type": "Ally",
+   "name": "* Surge",
+   "subtitle": "Noriko Ashida",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "CAPTIVE",
+    "MUTANT"
+   ],
+   "set_name": "Black King",
+   "text": "[star] <b>Interrupt</b>: When Surge attacks an enemy, that enemy get stunned.\n<i>\"We split the youth vote, didn't we?\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf211",
+   "type": "Ally",
+   "name": "* Prodigy",
+   "subtitle": "David Alleyne",
+   "desc": {
+    "Cost": "1",
+    "HP": "1",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Campaign;Basic"
+   },
+   "traits": [
+    "CAPTIVE",
+    "MUTANT"
+   ],
+   "set_name": "Black King",
+   "text": "<b>Response</b>: After you play Prodigy from hand, draw 1 card.\n<i>\"There are fates worse than death. And sometimes your own imagination is more monstrous than the truth.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf212",
+   "type": "Minion",
+   "name": "Ebon Knight",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HELLFIRE"
+   ],
+   "set_name": "Black King",
+   "text": "Guard. Patrol. Quickstrike.\n<hr />\n[star] <b>Boost</b>: After this activation, deal Ebon Knight to you as a facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf213",
+   "type": "Minion",
+   "name": "Ebon Knight",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HELLFIRE"
+   ],
+   "set_name": "Black King",
+   "text": "Guard. Patrol. Quickstrike.\n<hr />\n[star] <b>Boost</b>: After this activation, deal Ebon Knight to you as a facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf214",
+   "type": "Minion",
+   "name": "Ebon Knight",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HELLFIRE"
+   ],
+   "set_name": "Black King",
+   "text": "Guard. Patrol. Quickstrike.\n<hr />\n[star] <b>Boost</b>: After this activation, deal Ebon Knight to you as a facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf215",
+   "type": "Minion",
+   "name": "Ebon Knight",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "1",
+    "Guard": "1",
+    "Patrol": "1",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HELLFIRE"
+   ],
+   "set_name": "Black King",
+   "text": "Guard. Patrol. Quickstrike.\n<hr />\n[star] <b>Boost</b>: After this activation, deal Ebon Knight to you as a facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf216",
+   "type": "Attachment",
+   "name": "Inhibitor Collar",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "TECH",
+    "ARTIFACT"
+   ],
+   "set_name": "Black King",
+   "text": "Attach to your identity.\nTreat your identity's printed text box as blank <i>(except for [[TRAITS]])</i>.\n<b>Alter-Ego Action</b>: Spend [physical][physical] resources → discard this card. Any player may trigger this ability.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, this attack gains overkill.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf217",
+   "type": "Attachment",
+   "name": "Inhibitor Collar",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "TECH",
+    "ARTIFACT"
+   ],
+   "set_name": "Black King",
+   "text": "Attach to your identity.\nTreat your identity's printed text box as blank <i>(except for [[TRAITS]])</i>.\n<b>Alter-Ego Action</b>: Spend [physical][physical] resources → discard this card. Any player may trigger this ability.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, this attack gains overkill.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf218",
+   "type": "Attachment",
+   "name": "Targeted by Hellfire",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Black King",
+   "text": "Attach to your identity if a copy of Targeted by Hellfire is not attached to you. Otherwise, this card gains surge.\n<b>Forced Response</b>: After you change to hero form, Sebastian Shaw and each [[Hellfire]] minion engaged with you attacks you. Discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf219",
+   "type": "Attachment",
+   "name": "Targeted by Hellfire",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Black King",
+   "text": "Attach to your identity if a copy of Targeted by Hellfire is not attached to you. Otherwise, this card gains surge.\n<b>Forced Response</b>: After you change to hero form, Sebastian Shaw and each [[Hellfire]] minion engaged with you attacks you. Discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf220",
+   "type": "Treachery",
+   "name": "Mutant Suppression",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Black King",
+   "text": "<b>When Revealed</b>: Exhaust your identity and each ally you control.\n<hr />\n[star] <b>Boost</b>: After this activation, exhaust your identity and place 1 energy counter on Sebastian Shaw.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf221",
+   "type": "Treachery",
+   "name": "Mutant Suppression",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Black King",
+   "text": "<b>When Revealed</b>: Exhaust your identity and each ally you control.\n<hr />\n[star] <b>Boost</b>: After this activation, exhaust your identity and place 1 energy counter on Sebastian Shaw.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf222",
+   "type": "Treachery",
+   "name": "Hellfire Indoctrination",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "TACTIC"
+   ],
+   "set_name": "Black King",
+   "text": "<b>When Revealed</b>: Confuse each ally you control. If there is no [[Captive]] ally is confused in this way, this gains surge.\n<hr />\n[star] <b>Boost</b>: After this activation, place 2 energy counters on Sebastian Shaw.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf223",
+   "type": "Treachery",
+   "name": "Hellfire Indoctrination",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "TACTIC"
+   ],
+   "set_name": "Black King",
+   "text": "<b>When Revealed</b>: Confuse each ally you control. If there is no [[Captive]] ally is confused in this way, this gains surge.\n<hr />\n[star] <b>Boost</b>: After this activation, place 2 energy counters on Sebastian Shaw.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf224",
+   "type": "Treachery",
+   "name": "Energic Backlash",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Black King",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Place 4 energy counters on Sebastian Shaw.\n<b>When Revealed (Hero)</b>: Place 2 energy counters on Sebastian Shaw. Sebastian Shaw attacks you.\n<hr />\n[star] <b>Boost</b>: After this activation, place 3 energy counters on Sebastian Shaw.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf225",
+   "type": "Treachery",
+   "name": "Energic Backlash",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Black King",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Place 4 energy counters on Sebastian Shaw.\n<b>When Revealed (Hero)</b>: Place 2 energy counters on Sebastian Shaw. Sebastian Shaw attacks you.\n<hr />\n[star] <b>Boost</b>: After this activation, place 3 energy counters on Sebastian Shaw.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf226",
+   "type": "SideScheme",
+   "name": "Mutant Experimentation",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2",
+    "Hazard": "1"
+   },
+   "traits": [],
+   "set_name": "Black King",
+   "text": "<i>In their quest for power, the Hellfire Club has subjected the captured mutants to invasive experiments designed to unlock their full ptential for Shaw's personal army.</i>\n<b>When Defeated</b>: Each player must choose and discard 1 card from their hand.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf227",
+   "type": "SideScheme",
+   "name": "Rage of Black King",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Boost": "2",
+    "Hinder": "1*"
+   },
+   "traits": [],
+   "set_name": "Black King",
+   "text": "<i>\"And remember... Failure is not an option.\"</i>\nHinder 1[per_hero].\n<b>Forced Response</b>: After Sebastian Shaw activates, he gains a tough status card.\n<b>When Defeated</b>: Each player chooses to either place 2 energy counters on Sebastian Shaw or deal themselves 1 facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf331",
+   "type": "Minion",
+   "name": "* Sebastian Shaw",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "ELITE",
+    "HELLFIRE"
+   ],
+   "set_name": "Sebastian Shaw",
+   "text": "Villainous.\n<b>Forced Response</b>: After Sebastian Shaw takes any amount of damage, place that amount of threat on the main scheme.\n<hr />\n[star] <b>Boost</b>: Give the villain a facedown boost card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf332",
+   "type": "Attachment",
+   "name": "Energy Absorption",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Sebastian Shaw",
+   "text": "Max 1 per character.\nAttach to Sebastian Shaw. Otherwise, attach to the villain.\n<b>Forced Interrupt</b>: When the attached character would take any amount of damage, heal that character for that amount instead of dealing damage. If no damage was healed this way, give that character a tough status card. Set aside this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf333",
+   "type": "Attachment",
+   "name": "Energy Absorption",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Sebastian Shaw",
+   "text": "Max 1 per character.\nAttach to Sebastian Shaw. Otherwise, attach to the villain.\n<b>Forced Interrupt</b>: When the attached character would take any amount of damage, heal that character for that amount instead of dealing damage. If no damage was healed this way, give that character a tough status card. Set aside this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf334",
+   "type": "Attachment",
+   "name": "Energy Counterattack",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Sebastian Shaw",
+   "text": "Max 1 per character.\nAttach to Sebastian Shaw. Otherwise, attach to the villain.\n<b>Forced Interrupt</b>: When a character attacks the attached character, the attached character attacks that character. <i>(Resolve the attached character's attack first)</i>. Set aside this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf335",
+   "type": "Attachment",
+   "name": "Energy Counterattack",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Sebastian Shaw",
+   "text": "Max 1 per character.\nAttach to Sebastian Shaw. Otherwise, attach to the villain.\n<b>Forced Interrupt</b>: When a character attacks the attached character, the attached character attacks that character. <i>(Resolve the attached character's attack first)</i>. Set aside this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf336",
+   "type": "Treachery",
+   "name": "Ambient Energy Absorption",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Sebastian Shaw",
+   "text": "<b>When Revealed</b>: Choose a set-aside Sebastian Shaw attachment and reveal it. Give this card to the enemy who attached that attachment as a facedown boost card. Otherwise, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Give this enemy 1 additional boost card for this activation.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf337",
+   "type": "Treachery",
+   "name": "Ambient Energy Absorption",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Sebastian Shaw",
+   "text": "<b>When Revealed</b>: Choose a set-aside Sebastian Shaw attachment and reveal it. Give this card to the enemy who attached that attachment as a facedown boost card. Otherwise, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Give this enemy 1 additional boost card for this activation.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf338",
+   "type": "SideScheme",
+   "name": "Hellfire Domination",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "3",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Sebastian Shaw",
+   "text": "<i>Sebastian Shaw sat in his throne, his cold, calculating gaze surveying the city below. A malicious grin spread across his lips as he contemplated his latest scheme.</i>\n<b>When Defeated</b>: Shuffle each set-aside Sebastian Shaw encounter card into the encounter deck.",
+   "custom": "Dipsome"
+  }
+ ],
+ "hellfire_hunt_torn": [
+  {
+   "card_id": "hf501a",
+   "type": "Villain",
+   "name": "* Emma Frost",
+   "subtitle": "",
+   "desc": {
+    "HP": "7*",
+    "ATK": "1*",
+    "SCH": "2*",
+    "Stage": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "PSIONIC",
+    "X-MEN"
+   ],
+   "set_name": "Torn",
+   "text": "[star] <b>Forced Response</b>: After Emma Frost activates, discard 1 card from the top of the encounter deck, if it has the [[Psionic]] trait, place 1 threat on each scheme.\n<b>Forced Interrupt</b>: When Emma Frost would be defeated, remove 5 threat from each scheme in play, and flip this card instead.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf501b",
+   "type": "Villain",
+   "name": "* Emma Frost",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "0*",
+    "SCH": "0*",
+    "Stage": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "PSIONIC",
+    "X-MEN"
+   ],
+   "set_name": "Torn",
+   "text": "[star] <b>Forced Interrupt</b>: When Emma Frost would activate, discard 2 cards from the top of the encounter deck instead.\n<b>Forced Response</b>: After the end of the villain phase, flip this card, then set Emma Frost's hit point dial to her printed hit points.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf502a",
+   "type": "Villain",
+   "name": "* Emma Frost",
+   "subtitle": "",
+   "desc": {
+    "HP": "8*",
+    "ATK": "2*",
+    "SCH": "2*",
+    "Stage": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "PSIONIC",
+    "X-MEN"
+   ],
+   "set_name": "Torn",
+   "text": "[star] <b>Forced Response</b>: After Emma Frost activates, discard 2 cards from the top of the encounter deck, for each [[Psionic]] card discarded in this way, place 1 threat on each scheme.\n<b>Forced Interrupt</b>: When Emma Frost would be defeated, remove 5 threat from each scheme in play, and flip this card instead.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf502b",
+   "type": "Villain",
+   "name": "* Emma Frost",
+   "subtitle": "",
+   "desc": {
+    "HP": "INF",
+    "ATK": "0*",
+    "SCH": "0*",
+    "Stage": "1"
+   },
+   "traits": [
+    "HELLFIRE",
+    "PSIONIC",
+    "X-MEN"
+   ],
+   "set_name": "Torn",
+   "text": "[star] <b>Forced Interrupt</b>: When Emma Frost activates against a player, give the player a facedown encounter card instead.\n<b>Forced Response</b>: After the end of the villain phase, flip this card, then set Emma Frost's hit point dial to her printed hit points.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf503a",
+   "type": "MainScheme",
+   "name": "The Hellfire Club's Revenge",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Torn",
+   "text": "<b>Contents</b>: Emma Frost (A1) <i>(Emma Frost (B1) instead for expert mode)</i>. Torn, Perfection and Standard encounter set.\n<b>Setup</b>: Choose 3 modular sets, each with an [[Elite]], [[Hellfire]] minion <i>(Recommended: Immensity, Sebastian Shaw, Negasonic Teenage Warhead)</i> and shuffle them into the encounter deck. Shuffle every [[Elite]], [[Hellfire]] minion to create the Hellfire deck and set it next to the encounter deck <i>(see insert)</i>. Put the Nova's Psychic Puppetry side scheme into play, [[Controlled]] side face up.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf503b",
+   "type": "MainScheme",
+   "name": "Free Cassandra Nova",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "15*",
+    "EscalationThreat": "1*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Torn",
+   "text": "The players cannot win unless they help Emma Frost to escape Cassandra's control.\n<b>Forced Interrupt</b>: At the start of the player phase, in player order, each player not engaged with an [[Elite]], [[Hellfire]] minion reveals the top card of the Hellfire deck.\n<b>If this scheme is completed, the players lose the game.</b>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf504a",
+   "type": "SideScheme",
+   "name": "Nova's Psychic Puppetry",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "8",
+    "Permanent": "1",
+    "Hinder": "5*"
+   },
+   "traits": [
+    "CONTROLLED"
+   ],
+   "set_name": "Torn",
+   "text": "Permanent. Hinder 5[per_hero].\n<b>Forced Interrupt</b>: When the last threat is removed from this scheme, discard each [[Hellfire]] minion in play and deal each player a facedown encounter card. Then, flip this card. <i>(The player can help Emma Frost to escape on that side.)</i>\n<b>Forced Response</b>: After an [[Elite]], [[Hellfire]] minion is defeated, remove 5 threat from another side scheme. Otherwise, remove 5 threat from here.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf504b",
+   "type": "SideScheme",
+   "name": "Nova's Psychic Puppetry",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1",
+    "Permanent": "1",
+    "Hinder": "12*"
+   },
+   "traits": [
+    "FRAGMENT"
+   ],
+   "set_name": "Torn",
+   "text": "Permanent. Hinder 12[per_hero].\nEach [[Hellfire]] minion gains the [[Illusion]] trait.\n<b>Forced Interrupt</b>: When the last threat is removed from this scheme, Emma Frost escapes from the control of Cassandra Nova, the players win the game.\n<b>Forced Response</b>: After an [[Elite]], [[Hellfire]] minion is defeated, remove 5 threat from another side scheme. Otherwise, remove 5 threat from here.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf505",
+   "type": "Obligation",
+   "name": "Protect Students",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "Torn",
+   "text": "Your hero gets -1 ATK, and -1 DEF.\n<b>Alter-Ego Action</b>: Exhaust your identity and reveal 1 card from the Hellfire deck → heal 1 damage from each friendly character in play. Discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf506",
+   "type": "Obligation",
+   "name": "Uncover The Truth",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Hazard": "1",
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "Torn",
+   "text": "<b>Alter-Ego Action</b>: Exhaust your identity → heal 5 damage from the villain and remove 5 threat from a side scheme. Discard this obligation.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf507",
+   "type": "SideScheme",
+   "name": "Psychic Bulwark",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "9",
+    "Victory": "1"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Torn",
+   "text": "<i>Nova's psychic influence envelops her thralls, shielding them from harm as she weaves her twisted web.</i>\nVictory 1.\nEach minion gains guard and patrol.\n<hr />\n[star] <b>Boost</b>: Give each minion a tough status card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf508",
+   "type": "SideScheme",
+   "name": "Psychic Entanglement",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "8",
+    "Victory": "1"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Torn",
+   "text": "<i>Frost's web of deceit and illusion ensnares the heroes, trapping them in a labyrinth of her own design.</i>\nVictory 1.\nThreat cannot be removed from other side schemes.\n<b>When Defeated</b>: Deal each player a facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf509",
+   "type": "SideScheme",
+   "name": "Psychic Paragon",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "4*"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Torn",
+   "text": "Emma Frost gets +10 hit point.\nEach [[Illusion]] card gains incite 1.\n<b>When Revealed</b>: Deal 1 facedown encounter card to each player with no engaged minions.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf510",
+   "type": "SideScheme",
+   "name": "Hellfire Assault",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Torn",
+   "text": "Threat cannot be removed from here except by thwarting.\n<b>Forced Response</b>: After a [[Hellfire]] minion is defeated by a player, if it is White Queen, Emma Frost attacks the player. Otherwise, Emma Frost schemes.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf341",
+   "type": "Minion",
+   "name": "* Negasonic Teenage Warhead",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2*",
+    "SCH": "1",
+    "Boost": "1",
+    "Steady": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "ELITE",
+    "HELLFIRE"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "Steady. Toughness.\n[star] When Negasonic Teenage Warhead attacks you, you must exhaust a support or upgrade you control, if able.\n<hr />\n[star] <b>Boost</b>: Exhaust a support or upgrade you control.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf342",
+   "type": "Attachment",
+   "name": "Perception Manipulation",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "Attach to your identity.\nAttached character cannot be readied.\n<b>Alter-Ego Action</b>: Spend [mental][mental] → discard this card.\n<hr />\n[star] <b>Boost</b>: Change your form <i>(flip your identity card)</i>.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf343",
+   "type": "Attachment",
+   "name": "Perception Manipulation",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "Attach to your identity.\nAttached character cannot be readied.\n<b>Alter-Ego Action</b>: Spend [mental][mental] → discard this card.\n<hr />\n[star] <b>Boost</b>: Change your form <i>(flip your identity card)</i>.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf344",
+   "type": "Treachery",
+   "name": "Mind Over Matter",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "<b>When Revealed</b>: Reveal the topmost attachment in the encounter discard pile. Otherwise, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Exhaust your hero.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf345",
+   "type": "Treachery",
+   "name": "Mind Over Matter",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "<b>When Revealed</b>: Reveal the topmost attachment in the encounter discard pile. Otherwise, this card gains surge.\n<hr />\n[star] <b>Boost</b>: Exhaust your hero.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf346",
+   "type": "Treachery",
+   "name": "Matter Manipulation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "<b>When Revealed</b>: Discard a card you control, then search your deck and discard pile for a card of the same type but with a resource cost less than the resource cost of the discarded card, and put that card into play. Otherwise, this card gains surge.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf347",
+   "type": "Treachery",
+   "name": "Matter Manipulation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "<b>When Revealed</b>: Discard a card you control, then search your deck and discard pile for a card of the same type but with a resource cost less than the resource cost of the discarded card, and put that card into play. Otherwise, this card gains surge.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf348",
+   "type": "Treachery",
+   "name": "Matter Manipulation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Negasonic Teenage Warhead",
+   "text": "<b>When Revealed</b>: Discard a card you control, then search your deck and discard pile for a card of the same type but with a resource cost less than the resource cost of the discarded card, and put that card into play. Otherwise, this card gains surge.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf351",
+   "type": "Minion",
+   "name": "* Cassandra Nova",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "3",
+    "SCH": "3",
+    "Steady": "1"
+   },
+   "traits": [
+    "ELITE",
+    "HELLFIRE",
+    "PSIONIC"
+   ],
+   "set_name": "Immensity",
+   "text": "Steady.\n<b>When Revealed</b>: Find the Cassandra's Telepathic Cloak attachment and put it into play.\n<hr />\n[star] <b>Boost</b>: Put Cassandra Nova into play engaged with you.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf352",
+   "type": "Treachery",
+   "name": "Illusory Duty",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Immensity",
+   "text": "<b>When Revealed</b>: Discard 3 cards from the top of the encounter deck. Reveal each obligation discarded in this way. If no obligation was not revealed this way, search the encounter deck, discard pile, set-aside area, and removed-from-game area for a copy of your obligation, then reveal it and remove this card from the game.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf353",
+   "type": "Treachery",
+   "name": "Mental Paralysis",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Surge": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Immensity",
+   "text": "Surge.\n<b>When Revealed</b>: You are stunned and confused.\n<hr />\n[star] <b>Boost</b>: You are stunned and confused.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf354",
+   "type": "Attachment",
+   "name": "Cassandra's Telepathic Cloak",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "ARTIFACT",
+    "ITEM"
+   ],
+   "set_name": "Immensity",
+   "text": "Attach to Cassandra Nova. If she is not in play, find Cassandra Nova, reveal her, and then attach this card on her.\nCassandra Nova cannot take any amount of damage.\n<b>Forced Response</b>: After Cassandra Nova attacks you, discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf355",
+   "type": "Attachment",
+   "name": "Jumpstart",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "2",
+    "ATK+": "0*"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Immensity",
+   "text": "Attach to the highest hit-point minion. Otherwise, this gains surge.\n[star] <b>Forced Interrupt</b>: When the attached character attacks you, give them 1 additional boost card for this activation.\n<hr />\n[star] <b>Boost</b>: Deal yourself 1 facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf356",
+   "type": "Attachment",
+   "name": "Jumpstart",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "2",
+    "ATK+": "0*"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Immensity",
+   "text": "Attach to the highest hit-point minion. Otherwise, this gains surge.\n[star] <b>Forced Interrupt</b>: When the attached character attacks you, give them 1 additional boost card for this activation.\n<hr />\n[star] <b>Boost</b>: Deal yourself 1 facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf357",
+   "type": "Obligation",
+   "name": "Narrow Minded",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Amplify": "1",
+    "GiveTo": ""
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Immensity",
+   "text": "<b>Alter-Ego Action</b>: Exhaust your identity → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf358",
+   "type": "Obligation",
+   "name": "Narrow Minded",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Amplify": "1",
+    "GiveTo": ""
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Immensity",
+   "text": "<b>Alter-Ego Action</b>: Exhaust your identity → discard this card.",
+   "custom": "Dipsome"
+  }
+ ],
+ "hellfire_hunt_cassandra_nova": [
+  {
+   "card_id": "hf601",
+   "type": "Villain",
+   "name": "* Cassandra Nova",
+   "subtitle": "",
+   "desc": {
+    "HP": "15*",
+    "ATK": "1*",
+    "SCH": "2*",
+    "Stage": "1"
+   },
+   "traits": [
+    "MUMMUDRAI",
+    "PSIONIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "[star] <b>Forced Response</b>: After Cassandra Nova activates against you, place 1 Cassandra Controls counter on your identity card.\n<i>\"People must learn to hate. I'm going to be their teacher.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf602",
+   "type": "Villain",
+   "name": "* Cassandra Nova",
+   "subtitle": "",
+   "desc": {
+    "HP": "18*",
+    "ATK": "2*",
+    "SCH": "3*",
+    "Stage": "2",
+    "Steady": "1"
+   },
+   "traits": [
+    "MUMMUDRAI",
+    "PSIONIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "Steady.\n<b>When Revealed</b>: Place 1 Cassandra Controls counter on each identity.\n[star] <b>Forced Response</b>: After Cassandra Nova activates against you, place 1 Cassandra Controls counter on your identity card.\n<i>\"How can it be murder when they're germs or vermin?\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf603",
+   "type": "Villain",
+   "name": "* Cassandra Nova",
+   "subtitle": "",
+   "desc": {
+    "HP": "20*",
+    "ATK": "3*",
+    "SCH": "3*",
+    "Stage": "3",
+    "Stalwart": "1"
+   },
+   "traits": [
+    "MUMMUDRAI",
+    "PSIONIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "Stalwart.\n<b>When Revealed</b>: Place 1 Cassandra Controls counter on each identity and place 1[per_hero] acceleration tokens on the main scheme.\n[star] <b>Forced Response</b>: After Cassandra Nova activates against you, place 1 Cassandra Controls counter on your identity card.\n<i>\"From here I can reach out, take hold of every remaining mutant mind on Earth and extinguish it. But I only need one.\"</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf604a",
+   "type": "MainScheme",
+   "name": "Diplomatic Sabotage",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Contents</b>: Cassandra Nova (I) and Cassandra Nova (II). <i>(Cassandra Nova (II) and Cassandra Nova (III) instead for expert mode.)</i> Cassandra Nova, Immensity and Standard encounter sets. Two modular encounter sets <i>(Mind Control and Mutant Extinction Agenda)</i>.\n<b>Setup</b>: Remove Cassandra Nova minion from the game. Put the Cassandra Domination environment into play. In expert mode, advance to stage 2A.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf604b",
+   "type": "MainScheme",
+   "name": "Diplomatic Sabotage",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "TargetThreat": "7*",
+    "EscalationThreat": "1*",
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Forced Response</b>: After your turn ends, if there is Cassandra Controls counter on your identity, you must choose to either place 1 threat here or take 2 damage.\n<b>Hero Action</b>: Discard 5 cards from the top of the encounter deck → remove a Cassandra Controls counter from your identity. <i>(Limit once per round per player.)</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf605a",
+   "type": "MainScheme",
+   "name": "Silent Takeover",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<i>Cassandra prepares to have a war with the mutants and turn the heroes' enemies into her personal army.</i>\n<b>When Revealed</b>: Each player finds their own nemesis minion and put it into play engaged with themself.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf605b",
+   "type": "MainScheme",
+   "name": "Silent Takeover",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "TargetThreat": "11*",
+    "EscalationThreat": "1*",
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Forced Response</b>: After your turn ends, if there is Cassandra Controls counter on your identity, you must choose to either place 2 threat here or deal yourself 1 facedown encounter card.\n<b>Hero Action</b>: Discard 6 cards from the top of the encounter deck → remove a Cassandra Controls counter from your identity. <i>(Limit once per round per player.)</i>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf606a",
+   "type": "MainScheme",
+   "name": "Mutant Extermination",
+   "subtitle": "",
+   "desc": {
+    "Stage": "3"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<i>Nova furthered her goal with the creation of Sentinites, allowed them to detect mutants in their vicinity and sent them into a murderous rage.</i>\n<b>When Revealed</b>: Deal each player 1 facedown encounter card for each character they control.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf606b",
+   "type": "MainScheme",
+   "name": "Mutant Extermination",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "TargetThreat": "13*",
+    "EscalationThreat": "1*",
+    "Stage": "3"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Forced Response</b>: After your turn ends, if there is Cassandra Controls counter on your identity, you must choose to either place 3 threat here or discard 1 card from your hand.\n<b>Hero Action</b>: Discard 7 cards from the top of the encounter deck → remove a Cassandra Controls counter from your identity. <i>(Limit once per round per player.)</i>\n<b>When this scheme is completed, the players lose the game.</b>",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf607",
+   "type": "Environment",
+   "name": "Cassandra Domination",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Forced Response</b>: After a Cassandra Controls counter is placed on your identity card, if there is at least 3 Cassandra Controls counter, remove 3 Cassandra Controls counter from it → you choose one: place 2 threat on each scheme, stun and confuse your identity, or deal 3 indirect damage to another friendly character.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf608",
+   "type": "Obligation",
+   "name": "Exploding Their Head",
+   "subtitle": "",
+   "desc": {
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "Each encounter card you revealed gains peril.\n<b>Forced Response</b>: After your turn ends, discard cards you control that the total resource cost of cards is at least 2. Take 1 damage for each card you discarded. Then, discard this card. Otherwise, deal yourself 1 facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf609",
+   "type": "Obligation",
+   "name": "Exploding Their Head",
+   "subtitle": "",
+   "desc": {
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "Each encounter card you revealed gains peril.\n<b>Forced Response</b>: After your turn ends, discard cards you control that the total resource cost of cards is at least 2. Take 1 damage for each card you discarded. Then, discard this card. Otherwise, deal yourself 1 facedown encounter card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf610",
+   "type": "Obligation",
+   "name": "Psychic Control",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Forced Response</b>: After your turn ends, Cassandra Nova schemes. Confuse your identity, then, discard this card.\n<b>Alter-Ego Action</b>: Exhaust your identity → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf611",
+   "type": "Obligation",
+   "name": "Psychic Control",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Forced Response</b>: After your turn ends, Cassandra Nova schemes. Confuse your identity, then, discard this card.\n<b>Alter-Ego Action</b>: Exhaust your identity → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf612",
+   "type": "Obligation",
+   "name": "Psychic Control",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "GiveTo": ""
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "<b>Forced Response</b>: After your turn ends, Cassandra Nova schemes. Confuse your identity, then, discard this card.\n<b>Alter-Ego Action</b>: Exhaust your identity → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf613",
+   "type": "Treachery",
+   "name": "Shatter Your Mind",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain's stage number. Each time a Cassandra Nova card is discarded this way, place 1 Cassandra Controls counter on your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf614",
+   "type": "Treachery",
+   "name": "Shatter Your Mind",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain's stage number. Each time a Cassandra Nova card is discarded this way, place 1 Cassandra Controls counter on your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf615",
+   "type": "Treachery",
+   "name": "Shatter Your Mind",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain's stage number. Each time a Cassandra Nova card is discarded this way, place 1 Cassandra Controls counter on your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf616",
+   "type": "Treachery",
+   "name": "Psychic Combo",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "<b>When Revealed</b>: Cassandra Nova activates against you. You are stunned.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, this attack gains overkill and piercing. Otherwise, place threat on the main scheme equals to the number of Cassandra Controls counter on your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf617",
+   "type": "Treachery",
+   "name": "Psychic Combo",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "<b>When Revealed</b>: Cassandra Nova activates against you. You are stunned.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, this attack gains overkill and piercing. Otherwise, place threat on the main scheme equals to the number of Cassandra Controls counter on your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf618",
+   "type": "Treachery",
+   "name": "Psychic Leech",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "<b>When Revealed</b>: Discard your hand. Draw up to your hand size. For each card you discard in this way, heal 1 damage from Cassandra Nova, if you cannot, place a Cassandra Controls counter on your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf619",
+   "type": "Treachery",
+   "name": "Psychic Leech",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Cassandra Nova",
+   "text": "<b>When Revealed</b>: Discard your hand. Draw up to your hand size. For each card you discard in this way, heal 1 damage from Cassandra Nova, if you cannot, place a Cassandra Controls counter on your identity.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf620",
+   "type": "SideScheme",
+   "name": "Global Opinion Controls",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "Treat each support's text box as if it were blank.\n<b>When Revealed</b>: For each Cassandra Controls counter in play, place 1 threat here.\n<hr />\n[star] <b>Boost</b>: Place 2 Cassandra Controls counters on your identity card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf621",
+   "type": "SideScheme",
+   "name": "The Hate Machine",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2"
+   },
+   "traits": [],
+   "set_name": "Cassandra Nova",
+   "text": "While at least 1 Cassandra Control counter on your identity, you cannot attack Cassandra Nova or thwart the main scheme.\n<b>When Revealed</b>: For each Cassandra Controls counter in play, place 1 threat here.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf371",
+   "type": "Attachment",
+   "name": "Psychic Aegis",
+   "subtitle": "",
+   "desc": {
+    "Setup": "1"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Mind Control",
+   "text": "Setup. Attach to the villain.\nAttached character cannot be confused.\nAttached character cannot take damage from a player while that player is confused.\n<b>Action</b>: Spend [mental][mental] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf372",
+   "type": "Attachment",
+   "name": "False Reality",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Mind Control",
+   "text": "Attach to the main scheme.\n<b>Forced Interrupt</b>: When a player would remove threat from the main scheme, prevent 2 of that threat from being removed. Then, confuse that player. <i>(Limit once per phase.)</i>\n<b>Hero Action</b>: Spend [mental][mental] resource → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf373",
+   "type": "Attachment",
+   "name": "Mind Maze",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Mind Control",
+   "text": "Attach to your identity.\n<b>Forced Interrupt</b>: When you would thwart, discard this card instead. Then, you are confused.\n<b>Action</b>: Spend [mental][mental] resources → discard this card.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf374",
+   "type": "Treachery",
+   "name": "Illusory Attacks",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Mind Control",
+   "text": "<b>When Revealed</b>: You are confused. Deal 1 damage to each confused character in play.\n<hr />\n[star] <b>Boost</b>: You are confused.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf375",
+   "type": "Treachery",
+   "name": "Illusory Attacks",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Mind Control",
+   "text": "<b>When Revealed</b>: You are confused. Deal 1 damage to each confused character in play.\n<hr />\n[star] <b>Boost</b>: You are confused.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf376",
+   "type": "Treachery",
+   "name": "Mind Shatter",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Peril": "1"
+   },
+   "traits": [
+    "ILLUSION",
+    "PSIONIC"
+   ],
+   "set_name": "Mind Control",
+   "text": "Peril.\n<b>When Revealed</b>: You are confused. You may discard any number of cards from your hand. Then, deal X damage to each identity in play, where X is equal to half of the number of cards from your hand.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf381",
+   "type": "SideScheme",
+   "name": "* Mutant Extinction Agenda",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Victory": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "Victory 1.\nEach [[Sentinel]] minion gets +1 ATK and +1 SCH. This card cannot be defeated while a [[Sentinel]] minion is in play.\n<b>When Revealed</b>: Each player search the encounter deck and discard pile for a [[Sentinel]] minion in player order. Put it into play engaged with you.\n<hr />\n[star] <b>Boost</b>: Put this card into play.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf382",
+   "type": "Minion",
+   "name": "Wild Sentinel",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "SENTINEL"
+   ],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "<b>When Defeated</b>: The defeating player chooses to either take 2 damage or place this card on the bottom of the encounter deck instead of the discard pile.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf383",
+   "type": "Minion",
+   "name": "Wild Sentinel",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "SENTINEL"
+   ],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "<b>When Defeated</b>: The defeating player chooses to either take 2 damage or place this card on the bottom of the encounter deck instead of the discard pile.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf384",
+   "type": "Minion",
+   "name": "Wild Sentinel",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "SENTINEL"
+   ],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "<b>When Defeated</b>: The defeating player chooses to either take 2 damage or place this card on the bottom of the encounter deck instead of the discard pile.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf385",
+   "type": "Minion",
+   "name": "Wild Sentinel",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "SENTINEL"
+   ],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "<b>When Defeated</b>: The defeating player chooses to either take 2 damage or place this card on the bottom of the encounter deck instead of the discard pile.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf386",
+   "type": "Treachery",
+   "name": "E for Extinction",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "<b>When Revealed</b>: For each [[Sentinel]] minion in play, deal 1 indirect damage to each player. If there is no [[Sentinel]] minion in play, search the encounter deck and discard pile for a [[Sentinel]] minion and put it into play engaged with you.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf387",
+   "type": "Treachery",
+   "name": "E for Extinction",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "<b>When Revealed</b>: For each [[Sentinel]] minion in play, deal 1 indirect damage to each player. If there is no [[Sentinel]] minion in play, search the encounter deck and discard pile for a [[Sentinel]] minion and put it into play engaged with you.",
+   "custom": "Dipsome"
+  },
+  {
+   "card_id": "hf388",
+   "type": "SideScheme",
+   "name": "* Worldwide Sentinel Deployment",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Victory": "1",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Mutant Extinction Agenda",
+   "text": "Victory 1.\n<b>When Revealed</b>: Each player search the encounter deck and discard pile for a [[Sentinel]] minion in player order. Put it into play engaged with you.",
    "custom": "Dipsome"
   }
  ]

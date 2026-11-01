@@ -678,6 +678,13 @@ function sontDesPieges(liste: readonly unknown[] | undefined): boolean {
   )
 }
 
+/** Un deck (ou une defausse) supplementaire dont TOUTES les cartes sont des sbires ELITE HELLFIRE : le deck Hellfire du scenario 4 « Torn » (Hellfire Hunt, `hellfire_hunt_torn`). Cles du moteur : `t_ELITE` et `t_HELLFIRE`. */
+function sontDuHellfire(liste: readonly unknown[] | undefined): boolean {
+  const cartesDeck = (Array.isArray(liste) ? liste : []).filter(estUneCarte)
+  const porte = (carte: WorldCard, trait: string) => Object.keys(carte.traits ?? {}).some((cle) => cle.toUpperCase() === trait)
+  return cartesDeck.length > 0 && cartesDeck.every((carte) => porte(carte, 'T_ELITE') && porte(carte, 'T_HELLFIRE'))
+}
+
 /** Une carte de type vilain (utilise sur le brut du descripteur ou une WorldCard). */
 function estVilain(carte: unknown): boolean {
   return (
@@ -903,8 +910,11 @@ export function construirePlateau(world: World, options: Options): Plateau {
   // Le paquet de pieges (cartes TRAP) et sa defausse ont leurs propres piles ; les autres decks supplementaires restent fondus.
   const paquetsDePieges = decksSupplementaires.filter((pile) => sontDesPieges(pile.cartes))
   const defaussesDePieges = defaussesSupplementaires.filter((pile) => sontDesPieges(pile.cartes))
-  const autresDecks = decksSupplementaires.filter((pile) => !sontDesPieges(pile.cartes))
-  const autresDefausses = defaussesSupplementaires.filter((pile) => !sontDesPieges(pile.cartes))
+  // Le deck Hellfire (Torn) et sa defausse ont, eux aussi, leurs propres piles sous le deck de rencontre.
+  const decksHellfire = decksSupplementaires.filter((pile) => sontDuHellfire(pile.cartes))
+  const defaussesHellfire = defaussesSupplementaires.filter((pile) => sontDuHellfire(pile.cartes))
+  const autresDecks = decksSupplementaires.filter((pile) => !sontDesPieges(pile.cartes) && !sontDuHellfire(pile.cartes))
+  const autresDefausses = defaussesSupplementaires.filter((pile) => !sontDesPieges(pile.cartes) && !sontDuHellfire(pile.cartes))
 
   const emplacements = [
     emplacement('piles-rencontre', t('Deck Rencontre'), [
@@ -930,6 +940,15 @@ export function construirePlateau(world: World, options: Options): Plateau {
         [
           ...paquetsDePieges.map((pile) => ({ ...pile, videAffichable: true, titre: t('Paquet de pièges') })),
           ...defaussesDePieges.map((pile) => ({ ...pile, regardable: true, videAffichable: true, titre: t('Défausse de pièges') })),
+        ],
+        rendu
+      ),
+      // Torn : le deck Hellfire et sa defausse (sbires ELITE HELLFIRE), sous le paquet de pieges. Le deck n'est pas regardable (l'ordre est cache), la defausse l'est.
+      piles(
+        'hellfire',
+        [
+          ...decksHellfire.map((pile) => ({ ...pile, videAffichable: true, titre: t('Deck Hellfire') })),
+          ...defaussesHellfire.map((pile) => ({ ...pile, regardable: true, videAffichable: true, titre: t('Défausse Hellfire') })),
         ],
         rendu
       ),

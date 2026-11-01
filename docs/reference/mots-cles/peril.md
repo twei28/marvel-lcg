@@ -9,3 +9,8 @@
 **Pièges connus** : Peril isole complètement le joueur qui résout la carte, y compris de la consultation tactique (le joueur ne peut pas demander l'avis des autres). Si une future carte cumule Peril avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mot-clé Peril lui-même.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+## Pack Cassandra Nova (Hellfire Hunt, 01/11/2026)
+
+- `hf376` Mind Shatter : `desc.Peril = "1"` natif, aucun script pour le mot-cle.
+- `hf608`/`hf609` Exploding Their Head (« Each encounter card YOU revealed gains peril ») : `WhenPlayerRevealCard(ForcedInterrupt, "AttachedPlayer", EncounterNonVillainCard, None, op)` avec `face.GainPeril(1, effect)`. ⚠ `GiveKeywordToInPlayWhenApplyThis(EncounterCard, peril=1, control_by="You")` ne lit PAS le joueur qui revele (Peril reste a 0, mesure du 01/11/2026) : il convient a « each encounter card gains peril » sans joueur (bf023, 39064).

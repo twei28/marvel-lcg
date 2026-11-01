@@ -154,7 +154,7 @@ A(carte("hf317", "SideScheme", "The Hellfire Conclave", HC, {"StartingThreat": "
         "<i>The inner circle is trying to implement their perfect evil plan in secret meeting.</i>\n"
         "Each player engaged with a [[Hellfire]] minion cannot thwart this scheme.\nEach [[Hellfire]] minion gains incite 1.\n"
         "<b>When Revealed</b>: Move 1 threat from here to the main scheme for each [[Elite]], [[Hellfire]] minion in play."))
-A(carte("hf318", "SideScheme", "Hellfire Hunt", HC, {"StartingThreat": "2*", "Acceleration": "1", "Boost": "1"}, [],
+A(carte("hf318", "SideScheme", "Hellfire Hunt", HC, {"StartingThreat": "2*", "Hazard": "1", "Boost": "1"}, [],
         "Each [[Hellfire]] minion gets +1 ATK.\n<b>When Revealed</b>: Each player searches the encounter deck and discard pile for a [[Hellfire]] "
         "minion and puts it into play engaged with them."))
 

@@ -1148,6 +1148,26 @@ class RunPuzzle:
             fabriquee = CardFactory.GenerateCard(carte, cible, self.world)
             fabriquee.bind_discard_pile = defausse
 
+    def PutIntoHellfireDeck(self, *cards: str, discard: bool=False) -> None:
+        """AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Torn, `hf`) : fabrique ces cartes DANS le Hellfire deck de table (dans sa defausse si
+        `discard=True`), comme la mise en place du complot hf503a le fait des sbires ELITE HELLFIRE. Cree le deck a la demande
+        (`cards.pack.hellfire_hunt_torn.DeckHellfire`). Les cartes y gardent `bind_discard_pile` : defaussees ou vaincues, elles reviennent dans la
+        defausse Hellfire. Additif."""
+        from game.card.factory import CardFactory
+        from cards.pack.hellfire_hunt_torn import DeckHellfire
+        deck, defausse = DeckHellfire(self.debug_rule)
+        cible = defausse if discard else deck
+        for carte in cards:
+            fabriquee = CardFactory.GenerateCard(carte, cible, self.world)
+            fabriquee.bind_discard_pile = defausse
+
+    def EmptyHellfireDeck(self) -> None:
+        """AJOUT (01/11/2026, Torn) : vide le Hellfire deck ET sa defausse (les cartes sont retirees de la partie). Additif."""
+        from cards.pack.hellfire_hunt_torn import DeckHellfire
+        from game.operate.faces import Faces
+        deck, defausse = DeckHellfire(self.debug_rule)
+        Faces.RemoveAllFromGame(list(deck.Get(True)) + list(defausse.Get(True)), self.debug_rule)
+
     def PlayFromRecruitedDiscard(self, card: str) -> None:
         """AJOUT (26/10/2026, campagne Hellfire Hunt, hf014 Blink : « play Blink from Recruited Mutant discard pile during their own turn ») :
         joue la carte designee DEPUIS la defausse Recruited Mutants par le VRAI chemin (comme `jouer_carte_glissee` du harnais) : on demande
@@ -1186,6 +1206,15 @@ class RunPuzzle:
         class _Fin:
             players_won = gagne
         self.world.hf_releve = hc.Releve(level, self.debug_rule, _Fin())
+
+    def HellfireReleveTorn(self, gagne: bool=True) -> None:
+        """AJOUT (01/11/2026, scenario Torn) : comme `HellfireReleve(4)` mais par `cards.pack.hellfire_hunt_torn.ReleveTorn` (le releve commun + les allies
+        qui ne sont plus dans la zone mise de cote). Garde le resultat dans `world.hft_releve`. Additif."""
+        from cards.pack.hellfire_hunt_torn import ReleveTorn
+
+        class _Fin:
+            players_won = gagne
+        self.world.hft_releve = ReleveTorn(self.debug_rule, _Fin())
 
     def NewTurnWorldStat(self) -> None:
         """AJOUT (26/10/2026, pack `hp` Wasp (Hank Pym), hp009 / hp012 : « X = formes changees CE tour » avec X = 0). Remet a zero les
@@ -1307,6 +1336,23 @@ class RunPuzzle:
         world.phase_id += 1
 
         phase_message = Message.WhenPhaseBegin("Villain", world)
+        phase_message.Send()
+
+        for player in world.const_players:
+            player.phase.BeginPhase()
+
+        Message.AfterPhaseBegin(phase_message).Send()
+
+    def BeginPlayerPhase(self) -> None:
+        """AJOUT (01/11/2026, scenario Torn, hf503b « At the start of the player phase ») : ouvre la PHASE DES JOUEURS sans la jouer, comme
+        `BeginVillainPhase` ouvre celle du mechant (`world.py` `phase_begin("Player")`) : `WhenPhaseBegin("Player")` (les Interruptions forcees),
+        chaque joueur ouvre sa phase, puis `AfterPhaseBegin`. Additif."""
+        from game.message import Message
+
+        world = self.world
+        world.phase_id += 1
+
+        phase_message = Message.WhenPhaseBegin("Player", world)
         phase_message.Send()
 
         for player in world.const_players:

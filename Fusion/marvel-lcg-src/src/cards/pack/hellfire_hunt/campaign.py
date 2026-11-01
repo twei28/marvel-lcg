@@ -44,6 +44,9 @@ CLE_CRYPTIC = 'Cryptic Threatening Message: Defeated'
 # Les 16 allies RECRUITED (hf013-hf028), dans l'ordre du dossier.
 ALLIES = ['hf013', 'hf014', 'hf015', 'hf016', 'hf017', 'hf018', 'hf019', 'hf020', 'hf021', 'hf022', 'hf023', 'hf024', 'hf025', 'hf026', 'hf027', 'hf028']
 EMMA_FROST = 'hf025'
+# Les 4 allies CAPTIVE du scenario 2 « Black King » (hf208-hf211, pack hellfire_hunt_black_king) : une fois liberes ils sont notes « Recruited » au
+# carnet (livret p. 10, Victory) et rejoignent le deck Recruited Mutants des scenarios suivants.
+CAPTIFS = ['hf208', 'hf209', 'hf210', 'hf211']
 # Les 12 manigances POTENTIAL ALLY (hf029-hf040).
 POTENTIAL_ALLY = ['hf029', 'hf030', 'hf031', 'hf032', 'hf033', 'hf034', 'hf035', 'hf036', 'hf037', 'hf038', 'hf039', 'hf040']
 # Cartes de campagne : manigances annexes numerotees du livret et l'environnement.
@@ -68,7 +71,7 @@ def _mettre_de_cote(effect: 'Effect', card_id: str) -> 'CardFace':
 # ----------------------------------------------------------------------------- les trois pas communs
 def _allies_recrutes(effect: 'Effect') -> None:
     """Pas 1. Les allies deja gagnes forment le deck Recruited Mutants ; les autres attendent de cote."""
-    gagnes = [i for i in _liste(effect, CLE_RECRUTES) if i in ALLIES]
+    gagnes = [i for i in _liste(effect, CLE_RECRUTES) if i in ALLIES or i in CAPTIFS]
     RecruitedMutants(effect)                       # le deck existe meme vide (Xavier's Institute / Rally the Survivors le tiennent)
     faces = [CardFactory.GenerateCard(i, None, effect.world).face for i in gagnes]
     if faces:
@@ -113,7 +116,7 @@ def _campagne_experte(effect: 'Effect') -> None:
 # leurs instructions de campagne propres relevent du scenario.
 ETAPES_PAR_SCENARIO = {
     1: [('reveler', CEREBRO_INSIGHTS), ('en_jeu', XAVIERS_INSTITUTE)],
-    2: [('en_jeu', XAVIERS_INSTITUTE)],
+    2: [('reveler', EMMAS_REDEMPTION), ('en_jeu', XAVIERS_INSTITUTE)],     # livret p. 10 : « Reveal the Emma Frost's Redemption side scheme (181) »
     3: [('en_jeu', XAVIERS_INSTITUTE), ('emma_ou_message', None)],
     4: [('en_jeu', XAVIERS_INSTITUTE)],
     5: [('melanger_rencontre', TACTICAL_HELP), ('melanger_rencontre', ENEMY_OF_ENEMY), ('reveler', RALLY_THE_SURVIVORS), ('emma_dans_recrutes', None)],
@@ -139,6 +142,19 @@ def EtapesDuScenario(effect: 'Effect', level: int) -> None:
         elif verbe == 'emma_dans_recrutes':
             if not CampaignLog.GetStrInternal(CLE_EMMA, effect):
                 AjouterAuxRecrutes(effect, [_generer(effect, EMMA_FROST)])
+
+
+def _captif_libere(effect: 'Effect', card_id: str) -> bool:
+    """Un allie CAPTIVE est libere quand sa carte est chez un joueur (main, jeu, deck, defausse) ou a la victoire ; PAS tant qu'elle est mise de cote ou
+    glissee sous Captured by Hellfire!."""
+    for card in effect.world.object_manager.card_dict.values():
+        face = card.face
+        if face is None or face.paper.card_id != card_id:
+            continue
+        flags = card.area.flags
+        if flags.is_in_play or flags.is_in_hand or flags.is_player_deck or flags.is_discards or flags.is_victory_display:
+            return True
+    return False
 
 
 def Executer(effect: 'Effect', level: int) -> None:
@@ -174,6 +190,13 @@ def Releve(level: int, effect: 'Effect', message: 'Message.WhenGameOver') -> dic
     recrutes = list(_liste(effect, CLE_RECRUTES))
     for card_id in ALLIES:
         if card_id not in recrutes and (FaceExists(effect, card_id, in_play=True) or FaceExists(effect, card_id, in_victory=True)):
+            recrutes.append(card_id)
+    updates[CLE_RECRUTES] = SEP.join(recrutes)
+
+    # --- Allies CAPTIVE liberes (scenario 2) : ceux qui ne sont plus ni de cote ni caches sous Captured by Hellfire! (en main, en jeu, deck, defausse)
+    #     sont notes « Recruited » au carnet (livret p. 10 : « Record the name of each CAPTIVE ally ... as Recruited »)
+    for card_id in CAPTIFS:
+        if card_id not in recrutes and _captif_libere(effect, card_id):
             recrutes.append(card_id)
     updates[CLE_RECRUTES] = SEP.join(recrutes)
 

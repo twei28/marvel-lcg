@@ -1,6 +1,6 @@
 from . import *
 
-# Hellfire Hunt. Manigance annexe, icone d'acceleration. « Each HELLFIRE minion gets +1 ATK. When Revealed : Each player searches the encounter deck and
+# Hellfire Hunt. Manigance annexe, icone Hazard. « Each HELLFIRE minion gets +1 ATK. When Revealed : Each player searches the encounter deck and
 # discard pile for a HELLFIRE minion and puts it into play engaged with them. » Cartes de reference : 01136 Ultron (`GiveKeywordToInPlayWhenApplyThis(...,
 # attack=1)`), masters_of_mayhem 01133 (`Search.EncounterCard` + `PutIntoPlay`).
 

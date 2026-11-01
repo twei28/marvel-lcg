@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Mind Control",
+  "encounters": [
+    "hf371",
+    "hf372",
+    "hf373",
+    "hf374",
+    "hf375",
+    "hf376"
+  ]
+}
