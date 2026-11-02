@@ -2385,5 +2385,14 @@
   "encounters": [],
   "max_id": "dy016"
  },
+ "247. Custom (Beast Proust)": {
+  "name": "beast_proust",
+  "scenarios": [],
+  "heroes": [
+   "beast_proust"
+  ],
+  "encounters": [],
+  "max_id": "bs017"
+ },
  "checksum": "35224aaa4f1d42b9032f43c3799752f4dde89d0832f664f620023487e986a35a"
 }

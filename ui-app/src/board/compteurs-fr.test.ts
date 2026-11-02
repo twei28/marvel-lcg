@@ -94,4 +94,10 @@ describe('nomDeCompteur', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('doubt')).toBe('doute')
   })
+
+  it('traduit les compteurs de Beast (Proust) : traceur (bs005) et Psy (bs008)', () => {
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('tracer')).toBe('traceur')
+    expect(nomDeCompteur('psy')).toBe('Psy')
+  })
 })

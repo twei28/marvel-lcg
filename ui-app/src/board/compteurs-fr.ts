@@ -138,6 +138,9 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   fuel: 'carburant',
   // Galactic Storm, heros Quasar (20/10/2026) : « Uses (3 duty counters) » de gs065 Protector of the Universe.
   duty: 'devoir',
+  // Beast de Proust (02/11/2026) : « jetons traceur » de bs005 Spider-Traceurs de Peter, « jetons Psy » de bs008 Cérébro de Xavier (mots du scan FR).
+  tracer: 'traceur',
+  psy: 'Psy',
   // Punisher MC×DC 2026, set Hobgoblin (21/10/2026) : Rabble (pu076) entre en jeu avec 2 « drone counters ».
   drone: 'drone',
   // SWAT Team (21/10/2026) : les « wanted counters » de la manigance SWAT (pu119).

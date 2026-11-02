@@ -13,6 +13,13 @@
   "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
  ],
  "prefixes": {
+  "bs": {
+   "pack": "beast_proust",
+   "libelle": "247. Custom (Beast Proust)",
+   "cartes": 18,
+   "depuis": "2026-11-02",
+   "note": "Cree le 02/11/2026 depuis le zip de Proust (Beast, scans FR seuls, pas de EN ni de dos ; textes EN traduits du FR). ATTENTION : un AUTRE Beast existe (D0natello, prefixe bt, set 134, deck beast) ; celui-ci s'appelle « Beast (Proust) ». bs001a/b identite ; bs002-bs012 deck de heros (Beast's Lab, Ultimate Mutation, Hacked Power Gloves, Peter's Spider-Tracers, Bobby's Belt, Tony's Arc Reactor, Xavier's Cerebro, Tech Support x3, Beastly Charge x2, Civil Genius x2, Tech Genius x2) ; bs013 obligation Overworked ; bs014-bs017 set nemesis (Technical Difficulties, Black Beast, Evil Genius x2, High-Tech Glasses). Aucun Extras : player_deck vide."
+  },
   "dy": {
    "pack": "destiny",
    "libelle": "246. Custom (Destiny)",

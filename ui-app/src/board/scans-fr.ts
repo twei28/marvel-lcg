@@ -47,11 +47,21 @@ export function scansFrActifs(): boolean {
     generee ne les connait pas, elle ne lit que les codes des archives. */
 export const SCANS_FR_MAISON: ReadonlySet<string> = new Set(['tough', 'stunned', 'confused'])
 
-/** Les cartes fan-made livrees avec un scan francais de leur auteur (Destiny de Merlin, FR Release 1.2, 02/11/2026) : `fr_dy*.jpg`
+/** Les cartes fan-made livrees avec un scan francais de leur auteur (Destiny de Merlin, FR Release 1.2 ; Beast de Proust, 02/11/2026) : `fr_dy*.jpg`
     est depose a la main dans assets/pics-fr. La liste generee ne les connait pas ; sans ce jeu, le voile FR se poserait sur l'image. */
 export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
   'dy001a', 'dy001b', 'dy002', 'dy003', 'dy004', 'dy005', 'dy006', 'dy007', 'dy008',
   'dy009', 'dy010', 'dy011', 'dy012', 'dy013', 'dy014', 'dy015', 'dy016',
+  // Beast de Proust (scans FR seuls, ni EN ni dos, 02/11/2026) : `fr_bs*.jpg` deposes a la main dans assets/pics-fr.
+  'bs001a', 'bs001b', 'bs002', 'bs003', 'bs004', 'bs005', 'bs006', 'bs007', 'bs008',
+  'bs009', 'bs010', 'bs011', 'bs012', 'bs013', 'bs014', 'bs015', 'bs016', 'bs017',
+])
+
+/** Les cartes dont le SEUL scan est francais (aucun scan anglais n'existe : Beast de Proust, `bs*`) : en anglais on voile le scan francais et
+    on pose le texte anglais dessus (textes-en-scan-fr.ts), l'inverse de la traduction habituelle. Leur `assets/pics/<id>.jpg` est ce meme scan. */
+export const SCANS_FR_SEULS: ReadonlySet<string> = new Set([
+  'bs001a', 'bs001b', 'bs002', 'bs003', 'bs004', 'bs005', 'bs006', 'bs007', 'bs008',
+  'bs009', 'bs010', 'bs011', 'bs012', 'bs013', 'bs014', 'bs015', 'bs016', 'bs017',
 ])
 
 /** Les cartes fan-made dont le scan est DEJA imprime en francais par son auteur (pack Superior Iron Man de Merlin, `si001a`...`si017`,

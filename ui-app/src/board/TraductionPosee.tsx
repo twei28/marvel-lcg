@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { GLYPHES, detecterZoneSurFondTeinte, detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, emDesTraits, encochesGauche, formeDuCache, ligneDeTraits, prolongerLaZone, texteEnParagraphes, zoneDansLeCadre, type ZoneTexte } from './traduction-posee'
 import { chargerCatalogue } from './catalogue'
 import { TRAITS_FR } from './traits-fr'
+import { SCANS_FR_SEULS } from './scans-fr'
 import { CADRES_PENCHES, FILETS_PLEINE_LARGEUR, GOMMES, VOILE_UNI, corrigerZone, type Gomme } from './zones-corrections'
 import { BANDES_DROITE, effacerTexte, type CadreDuTexte, type OptionsEffacement } from './effacer-texte'
 import './traduction-posee.css'
@@ -491,7 +492,9 @@ export function TraductionPosee({
 
   if (!zone) return null
   const forme = formeDuCache(zone)
-  const ligneTraits = ligneDeTraits(traits, TRAITS_FR)
+  // Scan francais seul posé en anglais : les traits restent ceux du moteur (anglais), sans table de traduction.
+  const traitsTraduits = SCANS_FR_SEULS.has(code) ? {} : TRAITS_FR
+  const ligneTraits = ligneDeTraits(traits, traitsTraduits)
   return (
     <div
       ref={boite}
@@ -523,7 +526,7 @@ export function TraductionPosee({
           <span className="tp-traits-texte">{ligneTraits}</span>
         </div>
       ) : null}
-      <div dangerouslySetInnerHTML={{ __html: avecBandes(texteEnParagraphes(texte), fond?.texte?.entre ?? []) }} />
+      <div dangerouslySetInnerHTML={{ __html: avecBandes(texteEnParagraphes(texte, traitsTraduits), fond?.texte?.entre ?? []) }} />
       {icones.length > 0 && !fond ? (
         <div className="tp-icones-manigance">
           {icones.map((jeton) => (

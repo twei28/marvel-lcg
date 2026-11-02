@@ -65690,6 +65690,14 @@ def executer_un_cas(game_dir, port, index):
             # que l'identite, par le meme chemin que `jouer_glissee`. ADDITIVE.
             for hote_id, card_id in cas.get("jouer_sous") or []:
                 jouer_carte_glissee(card_id, hote_id)
+            # `jouer_sous_tolerant: [[hote, card_id]]` (02/11/2026, pack beast_proust) : le REFUS est le resultat attendu (meme
+            # raison d'etre que `jouer_glissee_tolerant`) : « Upgrades tucked under Beast's Lab » ne rend PAS jouable un evenement
+            # glisse sous le Lab. ADDITIVE.
+            for hote_id, card_id in cas.get("jouer_sous_tolerant") or []:
+                try:
+                    jouer_carte_glissee(card_id, hote_id)
+                except Exception as exc:
+                    print(f"TOLERE: jouer_sous {hote_id} {card_id} -> {type(exc).__name__}: {exc}", flush=True)
             for card_id in cas.get("action_en_main") or []:
                 declencher_action_en_main(card_id)
             # `declencher_final` (08/10/2026, rapport n68 Hellcat) : commandes

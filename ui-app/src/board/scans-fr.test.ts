@@ -126,13 +126,38 @@ describe('scanDejaFrancais', () => {
 })
 
 describe('SCANS_FR_FANMADE', () => {
-  it('les 17 cartes de Destiny ont un scan francais, donc pas de voile', async () => {
+  it('les 17 cartes de Destiny (35 avec les 18 de Beast) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(17)
+    expect(SCANS_FR_FANMADE.size).toBe(35)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
     window.localStorage.setItem('marvel-board-scans-fr', 'on')
     expect(picIdFr('dy015')).toBe('fr_dy015')
+  })
+})
+
+describe('SCANS_FR_FANMADE (Beast de Proust)', () => {
+  it('les 18 cartes de Beast (Proust) ont un scan francais, donc pas de voile', async () => {
+    const { aScanFr, picIdFr } = await import('./scans-fr')
+    for (const id of ['bs001a', 'bs001b', 'bs002', 'bs009', 'bs015', 'bs017']) expect(aScanFr(id)).toBe(true)
+    expect(aScanFr('bs018')).toBe(false)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('bs013')).toBe('fr_bs013')
+  })
+})
+
+describe('Beast (Proust) : scan français seul, texte anglais posé dessus', () => {
+  it('chaque carte à scan français seul a son texte anglais', async () => {
+    const { SCANS_FR_SEULS } = await import('./scans-fr')
+    const { TEXTES_EN_SCAN_FR, CODES_SANS_TEXTE_EN } = await import('./textes-en-scan-fr')
+    expect(SCANS_FR_SEULS.size).toBe(18)
+    expect(CODES_SANS_TEXTE_EN).toEqual([])
+    expect(TEXTES_EN_SCAN_FR['bs002']).toMatch(/tucked under this card/)
+  })
+  it("les traits du texte posé restent anglais quand on passe une table vide", async () => {
+    const { texteEnParagraphes } = await import('./traduction-posee')
+    expect(texteEnParagraphes('Search for a [[TECH]] upgrade, a [[ELITE]] one.', {})).toContain('>ELITE<')
+    expect(texteEnParagraphes('un [[ELITE]]')).toContain('>ÉLITE<')
   })
 })

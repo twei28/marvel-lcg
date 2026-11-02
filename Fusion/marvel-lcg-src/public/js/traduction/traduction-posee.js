@@ -761,10 +761,10 @@ export const GLYPHES = {
  * « [[AÉRIEN]] », sauts de ligne) en HTML prêt à poser. Seules les balises de
  * mise en forme survivent ; un jeton inconnu reste écrit en toutes lettres.
  */
-export function texteEnHtml(texte) {
+export function texteEnHtml(texte, traits = TRAITS_FR) {
     return texte
         .replace(/<(?!\/?(b|i|em|strong|br)\b)[^>]*>/g, '')
-        .replace(/\[\[([^\]]+)\]\]/g, (_, trait) => `<span class="tp-trait">${TRAITS_FR[trait.toUpperCase()] ?? trait}</span>`)
+        .replace(/\[\[([^\]]+)\]\]/g, (_, trait) => `<span class="tp-trait">${traits[trait.toUpperCase()] ?? trait}</span>`)
         .replace(/\[([a-z_]+)\]/g, (tout, cle) => GLYPHES[cle] ? `<span class="tp-icone tp-icone-${cle}">${GLYPHES[cle]}</span>` : tout)
         .replace(/\n/g, '<br />');
 }
@@ -775,7 +775,7 @@ export function texteEnHtml(texte) {
  * `<center>…</center>` centrée (« Ordre d'activation N » des méchants de The Vault, comme « Activation Order N »).
  * L'encadré sous la carte (Board.tsx) garde `texteEnHtml`.
  */
-export function texteEnParagraphes(texte) {
+export function texteEnParagraphes(texte, traits = TRAITS_FR) {
     return texte
         .split('\n')
         .map((ligne) => {
@@ -787,7 +787,7 @@ export function texteEnParagraphes(texte) {
         const contenu = centre ? centre[1] : brute;
         const citation = /^<i>[\s\S]*<\/i>(\s*[—–-][^<]*)?$/.test(contenu) && !/<\/i>[\s\S]*<i>/.test(contenu);
         const classes = ['tp-par', centre ? 'tp-centre' : '', citation ? 'tp-citation' : ''].filter(Boolean).join(' ');
-        return `<div class="${classes}">${texteEnHtml(contenu)}</div>`;
+        return `<div class="${classes}">${texteEnHtml(contenu, traits)}</div>`;
     })
         .join('');
 }

@@ -440,6 +440,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (20/10/2026, Galactic Storm GS-8, Kajislav) : « integrity counters » de gs200
         # Holding Tank (Uses 7 par joueur). `time` (gs222a Nega-Bomb) existait deja.
         'integrity',
+        # AJOUT (02/11/2026, pack custom beast_proust, Proust) : `tracer` (bs005 Peter's Spider-Tracers, 4) et `psy` (bs008 Xavier's Cerebro, 2).
+        'tracer', 'psy',
 
         'progress', 'sym', 'luck', 'deploy', 'supply', 'missile', 'operation', 'speed', 
         'staff', 'mission', 'leap', 'lock', 'parley', 'bystander', 'doubt', 'target', 

@@ -94,3 +94,9 @@ visible) dans `AfterCardLeavePlay(ForcedResponse, "This", ...)`. Voir aussi perm
 d'abord DÉFAUSSÉE (zone de ressources -> défausse), puis glissée depuis la défausse (`AfterCardDiscard`, pas `AfterCardsBeSpendAsResource`). Une autre Réponse « after you discard »
 (Corsair's Rapier) voit donc la même défausse ; déclenchées ENSEMBLE, la seconde doit vérifier que la carte attend encore dans la défausse avant de la glisser
 (`ToujoursEnDefausse`, sinon elle était glissée DEUX fois).
+
+**Beast's Lab (`bs002`, pack `beast_proust`, 02/11/2026)** : un SOUTIEN permanent est l'hôte des glissements (jusqu'à 3 améliorations). Trois montages à retenir :
+- « Upgrades tucked under this card may be played as if they were in your hand » = `*AbilityFactory.AttachedCardCanPlayLikeInHand(Upgrade)` SANS `also_spend` ni `also_discard` ; le TYPE passé filtre : un événement glissé dessous n'est pas jouable (cas `jouer_sous_tolerant`).
+- « If there are more than 3 cards tucked under this card, discard cards until only 3 remain » = `AbilityFactory.AfterCardsMoved(ForcedResponse, None, op, conditions=[zone du Lab dans message.related_decks, taille > 3])` : la règle tient pour TOUTE source de glissement (modèle `sf010`) ; le joueur choisit lesquelles défausser.
+- Les cartes glissées par `Glisser(joueur, faces, effect)` (helper du set) le sont avec `peek=True` : face cachée mais visible de tous, comme l'exige un hôte dont on rejoue le contenu. Le plateau les dessine derrière le soutien (`beast-proust-plateau.test.ts`).
+Un sbire peut aussi être hôte (`bs015` Black Beast) : sa capacité `[star]` lit la zone par `ThisGainKeyword(.., change_on_event=[OnEvent.PlacedCard("Here")])`.

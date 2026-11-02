@@ -2049,4 +2049,15 @@ export const HEROS_INFO = {
         equipesEn: "Avengers, Force Works",
         apparition: "Secret Wars #6 (1985)",
     },
+    "bs001a": {
+        bio: "Hank McCoy est mutant et génie, et il n'a jamais su choisir entre le laboratoire et le champ de bataille. Sous la fourrure bleue du Fauve, ce membre fondateur des X-Men cite Shakespeare en plein combat et bricole dans l'ombre : il récupère, détourne et perfectionne les inventions de ses amis, du réacteur de Tony Stark aux toiles-traceurs de Peter Parker, quand il n'écoute pas Cérébro. Son plus grand adversaire reste un autre lui-même, plus sombre, né d'un même esprit mais sans scrupules.",
+        bioEn: "Hank McCoy is a mutant and a genius, and he has never been able to choose between the laboratory and the battlefield. Under the Beast's blue fur, this founding X-Man quotes Shakespeare mid-fight and tinkers in the background: he salvages, repurposes and perfects his friends' inventions, from Tony Stark's reactor to Peter Parker's tracers, when he is not listening to Cerebro. His greatest adversary remains another version of himself, darker, born of the same mind but with no scruples.",
+        civil: "Hank McCoy",
+        base: "Institut Xavier, Westchester",
+        baseEn: "Xavier Institute, Westchester",
+        equipes: "X-Men, Vengeurs, Defenders",
+        equipesEn: "X-Men, Avengers, Defenders",
+        ennemis: "Dark Beast",
+        apparition: "X-Men #1 (1963)",
+    },
 };
