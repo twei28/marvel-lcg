@@ -159,7 +159,7 @@ class CanDefense(CardFace):
     #     )
 
     @final
-    def IsCanDefense(self, attacker: 'Unit2') -> bool:
+    def IsCanDefense(self, attacker: 'Unit2', attacked_targets: 'Sequence[Unit2]|None'=None) -> bool:
         from game.card.face.card_type import Hero
         from game.card.face.card_type import Ally
 
@@ -167,7 +167,7 @@ class CanDefense(CardFace):
             return False
         if not isinstance(self, Ally|Hero):
             return False
-        check_message = Message.CheckIfUnitCanDefendAgainstAttack(self, attacker)
+        check_message = Message.CheckIfUnitCanDefendAgainstAttack(self, attacker, attacked_targets)
         check_message.Send()
         return check_message.can_defend
 

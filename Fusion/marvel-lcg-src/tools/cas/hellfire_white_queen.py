@@ -338,6 +338,30 @@ CAS = [
        "« After the villain attacks you, remove 1 illusion counter from here »",
        [HEROS, "Puzzle.Exhaust('01001a')"] + deck("hf304", "01105", "01105"), ["Puzzle.Reveal('hf304')", "Puzzle.Attack('hf101a')"],
        {"compteurs_sur": [["hf304", "illusion", 1]]}),
+    _c("hf304 Illusory Defender, 2 joueurs : l'allie de l'AUTRE joueur ne peut pas defendre contre une attaque visant le porteur",
+       "« Attacks against YOU cannot be defended by allies or other identities » : cible de l'attaque = l'identite du porteur",
+       [HEROS, "Puzzle.PutIntoPlay('04001a')", "Puzzle.PutIntoPlay('01076', under_control=True, player=1)"] + deck("hf304", "01105"), ["Puzzle.Reveal('hf304')"],
+       {"peut_defendre": [["01076", "hf101a", False, "01001a"]]}, heros2="hawkeye"),
+    _c("hf304 Illusory Defender, 2 joueurs : l'AUTRE heros (autre identite) ne peut pas defendre non plus contre une attaque visant le porteur",
+       "« ... or other identities »", [HEROS, "Puzzle.ChangeForm('04001b')"] + deck("hf304", "01105"), ["Puzzle.Reveal('hf304')"],
+       {"peut_defendre": [["04001a", "hf101a", False, "01001a"]]}, heros2="hawkeye"),
+    _c("hf304 Illusory Defender, 2 joueurs : une attaque visant l'AUTRE joueur reste defendable (par son allie, par l'allie du porteur, par le porteur)",
+       "la restriction ne vaut que pour les attaques contre le porteur : texte « against YOU »",
+       [HEROS, "Puzzle.ChangeForm('04001b')", "Puzzle.PutIntoPlay('01083', under_control=True)", "Puzzle.PutIntoPlay('01076', under_control=True, player=1)"] + deck("hf304", "01105"),
+       ["Puzzle.Reveal('hf304')"],
+       {"peut_defendre": [["01076", "hf101a", True, "04001a"], ["01083", "hf101a", True, "04001a"], ["01001a", "hf101a", True, "04001a"]]}, heros2="hawkeye"),
+    _c("hf304 Illusory Defender : le PORTEUR lui-meme peut defendre contre l'attaque qui le vise (seuls les allies et les AUTRES identites sont exclus)",
+       "« cannot be defended by allies or other identities » : sa propre identite n'est pas exclue",
+       [HEROS] + deck("hf304", "01105"), ["Puzzle.Reveal('hf304')"],
+       {"peut_defendre": [["01001a", "hf101a", True, "01001a"]]}),
+    _c("hf304 Illusory Defender : l'allie du porteur ne peut pas defendre contre l'attaque qui vise le porteur (1 joueur)",
+       "« allies » = tous les allies, y compris les siens", [HEROS, "Puzzle.PutIntoPlay('01083', under_control=True)"] + deck("hf304", "01105"), ["Puzzle.Reveal('hf304')"],
+       {"peut_defendre": [["01083", "hf101a", False, "01001a"]]}),
+    _c("hf304 Illusory Defender, CAPACITE DE DEFENSE REELLE de l'allie (condition posee par `ability.py` sur la capacite DEF, message d'attaque reel) : 2 joueurs",
+       "la condition `can_defense_attack` de la capacite DEF de l'allie transmet la cible de l'attaque (`message.attacked_targets`) : refus si l'attaque vise le porteur, accord si elle vise l'autre joueur",
+       [HEROS, "Puzzle.ChangeForm('04001b')", "Puzzle.PutIntoPlay('01076', under_control=True, player=1)", "Puzzle.PutIntoPlay('01083', under_control=True)"] + deck("hf304", "01105"),
+       ["Puzzle.Reveal('hf304')"],
+       {"defense_reelle": [["01076", "hf101a", "01001a", False], ["01083", "hf101a", "01001a", False], ["01076", "hf101a", "04001a", True], ["01083", "hf101a", "04001a", True]]}, heros2="hawkeye"),
     _c("hf305 Psychic Mirage : « You cannot change form » : le heros reste en alter-ego",
        "`PlayersCannotChangeForms`", deck("hf305", "01105"), ["Puzzle.Reveal('hf305')", "Puzzle.ChangeForm('01001a')"],
        {"forme": "AlterEgo"}),
@@ -354,6 +378,21 @@ CAS = [
        "`AdditionalCostToAttack(Hero, Spend B)` ; « After your hero makes a basic attack or a basic thwart, remove 1 illusion counter »",
        [HEROS] + deck("hf306", "01105"), ["Puzzle.Reveal('hf306')", "Puzzle.Attack('01001a')"],
        {"compteurs_sur": [["hf306", "illusion", 1]], "defausse": ["01089"]}, main_exclusive=["01089"], payer_avec=["01089"], cibles=["hf101a"], accepter_choix=True),
+    _c("hf306 Psionic Projection : la DEFENSE de base du heros coute aussi 1 ressource [mental] (Rules Reference 1.8 p.10 : ATK, THW, DEF, REC, SCH sont des pouvoirs de base)",
+       "`AdditionalCostToDefense(Hero, Spend B)` comme gb011 / 50173 ; la Reponse forcee ne vise que l'attaque et le contre : le compteur reste a 2",
+       [HEROS] + deck("hf306", "01105"), ["Puzzle.Reveal('hf306')", "Puzzle.Attack('hf101a')"],
+       {"defausse": ["01089"]}, main_exclusive=["01089"], payer_avec=["01089"], accepter_choix=True),
+    _c("hf306 Psionic Projection : la Reponse forcee ne vise QUE l'attaque et le contre : apres une DEFENSE de base le compteur reste a 2",
+       "« After your hero makes a basic ATTACK or a basic THWART » (la defense n'y figure pas) : `AfterUnitUseBasicPower(..., powers=[\"ATK\", \"THW\"])`",
+       [HEROS] + deck("hf306", "01105"), ["Puzzle.Reveal('hf306')", "Puzzle.Attack('hf101a')"],
+       {"compteurs_sur": [["hf306", "illusion", 2]]}, main_exclusive=["01089"], payer_avec=["01089"], accepter_choix=True),
+    _c("hf306 Psionic Projection : TEMOIN, sans la carte la defense de base ne coute rien (la ressource reste en main)",
+       "contre-cas", [HEROS] + deck("01105"), ["Puzzle.Attack('hf101a')"],
+       {"en_main": ["01089"], "exhausted": ["01001a"]}, main_exclusive=["01089"], accepter_choix=True),
+    _c("hf306 Psionic Projection : le CONTRE de base coute 1 ressource [mental] ; Reponse forcee : -1 compteur apres le contre",
+       "`AdditionalCostToThwart(Hero, Spend B)` ; « After your hero makes a basic attack or a basic THWART, remove 1 illusion counter »",
+       [HEROS, "Puzzle.PlaceThreat('hf104b', 1)"] + deck("hf306", "01105"), ["Puzzle.Reveal('hf306')", "Puzzle.Thwart('01001a')"],
+       {"compteurs_sur": [["hf306", "illusion", 1]], "defausse": ["01089"]}, main_exclusive=["01089"], payer_avec=["01089"], cibles=["hf104b"], accepter_choix=True),
     _c("hf307 Illusion Unraveled : quand un attachement ILLUSION est defausse, il est donne au vilain en boost face cachee et hf307 est defaussee",
        "« When an ILLUSION attachment is discarded, give that card to the villain as a facedown boost card. Discard this card. »",
        deck("hf307", "hf303", "01105", "01105"), ["Puzzle.Reveal('hf307')", "Puzzle.Reveal('hf303')", "Puzzle.Discard('hf303')"],
@@ -449,7 +488,7 @@ def hf_etat(monde, aides):
         _trace = [l for l in _journal.splitlines() if "Traceback" in l]
     except Exception:
         _trace = []
-    propres = ("compteurs_sur", "menace_de", "attaque", "vie", "degats_de", "statuts_sur", "absents", "trait_de", "attache", "boosts_de", "steady", "acceleration", "gagnee", "partie_finie", "nb_en_jeu", "distribuees", "hors_deck_rencontre", "peut_defendre", "hote_pic")
+    propres = ("compteurs_sur", "menace_de", "attaque", "vie", "degats_de", "statuts_sur", "absents", "trait_de", "attache", "boosts_de", "steady", "acceleration", "gagnee", "partie_finie", "nb_en_jeu", "distribuees", "hors_deck_rencontre", "peut_defendre", "defense_reelle", "hote_pic")
     reste = {k: v for k, v in attendu.items() if k not in propres}
     copie = dict(aides); copie["cas"] = dict(aides["cas"]); copie["cas"]["attendu"] = reste
     ok, msg = etat_attendu(monde, copie)
@@ -535,10 +574,32 @@ def hf_etat(monde, aides):
         for cid in attendu["hors_deck_rencontre"]:
             if cid in ids:
                 soucis.append(f"{cid} est dans le deck de rencontre (il devait en etre retire)")
-    for ally, attaquant, voulu in attendu.get("peut_defendre", []):
+    for entree in attendu.get("peut_defendre", []):
+        # [defenseur, attaquant, voulu] ou [defenseur, attaquant, voulu, cible_de_l_attaque] (la cible renseigne `attacked_targets`, comme le fait le moteur)
+        ally, attaquant, voulu = entree[:3]
         f, a = face(ally), face(attaquant)
-        if f is not None and a is not None and bool(f.IsCanDefense(a)) != voulu:
-            soucis.append(f"{ally} peut defendre contre {attaquant} = {f.IsCanDefense(a)} (attendu {voulu})")
+        cibles_att = [face(entree[3])] if len(entree) > 3 else None
+        if f is not None and a is not None and bool(f.IsCanDefense(a, cibles_att)) != voulu:
+            soucis.append(f"{ally} peut defendre contre {attaquant}{' visant ' + entree[3] if cibles_att else ''} = {f.IsCanDefense(a, cibles_att)} (attendu {voulu})")
+    for ally, attaquant, cible, voulu in attendu.get("defense_reelle", []):
+        # La condition `can_defense_attack` est ajoutee par `Ability.__init__` en tete des conditions de la capacite DEF (`is_like_defense`) : on
+        # l'evalue avec un message d'attaque dont la cible est donnee, comme le fait le moteur quand le defenseur est choisi.
+        from game.message.message_type import AttackerMessage
+        f, a, c = face(ally), face(attaquant), face(cible)
+        if f is None or a is None or c is None:
+            continue
+        effets = f.effect.Find(func_name="DEF")
+        cond = [x for x in effets[0].ability.conditions if getattr(x, "__name__", "") == "can_defense_attack"] if effets else []
+        if not cond:
+            soucis.append(f"{ally} : pas de condition can_defense_attack sur sa capacite DEF")
+            continue
+        class _Msg(AttackerMessage):
+            def __init__(self, att, vises):
+                self.attacker_internal = att
+                self.targets_internal = list(vises)
+        obtenu = bool(cond[0](effets[0], _Msg(a, [c])))
+        if obtenu != voulu:
+            soucis.append(f"capacite DEF de {ally} contre {attaquant} visant {cible} = {obtenu} (attendu {voulu})")
     for cid, pic in attendu.get("hote_pic", []):
         f = face(cid)
         if f is not None:

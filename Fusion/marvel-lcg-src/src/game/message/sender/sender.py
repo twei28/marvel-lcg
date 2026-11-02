@@ -157,8 +157,11 @@ class Message(SenderRound, SenderPlayer, SenderCard, SenderTokenCounter, SenderD
             self.SetCauseBy(by_effect)
 
     class CheckIfUnitCanDefendAgainstAttack(CheckIfMessage):
-        def __init__(self, unit: 'Ally|Hero', attacker: 'Unit2') -> None:
+        def __init__(self, unit: 'Ally|Hero', attacker: 'Unit2', attacked_targets: 'Sequence[Unit2]|None'=None) -> None:
             self.can_defend: bool = True
+            # AJOUT (02/11/2026, Illusory Defender hf304) : les unites visees par l'attaque, quand l'appelant les connait (None sinon) ;
+            # permet « attacks against YOU cannot be defended by... » sans toucher aux restrictions existantes.
+            self.attacked_targets: Final = attacked_targets
             self.friend = unit
             self.attacker: Final = attacker
             self.check_unit: Final = unit

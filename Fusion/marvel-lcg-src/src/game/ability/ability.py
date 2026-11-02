@@ -314,7 +314,7 @@ class Ability:
                     else:
                         unit = this
                     if isinstance(unit, Ally|Hero):
-                        return unit.IsCanDefense(attacker)
+                        return unit.IsCanDefense(attacker, message.attacked_targets)
                     else:
                         return False
                 else:

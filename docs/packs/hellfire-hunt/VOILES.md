@@ -5,7 +5,7 @@ Rendu : `ui-app/outils/export-voile/rendre-voile.mjs` (banc Vite + Chromium) sur
 Limite : rendus du banc `harnais.tsx` (même composant que le site), pas un vrai plateau, sauf les 4 captures ci-dessus.
 
 ## 1. Cartes sans aucun texte FR (le scan reste en anglais) : DONNÉE
-hf101a, hf101b, hf102a, hf102b, hf103a, hf103b, hf104a, hf104b, hf105a, hf105b, hf106a, hf106b, hf107, hf110, hf111, hf112, hf114, hf115, hf116, hf117, hf118, hf120, hf122, hf124, hf125 (White Queen) ; hf301-hf308, hf311, hf312, hf313, hf317, hf318, hf321, hf322, hf324, hf325 (modules Perfection / Conclave / Delusion). Aucune entrée dans `textes-fr-fanmade.ts`, `textes-fr.ts` ni `textes-fr-complets.ts`. À traduire ou à confirmer comme voulu.
+hf101a, hf101b, hf102a, hf102b, hf103a, hf103b, hf104a, hf104b, hf105a, hf105b, hf106a, hf106b, hf107, hf110, hf111, hf112, hf114, hf115, hf116, hf117, hf118, hf120, hf122, hf124, hf125 (White Queen) ; hf301-hf308, hf311, hf312, hf313, hf317, hf318, hf321, hf322, hf324, hf325 (modules Perfection / Conclave / Delusion). Aucune entrée dans `textes-fr-fanmade.ts`, `textes-fr.ts` ni `textes-fr-complets.ts`. **RÉSOLU le 02/11** : les 42 textes sont écrits (bloc `hellfire_hunt_white_queen` de `textes-fr-fanmade.ts`), relevé des voiles au §5.
 
 ## 2. Noms catalogue différents du scan : DONNÉE
 - hf509 : scan « PSIONIC PARAGON », catalogue « Psychic Paragon ».
@@ -43,3 +43,16 @@ Traces fantômes sans gravité (dans l'illustration) : hf204a « w. », hf205b �
 - Cassandra Nova : hf601, hf602, hf603, hf604a, hf605a, hf606a, hf607-hf619, hf620, hf621.
 
 Aucune section « reste à regarder » : toutes les cartes rendues ont été vues.
+
+## 5. White Queen (hf101-hf125) et modules Perfection / Conclave / Delusion : voiles du 02/11
+Textes posés dans `textes-fr-fanmade.ts` (bloc `hellfire_hunt_white_queen`), JS public régénéré. Rendu : `rendre-voile.mjs`, version du voile `13a07d37a9e2`, 42 cartes rendues, 0 erreur, les 42 images vues (planches `.../scratchpad/wq/VP00-VP10.jpg`, `VL00-VL04.jpg`, rendus `.../scratchpad/wq/cache/hfNNN.jpg`). Texte saisi comparé au scan : identique au catalogue pour les 42 cartes. Composant non modifié.
+
+Défauts (composant, sauf mention) :
+- Doublon anglais non effacé, français posé dessous : hf114, hf115, hf116, hf117 (Phantom Warrior : « Guard. Steady. Toughness. » reste au-dessus de « Garde. Solide. Ténacité. ») ; hf313 Hellfire Pawn (« Guard. Patrol. Surge. »). Même défaut que Ebon Knight hf212-215 : cartes dont la seule ligne de mots-clés est suivie du Boost.
+- Débord du texte hors du cadre : hf122 Psionic Fortification (« COMPÉTENCE. Une fois révélée : si » remonte sur l'illustration, texte trop long pour la zone) ; hf304 Illusory Defender (dernière ligne « d'illusion. » rognée sous le cadre, texte trop long).
+- hf317 The Hellfire Conclave : « HELLFIRE » de la dernière ligne mordu par le badge « 9 » ; un « 1 » anglais résiduel sous « Incitation 1. » ; la ligne d'ambiance démarre à cheval sur le bord gauche du cadre.
+- Icônes de boost en bas à droite délavées (grises au lieu de rouges) : hf111, hf120, hf304.
+- Fragments anglais fantômes : hf104a un « a » sous « et White Queen (A2) » ; hf105a « army » sous le texte d'ambiance (et un « : » orphelin en début de ligne, effet de retour à la ligne) ; hf106b une trace « .com » au-dessus de « Si ce stade est achevé » ; petites taches blanches sur le bord droit du cadre (hf101a/b, hf102a/b, hf103a/b, hf301, hf302, hf303, hf304, hf306, hf313, hf114-117, hf124, hf318).
+- hf125 : la ligne d'ambiance chevauche le bord gauche du panneau (premières lettres collées au cadre).
+- DONNÉE (traits-fr.ts) : les traits DIAMOND, HELLFIRE et ILLUSION restent affichés tels quels sur la ligne de traits (« DIAMOND. HELLFIRE. », « ILLUSION. PSIONIQUE. ») : PSIONIC, ELITE et SKILL sont traduits, pas ces trois-là. À trancher (laisser en anglais comme pour les autres noms propres, ou « DIAMANT »).
+- Sans défaut notable : hf101a, hf102a, hf103a (hors tache), hf107, hf110, hf112, hf118, hf301, hf302, hf303, hf305, hf306, hf307, hf308, hf311, hf312, hf321, hf322, hf324, hf325, hf104b, hf105b, hf106a, hf318, hf124.
