@@ -753,6 +753,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                 return 50
             if nom == "Thwart":
                 if type_cible == "MainScheme":
+                    # AJOUT 01/11/2026 (Hellfire Hunt, Black King hf204b : « Threat cannot be removed from this scheme ») : contrer un
+                    # complot qui refuse qu'on lui retire de la menace ne fait rien, la manigance annexe (Captured by Hellfire!) passe d'abord.
+                    # Sans effet sur tout complot dont le texte ne porte pas cette phrase.
+                    _texte_cx = str(getattr(getattr(face, "paper", None), "text", "") or "").lower()
+                    if "threat cannot be removed" in _texte_cx:
+                        return 60
                     # Sous Crise, retirer de la menace du plan principal ne
                     # fait rien : tout passe apres la manigance qui l'impose.
                     return 60 if ctx.get("crise") else 200

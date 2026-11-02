@@ -473,6 +473,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Défausse Rencontre': 'Encounter discard',
   'Défausse de pièges': 'Trap discard',
   'Paquet de pièges': 'Trap deck',
+  'Deck Hellfire': 'Hellfire deck',
+  'Défausse Hellfire': 'Hellfire discard',
   'Méchant': 'Villain',
   'Manigance principale': 'Main scheme',
   'Manigances annexes': 'Side schemes',

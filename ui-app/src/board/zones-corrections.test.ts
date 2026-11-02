@@ -25,6 +25,12 @@ describe('corrigerZone : zones relevées à la main', () => {
     expect(tk001a.bords[0][1]).toBeLessThan(tk001a.bords[tk001a.bords.length - 1][1])
   })
 
+  it('hf122 : le haut de la zone est ramené au cadre de texte (la détection le mettait dans l\'illustration)', () => {
+    const zone = corrigerZone('hf122', { ...detectee, y0: 0.4737 })!
+    expect(zone.y0).toBe(0.575)
+    expect(zone.y1).toBe(detectee.y1)
+  })
+
   it('une carte sans correction garde sa détection, ou son absence', () => {
     expect(corrigerZone('zz999', detectee)).toBe(detectee)
     expect(corrigerZone('zz999', null)).toBeNull()

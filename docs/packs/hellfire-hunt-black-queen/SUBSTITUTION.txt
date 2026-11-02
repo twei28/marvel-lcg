@@ -1,0 +1,33 @@
+hf361    rouges 3/4   restent VERTS : 1
+hf362    rouges 5/5
+hf363    rouges 2/2
+hf364    rouges 3/3
+hf365    rouges 3/3
+hf366    rouges 2/2
+hf401    rouges 2/4   restent VERTS : 2
+hf402    rouges 1/1
+hf403    rouges 0/1   restent VERTS : 1
+hf404a   rouges 2/2
+hf404b   rouges 4/5   restent VERTS : 1
+hf405a   AUCUN CAS
+hf405b   rouges 2/2
+hf406a   rouges 1/1
+hf406b   rouges 2/2
+hf407a   rouges 10/11   restent VERTS : 1
+hf407b   rouges 4/5   restent VERTS : 1
+hf408    rouges 2/5   restent VERTS : 3
+hf409    rouges 1/4   restent VERTS : 3
+hf410    rouges 1/1
+hf411    rouges 1/1
+hf412    rouges 1/1
+hf413    rouges 6/7   restent VERTS : 1
+hf414    rouges 1/1
+hf415    rouges 1/1
+hf416    rouges 3/4   restent VERTS : 1
+hf417    rouges 1/1
+hf418    rouges 2/3   restent VERTS : 1
+hf419    rouges 2/3   restent VERTS : 1
+hf420    rouges 4/5   restent VERTS : 1
+hf421    rouges 1/4   restent VERTS : 3
+hf422    rouges 1/5   restent VERTS : 4
+empreinte avant/apres : 1d92cb3c0d042473402e39a4f16cd0a7 1d92cb3c0d042473402e39a4f16cd0a7 IDENTIQUES

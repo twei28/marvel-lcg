@@ -1803,3 +1803,90 @@ EPREUVES += [
         "carnet_attendu": {"scenario": "spiral", "cles": {"Modular Sets Used": "crime;fantasy;horror;sci_fi"}},
     },
 ]
+
+
+# ============================================================ Hellfire Hunt (hf), scenario 5 « Cassandra Nova » (01/11/2026)
+#
+# Le scenario 5 est le DERNIER de la boite : pas de « suivant » naturel. On rejoue donc le meme scenario avec le carnet sortant pour mesurer ce que
+# la mise en place de CAMPAGNE (cards.pack.hellfire_hunt.campaign.CampaignSetup(5), appelee par hf604a) fait des cles : Rally the Survivors revelee, pas de
+# Xavier's Institute, Tactical Help et Enemy Of Enemy melanges au deck de rencontre. La defaite de CAMPAGNE en expert est une regle d'ecran
+# (ui-app/src/board/campagne/defaite-campagne.ts) : voir defaite-hellfire.test.ts.
+# BLOC « hellfire_cassandra_nova » (ne pas deplacer : l'agent du scenario 5 le reecrit seul).
+EPREUVES += [
+    {
+        "nom": "hellfire — victoire sur Cassandra Nova (campagne) : carnet sortant estampille du scenario, allies Recruited gardes ; la mise en place du scenario 5 est jouee",
+        "scenario": "hellfire_cassandra_nova",
+        "heros": "spider_man",
+        "carnet": {"Recruited Allies": "hf013;hf014"},
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "hellfire_cassandra_nova",
+            # Emma Frost (case « Redemption » non cochee) est melangee au deck Recruited Mutants par la mise en place du scenario 5 : tout allie sorti de la zone
+            # « mise de cote » est note recrute (livret : « Record each ... ally in the Recruited Mutants deck »), regle du 01/11/2026.
+            "cles": {"Recruited Allies": "hf013;hf014;hf025"},
+            "cles_presentes": ["Player 1 Remaining hit points", "Player 1 Identity"],
+        },
+        "suivant": "hellfire_cassandra_nova",
+        "attendu": {"en_jeu": ["hf045", "hf607"], "pas_en_jeu": ["hf048"]},
+    },
+    {
+        "nom": "hellfire — DEFAITE sur Cassandra Nova : rien n'est ecrit au carnet de scenario (on rejoue sans penalite en standard)",
+        "scenario": "hellfire_cassandra_nova",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet": {"Recruited Allies": "hf013;hf014"},
+        "carnet_attendu": {"gagnee": False, "scenario": "hellfire_cassandra_nova", "cles_presentes": ["Player 1 Remaining hit points"]},
+    },
+    {
+        "nom": "hellfire — EXPERT : les PV restants du carnet (4) sont reposes au depart ; le pilote accepte de payer 1 pion Acceleration pour soigner : identite soignee (0 degat) et 1 pion sur le complot COURANT (hf605b)",
+        "scenario": "hellfire_cassandra_nova_expert",
+        "heros": "spider_man",
+        "choix": {"Player 1 Remaining hit points": "4"},
+        "suivant": "hellfire_cassandra_nova_expert",
+        "attendu": {"degats_identite": 0, "jetons": [["hf605b", "acceleration_token", 1]], "en_jeu": ["hf602", "hf607"]},
+    },
+]
+# FIN BLOC hellfire_cassandra_nova
+
+
+# ============================================================ Hellfire Hunt (hf), scenario 4 « Torn » (01/11/2026)
+#
+# `hf503a` porte `hc.MiseEnPlace(4)` (mise en place de CAMPAGNE) et `WriteCampaignLogAtGameOver(ReleveTorn)` : le releve commun + les allies qui ne sont plus dans la zone
+# « mise de cote » (livret p.14). On rejoue le meme scenario avec le carnet sortant pour mesurer la reprise (Xavier's Institute en jeu, allies gagnes hors de la zone mise de cote).
+# BLOC « hellfire_torn » (ne pas deplacer : l'agent du scenario 4 le reecrit seul).
+EPREUVES += [
+    {
+        "nom": "hellfire Torn — victoire (campagne) : carnet sortant estampille « hellfire_torn », l'allie recrute en cours de partie est note ; la mise en place suivante : Xavier's Institute en jeu, l'allie note n'est plus de cote",
+        "scenario": "hellfire_torn",
+        "heros": "spider_man",
+        "carnet": {"Recruited Allies": "hf013"},
+        "avant": ["Puzzle.PutIntoPlay('hf014', under_control=True)"],
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "hellfire_torn",
+            "cles": {"Recruited Allies": "hf013;hf014"},
+            "cles_presentes": ["Player 1 Remaining hit points", "Player 1 Identity", "Removed Potential Allies"],
+        },
+        "suivant": "hellfire_torn",
+        "attendu": {"en_jeu": ["hf048"], "pas_de_cote": ["hf013"], "de_cote": ["hf015", "hf016"]},
+    },
+    {
+        "nom": "hellfire Torn — DEFAITE : rien n'est ecrit au carnet de scenario (on rejoue sans penalite)",
+        "scenario": "hellfire_torn",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet": {"Recruited Allies": "hf013"},
+        "avant": ["Puzzle.PutIntoPlay('hf014', under_control=True)"],
+        "carnet_attendu": {"gagnee": False, "scenario": "hellfire_torn", "cles_presentes": ["Player 1 Remaining hit points"], "cles": {"Recruited Allies": "hf013"}},
+    },
+    {
+        "nom": "hellfire Torn expert — PV restants notes au carnet (4 sur 10) et reportes a la mise en place suivante (le pilote accepte le soin par pion Acceleration : 10)",
+        "scenario": "hellfire_torn_expert",
+        "heros": "spider_man",
+        "avant": ["Puzzle.Damage('01001b', 6)"],
+        "carnet_attendu": {"gagnee": True, "scenario": "hellfire_torn", "cles": {"Player 1 Remaining hit points": "4"}},
+        "suivant": "hellfire_torn_expert",
+        "attendu": {"en_jeu": ["hf048"], "pv_identite": 10},
+    },
+]
+# FIN BLOC « hellfire_torn »

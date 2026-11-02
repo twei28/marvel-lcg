@@ -4,7 +4,7 @@
     "metadata": {
         "url": "",
         "auteur": "Dipsome",
-        "note": "Deck de depart reconstruit depuis le zip de l'auteur (dossier Hero/Sunspot de la campagne Hellfire Hunt : 23 images, aucune decklist d'aspect fournie : player_deck VIDE, decision utilisateur du 06/09/2026). Le deck est celui du heros seul ; la campagne Hellfire Hunt n'est pas portee."
+        "note": "Sunspot (Dipsome, campagne Hellfire Hunt). player_deck PARTIEL (15/30+) : Finishing Blow, Cecilia Reyes, For What's Right et X-Force Strike sont absents du zip et du jeu (voir QUESTIONS.md)."
     },
     "hero": [
         "so001a,so001b"
@@ -37,5 +37,21 @@
         "so015",
         "so016"
     ],
-    "player_deck": []
+    "player_deck": [
+        "45011",
+        "41031",
+        "36022",
+        "42013",
+        "06018",
+        "35015",
+        "01057",
+        "01057",
+        "40014",
+        "14022",
+        "14022",
+        "14022",
+        "01088",
+        "01089",
+        "01090"
+    ]
 }

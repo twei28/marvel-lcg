@@ -47,6 +47,8 @@
 - `rapports/CAMPAGNES.md` : état des lieux du mode campagne, figé au
   07/08/2026 (comprendre comment ça marchait à cette date, pas une
   référence tenue à jour)
+- `rapports/CAMPAGNES.md`, section « Hellfire Hunt » (en fin de fichier) : mode campagne de Hellfire Hunt, chaîne 1 -> 5, scans du livret,
+  règle de deck-building ; doutes restants dans `packs/hellfire-hunt/QUESTIONS.md`
 
 ## Packs custom avec leur propre dossier de conception
 

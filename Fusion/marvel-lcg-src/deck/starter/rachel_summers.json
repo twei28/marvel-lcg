@@ -4,7 +4,7 @@
  "metadata": {
   "url": "",
   "author": "Dipsome",
-  "note": "Pack « Rachel Summers / Marvel Girl » (Dipsome, campagne Hellfire Hunt). Le dossier du zip ne contient pas de decklist : player_deck vide (PROCESSUS-HEROS etape 3)."
+  "note": "Pack « Rachel Summers / Marvel Girl » (Dipsome, campagne Hellfire Hunt). player_deck = livret p.20 : X-Gene n'est mis qu'en 1 exemplaire (Max 1 par joueur)."
  },
  "hero": [
   "rm001a,rm001b"
@@ -37,5 +37,28 @@
   "rm016",
   "rm016"
  ],
- "player_deck": []
+ "player_deck": [
+  "hf001",
+  "hf002",
+  "hf003",
+  "hf004",
+  "hf004",
+  "hf004",
+  "hf005",
+  "hf005",
+  "hf005",
+  "hf006",
+  "hf007",
+  "hf007",
+  "hf007",
+  "38019",
+  "32049",
+  "37021",
+  "hf008",
+  "hf009",
+  "hf009",
+  "01088",
+  "01089",
+  "01090"
+ ]
 }

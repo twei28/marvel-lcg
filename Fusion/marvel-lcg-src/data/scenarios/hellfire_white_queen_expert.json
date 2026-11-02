@@ -1,0 +1,26 @@
+{
+  "version": "0.5.8",
+  "name": "White Queen",
+  "villain": [
+    "hf102a,hf102b",
+    "hf103a,hf103b"
+  ],
+  "expert": true,
+  "schemes": [
+    "hf104a,hf104b",
+    "hf105a,hf105b",
+    "hf106a,hf106b"
+  ],
+  "set_aside": [],
+  "encounters": [],
+  "encounter_sets": [
+    "hf_white_queen",
+    "hf_perfection",
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "hf_hellfire_conclave",
+    "hf_psionic_delusion"
+  ]
+}

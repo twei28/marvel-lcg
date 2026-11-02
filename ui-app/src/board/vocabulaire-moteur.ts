@@ -531,6 +531,15 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   // « Combien de fois ce choix ? » (player_action.py, `ChooseAbilities(repeat=...)`).
   [/^(\d+) times?$/, (m) => `${m[1]} fois`],
   [/^No repeat$/, () => 'Aucun'],
+  // Scenario 5 « Cassandra Nova » de Hellfire Hunt (`hf`, 01/11/2026) : les choix de Cassandra Domination (hf607), des trois complots (hf604b-hf606b),
+  // de Wild Sentinel (hf382-hf385) et d'Exploding Their Head (hf608).
+  [/^Place (\d+) threat on each scheme$/, (m) => `Placer ${menaces(m[1]!)} sur chaque manigance`],
+  [/^Stun and confuse your identity$/, () => 'Rendre ton identité sonnée et désorientée'],
+  [/^Deal (\d+) indirect damage to another friendly character$/, (m) => `Infliger ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'} à un autre personnage ami`],
+  [/^Deal yourself (\d+) facedown encounter cards?$/, (m) => `Te distribuer ${m[1]} ${Number(m[1]) > 1 ? 'cartes rencontre' : 'carte rencontre'} face cachée`],
+  [/^Discard (\d+) cards? from your hand$/, (m) => `Défausser ${m[1]} ${Number(m[1]) > 1 ? 'cartes' : 'carte'} de ta main`],
+  [/^Place this card on the bottom of the encounter deck instead of the discard pile$/, () => 'Placer cette carte sous le deck rencontre au lieu de la défausse'],
+  [/^Discard \(total resource cost at least (\d+)\)$/, (m) => `Défausser (coût total d’au moins ${m[1]})`],
 ]
 
 /**

@@ -2309,5 +2309,72 @@
   "encounters": [],
   "max_id": "mt016"
  },
- "checksum": "3cb8d73959b59cfec878de3e4920829fe195767944e0404e67ed7808a975b3b0"
+ "checksum": "2e4d1a39e7afe67d5bf2cc92435a63631ffed4e1d44ca01f6c5706e70d159f4e",
+ "240. Custom (Hellfire Hunt - White Queen)": {
+  "name": "hellfire_hunt_white_queen",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_white_queen",
+   "hf_perfection",
+   "hf_hellfire_conclave",
+   "hf_psionic_delusion"
+  ],
+  "max_id": "hf325"
+ },
+ "241. Custom (Hellfire Hunt)": {
+  "name": "hellfire_hunt",
+  "scenarios": [
+   "hellfire_white_queen",
+   "hellfire_black_king",
+   "hellfire_black_queen",
+   "hellfire_torn",
+   "hellfire_cassandra_nova"
+  ],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "hf048"
+ },
+ "243. Custom (Hellfire Hunt - Black Queen)": {
+  "name": "hellfire_hunt_black_queen",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_black_queen",
+   "hf_darkhold"
+  ],
+  "max_id": "hf422"
+ },
+ "242. Custom (Hellfire Hunt - Black King)": {
+  "name": "hellfire_hunt_black_king",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_black_king",
+   "hf_sebastian_shaw"
+  ],
+  "max_id": "hf338"
+ },
+ "244. Custom (Hellfire Hunt - Torn)": {
+  "name": "hellfire_hunt_torn",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_torn",
+   "hf_negasonic_teenage_warhead",
+   "hf_immensity"
+  ],
+  "max_id": "hf510"
+ },
+ "245. Custom (Hellfire Hunt - Cassandra Nova)": {
+  "name": "hellfire_hunt_cassandra_nova",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_cassandra_nova",
+   "hf_mind_control",
+   "hf_mutant_extinction_agenda"
+  ],
+  "max_id": "hf621"
+ }
 }

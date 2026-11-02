@@ -907,6 +907,13 @@
    "cartes": 18,
    "depuis": "2026-11-01",
    "note": "Cree le 01/11/2026 depuis le Drive partage (dossier « Robocop (Released) », MissSugarPink) puis complete par les images envoyees par l'utilisateur (set nemesis, obligation). rc001a/b identite (RoboCop / Alex Murphy) ; rc002-rc011 deck de heros (Authorized Force x3, Dead or Alive x3, No Collateral x2, Auto-9, Internal Reload System, Flightpack, Terminal Spike, Gunarm, Squad Car, Officer Lewis : les numeros n/15) ; rc012 obligation Classified ; rc013-rc016 set nemesis (ED-209, Corporate Demonstration, Stairs, Fugitives x2) ; rc017 Leg Holster (amelioration Basic du dossier Drip). Down Time, Endurance, Genius, Strength, Energy illustres par l'auteur : memes cartes que les officielles (art seul), NON importees. Traits OFFICER et CREEP ajoutes a l'enum."
+  },
+  "hf": {
+   "pack": "hellfire_hunt_white_queen",
+   "libelle": "240. Custom (Hellfire Hunt - White Queen)",
+   "cartes": 42,
+   "depuis": "2026-10-26",
+   "note": "Cree le 26/10/2026. Auteur Dipsome, campagne Hellfire Hunt (zip Hellfire Hunt Campaign). hf001-hf099 : fondations de campagne (autre agent) ; hf101-hf125 : scenario 1 White Queen ; hf301-hf325 : modules Perfection (301-308), Hellfire Conclave (311-318), Psionic Delusion (321-325). card_id = hf + 100 + numero du scan pour le scenario ; 300/310/320 + numero du scan pour les modules. Scenario 5 Cassandra Nova (pack hellfire_hunt_cassandra_nova, set 245) : hf601-hf621 (600 + numero du scan) ; modules Mind Control hf371-hf376 et Mutant Extinction Agenda hf381-hf388 (370 / 380 + numero du scan). hf401-hf422 : scenario 3 Black Queen (pack hellfire_hunt_black_queen, set 243, numero du scan + 400 ; l'environnement recto-verso est hf407a/hf407b) ; hf361-hf366 : module Darkhold (meme pack, numero du scan + 360)."
   }
  }
 }

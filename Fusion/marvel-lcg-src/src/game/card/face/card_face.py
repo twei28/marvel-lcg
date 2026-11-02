@@ -77,6 +77,18 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (20/10/2026, heros Quasar de Galactic Storm, Kajislav, prefixe `gs`) : trait imprime
         # sur gs099q Maelstrom (« DEVIANT. INHUMAN. »).
         "DEVIANT",
+        # AJOUT (26/10/2026, campagne Hellfire Hunt, scenario White Queen, prefixe `hf`) : forme DIAMOND de White Queen
+        # (hf101b, hf301...), LUE par les scripts du pack (« if White Queen is in DIAMOND form »).
+        "DIAMOND",
+        # AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Cassandra Nova, prefixe `hf`) : trait imprime sur hf601-hf603 (« MUMMUDRAI. PSIONIC. »),
+        # purement declaratif.
+        "MUMMUDRAI",
+        # AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Torn, prefixe `hf`) : face « FRAGMENT » de hf504b Nova's Psychic Puppetry
+        # (purement declaratif).
+        "FRAGMENT",
+        # AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Black Queen + module Darkhold, prefixe `hf`) : traits imprimes sur hf362 Darkhold
+        # (« MAGICAL BOOK »), hf363-hf366 (« SPELL OF DARKHOLD », cherche par hf361 Darkhold Dwarf) et hf409-hf412 Little Demon (« HELL »).
+        "SPELL OF DARKHOLD", "MAGICAL BOOK", "HELL",
         "WARTHOG", "RHINOCEROS", "ALERT", "K.O.", "HOG", "RHINO", "ROWDY",
         "TEMPER", "ENRAGED", "BESTIES", "BERSERK", "FERAL", "SUNGLASSES",
         "HELMET", "STREETS", "VELOCIRAPTOR",
@@ -341,6 +353,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',
+        'darkspell',  # AJOUT (01/11/2026) : compteur « Darkspell » de hf362 Darkhold (Uses 2), module Darkhold, Hellfire Hunt
+        'cassandra_controls',  # AJOUT (01/11/2026, scenario Cassandra Nova, Hellfire Hunt) : « Cassandra Controls counter » sur l'IDENTITE des joueurs (hf601-hf603, hf607...)
         'time', 'test', 'active', 'energy', 'glider', 'bomb', 'mental',
         'vengeance', 'physical', 'ammo', 'charge', 'toon', 'training', 'chime',
         'rage', 'delay',

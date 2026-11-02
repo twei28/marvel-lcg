@@ -1135,6 +1135,87 @@ class RunPuzzle:
         (tour de plus de rm007) sans jouer la boucle d'actions. Additif."""
         self.world.GetCurrentPlayer().stat.OnEndTurn()
 
+    def PutIntoRecruitedMutants(self, *cards: str, discard: bool=False) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt, pack `hf`) : fabrique ces cartes DANS le deck de table « Recruited Mutants » (en
+        defausse si `discard=True`), comme la mise en place de campagne le fait des allies gagnes. Cree le deck a la demande
+        (`cards.pack.hellfire_hunt.RecruitedMutants`). Les cartes y gardent `bind_discard_pile` : defaussees, elles reviennent dans la
+        defausse Recruited. Additif."""
+        from game.card.factory import CardFactory
+        from cards.pack.hellfire_hunt import RecruitedMutants
+        deck, defausse = RecruitedMutants(self.debug_rule)
+        cible = defausse if discard else deck
+        for carte in cards:
+            fabriquee = CardFactory.GenerateCard(carte, cible, self.world)
+            fabriquee.bind_discard_pile = defausse
+
+    def PutIntoHellfireDeck(self, *cards: str, discard: bool=False) -> None:
+        """AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Torn, `hf`) : fabrique ces cartes DANS le Hellfire deck de table (dans sa defausse si
+        `discard=True`), comme la mise en place du complot hf503a le fait des sbires ELITE HELLFIRE. Cree le deck a la demande
+        (`cards.pack.hellfire_hunt_torn.DeckHellfire`). Les cartes y gardent `bind_discard_pile` : defaussees ou vaincues, elles reviennent dans la
+        defausse Hellfire. Additif."""
+        from game.card.factory import CardFactory
+        from cards.pack.hellfire_hunt_torn import DeckHellfire
+        deck, defausse = DeckHellfire(self.debug_rule)
+        cible = defausse if discard else deck
+        for carte in cards:
+            fabriquee = CardFactory.GenerateCard(carte, cible, self.world)
+            fabriquee.bind_discard_pile = defausse
+
+    def EmptyHellfireDeck(self) -> None:
+        """AJOUT (01/11/2026, Torn) : vide le Hellfire deck ET sa defausse (les cartes sont retirees de la partie). Additif."""
+        from cards.pack.hellfire_hunt_torn import DeckHellfire
+        from game.operate.faces import Faces
+        deck, defausse = DeckHellfire(self.debug_rule)
+        Faces.RemoveAllFromGame(list(deck.Get(True)) + list(defausse.Get(True)), self.debug_rule)
+
+    def PlayFromRecruitedDiscard(self, card: str) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt, hf014 Blink : « play Blink from Recruited Mutant discard pile during their own turn ») :
+        joue la carte designee DEPUIS la defausse Recruited Mutants par le VRAI chemin (comme `jouer_carte_glissee` du harnais) : on demande
+        les effets « Play » de la carte, on les passe au filtre du gestionnaire d'evenements (qui interroge `IsLikeInHand`), puis on resout en
+        PAYANT le cout. Si le moteur n'offre pas la carte, l'echec est le resultat. Additif."""
+        from game.message import Message
+        from game.effect.rule import GameRule
+        from game.event.manager import EventManager
+        from cards.pack.hellfire_hunt import RecruitedMutants
+        _, defausse = RecruitedMutants(self.debug_rule)
+        joueur = self.world.GetCurrentPlayer()
+        for face in defausse.Get(True):
+            if getattr(face.paper, "card_id", None) == card:
+                effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+                message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+                message.Send()
+                disponibles = EventManager.FilterAvailableEffects(message, effets, joueur, self.world, None)
+                assert disponibles, f"le moteur n'offre PAS de jouer {card} depuis la defausse Recruited Mutants"
+                joueur.ChooseEffects([disponibles[0]], message, forced=False)
+                return
+        raise AssertionError(f"{card} n'est pas dans la defausse Recruited Mutants")
+
+    def HellfireCampagne(self, level: int, carnet: 'dict|None'=None) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt) : joue la MISE EN PLACE de campagne du scenario `level` (`cards.pack.hellfire_hunt.campaign.Executer`)
+        avec un carnet donne (cles -> chaines, ecrites au store du monde). Banc de test : aucune campagne reelle n'est lancee. Additif."""
+        from cards.pack.hellfire_hunt import campaign as hc
+        for cle, valeur in (carnet or {}).items():
+            self.world.store.SetStr(cle, valeur)
+        hc.Executer(self.debug_rule, level)
+
+    def HellfireReleve(self, level: int, gagne: bool=True) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt) : calcule le RELEVE de carnet de fin de partie du scenario `level` (`campaign.Releve`) et le garde
+        dans `world.hf_releve` (lu par le verificateur `hf_etat`). Additif."""
+        from cards.pack.hellfire_hunt import campaign as hc
+
+        class _Fin:
+            players_won = gagne
+        self.world.hf_releve = hc.Releve(level, self.debug_rule, _Fin())
+
+    def HellfireReleveTorn(self, gagne: bool=True) -> None:
+        """AJOUT (01/11/2026, scenario Torn) : comme `HellfireReleve(4)` mais par `cards.pack.hellfire_hunt_torn.ReleveTorn` (le releve commun + les allies
+        qui ne sont plus dans la zone mise de cote). Garde le resultat dans `world.hft_releve`. Additif."""
+        from cards.pack.hellfire_hunt_torn import ReleveTorn
+
+        class _Fin:
+            players_won = gagne
+        self.world.hft_releve = ReleveTorn(self.debug_rule, _Fin())
+
     def NewTurnWorldStat(self) -> None:
         """AJOUT (26/10/2026, pack `hp` Wasp (Hank Pym), hp009 / hp012 : « X = formes changees CE tour » avec X = 0). Remet a zero les
         compteurs « ce tour » du MONDE (`WorldStat.OnTurnEnd` : attaques, contres, formes changees), que `EndPlayerTurn` n'appelle pas.
@@ -1255,6 +1336,23 @@ class RunPuzzle:
         world.phase_id += 1
 
         phase_message = Message.WhenPhaseBegin("Villain", world)
+        phase_message.Send()
+
+        for player in world.const_players:
+            player.phase.BeginPhase()
+
+        Message.AfterPhaseBegin(phase_message).Send()
+
+    def BeginPlayerPhase(self) -> None:
+        """AJOUT (01/11/2026, scenario Torn, hf503b « At the start of the player phase ») : ouvre la PHASE DES JOUEURS sans la jouer, comme
+        `BeginVillainPhase` ouvre celle du mechant (`world.py` `phase_begin("Player")`) : `WhenPhaseBegin("Player")` (les Interruptions forcees),
+        chaque joueur ouvre sa phase, puis `AfterPhaseBegin`. Additif."""
+        from game.message import Message
+
+        world = self.world
+        world.phase_id += 1
+
+        phase_message = Message.WhenPhaseBegin("Player", world)
         phase_message.Send()
 
         for player in world.const_players:

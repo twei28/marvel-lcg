@@ -132,6 +132,9 @@ async function nouvellePage() {
   // Mesure : EXPORT_VOILE_FONDS=1 écrit aussi, pour chaque carte, le fond nettoyé SANS le français (fond-<code>.webp), pour voir ce qui reste d'anglais.
   if (process.env.EXPORT_VOILE_FONDS) await page.addInitScript(() => { window.exportVoileFonds = true })
   page.on('pageerror', (e) => process.stderr.write(`[page] ${e}\n`))
+  // Mesure : EXPORT_VOILE_SANS_WORKER=1 efface sur le fil principal, pour que les console.log de effacer-texte.ts remontent (avec EXPORT_VOILE_CONSOLE=1).
+  if (process.env.EXPORT_VOILE_SANS_WORKER) await page.addInitScript(() => { delete window.Worker })
+  if (process.env.EXPORT_VOILE_CONSOLE) page.on('console', (m) => process.stderr.write(`[console] ${m.text()}\n`))
   await page.goto(new URL('outils/export-voile/index.html', adresse).href)
   await page.waitForFunction(() => window.exportVoile?.pret === true, null, { timeout: 120000 })
   return page

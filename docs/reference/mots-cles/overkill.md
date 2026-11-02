@@ -62,3 +62,7 @@ pas un boost.
 - **Mesurer un « this attack gains overkill » porté par une carte de boost** (`rl017` Devour, comme `an013`) : faire attaquer le vilain CONTRE UN ALLIÉ, `Puzzle.EnemyAttacks('01094', '01002')`, avec `Puzzle.GiveFacedownBoost('01094', 'rl017')` et la clé de cas **`passer_sur_option="Defense"`**. Avec `accepter_choix=True` le HÉROS défend à la place de l'allié et l'excès n'apparaît jamais ; `Puzzle.Attack('01094', '<allié>')` (défenseur armé) n'a pas donné d'excès non plus.
 - ⚠ Mockingbird (`01083`) SONNE un ennemi en entrant en jeu : Rhino sonné n'attaquait plus (0 dégât partout, cas rouge pour rien). Alliés neutres : `01002` Black Cat, `rl002`.
 - Témoin obligatoire : même montage avec une carte de boost de même nombre d'icônes SANS overkill (`rl016` New Host) : 0 dégât d'excès au héros.
+
+## Pack Cassandra Nova (Hellfire Hunt, `hf616`, 01/11/2026)
+
+- « If this activation is an attack, this attack gains overkill and piercing » (boost de `hf616` Psychic Combo) : `message.would_atk_message.GainOverKill(effect)` + `.GainPiercing(effect)` dans `WhenCardBecomeBoost("This", op)`, branche `message.being_message.IsAttack()`. Cas visibles : `Puzzle.Attack('hf602', defender='01002')` (Black Cat, 2 PV) : 1 degat d'exces au heros avec la carte, 0 avec Psychic Leech (meme nombre d'icones, aucun effet) ; Black Cat Tenace est blessee avec la carte (piercing) et survit sans.

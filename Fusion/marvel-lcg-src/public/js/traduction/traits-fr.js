@@ -119,6 +119,7 @@ export const TRAITS_FR = {
     "HERALD": "HÉRAUT",
     "HERO": "HÉROS",
     "HERO FOR HIRE": "HÉROS À LOUER",
+    "HELLFIRE": "DAMNÉS",
     "HIGH": "HAUT",
     "HOG": "PORC",
     "HORSEMEN": "CAVALIERS",

@@ -40,3 +40,7 @@ sans la carte.
 **Variantes maison** : `ho016` (* Bullseye, pack `harry_osborn`) : « [star]
 Bullseye's attack gains piercing and overkill » — capacité étoile (Expert)
 posée par `GainPiercing`/`GainOverKill` sur l'attaque en cours.
+
+## Pack Cassandra Nova (Hellfire Hunt, `hf616`, 01/11/2026)
+
+Voir `overkill.md` : meme boost, meme message, meme couple de cas (Black Cat avec une carte Tenace : `Puzzle.Tough('01002')`).

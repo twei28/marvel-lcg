@@ -3899,6 +3899,8 @@ const COLLECTIONS_RESSOURCES = [
     { code: "roz", nom: "Roz", apercu: "rz014" },
     { code: "smasher", nom: "Smasher", apercu: "sz017" },
     { code: "warriors_three", nom: "The Warriors Three", apercu: "wt023" },
+    { code: "sunspot_hellfire", nom: "Sunspot (Hellfire Hunt)", apercu: "hf011" },
+    { code: "rachel_summers", nom: "Rachel Summers", apercu: "hf011" },
     { code: "predator", nom: "Predator", apercu: "pd022" },
 ];
 

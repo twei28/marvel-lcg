@@ -20,6 +20,9 @@ const PACKS: Array<[string, [string, string, string]]> = [
   ['chod', ['co017', 'co018', 'co019']],
   ['smasher', ['sz016', 'sz017', 'sz018']],
   ['warriors_three', ['wt024', 'wt023', 'wt025']],
+  // Hellfire Hunt (Dipsome) : hf010 Energy, hf011 Genius, hf012 Strength, pour Sunspot et Rachel Summers (26/10/2026).
+  ['sunspot_hellfire', ['hf010', 'hf011', 'hf012']],
+  ['rachel_summers', ['hf010', 'hf011', 'hf012']],
   // Predator (RyCoRan) : pd021 Energy, pd022 Genius, pd023 Strength, meme traitement (26/10/2026, oubli de la premiere passe).
   ['predator', ['pd021', 'pd022', 'pd023']],
 ]

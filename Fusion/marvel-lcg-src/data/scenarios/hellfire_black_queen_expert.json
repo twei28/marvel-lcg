@@ -1,0 +1,27 @@
+{
+  "version": "0.5.8",
+  "name": "Black Queen",
+  "villain": [
+    "hf402",
+    "hf403"
+  ],
+  "expert": true,
+  "schemes": [
+    "hf404a,hf404b",
+    "hf405a,hf405b",
+    "hf406a,hf406b"
+  ],
+  "set_aside": [
+    "hf407a,hf407b"
+  ],
+  "encounters": [],
+  "encounter_sets": [
+    "hf_black_queen",
+    "hf_darkhold",
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "hf_hellfire_conclave"
+  ]
+}

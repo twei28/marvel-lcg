@@ -152,6 +152,16 @@ class SenderScheme:
             text = TransText("{scheme} would remove {value}{symbol}", scheme=scheme, value=value, symbol=Symbol.threat)
             self.Present(text, "", scheme, by_face)
 
+        def PreventRemoval(self, value: int, by_effect: 'Effect') -> int:
+            """AJOUT (01/11/2026, Hellfire Hunt, hf372 False Reality) : « prevent N of that threat from being removed ». Retire au plus `value` de
+            la menace QUE CETTE RETRAIT allait enlever (jamais sous 0) ; rend la quantite reellement empechee."""
+            prevented = max(0, min(value, self.value))
+            if prevented:
+                self.value -= prevented
+                text = TransText("{prevented} threat prevented from being removed from {trigger}", prevented=prevented, trigger=self.trigger)
+                self.Present_ByEffect(text, "activate", self.trigger, by_effect.this)
+            return prevented
+
         def SetCannotBeRemoved(self, by_effect: 'Effect'):
             self.cannot_be_removed = True
             text = TransText("Threat cannot be removed from {trigger}", trigger=self.trigger)

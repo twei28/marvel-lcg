@@ -1,0 +1,14 @@
+{
+  "version": "0.5.8",
+  "name": "Mutant Extinction Agenda",
+  "encounters": [
+    "hf381",
+    "hf382",
+    "hf383",
+    "hf384",
+    "hf385",
+    "hf386",
+    "hf387",
+    "hf388"
+  ]
+}
