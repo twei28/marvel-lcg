@@ -151,7 +151,7 @@ compter_joueurs() {
 
 poser_annonce() {
   etape "2. Annonce aux joueurs ($ANNONCE min)"
-  local texte="Mise a jour du jeu dans $ANNONCE minutes : les parties en cours seront interrompues. Sauvegardez la votre avec le bouton Save du plateau."
+  local texte="Mise a jour du jeu dans $ANNONCE minutes : les parties en cours seront interrompues. Sauvegardez la votre avec le bouton Save du plateau. / Game update in $ANNONCE minutes: games in progress will be interrupted. Save yours with the Save button on the board."
   PHASE="annonce"
   distant_script "poser l'annonce" <<REMOTE
 set -e
