@@ -7,8 +7,8 @@ Livret p.20 : Aggression `Finishing Blow (x3)` ; Basic `Cecilia Reyes`, `For Wha
 Lectures : (a) ce sont des cartes officielles que le catalogue ne contient pas (à importer) ; (b) des cartes maison de l'auteur, non livrées. Effet en jeu : `deck/starter/sunspot_hellfire.json` a 15 cartes au lieu de 25.
 Recommandation : fournir les images/données de ces 4 cartes ; en attendant, le deck monte une partie (verifier_tous_les_decks) mais il est plus court que celui du livret.
 
-## 2. Nemesis « Mutant Kidnapping » (p.20) = so016 « Political Persecution » ?
-Le livret cite `Mutant Kidnapping` ; le catalogue a `so016 Political Persecution` en carte nemesis. Même emplacement ? À confirmer sur le scan de so016.
+## 2. Nemesis « Mutant Kidnapping » (p.20) = so016 « Political Persecution » : RÉSOLU le 02/11/2026
+L'utilisateur a montré le set nemesis complet (5 cartes : Superhuman Mutants Murdering 1/5, Donald Pierce 2/5, Cybernetic Assault 3/5 et 4/5, Political Persecution 5/5). Le catalogue a bien ces 5 cartes (so013, so014, so015 x2, so016) : « Mutant Kidnapping » est le nom du livret pour Political Persecution. Aucune carte nemesis ne manque ; il ne manque que les 10 exemplaires (4 cartes) du point 1.
 
 ## 3. Marvel Girl : X-Gene (x2) mais « Max 1 per player »
 Le deck `rachel_summers.json` ne porte qu'un X-Gene. Lecture A : suivre la limite imprimée (1) ; B : suivre la liste du livret (2). Recommandation : A.
