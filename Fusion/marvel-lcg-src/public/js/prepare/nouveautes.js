@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-02",
+        genre: "jeu",
+        fr: "La campagne fan-made Hellfire Hunt est jouable : cinq scénarios à enchaîner avec le même héros, un carnet qui garde vos alliés mutants recrutés, et un mode expert.",
+        en: "The fan-made Hellfire Hunt campaign is playable: five scenarios to play in order with the same hero, a campaign log that keeps your recruited mutant allies, and an expert mode.",
+    },
+    {
+        date: "2026-11-02",
+        genre: "correction",
+        fr: "Les héros Mantis, RoboCop, Buffy et Major Victory affichent maintenant le nom de leur créateur, et la traduction française pose mieux le texte sur les cartes.",
+        en: "The heroes Mantis, RoboCop, Buffy and Major Victory now show their creator's name, and the French text sits more cleanly on the cards.",
+    },
+    {
         date: "2026-11-01",
         genre: "heros",
         fr: "Trois nouveaux héros fan-made rejoignent le roster : RoboCop, Buffy et Mantis, avec leurs ennemis et leurs cartes en français.",
