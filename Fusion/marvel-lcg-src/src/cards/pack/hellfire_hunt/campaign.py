@@ -111,6 +111,11 @@ def _campagne_experte(effect: 'Effect') -> None:
             'Place 1 acceleration token on the main scheme to heal to full', soigner))
 
 
+# Livret p.8, p.12 et p.14 : « Shuffle 1 [joueur] cards from Potential Ally deck into the encounter deck » figure a la mise en place des scenarios 1, 3 et 4 SEULEMENT.
+# Le scenario 2 (p.10) a ses captifs sous Captured by Hellfire!, le scenario 5 (p.16) n'a plus de Xavier's Institute : ni l'un ni l'autre ne melange de Potential Ally
+# (corrige le 01/11/2026 en bouclant la chaine de campagne 1 -> 5 : la mise en place les melangeait a tous les niveaux).
+NIVEAUX_POTENTIAL_ALLY = (1, 3, 4)
+
 # Etapes PROPRES a un scenario, d'apres le livret (docs/rapports/2026-10-26-hellfire-hunt-lecture-livret.md §3). Les etapes de scenario sont
 # des sequences de couples (verbe, carte) lues par `EtapesDuScenario`. Les scenarios 2 (Black King) et 4 (Torn) n'ont ICI que les pas communs :
 # leurs instructions de campagne propres relevent du scenario.
@@ -118,9 +123,17 @@ ETAPES_PAR_SCENARIO = {
     1: [('reveler', CEREBRO_INSIGHTS), ('en_jeu', XAVIERS_INSTITUTE)],
     2: [('reveler', EMMAS_REDEMPTION), ('en_jeu', XAVIERS_INSTITUTE)],     # livret p. 10 : « Reveal the Emma Frost's Redemption side scheme (181) »
     3: [('en_jeu', XAVIERS_INSTITUTE), ('emma_ou_message', None)],
-    4: [('en_jeu', XAVIERS_INSTITUTE)],
+    4: [('cryptic_ou_minefield', None), ('en_jeu', XAVIERS_INSTITUTE)],     # livret p. 14 : Cryptic Threatening Message (182) si non cochee, sinon Psychic Minefield (183)
     5: [('melanger_rencontre', TACTICAL_HELP), ('melanger_rencontre', ENEMY_OF_ENEMY), ('reveler', RALLY_THE_SURVIVORS), ('emma_dans_recrutes', None)],
 }
+
+
+def _emma_dans_recrutes(effect: 'Effect') -> None:
+    """« shuffle Emma Frost (212) into the Recruited Mutants deck » : une seule Emma Frost (alliee unique). Si le carnet la note DEJA recrutee (vaincre Emma Frost's
+    Redemption la met en jeu : elle est notee a la victoire du scenario), `_allies_recrutes` l'a deja mise dans le deck : on ne la cree pas une seconde fois."""
+    if EMMA_FROST in _liste(effect, CLE_RECRUTES):
+        return
+    AjouterAuxRecrutes(effect, [_generer(effect, EMMA_FROST)])
 
 
 def EtapesDuScenario(effect: 'Effect', level: int) -> None:
@@ -135,13 +148,18 @@ def EtapesDuScenario(effect: 'Effect', level: int) -> None:
             # Scenario 3 : « si Emma Frost's Redemption n'est pas cochee, la reveler ; sinon melanger Emma Frost dans le deck Recruited Mutants
             # et reveler Cryptic Threatening Message ».
             if CampaignLog.GetStrInternal(CLE_EMMA, effect):
-                AjouterAuxRecrutes(effect, [_generer(effect, EMMA_FROST)])
+                _emma_dans_recrutes(effect)
                 _generer(effect, CRYPTIC_MESSAGE).Reveal(effect.world.GetFirstPlayer(), effect)
             else:
                 _generer(effect, EMMAS_REDEMPTION).Reveal(effect.world.GetFirstPlayer(), effect)
+        elif verbe == 'cryptic_ou_minefield':
+            # Scenario 4 (livret p.14) : « If the Cryptic Threatening Message side scheme is not checked in the campaign log, reveal [it] (182). Otherwise, reveal the
+            # Psychic Minefield side scheme (183). » Le scenario 4 ne portait pas cette etape : trouve en bouclant la chaine de campagne (01/11/2026).
+            carte = PSYCHIC_MINEFIELD if CampaignLog.GetStrInternal(CLE_CRYPTIC, effect) else CRYPTIC_MESSAGE
+            _generer(effect, carte).Reveal(effect.world.GetFirstPlayer(), effect)
         elif verbe == 'emma_dans_recrutes':
             if not CampaignLog.GetStrInternal(CLE_EMMA, effect):
-                AjouterAuxRecrutes(effect, [_generer(effect, EMMA_FROST)])
+                _emma_dans_recrutes(effect)
 
 
 def _captif_libere(effect: 'Effect', card_id: str) -> bool:
@@ -157,10 +175,21 @@ def _captif_libere(effect: 'Effect', card_id: str) -> bool:
     return False
 
 
+def _sorti_de_la_zone_de_cote(effect: 'Effect', card_id: str) -> bool:
+    """Vrai si une carte de ce card_id existe ailleurs que dans la zone « mise de cote » du scenario (un allie qui en est sorti n'y retourne jamais)."""
+    aside = effect.world.aside_deck
+    for card in effect.world.object_manager.card_dict.values():
+        face = card.face
+        if face is not None and face.paper.card_id == card_id and card.area is not aside:
+            return True
+    return False
+
+
 def Executer(effect: 'Effect', level: int) -> None:
     """Le corps de la mise en place de campagne (sorti de la capacite pour que le banc de test le joue sans lancer de campagne)."""
     _allies_recrutes(effect)
-    _potential_allies(effect)
+    if level in NIVEAUX_POTENTIAL_ALLY:
+        _potential_allies(effect)
     EtapesDuScenario(effect, level)
     if level >= 2 and Worlds.IsExpert(effect):
         _campagne_experte(effect)
@@ -186,10 +215,13 @@ def Releve(level: int, effect: 'Effect', message: 'Message.WhenGameOver') -> dic
         if identity and not player.is_eliminated:
             updates[f'Player {player.player_id + 1} Remaining hit points'] = str(max(0, min(identity.health, identity.printed_health)))
 
-    # --- Allies Recruited en jeu a la fin : gagnes (jamais perdus), ajoutes a la liste
+    # --- Allies Recruited : gagnes (jamais perdus), ajoutes a la liste. Livret p.8/p.10/p.12/p.14 : « Record each RECRUITED ally in the Recruited Mutants deck as
+    #     "Recruited" in the campaign log » : tout allie qui n'est PLUS dans la zone « mise de cote » (en jeu, en main, deck, defausse, pile de victoire, deck ou defausse
+    #     Recruited Mutants) est recrute. Avant le 01/11/2026 on ne regardait que le jeu et la pile de victoire : Emma Frost, melangee au deck Recruited Mutants a la mise en
+    #     place du scenario 3 (case « Emma Frost's Redemption » cochee), n'etait jamais notee et manquait aux scenarios 4 et 5.
     recrutes = list(_liste(effect, CLE_RECRUTES))
     for card_id in ALLIES:
-        if card_id not in recrutes and (FaceExists(effect, card_id, in_play=True) or FaceExists(effect, card_id, in_victory=True)):
+        if card_id not in recrutes and _sorti_de_la_zone_de_cote(effect, card_id):
             recrutes.append(card_id)
     updates[CLE_RECRUTES] = SEP.join(recrutes)
 

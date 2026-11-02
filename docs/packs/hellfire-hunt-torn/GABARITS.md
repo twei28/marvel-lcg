@@ -188,7 +188,7 @@ Carte terminée : NON : partie humaine à faire (aucun humain n'a joué cette ca
 
 Carte terminée : NON : partie humaine à faire (aucun humain n'a joué cette carte dans le navigateur) ; tout le reste de la liste ci-dessus est fait.
 
-### hf509 : Psychic Paragon
+### hf509 : Psionic Paragon
 
 - [x] Étape 2 : carte(s) de référence : `GiveKeywordToInPlayWhenApplyThis(CardFinder(name=Emma Frost), health=10)` (21160 / 01140) ; 39035 Dial M for Mojo (`incite=1` sur `EncounterCard`).
 - [x] Étape 5 : texte-contre-code, mots-pièges vérifiés : `+10 hit point` (plat) ; `Each ILLUSION card gains incite 1` (carte pas encore en jeu : traîtrise, attachement) ; `each player with no engaged minions` ; Paragon est vaincue par l'interruption d'Emma si elle a moins de 5 menaces.
@@ -485,3 +485,7 @@ et les épreuves de campagne.
 - `tools/verifier_prefixes.py` : OK. `tools/verifier_campagnes.py` : OK. `tools/verifier_scenes_campagne.py` : OK. `tools/verifier_pages_campagnes.py` : OK.
 - `ui-app` : `npx tsc --noEmit` OK ; vitest `textes-fr-fanmade`, `traduction-public`, `vocabulaire-statuts`, `vocabulaire-moteur`, `dico-en`, `torn-hellfire-plateau` verts.
 
+## Finitions du 01/11/2026 (session « finitions Hellfire Hunt »)
+
+- Outil de preuve sur COPIE PRIVEE (jamais sur les sources partagees) : `docs/packs/hellfire-hunt/substituer_prive.py <pack> <port> <sortie.json>` (generalisation de celui de Torn ; `HFF_TAG='[hfc]'` pour les fondations). Mutations ponctuelles : un seul fragment du module retire, le cas doit tomber au rouge.
+- **hf510 Hellfire Assault, branche White Queen** : le cas « Emma ATTAQUE le joueur » n'assertait que la menace de la principale (vraie aussi sans le module) : ajout de `degats_identite: 1` ; mutation (`emma.DoAttackYou` remplace par `pass`) -> ROUGE. Avant : vert module vide, donc non prouve.

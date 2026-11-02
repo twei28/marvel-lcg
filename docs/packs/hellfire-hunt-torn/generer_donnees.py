@@ -78,7 +78,7 @@ A(carte("hf507", "SideScheme", "Psychic Bulwark", TN, {"Boost": "2", "StartingTh
 A(carte("hf508", "SideScheme", "Psychic Entanglement", TN, {"Boost": "2", "StartingThreat": "8", "Victory": "1"}, ["PSIONIC"],
         "<i>Frost's web of deceit and illusion ensnares the heroes, trapping them in a labyrinth of her own design.</i>\nVictory 1.\n"
         "Threat cannot be removed from other side schemes.\n<b>When Defeated</b>: Deal each player a facedown encounter card."))
-A(carte("hf509", "SideScheme", "Psychic Paragon", TN, {"Boost": "2", "StartingThreat": "4*"}, ["PSIONIC"],
+A(carte("hf509", "SideScheme", "Psionic Paragon", TN, {"Boost": "2", "StartingThreat": "4*"}, ["PSIONIC"],
         "Emma Frost gets +10 hit point.\nEach [[Illusion]] card gains incite 1.\n<b>When Revealed</b>: Deal 1 facedown encounter card to each "
         "player with no engaged minions."))
 A(carte("hf510", "SideScheme", "Hellfire Assault", TN, {"StartingThreat": "1*"}, [],

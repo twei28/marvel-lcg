@@ -5,7 +5,7 @@ from . import *
 # attached to the villain, attached this to your ally with highest hit-point, Remove 1 darkspell counter from Darkhold. Otherwise, find Darkhold
 # attachment and reveal it. »
 # Cartes de reference : hf324 Mind Manipulation (MEME texte : `TreatAttachedCardAsMinion(Ally, "Minion")`), hp017 Take Over Signal ;
-# `ResolutionDeSort` (__init__.py) pour la forme commune des quatre sorts. « highest hit-point » = le plus de PV RESTANTS (comme Hyponotic
+# `ResolutionDeSort` (__init__.py) pour la forme commune des quatre sorts. « highest hit-point » = le plus de PV RESTANTS (comme Hypnotic
 # Trance). Aucun allie : la carte ne s'attache pas et est defaussee ; le compteur Darkspell est retire quand meme (QUESTIONS.md n°6).
 
 

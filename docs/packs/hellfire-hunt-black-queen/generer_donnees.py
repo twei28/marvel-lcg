@@ -86,9 +86,9 @@ for scan in (9, 10, 11, 12):
             ["DEMON", "HELL"],
             "Patrol. Teamwork ([[Demon]]).\n<b>Forced Response</b>: After Little Demon attacks and damages you, you are confused."))
 for scan in (13, 14, 15):
-    A(carte("hf4%02d" % scan, "Attachment", "Hyponotic Trance", BQ, {"THW+": "-1", "Boost": "1"}, ["PSIONIC", "SKILL"],
+    A(carte("hf4%02d" % scan, "Attachment", "Hypnotic Trance", BQ, {"THW+": "-1", "Boost": "1"}, ["PSIONIC", "SKILL"],
             "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n"
-            "<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached. Otherwise, this "
+            "<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hypnotic Trance attached. Otherwise, this "
             "card gains surge.\n"
             "<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card."))
 for scan in (16, 17):
@@ -106,7 +106,7 @@ A(carte("hf420", "Treachery", "Lunar Eclipse", BQ, {"Boost": "1"}, ["SPELL"],
         "Moonlight.\n<hr />\n[star] <b>Boost</b>: Reveal this card."))
 A(carte("hf421", "SideScheme", "Eternal Night", BQ, {"StartingThreat": "3", "Boost": "3"}, [],
         "Time counter on Under the Moonlight environment could not be removed.\n<b>When Revealed</b>: Flip Beneath the Sun."))
-A(carte("hf422", "SideScheme", "Immortal Moon Goddess", BQ, {"StartingThreat": "7", "Hinder": "2*", "Victory": "1", "Acceleration": "1", "Boost": "1"}, [],
+A(carte("hf422", "SideScheme", "Immortal Moon Goddess", BQ, {"StartingThreat": "7", "Hinder": "2*", "Victory": "1", "Hazard": "1", "Boost": "1"}, [],
         "<i>\"Soon...the world will know True External High Lords for the first time. Immortal. Invulnerable...and unstoppable.\"</i>\n"
         "Hinder 2[per_hero]. Victory 1.\nWhile Under the Moonlight is in play, Black Queen cannot be defeated."))
 

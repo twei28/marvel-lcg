@@ -500,10 +500,10 @@ Carte terminee : NON : partie humaine a faire (test dans le navigateur) ; le res
 
 ### hf338 : Hellfire Domination
 
-- [x] Etape 2 : cartes de reference : Hellfire Domination (side scheme 3[per_hero], icone Acceleration, boost 3). « When Defeated : Shuffle each set-aside Sebastian Shaw encounter card into the encounter deck. » Cartes de reference : 04141 (`WhenSchemeBeDefeated`), `Faces.ShuffleAllTo(faces, "EncounterDeck", effect)` (hf-fondations campaign.py), `Worlds.GetSetAsideAreaCards(effect, CardFinder(...))`. ⚠ « each set-aside Sebastian Shaw encounter CARD » : toute carte du set « Sebastian Shaw » de la zone mise de cote (pas seulement les attachements).
+- [x] Etape 2 : cartes de reference : Hellfire Domination (side scheme 3[per_hero], icone AMPLIFY (corrige le 01/11 : avion + croix, pas Acceleration), boost 3). « When Defeated : Shuffle each set-aside Sebastian Shaw encounter card into the encounter deck. » Cartes de reference : 04141 (`WhenSchemeBeDefeated`), `Faces.ShuffleAllTo(faces, "EncounterDeck", effect)` (hf-fondations campaign.py), `Worlds.GetSetAsideAreaCards(effect, CardFinder(...))`. ⚠ « each set-aside Sebastian Shaw encounter CARD » : toute carte du set « Sebastian Shaw » de la zone mise de cote (pas seulement les attachements).
 - [x] Etape 5 : texte-contre-code, mots-pieges verifies phrase par phrase (voir le commentaire de tete du script `src/cards/pack/hellfire_hunt_black_king/hf338.py`). Resultat : conforme au scan.
-- [x] Etape 6 : nombres texte <-> code : `desc` = {"StartingThreat": "3*", "Boost": "3", "Acceleration": "1"} ; traits []. Resultat : identiques au scan (lus a l'ecran).
-- [x] Etape 7 : cas test_capacites (3) : hf338 Hellfire Domination : menace de depart 3 (1 joueur), icone ACCELERATION 1, boos | hf338 When Defeated : tous les attachements Shaw mis de cote retournent dans le deck  | hf338 When Defeated : TEMOIN, une carte de COTE d'un autre set (Black King hf207) n'e
+- [x] Etape 6 : nombres texte <-> code : `desc` = {"StartingThreat": "3*", "Boost": "3", "Amplify": "1"} ; traits []. Resultat : identiques au scan (lus a l'ecran).
+- [x] Etape 7 : cas test_capacites (3) : hf338 Hellfire Domination : menace de depart 3 (1 joueur), icone AMPLIFY 1, boos | hf338 When Defeated : tous les attachements Shaw mis de cote retournent dans le deck  | hf338 When Defeated : TEMOIN, une carte de COTE d'un autre set (Black King hf207) n'e
       preuve par substitution : rouges 2/3 ⚠ un cas reste vert sans module
 - [x] Etape 7 bis : limite imprimee ? NON
 - [ ] Etape 8 : autoplay ciblé : voir « Etat net » ; cartes de rencontre tirees au hasard, journal lu en partie.
@@ -565,3 +565,10 @@ SUBST hf210 : rouges 2/3 (temoin Mercury reste vert)
 SUBST hf211 : rouges 2/3 (temoin sans pioche reste vert)
 
 ```
+
+## Finitions du 01/11/2026 (session « finitions Hellfire Hunt »)
+
+- Outil de preuve sur COPIE PRIVEE (jamais sur les sources partagees) : `docs/packs/hellfire-hunt/substituer_prive.py <pack> <port> <sortie.json>` (generalisation de celui de Torn ; `HFF_TAG='[hfc]'` pour les fondations). Mutations ponctuelles : un seul fragment du module retire, le cas doit tomber au rouge.
+- **Icones (revue du 01/11/2026)** : `hf338` Hellfire Domination porte l'icone AMPLIFY (avion + croix), pas Acceleration : `desc` et cas corriges. Les 18 cartes a icone du pack hf ont ete comparees planche par planche a une carte du MEME pack de glyphe connu.
+- **2B (FAQ p.22, usage pendant le tour d'un autre joueur)** : NON code, blocage documente avec precision dans `QUESTIONS.md` (boucle du tour par joueur dans `EventManager.ProcessOptionalEffect`, barriere `WhenInYourPlayTurn` + `check_initiator` des manigances, UI non verifiable sans deux navigateurs).
+- Verts sans module : numeriques natifs (`desc`), `Permanent`/`Stalwart` natifs (hf201, hf206, hf207b), « If this stage is completed, the players lose the game » natif (hf204b, hf205b), temoins. Voir la liste au rejeu prive.

@@ -48,7 +48,7 @@ FR = {
     "hf408": "Garde. Patrouille. Solide.\n<i>« Vous avez apporté l'Enfer sur Terre ! »</i>\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, "
              "cette attaque gagne Déferlement, Perçant et À distance.",
     "hf413": "Le personnage attaché ne peut pas attaquer Selene ni se défendre contre ses attaques.\n<b>Une fois révélée</b> : attachez-la à l'allié qui a le plus "
-             "de points de vie restants et qui n'a pas de Hyponotic Trance attachée. Sinon, cette carte gagne Renfort.\n<b>Action de héros</b> : dépensez "
+             "de points de vie restants et qui n'a pas de Hypnotic Trance attachée. Sinon, cette carte gagne Renfort.\n<b>Action de héros</b> : dépensez "
              "[mental][mental] " + COUT_JOUR,
     "hf416": "Attachez-la à Selene.\nSelene ne peut pas subir plus de 2 dégâts d'une seule attaque.\n<b>Action de héros</b> : dépensez 1 ressource [energy] "
              + COUT_JOUR + "\n<hr />\n[star] <b>Boost</b> : attachez cette carte à Selene.",

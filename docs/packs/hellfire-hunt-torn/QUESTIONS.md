@@ -18,14 +18,14 @@ discard pile, set-aside area, and removed-from-game area for a copy of your obli
 
 Cas : `[hf] hf352 ...` (4 cas : obligation défaussée / aucune obligation / défausse / témoin). Recommandation : A.
 
-## 2. Emma Frost, retour sur la face active : « set Emma Frost's hit point dial to her printed hit points » avec Psychic Paragon (hf509) en jeu
-Scans : `Scenario/Torn/2a.png` (A2), `2b.png` (B2) ; Psychic Paragon = `Scenario/Torn/9.png` (« Emma Frost gets +10 hit point »).
+## 2. Emma Frost, retour sur la face active : « set Emma Frost's hit point dial to her printed hit points » avec Psionic Paragon (hf509) en jeu
+Scans : `Scenario/Torn/2a.png` (A2), `2b.png` (B2) ; Psionic Paragon = `Scenario/Torn/9.png` (« Emma Frost gets +10 hit point »).
 | Lecture | Ce que ça change en jeu |
 |---|---|
 | **A (provisoire, recommandée)** : le cadran revient à son MAXIMUM courant (PV imprimés + bonus de Paragon : 7 + 10 = 17) | Paragon garde son intérêt après la 1re défaite d'Emma (elle revient « pleine ») |
 | B : le cadran revient aux PV IMPRIMÉS seuls (7) alors que son maximum est 17 | Emma revient déjà blessée de 10 tant que Paragon est en jeu : Paragon ne sert alors qu'avant la première défaite |
 
-Cas : `[hf] hf509 Psychic Paragon + cycle d'Emma Frost ...` (17 PV pleins, 0 dégât). Note de règle (non ambiguë) : l'interruption de défaite d'Emma retire 5 menaces de CHAQUE manigance, Paragon comprise ; à 4 menaces Paragon est vaincue (cas dédié).
+Cas : `[hf] hf509 Psionic Paragon + cycle d'Emma Frost ...` (17 PV pleins, 0 dégât). Note de règle (non ambiguë) : l'interruption de défaite d'Emma retire 5 menaces de CHAQUE manigance, Paragon comprise ; à 4 menaces Paragon est vaincue (cas dédié).
 
 ## 3. Quelle version des cartes est la bonne ? (anciens brouillons dans le dossier)
 `Scenario/Torn/` contient, en plus des cartes finales (fichiers de mai 2025 : `1a 1b 2a 2b 3 3B 4 4b 5-10`), des états antérieurs : `a1/a2/b1/b2.png` (déc. 2024) et `3b(1).png` (oct. 2024). `a2`/`b2` sont identiques à `2a`/`2b`.

@@ -603,3 +603,10 @@ Carte terminée : NON : partie humaine à faire (test dans le navigateur) ; tout
 
 Carte terminée : NON : partie humaine à faire (test dans le navigateur) ; tout le reste est fait.
 
+## Finitions du 01/11/2026 (session « finitions Hellfire Hunt »)
+
+- Outil de preuve sur COPIE PRIVEE (jamais sur les sources partagees) : `docs/packs/hellfire-hunt/substituer_prive.py <pack> <port> <sortie.json>` (generalisation de celui de Torn ; `HFF_TAG='[hfc]'` pour les fondations). Mutations ponctuelles : un seul fragment du module retire, le cas doit tomber au rouge.
+- **hf381, moitie « la derniere SENTINEL part -> manigance vaincue »** : prouvee par MUTATION (retrait de la seule Reponse forcee `sentinelle_partie` du module : le cas `hf381 ... DERNIERE SENTINEL` ECHEC, 6/7 ; module restaure, 7/7).
+- **hf606b** : la capacite `IfThisSchemeStageIsCompletedPlayersLoseTheGame` posee a la main etait REDONDANTE (la fin de partie du dernier stade est NATIVE : `World.AdvanceMainScheme`, « The Final Stage of the Main Scheme was Completed »). Retiree ; le cas `complot COMPLETE -> PERDENT` reste vert (6/6), commentaire du module et du cas mis a jour.
+- **hf602 / hf603** : la Reponse forcee `ReponseControle()` portee par CHAQUE stade n'etait visee par aucun cas (module sans cette reponse : 4/4 et 3/3 verts). Cas ajoutes : `hf602 Reponse forcee : apres l'ATTAQUE du stade II` et `hf603 Reponse forcee (EXPERT)` (compteurs 3 -> Cassandra Domination -> 0). Mutation (retrait de `ReponseControle()`) -> ROUGE pour chacun. Les cas VICTOIRE (natifs) restent verts sans module, assume.
+- **`ui-app/src/board/campagne/defaite-hellfire.test.ts` vu ROUGE** (jamais fait avant) : le fichier du test est rejoue a l'identique sur des COPIES mutees du JSON de campagne (le vrai fichier n'est pas touche ; copies `mut_*.json` dans le scratchpad) : copie non mutee 5/5 vert ; sans `defaite` sur Nova -> 2 rouges ; `expert_seulement: false` -> 2 rouges ; `quand: 'toujours'` -> 2 rouges ; `defaite` ajoutee au scenario 3 -> 1 rouge ; Nova `final: false` -> 1 rouge.

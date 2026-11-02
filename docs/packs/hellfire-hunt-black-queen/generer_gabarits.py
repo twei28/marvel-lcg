@@ -50,7 +50,7 @@ CARTES = {
               "PV 9, ATK 3, SCH 1, 3 icones de boost + etoile", "NON", "NON"),
     "hf409": ("Little Demon (1/4)", ["Patrol + Teamwork (DEMON) (natifs)", "Reponse forcee : apres avoir attaque et blesse vous, vous etes desoriente"], "hf124 (`AfterUnitAttackAndDamageUnit`), 41029 (`GiveStatus`), fiche teamwork.md",
               "« damages YOU » (l'identite, pas un allie) ; ne JAMAIS recoder Teamwork (le sbire s'activerait deux fois)", "PV 3, ATK 2, SCH 1, 2 icones de boost", "NON", "NON"),
-    "hf413": ("Hyponotic Trance (1/3)", ["Ne peut pas attaquer Selene ni defendre contre elle", "When Revealed : s'attache a l'allie aux PV restants les plus hauts sans Trance, sinon surge", "Action de heros : [mental][mental] + -1 compteur du jour -> defausse"],
+    "hf413": ("Hypnotic Trance (1/3)", ["Ne peut pas attaquer Selene ni defendre contre elle", "When Revealed : s'attache a l'allie aux PV restants les plus hauts sans Trance, sinon surge", "Action de heros : [mental][mental] + -1 compteur du jour -> defausse"],
              "04119 (`AttachToFaceWhenPutIntoPlay(most_remaining_hp, without_another_copy, if_cannot_gain_surge)`), hf304 (`UnitCannotDefend`), `UnitCannotAttackTarget`, 16095 (`CostFunc.Counter` sur une autre carte)",
              "« remaining » (PV restants, pas imprimes ; ⚠ Luke Cage a la carte Tough : `Puzzle.Damage` est absorbe) ; « the ally » (QUESTIONS.md n°6) ; le cout comprend le retrait du compteur du JOUR",
              "-1 THW, 1 icone de boost", "NON", "NON"),

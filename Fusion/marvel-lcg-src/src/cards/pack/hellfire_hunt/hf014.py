@@ -9,16 +9,23 @@ from . import *
 # ⚠ La PERMISSION de jouer Blink depuis la defausse Recruited n'est PAS portee par cette carte (une capacite de carte endormie dans une defausse
 # n'est pas active) : voir `PermissionDeJouerLesRecrutes` (__init__.py), portee par Xavier's Institute (hf048) et Rally the Survivors (hf045).
 def GetAbilities() -> Sequence['Ability']:
-    def blink(effect: 'Effect', message: 'Message.AfterUnitBeDefeated') -> None:
-        this = effect.this.CastTo(Ally)
+    # ⚠ CORRIGE le 01/11/2026 : l'ancienne version (`AfterUnitBeDefeated`, Forced Response) ne partait JAMAIS : au moment de la reponse, Blink est
+    # deja dans la defausse du joueur et la capacite d'une carte defaussee dort (cas `hf014 Blink : vaincue` rouge des que le verificateur a ete
+    # bien branche : deux fonctions `hf_etat` homonymes, la bonne ecrasee). Meme schema que Wild Sentinel (hf382) : un drapeau a la defaite,
+    # puis un REMPLACEMENT du passage en defausse (`WhenCardWouldDiscard` + `SetBeInstead`) qui la remet dans le deck Recruited Mutants.
+    def vaincue(effect: 'Effect', message: 'Message.WhenUnitBeDefeated') -> None:
+        effect.this.vers_les_recrutes = True
+
+    def a_defausser(effect: 'Effect', message: 'Message.WhenCardWouldDiscard') -> None:
+        this = effect.this
+        this.vers_les_recrutes = False
+        message.SetBeInstead(effect)
         deck, _ = RecruitedMutants(effect)
         Faces.MoveAllTo([this], deck, effect)
         deck.Shuffle(effect)
 
     return [
-        AbilityFactory.AfterUnitBeDefeated(
-            AbilityType.ForcedResponse,
-            "This",
-            blink,
-        ),
+        AbilityFactory.WhenUnitBeDefeated(AbilityType.WhenDefeated, "This", vaincue),
+        AbilityFactory.WhenCardWouldDiscard(AbilityType.ForcedInterrupt, "This", a_defausser,
+                                            conditions=[lambda effect, message: getattr(effect.this, "vers_les_recrutes", False)]),
     ]

@@ -197,13 +197,13 @@ CAS = [
        "les quatre exemplaires portent le meme texte", [HEROS, PRET_EXH, "Puzzle.PutIntoPlay('hf412')"] + deck("01105"), ["Puzzle.Attack('hf412')"],
        {"degats_identite": 2, "statuts": [["01001a", "Confused"]]}),
 
-    # ===================================================================== hf413-hf415 Hyponotic Trance
+    # ===================================================================== hf413-hf415 Hypnotic Trance
     _c("hf413 revelee : s'attache a l'allie qui a le plus de PV RESTANTS (Mockingbird 3 PV intacts, pas Hulk 5 PV a 4 degats) ; THW -1",
-       "« Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached » ; -1 THW imprime (Hulk 5 PV a 4 degats : 1 restant ; Luke Cage aurait la carte Tough et ne se prete pas a la mesure)",
+       "« Attach to the ally with the highest remaining hit-point without Hypnotic Trance attached » ; -1 THW imprime (Hulk 5 PV a 4 degats : 1 restant ; Luke Cage aurait la carte Tough et ne se prete pas a la mesure)",
        [HEROS, HU, MB, "Puzzle.Damage('01050', 4)"] + deck("hf413"), ["Puzzle.Reveal('hf413')"],
        {"attache": [["hf413", "01083"]], "prop_de": [["01083", "thwart", 0]]}),
     _c("hf414 revelee apres hf413 : l'allie qui a deja une Trance est exclu, la 2e va a l'AUTRE allie (Hulk)",
-       "« ... without Hyponotic Trance attached »", [HEROS, HU, MB, "Puzzle.Damage('01050', 4)"] + deck("hf413", "hf414"), ["Puzzle.Reveal('hf413')", "Puzzle.Reveal('hf414')"],
+       "« ... without Hypnotic Trance attached »", [HEROS, HU, MB, "Puzzle.Damage('01050', 4)"] + deck("hf413", "hf414"), ["Puzzle.Reveal('hf413')", "Puzzle.Reveal('hf414')"],
        {"attache": [["hf413", "01083"], ["hf414", "01050"]]}),
     _c("hf415 revelee quand le seul allie porte deja une Trance : « Otherwise, this card gains surge » (la carte suivante, Little Demon, est revelee)",
        "pas d'hote legal -> surge", [HEROS, MB] + deck("hf413", "hf415", "hf409"), ["Puzzle.Reveal('hf413')", "Puzzle.Reveal('hf415')"],
@@ -287,7 +287,7 @@ CAS = [
        ["Puzzle.Reveal('hf421')", "Puzzle.Flip('hf407a')", "Puzzle.Activate('hf401')"], {"compteurs_sur": [["hf407b", "time", 2]]}),
     # ===================================================================== hf422 Immortal Moon Goddess
     _c("hf422 revelee : menace 7 + Hinder 2 par joueur = 9 ; Victory 1 (desc)",
-       "nombres texte <-> code (scan)", deck("hf422"), ["Puzzle.Reveal('hf422')"], {"menace_de": [["hf422", 9]], "en_jeu": ["hf422"]}),
+       "nombres texte <-> code (scan) ; icone HAZARD (carte penchee sans barre, comparee a hf318/hf039 ; l'ACCELERATION de hf035 porte une barre dessous)", deck("hf422"), ["Puzzle.Reveal('hf422')"], {"menace_de": [["hf422", 9]], "mots": [["hf422", "Hazard", 1]], "en_jeu": ["hf422"]}),
     _c("hf422 : la NUIT, Selene a 12 degats (mortels) mais n'est PAS vaincue (elle reste le stade I)",
        "« While Under the Moonlight is in play, Black Queen cannot be defeated »", deck("hf422"), ["Puzzle.Reveal('hf422')", "Puzzle.Damage('hf401', 12)"],
        {"en_jeu": ["hf401"], "absents": ["hf402"]}),

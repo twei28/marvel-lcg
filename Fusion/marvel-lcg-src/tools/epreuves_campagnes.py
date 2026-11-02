@@ -1821,7 +1821,9 @@ EPREUVES += [
         "carnet_attendu": {
             "gagnee": True,
             "scenario": "hellfire_cassandra_nova",
-            "cles": {"Recruited Allies": "hf013;hf014"},
+            # Emma Frost (case « Redemption » non cochee) est melangee au deck Recruited Mutants par la mise en place du scenario 5 : tout allie sorti de la zone
+            # « mise de cote » est note recrute (livret : « Record each ... ally in the Recruited Mutants deck »), regle du 01/11/2026.
+            "cles": {"Recruited Allies": "hf013;hf014;hf025"},
             "cles_presentes": ["Player 1 Remaining hit points", "Player 1 Identity"],
         },
         "suivant": "hellfire_cassandra_nova",

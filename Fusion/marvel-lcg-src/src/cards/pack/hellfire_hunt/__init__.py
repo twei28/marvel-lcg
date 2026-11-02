@@ -47,18 +47,19 @@ def RecruterDepuisLeMisDeCote(effect: 'Effect', joueur: 'Player', nom: str) -> '
 # AdditionalDeck / AdditionalDiscardPile rattache au SCENARIO (pas a une carte : un environnement n'a pas de controleur, et le deck
 # doit survivre au depart de Xavier's Institute, scenario 5 : il est alors pose a cote de Rally the Survivors).
 # ----------------------------------------------------------------------------------------------------------------------------
+class DeckDeTable(Deck2):
+    """Deck commun a la table : son PROPRIETAIRE est le joueur DONT C'EST LE TOUR. Le gestionnaire d'evenements ne laisse jouer une carte
+    d'une pile hors-jeu que si `area.GetOwner()` est le joueur qui demande (manager.py:`check_initiator`) : avec le scenario pour proprietaire,
+    Blink n'etait JAMAIS offerte depuis la defausse Recruited. (Niveau MODULE : `verifier_api_cartes` ne voit pas les classes locales.)"""
+    def GetOwner(self):
+        return self.bind_owner.world.GetCurrentPlayer()
+
+
 def RecruitedMutants(effect: 'Effect') -> 'Tuple[Deck, Deck]':
     """(deck, defausse) du Recruited Mutants deck de cette partie."""
     from game.deck.deck import Deck2
     from game.deck.deck_type import DeckType
     from game.card.face.card_face import CardFace
-
-    class DeckDeTable(Deck2):
-        """Deck commun a la table : son PROPRIETAIRE est le joueur DONT C'EST LE TOUR. Le gestionnaire d'evenements ne laisse jouer une carte
-        d'une pile hors-jeu que si `area.GetOwner()` est le joueur qui demande (manager.py:`check_initiator`) : avec le scenario pour proprietaire,
-        Blink n'etait JAMAIS offerte depuis la defausse Recruited."""
-        def GetOwner(self):
-            return self.bind_owner.world.GetCurrentPlayer()
 
     monde = effect.world
     etat = getattr(monde, "hf_recruited", None)

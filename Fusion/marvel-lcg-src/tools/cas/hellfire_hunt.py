@@ -22,7 +22,7 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
     mise = SANS_BOOST + list(mise)
     cas = {"nom": "[hfc] " + nom, "pourquoi": pourquoi, "scenario": cle.pop("scenario", SC),
            "heros": cle.pop("heros", "spider_man"), "mise_en_place": mise, "declencher": declencher,
-           "verifier": cle.pop("verifier", "hf_etat"), "attendu": attendu}
+           "verifier": cle.pop("verifier", "hfc_etat"), "attendu": attendu}
     cas.setdefault("regles", ["v16_all", "v18_all"])
     cas.update(cle)
     return cas
@@ -215,10 +215,14 @@ CAS += [
     _c("hf043 Cryptic Threatening Message : defaite -> l'allie Charles Xavier entre en jeu", "« searches the Charles Xavier ally from the set-aside area »",
        [HEROS, "Puzzle.EmptyHand()", "Puzzle.PutIntoPlay('hf043')", "Puzzle.SetThreat('hf043', 1)", "Puzzle.MoveTo('hf026', 'AsideScenario')"],
        ["Puzzle.Thwart('01001a')"], {"en_jeu": ["hf026"], "hors_jeu": ["hf043"]}, cibles=["hf043"], accepter_choix=True),
-    _c("hf044 Psychic Minefield : la derniere menace ne peut pas etre retiree (2 menaces, contre de 2 -> reste 1)",
-       "« Threat cannot be removed from here while there is only 1 threat here »",
+    _c("hf044 Psychic Minefield : la derniere menace ne peut pas etre retiree (1 menace, un contre -> reste 1, la carte reste en jeu)",
+       "« Threat cannot be removed from here while there is only 1 threat here » (refait le 01/11/2026 : l'ancien cas faisait deux contres de suite, le heros s'epuise au premier et le cas restait vert sans module)",
+       [HEROS, "Puzzle.EmptyHand()", "Puzzle.PutIntoPlay('hf044')", "Puzzle.SetThreat('hf044', 1)", "Puzzle.Counter('01001a', 'counter', 0)"],
+       ["Puzzle.Thwart('01001a')"], {"menace": [["hf044", 1]], "en_jeu": ["hf044"]}, cibles=["hf044"], accepter_choix=True),
+    _c("hf044 Psychic Minefield : TEMOIN, avec 2 menaces un contre en retire 1 (2 -> 1)",
+       "contre-cas : la protection ne joue que s'il ne reste qu'1 menace",
        [HEROS, "Puzzle.EmptyHand()", "Puzzle.PutIntoPlay('hf044')", "Puzzle.SetThreat('hf044', 2)", "Puzzle.Counter('01001a', 'counter', 0)"],
-       ["Puzzle.Thwart('01001a')", "Puzzle.Thwart('01001a')"], {"menace": [["hf044", 1]]}, cibles=["hf044", "hf044"], accepter_choix=True),
+       ["Puzzle.Thwart('01001a')"], {"menace": [["hf044", 1]], "en_jeu": ["hf044"]}, cibles=["hf044"], accepter_choix=True),
     _c("hf045 Rally the Survivors : defaite -> prend une carte du deck Recruited Mutants (en jeu sous son controle) puis, s'il en reste, 5 menaces ici",
        "« takes a card from the Recruited Mutants deck and put it into play under their control. Then, if there still has card in the deck, place 5 threat here »",
        [HEROS, "Puzzle.EmptyHand()", "Puzzle.PutIntoPlay('hf045')", "Puzzle.SetThreat('hf045', 1)", "Puzzle.PutIntoRecruitedMutants('hf013', 'hf015')"],
@@ -322,11 +326,24 @@ CAS += [
        "« Recruited Allies » du carnet -> deck Recruited Mutants", [HEROS, "Puzzle.EmptyHand()"],
        ["Puzzle.HellfireCampagne(1, {'Recruited Allies': 'hf013;hf014'})"],
        {"hf_recrutes_deck": ["hf013", "hf014"], "hf_mis_de_cote": 14}),
-    _c("campagne scenario 2 : une seule manigance POTENTIAL ALLY n'est pas retiree (hf030) -> c'est elle que le joueur recoit dans le deck de rencontre",
-       "« Removed Potential Allies » du carnet : les manigances vaincues quittent la campagne",
+    _c("campagne scenario 3 : une seule manigance POTENTIAL ALLY n'est pas retiree (hf030) -> c'est elle que le joueur recoit dans le deck de rencontre",
+       "« Removed Potential Allies » du carnet : les manigances vaincues quittent la campagne (livret p.12 : « Shuffle 1 [joueur] cards from Potential Ally deck into the encounter deck »)",
+       [HEROS, "Puzzle.EmptyHand()"],
+       ["Puzzle.HellfireCampagne(3, {'Removed Potential Allies': 'hf029;hf031;hf032;hf033;hf034;hf035;hf036;hf037;hf038;hf039;hf040'})"],
+       {"hf_pa_ids_dans_rencontre": ["hf030"]}),
+    _c("campagne scenario 2 : AUCUNE manigance POTENTIAL ALLY n'est melangee au deck de rencontre (livret p.10 : la mise en place du scenario 2 n'en parle pas)",
+       "TEMOIN du precedent : meme carnet (une seule PA disponible) au niveau 2 -> le deck de rencontre n'en recoit aucune ; Emma Frost's Redemption est revelee",
        [HEROS, "Puzzle.EmptyHand()"],
        ["Puzzle.HellfireCampagne(2, {'Removed Potential Allies': 'hf029;hf031;hf032;hf033;hf034;hf035;hf036;hf037;hf038;hf039;hf040'})"],
-       {"hf_pa_ids_dans_rencontre": ["hf030"]}),
+       {"hf_pa_dans_rencontre": 0, "en_jeu": ["hf042", "hf048"]}),
+    _c("campagne scenario 4 : Cryptic Threatening Message NON cochee -> elle est revelee (pas Psychic Minefield), Xavier's Institute en jeu, 1 POTENTIAL ALLY melangee",
+       "livret p.14 : « If the Cryptic Threatning Message side scheme is not checked in the campaign log, reveal [it] (182). Otherwise, reveal the Psychic Minefield side scheme (183) »",
+       [HEROS, "Puzzle.EmptyHand()"], ["Puzzle.HellfireCampagne(4)"],
+       {"en_jeu": ["hf043", "hf048"], "hors_jeu": ["hf044"], "hf_pa_dans_rencontre": 1}),
+    _c("campagne scenario 4 : Cryptic Threatening Message cochee -> Psychic Minefield est revelee (pas Cryptic)",
+       "livret p.14, second cas", [HEROS, "Puzzle.EmptyHand()"],
+       ["Puzzle.HellfireCampagne(4, {'Cryptic Threatening Message: Defeated': '1'})"],
+       {"en_jeu": ["hf044", "hf048"], "hors_jeu": ["hf043"]}),
     _c("campagne scenario 3 : Emma Frost's Redemption non cochee -> elle est revelee",
        "livret scenario 3 : « if Emma Frost's Redemption is not checked, reveal it »", [HEROS, "Puzzle.EmptyHand()"], ["Puzzle.HellfireCampagne(3)"],
        {"en_jeu": ["hf042", "hf048"], "hors_jeu": ["hf043"]}),
@@ -337,18 +354,25 @@ CAS += [
     _c("campagne scenario 5 : Tactical Help et Enemy Of Enemy melanges dans le deck de rencontre, Rally the Survivors revelee, PAS de Xavier's Institute, Emma dans le deck Recruited",
        "livret scenario 5 : « shuffle Tactical Help and Enemy of Enemy into the encounter deck ; reveal Rally the Survivors ; remove Xavier's Institute ; Emma Frost's Redemption not checked -> shuffle Emma Frost into the Recruited Mutants deck »",
        [HEROS, "Puzzle.EmptyHand()"], ["Puzzle.HellfireCampagne(5)"],
-       {"en_jeu": ["hf045"], "hors_jeu": ["hf048"], "hf_recrutes_deck": ["hf025"], "hf_ids_dans_rencontre": ["hf046", "hf047"]}),
+       {"en_jeu": ["hf045"], "hors_jeu": ["hf048"], "hf_recrutes_deck": ["hf025"], "hf_ids_dans_rencontre": ["hf046", "hf047"], "hf_pa_dans_rencontre": 0}),
     _c("campagne releve : a la victoire, les allies Recruited en jeu sont notes et la manigance POTENTIAL ALLY vaincue est retiree de la campagne",
        "carnet sortant : `Recruited Allies`, `Removed Potential Allies`",
        [HEROS, *en_jeu("hf013"), "Puzzle.PutIntoPlay('hf029')", "Puzzle.MoveTo('hf029', 'VictoryDisplay')"], ["Puzzle.HellfireReleve(1, True)"],
        {"hf_releve": {"Recruited Allies": "hf013", "Removed Potential Allies": "hf029"}}),
+    _c("campagne releve : un allie que la MISE EN PLACE a melange au deck Recruited Mutants (Emma Frost, scenario 3, case cochee) est note « Recruited » a la victoire, meme sans etre en jeu",
+       "livret p.12 : « Record the name of each ... ally in the Recruited Mutants Deck as Recruited » ; avant le 01/11/2026 seul le jeu et la pile de victoire etaient lus : Emma manquait aux scenarios 4 et 5",
+       [HEROS, "Puzzle.EmptyHand()", "Puzzle.HellfireCampagne(3, {\"Emma Frost's Redemption: Defeated\": '1', 'Recruited Allies': 'hf013'})"], ["Puzzle.HellfireReleve(3, True)"],
+       {"hf_releve": {"Recruited Allies": "hf013;hf025"}}),
+    _c("campagne releve : TEMOIN, un allie qui est reste de cote n'est PAS note (Emma Frost's Redemption non cochee au scenario 3)",
+       "contre-cas : seuls les allies sortis de la zone mise de cote sont recrutes", [HEROS, "Puzzle.EmptyHand()", "Puzzle.HellfireCampagne(3, {'Recruited Allies': 'hf013'})"],
+       ["Puzzle.HellfireReleve(3, True)"], {"hf_releve": {"Recruited Allies": "hf013"}}),
     _c("campagne releve : a la DEFAITE rien n'est note (on rejoue sans penalite)",
        "livret p.5 : « defeat : replay without penalty »", [HEROS, *en_jeu("hf013")], ["Puzzle.HellfireReleve(1, False)"], {"hf_releve": {}}),
 ]
 
 
 VERIFICATIONS = r'''
-def hf_etat(monde, aides):
+def hfc_etat(monde, aides):
     """Cles propres : `hf_recrutes_deck` / `hf_recrutes_defausse` (liste EXACTE des card_id du deck / de la defausse Recruited Mutants, dans
     n'importe quel ordre) ; le reste va a etat_attendu."""
     cas = aides["cas"]

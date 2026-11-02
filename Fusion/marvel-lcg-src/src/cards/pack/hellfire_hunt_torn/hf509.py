@@ -1,6 +1,6 @@
 from . import *
 
-# Psychic Paragon (manigance annexe PSIONIC, Boost 2, menace 4 par joueur). « Emma Frost gets +10 hit point. Each ILLUSION card gains incite 1. When Revealed : Deal 1
+# Psionic Paragon (manigance annexe PSIONIC, Boost 2, menace 4 par joueur). « Emma Frost gets +10 hit point. Each ILLUSION card gains incite 1. When Revealed : Deal 1
 # facedown encounter card to each player with no engaged minions. »
 # Cartes de reference : 21160 / hf501 (`GiveKeywordToInPlayWhenApplyThis(CardFinder(name=...), health=10)`), 39035 Dial M for Mojo (`GiveKeywordToInPlayWhenApplyThis(
 # EncounterCard, incite=1)`), `AbilityFactory.WhenThisRevealed`.

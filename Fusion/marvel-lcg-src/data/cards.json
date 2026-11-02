@@ -136820,7 +136820,7 @@
    "text": "Team-Up (Drax and Mantis). Max 1 per deck.\n<b>Hero Action</b>: Spend up to 2 [mental] resources → heal 2 damage from an identity for each [mental] resource spent. You may take 1 damage to shuffle this card into your deck."
   }
  ],
- "checksum": "832089208bc357a087f4767c243d3f2d1a8e35c454ef84426f64f2537c3196f8",
+ "checksum": "1c3276fc8ae7091684631193740cd93442078b08da14bb40bf91cb210854f683",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -138803,7 +138803,7 @@
   {
    "card_id": "hf413",
    "type": "Attachment",
-   "name": "Hyponotic Trance",
+   "name": "Hypnotic Trance",
    "subtitle": "",
    "desc": {
     "THW+": "-1",
@@ -138814,13 +138814,13 @@
     "SKILL"
    ],
    "set_name": "Black Queen",
-   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
+   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hypnotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
    "custom": "Dipsome"
   },
   {
    "card_id": "hf414",
    "type": "Attachment",
-   "name": "Hyponotic Trance",
+   "name": "Hypnotic Trance",
    "subtitle": "",
    "desc": {
     "THW+": "-1",
@@ -138831,13 +138831,13 @@
     "SKILL"
    ],
    "set_name": "Black Queen",
-   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
+   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hypnotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
    "custom": "Dipsome"
   },
   {
    "card_id": "hf415",
    "type": "Attachment",
-   "name": "Hyponotic Trance",
+   "name": "Hypnotic Trance",
    "subtitle": "",
    "desc": {
     "THW+": "-1",
@@ -138848,7 +138848,7 @@
     "SKILL"
    ],
    "set_name": "Black Queen",
-   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hyponotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
+   "text": "Attached character cannot attack Selene and cannot defend against Selene's attacks.\n<b>When Revealed</b>: Attach to the ally with the highest remaining hit-point without Hypnotic Trance attached. Otherwise, this card gains surge.\n<b>Hero Action</b>: Spend [mental][mental] resources and remove 1 time counter from Beneath the Sun → discard this card.",
    "custom": "Dipsome"
   },
   {
@@ -138945,8 +138945,8 @@
     "StartingThreat": "7",
     "Hinder": "2*",
     "Victory": "1",
-    "Acceleration": "1",
-    "Boost": "1"
+    "Boost": "1",
+    "Hazard": "1"
    },
    "traits": [],
    "set_name": "Black Queen",
@@ -139587,7 +139587,7 @@
    "desc": {
     "StartingThreat": "3*",
     "Boost": "3",
-    "Acceleration": "1"
+    "Amplify": "1"
    },
    "traits": [],
    "set_name": "Sebastian Shaw",
@@ -139805,7 +139805,7 @@
   {
    "card_id": "hf509",
    "type": "SideScheme",
-   "name": "Psychic Paragon",
+   "name": "Psionic Paragon",
    "subtitle": "",
    "desc": {
     "Boost": "2",

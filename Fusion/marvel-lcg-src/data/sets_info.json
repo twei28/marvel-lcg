@@ -2312,9 +2312,7 @@
  "checksum": "2e4d1a39e7afe67d5bf2cc92435a63631ffed4e1d44ca01f6c5706e70d159f4e",
  "240. Custom (Hellfire Hunt - White Queen)": {
   "name": "hellfire_hunt_white_queen",
-  "scenarios": [
-   "hellfire_white_queen"
-  ],
+  "scenarios": [],
   "heroes": [],
   "encounters": [
    "hf_white_queen",
@@ -2326,16 +2324,20 @@
  },
  "241. Custom (Hellfire Hunt)": {
   "name": "hellfire_hunt",
-  "scenarios": [],
+  "scenarios": [
+   "hellfire_white_queen",
+   "hellfire_black_king",
+   "hellfire_black_queen",
+   "hellfire_torn",
+   "hellfire_cassandra_nova"
+  ],
   "heroes": [],
   "encounters": [],
   "max_id": "hf048"
  },
  "243. Custom (Hellfire Hunt - Black Queen)": {
   "name": "hellfire_hunt_black_queen",
-  "scenarios": [
-   "hellfire_black_queen"
-  ],
+  "scenarios": [],
   "heroes": [],
   "encounters": [
    "hf_black_queen",
@@ -2345,9 +2347,7 @@
  },
  "242. Custom (Hellfire Hunt - Black King)": {
   "name": "hellfire_hunt_black_king",
-  "scenarios": [
-   "hellfire_black_king"
-  ],
+  "scenarios": [],
   "heroes": [],
   "encounters": [
    "hf_black_king",
@@ -2357,9 +2357,7 @@
  },
  "244. Custom (Hellfire Hunt - Torn)": {
   "name": "hellfire_hunt_torn",
-  "scenarios": [
-   "hellfire_torn"
-  ],
+  "scenarios": [],
   "heroes": [],
   "encounters": [
    "hf_torn",
@@ -2370,9 +2368,7 @@
  },
  "245. Custom (Hellfire Hunt - Cassandra Nova)": {
   "name": "hellfire_hunt_cassandra_nova",
-  "scenarios": [
-   "hellfire_cassandra_nova"
-  ],
+  "scenarios": [],
   "heroes": [],
   "encounters": [
    "hf_cassandra_nova",

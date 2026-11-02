@@ -497,3 +497,9 @@ Carte terminée : NON : partie humaine à faire.
 - `tools/test_cards.py` : 8103 cartes construites, 0 erreur.
 - `ui-app` : `black-queen-plateau.test.ts` (5 cas, bloc plateau : aucun correctif d'affichage n'a été nécessaire, le plateau dessine déjà compteurs, attachements et cartes glissées sous un sbire), `textes-fr-fanmade.test.ts`, `traduction-public.test.ts`, `vocabulaire-statuts.test.ts`, `icones-ressources-fr.test.ts` : verts.
 - Voile FR (Chromium via `ui-app/outils/export-voile/rendre-voile.mjs`, 11 cartes rendues : hf401, hf404a, hf404b, hf407a, hf407b, hf408, hf413, hf362, hf363, hf421, hf422) : le français se pose ; **défauts du voile (composant d'une autre session)** : hf404b garde deux traces d'anglais (« 2A », « it. ») hors de la zone effacée ; hf413 laisse « SIONI KIL » au-dessus de la ligne de traits traduite.
+
+## Finitions du 01/11/2026 (session « finitions Hellfire Hunt »)
+
+- Outil de preuve sur COPIE PRIVEE (jamais sur les sources partagees) : `docs/packs/hellfire-hunt/substituer_prive.py <pack> <port> <sortie.json>` (generalisation de celui de Torn ; `HFF_TAG='[hfc]'` pour les fondations). Mutations ponctuelles : un seul fragment du module retire, le cas doit tomber au rouge.
+- **hf422 Immortal Moon Goddess : icone corrigee** (HAZARD, pas Acceleration : carte penchee sans barre, comparee a hf318/hf039/hf045 ; l'Acceleration de hf035 porte une barre dessous). `desc`, generateur et cas (`mots Hazard 1`) corriges.
+- **hf422, preuve completee par MUTATIONS** (les deux cas « jour venu » et « la manigance quitte le jeu » restaient verts module vide car, sans protection, Selene est vaincue d'emblee : ils ne distinguaient rien) : (A) fabrique `UnitCannotBeDefeatedWhile(...)[:1]` (sans la relance a la sortie de la manigance) -> ROUGE sur « la manigance quitte le jeu » ; (B) sans la capacite `AfterCardFlip` (relance au retournement du jour) -> ROUGE sur « le jour venu ». Les deux moities sont donc PROUVEES.

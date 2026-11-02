@@ -123,9 +123,23 @@ export function estTypeJouable(c) {
  *  Skrull Menace campaign », livret p.5) : absentes du constructeur. */
 export const SETS_RESERVES_A_LA_CAMPAGNE = ["Skrull Menace Campaign"];
 
+/** Hellfire Hunt (E10, livret p.5) : « Cards 263-288 ... cannot be included in any deck unless playing the Hellfire Hunt campaign and the players are
+ *  directed to add them to a deck by the Campaign Instructions. Campaign-specific cards do not count toward players' minimum or maximum deck size. »
+ *  Ses allies RECRUITED (hf013-hf028, classe « Campaign;Basic ») et les allies CAPTIVE du scenario 2 (hf208-hf211) vivent dans le MEME set que des cartes
+ *  d'aspect ordinaires (hf001-hf012) : on les reconnait donc par leur classe « Campaign », dans les sets de la campagne. Le deck Recruited Mutants est un
+ *  deck de TABLE, hors du deck du joueur : la taille du deck ne les compte jamais. */
+export const SETS_CARTES_DE_CAMPAGNE_PAR_CLASSE = ["Hellfire Hunt", "Black King"];
+
+export function estReserveeALaCampagne(c) {
+    if (!c) return false;
+    if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return true;
+    return SETS_CARTES_DE_CAMPAGNE_PAR_CLASSE.includes(c.set_name)
+        && String(c.class || "").split(";").map((x) => x.trim()).includes("Campaign");
+}
+
 export function estCarteJoueur(c) {
     if (!c || !c.class) return false;
-    if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return false;
+    if (estReserveeALaCampagne(c)) return false;
     if (c.class === "Hero") return false;
     // « Linked » : la carte est mise de côté par sa carte liée, jamais dans le deck d'un joueur (RR « Linked »).
     if (c.desc && c.desc.Linked) return false;

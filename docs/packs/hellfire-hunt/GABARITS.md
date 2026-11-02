@@ -43,3 +43,17 @@ Aucune carte n'est « terminée : OUI » : aucune partie réelle jouée par un h
 - Lire : `tools/cas/hellfire_hunt.py`, `src/cards/pack/hellfire_hunt/{__init__,campaign}.py`, `tools/importer_cartes_hellfire_hunt.py`, `docs/rapports/2026-10-26-hellfire-hunt-lecture-livret.md`.
 - Numéros réservés : hf001-hf099 (moi, utilisés jusqu'à hf048) ; hf100-hf199 et hf300-hf399 = autre fork. `data/cards.json` seulement par script sous `flock /tmp/cards_json.lock`.
 - Rien n'est commité ; `deployer.sh` non lancé.
+
+## Finitions du 01/11/2026 (session « finitions Hellfire Hunt »)
+
+- **DEFAUT DE HARNAIS TROUVE ET CORRIGE** : `tools/cas/hellfire_hunt.py` et `tools/cas/hellfire_white_queen.py` definissaient TOUS DEUX un verificateur `hf_etat` ; `test_capacites.py` execute les `VERIFICATIONS` de tous les fichiers dans UN seul espace de noms : la definition de White Queen ecrasait celle des fondations, et les cles `hf_recrutes_deck`, `hf_recrutes_defausse`... des cas `[hfc]` n'etaient JAMAIS verifiees (un cas passait meme avec `hf_recrutes_defausse: ['zzz']`). Le verificateur des fondations s'appelle desormais `hfc_etat`. Rejoue des 97 cas `[hfc]` : 96 verts + 1 rouge revele.
+- **hf014 Blink (BUG REEL revele par la correction ci-dessus)** : « When Blink is defeated, shuffle her into the Recruited Mutants deck » ne partait jamais (la Reponse forcee arrive quand Blink est deja dans la defausse du joueur, ou sa capacite dort). Corrige comme Wild Sentinel hf382 : drapeau a la defaite + remplacement de la defausse (`WhenCardWouldDiscard` + `SetBeInstead`) qui la remet dans le deck. Preuve : cas `hf014 Blink : vaincue...` vert, ROUGE si le module est vide.
+- **hf044 Psychic Minefield** : le cas « derniere menace non retirable » faisait deux contres de suite (le heros s'epuise au premier) et restait vert module vide : refait (1 menace, un contre, la carte reste) + temoin a 2 menaces ; rouge module vide.
+- `DeckDeTable` (classe du deck de table Recruited Mutants) remontee au niveau MODULE de `__init__.py` : `verifier_api_cartes` ne voit pas les classes locales et signalait un `DeckDeTable` « defini nulle part » (0 en faute apres correction : « 9128 fichiers analyses, 0 en faute »).
+- Outil de preuve sur COPIE PRIVEE (jamais sur les sources partagees) : `docs/packs/hellfire-hunt/substituer_prive.py <pack> <port> <sortie.json>` (generalisation de celui de Torn ; `HFF_TAG='[hfc]'` pour les fondations). Mutations ponctuelles : un seul fragment du module retire, le cas doit tomber au rouge.
+- Verts sans module apres rejeu corrige (`/tmp/.../subst_fond2.txt`) : tous des TEMOINS / CONTRE-CAS d'absence (hf002, hf007, hf008, hf013, hf016, hf017, hf019, hf022, hf027, hf028, hf029, hf036, hf040), des valeurs imprimees natives (`desc`) ou, pour hf014 « jouee depuis la defausse Recruited », une permission portee par Xavier's Institute (hf048) / Rally the Survivors (hf045) et non par Blink (voir le commentaire de hf014.py).
+
+## Mode campagne bouclé (01-02/11/2026)
+Corrections de `campaign.py` / `hf104a` trouvées par la chaîne 1 -> 5 (`tools/cas/campagne_hellfire.py`, 9 chaînes) : appel de `CampaignSetup(1)` au scénario 1 ; étape Cryptic / Minefield du scénario 4 ;
+relevé des alliés sortis de la zone mise de côté ; Potential Ally seulement aux scénarios 1, 3, 4 ; Emma Frost jamais en double. Cas `[hfc]` ajoutés (scénarios 2, 3, 4, 5 et relevé). Détail et limites : `docs/rapports/CAMPAGNES.md`, section Hellfire Hunt.
+Aucune carte ne passe à « Carte terminée : OUI » : aucune partie jouée par un humain.

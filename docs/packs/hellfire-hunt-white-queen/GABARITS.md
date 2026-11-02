@@ -39,3 +39,10 @@ Vérifié à l'instant : `python -m compileall -q src` passe, JSON valides (card
 - Un « MayChooseOneAbility » : le pilote l'ACCEPTE par défaut ; `choisir_option="Cancel"` pour refuser.
 - Un `game_dir` à soi (`.game-src-hfw`) : un autre harnais peut tourner sur `.game-src-par*`.
 - Hero en forme HEROS : le pilote DEFEND ; pour mesurer des dégâts, `Puzzle.Exhaust('01001a')` ou rester en alter-ego (Quickstrike ne s'applique qu'à un HEROS).
+
+## Finitions du 01/11/2026 (session « finitions Hellfire Hunt »)
+
+- Outil de preuve sur COPIE PRIVEE (jamais sur les sources partagees) : `docs/packs/hellfire-hunt/substituer_prive.py <pack> <port> <sortie.json>` (generalisation de celui de Torn ; `HFF_TAG='[hfc]'` pour les fondations). Mutations ponctuelles : un seul fragment du module retire, le cas doit tomber au rouge.
+- **Modules sans cas** (rouges 0/0 au rejeu prive) : `hf102a` (Reponse forcee forme A du stade 2), `hf103b` (Interruption forcee forme B du stade 3 expert) : AUCUN cas ne les visait (module vide, 22 cas verts). Cas ajoutes : `hf102a Reponse forcee`, `hf103b Interruption forcee` + temoin ; rouges si le module est vide (preuve par substitution refaite). `hf105a` et `hf106a` sont couverts par les cas `hf104b` / `hf105b` (rouges quand on les vide). `hf103b` porte aussi la Reponse forcee B couverte par `hf103a Incite 1`.
+- **hf308 Illusion Loop, branche Boost** : le cas existant n'avait AUCUNE attente (`{}`, vert quoi qu'il arrive). Refait : un attachement ILLUSION sur l'identite -> Confused (rouge si la branche Boost est retiree) + temoin sans attachement. Balayage de TOUS les fichiers `tools/cas/hellfire_*.py` : plus aucun cas a attendu vide.
+- Verts sans module (rejeu prive) : stades vaincus en meme forme (logique du moteur), `hf106b` « If this stage is completed, the players lose the game » (lu NATIVEMENT dans le texte, scheme_main.py), valeurs imprimees (`desc`), temoins (hf101b, hf103a, hf107, hf301, hf124/125...). Aucun cas nominal vert par erreur apres les corrections ci-dessus.

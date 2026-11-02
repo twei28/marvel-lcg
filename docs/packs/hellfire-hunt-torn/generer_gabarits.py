@@ -76,7 +76,7 @@ A("hf508", "Psychic Entanglement",
   "27107 Brute Force Barricade (`ThreatCannotBeRemovedFromWhile(SchemeSide2, effect.this != message.trigger)`) ; hf029 (`WhenSchemeBeDefeated`).",
   "`OTHER side schemes` (pas elle-même, pas la principale) ; vaut pour les effets de carte (interruption d'Emma) ET la contrarie ; `When Defeated` : une carte face cachée à CHAQUE joueur ; Victory 1 -> pile de victoire.",
   "Menace de départ 8, Victory 1, Boost 2.")
-A("hf509", "Psychic Paragon",
+A("hf509", "Psionic Paragon",
   "`GiveKeywordToInPlayWhenApplyThis(CardFinder(name=Emma Frost), health=10)` (21160 / 01140) ; 39035 Dial M for Mojo (`incite=1` sur `EncounterCard`).",
   "`+10 hit point` (plat) ; `Each ILLUSION card gains incite 1` (carte pas encore en jeu : traîtrise, attachement) ; `each player with no engaged minions` ; Paragon est vaincue par l'interruption d'Emma si elle a moins de 5 menaces.",
   "Menace de départ 4 par joueur, +10 PV, incite 1, Boost 2.")

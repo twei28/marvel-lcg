@@ -139,7 +139,7 @@ for n in (36, 37):
             "<b>When Revealed</b>: Choose a set-aside Sebastian Shaw attachment and reveal it. Give this card to the enemy who attached that "
             "attachment as a facedown boost card. Otherwise, this card gains surge.\n<hr />\n"
             "[star] <b>Boost</b>: Give this enemy 1 additional boost card for this activation."))
-A(carte("hf338", "SideScheme", "Hellfire Domination", SS, {"StartingThreat": "3*", "Boost": "3", "Acceleration": "1"}, [],
+A(carte("hf338", "SideScheme", "Hellfire Domination", SS, {"StartingThreat": "3*", "Boost": "3", "Amplify": "1"}, [],
         "<i>Sebastian Shaw sat in his throne, his cold, calculating gaze surveying the city below. A malicious grin spread across his lips as he "
         "contemplated his latest scheme.</i>\n<b>When Defeated</b>: Shuffle each set-aside Sebastian Shaw encounter card into the encounter deck."))
 

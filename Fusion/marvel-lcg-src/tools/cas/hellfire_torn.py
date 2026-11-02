@@ -273,7 +273,7 @@ CAS = [
        "« When Defeated : Deal each player a facedown encounter card » ; `Victory 1` natif",
        [HEROS, "Puzzle.SetThreat('hf508', 1)"] + deck("hf508", "01105") + ["Puzzle.Reveal('hf508')", "Puzzle.SetThreat('hf508', 1)"], ["Puzzle.Thwart('01001a')"],
        {"absents": ["hf508"], "distribuees": 1, "dans_victoire": ["hf508"]}, cibles=["hf508"], accepter_choix=True),
-    # ===================================================================== hf509 Psychic Paragon
+    # ===================================================================== hf509 Psionic Paragon
     _c("hf509 revelee : menace 4 (par joueur) ; « Emma Frost gets +10 hit point » : PV 7 -> 17",
        "`GiveKeywordToInPlayWhenApplyThis(CardFinder(name=Emma Frost, Villain), health=10)`", deck("hf509", "01105") + ["Puzzle.Reveal('hf509')"], [],
        {"en_jeu": ["hf509"], "menace_de": [["hf509", 4]], "vie": [["hf501a", 17]]}),
@@ -306,7 +306,7 @@ CAS = [
     _c("hf510 Reponse forcee : le sbire vaincu est WHITE QUEEN -> Emma Frost ATTAQUE le joueur (ATQ 1 : 1 degat sur l'identite, la principale ne bouge pas)",
        "le sbire White Queen (Perfection hf302) entre en jeu dans ce scenario (le vilain est Emma Frost, pas White Queen) ; le heros est incline pour ne pas defendre",
        [HEROS] + deck("hf510", "01105", "01105") + ["Puzzle.Reveal('hf510')", "Puzzle.PutIntoPlay('hf302')", "Puzzle.Damage('hf302', 2)"], ["Puzzle.Attack('01001a')", "Puzzle.Exhaust('01001a')"],
-       {"absents": ["hf302"], "menace_de": [["hf503b", 1]]}, cibles=["hf302"], accepter_choix=True),
+       {"absents": ["hf302"], "menace_de": [["hf503b", 1]], "degats_identite": 1}, cibles=["hf302"], accepter_choix=True),
     _c("hf510 Reponse forcee : TEMOIN, un sbire qui n'est PAS HELLFIRE vaincu (Weapons Runner) -> Emma ne fait rien (principale 1)",
        "« After a HELLFIRE minion is defeated »", [HEROS] + deck("hf510", "01105") + ["Puzzle.Reveal('hf510')", "Puzzle.PutIntoPlay('01121')", "Puzzle.Damage('01121', 0)"], ["Puzzle.Attack('01001a')"],
        {"absents": ["01121"], "menace_de": [["hf503b", 1]]}, cibles=["01121"], accepter_choix=True),
@@ -482,7 +482,7 @@ CAS = [
        "livret p.14 : « Shuffle each RECRUITED ally in each player's deck and discard pile into the Recruited Mutants deck. Record the name of each ... ally in the Recruited Mutants Deck » ; chemin REEL : `Puzzle.Win()` -> `WriteCampaignLogAtGameOver(ReleveTorn)` -> fichier de carnet",
        [HEROS, "Puzzle.CreatePlayerDiscardPile('hf013')", "Puzzle.PutIntoRecruitedMutants('hf014')", "Puzzle.PutIntoRecruitedMutants('hf015', discard=True)",
         "Puzzle.PutIntoPlay('hf016', under_control=True)", "Puzzle.CreatePlayerDeck('hf018')"] + deck("01105"), ["Puzzle.Win()"],
-       {"gagnee": True, "scenario": "hellfire_torn", "cles_presentes": ["Recruited Allies", "Removed Potential Allies"], "cles": {"Recruited Allies": "hf016;hf013;hf014;hf015;hf018"}},
+       {"gagnee": True, "scenario": "hellfire_torn", "cles_presentes": ["Recruited Allies", "Removed Potential Allies"], "cles": {"Recruited Allies": "hf013;hf014;hf015;hf016;hf018"}},
        campagne=True, libre=True, verifier="fnefin_carnet_sortant"),
     _c("hf503a CARNET SORTANT a la DEFAITE : aucun allie n'est note (on rejoue sans penalite) ; l'estampille reste celle du scenario",
        "livret p.5 : « If the players lost, they may reset the scenario and try again with no penalty »",
