@@ -190,14 +190,21 @@ def main():
     resultats = []
     for index, nom in enumerate(decks):
         port = port_base + index
-        assert port < 65500, f"port {port} hors plage, baisser port_base"
+        assert port + 20000 < 65500, f"port {port} hors plage, baisser port_base"
         chemin = f"/tmp/deck_{nom}.json"
         if os.path.exists(chemin):
             os.remove(chemin)
         env = dict(os.environ, DECK_NOM=nom)
-        subprocess.run([sys.executable, os.path.abspath(__file__), game_dir,
-                        str(port), rapport],
-                       env=env, timeout=120, capture_output=True)
+        # AJOUT (02/11/2026) : un port deja pris (« AssertionError: ip/port », puis « Engine has no attribute 'game' » dans le
+        # plantage du plantage) donnait 24 faux echecs sur 180, tous disparus a la relance. On retente deux fois sur un autre port.
+        for essai in range(3):
+            subprocess.run([sys.executable, os.path.abspath(__file__), game_dir,
+                            str(port + 10000 * essai), rapport],
+                           env=env, timeout=120, capture_output=True)
+            if os.path.exists(chemin) and "Engine' has no attribute 'game'" not in open(chemin).read():
+                break
+            if os.path.exists(chemin):
+                os.remove(chemin)
         if os.path.exists(chemin):
             resultats.append(json.load(open(chemin)))
         else:
