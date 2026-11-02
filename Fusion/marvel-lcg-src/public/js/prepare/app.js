@@ -5862,7 +5862,7 @@ const SECTIONS_FANMADE = [
     { id: "defis", libelle: "Défis et autres" },
 ];
 // Campagnes : couverture « Expansion » / « Extension » / « Rulebook » ; défis : Challenges et Super Bouffon ; le reste : « Scenario Pack ».
-const NUMEROS_FANMADE_CAMPAGNES = new Set([120, 143, 144, 178, 208]);
+const NUMEROS_FANMADE_CAMPAGNES = new Set([120, 143, 144, 178, 208, 241]);
 const NUMEROS_FANMADE_DEFIS = new Set([210, 235]);
 function sectionDeLExtensionFanmade(cle) {
     const numero = parseInt(String(cle).split(".")[0], 10);
