@@ -2309,7 +2309,6 @@
   "encounters": [],
   "max_id": "mt016"
  },
- "checksum": "2e4d1a39e7afe67d5bf2cc92435a63631ffed4e1d44ca01f6c5706e70d159f4e",
  "240. Custom (Hellfire Hunt - White Queen)": {
   "name": "hellfire_hunt_white_queen",
   "scenarios": [],
@@ -2376,5 +2375,15 @@
    "hf_mutant_extinction_agenda"
   ],
   "max_id": "hf621"
- }
+ },
+ "246. Custom (Destiny)": {
+  "name": "destiny",
+  "scenarios": [],
+  "heroes": [
+   "destiny"
+  ],
+  "encounters": [],
+  "max_id": "dy016"
+ },
+ "checksum": "35224aaa4f1d42b9032f43c3799752f4dde89d0832f664f620023487e986a35a"
 }

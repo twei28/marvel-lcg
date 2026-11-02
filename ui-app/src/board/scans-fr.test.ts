@@ -124,3 +124,15 @@ describe('scanDejaFrancais', () => {
     expect(scanDejaFrancais('si005_cb')).toBe(false)
   })
 })
+
+describe('SCANS_FR_FANMADE', () => {
+  it('les 17 cartes de Destiny ont un scan francais, donc pas de voile', async () => {
+    const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
+    expect(SCANS_FR_FANMADE.size).toBe(17)
+    expect(aScanFr('dy001a')).toBe(true)
+    expect(aScanFr('dy016')).toBe(true)
+    expect(aScanFr('dy017')).toBe(false)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('dy015')).toBe('fr_dy015')
+  })
+})

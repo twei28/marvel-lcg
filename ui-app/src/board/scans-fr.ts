@@ -47,6 +47,13 @@ export function scansFrActifs(): boolean {
     generee ne les connait pas, elle ne lit que les codes des archives. */
 export const SCANS_FR_MAISON: ReadonlySet<string> = new Set(['tough', 'stunned', 'confused'])
 
+/** Les cartes fan-made livrees avec un scan francais de leur auteur (Destiny de Merlin, FR Release 1.2, 02/11/2026) : `fr_dy*.jpg`
+    est depose a la main dans assets/pics-fr. La liste generee ne les connait pas ; sans ce jeu, le voile FR se poserait sur l'image. */
+export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
+  'dy001a', 'dy001b', 'dy002', 'dy003', 'dy004', 'dy005', 'dy006', 'dy007', 'dy008',
+  'dy009', 'dy010', 'dy011', 'dy012', 'dy013', 'dy014', 'dy015', 'dy016',
+])
+
 /** Les cartes fan-made dont le scan est DEJA imprime en francais par son auteur (pack Superior Iron Man de Merlin, `si001a`...`si017`,
     audit des voiles du 25/10/2026) : poser une traduction dessus ferait doublon avec l'image. Aucun fichier `fr_` n'existe pour elles. */
 export function scanDejaFrancais(code: string): boolean {
@@ -56,7 +63,7 @@ export function scanDejaFrancais(code: string): boolean {
 /** La liste generee fait foi : elle ne contient que des fichiers reellement
     extraits, donc jamais un art alternatif ni un dos generique. */
 export function aScanFr(picId: string): boolean {
-  return CODES_SCAN_FR.has(picId) || SCANS_FR_MAISON.has(picId)
+  return CODES_SCAN_FR.has(picId) || SCANS_FR_MAISON.has(picId) || SCANS_FR_FANMADE.has(picId)
 }
 
 /** Nom de fichier a demander au serveur pour cette carte. */

@@ -13,6 +13,13 @@
   "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
  ],
  "prefixes": {
+  "dy": {
+   "pack": "destiny",
+   "libelle": "246. Custom (Destiny)",
+   "cartes": 17,
+   "depuis": "2026-11-02",
+   "note": "Cree le 02/11/2026 depuis le zip de Merlin (Destiny/Irene Adler, bêta EN 1.0 + Release FR 1.2). dy001a/b identite ; dy002-dy012 deck de heros (Glimpse of the Future, Mystique allie, Mental Awareness x2, Clairvoyance, Unmask, Be Careful, Prescience x2, Astral Projection x2, Path of Violence x3, Unconditional Love, Fragment Studies) ; dy013 obligation Seizure ; dy014-dy016 set nemesis (Mister Sinister, Destiny's Warning, So, What's the Plan? x3). Aucun Extras : player_deck vide."
+  },
   "hg": {
    "pack": "the_hunger_core",
    "libelle": "234. Custom (The Hunger Core)",

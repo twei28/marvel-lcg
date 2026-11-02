@@ -136906,7 +136906,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "96d5da52539b1f28770020e9b9b4929312873b53edd690e8935c6135a827e4ef",
+ "checksum": "4cd12489696fa94cb8ebcf89c6bd5313d210659e7bc92ad7e997510a0349cccf",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -140776,6 +140776,308 @@
    "set_name": "Mutant Extinction Agenda",
    "text": "Victory 1.\n<b>When Revealed</b>: Each player search the encounter deck and discard pile for a [[Sentinel]] minion in player order. Put it into play engaged with you.",
    "custom": "Dipsome"
+  }
+ ],
+ "destiny": [
+  {
+   "card_id": "dy001a",
+   "type": "Hero",
+   "name": "* Destiny",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "0",
+    "THW": "0",
+    "DEF": "0",
+    "HS": "5"
+   },
+   "traits": [
+    "PSIONIC",
+    "X-MEN"
+   ],
+   "set_name": "Destiny",
+   "text": "X is the number of icons ([star] and [boost]) on the card tucked under Glimpse of the Future.\n<b>Interrupt</b>: When a boost card is turned faceup, give the enemy another boost card for this activation. Then discard one of them. <i>(Limit once per phase.)</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy001b",
+   "type": "AlterEgo",
+   "name": "* Irene Adler",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "MUTANT",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Setup</b>: Search your deck for a [[PSIONIC]] upgrade and add it to your hand. <i>(Shuffle.)</i>\n<b>Response</b>: After you change to this form, shuffle a [[PSIONIC]] card from your discard pile into your deck.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy002",
+   "type": "Upgrade",
+   "name": "* Glimpse of the Future",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "R",
+    "Permanent": "1",
+    "Setup": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "Permanent. Setup.\n<i>Precognition</i> — <b>Action</b>: Exhaust Glimpse of the Future → look at the top 3 cards of the encounter deck. Shuffle 2 of them into the encounter deck and tuck the other one under this card so that only its boost field is visible. Discard it at the end of the round.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy003",
+   "type": "Ally",
+   "name": "* Mystique",
+   "subtitle": "Raven Darkhölme",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "X-MEN"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Action</b>: Exhaust Mystique and spend a resource of any type → heal 1 damage from your identity and ready your identity. <i>(Limit once per phase.)</i>\n<i>\"The game's afoot, Irene. Our game.\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy004",
+   "type": "Upgrade",
+   "name": "Mental Awareness",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Resource</b>: Exhaust Mental Awareness → generate a [wild] resource for a [[PSIONIC]] card.\n<i>Destiny can focus on the most probable alternative futures.</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy005",
+   "type": "Upgrade",
+   "name": "Clairvoyance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Hero Action</b>: Spend any number of [mental] resources (to a maximum of 3) and exhaust Clairvoyance → for each resource spent this way, choose a different scheme and remove X threat from it, where X is the number of icons ([star] and [boost]) on the card tucked under Glimpse of the Future.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy006",
+   "type": "Upgrade",
+   "name": "Unmask",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Hero Action</b>: Spend any number of [mental] resources (to a maximum of 3) and exhaust Unmask → for each resource spent this way, choose a different enemy and deal X damage to it, where X is the number of icons ([star] and [boost]) on the card tucked under Glimpse of the Future.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy007",
+   "type": "Upgrade",
+   "name": "Be Careful",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Hero Interrupt</b>: When you would take any amount of damage, spend 1 [mental] resource and exhaust Be Careful → prevent X of that damage, where X is the number of icons ([star] and [boost]) on the card tucked under Glimpse of the Future.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy008",
+   "type": "Upgrade",
+   "name": "Prescience",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Forced Interrupt</b>: When you reveal a treachery card, cancel its \"<b>When Revealed</b>\" effects and discard it. Then, discard Prescience.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy009",
+   "type": "Event",
+   "name": "Astral Projection",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Remove 1 additional threat for each icon ([star] and [boost]) on the card tucked under Glimpse of the Future.\n<i>\"We have to manage this immediate threat.\" — Destiny</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy010",
+   "type": "Event",
+   "name": "Path of Violence",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "PSIONIC"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Deal 1 additional damage for each icon ([star] and [boost]) on the card tucked under Glimpse of the Future.\n<i>\"Beware of him!\" — Destiny</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy011",
+   "type": "Event",
+   "name": "Unconditional Love",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Destiny",
+   "text": "<b>Action</b>: If Mystique/Raven Darkhölme is in play, ready Mystique/Raven Darkhölme and Destiny/Irene Adler. Otherwise, search your deck and discard pile for Mystique and add her to your hand. <i>(Shuffle your deck.)</i>\n<i>\"A rope through Time.\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy012",
+   "type": "Resource",
+   "name": "Fragment Studies",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Destiny",
+   "text": "<b>Response</b>: After you spend this card, shuffle 1 identity-specific card from your discard pile into your deck.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy013",
+   "type": "Obligation",
+   "name": "Seizure",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Destiny"
+   },
+   "traits": [],
+   "set_name": "Destiny",
+   "text": "<b><i>Give to the Destiny player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Irene Adler → remove Seizure from the game.\n• Discard 1 [[SKILL]] upgrade you control. If no upgrade was discarded this way, this card gains surge. Discard this obligation.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy014",
+   "type": "Minion",
+   "name": "* Mister Sinister",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "3",
+    "SCH": "3",
+    "Boost": "2",
+    "Incite": "2",
+    "Villainous": "1",
+    "Nemesis": "Destiny"
+   },
+   "traits": [
+    "ELITE",
+    "GENIUS"
+   ],
+   "set_name": "Destiny Nemesis",
+   "text": "Incite 2. Villainous.\nWhile Destiny's Warning side scheme is in play, Mister Sinister does not activate.\n<b>When Revealed</b>: If Mister Sinister is already in play, discard this card then Mister Sinister activates against you even if Destiny's Warning side scheme is in play.\n<i>(Destiny's nemesis minion.)</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy015",
+   "type": "SideScheme",
+   "name": "Destiny's Warning",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "0",
+    "Incite": "2"
+   },
+   "traits": [],
+   "set_name": "Destiny Nemesis",
+   "text": "<i>\"Wha--? You Spoilsport--!\" — Mister Sinister</i>\nIncite 2.\n<b>When Revealed</b>: Remove 1 [per_hero] threat from the main scheme.\n<hr />[star] <b>Boost</b>: Put Destiny's Warning into play.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "dy016",
+   "type": "Treachery",
+   "name": "So, What's the Plan?",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Incite": "1"
+   },
+   "traits": [
+    "TEMPORAL"
+   ],
+   "set_name": "Destiny Nemesis",
+   "text": "Incite 1.\n<b>When Revealed</b>: Remove 1 [per_hero] threat from Destiny's Warning. If you cannot, Mister Sinister activates against you. If you cannot, this card gains surge.\n<i>\"Oh that woman is just the worst. Perhaps, if I can arrange her to be absent, I can...\"</i>",
+   "custom": "Merlin"
   }
  ]
 }
