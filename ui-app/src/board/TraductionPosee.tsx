@@ -358,7 +358,11 @@ export function TraductionPosee({
       // peut descendre jusqu'au bas de la zone (il est souvent plus long).
       const cadreTexte = fond?.texte
       if (cadreTexte) {
-        element.style.paddingLeft = `${cadreTexte.x0 * largeurRef}px`
+        // Cadre qui penche reconnu automatiquement, mais une icône au milieu du texte interdit le flottant de gauche : le français part
+        // alors du départ de la PREMIÈRE ligne anglaise (le plus à droite), au lieu de la ligne la plus à gauche, sous le bord du cadre.
+        const penteSansFlottant = !CADRES_PENCHES.has(codeImage(url)) && cadreTexte.penche && cadreTexte.entre.length > 0
+        const departGauche = penteSansFlottant ? Math.max(cadreTexte.x0, ...(cadreTexte.gauche ?? [])) : cadreTexte.x0
+        element.style.paddingLeft = `${departGauche * largeurRef}px`
         // À droite, la fin des lignes anglaises : le français ne s'étend pas plus loin (le cadre peut avoir un dessin pâle à
         // droite, sur lequel l'anglais ne mord qu'à peine). Une seule ligne anglaise courte (« Max 1 per deck. ») ne dit
         // rien de la colonne : marge symétrique de la gauche.
@@ -403,7 +407,8 @@ export function TraductionPosee({
         // un flottant dont la forme suit le départ des lignes anglaises, bande par bande.
         const flottantGauche = contourGauche.current
         if (flottantGauche) {
-          const encochesG = CADRES_PENCHES.has(codeImage(url)) ? encochesGauche(cadreTexte.gauche ?? [], cadreTexte.x0, largeurRef) : null
+          const penche = CADRES_PENCHES.has(codeImage(url)) || cadreTexte.penche ? encochesGauche(cadreTexte.gauche ?? [], cadreTexte.x0, largeurRef) : null
+          const encochesG = penche
           const haut = Math.max(0, cadreTexte.y0 * hauteurRef - 1)
           const hauteurContenu = Math.max(0, element.clientHeight - haut - parseFloat(element.style.paddingBottom))
           if (encochesG && hauteurContenu > 0 && !cadreTexte.entre.length) {

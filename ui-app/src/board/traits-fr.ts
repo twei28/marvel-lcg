@@ -118,6 +118,7 @@ export const TRAITS_FR: Readonly<Record<string, string | undefined>> = {
   "HERALD": "HÉRAUT",
   "HERO": "HÉROS",
   "HERO FOR HIRE": "HÉROS À LOUER",
+  "HELLFIRE": "DAMNÉS",
   "HIGH": "HAUT",
   "HOG": "PORC",
   "HORSEMEN": "CAVALIERS",

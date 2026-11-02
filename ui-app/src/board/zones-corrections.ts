@@ -49,6 +49,9 @@ export const ZONES_CORRECTIONS: Readonly<Record<string, CorrectionZone>> = {
   rl016: { y0: 0.52 },
   // Rachel Summers : Hound Program (annexe paysage), le voile mordait l'ornement du haut et rayait « MARVEL GIRL NEMESIS (1/5) » en bas.
   rm014: { y1: 0.9 },
+  // Hellfire Hunt, White Queen, Psionic Fortification (02/11/2026) : la détection prenait le haut de la zone dans l'illustration (0,47) ; le
+  // cadre de texte commence à 0,57 : le français démarrait sur le dessin, au-dessus du liseré.
+  hf122: { y0: 0.575 },
   // Shadowland, Dark Invitation 1B : la fin du texte anglais (« to stage 2A. ») descendait sous le bas de la zone détectée.
   sl060b: { y1: 0.93 },
 }

@@ -60,11 +60,13 @@ Chaque ligne vient d'un rapport d'agent de la journée. Cocher `[x]` quand c'est
 ## C. Traduction et voile (autre session pour le composant)
 
 Défauts qui exigent de modifier `effacer-texte.ts` / `TraductionPosee.tsx` (NE PAS les toucher d'ici) :
-- [ ] **sq015** : première lettre de chaque ligne anglaise collée au bord gauche du cadre non effacée.
-- [ ] **bg014** : petit « F » résiduel en haut à gauche.
-- [ ] **bg001a, bg001c, hz001b** : soulignement parasite sous « Int » / « Vous pouvez ».
-- [ ] **bm016, bm017** : lettres isolées au bord droit ; **bm001a, rm001a, rm001b** : petits traits ; **rm014** : tache grise sur l'ornement.
-- [ ] **co001a, uw001b** : le tiret « — » anglais reste comme un trait ; **uw015** : un « X. » en haut ; **uw010** : halo pâle sous « vie ».
+**Mise à jour 02/11/2026 (session « voile » : composant corrigé, détail dans `docs/packs/hellfire-hunt/VOILES.md` §6).** Rendus avant/après relus sur 63 cartes de cette liste et d'autres : sq015, bg014, bg001a/c, hz001b, bm016/017, bm001a, rm001a/b, rm014, co001a, uw001b, sv004, sz004, sy024 se voient propres (déjà avant, rapport périmé) ; seuls restent uw010 (halo très pâle sous « vie. ») et uw015 (un point en haut). Le composant a gagné : bords de cadre intacts (bg001a/c, bm001a, rm001a/b, co001a, sl002b, so014, sy037/038, badges « 3 » et « 5 » de 04099 et 65012 qui étaient entamés), mot italique « bestowed » de sv015 effacé, doublon anglais de 27144 effacé.
+
+- [x] **sq015** : première lettre de chaque ligne anglaise collée au bord gauche du cadre non effacée. (02/11 : propre aux rendus avant et après.)
+- [x] **bg014** : petit « F » résiduel en haut à gauche. (02/11 : propre.)
+- [x] **bg001a, bg001c, hz001b** : soulignement parasite sous « Int » / « Vous pouvez ». (02/11 : propre ; liserés du cadre mieux conservés.)
+- [x] **bm016, bm017** : lettres isolées au bord droit ; **bm001a, rm001a, rm001b** : petits traits ; **rm014** : tache grise sur l'ornement. (02/11 : propres ; bm001a, rm001a/b : traits du cadre conservés ; rm014 non revu en détail.)
+- [x] **co001a, uw001b** : le tiret « — » anglais reste comme un trait ; **uw015** : un « X. » en haut ; **uw010** : halo pâle sous « vie ». (02/11 : tiret absent ; uw015 : un point reste en haut ; uw010 : halo très pâle sous « vie ».)
 - [ ] Piste de l'agent : ne plus protéger la bande de marge gauche (`margeCote`) quand une lettre touche le bord du cadre.
 - [ ] **Textes français à recontrôler** après les corrections de règles (cartes dont le texte imprimé a changé : bm014 Hazard, so005, rz006, bg012, hz007…).
 - [ ] **`ui-app/deployer.sh`** pas encore lancé : rien n'apparaît en jeu avant.
