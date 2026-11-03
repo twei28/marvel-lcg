@@ -37,6 +37,7 @@ import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
 import { CoucheOrdre } from './ordre/CoucheOrdre'
 import { cleDePile, cleDeRangee, coteDe, ranger, type Ordres } from './ordre/ordre-cartes'
 import { useCoteAmeliorations } from './cote-ameliorations'
+import { useInversionPiles } from './inversion-piles'
 import { PastillesTraits } from './PastillesTraits'
 import { PAS_PAR_CHEVAUCHEMENT, useChevauchement } from './reglages-affichage-cartes'
 import { useReordonner } from './ordre/useReordonner'
@@ -1207,6 +1208,8 @@ export function Board({
   identitePartie,
   tablette = false,
 }: BoardProps) {
+  // Inverser le deck et la defausse (reglage Apparence) : pose `data-piles-inversees` sur <html>, que lit board.css. Une seule fois, ici.
+  useInversionPiles()
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
 

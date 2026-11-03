@@ -2199,6 +2199,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'sbire engagé': 'minion engaged',
   'Estimation, pas une probabilité': 'An estimate, not a probability',
   'Barre d’avantage (estimation)': 'Advantage bar (estimate)',
+  'Inverser le deck et la défausse': 'Swap deck and discard sides',
+  'Échange la place du deck et de la défausse (les vôtres, ceux de la rencontre et le deck spécial)': 'Swaps the places of the deck and the discard pile (yours, the encounter piles and the special deck)',
   'Une fine barre au bord gauche : elle monte quand les héros dominent. Une estimation, pas une probabilité': 'A thin bar on the left edge: it rises when the heroes are ahead. An estimate, not a probability',
 
   // ---- board/CreateurPuzzle.tsx (mode Puzzle, createur) ----

@@ -2974,6 +2974,15 @@
     justify-content: flex-start;
   }
 
+  /* INVERSION DU DECK ET DE LA DEFAUSSE (03/11/2026, reglage « Inverser le deck et la defausse », inversion-piles.ts) : la premiere pile de
+     chaque groupe (le deck) passe APRES la seconde (la defausse). `order` plutot que `row-reverse` : les piles restent calees a GAUCHE de leur
+     colonne. Vaut pour le joueur, la rencontre (et ses paquets de pieges / Hellfire) et le deck special. */
+  html[data-piles-inversees='oui'] .zone-piles-joueur .plateau-groupe > :first-child,
+  html[data-piles-inversees='oui'] .zone-piles-rencontre .plateau-groupe > :first-child,
+  html[data-piles-inversees='oui'] .zone-deck-special .plateau-groupe > :first-child {
+    order: 2;
+  }
+
   /* ⚠ « Mises de côté / autres piles » a couvert DEUX RANGÉES du 14/09 au
      18/09/2026 ; depuis, elle n'a que la rangée de la main (voir la grille).
      Elle grandissait alors vers le HAUT au-delà de deux piles, dans la rangée

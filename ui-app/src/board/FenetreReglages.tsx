@@ -25,6 +25,7 @@
 // fonction qu'avant.
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireBarreAvantage, lireBarreAvantage } from './barre-avantage-reglage'
+import { ecrireInversionPiles, lireInversionPiles } from './inversion-piles'
 import { ecrireChevauchement, ecrireModeTraits, lireChevauchement, lireModeTraits, type ChevauchementAmeliorations } from './reglages-affichage-cartes'
 import type { ModeTraits } from './traits-heros'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
@@ -405,6 +406,21 @@ function LigneBarreAvantage() {
   )
 }
 
+function LigneInversionPiles() {
+  const [actif, setActif] = useState(lireInversionPiles)
+  return (
+    <LigneBascule
+      libelle={t('Inverser le deck et la défausse')}
+      detail={t('Échange la place du deck et de la défausse (les vôtres, ceux de la rencontre et le deck spécial)')}
+      actif={actif}
+      onBascule={() => {
+        ecrireInversionPiles(!actif)
+        setActif(!actif)
+      }}
+    />
+  )
+}
+
 function LigneCoteAmeliorations() {
   const [cote, setCote] = useState<CoteAmeliorations>(lireCoteAmeliorations)
   return (
@@ -740,6 +756,7 @@ export function ContenuOnglet({
         ) : null}
         <LigneEtiquettesTable />
         <LigneBarreAvantage />
+        {p.telephone ? null : <LigneInversionPiles />}
         {p.telephone ? null : <LigneJeuAuDoigt />}
         {p.telephone ? (
           <>
