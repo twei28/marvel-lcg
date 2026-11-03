@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-03",
+        genre: "heros",
+        fr: "Carnage (Eddie Brock) rejoint le roster, avec son deck, son obligation, sa némésis Torment et le modulaire Twisted Killers.",
+        en: "Carnage (Eddie Brock) joins the roster, with his deck, his obligation, his nemesis Torment and the Twisted Killers modular set.",
+    },
+    {
+        date: "2026-11-03",
+        genre: "jeu",
+        fr: "Sur Play, le mode « Coop en ligne » est disponible sans compte : on ouvre une table, on envoie les liens, et un compteur indique combien de tables sont prises.",
+        en: "On Play, “Online co-op” is now available without an account: open a table, send the links, and a counter shows how many tables are taken.",
+    },
+    {
         date: "2026-11-02",
         genre: "jeu",
         fr: "La campagne fan-made Hellfire Hunt est jouable : cinq scénarios à enchaîner avec le même héros, un carnet qui garde vos alliés mutants recrutés, et un mode expert.",
