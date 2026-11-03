@@ -2603,3 +2603,23 @@ Pack `beast_proust` (18 `card_id`, scans FR seuls). ⚠ Un AUTRE Beast existe (D
 - Sandman `01102` est Tenace : 6 dégâts ne le vainquent pas (le Tough absorbe). Pour tester un sbire vaincu ou un overkill, prendre Hydra Mercenary `01101` (3 PV).
 - `main_exclusive=[]` est FAUX donc ignoré : une main vide s'obtient par `Puzzle.EmptyHand()` dans `mise_en_place`.
 <!-- FIN beast_proust -->
+
+## 43. Mystique / Raven Darkhölme (`my`, set 248, 02/11/2026) : améliorations à deux faces (visible / cachée), recettes et pièges payés
+
+Pack `mystique` (23 faces, FR Release 1.1.1 prime sur l'EN bêta 4.2). Cas : `tools/cas/mystique.py` (77). Gabarits : `docs/packs/mystique/GABARITS.md`. Plateau : `ui-app/src/board/mystique-plateau.test.ts`.
+
+| Texte imprimé | Montage | Modèle | Piège |
+|---|---|---|---|
+| Amélioration « face visible / face cachée » (Formes Métamorphose) | carte à DEUX faces `a` (visible, capacités) / `b` (cachée, `GetAbilities -> []`) ; « flip » = `face.card.Flip(effect)` ; visible = `paper.card_id.endswith("a")` | `21187a`, `26002a/b`, `my003`-`my005` | un `Flip` d'amélioration posée dans la zone d'améliorations garde son hôte (mesuré) ; clé de cas `en_jeu: ['my003a']` = visible, `['my003b']` = cachée |
+| « Put all 3 form upgrades into play, facedown » (Setup d'alter-ego) | `BeginGameWithSetAside(["my003b,my003a", ..])` (la PREMIÈRE face de la chaîne est la face initiale) + `WhenCardSetup("This", op)` : `joueur.set_aside_deck.Get()` puis `PutIntoPlay(joueur, effect, under_control=True)` ; le deck déclare `set_aside: ["my003a,my003b", ..]` | `36001b`, `my001b` | l'amélioration Permanent+Setup du deck (`my002`) entre seule (`desc.Setup`), pas besoin de la mettre en jeu dans le Setup |
+| « When THIS card is turned faceup » | `AfterCardFlipToThisSide(ForcedResponse, op)` sur la face `a` | `state.py`, `my003a` | ne part ni à l'entrée en jeu ni depuis la face `b` |
+| « After you flip <une autre carte> » (Réponse d'identité) | `Ability(Response, Message.AfterCardFlip, [cond], op)` ; `message.to_face` = face COURANTE | `hf041`, `hf110`, `my001a` | la Réponse est acceptée d'office par le pilote : pas de témoin de refus |
+| « While X is in the victory display, <héros> ignores guard/patrol » | `UnitIgnoreKeywordIcons(CardFinder(name=.., card_type=Hero), guard=True, patrol=True, conditions=[carte dans Worlds.VictoryDisplay])` posée sur l'IDENTITÉ | `bm010`, `pd001a` | une capacité posée sur la carte en vitrine ne part jamais |
+| « Characters other than X cannot remove threat from this card » | `ThreatCannotBeRemovedFromWhile("This", by_character=CardFinder(non_name=..))` | `40006`, `my007` | ⚠ `Puzzle.SetThreat`/`PlaceThreat` sont refusés aussi : vider la carte par des `Puzzle.Thwart` du personnage autorisé |
+| Contre « si <forme> est visible, ignorez la Crise pour ce contre » | `.SetIgnoreKeyword('Crisis', condition=fn)` + `ignore_crisis=` à la résolution | `90119`, `my013` | forme cachée sous une Crise : le principal n'est pas ciblable, le pilote vise une annexe |
+| « Discard the top card of the encounter deck. You may count its boost icons instead » | `Worlds.GetEncounterDeck(effect).GetTop()`, `CountBoostIconsInternal()`, puis `message.boost_icons = n` + `message.trigger.SetBoostIcon(n, effect)` | `dy001a`, `53004`, `my006` | `boost_const` vaut 0 pour une carte du deck ; un deck de test de 2 cartes se remélange avec sa défausse : en monter 5+ |
+| Sbire UNIQUE révélé alors qu'un exemplaire est en jeu, avec un When Revealed qui le concerne | `UniqueRuleNotApplyTo(name=NOM)` (par NOM, pas « This ») | `dy014`, `my016` | sans elle le moteur défausse la 2e copie AVANT son When Revealed (branche jamais mesurée sur `dy014` avant le 02/11/2026). 2e copie de test : `CreateEncounterDeck` PUIS `Reveal` (le deck est cherché avant le jeu) |
+| Événement Team-Up avec ennemi en 2e cible | `.SetTarget("TeamUp").SetTarget2(Enemy)` ; lire `effect.targets2` | `47022`, `my019` | `targets2` ne se lit qu'UNE fois (assert) : le mettre dans une variable |
+
+**Pièges de harnais payés** : `Puzzle.EmptyHand()` AVANT un `Puzzle.Damage` en forme héros (sinon le pilote joue une interruption de la main) ; `Puzzle.Action` retombe sur le pouvoir de base quand l'Action n'est plus offerte (mesurer la limite par l'inclinaison de l'identité) ; un allié de même nom que le héros (dy003 « * Mystique ») n'entre pas en jeu (carte unique) ; une limite « Max 1 per round » se mesure sur l'EFFET (pioche), pas sur la présence de la 2e copie en main.
+<!-- FIN mystique -->

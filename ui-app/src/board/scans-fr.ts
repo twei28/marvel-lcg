@@ -55,6 +55,9 @@ export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
   // Beast de Proust (scans FR seuls, ni EN ni dos, 02/11/2026) : `fr_bs*.jpg` deposes a la main dans assets/pics-fr.
   'bs001a', 'bs001b', 'bs002', 'bs003', 'bs004', 'bs005', 'bs006', 'bs007', 'bs008',
   'bs009', 'bs010', 'bs011', 'bs012', 'bs013', 'bs014', 'bs015', 'bs016', 'bs017',
+  // Mystique de Merlin (Release FR 1.1.1, 02/11/2026) : `fr_my*.jpg` deposes a la main dans assets/pics-fr (les 23 faces).
+  'my001a', 'my001b', 'my002', 'my003a', 'my003b', 'my004a', 'my004b', 'my005a', 'my005b', 'my006', 'my007', 'my008',
+  'my009', 'my010', 'my011', 'my012', 'my013', 'my014', 'my015', 'my016', 'my017', 'my018', 'my019',
 ])
 
 /** Les cartes dont le SEUL scan est francais (aucun scan anglais n'existe : Beast de Proust, `bs*`) : en anglais on voile le scan francais et
@@ -62,6 +65,8 @@ export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
 export const SCANS_FR_SEULS: ReadonlySet<string> = new Set([
   'bs001a', 'bs001b', 'bs002', 'bs003', 'bs004', 'bs005', 'bs006', 'bs007', 'bs008',
   'bs009', 'bs010', 'bs011', 'bs012', 'bs013', 'bs014', 'bs015', 'bs016', 'bs017',
+  // Mystique : le texte du scan EN beta 4.2 est PERIME par la Release FR 1.1.1 (le FR prime) pour ces faces, ou n'existe pas (my019) : on montre le scan FR voile par l'anglais.
+  'my005a', 'my005b', 'my007', 'my012', 'my013', 'my018', 'my019',
 ])
 
 /** Les cartes fan-made dont le scan est DEJA imprime en francais par son auteur (pack Superior Iron Man de Merlin, `si001a`...`si017`,

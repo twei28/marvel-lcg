@@ -2394,5 +2394,14 @@
   "encounters": [],
   "max_id": "bs017"
  },
- "checksum": "35224aaa4f1d42b9032f43c3799752f4dde89d0832f664f620023487e986a35a"
+ "248. Custom (Mystique)": {
+  "name": "mystique",
+  "scenarios": [],
+  "heroes": [
+   "mystique"
+  ],
+  "encounters": [],
+  "max_id": "my019"
+ },
+ "checksum": "35420699ed734d9273938432633107ff314749a85059c0bc522b1d6f90944382"
 }

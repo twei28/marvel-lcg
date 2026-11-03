@@ -2060,4 +2060,13 @@ export const HEROS_INFO = {
         ennemis: "Dark Beast",
         apparition: "X-Men #1 (1963)",
     },
+    "my001a": {
+        bio: "Raven Darkhölme n'a jamais eu un seul visage. Mutante métamorphe, elle imite n'importe qui, jusqu'à la voix et aux empreintes, et s'en sert comme espionne, voleuse ou terroriste, selon ce qui sert ses desseins du moment. Mère de Diablo, compagne de Destiny depuis des décennies, elle a adopté Malicia. Ses alliances avec les X-Men sont toujours provisoires, mais ses proches comptent plus qu'elle ne l'avoue.",
+        bioEn: "Raven Darkhölme has never had a single face. A shapeshifting mutant, she can imitate anyone, voice and fingerprints included, and uses it as a spy, a thief or a terrorist, whatever suits her purposes of the moment. Mother of Nightcrawler, Destiny's partner for decades, she adopted Rogue. Her alliances with the X-Men are always temporary, but her loved ones matter more to her than she admits.",
+        civil: "Raven Darkhölme",
+        equipes: "Confrérie des mutants diaboliques, X-Men",
+        equipesEn: "Brotherhood of Evil Mutants, X-Men",
+        ennemis: "Mister Sinister",
+        apparition: "Ms. Marvel #16 (1978)",
+    },
 };

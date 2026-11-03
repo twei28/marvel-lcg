@@ -928,6 +928,13 @@
    "cartes": 42,
    "depuis": "2026-10-26",
    "note": "Cree le 26/10/2026. Auteur Dipsome, campagne Hellfire Hunt (zip Hellfire Hunt Campaign). hf001-hf099 : fondations de campagne (autre agent) ; hf101-hf125 : scenario 1 White Queen ; hf301-hf325 : modules Perfection (301-308), Hellfire Conclave (311-318), Psionic Delusion (321-325). card_id = hf + 100 + numero du scan pour le scenario ; 300/310/320 + numero du scan pour les modules. Scenario 5 Cassandra Nova (pack hellfire_hunt_cassandra_nova, set 245) : hf601-hf621 (600 + numero du scan) ; modules Mind Control hf371-hf376 et Mutant Extinction Agenda hf381-hf388 (370 / 380 + numero du scan). hf401-hf422 : scenario 3 Black Queen (pack hellfire_hunt_black_queen, set 243, numero du scan + 400 ; l'environnement recto-verso est hf407a/hf407b) ; hf361-hf366 : module Darkhold (meme pack, numero du scan + 360)."
+  },
+  "my": {
+   "pack": "mystique",
+   "libelle": "248. Custom (Mystique)",
+   "cartes": 23,
+   "depuis": "2026-11-02",
+   "note": "Cree le 02/11/2026 depuis le zip de Merlin (Mystique/Raven Darkhölme, bêta EN 4.2 + Release FR 1.1.1 ; le FR prime quand ils different). my001a/b identite ; my002 Shapeshifter (Permanent+Setup) ; my003-my005 formes Civilian/Enemy/Friend (a = face visible, b = face cachee, mises de cote puis posees face cachee au Setup) ; my006 Destiny allie, my007 Infiltration (manigance annexe de joueur), my008 Shapeshifter Focus, my009 Deception x3, my010 Quick and Dirty x3, my011 Unconditional Love, my012 Really? x2, my013 Unnoticed x2, my014 Happy Family ; my015 obligation My Love ; my016-my018 set nemesis (Mister Sinister, Destiny's Warning, So, What's the Plan? x3) ; my019 Mother and Son! (Basic, Team-Up Nightcrawler/Mystique, FR seul, hors deck). Aucun Extras : player_deck vide."
   }
  }
 }

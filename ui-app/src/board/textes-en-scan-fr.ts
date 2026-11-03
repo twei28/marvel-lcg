@@ -1,4 +1,4 @@
-// textes-en-scan-fr.ts — le texte ANGLAIS posé sur les cartes dont le SEUL scan est français (Beast de Proust, 02/11/2026).
+// textes-en-scan-fr.ts — le texte ANGLAIS posé sur les cartes dont le SEUL scan est français (Beast de Proust, 02/11/2026 ; sept cartes de Mystique).
 // Même mécanisme que la traduction française, à l'envers : le scan français est voilé et l'anglais s'écrit dessus (TraductionPosee,
 // langue 'en'). Source : le champ `text` de data/cards.json (traduit du français faute d'original), à ne pas éditer ici sans lui.
 import { SCANS_FR_SEULS } from './scans-fr'
@@ -22,6 +22,14 @@ export const TEXTES_EN_SCAN_FR: Readonly<Record<string, string | undefined>> = {
   'bs015': "[star] Black Beast gets +X ATK, where X is the printed resource cost of the card tucked under him.\n<b>When Revealed</b>: Tuck the highest-cost [[TECH]] upgrade you control under Black Beast. If you cannot, tuck the top card of your deck under Black Beast.\n<i>(Beast's nemesis minion.)</i>",
   'bs016': "<b>When Revealed</b>: Discard a [[TECH]] upgrade you control and deal X indirect damage to your identity, where X is the printed cost of that upgrade. If no upgrade is discarded by this effect, this card gains surge.",
   'bs017': "Attach this card to Black Beast. If you cannot, attach it to the villain.\n<b>Hero Action</b>: Discard an upgrade you control → discard this attachment.",
+  // Mystique (Merlin) : cartes dont le texte du scan EN beta 4.2 est périmé par la Release FR 1.1.1 (le FR prime) ou absent de l'EN (my019). Texte = champ `text` de cards.json.
+  'my005a': "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Friend → ready a hero other than Mystique or an ally.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+  'my005b': "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Friend → ready a hero other than Mystique or an ally.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+  'my007': "Victory 0.\nCharacters other than Mystique cannot remove threat from Infiltration.\n<b>When Defeated</b>: Choose to deal 5 damage to an enemy or remove 3 threat from a scheme.\nWhile Infiltration is in the victory display, Mystique ignores the guard and patrol keywords.",
+  'my012': "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent 3 of that damage. If the Friend shapeshift form upgrade is faceup, ready Mystique.\n<i>\"Surprise!\"</i>",
+  'my013': "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If the Civilian shapeshift form upgrade is faceup, ignore any crisis icon ([crisis]) for this thwart and remove 1 threat from each scheme.\n<i>\"Hello Raven, please tell me you didn't kill the poor soldier.\" — Destiny</i>",
+  'my018': "Incite 1.\n<b>When Revealed</b>: Remove 1 [per_hero] threat from Destiny's Warning. If you cannot, Mister Sinister activates against you. If you cannot, this card gains surge.\n<i>\"Oh that woman is just the worst. Perhaps, if I can arrange her to be absent, I can...\"</i>",
+  'my019': "Team-Up (Nightcrawler and Mystique). Max 1 per deck.\n<b>Hero Action</b>: Stun and confuse an enemy.\n<i>\"Friends or foes?\"</i>",
 }
 
 /** Garde : chaque carte à scan français seul a son texte anglais (testé par scans-fr.test.ts). */

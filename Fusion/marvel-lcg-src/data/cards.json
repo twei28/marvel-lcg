@@ -136906,7 +136906,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "4cd12489696fa94cb8ebcf89c6bd5313d210659e7bc92ad7e997510a0349cccf",
+ "checksum": "28d416ed47af2f247e0278e38d0b87440b496b24aa495d91f31bdb068b14c515",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -141385,6 +141385,419 @@
    "set_name": "Beast Proust Nemesis",
    "text": "Attach this card to Black Beast. If you cannot, attach it to the villain.\n<b>Hero Action</b>: Discard an upgrade you control → discard this attachment.",
    "custom": "Proust"
+  }
+ ],
+ "mystique": [
+  {
+   "card_id": "my001a",
+   "type": "Hero",
+   "name": "* Mystique",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "SPY",
+    "X-MEN"
+   ],
+   "set_name": "Mystique",
+   "text": "<i>True Form</i> — <b>Response</b>: After you flip a shapeshift form upgrade, if all shapeshift form upgrades are facedown, ready your identity.\n<i>\"Yes, that's me!\" — Raven</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my001b",
+   "type": "AlterEgo",
+   "name": "* Raven Darkhölme",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "MUTANT"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Setup</b>: Put the Shapeshifter upgrade into play. Put all 3 shapeshift form upgrades into play, facedown.\n<i>Fast Heal</i> — <b>Action</b>: Heal 1 damage or remove a status card from Raven Darkhölme. <i>(Limit once per round.)</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my002",
+   "type": "Upgrade",
+   "name": "Shapeshifter",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "Y",
+    "Permanent": "1",
+    "Setup": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SUPERPOWER"
+   ],
+   "set_name": "Mystique",
+   "text": "Permanent.\n<b>Action</b>: Exhaust Shapeshifter → choose a shapeshift form upgrade and flip that card.\n<i>Mystique can take the appearance of anyone.</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my003a",
+   "type": "Upgrade",
+   "name": "Civilian",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "B",
+    "Permanent": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SUPERPOWER"
+   ],
+   "set_name": "Mystique",
+   "text": "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Civilian → remove 1 threat from a scheme.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my003b",
+   "type": "Upgrade",
+   "name": "Civilian",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "B",
+    "Permanent": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SUPERPOWER"
+   ],
+   "set_name": "Mystique",
+   "text": "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Civilian → remove 1 threat from a scheme.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my004a",
+   "type": "Upgrade",
+   "name": "Enemy",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "R",
+    "Permanent": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SUPERPOWER"
+   ],
+   "set_name": "Mystique",
+   "text": "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Enemy → deal 1 damage to an enemy.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my004b",
+   "type": "Upgrade",
+   "name": "Enemy",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "R",
+    "Permanent": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SUPERPOWER"
+   ],
+   "set_name": "Mystique",
+   "text": "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Enemy → deal 1 damage to an enemy.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my005a",
+   "type": "Upgrade",
+   "name": "Friend",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "Y",
+    "Permanent": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SUPERPOWER"
+   ],
+   "set_name": "Mystique",
+   "text": "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Friend → ready a hero other than Mystique or an ally.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my005b",
+   "type": "Upgrade",
+   "name": "Friend",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "Y",
+    "Permanent": "1"
+   },
+   "traits": [
+    "CONDITION",
+    "SUPERPOWER"
+   ],
+   "set_name": "Mystique",
+   "text": "Shapeshift form. Permanent.\n<b>Action</b>: Exhaust Friend → ready a hero other than Mystique or an ally.\n<b>Forced Response</b>: When this card is turned faceup, flip each other shapeshift form upgrade facedown.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my006",
+   "type": "Ally",
+   "name": "* Destiny",
+   "subtitle": "Irene Adler",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "X-MEN"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Interrupt</b>: When a boost card is turned faceup during a scheme activation, discard the top card of the encounter deck. You may count the number of boost icons on that card instead. <i>(Limit once per phase.)</i>\n<i>\"The near future slips away and my mind rushes...\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my007",
+   "type": "PlayerSideScheme",
+   "name": "* Infiltration",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "StartingThreat": "6",
+    "Class": "Hero",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "Mystique",
+   "text": "Victory 0.\nCharacters other than Mystique cannot remove threat from Infiltration.\n<b>When Defeated</b>: Choose to deal 5 damage to an enemy or remove 3 threat from a scheme.\nWhile Infiltration is in the victory display, Mystique ignores the guard and patrol keywords.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my008",
+   "type": "Upgrade",
+   "name": "Shapeshifter Focus",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Hero Resource</b>: Exhaust Shapeshifter Focus → generate a [wild] resource for a [[SHAPESHIFTER]] card.\n<i>\"Maybe you should worry about just being happy with what you have.\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my009",
+   "type": "Event",
+   "name": "Deception",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SHAPESHIFTER",
+    "TACTIC"
+   ],
+   "set_name": "Mystique",
+   "text": "Max 1 per round.\n<b>Action</b>: Flip all shapeshift form upgrades facedown and ready them. Draw 1 card. Choose a shapeshift form upgrade and flip that card faceup.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my010",
+   "type": "Event",
+   "name": "Quick and Dirty",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SHAPESHIFTER"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If the Enemy shapeshift form upgrade is faceup, this attack deals 2 additional damage and gains overkill.\n<i>\"I will get it.\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my011",
+   "type": "Event",
+   "name": "Unconditional Love",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Action</b>: If Destiny/Irene Adler is in play, ready Destiny/Irene Adler and Mystique/Raven Darkhölme. Otherwise, search your deck and discard pile for Destiny and add her to your hand. <i>(Shuffle your deck.)</i>\n<i>\"A rope through Time.\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my012",
+   "type": "Event",
+   "name": "Really?",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SHAPESHIFTER"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent 3 of that damage. If the Friend shapeshift form upgrade is faceup, ready Mystique.\n<i>\"Surprise!\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my013",
+   "type": "Event",
+   "name": "Unnoticed",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SHAPESHIFTER",
+    "THWART"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If the Civilian shapeshift form upgrade is faceup, ignore any crisis icon ([crisis]) for this thwart and remove 1 threat from each scheme.\n<i>\"Hello Raven, please tell me you didn't kill the poor soldier.\" — Destiny</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my014",
+   "type": "Event",
+   "name": "Happy Family",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Mystique",
+   "text": "<b>Action</b>: If you are in hero form, flip to alter-ego form. Heal 4 damage among Raven Darkhölme, Destiny/Irene Adler, and Rogue/Anna Marie.\n<i>\"No small thing, letting me in on the secret.\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my015",
+   "type": "Obligation",
+   "name": "My Love",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Raven Darkhölme"
+   },
+   "traits": [],
+   "set_name": "Mystique",
+   "text": "<b><i>Give to the Raven Darkhölme player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Raven Darkhölme and Destiny → remove My Love from the game. Any player may help pay the cost for this ability.\n• Discard Destiny. If no card was discarded this way, this card gains surge. Discard this obligation.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my016",
+   "type": "Minion",
+   "name": "* Mister Sinister",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "3",
+    "SCH": "3",
+    "Boost": "2",
+    "Incite": "2",
+    "Villainous": "1",
+    "Nemesis": "Mystique"
+   },
+   "traits": [
+    "ELITE",
+    "GENIUS"
+   ],
+   "set_name": "Mystique Nemesis",
+   "text": "Incite 2. Villainous.\nWhile Destiny's Warning side scheme is in play, Mister Sinister does not activate.\n<b>When Revealed</b>: If Mister Sinister is already in play, discard this card then Mister Sinister activates against you even if Destiny's Warning side scheme is in play.\n<i>(Mystique's nemesis minion.)</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my017",
+   "type": "SideScheme",
+   "name": "Destiny's Warning",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "0",
+    "Incite": "2"
+   },
+   "traits": [],
+   "set_name": "Mystique Nemesis",
+   "text": "<i>\"Wha--? You Spoilsport--!\" — Mister Sinister</i>\n<b>When Revealed</b>: Remove 1 [per_hero] threat from the main scheme.\n<hr />[star] <b>Boost</b>: Put Destiny's Warning into play.",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my018",
+   "type": "Treachery",
+   "name": "So, What's the Plan?",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Incite": "1"
+   },
+   "traits": [
+    "TEMPORAL"
+   ],
+   "set_name": "Mystique Nemesis",
+   "text": "Incite 1.\n<b>When Revealed</b>: Remove 1 [per_hero] threat from Destiny's Warning. If you cannot, Mister Sinister activates against you. If you cannot, this card gains surge.\n<i>\"Oh that woman is just the worst. Perhaps, if I can arrange her to be absent, I can...\"</i>",
+   "custom": "Merlin"
+  },
+  {
+   "card_id": "my019",
+   "type": "Event",
+   "name": "Mother and Son!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "RB",
+    "MaxPerDeck": "1",
+    "TeamUp": "Nightcrawler;Mystique",
+    "Class": "Basic"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Mystique",
+   "text": "Team-Up (Nightcrawler and Mystique). Max 1 per deck.\n<b>Hero Action</b>: Stun and confuse an enemy.\n<i>\"Friends or foes?\"</i>",
+   "custom": "Merlin"
   }
  ]
 }

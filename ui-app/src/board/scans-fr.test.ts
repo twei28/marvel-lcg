@@ -126,9 +126,9 @@ describe('scanDejaFrancais', () => {
 })
 
 describe('SCANS_FR_FANMADE', () => {
-  it('les 17 cartes de Destiny (35 avec les 18 de Beast) ont un scan francais, donc pas de voile', async () => {
+  it('les 17 cartes de Destiny (58 avec les 18 de Beast et les 23 de Mystique) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(35)
+    expect(SCANS_FR_FANMADE.size).toBe(58)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
@@ -151,7 +151,7 @@ describe('Beast (Proust) : scan français seul, texte anglais posé dessus', () 
   it('chaque carte à scan français seul a son texte anglais', async () => {
     const { SCANS_FR_SEULS } = await import('./scans-fr')
     const { TEXTES_EN_SCAN_FR, CODES_SANS_TEXTE_EN } = await import('./textes-en-scan-fr')
-    expect(SCANS_FR_SEULS.size).toBe(18)
+    expect(SCANS_FR_SEULS.size).toBe(25)
     expect(CODES_SANS_TEXTE_EN).toEqual([])
     expect(TEXTES_EN_SCAN_FR['bs002']).toMatch(/tucked under this card/)
   })
@@ -159,5 +159,25 @@ describe('Beast (Proust) : scan français seul, texte anglais posé dessus', () 
     const { texteEnParagraphes } = await import('./traduction-posee')
     expect(texteEnParagraphes('Search for a [[TECH]] upgrade, a [[ELITE]] one.', {})).toContain('>ELITE<')
     expect(texteEnParagraphes('un [[ELITE]]')).toContain('>ÉLITE<')
+  })
+})
+
+describe('SCANS_FR_FANMADE (Mystique de Merlin)', () => {
+  it('les 23 faces de Mystique ont un scan francais, donc pas de voile FR', async () => {
+    const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
+    for (const id of ['my001a', 'my001b', 'my002', 'my003a', 'my003b', 'my005b', 'my007', 'my015', 'my018', 'my019']) expect(aScanFr(id)).toBe(true)
+    expect([...SCANS_FR_FANMADE].filter((c) => c.startsWith('my'))).toHaveLength(23)
+    expect(aScanFr('my020')).toBe(false)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('my003b')).toBe('fr_my003b')
+  })
+  it("sept cartes ont un scan FR seul (texte du scan EN périmé par la Release FR) avec leur texte anglais ; les autres gardent le scan EN", async () => {
+    const { SCANS_FR_SEULS } = await import('./scans-fr')
+    const { TEXTES_EN_SCAN_FR, CODES_SANS_TEXTE_EN } = await import('./textes-en-scan-fr')
+    const mystique = [...SCANS_FR_SEULS].filter((c) => c.startsWith('my')).sort()
+    expect(mystique).toEqual(['my005a', 'my005b', 'my007', 'my012', 'my013', 'my018', 'my019'])
+    expect(CODES_SANS_TEXTE_EN).toEqual([])
+    expect(TEXTES_EN_SCAN_FR['my012']).toMatch(/ready Mystique/)
+    expect(SCANS_FR_SEULS.has('my010')).toBe(false)
   })
 })
