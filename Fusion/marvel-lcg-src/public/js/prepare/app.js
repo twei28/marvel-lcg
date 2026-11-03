@@ -378,6 +378,67 @@ function enLigne() {
     return state.salon.multi && state.coopEnLigne !== false;
 }
 
+/**
+ * PLAY (sans compte) : « Coop en ligne » ouvre une table INVITE sur le site principal.
+ *
+ * Le moteur de Play tourne dans le navigateur du joueur : il ne sait pas être en multi
+ * (`get_choix_sieges` rend toujours `multi:false`), donc la tuile n'existait pas. Le shim
+ * de Play (`navigateur/src/shim.js`) pose `window.__playInvite = { origine }` ; ici, la
+ * tuile s'affiche comme sur le site et un clic envoie vers `<origine>/jouer-invite`,
+ * qui prête une vraie table (sans compte, 15 au plus). Partout ailleurs (le site, le jeu
+ * local) `__playInvite` n'existe pas et RIEN ne change.
+ */
+function invitePlay() {
+    return (typeof window !== "undefined" && window.__playInvite) || null;
+}
+
+/** La tuile « Coop en ligne » est proposée : table de compte (salon.multi) OU table invite de Play. */
+function coopEnLigneProposee() {
+    return !!state.salon.multi || !!invitePlay();
+}
+
+let placesInvite = null; // { prises, total, libres } du dernier relevé, null tant qu'inconnu
+
+async function chargerPlacesInvite() {
+    const invite = invitePlay();
+    if (!invite) return;
+    try {
+        const res = await fetch(invite.origine + "/places_invite", { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const lu = await res.json();
+        const change = !placesInvite || placesInvite.prises !== lu.prises || placesInvite.total !== lu.total;
+        placesInvite = lu;
+        if (change) render();
+    } catch (e) {
+        // Le compteur est un confort : sans lui, la tuile reste cliquable (le serveur répond « tables prises »).
+    }
+}
+
+/** Détail de la tuile « Coop en ligne » : le compteur de tables invite quand on est sur Play. */
+function detailCoopEnLigne() {
+    if (invitePlay() && placesInvite) {
+        return placesInvite.libres > 0
+            ? placesInvite.prises + "/" + placesInvite.total + " " + t("tables occupées")
+            : t("Toutes les tables sont prises");
+    }
+    return t("2 à 4 héros, chacun choisit le sien");
+}
+
+/** La pastille « 3/15 » de la tuile (les sous-titres des tuiles à nombres sont masqués par le CSS). */
+function badgeCoopEnLigne() {
+    if (!invitePlay() || !placesInvite) return null;
+    const complet = placesInvite.libres <= 0;
+    return { complet, texte: complet ? t("Complet") : placesInvite.prises + "/" + placesInvite.total };
+}
+
+function ouvrirTableInvite(nombre) {
+    const invite = invitePlay();
+    if (!invite) return;
+    const adresse = invite.origine + "/jouer-invite?joueurs=" + Math.max(2, Math.min(4, nombre || 2));
+    // Navigation de la page ENTIÈRE : les pages du jeu vivent dans un cadre de la coquille de Play.
+    try { window.top.location.assign(adresse); } catch (e) { window.location.assign(adresse); }
+}
+
 function activePlayers() {
     return state.players.slice(0, state.playerCount);
 }
@@ -2470,11 +2531,11 @@ function blocRemerciements() {
 function accueilView() {
     const tuiles = [];
     for (const m of MODES) {
-        if (m.id === "hotseat" && state.salon.multi) {
+        if (m.id === "hotseat" && coopEnLigneProposee()) {
             tuiles.push({ mode: m, distant: false, mark: m.mark, libelle: m.label,
                           detail: m.desc, aide: m.aide, cle: m.id });
             tuiles.push({ mode: m, distant: true, mark: "@", libelle: t("Coop en ligne"),
-                          detail: t("2 à 4 héros, chacun choisit le sien"),
+                          detail: detailCoopEnLigne(), badge: badgeCoopEnLigne(),
                           aide: t("Chacun sur son écran. Tu envoies un lien, ils rejoignent."),
                           cle: m.id + "-en-ligne" });
             continue;
@@ -2496,6 +2557,8 @@ function accueilView() {
         // de nombre y aboutissent, d'où un seul appel au son.
         jouerSon(SON.mode);
         if (tuile.cle === "hasard") { void ouvrirRoue(nombre || 1); return; }
+        // Play : « Coop en ligne » ouvre une table invite sur le site (voir `invitePlay`).
+        if (tuile.distant === true && invitePlay()) { ouvrirTableInvite(nombre); return; }
         // Puzzle : sans nombre de heros, le clic ouvre le panneau (puzzles.js) ; avec un nombre, c'est la creation qui demarre.
         if (m.id === "puzzle") window.creerPuzzle = (n) => partir(tuile, n);
         if (m.id === "puzzle" && !nombre) {
@@ -2559,6 +2622,8 @@ function accueilView() {
                         ? el("b", { class: "mvl" }, tuile.libelle.slice(0, tuile.libelle.indexOf(" ") + 1), el("br"), tuile.libelle.slice(tuile.libelle.indexOf(" ") + 1))
                         : el("b", { class: "mvl" }, tuile.libelle),
                     el("small", {}, tuile.detail),
+                    tuile.badge ? el("span", { class: "acc-places" + (tuile.badge.complet ? " complet" : ""),
+                                               title: tuile.detail }, tuile.badge.texte) : null,
                 ),
                 nombres.length ? el("span", { class: "acc-nombres" },
                     el("small", {}, t("héros")), ...nombres) : null,
@@ -6401,6 +6466,11 @@ installerHistorique(appliquerCleTel);
         console.error("reprise equipe campagne:", e);
     }
     render();
+    // Play : le compteur de tables invite se charge tout de suite, avant les fenetres modales (langue, phase) qui bloquent la suite.
+    if (invitePlay()) {
+        void chargerPlacesInvite();
+        setInterval(() => { if (!document.hidden) void chargerPlacesInvite(); }, 30000);
+    }
     // ⚠ APRES `render()`, ET NON AVANT. La modale se pose sur `document.body` ;
     // posee avant, le premier rendu la balayait. Et on ne la montre pas en
     // creation d'equipe de campagne : on y arrive depuis un autre ecran, la

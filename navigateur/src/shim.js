@@ -5,6 +5,16 @@
   if (window === window.top) return;
   const M = window.top.__moteur;
   if (!M) return;
+
+  // Multi en ligne SANS compte (03/11/2026) : sur Play, la tuile « Coop en ligne » de l'ecran de preparation ouvre
+  // une table INVITE sur le site principal (`<site>/jouer-invite`). Voir `invitePlay` dans public/js/prepare/app.js.
+  // Hors `play.*`, rien n'est pose, sauf pour un essai local : localStorage `playInviteOrigine` = adresse du site.
+  try {
+    let origine = null;
+    if (location.hostname.startsWith("play.")) origine = location.origin.replace("//play.", "//");
+    else { try { origine = localStorage.getItem("playInviteOrigine"); } catch (e) { /* stockage bloque */ } }
+    if (origine) window.__playInvite = { origine };
+  } catch (e) { /* jamais gener une partie solo */ }
   const STATIQUE = /^\/(app|public|css|js|fonts|img|effects|stories|scan|assets|sounds|favicon\.ico|[A-Za-z0-9_.-]+\.html$)/;
   const natif = window.fetch.bind(window);
   const routeMoteur = (url) => url.origin === location.origin && !STATIQUE.test(url.pathname);

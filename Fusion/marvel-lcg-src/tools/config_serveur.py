@@ -30,7 +30,7 @@ PORT_BASE = 2350
 # ⚠ TROIS ENDROITS DOIVENT S'ACCORDER : cette constante, `NB_EMPLACEMENTS`
 # (orchestrateur) et les routes `p1..pN` du Caddyfile. Une place sans route
 # Caddy donne une table qui tourne et que personne ne peut joindre.
-PLACES_MAX = 30
+PLACES_MAX = 45
 
 
 def construire_config(base: dict, place: int) -> dict:

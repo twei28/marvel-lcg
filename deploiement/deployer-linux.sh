@@ -400,6 +400,9 @@ set -e
 tar -czf $ROLLBACK -C $DIST --exclude='site/comptes.json' --exclude='*.db*' --exclude='site/rapports' Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/public Fusion/marvel-lcg-src/data site
 test -s $ROLLBACK
 ls -lh $ROLLBACK
+# On ne garde que les 5 plus recentes (03/11/2026) : 49 archives de 120 Mo s'etaient accumulees dans /root (4,7 Go,
+# disque a 89 %). La nouvelle est la plus recente, donc jamais supprimee ici.
+ls -1t /root/rollback-code-*.tgz | tail -n +6 | xargs -r rm -f --
 REMOTE
   PHASE="extraction"
   distant_script "extraction du code (sans toucher aux comptes, bases, rapports)" <<REMOTE

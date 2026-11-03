@@ -1710,8 +1710,8 @@ verifier("un compte expire ne garde pas sa session",
 # libere sur le papier mais la personne suivante s'entend quand meme repondre
 # « Plus aucun espace de jeu disponible » : les places sont toutes tenues par
 # des comptes qui ne viennent plus.
-_places_avant = o.NB_EMPLACEMENTS
-o.NB_EMPLACEMENTS = len([1 for _x in o.liste_comptes() if _x["emplacement"] is not None])
+_places_avant = o.NB_EMPLACEMENTS_COMPTES
+o.NB_EMPLACEMENTS_COMPTES = len([1 for _x in o.liste_comptes() if _x["emplacement"] is not None])
 try:
     o.inscrire("nouveau", "nouveau@exemple.fr", "motdepasse123")
     _refus = ""
@@ -1734,7 +1734,7 @@ except ValueError as _e:
     _refus = str(_e)
 verifier("sans compte expire a recycler, le site se dit complet",
          "espace de jeu" in _refus, _refus or "aucun refus")
-o.NB_EMPLACEMENTS = _places_avant
+o.NB_EMPLACEMENTS_COMPTES = _places_avant
 
 # --- Le remettre en service --------------------------------------------------
 o.changer_statut("dormeur", "valide")

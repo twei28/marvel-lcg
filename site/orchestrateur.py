@@ -64,7 +64,20 @@ DISCORD_CLIENT_ID = os.environ.get("DISCORD_CLIENT_ID", "")
 
 PORT_SITE = int(os.environ.get("PORT_SITE", "8080"))
 PORT_BASE = 2350                      # emplacement N -> port PORT_BASE + N
-NB_EMPLACEMENTS = int(os.environ.get("NB_EMPLACEMENTS", "30"))
+# Emplacements 1..N : les COMPTES (un emplacement fixe chacun). Emplacements
+# N+1..N+P : les tables INVITE de Play (voir `prendre_place_invite`), prêtées le
+# temps d'une partie, sans compte. ⚠ TROIS ENDROITS DOIVENT S'ACCORDER sur le
+# total : voir `site/test_places.py`.
+NB_EMPLACEMENTS_COMPTES = int(os.environ.get("NB_EMPLACEMENTS_COMPTES", "30"))
+NB_PLACES_INVITE = int(os.environ.get("NB_PLACES_INVITE", "15"))
+NB_EMPLACEMENTS = NB_EMPLACEMENTS_COMPTES + NB_PLACES_INVITE
+# Plafond de moteurs ALLUMES (comptes + invites) : une table coute ~220 Mo pour
+# 3,8 Go de RAM (deploiement/memoire-serveur.sh) ; releve du 03/11/2026 : 542 Mo pris au repos,
+# ~13 tables en RAM, le swap de 4 Go couvre jusqu'a ~18. Les 15 places invite ne
+# doivent jamais pouvoir affamer les comptes : au-dela, on refuse un NOUVEL invite.
+MAX_TABLES_VIVANTES = int(os.environ.get("MAX_TABLES_VIVANTES", "18"))
+# Tables invite creees par une meme adresse, par heure (frein, pas defense).
+INVITES_PAR_HEURE_ET_ADRESSE = int(os.environ.get("INVITES_PAR_HEURE_ET_ADRESSE", "3"))
 
 # Une partie est fauchee quand son moteur est mort, ou passe cette duree.
 # ⚠ CE N'EST PAS UNE MESURE D'INACTIVITE : le moteur n'expose rien qui
@@ -1148,6 +1161,10 @@ def faucheur() -> None:
                 else:
                     cause = "inactivite"
                 eteindre_jeu(code, cause)
+        try:
+            nettoyer_invites_perimes()
+        except Exception as souci:
+            print(f"  ⚠ nettoyage des tables invite en echec : {souci}")
         if time.time() >= prochaine_revue:
             prochaine_revue = time.time() + PERIODE_EXPIRATION_S
             try:
@@ -1500,7 +1517,7 @@ def _prendre_un_emplacement(cx, pour: str = "") -> int:
     """
     pris = {r["emplacement"] for r in cx.execute(
         "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
-    libre = next((n for n in range(1, NB_EMPLACEMENTS + 1) if n not in pris), None)
+    libre = next((n for n in range(1, NB_EMPLACEMENTS_COMPTES + 1) if n not in pris), None)
     if libre is not None:
         return libre
     recyclable = cx.execute(
@@ -1538,7 +1555,7 @@ def _attribuer_emplacements_manquants() -> None:
         # en train de s'ecrire.
         sans_place = [r["pseudo"] for r in cx.execute(
             "SELECT pseudo FROM comptes WHERE emplacement IS NULL"
-            " AND role != 'createur' ORDER BY cree")]
+            " AND role NOT IN ('createur', 'invite_play') ORDER BY cree")]
         for pseudo in sans_place:
             libre = _prendre_un_emplacement(cx, pseudo)
             if libre < 0:
@@ -1585,6 +1602,103 @@ def revoquer_mot_de_passe_jeu(pseudo: str) -> None:
     """
     with _cx() as cx:
         cx.execute("UPDATE comptes SET mdp_jeu=NULL WHERE pseudo=?", (pseudo,))
+
+
+# ===========================================================================
+# TABLES INVITE DE PLAY (03/11/2026)
+#
+# Play (play.<domaine>) n'a pas de compte. Pour y jouer EN LIGNE, l'hote prend
+# une table invite : une vraie ligne `comptes` de role `invite_play`, avec un
+# emplacement du lot reserve (N+1..N+P), pour que TOUT le reste (session, mot de
+# passe du moteur, cles de siege, salon) serve tel quel. La ligne est jetable :
+# `liberer_invite` la supprime avec sa session et nettoie l'emplacement.
+#
+# ⚠ ELLE NE PEUT JAMAIS SE CONNECTER : mot de passe aleatoire que personne ne
+# connait. ⚠ ELLE NE COMPTE NI DANS `MAX_COMPTES` NI DANS LA LISTE DES JOUEURS.
+# ===========================================================================
+ROLE_INVITE = "invite_play"
+_INVITES_RECENTES: dict[str, list[float]] = {}
+_VERROU_INVITES = threading.Lock()
+DELAI_GRACE_INVITE_S = 300     # le moteur d'un invite fraichement cree n'est pas encore dans PARTIES
+
+
+def tables_invite_prises() -> int:
+    with _cx() as cx:
+        return cx.execute("SELECT COUNT(*) FROM comptes WHERE role = ?",
+                          (ROLE_INVITE,)).fetchone()[0]
+
+
+def invite_trop_souvent(adresse: str, maintenant: float | None = None) -> bool:
+    """Vrai si cette adresse a deja pris `INVITES_PAR_HEURE_ET_ADRESSE` tables dans
+    l'heure. Sinon, la note ET rend faux."""
+    maintenant = time.time() if maintenant is None else maintenant
+    with _VERROU_INVITES:
+        recentes = [q for q in _INVITES_RECENTES.get(adresse, []) if maintenant - q < 3600]
+        if len(recentes) >= INVITES_PAR_HEURE_ET_ADRESSE:
+            _INVITES_RECENTES[adresse] = recentes
+            return True
+        recentes.append(maintenant)
+        _INVITES_RECENTES[adresse] = recentes
+        return False
+
+
+def prendre_place_invite() -> "tuple[str | None, str]":
+    """Rend (pseudo, "") ou (None, raison) ; raison = "pleines" ou "memoire".
+
+    Sous `VERROU_COMPTES` : deux visiteurs simultanes ne recoivent jamais le meme
+    emplacement.
+    """
+    nettoyer_invites_perimes()
+    if sum(1 for p in list(PARTIES.values()) if p.vivant()) >= MAX_TABLES_VIVANTES:
+        return None, "memoire"
+    with VERROU_COMPTES, _cx() as cx:
+        pris = {r["emplacement"] for r in cx.execute(
+            "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
+        libre = next((n for n in range(NB_EMPLACEMENTS_COMPTES + 1, NB_EMPLACEMENTS + 1)
+                      if n not in pris), None)
+        if libre is None:
+            return None, "pleines"
+        pseudo = "invite-" + secrets.token_hex(4)
+        cx.execute(
+            "INSERT INTO comptes (pseudo, email, sel, empreinte, statut, cree, emplacement, role)"
+            " VALUES (?, NULL, ?, ?, 'valide', ?, ?, ?)",
+            (pseudo, secrets.token_bytes(16).hex(), secrets.token_hex(32),
+             _maintenant(), libre, ROLE_INVITE))
+    # Un emplacement rendu est deja propre ; on le refait par prudence (reste d'un plantage).
+    _nettoyer_emplacement(libre)
+    return pseudo, ""
+
+
+def liberer_invite(pseudo: str) -> None:
+    """Rend la table invite : moteur eteint, session et ligne supprimees, dossiers nettoyes."""
+    ligne = compte(pseudo)
+    if ligne is None or ligne["role"] != ROLE_INVITE:
+        return
+    eteindre_jeu(pseudo, "invite termine")
+    with VERROU_COMPTES, _cx() as cx:
+        cx.execute("DELETE FROM sessions WHERE pseudo = ?", (pseudo,))
+        cx.execute("DELETE FROM comptes WHERE pseudo = ? AND role = ?", (pseudo, ROLE_INVITE))
+    if ligne["emplacement"]:
+        _nettoyer_emplacement(ligne["emplacement"])
+
+
+def nettoyer_invites_perimes(delai_grace_s: float = DELAI_GRACE_INVITE_S) -> int:
+    """Libere les tables invite dont le moteur n'existe plus (partie finie, faucheuse,
+    redemarrage du service). Rend le nombre libere."""
+    with _cx() as cx:
+        lignes = cx.execute("SELECT pseudo, cree FROM comptes WHERE role = ?",
+                            (ROLE_INVITE,)).fetchall()
+    n = 0
+    for l in lignes:
+        partie = PARTIES.get(l["pseudo"])
+        if partie is not None and partie.vivant():
+            continue
+        age = _secondes_depuis(l["cree"])
+        if age is not None and age < delai_grace_s:
+            continue
+        liberer_invite(l["pseudo"])
+        n += 1
+    return n
 
 
 def emplacement_de(pseudo: str):
@@ -1789,7 +1903,7 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
         # d'inscriptions en attente suffirait a bloquer les vraies demandes.
         valides = cx.execute(
             "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'"
-            " AND role != 'createur'").fetchone()[0]
+            " AND role NOT IN ('createur', 'invite_play')").fetchone()[0]
         role_invitation = "joueur"
         if jeton:
             ligne_role = cx.execute(
@@ -2031,7 +2145,7 @@ def liste_comptes():
     (`liste_createurs`) : ils n'ont ni table, ni deck, ni presence."""
     with _cx() as cx:
         return cx.execute(
-            "SELECT * FROM comptes WHERE role != 'createur' ORDER BY"
+            "SELECT * FROM comptes WHERE role NOT IN ('createur', 'invite_play') ORDER BY"
             " CASE statut WHEN 'attente' THEN 0 WHEN 'valide' THEN 1 ELSE 2 END,"
             " pseudo").fetchall()
 
@@ -2041,7 +2155,7 @@ def nb_valides() -> int:
     with _cx() as cx:
         return cx.execute(
             "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'"
-            " AND role != 'createur'").fetchone()[0]
+            " AND role NOT IN ('createur', 'invite_play')").fetchone()[0]
 
 
 def liste_createurs():
@@ -5907,6 +6021,61 @@ class Handler(BaseHTTPRequestHandler):
         demarrer_en_fond(pseudo, joueurs)
         self._repondre(200, page_attente(pseudo), entetes=entetes_supplementaires)
 
+    def _origine_play(self) -> str:
+        """L'origine de Play si c'est elle qui appelle (pour le CORS), sinon ""."""
+        origine = (self.headers.get("Origin") or "").strip()
+        if DOMAINE:
+            return origine if origine == "https://play." + DOMAINE else ""
+        return origine if re.match(r"^http://(localhost|127\.0\.0\.1)(:\d+)?$", origine) else ""
+
+    def _places_invite(self) -> None:
+        """`/places_invite` : combien de tables invite sont prises. Lu par la tuile
+        « Online co-op » de Play (autre origine : d'ou le CORS)."""
+        prises = tables_invite_prises()
+        corps = json.dumps({"prises": prises, "total": NB_PLACES_INVITE,
+                            "libres": max(0, NB_PLACES_INVITE - prises)}).encode("utf-8")
+        entetes = [("Cache-Control", "no-store")]
+        origine = self._origine_play()
+        if origine:
+            entetes += [("Access-Control-Allow-Origin", origine), ("Vary", "Origin")]
+        self._repondre(200, corps, "application/json; charset=utf-8", entetes=entetes)
+
+    def _jouer_invite(self) -> None:
+        """`/jouer-invite?joueurs=N` : l'hote d'une partie en ligne depuis Play, SANS compte.
+
+        Il prend une table invite, recoit une session jetable, et suit ensuite
+        EXACTEMENT le chemin d'un joueur qui clique sur « Entrer » (attente du
+        moteur, puis table `p<N>` et salon).
+        """
+        try:
+            joueurs = int((self.parametres.get("joueurs") or ["2"])[0])
+        except ValueError:
+            joueurs = 2
+        joueurs = max(2, min(4, joueurs))
+
+        def refus(code: int, titre: str, texte: str) -> None:
+            page = ('<!DOCTYPE html><html><head><meta charset="utf-8"><title>%s</title>'
+                    '<meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+                    '<body style="font-family:system-ui;background:#111;color:#eee;'
+                    'max-width:32rem;margin:4rem auto;padding:0 1rem"><h1>%s</h1><p>%s</p></body></html>'
+                    % (html.escape(titre), html.escape(titre), html.escape(texte)))
+            self._repondre(code, page.encode("utf-8"))
+
+        if invite_trop_souvent(self._adresse_client()):
+            refus(429, lang.t("Trop de tables créées"),
+                  lang.t("Tu as déjà ouvert plusieurs parties en ligne cette heure-ci. Réessaie plus tard."))
+            return
+        pseudo, raison = prendre_place_invite()
+        if pseudo is None:
+            refus(503, lang.t("Toutes les tables en ligne sont prises"),
+                  lang.t("Réessaie dans quelques minutes : une table se libère dès qu'une partie se termine."))
+            return
+        jeton = ouvrir_session(pseudo)
+        cookie = (f"nc_session={jeton}; HttpOnly; Path=/; Max-Age=86400"
+                  + self._attributs_cookie())
+        self._entrer_dans_partie(pseudo, proposer_reprise=False, joueurs=joueurs,
+                                 entetes_supplementaires=[("Set-Cookie", cookie)])
+
     def _activite_discord(self, pseudo: str | None) -> None:
         """`/activite_discord?instance_id=...` : point d'entree du salon vocal.
 
@@ -6885,6 +7054,10 @@ class Handler(BaseHTTPRequestHandler):
                                "text/plain; charset=utf-8")
                 return
             self._repondre(200, page_activite_discord_amorce())
+        elif self.chemin == "/places_invite":
+            self._places_invite()
+        elif self.chemin == "/jouer-invite":
+            self._jouer_invite()
         elif self.chemin == "/pret":
             # ⚠ CETTE ROUTE NE DEMARRE RIEN, et c'est tout son interet. La page
             # d'attente l'interroge toutes les 1,5 s : si elle appelait
@@ -8055,6 +8228,11 @@ def main() -> int:
     if compte(ADMIN) is None:
         print(f"  ⚠ Aucun compte administrateur « {ADMIN} » : cree-le sur /inscription,")
         print("    il sera valide d'office.")
+    # Au demarrage aucun moteur ne tourne : toute table invite en base est un reste.
+    try:
+        nettoyer_invites_perimes(0)
+    except Exception as souci:
+        print(f"  ⚠ nettoyage initial des tables invite en echec : {souci}")
     threading.Thread(target=faucheur, daemon=True).start()
     serveur = ThreadingHTTPServer(("127.0.0.1", PORT_SITE), Handler)
 
