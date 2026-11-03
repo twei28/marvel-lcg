@@ -18,6 +18,7 @@
     "mains-privees": "playwright test tests/mains-privees.spec.ts --project=pc",
     "annonce-attend-le-clic": "playwright test tests/annonce-attend-le-clic.spec.ts --project=pc",
     "lancement": "playwright test tests/lancement-partie.spec.ts --project=pc",
+    "inversion-piles": "playwright test tests/inversion-piles.spec.ts --project=pc",
     "campagne-decks": "playwright test tests/campagne-decks.spec.ts --project=pc",
     "campagne-defaite": "playwright test tests/campagne-defaite.spec.ts --project=pc",
     "campagne-hauts-faits": "playwright test tests/campagne-hauts-faits.spec.ts --project=pc",
