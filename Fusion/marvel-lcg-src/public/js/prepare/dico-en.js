@@ -1008,6 +1008,7 @@ export const DICO_EN_BASE = {
       "No campaign under way. A campaign plays the scenarios of a box in order: what you earn follows you from one scenario to the next.",
     "Impossible de charger les campagnes :": "Could not load the campaigns:",
     "La campagne n'a pas pu être créée :": "The campaign could not be created:",
+    "La campagne n'a pas pu être ouverte :": "The campaign could not be opened:",
     "Scénario introuvable dans le catalogue :": "Scenario not found in the catalog:",
 
     "Choisir ce héros": "Choose this hero",

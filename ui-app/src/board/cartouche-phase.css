@@ -1346,17 +1346,17 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-chaine-annulee {
 
 .deroule-phase.est-scene .deroule-resultat-texte,
 .deroule-phase.est-scene .deroule-resultat-note,
-.deroule-phase.est-essai .essai-boite .deroule-resultat-texte,
-.deroule-phase.est-essai .essai-resultat-ligne,
-.deroule-phase.est-essai .essai-raison {
+.deroule-phase.est-scene.est-essai .essai-boite .deroule-resultat-texte,
+.deroule-phase.est-scene.est-essai .essai-resultat-ligne,
+.deroule-phase.est-scene.est-essai .essai-raison {
   max-width: 100%;
   min-width: 0;
   white-space: normal;
   overflow-wrap: anywhere;
 }
 
-.deroule-phase.est-essai .essai-boite,
-.deroule-phase.est-essai .essai-resultat {
+.deroule-phase.est-scene.est-essai .essai-boite,
+.deroule-phase.est-scene.est-essai .essai-resultat {
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;

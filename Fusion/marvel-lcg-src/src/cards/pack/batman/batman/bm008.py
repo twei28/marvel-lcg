@@ -28,5 +28,5 @@ def GetAbilities() -> Sequence['Ability']:
         )
     return [
         AbilityFactory.WhenInYourPlayTurn(AbilityType.HeroAction, plan).SetLabel('thwart')
-        .SetCostFunc(CostFunc.Discard("This")).SetTarget(Scheme2),
+        .SetIgnoreKeyword('Crisis').SetCostFunc(CostFunc.Discard("This")).SetTarget(Scheme2),
     ]

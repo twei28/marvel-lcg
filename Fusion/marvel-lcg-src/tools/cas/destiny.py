@@ -238,6 +238,10 @@ CAS = [
        "meme position sans la manigance annexe",
        [HEROS, "Puzzle.PutIntoPlay('dy014')"] + SANS_BOOST, ["Puzzle.Activate('dy014')"],
        {'degats_identite': 3}, accepter_choix=True, main_exclusive=['01090']),
+    _c("dy014 Mister Sinister — Une fois revele, DEJA en jeu : la 2e copie est defaussee et le sbire en jeu s'active MEME avec Destiny's Warning (3 degats)",
+       "branche decouverte au pack Mystique : le moteur defaussait la 2e copie (UNIQUE) avant son When Revealed ; `UniqueRuleNotApplyTo(name=..)` ; la 2e copie est creee SUR le deck (`FindOrCreateFace` cherche le deck avant le jeu)",
+       [HEROS, "Puzzle.Exhaust('dy001a')", "Puzzle.PutIntoPlay('dy015')", "Puzzle.PutIntoPlay('dy014')"] + SANS_BOOST, ["Puzzle.CreateEncounterDeck('dy014')", "Puzzle.Reveal('dy014')"],
+       {'degats_identite': 3}, accepter_choix=True, main_exclusive=['01090']),
     # ============================================================ dy015 Destiny's Warning
     _c("dy015 Destiny's Warning — a la revelation : Incite 2 pose 2 menaces PUIS Une fois revelee en retire 1 par joueur (1 + 2 - 1 = 2)",
        "`desc.Incite = 2` natif + `RemoveThreatFromSchemes(\"MainScheme\", \"1*\", effect)` (menace de depart basse : au-dela de 7 le complot serait accompli)",

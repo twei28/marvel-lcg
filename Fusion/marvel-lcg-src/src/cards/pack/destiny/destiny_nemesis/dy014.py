@@ -32,6 +32,10 @@ def GetAbilities() -> Sequence['Ability']:
         ActiverSinister(effect, autres[0], joueur)
 
     return [
+        # ⚠ Sinister est UNIQUE : sans cette ligne le moteur defausse en silence la 2e copie AVANT son « When Revealed », et « Mister Sinister activates against you even if
+        # Destiny's Warning is in play » ne partait jamais (branche decouverte au pack Mystique, 02/11/2026, cas `dy014 ... DEJA en jeu`). Par NOM : la copie qu'on revele n'est pas
+        # encore en jeu, seule la copie DEJA en jeu entend la question.
+        AbilityFactory.UniqueRuleNotApplyTo(name=NOM_SINISTER),
         AbilityFactory.EnemyCannotActivate(
             AbilityType.NonKeyword,
             "This",
