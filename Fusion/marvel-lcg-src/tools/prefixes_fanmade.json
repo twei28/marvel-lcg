@@ -935,6 +935,13 @@
    "cartes": 23,
    "depuis": "2026-11-02",
    "note": "Cree le 02/11/2026 depuis le zip de Merlin (Mystique/Raven Darkhölme, bêta EN 4.2 + Release FR 1.1.1 ; le FR prime quand ils different). my001a/b identite ; my002 Shapeshifter (Permanent+Setup) ; my003-my005 formes Civilian/Enemy/Friend (a = face visible, b = face cachee, mises de cote puis posees face cachee au Setup) ; my006 Destiny allie, my007 Infiltration (manigance annexe de joueur), my008 Shapeshifter Focus, my009 Deception x3, my010 Quick and Dirty x3, my011 Unconditional Love, my012 Really? x2, my013 Unnoticed x2, my014 Happy Family ; my015 obligation My Love ; my016-my018 set nemesis (Mister Sinister, Destiny's Warning, So, What's the Plan? x3) ; my019 Mother and Son! (Basic, Team-Up Nightcrawler/Mystique, FR seul, hors deck). Aucun Extras : player_deck vide."
+  },
+  "ca": {
+   "pack": "carnage_eddie_brock",
+   "libelle": "249. Custom (Carnage)",
+   "cartes": 35,
+   "depuis": "2026-11-03",
+   "note": "Cree le 03/11/2026 depuis carnage.zip (Neptune ; scans EN seuls, PNG > PDF d'impression plus ancien). ca001a/b identite (Carnage / Eddie Brock), ca002 Spider-Man, ca003 Symbiote Hive-Mind, ca004 Lethal Restraint, ca005 Probing Minds, ca006 Frenzied Violence, ca007 Hunting Hosts, ca008 Amorphous Arsenal, ca009 Klyntar Bond, ca010 Sinister Flight x2, ca011 Vicious Lashing x2, ca012 Chomp, ca013 Rend x2, ca014 obligation Essential Bloodlust ; ca015-ca018 set nemesis (Torment, Meticulous Targeting, Death Spiral, Closing the Loops x2) ; ca019-ca023 modulaire Twisted Killers (Muse, Bushwacker, Recognizing Evil, Murderous Nature x2, Hunting Victims x3) ; ca024-ca034 onze Basics (reskins d'officielles, decision Hellcat : doublons). Deux decklists d'auteur (Aggression = deck de base, Protection = variante) ; la ligne « Pacifying Presence » (sans scan) est laissee vide sur decision de l'utilisateur."
   }
  }
 }

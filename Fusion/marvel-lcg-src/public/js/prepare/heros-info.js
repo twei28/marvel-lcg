@@ -2069,4 +2069,13 @@ export const HEROS_INFO = {
         ennemis: "Mister Sinister",
         apparition: "Ms. Marvel #16 (1978)",
     },
+    "ca001a": {
+        bio: "Eddie Brock, ancien journaliste et premier hôte de Venom, se retrouve lié au symbiote Carnage, la plus sauvage de toutes les engeances. Le symbiote ne connaît ni retenue ni remords : il pousse son hôte à tuer, encore et toujours, et le punit quand il ne le fait pas. Eddie lutte pour garder le contrôle, et pour ne pas laisser le monstre le dévorer de l'intérieur.",
+        bioEn: "Eddie Brock, a former journalist and Venom's first host, finds himself bonded to the Carnage symbiote, the wildest of all the spawn. The symbiote knows neither restraint nor remorse: it drives its host to kill, over and over, and punishes him when he does not. Eddie struggles to stay in control, and to keep the monster from devouring him from the inside.",
+        civil: "Eddie Brock",
+        base: "New York",
+        baseEn: "New York",
+        ennemis: "Torment",
+        apparition: "The Amazing Spider-Man #344 (1991)",
+    },
 };

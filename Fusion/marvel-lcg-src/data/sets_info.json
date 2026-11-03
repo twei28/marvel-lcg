@@ -2403,5 +2403,17 @@
   "encounters": [],
   "max_id": "my019"
  },
- "checksum": "35420699ed734d9273938432633107ff314749a85059c0bc522b1d6f90944382"
+ "249. Custom (Carnage)": {
+  "name": "carnage_eddie_brock",
+  "scenarios": [],
+  "heroes": [
+   "carnage_eddie_brock",
+   "carnage_eddie_brock_protection"
+  ],
+  "encounters": [
+   "twisted_killers"
+  ],
+  "max_id": "ca034"
+ },
+ "checksum": "896bfe91dd0948b7f9228dff5c20d1d14df439fbbec32f026b673bd9e4a714ac"
 }

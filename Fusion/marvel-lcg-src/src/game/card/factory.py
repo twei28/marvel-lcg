@@ -230,7 +230,11 @@ class CardFactory:
                                                     "bm005",   # Intimidate (batman)
                                                     # CORRECTIF (26/10/2026) : pack custom sunspot_hellfire (Dipsome).
                                                     #  so006 Soak Up the Sun : une Alter-Ego Action ET une Hero Action, toutes deux `.SetPlay()`.
-                                                    "so006"]:  # Soak Up the Sun (sunspot_hellfire)
+                                                    "so006",   # Soak Up the Sun (sunspot_hellfire)
+                                                    # CORRECTIF (03/11/2026) : pack custom carnage_eddie_brock (Neptune).
+                                                    #  ca011 Vicious Lashing : une Hero Interrupt (attack/defense) ET une Hero Action (attack), toutes deux `.SetPlay()`.
+                                                    # ⚠ Invisible pour `test_capacites` et `substituer_pack` (92 cas verts) : seul `verifier_tous_les_decks` le voit.
+                                                    "ca011"]:  # Vicious Lashing (carnage_eddie_brock)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

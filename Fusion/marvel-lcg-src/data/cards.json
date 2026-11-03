@@ -136906,7 +136906,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "28d416ed47af2f247e0278e38d0b87440b496b24aa495d91f31bdb068b14c515",
+ "checksum": "48cc90970e914a19b18573e2e5aceb5ea524ba0245aac54c689a68a3c49b5387",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -141798,6 +141798,621 @@
    "set_name": "Mystique",
    "text": "Team-Up (Nightcrawler and Mystique). Max 1 per deck.\n<b>Hero Action</b>: Stun and confuse an enemy.\n<i>\"Friends or foes?\"</i>",
    "custom": "Merlin"
+  }
+ ],
+ "carnage_eddie_brock": [
+  {
+   "card_id": "ca001a",
+   "type": "Hero",
+   "name": "* Carnage",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER",
+    "SYMBIOTE"
+   ],
+   "set_name": "Carnage",
+   "text": "<i>Death-Dealer</i> — <b>Response</b>: After you attack and defeat an enemy, heal 1 damage from Carnage for each point of excess damage dealt by that attack.\n<i>Need to Kill</i> — <b>Forced Response</b>: At the end of the round, if you did not defeat an enemy this round, take damage equal to your ATK.\n<i>\"I told you, if you don't kill, I kill you.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca001b",
+   "type": "AlterEgo",
+   "name": "* Eddie Brock",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "Carnage",
+   "text": "You may include up to 5 [[ATTACK]] events in your deck from aspects other than your chosen aspect.\n<i>Dark Urges</i> — <b>Action</b>: Discard cards from the encounter deck until you discard a minion. Put that minion into play engaged with you. <i>(Limit once per round.)</i>\n<i>\"I kill someone every so often, and it leaves me alone.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca002",
+   "type": "Ally",
+   "name": "* Spider-Man",
+   "subtitle": "Peter Parker",
+   "desc": {
+    "Cost": "4",
+    "HP": "4",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEB-WARRIOR"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Interrupt</b>: When you would take any amount of damage from resolving Carnage's \"<i>Need to Kill</i>\" ability, exhaust Spider-Man and deal 1 damage to him → prevent all of that damage.\n<i>\"One way or another...Eddie needs our help.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca003",
+   "type": "Support",
+   "name": "* Symbiote Hive-Mind",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "SYMBIOTE"
+   ],
+   "set_name": "Carnage",
+   "text": "Eddie Brock gets +1 REC.\n<b>Alter-Ego Action</b>: Exhaust this card → shuffle 1 Carnage card from your discard pile into your deck.\n<i>\"The King in Black is the center of the whole symbiote web. Every symbiote everywhere is connected to the king.\" —Eddie Brock</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca004",
+   "type": "Upgrade",
+   "name": "Lethal Restraint",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Carnage",
+   "text": "Carnage gains retaliate 1.\n<b>Hero Action</b>: Return this card to your hand <i>(from play)</i> → reduce the cost of the next Carnage event you play this phase by 1.\n<i>\"I've got a voice in my head. It tells me to do things. Bad things.\" —Eddie Brock</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca005",
+   "type": "Upgrade",
+   "name": "Probing Minds",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER",
+    "SYMBIOTE"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Hero Interrupt</b>: When you reveal a non-[[ELITE]] minion, exhaust this card → if that minion has boost icons ([boost]) equal to:\n• 0, heal 1 damage.\n• 1, confuse that minion.\n• 2, stun that minion.\n• 3+, remove 1 threat from a scheme.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca006",
+   "type": "Upgrade",
+   "name": "Frenzied Violence",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Carnage",
+   "text": "Carnage gets +1 ATK and his basic attacks gain overkill.\n<b>Hero Response</b>: After you attack and defeat an enemy, exhaust this card → ready Carnage.\n<i>\"Beautiful. Just beautiful work.\" —Carnage</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca007",
+   "type": "Upgrade",
+   "name": "Hunting Hosts",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Response</b>: After you attack and defeat an [[ELITE]] minion → ready this card.\n<b>Action</b>: Exhaust this card → search the encounter deck and discard pile for a minion and put it into play engaged with you. <i>(Shuffle.)</i>\n<i>\"I want someone with juice. Otherwise, well, its' not a fair fight, is it?\" —Carnage</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca008",
+   "type": "Upgrade",
+   "name": "* Amorphous Arsenal",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER",
+    "SYMBIOTE"
+   ],
+   "set_name": "Carnage",
+   "text": "When you make an attack that has a keyword <i>(overkill, piercing, or ranged)</i>, that attack deals 1 additional damage for each keyword it has.\n<b>Hero Interrupt</b>: When you attack, exhaust this card and choose a keyword <i>(overkill, piercing, or ranged)</i> → that attack gains the chosen keyword.\n<i>\"It's why I don't use guns. I prefer blades.\" —Carnage</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca009",
+   "type": "Upgrade",
+   "name": "* Klyntar Bond",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "SYMBIOTE"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Hero Interrupt</b>: When Carnage uses a basic power, you may give him a boost card.\n<b>Resource</b>: Exhaust this card → generate a [wild] resource for a Carnage event.\n<i>\"And being with a symbiote...to call it a rush doesn't do it justice.\" —Eddie Brock</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca010",
+   "type": "Event",
+   "name": "Sinister Flight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "THWART"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme, ignoring the patrol keyword. Carnage gains the [[AERIAL]] trait until the end of the phase.\n<i>\"You can't use my powers like this!\" —Carnage</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca011",
+   "type": "Event",
+   "name": "Vicious Lashing",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When an enemy attacks you, deal 4 damage to that enemy. This attack gains ranged.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Deal 2 damage to an enemy. This attack gains ranged.\n<i>\"I told you flaying is cool.\" —Carnage</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca012",
+   "type": "Event",
+   "name": "Chomp",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy. This attack gains piercing. If this attack defeats that enemy, ready Carnage.\n<i>\"Tasty!\" —Eddie Brock</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca013",
+   "type": "Event",
+   "name": "Rend",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Carnage",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. This attack gains overkill. Deal 2 additional damage for each [physical] you overpaid for this card (to a maximum of [physical][physical][physical]).\n<i>\"This feels...it feels so...good.\" —Carnage</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca014",
+   "type": "Obligation",
+   "name": "Essential Bloodlust",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Eddie Brock"
+   },
+   "traits": [],
+   "set_name": "Carnage",
+   "text": "<b><i>Give to the Eddie Brock player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Eddie Brock → remove Essential Bloodlust from the game.\n• Take indirect damage equal to your ATK. Discard this obligation.\n<i>\"If I didn't give Carnage death, it would kill me instead.\" —Eddie Brock</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca015",
+   "type": "Minion",
+   "name": "* Torment",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "1*",
+    "SCH": "2",
+    "Boost": "3",
+    "Quickstrike": "1",
+    "Villainous": "1",
+    "Nemesis": "Carnage"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE",
+    "KILLER"
+   ],
+   "set_name": "Carnage Nemesis",
+   "text": "Quickstrike. Villainous.\n<b>When Revealed</b>: Search the encounter deck, discard pile, and set-aside area for Death Spiral and reveal it.\n[star] <b>Forced Interrupt</b>: When Torment attacks a friendly character, if there is an ally or [[PERSONA]] support with the same classification as that character under your control or in your hand <i>(identity-specific, aspect, or basic)</i>, cancel this attack and discard that card instead.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca016",
+   "type": "SideScheme",
+   "name": "Meticulous Targeting",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2",
+    "Amplify": "1"
+   },
+   "traits": [],
+   "set_name": "Carnage Nemesis",
+   "text": "<i>Torment picks a victim, then kills his way to them by starting with their distant relatives.</i>\n<b>When Revealed</b>: Find Torment and reveal him. <i>(If he is already in play, he engages you.)</i> Torment activates against you. If no enemy activated this way, this card gains surge.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca017",
+   "type": "Attachment",
+   "name": "* Death Spiral",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Carnage Nemesis",
+   "text": "Attach to Torment. Otherwise, this card gains surge.\n[star] <b>Forced Interrupt</b>: When Torment attacks a friendly character, if there is an ally or [[PERSONA]] support with the same classification as that character under your control or in your hand <i>(identity-specific, aspect, or basic)</i>, cancel this attack and discard that card instead.\n<b>Hero Action</b>: Spend [mental] [physical] resources → discard this card.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca018",
+   "type": "Treachery",
+   "name": "Closing the Loops",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Carnage Nemesis",
+   "text": "<b>When Revealed</b>: Torment attacks you <i>(even in alter-ego form)</i>. If no attack was made this way, this card gains surge.\n<hr />[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if you have more than 2 classifications in play <i>(identity-specific, aspect, or basic)</i>.\n<i>\"I could finish you off now, but the spirals aren't tight enough.\" —Torment</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca019",
+   "type": "Minion",
+   "name": "* Muse",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "1*",
+    "SCH": "2",
+    "Boost": "3",
+    "Steady": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE",
+    "KILLER"
+   ],
+   "set_name": "Twisted Killers",
+   "text": "Steady. Villainous.\n[star] <b>Forced Interrupt</b>: When Muse attacks, he attacks the character with the fewest remaining hit points. This attack gains piercing. If this attack defeats a character, heal 1 damage from Muse for each point of excess damage dealt to that character by that attack.\n<i>\"When you create things, pure things, you must accept that not everyone will understand them.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca020",
+   "type": "Minion",
+   "name": "* Bushwacker",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "ATK": "2*",
+    "SCH": "1",
+    "Boost": "2",
+    "Toughness": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "KILLER"
+   ],
+   "set_name": "Twisted Killers",
+   "text": "Toughness. Villainous.\n[star] Bushwacker's attacks gain piercing and overkill.\n<hr />[star] <b>Boost</b>: If Murderous Nature is attached to this enemy, give this enemy another boost card.\n<i>\"Gonna kill you and eat you! Put you on the grill!\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca021",
+   "type": "SideScheme",
+   "name": "Recognizing Evil",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Twisted Killers",
+   "text": "<i>There are killers and monsters in this world. Rarely do those titles not overlap.</i>\nExcess damage dealt by [[KILLER]] minions is placed as threat here.\n<b>When Revealed</b>: Find a copy of Murderous Nature and reveal it.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca022",
+   "type": "Attachment",
+   "name": "Murderous Nature",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Twisted Killers",
+   "text": "Attach to a non-[[ELITE]] minion without a copy of Murderous Nature attached. Otherwise, this card gains surge.\nAttached enemy gains the [[KILLER]] trait and villainous keyword.\n[star] <b>Forced Interrupt</b>: When attached enemy attacks, it attacks the friendly character or other enemy with the fewest remaining hit points. That attack gains overkill.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca023",
+   "type": "Treachery",
+   "name": "Hunting Victims",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Twisted Killers",
+   "text": "<b>When Revealed</b>: Each [[KILLER]] minion engaged with a player activates against that player. If no minion activates this way, this card gains surge.\n<hr />[star] <b>Boost</b>: If this activation is an attack that defeats a character, excess damage dealt by this attack is placed as threat on the main scheme.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca024",
+   "type": "Event",
+   "name": "Face the Past",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.\n<b>Hero Action</b>: Search the encounter deck, discard pile, and set-aside area for your nemesis minion and reveal it → ready your hero and draw 3 cards. You cannot attack the villain this phase. Remove this card from the game.",
+   "custom": "Neptune",
+   "ability_link": "49022"
+  },
+  {
+   "card_id": "ca025",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca026",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca027",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ca028",
+   "type": "Upgrade",
+   "name": "Down Time",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYour alter-ego gets +2 REC.",
+   "custom": "Neptune",
+   "ability_link": "05033"
+  },
+  {
+   "card_id": "ca029",
+   "type": "Upgrade",
+   "name": "Endurance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points.",
+   "custom": "Neptune",
+   "ability_link": "05023"
+  },
+  {
+   "card_id": "ca030",
+   "type": "Upgrade",
+   "name": "Enhanced Awareness",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Uses": "3,mental",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Uses (3 mental counters).\n<b>Hero Resource</b>: Exhaust Enhanced Awareness and remove 1 mental counter from it → generate a [mental] resource.",
+   "custom": "Neptune",
+   "ability_link": "03034"
+  },
+  {
+   "card_id": "ca031",
+   "type": "Upgrade",
+   "name": "Enhanced Physique",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Uses": "3,physical",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Uses (3 physical counters).\n<b>Hero Resource</b>: Exhaust Enhanced Physique and remove 1 physical counter from it → generate a [physical] resource.",
+   "custom": "Neptune",
+   "ability_link": "06034"
+  },
+  {
+   "card_id": "ca032",
+   "type": "Upgrade",
+   "name": "Enhanced Reflexes",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Uses": "3,energy",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Uses (3 energy counters). <b>Hero Resource:</b> Exhaust Enhanced Reflexes and remove 1 energy counter from it → generate a [energy] resource.",
+   "custom": "Neptune",
+   "ability_link": "05024"
+  },
+  {
+   "card_id": "ca033",
+   "type": "Upgrade",
+   "name": "Ready to Rumble",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\r\n<b>Hero Response</b>: After you change form, discard this card &#8594; ready your hero.",
+   "custom": "Neptune",
+   "ability_link": "21022"
+  },
+  {
+   "card_id": "ca034",
+   "type": "Upgrade",
+   "name": "Symbiote Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "MaxPerDeck": "1",
+    "RES": "G",
+    "Hazard": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "set_name": "",
+   "text": "Max 1 per deck.\r\nYour identity gets +1 to each of its basic powers, +1 hand size, and +10 hit points.",
+   "custom": "Neptune",
+   "ability_link": "27191"
   }
  ]
 }
