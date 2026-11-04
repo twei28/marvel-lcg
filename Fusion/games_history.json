@@ -6468,5 +6468,43 @@
   "won": false,
   "reason": "The Final Stage of the Main Scheme was Completed",
   "rounds": 1
+ },
+ {
+  "time": 1793811200,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Delroy Garrett Jr.",
+    "card_id": "dm001b",
+    "deck": "3-D Man",
+    "aspects": [
+     "Protection",
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "There were no cards in either the encounter deck or the encounter discard pile",
+  "rounds": 1
+ },
+ {
+  "time": 1793811204,
+  "scenario": "Rhino",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Delroy Garrett Jr.",
+    "card_id": "dm001b",
+    "deck": "3-D Man",
+    "aspects": [
+     "Protection",
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "There were no cards in either the encounter deck or the encounter discard pile",
+  "rounds": 1
  }
 ]
