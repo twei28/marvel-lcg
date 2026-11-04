@@ -471,9 +471,16 @@ export const catalog = {
     /** Decks jouables pour un héros donné : base (s'il en a un) + sauvegardés + paquets d'aspect. */
     async decksForHero(hero) {
         await cards.load();
-        const out = aDeckDeBase(hero)
-            ? [{ id: hero.baseDeckId, name: hero.deck.name || hero.name, source: "base", deck: hero.deck, aspects: hero.aspects }]
-            : [];
+        // TOUS les decks de depart fournis par l'auteur sont listes (Aggression, Protection, Justice, Leadership...),
+        // pas seulement le premier (04/11/2026). `hero.versions` les porte quand un heros a plusieurs decks ; sinon
+        // on retombe sur l'unique deck de base. Un « deck » de 15 cartes sans aspect (player_deck vide) n'est pas un
+        // deck de depart jouable et n'est pas liste ici. Voir la memoire versions-decks-selection.
+        const versionsDeBase = (hero && hero.versions && hero.versions.length)
+            ? hero.versions
+            : (hero && hero.deck ? [{ id: hero.baseDeckId, deck: hero.deck }] : []);
+        const out = versionsDeBase
+            .filter((v) => v.deck && (v.deck.player_deck || []).length)
+            .map((v) => ({ id: v.id, name: v.deck.name || hero.name, source: "base", deck: v.deck, aspects: aspectsOfDeck(v.deck) }));
         try {
             // UN DECK NE SE LISTE QU'UNE FOIS. `list_deck` rend les chemins de
             // tous les dossiers ; `fileName` en retire le dossier, donc un meme

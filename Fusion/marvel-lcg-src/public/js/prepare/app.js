@@ -473,7 +473,10 @@ function deckAffiche(p) {
 /** Un héros sans deck de départ (fan-made, le plus souvent) : son deck de 15 cartes ne se joue pas, et aucun deck n'est
  *  choisi à sa place (30/10/2026). Le joueur en prend un de la communauté ou une proposition. */
 function sansDeckDeDepart(p) {
-    return !!(p && p.hero && !aDeckDeBase(p.hero));
+    // « Pas de deck de depart unique » = aucun deck choisi par defaut, le joueur DOIT en choisir un.
+    // Vrai quand le heros n'a pas de deck de base (fan-made nu) OU quand il a PLUSIEURS decks de depart
+    // (04/11/2026 : l'auteur en a prevu plusieurs, le choix se fait a la main). Voir versions-decks-selection.
+    return !!(p && p.hero && (!aDeckDeBase(p.hero) || versionsDe(p.hero).length > 1));
 }
 
 /** Le recapitulatif des decks est-il a l'ecran ? Tous les decks sont valides et
