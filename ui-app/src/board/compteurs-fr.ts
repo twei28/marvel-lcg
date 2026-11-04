@@ -24,6 +24,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   size: 'taille',
   mystic: 'mystique',
   agent: 'agent',
+  balance: 'équilibre',
+  overwhelm: 'submersion',
   solar: 'solaire',
   psionic: 'psionique',
   warrior: 'guerrier',

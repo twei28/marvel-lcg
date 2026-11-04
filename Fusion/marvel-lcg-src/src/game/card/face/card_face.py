@@ -120,6 +120,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "BAT FAMILY", "BIRD OF PREY",
         # CORRECTIF (25/10/2026) : trait du pack custom roz (jakxin, prefixe `rz`), Dario Agger.
         "ROXXON",
+        # AJOUT (03/11/2026, pack rr Sentry) : traits imprimes absents de la liste.
+        "DARK SENTRY", "SPLIT", "THERAPIST",
         # CORRECTIF (25/10/2026) : traits du pack custom spider_punisher (T-Wrecks, prefixe `sq`).
         "EARTH-71928", "WEB-SHOOTER",
         # CORRECTIF (26/10/2026) : trait du pack custom smasher (Phenexian, prefixe `sz`), les ameliorations Exospex.
@@ -323,6 +325,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
 
     COUNTER = Literal[
         'counter',
+        # AJOUT (03/11/2026, pack rr Sentry) : « balance counter » (Duality Aspect, set heros) et « overwhelm counter » (Merged Sentry).
+        'balance', 'overwhelm',
         # AJOUT (25/10/2026, pack hp Wasp Hank Pym) : compteurs imprimes « crisis counter » (hp013 Identity Crisis)
         # et « seize counter » (hp014 Return of the Prodigal Son). Sans ces entrees `IsCounter` refuse le nom.
         'crisis', 'seize',

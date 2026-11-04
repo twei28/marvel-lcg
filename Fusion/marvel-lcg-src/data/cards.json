@@ -136907,7 +136907,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "48cc90970e914a19b18573e2e5aceb5ea524ba0245aac54c689a68a3c49b5387",
+ "checksum": "73ece60f4c0114b5004b7ff091414d069e446d23adf8b479fa1f47a1255ed6e0",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -142414,6 +142414,1668 @@
    "text": "Max 1 per deck.\r\nYour identity gets +1 to each of its basic powers, +1 hand size, and +10 hit points.",
    "custom": "Neptune",
    "ability_link": "27191"
+  }
+ ],
+ "sentry": [
+  {
+   "card_id": "rr001a",
+   "type": "Hero",
+   "name": "* Sentry",
+   "subtitle": "",
+   "desc": {
+    "HP": "16",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "3",
+    "HS": "4"
+   },
+   "traits": [
+    "AERIAL",
+    "AVENGER"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Forced Response</b>: At the end of your turn, place 1 balance counter on Duality Aspect.\n<i>Golden Guardian</i> — Once per phase, reduce the resource cost of the next event you play by X, where X is the number of balance counters on Duality Aspect.\n<i>\"You're the man with the power of a million exploding suns... and one sordid little secret.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr001b",
+   "type": "AlterEgo",
+   "name": "* Robert Reynolds",
+   "subtitle": "",
+   "desc": {
+    "HP": "16",
+    "REC": "4",
+    "HS": "5"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Setup</b>: Put your Duality Aspect upgrade into play with 0 balance counters on it. <i>(See insert.)</i>\n<b>Response</b>: After you change to this form, you may remove up to 2 balance counters from play.\n<i>\"You are a hero -- you want to scream it, but no one would believe you.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr002",
+   "type": "Upgrade",
+   "name": "* Duality Aspect",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Permanent</b>.\n<b>Forced Response</b>: After you place a balance counter here, if there are 3+ balance counters here → find Void and reveal him. <i>(If he is already in play, he engages you.)</i>\n<b>Forced Response</b>: After the \"<b>Special</b>\" ability on a [[SPLIT]] card is resolved → shuffle that card into your deck. Then, you may remove 1 balance counter from here.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr003",
+   "type": "Ally",
+   "name": "* C.L.O.C.",
+   "subtitle": "Centrally Located Organic Computer",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ANDROID",
+    "AVENGER"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Response</b>: When C.L.O.C. enters play, you may remove 1 balance counter from play.\n<i>\"It's good to have you back, sir.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr004",
+   "type": "Support",
+   "name": "* Cornelius Worth",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PERSONA",
+    "THERAPIST"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Action</b>: Exhaust this card → choose:\n• Generate a [mental] resource.\n• Remove 1 balance counter from Duality Aspect.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr005",
+   "type": "Support",
+   "name": "* The Watchtower",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Sentry",
+   "text": "You get +2 THW.\n<b>Interrupt</b>: When a balance counter would be placed on Duality Aspect, exhaust this card → place that counter here instead <i>(to a maximum of 1)</i>.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr006",
+   "type": "Upgrade",
+   "name": "* Endless Power",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "SPLIT",
+    "SUPERPOWER"
+   ],
+   "set_name": "Sentry",
+   "text": "Sentry gets +1 ATK and gains retaliate 1.\n<b>Hero Response</b>: After you play an event using your \"Golden Guardian\" ability, exhaust this card → shuffle that event into your deck.\n<b>Special</b>: The Void stuns and confuses each other enemy and each character under your control.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr007",
+   "type": "Upgrade",
+   "name": "Molecularkinesis",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "SPLIT",
+    "SUPERPOWER"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Hero Interrupt</b>: When an encounter card is revealed, cancel all of its effects and discard it. Then, discard this card and draw 1 card for each balance counter on Duality Aspect.\n<b>Special</b>: Discard 1 card from your deck and the encounter deck for each balance counter in play.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr008",
+   "type": "Upgrade",
+   "name": "Pacifying Presence",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "SPLIT",
+    "SUPERPOWER"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Hero Interrupt</b>: When a friendly character would be dealt any amount of damage, discard this card → prevent all of that damage. Then, heal damage from among characters equal to that damage.\n<b>Special</b>: Heal 2 [per_hero] from Void. Other enemies cannot activate this round.\n<i>\"The fight is over because you say it is.\" —Sentry</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr009",
+   "type": "Upgrade",
+   "name": "* Purposeful Disparity",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Sentry",
+   "text": "While Sentry is in hero form, reduce the amount of damage he takes from each attack by 1.\n<b>Action</b>: Exhaust this card → choose a [[SPLIT]] card in your discard pile. Place it on top of your discard pile.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr010",
+   "type": "Event",
+   "name": "Energy Flare",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SPLIT",
+    "SUPERPOWER"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Hero Action</b>: Deal 3 damage to each enemy in play <i>(this event gains overkill if there are 3+ balance counters in play)</i>.\n<b>Special</b>: The Void attacks each character you control and each enemy in play. This attack gains overkill.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr011",
+   "type": "Event",
+   "name": "Global Influence",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SPLIT",
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove up to 3 threat from among schemes, ignoring the patrol keyword and any [crisis] icons in play <i>(5 threat instead if there are 3+ balance counters in play)</i>.\n<b>Special</b>: Place X threat on each scheme, where X is equal to the Void's SCH.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr012",
+   "type": "Event",
+   "name": "Nigh-Invulnerability",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SPLIT",
+    "SUPERPOWER"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attacks, declare Sentry the defender without exhausting him. Give him a tough status card <i>(stun the attacker if there are 3+ balance counters in play)</i>.\n<b>Special</b>: Give the Void a tough status card. The Void cannot take damage this phase.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr013",
+   "type": "Event",
+   "name": "Obliterate",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SPLIT",
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Choose to discard all attachments from an enemy or defeat a non-[[ELITE]] minion, ignoring any \"When Defeated\" abilities on that minion <i>(you may choose a side scheme instead if there are 3+ balance counters in play)</i>.\n<b>Special</b>: Discard the highest-cost card you control, highest hit point minion, and side scheme with the most threat.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr014",
+   "type": "Event",
+   "name": "Unrivaled Might",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SPLIT",
+    "SUPERPOWER"
+   ],
+   "set_name": "Sentry",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy <i>(10 damage instead if there are 3+ balance counters in play)</i>. This attack gains piercing.\n<b>Special</b>: The Void attacks the villain and you. You cannot defend against this attack. This attack gains piercing.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr015",
+   "type": "Obligation",
+   "name": "Fractured Psyche",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Robert Reynolds"
+   },
+   "traits": [],
+   "set_name": "Sentry",
+   "text": "<b><i>Give to the Robert Reynolds player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Robert Reynolds → remove Fractured Psyche from the game.\n• Place 3 balance counters on Duality Aspect. Discard this obligation.\n<i>\"Half a man, half a monster.\" —Robert Reynolds</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr016",
+   "type": "Minion",
+   "name": "* Void",
+   "subtitle": "",
+   "desc": {
+    "HP": "4*",
+    "ATK": "0*",
+    "SCH": "0*",
+    "Boost": "3",
+    "Toughness": "1",
+    "Nemesis": "Sentry"
+   },
+   "traits": [
+    "DARK SENTRY",
+    "ELITE"
+   ],
+   "set_name": "Sentry Nemesis",
+   "text": "Malevolent. <i>(Each character you control and other enemies must target this card for their first attack each round.)</i> Toughness.\nX is the number of balance counters on Duality Aspect. The Void cannot take less than X damage each round.\n[star] <b>Forced Interrupt</b>: When the Void would activate, if there are 3+ balance counters in play, resolve the \"<b>Special</b>\" ability of the topmost [[SPLIT]] card from the Sentry player's discard pile instead, if able.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr017",
+   "type": "SideScheme",
+   "name": "* Monster of Antithesis",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "3",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Sentry Nemesis",
+   "text": "<i>\"For every person you save, for every act of good, there must be balance.\" —Void</i>\n<b>Forced Interrupt</b>: When a [[SPLIT]] card would be shuffled into the Sentry player's deck after its \"<b>Special</b>\" ability is resolved, place it facedown under this scheme instead.\n<b>If there are 5 facedown cards under this scheme, the players lose the game.</b>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr018",
+   "type": "Attachment",
+   "name": "Angel of Death",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Sentry Nemesis",
+   "text": "Attach to The Void. If you cannot, place 2 balance counters on Duality Aspect, then this card gains surge. The Void gains guard and patrol.\n<b>Forced Interrupt</b>: At the end of the round <i>(after the first player token is passed)</i>, the Sentry player discards cards from the top of their deck until they discard a [[SPLIT]] card. Resolve the \"<b>Special</b>\" ability on that card.\n<i>\"How many gods will I have to kill today?\" —Void</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr019",
+   "type": "Treachery",
+   "name": "Equilibrium Intent",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Sentry Nemesis",
+   "text": "<b>When Revealed</b>: If the Void is in play, he activates. If the Void is not in play, place 1 balance counter on Duality Aspect, then this card gains surge.\n[star] <b>Boost</b>: Discard 1 identity-specific card you control at random. If you cannot, discard an identity-specific card from your hand.\n<i>\"When you exist, I exist.\" —Void</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr020",
+   "type": "Minion",
+   "name": "* Merged Sentry",
+   "subtitle": "",
+   "desc": {
+    "HP": "4*",
+    "ATK": "3",
+    "SCH": "2*",
+    "Boost": "3",
+    "Guard": "1",
+    "Patrol": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "AVENGER",
+    "ELITE"
+   ],
+   "set_name": "Merged Sentry",
+   "text": "Patrol. Guard. Toughness.\nMerged Sentry gets +X ATK and cannot take less than X damage from each attack, where X is the number of overwhelm counters on him.\n[star] <b>Forced Response</b>: After Merged Sentry schemes or thwarts, place 1 overwhelm counter on him.\n<b>When Defeated</b>: The player who defeated Merged Sentry puts him into play under their control as an ally. Reset his hit points to 4, his THW is equal to his SCH, and he takes 1 [consequential] damage after he thwarts or attacks.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr021",
+   "type": "SideScheme",
+   "name": "* External Darkness",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "3",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "set_name": "Merged Sentry",
+   "text": "<i>\"Why have you disturbed my meditation?\" —Merged Sentry</i>\n<b>When Revealed</b>: Find Merged Sentry and put him into play engaged with you. Place X overwhelm counters on Merged Sentry, where X is equal to the main scheme's current stage number.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr022",
+   "type": "Attachment",
+   "name": "* Newfound Nature",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Merged Sentry",
+   "text": "Attach to Merged Sentry. Otherwise, this card gains surge.\n<b>When Revealed</b>: Place X overwhelm counters on Merged Sentry, where X is equal to the villain's current stage number.\n[star] <b>Forced Response</b>: After Merged Sentry attacks and damages a non-hero character, stun that character.\n<i>\"I don't want to fight you, if that's what you're asking.\"</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr023",
+   "type": "Treachery",
+   "name": "Scourge Blast",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Merged Sentry",
+   "text": "<b>When Revealed</b>: If Merged Sentry is in play, place 1 overwhelm counter on him. Take 1 indirect damage for each overwhelm counter on Merged Sentry. Otherwise, this card gains surge.\n[star] <b>Boost</b>: If this activation is an attack, this card gets +2 [boost] icons for this attack and this attack gains piercing.\n<i>\"I ended this.\" —Merged Sentry</i>",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr024",
+   "type": "Upgrade",
+   "name": "Aggressive Conditioning",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points and your hero gets +1 ATK.",
+   "custom": "Neptune",
+   "ability_link": "56013"
+  },
+  {
+   "card_id": "rr025",
+   "type": "Resource",
+   "name": "Aggressive Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Aggression"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 2 per deck.\n<b>Hero Interrupt</b>: When you spend this card to play a [[Attack]] event, that event deals 1 additional damage.",
+   "custom": "Neptune",
+   "ability_link": "32047"
+  },
+  {
+   "card_id": "rr026",
+   "type": "Resource",
+   "name": "Audacity",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Aggression"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.\n<b>Hero Response</b>: After you spend this card, deal 1 damage to the villain.",
+   "custom": "Neptune",
+   "ability_link": "21046"
+  },
+  {
+   "card_id": "rr027",
+   "type": "Event",
+   "name": "Bombs Away",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "AERIAL",
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b>: Exhaust an [[AERIAL]] character you control and choose a player → deal 3 damage to the villain and each minion engaged with that player.",
+   "custom": "Neptune",
+   "ability_link": "42029"
+  },
+  {
+   "card_id": "rr028",
+   "type": "Event",
+   "name": "\"Bring It!\"",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Aggression"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per phase.\n<b>Hero Action</b>: Draw 1 card for each minion engaged with you.",
+   "custom": "Neptune",
+   "ability_link": "19030"
+  },
+  {
+   "card_id": "rr029",
+   "type": "Event",
+   "name": "Clobber",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(Attack)</i>: Deal 3 damage to an enemy. If this is the first card you have played this round, return this card to your hand.",
+   "custom": "Neptune",
+   "ability_link": "18012"
+  },
+  {
+   "card_id": "rr030",
+   "type": "Upgrade",
+   "name": "Combat Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYour hero gets +1 ATK.",
+   "custom": "Neptune",
+   "ability_link": "01057"
+  },
+  {
+   "card_id": "rr031",
+   "type": "Event",
+   "name": "Dive Bomb",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "AERIAL",
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "Play only if your identity has the [[aerial]] trait.\n<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. Deal 1 damage to each other enemy.",
+   "custom": "Neptune",
+   "ability_link": "17028"
+  },
+  {
+   "card_id": "rr032",
+   "type": "Upgrade",
+   "name": "Follow Through",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b>: When your hero's attack deals any amount of excess damage, increase that amount by 1.",
+   "custom": "Neptune",
+   "ability_link": "16045"
+  },
+  {
+   "card_id": "rr033",
+   "type": "Event",
+   "name": "Full-Body Charge",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy. If your hero's remaining hit points are less than half your hero's starting hit points, this attack gains overkill.",
+   "custom": "Neptune",
+   "ability_link": "45045"
+  },
+  {
+   "card_id": "rr034",
+   "type": "Upgrade",
+   "name": "Honed Technique",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Aggression",
+    "Requirement": "BB"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Requirement ([mental][mental]). Max 1 per player.\n<b>Interrupt</b>: When you play an Aggression [[Attack]] event, if you paid for that event using a [mental] resource, increase the amount of damage that event deals by its printed cost.",
+   "custom": "Neptune",
+   "ability_link": "28017"
+  },
+  {
+   "card_id": "rr035",
+   "type": "Event",
+   "name": "Looking for Trouble",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Discard cards from the top of the encounter deck until you discard a minion. Put that minion into play engaged with you → remove 3 threat from the main scheme.",
+   "custom": "Neptune",
+   "ability_link": "16043"
+  },
+  {
+   "card_id": "rr036",
+   "type": "Event",
+   "name": "One by One",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If this attack defeats that enemy, deal 2 damage to an enemy.",
+   "custom": "Neptune",
+   "ability_link": "28014"
+  },
+  {
+   "card_id": "rr037",
+   "type": "Event",
+   "name": "Pitchback",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "AERIAL",
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "Play only if your identity has the [[Aerial]] trait.\n<b>Hero Response</b> <i>(attack)</i>: After your hero attacks, deal 4 damage to an enemy.",
+   "custom": "Neptune",
+   "ability_link": "28012"
+  },
+  {
+   "card_id": "rr038",
+   "type": "Event",
+   "name": "Press the Advantage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy is stunned or confused, draw 1 card.",
+   "custom": "Neptune",
+   "ability_link": "04043"
+  },
+  {
+   "card_id": "rr039",
+   "type": "Event",
+   "name": "Surprise Attack",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After you change form, deal 3 damage to an enemy (4 damage instead if you paid for this card using [physical] resource).",
+   "custom": "Neptune",
+   "ability_link": "13014"
+  },
+  {
+   "card_id": "rr040",
+   "type": "Upgrade",
+   "name": "Test the Defense",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Max 1 per player.\n<b>Response</b>: After you play an [[ATTACK]] event, place 1 test counter here. If there are 5 test counters here, discard this card to deal 5 damage to an enemy.",
+   "custom": "Neptune",
+   "ability_link": "45044"
+  },
+  {
+   "card_id": "rr041",
+   "type": "Event",
+   "name": "Toe to Toe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Choose an enemy. That enemy attacks you. Deal 5 damage to that enemy.",
+   "custom": "Neptune",
+   "ability_link": "10015"
+  },
+  {
+   "card_id": "rr042",
+   "type": "Event",
+   "name": "Agile Flight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "AERIAL",
+    "THWART"
+   ],
+   "set_name": "",
+   "text": "Play only if your identity has the [[aerial]] trait.\n<b>Hero Action</b> <i>(thwart)</i>: Remove a total of up to 5 threat from among schemes (as you choose).",
+   "custom": "Neptune",
+   "ability_link": "17029"
+  },
+  {
+   "card_id": "rr043",
+   "type": "Event",
+   "name": "Clear the Area",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. If this removes the last threat on that scheme, draw 1 card.",
+   "custom": "Neptune",
+   "ability_link": "04049"
+  },
+  {
+   "card_id": "rr044",
+   "type": "Event",
+   "name": "Crisis Averted",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 6 threat from the main scheme. If you paid for this card using a [mental] resource, this thwart ignores the crisis icon ([crisis]).",
+   "custom": "Neptune",
+   "ability_link": "15012"
+  },
+  {
+   "card_id": "rr045",
+   "type": "Resource",
+   "name": "Determination",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Justice"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.\n<b>Hero Response</b>: After you spend this card, remove 1 threat from the main scheme.",
+   "custom": "Neptune",
+   "ability_link": "21052"
+  },
+  {
+   "card_id": "rr046",
+   "type": "Event",
+   "name": "Everywhere All at Once",
+   "subtitle": "",
+   "desc": {
+    "Cost": "-1",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "AERIAL",
+    "THWART"
+   ],
+   "set_name": "",
+   "text": "Play only if your identity has the [[Aerial]] trait.\n<b>Hero Action</b> <i>(thwart)</i>: Choose X schemes. Remove 2 threat from each chosen scheme (3 threat instead if you overpaid for this card).",
+   "custom": "Neptune",
+   "ability_link": "58018"
+  },
+  {
+   "card_id": "rr047",
+   "type": "Event",
+   "name": "Foiled!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "<b>Interrupt</b>: When a boost card is turned faceup during a scheme activation, cancel its boost icons.",
+   "custom": "Neptune",
+   "ability_link": "09038"
+  },
+  {
+   "card_id": "rr048",
+   "type": "Upgrade",
+   "name": "Heroic Conditioning",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points and your hero gets +1 THW.",
+   "custom": "Neptune",
+   "ability_link": "58021"
+  },
+  {
+   "card_id": "rr049",
+   "type": "Upgrade",
+   "name": "Heroic Intuition",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYour hero gets +1 THW.",
+   "custom": "Neptune",
+   "ability_link": "01065"
+  },
+  {
+   "card_id": "rr050",
+   "type": "Event",
+   "name": "Observe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerDeck": "3",
+    "Class": "Justice"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b>: The villain schemes. Give your hero a tough status card.",
+   "custom": "Neptune",
+   "ability_link": "62035"
+  },
+  {
+   "card_id": "rr051",
+   "type": "Event",
+   "name": "One Way or Another",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Justice"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per round.\n<b>Hero Action</b>: Search the encounter deck for a side scheme. Reveal that side scheme → draw 3 cards (shuffle the encounter deck).",
+   "custom": "Neptune",
+   "ability_link": "22015"
+  },
+  {
+   "card_id": "rr052",
+   "type": "Upgrade",
+   "name": "Sense of Justice",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control.\nMax 1 per player.\n<b>Resource:</b> Exhaust Sense of Justice → generate a [mental] resource for a [[Thwart]] event.",
+   "custom": "Neptune",
+   "ability_link": "14030"
+  },
+  {
+   "card_id": "rr053",
+   "type": "Event",
+   "name": "Turn the Tide",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Response</b> <i>(attack)</i>: After your hero thwarts and removes all threat from a scheme, deal 3 damage to an enemy.",
+   "custom": "Neptune",
+   "ability_link": "15015"
+  },
+  {
+   "card_id": "rr054",
+   "type": "Upgrade",
+   "name": "Under Surveillance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Justice"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Attach to the main scheme. Max 1 per scheme.\r\nIncrease the target threat value of attached scheme by 4.",
+   "custom": "Neptune",
+   "ability_link": "06031"
+  },
+  {
+   "card_id": "rr055",
+   "type": "Event",
+   "name": "Waylay",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Justice"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After your hero thwarts, deal 4 damage to an enemy (7 damage instead if that thwart removed the last threat from a scheme).",
+   "custom": "Neptune",
+   "ability_link": "47014"
+  },
+  {
+   "card_id": "rr056",
+   "type": "Resource",
+   "name": "Band Together",
+   "subtitle": "",
+   "desc": {
+    "Class": "Leadership"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "This card generates [wild] for each ally you control (to a maximum of 3)",
+   "custom": "Neptune",
+   "ability_link": "21018"
+  },
+  {
+   "card_id": "rr057",
+   "type": "Event",
+   "name": "Call for Aid",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Leadership"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "<b>Hero Action:</b> Discard cards from the top of your deck until you discard an [[Avenger]] ally, then add that ally to your hand.",
+   "custom": "Neptune",
+   "ability_link": "12015"
+  },
+  {
+   "card_id": "rr058",
+   "type": "Support",
+   "name": "Cameo",
+   "subtitle": "",
+   "desc": {
+    "MaxPerDeck": "1",
+    "Setup": "1",
+    "Class": "Leadership"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Setup. Max 1 per deck.\n<b>Setup</b>: Search your collection for an identity-specific ally for an identity not in this game. Shuffle that ally into your deck. Discard 2 cards from your hand and remove this card from the game.",
+   "custom": "Neptune",
+   "ability_link": "58031"
+  },
+  {
+   "card_id": "rr059",
+   "type": "Upgrade",
+   "name": "Clarity of Purpose",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Attach to a friendly character. Max 1 per character.\n<b>Hero Resource</b>: Exhaust this card and deal 1 damage to attached character → generate a [wild] resource.",
+   "custom": "Neptune",
+   "ability_link": "31029"
+  },
+  {
+   "card_id": "rr060",
+   "type": "Event",
+   "name": "Get Ready",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Leadership"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "<b>Action</b>: Ready an ally.",
+   "custom": "Neptune",
+   "ability_link": "01069"
+  },
+  {
+   "card_id": "rr061",
+   "type": "Event",
+   "name": "Go All Out",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Leadership",
+    "Requirement": "Y"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "Requirement ([energy]). <i>(While paying for this card, spend the listed resources.)</i>\r\n<b>Hero Action</b> <i>(attack)</i>: Exhaust your hero &#8594; deal damage to an enemy equal to the total of your hero's THW, ATK, and DEF values.",
+   "custom": "Neptune",
+   "ability_link": "29017"
+  },
+  {
+   "card_id": "rr062",
+   "type": "Upgrade",
+   "name": "Inspired",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Attach to an ally. Max 1 per ally.\nAttached ally gets +1 THW and +1 ATK.",
+   "custom": "Neptune",
+   "ability_link": "01074"
+  },
+  {
+   "card_id": "rr063",
+   "type": "Event",
+   "name": "Make the Call",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Leadership"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "<b>Action</b>: Pay the printed cost of an ally in any player's discard pile → put that ally into play under your control.",
+   "custom": "Neptune",
+   "ability_link": "01071"
+  },
+  {
+   "card_id": "rr064",
+   "type": "Support",
+   "name": "Mighty Avengers",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TEAM"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 Team per player.\r\nIf each of your characters has the Avengers trait, each ally you control gets +1 THW and +1 ATK.",
+   "custom": "Neptune",
+   "ability_link": "21015"
+  },
+  {
+   "card_id": "rr065",
+   "type": "Upgrade",
+   "name": "Rapid Response",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "PREPARATION",
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "Max 1 per player.\r\n<b>Hero Response</b>: After an ally you control is defeated, discard Rapid Response &#8594; put that ally into play from your discard pile and deal 1 damage to it.",
+   "custom": "Neptune",
+   "ability_link": "08031"
+  },
+  {
+   "card_id": "rr066",
+   "type": "Support",
+   "name": "Regroup",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Interrupt</b>: When an ally is defeated by an enemy attack, return it to its owner's hand instead of discarding it.\n<b>Forced Interrupt</b>: When the round ends, discard this card.",
+   "custom": "Neptune",
+   "ability_link": "19032"
+  },
+  {
+   "card_id": "rr067",
+   "type": "Support",
+   "name": "Righteous Purpose",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "MaxPerDeck": "3",
+    "Class": "Leadership",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "MAXIM"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nEach character you control that has exactly 1 hit point remaining gets +2 THW and +2 ATK.",
+   "custom": "Neptune",
+   "ability_link": "62019"
+  },
+  {
+   "card_id": "rr068",
+   "type": "Support",
+   "name": "Team Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nEach ally you control gets +1 hit point.",
+   "custom": "Neptune",
+   "ability_link": "04016"
+  },
+  {
+   "card_id": "rr069",
+   "type": "Event",
+   "name": "Teamwork",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b> When you use your basic thwart power <i>(THW)</i> or basic attack power <i>(ATK)</i>, exhaust an ally you control → add that ally's matching power to your hero's power for this use.",
+   "custom": "Neptune",
+   "ability_link": "06032"
+  },
+  {
+   "card_id": "rr070",
+   "type": "Event",
+   "name": "\"You Got This!\"",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Response</b>: After you exhaust your hero to make a basic thwart or attack, discard an ally you control → add that ally's matching power to your hero's power for this use. Ready your hero.",
+   "custom": "Neptune",
+   "ability_link": "49019"
+  },
+  {
+   "card_id": "rr071",
+   "type": "Upgrade",
+   "name": "Change of Fortune",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Response</b>: After you defeat an enemy during the villain phase, exhaust this card → draw 2 cards.",
+   "custom": "Neptune",
+   "ability_link": "48014"
+  },
+  {
+   "card_id": "rr072",
+   "type": "Event",
+   "name": "Counter-Punch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Response</b> <i>(attack)</i>: After your hero defends against an enemy attack, deal damage to that enemy equal to your hero's ATK.",
+   "custom": "Neptune",
+   "ability_link": "01077"
+  },
+  {
+   "card_id": "rr073",
+   "type": "Upgrade",
+   "name": "Defensive Conditioning",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points and your hero gets +1 DEF.",
+   "custom": "Neptune",
+   "ability_link": "56046"
+  },
+  {
+   "card_id": "rr074",
+   "type": "Resource",
+   "name": "Defensive Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Protection"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 2 per deck.\n<b>Hero Interrupt</b>: When you spend this card to play a [[Defense]] event, draw 1 card.",
+   "custom": "Neptune",
+   "ability_link": "32018"
+  },
+  {
+   "card_id": "rr075",
+   "type": "Event",
+   "name": "Desperate Defense",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, it gets +2 DEF for that attack. If you take no damage from that attack, ready your hero.",
+   "custom": "Neptune",
+   "ability_link": "09015"
+  },
+  {
+   "card_id": "rr076",
+   "type": "Event",
+   "name": "Ever Vigilant",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "AERIAL",
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Play only if your identity has the [[aerial]] trait.\n<b>Hero Action</b>: Ready your hero and remove 2 threat from the main scheme.",
+   "custom": "Neptune",
+   "ability_link": "17030"
+  },
+  {
+   "card_id": "rr077",
+   "type": "Event",
+   "name": "Hard Knocks",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If that enemy is defeated by this attack, give your hero a tough status card.",
+   "custom": "Neptune",
+   "ability_link": "19016"
+  },
+  {
+   "card_id": "rr078",
+   "type": "Upgrade",
+   "name": "Hard to Ignore",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Response</b>: After your hero defends against an attack and takes no damage, exhaust Hard to Ignore → remove 1 threat from the main scheme.",
+   "custom": "Neptune",
+   "ability_link": "16017"
+  },
+  {
+   "card_id": "rr079",
+   "type": "Event",
+   "name": "Leading Blow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b>: When your hero makes a basic attack, discard the top card of the encounter deck → reduce your hero's ATK for that attack by the number of printed boost icons on that card. If that attack still deals damage, ready your hero.",
+   "custom": "Neptune",
+   "ability_link": "19017"
+  },
+  {
+   "card_id": "rr080",
+   "type": "Event",
+   "name": "Powerful Punch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When an enemy initiates an attack, deal 4 damage to that enemy.",
+   "custom": "Neptune",
+   "ability_link": "32014"
+  },
+  {
+   "card_id": "rr081",
+   "type": "Upgrade",
+   "name": "Ready for a Fight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Protection",
+    "Requirement": "R"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "",
+   "text": "Requirement ([physical]). Max 1 per player.\n<b>Interrupt</b>: When an enemy would scheme, discard Ready for a Fight → change to hero form. That enemy attacks you instead.",
+   "custom": "Neptune",
+   "ability_link": "52019"
+  },
+  {
+   "card_id": "rr082",
+   "type": "Upgrade",
+   "name": "Stand Alone",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Max 1 per player.\n<b>Hero Interrupt</b>: When an enemy attacks you <i>(before any defender is declared)</i>, if you do not control any allies, exhaust Stand Alone → ready your hero.",
+   "custom": "Neptune",
+   "ability_link": "60054"
+  },
+  {
+   "card_id": "rr083",
+   "type": "Event",
+   "name": "Taunt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "<b>Hero Action</b>: The villain attacks you. Other characters cannot defend against this attack. Draw 3 cards.",
+   "custom": "Neptune",
+   "ability_link": "42016"
+  },
+  {
+   "card_id": "rr084",
+   "type": "Upgrade",
+   "name": "The Best Offense...",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Temporary": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Temporary.\nYour hero gets +1 DEF.\nUse your DEF in place of your THW and ATK. <i>(Ignore any modifiers to your THW and ATK.)</i>",
+   "custom": "Neptune",
+   "ability_link": "60052"
+  },
+  {
+   "card_id": "rr085",
+   "type": "Upgrade",
+   "name": "Unflappable",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\n<b>Response</b>: After you defend against an attack and take no damage, exhaust Unflappable → draw 1 card.",
+   "custom": "Neptune",
+   "ability_link": "09020"
+  },
+  {
+   "card_id": "rr086",
+   "type": "Event",
+   "name": "What Doesn't Kill Me",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Protection",
+    "Requirement": "R"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Requirement ([physical]) <i>(While paying for this card, spend the listed resources.)</i>\r\n<b>Hero Action</b>: Heal 2 damage from your hero &#8594; ready your hero.",
+   "custom": "Neptune",
+   "ability_link": "27016"
+  },
+  {
+   "card_id": "rr087",
+   "type": "Upgrade",
+   "name": "Deft Focus",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "Max 1 per player.\n<b>Hero Action</b>: Exhaust Deft Focus → reduce the resource cost of the next [[superpower]] card you play this turn by 1.",
+   "custom": "Neptune",
+   "ability_link": "16024"
+  },
+  {
+   "card_id": "rr088",
+   "type": "Upgrade",
+   "name": "Endurance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "",
+   "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points.",
+   "custom": "Neptune",
+   "ability_link": "05023"
+  },
+  {
+   "card_id": "rr089",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr090",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "rr091",
+   "type": "Event",
+   "name": "Limitless Stamina",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Basic"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "",
+   "text": "Play only if your identity has at least 14 printed hit points.\r\n<b>Hero Action</b>: Ready your hero.",
+   "custom": "Neptune",
+   "ability_link": "31023"
+  },
+  {
+   "card_id": "rr092",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "Neptune"
   }
  ]
 }

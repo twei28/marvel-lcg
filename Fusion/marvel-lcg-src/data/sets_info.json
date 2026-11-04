@@ -2415,5 +2415,19 @@
   ],
   "max_id": "ca034"
  },
- "checksum": "896bfe91dd0948b7f9228dff5c20d1d14df439fbbec32f026b673bd9e4a714ac"
+ "250. Custom (Sentry)": {
+  "name": "sentry",
+  "scenarios": [],
+  "heroes": [
+   "sentry",
+   "sentry_justice",
+   "sentry_leadership",
+   "sentry_protection"
+  ],
+  "encounters": [
+   "merged_sentry"
+  ],
+  "max_id": "rr092"
+ },
+ "checksum": "608d78510a4fbc92d94fb995c5876fbee3c97aaeca301d1790d2fd48bc1b6e02"
 }

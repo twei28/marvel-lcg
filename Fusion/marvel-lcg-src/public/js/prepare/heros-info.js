@@ -2078,4 +2078,10 @@ export const HEROS_INFO = {
         ennemis: "Torment",
         apparition: "The Amazing Spider-Man #344 (1991)",
     },
+    "rr001a": {
+        bio: "Après avoir ingéré un sérum de super-soldat oublié, Robert Reynolds a acquis la puissance d'un million de soleils qui explosent. Ses aspirations positives l'ont poussé à devenir le plus grand héros de l'humanité, connu sous le nom de Sentry, tandis que ses traits négatifs refoulés se sont manifestés sous la forme de l'être malveillant appelé le Void. Pris dans un conflit éternel, Robert aide le monde en tant que héros le plus puissant tout en étant secrètement son vilain le plus redouté.",
+        bioEn: "After ingesting a forgotten super soldier serum, Robert Reynolds gained the power of a million exploding suns. His positive aspirations drove him to become humanity's greatest hero, known as the Sentry, while his repressed negative traits manifested as the malevolent being known as the Void. Caught in an eternal conflict, Robert helps the world as its most powerful hero while secretly being its most feared villain.",
+        civil: "Robert Reynolds",
+        ennemis: "Void",
+    },
 };

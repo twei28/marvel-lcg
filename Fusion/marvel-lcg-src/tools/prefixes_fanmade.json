@@ -942,6 +942,13 @@
    "cartes": 35,
    "depuis": "2026-11-03",
    "note": "Cree le 03/11/2026 depuis carnage.zip (Neptune ; scans EN seuls, PNG > PDF d'impression plus ancien). ca001a/b identite (Carnage / Eddie Brock), ca002 Spider-Man, ca003 Symbiote Hive-Mind, ca004 Lethal Restraint, ca005 Probing Minds, ca006 Frenzied Violence, ca007 Hunting Hosts, ca008 Amorphous Arsenal, ca009 Klyntar Bond, ca010 Sinister Flight x2, ca011 Vicious Lashing x2, ca012 Chomp, ca013 Rend x2, ca014 obligation Essential Bloodlust ; ca015-ca018 set nemesis (Torment, Meticulous Targeting, Death Spiral, Closing the Loops x2) ; ca019-ca023 modulaire Twisted Killers (Muse, Bushwacker, Recognizing Evil, Murderous Nature x2, Hunting Victims x3) ; ca024-ca034 onze Basics (reskins d'officielles, decision Hellcat : doublons). Deux decklists d'auteur (Aggression = deck de base, Protection = variante) ; la ligne « Pacifying Presence » (sans scan) est laissee vide sur decision de l'utilisateur."
+  },
+  "rr": {
+   "pack": "sentry",
+   "libelle": "250. Custom (Sentry)",
+   "cartes": 93,
+   "depuis": "2026-11-03",
+   "note": "Cree le 03/11/2026 depuis Sentry.zip (Neptune, version New ; scans EN seuls). rr001a/b identite (Sentry / Robert Reynolds), rr002-rr014 set heros (16 cartes : Duality Aspect, C.L.O.C., Cornelius Worth, The Watchtower, Endless Power, Molecularkinesis, Pacifying Presence, Purposeful Disparity, Energy Flare, Global Influence x2, Nigh-Invulnerability x2, Obliterate, Unrivaled Might x2), rr015 obligation Fractured Psyche, rr016-rr019 set nemesis (Void, Monster of Antithesis, Angel of Death, Equilibrium Intent x2), rr020-rr023 modulaire Merged Sentry (Merged Sentry, External Darkness, Newfound Nature, Scourge Blast x3), rr024-rr092 reskins d'aspect (officielles, ability_link). Quatre decklists d'auteur (Aggression = deck de base, Justice/Leadership/Protection = variantes)."
   }
  }
 }

@@ -360,3 +360,11 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - [x] absorb.md
 - [x] captive.md
 - [x] deck-hellfire.md (maison, scénario 4 « Torn » de Hellfire Hunt : deck de TABLE avec défausse propre, `DeckHellfire`, `bind_discard_pile`, remélange sans pénalité, piles de la table)
+
+## Ajoutés le 03/11/2026 (pack Sentry)
+
+- [x] stun.md
+- [x] confuse.md
+- [x] consequential.md
+- [x] malevolent.md (maison)
+- [x] cancel.md (ajoute le 03/11/2026, Sentry rr007)
