@@ -148,6 +148,13 @@ describe('les etats', () => {
     expect(etats.map((e) => e.fond)).toEqual(['#8fcf3a', '#7a3a82', '#ef8b18', '#9a2624', '#f4a7c2'])
   })
 
+  it('traduit le nom du moteur dans la langue du plateau (04/11/2026, Tough -> Tenace en FR)', () => {
+    const enAnglais = etatsDe([carte('1', 'status', { name: 'Tough' })])
+    expect(enAnglais.map((e) => e.texte)).toEqual(['Tenace'])
+    const dejaEnFrancais = etatsDe([carte('2', 'status', { name: 'Désorienté' })])
+    expect(dejaEnFrancais.map((e) => e.texte)).toEqual(['Désorienté'])
+  })
+
   it('initiales : deux lettres, majuscule puis minuscule', () => {
     expect(initialesDe('Sonné')).toBe('So')
     expect(initialesDe('désorienté')).toBe('Dé')

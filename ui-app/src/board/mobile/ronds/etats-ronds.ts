@@ -2,6 +2,8 @@
 // 24/10/2026) : Sonne (vert), Desoriente (violet), Tenace (orange), Hebete (rouge), Intensifie (rose).
 // Plus de deux etats : des initiales colorees, pour ne pas deborder du rond.
 import type { ScanCardProps } from '../../../components/ScanCard'
+import { libelleStatut, type Statut } from '../../effets-statuts'
+import { langueActuelle } from '../../langue'
 
 export type EtatRond = {
   cle: string
@@ -11,12 +13,12 @@ export type EtatRond = {
   encre: string
 }
 
-const FAMILLES: Array<{ motif: RegExp; fond: string; encre: string }> = [
-  { motif: /stun|sonn/i, fond: '#8fcf3a', encre: '#14210a' },
-  { motif: /confus|d[ée]sorient/i, fond: '#7a3a82', encre: '#f2e6f7' },
-  { motif: /tough|tenace|robuste/i, fond: '#ef8b18', encre: '#2a1600' },
-  { motif: /daze|h[ée]b[ée]t/i, fond: '#9a2624', encre: '#ffe9a8' },
-  { motif: /intensif/i, fond: '#f4a7c2', encre: '#3b0a1c' },
+const FAMILLES: Array<{ statut: Statut; motif: RegExp; fond: string; encre: string }> = [
+  { statut: 'stunned', motif: /stun|sonn/i, fond: '#8fcf3a', encre: '#14210a' },
+  { statut: 'confused', motif: /confus|d[ée]sorient/i, fond: '#7a3a82', encre: '#f2e6f7' },
+  { statut: 'tough', motif: /tough|tenace|robuste/i, fond: '#ef8b18', encre: '#2a1600' },
+  { statut: 'dazed', motif: /daze|h[ée]b[ée]t/i, fond: '#9a2624', encre: '#ffe9a8' },
+  { statut: 'intensified', motif: /intensif/i, fond: '#f4a7c2', encre: '#3b0a1c' },
 ]
 const AUTRE = { fond: '#6a7280', encre: '#ffffff' }
 
@@ -27,11 +29,18 @@ export function initialesDe(nom: string): string {
 }
 
 export function etatsDe(attachees: ScanCardProps[]): EtatRond[] {
+  const langue = langueActuelle()
   return attachees
     .filter((carte) => carte.kind === 'status')
     .map((carte) => {
-      const famille = FAMILLES.find((f) => f.motif.test(`${carte.name} ${carte.codeCarte ?? ''} ${carte.id}`)) ?? AUTRE
-      return { cle: carte.id, texte: carte.name, initiales: initialesDe(carte.name), fond: famille.fond, encre: famille.encre }
+      const famille = FAMILLES.find((f) => f.motif.test(`${carte.name} ${carte.codeCarte ?? ''} ${carte.id}`))
+      // ⚠ Le moteur sert le nom du statut dans SA langue a lui (souvent l'anglais, « Tough »), pas celle du
+      // plateau : sans traduction, un joueur FR voyait « Tough » au lieu de « Tenace » (constat du 04/11/2026,
+      // etiquette sur Rhino en telephone). `libelleStatut` connait les 7 statuts dans les deux langues ;
+      // un statut hors de cette liste (mod custom non reconnu) garde son nom brut, mieux qu'un texte vide.
+      const texte = famille ? libelleStatut(famille.statut, 1, langue) : carte.name
+      const couleurs = famille ?? AUTRE
+      return { cle: carte.id, texte, initiales: initialesDe(texte), fond: couleurs.fond, encre: couleurs.encre }
     })
 }
 

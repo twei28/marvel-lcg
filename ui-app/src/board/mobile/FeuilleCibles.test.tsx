@@ -88,12 +88,14 @@ describe('ce que la feuille montre', () => {
     expect(ronds).toHaveLength(2)
     expect(ronds[0]!.querySelector('.rond-pastille')!.textContent).toBe('3/3')
     expect(ronds[1]!.querySelector('.rond-pastille')!.textContent).toBe('1/3')
-    expect(ronds[0]!.querySelector('.rond-etats')!.textContent).toContain('Stunned')
+    // Le moteur sert le nom du statut en anglais (« Stunned ») ; `etatsDe` le traduit dans la langue
+    // du plateau (04/11/2026) : en français par defaut dans les tests (aucune langue posee), donc « Sonné ».
+    expect(ronds[0]!.querySelector('.rond-etats')!.textContent).toContain('Sonné')
   })
 
   it('chaque rond se lit au lecteur d ecran : nom, PV, statuts', () => {
     monter()
-    expect(screen.getByRole('button', { name: 'Sbire 1, 3/3, Stunned' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Sbire 1, 3/3, Sonné' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Sbire 2, 1/3' })).toBeTruthy()
   })
 
