@@ -8,6 +8,8 @@ import { TEXTES_EN_SCAN_FR } from './textes-en-scan-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
 import { TraductionPosee, type CotePaysage } from './TraductionPosee'
+import { erratumDeCarte, texteErratum, type ErratumRrg } from './errata-rrg'
+import { PastilleErrata } from './PastilleErrata'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 
 /** Texte officiel FR de la carte, de trois sources qui ne se marchent pas dessus.
@@ -55,6 +57,23 @@ export function useTraductionFr(codeCarte?: string, artAlternatif = false): stri
 }
 
 
+/**
+ * Le texte à poser sur une carte agrandie, et sa langue : l'ERRATA officiel s'il y en a un (dans la langue des scans actifs,
+ * posé sur n'importe quel scan : l'ancien texte imprimé est sous le voile), sinon la traduction. `langue` absente = le
+ * comportement historique de TraductionPosee. Un errata sans texte (titre, icône, classification) ne donne que la pastille.
+ */
+export function useTexteSurCarte(
+  codeCarte?: string,
+  artAlternatif = false
+): { texte: string; langue?: 'fr' | 'en'; erratum?: ErratumRrg } | undefined {
+  const traduction = useTraductionFr(codeCarte, artAlternatif)
+  const erratum = erratumDeCarte(codeCarte)
+  const langue: 'fr' | 'en' = scansFrActifs() ? 'fr' : 'en'
+  const texteErrata = erratum ? texteErratum(erratum, langue) : undefined
+  if (erratum && texteErrata) return { texte: texteErrata, langue, erratum }
+  return traduction ? { texte: traduction } : undefined
+}
+
 /** Côté de la boîte de texte d'une carte paysage, selon son type. */
 export function coteDuTexte(type: string | undefined): CotePaysage | undefined {
   if (type === 'MainScheme') return 'gauche'
@@ -78,10 +97,21 @@ export function useSurcoucheTraduction(carte: {
   paysage?: boolean
   facedown?: boolean
 }): ReactNode | undefined {
-  const traduction = useTraductionFr(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
+  const codeCarte = carte.facedown ? undefined : carte.codeCarte
+  const surcouche = useTexteSurCarte(codeCarte, carte.artAlternatif)
+  const erratum = erratumDeCarte(codeCarte)
   const cote = carte.paysage ? coteDuTexte(carte.type) : undefined
-  if (!traduction || !carte.imageUrl || (carte.paysage && !cote)) return undefined
-  return <TraductionPosee url={carte.imageUrl} texte={traduction} traits={carte.traits} paysage={cote} />
+  const voile =
+    surcouche && carte.imageUrl && !(carte.paysage && !cote) ? (
+      <TraductionPosee url={carte.imageUrl} texte={surcouche.texte} traits={carte.traits} paysage={cote} langue={surcouche.langue} />
+    ) : undefined
+  if (!voile && !erratum) return undefined
+  return (
+    <>
+      {voile}
+      {erratum ? <PastilleErrata erratum={erratum} cote={cote} /> : null}
+    </>
+  )
 }
 
 /** Le type de carte du moteur ramené à celui qui place la boîte de texte paysage. */

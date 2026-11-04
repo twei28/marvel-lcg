@@ -1,6 +1,10 @@
 from . import *
 
 # Steel Fist
+#
+# ERRATA RRG 1.7 / 1.8 (Annexe V, Mutant Genesis #8) : « You may discard a tough status card from your hero TO stun and confuse that enemy » (la fleche de cout devient « to »).
+#   Le script suivait DEJA le nouveau texte : le choix facultatif est tire apres les 5 degats, la carte Tenace est defaussee PUIS les deux statuts sont poses (aucun cout).
+#   Cas : `32008` de `tools/cas/errata_rrg.py`. Relu le 03/11/2026 : rien a changer.
 
 def GetAbilities() -> Sequence['Ability']:
 

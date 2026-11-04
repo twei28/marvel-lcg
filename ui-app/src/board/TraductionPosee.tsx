@@ -234,6 +234,7 @@ export function TraductionPosee({
   traits = [],
   paysage,
   onPose,
+  langue,
 }: {
   url: string
   texte: string
@@ -242,6 +243,9 @@ export function TraductionPosee({
   /** Traits imprimés : leur ligne est sous le cache, on la réécrit en tête. */
   traits?: readonly string[]
   onPose?: (pose: boolean) => void
+  /** Langue du texte posé. Sans elle : l'anglais sur un scan français seul, le français sinon (traduction). Un ERRATA
+      se pose dans la langue du joueur, sur n'importe quel scan : il la donne. */
+  langue?: 'fr' | 'en'
 }) {
   const [zoneImage, setZone] = useState<ZoneTexte | null>(null)
   // La même zone, ramenée au CADRE : le scan y est posé en `object-fit: cover`, donc rogné (voir `zoneDansLeCadre`).
@@ -493,13 +497,14 @@ export function TraductionPosee({
   if (!zone) return null
   const forme = formeDuCache(zone)
   // Scan francais seul posé en anglais : les traits restent ceux du moteur (anglais), sans table de traduction.
-  const traitsTraduits = SCANS_FR_SEULS.has(code) ? {} : TRAITS_FR
+  const enAnglais = langue ? langue === 'en' : SCANS_FR_SEULS.has(code)
+  const traitsTraduits = enAnglais ? {} : TRAITS_FR
   const ligneTraits = ligneDeTraits(traits, traitsTraduits)
   return (
     <div
       ref={boite}
       className={`traduction-posee${icones.length > 0 && !fond ? ' tp-avec-icones' : ''}`}
-      lang="fr"
+      lang={enAnglais ? 'en' : 'fr'}
       style={{
         left: `${zone.x0 * 100}%`,
         top: `${zone.y0 * 100}%`,

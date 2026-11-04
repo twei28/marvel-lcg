@@ -797,7 +797,7 @@
     "LOCATION"
    ],
    "set_name": "She-Hulk",
-   "text": "<b>Alter-Ego Action</b> <i>(thwart)</i>: Exhaust Superhuman Law Division and spend a [mental] resource → remove 2 threat from a scheme."
+   "text": "<b>Alter-Ego Action</b>: Exhaust Superhuman Law Division and spend a [mental] resource → remove 2 threat from a scheme."
   },
   {
    "card_id": "01027",
@@ -4669,7 +4669,7 @@
     "TITLE"
    ],
    "set_name": "",
-   "text": "Play only if your identity has the [[Avenger]] trait.\nAttach to a friendly character.\nAttached character gets +1 hit point and gains the [[Avenger]] trait."
+   "text": "Play only if your identity has the [[Avenger]] trait.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[Avenger]] trait."
   },
   {
    "card_id": "03026",
@@ -4764,7 +4764,7 @@
    },
    "traits": [],
    "set_name": "",
-   "text": "Attach to a side scheme. Max 1 per scheme.\n<b>Response</b>: When attached scheme is defeated, deal 4 damage to an enemy."
+   "text": "Attach to a side scheme. Max 1 per scheme.\n<b>Interrupt</b>: When attached scheme is defeated, deal 4 damage to an enemy."
   },
   {
    "card_id": "03033",
@@ -5677,7 +5677,8 @@
     "Stage": "1"
    },
    "traits": [],
-   "set_name": "Crossbones"
+   "set_name": "Crossbones",
+   "text": "<b>Contents:</b> Crossbones (I) and Crossbones (II). Crossbones, Experimental Weapons, and Standard Encounter sets. Three modular sets <i>(Hydra Assault, Weapon Master, and Legions of Hydra)</i>.\n<b>Setup:</b> Create the Experimental Weapons deck and set it next to the main scheme deck. (See rulebook page 5.)"
   },
   {
    "card_id": "04061b",
@@ -6756,7 +6757,7 @@
    },
    "traits": [],
    "set_name": "Red Skull",
-   "text": "<b>Contents:<\\/b> Red Skull (I) and Red Skull (II). Red Skull and Standard encounter sets. Two modular encounter sets <i>(Hydra Assault and Hydra Patrol).<\\/i>\\n<b>Setup:<\\/b> Put the Red House into play. Shuffle every other side scheme into the side-scheme deck and set it next to the encounter deck (see insert).\\nSet The Sleeper aside, out of play."
+   "text": "<b>Contents:</b> Red Skull (I) and Red Skull (II). Red Skull and Standard encounter sets. Two modular encounter sets <i>(Hydra Assault and Hydra Patrol).</i>\n<b>Setup:</b> Put the Red House into play. Shuffle every other encounter side scheme into the side-scheme deck and set it next to the encounter deck (see insert).\nSet The Sleeper aside, out of play."
   },
   {
    "card_id": "04128b",
@@ -6896,7 +6897,7 @@
     "CONDITION"
    ],
    "set_name": "Red Skull",
-   "text": "Incite 1.\r\nAttach to a side scheme.\r\n<b>Forced Response:</b> When attached side scheme is defeated, deal the first player an encounter card."
+   "text": "Incite 1.\r\nAttach to a side scheme.\r\n<b>Forced Interrupt:</b> When attached side scheme is defeated, deal the first player an encounter card."
   },
   {
    "card_id": "04136",
@@ -7986,7 +7987,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Thor",
-   "text": "<b>Hero Action</b>: Spend X [energy] resources → deal X damages to the villain and each minion engaged with you. This attack ignores tough statuses card if you have the [[Aerial]] trait."
+   "text": "<b>Hero Action</b>: Spend X [energy] resources → deal X damage to the villain and each minion engaged with you. This damage ignores tough status cards if you have the [[Aerial]] trait."
   },
   {
    "card_id": "06007",
@@ -8284,7 +8285,7 @@
     "ASGARD"
    ],
    "set_name": "Thor Nemesis",
-   "text": "<b>Interrupt</b>: When Loki would be defeated, discard the top card of the encounter deck. If that card is a treachery, heal all damage from Loki instead.\n<i>(Thor's nemesis minion.)</i>"
+   "text": "<b>Forced Interrupt</b>: When Loki would be defeated, discard the top card of the encounter deck. If that card is a treachery, heal all damage from Loki instead.\n<i>(Thor's nemesis minion.)</i>"
   },
   {
    "card_id": "06029",
@@ -9072,7 +9073,7 @@
     "SPY"
    ],
    "set_name": "Black Widow",
-   "text": "\"Widowmaker\" — <b>Response</b>: After you trigger the ability of a [[Preparation]] card you control, deal 1 damage to an enemy."
+   "text": "\"Widowmaker\" — <b>Response</b>: After you resolve the ability of a [[Preparation]] card you control, deal 1 damage to an enemy."
   },
   {
    "card_id": "08001b",
@@ -9873,7 +9874,7 @@
    },
    "traits": [],
    "set_name": "",
-   "text": "<b>Interrupt</b> <i>(defense)</i>: When a hero would take any amount of damage, reduce that amount by 1."
+   "text": "<b>Interrupt</b>: When a hero would take any amount of damage, reduce that amount by 1."
   },
   {
    "card_id": "09022",
@@ -10458,7 +10459,7 @@
    },
    "traits": [],
    "set_name": "Hulk",
-   "text": "<b><i>Give to the Bruce Banner player.</i></b>\nChange form <i>(flip your identity)</i>. Then:\n• If you are Bruce Banner, discard 2 cards from your hand. Discard this obligation.\n• If you are Hulk, exhaust your hero. Discard this obligation."
+   "text": "<b><i>Give to the Bruce Banner player.</i></b>\nChange form <i>(flip your identity)</i>.\n• If you are Bruce Banner, discard 2 cards from your hand. Discard this obligation.\n• If you are Hulk, exhaust your hero. Discard this obligation."
   },
   {
    "card_id": "10026",
@@ -12413,7 +12414,7 @@
     "CRIMINAL"
    ],
    "set_name": "Wasp Nemesis",
-   "text": "Guard.\n<b>Forced Interrupt</b>: When Beetle is defeated, choose to either spend a [physical] resource or shuffle Beetle into the encounter deck.\n<i>(Wasp's nemesis minion.)</i>"
+   "text": "Guard.\n<b>Forced Interrupt</b>: When Beetle is defeated, the defeating player chooses to either spend a [physical] resource or shuffle Beetle into the encounter deck.\n<i>(Wasp's nemesis minion.)</i>"
   },
   {
    "card_id": "13029",
@@ -15387,7 +15388,7 @@
     "ARTIFACT"
    ],
    "set_name": "Galactic Artifacts",
-   "text": "Attach to your identity.\r\nAttached character gets -1 THW, -1 ATK, and -1 DEF.\r\n<b>Hero Action:</b> Take 1 damage and spend [mental][mental] resources &#8594; discard this card. <i>(Any player can do this.)</i>"
+   "text": "Attach to your identity.\r\nAttached character gets -1 THW, -1 ATK, and -1 DEF.\r\n<b>Hero Action:</b> Take 1 damage and spend [mental][mental] resources &#8594; discard this card. Any player can do this."
   },
   {
    "card_id": "16124",
@@ -15416,7 +15417,7 @@
     "ARTIFACT"
    ],
    "set_name": "Galactic Artifacts",
-   "text": "Attach to your identity.\r\n<b>Forced Interrupt:</b> When your turn begins, place 1 poison counter here, the take 1 damage for each poison counter here.\r\n<b>Hero Action:</b> Spend 3 resources of different types &#8594; discard this card. <i>(Any player can do this.)</i>"
+   "text": "Attach to your identity.\r\n<b>Forced Interrupt:</b> When your turn begins, place 1 poison counter here, the take 1 damage for each poison counter here.\r\n<b>Hero Action:</b> Spend 3 resources of different types &#8594; discard this card. Any player can do this."
   },
   {
    "card_id": "16126",
@@ -16811,7 +16812,7 @@
     "GUARDIAN"
    ],
    "set_name": "",
-   "text": "<b>Interrupt</b>: When Cosmo attacks or thwarts, name a card type, then discard the top card of a deck. If that card is of the named type, Cosmo does not take consequential damage (the damage under THW or ATK) for this use."
+   "text": "<b>Interrupt</b>: When Cosmo attacks or thwarts, name a card type, then discard the top card of a player deck or the encounter deck. If that card is of the named type, Cosmo does not take consequential damage for this use."
   },
   {
    "card_id": "17021",
@@ -20152,7 +20153,7 @@
    },
    "traits": [],
    "set_name": "Thanos",
-   "text": "Hinder 1[per_hero]. Victory 1.\nThanos cannot take damage.<b> When Defeated:</b> Each player may spend up to 3 [physical] resources from their hand. Deal 2 damage to Thanos for each [physical] resource spent this way. This damage ignores the tough status card."
+   "text": "Hinder 1[per_hero]. Victory 1.\nThanos cannot take damage from player cards.<b> When Defeated:</b> Each player may spend up to 3 [physical] resources from their hand. Deal 2 damage to Thanos for each [physical] resource spent this way. This damage ignores the tough status card."
   },
   {
    "card_id": "21117",
@@ -20339,7 +20340,7 @@
     "WEAPON"
    ],
    "set_name": "Infinity Gauntlet",
-   "text": "Permanent. setup\n[star] <b>Forced Response</b>: After attached villain activates, resolve the <b> Special </b> ability of each [[infinity stone]] in play. Otherwise, put the top card of the [[infinity stone]] deck into play."
+   "text": "Permanent. Setup.\nAttach to the villain.\n[star] <b>Forced Response</b>: After attached villain activates against you, resolve the <b> Special </b> ability of each [[infinity stone]] in play. Otherwise, put the top card of the [[infinity stone]] deck into play."
   },
   {
    "card_id": "21130",
@@ -21702,7 +21703,7 @@
     "GUARDIAN"
    ],
    "set_name": "",
-   "text": "<b>Response:</b> After you play Eros from your hand, confuse a minion for each [mental] resource you used to pay for him."
+   "text": "<b>Response:</b> After you play Eros from your hand, for each [mental] resource you used to pay for him, choose a minion and confuse it."
   },
   {
    "card_id": "22012",
@@ -21909,7 +21910,7 @@
    },
    "traits": [],
    "set_name": "Nebula Nemesis",
-   "text": "<b>When Revealed:</b> Gamora attacks you. If no attack was made this way, this card gains surge. <i>(If the Gamora hero or ally is in play, she resolves her ATK against you without exhausting.)</i>"
+   "text": "<b>When Revealed:</b> Gamora attacks you. If the Gamora hero or ally is in play, she attacks you (resolve her ATK against you without exhausting her). If no attack was made this way, this card gains surge."
   },
   {
    "card_id": "22032",
@@ -22015,7 +22016,7 @@
     "SOLDIER"
    ],
    "set_name": "War Machine",
-   "text": "<b>Action</b>: Choose a War Machine card in your discard pile and shuffle it into your deck.\n<b>Forced Response</b>: After you change to this form, discard each ammo counter from your identity."
+   "text": "<b>Action</b>: Choose a War Machine card in your discard pile and shuffle it into your deck. (Limit once per phase.)\n<b>Forced Response</b>: After you change to this form, discard each ammo counter from your identity."
   },
   {
    "card_id": "23002",
@@ -23759,7 +23760,7 @@
     "DEFENSE"
    ],
    "set_name": "Valkyrie",
-   "text": "<b>Hero Interrupt</b>: When the enemy with Death-Glow attached attacks, declare Valkyrie the defender without exhausting her. She gets +2 DEF for this attack."
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When the enemy with Death-Glow attached attacks, declare Valkyrie the defender without exhausting her. She gets +2 DEF for this attack."
   },
   {
    "card_id": "25012",
@@ -24411,7 +24412,7 @@
     "ANDROID"
    ],
    "set_name": "",
-   "text": "<b>Interrupt:</b> When Machine Man attacks or thwarts, spend up to 3 resources of any type &#8594; Machine Man gets +1 THW and +1 ATK for each resource spent this way."
+   "text": "<b>Interrupt:</b> When Machine Man attacks or thwarts, spend up to 3 resources of any type &#8594; Machine Man gets +1 THW and +1 ATK for this use for each resource spent this way."
   },
   {
    "card_id": "26023",
@@ -24949,7 +24950,7 @@
    },
    "traits": [],
    "set_name": "Ghost-Spider",
-   "text": "<b>Give to the Gwen Stacy player.</b>\nSearch your deck, hand, discard pile, and play area for George Stacy and set him aside. Attach this obligation to him.\n<b>Alter-Ego Action</b>: Exhaust Gwen Stacy and remove this obligation from the game → add George Stacy to your hand."
+   "text": "<b>Give to the Gwen Stacy player.</b>\nSearch your deck, hand, discard pile, and play area for George Stacy and attach him facedown to this card.\n<b>Alter-Ego Action</b>: Exhaust Gwen Stacy and remove this obligation from the game → add George Stacy to your hand."
   },
   {
    "card_id": "27026",
@@ -25676,7 +25677,7 @@
     "SYMBIOTE"
    ],
    "set_name": "Venom",
-   "text": "Toughness. (This character enters play with a tough status card.)\n<i>Vengeance</i> — <b>Forced Response</b>: After you attack and damage Venom with a card you control, place 1 facedown boost card on your identity."
+   "text": "Toughness. (This character enters play with a tough status card.)\n<i>Vengeance</i> — <b>Forced Response</b>: After you or an ally you control attacks and damages Venom, place 1 facedown boost card on your identity."
   },
   {
    "card_id": "27074",
@@ -25695,7 +25696,7 @@
     "SYMBIOTE"
    ],
    "set_name": "Venom",
-   "text": "Toughness. Steady.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Tooth and Nail side scheme and put it into play. <i>(Shuffle.)</i>\n<i>Vengeance</i> — <b>Forced Response</b>: After you attack and damage Venom with a card you control, place 1 facedown boost card on your identity."
+   "text": "Toughness. Steady.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Tooth and Nail side scheme and put it into play. <i>(Shuffle.)</i>\n<i>Vengeance</i> — <b>Forced Response</b>: After you or an ally you control attacks and damages Venom, place 1 facedown boost card on your identity."
   },
   {
    "card_id": "27075",
@@ -25715,7 +25716,7 @@
     "SYMBIOTE"
    ],
    "set_name": "Venom",
-   "text": "Retaliate 1. Steady. Toughness.\n<b>When Revealed</b>: Place 2 facedown boost cards on each identity.\n<i>Retribution</i> — <b>Forced Response</b>: After you attack and damage Venom with a card you control, place 1 facedown boost card on your identity (2 facedown boost cards instead if this is the first attack this turn)."
+   "text": "Retaliate 1. Steady. Toughness.\n<b>When Revealed</b>: Place 2 facedown boost cards on each identity.\n<i>Retribution</i> — <b>Forced Response</b>: After you or an ally you control attacks and damages Venom, place 1 facedown boost card on your identity (2 facedown boost cards instead if this is the first attack this turn)."
   },
   {
    "card_id": "27076a",
@@ -27818,7 +27819,7 @@
     "INHUMAN"
    ],
    "set_name": "Nova",
-   "text": "<b>Hero Response</b>: After you play an event, exhaust Ms. Marvel and deal 1 damage to her → return that event to your hand."
+   "text": "<b>Hero Response</b>: After you play an event, exhaust Ms. Marvel and deal 1 damage to her → return that event to your hand from your discard pile."
   },
   {
    "card_id": "28003",
@@ -28711,7 +28712,7 @@
    },
    "traits": [],
    "set_name": "",
-   "text": "Max 1 per deck.\nPlay only if your identity has the [[Champion]] trait.\n<b>Hero Action</b>: Each [[champion]] character in play cannot take damage until the end of the round."
+   "text": "Max 1 per deck.\nPlay only if your identity has the [[Champion]] trait.\n<b>Hero Action</b>: Remove ‘Go for Champions!’ from the game &#8594; each [[champion]] character in play cannot take damage until the end of the round."
   },
   {
    "card_id": "29026",
@@ -29547,7 +29548,7 @@
     "TECH"
    ],
    "set_name": "SP//dr",
-   "text": "Permanent. This card's printed text box cannot be treated as if it were blank.\n<i>Return to Base</i> — <b>Forced Interrupt</b>: When you flip to this side, flip SP//dr to Peni Parker. Detach Peni Parker from here, moving all counters on her and cards attached to her to this card."
+   "text": "Permanent. This card's printed text box cannot be treated as if it were blank.\n<i>Return to Base</i> — <b>Forced Interrupt</b>: When you flip to this side, flip SP//dr to Peni Parker. Detach Peni Parker from here, moving all counters on this card and cards attached to this card to her."
   },
   {
    "card_id": "31002a",
@@ -29982,7 +29983,7 @@
     "CREATURE"
    ],
    "set_name": "SP//dr Nemesis",
-   "text": "<b>Forced Response</b>: After the engaged hero generates any number of resources, deal an equal amount of damage to that hero.\n<i>(SP//dr's nemesis minion.)</i>"
+   "text": "<b>Forced Response</b>: After the engaged player generates any number of resources, deal an equal amount of damage to that player’s hero.\n<i>(SP//dr's nemesis minion.)</i>"
   },
   {
    "card_id": "31028",
@@ -30296,7 +30297,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Colossus",
-   "text": "<b>Hero Action</b>: Deal 5 damage to an enemy. You may discard a tough status card from your hero → stun and confuse that enemy."
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. You may discard a tough status card from your hero to stun and confuse that enemy."
   },
   {
    "card_id": "32009",
@@ -30328,7 +30329,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Colossus",
-   "text": "<b>Alter-Ego Interrupt</b>: When the villain activates, change to hero form."
+   "text": "<b>Alter-Ego Interrupt</b>: When the villain would activate, change to hero form."
   },
   {
    "card_id": "32011",
@@ -31530,7 +31531,7 @@
    },
    "traits": [],
    "set_name": "Project Wideawake",
-   "text": "<b>When Defeated</b>: The first player searches the encounter deck and discard pile for a [[Sentinel]] minion and reveals it. Flip this card and put Jubilee into play, discarding any other version of Jubilee from play."
+   "text": "<b>When Defeated</b>: The first player searches the encounter deck and discard pile for a [[Sentinel]] minion and reveals it. Flip this card and put Jubilee into play, discarding any other ally version of Jubilee from play."
   },
   {
    "card_id": "32088b",
@@ -32530,7 +32531,7 @@
    },
    "traits": [],
    "set_name": "Magneto",
-   "text": "<b>Forced Response</b>: After you place a magnet counter on this scheme, if there are at least 3 magnet counters here, discard cards from the encounter deck until a [[Magnetic]] card is discarded. Reveal that card, then remove 3 magnet counters from this scheme."
+   "text": "<b>Forced Response</b>: After you place a magnet counter on this scheme, if there are at least 3 magnet counters here, remove 3 of them and discard cards from the encounter deck until a [[Magnetic]] card is discarded. Reveal that card."
   },
   {
    "card_id": "32142a",
@@ -32557,7 +32558,7 @@
    },
    "traits": [],
    "set_name": "Magneto",
-   "text": "<b>Forced Response</b>: After you place a magnet counter on this scheme, if there are at least 3 magnet counters here, discard cards from the encounter deck until a [[Magnetic]] card is discarded. Reveal that card, then remove 3 magnet counters from this scheme.",
+   "text": "<b>Forced Response</b>: After you place a magnet counter on this scheme, if there are at least 3 magnet counters here, remove 3 of them and discard cards from the encounter deck until a [[Magnetic]] card is discarded. Reveal that card.",
    "ability_link": "32141b"
   },
   {
@@ -32585,7 +32586,7 @@
    },
    "traits": [],
    "set_name": "Magneto",
-   "text": "<b>Forced Response</b>: After you place a magnet counter on this scheme, if there are at least 3 magnet counters here, discard cards from the encounter deck until a [[Magnetic]] card is discarded. Reveal that card, then remove 3 magnet counters from this scheme.\n<b>If this stage is completed, the players lose the game.</b>",
+   "text": "<b>Forced Response</b>: After you place a magnet counter on this scheme, if there are at least 3 magnet counters here, remove 3 of them and discard cards from the encounter deck until a [[Magnetic]] card is discarded. Reveal that card.\n<b>If this stage is completed, the players lose the game.</b>",
    "ability_link": "32141b"
   },
   {
@@ -34674,7 +34675,7 @@
     "MUTANT"
    ],
    "set_name": "Wolverine",
-   "text": "<i>Snikt!</i> - <b>Setup</b>: Search your deck and discard pile for the Wolverine's Claws upgrade and put it into play."
+   "text": "<i>Snikt!</i> - <b>Setup</b>: Put Wolverine’s Claws into play."
   },
   {
    "card_id": "35002",
@@ -34787,7 +34788,7 @@
     "ATTACK"
    ],
    "set_name": "Wolverine",
-   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If this attack defeats an enemy, you may take 2 damage → repeat this ability."
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If this attack defeats an enemy, you may take 2 damage to repeat this ability."
   },
   {
    "card_id": "35009",
@@ -35604,7 +35605,7 @@
    },
    "traits": [],
    "set_name": "Storm",
-   "text": "<b><i>Give to the Ororo Munroe player.</i></b>\r\nFlip to alter-ego form. You cannot change forms.\r\n<b>Alter-Ego Action:</b> Exhaust Ororo Munroe &#8594; remove Claustrophobia from the game."
+   "text": "<b><i>Give to the Ororo Munroe player.</i></b>\r\nFlip to alter-ego form. You cannot change to hero form.\r\n<b>Alter-Ego Action:</b> Exhaust Ororo Munroe &#8594; remove Claustrophobia from the game."
   },
   {
    "card_id": "36031",
@@ -36248,7 +36249,7 @@
     "PSIONIC"
    ],
    "set_name": "Exodus",
-   "text": "Attach to a minion. Otherwise, Psionic Shield gains surge.\n<b>Forced Interrupt</b>: When attached minion would leave play, instead heal all damage from that minion and put it back into play. Then, discard this attachment."
+   "text": "Attach to a minion. Otherwise, Psionic Shield gains surge.\n<b>Forced Interrupt</b>: When attached minion would leave play, instead heal all damage from that minion. Then, discard this attachment."
   },
   {
    "card_id": "37035",
@@ -36320,7 +36321,7 @@
     "X-MEN"
    ],
    "set_name": "Rogue",
-   "text": "<i>Skin Contact</i> − <b>Action</b>: Attach Touched to another character. You gain each of the attached character's [[TRAITS]] until the end of the round. (Limit once per round.)\n<b>Forced Response</b>: After the player phase begins, find Touched and set it aside."
+   "text": "<i>Skin Contact</i> − <b>Action</b>: Find Touched and attach it to another character. You gain each of the attached character's [[TRAITS]] until the end of the round. (Limit once per round.)\n<b>Forced Response</b>: After the player phase begins, find Touched and set it aside."
   },
   {
    "card_id": "38001b",
@@ -36336,7 +36337,7 @@
     "MUTANT"
    ],
    "set_name": "Rogue",
-   "text": "<b>Setup</b>: Set your Touched upgrade aside.\n<i>Withdrawn</i> − <b>Forced Response</b>: After you change to this form, set Touched aside."
+   "text": "<b>Setup</b>: Find your Touched upgrade and set it aside.\n<i>Withdrawn</i> − <b>Forced Response</b>: After you change to this form, find Touched and set it aside."
   },
   {
    "card_id": "38002",
@@ -36436,7 +36437,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Rogue",
-   "text": "<b>Hero Action</b>: Attach Touched to a character other than Rogue and deal 2 damage to that character → heal 2 damage from Rogue and ready her. You gain each of the attached character's [[TRAITS]] until the end of the round."
+   "text": "<b>Hero Action</b>: Find Touched and attach it to a character other than Rogue and deal 2 damage to that character → heal 2 damage from Rogue and ready her. You gain each of the attached character's [[TRAITS]] until the end of the round."
   },
   {
    "card_id": "38008",
@@ -36681,7 +36682,7 @@
    },
    "traits": [],
    "set_name": "Rogue Nemesis",
-   "text": "<b>When Defeated</b>: Search the encounter deck and discard pile for a copy of the Misled treachery and shuffle it into your deck."
+   "text": "<b>When Defeated</b>: The defeating player searches the encounter deck and discard pile for a copy of the Misled treachery and shuffles it into their deck."
   },
   {
    "card_id": "38027",
@@ -37204,7 +37205,7 @@
    },
    "traits": [],
    "set_name": "Spiral",
-   "text": "Permanent."
+   "text": "Permanent.\n<b>Forced Response</b>: After the last threat is removed from here, the player who removed that threat reveals the top card of the show deck and places 3[per_hero] threat here.\n<b>Hero Action</b>: Take 2 damage &#8594; remove 3 threat from here."
   },
   {
    "card_id": "39017",
@@ -37643,7 +37644,7 @@
    },
    "traits": [],
    "set_name": "Fantasy",
-   "text": "Surge."
+   "text": "Surge.\n<b>When Defeated</b>: In player order, each player may search their deck for a card and play that card, ignoring its resource cost. <i>(Shuffle.)</i>\n[star] <b>Boost</b>: Put this card into play."
   },
   {
    "card_id": "39046",
@@ -39662,7 +39663,7 @@
     "TECH"
    ],
    "set_name": "Military Grade",
-   "text": "Attach to your identity.\nTreat your identity's printed text box as if it were blank <i>(except for traits)</i>.\n<b>Action</b>: Choose to either exhaust a character you control or take 3 damage → discard this card. <i>(Any player can do this.)</i>"
+   "text": "Attach to your identity.\nTreat your identity's printed text box as if it were blank <i>(except for traits)</i>.\n<b>Action</b>: Choose to either exhaust a character you control or take 3 damage → discard this card. Any player can do this."
   },
   {
    "card_id": "40093",
@@ -43280,7 +43281,7 @@
     "SPECIALIZATION"
    ],
    "set_name": "",
-   "text": "Linked (Specialized Training).\r\nYour hero gets +4 hit points.\r\n<b>Response</b>: After your identity takes damage from an enemy attack, exhaust this card &#8594; draw 1 card."
+   "text": "Linked (Specialized Training).\r\nYour identity gets +4 hit points.\r\n<b>Response</b>: After your identity takes damage from an enemy attack, exhaust this card &#8594; draw 1 card."
   },
   {
    "card_id": "43037",
@@ -44600,7 +44601,7 @@
    },
    "traits": [],
    "set_name": "",
-   "text": "<b>Alter-Ego Action</b>: Search your deck and discard pile for an ally and an upgrade that can be attached to that ally. Add them to your hand. <i>(Shuffle.)</i>"
+   "text": "<b>Alter-Ego Action</b>: Search your deck and discard pile for an ally and an upgrade that can be attached to an ally. Add them to your hand. <i>(Shuffle.)</i>"
   },
   {
    "card_id": "45018",
@@ -49070,7 +49071,7 @@
     "X-MEN"
    ],
    "set_name": "",
-   "text": "<b>Action</b>: Deal 1 damage to another friendly character → until the end of the round, Rogue gains each of that character's [[Traits]] and adds that character's printed THW and ATK to her matching powers. (Limit once per round.)"
+   "text": "<b>Action</b>: Deal 1 damage to another friendly character → until the end of the round, Rogue gains each of that character's [[Traits]] and adds that character's base THW and ATK to her matching powers. (Limit once per round.)"
   },
   {
    "card_id": "48013",
@@ -49605,7 +49606,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Magneto",
-   "text": "<b>Hero Action</b>: Discard a minion with Wrapped in Metal attached → deal 5 damage to an enemy and stun it."
+   "text": "<b>Hero Action</b>: Discard a minion with Wrapped in Metal attached. Then, deal 5 damage to an enemy and stun it."
   },
   {
    "card_id": "49011",
@@ -52792,7 +52793,7 @@
     "THUNDERBOLT"
    ],
    "set_name": "Supersonic",
-   "text": "Villainous. Victory 1.\n[star] Each character without the [[Aerial]] trait cannot make basic defenses against MACH-IV's attacks."
+   "text": "Villainous. Victory 1.\n[star] Each character without the [[Aerial]] trait cannot defend against MACH-IV's attacks."
   },
   {
    "card_id": "50157",
@@ -54309,7 +54310,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Silk",
-   "text": "<b>Interrupt</b>: When you reveal a card from the same encounter set as a card tucked under your identity, exhaust Eidetic Memory → swap those cards. Reveal the card that had been tucked under Silk instead."
+   "text": "<b>Interrupt</b>: When you reveal a card from the same encounter set as a card tucked under your identity, exhaust Eidetic Memory → swap those cards. Reveal the card that had been tucked under your identity instead."
   },
   {
    "card_id": "52009",
@@ -55898,7 +55899,7 @@
     "TITLE"
    ],
    "set_name": "",
-   "text": "Play only if your identity has the [[S.H.I.E.L.D.]] trait.\nAttach to a friendly character.\nAttached character gets +1 hit point and gains the [[S.H.I.E.L.D.]] trait."
+   "text": "Play only if your identity has the [[S.H.I.E.L.D.]] trait.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[S.H.I.E.L.D.]] trait."
   },
   {
    "card_id": "54034",

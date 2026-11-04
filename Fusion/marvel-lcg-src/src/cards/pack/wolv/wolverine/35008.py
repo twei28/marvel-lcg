@@ -1,6 +1,10 @@
 from . import *
 
 # Berserker Barrage
+#
+# ERRATA RRG 1.7 / 1.8 (Annexe V, Wolverine Hero Pack #8) : « If this attack defeats an enemy, you may take 2 damage TO repeat this ability » (la fleche de cout devient « to »).
+#   Le script suivait DEJA le nouveau texte : les 2 degats sont un EFFET (`TakeDamage` puis `action`), pas un `CostFunc`.
+#   Cas : `35008` de `tools/cas/errata_rrg.py`. Relu le 03/11/2026 : rien a changer.
 
 def GetAbilities() -> Sequence['Ability']:
 

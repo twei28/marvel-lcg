@@ -44,7 +44,9 @@ import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } from './glisser/useGlisser'
 import { TraductionPosee } from './TraductionPosee'
 import { compterEmpilees, estEmpilee, libelleEmpilees } from './empilees'
-import { coteDuTexte, useTraductionFr } from './traduction-carte'
+import { coteDuTexte, useTexteSurCarte, useTraductionFr } from './traduction-carte'
+import { erratumDeCarte } from './errata-rrg'
+import { NoteErrata, PastilleErrata } from './PastilleErrata'
 import { texteEnHtml } from './traduction-posee'
 import { APERCU_JUMELLES_DOUBLE, jumellesPourApercu, type ApercuJumelle } from './panorama-jumelles'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
@@ -659,11 +661,19 @@ function ApercuAutreFace({
   paysageVisible: boolean
 }) {
   const estPaysage = face.isLandscape ?? paysageVisible
-  const traduction = useTraductionFr(face.code, face.artAlternatif)
+  const texteSurFace = useTexteSurCarte(face.code, face.artAlternatif)
+  const erratumFace = erratumDeCarte(face.code)
   const paysage = estPaysage ? coteDuTexte(face.type) : undefined
+  const voileFace =
+    texteSurFace && (!estPaysage || paysage) ? (
+      <TraductionPosee url={face.url} texte={texteSurFace.texte} traits={face.traits} paysage={paysage} langue={texteSurFace.langue} />
+    ) : undefined
   const surcouche =
-    traduction && (!estPaysage || paysage) ? (
-      <TraductionPosee url={face.url} texte={traduction} traits={face.traits} paysage={paysage} />
+    voileFace || erratumFace ? (
+      <>
+        {voileFace}
+        {erratumFace ? <PastilleErrata erratum={erratumFace} cote={paysage} /> : null}
+      </>
     ) : undefined
   return (
     <div className={`apercu-face apercu-face-autre${estPaysage ? ' est-paysage' : ''}`}>
@@ -717,18 +727,27 @@ function FaceCarteApercu({
   // La traduction se pose SUR le scan anglais quand sa zone de texte est
   // reconnue (portrait, et manigances en paysage) ; l'encadré sous la carte
   // reste le repli.
-  const traduction = useTraductionFr(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
+  const texteSurCarte = useTexteSurCarte(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
+  const erratum = carte.facedown ? undefined : erratumDeCarte(carte.codeCarte)
   const [traductionPosee, setTraductionPosee] = useState(false)
   const paysage = carteAgrandie.isLandscape ? coteDuTexte(carte.kind === 'main-scheme' ? 'MainScheme' : carte.kind === 'side-scheme' ? 'SideScheme' : undefined) : undefined
-  const surcouche =
-    traduction && carteAgrandie.imageUrl && (!carteAgrandie.isLandscape || paysage) ? (
+  const voile =
+    texteSurCarte && carteAgrandie.imageUrl && (!carteAgrandie.isLandscape || paysage) ? (
       <TraductionPosee
         url={carteAgrandie.imageUrl}
-        texte={traduction}
+        texte={texteSurCarte.texte}
         traits={carteAgrandie.traits}
         paysage={paysage}
+        langue={texteSurCarte.langue}
         onPose={setTraductionPosee}
       />
+    ) : undefined
+  const surcouche =
+    voile || erratum ? (
+      <>
+        {voile}
+        {erratum ? <PastilleErrata erratum={erratum} cote={paysage} /> : null}
+      </>
     ) : undefined
 
   // Rien sous la carte quand elle n'a ni jeton ni statut : le bloc vide
@@ -758,6 +777,8 @@ function FaceCarteApercu({
         />
         {/* Les traits qu'a le heros EN CE MOMENT, sous la carte (reglage « Traits du heros »). */}
         <PastillesTraits carte={carte} />
+        {/* L'ERRATA, en clair sous la carte : la souris n'atteint pas la pastille de l'aperçu. */}
+        {erratum ? <NoteErrata erratum={erratum} /> : null}
         {/* POURQUOI ON NE PEUT PAS LA JOUER, juste sous la carte : place apres
             les mots-cles, en petit, on ne le voyait pas (30/09/2026). Une ligne
             par action refusee : le joueur doit savoir LAQUELLE il peut

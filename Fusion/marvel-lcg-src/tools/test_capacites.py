@@ -40027,8 +40027,8 @@ CAS = [
         }
     },
     {
-        "nom": "45017 Suit Up [aoa] — contre-cas : aucune amelioration attachable a un allie, rien n'entre en main",
-        "pourquoi": "« for an ally AND an upgrade » : les deux ou aucun. Les allies sans amelioration attachable ne sont meme pas proposes, sinon le joueur choisit un allie et perd sa carte pour rien",
+        "nom": "45017 Suit Up [aoa] — aucune amelioration attachable a un allie : l'allie est pris quand meme, pas d'amelioration",
+        "pourquoi": "RRG 1.8, Search : chaque recherche est independante (« si le joueur trouve une carte qui repond aux criteres, il l'ajoute »). Maria Hill (01067) est un allie, 01065 n'est pas une amelioration attachable a un allie : seul l'allie entre en main (decision du 04/11 : on suit les regles a 100 %)",
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": [],
@@ -40045,12 +40045,13 @@ CAS = [
         "accepter_choix": True,
         "verifier": "etat_attendu",
         "attendu": {
-            "taille_main": 0
+            "en_main": ["01067"],
+            "taille_main": 1
         }
     },
     {
-        "nom": "45017 Suit Up [aoa] — Sidekick (45015, « identity-specific ally ») n'est prise qu'avec l'allie signature : Black Cat, pas Maria Hill",
-        "pourquoi": "le filtre est la VRAIE regle d'attache (Upgrade.CanAttachTo relit le selecteur de la capacite Play) : 45015 ne s'attache qu'a un allie de classe Hero, donc Black Cat (01002) et jamais Maria Hill (01067)",
+        "nom": "45017 Suit Up [aoa] — Sidekick (45015, « identity-specific ally ») est proposee quand l'allie signature Black Cat est dans le deck (l'allie pris est Maria Hill, premier du deck : plus contraint par l'amelioration)",
+        "pourquoi": "ERRATA RRG 1.8 (« to AN ally ») : le filtre est la VRAIE regle d'attache (Upgrade.CanAttachTo relit le selecteur de la capacite Play) sur UN allie quelconque ; 45015 ne s'attache qu'a un allie de classe Hero (Black Cat 01002, present dans le deck). ⚠ AVANT l'errata ce cas disait « jamais avec Maria Hill » : l'allie pris n'est plus contraint par l'amelioration, voir tools/cas/errata_rrg.py",
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": [],
@@ -40068,7 +40069,7 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {
             "en_main": [
-                "01002",
+                "01067",
                 "45015"
             ],
             "taille_main": 2

@@ -1,0 +1,99 @@
+/* La pastille « Errata » (PastilleErrata.tsx) : posée DANS le cadre du scan, en bas au centre, sans toucher au bandeau du bas
+   (nom du set et numéro) ; la bulle s'ouvre vers le haut, dans la carte. Les tailles suivent la largeur de la carte (cqw). */
+.scan-frame { container-type: inline-size; }
+
+.pastille-errata {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 5.2%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+  font-family: system-ui, 'Segoe UI', sans-serif;
+  outline: none;
+}
+.pastille-errata-droite { left: auto; right: 4%; bottom: 11%; transform: none; align-items: flex-end; }
+.pastille-errata-gauche { left: 4%; bottom: 11%; transform: none; align-items: flex-start; }
+.pastille-errata-droite .pastille-errata-bulle { left: auto; right: 0; transform: none; }
+.pastille-errata-gauche .pastille-errata-bulle { left: 0; transform: none; }
+.pastille-errata-mot {
+  display: inline-block;
+  padding: 0.35em 1.1em;
+  border-radius: 999px;
+  background: rgba(20, 20, 24, 0.9);
+  border: 1px solid #f4c430;
+  color: #f4c430;
+  font-size: clamp(8px, 3.6cqw, 14px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: help;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+.pastille-errata:focus-visible .pastille-errata-mot {
+  box-shadow: 0 0 0 2px #fff, 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+.pastille-errata-bulle {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(78cqw, 320px);
+  box-sizing: border-box;
+  padding: 0.7em 0.9em;
+  border-radius: 8px;
+  background: rgba(14, 14, 18, 0.96);
+  border: 1px solid #f4c430;
+  color: #f2f2f2;
+  font-size: clamp(9px, 3.8cqw, 15px);
+  line-height: 1.3;
+  text-align: left;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+.pastille-errata:hover .pastille-errata-bulle,
+.pastille-errata:focus .pastille-errata-bulle,
+.pastille-errata:focus-within .pastille-errata-bulle {
+  display: block;
+}
+.pastille-errata-bulle b {
+  display: block;
+  margin-bottom: 0.35em;
+  color: #f4c430;
+  font-size: 0.95em;
+}
+.pastille-errata-resume { display: block; }
+.pastille-errata-source {
+  display: block;
+  margin-top: 0.45em;
+  color: #a9a9b3;
+  font-size: 0.85em;
+}
+
+/* Sous la carte, dans l'aperçu au survol : la souris n'atteint pas la pastille, l'information est écrite. */
+.note-errata {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  margin-top: 6px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: rgba(244, 196, 48, 0.12);
+  border: 1px solid rgba(244, 196, 48, 0.55);
+  color: #f2f2f2;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.note-errata-mot {
+  flex: none;
+  color: #f4c430;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.note-errata-source { color: #a9a9b3; white-space: nowrap; }
