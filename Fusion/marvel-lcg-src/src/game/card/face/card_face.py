@@ -122,6 +122,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "ROXXON",
         # AJOUT (03/11/2026, pack rr Sentry) : traits imprimes absents de la liste.
         "DARK SENTRY", "SPLIT", "THERAPIST",
+        # AJOUT (04/11/2026, pack mm Multiple Man) : trait imprime sans effet propre (RRG, Traits), absent de la liste.
+        "DUPLICATE",
         # CORRECTIF (25/10/2026) : traits du pack custom spider_punisher (T-Wrecks, prefixe `sq`).
         "EARTH-71928", "WEB-SHOOTER",
         # CORRECTIF (26/10/2026) : trait du pack custom smasher (Phenexian, prefixe `sz`), les ameliorations Exospex.

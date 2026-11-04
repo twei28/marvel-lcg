@@ -2084,4 +2084,10 @@ export const HEROS_INFO = {
         civil: "Robert Reynolds",
         ennemis: "Void",
     },
+    "mm001a": {
+        bio: "Jamie Madrox est né avec le pouvoir mutant unique de se dupliquer sous l'effet d'un choc physique. Chacun de ses doubles (ses « Dupes ») est une entité indépendante, avec sa propre personnalité, qui peut agir de façon autonome, mais qui garde les souvenirs et les compétences de Jamie au moment de sa création. Quand il les réabsorbe, Jamie gagne tous leurs souvenirs et toutes leurs expériences, et il les envoie souvent en mission, parfois pendant des années, pour recueillir des informations ou acquérir de nouvelles compétences.",
+        bioEn: "Jamie Madrox was born with the unique mutant ability to duplicate himself upon physical impact. Each of his duplicates (or \"Dupes\") is an independent entity with their own personality and can act autonomously, but they retain Jamie's memories and skills at the time of their creation. When reabsorbed, Jamie gains all the memories and experiences of his dupes, and he often sends them off on missions (sometimes for years) to gather information or acquire new skills.",
+        civil: "Jamie Madrox",
+        ennemis: "Emperor Madrox",
+    },
 };

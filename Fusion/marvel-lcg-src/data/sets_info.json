@@ -2429,5 +2429,14 @@
   ],
   "max_id": "rr092"
  },
- "checksum": "608d78510a4fbc92d94fb995c5876fbee3c97aaeca301d1790d2fd48bc1b6e02"
+ "251. Custom (Multiple Man)": {
+  "name": "multiple_man",
+  "scenarios": [],
+  "heroes": [
+   "multiple_man"
+  ],
+  "encounters": [],
+  "max_id": "mm027"
+ },
+ "checksum": "52fa891b169f4a50b9dc735be17eee6e88673f69b159ff907e4d459fb2bb7a0c"
 }

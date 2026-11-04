@@ -136907,7 +136907,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "73ece60f4c0114b5004b7ff091414d069e446d23adf8b479fa1f47a1255ed6e0",
+ "checksum": "20b7511e8e7b7a966d802ed2a604e84a59adfed5c366f4ce8e9a06f177c1f29c",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -144076,6 +144076,509 @@
    "set_name": "",
    "text": "Max 1 per deck.",
    "custom": "Neptune"
+  }
+ ],
+ "multiple_man": [
+  {
+   "card_id": "mm001a",
+   "type": "Hero",
+   "name": "Multiple Man",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "1",
+    "HS": "5"
+   },
+   "traits": [
+    "X-FACTOR"
+   ],
+   "set_name": "Multiple Man",
+   "text": "When an effect targets \"You\" or \"Your Hero\" or \"Your Identity\" you may have it target a Dupe ally in play instead.\n<i>Makin' Dupes</i> — <b>Action</b>: Exhaust Multiple Man, discard 1 card → search your deck, hand, and discard pile for a Dupe ally and put it into play. <i>(Limit once per round.)</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm001b",
+   "type": "AlterEgo",
+   "name": "* Jamie Madrox",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "MUTANT"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<i>Reabsorb Dupe</i> — <b>Action</b>: <i>(Limit once per round.)</i> Discard a Dupe Ally from play, then choose 1:\n• Heal 2 damage from Jamie Madrox.\n• Remove 2 threat from a scheme.\n• Multiple Man and all Dupe allies get +1 to all basic powers until the end of the round.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm002",
+   "type": "Ally",
+   "name": "Dupe",
+   "subtitle": "Jamie Madrox",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DUPLICATE",
+    "X-FACTOR"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<i>Separate Lives</i> – <b>Action</b>: Exhaust this card → generate its printed resource to pay for an identity-specific card.\n<i>\"He's his own best friend.\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm003",
+   "type": "Ally",
+   "name": "Dupe",
+   "subtitle": "Jamie Madrox",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DUPLICATE",
+    "X-FACTOR"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<i>Separate Lives</i> – <b>Action</b>: Exhaust this card → generate its printed resource to pay for an identity-specific card.\n<i>\"He's his own best friend.\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm004",
+   "type": "Ally",
+   "name": "Dupe",
+   "subtitle": "Jamie Madrox",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DUPLICATE",
+    "X-FACTOR"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<i>Separate Lives</i> – <b>Action</b>: Exhaust this card → generate its printed resource to pay for an identity-specific card.\n<i>\"He's his own best friend.\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm005",
+   "type": "Ally",
+   "name": "Dupe",
+   "subtitle": "Jamie Madrox",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DUPLICATE",
+    "X-FACTOR"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<i>Separate Lives</i> – <b>Action</b>: Exhaust this card → generate its printed resource to pay for an identity-specific card.\n<i>\"He's his own best friend.\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm006",
+   "type": "Event",
+   "name": "Someone's Got This",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DUPLICATE",
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Then, remove 1 threat from each scheme in play for each Dupe ally in play.\n<i>\"Surely ONE of you is man enough for the job…\"</i>\n<i>\"We're all the same man, sir!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm007",
+   "type": "Event",
+   "name": "Someone's Got This",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DUPLICATE",
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Then, remove 1 threat from each scheme in play for each Dupe ally in play.\n<i>\"Surely ONE of you is man enough for the job…\"</i>\n<i>\"We're all the same man, sir!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm008",
+   "type": "Event",
+   "name": "We've Got This",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "DUPLICATE",
+    "SUPERPOWER"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Then, choose a player and deal 1 damage to the villain and each enemy engaged with that player for each Dupe ally in play.\n<i>\"Got him!\"</i>\n<i>\"Got him!\"</i>\n<i>\"Got him!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm009",
+   "type": "Event",
+   "name": "We've Got This",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "DUPLICATE",
+    "SUPERPOWER"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Then, choose a player and deal 1 damage to the villain and each enemy engaged with that player for each Dupe ally in play.\n<i>\"Got him!\"</i>\n<i>\"Got him!\"</i>\n<i>\"Got him!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm010",
+   "type": "Event",
+   "name": "He's Got This",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "DUPLICATE"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you take damage from an attack, discard 1 Dupe ally from play → prevent all damage from that attack. Search your deck, hand, and discard pile for a different Dupe ally and put it into play exhausted.\n<i>\"You'll thank me later! . . . Maybe!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm011",
+   "type": "Event",
+   "name": "He's Got This",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "DUPLICATE"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you take damage from an attack, discard 1 Dupe ally from play → prevent all damage from that attack. Search your deck, hand, and discard pile for a different Dupe ally and put it into play exhausted.\n<i>\"You'll thank me later! . . . Maybe!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm012",
+   "type": "PlayerSideScheme",
+   "name": "Madrox Prime",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "StartingThreat": "4",
+    "Victory": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Multiple Man",
+   "text": "Victory 0. Only a Dupe ally can remove threat from this scheme.\n<b>Hero Response</b>: After this side scheme is defeated, return the Dupe ally that defeated it to your hand → heal 2 damage from Multiple Man.\nWhile Madrox Prime is in the victory display, Multiple Man gains +1 ATK, and the <i>Makin' Dupes</i> ability does not require exhausting.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm013",
+   "type": "PlayerSideScheme",
+   "name": "Madrox, Agent of S.H.I.E.L.D.",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "StartingThreat": "4",
+    "Victory": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Multiple Man",
+   "text": "Victory 0. Only a Dupe ally can remove threat from this scheme.\n<b>Hero Response</b>: After this side scheme is defeated, return the Dupe ally that defeated it to your hand → deal 2 damage to an enemy.\nWhile Madrox, Agent of S.H.I.E.L.D. is in the victory display, Multiple Man gains +1 THW, the [[S.H.I.E.L.D.]] trait, and your ally limit is increased by 1.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm014",
+   "type": "PlayerSideScheme",
+   "name": "Prepare For Future Tragedy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "StartingThreat": "4",
+    "Victory": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Multiple Man",
+   "text": "Victory 0. Only a Dupe ally can remove threat from this scheme.\n<b>Hero Response</b>: After this side scheme is defeated, return the Dupe ally that defeated it to your hand → remove 2 threat from a different scheme.\nWhile Prepare For Future Tragedy is in the victory display, Multiple Man gains +1 DEF, and Dupe allies gain Toughness.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm015",
+   "type": "Upgrade",
+   "name": "Kinetic Absorption Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Hero Interrupt</b>: When Multiple Man is dealt damage from an attack, exhaust this card → choose 1:\n• Reduce the amount of damage taken by 1.\n• Search your hand, deck, and discard pile for a Dupe ally and put it into play. <i>(Shuffle.)</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm016",
+   "type": "Support",
+   "name": "X-Factor Investigations",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "X-FACTOR"
+   ],
+   "set_name": "Multiple Man",
+   "text": "<b>Alter Ego Response</b>: After Jamie Madrox defeats a side scheme, exhaust X-Factor Investigations → remove 3 threat from the main scheme.\n<i>X-Factor Investigations. When your case is just too weird.</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm017",
+   "type": "Obligation",
+   "name": "Got Duped!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Jamie Madrox"
+   },
+   "traits": [],
+   "set_name": "Multiple Man",
+   "text": "<b><i>Give to the Jamie Madrox player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Jamie Madrox → remove Got Duped! from the game.\n• Discard 1 Dupe ally you control. If no ally was discarded this way, search the encounter deck, encounter discard pile, and set-aside area for a Dupes Gone Bad minion and put it into play. Discard this obligation.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm018",
+   "type": "SideScheme",
+   "name": "Who's Killing Dupes?",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Boost": "2",
+    "Amplify": "1"
+   },
+   "traits": [],
+   "set_name": "Multiple Man Nemesis",
+   "text": "<i>Dead dupes are starting to show up everywhere. This calls for some discrete investigation.</i>\nOnly a Dupe ally can remove threat from this scheme.\n<b>When Revealed</b>: Discard a Dupe ally from play.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm019",
+   "type": "Minion",
+   "name": "* Emperor Madrox",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "3*",
+    "SCH": "1",
+    "Boost": "2",
+    "Hazard": "1",
+    "Nemesis": "Multiple Man"
+   },
+   "traits": [
+    "DUPLICATE"
+   ],
+   "set_name": "Multiple Man Nemesis",
+   "text": "[star] When Emperor Madrox attacks you, his attack targets an ally you control.\nDupe allies may not attack Emperor Madrox.\n<i>(Multiple Man's nemesis minion.)</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm020",
+   "type": "Minion",
+   "name": "Dupes Gone Bad",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "DUPLICATE"
+   ],
+   "set_name": "Multiple Man Nemesis",
+   "text": "<b>When Revealed</b>: Add 1 threat to each side scheme in play.\n[star] <b>Boost</b>: Add 1 threat to each side scheme in play.\n<i>\"HIT HIM! HIT HIM!!\"</i>\n<i>\"COME ON BUB, HIT HIM AGAIN!!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm021",
+   "type": "Minion",
+   "name": "Dupes Gone Bad",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "DUPLICATE"
+   ],
+   "set_name": "Multiple Man Nemesis",
+   "text": "<b>When Revealed</b>: Add 1 threat to each side scheme in play.\n[star] <b>Boost</b>: Add 1 threat to each side scheme in play.\n<i>\"HIT HIM! HIT HIM!!\"</i>\n<i>\"COME ON BUB, HIT HIM AGAIN!!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm022",
+   "type": "Minion",
+   "name": "Dupes Gone Bad",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "DUPLICATE"
+   ],
+   "set_name": "Multiple Man Nemesis",
+   "text": "<b>When Revealed</b>: Add 1 threat to each side scheme in play.\n[star] <b>Boost</b>: Add 1 threat to each side scheme in play.\n<i>\"HIT HIM! HIT HIM!!\"</i>\n<i>\"COME ON BUB, HIT HIM AGAIN!!\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm023",
+   "type": "Event",
+   "name": "Got Your Back",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "Play only if you control an ally while you have 3 or fewer remaining hit points.\n<b>Hero Action</b>: Each character you control cannot take damage until the end of the round.\n<i>\"I can be pretty self-reliant, especially when I have other selves to rely on!\" —Jamie Madrox</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm024",
+   "type": "Event",
+   "name": "Ultimate Teamwork",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b>: Choose a team trait. If you control at least 4 characters that share the chosen team trait, they each get +2 ATK until the end of the phase.\n<i>\"There's no I in team. But there is a ME.\" —Multiple Man</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm025",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm026",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "mm027",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "R. Tim Morris"
   }
  ]
 }

@@ -949,6 +949,13 @@
    "cartes": 93,
    "depuis": "2026-11-03",
    "note": "Cree le 03/11/2026 depuis Sentry.zip (Neptune, version New ; scans EN seuls). rr001a/b identite (Sentry / Robert Reynolds), rr002-rr014 set heros (16 cartes : Duality Aspect, C.L.O.C., Cornelius Worth, The Watchtower, Endless Power, Molecularkinesis, Pacifying Presence, Purposeful Disparity, Energy Flare, Global Influence x2, Nigh-Invulnerability x2, Obliterate, Unrivaled Might x2), rr015 obligation Fractured Psyche, rr016-rr019 set nemesis (Void, Monster of Antithesis, Angel of Death, Equilibrium Intent x2), rr020-rr023 modulaire Merged Sentry (Merged Sentry, External Darkness, Newfound Nature, Scourge Blast x3), rr024-rr092 reskins d'aspect (officielles, ability_link). Quatre decklists d'auteur (Aggression = deck de base, Justice/Leadership/Protection = variantes)."
+  },
+  "mm": {
+   "pack": "multiple_man",
+   "libelle": "251. Custom (Multiple Man)",
+   "cartes": 28,
+   "depuis": "2026-11-04",
+   "note": "Cree le 04/11/2026 depuis le zip « Multiple Man » (R. Tim Morris ; scans EN seuls). mm001a/b identite (Multiple Man / Jamie Madrox), mm002-mm016 set heros (15 cartes : Dupe x4, Someone's Got This x2, We've Got This x2, He's Got This x2, 3 complots annexes joueur Madrox Prime / Madrox Agent of S.H.I.E.L.D. / Prepare For Future Tragedy, Kinetic Absorption Suit, X-Factor Investigations), mm017 obligation Got Duped!, mm018-mm022 set nemesis (Who's Killing Dupes?, Emperor Madrox, Dupes Gone Bad x3), mm023-mm024 aspect Leadership de l'auteur (Got Your Back, Ultimate Teamwork), mm025-mm027 reskins Energy/Genius/Strength. Un seul deck (decklist Leadership de l'auteur, 40 cartes)."
   }
  }
 }

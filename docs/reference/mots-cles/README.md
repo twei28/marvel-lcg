@@ -368,3 +368,6 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - [x] consequential.md
 - [x] malevolent.md (maison)
 - [x] cancel.md (ajoute le 03/11/2026, Sentry rr007)
+- [x] duplicate.md (trait maison, ajoute le 04/11/2026, Multiple Man mm)
+- [x] dupe.md (nom d'allie maison, Multiple Man mm)
+- [x] x-factor.md (trait officiel, Multiple Man mm)
