@@ -327,12 +327,24 @@
     // Le relevé des illustrations. Même condition d'affichage, et même
     // remarque : /save_images_cartes refuse l'écriture (403) à qui n'est pas
     // l'administrateur, quoi que montre ce bouton.
+    //
+    // ⚠ ORIGINE DE LA PAGE COURANTE, PAS `origineSite` (04/11/2026). Contrairement
+    // au Card Maker (`/createur-cartes.html`, servi par le SITE lui-même,
+    // `_route_createur` dans orchestrateur.py), le relevé des illustrations et les
+    // palettes de héros ne vivent QUE dans le MOTEUR de la table (page statique +
+    // `/get_palettes_heros`, `/save_palette_heros`) : orchestrateur.py n'a aucune
+    // route pour elles. Le correctif du 29/10/2026 (052f0b2b, « les boutons
+    // visent le vrai site ») les a fait suivre `origineSite` par erreur, en même
+    // temps que les boutons du Card Maker : depuis une vraie table
+    // (pN.narwhalchampions.com), ouvrir `origineSite + '/palettes-heros.html'`
+    // retombe sur le domaine nu, qui ne sert ni la page ni ses API — « Introuvable ».
+    // `window.location.origin` reste la table courante, que ce soit le site ou Play.
     var releve = document.createElement('button');
     releve.type = 'button';
     releve.textContent = '🖼️ ' + t('Relevé des illustrations');
     releve.title = t('Dire qui est dessiné sur chaque carte');
     releve.addEventListener('click', function () {
-      window.open(origineSite + '/releve-images.html', '_blank', 'noopener');
+      window.open(window.location.origin + '/releve-images.html', '_blank', 'noopener');
     });
     rangee.append(releve);
 
@@ -344,7 +356,7 @@
     palettes.textContent = '🎨 ' + t('Palettes des héros');
     palettes.title = t('Corriger la couleur du fond de plateau');
     palettes.addEventListener('click', function () {
-      window.open(origineSite + '/palettes-heros.html', '_blank', 'noopener');
+      window.open(window.location.origin + '/palettes-heros.html', '_blank', 'noopener');
     });
     rangee.append(palettes);
 
