@@ -49,6 +49,24 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-04",
         genre: "heros",
+        fr: "Multiple Man (Jamie Madrox) rejoint le roster, avec ses alliés Dupe, ses complots annexes à récompense et sa némésis Emperor Madrox.",
+        en: "Multiple Man (Jamie Madrox) joins the roster, with his Dupe allies, his payoff side schemes and his Emperor Madrox nemesis.",
+    },
+    {
+        date: "2026-11-04",
+        genre: "correction",
+        fr: "Sur le plateau du téléphone, le statut « Tough » s'affichait parfois en anglais au lieu de « Tenace » en français : corrigé.",
+        en: "On the phone board, the “Tough” status sometimes showed in English instead of its French translation: fixed.",
+    },
+    {
+        date: "2026-11-04",
+        genre: "jeu",
+        fr: "Écran de sélection des héros : la recherche prend moins de place, et le bouton « Fan-made » se repère plus facilement.",
+        en: "Hero selection screen: the search bar takes up less room, and the “Fan-made” button is easier to spot.",
+    },
+    {
+        date: "2026-11-04",
+        genre: "heros",
         fr: "Sentry (Robert Reynolds) rejoint le roster, avec ses quatre decks, sa némésis le Void, son obligation et le modulaire Merged Sentry.",
         en: "Sentry (Robert Reynolds) joins the roster, with his four decks, his nemesis the Void, his obligation and the Merged Sentry modular set.",
     },
