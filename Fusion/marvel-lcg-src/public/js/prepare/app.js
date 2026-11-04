@@ -5441,6 +5441,37 @@ function verifierDeck(deck) {
             ecarts.push(`${propre} ×${nombre} — ${t("maximum")} ${max}`);
         }
     }
+
+    // Restriction de construction propre à CERTAINS héros (desc de l'alter-ego, ex. dm001b 3-D Man :
+    // "your deck must include only 3-cost cards (except for resource cards). You may have events from up to
+    // 3 total aspects"). Rien ici pour l'immense majorité des héros (desc.DeckCost / DeckMaxEventAspects absents).
+    const alterEgoId = (deck.hero && deck.hero[0] || "").split(",")[1];
+    const alterEgo = alterEgoId ? cards.get(alterEgoId) : null;
+    const coutImpose = alterEgo && alterEgo.desc && parseInt(alterEgo.desc.DeckCost, 10);
+    if (coutImpose) {
+        for (const id of personnalisable) {
+            const c = cards.get(id);
+            if (!c || c.type === "Resource") continue;
+            const cout = parseInt(c.cost, 10);
+            if (Number.isFinite(cout) && cout !== coutImpose) {
+                const propre = String(_titre(id)).replace(/^\*\s*/, "");
+                ecarts.push(`${propre} — ${t("coût")} ${cout} (${t("doit valoir")} ${coutImpose})`);
+            }
+        }
+    }
+    const aspectsMax = alterEgo && alterEgo.desc && parseInt(alterEgo.desc.DeckMaxEventAspects, 10);
+    if (aspectsMax) {
+        const aspectsEvenements = new Set(
+            personnalisable
+                .filter((id) => { const c = cards.get(id); return c && c.type === "Event"; })
+                .map((id) => cards.aspectOf(id))
+                .filter((a) => a && a !== "basic")
+        );
+        if (aspectsEvenements.size > aspectsMax) {
+            ecarts.push(`${[...aspectsEvenements].join(", ")} — ${t("événements de")} ${aspectsEvenements.size} ${t("aspects, maximum")} ${aspectsMax}`);
+        }
+    }
+
     return ecarts;
 }
 

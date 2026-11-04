@@ -445,6 +445,10 @@ export const DICO_EN_BASE = {
     "Hors règles": "Off-rules",
     "minimum": "minimum",
     "maximum": "maximum",
+    "coût": "cost",
+    "doit valoir": "must be",
+    "événements de": "events across",
+    "aspects, maximum": "aspects, maximum",
     "Energy · Genius · Strength — même collection": "Energy · Genius · Strength — same art set",
 
     /* ---- Import marvelcdb ---- */
