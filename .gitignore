@@ -198,3 +198,6 @@ kit-code-tomes/
 Fusion/marvel-lcg-src/tools/createur-cartes/reference/
 Fusion/marvel-lcg-src/public/createur-cartes/_essai/
 donnees-createur/
+
+# Rangement de la racine (04/11/2026) : zips et fichiers en vrac, hors depot (voir archives/LISEZ-MOI.md)
+/archives/*/
