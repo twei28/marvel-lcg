@@ -1,67 +1,68 @@
 {
-    "version": "0.5.8",
-    "name": "Carnage (Eddie Brock)",
-    "metadata": {
-        "author": "Neptune",
-        "url": "",
-        "note": "Pack « Carnage (Eddie Brock) » (Neptune, zip carnage.zip : PNG 1500x2150 + PDF d'impression plus ancien ; les PNG et les pages A4 PNG priment). Deck de heros = les 15 cartes n/15 (ca002 Spider-Man, ca003 Symbiote Hive-Mind, ca004 Lethal Restraint, ca005 Probing Minds, ca006 Frenzied Violence, ca007 Hunting Hosts, ca008 Amorphous Arsenal, ca009 Klyntar Bond, ca010 Sinister Flight x2, ca011 Vicious Lashing x2, ca012 Chomp, ca013 Rend x2). Obligation Essential Bloodlust (ca014), set nemesis Carnage Nemesis (ca015 Torment, ca016 Meticulous Targeting, ca017 Death Spiral, ca018 Closing the Loops x2), modulaire Twisted Killers (ca019-ca023). player_deck = decklist imprimee de l'auteur, recopiee telle quelle MOINS la ligne « Pacifying Presence » (n°6 des cartes de heros) : aucun scan ni aucune carte ; decision de l'utilisateur du 03/11/2026, carte oubliee par l'auteur, ligne laissee vide. Les Basics Energy/Genius/Strength/Symbiote Suit de la liste sont les reskins ca025-ca027/ca034 (art de l'auteur, valeurs de 01088-01090 et 27191).",
-        "variante_nom": "Agression (precon)"
-    },
-    "hero": [
-        "ca001a,ca001b"
-    ],
-    "hero_deck": [
-        "ca002",
-        "ca003",
-        "ca004",
-        "ca005",
-        "ca006",
-        "ca007",
-        "ca008",
-        "ca009",
-        "ca010",
-        "ca010",
-        "ca011",
-        "ca011",
-        "ca012",
-        "ca013",
-        "ca013"
-    ],
-    "set_aside": [],
-    "obligations": [
-        "ca014"
-    ],
-    "nemesis_set": [
-        "ca015",
-        "ca016",
-        "ca017",
-        "ca018",
-        "ca018"
-    ],
-    "player_deck": [
-        "18011",
-        "04040",
-        "18012",
-        "16043",
-        "16043",
-        "01053",
-        "09037",
-        "09037",
-        "10015",
-        "10015",
-        "21046",
-        "56013",
-        "01057",
-        "16045",
-        "28016",
-        "05031",
-        "08013",
-        "29017",
-        "18015",
-        "19016",
-        "ca025",
-        "ca026",
-        "ca027",
-        "ca034"
-    ]
+  "version": "0.5.8",
+  "name": "Carnage (Eddie Brock)",
+  "metadata": {
+    "author": "Neptune",
+    "url": "",
+    "note": "Pack « Carnage (Eddie Brock) » (Neptune, zip carnage.zip : PNG 1500x2150 + PDF d'impression plus ancien ; les PNG et les pages A4 PNG priment). Deck de heros = les 15 cartes n/15 (ca002 Spider-Man, ca003 Symbiote Hive-Mind, ca004 Lethal Restraint, ca005 Probing Minds, ca006 Frenzied Violence, ca007 Hunting Hosts, ca008 Amorphous Arsenal, ca009 Klyntar Bond, ca010 Sinister Flight x2, ca011 Vicious Lashing x2, ca012 Chomp, ca013 Rend x2). Obligation Essential Bloodlust (ca014), set nemesis Carnage Nemesis (ca015 Torment, ca016 Meticulous Targeting, ca017 Death Spiral, ca018 Closing the Loops x2), modulaire Twisted Killers (ca019-ca023). player_deck = decklist imprimee de l'auteur, recopiee telle quelle MOINS la ligne « Pacifying Presence » (n°6 des cartes de heros) : aucun scan ni aucune carte ; decision de l'utilisateur du 03/11/2026, carte oubliee par l'auteur, ligne laissee vide. Les Basics Energy/Genius/Strength/Symbiote Suit de la liste sont les reskins ca025-ca027/ca034 (art de l'auteur, valeurs de 01088-01090 et 27191). | Correction 04/11 : Enhanced Physique (ca031) avait ete oubliee dans la decklist (deck a 39) ; ajoutee -> 40.",
+    "variante_nom": "Agression (precon)"
+  },
+  "hero": [
+    "ca001a,ca001b"
+  ],
+  "hero_deck": [
+    "ca002",
+    "ca003",
+    "ca004",
+    "ca005",
+    "ca006",
+    "ca007",
+    "ca008",
+    "ca009",
+    "ca010",
+    "ca010",
+    "ca011",
+    "ca011",
+    "ca012",
+    "ca013",
+    "ca013"
+  ],
+  "set_aside": [],
+  "obligations": [
+    "ca014"
+  ],
+  "nemesis_set": [
+    "ca015",
+    "ca016",
+    "ca017",
+    "ca018",
+    "ca018"
+  ],
+  "player_deck": [
+    "18011",
+    "04040",
+    "18012",
+    "16043",
+    "16043",
+    "01053",
+    "09037",
+    "09037",
+    "10015",
+    "10015",
+    "21046",
+    "56013",
+    "01057",
+    "16045",
+    "28016",
+    "05031",
+    "08013",
+    "29017",
+    "18015",
+    "19016",
+    "ca025",
+    "ca026",
+    "ca027",
+    "ca031",
+    "ca034"
+  ]
 }
