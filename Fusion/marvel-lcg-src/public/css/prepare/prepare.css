@@ -1527,8 +1527,12 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-filtres{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .tb-merci{font-size:13px;line-height:1.4;color:var(--affiche-jaune);opacity:.9}
 .tb-merci b{font-weight:600}
-.tb-search{flex:1 1 200px;min-width:0;min-height:36px;border:3px solid #1e1e1e;background:#1e1e1e;box-shadow:4px 4px 0 #1e1e1e}
+.tb-search{flex:0 1 50%;min-width:140px;min-height:36px;border:3px solid #1e1e1e;background:#1e1e1e;box-shadow:4px 4px 0 #1e1e1e}
 .tb-search:focus{border-color:var(--affiche-jaune);box-shadow:4px 4px 0 #1e1e1e}
+/* Demande du 04/11/2026 : la recherche ne prend plus que la moitie de la barre, les trois
+   filtres (Favoris, vague, Fan-made) grandissent dans l'espace libere a la place. */
+.tb-filtres > .tampon{flex:1 1 0}
+.tampon.fan-made:not(.on){border-color:var(--affiche-jaune);color:var(--affiche-jaune)}
 .tb-roster{
   flex:1 1 auto;min-height:0;max-height:none;
   display:grid;grid-template-columns:repeat(auto-fill,var(--affiche-portrait,104px));grid-auto-rows:var(--affiche-portrait-h,148px);justify-content:space-between;gap:8px;

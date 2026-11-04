@@ -3104,7 +3104,7 @@ function stepTeam() {
                 onchange: (e) => { f.vague = e.target.value; refreshHeroGrid(); },
             }, el("option", { value: "" }, t("Toutes les vagues"))),
             el("button", {
-                class: "tampon" + (f.homebrew ? " on" : ""),
+                class: "tampon fan-made" + (f.homebrew ? " on" : ""),
                 title: t("Héros fan-made, hors de toute extension officielle"),
                 onclick: (e) => {
                     f.homebrew = !f.homebrew;
