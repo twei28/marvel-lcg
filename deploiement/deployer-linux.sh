@@ -312,9 +312,8 @@ attendre_echeance() {
 images_custom() {
   # ⚠ TROUVE LE 21/10/2026, PREMIER VRAI DEPLOIEMENT REEL AVEC CE SCRIPT :
   # `deployer.ps1` avait sa propre etape « Images custom » (comparaison taille
-  # par taille, assets/pics SEUL — assets/pics-fr est un depot ponctuel, fait
-  # a la main, jamais resynchronise ici) ; ce script-ci n'avait AUCUN
-  # equivalent. L'archive de code exclut deja `assets/pics` (voir plus bas,
+  # par taille, assets/pics SEUL). Ce script-ci n'avait AUCUN equivalent.
+  # L'archive de code exclut deja `assets/pics` (voir plus bas,
   # "les scans voyagent par une etape a part") : sans cette fonction, un scan
   # tout neuf (ex. les portraits Quasar/Binary de Galactic Storm) n'atteint
   # JAMAIS le serveur, silencieusement — la carte manque a l'ecran, rien ne le
@@ -326,12 +325,26 @@ images_custom() {
   local cible="$DIST/Fusion/marvel-lcg-src/assets/pics/"
   if [ "$REEL" -eq 0 ]; then
     dire "[simulation] rsync -az --delete $source -> $cible"
+    dire "[simulation] rsync -az --delete $RACINE/Fusion/marvel-lcg-src/assets/pics-fr/ -> $DIST/Fusion/marvel-lcg-src/assets/pics-fr/"
     return 0
   fi
   rsync -az --delete -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
     "$source" "$HOTE:$cible" \
     || arret "rsync des images custom (assets/pics) vers le serveur a echoue."
   dire "images custom envoyees."
+
+  # ⚠ TROUVE LE 04/11/2026, EN PARTIE REELLE (signale par l'utilisateur : « je
+  # joue en francais et les cartes de Blade sont en anglais »). `assets/pics-fr`
+  # etait depose a la main sur le serveur depuis le tout premier deploiement
+  # (voir le commentaire au-dessus, longtemps vrai) : chaque nouveau pack
+  # fan-made qui ajoute ses scans FR (Destiny, Beast, Mystique, Blade...)
+  # n'atteignait JAMAIS le serveur sans un rsync manuel a part, exactement
+  # comme assets/pics avant le 21/10/2026. Meme etape, meme raison, meme filet :
+  # un scan FR oublie ici reste invisible, sans aucune erreur.
+  rsync -az --delete -e "ssh -i $CLE -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new" \
+    "$RACINE/Fusion/marvel-lcg-src/assets/pics-fr/" "$HOTE:$DIST/Fusion/marvel-lcg-src/assets/pics-fr/" \
+    || arret "rsync des scans francais (assets/pics-fr) vers le serveur a echoue."
+  dire "scans francais (assets/pics-fr) envoyes."
   planches_livret
 }
 
