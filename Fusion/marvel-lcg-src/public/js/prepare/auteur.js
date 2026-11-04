@@ -87,6 +87,7 @@ export const AUTEURS_EXTENSIONS = {
     "hunting season": "Nugget",
     "saison de chasse": "Nugget",
     "the hunger core": "Penasquequeman",
+    "the spot": "Designhacker",
 };
 
 /** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas.
