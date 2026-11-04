@@ -86,6 +86,7 @@ export const AUTEURS_EXTENSIONS = {
     "hellfire hunt": "Dipsome",
     "hunting season": "Nugget",
     "saison de chasse": "Nugget",
+    "the hunger core": "Penasquequeman",
 };
 
 /** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas.
