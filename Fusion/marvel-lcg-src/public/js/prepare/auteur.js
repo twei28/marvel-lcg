@@ -81,10 +81,20 @@ export const AUTEURS_EXTENSIONS = {
     "shredder": "Inkwire",
     // Campagne MC×DC 2026 (demande du 22/10/2026) : « La ville ne dort jamais (MCDC 2026) », et ses défis à part.
     "la ville ne dort jamais": "MCDC 2026",
+    "the city never sleeps": "MCDC 2026",
     "challenges": "MCDC 2026",
+    "hellfire hunt": "Dipsome",
+    "hunting season": "Nugget",
+    "saison de chasse": "Nugget",
 };
 
-/** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas. */
+/** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas.
+ *  Essaie le nom entier, puis le nom AVANT un suffixe « - ... » : une sous-boîte de
+ *  campagne (« Hellfire Hunt - Black King ») hérite ainsi du créateur de la campagne.
+ *  La clé est le nom AFFICHE (donc selon la langue) : d'où les variantes FR/EN ci-dessus. */
 export function auteurConnuDeLExtension(nomInterne) {
-    return AUTEURS_EXTENSIONS[String(nomInterne || "").trim().toLowerCase()] || "";
+    const brut = String(nomInterne || "").trim().toLowerCase();
+    if (AUTEURS_EXTENSIONS[brut]) return AUTEURS_EXTENSIONS[brut];
+    const sansSuffixe = brut.split(" - ")[0].trim();
+    return AUTEURS_EXTENSIONS[sansSuffixe] || "";
 }
