@@ -266,12 +266,20 @@ class AbilityFactoryBoost:
         def check_activate_target(effect: 'Effect', message: 'Message.WhenBoostCardTurnedFaceUp') -> bool:
             if not activate_target:
                 return True
+            # CORRECTIF (04/11/2026, pack custom three_d_man, dm020) : `activate_target="You"` plantait
+            # (`AssertionError` dans `card_type.py:247`, "You" n'etant jamais reconnu par `invoke_check_card`,
+            # tombant jusqu'au `assert not isinstance(check_rule, Sequence)` -- une str EST une Sequence).
+            # `WhenBoostCardWouldTurnedFaceUp.check_activate_target` (ligne 219 ci-dessus) convertit deja
+            # "You" via `Condition.GetYouRule(.., identity=True)` avant d'appeler `CheckWhichCard` ; cette
+            # fonction-ci, pour le meme parametre documente de la meme facon (fabrique soeur), ne le faisait
+            # pas. Touche aussi `sr010` Spider-Sense (cancel boost), meme `activate_target="You"`.
+            rule = Condition.GetYouRule(activate_target, identity=True)
             if isinstance(message.would_message, AttackerMessageInternal):
                 targets = message.would_message.attacked_targets
             else:
                 assert False
                 # targets = message.would_message.targets
-            return Condition.CheckWhichCard(activate_target, targets, effect)
+            return Condition.CheckWhichCard(rule, targets, effect)
 
         def check_activate_message(effect: 'Effect', message: 'Message.WhenBoostCardTurnedFaceUp') -> bool:
             if activate_message == None:

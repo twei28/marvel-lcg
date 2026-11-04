@@ -126,14 +126,27 @@ describe('scanDejaFrancais', () => {
 })
 
 describe('SCANS_FR_FANMADE', () => {
-  it('les 17 cartes de Destiny (58 avec les 18 de Beast et les 23 de Mystique) ont un scan francais, donc pas de voile', async () => {
+  it('les 17 cartes de Destiny (76 avec les 18 de Beast, les 23 de Mystique et les 17 de Blade) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(58)
+    expect(SCANS_FR_FANMADE.size).toBe(76)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
     window.localStorage.setItem('marvel-board-scans-fr', 'on')
     expect(picIdFr('dy015')).toBe('fr_dy015')
+  })
+})
+
+describe('SCANS_FR_FANMADE (Blade de Rainy)', () => {
+  it('les 17 cartes Blade ont toutes un scan francais, donc pas de voile', async () => {
+    const { aScanFr, picIdFr } = await import('./scans-fr')
+    for (const id of [
+      'bl001a', 'bl001b', 'bl002', 'bl003', 'bl004', 'bl005', 'bl006', 'bl007', 'bl008', 'bl009', 'bl010', 'bl011',
+      'bl012', 'bl013', 'bl014', 'bl015', 'bl016', 'bl017',
+    ])
+      expect(aScanFr(id)).toBe(true)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('bl009')).toBe('fr_bl009')
   })
 })
 

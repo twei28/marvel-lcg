@@ -57,9 +57,9 @@ class HasThwart(HasAttribute):
 class CanThwart(CardFace):
 
     @override
-    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect') -> int|None:
+    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect', *, thwart_in_event: bool=False) -> int|None:
 
-        if by_effect.ability.is_like_thwart:
+        if thwart_in_event or by_effect.ability.is_like_thwart:
             property = ThwartProperty(additional_value=value)
 
             message = CanThwart.SpecialThwart(self, schemes, by_effect, property=property)

@@ -4,6 +4,26 @@ class AbilityFactoryDeck:
 
     ################################################################################
     # Deck
+    # AJOUT (04/11/2026, pack dm 3-D Man, carte Secret Initiative) : "When
+    # cards from the encounter deck are looked at by player abilities".
+    # Couvre tout appel a `PlayerAction.LookAtDeck("EncounterDeck", ...)`,
+    # direct ou via `CostFunc.LookAtDeck` (deja une soixantaine de cartes).
+    @staticmethod
+    def AfterPlayerLookedAtEncounterDeck(ability_type: 'AbilityType',
+                        operation: OperationType[Message.AfterPlayerLookedAtEncounterDeck],
+                        *,
+                        conditions: ConditionsType[Message.AfterPlayerLookedAtEncounterDeck]=[],
+                        ) -> 'Ability':
+
+        return Ability(
+            ability_type,
+            Message.AfterPlayerLookedAtEncounterDeck,
+            [
+                *conditions
+            ],
+            operation,
+        )
+
     @staticmethod
     def AfterDeckShuffle(ability_type: 'AbilityType',
                         deck: Callable[['Effect'], 'Deck']|Callable[['Effect'], List['Deck']],

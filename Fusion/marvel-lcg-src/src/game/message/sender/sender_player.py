@@ -117,6 +117,19 @@ class SenderPlayer:
             text = TransText("{player} gains {faces}", player=player, faces=faces)
             self.Present(text, "draw", by_effect.this, *faces)
 
+    # AJOUT (04/11/2026, pack dm 3-D Man, carte Secret Initiative) : message
+    # declenchable pose au point de passage unique `PlayerAction.LookAtDeck`
+    # (voir deck.py), pour TOUTE capacite "look at the top N cards of the
+    # encounter deck" deja existante (Precognition, Tri-Force Vision...),
+    # sans liste a maintenir carte par carte. Ne fait rien d'autre que porter
+    # les donnees : pas de `Present`, le texte de journal est deja envoye par
+    # `Faces.LookAt` (`LookAt_Text`) juste avant.
+    class AfterPlayerLookedAtEncounterDeck(TriggerPlayerMessage):
+        def __init__(self, player: 'Player', faces: Sequence['CardFace'], by_effect: 'Effect') -> None:
+            self.by_effect: Final = by_effect
+            self.looked_faces: Final = list(faces)
+            super().__init__(player=player)
+
     class GameAreaAddPlayer(TriggerPlayerMessage):
         def __init__(self, player: 'Player') -> None:
             super().__init__(player=player)

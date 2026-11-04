@@ -322,6 +322,11 @@ const MOTEUR_FR: Record<string, string> = {
   'Player Gain Cards_Text': 'Cartes gagnées',
   'Player In Turn': 'Tour du joueur',
   'Player Like In Turn': 'Considéré comme son tour',
+  // AJOUT (04/11/2026, pack custom three_d_man, dm012 Secret Initiative) :
+  // `AbilityFactory.AfterPlayerLookedAtEncounterDeck` (factory/deck.py),
+  // primitive sans nom donné -> le libellé par défaut du moteur, sans
+  // traduction, s'affichait en anglais dans le surtitre de narration.
+  'Player Looked At Encounter Deck': 'Le joueur regarde le deck Rencontre',
   'Player On Event_Text': 'Événement de jeu',
   'Player Paying Resources': 'Paiement des ressources',
   'Player Play Card': 'Le joueur joue une carte',

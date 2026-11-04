@@ -1884,6 +1884,7 @@ class PlayerAction:
 
     # Return from top to bottom
     def LookAtDeck(self, deck: 'Deck|Literal["EncounterDeck"]', num: int|Literal["2*"], by_effect: 'Effect', *, from_top: bool=True) -> List['CardFace']:
+        from game.message import Message
         from game.operate.faces import Faces
         from game.operate.worlds import Worlds
 
@@ -1891,11 +1892,22 @@ class PlayerAction:
 
         num = Worlds.ConvertPerPlayerIconToInt(num, by_effect)
 
+        encounter_deck = Worlds.GetEncounterDeck(by_effect)
         if deck == "EncounterDeck":
-            deck = Worlds.GetEncounterDeck(by_effect)
+            deck = encounter_deck
 
         faces = deck.Get(from_top)[:num]
         Faces.LookAt(faces, player, by_effect)
+
+        # AJOUT (04/11/2026, pack dm 3-D Man, carte Secret Initiative) : ce
+        # point de passage est le SEUL utilise par toute capacite "look at the
+        # top N cards of the encounter deck" (Precognition, Tri-Force Vision,
+        # Doctor Strange...). Le message n'est pose que pour le deck de
+        # rencontre : Secret Initiative ne parle que de lui, et la plupart des
+        # appels ici visent le deck du joueur (fouille de sa propre main
+        # future), hors de son texte.
+        if faces and deck == encounter_deck:
+            Message.AfterPlayerLookedAtEncounterDeck(player, faces, by_effect).Send()
 
         # reversed_face = faces[::-1]
         return faces

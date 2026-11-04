@@ -160,6 +160,13 @@ class AlterEgo(HasRecover, CanRecover, CanThwart, Identity, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
         super().__init__(paper)
+        # Restriction de construction de deck IMPRIMEE sur certains heros maison (ex. dm001b 3-D Man : "your deck
+        # must include only 3-cost cards... You may have events from up to 3 total aspects"). Le moteur ne la fait
+        # respecter nulle part (comme ho001b, dd001b avant lui) : seul le deckbuilder (public/js/prepare/app.js,
+        # verifierDeck) la lit. Attributs INERTES cote moteur -- juste pour que InitPrintedValue reconnaisse la cle
+        # et ne plante pas (KeyError sans ca, has_attribute.py:32) -- modele `UnitCost` (card_player.py:72).
+        self.RegisterAttribute("DeckCost", None)
+        self.RegisterAttribute("DeckMaxEventAspects", None)
 
     @override
     def GetAbilities(self) -> List['Ability']:

@@ -136907,7 +136907,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "20b7511e8e7b7a966d802ed2a604e84a59adfed5c366f4ce8e9a06f177c1f29c",
+ "checksum": "91be09a301ab8f04ed61ed9b3f92855ba8b41849addcb9a19e0b0a30b6c106cc",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -144567,6 +144567,429 @@
   },
   {
    "card_id": "mm027",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "R. Tim Morris"
+  }
+ ],
+ "three_d_man": [
+  {
+   "card_id": "dm001a",
+   "type": "Hero",
+   "name": "* 3-D Man",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "1",
+    "HS": "5"
+   },
+   "traits": [
+    "AGENT OF ATLAS",
+    "AVENGER"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Action</b>: Reduce the resource cost of the next card you play this phase by 1.\n<i>Strength & Spirit of Three Men</i> — <b>Interrupt</b>: When you use a basic power, discard a card from your hand and choose → set that basic power's printed value to 3 until the end of the round.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm001b",
+   "type": "AlterEgo",
+   "name": "* Delroy Garrett Jr.",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6",
+    "DeckCost": "3",
+    "DeckMaxEventAspects": "3"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "3-D Man",
+   "text": "During deck-building, your deck must include only 3-cost cards (except for resource cards). You may have events from up to 3 total aspects.\n<i>\"The best way to honor a legacy is to create your own.\"</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm002",
+   "type": "Event",
+   "name": "Tri-Force Vision",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Hero Action</b>: Look at the top 3 cards of the encounter deck → put them back in any order. If you put them back in the same order, shuffle 3 cards from your discard pile into your deck.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm003",
+   "type": "Event",
+   "name": "Triple the Beatdown",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Deal 3 damage to another enemy. If you reduced this card's cost, ready 3-D Man.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm004",
+   "type": "Event",
+   "name": "Triple the Heroics",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "THWART"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Remove 3 threat from another scheme. If you reduced this card's cost, ready 3-D Man.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm005",
+   "type": "Event",
+   "name": "Triple the Effectiveness",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take damage from an enemy attack, reduce the amount taken by 3. Remove 3 threat from a scheme. Deal 3 damage to an enemy. If you reduced this card's cost, stun an enemy.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm006",
+   "type": "Event",
+   "name": "3-D Men Combined",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Hero Action</b>: Ready up to 3 cards you control. If you reduced this card's cost, for each card readied this way, deal 3 damage to an enemy.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm007",
+   "type": "Upgrade",
+   "name": "3-D Man's Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Interrupt</b>: When this card enters play from your hand, heal 1 damage from your identity.\n<b>Hero Interrupt</b>: When you play an event, discard 3-D Man's Suit → reduce the cost of that event by 3.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm008",
+   "type": "Upgrade",
+   "name": "True Sight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "3-D Man",
+   "text": "Hero form only.\n<b>Interrupt</b>: When this card enters play from your hand, remove 2 threat from a scheme.\n<b>Hero Action</b>: Discard True Sight, choose:\n• Remove an attachment from play with the text \"Hero Action\" or \"Hero Response\"\n• Remove a status card from any character.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm009",
+   "type": "Support",
+   "name": "The Triune Understanding",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ORGANIZATION"
+   ],
+   "set_name": "3-D Man",
+   "text": "<b>Alter-Ego Action</b>: Add 1 threat to the main scheme, exhaust The Triune Understanding → reduce the cost of the next identity-specific card you play this round by 3.\n<i>\"You may rest assured -- the Triune Understanding will deal with this in its own fashion...\" —Jonathan Tremont</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm010",
+   "type": "Resource",
+   "name": "Tri-Power",
+   "subtitle": "",
+   "desc": {
+    "RES": "RBY",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "3-D Man",
+   "text": "<b>Hero Response</b>: After you spend this resource, ready 3-D Man.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm011",
+   "type": "Obligation",
+   "name": "Arrival of the Triple-Evil!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Delroy Garrett Jr."
+   },
+   "traits": [],
+   "set_name": "3-D Man",
+   "text": "<b><i>Give to the Delroy Garrett Jr. player.</i></b>\n<b>When Revealed</b>: Find <i>The Triune Understanding</i> support and put it into play. Place 1 acceleration counter on it and it gains the Permanent keyword.\n<b>Response</b>: After you use <i>The Triune Understanding</i>'s <b>Alter-Ego Action</b>, place 1 apostasy counter on it. When there are 3 such counters on it, discard it and remove this obligation from the game.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm012",
+   "type": "SideScheme",
+   "name": "Secret Initiative",
+   "subtitle": "",
+   "desc": {
+    "Hazard": "1",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "3-D Man Nemesis",
+   "text": "<i>Skrulls are hiding in plain sight! Can 3-D Man's Tri-Force vision find them all before a full-blown invasion is underway?</i>\n[star]Threat cannot be removed from this scheme.\n<b>Response</b>: When cards from the encounter deck are looked at by player abilities, put each minion found into play engaged with that player. Place 1 skrull counter on this card for each minion put into play this way. When there are 3+ counters here, discard this scheme.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm013",
+   "type": "Minion",
+   "name": "* Magnitude",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2*",
+    "Toughness": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "3-D Man Nemesis",
+   "text": "Toughness.\n[star]Magnitude's attacks gain ranged.\n<b>When Defeated</b>: Shuffle each other <b>SKRULL</b> card from the discard pile into the encounter deck.\n<i>(3-D Man's nemesis minion.)</i>",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm014",
+   "type": "Minion",
+   "name": "Skrull Invaders",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "1",
+    "ATK": "1",
+    "Boost": "0",
+    "Patrol": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "3-D Man Nemesis",
+   "text": "Patrol.\n[star]Boost: Find a copy of <i>Skrull Infiltrator</i> and reveal it.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm015",
+   "type": "Attachment",
+   "name": "Skrull Infiltrator",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "3-D Man Nemesis",
+   "text": "Treat attached ally as a <b>SKRULL</b> minion with +2 hit points and a blank text box. Its SCH is equal to its printed THW and it does not take consequential damage.\n<b>When Revealed</b>: Reveal cards from the first player's deck until you reveal an ally. Attach this card to that ally.\n<b>Interrupt</b>: When you play 3-D Man's <i>True Sight</i> upgrade, you may exhaust your identity to discard this ally.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm016",
+   "type": "Ally",
+   "name": "* She-Hulk",
+   "subtitle": "Jennifer Walters",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "THW": "2",
+    "ATK": "2",
+    "RES": "R",
+    "Class": "Basic"
+   },
+   "traits": [
+    "AVENGER"
+   ],
+   "set_name": "",
+   "text": "Play only if your identity has the <b>AVENGER</b> trait.\n<b>Response</b>: After you play a 3-cost event, deal 1 damage to an enemy.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm017",
+   "type": "Support",
+   "name": "Number Cruncher",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Basic"
+   },
+   "traits": [
+    "TECH"
+   ],
+   "set_name": "",
+   "text": "Max 1 per player.\n<b>Interrupt</b>: When you discard a 3-cost event from your hand to pay for another event, exhaust this card → triple the number of resources that card generates.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm018",
+   "type": "Event",
+   "name": "Getting it Done",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b>: When you make a basic attack, you get +3 ATK for this attack. You may split this damage between enemies. If you reduced this card's cost, ready your hero.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm019",
+   "type": "Event",
+   "name": "Brick Session",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Justice"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b>: When you make a basic thwart, you get +3 THW for this thwart. You may split this threat removal between schemes. If you reduced this card's cost, ready your hero.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm020",
+   "type": "Event",
+   "name": "Prevent Disaster",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a boost card with [boost][boost][boost] is revealed during an enemy activation, cancel that activation and ignore any \"Boost\" ability. Draw 1 card.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm021",
+   "type": "Event",
+   "name": "Team Coordination",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Leadership"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "",
+   "text": "<b>Hero Action</b>: Ready up to 3 allies in play. You may use any number of those allies to attack or thwart. If you reduced this card's cost, those allies get +1 ATK and +1 THW for that action.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm022",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm023",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck.",
+   "custom": "R. Tim Morris"
+  },
+  {
+   "card_id": "dm024",
    "type": "Resource",
    "name": "Strength",
    "subtitle": "",

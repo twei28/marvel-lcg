@@ -356,6 +356,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'acceleration',
         # AJOUT (22/10/2026, campagne Punisher MC×DC 2026) : les « intelligence counters » de pu145 S.H.I.E.L.D. Support Team.
         'intelligence',
+        # AJOUT (04/11/2026, pack dm 3-D Man) : « skull counter » de dm012 Secret Initiative (imprime « skrull
+        # counter ») et « apostasy counter » de dm011 Arrival of the Triple-Evil!.
+        'skrull', 'apostasy',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',
@@ -925,7 +928,19 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
             if not ignore_identity:
                 assert not Identity.IsType(self)
             if HasPermanent.IsType(self):
-                if self.permanent:
+                if self.permanent and self.card.state.is_attached:
+                    # CORRECTIF (04/11/2026, pack dm 3-D Man, dm011 Arrival of the Triple-Evil!) : cette
+                    # branche ("Fix 46002"/"51036") ne doit porter que sur une carte REELLEMENT attachee
+                    # (`self.card.state.is_attached`, meme garde que `attached_face` plus haut dans ce
+                    # fichier). Avant ce correctif, le test lisait `self.bind_face` NU : pour un SOUTIEN
+                    # ordinaire, jamais accroche a rien, `Support.bind_face` (card_type/support.py) rend
+                    # quand meme l'identite du joueur par simple rangement de zone (correctif st010,
+                    # 12/09/2026) -- un soutien Permanent ORDINAIRE tombait donc TOUJOURS dans cette branche
+                    # et `return False` l'empechait d'etre JAMAIS defausse, meme par un effet de son PROPRE
+                    # set (le vrai controle de set vit dans `HasPermanent.OnWhenCardLeavePlay`, plus bas dans
+                    # `self.card.Discard(..)`, jamais atteint tant qu'on sortait ici). Sans carte NI
+                    # attachee NI eliminee, cette branche ne s'applique simplement plus : on laisse
+                    # `self.card.Discard(..)` statuer (son `OnWhenCardLeavePlay` compare les sets).
                     bind_face = self.bind_face
                     if bind_face:
                         # Fix "46002" and "51036"
@@ -1106,8 +1121,17 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
     def RemoveThreatFromSchemesTotal(self, schemes: Sequence['TC'], value: int, by_effect: 'Effect') -> int|None:
         return self.RemoveThreatFromSchemes(schemes[:value], 1, by_effect)
 
+    # `thwart_in_event` (AJOUT 04/11/2026, pack dm 3-D Man, dm004 Triple the Heroics) : meme principe que
+    # `attack_in_event` sur `DealDamage` -- force une VRAIE resolution de contre (`CanThwart.SpecialThwart`,
+    # via `OnRemoveSchemeThreat`) sans dependre du label `thwart` de L'ABILITE QUI APPELLE. Necessaire pour
+    # un evenement « Remove X threat from a scheme. Remove X threat from ANOTHER scheme » : `SetLabel
+    # ('thwart')` POSE SUR L'ABILITE force le moteur a n'offrir qu'UNE SEULE cible au `SetTarget` (constate
+    # en test : `target_num_range` tombe a [1,1] au lieu du [1,2] demande, DES QUE l'ability porte ce label)
+    # -- il faut donc retirer le label de l'ability et resoudre `RemoveThreatFromSchemes` UNE FOIS PAR CIBLE,
+    # chaque appel portant `thwart_in_event=True` pour garder le VRAI contre (et les cartes qui y reagissent)
+    # malgre l'absence du label. Defaut `False` : additif, aucun appel existant ne change de comportement.
     @final
-    def RemoveThreatFromSchemes(self, schemes: Sequence['TC']|Literal["MainScheme", "EachScheme", "YourLeaderMainScheme"], value: int|Literal["All", "1*", "3*", "5*"], by_effect: 'Effect', *, if_this_remove_last_threat: Callable[[], None]|None=None, ignore_crisis: bool=False) -> int|None:
+    def RemoveThreatFromSchemes(self, schemes: Sequence['TC']|Literal["MainScheme", "EachScheme", "YourLeaderMainScheme"], value: int|Literal["All", "1*", "3*", "5*"], by_effect: 'Effect', *, if_this_remove_last_threat: Callable[[], None]|None=None, ignore_crisis: bool=False, thwart_in_event: bool=False) -> int|None:
         from game.card.face.base import Scheme2
         from game.ability.factory import AbilityFactory
         from game.ability import AbilityType
@@ -1183,7 +1207,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
             else:
                 from game.operate.worlds import Worlds
                 value = Worlds.ConvertPerPlayerIconToInt(value, by_effect)
-                remove_counter = self.OnRemoveSchemeThreat(schemes2, value, by_effect)
+                remove_counter = self.OnRemoveSchemeThreat(schemes2, value, by_effect, thwart_in_event=thwart_in_event)
 
             Effects.UnRegister(temp_effects)
 

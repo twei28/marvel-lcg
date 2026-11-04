@@ -2090,4 +2090,13 @@ export const HEROS_INFO = {
         civil: "Jamie Madrox",
         ennemis: "Emperor Madrox",
     },
+    "dm001a": {
+        bio: "Delroy Garrett Jr., ancien athlète olympique déchu après un scandale de dopage, a d'abord tenté de se racheter sous le nom de Triathlon au sein des Vengeurs. En acceptant l'anneau de la Triune Understanding, une organisation mystique liée aux deux précédents héros nommés 3-D Man, il a hérité de leurs pouvoirs combinés et de la capacité unique de détecter les Skrulls, quelle que soit leur forme d'emprunt. Membre des Agents de l'Atlas, il met désormais sa force, sa vitesse et son sens de la justice au service d'une rédemption qu'il n'a jamais cessé de chercher.",
+        bioEn: "Delroy Garrett Jr., a disgraced former Olympic athlete stripped of his medals after a doping scandal, first tried to redeem himself as Triathlon with the Avengers. By accepting the ring of the Triune Understanding, a mystical organization tied to the two previous heroes who bore the name 3-D Man, he inherited their combined powers along with the unique ability to detect Skrulls no matter what form they take. A member of the Agents of Atlas, he now puts his strength, speed, and sense of justice toward a redemption he has never stopped seeking.",
+        civil: "Delroy Garrett Jr.",
+        equipes: "Agents de l'Atlas, Vengeurs (ex-Triathlon)",
+        equipesEn: "Agents of Atlas, Avengers (former Triathlon)",
+        ennemis: "Skrulls",
+        apparition: "Avengers: The Initiative Annual #1 (2008)",
+    },
 };

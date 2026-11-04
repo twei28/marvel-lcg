@@ -2438,5 +2438,14 @@
   "encounters": [],
   "max_id": "mm027"
  },
- "checksum": "52fa891b169f4a50b9dc735be17eee6e88673f69b159ff907e4d459fb2bb7a0c"
+ "252. Custom (3-D Man)": {
+  "name": "three_d_man",
+  "scenarios": [],
+  "heroes": [
+   "three_d_man"
+  ],
+  "encounters": [],
+  "max_id": "dm024"
+ },
+ "checksum": "5ec50826aa07c1da0fdaa327b8098a0efae405be0c761f15b28983124bfc517c"
 }
