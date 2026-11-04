@@ -30,6 +30,28 @@ from . import *
 # l'utilisateur, et confirme par l'arrivee annoncee d'un heros OFFICIEL
 # (Elektra) portant le meme effet.
 #
+# ⚠⚠ A LIRE AVANT DE PORTER ELEKTRA (ou toute carte « gain villainous » /
+# « give [heros] a boost card ») : Doom s'en sort parce que SON texte dit
+# explicitement « Ignore any boost effects on boost cards dealt to you » — il
+# n'a donc jamais besoin que la carte de boost serve a quoi que ce soit. Le
+# 04/11/2026, `ca009` Klyntar Bond (Carnage, « you may give him a boost card »
+# SANS cette clause d'ignorer) a ete trouve CASSE en partie reelle pour cette
+# raison exacte : `Faces.GiveFacedownBoostCards` pose la carte dans la pile
+# `CanBoost`, mais RIEN ne la resout pour un pouvoir de base d'un HEROS en
+# DEFENSE ou en RECUPERATION (seuls `can_attack.py` et `can_scheme.py`
+# appellent `ResolveBoostCards` ; aucun fichier equivalent ne le fait pour
+# CTR/DEF), et les effets [star] Boost d'une carte de rencontre ne se
+# declenchent de toute facon QUE sur une activation d'ENNEMI, jamais sur
+# celle d'un heros, attaque ou manigance comprise. SI Elektra (ou une future
+# carte) veut un VRAI effet de la carte de boost donnee (pas juste
+# l'ignorer), NE PAS reprendre `Faces.GiveFacedownBoostCards` : utiliser le
+# modele `ca009` (corrige) / `bc002` / `14002` — `Worlds.
+# DiscardEncounterTopCard` (ou `DiscardEncounterCards`) + `FacesCounter.
+# CountTotalBoostIcons` + `message.GainValue(valeur, effect)` sur le message
+# `WhenUnitUseBasicPower` — qui fonctionne pour les QUATRE pouvoirs de base
+# (ATQ, CTR, DEF, RECUPERATION), sans dependre de la pile `CanBoost` cassee
+# pour ce cas. Preuve par substitution de ca009 : `tools/cas/carnage.py`.
+#
 # ⚠ « to a MAXIMUM of 3 » : plafond passe a `PlaceCountersInternal`, pas verifie
 # a la main — sinon deux Response simultanees pourraient depasser.
 #

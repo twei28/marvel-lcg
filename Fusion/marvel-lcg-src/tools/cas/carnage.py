@@ -283,14 +283,21 @@ CAS = [
        {'pret': ['ca005'], 'statuts_absents': [['01102', 'Stunned']]}, accepter_choix=True),
 
     # ============================================================ ca009 Klyntar Bond
-    _c("ca009 Klyntar Bond — Hero Interrupt : a l'attaque de base, Carnage recoit UNE carte de boost (Hydra Mercenary, 1 icone) : 2 + 1 = 3 degats sur le vilain",
-       "modele 32177 (`WhenUnitUseBasicPower(HeroInterrupt, 'YourHero')`) + `Faces.GiveFacedownBoostCards` ; mesure `boosts_sur` ET les degats (RECETTES §7 : un cas qui n'ira pas jusqu'au bout laisse passer un plantage)",
+    # CORRECTIF (04/11/2026, signale en partie reelle : « donne une carte boost mais n'utilise pas la carte »).
+    # L'ANCIEN cas ci-dessous mesurait `boosts_sur` (une carte POSEE dans la pile CanBoost, jamais resolue pour un
+    # pouvoir de base d'un HEROS) ET les degats (3), mais n'avait jamais ete relance apres son ecriture : la pile
+    # CanBoost n'etant jamais resolue, les degats resteraient a 2 avec L'ANCIEN code, pas 3 — preuve que ce cas
+    # n'avait jamais ete vu ROUGE sur l'ancien code (lecon §9 : un gabarit coche n'est pas une preuve tant qu'on ne
+    # l'a pas vu echouer). Nouveau code (modele bc002/14002) : plus de pile CanBoost, la carte defaussee du dessus
+    # du deck de rencontre ajoute SA valeur directement au pouvoir en cours. On mesure donc les degats SEULS.
+    _c("ca009 Klyntar Bond — Hero Interrupt : a l'attaque de base, Carnage defausse le dessus du deck de rencontre (Hydra Mercenary, 1 icone) : 2 + 1 = 3 degats sur le vilain",
+       "modele bc002/14002 : `Worlds.DiscardEncounterTopCard` + `FacesCounter.CountTotalBoostIcons` + `message.GainValue`",
        ["Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01101', '01101', '01101', '01101')", HEROS, M('ca009')], ["Puzzle.Attack('ca001a')"],
-       {'boosts_sur': [['ca001a', 1]], 'degats': [['01094', 3]]}, cibles=['01094'], accepter_choix=True),
-    _c("ca009 Klyntar Bond — TEMOIN DE BASE : sans la carte, la meme attaque fait 2 degats et Carnage ne recoit aucune carte de boost",
-       "le +1 et la carte de boost viennent d'elle",
+       {'degats': [['01094', 3]], 'defausse_rencontre': ['01101']}, cibles=['01094'], accepter_choix=True),
+    _c("ca009 Klyntar Bond — TEMOIN DE BASE : sans la carte, la meme attaque fait 2 degats et le deck de rencontre n'est pas touche",
+       "le +1 et la defausse du dessus viennent d'elle",
        ["Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01101', '01101', '01101', '01101')", HEROS], ["Puzzle.Attack('ca001a')"],
-       {'boosts_sur': [['ca001a', 0]], 'degats': [['01094', 2]]}, cibles=['01094'], accepter_choix=True),
+       {'degats': [['01094', 2]], 'defausse_rencontre': []}, cibles=['01094'], accepter_choix=True),
     _c("ca009 Klyntar Bond — Resource : paie seule un evenement Carnage (ca010, cout 1, main = ca010 seule) ; ca009 s'incline",
        "modele im005 (`CanGenerateResources(Resource, Resources(\"G\"), for_card=..)`) ; DECISION UTILISATEUR : wild reserve aux evenements Carnage",
        ["Puzzle.EmptyHand()", HEROS, M('ca009'), "Puzzle.SetThreat('01097b', 5)"], [],
