@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-04",
+        genre: "heros",
+        fr: "Sentry (Robert Reynolds) rejoint le roster, avec ses quatre decks, sa némésis le Void, son obligation et le modulaire Merged Sentry.",
+        en: "Sentry (Robert Reynolds) joins the roster, with his four decks, his nemesis the Void, his obligation and the Merged Sentry modular set.",
+    },
+    {
+        date: "2026-11-04",
+        genre: "correction",
+        fr: "Les errata officiels du livret de règles 1.8 sont appliqués : quand tu agrandis une carte concernée, le texte corrigé s'affiche dessus avec une pastille « Errata » qui dit ce qui a changé. Suit Up et The Search for Spiral jouent aussi comme le nouveau texte.",
+        en: "The official errata from Rules Reference 1.8 are now applied: when you enlarge an affected card, the corrected text shows on it with an “Errata” badge that says what changed. Suit Up and The Search for Spiral also play as the new text.",
+    },
+    {
         date: "2026-11-03",
         genre: "heros",
         fr: "Carnage (Eddie Brock) rejoint le roster, avec son deck, son obligation, sa némésis Torment et le modulaire Twisted Killers.",
