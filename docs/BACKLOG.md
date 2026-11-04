@@ -6,6 +6,66 @@ sa documentation.
 
 ---
 
+## Outil de traduction autonome dans MC Creator (mis en pause le 04/11/2026)
+
+**Le besoin.** Des traducteurs externes (FR ou toute autre langue) veulent produire leurs propres images de cartes
+traduites, à partir d'un scan anglais, SANS dépendre des traductions déjà faites dans le jeu ni du catalogue
+(pas de `card_id`, pas de `textes-fr-fanmade.ts`). Deux exigences fermes posées par l'utilisateur en cours de
+route : (1) l'effacement du texte anglais doit être RÉEL (le vrai algorithme `effacer-texte.ts`, pas une boîte
+grise plaquée — une première tentative en artefact Claude autonome a été jugée « dégueulasse » et abandonnée),
+(2) l'outil doit pouvoir s'ouvrir en un seul fichier HTML, en double-cliquant dessus (`file://`), sans serveur.
+
+**Ce qui existe, non commité** (`git status` : rien n'est indexé) :
+- `Fusion/marvel-lcg-src/public/createur-cartes/traduction.html` + `.js` — la page, servie dans MC Creator.
+  Fonctionne avec un serveur statique (`python3 -m http.server` depuis `public/`).
+- `Fusion/marvel-lcg-src/public/createur-cartes/effacer-texte.js` — port JS vanilla fidèle de
+  `ui-app/src/board/effacer-texte.ts` (logique inchangée, juste les types retirés).
+- `Fusion/marvel-lcg-src/public/createur-cartes/detecter-zone.js` — port JS vanilla fidèle de la détection de
+  zone de `ui-app/src/board/traduction-posee.ts`.
+- `Fusion/marvel-lcg-src/public/createur-cartes/stockage-traduction.js` — persistance IndexedDB dédiée
+  (base séparée des projets de cartes normaux).
+- `Fusion/marvel-lcg-src/public/createur-cartes/traduction-autonome.html` — version à fichier unique (polices en
+  base64, tout le JS inliné), **OBSOLÈTE** : date du 04/11 16:43, alors que le dernier correctif de
+  `traduction.js` (option `gommes`, voir plus bas) a été écrit à 16:51 et n'a jamais été regénéré dedans.
+  **Relancer `node Fusion/marvel-lcg-src/tools/createur-cartes/construire-traduction-autonome.mjs` avant
+  toute reprise.**
+- `Fusion/marvel-lcg-src/tools/createur-cartes/construire-traduction-autonome.mjs` — le script qui regénère le
+  fichier ci-dessus (concatène le JS, encode les polices utilisées par `polices.js` en base64, inline
+  `donnees/types.json`).
+- `Fusion/marvel-lcg-src/public/createur-cartes.html` — modifié (1 ligne : lien « Traduction » ajouté au bandeau
+  d'accueil).
+
+**Zones gérées** (chacune : détection automatique + rectangle ajustable à la main + effacement réel +
+saisie libre multilingue, pré-remplie en FR officiel modifiable) : texte de règles (fiable, vérifié sur tous
+les types de carte testés), titre de la carte, libellé du type imprimé, badges de stats (THW→CTR, ATK→ATQ,
+DEF, REC, selon ce que le type a réellement), bande « Taille de main / Points de vie » (identité/alter-ego
+seulement). Export PNG individuel + zip global ; sauvegarde locale persistante (IndexedDB) entre deux visites.
+
+**Ce qui restait FAUX au moment de l'arrêt**, cause trouvée mais correctif non entièrement revérifié :
+- Le titre pouvait doubler avec l'anglais dessous sur certains scans (ex. `01001a.jpg` Spider-Man) : l'algorithme
+  de regroupement en lignes de `effacer-texte.ts` coupait au trait d'union de « SPIDER-MAN », n'effaçant que
+  « SPIDER ». Les badges THW/ATK/DEF pouvaient ne rien effacer du tout sur ce même scan (échec de reconnaissance
+  sur des mini-rectangles, pas une limite de résolution). **Correctif écrit** : pour les zones étroites
+  (titre/type/badges/main), passer tout le rectangle en `gommes` à `effacerTexte` (efface toute encre dans le
+  rectangle, sans dépendre de la reconnaissance en lignes) au lieu de la détection fine. Un seul test après ce
+  correctif (Spider-Man) montrait les 7 zones « effacé » et un zoom propre sur titre+ATQ — **pas revérifié sur
+  les 6 autres combinaisons zone/scan avant l'arrêt**, ni régénéré dans le fichier autonome.
+
+**À faire pour reprendre proprement** :
+1. Régénérer `traduction-autonome.html` avec le script (dernier correctif `gommes` non inclus dedans).
+2. Revérifier par EXPORT PNG (pas par l'aperçu en cours d'édition — c'est ce qui a fait annoncer un correctif
+   qui ne marchait pas, deux fois de suite) : titre, type, les 3-4 badges, bande main/PV, sur au moins 3 scans
+   `identity`/`alter-ego` réels, zoomés, en comparant au scan officiel d'origine.
+3. Vérifier la cohérence centrage/alignement par TYPE (mesuré sur de vrais scans officiels, jamais sur la
+   métadonnée `types.json` qui s'est révélée fausse pour la police/couleur de ces mêmes éléments) : `ally` =
+   aligné à gauche (confirmé sur 3 scans), `identity`/`alter-ego` = centré (confirmé sur la référence FR
+   Cyclope) — probablement vrai aussi pour les autres types, à vérifier au cas par cas avant d'étendre.
+4. Repasser un œil sur les libellés de type et d'abréviations de stats : dérivés des MOTS RÉELLEMENT IMPRIMÉS
+   sur de vrais scans (HÉROS, ALTER EGO sans trait d'union, CTR, ATQ...), pas du nom de menu de MC Creator
+   (`app.js`, table `NOMS`) qui a été utilisé par erreur une première fois.
+
+---
+
 ## 3. Une « barre d'avantage » sur le plateau, comme aux échecs (ajouté le 22/10/2026)
 
 > **FAIT le 22/10/2026 (version 1, formule simple)** : l'utilisateur a donné son go après la maquette. Code : `ui-app/src/board/barre-avantage.ts` (formule pure, 6 tests),
