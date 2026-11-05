@@ -1,6 +1,9 @@
-// DEUX REGLAGES D'AFFICHAGE DES CARTES, gardes dans le navigateur (decisions du 28/10/2026) :
+// TROIS REGLAGES D'AFFICHAGE DES CARTES, gardes dans le navigateur (decisions du 28/10/2026,
+// zoom ajoute le 05/11/2026 -- demande de Feyli, "la carte affichee au survol, je la trouve un
+// peu petite") :
 //  - les pastilles de traits du heros (tous / seulement les changements / aucun) ;
-//  - le chevauchement des ameliorations derriere leur porteur (moitie / quart / collees / espacees).
+//  - le chevauchement des ameliorations derriere leur porteur (moitie / quart / collees / espacees) ;
+//  - le zoom de l'apercu agrandi au survol (70% a 150% de la taille de depart).
 // Meme patron que `cote-ameliorations.ts` : un evenement previent le plateau ouvert, sans rechargement.
 import { useEffect, useState } from 'react'
 import type { ModeTraits } from './traits-heros'
@@ -9,10 +12,17 @@ export type ChevauchementAmeliorations = 'moitie' | 'quart' | 'collees' | 'espac
 
 export const CLE_TRAITS_PASTILLES = 'mc_traits_pastilles'
 export const CLE_CHEVAUCHEMENT = 'mc_ameliorations_chevauchement'
+export const CLE_ZOOM_APERCU = 'mc_apercu_zoom'
 const EVENEMENT = 'mc-reglages-affichage-cartes-change'
 
 const MODES_TRAITS: readonly ModeTraits[] = ['tous', 'changements', 'aucun']
 const CHEVAUCHEMENTS: readonly ChevauchementAmeliorations[] = ['moitie', 'quart', 'collees', 'espacees']
+
+/** Plage du curseur de zoom (point discute avec l'utilisateur, 05/11/2026) : les deux sens,
+ * pour reduire aussi bien qu'agrandir la taille de depart de l'apercu. */
+export const ZOOM_APERCU_MIN = 0.7
+export const ZOOM_APERCU_MAX = 1.5
+export const ZOOM_APERCU_DEFAUT = 1
 
 /** Largeur d'une carte attachee (board.css : `.est-attachee .scan-card { --card-w: 127px }`). */
 const LARGEUR_CARTE = 127
@@ -64,3 +74,30 @@ export const useModeTraits = (): ModeTraits => useReglage(lireModeTraits)
 export const lireChevauchement = (): ChevauchementAmeliorations => lire(CLE_CHEVAUCHEMENT, CHEVAUCHEMENTS, 'moitie')
 export const ecrireChevauchement = (valeur: ChevauchementAmeliorations): void => ecrire(CLE_CHEVAUCHEMENT, valeur)
 export const useChevauchement = (): ChevauchementAmeliorations => useReglage(lireChevauchement)
+
+export function lireZoomApercu(): number {
+  try {
+    const brut = window.localStorage.getItem(CLE_ZOOM_APERCU)
+    if (brut === null) return ZOOM_APERCU_DEFAUT
+    const valeur = Number(brut)
+    return Number.isFinite(valeur) ? Math.min(ZOOM_APERCU_MAX, Math.max(ZOOM_APERCU_MIN, valeur)) : ZOOM_APERCU_DEFAUT
+  } catch {
+    return ZOOM_APERCU_DEFAUT
+  }
+}
+export const ecrireZoomApercu = (valeur: number): void =>
+  ecrire(CLE_ZOOM_APERCU, String(Math.min(ZOOM_APERCU_MAX, Math.max(ZOOM_APERCU_MIN, valeur))))
+export const useZoomApercu = (): number => useReglage(lireZoomApercu)
+
+/**
+ * Pose `--zoom-apercu` sur la racine tant que le plateau est monte (meme patron que
+ * `useInversionPiles`) : `.carte-apercu` (board.css) la lit pour sa largeur. A appeler UNE FOIS,
+ * depuis le plateau -- jamais depuis le panneau de reglages lui-meme, qui n'est pas toujours monte.
+ */
+export function useZoomApercuSync(): void {
+  const zoom = useZoomApercu()
+  useEffect(() => {
+    document.documentElement.style.setProperty('--zoom-apercu', String(zoom))
+    return () => { document.documentElement.style.removeProperty('--zoom-apercu') }
+  }, [zoom])
+}

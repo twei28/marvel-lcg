@@ -14,6 +14,7 @@ import { t } from './langue'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import type { PiedMulti } from './CartouchePhase'
 import type { PhaseLecture } from './CoucheRencontreSurTable'
+import { tonaliteAction } from './action-style'
 
 /** Le rectangle de la carte, remesuré tant qu'elle bouge (vol, mise à l'échelle). */
 /**
@@ -526,6 +527,28 @@ function PuceSurCarte({
     const minuteur = window.setTimeout(() => signaler(choix.id, true), 600)
     return () => window.clearTimeout(minuteur)
   }, [boite, choix.id, signaler])
+  // ⚠ ANCRER LA MAIN (05/11/2026, rapport de partie reelle : « la main monte
+  // et descend en boucle sans que je bouge la souris »). Cette puce RE-MESURE
+  // la carte toutes les 120ms (`useBoiteDeCarte`) pour rester collee dessus.
+  // Si la carte visee est dans la MAIN, `.zone-main` ne la releve QUE sur
+  // :hover CSS (transition de 180ms) -- d'ou la boucle : survoler la puce
+  // ne releve pas `.zone-main` (la puce est un bouton a part, pas un
+  // descendant), la carte reste donc en position basse ; mais des que la
+  // vraie carte en dessous recoit un :hover (meme bref), la main se releve,
+  // la puce se re-mesure sur une carte qui a bouge sous la souris immobile,
+  // ressort de son aire -> :hover retombe -> la main redescend -> la puce
+  // revient sous la souris -> :hover repart. Cycle sans fin tant que la
+  // question reste ouverte. Fixer la main en position haute pour toute la
+  // duree de la puce (meme modele que `main-visible-forcee`, voir
+  // `main-visible.ts`) supprime la cause : plus rien ne bouge sous la puce.
+  useEffect(() => {
+    if (choix.carteId === undefined) return
+    const carte = document.querySelector<HTMLElement>(`.zone-main .scan-card[data-card-id="${choix.carteId}"]`)
+    const main = carte?.closest<HTMLElement>('.zone-main')
+    if (!main) return
+    main.classList.add('main-ancree-par-choix')
+    return () => main.classList.remove('main-ancree-par-choix')
+  }, [choix.carteId])
   if (!boite) return null
   const hauteurTable = cadreDuPlateau()?.boite.h ?? Number.POSITIVE_INFINITY
   const enBas = boite.y + boite.h + 44 > hauteurTable
@@ -883,21 +906,23 @@ export function CiblageSurTable({
         ) : null}
         {ordreDeLaTable && !prete ? <span className="tsm-consigne">{t('ou clique les cartes une à une, dans l’ordre voulu')}</span> : null}
       </BandeauDeplacable>
+      {/* Rouge = une cible qu'on SUBIT (attaquer, contrer...) ; vert = « defendre », un choix du
+          joueur comme jouer une carte (point 5, plan mode-sur-la-table-ux-plan, 05/11/2026). */}
       {cibles.map((c) => (
-        <CarteCiblable key={c.id} cible={c} />
+        <CarteCiblable key={c.id} cible={c} rouge={tonaliteAction(titre) !== 'defense'} />
       ))}
     </>
   )
 }
 
-function CarteCiblable({ cible }: { cible: CibleSurTable }) {
+function CarteCiblable({ cible, rouge }: { cible: CibleSurTable; rouge: boolean }) {
   const boite = useBoiteDeCarte(cible.id, 'cible')
   if (!boite) return null
   return (
     <>
       <button
         type="button"
-        className={`tsm-utilisable${cible.choisie ? ' est-choisie' : ''}`}
+        className={`tsm-utilisable${rouge ? ' est-cible-rouge' : ''}${cible.choisie ? ' est-choisie' : ''}`}
         style={boiteStyle(boite)}
         onClick={cible.agir}
         aria-pressed={cible.choisie}

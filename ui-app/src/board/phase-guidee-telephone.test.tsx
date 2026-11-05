@@ -3,7 +3,7 @@
 //  - le mode lu (`lireModePhaseMechant`) et la présentation lue (`lirePresentationPhase`) sont forcés à la LECTURE sur
 //    téléphone : `detaille` + `tris` (Guidée), quoi que le joueur ait rangé (Accéléré, Plateau animé…) ;
 //  - la préférence rangée n'est JAMAIS écrasée : un PC ou une tablette du même joueur la garde ;
-//  - la ligne « Présentation » des réglages n'est pas affichée sur téléphone, et l'est toujours sur PC.
+//  - la ligne « Mode d’affichage » des réglages n'est pas affichée sur téléphone, et l'est toujours sur PC.
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CLE_MODE_PHASE, lireModePhaseMechant, modePhaseEffectif } from './moteur'
@@ -100,20 +100,20 @@ function proprietes(telephone: boolean): ProprietesReglages {
 }
 
 describe('les réglages', () => {
-  it('PC : la ligne « Présentation » de la phase du méchant est là', () => {
+  it('PC : la ligne « Mode d’affichage » de la phase du méchant est là', () => {
     simulerEcran(false)
     render(<ContenuOnglet onglet="jeu" p={proprietes(false)} />)
-    expect(screen.getByText('Présentation')).toBeTruthy()
+    expect(screen.getByText('Mode d’affichage')).toBeTruthy()
     expect(screen.getByText('Accéléré')).toBeTruthy()
   })
 
-  it('téléphone : pas de ligne « Présentation », pas de choix Accéléré / Plateau animé, une note dit que c’est la Guidée', () => {
+  it('téléphone : pas de ligne « Mode d’affichage », pas de choix Accéléré / Plateau animé, une note dit que c’est la Guidée', () => {
     simulerEcran(true)
     render(<ContenuOnglet onglet="jeu" p={proprietes(true)} />)
-    expect(screen.queryByText('Présentation')).toBeNull()
+    expect(screen.queryByText('Mode d’affichage')).toBeNull()
     expect(screen.queryByText('Accéléré')).toBeNull()
     expect(screen.getByText(/Guidée sur téléphone/)).toBeTruthy()
     // le délai automatique des étapes reste proposé : il vaut pour la Guidée
-    expect(screen.getByText('Phase du méchant automatique')).toBeTruthy()
+    expect(screen.getByText('Avance toute seule après')).toBeTruthy()
   })
 })

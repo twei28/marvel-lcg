@@ -63,11 +63,14 @@ describe('les reglages du telephone (zone 3)', () => {
   })
 })
 
-const props = {} as unknown as ProprietesReglages
+// « Sur la table » (colonnes, taille du texte, verrou...) vit dans l'onglet Jeu depuis le
+// 05/11/2026 : son rendu complet exige aussi `libelleModePhase` (LignePhaseMechant), absent de
+// ce mock minimal avant ce rangement.
+const props = { libelleModePhase: () => '' } as unknown as ProprietesReglages
 
 describe('les colonnes des zones dans la fenetre des reglages', () => {
   it('sur telephone : un choix 1 / 2 / 3 / 4 / Auto par zone (Manigances, Alliés, Sbires, Cartes en jeu), qui s\'enregistre', () => {
-    render(<ContenuOnglet onglet="apparence" p={{ ...props, affichage: 'normal', telephone: true }} />)
+    render(<ContenuOnglet onglet="jeu" p={{ ...props, affichage: 'normal', telephone: true }} />)
     for (const zone of ['Manigances', 'Alliés', 'Sbires', 'Cartes en jeu']) {
       const groupe = screen.getByRole('group', { name: `Colonnes : ${zone}` })
       expect(Array.from(groupe.querySelectorAll('button')).map((b) => b.textContent)).toEqual(['1', '2', '3', '4', 'Auto'])
@@ -78,14 +81,14 @@ describe('les colonnes des zones dans la fenetre des reglages', () => {
   })
 
   it('pas sur ordinateur : le choix des colonnes ne concerne que le plateau du telephone', () => {
-    render(<ContenuOnglet onglet="apparence" p={{ ...props, affichage: 'normal', telephone: false }} />)
+    render(<ContenuOnglet onglet="jeu" p={{ ...props, affichage: 'normal', telephone: false }} />)
     expect(screen.queryByRole('group', { name: 'Colonnes : Sbires' })).toBeNull()
   })
 })
 
 describe('dans la fenetre des reglages', () => {
-  it('sur telephone : taille du texte (3 niveaux) et verrou portrait en Apparence, vibrations en Son', () => {
-    const { unmount } = render(<ContenuOnglet onglet="apparence" p={{ ...props, affichage: 'normal', telephone: true }} />)
+  it('sur telephone : taille du texte (3 niveaux) et verrou portrait en Jeu, vibrations en Son', () => {
+    const { unmount } = render(<ContenuOnglet onglet="jeu" p={{ ...props, affichage: 'normal', telephone: true }} />)
     const groupe = screen.getByRole('group', { name: 'Taille du texte' })
     expect(groupe.querySelectorAll('button')).toHaveLength(3)
     fireEvent.click(screen.getByRole('button', { name: 'Très grande' }))
@@ -99,7 +102,7 @@ describe('dans la fenetre des reglages', () => {
   })
 
   it('sur PC : aucune de ces lignes', () => {
-    render(<ContenuOnglet onglet="apparence" p={{ ...props, affichage: 'normal' }} />)
+    render(<ContenuOnglet onglet="jeu" p={{ ...props, affichage: 'normal' }} />)
     expect(screen.queryByRole('group', { name: 'Taille du texte' })).toBeNull()
     expect(screen.queryByRole('switch', { name: /Verrou portrait/ })).toBeNull()
   })

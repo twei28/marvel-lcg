@@ -26,7 +26,7 @@
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireBarreAvantage, lireBarreAvantage } from './barre-avantage-reglage'
 import { ecrireInversionPiles, lireInversionPiles } from './inversion-piles'
-import { ecrireChevauchement, ecrireModeTraits, lireChevauchement, lireModeTraits, type ChevauchementAmeliorations } from './reglages-affichage-cartes'
+import { ecrireChevauchement, ecrireModeTraits, ecrireZoomApercu, lireChevauchement, lireModeTraits, lireZoomApercu, ZOOM_APERCU_MAX, ZOOM_APERCU_MIN, type ChevauchementAmeliorations } from './reglages-affichage-cartes'
 import type { ModeTraits } from './traits-heros'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
@@ -79,7 +79,8 @@ import type { DosCartes } from './dos-cartes'
 
 /** Les quatre onglets, dans l'ordre ou ils s'affichent. */
 // Rangement du 04/10/2026 (questions une a une) : Apparence, Son, Jeu, Avance.
-export const ONGLETS = ['apparence', 'son', 'jeu', 'avance'] as const
+// Reordonne le 05/11/2026 (retour de l'utilisateur) : Jeu, Apparence, Son, Avance.
+export const ONGLETS = ['jeu', 'apparence', 'son', 'avance'] as const
 export type Onglet = (typeof ONGLETS)[number]
 
 export function libelleOnglet(onglet: Onglet): string {
@@ -196,7 +197,12 @@ export function LigneChoix<T extends string | number>({
 }: {
   libelle: string
   valeur: T
-  choix: ReadonlyArray<{ valeur: T; libelle: string }>
+  /**
+   * `detail` sur UN choix (05/11/2026, retour de l'utilisateur sur « Traits du héros ») : ce
+   * que CE choix precis fait, en infobulle sur son bouton -- au lieu d'une phrase sous le
+   * libelle qui explique les trois a la fois, loin des boutons qu'elle decrit.
+   */
+  choix: ReadonlyArray<{ valeur: T; libelle: string; detail?: string }>
   onChoisir: (valeur: T) => void
   parent?: boolean
   disponible?: boolean
@@ -223,6 +229,7 @@ export function LigneChoix<T extends string | number>({
             disabled={!disponible}
             className={valeur === c.valeur ? 'est-actif' : ''}
             onClick={() => onChoisir(c.valeur)}
+            title={c.detail}
           >
             {c.libelle}
           </button>
@@ -298,20 +305,28 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   const valeur: string = p.modePhase === 'detaille' && bisOuvert ? presentation : p.modePhase
   return (
     <LigneChoix<string>
-      libelle={t('Présentation')}
+      libelle={t('Mode d’affichage')}
       valeur={valeur}
       choix={[
-        ...(PHASE_ETAPE_VISIBLE || !bisOuvert ? [{ valeur: 'detaille', libelle: t('Étape par étape') }] : []),
+        // Le detail par choix (05/11/2026, meme traitement que « Traits du héros ») remplace la
+        // phrase unique qui expliquait les trois a la fois, loin des boutons qu'elle decrivait.
+        ...(PHASE_ETAPE_VISIBLE || !bisOuvert
+          ? [{ valeur: 'detaille', libelle: t('Étape par étape'), detail: t('Un « Suivant » par étape de la phase') }]
+          : []),
         ...(bisOuvert && PHASE_BIS_VISIBLE ? [{ valeur: 'bis', libelle: t('Étape par étape bis') }] : []),
         // « Guidée » (`tris`) : pour tout le monde depuis le 19/10/2026 (drapeau PHASE_TRIS_POUR_TOUS).
-        ...(bisOuvert && phaseTrisUtilisable() ? [{ valeur: 'tris', libelle: t('Guidée') }] : []),
+        ...(bisOuvert && phaseTrisUtilisable()
+          ? [{ valeur: 'tris', libelle: t('Guidée'), detail: t('« Lire la suite » puis « Étape suivante » à chaque étape de la phase') }]
+          : []),
         ...(bisOuvert && PHASE_DYNAMIQUE_VISIBLE ? [{ valeur: 'dynamique', libelle: t('Phase dynamique') }] : []),
         // « Plateau animé » : OUVERT À TOUS depuis le 05/10/2026, quand la
         // fenêtre de préparation « Choisis ta phase du méchant » l'a
         // présenté à chaque joueur (décision de l'utilisateur). Un mode
         // proposé là doit pouvoir se retrouver ici.
-        ...(MODE_SUR_TABLE_OUVERT ? [{ valeur: 'sur-table', libelle: t(p.libelleModePhase('sur-table')) }] : []),
-        { valeur: 'instantane', libelle: t('Accéléré') },
+        ...(MODE_SUR_TABLE_OUVERT
+          ? [{ valeur: 'sur-table', libelle: t(p.libelleModePhase('sur-table')), detail: t('Les cartes bougent sur la table') }]
+          : []),
+        { valeur: 'instantane', libelle: t('Accéléré'), detail: t('Tout se joue d’un coup') },
       ]}
       onChoisir={(v) => {
         if (v === 'bis' || v === 'tris' || v === 'dynamique' || v === 'detaille') {
@@ -321,22 +336,17 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
         }
         p.changerModePhase(v as ModePhaseMechant)
       }}
-      detail={
-        bisOuvert && !PHASE_ETAPE_VISIBLE
-          ? t('Guidée : « Lire la suite » puis « Étape suivante » à chaque étape de la phase. Plateau animé : les cartes bougent sur la table. Accéléré : tout se joue d’un coup')
-          : t('Étape par étape : un « Suivant » par étape de la phase')
-      }
     />
   )
 }
 
-/** « Phase du méchant automatique : Non / 2 s / 5 s » (23/10/2026). Sans objet en « Accéléré » : rien n'y attend de clic. */
+/** « Avance toute seule après : Non / 2 s / 5 s » (23/10/2026, renomme le 05/11/2026). Sans objet en « Accéléré » : rien n'y attend de clic. */
 function LigneDelaiAutoPhase() {
   const [delai, setDelai] = useState<DelaiAutoPhase>(lireDelaiAutoPhase)
   useEffect(() => suivreDelaiAutoPhase(setDelai), [])
   return (
     <LigneChoix<DelaiAutoPhase>
-      libelle={t('Phase du méchant automatique')}
+      libelle={t('Avance toute seule après')}
       valeur={delai}
       choix={[
         { valeur: 0, libelle: t('Non') },
@@ -361,7 +371,7 @@ function LigneFaconDeJouer() {
   const [facon, setFacon] = useState<FaconDeJouer>(lireFaconParDefaut)
   return (
     <LigneChoix
-      libelle={t('Façon de jouer')}
+      libelle={t('Mode de jeu par défaut')}
       valeur={facon}
       choix={[
         { valeur: 'auto' as FaconDeJouer, libelle: t('Auto') },
@@ -411,7 +421,7 @@ function LigneInversionPiles() {
   return (
     <LigneBascule
       libelle={t('Inverser le deck et la défausse')}
-      detail={t('Échange la place du deck et de la défausse (les vôtres, ceux de la rencontre et le deck spécial)')}
+      detail={t('Non : la défausse est à droite du deck. Oui : elle passe à gauche (les vôtres, ceux de la rencontre et le deck spécial)')}
       actif={actif}
       onBascule={() => {
         ecrireInversionPiles(!actif)
@@ -425,7 +435,7 @@ function LigneCoteAmeliorations() {
   const [cote, setCote] = useState<CoteAmeliorations>(lireCoteAmeliorations)
   return (
     <LigneChoix
-      libelle={t('Améliorations')}
+      libelle={t('Côté des améliorations')}
       valeur={cote}
       choix={[
         { valeur: 'gauche' as CoteAmeliorations, libelle: t('À gauche') },
@@ -444,7 +454,7 @@ function LigneChevauchementAmeliorations() {
   const [valeur, setValeur] = useState<ChevauchementAmeliorations>(lireChevauchement)
   return (
     <LigneChoix
-      libelle={t('Chevauchement')}
+      libelle={t('Chevauchement des améliorations')}
       valeur={valeur}
       choix={[
         { valeur: 'moitie' as ChevauchementAmeliorations, libelle: t('Moitié cachée') },
@@ -461,6 +471,39 @@ function LigneChevauchementAmeliorations() {
   )
 }
 
+/**
+ * Le zoom de l'apercu agrandi au survol (05/11/2026, demande de Feyli relayee par l'utilisateur :
+ * « je trouve ça un peu petit »). Curseur continu (decision de l'utilisateur), les deux sens
+ * (reduire ou agrandir), lu et pose dans `--zoom-apercu` par `useZoomApercuSync` (Board.tsx).
+ */
+function LigneZoomApercu() {
+  const [zoom, setZoom] = useState(lireZoomApercu)
+  const libelle = t('Taille de l’aperçu agrandi')
+  return (
+    <div className="ligne-option ligne-option-choix" title={t('La carte qui s’ouvre au survol, sur la table')}>
+      <span className="ligne-option-libelle">
+        {libelle}
+        <small className="ligne-option-aide">{`${Math.round(zoom * 100)} %`}</small>
+      </span>
+      <input
+        type="range"
+        className="ligne-option-curseur"
+        min={ZOOM_APERCU_MIN}
+        max={ZOOM_APERCU_MAX}
+        step={0.05}
+        value={zoom}
+        aria-label={libelle}
+        aria-valuetext={`${Math.round(zoom * 100)} %`}
+        onChange={(evenement) => {
+          const valeur = Number(evenement.target.value)
+          setZoom(valeur)
+          ecrireZoomApercu(valeur)
+        }}
+      />
+    </div>
+  )
+}
+
 function LigneTraitsHeros() {
   const [mode, setMode] = useState<ModeTraits>(lireModeTraits)
   return (
@@ -468,15 +511,15 @@ function LigneTraitsHeros() {
       libelle={t('Traits du héros')}
       valeur={mode}
       choix={[
-        { valeur: 'changements' as ModeTraits, libelle: t('Changements') },
-        { valeur: 'tous' as ModeTraits, libelle: t('Tous') },
-        { valeur: 'aucun' as ModeTraits, libelle: t('Aucun') },
+        { valeur: 'changements' as ModeTraits, libelle: t('Changements'), detail: t('Seulement les traits gagnés ou perdus') },
+        { valeur: 'tous' as ModeTraits, libelle: t('Tous'), detail: t('Tous les traits du héros') },
+        { valeur: 'aucun' as ModeTraits, libelle: t('Aucun'), detail: t('Aucune pastille') },
       ]}
       onChoisir={(v) => {
         ecrireModeTraits(v)
         setMode(v)
       }}
-      detail={t('Pastilles sur la carte du héros : les traits gagnés ou perdus seulement, tous ses traits, ou rien')}
+      detail={t('Pastilles sur la carte du héros')}
     />
   )
 }
@@ -509,7 +552,7 @@ function LigneJeuAuDoigt() {
   const [reglage, setReglage] = useState<ReglageDoigt>(lireReglageDoigt)
   return (
     <LigneChoix<ReglageDoigt>
-      libelle={t('Jeu au doigt')}
+      libelle={t('Mode tablette (gros boutons, glisser)')}
       valeur={reglage}
       choix={[
         { valeur: 'auto', libelle: t('Auto') },
@@ -714,12 +757,14 @@ export function ContenuOnglet({
           onChoisir={p.changerAffichage}
           detail={t('Coloré : couleurs du héros et halo vif. Sobre : fond gris, sans couleurs ni animations')}
         />
-        {/* La couleur du fond (04/10/2026) : la table change en direct. */}
+        {/* La couleur du fond (04/10/2026) : la table change en direct. Repliee par defaut
+            (05/11/2026, retour de l'utilisateur : « ça prend beaucoup de place alors qu'on
+            va quasiment jamais y aller ») -- la roue ne s'ouvre qu'au clic sur le titre. */}
         {p.changerTeinte && p.reinitialiserTeinte ? (
-          <div className="reglage-teinte">
-            <span className="reglage-teinte-titre">{t('Couleur de la table')}</span>
+          <details className="reglage-teinte reglage-repliable">
+            <summary className="reglage-teinte-titre">{t('Couleur de la table')}</summary>
             <RoueTeinte valeur={p.teinte} changer={p.changerTeinte} reinitialiser={p.reinitialiserTeinte} />
-          </div>
+          </details>
         ) : null}
         <LigneBascule
           libelle={t('Animations')}
@@ -730,6 +775,9 @@ export function ContenuOnglet({
           disponible={!sobre}
           raisonIndisponible={t('Coupées par l’affichage sobre')}
         />
+        {/* Categorie a part (05/11/2026, retour de l'utilisateur) : Meteo et decor, Apercu
+            d'ambiance et Demande d'ambiance forment un seul groupe, distinct d'Affichage. */}
+        <TitreSection>{t('Ambiance')}</TitreSection>
         <LigneBascule
           libelle={t('Météo et décor')}
           detail={t('Selon les cartes en jeu (pluie de Storm…)')}
@@ -744,72 +792,19 @@ export function ContenuOnglet({
           reponseAmbiance={p.reponseAmbiance}
           cyclerReponseAmbiance={p.cyclerReponseAmbiance}
         />
-        <TitreSection>{t('Sur la table')}</TitreSection>
-        {/* La table personnalisable (04/10/2026). PC seulement. */}
+        {/* « Placement des zones » vivait dans Jeu (section Cartes et plateau) : revenu ici le
+            05/11/2026 (retour de l'utilisateur). */}
         {p.modifierLaTable ? (
-          <div className="reglage-teinte reglage-table">
-            <span className="reglage-teinte-titre">{t('Placement des zones')}</span>
-            <button type="button" className="bh-bouton" onClick={p.modifierLaTable}>
-              {t('Modifier la table')}
-            </button>
-          </div>
-        ) : null}
-        <LigneEtiquettesTable />
-        <LigneBarreAvantage />
-        {p.telephone ? null : <LigneInversionPiles />}
-        {p.telephone ? null : <LigneJeuAuDoigt />}
-        {p.telephone ? (
           <>
-            <LignePlateauTelephone />
-            <LigneDemanderLePlateau />
-            <LigneAideDebut />
-            <LigneTailleTexte />
-            <LignesColonnesZones />
-            <LigneVerrouPortrait />
+            <TitreSection>{t('Table')}</TitreSection>
+            <div className="reglage-teinte reglage-table">
+              <span className="reglage-teinte-titre">{t('Placement des zones')}</span>
+              <button type="button" className="bh-bouton" onClick={p.modifierLaTable}>
+                {t('Modifier la table')}
+              </button>
+            </div>
           </>
         ) : null}
-        <TitreSection>{t('Langue et cartes')}</TitreSection>
-        {/* La langue n'est pas un interrupteur oui/non : deux pastilles nommees,
-            pour qu'on lise ou on va avant de cliquer. */}
-        <LigneChoix
-          libelle={t('Langue')}
-          valeur={langueActuelle() === 'fr' ? 'fr' : 'en'}
-          choix={[
-            { valeur: 'fr', libelle: 'Français' },
-            { valeur: 'en', libelle: 'English' },
-          ]}
-          onChoisir={(vers) => {
-            if (vers !== (langueActuelle() === 'fr' ? 'fr' : 'en')) void p.basculerLangue()
-          }}
-          // ⚠ CE QUE LA LANGUE NE PEUT PAS FAIRE, DIT AU MOMENT DU CHOIX
-          // (16/09/2026) : une carte sans scan dans cette langue reste en
-          // anglais, et l'infobulle prend le relais.
-          detail={t('Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : agrandie, sa traduction est posée sur son texte.')}
-        />
-        <LigneBascule
-          libelle={t('Cartes en français')}
-          detail={t('Images des cartes en français quand elles existent')}
-          actif={p.scansFr}
-          onBascule={p.basculerScansFr}
-        />
-        {p.dosCartes && p.changerDosCartes ? (
-          <LigneChoix
-            libelle={t('Dos de cartes')}
-            valeur={p.dosCartes}
-            choix={[
-              { valeur: 'officiels' as DosCartes, libelle: t('Officiels Marvel') },
-              { valeur: 'narwhal' as DosCartes, libelle: 'NarwhalChampions' },
-            ]}
-            onChoisir={p.changerDosCartes}
-            detail={t('Le dos des cartes face cachée : decks, boosts, cartes rencontre')}
-          />
-        ) : null}
-        <LigneBascule
-          libelle={t('Texte des cartes en français')}
-          detail={t('Sous l’aperçu agrandi (chargé depuis fr.marvelcdb.com)')}
-          actif={p.textesCdb}
-          onBascule={p.basculerTextesCdb}
-        />
       </>
     )
   }
@@ -838,9 +833,18 @@ export function ContenuOnglet({
   }
 
   if (onglet === 'jeu') {
+    // Redecoupe le 05/11/2026 (retour de l'utilisateur, relecture guidee question par question) :
+    // les anciennes categories « Phase du mechant » / « Mon tour » / « Sur la table » / « Le jeu
+    // agit pour moi... » melangeaient le DEROULE de la phase, le NIVEAU D'AUTOMATISME et
+    // L'AFFICHAGE des cartes sans que la frontiere se voie (ex. « Façon de jouer », un
+    // automatisme, vivait a cote de reglages purement visuels dans « Mon tour »). Desormais :
+    //   - Deroule de la phase du mechant : comment ET A QUELLE VITESSE elle se montre ;
+    //   - Automatismes : tout ce qui fait agir le jeu a la place du joueur (Façon de jouer
+    //     COMPRIS, qui est le meme sujet que les 4 bascules d'a cote) ;
+    //   - Cartes et plateau : tout l'affichage et l'agencement (cartes ET table).
     return (
       <>
-        <TitreSection>{t('Phase du méchant')}</TitreSection>
+        <TitreSection>{t('Déroulé de la phase du méchant')}</TitreSection>
         {/* SUR TELEPHONE la presentation est d'office « Guidee » (26/10/2026, demande de l'utilisateur : pas d'autres
             choix) : pas de ligne « Presentation ». Le delai automatique ci-dessous reste : il vaut pour la Guidee. */}
         {p.telephone ? (
@@ -857,7 +861,7 @@ export function ContenuOnglet({
           <p className="ligne-option-note">{p.texteTempsParDecision()}</p>
         ) : null}
         <LigneChoix
-          libelle={t('Carte révélée en grand')}
+          libelle={t('Durée d’affichage de la carte révélée')}
           valeur={p.revelation}
           choix={[
             { valeur: 'off' as ModeRevelation, libelle: t('Non') },
@@ -881,19 +885,15 @@ export function ContenuOnglet({
               : t('Au centre de l’écran, le temps de la lire')
           }
         />
-        <TitreSection>{t('Mon tour')}</TitreSection>
+        <TitreSection>{t('Automatismes')}</TitreSection>
         <LigneFaconDeJouer />
-        <LigneCoteAmeliorations />
-        <LigneChevauchementAmeliorations />
-        <LigneTraitsHeros />
-        <TitreSection>{t('Le jeu agit pour moi quand il n’y a qu’un choix')}</TitreSection>
         <LigneBascule
           libelle={t('Choisir la seule cible possible')}
           actif={p.autoCible}
           onBascule={p.basculerAutoCible}
         />
         <LigneBascule
-          libelle={t('Valider sans demander')}
+          libelle={t('Confirmer automatiquement')}
           detail={t('Cible unique et coût couvert')}
           actif={p.validationCourte}
           onBascule={p.basculerValidationCourte}
@@ -908,13 +908,24 @@ export function ContenuOnglet({
           actif={p.finTourAuto}
           onBascule={p.basculerFinTourAuto}
         />
-        <TitreSection>{t('Partie')}</TitreSection>
-        <LigneBascule
-          libelle={t('Sauvegarde à chaque phase')}
-          detail={t('En plus des trois emplacements')}
-          actif={p.sauvegardeAuto}
-          onBascule={p.basculerSauvegardeAuto}
-        />
+        <TitreSection>{t('Cartes et plateau')}</TitreSection>
+        <LigneCoteAmeliorations />
+        <LigneChevauchementAmeliorations />
+        <LigneTraitsHeros />
+        <LigneEtiquettesTable />
+        <LigneBarreAvantage />
+        {p.telephone ? null : <LigneZoomApercu />}
+        {p.telephone ? null : <LigneInversionPiles />}
+        {p.telephone ? (
+          <>
+            <LignePlateauTelephone />
+            <LigneDemanderLePlateau />
+            <LigneAideDebut />
+            <LigneTailleTexte />
+            <LignesColonnesZones />
+            <LigneVerrouPortrait />
+          </>
+        ) : null}
       </>
     )
   }
@@ -928,6 +939,9 @@ export function ContenuOnglet({
         actif={p.designEssai}
         onBascule={p.basculerDesignEssai}
       />
+      {/* « Jeu au doigt » vivait dans Jeu (section Cartes et plateau) : deplace ici le
+          05/11/2026 (retour de l'utilisateur), avec son nouveau nom. */}
+      {p.telephone ? null : <LigneJeuAuDoigt />}
       <LigneChoix
         libelle={t('Aide quand je joue une carte')}
         valeur={p.modeActions}
@@ -957,6 +971,60 @@ export function ContenuOnglet({
           detail={t('Non : la vue téléphone, adaptée à l’écran')}
         />
       ) : null}
+      {/* « Langue et cartes » vivait dans Apparence : deplace ici le 05/11/2026 (retour de
+          l'utilisateur, « tout ce qui est langue et carte devrait etre dans avance »). */}
+      <TitreSection>{t('Langue et cartes')}</TitreSection>
+      {/* La langue n'est pas un interrupteur oui/non : deux pastilles nommees,
+          pour qu'on lise ou on va avant de cliquer. */}
+      <LigneChoix
+        libelle={t('Langue')}
+        valeur={langueActuelle() === 'fr' ? 'fr' : 'en'}
+        choix={[
+          { valeur: 'fr', libelle: 'Français' },
+          { valeur: 'en', libelle: 'English' },
+        ]}
+        onChoisir={(vers) => {
+          if (vers !== (langueActuelle() === 'fr' ? 'fr' : 'en')) void p.basculerLangue()
+        }}
+        // ⚠ CE QUE LA LANGUE NE PEUT PAS FAIRE, DIT AU MOMENT DU CHOIX
+        // (16/09/2026) : une carte sans scan dans cette langue reste en
+        // anglais, et l'infobulle prend le relais.
+        detail={t('Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : agrandie, sa traduction est posée sur son texte.')}
+      />
+      <LigneBascule
+        libelle={t('Cartes en français')}
+        detail={t('Images des cartes en français quand elles existent')}
+        actif={p.scansFr}
+        onBascule={p.basculerScansFr}
+      />
+      {p.dosCartes && p.changerDosCartes ? (
+        <LigneChoix
+          libelle={t('Dos de cartes')}
+          valeur={p.dosCartes}
+          choix={[
+            { valeur: 'officiels' as DosCartes, libelle: t('Officiels Marvel') },
+            { valeur: 'narwhal' as DosCartes, libelle: 'NarwhalChampions' },
+          ]}
+          onChoisir={p.changerDosCartes}
+          detail={t('Le dos des cartes face cachée : decks, boosts, cartes rencontre')}
+        />
+      ) : null}
+      <LigneBascule
+        libelle={t('Texte des cartes en français')}
+        detail={t('Sous l’aperçu agrandi (chargé depuis fr.marvelcdb.com)')}
+        actif={p.textesCdb}
+        onBascule={p.basculerTextesCdb}
+      />
+      {/* « Partie » (sauvegarde) vivait dans Jeu : deplace ici le 05/11/2026 (retour de
+          l'utilisateur -- une sauvegarde automatique est un reglage avance, pas un reglage
+          de jeu courant). */}
+      <TitreSection>{t('Partie')}</TitreSection>
+      <LigneBascule
+        libelle={t('Sauvegarde à chaque phase')}
+        detail={t('En plus des trois emplacements')}
+        actif={p.sauvegardeAuto}
+        onBascule={p.basculerSauvegardeAuto}
+      />
       <TitreSection>{t('Multijoueur')}</TitreSection>
       <LigneBascule
         libelle={t('Curseurs des autres joueurs')}
@@ -984,7 +1052,7 @@ export function FenetreReglages({
   lectureSeule,
   ...p
 }: { ouvert: boolean; fermer: () => void; lectureSeule?: boolean } & ProprietesReglages) {
-  const [onglet, setOnglet] = useState<Onglet>('apparence')
+  const [onglet, setOnglet] = useState<Onglet>('jeu')
   const boite = useRef<HTMLDivElement | null>(null)
   // La recherche (23/10/2026) : non vide, les quatre onglets se rendent a la suite et le filtre cache ce qui ne correspond pas.
   const [recherche, setRecherche] = useState('')

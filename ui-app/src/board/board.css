@@ -2673,9 +2673,11 @@
      sur leur soeur. Une seule source par largeur, donc aucun risque de voir le
      texte et la carte diverger. */
   .carte-apercu {
-    /* Apercu agrandi ~15 % de plus, a la demande (300 -> 345, 440 -> 506). */
-    --largeur-face: 345px;
-    --largeur-face-paysage: 506px;
+    /* Apercu agrandi ~15 % de plus, a la demande (300 -> 345, 440 -> 506). Depuis le 05/11/2026,
+       un curseur dans Reglages > Apparence (--zoom-apercu, 70% a 150%) multiplie ces deux tailles
+       de depart -- demande de Feyli, « je trouve ça un peu petit ». */
+    --largeur-face: calc(345px * var(--zoom-apercu, 1));
+    --largeur-face-paysage: calc(506px * var(--zoom-apercu, 1));
   }
 
   .carte-apercu .scan-card {
@@ -3264,6 +3266,7 @@
 
   .zone-main:hover,
   .zone-main:focus-within,
+  .zone-main.main-ancree-par-choix,
   .plateau.main-visible-forcee .zone-main {
     z-index: 20;
     overflow: visible;
@@ -3277,8 +3280,18 @@
     transition: transform 180ms ease;
   }
 
+  /* `.main-ancree-par-choix` (05/11/2026) : posee par `PuceSurCarte`
+     (TableSansModale.tsx) tant qu'une carte DE LA MAIN est une option
+     cliquable sur la table (ex. Hero Interrupt pendant une attaque). Sans
+     elle, la main ne reste haute que par :hover/:focus-within -- la puce,
+     qui re-mesure la carte toutes les 120ms, la voit alors monter et
+     descendre au gre de ce survol et se desynchronise, d'ou la boucle
+     « monte-descend » tant que la souris reste immobile dessus (rapport de
+     partie reelle). La figer haute tout le temps que la puce existe
+     supprime la cause : la carte ne bouge plus sous elle. */
   .zone-main:hover .plateau-cartes,
   .zone-main:focus-within .plateau-cartes,
+  .zone-main.main-ancree-par-choix .plateau-cartes,
   .plateau.main-visible-forcee .zone-main .plateau-cartes {
     transform: translateY(0);
   }
@@ -4432,6 +4445,25 @@
   body.plateau-sans-animations .bandeau-phase-eclair {
     animation: none;
     opacity: 0;
+  }
+
+  /* RENFORT (Surge), point 4 du plan mode-sur-la-table-ux-plan (05/11/2026) :
+     meme famille que l'annonce de phase, mais DORE (pas le rouge du mechant)
+     et beaucoup plus bref -- le JS qui pose cette classe la retire apres
+     700ms, pas les 1 a 2 secondes de la phase. */
+  .bandeau-phase.est-renfort {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #f3c623 12%,
+      #f3c623 88%,
+      transparent
+    );
+    box-shadow: 0 0 40px rgba(243, 198, 35, 0.6);
+  }
+
+  .bandeau-phase.est-renfort .bandeau-phase-texte {
+    color: #1c1500;
   }
 
   /* La chronologie et, a sa droite, le rang de l'etape dans son temps. */

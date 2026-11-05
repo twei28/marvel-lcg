@@ -39,6 +39,9 @@ type Props = {
   renfort?: { phrase?: string }
 }
 
+/** Point 4 du plan mode-sur-la-table-ux-plan (05/11/2026) : le bandeau plein ecran, TRES bref, avant une carte de Renfort. */
+const DUREE_BANNIERE_RENFORT_MS = 700
+
 export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, actif, controle, surPhase, renfort }: Props) {
   const cartes: CarteLue[] = []
   if (actif && etape) {
@@ -59,10 +62,10 @@ export function CoucheRencontreSurTable({ etape, boostsMontres, carteScene, acti
     if (actif && rienALire && !boostsEnAttente) surPhase?.('aucune')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actif, rienALire, boostsEnAttente, etape?.cle])
-  return <LectureRencontre key={identite} cartes={cartes} apport={apport} auteurId={etape?.carteId} controle={controle} surPhase={surPhase} renfort={renfort} />
+  return <LectureRencontre key={identite} cartes={cartes} apport={apport} auteurId={etape?.carteId} controle={controle} surPhase={surPhase} renfort={renfort} surge={Boolean(etape?.parSurge)} />
 }
 
-function LectureRencontre({ cartes, apport, auteurId, controle, surPhase, renfort }: { cartes: CarteLue[]; apport: number; auteurId?: number; controle?: Ref<ControleRencontre>; surPhase?: (phase: PhaseLecture) => void; renfort?: { phrase?: string } }) {
+function LectureRencontre({ cartes, apport, auteurId, controle, surPhase, renfort, surge }: { cartes: CarteLue[]; apport: number; auteurId?: number; controle?: Ref<ControleRencontre>; surPhase?: (phase: PhaseLecture) => void; renfort?: { phrase?: string }; surge: boolean }) {
   const couche = useRef<HTMLDivElement>(null)
   const [ancres, setAncres] = useState<{ deck: Boite; cadre: Boite; auteur?: Boite }>()
   const etat = useRef<'entree' | 'lecture' | 'depart' | 'termine'>('entree')
@@ -74,6 +77,17 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase, renfor
   const commande = useRef<ControleRencontre | undefined>(undefined)
   const cartesRef = useRef(cartes)
   cartesRef.current = cartes
+
+  // Point 4 (05/11/2026) : un bandeau plein ecran, tres bref, annonce la carte de Renfort juste
+  // avant qu'elle n'apparaisse -- une seule fois par carte (la cle du composant change a chaque
+  // nouvelle lecture, voir `identite` plus haut), jamais repete pendant la lecture.
+  const [banniereRenfort, setBanniereRenfort] = useState(surge)
+  useEffect(() => {
+    if (!surge) return
+    const minuteur = window.setTimeout(() => setBanniereRenfort(false), DUREE_BANNIERE_RENFORT_MS)
+    return () => window.clearTimeout(minuteur)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- une seule fois par montage (cle = identite de la carte).
+  }, [])
 
   useLayoutEffect(() => {
     if (!cartesRef.current.length) return
@@ -243,6 +257,12 @@ function LectureRencontre({ cartes, apport, auteurId, controle, surPhase, renfor
   const ids = cartes.map((c) => c.id)
   return (
     <div ref={couche} className="rencontre-sur-table" data-lecture={phase} aria-hidden="true">
+      {banniereRenfort ? (
+        <div className="bandeau-phase est-renfort">
+          <span className="bandeau-phase-eclair" />
+          <p className="bandeau-phase-texte">{t('Renfort')}</p>
+        </div>
+      ) : null}
       {/* L'original garde sa place et reste mesurable pendant le voyage. */}
       <style>{phase !== 'termine' ? ids.map((id) => `.plateau-cadre .scan-card[data-card-id="${id}"]:not(.rencontre-sur-table *) { visibility: hidden !important; }`).join('\n') : ''}</style>
       {cartes.map((carte, i) => (

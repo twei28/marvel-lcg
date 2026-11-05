@@ -40,7 +40,7 @@ const CARTES_EMPILEES_TEL: Raccourci[] = [
 const LA_TABLE: Raccourci[] = [
   { touches: 'Réglages › Apparence', effet: '« Modifier la table » : glisse une zone pour la déplacer, ses poignées règlent sa place et la taille de ses cartes' },
   { touches: 'Double-clic sur le titre', effet: 'Dans « Modifier la table » : renommer la zone (laisse vide pour reprendre le titre d’origine)' },
-  { touches: 'Réglages › Jeu', effet: '« Améliorations » : à gauche ou à droite de la carte qui les porte' },
+  { touches: 'Réglages › Jeu', effet: '« Côté des améliorations » : à gauche ou à droite de la carte qui les porte' },
 ]
 
 // LE TELEPHONE (10/10/2026) : les touches et le glisser-Alt n'existent pas au

@@ -39,7 +39,7 @@ import { cleDePile, cleDeRangee, coteDe, ranger, type Ordres } from './ordre/ord
 import { useCoteAmeliorations } from './cote-ameliorations'
 import { useInversionPiles } from './inversion-piles'
 import { PastillesTraits } from './PastillesTraits'
-import { PAS_PAR_CHEVAUCHEMENT, useChevauchement } from './reglages-affichage-cartes'
+import { PAS_PAR_CHEVAUCHEMENT, useChevauchement, useZoomApercuSync } from './reglages-affichage-cartes'
 import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } from './glisser/useGlisser'
 import { TraductionPosee } from './TraductionPosee'
@@ -1231,6 +1231,8 @@ export function Board({
 }: BoardProps) {
   // Inverser le deck et la defausse (reglage Apparence) : pose `data-piles-inversees` sur <html>, que lit board.css. Une seule fois, ici.
   useInversionPiles()
+  // Le zoom de l'apercu agrandi (reglage Apparence, 05/11/2026) : pose `--zoom-apercu` sur <html>. Une seule fois, ici.
+  useZoomApercuSync()
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
 

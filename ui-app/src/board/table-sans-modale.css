@@ -89,7 +89,7 @@
   outline-offset: 3px;
 }
 
-/* La carte qui subit : un anneau rouge fin, sans mouvement. */
+/* La carte qui subit : un anneau rouge, qui respire doucement comme l'acteur (05/11/2026). */
 .tsm-cible {
   position: absolute;
   z-index: 139;
@@ -97,6 +97,7 @@
   border-radius: 8px;
   box-shadow: 0 0 12px 2px rgba(230, 36, 41, 0.45);
   pointer-events: none;
+  animation: tsm-respire-rouge 2s ease-in-out infinite;
 }
 
 @keyframes tsm-respire {
@@ -104,8 +105,24 @@
   50% { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 0 22px 6px rgba(243, 198, 35, 0.7); }
 }
 
+/* Halo pulsant lent (~2s), assorti a la couleur du contour : vert = jouable, rouge = cible (05/11/2026). */
+@keyframes tsm-respire-verte {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 14px 3px rgba(79, 209, 123, 0.4); }
+  50% { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 26px 7px rgba(79, 209, 123, 0.85); }
+}
+
+@keyframes tsm-respire-rouge {
+  0%, 100% { box-shadow: 0 0 12px 2px rgba(230, 36, 41, 0.35); }
+  50% { box-shadow: 0 0 22px 6px rgba(230, 36, 41, 0.8); }
+}
+
+@keyframes tsm-respire-rouge-utilisable {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 14px 3px rgba(230, 36, 41, 0.4); }
+  50% { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 26px 7px rgba(230, 36, 41, 0.85); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .tsm-acteur { animation: none; }
+  .tsm-acteur, .tsm-cible, .tsm-utilisable { animation: none; }
 }
 
 .tsm-confirmer {
@@ -125,10 +142,14 @@
   font-size: 14px;
 }
 
-/* La question : la ligne du haut porte la phrase et les choix sans carte. */
+/* La question : la ligne du haut porte la phrase et les choix sans carte.
+   Largeur x1.5 (texte a taille inchangee, hauteur inchangee), bordure
+   doree tout autour, ombre plus forte pour se detacher du plateau derriere
+   (point 2, plan mode-sur-la-table-ux-plan -- motif : « se fond dans l'ecran »). */
 .tsm-bandeau.est-question {
-  border-left-color: #f3c623;
-  max-width: min(980px, 94%);
+  max-width: min(1470px, 97%);
+  border: 2px solid #f3c623;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.75), 0 0 18px rgba(243, 198, 35, 0.4);
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -170,6 +191,7 @@
     0 0 0 2px rgba(0, 0, 0, 0.5),
     0 0 14px 3px rgba(79, 209, 123, 0.5);
   cursor: pointer;
+  animation: tsm-respire-verte 2s ease-in-out infinite;
 }
 
 .tsm-utilisable:hover {
@@ -181,7 +203,29 @@
 .tsm-utilisable.est-inactif {
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: none;
+  animation: none;
   cursor: not-allowed;
+}
+
+/* Cible d'une action (attaquer, contrer...) : rouge, jamais vert -- SAUF defendre,
+   qui reste vert car c'est un choix du joueur, pas une designation subie (point 5,
+   plan mode-sur-la-table-ux-plan). */
+.tsm-utilisable.est-cible-rouge {
+  border-color: #e62429;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.5),
+    0 0 14px 3px rgba(230, 36, 41, 0.45);
+  animation: tsm-respire-rouge-utilisable 2s ease-in-out infinite;
+}
+
+.tsm-utilisable.est-cible-rouge:hover {
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.5),
+    0 0 22px 6px rgba(230, 36, 41, 0.8);
+}
+
+.tsm-utilisable.est-choisie {
+  animation: none;
 }
 
 .tsm-etiquette {

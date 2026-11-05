@@ -91,6 +91,8 @@ describe('un sous-reglage inutilisable reste VISIBLE', () => {
   it('un sous-reglage porte le retrait, son parent non', () => {
     render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
     expect(ligne('Animations').className).toContain('est-enfant')
+    // « Langue » vit dans Avancé depuis le 05/11/2026 (rangement demandé par l'utilisateur).
+    render(<ContenuOnglet onglet="avance" p={proprietes()} />)
     expect(ligne('Langue').className).not.toContain('est-enfant')
   })
 })
@@ -115,6 +117,12 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
   // ailleurs ferait rougir ce test.
   // Rangement du 04/10/2026 (questions une a une) : Apparence, Son, Jeu,
   // Avance ; intitules qui disent l'effet.
+  // Rangement du 05/11/2026 (retour de l'utilisateur, « tout ce qui est sur la table devrait
+  // etre dans jeu » et « tout ce qui est langue et carte devrait etre dans avance ») : « Sur la
+  // table » passe d'Apparence a Jeu, « Langue et cartes » passe d'Apparence a Avance. Puis
+  // « Sauvegarde a chaque phase » (section Partie) passe de Jeu a Avance, et l'onglet Jeu
+  // lui-meme est redecoupe en trois categories (Deroule de la phase du mechant / Automatismes /
+  // Cartes et plateau) au lieu des quatre d'origine.
   const ATTENDUS: Record<string, string[]> = {
     apparence: [
       'Style d’affichage',
@@ -122,22 +130,31 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
       'Animations',
       'Météo et décor',
       'Aperçu d’ambiance',
-      'Langue',
-      'Cartes en français',
-      'Texte des cartes en français',
     ],
     son: ['Bruitages', 'Musique de fond'],
     jeu: [
-      'Présentation',
-      'Carte révélée en grand',
-      'Le jeu agit pour moi quand il n’y a qu’un choix',
+      'Mode d’affichage',
+      'Durée d’affichage de la carte révélée',
+      'Mode de jeu par défaut',
       'Choisir la seule cible possible',
-      'Valider sans demander',
+      'Confirmer automatiquement',
       'Payer avec la seule carte possible',
       'Finir mon tour quand je ne peux plus rien jouer',
-      'Sauvegarde à chaque phase',
+      'Étiquettes de type sur la table',
+      'Barre d’avantage (estimation)',
+      'Taille de l’aperçu agrandi',
+      'Inverser le deck et la défausse',
     ],
-    avance: ['Nouveau plateau', 'Aide quand je joue une carte', 'Curseurs des autres joueurs'],
+    avance: [
+      'Nouveau plateau',
+      'Mode tablette (gros boutons, glisser)',
+      'Aide quand je joue une carte',
+      'Langue',
+      'Cartes en français',
+      'Texte des cartes en français',
+      'Sauvegarde à chaque phase',
+      'Curseurs des autres joueurs',
+    ],
   }
 
   for (const [onglet, libelles] of Object.entries(ATTENDUS)) {
@@ -228,10 +245,10 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     expect(changerModePhase).toHaveBeenCalledWith('instantane')
   })
 
-  it('« Façon de jouer » : Auto par défaut, et Manuel se retient pour le lanceur', () => {
+  it('« Mode de jeu par défaut » : Auto par défaut, et Manuel se retient pour le lanceur', () => {
     window.localStorage.removeItem('marvel-board-facon-de-jouer')
     render(<ContenuOnglet onglet="jeu" p={proprietes()} />)
-    const groupe = screen.getByRole('group', { name: 'Façon de jouer' })
+    const groupe = screen.getByRole('group', { name: 'Mode de jeu par défaut' })
     expect(within(groupe).getByText('Auto').className).toContain('est-actif')
     fireEvent.click(within(groupe).getByText('Manuel'))
     expect(window.localStorage.getItem('marvel-board-facon-de-jouer')).toBe('manuel')
@@ -265,7 +282,7 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ revelation: 'court', cyclerRevelation, modePhase: 'instantane' })} />)
     // ⚠ Chercher DANS la ligne : « Non » est aussi l'etat affiche par chaque
     // interrupteur coupe de l'onglet, un `getByText` global en trouve plusieurs.
-    const cartes = within(ligne('Carte révélée en grand'))
+    const cartes = within(ligne('Durée d’affichage de la carte révélée'))
     fireEvent.click(cartes.getByText('5 s'))
     expect(cyclerRevelation).toHaveBeenCalledTimes(1)
     cyclerRevelation.mockClear()
@@ -277,10 +294,10 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
 // D42 (refonte du cartouche, 04/10/2026) : en « Étape par étape », la carte
 // révélée se montre en grand DANS le cartouche du bas. La ligne reste dans les
 // réglages, grisée, et dit pourquoi ; les deux autres modes la gardent active.
-describe('« Carte révélée en grand » et le cartouche', () => {
+describe('« Durée d’affichage de la carte révélée » et le cartouche', () => {
   it('grisée en « Étape par étape », avec « Le cartouche s’en charge »', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'detaille' })} />)
-    const rangee = ligne('Carte révélée en grand')
+    const rangee = ligne('Durée d’affichage de la carte révélée')
     expect(rangee.className).toContain('est-desactive')
     expect(within(rangee).getByText('Le cartouche s’en charge')).toBeInTheDocument()
     for (const bouton of within(rangee).getAllByRole('button')) expect(bouton).toBeDisabled()
@@ -289,7 +306,7 @@ describe('« Carte révélée en grand » et le cartouche', () => {
   it('active, avec son explication d’origine, dans les deux autres modes', () => {
     for (const modePhase of ['instantane', 'sur-table'] as const) {
       const { unmount } = render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase })} />)
-      const rangee = ligne('Carte révélée en grand')
+      const rangee = ligne('Durée d’affichage de la carte révélée')
       expect(rangee.className, modePhase).not.toContain('est-desactive')
       expect(within(rangee).getByText('Au centre de l’écran, le temps de la lire')).toBeInTheDocument()
       unmount()
@@ -297,14 +314,14 @@ describe('« Carte révélée en grand » et le cartouche', () => {
   })
 })
 
-// « Phase du méchant automatique » (23/10/2026) : Non / 2 s / 5 s, pour les modes qui ont un cartouche ; sans objet en « Accéléré ».
-describe('« Phase du méchant automatique »', () => {
+// « Avance toute seule après » (23/10/2026) : Non / 2 s / 5 s, pour les modes qui ont un cartouche ; sans objet en « Accéléré ».
+describe('« Avance toute seule après »', () => {
   beforeEach(() => window.localStorage.clear())
 
   it('présente Non / 2 s / 5 s en « Étape par étape » et « Plateau animé »', () => {
     for (const modePhase of ['detaille', 'sur-table'] as const) {
       const { unmount } = render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase })} />)
-      const rangee = within(ligne('Phase du méchant automatique'))
+      const rangee = within(ligne('Avance toute seule après'))
       expect(rangee.getByText('Non')).toBeInTheDocument()
       expect(rangee.getByText('2 s')).toBeInTheDocument()
       expect(rangee.getByText('5 s')).toBeInTheDocument()
@@ -314,12 +331,12 @@ describe('« Phase du méchant automatique »', () => {
 
   it('absente en « Accéléré » : rien n’y attend de clic', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'instantane' })} />)
-    expect(screen.queryByText('Phase du méchant automatique')).toBeNull()
+    expect(screen.queryByText('Avance toute seule après')).toBeNull()
   })
 
   it('choisir 2 s l’enregistre (réglage personnel), Non le coupe', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'detaille' })} />)
-    const rangee = within(ligne('Phase du méchant automatique'))
+    const rangee = within(ligne('Avance toute seule après'))
     fireEvent.click(rangee.getByText('2 s'))
     expect(window.localStorage.getItem('marvel-board-phase-auto')).toBe('2000')
     fireEvent.click(rangee.getByText('Non'))
@@ -335,13 +352,15 @@ describe('la fenetre elle-meme', () => {
     expect(container.querySelector('.reglages-fenetre')).toBeNull()
   })
 
-  it('ouvre sur l’onglet « Apparence », et on peut changer d’onglet', () => {
+  it('ouvre sur l’onglet « Jeu », et on peut changer d’onglet', () => {
+    // Ordre et onglet de depart changes le 05/11/2026 (retour de l'utilisateur) : Jeu
+    // d'abord, puis Apparence, Son, Avance.
     render(<FenetreReglages ouvert fermer={vi.fn()} {...proprietes()} />)
-    expect(screen.getByText('Animations')).toBeTruthy()
-    expect(screen.getAllByRole('tab').map((o) => o.textContent)).toEqual(['Apparence', 'Son', 'Jeu', 'Avancé'])
+    expect(screen.getByText('Mode d’affichage')).toBeTruthy()
+    expect(screen.getAllByRole('tab').map((o) => o.textContent)).toEqual(['Jeu', 'Apparence', 'Son', 'Avancé'])
     fireEvent.click(screen.getByRole('tab', { name: 'Son' }))
     expect(screen.getByText('Bruitages')).toBeTruthy()
-    expect(screen.queryByText('Animations')).toBeNull()
+    expect(screen.queryByText('Mode d’affichage')).toBeNull()
   })
 
   it('affiche les quatre onglets, et un seul est selectionne', () => {
@@ -395,7 +414,7 @@ describe('le mode « Sur la table » est proposé à tous', () => {
   // `MODE_SUR_TABLE_OUVERT` repasse à faux, ces cas rougissent et rappellent de
   // réécrire ce qu'on attend. Ils ont déjà joué ce rôle une fois.
   const modes = () =>
-    within(screen.getByText('Présentation').closest('.ligne-option') as HTMLElement)
+    within(screen.getByText('Mode d’affichage').closest('.ligne-option') as HTMLElement)
       .getAllByRole('button')
       .map((b) => b.textContent)
 
@@ -406,7 +425,8 @@ describe('le mode « Sur la table » est proposé à tous', () => {
     // ici, au moment du choix, et elle nomme le relais : la traduction posée sur la carte agrandie.
     // ⚠ Le `detail` d'une ligne de réglage devient un attribut `title`, pas du
     // texte : c'est l'infobulle du bouton lui-même. On cherche donc là.
-    render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
+    // « Langue » vit dans Avancé depuis le 05/11/2026 (rangement demandé par l'utilisateur).
+    render(<ContenuOnglet onglet="avance" p={proprietes()} />)
     const ligne = screen.getByTitle(/Langue de l’interface et de la narration/)
     expect(ligne.getAttribute('title')).toMatch(/sans scan dans cette langue reste en anglais/)
     expect(ligne.getAttribute('title')).toMatch(/traduction est posée sur son texte/)
